@@ -1927,7 +1927,7 @@
       <targetAnchor xmi:type="notation:IdentityAnchor" xmi:id="_HgZ0sO54Ed-mme2kOgRe2Q" id="(0.9313725490196079,0.30952380952380953)"/>
     </edges>
   </notation:Diagram>
-  <notation:Diagram xmi:id="_d3JDce5HEd-mme2kOgRe2Q" type="EcoreTools" name="art2_topology" measurementUnit="Pixel">
+  <notation:Diagram xmi:id="_d3JDce5HEd-mme2kOgRe2Q" type="EcoreTools" name="kevoree_topology" measurementUnit="Pixel">
     <children xmi:type="notation:Node" xmi:id="_iS6EIO5HEd-mme2kOgRe2Q" type="1001">
       <children xmi:type="notation:Node" xmi:id="_iS_jsO5HEd-mme2kOgRe2Q" type="4001"/>
       <children xmi:type="notation:Node" xmi:id="_iTAKwO5HEd-mme2kOgRe2Q" type="5001">
@@ -2095,7 +2095,7 @@
       <targetAnchor xmi:type="notation:IdentityAnchor" xmi:id="_nhKRse5HEd-mme2kOgRe2Q" id="(0.5,1.0)"/>
     </edges>
   </notation:Diagram>
-  <notation:Diagram xmi:id="_086oAO5OEd-mme2kOgRe2Q" type="EcoreTools" name="art2_typegroup" measurementUnit="Pixel">
+  <notation:Diagram xmi:id="_086oAO5OEd-mme2kOgRe2Q" type="EcoreTools" name="kevoree_typegroup" measurementUnit="Pixel">
     <children xmi:type="notation:Node" xmi:id="_7Dqj0O5OEd-mme2kOgRe2Q" type="1001">
       <children xmi:type="notation:Node" xmi:id="_7DtnIO5OEd-mme2kOgRe2Q" type="4001"/>
       <children xmi:type="notation:Node" xmi:id="_7DtnIe5OEd-mme2kOgRe2Q" type="5001">
@@ -2189,7 +2189,7 @@
       <targetAnchor xmi:type="notation:IdentityAnchor" xmi:id="_--FK8e5OEd-mme2kOgRe2Q" id="(0.5,1.0)"/>
     </edges>
   </notation:Diagram>
-  <notation:Diagram xmi:id="_4yQscO5PEd-mme2kOgRe2Q" type="EcoreTools" name="art2_typedefinition" measurementUnit="Pixel">
+  <notation:Diagram xmi:id="_4yQscO5PEd-mme2kOgRe2Q" type="EcoreTools" name="kevoree_typedefinition" measurementUnit="Pixel">
     <children xmi:type="notation:Node" xmi:id="_-rGvIO5PEd-mme2kOgRe2Q" type="1001">
       <children xmi:type="notation:Node" xmi:id="_-rGvI-5PEd-mme2kOgRe2Q" type="4001"/>
       <children xmi:type="notation:Node" xmi:id="_-rHWMO5PEd-mme2kOgRe2Q" type="5001">
@@ -2431,7 +2431,7 @@
       <targetAnchor xmi:type="notation:IdentityAnchor" xmi:id="_C8Y-IO5QEd-mme2kOgRe2Q" id="(0.3333333333333333,1.0)"/>
     </edges>
   </notation:Diagram>
-  <notation:Diagram xmi:id="_im-rIO5REd-mme2kOgRe2Q" type="EcoreTools" name="art2_componentTypeDefinition" measurementUnit="Pixel">
+  <notation:Diagram xmi:id="_im-rIO5REd-mme2kOgRe2Q" type="EcoreTools" name="kevoree_componentTypeDefinition" measurementUnit="Pixel">
     <children xmi:type="notation:Node" xmi:id="_j7V2AO5REd-mme2kOgRe2Q" type="1001">
       <children xmi:type="notation:Node" xmi:id="_j7WdEO5REd-mme2kOgRe2Q" type="4001"/>
       <children xmi:type="notation:Node" xmi:id="_j7WdEe5REd-mme2kOgRe2Q" type="5001">
@@ -2755,7 +2755,7 @@
       <targetAnchor xmi:type="notation:IdentityAnchor" xmi:id="_2n3mke5REd-mme2kOgRe2Q" id="(0.8529411764705882,1.0)"/>
     </edges>
   </notation:Diagram>
-  <notation:Diagram xmi:id="__k9ygO5TEd-mme2kOgRe2Q" type="EcoreTools" name="art2_channelTypeDefinition" measurementUnit="Pixel">
+  <notation:Diagram xmi:id="__k9ygO5TEd-mme2kOgRe2Q" type="EcoreTools" name="kevoree_channelTypeDefinition" measurementUnit="Pixel">
     <children xmi:type="notation:Node" xmi:id="_CmykwO5UEd-mme2kOgRe2Q" type="1001">
       <children xmi:type="notation:Node" xmi:id="_CmzL0O5UEd-mme2kOgRe2Q" type="4001"/>
       <children xmi:type="notation:Node" xmi:id="_CmzL0e5UEd-mme2kOgRe2Q" type="5001">
@@ -2965,7 +2965,7 @@
       <targetAnchor xmi:type="notation:IdentityAnchor" xmi:id="_NbCKcO5UEd-mme2kOgRe2Q" id="(0.3333333333333333,1.0)"/>
     </edges>
   </notation:Diagram>
-  <notation:Diagram xmi:id="_GXBwsfALEd-vyedv5jrHuA" type="EcoreTools" name="art2_metrics" measurementUnit="Pixel">
+  <notation:Diagram xmi:id="_GXBwsfALEd-vyedv5jrHuA" type="EcoreTools" name="kevoree_metrics" measurementUnit="Pixel">
     <children xmi:type="notation:Node" xmi:id="_IPOocPALEd-vyedv5jrHuA" type="1001">
       <children xmi:type="notation:Node" xmi:id="_IPRrwPALEd-vyedv5jrHuA" type="4001"/>
       <children xmi:type="notation:Node" xmi:id="_IPS54PALEd-vyedv5jrHuA" type="5001">

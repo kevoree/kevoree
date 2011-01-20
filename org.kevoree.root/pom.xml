@@ -11,7 +11,7 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <art2.version>2.2.1-SNAPSHOT</art2.version>
+        <kevoree.version>2.2.1-SNAPSHOT</kevoree.version>
         <emf.version>2.6.0</emf.version>
         <scala.version>2.8.1</scala.version>
         <slf4j.version>1.6.1</slf4j.version>
