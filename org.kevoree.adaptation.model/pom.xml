@@ -22,6 +22,7 @@
         </resources>
         
         <plugins>
+            
             <plugin>
                 <groupId>org.kermeta.emf</groupId>
                 <artifactId>org.kermeta.emf.genmodel</artifactId>

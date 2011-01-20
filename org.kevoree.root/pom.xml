@@ -144,7 +144,9 @@
 
     <modules>
         <module>../org.kevoree.model</module>
+        <module>../org.kevoree.adaptation.model</module>
         <module>../org.kevoree.annotation.api</module>
+        <module>../org.kevoree.api</module>
     </modules>
 
 </project>
