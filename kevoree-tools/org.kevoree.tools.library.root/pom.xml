@@ -1,0 +1,107 @@
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>org.kevoree.library.root</artifactId>
+    <packaging>pom</packaging>
+    <name>Kevoree :: Tools :: Library Root</name>
+
+    <parent>
+        <artifactId>org.kevoree.tools.root</artifactId>
+        <groupId>org.kevoree.tools</groupId>
+        <version>2.2.1-SNAPSHOT</version>
+        <relativePath>../org.kevoree.tools.root/pom.xml</relativePath>
+    </parent>
+
+
+    <properties>
+        <maven.build.timestamp.format>yyyyMMddHHmmSSS</maven.build.timestamp.format>
+        <kevoree.repositories>http://www.kermeta.org/maven2</kevoree.repositories>
+    </properties>
+
+    <build>
+        <resources>
+            <resource>
+                <directory>${project.build.directory}/generated-sources/kevoree</directory>
+            </resource>
+        </resources>
+
+        <plugins>
+            <!-- APT ART2 PLUGIN : ART2 JAVA ANNOTATION INTEGRATION -->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>apt-maven-plugin</artifactId>
+                <version>1.0-alpha-3</version>
+                <configuration>
+                    <outputFiles>
+                        <outputFile>${project.build.directory}/generated-sources/kevoree/KEV-INF/kevLib.art2</outputFile>
+                    </outputFiles>
+                    <options>
+                        <value>art2.lib.id=${project.artifactId}</value>
+                        <value>art2.lib.group=${project.groupId}</value>
+                        <value>art2.lib.version=${project.version}</value>
+                        <value>art2.lib.target=${project.build.directory}/generated-sources/kevoree/KEV-INF/kevLib.art2</value>
+                        <value>tag=${maven.build.timestamp}</value>
+                        <value>repositories=${kevoree.repositories}</value>
+                    </options>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>process</goal>
+                            <goal>test-process</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+    <dependencies>
+
+        <dependency>
+            <groupId>org.kevoree</groupId>
+            <artifactId>org.kevoree.annotation.processor</artifactId>
+            <version>${kevoree.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.kevoree</groupId>
+            <artifactId>org.kevoree.framework</artifactId>
+            <version>${kevoree.version}</version>
+        </dependency>
+
+
+
+		<!-- all ART components will need ART2 to compile -->
+                <!--
+        <dependency>
+            <groupId>org.kermeta.art2</groupId>
+            <artifactId>art2.annotation</artifactId>
+            <version>${art2.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.kermeta.art2</groupId>
+            <artifactId>art2.framework</artifactId>
+            <version>${art2.version}</version>
+        </dependency>
+-->
+
+
+        <!-- Use to output logger message in APT phase 
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-core</artifactId>
+            <version>0.9.24</version>
+        </dependency>
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>0.9.24</version>
+        </dependency>
+        -->
+
+
+    </dependencies>
+
+
+</project>
