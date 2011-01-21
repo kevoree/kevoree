@@ -1,0 +1,37 @@
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>org.kevoree.annotation.processor</artifactId>
+    <packaging>jar</packaging>
+    <name>Kevoree :: Annotation Processor</name>
+
+    <parent>
+        <artifactId>org.kevoree.root</artifactId>
+        <groupId>org.kevoree</groupId>
+        <version>2.2.1-SNAPSHOT</version>
+        <relativePath>../org.kevoree.root/pom.xml</relativePath>
+    </parent>
+
+    <dependencies>
+        <dependency>
+            <groupId>javax.annotation</groupId>
+            <artifactId>jsr250-api</artifactId>
+            <version>1.0</version>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>org.kevoree.api</artifactId>
+            <version>${kevoree.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>org.kevoree.annotation.api</artifactId>
+            <version>${kevoree.version}</version>
+        </dependency>
+
+    </dependencies>
+
+</project>
