@@ -1,1 +1,2 @@
-[imageref]: kevoree-docs/figures/kevoree-logo-full.png "Image title here"
+
+<div style="float: right"><img src="kevoree-docs/figures/kevoree-logo-full.png"></div>
