@@ -22,7 +22,7 @@
                 <extensions>true</extensions>
                 <configuration>
                     <instructions>
-                        <Bundle-Activator>org.kevoree.kompare.Art2KompareActivator</Bundle-Activator>
+                        <Bundle-Activator>org.kevoree.kompare.KevoreeKompareActivator</Bundle-Activator>
                         <Import-Package>!org.kevoree.kompare.*,org.slf4j.*;version="${slf4j.version.range}",*</Import-Package>
                         <Private-Package>org.kevoree.kompare.*</Private-Package>
                     </instructions>
@@ -55,6 +55,7 @@
             <artifactId>org.kevoree.framework</artifactId>
             <version>${kevoree.version}</version>
         </dependency>
+
         <dependency>
             <groupId>org.osgi</groupId>
             <artifactId>org.osgi.core</artifactId>

@@ -31,7 +31,11 @@
             <artifactId>org.kevoree.tools.annotation.api</artifactId>
             <version>${kevoree.version}</version>
         </dependency>
-
+        <dependency>
+            <groupId>org.kevoree.tools</groupId>
+            <artifactId>org.kevoree.tools.annotation.generator</artifactId>
+            <version>${kevoree.version}</version>
+        </dependency>
     </dependencies>
 
 </project>

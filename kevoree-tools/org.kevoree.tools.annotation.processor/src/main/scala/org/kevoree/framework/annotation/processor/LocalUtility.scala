@@ -29,7 +29,7 @@ object LocalUtility {
   var root : ContainerRoot = _
 
   def generateLibURI(env:AnnotationProcessorEnvironment) = {
-    "file://" + env.getOptions.find({op => op._1.contains("art2.lib.target")}).getOrElse{("key=","")}._1.split('=').toList.get(1)
+    "file://" + env.getOptions.find({op => op._1.contains("kevoree.lib.target")}).getOrElse{("key=","")}._1.split('=').toList.get(1)
   }
 
   def getOraddDataType(datatype : TypedElement) : TypedElement = {

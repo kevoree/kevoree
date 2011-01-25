@@ -40,14 +40,13 @@
 
     <build>
         <plugins>
-
             <plugin>
                 <groupId>com.mycila.maven-license-plugin</groupId>
                 <artifactId>maven-license-plugin</artifactId>
                 <version>1.9.0</version>
                 <configuration>
                     <basedir>${basedir}</basedir>
-                    <header>${basedir}/../LICENSE_HEADER</header>
+                    <header>${basedir}/../../LICENSE_HEADER</header>
                     <strictCheck>true</strictCheck>
                     <properties>
                         <owner>Francois Fouquet</owner>
@@ -120,8 +119,6 @@
                     </jvmArgs>
                 </configuration>
             </plugin>
-
-            
         </plugins>
     </build>
 
@@ -150,5 +147,19 @@
         <module>../org.kevoree.kompare</module>
         <module>../org.kevoree.merger</module>
     </modules>
+
+    <distributionManagement>
+        <repository>
+            <id>embedded-repo</id>
+            <url>file:${project.build.directory}/../../../embedded-repo</url>
+            <uniqueVersion>false</uniqueVersion>
+        </repository>
+        <snapshotRepository>
+            <id>embedded-repo-snapshot</id>
+            <url>file:${project.build.directory}/../../../embedded-repo</url>
+            <uniqueVersion>false</uniqueVersion>
+        </snapshotRepository>
+    </distributionManagement>
+
 
 </project>

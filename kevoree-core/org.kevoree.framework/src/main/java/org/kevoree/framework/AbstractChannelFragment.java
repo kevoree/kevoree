@@ -29,7 +29,7 @@ import org.kevoree.framework.message.Message;
  */
 public abstract class AbstractChannelFragment implements ChannelFragment {
 
-    public java.util.List<Port> getBindedPorts(){return null;} //OVERRIDE BY FACTORY
+    public java.util.List<KevoreePort> getBindedPorts(){return null;} //OVERRIDE BY FACTORY
 
     public java.util.List<KevoreeChannelFragment> getOtherFragments(){return null;} //OVERRIDE BY FACTORY
 

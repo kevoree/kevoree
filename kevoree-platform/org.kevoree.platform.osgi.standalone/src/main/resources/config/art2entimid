@@ -1,0 +1,9 @@
+node{
+        name = "entimid"
+        modelsync{
+            port = "8091"
+        }
+        dispatcher{
+            port = "8090"
+        }
+    }

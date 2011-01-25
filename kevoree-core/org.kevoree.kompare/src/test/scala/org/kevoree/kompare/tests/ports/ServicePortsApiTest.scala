@@ -30,7 +30,7 @@ class ServicePortsApiTest extends AssertionsForJUnit with KompareSuite {
   var component : ModelKompareService = null
 
   @Before def initialize() {
-    component = new Art2KompareBean
+    component = new KevoreeKompareBean
   }
 
   @Test def verifyProvidedServiceMethodAdded() {

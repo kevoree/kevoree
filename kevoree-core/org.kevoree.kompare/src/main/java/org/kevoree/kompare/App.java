@@ -18,7 +18,7 @@ import org.kevoree.ContainerNode;
 import org.kevoree.ContainerRoot;
 import org.kevoree.KevoreeFactory;
 import org.kevoree.framework.KevoreeXmiHelper;
-import org.kevoree.kompare.Art2KompareBean;
+import org.kevoree.kompare.KevoreeKompareBean;
 import org.kevoreeAdaptation.*;
 
 /**
@@ -46,7 +46,7 @@ public class App {
         System.out.println("new model " + nmodel);
 
 
-        Art2KompareBean kompareService = new Art2KompareBean();
+        KevoreeKompareBean kompareService = new KevoreeKompareBean();
         //Art2AdaptationDeployServiceOSGi adaptationService = new Art2AdaptationDeployServiceOSGi();
         //adaptationService.setContext(new Art2DeployManager());
 

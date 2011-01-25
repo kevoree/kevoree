@@ -18,8 +18,7 @@
 package org.kevoree.framework;
 
 import java.util.HashMap;
-import java.util.Properties;
-import org.kevoree.framework.port.Art2RequiredPort;
+import org.kevoree.framework.port.KevoreeRequiredPort;
 
 /**
  *
@@ -92,8 +91,8 @@ public class AbstractComponentType implements ComponentType {
             port = this.getNeededPorts().get(portName);
         }
         if (port != null) {
-            Art2RequiredPort rport = (Art2RequiredPort) port;
-            return rport.getIsBind();
+            KevoreeRequiredPort rport = (KevoreeRequiredPort) port;
+            return rport.getIsBound();
         } else {
             return false;
         }

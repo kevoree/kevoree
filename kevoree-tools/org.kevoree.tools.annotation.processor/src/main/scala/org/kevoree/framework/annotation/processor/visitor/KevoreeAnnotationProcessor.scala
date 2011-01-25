@@ -28,8 +28,11 @@ import org.kevoree.ChannelType
 import org.kevoree.ContainerRoot
 import org.kevoree.annotation.ChannelTypeFragment
 import org.kevoree.annotation.ComponentType
-import org.kevoree.framework.annotation.processor.Art2XmiHelper
+import org.kevoree.framework.annotation.processor.KevoreeXmiHelper
 import org.kevoree.framework.annotation.processor.LocalUtility
+import org.kevoree.tools.annotation.generator.KevoreeActivatorGenerator
+import org.kevoree.tools.annotation.generator.KevoreeFactoryGenerator
+import org.kevoree.tools.annotation.generator.KevoreeGenerator
 import scala.collection.JavaConversions._
 
 class KevoreeAnnotationProcessor(env : AnnotationProcessorEnvironment) extends AnnotationProcessor {
@@ -51,16 +54,13 @@ class KevoreeAnnotationProcessor(env : AnnotationProcessorEnvironment) extends A
       //TODO
     }
 
-    /*
-    Art2Generator.generatePort(root, env.getFiler());
-    Art2FactoryGenerator.generateFactory(root, env.getFiler());
-    Art2ActivatorGenerator.generateActivator(root, env.getFiler());
-    */
+    //TODO SEPARATE MAVEN PLUGIN
+    KevoreeGenerator.generatePort(root, env.getFiler());
+    KevoreeFactoryGenerator.generateFactory(root, env.getFiler());
+    KevoreeActivatorGenerator.generateActivator(root, env.getFiler());
 
     System.out.println("Saving to "+ LocalUtility.generateLibURI(env));
-    Art2XmiHelper.save(LocalUtility.generateLibURI(env), root);
-
-
+    KevoreeXmiHelper.save(LocalUtility.generateLibURI(env), root);
   }
 
 

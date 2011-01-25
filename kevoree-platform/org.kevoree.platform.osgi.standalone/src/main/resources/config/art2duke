@@ -1,0 +1,9 @@
+node{
+        name = "duke"
+        modelsync{
+            port = "8081"
+        }
+        dispatcher{
+            port = "8080"
+        }
+    }

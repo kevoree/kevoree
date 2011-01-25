@@ -22,11 +22,11 @@ import org.kevoree.framework.message._
 import org.slf4j.LoggerFactory
 import scala.actors.Actor
 import scala.collection.JavaConversions._
-import org.kevoree.framework.aspects.Art2Aspects._
+import org.kevoree.framework.aspects.KevoreeAspects._
 
 abstract class KevoreeComponent(c : AbstractComponentType) extends KevoreeActor {
 
-  def getArt2ComponentType : ComponentType = c
+  def getKevoreeComponentType : ComponentType = c
 
   var logger = LoggerFactory.getLogger(this.getClass);
 
@@ -34,7 +34,7 @@ abstract class KevoreeComponent(c : AbstractComponentType) extends KevoreeActor 
 
     case UpdateDictionaryMessage(d) => {
         d.keySet.foreach{v=>
-          getArt2ComponentType.getDictionary.put(v, d.get(v))
+          getKevoreeComponentType.getDictionary.put(v, d.get(v))
         }
         reply(true)
     }
@@ -42,7 +42,7 @@ abstract class KevoreeComponent(c : AbstractComponentType) extends KevoreeActor 
     case StartMessage => {
         new Actor{ def act = startComponent }.start()
         //Wake Up Hosted Port
-        getArt2ComponentType.getHostedPorts.foreach{hp=>
+        getKevoreeComponentType.getHostedPorts.foreach{hp=>
           var port = hp._2.asInstanceOf[KevoreePort]
           if(port.isInPause){
             port.resume
@@ -52,7 +52,7 @@ abstract class KevoreeComponent(c : AbstractComponentType) extends KevoreeActor 
       }
     case StopMessage => {
         //Pause Hosted Port
-        getArt2ComponentType.getHostedPorts.foreach{hp=>
+        getKevoreeComponentType.getHostedPorts.foreach{hp=>
           var port = hp._2.asInstanceOf[KevoreePort]
           if(!port.isInPause){
             port.pause

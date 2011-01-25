@@ -25,9 +25,9 @@ import org.kevoree.kompare.sub.StopNodeKompare
 import org.kevoree.kompare.sub.UpdateNodeKompare
 import org.kevoreeAdaptation._
 import scala.collection.JavaConversions._
-import org.kevoree.framework.aspects.Art2Aspects._
+import org.kevoree.framework.aspects.KevoreeAspects._
 
-class Art2KompareBean extends org.kevoree.api.service.core.kompare.ModelKompareService with InitNodeKompare with StopNodeKompare with UpdateNodeKompare with AbstractKompare  {
+class KevoreeKompareBean extends org.kevoree.api.service.core.kompare.ModelKompareService with InitNodeKompare with StopNodeKompare with UpdateNodeKompare with AbstractKompare  {
 
   def kompare(actualModel : ContainerRoot,targetModel:ContainerRoot,nodeName : String) : AdaptationModel = {
 

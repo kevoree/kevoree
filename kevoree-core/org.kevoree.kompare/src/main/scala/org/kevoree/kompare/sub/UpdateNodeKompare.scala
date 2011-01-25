@@ -22,7 +22,7 @@ import org.kevoree._
 import org.kevoreeAdaptation._
 import org.kevoreeAdaptation._
 import scala.collection.JavaConversions._
-import org.kevoree.framework.aspects.Art2Aspects._
+import org.kevoree.framework.aspects.KevoreeAspects._
 
 trait UpdateNodeKompare extends AbstractKompare with UpdateChannelKompare {
   
