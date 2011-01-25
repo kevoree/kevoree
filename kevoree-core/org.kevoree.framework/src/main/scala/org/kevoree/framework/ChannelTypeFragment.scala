@@ -41,7 +41,7 @@ trait ChannelTypeFragment extends KevoreeChannelFragment with ChannelFragment {
   def setDictionary(d : HashMap[String, Object]) = dictionary = d
   override def getDictionary() : HashMap[String, Object] = dictionary
 
-  override def getBindedPorts():java.util.List[Port] = { portsBinded.values.toList } //OVERRIDE BY FACTORY
+  override def getBindedPorts():java.util.List[KevoreePort] = { portsBinded.values.toList } //OVERRIDE BY FACTORY
   override def getOtherFragments():java.util.List[KevoreeChannelFragment] = { fragementBinded.values.toList }
   override def forward(delegate : KevoreeActor,msg : Message) : Object = {
 

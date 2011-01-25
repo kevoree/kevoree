@@ -24,7 +24,7 @@ import org.kevoree.PortType
 import org.kevoree.ServicePortType
 import scala.collection.JavaConversions._
 import org.kevoree.TypedElement
-import org.kevoree.framework.aspects.Art2Aspects._
+import org.kevoree.framework.aspects.KevoreeAspects._
 
 trait PortTypeMerger {
 

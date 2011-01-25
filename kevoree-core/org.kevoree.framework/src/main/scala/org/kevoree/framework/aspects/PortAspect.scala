@@ -21,7 +21,7 @@ package org.kevoree.framework.aspects
 
 import org.kevoree._
 import scala.collection.JavaConversions._
-import Art2Aspects._
+import KevoreeAspects._
 
 case class PortAspect(p : Port) {
 

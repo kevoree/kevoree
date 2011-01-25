@@ -19,7 +19,7 @@
 package org.kevoree.kompare.tests.`type`
 
 import org.kevoree.api.service.core.kompare.ModelKompareService
-import org.kevoree.kompare.Art2KompareBean
+import org.kevoree.kompare.KevoreeKompareBean
 import org.kevoree.kompare.tests.KompareSuite
 import org.junit._
 import org.kevoreeAdaptation._
@@ -30,7 +30,7 @@ class TypeInstallAndRemoveTest extends KompareSuite {
   var component : ModelKompareService = null
 
   @Before def initialize() {
-    component = new Art2KompareBean
+    component = new KevoreeKompareBean
   }
 
   @Test def testNoTypeInstall()={

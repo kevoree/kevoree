@@ -30,7 +30,7 @@ import org.kevoree.TypeDefinition
 import org.kevoree.ComponentType
 import org.kevoree.merger.Merger
 import scala.collection.JavaConversions._
-import org.kevoree.framework.aspects.Art2Aspects._
+import org.kevoree.framework.aspects.KevoreeAspects._
 
 trait TypeDefinitionMerger extends Merger with DictionaryMerger with PortTypeMerger with DeployUnitMerger {
 

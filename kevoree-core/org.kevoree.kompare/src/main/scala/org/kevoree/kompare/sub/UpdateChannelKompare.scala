@@ -21,7 +21,7 @@ package org.kevoree.kompare.sub
 import org.kevoree._
 import org.kevoreeAdaptation._
 import scala.collection.JavaConversions._
-import org.kevoree.framework.aspects.Art2Aspects._
+import org.kevoree.framework.aspects.KevoreeAspects._
 
 trait UpdateChannelKompare {
 

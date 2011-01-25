@@ -31,9 +31,9 @@ trait DeployUnitProcessor {
     var root : ContainerRoot = typeDef.eContainer.asInstanceOf[ContainerRoot]
 
     /* CREATE COMPONENT TYPE DEPLOY UNIT IF NEEDED */
-    var unitName = env.getOptions.find({op => op._1.contains("art2.lib.id")}).getOrElse{("key=","")}._1.split('=').toList.get(1)
-    var groupName = env.getOptions.find({op => op._1.contains("art2.lib.group")}).getOrElse{("key=","")}._1.split('=').toList.get(1)
-    var version = env.getOptions.find({op => op._1.contains("art2.lib.version")}).getOrElse{("key=","")}._1.split('=').toList.get(1)
+    var unitName = env.getOptions.find({op => op._1.contains("kevoree.lib.id")}).getOrElse{("key=","")}._1.split('=').toList.get(1)
+    var groupName = env.getOptions.find({op => op._1.contains("kevoree.lib.group")}).getOrElse{("key=","")}._1.split('=').toList.get(1)
+    var version = env.getOptions.find({op => op._1.contains("kevoree.lib.version")}).getOrElse{("key=","")}._1.split('=').toList.get(1)
     var tag = env.getOptions.find({op => op._1.contains("tag")}).getOrElse{("key=","")}._1.split('=').toList.get(1)
 
     var repositories = env.getOptions.find({op => op._1.contains("repositories")}).getOrElse{("key=","")}._1.split('=').toList.get(1)

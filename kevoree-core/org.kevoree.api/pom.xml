@@ -46,7 +46,7 @@
                 <configuration>
                     <instructions>
                         <Bundle-ClassPath>.</Bundle-ClassPath>
-                        <Import-Package>org.kevoree.*,org.kevoreeAdaptation.*</Import-Package>
+                        <Import-Package>org.kevoree.*,org.kevoreeAdaptation.*,scala.*</Import-Package>
                         <Export-Package>org.kevoree.api.*</Export-Package>
                     </instructions>
                 </configuration>

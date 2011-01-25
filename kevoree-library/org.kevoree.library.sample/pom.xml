@@ -4,11 +4,11 @@
     <modelVersion>4.0.0</modelVersion>
     <artifactId>org.kevoree.library.sample</artifactId>
     <packaging>bundle</packaging>
-    <name>Kevoree :: Library Sample #1</name>
+    <name>Kevoree :: Library :: Sample #1</name>
 
     <parent>
-        <artifactId>org.kevoree.library.root</artifactId>
-        <groupId>org.kevoree</groupId>
+        <artifactId>org.kevoree.tools.library.root</artifactId>
+        <groupId>org.kevoree.tools</groupId>
         <version>2.2.1-SNAPSHOT</version>
     </parent>
 

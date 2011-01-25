@@ -18,8 +18,6 @@
 package org.kevoree.framework;
 
 import java.util.HashMap;
-import org.kevoree.framework.KevoreeChannelFragment;
-import org.kevoree.framework.Port;
 import org.kevoree.framework.message.Message;
 
 /**
@@ -30,7 +28,7 @@ public interface ChannelFragment {
 
     public Object dispatch(Message msg);
 
-    public java.util.List<Port> getBindedPorts();
+    public java.util.List<KevoreePort> getBindedPorts();
 
     public java.util.List<KevoreeChannelFragment> getOtherFragments();
 

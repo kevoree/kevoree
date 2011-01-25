@@ -20,34 +20,34 @@ package org.kevoree.framework
 
 object Constants {
 
-  def ART2_NODE_NAME = "art2.node.name"
-  def ART2_MODEL_PORT = "art2.modelsynch.port"
+  def KEVOREE_NODE_NAME = "KEVOREE.node.name"
+  def KEVOREE_MODEL_PORT = "KEVOREE.modelsynch.port"
 
 
-  def ART2_INSTANCE_NAME = "art2.component.name"
-  def ART2_PORT_NAME = "art2.port.name"
+  def KEVOREE_INSTANCE_NAME = "KEVOREE.component.name"
+  def KEVOREE_PORT_NAME = "KEVOREE.port.name"
 
-  def ART2_MESSAGEPORT_DEFAULTMETHOD = "process"
+  def KEVOREE_MESSAGEPORT_DEFAULTMETHOD = "process"
 
-  def ART2_NODE_NAME_HEADER = "Art2-Nodename"
-  def ART2_INSTANCE_NAME_HEADER = "Art2-Componentname"
-
-
-
-  def ART2_SERVICE = "_art2._tcp.local."
-  //def ART2_SERVICE_DISPATCHER = "_art2dispatcher._tcp.local."
-  def ART2_PLATFORM_REMOTE_NODE_IP = "art2.remote.node.ip"
-  def ART2_PLATFORM_REMOTE_NODE_DISPATCHER_PORT = "art2.remote.node.dispatcher.port"
-  def ART2_PLATFORM_REMOTE_NODE_MODELSYNCH_PORT = "art2.remote.node.modelsynch.port"
-  def ART2_PLATFORM_REMOTE_MTU = "art2.remote.node.mtu"
-  def ART2_PLATFORM_REMOTE_NETWORK_TYPE = "art2.remote.network.type"
-
-  def ART2_PROPERTY_OSGI_BUNDLE = "osgi.bundle"
+  def KEVOREE_NODE_NAME_HEADER = "KEVOREE-Nodename"
+  def KEVOREE_INSTANCE_NAME_HEADER = "KEVOREE-Componentname"
 
 
-  def ART2_PORT_AUTO = "auto"
+
+  def KEVOREE_SERVICE = "_KEVOREE._tcp.local."
+  //def KEVOREE_SERVICE_DISPATCHER = "_KEVOREEdispatcher._tcp.local."
+  def KEVOREE_PLATFORM_REMOTE_NODE_IP = "KEVOREE.remote.node.ip"
+  def KEVOREE_PLATFORM_REMOTE_NODE_DISPATCHER_PORT = "KEVOREE.remote.node.dispatcher.port"
+  def KEVOREE_PLATFORM_REMOTE_NODE_MODELSYNCH_PORT = "KEVOREE.remote.node.modelsynch.port"
+  def KEVOREE_PLATFORM_REMOTE_MTU = "KEVOREE.remote.node.mtu"
+  def KEVOREE_PLATFORM_REMOTE_NETWORK_TYPE = "KEVOREE.remote.network.type"
+
+  def KEVOREE_PROPERTY_OSGI_BUNDLE = "osgi.bundle"
 
 
-  //ART2 PARAM
+  def KEVOREE_PORT_AUTO = "auto"
+
+
+  //KEVOREE PARAM
 
 }

@@ -22,12 +22,12 @@ import java.util.Hashtable
 import org.osgi.framework.BundleActivator
 import org.osgi.framework.BundleContext
 
-class Art2KompareActivator extends BundleActivator {
+class KevoreeKompareActivator extends BundleActivator {
 
-  var bean : Art2KompareBean = null
+  var bean : KevoreeKompareBean = null
 
   def start(bc : BundleContext){
-    bean = new Art2KompareBean
+    bean = new KevoreeKompareBean
     bc.registerService(classOf[org.kevoree.api.service.core.kompare.ModelKompareService].getName(), bean, new Hashtable());
   }
 
