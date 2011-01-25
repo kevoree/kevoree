@@ -22,6 +22,7 @@ import org.kevoree.ChannelType;
 import org.kevoree.KevoreeFactory;
 import org.kevoree.tools.ui.editor.KevoreeUIKernel;
 import org.kevoree.tools.ui.framework.elements.ChannelPanel;
+import scala.util.Random;
 
 /**
  *
@@ -30,6 +31,7 @@ import org.kevoree.tools.ui.framework.elements.ChannelPanel;
 public class AddChannelCommand implements Command {
 
     private KevoreeUIKernel kernel;
+    private Random random = new Random();
 
     private Point point = null;
 
@@ -48,7 +50,7 @@ public class AddChannelCommand implements Command {
         newhub.setTypeDefinition(type);
 
         //CREATE NEW NAME
-        newhub.setName("hub-" + kernel.getModelHandler().getActualModel().getHubs().size());
+        newhub.setName("hub-" + random.nextInt());
         ChannelPanel newhubpanel = kernel.getUifactory().createHub(newhub);
         kernel.getModelHandler().getActualModel().getHubs().add(newhub);
         kernel.getModelPanel().addHub(newhubpanel);
