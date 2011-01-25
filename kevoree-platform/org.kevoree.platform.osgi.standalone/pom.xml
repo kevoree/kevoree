@@ -17,6 +17,7 @@
         <org.osgi.framework.system.packages.extra>sun.misc</org.osgi.framework.system.packages.extra>
         <!--<java.net.preferIPv4Stack>true</java.net.preferIPv4Stack>-->
         <node.name>duke</node.name>
+        <osgi.base>${project.build.directory}/duke_cache</osgi.base>
         <bootstrap.bundles>${project.build.directory}/kevoreeBundles</bootstrap.bundles>
         <bootstrap.version>${kevoree.version}</bootstrap.version>
     </properties>
