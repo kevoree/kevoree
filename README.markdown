@@ -1,1 +1,1 @@
-[imageref]: image.url.here "Image title here"
+[imageref]: kevoree-docs/figures/kevoree-logo-full.png "Image title here"
