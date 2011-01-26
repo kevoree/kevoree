@@ -22,4 +22,30 @@ import org.kevoree.framework.KevoreePort
 
 trait KevoreeProvidedPort extends KevoreePort {
 
+  /* Provided Port paused by default */
+
+  pauseState = true
+
+  override def act() = {
+    react {
+      case PAUSE_ACTOR => {
+          pauseState = false
+          loop {
+            react {
+              case PAUSE_ACTOR => {
+                  pauseState = true
+                  react {
+                    case RESUME_ACTOR => pauseState = false //NOTHING TO DO
+                    case STOP_ACTOR(f) => pauseState = false ; stopRequest(f)
+                  }
+                }
+              case STOP_ACTOR(f) => stopRequest(f)
+              case _ @ msg => internal_process(msg)
+            }
+          }
+        }
+    }
+  }
+
+
 }
