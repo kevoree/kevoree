@@ -70,7 +70,7 @@ abstract class KevoreeComponentActivator extends BundleActivator {
     /* START HOSTED ACTOR */
     componentActor.getKevoreeComponentType.getHostedPorts.foreach{hp=>
       hp._2.asInstanceOf[KevoreePort].start
-      hp._2.asInstanceOf[KevoreePort].pause
+      //hp._2.asInstanceOf[KevoreePort].pause
     }
 
 
