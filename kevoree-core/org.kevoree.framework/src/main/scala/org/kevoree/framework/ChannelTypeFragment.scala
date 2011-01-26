@@ -20,7 +20,6 @@ package org.kevoree.framework
 
 import java.util.HashMap
 import org.kevoree.framework.message._
-import org.slf4j.LoggerFactory
 import scala.actors.Actor
 import scala.collection.JavaConversions._
 import scala.reflect.BeanProperty
@@ -29,8 +28,6 @@ trait ChannelTypeFragment extends KevoreeChannelFragment with ChannelFragment {
 
   private var portsBinded : HashMap[String,KevoreePort] = new HashMap[String, KevoreePort]()
   private var fragementBinded : HashMap[String,KevoreeChannelFragment] = new HashMap[String, KevoreeChannelFragment]()
-
-  var internal_logger = LoggerFactory.getLogger(this.getClass);
 
   @BeanProperty
   var nodeName : String = ""
@@ -100,7 +97,7 @@ trait ChannelTypeFragment extends KevoreeChannelFragment with ChannelFragment {
         reply(true)
       }
     case msg : FragmentUnbindMessage=> {
-        internal_logger.info("Try to unbind channel "+name)
+        println("Try to unbind channel "+name)
         var actorPort = fragementBinded.get(createPortKey(msg))
         if(actorPort!=null){
           actorPort.stop
@@ -111,12 +108,12 @@ trait ChannelTypeFragment extends KevoreeChannelFragment with ChannelFragment {
         reply(true)
       }
     case msg : PortBindMessage => {
-        internal_logger.info("Addkey="+createPortKey(msg));
+        println("Addkey="+createPortKey(msg));
         portsBinded.put(createPortKey(msg), msg.getProxy);
         reply(true)
       }
     case msg : PortUnbindMessage => {
-        internal_logger.info("Removekey="+createPortKey(msg));
+        println("Removekey="+createPortKey(msg));
         portsBinded.remove(createPortKey(msg));
         reply(true)
       }
@@ -141,7 +138,7 @@ trait ChannelTypeFragment extends KevoreeChannelFragment with ChannelFragment {
         dispatch(msg2)
       }
     case _ @ msg => {
-        internal_logger.warn("Msg does not seem to be an object =>"+msg)
+        println("Msg does not seem to be an object =>"+msg)
         var msg2 = new Message
         msg2.setInOut(false)
         msg2.setContent(msg)

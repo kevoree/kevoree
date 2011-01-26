@@ -19,12 +19,11 @@
 package org.kevoree.framework.merger
 
 import org.kevoree._
-import org.slf4j.LoggerFactory
 import scala.collection.JavaConversions._
 
 object KevoreePlatformMerger {
 
-  var logger = LoggerFactory.getLogger(this.getClass)
+  //var logger = LoggerFactory.getLogger(this.getClass)
 
   def merge(actualModel : ContainerRoot,modelToMerge : ContainerRoot) : Unit = {
 
@@ -53,7 +52,7 @@ object KevoreePlatformMerger {
                                 fnp.setValue(np.getValue)
                               }
                             } catch {
-                              case _ @ e => logger.error("Error processing last check on model node link property",e)
+                              case _ @ e => println("Error processing last check on model node link property",e)
                             }
 
                         }

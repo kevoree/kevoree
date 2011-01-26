@@ -19,7 +19,6 @@
 package org.kevoree.framework
 
 import org.kevoree.framework.message._
-import org.slf4j.LoggerFactory
 import scala.actors.Actor
 import scala.collection.JavaConversions._
 import org.kevoree.framework.aspects.KevoreeAspects._
@@ -27,8 +26,6 @@ import org.kevoree.framework.aspects.KevoreeAspects._
 abstract class KevoreeComponent(c : AbstractComponentType) extends KevoreeActor {
 
   def getKevoreeComponentType : ComponentType = c
-
-  var logger = LoggerFactory.getLogger(this.getClass);
 
   override def internal_process(msg : Any) = msg match {
 
@@ -61,7 +58,7 @@ abstract class KevoreeComponent(c : AbstractComponentType) extends KevoreeActor 
         new Actor{ def act= stopComponent }.start()
         reply(true)
       }
-      case _ @ msg => logger.error("unknow message "+msg)
+      case _ @ msg => println("unknow message "+msg)
   }
 
 

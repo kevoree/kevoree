@@ -22,14 +22,12 @@ import org.kevoree.framework.KevoreeActor
 import org.kevoree.framework.KevoreePort
 import org.kevoree.framework.message.FragmentBindMessage
 import org.kevoree.framework.message.FragmentUnbindMessage
-import org.slf4j.LoggerFactory
 
 trait KevoreeRequiredPort extends KevoreePort {
 
   def getName : String
   def getInOut : Boolean
   var delegate : Option[KevoreeActor] = None
-  var logger = LoggerFactory.getLogger(this.getClass);
 
   private var isBound : Boolean = false
   def getIsBound = isBound
@@ -51,14 +49,14 @@ trait KevoreeRequiredPort extends KevoreePort {
     case _ @ msg => {
         delegate match {
           case None => react {
-              case bindmsg : FragmentBindMessage => bind(bindmsg)
+              case bindmsg : FragmentBindMessage => { bind(bindmsg);reply(true) }
               case STOP_ACTOR(f) => pauseState = false ; stopRequest(f)
             }
           case Some(d) => {
               if(getInOut){
-                try { reply(d !? msg) } catch { case _ @ e=> logger.error("error sending message  ",e) }
+                try { reply(d !? msg) } catch { case _ @ e=> println("error sending message  ",e) }
               } else {
-                try { d ! msg } catch { case _ @ e=> logger.error("error sending message  ",e) }
+                try { d ! msg } catch { case _ @ e=> println("error sending message  ",e) }
               }
             }
         }
