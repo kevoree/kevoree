@@ -19,13 +19,11 @@
 package org.kevoree.framework
 
 import org.kevoree._
-import org.slf4j.LoggerFactory
 import scala.collection.JavaConversions._
 
 object KevoreePlatformHelper {
 
   def updateNodeLinkProp(actualModel : ContainerRoot,currentNodeName : String,targetNodeName:String,key:String,value:String,networkType : String,weight:Int) = {
-    var logger = LoggerFactory.getLogger(this.getClass);
 
     /* SEARCH THE NODE NETWORK */
     var nodenetwork = actualModel.getNodeNetworks.find({nn =>
@@ -41,7 +39,7 @@ object KevoreePlatformHelper {
       }
 
       newNodeNetwork.setTarget(targetNode.getOrElse{
-          logger.warn("Unknow node "+targetNodeName+" add to model")
+          println("Unknow node "+targetNodeName+" add to model")
           var newnode =KevoreeFactory.eINSTANCE.createContainerNode
           newnode.setName(targetNodeName)
           actualModel.getNodes.add(newnode)
@@ -60,7 +58,7 @@ object KevoreePlatformHelper {
       newlink
     }
     try { nodelink.setEstimatedRate(weight) } catch {
-      case _ @ e => logger.error("Unexpected estimate rate",e)
+      case _ @ e => println("Unexpected estimate rate",e)
     }
 
     /* Found Property and SET remote IP */
@@ -73,7 +71,7 @@ object KevoreePlatformHelper {
     prop.setValue(value)
     prop.setLastCheck(new java.util.Date().getTime.toString)
 
-    logger.info("New node link prop registred = "+targetNodeName+","+key+","+value)
+    println("New node link prop registred = "+targetNodeName+","+key+","+value)
 
   }
 
