@@ -45,8 +45,17 @@ class KevoreeDeployManager {
 
   def setPackageAdminServiceTracker(st : ServiceTracker) = packageAdminServiceTracker = st
   private var packageAdminServiceTracker : ServiceTracker = null
-  def getServicePackageAdmin : PackageAdmin = packageAdminServiceTracker.getService.asInstanceOf[PackageAdmin]
   
+  var servicePackageAdmin : Option[PackageAdmin] = null
+  def setServicePackageAdmin(pa:PackageAdmin)= servicePackageAdmin = Some(pa)
+  def getServicePackageAdmin : PackageAdmin = {
+    servicePackageAdmin.getOrElse{
+      servicePackageAdmin = Some(packageAdminServiceTracker.getService.asInstanceOf[PackageAdmin] )
+      packageAdminServiceTracker.getService.asInstanceOf[PackageAdmin] 
+    }
+  } 
+
+
 
 }
 
