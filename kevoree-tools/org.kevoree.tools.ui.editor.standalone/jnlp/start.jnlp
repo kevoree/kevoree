@@ -3,7 +3,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <jnlp
     spec="1.0+"
-    codebase="https://github.com/dukeboard/kevoree/raw/master/embedded-repo/org/kevoree/tools/org.kevoree.tools.ui.editor.standalone/jnlp"
+    codebase="https://github.com/dukeboard/kevoree/blob/master/kevoree-tools/org.kevoree.tools.ui.editor.standalone/jnlp"
     href="start.jnlp">
   <information>
     <title>Kevoree :: Tools :: UI Editor Standalone</title>
