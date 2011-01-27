@@ -27,12 +27,9 @@ import org.kevoree.{ComponentType => KevoreeComponentType }
 import org.kevoree.ServicePortType
 import org.kevoree.framework.Constants
 import org.kevoree.framework.aspects.KevoreeAspects._
-import org.slf4j.LoggerFactory
 import scala.collection.JavaConversions._
 
 object KevoreeProvidedPortGenerator {
-
-  var logger = LoggerFactory.getLogger(this.getClass);
 
   def generate(root:ContainerRoot,filer:Filer,ct: KevoreeComponentType,ref:PortTypeRef){
     var portPackage = ct.getFactoryBean().substring(0, ct.getFactoryBean().lastIndexOf("."));
@@ -63,7 +60,7 @@ object KevoreeProvidedPortGenerator {
               }
             case None => {
                 println("KevoreeProvidedPortGenerator::No mapping found for method '"+Constants.KEVOREE_MESSAGEPORT_DEFAULTMETHOD+"' of MessagePort '" + ref.getName + "' in component '" + ct.getName + "'")
-                logger.error("No mapping found for method '"+Constants.KEVOREE_MESSAGEPORT_DEFAULTMETHOD+"' of MessagePort '" + ref.getName + "' in component '" + ct.getName + "'")
+                println("No mapping found for method '"+Constants.KEVOREE_MESSAGEPORT_DEFAULTMETHOD+"' of MessagePort '" + ref.getName + "' in component '" + ct.getName + "'")
                 System.exit(1)
               }
           }
@@ -108,7 +105,7 @@ object KevoreeProvidedPortGenerator {
                 }
               case None => {
                   println("No mapping found for method '"+op.getName+"' of ServicePort '" + ref.getName + "' in component '" + ct.getName + "'")
-                  logger.error("No mapping found for method '"+op.getName+"' of ServicePort '" + ref.getName + "' in component '" + ct.getName + "'")
+                  //println("No mapping found for method '"+op.getName+"' of ServicePort '" + ref.getName + "' in component '" + ct.getName + "'")
                   System.exit(1)
                 }
             }

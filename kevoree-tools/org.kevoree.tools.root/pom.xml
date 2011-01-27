@@ -135,8 +135,26 @@
 
     <modules>
         <module>../org.kevoree.tools.annotation.api</module>
+        <module>../org.kevoree.tools.annotation.generator</module>
         <module>../org.kevoree.tools.annotation.processor</module>
         <module>../org.kevoree.tools.library.root</module>
+        <module>../org.kevoree.tools.osgi.sysgen</module>
+        <module>../org.kevoree.tools.ui.framework</module>
+        <module>../org.kevoree.tools.ui.editor</module>
+        <module>../org.kevoree.tools.ui.editor.standalone</module>
     </modules>
+
+    <distributionManagement>
+        <repository>
+            <id>embedded-repo</id>
+            <url>file:${project.build.directory}/../../../embedded-repo</url>
+            <uniqueVersion>false</uniqueVersion>
+        </repository>
+        <snapshotRepository>
+            <id>embedded-repo-snapshot</id>
+            <url>file:${project.build.directory}/../../../embedded-repo</url>
+            <uniqueVersion>false</uniqueVersion>
+        </snapshotRepository>
+    </distributionManagement>
 
 </project>

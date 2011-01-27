@@ -11,20 +11,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/* $Id: App.java 13086 2010-10-21 11:40:48Z francoisfouquet $ 
- * License    : EPL 								
- * Copyright  : IRISA / INRIA / Universite de Rennes 1 */
-package org.kevoree.tools.ui.editor;
+package org.kevoree.tools.ui.editor.standalone;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import javax.swing.JFrame;
+import org.kevoree.tools.ui.editor.KevoreeEditor;
 
 /**
  * Hello world!
  *
  */
-public class App {
+public class App 
+{
 
     public static void main(String[] args) {
         System.setProperty("apple.laf.useScreenMenuBar", "true");

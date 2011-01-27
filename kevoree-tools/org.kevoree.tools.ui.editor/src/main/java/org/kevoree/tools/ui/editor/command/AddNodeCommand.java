@@ -37,7 +37,13 @@ public class AddNodeCommand implements Command {
     public void execute(Object p) {
         ContainerNode newnode = KevoreeFactory.eINSTANCE.createContainerNode();
         //CREATE NEW NAME
-        newnode.setName("node-"+kernel.getModelHandler().getActualModel().getNodes().size());
+        //TODO CHECK EXISTING NAME
+        if(kernel.getModelHandler().getActualModel().getNodes().size()>0){
+            newnode.setName("node-"+kernel.getModelHandler().getActualModel().getNodes().size());
+        }else {
+            newnode.setName("KEVOREEDefaultNodeName");
+        }
+
         NodePanel newnodepanel = kernel.getUifactory().createComponentNode(newnode);
         kernel.getModelHandler().getActualModel().getNodes().add(newnode);
         kernel.getModelPanel().addNode(newnodepanel);

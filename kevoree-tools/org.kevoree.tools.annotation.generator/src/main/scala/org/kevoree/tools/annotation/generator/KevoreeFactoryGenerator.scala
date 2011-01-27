@@ -21,15 +21,12 @@ package org.kevoree.tools.annotation.generator
 import com.sun.mirror.apt.Filer
 import java.io.File
 import org.kevoree.ContainerRoot
-import org.slf4j.LoggerFactory
 import scala.collection.JavaConversions._
 import org.kevoree.ChannelType
 import org.kevoree.ComponentType
 import org.kevoree.framework.aspects.KevoreeAspects._
 
 object KevoreeFactoryGenerator {
-
-  var logger = LoggerFactory.getLogger(this.getClass);
 
   /* GENERATE FACTORY FOR COMPONENT & PORT  */
   def generateFactory(root:ContainerRoot,filer:Filer){
@@ -55,7 +52,7 @@ object KevoreeFactoryGenerator {
         error("Start method is mandatory for component name => "+ct.getName);System.exit(1)
       }
       if( ct.getStopMethod == null){
-        logger.error("Stop method is mandatory for component name => "+ct.getName);System.exit(1)
+        println("Stop method is mandatory for component name => "+ct.getName);System.exit(1)
       }
       wrapper.append("def startComponent(){getKevoreeComponentType.asInstanceOf["+componentBean+"]."+ct.getStartMethod+"()}\n")
       wrapper.append("def stopComponent(){getKevoreeComponentType.asInstanceOf["+componentBean+"]."+ct.getStopMethod+"()}\n")
