@@ -20,8 +20,6 @@ package org.kevoree.library.defaultChannels;
 import org.kevoree.annotation.*;
 import org.kevoree.framework.AbstractChannelFragment;
 import org.kevoree.framework.message.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -30,8 +28,6 @@ import org.slf4j.LoggerFactory;
 @Library(name ="art2baselib")
 @ChannelTypeFragment
 public class defSERVICE extends AbstractChannelFragment {
-
-    Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Override
     public Object dispatch(Message msg) {
@@ -43,7 +39,7 @@ public class defSERVICE extends AbstractChannelFragment {
             if (this.getOtherFragments().size() == 1) {
                 result = forward(getOtherFragments().get(0), msg);
             } else {
-                logger.error("No Art2 port or fragment bind on this channel fragment, message lost = ", msg.getContent());
+                System.out.println("No Art2 port or fragment bind on this channel fragment, message lost = "+msg.getContent());
             }
         }
         System.out.println("Ok result "+result);

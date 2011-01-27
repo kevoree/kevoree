@@ -21,10 +21,7 @@ package org.kevoree.library.defaultChannels;
 import org.kevoree.annotation.*;
 import org.kevoree.framework.AbstractChannelFragment;
 import org.kevoree.framework.KevoreeChannelFragment;
-import org.kevoree.framework.KevoreePort;
 import org.kevoree.framework.message.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -34,15 +31,13 @@ import org.slf4j.LoggerFactory;
 @ChannelTypeFragment
 public class defMSG extends AbstractChannelFragment {
 
-    Logger logger = LoggerFactory.getLogger(this.getClass());
-
     @Override
     public Object dispatch(Message msg) {
 
-        logger.info("Local node bsize"+getBindedPorts().size());
+        System.out.println("Local node bsize"+getBindedPorts().size());
 
         if(getBindedPorts().isEmpty() && getOtherFragments().isEmpty()){
-            logger.warn("No consumer, msg lost="+msg.getContent());
+            System.out.println("No consumer, msg lost="+msg.getContent());
         }
         for(org.kevoree.framework.KevoreePort p : getBindedPorts()){
             forward(p, msg);
