@@ -22,12 +22,9 @@ import org.kevoree.PortTypeRef
 import org.kevoree.{ComponentType => KevoreeComponentType }
 import org.kevoree.ServicePortType
 import org.kevoree.framework.aspects.KevoreeAspects._
-import org.slf4j.LoggerFactory
 import scala.collection.JavaConversions._
 
 object KevoreeRequiredPortGenerator {
-
-  var logger = LoggerFactory.getLogger(this.getClass);
 
   def generate(root:ContainerRoot,filer:Filer,ct: KevoreeComponentType,ref:PortTypeRef){
     var portPackage = ct.getFactoryBean().substring(0, ct.getFactoryBean().lastIndexOf("."));
