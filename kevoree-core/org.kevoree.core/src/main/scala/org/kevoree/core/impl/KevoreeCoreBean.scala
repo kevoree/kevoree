@@ -103,7 +103,7 @@ class KevoreeCoreBean extends KevoreeModelHandlerService with KevoreeActor {
 
   
   override def getLastModel : ContainerRoot = (this !? LastModel()).asInstanceOf[ContainerRoot]
-  override def updateModel(model : ContainerRoot) : java.lang.Boolean ={ (this !? UpdateModel(model)).asInstanceOf[Boolean] }
+  override def updateModel(model : ContainerRoot) : java.lang.Boolean ={ (this ! UpdateModel(model));true }
   override def getPreviousModel : java.util.List[ContainerRoot] = (this !? PreviousModel).asInstanceOf[java.util.List[ContainerRoot]]
 
 }

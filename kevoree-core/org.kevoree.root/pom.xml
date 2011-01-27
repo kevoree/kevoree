@@ -14,8 +14,6 @@
         <kevoree.version>2.2.1-SNAPSHOT</kevoree.version>
         <emf.version>2.6.0</emf.version>
         <scala.version>2.8.1</scala.version>
-        <slf4j.version>1.6.1</slf4j.version>
-        <slf4j.version.range>[1.5,2)</slf4j.version.range>
         <bundle.vendor>IRISA/INRIA</bundle.vendor>
     </properties>
     
@@ -30,11 +28,6 @@
             <groupId>org.scala-lang</groupId>
             <artifactId>scala-library</artifactId>
             <version>${scala.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
-            <version>${slf4j.version}</version>
         </dependency>
     </dependencies>
 
@@ -146,6 +139,9 @@
         <module>../org.kevoree.framework</module>
         <module>../org.kevoree.kompare</module>
         <module>../org.kevoree.merger</module>
+        <module>../org.kevoree.deploy.osgi</module>
+        <module>../org.kevoree.core</module>
+        <module>../org.kevoree.remote</module>
     </modules>
 
     <distributionManagement>
@@ -160,6 +156,5 @@
             <uniqueVersion>false</uniqueVersion>
         </snapshotRepository>
     </distributionManagement>
-
 
 </project>

@@ -12,8 +12,19 @@
         <version>2.2.1-SNAPSHOT</version>
         <relativePath>../org.kevoree.root/pom.xml</relativePath>
     </parent>
-    
+
+    <properties>
+        <slf4j.version>1.6.1</slf4j.version>
+        <slf4j.version.range>[1.5,2)</slf4j.version.range>
+    </properties>
+
     <dependencies>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>${slf4j.version}</version>
+        </dependency>
+
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>org.kevoree.framework</artifactId>
