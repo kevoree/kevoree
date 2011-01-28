@@ -1,0 +1,10 @@
+Manifest-Version: 1.0
+Bundle-SymbolicName: FakeSimpleLight-1493656056
+Bundle-Version: 1
+DynamicImport-Package: *
+Bundle-ManifestVersion: 2
+Bundle-Activator: org.kevoree.library.fakedomo.FakeSimpleLightActivator
+KEVOREE-Componentname: FakeSimpleLight-1493656056
+KEVOREE-Nodename: KEVOREEDefaultNodeName
+Require-Bundle: org.kevoree.library.org.kevoree.library.fakeDomo
+
