@@ -1,0 +1,10 @@
+Manifest-Version: 1.0
+Bundle-SymbolicName: hub--1313290422
+Bundle-Version: 1
+DynamicImport-Package: *
+Bundle-ManifestVersion: 2
+Bundle-Activator: org.kevoree.library.defaultChannels.defMSGActivator
+KEVOREE-Componentname: hub--1313290422
+KEVOREE-Nodename: KEVOREEDefaultNodeName
+Require-Bundle: org.kevoree.tools.org.kevoree.library.defaultChannels
+

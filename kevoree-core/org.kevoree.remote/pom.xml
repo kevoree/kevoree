@@ -43,35 +43,10 @@
         </dependency>
 
         <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>org.kevoree.annotation.api</artifactId>
-            <version>${kevoree.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>org.kevoree.framework</artifactId>
-            <version>${kevoree.version}</version>
-        </dependency>
-
-        <!--
-        <dependency>
-            <groupId>org.jboss.netty</groupId>
-            <artifactId>netty</artifactId>
-            <version>3.2.3.Final</version>
-        </dependency>
--->
-        <dependency>
             <groupId>org.restlet.jse</groupId>
             <artifactId>org.restlet</artifactId>
             <version>2.1-M2</version>
         </dependency>
-        <!--
-        <dependency>
-            <groupId>org.restlet.jse</groupId>
-            <artifactId>org.restlet.ext.netty</artifactId>
-            <version>2.1-M2</version>
-        </dependency>
--->
 
         <dependency>
             <groupId>org.osgi</groupId>
@@ -81,10 +56,6 @@
     </dependencies>
 
     <repositories>
-        <repository>
-            <id>jboss public</id>
-            <url>http://repository.jboss.org/nexus/content/groups/public-jboss</url>
-        </repository>
         <repository>
             <id>reslet</id>
             <url>http://maven.restlet.org/</url>

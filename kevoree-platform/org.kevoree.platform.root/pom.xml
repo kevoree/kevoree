@@ -84,12 +84,24 @@
                     <encoding>${project.build.sourceEncoding}</encoding>
                 </configuration>
             </plugin>
-            
         </plugins>
     </build>
 
     <modules>
-       <!-- <module>../org.kevoree.tools.annotation.api</module>-->
+       <module>../org.kevoree.platform.osgi.standalone</module>
     </modules>
+    
+    <distributionManagement>
+        <repository>
+            <id>embedded-repo</id>
+            <url>file:${basedir}/../../embedded-repo</url>
+            <uniqueVersion>false</uniqueVersion>
+        </repository>
+        <snapshotRepository>
+            <id>embedded-repo-snapshot</id>
+            <url>file:${basedir}/../../embedded-repo</url>
+            <uniqueVersion>false</uniqueVersion>
+        </snapshotRepository>
+    </distributionManagement>
 
 </project>

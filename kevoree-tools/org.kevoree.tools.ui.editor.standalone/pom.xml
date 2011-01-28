@@ -31,8 +31,9 @@
                             <goal>shade</goal>
                         </goals>
                         <configuration>
-                            <!--
+                            
                             <filters>
+                                <!--
                                 <filter>
                                     <includes>
                                         <include>org.ops4j.pax.url:*</include>
@@ -42,7 +43,7 @@
                                         <include>org.kermeta.emf:*</include>
                                         <include>org.kevoree</include>
                                     </includes>
-                                </filter>
+                                </filter>-->
                                 <filter>
                                     <artifact>*:*</artifact>
                                     <excludes>
@@ -52,7 +53,7 @@
                                     </excludes>
                                 </filter>
                             </filters>
-                            -->
+                            
                             <transformers>
                                 <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
                                     <mainClass>org.kevoree.tools.ui.editor.standalone.App</mainClass>
@@ -77,145 +78,6 @@
                     <mainClass>org.kevoree.tools.ui.editor.standalone.App</mainClass>
                 </configuration>
             </plugin>
-
-
-
-            <plugin>
-                <groupId>org.codehaus.mojo.webstart</groupId>
-                <artifactId>webstart-maven-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>jnlp-single</goal> <!-- use jnlp, jnlp-inline or jnlp-single as appropriate -->
-                        </goals>
-                    </execution>
-                </executions>
-                <configuration>
-                                        <!--outputDirectory></outputDirectory --> <!-- not required?? -->
-
-                                        <!-- Set to true to exclude all transitive dependencies. Default is
-                                                false. -->
-                    <excludeTransitive>true</excludeTransitive>
-
-                                        <!-- The path where the libraries are stored within the jnlp structure.
-                                                not required. by default the libraries are within the working directory -->
-                    <libPath>lib</libPath>
-
-                                        <!-- [optional] transitive dependencies filter - if omitted, all transitive
-                                                dependencies are included -->
-                    <dependencies>
-
-                                                <!-- Note that only groupId and artifactId must be specified here.
-                                                        because of a limitation of the Include/ExcludesArtifactFilter <includes>
-                                                        <include>commons-logging:commons-logging</include> </includes> -->
-
-
-                                                <!--<excludes>
-                                                        <exclude>com.ej-technologies:i4jruntime</exclude>
-                                                </excludes>-->
-
-
-                        <excludes>
-                            <exclude>org.kevoree:org.kevoree.adaptation.model</exclude>
-                            <exclude>org.kevoree:org.kevoree.model</exclude>
-                            <exclude>org.kevoree:org.kevoree.framework</exclude>
-                            <exclude>org.kevoree:org.kevoree.merger</exclude>
-                            <exclude>org.kevoree.tools:org.kevoree.tools.ui.editor</exclude>
-                            <exclude>org.kevoree.tools:org.kevoree.tools.ui.framework</exclude>
-                            <exclude>org.kevoree:org.kevoree.api</exclude>
-                            <exclude>org.scala-lang:scala-library</exclude>
-                            <exclude>org.kermeta.emf:emf.lib</exclude>
-                            <exclude>com.jhlabs:filters</exclude>
-                            <exclude>org.swinglabs:swingx</exclude>
-                            <exclude>org.swinglabs:swing-worker</exclude>
-                            <exclude>org.slf4j:slf4j-api</exclude>
-                            <exclude>org.osgi:org.osgi.core</exclude>
-                            <exclude>org.osgi:org.osgi.compendium</exclude>
-                        </excludes>
-                    </dependencies>
-
-                                        <!-- resourcesDirectory>${project.basedir}/src/main/jnlp/resources</resourcesDirectory --> <!-- default value -->
-
-                                        <!-- JNLP generation -->
-                    <jnlp>
-                                                <!-- default values -->
-                                                <!-- inputTemplateResourcePath>${project.basedir}</inputTemplateResourcePath -->
-                        <inputTemplate>src/main/jnlp/template.vm</inputTemplate> <!-- relative to inputTemplateResourcePath -->
-                        <outputFile>start.jnlp</outputFile> <!-- defaults to launch.jnlp -->
-
-                                                <!-- used to automatically identify the jar containing the main class. -->
-                                                <!-- this is perhaps going to change -->
-                        <mainClass>org.kevoree.tools.ui.editor.standalone.App</mainClass>
-                    </jnlp>
-
-
-                                        <!-- SIGNING -->
-                                        <!-- defining this will automatically sign the jar and its dependencies,
-                                                if necessary -->
-                    <sign>
-                        <keystore>${project.basedir}/keystore</keystore>
-                        <keypass>kevoree</keypass>
-                                                <!-- we need to override passwords easily from the command line. ${keypass} -->
-                        <storepass>kevoree</storepass> <!-- ${storepass} -->
-                                                <!--storetype>fillme</storetype -->
-                        <alias>kevoree</alias>
-
-                                                <!--validity>fillme</validity -->
-
-                                                <!-- only required for generating the keystore -->
-                                                <!-- dnameCn>fillme</dnameCn> <dnameOu>fillme</dnameOu> <dnameO>fillme</dnameO>
-                                                        <dnameL>fillme</dnameL> <dnameSt>fillme</dnameSt> <dnameC>fillme</dnameC -->
-
-                        <verify>false</verify> <!-- verify that the signing operation succeeded -->
-
-                                                <!-- KEYSTORE MANAGEMENT -->
-                        <keystoreConfig>
-                            <delete>false</delete> <!-- delete the keystore -->
-                            <gen>false</gen>       <!-- optional shortcut to generate the store. -->
-                        </keystoreConfig>
-                    </sign>
-
-                                        <!-- BUILDING PROCESS -->
-
-                    <pack200>false</pack200>
-                    <gzip>false</gzip> <!-- default force when pack200 false, true when pack200 selected ?? -->
-
-                                        <!-- causes a version attribute to be output in each jar resource element,
-                                                optional, default is false -->
-                    <outputJarVersions>false</outputJarVersions>
-
-                                        <!--install>false</install --> <!-- not yet supported -->
-                    <verbose>false</verbose>
-
-                </configuration>
-            </plugin>
-
-
-            <plugin>
-                <artifactId>maven-resources-plugin</artifactId>
-                <version>2.4.3</version>
-                <executions>
-                    <execution>
-                        <id>copy-jnlp-res</id>
-                        <phase>install</phase>
-                        <goals>
-                            <goal>copy-resources</goal>
-                        </goals>
-                        <configuration>
-                            <outputDirectory>${basedir}/jnlp</outputDirectory>
-                            <resources>
-                                <resource>
-                                    <directory>${basedir}/target/jnlp</directory>
-                                    <filtering>true</filtering>
-                                </resource>
-                            </resources>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-
-
         </plugins>
     </build>
 

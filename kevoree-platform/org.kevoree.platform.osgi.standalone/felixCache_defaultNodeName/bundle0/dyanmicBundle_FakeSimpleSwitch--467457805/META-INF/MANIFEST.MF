@@ -1,0 +1,10 @@
+Manifest-Version: 1.0
+Bundle-SymbolicName: FakeSimpleSwitch--467457805
+Bundle-Version: 1
+DynamicImport-Package: *
+Bundle-ManifestVersion: 2
+Bundle-Activator: org.kevoree.library.fakedomo.FakeSimpleSwitchActivator
+KEVOREE-Componentname: FakeSimpleSwitch--467457805
+KEVOREE-Nodename: KEVOREEDefaultNodeName
+Require-Bundle: org.kevoree.tools.org.kevoree.library.fakeDomo
+
