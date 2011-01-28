@@ -122,6 +122,10 @@
             <name>Scala-tools Maven2 Repository</name>
             <url>http://scala-tools.org/repo-releases</url>
         </repository>
+        <repository>
+            <id>kevoree-github</id>
+            <url>https://github.com/dukeboard/kevoree/raw/master/embedded-repo</url>
+        </repository>
     </repositories>
 
     <pluginRepositories>
@@ -129,6 +133,10 @@
             <id>plugin.scala-tools.org</id>
             <name>Plugin Scala-tools Maven2 Repository</name>
             <url>http://scala-tools.org/repo-releases</url>
+        </pluginRepository>
+        <pluginRepository>
+            <id>plugin.kevoree-github</id>
+            <url>https://github.com/dukeboard/kevoree/raw/master/embedded-repo</url>
         </pluginRepository>
     </pluginRepositories>
 
@@ -147,12 +155,12 @@
     <distributionManagement>
         <repository>
             <id>embedded-repo</id>
-            <url>file:${project.build.directory}/../../../embedded-repo</url>
+            <url>file:${basedir}/../../embedded-repo</url>
             <uniqueVersion>false</uniqueVersion>
         </repository>
         <snapshotRepository>
             <id>embedded-repo-snapshot</id>
-            <url>file:${project.build.directory}/../../../embedded-repo</url>
+            <url>file:${basedir}/../../embedded-repo</url>
             <uniqueVersion>false</uniqueVersion>
         </snapshotRepository>
     </distributionManagement>

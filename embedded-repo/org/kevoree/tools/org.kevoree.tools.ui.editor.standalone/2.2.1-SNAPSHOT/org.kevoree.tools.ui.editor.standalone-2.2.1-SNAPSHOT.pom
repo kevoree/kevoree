@@ -9,7 +9,7 @@
   <modelVersion>4.0.0</modelVersion>
   <artifactId>org.kevoree.tools.ui.editor.standalone</artifactId>
   <name>Kevoree :: Tools :: UI Editor Standalone</name>
-  <url>https://github.com/dukeboard/kevoree/raw/master/embedded-repo/org/kevoree/tools/org.kevoree.tools.ui.editor.standalone</url>
+  <url>https://github.com/dukeboard/kevoree/raw/master/embedded-repo/org/kevoree/tools/org.kevoree.tools.ui.editor.standalone/jnlp</url>
   <build>
     <plugins>
       <plugin>
@@ -21,6 +21,16 @@
               <goal>shade</goal>
             </goals>
             <configuration>
+              <filters>
+                <filter>
+                  <artifact>*:*</artifact>
+                  <excludes>
+                    <exclude>META-INF/*.SF</exclude>
+                    <exclude>META-INF/*.DSA</exclude>
+                    <exclude>META-INF/*.RSA</exclude>
+                  </excludes>
+                </filter>
+              </filters>
               <transformers>
                 <transformer>
                   <mainClass>org.kevoree.tools.ui.editor.standalone.App</mainClass>
@@ -43,61 +53,6 @@
         </executions>
         <configuration>
           <mainClass>org.kevoree.tools.ui.editor.standalone.App</mainClass>
-        </configuration>
-      </plugin>
-      <plugin>
-        <groupId>org.codehaus.mojo.webstart</groupId>
-        <artifactId>webstart-maven-plugin</artifactId>
-        <executions>
-          <execution>
-            <phase>package</phase>
-            <goals>
-              <goal>jnlp-single</goal>
-            </goals>
-          </execution>
-        </executions>
-        <configuration>
-          <excludeTransitive>true</excludeTransitive>
-          <libPath>lib</libPath>
-          <dependencies>
-            <excludes>
-              <exclude>org.kevoree:org.kevoree.adaptation.model</exclude>
-              <exclude>org.kevoree:org.kevoree.model</exclude>
-              <exclude>org.kevoree:org.kevoree.framework</exclude>
-              <exclude>org.kevoree:org.kevoree.merger</exclude>
-              <exclude>org.kevoree.tools:org.kevoree.tools.ui.editor</exclude>
-              <exclude>org.kevoree.tools:org.kevoree.tools.ui.framework</exclude>
-              <exclude>org.kevoree:org.kevoree.api</exclude>
-              <exclude>org.scala-lang:scala-library</exclude>
-              <exclude>org.kermeta.emf:emf.lib</exclude>
-              <exclude>com.jhlabs:filters</exclude>
-              <exclude>org.swinglabs:swingx</exclude>
-              <exclude>org.swinglabs:swing-worker</exclude>
-              <exclude>org.slf4j:slf4j-api</exclude>
-              <exclude>org.osgi:org.osgi.core</exclude>
-              <exclude>org.osgi:org.osgi.compendium</exclude>
-            </excludes>
-          </dependencies>
-          <jnlp>
-            <inputTemplate>src/main/jnlp/template.vm</inputTemplate>
-            <outputFile>start.jnlp</outputFile>
-            <mainClass>org.kevoree.tools.ui.editor.standalone.App</mainClass>
-          </jnlp>
-          <sign>
-            <keystore>${project.basedir}/keystore</keystore>
-            <keypass>kevoree</keypass>
-            <storepass>kevoree</storepass>
-            <alias>kevoree</alias>
-            <verify>false</verify>
-            <keystoreConfig>
-              <delete>false</delete>
-              <gen>false</gen>
-            </keystoreConfig>
-          </sign>
-          <pack200>false</pack200>
-          <gzip>false</gzip>
-          <outputJarVersions>false</outputJarVersions>
-          <verbose>false</verbose>
         </configuration>
       </plugin>
     </plugins>

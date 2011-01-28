@@ -13,22 +13,25 @@
         <relativePath>../org.kevoree.root/pom.xml</relativePath>
     </parent>
 
+    <properties>
+        <slf4j.version>1.6.1</slf4j.version>
+        <slf4j.version.range>[1.5,2)</slf4j.version.range>
+    </properties>
+    
     <build>
         <plugins>
-
             <plugin>
                 <groupId>org.apache.felix</groupId>
                 <artifactId>maven-bundle-plugin</artifactId>
                 <extensions>true</extensions>
                 <configuration>
                     <instructions>
-                        <Bundle-Activator>org.kevoree.kompare.Art2KompareActivator</Bundle-Activator>
+                        <Bundle-Activator>org.kevoree.kompare.KevoreeKompareActivator</Bundle-Activator>
                         <Import-Package>!org.kevoree.kompare.*,org.slf4j.*;version="${slf4j.version.range}",*</Import-Package>
                         <Private-Package>org.kevoree.kompare.*</Private-Package>
                     </instructions>
                 </configuration>
             </plugin>
-
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
@@ -47,11 +50,6 @@
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>org.kevoree.annotation.api</artifactId>
-            <version>${kevoree.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
             <artifactId>org.kevoree.framework</artifactId>
             <version>${kevoree.version}</version>
         </dependency>
@@ -60,13 +58,16 @@
             <artifactId>org.osgi.core</artifactId>
             <version>4.2.0</version>
         </dependency>
-
         <dependency>
             <groupId>org.scalatest</groupId>
             <artifactId>scalatest</artifactId>
             <version>1.2</version>
             <scope>test</scope>
         </dependency>
-
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>${slf4j.version}</version>
+        </dependency>
     </dependencies>
 </project>

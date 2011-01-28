@@ -1,0 +1,22 @@
+Manifest-Version: 1.0
+Export-Package: org.eclipse.emf.common,org.eclipse.emf.common.archive,
+ org.eclipse.emf.common.command,org.eclipse.emf.common.notify,org.ecli
+ pse.emf.common.notify.impl,org.eclipse.emf.common.util,org.eclipse.em
+ f.ecore,org.eclipse.emf.ecore.impl,org.eclipse.emf.ecore.plugin,org.e
+ clipse.emf.ecore.resource,org.eclipse.emf.ecore.resource.impl,org.ecl
+ ipse.emf.ecore.util,org.eclipse.emf.ecore.xmi,org.eclipse.emf.ecore.x
+ mi.impl,org.eclipse.emf.ecore.xmi.util,org.eclipse.emf.ecore.xml.name
+ space,org.eclipse.emf.ecore.xml.namespace.impl,org.eclipse.emf.ecore.
+ xml.namespace.util,org.eclipse.emf.ecore.xml.type,org.eclipse.emf.eco
+ re.xml.type.impl,org.eclipse.emf.ecore.xml.type.internal,org.eclipse.
+ emf.ecore.xml.type.util
+Bundle-Vendor: Eclipse
+Bundle-ClassPath: .
+Bundle-Version: 2.6.0
+Bundle-Name: EMF
+Bundle-ManifestVersion: 2
+Created-By: 1.6.0_0 (Sun Microsystems Inc.)
+Bundle-SymbolicName: org.eclipse.emf
+Import-Package: javax.xml.datatype,javax.xml.namespace,javax.xml.parse
+ rs,org.w3c.dom,org.xml.sax,org.xml.sax.ext,org.xml.sax.helpers
+

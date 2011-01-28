@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metadata>
+  <plugins>
+    <plugin>
+      <name>Kevoree :: Extra :: GenModelPlugin</name>
+      <prefix>org.kevoree.extra.emf.genmodel.</prefix>
+      <artifactId>org.kevoree.extra.emf.genmodel.mavenplugin</artifactId>
+    </plugin>
+  </plugins>
+</metadata>

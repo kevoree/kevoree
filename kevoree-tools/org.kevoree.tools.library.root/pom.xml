@@ -16,7 +16,7 @@
 
     <properties>
         <maven.build.timestamp.format>yyyyMMddHHmmSSS</maven.build.timestamp.format>
-        <kevoree.repositories>http://www.kermeta.org/maven2</kevoree.repositories>
+        <kevoree.repositories>https://github.com/dukeboard/kevoree/raw/master/embedded-repo</kevoree.repositories>
     </properties>
 
     <build>
