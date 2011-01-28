@@ -28,7 +28,7 @@ trait KevoreeProvidedPort extends KevoreePort {
 
   override def act() = {
     react {
-      case PAUSE_ACTOR => {
+      case RESUME_ACTOR => {
           pauseState = false
           loop {
             react {
