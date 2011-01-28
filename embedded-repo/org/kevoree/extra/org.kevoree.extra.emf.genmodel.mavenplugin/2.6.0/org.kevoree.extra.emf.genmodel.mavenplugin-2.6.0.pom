@@ -134,18 +134,12 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
-    <distributionManagement>
-        <repository>
-            <id>embedded-repo</id>
-            <url>file:${basedir}/../../embedded-repo</url>
-            <uniqueVersion>false</uniqueVersion>
-        </repository>
-        <snapshotRepository>
-            <id>embedded-repo-snapshot</id>
-            <url>file:${basedir}/../../embedded-repo</url>
-            <uniqueVersion>false</uniqueVersion>
-        </snapshotRepository>
-    </distributionManagement>
+    <parent>
+        <artifactId>org.kevoree.extra.root</artifactId>
+        <groupId>org.kevoree.extra</groupId>
+        <version>2.2.1-SNAPSHOT</version>
+        <relativePath>../org.kevoree.extra.root/pom.xml</relativePath>
+    </parent>
 
     <repositories>
         <repository>
