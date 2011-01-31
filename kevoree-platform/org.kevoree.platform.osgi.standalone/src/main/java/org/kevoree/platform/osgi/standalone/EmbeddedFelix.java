@@ -40,28 +40,36 @@ public class EmbeddedFelix {
     public void run() {
 
         String felix_base = System.getProperty("osgi.base");
-        if(felix_base == null){
+        if (felix_base == null) {
             felix_base = ".";//this.getClass().getClassLoader().getResource(".").getPath();
-            System.out.println("Init Felix Default path => "+felix_base);
+            System.out.println("Init Felix Default path => " + felix_base);
         }
-        
+
         String node_name = System.getProperty("node.name");
-        if(node_name == null){
-            node_name = "defaultNodeName";
-            System.out.println("Init default name =>"+node_name);
+        if (node_name == null) {
+            node_name = "KEVOREEDefaultNodeName";
         }
-        
-        File cacheDir = new File(felix_base +"/"+"felixCache_"+ node_name);
+
+        File cacheDir = new File(felix_base + "/" + "felixCache_" + node_name);
         Map<String, Object> configProps = new HashMap<String, Object>();
         if (cacheDir != null) {
             configProps.put(Constants.FRAMEWORK_STORAGE, cacheDir.getAbsolutePath());
         }
 
-        configProps.put(Constants.FRAMEWORK_SYSTEMPACKAGES_EXTRA, SysPackageConstants.getProperty()+",sun.misc");
+
+        /* Look for a free port for remote shell */
+        //int remoteShellPort = AvailablePortFinder.getNextAvailable();
+
+        //System.setProperty("osgi.shell.telnet.port", remoteShellPort + "");
+        //System.out.println("Remote Shell Port => " + remoteShellPort);
+
+
+        configProps.put(Constants.FRAMEWORK_SYSTEMPACKAGES_EXTRA, SysPackageConstants.getProperty() + ",sun.misc");
         configProps.put(Constants.FRAMEWORK_STORAGE_CLEAN, Constants.FRAMEWORK_STORAGE_CLEAN_ONFIRSTINIT);
         configProps.put(FelixConstants.SYSTEMBUNDLE_ACTIVATORS_PROP, EmbeddedActivators.getActivators());
 
         Runtime.getRuntime().addShutdownHook(new Thread("Felix Shutdown Hook") {
+
             public void run() {
                 try {
                     System.err.println("Stopping OSGi Embedded Framework");

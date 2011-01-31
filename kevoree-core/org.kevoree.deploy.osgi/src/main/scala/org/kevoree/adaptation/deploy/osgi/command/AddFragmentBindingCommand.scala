@@ -11,10 +11,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 
 package org.kevoree.adaptation.deploy.osgi.command
 
@@ -31,7 +27,7 @@ case class AddFragmentBindingCommand(c : Channel,remoteNodeName:String, ctx : Ke
   var logger = LoggerFactory.getLogger(this.getClass)
 
   def execute() : Boolean= {
-
+    
     var KevoreeChannelFound = ctx.bundleMapping.find(map=>map.objClassName == c.getClass.getName && map.name == c.getName) match {
       case None => logger.error("Channel Fragment Mapping not found");None
       case Some(mapfound)=> {
@@ -46,12 +42,14 @@ case class AddFragmentBindingCommand(c : Channel,remoteNodeName:String, ctx : Ke
       case Some(channel)=> {
           //CREATE REMOTE PROXY
 
+          
+
           //TODO
           var bindmsg = new FragmentBindMessage
-        //  var proxy = new org.kevoree.framework.bus.netty.remote.KevoreeRemoteChannelClient(remoteNodeName,c.getName,ctx.getServiceHandler,3000)
+          //var proxy = channel.createProxy(remoteNodeName,c.getName)//new org.kevoree.framework.bus.netty.remote.KevoreeRemoteChannelClient(remoteNodeName,c.getName,ctx.getServiceHandler,3000)
           bindmsg.setChannelName(c.getName)
           bindmsg.setFragmentNodeName(remoteNodeName)
-        //  bindmsg.setProxy(proxy)
+          //bindmsg.setProxy(proxy)
           
           (channel !? bindmsg).asInstanceOf[Boolean]
 

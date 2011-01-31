@@ -24,7 +24,8 @@ trait KevoreeChannelFragment extends KevoreeActor {
 
   def startChannelFragment
   def stopChannelFragment
-
   def getDictionary : java.util.HashMap[String,Object]
+
+ // def createProxy(remoteNodeName:String,remoteChannelName:String) : KevoreeChannelFragmentProxy
 
 }

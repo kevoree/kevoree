@@ -43,6 +43,7 @@ abstract class KevoreeComponentActivator extends BundleActivator {
     componentName = bc.getBundle.getHeaders.find(dic => dic._1 == Constants.KEVOREE_INSTANCE_NAME_HEADER).get._2.toString
     /* Create component actor */
     componentActor = callFactory()
+    
 
     /* PUT INITIAL PROPERTIES */
     componentActor.getKevoreeComponentType.getDictionary.put(Constants.KEVOREE_PROPERTY_OSGI_BUNDLE, bc.getBundle)

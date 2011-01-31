@@ -11,16 +11,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 
 package org.kevoree.framework.annotation.processor.visitor.sub
 
 import com.sun.mirror.declaration.MethodDeclaration
-import org.kevoree.ChannelType
-import org.kevoree.ComponentType
+import org.kevoree.LifeCycleTypeDefinition
 import org.kevoree.TypeDefinition
 
 trait LifeCycleMethodProcessor {
@@ -29,6 +24,16 @@ trait LifeCycleMethodProcessor {
 
     typeDefinition match {
 
+      case lctd : LifeCycleTypeDefinition =>{
+          /* STEP 1 : PROCESS START & STOP METHOD */
+          var startAnnot = methoddef.getAnnotation(classOf[org.kevoree.annotation.Start])
+          var stopAnnot = methoddef.getAnnotation(classOf[org.kevoree.annotation.Stop])
+          var updateAnnot = methoddef.getAnnotation(classOf[org.kevoree.annotation.Update])
+          if(startAnnot != null){ lctd.setStartMethod(methoddef.getSimpleName)}
+          if(stopAnnot != null){ lctd.setStopMethod(methoddef.getSimpleName)}
+          if(updateAnnot != null){ lctd.setUpdateMethod(methoddef.getSimpleName)}
+        }
+/*
       case c: ChannelType => {
           /* STEP 1 : PROCESS START & STOP METHOD */
           var startAnnot = methoddef.getAnnotation(classOf[org.kevoree.annotation.Start])
@@ -41,7 +46,7 @@ trait LifeCycleMethodProcessor {
           var stopAnnot = methoddef.getAnnotation(classOf[org.kevoree.annotation.Stop])
           if(startAnnot != null){ c.setStartMethod(methoddef.getSimpleName)}
           if(stopAnnot != null){ c.setStopMethod(methoddef.getSimpleName)}
-        }
+        }*/
       case _ =>
 
     }

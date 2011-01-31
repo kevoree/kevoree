@@ -56,6 +56,12 @@ object KevoreeFactoryGenerator {
       }
       wrapper.append("def startComponent(){getKevoreeComponentType.asInstanceOf["+componentBean+"]."+ct.getStartMethod+"()}\n")
       wrapper.append("def stopComponent(){getKevoreeComponentType.asInstanceOf["+componentBean+"]."+ct.getStopMethod+"()}\n")
+      
+      if( ct.getUpdateMethod != null){
+        wrapper.append("override def updateComponent(){getKevoreeComponentType.asInstanceOf["+componentBean+"]."+ct.getUpdateMethod+"()}\n")
+      }
+
+
       wrapper.append("}}\n")
 
       /* create Component */
@@ -117,7 +123,9 @@ object KevoreeFactoryGenerator {
       if(ct.getStopMethod != null){
         wrapper.append("override def stopChannelFragment(){this.asInstanceOf["+componentBean+"]."+ct.getStopMethod+"()}\n")
       }
-
+      if(ct.getUpdateMethod != null){
+        wrapper.append("override def updateChannelFragment(){this.asInstanceOf["+componentBean+"]."+ct.getUpdateMethod+"()}\n")
+      }
       wrapper.append("}}}\n")
     }
 

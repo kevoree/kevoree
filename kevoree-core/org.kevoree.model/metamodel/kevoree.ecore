@@ -10,7 +10,7 @@
         eType="#//Port" containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="namespace" eType="#//Namespace"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="ComponentType" eSuperTypes="#//TypeDefinition">
+  <eClassifiers xsi:type="ecore:EClass" name="ComponentType" eSuperTypes="#//LifeCycleTypeDefinition">
     <eStructuralFeatures xsi:type="ecore:EReference" name="required" upperBound="-1"
         eType="#//PortTypeRef" containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="integrationPatterns" upperBound="-1"
@@ -19,8 +19,6 @@
         eType="#//ExtraFonctionalProperty" containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="provided" upperBound="-1"
         eType="#//PortTypeRef" containment="true"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="startMethod" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="stopMethod" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="ContainerNode" eSuperTypes="#//NamedElement #//Instance">
     <eStructuralFeatures xsi:type="ecore:EReference" name="components" upperBound="-1"
@@ -179,15 +177,14 @@
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="value" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="lastCheck" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="ChannelType" eSuperTypes="#//TypeDefinition">
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="startMethod" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="stopMethod" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+  <eClassifiers xsi:type="ecore:EClass" name="ChannelType" eSuperTypes="#//LifeCycleTypeDefinition">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="lowerBindings" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EIntegerObject"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="upperBindings" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EIntegerObject"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="lowerFragments" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EIntegerObject"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="upperFragments" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EIntegerObject"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="TypeDefinition" eSuperTypes="#//NamedElement">
+  <eClassifiers xsi:type="ecore:EClass" name="TypeDefinition" abstract="true" interface="true"
+      eSuperTypes="#//NamedElement">
     <eStructuralFeatures xsi:type="ecore:EReference" name="deployUnit" lowerBound="1"
         eType="#//DeployUnit"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="factoryBean" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
@@ -225,5 +222,11 @@
   <eClassifiers xsi:type="ecore:EClass" name="PhysicalNodeType" eSuperTypes="#//NamedElement"/>
   <eClassifiers xsi:type="ecore:EClass" name="PhysicalNodeMetric" eSuperTypes="#//Metric">
     <eStructuralFeatures xsi:type="ecore:EReference" name="ref" lowerBound="1" eType="#//PhysicalNode"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="LifeCycleTypeDefinition" abstract="true"
+      interface="true" eSuperTypes="#//TypeDefinition">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="startMethod" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="stopMethod" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="updateMethod" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
   </eClassifiers>
 </ecore:EPackage>

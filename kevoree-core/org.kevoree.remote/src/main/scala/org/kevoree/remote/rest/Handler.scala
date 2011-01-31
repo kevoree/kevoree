@@ -26,4 +26,7 @@ object Handler {
   @BeanProperty
   var modelhandler : KevoreeModelHandlerService = null
 
+  @BeanProperty
+  var defaultHost : org.restlet.routing.VirtualHost = null
+
 }

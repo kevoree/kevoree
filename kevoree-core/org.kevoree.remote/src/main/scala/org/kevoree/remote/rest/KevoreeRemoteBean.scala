@@ -19,6 +19,7 @@
 package org.kevoree.remote.rest
 
 import org.kevoree.api.service.core.handler.KevoreeModelHandlerService
+import org.kevoree.remote.NetworkUtility
 import org.restlet.Component
 import org.restlet.Server
 import org.restlet.data.Protocol
@@ -27,7 +28,15 @@ import scala.collection.JavaConversions._
 class KevoreeRemoteBean {
 
   var component = new Component
-  var serverhttp = component.getServers().add(Protocol.HTTP, 8111);
+
+  var port : Int = NetworkUtility.findNextAvailblePort(8000, 60000).intValue
+
+  println("Kevoree Remote Port => "+port)
+
+  var serverhttp = component.getServers().add(Protocol.HTTP, port);
+
+  Handler.setDefaultHost(component.getDefaultHost)
+
   component.getDefaultHost().attach("/model/current",classOf[ModelHandlerResource])
 
   if (System.getProperty("org.kevoree.remote.repository") != null) {
