@@ -58,6 +58,13 @@ public class FakeSimpleSwitch extends AbstractFakeStuffComponent {
         frame = null;
     }
 
+    @Update
+    public void update(){
+        for(String s : this.getDictionary().keySet()){
+            System.out.println("Dic => "+s+" - "+this.getDictionary().get(s));
+        }
+    }
+
     private class MyFrame extends JFrame {
 
         private JButton on, off;

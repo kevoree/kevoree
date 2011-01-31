@@ -25,7 +25,7 @@ object MainTester {
 
     var component = new KevoreeRemoteBean
     component.start
-    Thread.sleep(10*1000)
+    Thread.sleep(20*1000)
     component.stop
 
 

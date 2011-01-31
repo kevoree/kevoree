@@ -20,12 +20,12 @@ package org.kevoree.framework
 
 object Constants {
 
-  def KEVOREE_NODE_NAME = "KEVOREE.node.name"
-  def KEVOREE_MODEL_PORT = "KEVOREE.modelsynch.port"
+  def KEVOREE_NODE_NAME = "kevoree.node.name"
+  def KEVOREE_MODEL_PORT = "kevoree.modelsynch.port"
 
 
-  def KEVOREE_INSTANCE_NAME = "KEVOREE.component.name"
-  def KEVOREE_PORT_NAME = "KEVOREE.port.name"
+  def KEVOREE_INSTANCE_NAME = "kevoree.component.name"
+  def KEVOREE_PORT_NAME = "kevoree.port.name"
 
   def KEVOREE_MESSAGEPORT_DEFAULTMETHOD = "process"
 

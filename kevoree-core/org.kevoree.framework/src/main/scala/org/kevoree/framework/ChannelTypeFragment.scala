@@ -29,10 +29,15 @@ trait ChannelTypeFragment extends KevoreeChannelFragment with ChannelFragment {
   private var portsBinded : HashMap[String,KevoreePort] = new HashMap[String, KevoreePort]()
   private var fragementBinded : HashMap[String,KevoreeChannelFragment] = new HashMap[String, KevoreeChannelFragment]()
 
-  @BeanProperty
+  //@BeanProperty
   var nodeName : String = ""
-  @BeanProperty
+  override def getNodeName = nodeName
+  def setNodeName(n:String)= { nodeName = n }
+
+  //@BeanProperty
   var name : String = ""
+  override def getName = name
+  def setName(n:String)= { name = n }
   //@BeanProperty
   var dictionary : HashMap[String, Object] = new HashMap[String, Object]()
   def setDictionary(d : HashMap[String, Object]) = dictionary = d
@@ -59,7 +64,7 @@ trait ChannelTypeFragment extends KevoreeChannelFragment with ChannelFragment {
         } else {
           (delegate ! msg);return null
         }
-      case _ => println("WTF !!!");return null
+      case _ => println("Call on forward on bad object type ! => Only Port or Channel accepted");return null
     }
   }
 
@@ -92,8 +97,11 @@ trait ChannelTypeFragment extends KevoreeChannelFragment with ChannelFragment {
       }
 
     case msg : FragmentBindMessage=> {
-        fragementBinded.put(createPortKey(msg), msg.getProxy);
-        msg.getProxy.start;
+        var sender = this.createSender(msg.getFragmentNodeName, msg.getChannelName)
+        var proxy = new KevoreeChannelFragmentProxy(msg.getFragmentNodeName, msg.getChannelName)
+        proxy.setChannelSender(sender)
+        fragementBinded.put(createPortKey(msg), proxy);
+        proxy.start;
         reply(true)
       }
     case msg : FragmentUnbindMessage=> {
@@ -149,6 +157,7 @@ trait ChannelTypeFragment extends KevoreeChannelFragment with ChannelFragment {
 
   def startChannelFragment : Unit = {}
   def stopChannelFragment : Unit = {}
+  def updateChannelFragment : Unit = {}
   
 
 }

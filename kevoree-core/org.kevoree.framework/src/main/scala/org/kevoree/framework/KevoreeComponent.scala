@@ -33,6 +33,7 @@ abstract class KevoreeComponent(c : AbstractComponentType) extends KevoreeActor 
         d.keySet.foreach{v=>
           getKevoreeComponentType.getDictionary.put(v, d.get(v))
         }
+        new Actor{ def act = updateComponent }.start()
         reply(true)
     }
     
@@ -61,8 +62,8 @@ abstract class KevoreeComponent(c : AbstractComponentType) extends KevoreeActor 
       case _ @ msg => println("unknow message "+msg)
   }
 
-
   def startComponent
   def stopComponent
+  def updateComponent = {}
 
 }

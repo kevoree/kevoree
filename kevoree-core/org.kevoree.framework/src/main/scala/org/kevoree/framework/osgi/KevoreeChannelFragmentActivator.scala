@@ -20,6 +20,7 @@ package org.kevoree.framework.osgi
 
 import java.util.Hashtable
 import org.kevoree.framework.KevoreeChannelFragment
+import org.kevoree.framework.ChannelTypeFragment
 import org.kevoree.framework.Constants
 import org.osgi.framework.BundleActivator
 import org.osgi.framework.BundleContext
@@ -29,7 +30,7 @@ abstract class KevoreeChannelFragmentActivator extends BundleActivator {
 
   def callFactory() : KevoreeChannelFragment
   var nodeName : String = ""
-  var componentName : String = ""
+  var instanceName : String = ""
   var channelActor : KevoreeChannelFragment = null
   var bundleContext : BundleContext = null
 
@@ -37,19 +38,23 @@ abstract class KevoreeChannelFragmentActivator extends BundleActivator {
     bundleContext = bc
     /* SEARCH HEADERS VALUE */
     nodeName = bc.getBundle.getHeaders.find(dic => dic._1 == Constants.KEVOREE_NODE_NAME_HEADER).get._2.toString
-    componentName = bc.getBundle.getHeaders.find(dic => dic._1 == Constants.KEVOREE_INSTANCE_NAME_HEADER).get._2.toString
+    instanceName = bc.getBundle.getHeaders.find(dic => dic._1 == Constants.KEVOREE_INSTANCE_NAME_HEADER).get._2.toString
     /* Create component actor */
     channelActor = callFactory()
+    
+
     /* Start actor */
     channelActor.start
     /* Expose component in OSGI */
     var props = new Hashtable[String,String]()
     props.put(Constants.KEVOREE_NODE_NAME, nodeName)
-    props.put(Constants.KEVOREE_INSTANCE_NAME, componentName)
+    props.put(Constants.KEVOREE_INSTANCE_NAME, instanceName)
     bc.registerService(classOf[KevoreeChannelFragment].getName(), channelActor, props);
 
     /* PUT INITIAL PROPERTIES */
     channelActor.getDictionary.put(Constants.KEVOREE_PROPERTY_OSGI_BUNDLE, bc.getBundle)
+    channelActor.asInstanceOf[ChannelTypeFragment].setName(instanceName)
+    channelActor.asInstanceOf[ChannelTypeFragment].setNodeName(nodeName)
 
     //channelActor.startChannelFragment //DEPRECATED DONE BY DEPLOY
   }

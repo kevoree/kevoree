@@ -93,13 +93,18 @@ public class SysGenPlugin extends AbstractMojo {
 
         List<String> filters2 = Arrays.asList(filters.split(","));
 
-        Iterator it2 = project.getDependencyArtifacts().iterator();
+        Iterator it2 = project.getCompileArtifacts().iterator();
+
+//        System.out.println(project.getDependencyArtifacts().size());
+    //    System.out.println(project.getCompileArtifacts().size());
+     //   System.out.println(project.getAttachedArtifacts().size());
+
+
         while (it2.hasNext()) {
             Artifact d = (Artifact) it2.next();
             String artefactPath = local.getBasedir() + "/" + local.pathOf(d).toString();
+
             packages.addAll(PackageUtils.getFilteredPackageNames(artefactPath, filters2, debug));
-
-
             String content = SysStaticClassGenerator.generate(packages);
             try {
                 generateFile(new File(sourceOutputDirectory.getAbsolutePath() + File.separatorChar + "generated"), "SysPackageConstants.java", content);

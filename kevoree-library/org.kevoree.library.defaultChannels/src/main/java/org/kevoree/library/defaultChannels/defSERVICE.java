@@ -19,6 +19,8 @@ package org.kevoree.library.defaultChannels;
 
 import org.kevoree.annotation.*;
 import org.kevoree.framework.AbstractChannelFragment;
+import org.kevoree.framework.ChannelFragmentSender;
+import org.kevoree.framework.NoopChannelFragmentSender;
 import org.kevoree.framework.message.*;
 
 /**
@@ -44,5 +46,10 @@ public class defSERVICE extends AbstractChannelFragment {
         }
         System.out.println("Ok result "+result);
         return result;
+    }
+
+    @Override
+    public ChannelFragmentSender createSender(String remoteNodeName, String remoteChannelName) {
+        return new NoopChannelFragmentSender();
     }
 }

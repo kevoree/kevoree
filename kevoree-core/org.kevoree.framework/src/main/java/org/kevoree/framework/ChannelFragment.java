@@ -35,4 +35,11 @@ public interface ChannelFragment {
     public Object forward(KevoreeActor delegate, Message msg);
 
     public HashMap<String, Object> getDictionary();
+
+    public ChannelFragmentSender createSender(String remoteNodeName,String remoteChannelName);
+
+    public String getNodeName();
+
+    public String getName();
+
 }

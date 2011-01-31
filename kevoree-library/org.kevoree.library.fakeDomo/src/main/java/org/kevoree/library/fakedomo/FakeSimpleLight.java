@@ -23,18 +23,17 @@ import javax.swing.JFrame;
 import org.kevoree.annotation.*;
 import org.kevoree.framework.MessagePort;
 
-
 /**
  *
  * @author ffouquet
  */
 @Provides({
-    @ProvidedPort(name = "on", type=PortType.MESSAGE),
-    @ProvidedPort(name = "off", type=PortType.MESSAGE)
+    @ProvidedPort(name = "on", type = PortType.MESSAGE),
+    @ProvidedPort(name = "off", type = PortType.MESSAGE)
 })
 @DictionaryType({
-    @DictionaryAttribute(name="param1"),
-    @DictionaryAttribute(name="param2",defaultValue="defVal",optional=true)
+    @DictionaryAttribute(name = "param1"),
+    @DictionaryAttribute(name = "param2", defaultValue = "defVal", optional = true)
 })
 @ComponentType
 public class FakeSimpleLight extends AbstractFakeStuffComponent {
@@ -54,11 +53,17 @@ public class FakeSimpleLight extends AbstractFakeStuffComponent {
         }
     }
 
-
     @Override
     public void stop() {
         frame.dispose();
         frame = null;
+    }
+
+    @Update
+    public void update() {
+        for (String s : this.getDictionary().keySet()) {
+            System.out.println("Dic => " + s + " - " + this.getDictionary().get(s));
+        }
     }
 
     @Ports({

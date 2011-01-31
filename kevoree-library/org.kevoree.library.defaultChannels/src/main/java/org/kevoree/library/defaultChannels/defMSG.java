@@ -15,35 +15,36 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package org.kevoree.library.defaultChannels;
 
 import org.kevoree.annotation.*;
 import org.kevoree.framework.AbstractChannelFragment;
+import org.kevoree.framework.ChannelFragmentSender;
 import org.kevoree.framework.KevoreeChannelFragment;
+import org.kevoree.framework.NoopChannelFragmentSender;
 import org.kevoree.framework.message.*;
 
 /**
  *
  * @author ffouquet
  */
-@Library(name ="art2baselib")
+@Library(name = "art2baselib")
 @ChannelTypeFragment
 public class defMSG extends AbstractChannelFragment {
 
     @Override
     public Object dispatch(Message msg) {
 
-        System.out.println("Local node bsize"+getBindedPorts().size());
+        System.out.println("Local node bsize" + getBindedPorts().size());
 
-        if(getBindedPorts().isEmpty() && getOtherFragments().isEmpty()){
-            System.out.println("No consumer, msg lost="+msg.getContent());
+        if (getBindedPorts().isEmpty() && getOtherFragments().isEmpty()) {
+            System.out.println("No consumer, msg lost=" + msg.getContent());
         }
-        for(org.kevoree.framework.KevoreePort p : getBindedPorts()){
+        for (org.kevoree.framework.KevoreePort p : getBindedPorts()) {
             forward(p, msg);
         }
-        for(KevoreeChannelFragment cf : getOtherFragments()){
-            if(!msg.getPassedNodes().contains(cf.getNodeName())){
+        for (KevoreeChannelFragment cf : getOtherFragments()) {
+            if (!msg.getPassedNodes().contains(cf.getNodeName())) {
                 forward(cf, msg);
             }
         }
@@ -51,12 +52,25 @@ public class defMSG extends AbstractChannelFragment {
     }
 
     @Start
-    public void startHello(){
+    public void startHello() {
         System.out.println("Hello Channel");
     }
+
     @Stop
-    public void stopHello(){
+    public void stopHello() {
         System.out.println("Bye Channel");
     }
-    
+
+    @Update
+    public void updateHello() {
+        for (String s : this.getDictionary().keySet()) {
+            System.out.println("Dic => " + s + " - " + this.getDictionary().get(s));
+        }
+    }
+
+    @Override
+    public ChannelFragmentSender createSender(String remoteNodeName, String remoteChannelName) {
+        return new NoopChannelFragmentSender();
+    }
+
 }

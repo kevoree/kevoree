@@ -1,0 +1,25 @@
+<project name="KevoreeEditor" default="do-bundle" basedir=".">
+
+    <classpath>
+      <pathelement path="${classpath}"/>
+      <pathelement location="lib/jarbundler-2.2.0.jar"/>
+    </classpath>
+  
+  <taskdef name="jarbundler" classname="net.sourceforge.jarbundler.JarBundler" />
+
+  <target name="do-bundle">
+  
+    <jarbundler dir="release" name="JavaMacDockTest" shortname="MacDock" signature="Alvin Alexander" mainclass="com.devdaily.macdocktest.JavaMacDockTest"  icon="kev-logo-full.icns" jvmversion="1.5+" version="0.92" infostring="Kevoree Editor OSX" build="2011" bundleid="org.kevoree.tools.ui.editor.osx" >
+
+      <documenttype name="Allow any document type" ostypes="****" role="Viewer"/>                    
+      <documenttype name="Image types we support" mimetypes="text/kevoree" role="editor"/>
+      <jarfileset dir="jar"><include name="**/*.jar" /></jarfileset>                             
+      <javaproperty name="apple.laf.useScreenMenuBar" value="true"/>
+      <javaproperty name="apple.awt.brushMetal" value="true"/>
+      <javaproperty name="apple.awt.showGrowBox" value="true"/>
+      <javaproperty name="com.apple.mrj.application.apple.menu.about.name" value="Kevoree Editor"/>
+      <javaproperty name="apple.awt.textantialiasing" value="true"/>
+    </jarbundler>
+  </target>
+
+</project>

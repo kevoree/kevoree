@@ -18,19 +18,18 @@
 
 package org.kevoree.remote
 
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
-package org.kermeta.art2.framework.bus.netty
-
 import java.io.IOException
 import java.net.DatagramSocket
 import java.net.ServerSocket
 import scala.collection.JavaConversions._
 
 object NetworkUtility {
+
+  def findNextAvailblePort(target : java.lang.Integer,max:java.lang.Integer) : java.lang.Integer = {
+    var port : Int = target.intValue
+    while( (!available(port)) && port < max.intValue  ){ port = port + 1 }
+    port
+  }
 
   /**
    * Checks to see if a specific port is available.
