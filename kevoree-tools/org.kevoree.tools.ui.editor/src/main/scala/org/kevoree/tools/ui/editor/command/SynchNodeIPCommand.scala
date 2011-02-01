@@ -54,7 +54,7 @@ class SynchNodeIPCommand extends Command {
       var IP = KevoreePlatformHelper.getProperty(kernel.getModelHandler.getActualModel, destNodeName, Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP);
       if(IP == "") {IP = "127.0.0.1"}
       var PORT = KevoreePlatformHelper.getProperty(kernel.getModelHandler.getActualModel, destNodeName, Constants.KEVOREE_PLATFORM_REMOTE_NODE_MODELSYNCH_PORT);
-      if(PORT == "") {PORT = "8111" }
+      if(PORT == "") {PORT = "8000" }
 
       println("IP="+IP+",PORT="+PORT)
       new InetSocketAddress(IP,Integer.parseInt(PORT))
