@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metadata>
+  <groupId>org.kevoree.extra</groupId>
+  <artifactId>org.kevoree.extra.emf.genmodel.mavenplugin</artifactId>
+  <versioning>
+    <latest>2.6.0</latest>
+    <release>2.6.0</release>
+    <versions>
+      <version>2.6.0</version>
+    </versions>
+    <lastUpdated>20110201112229</lastUpdated>
+  </versioning>
+</metadata>

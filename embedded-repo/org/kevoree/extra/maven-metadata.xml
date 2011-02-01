@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metadata>
+  <plugins>
+    <plugin>
+      <name>Kevoree :: Extra :: GenModelPlugin</name>
+      <prefix>org.kevoree.extra.emf.genmodel.</prefix>
+      <artifactId>org.kevoree.extra.emf.genmodel.mavenplugin</artifactId>
+    </plugin>
+    <plugin>
+      <name>Kevoree :: Extra :: OSGi System Package Gen</name>
+      <prefix>org.kevoree.extra.osgi.sysgen</prefix>
+      <artifactId>org.kevoree.extra.osgi.sysgen</artifactId>
+    </plugin>
+  </plugins>
+</metadata>
