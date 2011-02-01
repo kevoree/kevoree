@@ -2,11 +2,10 @@
 <metadata>
   <groupId>org.kevoree.tools</groupId>
   <artifactId>org.kevoree.tools.annotation.generator</artifactId>
-  <version>2.2.1-SNAPSHOT</version>
   <versioning>
     <versions>
       <version>2.2.1-SNAPSHOT</version>
     </versions>
-    <lastUpdated>20110131124331</lastUpdated>
+    <lastUpdated>20110201104459</lastUpdated>
   </versioning>
 </metadata>

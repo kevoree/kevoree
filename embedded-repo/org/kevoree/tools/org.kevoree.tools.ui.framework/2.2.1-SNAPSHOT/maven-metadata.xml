@@ -1,12 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<metadata>
+<metadata modelVersion="1.1.0">
   <groupId>org.kevoree.tools</groupId>
   <artifactId>org.kevoree.tools.ui.framework</artifactId>
   <version>2.2.1-SNAPSHOT</version>
   <versioning>
     <snapshot>
-      <buildNumber>5</buildNumber>
+      <timestamp>20110201.104516</timestamp>
+      <buildNumber>1</buildNumber>
     </snapshot>
-    <lastUpdated>20110131124410</lastUpdated>
+    <lastUpdated>20110201104516</lastUpdated>
+    <snapshotVersions>
+      <snapshotVersion>
+        <extension>jar</extension>
+        <value>2.2.1-20110201.104516-1</value>
+        <updated>20110201104516</updated>
+      </snapshotVersion>
+      <snapshotVersion>
+        <extension>pom</extension>
+        <value>2.2.1-20110201.104516-1</value>
+        <updated>20110201104516</updated>
+      </snapshotVersion>
+    </snapshotVersions>
   </versioning>
 </metadata>
