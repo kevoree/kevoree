@@ -14,20 +14,19 @@
         <module>kevoree-core/org.kevoree.root</module>
         <module>kevoree-tools/org.kevoree.tools.root</module>
         <module>kevoree-platform/org.kevoree.platform.root</module>
-        <!--
         <module>kevoree-library/org.kevoree.library.root</module>
-        -->
+
     </modules>
 
     <distributionManagement>
         <repository>
             <id>embedded-repo</id>
-            <url>file:${project.build.directory}/../../../embedded-repo</url>
+            <url>file:${project.build.directory}/embedded-repo</url>
             <uniqueVersion>false</uniqueVersion>
         </repository>
         <snapshotRepository>
             <id>embedded-repo-snapshot</id>
-            <url>file:${project.build.directory}/../../../embedded-repo</url>
+            <url>file:${project.build.directory}/embedded-repo</url>
             <uniqueVersion>false</uniqueVersion>
         </snapshotRepository>
     </distributionManagement>
