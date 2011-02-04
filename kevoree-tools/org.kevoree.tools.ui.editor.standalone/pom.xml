@@ -1,11 +1,12 @@
-
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <artifactId>org.kevoree.tools.ui.editor.standalone</artifactId>
     <packaging>jar</packaging>
     <name>Kevoree :: Tools :: UI Editor Standalone</name>
-    <url>https://github.com/dukeboard/kevoree/raw/master/embedded-repo/org/kevoree/tools/org.kevoree.tools.ui.editor.standalone/jnlp</url>
+    <url>
+        https://github.com/dukeboard/kevoree/raw/master/embedded-repo/org/kevoree/tools/org.kevoree.tools.ui.editor.standalone/jnlp
+    </url>
 
     <parent>
         <artifactId>org.kevoree.tools.root</artifactId>
@@ -14,13 +15,10 @@
         <relativePath>../org.kevoree.tools.root/pom.xml</relativePath>
     </parent>
 
-
-    <properties>
-        <project.Organization.Name>KEVOREE</project.Organization.Name>
-    </properties>
-    
     <build>
         <plugins>
+            <!--
+
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
@@ -31,19 +29,8 @@
                             <goal>shade</goal>
                         </goals>
                         <configuration>
-                            
+
                             <filters>
-                                <!--
-                                <filter>
-                                    <includes>
-                                        <include>org.ops4j.pax.url:*</include>
-                                        <include>org.osgi:*</include>
-                                        <include>org.apache.felix:*</include>
-                                        <include>ch.qos.logback:*</include>
-                                        <include>org.kermeta.emf:*</include>
-                                        <include>org.kevoree</include>
-                                    </includes>
-                                </filter>-->
                                 <filter>
                                     <artifact>*:*</artifact>
                                     <excludes>
@@ -53,9 +40,10 @@
                                     </excludes>
                                 </filter>
                             </filters>
-                            
+
                             <transformers>
-                                <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                                <transformer
+                                        implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
                                     <mainClass>org.kevoree.tools.ui.editor.standalone.App</mainClass>
                                 </transformer>
                             </transformers>
@@ -63,43 +51,124 @@
                     </execution>
                 </executions>
             </plugin>
+            -->
+
             <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>exec-maven-plugin</artifactId>
-                <version>1.1</version>
+                <groupId>com.pyx4me</groupId>
+                <artifactId>proguard-maven-plugin</artifactId>
                 <executions>
                     <execution>
+                        <phase>package</phase>
                         <goals>
-                            <goal>java</goal>
+                            <goal>proguard</goal>
                         </goals>
                     </execution>
                 </executions>
                 <configuration>
-                    <mainClass>org.kevoree.tools.ui.editor.standalone.App</mainClass>
+                    <injar>${project.build.finalName}.jar</injar>
+                    <outjar>${project.build.finalName}-small.jar</outjar>
+                    <obfuscate>false</obfuscate>
+                    <maxMemory>1024m</maxMemory>
+                    <proguardVersion>4.5</proguardVersion>
+                    <options>
+                        <option>-dontskipnonpubliclibraryclasses</option>
+                        <option>-dontskipnonpubliclibraryclassmembers</option>
+                        <option>-dontoptimize</option>
+                        <option>-printmapping map.txt</option>
+                        <option>-printseeds seed.txt</option>
+                        <option>-ignorewarnings</option>
+                        <option>-keep public class org.kevoree.tools.ui.editor.standalone.App { *; }</option>
+                        <option>-keep class * extends javax.swing.plaf.ComponentUI {
+                            public static javax.swing.plaf.ComponentUI createUI(javax.swing.JComponent);
+                            }
+                        </option>
+                    </options>
+                    <assembly>
+                        <inclusions>
+                            <inclusion>
+                                <groupId>org.kevoree.tools</groupId>
+                                <artifactId>org.kevoree.tools.ui.editor</artifactId>
+                            </inclusion>
+                            <inclusion>
+                                <groupId>org.kevoree.tools</groupId>
+                                <artifactId>org.kevoree.tools.ui.framework</artifactId>
+                            </inclusion>
+                            <inclusion>
+                                <groupId>org.scala-lang</groupId>
+                                <artifactId>scala-library</artifactId>
+                            </inclusion>
+                            <inclusion>
+                                <groupId>org.kevoree</groupId>
+                                <artifactId>org.kevoree.api</artifactId>
+                            </inclusion>
+                            <inclusion>
+                                <groupId>org.kevoree</groupId>
+                                <artifactId>org.kevoree.model</artifactId>
+                                <filter>!metamodel/**</filter>
+                            </inclusion>
+                            <inclusion>
+                                <groupId>org.kevoree</groupId>
+                                <artifactId>org.kevoree.framework</artifactId>
+                            </inclusion>
+                            <inclusion>
+                                <groupId>org.kevoree</groupId>
+                                <artifactId>org.kevoree.merger</artifactId>
+                            </inclusion>
+                            <inclusion>
+                                <groupId>org.swinglabs</groupId>
+                                <artifactId>swingx</artifactId>
+                            </inclusion>
+                            <inclusion>
+                                <groupId>org.kevoree.extra</groupId>
+                                <artifactId>org.kevoree.extra.emf.library</artifactId>
+                            </inclusion>
+                        </inclusions>
+                    </assembly>
+                    <libs>
+                        <lib>&lt;java.home&gt;/../Classes/classes.jar</lib>
+                    </libs>
                 </configuration>
             </plugin>
 
-<!--
+
             <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>osxappbundle-maven-plugin</artifactId>
-                <version>1.0-alpha-2</version>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>2.3.1</version>
                 <configuration>
-                    <mainClass>org.kevoree.tools.ui.editor.standalone.App</mainClass>
+                    <archive>
+                        <manifest>
+                            <mainClass>org.kevoree.tools.ui.editor.standalone.App</mainClass>
+                        </manifest>
+                    </archive>
                 </configuration>
                 <executions>
                     <execution>
                         <phase>package</phase>
                         <goals>
-                            <goal>bundle</goal>
+                            <goal>sign</goal>
                         </goals>
+                        <configuration>
+                            <jarPath>${project.build.directory}/${project.build.finalName}-small.jar</jarPath>
+                            <keystore>${project.build.directory}/../keystore</keystore>
+                            <alias>kevoree</alias>
+                            <storepass>kevoree</storepass>
+                            <signedjar>${project.build.directory}/signed/${project.build.finalName}.jar</signedjar>
+                            <verify>true</verify>
+                        </configuration>
                     </execution>
                 </executions>
-            </plugin>-->
+            </plugin>
+
         </plugins>
     </build>
 
-
+    <pluginRepositories>
+        <pluginRepository>
+            <id>lafros.com</id>
+            <url>http://lafros.com/m2arts</url>
+        </pluginRepository>
+    </pluginRepositories>
 
     <dependencies>
         <dependency>

@@ -141,6 +141,7 @@
         <module>../org.kevoree.tools.ui.framework</module>
         <module>../org.kevoree.tools.ui.editor</module>
         <module>../org.kevoree.tools.ui.editor.standalone</module>
+        <module>../org.kevoree.tools.android.framework</module>
     </modules>
 
     <distributionManagement>

@@ -36,13 +36,6 @@
             <artifactId>org.kevoree.merger</artifactId>
             <version>${kevoree.version}</version>
         </dependency>
-        <!--
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>art2.framework.bus.netty</artifactId>
-            <version>${art2.version}</version>
-        </dependency>
-        -->
     </dependencies>
 
 
