@@ -6,7 +6,7 @@
 
     <modelVersion>4.0.0</modelVersion>
     <artifactId>org.kevoree.tools.ui.framework</artifactId>
-    <packaging>bundle</packaging>
+    <packaging>jar</packaging>
     <name>Kevoree :: Tools :: UI Framework</name>
 
     <parent>
@@ -27,7 +27,7 @@
                 <configuration>
                     <instructions>                    	                  	                       
                         <Export-Package>
-                        	org.jdesktop.swingx.*,*
+                        	org.jdesktop.swingx.*,org.kevoree.tools.ui.framework.*
                         </Export-Package>
                         <!-- use the ! for avoiding to import some packages that are already there with the Require-Bundle -->
                      	<Import-Package>
@@ -37,7 +37,7 @@
                              ex: Bundle-ActivationPolicy: lazy -->
                         <!-- <_include>src/main/resources/MANIFEST-part.MF</_include> -->
                         <!-- embed any dependencies with artifactId swingx -->
-			<Embed-Dependency>swingx</Embed-Dependency>
+			<!--<Embed-Dependency>swingx</Embed-Dependency>            -->
                         <!--<Embed-Transitive>true</Embed-Transitive>-->
                     </instructions>
                 </configuration>	
