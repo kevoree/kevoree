@@ -55,7 +55,12 @@ trait PortMappingProcessor {
             }
             ptref.getMappings.add(ptREFmapping)
           }
-        case None => println("ProvidedPort not found "+annot.name);env.getMessager.printError("ProvidedPort not found "+annot.name);System.exit(1)
+        case None => {
+            var message : String = componentType.getBean + " declares a mapping to a ProvidedPort \"" + annot.name + "\", but this port has not been declared in ComponentType annotations.\nCan not resume. Process Exit.";
+            println(message);
+            env.getMessager.printError(message);
+            System.exit(1);
+        }
       }
     }
 
