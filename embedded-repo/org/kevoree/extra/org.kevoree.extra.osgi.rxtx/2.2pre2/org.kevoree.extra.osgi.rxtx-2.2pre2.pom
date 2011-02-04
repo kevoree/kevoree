@@ -12,8 +12,15 @@
         <dependency>
             <groupId>org.rxtx</groupId>
             <artifactId>rxtx</artifactId>
-            <version>2.1.7</version>
+            <version>2.2pre2</version>
             <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.rxtx</groupId>
+            <artifactId>rxtx</artifactId>
+            <version>2.2pre2</version>
+            <scope>system</scope>
+            <systemPath>${basedir}/lib/RXTXcomm.jar</systemPath>
         </dependency>
     </dependencies>
 
@@ -58,7 +65,9 @@
  				nativelib/Windows/win64/rxtxSerial.dll;
  				osname=Win64; processor=x86_64
 
-			</Bundle-NativeCode> 
+			</Bundle-NativeCode>
+			<Embed-Dependency>rxtx</Embed-Dependency>
+			 
 			
 			<!--
 			nativelib/Windows/i368-mingw32/rxtxParallel.dll;
@@ -67,7 +76,7 @@
 			-->
 			
 			
-            <Export-Package>!nativelib.*,gnu.io.*;version="${pom.version}"</Export-Package>
+            <Export-Package>!nativelib.*,gnu.io.*;version=2.2pre2</Export-Package>
           </instructions> 
         </configuration> 
     </plugin>  
