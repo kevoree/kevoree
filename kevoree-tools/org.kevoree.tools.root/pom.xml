@@ -123,6 +123,11 @@
             <name>Scala-tools Maven2 Repository</name>
             <url>http://scala-tools.org/repo-releases</url>
         </repository>
+        <repository>
+            <id>kevoree-github</id>
+            <url>https://github.com/dukeboard/kevoree/raw/master/embedded-repo</url>
+        </repository>
+
     </repositories>
 
     <pluginRepositories>
