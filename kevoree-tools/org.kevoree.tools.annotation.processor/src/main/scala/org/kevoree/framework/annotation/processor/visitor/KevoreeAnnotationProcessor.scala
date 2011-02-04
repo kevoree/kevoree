@@ -30,6 +30,7 @@ import org.kevoree.annotation.ChannelTypeFragment
 import org.kevoree.annotation.ComponentType
 import org.kevoree.framework.annotation.processor.KevoreeXmiHelper
 import org.kevoree.framework.annotation.processor.LocalUtility
+import org.kevoree.framework.annotation.processor.PostAptChecker
 import org.kevoree.tools.annotation.generator.KevoreeActivatorGenerator
 import org.kevoree.tools.annotation.generator.KevoreeFactoryGenerator
 import org.kevoree.tools.annotation.generator.KevoreeGenerator
@@ -52,7 +53,13 @@ class KevoreeAnnotationProcessor(env : AnnotationProcessorEnvironment) extends A
         processChannelType(channelTypeAnnotation,typeDecl,root)
       }
       //TODO
+
     }
+
+    //POST APT PROCESS CHECKER
+    var checker : PostAptChecker = new PostAptChecker(root)
+    if( !checker.check){printf("PostAptChecker returned errors. Process aborted."); System.exit(1)}
+
 
     //TODO SEPARATE MAVEN PLUGIN
     KevoreeGenerator.generatePort(root, env.getFiler());
