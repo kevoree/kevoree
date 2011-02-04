@@ -90,12 +90,25 @@
                 <configuration>
                     <instructions>
                         <Bundle-ClassPath>.</Bundle-ClassPath>
-                        <Private-Package>org.ops4j.*,org.codehaus.jackson.*</Private-Package>
-                        <Import-Package>!org.kevoree.*,scala.*,org.apache.commons.*,java.*,javax.*,org.osgi.*,org.w3c.*,org.xml.*</Import-Package>
+                        <Import-Package>!org.restlet.*,!org.kevoree.*,org.slf4j.*,scala.*,org.apache.commons.*,java.*,javax.*,org.osgi.*,org.w3c.*,org.xml.*,org.eclipse.emf.*</Import-Package>
+                        <Export-Package>org.kevoree.*,org.kevoreeAdaptation.*,org.restlet.*,net.lag.*,org.ops4j.*,org.codehaus.jackson.*</Export-Package>
                         <Bundle-Activator>org.kevoree.platform.osgi.bundle.BootstrapActivator</Bundle-Activator>
                         <Bundle-ActivationPolicy>auto</Bundle-ActivationPolicy>
                         <Eclipse-LazyStart>false</Eclipse-LazyStart>
                     </instructions>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.ops4j</groupId>
+                <artifactId>maven-pax-plugin</artifactId>
+                <version>1.4</version>
+                <configuration>
+                    <noDependencies>true</noDependencies>
+                    <provision>
+                        <param>--log=DEBUG</param>
+                        <param>--workingDirectory=target/runner</param>
+                    </provision>
+                    <deployURLs></deployURLs>
                 </configuration>
             </plugin>
         </plugins>

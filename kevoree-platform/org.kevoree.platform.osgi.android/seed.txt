@@ -1,0 +1,2 @@
+org.kevoree.platform.osgi.android.KevoreeActivity
+org.kevoree.platform.osgi.android.AndroidFelixService

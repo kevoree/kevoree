@@ -1,0 +1,46 @@
+10
+
+dir
+12773
+svn+ssh://scm.gforge.inria.fr/svn/kermeta/trunk/art2_projects/org.kermeta.art2.platform.android/res
+svn+ssh://scm.gforge.inria.fr/svn/kermeta
+
+
+
+2010-10-05T06:09:06.515967Z
+12771
+francoisfouquet
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+3b3ea266-f0f1-470e-95cb-5b2c9abc2e95
+
+values
+dir
+
+drawable-hdpi
+dir
+
+drawable-ldpi
+dir
+
+drawable-mdpi
+dir
+
+raw
+dir
+
+layout
+dir
+
