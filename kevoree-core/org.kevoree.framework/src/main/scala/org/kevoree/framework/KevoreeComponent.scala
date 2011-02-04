@@ -23,47 +23,64 @@ import scala.actors.Actor
 import scala.collection.JavaConversions._
 import org.kevoree.framework.aspects.KevoreeAspects._
 
-abstract class KevoreeComponent(c : AbstractComponentType) extends KevoreeActor {
+abstract class KevoreeComponent(c: AbstractComponentType) extends KevoreeActor {
 
-  def getKevoreeComponentType : ComponentType = c
+  def getKevoreeComponentType: ComponentType = c
 
-  override def internal_process(msg : Any) = msg match {
+  private var ct_started: Boolean = false
+
+  override def internal_process(msg: Any) = msg match {
 
     case UpdateDictionaryMessage(d) => {
-        d.keySet.foreach{v=>
+      d.keySet.foreach{
+        v =>
           getKevoreeComponentType.getDictionary.put(v, d.get(v))
-        }
-        new Actor{ def act = updateComponent }.start()
-        reply(true)
+      }
+      if (ct_started) {
+        new Actor {
+          def act = updateComponent
+        }.start()
+      }
+      reply(true)
     }
-    
+
     case StartMessage => {
-        new Actor{ def act = startComponent }.start()
-        //Wake Up Hosted Port
-        getKevoreeComponentType.getHostedPorts.foreach{hp=>
+      new Actor {
+        def act = startComponent
+      }.start()
+      //Wake Up Hosted Port
+      getKevoreeComponentType.getHostedPorts.foreach{
+        hp =>
           var port = hp._2.asInstanceOf[KevoreePort]
-          if(port.isInPause){
+          if (port.isInPause) {
             port.resume
           }
-        }
-        reply(true)
       }
+      ct_started = true
+      reply(true)
+    }
     case StopMessage => {
-        //Pause Hosted Port
-        getKevoreeComponentType.getHostedPorts.foreach{hp=>
+      //Pause Hosted Port
+      getKevoreeComponentType.getHostedPorts.foreach{
+        hp =>
           var port = hp._2.asInstanceOf[KevoreePort]
-          if(!port.isInPause){
+          if (!port.isInPause) {
             port.pause
           }
-        }
-        new Actor{ def act= stopComponent }.start()
-        reply(true)
       }
-      case _ @ msg => println("unknow message "+msg)
+      new Actor {
+        def act = stopComponent
+      }.start()
+      ct_started = false
+      reply(true)
+    }
+    case _@msg => println("unknow message " + msg)
   }
 
   def startComponent
+
   def stopComponent
+
   def updateComponent = {}
 
 }

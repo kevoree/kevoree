@@ -43,7 +43,6 @@ public class RestChannelFragmentRessource extends ServerResource {
             System.out.println("key="+key);
         }
 
-
         // Get the "itemName" attribute value taken from the URI template
         // /channels/{channelFragmentName}.
         this.channelFragmentName = (String) getRequest().getAttributes().get("channelFragmentName");

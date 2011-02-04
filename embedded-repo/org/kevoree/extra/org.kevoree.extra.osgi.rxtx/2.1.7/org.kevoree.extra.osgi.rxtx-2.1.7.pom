@@ -52,10 +52,19 @@
  				nativelib/Solaris/sparc-solaris/sparc64-sun-solaris2.8/librxtxSerial-2.1-7.so;
  				nativelib/Solaris/sparc-solaris/sparc64-sun-solaris2.8/librxtxSerial.so;
  				osname=Solaris; processor=Sparc64,
- 				nativelib/Windows/i368-mingw32/rxtxParallel.dll;
+ 				
+ 				nativelib/Windows/win32/rxtxSerial.dll;
+ 				osname=Win32; processor=x86,
+ 				nativelib/Windows/win64/rxtxSerial.dll;
+ 				osname=Win64; processor=x86_64
+
+			</Bundle-NativeCode> 
+			
+			<!--
+			nativelib/Windows/i368-mingw32/rxtxParallel.dll;
  				nativelib/Windows/i368-mingw32/rxtxSerial.dll;
  				osname=Win32; processor=x86
-			</Bundle-NativeCode> 
+			-->
 			
 			
             <Export-Package>!nativelib.*,gnu.io.*;version="${pom.version}"</Export-Package>

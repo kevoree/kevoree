@@ -19,6 +19,7 @@
         <module>../org.kevoree.library.defaultChannels</module>
         <module>../org.kevoree.library.fakeDomo</module>
         <module>../org.kevoree.library.sample</module>
+        <module>../org.kevoree.library.restChannels</module>
     </modules>
 
     <distributionManagement>
