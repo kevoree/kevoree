@@ -15,7 +15,7 @@
 
 -->
 <resources>
-    <string name="app_name">Art2Platform</string>
+    <string name="app_name">KevoreeRuntime</string>
     <string id="ButtonRed" name="ButtonRed">Red</string>
     <string id="ButtonBlue" name="ButtonBlue">Blue</string>
     <string id="ButtonGreen" name="ButtonGreen">Green</string>

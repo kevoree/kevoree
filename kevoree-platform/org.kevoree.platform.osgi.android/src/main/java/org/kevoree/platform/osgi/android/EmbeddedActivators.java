@@ -30,11 +30,11 @@ public class EmbeddedActivators {
 
     public static List<BundleActivator> getActivators(){
         return Arrays.asList(
-                (BundleActivator)new org.ops4j.pax.url.mvn.internal.Activator(),
+              //  (BundleActivator)new org.ops4j.pax.url.mvn.internal.Activator(),
                 (BundleActivator)new org.apache.felix.shell.impl.Activator(),
                 (BundleActivator)new org.apache.felix.shell.tui.Activator(),
                 (BundleActivator)new org.apache.felix.shell.remote.Activator(),
-                (BundleActivator)new org.ops4j.pax.url.assembly.internal.Activator(),
+             //   (BundleActivator)new org.ops4j.pax.url.assembly.internal.Activator(),
                 (BundleActivator)new org.kevoree.platform.osgi.android.BootstrapActivator()
                 );
     }
