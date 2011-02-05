@@ -18,29 +18,18 @@
 
 package org.kevoree.framework.annotation.processor
 
+import com.sun.mirror.apt.AnnotationProcessorEnvironment
 import org.kevoree.ContainerRoot
 import org.kevoree.LifeCycleTypeDefinition
 import scala.collection.JavaConversions._
 
-class PostAptChecker(root : ContainerRoot) {
+class PostAptChecker(root : ContainerRoot, env : AnnotationProcessorEnvironment) {
 
-  private var errors : String = ""
-  private var warnings : String = ""
+  private var errors = 0
 
   def check = {
     checkLifeCycleMethods
-
-    if( !errors.equals("")) {
-      printf("========== Errors detected by the PostAptChecker ==========\n")
-      printf(errors)
-    }
-
-    if( !warnings.equals("")) {
-      printf("========== Warnings detected by the PostAptChecker ==========\n")
-      printf(warnings)
-    }
-
-    errors.equals("")
+    errors == 0
   }
 
   def checkLifeCycleMethods = {
@@ -50,14 +39,17 @@ class PostAptChecker(root : ContainerRoot) {
 
         case lctd : LifeCycleTypeDefinition => {
             if(lctd.getStartMethod == null) {
-              errors += "[ERROR] in " + typeDef.getBean + "\n@Start method is mandatory.\n"
+              env.getMessager.printError("@Start method is mandatory in " + typeDef.getBean + ".")
+              errors += 1
             }
             if(lctd.getStopMethod == null) {
-              errors += "[ERROR] in " + typeDef.getBean + "\n@Stop method is mandatory.\n"
+              env.getMessager.printError("@Stop method is mandatory in " + typeDef.getBean + ".")
+              errors += 1
             }
             if(lctd.getUpdateMethod == null) {
-              warnings += "[WARNING] in " + typeDef.getBean + "\n@Update method is missing.\n"
+              env.getMessager.printWarning("@Update method is missing in " + typeDef.getBean + ".")
             }
+
           }
 
         case _=>

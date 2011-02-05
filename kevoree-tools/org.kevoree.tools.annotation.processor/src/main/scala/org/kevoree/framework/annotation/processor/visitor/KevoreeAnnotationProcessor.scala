@@ -56,20 +56,19 @@ class KevoreeAnnotationProcessor(env: AnnotationProcessorEnvironment) extends An
     }
 
     //POST APT PROCESS CHECKER
-    var checker: PostAptChecker = new PostAptChecker(root)
-    if (!checker.check) {
-      printf("PostAptChecker returned errors. Process aborted.");
-      System.exit(1)
+    var checker: PostAptChecker = new PostAptChecker(root, env)
+    val errorsInChecker = !checker.check
+
+
+    if(!errorsInChecker) {
+      //TODO SEPARATE MAVEN PLUGIN
+      KevoreeGenerator.generatePort(root, env.getFiler());
+      KevoreeFactoryGenerator.generateFactory(root, env.getFiler());
+      KevoreeActivatorGenerator.generateActivator(root, env.getFiler());
+
+      System.out.println("Saving to " + LocalUtility.generateLibURI(env));
+      KevoreeXmiHelper.save(LocalUtility.generateLibURI(env), root);
     }
-
-
-    //TODO SEPARATE MAVEN PLUGIN
-    KevoreeGenerator.generatePort(root, env.getFiler());
-    KevoreeFactoryGenerator.generateFactory(root, env.getFiler());
-    KevoreeActivatorGenerator.generateActivator(root, env.getFiler());
-
-    System.out.println("Saving to " + LocalUtility.generateLibURI(env));
-    KevoreeXmiHelper.save(LocalUtility.generateLibURI(env), root);
   }
 
 
