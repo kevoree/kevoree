@@ -20,11 +20,8 @@ package org.kevoree.framework.annotation.processor.visitor
 
 import com.sun.mirror.apt.AnnotationProcessor
 import com.sun.mirror.apt.AnnotationProcessorEnvironment
-import com.sun.mirror.declaration.AnnotationTypeDeclaration
-import com.sun.mirror.declaration.Declaration
 import com.sun.mirror.declaration.TypeDeclaration
 import org.kevoree.KevoreeFactory
-import org.kevoree.ChannelType
 import org.kevoree.ContainerRoot
 import org.kevoree.annotation.ChannelTypeFragment
 import org.kevoree.annotation.ComponentType
@@ -35,30 +32,35 @@ import org.kevoree.tools.annotation.generator.KevoreeActivatorGenerator
 import org.kevoree.tools.annotation.generator.KevoreeFactoryGenerator
 import org.kevoree.tools.annotation.generator.KevoreeGenerator
 import scala.collection.JavaConversions._
+import org.kevoree.framework.{AbstractChannelFragment, AbstractComponentType}
 
-class KevoreeAnnotationProcessor(env : AnnotationProcessorEnvironment) extends AnnotationProcessor {
+class KevoreeAnnotationProcessor(env: AnnotationProcessorEnvironment) extends AnnotationProcessor {
 
-  def process()={
+  def process() = {
 
     var root = KevoreeFactory.eINSTANCE.createContainerRoot();
     LocalUtility.root_=(root)
-    env.getTypeDeclarations().foreach{typeDecl=>
-      var ctAnnotation = typeDecl.getAnnotation(classOf[ComponentType]);
-      if(ctAnnotation != null){
-        processComponentType(ctAnnotation,typeDecl,root)
-      }
+    env.getTypeDeclarations().foreach{
+      typeDecl =>
+        var ctAnnotation = typeDecl.getAnnotation(classOf[ComponentType]);
+        if (ctAnnotation != null) {
+          processComponentType(ctAnnotation, typeDecl, root)
+        }
 
-      var channelTypeAnnotation = typeDecl.getAnnotation(classOf[ChannelTypeFragment]);
-      if(channelTypeAnnotation != null){
-        processChannelType(channelTypeAnnotation,typeDecl,root)
-      }
+        var channelTypeAnnotation = typeDecl.getAnnotation(classOf[ChannelTypeFragment]);
+        if (channelTypeAnnotation != null) {
+          processChannelType(channelTypeAnnotation, typeDecl, root)
+        }
       //TODO
 
     }
 
     //POST APT PROCESS CHECKER
-    var checker : PostAptChecker = new PostAptChecker(root)
-    if( !checker.check){printf("PostAptChecker returned errors. Process aborted."); System.exit(1)}
+    var checker: PostAptChecker = new PostAptChecker(root)
+    if (!checker.check) {
+      printf("PostAptChecker returned errors. Process aborted.");
+      System.exit(1)
+    }
 
 
     //TODO SEPARATE MAVEN PLUGIN
@@ -66,44 +68,56 @@ class KevoreeAnnotationProcessor(env : AnnotationProcessorEnvironment) extends A
     KevoreeFactoryGenerator.generateFactory(root, env.getFiler());
     KevoreeActivatorGenerator.generateActivator(root, env.getFiler());
 
-    System.out.println("Saving to "+ LocalUtility.generateLibURI(env));
+    System.out.println("Saving to " + LocalUtility.generateLibURI(env));
     KevoreeXmiHelper.save(LocalUtility.generateLibURI(env), root);
   }
 
 
+  def processChannelType(channelTypeAnnotation: ChannelTypeFragment, typeDecl: TypeDeclaration, root: ContainerRoot) = {
+    val superTypeChecker = new SuperTypeValidationVisitor(classOf[AbstractChannelFragment].getName)
+    typeDecl.accept(superTypeChecker)
+    if (superTypeChecker.result) {
 
-  def processChannelType(channelTypeAnnotation : ChannelTypeFragment,typeDecl : TypeDeclaration,root : ContainerRoot) = {
-    var channelType = KevoreeFactory.eINSTANCE.createChannelType();
-    var ctname = channelTypeAnnotation.name
-    if(ctname.equals("empty")){
-      ctname = typeDecl.getSimpleName
+      var channelType = KevoreeFactory.eINSTANCE.createChannelType();
+      var ctname = channelTypeAnnotation.name
+      if (ctname.equals("empty")) {
+        ctname = typeDecl.getSimpleName
+      }
+      channelType.setName(ctname)
+      channelType.setBean(typeDecl.getQualifiedName)
+      channelType.setFactoryBean(typeDecl.getQualifiedName + "Factory")
+      root.getTypeDefinitions.add(channelType)
+
+      //RUN VISITOR
+      typeDecl.accept(ChannelTypeFragmentVisitor(channelType, env))
+    } else {
+      env.getMessager.printWarning("ChannelFragment ignored " + typeDecl.getQualifiedName + " , reason=Must extend " + classOf[AbstractChannelFragment].getName)
     }
-    channelType.setName(ctname)
-    channelType.setBean(typeDecl.getQualifiedName)
-    channelType.setFactoryBean(typeDecl.getQualifiedName+"Factory")
-    root.getTypeDefinitions.add(channelType)
-
-    //RUN VISITOR
-    typeDecl.accept(ChannelTypeFragmentVisitor(channelType,env))
   }
 
-  def processComponentType(componentTypeAnnotation : ComponentType,typeDecl : TypeDeclaration,root : ContainerRoot) = {
-    var componentType = KevoreeFactory.eINSTANCE.createComponentType();
-    var ctname = componentTypeAnnotation.name
-    if(ctname.equals("empty")){
-      ctname = typeDecl.getSimpleName
+  def processComponentType(componentTypeAnnotation: ComponentType, typeDecl: TypeDeclaration, root: ContainerRoot) = {
+
+    val superTypeChecker = new SuperTypeValidationVisitor(classOf[AbstractComponentType].getName)
+    typeDecl.accept(superTypeChecker)
+    if (superTypeChecker.result) {
+      var componentType = KevoreeFactory.eINSTANCE.createComponentType();
+      var ctname = componentTypeAnnotation.name
+      if (ctname.equals("empty")) {
+        ctname = typeDecl.getSimpleName
+      }
+      componentType.setName(ctname)
+      componentType.setBean(typeDecl.getQualifiedName)
+      componentType.setFactoryBean(typeDecl.getQualifiedName + "Factory")
+
+      root.getTypeDefinitions.add(componentType)
+      //RUN VISITOR
+      typeDecl.accept(ComponentDefinitionVisitor(componentType, env))
+    } else {
+      env.getMessager.printWarning("ComponentType ignored " + typeDecl.getQualifiedName + " , reason=Must extend " + classOf[AbstractComponentType].getName)
     }
-    componentType.setName(ctname)
-    componentType.setBean(typeDecl.getQualifiedName)
-    componentType.setFactoryBean(typeDecl.getQualifiedName+"Factory")
-    
-    root.getTypeDefinitions.add(componentType)
-    //RUN VISITOR
-    typeDecl.accept(ComponentDefinitionVisitor(componentType,env))
+
 
   }
-
-
 
 
 }

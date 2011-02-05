@@ -15,6 +15,7 @@ public class Console extends JFrame {
     JTextArea textArea = new JTextArea();
 
     public Console() throws IOException {
+
         // Set up System.out
         piOut = new PipedInputStream();
         poOut = new PipedOutputStream(piOut);
@@ -32,13 +33,13 @@ public class Console extends JFrame {
         getContentPane().add(new JScrollPane(textArea), BorderLayout.CENTER);
         pack();
         setVisible(true);
+        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         // Create reader threads
         new ReaderThread(piOut).start();
         new ReaderThread(piErr).start();
 
         textArea.addKeyListener(new KeyAdapter() {
-
             @Override
             public void keyTyped(KeyEvent e) {
                 super.keyTyped(e);
@@ -46,17 +47,20 @@ public class Console extends JFrame {
             }
         });
 
-       // System.setIn(input);
+       input = new TextFieldInputStream();
+       System.setIn(input);
+
 
     }
 
-    private TextFieldInputStream input = new TextFieldInputStream();
+    private TextFieldInputStream input = null;
 
     class TextFieldInputStream extends InputStream {
 
         public java.util.concurrent.ArrayBlockingQueue<Character> fifo = new java.util.concurrent.ArrayBlockingQueue<Character>(1000);
 
         public int read() throws IOException {
+            System.out.println("Read ");
             try{
             return fifo.take();
             } catch (Exception e){
