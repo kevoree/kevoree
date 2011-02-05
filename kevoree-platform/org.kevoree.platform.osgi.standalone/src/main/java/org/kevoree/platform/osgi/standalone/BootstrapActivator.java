@@ -67,7 +67,7 @@ public class BootstrapActivator implements BundleActivator {
         coreBean.start();
         System.out.println("Kevoree Started !");
 
-        Handler.modelhandler_$eq((KevoreeModelHandlerService) coreBean);
+        Handler.setModelhandler((KevoreeModelHandlerService) coreBean);
         remoteBean = new KevoreeRemoteBean();
         remoteBean.start();
 
