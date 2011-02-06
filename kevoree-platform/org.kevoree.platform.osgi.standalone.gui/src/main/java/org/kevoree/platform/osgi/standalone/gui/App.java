@@ -18,17 +18,28 @@ import org.kevoree.platform.osgi.standalone.EmbeddedFelix;
 import org.osgi.framework.BundleActivator;
 
 import javax.swing.*;
-import java.net.URL;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.io.File;
+import java.io.IOException;
 import java.util.Arrays;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * Hello world!
  */
 public class App {
     public static void main(String[] args) {
-        new KevoreeGUIFrame();
+
+        try {
+            File cacheFolder = createTempDirectory();
+            cacheFolder.deleteOnExit();
+            System.setProperty("osgi.base", cacheFolder.getAbsolutePath());
+        } catch (IOException io) {
+            io.printStackTrace();
+        }
+
+        final JFrame frame = new KevoreeGUIFrame();
+
 
         EmbeddedActivators.setActivators(Arrays.asList(
                 (BundleActivator) new org.ops4j.pax.url.mvn.internal.Activator(),
@@ -39,7 +50,9 @@ public class App {
                 (BundleActivator) new org.kevoree.platform.osgi.standalone.BootstrapActivator()
         ));
 
-        EmbeddedFelix felix = new EmbeddedFelix();
+        final EmbeddedFelix felix = new EmbeddedFelix();
+        felix.run();
+        /*
         felix.run();
 
         try {
@@ -48,7 +61,40 @@ public class App {
         } catch (InterruptedException ex) {
             Logger.getLogger(App.class.getName()).log(Level.SEVERE, null, ex);
         }
-        System.exit(0);
+        System.exit(0);      */
 
+
+        frame.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent windowEvent) {
+                try {
+                    felix.getM_fwk().stop();
+                    frame.dispose();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+        frame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
+
+
+    }
+
+
+    public static File createTempDirectory()
+            throws IOException {
+        final File temp;
+
+        temp = File.createTempFile("temp", Long.toString(System.nanoTime()));
+
+        if (!(temp.delete())) {
+            throw new IOException("Could not delete temp file: " + temp.getAbsolutePath());
+        }
+
+        if (!(temp.mkdir())) {
+            throw new IOException("Could not create temp directory: " + temp.getAbsolutePath());
+        }
+
+        return (temp);
     }
 }

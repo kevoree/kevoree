@@ -39,9 +39,9 @@ public class KevoreeGUIFrame extends JFrame {
             System.exit(0);
         }
 
-        singleton.setVisible(true);
+        System.setProperty("node.name",response);
 
-        singleton.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        singleton.setVisible(true);
 
 
     }
