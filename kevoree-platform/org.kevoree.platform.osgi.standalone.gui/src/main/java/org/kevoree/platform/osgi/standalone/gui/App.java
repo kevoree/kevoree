@@ -11,9 +11,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kevoree.platform.osgi.standalone;
+package org.kevoree.platform.osgi.standalone.gui;
 
-import java.io.IOException;
+import org.kevoree.platform.osgi.standalone.EmbeddedActivators;
+import org.kevoree.platform.osgi.standalone.EmbeddedFelix;
+import org.osgi.framework.BundleActivator;
+
+import javax.swing.*;
+import java.net.URL;
+import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -22,6 +28,16 @@ import java.util.logging.Logger;
  */
 public class App {
     public static void main(String[] args) {
+        new KevoreeGUIFrame();
+
+        EmbeddedActivators.setActivators(Arrays.asList(
+                (BundleActivator) new org.ops4j.pax.url.mvn.internal.Activator(),
+                (BundleActivator) new org.apache.felix.shell.impl.Activator(),
+                //(BundleActivator) new org.apache.felix.shell.tui.Activator(),
+                (BundleActivator) new ConsoleActivator(),
+                (BundleActivator) new org.ops4j.pax.url.assembly.internal.Activator(),
+                (BundleActivator) new org.kevoree.platform.osgi.standalone.BootstrapActivator()
+        ));
 
         EmbeddedFelix felix = new EmbeddedFelix();
         felix.run();
