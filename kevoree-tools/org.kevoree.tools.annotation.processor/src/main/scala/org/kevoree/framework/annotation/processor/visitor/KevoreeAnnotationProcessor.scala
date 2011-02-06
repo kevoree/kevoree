@@ -42,38 +42,39 @@ class KevoreeAnnotationProcessor(env: AnnotationProcessorEnvironment) extends An
     LocalUtility.root_=(root)
     env.getTypeDeclarations().foreach{
       typeDecl =>
-        var ctAnnotation = typeDecl.getAnnotation(classOf[ComponentType]);
-        if (ctAnnotation != null) {
-          processComponentType(ctAnnotation, typeDecl, root)
-        }
+      var ctAnnotation = typeDecl.getAnnotation(classOf[ComponentType]);
+      if (ctAnnotation != null) {
+        processComponentType(ctAnnotation, typeDecl, root)
+      }
 
-        var channelTypeAnnotation = typeDecl.getAnnotation(classOf[ChannelTypeFragment]);
-        if (channelTypeAnnotation != null) {
-          processChannelType(channelTypeAnnotation, typeDecl, root)
-        }
+      var channelTypeAnnotation = typeDecl.getAnnotation(classOf[ChannelTypeFragment]);
+      if (channelTypeAnnotation != null) {
+        processChannelType(channelTypeAnnotation, typeDecl, root)
+      }
       //TODO
 
     }
 
     //POST APT PROCESS CHECKER
-    var checker: PostAptChecker = new PostAptChecker(root)
-    if (!checker.check) {
-      printf("PostAptChecker returned errors. Process aborted.");
-      System.exit(1)
+    var checker: PostAptChecker = new PostAptChecker(root, env)
+    val errorsInChecker = !checker.check
+
+
+    if(!errorsInChecker) {
+      //TODO SEPARATE MAVEN PLUGIN
+      KevoreeGenerator.generatePort(root, env.getFiler());
+      KevoreeFactoryGenerator.generateFactory(root, env.getFiler());
+      KevoreeActivatorGenerator.generateActivator(root, env.getFiler());
+
+      System.out.println("Saving to " + LocalUtility.generateLibURI(env));
+      KevoreeXmiHelper.save(LocalUtility.generateLibURI(env), root);
     }
-
-
-    //TODO SEPARATE MAVEN PLUGIN
-    KevoreeGenerator.generatePort(root, env.getFiler());
-    KevoreeFactoryGenerator.generateFactory(root, env.getFiler());
-    KevoreeActivatorGenerator.generateActivator(root, env.getFiler());
-
-    System.out.println("Saving to " + LocalUtility.generateLibURI(env));
-    KevoreeXmiHelper.save(LocalUtility.generateLibURI(env), root);
   }
 
 
   def processChannelType(channelTypeAnnotation: ChannelTypeFragment, typeDecl: TypeDeclaration, root: ContainerRoot) = {
+
+    //Checks that the root KevoreeChannelFragment is present in hierarchy.
     val superTypeChecker = new SuperTypeValidationVisitor(classOf[AbstractChannelFragment].getName)
     typeDecl.accept(superTypeChecker)
     if (superTypeChecker.result) {
@@ -97,9 +98,25 @@ class KevoreeAnnotationProcessor(env: AnnotationProcessorEnvironment) extends An
 
   def processComponentType(componentTypeAnnotation: ComponentType, typeDecl: TypeDeclaration, root: ContainerRoot) = {
 
+    //Checks that the root KevoreeComponent is present in hierarchy.
     val superTypeChecker = new SuperTypeValidationVisitor(classOf[AbstractComponentType].getName)
     typeDecl.accept(superTypeChecker)
-    if (superTypeChecker.result) {
+    //Prints a warning
+    if( !superTypeChecker.result) {
+      env.getMessager.printWarning("ComponentType ignored " + typeDecl.getQualifiedName + " , reason=Must extend " + classOf[AbstractComponentType].getName)
+    }
+
+    //Checks the Class is not Abstract
+    var isAbstract = false
+    typeDecl.getModifiers.find( mod => mod.equals(com.sun.mirror.declaration.Modifier.ABSTRACT)) match {
+      case Some(s) => {
+          isAbstract = true;
+          env.getMessager.printWarning("ComponentType ignored " + typeDecl.getQualifiedName + ", reason=Declared as @ComponentType but is actually ABSTRACT. Should be either concrete or @ComponentFragment.")
+        }
+      case None =>
+    }
+
+    if (superTypeChecker.result && !isAbstract) {
       var componentType = KevoreeFactory.eINSTANCE.createComponentType();
       var ctname = componentTypeAnnotation.name
       if (ctname.equals("empty")) {
@@ -112,8 +129,6 @@ class KevoreeAnnotationProcessor(env: AnnotationProcessorEnvironment) extends An
       root.getTypeDefinitions.add(componentType)
       //RUN VISITOR
       typeDecl.accept(ComponentDefinitionVisitor(componentType, env))
-    } else {
-      env.getMessager.printWarning("ComponentType ignored " + typeDecl.getQualifiedName + " , reason=Must extend " + classOf[AbstractComponentType].getName)
     }
 
 
