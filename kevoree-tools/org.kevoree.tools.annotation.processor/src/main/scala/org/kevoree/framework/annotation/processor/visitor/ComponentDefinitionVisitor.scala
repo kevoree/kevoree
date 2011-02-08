@@ -71,8 +71,8 @@ extends SimpleDeclarationVisitor
     processDictionary(componentType,typeDecl)
     processDeployUnit(componentType,typeDecl,env)
     processThirdParty(componentType,typeDecl)
-    processProvidedPort(componentType,typeDecl)
-    processRequiredPort(componentType,typeDecl)
+    processProvidedPort(componentType,typeDecl,env)
+    processRequiredPort(componentType,typeDecl,env)
 
     typeDecl.getMethods().foreach{method => method.accept(this) }
 
