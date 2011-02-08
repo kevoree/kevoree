@@ -13,7 +13,9 @@
  */
 package org.kevoree.platform.osgi.standalone;
 
+import java.io.File;
 import java.io.IOException;
+import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -22,11 +24,6 @@ import java.util.logging.Logger;
  */
 public class App {
     public static void main(String[] args) {
-
-        try {
-            new Console();
-        } catch (IOException ignored) {
-        }
 
         EmbeddedFelix felix = new EmbeddedFelix();
         felix.run();
