@@ -49,10 +49,10 @@ object KevoreeFactoryGenerator {
       wrapper.append("new KevoreeComponent(create"+ct.getName+"()){")
 
       if(ct.getStartMethod == null){
-        error("Start method is mandatory for component name => "+ct.getName);System.exit(1)
+        error("Start method is mandatory for component name => "+ct.getName);
       }
       if( ct.getStopMethod == null){
-        println("Stop method is mandatory for component name => "+ct.getName);System.exit(1)
+        error("Stop method is mandatory for component name => "+ct.getName);
       }
       wrapper.append("def startComponent(){getKevoreeComponentType.asInstanceOf["+componentBean+"]."+ct.getStartMethod+"()}\n")
       wrapper.append("def stopComponent(){getKevoreeComponentType.asInstanceOf["+componentBean+"]."+ct.getStopMethod+"()}\n")

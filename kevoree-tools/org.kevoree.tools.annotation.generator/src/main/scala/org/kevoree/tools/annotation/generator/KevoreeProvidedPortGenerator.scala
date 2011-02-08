@@ -59,9 +59,9 @@ object KevoreeProvidedPortGenerator {
                 wrapper.append("}\n")
               }
             case None => {
-                println("KevoreeProvidedPortGenerator::No mapping found for method '"+Constants.KEVOREE_MESSAGEPORT_DEFAULTMETHOD+"' of MessagePort '" + ref.getName + "' in component '" + ct.getName + "'")
-                println("No mapping found for method '"+Constants.KEVOREE_MESSAGEPORT_DEFAULTMETHOD+"' of MessagePort '" + ref.getName + "' in component '" + ct.getName + "'")
-                System.exit(1)
+                error("KevoreeProvidedPortGenerator::No mapping found for method '"+Constants.KEVOREE_MESSAGEPORT_DEFAULTMETHOD+"' of MessagePort '" + ref.getName + "' in component '" + ct.getName + "'")
+                error("No mapping found for method '"+Constants.KEVOREE_MESSAGEPORT_DEFAULTMETHOD+"' of MessagePort '" + ref.getName + "' in component '" + ct.getName + "'")
+                
               }
           }
         }
@@ -104,9 +104,9 @@ object KevoreeProvidedPortGenerator {
 
                 }
               case None => {
-                  println("No mapping found for method '"+op.getName+"' of ServicePort '" + ref.getName + "' in component '" + ct.getName + "'")
+                  error("No mapping found for method '"+op.getName+"' of ServicePort '" + ref.getName + "' in component '" + ct.getName + "'")
                   //println("No mapping found for method '"+op.getName+"' of ServicePort '" + ref.getName + "' in component '" + ct.getName + "'")
-                  System.exit(1)
+                  
                 }
             }
           }

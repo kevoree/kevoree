@@ -18,6 +18,7 @@
 
 package org.kevoree.framework.annotation.processor.visitor.sub
 
+import com.sun.mirror.apt.AnnotationProcessorEnvironment
 import com.sun.mirror.declaration.TypeDeclaration
 import org.kevoree.ComponentType
 import org.kevoree.KevoreeFactory
@@ -26,7 +27,7 @@ import org.kevoree.framework.annotation.processor.visitor.ServicePortTypeVisitor
 import scala.collection.JavaConversions._
 
 trait RequiredPortProcessor {
-  def processRequiredPort(componentType : ComponentType,classdef : TypeDeclaration)={
+  def processRequiredPort(componentType : ComponentType,classdef : TypeDeclaration,env : AnnotationProcessorEnvironment)={
     /* CHECK REQUIRED PORTS */
     if(classdef.getAnnotation(classOf[org.kevoree.annotation.Requires]) != null){
       classdef.getAnnotation(classOf[org.kevoree.annotation.Requires]).value.foreach{req=>
@@ -59,12 +60,9 @@ trait RequiredPortProcessor {
               componentType.getRequired.add(ptreqREF)
             }
           case Some(e)=> {
-              println("Port name duplicated in "+componentType.getName+" Scope => "+req.name); System.exit(1)
+              env.getMessager.printError("Port name duplicated in "+componentType.getName+" Scope => "+req.name)
             }
         }
-
-
-
       }
     }
   }

@@ -28,7 +28,7 @@ import scala.collection.JavaConversions._
 
 trait PortMappingProcessor {
 
-  def processPortMapping(componentType : ComponentType,methoddef : MethodDeclaration,env : AnnotationProcessorEnvironment)={
+  def processPortMapping(componentType : ComponentType,methoddef : MethodDeclaration, env : AnnotationProcessorEnvironment)={
     /* PROCESS PORTS & PORT ANNOTATION */
     var portAnnotations : List[org.kevoree.annotation.Port] = Nil
 
@@ -57,9 +57,7 @@ trait PortMappingProcessor {
           }
         case None => {
             var message : String = componentType.getBean + " declares a mapping to a ProvidedPort \"" + annot.name + "\", but this port has not been declared in ComponentType annotations.\nCan not resume. Process Exit.";
-            println(message);
             env.getMessager.printError(message);
-            System.exit(1);
         }
       }
     }
