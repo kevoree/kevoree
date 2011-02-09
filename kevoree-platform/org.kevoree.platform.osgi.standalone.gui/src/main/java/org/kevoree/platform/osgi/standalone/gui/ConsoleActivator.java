@@ -16,16 +16,15 @@ package org.kevoree.platform.osgi.standalone.gui;
 import org.apache.felix.shell.ShellService;
 import org.osgi.framework.*;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import javax.swing.*;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 
 public class ConsoleActivator implements BundleActivator {
     // private static final String CHECK_INPUT_PROP = "shell.tui.checkinput";
 
     private BundleContext m_context = null;
-    private volatile ShellGuiRunnable m_runnable = null;
     private volatile Thread m_thread = null;
     private ServiceReference m_shellRef = null;
     private ShellService m_shell = null;
@@ -68,11 +67,11 @@ public class ConsoleActivator implements BundleActivator {
         // since one might already be available.
         initializeService();
 
-        // Start impl thread.
-        m_thread = new Thread(
-                m_runnable = new ShellGuiRunnable(),
-                "Felix Shell GUI");
-        m_thread.start();
+        FelixShell shell = null;
+        shell = new FelixShell(m_shell);
+        KevoreeGUIFrame.showShell(shell);
+
+
     }
 
     private synchronized void initializeService() {
@@ -86,89 +85,10 @@ public class ConsoleActivator implements BundleActivator {
     }
 
     public void stop(BundleContext context) {
-        if (m_runnable != null) {
-            m_runnable.stop();
+        if (m_shellRef != null) {
+            context.ungetService(m_shellRef);
         }
     }
 
-    private class ShellGuiRunnable implements Runnable {
-        private volatile boolean m_stop = false;
-
-        private Console console = null;
-
-        public ShellGuiRunnable() {
-            try {
-                console = new Console();
-            } catch (IOException io) {
-                io.printStackTrace();
-            }
-
-        }
-
-        public void stop() {
-            m_stop = true;
-        }
-
-        public void run() {
-            String line = "";
-            //BufferedReader in = new BufferedReader(new InputStreamReader(console.getInputStream()));
-            try {
-                boolean needPrompt = true;
-                int available;
-                while (!m_stop) {
-
-                    //System.out.println("LOOP");
-                    if (needPrompt) {
-                        System.out.print("-> ");
-                        needPrompt = false;
-                    }
-                    available = console.getInputStream().available();
-                    if (available == 0) {
-                        try {
-                            Thread.sleep(200);
-                        } catch (InterruptedException ex) {
-                            // No one should be interrupting this thread, so
-                            // ignore it.
-                        }
-                        continue;
-                    }
-                    //System.out.println("Before Read");
-
-                    char c = (char) console.getInputStream().read();
-                    //System.out.println("read"+c);
-                    if (c == '\n') {
-                        needPrompt = true;
-                        line = line.trim();
-                        if (line.length() == 0) {
-                            continue;
-                        }
-                        synchronized (ConsoleActivator.this) {
-                            if (m_shell == null) {
-                                System.out.println("No impl service available.");
-                                continue;
-                            }
-
-                            try {
-                                //System.out.println("Execute command =>"+line);
-                                m_shell.executeCommand(line, System.out, System.err);
-                            } catch (Exception ex) {
-                                System.err.println("ShellGUI: " + ex);
-                                ex.printStackTrace();
-                            }
-                            line = "";
-                        }
-
-                    } else {
-                        line = line + c;
-                    }
-
-
-                }
-            } catch (IOException ex) {
-                // Any IO error causes the thread to exit.
-                System.err.println("ShellGUI: Unable to read from stdin...exiting.");
-            }
-        }
-    }
 
 }

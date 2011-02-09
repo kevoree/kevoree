@@ -45,10 +45,12 @@
                 <artifactId>apt-maven-plugin</artifactId>
                 <version>1.0-alpha-3</version>
                 <configuration>
+                    <verbose>true</verbose>
                     <outputFiles>
                         <outputFile>${project.build.directory}/generated-sources/kevoree/KEV-INF/lib.kev</outputFile>
                     </outputFiles>
                     <options>
+                        <value>debug=true</value>
                         <value>kevoree.lib.id=${project.artifactId}</value>
                         <value>kevoree.lib.group=${project.groupId}</value>
                         <value>kevoree.lib.version=${project.version}</value>

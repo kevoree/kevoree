@@ -15,11 +15,13 @@ package org.kevoree.platform.osgi.standalone.gui;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.net.URL;
 
 public class KevoreeGUIFrame extends JFrame {
 
-    private static KevoreeGUIFrame singleton = null;
+    public static KevoreeGUIFrame singleton = null;
 
     public KevoreeGUIFrame() {
         singleton = this;
@@ -31,6 +33,7 @@ public class KevoreeGUIFrame extends JFrame {
         ImageIcon smallIcon = new ImageIcon(urlSmallIcon);
         this.setIconImage(smallIcon.getImage());
         JLabel topImage = new JLabel(topIIcon);
+        topImage.setOpaque(false);
         this.add(topImage, BorderLayout.NORTH);
 
         String response = (String) JOptionPane.showInputDialog(this,
@@ -42,15 +45,13 @@ public class KevoreeGUIFrame extends JFrame {
             System.exit(0);
         }
 
-        System.setProperty("node.name",response);
-        this.setTitle(response +" : KevoreeNode");
+        System.setProperty("node.name", response);
+        this.setTitle(response + " : KevoreeNode");
         singleton.setVisible(true);
-
-
     }
 
-    public static void showConsole(JPanel p) {
-        singleton.add(p);
+    public static void showShell(JComponent shell) {
+        singleton.add(shell, BorderLayout.CENTER);
         singleton.pack();
     }
 

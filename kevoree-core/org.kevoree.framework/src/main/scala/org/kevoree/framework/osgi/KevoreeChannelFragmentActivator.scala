@@ -25,28 +25,30 @@ import org.kevoree.framework.Constants
 import org.osgi.framework.BundleActivator
 import org.osgi.framework.BundleContext
 import scala.collection.JavaConversions._
+import org.kevoree.framework.message._
 
 abstract class KevoreeChannelFragmentActivator extends BundleActivator {
 
-  def callFactory() : KevoreeChannelFragment
-  var nodeName : String = ""
-  var instanceName : String = ""
-  var channelActor : KevoreeChannelFragment = null
-  var bundleContext : BundleContext = null
+  def callFactory(): KevoreeChannelFragment
 
-  def start(bc : BundleContext){
+  var nodeName: String = ""
+  var instanceName: String = ""
+  var channelActor: KevoreeChannelFragment = null
+  var bundleContext: BundleContext = null
+
+  def start(bc: BundleContext) {
     bundleContext = bc
     /* SEARCH HEADERS VALUE */
     nodeName = bc.getBundle.getHeaders.find(dic => dic._1 == Constants.KEVOREE_NODE_NAME_HEADER).get._2.toString
     instanceName = bc.getBundle.getHeaders.find(dic => dic._1 == Constants.KEVOREE_INSTANCE_NAME_HEADER).get._2.toString
     /* Create component actor */
     channelActor = callFactory()
-    
+
 
     /* Start actor */
     channelActor.start
     /* Expose component in OSGI */
-    var props = new Hashtable[String,String]()
+    var props = new Hashtable[String, String]()
     props.put(Constants.KEVOREE_NODE_NAME, nodeName)
     props.put(Constants.KEVOREE_INSTANCE_NAME, instanceName)
     bc.registerService(classOf[KevoreeChannelFragment].getName(), channelActor, props);
@@ -59,7 +61,10 @@ abstract class KevoreeChannelFragmentActivator extends BundleActivator {
     //channelActor.startChannelFragment //DEPRECATED DONE BY DEPLOY
   }
 
-  def stop(bc : BundleContext){
+  def stop(bc: BundleContext) {
+    channelActor ! StopMessage
+    println("Stopping => " + instanceName)
+
     channelActor.stop
     //channelActor.stopChannelFragment //DEPRECATED DONE BY DEPLOY
     channelActor = null

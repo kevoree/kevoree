@@ -44,7 +44,7 @@ abstract class KevoreeComponent(c: AbstractComponentType) extends KevoreeActor {
       reply(true)
     }
 
-    case StartMessage => {
+    case StartMessage if(!ct_started) => {
       new Actor {
         def act = startComponent
       }.start()
@@ -59,7 +59,7 @@ abstract class KevoreeComponent(c: AbstractComponentType) extends KevoreeActor {
       ct_started = true
       reply(true)
     }
-    case StopMessage => {
+    case StopMessage if(ct_started) => {
       //Pause Hosted Port
       getKevoreeComponentType.getHostedPorts.foreach{
         hp =>

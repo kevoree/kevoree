@@ -15,33 +15,17 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package org.kevoree.framework;
 
-import java.util.HashMap;
-import org.kevoree.framework.message.Message;
+package org.kevoree.tools.annotation.mavenplugin
 
-/**
- *
- * @author ffouquet
- */
-public interface ChannelFragment {
+import scala.collection.JavaConversions._
 
-    public Object dispatch(Message msg);
+class ScalaCompiler {
 
-    public java.util.List<KevoreePort> getBindedPorts();
+  def compile(src: String, target: String, classpath: java.util.List[String]) = {
 
-    public java.util.List<KevoreeChannelFragment> getOtherFragments();
+    EmbettedScalaCompiler.compile(src, target, classpath.toList);
 
-    public Object forward(KevoreeActor delegate, Message msg);
-
-    public HashMap<String, Object> getDictionary();
-
-    public ChannelFragmentSender createSender(String remoteNodeName,String remoteChannelName);
-
-    public String getNodeName();
-
-    public String getName();
-
-    public Object remoteDispatch(Message msg);
+  }
 
 }

@@ -9,9 +9,14 @@
     <name>Kevoree :: Platform :: Root</name>
     <url>https://github.com/dukeboard/kevoree</url>
 
+    <parent>
+        <artifactId>org.kevoree</artifactId>
+        <groupId>org.kevoree</groupId>
+        <version>2.2.1-SNAPSHOT</version>
+        <relativePath>../../pom.xml</relativePath>
+    </parent>
+
     <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <kevoree.version>2.2.1-SNAPSHOT</kevoree.version>
         <emf.version>2.6.0</emf.version>
         <scala.version>2.8.1</scala.version>
         <slf4j.version>1.6.1</slf4j.version>
@@ -97,12 +102,12 @@
     <distributionManagement>
         <repository>
             <id>embedded-repo</id>
-            <url>file:${basedir}/../../embedded-repo</url>
+            <url>file:${basedir}/../../${kevoree.deploy.repo}</url>
             <uniqueVersion>false</uniqueVersion>
         </repository>
         <snapshotRepository>
             <id>embedded-repo-snapshot</id>
-            <url>file:${basedir}/../../embedded-repo</url>
+            <url>file:${basedir}/../../${kevoree.deploy.repo}</url>
             <uniqueVersion>false</uniqueVersion>
         </snapshotRepository>
     </distributionManagement>

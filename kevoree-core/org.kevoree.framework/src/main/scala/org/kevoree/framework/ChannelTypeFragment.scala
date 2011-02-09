@@ -26,6 +26,15 @@ import scala.reflect.BeanProperty
 
 trait ChannelTypeFragment extends KevoreeChannelFragment with ChannelFragment {
 
+   override def remoteDispatch(msg:Message):Object = {
+        if(msg.inOut.booleanValue){
+          (this !? msg).asInstanceOf[Object]
+        } else {
+          this ! msg
+          null
+        }
+   }
+
   private var portsBinded : HashMap[String,KevoreePort] = new HashMap[String, KevoreePort]()
   private var fragementBinded : HashMap[String,KevoreeChannelFragment] = new HashMap[String, KevoreeChannelFragment]()
 
