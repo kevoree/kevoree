@@ -52,30 +52,33 @@ public class RestChannelFragmentRessource extends ServerResource {
         setExisting(this.channelFragment != null);
     }
 
+    /*
     @Get()
-    public String getInput() {
+    public String getInput(String entity) {
         Message msg = buildMsg();
-        Object o = channelFragment.dispatch(msg);
+        Object o = channelFragment.remoteDispatch(msg);
         RichJSONObject oo = new RichJSONObject(o);
         return oo.toJSON();
-    }
+    } */
 
     @Post()
-    public String postInput() {
-        Message msg = buildMsg();
+    public String postInput(String entity) {
+        Message msg = buildMsg(entity);
+        System.out.println(entity);
+
         Object o = channelFragment.remoteDispatch(msg);
         return "<ack />";
     }
 
-    private Message buildMsg(){
-        Message msg =  buildMessageFromJSON();
-        if(msg == null) { msg = buildMessageFromAttribute(); }
+    private Message buildMsg(String entity){
+        Message msg =  buildMessageFromJSON(entity);
+        if(msg == null) { msg = buildMessageFromAttribute(entity); }
         return msg;
     }
 
-    private Message buildMessageFromJSON() {
+    private Message buildMessageFromJSON(String entity) {
         try {
-            RichString c = new RichString(getRequest().getEntityAsText());
+            RichString c = new RichString(entity);
             Message obj = (Message) c.fromJSON(Message.class);
             return obj;
         } catch (Exception e) {
@@ -84,7 +87,7 @@ public class RestChannelFragmentRessource extends ServerResource {
         return null;
     }
 
-    private Message buildMessageFromAttribute() {
+    private Message buildMessageFromAttribute(String entity) {
         Message msg = new Message();
         for (String key : getRequest().getAttributes().keySet()) {
             System.out.println("Debug=" + key + "--" + getRequest().getAttributes().get(key));

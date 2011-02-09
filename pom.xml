@@ -27,12 +27,12 @@
     <distributionManagement>
         <repository>
             <id>embedded-repo</id>
-            <url>file:${project.build.directory}/${kevoree.deploy.repo}</url>
+            <url>file:${basedir}/${kevoree.deploy.repo}</url>
             <uniqueVersion>false</uniqueVersion>
         </repository>
         <snapshotRepository>
             <id>embedded-repo-snapshot</id>
-            <url>file:${project.build.directory}/embedded-repo</url>
+            <url>file:${basedir}/${kevoree.deploy.repo}</url>
             <uniqueVersion>false</uniqueVersion>
         </snapshotRepository>
     </distributionManagement>

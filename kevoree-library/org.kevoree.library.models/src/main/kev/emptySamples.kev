@@ -25,13 +25,15 @@
       <mappings beanMethodName="appendIncoming" serviceMethodName="process"/>
     </provided>
   </typeDefinitions>
-  <typeDefinitions xsi:type="kevoree:ChannelType" name="defSERVICE" deployUnit="//@deployUnits.3" factoryBean="org.kevoree.library.defaultChannels.defSERVICEFactory" bean="org.kevoree.library.defaultChannels.defSERVICE" startMethod="startHello" stopMethod="stopHello"/>
-  <typeDefinitions xsi:type="kevoree:ChannelType" name="defMSG" deployUnit="//@deployUnits.3" factoryBean="org.kevoree.library.defaultChannels.defMSGFactory" bean="org.kevoree.library.defaultChannels.defMSG" startMethod="startHello" stopMethod="stopHello" updateMethod="updateHello"/>
-  <repositories units="//@deployUnits.0 //@deployUnits.3" url="https://github.com/dukeboard/kevoree/raw/master/embedded-repo"/>
+  <typeDefinitions xsi:type="kevoree:ChannelType" name="defSERVICE" deployUnit="//@deployUnits.5" factoryBean="org.kevoree.library.defaultChannels.defSERVICEFactory" bean="org.kevoree.library.defaultChannels.defSERVICE" startMethod="startHello" stopMethod="stopHello"/>
+  <typeDefinitions xsi:type="kevoree:ChannelType" name="defMSG" deployUnit="//@deployUnits.5" factoryBean="org.kevoree.library.defaultChannels.defMSGFactory" bean="org.kevoree.library.defaultChannels.defMSG" startMethod="startHello" stopMethod="stopHello" updateMethod="updateHello"/>
+  <repositories units="//@deployUnits.0 //@deployUnits.5" url="https://github.com/dukeboard/kevoree/raw/master/embedded-repo"/>
   <libraries name="Fake-DOMO" subTypes="//@typeDefinitions.1 //@typeDefinitions.2 //@typeDefinitions.3"/>
   <libraries name="art2baselib" subTypes="//@typeDefinitions.4 //@typeDefinitions.5"/>
-  <deployUnits groupName="org.kevoree.library" unitName="org.kevoree.library.fakeDomo" version="2.2.1-SNAPSHOT" hashcode="201102091346279"/>
+  <deployUnits groupName="org.kevoree.library" unitName="org.kevoree.library.fakeDomo" version="2.2.1-SNAPSHOT" hashcode="201102091735374"/>
   <deployUnits groupName="org.kevoree.library" unitName="org.kevoree.library.defaultChannels" version="2.2.1-SNAPSHOT" hashcode="201102011307431"/>
   <deployUnits groupName="org.kevoree.library" unitName="org.kevoree.library.defaultChannels" version="2.2.1-SNAPSHOT" hashcode="201102091341334"/>
   <deployUnits groupName="org.kevoree.library" unitName="org.kevoree.library.defaultChannels" version="2.2.1-SNAPSHOT" hashcode="201102091345920"/>
+  <deployUnits groupName="org.kevoree.library" unitName="org.kevoree.library.defaultChannels" version="2.2.1-SNAPSHOT" hashcode="201102091704398"/>
+  <deployUnits groupName="org.kevoree.library" unitName="org.kevoree.library.defaultChannels" version="2.2.1-SNAPSHOT" hashcode="201102091735970"/>
 </kevoree:ContainerRoot>

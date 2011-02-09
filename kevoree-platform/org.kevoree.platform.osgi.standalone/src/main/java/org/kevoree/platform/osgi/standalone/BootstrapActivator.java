@@ -65,6 +65,9 @@ public class BootstrapActivator implements BundleActivator {
         coreBean.setKompareService((ModelKompareService) kompareBean);
         coreBean.setDeployService((KevoreeAdaptationDeployService) deployBean);
         coreBean.start();
+
+        context.registerService(KevoreeModelHandlerService.class.getName(),coreBean,null);
+
         System.out.println("Kevoree Started !");
 
         Handler.setModelhandler((KevoreeModelHandlerService) coreBean);
@@ -76,6 +79,8 @@ public class BootstrapActivator implements BundleActivator {
 
     @Override
     public void stop(BundleContext context) throws Exception {
+
+
         kompareBean = null;
         deployBean = null;
         coreBean.stop();

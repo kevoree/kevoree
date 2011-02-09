@@ -18,11 +18,21 @@
 package org.kevoree.library.restChannels;
 
 import org.kevoree.annotation.*;
+import org.kevoree.api.service.core.handler.KevoreeModelHandlerService;
+import org.kevoree.extra.marshalling.RichJSONObject;
 import org.kevoree.framework.AbstractChannelFragment;
 import org.kevoree.framework.ChannelFragmentSender;
 import org.kevoree.framework.KevoreeChannelFragment;
+import org.kevoree.framework.KevoreePlatformHelper;
 import org.kevoree.framework.message.Message;
 import org.kevoree.remote.rest.Handler;
+import org.osgi.framework.Bundle;
+import org.osgi.framework.ServiceReference;
+import org.restlet.data.CharacterSet;
+import org.restlet.data.MediaType;
+import org.restlet.representation.Representation;
+import org.restlet.representation.StringRepresentation;
+import org.restlet.resource.ClientResource;
 
 /**
  * @author ffouquet
@@ -53,8 +63,17 @@ public class RestChannel extends AbstractChannelFragment {
         return null;
     }
 
+    private KevoreeModelHandlerService modelHandlerService = null;
+    private Bundle bundle = null;
+    private ServiceReference sr = null;
+
     @Start
     public void startHello() {
+        /* Get last model handler - previously deploy by kevoree core*/
+        bundle = (Bundle) this.getDictionary().get("osgi.bundle");
+        ServiceReference sr = bundle.getBundleContext().getServiceReference(KevoreeModelHandlerService.class.getName());
+        modelHandlerService = (KevoreeModelHandlerService) bundle.getBundleContext().getService(sr);
+
         RestChannelFragmentRessource.channels.put(this.getName(), this);
         Handler.defaultHost().attach("/channels/{channelFragmentName}", RestChannelFragmentRessource.class);
     }
@@ -63,6 +82,7 @@ public class RestChannel extends AbstractChannelFragment {
     public void stopHello() {
         Handler.defaultHost().detach(RestChannelFragmentRessource.class);
         RestChannelFragmentRessource.channels.remove(this.getName());
+        //bundle.getBundleContext().ungetService(sr);
     }
 
     @Update
@@ -71,12 +91,43 @@ public class RestChannel extends AbstractChannelFragment {
     }
 
     @Override
-    public ChannelFragmentSender createSender(String remoteNodeName, String remoteChannelName) {
+    public ChannelFragmentSender createSender(final String remoteNodeName, final String remoteChannelName) {
         return new ChannelFragmentSender() {
+
 
             @Override
             public Object sendMessageToRemote(Message message) {
+                String lastUrl = null;
+                try {
+                    message.getPassedNodes().add(modelHandlerService.getNodeName());
+                    lastUrl = buildURL();
+                    System.out.println("remote rest url =>" + lastUrl);
+                    ClientResource remoteChannelResource = new ClientResource(lastUrl);
+                    if (message.getInOut()) {
+                        System.out.println("Not implemented yet !");
+                    } else {
+                        RichJSONObject obj = new RichJSONObject(message);
+                        Representation representation = new StringRepresentation(obj.toJSON(), MediaType.TEXT_PLAIN);
+                        representation.setCharacterSet(CharacterSet.UTF_8);
+                        remoteChannelResource.post(representation);
+                    }
+                } catch (Exception e) {
+                    System.err.println("Fail to send to remote channel via =>"+lastUrl);
+                    System.err.println("Reply not implemented => message lost !!!");
+                }
                 return null;
+            }
+
+            public String buildURL() {
+                String ip = KevoreePlatformHelper.getProperty(modelHandlerService.getLastModel(), remoteNodeName, org.kevoree.framework.Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP());
+                if (ip == null) {
+                    ip = "127.0.0.1";
+                }
+                String port = KevoreePlatformHelper.getProperty(modelHandlerService.getLastModel(), remoteNodeName, org.kevoree.framework.Constants.KEVOREE_PLATFORM_REMOTE_NODE_MODELSYNCH_PORT());
+                if (port == null) {
+                    port = "8000";
+                }
+                return "http://" + ip + ":" + port + "/channels/" + remoteChannelName;
             }
         };
     }

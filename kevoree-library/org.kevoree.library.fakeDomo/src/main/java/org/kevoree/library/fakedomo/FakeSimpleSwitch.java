@@ -17,27 +17,25 @@
  */
 package org.kevoree.library.fakedomo;
 
-import java.awt.Dimension;
-import java.awt.FlowLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.util.HashMap;
-import javax.swing.ButtonGroup;
-import javax.swing.JButton;
-import javax.swing.JFrame;
 import org.kevoree.annotation.*;
 import org.kevoree.framework.MessagePort;
 
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.HashMap;
+
 
 /**
- *
  * @author ffouquet
  */
 
 @Requires({
-    @RequiredPort(name = "on", type=PortType.MESSAGE),
-    //@RequiredPort(name = "on2", type=PortType.MESSAGE),
-    @RequiredPort(name = "off", type=PortType.MESSAGE)
+        @RequiredPort(name = "on", type = PortType.MESSAGE),
+        //@RequiredPort(name = "on2", type=PortType.MESSAGE),
+        @RequiredPort(name = "off", type = PortType.MESSAGE),
+        @RequiredPort(name = "toogle", type = PortType.SERVICE, className = ToogleLightService.class, optional = true)
 })
 @ComponentType
 public class FakeSimpleSwitch extends AbstractFakeStuffComponent {
@@ -59,15 +57,15 @@ public class FakeSimpleSwitch extends AbstractFakeStuffComponent {
     }
 
     @Update
-    public void update(){
-        for(String s : this.getDictionary().keySet()){
-            System.out.println("Dic => "+s+" - "+this.getDictionary().get(s));
+    public void update() {
+        for (String s : this.getDictionary().keySet()) {
+            System.out.println("Dic => " + s + " - " + this.getDictionary().get(s));
         }
     }
 
     private class MyFrame extends JFrame {
 
-        private JButton on, off;
+        private JButton on, off, toogle;
         private String onText;
         private String offText;
 
@@ -75,8 +73,8 @@ public class FakeSimpleSwitch extends AbstractFakeStuffComponent {
 
             this.onText = onText;
             this.offText = offText;
-            setPreferredSize(new Dimension(SWITCH_WIDTH, SWITCH_HEIGHT));
-            setLayout(new FlowLayout());
+            //setPreferredSize(new Dimension(SWITCH_WIDTH, SWITCH_HEIGHT));
+            //setLayout(new FlowLayout());
             on = new JButton(onText);
             on.addActionListener(new ActionListener() {
 
@@ -94,14 +92,27 @@ public class FakeSimpleSwitch extends AbstractFakeStuffComponent {
                     getPortByName("off", MessagePort.class).process(new HashMap<String, String>());
                 }
             });
+            toogle = new JButton("-?-");
+            toogle.addActionListener(new ActionListener() {
 
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    if (isPortBinded("toogle")) {
+                        String state = getPortByName("toogle", ToogleLightService.class).toogle();
+                        toogle.setText(state);
+                    }
+
+                }
+            });
             ButtonGroup bg = new ButtonGroup();
             bg.add(on);
             bg.add(off);
+            bg.add(toogle);
 
             setLayout(new FlowLayout());
             add(on);
             add(off);
+            add(toogle);
 
             pack();
             setVisible(true);
