@@ -41,14 +41,14 @@
     <repositories>
         <repository>
             <id>kevoree-github</id>
-            <url>https://github.com/dukeboard/kevoree/raw/master/embedded-repo</url>
+            <url>http://dukeboard.github.com/kevoree/maven/</url>
         </repository>
     </repositories>
 
     <pluginRepositories>
         <pluginRepository>
             <id>plugin.kevoree-github</id>
-            <url>https://github.com/dukeboard/kevoree/raw/master/embedded-repo</url>
+            <url>http://dukeboard.github.com/kevoree/maven/</url>
         </pluginRepository>
     </pluginRepositories>
 
