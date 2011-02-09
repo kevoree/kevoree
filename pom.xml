@@ -15,7 +15,7 @@
         <module>kevoree-core/org.kevoree.root</module>
         <module>kevoree-tools/org.kevoree.tools.root</module>
         <module>kevoree-platform/org.kevoree.platform.root</module>
-        <!--<module>kevoree-library/org.kevoree.library.root</module>-->
+        <module>kevoree-library/org.kevoree.library.root</module>
     </modules>
     
     <properties>
