@@ -52,4 +52,15 @@ public class defSERVICE extends AbstractChannelFragment {
     public ChannelFragmentSender createSender(String remoteNodeName, String remoteChannelName) {
         return new NoopChannelFragmentSender();
     }
+
+        @Start
+    public void startHello() {
+        System.out.println("Hello Channel");
+    }
+
+    @Stop
+    public void stopHello() {
+        System.out.println("Bye Channel");
+    }
+
 }

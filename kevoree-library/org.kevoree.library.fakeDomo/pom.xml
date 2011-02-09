@@ -4,39 +4,15 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.kevoree.library</groupId>
     <artifactId>org.kevoree.library.fakeDomo</artifactId>
-    <packaging>jar</packaging>
+    <packaging>bundle</packaging>
     <version>2.2.1-SNAPSHOT</version>
     <name>Kevoree :: Library :: Fake Domo</name>
 
-    <dependencies>
-        <dependency>
-            <groupId>org.kevoree</groupId>
-            <artifactId>org.kevoree.framework</artifactId>
-            <version>2.2.1-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>org.kevoree.tools</groupId>
-            <artifactId>org.kevoree.tools.annotation.api</artifactId>
-            <version>2.2.1-SNAPSHOT</version>
-        </dependency>
-    </dependencies>
-
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.kevoree.tools</groupId>
-                <artifactId>org.kevoree.tools.annotation.mavenplugin</artifactId>
-                <extensions>true</extensions>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>generate</goal>
-                            <goal>compile</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-        </plugins>
-    </build>
+    <parent>
+        <artifactId>org.kevoree.library.root</artifactId>
+        <groupId>org.kevoree.library</groupId>
+        <version>2.2.1-SNAPSHOT</version>
+        <relativePath>../org.kevoree.library.root/pom.xml</relativePath>
+    </parent>
 
 </project>

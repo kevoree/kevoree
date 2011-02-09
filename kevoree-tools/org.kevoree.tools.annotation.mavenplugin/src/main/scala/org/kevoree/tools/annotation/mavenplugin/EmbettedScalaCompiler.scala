@@ -24,6 +24,9 @@ object EmbettedScalaCompiler {
 
     /* Src files collect step */
     var listSrcFiles = InternalCompilerHelper.listFile(new File(srcPATH))
+
+    if(listSrcFiles.size > 0){
+
     /* Build class path */
 		
     println("Scala compilation step begin on "+listSrcFiles.size+" files")
@@ -46,7 +49,7 @@ object EmbettedScalaCompiler {
 		
     var endTime= System.currentTimeMillis() - startTime
     println("Scala compilation step complete in "+(endTime)+" millisecondes ")
-
+    }
     return compilationResult
   }
 	
