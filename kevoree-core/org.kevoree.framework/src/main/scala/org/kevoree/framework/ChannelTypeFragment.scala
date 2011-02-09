@@ -22,151 +22,193 @@ import java.util.HashMap
 import org.kevoree.framework.message._
 import scala.actors.Actor
 import scala.collection.JavaConversions._
-import scala.reflect.BeanProperty
 
 trait ChannelTypeFragment extends KevoreeChannelFragment with ChannelFragment {
 
-   override def remoteDispatch(msg:Message):Object = {
-        if(msg.inOut.booleanValue){
-          (this !? msg).asInstanceOf[Object]
-        } else {
-          this ! msg
-          null
-        }
-   }
+  override def remoteDispatch(msg: Message): Object = {
+    if (msg.inOut.booleanValue) {
+      (this !? msg).asInstanceOf[Object]
+    } else {
+      this ! msg
+      null
+    }
+  }
 
-  private var portsBinded : HashMap[String,KevoreePort] = new HashMap[String, KevoreePort]()
-  private var fragementBinded : HashMap[String,KevoreeChannelFragment] = new HashMap[String, KevoreeChannelFragment]()
+  private var portsBinded: HashMap[String, KevoreePort] = new HashMap[String, KevoreePort]()
+  private var fragementBinded: HashMap[String, KevoreeChannelFragment] = new HashMap[String, KevoreeChannelFragment]()
 
   //@BeanProperty
-  var nodeName : String = ""
+  var nodeName: String = ""
+
   override def getNodeName = nodeName
-  def setNodeName(n:String)= { nodeName = n }
+
+  def setNodeName(n: String) = {
+    nodeName = n
+  }
 
   //@BeanProperty
-  var name : String = ""
+  var name: String = ""
+
   override def getName = name
-  def setName(n:String)= { name = n }
-  //@BeanProperty
-  var dictionary : HashMap[String, Object] = new HashMap[String, Object]()
-  def setDictionary(d : HashMap[String, Object]) = dictionary = d
-  override def getDictionary() : HashMap[String, Object] = dictionary
 
-  override def getBindedPorts():java.util.List[KevoreePort] = { portsBinded.values.toList } //OVERRIDE BY FACTORY
-  override def getOtherFragments():java.util.List[KevoreeChannelFragment] = { fragementBinded.values.toList }
-  override def forward(delegate : KevoreeActor,msg : Message) : Object = {
+  def setName(n: String) = {
+    name = n
+  }
+
+  //@BeanProperty
+  var dictionary: HashMap[String, Object] = new HashMap[String, Object]()
+
+  def setDictionary(d: HashMap[String, Object]) = dictionary = d
+
+  override def getDictionary(): HashMap[String, Object] = dictionary
+
+  override def getBindedPorts(): java.util.List[KevoreePort] = {
+    portsBinded.values.toList
+  }
+
+  //OVERRIDE BY FACTORY
+  override def getOtherFragments(): java.util.List[KevoreeChannelFragment] = {
+    fragementBinded.values.toList
+  }
+
+  override def forward(delegate: KevoreeActor, msg: Message): Object = {
 
     delegate match {
       case p: KevoreePort => {
-          if(msg.inOut.booleanValue){
-            return (delegate !? msg.getContent).asInstanceOf[Object]
-          } else {
-            (delegate ! msg.getContent);return null
-          }
+        if (msg.inOut.booleanValue) {
+          return (delegate !? msg.getContent).asInstanceOf[Object]
+        } else {
+          (delegate ! msg.getContent);
+          return null
         }
-      case f : KevoreeChannelFragment =>
+      }
+      case f: KevoreeChannelFragment =>
         msg.setDestChannelName(f.getName)
         msg.setDestNodeName(f.getNodeName)
 
-        if(msg.inOut.booleanValue){
+        if (msg.inOut.booleanValue) {
           return (delegate !? msg).asInstanceOf[Object]
         } else {
-          (delegate ! msg);return null
+          (delegate ! msg);
+          return null
         }
-      case _ => println("Call on forward on bad object type ! => Only Port or Channel accepted");return null
+      case _ => println("Call on forward on bad object type ! => Only Port or Channel accepted"); return null
     }
   }
 
-  private def createPortKey(a : Any) : String = {
+  private def createPortKey(a: Any): String = {
     a match {
-      case msg : PortBindMessage => msg.getNodeName+"-"+msg.getComponentName+"-"+msg.getPortName
-      case msg : PortUnbindMessage => msg.getNodeName+"-"+msg.getComponentName+"-"+msg.getPortName
-      case msg : FragmentBindMessage => msg.getChannelName+"-"+msg.getFragmentNodeName
-      case msg : FragmentUnbindMessage => msg.getChannelName+"-"+msg.getFragmentNodeName
-      case _=>""
+      case msg: PortBindMessage => msg.getNodeName + "-" + msg.getComponentName + "-" + msg.getPortName
+      case msg: PortUnbindMessage => msg.getNodeName + "-" + msg.getComponentName + "-" + msg.getPortName
+      case msg: FragmentBindMessage => msg.getChannelName + "-" + msg.getFragmentNodeName
+      case msg: FragmentUnbindMessage => msg.getChannelName + "-" + msg.getFragmentNodeName
+      case _ => ""
     }
   }
 
-  override def internal_process(msgg : Any)= msgg match {
-    
+  override def internal_process(msgg: Any) = msgg match {
+
     case UpdateDictionaryMessage(d) => {
-        d.keySet.foreach{v=>
+      d.keySet.foreach{
+        v =>
           dictionary.put(v, d.get(v))
-        }
-        reply(true)
       }
+      reply(true)
+    }
 
     case StartMessage => {
-        new Actor{ def act = startChannelFragment }.start
-        reply(true)
-      }
+      new Actor {
+        def act = {startChannelFragment;println("Starting Channel Internal queue");local_queue.start }
+      }.start
+      reply(true)
+    }
     case StopMessage => {
-        new Actor{ def act = stopChannelFragment }.start
-        reply(true)
-      }
-
-    case msg : FragmentBindMessage=> {
-        var sender = this.createSender(msg.getFragmentNodeName, msg.getChannelName)
-        var proxy = new KevoreeChannelFragmentProxy(msg.getFragmentNodeName, msg.getChannelName)
-        proxy.setChannelSender(sender)
-        fragementBinded.put(createPortKey(msg), proxy);
-        proxy.start;
-        reply(true)
-      }
-    case msg : FragmentUnbindMessage=> {
-        println("Try to unbind channel "+name)
-        var actorPort = fragementBinded.get(createPortKey(msg))
-        if(actorPort!=null){
-          actorPort.stop
-          fragementBinded.remove(createPortKey(msg))
-        } else {
-          println("Can't unbind Fragment "+createPortKey(msg))
+      new Actor {
+        def act = {
+          //TODO CHECK QUEUE SIZE AND SAVE STATE
+          local_queue.forceStop
+          stopChannelFragment
         }
-        reply(true)
+
+      }.start
+      reply(true)
+    }
+
+    case msg: FragmentBindMessage => {
+      var sender = this.createSender(msg.getFragmentNodeName, msg.getChannelName)
+      var proxy = new KevoreeChannelFragmentProxy(msg.getFragmentNodeName, msg.getChannelName)
+      proxy.setChannelSender(sender)
+      fragementBinded.put(createPortKey(msg), proxy);
+      proxy.start;
+      reply(true)
+    }
+    case msg: FragmentUnbindMessage => {
+      println("Try to unbind channel " + name)
+      var actorPort = fragementBinded.get(createPortKey(msg))
+      if (actorPort != null) {
+        actorPort.stop
+        fragementBinded.remove(createPortKey(msg))
+      } else {
+        println("Can't unbind Fragment " + createPortKey(msg))
       }
-    case msg : PortBindMessage => {
-        println("Addkey="+createPortKey(msg));
-        portsBinded.put(createPortKey(msg), msg.getProxy);
-        reply(true)
-      }
-    case msg : PortUnbindMessage => {
-        println("Removekey="+createPortKey(msg));
-        portsBinded.remove(createPortKey(msg));
-        reply(true)
-      }
-      //USE CASE A MSG REC BY OTHER FRAGMENT
-    case msg : Message => {
-        if(msg.inOut.booleanValue){
+      reply(true)
+    }
+    case msg: PortBindMessage => {
+      println("Addkey=" + createPortKey(msg));
+      portsBinded.put(createPortKey(msg), msg.getProxy);
+      reply(true)
+    }
+    case msg: PortUnbindMessage => {
+      println("Removekey=" + createPortKey(msg));
+      portsBinded.remove(createPortKey(msg));
+      reply(true)
+    }
+    //USE CASE A MSG REC BY OTHER FRAGMENT
+    case msg: Message => local_queue forward msg
+    case msg: MethodCallMessage => local_queue forward msg
+    case msg: Object => local_queue forward msg
+    case _@msg => local_queue forward msg
+  }
+
+  val local_queue = new KevoreeActor {
+    override def internal_process(msgg: Any) = msgg match {
+      case msg: Message => {
+        if (msg.inOut.booleanValue) {
           reply(dispatch(msg))
         } else {
           dispatch(msg)
         }
       }
-    case msg : MethodCallMessage =>{
+      case msg: MethodCallMessage => {
         var msg2 = new Message
         msg2.setInOut(true)
         msg2.setContent(msg)
         reply(dispatch(msg2))
       }
-    case msg : Object => {
+      case msg: Object => {
         var msg2 = new Message
         msg2.setInOut(false)
         msg2.setContent(msg)
         dispatch(msg2)
       }
-    case _ @ msg => {
-        println("Msg does not seem to be an object =>"+msg)
+      case _@msg => {
+        println("Msg does not seem to be an object =>" + msg)
         var msg2 = new Message
         msg2.setInOut(false)
         msg2.setContent(msg)
         dispatch(msg2)
       }
+
+    }
   }
 
 
-  def startChannelFragment : Unit = {}
-  def stopChannelFragment : Unit = {}
-  def updateChannelFragment : Unit = {}
-  
+  /* LifeCycle Method */
+  def startChannelFragment: Unit = {}
+
+  def stopChannelFragment: Unit = {}
+
+  def updateChannelFragment: Unit = {}
+
 
 }

@@ -156,12 +156,12 @@
     <distributionManagement>
         <repository>
             <id>embedded-repo</id>
-            <url>file:${basedir}/../../embedded-repo</url>
+            <url>file:${basedir}/../../../kevoreePages/maven</url>
             <uniqueVersion>false</uniqueVersion>
         </repository>
         <snapshotRepository>
             <id>embedded-repo-snapshot</id>
-            <url>file:${basedir}/../../embedded-repo</url>
+            <url>file:${basedir}/../../../kevoreePages/maven</url>
             <uniqueVersion>false</uniqueVersion>
         </snapshotRepository>
     </distributionManagement>
