@@ -1,0 +1,13 @@
+all:	lib
+
+CFLAGS = -O2 -Wall
+
+lib: 
+	$(CC) -I/opt/local/lib -I/opt/local/include -shared -lusb -o libtemper.dylib temper.c
+
+
+clean:		
+	rm -f temper *.o *.dylib
+
+rules-install:			# must be superuser to do this
+	cp 99-tempsensor.rules /etc/udev/rules.d

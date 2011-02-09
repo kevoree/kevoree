@@ -42,4 +42,6 @@ public interface ChannelFragment {
 
     public String getName();
 
+    public Object remoteDispatch(Message msg);
+
 }

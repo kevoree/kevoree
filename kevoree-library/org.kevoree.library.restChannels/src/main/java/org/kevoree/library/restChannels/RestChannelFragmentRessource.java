@@ -17,45 +17,79 @@
  */
 package org.kevoree.library.restChannels;
 
-import java.util.HashMap;
+import org.kevoree.extra.marshalling.RichJSONObject;
+import org.kevoree.extra.marshalling.RichString;
 import org.kevoree.framework.AbstractChannelFragment;
+import org.kevoree.framework.message.Message;
 import org.restlet.resource.Get;
+import org.restlet.resource.Post;
 import org.restlet.resource.ResourceException;
 import org.restlet.resource.ServerResource;
+import scala.actors.Actor;
+
+import java.util.HashMap;
 
 /**
- *
  * @author ffouquet
  */
 public class RestChannelFragmentRessource extends ServerResource {
 
     public static HashMap<String, AbstractChannelFragment> channels = new HashMap<String, AbstractChannelFragment>();
 
-    /** The underlying Channel object. */
+    /**
+     * The underlying Channel object.
+     */
     AbstractChannelFragment channelFragment;
-    /** The sequence of characters that identifies the resource. */
+    /**
+     * The sequence of characters that identifies the resource.
+     */
     String channelFragmentName;
 
     @Override
     protected void doInit() throws ResourceException {
-
-        for(String key : channels.keySet()){
-            System.out.println("key="+key);
-        }
-
-        // Get the "itemName" attribute value taken from the URI template
-        // /channels/{channelFragmentName}.
         this.channelFragmentName = (String) getRequest().getAttributes().get("channelFragmentName");
-
-        System.out.println("asked="+channelFragmentName);
-
-        // Get the item directly from the "persistence layer".
         this.channelFragment = channels.get(channelFragmentName);
         setExisting(this.channelFragment != null);
     }
 
     @Get()
-    public String getName() {
-        return channelFragmentName;
+    public String getInput() {
+        Message msg = buildMsg();
+        Object o = channelFragment.dispatch(msg);
+        RichJSONObject oo = new RichJSONObject(o);
+        return oo.toJSON();
     }
+
+    @Post()
+    public String postInput() {
+        Message msg = buildMsg();
+        Object o = channelFragment.remoteDispatch(msg);
+        return "<ack />";
+    }
+
+    private Message buildMsg(){
+        Message msg =  buildMessageFromJSON();
+        if(msg == null) { msg = buildMessageFromAttribute(); }
+        return msg;
+    }
+
+    private Message buildMessageFromJSON() {
+        try {
+            RichString c = new RichString(getRequest().getEntityAsText());
+            Message obj = (Message) c.fromJSON(Message.class);
+            return obj;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    private Message buildMessageFromAttribute() {
+        Message msg = new Message();
+        for (String key : getRequest().getAttributes().keySet()) {
+            System.out.println("Debug=" + key + "--" + getRequest().getAttributes().get(key));
+        }
+        return msg;
+    }
+
 }

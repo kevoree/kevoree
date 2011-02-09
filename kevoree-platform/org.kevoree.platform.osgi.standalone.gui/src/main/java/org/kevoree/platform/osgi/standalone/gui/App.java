@@ -69,6 +69,8 @@ public class App {
             public void windowClosing(WindowEvent windowEvent) {
                 try {
                     felix.getM_fwk().stop();
+
+                    frame.setVisible(false);
                     frame.dispose();
                 } catch (Exception e) {
                     e.printStackTrace();

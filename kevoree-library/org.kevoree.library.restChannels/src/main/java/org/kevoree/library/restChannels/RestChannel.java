@@ -21,18 +21,17 @@ import org.kevoree.annotation.*;
 import org.kevoree.framework.AbstractChannelFragment;
 import org.kevoree.framework.ChannelFragmentSender;
 import org.kevoree.framework.KevoreeChannelFragment;
-import org.kevoree.framework.message.*;
+import org.kevoree.framework.message.Message;
 import org.kevoree.remote.rest.Handler;
 
 /**
- *
  * @author ffouquet
  */
 @Library(name = "art2baselib")
 @ChannelTypeFragment
-/*@ThirdParties({
-@ThirdParty(name="reslet.api",url="mvn:org.restlet.jse/org.restlet/2.1-M2")
-})*/
+@ThirdParties({
+        @ThirdParty(name = "org.kevoree.extra.marshalling", url = "mvn:org.kevoree.extra/org.kevoree.extra.marshalling")
+})
 public class RestChannel extends AbstractChannelFragment {
 
     @Override

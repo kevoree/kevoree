@@ -9,19 +9,25 @@
     <name>Kevoree</name>
     <url>https://github.com/dukeboard/kevoree</url>
 
+
     <modules>
-        <module>kevoree-extra/org.kevoree.extra.root</module>
+       <module>kevoree-extra/org.kevoree.extra.root</module>
         <module>kevoree-core/org.kevoree.root</module>
         <module>kevoree-tools/org.kevoree.tools.root</module>
         <module>kevoree-platform/org.kevoree.platform.root</module>
-        <module>kevoree-library/org.kevoree.library.root</module>
-
+        <!--<module>kevoree-library/org.kevoree.library.root</module>-->
     </modules>
+    
+    <properties>
+    	<kevoree.version>2.2.1-SNAPSHOT</kevoree.version>
+    	<kevoree.deploy.repo>../kevoreePages/maven</kevoree.deploy.repo>
+    	<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
 
     <distributionManagement>
         <repository>
             <id>embedded-repo</id>
-            <url>file:${project.build.directory}/embedded-repo</url>
+            <url>file:${project.build.directory}/${kevoree.deploy.repo}</url>
             <uniqueVersion>false</uniqueVersion>
         </repository>
         <snapshotRepository>
@@ -30,5 +36,20 @@
             <uniqueVersion>false</uniqueVersion>
         </snapshotRepository>
     </distributionManagement>
+    
+    
+    <repositories>
+        <repository>
+            <id>kevoree-github</id>
+            <url>https://github.com/dukeboard/kevoree/raw/master/embedded-repo</url>
+        </repository>
+    </repositories>
+
+    <pluginRepositories>
+        <pluginRepository>
+            <id>plugin.kevoree-github</id>
+            <url>https://github.com/dukeboard/kevoree/raw/master/embedded-repo</url>
+        </pluginRepository>
+    </pluginRepositories>
 
 </project>

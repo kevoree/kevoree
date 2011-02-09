@@ -9,17 +9,20 @@
     <name>Kevoree :: Library :: Root</name>
 
     <parent>
-        <artifactId>org.kevoree.tools.library.root</artifactId>
-        <groupId>org.kevoree.tools</groupId>
+        <artifactId>org.kevoree</artifactId>
+        <groupId>org.kevoree</groupId>
         <version>2.2.1-SNAPSHOT</version>
+        <relativePath>../../pom.xml</relativePath>
     </parent>
-
 
     <modules>
         <module>../org.kevoree.library.defaultChannels</module>
         <module>../org.kevoree.library.fakeDomo</module>
         <module>../org.kevoree.library.sample</module>
         <module>../org.kevoree.library.restChannels</module>
+        <module>../org.kevoree.library.xmpp</module>
+        <module>../org.kevoree.library.models</module>
+        <module>../org.kevoree.library.temper</module>
     </modules>
 
     <distributionManagement>

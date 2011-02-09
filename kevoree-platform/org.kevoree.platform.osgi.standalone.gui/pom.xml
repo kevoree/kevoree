@@ -1,6 +1,5 @@
-
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <artifactId>org.kevoree.platform.osgi.standalone.gui</artifactId>
     <packaging>jar</packaging>
@@ -80,8 +79,9 @@
                                 </filter>
                             </filters>
                             <transformers>
-                                <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                                    <mainClass>org.kevoree.platform.osgi.standalone.App</mainClass>
+                                <transformer
+                                        implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                                    <mainClass>org.kevoree.platform.osgi.standalone.gui.App</mainClass>
                                 </transformer>
                             </transformers>
                         </configuration>
@@ -100,9 +100,40 @@
                     </execution>
                 </executions>
                 <configuration>
-                    <mainClass>org.kermeta.art2.platform.standalone.App</mainClass>
+                    <mainClass>org.kevoree.platform.osgi.standalone.gui.App</mainClass>
                 </configuration>
             </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>2.3.1</version>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <mainClass>org.kevoree.platform.osgi.standalone.gui.App</mainClass>
+                        </manifest>
+                    </archive>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>sign</goal>
+                        </goals>
+                        <configuration>
+                            <jarPath>${project.build.directory}/${project.build.finalName}.jar</jarPath>
+                            <keystore>${project.build.directory}/../../../keystore</keystore>
+                            <alias>kevoree</alias>
+                            <storepass>kevoree</storepass>
+                            <signedjar>${project.build.directory}/signed/${project.build.finalName}.jar</signedjar>
+                            <verify>true</verify>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+
         </plugins>
     </build>
 

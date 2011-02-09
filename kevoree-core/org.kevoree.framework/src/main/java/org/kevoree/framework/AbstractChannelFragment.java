@@ -51,4 +51,8 @@ public abstract class AbstractChannelFragment implements ChannelFragment {
     public String getName() {
         return null;
     }
+
+    public Object remoteDispatch(Message msg){
+        return null;
+    }
 }

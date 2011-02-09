@@ -8,44 +8,37 @@
     <version>2.2.1-SNAPSHOT</version>
     <name>Kevoree :: Extra :: Root</name>
     <url>https://github.com/dukeboard/kevoree</url>
+    
+    <parent>
+        <artifactId>org.kevoree</artifactId>
+        <groupId>org.kevoree</groupId>
+        <version>2.2.1-SNAPSHOT</version>
+        <relativePath>../../pom.xml</relativePath>
+    </parent>
 
     <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <kevoree.version>2.2.1-SNAPSHOT</kevoree.version>
         <emf.version>2.6.0</emf.version>
         <scala.version>2.8.1</scala.version>
         <bundle.vendor>IRISA/INRIA</bundle.vendor>
     </properties>
 
-    <repositories>
-        <repository>
-            <id>kevoree-github</id>
-            <url>https://github.com/dukeboard/kevoree/raw/master/embedded-repo</url>
-        </repository>
-    </repositories>
-
-    <pluginRepositories>
-        <pluginRepository>
-            <id>plugin.kevoree-github</id>
-            <url>https://github.com/dukeboard/kevoree/raw/master/embedded-repo</url>
-        </pluginRepository>
-    </pluginRepositories>
-
     <modules>
         <module>../org.kevoree.extra.emf.library</module>
         <module>../org.kevoree.extra.emf.genmodel.mavenplugin</module>
         <module>../org.kevoree.extra.osgi.sysgen</module>
+        <module>../org.kevoree.extra.osgi.rxtx</module>
+        <module>../org.kevoree.extra.marshalling</module>
     </modules>
 
     <distributionManagement>
         <repository>
             <id>embedded-repo</id>
-            <url>file:${basedir}/../../embedded-repo</url>
+            <url>file:${basedir}/../../${kevoree.deploy.repo}</url>
             <uniqueVersion>false</uniqueVersion>
         </repository>
         <snapshotRepository>
             <id>embedded-repo-snapshot</id>
-            <url>file:${basedir}/../../embedded-repo</url>
+            <url>file:${basedir}/../../${kevoree.deploy.repo}</url>
             <uniqueVersion>false</uniqueVersion>
         </snapshotRepository>
     </distributionManagement>
