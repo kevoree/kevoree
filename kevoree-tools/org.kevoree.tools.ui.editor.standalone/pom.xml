@@ -5,7 +5,7 @@
     <packaging>jar</packaging>
     <name>Kevoree :: Tools :: UI Editor Standalone</name>
     <url>
-        https://github.com/dukeboard/kevoree/raw/master/embedded-repo/org/kevoree/tools/org.kevoree.tools.ui.editor.standalone/jnlp
+        https://github.com/dukeboard/kevoree/
     </url>
 
     <parent>

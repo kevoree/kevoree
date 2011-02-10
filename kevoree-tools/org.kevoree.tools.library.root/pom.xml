@@ -9,7 +9,7 @@
 
     <properties>
         <maven.build.timestamp.format>yyyyMMddHHmmSSS</maven.build.timestamp.format>
-        <kevoree.repositories>https://github.com/dukeboard/kevoree/raw/master/embedded-repo</kevoree.repositories>
+        <kevoree.repositories>http://dukeboard.github.com/kevoree/maven/</kevoree.repositories>
         <kevoree.version>2.2.1-SNAPSHOT</kevoree.version>
         <scala.version>2.8.1</scala.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
