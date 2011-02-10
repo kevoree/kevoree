@@ -254,7 +254,7 @@ public class AnnotationPreProcessorMojo extends AbstractMojo {
                 "kevoree.lib.version=" + this.project.getVersion(),
                 "kevoree.lib.target=" + sourceOutputDirectory.getPath() + "/KEV-INF/lib.kev",
                 "tag=" + dateFormat.format(new Date()),
-                "repositories=https://github.com/dukeboard/kevoree/raw/master/embedded-repo"
+                "repositories=http://dukeboard.github.com/kevoree/maven/"
         ).toArray();
 
         Resource resource = new Resource();
