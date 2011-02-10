@@ -22,7 +22,6 @@ import org.kevoreeAdaptation.AdaptationModel;
  * @author ffouquet
  */
 public interface KevoreeAdaptationDeployService {
-
     public boolean deploy(AdaptationModel model,String nodeName);
 
 }
