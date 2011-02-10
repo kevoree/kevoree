@@ -23,6 +23,7 @@
         <module>../org.kevoree.library.xmpp</module>
         <module>../org.kevoree.library.models</module>
         <module>../org.kevoree.library.temper</module>
+        <module>../org.kevoree.library.logger.greg</module>
     </modules>
 
     <distributionManagement>

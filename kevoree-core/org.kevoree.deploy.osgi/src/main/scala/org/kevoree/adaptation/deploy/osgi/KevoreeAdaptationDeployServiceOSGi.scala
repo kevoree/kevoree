@@ -55,7 +55,6 @@ class KevoreeAdaptationDeployServiceOSGi extends KevoreeAdaptationDeployService 
     //var executedCommandCI :List[PrimitiveCommand] = List()
     //  var executedCommandBI :List[PrimitiveCommand] = List()
 
-
     //DEPLOY UNIT COMMAND
     var command_add_deployUnit :List[PrimitiveCommand] = List()
     var command_remove_deployUnit :List[PrimitiveCommand] = List()
