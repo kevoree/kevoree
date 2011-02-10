@@ -55,7 +55,8 @@ public class FelixShell extends JPanel {
         input.addKeyListener(new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent keyEvent) {
-                if (eol.equals(keyEvent.getKeyChar() + "")) {
+                if(keyEvent.getKeyCode() == KeyEvent.VK_ENTER) {
+               
                     try {
                        // textArea.append("==>" + input.getText() + eol);
                         textArea.append(input.getText() + eol, Color.BLUE, Color.white, true);
