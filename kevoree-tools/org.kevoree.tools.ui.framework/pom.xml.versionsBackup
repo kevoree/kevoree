@@ -1,0 +1,55 @@
+<!-- $Id: pom.xml 13513 2010-11-15 17:12:54Z kermeta_bot $ -->
+<!-- License    : EPL 									 -->
+<!-- Copyright  : IRISA / INRIA / Universite de Rennes 1 -->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>org.kevoree.tools.ui.framework</artifactId>
+    <packaging>jar</packaging>
+    <name>Kevoree :: Tools :: UI Framework</name>
+
+    <parent>
+        <artifactId>org.kevoree.tools.root</artifactId>
+        <groupId>org.kevoree.tools</groupId>
+        <version>2.2.1-SNAPSHOT</version>
+        <relativePath>../org.kevoree.tools.root/pom.xml</relativePath>
+    </parent>
+
+    <build>
+     	<plugins>
+            <!-- Creation of the bundle jar and its manifest -->
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <version>2.1.0</version>
+                <extensions>true</extensions>
+                <configuration>
+                    <instructions>                    	                  	                       
+                        <Export-Package>
+                        	org.jdesktop.swingx.*,org.kevoree.tools.ui.framework.*
+                        </Export-Package>
+                        <!-- use the ! for avoiding to import some packages that are already there with the Require-Bundle -->
+                     	<Import-Package>
+				!*
+                        </Import-Package>                        
+                        <!-- add extra element in the manifest, copy them from this file
+                             ex: Bundle-ActivationPolicy: lazy -->
+                        <!-- <_include>src/main/resources/MANIFEST-part.MF</_include> -->
+                        <!-- embed any dependencies with artifactId swingx -->
+			<!--<Embed-Dependency>swingx</Embed-Dependency>            -->
+                        <!--<Embed-Transitive>true</Embed-Transitive>-->
+                    </instructions>
+                </configuration>	
+            </plugin>
+    	</plugins>
+	</build>
+    <dependencies>
+        <dependency>
+            <groupId>org.swinglabs</groupId>
+            <artifactId>swingx</artifactId>
+            <version>1.6.1</version>
+        </dependency>
+    </dependencies>
+
+</project>

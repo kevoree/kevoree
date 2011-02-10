@@ -10,7 +10,7 @@
     <parent>
         <artifactId>org.kevoree.library.root</artifactId>
         <groupId>org.kevoree.library</groupId>
-        <version>2.2.1-SNAPSHOT</version>
+        <version>1.0.0-RC1</version>
         <relativePath>../org.kevoree.library.root/pom.xml</relativePath>
     </parent>
 
