@@ -5,14 +5,13 @@
     <groupId>org.kevoree</groupId>
     <artifactId>org.kevoree.root</artifactId>
     <packaging>pom</packaging>
-    <version>2.2.1-SNAPSHOT</version>
     <name>Kevoree :: Root</name>
     <url>https://github.com/dukeboard/kevoree</url>
     
     <parent>
         <artifactId>org.kevoree</artifactId>
         <groupId>org.kevoree</groupId>
-        <version>2.2.1-SNAPSHOT</version>
+        <version>1.0.0-RC1</version>
         <relativePath>../../pom.xml</relativePath>
     </parent>
 

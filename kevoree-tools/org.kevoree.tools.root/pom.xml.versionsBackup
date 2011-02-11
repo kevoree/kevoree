@@ -2,25 +2,23 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <groupId>org.kevoree.platform</groupId>
-    <artifactId>org.kevoree.platform.root</artifactId>
+    <groupId>org.kevoree.tools</groupId>
+    <artifactId>org.kevoree.tools.root</artifactId>
     <packaging>pom</packaging>
-    <version>1.0.0-RC1</version>
-    <name>Kevoree :: Platform :: Root</name>
+    <version>2.2.1-SNAPSHOT</version>
+    <name>Kevoree :: Tools :: Root</name>
     <url>https://github.com/dukeboard/kevoree</url>
 
     <parent>
         <artifactId>org.kevoree</artifactId>
         <groupId>org.kevoree</groupId>
-        <version>1.0.0-RC1</version>
+        <version>2.2.1-SNAPSHOT</version>
         <relativePath>../../pom.xml</relativePath>
     </parent>
 
     <properties>
         <emf.version>2.6.0</emf.version>
         <scala.version>2.8.1</scala.version>
-        <slf4j.version>1.6.1</slf4j.version>
-        <slf4j.version.range>[1.5,2)</slf4j.version.range>
         <bundle.vendor>IRISA/INRIA</bundle.vendor>
     </properties>
     
@@ -35,11 +33,6 @@
             <groupId>org.scala-lang</groupId>
             <artifactId>scala-library</artifactId>
             <version>${scala.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
-            <version>${slf4j.version}</version>
         </dependency>
     </dependencies>
 
@@ -89,16 +82,75 @@
                     <encoding>${project.build.sourceEncoding}</encoding>
                 </configuration>
             </plugin>
+            <!-- Felix BnD plugin : allow Bundle packaging : generate OSGi JAR  -->
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <version>2.1.0</version>
+                <extensions>true</extensions>
+            </plugin>
+
+            <!-- Scala plugin : allow to compile Scala file -->
+            <plugin>
+                <groupId>org.scala-tools</groupId>
+                <artifactId>maven-scala-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>scala-compile-first</id>
+                        <phase>process-resources</phase>
+                        <goals>
+                            <goal>add-source</goal>
+                            <goal>compile</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>scala-test-compile</id>
+                        <phase>process-test-resources</phase>
+                        <goals>
+                            <goal>testCompile</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <jvmArgs>
+                        <jvmArg>-Xmx1024m</jvmArg>
+                    </jvmArgs>
+                </configuration>
+            </plugin>
+
+            
         </plugins>
     </build>
 
+    <repositories>
+        <repository>
+            <id>scala-tools.org</id>
+            <name>Scala-tools Maven2 Repository</name>
+            <url>http://scala-tools.org/repo-releases</url>
+        </repository>
+    </repositories>
+
+    <pluginRepositories>
+        <pluginRepository>
+            <id>plugin.scala-tools.org</id>
+            <name>Plugin Scala-tools Maven2 Repository</name>
+            <url>http://scala-tools.org/repo-releases</url>
+        </pluginRepository>
+    </pluginRepositories>
+
     <modules>
-       <module>../org.kevoree.platform.osgi.standalone</module>
-       <module>../org.kevoree.platform.osgi.standalone.gui</module>
-       <module>../org.kevoree.platform.osgi.bundle.full</module>
-       <module>../org.kevoree.platform.osgi.android</module>
+        <module>../org.kevoree.tools.annotation.api</module>
+        <module>../org.kevoree.tools.annotation.generator</module>
+        <module>../org.kevoree.tools.annotation.processor</module>
+        <module>../org.kevoree.tools.library.root</module>
+        <module>../org.kevoree.tools.ui.framework</module>
+        <module>../org.kevoree.tools.ui.editor</module>
+        <module>../org.kevoree.tools.ui.editor.standalone</module>
+        <module>../org.kevoree.tools.android.framework</module>
+        <module>../org.kevoree.tools.merger.mavenplugin</module>
+        <module>../org.kevoree.tools.annotation.mavenplugin</module>
     </modules>
-    
+
     <distributionManagement>
         <repository>
             <id>embedded-repo</id>
