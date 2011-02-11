@@ -3,14 +3,14 @@
     <modelVersion>4.0.0</modelVersion>
     <artifactId>org.kevoree.tools.library.root</artifactId>
     <groupId>org.kevoree.tools</groupId>
-    <version>2.2.1-SNAPSHOT</version>
+    <version>1.0.0-RC1</version>
     <packaging>pom</packaging>
     <name>Kevoree :: Tools :: Library Root</name>
 
     <properties>
         <maven.build.timestamp.format>yyyyMMddHHmmSSS</maven.build.timestamp.format>
         <kevoree.repositories>http://dukeboard.github.com/kevoree/maven/</kevoree.repositories>
-        <kevoree.version>2.2.1-SNAPSHOT</kevoree.version>
+        <kevoree.version>1.0.0-RC1</kevoree.version>
         <scala.version>2.8.1</scala.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
