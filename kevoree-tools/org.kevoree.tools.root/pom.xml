@@ -5,14 +5,13 @@
     <groupId>org.kevoree.tools</groupId>
     <artifactId>org.kevoree.tools.root</artifactId>
     <packaging>pom</packaging>
-    <version>2.2.1-SNAPSHOT</version>
     <name>Kevoree :: Tools :: Root</name>
     <url>https://github.com/dukeboard/kevoree</url>
 
     <parent>
         <artifactId>org.kevoree</artifactId>
         <groupId>org.kevoree</groupId>
-        <version>2.2.1-SNAPSHOT</version>
+        <version>1.0.0-RC1</version>
         <relativePath>../../pom.xml</relativePath>
     </parent>
 
@@ -149,6 +148,7 @@
         <module>../org.kevoree.tools.android.framework</module>
         <module>../org.kevoree.tools.merger.mavenplugin</module>
         <module>../org.kevoree.tools.annotation.mavenplugin</module>
+        <module>../org.kevoree.tools.library.root</module>
     </modules>
 
     <distributionManagement>

@@ -7,10 +7,10 @@
     <name>Kevoree :: Deploy OSGI</name>
 
     <parent>
-	<artifactId>org.kevoree.root</artifactId>
-	<groupId>org.kevoree</groupId>
-	<version>2.2.1-SNAPSHOT</version>
-	<relativePath>../org.kevoree.root/pom.xml</relativePath>
+        <artifactId>org.kevoree.root</artifactId>
+        <groupId>org.kevoree</groupId>
+        <version>1.0.0-RC1</version>
+        <relativePath>../org.kevoree.root/pom.xml</relativePath>
     </parent>
 
     <repositories>
@@ -21,8 +21,8 @@
     </repositories>
 
     <properties>
-	<slf4j.version>1.6.1</slf4j.version>
-	<slf4j.version.range>[1.5,2)</slf4j.version.range>
+        <slf4j.version>1.6.1</slf4j.version>
+        <slf4j.version.range>[1.5,2)</slf4j.version.range>
     </properties>
 
     <build>
@@ -36,7 +36,7 @@
 		    <instructions>
 			<Export-Package></Export-Package>
 			<Import-Package>org.slf4j.*;version="${slf4j.version.range}",*</Import-Package>
-			<Private-Package>org.kevoree.adaptation.deploy.*,org.kevoree.scheduling</Private-Package>
+                        <Private-Package>org.kevoree.adaptation.deploy.*</Private-Package>
 			<Bundle-ClassPath>.</Bundle-ClassPath>
 			<Bundle-Activator>org.kevoree.adaptation.deploy.osgi.KevoreeDeployActivator</Bundle-Activator>
 		    </instructions>

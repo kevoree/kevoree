@@ -2,11 +2,12 @@
 <kevoree:ContainerRoot xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:kevoree="http://kevoree/1.0">
   <nodes name="duke"/>
   <typeDefinitions xsi:type="kevoree:MessagePortType" name="org.kevoree.framework.MessagePort"/>
+  <typeDefinitions xsi:type="kevoree:ServicePortType" name="org.kevoree.library.fakedomo.ToogleLightService"/>
   <typeDefinitions xsi:type="kevoree:ComponentType" name="FakeSimpleLight" deployUnit="//@deployUnits.0" factoryBean="org.kevoree.library.fakedomo.FakeSimpleLightFactory" bean="org.kevoree.library.fakedomo.FakeSimpleLight" startMethod="start" stopMethod="stop" updateMethod="update">
     <dictionaryType>
       <attributes name="param1"/>
       <attributes name="param2" optional="true"/>
-      <defaultValues attribute="//@typeDefinitions.1/@dictionaryType/@attributes.1" value="defVal"/>
+      <defaultValues attribute="//@typeDefinitions.2/@dictionaryType/@attributes.1" value="defVal"/>
     </dictionaryType>
     <provided name="on" ref="//@typeDefinitions.0">
       <mappings beanMethodName="lightOn" serviceMethodName="process"/>
@@ -14,15 +15,14 @@
     <provided name="off" ref="//@typeDefinitions.0">
       <mappings beanMethodName="lightOff" serviceMethodName="process"/>
     </provided>
-    <provided name="toogle" ref="//@typeDefinitions.2">
+    <provided name="toogle" ref="//@typeDefinitions.1">
       <mappings beanMethodName="toogle" serviceMethodName="toogle"/>
     </provided>
   </typeDefinitions>
-  <typeDefinitions xsi:type="kevoree:ServicePortType" name="org.kevoree.library.fakedomo.ToogleLightService"/>
   <typeDefinitions xsi:type="kevoree:ComponentType" name="FakeSimpleSwitch" deployUnit="//@deployUnits.0" factoryBean="org.kevoree.library.fakedomo.FakeSimpleSwitchFactory" bean="org.kevoree.library.fakedomo.FakeSimpleSwitch" startMethod="start" stopMethod="stop" updateMethod="update">
     <required name="on" ref="//@typeDefinitions.0"/>
     <required name="off" ref="//@typeDefinitions.0"/>
-    <required name="toogle" ref="//@typeDefinitions.2"/>
+    <required name="toogle" ref="//@typeDefinitions.1"/>
   </typeDefinitions>
   <typeDefinitions xsi:type="kevoree:ComponentType" name="FakeConsole" deployUnit="//@deployUnits.0" factoryBean="org.kevoree.library.fakedomo.FakeConsoleFactory" bean="org.kevoree.library.fakedomo.FakeConsole" startMethod="start" stopMethod="stop">
     <required name="textEntered" ref="//@typeDefinitions.0"/>
@@ -30,18 +30,19 @@
       <mappings beanMethodName="appendIncoming" serviceMethodName="process"/>
     </provided>
   </typeDefinitions>
-  <typeDefinitions xsi:type="kevoree:ChannelType" name="defSERVICE" deployUnit="//@deployUnits.6" factoryBean="org.kevoree.library.defaultChannels.defSERVICEFactory" bean="org.kevoree.library.defaultChannels.defSERVICE" startMethod="startHello" stopMethod="stopHello"/>
-  <typeDefinitions xsi:type="kevoree:ChannelType" name="defMSG" deployUnit="//@deployUnits.6" factoryBean="org.kevoree.library.defaultChannels.defMSGFactory" bean="org.kevoree.library.defaultChannels.defMSG" startMethod="startHello" stopMethod="stopHello" updateMethod="updateHello"/>
+  <typeDefinitions xsi:type="kevoree:ChannelType" name="defSERVICE" deployUnit="//@deployUnits.7" factoryBean="org.kevoree.library.defaultChannels.defSERVICEFactory" bean="org.kevoree.library.defaultChannels.defSERVICE" startMethod="startHello" stopMethod="stopHello"/>
+  <typeDefinitions xsi:type="kevoree:ChannelType" name="defMSG" deployUnit="//@deployUnits.7" factoryBean="org.kevoree.library.defaultChannels.defMSGFactory" bean="org.kevoree.library.defaultChannels.defMSG" startMethod="startHello" stopMethod="stopHello" updateMethod="updateHello"/>
   <repositories units="//@deployUnits.0 //@deployUnits.5" url="https://github.com/dukeboard/kevoree/raw/master/embedded-repo"/>
-  <repositories units="//@deployUnits.6 //@deployUnits.0" url="http://dukeboard.github.com/kevoree/maven/"/>
+  <repositories units="//@deployUnits.0 //@deployUnits.7" url="http://dukeboard.github.com/kevoree/maven/"/>
   <dataTypes name="java.lang.String"/>
-  <libraries name="Fake-DOMO" subTypes="//@typeDefinitions.1 //@typeDefinitions.3 //@typeDefinitions.4"/>
+  <libraries name="Fake-DOMO" subTypes="//@typeDefinitions.2 //@typeDefinitions.3 //@typeDefinitions.4"/>
   <libraries name="art2baselib" subTypes="//@typeDefinitions.5 //@typeDefinitions.6"/>
-  <deployUnits groupName="org.kevoree.library" unitName="org.kevoree.library.fakeDomo" version="2.2.1-SNAPSHOT" hashcode="201102101558396"/>
+  <deployUnits groupName="org.kevoree.library" unitName="org.kevoree.library.fakeDomo" version="2.2.1-SNAPSHOT" hashcode="201102101626418"/>
   <deployUnits groupName="org.kevoree.library" unitName="org.kevoree.library.defaultChannels" version="2.2.1-SNAPSHOT" hashcode="201102011307431"/>
   <deployUnits groupName="org.kevoree.library" unitName="org.kevoree.library.defaultChannels" version="2.2.1-SNAPSHOT" hashcode="201102091341334"/>
   <deployUnits groupName="org.kevoree.library" unitName="org.kevoree.library.defaultChannels" version="2.2.1-SNAPSHOT" hashcode="201102091345920"/>
   <deployUnits groupName="org.kevoree.library" unitName="org.kevoree.library.defaultChannels" version="2.2.1-SNAPSHOT" hashcode="201102091704398"/>
   <deployUnits groupName="org.kevoree.library" unitName="org.kevoree.library.defaultChannels" version="2.2.1-SNAPSHOT" hashcode="201102091735970"/>
   <deployUnits groupName="org.kevoree.library" unitName="org.kevoree.library.defaultChannels" version="2.2.1-SNAPSHOT" hashcode="201102101558614"/>
+  <deployUnits groupName="org.kevoree.library" unitName="org.kevoree.library.defaultChannels" version="2.2.1-SNAPSHOT" hashcode="201102101626890"/>
 </kevoree:ContainerRoot>

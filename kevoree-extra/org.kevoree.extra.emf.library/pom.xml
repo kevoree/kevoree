@@ -7,14 +7,14 @@
     <packaging>jar</packaging>
     <name>Kevoree :: Extra :: EmfLibrary</name>
     <version>2.6.0</version>
-
+       
     <parent>
         <artifactId>org.kevoree.extra.root</artifactId>
         <groupId>org.kevoree.extra</groupId>
-        <version>2.2.1-SNAPSHOT</version>
+        <version>1.0.0-RC1</version>
         <relativePath>../org.kevoree.extra.root/pom.xml</relativePath>
     </parent>
-
+      
     <build>
         <plugins>
             <plugin>
@@ -67,5 +67,6 @@
             </resource>
         </resources>
     </build>
+    
 
 </project>
