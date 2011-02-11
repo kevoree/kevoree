@@ -25,7 +25,7 @@ import org.kevoree.framework.Constants
 import org.kevoree.framework.message.StopMessage
 import scala.collection.JavaConversions._
 
-case class StopInstanceCommand(c : Instance, ctx : KevoreeDeployManager,nodeName:String) extends PrimitiveCommand {
+case class StopInstanceCommand(c : Instance, ctx : KevoreeDeployManager,nodeName:String) extends LifeCycleCommand(c, ctx,nodeName) {
 
   def execute() : Boolean= {
     ctx.bundleMapping.find(map=>map.objClassName == c.getClass.getName && map.name == c.getName) match {

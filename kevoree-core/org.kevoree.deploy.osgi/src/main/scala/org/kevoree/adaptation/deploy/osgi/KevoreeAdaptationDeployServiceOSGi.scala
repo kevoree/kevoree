@@ -18,6 +18,7 @@ import org.kevoree.ComponentInstance
 import org.kevoree.adaptation.deploy.osgi.command.AddFragmentBindingCommand
 import org.kevoree.adaptation.deploy.osgi.command._
 import org.kevoree.adaptation.deploy.osgi.context.KevoreeDeployManager
+import org.kevoree.adaptation.deploy.osgi.scheduling.ChocoScheduling
 import org.kevoree.api.service.adaptation.deploy.KevoreeAdaptationDeployService
 import org.kevoreeAdaptation.AdaptationModel
 import org.kevoreeAdaptation.AddBinding
@@ -72,8 +73,8 @@ class KevoreeAdaptationDeployServiceOSGi extends KevoreeAdaptationDeployService 
     var command_add_binding :List[PrimitiveCommand] = List()
 
     //Life cycle command COMMAND
-    var stopCommand :List[PrimitiveCommand] = List()
-    var startCommand :List[PrimitiveCommand] = List()
+    var stopCommand :List[LifeCycleCommand] = List()
+    var startCommand :List[LifeCycleCommand] = List()
 
     var updateDictionaryCommand :List[PrimitiveCommand] = List()
 
@@ -147,6 +148,12 @@ class KevoreeAdaptationDeployServiceOSGi extends KevoreeAdaptationDeployService 
         case _ => logger.error("Unknow Kevoree adaptation primitive");false
       }
     }
+
+    // scheduling of start and stop commands
+    var chocoScheduling : ChocoScheduling = new ChocoScheduling
+
+    stopCommand =  chocoScheduling.schedule(stopCommand, false).toList
+    startCommand = chocoScheduling.schedule(startCommand, true).toList
 
     var executionResult = true
 
