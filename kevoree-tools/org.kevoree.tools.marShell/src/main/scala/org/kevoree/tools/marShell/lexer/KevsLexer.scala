@@ -11,23 +11,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.kevoree.tools.marShell.lexer
 
-package org.kevoree.remote;
 
-import rest.KevoreeRemoteBean
+class KevsLexer(content : String) extends KevsLexical {
 
-object MainTester {
+  var tokens = new Scanner(content)
 
-  /**
-   * @param args the command line arguments
-   */
-  def main(args: Array[String]): Unit = {
-
-    var component = new KevoreeRemoteBean
-    component.start
-    Thread.sleep(20*1000)
-    component.stop
-
+  def nextToken : KevsToken = {
+    val tok = tokens.first
+    tokens = tokens.rest
+   tok.asInstanceOf[KevsToken]
   }
+
+  def atEnd = tokens.atEnd
 
 }

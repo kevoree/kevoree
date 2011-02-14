@@ -108,22 +108,22 @@ class KevoreeAdaptationDeployServiceOSGi extends KevoreeAdaptationDeployService 
         case ca : AddInstance => {
             command_add_instance = command_add_instance ++ List(AddInstanceCommand(ca.getRef,ctx,nodeName))
             updateDictionaryCommand = updateDictionaryCommand ++ List(UpdateDictionaryCommand(ca.getRef,ctx,nodeName))
-           // if(ca.getRef.isInstanceOf[ComponentInstance]){
-              startCommand = startCommand ++ List(StartInstanceCommand(ca.getRef,ctx,nodeName))
-           // }
+            // if(ca.getRef.isInstanceOf[ComponentInstance]){
+            startCommand = startCommand ++ List(StartInstanceCommand(ca.getRef,ctx,nodeName))
+            // }
           }
         case ca : RemoveInstance =>{
             command_remove_instance = command_remove_instance ++ List(RemoveInstanceCommand(ca.getRef,ctx,nodeName))
             //if(ca.getRef.isInstanceOf[ComponentInstance]){
-              stopCommand = stopCommand ++ List(StopInstanceCommand(ca.getRef,ctx,nodeName))
+            stopCommand = stopCommand ++ List(StopInstanceCommand(ca.getRef,ctx,nodeName))
             //}
           }
         case ca : UpdateInstance => {
             //STOP & REMOVE
             command_remove_instance = command_remove_instance ++ List(RemoveInstanceCommand(ca.getRef,ctx,nodeName))
             //if(ca.getRef.isInstanceOf[ComponentInstance]){
-              stopCommand = stopCommand ++ List(StopInstanceCommand(ca.getRef,ctx,nodeName))
-              startCommand = startCommand ++ List(StartInstanceCommand(ca.getRef,ctx,nodeName))
+            stopCommand = stopCommand ++ List(StopInstanceCommand(ca.getRef,ctx,nodeName))
+            startCommand = startCommand ++ List(StartInstanceCommand(ca.getRef,ctx,nodeName))
             //}
             command_add_instance = command_add_instance ++ List(AddInstanceCommand(ca.getRef,ctx,nodeName))
             updateDictionaryCommand = updateDictionaryCommand ++ List(UpdateDictionaryCommand(ca.getRef,ctx,nodeName))
@@ -139,7 +139,7 @@ class KevoreeAdaptationDeployServiceOSGi extends KevoreeAdaptationDeployService 
             //UPDATE MAP ON REMOVE & INSTALL
             command_add_binding = command_add_binding ++ List(AddBindingCommand(ca.getRef,ctx,nodeName))
             command_remove_binding = command_remove_binding ++ List(RemoveBindingCommand(ca.getRef,ctx,nodeName))
-        }
+          }
 
           //Channel binding
         case ca : AddFragmentBinding =>command_add_binding = command_add_binding ++ List(AddFragmentBindingCommand(ca.getRef,ca.getTargetNodeName,ctx,nodeName))
@@ -149,11 +149,16 @@ class KevoreeAdaptationDeployServiceOSGi extends KevoreeAdaptationDeployService 
       }
     }
 
+    var initTime = System.currentTimeMillis
+
     // scheduling of start and stop commands
     var chocoScheduling : ChocoScheduling = new ChocoScheduling
 
     stopCommand =  chocoScheduling.schedule(stopCommand, false).toList
     startCommand = chocoScheduling.schedule(startCommand, true).toList
+
+    var planTime = System.currentTimeMillis
+    println("Plannification time = "+(planTime-initTime)+" ms");
 
     var executionResult = true
 
@@ -176,7 +181,11 @@ class KevoreeAdaptationDeployServiceOSGi extends KevoreeAdaptationDeployService 
 
     if(!executionResult){phase.rollback}
 
+    var deployTime = System.currentTimeMillis
+    println("Deploy time = "+(deployTime-planTime)+" ms");
     executionResult
+
+
   }
 
 
@@ -190,6 +199,6 @@ class KevoreeAdaptationDeployServiceOSGi extends KevoreeAdaptationDeployService 
    var res = thirdPartiesAdaptations ++ componentTypeAdaptations ++ componentInstanceAdaptations ++ bindingAdaptations
    res.toList
    }*/
-  
+
 
 }

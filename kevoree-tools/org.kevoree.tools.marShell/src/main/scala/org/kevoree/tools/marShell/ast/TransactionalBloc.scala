@@ -11,23 +11,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.kevoree.tools.marShell.ast
 
-package org.kevoree.remote;
-
-import rest.KevoreeRemoteBean
-
-object MainTester {
-
-  /**
-   * @param args the command line arguments
-   */
-  def main(args: Array[String]): Unit = {
-
-    var component = new KevoreeRemoteBean
-    component.start
-    Thread.sleep(20*1000)
-    component.stop
-
-  }
-
-}
+case class TransactionalBloc(tl : List[Statment]) extends Block (tl)

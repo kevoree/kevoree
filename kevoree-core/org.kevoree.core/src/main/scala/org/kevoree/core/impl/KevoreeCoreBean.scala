@@ -87,7 +87,7 @@ class KevoreeCoreBean extends KevoreeModelHandlerService with KevoreeActor {
           var deployResult = deployService.deploy(adaptationModel,nodeName);
 
           if(deployResult){
-            //MErge previous model on new model for platform model
+            //Merge previous model on new model for platform model
             KevoreePlatformMerger.merge(newmodel,model)
             switchToNewModel(newmodel)
             logger.info("Deploy result " + deployResult)

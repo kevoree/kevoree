@@ -11,23 +11,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
 
-package org.kevoree.remote;
+package org.kevoree.tools.marShell.interpreter
 
-import rest.KevoreeRemoteBean
+import org.kevoree.tools.marShell.ast.Script
+import org.kevoree.tools.marShell.interpreter.KevsInterpreterAspects._
 
-object MainTester {
+case class KevsScriptInterpreter(script : Script) extends KevsAbstractInterpreter {
 
-  /**
-   * @param args the command line arguments
-   */
-  def main(args: Array[String]): Unit = {
+  def interpret(context : KevsInterpreterContext) : Boolean ={
 
-    var component = new KevoreeRemoteBean
-    component.start
-    Thread.sleep(20*1000)
-    component.stop
-
+    script.blocks.forall{block=>
+      block.interpret(context)
+    }
+    
   }
 
 }

@@ -28,15 +28,6 @@ import android.net.wifi.WifiManager.MulticastLock;
 import android.os.Environment;
 import android.os.IBinder;
 import android.util.Log;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.PrintStream;
-import java.lang.reflect.Method;
-import java.util.HashMap;
-import java.util.Hashtable;
-import java.util.Properties;
 import org.apache.felix.framework.Logger;
 import org.apache.felix.framework.util.FelixConstants;
 import org.kevoree.android.framework.service.KevoreeAndroidService;
@@ -44,6 +35,12 @@ import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleException;
 import org.osgi.framework.launch.Framework;
 import org.osgi.framework.launch.FrameworkFactory;
+
+import java.io.*;
+import java.lang.reflect.Method;
+import java.util.HashMap;
+import java.util.Hashtable;
+import java.util.Properties;
 
 /**
  *

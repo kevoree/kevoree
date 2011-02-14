@@ -11,23 +11,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
 
-package org.kevoree.remote;
+package org.kevoree.tools.marShell.parser.sub
 
-import rest.KevoreeRemoteBean
+import org.kevoree.tools.marShell.ast.AddComponentInstanceStatment
+import org.kevoree.tools.marShell.ast.Statment
 
-object MainTester {
+trait KevsAddInstParser extends KevsAbstractParser {
 
-  /**
-   * @param args the command line arguments
-   */
-  def main(args: Array[String]): Unit = {
-
-    var component = new KevoreeRemoteBean
-    component.start
-    Thread.sleep(20*1000)
-    component.stop
-
+  def parseAddInst : Parser[Statment] = "addComponent" ~ componentID ~ ":" ~ ident ^^{ case _ ~ cid ~ _ ~ typeid  =>
+    AddComponentInstanceStatment(cid,typeid)
   }
 
 }

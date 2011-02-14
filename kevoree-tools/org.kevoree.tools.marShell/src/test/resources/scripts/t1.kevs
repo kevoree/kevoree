@@ -1,0 +1,8 @@
+/* commennt */
+tblock{
+    //comment
+    addNode nodeSalon
+    addComponent light@nodeSalon : FakeLight
+    addComponent switch@nodeSalon : FakeSwitch
+
+}

@@ -149,6 +149,7 @@
         <module>../org.kevoree.tools.merger.mavenplugin</module>
         <module>../org.kevoree.tools.annotation.mavenplugin</module>
         <module>../org.kevoree.tools.library.root</module>
+        <module>../org.kevoree.tools.marShell</module>
     </modules>
 
     <distributionManagement>
