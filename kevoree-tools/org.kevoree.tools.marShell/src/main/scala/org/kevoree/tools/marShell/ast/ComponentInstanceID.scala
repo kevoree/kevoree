@@ -11,23 +11,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
 
-package org.kevoree.remote;
+package org.kevoree.tools.marShell.ast
 
-import rest.KevoreeRemoteBean
-
-object MainTester {
-
-  /**
-   * @param args the command line arguments
-   */
-  def main(args: Array[String]): Unit = {
-
-    var component = new KevoreeRemoteBean
-    component.start
-    Thread.sleep(20*1000)
-    component.stop
-
-  }
+case class ComponentInstanceID(componentInstanceName : String,nodeName : Option[String]) {
 
 }

@@ -30,8 +30,7 @@ class KevoreeDeployActivator extends BundleActivator {
 
   var bean : KevoreeAdaptationDeployServiceOSGi = null
   var context : KevoreeDeployManager = null
-  var modelHandlerServiceTracker : ServiceTracker = null
-
+  var modelHandlerServiceTracker : ServiceTracker = null;
   var packageAdminServiceTracker : ServiceTracker = null
 
   def start(bc : BundleContext){
