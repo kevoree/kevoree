@@ -24,15 +24,16 @@ import org.kevoree.tools.marShell.ast.Statment
 import sub._
 
 class KevsParser extends KevsAbstractParser
-                    with KevsAddInstParser
+                    with KevsInstParser
                     with KevsComponentInstanceParser
                     with KevsScriptParser
-                    with KevsAddNodeParser {
+                    with KevsNodeParser
+                    with KevsBindingParser{
 
   /**
    * extend the fExpression parser with sub parser
    */
-  override def kevStatement : Parser[Statment] = (parseAddInst | parseAddNode)
+  override def kevStatement : Parser[List[Statment]] = (parseInst | parseNode | parseBindingsStatments)
   override def componentID : Parser[ComponentInstanceID] = parseCID
 
   def parseScript(content : String) : Option[Script] = {

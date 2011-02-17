@@ -98,7 +98,7 @@ class KevoreeCoreBean extends KevoreeModelHandlerService with KevoreeActor {
 
         }
       }
-    case _ @ unknow=> logger.warn("unknow message  "+unknow)
+    case _ @ unknow=> logger.warn("unknow message  "+unknow.toString+" - sender"+sender.toString+ "-"+this.getClass.getName)
   }
 
   

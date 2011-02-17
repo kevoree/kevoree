@@ -14,12 +14,9 @@
 package org.kevoree.platform.osgi.android;
 
 import android.app.Activity;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.content.ServiceConnection;
 import android.os.Bundle;
-import android.os.IBinder;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -28,15 +25,8 @@ import android.widget.LinearLayout;
 import android.widget.TabHost;
 import android.widget.TabHost.TabSpec;
 import android.widget.TabWidget;
-import android.widget.TextView;
-import android.widget.Toast;
-import java.util.HashMap;
-import java.util.Properties;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.kevoree.android.framework.service.KevoreeAndroidService;
 import org.kevoree.platform.osgi.android.ui.PreExistingViewFactory;
-import org.osgi.framework.BundleContext;
 
 /**
  * Hello world!
@@ -49,13 +39,13 @@ public class KevoreeActivity extends Activity implements KevoreeAndroidService {
     @Override
     protected void onStart() {
         super.onStart();
-        Log.i("kevoree", "Kevoree UIActivity Start /"+this.toString() );
+        Log.i("kevoree", "Kevoree UIActivity Start /" + this.toString());
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-        Log.i("kevoree", "Kevoree UIActivity Stop /"+this.toString());
+        Log.i("kevoree", "Kevoree UIActivity Stop /" + this.toString());
         // Intent intent = new Intent(".AndroidFelixService.ACTION");
         //stopService(intent);
     }
@@ -65,6 +55,7 @@ public class KevoreeActivity extends Activity implements KevoreeAndroidService {
     @Override
     protected synchronized void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         last = this;
         LinearLayout main = new LinearLayout(this);
         main.setOrientation(LinearLayout.VERTICAL);
@@ -143,6 +134,7 @@ public class KevoreeActivity extends Activity implements KevoreeAndroidService {
                 }, BIND_AUTO_CREATE);
                  */
                 //startService(intent_start);
+
             }
         });
 

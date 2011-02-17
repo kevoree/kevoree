@@ -59,10 +59,5 @@ class KevsPanel extends JPanel {
             }
         }
       }
-
-
-
     })
-
-
 }

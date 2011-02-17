@@ -30,7 +30,7 @@ import org.kevoree.framework.MessagePort;
 @Provides({
     @ProvidedPort(name = "on", type = PortType.MESSAGE),
     @ProvidedPort(name = "off", type = PortType.MESSAGE),
-    @ProvidedPort(name = "toogle", type = PortType.SERVICE, className = ToogleLightService.class)
+    @ProvidedPort(name = "toggle", type = PortType.SERVICE, className = ToggleLightService.class)
 })
 @DictionaryType({
     @DictionaryAttribute(name = "param1"),
@@ -39,7 +39,7 @@ import org.kevoree.framework.MessagePort;
 @ComponentType
 public class FakeSimpleLight extends AbstractFakeStuffComponent {
 
-    @Port(name = "toogle",method = "toogle")
+    @Port(name = "toggle",method = "toggle")
     public String toogle(){
         if(state){
             this.lightOff("");

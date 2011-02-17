@@ -28,7 +28,7 @@ trait KevsAbstractParser extends TokenParsers {
   }
   import lexical._
 
-  def kevStatement : Parser[Statment]
+  def kevStatement : Parser[List[Statment]]
   //def fExpression : Parser[Expression] = fLiteral
   //def fLiteral : Parser[Expression]
   def componentID : Parser[ComponentInstanceID]

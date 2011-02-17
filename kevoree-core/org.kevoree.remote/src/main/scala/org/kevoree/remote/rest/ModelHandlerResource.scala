@@ -24,31 +24,47 @@ import java.io.ByteArrayOutputStream
 import java.io.StringWriter
 import org.kevoree.ContainerRoot
 import org.kevoree.framework.KevoreeXmiHelper
-import org.restlet.resource.Get;
-import org.restlet.resource.Post;
+import org.restlet.data.Method
+import org.restlet.representation.Representation
+import org.restlet.representation.StringRepresentation
+import org.restlet.representation.Variant
+import org.restlet.resource.UniformResource
+
 
 class ModelHandlerResource extends ServerResource {
+  /*
+   override def doInit()={
+   println("INIT")
+   }*/
 
-
-  @Get()
-  def getCurrentXMI() : String = {
-    var ouput = new ByteArrayOutputStream
-    KevoreeXmiHelper.saveStream(ouput, Handler.getModelhandler.getLastModel)
-    ouput.toString
+  override def doHandle():Representation={
+    var method = getMethod();
+    method match {
+      case Method.POST => post(getRequestEntity())
+      case Method.GET => get
+    }
   }
 
-  @Post()
-  def updateModel(newmodel:String) : String = {
+
+  override def get():Representation = {
+    var ouput = new ByteArrayOutputStream
+    KevoreeXmiHelper.saveStream(ouput, Handler.getModelhandler.getLastModel)
+    new StringRepresentation(ouput.toString)
+  }
+
+  override def post(entity:Representation):Representation = {
+    var newmodel = entity.getText
+
     try{
       var stream = new ByteArrayInputStream(newmodel.getBytes())
       var root = KevoreeXmiHelper.loadStream(stream);
       
       Handler.getModelhandler.updateModel(root)
 
-      "model uploaded"
+      new StringRepresentation("model uploaded")
 
     } catch {
-      case _ @ e => "error=>"+e.getMessage
+      case _ @ e => new StringRepresentation("error=>"+e.getMessage)
     }
 
   }
