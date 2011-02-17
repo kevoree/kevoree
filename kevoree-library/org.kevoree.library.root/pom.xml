@@ -7,13 +7,21 @@
     <artifactId>org.kevoree.library.root</artifactId>
     <packaging>pom</packaging>
     <name>Kevoree :: Library :: Root</name>
+    <version>1.0.0-RC2</version>
 
+    <properties>
+    	<kevoree.version>1.0.0-RC2</kevoree.version>
+    	<kevoree.deploy.repo>../kevoreePages/maven</kevoree.deploy.repo>
+    	<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+
+<!--
     <parent>
         <artifactId>org.kevoree</artifactId>
         <groupId>org.kevoree</groupId>
         <version>1.0.0-RC1</version>
         <relativePath>../../pom.xml</relativePath>
-    </parent>
+    </parent>-->
 
     <modules>
         <module>../org.kevoree.library.defaultChannels</module>
@@ -48,7 +56,7 @@
         <dependency>
             <groupId>org.kevoree.tools</groupId>
             <artifactId>org.kevoree.tools.annotation.api</artifactId>
-            <version>1.0.0-RC1</version>
+            <version>${kevoree.version}</version>
         </dependency>
     </dependencies>
 
@@ -87,5 +95,20 @@
             </plugin>
         </plugins>
     </build>
+    
+   <repositories>
+        <repository>
+            <id>kevoree-github</id>
+            <url>http://dukeboard.github.com/kevoree/maven/</url>
+        </repository>
+    </repositories>
+
+    <pluginRepositories>
+        <pluginRepository>
+            <id>plugin.kevoree-github</id>
+            <url>http://dukeboard.github.com/kevoree/maven/</url>
+        </pluginRepository>
+    </pluginRepositories>
+    
 
 </project>

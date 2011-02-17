@@ -15,11 +15,11 @@
         <module>kevoree-core/org.kevoree.root</module>
         <module>kevoree-tools/org.kevoree.tools.root</module>
         <module>kevoree-platform/org.kevoree.platform.root</module>
-     <!--   <module>kevoree-library/org.kevoree.library.root</module>-->
+     <!--   <module>kevoree-library/org.kevoree.library.root</module> -->
     </modules>
     
     <properties>
-    	<kevoree.version>1.0.0-RC1</kevoree.version>
+    	<kevoree.version>1.0.0-RC2</kevoree.version>
     	<kevoree.deploy.repo>../kevoreePages/maven</kevoree.deploy.repo>
     	<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
