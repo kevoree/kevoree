@@ -21,6 +21,7 @@ package org.kevoree.tools.marShell.parser.sub
 import org.kevoree.tools.marShell.ast.Block
 import org.kevoree.tools.marShell.ast.Statment
 import org.kevoree.tools.marShell.ast.TransactionalBloc
+import scala.collection.JavaConversions._
 
 trait KevsBlockParser extends KevsAbstractParser {
 
@@ -33,7 +34,13 @@ trait KevsBlockParser extends KevsAbstractParser {
 
   def parseBlockType : Parser[String] = "tblock"
   
-  def parseStatmentList : Parser[List[Statment]] = rep(kevStatement)
+  def parseStatmentList : Parser[List[Statment]] = rep(kevStatement) ^^{ case l =>
+      var res : List[Statment] = List()
+      l.foreach{newl=>
+        res = res ++ newl
+      }
+      res
+  }
 
 
 }

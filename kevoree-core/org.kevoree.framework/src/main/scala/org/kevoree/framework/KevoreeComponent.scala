@@ -45,9 +45,10 @@ abstract class KevoreeComponent(c: AbstractComponentType) extends KevoreeActor {
     }
 
     case StartMessage if(!ct_started) => {
-      new Actor {
-        def act = startComponent
-      }.start()
+     // new Actor {
+       // def act =
+          startComponent
+     // }.start()
       //Wake Up Hosted Port
       getKevoreeComponentType.getHostedPorts.foreach{
         hp =>
@@ -68,13 +69,16 @@ abstract class KevoreeComponent(c: AbstractComponentType) extends KevoreeActor {
             port.pause
           }
       }
-      new Actor {
-        def act = stopComponent
-      }.start()
+     // new Actor {
+        //def act =
+          stopComponent
+     // }.start()
       ct_started = false
       reply(true)
     }
-    case _@msg => println("unknow message " + msg)
+    case StopMessage if(!ct_started) =>
+    case StartMessage if(ct_started) =>
+    case _@msg => println("unknow message " + msg+"-sender-"+sender.getClass.getName)
   }
 
   def startComponent

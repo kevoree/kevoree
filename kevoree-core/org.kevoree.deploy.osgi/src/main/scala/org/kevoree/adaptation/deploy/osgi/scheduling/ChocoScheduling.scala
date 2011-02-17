@@ -141,7 +141,17 @@ class ChocoScheduling {
    * */
   private def lookForPotentialConstraints(commands: List[LifeCycleCommand]): scala.collection.mutable.Map[Instance, java.util.List[Instance]] = {
     val instanceDependencies: scala.collection.mutable.Map[Instance, java.util.List[Instance]] = scala.collection.mutable.Map[Instance, java.util.List[Instance]]()
-    var bindingIterator = ((commands(0)).getInstance.eContainer.asInstanceOf[ContainerRoot]).getMBindings.iterator
+
+    var rootContainer : ContainerRoot = null
+    var firstCommand= (commands(0)).getInstance
+    firstCommand match {
+      case c : Channel => rootContainer = c.eContainer.asInstanceOf[ContainerRoot]
+      case c : ComponentInstance => c.eContainer.eContainer.asInstanceOf[ContainerRoot]
+    }
+
+
+
+    var bindingIterator = rootContainer.getMBindings.iterator
     while(bindingIterator.hasNext){
       var binding = bindingIterator.next
       for (command <- commands) {

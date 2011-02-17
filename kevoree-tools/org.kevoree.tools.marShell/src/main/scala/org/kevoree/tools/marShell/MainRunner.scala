@@ -40,7 +40,7 @@ object MainRunner {
       case None => println("Error"+parser.lastNoSuccess)
       case Some(script)=> {
           import org.kevoree.tools.marShell.interpreter.KevsInterpreterAspects._
-          script.interpret(KevsInterpreterContext(newModel))
+          println("Interpreter Result : "+script.interpret(KevsInterpreterContext(newModel)))
       }
     }
 

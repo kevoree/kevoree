@@ -8,7 +8,7 @@
     <parent>
         <artifactId>org.kevoree.platform.root</artifactId>
         <groupId>org.kevoree.platform</groupId>
-        <version>1.0.0-RC1</version>
+        <version>1.0.0-RC2</version>
         <relativePath>../org.kevoree.platform.root/pom.xml</relativePath>
     </parent>
 
@@ -24,7 +24,7 @@
         <dependency>
             <groupId>org.kevoree.platform</groupId>
             <artifactId>org.kevoree.platform.osgi.standalone</artifactId>
-            <version>1.0.0-RC1</version>
+            <version>1.0.0-RC2</version>
         </dependency>
     </dependencies>
 
@@ -103,7 +103,7 @@
                     <mainClass>org.kevoree.platform.osgi.standalone.gui.App</mainClass>
                 </configuration>
             </plugin>
-
+<!--
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
@@ -132,7 +132,7 @@
                     </execution>
                 </executions>
             </plugin>
-
+-->
 
         </plugins>
     </build>

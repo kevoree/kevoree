@@ -97,7 +97,6 @@ abstract class KevoreeComponentActivator extends BundleActivator {
     componentActor.getKevoreeComponentType.getHostedPorts.foreach{
       hp => hp._2.asInstanceOf[KevoreePort].stop
     }
-
     componentActor.stop
     componentActor = null
   }

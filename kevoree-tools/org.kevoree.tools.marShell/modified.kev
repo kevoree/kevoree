@@ -4,4 +4,7 @@
     <components name="light"/>
     <components name="switch"/>
   </nodes>
+  <nodes name="nodeSalon2"/>
+  <hubs name="hub1"/>
+  <hubs name="hub2"/>
 </kevoree:ContainerRoot>

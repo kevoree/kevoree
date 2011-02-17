@@ -22,6 +22,7 @@ import java.util.HashMap
 import org.kevoree.framework.message._
 import scala.actors.Actor
 import scala.collection.JavaConversions._
+import scala.reflect.BeanProperty
 
 trait ChannelTypeFragment extends KevoreeChannelFragment with ChannelFragment {
 
@@ -39,6 +40,9 @@ trait ChannelTypeFragment extends KevoreeChannelFragment with ChannelFragment {
 
   //@BeanProperty
   var nodeName: String = ""
+
+  @BeanProperty
+  var isStarted : Boolean = false
 
   override def getNodeName = nodeName
 
@@ -117,20 +121,24 @@ trait ChannelTypeFragment extends KevoreeChannelFragment with ChannelFragment {
     }
 
     case StartMessage => {
-      new Actor {
-        def act = {startChannelFragment;println("Starting Channel Internal queue");local_queue.start }
-      }.start
+     // new Actor {
+      //  def act = {
+          startChannelFragment;println("Starting Channel Internal queue");local_queue.start;isStarted=true
+        //}
+     // }.start
+
       reply(true)
     }
     case StopMessage => {
-      new Actor {
-        def act = {
+     // new Actor {
+     //   def act = {
           //TODO CHECK QUEUE SIZE AND SAVE STATE
           local_queue.forceStop
           stopChannelFragment
-        }
+          isStarted=false
+     //   }
 
-      }.start
+     // }.start
       reply(true)
     }
 

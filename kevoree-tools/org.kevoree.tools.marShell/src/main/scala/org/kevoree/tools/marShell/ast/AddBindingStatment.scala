@@ -13,5 +13,7 @@
  */
 package org.kevoree.tools.marShell.ast
 
-class AddBindingStatment(cid:ComponentInstanceID,portName:String, bindingInstanceName: String)
-  extends Statment
+case class AddBindingStatment(cid:ComponentInstanceID,portName:String, bindingInstanceName: String)
+  extends Statment {
+    
+  }

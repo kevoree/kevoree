@@ -5,14 +5,14 @@
     <groupId>org.kevoree.platform</groupId>
     <artifactId>org.kevoree.platform.root</artifactId>
     <packaging>pom</packaging>
-    <version>1.0.0-RC1</version>
+    <version>1.0.0-RC2</version>
     <name>Kevoree :: Platform :: Root</name>
     <url>https://github.com/dukeboard/kevoree</url>
 
     <parent>
         <artifactId>org.kevoree</artifactId>
         <groupId>org.kevoree</groupId>
-        <version>1.0.0-RC1</version>
+        <version>1.0.0-RC2</version>
         <relativePath>../../pom.xml</relativePath>
     </parent>
 
@@ -97,6 +97,7 @@
        <module>../org.kevoree.platform.osgi.standalone.gui</module>
        <module>../org.kevoree.platform.osgi.bundle.full</module>
        <module>../org.kevoree.platform.osgi.android</module>
+       <module>../org.kevoree.platform.osgi.standalone.minigui</module>
     </modules>
     
     <distributionManagement>

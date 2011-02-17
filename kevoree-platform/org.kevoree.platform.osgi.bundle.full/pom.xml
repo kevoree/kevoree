@@ -1,3 +1,4 @@
+
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
@@ -8,7 +9,7 @@
     <parent>
         <artifactId>org.kevoree.platform.root</artifactId>
         <groupId>org.kevoree.platform</groupId>
-        <version>1.0.0-RC1</version>
+        <version>1.0.0-RC2</version>
         <relativePath>../org.kevoree.platform.root/pom.xml</relativePath>
     </parent>
 
@@ -79,6 +80,9 @@
             <artifactId>logback-classic</artifactId>
             <version>0.9.24</version>
         </dependency>
+       
+
+
     </dependencies>
 
     <build>
@@ -90,8 +94,39 @@
                 <configuration>
                     <instructions>
                         <Bundle-ClassPath>.</Bundle-ClassPath>
-                        <Import-Package>!org.restlet.*,!org.kevoree.*,org.slf4j.*,scala.*,org.apache.commons.*,java.*,javax.*,org.osgi.*,org.w3c.*,org.xml.*,org.eclipse.emf.*</Import-Package>
-                        <Export-Package>org.kevoree.*,org.kevoreeAdaptation.*,org.restlet.*,net.lag.*,org.ops4j.*,org.codehaus.jackson.*</Export-Package>
+                        <Import-Package>
+                            !org.jgraph.*,
+                            !org.jgrapht.*,
+                            !dk.brics.automaton,
+                            !gnu.trove.*,
+                            !choco.*,
+                            !com.touchgraph.graphlayout.*,
+                            !org.restlet.*,
+                            !org.kevoree.*,
+                            org.slf4j.*,
+                            scala.*,
+                            org.apache.commons.*,
+                            java.*,
+                            javax.*,
+                            org.osgi.*,
+                            org.w3c.*,
+                            org.xml.*,
+                            org.eclipse.emf.*
+                        </Import-Package>
+                        <Export-Package>
+                            com.touchgraph.graphlayout.*,
+                            org.jgraph.*,
+                            org.jgrapht.*,
+                            dk.brics.automaton,
+                            gnu.trove.*,
+                            choco.*,
+                            org.kevoree.*,
+                            org.kevoreeAdaptation.*,
+                            org.restlet.*,
+                            net.lag.*,
+                            org.ops4j.*,
+                            org.codehaus.jackson.*
+                        </Export-Package>
                         <Bundle-Activator>org.kevoree.platform.osgi.bundle.BootstrapActivator</Bundle-Activator>
                         <Bundle-ActivationPolicy>auto</Bundle-ActivationPolicy>
                         <Eclipse-LazyStart>false</Eclipse-LazyStart>
@@ -108,10 +143,18 @@
                         <param>--log=DEBUG</param>
                         <param>--workingDirectory=target/runner</param>
                     </provision>
-                    <deployURLs></deployURLs>
+                    <deployURLs>
+                        mvn:org.kevoree.extra/org.kevoree.extra.emf.library,
+                        mvn:org.slf4j/slf4j-api,
+                        mvn:ch.qos.logback/logback-core,
+                        mvn:ch.qos.logback/logback-classic,
+                        mvn:http://scala-tools.org/repo-releases/!com.weiglewilczek.scala-lang-osgi/scala-library/2.8.1
+                    </deployURLs>
+                    <profiles>log,compendium</profiles>
                 </configuration>
             </plugin>
         </plugins>
     </build>
+
 
 </project>

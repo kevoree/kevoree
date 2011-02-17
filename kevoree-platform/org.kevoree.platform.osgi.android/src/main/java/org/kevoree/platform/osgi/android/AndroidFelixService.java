@@ -23,8 +23,6 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
-import android.net.wifi.WifiManager;
-import android.net.wifi.WifiManager.MulticastLock;
 import android.os.Environment;
 import android.os.IBinder;
 import android.util.Log;
@@ -48,7 +46,7 @@ import java.util.Properties;
  */
 public class AndroidFelixService extends Service {
 
-    protected MulticastLock multicastLock;
+    //protected MulticastLock multicastLock;
     protected static Framework felixFramework;
     public static final String FELIX_BASE = "OSGI";
     public static final String FELIX_CACHE_DIR = "OSGI/cache";
@@ -246,6 +244,7 @@ public class AndroidFelixService extends Service {
                 }
 
 
+                /*
                 try {
                     // Activate WiFi multicast
                     WifiManager wifiManager = (WifiManager) getSystemService(Context.WIFI_SERVICE);
@@ -253,12 +252,12 @@ public class AndroidFelixService extends Service {
                     multicastLock.acquire();
                 } catch (Exception e) {
                     Log.e("art2.osgi.service.logger", "Exception when creating the multicast lock", e);
-                }
+                }*/
 
                 // Launch the Felix OSGi framework
                 HashMap<String, Object> configMap = new HashMap<String, Object>();
                 configMap.put(FelixConstants.LOG_LEVEL_PROP, String.valueOf(Logger.LOG_DEBUG));
-                configMap.put(org.osgi.framework.Constants.FRAMEWORK_SYSTEMPACKAGES, ANDROID_FRAMEWORK_PACKAGES);
+                configMap.put(org.osgi.framework.Constants.FRAMEWORK_SYSTEMPACKAGES, generated.SysPackageConstants.getProperty());//ANDROID_FRAMEWORK_PACKAGES);
                 configMap.put(org.osgi.framework.Constants.FRAMEWORK_STORAGE, m_cache.getAbsolutePath());
                 configMap.put(org.osgi.framework.Constants.FRAMEWORK_STORAGE_CLEAN, org.osgi.framework.Constants.FRAMEWORK_STORAGE_CLEAN_ONFIRSTINIT);
                 configMap.put(FelixConstants.SYSTEMBUNDLE_ACTIVATORS_PROP, EmbeddedActivators.getActivators());
@@ -337,7 +336,8 @@ public class AndroidFelixService extends Service {
         } catch (BundleException e) {
             Log.e("art2.osgi.service.logger", "Exception when stopping the OSGi framework", e);
         }
-        multicastLock.release();
+
+        //multicastLock.release();
         //Unset the service as foreground
         unsetServiceAsForeground();
 

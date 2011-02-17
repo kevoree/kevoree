@@ -11,7 +11,7 @@
     <parent>
         <artifactId>org.kevoree</artifactId>
         <groupId>org.kevoree</groupId>
-        <version>1.0.0-RC1</version>
+        <version>1.0.0-RC2</version>
         <relativePath>../../pom.xml</relativePath>
     </parent>
 
@@ -141,7 +141,6 @@
         <module>../org.kevoree.tools.annotation.api</module>
         <module>../org.kevoree.tools.annotation.generator</module>
         <module>../org.kevoree.tools.annotation.processor</module>
-        <module>../org.kevoree.tools.library.root</module>
         <module>../org.kevoree.tools.ui.framework</module>
         <module>../org.kevoree.tools.ui.editor</module>
         <module>../org.kevoree.tools.ui.editor.standalone</module>
@@ -150,6 +149,7 @@
         <module>../org.kevoree.tools.annotation.mavenplugin</module>
         <module>../org.kevoree.tools.library.root</module>
         <module>../org.kevoree.tools.marShell</module>
+        <module>../org.kevoree.tools.marShellGUI</module>
     </modules>
 
     <distributionManagement>

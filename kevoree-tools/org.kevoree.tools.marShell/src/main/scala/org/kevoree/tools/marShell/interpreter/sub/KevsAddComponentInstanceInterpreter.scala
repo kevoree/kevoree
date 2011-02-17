@@ -27,7 +27,6 @@ import scala.collection.JavaConversions._
 case class KevsAddComponentInstanceInterpreter(addCompo : AddComponentInstanceStatment) extends KevsAbstractInterpreter {
 
   def interpret(context : KevsInterpreterContext) : Boolean ={
-
     addCompo.cid.nodeName match {
       case Some(nodeID)=> {
           //SEARCH NODE
@@ -42,11 +41,9 @@ case class KevsAddComponentInstanceInterpreter(addCompo : AddComponentInstanceSt
         }
       case None => {
           //TODO search to solve ambiguity
+          false
         }
     }
-
-
-    true
   }
 
 }

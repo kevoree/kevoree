@@ -1,3 +1,4 @@
+
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
@@ -8,7 +9,7 @@
     <parent>
         <artifactId>org.kevoree.platform.root</artifactId>
         <groupId>org.kevoree.platform</groupId>
-        <version>1.0.0-RC1</version>
+        <version>1.0.0-RC2</version>
         <relativePath>../org.kevoree.platform.root/pom.xml</relativePath>
     </parent>
     <!--
@@ -33,7 +34,7 @@
         <dependency>
             <groupId>org.kevoree.tools</groupId>
             <artifactId>org.kevoree.tools.android.framework</artifactId>
-            <version>1.0.0-RC1</version>
+            <version>1.0.0-RC2</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -141,7 +142,7 @@
         <dependency>
             <groupId>org.restlet.android</groupId>
             <artifactId>org.restlet</artifactId>
-            <version>2.1-M2</version>
+            <version>2.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
 
@@ -165,7 +166,7 @@
                             <goal>generate</goal>
                         </goals>
                         <configuration>
-                            <filters>scala,org.ops4j,org.eclipse.emf,org.slf4j,org.kevoree,org.restlet,android</filters>
+                            <filters>scala,org.ops4j,org.eclipse.emf,org.slf4j,org.kevoree,org.restlet,android,org.osgi</filters>
                         </configuration>
                     </execution>
                 </executions>
@@ -188,21 +189,92 @@
                     <maxMemory>1024m</maxMemory>
                     <proguardVersion>4.5</proguardVersion>
                     <options>
+
+                        <option>-keepattributes **</option>
+                        <option>
+-keepclasseswithmembers public class * {
+    public static void main(java.lang.String[]);
+}
+
+-keep class * implements org.xml.sax.EntityResolver
+
+-keepclassmembers class * {
+    ** MODULE$;
+}
+
+-keepclassmembernames class scala.concurrent.forkjoin.ForkJoinPool {
+    long eventCount;
+    int  workerCounts;
+    int  runControl;
+    scala.concurrent.forkjoin.ForkJoinPool$WaitQueueNode syncStack;
+    scala.concurrent.forkjoin.ForkJoinPool$WaitQueueNode spareStack;
+}
+
+-keepclassmembernames class scala.concurrent.forkjoin.ForkJoinWorkerThread {
+    int base;
+    int sp;
+    int runState;
+}
+
+-keepclassmembernames class scala.concurrent.forkjoin.ForkJoinTask {
+    int status;
+}
+
+-keepclassmembernames class scala.concurrent.forkjoin.LinkedTransferQueue {
+    scala.concurrent.forkjoin.LinkedTransferQueue$PaddedAtomicReference head;
+    scala.concurrent.forkjoin.LinkedTransferQueue$PaddedAtomicReference tail;
+    scala.concurrent.forkjoin.LinkedTransferQueue$PaddedAtomicReference cleanMe;
+}
+                        </option>
+
+                        <option>-keepnames class * implements java.io.Serializable</option>
+                        <option>-dontnote</option>
+
+                      <!--  <option>-keepattributes *Annotation*</option>-->
+
+                        <!--
+                        <option>-keep class org.restlet.**</option>
+                        -->
+                        <option>-keep class org.osgi.** { *; }</option>
+                        <option>-keep class choco.cp.** { *; }</option>
+                        <option>-keep class org.kevoree.framework.** { *; }</option>
+                        <option>-keep class org.kevoree.android.framework.** { *; }</option>
+
                         <option>-dontskipnonpubliclibraryclasses</option>
                         <option>-dontskipnonpubliclibraryclassmembers</option>
                         <option>-dontoptimize</option>
+                        <option>-dontobfuscate</option>
+                        <option>-keepattributes Exceptions,InnerClasses,Signature,Deprecated,SourceFile,LineNumberTable,*Annotation*,EnclosingMethod</option>
+
                         <option>-printmapping map.txt</option>
                         <option>-printseeds seed.txt</option>
                         <option>-ignorewarnings</option>
+
+                        <option>
+                           -keepclassmembers class *{
+                            static final %                *;
+                            static final java.lang.String *;
+                           }
+                        </option>
+                        <option>
+                            -keepclassmembers class org.osgi.**
+                        </option>
+                        <option>
+                            -keepclassmembers class org.kevoree.framework.**
+                        </option>
+
                         <option>-keep public class * extends android.app.Activity</option>
                         <option>-keep public class * extends android.app.Application</option>
                         <option>-keep public class * extends android.app.Service</option>
+
                         <option>-keep public class * extends
                             android.content.BroadcastReceiver
                         </option>
                         <option>-keep public class * extends
                             android.content.ContentProvider
                         </option>
+                        <option>-keepclassmembers class org.kevoree.android.framework.**</option>
+
                     </options>
                     <assembly>
                         <inclusions>
@@ -275,19 +347,34 @@
                                 <groupId>org.restlet.android</groupId>
                                 <artifactId>org.restlet</artifactId>
                             </inclusion>
-
-
-                            <!--
+                            <inclusion>
+                                <groupId>choco</groupId>
+                                <artifactId>choco-solver</artifactId>
+                                <filter>!META-INF/**</filter>
+                            </inclusion>
+                            
+                           
+                            <inclusion>
+                                <groupId>org.ops4j.pax.url</groupId>
+                                <artifactId>pax-url-mvn</artifactId>
+                                <filter>!org/apache/commons/**,!META-INF/**</filter>
+                            </inclusion>
                             <inclusion>
                                 <groupId>org.ops4j.pax.url</groupId>
                                 <artifactId>pax-url-assembly</artifactId>
-                                <filter>!org/apache/commons/**</filter>
+                                <filter>
+                                !org/apache/commons/**,
+                                !META-INF/**,
+                                !org/ops4j/io/**,
+                                !org/ops4j/lang/**,
+                                !org/ops4j/monitors/**,
+                                !org/ops4j/pax/swissbox/property/**,
+                                !org/ops4j/pax/url/commons/handler/**,
+                                !org/ops4j/util/property/**
+                                </filter>
                             </inclusion>
-                             <inclusion>
-                                <groupId>org.ops4j.pax.url</groupId>
-                                <artifactId>pax-url-mvn</artifactId>
-                                 <filter>!org/apache/commons/**</filter>
-                            </inclusion>-->
+
+
                         </inclusions>
                     </assembly>
                     <libs>
