@@ -11,12 +11,16 @@ cd kevoree-extra/org.kevoree.extra.root
 #CHANGE LIB VERSION
 mvn versions:set -DnewVersion=$KEVOREE_RELEASE -DgenerateBackupPoms=false
 mvn clean install deploy -Dkevoree.version=$KEVOREE_RELEASE
+
+#GO TOP
 cd $BASE_RELEASE_DIR
 echo "current dir "
 echo `pwd`
 mvn clean install deploy -Dkevoree.version=$KEVOREE_RELEASE
 
-#cd $BASE_RELEASE_DIR
-#cd kevoree-library/org.kevoree.library.root
-#echo "current dir "
-#mvn clean install deploy -Dkevoree.version=1.0.0-RC2
+#GO LIB
+cd $BASE_RELEASE_DIR
+cd kevoree-library/org.kevoree.library.root
+echo "current dir "
+mvn versions:set -DnewVersion=$KEVOREE_RELEASE -DgenerateBackupPoms=false
+mvn clean install deploy -Dkevoree.version=$KEVOREE_RELEASE
