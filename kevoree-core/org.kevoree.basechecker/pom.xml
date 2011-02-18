@@ -1,0 +1,65 @@
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>org.kevoree.basechecker</artifactId>
+    <packaging>bundle</packaging>
+    <name>Kevoree :: BaseChecker</name>
+
+    <parent>
+        <artifactId>org.kevoree.root</artifactId>
+        <groupId>org.kevoree</groupId>
+        <version>1.0.0-RC2</version>
+        <relativePath>../org.kevoree.root/pom.xml</relativePath>
+    </parent>
+
+    <properties>
+        <slf4j.version>1.6.1</slf4j.version>
+        <slf4j.version.range>[1.5,2)</slf4j.version.range>
+    </properties>
+    
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <extensions>true</extensions>
+                <configuration>
+                    <instructions>
+                        <Bundle-Activator>org.kevoree.kompare.KevoreeKompareActivator</Bundle-Activator>
+                        <Import-Package>!org.kevoree.kompare.*,org.slf4j.*;version="${slf4j.version.range}",*</Import-Package>
+                        <Private-Package>org.kevoree.kompare.*</Private-Package>
+                    </instructions>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+    <dependencies>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>org.kevoree.api</artifactId>
+            <version>${kevoree.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>org.kevoree.framework</artifactId>
+            <version>${kevoree.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.osgi</groupId>
+            <artifactId>org.osgi.core</artifactId>
+            <version>4.2.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.scalatest</groupId>
+            <artifactId>scalatest</artifactId>
+            <version>1.2</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>${slf4j.version}</version>
+        </dependency>
+    </dependencies>
+</project>
