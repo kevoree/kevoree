@@ -1,0 +1,234 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kevoree:ContainerRoot xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:kevoree="http://kevoree/1.0">
+  <nodes name="paraisseux">
+    <components name="PlanNightmarePipe--201960466" typeDefinition="//@typeDefinitions.11">
+      <provided portTypeRef="//@typeDefinitions.11/@provided.0"/>
+      <provided portTypeRef="//@typeDefinitions.11/@provided.1"/>
+      <required portTypeRef="//@typeDefinitions.11/@required.0"/>
+      <required portTypeRef="//@typeDefinitions.11/@required.1"/>
+    </components>
+    <components name="PlanNightmareFL--280795374" typeDefinition="//@typeDefinitions.15">
+      <provided portTypeRef="//@typeDefinitions.15/@provided.0"/>
+      <provided portTypeRef="//@typeDefinitions.15/@provided.1"/>
+    </components>
+    <components name="PlanNightmareFS-1225402208" typeDefinition="//@typeDefinitions.16">
+      <required portTypeRef="//@typeDefinitions.16/@required.0"/>
+      <required portTypeRef="//@typeDefinitions.16/@required.1"/>
+    </components>
+    <components name="PlanNightmareFS--1266077465" typeDefinition="//@typeDefinitions.16">
+      <required portTypeRef="//@typeDefinitions.16/@required.0"/>
+      <required portTypeRef="//@typeDefinitions.16/@required.1"/>
+    </components>
+    <components name="PlanNightmareFL-1012226851" typeDefinition="//@typeDefinitions.15">
+      <provided portTypeRef="//@typeDefinitions.15/@provided.0"/>
+      <provided portTypeRef="//@typeDefinitions.15/@provided.1"/>
+    </components>
+    <components name="PlanNightmarePipe--344669846" typeDefinition="//@typeDefinitions.11">
+      <provided portTypeRef="//@typeDefinitions.11/@provided.0"/>
+      <provided portTypeRef="//@typeDefinitions.11/@provided.1"/>
+      <required portTypeRef="//@typeDefinitions.11/@required.0"/>
+      <required portTypeRef="//@typeDefinitions.11/@required.1"/>
+    </components>
+    <components name="PlanNightmarePipe-1302592126" typeDefinition="//@typeDefinitions.11">
+      <provided portTypeRef="//@typeDefinitions.11/@provided.0"/>
+      <provided portTypeRef="//@typeDefinitions.11/@provided.1"/>
+      <required portTypeRef="//@typeDefinitions.11/@required.0"/>
+      <required portTypeRef="//@typeDefinitions.11/@required.1"/>
+    </components>
+    <components name="PlanNightmarePipe-1664024107" typeDefinition="//@typeDefinitions.11">
+      <provided portTypeRef="//@typeDefinitions.11/@provided.0"/>
+      <provided portTypeRef="//@typeDefinitions.11/@provided.1"/>
+      <required portTypeRef="//@typeDefinitions.11/@required.0"/>
+      <required portTypeRef="//@typeDefinitions.11/@required.1"/>
+    </components>
+    <components name="PlanNightmarePipe-1448139060" typeDefinition="//@typeDefinitions.11">
+      <provided portTypeRef="//@typeDefinitions.11/@provided.0"/>
+      <provided portTypeRef="//@typeDefinitions.11/@provided.1"/>
+      <required portTypeRef="//@typeDefinitions.11/@required.0"/>
+      <required portTypeRef="//@typeDefinitions.11/@required.1"/>
+    </components>
+  </nodes>
+  <typeDefinitions xsi:type="kevoree:ChannelType" name="defSERVICE" deployUnit="//@deployUnits.0" factoryBean="org.kevoree.library.defaultChannels.defSERVICEFactory" bean="org.kevoree.library.defaultChannels.defSERVICE" startMethod="startHello" stopMethod="stopHello"/>
+  <typeDefinitions xsi:type="kevoree:ChannelType" name="defMSG" deployUnit="//@deployUnits.0" factoryBean="org.kevoree.library.defaultChannels.defMSGFactory" bean="org.kevoree.library.defaultChannels.defMSG" startMethod="startHello" stopMethod="stopHello" updateMethod="updateHello"/>
+  <typeDefinitions xsi:type="kevoree:ComponentType" name="FakeSimpleLight" deployUnit="//@deployUnits.1" factoryBean="org.kevoree.library.fakedomo.FakeSimpleLightFactory" bean="org.kevoree.library.fakedomo.FakeSimpleLight" startMethod="start" stopMethod="stop" updateMethod="update">
+    <dictionaryType>
+      <attributes name="param1"/>
+      <attributes name="param2" optional="true"/>
+      <defaultValues attribute="//@typeDefinitions.2/@dictionaryType/@attributes.1" value="defVal"/>
+    </dictionaryType>
+    <provided name="on" ref="//@typeDefinitions.3">
+      <mappings beanMethodName="lightOn" serviceMethodName="process"/>
+    </provided>
+    <provided name="off" ref="//@typeDefinitions.3">
+      <mappings beanMethodName="lightOff" serviceMethodName="process"/>
+    </provided>
+    <provided name="toggle" ref="//@typeDefinitions.4">
+      <mappings beanMethodName="toogle" serviceMethodName="toggle"/>
+    </provided>
+  </typeDefinitions>
+  <typeDefinitions xsi:type="kevoree:MessagePortType" name="org.kevoree.framework.MessagePort"/>
+  <typeDefinitions xsi:type="kevoree:ServicePortType" name="org.kevoree.library.fakedomo.ToggleLightService"/>
+  <typeDefinitions xsi:type="kevoree:ComponentType" name="FakeSimpleSwitch" deployUnit="//@deployUnits.1" factoryBean="org.kevoree.library.fakedomo.FakeSimpleSwitchFactory" bean="org.kevoree.library.fakedomo.FakeSimpleSwitch" startMethod="start" stopMethod="stop" updateMethod="update">
+    <required name="on" ref="//@typeDefinitions.3"/>
+    <required name="off" ref="//@typeDefinitions.3"/>
+    <required name="toggle" ref="//@typeDefinitions.4"/>
+  </typeDefinitions>
+  <typeDefinitions xsi:type="kevoree:ComponentType" name="FakeConsole" deployUnit="//@deployUnits.1" factoryBean="org.kevoree.library.fakedomo.FakeConsoleFactory" bean="org.kevoree.library.fakedomo.FakeConsole" startMethod="start" stopMethod="stop">
+    <required name="textEntered" ref="//@typeDefinitions.3"/>
+    <provided name="showText" ref="//@typeDefinitions.3">
+      <mappings beanMethodName="appendIncoming" serviceMethodName="process"/>
+    </provided>
+  </typeDefinitions>
+  <typeDefinitions xsi:type="kevoree:ComponentType" name="ComponentPrimitiveTypeService" deployUnit="//@deployUnits.2" factoryBean="org.kevoree.library.sample.ComponentPrimitiveTypeServiceFactory" bean="org.kevoree.library.sample.ComponentPrimitiveTypeService" startMethod="start" stopMethod="stop">
+    <provided name="portPrimitiveTypes" ref="//@typeDefinitions.8">
+      <mappings beanMethodName="methodShort" serviceMethodName="methodShort"/>
+      <mappings beanMethodName="methodInt" serviceMethodName="methodInt"/>
+      <mappings beanMethodName="methodLong" serviceMethodName="methodLong"/>
+      <mappings beanMethodName="methodDouble" serviceMethodName="methodDouble"/>
+      <mappings beanMethodName="methodFloat" serviceMethodName="methodFloat"/>
+      <mappings beanMethodName="methodChar" serviceMethodName="methodChar"/>
+      <mappings beanMethodName="methodVoid" serviceMethodName="methodVoid"/>
+      <mappings beanMethodName="methodByte" serviceMethodName="methodByte"/>
+      <mappings beanMethodName="methodBoolean" serviceMethodName="methodBoolean"/>
+    </provided>
+  </typeDefinitions>
+  <typeDefinitions xsi:type="kevoree:ServicePortType" name="org.kevoree.library.sample.service.ServicePrimitifReturnTypes">
+    <operations name="methodShort" returnType="//@dataTypes.1">
+      <parameters name="s" type="//@dataTypes.1"/>
+    </operations>
+    <operations name="methodInt" returnType="//@dataTypes.2">
+      <parameters name="i" type="//@dataTypes.2"/>
+    </operations>
+    <operations name="methodLong" returnType="//@dataTypes.3">
+      <parameters name="l" type="//@dataTypes.3"/>
+    </operations>
+    <operations name="methodDouble" returnType="//@dataTypes.4">
+      <parameters name="d" type="//@dataTypes.4"/>
+    </operations>
+    <operations name="methodFloat" returnType="//@dataTypes.5">
+      <parameters name="f" type="//@dataTypes.5"/>
+    </operations>
+    <operations name="methodChar" returnType="//@dataTypes.6">
+      <parameters name="c" type="//@dataTypes.6"/>
+    </operations>
+    <operations name="methodVoid" returnType="//@dataTypes.7"/>
+    <operations name="methodByte" returnType="//@dataTypes.8">
+      <parameters name="b" type="//@dataTypes.8"/>
+    </operations>
+    <operations name="methodBoolean" returnType="//@dataTypes.9">
+      <parameters name="b" type="//@dataTypes.9"/>
+    </operations>
+  </typeDefinitions>
+  <typeDefinitions xsi:type="kevoree:ComponentType" name="ComponentB" deployUnit="//@deployUnits.2" factoryBean="org.kevoree.library.sample.ComponentBFactory" bean="org.kevoree.library.sample.ComponentB" startMethod="start" stopMethod="stop">
+    <required name="req2" ref="//@typeDefinitions.3"/>
+    <required name="req3" ref="//@typeDefinitions.3"/>
+    <provided name="prov1" ref="//@typeDefinitions.10">
+      <mappings beanMethodName="methodBA" serviceMethodName="methodBA"/>
+      <mappings beanMethodName="methodBB" serviceMethodName="methodBB"/>
+    </provided>
+  </typeDefinitions>
+  <typeDefinitions xsi:type="kevoree:ServicePortType" name="org.kevoree.library.sample.service.ServiceB"/>
+  <typeDefinitions xsi:type="kevoree:ComponentType" name="PlanNightmarePipe" deployUnit="//@deployUnits.2" factoryBean="org.kevoree.library.sample.PlanNightmarePipeFactory" bean="org.kevoree.library.sample.PlanNightmarePipe" startMethod="startMethod" stopMethod="stopMethod">
+    <required name="r1" ref="//@typeDefinitions.3"/>
+    <required name="r2" ref="//@typeDefinitions.3"/>
+    <provided name="p1" ref="//@typeDefinitions.3">
+      <mappings beanMethodName="p1trigger" serviceMethodName="process"/>
+    </provided>
+    <provided name="p2" ref="//@typeDefinitions.3">
+      <mappings beanMethodName="p2trigger" serviceMethodName="process"/>
+    </provided>
+  </typeDefinitions>
+  <typeDefinitions xsi:type="kevoree:ComponentType" name="ComponentA" deployUnit="//@deployUnits.2" factoryBean="org.kevoree.library.sample.ComponentAFactory" bean="org.kevoree.library.sample.ComponentA" startMethod="start" stopMethod="stop">
+    <dictionaryType>
+      <attributes name="mandatory1"/>
+      <attributes name="mandatory2"/>
+      <attributes name="optional1" optional="true"/>
+      <attributes name="optional2" optional="true"/>
+      <defaultValues attribute="//@typeDefinitions.12/@dictionaryType/@attributes.1" value="DF"/>
+      <defaultValues attribute="//@typeDefinitions.12/@dictionaryType/@attributes.3" value="DF"/>
+    </dictionaryType>
+    <required name="req1" ref="//@typeDefinitions.3"/>
+    <required name="req2" ref="//@typeDefinitions.10"/>
+    <provided name="prov1" ref="//@typeDefinitions.3">
+      <mappings beanMethodName="prov1Processor" serviceMethodName="process"/>
+    </provided>
+    <provided name="prov2" ref="//@typeDefinitions.13">
+      <mappings beanMethodName="methodAA" serviceMethodName="methodAA"/>
+      <mappings beanMethodName="methodAB" serviceMethodName="methodAB"/>
+    </provided>
+    <provided name="req3" ref="//@typeDefinitions.14">
+      <mappings beanMethodName="getMyList" serviceMethodName="getMyList"/>
+    </provided>
+  </typeDefinitions>
+  <typeDefinitions xsi:type="kevoree:ServicePortType" name="org.kevoree.library.sample.service.ServiceA">
+    <operations name="methodAA" returnType="//@dataTypes.0"/>
+    <operations name="methodAB" returnType="//@dataTypes.4"/>
+  </typeDefinitions>
+  <typeDefinitions xsi:type="kevoree:ServicePortType" name="org.kevoree.library.sample.service.ServiceGenerics">
+    <operations name="getMyList" returnType="//@dataTypes.10"/>
+  </typeDefinitions>
+  <typeDefinitions xsi:type="kevoree:ComponentType" name="PlanNightmareFL" deployUnit="//@deployUnits.2" factoryBean="org.kevoree.library.sample.PlanNightmareFLFactory" bean="org.kevoree.library.sample.PlanNightmareFL" startMethod="startMethod" stopMethod="stopMethod">
+    <provided name="p1" ref="//@typeDefinitions.3">
+      <mappings beanMethodName="p1trigger" serviceMethodName="process"/>
+    </provided>
+    <provided name="p2" ref="//@typeDefinitions.3">
+      <mappings beanMethodName="p2trigger" serviceMethodName="process"/>
+    </provided>
+  </typeDefinitions>
+  <typeDefinitions xsi:type="kevoree:ComponentType" name="PlanNightmareFS" deployUnit="//@deployUnits.2" factoryBean="org.kevoree.library.sample.PlanNightmareFSFactory" bean="org.kevoree.library.sample.PlanNightmareFS" startMethod="startMethod" stopMethod="stopMethod">
+    <required name="r1" ref="//@typeDefinitions.3"/>
+    <required name="r2" ref="//@typeDefinitions.3"/>
+  </typeDefinitions>
+  <repositories units="//@deployUnits.0 //@deployUnits.1 //@deployUnits.2" url="http://dukeboard.github.com/kevoree/maven/"/>
+  <dataTypes name="java.lang.String"/>
+  <dataTypes name="scala.Short"/>
+  <dataTypes name="scala.Int"/>
+  <dataTypes name="scala.Long"/>
+  <dataTypes name="scala.Double"/>
+  <dataTypes name="scala.Float"/>
+  <dataTypes name="scala.Char"/>
+  <dataTypes name="void"/>
+  <dataTypes name="scala.Byte"/>
+  <dataTypes name="scala.Boolean"/>
+  <dataTypes name="java.util.List" genericTypes="//@dataTypes.0"/>
+  <libraries name="art2baselib" subTypes="//@typeDefinitions.0 //@typeDefinitions.1"/>
+  <libraries name="Fake-DOMO" subTypes="//@typeDefinitions.2 //@typeDefinitions.5 //@typeDefinitions.6"/>
+  <libraries name="ART2_TESTS" subTypes="//@typeDefinitions.7"/>
+  <libraries name="ART_TEST" subTypes="//@typeDefinitions.9 //@typeDefinitions.12"/>
+  <libraries name="KEVOREE_SAMPLES" subTypes="//@typeDefinitions.11 //@typeDefinitions.15 //@typeDefinitions.16"/>
+  <hubs name="hub--1283786796" typeDefinition="//@typeDefinitions.1"/>
+  <hubs name="hub-1957648261" typeDefinition="//@typeDefinitions.1"/>
+  <hubs name="hub-906801856" typeDefinition="//@typeDefinitions.1"/>
+  <hubs name="hub--1273724979" typeDefinition="//@typeDefinitions.1"/>
+  <hubs name="hub-213195355" typeDefinition="//@typeDefinitions.1"/>
+  <hubs name="hub--1685714610" typeDefinition="//@typeDefinitions.1"/>
+  <hubs name="hub--454923908" typeDefinition="//@typeDefinitions.1"/>
+  <hubs name="hub--1563784219" typeDefinition="//@typeDefinitions.1"/>
+  <hubs name="hub--833308531" typeDefinition="//@typeDefinitions.1"/>
+  <mBindings port="//@nodes.0/@components.1/@provided.1" hub="//@hubs.0"/>
+  <mBindings port="//@nodes.0/@components.4/@provided.0" hub="//@hubs.1"/>
+  <mBindings port="//@nodes.0/@components.4/@provided.1" hub="//@hubs.2"/>
+  <mBindings port="//@nodes.0/@components.5/@required.0" hub="//@hubs.4"/>
+  <mBindings port="//@nodes.0/@components.5/@required.1" hub="//@hubs.3"/>
+  <mBindings port="//@nodes.0/@components.2/@required.1" hub="//@hubs.2"/>
+  <mBindings port="//@nodes.0/@components.3/@required.0" hub="//@hubs.1"/>
+  <mBindings port="//@nodes.0/@components.3/@required.1" hub="//@hubs.0"/>
+  <mBindings port="//@nodes.0/@components.6/@provided.0" hub="//@hubs.4"/>
+  <mBindings port="//@nodes.0/@components.7/@provided.0" hub="//@hubs.3"/>
+  <mBindings port="//@nodes.0/@components.6/@required.1" hub="//@hubs.5"/>
+  <mBindings port="//@nodes.0/@components.7/@provided.0" hub="//@hubs.5"/>
+  <mBindings port="//@nodes.0/@components.0/@required.1" hub="//@hubs.6"/>
+  <mBindings port="//@nodes.0/@components.6/@provided.1" hub="//@hubs.6"/>
+  <mBindings port="//@nodes.0/@components.5/@provided.0" hub="//@hubs.2"/>
+  <mBindings port="//@nodes.0/@components.5/@provided.1" hub="//@hubs.0"/>
+  <mBindings port="//@nodes.0/@components.0/@provided.1" hub="//@hubs.0"/>
+  <mBindings port="//@nodes.0/@components.7/@required.1" hub="//@hubs.7"/>
+  <mBindings port="//@nodes.0/@components.8/@provided.0" hub="//@hubs.7"/>
+  <mBindings port="//@nodes.0/@components.1/@provided.0" hub="//@hubs.8"/>
+  <mBindings port="//@nodes.0/@components.0/@provided.0" hub="//@hubs.8"/>
+  <mBindings port="//@nodes.0/@components.8/@required.1" hub="//@hubs.8"/>
+  <mBindings port="//@nodes.0/@components.2/@required.0" hub="//@hubs.8"/>
+  <deployUnits groupName="org.kevoree.library" unitName="org.kevoree.library.defaultChannels" version="1.0.0-RC2" hashcode="201102171716374"/>
+  <deployUnits groupName="org.kevoree.library" unitName="org.kevoree.library.fakeDomo" version="1.0.0-RC2" hashcode="201102171716754"/>
+  <deployUnits groupName="org.kevoree.library" unitName="org.kevoree.library.sample" version="1.0.0-RC2" hashcode="201102171717654"/>
+</kevoree:ContainerRoot>
