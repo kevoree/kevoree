@@ -22,10 +22,13 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.lang.String;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -89,31 +92,69 @@ public class SysGenPlugin extends AbstractMojo {
     @Override
     public void execute() throws MojoExecutionException {
 
-        Set<String> packages = new HashSet<String>();
+
+        Map<String, String> packages = new HashMap<String, String>();
+        //   Set<String> packagesVersion = new HashSet<String>();
 
         List<String> filters2 = Arrays.asList(filters.split(","));
 
         Iterator it2 = project.getCompileArtifacts().iterator();
 
 //        System.out.println(project.getDependencyArtifacts().size());
-    //    System.out.println(project.getCompileArtifacts().size());
-     //   System.out.println(project.getAttachedArtifacts().size());
-
+        //    System.out.println(project.getCompileArtifacts().size());
+        //   System.out.println(project.getAttachedArtifacts().size());
 
         while (it2.hasNext()) {
             Artifact d = (Artifact) it2.next();
             String artefactPath = local.getBasedir() + "/" + local.pathOf(d).toString();
+            Set<String> newPackages = PackageUtils.getFilteredPackageNames(artefactPath, filters2, debug);
+            for (String packageName : newPackages) {
+                String version = d.getVersion();
+                if (version.contains("-")) {
+                    version = version.substring(0, version.indexOf("-"));
+                }
 
-            packages.addAll(PackageUtils.getFilteredPackageNames(artefactPath, filters2, debug));
-            String content = SysStaticClassGenerator.generate(packages);
-            try {
-                generateFile(new File(sourceOutputDirectory.getAbsolutePath() + File.separatorChar + "generated"), "SysPackageConstants.java", content);
-            } catch (FileNotFoundException ex) {
-                Logger.getLogger(SysGenPlugin.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (IOException ex) {
-                Logger.getLogger(SysGenPlugin.class.getName()).log(Level.SEVERE, null, ex);
+                if (!packages.keySet().contains(packageName)) {
+
+                    packages.put(packageName, version);
+                    //  packagesVersion.add(packageName+ ";version=" + version);
+                } else {
+                    getLog().warn("Doublon " + packageName + d.getVersion());
+
+                    String[] oldversions = packages.get(packageName).split("\\.");
+                    String[] newVersions = version.split("\\.");
+                    Boolean sup = false;
+
+                    int maxI = Math.max(oldversions.length, newVersions.length);
+                    for(int i = 0 ; i < maxI ; i++ ){
+                        if(i < oldversions.length && i < newVersions.length ){
+                              sup = sup || ( Integer.parseInt(newVersions[i]) > Integer.parseInt(oldversions[i])  );
+                        }
+                    }
+
+                    if (sup) {
+                        packages.put(packageName, version);
+                    }
+                }
             }
         }
+
+        //FLAT VERSION
+        Set<String> packagesVersion = new HashSet<String>();
+        Set<String> keys = packages.keySet();
+        for (String key : keys) {
+            packagesVersion.add(key + ";version=" + packages.get(key));
+        }
+
+        String content = SysStaticClassGenerator.generate(packagesVersion);
+        try {
+            generateFile(new File(sourceOutputDirectory.getAbsolutePath() + File.separatorChar + "generated"), "SysPackageConstants.java", content);
+        } catch (FileNotFoundException ex) {
+            Logger.getLogger(SysGenPlugin.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            Logger.getLogger(SysGenPlugin.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
         this.project.addCompileSourceRoot(sourceOutputDirectory.getAbsolutePath());
         this.getLog().info("Source directory: " + this.sourceOutputDirectory + " added.");
     }

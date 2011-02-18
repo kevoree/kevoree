@@ -35,16 +35,17 @@ public class SysStaticClassGenerator {
         out.append("public class SysPackageConstants {\n");
 
         out.append("public static String getProperty(){\n");
-        out.append("return \"");
+        out.append("return \"\"");
 
         boolean first = true;
         for(String s : packages){
-            if(!first){out.append(",");}
+            out.append("+");
+            if(!first){out.append("\",\"+");}
             first = false;
-            out.append(s);
+            out.append("\""+s+"\"\n");
         }
 
-        out.append("\";");
+        out.append(";");
 
         out.append("}//end method \n");
         out.append("}//end class \n");
