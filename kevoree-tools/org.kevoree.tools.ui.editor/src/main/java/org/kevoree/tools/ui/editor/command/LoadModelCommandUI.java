@@ -45,11 +45,9 @@ public class LoadModelCommandUI implements Command {
     /* Input expected : Model URI */
     @Override
     public void execute(Object p) {
-        filechooser.showOpenDialog(kernel.getModelPanel());
-        if (filechooser.getSelectedFile() != null) {
-
+        int returnVal = filechooser.showOpenDialog(kernel.getModelPanel());
+        if (filechooser.getSelectedFile() != null  && returnVal == JFileChooser.APPROVE_OPTION) {
             lastLoadedModel = URI.createFileURI(filechooser.getSelectedFile().getAbsolutePath()).toString();
-
             lcommand.execute(URI.createFileURI(filechooser.getSelectedFile().getAbsolutePath()));
         }
     }
