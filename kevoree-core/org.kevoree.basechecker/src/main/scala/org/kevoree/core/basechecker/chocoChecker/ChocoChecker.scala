@@ -16,17 +16,20 @@
  * and open the template in the editor.
  */
 
-package org.kevoree.api.service.core.checker;
+package org.kevoree.core.basechecker.chocoChecker
 
-import java.util.List;
-import org.kevoree.ContainerRoot;
+import org.kevoree.ContainerRoot
+import org.kevoree.api.service.core.checker.CheckerService
+import org.kevoree.api.service.core.checker.CheckerViolation
 
-/**
- *
- * @author ffouquet
- */
-public interface CheckerService {
+class ChocoChecker extends CheckerService {
 
-    public List<CheckerViolation> check(ContainerRoot model);
+  def check(model:ContainerRoot ):java.util.List[CheckerViolation] = {
+
+    //TODO
+
+    return null
+
+  }
 
 }
