@@ -28,29 +28,28 @@ import org.kevoree.ContainerRoot
 import org.kevoree.Instance
 import org.kevoree.MBinding
 
-case class KevoreeDirectedGraph(model : ContainerRoot,nodeName : String) extends DirectedGraph[Instance, MBinding] {
+case class KevoreeDirectedGraph(model : ContainerRoot,nodeName : String) extends DefaultDirectedGraph[Instance, MBinding](classOf[MBinding]) {
 
-
-  var graph : DirectedGraph[Instance, MBinding] = new DefaultDirectedGraph[Instance, MBinding](classOf[MBinding])
+  //var graph : DirectedGraph[Instance, MBinding] = new DefaultDirectedGraph[Instance, MBinding](classOf[MBinding])
   model.getNodes.find(node => node.getName == nodeName) match {
     case Some(node) =>
       node.getInstances.filter(p => p.isInstanceOf[ComponentInstance]).foreach{ instance =>
 	var componentinstance  = instance.asInstanceOf[ComponentInstance]
 	componentinstance.getRelatedBindings.foreach {
 	  binding =>
-	  graph.addVertex(binding.getHub)
-	  graph.addVertex(componentinstance)
+	  addVertex(binding.getHub)
+	  addVertex(componentinstance)
 
 	  if (componentinstance.getProvided.contains(binding.getPort)) {
-	    graph.addEdge(binding.getHub, componentinstance, binding)
+	    addEdge(binding.getHub, componentinstance, binding)
 	  } else {
-	    graph.addEdge(componentinstance, binding.getHub, binding)
+	    addEdge(componentinstance, binding.getHub, binding)
 	  }
 	}
       }
     case None =>
   }
-  graph
+  // graph
       
 
 
