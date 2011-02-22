@@ -30,6 +30,8 @@ import org.kevoree.tools.ui.editor.KevoreeUIKernel;
 import org.kevoree.tools.ui.framework.elements.*;
 import org.kevoree.tools.ui.framework.elements.PortPanel.PortType;
 
+import java.util.List;
+
 
 /**
  *
@@ -50,7 +52,7 @@ public class LoadModelCommand implements Command {
         kernel.getModelHandler().setActualModel(previousModel);
         kernel.getModelPanel().clear();
 
-        //HACK :-)
+        //HACK :-) TODO REMOVE
         kernel.getUifactory().getMapping().bind(kernel.getModelPanel(), previousModel);
 
 
@@ -99,6 +101,7 @@ public class LoadModelCommand implements Command {
             ChannelPanel newhubpanel = kernel.getUifactory().createHub(hub);
             kernel.getModelPanel().addHub(newhubpanel);
         }
+
 
         //LOAD BINDING
         /*
