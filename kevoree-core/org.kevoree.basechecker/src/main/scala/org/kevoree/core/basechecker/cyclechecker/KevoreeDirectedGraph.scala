@@ -16,12 +16,11 @@
  * and open the template in the editor.
  */
 
-package org.kevoree.core.basechecker
+package org.kevoree.core.basechecker.cyclechecker
 
 import org.kevoree.framework.aspects.KevoreeAspects._
 import scala.collection.JavaConversions._
 
-import org.jgrapht.DirectedGraph
 import org.jgrapht.graph.DefaultDirectedGraph
 import org.kevoree.ComponentInstance
 import org.kevoree.ContainerRoot
@@ -30,7 +29,6 @@ import org.kevoree.MBinding
 
 case class KevoreeDirectedGraph(model : ContainerRoot,nodeName : String) extends DefaultDirectedGraph[Instance, MBinding](classOf[MBinding]) {
 
-  //var graph : DirectedGraph[Instance, MBinding] = new DefaultDirectedGraph[Instance, MBinding](classOf[MBinding])
   model.getNodes.find(node => node.getName == nodeName) match {
     case Some(node) =>
       node.getInstances.filter(p => p.isInstanceOf[ComponentInstance]).foreach{ instance =>
@@ -49,11 +47,4 @@ case class KevoreeDirectedGraph(model : ContainerRoot,nodeName : String) extends
       }
     case None =>
   }
-  // graph
-      
-
-
-
-
-  
 }
