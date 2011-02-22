@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kevoree:ContainerRoot xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:kevoree="http://kevoree/1.0">
+  <typeDefinitions xsi:type="kevoree:ChannelType" name="defSERVICE" deployUnit="//@deployUnits.0" factoryBean="org.kevoree.library.defaultChannels.defSERVICEFactory" bean="org.kevoree.library.defaultChannels.defSERVICE" startMethod="startHello" stopMethod="stopHello"/>
+  <typeDefinitions xsi:type="kevoree:ChannelType" name="defMSG" deployUnit="//@deployUnits.0" factoryBean="org.kevoree.library.defaultChannels.defMSGFactory" bean="org.kevoree.library.defaultChannels.defMSG" startMethod="startHello" stopMethod="stopHello" updateMethod="updateHello"/>
+  <repositories units="//@deployUnits.0" url="http://dukeboard.github.com/kevoree/maven/"/>
+  <libraries name="art2baselib" subTypes="//@typeDefinitions.0 //@typeDefinitions.1"/>
+  <deployUnits groupName="org.kevoree.library" unitName="org.kevoree.library.defaultChannels" version="1.0.0-RC2" hashcode="201102171716374"/>
+</kevoree:ContainerRoot>

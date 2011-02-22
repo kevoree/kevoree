@@ -18,7 +18,7 @@
 
 package org.kevoree.basechecker.tests
 
-import org.kevoree.core.basechecker.CycleChecker
+import org.kevoree.core.basechecker.cyclechecker.CycleChecker
 import org.scalatest.junit.AssertionsForJUnit
 import scala.collection.JavaConversions._
 import org.junit._
