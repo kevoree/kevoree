@@ -18,7 +18,8 @@ import org.kevoree.ComponentInstance
 import org.kevoree.adaptation.deploy.osgi.command.AddFragmentBindingCommand
 import org.kevoree.adaptation.deploy.osgi.command._
 import org.kevoree.adaptation.deploy.osgi.context.KevoreeDeployManager
-import org.kevoree.adaptation.deploy.osgi.scheduling.ChocoScheduling
+//import org.kevoree.adaptation.deploy.osgi.scheduling.ChocoScheduling
+import org.kevoree.adaptation.deploy.osgi.scheduling.SchedulingWithTopologicalOrderAlgo
 import org.kevoree.api.service.adaptation.deploy.KevoreeAdaptationDeployService
 import org.kevoreeAdaptation.AdaptationModel
 import org.kevoreeAdaptation.AddBinding
@@ -152,13 +153,24 @@ class KevoreeAdaptationDeployServiceOSGi extends KevoreeAdaptationDeployService 
     var initTime = System.currentTimeMillis
 
     // scheduling of start and stop commands
-    var chocoScheduling : ChocoScheduling = new ChocoScheduling
+    //var chocoScheduling : ChocoScheduling = new ChocoScheduling
+    var scheduling = new SchedulingWithTopologicalOrderAlgo
 
-    stopCommand =  chocoScheduling.schedule(stopCommand, false).toList
-    startCommand = chocoScheduling.schedule(startCommand, true).toList
+    stopCommand =  scheduling.schedule(stopCommand, false).toList
+    startCommand = scheduling.schedule(startCommand, true).toList
 
     var planTime = System.currentTimeMillis
     println("Plannification time = "+(planTime-initTime)+" ms");
+
+    println("stop")
+    stopCommand.foreach  {c =>
+      println(c.getInstance.getName)
+    }
+
+    println("start")
+    startCommand.foreach  {c =>
+      println(c.getInstance.getName)
+    }
 
     var executionResult = true
 
