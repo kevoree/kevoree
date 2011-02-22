@@ -16,7 +16,7 @@
  * and open the template in the editor.
  */
 
-package org.kevoree.core.basechecker
+package org.kevoree.core.basechecker.cyclechecker
 
 /*import choco.cp.model.CPModel
  import choco.cp.solver.CPSolver

@@ -11,7 +11,7 @@
 
 
     <modules>
-       <module>kevoree-extra/org.kevoree.extra.root</module>
+      <!-- <module>kevoree-extra/org.kevoree.extra.root</module>        -->
         <module>kevoree-core/org.kevoree.root</module>
         <module>kevoree-tools/org.kevoree.tools.root</module>
         <module>kevoree-platform/org.kevoree.platform.root</module>
