@@ -72,8 +72,6 @@ public class LoadModelCommand implements Command {
             }
         }
 
-
-
         //LOAD NODE
         for (ContainerNode newnode : kernel.getModelHandler().getActualModel().getNodes()) {
             NodePanel newnodepanel = kernel.getUifactory().createComponentNode(newnode);

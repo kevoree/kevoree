@@ -348,8 +348,8 @@
                                 <artifactId>org.restlet</artifactId>
                             </inclusion>
                             <inclusion>
-                                <groupId>choco</groupId>
-                                <artifactId>choco-solver</artifactId>
+                                <groupId>jgrapht</groupId>
+                                <artifactId>jgrapht</artifactId>
                                 <filter>!META-INF/**</filter>
                             </inclusion>
                             
