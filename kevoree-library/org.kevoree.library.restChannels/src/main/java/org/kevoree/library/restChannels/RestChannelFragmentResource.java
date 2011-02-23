@@ -21,12 +21,16 @@ import org.kevoree.extra.marshalling.RichJSONObject;
 import org.kevoree.extra.marshalling.RichString;
 import org.kevoree.framework.AbstractChannelFragment;
 import org.kevoree.framework.message.Message;
+import org.restlet.data.Method;
+import org.restlet.representation.Representation;
+import org.restlet.representation.StringRepresentation;
 import org.restlet.resource.Get;
 import org.restlet.resource.Post;
 import org.restlet.resource.ResourceException;
 import org.restlet.resource.ServerResource;
 import scala.actors.Actor;
 
+import java.io.IOException;
 import java.util.HashMap;
 
 /**
@@ -52,16 +56,34 @@ public class RestChannelFragmentResource extends ServerResource {
         setExisting(this.channelFragment != null);
     }
 
-    /*
-    @Get()
+    public Representation doHandle() {
+        if (getMethod().equals(Method.POST)) {
+            try {
+                return new StringRepresentation(postInput(getRequestEntity().getText()));
+            } catch (IOException e) {
+                return new StringRepresentation(e.getLocalizedMessage());
+            }
+        }
+        if (getMethod().equals(Method.GET)) {
+           try {
+                return new StringRepresentation(getInput(getRequestEntity().getText()));
+            } catch (IOException e) {
+                return new StringRepresentation(e.getLocalizedMessage());
+            }
+        }
+        return new StringRepresentation("Error");
+    }
+
+
+    //@Get()
     public String getInput(String entity) {
-        Message msg = buildMsg();
+        Message msg = buildMsg(entity);
         Object o = channelFragment.remoteDispatch(msg);
         RichJSONObject oo = new RichJSONObject(o);
         return oo.toJSON();
-    } */
+    }
 
-    @Post()
+    //@Post()
     public String postInput(String entity) {
         Message msg = buildMsg(entity);
         System.out.println(entity);
@@ -70,9 +92,11 @@ public class RestChannelFragmentResource extends ServerResource {
         return "<ack />";
     }
 
-    private Message buildMsg(String entity){
-        Message msg =  buildMessageFromJSON(entity);
-        if(msg == null) { msg = buildMessageFromAttribute(entity); }
+    private Message buildMsg(String entity) {
+        Message msg = buildMessageFromJSON(entity);
+        if (msg == null) {
+            msg = buildMessageFromAttribute(entity);
+        }
         return msg;
     }
 
