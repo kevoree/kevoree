@@ -68,6 +68,7 @@ public class LoadNewLibCommand implements Command {
 
                     //CREATE TEMP FILE FROM ACTUAL MODEL
                     File tempFile = File.createTempFile("kevoreeEditorTemp", ".kev");
+                    //System.out.println("path="+tempFile);
                     KevoreeXmiHelper.save(URI.createFileURI(tempFile.getAbsolutePath()).toString(),kernel.getModelHandler().getActualModel());
 
                     //LOAD MODEL
