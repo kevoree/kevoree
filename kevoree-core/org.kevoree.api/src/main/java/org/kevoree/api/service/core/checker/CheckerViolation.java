@@ -18,13 +18,15 @@
 
 package org.kevoree.api.service.core.checker;
 
+import java.util.List;
+
 /**
  *
  * @author ffouquet
  */
 public class CheckerViolation {
 
-    private Object targetObject;
+    private List<Object> targetObjects;
 
     private String message;
 
@@ -36,12 +38,12 @@ public class CheckerViolation {
         this.message = message;
     }
 
-    public Object getTargetObject() {
-        return targetObject;
+    public List<Object> getTargetObjects() {
+        return targetObjects;
     }
 
-    public void setTargetObject(Object targetObject) {
-        this.targetObject = targetObject;
+    public void setTargetObjects(List<Object> targetObjects) {
+        this.targetObjects = targetObjects;
     }
 
 }
