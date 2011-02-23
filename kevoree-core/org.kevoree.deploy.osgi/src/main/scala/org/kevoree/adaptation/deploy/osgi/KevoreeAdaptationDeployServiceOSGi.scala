@@ -50,7 +50,7 @@ class KevoreeAdaptationDeployServiceOSGi extends KevoreeAdaptationDeployService 
   def setContext(context : KevoreeDeployManager) = { ctx = context }
   def deploy(model : AdaptationModel,nodeName:String) = {
 
-    var phase = new KevoreeDeployPhase
+    val phase = new KevoreeDeployPhase
 
     var executedCommandTP :List[PrimitiveCommand] = List()
     //var executedCommandCT :List[PrimitiveCommand] = List()
@@ -150,7 +150,7 @@ class KevoreeAdaptationDeployServiceOSGi extends KevoreeAdaptationDeployService 
       }
     }
 
-    var initTime = System.currentTimeMillis
+    val initTime = System.currentTimeMillis
 
     // scheduling of start and stop commands
     //var chocoScheduling : ChocoScheduling = new ChocoScheduling
