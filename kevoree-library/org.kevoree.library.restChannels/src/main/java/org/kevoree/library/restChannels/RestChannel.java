@@ -74,14 +74,18 @@ public class RestChannel extends AbstractChannelFragment {
         ServiceReference sr = bundle.getBundleContext().getServiceReference(KevoreeModelHandlerService.class.getName());
         modelHandlerService = (KevoreeModelHandlerService) bundle.getBundleContext().getService(sr);
 
-        RestChannelFragmentRessource.channels.put(this.getName(), this);
-        Handler.defaultHost().attach("/channels/{channelFragmentName}", RestChannelFragmentRessource.class);
+        RestChannelFragmentResource.channels.put(this.getName(), this);
+        Handler.getDefaultHost().attach("/channels/{channelFragmentName}", RestChannelFragmentResource.class);
+
+        Handler.getDefaultHost().attach("/channels", RestChannelsResource.class);
+
     }
 
     @Stop
     public void stopHello() {
-        Handler.defaultHost().detach(RestChannelFragmentRessource.class);
-        RestChannelFragmentRessource.channels.remove(this.getName());
+        Handler.getDefaultHost().detach(RestChannelFragmentResource.class);
+        Handler.getDefaultHost().detach(RestChannelsResource.class);
+        RestChannelFragmentResource.channels.remove(this.getName());
         //bundle.getBundleContext().ungetService(sr);
     }
 

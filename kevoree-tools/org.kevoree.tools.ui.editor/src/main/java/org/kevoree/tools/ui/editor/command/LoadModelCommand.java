@@ -60,7 +60,9 @@ public class LoadModelCommand implements Command {
         //LOAD COMPONENT TYPE
         kernel.getEditorPanel().getPalette().clear();
         for (org.kevoree.TypeLibrary ctl : kernel.getModelHandler().getActualModel().getLibraries()) {
+            //System.out.println(ctl.getName());
             for (org.kevoree.TypeDefinition ct : ctl.getSubTypes()) {
+                //System.out.println(ct.getName());
                 if (ct instanceof ComponentType) {
                     ComponentTypePanel ctp = kernel.getUifactory().createComponentTypeUI((ComponentType) ct);
                     kernel.getEditorPanel().getPalette().addTypeDefinitionPanel(ctp, ctl.getName());
@@ -71,8 +73,6 @@ public class LoadModelCommand implements Command {
                 }
             }
         }
-
-
 
         //LOAD NODE
         for (ContainerNode newnode : kernel.getModelHandler().getActualModel().getNodes()) {

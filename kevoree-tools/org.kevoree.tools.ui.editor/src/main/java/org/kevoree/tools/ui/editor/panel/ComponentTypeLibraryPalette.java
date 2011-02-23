@@ -37,8 +37,6 @@ public class ComponentTypeLibraryPalette extends JXTaskPane {
     }
 
     public void addComponentTypePanel(ComponentTypePanel ctp){
-        System.out.println("HELLO"+ctp.toString());
-
         add(ctp);
         repaint();
         revalidate();

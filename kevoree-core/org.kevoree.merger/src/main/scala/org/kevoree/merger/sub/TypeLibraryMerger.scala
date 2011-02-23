@@ -25,12 +25,12 @@ import scala.collection.JavaConversions._
 trait TypeLibraryMerger extends Merger {
 
   def mergeLibrary(actualModel : ContainerRoot,modelToMerge : ContainerRoot) : Unit = {
-    var ctLib : List[TypeLibrary] = List()++modelToMerge.getLibraries.toList
+    val ctLib : List[TypeLibrary] = List()++modelToMerge.getLibraries.toList
     ctLib.foreach{libtomerge=>
       actualModel.getLibraries.find({elib=> elib.getName.equals(libtomerge.getName) }) match {
         case Some(elib) => {
-            libtomerge.getSubTypes.filter{st=> st.isInstanceOf[ComponentType]}.foreach{libCTtomerge=>
-              elib.getSubTypes.filter{st=> st.isInstanceOf[ComponentType]}.find({esublib=>esublib.getName.equals(libCTtomerge.getName)}) match {
+            libtomerge.getSubTypes.filter{st=> st.isInstanceOf[TypeDefinition]}.foreach{libCTtomerge=>
+              elib.getSubTypes.filter{st=> st.isInstanceOf[TypeDefinition]}.find({esublib=>esublib.getName.equals(libCTtomerge.getName)}) match {
                 case Some(subct)=> //CHECK CONSISTENCY DONE BY PREVIOUS STEP
                 case None => elib.getSubTypes.add(libCTtomerge)
               }

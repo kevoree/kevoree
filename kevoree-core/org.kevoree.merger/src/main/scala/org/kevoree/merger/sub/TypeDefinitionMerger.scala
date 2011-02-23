@@ -36,7 +36,7 @@ trait TypeDefinitionMerger extends Merger with DictionaryMerger with PortTypeMer
 
   //TYPE DEFINITION MERGER ENTRYPOINT
   def mergeTypeDefinition(actualModel : ContainerRoot,modelToMerge : ContainerRoot) : Unit = {
-    var cts : List[TypeDefinition] = List()++modelToMerge.getTypeDefinitions.toList
+    val cts : List[TypeDefinition] = List()++modelToMerge.getTypeDefinitions.toList
     cts.foreach{toMergeTypeDef=>
       actualModel.getTypeDefinitions.find({actualTypeDef=>actualTypeDef.isModelEquals(toMergeTypeDef)}) match {
         case Some(found_type_definition)=> {
@@ -137,7 +137,7 @@ trait TypeDefinitionMerger extends Merger with DictionaryMerger with PortTypeMer
    // println("Merge new type Case =>"+newTypeDefinition)
 
     //MERGE TYPE REQUIRED LIB
-    var etp : List[DeployUnit] = List() ++ newTypeDefinition.getRequiredLibs
+    val etp : List[DeployUnit] = List() ++ newTypeDefinition.getRequiredLibs
     newTypeDefinition.getRequiredLibs.clear
     etp.foreach{loopTP=>
       newTypeDefinition.getRequiredLibs.add(mergeDeployUnit(actualModel,loopTP))
@@ -158,6 +158,8 @@ trait TypeDefinitionMerger extends Merger with DictionaryMerger with PortTypeMer
       case pt : PortType => { /*println("PORTTYPE M ?? "+pt.toString)*//* MERGE BY COMPONENT TYPE */ }
       case _ @ msg => println("Error uncatch type") // NO RECURSIVE FOR OTHER TYPE
     }
+
+
 
   }
 
