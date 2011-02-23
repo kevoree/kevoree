@@ -153,7 +153,8 @@
                             <keystore>${project.build.directory}/../../../keystore</keystore>
                             <alias>kevoree</alias>
                             <storepass>kevoree</storepass>
-                            <signedjar>${project.build.directory}/signed/${project.build.finalName}.jar</signedjar>
+                            <signedjar>${basedir}/../../../kevoreePages/releases/lib/KevoreeEditor.jar</signedjar>
+                          <!--  <signedjar>${project.build.directory}/signed/${project.build.finalName}.jar</signedjar> -->
                             <verify>true</verify>
                         </configuration>
                     </execution>
