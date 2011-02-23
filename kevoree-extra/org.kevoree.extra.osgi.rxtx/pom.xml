@@ -12,15 +12,13 @@
     <parent>
         <artifactId>org.kevoree.extra.root</artifactId>
         <groupId>org.kevoree.extra</groupId>
-        <version>1.0.0-RC2</version>
+        <version>1.0.0-RC3</version>
         <relativePath>../org.kevoree.extra.root/pom.xml</relativePath>
     </parent>
 
-  <build> 
-   <plugins>
-   
-   
-          <plugin>
+    <build>
+        <plugins>
+            <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>truezip-maven-plugin</artifactId>
                 <version>1.0-beta-4</version>
@@ -43,20 +41,20 @@
                     </execution>
 
                 </executions>
-            </plugin> 
+            </plugin>
    
     
-    <plugin> 
-      <groupId>org.apache.felix</groupId> 
-      <artifactId>maven-bundle-plugin</artifactId> 
-      <version>1.4.3</version> 
-      <extensions>true</extensions> 
-        <configuration> 
-          <instructions> 
-            <Bundle-SymbolicName>org.rxtx</Bundle-SymbolicName> 
-            <Bundle-Version>${pom.version}</Bundle-Version> 
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <version>1.4.3</version>
+                <extensions>true</extensions>
+                <configuration>
+                    <instructions>
+                        <Bundle-SymbolicName>org.rxtx</Bundle-SymbolicName>
+                        <Bundle-Version>${pom.version}</Bundle-Version>
             
-            <Bundle-NativeCode>
+                        <Bundle-NativeCode>
             	nativelib/Linux/i686-unknown-linux-gnu/librxtxParallel.so;
  				nativelib/Linux/i686-unknown-linux-gnu/librxtxSerial.so;
  				osname=Linux; processor=x86,
@@ -78,7 +76,7 @@
  				nativelib/Windows/win64/rxtxSerial.dll;
  				osname=Win64; processor=x86_64
 
-			</Bundle-NativeCode>
+                        </Bundle-NativeCode>
 			<!--
 			<Embed-Dependency>rxtx</Embed-Dependency>
 			-->
@@ -90,12 +88,11 @@
 			-->
 			
 			
-            <Export-Package>!nativelib.*,gnu.io.*;version=2.2.0</Export-Package>
-            
-          </instructions> 
-        </configuration> 
-    </plugin>  
-  </plugins> 
-</build> 
+                        <Export-Package>!nativelib.*,gnu.io.*;version=2.2.0</Export-Package>
+                    </instructions>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 
 </project>

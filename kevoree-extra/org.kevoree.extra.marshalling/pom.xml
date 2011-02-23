@@ -5,12 +5,12 @@
     <artifactId>org.kevoree.extra.marshalling</artifactId>
     <packaging>bundle</packaging>
     <name>Kevoree :: Extra :: Marshalling</name>
-    <version>1.0.0-RC2</version>
+    <version>1.0.0-RC3</version>
 
     <parent>
         <artifactId>org.kevoree.extra.root</artifactId>
         <groupId>org.kevoree.extra</groupId>
-        <version>1.0.0-RC2</version>
+        <version>1.0.0-RC3</version>
         <relativePath>../org.kevoree.extra.root/pom.xml</relativePath>
     </parent>
 

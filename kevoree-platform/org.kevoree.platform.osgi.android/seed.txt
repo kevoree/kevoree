@@ -12726,6 +12726,8 @@ org.jgrapht.graph.AbstractBaseGraph$DirectedSpecifics: java.lang.String NOT_IN_D
 org.jgrapht.graph.AbstractBaseGraph$Specifics: long serialVersionUID
 scala.collection.immutable.StringLike$$anonfun$lines$1: long serialVersionUID
 scala.Function2$mcIIL$sp$$anonfun$curried$mcIIL$sp$1: long serialVersionUID
+org.kevoree.adaptation.deploy.osgi.command.CommandHelper$$anonfun$buildPotentialMavenURL$2: long serialVersionUID
+org.kevoree.adaptation.deploy.osgi.command.CommandHelper$$anonfun$buildPotentialMavenURL$1: long serialVersionUID
 net.lag.configgy.ConfigParser$$anonfun$root$1$$anonfun$apply$4: long serialVersionUID
 scala.util.automata.WordBerrySethi$$anonfun$makeTransition$1: long serialVersionUID
 net.lag.configgy.ConfigParser$$anonfun$root$1$$anonfun$apply$5: long serialVersionUID
@@ -14241,6 +14243,7 @@ scala.concurrent.forkjoin.ForkJoinTask: int EXTERNAL_SIGNAL
 scala.concurrent.forkjoin.ForkJoinTask: long serialVersionUID
 scala.concurrent.forkjoin.ForkJoinTask: long statusOffset
 scala.collection.generic.Addable$$anonfun$$plus$plus$1: long serialVersionUID
+org.kevoree.adaptation.deploy.osgi.command.CommandHelper$$anonfun$buildAllQuery$3: long serialVersionUID
 org.jgrapht.graph.DirectedWeightedSubgraph: long serialVersionUID
 org.jgrapht.graph.DirectedSubgraph: long serialVersionUID
 org.jgrapht.graph.Subgraph: long serialVersionUID
@@ -14268,6 +14271,7 @@ org.codehaus.jackson.io.BaseReader: char NULL_BYTE
 scala.Tuple3$Zipped$$anonfun$forall$1: long serialVersionUID
 org.kevoree.adaptation.deploy.osgi.command.CommandHelper$$anonfun$buildAllQuery$1: long serialVersionUID
 scala.collection.SeqLike$$anonfun$indexOf$1: long serialVersionUID
+org.kevoree.adaptation.deploy.osgi.command.CommandHelper$$anonfun$buildAllQuery$2: long serialVersionUID
 org.eclipse.emf.ecore.util.AbstractSequentialInternalEList$1: long serialVersionUID
 scala.collection.mutable.ListMap$$anonfun$get$1: long serialVersionUID
 scala.collection.mutable.ListMap$$anonfun$get$2: long serialVersionUID
@@ -16914,7 +16918,10 @@ org.jgrapht.graph.SimpleGraph: long serialVersionUID
 org.jgrapht.graph.AbstractBaseGraph: long serialVersionUID
 org.jgrapht.graph.AbstractBaseGraph: boolean $assertionsDisabled
 org.jgrapht.graph.AbstractBaseGraph: java.lang.String LOOPS_NOT_ALLOWED
+org.kevoree.adaptation.deploy.osgi.command.AddThirdPartyCommand$$anonfun$execute$1: long serialVersionUID
+org.kevoree.adaptation.deploy.osgi.command.AddThirdPartyCommand$$anonfun$execute$2: long serialVersionUID
 scala.collection.mutable.WrappedArray$$anon$1$$anonfun$apply$1: long serialVersionUID
+org.kevoree.adaptation.deploy.osgi.command.AddThirdPartyCommand$$anonfun$execute$3: long serialVersionUID
 scala.collection.mutable.WrappedArray$$anon$1$$anonfun$apply$2: long serialVersionUID
 org.eclipse.emf.common.notify.impl.NotificationImpl: int PRIMITIVE_TYPE_OBJECT
 org.eclipse.emf.common.notify.impl.NotificationImpl: int PRIMITIVE_TYPE_BOOLEAN
@@ -19887,6 +19894,8 @@ scala.util.control.TailCalls$Done
 org.jgrapht.graph.AbstractBaseGraph$DirectedSpecifics
 scala.collection.immutable.StringLike$$anonfun$lines$1
 scala.Function2$mcIIL$sp$$anonfun$curried$mcIIL$sp$1
+org.kevoree.adaptation.deploy.osgi.command.CommandHelper$$anonfun$buildPotentialMavenURL$2
+org.kevoree.adaptation.deploy.osgi.command.CommandHelper$$anonfun$buildPotentialMavenURL$1
 net.lag.configgy.ConfigParser$$anonfun$root$1$$anonfun$apply$4
 scala.util.automata.WordBerrySethi$$anonfun$makeTransition$1
 net.lag.configgy.ConfigParser$$anonfun$root$1$$anonfun$apply$5
@@ -20561,6 +20570,7 @@ scala.util.parsing.json.Lexer$$anonfun$scala$util$parsing$json$Lexer$$unicodeBlo
 scala.util.parsing.json.Lexer$$anonfun$scala$util$parsing$json$Lexer$$unicodeBlock$1
 scala.util.parsing.json.Lexer$$anonfun$scala$util$parsing$json$Lexer$$unicodeBlock$2
 scala.collection.generic.Addable$$anonfun$$plus$plus$1
+org.kevoree.adaptation.deploy.osgi.command.CommandHelper$$anonfun$buildAllQuery$3
 net.lag.logging.Level$DEBUG$
 org.kevoree.framework.aspects.ContainerNodeAspect$$anonfun$getUsedTypeDefinition$2$$anonfun$apply$3
 scala.reflect.generic.Trees$Literal$
@@ -20572,6 +20582,7 @@ org.kevoree.framework.message.StartMessage$
 scala.Tuple3$Zipped$$anonfun$forall$1
 org.kevoree.adaptation.deploy.osgi.command.CommandHelper$$anonfun$buildAllQuery$1
 scala.collection.SeqLike$$anonfun$indexOf$1
+org.kevoree.adaptation.deploy.osgi.command.CommandHelper$$anonfun$buildAllQuery$2
 scala.math.BigInt
 scala.collection.immutable.TreeSet$
 scala.collection.mutable.ListMap$$anonfun$get$1
@@ -21679,7 +21690,10 @@ scala.util.automata.BaseBerrySethi$$anonfun$compFollow1$2
 scala.Function5$$anonfun$tupled$1
 scala.actors.$bang
 scala.actors.scheduler.ActorGC$$anonfun$terminated$1
+org.kevoree.adaptation.deploy.osgi.command.AddThirdPartyCommand$$anonfun$execute$1
+org.kevoree.adaptation.deploy.osgi.command.AddThirdPartyCommand$$anonfun$execute$2
 scala.collection.mutable.WrappedArray$$anon$1$$anonfun$apply$1
+org.kevoree.adaptation.deploy.osgi.command.AddThirdPartyCommand$$anonfun$execute$3
 scala.collection.mutable.WrappedArray$$anon$1$$anonfun$apply$2
 scala.reflect.PolyType
 org.kevoree.adaptation.deploy.osgi.command.AddFragmentBindingCommand$$anonfun$2

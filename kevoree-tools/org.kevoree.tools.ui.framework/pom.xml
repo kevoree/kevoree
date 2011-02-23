@@ -8,17 +8,19 @@
     <artifactId>org.kevoree.tools.ui.framework</artifactId>
     <packaging>jar</packaging>
     <name>Kevoree :: Tools :: UI Framework</name>
+    <version>1.0.0-RC3</version>
 
     <parent>
         <artifactId>org.kevoree.tools.root</artifactId>
         <groupId>org.kevoree.tools</groupId>
-        <version>1.0.0-RC2</version>
+        <version>1.0.0-RC3</version>
         <relativePath>../org.kevoree.tools.root/pom.xml</relativePath>
     </parent>
 
     <build>
      	<plugins>
             <!-- Creation of the bundle jar and its manifest -->
+            <!--
             <plugin>
                 <groupId>org.apache.felix</groupId>
                 <artifactId>maven-bundle-plugin</artifactId>
@@ -29,19 +31,12 @@
                         <Export-Package>
                         	org.jdesktop.swingx.*,org.kevoree.tools.ui.framework.*
                         </Export-Package>
-                        <!-- use the ! for avoiding to import some packages that are already there with the Require-Bundle -->
                      	<Import-Package>
 				!*
                         </Import-Package>                        
-                        <!-- add extra element in the manifest, copy them from this file
-                             ex: Bundle-ActivationPolicy: lazy -->
-                        <!-- <_include>src/main/resources/MANIFEST-part.MF</_include> -->
-                        <!-- embed any dependencies with artifactId swingx -->
-			<!--<Embed-Dependency>swingx</Embed-Dependency>            -->
-                        <!--<Embed-Transitive>true</Embed-Transitive>-->
                     </instructions>
                 </configuration>	
-            </plugin>
+            </plugin>-->
     	</plugins>
 	</build>
     <dependencies>

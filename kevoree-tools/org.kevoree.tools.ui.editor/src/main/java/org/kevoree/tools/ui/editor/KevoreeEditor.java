@@ -18,7 +18,8 @@
 
 package org.kevoree.tools.ui.editor;
 
-import javax.swing.JPanel;
+import javax.swing.*;
+
 import org.kevoree.framework.KevoreeXmiHelper;
 import org.kevoree.tools.ui.editor.command.LoadModelCommand;
 import org.kevoree.tools.ui.editor.command.SaveActuelModelCommand;
@@ -30,10 +31,20 @@ import org.kevoree.tools.ui.editor.panel.KevoreeEditorPanel;
  */
 public class KevoreeEditor {
 
-    private KevoreeEditorPanel panel = new KevoreeEditorPanel();
+    private KevoreeEditorPanel panel = null;
+    private KevoreeMenuBar menubar = null;
+
+    public KevoreeEditor(){
+        panel = new KevoreeEditorPanel();
+        menubar = new KevoreeMenuBar(panel.getKernel());
+    }
 
     public JPanel getPanel(){
         return panel;
+    }
+
+    public JMenuBar getMenuBar(){
+        return menubar;
     }
 
     public void loadModel(String uri){

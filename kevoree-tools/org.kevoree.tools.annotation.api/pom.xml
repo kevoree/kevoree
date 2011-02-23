@@ -6,11 +6,12 @@
     <artifactId>org.kevoree.tools.annotation.api</artifactId>
     <packaging>bundle</packaging>
     <name>Kevoree :: Tools :: Annotation API</name>
+    <version>1.0.0-RC3</version>
 
     <parent>
         <artifactId>org.kevoree.tools.root</artifactId>
         <groupId>org.kevoree.tools</groupId>
-        <version>1.0.0-RC2</version>
+        <version>1.0.0-RC3</version>
         <relativePath>../org.kevoree.tools.root/pom.xml</relativePath>
     </parent>
 

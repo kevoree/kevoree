@@ -3,17 +3,21 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
     <modelVersion>4.0.0</modelVersion>
-
     <artifactId>org.kevoree.tools.annotation.processor</artifactId>
     <packaging>jar</packaging>
     <name>Kevoree :: Tools :: Annotation Processor</name>
+    <version>1.0.0-RC3</version>
 
     <parent>
         <artifactId>org.kevoree.tools.root</artifactId>
         <groupId>org.kevoree.tools</groupId>
-        <version>1.0.0-RC2</version>
+        <version>1.0.0-RC3</version>
         <relativePath>../org.kevoree.tools.root/pom.xml</relativePath>
     </parent>
+
+    <properties>
+        <kevoree.version>${project.version}</kevoree.version>
+    </properties>
 
     <dependencies>
         <dependency>

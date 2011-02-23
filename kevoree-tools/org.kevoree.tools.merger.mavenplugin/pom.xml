@@ -3,18 +3,21 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <artifactId>org.kevoree.tools.merger.mavenplugin</artifactId>
-            <groupId>org.kevoree.tools</groupId>
-        <version>1.0.0-RC2</version>
+    <groupId>org.kevoree.tools</groupId>
+    <version>1.0.0-RC3</version>
     <packaging>maven-plugin</packaging>
     <name>Kevoree :: Tools :: Merger MavenPlugin</name>
-
 
     <parent>
         <artifactId>org.kevoree.tools.root</artifactId>
         <groupId>org.kevoree.tools</groupId>
-        <version>1.0.0-RC2</version>
+        <version>1.0.0-RC3</version>
         <relativePath>../org.kevoree.tools.root/pom.xml</relativePath>
     </parent>
+
+    <properties>
+        <kevoree.version>${project.version}</kevoree.version>
+    </properties>
 
     <dependencies>
         <dependency>
@@ -35,19 +38,5 @@
             <version>${kevoree.version}</version>
         </dependency>
     </dependencies>
-    <!--
-        <distributionManagement>
-        <repository>
-            <id>embedded-repo</id>
-            <url>file:${basedir}/../../../kevoreePages/maven</url>
-            <uniqueVersion>false</uniqueVersion>
-        </repository>
-        <snapshotRepository>
-            <id>embedded-repo-snapshot</id>
-            <url>file:${basedir}/../../../kevoreePages/maven</url>
-            <uniqueVersion>false</uniqueVersion>
-        </snapshotRepository>
-    </distributionManagement>
-    -->
     
 </project>

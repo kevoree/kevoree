@@ -7,21 +7,13 @@
     <artifactId>org.kevoree.library.root</artifactId>
     <packaging>pom</packaging>
     <name>Kevoree :: Library :: Root</name>
-    <version>1.0.0-RC2</version>
+    <version>1.0.0-RC3</version>
+
 
     <properties>
-    	<kevoree.version>1.0.0-RC2</kevoree.version>
-    	<kevoree.deploy.repo>../kevoreePages/maven</kevoree.deploy.repo>
+        <kevoree.version>${project.version}</kevoree.version>
     	<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
-
-<!--
-    <parent>
-        <artifactId>org.kevoree</artifactId>
-        <groupId>org.kevoree</groupId>
-        <version>1.0.0-RC1</version>
-        <relativePath>../../pom.xml</relativePath>
-    </parent>-->
 
     <modules>
         <module>../org.kevoree.library.defaultChannels</module>
@@ -37,12 +29,12 @@
     <distributionManagement>
         <repository>
             <id>embedded-repo</id>
-            <url>file:${basedir}/../../${kevoree.deploy.repo}</url>
+            <url>file:${basedir}/../../../kevoreePages/maven</url>
             <uniqueVersion>false</uniqueVersion>
         </repository>
         <snapshotRepository>
             <id>embedded-repo-snapshot</id>
-            <url>file:${basedir}/../../${kevoree.deploy.repo}</url>
+            <url>file:${basedir}/../../../kevoreePages/maven</url>
             <uniqueVersion>false</uniqueVersion>
         </snapshotRepository>
     </distributionManagement>
