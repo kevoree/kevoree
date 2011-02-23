@@ -18,14 +18,9 @@
 
 package org.kevoree.core.basechecker.cyclechecker
 
-/*import choco.cp.model.CPModel
- import choco.cp.solver.CPSolver
- import choco.kernel.model.Model
- import choco.kernel.model.variables.integer.IntegerVariable
- import choco.kernel.solver.Solver*/
+import org.jgrapht.DirectedGraph
 import org.jgrapht.alg.CycleDetector
 import org.kevoree.ContainerRoot
-import org.kevoree.Instance
 import org.kevoree.MBinding
 import org.kevoree.api.service.core.checker.CheckerService
 import org.kevoree.api.service.core.checker.CheckerViolation
@@ -33,121 +28,42 @@ import scala.collection.JavaConversions._
 
 class CycleChecker extends CheckerService {
 
-  def check(model:ContainerRoot ):java.util.List[CheckerViolation] = {
-    var violations : List[CheckerViolation] = List()
-    model.getNodes.foreach{
-      node =>
-      var graph  = KevoreeDirectedGraph(model,node.getName)
-      var cycleDetector  = new CycleDetector[Instance, MBinding](graph)
-      if (cycleDetector.detectCycles) {
-	var violation = new CheckerViolation
-	violation.setMessage("Cycle(s) detected")
-	violations = violations ++ List(violation)
-	cycleDetector.findCycles
-      }
-    }
+	def check(model: ContainerRoot): java.util.List[CheckerViolation] = {
+		var violations: List[CheckerViolation] = List()
+		model.getNodes.foreach {
+			node =>
+				val graph = KevoreeComponentDirectedGraph(model, node.getName)
+				/*var cycleDetector  = new CycleDetector[Instance, MBinding](graph)
+											 if (cycleDetector.detectCycles) {
+											 var violation = new CheckerViolation
+											 violation.setMessage("Cycle(s) detected")
+											 violation.setTargetObject(cycleDetector.findCycles.toList)
+											 violations = violations ++ List(violation)
+											 cycleDetector.findCycles
+											 }*/
+				violations = violations ++ check(graph)
+		}
 
-    /*var graph = KevoreeDirectedGraph(model,)
+		val distributedChecking = true // TODO need to be fixed according to the model and bindings between nodes
+		if (distributedChecking && model.getNodes.size > 1) {
+			val graph1 = KevoreeNodeDirectedGraph(model)
+			violations = violations ++ check(graph1)
+		}
 
-     var cycleDetector : CycleDetector = new CycleDetector(KevoreeDirectedGraph())*/
+		violations
+	}
 
-    return violations
+	private def check[A](graph: DirectedGraph[A, MBinding]): List[CheckerViolation] = {
+		var violations: List[CheckerViolation] = List()
+		val cycleDetector = new CycleDetector[A, MBinding](graph)
 
-  }
-
-  /*private def checkCyclicDependencies(model:ContainerRoot ):java.util.List[CheckerViolation] = {
-
-   // for each bindings, we define variables and constraints about dependencies between the two instances used by the binding
-   val solver: Solver = new CPSolver
-   solver.read(buildModelForCyclicDependenciesCheck(model))
-   var solutionExists = solver.isFeasible
-   if (solutionExists == false) {
-   return null
-   } else {
-   return null
-   }
-   }
-   private def buildModelForCyclicDependenciesCheck(model : ContainerRoot) : Model ={
-   val chocoModel : Model = new CPModel
-
-   var variables: Map[Instance,IntegerVariable] = Map()
-    
-   var bindingIterator = model.getMBindings.iterator
-   while(bindingIterator.hasNext) {
-   var binding = bindingIterator.next
-
-   var instance : ComponentInstance = binding.getPort.eContainer.asInstanceOf[ComponentInstance]
-
-   /*val variable: IntegerVariable = new IntegerVariable(instance.getName, 0, (commands.size-1))
-    if (instance.getProvided.contains(binding.getPort)) {
-
-    } else {
-
-    }*/
-
-
-
-
-      
-   //val variable: IntegerVariable = new IntegerVariable("v" + i, 0, (commands.size-1))
-   //variables = variables + (command -> variable)
-   //model.addVariable(variable)
-   //i += 1
-   }
-   return null
-   }
-
-   /*
-    * Return Map
-    *
-    * Instance Map key is a dependency of all List instances return by key
-    *
-    *
-    * [i:Instance,li:List[Instance]]
-    * li depends i
-    *
-    *
-    * */
-   private def lookForPotentialConstraints(model : ContainerRoot): scala.collection.mutable.Map[Instance, java.util.List[Instance]] = {
-   val instanceDependencies: scala.collection.mutable.Map[Instance, java.util.List[Instance]] = scala.collection.mutable.Map[Instance, java.util.List[Instance]]()
-
-
-
-
-   var bindingIterator = model.getMBindings.iterator
-   while(bindingIterator.hasNext){
-   var binding = bindingIterator.next
-   for (command <- commands) {
-   command.getInstance match {
-   case instance: ComponentInstance => {
-   // test all provided port
-   // the instance of the provided port must be stopped before those which are connected to him
-   var pit = instance.getProvided.iterator
-   while(pit.hasNext){
-   var port = pit.next
-   if (binding.getPort.equals(port)) {
-   var newL = instanceDependencies.get(instance).getOrElse(new java.util.ArrayList())
-   newL.add(binding.getHub)
-   instanceDependencies.update(instance, newL)
-   }
-   }
-   // test all required port
-   // the instance wait stops of all of those which are connected to him
-   var rit = instance.getRequired.iterator
-   while(rit.hasNext){
-   var port = rit.next
-   if (binding.getPort.equals(port)) {
-   var newL = instanceDependencies.get(binding.getHub).getOrElse(new java.util.ArrayList())
-   newL.add(instance)
-   instanceDependencies.update(binding.getHub, newL)
-   }
-   }
-   }
-   case _ =>
-   }
-   }
-   }
-   instanceDependencies
-   }*/
-
+		if (cycleDetector.detectCycles) {
+			val violation = new CheckerViolation
+			violation.setMessage("Cycle(s) detected")
+			violation.setTargetObjects(cycleDetector.findCycles.asInstanceOf[java.util.Set[Object]].toList)
+			violations = violations ++ List(violation)
+			cycleDetector.findCycles
+		}
+		violations
+	}
 }
