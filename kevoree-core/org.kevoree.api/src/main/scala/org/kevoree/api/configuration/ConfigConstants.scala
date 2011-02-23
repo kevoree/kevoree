@@ -18,8 +18,6 @@
 
 package org.kevoree.api.configuration
 
-import java.util.Enumeration
-
 object ConfigConstants extends Enumeration {
   type Value = ConfigConstant
   case class ConfigConstant(value : String,defaultValue : String) extends Val(value){
