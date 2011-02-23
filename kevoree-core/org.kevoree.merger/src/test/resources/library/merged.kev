@@ -4,7 +4,7 @@
   <typeDefinitions xsi:type="kevoree:ChannelType" name="defMSG" deployUnit="//@deployUnits.0" factoryBean="org.kevoree.library.defaultChannels.defMSGFactory" bean="org.kevoree.library.defaultChannels.defMSG" startMethod="startHello" stopMethod="stopHello" updateMethod="updateHello"/>
   <typeDefinitions xsi:type="kevoree:ChannelType" name="RestChannel" deployUnit="//@deployUnits.2" factoryBean="org.kevoree.library.restChannels.RestChannelFactory" bean="org.kevoree.library.restChannels.RestChannel" requiredLibs="//@deployUnits.1" startMethod="startHello" stopMethod="stopHello" updateMethod="updateHello"/>
   <repositories units="//@deployUnits.0 //@deployUnits.2" url="http://dukeboard.github.com/kevoree/maven/"/>
-  <libraries name="art2baselib" subTypes="//@typeDefinitions.0 //@typeDefinitions.1"/>
+  <libraries name="art2baselib" subTypes="//@typeDefinitions.0 //@typeDefinitions.1 //@typeDefinitions.2"/>
   <deployUnits groupName="org.kevoree.library" unitName="org.kevoree.library.defaultChannels" version="1.0.0-RC2" hashcode="201102171716374"/>
   <deployUnits name="org.kevoree.extra.marshalling" url="mvn:org.kevoree.extra/org.kevoree.extra.marshalling"/>
   <deployUnits groupName="org.kevoree.library" unitName="org.kevoree.library.restChannels" version="1.0.0-RC2" hashcode="201102171717287"/>
