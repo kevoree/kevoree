@@ -32,7 +32,7 @@ import java.util.HashMap;
 /**
  * @author ffouquet
  */
-public class RestChannelFragmentRessource extends ServerResource {
+public class RestChannelFragmentResource extends ServerResource {
 
     public static HashMap<String, AbstractChannelFragment> channels = new HashMap<String, AbstractChannelFragment>();
 
