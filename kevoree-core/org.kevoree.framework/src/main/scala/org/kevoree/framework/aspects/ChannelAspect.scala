@@ -39,6 +39,14 @@ case class ChannelAspect(cself : Channel) {
     result
   }
 
+  def getConnectedNode(nodeName : String) : List[ContainerNode] = {
+    var result : List[ContainerNode] = List()
+    cself.eContainer.asInstanceOf[ContainerRoot].getMBindings.filter(mb=> mb.getHub == cself && mb.getPort.eContainer.eContainer.asInstanceOf[ContainerNode].getName != nodeName).foreach{
+      mb=> result = result ++ List(mb.getPort.eContainer.eContainer.asInstanceOf[ContainerNode])
+    }
+    result
+  }
+
   def getRelatedBindings : List[MBinding] = {
     var res = new java.util.ArrayList[MBinding]();
     cself.eContainer.eContainer.asInstanceOf[ContainerRoot].getMBindings.foreach{b=>

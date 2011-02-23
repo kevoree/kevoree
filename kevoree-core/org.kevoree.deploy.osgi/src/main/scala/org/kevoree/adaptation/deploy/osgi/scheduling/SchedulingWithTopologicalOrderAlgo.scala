@@ -106,7 +106,7 @@ class SchedulingWithTopologicalOrderAlgo {
     var firstCommand= (commands(0)).getInstance
     firstCommand match {
       case c : Channel => rootContainer = c.eContainer.asInstanceOf[ContainerRoot]
-      case c : ComponentInstance => rootContainer= c.eContainer.eContainer.asInstanceOf[ContainerRoot]
+      case c : ComponentInstance => rootContainer = c.eContainer.eContainer.asInstanceOf[ContainerRoot]
     }
 
 

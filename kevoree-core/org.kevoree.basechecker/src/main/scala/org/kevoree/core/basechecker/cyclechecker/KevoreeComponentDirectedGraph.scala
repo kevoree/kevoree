@@ -27,24 +27,25 @@ import org.kevoree.ContainerRoot
 import org.kevoree.Instance
 import org.kevoree.MBinding
 
-case class KevoreeDirectedGraph(model : ContainerRoot,nodeName : String) extends DefaultDirectedGraph[Instance, MBinding](classOf[MBinding]) {
+case class KevoreeComponentDirectedGraph(model: ContainerRoot, nodeName: String) extends DefaultDirectedGraph[Instance, MBinding](classOf[MBinding]) {
 
-  model.getNodes.find(node => node.getName == nodeName) match {
-    case Some(node) =>
-      node.getInstances.filter(p => p.isInstanceOf[ComponentInstance]).foreach{ instance =>
-	var componentinstance  = instance.asInstanceOf[ComponentInstance]
-	componentinstance.getRelatedBindings.foreach {
-	  binding =>
-	  addVertex(binding.getHub)
-	  addVertex(componentinstance)
+	model.getNodes.find(node => node.getName == nodeName) match {
+		case Some(node) =>
+			node.getInstances.filter(p => p.isInstanceOf[ComponentInstance]).foreach {
+				instance =>
+					val componentInstance = instance.asInstanceOf[ComponentInstance]
+					componentInstance.getRelatedBindings.foreach {
+						binding =>
+							addVertex(binding.getHub)
+							addVertex(componentInstance)
 
-	  if (componentinstance.getProvided.contains(binding.getPort)) {
-	    addEdge(binding.getHub, componentinstance, binding)
-	  } else {
-	    addEdge(componentinstance, binding.getHub, binding)
-	  }
+							if (componentInstance.getProvided.contains(binding.getPort)) {
+								addEdge(binding.getHub, componentInstance, binding)
+							} else {
+								addEdge(componentInstance, binding.getHub, binding)
+							}
+					}
+			}
+		case None =>
 	}
-      }
-    case None =>
-  }
 }
