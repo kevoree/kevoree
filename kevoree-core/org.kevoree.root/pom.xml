@@ -8,12 +8,7 @@
     <name>Kevoree :: Root</name>
     <url>https://github.com/dukeboard/kevoree</url>
     
-    <parent>
-        <artifactId>org.kevoree</artifactId>
-        <groupId>org.kevoree</groupId>
-        <version>1.0.0-RC2</version>
-        <relativePath>../../pom.xml</relativePath>
-    </parent>
+    <version>1.0.0-RC3</version>
 
     <properties>
         <emf.version>2.6.0</emf.version>
@@ -125,6 +120,10 @@
             <name>Scala-tools Maven2 Repository</name>
             <url>http://scala-tools.org/repo-releases</url>
         </repository>
+        <repository>
+            <id>kevoree-github</id>
+            <url>http://dukeboard.github.com/kevoree/maven/</url>
+        </repository>
     </repositories>
 
     <pluginRepositories>
@@ -133,7 +132,12 @@
             <name>Plugin Scala-tools Maven2 Repository</name>
             <url>http://scala-tools.org/repo-releases</url>
         </pluginRepository>
+        <pluginRepository>
+            <id>plugin.kevoree-github</id>
+            <url>http://dukeboard.github.com/kevoree/maven/</url>
+        </pluginRepository>
     </pluginRepositories>
+
 
     <modules>
         <module>../org.kevoree.model</module>
@@ -150,12 +154,12 @@
     <distributionManagement>
         <repository>
             <id>embedded-repo</id>
-            <url>file:${basedir}/../../${kevoree.deploy.repo}</url>
+            <url>file:${basedir}/../../../kevoreePages/maven</url>
             <uniqueVersion>false</uniqueVersion>
         </repository>
         <snapshotRepository>
             <id>embedded-repo-snapshot</id>
-            <url>file:${basedir}/../../${kevoree.deploy.repo}</url>
+            <url>file:${basedir}/../../../kevoreePages/maven</url>
             <uniqueVersion>false</uniqueVersion>
         </snapshotRepository>
     </distributionManagement>
