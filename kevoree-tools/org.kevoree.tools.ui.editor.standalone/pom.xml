@@ -118,6 +118,10 @@
                                 <artifactId>org.kevoree.merger</artifactId>
                             </inclusion>
                             <inclusion>
+                                <groupId>org.kevoree</groupId>
+                                <artifactId>org.kevoree.baseChecker</artifactId>
+                            </inclusion>
+                            <inclusion>
                                 <groupId>org.swinglabs</groupId>
                                 <artifactId>swingx</artifactId>
                             </inclusion>

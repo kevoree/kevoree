@@ -31,7 +31,6 @@ public class KevoreeMenuBar extends JMenuBar {
         refresh.addActionListener(new CommandActionListener(cmdRM));
         file.add(refresh);
 
-
         model = new JMenu("Model");
         JMenuItem addNode = new JMenuItem("Add node");
         AddNodeCommand cmdAN = new AddNodeCommand();
@@ -48,6 +47,12 @@ public class KevoreeMenuBar extends JMenuBar {
         cmdLL.setKernel(kernel);
         mergeLib.addActionListener(new CommandActionListener(cmdLL));
         model.add(mergeLib);
+
+        JMenuItem checkModel = new JMenuItem("Check");
+        CheckCurrentModel cmdCheck = new CheckCurrentModel();
+        cmdCheck.setKernel(kernel);
+        checkModel.addActionListener(new CommandActionListener(cmdCheck));
+        model.add(checkModel);
 
 
         this.add(file);
