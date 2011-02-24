@@ -121,8 +121,8 @@
             <url>http://scala-tools.org/repo-releases</url>
         </repository>
         <repository>
-            <id>kevoree-github</id>
-            <url>http://dukeboard.github.com/kevoree/maven/</url>
+            <id>kevoree-libs-release-local</id>
+            <url>http://maven.kevoree.org/libs-release-local/</url>
         </repository>
     </repositories>
 
@@ -152,6 +152,7 @@
         <module>../org.kevoree.baseChecker</module>
     </modules>
 
+<!--
     <distributionManagement>
         <repository>
             <id>embedded-repo</id>
@@ -164,5 +165,15 @@
             <uniqueVersion>false</uniqueVersion>
         </snapshotRepository>
     </distributionManagement>
+-->
+
+<distributionManagement>
+    <repository>
+        <id>maven.kevoree.org-releases</id>
+        <name>maven.kevoree.org-releases</name>
+        <url>http://maven.kevoree.org/libs-release-local</url>
+    </repository>
+</distributionManagement>
+
 
 </project>

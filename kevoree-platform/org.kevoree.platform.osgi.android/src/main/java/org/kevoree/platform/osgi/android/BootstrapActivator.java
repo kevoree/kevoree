@@ -23,7 +23,6 @@ import org.kevoree.api.configuration.ConfigurationService;
 import org.kevoree.api.service.adaptation.deploy.KevoreeAdaptationDeployService;
 import org.kevoree.api.service.core.handler.KevoreeModelHandlerService;
 import org.kevoree.api.service.core.kompare.ModelKompareService;
-import org.kevoree.core.impl.KevoreeConfigServiceBean;
 import org.kevoree.core.impl.KevoreeCoreBean;
 import org.kevoree.kompare.KevoreeKompareBean;
 import org.kevoree.remote.rest.Handler;
@@ -31,6 +30,7 @@ import org.kevoree.remote.rest.KevoreeRemoteBean;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.service.packageadmin.PackageAdmin;
+import org.kevoree.api.configuration.ConfigConstants;
 
 /**
  *
@@ -58,7 +58,9 @@ public class BootstrapActivator implements BundleActivator {
 
         deployBean.setContext(contextDeploy);
 
-        KevoreeConfigServiceBean configBean = new KevoreeConfigServiceBean();
+        KevoreeAndroidConfigService configBean = new KevoreeAndroidConfigService();//new KevoreeConfigServiceBean();
+         configBean.def.put("node.name", KevoreeActivity.nodeName);
+
         coreBean = new KevoreeCoreBean();
         coreBean.setBundleContext(context);
         coreBean.setConfigService((ConfigurationService) configBean);
