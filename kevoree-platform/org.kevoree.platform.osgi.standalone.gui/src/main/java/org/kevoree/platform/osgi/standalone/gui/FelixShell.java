@@ -34,10 +34,13 @@ public class FelixShell extends JPanel {
 
     private static String eol = System.getProperty("line.separator");
 
+    private JScrollPane scrollShell = null;
+
     public FelixShell(final ShellService shell) {
 
         setLayout(new BorderLayout());
         final RichTextArea textArea = new RichTextArea();
+         textArea.setBackground(new Color(57,57,57));
         textArea.setEditable(false);
         textArea.setPreferredSize(new Dimension(500,250));
        // textArea.setRows(15);
@@ -45,10 +48,11 @@ public class FelixShell extends JPanel {
 
 
         singleton = null;
-        STDwriter = new PrintStream(new TextOutputStream(textArea,Color.GRAY));
+        STDwriter = new PrintStream(new TextOutputStream(textArea,Color.WHITE));
         ERRwriter = new PrintStream(new TextOutputStream(textArea,Color.ORANGE));
 
-        add(new JScrollPane(textArea), BorderLayout.CENTER);
+        scrollShell =  new JScrollPane(textArea);
+        add(scrollShell, BorderLayout.CENTER);
 
         final JTextField input = new JTextField();
 
@@ -59,7 +63,7 @@ public class FelixShell extends JPanel {
                
                     try {
                        // textArea.append("==>" + input.getText() + eol);
-                        textArea.append(input.getText() + eol, Color.BLUE, Color.white, true);
+                        textArea.append(input.getText() + eol, new Color(87,145,198), Color.white, true);
 
                         shell.executeCommand(input.getText().trim(), STDwriter, ERRwriter);
                         input.setText("");
@@ -94,6 +98,7 @@ public class FelixShell extends JPanel {
                 public void run() {
                     try {
                         _textArea.append(((char) i) + "", _color, Color.white, false);
+                         _textArea.selectAll();
                        // _textArea.append( ((char) i) + "");
                     } catch (Exception e) {
                         e.printStackTrace();

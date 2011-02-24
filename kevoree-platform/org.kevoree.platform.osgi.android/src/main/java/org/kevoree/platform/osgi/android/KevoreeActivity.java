@@ -17,24 +17,23 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
-import android.widget.FrameLayout;
-import android.widget.LinearLayout;
-import android.widget.TabHost;
+import android.widget.*;
 import android.widget.TabHost.TabSpec;
-import android.widget.TabWidget;
 import org.kevoree.android.framework.service.KevoreeAndroidService;
 import org.kevoree.platform.osgi.android.ui.PreExistingViewFactory;
 
 /**
  * Hello world!
- *
  */
 public class KevoreeActivity extends Activity implements KevoreeAndroidService {
 
     public static KevoreeAndroidService last = null;
+
+    public static String nodeName = "";
 
     @Override
     protected void onStart() {
@@ -49,6 +48,7 @@ public class KevoreeActivity extends Activity implements KevoreeAndroidService {
         // Intent intent = new Intent(".AndroidFelixService.ACTION");
         //stopService(intent);
     }
+
     private Boolean alreadyStarted = false;
     private TabHost tabs = null;
 
@@ -76,11 +76,18 @@ public class KevoreeActivity extends Activity implements KevoreeAndroidService {
         tspec1.setIndicator("Admin", this.getResources().getDrawable(android.R.drawable.ic_menu_preferences));
 
         LinearLayout adminLayout = new LinearLayout(this);
+
+
+        final EditText nodeNameView = new EditText(this);
+        nodeNameView.setText("dukeTab");
+        nodeNameView.setWidth(200);
+
         Button btstart = new Button(this);
         btstart.setText("Start");
         Button btstop = new Button(this);
         btstop.setText("Stop");
 
+        adminLayout.addView(nodeNameView);
         adminLayout.addView(btstart);
         adminLayout.addView(btstop);
 
@@ -90,6 +97,7 @@ public class KevoreeActivity extends Activity implements KevoreeAndroidService {
         TabSpec tspec2 = tabs.newTabSpec("Tab2");
         tspec2.setIndicator("Two", this.getResources().getDrawable(android.R.drawable.star_on));
         tspec2.setContent(new PreExistingViewFactory(content2));
+
         tabs.addTab(tspec2);
         TabSpec tspec3 = tabs.newTabSpec("Tab3");
         tspec3.setIndicator("Three", this.getResources().getDrawable(android.R.drawable.star_on));
@@ -111,6 +119,7 @@ public class KevoreeActivity extends Activity implements KevoreeAndroidService {
                 Intent intent_start = new Intent(ctx, AndroidFelixService.class);
                 Log.i("art2.service", "start bind service");
                 if (!alreadyStarted) {
+                    nodeName=  nodeNameView.getText().toString();
                     startService(intent_start);
                     alreadyStarted = true;
                 }
