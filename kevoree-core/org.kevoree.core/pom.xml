@@ -6,16 +6,18 @@
     <packaging>bundle</packaging>
     <name>Kevoree :: Core</name>
 
+    <version>1.0.0-RC3</version>
     <parent>
         <artifactId>org.kevoree.root</artifactId>
         <groupId>org.kevoree</groupId>
-        <version>1.0.0-RC2</version>
+        <version>1.0.0-RC3</version>
         <relativePath>../org.kevoree.root/pom.xml</relativePath>
     </parent>
 
     <properties>
         <slf4j.version>1.6.1</slf4j.version>
         <slf4j.version.range>[1.5,2)</slf4j.version.range>
+        <kevoree.version>${project.version}</kevoree.version>
     </properties>
 
     <dependencies>

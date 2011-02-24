@@ -1,24 +1,27 @@
+
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <artifactId>org.kevoree.tools.ui.editor.standalone</artifactId>
     <packaging>jar</packaging>
     <name>Kevoree :: Tools :: UI Editor Standalone</name>
-    <url>
-        https://github.com/dukeboard/kevoree/
-    </url>
+    <url>https://github.com/dukeboard/kevoree/</url>
+    <version>1.0.0-RC3</version>
 
     <parent>
         <artifactId>org.kevoree.tools.root</artifactId>
         <groupId>org.kevoree.tools</groupId>
-        <version>1.0.0-RC2</version>
+        <version>1.0.0-RC3</version>
         <relativePath>../org.kevoree.tools.root/pom.xml</relativePath>
     </parent>
+
+    <properties>
+        <kevoree.version>${project.version}</kevoree.version>
+    </properties>
 
     <build>
         <plugins>
             <!--
-
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
@@ -113,6 +116,10 @@
                             <inclusion>
                                 <groupId>org.kevoree</groupId>
                                 <artifactId>org.kevoree.merger</artifactId>
+                            </inclusion>
+                            <inclusion>
+                                <groupId>org.kevoree</groupId>
+                                <artifactId>org.kevoree.baseChecker</artifactId>
                             </inclusion>
                             <inclusion>
                                 <groupId>org.swinglabs</groupId>

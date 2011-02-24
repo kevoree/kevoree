@@ -5,15 +5,20 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <artifactId>org.kevoree.tools.ui.editor</artifactId>
-    <packaging>bundle</packaging>
+    <packaging>jar</packaging>
     <name>Kevoree :: Tools :: UI Editor</name>
+    <version>1.0.0-RC3</version>
 
     <parent>
         <artifactId>org.kevoree.tools.root</artifactId>
         <groupId>org.kevoree.tools</groupId>
-        <version>1.0.0-RC2</version>
+        <version>1.0.0-RC3</version>
         <relativePath>../org.kevoree.tools.root/pom.xml</relativePath>
     </parent>
+
+    <properties>
+        <kevoree.version>${project.version}</kevoree.version>
+    </properties>
     
     <dependencies>
         <dependency>
@@ -36,12 +41,18 @@
             <artifactId>org.kevoree.merger</artifactId>
             <version>${kevoree.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.kevoree</groupId>
+            <artifactId>org.kevoree.basechecker</artifactId>
+            <version>${kevoree.version}</version>
+        </dependency>
+
     </dependencies>
 
 
     <build>
         <plugins>
-
+<!--
             <plugin>
                 <groupId>org.apache.felix</groupId>
                 <artifactId>maven-bundle-plugin</artifactId>
@@ -52,8 +63,8 @@
                         <Private-Package>org.kevoree.tools.ui.editor.aspects.*</Private-Package>
                     </instructions>
                 </configuration>
-            </plugin>
-
+            </plugin>-->
+<!--
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>exec-maven-plugin</artifactId>
@@ -69,7 +80,7 @@
                     <mainClass>org.kevoree.tools.ui.editor.App</mainClass>
                 </configuration>
             </plugin>
-
+-->
 
         </plugins>
     </build>

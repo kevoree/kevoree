@@ -5,17 +5,9 @@
     <groupId>org.kevoree.extra</groupId>
     <artifactId>org.kevoree.extra.root</artifactId>
     <packaging>pom</packaging>
-    <version>1.0.0-RC2</version>
+    <version>1.0.0-RC3</version>
     <name>Kevoree :: Extra :: Root</name>
     <url>https://github.com/dukeboard/kevoree</url>
-    <!--
-    <parent>
-        <artifactId>org.kevoree</artifactId>
-        <groupId>org.kevoree</groupId>
-        <version>1.0.0-RC1</version>
-        <relativePath>../../pom.xml</relativePath>
-    </parent>
-    -->
 
     <properties>
         <emf.version>2.6.0</emf.version>

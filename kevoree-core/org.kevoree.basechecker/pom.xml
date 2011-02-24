@@ -6,13 +6,18 @@
     <packaging>bundle</packaging>
     <name>Kevoree :: BaseChecker</name>
 
+    <version>1.0.0-RC3</version>
     <parent>
         <artifactId>org.kevoree.root</artifactId>
         <groupId>org.kevoree</groupId>
-        <version>1.0.0-RC2</version>
+        <version>1.0.0-RC3</version>
         <relativePath>../org.kevoree.root/pom.xml</relativePath>
     </parent>
-    
+
+    <properties>
+        <kevoree.version>${project.version}</kevoree.version>
+    </properties>
+
     <build>
         <plugins>
             <plugin>
@@ -45,22 +50,18 @@
             <version>1.2</version>
             <scope>test</scope>
         </dependency>
-
-        <!--<dependency>
-            <groupId>choco</groupId>
-            <artifactId>choco-solver</artifactId>
-            <version>2.1.1-SNAPSHOT</version>
-        </dependency>-->
         <dependency>
             <groupId>jgrapht</groupId>
             <artifactId>jgrapht</artifactId>
             <version>0.8.1</version>
         </dependency>
     </dependencies>
+
     <repositories>
         <repository>
             <id>choco-repository</id>
             <url>http://www.emn.fr/z-info/choco-solver/mvn/repository</url>
         </repository>
     </repositories>
+
 </project>

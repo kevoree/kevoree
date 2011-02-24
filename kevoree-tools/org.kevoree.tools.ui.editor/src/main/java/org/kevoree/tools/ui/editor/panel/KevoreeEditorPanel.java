@@ -54,7 +54,7 @@ public class KevoreeEditorPanel extends JPanel {
     public TypeDefinitionPalette getPalette() {
         return palette;
     }
-    private CommandPanel commandPanel;
+    //private CommandPanel commandPanel;
 
     public KevoreeEditorPanel() {
         kernel.setEditorPanel(this);
@@ -86,10 +86,10 @@ public class KevoreeEditorPanel extends JPanel {
         this.add(editableModelPanel, BorderLayout.CENTER);
 
         /* LEFT BAR GENERATION */
-        commandPanel = new CommandPanel(kernel);
-        TrashPanel trash = new TrashPanel();
+        //commandPanel = new CommandPanel(kernel);
+        //TrashPanel trash = new TrashPanel();
         leftpanel.add(palette, BorderLayout.CENTER);
-        leftpanel.add(commandPanel, BorderLayout.NORTH);
+        //leftpanel.add(commandPanel, BorderLayout.NORTH);
         //leftpanel.add(trash);
 
         this.add(leftpanel, BorderLayout.WEST);

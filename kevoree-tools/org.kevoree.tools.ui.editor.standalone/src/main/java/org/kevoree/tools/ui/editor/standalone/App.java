@@ -31,6 +31,9 @@ public class App
         jframe.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         jframe.setPreferredSize(new Dimension(800, 600));
         KevoreeEditor artpanel = new KevoreeEditor();
+
+        jframe.setJMenuBar(artpanel.getMenuBar());
+
         jframe.add(artpanel.getPanel(),BorderLayout.CENTER);
         jframe.pack();
         jframe.setVisible(true);

@@ -80,7 +80,6 @@ public class AddComponentCommand implements Command {
                 insPanel.addRight(portPanel);
             }
 
-
             nodepanel.add(insPanel);
             node.getComponents().add(instance);
         } 
