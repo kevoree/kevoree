@@ -5,13 +5,15 @@
     <artifactId>org.kevoree.platform.osgi.android</artifactId>
     <packaging>jar</packaging>
     <name>Kevoree :: Platform :: OSGI Android</name>
+    <version>1.0.0-RC3</version>
 
     <parent>
         <artifactId>org.kevoree.platform.root</artifactId>
         <groupId>org.kevoree.platform</groupId>
-        <version>1.0.0-RC2</version>
+        <version>1.0.0-RC3</version>
         <relativePath>../org.kevoree.platform.root/pom.xml</relativePath>
     </parent>
+
     <!--
 <properties>
 <android.platform.version>8</android.platform.version>
@@ -34,7 +36,7 @@
         <dependency>
             <groupId>org.kevoree.tools</groupId>
             <artifactId>org.kevoree.tools.android.framework</artifactId>
-            <version>1.0.0-RC2</version>
+            <version>${kevoree.version}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -572,6 +574,7 @@
         <android.jar>${android.home}/${android.platform}/android.jar</android.jar>
         <android.tools.aapt>${android.home}/${android.platform}/tools/aapt</android.tools.aapt>
         <android.tools.dx>${android.home}/${android.platform}/tools/dx</android.tools.dx>
+         <kevoree.version>${project.version}</kevoree.version>
     </properties>
 
 

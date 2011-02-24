@@ -4,15 +4,17 @@
     <artifactId>org.kevoree.platform.osgi.standalone.gui</artifactId>
     <packaging>jar</packaging>
     <name>Kevoree :: Platform :: OSGI Standalone GUI</name>
+    <version>1.0.0-RC3</version>
 
     <parent>
         <artifactId>org.kevoree.platform.root</artifactId>
         <groupId>org.kevoree.platform</groupId>
-        <version>1.0.0-RC2</version>
+        <version>1.0.0-RC3</version>
         <relativePath>../org.kevoree.platform.root/pom.xml</relativePath>
     </parent>
 
     <properties>
+        <kevoree.version>${project.version}</kevoree.version>
         <org.osgi.framework.system.packages.extra>sun.misc</org.osgi.framework.system.packages.extra>
         <node.name>duke</node.name>
         <osgi.base>${project.build.directory}/duke_cache</osgi.base>
