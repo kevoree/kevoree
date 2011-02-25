@@ -1,4 +1,3 @@
-
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
@@ -168,7 +167,9 @@
                             <goal>generate</goal>
                         </goals>
                         <configuration>
-                            <filters>scala,org.ops4j,org.eclipse.emf,org.slf4j,org.kevoree,org.restlet,android,org.osgi</filters>
+                            <filters>
+                                scala,org.ops4j,org.eclipse.emf,org.slf4j,org.kevoree,org.restlet,android,org.osgi
+                            </filters>
                         </configuration>
                     </execution>
                 </executions>
@@ -194,45 +195,45 @@
 
                         <option>-keepattributes **</option>
                         <option>
--keepclasseswithmembers public class * {
-    public static void main(java.lang.String[]);
-}
+                            -keepclasseswithmembers public class * {
+                            public static void main(java.lang.String[]);
+                            }
 
--keep class * implements org.xml.sax.EntityResolver
+                            -keep class * implements org.xml.sax.EntityResolver
 
--keepclassmembers class * {
-    ** MODULE$;
-}
+                            -keepclassmembers class * {
+                            ** MODULE$;
+                            }
 
--keepclassmembernames class scala.concurrent.forkjoin.ForkJoinPool {
-    long eventCount;
-    int  workerCounts;
-    int  runControl;
-    scala.concurrent.forkjoin.ForkJoinPool$WaitQueueNode syncStack;
-    scala.concurrent.forkjoin.ForkJoinPool$WaitQueueNode spareStack;
-}
+                            -keepclassmembernames class scala.concurrent.forkjoin.ForkJoinPool {
+                            long eventCount;
+                            int workerCounts;
+                            int runControl;
+                            scala.concurrent.forkjoin.ForkJoinPool$WaitQueueNode syncStack;
+                            scala.concurrent.forkjoin.ForkJoinPool$WaitQueueNode spareStack;
+                            }
 
--keepclassmembernames class scala.concurrent.forkjoin.ForkJoinWorkerThread {
-    int base;
-    int sp;
-    int runState;
-}
+                            -keepclassmembernames class scala.concurrent.forkjoin.ForkJoinWorkerThread {
+                            int base;
+                            int sp;
+                            int runState;
+                            }
 
--keepclassmembernames class scala.concurrent.forkjoin.ForkJoinTask {
-    int status;
-}
+                            -keepclassmembernames class scala.concurrent.forkjoin.ForkJoinTask {
+                            int status;
+                            }
 
--keepclassmembernames class scala.concurrent.forkjoin.LinkedTransferQueue {
-    scala.concurrent.forkjoin.LinkedTransferQueue$PaddedAtomicReference head;
-    scala.concurrent.forkjoin.LinkedTransferQueue$PaddedAtomicReference tail;
-    scala.concurrent.forkjoin.LinkedTransferQueue$PaddedAtomicReference cleanMe;
-}
+                            -keepclassmembernames class scala.concurrent.forkjoin.LinkedTransferQueue {
+                            scala.concurrent.forkjoin.LinkedTransferQueue$PaddedAtomicReference head;
+                            scala.concurrent.forkjoin.LinkedTransferQueue$PaddedAtomicReference tail;
+                            scala.concurrent.forkjoin.LinkedTransferQueue$PaddedAtomicReference cleanMe;
+                            }
                         </option>
 
                         <option>-keepnames class * implements java.io.Serializable</option>
                         <option>-dontnote</option>
 
-                      <!--  <option>-keepattributes *Annotation*</option>-->
+                        <!--  <option>-keepattributes *Annotation*</option>-->
 
                         <!--
                         <option>-keep class org.restlet.**</option>
@@ -246,17 +247,19 @@
                         <option>-dontskipnonpubliclibraryclassmembers</option>
                         <option>-dontoptimize</option>
                         <option>-dontobfuscate</option>
-                        <option>-keepattributes Exceptions,InnerClasses,Signature,Deprecated,SourceFile,LineNumberTable,*Annotation*,EnclosingMethod</option>
+                        <option>-keepattributes
+                            Exceptions,InnerClasses,Signature,Deprecated,SourceFile,LineNumberTable,*Annotation*,EnclosingMethod
+                        </option>
 
                         <option>-printmapping map.txt</option>
                         <option>-printseeds seed.txt</option>
                         <option>-ignorewarnings</option>
 
                         <option>
-                           -keepclassmembers class *{
-                            static final %                *;
+                            -keepclassmembers class *{
+                            static final % *;
                             static final java.lang.String *;
-                           }
+                            }
                         </option>
                         <option>
                             -keepclassmembers class org.osgi.**
@@ -354,8 +357,8 @@
                                 <artifactId>jgrapht</artifactId>
                                 <filter>!META-INF/**</filter>
                             </inclusion>
-                            
-                           
+
+
                             <inclusion>
                                 <groupId>org.ops4j.pax.url</groupId>
                                 <artifactId>pax-url-mvn</artifactId>
@@ -365,14 +368,14 @@
                                 <groupId>org.ops4j.pax.url</groupId>
                                 <artifactId>pax-url-assembly</artifactId>
                                 <filter>
-                                !org/apache/commons/**,
-                                !META-INF/**,
-                                !org/ops4j/io/**,
-                                !org/ops4j/lang/**,
-                                !org/ops4j/monitors/**,
-                                !org/ops4j/pax/swissbox/property/**,
-                                !org/ops4j/pax/url/commons/handler/**,
-                                !org/ops4j/util/property/**
+                                    !org/apache/commons/**,
+                                    !META-INF/**,
+                                    !org/ops4j/io/**,
+                                    !org/ops4j/lang/**,
+                                    !org/ops4j/monitors/**,
+                                    !org/ops4j/pax/swissbox/property/**,
+                                    !org/ops4j/pax/url/commons/handler/**,
+                                    !org/ops4j/util/property/**
                                 </filter>
                             </inclusion>
 
@@ -564,6 +567,58 @@
             </plugin>
 
 
+            <plugin>
+                <artifactId>maven-install-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>install-apk</id>
+                        <phase>install</phase>
+                        <goals>
+                            <goal>install-file</goal>
+                        </goals>
+                        <configuration>
+                            <packaging>apk</packaging>
+                            <groupId>org.kevoree.platform</groupId>
+                            <artifactId>org.kevoree.platform.osgi.android</artifactId>
+                            <file>${project.build.directory}/${project.build.finalName}.apk</file>
+                            <version>${kevoree.version}</version>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <artifactId>maven-deploy-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>deploy-jar-apk</id>
+                        <phase>deploy</phase>
+                        <goals>
+                            <goal>deploy</goal>
+                        </goals>
+                        <configuration>
+                            <skip>true</skip>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>deploy-apk</id>
+                        <phase>deploy</phase>
+                        <goals>
+                            <goal>deploy-file</goal>
+                        </goals>
+                        <configuration>
+                            <file>${project.build.directory}/${project.build.finalName}.apk</file>
+                            <url>http://maven.kevoree.org/libs-release-local/</url>
+                            <packaging>apk</packaging>
+                            <groupId>org.kevoree.platform</groupId>
+                            <artifactId>org.kevoree.platform.osgi.android</artifactId>
+                            <version>${kevoree.version}</version>
+                        </configuration>
+                    </execution>
+                </executions>
+
+            </plugin>
+
+
         </plugins>
     </build>
 
@@ -574,7 +629,7 @@
         <android.jar>${android.home}/${android.platform}/android.jar</android.jar>
         <android.tools.aapt>${android.home}/${android.platform}/tools/aapt</android.tools.aapt>
         <android.tools.dx>${android.home}/${android.platform}/tools/dx</android.tools.dx>
-         <kevoree.version>${project.version}</kevoree.version>
+        <kevoree.version>${project.version}</kevoree.version>
     </properties>
 
 

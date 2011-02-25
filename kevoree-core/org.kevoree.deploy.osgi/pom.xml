@@ -50,7 +50,7 @@
 
     <dependencies>
         <dependency>
-            <groupId>${project.groupId}</groupId>
+            <groupId>org.kevoree</groupId>
             <artifactId>org.kevoree.framework</artifactId>
             <version>${kevoree.version}</version>
         </dependency>
@@ -83,7 +83,7 @@
         <dependency>
             <groupId>org.kevoree</groupId>
             <artifactId>org.kevoree.kompare</artifactId>
-            <version>1.0.0-RC2</version>
+            <version>${kevoree.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
