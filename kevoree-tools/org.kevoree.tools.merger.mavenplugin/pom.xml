@@ -17,6 +17,7 @@
 
     <properties>
         <kevoree.version>${project.version}</kevoree.version>
+        <releaseUrl>http://maven.kevoree.org/plugins-release-local</releaseUrl>
     </properties>
 
     <dependencies>

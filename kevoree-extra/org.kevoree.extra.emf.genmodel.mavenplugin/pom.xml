@@ -140,6 +140,9 @@
     </dependencies>
 
 
+<properties>
+<releaseUrl>http://maven.kevoree.org/plugins-release-local</releaseUrl>
+</properties>
 
     <repositories>
         <repository>

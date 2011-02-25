@@ -13,6 +13,11 @@
        <version>1.0.0-RC3</version>
         <relativePath>../org.kevoree.extra.root/pom.xml</relativePath>
     </parent>
+    
+    <properties>
+<releaseUrl>http://maven.kevoree.org/plugins-release-local</releaseUrl>
+</properties>
+    
     <build>
         <plugins>
             <plugin>

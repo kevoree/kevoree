@@ -63,7 +63,9 @@ class SynchNodeIPCommand extends Command {
       // Construct data
       // Send data
       var url = new URL("http://"+IP+":"+PORT+"/model/current");
+
       var conn = url.openConnection();
+      conn.setConnectTimeout(2000);
       conn.setDoOutput(true);
       var wr = new OutputStreamWriter(conn.getOutputStream())
       wr.write(outStream.toString);

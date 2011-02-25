@@ -38,7 +38,6 @@ class KevoreeCoreActivator extends BundleActivator {
     var configBean = new KevoreeConfigServiceBean
     bc.registerService(classOf[ConfigurationService].getName(), configBean, new Hashtable());
 
-
     myBean = new KevoreeCoreBean
     myBean.setBundleContext(bc)
     myBean.setConfigService(configBean)
@@ -62,7 +61,6 @@ class KevoreeCoreActivator extends BundleActivator {
         /* EXPOSE MODELHELPER SERVICES */
         bc.registerService(classOf[MetricsService].getName(), KevoreeMetricsServiceBean(myBean), new Hashtable());
 
-        
 
       }
     }.start
