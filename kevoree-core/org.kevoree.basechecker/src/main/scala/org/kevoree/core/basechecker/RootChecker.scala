@@ -31,5 +31,4 @@ class RootChecker extends CheckerService {
     result
   }
 
-
 }
