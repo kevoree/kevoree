@@ -24,11 +24,10 @@ import scala.collection.JavaConversions._
 import org.jgrapht.graph.DefaultDirectedGraph
 import org.kevoree._
 
-case class KevoreeNodeDirectedGraph(model: ContainerRoot) extends DefaultDirectedGraph[Object, MBinding](classOf[MBinding]) {
+case class KevoreeNodeDirectedGraph(model: ContainerRoot) extends DefaultDirectedGraph[Object, BindingFragment](classOf[BindingFragment]) {
 
 	model.getNodes.foreach {
 		node =>
-
 			node.getInstances.filter(p => p.isInstanceOf[Channel]).foreach {
 				instance =>
 					var channel = instance.asInstanceOf[Channel]
@@ -41,20 +40,19 @@ case class KevoreeNodeDirectedGraph(model: ContainerRoot) extends DefaultDirecte
 										binding =>
 											if (binding.getHub() == channel) {
 												addVertex(node)
-												addVertex(node1)// FIXME  use fragments and select appropriate binding
+												addVertex(node1)
 												val fragment = new ChannelFragment(binding.getHub, node.getName)
 												val fragment1 = new ChannelFragment(binding.getHub, node1.getName)
 												addVertex(fragment)
 												addVertex(fragment1)
-												//binding.getHub
 												if (componentInstance.getProvided.contains(binding.getPort)) {
-													addEdge(node1, fragment1, binding)
-													addEdge(fragment1, fragment, binding)// FIXME  use fragments and select appropriate binding
-													addEdge(fragment1, node, binding)
+													addEdge(node, fragment, new BindingFragment(binding, node.getName))
+													addEdge(fragment, fragment1, new BindingFragment(binding, null))
+													addEdge(fragment1, node1, new BindingFragment(binding, node1.getName))
 												} else {
-													addEdge(node1, fragment1, binding)
-													addEdge(fragment1, fragment, binding)
-													addEdge(fragment, node, binding)// FIXME  use fragments and select appropriate binding
+													addEdge(node1, fragment1, new BindingFragment(binding, node1.getName))
+													addEdge(fragment1, fragment, new BindingFragment(binding, null))
+													addEdge(fragment, node, new BindingFragment(binding, node.getName))
 												}
 											}
 									}
@@ -62,6 +60,4 @@ case class KevoreeNodeDirectedGraph(model: ContainerRoot) extends DefaultDirecte
 					}
 			}
 	}
-
-	case class ChannelFragment(channel : Channel, fragmentName : String) {} // TODO convert ChannelFragment by Channel before returning CheckerViolation
 }
