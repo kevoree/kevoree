@@ -93,19 +93,6 @@
        <module>../org.kevoree.platform.osgi.standalone.minigui</module>
     </modules>
     
-    <distributionManagement>
-        <repository>
-            <id>embedded-repo</id>
-            <url>file:${basedir}/../../../kevoreePages/maven</url>
-            <uniqueVersion>false</uniqueVersion>
-        </repository>
-        <snapshotRepository>
-            <id>embedded-repo-snapshot</id>
-            <url>file:${basedir}/../../../kevoreePages/maven</url>
-            <uniqueVersion>false</uniqueVersion>
-        </snapshotRepository>
-    </distributionManagement>
-    
     <repositories>
         <repository>
             <id>scala-tools.org</id>
@@ -113,8 +100,8 @@
             <url>http://scala-tools.org/repo-releases</url>
         </repository>
         <repository>
-            <id>kevoree-github</id>
-            <url>http://dukeboard.github.com/kevoree/maven/</url>
+            <id>kevoree-libs-release-local</id>
+            <url>http://maven.kevoree.org/libs-release-local</url>
         </repository>
     </repositories>
 
@@ -126,8 +113,16 @@
         </pluginRepository>
         <pluginRepository>
             <id>plugin.kevoree-github</id>
-            <url>http://dukeboard.github.com/kevoree/maven/</url>
+            <url>http://maven.kevoree.org/plugins-release-local</url>
         </pluginRepository>
     </pluginRepositories>
+
+<distributionManagement>
+    <repository>
+        <id>maven.kevoree.org-releases</id>
+        <name>maven.kevoree.org-releases</name>
+        <url>http://maven.kevoree.org/libs-release-local</url>
+    </repository>
+</distributionManagement>
 
 </project>

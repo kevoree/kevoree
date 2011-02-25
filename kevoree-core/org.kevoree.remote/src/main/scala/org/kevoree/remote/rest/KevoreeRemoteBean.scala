@@ -39,9 +39,10 @@ class KevoreeRemoteBean {
 
   component.getDefaultHost().attach("/model/current",classOf[ModelHandlerResource])
 
-  if (System.getProperty("org.kevoree.remote.repository") != null) {
+  if (System.getProperty("org.kevoree.remote.provisioning") != null) {
     component.getClients().add(Protocol.FILE);
-    component.getDefaultHost().attach("/provisionning",new FileServerApplication(System.getProperty("org.kevoree.remote.repository")))
+    component.getDefaultHost().attach("/provisioning",new FileServerApplication(System.getProperty("org.kevoree.remote.provisioning")))
+    System.out.println("Provisioning server started => /provisioning");
   } else {
     component.getDefaultHost.attachDefault(classOf[ErrorResource])
   }

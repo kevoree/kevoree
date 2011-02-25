@@ -33,6 +33,8 @@ public class EmbeddedFelix {
 
     private Felix m_fwk;
 
+    public static String node_name = "KEVOREEDefaultNodeName";
+
     public Felix getM_fwk() {
         return m_fwk;
     }
@@ -45,12 +47,14 @@ public class EmbeddedFelix {
             System.out.println("Init Felix Default path => " + felix_base);
         }
 
+        /*
         String node_name = System.getProperty("node.name");
+
         if (node_name == null) {
             node_name = "KEVOREEDefaultNodeName";
-        }
+        }*/
 
-        File cacheDir = new File(felix_base + "/" + "felixCache_" + node_name);
+        File cacheDir = new File(felix_base + "/" + "felixCache_" + KevoreeActivity.nodeName);
         Map<String, Object> configProps = new HashMap<String, Object>();
         if (cacheDir != null) {
             configProps.put(Constants.FRAMEWORK_STORAGE, cacheDir.getAbsolutePath());

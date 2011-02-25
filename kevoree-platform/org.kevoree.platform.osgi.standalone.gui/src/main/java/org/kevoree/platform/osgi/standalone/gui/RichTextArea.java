@@ -25,22 +25,21 @@ public class RichTextArea extends JTextPane {
     Document doc;
 
     public RichTextArea() {
-
         style = new SimpleAttributeSet();
-        this.setContentType("text/rtf" );
+        this.setContentType("text/rtf");
         this.setEditorKit(new javax.swing.text.rtf.RTFEditorKit());
         doc = this.getDocument();
     }
 
     public void append(String msg, Color color, Color bgColor, boolean isBold) {
         StyleConstants.setForeground(style, color);
-        StyleConstants.setBackground(style, bgColor);
+       // StyleConstants.setBackground(style, bgColor);
         StyleConstants.setBold(style, isBold);
         int len = doc.getLength();
         try {
- 	doc.insertString(len, msg, style);
+            doc.insertString(len, msg, style);
         } catch (Exception e) {
-            System.out.print("Failed to append msg ["+msg+"]" );
+            System.out.print("Failed to append msg [" + msg + "]");
         }
     }
 

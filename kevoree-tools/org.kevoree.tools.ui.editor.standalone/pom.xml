@@ -119,7 +119,7 @@
                             </inclusion>
                             <inclusion>
                                 <groupId>org.kevoree</groupId>
-                                <artifactId>org.kevoree.baseChecker</artifactId>
+                                <artifactId>org.kevoree.basechecker</artifactId>
                             </inclusion>
                             <inclusion>
                                 <groupId>org.swinglabs</groupId>
@@ -128,6 +128,10 @@
                             <inclusion>
                                 <groupId>org.kevoree.extra</groupId>
                                 <artifactId>org.kevoree.extra.emf.library</artifactId>
+                            </inclusion>
+                            <inclusion>
+                                <groupId>jgrapht</groupId>
+                                <artifactId>jgrapht</artifactId>
                             </inclusion>
                         </inclusions>
                     </assembly>
@@ -160,7 +164,8 @@
                             <keystore>${project.build.directory}/../../../keystore</keystore>
                             <alias>kevoree</alias>
                             <storepass>kevoree</storepass>
-                            <signedjar>${basedir}/../../../kevoreePages/releases/lib/KevoreeEditor.jar</signedjar>
+                              <signedjar>${project.build.directory}/${project.build.finalName}.jar</signedjar>
+                           <!-- <signedjar>${basedir}/../../../kevoreePages/releases/lib/KevoreeEditor.jar</signedjar>  -->
                           <!--  <signedjar>${project.build.directory}/signed/${project.build.finalName}.jar</signedjar> -->
                             <verify>true</verify>
                         </configuration>
