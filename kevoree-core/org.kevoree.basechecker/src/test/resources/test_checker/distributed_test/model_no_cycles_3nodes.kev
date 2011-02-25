@@ -1,39 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <kevoree:ContainerRoot xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:kevoree="http://kevoree/1.0">
   <nodes name="node-0">
-    <components name="FakeSimpleLight--2104888979" typeDefinition="//@typeDefinitions.2">
-      <provided portTypeRef="//@typeDefinitions.2/@provided.0"/>
-      <provided portTypeRef="//@typeDefinitions.2/@provided.1"/>
-      <provided portTypeRef="//@typeDefinitions.2/@provided.2"/>
-    </components>
-    <components name="FakeSimpleSwitch-726208940" typeDefinition="//@typeDefinitions.5">
-      <required portTypeRef="//@typeDefinitions.5/@required.0"/>
-      <required portTypeRef="//@typeDefinitions.5/@required.1"/>
-      <required portTypeRef="//@typeDefinitions.5/@required.2"/>
+    <components name="PlanNightmareFS--1171485258" typeDefinition="//@typeDefinitions.16">
+      <required portTypeRef="//@typeDefinitions.16/@required.0"/>
+      <required portTypeRef="//@typeDefinitions.16/@required.1"/>
     </components>
   </nodes>
   <nodes name="node-1">
-    <components name="FakeSimpleLight--1082679345" typeDefinition="//@typeDefinitions.2">
-      <provided portTypeRef="//@typeDefinitions.2/@provided.0"/>
-      <provided portTypeRef="//@typeDefinitions.2/@provided.1"/>
-      <provided portTypeRef="//@typeDefinitions.2/@provided.2"/>
-    </components>
-    <components name="FakeSimpleSwitch-1434392209" typeDefinition="//@typeDefinitions.5">
-      <required portTypeRef="//@typeDefinitions.5/@required.0"/>
-      <required portTypeRef="//@typeDefinitions.5/@required.1"/>
-      <required portTypeRef="//@typeDefinitions.5/@required.2"/>
+    <components name="PlanNightmareFL--2097905403" typeDefinition="//@typeDefinitions.15">
+      <provided portTypeRef="//@typeDefinitions.15/@provided.0"/>
+      <provided portTypeRef="//@typeDefinitions.15/@provided.1"/>
     </components>
   </nodes>
   <nodes name="node-2">
-    <components name="FakeSimpleLight--538879494" typeDefinition="//@typeDefinitions.2">
-      <provided portTypeRef="//@typeDefinitions.2/@provided.0"/>
-      <provided portTypeRef="//@typeDefinitions.2/@provided.1"/>
-      <provided portTypeRef="//@typeDefinitions.2/@provided.2"/>
-    </components>
-    <components name="FakeSimpleSwitch-1552547199" typeDefinition="//@typeDefinitions.5">
-      <required portTypeRef="//@typeDefinitions.5/@required.0"/>
-      <required portTypeRef="//@typeDefinitions.5/@required.1"/>
-      <required portTypeRef="//@typeDefinitions.5/@required.2"/>
+    <components name="PlanNightmarePipe-1400658657" typeDefinition="//@typeDefinitions.11">
+      <provided portTypeRef="//@typeDefinitions.11/@provided.0"/>
+      <provided portTypeRef="//@typeDefinitions.11/@provided.1"/>
+      <required portTypeRef="//@typeDefinitions.11/@required.0"/>
+      <required portTypeRef="//@typeDefinitions.11/@required.1"/>
     </components>
   </nodes>
   <typeDefinitions xsi:type="kevoree:ChannelType" name="defSERVICE" deployUnit="//@deployUnits.0" factoryBean="org.kevoree.library.defaultChannels.defSERVICEFactory" bean="org.kevoree.library.defaultChannels.defSERVICE" startMethod="startHello" stopMethod="stopHello"/>
@@ -188,31 +172,14 @@
   <hubs name="hub--782640837" typeDefinition="//@typeDefinitions.0"/>
   <hubs name="hub-1399537050" typeDefinition="//@typeDefinitions.0"/>
   <hubs name="hub-10075004" typeDefinition="//@typeDefinitions.0"/>
-  <hubs name="hub-1593025781" typeDefinition="//@typeDefinitions.0"/>
-  <hubs name="hub-180647198" typeDefinition="//@typeDefinitions.0"/>
-  <mBindings port="//@nodes.0/@components.0/@provided.0" hub="//@hubs.1"/>
-  <mBindings port="//@nodes.1/@components.0/@provided.0" hub="//@hubs.1"/>
-  <mBindings port="//@nodes.0/@components.1/@required.0" hub="//@hubs.0"/>
+  <mBindings port="//@nodes.0/@components.0/@required.0" hub="//@hubs.0"/>
   <mBindings port="//@nodes.2/@components.0/@provided.0" hub="//@hubs.0"/>
-  <mBindings port="//@nodes.1/@components.0/@provided.0" hub="//@hubs.0"/>
-  <mBindings port="//@nodes.0/@components.0/@provided.0" hub="//@hubs.0"/>
-  <mBindings port="//@nodes.2/@components.0/@provided.0" hub="//@hubs.1"/>
-  <mBindings port="//@nodes.2/@components.1/@required.0" hub="//@hubs.2"/>
-  <mBindings port="//@nodes.1/@components.1/@required.0" hub="//@hubs.1"/>
+  <mBindings port="//@nodes.2/@components.0/@provided.1" hub="//@hubs.1"/>
+  <mBindings port="//@nodes.0/@components.0/@required.1" hub="//@hubs.1"/>
+  <mBindings port="//@nodes.2/@components.0/@required.0" hub="//@hubs.2"/>
   <mBindings port="//@nodes.1/@components.0/@provided.0" hub="//@hubs.2"/>
-  <mBindings port="//@nodes.0/@components.0/@provided.0" hub="//@hubs.2"/>
-  <mBindings port="//@nodes.2/@components.1/@required.1" hub="//@hubs.3"/>
-  <mBindings port="//@nodes.2/@components.0/@provided.1" hub="//@hubs.3"/>
+  <mBindings port="//@nodes.2/@components.0/@required.1" hub="//@hubs.3"/>
   <mBindings port="//@nodes.1/@components.0/@provided.1" hub="//@hubs.3"/>
-  <mBindings port="//@nodes.0/@components.0/@provided.1" hub="//@hubs.3"/>
-  <mBindings port="//@nodes.1/@components.0/@provided.1" hub="//@hubs.4"/>
-  <mBindings port="//@nodes.0/@components.0/@provided.1" hub="//@hubs.4"/>
-  <mBindings port="//@nodes.1/@components.1/@required.1" hub="//@hubs.4"/>
-  <mBindings port="//@nodes.2/@components.0/@provided.1" hub="//@hubs.5"/>
-  <mBindings port="//@nodes.0/@components.1/@required.1" hub="//@hubs.5"/>
-  <mBindings port="//@nodes.2/@components.0/@provided.1" hub="//@hubs.4"/>
-  <mBindings port="//@nodes.0/@components.0/@provided.1" hub="//@hubs.5"/>
-  <mBindings port="//@nodes.1/@components.0/@provided.1" hub="//@hubs.5"/>
   <deployUnits groupName="org.kevoree.library" unitName="org.kevoree.library.defaultChannels" version="1.0.0-RC2" hashcode="201102171716374"/>
   <deployUnits groupName="org.kevoree.library" unitName="org.kevoree.library.fakeDomo" version="1.0.0-RC2" hashcode="201102171716754"/>
   <deployUnits groupName="org.kevoree.library" unitName="org.kevoree.library.sample" version="1.0.0-RC2" hashcode="201102171717654"/>

@@ -18,23 +18,23 @@
 
 package org.kevoree.basechecker.tests
 
-import org.kevoree.core.basechecker.cyclechecker.CycleChecker
 import org.scalatest.junit.AssertionsForJUnit
 import scala.collection.JavaConversions._
 import org.junit._
+import org.kevoree.core.basechecker.cyclechecker.{ComponentCycleChecker, NodeCycleChecker}
 
 class CycleDetectionCheckerTest extends AssertionsForJUnit with BaseCheckerSuite {
 
 	@Test def verifyCycleDetectionOK() {
 		val modelCycle = model("test_checker/model_cycle_depth.kev")
-		val cycleChecker = new CycleChecker
+		val componentCycleChecker = new ComponentCycleChecker
 		val firstTime = System.currentTimeMillis
-		val res = cycleChecker.check(modelCycle)
+		val res = componentCycleChecker.check(modelCycle)
 		println(System.currentTimeMillis - firstTime + "ms")
 
 		//assert(res.size == 0)
 		if (res.size == 1) {
-			assert(true)
+			return
 		} else {
 			res.foreach {
 				violation =>
@@ -52,14 +52,14 @@ class CycleDetectionCheckerTest extends AssertionsForJUnit with BaseCheckerSuite
 	@Test def verifyNoCycleDetection() {
 
 		val modelCycle = model("test_checker/model_noCycle.kev")
-		val cycleChecker = new CycleChecker
+		val componentCycleChecker = new ComponentCycleChecker
 		val firstTime = System.currentTimeMillis
-		val res = cycleChecker.check(modelCycle)
+		val res = componentCycleChecker.check(modelCycle)
 		println(System.currentTimeMillis - firstTime + "ms")
 
 		//assert(res.size == 0)
 		if (res.size == 0) {
-			assert(true)
+			return
 		} else {
 			res.foreach {
 				violation =>
@@ -75,116 +75,194 @@ class CycleDetectionCheckerTest extends AssertionsForJUnit with BaseCheckerSuite
 
 	@Test def verifyNoDistributedAndLocalCycleDetectionWith2Nodes() {
 		val modelCycle = model("test_checker/distributed_test/model_no_cycles.kev")
-		val cycleChecker = new CycleChecker
+		val componentCycleChecker = new ComponentCycleChecker
 		val firstTime = System.currentTimeMillis
-		val res = cycleChecker.check(modelCycle)
-		println(System.currentTimeMillis - firstTime + "ms")
+		var res = componentCycleChecker.check(modelCycle)
+		println(System.currentTimeMillis - firstTime + "ms for component cycle detection")
 
 		//assert(res.size == 0)
 		if (res.size == 0) {
-			assert(true)
-		} else {
-			res.foreach {
-				violation =>
-					println(violation.getMessage)
-					violation.getTargetObjects.foreach {
-						obj =>
-							println(obj)
-					}
+			val nodeCycleChecker = new NodeCycleChecker
+			val firstTime = System.currentTimeMillis
+			res = nodeCycleChecker.check(modelCycle)
+			println(System.currentTimeMillis - firstTime + "ms for node cycle detection")
+			if (res.size == 0) {
+				return
 			}
-			assert(false)
 		}
+
+		res.foreach {
+			violation =>
+				println(violation.getMessage)
+				violation.getTargetObjects.foreach {
+					obj =>
+						println(obj)
+				}
+		}
+		assert(false)
 	}
 
 	@Test def verifyNoDistributedAndLocalCycleDetectionWith3Nodes() {
 		val modelCycle = model("test_checker/distributed_test/model_no_cycles_3nodes.kev")
-		val cycleChecker = new CycleChecker
+		val componentCycleChecker = new ComponentCycleChecker
 		val firstTime = System.currentTimeMillis
-		val res = cycleChecker.check(modelCycle)
-		println(System.currentTimeMillis - firstTime + "ms")
+		var res = componentCycleChecker.check(modelCycle)
+		println(System.currentTimeMillis - firstTime + "ms for component cycle detection")
 
 		//assert(res.size == 0)
 		if (res.size == 0) {
-			assert(true)
-		} else {
-			res.foreach {
-				violation =>
-					println(violation.getMessage)
-					violation.getTargetObjects.foreach {
-						obj =>
-							println(obj)
-					}
+			val nodeCycleChecker = new NodeCycleChecker
+			val firstTime = System.currentTimeMillis
+			res = nodeCycleChecker.check(modelCycle)
+			println(System.currentTimeMillis - firstTime + "ms for node cycle detection")
+			if (res.size == 0) {
+				return
 			}
-			assert(false)
 		}
+
+		res.foreach {
+			violation =>
+				println(violation.getMessage)
+				violation.getTargetObjects.foreach {
+					obj =>
+						println(obj)
+				}
+		}
+		assert(false)
 	}
 
 	@Test def verifyDistributedCycleDetectionWith2Nodes() {
 		val modelCycle = model("test_checker/distributed_test/model_simple_distributed_cycles.kev")
-		val cycleChecker = new CycleChecker
+		val componentCycleChecker = new ComponentCycleChecker
 		val firstTime = System.currentTimeMillis
-		val res = cycleChecker.check(modelCycle)
-		println(System.currentTimeMillis - firstTime + "ms")
+		var res = componentCycleChecker.check(modelCycle)
+		println(System.currentTimeMillis - firstTime + "ms for component cycle detection")
 
 		//assert(res.size == 1)
-		if (res.size == 1) {
-			assert(true)
-		} else {
-			res.foreach {
-				violation =>
-					println(violation.getMessage)
-					violation.getTargetObjects.foreach {
-						obj =>
-							println(obj)
-					}
+		if (res.size == 0) {
+			val nodeCycleChecker = new NodeCycleChecker
+			val firstTime = System.currentTimeMillis
+			res = nodeCycleChecker.check(modelCycle)
+			println(System.currentTimeMillis - firstTime + "ms for node cycle detection")
+			if (res.size == 1) {
+				return
 			}
-			assert(false)
 		}
+
+		res.foreach {
+			violation =>
+				println(violation.getMessage)
+				violation.getTargetObjects.foreach {
+					obj =>
+						println(obj)
+				}
+		}
+		assert(false)
 	}
 
 	@Test def verifyDistributedCycleDetectionWith3Nodes() {
 		val modelCycle = model("test_checker/distributed_test/model_simple_distributed_cycles_3nodes.kev")
-		val cycleChecker = new CycleChecker
+		val componentCycleChecker = new ComponentCycleChecker
 		val firstTime = System.currentTimeMillis
-		val res = cycleChecker.check(modelCycle)
-		println(System.currentTimeMillis - firstTime + "ms")
+		var res = componentCycleChecker.check(modelCycle)
+		println(System.currentTimeMillis - firstTime + "ms for component cycle detection")
 
 		//assert(res.size == 1)
-		if (res.size == 1) {
-			assert(true)
-		} else {
-			res.foreach {
-				violation =>
-					println(violation.getMessage)
-					violation.getTargetObjects.foreach {
-						obj =>
-							println(obj)
-					}
+		if (res.size == 0) {
+			val nodeCycleChecker = new NodeCycleChecker
+			val firstTime = System.currentTimeMillis
+			res = nodeCycleChecker.check(modelCycle)
+			println(System.currentTimeMillis - firstTime + "ms for node cycle detection")
+			if (res.size == 1) {
+				return
 			}
-			assert(false)
 		}
+
+		res.foreach {
+			violation =>
+				println(violation.getMessage)
+				violation.getTargetObjects.foreach {
+					obj =>
+						println(obj)
+				}
+		}
+		assert(false)
 	}
+
+	@Test def verifyDistributedCycleDetectionWith3Nodes2() {
+		val modelCycle = model("test_checker/distributed_test/model_distributed_cycles_between_3nodes2.kev")
+		val componentCycleChecker = new ComponentCycleChecker
+		val firstTime = System.currentTimeMillis
+		var res = componentCycleChecker.check(modelCycle)
+		println(System.currentTimeMillis - firstTime + "ms for component cycle detection")
+		println("tutu")
+
+		//assert(res.size == 1)
+		if (res.size == 0) {
+			val nodeCycleChecker = new NodeCycleChecker
+			val firstTime = System.currentTimeMillis
+			res = nodeCycleChecker.check(modelCycle)
+			println(System.currentTimeMillis - firstTime + "ms for node cycle detection")
+			if (res.size == 1) {
+				return
+			}
+		}
+
+		res.foreach {
+			violation =>
+				println(violation.getMessage)
+				violation.getTargetObjects.foreach {
+					obj =>
+						println(obj)
+				}
+		}
+		assert(false)
+	}
+
 
 	@Test def verifyDistributedAndLocalCycleDetection() {
 		val modelCycle = model("test_checker/distributed_test/model_distributed_cycles_between_3nodes+local_cycle.kev")
-		val cycleChecker = new CycleChecker
+		val componentCycleChecker = new ComponentCycleChecker
 		val firstTime = System.currentTimeMillis
-		val res = cycleChecker.check(modelCycle)
-		println(System.currentTimeMillis - firstTime + "ms")
+		var res = componentCycleChecker.check(modelCycle)
+		println(System.currentTimeMillis - firstTime + "ms for component cycle detection")
 
-		//assert(res.size == 2)
+		/*res.foreach {
+			violation =>
+				println(violation.getMessage)
+				violation.getTargetObjects.foreach {
+					obj =>
+						println(obj)
+				}
+		}*/
+		//assert(res.size == 3)
 		if (res.size == 2) {
-			assert(true)
-		} else {
-			res.foreach {
-				violation =>
-					println(violation.getMessage)
-					violation.getTargetObjects.foreach {
-						obj =>
-							println(obj)
-					}
+			val nodeCycleChecker = new NodeCycleChecker
+			val firstTime = System.currentTimeMillis
+			res = nodeCycleChecker.check(modelCycle)
+			println(System.currentTimeMillis - firstTime + "ms for node cycle detection")
+			if (res.size == 1) {
+				/*res.foreach {
+			violation =>
+				println(violation.getMessage)
+				violation.getTargetObjects.foreach {
+					obj =>
+						println(obj)
+				}
+			}*/
+				return
 			}
-			assert(false)
 		}
+
+		res.foreach {
+			violation =>
+				println(violation.getMessage)
+				violation.getTargetObjects.foreach {
+					obj =>
+						println(obj)
+				}
+		}
+		assert(false)
 	}
+
 }
