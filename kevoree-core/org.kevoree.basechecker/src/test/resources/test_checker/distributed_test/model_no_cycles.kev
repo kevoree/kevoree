@@ -6,18 +6,8 @@
       <provided portTypeRef="//@typeDefinitions.2/@provided.1"/>
       <provided portTypeRef="//@typeDefinitions.2/@provided.2"/>
     </components>
-    <components name="FakeSimpleSwitch-726208940" typeDefinition="//@typeDefinitions.5">
-      <required portTypeRef="//@typeDefinitions.5/@required.0"/>
-      <required portTypeRef="//@typeDefinitions.5/@required.1"/>
-      <required portTypeRef="//@typeDefinitions.5/@required.2"/>
-    </components>
   </nodes>
   <nodes name="node-1">
-    <components name="FakeSimpleLight--1082679345" typeDefinition="//@typeDefinitions.2">
-      <provided portTypeRef="//@typeDefinitions.2/@provided.0"/>
-      <provided portTypeRef="//@typeDefinitions.2/@provided.1"/>
-      <provided portTypeRef="//@typeDefinitions.2/@provided.2"/>
-    </components>
     <components name="FakeSimpleSwitch-1434392209" typeDefinition="//@typeDefinitions.5">
       <required portTypeRef="//@typeDefinitions.5/@required.0"/>
       <required portTypeRef="//@typeDefinitions.5/@required.1"/>
@@ -172,22 +162,12 @@
   <libraries name="ART2_TESTS" subTypes="//@typeDefinitions.7"/>
   <libraries name="ART_TEST" subTypes="//@typeDefinitions.9 //@typeDefinitions.12"/>
   <libraries name="KEVOREE_SAMPLES" subTypes="//@typeDefinitions.11 //@typeDefinitions.15 //@typeDefinitions.16"/>
-  <hubs name="hub--782640837" typeDefinition="//@typeDefinitions.0"/>
-  <hubs name="hub-1593025781" typeDefinition="//@typeDefinitions.0"/>
-  <hubs name="hub-714718326" typeDefinition="//@typeDefinitions.0"/>
-  <hubs name="hub-69085209" typeDefinition="//@typeDefinitions.0"/>
+  <hubs name="hub--1666634202" typeDefinition="//@typeDefinitions.0"/>
+  <hubs name="hub--1377262317" typeDefinition="//@typeDefinitions.0"/>
   <mBindings port="//@nodes.0/@components.0/@provided.0" hub="//@hubs.0"/>
-  <mBindings port="//@nodes.1/@components.0/@provided.0" hub="//@hubs.0"/>
-  <mBindings port="//@nodes.1/@components.1/@required.0" hub="//@hubs.0"/>
-  <mBindings port="//@nodes.1/@components.0/@provided.1" hub="//@hubs.1"/>
   <mBindings port="//@nodes.0/@components.0/@provided.1" hub="//@hubs.1"/>
-  <mBindings port="//@nodes.1/@components.1/@required.1" hub="//@hubs.1"/>
-  <mBindings port="//@nodes.0/@components.1/@required.1" hub="//@hubs.2"/>
-  <mBindings port="//@nodes.0/@components.1/@required.0" hub="//@hubs.3"/>
-  <mBindings port="//@nodes.1/@components.0/@provided.0" hub="//@hubs.3"/>
-  <mBindings port="//@nodes.1/@components.0/@provided.1" hub="//@hubs.2"/>
-  <mBindings port="//@nodes.0/@components.0/@provided.0" hub="//@hubs.3"/>
-  <mBindings port="//@nodes.0/@components.0/@provided.1" hub="//@hubs.2"/>
+  <mBindings port="//@nodes.1/@components.0/@required.0" hub="//@hubs.0"/>
+  <mBindings port="//@nodes.1/@components.0/@required.1" hub="//@hubs.1"/>
   <deployUnits groupName="org.kevoree.library" unitName="org.kevoree.library.defaultChannels" version="1.0.0-RC2" hashcode="201102171716374"/>
   <deployUnits groupName="org.kevoree.library" unitName="org.kevoree.library.fakeDomo" version="1.0.0-RC2" hashcode="201102171716754"/>
   <deployUnits groupName="org.kevoree.library" unitName="org.kevoree.library.sample" version="1.0.0-RC2" hashcode="201102171717654"/>
