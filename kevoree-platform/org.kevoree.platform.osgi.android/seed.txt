@@ -24,6 +24,8 @@ org.jgrapht.demo.JGraphAdapterDemo
 org.jgrapht.demo.JGraphAdapterDemo: void main(java.lang.String[])
 org.jgrapht.experimental.touchgraph.SimpleTouchgraphApplet
 org.jgrapht.experimental.touchgraph.SimpleTouchgraphApplet: void main(java.lang.String[])
+org.restlet.engine.header.ChallengeRequestReader
+org.restlet.engine.header.ChallengeRequestReader: void main(java.lang.String[])
 org.jgrapht.demo.HelloJGraphT
 org.jgrapht.demo.HelloJGraphT: void main(java.lang.String[])
 org.eclipse.emf.common.archive.Handler
@@ -18632,6 +18634,7 @@ org.ops4j.pax.url.mvn.ServiceConstants: java.lang.String PROPERTY_REPOSITORIES
 org.ops4j.pax.url.mvn.ServiceConstants: java.lang.String PROPERTY_USE_FALLBACK_REPOSITORIES
 org.ops4j.pax.url.mvn.ServiceConstants: java.lang.String PROPERTY_PROXY_SUPPORT
 org.ops4j.pax.url.mvn.ServiceConstants: java.lang.String PROTOCOL
+org.restlet.representation.Representation: long UNKNOWN_SIZE
 scala.util.parsing.json.Lexer$$anonfun$hexDigit$1: long serialVersionUID
 scala.Function1$mcVF$sp$$anonfun$andThen$mcVF$sp$1: long serialVersionUID
 scala.xml.parsing.XhtmlEntities$$anonfun$1: long serialVersionUID

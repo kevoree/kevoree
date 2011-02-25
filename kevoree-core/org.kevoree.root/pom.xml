@@ -122,7 +122,7 @@
         </repository>
         <repository>
             <id>kevoree-libs-release-local</id>
-            <url>http://maven.kevoree.org/libs-release-local/</url>
+            <url>http://maven.kevoree.org/libs-release-local</url>
         </repository>
     </repositories>
 
@@ -134,7 +134,7 @@
         </pluginRepository>
         <pluginRepository>
             <id>plugin.kevoree-github</id>
-            <url>http://dukeboard.github.com/kevoree/maven/</url>
+            <url>http://maven.kevoree.org/plugins-release-local</url>
         </pluginRepository>
     </pluginRepositories>
 

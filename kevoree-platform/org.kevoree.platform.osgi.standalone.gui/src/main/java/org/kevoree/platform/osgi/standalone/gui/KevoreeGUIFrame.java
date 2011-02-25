@@ -17,6 +17,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.File;
 import java.net.URL;
 
 public class KevoreeGUIFrame extends JFrame {
@@ -36,10 +37,23 @@ public class KevoreeGUIFrame extends JFrame {
         topImage.setOpaque(false);
         this.add(topImage, BorderLayout.NORTH);
 
+
+        File mavenDir = new File(System.getProperty("user.home") + "/.m2/repository");
+        if (mavenDir.exists() && mavenDir.isDirectory()) {
+            System.out.println("use mavenDir=file:///" + mavenDir.getAbsoluteFile().getAbsolutePath());
+            System.setProperty("org.kevoree.remote.provisioning", "file:///"+mavenDir.getAbsolutePath());
+        }
+
+
+
+
+
+
         String response = (String) JOptionPane.showInputDialog(this,
                 "Kevoree node name ?",
                 "Kevoree node runtime",
                 JOptionPane.QUESTION_MESSAGE, smallIcon, null, "");
+
 
         if (response == null) {
             System.exit(0);

@@ -31,7 +31,7 @@ object CommandHelper {
 
   def buildAllQuery(du: DeployUnit): List[String] = {
     var res: List[String] = List()
-    var root = du.eContainer.asInstanceOf[ContainerRoot]
+    val root = du.eContainer.asInstanceOf[ContainerRoot]
     root.getRepositories.foreach {
       repo =>
         if (repo.getUnits.exists(p => p == du)) {
@@ -42,10 +42,12 @@ object CommandHelper {
       node =>
         res = res ++ List(buildQuery(du, Some(buildURL(root, node.getName))))
     }
+    /*
     res match {
       case List() => println("Add default location"); res = res ++ List(buildQuery(du, None))
       case _ =>
-    }
+    } */
+    res = res ++ List(buildQuery(du, None))
 
     //DEBUG
     res.foreach({u=>
