@@ -45,6 +45,7 @@ class NameChecker extends CheckerService {
 					component: ComponentInstance =>
 						violation = check(component)
 						if (violation != null) {
+							violation.setTargetObjects(List(component))
 							violations = violations ++ List(violation)
 						}
 						if (component.getDictionary != null) {
@@ -52,6 +53,7 @@ class NameChecker extends CheckerService {
 								property: DictionaryValue =>
 									violation = check(property.getAttribute)
 									if (violation != null) {
+										violation.setTargetObjects(List(component))
 										violations = violations ++ List(violation)
 									}
 							}
@@ -60,6 +62,7 @@ class NameChecker extends CheckerService {
 							port =>
 								violation = check(port.getPortTypeRef)
 								if (violation != null) {
+									violation.setTargetObjects(List(component))
 									violations = violations ++ List(violation)
 								}
 						}
@@ -67,6 +70,7 @@ class NameChecker extends CheckerService {
 							port =>
 								violation = check(port.getPortTypeRef)
 								if (violation != null) {
+									violation.setTargetObjects(List(component))
 									violations = violations ++ List(violation)
 								}
 						}
@@ -76,6 +80,7 @@ class NameChecker extends CheckerService {
 			channel =>
 				var violation = check(channel)
 				if (violation != null) {
+					violation.setTargetObjects(List(channel))
 					violations = violations ++ List(violation)
 				}
 				if (channel.getDictionary != null) {
@@ -83,6 +88,7 @@ class NameChecker extends CheckerService {
 						property: DictionaryValue =>
 							violation = check(property.getAttribute)
 							if (violation != null) {
+								violation.setTargetObjects(List(channel))
 								violations = violations ++ List(violation)
 							}
 					}
