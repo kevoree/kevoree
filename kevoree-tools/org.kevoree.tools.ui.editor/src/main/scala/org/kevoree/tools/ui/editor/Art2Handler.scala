@@ -18,6 +18,7 @@
 
 package org.kevoree.tools.ui.editor
 
+import command.Command
 import org.kevoree.ContainerRoot
 import org.kevoree.KevoreeFactory
 import org.kevoree.merger.KevoreeMergerComponent
@@ -28,25 +29,35 @@ import org.eclipse.emf.common.notify.Notification
 class Art2Handler {
 
   private var merger = new KevoreeMergerComponent
-  private var actualModel : ContainerRoot = KevoreeFactory.eINSTANCE.createContainerRoot
-  actualModel.eAdapters.add(POC)
+  private var actualModel: ContainerRoot = KevoreeFactory.eINSTANCE.createContainerRoot
+  actualModel.eAdapters.add(EMFListener)
 
-  def merge(modelToMerge : ContainerRoot) : Unit = {
+  private val listenerCommand: java.util.List[Command] = new java.util.ArrayList[Command]()
+
+  def addListenerCommand(c: Command) = {
+    listenerCommand.add(c)
+  }
+
+
+  def merge(modelToMerge: ContainerRoot): Unit = {
     actualModel = merger.merge(actualModel, modelToMerge)
   }
 
   /* ACESSOR TO MODEL */
-  def getActualModel : ContainerRoot = {actualModel}
-
-  def setActualModel(c : ContainerRoot) = {
-    actualModel = c
-    actualModel.eAdapters.add(POC)
+  def getActualModel: ContainerRoot = {
+    actualModel
   }
 
+  def setActualModel(c: ContainerRoot) = {
+    actualModel = c
+    actualModel.eAdapters.add(EMFListener)
+    //TODO FIRE CHANGE
+    EMFListener.notifyChanged(null)
+  }
 
-  object POC extends  AdapterImpl {
-    override def  notifyChanged(notification:Notification) = {
-       println("Model changed !")
+  object EMFListener extends AdapterImpl {
+    override def notifyChanged(notification: Notification) = {
+      listenerCommand.foreach(adapt => adapt.execute(notification))
     }
   }
 
