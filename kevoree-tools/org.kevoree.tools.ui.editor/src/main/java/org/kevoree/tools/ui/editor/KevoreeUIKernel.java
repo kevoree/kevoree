@@ -29,7 +29,7 @@ public class KevoreeUIKernel {
 
     public KevoreeUIKernel(){
         uifactory = new KevoreeUIFactory(this);
-        modelHandler = new Art2Handler();
+        modelHandler = new Art2Handler(this);
         modelPanel = uifactory.createModelPanelUI(modelHandler.getActualModel());
         //Art2Cluster.start();
 

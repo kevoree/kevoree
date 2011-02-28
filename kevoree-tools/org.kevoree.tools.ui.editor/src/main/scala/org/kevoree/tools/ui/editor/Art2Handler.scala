@@ -26,7 +26,7 @@ import scala.collection.JavaConversions._
 import org.eclipse.emf.common.notify.impl.AdapterImpl
 import org.eclipse.emf.common.notify.Notification
 
-class Art2Handler {
+class Art2Handler(kernel: KevoreeUIKernel) {
 
   private var merger = new KevoreeMergerComponent
   private var actualModel: ContainerRoot = KevoreeFactory.eINSTANCE.createContainerRoot
@@ -58,6 +58,9 @@ class Art2Handler {
   object EMFListener extends AdapterImpl {
     override def notifyChanged(notification: Notification) = {
       listenerCommand.foreach(adapt => adapt.execute(notification))
+
+      kernel.getModelPanel.repaint();
+      kernel.getModelPanel.revalidate();
     }
   }
 
