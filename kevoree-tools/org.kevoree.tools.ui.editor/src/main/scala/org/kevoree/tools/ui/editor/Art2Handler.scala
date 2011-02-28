@@ -22,11 +22,14 @@ import org.kevoree.ContainerRoot
 import org.kevoree.KevoreeFactory
 import org.kevoree.merger.KevoreeMergerComponent
 import scala.collection.JavaConversions._
+import org.eclipse.emf.common.notify.impl.AdapterImpl
+import org.eclipse.emf.common.notify.Notification
 
 class Art2Handler {
 
   private var merger = new KevoreeMergerComponent
   private var actualModel : ContainerRoot = KevoreeFactory.eINSTANCE.createContainerRoot
+  actualModel.eAdapters.add(POC)
 
   def merge(modelToMerge : ContainerRoot) : Unit = {
     actualModel = merger.merge(actualModel, modelToMerge)
@@ -37,5 +40,14 @@ class Art2Handler {
 
   def setActualModel(c : ContainerRoot) = {
     actualModel = c
+    actualModel.eAdapters.add(POC)
   }
+
+
+  object POC extends  AdapterImpl {
+    override def  notifyChanged(notification:Notification) = {
+       println("Model changed !")
+    }
+  }
+
 }

@@ -17,6 +17,8 @@
  */
 package org.kevoree.tools.ui.framework.elements;
 
+import org.kevoree.tools.ui.framework.ErrorHighlightableElement;
+
 import java.awt.AlphaComposite;
 import java.awt.BasicStroke;
 import java.awt.Color;
@@ -31,7 +33,6 @@ import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
 /**
- *
  * @author ffouquet
  */
 public class BindingPanel extends JPanel {
@@ -50,10 +51,10 @@ public class BindingPanel extends JPanel {
         bindings.remove(b);
     }
 
-    public void clear(){
+    public void clear() {
         Collection<Binding> rbindings = new ArrayList();
         rbindings.addAll(bindings);
-        for(Binding b : rbindings){
+        for (Binding b : rbindings) {
             removeBinding(b);
         }
     }
@@ -96,6 +97,14 @@ public class BindingPanel extends JPanel {
                 } else {
                     g2d.setColor(new Color(243, 238, 39, 150));
                 }*/
+                if (b.getCurrentState().equals(ErrorHighlightableElement.STATE.IN_ERROR)) {
+                    float dash1[] = {10.0f};
+                    BasicStroke dashed = new BasicStroke(5.0f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER, 10.0f, dash1, 0.0f);
+                    g2d.setStroke(dashed);
+                } else {
+                    g2d.setStroke(new BasicStroke(5, BasicStroke.CAP_SQUARE, BasicStroke.JOIN_ROUND));
+                }
+
                 g2d.setColor(b.getActualColor());
 
                 drawCable(g2d, p1, p2);

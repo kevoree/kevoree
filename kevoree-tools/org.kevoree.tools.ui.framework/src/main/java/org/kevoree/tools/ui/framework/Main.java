@@ -17,6 +17,7 @@
  */
 package org.kevoree.tools.ui.framework;
 
+import org.jdesktop.swingx.JXMultiSplitPane;
 import org.kevoree.tools.ui.framework.elements.NodePanel;
 import org.kevoree.tools.ui.framework.elements.ModelPanel;
 import java.awt.BorderLayout;
@@ -154,6 +155,8 @@ public class Main {
 
         jframe.pack();
         jframe.setVisible(true);
+
+
 
 
     }

@@ -20,17 +20,30 @@ package org.kevoree.tools.ui.framework.elements;
 import java.awt.Color;
 import javax.swing.JComponent;
 import org.kevoree.tools.ui.framework.AbstractSelectElement;
+import org.kevoree.tools.ui.framework.ErrorHighlightableElement;
 
 /**
  *
  * @author ffouquet
  */
-public class Binding extends AbstractSelectElement {
+public class Binding extends AbstractSelectElement implements ErrorHighlightableElement {
 
     private JComponent from = null;
     private JComponent to = null;
     private Color selectedcolor = null;
     private Color unselectedcolor = null;
+
+    private STATE currentState = STATE.NO_ERROR;
+
+    @Override
+    public void setState(STATE state) {
+        currentState = state;
+    }
+
+    @Override
+    public STATE getCurrentState() {
+        return currentState;
+    }
 
     public enum Type {
         input, ouput
