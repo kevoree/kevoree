@@ -10,7 +10,7 @@
     <version>1.0.0-SNAPSHOT</version>
     
     <properties>
-        <kevoree.version>1.0.0-RC2</kevoree.version>
+        <kevoree.version>1.0.0-RC3</kevoree.version>
         <android.platform.version>8</android.platform.version>
         <android.platform>platforms/android-${android.platform.version}</android.platform>
         <android.framework.aidl>${android.home}/${android.platform}/framework.aidl</android.framework.aidl>
@@ -118,35 +118,21 @@
                     </execution>
                 </executions>
             </plugin>
-
-        <!-- Workaround issue https://github.com/dukeboard/kevoree/issues/closed#issue/11
-        to be removed -->
-            <plugin>
-                <groupId>org.apache.felix</groupId>
-                <artifactId>maven-bundle-plugin</artifactId>
-                <version>2.1.0</version>
-                <extensions>true</extensions>
-                <configuration>
-                    <instructions>
-                        <Import-Package>*,org.osgi.framework;version="0.0.0"</Import-Package>
-                    </instructions>
-                </configuration>
-            </plugin>
         </plugins>
-    
     </build>
+
     <repositories>
         <repository>
-            <id>kevoree-github</id>
-            <url>http://dukeboard.github.com/kevoree/maven/</url>
+            <id>kevoree-libs-release-local</id>
+            <url>http://maven.kevoree.org/libs-release-local</url>
         </repository>
     </repositories>
+
     <pluginRepositories>
         <pluginRepository>
             <id>plugin.kevoree-github</id>
-            <url>http://dukeboard.github.com/kevoree/maven/</url>
+            <url>http://maven.kevoree.org/plugins-release-local</url>
         </pluginRepository>
     </pluginRepositories>
-
 </project>
 
