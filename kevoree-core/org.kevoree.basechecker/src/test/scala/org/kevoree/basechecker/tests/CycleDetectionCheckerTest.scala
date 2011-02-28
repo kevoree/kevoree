@@ -26,7 +26,7 @@ import org.kevoree.core.basechecker.cyclechecker.{ComponentCycleChecker, NodeCyc
 class CycleDetectionCheckerTest extends AssertionsForJUnit with BaseCheckerSuite {
 
 	@Test def verifyCycleDetectionOK() {
-		val modelCycle = model("test_checker/model_cycle_depth.kev")
+		val modelCycle = model("test_checker/cycle/model_cycle_depth.kev")
 		val componentCycleChecker = new ComponentCycleChecker
 		val firstTime = System.currentTimeMillis
 		val res = componentCycleChecker.check(modelCycle)
@@ -51,7 +51,7 @@ class CycleDetectionCheckerTest extends AssertionsForJUnit with BaseCheckerSuite
 
 	@Test def verifyNoCycleDetection() {
 
-		val modelCycle = model("test_checker/model_noCycle.kev")
+		val modelCycle = model("test_checker/cycle/model_noCycle.kev")
 		val componentCycleChecker = new ComponentCycleChecker
 		val firstTime = System.currentTimeMillis
 		val res = componentCycleChecker.check(modelCycle)
@@ -74,7 +74,7 @@ class CycleDetectionCheckerTest extends AssertionsForJUnit with BaseCheckerSuite
 	}
 
 	@Test def verifyNoDistributedAndLocalCycleDetectionWith2Nodes() {
-		val modelCycle = model("test_checker/distributed_test/model_no_cycles.kev")
+		val modelCycle = model("test_checker/cycle/distributed_test/model_no_cycles.kev")
 		val componentCycleChecker = new ComponentCycleChecker
 		val firstTime = System.currentTimeMillis
 		var res = componentCycleChecker.check(modelCycle)
@@ -103,7 +103,7 @@ class CycleDetectionCheckerTest extends AssertionsForJUnit with BaseCheckerSuite
 	}
 
 	@Test def verifyNoDistributedAndLocalCycleDetectionWith2Nodes2() {
-		val modelCycle = model("test_checker/distributed_test/model_no_cycles2.kev")
+		val modelCycle = model("test_checker/cycle/distributed_test/model_no_cycles2.kev")
 		val componentCycleChecker = new ComponentCycleChecker
 		val firstTime = System.currentTimeMillis
 		var res = componentCycleChecker.check(modelCycle)
@@ -132,7 +132,7 @@ class CycleDetectionCheckerTest extends AssertionsForJUnit with BaseCheckerSuite
 	}
 
 	@Test def verifyNoDistributedAndLocalCycleDetectionWith3Nodes() {
-		val modelCycle = model("test_checker/distributed_test/model_no_cycles_3nodes.kev")
+		val modelCycle = model("test_checker/cycle/distributed_test/model_no_cycles_3nodes.kev")
 		val componentCycleChecker = new ComponentCycleChecker
 		val firstTime = System.currentTimeMillis
 		var res = componentCycleChecker.check(modelCycle)
@@ -161,7 +161,7 @@ class CycleDetectionCheckerTest extends AssertionsForJUnit with BaseCheckerSuite
 	}
 
 	@Test def verifyDistributedCycleDetectionWith2Nodes() {
-		val modelCycle = model("test_checker/distributed_test/model_simple_distributed_cycles.kev")
+		val modelCycle = model("test_checker/cycle/distributed_test/model_simple_distributed_cycles.kev")
 		val componentCycleChecker = new ComponentCycleChecker
 		val firstTime = System.currentTimeMillis
 		var res = componentCycleChecker.check(modelCycle)
@@ -190,7 +190,7 @@ class CycleDetectionCheckerTest extends AssertionsForJUnit with BaseCheckerSuite
 	}
 
 	@Test def verifyDistributedCycleDetectionWith3Nodes() {
-		val modelCycle = model("test_checker/distributed_test/model_simple_distributed_cycles_3nodes.kev")
+		val modelCycle = model("test_checker/cycle/distributed_test/model_simple_distributed_cycles_3nodes.kev")
 		val componentCycleChecker = new ComponentCycleChecker
 		val firstTime = System.currentTimeMillis
 		var res = componentCycleChecker.check(modelCycle)
@@ -219,7 +219,7 @@ class CycleDetectionCheckerTest extends AssertionsForJUnit with BaseCheckerSuite
 	}
 
 	@Test def verifyDistributedCycleDetectionWith3Nodes2() {
-		val modelCycle = model("test_checker/distributed_test/model_distributed_cycles_between_3nodes2.kev")
+		val modelCycle = model("test_checker/cycle/distributed_test/model_distributed_cycles_between_3nodes2.kev")
 		val componentCycleChecker = new ComponentCycleChecker
 		val firstTime = System.currentTimeMillis
 		var res = componentCycleChecker.check(modelCycle)
@@ -249,7 +249,7 @@ class CycleDetectionCheckerTest extends AssertionsForJUnit with BaseCheckerSuite
 
 
 	@Test def verifyDistributedAndLocalCycleDetection() {
-		val modelCycle = model("test_checker/distributed_test/model_distributed_cycles_between_3nodes+local_cycle.kev")
+		val modelCycle = model("test_checker/cycle/distributed_test/model_distributed_cycles_between_3nodes+local_cycle.kev")
 		val componentCycleChecker = new ComponentCycleChecker
 		val firstTime = System.currentTimeMillis
 		var res = componentCycleChecker.check(modelCycle)
