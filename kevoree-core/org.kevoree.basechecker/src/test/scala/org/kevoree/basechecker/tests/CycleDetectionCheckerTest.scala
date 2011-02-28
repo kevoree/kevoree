@@ -102,6 +102,35 @@ class CycleDetectionCheckerTest extends AssertionsForJUnit with BaseCheckerSuite
 		assert(false)
 	}
 
+	@Test def verifyNoDistributedAndLocalCycleDetectionWith2Nodes2() {
+		val modelCycle = model("test_checker/distributed_test/model_no_cycles2.kev")
+		val componentCycleChecker = new ComponentCycleChecker
+		val firstTime = System.currentTimeMillis
+		var res = componentCycleChecker.check(modelCycle)
+		println(System.currentTimeMillis - firstTime + "ms for component cycle detection")
+
+		//assert(res.size == 0)
+		if (res.size == 0) {
+			val nodeCycleChecker = new NodeCycleChecker
+			val firstTime = System.currentTimeMillis
+			res = nodeCycleChecker.check(modelCycle)
+			println(System.currentTimeMillis - firstTime + "ms for node cycle detection")
+			if (res.size == 0) {
+				return
+			}
+		}
+
+		res.foreach {
+			violation =>
+				println(violation.getMessage)
+				violation.getTargetObjects.foreach {
+					obj =>
+						println(obj)
+				}
+		}
+		assert(false)
+	}
+
 	@Test def verifyNoDistributedAndLocalCycleDetectionWith3Nodes() {
 		val modelCycle = model("test_checker/distributed_test/model_no_cycles_3nodes.kev")
 		val componentCycleChecker = new ComponentCycleChecker
@@ -195,7 +224,6 @@ class CycleDetectionCheckerTest extends AssertionsForJUnit with BaseCheckerSuite
 		val firstTime = System.currentTimeMillis
 		var res = componentCycleChecker.check(modelCycle)
 		println(System.currentTimeMillis - firstTime + "ms for component cycle detection")
-		println("tutu")
 
 		//assert(res.size == 1)
 		if (res.size == 0) {

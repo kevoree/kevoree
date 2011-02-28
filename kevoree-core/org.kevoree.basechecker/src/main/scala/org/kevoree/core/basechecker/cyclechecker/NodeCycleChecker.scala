@@ -31,33 +31,40 @@ import scala.collection.JavaConversions._
 
 class NodeCycleChecker extends CheckerService {
 
-	def check(model: ContainerRoot): java.util.List[CheckerViolation] = {
-		var violations: List[CheckerViolation] = List()
-		if (model.getNodes.size > 1) {
-			val graph = KevoreeNodeDirectedGraph(model)
-			//violations = violations ++
-			CheckCycle(graph).check().foreach {
-				violation =>
-					var concreteViolation: CheckerViolation = new CheckerViolation()
-					//var targetObjects : List[Object] = new List()
-					concreteViolation.setMessage(violation.getMessage)
-					var bindings: List[MBinding] = List()
-					violation.getTargetObjects.filter(obj => obj.isInstanceOf[ComponentInstance]).foreach {
-						instance =>
-							val componentInstance : ComponentInstance = instance.asInstanceOf[ComponentInstance]
-							componentInstance.getRelatedBindings.foreach {
-								binding =>
-									if (violation.getTargetObjects.contains(new ChannelFragment(binding.getHub, componentInstance.eContainer.asInstanceOf[ContainerNode].getName))) {
-										bindings = bindings ++ List(binding)
-									}
-							}
-					}
-					concreteViolation.setTargetObjects(bindings)
-					violations = violations ++ List(concreteViolation)
-			}
-
+  def check(model: ContainerRoot): java.util.List[CheckerViolation] = {
+	var violations: List[CheckerViolation] = List()
+	if (model.getNodes.size > 1) {
+	  val graph = KevoreeNodeDirectedGraph(model)
+	  //println(graph)
+	  //violations = violations ++
+	  CheckCycle(graph).check().foreach {
+		violation =>
+		var concreteViolation: CheckerViolation = new CheckerViolation()
+		//var targetObjects : List[Object] = new List()
+		concreteViolation.setMessage(violation.getMessage)
+		var bindings: List[MBinding] = List()
+		violation.getTargetObjects.filter(obj => obj.isInstanceOf[ChannelFragment]).foreach {
+		  frag =>
+		  var fragment = frag.asInstanceOf[ChannelFragment]
+		  //var bindingTmp : MBinding = fragment.binding.asInstanceOf[MBinding]
+		  bindings = bindings ++ List(fragment.binding)
 		}
+		/*violation.getTargetObjects.filter(obj => obj.isInstanceOf[ComponentInstance]).foreach {
+		 instance =>
+		 val componentInstance : ComponentInstance = instance.asInstanceOf[ComponentInstance]
+		 componentInstance.getRelatedBindings.foreach {
+		 binding =>
+		 if (violation.getTargetObjects.contains(new ChannelFragment(binding.getHub, componentInstance.eContainer.asInstanceOf[ContainerNode].getName))) {
+		 bindings = bindings ++ List(binding)
+		 }
+		 }
+		 }*/
+		concreteViolation.setTargetObjects(bindings)
+		violations = violations ++ List(concreteViolation)
+	  }
 
-		violations
 	}
+
+	violations
+  }
 }
