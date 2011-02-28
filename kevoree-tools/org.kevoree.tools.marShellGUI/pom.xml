@@ -29,8 +29,8 @@
             <groupId>jsyntaxpane</groupId>
             <artifactId>jsyntaxpane</artifactId>
             <version>0.9.6</version>
-            <scope>system</scope>
-            <systemPath>${basedir}/lib/jsyntaxpane-0.9.6.jar</systemPath>
+          <!--  <scope>system</scope>
+            <systemPath>${basedir}/lib/jsyntaxpane-0.9.6.jar</systemPath>   -->
         </dependency>
     </dependencies>
 

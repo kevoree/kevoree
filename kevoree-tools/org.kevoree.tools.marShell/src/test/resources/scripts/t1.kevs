@@ -5,21 +5,29 @@ tblock{
 
     //ADD INSTANCE
     addNode nodeSalon,nodeSalon2
-    addComponent light@nodeSalon : FakeLight
-    addComponent switch@nodeSalon : FakeSwitch
+    addComponent lightS1@nodeSalon : FakeSimpleLight
+    //addComponent switch@nodeSalon : FakeSwitch
 
     //CHANNEL
-    addChannel hub1 : MyHubType
-    addChannel hub2 : MyHubType
+    addChannel hub1 : defMSG
+    //addChannel hub2 : MyHubType
 
 
-    addChannel hub3 : MyHubType
-    removeChannel hub3 : MyHubType
+    //addChannel hub3 : MyHubType
+    //removeChannel hub3 : MyHubType
 
     //BINDINGS
-    bind light.on@nodeSalon => hub1
-    bind switch.on@nodeSalon => hub1
-    bind light.off@nodeSalon => hub2
-    bind switch.off@nodeSalon => hub2
+    bind lightS1.on@nodeSalon => hub1
+    //bind switch.on@nodeSalon => hub1
+    bind lightS1.off@nodeSalon => hub1
+    //bind switch.off@nodeSalon => hub2
+
+  //  unbind lightS1.on@nodeSalon => hub1
+
+
+
+//    removeNode nodeSalon
+    // removeChannel hub1
+
 
 }

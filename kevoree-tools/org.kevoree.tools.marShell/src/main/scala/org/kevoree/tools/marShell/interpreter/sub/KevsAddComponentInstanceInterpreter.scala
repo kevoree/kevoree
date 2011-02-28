@@ -18,31 +18,65 @@
 
 package org.kevoree.tools.marShell.interpreter.sub
 
-import org.kevoree.KevoreeFactory
 import org.kevoree.tools.marShell.ast.AddComponentInstanceStatment
 import org.kevoree.tools.marShell.interpreter.KevsAbstractInterpreter
 import org.kevoree.tools.marShell.interpreter.KevsInterpreterContext
 import scala.collection.JavaConversions._
+import org.kevoree._
 
-case class KevsAddComponentInstanceInterpreter(addCompo : AddComponentInstanceStatment) extends KevsAbstractInterpreter {
+case class KevsAddComponentInstanceInterpreter(addCompo: AddComponentInstanceStatment) extends KevsAbstractInterpreter {
 
-  def interpret(context : KevsInterpreterContext) : Boolean ={
+  def interpret(context: KevsInterpreterContext): Boolean = {
     addCompo.cid.nodeName match {
-      case Some(nodeID)=> {
-          //SEARCH NODE
-          context.model.getNodes.find(n=>n.getName == nodeID) match {
-            case Some(targetNode)=> {
+      case Some(nodeID) => {
+        //SEARCH NODE
+        context.model.getNodes.find(n => n.getName == nodeID) match {
+          case Some(targetNode) => {
+            //SEARCH TYPE
+
+            context.model.getTypeDefinitions.find(td => td.getName == addCompo.typeDefinitionName) match {
+              case Some(typeDef) if (typeDef.isInstanceOf[ComponentType]) => {
+                var componentDefinition = typeDef.asInstanceOf[ComponentType]
                 var newcomponent = KevoreeFactory.eINSTANCE.createComponentInstance
+                newcomponent.setTypeDefinition(typeDef)
                 newcomponent.setName(addCompo.cid.componentInstanceName)
+
+                //ADD PORTS
+                for (ref <- componentDefinition.getProvided) {
+                  val port: Port = KevoreeFactory.eINSTANCE.createPort
+                  newcomponent.getProvided.add(port)
+                  port.setPortTypeRef(ref)
+                }
+                for (ref <- componentDefinition.getRequired) {
+                  val port: Port = KevoreeFactory.eINSTANCE.createPort
+                  newcomponent.getRequired.add(port)
+                  port.setPortTypeRef(ref)
+                }
                 targetNode.getComponents.add(newcomponent)
+
               }
-            case None => {println("Node not found "+nodeID);false}
+              case Some(typeDef) if (!typeDef.isInstanceOf[ComponentType]) => {
+                println("Type definition is not a componentType " + addCompo.typeDefinitionName);
+                false
+              }
+              case None => {
+                println("Type definition not found " + addCompo.typeDefinitionName);
+                false
+              }
+            }
+
+
+          }
+          case None => {
+            println("Node not found " + nodeID);
+            false
           }
         }
+      }
       case None => {
-          //TODO search to solve ambiguity
-          false
-        }
+        //TODO search to solve ambiguity
+        false
+      }
     }
   }
 

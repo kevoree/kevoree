@@ -172,16 +172,17 @@
                     </execution>
                 </executions>
             </plugin>
-
         </plugins>
     </build>
 
+     <!--
     <pluginRepositories>
         <pluginRepository>
             <id>lafros.com</id>
             <url>http://lafros.com/m2arts</url>
         </pluginRepository>
     </pluginRepositories>
+         -->
 
     <dependencies>
         <dependency>

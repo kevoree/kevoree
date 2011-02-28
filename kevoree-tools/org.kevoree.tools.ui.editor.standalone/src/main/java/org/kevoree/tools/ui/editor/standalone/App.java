@@ -15,28 +15,64 @@ package org.kevoree.tools.ui.editor.standalone;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
-import javax.swing.JFrame;
+import javax.swing.*;
+
+import org.jdesktop.swingx.JXMultiSplitPane;
+import org.jdesktop.swingx.MultiSplitLayout;
 import org.kevoree.tools.ui.editor.KevoreeEditor;
 
 /**
  * Hello world!
- *
  */
-public class App 
-{
+public class App {
 
     public static void main(String[] args) {
-        System.setProperty("apple.laf.useScreenMenuBar", "true");
-        JFrame jframe = new JFrame("Kevoree Editor");
-        jframe.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        jframe.setPreferredSize(new Dimension(800, 600));
-        KevoreeEditor artpanel = new KevoreeEditor();
 
-        jframe.setJMenuBar(artpanel.getMenuBar());
+        SwingUtilities.invokeLater(new Runnable() {
 
-        jframe.add(artpanel.getPanel(),BorderLayout.CENTER);
-        jframe.pack();
-        jframe.setVisible(true);
+            @Override
+            public void run() {
+                System.setProperty("apple.laf.useScreenMenuBar", "true");
+                JFrame jframe = new JFrame("Kevoree Editor");
+                jframe.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                jframe.setPreferredSize(new Dimension(800, 600));
+                KevoreeEditor artpanel = new KevoreeEditor();
+
+                jframe.setJMenuBar(artpanel.getMenuBar());
+
+                // jframe.add(artpanel.getPanel(), BorderLayout.CENTER);
+
+
+                // jframe.add(new LogPanel(), BorderLayout.SOUTH);
+
+                /*
+              String layoutDef =
+                      "(COLUMN (LEAF name=center weight=0.95) (LEAF name=bottom weight=0.05))";
+              MultiSplitLayout.Node modelRoot =
+                      MultiSplitLayout.parseModel(layoutDef);
+              JXMultiSplitPane multiSplitPane = new JXMultiSplitPane();
+              multiSplitPane.getMultiSplitLayout().setModel(modelRoot);
+
+              multiSplitPane.add(artpanel.getPanel(), "center");
+              multiSplitPane.add(new LogPanel(), "bottom");
+                */
+
+                JSplitPane splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT,
+                        artpanel.getPanel(), new LogPanel());
+                //splitPane.setResizeWeight(0.3);
+                splitPane.setOneTouchExpandable(true);
+                splitPane.setContinuousLayout(true);
+                splitPane.setDividerSize(15);
+                splitPane.setDividerLocation(500);
+                splitPane.setResizeWeight(1.0);
+
+
+                jframe.add(splitPane, BorderLayout.CENTER);
+                jframe.pack();
+                jframe.setVisible(true);
+            }
+        });
+
 
     }
 }

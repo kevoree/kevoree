@@ -20,9 +20,13 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.GradientPaint;
 import java.awt.Point;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
+import java.util.Arrays;
+import java.util.List;
+import javax.swing.*;
+
+import org.jdesktop.swingx.JXMultiSplitPane;
 import org.jdesktop.swingx.JXPanel;
+import org.jdesktop.swingx.MultiSplitLayout;
 import org.jdesktop.swingx.painter.CompoundPainter;
 import org.jdesktop.swingx.painter.MattePainter;
 import org.kevoree.tools.ui.editor.KevoreeUIKernel;
@@ -34,7 +38,6 @@ import org.kevoree.tools.ui.framework.elements.EditableModelPanel;
 import org.kevoree.tools.ui.framework.elements.NodePanel;
 
 /**
- *
  * @author ffouquet
  */
 public class KevoreeEditorPanel extends JPanel {
@@ -44,6 +47,7 @@ public class KevoreeEditorPanel extends JPanel {
     public KevoreeUIKernel getKernel() {
         return kernel;
     }
+
     private JXPanel leftpanel = new JXPanel();
     //private JXPanel southpanel = new JXPanel();
     private TypeDefinitionPalette palette = new TypeDefinitionPalette();
@@ -83,7 +87,7 @@ public class KevoreeEditorPanel extends JPanel {
         //scrollpane.setAutoscrolls(true);
 
 
-        this.add(editableModelPanel, BorderLayout.CENTER);
+        // this.add(editableModelPanel, BorderLayout.CENTER);
 
         /* LEFT BAR GENERATION */
         //commandPanel = new CommandPanel(kernel);
@@ -92,9 +96,36 @@ public class KevoreeEditorPanel extends JPanel {
         //leftpanel.add(commandPanel, BorderLayout.NORTH);
         //leftpanel.add(trash);
 
-        this.add(leftpanel, BorderLayout.WEST);
+        // this.add(leftpanel, BorderLayout.WEST);
         //this.add(southpanel, BorderLayout.SOUTH);
         //southpanel.setVisible(false);
+
+
+        /*
+  List children =
+Arrays.asList(new MultiSplitLayout.Leaf("left"),
+      new MultiSplitLayout.Divider(),
+      new MultiSplitLayout.Leaf("right"));
+MultiSplitLayout.Split modelRoot = new MultiSplitLayout.Split();
+modelRoot.setChildren(children);
+
+JXMultiSplitPane multiSplitPane = new JXMultiSplitPane();
+multiSplitPane.getMultiSplitLayout().setModel(modelRoot);
+multiSplitPane.add(leftpanel, "left");
+multiSplitPane.add(editableModelPanel, "right");
+        */
+
+        JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,
+                leftpanel, editableModelPanel);
+     //   splitPane.setResizeWeight(1);
+        splitPane.setOneTouchExpandable(true);
+        splitPane.setContinuousLayout(true);
+        splitPane.setDividerSize(15);
+        splitPane.setDividerLocation(150);
+        splitPane.setResizeWeight(0.0);
+
+        this.add(splitPane, BorderLayout.CENTER);
+
 
     }
 
@@ -117,8 +148,8 @@ public class KevoreeEditorPanel extends JPanel {
     //Art2XmiHelper.save("/Users/ffouquet/NetBeansProjects/Entimid/org.entimid.fakeStuff/art2Merged.xmi", kernel.getModelHandler().getActualModel());
     }*/
     public void showPropertyFor(JPanel p) {
-       // southpanel.setVisible(true);
-       // southpanel.removeAll();
+        // southpanel.setVisible(true);
+        // southpanel.removeAll();
         if (p instanceof NodePanel) {
             org.kevoree.ContainerNode elem = (org.kevoree.ContainerNode) kernel.getUifactory().getMapping().get(p);
             NodePropertyEditor prop = new NodePropertyEditor(elem, kernel);
@@ -131,8 +162,8 @@ public class KevoreeEditorPanel extends JPanel {
             //southpanel.add(prop);
             editableModelPanel.displayProperties(prop);
         }
-       // southpanel.repaint();
-       // southpanel.revalidate();
+        // southpanel.repaint();
+        // southpanel.revalidate();
 
 
         this.invalidate();

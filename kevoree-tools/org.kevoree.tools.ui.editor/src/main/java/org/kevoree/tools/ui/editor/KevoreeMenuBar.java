@@ -24,7 +24,7 @@ public class KevoreeMenuBar extends JMenuBar {
 
     public KevoreeMenuBar(KevoreeUIKernel kernel) {
 
-        JMenu file, model = null;
+        JMenu file, model, kevs = null;
 
         file = new JMenu("File");
         JMenuItem fileOpen = new JMenuItem("Open");
@@ -68,8 +68,20 @@ public class KevoreeMenuBar extends JMenuBar {
         model.add(checkModel);
 
 
+
+
+        kevs = new JMenu("KevScript");
+        JMenuItem openEditor = new JMenuItem("Open editor");
+        OpenKevsShell cmdOpenKevsGUI = new OpenKevsShell();
+        cmdOpenKevsGUI.setKernel(kernel);
+        openEditor.addActionListener(new CommandActionListener(cmdOpenKevsGUI));
+        kevs.add(openEditor);
+
+
+
         this.add(file);
         this.add(model);
+        this.add(kevs);
 
 
     }

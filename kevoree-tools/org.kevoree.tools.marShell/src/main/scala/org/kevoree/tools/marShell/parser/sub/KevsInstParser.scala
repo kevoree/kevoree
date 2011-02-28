@@ -31,8 +31,8 @@ trait KevsInstParser extends KevsAbstractParser {
   def parseAddChannel : Parser[List[Statment]] = "addChannel" ~ ident ~ ":" ~ ident ^^{ case _ ~ channelName ~ _ ~ channelTypeName =>
       List(AddChannelInstanceStatment(channelName,channelTypeName))
   }
-  def parseRemoveChannel : Parser[List[Statment]] = "removeChannel" ~ ident ~ ":" ~ ident ^^{ case _ ~ channelName ~ _ ~ channelTypeName =>
-      List(RemoveChannelInstanceStatment(channelName,channelTypeName))
+  def parseRemoveChannel : Parser[List[Statment]] = "removeChannel" ~ ident ^^{ case _ ~ channelName =>
+      List(RemoveChannelInstanceStatment(channelName))
   }
 
 

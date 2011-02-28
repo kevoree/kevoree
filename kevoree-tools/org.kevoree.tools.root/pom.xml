@@ -140,13 +140,12 @@
         <module>../org.kevoree.tools.annotation.processor</module>
         <module>../org.kevoree.tools.ui.framework</module>
         <module>../org.kevoree.tools.ui.editor</module>
-        <module>../org.kevoree.tools.ui.editor.standalone</module>
         <module>../org.kevoree.tools.android.framework</module>
         <module>../org.kevoree.tools.merger.mavenplugin</module>
         <module>../org.kevoree.tools.annotation.mavenplugin</module>
-    <!--    <module>../org.kevoree.tools.library.root</module> -->
         <module>../org.kevoree.tools.marShell</module>
         <module>../org.kevoree.tools.marShellGUI</module>
+        <module>../org.kevoree.tools.ui.editor.standalone</module>
     </modules>
 
 <!--

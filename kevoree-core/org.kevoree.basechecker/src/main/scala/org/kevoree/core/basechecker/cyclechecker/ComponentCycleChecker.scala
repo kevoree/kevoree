@@ -22,48 +22,42 @@ import org.jgrapht.DirectedGraph
 import org.jgrapht.alg.CycleDetector
 import org.kevoree.ContainerRoot
 import org.kevoree.MBinding
+import org.kevoree.ComponentInstance
+import org.kevoree.Channel
 import org.kevoree.api.service.core.checker.CheckerService
 import org.kevoree.api.service.core.checker.CheckerViolation
+import org.kevoree.framework.aspects.KevoreeAspects._
 import scala.collection.JavaConversions._
 
-class CycleChecker extends CheckerService {
+class ComponentCycleChecker extends CheckerService {
 
 	def check(model: ContainerRoot): java.util.List[CheckerViolation] = {
 		var violations: List[CheckerViolation] = List()
 		model.getNodes.foreach {
 			node =>
 				val graph = KevoreeComponentDirectedGraph(model, node.getName)
-				/*var cycleDetector  = new CycleDetector[Instance, MBinding](graph)
-											 if (cycleDetector.detectCycles) {
-											 var violation = new CheckerViolation
-											 violation.setMessage("Cycle(s) detected")
-											 violation.setTargetObject(cycleDetector.findCycles.toList)
-											 violations = violations ++ List(violation)
-											 cycleDetector.findCycles
-											 }*/
-				violations = violations ++ check(graph)
+				//violations = violations ++
+				CheckCycle(graph).check().foreach {
+				violation =>
+					var concreteViolation: CheckerViolation = new CheckerViolation()
+					//var targetObjects : List[Object] = new List()
+					concreteViolation.setMessage(violation.getMessage)
+					var bindings: List[MBinding] = List()
+					violation.getTargetObjects.filter(obj => obj.isInstanceOf[ComponentInstance]).foreach {
+						instance =>
+							val componentInstance : ComponentInstance = instance.asInstanceOf[ComponentInstance]
+							componentInstance.getRelatedBindings.foreach {
+								binding =>
+									if (violation.getTargetObjects.contains(binding.getHub)) {
+										bindings = bindings ++ List(binding)
+									}
+							}
+					}
+					concreteViolation.setTargetObjects(bindings)
+					violations = violations ++ List(concreteViolation)
+			}
 		}
 
-		val distributedChecking = true // TODO need to be fixed according to the model and bindings between nodes
-		if (distributedChecking && model.getNodes.size > 1) {
-			val graph1 = KevoreeNodeDirectedGraph(model)
-			violations = violations ++ check(graph1)
-		}
-
-		violations
-	}
-
-	private def check[A](graph: DirectedGraph[A, MBinding]): List[CheckerViolation] = {
-		var violations: List[CheckerViolation] = List()
-		val cycleDetector = new CycleDetector[A, MBinding](graph)
-
-		if (cycleDetector.detectCycles) {
-			val violation = new CheckerViolation
-			violation.setMessage("Cycle(s) detected")
-			violation.setTargetObjects(cycleDetector.findCycles.asInstanceOf[java.util.Set[Object]].toList)
-			violations = violations ++ List(violation)
-			cycleDetector.findCycles
-		}
 		violations
 	}
 }

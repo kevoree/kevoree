@@ -18,23 +18,41 @@
 
 package org.kevoree.tools.marShell.interpreter.sub
 
-import org.kevoree.KevoreeFactory
 import org.kevoree.tools.marShell.ast.AddChannelInstanceStatment
 import org.kevoree.tools.marShell.interpreter.KevsAbstractInterpreter
 import org.kevoree.tools.marShell.interpreter.KevsInterpreterContext
 import scala.collection.JavaConversions._
+import org.kevoree.{ChannelType, KevoreeFactory}
 
-case class KevsAddChannelInterpreter(addChannel : AddChannelInstanceStatment) extends KevsAbstractInterpreter {
+case class KevsAddChannelInterpreter(addChannel: AddChannelInstanceStatment) extends KevsAbstractInterpreter {
 
-  def interpret(context : KevsInterpreterContext):Boolean={
-    context.model.getHubs.find(n=>n.getName == addChannel.channelName) match {
-      case Some(target)=> {println("Channel already exist "+addChannel.channelName);false}
+  def interpret(context: KevsInterpreterContext): Boolean = {
+    context.model.getHubs.find(n => n.getName == addChannel.channelName) match {
+      case Some(target) => {
+        println("Channel already exist " + addChannel.channelName); false
+      }
       case None => {
-          var newchannel = KevoreeFactory.eINSTANCE.createChannel
-          newchannel.setName(addChannel.channelName)
-          context.model.getHubs.add(newchannel)
-          true
+        //SEARCH TYPE DEF
+        context.model.getTypeDefinitions.find(td => td.getName == addChannel.channelType) match {
+          case Some(targetChannelType) if (targetChannelType.isInstanceOf[ChannelType]) => {
+
+            val newchannel = KevoreeFactory.eINSTANCE.createChannel
+            newchannel.setTypeDefinition(targetChannelType)
+            newchannel.setName(addChannel.channelName)
+            context.model.getHubs.add(newchannel)
+
+          }
+          case Some(targetChannelType) if (!targetChannelType.isInstanceOf[ChannelType]) => {
+            println("Type definition is not a channelType " + addChannel.channelType);
+            false
+          }
+          case None => {
+            println("Type definition not found " + addChannel.channelType);
+            false
+          }
         }
+        true
+      }
     }
   }
 

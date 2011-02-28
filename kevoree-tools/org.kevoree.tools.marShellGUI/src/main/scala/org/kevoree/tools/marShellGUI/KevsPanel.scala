@@ -20,44 +20,70 @@ package org.kevoree.tools.marShellGUI
 
 import java.awt.BorderLayout
 import java.awt.Color
-import javax.swing.JEditorPane
-import javax.swing.JPanel
-import javax.swing.JScrollPane
 import javax.swing.event.DocumentEvent
 import javax.swing.event.DocumentListener
 import jsyntaxpane.components.Markers
 import org.kevoree.tools.marShell.parser.KevsParser
+import javax.swing.{JSplitPane, JEditorPane, JPanel, JScrollPane}
+import org.kevoree.tools.marShell.ast.Script
 
 class KevsPanel extends JPanel {
+
+  def getModel : Script = {
+    val parser = new KevsParser();
+    val result = parser.parseScript(codeEditor.getText);
+    result.get
+  }
 
   this.setLayout(new BorderLayout())
   jsyntaxpane.DefaultSyntaxKit.initKit();
   jsyntaxpane.DefaultSyntaxKit.registerContentType("text/kevs", classOf[KevsJSyntaxKit].getName());
   var codeEditor = new JEditorPane();
   var scrPane = new JScrollPane(codeEditor);
-  add(scrPane, BorderLayout.CENTER);
+
   codeEditor.setContentType("text/kevs");
-  codeEditor.setText("tblock { /* hehe */ }");
+  codeEditor.setText("tblock { \n //insert Kevoree Script here \n }");
 
-  //codeEditor.setEditorKit(new KermetaSyntaxKit());
+  codeEditor.getDocument.addDocumentListener(new DocumentListener() {
+    def removeUpdate(e: DocumentEvent) = {
+      updateMarkers(e.getDocument.getText(0, e.getDocument.getLength - 1))
+    }
 
-  codeEditor.getDocument.addDocumentListener(new DocumentListener(){
-      def removeUpdate(e:DocumentEvent) = {updateMarkers(e.getDocument.getText(0, e.getDocument.getLength-1))}
-      def insertUpdate(e:DocumentEvent) = {updateMarkers(e.getDocument.getText(0, e.getDocument.getLength-1))}
-      def changedUpdate(e:DocumentEvent) {updateMarkers(e.getDocument.getText(0, e.getDocument.getLength-1))}
+    def insertUpdate(e: DocumentEvent) = {
+      updateMarkers(e.getDocument.getText(0, e.getDocument.getLength - 1))
+    }
 
-      def updateMarkers(content:String){
-        var parser = new KevsParser();
-        var result = parser.parseScript(content);
-        Markers.removeMarkers(codeEditor)
-        result match {
-          case Some(e)=> Markers.removeMarkers(codeEditor);
-          case None => {
-              var highlighter = codeEditor.getHighlighter()
-              highlighter.addHighlight(parser.lastNoSuccess.next.offset, parser.lastNoSuccess.next.rest.offset, new Markers.SimpleMarker(Color.RED));
-              parser.lastNoSuccess.next.rest.offset
-            }
+    def changedUpdate(e: DocumentEvent) {
+      updateMarkers(e.getDocument.getText(0, e.getDocument.getLength - 1))
+    }
+
+    def updateMarkers(content: String) {
+      val parser = new KevsParser();
+      val result = parser.parseScript(codeEditor.getText);
+      Markers.removeMarkers(codeEditor)
+
+      logPanel.clear
+      result match {
+        case Some(e) => Markers.removeMarkers(codeEditor);
+        case None => {
+
+          logPanel.error(parser.lastNoSuccess.toString)
+
+          var highlighter = codeEditor.getHighlighter()
+          highlighter.addHighlight(parser.lastNoSuccess.next.offset, parser.lastNoSuccess.next.rest.offset, new Markers.SimpleMarker(Color.ORANGE));
+          parser.lastNoSuccess.next.rest.offset
         }
       }
-    })
+    }
+  })
+
+  var logPanel = new LogPanel
+  var splitPane: JSplitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, scrPane, logPanel)
+  splitPane.setOneTouchExpandable(true)
+  splitPane.setContinuousLayout(true)
+  splitPane.setDividerSize(15)
+  splitPane.setDividerLocation(0.99)
+  splitPane.setResizeWeight(1.0)
+  add(splitPane, BorderLayout.CENTER);
+
 }
