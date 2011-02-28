@@ -24,5 +24,5 @@ import org.kevoree.{Channel, MBinding}
  */
 
 
-	case class ChannelFragment(channel: Channel, fragmentName: String) {} // TODO define in a specific file with BindingFragment
-	case class BindingFragment(binding : MBinding, fragmentName: String) {}
+	case class ChannelFragment(channel: Channel, binding : MBinding) {}
+	case class BindingFragment(binding : MBinding, binding1 : MBinding) {}
