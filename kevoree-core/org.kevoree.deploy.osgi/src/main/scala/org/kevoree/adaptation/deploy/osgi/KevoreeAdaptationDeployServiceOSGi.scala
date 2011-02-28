@@ -234,7 +234,7 @@ class KevoreeAdaptationDeployServiceOSGi extends KevoreeAdaptationDeployService 
 		execute(schedule(buildCommandLists(model, nodeName)))
 	}
 
-	def buildCommandLists(model: AdaptationModel, nodeName: String): Map[String, List[PrimitiveCommand]] = {
+	def buildCommandLists(model: AdaptationModel, nodeName: String) :  scala.collection.mutable.Map[String, List[PrimitiveCommand]] = {
 		var executedCommandTP: List[PrimitiveCommand] = List()
 
 		//DEPLOY UNIT COMMAND
@@ -346,7 +346,7 @@ class KevoreeAdaptationDeployServiceOSGi extends KevoreeAdaptationDeployService 
 		result
 	}
 
-	def schedule(commands : scala.collection.mutable.Map[String, List[PrimitiveCommand]])= {
+	def schedule(commands : scala.collection.mutable.Map[String, List[PrimitiveCommand]]) : scala.collection.mutable.Map[String, List[PrimitiveCommand]] = {
 		// scheduling of start and stop commands
 		val initTime = System.currentTimeMillis
 		val scheduling = new SchedulingWithTopologicalOrderAlgo
@@ -371,6 +371,8 @@ class KevoreeAdaptationDeployServiceOSGi extends KevoreeAdaptationDeployService 
 			c =>
 				println(c.getInstance.getName)
 		}
+
+		commands
 	}
 
 	def execute(commands : scala.collection.mutable.Map[String, List[PrimitiveCommand]]) = {
