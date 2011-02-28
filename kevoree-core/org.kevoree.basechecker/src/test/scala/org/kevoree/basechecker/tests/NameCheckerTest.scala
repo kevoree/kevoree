@@ -178,4 +178,7 @@ class NameCheckerTest extends AssertionsForJUnit with BaseCheckerSuite {
 			assert(false)
 		}
 	}
+
+	// TODO test port name checking
+	// TODO test attribute name checking with wrong attribute name
 }

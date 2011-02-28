@@ -56,6 +56,20 @@ class NameChecker extends CheckerService {
 									}
 							}
 						}
+						component.getProvided.foreach {
+							port =>
+								violation = check(port.getPortTypeRef)
+								if (violation != null) {
+									violations = violations ++ List(violation)
+								}
+						}
+						component.getRequired.foreach {
+							port =>
+								violation = check(port.getPortTypeRef)
+								if (violation != null) {
+									violations = violations ++ List(violation)
+								}
+						}
 				}
 		}
 		model.getHubs.foreach {
