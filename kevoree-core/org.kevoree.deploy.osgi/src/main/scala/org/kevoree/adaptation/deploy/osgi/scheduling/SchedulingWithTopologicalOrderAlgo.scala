@@ -30,8 +30,8 @@ class SchedulingWithTopologicalOrderAlgo {
 
 	def schedule(commands: List[LifeCycleCommand], start: Boolean): List[LifeCycleCommand] = {
 		if (commands.size > 1) {
-			var graph: DefaultDirectedGraph[LifeCycleCommand, (LifeCycleCommand, LifeCycleCommand)] = buildGraph(commands, start)
-			var topologicAlgorithm: TopologicalOrderIterator[LifeCycleCommand, (LifeCycleCommand, LifeCycleCommand)] = new TopologicalOrderIterator(graph)
+			val graph: DefaultDirectedGraph[LifeCycleCommand, (LifeCycleCommand, LifeCycleCommand)] = buildGraph(commands, start)
+			val topologicAlgorithm: TopologicalOrderIterator[LifeCycleCommand, (LifeCycleCommand, LifeCycleCommand)] = new TopologicalOrderIterator(graph)
 
 			var listCommands = List[LifeCycleCommand]()
 			while (topologicAlgorithm.hasNext) {
