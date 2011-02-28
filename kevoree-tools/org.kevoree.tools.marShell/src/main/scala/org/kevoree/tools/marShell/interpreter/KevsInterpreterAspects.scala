@@ -18,21 +18,8 @@
 
 package org.kevoree.tools.marShell.interpreter
 
-import org.kevoree.tools.marShell.ast.AddBindingStatment
-import org.kevoree.tools.marShell.ast.AddChannelInstanceStatment
-import org.kevoree.tools.marShell.ast.AddComponentInstanceStatment
-import org.kevoree.tools.marShell.ast.AddNode
-import org.kevoree.tools.marShell.ast.Block
-import org.kevoree.tools.marShell.ast.RemoveChannelInstanceStatment
-import org.kevoree.tools.marShell.ast.Script
-import org.kevoree.tools.marShell.ast.Statment
-import org.kevoree.tools.marShell.ast.TransactionalBloc
-import org.kevoree.tools.marShell.interpreter.sub.KevsAddBindingInterpreter
-import org.kevoree.tools.marShell.interpreter.sub.KevsAddChannelInterpreter
-import org.kevoree.tools.marShell.interpreter.sub.KevsAddComponentInstanceInterpreter
-import org.kevoree.tools.marShell.interpreter.sub.KevsAddNodeInterpreter
-import org.kevoree.tools.marShell.interpreter.sub.KevsAddTBlockInterpreter
-import org.kevoree.tools.marShell.interpreter.sub.KevsRemoveChannelInterpreter
+import sub._
+import org.kevoree.tools.marShell.ast._
 
 object KevsInterpreterAspects {
 
@@ -51,7 +38,9 @@ object KevsInterpreterAspects {
         case addChannel : AddChannelInstanceStatment => KevsAddChannelInterpreter(addChannel)
         case removeChannel : RemoveChannelInstanceStatment => KevsRemoveChannelInterpreter(removeChannel)
         case addNodest : AddNode => KevsAddNodeInterpreter(addNodest)
+        case removeNodest : RemoveNode => KevsRemoveNodeInterpreter(removeNodest)
         case addBinding : AddBindingStatment => KevsAddBindingInterpreter(addBinding)
+        case removeBinding : RemoveBindingStatment => KevsRemoveBindingInterpreter(removeBinding)
       }
     case _ @ e => println(e);null
   }

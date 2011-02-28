@@ -18,43 +18,30 @@
 
 package org.kevoree.tools.marShell.interpreter.sub
 
-import org.kevoree.tools.marShell.ast.RemoveChannelInstanceStatment
+import org.kevoree.KevoreeFactory
 import org.kevoree.tools.marShell.interpreter.KevsAbstractInterpreter
 import org.kevoree.tools.marShell.interpreter.KevsInterpreterContext
 import scala.collection.JavaConversions._
-import org.kevoree.{MBinding, ContainerRoot, Channel}
+import org.kevoree.tools.marShell.ast.{RemoveNode, AddNode}
 
-case class KevsRemoveChannelInterpreter(removeChannel: RemoveChannelInstanceStatment) extends KevsAbstractInterpreter {
+case class KevsRemoveNodeInterpreter(addN: RemoveNode) extends KevsAbstractInterpreter {
 
   def interpret(context: KevsInterpreterContext): Boolean = {
-    context.model.getHubs.find(n => n.getName == removeChannel.channelName) match {
-      case Some(target) => {
 
-        val root = target.eContainer.asInstanceOf[ContainerRoot]
-        getRelatedBindings(target).foreach(rb => {
-          root.getMBindings.remove(rb)
+    context.model.getNodes.find(n => n.getName == addN.nodeName) match {
+      case Some(targetNode) => {
+        //DELETE ALL COMPONENT
+        (targetNode.getComponents.toList++ List()).foreach(c => {
+          KevsRemoveComponentInstanceInterpreter(null).deleteComponent(targetNode, c)
         })
-        context.model.getHubs.remove(target)
-
+        //DELETE NODE
+        context.model.getNodes.remove(targetNode)
         true
       }
       case None => {
-        println("Channel not exist " + removeChannel.channelName);
-        false
+        println("Node Already existe"); false
       }
     }
   }
-
-  def getRelatedBindings(cself: Channel): List[MBinding] = {
-    var res = new java.util.ArrayList[MBinding]();
-    cself.eContainer.asInstanceOf[ContainerRoot].getMBindings.foreach {
-      b =>
-        if (b.getHub == cself) {
-          res.add(b)
-        }
-    }
-    res.toList
-  }
-
 
 }

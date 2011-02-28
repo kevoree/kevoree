@@ -18,6 +18,6 @@
 
 package org.kevoree.tools.marShell.ast
 
-case class RemoveChannelInstanceStatment(channelName : String,channelType:String) extends Statment {
+case class RemoveChannelInstanceStatment(channelName : String) extends Statment {
 
 }

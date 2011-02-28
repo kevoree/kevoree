@@ -22,4 +22,12 @@ tblock{
     bind lightS1.off@nodeSalon => hub1
     //bind switch.off@nodeSalon => hub2
 
+  //  unbind lightS1.on@nodeSalon => hub1
+
+
+
+//    removeNode nodeSalon
+    // removeChannel hub1
+
+
 }

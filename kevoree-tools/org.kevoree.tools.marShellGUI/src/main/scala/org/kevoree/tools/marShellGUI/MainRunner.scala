@@ -37,7 +37,8 @@ object MainRunner {
   def main(args: Array[String]): Unit = {
     println("Hello, world!")
 
-    var f = new JFrame("Kevoree Script Shell GUI");
+    var f = new KevsFrame();
+    /*
     var c = f.getContentPane();
     c.setLayout(new BorderLayout());
 
@@ -45,12 +46,12 @@ object MainRunner {
     c.add(p, BorderLayout.CENTER)
 
 
-    
 
 
-    f.setSize(800, 600);
+
+    f.setSize(800, 600);  */
     f.setVisible(true);
-    f.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+    //f.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
 
   }
