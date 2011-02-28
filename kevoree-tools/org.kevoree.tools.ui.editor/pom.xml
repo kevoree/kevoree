@@ -2,7 +2,7 @@
 <!-- License    : EPL 									 -->
 <!-- Copyright  : IRISA / INRIA / Universite de Rennes 1 -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <artifactId>org.kevoree.tools.ui.editor</artifactId>
     <packaging>jar</packaging>
@@ -19,7 +19,7 @@
     <properties>
         <kevoree.version>${project.version}</kevoree.version>
     </properties>
-    
+
     <dependencies>
         <dependency>
             <groupId>org.kevoree.tools</groupId>
@@ -47,12 +47,23 @@
             <version>${kevoree.version}</version>
         </dependency>
 
+        <dependency>
+            <groupId>org.kevoree.tools</groupId>
+            <artifactId>org.kevoree.tools.marShell</artifactId>
+            <version>${kevoree.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.kevoree.tools</groupId>
+            <artifactId>org.kevoree.tools.marShellGUI</artifactId>
+            <version>${kevoree.version}</version>
+        </dependency>
+
     </dependencies>
 
 
     <build>
         <plugins>
-<!--
+            <!--
             <plugin>
                 <groupId>org.apache.felix</groupId>
                 <artifactId>maven-bundle-plugin</artifactId>
@@ -64,23 +75,23 @@
                     </instructions>
                 </configuration>
             </plugin>-->
-<!--
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>exec-maven-plugin</artifactId>
-                <version>1.1</version>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>java</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <configuration>
-                    <mainClass>org.kevoree.tools.ui.editor.App</mainClass>
-                </configuration>
-            </plugin>
--->
+            <!--
+                        <plugin>
+                            <groupId>org.codehaus.mojo</groupId>
+                            <artifactId>exec-maven-plugin</artifactId>
+                            <version>1.1</version>
+                            <executions>
+                                <execution>
+                                    <goals>
+                                        <goal>java</goal>
+                                    </goals>
+                                </execution>
+                            </executions>
+                            <configuration>
+                                <mainClass>org.kevoree.tools.ui.editor.App</mainClass>
+                            </configuration>
+                        </plugin>
+            -->
 
         </plugins>
     </build>
