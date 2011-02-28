@@ -18,6 +18,79 @@
 
 package org.kevoree.core.basechecker.namechecker
 
-class NameChecker {
+import java.util.regex.Matcher
+import java.util.regex.Pattern
+import org.kevoree.ComponentInstance
+import org.kevoree.ContainerRoot
+import org.kevoree.DictionaryValue
+import org.kevoree.NamedElement
+import org.kevoree.api.service.core.checker.CheckerService
+import org.kevoree.api.service.core.checker.CheckerViolation
+import scala.collection.JavaConversions._
 
+class NameChecker extends CheckerService {
+
+	val acceptedRegex = "[A-Za-z0-9_]*"
+	var message = "The name doesn't fit the defined format.\nA name only contains lower or upper letters, numbers and \"_\"."
+
+	def check(model: ContainerRoot): java.util.List[CheckerViolation] = {
+		var violations: List[CheckerViolation] = List()
+		model.getNodes.foreach {
+			node =>
+				var violation = check(node)
+				if (violation != null) {
+					violations = violations ++ List(violation)
+				}
+				node.getComponents.foreach {
+					component: ComponentInstance =>
+						violation = check(component)
+						if (violation != null) {
+							violations = violations ++ List(violation)
+						}
+						if (component.getDictionary != null) {
+							component.getDictionary.getValues.foreach {
+								property: DictionaryValue =>
+									violation = check(property.getAttribute)
+									if (violation != null) {
+										violations = violations ++ List(violation)
+									}
+							}
+						}
+				}
+		}
+		model.getHubs.foreach {
+			channel =>
+				var violation = check(channel)
+				if (violation != null) {
+					violations = violations ++ List(violation)
+				}
+				if (channel.getDictionary != null) {
+					channel.getDictionary.getValues.foreach {
+						property: DictionaryValue =>
+							violation = check(property.getAttribute)
+							if (violation != null) {
+								violations = violations ++ List(violation)
+							}
+					}
+				}
+		}
+
+		violations
+	}
+
+	private def check(name: String): Boolean = {
+		val p: Pattern = Pattern.compile(acceptedRegex)
+		val m: Matcher = p.matcher(name)
+		m.matches
+	}
+
+	private def check(obj: NamedElement): CheckerViolation = {
+		var violation: CheckerViolation = null
+		if (check(obj.getName) == false) {
+			violation = new CheckerViolation
+			violation.setMessage(message)
+			violation.setTargetObjects(List(obj))
+		}
+		violation
+	}
 }
