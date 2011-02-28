@@ -19,10 +19,14 @@
 package org.kevoree.tools.marShell
 
 import interpreter.KevsInterpreterContext
-import org.kevoree.KevoreeFactory
 import org.kevoree.tools.marShell.parser.KevsParser
 import org.kevoree.tools.marShell.parser.ParserUtil
 import scala.collection.JavaConversions._
+import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl
+import org.eclipse.emf.ecore.xmi.{XMLResource, XMIResource}
+import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl
+import org.kevoree.{KevoreePackage, ContainerRoot, KevoreeFactory}
+import org.eclipse.emf.common.util.URI
 
 object MainRunner {
 
@@ -31,7 +35,9 @@ object MainRunner {
    */
   def main(args: Array[String]): Unit = {
 
-    var newModel = KevoreeFactory.eINSTANCE.createContainerRoot
+   // var newModel = KevoreeFactory.eINSTANCE.createContainerRoot
+
+    var newModel = load("/Users/ffouquet/Desktop/emptyMerged.kev")
 
     var parser =new KevsParser();
     var oscript = parser.parseScript(ParserUtil.loadFile("/Users/ffouquet/Documents/DEV/dukeboard_github/kevoree/kevoree-tools/org.kevoree.tools.marShell/src/test/resources/scripts/t1.kevs"));
@@ -44,11 +50,25 @@ object MainRunner {
       }
     }
 
-    ParserUtil.save("modified.kev", newModel)
+    ParserUtil.save("/Users/ffouquet/Desktop/modified.kev", newModel)
     
 
     
 
   }
+
+  def load(uri:String) : ContainerRoot = {
+    var rs = new ResourceSetImpl();
+    rs.getResourceFactoryRegistry().getExtensionToFactoryMap().put("*", new XMIResourceFactoryImpl());
+    rs.getPackageRegistry().put(KevoreePackage.eNS_URI, KevoreePackage.eINSTANCE);
+    var res = rs.getResource(URI.createURI(uri), true)
+    res.asInstanceOf[XMIResource].getDefaultLoadOptions().put(XMLResource.OPTION_ENCODING, "UTF-8");
+    res.asInstanceOf[XMIResource].getDefaultSaveOptions().put(XMLResource.OPTION_ENCODING, "UTF-8");
+    var result = res.getContents().get(0);
+    //println(res)
+    return result.asInstanceOf[ContainerRoot];
+  }
+
+
 
 }

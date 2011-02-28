@@ -20,6 +20,13 @@
         <kevoree.version>${project.version}</kevoree.version>
         <releaseUrl>http://maven.kevoree.org/plugins-release-local</releaseUrl>
     </properties>
+    
+    <pluginRepositories>
+        <pluginRepository>
+            <id>pluginLib.kevoree-github</id>
+            <url>http://maven.kevoree.org/libs-release-local</url>
+        </pluginRepository>
+    </pluginRepositories>
 
     <dependencies>
         <dependency>

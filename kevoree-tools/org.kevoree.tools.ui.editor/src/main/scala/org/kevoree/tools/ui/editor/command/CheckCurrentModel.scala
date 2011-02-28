@@ -17,26 +17,56 @@ import org.kevoree.tools.ui.editor.KevoreeUIKernel
 import reflect.BeanProperty
 import org.kevoree.core.basechecker.RootChecker
 import scala.collection.JavaConversions._
+import org.kevoree.tools.ui.framework.ErrorHighlightableElement
 
 
 class CheckCurrentModel extends Command {
 
-  var kernel : KevoreeUIKernel = null
-  def setKernel(k : KevoreeUIKernel) = kernel = k
+  var kernel: KevoreeUIKernel = null
+
+  def setKernel(k: KevoreeUIKernel) = kernel = k
 
   var checker = new RootChecker
 
-  def execute(p :Object) {
+  var objectInError: List[ErrorHighlightableElement] = List()
 
+  def execute(p: Object) {
+
+    objectInError.foreach(o => o.setState(ErrorHighlightableElement.STATE.NO_ERROR))
+    objectInError = List()
     var result = checker.check(kernel.getModelHandler.getActualModel)
+    result.foreach({
+      res =>
+        println("Violation msg=" + res.getMessage)
 
-    result.foreach({ res=>
-         println("Violation msg="+res.getMessage)
+        //AGFFICHE OBJET ERROR
+        res.getTargetObjects.foreach {
+          target =>
+            println(target)
+
+            val uiObj = kernel.getUifactory.getMapping.get(target);
+            if (uiObj != null) {
+
+              println("ui="+uiObj)
+
+              uiObj match {
+                case hobj: ErrorHighlightableElement => {
+                  objectInError = objectInError ++ List(hobj)
+                  hobj.setState(ErrorHighlightableElement.STATE.IN_ERROR)
+                }
+                case _@e => println("Error checker obj = " + e)
+              }
+            }
+
+        }
     })
 
-    if(result.size == 0){
+    if (result.size == 0) {
       println("Model checked !")
     }
+
+    kernel.getModelPanel.repaint()
+    kernel.getModelPanel.revalidate()
 
   }
 

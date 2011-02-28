@@ -4,4 +4,4 @@ BASE_RELEASE_DIR=`pwd`
 
 #CHANGE TOP VERSION
 cd kevoree-extra/org.kevoree.extra.root
-mvn clean install deploy
+mvn clean deploy
