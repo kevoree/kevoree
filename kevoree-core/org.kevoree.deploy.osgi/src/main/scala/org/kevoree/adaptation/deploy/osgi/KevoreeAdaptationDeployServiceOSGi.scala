@@ -329,19 +329,19 @@ class KevoreeAdaptationDeployServiceOSGi extends KevoreeAdaptationDeployService 
 			}
 		}
 
-		val result = scala.collection.mutable.Map[String, List[PrimitiveCommand]]()
-		result.add("stop", stopCommand)
-		result.add("start", startCommand)
-		result.add("addDeployUnit", command_add_deployUnit)
-		result.add("removeDeployUnit", command_remove_deployUnit)
-		result.add("addType", command_add_type)
-		result.add("removeType", command_remove_type)
-		result.add("addInstance", command_add_instance)
-		result.add("removeInstance", command_remove_instance)
-		result.add("removeBinding", command_remove_binding)
-		result.add("addBinding", command_add_binding)
-		result.add("updateDictionary", updateDictionaryCommand)
-		result.add("thirdParty", executedCommandTP)
+		val result : scala.collection.mutable.Map[String, List[PrimitiveCommand]] = scala.collection.mutable.Map[String, List[PrimitiveCommand]]()
+		result.put("stop", stopCommand)
+		result.put("start", startCommand)
+		result.put("addDeployUnit", command_add_deployUnit)
+		result.put("removeDeployUnit", command_remove_deployUnit)
+		result.put("addType", command_add_type)
+		result.put("removeType", command_remove_type)
+		result.put("addInstance", command_add_instance)
+		result.put("removeInstance", command_remove_instance)
+		result.put("removeBinding", command_remove_binding)
+		result.put("addBinding", command_add_binding)
+		result.put("updateDictionary", updateDictionaryCommand)
+		result.put("thirdParty", executedCommandTP)
 
 		result
 	}
