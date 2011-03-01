@@ -27,7 +27,6 @@ object MergerApp {
    * @param args the command line arguments
    */
   def main(args: Array[String]): Unit = {
-    println("Hello, world!")
 
     var merger = new RootMerger
     var model1 = KevoreeXmiHelper.load("/Users/ffouquet/Documents/DEV/dukeboard_github/kevoree/kevoree-core/org.kevoree.merger/src/test/resources/library/deflib.kev")

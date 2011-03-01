@@ -19105,7 +19105,6 @@ scala.concurrent.forkjoin.ForkJoinTask: int EXTERNAL_SIGNAL
 scala.concurrent.forkjoin.ForkJoinTask: long serialVersionUID
 scala.concurrent.forkjoin.ForkJoinTask: long statusOffset
 scala.collection.generic.Addable$$anonfun$$plus$plus$1: long serialVersionUID
-org.kevoree.adaptation.deploy.osgi.command.CommandHelper$$anonfun$buildAllQuery$3: long serialVersionUID
 org.jgrapht.graph.DirectedWeightedSubgraph: long serialVersionUID
 org.jgrapht.graph.DirectedSubgraph: long serialVersionUID
 org.jgrapht.graph.Subgraph: long serialVersionUID
@@ -20525,6 +20524,7 @@ org.eclipse.emf.ecore.impl.EStoreEObjectImpl$1EStoreEcoreEMap: long serialVersio
 org.eclipse.emf.ecore.util.EcoreEMap: long serialVersionUID
 org.eclipse.emf.ecore.util.EcoreEMap: boolean $assertionsDisabled
 org.eclipse.emf.common.util.BasicEMap: long serialVersionUID
+org.kevoree.adaptation.deploy.osgi.KevoreeAdaptationDeployServiceOSGi$$anonfun$buildCommandLists$1: long serialVersionUID
 org.jgrapht.graph.DefaultEdge: long serialVersionUID
 org.jgrapht.graph.IntrusiveEdge: long serialVersionUID
 scala.collection.mutable.LinkedHashMap: long serialVersionUID
@@ -21268,9 +21268,6 @@ org.jgrapht.graph.SimpleGraph: long serialVersionUID
 org.jgrapht.graph.AbstractBaseGraph: long serialVersionUID
 org.jgrapht.graph.AbstractBaseGraph: boolean $assertionsDisabled
 org.jgrapht.graph.AbstractBaseGraph: java.lang.String LOOPS_NOT_ALLOWED
-org.kevoree.adaptation.deploy.osgi.KevoreeAdaptationDeployServiceOSGi$$anonfun$deploy$1: long serialVersionUID
-org.kevoree.adaptation.deploy.osgi.KevoreeAdaptationDeployServiceOSGi$$anonfun$deploy$3: long serialVersionUID
-org.kevoree.adaptation.deploy.osgi.KevoreeAdaptationDeployServiceOSGi$$anonfun$deploy$2: long serialVersionUID
 scala.collection.BitSetLike$$anonfun$1: long serialVersionUID
 org.kevoree.kompare.sub.UpdateNodeKompare$$anonfun$getUpdateNodeAdaptationModel$6: long serialVersionUID
 org.kevoree.kompare.sub.UpdateNodeKompare$$anonfun$getUpdateNodeAdaptationModel$7: long serialVersionUID
@@ -26161,7 +26158,6 @@ scala.collection.SetLike$$anonfun$subsetOf$1
 scala.util.parsing.json.Lexer$$anonfun$scala$util$parsing$json$Lexer$$unicodeBlock$1
 scala.util.parsing.json.Lexer$$anonfun$scala$util$parsing$json$Lexer$$unicodeBlock$2
 scala.collection.generic.Addable$$anonfun$$plus$plus$1
-org.kevoree.adaptation.deploy.osgi.command.CommandHelper$$anonfun$buildAllQuery$3
 net.lag.logging.Level$DEBUG$
 org.kevoree.framework.aspects.ContainerNodeAspect$$anonfun$getUsedTypeDefinition$2$$anonfun$apply$3
 scala.reflect.generic.Trees$Literal$
@@ -26436,8 +26432,8 @@ org.kevoree.framework.aspects.PortAspect$$anonfun$removeAndUnbind$1
 org.kevoree.framework.KevoreePlatformHelper$$anonfun$getProperty$1
 scala.util.parsing.json.Lexer$$anonfun$token$2$$anonfun$apply$5
 scala.util.parsing.json.Lexer$$anonfun$token$2$$anonfun$apply$6
-scala.reflect.LocalMethod
 scala.actors.Actor$$anonfun$unlinkFrom$1
+scala.reflect.LocalMethod
 scala.Function2$mcDLL$sp$$anonfun$curried$mcDLL$sp$1
 scala.xml.NodeSeq$$anonfun$makeSeq$1$1
 scala.actors.Futures$$anonfun$5$$anonfun$6
@@ -26719,6 +26715,7 @@ scala.util.parsing.json.Parser$$anonfun$jsonArray$1$$anonfun$apply$3
 scala.Array$$anonfun$fromFunction$1$$anonfun$apply$15
 org.scala_tools.vscaladoc.Page4ClassOrObject$$anonfun$nestedClasses$1
 scala.reflect.Ident$
+org.kevoree.adaptation.deploy.osgi.KevoreeAdaptationDeployServiceOSGi$$anonfun$buildCommandLists$1
 scala.collection.mutable.LinkedHashMap
 scala.collection.immutable.Stream$$anonfun$takeWhile$1
 net.lag.logging.Future$$anonfun$writer$1
@@ -27029,9 +27026,6 @@ scala.collection.mutable.OpenHashMap$$anonfun$apply$1
 org.kevoree.kompare.sub.UpdateNodeKompare$$anonfun$getUpdateNodeAdaptationModel$9
 org.kevoree.kompare.sub.UpdateNodeKompare$$anonfun$getUpdateNodeAdaptationModel$8
 scala.util.automata.NondetWordAutom$$anonfun$finalStates$1
-org.kevoree.adaptation.deploy.osgi.KevoreeAdaptationDeployServiceOSGi$$anonfun$deploy$1
-org.kevoree.adaptation.deploy.osgi.KevoreeAdaptationDeployServiceOSGi$$anonfun$deploy$3
-org.kevoree.adaptation.deploy.osgi.KevoreeAdaptationDeployServiceOSGi$$anonfun$deploy$2
 scala.actors.remote.RemoteApply0
 scala.collection.BitSetLike$$anonfun$1
 org.kevoree.kompare.sub.UpdateNodeKompare$$anonfun$getUpdateNodeAdaptationModel$6

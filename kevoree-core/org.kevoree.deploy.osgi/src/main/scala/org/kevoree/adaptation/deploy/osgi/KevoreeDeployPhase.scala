@@ -39,9 +39,9 @@ class KevoreeDeployPhase {
   }
 
   def phase(cmds: List[PrimitiveCommand],desc:String):Boolean = {
-    logger.info(desc+"="+cmds.size)
+    logger.debug(desc+"="+cmds.size)
     var intermediate = cmds.forall(c=> {
-        logger.info("Execute command "+c.getClass.getName)
+        logger.debug("Execute command "+c.getClass.getName)
         try{ c.execute } catch { case _ @ e => logger.error("Kevoree DEPLOY ERROR=",e);false }
       })
 
@@ -67,7 +67,7 @@ class KevoreeDeployPhase {
         })
     }
     executed = executed ++ cmds
-    logger.info("Result : "+intermediate)
+    logger.debug("Result : "+intermediate)
     intermediate
   }
 

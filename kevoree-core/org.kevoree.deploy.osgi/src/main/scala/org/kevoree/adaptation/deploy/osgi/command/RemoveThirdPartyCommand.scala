@@ -20,16 +20,19 @@ package org.kevoree.adaptation.deploy.osgi.command
 
 import org.kevoree.DeployUnit
 import org.kevoree.adaptation.deploy.osgi.context.KevoreeDeployManager
+import org.slf4j.LoggerFactory
 
 case class RemoveThirdPartyCommand(ct : DeployUnit, ctx : KevoreeDeployManager) extends PrimitiveCommand {
 
+  var logger = LoggerFactory.getLogger(this.getClass);
+
   def execute() : Boolean= {
-    println("Not implemented")
+    logger.warn("Not implemented")
     true
   }
 
   def undo() = {
-    println("Not implemented")
+    logger.warn("Not implemented")
   }
 
 

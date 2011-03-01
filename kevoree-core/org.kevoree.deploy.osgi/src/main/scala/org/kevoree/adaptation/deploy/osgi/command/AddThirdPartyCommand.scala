@@ -30,32 +30,29 @@ case class AddThirdPartyCommand(ct: DeployUnit, ctx: KevoreeDeployManager) exten
 
   var logger = LoggerFactory.getLogger(this.getClass)
 
-  // var lastExecutionBundle : Option[org.osgi.framework.Bundle] = None
   def execute(): Boolean = {
 
     var url: List[String] = List()
     url = url ++ List(ct.getUrl)
-
     if (ct.getUrl.contains("mvn:")) {
       CommandHelper.buildPotentialMavenURL(ct.eContainer.asInstanceOf[ContainerRoot]).foreach {
         urlRepo =>
-          url = url ++ List(ct.getUrl.replace("mvn:","mvn:"+urlRepo+"!"))
+          url = url ++ List(ct.getUrl.replace("mvn:", "mvn:" + urlRepo + "!"))
       }
     }
-
     //DEBUG
-    url.foreach({u=>
-      println("potential url="+u)
+    url.foreach({
+      u =>
+        logger.debug("potential url=" + u)
     })
-
-    url.exists({u=>
-      installBundle(u)
+    url.exists({
+      u =>
+        installBundle(u)
     })
-
   }
 
   def installBundle(url: String): Boolean = {
-    println("CMD ADD ThirdParty EXECUTION => url=" + url);
+    logger.debug("CMD ADD ThirdParty EXECUTION => url=" + url);
     /* Actually deploy only bundle from library  */
     try {
       lastExecutionBundle = Some(ctx.bundleContext.installBundle(url));
@@ -71,7 +68,6 @@ case class AddThirdPartyCommand(ct: DeployUnit, ctx: KevoreeDeployManager) exten
         true
       }
       case _@e => {
-        //logger.error("Error installing ThirdParty", e);
         false
       }
     }
@@ -79,16 +75,21 @@ case class AddThirdPartyCommand(ct: DeployUnit, ctx: KevoreeDeployManager) exten
 
 
   def undo() = {
-    lastExecutionBundle match {
-      case Some(bundle) => {
-        bundle.stop;
-        bundle.uninstall
-        val srPackageAdmin = ctx.bundleContext.getServiceReference(classOf[PackageAdmin].getName)
-        val padmin: PackageAdmin = ctx.bundleContext.getService(srPackageAdmin).asInstanceOf[PackageAdmin]
-        padmin.resolveBundles(Array(bundle))
+    try {
+      lastExecutionBundle match {
+        case Some(bundle) => {
+          bundle.stop;
+          bundle.uninstall
+          val srPackageAdmin = ctx.bundleContext.getServiceReference(classOf[PackageAdmin].getName)
+          val padmin: PackageAdmin = ctx.bundleContext.getService(srPackageAdmin).asInstanceOf[PackageAdmin]
+          padmin.resolveBundles(Array(bundle))
+        }
+        case None => //NOTHING CAN BE DOING HERE
       }
-      case None => //NOTHING CAN BE DOING HERE
+    } catch {
+      case _ =>
     }
+
     /* TODO CALL refreshPackage */
   }
 

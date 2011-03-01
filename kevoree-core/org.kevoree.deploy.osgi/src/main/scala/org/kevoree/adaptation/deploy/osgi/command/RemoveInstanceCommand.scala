@@ -22,32 +22,37 @@ import org.kevoree.Instance
 import org.kevoree.adaptation.deploy.osgi.context.KevoreeDeployManager
 import org.osgi.service.packageadmin.PackageAdmin
 import scala.collection.JavaConversions._
+import org.slf4j.LoggerFactory
 
-case class RemoveInstanceCommand(c : Instance, ctx : KevoreeDeployManager,nodeName : String)  extends PrimitiveCommand{
+case class RemoveInstanceCommand(c: Instance, ctx: KevoreeDeployManager, nodeName: String) extends PrimitiveCommand {
 
-  def execute() : Boolean= {
-    println("CMD REMOVE INSTANCE EXECUTION - "+c.getName+" - type - "+c.getTypeDefinition.getName);
+  var logger = LoggerFactory.getLogger(this.getClass)
 
-    var bundles = ctx.bundleMapping.filter({bm=> bm.objClassName  == c.getClass.getName && bm.name == c.getName }) ++ List()
+  def execute(): Boolean = {
+    logger.debug("CMD REMOVE INSTANCE EXECUTION - " + c.getName + " - type - " + c.getTypeDefinition.getName);
 
-    bundles.forall{mp=>
-      mp.bundle.stop;
-      mp.bundle.uninstall;
-//REFRESH OSGI PACKAGE
-      ctx.getServicePackageAdmin.refreshPackages(Array(mp.bundle))
+    val bundles = ctx.bundleMapping.filter({
+      bm => bm.objClassName == c.getClass.getName && bm.name == c.getName
+    }) ++ List()
 
-      true
+    bundles.forall {
+      mp =>
+        mp.bundle.stop;
+        mp.bundle.uninstall;
+        //REFRESH OSGI PACKAGE
+        ctx.getServicePackageAdmin.refreshPackages(Array(mp.bundle))
+        true
     }
-
     ctx.bundleMapping.removeAll(bundles)
-
-
-
-
   }
 
   def undo() = {
-    AddInstanceCommand(c,ctx,nodeName).execute
+    try {
+      AddInstanceCommand(c, ctx, nodeName).execute
+    } catch {
+      case _ =>
+    }
+
   }
 
 }

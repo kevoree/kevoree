@@ -69,7 +69,6 @@ class DataTypeVisitor extends TypeVisitor {
 
   def visitDeclaredType(t:DeclaredType)= {
     dataType.setName(t.getDeclaration().getQualifiedName());
-    System.out.println(dataType.getName());
   }
 
   def visitClassType(t:ClassType)= {

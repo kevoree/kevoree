@@ -26,34 +26,38 @@ import org.kevoree.framework.KevoreeActor
 import org.slf4j.LoggerFactory
 import scala.collection.JavaConversions._
 
-case class UpdateDictionaryCommand(c : Instance, ctx : KevoreeDeployManager,nodeName:String) extends PrimitiveCommand {
+case class UpdateDictionaryCommand(c: Instance, ctx: KevoreeDeployManager, nodeName: String) extends PrimitiveCommand {
 
   var logger = LoggerFactory.getLogger(this.getClass)
 
-  def execute() : Boolean= {
-    if(c.getDictionary != null){
-      
-      //BUILD MAP
-      val dictionary : java.util.HashMap[String,String]= new java.util.HashMap[String,String]
-      c.getTypeDefinition.getDictionaryType.getDefaultValues.foreach{dv=>
+  def execute(): Boolean = {
+    //BUILD MAP
+    val dictionary: java.util.HashMap[String, String] = new java.util.HashMap[String, String]
+    c.getTypeDefinition.getDictionaryType.getDefaultValues.foreach {
+      dv =>
         dictionary.put(dv.getAttribute.getName, dv.getValue)
-      }
-      c.getDictionary.getValues.foreach{v=>
-        dictionary.put(v.getAttribute.getName, v.getValue)
-      }
-
-      ctx.bundleMapping.find(map=>map.objClassName == c.getClass.getName && map.name == c.getName) match {
-        case None => false
-        case Some(mapfound)=> {
-            val componentBundle = mapfound.bundle
-            componentBundle.getRegisteredServices.find({sr=> sr.getProperty(Constants.KEVOREE_NODE_NAME)==nodeName && sr.getProperty(Constants.KEVOREE_INSTANCE_NAME)==c.getName }) match {
-              case None => false
-              case Some(sr)=> (componentBundle.getBundleContext.getService(sr).asInstanceOf[KevoreeActor] !? UpdateDictionaryMessage(dictionary) ).asInstanceOf[Boolean]
-            }
-          }
-      }} else {
-      true
     }
+
+    if (c.getDictionary != null) {
+      c.getDictionary.getValues.foreach {
+        v =>
+          dictionary.put(v.getAttribute.getName, v.getValue)
+      }
+    }
+
+    ctx.bundleMapping.find(map => map.objClassName == c.getClass.getName && map.name == c.getName) match {
+      case None => false
+      case Some(mapfound) => {
+        val componentBundle = mapfound.bundle
+        componentBundle.getRegisteredServices.find({
+          sr => sr.getProperty(Constants.KEVOREE_NODE_NAME) == nodeName && sr.getProperty(Constants.KEVOREE_INSTANCE_NAME) == c.getName
+        }) match {
+          case None => false
+          case Some(sr) => (componentBundle.getBundleContext.getService(sr).asInstanceOf[KevoreeActor] !? UpdateDictionaryMessage(dictionary)).asInstanceOf[Boolean]
+        }
+      }
+    }
+
   }
 
   def undo() = {

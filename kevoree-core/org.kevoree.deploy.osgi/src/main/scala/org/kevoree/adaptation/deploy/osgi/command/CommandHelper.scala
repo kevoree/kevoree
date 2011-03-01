@@ -50,15 +50,16 @@ object CommandHelper {
     res = res ++ List(buildQuery(du, None))
 
     //DEBUG
+    /*
     res.foreach({u=>
       println("potential url="+u)
-    })
+    })  */
 
     res
   }
 
   def buildQuery(du: DeployUnit, repoUrl: Option[String]): String = {
-    var query = new StringBuilder
+    val query = new StringBuilder
     query.append("mvn:")
     repoUrl match {
       case Some(r) => query.append(r); query.append("!")
