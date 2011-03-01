@@ -18,21 +18,22 @@
 package org.kevoree.tools.ui.framework.elements;
 
 import java.awt.Color;
+
+import org.kevoree.tools.ui.framework.ErrorHighlightableElement;
 import org.kevoree.tools.ui.framework.RoundedTitledPanel;
 import org.kevoree.tools.ui.framework.SelectElement;
 
 /**
- *
  * @author ffouquet
  */
-public class NodePanel extends RoundedTitledPanel implements SelectElement {
+public class NodePanel extends RoundedTitledPanel implements SelectElement, ErrorHighlightableElement {
 
     public NodePanel() {
 
         this.setBackground(new Color(100, 100, 100, 150));
     }
 
-    private Boolean selected= false;
+    private Boolean selected = false;
 
     @Override
     public void setSelected(Boolean _selected) {
@@ -45,20 +46,35 @@ public class NodePanel extends RoundedTitledPanel implements SelectElement {
         return selected;
     }
 
-    
 
 /*
+@Override
+public Dimension getPreferredSize() {
+    Dimension parentsize = this.getParent().getSize();
+
+//    System.out.println(this.get"")
+
+    Dimension preferedDim = new Dimension(0, 0);
+    for (Component child : content.getComponents()) {
+        preferedDim.width = Math.max(child.getMinimumSize().width, preferedDim.width);
+        preferedDim.height = Math.max(child.getLocation().y + child.getSize().height, preferedDim.height);
+    }
+    return preferedDim;
+}*/
+
+    private STATE _state = STATE.NO_ERROR;
+
     @Override
-    public Dimension getPreferredSize() {
-        Dimension parentsize = this.getParent().getSize();
-
-    //    System.out.println(this.get"")
-
-        Dimension preferedDim = new Dimension(0, 0);
-        for (Component child : content.getComponents()) {
-            preferedDim.width = Math.max(child.getMinimumSize().width, preferedDim.width);
-            preferedDim.height = Math.max(child.getLocation().y + child.getSize().height, preferedDim.height);
+    public void setState(STATE state) {
+        _state = state;
+        if(_state.equals(STATE.IN_ERROR)){
+             this.setBackground(new Color(239, 50, 50, 150));
+        } else {
+             this.setBackground(new Color(100, 100, 100, 150));
         }
-        return preferedDim;
-    }*/
+    }
+
+    @Override
+    public STATE getCurrentState() {return _state;}
+
 }
