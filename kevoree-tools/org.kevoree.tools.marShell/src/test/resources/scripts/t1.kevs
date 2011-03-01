@@ -5,8 +5,14 @@ tblock{
 
     //ADD INSTANCE
     addNode nodeSalon,nodeSalon2
-    addComponent lightS1@nodeSalon : FakeSimpleLight
+    addComponent lightS1@nodeSalon : FakeSimpleLight {  key1="",key2=""  }
     //addComponent switch@nodeSalon : FakeSwitch
+
+
+//merge
+
+
+//update
 
     //CHANNEL
     addChannel hub1 : defMSG
@@ -23,7 +29,7 @@ tblock{
     //bind switch.off@nodeSalon => hub2
 
   //  unbind lightS1.on@nodeSalon => hub1
-
+                                =>
 
 
 //    removeNode nodeSalon
