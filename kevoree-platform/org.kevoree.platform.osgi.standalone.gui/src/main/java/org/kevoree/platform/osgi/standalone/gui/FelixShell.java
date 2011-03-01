@@ -99,6 +99,7 @@ public class FelixShell extends JPanel {
                     try {
                         _textArea.append(((char) i) + "", _color, Color.white, false);
                          _textArea.selectAll();
+                        _textArea.setSelectionStart(_textArea.getDocument().getEndPosition().getOffset());
                        // _textArea.append( ((char) i) + "");
                     } catch (Exception e) {
                         e.printStackTrace();

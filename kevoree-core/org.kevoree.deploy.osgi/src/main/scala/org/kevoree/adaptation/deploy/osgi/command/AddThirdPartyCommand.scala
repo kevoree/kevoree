@@ -71,7 +71,7 @@ case class AddThirdPartyCommand(ct: DeployUnit, ctx: KevoreeDeployManager) exten
         true
       }
       case _@e => {
-        logger.error("Error installing ThirdParty", e);
+        //logger.error("Error installing ThirdParty", e);
         false
       }
     }

@@ -168,7 +168,7 @@
                         </goals>
                         <configuration>
                             <filters>
-                                scala,org.ops4j,org.eclipse.emf,org.slf4j,org.kevoree,org.restlet,android,org.osgi
+                                scala,org.ops4j,org.eclipse.emf,org.slf4j,org.kevoree,org.restlet,android,org.osgi,javax.xml,org.w3c,org.xml
                             </filters>
                         </configuration>
                     </execution>
