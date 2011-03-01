@@ -25,8 +25,11 @@ import org.kevoree.adaptation.deploy.osgi.context.KevoreeOSGiBundle
 import org.kevoree.framework.Constants
 import org.kevoree.framework.FileHelper._
 import scala.collection.JavaConversions._
+import org.slf4j.LoggerFactory
 
 case class AddInstanceCommand(c : Instance, ctx : KevoreeDeployManager,nodeName:String) extends PrimitiveCommand {
+
+  var logger = LoggerFactory.getLogger(this.getClass);
 
   def execute() : Boolean= {
 
@@ -45,17 +48,17 @@ case class AddInstanceCommand(c : Instance, ctx : KevoreeDeployManager,nodeName:
 
 
     //FOUND CT SYMBOLIC NAME
-    var mappingFound =  ctx.bundleMapping.find({bundle =>bundle.name==c.getTypeDefinition.getName && bundle.objClassName==c.getTypeDefinition.getClass.getName}) match {
+    val mappingFound =  ctx.bundleMapping.find({bundle =>bundle.name==c.getTypeDefinition.getName && bundle.objClassName==c.getTypeDefinition.getClass.getName}) match {
       case Some(bundle)=> bundle
-      case None => println("Type Not Found"); return false; null;
+      case None => logger.error("Type Not Found"); return false; null;
     }
 
     /* STEP GENERATE COMPONENT INSTANCE BUNDLE */
     /* Generate File */
-    var MANIFEST = new File(METAINFDIR+"/"+"MANIFEST.MF")
+    val MANIFEST = new File(METAINFDIR+"/"+"MANIFEST.MF")
 
-    var activatorPackage = c.getTypeDefinition.getFactoryBean().substring(0, c.getTypeDefinition.getFactoryBean().lastIndexOf("."))
-    var activatorName = c.getTypeDefinition.getName()+"Activator"
+    val activatorPackage = c.getTypeDefinition.getFactoryBean().substring(0, c.getTypeDefinition.getFactoryBean().lastIndexOf("."))
+    val activatorName = c.getTypeDefinition.getName()+"Activator"
     MANIFEST.write(List("Manifest-Version: 1.0",
                         "Bundle-SymbolicName: "+c.getName,
                         "Bundle-Version: 1",
@@ -89,10 +92,10 @@ case class AddInstanceCommand(c : Instance, ctx : KevoreeDeployManager,nodeName:
     //  BLUEPRINTWRAPPER.write(AddComponentInstanceWrapperGenerator.generate(c))
 
     // println(AddComponentInstanceGenerator.generate(c));
-    println("Instance-DIRECTORY"+directory.getAbsolutePath)
+    //println("Instance-DIRECTORY"+directory.getAbsolutePath)
     //  println("CI-DIRECTORY"+directoryWrapper.getAbsolutePath)
     try{
-      var bundle= ctx.bundleContext.installBundle("assembly:"+directory.getAbsolutePath);
+      val bundle= ctx.bundleContext.installBundle("assembly:"+directory.getAbsolutePath);
       // var bundleWrapper= ctx.bundleContext.installBundle("assembly:"+directoryWrapper.getAbsolutePath);
       //    executedBundles = List(bundle,bundleWrapper)
 
@@ -106,7 +109,7 @@ case class AddInstanceCommand(c : Instance, ctx : KevoreeDeployManager,nodeName:
       mustBeStarted = true
       true
     } catch {
-      case _ @ e => e.printStackTrace;false
+      case _ @ e => logger.error("Error while deploy Kevoree Instance",e);false
     }
   }
 
@@ -117,7 +120,7 @@ case class AddInstanceCommand(c : Instance, ctx : KevoreeDeployManager,nodeName:
           try{
             b.stop;b.uninstall
           }catch{
-            case _ @ e => e.printStackTrace
+            case _ @ e => // e.printStackTrace
           }
         }
     }

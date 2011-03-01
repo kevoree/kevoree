@@ -31,21 +31,26 @@ case class AddTypeCommand(ct : TypeDefinition, ctx : KevoreeDeployManager)  exte
 
   //var lastExecutionBundle : Option[org.osgi.framework.Bundle] = None
   def execute() : Boolean= {
-    logger.info("CMD ADD CT EXECUTION ");
-
+    logger.debug("CMD ADD CT EXECUTION ");
 
     //FOUND TYPE DEFINITION DEPLOY UNIT BUNDLE
-    var mappingFound =  ctx.bundleMapping.find({bundle =>bundle.name==CommandHelper.buildKEY(ct.getDeployUnit) && bundle.objClassName==ct.getDeployUnit.getClass.getName}) match {
+    val mappingFound =  ctx.bundleMapping.find({bundle =>bundle.name==CommandHelper.buildKEY(ct.getDeployUnit) && bundle.objClassName==ct.getDeployUnit.getClass.getName}) match {
       case Some(bundle)=> bundle
-      case None => println("Deploy Unit Not Found"); return false; null;
+      case None => logger.error("Deploy Unit Not Found"); return false; null;
     }
 
     //JUST ADD NEW BUNDING
     ctx.bundleMapping.add(KevoreeOSGiBundle(ct.getName,ct.getClass.getName,mappingFound.bundle))
-
     true
   }
 
-  def undo() = RemoveTypeCommand(ct,ctx).execute
+  def undo() = {
+    try{
+        RemoveTypeCommand(ct,ctx).execute
+    } catch {
+      case _ =>
+    }
+
+  }
 
 }

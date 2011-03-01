@@ -358,19 +358,19 @@ class KevoreeAdaptationDeployServiceOSGi extends KevoreeAdaptationDeployService 
 
 		val planTime = System.currentTimeMillis
 
-		println("Plannification time = " + (planTime - initTime) + " ms");
-
+		//println("Plannification time = " + (planTime - initTime) + " ms");
+    /*
 		println("stop")
 		commands.get("stop").get.asInstanceOf[List[LifeCycleCommand]].foreach {
 			c =>
 				println(c.getInstance.getName)
-		}
-
+		} */
+        /*
 		println("start")
 		commands.get("start").get.asInstanceOf[List[LifeCycleCommand]].foreach {
 			c =>
 				println(c.getInstance.getName)
-		}
+		}     */
 
 		commands
 	}
@@ -427,7 +427,7 @@ class KevoreeAdaptationDeployServiceOSGi extends KevoreeAdaptationDeployService 
 		}
 
 		val deployTime = System.currentTimeMillis
-		println("Deploy time = " + (deployTime - initTime) + " ms");
+		//println("Deploy time = " + (deployTime - initTime) + " ms");
 
 		executionResult
 	}

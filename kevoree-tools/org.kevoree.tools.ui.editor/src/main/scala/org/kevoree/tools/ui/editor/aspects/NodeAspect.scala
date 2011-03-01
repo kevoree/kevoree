@@ -33,15 +33,14 @@ case class NodeAspect(self : ContainerNode) {
 
     //REMOVE SUB NODE
 
-    var subcomponent = self.getComponents.toList ++ List()
+    val subcomponent = self.getComponents.toList ++ List()
 
     subcomponent.foreach{c => c.removeModelAndUI(kernel)}
 
     //REMOVE UI
-    var nodePanel = kernel.getUifactory().getMapping().get(self).asInstanceOf[NodePanel]
-    var modelPanel = kernel.getUifactory().getMapping().get(self.eContainer).asInstanceOf[ModelPanel]
+    val nodePanel = kernel.getUifactory().getMapping().get(self).asInstanceOf[NodePanel]
+    val modelPanel = kernel.getUifactory().getMapping().get(self.eContainer).asInstanceOf[ModelPanel]
 
-    println(nodePanel+"-"+modelPanel)
 
     modelPanel.removeInstance(nodePanel)
 

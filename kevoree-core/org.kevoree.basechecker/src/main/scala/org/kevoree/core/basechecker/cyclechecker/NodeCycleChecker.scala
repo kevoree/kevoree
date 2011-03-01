@@ -35,7 +35,6 @@ class NodeCycleChecker extends CheckerService {
 	var violations: List[CheckerViolation] = List()
 	if (model.getNodes.size > 1) {
 	  val graph = KevoreeNodeDirectedGraph(model)
-	  //println(graph)
 	  //violations = violations ++
 	  CheckCycle(graph).check().foreach {
 		violation =>

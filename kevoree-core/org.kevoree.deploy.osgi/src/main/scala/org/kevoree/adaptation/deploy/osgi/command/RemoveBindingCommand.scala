@@ -82,17 +82,11 @@ case class RemoveBindingCommand(c : MBinding, ctx : KevoreeDeployManager,nodeNam
                 KevoreeChannelFound match {
                   case None => logger.info("ChannelFragment not found in component");false
                   case Some(channelProxy) => {
-                      println(channelProxy)
                       var bindmsg = new PortUnbindMessage
                       bindmsg.setNodeName(nodeName)
                       bindmsg.setComponentName(c.getPort.eContainer.asInstanceOf[ComponentInstance].getName)
                       bindmsg.setPortName(portfound.getName)
-
-                      println("Send unbind msg"+bindmsg)
-
                       var res = (channelProxy.asInstanceOf[KevoreeChannelFragment] !? bindmsg).asInstanceOf[Boolean]
-
-                      println(res)
                       res
                     }
                 }

@@ -41,6 +41,7 @@ class KevoreeRemoteBean {
 
   if (System.getProperty("org.kevoree.remote.provisioning") != null) {
     component.getClients().add(Protocol.FILE);
+    component.getContext().getParameters().add("timeToLive", "0");
     component.getDefaultHost().attach("/provisioning",new FileServerApplication(System.getProperty("org.kevoree.remote.provisioning")))
     System.out.println("Provisioning server started => /provisioning");
   } else {

@@ -20,13 +20,16 @@ package org.kevoree.remote.rest
 
 import org.restlet.Application
 import org.restlet.Restlet
-import org.restlet.data.Protocol
 import org.restlet.resource.Directory
 
 class FileServerApplication(uri:String) extends Application {
 
   override def createInboundRoot() : Restlet = {
-    return new Directory(getContext(), uri);
+    val dir = new Directory(getContext(), uri);
+    dir.setDeeplyAccessible(true)
+    dir.setListingAllowed(true)
+    dir.setNegotiatingContent(true)
+    return dir
   }
 
 }
