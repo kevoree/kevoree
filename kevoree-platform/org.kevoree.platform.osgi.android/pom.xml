@@ -623,12 +623,8 @@
     </build>
 
     <properties>
-        <android.platform.version>8</android.platform.version>
-        <android.platform>platforms/android-${android.platform.version}</android.platform>
-        <android.framework.aidl>${android.home}/${android.platform}/framework.aidl</android.framework.aidl>
-        <android.jar>${android.home}/${android.platform}/android.jar</android.jar>
-        <android.tools.aapt>${android.home}/${android.platform}/tools/aapt</android.tools.aapt>
-        <android.tools.dx>${android.home}/${android.platform}/tools/dx</android.tools.dx>
+        <android.tools.aapt>${android.home}/platform-tools/aapt</android.tools.aapt>
+        <android.tools.dx>${android.home}/platform-tools/dx</android.tools.dx>
         <kevoree.version>${project.version}</kevoree.version>
     </properties>
 

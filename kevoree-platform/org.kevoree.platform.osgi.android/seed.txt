@@ -10904,6 +10904,8 @@ org.eclipse.emf.ecore.impl.BasicEObjectImpl: int EVIRTUAL_UNSET
 org.eclipse.emf.ecore.impl.BasicEObjectImpl: int EVIRTUAL_GET
 org.eclipse.emf.ecore.impl.BasicEObjectImpl: int EVIRTUAL_IS_SET
 org.eclipse.emf.ecore.impl.BasicEObjectImpl: boolean $assertionsDisabled
+org.kevoree.adaptation.deploy.osgi.KevoreeAdaptationDeployServiceOSGi$$anonfun$schedule$1: long serialVersionUID
+org.kevoree.adaptation.deploy.osgi.KevoreeAdaptationDeployServiceOSGi$$anonfun$schedule$2: long serialVersionUID
 org.eclipse.emf.ecore.xml.type.internal.XMLCalendar: long serialVersionUID
 org.eclipse.emf.ecore.xml.type.internal.XMLCalendar: short DATETIME
 org.eclipse.emf.ecore.xml.type.internal.XMLCalendar: short TIME
@@ -15606,6 +15608,7 @@ org.eclipse.emf.ecore.impl.EStoreEObjectImpl$1EStoreEcoreEMap: long serialVersio
 org.eclipse.emf.ecore.util.EcoreEMap: long serialVersionUID
 org.eclipse.emf.ecore.util.EcoreEMap: boolean $assertionsDisabled
 org.eclipse.emf.common.util.BasicEMap: long serialVersionUID
+org.kevoree.adaptation.deploy.osgi.KevoreeAdaptationDeployServiceOSGi$$anonfun$buildCommandLists$1: long serialVersionUID
 org.jgrapht.graph.DefaultEdge: long serialVersionUID
 org.jgrapht.graph.IntrusiveEdge: long serialVersionUID
 scala.collection.mutable.LinkedHashMap: long serialVersionUID
@@ -16325,9 +16328,6 @@ org.jgrapht.graph.SimpleGraph: long serialVersionUID
 org.jgrapht.graph.AbstractBaseGraph: long serialVersionUID
 org.jgrapht.graph.AbstractBaseGraph: boolean $assertionsDisabled
 org.jgrapht.graph.AbstractBaseGraph: java.lang.String LOOPS_NOT_ALLOWED
-org.kevoree.adaptation.deploy.osgi.KevoreeAdaptationDeployServiceOSGi$$anonfun$deploy$1: long serialVersionUID
-org.kevoree.adaptation.deploy.osgi.KevoreeAdaptationDeployServiceOSGi$$anonfun$deploy$3: long serialVersionUID
-org.kevoree.adaptation.deploy.osgi.KevoreeAdaptationDeployServiceOSGi$$anonfun$deploy$2: long serialVersionUID
 scala.collection.BitSetLike$$anonfun$1: long serialVersionUID
 org.kevoree.kompare.sub.UpdateNodeKompare$$anonfun$getUpdateNodeAdaptationModel$6: long serialVersionUID
 org.kevoree.kompare.sub.UpdateNodeKompare$$anonfun$getUpdateNodeAdaptationModel$7: long serialVersionUID
@@ -19546,6 +19546,8 @@ scala.xml.PrettyPrinter$Para$
 scala.Function$$anonfun$curried$3$$anonfun$apply$5$$anonfun$apply$6$$anonfun$apply$7
 scala.Function1$mcFI$sp$$anonfun$andThen$mcFI$sp$1
 scala.collection.mutable.DoubleLinkedList
+org.kevoree.adaptation.deploy.osgi.KevoreeAdaptationDeployServiceOSGi$$anonfun$schedule$1
+org.kevoree.adaptation.deploy.osgi.KevoreeAdaptationDeployServiceOSGi$$anonfun$schedule$2
 org.eclipse.emf.ecore.xml.type.internal.XMLCalendar
 scala.reflect.TypeApply$
 net.lag.logging.Level$CRITICAL$
@@ -21262,6 +21264,7 @@ scala.util.parsing.json.Parser$$anonfun$jsonArray$1$$anonfun$apply$4
 scala.util.parsing.json.Parser$$anonfun$jsonArray$1$$anonfun$apply$3
 scala.Array$$anonfun$fromFunction$1$$anonfun$apply$15
 scala.reflect.Ident$
+org.kevoree.adaptation.deploy.osgi.KevoreeAdaptationDeployServiceOSGi$$anonfun$buildCommandLists$1
 scala.collection.mutable.LinkedHashMap
 scala.collection.immutable.Stream$$anonfun$takeWhile$1
 net.lag.logging.Future$$anonfun$writer$1
@@ -21558,10 +21561,7 @@ scala.collection.mutable.OpenHashMap$$anonfun$apply$1
 org.kevoree.kompare.sub.UpdateNodeKompare$$anonfun$getUpdateNodeAdaptationModel$9
 org.kevoree.kompare.sub.UpdateNodeKompare$$anonfun$getUpdateNodeAdaptationModel$8
 scala.util.automata.NondetWordAutom$$anonfun$finalStates$1
-org.kevoree.adaptation.deploy.osgi.KevoreeAdaptationDeployServiceOSGi$$anonfun$deploy$1
-org.kevoree.adaptation.deploy.osgi.KevoreeAdaptationDeployServiceOSGi$$anonfun$deploy$3
 scala.actors.remote.RemoteApply0
-org.kevoree.adaptation.deploy.osgi.KevoreeAdaptationDeployServiceOSGi$$anonfun$deploy$2
 scala.collection.BitSetLike$$anonfun$1
 org.kevoree.kompare.sub.UpdateNodeKompare$$anonfun$getUpdateNodeAdaptationModel$6
 org.kevoree.kompare.sub.UpdateNodeKompare$$anonfun$getUpdateNodeAdaptationModel$7

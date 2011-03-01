@@ -17,8 +17,8 @@
     </parent>
 
     <properties>
-        <android.tools.aapt>${android.home}/${android.platform}/tools/aapt</android.tools.aapt>
-        <android.tools.dx>${android.home}/${android.platform}/tools/dx</android.tools.dx>
+        <android.tools.aapt>${android.home}/platform-tools/aapt</android.tools.aapt>
+        <android.tools.dx>${android.home}/platform-tools/dx</android.tools.dx>
     </properties>
 
     <dependencies>
