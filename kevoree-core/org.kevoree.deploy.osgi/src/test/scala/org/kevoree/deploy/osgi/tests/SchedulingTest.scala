@@ -20,7 +20,6 @@ import org.kevoree.adaptation.deploy.osgi.scheduling.SchedulingWithTopologicalOr
 import org.kevoree.KevoreeFactory
 import org.kevoree.kompare.KevoreeKompareBean
 import org.kevoreeAdaptation.AdaptationModel
-import org.kevoree.basechecker.tests.SchedulingSuite
 
 //import scala.collection.JavaConversions._
 

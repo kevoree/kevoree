@@ -53,10 +53,9 @@ public class AddMBindingCommand implements Command {
                 MBinding newb = KevoreeFactory.eINSTANCE.createMBinding();
                 newb.setPort(fromPort);
                 newb.setHub(targetHub);
+                org.kevoree.tools.ui.framework.elements.Binding uib = kernel.getUifactory().createMBinding(newb);
 
                 kernel.getModelHandler().getActualModel().getMBindings().add(newb);
-
-                org.kevoree.tools.ui.framework.elements.Binding uib = kernel.getUifactory().createMBinding(newb);
                 kernel.getModelPanel().addBinding(uib);
           //  }
 

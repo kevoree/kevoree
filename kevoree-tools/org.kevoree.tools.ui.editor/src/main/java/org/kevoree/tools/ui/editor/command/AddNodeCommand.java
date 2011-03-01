@@ -39,7 +39,7 @@ public class AddNodeCommand implements Command {
         //CREATE NEW NAME
         //TODO CHECK EXISTING NAME
         if(kernel.getModelHandler().getActualModel().getNodes().size()>0){
-            newnode.setName("node-"+kernel.getModelHandler().getActualModel().getNodes().size());
+            newnode.setName("node"+kernel.getModelHandler().getActualModel().getNodes().size());
         }else {
             newnode.setName("KEVOREEDefaultNodeName");
         }
