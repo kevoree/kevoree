@@ -32,7 +32,6 @@ class CycleDetectionCheckerTest extends AssertionsForJUnit with BaseCheckerSuite
 		val res = componentCycleChecker.check(modelCycle)
 		println(System.currentTimeMillis - firstTime + "ms")
 
-		//assert(res.size == 0)
 		if (res.size == 1) {
 			return
 		} else {
@@ -57,7 +56,6 @@ class CycleDetectionCheckerTest extends AssertionsForJUnit with BaseCheckerSuite
 		val res = componentCycleChecker.check(modelCycle)
 		println(System.currentTimeMillis - firstTime + "ms")
 
-		//assert(res.size == 0)
 		if (res.size == 0) {
 			return
 		} else {
@@ -80,7 +78,6 @@ class CycleDetectionCheckerTest extends AssertionsForJUnit with BaseCheckerSuite
 		var res = componentCycleChecker.check(modelCycle)
 		println(System.currentTimeMillis - firstTime + "ms for component cycle detection")
 
-		//assert(res.size == 0)
 		if (res.size == 0) {
 			val nodeCycleChecker = new NodeCycleChecker
 			val firstTime = System.currentTimeMillis
@@ -109,7 +106,6 @@ class CycleDetectionCheckerTest extends AssertionsForJUnit with BaseCheckerSuite
 		var res = componentCycleChecker.check(modelCycle)
 		println(System.currentTimeMillis - firstTime + "ms for component cycle detection")
 
-		//assert(res.size == 0)
 		if (res.size == 0) {
 			val nodeCycleChecker = new NodeCycleChecker
 			val firstTime = System.currentTimeMillis
@@ -138,7 +134,6 @@ class CycleDetectionCheckerTest extends AssertionsForJUnit with BaseCheckerSuite
 		var res = componentCycleChecker.check(modelCycle)
 		println(System.currentTimeMillis - firstTime + "ms for component cycle detection")
 
-		//assert(res.size == 0)
 		if (res.size == 0) {
 			val nodeCycleChecker = new NodeCycleChecker
 			val firstTime = System.currentTimeMillis
@@ -167,7 +162,6 @@ class CycleDetectionCheckerTest extends AssertionsForJUnit with BaseCheckerSuite
 		var res = componentCycleChecker.check(modelCycle)
 		println(System.currentTimeMillis - firstTime + "ms for component cycle detection")
 
-		//assert(res.size == 1)
 		if (res.size == 0) {
 			val nodeCycleChecker = new NodeCycleChecker
 			val firstTime = System.currentTimeMillis
@@ -196,7 +190,6 @@ class CycleDetectionCheckerTest extends AssertionsForJUnit with BaseCheckerSuite
 		var res = componentCycleChecker.check(modelCycle)
 		println(System.currentTimeMillis - firstTime + "ms for component cycle detection")
 
-		//assert(res.size == 1)
 		if (res.size == 0) {
 			val nodeCycleChecker = new NodeCycleChecker
 			val firstTime = System.currentTimeMillis
@@ -225,7 +218,6 @@ class CycleDetectionCheckerTest extends AssertionsForJUnit with BaseCheckerSuite
 		var res = componentCycleChecker.check(modelCycle)
 		println(System.currentTimeMillis - firstTime + "ms for component cycle detection")
 
-		//assert(res.size == 1)
 		if (res.size == 0) {
 			val nodeCycleChecker = new NodeCycleChecker
 			val firstTime = System.currentTimeMillis
@@ -263,7 +255,6 @@ class CycleDetectionCheckerTest extends AssertionsForJUnit with BaseCheckerSuite
 						println(obj)
 				}
 		}*/
-		//assert(res.size == 3)
 		if (res.size == 2) {
 			val nodeCycleChecker = new NodeCycleChecker
 			val firstTime = System.currentTimeMillis
