@@ -91,6 +91,8 @@
     <eStructuralFeatures xsi:type="ecore:EReference" name="ref" lowerBound="1" eType="#//PortType"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="mappings" upperBound="-1"
         eType="#//PortTypeMapping" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="optional" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBooleanObject"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="noDependency" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBooleanObject"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Wire">
     <eStructuralFeatures xsi:type="ecore:EReference" name="ports" lowerBound="2" upperBound="2"

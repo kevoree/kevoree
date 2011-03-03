@@ -33,10 +33,16 @@ case class UpdateDictionaryCommand(c: Instance, ctx: KevoreeDeployManager, nodeN
   def execute(): Boolean = {
     //BUILD MAP
     val dictionary: java.util.HashMap[String, String] = new java.util.HashMap[String, String]
-    c.getTypeDefinition.getDictionaryType.getDefaultValues.foreach {
-      dv =>
-        dictionary.put(dv.getAttribute.getName, dv.getValue)
+    if (c.getTypeDefinition.getDictionaryType != null) {
+      if (c.getTypeDefinition.getDictionaryType.getDefaultValues != null) {
+        c.getTypeDefinition.getDictionaryType.getDefaultValues.foreach {
+          dv =>
+            dictionary.put(dv.getAttribute.getName, dv.getValue)
+        }
+      }
     }
+
+
 
     if (c.getDictionary != null) {
       c.getDictionary.getValues.foreach {

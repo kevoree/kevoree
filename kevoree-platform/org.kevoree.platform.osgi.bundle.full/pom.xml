@@ -5,12 +5,12 @@
     <artifactId>org.kevoree.platform.osgi.bundle.full</artifactId>
     <packaging>bundle</packaging>
     <name>Kevoree :: Platform :: OSGI Bundle Full</name>
-    <version>1.0.0-RC3</version>
+    <version>1.0.0-RC5</version>
 
     <parent>
         <artifactId>org.kevoree.platform.root</artifactId>
         <groupId>org.kevoree.platform</groupId>
-        <version>1.0.0-RC3</version>
+        <version>1.0.0-RC5</version>
         <relativePath>../org.kevoree.platform.root/pom.xml</relativePath>
     </parent>
 

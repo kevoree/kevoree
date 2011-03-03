@@ -60,6 +60,12 @@ public class KevoreeMenuBar extends JMenuBar {
         cmdLL.setKernel(kernel);
         mergeLib.addActionListener(new CommandActionListener(cmdLL));
         model.add(mergeLib);
+        JMenuItem mergeDefLib = new JMenuItem("Merge default Lib");
+        MergeDefaultLibrary cmdLDEFL = new MergeDefaultLibrary();
+        cmdLDEFL.setKernel(kernel);
+        mergeDefLib.addActionListener(new CommandActionListener(cmdLDEFL));
+        model.add(mergeDefLib);
+
 
         JMenuItem checkModel = new JMenuItem("Check");
         CheckCurrentModel cmdCheck = new CheckCurrentModel();
@@ -68,15 +74,12 @@ public class KevoreeMenuBar extends JMenuBar {
         model.add(checkModel);
 
 
-
-
         kevs = new JMenu("KevScript");
         JMenuItem openEditor = new JMenuItem("Open editor");
         OpenKevsShell cmdOpenKevsGUI = new OpenKevsShell();
         cmdOpenKevsGUI.setKernel(kernel);
         openEditor.addActionListener(new CommandActionListener(cmdOpenKevsGUI));
         kevs.add(openEditor);
-
 
 
         this.add(file);
