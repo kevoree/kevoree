@@ -18,12 +18,9 @@
 
 package org.kevoree.core.basechecker.cyclechecker
 
-import org.jgrapht.DirectedGraph
-import org.jgrapht.alg.CycleDetector
 import org.kevoree.ContainerRoot
 import org.kevoree.MBinding
 import org.kevoree.ComponentInstance
-import org.kevoree.Channel
 import org.kevoree.api.service.core.checker.CheckerService
 import org.kevoree.api.service.core.checker.CheckerViolation
 import org.kevoree.framework.aspects.KevoreeAspects._
@@ -36,26 +33,27 @@ class ComponentCycleChecker extends CheckerService {
 		model.getNodes.foreach {
 			node =>
 				val graph = KevoreeComponentDirectedGraph(model, node.getName)
+
 				//violations = violations ++
 				CheckCycle(graph).check().foreach {
-				violation =>
-					var concreteViolation: CheckerViolation = new CheckerViolation()
-					//var targetObjects : List[Object] = new List()
-					concreteViolation.setMessage(violation.getMessage)
-					var bindings: List[MBinding] = List()
-					violation.getTargetObjects.filter(obj => obj.isInstanceOf[ComponentInstance]).foreach {
-						instance =>
-							val componentInstance : ComponentInstance = instance.asInstanceOf[ComponentInstance]
-							componentInstance.getRelatedBindings.foreach {
-								binding =>
-									if (violation.getTargetObjects.contains(binding.getHub)) {
-										bindings = bindings ++ List(binding)
-									}
-							}
-					}
-					concreteViolation.setTargetObjects(bindings)
-					violations = violations ++ List(concreteViolation)
-			}
+					violation =>
+						val concreteViolation: CheckerViolation = new CheckerViolation()
+						//var targetObjects : List[Object] = new List()
+						concreteViolation.setMessage(violation.getMessage)
+						var bindings: List[MBinding] = List()
+						violation.getTargetObjects.filter(obj => obj.isInstanceOf[ComponentInstance]).foreach {
+							instance =>
+								val componentInstance: ComponentInstance = instance.asInstanceOf[ComponentInstance]
+								componentInstance.getRelatedBindings.foreach {
+									binding =>
+										if (violation.getTargetObjects.contains(binding.getHub)) {
+											bindings = bindings ++ List(binding)
+										}
+								}
+						}
+						concreteViolation.setTargetObjects(bindings)
+						violations = violations ++ List(concreteViolation)
+				}
 		}
 
 		violations
