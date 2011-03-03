@@ -49,6 +49,10 @@
         eType="#//MetricType" containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="physicalNodes" upperBound="-1"
         eType="#//PhysicalNode" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="groups" upperBound="-1"
+        eType="#//Group" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="groupTypes" upperBound="-1"
+        eType="#//GroupType" containment="true"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="PortType" abstract="true" eSuperTypes="#//TypeDefinition">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="synchrone" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
@@ -231,4 +235,9 @@
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="stopMethod" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="updateMethod" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
   </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Group" eSuperTypes="#//Instance">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="subNodes" upperBound="-1"
+        eType="#//ContainerNode"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="GroupType" eSuperTypes="#//TypeDefinition"/>
 </ecore:EPackage>
