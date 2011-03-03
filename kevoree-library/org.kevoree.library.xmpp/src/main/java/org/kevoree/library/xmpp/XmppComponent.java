@@ -19,7 +19,7 @@ import org.kevoree.framework.MessagePort;
 @Requires({
     @RequiredPort(name = "messageReceived", type = PortType.MESSAGE)
 })
-@Library(name="KevoreeLib-XMPP")
+@Library(name = "Kevoree-Android-JavaSE")
 @DictionaryType({@DictionaryAttribute(name = "login"),@DictionaryAttribute(name = "password")})
 @ComponentType
 public class XmppComponent extends AbstractComponentType {

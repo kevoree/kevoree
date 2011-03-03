@@ -44,7 +44,7 @@ import org.kevoree.library.sample.service.ServiceGenerics;
     @DictionaryAttribute(name = "optional2", defaultValue = "DF", optional = true)
 })
 @NoneConcurrencyPorts({"prov1", "prov2"})
-@Library(name = "ART_TEST")
+@Library(name = "Kevoree-Samples")
 @ComponentType
 public class ComponentA extends AbstractComponentType implements ServiceA {
 

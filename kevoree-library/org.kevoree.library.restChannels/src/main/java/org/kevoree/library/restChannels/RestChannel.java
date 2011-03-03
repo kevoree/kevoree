@@ -37,7 +37,7 @@ import org.restlet.resource.ClientResource;
 /**
  * @author ffouquet
  */
-@Library(name = "art2baselib")
+@Library(name = "Kevoree-Android-JavaSE")
 @ChannelTypeFragment
 @ThirdParties({
         @ThirdParty(name = "org.kevoree.extra.marshalling", url = "mvn:org.kevoree.extra/org.kevoree.extra.marshalling")

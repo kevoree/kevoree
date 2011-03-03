@@ -17,24 +17,17 @@
  */
 package org.kevoree.tools.ui.editor.command;
 
-import org.kevoree.Channel;
-import org.kevoree.ChannelType;
-import org.kevoree.ComponentInstance;
-import org.kevoree.ComponentType;
-import org.kevoree.ContainerNode;
-import org.kevoree.ContainerRoot;
-import org.kevoree.MBinding;
-import org.kevoree.Port;
+import org.kevoree.*;
 import org.kevoree.framework.KevoreeXmiHelper;
 import org.kevoree.tools.ui.editor.KevoreeUIKernel;
 import org.kevoree.tools.ui.framework.elements.*;
 import org.kevoree.tools.ui.framework.elements.PortPanel.PortType;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
 /**
- *
  * @author ffouquet
  */
 public class LoadModelCommand implements Command {
@@ -42,6 +35,7 @@ public class LoadModelCommand implements Command {
     public void setKernel(KevoreeUIKernel kernel) {
         this.kernel = kernel;
     }
+
     private KevoreeUIKernel kernel;
 
     /* Input expected : Model URI */
@@ -58,6 +52,8 @@ public class LoadModelCommand implements Command {
 
         /* Synch every UI Component */
         //LOAD COMPONENT TYPE
+        List<org.kevoree.TypeDefinition> loadedLib = new ArrayList<org.kevoree.TypeDefinition>();
+
         kernel.getEditorPanel().getPalette().clear();
         for (org.kevoree.TypeLibrary ctl : kernel.getModelHandler().getActualModel().getLibraries()) {
             //System.out.println(ctl.getName());
@@ -71,8 +67,24 @@ public class LoadModelCommand implements Command {
                     ChannelTypePanel ctp = kernel.getUifactory().createChannelTypeUI((ChannelType) ct);
                     kernel.getEditorPanel().getPalette().addTypeDefinitionPanel(ctp, ctl.getName());
                 }
+                loadedLib.add(ct);
             }
         }
+
+        //LOAD COMPONENTTYPE WITHOUT LIB
+        for (TypeDefinition ct : kernel.getModelHandler().getActualModel().getTypeDefinitions()) {
+            if (!loadedLib.contains(ct)) {
+                if (ct instanceof ComponentType) {
+                    ComponentTypePanel ctp = kernel.getUifactory().createComponentTypeUI((ComponentType) ct);
+                    kernel.getEditorPanel().getPalette().addTypeDefinitionPanel(ctp, "default");
+                }
+                if (ct instanceof ChannelType) {
+                    ChannelTypePanel ctp = kernel.getUifactory().createChannelTypeUI((ChannelType) ct);
+                    kernel.getEditorPanel().getPalette().addTypeDefinitionPanel(ctp, "default");
+                }
+            }
+        }
+
 
         //LOAD NODE
         for (ContainerNode newnode : kernel.getModelHandler().getActualModel().getNodes()) {

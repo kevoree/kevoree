@@ -5,13 +5,13 @@
     <groupId>org.kevoree.library</groupId>
     <artifactId>org.kevoree.library.fakeDomo</artifactId>
     <packaging>bundle</packaging>
-    <version>1.0.0-RC3</version>
+    <version>1.0.0-RC5</version>
     <name>Kevoree :: Library :: Fake Domo</name>
 
     <parent>
         <artifactId>org.kevoree.library.root</artifactId>
         <groupId>org.kevoree.library</groupId>
-        <version>1.0.0-RC3</version>
+        <version>1.0.0-RC5</version>
         <relativePath>../org.kevoree.library.root/pom.xml</relativePath>
     </parent>
 

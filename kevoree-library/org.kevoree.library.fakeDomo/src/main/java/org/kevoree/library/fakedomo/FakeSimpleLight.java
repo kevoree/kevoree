@@ -53,16 +53,6 @@ public class FakeSimpleLight extends AbstractFakeStuffComponent {
     public void start() {
         logger = Logger.getLogger(this.getClass().getName());
 
-        /* DEBUG DICTIONARY */
-        for(String key : this.getDictionary().keySet()){
-
-            System.out.println("key"+key+"="+this.getDictionary().get(key));
-
-
-        }
-
-
-
         frame = new MyFrame(Color.RED);
         frame.setVisible(true);
         state = false;

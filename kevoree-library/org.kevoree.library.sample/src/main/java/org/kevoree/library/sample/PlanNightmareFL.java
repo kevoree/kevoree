@@ -16,7 +16,7 @@ import org.osgi.framework.Bundle;
     @ProvidedPort(name = "p1", type = PortType.MESSAGE),
     @ProvidedPort(name = "p2", type = PortType.MESSAGE)
 })
-@Library(name = "KEVOREE_SAMPLES")
+@Library(name = "Kevoree-Samples")
 @ComponentType
 public class PlanNightmareFL extends AbstractComponentType {
 

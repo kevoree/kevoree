@@ -1,3 +1,4 @@
+
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
@@ -10,7 +11,7 @@
     <parent>
         <artifactId>org.kevoree.library.root</artifactId>
         <groupId>org.kevoree.library</groupId>
-        <version>1.0.0-RC1</version>
+        <version>1.0.0-RC5</version>
         <relativePath>../org.kevoree.library.root/pom.xml</relativePath>
     </parent>
 
@@ -19,7 +20,6 @@
             <plugin>
                 <groupId>org.kevoree.tools</groupId>
                 <artifactId>org.kevoree.tools.merger.mavenplugin</artifactId>
-                <version>1.0.0-RC1</version>
                 <extensions>true</extensions>
                 <executions>
                     <execution>
@@ -27,7 +27,56 @@
                             <goal>generate</goal>
                         </goals>
                         <configuration>
-                            <model>src/main/kev</model>
+                            <model>${project.build.directory}/classes/defaultLibrary.kev</model>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <artifactId>maven-install-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>install-apk</id>
+                        <phase>install</phase>
+                        <goals>
+                            <goal>install-file</goal>
+                        </goals>
+                        <configuration>
+                            <packaging>kev</packaging>
+                            <groupId>${project.groupId}</groupId>
+                            <artifactId>${project.artifactId}</artifactId>
+                            <file>${project.build.directory}/classes/defaultLibrary.kev</file>
+                            <version>${kevoree.version}</version>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <artifactId>maven-deploy-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>deploy-jar-apk</id>
+                        <phase>deploy</phase>
+                        <goals>
+                            <goal>deploy</goal>
+                        </goals>
+                        <configuration>
+                            <skip>true</skip>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>deploy-apk</id>
+                        <phase>deploy</phase>
+                        <goals>
+                            <goal>deploy-file</goal>
+                        </goals>
+                        <configuration>
+                            <file>${project.build.directory}/classes/defaultLibrary.kev</file>
+                            <url>http://maven.kevoree.org/libs-release-local/</url>
+                            <packaging>kev</packaging>
+                            <groupId>${project.groupId}</groupId>
+                            <artifactId>${project.artifactId}</artifactId>
+                            <version>${kevoree.version}</version>
                         </configuration>
                     </execution>
                 </executions>
@@ -46,6 +95,30 @@
             <artifactId>org.kevoree.library.defaultChannels</artifactId>
             <version>${kevoree.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.kevoree.library</groupId>
+            <artifactId>org.kevoree.library.sample</artifactId>
+            <version>${kevoree.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.kevoree.library</groupId>
+            <artifactId>org.kevoree.library.restChannels</artifactId>
+            <version>${kevoree.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.kevoree.library</groupId>
+            <artifactId>org.kevoree.library.xmpp</artifactId>
+            <version>${kevoree.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.kevoree.library</groupId>
+            <artifactId>org.kevoree.library.logger.android</artifactId>
+            <version>${kevoree.version}</version>
+        </dependency>
     </dependencies>
+
+
+
+
 
 </project>

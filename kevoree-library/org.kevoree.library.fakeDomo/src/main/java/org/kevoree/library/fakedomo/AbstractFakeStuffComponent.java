@@ -29,7 +29,7 @@ import org.kevoree.framework.AbstractComponentType;
  * @author gnain
  */
 
-@Library(name="Fake-DOMO")
+@Library(name = "Kevoree-Components")
 @ComponentFragment
 public abstract class AbstractFakeStuffComponent extends AbstractComponentType {
 

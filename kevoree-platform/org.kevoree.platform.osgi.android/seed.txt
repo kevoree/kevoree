@@ -10904,8 +10904,6 @@ org.eclipse.emf.ecore.impl.BasicEObjectImpl: int EVIRTUAL_UNSET
 org.eclipse.emf.ecore.impl.BasicEObjectImpl: int EVIRTUAL_GET
 org.eclipse.emf.ecore.impl.BasicEObjectImpl: int EVIRTUAL_IS_SET
 org.eclipse.emf.ecore.impl.BasicEObjectImpl: boolean $assertionsDisabled
-org.kevoree.adaptation.deploy.osgi.KevoreeAdaptationDeployServiceOSGi$$anonfun$schedule$1: long serialVersionUID
-org.kevoree.adaptation.deploy.osgi.KevoreeAdaptationDeployServiceOSGi$$anonfun$schedule$2: long serialVersionUID
 org.eclipse.emf.ecore.xml.type.internal.XMLCalendar: long serialVersionUID
 org.eclipse.emf.ecore.xml.type.internal.XMLCalendar: short DATETIME
 org.eclipse.emf.ecore.xml.type.internal.XMLCalendar: short TIME
@@ -14413,7 +14411,6 @@ scala.concurrent.forkjoin.ForkJoinTask: int EXTERNAL_SIGNAL
 scala.concurrent.forkjoin.ForkJoinTask: long serialVersionUID
 scala.concurrent.forkjoin.ForkJoinTask: long statusOffset
 scala.collection.generic.Addable$$anonfun$$plus$plus$1: long serialVersionUID
-org.kevoree.adaptation.deploy.osgi.command.CommandHelper$$anonfun$buildAllQuery$3: long serialVersionUID
 org.jgrapht.graph.DirectedWeightedSubgraph: long serialVersionUID
 org.jgrapht.graph.DirectedSubgraph: long serialVersionUID
 org.jgrapht.graph.Subgraph: long serialVersionUID
@@ -19546,8 +19543,6 @@ scala.xml.PrettyPrinter$Para$
 scala.Function$$anonfun$curried$3$$anonfun$apply$5$$anonfun$apply$6$$anonfun$apply$7
 scala.Function1$mcFI$sp$$anonfun$andThen$mcFI$sp$1
 scala.collection.mutable.DoubleLinkedList
-org.kevoree.adaptation.deploy.osgi.KevoreeAdaptationDeployServiceOSGi$$anonfun$schedule$1
-org.kevoree.adaptation.deploy.osgi.KevoreeAdaptationDeployServiceOSGi$$anonfun$schedule$2
 org.eclipse.emf.ecore.xml.type.internal.XMLCalendar
 scala.reflect.TypeApply$
 net.lag.logging.Level$CRITICAL$
@@ -20742,7 +20737,6 @@ scala.util.parsing.json.Lexer$$anonfun$scala$util$parsing$json$Lexer$$unicodeBlo
 scala.util.parsing.json.Lexer$$anonfun$scala$util$parsing$json$Lexer$$unicodeBlock$1
 scala.util.parsing.json.Lexer$$anonfun$scala$util$parsing$json$Lexer$$unicodeBlock$2
 scala.collection.generic.Addable$$anonfun$$plus$plus$1
-org.kevoree.adaptation.deploy.osgi.command.CommandHelper$$anonfun$buildAllQuery$3
 net.lag.logging.Level$DEBUG$
 org.kevoree.framework.aspects.ContainerNodeAspect$$anonfun$getUsedTypeDefinition$2$$anonfun$apply$3
 scala.reflect.generic.Trees$Literal$

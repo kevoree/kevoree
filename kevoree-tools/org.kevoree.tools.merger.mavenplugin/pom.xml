@@ -4,14 +4,14 @@
     <modelVersion>4.0.0</modelVersion>
     <artifactId>org.kevoree.tools.merger.mavenplugin</artifactId>
     <groupId>org.kevoree.tools</groupId>
-    <version>1.0.0-RC3</version>
+    <version>1.0.0-RC5</version>
     <packaging>maven-plugin</packaging>
     <name>Kevoree :: Tools :: Merger MavenPlugin</name>
 
     <parent>
         <artifactId>org.kevoree.tools.root</artifactId>
         <groupId>org.kevoree.tools</groupId>
-        <version>1.0.0-RC3</version>
+        <version>1.0.0-RC5</version>
         <relativePath>../org.kevoree.tools.root/pom.xml</relativePath>
     </parent>
 
@@ -19,13 +19,6 @@
         <kevoree.version>${project.version}</kevoree.version>
         <releaseUrl>http://maven.kevoree.org/plugins-release-local</releaseUrl>
     </properties>
-
-    <pluginRepositories>
-        <pluginRepository>
-            <id>pluginLib.kevoree-github</id>
-            <url>http://maven.kevoree.org/libs-release-local</url>
-        </pluginRepository>
-    </pluginRepositories>
 
     <dependencies>
         <dependency>
@@ -46,5 +39,30 @@
             <version>${kevoree.version}</version>
         </dependency>
     </dependencies>
+    
+    <repositories>
+        <repository>
+            <id>scala-tools.org</id>
+            <name>Scala-tools Maven2 Repository</name>
+            <url>http://scala-tools.org/repo-releases</url>
+        </repository>
+        <repository>
+            <id>kevoree-libs-release-local</id>
+            <url>http://maven.kevoree.org/libs-release-local</url>
+        </repository>
+    </repositories>
+
+    <pluginRepositories>
+        <pluginRepository>
+            <id>plugin.scala-tools.org</id>
+            <name>Plugin Scala-tools Maven2 Repository</name>
+            <url>http://scala-tools.org/repo-releases</url>
+        </pluginRepository>
+        <pluginRepository>
+            <id>plugin.kevoree-github</id>
+            <url>http://maven.kevoree.org/plugins-release-local</url>
+        </pluginRepository>
+    </pluginRepositories>
+    
     
 </project>

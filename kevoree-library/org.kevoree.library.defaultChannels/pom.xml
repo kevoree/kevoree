@@ -7,18 +7,18 @@
     <artifactId>org.kevoree.library.defaultChannels</artifactId>
     <packaging>bundle</packaging>
     <name>Kevoree :: Library :: DefaultChannels</name>
-    <version>1.0.0-RC3</version>
+    <version>1.0.0-RC5</version>
 
     <parent>
         <artifactId>org.kevoree.library.root</artifactId>
         <groupId>org.kevoree.library</groupId>
-        <version>1.0.0-RC3</version>
+        <version>1.0.0-RC5</version>
         <relativePath>../org.kevoree.library.root/pom.xml</relativePath>
     </parent>
 
     <properties>
-        <android.tools.aapt>${android.home}/${android.platform}/tools/aapt</android.tools.aapt>
-        <android.tools.dx>${android.home}/${android.platform}/tools/dx</android.tools.dx>
+        <android.tools.aapt>${android.home}/platform-tools/aapt</android.tools.aapt>
+        <android.tools.dx>${android.home}/platform-tools/dx</android.tools.dx>
     </properties>
 
     <build>

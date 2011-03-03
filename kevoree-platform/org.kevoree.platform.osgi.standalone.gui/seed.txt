@@ -12946,7 +12946,7 @@ org.apache.felix.framework.util.EventDispatcher$Request
 org.apache.felix.framework.util.EventDispatcher$Request: int FRAMEWORK_EVENT
 org.apache.felix.framework.util.EventDispatcher$Request: int BUNDLE_EVENT
 org.apache.felix.framework.util.EventDispatcher$Request: int SERVICE_EVENT
-org.apache.felix.framework.util.EventDispatcher$Request: org.apache.felix.framework.Logger m_logger
+org.apache.felix.framework.util.EventDispatcher$Request: org.apache.felix.framework.util.EventDispatcher m_dispatcher
 org.apache.felix.framework.util.EventDispatcher$Request: int m_type
 org.apache.felix.framework.util.EventDispatcher$Request: java.lang.Object[] m_listeners
 org.apache.felix.framework.util.EventDispatcher$Request: java.util.EventObject m_event
@@ -12977,8 +12977,8 @@ org.apache.felix.framework.util.SecurityManagerEx
 org.apache.felix.framework.util.SecurityManagerEx: SecurityManagerEx()
 org.apache.felix.framework.util.SecurityManagerEx: java.lang.Class[] getClassContext()
 org.apache.felix.framework.util.SecureAction$Actions
-org.apache.felix.framework.util.SecureAction$Actions: int INITIALIZE_CONTEXT
-org.apache.felix.framework.util.SecureAction$Actions: int ADD_EXTENSION_URL
+org.apache.felix.framework.util.SecureAction$Actions: int INITIALIZE_CONTEXT_ACTION
+org.apache.felix.framework.util.SecureAction$Actions: int ADD_EXTENSION_URL_ACTION
 org.apache.felix.framework.util.SecureAction$Actions: int CREATE_TMPFILE_ACTION
 org.apache.felix.framework.util.SecureAction$Actions: int CREATE_URL_ACTION
 org.apache.felix.framework.util.SecureAction$Actions: int CREATE_URL_WITH_CONTEXT_ACTION
@@ -12994,6 +12994,7 @@ org.apache.felix.framework.util.SecureAction$Actions: int GET_DECLARED_METHOD_AC
 org.apache.felix.framework.util.SecureAction$Actions: int GET_FIELD_ACTION
 org.apache.felix.framework.util.SecureAction$Actions: int GET_FILE_INPUT_ACTION
 org.apache.felix.framework.util.SecureAction$Actions: int GET_FILE_OUTPUT_ACTION
+org.apache.felix.framework.util.SecureAction$Actions: int TO_URI_ACTION
 org.apache.felix.framework.util.SecureAction$Actions: int GET_METHOD_ACTION
 org.apache.felix.framework.util.SecureAction$Actions: int GET_POLICY_ACTION
 org.apache.felix.framework.util.SecureAction$Actions: int GET_PROPERTY_ACTION
@@ -13006,8 +13007,7 @@ org.apache.felix.framework.util.SecureAction$Actions: int INVOKE_METHOD_ACTION
 org.apache.felix.framework.util.SecureAction$Actions: int LIST_DIRECTORY_ACTION
 org.apache.felix.framework.util.SecureAction$Actions: int MAKE_DIRECTORIES_ACTION
 org.apache.felix.framework.util.SecureAction$Actions: int MAKE_DIRECTORY_ACTION
-org.apache.felix.framework.util.SecureAction$Actions: int OPEN_JARX_ACTION
-org.apache.felix.framework.util.SecureAction$Actions: int OPEN_JARX_VERIFY_ACTION
+org.apache.felix.framework.util.SecureAction$Actions: int OPEN_ZIPFILE_ACTION
 org.apache.felix.framework.util.SecureAction$Actions: int OPEN_URLCONNECTION_ACTION
 org.apache.felix.framework.util.SecureAction$Actions: int RENAME_FILE_ACTION
 org.apache.felix.framework.util.SecureAction$Actions: int SET_ACCESSIBLE_ACTION
@@ -13057,6 +13057,7 @@ org.apache.felix.framework.ExtensionManager$ExtensionManagerModule: org.apache.f
 org.apache.felix.framework.ExtensionManager$ExtensionManagerModule: java.net.URL getEntry(java.lang.String)
 org.apache.felix.framework.ExtensionManager$ExtensionManagerModule: boolean hasInputStream(int,java.lang.String)
 org.apache.felix.framework.ExtensionManager$ExtensionManagerModule: java.io.InputStream getInputStream(int,java.lang.String)
+org.apache.felix.framework.ExtensionManager$ExtensionManagerModule: java.net.URL getLocalURL(int,java.lang.String)
 org.apache.felix.framework.ModuleImpl: org.apache.felix.framework.Logger m_logger
 org.apache.felix.framework.ModuleImpl: java.util.Map m_configMap
 org.apache.felix.framework.ModuleImpl: org.apache.felix.framework.Felix$FelixResolver m_resolver
@@ -13096,20 +13097,22 @@ org.apache.felix.framework.ModuleImpl: java.lang.ClassLoader m_defBootClassLoade
 org.apache.felix.framework.ModuleImpl: java.lang.String[] m_bootPkgs
 org.apache.felix.framework.ModuleImpl: boolean[] m_bootPkgWildcards
 org.apache.felix.framework.ModuleImpl: boolean m_implicitBootDelegation
+org.apache.felix.framework.ModuleImpl: boolean m_useLocalURLs
 org.apache.felix.framework.ModuleImpl: org.apache.felix.framework.util.SecurityManagerEx m_sm
 org.apache.felix.framework.ModuleImpl: java.lang.ThreadLocal m_cycleCheck
 org.apache.felix.framework.ModuleImpl: java.lang.ThreadLocal m_deferredActivation
+org.apache.felix.framework.ModuleImpl: boolean m_isPreJava5
 org.apache.felix.framework.ModuleImpl: java.lang.reflect.Constructor m_dexFileClassConstructor
 org.apache.felix.framework.ModuleImpl: java.lang.reflect.Method m_dexFileClassLoadDex
 org.apache.felix.framework.ModuleImpl: java.lang.reflect.Method m_dexFileClassLoadClass
 org.apache.felix.framework.ModuleImpl: java.lang.Class class$java$security$SecureClassLoader
 org.apache.felix.framework.ModuleImpl: java.lang.Class class$java$lang$ClassLoader
 org.apache.felix.framework.ModuleImpl: java.lang.Class class$org$apache$felix$framework$ModuleImpl$ModuleClassLoader
+org.apache.felix.framework.ModuleImpl: java.lang.Class class$org$apache$felix$framework$ModuleImpl$ModuleClassLoaderJava5
 org.apache.felix.framework.ModuleImpl: java.lang.Class class$org$apache$felix$framework$ModuleImpl
 org.apache.felix.framework.ModuleImpl: java.lang.Class class$java$lang$Thread
-org.apache.felix.framework.ModuleImpl: java.lang.Class class$org$osgi$framework$Bundle
+org.apache.felix.framework.ModuleImpl: java.lang.Class class$org$apache$felix$framework$BundleImpl
 org.apache.felix.framework.ModuleImpl: java.lang.Class class$java$lang$Class
-org.apache.felix.framework.ModuleImpl: java.lang.Class class$java$lang$reflect$Proxy
 org.apache.felix.framework.ModuleImpl: java.lang.Class class$java$lang$String
 org.apache.felix.framework.ModuleImpl: java.lang.Class class$java$io$File
 org.apache.felix.framework.ModuleImpl: ModuleImpl(org.apache.felix.framework.Logger,java.util.Map,org.osgi.framework.Bundle,java.lang.String,java.lang.String[],boolean[])
@@ -13146,6 +13149,7 @@ org.apache.felix.framework.ModuleImpl: java.util.Enumeration getResourcesLocal(j
 org.apache.felix.framework.ModuleImpl: java.net.URL getEntry(java.lang.String)
 org.apache.felix.framework.ModuleImpl: boolean hasInputStream(int,java.lang.String)
 org.apache.felix.framework.ModuleImpl: java.io.InputStream getInputStream(int,java.lang.String)
+org.apache.felix.framework.ModuleImpl: java.net.URL getLocalURL(int,java.lang.String)
 org.apache.felix.framework.ModuleImpl: java.net.URL createURL(int,java.lang.String)
 org.apache.felix.framework.ModuleImpl: java.util.List getFragments()
 org.apache.felix.framework.ModuleImpl: void attachFragments(java.util.List)
@@ -13169,28 +13173,31 @@ org.apache.felix.framework.ModuleImpl: java.lang.ClassLoader determineParentClas
 org.apache.felix.framework.ModuleImpl: java.lang.Object searchImports(java.lang.String,boolean)
 org.apache.felix.framework.ModuleImpl: java.lang.Object searchDynamicImports(java.lang.String,java.lang.String,boolean)
 org.apache.felix.framework.ModuleImpl: java.lang.Object doImplicitBootDelegation(java.lang.Class[],java.lang.String,boolean)
-org.apache.felix.framework.ModuleImpl: boolean isClassNotLoadedFromBundle(java.lang.Class)
-org.apache.felix.framework.ModuleImpl: java.lang.Class getEnclosingClass(java.lang.Class)
+org.apache.felix.framework.ModuleImpl: boolean isClassLoadedFromModule(java.lang.Class)
+org.apache.felix.framework.ModuleImpl: boolean isClassExternal(java.lang.Class)
 org.apache.felix.framework.ModuleImpl: boolean shouldBootDelegate(java.lang.String)
 org.apache.felix.framework.ModuleImpl: java.lang.ClassLoader getBootDelegationClassLoader()
+org.apache.felix.framework.ModuleImpl: java.net.URL convertToLocalUrl(java.net.URL)
 org.apache.felix.framework.ModuleImpl: java.lang.String diagnoseClassLoadError(org.apache.felix.framework.Felix$FelixResolver,org.apache.felix.framework.ModuleImpl,java.lang.String)
 org.apache.felix.framework.ModuleImpl: java.lang.Class class$(java.lang.String)
 org.apache.felix.framework.ModuleImpl: java.lang.Object access$000(org.apache.felix.framework.ModuleImpl,java.lang.Class[],java.lang.String,boolean)
-org.apache.felix.framework.ModuleImpl: java.lang.reflect.Method access$100()
-org.apache.felix.framework.ModuleImpl: java.lang.Object access$200(org.apache.felix.framework.ModuleImpl,java.lang.String,boolean)
-org.apache.felix.framework.ModuleImpl: org.apache.felix.framework.Logger access$300(org.apache.felix.framework.ModuleImpl)
-org.apache.felix.framework.ModuleImpl: org.apache.felix.framework.Felix$FelixResolver access$400(org.apache.felix.framework.ModuleImpl)
-org.apache.felix.framework.ModuleImpl: java.lang.String access$500(org.apache.felix.framework.Felix$FelixResolver,org.apache.felix.framework.ModuleImpl,java.lang.String)
-org.apache.felix.framework.ModuleImpl: org.apache.felix.framework.resolver.Content[] access$600(org.apache.felix.framework.ModuleImpl)
-org.apache.felix.framework.ModuleImpl: boolean access$700(org.apache.felix.framework.ModuleImpl)
-org.apache.felix.framework.ModuleImpl: java.lang.ThreadLocal access$800()
-org.apache.felix.framework.ModuleImpl: java.security.ProtectionDomain access$900(org.apache.felix.framework.ModuleImpl)
-org.apache.felix.framework.ModuleImpl: boolean access$702(org.apache.felix.framework.ModuleImpl,boolean)
-org.apache.felix.framework.ModuleImpl: java.util.Map access$1000(org.apache.felix.framework.ModuleImpl)
-org.apache.felix.framework.ModuleImpl: java.lang.reflect.Method access$1100()
-org.apache.felix.framework.ModuleImpl: java.lang.reflect.Constructor access$1200()
-org.apache.felix.framework.ModuleImpl: java.util.Map access$1300(org.apache.felix.framework.ModuleImpl)
-org.apache.felix.framework.ModuleImpl: org.apache.felix.framework.resolver.Content[] access$1400(org.apache.felix.framework.ModuleImpl)
+org.apache.felix.framework.ModuleImpl: boolean access$100(org.apache.felix.framework.ModuleImpl)
+org.apache.felix.framework.ModuleImpl: java.util.Enumeration access$200(org.apache.felix.framework.ModuleImpl,java.lang.String)
+org.apache.felix.framework.ModuleImpl: java.lang.reflect.Method access$300()
+org.apache.felix.framework.ModuleImpl: java.lang.Object access$400(org.apache.felix.framework.ModuleImpl,java.lang.String,boolean)
+org.apache.felix.framework.ModuleImpl: org.apache.felix.framework.Logger access$500(org.apache.felix.framework.ModuleImpl)
+org.apache.felix.framework.ModuleImpl: org.apache.felix.framework.Felix$FelixResolver access$600(org.apache.felix.framework.ModuleImpl)
+org.apache.felix.framework.ModuleImpl: java.lang.String access$700(org.apache.felix.framework.Felix$FelixResolver,org.apache.felix.framework.ModuleImpl,java.lang.String)
+org.apache.felix.framework.ModuleImpl: org.apache.felix.framework.resolver.Content[] access$800(org.apache.felix.framework.ModuleImpl)
+org.apache.felix.framework.ModuleImpl: boolean access$900(org.apache.felix.framework.ModuleImpl)
+org.apache.felix.framework.ModuleImpl: java.lang.ThreadLocal access$1000()
+org.apache.felix.framework.ModuleImpl: java.security.ProtectionDomain access$1100(org.apache.felix.framework.ModuleImpl)
+org.apache.felix.framework.ModuleImpl: boolean access$902(org.apache.felix.framework.ModuleImpl,boolean)
+org.apache.felix.framework.ModuleImpl: java.util.Map access$1200(org.apache.felix.framework.ModuleImpl)
+org.apache.felix.framework.ModuleImpl: java.lang.reflect.Method access$1300()
+org.apache.felix.framework.ModuleImpl: java.lang.reflect.Constructor access$1400()
+org.apache.felix.framework.ModuleImpl: java.util.Map access$1500(org.apache.felix.framework.ModuleImpl)
+org.apache.felix.framework.ModuleImpl: org.apache.felix.framework.resolver.Content[] access$1600(org.apache.felix.framework.ModuleImpl)
 org.apache.felix.framework.ModuleImpl: void <clinit>()
 org.apache.felix.framework.ModuleImpl
 org.apache.felix.framework.ModuleImpl: org.apache.felix.framework.Logger m_logger
@@ -13232,20 +13239,22 @@ org.apache.felix.framework.ModuleImpl: java.lang.ClassLoader m_defBootClassLoade
 org.apache.felix.framework.ModuleImpl: java.lang.String[] m_bootPkgs
 org.apache.felix.framework.ModuleImpl: boolean[] m_bootPkgWildcards
 org.apache.felix.framework.ModuleImpl: boolean m_implicitBootDelegation
+org.apache.felix.framework.ModuleImpl: boolean m_useLocalURLs
 org.apache.felix.framework.ModuleImpl: org.apache.felix.framework.util.SecurityManagerEx m_sm
 org.apache.felix.framework.ModuleImpl: java.lang.ThreadLocal m_cycleCheck
 org.apache.felix.framework.ModuleImpl: java.lang.ThreadLocal m_deferredActivation
+org.apache.felix.framework.ModuleImpl: boolean m_isPreJava5
 org.apache.felix.framework.ModuleImpl: java.lang.reflect.Constructor m_dexFileClassConstructor
 org.apache.felix.framework.ModuleImpl: java.lang.reflect.Method m_dexFileClassLoadDex
 org.apache.felix.framework.ModuleImpl: java.lang.reflect.Method m_dexFileClassLoadClass
 org.apache.felix.framework.ModuleImpl: java.lang.Class class$java$security$SecureClassLoader
 org.apache.felix.framework.ModuleImpl: java.lang.Class class$java$lang$ClassLoader
 org.apache.felix.framework.ModuleImpl: java.lang.Class class$org$apache$felix$framework$ModuleImpl$ModuleClassLoader
+org.apache.felix.framework.ModuleImpl: java.lang.Class class$org$apache$felix$framework$ModuleImpl$ModuleClassLoaderJava5
 org.apache.felix.framework.ModuleImpl: java.lang.Class class$org$apache$felix$framework$ModuleImpl
 org.apache.felix.framework.ModuleImpl: java.lang.Class class$java$lang$Thread
-org.apache.felix.framework.ModuleImpl: java.lang.Class class$org$osgi$framework$Bundle
+org.apache.felix.framework.ModuleImpl: java.lang.Class class$org$apache$felix$framework$BundleImpl
 org.apache.felix.framework.ModuleImpl: java.lang.Class class$java$lang$Class
-org.apache.felix.framework.ModuleImpl: java.lang.Class class$java$lang$reflect$Proxy
 org.apache.felix.framework.ModuleImpl: java.lang.Class class$java$lang$String
 org.apache.felix.framework.ModuleImpl: java.lang.Class class$java$io$File
 org.apache.felix.framework.ModuleImpl: ModuleImpl(org.apache.felix.framework.Logger,java.util.Map,org.osgi.framework.Bundle,java.lang.String,java.lang.String[],boolean[])
@@ -13282,6 +13291,7 @@ org.apache.felix.framework.ModuleImpl: java.util.Enumeration getResourcesLocal(j
 org.apache.felix.framework.ModuleImpl: java.net.URL getEntry(java.lang.String)
 org.apache.felix.framework.ModuleImpl: boolean hasInputStream(int,java.lang.String)
 org.apache.felix.framework.ModuleImpl: java.io.InputStream getInputStream(int,java.lang.String)
+org.apache.felix.framework.ModuleImpl: java.net.URL getLocalURL(int,java.lang.String)
 org.apache.felix.framework.ModuleImpl: java.net.URL createURL(int,java.lang.String)
 org.apache.felix.framework.ModuleImpl: java.util.List getFragments()
 org.apache.felix.framework.ModuleImpl: void attachFragments(java.util.List)
@@ -13305,28 +13315,31 @@ org.apache.felix.framework.ModuleImpl: java.lang.ClassLoader determineParentClas
 org.apache.felix.framework.ModuleImpl: java.lang.Object searchImports(java.lang.String,boolean)
 org.apache.felix.framework.ModuleImpl: java.lang.Object searchDynamicImports(java.lang.String,java.lang.String,boolean)
 org.apache.felix.framework.ModuleImpl: java.lang.Object doImplicitBootDelegation(java.lang.Class[],java.lang.String,boolean)
-org.apache.felix.framework.ModuleImpl: boolean isClassNotLoadedFromBundle(java.lang.Class)
-org.apache.felix.framework.ModuleImpl: java.lang.Class getEnclosingClass(java.lang.Class)
+org.apache.felix.framework.ModuleImpl: boolean isClassLoadedFromModule(java.lang.Class)
+org.apache.felix.framework.ModuleImpl: boolean isClassExternal(java.lang.Class)
 org.apache.felix.framework.ModuleImpl: boolean shouldBootDelegate(java.lang.String)
 org.apache.felix.framework.ModuleImpl: java.lang.ClassLoader getBootDelegationClassLoader()
+org.apache.felix.framework.ModuleImpl: java.net.URL convertToLocalUrl(java.net.URL)
 org.apache.felix.framework.ModuleImpl: java.lang.String diagnoseClassLoadError(org.apache.felix.framework.Felix$FelixResolver,org.apache.felix.framework.ModuleImpl,java.lang.String)
 org.apache.felix.framework.ModuleImpl: java.lang.Class class$(java.lang.String)
 org.apache.felix.framework.ModuleImpl: java.lang.Object access$000(org.apache.felix.framework.ModuleImpl,java.lang.Class[],java.lang.String,boolean)
-org.apache.felix.framework.ModuleImpl: java.lang.reflect.Method access$100()
-org.apache.felix.framework.ModuleImpl: java.lang.Object access$200(org.apache.felix.framework.ModuleImpl,java.lang.String,boolean)
-org.apache.felix.framework.ModuleImpl: org.apache.felix.framework.Logger access$300(org.apache.felix.framework.ModuleImpl)
-org.apache.felix.framework.ModuleImpl: org.apache.felix.framework.Felix$FelixResolver access$400(org.apache.felix.framework.ModuleImpl)
-org.apache.felix.framework.ModuleImpl: java.lang.String access$500(org.apache.felix.framework.Felix$FelixResolver,org.apache.felix.framework.ModuleImpl,java.lang.String)
-org.apache.felix.framework.ModuleImpl: org.apache.felix.framework.resolver.Content[] access$600(org.apache.felix.framework.ModuleImpl)
-org.apache.felix.framework.ModuleImpl: boolean access$700(org.apache.felix.framework.ModuleImpl)
-org.apache.felix.framework.ModuleImpl: java.lang.ThreadLocal access$800()
-org.apache.felix.framework.ModuleImpl: java.security.ProtectionDomain access$900(org.apache.felix.framework.ModuleImpl)
-org.apache.felix.framework.ModuleImpl: boolean access$702(org.apache.felix.framework.ModuleImpl,boolean)
-org.apache.felix.framework.ModuleImpl: java.util.Map access$1000(org.apache.felix.framework.ModuleImpl)
-org.apache.felix.framework.ModuleImpl: java.lang.reflect.Method access$1100()
-org.apache.felix.framework.ModuleImpl: java.lang.reflect.Constructor access$1200()
-org.apache.felix.framework.ModuleImpl: java.util.Map access$1300(org.apache.felix.framework.ModuleImpl)
-org.apache.felix.framework.ModuleImpl: org.apache.felix.framework.resolver.Content[] access$1400(org.apache.felix.framework.ModuleImpl)
+org.apache.felix.framework.ModuleImpl: boolean access$100(org.apache.felix.framework.ModuleImpl)
+org.apache.felix.framework.ModuleImpl: java.util.Enumeration access$200(org.apache.felix.framework.ModuleImpl,java.lang.String)
+org.apache.felix.framework.ModuleImpl: java.lang.reflect.Method access$300()
+org.apache.felix.framework.ModuleImpl: java.lang.Object access$400(org.apache.felix.framework.ModuleImpl,java.lang.String,boolean)
+org.apache.felix.framework.ModuleImpl: org.apache.felix.framework.Logger access$500(org.apache.felix.framework.ModuleImpl)
+org.apache.felix.framework.ModuleImpl: org.apache.felix.framework.Felix$FelixResolver access$600(org.apache.felix.framework.ModuleImpl)
+org.apache.felix.framework.ModuleImpl: java.lang.String access$700(org.apache.felix.framework.Felix$FelixResolver,org.apache.felix.framework.ModuleImpl,java.lang.String)
+org.apache.felix.framework.ModuleImpl: org.apache.felix.framework.resolver.Content[] access$800(org.apache.felix.framework.ModuleImpl)
+org.apache.felix.framework.ModuleImpl: boolean access$900(org.apache.felix.framework.ModuleImpl)
+org.apache.felix.framework.ModuleImpl: java.lang.ThreadLocal access$1000()
+org.apache.felix.framework.ModuleImpl: java.security.ProtectionDomain access$1100(org.apache.felix.framework.ModuleImpl)
+org.apache.felix.framework.ModuleImpl: boolean access$902(org.apache.felix.framework.ModuleImpl,boolean)
+org.apache.felix.framework.ModuleImpl: java.util.Map access$1200(org.apache.felix.framework.ModuleImpl)
+org.apache.felix.framework.ModuleImpl: java.lang.reflect.Method access$1300()
+org.apache.felix.framework.ModuleImpl: java.lang.reflect.Constructor access$1400()
+org.apache.felix.framework.ModuleImpl: java.util.Map access$1500(org.apache.felix.framework.ModuleImpl)
+org.apache.felix.framework.ModuleImpl: org.apache.felix.framework.resolver.Content[] access$1600(org.apache.felix.framework.ModuleImpl)
 org.apache.felix.framework.ModuleImpl: void <clinit>()
 org.apache.felix.framework.URLHandlers
 org.apache.felix.framework.URLHandlers: java.lang.Class[] CLASS_TYPE
@@ -13401,13 +13414,17 @@ org.apache.felix.framework.cache.JarContent$DevNullRunnable: void run()
 org.apache.felix.framework.cache.JarRevision
 org.apache.felix.framework.cache.JarRevision: java.lang.String BUNDLE_JAR_FILE
 org.apache.felix.framework.cache.JarRevision: java.io.File m_bundleFile
-org.apache.felix.framework.cache.JarRevision: org.apache.felix.framework.util.JarFileX m_jarFile
+org.apache.felix.framework.cache.JarRevision: org.apache.felix.framework.util.ZipFileX m_zipFile
+org.apache.felix.framework.cache.JarRevision: java.lang.ThreadLocal m_defaultBuffer
+org.apache.felix.framework.cache.JarRevision: int DEFAULT_BUFFER
 org.apache.felix.framework.cache.JarRevision: JarRevision(org.apache.felix.framework.Logger,java.util.Map,java.io.File,java.lang.String,boolean)
 org.apache.felix.framework.cache.JarRevision: JarRevision(org.apache.felix.framework.Logger,java.util.Map,java.io.File,java.lang.String,boolean,java.io.InputStream)
 org.apache.felix.framework.cache.JarRevision: java.util.Map getManifestHeader()
 org.apache.felix.framework.cache.JarRevision: org.apache.felix.framework.resolver.Content getContent()
 org.apache.felix.framework.cache.JarRevision: void close()
 org.apache.felix.framework.cache.JarRevision: void initialize(boolean,java.io.InputStream)
+org.apache.felix.framework.cache.JarRevision: void getMainAttributes(java.util.Map,org.apache.felix.framework.util.ZipFileX)
+org.apache.felix.framework.cache.JarRevision: void <clinit>()
 org.apache.felix.framework.cache.BundleRevision: org.apache.felix.framework.Logger m_logger
 org.apache.felix.framework.cache.BundleRevision: java.util.Map m_configMap
 org.apache.felix.framework.cache.BundleRevision: java.io.File m_revisionRootDir
@@ -13561,6 +13578,7 @@ org.apache.felix.framework.Felix: boolean[] m_bootPkgWildcards
 org.apache.felix.framework.Felix: java.lang.Thread m_shutdownThread
 org.apache.felix.framework.Felix: org.apache.felix.framework.util.ThreadGate m_shutdownGate
 org.apache.felix.framework.Felix: java.lang.SecurityManager m_securityManager
+org.apache.felix.framework.Felix: java.util.Map m_systemBundleClassCache
 org.apache.felix.framework.Felix: org.apache.felix.framework.ext.SecurityProvider m_securityProvider
 org.apache.felix.framework.Felix: org.apache.felix.framework.URLHandlersActivator m_urlHandlersActivator
 org.apache.felix.framework.Felix: java.lang.Class class$org$osgi$service$startlevel$StartLevel
@@ -13692,6 +13710,8 @@ org.apache.felix.framework.Felix: void access$1000(org.apache.felix.framework.Fe
 org.apache.felix.framework.Felix: java.util.List access$1100(org.apache.felix.framework.Felix)
 org.apache.felix.framework.Felix: java.lang.SecurityManager access$1200(org.apache.felix.framework.Felix)
 org.apache.felix.framework.Felix: java.lang.SecurityManager access$1202(org.apache.felix.framework.Felix,java.lang.SecurityManager)
+org.apache.felix.framework.Felix: org.apache.felix.framework.cache.BundleCache access$1300(org.apache.felix.framework.Felix)
+org.apache.felix.framework.Felix: org.apache.felix.framework.cache.BundleCache access$1302(org.apache.felix.framework.Felix,org.apache.felix.framework.cache.BundleCache)
 org.apache.felix.framework.Felix: org.apache.felix.framework.util.ThreadGate access$102(org.apache.felix.framework.Felix,org.apache.felix.framework.util.ThreadGate)
 org.apache.felix.framework.Felix: void <clinit>()
 org.apache.felix.framework.BundleImpl: org.apache.felix.framework.Felix __m_felix
@@ -13830,14 +13850,14 @@ org.apache.felix.framework.util.SecureAction: boolean mkdir(java.io.File)
 org.apache.felix.framework.util.SecureAction: boolean mkdirs(java.io.File)
 org.apache.felix.framework.util.SecureAction: java.io.File[] listDirectory(java.io.File)
 org.apache.felix.framework.util.SecureAction: boolean renameFile(java.io.File,java.io.File)
-org.apache.felix.framework.util.SecureAction: java.io.InputStream getFileInputStream(java.io.File)
-org.apache.felix.framework.util.SecureAction: java.io.OutputStream getFileOutputStream(java.io.File)
+org.apache.felix.framework.util.SecureAction: java.io.FileInputStream getFileInputStream(java.io.File)
+org.apache.felix.framework.util.SecureAction: java.io.FileOutputStream getFileOutputStream(java.io.File)
+org.apache.felix.framework.util.SecureAction: java.net.URI toURI(java.io.File)
 org.apache.felix.framework.util.SecureAction: java.io.InputStream getURLConnectionInputStream(java.net.URLConnection)
 org.apache.felix.framework.util.SecureAction: boolean deleteFile(java.io.File)
 org.apache.felix.framework.util.SecureAction: java.io.File createTempFile(java.lang.String,java.lang.String,java.io.File)
 org.apache.felix.framework.util.SecureAction: java.net.URLConnection openURLConnection(java.net.URL)
-org.apache.felix.framework.util.SecureAction: org.apache.felix.framework.util.JarFileX openJAR(java.io.File)
-org.apache.felix.framework.util.SecureAction: org.apache.felix.framework.util.JarFileX openJAR(java.io.File,boolean)
+org.apache.felix.framework.util.SecureAction: org.apache.felix.framework.util.ZipFileX openZipFile(java.io.File)
 org.apache.felix.framework.util.SecureAction: void startActivator(org.osgi.framework.BundleActivator,org.osgi.framework.BundleContext)
 org.apache.felix.framework.util.SecureAction: void stopActivator(org.osgi.framework.BundleActivator,org.osgi.framework.BundleContext)
 org.apache.felix.framework.util.SecureAction: java.security.Policy getPolicy()
@@ -13949,8 +13969,8 @@ org.apache.felix.framework.util.EventDispatcher: org.osgi.framework.hooks.servic
 org.apache.felix.framework.util.EventDispatcher: void fireFrameworkEvent(org.osgi.framework.FrameworkEvent)
 org.apache.felix.framework.util.EventDispatcher: void fireBundleEvent(org.osgi.framework.BundleEvent)
 org.apache.felix.framework.util.EventDispatcher: void fireServiceEvent(org.osgi.framework.ServiceEvent,java.util.Dictionary,org.osgi.framework.launch.Framework)
-org.apache.felix.framework.util.EventDispatcher: void fireEventAsynchronously(org.apache.felix.framework.Logger,int,java.lang.Object[],java.util.EventObject)
-org.apache.felix.framework.util.EventDispatcher: void fireEventImmediately(org.apache.felix.framework.Logger,int,java.lang.Object[],java.util.EventObject,java.util.Dictionary)
+org.apache.felix.framework.util.EventDispatcher: void fireEventAsynchronously(org.apache.felix.framework.util.EventDispatcher,int,java.lang.Object[],java.util.EventObject)
+org.apache.felix.framework.util.EventDispatcher: void fireEventImmediately(org.apache.felix.framework.util.EventDispatcher,int,java.lang.Object[],java.util.EventObject,java.util.Dictionary)
 org.apache.felix.framework.util.EventDispatcher: void invokeFrameworkListenerCallback(org.osgi.framework.Bundle,java.util.EventListener,java.util.EventObject)
 org.apache.felix.framework.util.EventDispatcher: void invokeBundleListenerCallback(org.osgi.framework.Bundle,java.util.EventListener,java.util.EventObject)
 org.apache.felix.framework.util.EventDispatcher: void invokeServiceListenerCallback(org.osgi.framework.Bundle,java.util.EventListener,org.osgi.framework.Filter,java.lang.Object,java.util.EventObject,java.util.Dictionary)
@@ -13988,7 +14008,6 @@ org.apache.felix.framework.capabilityset.Capability: java.util.List getAttribute
 org.apache.felix.framework.capabilityset.Capability: java.util.List getUses()
 org.apache.felix.framework.resolver.ResolverImpl
 org.apache.felix.framework.resolver.ResolverImpl: org.apache.felix.framework.Logger m_logger
-org.apache.felix.framework.resolver.ResolverImpl: java.util.List m_emptyWires
 org.apache.felix.framework.resolver.ResolverImpl: java.util.List m_usesPermutations
 org.apache.felix.framework.resolver.ResolverImpl: java.util.List m_importPermutations
 org.apache.felix.framework.resolver.ResolverImpl: java.util.Map m_packageSourcesCache
@@ -13998,16 +14017,14 @@ org.apache.felix.framework.resolver.ResolverImpl: java.util.Map resolve(org.apac
 org.apache.felix.framework.resolver.ResolverImpl: java.util.Map getDynamicImportCandidates(org.apache.felix.framework.resolver.Resolver$ResolverState,org.apache.felix.framework.resolver.Module,java.lang.String)
 org.apache.felix.framework.resolver.ResolverImpl: void populateCandidates(org.apache.felix.framework.resolver.Resolver$ResolverState,org.apache.felix.framework.resolver.Module,java.util.Map,java.util.Map)
 org.apache.felix.framework.resolver.ResolverImpl: void populateDynamicCandidates(org.apache.felix.framework.resolver.Resolver$ResolverState,org.apache.felix.framework.resolver.Module,java.util.Map)
-org.apache.felix.framework.resolver.ResolverImpl: void calculatePackageSpaces(org.apache.felix.framework.resolver.Module,java.util.Map,java.util.Map,java.util.Map,java.util.Map,java.util.Set)
+org.apache.felix.framework.resolver.ResolverImpl: void calculatePackageSpaces(org.apache.felix.framework.resolver.Module,java.util.Map,java.util.Map,java.util.Map,java.util.Set)
 org.apache.felix.framework.resolver.ResolverImpl: void mergeCandidatePackages(org.apache.felix.framework.resolver.Module,org.apache.felix.framework.capabilityset.Requirement,org.apache.felix.framework.capabilityset.Capability,java.util.Map,java.util.Map)
 org.apache.felix.framework.resolver.ResolverImpl: void mergeCandidatePackage(org.apache.felix.framework.resolver.Module,boolean,org.apache.felix.framework.capabilityset.Requirement,org.apache.felix.framework.capabilityset.Capability,java.util.Map)
-org.apache.felix.framework.resolver.ResolverImpl: void addCapabilityDependency(org.apache.felix.framework.capabilityset.Capability,org.apache.felix.framework.capabilityset.Requirement,java.util.Map)
 org.apache.felix.framework.resolver.ResolverImpl: void mergeUses(org.apache.felix.framework.resolver.Module,org.apache.felix.framework.resolver.ResolverImpl$Packages,org.apache.felix.framework.capabilityset.Capability,java.util.List,java.util.Map,java.util.Map,java.util.Map)
-org.apache.felix.framework.resolver.ResolverImpl: void checkPackageSpaceConsistency(org.apache.felix.framework.resolver.Module,java.util.Map,java.util.Map,java.util.Map,java.util.Map)
+org.apache.felix.framework.resolver.ResolverImpl: void checkPackageSpaceConsistency(boolean,org.apache.felix.framework.resolver.Module,java.util.Map,java.util.Map,java.util.Map)
 org.apache.felix.framework.resolver.ResolverImpl: void permutate(java.util.Map,org.apache.felix.framework.capabilityset.Requirement,java.util.List)
 org.apache.felix.framework.resolver.ResolverImpl: void permutateIfNeeded(java.util.Map,org.apache.felix.framework.capabilityset.Requirement,java.util.List)
-org.apache.felix.framework.resolver.ResolverImpl: void calculateExportedPackages(org.apache.felix.framework.resolver.Module,java.util.Map)
-org.apache.felix.framework.resolver.ResolverImpl: boolean hasOverlappingImport(org.apache.felix.framework.resolver.Module,org.apache.felix.framework.capabilityset.Capability)
+org.apache.felix.framework.resolver.ResolverImpl: void calculateExportedPackages(org.apache.felix.framework.resolver.Module,java.util.Map,java.util.Map)
 org.apache.felix.framework.resolver.ResolverImpl: boolean isCompatible(org.apache.felix.framework.capabilityset.Capability,org.apache.felix.framework.capabilityset.Capability,java.util.Map)
 org.apache.felix.framework.resolver.ResolverImpl: java.util.List getPackageSources(org.apache.felix.framework.capabilityset.Capability,java.util.Map)
 org.apache.felix.framework.resolver.ResolverImpl: java.util.List getPackageSourcesInternal(org.apache.felix.framework.capabilityset.Capability,java.util.Map,java.util.List,java.util.Set)
@@ -14017,7 +14034,6 @@ org.apache.felix.framework.resolver.ResolverImpl: java.util.Map populateDynamicW
 org.apache.felix.framework.resolver.ResolverImpl: void dumpCandidateMap(java.util.Map)
 org.apache.felix.framework.resolver.ResolverImpl: void dumpModulePkgMap(java.util.Map)
 org.apache.felix.framework.resolver.ResolverImpl: void dumpModulePkgs(org.apache.felix.framework.resolver.Module,org.apache.felix.framework.resolver.ResolverImpl$Packages)
-org.apache.felix.framework.resolver.ResolverImpl: void <clinit>()
 org.apache.felix.framework.resolver.ResolveException
 org.apache.felix.framework.resolver.ResolveException: org.apache.felix.framework.resolver.Module m_module
 org.apache.felix.framework.resolver.ResolveException: org.apache.felix.framework.capabilityset.Requirement m_req
@@ -14091,6 +14107,7 @@ org.apache.felix.framework.util.FelixConstants: java.lang.String BUNDLE_STARTLEV
 org.apache.felix.framework.util.FelixConstants: java.lang.String SERVICE_URLHANDLERS_PROP
 org.apache.felix.framework.util.FelixConstants: java.lang.String IMPLICIT_BOOT_DELEGATION_PROP
 org.apache.felix.framework.util.FelixConstants: java.lang.String BOOT_CLASSLOADERS_PROP
+org.apache.felix.framework.util.FelixConstants: java.lang.String USE_LOCALURLS_PROP
 org.apache.felix.framework.util.FelixConstants: int FRAMEWORK_INACTIVE_STARTLEVEL
 org.apache.felix.framework.util.FelixConstants: int FRAMEWORK_DEFAULT_STARTLEVEL
 org.apache.felix.framework.util.FelixConstants: int SYSTEMBUNDLE_DEFAULT_STARTLEVEL
@@ -14130,6 +14147,7 @@ org.apache.felix.framework.URLHandlersBundleURLConnection: int getContentLength(
 org.apache.felix.framework.URLHandlersBundleURLConnection: long getLastModified()
 org.apache.felix.framework.URLHandlersBundleURLConnection: java.lang.String getContentType()
 org.apache.felix.framework.URLHandlersBundleURLConnection: java.security.Permission getPermission()
+org.apache.felix.framework.URLHandlersBundleURLConnection: java.net.URL getLocalURL()
 org.apache.felix.framework.BundleProtectionDomain
 org.apache.felix.framework.BundleProtectionDomain: java.lang.ref.WeakReference m_felix
 org.apache.felix.framework.BundleProtectionDomain: java.lang.ref.WeakReference m_bundle
@@ -14248,6 +14266,7 @@ org.apache.felix.framework.resolver.Module: java.util.Enumeration getResourcesBy
 org.apache.felix.framework.resolver.Module: java.net.URL getEntry(java.lang.String)
 org.apache.felix.framework.resolver.Module: boolean hasInputStream(int,java.lang.String)
 org.apache.felix.framework.resolver.Module: java.io.InputStream getInputStream(int,java.lang.String)
+org.apache.felix.framework.resolver.Module: java.net.URL getLocalURL(int,java.lang.String)
 org.apache.felix.framework.Felix$FelixResolver
 org.apache.felix.framework.Felix$FelixResolver: org.apache.felix.framework.resolver.Resolver m_resolver
 org.apache.felix.framework.Felix$FelixResolver: org.apache.felix.framework.FelixResolverState m_resolverState
@@ -14259,6 +14278,7 @@ org.apache.felix.framework.Felix$FelixResolver: java.util.Set getCandidates(org.
 org.apache.felix.framework.Felix$FelixResolver: boolean isAllowedDynamicImport(org.apache.felix.framework.resolver.Module,java.lang.String)
 org.apache.felix.framework.Felix$FelixResolver: void markResolvedModules(java.util.Map)
 org.apache.felix.framework.Felix$FelixResolver: void markBundleResolved(org.apache.felix.framework.resolver.Module)
+org.apache.felix.framework.Felix$FelixResolver: void fireResolvedEvents(java.util.Map)
 org.apache.felix.framework.cache.DirectoryContent$EntriesEnumeration
 org.apache.felix.framework.cache.DirectoryContent$EntriesEnumeration: java.io.File m_dir
 org.apache.felix.framework.cache.DirectoryContent$EntriesEnumeration: java.io.File[] m_children
@@ -14334,14 +14354,6 @@ org.apache.felix.framework.BundleContextImpl: java.lang.Object getService(org.os
 org.apache.felix.framework.BundleContextImpl: boolean ungetService(org.osgi.framework.ServiceReference)
 org.apache.felix.framework.BundleContextImpl: java.io.File getDataFile(java.lang.String)
 org.apache.felix.framework.BundleContextImpl: void checkValidity()
-org.apache.felix.framework.util.JarFileX
-org.apache.felix.framework.util.JarFileX: JarFileX(java.io.File)
-org.apache.felix.framework.util.JarFileX: JarFileX(java.io.File,boolean)
-org.apache.felix.framework.util.JarFileX: JarFileX(java.io.File,boolean,int)
-org.apache.felix.framework.util.JarFileX: JarFileX(java.lang.String)
-org.apache.felix.framework.util.JarFileX: JarFileX(java.lang.String,boolean)
-org.apache.felix.framework.util.JarFileX: java.util.zip.ZipEntry getEntry(java.lang.String)
-org.apache.felix.framework.util.JarFileX: java.util.jar.JarEntry getJarEntry(java.lang.String)
 org.apache.felix.framework.Felix$SystemBundleActivator
 org.apache.felix.framework.Felix$SystemBundleActivator: org.apache.felix.framework.Felix this$0
 org.apache.felix.framework.Felix$SystemBundleActivator: Felix$SystemBundleActivator(org.apache.felix.framework.Felix)
@@ -14417,33 +14429,32 @@ org.apache.felix.framework.cache.BundleArchive
 org.apache.felix.framework.cache.BundleArchive: java.lang.String FILE_PROTOCOL
 org.apache.felix.framework.cache.BundleArchive: java.lang.String REFERENCE_PROTOCOL
 org.apache.felix.framework.cache.BundleArchive: java.lang.String INPUTSTREAM_PROTOCOL
-org.apache.felix.framework.cache.BundleArchive: java.lang.String BUNDLE_ID_FILE
-org.apache.felix.framework.cache.BundleArchive: java.lang.String BUNDLE_LOCATION_FILE
-org.apache.felix.framework.cache.BundleArchive: java.lang.String CURRENT_LOCATION_FILE
+org.apache.felix.framework.cache.BundleArchive: java.lang.String BUNDLE_INFO_FILE
 org.apache.felix.framework.cache.BundleArchive: java.lang.String REVISION_LOCATION_FILE
-org.apache.felix.framework.cache.BundleArchive: java.lang.String BUNDLE_STATE_FILE
-org.apache.felix.framework.cache.BundleArchive: java.lang.String BUNDLE_START_LEVEL_FILE
-org.apache.felix.framework.cache.BundleArchive: java.lang.String REFRESH_COUNTER_FILE
-org.apache.felix.framework.cache.BundleArchive: java.lang.String BUNDLE_LASTMODIFIED_FILE
 org.apache.felix.framework.cache.BundleArchive: java.lang.String REVISION_DIRECTORY
 org.apache.felix.framework.cache.BundleArchive: java.lang.String DATA_DIRECTORY
+org.apache.felix.framework.cache.BundleArchive: org.apache.felix.framework.Logger m_logger
+org.apache.felix.framework.cache.BundleArchive: java.util.Map m_configMap
+org.apache.felix.framework.cache.BundleArchive: java.io.File m_archiveRootDir
+org.apache.felix.framework.cache.BundleArchive: boolean m_isSingleBundleFile
+org.apache.felix.framework.cache.BundleArchive: long m_id
+org.apache.felix.framework.cache.BundleArchive: java.lang.String m_originalLocation
+org.apache.felix.framework.cache.BundleArchive: int m_persistentState
+org.apache.felix.framework.cache.BundleArchive: int m_startLevel
+org.apache.felix.framework.cache.BundleArchive: long m_lastModified
+org.apache.felix.framework.cache.BundleArchive: long m_refreshCount
+org.apache.felix.framework.cache.BundleArchive: java.util.SortedMap m_revisions
+org.apache.felix.framework.cache.BundleArchive: java.lang.String BUNDLE_ID_FILE
+org.apache.felix.framework.cache.BundleArchive: java.lang.String BUNDLE_LOCATION_FILE
+org.apache.felix.framework.cache.BundleArchive: java.lang.String BUNDLE_STATE_FILE
+org.apache.felix.framework.cache.BundleArchive: java.lang.String BUNDLE_START_LEVEL_FILE
+org.apache.felix.framework.cache.BundleArchive: java.lang.String BUNDLE_LASTMODIFIED_FILE
+org.apache.felix.framework.cache.BundleArchive: java.lang.String REFRESH_COUNTER_FILE
 org.apache.felix.framework.cache.BundleArchive: java.lang.String ACTIVE_STATE
 org.apache.felix.framework.cache.BundleArchive: java.lang.String STARTING_STATE
 org.apache.felix.framework.cache.BundleArchive: java.lang.String INSTALLED_STATE
 org.apache.felix.framework.cache.BundleArchive: java.lang.String UNINSTALLED_STATE
-org.apache.felix.framework.cache.BundleArchive: org.apache.felix.framework.Logger m_logger
-org.apache.felix.framework.cache.BundleArchive: java.util.Map m_configMap
-org.apache.felix.framework.cache.BundleArchive: long m_id
-org.apache.felix.framework.cache.BundleArchive: java.io.File m_archiveRootDir
-org.apache.felix.framework.cache.BundleArchive: java.lang.String m_originalLocation
-org.apache.felix.framework.cache.BundleArchive: java.lang.String m_currentLocation
-org.apache.felix.framework.cache.BundleArchive: int m_persistentState
-org.apache.felix.framework.cache.BundleArchive: int m_startLevel
-org.apache.felix.framework.cache.BundleArchive: long m_lastModified
-org.apache.felix.framework.cache.BundleArchive: org.apache.felix.framework.cache.BundleRevision[] m_revisions
-org.apache.felix.framework.cache.BundleArchive: long m_refreshCount
-org.apache.felix.framework.cache.BundleArchive: BundleArchive()
-org.apache.felix.framework.cache.BundleArchive: BundleArchive(org.apache.felix.framework.Logger,java.util.Map,java.io.File,long,java.lang.String,java.io.InputStream)
+org.apache.felix.framework.cache.BundleArchive: BundleArchive(org.apache.felix.framework.Logger,java.util.Map,java.io.File,long,int,java.lang.String,java.io.InputStream)
 org.apache.felix.framework.cache.BundleArchive: BundleArchive(org.apache.felix.framework.Logger,java.util.Map,java.io.File)
 org.apache.felix.framework.cache.BundleArchive: long getId()
 org.apache.felix.framework.cache.BundleArchive: java.lang.String getLocation()
@@ -14453,25 +14464,38 @@ org.apache.felix.framework.cache.BundleArchive: int getStartLevel()
 org.apache.felix.framework.cache.BundleArchive: void setStartLevel(int)
 org.apache.felix.framework.cache.BundleArchive: long getLastModified()
 org.apache.felix.framework.cache.BundleArchive: void setLastModified(long)
+org.apache.felix.framework.cache.BundleArchive: long getRefreshCount()
+org.apache.felix.framework.cache.BundleArchive: void setRefreshCount(long)
 org.apache.felix.framework.cache.BundleArchive: java.io.File getDataFile(java.lang.String)
-org.apache.felix.framework.cache.BundleArchive: int getRevisionCount()
-org.apache.felix.framework.cache.BundleArchive: org.apache.felix.framework.cache.BundleRevision getRevision(int)
+org.apache.felix.framework.cache.BundleArchive: java.lang.Long getCurrentRevisionNumber()
+org.apache.felix.framework.cache.BundleArchive: org.apache.felix.framework.cache.BundleRevision getCurrentRevision()
+org.apache.felix.framework.cache.BundleArchive: org.apache.felix.framework.cache.BundleRevision getRevision(java.lang.Long)
 org.apache.felix.framework.cache.BundleArchive: void revise(java.lang.String,java.io.InputStream)
+org.apache.felix.framework.cache.BundleArchive: void reviseInternal(boolean,java.lang.Long,java.lang.String,java.io.InputStream)
 org.apache.felix.framework.cache.BundleArchive: boolean rollbackRevise()
-org.apache.felix.framework.cache.BundleArchive: java.lang.String getRevisionLocation(int)
-org.apache.felix.framework.cache.BundleArchive: void setRevisionLocation(java.lang.String,int)
+org.apache.felix.framework.cache.BundleArchive: java.lang.String getRevisionLocation(java.lang.Long)
+org.apache.felix.framework.cache.BundleArchive: void setRevisionLocation(java.lang.String,java.lang.Long)
 org.apache.felix.framework.cache.BundleArchive: void close()
 org.apache.felix.framework.cache.BundleArchive: void closeAndDelete()
 org.apache.felix.framework.cache.BundleArchive: void purge()
 org.apache.felix.framework.cache.BundleArchive: void initialize()
-org.apache.felix.framework.cache.BundleArchive: java.lang.String getCurrentLocation()
-org.apache.felix.framework.cache.BundleArchive: void setCurrentLocation(java.lang.String)
-org.apache.felix.framework.cache.BundleArchive: org.apache.felix.framework.cache.BundleRevision createRevisionFromLocation(java.lang.String,java.io.InputStream)
+org.apache.felix.framework.cache.BundleArchive: org.apache.felix.framework.cache.BundleRevision createRevisionFromLocation(java.lang.String,java.io.InputStream,java.lang.Long)
 org.apache.felix.framework.cache.BundleArchive: java.lang.String decode(java.lang.String)
-org.apache.felix.framework.cache.BundleArchive: long getRefreshCount()
-org.apache.felix.framework.cache.BundleArchive: void setRefreshCount(long)
+org.apache.felix.framework.cache.BundleArchive: void readBundleInfo()
+org.apache.felix.framework.cache.BundleArchive: void writeBundleInfo()
+org.apache.felix.framework.cache.BundleArchive: void writeId()
+org.apache.felix.framework.cache.BundleArchive: long readId()
+org.apache.felix.framework.cache.BundleArchive: void writeLocation()
+org.apache.felix.framework.cache.BundleArchive: java.lang.String readLocation()
+org.apache.felix.framework.cache.BundleArchive: void writePersistentState()
+org.apache.felix.framework.cache.BundleArchive: int readPersistentState()
+org.apache.felix.framework.cache.BundleArchive: void writeStartLevel()
+org.apache.felix.framework.cache.BundleArchive: int readStartLevel()
+org.apache.felix.framework.cache.BundleArchive: void writeLastModified()
+org.apache.felix.framework.cache.BundleArchive: long readLastModified()
+org.apache.felix.framework.cache.BundleArchive: void writeRefreshCount()
+org.apache.felix.framework.cache.BundleArchive: long readRefreshCount()
 org.apache.felix.framework.util.Util
-org.apache.felix.framework.util.Util: java.util.List m_emptyList
 org.apache.felix.framework.util.Util: java.lang.String DEFAULT_PROPERTIES_FILE
 org.apache.felix.framework.util.Util: byte[] encTab
 org.apache.felix.framework.util.Util: byte[] decTab
@@ -14512,6 +14536,7 @@ org.apache.felix.framework.resolver.Content: byte[] getEntryAsBytes(java.lang.St
 org.apache.felix.framework.resolver.Content: java.io.InputStream getEntryAsStream(java.lang.String)
 org.apache.felix.framework.resolver.Content: org.apache.felix.framework.resolver.Content getEntryAsContent(java.lang.String)
 org.apache.felix.framework.resolver.Content: java.lang.String getEntryAsNativeLibrary(java.lang.String)
+org.apache.felix.framework.resolver.Content: java.net.URL getEntryAsURL(java.lang.String)
 org.apache.felix.framework.util.EventDispatcher$1
 org.apache.felix.framework.util.EventDispatcher$1: EventDispatcher$1()
 org.apache.felix.framework.util.EventDispatcher$1: void run()
@@ -14577,22 +14602,23 @@ org.apache.felix.framework.cache.JarContent: java.util.Map m_configMap
 org.apache.felix.framework.cache.JarContent: java.lang.Object m_revisionLock
 org.apache.felix.framework.cache.JarContent: java.io.File m_rootDir
 org.apache.felix.framework.cache.JarContent: java.io.File m_file
-org.apache.felix.framework.cache.JarContent: org.apache.felix.framework.util.JarFileX m_jarFile
-org.apache.felix.framework.cache.JarContent: boolean m_isJarFileOwner
+org.apache.felix.framework.cache.JarContent: org.apache.felix.framework.util.ZipFileX m_zipFile
+org.apache.felix.framework.cache.JarContent: boolean m_isZipFileOwner
 org.apache.felix.framework.cache.JarContent: java.util.Map m_nativeLibMap
-org.apache.felix.framework.cache.JarContent: JarContent(org.apache.felix.framework.Logger,java.util.Map,java.lang.Object,java.io.File,java.io.File,org.apache.felix.framework.util.JarFileX)
+org.apache.felix.framework.cache.JarContent: JarContent(org.apache.felix.framework.Logger,java.util.Map,java.lang.Object,java.io.File,java.io.File,org.apache.felix.framework.util.ZipFileX)
 org.apache.felix.framework.cache.JarContent: void finalize()
 org.apache.felix.framework.cache.JarContent: void close()
 org.apache.felix.framework.cache.JarContent: boolean hasEntry(java.lang.String)
 org.apache.felix.framework.cache.JarContent: java.util.Enumeration getEntries()
 org.apache.felix.framework.cache.JarContent: byte[] getEntryAsBytes(java.lang.String)
 org.apache.felix.framework.cache.JarContent: java.io.InputStream getEntryAsStream(java.lang.String)
+org.apache.felix.framework.cache.JarContent: java.net.URL getEntryAsURL(java.lang.String)
 org.apache.felix.framework.cache.JarContent: org.apache.felix.framework.resolver.Content getEntryAsContent(java.lang.String)
 org.apache.felix.framework.cache.JarContent: java.lang.String getEntryAsNativeLibrary(java.lang.String)
 org.apache.felix.framework.cache.JarContent: java.lang.String toString()
 org.apache.felix.framework.cache.JarContent: java.io.File getFile()
 org.apache.felix.framework.cache.JarContent: void extractEmbeddedJar(java.lang.String)
-org.apache.felix.framework.cache.JarContent: org.apache.felix.framework.util.JarFileX openJarFile(java.io.File)
+org.apache.felix.framework.cache.JarContent: org.apache.felix.framework.util.ZipFileX openZipFile(java.io.File)
 org.apache.felix.framework.Logger
 org.apache.felix.framework.Logger: int LOG_ERROR
 org.apache.felix.framework.Logger: int LOG_WARNING
@@ -14615,8 +14641,10 @@ org.apache.felix.framework.Logger: void log(int,java.lang.String)
 org.apache.felix.framework.Logger: void log(int,java.lang.String,java.lang.Throwable)
 org.apache.felix.framework.Logger: void log(org.osgi.framework.ServiceReference,int,java.lang.String)
 org.apache.felix.framework.Logger: void log(org.osgi.framework.ServiceReference,int,java.lang.String,java.lang.Throwable)
-org.apache.felix.framework.Logger: void doLog(org.osgi.framework.ServiceReference,int,java.lang.String,java.lang.Throwable)
-org.apache.felix.framework.Logger: void _log(org.osgi.framework.ServiceReference,int,java.lang.String,java.lang.Throwable)
+org.apache.felix.framework.Logger: void log(org.osgi.framework.Bundle,int,java.lang.String)
+org.apache.felix.framework.Logger: void log(org.osgi.framework.Bundle,int,java.lang.String,java.lang.Throwable)
+org.apache.felix.framework.Logger: void doLog(org.osgi.framework.Bundle,org.osgi.framework.ServiceReference,int,java.lang.String,java.lang.Throwable)
+org.apache.felix.framework.Logger: void _log(org.osgi.framework.Bundle,org.osgi.framework.ServiceReference,int,java.lang.String,java.lang.Throwable)
 org.apache.felix.framework.Logger: void _logReflectively(java.lang.Object[],org.osgi.framework.ServiceReference,int,java.lang.String,java.lang.Throwable)
 org.apache.felix.framework.Logger: void startListeningForLogService()
 org.apache.felix.framework.Logger: void serviceChanged(org.osgi.framework.ServiceEvent)
@@ -14653,24 +14681,40 @@ org.apache.felix.framework.cache.BundleRevision: java.lang.String getLocation()
 org.apache.felix.framework.cache.BundleRevision: java.util.Map getManifestHeader()
 org.apache.felix.framework.cache.BundleRevision: org.apache.felix.framework.resolver.Content getContent()
 org.apache.felix.framework.cache.BundleRevision: void close()
-org.apache.felix.framework.util.IteratorToEnumeration
-org.apache.felix.framework.util.IteratorToEnumeration: java.util.Iterator m_iter
-org.apache.felix.framework.util.IteratorToEnumeration: IteratorToEnumeration(java.util.Iterator)
-org.apache.felix.framework.util.IteratorToEnumeration: boolean hasMoreElements()
-org.apache.felix.framework.util.IteratorToEnumeration: java.lang.Object nextElement()
 org.apache.felix.framework.ServiceRegistry$UsageCount
 org.apache.felix.framework.ServiceRegistry$UsageCount: int m_count
 org.apache.felix.framework.ServiceRegistry$UsageCount: org.osgi.framework.ServiceReference m_ref
 org.apache.felix.framework.ServiceRegistry$UsageCount: java.lang.Object m_svcObj
 org.apache.felix.framework.ServiceRegistry$UsageCount: ServiceRegistry$UsageCount()
 org.apache.felix.framework.ServiceRegistry$UsageCount: ServiceRegistry$UsageCount(org.apache.felix.framework.ServiceRegistry$1)
+org.apache.felix.framework.ModuleImpl$ModuleClassLoaderJava5
+org.apache.felix.framework.ModuleImpl$ModuleClassLoaderJava5: org.apache.felix.framework.ModuleImpl this$0
+org.apache.felix.framework.ModuleImpl$ModuleClassLoaderJava5: ModuleImpl$ModuleClassLoaderJava5(org.apache.felix.framework.ModuleImpl,java.lang.ClassLoader)
+org.apache.felix.framework.ModuleImpl$ModuleClassLoaderJava5: java.util.Enumeration getResources(java.lang.String)
+org.apache.felix.framework.ModuleImpl$ModuleClassLoaderJava5: java.util.Enumeration findResources(java.lang.String)
+org.apache.felix.framework.ModuleImpl$ModuleClassLoader: java.util.Map m_jarContentToDexFile
+org.apache.felix.framework.ModuleImpl$ModuleClassLoader: java.lang.Object[][] m_cachedLibs
+org.apache.felix.framework.ModuleImpl$ModuleClassLoader: int LIBNAME_IDX
+org.apache.felix.framework.ModuleImpl$ModuleClassLoader: int LIBPATH_IDX
+org.apache.felix.framework.ModuleImpl$ModuleClassLoader: org.apache.felix.framework.ModuleImpl this$0
+org.apache.felix.framework.ModuleImpl$ModuleClassLoader: ModuleImpl$ModuleClassLoader(org.apache.felix.framework.ModuleImpl,java.lang.ClassLoader)
+org.apache.felix.framework.ModuleImpl$ModuleClassLoader: org.osgi.framework.Bundle getBundle()
+org.apache.felix.framework.ModuleImpl$ModuleClassLoader: java.lang.Class loadClass(java.lang.String,boolean)
+org.apache.felix.framework.ModuleImpl$ModuleClassLoader: java.lang.Class findClass(java.lang.String)
+org.apache.felix.framework.ModuleImpl$ModuleClassLoader: java.lang.Object[] definePackage(java.lang.String)
+org.apache.felix.framework.ModuleImpl$ModuleClassLoader: java.lang.Class getDexFileClass(org.apache.felix.framework.cache.JarContent,java.lang.String,java.lang.ClassLoader)
+org.apache.felix.framework.ModuleImpl$ModuleClassLoader: java.net.URL getResource(java.lang.String)
+org.apache.felix.framework.ModuleImpl$ModuleClassLoader: java.net.URL findResource(java.lang.String)
+org.apache.felix.framework.ModuleImpl$ModuleClassLoader: java.util.Enumeration findResources(java.lang.String)
+org.apache.felix.framework.ModuleImpl$ModuleClassLoader: java.lang.String findLibrary(java.lang.String)
+org.apache.felix.framework.ModuleImpl$ModuleClassLoader: java.lang.String toString()
 org.apache.felix.framework.capabilityset.CapabilitySet
 org.apache.felix.framework.capabilityset.CapabilitySet: java.util.Map m_indices
 org.apache.felix.framework.capabilityset.CapabilitySet: java.util.Set m_capList
 org.apache.felix.framework.capabilityset.CapabilitySet: org.apache.felix.framework.util.SecureAction m_secureAction
 org.apache.felix.framework.capabilityset.CapabilitySet: java.lang.Class[] STRING_CLASS
 org.apache.felix.framework.capabilityset.CapabilitySet: java.lang.Class class$java$lang$String
-org.apache.felix.framework.capabilityset.CapabilitySet: CapabilitySet(java.util.List)
+org.apache.felix.framework.capabilityset.CapabilitySet: CapabilitySet(java.util.List,boolean)
 org.apache.felix.framework.capabilityset.CapabilitySet: void addCapability(org.apache.felix.framework.capabilityset.Capability)
 org.apache.felix.framework.capabilityset.CapabilitySet: void indexCapability(java.util.Map,org.apache.felix.framework.capabilityset.Capability,java.lang.Object)
 org.apache.felix.framework.capabilityset.CapabilitySet: void removeCapability(org.apache.felix.framework.capabilityset.Capability)
@@ -14725,6 +14769,7 @@ org.apache.felix.framework.cache.DirectoryContent: boolean hasEntry(java.lang.St
 org.apache.felix.framework.cache.DirectoryContent: java.util.Enumeration getEntries()
 org.apache.felix.framework.cache.DirectoryContent: byte[] getEntryAsBytes(java.lang.String)
 org.apache.felix.framework.cache.DirectoryContent: java.io.InputStream getEntryAsStream(java.lang.String)
+org.apache.felix.framework.cache.DirectoryContent: java.net.URL getEntryAsURL(java.lang.String)
 org.apache.felix.framework.cache.DirectoryContent: org.apache.felix.framework.resolver.Content getEntryAsContent(java.lang.String)
 org.apache.felix.framework.cache.DirectoryContent: java.lang.String getEntryAsNativeLibrary(java.lang.String)
 org.apache.felix.framework.cache.DirectoryContent: java.lang.String toString()
@@ -14771,27 +14816,42 @@ org.apache.felix.framework.StartLevelActivator: StartLevelActivator(org.apache.f
 org.apache.felix.framework.StartLevelActivator: void start(org.osgi.framework.BundleContext)
 org.apache.felix.framework.StartLevelActivator: void stop(org.osgi.framework.BundleContext)
 org.apache.felix.framework.StartLevelActivator: java.lang.Class class$(java.lang.String)
+org.apache.felix.framework.ModuleImpl$ToLocalUrlEnumeration
+org.apache.felix.framework.ModuleImpl$ToLocalUrlEnumeration: java.util.Enumeration m_enumeration
+org.apache.felix.framework.ModuleImpl$ToLocalUrlEnumeration: ModuleImpl$ToLocalUrlEnumeration(java.util.Enumeration)
+org.apache.felix.framework.ModuleImpl$ToLocalUrlEnumeration: boolean hasMoreElements()
+org.apache.felix.framework.ModuleImpl$ToLocalUrlEnumeration: java.lang.Object nextElement()
 org.apache.felix.framework.cache.BundleCache
 org.apache.felix.framework.cache.BundleCache: java.lang.String CACHE_BUFSIZE_PROP
 org.apache.felix.framework.cache.BundleCache: java.lang.String CACHE_ROOTDIR_PROP
+org.apache.felix.framework.cache.BundleCache: java.lang.String CACHE_LOCKING_PROP
+org.apache.felix.framework.cache.BundleCache: java.lang.String CACHE_SINGLEBUNDLEFILE_PROP
 org.apache.felix.framework.cache.BundleCache: int BUFSIZE
 org.apache.felix.framework.cache.BundleCache: java.lang.String CACHE_DIR_NAME
 org.apache.felix.framework.cache.BundleCache: java.lang.String CACHE_ROOTDIR_DEFAULT
+org.apache.felix.framework.cache.BundleCache: java.lang.String CACHE_LOCK_NAME
 org.apache.felix.framework.cache.BundleCache: java.lang.String BUNDLE_DIR_PREFIX
 org.apache.felix.framework.cache.BundleCache: org.apache.felix.framework.util.SecureAction m_secureAction
 org.apache.felix.framework.cache.BundleCache: org.apache.felix.framework.Logger m_logger
 org.apache.felix.framework.cache.BundleCache: java.util.Map m_configMap
+org.apache.felix.framework.cache.BundleCache: java.lang.Object m_lock
 org.apache.felix.framework.cache.BundleCache: BundleCache(org.apache.felix.framework.Logger,java.util.Map)
+org.apache.felix.framework.cache.BundleCache: void release()
 org.apache.felix.framework.cache.BundleCache: org.apache.felix.framework.util.SecureAction getSecureAction()
 org.apache.felix.framework.cache.BundleCache: void delete()
 org.apache.felix.framework.cache.BundleCache: org.apache.felix.framework.cache.BundleArchive[] getArchives()
-org.apache.felix.framework.cache.BundleCache: org.apache.felix.framework.cache.BundleArchive create(long,java.lang.String,java.io.InputStream)
+org.apache.felix.framework.cache.BundleCache: org.apache.felix.framework.cache.BundleArchive create(long,int,java.lang.String,java.io.InputStream)
 org.apache.felix.framework.cache.BundleCache: java.io.File getSystemBundleDataFile(java.lang.String)
 org.apache.felix.framework.cache.BundleCache: void copyStreamToFile(java.io.InputStream,java.io.File)
 org.apache.felix.framework.cache.BundleCache: boolean deleteDirectoryTree(java.io.File)
 org.apache.felix.framework.cache.BundleCache: java.io.File determineCacheDir(java.util.Map)
 org.apache.felix.framework.cache.BundleCache: boolean deleteDirectoryTreeRecursive(java.io.File)
 org.apache.felix.framework.cache.BundleCache: void <clinit>()
+org.apache.felix.framework.util.ZipFileX
+org.apache.felix.framework.util.ZipFileX: ZipFileX(java.io.File)
+org.apache.felix.framework.util.ZipFileX: ZipFileX(java.io.File,int)
+org.apache.felix.framework.util.ZipFileX: ZipFileX(java.lang.String)
+org.apache.felix.framework.util.ZipFileX: java.util.zip.ZipEntry getEntry(java.lang.String)
 org.apache.felix.framework.URLHandlersStreamHandlerProxy
 org.apache.felix.framework.URLHandlersStreamHandlerProxy: java.lang.Class[] URL_PROXY_CLASS
 org.apache.felix.framework.URLHandlersStreamHandlerProxy: java.lang.Class[] STRING_TYPES
@@ -14882,6 +14942,7 @@ org.apache.felix.framework.cache.ContentDirectoryContent: boolean hasEntry(java.
 org.apache.felix.framework.cache.ContentDirectoryContent: java.util.Enumeration getEntries()
 org.apache.felix.framework.cache.ContentDirectoryContent: byte[] getEntryAsBytes(java.lang.String)
 org.apache.felix.framework.cache.ContentDirectoryContent: java.io.InputStream getEntryAsStream(java.lang.String)
+org.apache.felix.framework.cache.ContentDirectoryContent: java.net.URL getEntryAsURL(java.lang.String)
 org.apache.felix.framework.cache.ContentDirectoryContent: org.apache.felix.framework.resolver.Content getEntryAsContent(java.lang.String)
 org.apache.felix.framework.cache.ContentDirectoryContent: java.lang.String getEntryAsNativeLibrary(java.lang.String)
 org.apache.felix.framework.cache.ContentDirectoryContent: java.lang.String toString()
@@ -15144,6 +15205,7 @@ org.apache.felix.framework.ExtensionManager: byte[] getEntryAsBytes(java.lang.St
 org.apache.felix.framework.ExtensionManager: java.io.InputStream getEntryAsStream(java.lang.String)
 org.apache.felix.framework.ExtensionManager: org.apache.felix.framework.resolver.Content getEntryAsContent(java.lang.String)
 org.apache.felix.framework.ExtensionManager: java.lang.String getEntryAsNativeLibrary(java.lang.String)
+org.apache.felix.framework.ExtensionManager: java.net.URL getEntryAsURL(java.lang.String)
 org.apache.felix.framework.ExtensionManager: java.lang.Class class$(java.lang.String)
 org.apache.felix.framework.ExtensionManager: org.apache.felix.framework.Logger access$000(org.apache.felix.framework.ExtensionManager)
 org.apache.felix.framework.ExtensionManager: java.util.Map access$100(org.apache.felix.framework.ExtensionManager)
@@ -16333,8 +16395,8 @@ org.eclipse.emf.ecore.impl.BasicEObjectImpl: boolean $assertionsDisabled
 scala.Function1$mcIL$sp$$anonfun$compose$mcIL$sp$1: long serialVersionUID
 scala.util.parsing.combinator.lexical.StdLexical$$anonfun$whitespace$1$$anonfun$apply$16$$anonfun$apply$17: long serialVersionUID
 scala.util.parsing.combinator.lexical.StdLexical$$anonfun$whitespace$1$$anonfun$apply$16$$anonfun$apply$18: long serialVersionUID
-org.apache.felix.framework.util.SecureAction$Actions: int INITIALIZE_CONTEXT
-org.apache.felix.framework.util.SecureAction$Actions: int ADD_EXTENSION_URL
+org.apache.felix.framework.util.SecureAction$Actions: int INITIALIZE_CONTEXT_ACTION
+org.apache.felix.framework.util.SecureAction$Actions: int ADD_EXTENSION_URL_ACTION
 org.apache.felix.framework.util.SecureAction$Actions: int CREATE_TMPFILE_ACTION
 org.apache.felix.framework.util.SecureAction$Actions: int CREATE_URL_ACTION
 org.apache.felix.framework.util.SecureAction$Actions: int CREATE_URL_WITH_CONTEXT_ACTION
@@ -16350,6 +16412,7 @@ org.apache.felix.framework.util.SecureAction$Actions: int GET_DECLARED_METHOD_AC
 org.apache.felix.framework.util.SecureAction$Actions: int GET_FIELD_ACTION
 org.apache.felix.framework.util.SecureAction$Actions: int GET_FILE_INPUT_ACTION
 org.apache.felix.framework.util.SecureAction$Actions: int GET_FILE_OUTPUT_ACTION
+org.apache.felix.framework.util.SecureAction$Actions: int TO_URI_ACTION
 org.apache.felix.framework.util.SecureAction$Actions: int GET_METHOD_ACTION
 org.apache.felix.framework.util.SecureAction$Actions: int GET_POLICY_ACTION
 org.apache.felix.framework.util.SecureAction$Actions: int GET_PROPERTY_ACTION
@@ -16362,8 +16425,7 @@ org.apache.felix.framework.util.SecureAction$Actions: int INVOKE_METHOD_ACTION
 org.apache.felix.framework.util.SecureAction$Actions: int LIST_DIRECTORY_ACTION
 org.apache.felix.framework.util.SecureAction$Actions: int MAKE_DIRECTORIES_ACTION
 org.apache.felix.framework.util.SecureAction$Actions: int MAKE_DIRECTORY_ACTION
-org.apache.felix.framework.util.SecureAction$Actions: int OPEN_JARX_ACTION
-org.apache.felix.framework.util.SecureAction$Actions: int OPEN_JARX_VERIFY_ACTION
+org.apache.felix.framework.util.SecureAction$Actions: int OPEN_ZIPFILE_ACTION
 org.apache.felix.framework.util.SecureAction$Actions: int OPEN_URLCONNECTION_ACTION
 org.apache.felix.framework.util.SecureAction$Actions: int RENAME_FILE_ACTION
 org.apache.felix.framework.util.SecureAction$Actions: int SET_ACCESSIBLE_ACTION
@@ -17220,6 +17282,7 @@ net.lag.configgy.ConfigParser$$anonfun$root$1$$anonfun$apply$3: long serialVersi
 net.lag.configgy.ConfigParser$$anonfun$root$1$$anonfun$apply$2: long serialVersionUID
 net.lag.configgy.ConfigParser$$anonfun$root$1$$anonfun$apply$1: long serialVersionUID
 scala.util.PropertiesTrait$$anonfun$propOrFalse$1: long serialVersionUID
+org.apache.felix.framework.cache.JarRevision: int DEFAULT_BUFFER
 org.apache.felix.framework.cache.JarRevision: java.lang.String BUNDLE_JAR_FILE
 org.eclipse.emf.ecore.resource.impl.ContentHandlerImpl$Describer: java.lang.String CONTENT_TYPE_ID
 org.eclipse.emf.ecore.resource.impl.ContentHandlerImpl$Describer: java.lang.String EXTENSIONS
@@ -18779,6 +18842,7 @@ org.apache.felix.framework.util.FelixConstants: java.lang.String BUNDLE_STARTLEV
 org.apache.felix.framework.util.FelixConstants: java.lang.String SERVICE_URLHANDLERS_PROP
 org.apache.felix.framework.util.FelixConstants: java.lang.String IMPLICIT_BOOT_DELEGATION_PROP
 org.apache.felix.framework.util.FelixConstants: java.lang.String BOOT_CLASSLOADERS_PROP
+org.apache.felix.framework.util.FelixConstants: java.lang.String USE_LOCALURLS_PROP
 org.apache.felix.framework.util.FelixConstants: java.lang.String FAKE_URL_PROTOCOL_VALUE
 org.apache.felix.framework.util.FelixConstants: java.lang.String FELIX_EXTENSION_ACTIVATOR
 scala.Function1$mcLI$sp$$anonfun$compose$mcLI$sp$1: long serialVersionUID
@@ -20057,16 +20121,16 @@ scala.actors.ReactChannel$$anonfun$react$1: long serialVersionUID
 org.apache.felix.framework.cache.BundleArchive: java.lang.String FILE_PROTOCOL
 org.apache.felix.framework.cache.BundleArchive: java.lang.String REFERENCE_PROTOCOL
 org.apache.felix.framework.cache.BundleArchive: java.lang.String INPUTSTREAM_PROTOCOL
-org.apache.felix.framework.cache.BundleArchive: java.lang.String BUNDLE_ID_FILE
-org.apache.felix.framework.cache.BundleArchive: java.lang.String BUNDLE_LOCATION_FILE
-org.apache.felix.framework.cache.BundleArchive: java.lang.String CURRENT_LOCATION_FILE
+org.apache.felix.framework.cache.BundleArchive: java.lang.String BUNDLE_INFO_FILE
 org.apache.felix.framework.cache.BundleArchive: java.lang.String REVISION_LOCATION_FILE
-org.apache.felix.framework.cache.BundleArchive: java.lang.String BUNDLE_STATE_FILE
-org.apache.felix.framework.cache.BundleArchive: java.lang.String BUNDLE_START_LEVEL_FILE
-org.apache.felix.framework.cache.BundleArchive: java.lang.String REFRESH_COUNTER_FILE
-org.apache.felix.framework.cache.BundleArchive: java.lang.String BUNDLE_LASTMODIFIED_FILE
 org.apache.felix.framework.cache.BundleArchive: java.lang.String REVISION_DIRECTORY
 org.apache.felix.framework.cache.BundleArchive: java.lang.String DATA_DIRECTORY
+org.apache.felix.framework.cache.BundleArchive: java.lang.String BUNDLE_ID_FILE
+org.apache.felix.framework.cache.BundleArchive: java.lang.String BUNDLE_LOCATION_FILE
+org.apache.felix.framework.cache.BundleArchive: java.lang.String BUNDLE_STATE_FILE
+org.apache.felix.framework.cache.BundleArchive: java.lang.String BUNDLE_START_LEVEL_FILE
+org.apache.felix.framework.cache.BundleArchive: java.lang.String BUNDLE_LASTMODIFIED_FILE
+org.apache.felix.framework.cache.BundleArchive: java.lang.String REFRESH_COUNTER_FILE
 org.apache.felix.framework.cache.BundleArchive: java.lang.String ACTIVE_STATE
 org.apache.felix.framework.cache.BundleArchive: java.lang.String STARTING_STATE
 org.apache.felix.framework.cache.BundleArchive: java.lang.String INSTALLED_STATE
@@ -20758,6 +20822,8 @@ scala.collection.TraversableLike$$anonfun$map$1: long serialVersionUID
 scala.collection.TraversableLike$$anonfun$dropWhile$1: long serialVersionUID
 scala.concurrent.DelayedLazyVal$$anonfun$3: long serialVersionUID
 scala.collection.mutable.ArrayBuffer: long serialVersionUID
+org.apache.felix.framework.ModuleImpl$ModuleClassLoader: int LIBNAME_IDX
+org.apache.felix.framework.ModuleImpl$ModuleClassLoader: int LIBPATH_IDX
 scala.collection.generic.GenericTraversableTemplate$$anonfun$unzip$1: long serialVersionUID
 org.eclipse.emf.ecore.xmi.impl.XMISaveImpl: java.lang.String XMI_ID_NS
 org.eclipse.emf.ecore.xmi.impl.XMISaveImpl: java.lang.String XMI_TAG_NS
@@ -21354,6 +21420,7 @@ scala.xml.parsing.MarkupParserCommon$$anonfun$xProcInstr$1: long serialVersionUI
 org.apache.felix.main.AutoProcessor: java.lang.String AUTO_DEPLOY_DIR_PROPERY
 org.apache.felix.main.AutoProcessor: java.lang.String AUTO_DEPLOY_DIR_VALUE
 org.apache.felix.main.AutoProcessor: java.lang.String AUTO_DEPLOY_ACTION_PROPERY
+org.apache.felix.main.AutoProcessor: java.lang.String AUTO_DEPLOY_STARTLEVEL_PROPERY
 org.apache.felix.main.AutoProcessor: java.lang.String AUTO_DEPLOY_INSTALL_VALUE
 org.apache.felix.main.AutoProcessor: java.lang.String AUTO_DEPLOY_START_VALUE
 org.apache.felix.main.AutoProcessor: java.lang.String AUTO_DEPLOY_UPDATE_VALUE
@@ -21966,8 +22033,11 @@ org.restlet.routing.Router: int MODE_RANDOM_MATCH
 org.restlet.Restlet: java.lang.String UNABLE_TO_START
 org.apache.felix.framework.cache.BundleCache: java.lang.String CACHE_BUFSIZE_PROP
 org.apache.felix.framework.cache.BundleCache: java.lang.String CACHE_ROOTDIR_PROP
+org.apache.felix.framework.cache.BundleCache: java.lang.String CACHE_LOCKING_PROP
+org.apache.felix.framework.cache.BundleCache: java.lang.String CACHE_SINGLEBUNDLEFILE_PROP
 org.apache.felix.framework.cache.BundleCache: java.lang.String CACHE_DIR_NAME
 org.apache.felix.framework.cache.BundleCache: java.lang.String CACHE_ROOTDIR_DEFAULT
+org.apache.felix.framework.cache.BundleCache: java.lang.String CACHE_LOCK_NAME
 org.apache.felix.framework.cache.BundleCache: java.lang.String BUNDLE_DIR_PREFIX
 org.slf4j.LoggerFactory: int UNINITIALIZED
 org.slf4j.LoggerFactory: int ONGOING_INITILIZATION

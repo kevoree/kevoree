@@ -19,7 +19,7 @@ import org.osgi.framework.Bundle;
 @Provides({
     @ProvidedPort(name = "log", type = PortType.MESSAGE)
 })
-@Library(name = "EnTiMid-Notification")
+@Library(name = "Kevoree-Android-JavaSE")
 @ComponentType
 public class AndroidNotification extends AbstractComponentType {
 

@@ -28,7 +28,7 @@ import org.kevoree.library.sample.service.ServicePrimitifReturnTypes;
 @Provides({
     @ProvidedPort(name = "portPrimitiveTypes", type = PortType.SERVICE, className = ServicePrimitifReturnTypes.class)
 })
-@Library(name = "ART2_TESTS")
+@Library(name = "Kevoree-Samples")
 @ComponentType
 public class ComponentPrimitiveTypeService extends AbstractComponentType implements ServicePrimitifReturnTypes {
 

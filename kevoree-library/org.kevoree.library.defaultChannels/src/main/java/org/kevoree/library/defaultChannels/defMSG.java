@@ -28,7 +28,7 @@ import org.kevoree.framework.message.*;
  *
  * @author ffouquet
  */
-@Library(name = "art2baselib")
+@Library(name = "Kevoree-Android-JavaSE")
 @ChannelTypeFragment
 public class defMSG extends AbstractChannelFragment {
 

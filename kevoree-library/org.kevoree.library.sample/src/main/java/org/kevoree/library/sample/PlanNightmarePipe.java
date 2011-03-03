@@ -21,7 +21,7 @@ import org.osgi.framework.Bundle;
     @RequiredPort(name = "r1", type = PortType.MESSAGE, optional = false),
     @RequiredPort(name = "r2", type = PortType.MESSAGE, optional = false)
 })
-@Library(name = "KEVOREE_SAMPLES")
+@Library(name = "Kevoree-Samples")
 @ComponentType
 public class PlanNightmarePipe extends AbstractComponentType {
 

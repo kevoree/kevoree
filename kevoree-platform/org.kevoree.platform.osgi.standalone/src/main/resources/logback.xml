@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="UTF-8"?>
 <!--
 
     Licensed under the GNU LESSER GENERAL PUBLIC LICENSE, Version 3, 29 June 2007;
@@ -15,67 +14,13 @@
 
 -->
 <configuration>
-    <appender name="LOGFILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <append>false</append>
-        <File>kevoreeNode.log</File>
-        <layout class="ch.qos.logback.classic.PatternLayout">
-            <pattern>%d %5p [ %F:%L ] - %m%n</pattern>
-        </layout>
-        <rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
-            <FileNamePattern>kevoreeNode%i.log</FileNamePattern>
-            <maxIndex>50</maxIndex>
-        </rollingPolicy>
-        <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
-            <MaxFileSize>1024KB</MaxFileSize>
-        </triggeringPolicy>
-    </appender>
     <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
-        <layout class="ch.qos.logback.classic.PatternLayout">
-            <pattern>%d %5p - %m%n</pattern>
-        </layout>
+        <encoder>
+            <pattern>%msg%n</pattern>
+        </encoder>
     </appender>
-    <!--
-    <appender name="SMTP" class="ch.qos.logback.classic.net.SMTPAppender">
-        <From>no_reply_errors@aruld.org</From>
-        <Subject>loandb - Error Log</Subject>
-        <To>aruld@acm.org</To>
-        <SMTPHost>localhost</SMTPHost>
-        <Threshold>ERROR</Threshold>
-        <layout class="ch.qos.logback.classic.html.HTMLLayout">
-            <pattern>%d %5p [ %F:%L ] - %m%n</pattern>
-        </layout>
-    </appender>
-    -->
-    <!--
-    <logger name="org.springframework.orm">
-        <level value="INFO"/>
-    </logger>
-    <logger name="org.springframework.transaction">
-        <level value="INFO"/>
-    </logger>
-    <logger name="org.hibernate.cache">
-        <level value="INFO"/>
-    </logger>
-    <logger name="org.hibernate.type">
-        <level value="INFO"/>
-    </logger>
-    <logger name="org.apache">
-        <level value="INFO"/>
-    </logger>
-    <logger name="org.hibernate.SQL">
-        <level value="INFO"/>
-    </logger>
-    <logger name="org.hibernate">
-        <level value="INFO"/>
-    </logger>
-    <logger name="org.loandb">
-        <level value="WARN"/>
-    </logger>
-    -->
-    <root>
-        <level value="INFO"/>
-        <appender-ref ref="LOGFILE"/>
+
+    <root level="${root-level:-INFO}">
         <appender-ref ref="CONSOLE"/>
-        <appender-ref ref="SMTP"/>
     </root>
 </configuration>

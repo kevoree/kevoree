@@ -32,21 +32,19 @@ import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.project.MavenProject;
 
 /**
- *
  * @author ffouquet
- *
+ * @author <a href="mailto:ffouquet@irisa.fr">Fouquet François</a>
+ * @version $Id$
  * @goal generate
  * @phase generate-sources
  * @requiresDependencyResolution compile
- * @author <a href="mailto:ffouquet@irisa.fr">Fouquet François</a>
- * @version $Id$
- *
  */
 public class SysGenPlugin extends AbstractMojo {
 
@@ -89,6 +87,35 @@ public class SysGenPlugin extends AbstractMojo {
      */
     private File sourceOutputDirectory;
 
+    public String cleanVersion(String previousVersion) {
+        String finalVersion = "";
+        String ppreviousVersion = previousVersion;
+        if (ppreviousVersion.contains("-")) {
+            ppreviousVersion = ppreviousVersion.substring(0, ppreviousVersion.indexOf("-"));
+        }
+        String[] currentVersionTab = ppreviousVersion.split("\\.");
+        for (int i = 0; i < currentVersionTab.length; i++) {
+
+            String temp = currentVersionTab[i];
+            String finalTemp = "";
+            char[] chars = temp.toCharArray();
+            for (int j = 0; j < chars.length; j++) {
+                if (Character.isDigit(chars[j])) {
+                    finalTemp = finalTemp + chars[j];
+                }
+            }
+
+            if (!finalTemp.equals("")) {
+                if (i != 0) {
+                    finalVersion = finalVersion +".";
+                }
+                finalVersion = finalVersion + finalTemp;
+            }
+        }
+        return finalVersion;
+    }
+
+
     @Override
     public void execute() throws MojoExecutionException {
 
@@ -109,13 +136,9 @@ public class SysGenPlugin extends AbstractMojo {
             String artefactPath = local.getBasedir() + "/" + local.pathOf(d).toString();
             Set<String> newPackages = PackageUtils.getFilteredPackageNames(artefactPath, filters2, debug);
             for (String packageName : newPackages) {
-                String version = d.getVersion();
-                if (version.contains("-")) {
-                    version = version.substring(0, version.indexOf("-"));
-                }
+                String version = cleanVersion(d.getVersion());
 
                 if (!packages.keySet().contains(packageName)) {
-
                     packages.put(packageName, version);
                     //  packagesVersion.add(packageName+ ";version=" + version);
                 } else {
@@ -126,9 +149,9 @@ public class SysGenPlugin extends AbstractMojo {
                     Boolean sup = false;
 
                     int maxI = Math.max(oldversions.length, newVersions.length);
-                    for(int i = 0 ; i < maxI ; i++ ){
-                        if(i < oldversions.length && i < newVersions.length ){
-                              sup = sup || ( Integer.parseInt(newVersions[i]) > Integer.parseInt(oldversions[i])  );
+                    for (int i = 0; i < maxI; i++) {
+                        if (i < oldversions.length && i < newVersions.length) {
+                            sup = sup || (Integer.parseInt(newVersions[i]) > Integer.parseInt(oldversions[i]));
                         }
                     }
 

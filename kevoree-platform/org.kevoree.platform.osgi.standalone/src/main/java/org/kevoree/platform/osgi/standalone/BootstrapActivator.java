@@ -33,7 +33,6 @@ import org.osgi.framework.BundleContext;
 import org.osgi.service.packageadmin.PackageAdmin;
 
 /**
- *
  * @author ffouquet
  */
 public class BootstrapActivator implements BundleActivator {
@@ -46,35 +45,46 @@ public class BootstrapActivator implements BundleActivator {
     @Override
     public void start(BundleContext context) throws Exception {
         //StandaloneBootstrap.performArt2BootStrap(context);
+        try {
 
-        kompareBean = new KevoreeKompareBean();
-        deployBean = new KevoreeAdaptationDeployServiceOSGi();
-        KevoreeDeployManager contextDeploy = new KevoreeDeployManager();
-        contextDeploy.setBundle(context.getBundle());
-        contextDeploy.setBundleContext(context);
+            kompareBean = new KevoreeKompareBean();
+            deployBean = new KevoreeAdaptationDeployServiceOSGi();
+            KevoreeDeployManager contextDeploy = new KevoreeDeployManager();
+            contextDeploy.setBundle(context.getBundle());
+            contextDeploy.setBundleContext(context);
 
-        PackageAdmin paAdmin = (PackageAdmin) context.getService(context.getServiceReferences(PackageAdmin.class.getName(), null)[0]);
-        contextDeploy.setServicePackageAdmin(paAdmin);
+            PackageAdmin paAdmin = (PackageAdmin) context.getService(context.getServiceReferences(PackageAdmin.class.getName(), null)[0]);
+            contextDeploy.setServicePackageAdmin(paAdmin);
 
-        deployBean.setContext(contextDeploy);
+            deployBean.setContext(contextDeploy);
 
-        KevoreeConfigServiceBean configBean = new KevoreeConfigServiceBean();
-        coreBean = new KevoreeCoreBean();
-        coreBean.setBundleContext(context);
-        coreBean.setConfigService((ConfigurationService) configBean);
-        coreBean.setKompareService((ModelKompareService) kompareBean);
-        coreBean.setDeployService((KevoreeAdaptationDeployService) deployBean);
-        coreBean.start();
+            KevoreeConfigServiceBean configBean = new KevoreeConfigServiceBean();
+            coreBean = new KevoreeCoreBean();
+            coreBean.setBundleContext(context);
+            coreBean.setConfigService((ConfigurationService) configBean);
+            coreBean.setKompareService((ModelKompareService) kompareBean);
+            coreBean.setDeployService((KevoreeAdaptationDeployService) deployBean);
+            coreBean.start();
 
-        context.registerService(KevoreeModelHandlerService.class.getName(),coreBean,null);
+            context.registerService(KevoreeModelHandlerService.class.getName(), coreBean, null);
 
-        System.out.println("Kevoree Started !");
+            System.out.println("Kevoree Started !");
 
-        Handler.setModelhandler((KevoreeModelHandlerService) coreBean);
-        remoteBean = new KevoreeRemoteBean();
-        remoteBean.start();
+            Handler.setModelhandler((KevoreeModelHandlerService) coreBean);
 
-        System.out.println("Kevoree Remote Started !");
+            remoteBean = new KevoreeRemoteBean();
+            remoteBean.start();
+            System.out.println("Kevoree Remote Started !");
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
+        /*
+
+        */
+
     }
 
     @Override

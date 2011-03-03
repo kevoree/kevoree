@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="ASCII"?>
-<art2:ContainerRoot xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:art2="http://art/2.0">
-  <typeDefinitions xsi:type="art2:ComponentType" name="AndroidNotification" deployUnit="//@deployUnits.0" factoryBean="org.entimid.org.entimid.android.notification.AndroidNotificationFactory" bean="org.entimid.org.entimid.android.notification.AndroidNotification" startMethod="start" stopMethod="stop"/>
-  <libraries name="EnTiMid-Notification" subTypes="//@typeDefinitions.0"/>
-  <deployUnits groupName="org.entimid" unitName="android.notification" version="3.0.0-SNAPSHOT" hashcode="201010261723381"/>
-</art2:ContainerRoot>

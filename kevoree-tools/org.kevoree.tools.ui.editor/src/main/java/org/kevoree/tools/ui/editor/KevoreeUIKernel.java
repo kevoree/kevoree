@@ -21,6 +21,7 @@ import org.kevoree.tools.ui.editor.command.CheckCurrentModel;
 import org.kevoree.tools.ui.editor.panel.KevoreeEditorPanel;
 import org.kevoree.tools.ui.framework.elements.ModelPanel;
 
+
 /**
  *
  * @author ffouquet
@@ -34,10 +35,11 @@ public class KevoreeUIKernel {
         //Art2Cluster.start();
 
         //INIT PERIODIQUE COMMAND
+        /*
         CheckCurrentModel checker = new CheckCurrentModel();
         checker.setKernel(this);
         modelHandler.addListenerCommand(checker);
-
+        */
     }
 
     private KevoreeUIFactory uifactory;

@@ -7,23 +7,18 @@
     <artifactId>org.kevoree.library.logger.android</artifactId>
     <packaging>bundle</packaging>
     <name>Kevoree :: Library :: Logger :: Android</name>
-    <version>1.0.0-RC3</version>
+    <version>1.0.0-RC5</version>
 
     <parent>
         <artifactId>org.kevoree.library.root</artifactId>
         <groupId>org.kevoree.library</groupId>
-        <version>1.0.0-RC3</version>
+        <version>1.0.0-RC5</version>
         <relativePath>../org.kevoree.library.root/pom.xml</relativePath>
     </parent>
     
     <properties>
-        <kevoree.repositories>http://duke.irisa.fr/maven2/</kevoree.repositories>
-        <android.platform.version>8</android.platform.version>
-        <android.platform>platforms/android-${android.platform.version}</android.platform>
-        <android.framework.aidl>${android.home}/${android.platform}/framework.aidl</android.framework.aidl>
-        <android.jar>${android.home}/${android.platform}/android.jar</android.jar>
-        <android.tools.aapt>${android.home}/${android.platform}/tools/aapt</android.tools.aapt>
-        <android.tools.dx>${android.home}/${android.platform}/tools/dx</android.tools.dx>
+        <android.tools.aapt>${android.home}/platform-tools/aapt</android.tools.aapt>
+        <android.tools.dx>${android.home}/platform-tools/dx</android.tools.dx>
     </properties>
 
     <dependencies>

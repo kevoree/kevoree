@@ -34,7 +34,7 @@ import org.kevoree.library.sample.service.ServiceB;
     @RequiredPort(name="req2", type=PortType.MESSAGE),
     @RequiredPort(name="req3", type=PortType.MESSAGE)
 })
-@Library(name="ART_TEST")
+@Library(name = "Kevoree-Samples")
 @ComponentType
 public class ComponentB extends AbstractComponentType implements ServiceB {
 
