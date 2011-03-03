@@ -23,8 +23,6 @@ import com.sun.mirror.apt.AnnotationProcessorEnvironment
 import com.sun.mirror.declaration.TypeDeclaration
 import org.kevoree.KevoreeFactory
 import org.kevoree.ContainerRoot
-import org.kevoree.annotation.ChannelTypeFragment
-import org.kevoree.annotation.ComponentType
 import org.kevoree.framework.annotation.processor.KevoreeXmiHelper
 import org.kevoree.framework.annotation.processor.LocalUtility
 import org.kevoree.framework.annotation.processor.PostAptChecker
@@ -32,26 +30,33 @@ import org.kevoree.tools.annotation.generator.KevoreeActivatorGenerator
 import org.kevoree.tools.annotation.generator.KevoreeFactoryGenerator
 import org.kevoree.tools.annotation.generator.KevoreeGenerator
 import scala.collection.JavaConversions._
-import org.kevoree.framework.{AbstractChannelFragment, AbstractComponentType}
+import org.kevoree.annotation.{GroupType, ChannelTypeFragment, ComponentType}
+import org.kevoree.framework.{AbstractGroupType, AbstractChannelFragment, AbstractComponentType}
 
 class KevoreeAnnotationProcessor(env: AnnotationProcessorEnvironment) extends AnnotationProcessor {
 
   def process() = {
 
-    var root = KevoreeFactory.eINSTANCE.createContainerRoot();
+    val root = KevoreeFactory.eINSTANCE.createContainerRoot();
     LocalUtility.root_=(root)
-    env.getTypeDeclarations().foreach{
+    env.getTypeDeclarations().foreach {
       typeDecl =>
-      var ctAnnotation = typeDecl.getAnnotation(classOf[ComponentType]);
-      if (ctAnnotation != null) {
-        processComponentType(ctAnnotation, typeDecl, root)
-      }
 
-      var channelTypeAnnotation = typeDecl.getAnnotation(classOf[ChannelTypeFragment]);
-      if (channelTypeAnnotation != null) {
-        processChannelType(channelTypeAnnotation, typeDecl, root)
-      }
-      //TODO
+      //PROCESS COMPONENT TYPE
+        val ctAnnotation = typeDecl.getAnnotation(classOf[ComponentType]);
+        if (ctAnnotation != null) {
+          processComponentType(ctAnnotation, typeDecl, root)
+        }
+        //PROCESS CHANNEL TYPE
+        val channelTypeAnnotation = typeDecl.getAnnotation(classOf[ChannelTypeFragment]);
+        if (channelTypeAnnotation != null) {
+          processChannelType(channelTypeAnnotation, typeDecl, root)
+        }
+        //GROUPTYPE
+        val groupTypeAnnotation = typeDecl.getAnnotation(classOf[GroupType]);
+        if (groupTypeAnnotation != null) {
+          processGroupType(groupTypeAnnotation, typeDecl, root)
+        }
 
     }
 
@@ -60,12 +65,36 @@ class KevoreeAnnotationProcessor(env: AnnotationProcessorEnvironment) extends An
     val errorsInChecker = !checker.check
 
 
-    if(!errorsInChecker) {
+    if (!errorsInChecker) {
       //TODO SEPARATE MAVEN PLUGIN
       KevoreeGenerator.generatePort(root, env.getFiler());
       KevoreeFactoryGenerator.generateFactory(root, env.getFiler());
       KevoreeActivatorGenerator.generateActivator(root, env.getFiler());
       KevoreeXmiHelper.save(LocalUtility.generateLibURI(env), root);
+    }
+  }
+
+
+  def processGroupType(groupTypeAnnotation: GroupType, typeDecl: TypeDeclaration, root: ContainerRoot) = {
+    //Checks that the root KevoreeChannelFragment is present in hierarchy.
+    val superTypeChecker = new SuperTypeValidationVisitor(classOf[AbstractGroupType].getName)
+    typeDecl.accept(superTypeChecker)
+    if (superTypeChecker.result) {
+
+      var groupType = KevoreeFactory.eINSTANCE.createGroupType
+      var groupName = groupTypeAnnotation.name
+      if (groupName.equals("empty")) {
+        groupName = typeDecl.getSimpleName
+      }
+      groupType.setName(groupName)
+      groupType.setBean(typeDecl.getQualifiedName)
+      groupType.setFactoryBean(typeDecl.getQualifiedName + "Factory")
+      root.getTypeDefinitions.add(groupType)
+
+      //RUN VISITOR
+      typeDecl.accept(GroupTypeVisitor(groupType, env))
+    } else {
+      env.getMessager.printWarning("GroupType ignored " + typeDecl.getQualifiedName + " , reason=Must extend " + classOf[AbstractChannelFragment].getName)
     }
   }
 
@@ -100,17 +129,17 @@ class KevoreeAnnotationProcessor(env: AnnotationProcessorEnvironment) extends An
     val superTypeChecker = new SuperTypeValidationVisitor(classOf[AbstractComponentType].getName)
     typeDecl.accept(superTypeChecker)
     //Prints a warning
-    if( !superTypeChecker.result) {
+    if (!superTypeChecker.result) {
       env.getMessager.printWarning("ComponentType ignored " + typeDecl.getQualifiedName + " , reason=Must extend " + classOf[AbstractComponentType].getName)
     }
 
     //Checks the Class is not Abstract
     var isAbstract = false
-    typeDecl.getModifiers.find( mod => mod.equals(com.sun.mirror.declaration.Modifier.ABSTRACT)) match {
+    typeDecl.getModifiers.find(mod => mod.equals(com.sun.mirror.declaration.Modifier.ABSTRACT)) match {
       case Some(s) => {
-          isAbstract = true;
-          env.getMessager.printWarning("ComponentType ignored " + typeDecl.getQualifiedName + ", reason=Declared as @ComponentType but is actually ABSTRACT. Should be either concrete or @ComponentFragment.")
-        }
+        isAbstract = true;
+        env.getMessager.printWarning("ComponentType ignored " + typeDecl.getQualifiedName + ", reason=Declared as @ComponentType but is actually ABSTRACT. Should be either concrete or @ComponentFragment.")
+      }
       case None =>
     }
 

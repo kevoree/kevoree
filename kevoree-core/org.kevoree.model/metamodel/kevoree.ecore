@@ -161,10 +161,6 @@
     <eStructuralFeatures xsi:type="ecore:EReference" name="port" lowerBound="1" eType="#//Port"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="hub" lowerBound="1" eType="#//Channel"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="NodeType" eSuperTypes="#//TypeDefinition">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="bootstrap" upperBound="-1"
-        eType="#//DeployUnit"/>
-  </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="NodeNetwork">
     <eStructuralFeatures xsi:type="ecore:EReference" name="link" upperBound="-1" eType="#//NodeLink"
         containment="true"/>
@@ -239,5 +235,6 @@
     <eStructuralFeatures xsi:type="ecore:EReference" name="subNodes" upperBound="-1"
         eType="#//ContainerNode"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="GroupType" eSuperTypes="#//TypeDefinition"/>
+  <eClassifiers xsi:type="ecore:EClass" name="GroupType" eSuperTypes="#//LifeCycleTypeDefinition"/>
+  <eClassifiers xsi:type="ecore:EClass" name="NodeType" eSuperTypes="#//TypeDefinition"/>
 </ecore:EPackage>
