@@ -20,6 +20,6 @@ import java.lang.annotation.Target;
 
 @Retention(RetentionPolicy.CLASS)
 @Target({ElementType.TYPE})
-public @interface GroupType {
+public @interface NodeType {
     java.lang.String name() default "empty";
 }

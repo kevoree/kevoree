@@ -26,22 +26,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Set;
-import org.kevoree.annotation.ChannelTypeFragment;
-import org.kevoree.annotation.ComponentFragment;
-import org.kevoree.annotation.ComponentType;
-import org.kevoree.annotation.DictionaryAttribute;
-import org.kevoree.annotation.DictionaryType;
-import org.kevoree.annotation.Library;
-import org.kevoree.annotation.Port;
-import org.kevoree.annotation.Ports;
-import org.kevoree.annotation.ProvidedPort;
-import org.kevoree.annotation.Provides;
-import org.kevoree.annotation.RequiredPort;
-import org.kevoree.annotation.Requires;
-import org.kevoree.annotation.Start;
-import org.kevoree.annotation.Stop;
-import org.kevoree.annotation.ThirdParties;
-import org.kevoree.annotation.ThirdParty;
+
+import org.kevoree.annotation.*;
 
 /**
  *
@@ -74,6 +60,7 @@ public class KevoreeAnnotationProcessorFactory implements
         stype.add(DictionaryType.class.getName());
         stype.add(ComponentFragment.class.getName());
         stype.add(Library.class.getName());
+        stype.add(GroupType.class.getName());
         return stype;
     }
 
