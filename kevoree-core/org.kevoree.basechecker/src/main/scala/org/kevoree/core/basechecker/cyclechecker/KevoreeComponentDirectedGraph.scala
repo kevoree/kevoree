@@ -36,16 +36,19 @@ case class KevoreeComponentDirectedGraph(model: ContainerRoot, nodeName: String)
 					val componentInstance = instance.asInstanceOf[ComponentInstance]
 					componentInstance.getRelatedBindings.foreach {
 						binding =>
-							addVertex(binding.getHub)
-							addVertex(componentInstance)
+							if (binding.getPort.getPortTypeRef.getNoDependency == null || binding.getPort.getPortTypeRef.getNoDependency == false) {
+								addVertex(binding.getHub)
+								addVertex(componentInstance)
 
-							if (componentInstance.getProvided.contains(binding.getPort)) {
-								addEdge(binding.getHub, componentInstance, binding)
-							} else {
-								addEdge(componentInstance, binding.getHub, binding)
+								if (componentInstance.getProvided.contains(binding.getPort)) {
+									addEdge(binding.getHub, componentInstance, binding)
+								} else {
+									addEdge(componentInstance, binding.getHub, binding)
+								}
 							}
 					}
 			}
 		case None =>
 	}
+
 }
