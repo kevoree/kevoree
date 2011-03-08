@@ -72,9 +72,10 @@ public class VectorClock implements Version, Serializable {
      * 
      * @param bytes The serialized bytes of the VectorClock
      */
+    /*
     public VectorClock(byte[] bytes) {
         this(bytes, 0);
-    }
+    }*/
 
     /**
      * Read the vector clock from the given bytes starting from a particular
@@ -83,6 +84,7 @@ public class VectorClock implements Version, Serializable {
      * @param bytes The bytes to read from
      * @param offset The offset to start reading from
      */
+    /*
     public VectorClock(byte[] bytes, int offset) {
         if(bytes == null || bytes.length <= offset)
             throw new IllegalArgumentException("Invalid byte array for serialization--no bytes to read.");
@@ -104,8 +106,9 @@ public class VectorClock implements Version, Serializable {
             index += entrySize;
         }
         this.timestamp = ByteUtils.readLong(bytes, index);
-    }
+    }*/
 
+    /*
     public byte[] toBytes() {
         byte[] serialized = new byte[sizeInBytes()];
         // write the number of versions
@@ -126,13 +129,14 @@ public class VectorClock implements Version, Serializable {
         }
         ByteUtils.writeLong(serialized, this.timestamp, start);
         return serialized;
-    }
+    }*/
 
+    /*
     public int sizeInBytes() {
         byte versionSize = ByteUtils.numberOfBytesRequired(getMaxVersion());
         return ByteUtils.SIZE_OF_SHORT + 1 + this.versions.size()
                * (ByteUtils.SIZE_OF_SHORT + versionSize) + ByteUtils.SIZE_OF_LONG;
-    }
+    }*/
 
     /**
      * Increment the version info associated with the given node
