@@ -31,8 +31,8 @@ class KevsLexical extends Lexical with KevsTokens {
   protected def kident(name: String) : KevsToken = if (reserved contains name) Keyword(name) else Identifier(name)
   override def whitespace: Parser[Any] = rep(whitespaceChar)
 
-  val reserved : HashSet[String] = HashSet("tblock","addComponent","removeComponent","addNode","removeNode","addChannel","removeChannel","bind","unbind")
-  val delimiters : HashSet[String] = HashSet("@",":","{","}","=>",".",",")
+  val reserved : HashSet[String] = HashSet("tblock","addComponent","removeComponent","addNode","removeNode","addChannel","removeChannel","bind","unbind","addGroup","removeGroup")
+  val delimiters : HashSet[String] = HashSet("@",":","{","}","=>",".",",","=")
 
   
 

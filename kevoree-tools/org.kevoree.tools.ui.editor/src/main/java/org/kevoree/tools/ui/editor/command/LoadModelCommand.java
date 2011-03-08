@@ -67,6 +67,14 @@ public class LoadModelCommand implements Command {
                     ChannelTypePanel ctp = kernel.getUifactory().createChannelTypeUI((ChannelType) ct);
                     kernel.getEditorPanel().getPalette().addTypeDefinitionPanel(ctp, ctl.getName());
                 }
+                if (ct instanceof NodeType) {
+                    NodeTypePanel ctp = kernel.getUifactory().createNodeTypeUI((NodeType) ct);
+                    kernel.getEditorPanel().getPalette().addTypeDefinitionPanel(ctp, ctl.getName());
+                }
+                if (ct instanceof GroupType) {
+                    GroupTypePanel ctp = kernel.getUifactory().createGroupTypeUI((GroupType) ct);
+                    kernel.getEditorPanel().getPalette().addTypeDefinitionPanel(ctp, ctl.getName());
+                }
                 loadedLib.add(ct);
             }
         }
@@ -82,6 +90,15 @@ public class LoadModelCommand implements Command {
                     ChannelTypePanel ctp = kernel.getUifactory().createChannelTypeUI((ChannelType) ct);
                     kernel.getEditorPanel().getPalette().addTypeDefinitionPanel(ctp, "default");
                 }
+                if (ct instanceof NodeType) {
+                    NodeTypePanel ctp = kernel.getUifactory().createNodeTypeUI((NodeType) ct);
+                    kernel.getEditorPanel().getPalette().addTypeDefinitionPanel(ctp, "default");
+                }
+                if (ct instanceof GroupType) {
+                    GroupTypePanel ctp = kernel.getUifactory().createGroupTypeUI((GroupType) ct);
+                    kernel.getEditorPanel().getPalette().addTypeDefinitionPanel(ctp, "default");
+                }
+
             }
         }
 
@@ -112,6 +129,20 @@ public class LoadModelCommand implements Command {
         for (Channel hub : kernel.getModelHandler().getActualModel().getHubs()) {
             ChannelPanel newhubpanel = kernel.getUifactory().createHub(hub);
             kernel.getModelPanel().addHub(newhubpanel);
+        }
+
+        //LOAD GROUP
+        for (Group group : kernel.getModelHandler().getActualModel().getGroups()) {
+            GroupPanel newgrouppanel = kernel.getUifactory().createGroup(group);
+            kernel.getModelPanel().addGroup(newgrouppanel);
+            //LOAD GROUP BINDINGS
+            for (ContainerNode subNode : group.getSubNodes()) {
+                NodePanel nodePanel = (NodePanel) kernel.getUifactory().getMapping().get(subNode);
+                org.kevoree.tools.ui.framework.elements.Binding uib = new Binding(Binding.Type.groupLink);
+                uib.setFrom(newgrouppanel.getAnchor());
+                uib.setTo(nodePanel);
+                kernel.getModelPanel().addBinding(uib);
+            }
         }
 
 

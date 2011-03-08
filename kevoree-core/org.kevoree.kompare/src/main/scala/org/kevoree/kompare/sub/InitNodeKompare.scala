@@ -27,66 +27,80 @@ import org.kevoree.framework.aspects.KevoreeAspects._
 
 trait InitNodeKompare extends AbstractKompare {
 
-  def getInitNodeAdaptationModel(node:ContainerNode):AdaptationModel= {
+  def getInitNodeAdaptationModel(node: ContainerNode): AdaptationModel = {
     var adaptationModel = org.kevoreeAdaptation.KevoreeAdaptationFactory.eINSTANCE.createAdaptationModel
-    logger.info("INIT NODE v2 "+node.getName)
+    logger.info("INIT NODE v2 " + node.getName)
     //UPDATE ALL COMPONENT TYPE
 
     var root = node.eContainer.asInstanceOf[ContainerRoot]
-    
+
     /* add type */
-    node.getUsedTypeDefinition.foreach{ct=>
-      var typecmd = KevoreeAdaptationFactory.eINSTANCE.createAddType
-      typecmd.setRef(ct)
-      adaptationModel.getAdaptations.add(typecmd)
+    node.getUsedTypeDefinition.foreach {
+      ct =>
+        var typecmd = KevoreeAdaptationFactory.eINSTANCE.createAddType
+        typecmd.setRef(ct)
+        adaptationModel.getAdaptations.add(typecmd)
 
-      /* add all reLib */
-      ct.getRequiredLibs.foreach{rLib =>
-        var addcttp = KevoreeAdaptationFactory.eINSTANCE.createAddThirdParty
-        addcttp.setRef(rLib)
-        adaptationModel.getAdaptations.add(addcttp)
-      }
+        /* add all reLib */
+        ct.getRequiredLibs.foreach {
+          rLib =>
+            var addcttp = KevoreeAdaptationFactory.eINSTANCE.createAddThirdParty
+            addcttp.setRef(rLib)
+            adaptationModel.getAdaptations.add(addcttp)
+        }
 
-      /* add deploy unit if necessary */
-      adaptationModel.getAdaptations.filter(adaptation => adaptation.isInstanceOf[AddDeployUnit]).find(adaptation=> adaptation.asInstanceOf[AddDeployUnit].getRef.isModelEquals(ct.getDeployUnit) ) match {
-        case None => {
+        /* add deploy unit if necessary */
+        adaptationModel.getAdaptations.filter(adaptation => adaptation.isInstanceOf[AddDeployUnit]).find(adaptation => adaptation.asInstanceOf[AddDeployUnit].getRef.isModelEquals(ct.getDeployUnit)) match {
+          case None => {
             var ctcmd = KevoreeAdaptationFactory.eINSTANCE.createAddDeployUnit
             ctcmd.setRef(ct.getDeployUnit)
             adaptationModel.getAdaptations.add(ctcmd)
           }
-        case Some(e)=> //SIMILAR DEPLOY UNIT PRIMITIVE ALREADY REGISTERED
-      }
-
+          case Some(e) => //SIMILAR DEPLOY UNIT PRIMITIVE ALREADY REGISTERED
+        }
 
 
     }
-    
+
     /* add component */
-    node.getInstances.foreach({c =>
+    node.getInstances.foreach({
+      c =>
         var addccmd = KevoreeAdaptationFactory.eINSTANCE.createAddInstance
         addccmd.setRef(c)
         adaptationModel.getAdaptations.add(addccmd)
-      })
-    
+    })
+
 
     /* add FRAGMENT binding */
-    root.getHubs.foreach{channel =>
-      channel.getOtherFragment(node.getName).foreach{remoteName =>
-        var addccmd = KevoreeAdaptationFactory.eINSTANCE.createAddFragmentBinding
-        addccmd.setRef(channel)
-        addccmd.setTargetNodeName(remoteName)
-        adaptationModel.getAdaptations.add(addccmd)
-      }
+    root.getHubs.foreach {
+      channel =>
+        channel.getOtherFragment(node.getName).foreach {
+          remoteName =>
+            var addccmd = KevoreeAdaptationFactory.eINSTANCE.createAddFragmentBinding
+            addccmd.setRef(channel)
+            addccmd.setTargetNodeName(remoteName)
+            adaptationModel.getAdaptations.add(addccmd)
+        }
     }
-    
+
     /* add mbinding */
-    root.getMBindings.foreach{b=>
-      if(b.getPort.eContainer.eContainer == node){
-        var addcmd = KevoreeAdaptationFactory.eINSTANCE.createAddBinding
-        addcmd.setRef(b)
-        adaptationModel.getAdaptations.add(addcmd)
-      }
+    root.getMBindings.foreach {
+      b =>
+        if (b.getPort.eContainer.eContainer == node) {
+          var addcmd = KevoreeAdaptationFactory.eINSTANCE.createAddBinding
+          addcmd.setRef(b)
+          adaptationModel.getAdaptations.add(addcmd)
+        }
     }
+
+    /* add group */
+    /*
+    root.getGroups.filter(group=> group.getSubNodes.contains(node)).foreach({
+      c =>
+        val addgroup = KevoreeAdaptationFactory.eINSTANCE.createAddInstance
+        addgroup.setRef(c)
+        adaptationModel.getAdaptations.add(addgroup)
+    })  */
 
     adaptationModel
   }

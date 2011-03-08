@@ -18,10 +18,18 @@
 
 package org.kevoree.tools.ui.framework.elements;
 
+import org.kevoree.tools.ui.framework.UITools;
+
 /**
- *
  * @author ffouquet
  */
 public class ChannelTypePanel extends ChannelPanel {
+
+
+    @Override
+    public void setTitle(String _title) {
+        String newtitle = UITools.formatTitle(_title,18);
+        super.setTitle(newtitle);
+    }
 
 }

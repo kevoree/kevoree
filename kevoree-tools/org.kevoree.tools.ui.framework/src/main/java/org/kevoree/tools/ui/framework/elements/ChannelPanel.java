@@ -46,6 +46,7 @@ public class ChannelPanel extends JPanel implements TitledElement,SelectElement 
     public void setTitle(String _title) {
         if (_title != null) {
             title = _title;
+            this.setToolTipText("Channel "+title);
         }
     }
 

@@ -57,7 +57,7 @@ public class PortDragTargetListener extends DropTarget {
             Object draggedPanel = arg0.getTransferable().getTransferData(new DataFlavor(DataFlavor.javaJVMLocalObjectMimeType));
 
             if (target.getNature().equals(PortPanel.PortNature.SERVICE)) {
-                AddBindingCommand command = new AddBindingCommand();
+                AddGroupBindingCommand command = new AddGroupBindingCommand();
                 command.setKernel(kernel);
                 command.setTarget(target);
                 command.execute(draggedPanel);

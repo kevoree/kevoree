@@ -117,6 +117,7 @@ trait ChannelTypeFragment extends KevoreeChannelFragment with ChannelFragment {
         v =>
           dictionary.put(v, d.get(v))
       }
+      updateChannelFragment
       reply(true)
     }
 

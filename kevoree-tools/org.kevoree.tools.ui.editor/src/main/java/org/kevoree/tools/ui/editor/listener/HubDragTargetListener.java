@@ -39,7 +39,7 @@ public class HubDragTargetListener extends DropTarget {
 
     /**
      * constructor
-     * @param _p the table view panel
+     * @param _kernel the table view panel
      * @param _target the view of the component
      */
     public HubDragTargetListener(ChannelPanel _target, KevoreeUIKernel _kernel) {

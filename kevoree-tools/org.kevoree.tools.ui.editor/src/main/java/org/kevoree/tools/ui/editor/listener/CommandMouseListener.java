@@ -39,17 +39,17 @@ public class CommandMouseListener extends MouseAdapter {
 
     @Override
     public void mouseClicked(MouseEvent e) {
-        System.out.println("MouseListener::MouseClicked::"+e.getButton());
+       // System.out.println("MouseListener::MouseClicked::"+e.getButton());
         switch(e.getButton()) {
             case MouseEvent.BUTTON1 : {
                 if(leftClickCommand != null) {
-                    System.out.println("MouseListener::MouseClicked::executeLeftClickCommand");
+                   // System.out.println("MouseListener::MouseClicked::executeLeftClickCommand");
                     leftClickCommand.execute(e.getComponent());
                 }
             }break;
             case MouseEvent.BUTTON3 : {
                 if(rightClickCommand != null) {
-                    System.out.println("MouseListener::MouseClicked::executeRightClickCommand");
+                   // System.out.println("MouseListener::MouseClicked::executeRightClickCommand");
                     rightClickCommand.execute(e.getComponent());
                 }
             }break;

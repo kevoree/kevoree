@@ -28,6 +28,12 @@ import org.kevoree.tools.ui.framework.SelectElement;
  */
 public class NodePanel extends RoundedTitledPanel implements SelectElement, ErrorHighlightableElement {
 
+    @Override
+    public void setTitle(String _title) {
+        super.setTitle(_title);
+        this.setToolTipText("Node "+_title);
+    }
+
     public NodePanel() {
 
         this.setBackground(new Color(100, 100, 100, 150));
@@ -67,14 +73,16 @@ public Dimension getPreferredSize() {
     @Override
     public void setState(STATE state) {
         _state = state;
-        if(_state.equals(STATE.IN_ERROR)){
-             this.setBackground(new Color(239, 50, 50, 150));
+        if (_state.equals(STATE.IN_ERROR)) {
+            this.setBackground(new Color(239, 50, 50, 150));
         } else {
-             this.setBackground(new Color(100, 100, 100, 150));
+            this.setBackground(new Color(100, 100, 100, 150));
         }
     }
 
     @Override
-    public STATE getCurrentState() {return _state;}
+    public STATE getCurrentState() {
+        return _state;
+    }
 
 }

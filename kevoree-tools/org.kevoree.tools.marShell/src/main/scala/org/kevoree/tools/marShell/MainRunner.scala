@@ -37,10 +37,10 @@ object MainRunner {
 
    // var newModel = KevoreeFactory.eINSTANCE.createContainerRoot
 
-    var newModel = load("/Users/ffouquet/Desktop/emptyMerged.kev")
+    val newModel = load("/Users/ffouquet/Desktop/emptyMerged.kev")
 
-    var parser =new KevsParser();
-    var oscript = parser.parseScript(ParserUtil.loadFile("/Users/ffouquet/Documents/DEV/dukeboard_github/kevoree/kevoree-tools/org.kevoree.tools.marShell/src/test/resources/scripts/t1.kevs"));
+    val parser =new KevsParser();
+    val oscript = parser.parseScript(ParserUtil.loadFile("/Users/ffouquet/Documents/DEV/dukeboard_github/kevoree/kevoree-tools/org.kevoree.tools.marShell/src/test/resources/scripts/t1.kevs"));
 
     oscript match {
       case None => println("Error"+parser.lastNoSuccess)
@@ -49,22 +49,17 @@ object MainRunner {
           println("Interpreter Result : "+script.interpret(KevsInterpreterContext(newModel)))
       }
     }
-
     ParserUtil.save("/Users/ffouquet/Desktop/modified.kev", newModel)
-    
-
-    
-
   }
 
   def load(uri:String) : ContainerRoot = {
-    var rs = new ResourceSetImpl();
-    rs.getResourceFactoryRegistry().getExtensionToFactoryMap().put("*", new XMIResourceFactoryImpl());
+    val rs = new ResourceSetImpl();
+    rs.getResourceFactoryRegistry().getExtensionToFactoryMap().put("kev", new XMIResourceFactoryImpl());
     rs.getPackageRegistry().put(KevoreePackage.eNS_URI, KevoreePackage.eINSTANCE);
-    var res = rs.getResource(URI.createURI(uri), true)
+    val res = rs.getResource(URI.createURI(uri), true)
     res.asInstanceOf[XMIResource].getDefaultLoadOptions().put(XMLResource.OPTION_ENCODING, "UTF-8");
     res.asInstanceOf[XMIResource].getDefaultSaveOptions().put(XMLResource.OPTION_ENCODING, "UTF-8");
-    var result = res.getContents().get(0);
+    val result = res.getContents().get(0);
     //println(res)
     return result.asInstanceOf[ContainerRoot];
   }

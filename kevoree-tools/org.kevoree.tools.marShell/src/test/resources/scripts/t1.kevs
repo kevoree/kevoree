@@ -4,7 +4,7 @@ tblock{
    // include("")
 
     //ADD INSTANCE
-    addNode nodeSalon,nodeSalon2
+    addNode nodeSalon,nodeSalon2 : JavaSE
     addComponent lightS1@nodeSalon : FakeSimpleLight {  key1="",key2=""  }
     //addComponent switch@nodeSalon : FakeSwitch
 
@@ -29,7 +29,7 @@ tblock{
     //bind switch.off@nodeSalon => hub2
 
   //  unbind lightS1.on@nodeSalon => hub1
-                                =>
+
 
 
 //    removeNode nodeSalon

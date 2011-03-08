@@ -36,10 +36,10 @@ public class PortPanel extends JPanel {
 
     public enum PortType {
         REQUIRED, PROVIDED
-    };
+    }
     public enum PortNature {
         MESSAGE, SERVICE
-    };
+    }
 
     private PortNature nature = null;
 
@@ -65,6 +65,7 @@ public class PortPanel extends JPanel {
     public void setTitle(String _title) {
         if (_title != null) {
             title = _title;
+            this.setToolTipText("Port "+title);
         }
     }
 

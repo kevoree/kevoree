@@ -36,7 +36,7 @@ public class TypeDefinitionPalette extends JScrollPane {
     public void addTypeDefinitionPanel(JPanel ctp, String libName) {
         ComponentTypeLibraryPalette foundP = null;
         for (ComponentTypeLibraryPalette p : libPalettes) {
-            if (p.getName().equals(libName)) {
+            if (p.getLibName().equals(libName)) {
                 foundP = p;
             }
         }
@@ -45,7 +45,7 @@ public class TypeDefinitionPalette extends JScrollPane {
             libPalettes.add(foundP);
             subpanels.add(foundP);
         }
-        foundP.add(ctp);
+        foundP.addComponentTypePanel(ctp);
         repaint();
         revalidate();
     }

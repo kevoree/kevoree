@@ -27,6 +27,7 @@ object Art2UIAspects{
   implicit def channelAspect(c : org.kevoree.Channel) = ChannelAspect(c)
   implicit def nodeAspect(c : org.kevoree.ContainerNode) = NodeAspect(c)
   implicit def componentAspect(c : org.kevoree.ComponentInstance) = ComponentAspect(c)
+  implicit def groupAspect(c : org.kevoree.Group) = GroupAspect(c)
 }
 
 

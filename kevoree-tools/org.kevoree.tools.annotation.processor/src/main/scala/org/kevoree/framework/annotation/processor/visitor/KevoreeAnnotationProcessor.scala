@@ -30,8 +30,8 @@ import org.kevoree.tools.annotation.generator.KevoreeActivatorGenerator
 import org.kevoree.tools.annotation.generator.KevoreeFactoryGenerator
 import org.kevoree.tools.annotation.generator.KevoreeGenerator
 import scala.collection.JavaConversions._
-import org.kevoree.annotation.{GroupType, ChannelTypeFragment, ComponentType}
-import org.kevoree.framework.{AbstractGroupType, AbstractChannelFragment, AbstractComponentType}
+import org.kevoree.annotation.{GroupType, ChannelTypeFragment, ComponentType, NodeType}
+import org.kevoree.framework.{AbstractNodeType, AbstractGroupType, AbstractChannelFragment, AbstractComponentType}
 
 class KevoreeAnnotationProcessor(env: AnnotationProcessorEnvironment) extends AnnotationProcessor {
 
@@ -57,6 +57,12 @@ class KevoreeAnnotationProcessor(env: AnnotationProcessorEnvironment) extends An
         if (groupTypeAnnotation != null) {
           processGroupType(groupTypeAnnotation, typeDecl, root)
         }
+        //NODETYPE
+        val nodeTypeAnnotation = typeDecl.getAnnotation(classOf[NodeType]);
+        if (nodeTypeAnnotation != null) {
+          processNodeType(nodeTypeAnnotation, typeDecl, root)
+        }
+
 
     }
 
@@ -75,13 +81,37 @@ class KevoreeAnnotationProcessor(env: AnnotationProcessorEnvironment) extends An
   }
 
 
+  def processNodeType(nodeTypeAnnotation: NodeType, typeDecl: TypeDeclaration, root: ContainerRoot) = {
+    //Checks that the root KevoreeChannelFragment is present in hierarchy.
+    val superTypeChecker = new SuperTypeValidationVisitor(classOf[AbstractNodeType].getName)
+    typeDecl.accept(superTypeChecker)
+    if (superTypeChecker.result) {
+
+      val nodeType = KevoreeFactory.eINSTANCE.createNodeType
+      var nodeTypeName = nodeTypeAnnotation.name
+      if (nodeTypeName.equals("empty")) {
+        nodeTypeName = typeDecl.getSimpleName
+      }
+      nodeType.setName(nodeTypeName)
+      nodeType.setBean(typeDecl.getQualifiedName)
+      nodeType.setFactoryBean(typeDecl.getQualifiedName + "Factory")
+      root.getTypeDefinitions.add(nodeType)
+
+      //RUN VISITOR
+      typeDecl.accept(NodeTypeVisitor(nodeType, env))
+    } else {
+      env.getMessager.printWarning("GroupType ignored " + typeDecl.getQualifiedName + " , reason=Must extend " + classOf[AbstractChannelFragment].getName)
+    }
+  }
+
+
   def processGroupType(groupTypeAnnotation: GroupType, typeDecl: TypeDeclaration, root: ContainerRoot) = {
     //Checks that the root KevoreeChannelFragment is present in hierarchy.
     val superTypeChecker = new SuperTypeValidationVisitor(classOf[AbstractGroupType].getName)
     typeDecl.accept(superTypeChecker)
     if (superTypeChecker.result) {
 
-      var groupType = KevoreeFactory.eINSTANCE.createGroupType
+      val groupType = KevoreeFactory.eINSTANCE.createGroupType
       var groupName = groupTypeAnnotation.name
       if (groupName.equals("empty")) {
         groupName = typeDecl.getSimpleName

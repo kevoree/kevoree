@@ -25,23 +25,41 @@ import org.kevoree.tools.ui.framework.elements.NodePanel
 import scala.collection.JavaConversions._
 import Art2UIAspects._
 
-case class NodeAspect(self : ContainerNode) {
+case class NodeAspect(self: ContainerNode) {
 
-  def removeModelAndUI(kernel : KevoreeUIKernel)={
+  def removeModelAndUI(kernel: KevoreeUIKernel) = {
 
-    var root : ContainerRoot = self.eContainer.asInstanceOf[ContainerRoot]
+    var root: ContainerRoot = self.eContainer.asInstanceOf[ContainerRoot]
+    val nodePanel = kernel.getUifactory().getMapping().get(self).asInstanceOf[NodePanel]
 
-    //REMOVE SUB NODE
+    //REMOVE POTENTIAL GROUP LINK
+    root.getGroups.foreach(g => {
+      if (g.getSubNodes.contains(self)) {
+        //REMOVE UI
+        val bindings = kernel.getModelPanel.getBindings().toList ++ List()
+        bindings.foreach {
+          b =>
+            if (b.getFrom.equals(nodePanel) || b.getTo.equals(nodePanel)) {
+              kernel.getModelPanel.removeBinding(b)
+            }
+        }
 
+        //REMOVE GROUP LINK
+        g.getSubNodes.remove(self)
+      }
+    })
+
+
+
+    //REMOVE SUB Component
     val subcomponent = self.getComponents.toList ++ List()
 
-    subcomponent.foreach{c => c.removeModelAndUI(kernel)}
+    subcomponent.foreach {
+      c => c.removeModelAndUI(kernel)
+    }
 
     //REMOVE UI
-    val nodePanel = kernel.getUifactory().getMapping().get(self).asInstanceOf[NodePanel]
     val modelPanel = kernel.getUifactory().getMapping().get(self.eContainer).asInstanceOf[ModelPanel]
-
-
     modelPanel.removeInstance(nodePanel)
 
     //REMOVE INSTANCE

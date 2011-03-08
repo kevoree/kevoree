@@ -13,5 +13,4 @@
  */
 package org.kevoree.tools.marShell.ast
 
-case class AddComponentInstanceStatment(cid:ComponentInstanceID, typeDefinitionName : String)
-  extends Statment
+case class AddComponentInstanceStatment(cid:ComponentInstanceID, typeDefinitionName : String,dictionary : java.util.Properties) extends AddInstanceStatment(dictionary)

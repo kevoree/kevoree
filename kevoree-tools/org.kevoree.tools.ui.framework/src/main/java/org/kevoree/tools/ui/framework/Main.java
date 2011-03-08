@@ -18,19 +18,15 @@
 package org.kevoree.tools.ui.framework;
 
 import org.jdesktop.swingx.JXMultiSplitPane;
-import org.kevoree.tools.ui.framework.elements.NodePanel;
-import org.kevoree.tools.ui.framework.elements.ModelPanel;
+import org.kevoree.tools.ui.framework.elements.*;
+
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import org.kevoree.tools.ui.framework.elements.Binding;
-import org.kevoree.tools.ui.framework.elements.ComponentPanel;
-import org.kevoree.tools.ui.framework.elements.ChannelPanel;
-import org.kevoree.tools.ui.framework.elements.EditableModelPanel;
-import org.kevoree.tools.ui.framework.elements.PortPanel;
+
 import org.kevoree.tools.ui.framework.elements.PortPanel.PortType;
 
 /**
@@ -50,6 +46,13 @@ public class Main {
 
 
         ModelPanel model = new ModelPanel();
+
+        //Test Group Panel
+         GroupPanel groupPanel = new GroupPanel();
+        groupPanel.setTitle("G1");
+         model.addGroup(groupPanel);
+
+
         NodePanel node1 = new NodePanel();
         NodePanel node2 = new NodePanel();
         model.addNode(node2);

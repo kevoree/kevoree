@@ -56,6 +56,7 @@ public class ComponentPanel extends ThreePartRoundedPanel implements SelectEleme
     @Override
     public void setTitle(String title) {
         titlebar.setTitle(title);
+        this.setToolTipText("Component "+title);
     }
 
     public void setTypeName(String title) {

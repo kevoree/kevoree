@@ -59,7 +59,7 @@ trait InstanceMerger {
     }
   }
 
-
+     /*
   def mergeAllChannelInstance(actualModel : ContainerRoot,c : Channel)={
 
     actualModel.getHubs.find(ec=> ec.isModelEquals(c)) match {
@@ -68,8 +68,8 @@ trait InstanceMerger {
       }
       case Some(ec)=>
     }
-    
-  }
+
+  }   */
   
 
 

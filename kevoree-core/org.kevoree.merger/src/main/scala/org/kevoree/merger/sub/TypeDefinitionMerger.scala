@@ -18,19 +18,10 @@
 
 package org.kevoree.merger.sub
 
-import org.kevoree.KevoreeFactory
-import org.kevoree.ChannelType
-import org.kevoree.ComponentInstance
-import org.kevoree.ComponentType
-import org.kevoree.ContainerRoot
-import org.kevoree.DeployUnit
-import org.kevoree.Instance
-import org.kevoree.PortType
-import org.kevoree.TypeDefinition
-import org.kevoree.ComponentType
 import org.kevoree.merger.Merger
 import scala.collection.JavaConversions._
 import org.kevoree.framework.aspects.KevoreeAspects._
+import org.kevoree._
 
 trait TypeDefinitionMerger extends Merger with DictionaryMerger with PortTypeMerger with DeployUnitMerger {
 
@@ -50,11 +41,9 @@ trait TypeDefinitionMerger extends Merger with DictionaryMerger with PortTypeMer
     }
   }
 
-
-
   /* This method try to update */
   private def updateTypeDefinition(actuelTypeDefinition:TypeDefinition, newTypeDefinition:TypeDefinition) = {
-    var root = actuelTypeDefinition.eContainer.asInstanceOf[ContainerRoot]
+    val root = actuelTypeDefinition.eContainer.asInstanceOf[ContainerRoot]
 
     //REMOVE OLD AND ADD NEW TYPE
     root.getTypeDefinitions.remove(actuelTypeDefinition)
@@ -66,7 +55,7 @@ trait TypeDefinitionMerger extends Merger with DictionaryMerger with PortTypeMer
     }
 
     //PROCESS INSTANCE
-    var listInstance = root.eAllContents.filter(p=>{
+    val listInstance = root.eAllContents.filter(p=>{
         p match {
           case i : Instance => i.getTypeDefinition == actuelTypeDefinition
           case _ => false
@@ -74,7 +63,7 @@ trait TypeDefinitionMerger extends Merger with DictionaryMerger with PortTypeMer
       }).toList ++ List()
     listInstance.foreach{instance=>
 
-      var art2instance = instance.asInstanceOf[Instance]
+      val art2instance = instance.asInstanceOf[Instance]
       art2instance.setTypeDefinition(newTypeDefinition)
 
       //MERGE DICTIONARY
@@ -83,17 +72,17 @@ trait TypeDefinitionMerger extends Merger with DictionaryMerger with PortTypeMer
       //SPECIFIC PROCESS
       art2instance match {
         case c : ComponentInstance => {
-            var ct = newTypeDefinition.asInstanceOf[ComponentType]
+            val ct = newTypeDefinition.asInstanceOf[ComponentType]
 
             //MERGE PORT
-            var providedPort = c.getProvided.toList ++ List()
+            val providedPort = c.getProvided.toList ++ List()
             providedPort.foreach{pport=>
               ct.getProvided.find(p=> p.getName == pport.getPortTypeRef.getName) match {
                 case None => pport.removeAndUnbind
                 case Some(ptref)=> pport.setPortTypeRef(ptref)
               }
             }
-            var requiredPort = c.getRequired.toList ++ List()
+            val requiredPort = c.getRequired.toList ++ List()
             requiredPort.foreach{rport=>
               ct.getRequired.find(p=> p.getName == rport.getPortTypeRef.getName) match {
                 case None => rport.removeAndUnbind
@@ -105,7 +94,7 @@ trait TypeDefinitionMerger extends Merger with DictionaryMerger with PortTypeMer
             ct.getProvided.foreach{newpt=> 
               c.getProvided.find(p=>p.getPortTypeRef == newpt) match {
                 case None => {
-                    var newport = KevoreeFactory.eINSTANCE.createPort();
+                    val newport = KevoreeFactory.eINSTANCE.createPort();
                     newport.setPortTypeRef(newpt)
                     c.getProvided.add(newport)
                   }
@@ -115,7 +104,7 @@ trait TypeDefinitionMerger extends Merger with DictionaryMerger with PortTypeMer
             ct.getRequired.foreach{newpt=>
               c.getRequired.find(p=>{p.getPortTypeRef == newpt}) match {
                 case None => {
-                    var newport = KevoreeFactory.eINSTANCE.createPort();
+                    val newport = KevoreeFactory.eINSTANCE.createPort();
                     newport.setPortTypeRef(newpt)
                     c.getRequired.add(newport)
                   }
@@ -155,6 +144,8 @@ trait TypeDefinitionMerger extends Merger with DictionaryMerger with PortTypeMer
           ct.getProvided.foreach{ptref=>ptref.setRef(mergePortType(actualModel,ptref.getRef))}
           ct.getRequired.foreach{ptref=>ptref.setRef(mergePortType(actualModel,ptref.getRef))}
         }
+      case nt : NodeType => { actualModel.getTypeDefinitions.add(nt) }
+      case gt : GroupType => { actualModel.getTypeDefinitions.add(gt) }
       case pt : PortType => { /*println("PORTTYPE M ?? "+pt.toString)*//* MERGE BY COMPONENT TYPE */ }
       case _ @ msg => println("Error uncatch type") // NO RECURSIVE FOR OTHER TYPE
     }

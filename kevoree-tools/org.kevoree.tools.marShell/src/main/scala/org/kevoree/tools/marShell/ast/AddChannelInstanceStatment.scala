@@ -18,6 +18,6 @@
 
 package org.kevoree.tools.marShell.ast
 
-case class AddChannelInstanceStatment(channelName : String,channelType:String) extends Statment {
+case class AddChannelInstanceStatment(channelName : String,channelType:String,dictionary : java.util.Properties) extends AddInstanceStatment(dictionary) {
 
 }

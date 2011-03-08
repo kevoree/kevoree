@@ -63,4 +63,8 @@ public class RoundedTitledPanel extends RoundPanel implements TitledElement {
     public void setTitle(String _title) {
         title.setTitle(_title);
     }
+
+    public String getTitle(){
+        return title.getTitle();
+    }
 }

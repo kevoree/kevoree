@@ -22,14 +22,20 @@ import org.kevoree.KevoreeFactory
 import org.kevoree.tools.marShell.interpreter.KevsAbstractInterpreter
 import org.kevoree.tools.marShell.interpreter.KevsInterpreterContext
 import scala.collection.JavaConversions._
-import org.kevoree.tools.marShell.ast.{RemoveNode, AddNode}
+import org.kevoree.tools.marShell.ast.{RemoveNodeStatment, AddNodeStatment}
 
-case class KevsRemoveNodeInterpreter(addN: RemoveNode) extends KevsAbstractInterpreter {
+case class KevsRemoveNodeInterpreter(addN: RemoveNodeStatment) extends KevsAbstractInterpreter {
 
   def interpret(context: KevsInterpreterContext): Boolean = {
 
     context.model.getNodes.find(n => n.getName == addN.nodeName) match {
       case Some(targetNode) => {
+        //DELETE ALL GROUP DEPENDENCY
+         context.model.getGroups.foreach{g=>
+             if(g.getSubNodes.contains(targetNode)){
+               g.getSubNodes.remove(targetNode)
+             }
+         }
         //DELETE ALL COMPONENT
         (targetNode.getComponents.toList++ List()).foreach(c => {
           KevsRemoveComponentInstanceInterpreter(null).deleteComponent(targetNode, c)

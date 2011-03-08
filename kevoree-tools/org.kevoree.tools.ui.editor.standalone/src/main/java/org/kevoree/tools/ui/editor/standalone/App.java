@@ -62,7 +62,7 @@ public class App {
                 //splitPane.setResizeWeight(0.3);
                 splitPane.setOneTouchExpandable(true);
                 splitPane.setContinuousLayout(true);
-                splitPane.setDividerSize(15);
+                splitPane.setDividerSize(7);
                 splitPane.setDividerLocation(500);
                 splitPane.setResizeWeight(1.0);
 

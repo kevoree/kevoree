@@ -32,10 +32,7 @@ import org.jdesktop.swingx.painter.MattePainter;
 import org.kevoree.tools.ui.editor.KevoreeUIKernel;
 import org.kevoree.tools.ui.editor.property.InstancePropertyEditor;
 import org.kevoree.tools.ui.editor.property.NodePropertyEditor;
-import org.kevoree.tools.ui.framework.elements.ChannelPanel;
-import org.kevoree.tools.ui.framework.elements.ComponentPanel;
-import org.kevoree.tools.ui.framework.elements.EditableModelPanel;
-import org.kevoree.tools.ui.framework.elements.NodePanel;
+import org.kevoree.tools.ui.framework.elements.*;
 
 /**
  * @author ffouquet
@@ -120,7 +117,7 @@ multiSplitPane.add(editableModelPanel, "right");
      //   splitPane.setResizeWeight(1);
         splitPane.setOneTouchExpandable(true);
         splitPane.setContinuousLayout(true);
-        splitPane.setDividerSize(15);
+        splitPane.setDividerSize(7);
         splitPane.setDividerLocation(150);
         splitPane.setResizeWeight(0.0);
 
@@ -156,12 +153,13 @@ multiSplitPane.add(editableModelPanel, "right");
             //southpanel.add(prop);
             editableModelPanel.displayProperties(prop);
         }
-        if (p instanceof ComponentPanel || p instanceof ChannelPanel) {
+        if (p instanceof ComponentPanel || p instanceof ChannelPanel || p instanceof GroupPanel) {
             org.kevoree.Instance elem = (org.kevoree.Instance) kernel.getUifactory().getMapping().get(p);
             InstancePropertyEditor prop = new InstancePropertyEditor(elem, kernel);
             //southpanel.add(prop);
             editableModelPanel.displayProperties(prop);
         }
+
         // southpanel.repaint();
         // southpanel.revalidate();
 

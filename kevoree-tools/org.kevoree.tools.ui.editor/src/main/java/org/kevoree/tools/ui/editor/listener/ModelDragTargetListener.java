@@ -24,13 +24,19 @@ import java.awt.dnd.DropTargetDropEvent;
 import java.awt.dnd.DropTargetEvent;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import org.kevoree.tools.ui.editor.KevoreeUIKernel;
 import org.kevoree.tools.ui.editor.command.AddChannelCommand;
+import org.kevoree.tools.ui.editor.command.AddGroupCommand;
+import org.kevoree.tools.ui.editor.command.AddNodeCommand;
 import org.kevoree.tools.ui.framework.elements.ChannelTypePanel;
+import org.kevoree.tools.ui.framework.elements.GroupTypePanel;
 import org.kevoree.tools.ui.framework.elements.ModelPanel;
+import org.kevoree.tools.ui.framework.elements.NodeTypePanel;
 
 /**
  * implementation of the target listener
+ *
  * @author francoisfouquet
  */
 public class ModelDragTargetListener extends DropTarget {
@@ -40,7 +46,8 @@ public class ModelDragTargetListener extends DropTarget {
 
     /**
      * constructor
-     * @param _p the table view panel
+     *
+     * @param _kernel      the table view panel
      * @param _target the view of the component
      */
     public ModelDragTargetListener(ModelPanel _target, KevoreeUIKernel _kernel) {
@@ -52,11 +59,19 @@ public class ModelDragTargetListener extends DropTarget {
         if (o instanceof ChannelTypePanel) {
             return true;
         }
+        if (o instanceof GroupTypePanel) {
+            return true;
+        }
+        if(o instanceof NodeTypePanel) {
+            return true;
+        }
+        //otherwise return false / no other type accepted
         return false;
     }
 
     /**
      * callback when DnD is finished
+     *
      * @param arg0
      */
     @Override
@@ -70,6 +85,19 @@ public class ModelDragTargetListener extends DropTarget {
                     command.setKernel(kernel);
                     command.execute(o);
                 }
+                if(o instanceof NodeTypePanel){
+                    AddNodeCommand command = new AddNodeCommand();
+                    command.setPoint(arg0.getLocation());
+                    command.setKernel(kernel);
+                    command.execute(o);
+                }
+                if(o instanceof GroupTypePanel){
+                    AddGroupCommand command = new AddGroupCommand();
+                    command.setPoint(arg0.getLocation());
+                    command.setKernel(kernel);
+                    command.execute(o);
+                }
+
                 kernel.getModelPanel().repaint();
                 kernel.getModelPanel().revalidate();
                 arg0.dropComplete(true);
@@ -85,6 +113,7 @@ public class ModelDragTargetListener extends DropTarget {
 
     /**
      * not implemented
+     *
      * @param dtde
      */
     @Override
@@ -93,6 +122,7 @@ public class ModelDragTargetListener extends DropTarget {
 
     /**
      * not implemented
+     *
      * @param arg0
      */
     @Override
@@ -101,6 +131,7 @@ public class ModelDragTargetListener extends DropTarget {
 
     /**
      * not implemented
+     *
      * @param arg0
      */
     @Override
@@ -109,6 +140,7 @@ public class ModelDragTargetListener extends DropTarget {
 
     /**
      * not implemented
+     *
      * @param arg0
      */
     @Override

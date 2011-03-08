@@ -18,13 +18,11 @@
 
 package org.kevoree.tools.ui.editor.command
 
-import org.kevoree.Channel
-import org.kevoree.ComponentInstance
-import org.kevoree.ContainerNode
 import org.kevoree.tools.ui.editor.KevoreeUIKernel
 import scala.reflect.BeanProperty
 import scala.collection.JavaConversions._
 import org.kevoree.tools.ui.editor.aspects.Art2UIAspects._
+import org.kevoree.{Group, Channel, ComponentInstance, ContainerNode}
 
 class RemoveInstanceCommand(elem : org.kevoree.NamedElement) extends Command {
 
@@ -37,6 +35,7 @@ class RemoveInstanceCommand(elem : org.kevoree.NamedElement) extends Command {
       case inst : Channel => inst.removeModelAndUI(kernel)
       case inst : ComponentInstance => inst.removeModelAndUI(kernel)
       case inst : ContainerNode => inst.removeModelAndUI(kernel)
+      case inst : Group => inst.removeModelAndUI(kernel)
     }
 
     kernel.getEditorPanel.unshowPropertyEditor()
