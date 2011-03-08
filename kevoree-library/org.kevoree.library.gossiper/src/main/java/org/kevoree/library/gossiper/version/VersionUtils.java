@@ -103,4 +103,64 @@ public class VersionUtils {
 
         return newClockBuilder.setTimestamp(System.currentTimeMillis()).build();
     }
+
+
+
+
+    public static Occured compare(VectorClock v1, VectorClock v2) {
+        if (v1 == null || v2 == null) {
+            throw new IllegalArgumentException("Can't compare null vector clocks!");
+        }
+        // We do two checks: v1 <= v2 and v2 <= v1 if both are true then
+        boolean v1Bigger = false;
+        boolean v2Bigger = false;
+        int p1 = 0;
+        int p2 = 0;
+
+        while (p1 < v1.getEntiesCount() && p2 < v2.getEntiesCount()) {
+            ClockEntry ver1 = v1.getEnties(p1);
+            ClockEntry ver2 = v2.getEnties(p2);
+            if (ver1.getNodeID().equals(ver2.getNodeID())) {
+                if (ver1.getVersion() > ver2.getVersion()) {
+                    v1Bigger = true;
+                } else if (ver2.getVersion() > ver1.getVersion()) {
+                    v2Bigger = true;
+                }
+                p1++;
+                p2++;
+            } else if (p1 > p2) {
+                // since ver1 is bigger that means it is missing a version that
+                // ver2 has
+                v2Bigger = true;
+                p2++;
+            } else {
+                // this means ver2 is bigger which means it is missing a version
+                // ver1 has
+                v1Bigger = true;
+                p1++;
+            }
+        }
+
+        /* Okay, now check for left overs */
+        if (p1 < v1.getEntiesCount()) {
+            v1Bigger = true;
+        } else if (p2 < v2.getEntiesCount()) {
+            v2Bigger = true;
+        }
+
+        /* This is the case where they are equal, return BEFORE arbitrarily */
+        if (!v1Bigger && !v2Bigger) {
+            return Occured.BEFORE;
+        } /* This is the case where v1 is a successor clock to v2 */ else if (v1Bigger && !v2Bigger) {
+            return Occured.AFTER;
+        } /* This is the case where v2 is a successor clock to v1 */ else if (!v1Bigger && v2Bigger) {
+            return Occured.BEFORE;
+        } /* This is the case where both clocks are parallel to one another */ else {
+            return Occured.CONCURRENTLY;
+        }
+    }
+
+
+
+
 }
