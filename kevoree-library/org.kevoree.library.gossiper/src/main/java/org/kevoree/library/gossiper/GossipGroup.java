@@ -11,6 +11,8 @@ import org.kevoree.annotation.Start;
 import org.kevoree.annotation.Stop;
 import org.kevoree.annotation.Update;
 import org.kevoree.framework.AbstractGroupType;
+import org.kevoree.library.gossiper.org.kevoree.library.gossiper.version.VectorClock;
+import org.kevoree.library.gossiper.org.kevoree.library.gossiper.version.Versioned;
 
 /**
  *
@@ -19,9 +21,9 @@ import org.kevoree.framework.AbstractGroupType;
 @GroupType
 public class GossipGroup extends AbstractGroupType implements Runnable {
 
-	private boolean running = true;
-	private int gossipInterval = 5000;
-	
+    private boolean running = true;
+    private int gossipInterval = 5000;
+
     @Override
     public void triggerModelUpdate() {
         System.out.println("Update trigger");
@@ -31,7 +33,7 @@ public class GossipGroup extends AbstractGroupType implements Runnable {
     public void startMyGroup() {
         System.out.println("StartGroup " + this.getClass().getName());
 
-        System.out.println("last date "+this.getModelService().getLastModification());
+        System.out.println("last date " + this.getModelService().getLastModification());
 
     }
 
@@ -41,44 +43,42 @@ public class GossipGroup extends AbstractGroupType implements Runnable {
     }
 
     @Update
-    public void updateMyGroup(){
+    public void updateMyGroup() {
         System.out.println("UpdateGroup " + this.getClass().getName());
     }
 
-	@Override
-	public void run() {
-		while(running) {
+    @Override
+    public void run() {
+        while (running) {
             try {
                 Thread.sleep(gossipInterval);
-            } catch(InterruptedException e) {
+            } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
             }
             ContainerNode node = selectPeer();
             //adminClient.setAdminClientCluster(metadataStore.getCluster());
 
-			// TODO :
-			  // VectorClock clock = node.getGroup().get();
-				//Occured result =  this.clock.compare(clock);
-			// if () {
+            // TODO :
+            // VectorClock clock = node.getGroup().get();
+            //Occured result =  this.clock.compare(clock);
+            // if () {
 
         }
-	}
+    }
 
-	 /**
-     * Randomly select a distinct peer. Method is <code>protected</code> rather
-     * than <code>private</code>, so that it may be  overridden if
-     * peer selection logic is to be changed e.g., to add datacenter/rack awareness.
-     *
-     * @return Peer for Gossip.
-     */
     protected ContainerNode selectPeer() {
-        Cluster cluster = metadataStore.getCluster();
-        int nodes = cluster.getNumberOfNodes();
-        Node node;
-        do {
-            node = cluster.getNodeById(random.nextInt(nodes));
-        } while(node.getId() == metadataStore.getNodeId());
+        return null;
+    }
 
-        return node;
+    protected VectorClock getVectorFromPeer(ContainerNode node){
+        return null;
+    }
+
+    protected Versioned<ContainerRoot> getVersionnedModelFromPeer(ContainerNode node){
+        return null;
+    }
+
+    protected Boolean pushVersionnedModelToPeer(Versioned<ContainerRoot> models){
+        return null;
     }
 }
