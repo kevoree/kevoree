@@ -97,6 +97,16 @@
         </dependency>
         <dependency>
             <groupId>org.kevoree.library</groupId>
+            <artifactId>org.kevoree.library.defaultNodeTypes</artifactId>
+            <version>${kevoree.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.kevoree.library</groupId>
+            <artifactId>org.kevoree.library.gossiper</artifactId>
+            <version>${kevoree.version}</version>
+        </dependency>        
+        <dependency>
+            <groupId>org.kevoree.library</groupId>
             <artifactId>org.kevoree.library.sample</artifactId>
             <version>${kevoree.version}</version>
         </dependency>

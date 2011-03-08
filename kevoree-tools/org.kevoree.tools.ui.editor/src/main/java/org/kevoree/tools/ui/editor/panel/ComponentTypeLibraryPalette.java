@@ -19,7 +19,10 @@
 package org.kevoree.tools.ui.editor.panel;
 
 import org.jdesktop.swingx.JXTaskPane;
+import org.kevoree.tools.ui.framework.UITools;
 import org.kevoree.tools.ui.framework.elements.ComponentTypePanel;
+
+import javax.swing.*;
 
 /**
  *
@@ -29,14 +32,25 @@ public class ComponentTypeLibraryPalette extends JXTaskPane {
 
     //private JPanel content = new JPanel();
 
-    public ComponentTypeLibraryPalette(String name){
+    private String libName = "";
+
+    public String getLibName(){
+        return libName;
+    }
+
+    public ComponentTypeLibraryPalette(String title){
+
+        libName = title;
+
+        String name = UITools.formatTitle(title,25);
+
         this.setTitle(name);
         this.setName(name);
         //this.setLayout(new BorderLayout());
         //add(content);
     }
 
-    public void addComponentTypePanel(ComponentTypePanel ctp){
+    public void addComponentTypePanel(JPanel ctp){
         add(ctp);
         repaint();
         revalidate();

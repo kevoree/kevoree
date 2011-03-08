@@ -15,13 +15,13 @@ package org.kevoree.tools.ui.editor.command
 
 import javax.swing.{JButton, BoxLayout, JPanel}
 import java.awt.BorderLayout
-import org.kevoree.tools.marShellGUI.KevsFrame
 import org.kevoree.tools.ui.editor.KevoreeUIKernel
 import java.awt.event.{MouseEvent, MouseAdapter}
 import org.kevoree.tools.marShell.interpreter.KevsInterpreterContext
 import org.kevoree.framework.KevoreeXmiHelper
 import java.io.File
 import java.util.Random
+import org.kevoree.tools.marShellGUI.{KevsModelHandlers, KevsFrame}
 
 class OpenKevsShell extends Command {
 
@@ -31,8 +31,6 @@ class OpenKevsShell extends Command {
   def setKernel(k: KevoreeUIKernel) = kernel = k
 
   class KevsEditorFrame extends KevsFrame {
-
-
     var buttons = new JPanel
     buttons.setLayout(new BoxLayout(buttons, BoxLayout.LINE_AXIS))
     var btExecution = new JButton("execute");
@@ -45,16 +43,15 @@ class OpenKevsShell extends Command {
 
           var result = script.interpret(KevsInterpreterContext(kernel.getModelHandler.getActualModel))
           println("Interpreter Result : " + result)
-          if(result){
+          if (result) {
             //reload
-            val file = File.createTempFile("kev", new Random().nextInt+"")
+            val file = File.createTempFile("kev", new Random().nextInt + "")
 
             KevoreeXmiHelper.save(file.getAbsolutePath, kernel.getModelHandler().getActualModel);
 
             var loadCMD = new LoadModelCommand
-             loadCMD.setKernel(kernel)
+            loadCMD.setKernel(kernel)
             loadCMD.execute(file.getAbsolutePath)
-
 
 
           }
@@ -70,7 +67,14 @@ class OpenKevsShell extends Command {
   }
 
   def execute(p: Object) = {
+
+    KevsModelHandlers.put(1,kernel.getModelHandler.getActualModel)
+
     if (current == null) {
+      current = new KevsEditorFrame
+      current.setVisible(true)
+    } else {
+      current.dispose;
       current = new KevsEditorFrame
       current.setVisible(true)
     }

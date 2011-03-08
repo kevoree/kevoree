@@ -50,7 +50,7 @@ public class AddChannelCommand implements Command {
         newhub.setTypeDefinition(type);
 
         //CREATE NEW NAME
-        newhub.setName("hub-" + random.nextInt());
+        newhub.setName("hub" + Math.abs(random.nextInt()));
         ChannelPanel newhubpanel = kernel.getUifactory().createHub(newhub);
         kernel.getModelHandler().getActualModel().getHubs().add(newhub);
         kernel.getModelPanel().addHub(newhubpanel);

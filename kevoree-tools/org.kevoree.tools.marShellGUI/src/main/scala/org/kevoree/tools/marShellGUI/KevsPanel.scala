@@ -39,6 +39,7 @@ class KevsPanel extends JPanel {
   jsyntaxpane.DefaultSyntaxKit.initKit();
   jsyntaxpane.DefaultSyntaxKit.registerContentType("text/kevs", classOf[KevsJSyntaxKit].getName());
   var codeEditor = new JEditorPane();
+  
   var scrPane = new JScrollPane(codeEditor);
 
   codeEditor.setContentType("text/kevs");

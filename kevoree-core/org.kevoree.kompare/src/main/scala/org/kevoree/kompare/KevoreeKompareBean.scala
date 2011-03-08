@@ -31,11 +31,11 @@ class KevoreeKompareBean extends org.kevoree.api.service.core.kompare.ModelKompa
 
   def kompare(actualModel : ContainerRoot,targetModel:ContainerRoot,nodeName : String) : AdaptationModel = {
 
-    var adaptationModel = org.kevoreeAdaptation.KevoreeAdaptationFactory.eINSTANCE.createAdaptationModel
+    val adaptationModel = org.kevoreeAdaptation.KevoreeAdaptationFactory.eINSTANCE.createAdaptationModel
     //STEP 0 - FOUND LOCAL NODE
 
-    var actualLocalNode = actualModel.getNodes.find{c=> c.getName==nodeName }
-    var updateLocalNode = targetModel.getNodes.find{c=> c.getName==nodeName }
+    val actualLocalNode = actualModel.getNodes.find{c=> c.getName==nodeName }
+    val updateLocalNode = targetModel.getNodes.find{c=> c.getName==nodeName }
     updateLocalNode match {
       case Some(uln)=> {
           

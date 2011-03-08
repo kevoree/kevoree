@@ -18,6 +18,8 @@
 
 package org.kevoree.tools.marShell.ast
 
-case class AddNode(nodeName : String) extends Statment {
+case class AddNodeStatment(nodeName : String, nodeTypeName : String,dictionary : java.util.Properties) extends AddInstanceStatment(dictionary) {
+
+
 
 }

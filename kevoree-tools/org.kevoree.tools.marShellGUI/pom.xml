@@ -29,35 +29,12 @@
             <groupId>jsyntaxpane</groupId>
             <artifactId>jsyntaxpane</artifactId>
             <version>0.9.6</version>
-          <!--  <scope>system</scope>
-            <systemPath>${basedir}/lib/jsyntaxpane-0.9.6.jar</systemPath>   -->
         </dependency>
     </dependencies>
 
     <build>
         <plugins>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>truezip-maven-plugin</artifactId>
-                <version>1.0-beta-4</version>
-                <executions>
-                    <execution>
-                        <id>copy-out-files</id>
-                        <goals>
-                            <goal>copy</goal>
-                        </goals>
-                        <phase>generate-resources</phase>
-                        <configuration>
-                            <filesets>
-                                <fileset>
-                                    <directory>lib/jsyntaxpane-0.9.6.jar</directory>
-                                    <outputDirectory>${project.build.directory}/classes</outputDirectory>
-                                </fileset>
-                            </filesets>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
+
         </plugins>
     </build>
 

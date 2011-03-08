@@ -29,6 +29,7 @@ import java.awt.RenderingHints;
 import java.awt.geom.QuadCurve2D;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
@@ -59,12 +60,17 @@ public class BindingPanel extends JPanel {
         }
     }
 
+    public Collection<Binding> getBindings() {
+        return bindings;
+    }
+
     public void drawCable(Graphics2D g2D, Point start, Point end) {
         Point intermed = new Point();
         intermed.y = Math.max(end.y, start.y) + 30;
         intermed.x = (end.x + start.x) / 2;
         g2D.draw(new QuadCurve2D.Float(start.x, start.y, intermed.x, intermed.y, end.x, end.y));
     }
+
 
     @Override
     public void paint(Graphics g) {
@@ -102,7 +108,9 @@ public class BindingPanel extends JPanel {
                     BasicStroke dashed = new BasicStroke(5.0f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER, 10.0f, dash1, 0.0f);
                     g2d.setStroke(dashed);
                 } else {
-                    g2d.setStroke(new BasicStroke(5, BasicStroke.CAP_SQUARE, BasicStroke.JOIN_ROUND));
+                    //g2d.setStroke(new BasicStroke(5, BasicStroke.CAP_SQUARE, BasicStroke.JOIN_ROUND));
+
+                    g2d.setStroke(b.getStroke());
                 }
 
                 g2d.setColor(b.getActualColor());

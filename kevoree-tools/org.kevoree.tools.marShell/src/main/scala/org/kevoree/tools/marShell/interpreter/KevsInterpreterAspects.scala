@@ -25,7 +25,7 @@ object KevsInterpreterAspects {
 
   implicit def rich(o : Script) = KevsScriptInterpreter(o)
   implicit def rich(o : TransactionalBloc) = KevsAddTBlockInterpreter(o)
-  implicit def rich(o : AddNode) = KevsAddNodeInterpreter(o)
+  implicit def rich(o : AddNodeStatment) = KevsAddNodeInterpreter(o)
 
 
   implicit def rich(o : Object) : KevsAbstractInterpreter  = o match {
@@ -37,10 +37,14 @@ object KevsInterpreterAspects {
         case addst : AddComponentInstanceStatment => KevsAddComponentInstanceInterpreter(addst)
         case addChannel : AddChannelInstanceStatment => KevsAddChannelInterpreter(addChannel)
         case removeChannel : RemoveChannelInstanceStatment => KevsRemoveChannelInterpreter(removeChannel)
-        case addNodest : AddNode => KevsAddNodeInterpreter(addNodest)
-        case removeNodest : RemoveNode => KevsRemoveNodeInterpreter(removeNodest)
+        case addNodest : AddNodeStatment => KevsAddNodeInterpreter(addNodest)
+        case removeNodest : RemoveNodeStatment => KevsRemoveNodeInterpreter(removeNodest)
         case addBinding : AddBindingStatment => KevsAddBindingInterpreter(addBinding)
         case removeBinding : RemoveBindingStatment => KevsRemoveBindingInterpreter(removeBinding)
+
+        case addGroup : AddGroupStatment => KevsAddGroupInterpreter(addGroup)
+        case removeGroup : RemoveGroupStatment => KevsRemoveGroupInterpreter(removeGroup)
+
       }
     case _ @ e => println(e);null
   }

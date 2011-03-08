@@ -53,7 +53,11 @@ public class SaveActuelModelCommand implements Command {
         } else {
             location = defaultLocation;
         }
+        try{
+          KevoreeXmiHelper.save(location.toString(), kernel.getModelHandler().getActualModel());
+        } catch (Exception e){
+            System.out.println("Can save model !");
+        }
 
-        KevoreeXmiHelper.save(location.toString(), kernel.getModelHandler().getActualModel());
     }
 }

@@ -45,11 +45,11 @@ public class KevoreeMenuBar extends JMenuBar {
         file.add(refresh);
 
         model = new JMenu("Model");
-        JMenuItem addNode = new JMenuItem("Add node");
-        AddNodeCommand cmdAN = new AddNodeCommand();
-        cmdAN.setKernel(kernel);
-        addNode.addActionListener(new CommandActionListener(cmdAN));
-        model.add(addNode);
+       // JMenuItem addNode = new JMenuItem("Add node");
+      //  AddNodeCommand cmdAN = new AddNodeCommand();
+      //  cmdAN.setKernel(kernel);
+       // addNode.addActionListener(new CommandActionListener(cmdAN));
+      // model.add(addNode);
         JMenuItem clearModel = new JMenuItem("Clear");
         ClearModelCommand cmdCM = new ClearModelCommand();
         cmdCM.setKernel(kernel);

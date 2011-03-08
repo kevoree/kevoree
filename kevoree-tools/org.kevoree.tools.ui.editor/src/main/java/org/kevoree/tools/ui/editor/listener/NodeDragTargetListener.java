@@ -24,17 +24,19 @@ import java.awt.dnd.DropTargetDropEvent;
 import java.awt.dnd.DropTargetEvent;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import org.kevoree.ComponentInstance;
 import org.kevoree.ContainerNode;
 import org.kevoree.tools.ui.editor.KevoreeUIKernel;
 import org.kevoree.tools.ui.editor.command.AddComponentCommand;
+import org.kevoree.tools.ui.editor.command.AddGroupBindingCommand;
 import org.kevoree.tools.ui.editor.command.MoveComponentCommand;
-import org.kevoree.tools.ui.framework.elements.ComponentPanel;
-import org.kevoree.tools.ui.framework.elements.ComponentTypePanel;
-import org.kevoree.tools.ui.framework.elements.NodePanel;
+import org.kevoree.tools.ui.framework.elements.*;
+import org.kevoreeAdaptation.AddBinding;
 
 /**
  * implementation of the target listener
+ *
  * @author francoisfouquet
  */
 public class NodeDragTargetListener extends DropTarget {
@@ -44,7 +46,8 @@ public class NodeDragTargetListener extends DropTarget {
 
     /**
      * constructor
-     * @param _p the table view panel
+     *
+     * @param _kernel the table view panel
      * @param _target the view of the component
      */
     public NodeDragTargetListener(NodePanel _target, KevoreeUIKernel _kernel) {
@@ -66,11 +69,15 @@ public class NodeDragTargetListener extends DropTarget {
         if (o instanceof ComponentTypePanel) {
             return true;
         }
+        if (o instanceof GroupAnchorPanel) {
+            return true;
+        }
         return false;
     }
 
     /**
      * callback when DnD is finished
+     *
      * @param arg0
      */
     @Override
@@ -90,6 +97,12 @@ public class NodeDragTargetListener extends DropTarget {
                     command.setNodepanel(target);
                     command.execute(o);
                 }
+                if (o instanceof GroupAnchorPanel) {
+                    AddGroupBindingCommand command = new AddGroupBindingCommand();
+                    command.setKernel(kernel);
+                    command.setTarget(target);
+                    command.execute(o);
+                }
                 kernel.getModelPanel().repaint();
                 kernel.getModelPanel().revalidate();
                 arg0.dropComplete(true);
@@ -105,6 +118,7 @@ public class NodeDragTargetListener extends DropTarget {
 
     /**
      * not implemented
+     *
      * @param dtde
      */
     @Override
@@ -113,6 +127,7 @@ public class NodeDragTargetListener extends DropTarget {
 
     /**
      * not implemented
+     *
      * @param arg0
      */
     @Override
@@ -121,6 +136,7 @@ public class NodeDragTargetListener extends DropTarget {
 
     /**
      * not implemented
+     *
      * @param arg0
      */
     @Override
@@ -129,6 +145,7 @@ public class NodeDragTargetListener extends DropTarget {
 
     /**
      * not implemented
+     *
      * @param arg0
      */
     @Override

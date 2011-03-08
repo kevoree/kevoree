@@ -16,8 +16,27 @@ package org.kevoree.framework;
 
 import org.kevoree.ContainerRoot;
 
+import java.util.HashMap;
+
 public abstract class AbstractGroupType {
 
-    public abstract void update(ContainerRoot root);
+    public abstract void triggerModelUpdate();
+
+    public ContainerRoot getCurrentModel() {
+        return null;
+    }
+
+
+    public HashMap<String, Object> getDictionary() {
+        return null;
+    } //OVERRIDE BY FACTORY
+
+    public String getNodeName() {
+        return null;
+    }
+
+    public String getName() {
+        return null;
+    }
 
 }

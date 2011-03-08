@@ -18,26 +18,29 @@
 
 package org.kevoree.tools.marShell.parser.sub
 
-import org.kevoree.tools.marShell.ast.AddNode
-import org.kevoree.tools.marShell.ast.RemoveNode
+import org.kevoree.tools.marShell.ast.AddNodeStatment
+import org.kevoree.tools.marShell.ast.RemoveNodeStatment
 import org.kevoree.tools.marShell.ast.Statment
 
-trait KevsNodeParser extends KevsAbstractParser {
+trait KevsNodeParser extends KevsAbstractParser with KevsPropertiesParser {
 
-  def parseAddNode : Parser[List[Statment]] = "addNode" ~ repsep(ident,",") ^^{ case _ ~ nodeIDs =>
-    var res : List[Statment] = List()
-    nodeIDs.foreach{nodeID=>
-      res = res ++ List(AddNode(nodeID))
-    }
-    res
+  //example : addNode node1,node2 : JavaSENode
+  def parseAddNode : Parser[List[Statment]] = "addNode" ~ repsep(ident,",") ~ ":" ~ ident ~ opt(parseProperties) ^^{ case _ ~ nodeIDs ~ _ ~ nodeTypeName ~ oprops =>
+      var props = oprops.getOrElse{new java.util.Properties}
+      var res : List[Statment] = List()
+      nodeIDs.foreach{nodeID=>
+        res = res ++ List(AddNodeStatment(nodeID,nodeTypeName,props))
+      }
+      res
   }
 
+  //example : removeNode node1,node2
   def parseRemoveNode : Parser[List[Statment]] = "removeNode" ~ repsep(ident,",") ^^{ case _ ~ nodeIDs =>
-    var res : List[Statment] = List()
-    nodeIDs.foreach{nodeID=>
-      res = res ++ List(RemoveNode(nodeID))
-    }
-    res
+      var res : List[Statment] = List()
+      nodeIDs.foreach{nodeID=>
+        res = res ++ List(RemoveNodeStatment(nodeID))
+      }
+      res
   }
 
   def parseNode : Parser[List[Statment]] = (parseAddNode | parseRemoveNode)

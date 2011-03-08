@@ -1,0 +1,117 @@
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>org.kevoree.library</groupId>
+    <artifactId>org.kevoree.library.com.skype</artifactId>
+    <version>1.0-SNAPSHOT</version>
+    <packaging>bundle</packaging>
+
+    <name>org.kevoree.library.com.skype</name>
+    <url>http://maven.apache.org</url>
+
+    <repositories>
+        <repository>
+            <id>kevoree-libs-release-local</id>
+            <url>http://maven.kevoree.org/libs-release-local</url>
+        </repository>
+    </repositories>
+
+    <pluginRepositories>
+        <pluginRepository>
+            <id>plugin.kevoree</id>
+            <url>http://maven.kevoree.org/libs-release-local</url>
+        </pluginRepository>
+
+        <pluginRepository>
+            <id>plugin.kevoree-github</id>
+            <url>http://maven.kevoree.org/plugins-release-local</url>
+        </pluginRepository>
+    </pluginRepositories>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>3.8.1</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.kevoree</groupId>
+            <artifactId>org.kevoree.framework</artifactId>
+            <version>1.0.0-RC4</version><!-- To modify on wiki -->
+        </dependency>
+        <dependency>
+            <groupId>org.kevoree.tools</groupId>
+            <artifactId>org.kevoree.tools.annotation.api</artifactId>
+            <version>1.0.0-RC4</version><!-- To modify on wiki -->
+        </dependency>
+        <dependency>
+            <systemPath>${basedir}/lib/skype.jar</systemPath>
+            <groupId>com.skype</groupId>
+            <artifactId>com.skype.linux</artifactId>
+            <version>1.0.0</version>
+            <scope>system</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.kevoree.tools</groupId>
+                <artifactId>org.kevoree.tools.annotation.mavenplugin</artifactId>
+                <version>1.0.0-RC4</version><!-- To modify on wiki -->
+                <extensions>true</extensions>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>generate</goal>
+                            <goal>compile</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+			<!-- Felix BnD plugin : allow Bundle packaging : generate OSGi JAR -->
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <version>2.1.0</version>
+                <extensions>true</extensions>
+
+                <configuration>
+                    <instructions>
+
+                        <Import-Package>!javax.imageio.*,!org.eclipse.swt.internal.*,!org.eclipse.swt.internal.win32.*,!org.eclipse.swt.widgets.*,!org.jvnet.winp.*,!org.kevoree.library.com.skype.*,!com.sun.*,*</Import-Package>
+                        <!-- <Private-Package>com.skype.*</Private-Package>-->
+                        <Export-Package>org.kevoree.library.com.skype.*</Export-Package>
+                        <Embed-Dependency>com.skype.linux</Embed-Dependency>
+                        <Bundle-ClassPath>.,{maven-dependencies} </Bundle-ClassPath>
+                        <Bundle-NativeCode>
+							<!--nativelib/libskype32.so;
+							osname=Linux; processor=x86,-->
+                                                        nativelib/libskype.so;
+							osname=Linux; processor=x86-64,
+							nativelib/skype.dll;
+							osname=Win32; processor=x86
+                        </Bundle-NativeCode>
+                    </instructions>
+                </configuration>
+            </plugin>        <!-- Java compiler plugin -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>2.3.2</version>
+                <configuration>
+                    <source>1.6</source>
+                    <target>1.6</target>
+                    <encoding>${project.build.sourceEncoding}</encoding>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>

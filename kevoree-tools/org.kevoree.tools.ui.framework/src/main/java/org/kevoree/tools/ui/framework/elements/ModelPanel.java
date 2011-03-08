@@ -30,11 +30,13 @@ import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.Collection;
 import javax.swing.JButton;
 import javax.swing.JLayeredPane;
 import javax.swing.JPanel;
 import javax.swing.JViewport;
 import javax.swing.Scrollable;
+
 import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.painter.CompoundPainter;
 import org.jdesktop.swingx.painter.MattePainter;
@@ -42,7 +44,6 @@ import org.kevoree.tools.ui.framework.listener.DragDropLayout;
 import org.kevoree.tools.ui.framework.listener.InstanceDragSourceListener;
 
 /**
- *
  * @author ffouquet
  */
 public class ModelPanel extends JLayeredPane {
@@ -59,9 +60,6 @@ public class ModelPanel extends JLayeredPane {
         nodePanel.revalidate();
 
     }
-
-
-
 
 
     public ModelPanel() {
@@ -115,6 +113,15 @@ public class ModelPanel extends JLayeredPane {
         revalidate();
     }
 
+    public void addGroup(JPanel p) {
+        nodePanel.add(p);
+        p.setBounds(50, 50, (int) p.getPreferredSize().getWidth(), (int) p.getPreferredSize().getHeight());
+        InstanceDragSourceListener listener = new InstanceDragSourceListener(p);
+        repaint();
+        revalidate();
+    }
+
+
     public void addBinding(Binding b) {
         bindingPanel.addBinding(b);
         repaint();
@@ -129,6 +136,10 @@ public class ModelPanel extends JLayeredPane {
 
     public void removeBinding(Binding b) {
         bindingPanel.removeBinding(b);
+    }
+
+    public Collection<Binding> getBindings() {
+        return bindingPanel.getBindings();
     }
 
     public void setFlightObject(JPanel fobject) {

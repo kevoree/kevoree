@@ -20,6 +20,7 @@ package org.kevoree.tools.ui.framework.elements;
 import java.awt.Color;
 import org.jdesktop.swingx.JXTitledSeparator;
 import org.kevoree.tools.ui.framework.RoundPanel;
+import org.kevoree.tools.ui.framework.UITools;
 
 /**
  *
@@ -27,10 +28,13 @@ import org.kevoree.tools.ui.framework.RoundPanel;
  */
 public class ComponentTypePanel extends RoundPanel {
 
-    public ComponentTypePanel(String title) {
+    public ComponentTypePanel(String ttitle) {
+        String title = UITools.formatTitle(ttitle,18);
+        this.setToolTipText("ComponentType " + ttitle);
         JXTitledSeparator titlebar = new JXTitledSeparator();
         titlebar.setForeground(Color.WHITE);
         titlebar.setTitle(title);
         add(titlebar);
     }
+
 }

@@ -16,29 +16,19 @@
  * Copyright  : IRISA / INRIA / Universite de Rennes 1 */
 package org.kevoree.tools.ui.editor;
 
-import org.kevoree.ComponentInstance;
-import org.kevoree.ComponentType;
+import org.kevoree.*;
+
 import java.awt.Component;
 
-import org.kevoree.ChannelType;
-import org.kevoree.ContainerRoot;
 import org.kevoree.framework.aspects.PortAspect;
 import org.kevoree.tools.ui.editor.command.ContextualMenuCommand;
 import org.kevoree.tools.ui.editor.command.SelectInstanceCommand;
-import org.kevoree.tools.ui.editor.listener.ChannelTypeDragSourceListener;
-import org.kevoree.tools.ui.editor.listener.CommandMouseListener;
-import org.kevoree.tools.ui.editor.listener.ComponentDragSourceListener;
-import org.kevoree.tools.ui.editor.listener.ComponentTypeDragSourceListener;
-import org.kevoree.tools.ui.editor.listener.HubDragTargetListener;
-import org.kevoree.tools.ui.editor.listener.ModelDragTargetListener;
-import org.kevoree.tools.ui.editor.listener.NodeDragTargetListener;
-import org.kevoree.tools.ui.editor.listener.PortDragSourceListener;
-import org.kevoree.tools.ui.editor.listener.PortDragTargetListener;
+import org.kevoree.tools.ui.editor.command.UnSelectPropertyEditor;
+import org.kevoree.tools.ui.editor.listener.*;
 import org.kevoree.tools.ui.framework.elements.*;
 import org.kevoree.tools.ui.framework.elements.PortPanel.PortType;
 
 /**
- *
  * @author ffouquet
  */
 public class KevoreeUIFactory {
@@ -48,20 +38,21 @@ public class KevoreeUIFactory {
     public KevoreeUIFactory(KevoreeUIKernel _kernel) {
         kernel = _kernel;
     }
+
     private MappingRepository mapping = new MappingRepository();
 
     public MappingRepository getMapping() {
         return mapping;
     }
-    
+
     public ModelPanel createModelPanelUI(ContainerRoot ct) {
         ModelPanel mui = new ModelPanel();
         ((Component) mui).setDropTarget(new ModelDragTargetListener(mui, kernel));
 
         CommandMouseListener listener = new CommandMouseListener();
-        ContextualMenuCommand command = new ContextualMenuCommand();
+        UnSelectPropertyEditor command = new UnSelectPropertyEditor();
         command.setKernel(kernel);
-        listener.setRightClickCommand(command);
+        listener.setLeftClickCommand(command);
         mui.addMouseListener(listener);
 
         mapping.bind(mui, ct);
@@ -82,6 +73,23 @@ public class KevoreeUIFactory {
         mapping.bind(ctui, ct);
         return ctui;
     }
+
+    public GroupTypePanel createGroupTypeUI(GroupType ct) {
+        GroupTypePanel ctui = new GroupTypePanel();
+        ctui.setTitle(ct.getName());
+        GroupTypeDragSourceListener listener = new GroupTypeDragSourceListener(ctui, kernel);
+        mapping.bind(ctui, ct);
+        return ctui;
+    }
+
+    public NodeTypePanel createNodeTypeUI(NodeType ct) {
+        NodeTypePanel ctui = new NodeTypePanel();
+        ctui.setTitle(ct.getName());
+        NodeTypeDragSourceListener listener = new NodeTypeDragSourceListener(ctui, kernel);
+        mapping.bind(ctui, ct);
+        return ctui;
+    }
+
 
     public ComponentPanel createComponentInstance(ComponentInstance ci) {
         ComponentPanel cui = new ComponentPanel();
@@ -134,6 +142,23 @@ public class KevoreeUIFactory {
         mapping.bind(hui, hub);
         return hui;
     }
+
+    public GroupPanel createGroup(org.kevoree.Group group) {
+        GroupPanel hui = new GroupPanel();
+        hui.setTitle(group.getName() + " : \n" + group.getTypeDefinition().getName());
+        GroupAnchorDragSourceListener draglistener = new GroupAnchorDragSourceListener(hui.getAnchor(), kernel);
+
+        /* ADD SELECT COMMAND */
+        CommandMouseListener mouse_listener = new CommandMouseListener();
+        SelectInstanceCommand command = new SelectInstanceCommand();
+        command.setKernel(kernel);
+        mouse_listener.setLeftClickCommand(command);
+        hui.addMouseListener(mouse_listener);
+
+        mapping.bind(hui, group);
+        return hui;
+    }
+
 
     public PortPanel createPort(org.kevoree.Port port) {
         PortPanel pui = new PortPanel();

@@ -19,24 +19,31 @@
 package org.kevoree.tools.marShell.interpreter.sub
 
 import org.kevoree.KevoreeFactory
-import org.kevoree.tools.marShell.ast.AddNode
+import org.kevoree.NodeType
+import org.kevoree.tools.marShell.ast.AddNodeStatment
 import org.kevoree.tools.marShell.interpreter.KevsAbstractInterpreter
 import org.kevoree.tools.marShell.interpreter.KevsInterpreterContext
 import scala.collection.JavaConversions._
 
-case class KevsAddNodeInterpreter(addN : AddNode) extends KevsAbstractInterpreter {
+case class KevsAddNodeInterpreter(addN : AddNodeStatment) extends KevsAbstractInterpreter {
 
   def interpret(context : KevsInterpreterContext):Boolean={
 
-    context.model.getNodes.find(n=>n.getName == addN.nodeName) match {
-      case Some(e)=> println("Node Already existe");false
-      case None => {
-          var newnode = KevoreeFactory.eINSTANCE.createContainerNode
-          newnode.setName(addN.nodeName)
-          context.model.getNodes.add(newnode)
-          true
+    context.model.getTypeDefinitions.find(p=> p.getName == addN.nodeTypeName && p.isInstanceOf[NodeType] ) match {
+      case None => println("Node Type not found for name "+addN.nodeTypeName);false
+      case Some(nodeType)=> {
+          context.model.getNodes.find(n=>n.getName == addN.nodeName) match {
+            case Some(e)=> println("Node Already existe");true
+            case None => {
+              System.out.println("Add Node");
+                var newnode = KevoreeFactory.eINSTANCE.createContainerNode
+                newnode.setName(addN.nodeName)
+                newnode.setTypeDefinition(nodeType)
+                context.model.getNodes.add(newnode)
+                true
+              }
+          }
         }
     }
   }
-
 }

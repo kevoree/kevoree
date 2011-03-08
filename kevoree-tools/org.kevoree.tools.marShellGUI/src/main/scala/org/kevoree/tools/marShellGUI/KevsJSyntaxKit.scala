@@ -19,9 +19,23 @@
 package org.kevoree.tools.marShellGUI
 
 import jsyntaxpane.DefaultSyntaxKit
+import jsyntaxpane.util.Configuration
 
 class KevsJSyntaxKit extends DefaultSyntaxKit(new KevsJSyntaxLexerWrapper()) {
 
   override def getContentType = "text/kevs"
+
+  var config = new java.util.Properties
+  config.setProperty("RightMarginColumn", "80")
+  config.setProperty("RightMarginColor", "0xdddddd")
+
+  config.setProperty("Action.indent.WordRegex", "\\w+|\\/(\\*)+")
+  config.setProperty("Action.combo-completion", "org.kevoree.tools.marShellGUI.KevsComboCompletionAction, control SPACE")
+  config.setProperty("Action.combo-completion.MenuText", "Completions")
+  config.setProperty("Action.double-quotes", "jsyntaxpane.actions.PairAction, typed \"")
+
+  this.setConfig(config)
+
+
 
 }
