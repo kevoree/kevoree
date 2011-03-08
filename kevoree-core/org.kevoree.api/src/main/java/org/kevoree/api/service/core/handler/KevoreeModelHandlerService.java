@@ -18,6 +18,7 @@ package org.kevoree.api.service.core.handler;
  * and open the template in the editor.
  */
 
+import java.util.Date;
 import java.util.List;
 import org.kevoree.ContainerRoot;
 
@@ -28,6 +29,8 @@ import org.kevoree.ContainerRoot;
 public interface KevoreeModelHandlerService {
 
     public ContainerRoot getLastModel();
+
+    public Date getLastModification();
 
     public Boolean updateModel(ContainerRoot model);
 

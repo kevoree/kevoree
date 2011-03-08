@@ -15,6 +15,7 @@ package org.kevoree.framework;
 
 
 import org.kevoree.ContainerRoot;
+import org.kevoree.api.service.core.handler.KevoreeModelHandlerService;
 
 import java.util.HashMap;
 
@@ -22,7 +23,7 @@ public abstract class AbstractGroupType {
 
     public abstract void triggerModelUpdate();
 
-    public ContainerRoot getCurrentModel() {
+    public KevoreeModelHandlerService getModelService() {
         return null;
     }
 

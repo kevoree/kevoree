@@ -26,8 +26,8 @@ trait KevoreeGroup extends AbstractGroupType with KevoreeActor {
   @BeanProperty
   var mhandler: KevoreeModelHandlerService = null;
 
-  override def getCurrentModel(): ContainerRoot = {
-    mhandler.getLastModel
+  override def getModelService(): KevoreeModelHandlerService = {
+    mhandler
   }
 
 

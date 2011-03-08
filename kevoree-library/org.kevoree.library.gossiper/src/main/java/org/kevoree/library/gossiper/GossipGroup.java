@@ -26,6 +26,9 @@ public class GossipGroup extends AbstractGroupType {
     @Start
     public void startMyGroup() {
         System.out.println("StartGroup " + this.getClass().getName());
+
+        System.out.println("last date "+this.getModelService().getLastModification());
+
     }
 
     @Stop

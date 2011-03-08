@@ -36,6 +36,7 @@ import org.kevoree.framework.message._
 import scala.actors.Actor
 import scala.collection.JavaConversions._
 import org.kevoree.api.configuration.ConfigConstants
+import java.util.Date
 
 class KevoreeCoreBean extends KevoreeModelHandlerService with KevoreeActor {
 
@@ -48,11 +49,19 @@ class KevoreeCoreBean extends KevoreeModelHandlerService with KevoreeActor {
   var models : java.util.ArrayList[ContainerRoot] = new java.util.ArrayList()
   var model : ContainerRoot = KevoreeFactory.eINSTANCE.createContainerRoot()
 
+  var lastDate : Date = new Date(System.currentTimeMillis)
+
+  def getLastModification = lastDate
+
   var logger = LoggerFactory.getLogger(this.getClass);
 
   private def switchToNewModel(c : ContainerRoot)={
     models.add(model)
     model = c
+    lastDate = new Date(System.currentTimeMillis)
+    //TODO ADD LISTENER
+
+
   }
 
   override def start : Actor={
