@@ -11,8 +11,8 @@ import org.kevoree.annotation.Start;
 import org.kevoree.annotation.Stop;
 import org.kevoree.annotation.Update;
 import org.kevoree.framework.AbstractGroupType;
-import org.kevoree.library.gossiper.org.kevoree.library.gossiper.version.VectorClock;
-import org.kevoree.library.gossiper.org.kevoree.library.gossiper.version.Versioned;
+import org.kevoree.library.gossiper.version.VectorClock;
+import org.kevoree.library.gossiper.version.Versioned;
 
 /**
  *

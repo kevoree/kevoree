@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.ListIterator;
 
-import org.kevoree.library.gossiper.org.kevoree.library.gossiper.version.Occured;
-import org.kevoree.library.gossiper.org.kevoree.library.gossiper.version.Versioned;
+import org.kevoree.library.gossiper.version.Occured;
+import org.kevoree.library.gossiper.version.Versioned;
 
 /**
  * An inconsistency resolver that uses the object VectorClocks leaving only a

@@ -1,3 +1,4 @@
+
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
@@ -14,5 +15,51 @@
         <version>1.0.0-RC5</version>
         <relativePath>../org.kevoree.library.root/pom.xml</relativePath>
     </parent>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>com.google.protobuf.tools</groupId>
+                <artifactId>maven-protoc-plugin</artifactId>
+                <configuration>
+                    <protocExecutable>/opt/local/bin/protoc</protocExecutable>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>compile</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.google.protobuf</groupId>
+            <artifactId>protobuf-java</artifactId>
+            <version>2.3.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.kevoree</groupId>
+            <artifactId>org.kevoree.framework</artifactId>
+            <version>${kevoree.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.kevoree.tools</groupId>
+            <artifactId>org.kevoree.tools.annotation.api</artifactId>
+            <version>${kevoree.version}</version>
+        </dependency>
+
+    </dependencies>
+
+    <pluginRepositories>
+        <pluginRepository>
+            <id>dtrott</id>
+            <url>http://maven.davidtrott.com/repository</url>
+        </pluginRepository>
+    </pluginRepositories>
+    
 
 </project>

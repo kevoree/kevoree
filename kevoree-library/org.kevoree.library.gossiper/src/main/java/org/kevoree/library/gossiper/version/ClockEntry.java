@@ -1,4 +1,4 @@
-package org.kevoree.library.gossiper.org.kevoree.library.gossiper.version;
+package org.kevoree.library.gossiper.version;
 
 import java.io.Serializable;
 

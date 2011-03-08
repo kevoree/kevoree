@@ -14,7 +14,7 @@
  * the License.
  */
 
-package org.kevoree.library.gossiper.org.kevoree.library.gossiper.version;
+package org.kevoree.library.gossiper.version;
 
 /**
  * An interface that allows us to determine if a given version happened before
