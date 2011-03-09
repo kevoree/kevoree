@@ -11,10 +11,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 
 package org.kevoree.adaptation.deploy.osgi.scheduling
 
@@ -58,28 +54,28 @@ class SchedulingWithTopologicalOrderAlgo {
 				if (!command.equals(command2)) {
 					(map.get(command2.getInstance)) match {
 						case Some(cmdDep) => {
-							if (cmdDep.contains(command.getInstance)) {
-								if (start) {
-									graph.addEdge(command2, command, (command2, command))
-									//constraint1 = Choco.lt(variables.get(command2).get, variables.get(command).get)
-									//println(command2.getInstance.getName+"<"+command.getInstance.getName)
-								}
-								else {
-									graph.addEdge(command, command2, (command, command2))
-									//constraint1 = Choco.lt(variables.get(command).get, variables.get(command2).get)
-								}
+								if (cmdDep.contains(command.getInstance)) {
+									if (start) {
+										graph.addEdge(command2, command, (command2, command))
+										//constraint1 = Choco.lt(variables.get(command2).get, variables.get(command).get)
+										//println(command2.getInstance.getName+"<"+command.getInstance.getName)
+									}
+									else {
+										graph.addEdge(command, command2, (command, command2))
+										//constraint1 = Choco.lt(variables.get(command).get, variables.get(command2).get)
+									}
 
-							} /* else {
-		  //println(command.getInstance.getName + "!="+command2.getInstance.getName)
-		  constraint1 = Choco.neq(variables.get(command).get, variables.get(command2).get)
-		  }*/
-							//model.addConstraint(constraint1)
-						}
+								} /* else {
+								   //println(command.getInstance.getName + "!="+command2.getInstance.getName)
+								   constraint1 = Choco.neq(variables.get(command).get, variables.get(command2).get)
+								   }*/
+								//model.addConstraint(constraint1)
+							}
 						case _ => {
-							//println(command.getInstance.getName + "!="+command2.getInstance.getName)
-							/*var constraint1: Constraint = Choco.neq(variables.get(command).get, variables.get(command2).get)
-																 model.addConstraint(constraint1)*/
-						}
+								//println(command.getInstance.getName + "!="+command2.getInstance.getName)
+								/*var constraint1: Constraint = Choco.neq(variables.get(command).get, variables.get(command2).get)
+								 model.addConstraint(constraint1)*/
+							}
 					}
 				}
 
@@ -89,16 +85,16 @@ class SchedulingWithTopologicalOrderAlgo {
 	}
 
 	/*
-			 * Return Map
-			 *
-			 * Instance Map key is a dependency of all List instances return by key
-			 *
-			 *
-			 * [i:Instance,li:List[Instance]]
-			 * li depends i
-			 *
-			 *
-			 * */
+	 * Return Map
+	 *
+	 * Instance Map key is a dependency of all List instances return by key
+	 *
+	 *
+	 * [i:Instance,li:List[Instance]]
+	 * li depends i
+	 *
+	 *
+	 * */
 	private def lookForPotentialConstraints(commands: List[LifeCycleCommand]): scala.collection.mutable.Map[Instance, java.util.List[Instance]] = {
 		val instanceDependencies: scala.collection.mutable.Map[Instance, java.util.List[Instance]] = scala.collection.mutable.Map[Instance, java.util.List[Instance]]()
 
@@ -117,29 +113,29 @@ class SchedulingWithTopologicalOrderAlgo {
 				for (command <- commands) {
 					command.getInstance match {
 						case instance: ComponentInstance => {
-							// test all provided port
-							// the instance of the provided port must be stopped before those which are connected to him
-							var pit = instance.getProvided.iterator
-							while (pit.hasNext) {
-								var port = pit.next
-								if (binding.getPort.equals(port)) {
-									var newL = instanceDependencies.get(instance).getOrElse(new java.util.ArrayList())
-									newL.add(binding.getHub)
-									instanceDependencies.update(instance, newL)
+								// test all provided port
+								// the instance of the provided port must be stopped before those which are connected to him
+								var pit = instance.getProvided.iterator
+								while (pit.hasNext) {
+									var port = pit.next
+									if (binding.getPort.equals(port)) {
+										var newL = instanceDependencies.get(instance).getOrElse(new java.util.ArrayList())
+										newL.add(binding.getHub)
+										instanceDependencies.update(instance, newL)
+									}
+								}
+								// test all required port
+								// the instance wait stops of all of those which are connected to him
+								var rit = instance.getRequired.iterator
+								while (rit.hasNext) {
+									var port = rit.next
+									if (binding.getPort.equals(port)) {
+										var newL = instanceDependencies.get(binding.getHub).getOrElse(new java.util.ArrayList())
+										newL.add(instance)
+										instanceDependencies.update(binding.getHub, newL)
+									}
 								}
 							}
-							// test all required port
-							// the instance wait stops of all of those which are connected to him
-							var rit = instance.getRequired.iterator
-							while (rit.hasNext) {
-								var port = rit.next
-								if (binding.getPort.equals(port)) {
-									var newL = instanceDependencies.get(binding.getHub).getOrElse(new java.util.ArrayList())
-									newL.add(instance)
-									instanceDependencies.update(binding.getHub, newL)
-								}
-							}
-						}
 						case _ =>
 					}
 				}
