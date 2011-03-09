@@ -95,13 +95,9 @@ public class GossipGroup extends AbstractGroupType implements Runnable {
         }
     }
 
-    public synchronized void updateFromRemote(VersionedModel model){
-            //TODO
-    }
-
 
     private synchronized void updateClock(ContainerNode node) {
-        VersionedModel versioned = getVersionnedModelFromPeer(node);
+        VersionedModel versioned = getVersionnedModelToPeer(node);
         if (this.getModelService().updateModel(KevoreeXmiHelper.load(versioned.getModel()))) {
             //this.clock.merge(versioned.);
         }
@@ -133,15 +129,14 @@ public class GossipGroup extends AbstractGroupType implements Runnable {
     }
 
 
-    /* Override in child classe */
+    /* Override in child classes */
     protected VectorClock getVectorFromPeer(ContainerNode node) {
         return null;
 
     }
 
-    protected Boolean pushVersionnedModelToPeer(ContainerNode node,VersionedModel model) {
-
-
+    /* Override in child classes*/
+    protected VersionedModel getVersionnedModelToPeer(ContainerNode node) {
         return null;
     }
 }

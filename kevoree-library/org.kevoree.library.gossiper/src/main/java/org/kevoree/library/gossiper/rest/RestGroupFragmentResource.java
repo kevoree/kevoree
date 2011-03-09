@@ -17,6 +17,8 @@
  */
 package org.kevoree.library.gossiper.rest;
 
+import com.sun.xml.internal.messaging.saaj.util.ByteOutputStream;
+import org.kevoree.framework.KevoreeXmiHelper;
 import org.kevoree.library.gossiper.version.GossiperMessages;
 import org.restlet.data.MediaType;
 import org.restlet.data.Method;
@@ -26,6 +28,7 @@ import org.restlet.resource.ResourceException;
 import org.restlet.resource.ServerResource;
 
 import java.io.IOException;
+import java.io.StringWriter;
 import java.util.HashMap;
 
 /**
@@ -52,14 +55,21 @@ public class RestGroupFragmentResource extends ServerResource {
     }
 
     public Representation doHandle() {
-        if (getMethod().equals(Method.PUT)) {
+        if (getMethod().equals(Method.POST)) {
+
+
+            ByteOutputStream out = new ByteOutputStream();
+            KevoreeXmiHelper.saveStream(out,groupFragment.getModelService().getLastModel());
             try {
-                GossiperMessages.VersionedModel model = GossiperMessages.VersionedModel.parseFrom(getRequestEntity().getStream());
-                groupFragment.updateFromRemote(model);
-                return new StringRepresentation("<gossipAck />");
+                out.flush();
             } catch (IOException e) {
-                return new StringRepresentation(e.getLocalizedMessage());
+                e.printStackTrace();
             }
+            String flatModel = new String(out.getBytes());
+            GossiperMessages.VersionedModel model = GossiperMessages.VersionedModel.newBuilder().setVector(groupFragment.clockRef.get()).setModel(flatModel).build();
+            Representation representation = new StringRepresentation(model.toByteString().toStringUtf8());
+            representation.setMediaType(MediaType.TEXT_HTML);
+            return representation;
         }
         if (getMethod().equals(Method.GET)) {
             Representation representation = new StringRepresentation(groupFragment.clockRef.get().toByteString().toStringUtf8());
