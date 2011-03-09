@@ -21,16 +21,17 @@ import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * @author ffouquet
  */
-@GroupType
+//@GroupType
 public class GossipGroup extends AbstractGroupType implements Runnable {
 
     private boolean running;
     private int gossipInterval;
-    private VectorClock clock; // TODO initilization
+    public final AtomicReference<VectorClock> clockRef = new AtomicReference<VectorClock>(VectorClock.newBuilder().build());
 
     @Override
     public void triggerModelUpdate() {
@@ -60,6 +61,7 @@ public class GossipGroup extends AbstractGroupType implements Runnable {
     public void updateMyGroup() {
         System.out.println("UpdateGroup " + this.getClass().getName());
     }
+
 
     @Override
     public void run() {
@@ -92,6 +94,11 @@ public class GossipGroup extends AbstractGroupType implements Runnable {
 
         }
     }
+
+    public synchronized void updateFromRemote(VersionedModel model){
+            //TODO
+    }
+
 
     private synchronized void updateClock(ContainerNode node) {
         VersionedModel versioned = getVersionnedModelFromPeer(node);
@@ -126,16 +133,13 @@ public class GossipGroup extends AbstractGroupType implements Runnable {
     }
 
 
+    /* Override in child classe */
     protected VectorClock getVectorFromPeer(ContainerNode node) {
         return null;
+
     }
 
-    /*
-    protected VersionedModel getVersionnedModelFromPeer(ContainerNode node) {
-        return null;
-    }  */
-
-    protected Boolean pushVersionnedModelToPeer(VersionedModel model) {
+    protected Boolean pushVersionnedModelToPeer(ContainerNode node,VersionedModel model) {
 
 
         return null;

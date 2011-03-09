@@ -17,11 +17,8 @@
  */
 package org.kevoree.library.gossiper.rest;
 
-import org.kevoree.extra.marshalling.RichJSONObject;
-import org.kevoree.extra.marshalling.RichString;
-import org.kevoree.framework.AbstractChannelFragment;
-import org.kevoree.framework.AbstractGroupType;
-import org.kevoree.framework.message.Message;
+import org.kevoree.library.gossiper.version.GossiperMessages;
+import org.restlet.data.MediaType;
 import org.restlet.data.Method;
 import org.restlet.representation.Representation;
 import org.restlet.representation.StringRepresentation;
@@ -36,12 +33,12 @@ import java.util.HashMap;
  */
 public class RestGroupFragmentResource extends ServerResource {
 
-    public static HashMap<String, AbstractGroupType> groups = new HashMap<String, AbstractGroupType>();
+    public static HashMap<String, RestGossipGroup> groups = new HashMap<String, RestGossipGroup>();
 
     /**
      * The underlying Channel object.
      */
-    AbstractGroupType groupFragment;
+    RestGossipGroup groupFragment;
     /**
      * The sequence of characters that identifies the resource.
      */
@@ -57,64 +54,19 @@ public class RestGroupFragmentResource extends ServerResource {
     public Representation doHandle() {
         if (getMethod().equals(Method.PUT)) {
             try {
-                return new StringRepresentation(postInput(getRequestEntity().getText()));
+                GossiperMessages.VersionedModel model = GossiperMessages.VersionedModel.parseFrom(getRequestEntity().getStream());
+                groupFragment.updateFromRemote(model);
+                return new StringRepresentation("<gossipAck />");
             } catch (IOException e) {
                 return new StringRepresentation(e.getLocalizedMessage());
             }
         }
         if (getMethod().equals(Method.GET)) {
-           try {
-                return new StringRepresentation(getInput(getRequestEntity().getText()));
-            } catch (IOException e) {
-                return new StringRepresentation(e.getLocalizedMessage());
-            }
+            Representation representation = new StringRepresentation(groupFragment.clockRef.get().toByteString().toStringUtf8());
+            representation.setMediaType(MediaType.TEXT_HTML);
+            return representation;
         }
         return new StringRepresentation("Error");
-    }
-
-
-    //@Get()
-    public String getInput(String entity) {
-        Message msg = buildMsg(entity);
-        Object o = channelFragment.remoteDispatch(msg);
-        RichJSONObject oo = new RichJSONObject(o);
-        return oo.toJSON();
-    }
-
-    //@Post()
-    public String postInput(String entity) {
-        Message msg = buildMsg(entity);
-        System.out.println(entity);
-
-        Object o = channelFragment.remoteDispatch(msg);
-        return "<ack />";
-    }
-
-    private Message buildMsg(String entity) {
-        Message msg = buildMessageFromJSON(entity);
-        if (msg == null) {
-            msg = buildMessageFromAttribute(entity);
-        }
-        return msg;
-    }
-
-    private Message buildMessageFromJSON(String entity) {
-        try {
-            RichString c = new RichString(entity);
-            Message obj = (Message) c.fromJSON(Message.class);
-            return obj;
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
-    private Message buildMessageFromAttribute(String entity) {
-        Message msg = new Message();
-        for (String key : getRequest().getAttributes().keySet()) {
-            System.out.println("Debug=" + key + "--" + getRequest().getAttributes().get(key));
-        }
-        return msg;
     }
 
 }

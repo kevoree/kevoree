@@ -15899,6 +15899,8 @@ org.eclipse.emf.ecore.impl.BasicEObjectImpl: int EVIRTUAL_UNSET
 org.eclipse.emf.ecore.impl.BasicEObjectImpl: int EVIRTUAL_GET
 org.eclipse.emf.ecore.impl.BasicEObjectImpl: int EVIRTUAL_IS_SET
 org.eclipse.emf.ecore.impl.BasicEObjectImpl: boolean $assertionsDisabled
+org.kevoree.adaptation.deploy.osgi.KevoreeAdaptationDeployServiceOSGi$$anonfun$schedule$1: long serialVersionUID
+org.kevoree.adaptation.deploy.osgi.KevoreeAdaptationDeployServiceOSGi$$anonfun$schedule$2: long serialVersionUID
 org.eclipse.emf.ecore.xml.type.internal.XMLCalendar: long serialVersionUID
 org.eclipse.emf.ecore.xml.type.internal.XMLCalendar: short DATETIME
 org.eclipse.emf.ecore.xml.type.internal.XMLCalendar: short TIME
@@ -25675,6 +25677,8 @@ scala.Function$$anonfun$curried$3$$anonfun$apply$5$$anonfun$apply$6$$anonfun$app
 scala.Function1$mcFI$sp$$anonfun$andThen$mcFI$sp$1
 scala.collection.mutable.DoubleLinkedList
 org.scala_tools.vscaladoc.ModelExtractor$ClassOrObject$Val
+org.kevoree.adaptation.deploy.osgi.KevoreeAdaptationDeployServiceOSGi$$anonfun$schedule$1
+org.kevoree.adaptation.deploy.osgi.KevoreeAdaptationDeployServiceOSGi$$anonfun$schedule$2
 org.eclipse.emf.ecore.xml.type.internal.XMLCalendar
 scala.reflect.TypeApply$
 net.lag.logging.Level$CRITICAL$
