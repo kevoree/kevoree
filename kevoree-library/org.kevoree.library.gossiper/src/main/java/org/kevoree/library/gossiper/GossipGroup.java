@@ -130,9 +130,10 @@ public class GossipGroup extends AbstractGroupType implements Runnable {
         return null;
     }
 
+    /*
     protected VersionedModel getVersionnedModelFromPeer(ContainerNode node) {
         return null;
-    }
+    }  */
 
     protected Boolean pushVersionnedModelToPeer(VersionedModel model) {
 
