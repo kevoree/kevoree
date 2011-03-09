@@ -81,5 +81,7 @@ public class ClockVectorMergerJUnitTest {
         assert (v3.getEnties(5).getNodeID().equals("F"));
         assert (v3.getEnties(5).getVersion() == 6);
 
+         System.out.println(v3.toByteArray());
+
     }
 }
