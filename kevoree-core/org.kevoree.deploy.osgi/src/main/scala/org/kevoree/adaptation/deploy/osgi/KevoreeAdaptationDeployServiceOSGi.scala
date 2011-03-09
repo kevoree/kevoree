@@ -353,7 +353,7 @@ class KevoreeAdaptationDeployServiceOSGi extends KevoreeAdaptationDeployService 
 
 		commands.put("stop", scheduling.schedule(commands.get("stop").get.asInstanceOf[List[LifeCycleCommand]], false).toList)
 		//stopCommand = scheduling.schedule(commands.get("stop"), false).toList
-		commands.put("start", scheduling.schedule(commands.get("start").get.asInstanceOf[List[LifeCycleCommand]], false).toList)
+		commands.put("start", scheduling.schedule(commands.get("start").get.asInstanceOf[List[LifeCycleCommand]], true).toList)
 		//startCommand = scheduling.schedule(commands.get("start"), true).toList
 
 		val planTime = System.currentTimeMillis
