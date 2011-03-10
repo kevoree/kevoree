@@ -8,6 +8,7 @@ import org.kevoree.annotation.Update;
 import org.kevoree.framework.KevoreePlatformHelper;
 import org.kevoree.library.gossiper.GossipGroup;
 import org.kevoree.library.gossiper.version.GossiperMessages;
+import org.kevoree.remote.rest.Handler;
 import org.restlet.data.CharacterSet;
 import org.restlet.data.MediaType;
 import org.restlet.representation.EmptyRepresentation;
@@ -23,6 +24,8 @@ public class RestGossipGroup extends GossipGroup {
     @Override
     public void startMyGroup() {
         super.startMyGroup();
+        Handler.getDefaultHost().attach("/channels/{channelFragmentName}", RestGroupFragmentResource.class);
+        Handler.getDefaultHost().attach("/groups", RestGroupsResource.class);
     }
 
     @Stop
@@ -82,5 +85,4 @@ public class RestGossipGroup extends GossipGroup {
         }
         return "http://" + ip + ":" + port + "/groups/" + groupName;
     }
-
 }

@@ -7,7 +7,6 @@ package org.kevoree.library.gossiper;
 import org.kevoree.ContainerNode;
 import org.kevoree.ContainerRoot;
 import org.kevoree.Group;
-import org.kevoree.annotation.GroupType;
 import org.kevoree.annotation.Start;
 import org.kevoree.annotation.Stop;
 import org.kevoree.annotation.Update;
@@ -16,6 +15,7 @@ import org.kevoree.framework.KevoreeXmiHelper;
 import org.kevoree.library.gossiper.version.GossiperMessages.VectorClock;
 import org.kevoree.library.gossiper.version.GossiperMessages.VersionedModel;
 import org.kevoree.library.gossiper.version.Occured;
+import org.kevoree.remote.rest.Handler;
 
 import java.security.SecureRandom;
 import java.util.ArrayList;
@@ -108,6 +108,7 @@ public class GossipGroup extends AbstractGroupType implements Runnable {
         ContainerRoot model = this.getModelService().getLastModel();
         /* Search self group */
         Group selfGroup = null;
+        
         for (Group g : model.getGroups()) {
             if (g.getName().equals(this.getName())) {
                 selfGroup = g;
