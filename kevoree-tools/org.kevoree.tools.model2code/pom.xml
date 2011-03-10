@@ -1,0 +1,18 @@
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>org.kevoree.tools.annotation.api</artifactId>
+    <packaging>bundle</packaging>
+    <name>Kevoree :: Tools :: Annotation API</name>
+    <version>1.0.0-RC5</version>
+
+    <parent>
+        <artifactId>org.kevoree.tools.root</artifactId>
+        <groupId>org.kevoree.tools</groupId>
+        <version>1.0.0-RC5</version>
+        <relativePath>../org.kevoree.tools.root/pom.xml</relativePath>
+    </parent>
+
+</project>
