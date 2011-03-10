@@ -62,6 +62,8 @@ public class KevoreeAnnotationProcessorFactory implements
         stype.add(Library.class.getName());
         stype.add(GroupType.class.getName());
         stype.add(NodeType.class.getName());
+        stype.add(Slot.class.getName());
+        stype.add(SlotPort.class.getName());
         return stype;
     }
 
