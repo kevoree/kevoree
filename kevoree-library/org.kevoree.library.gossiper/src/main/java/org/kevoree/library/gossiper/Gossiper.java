@@ -134,7 +134,7 @@
 //     * <p>
 //     * Method is <code>protected</code> rather than <code>private</code>, so that it may
 //     * be overridden if the behaviour for handling concurrent values of the same key was to be
-//     * changed e.g., if two differently named stores were added during a network split, merge
+//     * changed e.g., if two differently named stores were added during a rest split, merge
 //     * appropriate metadata to include both stores.
 //     * </p>
 //     *
