@@ -29,15 +29,16 @@ import org.restlet.resource.ServerResource;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author ffouquet
  */
 public class RestGroupFragmentResource extends ServerResource {
 
-    public static HashMap<String, RestGossipGroup> groups = new HashMap<String, RestGossipGroup>();
-
+    public static Map<String, RestGossipGroup> groups = Collections.synchronizedMap(new HashMap<String, RestGossipGroup>());
     /**
      * The underlying Channel object.
      */
@@ -59,7 +60,7 @@ public class RestGroupFragmentResource extends ServerResource {
 
 
             ByteArrayOutputStream out = new ByteArrayOutputStream();
-            KevoreeXmiHelper.saveStream(out,groupFragment.getModelService().getLastModel());
+            KevoreeXmiHelper.saveStream(out, groupFragment.getModelService().getLastModel());
             try {
                 out.flush();
             } catch (IOException e) {
@@ -78,5 +79,4 @@ public class RestGroupFragmentResource extends ServerResource {
         }
         return new StringRepresentation("Error");
     }
-
 }

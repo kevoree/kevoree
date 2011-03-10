@@ -1,7 +1,9 @@
 package org.kevoree.library.gossiper.rest;
 
+import java.util.concurrent.Semaphore;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.kevoree.ContainerNode;
-import org.kevoree.annotation.GroupType;
 import org.kevoree.annotation.Start;
 import org.kevoree.annotation.Stop;
 import org.kevoree.annotation.Update;
@@ -9,28 +11,48 @@ import org.kevoree.framework.KevoreePlatformHelper;
 import org.kevoree.library.gossiper.GossipGroup;
 import org.kevoree.library.gossiper.version.GossiperMessages;
 import org.kevoree.remote.rest.Handler;
-import org.restlet.data.CharacterSet;
-import org.restlet.data.MediaType;
 import org.restlet.representation.EmptyRepresentation;
 import org.restlet.representation.Representation;
-import org.restlet.representation.StringRepresentation;
 import org.restlet.resource.ClientResource;
 
 //@GroupType
 public class RestGossipGroup extends GossipGroup {
+
+    private static final Semaphore handlerAccess = new Semaphore(1, true);
 
     //LIFE CYCLE GROUP
     @Start
     @Override
     public void startMyGroup() {
         super.startMyGroup();
-        Handler.getDefaultHost().attach("/channels/{channelFragmentName}", RestGroupFragmentResource.class);
-        Handler.getDefaultHost().attach("/groups", RestGroupsResource.class);
+        try {
+            handlerAccess.acquire();
+            if (RestGroupFragmentResource.groups.keySet().isEmpty()) {
+                Handler.getDefaultHost().attach("/channels/{channelFragmentName}", RestGroupFragmentResource.class);
+                Handler.getDefaultHost().attach("/groups", RestGroupsResource.class);
+            }
+            RestGroupFragmentResource.groups.put(this.getName(), this);
+            handlerAccess.release();
+        } catch (InterruptedException ex) {
+            Logger.getLogger(RestGossipGroup.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     @Stop
     @Override
     public void stopMyGroup() {
+
+        try {
+            handlerAccess.acquire();
+            RestGroupFragmentResource.groups.remove(this.getName());
+            if (RestGroupFragmentResource.groups.keySet().isEmpty()) {
+                Handler.getDefaultHost().detach(RestGroupFragmentResource.class);
+                Handler.getDefaultHost().detach(RestGroupsResource.class);
+            }
+            handlerAccess.release();
+        } catch (InterruptedException ex) {
+            Logger.getLogger(RestGossipGroup.class.getName()).log(Level.SEVERE, null, ex);
+        }
         super.stopMyGroup();
     }
 
@@ -40,6 +62,7 @@ public class RestGossipGroup extends GossipGroup {
         super.updateMyGroup();
     }
 
+    @Override
     protected GossiperMessages.VectorClock getVectorFromPeer(ContainerNode node) {
         String lastUrl = null;
         try {

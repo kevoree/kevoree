@@ -8,7 +8,7 @@ import org.restlet.resource.ResourceException;
 import org.restlet.resource.ServerResource;
 
 public class RestGroupsResource extends ServerResource {
-
+    
     protected void doInit() throws ResourceException {
         setExisting(true);
     }

@@ -15,7 +15,6 @@ import org.kevoree.framework.KevoreeXmiHelper;
 import org.kevoree.library.gossiper.version.GossiperMessages.VectorClock;
 import org.kevoree.library.gossiper.version.GossiperMessages.VersionedModel;
 import org.kevoree.library.gossiper.version.Occured;
-import org.kevoree.remote.rest.Handler;
 
 import java.security.SecureRandom;
 import java.util.ArrayList;
