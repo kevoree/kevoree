@@ -13,6 +13,7 @@ public class RestGroupsResource extends ServerResource {
         setExisting(true);
     }
 
+    @Override
     public Representation doHandle() {
         if (getMethod().equals(Method.GET)) {
             StringRepresentation result = new StringRepresentation(getHTMLList());

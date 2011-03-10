@@ -231,7 +231,13 @@ class KevoreeAdaptationDeployServiceOSGi extends KevoreeAdaptationDeployService 
         executionResult
 
     */
-    execute(schedule(buildCommandLists(model, nodeName)))
+   
+   if(!model.getAdaptations.isEmpty){
+     execute(schedule(buildCommandLists(model, nodeName)))
+   } else {
+     true
+   }
+    
   }
 
   def buildCommandLists(model: AdaptationModel, nodeName: String): scala.collection.mutable.Map[String, List[PrimitiveCommand]] = {

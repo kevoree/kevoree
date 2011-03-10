@@ -18,6 +18,8 @@
 package org.kevoree.library.gossiper.rest;
 
 import java.io.ByteArrayOutputStream;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.kevoree.framework.KevoreeXmiHelper;
 import org.kevoree.library.gossiper.version.GossiperMessages;
 import org.restlet.data.MediaType;
@@ -28,7 +30,6 @@ import org.restlet.resource.ResourceException;
 import org.restlet.resource.ServerResource;
 
 import java.io.IOException;
-import java.io.OutputStream;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -55,27 +56,23 @@ public class RestGroupFragmentResource extends ServerResource {
         setExisting(this.groupFragment != null);
     }
 
+    @Override
     public Representation doHandle() {
         if (getMethod().equals(Method.POST)) {
-
-
             ByteArrayOutputStream out = new ByteArrayOutputStream();
             KevoreeXmiHelper.saveStream(out, groupFragment.getModelService().getLastModel());
-            try {
-                out.flush();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
             String flatModel = new String(out.toByteArray());
+            try {
+                out.close();
+            } catch (IOException ex) {
+                Logger.getLogger(RestGroupFragmentResource.class.getName()).log(Level.SEVERE, null, ex);
+            }
             GossiperMessages.VersionedModel model = GossiperMessages.VersionedModel.newBuilder().setVector(groupFragment.clockRef.get()).setModel(flatModel).build();
-            Representation representation = new StringRepresentation(model.toByteString().toStringUtf8());
-            representation.setMediaType(MediaType.TEXT_HTML);
-            return representation;
+            return new MessageRepresentation<GossiperMessages.VersionedModel>(model);
         }
         if (getMethod().equals(Method.GET)) {
-            Representation representation = new StringRepresentation(groupFragment.clockRef.get().toByteString().toStringUtf8());
-            representation.setMediaType(MediaType.TEXT_HTML);
-            return representation;
+            groupFragment.incrementedVectorClock();
+            return new MessageRepresentation<GossiperMessages.VectorClock>(groupFragment.clockRef.get());
         }
         return new StringRepresentation("Error");
     }

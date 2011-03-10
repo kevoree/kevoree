@@ -23,6 +23,8 @@ public class VersionUtils {
         List<String> orderedNodeID = new ArrayList();
         Map<String, Long> values = new HashMap<String, Long>();
         Map<String, Long> timestamps = new HashMap<String, Long>();
+        
+        Long currentTimeMillis = System.currentTimeMillis();
 
         int i = 0;
         int j = 0;
@@ -36,7 +38,7 @@ public class VersionUtils {
                     timestamps.put(v2.getNodeID(), v2.getTimestamp());
                 } else {
                     values.put(v2.getNodeID(), Math.max(v2.getVersion(), values.get(v2.getNodeID())));
-                    timestamps.put(v2.getNodeID(), System.currentTimeMillis());
+                    timestamps.put(v2.getNodeID(), currentTimeMillis);
                 }
                 j++;
                 continue;
@@ -49,7 +51,7 @@ public class VersionUtils {
                     timestamps.put(v1.getNodeID(), v1.getTimestamp());
                 } else {
                     values.put(v1.getNodeID(), Math.max(v1.getVersion(), values.get(v1.getNodeID())));
-                    timestamps.put(v1.getNodeID(), System.currentTimeMillis());
+                    timestamps.put(v1.getNodeID(), currentTimeMillis);
                 }
                 i++;
                 continue;
@@ -60,7 +62,7 @@ public class VersionUtils {
             ClockEntry v2 = clock2.getEnties(j);
             if (v1.getNodeID().equals(v2.getNodeID())) {
                 values.put(v1.getNodeID(), Math.max(v1.getVersion(), v2.getVersion()));
-                timestamps.put(v1.getNodeID(), System.currentTimeMillis());
+                timestamps.put(v1.getNodeID(), currentTimeMillis);
                 if (!orderedNodeID.contains(v1.getNodeID())) {
                     orderedNodeID.add(v1.getNodeID());
                 }
@@ -74,7 +76,7 @@ public class VersionUtils {
                         timestamps.put(v2.getNodeID(), v2.getTimestamp());
                     } else {
                         values.put(v2.getNodeID(), Math.max(v2.getVersion(), values.get(v2.getNodeID())));
-                        timestamps.put(v2.getNodeID(), System.currentTimeMillis());
+                        timestamps.put(v2.getNodeID(), currentTimeMillis);
                     }
                     j++;
                 } else {
@@ -84,7 +86,7 @@ public class VersionUtils {
                         timestamps.put(v1.getNodeID(), v1.getTimestamp());
                     } else {
                         values.put(v1.getNodeID(), Math.max(v1.getVersion(), values.get(v1.getNodeID())));
-                        timestamps.put(v1.getNodeID(), System.currentTimeMillis());
+                        timestamps.put(v1.getNodeID(), currentTimeMillis);
                     }
                     i++;
                 }
@@ -101,16 +103,21 @@ public class VersionUtils {
           //  index++;
         }
 
-        return newClockBuilder.setTimestamp(System.currentTimeMillis()).build();
+        return newClockBuilder.setTimestamp(currentTimeMillis).build();
     }
 
 
 
 
     public static Occured compare(VectorClock v1, VectorClock v2) {
-        if (v1 == null || v2 == null) {
-            throw new IllegalArgumentException("Can't compare null vector clocks!");
+        if (v1 == null) {
+            return Occured.BEFORE;
         }
+        if (v2 == null) {
+            return Occured.AFTER;
+        }        
+        
+        
         // We do two checks: v1 <= v2 and v2 <= v1 if both are true then
         boolean v1Bigger = false;
         boolean v2Bigger = false;
