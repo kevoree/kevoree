@@ -21,6 +21,7 @@ package org.kevoree.framework.annotation.processor.visitor
 import org.kevoree.ComponentType
 import com.sun.mirror.apt.AnnotationProcessorEnvironment
 import com.sun.mirror.declaration.ClassDeclaration
+import com.sun.mirror.declaration.FieldDeclaration
 import com.sun.mirror.declaration.InterfaceDeclaration
 import com.sun.mirror.declaration.MethodDeclaration
 import com.sun.mirror.declaration.TypeDeclaration
@@ -32,6 +33,7 @@ import org.kevoree.framework.annotation.processor.visitor.sub.LifeCycleMethodPro
 import org.kevoree.framework.annotation.processor.visitor.sub.PortMappingProcessor
 import org.kevoree.framework.annotation.processor.visitor.sub.ProvidedPortProcessor
 import org.kevoree.framework.annotation.processor.visitor.sub.RequiredPortProcessor
+import org.kevoree.framework.annotation.processor.visitor.sub.SlotProcessor
 import org.kevoree.framework.annotation.processor.visitor.sub.ThirdPartyProcessor
 import scala.collection.JavaConversions._
 
@@ -45,6 +47,7 @@ extends SimpleDeclarationVisitor
    with PortMappingProcessor
    with LibraryProcessor
    with LifeCycleMethodProcessor
+   with SlotProcessor
 {
 
   override def visitClassDeclaration(classdef : ClassDeclaration) = {
@@ -73,6 +76,7 @@ extends SimpleDeclarationVisitor
     processThirdParty(componentType,typeDecl)
     processProvidedPort(componentType,typeDecl,env)
     processRequiredPort(componentType,typeDecl,env)
+    processSlot(env, typeDecl, componentType)
 
     typeDecl.getMethods().foreach{method => method.accept(this) }
 
@@ -81,9 +85,7 @@ extends SimpleDeclarationVisitor
   override def visitMethodDeclaration(methoddef : MethodDeclaration) = {
     processPortMapping(componentType,methoddef,env)
     processLifeCycleMethod(componentType,methoddef)
+
   }
-
-
-
-
+  
 }
