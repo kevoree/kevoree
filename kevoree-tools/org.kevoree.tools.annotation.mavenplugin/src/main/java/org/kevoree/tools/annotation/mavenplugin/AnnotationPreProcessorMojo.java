@@ -35,6 +35,8 @@ import java.io.File;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import org.apache.maven.model.Dependency;
+import org.apache.maven.model.Repository;
 
 /**
  * @author ffouquet
@@ -227,14 +229,28 @@ public class AnnotationPreProcessorMojo extends AbstractMojo {
     @Override
     public void execute() throws MojoExecutionException {
 
-        String repositories = "http://maven.kevoree.org/libs-release/";
+        String repositories = "";
         if (project.getDistributionManagement() != null) {
             if (project.getVersion().contains("SNAPSHOT")) {
                 repositories += ";" + project.getDistributionManagement().getSnapshotRepository().getUrl();
             } else {
                 repositories += ";" + project.getDistributionManagement().getRepository().getUrl();
             }
-
+        }
+        String otherRepositories = "";
+        Iterator repoIterator = project.getRepositories().iterator();
+        while(repoIterator.hasNext()){
+            Repository repo = (Repository) repoIterator.next();
+            otherRepositories += ";" + repo.getUrl();
+        }
+        
+        Iterator dependenciesIterator = project.getDependencies().iterator();
+        String thirdParties = "";
+        while(dependenciesIterator.hasNext()){
+            Dependency dep =(Dependency) dependenciesIterator.next();
+            if(dep.getScope().equals("provided")){
+                thirdParties += ";" + dep.getGroupId()+ "." + dep.getArtifactId() + "!" + "mvn:"+dep.getGroupId()+"/"+dep.getArtifactId()+"/"+dep.getVersion() ;
+            }
         }
 
         this.options = (String[]) Arrays.asList(
@@ -243,7 +259,9 @@ public class AnnotationPreProcessorMojo extends AbstractMojo {
                 "kevoree.lib.version=" + this.project.getVersion(),
                 "kevoree.lib.target=" + sourceOutputDirectory.getPath() + "/KEV-INF/lib.kev",
                 "tag=" + dateFormat.format(new Date()),
-                "repositories=" + repositories
+                "repositories=" + repositories,
+                "otherRepositories=" + otherRepositories,
+                "thirdParties="+thirdParties
                 ).toArray();
 
         Resource resource = new Resource();

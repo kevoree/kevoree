@@ -52,6 +52,13 @@
             <artifactId>org.restlet</artifactId>
             <version>2.1-M2</version>
         </dependency>
+        <dependency>
+            <groupId>org.restlet.jse</groupId>
+            <artifactId>org.restlet.ext.slf4j</artifactId>
+            <version>2.1-M2</version>
+        </dependency>
+        
+        
 
         <dependency>
             <groupId>org.osgi</groupId>

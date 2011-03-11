@@ -22,7 +22,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.kevoree.framework.KevoreeXmiHelper;
 import org.kevoree.library.gossiper.version.GossiperMessages;
-import org.restlet.data.MediaType;
 import org.restlet.data.Method;
 import org.restlet.representation.Representation;
 import org.restlet.representation.StringRepresentation;
@@ -73,6 +72,13 @@ public class RestGroupFragmentResource extends ServerResource {
         if (getMethod().equals(Method.GET)) {
             groupFragment.incrementedVectorClock();
             return new MessageRepresentation<GossiperMessages.VectorClock>(groupFragment.clockRef.get());
+        }
+        if (getMethod().equals(Method.PUT)) {
+            //TRIGGER AND UPDATE FROM REMOTE NODE
+            Object o = this.getRequestAttributes().get("remotePeerNodeName");
+            if(o != null){
+                
+            }
         }
         return new StringRepresentation("Error");
     }
