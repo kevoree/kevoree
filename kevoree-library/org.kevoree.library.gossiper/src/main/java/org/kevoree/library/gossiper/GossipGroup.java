@@ -37,8 +37,8 @@ public abstract class GossipGroup extends AbstractGroupType implements Runnable 
     private AtomicBoolean running = new AtomicBoolean(false);
     public AtomicReference<VectorClock> clockRef = new AtomicReference<VectorClock>(VectorClock.newBuilder().setTimestamp(System.currentTimeMillis()).build());
     public final AtomicReference<Date> lastCheckedTimeStamp = new AtomicReference<Date>(new Date(0l));
-
-    public void incrementedVectorClock() {
+	
+    public synchronized void incrementedVectorClock() {
         if (this.getModelService().getLastModification().after(lastCheckedTimeStamp.get())) {
             //Increment & Replace local vector clock
             VectorClock currentClock = clockRef.get();
@@ -97,7 +97,7 @@ public abstract class GossipGroup extends AbstractGroupType implements Runnable 
         while (running.get()) {
             try {
                 //     Thread.sleep(Integer.parseInt((String) this.getDictionary().get("interval")));
-                Thread.sleep(12000);
+                Thread.sleep(12000); // TODO
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
             }

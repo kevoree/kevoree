@@ -27,87 +27,94 @@ import org.kevoreeAdaptation.AdaptationModel
 
 class SchedulingTest extends AssertionsForJUnit with SchedulingSuite {
 
-	var component : KevoreeKompareBean = null
-	var adaptationDeploy : KevoreeAdaptationDeployServiceOSGi = null
-	def emptyModel = KevoreeFactory.eINSTANCE.createContainerRoot
+  var component : KevoreeKompareBean = null
+  var adaptationDeploy : KevoreeAdaptationDeployServiceOSGi = null
+  def emptyModel = KevoreeFactory.eINSTANCE.createContainerRoot
 
-	@Before def initialize() {
-		component = new KevoreeKompareBean
-		adaptationDeploy = new KevoreeAdaptationDeployServiceOSGi
+  @Before def initialize() {
+	component = new KevoreeKompareBean
+	adaptationDeploy = new KevoreeAdaptationDeployServiceOSGi
+  }
+
+  def adaptationModelStart(url1 : String, nodeName : String):AdaptationModel={
+	var node = KevoreeFactory.eINSTANCE.createContainerNode()
+	node.setName(nodeName);
+	emptyModel.getNodes.add(node)
+	component.kompare(emptyModel, model(url1), nodeName)
+  }
+  
+  def adaptationModelStop(url1 : String, nodeName : String):AdaptationModel={
+	var node = KevoreeFactory.eINSTANCE.createContainerNode()
+	node.setName(nodeName);
+	emptyModel.getNodes.add(node)
+	component.kompare(model(url1), emptyModel, nodeName)
+  }
+
+  @Test def noSchedule() {
+	val adaptationSchedule = adaptationModelStart("test_scheduling/noscheduling.kev", "node0")
+	val scheduler = new SchedulingWithTopologicalOrderAlgo()
+	// TODO build list of commands to schedule them
+	scheduler.schedule()
+	// TODO end the test
+	error("NOT IMPLEMENTED YET")
+  }
+
+  @Test def schedulingWith2Components() {
+	val adaptationSchedule = adaptationModelStart("test_scheduling/simpleschedulingwith2components.kev", "node0")
+	val scheduler = new SchedulingWithTopologicalOrderAlgo()
+	// TODO build list of commands to schedule them
+	scheduler.schedule()
+	// TODO end the test
+	error("NOT IMPLEMENTED YET")
+  }
+
+  @Test def schedulingWith4Components() {
+	val adaptationSchedule = adaptationModelStart("test_scheduling/simpleschedulingwith4components.kev", "node0")
+	val scheduler = new SchedulingWithTopologicalOrderAlgo()
+	// TODO build list of commands to schedule them
+	scheduler.schedule()
+	// TODO end the test
+	error("NOT IMPLEMENTED YET")
+  }
+
+  @Test def schedulingWith5Components2DistinctsGroups() {
+	val adaptationSchedule = adaptationModelStart("test_scheduling/schedulingwith5component+2distinctsgroups.kev", "node0")
+	val scheduler = new SchedulingWithTopologicalOrderAlgo()
+	// TODO build list of commands to schedule them
+	scheduler.schedule()
+	// TODO end the test
+	error("NOT IMPLEMENTED YET")
+  }
+
+  @Test def schedulingWith6Components2DistinctsGroups() {
+	val adaptationSchedule = adaptationModelStart("test_scheduling/schedulingwith6component+2distinctsgroups.kev", "node0")
+	val scheduler = new SchedulingWithTopologicalOrderAlgo()
+	// TODO build list of commands to schedule them
+	scheduler.schedule()
+	// TODO end the test
+	error("NOT IMPLEMENTED YET")
+  }
+
+  @Test def schedulingComplexModel() {
+	val scheduler = new SchedulingWithTopologicalOrderAlgo()
+	
+	val adaptationSchedule = adaptationModelStart("scheduling_test/complexScheduling.kev", "home")
+	var commands = adaptationDeploy.buildCommandLists(adaptationSchedule, "home")
+	var stopCommands = commands.getOrElse("stop", List())
+	assert(stopCommands.isEmpty)
+	var startCommands = commands.getOrElse("stop", List())
+	assert(startCommands.size == 3)
+	/*if (!stopCommands.isEmpty) {
+	  var tmpCommands = scheduler.schedule(stopCommands.asInstanceOf[List[LifeCycleCommand]], false)
+	  
+	}*/
+	if (!startCommands.isEmpty) {
+	  var tmpCommands = scheduler.schedule(startCommands.asInstanceOf[List[LifeCycleCommand]], true)
+	  assert(tmpCommands.size == startCommands.size)
+	  tmpCommands.head.getInstance.getName.equals(x$1)
+	  for (command <- tmpCommands) {
+		println(command)
+	  }
 	}
-
-	def adaptationModel(url1 : String, nodeName : String):AdaptationModel={
-		var node = KevoreeFactory.eINSTANCE.createContainerNode()
-		node.setName(nodeName);
-		emptyModel.getNodes.add(node)
-		component.kompare(emptyModel, model(url1), nodeName)
-	}
-
-	/*@Test def noSchedule() {
-	 val adaptationSchedule = adaptationModel("test_scheduling/noscheduling.kev")
-	 val scheduler = new SchedulingWithTopologicalOrderAlgo()
-	 // TODO build list of commands to schedule them
-	 scheduler.schedule()
-	 // TODO end the test
-	 error("NOT IMPLEMENTED YET")
-	 }
-
-	 @Test def schedulingWith2Components() {
-	 val adaptationSchedule = adaptationModel("test_scheduling/simpleschedulingwith2components.kev")
-	 val scheduler = new SchedulingWithTopologicalOrderAlgo()
-	 // TODO build list of commands to schedule them
-	 scheduler.schedule()
-	 // TODO end the test
-	 error("NOT IMPLEMENTED YET")
-	 }
-
-	 @Test def schedulingWith4Components() {
-	 val adaptationSchedule = adaptationModel("test_scheduling/simpleschedulingwith4components.kev")
-	 val scheduler = new SchedulingWithTopologicalOrderAlgo()
-	 // TODO build list of commands to schedule them
-	 scheduler.schedule()
-	 // TODO end the test
-	 error("NOT IMPLEMENTED YET")
-	 }
-
-	 @Test def schedulingWith5Components2DistinctsGroups() {
-	 val adaptationSchedule = adaptationModel("test_scheduling/schedulingwith5component+2distinctsgroups.kev")
-	 val scheduler = new SchedulingWithTopologicalOrderAlgo()
-	 // TODO build list of commands to schedule them
-	 scheduler.schedule()
-	 // TODO end the test
-	 error("NOT IMPLEMENTED YET")
-	 }
-
-	 @Test def schedulingWith6Components2DistinctsGroups() {
-	 val adaptationSchedule = adaptationModel("test_scheduling/schedulingwith6component+2distinctsgroups.kev")
-	 val scheduler = new SchedulingWithTopologicalOrderAlgo()
-	 // TODO build list of commands to schedule them
-	 scheduler.schedule()
-	 // TODO end the test
-	 error("NOT IMPLEMENTED YET")
-	 }
-
-	 @Test def schedulingComplexModel() {
-	 val adaptationSchedule = adaptationModel("scheduling_test/complexScheduling.kev", "home")
-	 val scheduler = new SchedulingWithTopologicalOrderAlgo()
-	 // TODO build list of commands to schedule them
-	 var commands = adaptationDeploy.buildCommandLists(adaptationSchedule, "home")
-	 var stopCommands = commands.getOrElse("stop", List())
-	 var startCommands = commands.getOrElse("stop", List())
-	 if (!stopCommands.isEmpty) {
-	 var tmpCommands = scheduler.schedule(stopCommands.asInstanceOf[List[LifeCycleCommand]], false)
-	 for (command <- tmpCommands) {
-	 println(command)
-	 }
-	 }
-	 if (!startCommands.isEmpty) {
-	 var tmpCommands = scheduler.schedule(startCommands.asInstanceOf[List[LifeCycleCommand]], true)
-	 for (command <- tmpCommands) {
-	 println(command)
-	 }
-	 }
-	 // TODO end the test
-	 //error("NOT IMPLEMENTED YET")
-	 }*/
+  }
 }
