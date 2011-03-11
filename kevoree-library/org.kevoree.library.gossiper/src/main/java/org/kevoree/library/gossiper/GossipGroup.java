@@ -9,7 +9,6 @@ import java.io.InputStream;
 import org.kevoree.ContainerNode;
 import org.kevoree.ContainerRoot;
 import org.kevoree.Group;
-import org.kevoree.annotation.DictionaryAttribute;
 import org.kevoree.annotation.Start;
 import org.kevoree.annotation.Stop;
 import org.kevoree.annotation.Update;
@@ -26,7 +25,6 @@ import java.util.List;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
-import org.kevoree.annotation.DictionaryType;
 import org.kevoree.library.gossiper.version.GossiperMessages.ClockEntry;
 import org.kevoree.library.gossiper.version.VersionUtils;
 
@@ -34,9 +32,6 @@ import org.kevoree.library.gossiper.version.VersionUtils;
  * @author ffouquet
  */
 //@GroupType
-@DictionaryType({
-    @DictionaryAttribute(name = "interval", defaultValue = "60000", optional = true)
-})
 public abstract class GossipGroup extends AbstractGroupType implements Runnable {
 
     private AtomicBoolean running = new AtomicBoolean(false);
@@ -194,7 +189,6 @@ public abstract class GossipGroup extends AbstractGroupType implements Runnable 
         ContainerRoot model = this.getModelService().getLastModel();
         /* Search self group */
         Group selfGroup = null;
-
         for (Group g : model.getGroups()) {
             if (g.getName().equals(this.getName())) {
                 selfGroup = g;
