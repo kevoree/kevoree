@@ -9,7 +9,6 @@ import java.io.InputStream;
 import org.kevoree.ContainerNode;
 import org.kevoree.ContainerRoot;
 import org.kevoree.Group;
-import org.kevoree.annotation.DictionaryAttribute;
 import org.kevoree.annotation.Start;
 import org.kevoree.annotation.Stop;
 import org.kevoree.annotation.Update;
@@ -26,7 +25,6 @@ import java.util.List;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
-import org.kevoree.annotation.DictionaryType;
 import org.kevoree.library.gossiper.version.GossiperMessages.ClockEntry;
 import org.kevoree.library.gossiper.version.VersionUtils;
 

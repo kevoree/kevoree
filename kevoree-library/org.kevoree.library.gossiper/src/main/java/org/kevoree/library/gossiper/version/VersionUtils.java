@@ -23,7 +23,7 @@ public class VersionUtils {
         List<String> orderedNodeID = new ArrayList();
         Map<String, Long> values = new HashMap<String, Long>();
         Map<String, Long> timestamps = new HashMap<String, Long>();
-        
+
         Long currentTimeMillis = System.currentTimeMillis();
 
         int i = 0;
@@ -93,38 +93,36 @@ public class VersionUtils {
             }
         }
 
-       // int index = 0;
+        // int index = 0;
         for (String nodeId : orderedNodeID) {
             ClockEntry entry = ClockEntry.newBuilder().
                     setNodeID(nodeId).
                     setVersion(values.get(nodeId)).
                     setTimestamp(timestamps.get(nodeId)).build();
             newClockBuilder.addEnties(entry);
-          //  index++;
+            //  index++;
         }
 
         return newClockBuilder.setTimestamp(currentTimeMillis).build();
     }
 
-
-
-
     public static Occured compare(VectorClock v1, VectorClock v2) {
+        /* If one instance is null => priority to none null version */
         if (v1 == null) {
             return Occured.BEFORE;
         }
         if (v2 == null) {
             return Occured.AFTER;
-        }        
-        
-        
+        }
+
+
         // We do two checks: v1 <= v2 and v2 <= v1 if both are true then
         boolean v1Bigger = false;
         boolean v2Bigger = false;
         int p1 = 0;
         int p2 = 0;
-
-        while (p1 < v1.getEntiesCount() && p2 < v2.getEntiesCount()) {
+        while (p1 < v1.getEntiesCount() || p2 < v2.getEntiesCount()) {
+            // while (p1 < v1.getEntiesCount() && p2 < v2.getEntiesCount()) {
             ClockEntry ver1 = v1.getEnties(p1);
             ClockEntry ver2 = v2.getEnties(p2);
             if (ver1.getNodeID().equals(ver2.getNodeID())) {
@@ -166,8 +164,4 @@ public class VersionUtils {
             return Occured.CONCURRENTLY;
         }
     }
-
-
-
-
 }
