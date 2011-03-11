@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <kevoree:ContainerRoot xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:kevoree="http://kevoree/1.0">
-  <nodes name="node-0">
-    <components name="FakeSimpleLight--1111486382" typeDefinition="//@typeDefinitions.2">
+  <nodes name="node0">
+    <components name="FakeSimpleLight1111486382" typeDefinition="//@typeDefinitions.2">
       <provided portTypeRef="//@typeDefinitions.2/@provided.0"/>
       <provided portTypeRef="//@typeDefinitions.2/@provided.1"/>
       <provided portTypeRef="//@typeDefinitions.2/@provided.2"/>
     </components>
-    <components name="FakeSimpleSwitch-1818922499" typeDefinition="//@typeDefinitions.5">
+    <components name="FakeSimpleSwitch1818922499" typeDefinition="//@typeDefinitions.5">
       <required portTypeRef="//@typeDefinitions.5/@required.0"/>
       <required portTypeRef="//@typeDefinitions.5/@required.1"/>
       <required portTypeRef="//@typeDefinitions.5/@required.2"/>
@@ -160,8 +160,8 @@
   <libraries name="ART2_TESTS" subTypes="//@typeDefinitions.7"/>
   <libraries name="ART_TEST" subTypes="//@typeDefinitions.9 //@typeDefinitions.12"/>
   <libraries name="KEVOREE_SAMPLES" subTypes="//@typeDefinitions.11 //@typeDefinitions.15 //@typeDefinitions.16"/>
-  <hubs name="hub--462082892" typeDefinition="//@typeDefinitions.0"/>
-  <hubs name="hub--897748425" typeDefinition="//@typeDefinitions.0"/>
+  <hubs name="hub462082892" typeDefinition="//@typeDefinitions.0"/>
+  <hubs name="hub897748425" typeDefinition="//@typeDefinitions.0"/>
   <mBindings port="//@nodes.0/@components.1/@required.0" hub="//@hubs.0"/>
   <mBindings port="//@nodes.0/@components.1/@required.1" hub="//@hubs.1"/>
   <mBindings port="//@nodes.0/@components.0/@provided.1" hub="//@hubs.1"/>
