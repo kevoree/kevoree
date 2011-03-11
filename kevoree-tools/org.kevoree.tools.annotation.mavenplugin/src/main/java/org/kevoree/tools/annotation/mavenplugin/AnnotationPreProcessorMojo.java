@@ -54,7 +54,6 @@ public class AnnotationPreProcessorMojo extends AbstractMojo {
      * @readonly
      */
     private List<String> classpathElements;
-
     /**
      * The maven project.
      *
@@ -63,7 +62,6 @@ public class AnnotationPreProcessorMojo extends AbstractMojo {
      * @readonly
      */
     private MavenProject project;
-
     /**
      * The plugin's artifacts.
      *
@@ -72,7 +70,6 @@ public class AnnotationPreProcessorMojo extends AbstractMojo {
      * @readonly
      */
     private List<Artifact> pluginArtifacts;
-
     /**
      * The directory to run apt from when forked.
      *
@@ -81,44 +78,37 @@ public class AnnotationPreProcessorMojo extends AbstractMojo {
      * @readonly
      */
     private File workingDirectory;
-
     // configurable parameters ------------------------------------------------
-
     /**
      * Whether to run apt in a separate process.
      *
      * @parameter default-value="false"
      */
     private boolean fork;
-
     /**
      * The apt executable to use when forked.
      *
      * @parameter expression="${maven.apt.executable}" default-value="apt"
      */
     private String executable;
-
     /**
      * The initial size of the memory allocation pool when forked, for example <code>64m</code>.
      *
      * @parameter
      */
     private String meminitial;
-
     /**
      * The maximum size of the memory allocation pool when forked, for example <code>128m</code>.
      *
      * @parameter
      */
     private String maxmem;
-
     /**
      * Whether to show apt warnings. This is opposite to the <code>-nowarn</code> argument for apt.
      *
      * @parameter expression="${maven.apt.showWarnings}" default-value="false"
      */
     private boolean showWarnings;
-
     /**
      * The source file encoding name, such as <code>EUC-JP</code> and <code>UTF-8</code>. If encoding is not
      * specified, the encoding <code>ISO-8859-1</code> is used rather than the platform default for reproducibility
@@ -127,7 +117,6 @@ public class AnnotationPreProcessorMojo extends AbstractMojo {
      * @parameter expression="${maven.apt.encoding}" default-value="ISO-8859-1"
      */
     private String encoding;
-
     /**
      * Whether to output information about each class loaded and each source file processed. This is equivalent to the
      * <code>-verbose</code> argument for apt.
@@ -135,14 +124,12 @@ public class AnnotationPreProcessorMojo extends AbstractMojo {
      * @parameter expression="${maven.apt.verbose}" default-value="false"
      */
     private boolean verbose;
-
     /**
      * Options to pass to annotation processors. These are equivalent to multiple <code>-A</code> arguments for apt.
      *
      * @parameter
      */
     private String[] options;
-
     /**
      * Name of <code>AnnotationProcessorFactory</code> to use; bypasses default discovery process. This is equivalent
      * to the <code>-factory</code> argument for apt.
@@ -150,28 +137,24 @@ public class AnnotationPreProcessorMojo extends AbstractMojo {
      * @parameter expression="${maven.apt.factory}"
      */
     private String factory;
-
     /**
      * The source directories containing any additional sources to be processed.
      *
      * @parameter
      */
     private List<String> additionalSourceRoots;
-
     /**
      * The path for processor-generated resources.
      *
      * @parameter
      */
     private String resourceTargetPath;
-
     /**
      * Whether resource filtering is enabled for processor-generated resources.
      *
      * @parameter default-value="false"
      */
     private boolean resourceFiltering;
-
     /**
      * Force apt processing without staleness checking. When <code>false</code>, use <code>outputFiles</code> or
      * <code>outputFileEndings</code> to control computing staleness.
@@ -179,7 +162,6 @@ public class AnnotationPreProcessorMojo extends AbstractMojo {
      * @parameter default-value="false"
      */
     private boolean force;
-
     /**
      * The filenames of processor-generated files to examine when computing staleness. For example,
      * <code>generated.xml</code> would specify that the processor creates the aforementioned single file from all
@@ -189,7 +171,6 @@ public class AnnotationPreProcessorMojo extends AbstractMojo {
      * @parameter
      */
     private Set<String> outputFiles;
-
     /**
      * The filename endings of processor-generated files to examine when computing staleness. For example,
      * <code>.txt</code> would specify that the processor creates a corresponding <code>.txt</code> file for every
@@ -199,7 +180,6 @@ public class AnnotationPreProcessorMojo extends AbstractMojo {
      * @parameter
      */
     private Set<String> outputFileEndings;
-
     /**
      * Sets the granularity in milliseconds of the last modification date for testing whether a source needs
      * processing.
@@ -207,20 +187,15 @@ public class AnnotationPreProcessorMojo extends AbstractMojo {
      * @parameter expression="${maven.apt.staleMillis}" default-value="0"
      */
     private int staleMillis;
-
     /**
      * Whether to bypass running apt.
      *
      * @parameter expression="${maven.apt.skip}" default-value="false"
      */
     private boolean skip;
-
     // fields -----------------------------------------------------------------
-
     private Set<String> includes;
-
     private Set<String> excludes;
-
     /**
      * The directory to place processor and generated class files. This is equivalent to the <code>-d</code> argument
      * for apt.
@@ -228,7 +203,6 @@ public class AnnotationPreProcessorMojo extends AbstractMojo {
      * @parameter default-value="${project.build.directory}/generated-resources/kevoree"
      */
     private File outputDirectory;
-
     /**
      * The directory root under which processor-generated source files will be placed; files are placed in
      * subdirectories based on package namespace. This is equivalent to the <code>-s</code> argument for apt.
@@ -236,17 +210,32 @@ public class AnnotationPreProcessorMojo extends AbstractMojo {
      * @parameter default-value="${project.build.directory}/generated-sources/kevoree"
      */
     private File sourceOutputDirectory;
-
     /**
      *
      * @parameter default-value="${project.build.directory}/classes"
      */
     private File outputClasses;
-
+    /**
+     *
+     * @parameter expression="${project}"
+     * @required
+     * @readonly
+     */
+    private MavenProject mavenProject;
     private static DateFormat dateFormat = new SimpleDateFormat("yyyyMMddHHmmSSS");
 
     @Override
     public void execute() throws MojoExecutionException {
+
+        String repositories = "http://maven.kevoree.org/libs-release/";
+        if (project.getDistributionManagement() != null) {
+            if (project.getVersion().contains("SNAPSHOT")) {
+                repositories += ";" + project.getDistributionManagement().getSnapshotRepository().getUrl();
+            } else {
+                repositories += ";" + project.getDistributionManagement().getRepository().getUrl();
+            }
+
+        }
 
         this.options = (String[]) Arrays.asList(
                 "kevoree.lib.id=" + this.project.getArtifactId(),
@@ -254,8 +243,8 @@ public class AnnotationPreProcessorMojo extends AbstractMojo {
                 "kevoree.lib.version=" + this.project.getVersion(),
                 "kevoree.lib.target=" + sourceOutputDirectory.getPath() + "/KEV-INF/lib.kev",
                 "tag=" + dateFormat.format(new Date()),
-                "repositories=http://maven.kevoree.org/libs-release/"
-        ).toArray();
+                "repositories=" + repositories
+                ).toArray();
 
         Resource resource = new Resource();
         resource.setDirectory(sourceOutputDirectory.getPath() + "/KEV-INF");
@@ -267,7 +256,6 @@ public class AnnotationPreProcessorMojo extends AbstractMojo {
     }
 
     // protected methods ------------------------------------------------------
-
     protected void executeImpl() throws MojoExecutionException {
         // apply defaults
 
@@ -294,7 +282,6 @@ public class AnnotationPreProcessorMojo extends AbstractMojo {
 
     }
 
-
     private void executeApt() throws MojoExecutionException {
         List<File> sourceFiles = getSourceFiles(getSourceScanner(), "sources");
 
@@ -306,12 +293,12 @@ public class AnnotationPreProcessorMojo extends AbstractMojo {
 
         List<String> args = createArgs(sourceFiles);
         /*
-      System.out.println("cmd=");
-      for (String s : args) {
-          System.out.print(s + " ");
-      }
-      System.out.println();
-        */
+        System.out.println("cmd=");
+        for (String s : args) {
+        System.out.print(s + " ");
+        }
+        System.out.println();
+         */
 
         boolean success;
 
@@ -538,5 +525,4 @@ public class AnnotationPreProcessorMojo extends AbstractMojo {
     protected List<String> getClasspathElements() {
         return classpathElements;
     }
-
 }
