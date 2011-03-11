@@ -111,7 +111,9 @@ public abstract class GossipGroup extends AbstractGroupType implements Runnable 
             VectorClock clock = getVectorFromPeer(node);
 
             System.out.println("-------------");
+			System.out.print("local clock: ");
             print(this.clockRef.get());
+			System.out.print("remote clock: ");
             print(clock);
             System.out.println("-------------");
 
@@ -119,7 +121,7 @@ public abstract class GossipGroup extends AbstractGroupType implements Runnable 
             Occured result = VersionUtils.compare(this.clockRef.get(), clock);
             if (result == Occured.AFTER) {
 
-                System.out.println("before");
+                System.out.println("after : We do nothing because AFTER potentially means EQUALS");
                 // we do nothing because VectorClocks are equals (and so models are equals)
                 // or local VectorClock is more recent (and so local model is more recent)
             } else if (result == Occured.BEFORE) {
@@ -150,8 +152,11 @@ public abstract class GossipGroup extends AbstractGroupType implements Runnable 
     
     private synchronized void mergeReconcile(VersionedModel versioned) {
         if (versioned != null) {
-            System.out.println("recocnile");
+            System.out.println("reconcile");
+			
+			System.out.print("local clock: ");
             print(this.clockRef.get());
+			System.out.print("remote clock: ");
             print(versioned.getVector());
             
             Date localDate = new Date(this.clockRef.get().getTimestamp());
@@ -169,8 +174,10 @@ public abstract class GossipGroup extends AbstractGroupType implements Runnable 
 
     private synchronized void updateClock(VersionedModel versioned) {
         if (versioned != null) {
-            print(versioned.getVector());
+			System.out.print("local clock: ");
             print(clockRef.get());
+			System.out.print("remote clock: ");
+            print(versioned.getVector());
             InputStream stream = new ByteArrayInputStream(versioned.getModel().getBytes());
 
             if (this.getModelService().updateModel(KevoreeXmiHelper.loadStream(stream))) {

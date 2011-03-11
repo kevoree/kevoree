@@ -157,7 +157,7 @@ public class VersionUtils {
 
         /* This is the case where they are equal, return BEFORE arbitrarily */
         if (!v1Bigger && !v2Bigger) {
-            return Occured.BEFORE;
+            return Occured.AFTER;
         } /* This is the case where v1 is a successor clock to v2 */ else if (v1Bigger && !v2Bigger) {
             return Occured.AFTER;
         } /* This is the case where v2 is a successor clock to v1 */ else if (!v1Bigger && v2Bigger) {
