@@ -229,7 +229,7 @@ public class AnnotationPreProcessorMojo extends AbstractMojo {
     @Override
     public void execute() throws MojoExecutionException {
 
-        String repositories = "";
+        String repositories = ";";
         if (project.getDistributionManagement() != null) {
             if (project.getVersion().contains("SNAPSHOT")) {
                 repositories += ";" + project.getDistributionManagement().getSnapshotRepository().getUrl();
@@ -237,7 +237,7 @@ public class AnnotationPreProcessorMojo extends AbstractMojo {
                 repositories += ";" + project.getDistributionManagement().getRepository().getUrl();
             }
         }
-        String otherRepositories = "";
+        String otherRepositories = ";";
         Iterator repoIterator = project.getRepositories().iterator();
         while(repoIterator.hasNext()){
             Repository repo = (Repository) repoIterator.next();
