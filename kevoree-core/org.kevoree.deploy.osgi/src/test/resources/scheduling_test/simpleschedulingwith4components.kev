@@ -1,23 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <kevoree:ContainerRoot xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:kevoree="http://kevoree/1.0">
-  <nodes name="node-0">
-    <components name="PlanNightmareFS--1353029287" typeDefinition="//@typeDefinitions.16">
+  <nodes name="node0">
+    <components name="PlanNightmareFS1353029287" typeDefinition="//@typeDefinitions.16">
       <required portTypeRef="//@typeDefinitions.16/@required.0"/>
       <required portTypeRef="//@typeDefinitions.16/@required.1"/>
     </components>
-    <components name="PlanNightmarePipe--336155635" typeDefinition="//@typeDefinitions.11">
+    <components name="PlanNightmarePipe336155635" typeDefinition="//@typeDefinitions.11">
       <provided portTypeRef="//@typeDefinitions.11/@provided.0"/>
       <provided portTypeRef="//@typeDefinitions.11/@provided.1"/>
       <required portTypeRef="//@typeDefinitions.11/@required.0"/>
       <required portTypeRef="//@typeDefinitions.11/@required.1"/>
     </components>
-    <components name="PlanNightmarePipe--2031299872" typeDefinition="//@typeDefinitions.11">
+    <components name="PlanNightmarePipe2031299872" typeDefinition="//@typeDefinitions.11">
       <provided portTypeRef="//@typeDefinitions.11/@provided.0"/>
       <provided portTypeRef="//@typeDefinitions.11/@provided.1"/>
       <required portTypeRef="//@typeDefinitions.11/@required.0"/>
       <required portTypeRef="//@typeDefinitions.11/@required.1"/>
     </components>
-    <components name="PlanNightmareFL-1981939117" typeDefinition="//@typeDefinitions.15">
+    <components name="PlanNightmareFL1981939117" typeDefinition="//@typeDefinitions.15">
       <provided portTypeRef="//@typeDefinitions.15/@provided.0"/>
       <provided portTypeRef="//@typeDefinitions.15/@provided.1"/>
     </components>
@@ -170,10 +170,10 @@
   <libraries name="ART2_TESTS" subTypes="//@typeDefinitions.7"/>
   <libraries name="ART_TEST" subTypes="//@typeDefinitions.9 //@typeDefinitions.12"/>
   <libraries name="KEVOREE_SAMPLES" subTypes="//@typeDefinitions.11 //@typeDefinitions.15 //@typeDefinitions.16"/>
-  <hubs name="hub--519086804" typeDefinition="//@typeDefinitions.0"/>
-  <hubs name="hub-1261785625" typeDefinition="//@typeDefinitions.0"/>
-  <hubs name="hub--1715280961" typeDefinition="//@typeDefinitions.0"/>
-  <hubs name="hub--717062231" typeDefinition="//@typeDefinitions.0"/>
+  <hubs name="hub519086804" typeDefinition="//@typeDefinitions.0"/>
+  <hubs name="hub1261785625" typeDefinition="//@typeDefinitions.0"/>
+  <hubs name="hub1715280961" typeDefinition="//@typeDefinitions.0"/>
+  <hubs name="hub717062231" typeDefinition="//@typeDefinitions.0"/>
   <mBindings port="//@nodes.0/@components.0/@required.0" hub="//@hubs.0"/>
   <mBindings port="//@nodes.0/@components.0/@required.1" hub="//@hubs.1"/>
   <mBindings port="//@nodes.0/@components.1/@provided.0" hub="//@hubs.0"/>

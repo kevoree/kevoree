@@ -18,7 +18,7 @@
 
 package org.kevoree.framework.annotation.processor.visitor.sub
 
-import com.sun.mirror.declaration.ClassDeclaration
+import com.sun.mirror.apt.AnnotationProcessorEnvironment
 import com.sun.mirror.declaration.TypeDeclaration
 import org.kevoree.KevoreeFactory
 import org.kevoree.ContainerRoot
@@ -30,10 +30,10 @@ import scala.collection.JavaConversions._
 
 trait ThirdPartyProcessor {
 
-  def processThirdParty(componentType : TypeDefinition,classdef : TypeDeclaration)={
+  def processThirdParty(componentType : TypeDefinition,classdef : TypeDeclaration,env : AnnotationProcessorEnvironment)={
     var root : ContainerRoot = componentType.eContainer.asInstanceOf[ContainerRoot]
 
-     var thirdPartyAnnotations : List[org.kevoree.annotation.ThirdParty] = Nil
+    var thirdPartyAnnotations : List[org.kevoree.annotation.ThirdParty] = Nil
 
     var annotationThirdParty = classdef.getAnnotation(classOf[org.kevoree.annotation.ThirdParty])
     if(annotationThirdParty != null){ thirdPartyAnnotations = thirdPartyAnnotations ++ List(annotationThirdParty) }
@@ -41,23 +41,45 @@ trait ThirdPartyProcessor {
     var annotationThirdParties = classdef.getAnnotation(classOf[org.kevoree.annotation.ThirdParties])
     if(annotationThirdParties != null){ thirdPartyAnnotations = thirdPartyAnnotations ++ annotationThirdParties.value.toList }
 
+    
+    var thirdParties = env.getOptions.find({op => op._1.contains("thirdParties")}).getOrElse{("key=","")}._1.split('=').toList.get(1)
+    var thirdPartiesList : List[String] = thirdParties.split(";").filter(r=> r != null && r != "").toList
 
 
     /* CHECK THIRDPARTIES */
     thirdPartyAnnotations.foreach{tp=>
-      
-        root.getDeployUnits.find({etp => etp.getName == tp.name}) match {
-          case Some(e) => {
-              componentType.getRequiredLibs.add(e)
-            }
-          case None => {
-              var newThirdParty = KevoreeFactory.eINSTANCE.createDeployUnit
-              newThirdParty.setName(tp.name)
-              newThirdParty.setUrl(tp.url)
-              root.getDeployUnits.add(newThirdParty)
-              componentType.getRequiredLibs.add(newThirdParty)
-            }
-        }
+      root.getDeployUnits.find({etp => etp.getName == tp.name}) match {
+        case Some(e) => {
+            componentType.getRequiredLibs.add(e)
+          }
+        case None => {
+            var newThirdParty = KevoreeFactory.eINSTANCE.createDeployUnit
+            newThirdParty.setName(tp.name)
+            newThirdParty.setUrl(tp.url)
+            root.getDeployUnits.add(newThirdParty)
+            componentType.getRequiredLibs.add(newThirdParty)
+          }
+      }
     }
+    
+    /* CHECK TP from POM */
+    thirdPartiesList.foreach{tp=>
+      var name = tp.split("!").toList.get(0)
+      var url = tp.split("!").toList.get(1)
+      
+      root.getDeployUnits.find({etp => etp.getName == name}) match {
+        case Some(e) => {
+            componentType.getRequiredLibs.add(e)
+          }
+        case None => {
+            var newThirdParty = KevoreeFactory.eINSTANCE.createDeployUnit
+            newThirdParty.setName(name)
+            newThirdParty.setUrl(url)
+            root.getDeployUnits.add(newThirdParty)
+            componentType.getRequiredLibs.add(newThirdParty)
+          }
+      }
+    }
+    
   }
 }
