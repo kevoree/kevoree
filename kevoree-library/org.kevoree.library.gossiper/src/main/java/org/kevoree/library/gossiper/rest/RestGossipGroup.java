@@ -1,10 +1,11 @@
 package org.kevoree.library.gossiper.rest;
 
-import com.google.protobuf.ByteString;
 import java.util.concurrent.Semaphore;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.kevoree.ContainerNode;
+import org.kevoree.annotation.DictionaryAttribute;
+import org.kevoree.annotation.DictionaryType;
 import org.kevoree.annotation.GroupType;
 import org.kevoree.annotation.Start;
 import org.kevoree.annotation.Stop;
@@ -18,6 +19,9 @@ import org.restlet.representation.Representation;
 import org.restlet.resource.ClientResource;
 
 @GroupType
+@DictionaryType({
+    @DictionaryAttribute(name = "interval", defaultValue = "60000", optional = true)
+})
 public class RestGossipGroup extends GossipGroup {
 
     private static final Semaphore handlerAccess = new Semaphore(1, true);
