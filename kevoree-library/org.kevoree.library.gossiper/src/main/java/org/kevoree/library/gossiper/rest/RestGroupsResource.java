@@ -8,11 +8,12 @@ import org.restlet.resource.ResourceException;
 import org.restlet.resource.ServerResource;
 
 public class RestGroupsResource extends ServerResource {
-
+    
     protected void doInit() throws ResourceException {
         setExisting(true);
     }
 
+    @Override
     public Representation doHandle() {
         if (getMethod().equals(Method.GET)) {
             StringRepresentation result = new StringRepresentation(getHTMLList());

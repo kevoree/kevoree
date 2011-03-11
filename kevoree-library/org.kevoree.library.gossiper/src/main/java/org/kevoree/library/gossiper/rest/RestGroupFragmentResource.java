@@ -17,11 +17,11 @@
  */
 package org.kevoree.library.gossiper.rest;
 
-import org.kevoree.extra.marshalling.RichJSONObject;
-import org.kevoree.extra.marshalling.RichString;
-import org.kevoree.framework.AbstractChannelFragment;
-import org.kevoree.framework.AbstractGroupType;
-import org.kevoree.framework.message.Message;
+import java.io.ByteArrayOutputStream;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import org.kevoree.framework.KevoreeXmiHelper;
+import org.kevoree.library.gossiper.version.GossiperMessages;
 import org.restlet.data.Method;
 import org.restlet.representation.Representation;
 import org.restlet.representation.StringRepresentation;
@@ -29,19 +29,20 @@ import org.restlet.resource.ResourceException;
 import org.restlet.resource.ServerResource;
 
 import java.io.IOException;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author ffouquet
  */
 public class RestGroupFragmentResource extends ServerResource {
 
-    public static HashMap<String, AbstractGroupType> groups = new HashMap<String, AbstractGroupType>();
-
+    public static Map<String, RestGossipGroup> groups = Collections.synchronizedMap(new HashMap<String, RestGossipGroup>());
     /**
      * The underlying Channel object.
      */
-    AbstractGroupType groupFragment;
+    RestGossipGroup groupFragment;
     /**
      * The sequence of characters that identifies the resource.
      */
@@ -54,67 +55,31 @@ public class RestGroupFragmentResource extends ServerResource {
         setExisting(this.groupFragment != null);
     }
 
+    @Override
     public Representation doHandle() {
-        if (getMethod().equals(Method.PUT)) {
+        if (getMethod().equals(Method.POST)) {
+            ByteArrayOutputStream out = new ByteArrayOutputStream();
+            KevoreeXmiHelper.saveStream(out, groupFragment.getModelService().getLastModel());
+            String flatModel = new String(out.toByteArray());
             try {
-                return new StringRepresentation(postInput(getRequestEntity().getText()));
-            } catch (IOException e) {
-                return new StringRepresentation(e.getLocalizedMessage());
+                out.close();
+            } catch (IOException ex) {
+                Logger.getLogger(RestGroupFragmentResource.class.getName()).log(Level.SEVERE, null, ex);
             }
+            GossiperMessages.VersionedModel model = GossiperMessages.VersionedModel.newBuilder().setVector(groupFragment.clockRef.get()).setModel(flatModel).build();
+            return new MessageRepresentation<GossiperMessages.VersionedModel>(model);
         }
         if (getMethod().equals(Method.GET)) {
-           try {
-                return new StringRepresentation(getInput(getRequestEntity().getText()));
-            } catch (IOException e) {
-                return new StringRepresentation(e.getLocalizedMessage());
+            groupFragment.incrementedVectorClock();
+            return new MessageRepresentation<GossiperMessages.VectorClock>(groupFragment.clockRef.get());
+        }
+        if (getMethod().equals(Method.PUT)) {
+            //TRIGGER AND UPDATE FROM REMOTE NODE
+            Object o = this.getRequestAttributes().get("remotePeerNodeName");
+            if(o != null){
+                
             }
         }
         return new StringRepresentation("Error");
     }
-
-
-    //@Get()
-    public String getInput(String entity) {
-        Message msg = buildMsg(entity);
-        Object o = channelFragment.remoteDispatch(msg);
-        RichJSONObject oo = new RichJSONObject(o);
-        return oo.toJSON();
-    }
-
-    //@Post()
-    public String postInput(String entity) {
-        Message msg = buildMsg(entity);
-        System.out.println(entity);
-
-        Object o = channelFragment.remoteDispatch(msg);
-        return "<ack />";
-    }
-
-    private Message buildMsg(String entity) {
-        Message msg = buildMessageFromJSON(entity);
-        if (msg == null) {
-            msg = buildMessageFromAttribute(entity);
-        }
-        return msg;
-    }
-
-    private Message buildMessageFromJSON(String entity) {
-        try {
-            RichString c = new RichString(entity);
-            Message obj = (Message) c.fromJSON(Message.class);
-            return obj;
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
-    private Message buildMessageFromAttribute(String entity) {
-        Message msg = new Message();
-        for (String key : getRequest().getAttributes().keySet()) {
-            System.out.println("Debug=" + key + "--" + getRequest().getAttributes().get(key));
-        }
-        return msg;
-    }
-
 }

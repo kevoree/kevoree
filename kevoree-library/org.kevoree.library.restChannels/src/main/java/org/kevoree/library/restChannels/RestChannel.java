@@ -76,7 +76,6 @@ public class RestChannel extends AbstractChannelFragment {
 
         RestChannelFragmentResource.channels.put(this.getName(), this);
         Handler.getDefaultHost().attach("/channels/{channelFragmentName}", RestChannelFragmentResource.class);
-
         Handler.getDefaultHost().attach("/channels", RestChannelsResource.class);
 
     }

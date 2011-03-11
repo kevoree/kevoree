@@ -24,11 +24,8 @@ import org.kevoree.framework.message.Message;
 import org.restlet.data.Method;
 import org.restlet.representation.Representation;
 import org.restlet.representation.StringRepresentation;
-import org.restlet.resource.Get;
-import org.restlet.resource.Post;
 import org.restlet.resource.ResourceException;
 import org.restlet.resource.ServerResource;
-import scala.actors.Actor;
 
 import java.io.IOException;
 import java.util.HashMap;
