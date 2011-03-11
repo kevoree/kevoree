@@ -245,7 +245,7 @@ public class AnnotationPreProcessorMojo extends AbstractMojo {
         }
         
         Iterator dependenciesIterator = project.getDependencies().iterator();
-        String thirdParties = "";
+        String thirdParties = ";";
         while(dependenciesIterator.hasNext()){
             Dependency dep =(Dependency) dependenciesIterator.next();
             if(dep.getScope().equals("provided")){
