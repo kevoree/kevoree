@@ -133,6 +133,8 @@ public class VersionUtils {
                 }
                 p1++;
                 p2++;
+                
+                //Completement faux dans notre cas , on doit travailler sur les distances et non sur un index d'ordre total !
             } else if (p1 > p2) {
                 // since ver1 is bigger that means it is missing a version that
                 // ver2 has
