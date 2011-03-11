@@ -27,7 +27,7 @@ trait DictionaryMerger {
 
   def mergeDictionary(dictionary : Dictionary,newtype : DictionaryType) : Unit = {
     if(dictionary != null){
-      var values = dictionary.getValues ++ List()
+      var values = dictionary.getValues.toList ++ List()
       values.foreach{v=>
 
         var newAttribute = newtype.getAttributes.find(att=> att.getName == v.getAttribute.getName)

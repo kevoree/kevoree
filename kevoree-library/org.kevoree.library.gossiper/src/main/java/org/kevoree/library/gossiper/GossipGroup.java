@@ -34,9 +34,6 @@ import org.kevoree.library.gossiper.version.VersionUtils;
  * @author ffouquet
  */
 //@GroupType
-@DictionaryType({
-    @DictionaryAttribute(name = "interval", defaultValue = "60000", optional = true)
-})
 public abstract class GossipGroup extends AbstractGroupType implements Runnable {
 
     private AtomicBoolean running = new AtomicBoolean(false);
@@ -194,7 +191,6 @@ public abstract class GossipGroup extends AbstractGroupType implements Runnable 
         ContainerRoot model = this.getModelService().getLastModel();
         /* Search self group */
         Group selfGroup = null;
-
         for (Group g : model.getGroups()) {
             if (g.getName().equals(this.getName())) {
                 selfGroup = g;
