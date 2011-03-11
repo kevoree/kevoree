@@ -50,7 +50,7 @@ class SchedulingTest extends AssertionsForJUnit with SchedulingSuite {
 	component.kompare(model(url1), emptyModel, nodeName)
   }
 
-  @Test def noSchedule() {
+  /*@Test def noSchedule() {
 	val adaptationSchedule = adaptationModelStart("test_scheduling/noscheduling.kev", "node0")
 	val scheduler = new SchedulingWithTopologicalOrderAlgo()
 	// TODO build list of commands to schedule them
@@ -115,6 +115,6 @@ class SchedulingTest extends AssertionsForJUnit with SchedulingSuite {
 	  for (command <- tmpCommands) {
 		println(command)
 	  }
-	}
+	}*/
   }
 }
