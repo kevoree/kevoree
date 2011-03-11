@@ -37,9 +37,11 @@ trait DeployUnitProcessor {
     var tag = env.getOptions.find({op => op._1.contains("tag")}).getOrElse{("key=","")}._1.split('=').toList.get(1)
 
     var repositories = env.getOptions.find({op => op._1.contains("repositories")}).getOrElse{("key=","")}._1.split('=').toList.get(1)
+    var repositoriesList : List[String] = repositories.split(";").filter(r=> r != null && r != "").toList
 
-    var repositoriesList : List[String] = repositories.split(";").toList
-
+    var tRepositories = env.getOptions.find({op => op._1.contains("otherRepositories")}).getOrElse{("key=","")}._1.split('=').toList.get(1)
+    var tRepositoriesList : List[String] = tRepositories.split(";").filter(r=> r != null && r != "").toList
+    
     var ctdeployunit = root.getDeployUnits.find({du => du.getUnitName == unitName && du.getGroupName == groupName && du.getVersion == version }) match {
       case None => {
           var newdeploy = KevoreeFactory.eINSTANCE.createDeployUnit
@@ -63,10 +65,24 @@ trait DeployUnitProcessor {
               newrepo.setUrl(repoUrl)
               root.getRepositories.add(newrepo)
               newrepo
-          }
+            }
           case Some(e)=> e
         }
         repo.getUnits.add(ctdeployunit)
+      }
+    }
+    
+    tRepositoriesList.foreach{rRepoUrl=>
+      if(rRepoUrl != ""){
+        root.getRepositories.find(r => r.getUrl == rRepoUrl) match {
+          case None => {
+              var newrepo = KevoreeFactory.eINSTANCE.createRepository
+              newrepo.setUrl(rRepoUrl)
+              root.getRepositories.add(newrepo)
+              newrepo
+            }
+          case Some(e)=>
+        }
       }
     }
 

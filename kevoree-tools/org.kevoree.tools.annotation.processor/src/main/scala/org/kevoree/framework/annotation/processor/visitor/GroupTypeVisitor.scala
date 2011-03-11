@@ -43,7 +43,7 @@ extends SimpleDeclarationVisitor
     processDictionary(groupType,classdef)
     processDeployUnit(groupType,classdef,env)
     processLibrary(groupType,classdef)
-    processThirdParty(groupType,classdef)
+    processThirdParty(groupType,classdef,env)
     classdef.getMethods().foreach{method => method.accept(this) }
   }
 

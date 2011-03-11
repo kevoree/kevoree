@@ -70,7 +70,7 @@ extends SimpleDeclarationVisitor
     processLibrary(componentType,typeDecl)
     processDictionary(componentType,typeDecl)
     processDeployUnit(componentType,typeDecl,env)
-    processThirdParty(componentType,typeDecl)
+    processThirdParty(componentType,typeDecl,env)
     processProvidedPort(componentType,typeDecl,env)
     processRequiredPort(componentType,typeDecl,env)
 
