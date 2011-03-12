@@ -7,3 +7,8 @@ target/
 *.ipr
 *.iws
 keystore
+/kevoree-tools/org.kevoree.tools.annotation.mavenplugin/target/
+/kevoree-tools/org.kevoree.tools.annotation.api/target/
+/kevoree-tools/org.kevoree.tools.annotation.processor/target/
+/kevoree-tools/org.kevoree.tools.model2code/target/
+/kevoree-core/org.kevoree.merger/target/

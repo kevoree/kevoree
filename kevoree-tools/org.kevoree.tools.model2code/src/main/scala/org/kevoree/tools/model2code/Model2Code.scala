@@ -29,46 +29,40 @@ import org.kevoree.ComponentType
 
 class Model2Code {
 
-  def modelToCode(componentType : ComponentType, fileLocation : URI) = {
+  def modelToCode(componentType : ComponentType, srcRoot : URI) = {
+    
+    
+    var fileLocation = srcRoot.toString + componentType.getBean.replace(".", "/").concat(".java")
+    var fileLocationUri = new URI(fileLocation)
     
     //Load CU
-    var compilationUnit = compilationUnitLoader(fileLocation)
+    var compilationUnit = compilationUnitLoader(fileLocationUri)
     
     if(compilationUnit != null) {
     
-      //Update Annotations
-      var annotationUpdater = new AnnotationUpdater
-      annotationUpdater.updateAnnotations(componentType, compilationUnit)
+      var ctw = new ComponentTypeWorker(componentType, compilationUnit)
+      ctw.synchronize
       
-      
-      //Generate Missing Mandatory Methods
-      var codeFiller = new CodeFiller
-      codeFiller.fillCode(componentType, compilationUnit)
-      
-      //Generate Utility Methods
-      var utilityGen = new UtilityGenerator
-      utilityGen.generateUtilities(componentType, compilationUnit)
-      
-      //Write CU
-      compilationUnitWriter(compilationUnit, fileLocation)
-      
+      //Save CU
+      compilationUnitWriter(compilationUnit, fileLocationUri)
       
     }
     
   }
   
-  def compilationUnitLoader(fileLocation : URI) = {
+  private def compilationUnitLoader(fileLocation : URI) = {
     var file = new File(fileLocation)
-    if(file.exists) {
-      var in = new FileInputStream(file)
-      var cu = JavaParser.parse(in)
-      cu
-    } else {
-      null
+    if(!file.exists) {
+      var folders = new File(new URI(fileLocation.toString.substring(0, fileLocation.toString.lastIndexOf("/"))))
+      folders.mkdirs
+      file.createNewFile
     }
+    var in = new FileInputStream(file)
+    var cu = JavaParser.parse(in)
+    cu
   }
   
-  def compilationUnitWriter(cu : CompilationUnit, fileLocation : URI) = {
+  private def compilationUnitWriter(cu : CompilationUnit, fileLocation : URI) = {
         
     var file = new File(fileLocation)
     if( ! file.exists) {
