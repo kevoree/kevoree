@@ -27,14 +27,19 @@ import japa.parser.ast.body.BodyDeclaration
 import japa.parser.ast.body.ClassOrInterfaceDeclaration
 import japa.parser.ast.body.MethodDeclaration
 import japa.parser.ast.body.ModifierSet
+import japa.parser.ast.body.Parameter
 import japa.parser.ast.body.TypeDeclaration
+import japa.parser.ast.body.VariableDeclaratorId
 import japa.parser.ast.expr.AnnotationExpr
 import japa.parser.ast.expr.ArrayInitializerExpr
+import japa.parser.ast.expr.BooleanLiteralExpr
 import japa.parser.ast.expr.Expression
+import japa.parser.ast.expr.FieldAccessExpr
 import japa.parser.ast.expr.MarkerAnnotationExpr
 import japa.parser.ast.expr.MemberValuePair
 import japa.parser.ast.expr.NameExpr
 import japa.parser.ast.TypeParameter
+import japa.parser.ast.`type`.Type
 import japa.parser.ast.`type`.ClassOrInterfaceType
 import japa.parser.ast.expr.NormalAnnotationExpr
 import japa.parser.ast.expr.SingleMemberAnnotationExpr
@@ -43,8 +48,13 @@ import japa.parser.ast.stmt.BlockStmt
 import java.util.ArrayList
 import java.util.Collections
 import org.kevoree.ComponentType
+import org.kevoree.MessagePortType
+import org.kevoree.Operation
+import org.kevoree.PortTypeMapping
 import org.kevoree.PortTypeRef
+import org.kevoree.ServicePortType
 import org.kevoree.annotation._
+import org.kevoree.framework.MessagePort
 import scala.collection.JavaConversions._
 
 
@@ -98,15 +108,6 @@ class ComponentTypeWorker(componentType : ComponentType, compilationUnit : Compi
     }
     
     checkOrAddMarkerAnnotation(td,classOf[org.kevoree.annotation.ComponentType].getName)
-    /*
-     td.getAnnotations.find({ann => ann.getName.getName.equals("ComponentType")}) match {
-     case None => {
-     var ann = new MarkerAnnotationExpr(new NameExpr("ComponentType"))
-     td.getAnnotations.add(ann)          
-     compilationUnit.getImports.add(new ImportDeclaration(new NameExpr("org.kevoree.annotation.ComponentType"), false, false))
-     }
-     case Some(a) =>
-     }*/
     td
   }
   
@@ -197,7 +198,7 @@ class ComponentTypeWorker(componentType : ComponentType, compilationUnit : Compi
         }
       case 1 => {
           //check ProvidedPort
-          checkOrAddProvidedPortAnnotation(td.getAnnotations, componentType.getProvided.head.asInstanceOf[PortTypeRef])
+          checkOrAddProvidedPortAnnotation(td.getAnnotations, componentType.getProvided.head.asInstanceOf[PortTypeRef], td)
         }
       case _ => {
           //check ProvidedPorts
@@ -230,14 +231,14 @@ class ComponentTypeWorker(componentType : ComponentType, compilationUnit : Compi
 
     componentType.getProvided.foreach { providedPort =>
       printf("Dealing with " + providedPort.getName + " ProvidedPort")
-      checkOrAddProvidedPortAnnotation(providedPortAnnotationsList, providedPort)
+      checkOrAddProvidedPortAnnotation(providedPortAnnotationsList, providedPort, td)
     }
     
     annotation.setMemberValue(new ArrayInitializerExpr(providedPortAnnotationsList.toList))
     
   }
   
-  private def checkOrAddProvidedPortAnnotation(annotList : java.util.List[AnnotationExpr], providedPort : PortTypeRef) {
+  private def checkOrAddProvidedPortAnnotation(annotList : java.util.List[AnnotationExpr], providedPort : PortTypeRef, td : TypeDeclaration) {
     var annotation : NormalAnnotationExpr = annotList.filter({annot => 
         annot.getName.toString.equals(classOf[ProvidedPort].getSimpleName)}).find({annot => 
         annot.asInstanceOf[NormalAnnotationExpr].getPairs.find({pair => 
@@ -254,13 +255,204 @@ class ComponentTypeWorker(componentType : ComponentType, compilationUnit : Compi
           
     var portName = new MemberValuePair("name", new StringLiteralExpr(providedPort.getName))
     pairs.add(portName)
+    
+    
+    checkOrAddImport(classOf[PortType].getName)
+    providedPort.getRef match {
+      case portTypeRef:MessagePortType => {
+          var portType = new MemberValuePair("type", new FieldAccessExpr(new NameExpr("PortType"),"MESSAGE"))
+          pairs.add(portType)
           
+        }
+      case portTypeRef:ServicePortType => {
+          var portType = new MemberValuePair("type", new FieldAccessExpr(new NameExpr("PortType"),"SERVICE"))
+          pairs.add(portType)
+          var serviceClass = new MemberValuePair("className", 
+                                                 new FieldAccessExpr(
+              new NameExpr(portTypeRef.getName.substring(portTypeRef.getName.lastIndexOf(".")+1)),
+              "class") )
+          pairs.add(serviceClass)
+          checkOrAddImport(portTypeRef.getName)
+        }        
+      case _ =>
+    }
+    
     annotation.setPairs(pairs)
-          
-          
-        
+   
+    checkProvidedPortMappedMethod(providedPort, td)
   }
   
+  
+  private def checkProvidedPortMappedMethod(providedPort : PortTypeRef, td : TypeDeclaration) {
+    
+    providedPort.getRef match {
+      case srvPort : ServicePortType => {
+          srvPort.getOperations.foreach{operation =>
+            var method : MethodDeclaration = providedPort.getMappings.find({mapping => 
+                mapping.getServiceMethodName.equals(operation.getName)}) match {
+              case Some(mapping) => {
+                  //Check method existence
+                  td.getMembers.filter({member => member.isInstanceOf[MethodDeclaration]}).find({method =>
+                      method.asInstanceOf[MethodDeclaration].getName.equals(mapping.getBeanMethodName)}) match {
+                    case Some(methodDecl) => methodDecl.asInstanceOf[MethodDeclaration]
+                    case None => createProvidedServicePortMethod(operation, mapping.getBeanMethodName, td)
+                  }
+                }
+              case None => {
+                  //Generate Method
+                  var methodName = "on"
+                  methodName += operation.getName.substring(0,1).capitalize
+                  methodName += operation.getName.substring(1);
+                  methodName += "From" + providedPort.getName.substring(0,1).capitalize
+                  methodName += providedPort.getName.substring(1) + "PortActivated";
+                 
+                  //Add Mapping
+                  var newMapping = org.kevoree.KevoreeFactory.eINSTANCE.createPortTypeMapping
+                  newMapping.setServiceMethodName(operation.getName)
+                  newMapping.setBeanMethodName(methodName)
+                  providedPort.getMappings.add(newMapping)
+                  
+                  createProvidedServicePortMethod(operation, methodName, td)
+                 
+                }
+            }
+            //Check annotation
+            checkOrAddPortAnnotationOnMethod(providedPort, method, operation.getName)
+            
+          }
+        }
+      case msgPort : MessagePortType => {
+          var method : MethodDeclaration = providedPort.getMappings.find({mapping => mapping.getServiceMethodName.equals("process")}) match {
+            case Some(mapping) => {
+                //Check method existence
+                td.getMembers.filter({member => member.isInstanceOf[MethodDeclaration]}).find({method =>
+                    method.asInstanceOf[MethodDeclaration].getName.equals(mapping.getBeanMethodName)}) match {
+                  case Some(methodDecl) => methodDecl.asInstanceOf[MethodDeclaration]
+                  case None => {
+                      createProvidedMessagePortMethod(mapping.getBeanMethodName, td)
+                    }
+                }
+                //Check annotation
+              }
+            case None => {
+                //Generate Method
+                var methodName = providedPort.getName.substring(0,1).capitalize
+                methodName += providedPort.getName.substring(1);
+                 
+                //Add Mapping
+                var newMapping = org.kevoree.KevoreeFactory.eINSTANCE.createPortTypeMapping
+                newMapping.setServiceMethodName("process")
+                newMapping.setBeanMethodName(methodName)
+                providedPort.getMappings.add(newMapping)
+                  
+                createProvidedMessagePortMethod(methodName, td)
+              }
+          }
+          //Check annotation
+          checkOrAddPortAnnotationOnMethod(providedPort, method, "process")
+        }
+      case _ =>
+    }
+    
+  }
+  
+  private def checkOrAddPortAnnotationOnMethod(providedPort : PortTypeRef, method : MethodDeclaration, operationName : String) {
+    if(method.getAnnotations == null) {
+      method.setAnnotations(new ArrayList[AnnotationExpr])
+    }
+    
+    var mapping = providedPort.getMappings.find({mapping => 
+        mapping.getServiceMethodName.equals(operationName)}).head
+                  
+    var pairs = new ArrayList[MemberValuePair]
+          
+    var portName = new MemberValuePair("name", new StringLiteralExpr(providedPort.getName))
+    pairs.add(portName)
+    
+    var methName = new MemberValuePair("method", new StringLiteralExpr(operationName))
+    pairs.add(methName)
+                  
+    var newAnnot = new NormalAnnotationExpr(new NameExpr(classOf[Port].getSimpleName), pairs)
+          
+    method.getAnnotations.size match {
+      case 0 => {
+          method.getAnnotations.add(newAnnot)
+          checkOrAddImport(classOf[Port].getName)
+        }
+      case 1 => {
+          if(method.getAnnotations.head.getName.toString.equals(classOf[Port].getSimpleName)) {
+            var portAnnot = method.getAnnotations.head.asInstanceOf[NormalAnnotationExpr]
+            if( !portAnnot.getPairs.find({pair => pair.getName.equals("name")}).head.getValue.asInstanceOf[StringLiteralExpr].getValue.equals(providedPort.getName) ||
+                !portAnnot.getPairs.find({pair => pair.getName.equals("method")}).head.getValue.asInstanceOf[StringLiteralExpr].getValue.equals(operationName) ) {
+               var portsAnnot = new SingleMemberAnnotationExpr(new NameExpr(classOf[Ports].getSimpleName), null)
+            var memberValue = new ArrayInitializerExpr
+            memberValue.setValues(new ArrayList[Expression])
+            memberValue.getValues.add(portAnnot)
+            memberValue.getValues.add(newAnnot)
+            portsAnnot.setMemberValue(memberValue)
+            
+            method.getAnnotations.remove(portAnnot)
+            method.getAnnotations.add(portsAnnot)
+            checkOrAddImport(classOf[Ports].getName)
+                }
+            
+            
+            
+          } else if(method.getAnnotations.head.getName.toString.equals(classOf[Ports].getSimpleName)) {
+            method.getAnnotations.head.asInstanceOf[SingleMemberAnnotationExpr].getMemberValue.asInstanceOf[ArrayInitializerExpr].getValues.find({portAnnot =>
+              !portAnnot.asInstanceOf[NormalAnnotationExpr].getPairs.find({pair => pair.getName.equals("name")}).head.getValue.asInstanceOf[StringLiteralExpr].getValue.equals(providedPort.getName) ||
+              !portAnnot.asInstanceOf[NormalAnnotationExpr].getPairs.find({pair => pair.getName.equals("method")}).head.getValue.asInstanceOf[StringLiteralExpr].getValue.equals(operationName)}) match {
+               case None => method.getAnnotations.head.asInstanceOf[SingleMemberAnnotationExpr].getMemberValue.asInstanceOf[ArrayInitializerExpr].getValues.add(newAnnot)
+               case Some(s) =>
+                }
+          } else {
+            method.getAnnotations.add(newAnnot)
+            checkOrAddImport(classOf[Port].getName)
+          }
+        }
+      case _ => {
+                  
+        }
+    }
+  }
+  
+  private def createProvidedServicePortMethod(operation : Operation, methodName : String, td : TypeDeclaration) : MethodDeclaration = {
+    var newMethod = new MethodDeclaration(ModifierSet.PUBLIC, ASTHelper.VOID_TYPE, methodName);
+    newMethod.setType(new ClassOrInterfaceType(operation.getReturnType.getName))
+                        
+    //Method body block
+    var block = new BlockStmt();
+    newMethod.setBody(block);
+           
+    var parameterList = new ArrayList[Parameter]
+                        
+    operation.getParameters.foreach{parameter =>
+      var param = new Parameter(0, 
+                                new ClassOrInterfaceType(parameter.getType.toString),
+                                new VariableDeclaratorId(parameter.getName))
+      parameterList.add(param)
+                        
+    }
+    newMethod.setParameters(parameterList)
+    ASTHelper.addMember(td, newMethod);
+    newMethod
+  }
+  
+  private def createProvidedMessagePortMethod(methodName : String, td : TypeDeclaration) : MethodDeclaration = {
+    var newMethod = new MethodDeclaration(ModifierSet.PUBLIC, ASTHelper.VOID_TYPE, methodName);
+            
+    //Method body block
+    var block = new BlockStmt();
+    newMethod.setBody(block);
+           
+    var parameterList = new ArrayList[Parameter]
+    var param = new Parameter(0, new ClassOrInterfaceType("Object"), new VariableDeclaratorId("msg"))
+    parameterList.add(param)
+    newMethod.setParameters(parameterList)
+           
+    ASTHelper.addMember(td, newMethod);
+    newMethod
+  }
   
   private def createProvidedPortAnnotation : NormalAnnotationExpr = {
     var newAnnot = new NormalAnnotationExpr(new NameExpr(classOf[ProvidedPort].getSimpleName), null)
