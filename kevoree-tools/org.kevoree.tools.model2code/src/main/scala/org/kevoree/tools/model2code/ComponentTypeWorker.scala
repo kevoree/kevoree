@@ -67,6 +67,7 @@ class ComponentTypeWorker(componentType : ComponentType, compilationUnit : Compi
     synchronizeStart(td)
     synchronizeStop(td)
     synchronizeProvidedPorts(td)
+    synchronizeRequiredPorts(td)
   }
   
   
@@ -205,8 +206,71 @@ class ComponentTypeWorker(componentType : ComponentType, compilationUnit : Compi
           checkOrAddProvidesAnnotation(td)
         }
     }
+  }
+  
+    private def synchronizeRequiredPorts(td : TypeDeclaration) {
     
+    componentType.getRequired.size match {
+      case 0 => {
+          //remove provided ports if exists
+          checkOrRemoveAnnotation(td, classOf[Requires].getName)
+          checkOrRemoveAnnotation(td, classOf[RequiredPort].getName)
+        }
+      case 1 => {
+          //check ProvidedPort
+          checkOrAddRequiredPortAnnotation(td.getAnnotations, componentType.getRequired.head.asInstanceOf[PortTypeRef], td)
+        }
+      case _ => {
+          //check ProvidedPorts
+          checkOrAddRequiresAnnotation(td)
+        }
+    }
+  }
+  
+    private def checkOrAddRequiredPortAnnotation(annotList : java.util.List[AnnotationExpr], requiredPort : PortTypeRef, td : TypeDeclaration) {
     
+    var annotation : NormalAnnotationExpr = annotList.filter({annot => 
+        annot.getName.toString.equals(classOf[RequiredPort].getSimpleName)}).find({annot => 
+        annot.asInstanceOf[NormalAnnotationExpr].getPairs.find({pair => 
+            pair.getName.equals("name")}).head.getValue.asInstanceOf[StringLiteralExpr].getValue.equals(requiredPort.getName)}) match {
+      case Some(annot : NormalAnnotationExpr) => annot
+      case None =>  {
+          var annot = createRequiredPortAnnotation
+          annotList.add(annot)
+          annot
+        }
+    }
+       
+    var pairs = new ArrayList[MemberValuePair]
+          
+    var portName = new MemberValuePair("name", new StringLiteralExpr(requiredPort.getName))
+    pairs.add(portName)
+    
+    checkOrAddImport(classOf[PortType].getName)
+    requiredPort.getRef match {
+      case portTypeRef:MessagePortType => {
+          var portType = new MemberValuePair("type", new FieldAccessExpr(new NameExpr("PortType"),"MESSAGE"))
+          pairs.add(portType)
+          
+        }
+      case portTypeRef:ServicePortType => {
+          var portType = new MemberValuePair("type", new FieldAccessExpr(new NameExpr("PortType"),"SERVICE"))
+          pairs.add(portType)
+          var serviceClass = new MemberValuePair("className", 
+                                                 new FieldAccessExpr(
+              new NameExpr(portTypeRef.getName.substring(portTypeRef.getName.lastIndexOf(".")+1)),
+              "class") )
+          pairs.add(serviceClass)
+          checkOrAddImport(portTypeRef.getName)
+        }        
+      case _ =>
+    }
+    
+    var optional = new MemberValuePair("optional", new BooleanLiteralExpr(requiredPort.getOptional.booleanValue))
+    pairs.add(optional)
+    
+    annotation.setPairs(pairs)
+   
   }
   
   private def checkOrAddProvidesAnnotation(td : TypeDeclaration) {
@@ -235,6 +299,35 @@ class ComponentTypeWorker(componentType : ComponentType, compilationUnit : Compi
     }
     
     annotation.setMemberValue(new ArrayInitializerExpr(providedPortAnnotationsList.toList))
+    
+  }
+  
+  private def checkOrAddRequiresAnnotation(td : TypeDeclaration) {
+    var annotation : SingleMemberAnnotationExpr = td.getAnnotations.find({annot => 
+        annot.getName.toString.equals(classOf[Requires].getSimpleName)}) match {
+      case Some(annot : SingleMemberAnnotationExpr) => annot
+      case None =>  {
+          var annot = createRequiresAnnotation
+          td.getAnnotations.add(annot)
+          annot
+        }
+    }
+    
+    var requiredPortAnnotationsList : java.util.List[AnnotationExpr] = if(annotation.getMemberValue == null) {
+      new ArrayList[AnnotationExpr]
+    } else {
+      annotation.getMemberValue match {
+        case arrayInitExpr : ArrayInitializerExpr => arrayInitExpr.getValues.asInstanceOf[java.util.List[AnnotationExpr]]
+        case _ => new ArrayList[AnnotationExpr]
+      }
+    }
+
+    componentType.getRequired.foreach { requiredPort =>
+      printf("Dealing with " + requiredPort.getName + " RequiredPort")
+      checkOrAddRequiredPortAnnotation(requiredPortAnnotationsList, requiredPort, td)
+    }
+    
+    annotation.setMemberValue(new ArrayInitializerExpr(requiredPortAnnotationsList.toList))
     
   }
   
@@ -281,8 +374,7 @@ class ComponentTypeWorker(componentType : ComponentType, compilationUnit : Compi
    
     checkProvidedPortMappedMethod(providedPort, td)
   }
-  
-  
+ 
   private def checkProvidedPortMappedMethod(providedPort : PortTypeRef, td : TypeDeclaration) {
     
     providedPort.getRef match {
@@ -318,7 +410,6 @@ class ComponentTypeWorker(componentType : ComponentType, compilationUnit : Compi
             }
             //Check annotation
             checkOrAddPortAnnotationOnMethod(providedPort, method, operation.getName)
-            
           }
         }
       case msgPort : MessagePortType => {
@@ -479,9 +570,21 @@ class ComponentTypeWorker(componentType : ComponentType, compilationUnit : Compi
     newAnnot
   }
   
+  private def createRequiredPortAnnotation : NormalAnnotationExpr = {
+    var newAnnot = new NormalAnnotationExpr(new NameExpr(classOf[RequiredPort].getSimpleName), null)
+    checkOrAddImport(classOf[RequiredPort].getName)
+    newAnnot
+  }
+  
   private def createProvidesAnnotation : SingleMemberAnnotationExpr = {
     var newAnnot = new SingleMemberAnnotationExpr(new NameExpr(classOf[Provides].getSimpleName), null)
     checkOrAddImport(classOf[Provides].getName)
+    newAnnot
+  }
+  
+  private def createRequiresAnnotation : SingleMemberAnnotationExpr = {
+    var newAnnot = new SingleMemberAnnotationExpr(new NameExpr(classOf[Requires].getSimpleName), null)
+    checkOrAddImport(classOf[Requires].getName)
     newAnnot
   }
   
@@ -495,7 +598,7 @@ class ComponentTypeWorker(componentType : ComponentType, compilationUnit : Compi
             //Remove imports of internal annotations recursively if necessary
             annot.getPairs.foreach{memberPair =>
               memberPair.getValue match {
-                case internalAnnot : AnnotationExpr => 
+                case internalAnnot : AnnotationExpr => //TODO
                 case _ =>
               }
             }
