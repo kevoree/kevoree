@@ -19,27 +19,69 @@
 package org.kevoree.tools.model2code.test
 
 import org.junit._
+import org.kevoree.ComponentType
+import org.kevoree.framework.KevoreeXmiHelper
+import org.kevoree.tools.model2code.Model2Code
 import org.scalatest.junit.JUnitSuite
 import scala.collection.JavaConversions._
+import java.io.File
+import java.net.URI
 import org.junit.Assert._
 
 class BasicTest extends JUnitSuite {
 
     @Before
-    def setUp = {
+    def setUp {
+      var outputFolder = new File("target/test-classes/generated")
+      if(!outputFolder.exists) {
+        outputFolder.mkdirs
+      }
     }
 
     @After
-    def tearDown = {
-    }
-
-    @Test
-    def example = {
+    def tearDown {
     }
     
     @Test 
-    def baseComponentTypeTest = {
-      assert(true, "Not Well Done")
+    def BaseComponentTypeTest = {
+      
+      System.out.println("Loading Model FakeSimpleLight.kev")
+      
+      var model = KevoreeXmiHelper.load(this.getClass.getClassLoader.getResource("models/lib.kev").getPath)
+    
+      System.out.println("Model loaded.")
+    
+      var m2c = new Model2Code()
+      model.getTypeDefinitions.filter(typeDef => typeDef.isInstanceOf[ComponentType]).foreach { componentType =>
+        System.out.println("Model2Code on " + componentType.getBean)
+                
+        var outputFolder = new File("target/test-classes/generated")
+      
+        m2c.modelToCode(componentType.asInstanceOf[ComponentType], outputFolder.toURI)
+        
+        System.out.println("Model2Code done for " + componentType.getBean)
+      }
+    }
+    
+    @Test 
+    def BaseComponentTypeTest2ndPass = {
+      
+      System.out.println("Loading Model FakeSimpleLight.kev")
+      
+      var model = KevoreeXmiHelper.load(this.getClass.getClassLoader.getResource("models/lib.kev").getPath)
+    
+      System.out.println("Model loaded.")
+    
+      var m2c = new Model2Code()
+      model.getTypeDefinitions.filter(typeDef => typeDef.isInstanceOf[ComponentType]).foreach { componentType =>
+        System.out.println("Model2Code on " + componentType.getBean)
+                
+        var outputFolder = new File("target/test-classes/generated")
+      
+        m2c.modelToCode(componentType.asInstanceOf[ComponentType], outputFolder.toURI)
+        
+        System.out.println("Model2Code done for " + componentType.getBean)
+      }
     }
 
 }
