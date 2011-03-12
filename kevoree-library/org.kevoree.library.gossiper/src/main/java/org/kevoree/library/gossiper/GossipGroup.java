@@ -16,183 +16,64 @@ import org.kevoree.framework.AbstractGroupType;
 import org.kevoree.framework.KevoreeXmiHelper;
 import org.kevoree.library.gossiper.version.GossiperMessages.VectorClock;
 import org.kevoree.library.gossiper.version.GossiperMessages.VersionedModel;
-import org.kevoree.library.gossiper.version.Occured;
-
 import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Random;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
-import org.kevoree.library.gossiper.version.GossiperMessages.ClockEntry;
-import org.kevoree.library.gossiper.version.VersionUtils;
 
 /**
  * @author ffouquet
  */
 //@GroupType
-public abstract class GossipGroup extends AbstractGroupType implements Runnable {
+public abstract class GossipGroup extends AbstractGroupType implements GossiperGroup<VersionedModel> {
 
-    private AtomicBoolean running = new AtomicBoolean(false);
-    public AtomicReference<VectorClock> clockRef = new AtomicReference<VectorClock>(VectorClock.newBuilder().setTimestamp(System.currentTimeMillis()).build());
     public final AtomicReference<Date> lastCheckedTimeStamp = new AtomicReference<Date>(new Date(0l));
-	
-    public synchronized void incrementedVectorClock() {
-        if (this.getModelService().getLastModification().after(lastCheckedTimeStamp.get())) {
-            //Increment & Replace local vector clock
-            VectorClock currentClock = clockRef.get();
-            Long currentTimeStamp = System.currentTimeMillis();
-            List<ClockEntry> incrementedEntries = new ArrayList<ClockEntry>();
-            boolean selfFound = false;
-            for (ClockEntry clock : currentClock.getEntiesList()) {
-                if (clock.getNodeID().equals(this.getNodeName())) {
-                    selfFound = true;
-                    incrementedEntries.add(ClockEntry.newBuilder(clock).setVersion(clock.getVersion() + 1).setTimestamp(currentTimeStamp).build());
-                } else {
-                    incrementedEntries.add(clock);
-                }
-            }
-            if(!selfFound){
-                incrementedEntries.add(ClockEntry.newBuilder().setNodeID(this.getNodeName()).setVersion(1).setTimestamp(currentTimeStamp).build());
-            }
-            clockRef.set(VectorClock.newBuilder().addAllEnties(incrementedEntries).setTimestamp(currentTimeStamp).build());
-            lastCheckedTimeStamp.set(this.getModelService().getLastModification());
-        }
-    }
+    private VectorClockActor currentClock = null;
+    private GossiperActor gossipActor = null;
 
     @Override
-    public void triggerModelUpdate() {
-        System.out.println("Update trigger");
-    }
-
-    @Start
-    public void startMyGroup() {
-
-        System.out.println("StartGroup " + this.getClass().getName());
-        running.set(true);
-        Thread myThread = new Thread(this);
-        myThread.setPriority(Thread.MIN_PRIORITY);
-        myThread.start();
-
-        System.out.println("last date " + this.getModelService().getLastModification());
-
-
-
-    }
-
-    @Stop
-    public void stopMyGroup() {
-        System.out.println("StopGroup " + this.getClass().getName());
-        running.set(false);
-    }
-
-    @Update
-    public void updateMyGroup() {
-        System.out.println("UpdateGroup " + this.getClass().getName());
-    }
-
-    @Override
-    public void run() {
-        while (running.get()) {
-            try {
-                //     Thread.sleep(Integer.parseInt((String) this.getDictionary().get("interval")));
-                Thread.sleep(12000); // TODO
-            } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
-            }
-            ContainerNode node = selectPeer();
-            //adminClient.setAdminClientCluster(metadataStore.getCluster());
-            VectorClock clock = getVectorFromPeer(node);
-
-            System.out.println("-------------");
-			System.out.print("local clock: ");
-            print(this.clockRef.get());
-			System.out.print("remote clock: ");
-            print(clock);
-            System.out.println("-------------");
-
-
-            Occured result = VersionUtils.compare(this.clockRef.get(), clock);
-            if (result == Occured.AFTER) {
-
-                System.out.println("after : We do nothing because AFTER potentially means EQUALS");
-                // we do nothing because VectorClocks are equals (and so models are equals)
-                // or local VectorClock is more recent (and so local model is more recent)
-            } else if (result == Occured.BEFORE) {
-                // we update our local model because the selected peer has a more recent VectorClock (and so a more recent model)
-                VersionedModel versioned = getVersionnedModelToPeer(node);
-                updateClock(versioned);
-            } else if (result == Occured.CONCURRENTLY) {
-                System.out.println("CONCURRENTLY");
-                VersionedModel versioned = getVersionnedModelToPeer(node);
-                mergeReconcile(versioned);
-                // Other possibility not implemented :
-                // It is not possible to find the most recent VectorClock (and so the more recent model)
-                // That's why we choose to keep all local information about local node, component, ...
-                // We also choose to keep all remote information describe into the model of the selected peer.
-            }
-
-        }
-    }
-
-    private void print(VectorClock clock) {
-        System.out.println();
-        for (ClockEntry entry : clock.getEntiesList()) {
-            System.out.print(entry.getNodeID() + ":" + entry.getVersion());
-            System.out.print(",");
-        }
-        System.out.println();
-    }
-    
-    private synchronized void mergeReconcile(VersionedModel versioned) {
+    public VectorClock update(VersionedModel versioned) {
         if (versioned != null) {
-            System.out.println("reconcile");
-			
-			System.out.print("local clock: ");
-            print(this.clockRef.get());
-			System.out.print("remote clock: ");
-            print(versioned.getVector());
-            
-            Date localDate = new Date(this.clockRef.get().getTimestamp());
+            InputStream stream = new ByteArrayInputStream(versioned.getModel().getBytes());
+            if (this.getModelService().updateModel(KevoreeXmiHelper.loadStream(stream))) {
+                lastCheckedTimeStamp.set(this.getModelService().getLastModification());
+                VectorClock ncur = currentClock.merge(versioned.getVector());
+                return ncur;
+            }
+        }
+        return currentClock.get();
+    }
+
+    @Override
+    public VectorClock resolve(VersionedModel versioned) {
+        if (versioned != null) {
+            Date localDate = new Date(currentClock.get().getTimestamp());
             Date remoteDate = new Date(versioned.getVector().getTimestamp());
             //TODO TO IMPROVE
-            if(localDate.before(remoteDate)){
+            if (localDate.before(remoteDate)) {
                 InputStream stream = new ByteArrayInputStream(versioned.getModel().getBytes());
                 this.getModelService().updateModel(KevoreeXmiHelper.loadStream(stream));
                 lastCheckedTimeStamp.set(this.getModelService().getLastModification());
             }
-            VectorClock clock = VersionUtils.merge(this.clockRef.get(), versioned.getVector());
-            this.clockRef.set(clock);
+            return currentClock.merge(versioned.getVector());
         }
+        return currentClock.get();
     }
 
-    private synchronized void updateClock(VersionedModel versioned) {
-        if (versioned != null) {
-			System.out.print("local clock: ");
-            print(clockRef.get());
-			System.out.print("remote clock: ");
-            print(versioned.getVector());
-            InputStream stream = new ByteArrayInputStream(versioned.getModel().getBytes());
-
-            if (this.getModelService().updateModel(KevoreeXmiHelper.loadStream(stream))) {
-                lastCheckedTimeStamp.set(this.getModelService().getLastModification());
-                VectorClock clock = VersionUtils.merge(this.clockRef.get(), versioned.getVector());
-
-                
-                
-                System.out.println("merged");
-                print(clock);
-                this.clockRef.set(clock);
-            }
-        } else {
-            System.out.println("Null rec");
-        }
-
+    @Override
+    public void setCurrentClock(VectorClock clock) {
+        currentClock.swap(clock);
     }
 
-    /* Pick a node randomly */
-    protected ContainerNode selectPeer() {
+    @Override
+    public VectorClock currentClock() {
+        return currentClock.get();
+    }
+
+    @Override
+    public String selectPeer() {
         ContainerRoot model = this.getModelService().getLastModel();
         /* Search self group */
         Group selfGroup = null;
@@ -209,17 +90,43 @@ public abstract class GossipGroup extends AbstractGroupType implements Runnable 
                 }
             }
         }
-
         int nodesSize = groupNode.size();
         Random diceRoller = new SecureRandom();
         int peerIndex = diceRoller.nextInt(nodesSize);
-        return groupNode.get(peerIndex);
+        return groupNode.get(peerIndex).getName();
+    }
+
+    public VectorClock incrementedVectorClock() {
+        if (this.getModelService().getLastModification().after(lastCheckedTimeStamp.get())) {
+            lastCheckedTimeStamp.set(this.getModelService().getLastModification());
+            return currentClock.incAndGet();
+        }
+        return currentClock.get();
+    }
+
+    @Override
+    public void triggerModelUpdate() {
+        System.out.println("Update trigger");
+    }
+
+    @Start
+    public void startMyGroup() {
+        System.out.println("StartGroup " + this.getClass().getName());
+        currentClock = new VectorClockActor(this.getNodeName());
+        gossipActor = new GossiperActor(Integer.parseInt(this.getDictionary().get("interval").toString()), this);
+    }
+
+    @Stop
+    public void stopMyGroup() {
+        System.out.println("StopGroup " + this.getClass().getName());
+        gossipActor.stop();
+        currentClock.stop();
+    }
+
+    @Update
+    public void updateMyGroup() {
+        System.out.println("UpdateGroup " + this.getClass().getName());
     }
 
 
-    /* Override in child classes */
-    protected abstract VectorClock getVectorFromPeer(ContainerNode node);
-
-    /* Override in child classes*/
-    protected abstract VersionedModel getVersionnedModelToPeer(ContainerNode node);
 }

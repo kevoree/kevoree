@@ -66,12 +66,11 @@ public class RestGroupFragmentResource extends ServerResource {
             } catch (IOException ex) {
                 Logger.getLogger(RestGroupFragmentResource.class.getName()).log(Level.SEVERE, null, ex);
             }
-            GossiperMessages.VersionedModel model = GossiperMessages.VersionedModel.newBuilder().setVector(groupFragment.clockRef.get()).setModel(flatModel).build();
+            GossiperMessages.VersionedModel model = GossiperMessages.VersionedModel.newBuilder().setVector(groupFragment.currentClock()).setModel(flatModel).build();
             return new MessageRepresentation<GossiperMessages.VersionedModel>(model);
         }
         if (getMethod().equals(Method.GET)) {
-            groupFragment.incrementedVectorClock();
-            return new MessageRepresentation<GossiperMessages.VectorClock>(groupFragment.clockRef.get());
+            return new MessageRepresentation<GossiperMessages.VectorClock>(groupFragment.incrementedVectorClock());
         }
         if (getMethod().equals(Method.PUT)) {
             //TRIGGER AND UPDATE FROM REMOTE NODE

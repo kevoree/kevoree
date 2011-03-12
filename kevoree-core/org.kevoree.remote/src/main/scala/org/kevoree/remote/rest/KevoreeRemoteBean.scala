@@ -27,7 +27,7 @@ import scala.collection.JavaConversions._
 
 class KevoreeRemoteBean {
 
-  System.setProperty("org.restlet.engine.loggerFacadeClass", "org.restlet.ext.slf4j.Slf4jLoggerFacade")
+ // System.setProperty("org.restlet.engine.loggerFacadeClass", "org.restlet.ext.slf4j.Slf4jLoggerFacade")
   
   var component = new Component
 
