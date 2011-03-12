@@ -332,7 +332,6 @@ class ComponentTypeWorker(componentType : ComponentType, compilationUnit : Compi
                       createProvidedMessagePortMethod(mapping.getBeanMethodName, td)
                     }
                 }
-                //Check annotation
               }
             case None => {
                 //Generate Method
@@ -381,38 +380,58 @@ class ComponentTypeWorker(componentType : ComponentType, compilationUnit : Compi
         }
       case 1 => {
           if(method.getAnnotations.head.getName.toString.equals(classOf[Port].getSimpleName)) {
-            var portAnnot = method.getAnnotations.head.asInstanceOf[NormalAnnotationExpr]
-            if( !portAnnot.getPairs.find({pair => pair.getName.equals("name")}).head.getValue.asInstanceOf[StringLiteralExpr].getValue.equals(providedPort.getName) ||
-                !portAnnot.getPairs.find({pair => pair.getName.equals("method")}).head.getValue.asInstanceOf[StringLiteralExpr].getValue.equals(operationName) ) {
-               var portsAnnot = new SingleMemberAnnotationExpr(new NameExpr(classOf[Ports].getSimpleName), null)
-            var memberValue = new ArrayInitializerExpr
-            memberValue.setValues(new ArrayList[Expression])
-            memberValue.getValues.add(portAnnot)
-            memberValue.getValues.add(newAnnot)
-            portsAnnot.setMemberValue(memberValue)
-            
-            method.getAnnotations.remove(portAnnot)
-            method.getAnnotations.add(portsAnnot)
-            checkOrAddImport(classOf[Ports].getName)
-                }
-            
-            
-            
+            changeAndAdd_PortToPorts(method, method.getAnnotations.head.asInstanceOf[NormalAnnotationExpr], newAnnot, providedPort, operationName)            
           } else if(method.getAnnotations.head.getName.toString.equals(classOf[Ports].getSimpleName)) {
-            method.getAnnotations.head.asInstanceOf[SingleMemberAnnotationExpr].getMemberValue.asInstanceOf[ArrayInitializerExpr].getValues.find({portAnnot =>
-              !portAnnot.asInstanceOf[NormalAnnotationExpr].getPairs.find({pair => pair.getName.equals("name")}).head.getValue.asInstanceOf[StringLiteralExpr].getValue.equals(providedPort.getName) ||
-              !portAnnot.asInstanceOf[NormalAnnotationExpr].getPairs.find({pair => pair.getName.equals("method")}).head.getValue.asInstanceOf[StringLiteralExpr].getValue.equals(operationName)}) match {
-               case None => method.getAnnotations.head.asInstanceOf[SingleMemberAnnotationExpr].getMemberValue.asInstanceOf[ArrayInitializerExpr].getValues.add(newAnnot)
-               case Some(s) =>
-                }
+            checkOrAddPortMappingAnnotationToPortsAnnotation(method.getAnnotations.head.asInstanceOf[SingleMemberAnnotationExpr], newAnnot, providedPort, operationName)
           } else {
             method.getAnnotations.add(newAnnot)
             checkOrAddImport(classOf[Port].getName)
           }
         }
       case _ => {
-                  
+          method.getAnnotations.find({annot => annot.asInstanceOf[NormalAnnotationExpr].getName.toString.equals(classOf[Ports].getSimpleName)}) match {
+            case Some(portsAnnot : SingleMemberAnnotationExpr) => {
+                checkOrAddPortMappingAnnotationToPortsAnnotation(portsAnnot, newAnnot, providedPort, operationName)
+              }
+            case None => {
+                method.getAnnotations.find({annot => annot.asInstanceOf[NormalAnnotationExpr].getName.toString.equals(classOf[Port].getSimpleName)}) match {
+                  case Some(annot : NormalAnnotationExpr) => {
+                      changeAndAdd_PortToPorts(method, method.getAnnotations.head.asInstanceOf[NormalAnnotationExpr], newAnnot, providedPort, operationName)
+                    }
+                  case None => {
+                      method.getAnnotations.add(newAnnot)
+                      checkOrAddImport(classOf[Port].getName)
+                    }
+                }
+              }
+          }
         }
+    }
+  }
+  
+  private def changeAndAdd_PortToPorts(method : MethodDeclaration, portAnnot : NormalAnnotationExpr, newAnnot : NormalAnnotationExpr, providedPort : PortTypeRef, operationName : String) {
+    var portAnnot = method.getAnnotations.head.asInstanceOf[NormalAnnotationExpr]
+    if( !portAnnot.getPairs.find({pair => pair.getName.equals("name")}).head.getValue.asInstanceOf[StringLiteralExpr].getValue.equals(providedPort.getName) ||
+       !portAnnot.getPairs.find({pair => pair.getName.equals("method")}).head.getValue.asInstanceOf[StringLiteralExpr].getValue.equals(operationName) ) {
+      var portsAnnot = new SingleMemberAnnotationExpr(new NameExpr(classOf[Ports].getSimpleName), null)
+      var memberValue = new ArrayInitializerExpr
+      memberValue.setValues(new ArrayList[Expression])
+      memberValue.getValues.add(portAnnot)
+      memberValue.getValues.add(newAnnot)
+      portsAnnot.setMemberValue(memberValue)
+            
+      method.getAnnotations.remove(portAnnot)
+      method.getAnnotations.add(portsAnnot)
+      checkOrAddImport(classOf[Ports].getName)
+    }
+  }
+  
+  private def checkOrAddPortMappingAnnotationToPortsAnnotation(portsAnnotation : SingleMemberAnnotationExpr, newAnnot : NormalAnnotationExpr, providedPort : PortTypeRef, operationName : String) {
+    portsAnnotation.getMemberValue.asInstanceOf[ArrayInitializerExpr].getValues.find({portAnnot =>
+        !portAnnot.asInstanceOf[NormalAnnotationExpr].getPairs.find({pair => pair.getName.equals("name")}).head.getValue.asInstanceOf[StringLiteralExpr].getValue.equals(providedPort.getName) ||
+        !portAnnot.asInstanceOf[NormalAnnotationExpr].getPairs.find({pair => pair.getName.equals("method")}).head.getValue.asInstanceOf[StringLiteralExpr].getValue.equals(operationName)}) match {
+      case None => portsAnnotation.getMemberValue.asInstanceOf[ArrayInitializerExpr].getValues.add(newAnnot)
+      case Some(s) =>
     }
   }
   
