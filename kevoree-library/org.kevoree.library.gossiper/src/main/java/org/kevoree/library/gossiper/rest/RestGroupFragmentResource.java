@@ -32,6 +32,7 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.zip.GZIPOutputStream;
 
 /**
  * @author ffouquet
@@ -58,16 +59,19 @@ public class RestGroupFragmentResource extends ServerResource {
     @Override
     public Representation doHandle() {
         if (getMethod().equals(Method.POST)) {
-            ByteArrayOutputStream out = new ByteArrayOutputStream();
-            KevoreeXmiHelper.saveStream(out, groupFragment.getModelService().getLastModel());
-            String flatModel = new String(out.toByteArray());
             try {
+                ByteArrayOutputStream out = new ByteArrayOutputStream();
+                KevoreeXmiHelper.saveStream(out, groupFragment.getModelService().getLastModel());
+                out.flush();
+                String flatModel = new String(out.toByteArray());
+                String flatZippedModel = new String(StringZipper.zipStringToBytes(flatModel));
                 out.close();
+                GossiperMessages.VersionedModel model = GossiperMessages.VersionedModel.newBuilder().setVector(groupFragment.currentClock()).setModel(flatZippedModel).build();
+                return new MessageRepresentation<GossiperMessages.VersionedModel>(model);
             } catch (IOException ex) {
                 Logger.getLogger(RestGroupFragmentResource.class.getName()).log(Level.SEVERE, null, ex);
             }
-            GossiperMessages.VersionedModel model = GossiperMessages.VersionedModel.newBuilder().setVector(groupFragment.currentClock()).setModel(flatModel).build();
-            return new MessageRepresentation<GossiperMessages.VersionedModel>(model);
+
         }
         if (getMethod().equals(Method.GET)) {
             return new MessageRepresentation<GossiperMessages.VectorClock>(groupFragment.incrementedVectorClock());
@@ -75,8 +79,7 @@ public class RestGroupFragmentResource extends ServerResource {
         if (getMethod().equals(Method.PUT)) {
             //TRIGGER AND UPDATE FROM REMOTE NODE
             Object o = this.getRequestAttributes().get("remotePeerNodeName");
-            if(o != null){
-                
+            if (o != null) {
             }
         }
         return new StringRepresentation("Error");

@@ -3,6 +3,7 @@ package org.kevoree.library.gossiper.rest;
 import java.util.concurrent.Semaphore;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.zip.GZIPInputStream;
 import org.kevoree.annotation.DictionaryAttribute;
 import org.kevoree.annotation.DictionaryType;
 import org.kevoree.annotation.GroupType;
@@ -89,9 +90,10 @@ public class RestGossipGroup extends GossipGroup {
             lastUrl = buildGroupURL(targetNodeName, this.getName());
             System.out.println("remote rest url =>" + lastUrl);
             ClientResource remoteGroupResource = new ClientResource(lastUrl);
-            //TODO ADD COMPRESSION GZIP
             Representation result = remoteGroupResource.post(new EmptyRepresentation());
-            return GossiperMessages.VersionedModel.parseFrom(result.getStream());
+            GossiperMessages.VersionedModel resModel =  GossiperMessages.VersionedModel.parseFrom(result.getStream());
+            return GossiperMessages.VersionedModel.newBuilder(resModel).setModel(StringZipper.unzipStringFromBytes(resModel.getModel().getBytes())).build();
+            //return resModel;
         } catch (Exception e) {
             System.err.println("Fail to send to remote channel via =>" + lastUrl);
         }
