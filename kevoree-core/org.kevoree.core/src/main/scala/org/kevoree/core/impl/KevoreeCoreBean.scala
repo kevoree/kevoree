@@ -24,7 +24,6 @@ import org.kevoree.api.configuration.ConfigurationService
 import org.kevoree.api.service.adaptation.deploy.KevoreeAdaptationDeployService
 import org.kevoree.api.service.core.handler.KevoreeModelHandlerService
 import org.kevoree.api.service.core.kompare.ModelKompareService
-import org.kevoree.framework.AbstractGroupType
 import org.kevoree.framework.KevoreeActor
 import org.kevoree.framework.KevoreeGroup
 import org.kevoree.framework.KevoreePlatformHelper
@@ -63,8 +62,11 @@ class KevoreeCoreBean extends KevoreeModelHandlerService with KevoreeActor {
     lastDate = new Date(System.currentTimeMillis)
     //TODO ADD LISTENER
 
-    bundleContext.getServiceReferences(classOf[KevoreeGroup].getName,null).foreach{sr =>
-      bundleContext.getService(sr).asInstanceOf[KevoreeGroup].triggerModelUpdate
+    var srs = bundleContext.getServiceReferences(classOf[KevoreeGroup].getName,null)
+    if(srs != null){
+      srs.foreach{sr =>
+        bundleContext.getService(sr).asInstanceOf[KevoreeGroup].triggerModelUpdate
+      }
     }
 
   }
@@ -87,7 +89,7 @@ class KevoreeCoreBean extends KevoreeModelHandlerService with KevoreeActor {
     super[KevoreeActor].forceStop
     //TODO CLEAN AND REACTIVATE
 
-   // KevoreeXmiHelper.save(bundleContext.getDataFile("lastModel.xmi").getAbsolutePath(), models.head);
+    // KevoreeXmiHelper.save(bundleContext.getDataFile("lastModel.xmi").getAbsolutePath(), models.head);
   }
 
   def internal_process(msg : Any) = msg match {
@@ -117,7 +119,10 @@ class KevoreeCoreBean extends KevoreeModelHandlerService with KevoreeActor {
 
   
   override def getLastModel : ContainerRoot = (this !? LastModel()).asInstanceOf[ContainerRoot]
-  override def updateModel(model : ContainerRoot) : java.lang.Boolean ={ (this ! UpdateModel(model));true }
+  override def updateModel(model : ContainerRoot) = this ! UpdateModel(model)
+  
+  override def atomicUpdateModel(model : ContainerRoot) = { (this !? UpdateModel(model));lastDate }
+  
   override def getPreviousModel : java.util.List[ContainerRoot] = (this !? PreviousModel).asInstanceOf[java.util.List[ContainerRoot]]
 
 }

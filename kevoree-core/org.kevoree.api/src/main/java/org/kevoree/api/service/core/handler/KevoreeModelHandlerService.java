@@ -32,7 +32,9 @@ public interface KevoreeModelHandlerService {
 
     public Date getLastModification();
 
-    public Boolean updateModel(ContainerRoot model);
+    public void updateModel(ContainerRoot model);
+    
+    public Date atomicUpdateModel(ContainerRoot model);
 
     public List<ContainerRoot> getPreviousModel();
 

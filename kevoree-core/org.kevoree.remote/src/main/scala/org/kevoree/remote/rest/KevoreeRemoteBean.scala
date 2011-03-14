@@ -55,6 +55,7 @@ class KevoreeRemoteBean {
   }
   def stop()={
     //serverhttp.stop
+    component.getDefaultHost.detach(classOf[ModelHandlerResource])
     component.stop
     
   }

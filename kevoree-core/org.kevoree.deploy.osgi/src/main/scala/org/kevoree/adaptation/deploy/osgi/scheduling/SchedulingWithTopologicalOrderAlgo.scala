@@ -19,6 +19,7 @@ import org.jgrapht.traverse.TopologicalOrderIterator
 import org.kevoree.Channel
 import org.kevoree.ComponentInstance
 import org.kevoree.ContainerRoot
+import org.kevoree.Group
 import org.kevoree.Instance
 import org.kevoree.adaptation.deploy.osgi.command.LifeCycleCommand
 
@@ -101,6 +102,7 @@ class SchedulingWithTopologicalOrderAlgo {
 		var rootContainer: ContainerRoot = null
 		var firstCommand = (commands(0)).getInstance
 		firstCommand match {
+                        case c: Group => rootContainer = c.eContainer.asInstanceOf[ContainerRoot]
 			case c: Channel => rootContainer = c.eContainer.asInstanceOf[ContainerRoot]
 			case c: ComponentInstance => rootContainer = c.eContainer.eContainer.asInstanceOf[ContainerRoot]
 		}
