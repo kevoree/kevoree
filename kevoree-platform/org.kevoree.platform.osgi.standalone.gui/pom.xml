@@ -306,7 +306,11 @@
                         <option>-keep class org.restlet.**</option>
                         -->
                         <option>-keep class org.osgi.** { *; }</option>
+                        <option>-keep class org.restlet.resource.** { *; }</option>
+                        <option>-keep class scala.runtime.** { *; }</option>
+                        
                      <!--   <option>-keep class choco.cp.** { *; }</option>   -->
+                        <option>-keep class org.kevoree.api.** { *; }</option>
                         <option>-keep class org.kevoree.framework.** { *; }</option>
                         <option>-keep class org.kevoree.remote.** { *; }</option>
                         <option>-keep class org.apache.felix.framework.** { *; }</option>

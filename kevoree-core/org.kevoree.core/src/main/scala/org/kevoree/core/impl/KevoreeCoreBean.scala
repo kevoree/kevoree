@@ -63,7 +63,7 @@ class KevoreeCoreBean extends KevoreeModelHandlerService with KevoreeActor {
     lastDate = new Date(System.currentTimeMillis)
     //TODO ADD LISTENER
 
-    bundleContext.getServiceReferences(null, classOf[KevoreeGroup].getName).foreach{sr =>
+    bundleContext.getServiceReferences(classOf[KevoreeGroup].getName,null).foreach{sr =>
       bundleContext.getService(sr).asInstanceOf[KevoreeGroup].triggerModelUpdate
     }
 

@@ -49,26 +49,43 @@ class KevsComboCompletionAction extends ComboCompletionAction {
     if (tokenPrevious != null) {
       tokenPreviousS = tokenPrevious.getString(sdoc);
     }
-    if (tokenPreviousS == ":" || tokens == ":") {
-      pushTypeId
-    } else {
-       pushKeyword
+    
+    tokenPreviousS match {
+      case _ if(tokenPreviousS == ":" || tokens == ":") => pushTypeId
+      case _ if(tokenPreviousS == "@" || tokens == "@") => pushNodeId
+      case _ => pushKeyword
+      
     }
+    
 
 
   }
 
 
+  def pushNodeId = {
+    KevsModelHandlers.get(1) match {
+      case Some(model) => {
+          val items = new java.util.ArrayList[String]()
+          model.getNodes.foreach {
+            node =>
+            items.add(node.getName)
+          }
+          this.setItems(items)
+        }
+      case None =>
+    }
+  }
+  
   def pushTypeId = {
     KevsModelHandlers.get(1) match {
       case Some(model) => {
-        val items = new java.util.ArrayList[String]()
-        model.getTypeDefinitions.foreach {
-          tdef =>
+          val items = new java.util.ArrayList[String]()
+          model.getTypeDefinitions.foreach {
+            tdef =>
             items.add(tdef.getName)
+          }
+          this.setItems(items)
         }
-        this.setItems(items)
-      }
       case None =>
     }
   }
