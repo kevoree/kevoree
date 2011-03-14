@@ -4,21 +4,12 @@
  */
 package org.kevoree.library.gossiper;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.kevoree.library.gossiper.version.GossiperMessages.VectorClock;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.restlet.data.MediaType;
-import org.restlet.representation.ChannelRepresentation;
-import org.restlet.representation.InputRepresentation;
-import org.restlet.representation.OutputRepresentation;
-import org.restlet.representation.WritableRepresentation;
 
 /**
  *
@@ -116,7 +107,7 @@ public class ClockVectorMergerJUnitTest {
                 //addEnties(org.kevoree.library.gossiper.version.GossiperMessages.ClockEntry.newBuilder().setNodeID("A").setVersion(1).setTimestamp(System.currentTimeMillis())).
                 //addEnties(org.kevoree.library.gossiper.version.GossiperMessages.ClockEntry.newBuilder().setNodeID("F").setVersion(6).setTimestamp(System.currentTimeMillis()))
 				.build();
-
+        
 		System.out.println(org.kevoree.library.gossiper.VersionUtils.compare(v1, v2));
 		
 	}

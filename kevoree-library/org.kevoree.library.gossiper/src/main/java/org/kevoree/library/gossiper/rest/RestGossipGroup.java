@@ -98,9 +98,10 @@ public class RestGossipGroup extends GossipGroup {
             ClientResource remoteGroupResource = new ClientResource(lastUrl);
             Representation result = remoteGroupResource.post(new EmptyRepresentation());
             GossiperMessages.VersionedModel resModel = GossiperMessages.VersionedModel.parseFrom(result.getStream());
-            return GossiperMessages.VersionedModel.newBuilder(resModel).setModel(StringZipper.unzipStringFromBytes(resModel.getModel().getBytes())).build();
+            return resModel;
+//            return GossiperMessages.VersionedModel.newBuilder(resModel).setModel(StringZipper.unzipStringFromBytes(resModel.getModel().getBytes())).build();
         } catch (Exception e) {
-            logger.debug("Fail to getVersionnedModelToPeer via =>" + lastUrl);
+            logger.debug("Fail to getVersionnedModelToPeer via =>" + lastUrl,e);
         }
         return null;
     }

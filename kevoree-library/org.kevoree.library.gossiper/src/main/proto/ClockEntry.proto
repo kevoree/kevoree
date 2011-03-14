@@ -18,5 +18,5 @@ message VectorClock {
 
 message VersionedModel {
     required VectorClock vector = 1;
-    required string model = 2;
+    required bytes model = 2;
 }

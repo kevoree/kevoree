@@ -17,6 +17,7 @@
  */
 package org.kevoree.library.gossiper.rest;
 
+import com.google.protobuf.ByteString;
 import java.io.ByteArrayOutputStream;
 import org.kevoree.framework.KevoreeXmiHelper;
 import org.kevoree.library.gossiper.version.GossiperMessages;
@@ -61,10 +62,13 @@ public class RestGroupFragmentResource extends ServerResource {
                 ByteArrayOutputStream out = new ByteArrayOutputStream();
                 KevoreeXmiHelper.saveStream(out, groupFragment.getModelService().getLastModel());
                 out.flush();
-                String flatModel = new String(out.toByteArray());
-                String flatZippedModel = new String(StringZipper.zipStringToBytes(flatModel));
+             //   String flatModel = new String(out.toByteArray());
+             //   String flatZippedModel = new String(StringZipper.zipStringToBytes(flatModel),"UTF-8");
+                
+                
+                
                 out.close();
-                GossiperMessages.VersionedModel model = GossiperMessages.VersionedModel.newBuilder().setVector(groupFragment.currentClock()).setModel(flatZippedModel).build();
+                GossiperMessages.VersionedModel model = GossiperMessages.VersionedModel.newBuilder().setVector(groupFragment.currentClock()).setModel(ByteString.copyFrom(out.toByteArray())).build();
                 return new MessageRepresentation<GossiperMessages.VersionedModel>(model);
             } catch (IOException ex) {
                 logger.error("Error processing rest resource", ex);

@@ -36,7 +36,7 @@ public abstract class GossipGroup extends AbstractGroupType implements GossiperG
     @Override
     public VectorClock update(VersionedModel versioned) {
         if (versioned != null) {
-            InputStream stream = new ByteArrayInputStream(versioned.getModel().getBytes());
+            InputStream stream = new ByteArrayInputStream(versioned.getModel().toByteArray());
             lastCheckedTimeStamp.set(this.getModelService().atomicUpdateModel(KevoreeXmiHelper.loadStream(stream)));
 
             // if (this.getModelService().updateModel(KevoreeXmiHelper.loadStream(stream))) {
@@ -55,7 +55,7 @@ public abstract class GossipGroup extends AbstractGroupType implements GossiperG
             Date remoteDate = new Date(versioned.getVector().getTimestamp());
             //TODO TO IMPROVE
             if (localDate.before(remoteDate)) {
-                InputStream stream = new ByteArrayInputStream(versioned.getModel().getBytes());
+                InputStream stream = new ByteArrayInputStream(versioned.getModel().toByteArray());
                 lastCheckedTimeStamp.set(this.getModelService().atomicUpdateModel(KevoreeXmiHelper.loadStream(stream)));
                // this.getModelService().updateModel(KevoreeXmiHelper.loadStream(stream));
               //  lastCheckedTimeStamp.set(this.getModelService().getLastModification());
