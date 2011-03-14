@@ -68,7 +68,9 @@ public class ClockVectorMergerJUnitTest {
                 addEnties(org.kevoree.library.gossiper.version.GossiperMessages.ClockEntry.newBuilder().setNodeID("A").setVersion(1).setTimestamp(System.currentTimeMillis())).
                 addEnties(org.kevoree.library.gossiper.version.GossiperMessages.ClockEntry.newBuilder().setNodeID("F").setVersion(6).setTimestamp(System.currentTimeMillis())).build();
 
-        VectorClock v3 = VersionUtils.merge(v1, v2);
+        VectorClockActor actor = new VectorClockActor("C");
+        actor.swap(v1);
+        VectorClock v3 = actor.merge(v2);
 
         assert (v3.getEnties(0).getNodeID().equals("A"));
         assert (v3.getEnties(0).getVersion() == 2);
@@ -87,31 +89,6 @@ public class ClockVectorMergerJUnitTest {
 
         assert (v3.getEnties(5).getNodeID().equals("F"));
         assert (v3.getEnties(5).getVersion() == 6);
-
-
-
-        try {
-            byte[] flux = v3.toByteArray();
-            System.out.println();
-            for (int i = 0; i < flux.length; i++) {
-                System.out.print(flux[i]);
-            }
-            System.out.println();
-            
-            String flux2 = new String(flux);
-            byte[] flux3 = flux2.getBytes();
-            System.out.println();
-            for(int i = 0; i< flux3.length;i++){
-                System.out.print(flux3[i]);
-            }
-            System.out.println();
-
-            VectorClock deocoded = VectorClock.parseFrom(flux3);
-            System.out.println(deocoded);
-
-        } catch (IOException ex) {
-            Logger.getLogger(ClockVectorMergerJUnitTest.class.getName()).log(Level.SEVERE, null, ex);
-        }
 
 
 

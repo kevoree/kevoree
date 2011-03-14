@@ -3,7 +3,7 @@ package org.kevoree.library.gossiper.rest;
 import java.util.concurrent.Semaphore;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.kevoree.ContainerNode;
+import java.util.zip.GZIPInputStream;
 import org.kevoree.annotation.DictionaryAttribute;
 import org.kevoree.annotation.DictionaryType;
 import org.kevoree.annotation.GroupType;
@@ -47,7 +47,6 @@ public class RestGossipGroup extends GossipGroup {
     @Stop
     @Override
     public void stopMyGroup() {
-
         try {
             handlerAccess.acquire();
             RestGroupFragmentResource.groups.remove(this.getName());
@@ -69,11 +68,10 @@ public class RestGossipGroup extends GossipGroup {
     }
 
     @Override
-    protected GossiperMessages.VectorClock getVectorFromPeer(ContainerNode node) {
+    public GossiperMessages.VectorClock getVectorFromPeer(String targetNodeName) {
         String lastUrl = null;
         try {
-
-            lastUrl = buildGroupURL(node.getName(), this.getName());
+            lastUrl = buildGroupURL(targetNodeName, this.getName());
             System.out.println("remote rest url =>" + lastUrl);
             ClientResource remoteGroupResource = new ClientResource(lastUrl);
             //TODO ADD COMPRESSION GZIP
@@ -81,20 +79,21 @@ public class RestGossipGroup extends GossipGroup {
             return GossiperMessages.VectorClock.parseFrom(result.getStream());
         } catch (Exception e) {
             System.err.println("Fail to send to remote channel via =>" + lastUrl);
-            e.printStackTrace();
         }
         return null;
     }
 
-    protected GossiperMessages.VersionedModel getVersionnedModelToPeer(ContainerNode node) {
+    @Override
+    public GossiperMessages.VersionedModel getVersionnedModelToPeer(String targetNodeName) {
         String lastUrl = null;
         try {
-            lastUrl = buildGroupURL(node.getName(), this.getName());
+            lastUrl = buildGroupURL(targetNodeName, this.getName());
             System.out.println("remote rest url =>" + lastUrl);
             ClientResource remoteGroupResource = new ClientResource(lastUrl);
-            //TODO ADD COMPRESSION GZIP
             Representation result = remoteGroupResource.post(new EmptyRepresentation());
-            return GossiperMessages.VersionedModel.parseFrom(result.getStream());
+            GossiperMessages.VersionedModel resModel =  GossiperMessages.VersionedModel.parseFrom(result.getStream());
+            return GossiperMessages.VersionedModel.newBuilder(resModel).setModel(StringZipper.unzipStringFromBytes(resModel.getModel().getBytes())).build();
+            //return resModel;
         } catch (Exception e) {
             System.err.println("Fail to send to remote channel via =>" + lastUrl);
         }
@@ -107,9 +106,10 @@ public class RestGossipGroup extends GossipGroup {
             ip = "127.0.0.1";
         }
         String port = KevoreePlatformHelper.getProperty(this.getModelService().getLastModel(), remoteNodeName, org.kevoree.framework.Constants.KEVOREE_PLATFORM_REMOTE_NODE_MODELSYNCH_PORT());
-        if (port == null) {
+        if (port == null || port.equals("")) {
             port = "8000";
         }
         return "http://" + ip + ":" + port + "/groups/" + groupName;
     }
+
 }
