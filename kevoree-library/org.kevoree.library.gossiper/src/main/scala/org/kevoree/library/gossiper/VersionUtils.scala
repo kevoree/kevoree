@@ -54,7 +54,7 @@ object VersionUtils {
 			smallerBigger = true
 		  }
 		  larger = larger + 1
-		  smaller = larger + 1
+		  smaller = smaller + 1
 		  check = true
 		}
 	  }
@@ -76,11 +76,13 @@ object VersionUtils {
 	   /* Okay, now check for left overs */
 	   if (larger < largerClock.getEntiesCount()) {
 		  largerBigger = true
-		} else if (smaller < smallerClock.getEntiesCount()) {
+		}
+	   if (smaller < smallerClock.getEntiesCount()) {
 		  smallerBigger = true
 		}
 
 	   /* This is the case where they are equal, return AFTER arbitrarily */
+	   println("larger = " + larger + "smaller = " + smaller)
 	   println("largerBigger : " + largerBigger + " && smallerBigger : " +smallerBigger + " => " + "largerIsV1" + largerIsV1)
 	   
 	   larger match {
@@ -95,4 +97,4 @@ object VersionUtils {
 	
 	
 	   }
-}
+	   }
