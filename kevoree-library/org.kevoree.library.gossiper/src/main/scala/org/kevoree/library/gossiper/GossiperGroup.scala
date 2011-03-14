@@ -16,5 +16,8 @@ trait GossiperGroup[A] {
   def setCurrentClock(clock : VectorClock)
   def resolve(model : A) : VectorClock
   def update(model : A) : VectorClock
+  def triggerGossipNotification(nodeName : String)
+  def notifyPeers()
+  def notifyPeer(nodeName : String)
   
 }

@@ -106,19 +106,22 @@ public abstract class GossipGroup extends AbstractGroupType implements GossiperG
 
     @Override
     public void triggerModelUpdate() {
-        System.out.println("Update trigger");
+        gossipActor.notifyPeers();
+    }
+
+    @Override
+    public void triggerGossipNotification(String nodeName) {
+        gossipActor.scheduleGossip(nodeName);
     }
 
     @Start
     public void startMyGroup() {
-        System.out.println("StartGroup " + this.getClass().getName());
         currentClock = new VectorClockActor(this.getNodeName());
         gossipActor = new GossiperActor(Integer.parseInt(this.getDictionary().get("interval").toString()), this);
     }
 
     @Stop
     public void stopMyGroup() {
-        System.out.println("StopGroup " + this.getClass().getName());
         gossipActor.stop();
         currentClock.stop();
     }
@@ -128,5 +131,23 @@ public abstract class GossipGroup extends AbstractGroupType implements GossiperG
         System.out.println("UpdateGroup " + this.getClass().getName());
     }
 
-
+    @Override
+    public void notifyPeers() {
+        ContainerRoot model = this.getModelService().getLastModel();
+        Group selfGroup = null;
+        for (Object o : model.getGroups()) {
+            Group g = (Group) o;
+            if (g.getName().equals(this.getName())) {
+                selfGroup = g;
+            }
+        }
+        if (selfGroup != null && selfGroup.getSubNodes() != null) {
+            for (Object o : selfGroup.getSubNodes()) {
+                ContainerNode  sub= (ContainerNode)o;
+                if (!sub.getName().equals(this.getNodeName())) {
+                    notifyPeer(sub.getName());
+                }
+            }
+        }   
+    }
 }

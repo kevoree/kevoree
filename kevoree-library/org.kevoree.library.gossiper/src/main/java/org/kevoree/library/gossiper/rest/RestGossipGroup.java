@@ -1,9 +1,9 @@
 package org.kevoree.library.gossiper.rest;
 
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.Semaphore;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import java.util.zip.GZIPInputStream;
 import org.kevoree.annotation.DictionaryAttribute;
 import org.kevoree.annotation.DictionaryType;
 import org.kevoree.annotation.GroupType;
@@ -16,7 +16,10 @@ import org.kevoree.library.gossiper.version.GossiperMessages;
 import org.kevoree.remote.rest.Handler;
 import org.restlet.representation.EmptyRepresentation;
 import org.restlet.representation.Representation;
+import org.restlet.representation.StringRepresentation;
 import org.restlet.resource.ClientResource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @GroupType
 @DictionaryType({
@@ -25,6 +28,8 @@ import org.restlet.resource.ClientResource;
 public class RestGossipGroup extends GossipGroup {
 
     private static final Semaphore handlerAccess = new Semaphore(1, true);
+    private static final Map<String, ClientResource> clients = Collections.synchronizedMap(new HashMap<String, ClientResource>());
+    private Logger logger = LoggerFactory.getLogger(RestGossipGroup.class);
 
     //LIFE CYCLE GROUP
     @Start
@@ -40,7 +45,7 @@ public class RestGossipGroup extends GossipGroup {
             RestGroupFragmentResource.groups.put(this.getName(), this);
             handlerAccess.release();
         } catch (InterruptedException ex) {
-            Logger.getLogger(RestGossipGroup.class.getName()).log(Level.SEVERE, null, ex);
+            logger.error("GroupError", ex);
         }
     }
 
@@ -56,14 +61,16 @@ public class RestGossipGroup extends GossipGroup {
             }
             handlerAccess.release();
         } catch (InterruptedException ex) {
-            Logger.getLogger(RestGossipGroup.class.getName()).log(Level.SEVERE, null, ex);
+            logger.error("GroupError", ex);
         }
+        clients.clear();
         super.stopMyGroup();
     }
 
     @Update
     @Override
     public void updateMyGroup() {
+        //TODO CHECK DICTIONARY CHANGE
         super.updateMyGroup();
     }
 
@@ -73,12 +80,11 @@ public class RestGossipGroup extends GossipGroup {
         try {
             lastUrl = buildGroupURL(targetNodeName, this.getName());
             System.out.println("remote rest url =>" + lastUrl);
-            ClientResource remoteGroupResource = new ClientResource(lastUrl);
-            //TODO ADD COMPRESSION GZIP
-            Representation result = remoteGroupResource.get();  
+            ClientResource remoteGroupResource = getOrCreate(lastUrl);
+            Representation result = remoteGroupResource.get();
             return GossiperMessages.VectorClock.parseFrom(result.getStream());
         } catch (Exception e) {
-            System.err.println("Fail to send to remote channel via =>" + lastUrl);
+            logger.debug("Fail to send to remote channel via =>" + lastUrl, e);
         }
         return null;
     }
@@ -89,15 +95,25 @@ public class RestGossipGroup extends GossipGroup {
         try {
             lastUrl = buildGroupURL(targetNodeName, this.getName());
             System.out.println("remote rest url =>" + lastUrl);
-            ClientResource remoteGroupResource = new ClientResource(lastUrl);
+            ClientResource remoteGroupResource = getOrCreate(lastUrl);
             Representation result = remoteGroupResource.post(new EmptyRepresentation());
-            GossiperMessages.VersionedModel resModel =  GossiperMessages.VersionedModel.parseFrom(result.getStream());
+            GossiperMessages.VersionedModel resModel = GossiperMessages.VersionedModel.parseFrom(result.getStream());
             return GossiperMessages.VersionedModel.newBuilder(resModel).setModel(StringZipper.unzipStringFromBytes(resModel.getModel().getBytes())).build();
-            //return resModel;
         } catch (Exception e) {
-            System.err.println("Fail to send to remote channel via =>" + lastUrl);
+            logger.debug("Fail to send to remote channel via =>" + lastUrl, e);
         }
         return null;
+    }
+
+    protected ClientResource getOrCreate(String url) {
+        ClientResource res = null;
+        if (clients.containsKey(url)) {
+            res = clients.get(url);
+        } else {
+            res = new ClientResource(url);
+            clients.put(url, res);
+        }
+        return res;
     }
 
     protected String buildGroupURL(String remoteNodeName, String groupName) {
@@ -112,4 +128,15 @@ public class RestGossipGroup extends GossipGroup {
         return "http://" + ip + ":" + port + "/groups/" + groupName;
     }
 
+    @Override
+    public void notifyPeer(String nodeName) {
+        String url = "";
+        try {
+            url = buildGroupURL(nodeName, this.getName());
+            ClientResource client = getOrCreate(url);
+            client.put(new StringRepresentation(nodeName));
+        } catch (Exception e) {
+            logger.debug("Fail to send gossip group notification via =>" + url, e);
+        }
+    }
 }

@@ -12,8 +12,11 @@ import scala.actors.TIMEOUT
 
 class GossiperActor(timeout : Long,group : GossiperGroup[VersionedModel]) extends actors.DaemonActor {
 
+  private var logger = org.slf4j.LoggerFactory.getLogger(classOf[GossiperActor])
+  
   this.start
   
+  /* PUBLIC PART */
   case class STOP_GOSSIPER()
   case class DO_GOSSIP(targetNodeName : String)
   case class NOTIFY_PEERS()
@@ -22,8 +25,15 @@ class GossiperActor(timeout : Long,group : GossiperGroup[VersionedModel]) extend
     this ! STOP_GOSSIPER()
   }
   
+  def scheduleGossip(nodeName : String)={
+    this ! DO_GOSSIP(nodeName)
+  }
   
+  def notifyPeers()={
+    this ! NOTIFY_PEERS()
+  }
   
+  /* PRIVATE PROCESS PART */
   def act(){
     loop {
       reactWithin(timeout){
@@ -33,6 +43,10 @@ class GossiperActor(timeout : Long,group : GossiperGroup[VersionedModel]) extend
         case TIMEOUT => doGossip(group.selectPeer)
       }
     }
+  }
+  
+  private def doNotifyPeer(){
+    group.notifyPeers
   }
   
   private def doGossip(targetNodeName : String)={
@@ -45,13 +59,13 @@ class GossiperActor(timeout : Long,group : GossiperGroup[VersionedModel]) extend
           // or local VectorClock is more recent (and so local model is more recent)
         case Occured.BEFORE => {
             // we update our local model because the selected peer has a more recent VectorClock (and so a more recent model)
-            println("Update detected by Gossip Group")
+            logger.debug("Update detected by Gossip Group")
             var versionedModel = group.getVersionnedModelToPeer(targetNodeName)
             var newClock = group.update(versionedModel)
             group.setCurrentClock(newClock)
           }
         case Occured.CONCURRENTLY => {
-            println("Concurrency detected by Gossip Group")
+            logger.debug("Concurrency detected by Gossip Group")
             var versionedModel = group.getVersionnedModelToPeer(targetNodeName)
             group.setCurrentClock(group.resolve(versionedModel))
             // Other possibility not implemented :
