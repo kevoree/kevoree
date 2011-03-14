@@ -15934,6 +15934,7 @@ scala.collection.TraversableOnce$$anonfun$foldRight$1: long serialVersionUID
 scala.xml.include.sax.Main$$anonfun$main$1$$anonfun$apply$1: long serialVersionUID
 scala.xml.include.sax.Main$$anonfun$main$1$$anonfun$apply$4: long serialVersionUID
 scala.collection.immutable.HashSet$HashSetCollision1$$anonfun$updated0$1: long serialVersionUID
+org.kevoree.core.impl.KevoreeCoreBean$$anonfun$switchToNewModel$1: long serialVersionUID
 org.eclipse.emf.ecore.xmi.util.XMLProcessor: java.lang.String XML_EXTENSION
 org.eclipse.emf.ecore.xmi.util.XMLProcessor: java.lang.String STAR_EXTENSION
 org.osgi.service.device.Constants: java.lang.String DRIVER_ID
@@ -25677,6 +25678,7 @@ scala.xml.include.sax.Main$$anonfun$main$1$$anonfun$apply$1
 scala.xml.include.sax.Main$$anonfun$main$1$$anonfun$apply$4
 scala.reflect.generic.Constants$Constant
 scala.collection.immutable.HashSet$HashSetCollision1$$anonfun$updated0$1
+org.kevoree.core.impl.KevoreeCoreBean$$anonfun$switchToNewModel$1
 org.kevoree.framework.aspects.TypeDefinitionAspect
 net.lag.configgy.ConfigMap$$anonfun$getDouble$2$$anonfun$apply$3
 scala.Function2$mcDIL$sp$$anonfun$tupled$mcDIL$sp$1

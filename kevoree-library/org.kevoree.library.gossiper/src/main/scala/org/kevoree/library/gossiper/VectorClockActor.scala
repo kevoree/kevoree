@@ -75,6 +75,8 @@ class VectorClockActor(selfNodeName : String) extends actors.DaemonActor {
       
       clock match {
         case _ if(i >= clock.getEntiesCount())=> {
+            addOrUpdate(orderedNodeID,values,timestamps,clock2.getEnties(j),currentTimeMillis)
+            /*
             var v2 = clock2.getEnties(j);
             if (!orderedNodeID.contains(v2.getNodeID())) {
               orderedNodeID.add(v2.getNodeID());
@@ -83,10 +85,12 @@ class VectorClockActor(selfNodeName : String) extends actors.DaemonActor {
             } else {
               values.put(v2.getNodeID(), Math.max(v2.getVersion(), values.get(v2.getNodeID())));
               timestamps.put(v2.getNodeID(), currentTimeMillis);
-            }
+            }*/
             j = j + 1;
           }
         case _ if(j >= clock2.getEntiesCount())=> {
+            addOrUpdate(orderedNodeID,values,timestamps,clock.getEnties(i),currentTimeMillis)
+            /*
             var v1 = clock.getEnties(i);
             if (!orderedNodeID.contains(v1.getNodeID())) {
               orderedNodeID.add(v1.getNodeID());
@@ -95,7 +99,7 @@ class VectorClockActor(selfNodeName : String) extends actors.DaemonActor {
             } else {
               values.put(v1.getNodeID(), Math.max(v1.getVersion(), values.get(v1.getNodeID())));
               timestamps.put(v1.getNodeID(), currentTimeMillis);
-            }
+            }*/
             i= i +1;
           }
         case _ => {
@@ -146,6 +150,19 @@ class VectorClockActor(selfNodeName : String) extends actors.DaemonActor {
     println("merged")
     
     return newClockBuilder.setTimestamp(currentTimeMillis).build();
+  }
+  
+  
+  private def addOrUpdate(orderedNodeID : java.util.ArrayList[String],values:java.util.HashMap[String, Long],timestamps:java.util.HashMap[String, Long],clockEntry : ClockEntry,currentTimeMillis:Long){
+    if (!orderedNodeID.contains(clockEntry.getNodeID())) {
+      orderedNodeID.add(clockEntry.getNodeID());
+      values.put(clockEntry.getNodeID(), clockEntry.getVersion());
+      timestamps.put(clockEntry.getNodeID(), clockEntry.getTimestamp());
+    } else {
+      values.put(clockEntry.getNodeID(), Math.max(clockEntry.getVersion(), values.get(clockEntry.getNodeID())));
+      timestamps.put(clockEntry.getNodeID(), currentTimeMillis);
+    }
+    
   }
 
 }
