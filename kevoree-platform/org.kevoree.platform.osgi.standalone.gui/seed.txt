@@ -1,17 +1,3 @@
-====
-    Licensed under the GNU LESSER GENERAL PUBLIC LICENSE, Version 3, 29 June 2007;
-    you may not use this file except in compliance with the License.
-    You may obtain a copy of the License at
-
-    	http://www.gnu.org/licenses/lgpl-3.0.txt
-
-    Unless required by applicable law or agreed to in writing, software
-    distributed under the License is distributed on an "AS IS" BASIS,
-    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-    See the License for the specific language governing permissions and
-    limitations under the License.
-====
-
 org.restlet.Component
 org.restlet.Component: void main(java.lang.String[])
 org.kevoree.remote.MainTester
@@ -20,8 +6,6 @@ org.kevoree.platform.osgi.standalone.App
 org.kevoree.platform.osgi.standalone.App: void main(java.lang.String[])
 scala.xml.include.sax.Main
 scala.xml.include.sax.Main: void main(java.lang.String[])
-org.apache.felix.main.Main
-org.apache.felix.main.Main: void main(java.lang.String[])
 ch.qos.logback.classic.net.JMSTopicSink
 ch.qos.logback.classic.net.JMSTopicSink: void main(java.lang.String[])
 org.eclipse.emf.ecore.xml.type.internal.RegEx$REUtil
@@ -14259,6 +14243,7 @@ org.apache.felix.framework.Felix: java.net.URLStreamHandler getBundleStreamHandl
 org.apache.felix.framework.Felix: java.lang.String[] getBootPackages()
 org.apache.felix.framework.Felix: boolean[] getBootPackageWildcards()
 org.apache.felix.framework.Felix: java.util.Map createUnmodifiableMap(java.util.Map)
+org.apache.felix.framework.Felix: void close()
 org.apache.felix.framework.Felix: org.apache.felix.framework.Felix getFramework()
 org.apache.felix.framework.Felix: long getBundleId()
 org.apache.felix.framework.Felix: long getLastModified()
@@ -14373,8 +14358,9 @@ org.apache.felix.framework.Felix: void access$1000(org.apache.felix.framework.Fe
 org.apache.felix.framework.Felix: java.util.List access$1100(org.apache.felix.framework.Felix)
 org.apache.felix.framework.Felix: java.lang.SecurityManager access$1200(org.apache.felix.framework.Felix)
 org.apache.felix.framework.Felix: java.lang.SecurityManager access$1202(org.apache.felix.framework.Felix,java.lang.SecurityManager)
-org.apache.felix.framework.Felix: org.apache.felix.framework.cache.BundleCache access$1300(org.apache.felix.framework.Felix)
-org.apache.felix.framework.Felix: org.apache.felix.framework.cache.BundleCache access$1302(org.apache.felix.framework.Felix,org.apache.felix.framework.cache.BundleCache)
+org.apache.felix.framework.Felix: org.apache.felix.framework.ExtensionManager access$1300(org.apache.felix.framework.Felix)
+org.apache.felix.framework.Felix: org.apache.felix.framework.cache.BundleCache access$1400(org.apache.felix.framework.Felix)
+org.apache.felix.framework.Felix: org.apache.felix.framework.cache.BundleCache access$1402(org.apache.felix.framework.Felix,org.apache.felix.framework.cache.BundleCache)
 org.apache.felix.framework.Felix: org.apache.felix.framework.util.ThreadGate access$102(org.apache.felix.framework.Felix,org.apache.felix.framework.util.ThreadGate)
 org.apache.felix.framework.Felix: void <clinit>()
 org.apache.felix.framework.BundleImpl: org.apache.felix.framework.Felix __m_felix
@@ -14697,6 +14683,7 @@ org.apache.felix.framework.resolver.ResolverImpl: java.util.Map populateDynamicW
 org.apache.felix.framework.resolver.ResolverImpl: void dumpCandidateMap(java.util.Map)
 org.apache.felix.framework.resolver.ResolverImpl: void dumpModulePkgMap(java.util.Map)
 org.apache.felix.framework.resolver.ResolverImpl: void dumpModulePkgs(org.apache.felix.framework.resolver.Module,org.apache.felix.framework.resolver.ResolverImpl$Packages)
+org.apache.felix.framework.resolver.ResolverImpl: java.lang.String toStringBlame(org.apache.felix.framework.resolver.ResolverImpl$Blame)
 org.apache.felix.framework.resolver.ResolveException
 org.apache.felix.framework.resolver.ResolveException: org.apache.felix.framework.resolver.Module m_module
 org.apache.felix.framework.resolver.ResolveException: org.apache.felix.framework.capabilityset.Requirement m_req
@@ -16987,13 +16974,6 @@ scala.actors.ReactChannel$$anonfun$receiveWithin$1: long serialVersionUID
 org.osgi.service.blueprint.reflect.ComponentMetadata: int ACTIVATION_EAGER
 org.osgi.service.blueprint.reflect.ComponentMetadata: int ACTIVATION_LAZY
 scala.util.parsing.ast.Binders$$anon$6$$anonfun$gmap$6: long serialVersionUID
-org.apache.felix.main.Main: java.lang.String BUNDLE_DIR_SWITCH
-org.apache.felix.main.Main: java.lang.String SHUTDOWN_HOOK_PROP
-org.apache.felix.main.Main: java.lang.String SYSTEM_PROPERTIES_PROP
-org.apache.felix.main.Main: java.lang.String SYSTEM_PROPERTIES_FILE_VALUE
-org.apache.felix.main.Main: java.lang.String CONFIG_PROPERTIES_PROP
-org.apache.felix.main.Main: java.lang.String CONFIG_PROPERTIES_FILE_VALUE
-org.apache.felix.main.Main: java.lang.String CONFIG_DIRECTORY
 org.eclipse.emf.ecore.impl.EPackageImpl: boolean IS_ABSTRACT
 org.eclipse.emf.ecore.impl.EPackageImpl: boolean IS_INTERFACE
 org.eclipse.emf.ecore.impl.EPackageImpl: boolean IS_GENERATED_INSTANCE_CLASS
@@ -22116,16 +22096,6 @@ org.eclipse.emf.common.util.BasicEMap$1: long serialVersionUID
 org.eclipse.emf.common.util.BasicEList: long serialVersionUID
 scala.xml.parsing.MarkupParserCommon$$anonfun$xProcInstr$2: long serialVersionUID
 scala.xml.parsing.MarkupParserCommon$$anonfun$xProcInstr$1: long serialVersionUID
-org.apache.felix.main.AutoProcessor: java.lang.String AUTO_DEPLOY_DIR_PROPERY
-org.apache.felix.main.AutoProcessor: java.lang.String AUTO_DEPLOY_DIR_VALUE
-org.apache.felix.main.AutoProcessor: java.lang.String AUTO_DEPLOY_ACTION_PROPERY
-org.apache.felix.main.AutoProcessor: java.lang.String AUTO_DEPLOY_STARTLEVEL_PROPERY
-org.apache.felix.main.AutoProcessor: java.lang.String AUTO_DEPLOY_INSTALL_VALUE
-org.apache.felix.main.AutoProcessor: java.lang.String AUTO_DEPLOY_START_VALUE
-org.apache.felix.main.AutoProcessor: java.lang.String AUTO_DEPLOY_UPDATE_VALUE
-org.apache.felix.main.AutoProcessor: java.lang.String AUTO_DEPLOY_UNINSTALL_VALUE
-org.apache.felix.main.AutoProcessor: java.lang.String AUTO_INSTALL_PROP
-org.apache.felix.main.AutoProcessor: java.lang.String AUTO_START_PROP
 scala.collection.mutable.History: long serialVersionUID
 org.kevoree.impl.DictionaryValueImpl: java.lang.String VALUE_EDEFAULT
 org.eclipse.emf.ecore.impl.EObjectImpl: int EDELIVER

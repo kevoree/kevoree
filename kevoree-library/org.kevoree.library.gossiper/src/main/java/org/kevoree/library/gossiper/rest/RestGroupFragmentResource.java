@@ -18,8 +18,6 @@
 package org.kevoree.library.gossiper.rest;
 
 import java.io.ByteArrayOutputStream;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.kevoree.framework.KevoreeXmiHelper;
 import org.kevoree.library.gossiper.version.GossiperMessages;
 import org.restlet.data.Method;
@@ -27,12 +25,12 @@ import org.restlet.representation.Representation;
 import org.restlet.representation.StringRepresentation;
 import org.restlet.resource.ResourceException;
 import org.restlet.resource.ServerResource;
-
 import java.io.IOException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.zip.GZIPOutputStream;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author ffouquet
@@ -40,6 +38,7 @@ import java.util.zip.GZIPOutputStream;
 public class RestGroupFragmentResource extends ServerResource {
 
     public static Map<String, RestGossipGroup> groups = Collections.synchronizedMap(new HashMap<String, RestGossipGroup>());
+    private Logger logger = LoggerFactory.getLogger(RestGroupFragmentResource.class);
     /**
      * The underlying Channel object.
      */
@@ -69,18 +68,30 @@ public class RestGroupFragmentResource extends ServerResource {
                 GossiperMessages.VersionedModel model = GossiperMessages.VersionedModel.newBuilder().setVector(groupFragment.currentClock()).setModel(flatZippedModel).build();
                 return new MessageRepresentation<GossiperMessages.VersionedModel>(model);
             } catch (IOException ex) {
-                Logger.getLogger(RestGroupFragmentResource.class.getName()).log(Level.SEVERE, null, ex);
+                logger.error("Error processing rest resource", ex);
             }
 
         }
         if (getMethod().equals(Method.GET)) {
-            return new MessageRepresentation<GossiperMessages.VectorClock>(groupFragment.incrementedVectorClock());
+            try {
+                return new MessageRepresentation<GossiperMessages.VectorClock>(groupFragment.incrementedVectorClock());
+            } catch (Exception ex) {
+                logger.error("Error processing rest resource", ex);
+            }
         }
         if (getMethod().equals(Method.PUT)) {
-            //TRIGGER AND UPDATE FROM REMOTE NODE
-            Object o = this.getRequestAttributes().get("remotePeerNodeName");
-            if (o != null) {
+            try {
+                Representation o = this.getRequestEntity();
+                // Object o = this.getRequestAttributes().get("remotePeerNodeName");
+                if (o != null && o.getText() != null && (!o.getText().equals(""))) {
+                    groupFragment.triggerGossipNotification(o.getText());
+                } else {
+                    logger.warn("Bad request receive for gossip notify");
+                }
+            } catch (Exception ex) {
+                logger.error("Error processing rest resource", ex);
             }
+
         }
         return new StringRepresentation("Error");
     }

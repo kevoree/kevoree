@@ -24,7 +24,9 @@ import org.kevoree.api.configuration.ConfigurationService
 import org.kevoree.api.service.adaptation.deploy.KevoreeAdaptationDeployService
 import org.kevoree.api.service.core.handler.KevoreeModelHandlerService
 import org.kevoree.api.service.core.kompare.ModelKompareService
+import org.kevoree.framework.AbstractGroupType
 import org.kevoree.framework.KevoreeActor
+import org.kevoree.framework.KevoreeGroup
 import org.kevoree.framework.KevoreePlatformHelper
 import org.kevoree.framework.KevoreeXmiHelper
 import org.osgi.framework.BundleContext
@@ -61,6 +63,9 @@ class KevoreeCoreBean extends KevoreeModelHandlerService with KevoreeActor {
     lastDate = new Date(System.currentTimeMillis)
     //TODO ADD LISTENER
 
+    bundleContext.getServiceReferences(null, classOf[KevoreeGroup].getName).foreach{sr =>
+      bundleContext.getService(sr).asInstanceOf[KevoreeGroup].triggerModelUpdate
+    }
 
   }
 
