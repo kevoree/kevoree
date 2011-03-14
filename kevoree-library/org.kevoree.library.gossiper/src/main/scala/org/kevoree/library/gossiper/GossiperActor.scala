@@ -7,7 +7,6 @@ package org.kevoree.library.gossiper
 
 import org.kevoree.library.gossiper.version.GossiperMessages.VersionedModel
 import org.kevoree.library.gossiper.version.Occured
-import org.kevoree.library.gossiper.version.VersionUtils
 import scala.actors.TIMEOUT
 
 class GossiperActor(timeout : Long,group : GossiperGroup[VersionedModel]) extends actors.DaemonActor {
