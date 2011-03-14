@@ -26,8 +26,7 @@ import org.restlet.representation.StringRepresentation;
 import org.restlet.resource.ResourceException;
 import org.restlet.resource.ServerResource;
 import java.io.IOException;
-import java.util.Collections;
-import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,7 +36,7 @@ import org.slf4j.LoggerFactory;
  */
 public class RestGroupFragmentResource extends ServerResource {
 
-    public static Map<String, RestGossipGroup> groups = Collections.synchronizedMap(new HashMap<String, RestGossipGroup>());
+    public static Map<String, RestGossipGroup> groups = new Hashtable<String, RestGossipGroup>();
     private Logger logger = LoggerFactory.getLogger(RestGroupFragmentResource.class);
     /**
      * The underlying Channel object.

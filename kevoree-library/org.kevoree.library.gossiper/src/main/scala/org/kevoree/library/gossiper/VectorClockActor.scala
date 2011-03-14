@@ -146,9 +146,7 @@ class VectorClockActor(selfNodeName : String) extends actors.DaemonActor {
       setVersion(values.get(nodeId)).
       setTimestamp(timestamps.get(nodeId)).build();
       newClockBuilder.addEnties(entry);
-    }
-    println("merged")
-    
+    }  
     return newClockBuilder.setTimestamp(currentTimeMillis).build();
   }
   

@@ -85,6 +85,10 @@
                             public static javax.swing.plaf.ComponentUI createUI(javax.swing.JComponent);
                             }
                         </option>
+                        <option>-keep class jsyntaxpane.** { *; }</option>
+                       <option>-keep class org.kevoree.tools.marShellGUI.** { *; }</option> 
+                        
+                        
                     </options>
                     <assembly>
                         <inclusions>
@@ -142,7 +146,13 @@
                                 <groupId>org.kevoree.tools</groupId>
                                 <artifactId>org.kevoree.tools.marShellGUI</artifactId>
                             </inclusion>
-
+                            
+                            <inclusion>
+                                <groupId>jsyntaxpane</groupId>
+                                <artifactId>jsyntaxpane</artifactId>
+                                <filter>!META-INF/services/jsyntaxpane/kitsfortypes.properties</filter>
+                            </inclusion>
+                            
                         </inclusions>
                     </assembly>
                     <libs>

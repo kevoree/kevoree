@@ -39,7 +39,7 @@ class GossiperActor(timeout : Long,group : GossiperGroup[VersionedModel]) extend
       reactWithin(timeout){
         case DO_GOSSIP(targetNodeName : String) => doGossip(targetNodeName)
         case STOP_GOSSIPER() => this.exit
-        case NOTIFY_PEERS() =>
+        case NOTIFY_PEERS() => doNotifyPeer()
         case TIMEOUT => doGossip(group.selectPeer)
       }
     }

@@ -21,7 +21,9 @@ public class StringZipper {
     ByteArrayOutputStream bos = new ByteArrayOutputStream();
     BufferedOutputStream bufos = new BufferedOutputStream(new GZIPOutputStream(bos));
     bufos.write( input.getBytes() );
+    bufos.flush();
     bufos.close();
+    bos.flush();
     byte[] retval= bos.toByteArray();
     bos.close();
     return retval;
@@ -44,6 +46,7 @@ public class StringZipper {
     {
       bos.write(buf, 0, len);
     }
+    bos.flush();
     String retval = bos.toString();
     bis.close();
     bufis.close();
