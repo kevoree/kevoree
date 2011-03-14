@@ -82,8 +82,8 @@ object VersionUtils {
 		}
 
 	   /* This is the case where they are equal, return AFTER arbitrarily */
-	   println("larger = " + larger + "smaller = " + smaller)
-	   println("largerBigger : " + largerBigger + " && smallerBigger : " +smallerBigger + " => " + "largerIsV1" + largerIsV1)
+	   //println("larger = " + larger + "smaller = " + smaller)
+	   //println("largerBigger : " + largerBigger + " && smallerBigger : " +smallerBigger + " => " + "largerIsV1" + largerIsV1)
 	   
 	   larger match {
 		  case _ if (!largerBigger && !smallerBigger)=>Occured.AFTER

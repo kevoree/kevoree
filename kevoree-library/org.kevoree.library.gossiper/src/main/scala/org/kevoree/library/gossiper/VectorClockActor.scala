@@ -7,6 +7,7 @@ package org.kevoree.library.gossiper
 
 import org.kevoree.library.gossiper.version.GossiperMessages.ClockEntry
 import org.kevoree.library.gossiper.version.GossiperMessages.VectorClock
+import java.lang.{Math=>Math}
 import scala.collection.JavaConversions._
 
 class VectorClockActor(selfNodeName : String) extends actors.DaemonActor {
