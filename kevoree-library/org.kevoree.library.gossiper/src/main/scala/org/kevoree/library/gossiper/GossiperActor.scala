@@ -5,6 +5,7 @@
 
 package org.kevoree.library.gossiper
 
+import org.kevoree.library.gossiper.version.GossiperMessages.VectorClock
 import org.kevoree.library.gossiper.version.GossiperMessages.VersionedModel
 import org.kevoree.library.gossiper.version.Occured
 import org.kevoree.library.gossiper.version.VersionUtils
@@ -37,7 +38,7 @@ class GossiperActor(timeout : Long,group : GossiperGroup[VersionedModel]) extend
   def act(){
     loop {
       reactWithin(timeout){
-        case DO_GOSSIP(targetNodeName : String) => doGossip(targetNodeName)
+        case DO_GOSSIP(targetNodeName) => doGossip(targetNodeName)
         case STOP_GOSSIPER() => this.exit
         case NOTIFY_PEERS() => doNotifyPeer()
         case TIMEOUT => doGossip(group.selectPeer)
@@ -49,10 +50,21 @@ class GossiperActor(timeout : Long,group : GossiperGroup[VersionedModel]) extend
     group.notifyPeers
   }
   
+  implicit def vectorDebug(vc : VectorClock) = VectorClockAspect(vc) 
   private def doGossip(targetNodeName : String)={
+    
+    println("targetGossipName"+targetNodeName)
+    
     try {
       var clock = group.getVectorFromPeer(targetNodeName)
+
+      group.currentClock.printDebug
+      clock.printDebug
+      
       var compareResult = VersionUtils.compare(group.currentClock, clock)
+      
+      logger.debug(compareResult.toString)
+      
       compareResult match {
         case Occured.AFTER =>
           // we do nothing because VectorClocks are equals (and so models are equals)

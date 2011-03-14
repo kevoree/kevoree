@@ -19962,7 +19962,8 @@ org.kevoree.api.service.core.checker.CheckerService: java.util.List check(org.ke
 org.kevoree.api.service.core.handler.KevoreeModelHandlerService
 org.kevoree.api.service.core.handler.KevoreeModelHandlerService: org.kevoree.ContainerRoot getLastModel()
 org.kevoree.api.service.core.handler.KevoreeModelHandlerService: java.util.Date getLastModification()
-org.kevoree.api.service.core.handler.KevoreeModelHandlerService: java.lang.Boolean updateModel(org.kevoree.ContainerRoot)
+org.kevoree.api.service.core.handler.KevoreeModelHandlerService: void updateModel(org.kevoree.ContainerRoot)
+org.kevoree.api.service.core.handler.KevoreeModelHandlerService: java.util.Date atomicUpdateModel(org.kevoree.ContainerRoot)
 org.kevoree.api.service.core.handler.KevoreeModelHandlerService: java.util.List getPreviousModel()
 org.kevoree.api.service.core.handler.KevoreeModelHandlerService: java.lang.String getNodeName()
 org.kevoree.api.service.core.merger.MergerService

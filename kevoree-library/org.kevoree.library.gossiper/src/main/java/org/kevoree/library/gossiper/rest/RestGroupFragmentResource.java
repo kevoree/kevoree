@@ -81,9 +81,11 @@ public class RestGroupFragmentResource extends ServerResource {
         if (getMethod().equals(Method.PUT)) {
             try {
                 Representation o = this.getRequestEntity();
+                String nodeName = o.getText();
+                
                 // Object o = this.getRequestAttributes().get("remotePeerNodeName");
-                if (o != null && o.getText() != null && (!o.getText().equals(""))) {
-                    groupFragment.triggerGossipNotification(o.getText());
+                if (!nodeName.equals("")) {
+                    groupFragment.triggerGossipNotification(nodeName);
                 } else {
                     logger.warn("Bad request receive for gossip notify");
                 }

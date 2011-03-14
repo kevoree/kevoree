@@ -11,6 +11,8 @@ import scala.collection.JavaConversions._
 
 class VectorClockActor(selfNodeName : String) extends actors.DaemonActor {
   
+  private var logger = org.slf4j.LoggerFactory.getLogger(classOf[VectorClockActor])
+  
   this.start
   
   case class STOP_GOSSIPER()
@@ -57,9 +59,9 @@ class VectorClockActor(selfNodeName : String) extends actors.DaemonActor {
     VectorClock.newBuilder().addAllEnties(incrementedEntries).setTimestamp(currentTimeStamp).build()
   }
   
+ // implicit def vectorDebug(vc : VectorClock) = VectorClockAspect(vc) 
+  
   private def localMerge(clock2 : VectorClock) : VectorClock ={
-    
-    println("local merge")
     
     var newClockBuilder = VectorClock.newBuilder();
     var clock = current
@@ -162,5 +164,6 @@ class VectorClockActor(selfNodeName : String) extends actors.DaemonActor {
     }
     
   }
+  
 
 }

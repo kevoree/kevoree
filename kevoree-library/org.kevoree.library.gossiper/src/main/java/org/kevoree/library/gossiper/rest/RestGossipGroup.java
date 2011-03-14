@@ -80,11 +80,11 @@ public class RestGossipGroup extends GossipGroup {
         try {
             lastUrl = buildGroupURL(targetNodeName, this.getName());
             System.out.println("remote rest url =>" + lastUrl);
-            ClientResource remoteGroupResource = getOrCreate(lastUrl);
+            ClientResource remoteGroupResource = new ClientResource(lastUrl);
             Representation result = remoteGroupResource.get();
             return GossiperMessages.VectorClock.parseFrom(result.getStream());
         } catch (Exception e) {
-            logger.debug("Fail to send to remote channel via =>" + lastUrl, e);
+            logger.debug("Fail to getVectorFromPeer via =>" + lastUrl);
         }
         return null;
     }
@@ -95,16 +95,16 @@ public class RestGossipGroup extends GossipGroup {
         try {
             lastUrl = buildGroupURL(targetNodeName, this.getName());
             System.out.println("remote rest url =>" + lastUrl);
-            ClientResource remoteGroupResource = getOrCreate(lastUrl);
+            ClientResource remoteGroupResource = new ClientResource(lastUrl);
             Representation result = remoteGroupResource.post(new EmptyRepresentation());
             GossiperMessages.VersionedModel resModel = GossiperMessages.VersionedModel.parseFrom(result.getStream());
             return GossiperMessages.VersionedModel.newBuilder(resModel).setModel(StringZipper.unzipStringFromBytes(resModel.getModel().getBytes())).build();
         } catch (Exception e) {
-            logger.debug("Fail to send to remote channel via =>" + lastUrl, e);
+            logger.debug("Fail to getVersionnedModelToPeer via =>" + lastUrl);
         }
         return null;
     }
-
+/*
     protected ClientResource getOrCreate(String url) {
         ClientResource res = null;
         if (clients.containsKey(url)) {
@@ -114,7 +114,7 @@ public class RestGossipGroup extends GossipGroup {
             clients.put(url, res);
         }
         return res;
-    }
+    }*/
 
     protected String buildGroupURL(String remoteNodeName, String groupName) {
         String ip = KevoreePlatformHelper.getProperty(this.getModelService().getLastModel(), remoteNodeName, org.kevoree.framework.Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP());
@@ -133,10 +133,10 @@ public class RestGossipGroup extends GossipGroup {
         String url = "";
         try {
             url = buildGroupURL(nodeName, this.getName());
-            ClientResource client = getOrCreate(url);
-            client.put(new StringRepresentation(nodeName));
+            ClientResource client = new ClientResource(url);
+            client.put(new StringRepresentation(this.getNodeName()));
         } catch (Exception e) {
-            logger.debug("Fail to send gossip group notification via =>" + url, e);
+            logger.debug("Fail to send gossip group notification via =>" + url);
         }
     }
 }

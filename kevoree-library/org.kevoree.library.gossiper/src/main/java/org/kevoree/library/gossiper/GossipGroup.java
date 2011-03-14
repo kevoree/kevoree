@@ -37,11 +37,13 @@ public abstract class GossipGroup extends AbstractGroupType implements GossiperG
     public VectorClock update(VersionedModel versioned) {
         if (versioned != null) {
             InputStream stream = new ByteArrayInputStream(versioned.getModel().getBytes());
-            if (this.getModelService().updateModel(KevoreeXmiHelper.loadStream(stream))) {
-                lastCheckedTimeStamp.set(this.getModelService().getLastModification());
-                VectorClock ncur = currentClock.merge(versioned.getVector());
-                return ncur;
-            }
+            lastCheckedTimeStamp.set(this.getModelService().atomicUpdateModel(KevoreeXmiHelper.loadStream(stream)));
+
+            // if (this.getModelService().updateModel(KevoreeXmiHelper.loadStream(stream))) {
+            //   lastCheckedTimeStamp.set(this.getModelService().getLastModification());
+            VectorClock ncur = currentClock.merge(versioned.getVector());
+            return ncur;
+            // }
         }
         return currentClock.get();
     }
@@ -54,8 +56,9 @@ public abstract class GossipGroup extends AbstractGroupType implements GossiperG
             //TODO TO IMPROVE
             if (localDate.before(remoteDate)) {
                 InputStream stream = new ByteArrayInputStream(versioned.getModel().getBytes());
-                this.getModelService().updateModel(KevoreeXmiHelper.loadStream(stream));
-                lastCheckedTimeStamp.set(this.getModelService().getLastModification());
+                lastCheckedTimeStamp.set(this.getModelService().atomicUpdateModel(KevoreeXmiHelper.loadStream(stream)));
+               // this.getModelService().updateModel(KevoreeXmiHelper.loadStream(stream));
+              //  lastCheckedTimeStamp.set(this.getModelService().getLastModification());
             }
             return currentClock.merge(versioned.getVector());
         }
@@ -97,10 +100,15 @@ public abstract class GossipGroup extends AbstractGroupType implements GossiperG
     }
 
     public VectorClock incrementedVectorClock() {
-        if (this.getModelService().getLastModification().after(lastCheckedTimeStamp.get())) {
+        if ( (currentClock.get().getEntiesCount()==0) || this.getModelService().getLastModification().after(lastCheckedTimeStamp.get())) {
             lastCheckedTimeStamp.set(this.getModelService().getLastModification());
             return currentClock.incAndGet();
-        }
+        } /*else {
+            System.out.println("no impement detected");
+            VectorClockAspect vaspect = new VectorClockAspect(currentClock.get());
+            vaspect.printDebug();
+                 
+        }*/
         return currentClock.get();
     }
 
@@ -143,11 +151,11 @@ public abstract class GossipGroup extends AbstractGroupType implements GossiperG
         }
         if (selfGroup != null && selfGroup.getSubNodes() != null) {
             for (Object o : selfGroup.getSubNodes()) {
-                ContainerNode  sub= (ContainerNode)o;
+                ContainerNode sub = (ContainerNode) o;
                 if (!sub.getName().equals(this.getNodeName())) {
                     notifyPeer(sub.getName());
                 }
             }
-        }   
+        }
     }
 }
