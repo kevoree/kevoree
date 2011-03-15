@@ -9,6 +9,7 @@ import java.util.concurrent.Semaphore;
 import org.kevoree.annotation.DictionaryAttribute;
 import org.kevoree.annotation.DictionaryType;
 import org.kevoree.annotation.GroupType;
+import org.kevoree.annotation.Library;
 import org.kevoree.annotation.Start;
 import org.kevoree.annotation.Stop;
 import org.kevoree.annotation.Update;
@@ -23,6 +24,7 @@ import org.restlet.resource.ClientResource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@Library(name = "Kevoree-Android-JavaSE")
 @GroupType
 @DictionaryType({
     @DictionaryAttribute(name = "interval", defaultValue = "60000", optional = true)

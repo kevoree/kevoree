@@ -8,14 +8,16 @@ package org.kevoree.library.gossiper
 import scala.actors.TIMEOUT
 import scala.collection.JavaConversions._
 import java.util.UUID
+import org.kevoree.extra.marshalling.RichString
+import org.kevoree.framework.message.Message
 import org.kevoree.library.gossiper.version.GossiperMessages.VectorClock
 import org.kevoree.library.gossiper.version.Occured
 
-class GossiperChannelActor(timeout : Long,group : GossiperChannel) extends actors.DaemonActor {
+class GossiperChannelActor(timeout : java.lang.Long,group : GossiperChannel,clocksActor:GossiperUUIDSVectorClockActor) extends actors.DaemonActor {
 
   /* CONSTRUCTOR */
   private var logger = org.slf4j.LoggerFactory.getLogger(classOf[GossiperActor])
-  private var clocksActor = new GossiperUUIDSVectorClockActor
+  //private var clocksActor = new GossiperUUIDSVectorClockActor
   this.start
   
   
@@ -37,6 +39,7 @@ class GossiperChannelActor(timeout : Long,group : GossiperChannel) extends actor
   def stop(){
     this ! STOP_GOSSIPER()
   }
+
   
   def scheduleGossip(nodeName : String)={
     this ! DO_GOSSIP(nodeName)
@@ -49,7 +52,7 @@ class GossiperChannelActor(timeout : Long,group : GossiperChannel) extends actor
   /* PRIVATE PROCESS PART */
   def act(){
     loop {
-      reactWithin(timeout){
+      reactWithin(timeout.longValue){
         case DO_GOSSIP(targetNodeName) => doGossip(targetNodeName)
         case STOP_GOSSIPER() => this.exit
         case NOTIFY_PEERS() => doNotifyPeer()
@@ -113,13 +116,10 @@ class GossiperChannelActor(timeout : Long,group : GossiperChannel) extends actor
       if(remoteVersionedModel != null){
         //UNSERIALZE OBJECT
         var remoteObjectByteString = remoteVersionedModel.getModel
-        //TODO UNSERIALZE and STORE
-        
-        
         finalVectorClock = remoteVersionedModel.getVector
-              //LOCAL DELEVERY
-              
-        
+        var o = RichString(remoteObjectByteString.toStringUtf8).fromJSON(classOf[Message])
+        clocksActor.swap(uuid, Tuple2[VectorClock,Object](finalVectorClock,o))
+        group.localDelivery(o)
         
       }
 

@@ -20,3 +20,7 @@ message VersionedModel {
     required VectorClock vector = 1;
     required bytes model = 2;
 }
+
+message VectorClockUUIDS {
+    repeated string uuids = 1; 
+}

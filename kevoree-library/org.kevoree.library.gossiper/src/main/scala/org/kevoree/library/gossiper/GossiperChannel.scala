@@ -6,6 +6,7 @@
 package org.kevoree.library.gossiper
 
 import java.util.UUID
+import org.kevoree.framework.message.Message
 import org.kevoree.library.gossiper.version.GossiperMessages.VectorClock
 import org.kevoree.library.gossiper.version.GossiperMessages.VersionedModel
 
@@ -17,6 +18,6 @@ trait GossiperChannel {
    // def selectPeer(uuid:String)
     def notifyPeers()
     def notifyPeer(nodeName:String)
-    def localDelivery(o : Object)
+    def localDelivery(o : Message)
   
 }

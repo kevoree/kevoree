@@ -30,8 +30,13 @@ import java.io.IOException;
 import java.util.Hashtable;
 import java.util.Map;
 import java.util.UUID;
+import org.kevoree.extra.marshalling.RichJSONObject;
+import org.kevoree.framework.message.Message;
+import org.kevoree.library.gossiper.version.GossiperMessages.VectorClock;
+import org.kevoree.library.gossiper.version.GossiperMessages.VectorClockUUIDS.Builder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import scala.Tuple2;
 
 /**
  * @author ffouquet
@@ -56,33 +61,35 @@ public class RestGossiperChannelFragmentResource extends ServerResource {
         this.channelName = (String) getRequest().getAttributes().get("channelName");
         this.uuid = UUID.fromString(getRequest().getAttributes().get("uuid").toString());
         this.channelFragment = channels.get(channelName);
-        setExisting(this.channelFragment != null);
+        setExisting(this.channelFragment != null && ( channelFragment.getUUIDS().contains(uuid) || uuid.equals("all")  ));
     }
 
     @Override
     public Representation doHandle() {
         if (getMethod().equals(Method.POST)) {
             try {
-                ByteArrayOutputStream out = new ByteArrayOutputStream();
-                KevoreeXmiHelper.saveStream(out, groupFragment.getModelService().getLastModel());
-                out.flush();
-                //   String flatModel = new String(out.toByteArray());
-                //   String flatZippedModel = new String(StringZipper.zipStringToBytes(flatModel),"UTF-8");
-
-                ByteString modelBytes = ByteString.copyFrom(out.toByteArray());
-                out.close();
-
-                GossiperMessages.VersionedModel model = GossiperMessages.VersionedModel.newBuilder().setVector(groupFragment.currentClock()).setModel(modelBytes).build();
-
+                Tuple2<VectorClock,Object> tuple = channelFragment.getObject(uuid);
+                RichJSONObject localObjJSON = new RichJSONObject((Message)tuple._2);
+                String res = localObjJSON.toJSON(); 
+                ByteString modelBytes = ByteString.copyFromUtf8(res);
+                GossiperMessages.VersionedModel model = GossiperMessages.VersionedModel.newBuilder().setVector(tuple._1).setModel(modelBytes).build();
                 return new MessageRepresentation<GossiperMessages.VersionedModel>(model);
-            } catch (IOException ex) {
+            } catch (Exception ex) {
                 logger.error("Error processing rest resource", ex);
             }
-
         }
         if (getMethod().equals(Method.GET)) {
             try {
-                return new MessageRepresentation<GossiperMessages.VectorClock>(groupFragment.incrementedVectorClock());
+                if(uuid.toString().equals("all")){
+                    Builder b = GossiperMessages.VectorClockUUIDS.newBuilder();
+                    for(UUID s : channelFragment.getUUIDS()){
+                        b.addUuids(s.toString());
+                    }
+                    return new MessageRepresentation<GossiperMessages.VectorClockUUIDS>(b.build());
+                } else {
+                    Tuple2<VectorClock,Object> tuple = channelFragment.getObject(uuid);
+                    return new MessageRepresentation<GossiperMessages.VectorClock>(tuple._1);
+                }
             } catch (Exception ex) {
                 logger.error("Error processing rest resource", ex);
             }
@@ -91,10 +98,8 @@ public class RestGossiperChannelFragmentResource extends ServerResource {
             try {
                 Representation o = this.getRequestEntity();
                 String nodeName = o.getText();
-
-                // Object o = this.getRequestAttributes().get("remotePeerNodeName");
                 if (!nodeName.equals("")) {
-                    groupFragment.triggerGossipNotification(nodeName);
+                    channelFragment.triggerGossipNotification(nodeName);
                 } else {
                     logger.warn("Bad request receive for gossip notify");
                 }

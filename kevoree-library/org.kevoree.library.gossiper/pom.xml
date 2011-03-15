@@ -123,6 +123,12 @@
             <version>4.8.2</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>org.kevoree.extra</groupId>
+            <artifactId>org.kevoree.extra.marshalling</artifactId>
+            <version>${kevoree.version}</version>
+        </dependency>
+        
     </dependencies>
 
 
