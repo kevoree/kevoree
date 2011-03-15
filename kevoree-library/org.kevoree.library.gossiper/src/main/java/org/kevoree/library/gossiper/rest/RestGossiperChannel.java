@@ -41,7 +41,7 @@ import scala.Tuple2;
  */
 @Library(name = "Kevoree-Android-JavaSE")
 @ThirdParties({
-        @ThirdParty(name = "org.kevoree.extra.marshalling", url = "mvn:org.kevoree.extra/org.kevoree.extra.marshalling")
+    @ThirdParty(name = "org.kevoree.extra.marshalling", url = "mvn:org.kevoree.extra/org.kevoree.extra.marshalling")
 })
 @DictionaryType({
     @DictionaryAttribute(name = "interval", defaultValue = "60000", optional = true)})
@@ -69,15 +69,19 @@ public class RestGossiperChannel extends AbstractChannelFragment implements Goss
 
     @Update
     public void updateGossiperChannel() {
-        actor.stop();
-        clocksActor.stop();
+        if (actor != null) {
+            actor.stop();
+        }
+        if (clocksActor != null) {
+            clocksActor.stop();
+        }
         actor = null;
         clocksActor = null;
         clocksActor = new GossiperUUIDSVectorClockActor();
         actor = new GossiperChannelActor(Long.parseLong(this.getDictionary().get("interval").toString()), this, clocksActor);
     }
 
-    public List<UUID> getUUIDS(){
+    public List<UUID> getUUIDS() {
         List<UUID> uuids = new java.util.ArrayList<UUID>();
         scala.collection.Iterator<UUID> it = clocksActor.getUUIDS().iterator();
         while (it.hasNext()) {
