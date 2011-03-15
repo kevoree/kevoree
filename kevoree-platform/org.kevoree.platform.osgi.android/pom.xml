@@ -244,6 +244,7 @@
                         <option>-keep class org.kevoree.android.framework.** { *; }</option>
                         <option>-keep class org.restlet.resource.** { *; }</option>
                         <option>-keep class scala.runtime.** { *; }</option>
+                        <option>-keep class org.kevoree.api.** { *; }</option>
 
                         <option>-dontskipnonpubliclibraryclasses</option>
                         <option>-dontskipnonpubliclibraryclassmembers</option>

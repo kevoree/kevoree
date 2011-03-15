@@ -18,15 +18,12 @@
 package org.kevoree.library.gossiper.rest;
 
 import com.google.protobuf.ByteString;
-import java.io.ByteArrayOutputStream;
-import org.kevoree.framework.KevoreeXmiHelper;
 import org.kevoree.library.gossiper.version.GossiperMessages;
 import org.restlet.data.Method;
 import org.restlet.representation.Representation;
 import org.restlet.representation.StringRepresentation;
 import org.restlet.resource.ResourceException;
 import org.restlet.resource.ServerResource;
-import java.io.IOException;
 import java.util.Hashtable;
 import java.util.Map;
 import java.util.UUID;

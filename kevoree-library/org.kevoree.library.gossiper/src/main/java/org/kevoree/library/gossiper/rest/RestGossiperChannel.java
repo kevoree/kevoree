@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.Semaphore;
 import org.kevoree.ContainerNode;
 import org.kevoree.ContainerRoot;
 import org.kevoree.Group;
@@ -27,12 +28,15 @@ import org.kevoree.library.gossiper.version.GossiperMessages.ClockEntry;
 import org.kevoree.library.gossiper.version.GossiperMessages.VectorClock;
 import org.kevoree.library.gossiper.version.GossiperMessages.VectorClockUUIDS;
 import org.kevoree.library.gossiper.version.GossiperMessages.VersionedModel;
+import org.kevoree.remote.rest.Handler;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.ServiceReference;
 import org.restlet.representation.EmptyRepresentation;
 import org.restlet.representation.Representation;
 import org.restlet.representation.StringRepresentation;
 import org.restlet.resource.ClientResource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import scala.Tuple2;
 
 /**
@@ -51,20 +55,38 @@ public class RestGossiperChannel extends AbstractChannelFragment implements Goss
     GossiperChannelActor actor = null;
     GossiperUUIDSVectorClockActor clocksActor = null;
     private KevoreeModelHandlerService modelHandlerService = null;
+    private static final Semaphore handlerAccess = new Semaphore(1, true);
+    private static final String restBaseUrl = "gossipchannel";
+    private Logger logger = LoggerFactory.getLogger(RestGossipGroup.class);
 
     @Start
     public void startGossiperChannel() {
         Bundle bundle = (Bundle) this.getDictionary().get("osgi.bundle");
         ServiceReference sr = bundle.getBundleContext().getServiceReference(KevoreeModelHandlerService.class.getName());
         modelHandlerService = (KevoreeModelHandlerService) bundle.getBundleContext().getService(sr);
-
         clocksActor = new GossiperUUIDSVectorClockActor();
         actor = new GossiperChannelActor(Long.parseLong(this.getDictionary().get("interval").toString()), this, clocksActor);
+        try {
+            handlerAccess.acquire();
+            if (RestGossiperChannelFragmentResource.channels.keySet().isEmpty()) {
+                Handler.getDefaultHost().attach("/" + restBaseUrl + "/{channelName}/{uuid}", RestGossiperChannelFragmentResource.class);
+                //  Handler.getDefaultHost().attach("/restBaseUrl", RestGroupsResource.class);
+            }
+            RestGossiperChannelFragmentResource.channels.put(this.getName(), this);
+            handlerAccess.release();
+        } catch (InterruptedException ex) {
+            logger.error("GossipChannelStartError", ex);
+        }
     }
 
     @Stop
     public void stopGossiperChannel() {
-        actor.stop();
+        try {
+            actor.stop();
+            clocksActor.stop();
+        } catch (Exception ex) {
+            logger.error("GossipChannelStopError", ex);
+        }
     }
 
     @Update

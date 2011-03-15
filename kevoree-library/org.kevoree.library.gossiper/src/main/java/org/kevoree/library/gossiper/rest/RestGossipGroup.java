@@ -32,7 +32,7 @@ import org.slf4j.LoggerFactory;
 public class RestGossipGroup extends GossipGroup {
 
     private static final Semaphore handlerAccess = new Semaphore(1, true);
-    private static final Map<String, ClientResource> clients = Collections.synchronizedMap(new HashMap<String, ClientResource>());
+    //private static final Map<String, ClientResource> clients = Collections.synchronizedMap(new HashMap<String, ClientResource>());
     private Logger logger = LoggerFactory.getLogger(RestGossipGroup.class);
 
     //LIFE CYCLE GROUP
@@ -67,7 +67,7 @@ public class RestGossipGroup extends GossipGroup {
         } catch (InterruptedException ex) {
             logger.error("GroupError", ex);
         }
-        clients.clear();
+        //clients.clear();
         super.stopMyGroup();
     }
 
