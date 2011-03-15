@@ -5,7 +5,10 @@
 package org.kevoree.library.gossiper;
 
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.io.InputStream;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.kevoree.ContainerNode;
 import org.kevoree.ContainerRoot;
 import org.kevoree.Group;
@@ -33,17 +36,26 @@ public abstract class GossipGroup extends AbstractGroupType implements GossiperG
     private VectorClockActor currentClock = null;
     private GossiperActor gossipActor = null;
 
+    /* Method to evalute if group has to do a synchronious or asynchronous call to model container 
+     * In case of group self update detection, activate harakiri mode ... and don't wait model handler deployment comfirmation
+     */
+    private void updateModelOrHaraKiri(ContainerRoot newmodel) {
+        if (GroupUtils.detectHaraKiri(newmodel, this.getModelService().getLastModel(), this.getName(), this.getNodeName())) {
+            this.getModelService().updateModel(newmodel);
+            lastCheckedTimeStamp.set(this.getModelService().getLastModification());
+        } else {
+            lastCheckedTimeStamp.set(this.getModelService().atomicUpdateModel(newmodel));
+        }
+    }
+
     @Override
     public VectorClock update(VersionedModel versioned) {
         if (versioned != null) {
-            InputStream stream = new ByteArrayInputStream(versioned.getModel().toByteArray());
-            lastCheckedTimeStamp.set(this.getModelService().atomicUpdateModel(KevoreeXmiHelper.loadStream(stream)));
-
-            // if (this.getModelService().updateModel(KevoreeXmiHelper.loadStream(stream))) {
-            //   lastCheckedTimeStamp.set(this.getModelService().getLastModification());
-            VectorClock ncur = currentClock.merge(versioned.getVector());
-            return ncur;
-            // }
+            InputStream stream = null;
+            stream = new ByteArrayInputStream(versioned.getModel().toByteArray());
+            ContainerRoot newModel = KevoreeXmiHelper.loadStream(stream);
+            updateModelOrHaraKiri(newModel);
+            return currentClock.merge(versioned.getVector());
         }
         return currentClock.get();
     }
@@ -55,10 +67,16 @@ public abstract class GossipGroup extends AbstractGroupType implements GossiperG
             Date remoteDate = new Date(versioned.getVector().getTimestamp());
             //TODO TO IMPROVE
             if (localDate.before(remoteDate)) {
-                InputStream stream = new ByteArrayInputStream(versioned.getModel().toByteArray());
-                lastCheckedTimeStamp.set(this.getModelService().atomicUpdateModel(KevoreeXmiHelper.loadStream(stream)));
-               // this.getModelService().updateModel(KevoreeXmiHelper.loadStream(stream));
-              //  lastCheckedTimeStamp.set(this.getModelService().getLastModification());
+                InputStream stream = null;
+                stream = new ByteArrayInputStream(versioned.getModel().toByteArray());
+                ContainerRoot newModel = KevoreeXmiHelper.loadStream(stream);
+                updateModelOrHaraKiri(newModel);
+
+                //  stream = new ByteArrayInputStream(versioned.getModel().toByteArray());
+                // lastCheckedTimeStamp.set(this.getModelService().atomicUpdateModel(KevoreeXmiHelper.loadStream(stream)));
+                // this.getModelService().updateModel(KevoreeXmiHelper.loadStream(stream));
+                //  lastCheckedTimeStamp.set(this.getModelService().getLastModification());
+
             }
             return currentClock.merge(versioned.getVector());
         }
@@ -94,20 +112,25 @@ public abstract class GossipGroup extends AbstractGroupType implements GossiperG
             }
         }
         int nodesSize = groupNode.size();
-        Random diceRoller = new SecureRandom();
-        int peerIndex = diceRoller.nextInt(nodesSize);
-        return groupNode.get(peerIndex).getName();
+        if (nodesSize > 0) {
+            Random diceRoller = new SecureRandom();
+            int peerIndex = diceRoller.nextInt(nodesSize);
+            return groupNode.get(peerIndex).getName();
+        } else {
+           return ""; 
+        }
+
     }
 
     public VectorClock incrementedVectorClock() {
-        if ( (currentClock.get().getEntiesCount()==0) || this.getModelService().getLastModification().after(lastCheckedTimeStamp.get())) {
+        if ((currentClock.get().getEntiesCount() == 0) || this.getModelService().getLastModification().after(lastCheckedTimeStamp.get())) {
             lastCheckedTimeStamp.set(this.getModelService().getLastModification());
             return currentClock.incAndGet();
         } /*else {
-            System.out.println("no impement detected");
-            VectorClockAspect vaspect = new VectorClockAspect(currentClock.get());
-            vaspect.printDebug();
-                 
+        System.out.println("no impement detected");
+        VectorClockAspect vaspect = new VectorClockAspect(currentClock.get());
+        vaspect.printDebug();
+        
         }*/
         return currentClock.get();
     }

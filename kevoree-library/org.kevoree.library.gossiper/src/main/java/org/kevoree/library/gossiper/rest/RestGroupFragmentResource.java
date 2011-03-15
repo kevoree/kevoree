@@ -62,13 +62,14 @@ public class RestGroupFragmentResource extends ServerResource {
                 ByteArrayOutputStream out = new ByteArrayOutputStream();
                 KevoreeXmiHelper.saveStream(out, groupFragment.getModelService().getLastModel());
                 out.flush();
-             //   String flatModel = new String(out.toByteArray());
-             //   String flatZippedModel = new String(StringZipper.zipStringToBytes(flatModel),"UTF-8");
-                
-                
-                
+                //   String flatModel = new String(out.toByteArray());
+                //   String flatZippedModel = new String(StringZipper.zipStringToBytes(flatModel),"UTF-8");
+
+                ByteString modelBytes = ByteString.copyFrom(out.toByteArray());
                 out.close();
-                GossiperMessages.VersionedModel model = GossiperMessages.VersionedModel.newBuilder().setVector(groupFragment.currentClock()).setModel(ByteString.copyFrom(out.toByteArray())).build();
+
+                GossiperMessages.VersionedModel model = GossiperMessages.VersionedModel.newBuilder().setVector(groupFragment.currentClock()).setModel(modelBytes).build();
+
                 return new MessageRepresentation<GossiperMessages.VersionedModel>(model);
             } catch (IOException ex) {
                 logger.error("Error processing rest resource", ex);
@@ -86,7 +87,7 @@ public class RestGroupFragmentResource extends ServerResource {
             try {
                 Representation o = this.getRequestEntity();
                 String nodeName = o.getText();
-                
+
                 // Object o = this.getRequestAttributes().get("remotePeerNodeName");
                 if (!nodeName.equals("")) {
                     groupFragment.triggerGossipNotification(nodeName);

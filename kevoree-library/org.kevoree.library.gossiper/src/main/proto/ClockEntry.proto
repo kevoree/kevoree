@@ -3,7 +3,7 @@ package gossipMsg;
 option java_package = "org.kevoree.library.gossiper.version";
 option java_outer_classname = "GossiperMessages";
 
-option optimize_for = LITE_RUNTIME;
+//option optimize_for = LITE_RUNTIME;
 
 message ClockEntry {
     required string nodeID = 1;

@@ -1,5 +1,7 @@
 package org.kevoree.library.gossiper.rest;
 
+import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -97,24 +99,24 @@ public class RestGossipGroup extends GossipGroup {
             System.out.println("remote rest url =>" + lastUrl);
             ClientResource remoteGroupResource = new ClientResource(lastUrl);
             Representation result = remoteGroupResource.post(new EmptyRepresentation());
+           // byte[] modelB = IOUtils.readFully(result.getStream(), Integer.MAX_VALUE, true);
             GossiperMessages.VersionedModel resModel = GossiperMessages.VersionedModel.parseFrom(result.getStream());
             return resModel;
-//            return GossiperMessages.VersionedModel.newBuilder(resModel).setModel(StringZipper.unzipStringFromBytes(resModel.getModel().getBytes())).build();
         } catch (Exception e) {
-            logger.debug("Fail to getVersionnedModelToPeer via =>" + lastUrl,e);
+            logger.debug("Fail to getVersionnedModelToPeer via =>" + lastUrl, e);
         }
         return null;
     }
-/*
+    /*
     protected ClientResource getOrCreate(String url) {
-        ClientResource res = null;
-        if (clients.containsKey(url)) {
-            res = clients.get(url);
-        } else {
-            res = new ClientResource(url);
-            clients.put(url, res);
-        }
-        return res;
+    ClientResource res = null;
+    if (clients.containsKey(url)) {
+    res = clients.get(url);
+    } else {
+    res = new ClientResource(url);
+    clients.put(url, res);
+    }
+    return res;
     }*/
 
     protected String buildGroupURL(String remoteNodeName, String groupName) {
