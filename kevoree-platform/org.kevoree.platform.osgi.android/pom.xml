@@ -1,3 +1,4 @@
+
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
@@ -239,9 +240,10 @@
                         <option>-keep class org.restlet.**</option>
                         -->
                         <option>-keep class org.osgi.** { *; }</option>
-                        <option>-keep class choco.cp.** { *; }</option>
                         <option>-keep class org.kevoree.framework.** { *; }</option>
                         <option>-keep class org.kevoree.android.framework.** { *; }</option>
+                        <option>-keep class org.restlet.resource.** { *; }</option>
+                        <option>-keep class scala.runtime.** { *; }</option>
 
                         <option>-dontskipnonpubliclibraryclasses</option>
                         <option>-dontskipnonpubliclibraryclassmembers</option>
