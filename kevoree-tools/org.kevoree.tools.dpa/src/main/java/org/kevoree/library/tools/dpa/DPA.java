@@ -18,7 +18,9 @@
 
 package org.kevoree.library.tools.dpa;
 
+import java.util.List;
 import java.util.Map;
+
 import org.kevoree.ContainerRoot;
 import org.kevoree.NamedElement;
 
@@ -28,7 +30,7 @@ import org.kevoree.NamedElement;
  */
 public interface DPA {
 
-    public Map<String,NamedElement> applyPointcut(ContainerRoot model);
+    public List<Map<String,NamedElement>> applyPointcut(ContainerRoot model);
     
     public String getScript(Map<String,NamedElement> vars);
     
