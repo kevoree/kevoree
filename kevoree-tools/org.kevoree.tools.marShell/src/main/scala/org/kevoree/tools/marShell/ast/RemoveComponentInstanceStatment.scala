@@ -13,5 +13,5 @@
  */
 package org.kevoree.tools.marShell.ast
 
-case class RemoveComponentInstanceStatment(cid:ComponentInstanceID, typeDefinitionName : String)
+case class RemoveComponentInstanceStatment(cid:ComponentInstanceID)
   extends Statment

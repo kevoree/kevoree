@@ -48,8 +48,8 @@ trait KevsInstParser extends KevsAbstractParser with KevsPropertiesParser {
         case Some(props)=>List(AddComponentInstanceStatment(cid,typeid,props))
       }
   }
-  def parseRemoveComponent : Parser[List[Statment]] = "removeComponent" ~ componentID ~ ":" ~ ident ^^{ case _ ~ cid ~ _ ~ typeid  =>
-      List(RemoveComponentInstanceStatment(cid,typeid))
+  def parseRemoveComponent : Parser[List[Statment]] = "removeComponent" ~ componentID  ^^{ case _ ~ cid  =>
+      List(RemoveComponentInstanceStatment(cid))
   }
 
   //GROUP
