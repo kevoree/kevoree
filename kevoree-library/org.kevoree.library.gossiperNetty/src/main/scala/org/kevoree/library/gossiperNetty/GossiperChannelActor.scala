@@ -17,7 +17,7 @@ import org.kevoree.library.gossiper.version.Occured
 class GossiperChannelActor(selfNodeName : String,timeout : java.lang.Long,group : GossiperChannel,clocksActor:GossiperUUIDSVectorClockActor) extends actors.DaemonActor {
 
   /* CONSTRUCTOR */
-  private var logger = org.slf4j.LoggerFactory.getLogger(classOf[GossiperActor])
+  private var logger = org.slf4j.LoggerFactory.getLogger(classOf[GossiperChannelActor])
   //private var clocksActor = new GossiperUUIDSVectorClockActor
   this.start
   

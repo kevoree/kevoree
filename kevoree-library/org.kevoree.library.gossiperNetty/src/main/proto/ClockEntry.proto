@@ -1,0 +1,26 @@
+package gossipMsg;
+
+option java_package = "org.kevoree.library.gossiper.version";
+option java_outer_classname = "GossiperMessages";
+
+//option optimize_for = LITE_RUNTIME;
+
+message ClockEntry {
+    required string nodeID = 1;
+    required int64 version = 2;
+    required int64 timestamp = 3;
+}
+
+message VectorClock {
+    repeated ClockEntry enties = 1;
+    required int64 timestamp = 2;
+}
+
+message VersionedModel {
+    required VectorClock vector = 1;
+    required bytes model = 2;
+}
+
+message VectorClockUUIDS {
+    repeated string uuids = 1; 
+}
