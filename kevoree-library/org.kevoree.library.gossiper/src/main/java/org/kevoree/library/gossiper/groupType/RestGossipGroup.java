@@ -1,19 +1,14 @@
-package org.kevoree.library.gossiper.rest;
+package org.kevoree.library.gossiper.groupType;
 
-import java.io.ByteArrayOutputStream;
-import java.io.InputStream;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.concurrent.Semaphore;
 import org.kevoree.annotation.DictionaryAttribute;
 import org.kevoree.annotation.DictionaryType;
 import org.kevoree.annotation.GroupType;
+import org.kevoree.annotation.Library;
 import org.kevoree.annotation.Start;
 import org.kevoree.annotation.Stop;
 import org.kevoree.annotation.Update;
 import org.kevoree.framework.KevoreePlatformHelper;
-import org.kevoree.library.gossiper.GossipGroup;
 import org.kevoree.library.gossiper.version.GossiperMessages;
 import org.kevoree.remote.rest.Handler;
 import org.restlet.representation.EmptyRepresentation;
@@ -23,6 +18,7 @@ import org.restlet.resource.ClientResource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@Library(name = "Kevoree-Android-JavaSE")
 @GroupType
 @DictionaryType({
     @DictionaryAttribute(name = "interval", defaultValue = "60000", optional = true)
@@ -30,7 +26,7 @@ import org.slf4j.LoggerFactory;
 public class RestGossipGroup extends GossipGroup {
 
     private static final Semaphore handlerAccess = new Semaphore(1, true);
-    private static final Map<String, ClientResource> clients = Collections.synchronizedMap(new HashMap<String, ClientResource>());
+    //private static final Map<String, ClientResource> clients = Collections.synchronizedMap(new HashMap<String, ClientResource>());
     private Logger logger = LoggerFactory.getLogger(RestGossipGroup.class);
 
     //LIFE CYCLE GROUP
@@ -65,7 +61,7 @@ public class RestGossipGroup extends GossipGroup {
         } catch (InterruptedException ex) {
             logger.error("GroupError", ex);
         }
-        clients.clear();
+        //clients.clear();
         super.stopMyGroup();
     }
 

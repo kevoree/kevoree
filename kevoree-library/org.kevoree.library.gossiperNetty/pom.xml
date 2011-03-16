@@ -4,9 +4,9 @@
 
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.kevoree.library</groupId>
-    <artifactId>org.kevoree.library.gossiper</artifactId>
+    <artifactId>org.kevoree.library.gossiperNetty</artifactId>
     <packaging>bundle</packaging>
-    <name>Kevoree :: Library :: Gossiper</name>
+    <name>Kevoree :: Library :: GossiperNetty</name>
     <version>1.0.0-RC5</version>
 
     <parent>
@@ -52,8 +52,8 @@
                 <configuration>
                     <instructions>
                         <Private-Package>com.google.protobuf.*</Private-Package>
-                        <Export-Package>org.kevoree.library.gossiper.*</Export-Package>
-                        <Import-Package>!org.kevoree.library.gossiper.*,*</Import-Package>
+                        <Export-Package>org.kevoree.library.gossiperNetty.*</Export-Package>
+                        <Import-Package>!org.kevoree.library.gossiperNetty.*,*</Import-Package>
                     </instructions>
                 </configuration>
             </plugin>
@@ -128,10 +128,5 @@
             <artifactId>org.kevoree.extra.marshalling</artifactId>
             <version>${kevoree.version}</version>
         </dependency>
-        
     </dependencies>
-
-
-
-
 </project>

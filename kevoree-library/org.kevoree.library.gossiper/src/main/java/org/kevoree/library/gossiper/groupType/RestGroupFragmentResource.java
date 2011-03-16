@@ -15,8 +15,9 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package org.kevoree.library.gossiper.rest;
+package org.kevoree.library.gossiper.groupType;
 
+import org.kevoree.library.gossiper.groupType.RestGossipGroup;
 import com.google.protobuf.ByteString;
 import java.io.ByteArrayOutputStream;
 import org.kevoree.framework.KevoreeXmiHelper;
@@ -29,6 +30,7 @@ import org.restlet.resource.ServerResource;
 import java.io.IOException;
 import java.util.Hashtable;
 import java.util.Map;
+import org.kevoree.library.gossiper.rest.MessageRepresentation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

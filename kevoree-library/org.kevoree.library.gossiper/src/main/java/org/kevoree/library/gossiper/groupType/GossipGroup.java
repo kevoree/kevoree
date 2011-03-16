@@ -2,13 +2,10 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package org.kevoree.library.gossiper;
+package org.kevoree.library.gossiper.groupType;
 
 import java.io.ByteArrayInputStream;
-import java.io.IOException;
 import java.io.InputStream;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.kevoree.ContainerNode;
 import org.kevoree.ContainerRoot;
 import org.kevoree.Group;
@@ -25,6 +22,10 @@ import java.util.Date;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicReference;
+import org.kevoree.library.gossiper.GossiperActor;
+import org.kevoree.library.gossiper.GossiperGroup;
+import org.kevoree.library.gossiper.GroupUtils;
+import org.kevoree.library.gossiper.VectorClockActor;
 
 /**
  * @author ffouquet
