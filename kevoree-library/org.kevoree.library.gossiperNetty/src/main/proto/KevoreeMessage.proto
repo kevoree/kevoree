@@ -1,0 +1,14 @@
+package org.kevoree.library.gossiperNetty.api.msg;
+
+option java_package = "org.kevoree.library.gossiperNetty.api.msg";
+option java_outer_classname = "KevoreeMessage";
+
+option optimize_for = LITE_RUNTIME;
+
+message Message {
+
+    required string destChannelName =1;
+
+    required bytes content = 2;
+
+}
