@@ -74,7 +74,7 @@
                 <configuration>
                     <instructions>
                         <Export-Package>org.codehaus.jackson.*,org.kevoree.extra.marshalling.*,org.joda.time.*</Export-Package>
-                        <Import-Package>!org.codehaus.jackson.*,!org.joda.time.*,!org.w3c.*,*</Import-Package>
+                        <Import-Package>!javax.xml.datatype,!org.codehaus.jackson.*,!org.joda.time.*,!org.w3c.*,*</Import-Package>
                     </instructions>
                 </configuration>
             </plugin>
