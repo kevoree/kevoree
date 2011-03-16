@@ -47,7 +47,7 @@ case class KevsAddGroupInterpreter(addGroup: AddGroupStatment) extends KevsAbstr
             println("Type definition is not a groupType " + addGroup.groupTypeName);
             false
           }
-          case None => {
+          case _ => {
             println("Type definition not found " + addGroup.groupTypeName);
             false
           }
