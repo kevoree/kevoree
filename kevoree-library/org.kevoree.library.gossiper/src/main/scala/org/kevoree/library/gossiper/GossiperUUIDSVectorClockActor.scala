@@ -24,7 +24,8 @@ class GossiperUUIDSVectorClockActor extends actors.DaemonActor {
   case class REMOVE(uuid: UUID)
   case class MERGE(uuid: UUID,newclock : VectorClock)
   
-  def getUUIDS = { {this !? GET_UUIDS}.asInstanceOf[List[UUID]] }
+  
+  def getUUIDS() = { {this !? GET_UUIDS()}.asInstanceOf[List[UUID]] }
   def stop() ={this ! STOP_GOSSIPER()}
   def get(uuid: UUID):Tuple2[VectorClock,Object] = {(this !? GET(uuid)).asInstanceOf[Tuple2[VectorClock,Object]] }
   def swap(uuid: UUID,value : Tuple2[VectorClock,Object]):Tuple2[VectorClock,Object] = {(this !? SET(uuid,value)).asInstanceOf[Tuple2[VectorClock,Object]] }
@@ -42,6 +43,7 @@ class GossiperUUIDSVectorClockActor extends actors.DaemonActor {
         case MERGE(uuid,newClock)=> { 
             var mergedVC = localMerge(uuids.get(uuid)._1,newClock)
             uuids.put(uuid, Tuple2[VectorClock,Object](mergedVC,uuids.get(uuid)._2))
+            reply(mergedVC)
           }
       }
     }

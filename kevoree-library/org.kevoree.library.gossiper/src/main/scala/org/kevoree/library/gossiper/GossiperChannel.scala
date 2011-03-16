@@ -15,9 +15,10 @@ trait GossiperChannel {
     def getMsgUUIDSFromPeer(nodeName : String) : java.util.List[UUID]
     def getUUIDVectorClockFromPeer(nodeName:String,uuid:UUID) : VectorClock
     def getUUIDDataFromPeer(nodeName:String,uuid:UUID) : VersionedModel
-   // def selectPeer(uuid:String)
+    def selectPeer() : String
     def notifyPeers()
     def notifyPeer(nodeName:String)
     def localDelivery(o : Message)
+    def getAllPeers() : java.util.List[String]
   
 }

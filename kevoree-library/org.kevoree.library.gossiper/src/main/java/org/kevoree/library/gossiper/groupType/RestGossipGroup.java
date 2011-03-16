@@ -1,10 +1,5 @@
-package org.kevoree.library.gossiper.rest;
+package org.kevoree.library.gossiper.groupType;
 
-import java.io.ByteArrayOutputStream;
-import java.io.InputStream;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.concurrent.Semaphore;
 import org.kevoree.annotation.DictionaryAttribute;
 import org.kevoree.annotation.DictionaryType;
@@ -14,7 +9,6 @@ import org.kevoree.annotation.Start;
 import org.kevoree.annotation.Stop;
 import org.kevoree.annotation.Update;
 import org.kevoree.framework.KevoreePlatformHelper;
-import org.kevoree.library.gossiper.GossipGroup;
 import org.kevoree.library.gossiper.version.GossiperMessages;
 import org.kevoree.remote.rest.Handler;
 import org.restlet.representation.EmptyRepresentation;

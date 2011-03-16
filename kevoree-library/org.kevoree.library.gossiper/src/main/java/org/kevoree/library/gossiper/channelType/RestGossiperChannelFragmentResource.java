@@ -15,8 +15,9 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package org.kevoree.library.gossiper.rest;
+package org.kevoree.library.gossiper.channelType;
 
+import org.kevoree.library.gossiper.channelType.RestGossiperChannel;
 import com.google.protobuf.ByteString;
 import org.kevoree.library.gossiper.version.GossiperMessages;
 import org.restlet.data.Method;
@@ -29,6 +30,7 @@ import java.util.Map;
 import java.util.UUID;
 import org.kevoree.extra.marshalling.RichJSONObject;
 import org.kevoree.framework.message.Message;
+import org.kevoree.library.gossiper.rest.MessageRepresentation;
 import org.kevoree.library.gossiper.version.GossiperMessages.VectorClock;
 import org.kevoree.library.gossiper.version.GossiperMessages.VectorClockUUIDS.Builder;
 import org.slf4j.Logger;
@@ -50,24 +52,31 @@ public class RestGossiperChannelFragmentResource extends ServerResource {
      * The sequence of characters that identifies the resource.
      */
     String channelName;
-    
-    UUID uuid;
+    UUID uuid=null;
 
     @Override
     protected void doInit() throws ResourceException {
         this.channelName = (String) getRequest().getAttributes().get("channelName");
-        this.uuid = UUID.fromString(getRequest().getAttributes().get("uuid").toString());
+        String requestUUID = getRequest().getAttributes().get("uuid").toString();
+        if (!requestUUID.equals("all")) {
+            this.uuid = UUID.fromString(getRequest().getAttributes().get("uuid").toString());
+        }
         this.channelFragment = channels.get(channelName);
-        setExisting(this.channelFragment != null && ( channelFragment.getUUIDS().contains(uuid) || uuid.equals("all")  ));
+
+        if(uuid != null){
+           setExisting(this.channelFragment != null && channelFragment.getUUIDS().contains(uuid)); 
+        } else {
+            setExisting(this.channelFragment != null);
+        }
     }
 
     @Override
     public Representation doHandle() {
         if (getMethod().equals(Method.POST)) {
             try {
-                Tuple2<VectorClock,Object> tuple = channelFragment.getObject(uuid);
-                RichJSONObject localObjJSON = new RichJSONObject((Message)tuple._2);
-                String res = localObjJSON.toJSON(); 
+                Tuple2<VectorClock, Object> tuple = channelFragment.getObject(uuid);
+                RichJSONObject localObjJSON = new RichJSONObject((Message) tuple._2);
+                String res = localObjJSON.toJSON();
                 ByteString modelBytes = ByteString.copyFromUtf8(res);
                 GossiperMessages.VersionedModel model = GossiperMessages.VersionedModel.newBuilder().setVector(tuple._1).setModel(modelBytes).build();
                 return new MessageRepresentation<GossiperMessages.VersionedModel>(model);
@@ -77,14 +86,14 @@ public class RestGossiperChannelFragmentResource extends ServerResource {
         }
         if (getMethod().equals(Method.GET)) {
             try {
-                if(uuid.toString().equals("all")){
+                if (uuid == null) {
                     Builder b = GossiperMessages.VectorClockUUIDS.newBuilder();
-                    for(UUID s : channelFragment.getUUIDS()){
+                    for (UUID s : channelFragment.getUUIDS()) {
                         b.addUuids(s.toString());
                     }
                     return new MessageRepresentation<GossiperMessages.VectorClockUUIDS>(b.build());
                 } else {
-                    Tuple2<VectorClock,Object> tuple = channelFragment.getObject(uuid);
+                    Tuple2<VectorClock, Object> tuple = channelFragment.getObject(uuid);
                     return new MessageRepresentation<GossiperMessages.VectorClock>(tuple._1);
                 }
             } catch (Exception ex) {

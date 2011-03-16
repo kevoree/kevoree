@@ -1,5 +1,6 @@
-package org.kevoree.library.gossiper.rest;
+package org.kevoree.library.gossiper.groupType;
 
+import org.kevoree.library.gossiper.groupType.RestGroupFragmentResource;
 import org.restlet.data.MediaType;
 import org.restlet.data.Method;
 import org.restlet.representation.Representation;

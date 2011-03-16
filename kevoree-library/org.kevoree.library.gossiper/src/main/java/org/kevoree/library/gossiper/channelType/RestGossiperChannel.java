@@ -2,16 +2,15 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package org.kevoree.library.gossiper.rest;
+package org.kevoree.library.gossiper.channelType;
 
+import java.security.SecureRandom;
+import org.kevoree.library.gossiper.groupType.RestGossipGroup;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
+import java.util.Random;
 import java.util.UUID;
 import java.util.concurrent.Semaphore;
-import org.kevoree.ContainerNode;
-import org.kevoree.ContainerRoot;
-import org.kevoree.Group;
 import org.kevoree.annotation.*;
 import org.kevoree.api.service.core.handler.KevoreeModelHandlerService;
 import org.kevoree.framework.AbstractChannelFragment;
@@ -65,7 +64,7 @@ public class RestGossiperChannel extends AbstractChannelFragment implements Goss
         ServiceReference sr = bundle.getBundleContext().getServiceReference(KevoreeModelHandlerService.class.getName());
         modelHandlerService = (KevoreeModelHandlerService) bundle.getBundleContext().getService(sr);
         clocksActor = new GossiperUUIDSVectorClockActor();
-        actor = new GossiperChannelActor(Long.parseLong(this.getDictionary().get("interval").toString()), this, clocksActor);
+        actor = new GossiperChannelActor(this.getNodeName(),Long.parseLong(this.getDictionary().get("interval").toString()), this, clocksActor);
         try {
             handlerAccess.acquire();
             if (RestGossiperChannelFragmentResource.channels.keySet().isEmpty()) {
@@ -91,24 +90,29 @@ public class RestGossiperChannel extends AbstractChannelFragment implements Goss
 
     @Update
     public void updateGossiperChannel() {
+        /*
         if (actor != null) {
-            actor.stop();
+        actor.stop();
         }
         if (clocksActor != null) {
-            clocksActor.stop();
+        clocksActor.stop();
         }
         actor = null;
         clocksActor = null;
         clocksActor = new GossiperUUIDSVectorClockActor();
         actor = new GossiperChannelActor(Long.parseLong(this.getDictionary().get("interval").toString()), this, clocksActor);
+         * 
+         */
     }
 
     public List<UUID> getUUIDS() {
         List<UUID> uuids = new java.util.ArrayList<UUID>();
         scala.collection.Iterator<UUID> it = clocksActor.getUUIDS().iterator();
+        System.out.println("AFTER ACTOR");
         while (it.hasNext()) {
             uuids.add(it.next());
         }
+        System.out.println("AFTER LOOP");
         return uuids;
     }
 
@@ -123,7 +127,7 @@ public class RestGossiperChannel extends AbstractChannelFragment implements Goss
         //CREATE NEW MESSAGE
         UUID msgUUID = UUID.randomUUID();
         Tuple2<VectorClock, Object> tuple = new Tuple2<VectorClock, Object>(VectorClock.newBuilder().
-                addEnties(ClockEntry.newBuilder().setNodeID(this.getNodeName()).setTimestamp(System.currentTimeMillis()).setVersion(2l)).setTimestamp(System.currentTimeMillis()).build(), msg);
+                addEnties(ClockEntry.newBuilder().setNodeID(this.getNodeName()).setTimestamp(System.currentTimeMillis()).setVersion(2l).build()).setTimestamp(System.currentTimeMillis()).build(), msg);
         clocksActor.swap(msgUUID, tuple);
         actor.notifyPeers();
         //SYNCHRONOUS NON IMPLEMENTED
@@ -205,7 +209,7 @@ public class RestGossiperChannel extends AbstractChannelFragment implements Goss
         if (port == null || port.equals("")) {
             port = "8000";
         }
-        return "http://" + ip + ":" + port + "/channels/" + channelName;
+        return "http://" + ip + ":" + port + "/" + restBaseUrl + "/" + channelName;
     }
 
     @Override
@@ -213,6 +217,7 @@ public class RestGossiperChannel extends AbstractChannelFragment implements Goss
         String url = "";
         try {
             url = buildGroupURL(nodeName, this.getName());
+            url = url + "/all";
             ClientResource client = new ClientResource(url);
             client.put(new StringRepresentation(this.getNodeName()));
         } catch (Exception e) {
@@ -228,7 +233,24 @@ public class RestGossiperChannel extends AbstractChannelFragment implements Goss
         }
     }
 
+    @Override
+    public String selectPeer() {
+        int othersSize = getOtherFragments().size();
+        Random diceRoller = new SecureRandom();
+        int peerIndex = diceRoller.nextInt(othersSize);
+        return getOtherFragments().get(peerIndex).getNodeName();
+    }
+
     public void triggerGossipNotification(String nodeName) {
         actor.scheduleGossip(nodeName);
+    }
+
+    @Override
+    public List<String> getAllPeers() {
+        List<String> peers = new ArrayList<String>();
+        for(KevoreeChannelFragment fragment : getOtherFragments()){
+            peers.add(fragment.getNodeName());
+        }
+        return peers;
     }
 }

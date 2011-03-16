@@ -28,7 +28,7 @@ class VectorClockActor(selfNodeName : String) extends actors.DaemonActor {
   def swap(v : VectorClock) : VectorClock  = {(this !? SET(v)).asInstanceOf[VectorClock] }
   def merge(v : VectorClock) = {(this !? MERGE(v)).asInstanceOf[VectorClock] }
 
-  private var current : VectorClock = VectorClock.newBuilder.setTimestamp(System.currentTimeMillis()).addEnties(ClockEntry.newBuilder.setNodeID(selfNodeName).setVersion(1).setTimestamp(System.currentTimeMillis())).build
+  private var current : VectorClock = VectorClock.newBuilder.setTimestamp(System.currentTimeMillis()).addEnties(ClockEntry.newBuilder.setNodeID(selfNodeName).setVersion(1).setTimestamp(System.currentTimeMillis()).build).build
   
   def act(){
     loop {
