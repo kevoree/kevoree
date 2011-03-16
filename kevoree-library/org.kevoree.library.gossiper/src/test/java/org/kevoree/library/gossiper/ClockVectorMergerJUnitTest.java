@@ -39,7 +39,7 @@ public class ClockVectorMergerJUnitTest {
     // TODO add test methods here.
     // The methods must be annotated with annotation @Test. For example:
     //
-    @Test
+    /*@Test
     public void checkMerger() {
         VectorClock v1 = org.kevoree.library.gossiper.version.GossiperMessages.VectorClock.newBuilder().
                 setTimestamp(System.currentTimeMillis()).
@@ -85,7 +85,7 @@ public class ClockVectorMergerJUnitTest {
 
 
 
-    }
+    }*/
 	 
 	@Test
     public void checkCompare() {
