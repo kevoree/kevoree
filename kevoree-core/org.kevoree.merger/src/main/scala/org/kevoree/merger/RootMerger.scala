@@ -31,9 +31,7 @@ class RootMerger extends TypeDefinitionMerger with TypeLibraryMerger with NodeMe
       // Art2DeployUnitMerger.merge(actualModel, modelToMerge)
       mergeTypeDefinition(actualModel, modelToMerge)
       mergeLibrary(actualModel, modelToMerge)
-
       mergeAllNode(actualModel, modelToMerge)
-
       mergeRepositories(actualModel, modelToMerge)
 
       executePostProcesses

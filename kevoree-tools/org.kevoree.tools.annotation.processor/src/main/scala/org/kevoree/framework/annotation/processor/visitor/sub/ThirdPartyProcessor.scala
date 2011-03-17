@@ -50,14 +50,14 @@ trait ThirdPartyProcessor {
     thirdPartyAnnotations.foreach{tp=>
       root.getDeployUnits.find({etp => etp.getName == tp.name}) match {
         case Some(e) => {
-            componentType.getRequiredLibs.add(e)
+            componentType.getDeployUnits.get(0).getRequiredLibs.add(e)
           }
         case None => {
             var newThirdParty = KevoreeFactory.eINSTANCE.createDeployUnit
             newThirdParty.setName(tp.name)
             newThirdParty.setUrl(tp.url)
             root.getDeployUnits.add(newThirdParty)
-            componentType.getRequiredLibs.add(newThirdParty)
+            componentType.getDeployUnits.get(0).getRequiredLibs.add(newThirdParty)
           }
       }
     }
@@ -69,14 +69,14 @@ trait ThirdPartyProcessor {
       
       root.getDeployUnits.find({etp => etp.getName == name}) match {
         case Some(e) => {
-            componentType.getRequiredLibs.add(e)
+            componentType.getDeployUnits.get(0).getRequiredLibs.add(e)
           }
         case None => {
             var newThirdParty = KevoreeFactory.eINSTANCE.createDeployUnit
             newThirdParty.setName(name)
             newThirdParty.setUrl(url)
             root.getDeployUnits.add(newThirdParty)
-            componentType.getRequiredLibs.add(newThirdParty)
+            componentType.getDeployUnits.get(0).getRequiredLibs.add(newThirdParty)
           }
       }
     }

@@ -30,15 +30,47 @@ case class TypeDefinitionAspect(selfTD : TypeDefinition) {
   }
 
   def isUpdated(pTD : TypeDefinition) : Boolean = {
-    if(selfTD.getDeployUnit != null){
-      if(pTD.getDeployUnit != null){
-        selfTD.getDeployUnit.getHashcode != pTD.getDeployUnit.getHashcode
+    
+    if(selfTD.getDeployUnits != null){
+      if(pTD.getDeployUnits != null){
+        if(selfTD.getDeployUnits.size != pTD.getDeployUnits.size){
+          return true
+        }
+        var allNotUpdate = selfTD.getDeployUnits.forall(selfDU=>{
+            pTD.getDeployUnits.find(p=> p.isModelEquals(selfDU)) match {
+              case Some(pDU)=> pDU.getHashcode == selfDU.getHashcode
+              case _ => false
+            }
+          })
+        
+        !allNotUpdate
+        
       } else {
         true
       }
     } else {
-      pTD.getDeployUnit != null
+      pTD.getDeployUnits != null
     }
   }
+  
+  
+  
+  def foundRelevantDeployUnit(node : ContainerNode) = {
+    
+    /* add all reLib from found deploy Unit*/
+    var deployUnitfound : DeployUnit = null
+    if(node.getTypeDefinition != null){
+      deployUnitfound = selfTD.getDeployUnits.find(du => du.getTargetNodeType.getName == node.getTypeDefinition.getName).get
+    } else {
+      //BEST EFFORT TRY TO FOUND A DEPLOY UNIT WITH NULL NODE TYPE
+      deployUnitfound = selfTD.getDeployUnits.find(du => du.getTargetNodeType.getName == null).get
+      if(deployUnitfound == null){
+        deployUnitfound = selfTD.getDeployUnits.get(0)
+      }
+    }
+    deployUnitfound
+    
+  }
+  
 
 }

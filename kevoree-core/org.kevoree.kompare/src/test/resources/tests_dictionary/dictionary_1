@@ -12,25 +12,25 @@
       <required portTypeRef="//@typeDefinitions.4/@required.1"/>
     </components>
   </nodes>
-  <typeDefinitions xsi:type="kevoree:ComponentType" name="FakeSimpleSwitchA" deployUnit="//@deployUnits.1" factoryBean="org.entimid.fakeStuff.devices.FakeSimpleSwitchAFactory" bean="org.entimid.fakeStuff.devices.FakeSimpleSwitchA" requiredLibs="//@deployUnits.0" startMethod="start" stopMethod="stop">
+  <typeDefinitions xsi:type="kevoree:ComponentType" name="FakeSimpleSwitchA" deployUnits="//@deployUnits.1" factoryBean="org.entimid.fakeStuff.devices.FakeSimpleSwitchAFactory" bean="org.entimid.fakeStuff.devices.FakeSimpleSwitchA" startMethod="start" stopMethod="stop">
     <required name="log" ref="//@typeDefinitions.1"/>
     <required name="on" ref="//@typeDefinitions.1"/>
     <required name="off" ref="//@typeDefinitions.1"/>
   </typeDefinitions>
   <typeDefinitions xsi:type="kevoree:MessagePortType" name="org.kevoree.framework.MessagePort"/>
-  <typeDefinitions xsi:type="kevoree:ComponentType" name="FakeConsole" deployUnit="//@deployUnits.1" factoryBean="org.entimid.fakeStuff.devices.FakeConsoleFactory" bean="org.entimid.fakeStuff.devices.FakeConsole" requiredLibs="//@deployUnits.0" startMethod="start" stopMethod="stop">
+  <typeDefinitions xsi:type="kevoree:ComponentType" name="FakeConsole" deployUnits="//@deployUnits.1" factoryBean="org.entimid.fakeStuff.devices.FakeConsoleFactory" bean="org.entimid.fakeStuff.devices.FakeConsole" startMethod="start" stopMethod="stop">
     <required name="log" ref="//@typeDefinitions.1"/>
     <required name="textEntered" ref="//@typeDefinitions.1"/>
     <provided name="showText" ref="//@typeDefinitions.1">
       <mappings beanMethodName="appendIncoming" serviceMethodName="process"/>
     </provided>
   </typeDefinitions>
-  <typeDefinitions xsi:type="kevoree:ComponentType" name="FakeSimpleLog" deployUnit="//@deployUnits.1" factoryBean="org.entimid.fakeStuff.devices.FakeSimpleLogFactory" bean="org.entimid.fakeStuff.devices.FakeSimpleLog" requiredLibs="//@deployUnits.0" startMethod="start" stopMethod="stop">
+  <typeDefinitions xsi:type="kevoree:ComponentType" name="FakeSimpleLog" deployUnits="//@deployUnits.1" factoryBean="org.entimid.fakeStuff.devices.FakeSimpleLogFactory" bean="org.entimid.fakeStuff.devices.FakeSimpleLog" startMethod="start" stopMethod="stop">
     <provided name="log" ref="//@typeDefinitions.1">
       <mappings beanMethodName="processMsg" serviceMethodName="process"/>
     </provided>
   </typeDefinitions>
-  <typeDefinitions xsi:type="kevoree:ComponentType" name="FakeSimpleLight" deployUnit="//@deployUnits.1" factoryBean="org.entimid.fakeStuff.devices.FakeSimpleLightFactory" bean="org.entimid.fakeStuff.devices.FakeSimpleLight" requiredLibs="//@deployUnits.0" startMethod="start" stopMethod="stop">
+  <typeDefinitions xsi:type="kevoree:ComponentType" name="FakeSimpleLight" deployUnits="//@deployUnits.1" factoryBean="org.entimid.fakeStuff.devices.FakeSimpleLightFactory" bean="org.entimid.fakeStuff.devices.FakeSimpleLight" startMethod="start" stopMethod="stop">
     <dictionaryType>
       <attributes name="param1"/>
       <attributes name="param2" optional="true"/>
@@ -53,7 +53,7 @@
     <operations name="on" returnType="//@dataTypes.0"/>
     <operations name="off" returnType="//@dataTypes.0"/>
   </typeDefinitions>
-  <typeDefinitions xsi:type="kevoree:ComponentType" name="FakeSimpleLightA" deployUnit="//@deployUnits.1" factoryBean="org.entimid.fakeStuff.devices.FakeSimpleLightAFactory" bean="org.entimid.fakeStuff.devices.FakeSimpleLightA" requiredLibs="//@deployUnits.0" startMethod="start" stopMethod="stop">
+  <typeDefinitions xsi:type="kevoree:ComponentType" name="FakeSimpleLightA" deployUnits="//@deployUnits.1" factoryBean="org.entimid.fakeStuff.devices.FakeSimpleLightAFactory" bean="org.entimid.fakeStuff.devices.FakeSimpleLightA" startMethod="start" stopMethod="stop">
     <dictionaryType>
       <attributes name="param1"/>
       <attributes name="param2" optional="true"/>
@@ -67,7 +67,7 @@
       <mappings beanMethodName="lightOff" serviceMethodName="process"/>
     </provided>
   </typeDefinitions>
-  <typeDefinitions xsi:type="kevoree:ComponentType" name="FakeSimpleSwitch" deployUnit="//@deployUnits.1" factoryBean="org.entimid.fakeStuff.devices.FakeSimpleSwitchFactory" bean="org.entimid.fakeStuff.devices.FakeSimpleSwitch" requiredLibs="//@deployUnits.0" startMethod="start" stopMethod="stop">
+  <typeDefinitions xsi:type="kevoree:ComponentType" name="FakeSimpleSwitch" deployUnits="//@deployUnits.1" factoryBean="org.entimid.fakeStuff.devices.FakeSimpleSwitchFactory" bean="org.entimid.fakeStuff.devices.FakeSimpleSwitch" startMethod="start" stopMethod="stop">
     <required name="log" ref="//@typeDefinitions.1"/>
     <required name="on" ref="//@typeDefinitions.1"/>
     <required name="off" ref="//@typeDefinitions.1"/>
@@ -76,5 +76,5 @@
   <dataTypes name="void"/>
   <libraries name="EnTiMid-FakeStuff" subTypes="//@typeDefinitions.0 //@typeDefinitions.2 //@typeDefinitions.4 //@typeDefinitions.6 //@typeDefinitions.7"/>
   <deployUnits name="org.entimid.framework" url="mvn:org.entimid/framework"/>
-  <deployUnits groupName="org.entimid" unitName="entimid.fakeStuff" version="3.0.0-SNAPSHOT" hashcode="201010251655616"/>
+  <deployUnits groupName="org.entimid" unitName="entimid.fakeStuff" version="3.0.0-SNAPSHOT" hashcode="201010251655616" requiredLibs="//@deployUnits.0"/>
 </kevoree:ContainerRoot>

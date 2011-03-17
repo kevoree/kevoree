@@ -34,17 +34,29 @@ trait TypeDefinitionMerger extends Merger with DictionaryMerger with PortTypeMer
             if(found_type_definition.isUpdated(toMergeTypeDef)){
               updateTypeDefinition(found_type_definition,toMergeTypeDef)
             }
+            mergeTypeDefinition(found_type_definition,toMergeTypeDef)
           }
-        //SIMPLE CASE ? JUST MERGE THE NEW TYPE DEFINITION
+          //SIMPLE CASE ? JUST MERGE THE NEW TYPE DEFINITION
         case None => mergeNewTypeDefinition(actualModel,toMergeTypeDef)
       }
     }
   }
 
+  
+  private def mergeTypeDefinition(actuelTypeDefinition:TypeDefinition, newTypeDefinition:TypeDefinition) = {
+    //UPDATE DEPLOYS UNIT
+    val root = newTypeDefinition.eContainer.asInstanceOf[ContainerRoot]
+    var allDeployUnits = List() ++newTypeDefinition.getDeployUnits.toList ++actuelTypeDefinition.getDeployUnits.toList  //CLONE LIST
+    newTypeDefinition.getDeployUnits.clear
+    allDeployUnits.foreach{ndu=>
+      var merged = mergeDeployUnit(root,ndu)
+      if(!newTypeDefinition.getDeployUnits.contains(merged)){ newTypeDefinition.getDeployUnits.add(merged) }
+    }
+  }
+  
   /* This method try to update */
   private def updateTypeDefinition(actuelTypeDefinition:TypeDefinition, newTypeDefinition:TypeDefinition) = {
     val root = actuelTypeDefinition.eContainer.asInstanceOf[ContainerRoot]
-
     //REMOVE OLD AND ADD NEW TYPE
     root.getTypeDefinitions.remove(actuelTypeDefinition)
     mergeNewTypeDefinition(root,newTypeDefinition)
@@ -123,18 +135,27 @@ trait TypeDefinitionMerger extends Merger with DictionaryMerger with PortTypeMer
   /* MERGE A SIMPLE NEW TYPE DEFINITION */
   private def mergeNewTypeDefinition(actualModel : ContainerRoot, newTypeDefinition:TypeDefinition) = {
 
-   // println("Merge new type Case =>"+newTypeDefinition)
+    // println("Merge new type Case =>"+newTypeDefinition)
 
-    //MERGE TYPE REQUIRED LIB
-    val etp : List[DeployUnit] = List() ++ newTypeDefinition.getRequiredLibs
-    newTypeDefinition.getRequiredLibs.clear
-    etp.foreach{loopTP=>
-      newTypeDefinition.getRequiredLibs.add(mergeDeployUnit(actualModel,loopTP))
+    //MERGE TYPE REQUIRED LIB DEPRECATED 
+    /*
+     val etp : List[DeployUnit] = List() ++ newTypeDefinition.getRequiredLibs
+     newTypeDefinition.getRequiredLibs.clear
+     etp.foreach{loopTP=>
+     newTypeDefinition.getRequiredLibs.add(mergeDeployUnit(actualModel,loopTP))
+     }*/
+    
+    //MERGE TYPE DEPLOY UNITS
+    var newTypeDefinitionDeployUnits = List() ++newTypeDefinition.getDeployUnits.toList //CLONE LIST
+    newTypeDefinition.getDeployUnits.clear
+    newTypeDefinitionDeployUnits.foreach{ndu=>
+      newTypeDefinition.getDeployUnits.add(mergeDeployUnit(actualModel,ndu))
     }
-    //MERGE TYPE DEPLOY UNIT
-    if(newTypeDefinition.getDeployUnit != null){
-      newTypeDefinition.setDeployUnit(mergeDeployUnit(actualModel,newTypeDefinition.getDeployUnit))
-    }
+    
+    /* DEPRECATED BEFORE DEPLOYTS UNITS TO N
+     if(newTypeDefinition.getDeployUnit != null){
+     newTypeDefinition.setDeployUnit(mergeDeployUnit(actualModel,newTypeDefinition.getDeployUnit))
+     }*/
 
     //ADD RECUSIVE DEFINITON TO ROOT
     newTypeDefinition match {
