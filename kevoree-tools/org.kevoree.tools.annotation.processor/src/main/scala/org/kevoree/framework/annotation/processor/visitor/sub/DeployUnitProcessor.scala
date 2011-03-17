@@ -22,6 +22,7 @@ import com.sun.mirror.apt.AnnotationProcessorEnvironment
 import com.sun.mirror.declaration.TypeDeclaration
 import org.kevoree.KevoreeFactory
 import org.kevoree.ContainerRoot
+import org.kevoree.NodeType
 import org.kevoree.TypeDefinition
 import scala.collection.JavaConversions._
 
@@ -41,7 +42,10 @@ trait DeployUnitProcessor {
 
     var tRepositories = env.getOptions.find({op => op._1.contains("otherRepositories")}).getOrElse{("key=","")}._1.split('=').toList.get(1)
     var tRepositoriesList : List[String] = tRepositories.split(";").filter(r=> r != null && r != "").toList
-    
+
+    var nodeTypeNames = env.getOptions.find({op => op._1.contains("nodeTypeNames")}).getOrElse{("key=","")}._1.split('=').toList.get(1)
+    var nodeTypeNameList : List[String] = nodeTypeNames.split(";").filter(r=> r != null && r != "").toList
+
     var ctdeployunit = root.getDeployUnits.find({du => du.getUnitName == unitName && du.getGroupName == groupName && du.getVersion == version }) match {
       case None => {
           var newdeploy = KevoreeFactory.eINSTANCE.createDeployUnit
@@ -49,12 +53,26 @@ trait DeployUnitProcessor {
           newdeploy.setGroupName(groupName)
           newdeploy.setVersion(version)
           newdeploy.setHashcode(tag)
+          
+          /* ROOT ADD NODE TYPE IF NECESSARY */
+          nodeTypeNameList.foreach{nodeTypeName =>
+            root.getTypeDefinitions.filter(p=> p.isInstanceOf[NodeType]).find(nt => nt.getName == nodeTypeName) match {
+              case Some(existingNodeType)=>newdeploy.setTargetNodeType(existingNodeType.asInstanceOf[NodeType])
+              case None => {
+                  var nodeType = KevoreeFactory.eINSTANCE.createNodeType
+                  nodeType.setName(nodeTypeName)
+                  root.getTypeDefinitions.add(nodeType)
+                  newdeploy.setTargetNodeType(nodeType)
+              }
+            }
+          }
+
           root.getDeployUnits.add(newdeploy)
           newdeploy
         }
       case Some(fdu)=> fdu.setHashcode(tag);fdu
     }
-    typeDef.setDeployUnit(ctdeployunit)
+    typeDef.getDeployUnits.add(ctdeployunit)
 
     /* ADD DEPLOY UNIT to RepositoryList */
     repositoriesList.foreach{repoUrl=>

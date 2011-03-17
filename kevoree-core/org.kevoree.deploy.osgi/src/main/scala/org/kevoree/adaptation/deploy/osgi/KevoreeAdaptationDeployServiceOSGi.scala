@@ -283,12 +283,12 @@ class KevoreeAdaptationDeployServiceOSGi extends KevoreeAdaptationDeployService 
         case tpa: RemoveThirdParty => executedCommandTP = executedCommandTP ++ List(RemoveThirdPartyCommand(tpa.getRef, ctx))
 
         //Type CRUD
-        case cta: AddType => command_add_type = command_add_type ++ List(AddTypeCommand(cta.getRef, ctx))
-        case cta: RemoveType => command_remove_type = command_remove_type ++ List(RemoveTypeCommand(cta.getRef, ctx))
+        case cta: AddType => command_add_type = command_add_type ++ List(AddTypeCommand(cta.getRef, ctx,nodeName))
+        case cta: RemoveType => command_remove_type = command_remove_type ++ List(RemoveTypeCommand(cta.getRef, ctx,nodeName))
         case cta: UpdateType => {
           //UPDATE IS MAPPED UN REMOVE & INSTALL
-          command_remove_type = command_remove_type ++ List(RemoveTypeCommand(cta.getRef, ctx))
-          command_add_type = command_add_type ++ List(AddTypeCommand(cta.getRef, ctx))
+          command_remove_type = command_remove_type ++ List(RemoveTypeCommand(cta.getRef, ctx,nodeName))
+          command_add_type = command_add_type ++ List(AddTypeCommand(cta.getRef, ctx,nodeName))
         }
         //Instance CRUD
         case ca: AddInstance => {

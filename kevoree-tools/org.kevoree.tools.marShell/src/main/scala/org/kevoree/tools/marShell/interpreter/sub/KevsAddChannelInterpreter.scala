@@ -46,7 +46,7 @@ case class KevsAddChannelInterpreter(addChannel: AddChannelInstanceStatment) ext
             println("Type definition is not a channelType " + addChannel.channelType);
             false
           }
-          case None => {
+          case _ => {
             println("Type definition not found " + addChannel.channelType);
             false
           }

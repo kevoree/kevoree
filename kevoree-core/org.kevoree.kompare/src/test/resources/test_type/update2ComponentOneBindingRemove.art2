@@ -46,17 +46,17 @@
       <parameters name="b" type="//@dataTypes.1"/>
     </operations>
   </typeDefinitions>
-  <typeDefinitions xsi:type="kevoree:ChannelType" name="DefaultMessageChannelType" deployUnit="//@deployUnits.1" factoryBean="org.kevoree.framework.baselib.channeltype.DefaultMessageChannelTypeFactory" bean="org.kevoree.framework.baselib.channeltype.DefaultMessageChannelType"/>
-  <typeDefinitions xsi:type="kevoree:ChannelType" name="DefaultServiceChannelType" deployUnit="//@deployUnits.1" factoryBean="org.kevoree.framework.baselib.channeltype.DefaultServiceChannelTypeFactory" bean="org.kevoree.framework.baselib.channeltype.DefaultServiceChannelType"/>
-  <typeDefinitions xsi:type="kevoree:ChannelType" name="LocalBroadcastMessageChannelType" deployUnit="//@deployUnits.1" factoryBean="org.kevoree.framework.baselib.channeltype.LocalBroadcastMessageChannelTypeFactory" bean="org.kevoree.framework.baselib.channeltype.LocalBroadcastMessageChannelType"/>
-  <typeDefinitions xsi:type="kevoree:ComponentType" name="ComponentB" deployUnit="//@deployUnits.0" factoryBean="org.kevoree.lib4tests.ComponentBFactory" bean="org.kevoree.lib4tests.ComponentB" startMethod="start" stopMethod="stop">
+  <typeDefinitions xsi:type="kevoree:ChannelType" name="DefaultMessageChannelType" deployUnits="//@deployUnits.1" factoryBean="org.kevoree.framework.baselib.channeltype.DefaultMessageChannelTypeFactory" bean="org.kevoree.framework.baselib.channeltype.DefaultMessageChannelType"/>
+  <typeDefinitions xsi:type="kevoree:ChannelType" name="DefaultServiceChannelType" deployUnits="//@deployUnits.1" factoryBean="org.kevoree.framework.baselib.channeltype.DefaultServiceChannelTypeFactory" bean="org.kevoree.framework.baselib.channeltype.DefaultServiceChannelType"/>
+  <typeDefinitions xsi:type="kevoree:ChannelType" name="LocalBroadcastMessageChannelType" deployUnits="//@deployUnits.1" factoryBean="org.kevoree.framework.baselib.channeltype.LocalBroadcastMessageChannelTypeFactory" bean="org.kevoree.framework.baselib.channeltype.LocalBroadcastMessageChannelType"/>
+  <typeDefinitions xsi:type="kevoree:ComponentType" name="ComponentB" deployUnits="//@deployUnits.0" factoryBean="org.kevoree.lib4tests.ComponentBFactory" bean="org.kevoree.lib4tests.ComponentB" startMethod="start" stopMethod="stop">
     <required name="req2" ref="//@typeDefinitions.1"/>
     <provided name="prov1" ref="//@typeDefinitions.0">
       <mappings beanMethodName="methodBA" serviceMethodName="methodBA"/>
       <mappings beanMethodName="methodBB" serviceMethodName="methodBB"/>
     </provided>
   </typeDefinitions>
-  <typeDefinitions xsi:type="kevoree:ComponentType" name="ComponentA" deployUnit="//@deployUnits.0" factoryBean="org.kevoree.lib4tests.ComponentAFactory" bean="org.kevoree.lib4tests.ComponentA" startMethod="start" stopMethod="stop">
+  <typeDefinitions xsi:type="kevoree:ComponentType" name="ComponentA" deployUnits="//@deployUnits.0" factoryBean="org.kevoree.lib4tests.ComponentAFactory" bean="org.kevoree.lib4tests.ComponentA" startMethod="start" stopMethod="stop">
     <dictionaryType>
       <attributes name="mandatory1"/>
       <attributes name="mandatory2"/>
@@ -74,7 +74,7 @@
       <mappings beanMethodName="methodAB" serviceMethodName="methodAB"/>
     </provided>
   </typeDefinitions>
-  <typeDefinitions xsi:type="kevoree:ComponentType" name="ComponentPrimitiveTypeService" deployUnit="//@deployUnits.0" factoryBean="org.kevoree.lib4tests.ComponentPrimitiveTypeServiceFactory" bean="org.kevoree.lib4tests.ComponentPrimitiveTypeService" startMethod="start" stopMethod="stop">
+  <typeDefinitions xsi:type="kevoree:ComponentType" name="ComponentPrimitiveTypeService" deployUnits="//@deployUnits.0" factoryBean="org.kevoree.lib4tests.ComponentPrimitiveTypeServiceFactory" bean="org.kevoree.lib4tests.ComponentPrimitiveTypeService" startMethod="start" stopMethod="stop">
     <provided name="portPrimitiveTypes" ref="//@typeDefinitions.3">
       <mappings beanMethodName="methodShort" serviceMethodName="methodShort"/>
       <mappings beanMethodName="methodInt" serviceMethodName="methodInt"/>

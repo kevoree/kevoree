@@ -30,7 +30,7 @@ trait StopNodeKompare extends AbstractKompare {
     var adaptationModel = org.kevoreeAdaptation.KevoreeAdaptationFactory.eINSTANCE.createAdaptationModel
     logger.info("STOP NODE "+node.getName)
 
-    var root = node.eContainer.asInstanceOf[ContainerRoot]
+    var root = node.eContainer.asInstanceOf[ContainerRoot] 
 
     /* add remove FRAGMENT binding */
     root.getHubs.foreach{channel =>
@@ -65,15 +65,19 @@ trait StopNodeKompare extends AbstractKompare {
       var rmctcmd = KevoreeAdaptationFactory.eINSTANCE.createRemoveType
       rmctcmd.setRef(ct)
       adaptationModel.getAdaptations.add(rmctcmd)
+      
+      /* add all reLib from found deploy Unit*/
+      var deployUnitfound : DeployUnit = ct.foundRelevantDeployUnit(node)
+      
 
       /* remove all reLib */
       //TODO
 
       /* add deploy unit if necessary */
-      adaptationModel.getAdaptations.filter(adaptation => adaptation.isInstanceOf[RemoveDeployUnit]).find(adaptation=> adaptation.asInstanceOf[RemoveDeployUnit].getRef.isModelEquals(ct.getDeployUnit) ) match {
+      adaptationModel.getAdaptations.filter(adaptation => adaptation.isInstanceOf[RemoveDeployUnit]).find(adaptation=> adaptation.asInstanceOf[RemoveDeployUnit].getRef.isModelEquals(deployUnitfound) ) match {
         case None => {
             var ctcmd = KevoreeAdaptationFactory.eINSTANCE.createRemoveDeployUnit
-            ctcmd.setRef(ct.getDeployUnit)
+            ctcmd.setRef(deployUnitfound)
             adaptationModel.getAdaptations.add(ctcmd)
           }
         case Some(e)=> //SIMILAR DEPLOY UNIT PRIMITIVE ALREADY REGISTERED

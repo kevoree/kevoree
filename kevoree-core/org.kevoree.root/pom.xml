@@ -8,7 +8,7 @@
     <name>Kevoree :: Root</name>
     <url>https://github.com/dukeboard/kevoree</url>
     
-    <version>1.0.0-RC5</version>
+    <version>1.1.0-BETA1</version>
 
     <properties>
         <emf.version>2.6.0</emf.version>
@@ -122,7 +122,7 @@
         </repository>
         <repository>
             <id>kevoree-libs-release-local</id>
-            <url>http://maven.kevoree.org/libs-release-local</url>
+            <url>http://maven.kevoree.org/release</url>
         </repository>
     </repositories>
 
@@ -134,7 +134,7 @@
         </pluginRepository>
         <pluginRepository>
             <id>plugin.kevoree-github</id>
-            <url>http://maven.kevoree.org/plugins-release-local</url>
+            <url>http://maven.kevoree.org/release</url>
         </pluginRepository>
     </pluginRepositories>
 
@@ -152,28 +152,13 @@
         <module>../org.kevoree.basechecker</module>
     </modules>
 
-<!--
     <distributionManagement>
         <repository>
-            <id>embedded-repo</id>
-            <url>file:${basedir}/../../../kevoreePages/maven</url>
-            <uniqueVersion>false</uniqueVersion>
+            <id>maven.kevoree.org-releases</id>
+            <name>maven.kevoree.org-releases</name>
+            <url>http://maven.kevoree.org/libs-release-local</url>
         </repository>
-        <snapshotRepository>
-            <id>embedded-repo-snapshot</id>
-            <url>file:${basedir}/../../../kevoreePages/maven</url>
-            <uniqueVersion>false</uniqueVersion>
-        </snapshotRepository>
     </distributionManagement>
--->
-
-<distributionManagement>
-    <repository>
-        <id>maven.kevoree.org-releases</id>
-        <name>maven.kevoree.org-releases</name>
-        <url>http://maven.kevoree.org/libs-release-local</url>
-    </repository>
-</distributionManagement>
 
 
 </project>

@@ -224,6 +224,15 @@ public class AnnotationPreProcessorMojo extends AbstractMojo {
      * @readonly
      */
     private MavenProject mavenProject;
+    
+     /**
+     * TargetNodeTypeNames
+     *
+     * @parameter
+     * @required
+     */
+    private String nodeTypeNames;
+    
     private static DateFormat dateFormat = new SimpleDateFormat("yyyyMMddHHmmSSS");
 
     @Override
@@ -261,7 +270,8 @@ public class AnnotationPreProcessorMojo extends AbstractMojo {
                 "tag=" + dateFormat.format(new Date()),
                 "repositories=" + repositories,
                 "otherRepositories=" + otherRepositories,
-                "thirdParties="+thirdParties
+                "thirdParties="+thirdParties,
+                "nodeTypeNames="+nodeTypeNames
                 ).toArray();
 
         Resource resource = new Resource();

@@ -67,6 +67,7 @@ public class BootstrapActivator implements BundleActivator {
         coreBean.setKompareService((ModelKompareService) kompareBean);
         coreBean.setDeployService((KevoreeAdaptationDeployService) deployBean);
         coreBean.start();
+        context.registerService(KevoreeModelHandlerService.class.getName(), coreBean, null);
         System.out.println("Kevoree Started !");
 
         Handler.setModelhandler((KevoreeModelHandlerService) coreBean);

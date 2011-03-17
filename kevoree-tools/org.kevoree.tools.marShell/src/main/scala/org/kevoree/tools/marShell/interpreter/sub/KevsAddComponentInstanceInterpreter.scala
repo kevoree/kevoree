@@ -59,7 +59,7 @@ case class KevsAddComponentInstanceInterpreter(addCompo: AddComponentInstanceSta
                 println("Type definition is not a componentType " + addCompo.typeDefinitionName);
                 false
               }
-              case None => {
+              case _ => {
                 println("Type definition not found " + addCompo.typeDefinitionName);
                 false
               }

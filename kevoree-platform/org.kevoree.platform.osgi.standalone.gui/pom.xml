@@ -1,15 +1,16 @@
+
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <artifactId>org.kevoree.platform.osgi.standalone.gui</artifactId>
     <packaging>jar</packaging>
     <name>Kevoree :: Platform :: OSGI Standalone GUI</name>
-    <version>1.0.0-RC5</version>
+    <version>1.1.0-BETA1</version>
 
     <parent>
         <artifactId>org.kevoree.platform.root</artifactId>
         <groupId>org.kevoree.platform</groupId>
-        <version>1.0.0-RC5</version>
+        <version>1.1.0-BETA1</version>
         <relativePath>../org.kevoree.platform.root/pom.xml</relativePath>
     </parent>
 
@@ -66,11 +67,10 @@
                 </exclusion>
             </exclusions>
         </dependency>
-
         <dependency>
             <groupId>org.apache.felix</groupId>
-            <artifactId>org.apache.felix.main</artifactId>
-            <version>3.0.2</version>
+            <artifactId>org.apache.felix.framework</artifactId>
+            <version>3.0.9</version>
         </dependency>
         <dependency>
             <groupId>org.apache.felix</groupId>
@@ -306,7 +306,11 @@
                         <option>-keep class org.restlet.**</option>
                         -->
                         <option>-keep class org.osgi.** { *; }</option>
+                        <option>-keep class org.restlet.resource.** { *; }</option>
+                        <option>-keep class scala.runtime.** { *; }</option>
+                        
                      <!--   <option>-keep class choco.cp.** { *; }</option>   -->
+                        <option>-keep class org.kevoree.api.** { *; }</option>
                         <option>-keep class org.kevoree.framework.** { *; }</option>
                         <option>-keep class org.kevoree.remote.** { *; }</option>
                         <option>-keep class org.apache.felix.framework.** { *; }</option>

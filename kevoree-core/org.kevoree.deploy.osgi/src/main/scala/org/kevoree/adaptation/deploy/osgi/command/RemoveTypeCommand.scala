@@ -23,7 +23,7 @@ import org.kevoree.adaptation.deploy.osgi.context.KevoreeDeployManager
 import org.slf4j.LoggerFactory
 import scala.collection.JavaConversions._
 
-case class RemoveTypeCommand(ct : TypeDefinition, ctx : KevoreeDeployManager) extends PrimitiveCommand {
+case class RemoveTypeCommand(ct : TypeDefinition, ctx : KevoreeDeployManager,nodeName:String) extends PrimitiveCommand {
 
   var logger = LoggerFactory.getLogger(this.getClass)
 
@@ -35,6 +35,6 @@ case class RemoveTypeCommand(ct : TypeDefinition, ctx : KevoreeDeployManager) ex
   }
 
   def undo() = {
-    AddTypeCommand(ct,ctx).execute
+    AddTypeCommand(ct,ctx,nodeName).execute
   }
 }
