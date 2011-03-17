@@ -28,48 +28,51 @@ import scala.collection.JavaConversions._
 
 trait ProvidedPortProcessor {
 
-  def processProvidedPort(componentType : ComponentType,classdef : TypeDeclaration, env : AnnotationProcessorEnvironment)={
+  def processProvidedPort(componentType : ComponentType, classdef : TypeDeclaration, env : AnnotationProcessorEnvironment)={
     /* CHECK PROVIDED PORTS */
-  
-    if(classdef.getAnnotation(classOf[org.kevoree.annotation.Provides]) != null){
-      classdef.getAnnotation(classOf[org.kevoree.annotation.Provides]).value.foreach{req=>
+    var providedPortAnnotations : List[org.kevoree.annotation.ProvidedPort] = Nil
 
-        var portAll : List[org.kevoree.PortTypeRef] = componentType.getRequired.toList ++ componentType.getProvided.toList
-        portAll.find(alR=> alR.getName == req.name) match {
-          case None => {
-              var ptreqREF = KevoreeFactory.eINSTANCE.createPortTypeRef
-              ptreqREF.setName(req.name)
+    var annotationProvided = classdef.getAnnotation(classOf[org.kevoree.annotation.ProvidedPort])
+    if(annotationProvided != null){ providedPortAnnotations = providedPortAnnotations ++ List(annotationProvided) }
 
-              ptreqREF.setRef(LocalUtility.getOraddPortType(req.`type` match {
-                    case org.kevoree.annotation.PortType.SERVICE => {
-                        var tv = new ServicePortTypeVisitor
-                        try { req.className
-                        } catch {case e : com.sun.mirror.`type`.MirroredTypeException => e.getTypeMirror.accept(tv)}
-                        tv.getDataType
+    var annotationProvides = classdef.getAnnotation(classOf[org.kevoree.annotation.Provides])
+    if(annotationProvides != null){ providedPortAnnotations = providedPortAnnotations ++ annotationProvides.value.toList }
+
+    providedPortAnnotations.foreach{req=>
+
+      var portAll : List[org.kevoree.PortTypeRef] = componentType.getRequired.toList ++ componentType.getProvided.toList
+      portAll.find(alR=> alR.getName == req.name) match {
+        case None => {
+            var ptreqREF = KevoreeFactory.eINSTANCE.createPortTypeRef
+            ptreqREF.setName(req.name)
+
+            ptreqREF.setRef(LocalUtility.getOraddPortType(req.`type` match {
+                  case org.kevoree.annotation.PortType.SERVICE => {
+                      var tv = new ServicePortTypeVisitor
+                      try { req.className
+                      } catch {case e : com.sun.mirror.`type`.MirroredTypeException => e.getTypeMirror.accept(tv)}
+                      tv.getDataType
+                    }
+                  case org.kevoree.annotation.PortType.MESSAGE => {
+                      var mpt = KevoreeFactory.eINSTANCE.createMessagePortType
+                      mpt.setName("org.kevoree.framework.MessagePort")
+                      req.filter.foreach{ndts=>
+                        var ndt = KevoreeFactory.eINSTANCE.createTypedElement
+                        ndt.setName(ndts)
+                        mpt.getFilters.add(LocalUtility.getOraddDataType(ndt))
                       }
-                    case org.kevoree.annotation.PortType.MESSAGE => {
-                        var mpt = KevoreeFactory.eINSTANCE.createMessagePortType
-                        mpt.setName("org.kevoree.framework.MessagePort")
-                        req.filter.foreach{ndts=>
-                          var ndt = KevoreeFactory.eINSTANCE.createTypedElement
-                          ndt.setName(ndts)
-                          mpt.getFilters.add(LocalUtility.getOraddDataType(ndt))
-                        }
-                        mpt
-                      }
-                    case _ => null
-                  }))
+                      mpt
+                    }
+                  case _ => null
+                }))
 
-              componentType.getProvided.add(ptreqREF)
-            }
-          case Some(e)=> {
-              env.getMessager.printError("Port name duplicated in "+componentType.getName+" Scope => "+req.name)
-            }
-        }
-
-
-
+            componentType.getProvided.add(ptreqREF)
+          }
+        case Some(e)=> {
+            env.getMessager.printError("Port name duplicated in "+componentType.getName+" Scope => "+req.name)
+          }
       }
+
     }
   }
 
