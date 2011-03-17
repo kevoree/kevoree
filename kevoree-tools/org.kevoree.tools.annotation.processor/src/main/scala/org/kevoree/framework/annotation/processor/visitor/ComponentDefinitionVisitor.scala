@@ -76,7 +76,7 @@ extends SimpleDeclarationVisitor
     processThirdParty(componentType,typeDecl,env)
     processProvidedPort(componentType,typeDecl,env)
     processRequiredPort(componentType,typeDecl,env)
-    processSlot(env, typeDecl, componentType)
+    processSlot(componentType, typeDecl, env)
 
     typeDecl.getMethods().foreach{method => method.accept(this) }
 
