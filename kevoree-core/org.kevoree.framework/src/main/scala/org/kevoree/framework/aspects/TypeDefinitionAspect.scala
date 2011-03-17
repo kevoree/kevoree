@@ -64,13 +64,15 @@ case class TypeDefinitionAspect(selfTD : TypeDefinition) {
         case Some(e)=> deployUnitfound = e
         case _ =>
       }
-    } else {
-      //BEST EFFORT TRY TO FOUND A DEPLOY UNIT WITH NULL NODE TYPE
-      deployUnitfound = selfTD.getDeployUnits.find(du => du.getTargetNodeType.getName == null).get
-      if(deployUnitfound == null){
-        deployUnitfound = selfTD.getDeployUnits.get(0)
-      }
     }
+    /*
+    if(deployUnitfound == null){
+      deployUnitfound = selfTD.getDeployUnits.find(du => du.getTargetNodeType.getName == null).get
+    }*/
+    if(deployUnitfound == null){
+      deployUnitfound = selfTD.getDeployUnits.get(0)
+    }
+    
     deployUnitfound
     
   }
