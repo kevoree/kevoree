@@ -60,7 +60,10 @@ case class TypeDefinitionAspect(selfTD : TypeDefinition) {
     /* add all reLib from found deploy Unit*/
     var deployUnitfound : DeployUnit = null
     if(node.getTypeDefinition != null){
-      deployUnitfound = selfTD.getDeployUnits.find(du => du.getTargetNodeType.getName == node.getTypeDefinition.getName).get
+      selfTD.getDeployUnits.find(du => du.getTargetNodeType != null && du.getTargetNodeType.getName == node.getTypeDefinition.getName) match {
+        case Some(e)=> deployUnitfound = e
+        case _ =>
+      }
     } else {
       //BEST EFFORT TRY TO FOUND A DEPLOY UNIT WITH NULL NODE TYPE
       deployUnitfound = selfTD.getDeployUnits.find(du => du.getTargetNodeType.getName == null).get
