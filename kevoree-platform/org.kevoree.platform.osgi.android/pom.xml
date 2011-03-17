@@ -13,19 +13,13 @@
         <version>1.0.0-RC5</version>
         <relativePath>../org.kevoree.platform.root/pom.xml</relativePath>
     </parent>
-
-    <!--
-<properties>
-<android.platform.version>8</android.platform.version>
-<android.platform>platforms/android-${android.platform.version}</android.platform>
-<android.framework.aidl>${android.home}/${android.platform}/framework.aidl</android.framework.aidl>
-<android.jar>${android.home}/${android.platform}/android.jar</android.jar>
-<android.tools.aapt>${android.home}/${android.platform}/tools/aapt</android.tools.aapt>
-<android.tools.dx>${android.home}/${android.platform}/tools/dx</android.tools.dx>
-<android.tools.adb>${android.home}/tools/adb</android.tools.adb>
-</properties>
-    -->
-
+	
+    <properties>
+        <android.tools.aapt>${android.home}/platform-tools/aapt</android.tools.aapt>
+        <android.tools.dx>${android.home}/platform-tools/dx</android.tools.dx>
+        <kevoree.version>${project.version}</kevoree.version>
+    </properties>
+	
     <dependencies>
         <dependency>
             <groupId>com.google.android</groupId>
@@ -168,9 +162,7 @@
                             <goal>generate</goal>
                         </goals>
                         <configuration>
-                            <filters>
-                                scala,org.ops4j,org.eclipse.emf,org.slf4j,org.kevoree,org.restlet,android,org.osgi,javax.xml,org.w3c,org.xml
-                            </filters>
+                            <filters>scala,org.ops4j,org.eclipse.emf,org.slf4j,org.kevoree,org.restlet,android,org.osgi,javax.xml,org.w3c,org.xml</filters>
                         </configuration>
                     </execution>
                 </executions>
@@ -240,12 +232,15 @@
                         <option>-keep class org.restlet.**</option>
                         -->
                         <option>-keep class org.osgi.** { *; }</option>
-                        <option>-keep class org.kevoree.framework.** { *; }</option>
-                        <option>-keep class org.kevoree.android.framework.** { *; }</option>
                         <option>-keep class org.restlet.resource.** { *; }</option>
                         <option>-keep class scala.runtime.** { *; }</option>
+                        
+                     <!--   <option>-keep class choco.cp.** { *; }</option>   -->
                         <option>-keep class org.kevoree.api.** { *; }</option>
-
+                        <option>-keep class org.kevoree.framework.** { *; }</option>
+                        <option>-keep class org.kevoree.remote.** { *; }</option>
+                        <option>-keep class org.apache.felix.framework.** { *; }</option>
+                        <option>-keep class org.kevoree.android.framework.** { *; }</option>
                         <option>-dontskipnonpubliclibraryclasses</option>
                         <option>-dontskipnonpubliclibraryclassmembers</option>
                         <option>-dontoptimize</option>
@@ -282,6 +277,10 @@
                             android.content.ContentProvider
                         </option>
                         <option>-keepclassmembers class org.kevoree.android.framework.**</option>
+
+                        <option>
+                            -keepclassmembers class org.kevoree.remote.rest.**
+                        </option>
 
                     </options>
                     <assembly>
@@ -390,122 +389,6 @@
                     </libs>
                 </configuration>
             </plugin>
-
-            <!--
-            <plugin>
-                <groupId>com.pyx4me</groupId>
-                <artifactId>proguard-maven-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <phase>process-classes</phase>
-                        <goals>
-                            <goal>proguard</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <configuration>
-                    <proguardVersion>4.5</proguardVersion>
-                    <injar>android-classes</injar>
-                    <inFilter>!META-INF/**</inFilter>
-                    <libs>
-                        <lib>${java.home}/lib/rt.jar</lib>
-                    </libs>
-                    <obfuscate>false</obfuscate>
-                    <maxMemory>1024m</maxMemory>
-                    <options>
-                        <option>-keep public class * extends android.app.Activity</option>
-                        <option>-keep public class * extends android.app.Application</option>
-                        <option>-keep public class * extends android.app.Service</option>
-                        <option>-keep public class * extends
-                            android.content.BroadcastReceiver
-                        </option>
-                        <option>-keep public class * extends
-                            android.content.ContentProvider
-                        </option>
-                        <option>-dontskipnonpubliclibraryclasses</option>
-                        <option>-dontskipnonpubliclibraryclassmembers</option>
-                        <option>-dontoptimize</option>
-                        <option>-printmapping map.txt</option>
-                        <option>-printseeds seed.txt</option>
-                        <option>-ignorewarnings</option>
-                    </options>
-
-                    <exclusions>
-                        <exclusion>
-                            <groupId>org.scala-lang</groupId>
-                            <artifactId>scala-library</artifactId>
-                        </exclusion>
-                    </exclusions>
-
-                    <assembly>
-
-
-                        <inclusions>
-                            <inclusion>
-                                <groupId>org.kevoree</groupId>
-                                <artifactId>org.kevoree.adaptation.model</artifactId>
-                            </inclusion>
-                            <inclusion>
-                                <groupId>org.kevoree</groupId>
-                                <artifactId>org.kevoree.model</artifactId>
-                            </inclusion>
-                            <inclusion>
-                                <groupId>org.kevoree</groupId>
-                                <artifactId>org.kevoree.framework</artifactId>
-                            </inclusion>
-                            <inclusion>
-                                <groupId>org.kevoree.extra</groupId>
-                                <artifactId>org.kevoree.extra.emf.library</artifactId>
-                            </inclusion>
-                            <inclusion>
-                                <groupId>org.kevoree.tools</groupId>
-                                <artifactId>org.kevoree.tools.android.framework</artifactId>
-                            </inclusion>
-                            <inclusion>
-                                <groupId>org.kevoree</groupId>
-                                <artifactId>org.kevoree.api</artifactId>
-                            </inclusion>
-                            <inclusion>
-                                <groupId>org.kevoree</groupId>
-                                <artifactId>org.kevoree.deploy.osgi</artifactId>
-                            </inclusion>
-                            <inclusion>
-                                <groupId>org.kevoree</groupId>
-                                <artifactId>org.kevoree.kompare</artifactId>
-                            </inclusion>
-                            <inclusion>
-                                <groupId>org.kevoree</groupId>
-                                <artifactId>org.kevoree.core</artifactId>
-                            </inclusion>
-                            <inclusion>
-                                <groupId>org.kevoree</groupId>
-                                <artifactId>org.kevoree.remote</artifactId>
-                            </inclusion>
-                            <inclusion>
-                                <groupId>org.apache.felix</groupId>
-                                <artifactId>org.apache.felix.main</artifactId>
-                            </inclusion>
-
-                            <inclusion>
-                                <groupId>org.apache.felix</groupId>
-                                <artifactId>org.apache.felix.shell.tui</artifactId>
-                            </inclusion>
-
-                            <inclusion>
-                                <groupId>org.apache.felix</groupId>
-                                <artifactId>org.apache.felix.shell.remote</artifactId>
-                            </inclusion>
-                            <inclusion>
-                                <groupId>org.slf4j</groupId>
-                                <artifactId>slf4j-android</artifactId>
-                            </inclusion>
-
-
-                        </inclusions>
-                    </assembly>
-                </configuration>
-            </plugin>
-                    -->
 
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
@@ -626,11 +509,6 @@
         </plugins>
     </build>
 
-    <properties>
-        <android.tools.aapt>${android.home}/platform-tools/aapt</android.tools.aapt>
-        <android.tools.dx>${android.home}/platform-tools/dx</android.tools.dx>
-        <kevoree.version>${project.version}</kevoree.version>
-    </properties>
 
 
 </project>

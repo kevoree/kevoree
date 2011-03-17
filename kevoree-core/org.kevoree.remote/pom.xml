@@ -28,7 +28,7 @@
                     <instructions>
                        <!-- <Bundle-Activator>org.kevoree.kompare.KevoreeKompareActivator</Bundle-Activator>-->
                         <Import-Package>!org.kevoree.remote.*,org.slf4j.*;version="${slf4j.version.range}",*</Import-Package>
-                        <Private-Package>org.kevoree.remote.*</Private-Package>
+                        <Export-Package>org.kevoree.remote.*</Export-Package>
                     </instructions>
                 </configuration>
             </plugin>
