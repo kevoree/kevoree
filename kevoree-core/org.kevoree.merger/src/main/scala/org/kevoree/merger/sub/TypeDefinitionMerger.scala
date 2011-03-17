@@ -33,8 +33,6 @@ trait TypeDefinitionMerger extends Merger with DictionaryMerger with PortTypeMer
         case Some(found_type_definition)=> {
             if(found_type_definition.isUpdated(toMergeTypeDef)){
               updateTypeDefinition(found_type_definition,toMergeTypeDef)
-              
-              println("updated -"+found_type_definition)
             }
             mergeTypeDefinition(found_type_definition,toMergeTypeDef)
           }
@@ -74,7 +72,11 @@ trait TypeDefinitionMerger extends Merger with DictionaryMerger with PortTypeMer
     
     //PARTICULAR CASE - CHECK
     if(actuelTypeDefinition.isInstanceOf[NodeType]){
-      
+      root.getDeployUnits.foreach{du=>
+        if(du.getTargetNodeType!= null && du.getTargetNodeType.getName==actuelTypeDefinition.getName){
+          du.setTargetNodeType(newTypeDefinition.asInstanceOf[NodeType])
+        }
+      }
     }
 
     //PROCESS INSTANCE
