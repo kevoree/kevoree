@@ -58,7 +58,7 @@ class FromExistingSourceTest extends JUnitSuite {
         var outputFolder = new File("target/test-classes/generated")
         var srcRoot = new File(this.getClass.getClassLoader.getResource("targetCode").getPath)
         
-      m2c.modelToCode(componentType.asInstanceOf[ComponentType], srcRoot.toURI, outputFolder.toURI)
+      m2c.modelToCode(model, componentType.asInstanceOf[ComponentType], srcRoot.toURI, outputFolder.toURI)
         
         System.out.println("Model2Code done for " + componentType.getBean)
       }

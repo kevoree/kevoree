@@ -19,29 +19,24 @@
 package org.kevoree.editor.component.creator.handlers
 
 import org.kevoree.ContainerRoot
+import org.kevoree.KevoreeFactory
 import org.kevoree.editor.component.creator.Kernel
-import org.kevoree.editor.component.creator.model.ComponentModelElement
+import org.kevoree.editor.component.creator.model.LibraryModelElement
 import scala.collection.JavaConversions._
 
-trait AddComponentHandler {
+trait AddLibraryHandler {
 
-  def addComponent(root:ContainerRoot,kernel:Kernel,lib:Object) : ComponentModelElement = {
+  def addLibrary(root:ContainerRoot,kernel:Kernel) : LibraryModelElement = {
 
-    var name : String = "Component-" + root.getTypeDefinitions.size
+    var name : String = "lib-" + root.getLibraries.size
 
-    var newComponent = org.kevoree.Art2Factory.eINSTANCE.createComponentType();
-    newComponent.setName(name)
+    var newLib = KevoreeFactory.eINSTANCE.createTypeLibrary();
+    //CREATE NEW NAME
+    newLib.setName(name);
+    root.getLibraries.add(newLib)
 
-    root.getTypeDefinitions.add(newComponent)
-    root.getLibraries.find(libInMod=>libInMod==lib)match{
-      case Some(l) => {
-          l.getSubTypes.add(newComponent)
-      }
-      case None =>
-    }
-
-    var elem = new ComponentModelElement(kernel,name);
-    kernel.getModelMapper.put(elem,newComponent)
+    var elem = new LibraryModelElement(kernel,name);
+    kernel.getModelMapper.put(elem,newLib)
 
     elem
   }

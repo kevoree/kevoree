@@ -56,7 +56,7 @@ trait PortMappingProcessor {
             ptref.getMappings.add(ptREFmapping)
           }
         case None => {
-            var message : String = componentType.getBean + " declares a mapping to a ProvidedPort \"" + annot.name + "\", but this port has not been declared in ComponentType annotations.\nCan not resume. Process Exit.";
+            var message : String = "[PortMappingProcessor]:" + componentType.getBean + " declares a mapping to a ProvidedPort \"" + annot.name + "\", but this port has not been declared in ComponentType annotations.\nCan not resume. Process Exit.";
             env.getMessager.printError(message);
         }
       }

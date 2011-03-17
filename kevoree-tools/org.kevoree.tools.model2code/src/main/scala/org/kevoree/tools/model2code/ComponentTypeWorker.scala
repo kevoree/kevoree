@@ -48,17 +48,20 @@ import japa.parser.ast.stmt.BlockStmt
 import java.util.ArrayList
 import java.util.Collections
 import org.kevoree.ComponentType
+import org.kevoree.ContainerRoot
 import org.kevoree.MessagePortType
 import org.kevoree.Operation
 import org.kevoree.PortTypeMapping
 import org.kevoree.PortTypeRef
 import org.kevoree.ServicePortType
+import org.kevoree.TypeLibrary
 import org.kevoree.annotation._
+import org.kevoree.framework.AbstractComponentType
 import org.kevoree.framework.MessagePort
 import scala.collection.JavaConversions._
 
 
-class ComponentTypeWorker(componentType : ComponentType, compilationUnit : CompilationUnit) {
+class ComponentTypeWorker(root : ContainerRoot, componentType : ComponentType, compilationUnit : CompilationUnit) {
   
   def synchronize {
     initCompilationUnit
@@ -68,6 +71,7 @@ class ComponentTypeWorker(componentType : ComponentType, compilationUnit : Compi
     synchronizeStop(td)
     synchronizeProvidedPorts(td)
     synchronizeRequiredPorts(td)
+    synchronizeLibrary(td)
   }
   
   
@@ -104,6 +108,12 @@ class ComponentTypeWorker(componentType : ComponentType, compilationUnit : Compi
           classDecl.setAnnotations(new ArrayList[AnnotationExpr])
           classDecl.setMembers(new ArrayList[BodyDeclaration])
           ASTHelper.addTypeDeclaration(compilationUnit,classDecl)
+
+          classDecl.setExtends(new ArrayList[ClassOrInterfaceType])
+          classDecl.getExtends.add(new ClassOrInterfaceType(classOf[AbstractComponentType].getName))
+
+          checkOrAddImport(classOf[AbstractComponentType].getName)
+
           classDecl
         }
     }
@@ -227,7 +237,41 @@ class ComponentTypeWorker(componentType : ComponentType, compilationUnit : Compi
     }
   }
 
+  private def synchronizeLibrary(td : TypeDeclaration) {
+    val lib = root.getLibraries.find({libraryType =>
+        libraryType.getSubTypes.find({subType => subType.getName.equals(componentType.getName)}) match {
+          case Some(s) => true
+          case None => false}
+      }).head
+
+    //Check Annotation
+    checkOrAddLibraryAnnotation(td, lib)
+  }
+
+  private def checkOrAddLibraryAnnotation(td : TypeDeclaration, lib : TypeLibrary) {
+    td.getAnnotations.find({annot => annot.getName.toString.equals(classOf[Library].getSimpleName)}) match {
+      case Some(annot) => {
+
+        }
+      case None => {
+          td.getAnnotations.add(createLibraryAnnotation(lib))
+        }
+    }
+    checkOrAddImport(classOf[Library].getName)
+  }
   
+  private def createLibraryAnnotation(lib : TypeLibrary) : NormalAnnotationExpr = {
+    var newAnnot = new NormalAnnotationExpr(new NameExpr(classOf[Library].getSimpleName), null)
+
+    var pairs = new ArrayList[MemberValuePair]
+
+    var portName = new MemberValuePair("name", new StringLiteralExpr(lib.getName))
+    pairs.add(portName)
+
+    newAnnot.setPairs(pairs)
+    newAnnot
+  }
+
   private def checkOrAddRequiredPortAnnotation(annotList : java.util.List[AnnotationExpr], requiredPort : PortTypeRef, td : TypeDeclaration) {
     
     var annotation : NormalAnnotationExpr = annotList.filter({annot => 
