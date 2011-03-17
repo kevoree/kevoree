@@ -29,14 +29,21 @@ import org.kevoree.ComponentType
 
 class Model2Code {
 
-  def modelToCode(componentType : ComponentType, srcRoot : URI) = {
+  def modelToCode(componentType : ComponentType, srcRoot : URI) {
+    modelToCode(componentType, srcRoot, srcRoot) 
+  }
+  
+  def modelToCode(componentType : ComponentType, srcRoot : URI, targetRoot : URI) {
     
     
-    var fileLocation = srcRoot.toString + componentType.getBean.replace(".", "/").concat(".java")
-    var fileLocationUri = new URI(fileLocation)
+    var fileSrcLocation = srcRoot.toString + componentType.getBean.replace(".", "/").concat(".java")
+    var fileSrcLocationUri = new URI(fileSrcLocation)
+    
+    var fileTargetLocation = targetRoot.toString + componentType.getBean.replace(".", "/").concat(".java")
+    var fileTargetLocationUri = new URI(fileTargetLocation)
     
     //Load CU
-    var compilationUnit = compilationUnitLoader(fileLocationUri)
+    var compilationUnit = compilationUnitLoader(fileSrcLocationUri)
     
     if(compilationUnit != null) {
     
@@ -44,28 +51,31 @@ class Model2Code {
       ctw.synchronize
       
       //Save CU
-      compilationUnitWriter(compilationUnit, fileLocationUri)
+      compilationUnitWriter(compilationUnit, fileTargetLocationUri)
       
     }
     
   }
   
+  
+  
   private def compilationUnitLoader(fileLocation : URI) = {
     var file = new File(fileLocation)
     if(!file.exists) {
-      var folders = new File(new URI(fileLocation.toString.substring(0, fileLocation.toString.lastIndexOf("/"))))
-      folders.mkdirs
-      file.createNewFile
+      new CompilationUnit
+    } else {
+      var in = new FileInputStream(file)
+      var cu = JavaParser.parse(in)
+      cu
     }
-    var in = new FileInputStream(file)
-    var cu = JavaParser.parse(in)
-    cu
   }
   
   private def compilationUnitWriter(cu : CompilationUnit, fileLocation : URI) = {
         
     var file = new File(fileLocation)
-    if( ! file.exists) {
+    if(!file.exists) {
+      var folders = new File(new URI(fileLocation.toString.substring(0, fileLocation.toString.lastIndexOf("/"))))
+      folders.mkdirs
       file.createNewFile
     }
             
