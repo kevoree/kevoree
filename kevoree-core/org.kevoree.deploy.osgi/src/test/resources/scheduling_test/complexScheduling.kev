@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kevoree:ContainerRoot xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:kevoree="http://kevoree/1.0">
+  <nodes name="node0">
+    <components name="TOBECHANGED" typeDefinition="//@typeDefinitions.0">
+      <provided portTypeRef="//@typeDefinitions.0/@provided.0"/>
+    </components>
+    <components name="SimpleLight1" typeDefinition="//@typeDefinitions.5">
+      <dictionary>
+        <values attribute="//@typeDefinitions.5/@dictionaryType/@attributes.0" value="SimpleLight"/>
+        <values attribute="//@typeDefinitions.5/@dictionaryType/@attributes.1" value="261"/>
+        <values attribute="//@typeDefinitions.5/@dictionaryType/@attributes.2" value="472"/>
+      </dictionary>
+      <provided portTypeRef="//@typeDefinitions.5/@provided.0"/>
+      <provided portTypeRef="//@typeDefinitions.5/@provided.1"/>
+      <provided portTypeRef="//@typeDefinitions.5/@provided.2"/>
+      <required portTypeRef="//@typeDefinitions.5/@required.0"/>
+    </components>
+  </nodes>
+  <typeDefinitions xsi:type="kevoree:ComponentType" name="HomeDrawing" deployUnits="//@deployUnits.2" factoryBean="org.entimid.homesimulator.HomeDrawingFactory" bean="org.entimid.homesimulator.HomeDrawing" startMethod="start" stopMethod="stop" updateMethod="update">
+    <dictionaryType>
+      <attributes name="name"/>
+      <attributes name="xPosition" optional="true"/>
+      <attributes name="yPosition" optional="true"/>
+      <defaultValues attribute="//@typeDefinitions.0/@dictionaryType/@attributes.1" value="0"/>
+      <defaultValues attribute="//@typeDefinitions.0/@dictionaryType/@attributes.2" value="0"/>
+    </dictionaryType>
+    <provided name="uiService" ref="//@typeDefinitions.1">
+      <mappings beanMethodName="repaint" serviceMethodName="repaint"/>
+      <mappings beanMethodName="addComponent" serviceMethodName="addComponent"/>
+      <mappings beanMethodName="removeComponent" serviceMethodName="removeComponent"/>
+    </provided>
+  </typeDefinitions>
+  <typeDefinitions xsi:type="kevoree:ServicePortType" name="org.entimid.homesimulator.services.HomeDrawingService"/>
+  <typeDefinitions xsi:type="kevoree:ComponentType" name="OnOffSwitch" deployUnits="//@deployUnits.2" factoryBean="org.entimid.homesimulator.devices.OnOffSwitchFactory" bean="org.entimid.homesimulator.devices.OnOffSwitch" startMethod="start" stopMethod="stop" updateMethod="update">
+    <dictionaryType>
+      <attributes name="name"/>
+      <attributes name="xPosition" optional="true"/>
+      <attributes name="yPosition" optional="true"/>
+      <defaultValues attribute="//@typeDefinitions.2/@dictionaryType/@attributes.1" value="0"/>
+      <defaultValues attribute="//@typeDefinitions.2/@dictionaryType/@attributes.2" value="0"/>
+    </dictionaryType>
+    <required name="on" ref="//@typeDefinitions.3"/>
+    <required name="off" ref="//@typeDefinitions.3"/>
+    <required name="uiService" ref="//@typeDefinitions.1"/>
+  </typeDefinitions>
+  <typeDefinitions xsi:type="kevoree:MessagePortType" name="org.kevoree.framework.MessagePort"/>
+  <typeDefinitions xsi:type="kevoree:ComponentType" name="OnOffSwitchInFrame" deployUnits="//@deployUnits.2" factoryBean="org.entimid.homesimulator.devices.OnOffSwitchInFrameFactory" bean="org.entimid.homesimulator.devices.OnOffSwitchInFrame" startMethod="start" stopMethod="stop" updateMethod="update">
+    <dictionaryType>
+      <attributes name="name"/>
+      <attributes name="xPosition" optional="true"/>
+      <attributes name="yPosition" optional="true"/>
+      <defaultValues attribute="//@typeDefinitions.4/@dictionaryType/@attributes.1" value="0"/>
+      <defaultValues attribute="//@typeDefinitions.4/@dictionaryType/@attributes.2" value="0"/>
+    </dictionaryType>
+    <required name="on" ref="//@typeDefinitions.3"/>
+    <required name="off" ref="//@typeDefinitions.3"/>
+    <required name="uiService" ref="//@typeDefinitions.1"/>
+  </typeDefinitions>
+  <typeDefinitions xsi:type="kevoree:ComponentType" name="SimpleLight" deployUnits="//@deployUnits.2" factoryBean="org.entimid.homesimulator.devices.SimpleLightFactory" bean="org.entimid.homesimulator.devices.SimpleLight" startMethod="start" stopMethod="stop" updateMethod="update">
+    <dictionaryType>
+      <attributes name="name"/>
+      <attributes name="xPosition" optional="true"/>
+      <attributes name="yPosition" optional="true"/>
+      <defaultValues attribute="//@typeDefinitions.5/@dictionaryType/@attributes.1" value="0"/>
+      <defaultValues attribute="//@typeDefinitions.5/@dictionaryType/@attributes.2" value="0"/>
+    </dictionaryType>
+    <required name="uiService" ref="//@typeDefinitions.1"/>
+    <provided name="on" ref="//@typeDefinitions.3">
+      <mappings beanMethodName="lightOn" serviceMethodName="process"/>
+    </provided>
+    <provided name="off" ref="//@typeDefinitions.3">
+      <mappings beanMethodName="lightOff" serviceMethodName="process"/>
+    </provided>
+    <provided name="onoff" ref="//@typeDefinitions.6">
+      <mappings beanMethodName="lightOn" serviceMethodName="on"/>
+      <mappings beanMethodName="lightOff" serviceMethodName="off"/>
+    </provided>
+  </typeDefinitions>
+  <typeDefinitions xsi:type="kevoree:ServicePortType" name="org.entimid.framework.service.OnOffService">
+    <operations name="on" returnType="//@dataTypes.0"/>
+    <operations name="off" returnType="//@dataTypes.0"/>
+  </typeDefinitions>
+  <typeDefinitions xsi:type="kevoree:ChannelType" name="defSERVICE" deployUnits="//@deployUnits.3" factoryBean="org.kevoree.library.defaultChannels.defSERVICEFactory" bean="org.kevoree.library.defaultChannels.defSERVICE" startMethod="startHello" stopMethod="stopHello"/>
+  <typeDefinitions xsi:type="kevoree:ChannelType" name="defMSG" deployUnits="//@deployUnits.3" factoryBean="org.kevoree.library.defaultChannels.defMSGFactory" bean="org.kevoree.library.defaultChannels.defMSG" startMethod="startHello" stopMethod="stopHello" updateMethod="updateHello"/>
+  <repositories units="//@deployUnits.2" url="http://dukeboard.github.com/kevoree/maven/"/>
+  <repositories units="//@deployUnits.3" url="http://maven.kevoree.org/libs-release/"/>
+  <dataTypes name="void"/>
+  <dataTypes name="javax.swing.JComponent"/>
+  <libraries name="EnTiMid-HomeSimulator" subTypes="//@typeDefinitions.0 //@typeDefinitions.2 //@typeDefinitions.4 //@typeDefinitions.5"/>
+  <libraries name="art2baselib" subTypes="//@typeDefinitions.7 //@typeDefinitions.8"/>
+  <hubs name="hubuiService1" typeDefinition="//@typeDefinitions.7"/>
+  <mBindings port="//@nodes.0/@components.0/@provided.0" hub="//@hubs.0"/>
+  <mBindings port="//@nodes.0/@components.1/@required.0" hub="//@hubs.0"/>
+  <deployUnits name="pax-logging" url="mvn:org.ops4j.pax.logging/pax-logging-api/1.5.3"/>
+  <deployUnits name="org.entimid.framework" url="mvn:org.entimid/framework"/>
+  <deployUnits groupName="org.entimid" unitName="org.entimid.homesimulator" requiredLibs="//@deployUnits.0 //@deployUnits.1" version="1.0.0" hashcode="201102111459795"/>
+  <deployUnits groupName="org.kevoree.library" unitName="org.kevoree.library.defaultChannels" version="1.0.0-RC4" hashcode="201103020926370"/>
+</kevoree:ContainerRoot>

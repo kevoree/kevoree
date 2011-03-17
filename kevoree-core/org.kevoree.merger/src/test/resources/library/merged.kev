@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <kevoree:ContainerRoot xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:kevoree="http://kevoree/1.0">
-  <typeDefinitions xsi:type="kevoree:GroupType" name="GossipGroup" deployUnit="//@deployUnits.0" factoryBean="org.kevoree.library.gossiper.GossipGroupFactory" bean="org.kevoree.library.gossiper.GossipGroup" startMethod="startGroup" stopMethod="stopGroup"/>
+  <typeDefinitions xsi:type="kevoree:GroupType" name="GossipGroup" deployUnits="//@deployUnits.0" factoryBean="org.kevoree.library.gossiper.GossipGroupFactory" bean="org.kevoree.library.gossiper.GossipGroup" startMethod="startGroup" stopMethod="stopGroup"/>
   <repositories units="//@deployUnits.0" url="http://maven.kevoree.org/libs-release/"/>
   <deployUnits groupName="org.kevoree.library" unitName="org.kevoree.library.gossiper" version="1.0.0-RC5" hashcode="201103031307121"/>
 </kevoree:ContainerRoot>

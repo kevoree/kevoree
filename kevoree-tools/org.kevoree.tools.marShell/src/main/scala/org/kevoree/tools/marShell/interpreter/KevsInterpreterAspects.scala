@@ -35,6 +35,8 @@ object KevsInterpreterAspects {
       }
     case st : Statment => st match {
         case addst : AddComponentInstanceStatment => KevsAddComponentInstanceInterpreter(addst)
+        case removest : RemoveComponentInstanceStatment => KevsRemoveComponentInstanceInterpreter(removest)
+          
         case addChannel : AddChannelInstanceStatment => KevsAddChannelInterpreter(addChannel)
         case removeChannel : RemoveChannelInstanceStatment => KevsRemoveChannelInterpreter(removeChannel)
         case addNodest : AddNodeStatment => KevsAddNodeInterpreter(addNodest)

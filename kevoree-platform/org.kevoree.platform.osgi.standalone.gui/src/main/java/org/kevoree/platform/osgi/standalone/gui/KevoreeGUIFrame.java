@@ -35,7 +35,9 @@ public class KevoreeGUIFrame extends JFrame {
         this.setIconImage(smallIcon.getImage());
         JLabel topImage = new JLabel(topIIcon);
         topImage.setOpaque(false);
+        topImage.setBackground(new Color(63, 128, 187));
         this.add(topImage, BorderLayout.NORTH);
+        
 
 
         File mavenDir = new File(System.getProperty("user.home") + "/.m2/repository");
@@ -43,11 +45,6 @@ public class KevoreeGUIFrame extends JFrame {
             System.out.println("use mavenDir=file:///" + mavenDir.getAbsoluteFile().getAbsolutePath());
             System.setProperty("org.kevoree.remote.provisioning", "file:///"+mavenDir.getAbsolutePath());
         }
-
-
-
-
-
 
         String response = (String) JOptionPane.showInputDialog(this,
                 "Kevoree node name ?",

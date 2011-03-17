@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kevoree:ContainerRoot xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:kevoree="http://kevoree/1.0">
+  <nodes name="node0"/>
+</kevoree:ContainerRoot>

@@ -28,28 +28,33 @@ trait DeployUnitMerger extends Merger {
   def mergeDeployUnit(actualModel : ContainerRoot,tp : DeployUnit) : DeployUnit = {
     actualModel.getDeployUnits.find({atp=> atp.getName == tp.getName}) match {
       case Some(ftp)=> {
+        
           //CHECK CONSISTENCY, IF NOT JUST ADD
           if(tp.getUrl != ftp.getUrl || tp.getUnitName != ftp.getUnitName || tp.getGroupName != ftp.getGroupName || tp.getVersion != ftp.getVersion  ){
-            actualModel.getDeployUnits.add(tp);tp
+            actualModel.getDeployUnits.add(tp);
+            mergeRequiredLibs(actualModel,tp)
+            tp
           } else {
             this.addPostProcess({ ()=> { ftp.setHashcode(tp.getHashcode) } })
+            mergeRequiredLibs(actualModel,ftp)
             ftp
           }
         }
       case None => {
-          actualModel.getDeployUnits.add(tp);tp
+          actualModel.getDeployUnits.add(tp)
+          mergeRequiredLibs(actualModel,tp)
+          tp
         }
     }
   }
-
-
-/*
-
-  def merge(actualModel : ContainerRoot,modelToMerge : ContainerRoot) : Unit = {
-    /* STEP 0 MERGE PARTY */
-    var tps : List[DeployUnit] = List()++modelToMerge.getDeployUnits.toList
-    tps.foreach{tp=>
-      mergeDeployUnit(actualModel,tp)
+    
+  def mergeRequiredLibs(actualModel : ContainerRoot,tp : DeployUnit)={
+    var requireds : List[DeployUnit] = List()++tp.getRequiredLibs.toList
+    tp.getRequiredLibs.clear
+    requireds.foreach{rLib=>
+      tp.getRequiredLibs.add(mergeDeployUnit(actualModel,rLib))
     }
-  }*/
+  }
+
+  
 }

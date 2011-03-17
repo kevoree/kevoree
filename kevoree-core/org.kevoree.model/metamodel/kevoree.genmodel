@@ -103,6 +103,8 @@
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute kevoree.ecore#//DeployUnit/version"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute kevoree.ecore#//DeployUnit/url"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute kevoree.ecore#//DeployUnit/hashcode"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference kevoree.ecore#//DeployUnit/requiredLibs"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference kevoree.ecore#//DeployUnit/targetNodeType"/>
     </genClasses>
     <genClasses ecoreClass="kevoree.ecore#//TypeLibrary">
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference kevoree.ecore#//TypeLibrary/subTypes"/>
@@ -148,10 +150,9 @@
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute kevoree.ecore#//ChannelType/upperFragments"/>
     </genClasses>
     <genClasses ecoreClass="kevoree.ecore#//TypeDefinition">
-      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference kevoree.ecore#//TypeDefinition/deployUnit"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference kevoree.ecore#//TypeDefinition/deployUnits"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute kevoree.ecore#//TypeDefinition/factoryBean"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute kevoree.ecore#//TypeDefinition/bean"/>
-      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference kevoree.ecore#//TypeDefinition/requiredLibs"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference kevoree.ecore#//TypeDefinition/dictionaryType"/>
     </genClasses>
     <genClasses ecoreClass="kevoree.ecore#//Instance">

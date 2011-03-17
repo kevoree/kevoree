@@ -4,22 +4,12 @@
  */
 package org.kevoree.library.gossiper;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import org.kevoree.library.gossiper.version.VersionUtils;
 import org.kevoree.library.gossiper.version.GossiperMessages.VectorClock;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.restlet.data.MediaType;
-import org.restlet.representation.ChannelRepresentation;
-import org.restlet.representation.InputRepresentation;
-import org.restlet.representation.OutputRepresentation;
-import org.restlet.representation.WritableRepresentation;
 
 /**
  *
@@ -49,7 +39,7 @@ public class ClockVectorMergerJUnitTest {
     // TODO add test methods here.
     // The methods must be annotated with annotation @Test. For example:
     //
-    @Test
+    /*@Test
     public void checkMerger() {
         VectorClock v1 = org.kevoree.library.gossiper.version.GossiperMessages.VectorClock.newBuilder().
                 setTimestamp(System.currentTimeMillis()).
@@ -68,7 +58,9 @@ public class ClockVectorMergerJUnitTest {
                 addEnties(org.kevoree.library.gossiper.version.GossiperMessages.ClockEntry.newBuilder().setNodeID("A").setVersion(1).setTimestamp(System.currentTimeMillis())).
                 addEnties(org.kevoree.library.gossiper.version.GossiperMessages.ClockEntry.newBuilder().setNodeID("F").setVersion(6).setTimestamp(System.currentTimeMillis())).build();
 
-        VectorClock v3 = VersionUtils.merge(v1, v2);
+        VectorClockActor actor = new VectorClockActor("C");
+        actor.swap(v1);
+        VectorClock v3 = actor.merge(v2);
 
         assert (v3.getEnties(0).getNodeID().equals("A"));
         assert (v3.getEnties(0).getVersion() == 2);
@@ -90,33 +82,34 @@ public class ClockVectorMergerJUnitTest {
 
 
 
-        try {
-            byte[] flux = v3.toByteArray();
-            System.out.println();
-            for (int i = 0; i < flux.length; i++) {
-                System.out.print(flux[i]);
-            }
-            System.out.println();
-            
-            String flux2 = new String(flux);
-            byte[] flux3 = flux2.getBytes();
-            System.out.println();
-            for(int i = 0; i< flux3.length;i++){
-                System.out.print(flux3[i]);
-            }
-            System.out.println();
-
-            VectorClock deocoded = VectorClock.parseFrom(flux3);
-            System.out.println(deocoded);
-
-        } catch (IOException ex) {
-            Logger.getLogger(ClockVectorMergerJUnitTest.class.getName()).log(Level.SEVERE, null, ex);
-        }
 
 
 
+    }*/
+	 
+	@Test
+    public void checkCompare() {
+		 VectorClock v1 = org.kevoree.library.gossiper.version.GossiperMessages.VectorClock.newBuilder().
+                setTimestamp(System.currentTimeMillis()).
+                addEnties(org.kevoree.library.gossiper.version.GossiperMessages.ClockEntry.newBuilder().setNodeID("A").setVersion(2).setTimestamp(System.currentTimeMillis()))
+                //addEnties(org.kevoree.library.gossiper.version.GossiperMessages.ClockEntry.newBuilder().setNodeID("B").setVersion(3).setTimestamp(System.currentTimeMillis())).
+                //addEnties(org.kevoree.library.gossiper.version.GossiperMessages.ClockEntry.newBuilder().setNodeID("C").setVersion(1).setTimestamp(System.currentTimeMillis())).
+                //addEnties(org.kevoree.library.gossiper.version.GossiperMessages.ClockEntry.newBuilder().setNodeID("D").setVersion(5).setTimestamp(System.currentTimeMillis())).
+                //addEnties(org.kevoree.library.gossiper.version.GossiperMessages.ClockEntry.newBuilder().setNodeID("E").setVersion(4).setTimestamp(System.currentTimeMillis()))
+				 .build();
 
-
-
-    }
+        VectorClock v2 = org.kevoree.library.gossiper.version.GossiperMessages.VectorClock.newBuilder().
+                setTimestamp(System.currentTimeMillis()).
+                addEnties(org.kevoree.library.gossiper.version.GossiperMessages.ClockEntry.newBuilder().setNodeID("E").setVersion(2).setTimestamp(System.currentTimeMillis()))
+                //addEnties(org.kevoree.library.gossiper.version.GossiperMessages.ClockEntry.newBuilder().setNodeID("C").setVersion(5).setTimestamp(System.currentTimeMillis())).
+                //addEnties(org.kevoree.library.gossiper.version.GossiperMessages.ClockEntry.newBuilder().setNodeID("B").setVersion(4).setTimestamp(System.currentTimeMillis())).
+                //addEnties(org.kevoree.library.gossiper.version.GossiperMessages.ClockEntry.newBuilder().setNodeID("D").setVersion(3).setTimestamp(System.currentTimeMillis())).
+                //addEnties(org.kevoree.library.gossiper.version.GossiperMessages.ClockEntry.newBuilder().setNodeID("A").setVersion(1).setTimestamp(System.currentTimeMillis())).
+                //addEnties(org.kevoree.library.gossiper.version.GossiperMessages.ClockEntry.newBuilder().setNodeID("F").setVersion(6).setTimestamp(System.currentTimeMillis()))
+				.build();
+        
+		System.out.println(org.kevoree.library.gossiper.VersionUtils.compare(v1, v2));
+		
+	}
+	
 }
