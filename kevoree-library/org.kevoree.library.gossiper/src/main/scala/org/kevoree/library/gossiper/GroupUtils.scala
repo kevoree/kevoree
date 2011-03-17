@@ -7,6 +7,7 @@ package org.kevoree.library.gossiper
 
 import org.kevoree.ContainerRoot
 import scala.collection.JavaConversions._
+import org.kevoree.framework.aspects.KevoreeAspects._
 
 object GroupUtils {
 
@@ -18,7 +19,10 @@ object GroupUtils {
           oldModel.getGroups.find(group => group.getName==instanceGroupName && group.getSubNodes.exists(sub=>sub.getName == nodeName)) match {
             case Some(currentGroup)=> {
                 //TYPE DEF HASHCODE COMPARE
-                return (newGroup.getTypeDefinition.getDeployUnit.getHashcode != currentGroup.getTypeDefinition.getDeployUnit.getHashcode)
+                var node = newModel.getNodes.find(node=>node.getName==nodeName).get
+                
+                
+                return (newGroup.getTypeDefinition.foundRelevantDeployUnit(node).getHashcode != currentGroup.getTypeDefinition.foundRelevantDeployUnit(node).getHashcode)
             }
             case None => true//STRANGE ERROR wTf  - HaraKiri best effort
           }
