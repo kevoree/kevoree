@@ -119,7 +119,7 @@ class Model2Code {
     pr.println("    <dependency>")
     pr.println("      <groupId>org.kevoree.tools</groupId>")
     pr.println("      <artifactId>org.kevoree.tools.annotation.api</artifactId>")
-    pr.println("      <version>1.1.0-SNAPSHOT</version>")
+    pr.println("      <version>1.1.0-BETA1</version>")
     pr.println("      <scope>compile</scope>")
     pr.println("    </dependency>")
 
@@ -132,7 +132,7 @@ class Model2Code {
       if(duVals(2) != null) {
         pr.println("      <version>"+duVals(2)+"</version>")
       }
-      pr.println("      <scope>compile</scope>")
+      pr.println("      <scope>provided</scope>")
       pr.println("    </dependency>")
     }
 
@@ -170,8 +170,11 @@ class Model2Code {
     pr.println("      <plugin>")
     pr.println("        <groupId>org.kevoree.tools</groupId>")
     pr.println("        <artifactId>org.kevoree.tools.annotation.mavenplugin</artifactId>")
-    pr.println("        <version>1.1.0-SNAPSHOT</version>")
+    pr.println("        <version>1.1.0-BETA1</version>")
     pr.println("        <extensions>true</extensions>")
+    pr.println("        <configuration>")
+    pr.println("          <nodeTypeNames>JavaSENode</nodeTypeNames>")
+    pr.println("        </configuration>")
     pr.println("        <executions>")
     pr.println("          <execution>")
     pr.println("            <goals>")

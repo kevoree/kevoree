@@ -69,9 +69,11 @@ class ComponentTypeWorker(root : ContainerRoot, componentType : ComponentType, c
     var td = sychronizeClass
     synchronizeStart(td)
     synchronizeStop(td)
+    synchronizeUpdate(td)
     synchronizeProvidedPorts(td)
     synchronizeRequiredPorts(td)
     synchronizeLibrary(td)
+    synchronizeDictionary(td)
   }
   
   
@@ -197,7 +199,46 @@ class ComponentTypeWorker(root : ContainerRoot, componentType : ComponentType, c
       checkOrAddMarkerAnnotation(stopMethod, classOf[Stop].getName)
     }
   }
-  
+
+  private def synchronizeUpdate(td : TypeDeclaration) {
+    //Check method presence
+    var updateMethod = new MethodDeclaration
+
+    if(componentType.getUpdateMethod == null || componentType.getUpdateMethod.equals("")) {
+
+      //No start method in the model
+      var possibleMethodNames = List("update", "updateComponent", "updateKevoreeComponent")
+      var methods = td.getMembers.filter({member => member.isInstanceOf[MethodDeclaration]})
+
+      //Check available names for start method
+      var availableNames = possibleMethodNames.filter({name =>
+          methods.filter({method =>
+              method.asInstanceOf[MethodDeclaration].getName.equals(name)}).size == 0})
+
+
+      updateMethod = availableNames.head match {
+        case name : String => addDefaultMethod(td, name)
+        case _=> {
+            printf("No name found for Update method name generation. Please add the update annotation by hand.")
+            null
+          }
+      }
+
+    } else {
+      updateMethod = td.getMembers.filter({member => member.isInstanceOf[MethodDeclaration]}).find({method =>
+          method.asInstanceOf[MethodDeclaration].getName.equals(componentType.getStopMethod)}) match {
+        case Some(m:MethodDeclaration) => m
+        case None=> addDefaultMethod(td, componentType.getUpdateMethod)
+      }
+    }
+
+    //Check annotation
+    if(updateMethod != null) {
+      checkOrAddMarkerAnnotation(updateMethod, classOf[Update].getName)
+    }
+  }
+
+
   private def synchronizeProvidedPorts(td : TypeDeclaration) {
     
     componentType.getProvided.size match {
@@ -205,7 +246,6 @@ class ComponentTypeWorker(root : ContainerRoot, componentType : ComponentType, c
           //remove provided ports if exists
           checkOrRemoveAnnotation(td, classOf[Provides].getName)
           checkOrRemoveAnnotation(td, classOf[ProvidedPort].getName)
-          
         }
       case 1 => {
           //check ProvidedPort
@@ -248,6 +288,80 @@ class ComponentTypeWorker(root : ContainerRoot, componentType : ComponentType, c
     checkOrAddLibraryAnnotation(td, lib)
   }
 
+  private def synchronizeDictionary(td : TypeDeclaration) {
+
+    if(componentType.getDictionaryType != null) {
+      val dic : SingleMemberAnnotationExpr = td.getAnnotations.find({annot => annot.getName.toString.equals(classOf[DictionaryType].getSimpleName)}) match {
+        case Some(annot) => annot.asInstanceOf[SingleMemberAnnotationExpr]
+        case None => {
+            val newDic = createDictionaryAnnotation
+            td.getAnnotations.add(newDic)
+            newDic
+          }
+      }
+      checkOrUpdateDictionary(td, dic)
+      // checkOrAddImport(classOf[Library].getName)
+    }
+
+  }
+
+  private def checkOrUpdateDictionary(td : TypeDeclaration, dicAnnot : SingleMemberAnnotationExpr) {
+    //for each attribute in the model
+    componentType.getDictionaryType.getAttributes.foreach{dicAtt =>
+      //retreive or create the attribute annotation
+      dicAnnot.getMemberValue.asInstanceOf[ArrayInitializerExpr].getValues.find({member =>
+          member.asInstanceOf[NormalAnnotationExpr].getPairs.find({pair =>
+              pair.getName.equals("name") && pair.getValue.asInstanceOf[StringLiteralExpr].getValue.equals(dicAtt.getName)}) match {
+            case Some(s)=>true
+            case None=>false
+          }}) match {
+
+        case Some(ann)=>updateDictionaryAtribute(ann.asInstanceOf[NormalAnnotationExpr], dicAtt)
+        case None => dicAnnot.getMemberValue.asInstanceOf[ArrayInitializerExpr].getValues.add(
+            createDictionaryAttributeAnnotation(componentType.getDictionaryType, dicAtt))
+      }
+    }
+  }
+
+  private def updateDictionaryAtribute(attributeAnn : NormalAnnotationExpr, dictAttr : org.kevoree.DictionaryAttribute) {
+    //TODO
+  }
+
+  private def createDictionaryAnnotation() : SingleMemberAnnotationExpr = {
+    var newAnnot = new SingleMemberAnnotationExpr(new NameExpr(classOf[DictionaryType].getSimpleName), null)
+    var memberValue = new ArrayInitializerExpr
+    memberValue.setValues(new ArrayList[Expression])
+    newAnnot.setMemberValue(memberValue)
+    checkOrAddImport(classOf[DictionaryType].getName)
+    checkOrAddImport(classOf[DictionaryAttribute].getName)
+    newAnnot
+  }
+
+  private def createDictionaryAttributeAnnotation(dict : org.kevoree.DictionaryType, dictAttr : org.kevoree.DictionaryAttribute) : NormalAnnotationExpr = {
+    var newAnnot = new NormalAnnotationExpr(new NameExpr(classOf[DictionaryAttribute].getSimpleName), null)
+
+    var pairs = new ArrayList[MemberValuePair]
+
+    var portName = new MemberValuePair("name", new StringLiteralExpr(dictAttr.getName))
+    pairs.add(portName)
+
+    if(dictAttr.isOptional) {
+      var opt = new MemberValuePair("optional", new BooleanLiteralExpr(dictAttr.isOptional.booleanValue))
+      pairs.add(opt)
+    }
+
+    dict.getDefaultValues.find({defVal => defVal.getAttribute.getName.equals(dictAttr.getName)}) match {
+      case Some(defVal) => {
+          var defValue = new MemberValuePair("defaultValue", new StringLiteralExpr(defVal.getValue))
+          pairs.add(defValue)
+        }
+      case None =>
+    }
+
+    newAnnot.setPairs(pairs)
+    newAnnot
+  }
+  
   private def checkOrAddLibraryAnnotation(td : TypeDeclaration, lib : TypeLibrary) {
     td.getAnnotations.find({annot => annot.getName.toString.equals(classOf[Library].getSimpleName)}) match {
       case Some(annot) => {
