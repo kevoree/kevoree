@@ -1,0 +1,44 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>org.kevoree.tools.ui.creator</artifactId>
+    <packaging>bundle</packaging>
+    <name>Kevoree :: Tools :: UI Creator</name>
+    <version>1.1.0-SNAPSHOT</version>
+
+    <parent>
+        <artifactId>org.kevoree.tools.root</artifactId>
+        <groupId>org.kevoree.tools</groupId>
+        <version>1.0.0-RC5</version>
+        <relativePath>../org.kevoree.tools.root/pom.xml</relativePath>
+    </parent>
+
+    <dependencies>
+        <dependency>
+            <artifactId>org.kevoree.framework</artifactId>
+            <groupId>org.kevoree</groupId>
+            <version>1.0.0-RC5</version>
+        </dependency>
+        <dependency>
+            <groupId>org.kevoree.tools</groupId>
+            <artifactId>org.kevoree.tools.annotation.api</artifactId>
+            <version>1.1.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.scalatest</groupId>
+            <artifactId>scalatest</artifactId>
+            <version>1.3</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <distributionManagement>
+        <snapshotRepository>
+            <id>maven.kevoree.org-snapshots</id>
+            <name>maven.kevoree.org-snapshots</name>
+            <url>http://maven.kevoree.org/libs-snapshot-local</url>
+        </snapshotRepository>
+    </distributionManagement>
+
+</project>

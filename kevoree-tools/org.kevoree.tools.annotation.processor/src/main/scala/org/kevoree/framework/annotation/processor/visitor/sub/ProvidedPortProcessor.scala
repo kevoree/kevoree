@@ -30,6 +30,7 @@ trait ProvidedPortProcessor {
 
   def processProvidedPort(componentType : ComponentType,classdef : TypeDeclaration, env : AnnotationProcessorEnvironment)={
     /* CHECK PROVIDED PORTS */
+  
     if(classdef.getAnnotation(classOf[org.kevoree.annotation.Provides]) != null){
       classdef.getAnnotation(classOf[org.kevoree.annotation.Provides]).value.foreach{req=>
 
