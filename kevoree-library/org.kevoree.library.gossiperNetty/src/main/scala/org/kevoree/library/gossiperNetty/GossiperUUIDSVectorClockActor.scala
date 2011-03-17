@@ -9,12 +9,13 @@ import java.util.HashMap
 import java.util.UUID
 import org.kevoree.library.gossiper.version.GossiperMessages.ClockEntry
 import org.kevoree.library.gossiper.version.GossiperMessages.VectorClock
+import org.slf4j.LoggerFactory
 import scala.collection.JavaConversions._
 
 class GossiperUUIDSVectorClockActor extends actors.DaemonActor {
 
   private var uuids = new HashMap[UUID,Tuple2[VectorClock,Object]]
-  private var logger = org.slf4j.LoggerFactory.getLogger(classOf[GossiperActor])
+  private var logger = LoggerFactory.getLogger(classOf[GossiperUUIDSVectorClockActor])
   this.start
   
   case class STOP_GOSSIPER()

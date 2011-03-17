@@ -10,6 +10,7 @@ import scala.collection.JavaConversions._
 import java.util.UUID
 import org.kevoree.extra.marshalling.RichString
 import org.kevoree.framework.message.Message
+import org.kevoree.library.gossiper.VectorClockAspect
 import org.kevoree.library.gossiper.version.GossiperMessages.ClockEntry
 import org.kevoree.library.gossiper.version.GossiperMessages.VectorClock
 import org.kevoree.library.gossiper.version.Occured
