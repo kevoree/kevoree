@@ -62,9 +62,8 @@ class KevoreeAnnotationProcessor(env: AnnotationProcessorEnvironment) extends An
         if (nodeTypeAnnotation != null) {
           processNodeType(nodeTypeAnnotation, typeDecl, root)
         }
-
-
     }
+
 
     //POST APT PROCESS CHECKER
     var checker: PostAptChecker = new PostAptChecker(root, env)
