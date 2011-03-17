@@ -26,9 +26,6 @@ trait DeployUnitMerger extends Merger {
 
 
   def mergeDeployUnit(actualModel : ContainerRoot,tp : DeployUnit) : DeployUnit = {
-    
-    
-    
     actualModel.getDeployUnits.find({atp=> atp.getName == tp.getName}) match {
       case Some(ftp)=> {
         
@@ -58,4 +55,6 @@ trait DeployUnitMerger extends Merger {
       tp.getRequiredLibs.add(mergeDeployUnit(actualModel,rLib))
     }
   }
+
+  
 }
