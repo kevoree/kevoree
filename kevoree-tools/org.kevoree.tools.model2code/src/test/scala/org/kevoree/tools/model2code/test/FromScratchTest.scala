@@ -36,6 +36,12 @@ class FromScratchTest extends JUnitSuite {
       if(!outputFolder.exists) {
         outputFolder.mkdirs
       }
+
+      var duFolder = new File("target/test-classes/generated/new_artefact")
+     if(!duFolder.exists) {
+        duFolder.mkdirs
+      }
+
     }
 
     @After
@@ -57,7 +63,7 @@ class FromScratchTest extends JUnitSuite {
                 
         var outputFolder = new File("target/test-classes/generated")
       
-        m2c.modelToCode(componentType.asInstanceOf[ComponentType], outputFolder.toURI)
+        m2c.modelToCode(model, componentType.asInstanceOf[ComponentType], outputFolder.toURI)
         
         System.out.println("Model2Code done for " + componentType.getBean)
       }
@@ -78,10 +84,24 @@ class FromScratchTest extends JUnitSuite {
                 
         var outputFolder = new File("target/test-classes/generated")
       
-        m2c.modelToCode(componentType.asInstanceOf[ComponentType], outputFolder.toURI)
+        m2c.modelToCode(model, componentType.asInstanceOf[ComponentType], outputFolder.toURI)
         
         System.out.println("Model2Code done for " + componentType.getBean)
       }
     }
 
+  @Test
+    def GenerateDeployUnitTest = {
+
+      System.out.println("Loading Model lib.kev")
+
+      var model = KevoreeXmiHelper.load(this.getClass.getClassLoader.getResource("models/lib.kev").getPath)
+
+      System.out.println("Model loaded.")
+
+      var m2c = new Model2Code()
+      m2c.modelToDeployUnit(model, new File("target/test-classes/generated/new_artefact").toURI)
+
+    
+    }
 }

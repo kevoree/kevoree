@@ -20,11 +20,11 @@ package org.kevoree.editor.component.creator.handlers
 
 import org.kevoree.ContainerRoot
 import org.eclipse.emf.common.util.URI
-import org.kevoree.Art2Factory
+import org.kevoree.KevoreeFactory
 import org.kevoree.editor.component.creator.Kernel
 import org.kevoree.editor.component.creator.model.ComponentModelElement
 import org.kevoree.editor.component.creator.model.LibraryModelElement
-import org.kevoree.framework.Art2XmiHelper
+import org.kevoree.framework.KevoreeXmiHelper
 import scala.collection.JavaConversions._
 
 class ModelHandler(kernel:Kernel)
@@ -32,7 +32,7 @@ extends AddLibraryHandler
 with AddComponentHandler
 {
 
-  private var actualModel : ContainerRoot = Art2Factory.eINSTANCE.createContainerRoot
+  private var actualModel : ContainerRoot = KevoreeFactory.eINSTANCE.createContainerRoot
   private var unsavedChanges : Boolean = false
 
   /* ACESSOR TO MODEL */
@@ -45,17 +45,17 @@ with AddComponentHandler
   def containsUnsavedChanges = {unsavedChanges}
 
   def saveActualModel(location:String) = {
-    Art2XmiHelper.save(URI.createFileURI(location).toString(),actualModel)
+    KevoreeXmiHelper.save(URI.createFileURI(location).toString(),actualModel)
     unsavedChanges = false
   }
 
   def loadModel(location:String) = {
-    actualModel = Art2XmiHelper.load(URI.createFileURI(location).toString());
+    actualModel = KevoreeXmiHelper.load(URI.createFileURI(location).toString());
     unsavedChanges = false
   }
 
   def newModel() = {
-    actualModel = Art2Factory.eINSTANCE.createContainerRoot
+    actualModel = KevoreeFactory.eINSTANCE.createContainerRoot
     unsavedChanges = false
   }
 
