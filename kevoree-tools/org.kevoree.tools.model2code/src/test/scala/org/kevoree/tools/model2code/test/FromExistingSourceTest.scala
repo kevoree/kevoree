@@ -28,7 +28,7 @@ import java.io.File
 import java.net.URI
 import org.junit.Assert._
 
-class BasicTest extends JUnitSuite {
+class FromExistingSourceTest extends JUnitSuite {
 
     @Before
     def setUp {
@@ -56,13 +56,14 @@ class BasicTest extends JUnitSuite {
         System.out.println("Model2Code on " + componentType.getBean)
                 
         var outputFolder = new File("target/test-classes/generated")
-      
-        m2c.modelToCode(componentType.asInstanceOf[ComponentType], outputFolder.toURI)
+        var srcRoot = new File(this.getClass.getClassLoader.getResource("targetCode").getPath)
+        
+      m2c.modelToCode(componentType.asInstanceOf[ComponentType], srcRoot.toURI, outputFolder.toURI)
         
         System.out.println("Model2Code done for " + componentType.getBean)
       }
     }
-    
+    /*
     @Test 
     def BaseComponentTypeTest2ndPass = {
       
@@ -83,5 +84,6 @@ class BasicTest extends JUnitSuite {
         System.out.println("Model2Code done for " + componentType.getBean)
       }
     }
+    */
 
 }
