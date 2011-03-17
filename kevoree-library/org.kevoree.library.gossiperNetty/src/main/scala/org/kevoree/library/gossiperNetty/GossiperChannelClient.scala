@@ -16,6 +16,7 @@ import org.jboss.netty.channel.ExceptionEvent
 import org.jboss.netty.channel.MessageEvent
 import org.jboss.netty.channel.SimpleChannelUpstreamHandler
 import org.jboss.netty.channel.socket.nio.NioDatagramChannelFactory
+import org.jboss.netty.channel.socket.oio.OioDatagramChannelFactory
 import org.jboss.netty.handler.codec.string.StringDecoder
 import org.jboss.netty.handler.codec.string.StringEncoder
 import org.jboss.netty.util.CharsetUtil
@@ -28,7 +29,7 @@ class GossiperChannelClient(timeout:Long,adr:InetSocketAddress) extends SimpleCh
   case class CALL_MSG(content : AnyRef)
   
   /* CONSTRUCTOR */
-  var factory =  new NioDatagramChannelFactory(Executors.newCachedThreadPool())
+  var factory =  new OioDatagramChannelFactory(Executors.newCachedThreadPool())
   var bootstrap = new ConnectionlessBootstrap(factory)
   var self = this
   bootstrap.setPipelineFactory(new ChannelPipelineFactory(){
@@ -41,9 +42,9 @@ class GossiperChannelClient(timeout:Long,adr:InetSocketAddress) extends SimpleCh
     }
   )
   var channel = bootstrap.bind(new InetSocketAddress(0));
+  this.start
   
   def call(content : AnyRef) : AnyRef = {
-    this.start
     (this !? CALL_MSG(content)).asInstanceOf[AnyRef]
   }
   
@@ -51,12 +52,13 @@ class GossiperChannelClient(timeout:Long,adr:InetSocketAddress) extends SimpleCh
   def act{
     react {
       case CALL_MSG(content) => {
-          channel.write(content, adr)
+          channel.write(content, adr);reply("res")
       }
     }
+    println("OK WAITING FOR TIMEOUT")
     reactWithin(timeout){
-      case RETURN_MSG(e) => reply(e)
-      case TIMEOUT => reply(null)
+      case RETURN_MSG(e) => reply(e);exit
+      case TIMEOUT => println("TIMEOUT");reply(null);channel.close().awaitUninterruptibly();exit
     }
   }
   

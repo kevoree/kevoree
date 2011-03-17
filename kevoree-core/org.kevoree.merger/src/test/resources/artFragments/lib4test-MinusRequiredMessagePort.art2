@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="ASCII"?>
 <kevoree:ContainerRoot xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:kevoree="http://kevoree/1.0">
-  <typeDefinitions xsi:type="kevoree:ComponentType" name="ComponentPrimitiveTypeService" deployUnit="//@deployUnits.0" factoryBean="org.kevoree.lib4tests.ComponentPrimitiveTypeServiceFactory" bean="org.kevoree.lib4tests.ComponentPrimitiveTypeService" startMethod="start" stopMethod="stop">
+  <typeDefinitions xsi:type="kevoree:ComponentType" name="ComponentPrimitiveTypeService" deployUnits="//@deployUnits.0" factoryBean="org.kevoree.lib4tests.ComponentPrimitiveTypeServiceFactory" bean="org.kevoree.lib4tests.ComponentPrimitiveTypeService" startMethod="start" stopMethod="stop">
     <provided name="portPrimitiveTypes" ref="//@typeDefinitions.1">
       <mappings beanMethodName="methodShort" serviceMethodName="methodShort"/>
       <mappings beanMethodName="methodInt" serviceMethodName="methodInt"/>
@@ -40,7 +40,7 @@
       <parameters name="b" type="//@dataTypes.8"/>
     </operations>
   </typeDefinitions>
-  <typeDefinitions xsi:type="kevoree:ComponentType" name="ComponentA" deployUnit="//@deployUnits.0" factoryBean="org.kevoree.lib4tests.ComponentAFactory" bean="org.kevoree.lib4tests.ComponentA" startMethod="start" stopMethod="stop">
+  <typeDefinitions xsi:type="kevoree:ComponentType" name="ComponentA" deployUnits="//@deployUnits.0" factoryBean="org.kevoree.lib4tests.ComponentAFactory" bean="org.kevoree.lib4tests.ComponentA" startMethod="start" stopMethod="stop">
     <dictionaryType>
       <attributes name="mandatory1"/>
       <attributes name="mandatory2"/>
@@ -67,7 +67,7 @@
     <operations name="methodBA" returnType="//@dataTypes.6"/>
     <operations name="methodBB" returnType="//@dataTypes.8"/>
   </typeDefinitions>
-  <typeDefinitions xsi:type="kevoree:ComponentType" name="ComponentB" deployUnit="//@deployUnits.0" factoryBean="org.kevoree.lib4tests.ComponentBFactory" bean="org.kevoree.lib4tests.ComponentB" startMethod="start" stopMethod="stop">
+  <typeDefinitions xsi:type="kevoree:ComponentType" name="ComponentB" deployUnits="//@deployUnits.0" factoryBean="org.kevoree.lib4tests.ComponentBFactory" bean="org.kevoree.lib4tests.ComponentB" startMethod="start" stopMethod="stop">
     <required name="req2" ref="//@typeDefinitions.3"/>
     <provided name="prov1" ref="//@typeDefinitions.5">
       <mappings beanMethodName="methodBA" serviceMethodName="methodBA"/>

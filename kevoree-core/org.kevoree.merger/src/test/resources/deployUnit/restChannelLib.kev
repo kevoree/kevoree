@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kevoree:ContainerRoot xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:kevoree="http://kevoree/1.0">
+  <typeDefinitions xsi:type="kevoree:ChannelType" name="RestChannel" deployUnits="//@deployUnits.0" factoryBean="org.kevoree.library.restChannels.RestChannelFactory" bean="org.kevoree.library.restChannels.RestChannel" startMethod="startHello" stopMethod="stopHello" updateMethod="updateHello"/>
+  <repositories units="//@deployUnits.0" url="http://maven.kevoree.org/libs-release-local"/>
+  <repositories url="http://scala-tools.org/repo-releases"/>
+  <repositories url="http://maven.kevoree.org/release"/>
+  <repositories url="http://repo1.maven.org/maven2"/>
+  <libraries name="Kevoree-Android-JavaSE" subTypes="//@typeDefinitions.0"/>
+  <deployUnits groupName="org.kevoree.library" unitName="org.kevoree.library.restChannels" version="1.0.0-RC5" hashcode="201103171023256" requiredLibs="//@deployUnits.1"/>
+  <deployUnits name="org.kevoree.extra.marshalling" url="mvn:org.kevoree.extra/org.kevoree.extra.marshalling"/>
+</kevoree:ContainerRoot>

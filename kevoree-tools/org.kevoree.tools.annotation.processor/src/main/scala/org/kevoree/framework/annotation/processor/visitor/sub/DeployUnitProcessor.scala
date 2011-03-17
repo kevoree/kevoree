@@ -54,7 +54,7 @@ trait DeployUnitProcessor {
         }
       case Some(fdu)=> fdu.setHashcode(tag);fdu
     }
-    typeDef.setDeployUnit(ctdeployunit)
+    typeDef.getDeployUnits.add(ctdeployunit)
 
     /* ADD DEPLOY UNIT to RepositoryList */
     repositoriesList.foreach{repoUrl=>

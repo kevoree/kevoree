@@ -41,8 +41,11 @@ trait InitNodeKompare extends AbstractKompare {
         typecmd.setRef(ct)
         adaptationModel.getAdaptations.add(typecmd)
 
-        /* add all reLib */
-        ct.getRequiredLibs.foreach {
+        /* add all reLib from found deploy Unit*/
+        var deployUnitfound : DeployUnit = ct.foundRelevantDeployUnit(node)
+        
+      
+        deployUnitfound.getRequiredLibs.foreach {
           rLib =>
             var addcttp = KevoreeAdaptationFactory.eINSTANCE.createAddThirdParty
             addcttp.setRef(rLib)
@@ -50,10 +53,10 @@ trait InitNodeKompare extends AbstractKompare {
         }
 
         /* add deploy unit if necessary */
-        adaptationModel.getAdaptations.filter(adaptation => adaptation.isInstanceOf[AddDeployUnit]).find(adaptation => adaptation.asInstanceOf[AddDeployUnit].getRef.isModelEquals(ct.getDeployUnit)) match {
+        adaptationModel.getAdaptations.filter(adaptation => adaptation.isInstanceOf[AddDeployUnit]).find(adaptation => adaptation.asInstanceOf[AddDeployUnit].getRef.isModelEquals(deployUnitfound)) match {
           case None => {
             var ctcmd = KevoreeAdaptationFactory.eINSTANCE.createAddDeployUnit
-            ctcmd.setRef(ct.getDeployUnit)
+            ctcmd.setRef(deployUnitfound)
             adaptationModel.getAdaptations.add(ctcmd)
           }
           case Some(e) => //SIMILAR DEPLOY UNIT PRIMITIVE ALREADY REGISTERED

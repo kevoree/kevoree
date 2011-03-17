@@ -15,7 +15,7 @@
     </components>
   </nodes>
   <typeDefinitions xsi:type="kevoree:ComponentType" name="ComponentB" factoryBean="org.kevoree.libs4tests.ComponentBFactory" bean="org.kevoree.libs4tests.ComponentB" startMethod="start" stopMethod="stop">
-    <deployUnit href="../../../../var/folders/Rz/Rz-VyDuTHfqxv4ck8hfV+E+++TI/-Tmp-/art2loaderLib16982136803886362709020999201.xmi#//@deployUnits.0"/>
+    <deployUnits href="../../../../var/folders/Rz/Rz-VyDuTHfqxv4ck8hfV+E+++TI/-Tmp-/art2loaderLib16982136803886362709020999201.xmi#//@deployUnits.0"/>
     <required name="req2" ref="//@typeDefinitions.2"/>
     <provided name="prov1" ref="//@typeDefinitions.1">
       <mappings beanMethodName="methodBA" serviceMethodName="methodBA"/>
@@ -32,7 +32,7 @@
   </typeDefinitions>
   <typeDefinitions xsi:type="kevoree:MessagePortType" name="org.kevoree.framework.MessagePort"/>
   <typeDefinitions xsi:type="kevoree:ComponentType" name="ComponentA" factoryBean="org.kevoree.libs4tests.ComponentAFactory" bean="org.kevoree.libs4tests.ComponentA" startMethod="start" stopMethod="stop">
-    <deployUnit href="../../../../var/folders/Rz/Rz-VyDuTHfqxv4ck8hfV+E+++TI/-Tmp-/art2loaderLib16982136803886362709020999201.xmi#//@deployUnits.0"/>
+    <deployUnits href="../../../../var/folders/Rz/Rz-VyDuTHfqxv4ck8hfV+E+++TI/-Tmp-/art2loaderLib16982136803886362709020999201.xmi#//@deployUnits.0"/>
     <dictionaryType>
       <attributes name="mandatory1"/>
       <attributes name="mandatory2"/>
@@ -57,7 +57,7 @@
     </operations>
   </typeDefinitions>
   <typeDefinitions xsi:type="kevoree:ComponentType" name="ComponentPrimitiveTypeService" factoryBean="org.kevoree.libs4tests.ComponentPrimitiveTypeServiceFactory" bean="org.kevoree.libs4tests.ComponentPrimitiveTypeService" startMethod="start" stopMethod="stop">
-    <deployUnit href="../../../../var/folders/Rz/Rz-VyDuTHfqxv4ck8hfV+E+++TI/-Tmp-/art2loaderLib16982136803886362709020999201.xmi#//@deployUnits.0"/>
+    <deployUnits href="../../../../var/folders/Rz/Rz-VyDuTHfqxv4ck8hfV+E+++TI/-Tmp-/art2loaderLib16982136803886362709020999201.xmi#//@deployUnits.0"/>
     <provided name="portPrimitiveTypes" ref="//@typeDefinitions.6">
       <mappings beanMethodName="methodShort" serviceMethodName="methodShort"/>
       <mappings beanMethodName="methodInt" serviceMethodName="methodInt"/>

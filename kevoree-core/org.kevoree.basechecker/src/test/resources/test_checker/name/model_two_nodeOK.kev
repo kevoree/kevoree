@@ -2,9 +2,9 @@
 <kevoree:ContainerRoot xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:kevoree="http://kevoree/1.0">
   <nodes name="node0"/>
   <nodes name="node1"/>
-  <typeDefinitions xsi:type="kevoree:ChannelType" name="defSERVICE" deployUnit="//@deployUnits.0" factoryBean="org.kevoree.library.defaultChannels.defSERVICEFactory" bean="org.kevoree.library.defaultChannels.defSERVICE" startMethod="startHello" stopMethod="stopHello"/>
-  <typeDefinitions xsi:type="kevoree:ChannelType" name="defMSG" deployUnit="//@deployUnits.0" factoryBean="org.kevoree.library.defaultChannels.defMSGFactory" bean="org.kevoree.library.defaultChannels.defMSG" startMethod="startHello" stopMethod="stopHello" updateMethod="updateHello"/>
-  <typeDefinitions xsi:type="kevoree:ComponentType" name="FakeSimpleLight" deployUnit="//@deployUnits.1" factoryBean="org.kevoree.library.fakedomo.FakeSimpleLightFactory" bean="org.kevoree.library.fakedomo.FakeSimpleLight" startMethod="start" stopMethod="stop" updateMethod="update">
+  <typeDefinitions xsi:type="kevoree:ChannelType" name="defSERVICE" deployUnits="//@deployUnits.0" factoryBean="org.kevoree.library.defaultChannels.defSERVICEFactory" bean="org.kevoree.library.defaultChannels.defSERVICE" startMethod="startHello" stopMethod="stopHello"/>
+  <typeDefinitions xsi:type="kevoree:ChannelType" name="defMSG" deployUnits="//@deployUnits.0" factoryBean="org.kevoree.library.defaultChannels.defMSGFactory" bean="org.kevoree.library.defaultChannels.defMSG" startMethod="startHello" stopMethod="stopHello" updateMethod="updateHello"/>
+  <typeDefinitions xsi:type="kevoree:ComponentType" name="FakeSimpleLight" deployUnits="//@deployUnits.1" factoryBean="org.kevoree.library.fakedomo.FakeSimpleLightFactory" bean="org.kevoree.library.fakedomo.FakeSimpleLight" startMethod="start" stopMethod="stop" updateMethod="update">
     <dictionaryType>
       <attributes name="param1"/>
       <attributes name="param2" optional="true"/>
@@ -22,18 +22,18 @@
   </typeDefinitions>
   <typeDefinitions xsi:type="kevoree:MessagePortType" name="org.kevoree.framework.MessagePort"/>
   <typeDefinitions xsi:type="kevoree:ServicePortType" name="org.kevoree.library.fakedomo.ToggleLightService"/>
-  <typeDefinitions xsi:type="kevoree:ComponentType" name="FakeSimpleSwitch" deployUnit="//@deployUnits.1" factoryBean="org.kevoree.library.fakedomo.FakeSimpleSwitchFactory" bean="org.kevoree.library.fakedomo.FakeSimpleSwitch" startMethod="start" stopMethod="stop" updateMethod="update">
+  <typeDefinitions xsi:type="kevoree:ComponentType" name="FakeSimpleSwitch" deployUnits="//@deployUnits.1" factoryBean="org.kevoree.library.fakedomo.FakeSimpleSwitchFactory" bean="org.kevoree.library.fakedomo.FakeSimpleSwitch" startMethod="start" stopMethod="stop" updateMethod="update">
     <required name="on" ref="//@typeDefinitions.3"/>
     <required name="off" ref="//@typeDefinitions.3"/>
     <required name="toggle" ref="//@typeDefinitions.4"/>
   </typeDefinitions>
-  <typeDefinitions xsi:type="kevoree:ComponentType" name="FakeConsole" deployUnit="//@deployUnits.1" factoryBean="org.kevoree.library.fakedomo.FakeConsoleFactory" bean="org.kevoree.library.fakedomo.FakeConsole" startMethod="start" stopMethod="stop">
+  <typeDefinitions xsi:type="kevoree:ComponentType" name="FakeConsole" deployUnits="//@deployUnits.1" factoryBean="org.kevoree.library.fakedomo.FakeConsoleFactory" bean="org.kevoree.library.fakedomo.FakeConsole" startMethod="start" stopMethod="stop">
     <required name="textEntered" ref="//@typeDefinitions.3"/>
     <provided name="showText" ref="//@typeDefinitions.3">
       <mappings beanMethodName="appendIncoming" serviceMethodName="process"/>
     </provided>
   </typeDefinitions>
-  <typeDefinitions xsi:type="kevoree:ComponentType" name="ComponentPrimitiveTypeService" deployUnit="//@deployUnits.2" factoryBean="org.kevoree.library.sample.ComponentPrimitiveTypeServiceFactory" bean="org.kevoree.library.sample.ComponentPrimitiveTypeService" startMethod="start" stopMethod="stop">
+  <typeDefinitions xsi:type="kevoree:ComponentType" name="ComponentPrimitiveTypeService" deployUnits="//@deployUnits.2" factoryBean="org.kevoree.library.sample.ComponentPrimitiveTypeServiceFactory" bean="org.kevoree.library.sample.ComponentPrimitiveTypeService" startMethod="start" stopMethod="stop">
     <provided name="portPrimitiveTypes" ref="//@typeDefinitions.8">
       <mappings beanMethodName="methodShort" serviceMethodName="methodShort"/>
       <mappings beanMethodName="methodInt" serviceMethodName="methodInt"/>
@@ -73,7 +73,7 @@
       <parameters name="b" type="//@dataTypes.9"/>
     </operations>
   </typeDefinitions>
-  <typeDefinitions xsi:type="kevoree:ComponentType" name="ComponentB" deployUnit="//@deployUnits.2" factoryBean="org.kevoree.library.sample.ComponentBFactory" bean="org.kevoree.library.sample.ComponentB" startMethod="start" stopMethod="stop">
+  <typeDefinitions xsi:type="kevoree:ComponentType" name="ComponentB" deployUnits="//@deployUnits.2" factoryBean="org.kevoree.library.sample.ComponentBFactory" bean="org.kevoree.library.sample.ComponentB" startMethod="start" stopMethod="stop">
     <required name="req2" ref="//@typeDefinitions.3"/>
     <required name="req3" ref="//@typeDefinitions.3"/>
     <provided name="prov1" ref="//@typeDefinitions.10">
@@ -82,7 +82,7 @@
     </provided>
   </typeDefinitions>
   <typeDefinitions xsi:type="kevoree:ServicePortType" name="org.kevoree.library.sample.service.ServiceB"/>
-  <typeDefinitions xsi:type="kevoree:ComponentType" name="PlanNightmarePipe" deployUnit="//@deployUnits.2" factoryBean="org.kevoree.library.sample.PlanNightmarePipeFactory" bean="org.kevoree.library.sample.PlanNightmarePipe" startMethod="startMethod" stopMethod="stopMethod">
+  <typeDefinitions xsi:type="kevoree:ComponentType" name="PlanNightmarePipe" deployUnits="//@deployUnits.2" factoryBean="org.kevoree.library.sample.PlanNightmarePipeFactory" bean="org.kevoree.library.sample.PlanNightmarePipe" startMethod="startMethod" stopMethod="stopMethod">
     <required name="r1" ref="//@typeDefinitions.3"/>
     <required name="r2" ref="//@typeDefinitions.3"/>
     <provided name="p1" ref="//@typeDefinitions.3">
@@ -92,7 +92,7 @@
       <mappings beanMethodName="p2trigger" serviceMethodName="process"/>
     </provided>
   </typeDefinitions>
-  <typeDefinitions xsi:type="kevoree:ComponentType" name="ComponentA" deployUnit="//@deployUnits.2" factoryBean="org.kevoree.library.sample.ComponentAFactory" bean="org.kevoree.library.sample.ComponentA" startMethod="start" stopMethod="stop">
+  <typeDefinitions xsi:type="kevoree:ComponentType" name="ComponentA" deployUnits="//@deployUnits.2" factoryBean="org.kevoree.library.sample.ComponentAFactory" bean="org.kevoree.library.sample.ComponentA" startMethod="start" stopMethod="stop">
     <dictionaryType>
       <attributes name="mandatory1"/>
       <attributes name="mandatory2"/>
@@ -121,7 +121,7 @@
   <typeDefinitions xsi:type="kevoree:ServicePortType" name="org.kevoree.library.sample.service.ServiceGenerics">
     <operations name="getMyList" returnType="//@dataTypes.10"/>
   </typeDefinitions>
-  <typeDefinitions xsi:type="kevoree:ComponentType" name="PlanNightmareFL" deployUnit="//@deployUnits.2" factoryBean="org.kevoree.library.sample.PlanNightmareFLFactory" bean="org.kevoree.library.sample.PlanNightmareFL" startMethod="startMethod" stopMethod="stopMethod">
+  <typeDefinitions xsi:type="kevoree:ComponentType" name="PlanNightmareFL" deployUnits="//@deployUnits.2" factoryBean="org.kevoree.library.sample.PlanNightmareFLFactory" bean="org.kevoree.library.sample.PlanNightmareFL" startMethod="startMethod" stopMethod="stopMethod">
     <provided name="p1" ref="//@typeDefinitions.3">
       <mappings beanMethodName="p1trigger" serviceMethodName="process"/>
     </provided>
@@ -129,7 +129,7 @@
       <mappings beanMethodName="p2trigger" serviceMethodName="process"/>
     </provided>
   </typeDefinitions>
-  <typeDefinitions xsi:type="kevoree:ComponentType" name="PlanNightmareFS" deployUnit="//@deployUnits.2" factoryBean="org.kevoree.library.sample.PlanNightmareFSFactory" bean="org.kevoree.library.sample.PlanNightmareFS" startMethod="startMethod" stopMethod="stopMethod">
+  <typeDefinitions xsi:type="kevoree:ComponentType" name="PlanNightmareFS" deployUnits="//@deployUnits.2" factoryBean="org.kevoree.library.sample.PlanNightmareFSFactory" bean="org.kevoree.library.sample.PlanNightmareFS" startMethod="startMethod" stopMethod="stopMethod">
     <required name="r1" ref="//@typeDefinitions.3"/>
     <required name="r2" ref="//@typeDefinitions.3"/>
   </typeDefinitions>

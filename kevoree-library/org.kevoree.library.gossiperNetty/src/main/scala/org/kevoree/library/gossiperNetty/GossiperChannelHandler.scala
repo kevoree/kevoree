@@ -15,6 +15,7 @@ class GossiperChannelHandler extends SimpleChannelUpstreamHandler {
 
   override def messageReceived(ctx:ChannelHandlerContext, e:MessageEvent)={
     println("Hello "+e.getMessage)
+    e.getChannel.write("result")
   }
   
   override def exceptionCaught(ctx:ChannelHandlerContext, e:ExceptionEvent)={

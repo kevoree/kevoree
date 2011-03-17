@@ -16,7 +16,7 @@
       <required portTypeRef="//@typeDefinitions.5/@required.0"/>
     </components>
   </nodes>
-  <typeDefinitions xsi:type="kevoree:ComponentType" name="HomeDrawing" deployUnit="//@deployUnits.2" factoryBean="org.entimid.homesimulator.HomeDrawingFactory" bean="org.entimid.homesimulator.HomeDrawing" requiredLibs="//@deployUnits.0 //@deployUnits.1" startMethod="start" stopMethod="stop" updateMethod="update">
+  <typeDefinitions xsi:type="kevoree:ComponentType" name="HomeDrawing" deployUnits="//@deployUnits.2" factoryBean="org.entimid.homesimulator.HomeDrawingFactory" bean="org.entimid.homesimulator.HomeDrawing" startMethod="start" stopMethod="stop" updateMethod="update">
     <dictionaryType>
       <attributes name="name"/>
       <attributes name="xPosition" optional="true"/>
@@ -31,7 +31,7 @@
     </provided>
   </typeDefinitions>
   <typeDefinitions xsi:type="kevoree:ServicePortType" name="org.entimid.homesimulator.services.HomeDrawingService"/>
-  <typeDefinitions xsi:type="kevoree:ComponentType" name="OnOffSwitch" deployUnit="//@deployUnits.2" factoryBean="org.entimid.homesimulator.devices.OnOffSwitchFactory" bean="org.entimid.homesimulator.devices.OnOffSwitch" requiredLibs="//@deployUnits.0 //@deployUnits.1" startMethod="start" stopMethod="stop" updateMethod="update">
+  <typeDefinitions xsi:type="kevoree:ComponentType" name="OnOffSwitch" deployUnits="//@deployUnits.2" factoryBean="org.entimid.homesimulator.devices.OnOffSwitchFactory" bean="org.entimid.homesimulator.devices.OnOffSwitch" startMethod="start" stopMethod="stop" updateMethod="update">
     <dictionaryType>
       <attributes name="name"/>
       <attributes name="xPosition" optional="true"/>
@@ -44,7 +44,7 @@
     <required name="uiService" ref="//@typeDefinitions.1"/>
   </typeDefinitions>
   <typeDefinitions xsi:type="kevoree:MessagePortType" name="org.kevoree.framework.MessagePort"/>
-  <typeDefinitions xsi:type="kevoree:ComponentType" name="OnOffSwitchInFrame" deployUnit="//@deployUnits.2" factoryBean="org.entimid.homesimulator.devices.OnOffSwitchInFrameFactory" bean="org.entimid.homesimulator.devices.OnOffSwitchInFrame" requiredLibs="//@deployUnits.0 //@deployUnits.1" startMethod="start" stopMethod="stop" updateMethod="update">
+  <typeDefinitions xsi:type="kevoree:ComponentType" name="OnOffSwitchInFrame" deployUnits="//@deployUnits.2" factoryBean="org.entimid.homesimulator.devices.OnOffSwitchInFrameFactory" bean="org.entimid.homesimulator.devices.OnOffSwitchInFrame" startMethod="start" stopMethod="stop" updateMethod="update">
     <dictionaryType>
       <attributes name="name"/>
       <attributes name="xPosition" optional="true"/>
@@ -56,7 +56,7 @@
     <required name="off" ref="//@typeDefinitions.3"/>
     <required name="uiService" ref="//@typeDefinitions.1"/>
   </typeDefinitions>
-  <typeDefinitions xsi:type="kevoree:ComponentType" name="SimpleLight" deployUnit="//@deployUnits.2" factoryBean="org.entimid.homesimulator.devices.SimpleLightFactory" bean="org.entimid.homesimulator.devices.SimpleLight" requiredLibs="//@deployUnits.0 //@deployUnits.1" startMethod="start" stopMethod="stop" updateMethod="update">
+  <typeDefinitions xsi:type="kevoree:ComponentType" name="SimpleLight" deployUnits="//@deployUnits.2" factoryBean="org.entimid.homesimulator.devices.SimpleLightFactory" bean="org.entimid.homesimulator.devices.SimpleLight" startMethod="start" stopMethod="stop" updateMethod="update">
     <dictionaryType>
       <attributes name="name"/>
       <attributes name="xPosition" optional="true"/>
@@ -80,8 +80,8 @@
     <operations name="on" returnType="//@dataTypes.0"/>
     <operations name="off" returnType="//@dataTypes.0"/>
   </typeDefinitions>
-  <typeDefinitions xsi:type="kevoree:ChannelType" name="defSERVICE" deployUnit="//@deployUnits.3" factoryBean="org.kevoree.library.defaultChannels.defSERVICEFactory" bean="org.kevoree.library.defaultChannels.defSERVICE" startMethod="startHello" stopMethod="stopHello"/>
-  <typeDefinitions xsi:type="kevoree:ChannelType" name="defMSG" deployUnit="//@deployUnits.3" factoryBean="org.kevoree.library.defaultChannels.defMSGFactory" bean="org.kevoree.library.defaultChannels.defMSG" startMethod="startHello" stopMethod="stopHello" updateMethod="updateHello"/>
+  <typeDefinitions xsi:type="kevoree:ChannelType" name="defSERVICE" deployUnits="//@deployUnits.3" factoryBean="org.kevoree.library.defaultChannels.defSERVICEFactory" bean="org.kevoree.library.defaultChannels.defSERVICE" startMethod="startHello" stopMethod="stopHello"/>
+  <typeDefinitions xsi:type="kevoree:ChannelType" name="defMSG" deployUnits="//@deployUnits.3" factoryBean="org.kevoree.library.defaultChannels.defMSGFactory" bean="org.kevoree.library.defaultChannels.defMSG" startMethod="startHello" stopMethod="stopHello" updateMethod="updateHello"/>
   <repositories units="//@deployUnits.2" url="http://dukeboard.github.com/kevoree/maven/"/>
   <repositories units="//@deployUnits.3" url="http://maven.kevoree.org/libs-release/"/>
   <dataTypes name="void"/>
@@ -93,6 +93,6 @@
   <mBindings port="//@nodes.0/@components.1/@required.0" hub="//@hubs.0"/>
   <deployUnits name="pax-logging" url="mvn:org.ops4j.pax.logging/pax-logging-api/1.5.3"/>
   <deployUnits name="org.entimid.framework" url="mvn:org.entimid/framework"/>
-  <deployUnits groupName="org.entimid" unitName="org.entimid.homesimulator" version="1.0.0" hashcode="201102111459795"/>
+  <deployUnits groupName="org.entimid" unitName="org.entimid.homesimulator" requiredLibs="//@deployUnits.0 //@deployUnits.1" version="1.0.0" hashcode="201102111459795"/>
   <deployUnits groupName="org.kevoree.library" unitName="org.kevoree.library.defaultChannels" version="1.0.0-RC4" hashcode="201103020926370"/>
 </kevoree:ContainerRoot>

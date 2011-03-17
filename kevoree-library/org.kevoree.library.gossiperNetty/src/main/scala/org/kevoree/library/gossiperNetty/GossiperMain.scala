@@ -5,6 +5,8 @@
 
 package org.kevoree.library.gossiperNetty
 
+import java.net.InetSocketAddress
+
 object GossiperMain {
 
   /**
@@ -14,6 +16,10 @@ object GossiperMain {
     println("Hello, world!")
     
     GossiperChannelServer.startOrUpdate(8000);
+    
+    
+    var client = new GossiperChannelClient(3000,new InetSocketAddress("127.0.0.1",8000))
+    println(client.call("hello"))
     
     var stop = new Thread(){
       override def run()={

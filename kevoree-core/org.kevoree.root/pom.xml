@@ -8,7 +8,7 @@
     <name>Kevoree :: Root</name>
     <url>https://github.com/dukeboard/kevoree</url>
     
-    <version>1.0.0-RC5</version>
+    <version>1.1.0-BETA1</version>
 
     <properties>
         <emf.version>2.6.0</emf.version>
