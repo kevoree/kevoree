@@ -37,7 +37,6 @@ case class KevsCreateChannelTypeInterpreter(self : CreateChannelTypeStatment) ex
           true
       }
     }
-    false
   }
   
   
