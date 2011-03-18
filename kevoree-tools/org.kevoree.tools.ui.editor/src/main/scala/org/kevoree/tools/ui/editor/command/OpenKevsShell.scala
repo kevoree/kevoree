@@ -13,13 +13,19 @@
  */
 package org.kevoree.tools.ui.editor.command
 
-import javax.swing.{JButton, BoxLayout, JPanel}
+import javax.swing.filechooser.FileFilter
+import javax.swing.{JButton, BoxLayout, JPanel, JFileChooser}
 import java.awt.BorderLayout
 import org.kevoree.tools.ui.editor.KevoreeUIKernel
 import java.awt.event.{MouseEvent, MouseAdapter}
 import org.kevoree.tools.marShell.interpreter.KevsInterpreterContext
 import org.kevoree.framework.KevoreeXmiHelper
+import java.io.BufferedReader
 import java.io.File
+import java.io.FileInputStream
+import java.io.FileOutputStream
+import java.io.InputStreamReader
+import java.io.PrintWriter
 import java.util.Random
 import org.kevoree.tools.marShellGUI.{KevsModelHandlers, KevsFrame}
 
@@ -33,34 +39,139 @@ class OpenKevsShell extends Command {
   class KevsEditorFrame extends KevsFrame {
     var buttons = new JPanel
     buttons.setLayout(new BoxLayout(buttons, BoxLayout.LINE_AXIS))
+
+
+    var btSave = new JButton("Save");
+    btSave.addMouseListener(new MouseAdapter() {
+        override def mouseClicked(p1: MouseEvent) = {
+          //Save Script
+
+          var fileChooser = new JFileChooser
+          fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY)
+          fileChooser.setMultiSelectionEnabled(false)
+          fileChooser.setAcceptAllFileFilterUsed(true)
+          fileChooser.setFileHidingEnabled(true)
+          fileChooser.addChoosableFileFilter(new FileFilter() {
+
+              override def getDescription() : String = "KevScript Files"
+
+              override def accept(f : File) : Boolean = {
+                if (f.isDirectory()) {
+                  return false;
+                }
+
+                val extension = f.getName.substring(f.getName.lastIndexOf(".")+1)
+                if (extension != null) {
+                  if (extension.equals("kevs")) {
+                    return true;
+                  } else {
+                    return false;
+                  }
+                }
+
+                return false;
+              }
+            })
+          var result = fileChooser.showSaveDialog(kevsPanel);
+          if(result == JFileChooser.APPROVE_OPTION) {
+            var destFile = fileChooser.getSelectedFile
+            if( !destFile.exists) {
+              destFile.createNewFile
+            }
+
+            var pr = new PrintWriter(new FileOutputStream(destFile))
+            pr.append(kevsPanel.codeEditor.getText)
+            pr.flush
+            pr.close
+          }
+
+        }
+      })
+    buttons.add(btSave)
+
+    var btLoad = new JButton("Load");
+    btLoad.addMouseListener(new MouseAdapter() {
+        override def mouseClicked(p1: MouseEvent) = {
+          //Save Script
+
+          var fileChooser = new JFileChooser
+          fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY)
+          fileChooser.setMultiSelectionEnabled(false)
+          fileChooser.setAcceptAllFileFilterUsed(true)
+          fileChooser.setFileHidingEnabled(true)
+          fileChooser.addChoosableFileFilter(new FileFilter() {
+              
+              override def getDescription() : String = "KevScript Files"
+
+              override def accept(f : File) : Boolean = {
+                if (f.isDirectory()) {
+                  return false;
+                }
+
+                val extension = f.getName.substring(f.getName.lastIndexOf(".")+1)
+                if (extension != null) {
+                  if (extension.equals("kevs")) {
+                    return true;
+                  } else {
+                    return false;
+                  }
+                }
+
+                return false;
+              }
+            })
+          var result = fileChooser.showOpenDialog(kevsPanel);
+          if(result == JFileChooser.APPROVE_OPTION) {
+            var loadFile = fileChooser.getSelectedFile
+            
+            
+            var br = new BufferedReader(new InputStreamReader(new FileInputStream(loadFile)))
+
+            var line = br.readLine
+            var content = new StringBuffer
+            while(line != null) {
+              content.append(line)
+              content.append("\n")
+              line = br.readLine
+            }
+
+            kevsPanel.codeEditor.setText(content.toString)
+            
+          }
+
+        }
+      })
+    buttons.add(btLoad)
+
+
     var btExecution = new JButton("execute");
     btExecution.addMouseListener(new MouseAdapter() {
-      override def mouseClicked(p1: MouseEvent) = {
-        //TODO SAVE CURRENT MODEL
-        var script = kevsPanel.getModel
-        if (script != null) {
-          import org.kevoree.tools.marShell.interpreter.KevsInterpreterAspects._
+        override def mouseClicked(p1: MouseEvent) = {
+          //TODO SAVE CURRENT MODEL
+          var script = kevsPanel.getModel
+          if (script != null) {
+            import org.kevoree.tools.marShell.interpreter.KevsInterpreterAspects._
 
-          var result = script.interpret(KevsInterpreterContext(kernel.getModelHandler.getActualModel))
-          println("Interpreter Result : " + result)
-          if (result) {
-            //reload
-            val file = File.createTempFile("kev", new Random().nextInt + "")
+            var result = script.interpret(KevsInterpreterContext(kernel.getModelHandler.getActualModel))
+            println("Interpreter Result : " + result)
+            if (result) {
+              //reload
+              val file = File.createTempFile("kev", new Random().nextInt + "")
 
-            KevoreeXmiHelper.save("file:///"+file.getAbsolutePath, kernel.getModelHandler().getActualModel);
+              KevoreeXmiHelper.save("file:///"+file.getAbsolutePath, kernel.getModelHandler().getActualModel);
 
-            var loadCMD = new LoadModelCommand
-            loadCMD.setKernel(kernel)
-            loadCMD.execute("file:///"+file.getAbsolutePath)
+              var loadCMD = new LoadModelCommand
+              loadCMD.setKernel(kernel)
+              loadCMD.execute("file:///"+file.getAbsolutePath)
 
 
+            }
           }
         }
-      }
-    })
-
-
+      })
     buttons.add(btExecution)
+
+
     add(buttons, BorderLayout.SOUTH)
 
 
