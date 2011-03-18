@@ -28,12 +28,14 @@ class KevsParser extends KevsAbstractParser
                     with KevsComponentInstanceParser
                     with KevsScriptParser
                     with KevsNodeParser
-                    with KevsBindingParser{
+                    with KevsBindingParser
+                    with KevsTypeParser
+                    {
 
   /**
    * extend the fExpression parser with sub parser
    */
-  override def kevStatement : Parser[List[Statment]] = (parseInst | parseNode | parseBindingsStatments)
+  override def kevStatement : Parser[List[Statment]] = (parseInst | parseNode | parseBindingsStatments | parseType)
   override def componentID : Parser[ComponentInstanceID] = parseCID
 
   def parseScript(content : String) : Option[Script] = {
