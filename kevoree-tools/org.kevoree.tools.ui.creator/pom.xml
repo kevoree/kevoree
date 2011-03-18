@@ -3,27 +3,31 @@
 
     <modelVersion>4.0.0</modelVersion>
     <artifactId>org.kevoree.tools.ui.creator</artifactId>
-    <packaging>bundle</packaging>
+    <packaging>jar</packaging>
     <name>Kevoree :: Tools :: UI Creator</name>
-    <version>1.1.0-SNAPSHOT</version>
+    <version>1.1.0-BETA1</version>
 
     <parent>
         <artifactId>org.kevoree.tools.root</artifactId>
         <groupId>org.kevoree.tools</groupId>
-        <version>1.0.0-RC5</version>
+        <version>1.1.0-BETA1</version>
         <relativePath>../org.kevoree.tools.root/pom.xml</relativePath>
     </parent>
+
+    <properties>
+        <kevoree.version>${project.version}</kevoree.version>
+    </properties>
 
     <dependencies>
         <dependency>
             <artifactId>org.kevoree.framework</artifactId>
             <groupId>org.kevoree</groupId>
-            <version>1.0.0-RC5</version>
+            <version>${kevoree.version}</version>
         </dependency>
         <dependency>
             <groupId>org.kevoree.tools</groupId>
             <artifactId>org.kevoree.tools.annotation.api</artifactId>
-            <version>1.1.0-SNAPSHOT</version>
+            <version>${kevoree.version}</version>
         </dependency>
         <dependency>
             <groupId>org.scalatest</groupId>
@@ -32,13 +36,5 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
-
-    <distributionManagement>
-        <snapshotRepository>
-            <id>maven.kevoree.org-snapshots</id>
-            <name>maven.kevoree.org-snapshots</name>
-            <url>http://maven.kevoree.org/libs-snapshot-local</url>
-        </snapshotRepository>
-    </distributionManagement>
 
 </project>
