@@ -11,8 +11,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
+
 package org.kevoree.tools.marShell.ast
 
-abstract case class Statment
+case class CreateComponentTypeStatment(newTypeName : String) extends TypeStatment {
 
-abstract case class TypeStatment extends Statment
+  
+  
+}
