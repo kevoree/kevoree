@@ -46,6 +46,10 @@ object KevsInterpreterAspects {
 
         case addGroup : AddGroupStatment => KevsAddGroupInterpreter(addGroup)
         case removeGroup : RemoveGroupStatment => KevsRemoveGroupInterpreter(removeGroup)
+          
+          //TYPE ASPECT
+        case createComponentType : CreateComponentTypeStatment => KevsCreateComponentTypeInterpreter(createComponentType)
+        case createChannelType : CreateChannelTypeStatment => KevsCreateChannelTypeInterpreter(createChannelType)
 
       }
     case _ @ e => println(e);null
