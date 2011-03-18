@@ -27,6 +27,8 @@ import scala.collection.JavaConversions._
 case class KevsCreateComponentTypeInterpreter(self : CreateComponentTypeStatment) extends KevsAbstractInterpreter {
 
   def interpret(context: KevsInterpreterContext): Boolean = {
+    
+    println("yo")
     //LOOK FOR PREVIOUSLY EXSITING COMPONENT TYPE
     context.model.getTypeDefinitions.find(tdef => tdef.getName == self.newTypeName) match {
       case Some(e)=> println("TypeDefinition already exist with name => "+self.newTypeName);false
@@ -37,7 +39,6 @@ case class KevsCreateComponentTypeInterpreter(self : CreateComponentTypeStatment
           true
       }
     }
-    false
   }
   
   

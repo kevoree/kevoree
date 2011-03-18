@@ -37,7 +37,7 @@ object MainRunner {
 
    // var newModel = KevoreeFactory.eINSTANCE.createContainerRoot
 
-    val newModel = load("/Users/ffouquet/Desktop/emptyMerged.kev")
+    val newModel = KevoreeFactory.eINSTANCE.createContainerRoot//load("/Users/ffouquet/Desktop/emptyMerged.kev")
 
     val parser =new KevsParser();
     val oscript = parser.parseScript(ParserUtil.loadFile("/Users/ffouquet/Documents/DEV/dukeboard_github/kevoree/kevoree-tools/org.kevoree.tools.marShell/src/test/resources/scripts/t1.kevs"));

@@ -1,13 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<kevoree:ContainerRoot xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:kevoree="http://kevoree/1.0">
-  <typeDefinitions xsi:type="kevoree:ChannelType" name="RestChannel" deployUnits="//@deployUnits.1" factoryBean="org.kevoree.library.restChannels.RestChannelFactory" bean="org.kevoree.library.restChannels.RestChannel" startMethod="startHello" stopMethod="stopHello" updateMethod="updateHello"/>
-  <typeDefinitions xsi:type="kevoree:NodeType" name="JavaSENode" deployUnits="//@deployUnits.0"/>
-  <repositories units="//@deployUnits.0 //@deployUnits.1" url="http://maven.kevoree.org/libs-release-local"/>
+<kevoree:ContainerRoot xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:kevoree="http://kevoree/1.0">
+  <repositories url="http://maven.kevoree.org/libs-release-local">
+    <units href="/Users/ffouquet/Documents/DEV/dukeboard_github/kevoree/kevoree-core/org.kevoree.merger/src/test/resources/deployUnit/defNodeLib.kev#//@deployUnits.1"/>
+  </repositories>
   <repositories url="http://scala-tools.org/repo-releases"/>
   <repositories url="http://maven.kevoree.org/release"/>
   <repositories url="http://repo1.maven.org/maven2"/>
-  <libraries name="Kevoree-Android-JavaSE" subTypes="//@typeDefinitions.0"/>
-  <deployUnits groupName="org.kevoree.library" unitName="org.kevoree.library.defaultNodeTypes" version="1.1.0-BETA1" hashcode="201103171520639" targetNodeType="//@typeDefinitions.1"/>
-  <deployUnits groupName="org.kevoree.library" unitName="org.kevoree.library.restChannels" version="1.1.0-BETA1" hashcode="201103171516322" requiredLibs="//@deployUnits.2" targetNodeType="//@typeDefinitions.1"/>
-  <deployUnits name="org.kevoree.extra.marshalling" url="mvn:org.kevoree.extra/org.kevoree.extra.marshalling"/>
 </kevoree:ContainerRoot>
