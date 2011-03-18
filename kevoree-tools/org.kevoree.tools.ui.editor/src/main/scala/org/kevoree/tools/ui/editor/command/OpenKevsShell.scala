@@ -27,6 +27,7 @@ import java.io.FileOutputStream
 import java.io.InputStreamReader
 import java.io.PrintWriter
 import java.util.Random
+import org.kevoree.tools.marShell.parser.ParserUtil
 import org.kevoree.tools.marShellGUI.{KevsModelHandlers, KevsFrame}
 
 class OpenKevsShell extends Command {
@@ -122,20 +123,11 @@ class OpenKevsShell extends Command {
             })
           var result = fileChooser.showOpenDialog(kevsPanel);
           if(result == JFileChooser.APPROVE_OPTION) {
-            var loadFile = fileChooser.getSelectedFile
-            
-            
-            var br = new BufferedReader(new InputStreamReader(new FileInputStream(loadFile)))
-
-            var line = br.readLine
-            var content = new StringBuffer
-            while(line != null) {
-              content.append(line)
-              content.append("\n")
-              line = br.readLine
-            }
-
-            kevsPanel.codeEditor.setText(content.toString)
+            var loadFilePath = fileChooser.getSelectedFile.getAbsolutePath()
+            var kevsContent = ParserUtil.loadFile(loadFilePath)
+            kevsPanel.codeEditor.setText(kevsContent.toString.trim)
+            kevsPanel.repaint()
+            kevsPanel.revalidate()
             
           }
 
