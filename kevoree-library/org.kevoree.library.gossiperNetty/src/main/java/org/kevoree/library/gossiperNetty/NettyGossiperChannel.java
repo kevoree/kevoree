@@ -44,8 +44,9 @@
 //
 //	GossiperChannelActor actor = null;
 //	GossiperUUIDSVectorClockActor clocksActor = null;
+//	GossiperChannelServer gossiperServer = null;
 //	private KevoreeModelHandlerService modelHandlerService = null;
-//	private static final String restBaseUrl = "gossipchannel";
+//	//private static final String restBaseUrl = "gossipchannel";
 //	private Logger logger = LoggerFactory.getLogger(NettyGossiperChannel.class);
 //
 //	@Start
@@ -55,22 +56,23 @@
 //		modelHandlerService = (KevoreeModelHandlerService) bundle.getBundleContext().getService(sr);
 //		clocksActor = new GossiperUUIDSVectorClockActor();
 //		actor = new GossiperChannelActor(this.getNodeName(), Long.parseLong(this.getDictionary().get("interval").toString()), this, clocksActor);
-//                
-//                GossiperChannelFragmentHandlerActor.setFragment(this.getName(), this);
-//                
-//                //START SERVER IF NECESSARY
-//                
-//                /*
+//
+//		GossiperChannelFragmentHandlerActor.setFragment(this.getName(), this);
+//		gossiperServer = new GossiperChannelServer();
+//
+//		//START SERVER IF NECESSARY
+//
+//		/*
 //		try {
-//			handlerAccess.acquire();
-//			if (RestGossiperChannelFragmentResource.channels.keySet().isEmpty()) {
-//				Handler.getDefaultHost().attach("/" + restBaseUrl + "/{channelName}/{uuid}", RestGossiperChannelFragmentResource.class);
-//				//  Handler.getDefaultHost().attach("/restBaseUrl", RestGroupsResource.class);
-//			}
-//			RestGossiperChannelFragmentResource.channels.put(this.getName(), this);
-//			handlerAccess.release();
+//		handlerAccess.acquire();
+//		if (RestGossiperChannelFragmentResource.channels.keySet().isEmpty()) {
+//		Handler.getDefaultHost().attach("/" + restBaseUrl + "/{channelName}/{uuid}", RestGossiperChannelFragmentResource.class);
+//		//  Handler.getDefaultHost().attach("/restBaseUrl", RestGroupsResource.class);
+//		}
+//		RestGossiperChannelFragmentResource.channels.put(this.getName(), this);
+//		handlerAccess.release();
 //		} catch (InterruptedException ex) {
-//			logger.error("GossipChannelStartError", ex);
+//		logger.error("GossipChannelStartError", ex);
 //		}*/
 //	}
 //

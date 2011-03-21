@@ -5,7 +5,9 @@
 
 package org.kevoree.library.gossiperNetty
 
+import com.google.protobuf.ByteString
 import java.net.InetSocketAddress
+import org.kevoree.library.gossiperNetty.api.msg.KevoreeMessage
 
 object GossiperMain {
 
@@ -19,7 +21,10 @@ object GossiperMain {
     
     
     var client = new GossiperChannelClient(3000,new InetSocketAddress("127.0.0.1",8000))
-    println(client.call("hello"))
+	var modelBytes = ByteString.copyFromUtf8("Hello");
+	var message = KevoreeMessage.Message.newBuilder.setContent(modelBytes).setDestChannelName("localhost").build
+	
+    println(client.call(message))
     
     var stop = new Thread(){
       override def run()={

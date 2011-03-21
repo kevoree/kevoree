@@ -10,7 +10,7 @@ import org.jboss.netty.channel.ExceptionEvent
 import org.jboss.netty.channel.MessageEvent
 import org.jboss.netty.channel.SimpleChannelUpstreamHandler
 
-class GossiperChannelHandler extends SimpleChannelUpstreamHandler {
+class GossiperChannelHandler extends SimpleChannelUpstreamHandler with GossiperChannel {
   
 
   override def messageReceived(ctx:ChannelHandlerContext, e:MessageEvent)={
