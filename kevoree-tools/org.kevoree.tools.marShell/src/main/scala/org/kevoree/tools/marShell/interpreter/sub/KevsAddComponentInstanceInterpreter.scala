@@ -21,6 +21,7 @@ package org.kevoree.tools.marShell.interpreter.sub
 import org.kevoree.tools.marShell.ast.AddComponentInstanceStatment
 import org.kevoree.tools.marShell.interpreter.KevsAbstractInterpreter
 import org.kevoree.tools.marShell.interpreter.KevsInterpreterContext
+import org.kevoree.tools.marShell.interpreter.utils.Merger
 import scala.collection.JavaConversions._
 import org.kevoree._
 
@@ -33,7 +34,6 @@ case class KevsAddComponentInstanceInterpreter(addCompo: AddComponentInstanceSta
         context.model.getNodes.find(n => n.getName == nodeID) match {
           case Some(targetNode) => {
             //SEARCH TYPE
-
             context.model.getTypeDefinitions.find(td => td.getName == addCompo.typeDefinitionName) match {
               case Some(typeDef) if (typeDef.isInstanceOf[ComponentType]) => {
                 var componentDefinition = typeDef.asInstanceOf[ComponentType]
@@ -52,6 +52,10 @@ case class KevsAddComponentInstanceInterpreter(addCompo: AddComponentInstanceSta
                   newcomponent.getRequired.add(port)
                   port.setPortTypeRef(ref)
                 }
+                
+                //MERGE DICTIONARY
+                Merger.mergeDictionary(newcomponent, addCompo.props)
+                      
                 targetNode.getComponents.add(newcomponent)
 
               }
