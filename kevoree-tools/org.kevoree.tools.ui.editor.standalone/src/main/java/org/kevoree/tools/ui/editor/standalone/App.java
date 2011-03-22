@@ -26,14 +26,21 @@ import org.kevoree.tools.ui.editor.KevoreeEditor;
  */
 public class App {
 
-    public static void main(String[] args) {
+    public static void main(final String[] args) {
 
         SwingUtilities.invokeLater(new Runnable() {
 
             @Override
             public void run() {
                 System.setProperty("apple.laf.useScreenMenuBar", "true");
-                JFrame jframe = new JFrame("Kevoree Editor");
+
+                String frameName = "Kevoree Editor";
+
+                if(args[1] != null && !args[1].equals("")) {
+                 frameName += " - " + args[1];
+                }
+
+                JFrame jframe = new JFrame(frameName);
                 jframe.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
                 jframe.setPreferredSize(new Dimension(800, 600));
                 KevoreeEditor artpanel = new KevoreeEditor();
