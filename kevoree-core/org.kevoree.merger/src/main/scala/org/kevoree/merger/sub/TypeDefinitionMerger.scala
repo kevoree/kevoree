@@ -31,10 +31,12 @@ trait TypeDefinitionMerger extends Merger with DictionaryMerger with PortTypeMer
     cts.foreach{toMergeTypeDef=>
       actualModel.getTypeDefinitions.find({actualTypeDef=>actualTypeDef.isModelEquals(toMergeTypeDef)}) match {
         case Some(found_type_definition)=> {
+            var root = found_type_definition.eContainer.asInstanceOf[ContainerRoot]
+            
             if(found_type_definition.isUpdated(toMergeTypeDef)){
               updateTypeDefinition(found_type_definition,toMergeTypeDef)
             }
-            mergeTypeDefinition(found_type_definition,toMergeTypeDef)
+            mergeTypeDefinition(root,found_type_definition,toMergeTypeDef)
           }
           //SIMPLE CASE ? JUST MERGE THE NEW TYPE DEFINITION
         case None => mergeNewTypeDefinition(actualModel,toMergeTypeDef)
@@ -43,9 +45,9 @@ trait TypeDefinitionMerger extends Merger with DictionaryMerger with PortTypeMer
   }
 
   
-  private def mergeTypeDefinition(actuelTypeDefinition:TypeDefinition, newTypeDefinition:TypeDefinition) = {
+  private def mergeTypeDefinition(root : ContainerRoot,actuelTypeDefinition:TypeDefinition, newTypeDefinition:TypeDefinition) = {
     //UPDATE DEPLOYS UNIT
-    val root = newTypeDefinition.eContainer.asInstanceOf[ContainerRoot]
+    //val root = actuelTypeDefinition.eContainer.asInstanceOf[ContainerRoot]
     var allDeployUnits = List() ++newTypeDefinition.getDeployUnits.toList ++actuelTypeDefinition.getDeployUnits.toList  //CLONE LIST
     newTypeDefinition.getDeployUnits.clear
     allDeployUnits.foreach{ndu=>
