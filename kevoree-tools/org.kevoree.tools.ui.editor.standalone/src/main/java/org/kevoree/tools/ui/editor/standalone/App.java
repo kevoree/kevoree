@@ -36,8 +36,8 @@ public class App {
 
                 String frameName = "Kevoree Editor";
 
-                if(args[1] != null && !args[1].equals("")) {
-                 frameName += " - " + args[1];
+                if(args[0] != null && !args[0].equals("")) {
+                 frameName += " - " + args[0];
                 }
 
                 JFrame jframe = new JFrame(frameName);
