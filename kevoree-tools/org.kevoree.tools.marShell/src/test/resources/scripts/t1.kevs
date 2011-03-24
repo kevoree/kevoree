@@ -1,39 +1,6 @@
 /* commennt */
 tblock{
 
-   // include("")
-
-    //ADD INSTANCE
-    addNode nodeSalon,nodeSalon2 : JavaSE
-    addComponent lightS1@nodeSalon : FakeSimpleLight {  key1="",key2=""  }
-    //addComponent switch@nodeSalon : FakeSwitch
-
-
-//merge
-
-
-//update
-
-    //CHANNEL
-    addChannel hub1 : defMSG
-    //addChannel hub2 : MyHubType
-
-
-    //addChannel hub3 : MyHubType
-    //removeChannel hub3 : MyHubType
-
-    //BINDINGS
-    bind lightS1.on@nodeSalon => hub1
-    //bind switch.on@nodeSalon => hub1
-    bind lightS1.off@nodeSalon => hub1
-    //bind switch.off@nodeSalon => hub2
-
-  //  unbind lightS1.on@nodeSalon => hub1
-
-
-
-//    removeNode nodeSalon
-    // removeChannel hub1
-
+createComponentType fakeLight2
 
 }

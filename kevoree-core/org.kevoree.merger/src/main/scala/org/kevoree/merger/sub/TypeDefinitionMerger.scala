@@ -57,6 +57,10 @@ trait TypeDefinitionMerger extends Merger with DictionaryMerger with PortTypeMer
   /* This method try to update */
   private def updateTypeDefinition(actuelTypeDefinition:TypeDefinition, newTypeDefinition:TypeDefinition) = {
     val root = actuelTypeDefinition.eContainer.asInstanceOf[ContainerRoot]
+    
+   // org.eclipse.emf.ecore.util.EcoreUtil.replace(actuelTypeDefinition, newTypeDefinition)
+    
+    
     //REMOVE OLD AND ADD NEW TYPE
     root.getTypeDefinitions.remove(actuelTypeDefinition)
     mergeNewTypeDefinition(root,newTypeDefinition)
@@ -64,6 +68,15 @@ trait TypeDefinitionMerger extends Merger with DictionaryMerger with PortTypeMer
     //UPDATE LIBRARIES
     root.getLibraries.filter(p=> p.getSubTypes.contains(actuelTypeDefinition) ).foreach{lib=>
       lib.getSubTypes.remove(actuelTypeDefinition);lib.getSubTypes.add(newTypeDefinition)
+    }
+    
+    //PARTICULAR CASE - CHECK
+    if(actuelTypeDefinition.isInstanceOf[NodeType]){
+      root.getDeployUnits.foreach{du=>
+        if(du.getTargetNodeType!= null && du.getTargetNodeType.getName==actuelTypeDefinition.getName){
+          du.setTargetNodeType(newTypeDefinition.asInstanceOf[NodeType])
+        }
+      }
     }
 
     //PROCESS INSTANCE
@@ -83,6 +96,9 @@ trait TypeDefinitionMerger extends Merger with DictionaryMerger with PortTypeMer
 
       //SPECIFIC PROCESS
       art2instance match {
+        
+        
+        
         case c : ComponentInstance => {
             val ct = newTypeDefinition.asInstanceOf[ComponentType]
 

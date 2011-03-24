@@ -22,6 +22,7 @@ import com.sun.mirror.apt.AnnotationProcessorEnvironment
 import com.sun.mirror.declaration.TypeDeclaration
 import org.kevoree.KevoreeFactory
 import org.kevoree.ContainerRoot
+import org.kevoree.NodeType
 import org.kevoree.TypeDefinition
 import scala.collection.JavaConversions._
 
@@ -45,7 +46,10 @@ trait ThirdPartyProcessor {
     var thirdParties = env.getOptions.find({op => op._1.contains("thirdParties")}).getOrElse{("key=","")}._1.split('=').toList.get(1)
     var thirdPartiesList : List[String] = thirdParties.split(";").filter(r=> r != null && r != "").toList
 
-
+    var nodeTypeNames = env.getOptions.find({op => op._1.contains("nodeTypeNames")}).getOrElse{("key=","")}._1.split('=').toList.get(1)
+    var nodeTypeNameList : List[String] = nodeTypeNames.split(";").filter(r=> r != null && r != "").toList
+    
+    
     /* CHECK THIRDPARTIES */
     thirdPartyAnnotations.foreach{tp=>
       root.getDeployUnits.find({etp => etp.getName == tp.name}) match {
@@ -80,6 +84,27 @@ trait ThirdPartyProcessor {
           }
       }
     }
+    
+    /* POST PROCESS ADD NODE TYPE TO ALL THIRDPARTY */
+    componentType.getDeployUnits.get(0).getRequiredLibs.foreach{tp =>
+      nodeTypeNameList.foreach{nodeTypeName=>
+        /* ROOT ADD NODE TYPE IF NECESSARY */
+        nodeTypeNameList.foreach{nodeTypeName =>
+          componentType.eContainer.asInstanceOf[ContainerRoot].getTypeDefinitions.filter(p=> p.isInstanceOf[NodeType]).find(nt => nt.getName == nodeTypeName) match {
+            case Some(existingNodeType)=>tp.setTargetNodeType(existingNodeType.asInstanceOf[NodeType])
+            case None => {
+                var nodeType = KevoreeFactory.eINSTANCE.createNodeType
+                nodeType.setName(nodeTypeName)
+                root.getTypeDefinitions.add(nodeType)
+                tp.setTargetNodeType(nodeType)
+              }
+          }
+        }
+        
+      }
+      
+    }
+    
     
   }
 }
