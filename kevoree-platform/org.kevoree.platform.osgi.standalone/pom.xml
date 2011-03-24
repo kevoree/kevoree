@@ -123,6 +123,8 @@
             <artifactId>org.kevoree.remote</artifactId>
             <version>${kevoree.version}</version>
         </dependency>
+        
+        
     </dependencies>
 
     <build>

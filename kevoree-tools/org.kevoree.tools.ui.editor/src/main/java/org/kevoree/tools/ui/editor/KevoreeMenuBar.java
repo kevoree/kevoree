@@ -27,12 +27,21 @@ public class KevoreeMenuBar extends JMenuBar {
         JMenu file, model, kevs = null;
 
         file = new JMenu("File");
+        
+        /* Load command */
         JMenuItem fileOpen = new JMenuItem("Open");
-
         LoadModelCommandUI cmdLM = new LoadModelCommandUI();
         cmdLM.setKernel(kernel);
         fileOpen.addActionListener(new CommandActionListener(cmdLM));
         file.add(fileOpen);
+        
+        /* Load remote ui command */
+        JMenuItem fileOpenRemote = new JMenuItem("Open from node");
+        LoadRemoteModelUICommand cmdLMRemote = new LoadRemoteModelUICommand();
+        cmdLMRemote.setKernel(kernel);
+        fileOpenRemote.addActionListener(new CommandActionListener(cmdLMRemote));
+        file.add(fileOpenRemote);
+        
         JMenuItem fileSave = new JMenuItem("Save");
         SaveActuelModelCommand cmdSM = new SaveActuelModelCommand();
         cmdSM.setKernel(kernel);
