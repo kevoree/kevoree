@@ -42,7 +42,8 @@ class LoadRemoteModelUICommand extends Command {
           var port = results(1)
           //CALL POST REMOTE URL
           var url = new URL("http://"+ip+":"+port+"/model/current");
-          
+
+          lcommand.setKernel(kernel)
           lcommand.execute(url)
           
           /*var conn = url.openConnection();
@@ -52,7 +53,7 @@ class LoadRemoteModelUICommand extends Command {
         }
       }
     } catch {
-      case _ @ e =>
+      case _ @ e => e.printStackTrace
     }
 
   }

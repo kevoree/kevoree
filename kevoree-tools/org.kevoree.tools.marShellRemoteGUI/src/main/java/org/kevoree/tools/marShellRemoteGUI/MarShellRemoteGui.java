@@ -15,10 +15,13 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package org.kevoree.tools.marShellRemoteGUI;
 
+import java.awt.BorderLayout;
+import java.awt.Color;
+import javax.swing.BorderFactory;
 import javax.swing.JApplet;
+import javax.swing.JLabel;
 
 /**
  *
@@ -26,17 +29,28 @@ import javax.swing.JApplet;
  */
 public class MarShellRemoteGui extends JApplet {
 
-    /**
-     * Initialization method that will be called after the applet is loaded
-     * into the browser.
-     */
     @Override
     public void init() {
-        
-        
-        
+        //Execute a job on the event-dispatching thread:
+        //creating this applet's GUI.
+        try {
+            javax.swing.SwingUtilities.invokeAndWait(new Runnable() {
+
+                @Override
+                public void run() {
+                    createGUI();
+                }
+            });
+        } catch (Exception e) {
+            System.err.println("createGUI didn't successfully complete");
+        }
     }
 
-    // TODO overwrite start(), stop() and destroy() methods
-
+    private void createGUI() {
+        JLabel label = new JLabel(
+                "You are successfully running a Swing applet!");
+        label.setHorizontalAlignment(JLabel.CENTER);
+        label.setBorder(BorderFactory.createMatteBorder(1, 1, 1, 1, Color.black));
+        getContentPane().add(label, BorderLayout.CENTER);
+    }
 }

@@ -65,7 +65,7 @@ trait TypeDefinitionMerger extends Merger with DictionaryMerger with PortTypeMer
     //    println(du)
         
         if(du.getTargetNodeType!= null && du.getTargetNodeType.getName==actuelTypeDefinition.getName){
-          println("ok")
+          //println("ok")
           du.setTargetNodeType(actuelTypeDefinition.asInstanceOf[NodeType])
         }
       }
