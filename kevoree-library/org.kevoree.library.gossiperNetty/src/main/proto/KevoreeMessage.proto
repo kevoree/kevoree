@@ -6,9 +6,7 @@ option java_outer_classname = "KevoreeMessage";
 option optimize_for = LITE_RUNTIME;
 
 message Message {
-
     required string destChannelName =1;
-
     required bytes content = 2;
-
+	required string contentClass = 3;
 }

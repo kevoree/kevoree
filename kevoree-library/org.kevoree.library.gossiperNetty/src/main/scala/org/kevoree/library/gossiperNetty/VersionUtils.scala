@@ -5,7 +5,7 @@
 
 package org.kevoree.library.gossiperNetty
 
-import org.kevoree.library.gossiper.version.GossiperMessages.VectorClock
+import org.kevoree.library.version.Version.VectorClock
 import org.kevoree.library.gossiper.version.Occured
 import scala.collection.JavaConversions._
 
@@ -71,30 +71,30 @@ object VersionUtils {
 	   break
 	   }
 	   }*/
-	   }
+	}
 
-	   /* Okay, now check for left overs */
-	   if (larger < largerClock.getEntiesCount()) {
-		  largerBigger = true
-		}
-	   if (smaller < smallerClock.getEntiesCount()) {
-		  smallerBigger = true
-		}
+	/* Okay, now check for left overs */
+	if (larger < largerClock.getEntiesCount()) {
+	  largerBigger = true
+	}
+	if (smaller < smallerClock.getEntiesCount()) {
+	  smallerBigger = true
+	}
 
-	   /* This is the case where they are equal, return AFTER arbitrarily */
-	   //println("larger = " + larger + "smaller = " + smaller)
-	   //println("largerBigger : " + largerBigger + " && smallerBigger : " +smallerBigger + " => " + "largerIsV1" + largerIsV1)
+	/* This is the case where they are equal, return AFTER arbitrarily */
+	//println("larger = " + larger + "smaller = " + smaller)
+	//println("largerBigger : " + largerBigger + " && smallerBigger : " +smallerBigger + " => " + "largerIsV1" + largerIsV1)
 	   
-	   larger match {
-		  case _ if (!largerBigger && !smallerBigger)=>Occured.AFTER
-		  case _ if (!largerBigger && smallerBigger) =>Occured.CONCURRENTLY
-		  case _ if(largerBigger && !smallerBigger && largerIsV1)=>Occured.AFTER
-		  case _ if(largerBigger && !smallerBigger && !largerIsV1)=>Occured.BEFORE
-		  case _ if (!largerBigger && smallerBigger && largerIsV1) =>Occured.BEFORE
-		  case _ if (!largerBigger && smallerBigger && !largerIsV1) =>Occured.AFTER
-		  case _ => Occured.CONCURRENTLY
-		}
+	larger match {
+	  case _ if (!largerBigger && !smallerBigger)=>Occured.AFTER
+	  case _ if (!largerBigger && smallerBigger) =>Occured.CONCURRENTLY
+	  case _ if(largerBigger && !smallerBigger && largerIsV1)=>Occured.AFTER
+	  case _ if(largerBigger && !smallerBigger && !largerIsV1)=>Occured.BEFORE
+	  case _ if (!largerBigger && smallerBigger && largerIsV1) =>Occured.BEFORE
+	  case _ if (!largerBigger && smallerBigger && !largerIsV1) =>Occured.AFTER
+	  case _ => Occured.CONCURRENTLY
+	}
 	
 	
-	   }
-	   }
+  }
+}

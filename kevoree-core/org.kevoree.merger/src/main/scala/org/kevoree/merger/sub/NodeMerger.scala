@@ -30,7 +30,6 @@ trait NodeMerger extends InstanceMerger {
   def mergeAllNode(actualModel : ContainerRoot,modelToMerge : ContainerRoot)={
 
     var toMergeNodes = modelToMerge.getNodes.toList ++ List()
-
     toMergeNodes.foreach{toMergeNode=> mergeNode(actualModel,toMergeNode)  }
 
   }
