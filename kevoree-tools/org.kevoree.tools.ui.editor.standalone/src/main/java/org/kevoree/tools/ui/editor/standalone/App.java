@@ -34,17 +34,17 @@ public class App {
             public void run() {
                 System.setProperty("apple.laf.useScreenMenuBar", "true");
 
+                KevoreeEditor artpanel = new KevoreeEditor();
+                
                 String frameName = "Kevoree Editor";
-
-                /*
-                if(args[1] != null && !args[1].equals("")) {
-                 frameName += " - " + args[1];
-                }*/
+                if(!artpanel.getEditorVersion().equals("")) {
+                    frameName += " - " + artpanel.getEditorVersion();
+                }
 
                 JFrame jframe = new JFrame(frameName);
                 jframe.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
                 jframe.setPreferredSize(new Dimension(800, 600));
-                KevoreeEditor artpanel = new KevoreeEditor();
+                
 
                 jframe.setJMenuBar(artpanel.getMenuBar());
 
