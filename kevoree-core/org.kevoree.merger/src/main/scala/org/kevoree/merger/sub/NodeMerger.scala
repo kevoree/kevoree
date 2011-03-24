@@ -46,7 +46,8 @@ trait NodeMerger extends InstanceMerger {
   }
   
   private def mergeAllInstances(actualModel : ContainerRoot,targetInstance:ContainerNode,instanceToMerge : ContainerNode)={
-    instanceToMerge.getComponents.foreach{c=>
+    var componentsList = List() ++ instanceToMerge.getComponents
+    componentsList.foreach{c=>
       targetInstance.getComponents.find(eC=> eC.isModelEquals(c) ) match {
 
         case None => {
