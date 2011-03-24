@@ -125,12 +125,10 @@ class OpenKevsShell extends Command {
           if(result == JFileChooser.APPROVE_OPTION) {
             var loadFilePath = fileChooser.getSelectedFile.getAbsolutePath()
             var kevsContent = ParserUtil.loadFile(loadFilePath)
+            kevsPanel.codeEditor.setText(null)
             kevsPanel.codeEditor.setText(kevsContent.toString.trim)
             kevsPanel.repaint()
-            kevsPanel.revalidate()
-            
           }
-
         }
       })
     buttons.add(btLoad)
