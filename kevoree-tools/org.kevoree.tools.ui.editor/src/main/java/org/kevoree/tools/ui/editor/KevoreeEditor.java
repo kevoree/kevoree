@@ -18,6 +18,11 @@
 
 package org.kevoree.tools.ui.editor;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Properties;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.*;
 
 import org.kevoree.framework.KevoreeXmiHelper;
@@ -63,6 +68,34 @@ public class KevoreeEditor {
 
     public void setDefaultSaveLocation(String url){
         SaveActuelModelCommand.setDefaultLocation(url);
+    }
+
+    public String getEditorVersion() {
+
+        InputStream is = getClass().getResourceAsStream("/META-INF/maven/org.kevoree.tools/org.kevoree.tools.ui.editor/pom.properties");
+        String version = null;
+
+        if(is != null) {
+            try {
+                Properties p = new Properties();
+                p.load(is);
+                version = p.getProperty("version");
+            } catch (IOException ex) {
+                Logger.getLogger(KevoreeEditor.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            try {
+                is.close();
+            } catch (IOException ex) {
+                Logger.getLogger(KevoreeEditor.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+
+        if(version == null) {
+            return "";
+        } else {
+            return version;
+        }
+
     }
 
 }
