@@ -19,8 +19,13 @@ package org.kevoree.platform.osgi.standalone;
 
 import generated.SysPackageConstants;
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Properties;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.apache.felix.framework.Felix;
 import org.apache.felix.framework.util.FelixConstants;
 import org.osgi.framework.Constants;
@@ -90,6 +95,8 @@ public class EmbeddedFelix {
             // (10) Start the framework.
             m_fwk.start();
 
+            printWelcome();
+
             System.out.println("Felix Embedded started");
             // (11) Wait for framework to stop to exit the VM.
             //m_fwk.waitForStop(0);
@@ -99,6 +106,33 @@ public class EmbeddedFelix {
             ex.printStackTrace();
             System.exit(0);
         }
+
+    }
+
+    private void printWelcome() {
+        String welcomeMessage = "Kevoree OSGi Standalone";
+
+        InputStream is = getClass().getResourceAsStream("/META-INF/maven/org.kevoree.platform/org.kevoree.platform.osgi.standalone/pom.properties");
+        if (is != null) {
+            try {
+                Properties p = new Properties();
+
+                p.load(is);
+
+                String version = p.getProperty("version");
+                if (version != null) {
+                    welcomeMessage += " - " + version;
+                }
+
+                is.close();
+
+            } catch (IOException ex) {
+                Logger.getLogger(EmbeddedFelix.class.getName()).log(Level.SEVERE, null, ex);
+            }
+
+        }
+
+        System.out.println(welcomeMessage);
 
     }
 }
