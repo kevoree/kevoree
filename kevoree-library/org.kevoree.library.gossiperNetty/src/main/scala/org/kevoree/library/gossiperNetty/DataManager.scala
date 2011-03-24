@@ -5,7 +5,6 @@
 
 package org.kevoree.library.gossiperNetty
 
-import java.security.SecureRandom
 import java.util.HashMap
 import java.util.UUID
 import org.kevoree.framework.message.Message

@@ -12,7 +12,7 @@ import org.jboss.netty.channel.ChannelPipeline
 import org.jboss.netty.channel.ChannelPipelineFactory
 import org.jboss.netty.channel.Channels
 import org.jboss.netty.channel.socket.DatagramChannel
-import org.jboss.netty.channel.socket.oio.OioDatagramChannelFactory
+import org.jboss.netty.channel.socket.nio.NioDatagramChannelFactory
 import org.jboss.netty.handler.codec.protobuf.ProtobufDecoder
 import org.jboss.netty.handler.codec.protobuf.ProtobufEncoder
 import org.kevoree.library.gossip.Gossip.UpdatedValueNotification
@@ -23,7 +23,7 @@ class NotificationRequestSender(channelFragment : NettyGossiperChannel, port : I
 
   
   // define attributes used to define channel to send notification message
-  var factoryNotificationMessage =  new OioDatagramChannelFactory(Executors.newCachedThreadPool())
+  var factoryNotificationMessage =  new NioDatagramChannelFactory(Executors.newCachedThreadPool())
   var bootstrapNotificationMessage = new ConnectionlessBootstrap(factoryNotificationMessage)
   bootstrapNotificationMessage.setPipelineFactory(new ChannelPipelineFactory(){
       override def getPipeline() : ChannelPipeline = {

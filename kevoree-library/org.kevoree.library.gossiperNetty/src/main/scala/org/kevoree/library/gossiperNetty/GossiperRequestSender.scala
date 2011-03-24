@@ -15,7 +15,7 @@ import org.jboss.netty.channel.ChannelPipeline
 import org.jboss.netty.channel.ChannelPipelineFactory
 import org.jboss.netty.channel.Channels
 import org.jboss.netty.channel.socket.DatagramChannel
-import org.jboss.netty.channel.socket.oio.OioDatagramChannelFactory
+import org.jboss.netty.channel.socket.nio.NioDatagramChannelFactory
 import org.jboss.netty.handler.codec.protobuf.ProtobufDecoder
 import org.jboss.netty.handler.codec.protobuf.ProtobufEncoder
 import org.kevoree.extra.marshalling.RichString
@@ -35,7 +35,7 @@ import scala.collection.JavaConversions._
 class GossiperRequestSender(timeout : java.lang.Long,channelFragment : NettyGossiperChannel,dataManager : DataManager, port : Int) extends actors.DaemonActor {
 
   // define attributes used to define channel to send gossip request
-  var factory =  new OioDatagramChannelFactory(Executors.newCachedThreadPool())
+  var factory =  new NioDatagramChannelFactory(Executors.newCachedThreadPool())
   var bootstrap = new ConnectionlessBootstrap(factory)
   var self = this
   bootstrap.setPipelineFactory(new ChannelPipelineFactory(){

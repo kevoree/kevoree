@@ -4,12 +4,9 @@
  */
 package org.kevoree.library.gossiperNetty;
 
-import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 import java.util.UUID;
-import java.util.concurrent.Semaphore;
 import org.kevoree.annotation.ChannelTypeFragment;
 import org.kevoree.annotation.DictionaryAttribute;
 import org.kevoree.annotation.DictionaryType;
@@ -43,6 +40,9 @@ import scala.Tuple2;
 	@DictionaryAttribute(name = "interval", defaultValue = "60000", optional = true),
 	@DictionaryAttribute(name = "port", defaultValue = "9000", optional = true)
 })
+/*@ThirdParties({
+    @ThirdParty(name="protobuf", url="wrap:mvn:com.google.protobuf/protobuf-java/2.3.0")
+})*/
 @ChannelTypeFragment
 public class NettyGossiperChannel extends AbstractChannelFragment {
 

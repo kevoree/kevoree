@@ -12,31 +12,23 @@ import java.net.InetSocketAddress
 import java.net.SocketAddress
 import org.jboss.netty.bootstrap.ConnectionlessBootstrap
 import org.jboss.netty.channel.ChannelPipelineFactory
-import org.jboss.netty.channel.Channel
-import org.jboss.netty.channel.ChannelHandlerContext
 import org.jboss.netty.channel.ChannelPipeline
 import org.jboss.netty.channel.Channels
-import org.jboss.netty.channel.ExceptionEvent
-import org.jboss.netty.channel.ExceptionEvent
-import org.jboss.netty.channel.MessageEvent
-import org.jboss.netty.channel.SimpleChannelUpstreamHandler
 import org.jboss.netty.channel.socket.DatagramChannel
-import org.jboss.netty.channel.socket.oio.OioDatagramChannelFactory
+import org.jboss.netty.channel.socket.nio.NioDatagramChannelFactory
 import org.kevoree.extra.marshalling.RichJSONObject
-import org.kevoree.framework.AbstractChannelFragment
 import org.kevoree.library.gossiperNetty.api.msg.KevoreeMessage.Message
 import org.jboss.netty.handler.codec.protobuf.ProtobufDecoder
 import org.jboss.netty.handler.codec.protobuf.ProtobufEncoder
 import org.kevoree.framework.KevoreeChannelFragment
 import org.kevoree.library.gossip.Gossip
-import scala.concurrent.TIMEOUT
 import scala.collection.JavaConversions._
 
 class GossiperRequestReceiver(channelFragment : NettyGossiperChannel,dataManager : DataManager, port : Int, gossiperRequestSender : GossiperRequestSender) extends actors.DaemonActor {
 
   // define attributes used to define channel to listen request
-  var factoryForRequest =  new OioDatagramChannelFactory(Executors.newCachedThreadPool())
-  var bootstrapForRequest = new ConnectionlessBootstrap(factory)
+  var factoryForRequest =  new NioDatagramChannelFactory(Executors.newCachedThreadPool())
+  var bootstrapForRequest = new ConnectionlessBootstrap(factoryForRequest)
   var self = this
   bootstrapForRequest.setPipelineFactory(new ChannelPipelineFactory(){
       override def getPipeline() : ChannelPipeline = {
@@ -50,7 +42,7 @@ class GossiperRequestReceiver(channelFragment : NettyGossiperChannel,dataManager
   bootstrapForRequest.bind(new InetSocketAddress(port));
   
   // define attibutes used to define channel and to send data when someone ask for it
-  var factory =  new OioDatagramChannelFactory(Executors.newCachedThreadPool())
+  var factory =  new NioDatagramChannelFactory(Executors.newCachedThreadPool())
   var bootstrap = new ConnectionlessBootstrap(factory)
   //var self = this
   bootstrap.setPipelineFactory(new ChannelPipelineFactory(){
