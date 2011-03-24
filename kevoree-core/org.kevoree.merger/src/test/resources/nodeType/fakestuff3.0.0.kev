@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kevoree:ContainerRoot xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:kevoree="http://kevoree/1.0">
+  <typeDefinitions xsi:type="kevoree:ComponentType" name="FakeConsole" deployUnits="//@deployUnits.0" factoryBean="org.entimid.fakeStuff.devices.FakeConsoleFactory" bean="org.entimid.fakeStuff.devices.FakeConsole" startMethod="start" stopMethod="stop" updateMethod="update">
+    <required name="log" ref="//@typeDefinitions.2" optional="true" noDependency="false"/>
+    <required name="textEntered" ref="//@typeDefinitions.2" optional="false" noDependency="false"/>
+    <provided name="showText" ref="//@typeDefinitions.2">
+      <mappings beanMethodName="appendIncoming" serviceMethodName="process"/>
+    </provided>
+  </typeDefinitions>
+  <typeDefinitions xsi:type="kevoree:NodeType" name="JavaSENode"/>
+  <typeDefinitions xsi:type="kevoree:MessagePortType" name="org.kevoree.framework.MessagePort"/>
+  <typeDefinitions xsi:type="kevoree:ComponentType" name="FakeSimpleSwitch" deployUnits="//@deployUnits.0" factoryBean="org.entimid.fakeStuff.devices.FakeSimpleSwitchFactory" bean="org.entimid.fakeStuff.devices.FakeSimpleSwitch" startMethod="start" stopMethod="stop" updateMethod="update">
+    <required name="log" ref="//@typeDefinitions.2" optional="true" noDependency="false"/>
+    <required name="on" ref="//@typeDefinitions.2" optional="false" noDependency="false"/>
+    <required name="off" ref="//@typeDefinitions.2" optional="false" noDependency="false"/>
+    <required name="onoff" ref="//@typeDefinitions.4" optional="true" noDependency="false"/>
+  </typeDefinitions>
+  <typeDefinitions xsi:type="kevoree:ServicePortType" name="org.entimid.framework.service.OnOffService">
+    <operations name="on" returnType="//@dataTypes.0"/>
+    <operations name="off" returnType="//@dataTypes.0"/>
+  </typeDefinitions>
+  <typeDefinitions xsi:type="kevoree:ComponentType" name="FakeSimpleLight" deployUnits="//@deployUnits.0" factoryBean="org.entimid.fakeStuff.devices.FakeSimpleLightFactory" bean="org.entimid.fakeStuff.devices.FakeSimpleLight" startMethod="start" stopMethod="stop" updateMethod="update">
+    <dictionaryType>
+      <attributes name="param1"/>
+      <attributes name="param2" optional="true"/>
+      <defaultValues attribute="//@typeDefinitions.5/@dictionaryType/@attributes.1" value="defaultValue"/>
+    </dictionaryType>
+    <required name="log" ref="//@typeDefinitions.2" optional="true" noDependency="false"/>
+    <provided name="on" ref="//@typeDefinitions.2">
+      <mappings beanMethodName="lightOn" serviceMethodName="process"/>
+    </provided>
+    <provided name="off" ref="//@typeDefinitions.2">
+      <mappings beanMethodName="lightOff" serviceMethodName="process"/>
+    </provided>
+    <provided name="onoff" ref="//@typeDefinitions.4">
+      <mappings beanMethodName="lightOn" serviceMethodName="on"/>
+      <mappings beanMethodName="lightOff" serviceMethodName="off"/>
+    </provided>
+  </typeDefinitions>
+  <typeDefinitions xsi:type="kevoree:ComponentType" name="FakeSimpleLog" deployUnits="//@deployUnits.0" factoryBean="org.entimid.fakeStuff.devices.FakeSimpleLogFactory" bean="org.entimid.fakeStuff.devices.FakeSimpleLog" startMethod="start" stopMethod="stop" updateMethod="update">
+    <required name="log" ref="//@typeDefinitions.2" optional="true" noDependency="false"/>
+    <provided name="pLog" ref="//@typeDefinitions.2">
+      <mappings beanMethodName="processMsg" serviceMethodName="process"/>
+    </provided>
+  </typeDefinitions>
+  <repositories units="//@deployUnits.0" url="http://authreader:pass@maven.entimid.org/entimid-snapshot"/>
+  <repositories url="http://maven.kevoree.org/release"/>
+  <repositories url="http://authreader:pass@maven.entimid.org/entimid-release"/>
+  <repositories url="http://repo1.maven.org/maven2"/>
+  <dataTypes name="void"/>
+  <libraries name="EnTiMid-FakeStuff" subTypes="//@typeDefinitions.0 //@typeDefinitions.3 //@typeDefinitions.5 //@typeDefinitions.6"/>
+  <deployUnits groupName="org.entimid" unitName="org.entimid.fakeStuff" version="3.0.0-SNAPSHOT" hashcode="201103211323288" requiredLibs="//@deployUnits.1" targetNodeType="//@typeDefinitions.1"/>
+  <deployUnits name="org.entimid.framework" url="mvn:org.entimid/framework/3.0.0-SNAPSHOT" targetNodeType="//@typeDefinitions.1"/>
+</kevoree:ContainerRoot>
