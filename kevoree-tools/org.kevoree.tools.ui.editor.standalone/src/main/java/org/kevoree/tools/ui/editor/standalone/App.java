@@ -36,9 +36,10 @@ public class App {
 
                 String frameName = "Kevoree Editor";
 
-                if(args[0] != null && !args[0].equals("")) {
-                 frameName += " - " + args[0];
-                }
+                /*
+                if(args[1] != null && !args[1].equals("")) {
+                 frameName += " - " + args[1];
+                }*/
 
                 JFrame jframe = new JFrame(frameName);
                 jframe.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
