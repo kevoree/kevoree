@@ -29,10 +29,13 @@ trait TypeDefinitionMerger extends Merger with DictionaryMerger with PortTypeMer
   def mergeTypeDefinition(actualModel : ContainerRoot,modelToMerge : ContainerRoot) : Unit = {
     val cts : List[TypeDefinition] = List()++modelToMerge.getTypeDefinitions.toList
     cts.foreach{toMergeTypeDef=>
+      
+    //  println(toMergeTypeDef)
+      
       actualModel.getTypeDefinitions.find({actualTypeDef=>actualTypeDef.isModelEquals(toMergeTypeDef)}) match {
         case Some(found_type_definition)=> {
+            //println(found_type_definition);
             var root = found_type_definition.eContainer.asInstanceOf[ContainerRoot]
-            
             if(found_type_definition.isUpdated(toMergeTypeDef)){
               updateTypeDefinition(found_type_definition,toMergeTypeDef)
             }
@@ -49,16 +52,34 @@ trait TypeDefinitionMerger extends Merger with DictionaryMerger with PortTypeMer
     //UPDATE DEPLOYS UNIT
     //val root = actuelTypeDefinition.eContainer.asInstanceOf[ContainerRoot]
     var allDeployUnits = List() ++newTypeDefinition.getDeployUnits.toList ++actuelTypeDefinition.getDeployUnits.toList  //CLONE LIST
-    newTypeDefinition.getDeployUnits.clear
+    actuelTypeDefinition.getDeployUnits.clear
     allDeployUnits.foreach{ndu=>
       var merged = mergeDeployUnit(root,ndu)
-      if(!newTypeDefinition.getDeployUnits.contains(merged)){ newTypeDefinition.getDeployUnits.add(merged) }
+      if(!actuelTypeDefinition.getDeployUnits.contains(merged)){ actuelTypeDefinition.getDeployUnits.add(merged) }
     }
+    
+   // println(actuelTypeDefinition)
+    //PARTICULAR CASE - CHECK
+    if(actuelTypeDefinition.isInstanceOf[NodeType]){
+      root.getDeployUnits.foreach{du=>
+    //    println(du)
+        
+        if(du.getTargetNodeType!= null && du.getTargetNodeType.getName==actuelTypeDefinition.getName){
+          println("ok")
+          du.setTargetNodeType(actuelTypeDefinition.asInstanceOf[NodeType])
+        }
+      }
+      
+    }
+    
+    
+    
   }
   
   /* This method try to update */
   private def updateTypeDefinition(actuelTypeDefinition:TypeDefinition, newTypeDefinition:TypeDefinition) = {
     val root = actuelTypeDefinition.eContainer.asInstanceOf[ContainerRoot]
+    val otherRoot = newTypeDefinition.eContainer.asInstanceOf[ContainerRoot]
     
    // org.eclipse.emf.ecore.util.EcoreUtil.replace(actuelTypeDefinition, newTypeDefinition)
     
@@ -169,6 +190,12 @@ trait TypeDefinitionMerger extends Merger with DictionaryMerger with PortTypeMer
     newTypeDefinitionDeployUnits.foreach{ndu=>
       newTypeDefinition.getDeployUnits.add(mergeDeployUnit(actualModel,ndu))
     }
+    
+    //MERGE TARGET NODE TYPE
+    
+    
+ //   println("ok"+newTypeDefinition)
+    
     
     /* DEPRECATED BEFORE DEPLOYTS UNITS TO N
      if(newTypeDefinition.getDeployUnit != null){
