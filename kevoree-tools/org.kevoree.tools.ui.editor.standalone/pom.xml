@@ -95,6 +95,7 @@
                             <inclusion>
                                 <groupId>org.kevoree.tools</groupId>
                                 <artifactId>org.kevoree.tools.ui.editor</artifactId>
+                              <!--  <filter>META-INF/maven/**</filter> -->
                             </inclusion>
                             <inclusion>
                                 <groupId>org.kevoree.tools</groupId>
