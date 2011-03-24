@@ -5,7 +5,7 @@
 
 package org.kevoree.library.gossiper
 
-import org.kevoree.library.gossiper.version.GossiperMessages.VectorClock
+import org.kevoree.library.version.Version.VectorClock
 import scala.collection.JavaConversions._
 
 case class VectorClockAspect(self : VectorClock) {
