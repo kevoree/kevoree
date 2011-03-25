@@ -32,7 +32,7 @@ import org.kevoree.library.gossip.Gossip.VersionedModel
 import org.kevoree.library.gossiper.version.Occured
 import scala.collection.JavaConversions._
 
-class GossiperRequestSender(timeout : java.lang.Long,channelFragment : NettyGossiperChannel,dataManager : DataManager, port : Int) extends actors.DaemonActor {
+class GossiperRequestSender(timeout : java.lang.Long,channelFragment : NettyGossiperChannel,dataManager : DataManager) extends actors.DaemonActor {
 
   // define attributes used to define channel to send gossip request
   var factory =  new NioDatagramChannelFactory(Executors.newCachedThreadPool())
@@ -61,7 +61,7 @@ class GossiperRequestSender(timeout : java.lang.Long,channelFragment : NettyGoss
   case class END_GOSSIP(message : Message)
   
   def stop(){
-    this ! STOP_GOSSIPER()
+    this !? STOP_GOSSIPER()
   }
   
   def initGossipAction(peer : String) ={
@@ -115,7 +115,7 @@ class GossiperRequestSender(timeout : java.lang.Long,channelFragment : NettyGoss
 		var messageBuilder : Message.Builder = Message.newBuilder.setDestChannelName(channelFragment.getName)
 		messageBuilder.setContentClass(classOf[VectorClockUUIDsRequest].getName).setContent(VectorClockUUIDsRequest.newBuilder.build.toByteString)
 	
-		channel.write(messageBuilder.build, new InetSocketAddress(channelFragment.getAddress(peer), port));
+		channel.write(messageBuilder.build, new InetSocketAddress(channelFragment.getAddress(peer), channelFragment.parsePortNumber(peer)));
 	 
 	  } 
 	}

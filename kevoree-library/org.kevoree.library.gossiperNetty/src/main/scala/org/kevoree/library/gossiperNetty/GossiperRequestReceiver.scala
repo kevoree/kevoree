@@ -26,10 +26,10 @@ import scala.collection.JavaConversions._
 
 class GossiperRequestReceiver(channelFragment : NettyGossiperChannel,dataManager : DataManager, port : Int, gossiperRequestSender : GossiperRequestSender) extends actors.DaemonActor {
 
+  var self = this
   // define attributes used to define channel to listen request
   var factoryForRequest =  new NioDatagramChannelFactory(Executors.newCachedThreadPool())
   var bootstrapForRequest = new ConnectionlessBootstrap(factoryForRequest)
-  var self = this
   bootstrapForRequest.setPipelineFactory(new ChannelPipelineFactory(){
       override def getPipeline() : ChannelPipeline = {
         return Channels.pipeline(
@@ -39,12 +39,11 @@ class GossiperRequestReceiver(channelFragment : NettyGossiperChannel,dataManager
       }
     }
   )
-  bootstrapForRequest.bind(new InetSocketAddress(port));
+  var channel = bootstrapForRequest.bind(new InetSocketAddress(port));
   
   // define attibutes used to define channel and to send data when someone ask for it
   var factory =  new NioDatagramChannelFactory(Executors.newCachedThreadPool())
   var bootstrap = new ConnectionlessBootstrap(factory)
-  //var self = this
   bootstrap.setPipelineFactory(new ChannelPipelineFactory(){
       override def getPipeline() : ChannelPipeline = {
         return Channels.pipeline(
@@ -63,7 +62,7 @@ class GossiperRequestReceiver(channelFragment : NettyGossiperChannel,dataManager
   case class STOP_GOSSIPER()
   
   def stop(){
-    this ! STOP_GOSSIPER()
+    this !? STOP_GOSSIPER()
   }
   
   def reply(message : Message, address : SocketAddress) ={
@@ -74,7 +73,10 @@ class GossiperRequestReceiver(channelFragment : NettyGossiperChannel,dataManager
   def act(){
 	loop {
 	  react {
-		case STOP_GOSSIPER() => this.exit
+		case STOP_GOSSIPER() => {
+			channel.close
+			this.exit
+		}
 		case Reply(message, address) => doGossip(message, address)
 	  }
 	}

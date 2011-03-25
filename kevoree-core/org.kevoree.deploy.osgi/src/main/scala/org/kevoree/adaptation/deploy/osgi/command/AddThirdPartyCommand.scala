@@ -37,18 +37,18 @@ case class AddThirdPartyCommand(ct: DeployUnit, ctx: KevoreeDeployManager) exten
     if (ct.getUrl.contains("mvn:")) {
       CommandHelper.buildPotentialMavenURL(ct.eContainer.asInstanceOf[ContainerRoot]).foreach {
         urlRepo =>
-          url = url ++ List(ct.getUrl.replace("mvn:", "mvn:" + urlRepo + "!"))
+		url = url ++ List(ct.getUrl.replace("mvn:", "mvn:" + urlRepo + "!"))
       }
     }
     //DEBUG
     url.foreach({
-      u =>
+		u =>
         logger.debug("potential url=" + u)
-    })
+	  })
     url.exists({
-      u =>
+		u =>
         installBundle(u)
-    })
+	  })
   }
 
   def installBundle(url: String): Boolean = {
@@ -59,17 +59,17 @@ case class AddThirdPartyCommand(ct: DeployUnit, ctx: KevoreeDeployManager) exten
       val symbolicName: String = lastExecutionBundle.get.getSymbolicName
       ctx.bundleMapping.append(KevoreeOSGiBundle(ct.getName, ct.getClass.getName, lastExecutionBundle.get))
       // lastExecutionBundle.get.start
-      mustBeStarted = true
+      //mustBeStarted = true
       true
     } catch {
       case e: BundleException if (e.getType == BundleException.DUPLICATE_BUNDLE_ERROR) => {
-        logger.warn("ThirdParty conflict ! ")
-        mustBeStarted = false
-        true
-      }
+		  logger.warn("ThirdParty conflict ! ")
+		  mustBeStarted = false
+		  true
+		}
       case _@e => {
-        false
-      }
+		  false
+		}
     }
   }
 
@@ -78,12 +78,12 @@ case class AddThirdPartyCommand(ct: DeployUnit, ctx: KevoreeDeployManager) exten
     try {
       lastExecutionBundle match {
         case Some(bundle) => {
-          bundle.stop;
-          bundle.uninstall
-          val srPackageAdmin = ctx.bundleContext.getServiceReference(classOf[PackageAdmin].getName)
-          val padmin: PackageAdmin = ctx.bundleContext.getService(srPackageAdmin).asInstanceOf[PackageAdmin]
-          padmin.resolveBundles(Array(bundle))
-        }
+			bundle.stop;
+			bundle.uninstall
+			val srPackageAdmin = ctx.bundleContext.getServiceReference(classOf[PackageAdmin].getName)
+			val padmin: PackageAdmin = ctx.bundleContext.getService(srPackageAdmin).asInstanceOf[PackageAdmin]
+			padmin.resolveBundles(Array(bundle))
+		  }
         case None => //NOTHING CAN BE DOING HERE
       }
     } catch {

@@ -26,6 +26,9 @@ class DataManager extends actors.DaemonActor {
   case class Stop()
   case class MergeClock(uuid: UUID,newclock : VectorClock)
   
+  def stop(){
+    this ! Stop()
+  }
   
   def getData(uuid : UUID) : Tuple2[VectorClock,Message] ={
 	(this !? GetData(uuid)).asInstanceOf[Tuple2[VectorClock,Message]]

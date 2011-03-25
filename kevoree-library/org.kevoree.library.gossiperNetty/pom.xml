@@ -55,7 +55,7 @@
 				<artifactId>maven-bundle-plugin</artifactId>
 				<configuration>
 					<instructions>
-						<Private-Package>com.google.protobuf.*,org.kevoree.library.gossiper.version.*,org.kevoree.library.gossip.*,org.kevoree.library.version.*</Private-Package>
+						<Private-Package>org.kevoree.library.gossiper.version.*,org.kevoree.library.gossip.*,org.kevoree.library.version.*</Private-Package>
 						<Export-Package>org.kevoree.library.gossiperNetty.*,com.google.protobuf.*</Export-Package>
 						<Import-Package>!com.google.protobuf.*,!org.kevoree.library.gossiperNetty.*,!org.kevoree.library.gossiper.version.*,!org.kevoree.library.gossip.*,!org.kevoree.library.version.*,*</Import-Package>
 					</instructions>

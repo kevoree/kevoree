@@ -13,8 +13,6 @@ import org.kevoree.annotation.DictionaryType;
 import org.kevoree.annotation.Library;
 import org.kevoree.annotation.Start;
 import org.kevoree.annotation.Stop;
-import org.kevoree.annotation.ThirdParties;
-import org.kevoree.annotation.ThirdParty;
 import org.kevoree.annotation.Update;
 import org.kevoree.api.service.core.handler.KevoreeModelHandlerService;
 import org.kevoree.framework.AbstractChannelFragment;
@@ -40,9 +38,6 @@ import scala.Tuple2;
 	@DictionaryAttribute(name = "interval", defaultValue = "60000", optional = true),
 	@DictionaryAttribute(name = "port", defaultValue = "9000", optional = true)
 })
-/*@ThirdParties({
-    @ThirdParty(name="protobuf", url="wrap:mvn:com.google.protobuf/protobuf-java/2.3.0")
-})*/
 @ChannelTypeFragment
 public class NettyGossiperChannel extends AbstractChannelFragment {
 
@@ -50,7 +45,6 @@ public class NettyGossiperChannel extends AbstractChannelFragment {
 	private GossiperActor actor = null;
 	private ServiceReference sr;
 	private KevoreeModelHandlerService modelHandlerService = null;
-	//private static final String restBaseUrl = "gossipchannel";
 	private Logger logger = LoggerFactory.getLogger(NettyGossiperChannel.class);
 
 	@Start
@@ -58,10 +52,12 @@ public class NettyGossiperChannel extends AbstractChannelFragment {
 		Bundle bundle = (Bundle) this.getDictionary().get("osgi.bundle");
 		sr = bundle.getBundleContext().getServiceReference(KevoreeModelHandlerService.class.getName());
 		modelHandlerService = (KevoreeModelHandlerService) bundle.getBundleContext().getService(sr);
+		
+		dataManager = new DataManager();
 
 		actor = new GossiperActor(Long.parseLong(this.getDictionary().get("interval").toString()), this, 
 				dataManager, 
-				Integer.parseInt(this.getDictionary().get("port").toString()));
+				parsePortNumber(getNodeName()));
 
 		// TODO continue
 
@@ -70,31 +66,26 @@ public class NettyGossiperChannel extends AbstractChannelFragment {
 
 	@Stop
 	public void stopGossiperChannel() {
-		actor.stop();
-		Bundle bundle = (Bundle) this.getDictionary().get("osgi.bundle");
-		bundle.getBundleContext().ungetService(sr);
-		modelHandlerService = null;
+		if (actor != null) {
+			actor.stop();
+			actor = null;
+		}
+		if (dataManager != null) {
+			dataManager.stop();
+		}
+		if (modelHandlerService != null) {
+			Bundle bundle = (Bundle) this.getDictionary().get("osgi.bundle");
+			bundle.getBundleContext().ungetService(sr);
+			modelHandlerService = null;
+		}
 	}
 
 	@Update
 	public void updateGossiperChannel() {
-		// TODO continue
+		stopGossiperChannel();
+		startGossiperChannel();
 	}
-
-	/*public List<UUID> getUUIDS() {
-	List<UUID> uuids = new java.util.ArrayList<UUID>();
-	scala.collection.Iterator<UUID> it = clocksActor.getUUIDS().iterator();
-	System.out.println("AFTER ACTOR");
-	while (it.hasNext()) {
-	uuids.add(it.next());
-	}
-	System.out.println("AFTER LOOP");
-	return uuids;
-	}*/
-
-	/*public Tuple2<VectorClock, Object> getObject(UUID uuid) {
-	return clocksActor.get(uuid);
-	}*/
+	
 	@Override
 	public Object dispatch(Message msg) {
 		//Local delivery
@@ -137,5 +128,25 @@ public class NettyGossiperChannel extends AbstractChannelFragment {
 			ip = "127.0.0.1";
 		}
 		return ip;
+	}
+	
+	private String name = "[A-Za-z0-9_]*";
+	private String portNumber = "(65535|5[0-9]{4}|4[0-9]{4}|3[0-9]{4}|2[0-9]{4}|1[0-9]{4}|[0-9]{0,4})";
+	private String separator = ",";
+	private String affectation = "=";
+	private String portPropertyRegex = "((" + name + affectation + portNumber + ")" + separator + ")*(" + name + affectation + portNumber + ")";
+	
+	public int parsePortNumber(String nodeName) {
+		String portProperty = this.getDictionary().get("port").toString();
+		if (portProperty.matches(portPropertyRegex)) {
+			String[] definitionParts = portProperty.split(separator);
+			for (String part : definitionParts) {
+				if (part.contains(nodeName + affectation)) {
+					System.out.println(Integer.parseInt(part.substring((nodeName + affectation).length(), part.length())));
+					return Integer.parseInt(part.substring((nodeName + affectation).length(), part.length()));
+				}
+			}
+		}
+		return 0;
 	}
 }
