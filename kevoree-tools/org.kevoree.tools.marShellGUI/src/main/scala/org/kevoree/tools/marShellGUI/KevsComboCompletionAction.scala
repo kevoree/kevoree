@@ -20,10 +20,10 @@ package org.kevoree.tools.marShellGUI
 
 import java.awt.event.ActionEvent
 import javax.swing.text.JTextComponent
-import jsyntaxpane.SyntaxDocument
 import jsyntaxpane.actions.ComboCompletionAction
 import scala.collection.JavaConversions._
 import org.kevoree.tools.marShell.lexer.KevsLexical
+import jsyntaxpane.{Token, TokenType, SyntaxDocument}
 
 class KevsComboCompletionAction extends ComboCompletionAction {
 
@@ -39,9 +39,9 @@ class KevsComboCompletionAction extends ComboCompletionAction {
   }
 
   def refreshList(target: JTextComponent, sdoc: SyntaxDocument, dot: Int) = {
-    var token = sdoc.getTokenAt(dot);
+    val token = sdoc.getTokenAt(dot);
     var tokens: String = ""
-    var tokenPrevious = sdoc.getTokenAt(dot - 1);
+    val tokenPrevious = sdoc.getTokenAt(dot - 1);
     var tokenPreviousS: String = ""
     if (token != null) {
       tokens = token.getString(sdoc);
@@ -49,6 +49,12 @@ class KevsComboCompletionAction extends ComboCompletionAction {
     if (tokenPrevious != null) {
       tokenPreviousS = tokenPrevious.getString(sdoc);
     }
+
+
+    isFirstDelimiter(sdoc,dot)
+    println(getFirstDelimiter(sdoc,dot).get.getString(sdoc) )
+    println(getFirstKeyword(sdoc,dot).get.getString(sdoc) )
+
     
     tokenPreviousS match {
       case _ if(tokenPreviousS == ":" || tokens == ":") => pushTypeId
@@ -59,6 +65,19 @@ class KevsComboCompletionAction extends ComboCompletionAction {
     
 
 
+  }
+
+  def isFirstDelimiter(sdoc: SyntaxDocument,dot: Int) : Boolean ={
+    sdoc.getTokens(0,dot).toList.reverse.foreach(t => println(t))
+    true
+          //sdoc.getTokens(0,dot).toList.reverse.find(tok=>tok.`type` == TokenType.DELIMITER)
+  }
+
+  def getFirstDelimiter(sdoc: SyntaxDocument,dot: Int) : Option[Token]={
+          sdoc.getTokens(0,dot).toList.reverse.find(tok=>tok.`type` == TokenType.DELIMITER)
+  }
+  def getFirstKeyword(sdoc: SyntaxDocument,dot: Int) : Option[Token]={
+          sdoc.getTokens(0,dot).toList.reverse.find(tok=>tok.`type` == TokenType.KEYWORD || tok.`type` == TokenType.KEYWORD2)
   }
 
 

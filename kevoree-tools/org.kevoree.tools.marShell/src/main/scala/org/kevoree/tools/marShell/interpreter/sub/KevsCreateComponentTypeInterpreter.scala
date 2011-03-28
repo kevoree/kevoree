@@ -28,7 +28,7 @@ case class KevsCreateComponentTypeInterpreter(self : CreateComponentTypeStatment
 
   def interpret(context: KevsInterpreterContext): Boolean = {
     
-    println("yo")
+    //println("yo")
     //LOOK FOR PREVIOUSLY EXSITING COMPONENT TYPE
     context.model.getTypeDefinitions.find(tdef => tdef.getName == self.newTypeName) match {
       case Some(e)=> println("TypeDefinition already exist with name => "+self.newTypeName);false
