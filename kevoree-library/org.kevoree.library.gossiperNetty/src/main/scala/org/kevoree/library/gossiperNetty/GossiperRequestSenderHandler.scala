@@ -1,8 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package org.kevoree.library.gossiperNetty
 
 import org.jboss.netty.channel.ChannelHandlerContext
@@ -18,22 +13,24 @@ class GossiperRequestSenderHandler(gossiperRequestSender : GossiperRequestSender
   
   override def messageReceived(ctx:ChannelHandlerContext, e:MessageEvent)={
 	var message = e.getMessage.asInstanceOf[Message]
+	println("response received" + message.getContentClass)
 	if (message.getContentClass.equals(classOf[VectorClockUUIDs].getName)) {
 	  //var vectorClockUUIDs = RichString(message.getContent.toStringUtf8).fromJSON(classOf[VectorClockUUIDs])
-	  gossiperRequestSender.initSecondStepAction(message, e.getRemoteAddress, e.getChannel)
-	} else if (message.getContentClass.equals(classOf[VectorClockUUID].getName)) {
+	  gossiperRequestSender.initSecondStepAction(message, e.getRemoteAddress/*, e.getChannel*/)
+	}/* else if (message.getContentClass.equals(classOf[VectorClockUUID].getName)) {
 	  //var vectorClockUUID = RichString(message.getContent.toStringUtf8).fromJSON(classOf[VectorClockUUID])
 	  gossiperRequestSender.initLastStepAction(message, e.getRemoteAddress, e.getChannel)
-	} else if (message.getContentClass.equals(classOf[VersionedModel].getName)) {
+	}*/ else if (message.getContentClass.equals(classOf[VersionedModel].getName)) {
 	  //var versionModel = RichString(message.getContent.toStringUtf8).fromJSON(classOf[VersionedModel])
 	  gossiperRequestSender.endGossipAction(message)
-	  e.getChannel.close
+	  //e.getChannel.close.awaitUninterruptibly
 	}
   }
   
   override def exceptionCaught(ctx:ChannelHandlerContext, e:ExceptionEvent)={
     //NOOP
+	println("Exception GossiperRequestSenderHandler")
 	e.getCause().printStackTrace();
-	e.getChannel.close
+	//e.getChannel.close.awaitUninterruptibly
   }
 }

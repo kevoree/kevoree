@@ -9,11 +9,11 @@ import java.security.SecureRandom
 import scala.actors.TIMEOUT
 import scala.collection.JavaConversions._
 
-class GossiperActor(timeout : java.lang.Long,channel : NettyGossiperChannel,dataManager : DataManager, port : Int) extends actors.DaemonActor {
+class GossiperActor(timeout : java.lang.Long,channel : NettyGossiperChannel,dataManager : DataManager, port : Int, fullUDP : Boolean) extends actors.DaemonActor {
 
-  private var gossiperRequestSender = new GossiperRequestSender(timeout, channel,dataManager)
+  private var gossiperRequestSender = new GossiperRequestSender(timeout, channel,dataManager,fullUDP)
   private var notificationRequestSender = new NotificationRequestSender(channel)
-  private var gossiperRequestReceiver = new GossiperRequestReceiver(channel,dataManager,port, gossiperRequestSender)
+  private var gossiperRequestReceiver = new GossiperRequestReceiver(channel,dataManager,port, gossiperRequestSender,fullUDP)
   this.start
   
   /* PUBLIC PART */
@@ -22,7 +22,7 @@ class GossiperActor(timeout : java.lang.Long,channel : NettyGossiperChannel,data
   case class NOTIFY_PEERS()
   
   def stop(){
-    this !? STOP_GOSSIPER()
+    this ! STOP_GOSSIPER()
   }
 
   
@@ -61,7 +61,7 @@ class GossiperActor(timeout : java.lang.Long,channel : NettyGossiperChannel,data
   private def doGossip(targetNodeName : String) ={
 	
 	if (targetNodeName != null && targetNodeName != "") {
-	  println("launch Gossip")
+	  //println("launch Gossip")
 	  gossiperRequestSender.initGossipAction(targetNodeName)
 	  
 	}
