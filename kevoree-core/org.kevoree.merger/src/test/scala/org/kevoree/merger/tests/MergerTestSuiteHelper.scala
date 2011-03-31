@@ -72,7 +72,7 @@ case class RichContainerRoot(self : ContainerRoot) extends MergerTestSuiteHelper
   def testSave(path : String,file:String) {
     try{
       KevoreeXmiHelper.save(this.getClass.getClassLoader.getResource(path).getPath+"/"+file, self)
-      assert(hasNoRelativeReference(path,file) )
+      assertTrue("At least one relative reference have been detected in model " + path + "/" + file, hasNoRelativeReference(path,file) )
     } catch {
       case _ @ e => e.printStackTrace(); fail()
     }
