@@ -69,7 +69,7 @@ class PortsTest extends MergerTestSuiteHelper  {
 
 
   @Test def verifyProvidedMessagePortAdded() {
-    var mergedModel = component.merge(model("artFragments/lib4test-MinusProvidedMessagePort.art2"), model("artFragments/lib4test-base.art2"))
+    var mergedModel = component.merge(model("artFragments/lib4test-MinusProvidedMessagePort.art2").setLowerHashCode, model("artFragments/lib4test-base.art2"))
     mergedModel testSave ("artFragments","lib4test-PlusProvidedMessagePortMerged.art2")
 
     mergedModel.getTypeDefinitions.toArray.find(typeDef =>
@@ -94,7 +94,7 @@ class PortsTest extends MergerTestSuiteHelper  {
 
 
   @Test def verifyProvidedServicePortRemoved() {
-    var mergedModel = component.merge(model("artFragments/lib4test-base.art2"), model("artFragments/lib4test-MinusProvidedServicePort.art2"))
+    var mergedModel = component.merge(model("artFragments/lib4test-base.art2").setLowerHashCode, model("artFragments/lib4test-MinusProvidedServicePort.art2"))
     mergedModel testSave ("artFragments","lib4test-MinusProvidedServicePortMerged.art2")
 
     mergedModel.getTypeDefinitions.toArray.find(typeDef =>
@@ -118,7 +118,7 @@ class PortsTest extends MergerTestSuiteHelper  {
   }
 
   @Test def verifyProvidedServicePortAdded() {
-    var mergedModel = component.merge(model("artFragments/lib4test-MinusProvidedServicePort.art2"), model("artFragments/lib4test-base.art2"))
+    var mergedModel = component.merge(model("artFragments/lib4test-MinusProvidedServicePort.art2").setLowerHashCode, model("artFragments/lib4test-base.art2"))
     mergedModel testSave ("artFragments","lib4test-PlusProvidedServicePortMerged.art2")
 
     mergedModel.getTypeDefinitions.toArray.find(typeDef =>
@@ -142,7 +142,7 @@ class PortsTest extends MergerTestSuiteHelper  {
   }
 
   @Test def verifyRequiredMessagePortRemoved() {
-    var mergedModel = component.merge(model("artFragments/lib4test-base.art2"), model("artFragments/lib4test-MinusRequiredMessagePort.art2"))
+    var mergedModel = component.merge(model("artFragments/lib4test-base.art2").setLowerHashCode, model("artFragments/lib4test-MinusRequiredMessagePort.art2"))
     mergedModel testSave ("artFragments","lib4test-MinusRequiredMessagePortMerged.art2")
 
     mergedModel.getTypeDefinitions.toArray.find(typeDef =>
@@ -166,7 +166,7 @@ class PortsTest extends MergerTestSuiteHelper  {
   }
 
   @Test def verifyRequiredMessagePortAdded() {
-    var mergedModel = component.merge(model("artFragments/lib4test-MinusRequiredMessagePort.art2"), model("artFragments/lib4test-base.art2"))
+    var mergedModel = component.merge(model("artFragments/lib4test-MinusRequiredMessagePort.art2").setLowerHashCode, model("artFragments/lib4test-base.art2"))
     mergedModel testSave ("artFragments","lib4test-PlusRequiredMessagePortMerged.art2")
 
     mergedModel.getTypeDefinitions.toArray.find(typeDef =>
@@ -214,7 +214,7 @@ class PortsTest extends MergerTestSuiteHelper  {
   }
 
   @Test def verifyRequiredServicePortAdded() {
-    var mergedModel = component.merge(model("artFragments/lib4test-MinusRequiredServicePort.art2"), model("artFragments/lib4test-base.art2"))
+    var mergedModel = component.merge(model("artFragments/lib4test-MinusRequiredServicePort.art2").setLowerHashCode, model("artFragments/lib4test-base.art2"))
     mergedModel testSave ("artFragments","lib4test-PlusRequiredServicePortMerged.art2")
 
     mergedModel.getTypeDefinitions.toArray.find(typeDef =>
@@ -238,7 +238,7 @@ class PortsTest extends MergerTestSuiteHelper  {
   }
 
   @Test def verifyProvidedMessagePortRenamed() {
-    var mergedModel = component.merge(model("artFragments/lib4test-base.art2"), model("artFragments/lib4test-ProvidedMessagePortRenamed.art2"))
+    var mergedModel = component.merge(model("artFragments/lib4test-base.art2").setLowerHashCode, model("artFragments/lib4test-ProvidedMessagePortRenamed.art2"))
     mergedModel testSave ("artFragments","lib4test-ProvidedMessagePortRenamedMerged.art2")
 
     mergedModel.getTypeDefinitions.toArray.find(typeDef =>
@@ -268,7 +268,7 @@ class PortsTest extends MergerTestSuiteHelper  {
   }
 
   @Test def verifyProvidedServicePortRenamed() {
-    var mergedModel = component.merge(model("artFragments/lib4test-base.art2"), model("artFragments/lib4test-ProvidedServicePortRenamed.art2"))
+    var mergedModel = component.merge(model("artFragments/lib4test-base.art2").setLowerHashCode, model("artFragments/lib4test-ProvidedServicePortRenamed.art2"))
     mergedModel testSave ("artFragments","lib4test-ProvidedServicePortRenamedMerged.art2")
 
     mergedModel.getTypeDefinitions.toArray.find(typeDef =>
@@ -300,7 +300,7 @@ class PortsTest extends MergerTestSuiteHelper  {
   }
 
   @Test def verifyRequiredMessagePortRenamed() {
-    var mergedModel = component.merge(model("artFragments/lib4test-base.art2"), model("artFragments/lib4test-RequiredMessagePortRenamed.art2"))
+    var mergedModel = component.merge(model("artFragments/lib4test-base.art2").setLowerHashCode, model("artFragments/lib4test-RequiredMessagePortRenamed.art2"))
     mergedModel testSave ("artFragments","lib4test-RequiredMessagePortRenamedMerged.art2")
 
     mergedModel.getTypeDefinitions.toArray.find(typeDef =>
@@ -334,7 +334,7 @@ class PortsTest extends MergerTestSuiteHelper  {
   }
 
   @Test def verifyRequiredServicePortRenamed() {
-    var mergedModel = component.merge(model("artFragments/lib4test-base.art2"), model("artFragments/lib4test-RequiredServicePortRenamed.art2"))
+    var mergedModel = component.merge(model("artFragments/lib4test-base.art2").setLowerHashCode, model("artFragments/lib4test-RequiredServicePortRenamed.art2"))
     mergedModel testSave ("artFragments","lib4test-RequiredServicePortRenamedMerged.art2")
 
     mergedModel.getTypeDefinitions.toArray.find(typeDef =>
@@ -364,7 +364,7 @@ class PortsTest extends MergerTestSuiteHelper  {
   }
 
   @Test def verifyProvidedServicePortClassChanged() {
-    var mergedModel = component.merge(model("artFragments/lib4test-base.art2"), model("artFragments/lib4test-ProvidedServicePortClassChanged.art2"))
+    var mergedModel = component.merge(model("artFragments/lib4test-base.art2").setLowerHashCode, model("artFragments/lib4test-ProvidedServicePortClassChanged.art2"))
     mergedModel testSave ("artFragments","lib4test-ProvidedServicePortClassChangedMerged.art2")
 
     mergedModel.getTypeDefinitions.toArray.find(typeDef =>
@@ -393,7 +393,7 @@ class PortsTest extends MergerTestSuiteHelper  {
   }
 
   @Test def verifyRequiredServicePortClassChanged() {
-    var mergedModel = component.merge(model("artFragments/lib4test-base.art2"), model("artFragments/lib4test-RequiredServicePortClassChanged.art2"))
+    var mergedModel = component.merge(model("artFragments/lib4test-base.art2").setLowerHashCode, model("artFragments/lib4test-RequiredServicePortClassChanged.art2"))
     mergedModel testSave ("artFragments","lib4test-RequiredServicePortClassChangedMerged.art2")
 
     mergedModel.getTypeDefinitions.toArray.find(typeDef =>
