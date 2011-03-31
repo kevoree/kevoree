@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kevoree:ContainerRoot xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:kevoree="http://kevoree/1.0">
+  <nodes name="node1" typeDefinition="//@typeDefinitions.1">
+    <components name="FakeSimpleSwitch378079495" typeDefinition="//@typeDefinitions.2">
+      <required portTypeRef="//@typeDefinitions.2/@required.0"/>
+      <required portTypeRef="//@typeDefinitions.2/@required.1"/>
+      <required portTypeRef="//@typeDefinitions.2/@required.2"/>
+    </components>
+  </nodes>
+  <nodes name="node2" typeDefinition="//@typeDefinitions.1">
+    <components name="FakeSimpleLight370527388" typeDefinition="//@typeDefinitions.6">
+      <provided portTypeRef="//@typeDefinitions.6/@provided.0"/>
+      <provided portTypeRef="//@typeDefinitions.6/@provided.1"/>
+      <provided portTypeRef="//@typeDefinitions.6/@provided.2"/>
+    </components>
+  </nodes>
+  <typeDefinitions xsi:type="kevoree:ChannelType" name="NettyGossiperChannel" deployUnits="//@deployUnits.0" factoryBean="org.kevoree.library.gossiperNetty.NettyGossiperChannelFactory" bean="org.kevoree.library.gossiperNetty.NettyGossiperChannel" startMethod="startGossiperChannel" stopMethod="stopGossiperChannel" updateMethod="updateGossiperChannel">
+    <dictionaryType>
+      <attributes name="interval" optional="true"/>
+      <attributes name="port" optional="true"/>
+      <attributes name="FullUDP" optional="true"/>
+      <defaultValues attribute="//@typeDefinitions.0/@dictionaryType/@attributes.0" value="5000"/>
+      <defaultValues attribute="//@typeDefinitions.0/@dictionaryType/@attributes.1" value="9000"/>
+      <defaultValues attribute="//@typeDefinitions.0/@dictionaryType/@attributes.2" value="true"/>
+    </dictionaryType>
+  </typeDefinitions>
+  <typeDefinitions xsi:type="kevoree:NodeType" name="JavaSENode"/>
+  <typeDefinitions xsi:type="kevoree:ComponentType" name="FakeSimpleSwitch" deployUnits="//@deployUnits.3" factoryBean="org.kevoree.library.fakedomo.FakeSimpleSwitchFactory" bean="org.kevoree.library.fakedomo.FakeSimpleSwitch" startMethod="start" stopMethod="stop" updateMethod="update">
+    <required name="on" ref="//@typeDefinitions.3" optional="false" noDependency="true"/>
+    <required name="off" ref="//@typeDefinitions.3" optional="false" noDependency="true"/>
+    <required name="toggle" ref="//@typeDefinitions.4" optional="true" noDependency="false"/>
+  </typeDefinitions>
+  <typeDefinitions xsi:type="kevoree:MessagePortType" name="org.kevoree.framework.MessagePort"/>
+  <typeDefinitions xsi:type="kevoree:ServicePortType" name="org.kevoree.library.fakedomo.ToggleLightService"/>
+  <typeDefinitions xsi:type="kevoree:ComponentType" name="FakeConsole" deployUnits="//@deployUnits.3" factoryBean="org.kevoree.library.fakedomo.FakeConsoleFactory" bean="org.kevoree.library.fakedomo.FakeConsole" startMethod="start" stopMethod="stop">
+    <required name="textEntered" ref="//@typeDefinitions.3" optional="false" noDependency="false"/>
+    <provided name="showText" ref="//@typeDefinitions.3">
+      <mappings beanMethodName="appendIncoming" serviceMethodName="process"/>
+    </provided>
+  </typeDefinitions>
+  <typeDefinitions xsi:type="kevoree:ComponentType" name="FakeSimpleLight" deployUnits="//@deployUnits.3" factoryBean="org.kevoree.library.fakedomo.FakeSimpleLightFactory" bean="org.kevoree.library.fakedomo.FakeSimpleLight" startMethod="start" stopMethod="stop" updateMethod="update">
+    <dictionaryType>
+      <attributes name="param1"/>
+      <attributes name="param2" optional="true"/>
+      <defaultValues attribute="//@typeDefinitions.6/@dictionaryType/@attributes.1" value="defVal"/>
+    </dictionaryType>
+    <provided name="on" ref="//@typeDefinitions.3">
+      <mappings beanMethodName="lightOn" serviceMethodName="process"/>
+    </provided>
+    <provided name="off" ref="//@typeDefinitions.3">
+      <mappings beanMethodName="lightOff" serviceMethodName="process"/>
+    </provided>
+    <provided name="toggle" ref="//@typeDefinitions.4">
+      <mappings beanMethodName="toogle" serviceMethodName="toggle"/>
+    </provided>
+  </typeDefinitions>
+  <repositories units="//@deployUnits.0 //@deployUnits.3" url="http://maven.kevoree.org/libs-release-local"/>
+  <repositories url="http://maven.kevoree.org/release"/>
+  <repositories url="http://maven.kevoree.org/libs-snapshot"/>
+  <repositories url="http://www.kermeta.org/maven2"/>
+  <repositories url="http://www.kermeta.org/maven2-snapshots"/>
+  <repositories url="http://scala-tools.org/repo-releases"/>
+  <repositories url="http://repository.jboss.org/nexus/content/groups/public/"/>
+  <repositories url="http://akka.io/repository/"/>
+  <repositories url="http://repo1.maven.org/maven2"/>
+  <dataTypes name="java.lang.String"/>
+  <libraries name="Kevoree-Netty" subTypes="//@typeDefinitions.0"/>
+  <libraries name="Kevoree-Components" subTypes="//@typeDefinitions.2 //@typeDefinitions.5 //@typeDefinitions.6"/>
+  <hubs name="hub1175016747" typeDefinition="//@typeDefinitions.0">
+    <dictionary>
+      <values attribute="//@typeDefinitions.0/@dictionaryType/@attributes.0" value="30000"/>
+      <values attribute="//@typeDefinitions.0/@dictionaryType/@attributes.1" value="duke=9000,duke2=9001"/>
+    </dictionary>
+  </hubs>
+  <hubs name="hub1186253044" typeDefinition="//@typeDefinitions.0">
+    <dictionary>
+      <values attribute="//@typeDefinitions.0/@dictionaryType/@attributes.0" value="30000"/>
+      <values attribute="//@typeDefinitions.0/@dictionaryType/@attributes.2" value="false"/>
+      <values attribute="//@typeDefinitions.0/@dictionaryType/@attributes.1" value="duke=9010,duke2=9011"/>
+    </dictionary>
+  </hubs>
+  <mBindings port="//@nodes.0/@components.0/@required.1" hub="//@hubs.1"/>
+  <mBindings port="//@nodes.0/@components.0/@required.0" hub="//@hubs.0"/>
+  <mBindings port="//@nodes.1/@components.0/@provided.0" hub="//@hubs.0"/>
+  <mBindings port="//@nodes.1/@components.0/@provided.1" hub="//@hubs.1"/>
+  <deployUnits groupName="org.kevoree.library" unitName="org.kevoree.library.gossiperNetty" version="1.1.0-BETA1" hashcode="201103291741056" requiredLibs="//@deployUnits.1 //@deployUnits.2" targetNodeType="//@typeDefinitions.1"/>
+  <deployUnits name="org.jboss.netty.netty" url="mvn:org.jboss.netty/netty/3.2.4.Final" targetNodeType="//@typeDefinitions.1"/>
+  <deployUnits name="org.kevoree.extra.org.kevoree.extra.marshalling" url="mvn:org.kevoree.extra/org.kevoree.extra.marshalling/1.1.0-BETA1" targetNodeType="//@typeDefinitions.1"/>
+  <deployUnits groupName="org.kevoree.library" unitName="org.kevoree.library.fakeDomo" version="1.1.0-BETA1" hashcode="201103241503208" targetNodeType="//@typeDefinitions.1"/>
+  <nodeNetworks initBy="//@nodes.1" target="//@nodes.1">
+    <link networkType="" estimatedRate="100">
+      <networkProperties name="KEVOREE.remote.node.modelsynch.port" value="8000" lastCheck="1301559800495"/>
+      <networkProperties name="KEVOREE.remote.node.ip" value="131.254.12.28" lastCheck="1301559791512"/>
+    </link>
+  </nodeNetworks>
+  <nodeNetworks initBy="//@nodes.0" target="//@nodes.0">
+    <link networkType="" estimatedRate="100">
+      <networkProperties name="KEVOREE.remote.node.ip" value="duke.irisa.fr" lastCheck="1301559764953"/>
+    </link>
+  </nodeNetworks>
+</kevoree:ContainerRoot>
