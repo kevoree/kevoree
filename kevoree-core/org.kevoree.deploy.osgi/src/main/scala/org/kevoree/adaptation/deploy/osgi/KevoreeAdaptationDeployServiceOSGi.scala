@@ -412,6 +412,10 @@ class KevoreeAdaptationDeployServiceOSGi extends KevoreeAdaptationDeployService 
       executionResult = phase.phase(commands.get("addDeployUnit").get, "Phase 6 Add TypeDefinition DeployUnit")
     }
 	
+	if (executionResult) {
+      executionResult = phase.phase(commands.get("addType").get, "Phase 7 Add ComponentType")
+    }
+	
 	// test if there are adds
 	// resolve all bundles
 	var bundles = ctx.bundleContext.getBundles
@@ -425,10 +429,6 @@ class KevoreeAdaptationDeployServiceOSGi extends KevoreeAdaptationDeployService 
 	  bundle.start
 	}
 	logger.debug("bundles started")
-	
-	if (executionResult) {
-      executionResult = phase.phase(commands.get("addType").get, "Phase 7 Add ComponentType")
-    }
 	
     //INSTALL INSTANCE
     if (executionResult) {
