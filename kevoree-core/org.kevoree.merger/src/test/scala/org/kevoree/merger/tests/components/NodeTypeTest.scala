@@ -25,22 +25,22 @@ import org.kevoree.merger.tests.MergerTestSuiteHelper
 import org.kevoree.TypeDefinition
 import org.kevoree.api.service.core.merger.MergerService
 
-class NodeTypeTest extends MergerTestSuiteHelper  {
+class NodeTypeTest extends MergerTestSuiteHelper {
 
-   var component : MergerService = null
+  var component: MergerService = null
 
   @Before def initialize() {
     component = new KevoreeMergerComponent
+
   }
 
   @Test def verifyNodeTypeMerge() {
-     var mergedModel = component.merge(model("nodeType/defchannels1.1.0.kev"), model("nodeType/fakestuff3.0.0.kev"))
-    mergedModel testSave ("nodeType","merged.kev")
+    var mergedModel = component.merge(model("nodeType/defchannels1.1.0.kev"), model("nodeType/fakestuff3.0.0.kev"))
+    mergedModel testSave ("nodeType", "merged.kev")
 
     //test cast error
 
   }
 
-  
 
 }
