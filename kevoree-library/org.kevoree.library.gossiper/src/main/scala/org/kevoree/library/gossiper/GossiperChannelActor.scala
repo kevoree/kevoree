@@ -147,7 +147,7 @@ class GossiperChannelActor(selfNodeName : String,timeout : java.lang.Long,group 
     
     //CHECK FOR GARBAGE
     if(newMerged.getEnties(0).getNodeID.equals(selfNodeName)){
-      var allPresent = group.getAllPeers.forall(peer=>{
+      val allPresent = group.getAllPeers.forall(peer=>{
           newMerged.getEntiesList.exists(e=> e.getNodeID == peer && e.getVersion > 0)
       })
       if(allPresent){

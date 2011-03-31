@@ -69,13 +69,18 @@ case class RichContainerRoot(self : ContainerRoot) extends MergerTestSuiteHelper
     }
   }*/
 
-  def testSave(path : String,file:String) = {
+  def testSave(path : String,file:String) {
     try{
       KevoreeXmiHelper.save(this.getClass.getClassLoader.getResource(path).getPath+"/"+file, self)
       assert(hasNoRelativeReference(path,file) )
     } catch {
-      case _ @ e => e.printStackTrace; fail()
+      case _ @ e => e.printStackTrace(); fail()
     }
+  }
+
+  def setLowerHashCode : ContainerRoot = {
+       self.getDeployUnits.foreach(du=> du.setHashcode(0+""))
+      self
   }
 
   

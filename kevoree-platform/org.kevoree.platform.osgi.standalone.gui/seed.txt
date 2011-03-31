@@ -19966,6 +19966,8 @@ org.kevoree.api.service.core.handler.KevoreeModelHandlerService: void updateMode
 org.kevoree.api.service.core.handler.KevoreeModelHandlerService: java.util.Date atomicUpdateModel(org.kevoree.ContainerRoot)
 org.kevoree.api.service.core.handler.KevoreeModelHandlerService: java.util.List getPreviousModel()
 org.kevoree.api.service.core.handler.KevoreeModelHandlerService: java.lang.String getNodeName()
+org.kevoree.api.service.core.script.ScriptInterpreter
+org.kevoree.api.service.core.script.ScriptInterpreter: java.lang.Boolean interpret(java.lang.String)
 org.kevoree.api.service.core.merger.MergerService
 org.kevoree.api.service.core.merger.MergerService: org.kevoree.ContainerRoot merge(org.kevoree.ContainerRoot,org.kevoree.ContainerRoot)
 org.kevoree.api.configuration.ConfigConstants$ConfigConstant
@@ -34828,6 +34830,7 @@ scala.actors.scheduler.ThreadPoolConfig$$anonfun$getIntegerProp$1: long serialVe
 scala.actors.Actor$$anonfun$$qmark$1: long serialVersionUID
 scala.actors.ReplyReactor$$anonfun$reactWithin$2: long serialVersionUID
 scala.collection.mutable.HashMap: long serialVersionUID
+org.kevoree.adaptation.deploy.osgi.KevoreeAdaptationDeployServiceOSGi$$anonfun$execute$1: long serialVersionUID
 scala.Function2$mcLLL$sp$$anonfun$tupled$mcLLL$sp$1: long serialVersionUID
 org.eclipse.emf.ecore.impl.EObjectImpl: int EDELIVER
 org.eclipse.emf.ecore.impl.EObjectImpl: int EDYNAMIC_CLASS
@@ -43368,6 +43371,7 @@ org.scala_tools.compiler.reporters.MyConsoleReporter$$anonfun$printMessage$1
 scala.actors.scheduler.ThreadPoolConfig$$anonfun$getIntegerProp$1
 scala.actors.Actor$$anonfun$$qmark$1
 scala.actors.ReplyReactor$$anonfun$reactWithin$2
+org.kevoree.adaptation.deploy.osgi.KevoreeAdaptationDeployServiceOSGi$$anonfun$execute$1
 scala.Function2$mcLLL$sp$$anonfun$tupled$mcLLL$sp$1
 org.kevoree.framework.KevoreeActor$ACTOR_ADMIN_MSG$
 scala.util.parsing.json.Lexer$$anonfun$fracPart$1$$anonfun$apply$18

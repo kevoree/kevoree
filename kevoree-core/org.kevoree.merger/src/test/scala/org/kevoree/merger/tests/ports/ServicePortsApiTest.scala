@@ -45,7 +45,7 @@ class ServicePortsApiTest extends MergerTestSuiteHelper  {
   }
 
   @Test def verifyProvidedServiceMethodAdded() {
-    var mergedModel = component.merge( model("artFragments/lib4test-ProvidedServiceMethodRemoved.art2"), model("artFragments/lib4test-base.art2"))
+    var mergedModel = component.merge( model("artFragments/lib4test-ProvidedServiceMethodRemoved.art2").setLowerHashCode, model("artFragments/lib4test-base.art2"))
     mergedModel testSave ("artFragments","lib4test-ProvidedServiceMethodAddedMerged.art2")
 
     mergedModel.getTypeDefinitions.foreach(typeDef => typeDef.getName match {

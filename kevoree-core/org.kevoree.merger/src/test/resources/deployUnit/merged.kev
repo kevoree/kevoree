@@ -39,6 +39,6 @@
   <dataTypes name="java.lang.String"/>
   <libraries name="Kevoree-Android-JavaSE" subTypes="//@typeDefinitions.0 //@typeDefinitions.2"/>
   <libraries name="Kevoree-Components" subTypes="//@typeDefinitions.3 //@typeDefinitions.6 //@typeDefinitions.7"/>
-  <deployUnits groupName="org.kevoree.library" unitName="org.kevoree.library.defaultChannels" version="1.1.0-BETA1" hashcode="201103241037701" targetNodeType="//@typeDefinitions.1"/>
-  <deployUnits groupName="org.kevoree.library" unitName="org.kevoree.library.fakeDomo" version="1.1.0-BETA1" hashcode="201103181753275" targetNodeType="//@typeDefinitions.1"/>
+  <deployUnits groupName="org.kevoree.library" unitName="org.kevoree.library.defaultChannels" version="1.1.0-BETA1" hashcode="201103242325774" targetNodeType="//@typeDefinitions.1"/>
+  <deployUnits groupName="org.kevoree.library" unitName="org.kevoree.library.fakeDomo" version="1.1.0-BETA1" hashcode="201103242326260" targetNodeType="//@typeDefinitions.1"/>
 </kevoree:ContainerRoot>
