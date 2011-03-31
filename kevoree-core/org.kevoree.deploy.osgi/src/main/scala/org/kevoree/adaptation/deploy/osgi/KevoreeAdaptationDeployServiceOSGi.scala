@@ -412,12 +412,14 @@ class KevoreeAdaptationDeployServiceOSGi extends KevoreeAdaptationDeployService 
       executionResult = phase.phase(commands.get("addDeployUnit").get, "Phase 6 Add TypeDefinition DeployUnit")
     }
 	
+	// test if there are adds
+	// resolve all bundles
 	var bundles = ctx.bundleContext.getBundles
 	logger.debug("resolving bundles ...")
 	var test = ctx.getServicePackageAdmin.resolveBundles(bundles)
 	logger.debug("bundles resolved: " + test)
 	
-	
+	// start all bundles
 	logger.debug("starting bundles ...")
 	bundles.foreach{bundle =>
 	  bundle.start

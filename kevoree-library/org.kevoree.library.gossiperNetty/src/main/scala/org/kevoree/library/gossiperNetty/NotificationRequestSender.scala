@@ -1,8 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package org.kevoree.library.gossiperNetty
 
 import java.net.InetSocketAddress
@@ -15,6 +10,8 @@ import org.jboss.netty.channel.socket.DatagramChannel
 import org.jboss.netty.channel.socket.nio.NioDatagramChannelFactory
 import org.jboss.netty.handler.codec.protobuf.ProtobufDecoder
 import org.jboss.netty.handler.codec.protobuf.ProtobufEncoder
+import org.jboss.netty.handler.codec.protobuf.ProtobufVarint32FrameDecoder
+import org.jboss.netty.handler.codec.protobuf.ProtobufVarint32LengthFieldPrepender
 import org.kevoree.library.gossip.Gossip.UpdatedValueNotification
 import org.kevoree.library.gossiperNetty.api.msg.KevoreeMessage.Message
 import scala.collection.JavaConversions._
@@ -27,20 +24,27 @@ class NotificationRequestSender(channelFragment : NettyGossiperChannel) extends 
   var bootstrapNotificationMessage = new ConnectionlessBootstrap(factoryNotificationMessage)
   bootstrapNotificationMessage.setPipelineFactory(new ChannelPipelineFactory(){
       override def getPipeline() : ChannelPipeline = {
-        return Channels.pipeline(
-          new ProtobufEncoder(),
-          new ProtobufDecoder(Message.getDefaultInstance()),
-          new CloseChannelManager)
+        var p : ChannelPipeline = Channels.pipeline()
+		//p.addLast("frameDecoder", new ProtobufVarint32FrameDecoder());
+		p.addLast("protobufDecoder", new ProtobufDecoder(Message.getDefaultInstance()))
+		//p.addLast("frameEncoder", new ProtobufVarint32LengthFieldPrepender());
+		p.addLast("protobufEncoder", new ProtobufEncoder())
+		return p
       }
     }
   )
+  
+  //private var channels : ChannelGroup = new DefaultChannelGroup
+  private var channel = bootstrapNotificationMessage.bind(new InetSocketAddress(0)).asInstanceOf[DatagramChannel]
+  
+  this.start
   
   /* PUBLIC PART */
   case class STOP_GOSSIPER()
   case class NOTIFY_PEERS()
   
   def stop(){
-    this !? STOP_GOSSIPER()
+    this ! STOP_GOSSIPER()
   }
   
   def notifyPeersAction() ={
@@ -49,36 +53,33 @@ class NotificationRequestSender(channelFragment : NettyGossiperChannel) extends 
   
   /* PRIVATE PROCESS PART */
   def act(){
-	react {
-	  //reactWithin(timeout.longValue){
-	  case STOP_GOSSIPER() => {
-		  channels.foreach{channel=>
-			channel.close
+	loop {
+	  react {
+		//reactWithin(timeout.longValue){
+		case STOP_GOSSIPER() => {
+			//println("stop gossiper")
+			channel.close.awaitUninterruptibly
+			bootstrapNotificationMessage.releaseExternalResources
+			this.exit
 		  }
-		  this.exit
-		}
-	  case NOTIFY_PEERS() => {
-		  channels.foreach{channel=>
-			channel.close
+		case NOTIFY_PEERS() => {
+			//channels.close.awaitUninterruptibly
+			doNotifyPeers()
 		  }
-		  channels = List[org.jboss.netty.channel.socket.DatagramChannel]()
-		  doNotifyPeers()
-		}
+	  }
 	}
   }
   
-  private var channels = List[org.jboss.netty.channel.socket.DatagramChannel]()
-  
   
   private def doNotifyPeers() ={
-	channelFragment.getAllPeers.foreach { fragment =>
-	  
-	  var channel = bootstrapNotificationMessage.bind(new InetSocketAddress(0)).asInstanceOf[DatagramChannel]
-	  var messageBuilder : Message.Builder = Message.newBuilder.setDestChannelName(channelFragment.getName)
+	channelFragment.getAllPeers.foreach { peer =>
+	  var messageBuilder : Message.Builder = Message.newBuilder.setDestChannelName(channelFragment.getName).setDestNodeName(channelFragment.getNodeName)
 	  messageBuilder.setContentClass(classOf[UpdatedValueNotification].getName).setContent(UpdatedValueNotification.newBuilder.build.toByteString)
-	
-	  channel.write(messageBuilder.build, new InetSocketAddress(channelFragment.getAddress(fragment), channelFragment.parsePortNumber(fragment)));
-	  channels = channels ++ List(channel)
+	  //println("sending notification ...")
+	  //println(channelFragment.getAddress(peer) + ":" + channelFragment.parsePortNumber(peer))
+	  channel.write(messageBuilder.build, new InetSocketAddress(channelFragment.getAddress(peer), channelFragment.parsePortNumber(peer)));
+	  //println("notification send ...")
+	  //channels.add(channel)
 	}
 	
   }

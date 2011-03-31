@@ -1,8 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package org.kevoree.library.gossiperNetty
 
 import org.jboss.netty.channel.ChannelHandlerContext
@@ -15,13 +10,15 @@ class GossiperRequestReceiverHandler(serverActor : GossiperRequestReceiver) exte
 
   override def messageReceived(ctx:ChannelHandlerContext, e:MessageEvent)={
 	var message = e.getMessage.asInstanceOf[Message]
-	println("Message received : " + message)
-	serverActor.reply(message, e.getRemoteAddress)
-	//e.getChannel.close
+	//println("Message received : " + message)
+	// TODO insert Actor into this
+	serverActor.sendReply(message, e.getRemoteAddress, e.getChannel)
+	//println("Message used")
   }
   
   override def exceptionCaught(ctx:ChannelHandlerContext, e:ExceptionEvent)={
     //NOOP
+	println("Exception GossiperRequestReceiverHandler")
 	e.getCause().printStackTrace();
 	//e.getChannel.close
   }

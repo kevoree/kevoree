@@ -1,8 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package org.kevoree.library.gossiperNetty
 
 import java.util.HashMap
@@ -53,18 +48,22 @@ class DataManager extends actors.DaemonActor {
   def mergeClock(uid: UUID,v : VectorClock):VectorClock = {(this !? MergeClock(uid,v)).asInstanceOf[VectorClock] }
   
   def act(){
-	react {
-	  case Stop() => this.exit
-	  case GetData(uuid) => reply(datas.get(uuid)) // TODO maybe we need to clone the map
-	  case SetData(uuid, tuple) => datas.put(uuid, tuple)
-	  case RemoveData(uuid) => datas.remove(uuid)
-	  case GetUUIDVectorClock(uuid) => reply(getUUIDVectorClockFromUUID(uuid))
-	  case GetUUIDVectorClocks() => reply(this.getAllUUIDVectorClocks())
-	  case MergeClock(uuid,newClock)=> { 
-		  var mergedVC = localMerge(datas.get(uuid)._1,newClock)
-		  datas.put(uuid, Tuple2[VectorClock,Message](mergedVC,datas.get(uuid)._2))
-		  reply(mergedVC)
-		}
+	loop {
+	  react {
+		case Stop() => this.exit
+		case GetData(uuid) => reply(datas.get(uuid)) // TODO maybe we need to clone the map
+		case SetData(uuid, tuple) => datas.put(uuid, tuple)
+		case RemoveData(uuid) => datas.remove(uuid)
+		case GetUUIDVectorClock(uuid) => reply(getUUIDVectorClockFromUUID(uuid))
+		case GetUUIDVectorClocks() => reply(getAllUUIDVectorClocks())
+		case MergeClock(uuid,newClock)=> {
+			//println("clock must be merged")
+			var mergedVC = localMerge(datas.get(uuid)._1,newClock)
+			datas.put(uuid, Tuple2[VectorClock,Message](mergedVC,datas.get(uuid)._2))
+			//println("clock has been merged")
+			reply(mergedVC)
+		  }
+	  }
 	}
   }
   
@@ -79,6 +78,7 @@ class DataManager extends actors.DaemonActor {
   private def getAllUUIDVectorClocks() : java.util.Map[UUID, VectorClock] ={
 	var uuidVectorClocks : java.util.Map[UUID, VectorClock] = new HashMap[UUID, VectorClock]()
 	datas.keySet.foreach { uuid : UUID =>
+	  //println(uuid)
 	  uuidVectorClocks.put(uuid, datas.get(uuid)._1)
 	}
 	uuidVectorClocks

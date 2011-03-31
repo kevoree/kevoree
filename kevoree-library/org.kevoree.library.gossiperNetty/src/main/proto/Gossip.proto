@@ -24,6 +24,7 @@ message UUIDDataRequest {
 message VectorClockUUIDs {
 	repeated VectorClockUUID vectorClockUUIDs = 1;
 }
+
 message VectorClockUUID {
     required string uuid = 1;
 	required VectorClock vector = 2;

@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package org.kevoree.library.gossiperNetty;
 
 import java.util.ArrayList;
@@ -32,11 +28,13 @@ import scala.Tuple2;
 /**
  *
  * @author Erwan Daubert
+ * TODO add a DictionaryAttribute to define the number of uuids sent by response when a VectorClockUUIDsRequest is sent
  */
 @Library(name = "Kevoree-Netty")
 @DictionaryType({
-	@DictionaryAttribute(name = "interval", defaultValue = "60000", optional = true),
-	@DictionaryAttribute(name = "port", defaultValue = "9000", optional = true)
+	@DictionaryAttribute(name = "interval", defaultValue = "30000", optional = true),
+	@DictionaryAttribute(name = "port", defaultValue = "9000", optional = true),
+	@DictionaryAttribute(name = "FullUDP", defaultValue = "true", optional = true)
 })
 @ChannelTypeFragment
 public class NettyGossiperChannel extends AbstractChannelFragment {
@@ -52,12 +50,13 @@ public class NettyGossiperChannel extends AbstractChannelFragment {
 		Bundle bundle = (Bundle) this.getDictionary().get("osgi.bundle");
 		sr = bundle.getBundleContext().getServiceReference(KevoreeModelHandlerService.class.getName());
 		modelHandlerService = (KevoreeModelHandlerService) bundle.getBundleContext().getService(sr);
-		
+
 		dataManager = new DataManager();
 
-		actor = new GossiperActor(Long.parseLong(this.getDictionary().get("interval").toString()), this, 
-				dataManager, 
-				parsePortNumber(getNodeName()));
+		actor = new GossiperActor(Long.parseLong(this.getDictionary().get("interval").toString()), this,
+				dataManager,
+				parsePortNumber(getNodeName()),
+				parseFullUDPParameter());
 
 		// TODO continue
 
@@ -82,10 +81,10 @@ public class NettyGossiperChannel extends AbstractChannelFragment {
 
 	@Update
 	public void updateGossiperChannel() {
-		stopGossiperChannel();
-		startGossiperChannel();
+		/*stopGossiperChannel();
+		startGossiperChannel();*/
 	}
-	
+
 	@Override
 	public Object dispatch(Message msg) {
 		//Local delivery
@@ -135,18 +134,28 @@ public class NettyGossiperChannel extends AbstractChannelFragment {
 	private String separator = ",";
 	private String affectation = "=";
 	private String portPropertyRegex = "((" + name + affectation + portNumber + ")" + separator + ")*(" + name + affectation + portNumber + ")";
-	
+
 	public int parsePortNumber(String nodeName) {
 		String portProperty = this.getDictionary().get("port").toString();
 		if (portProperty.matches(portPropertyRegex)) {
 			String[] definitionParts = portProperty.split(separator);
 			for (String part : definitionParts) {
 				if (part.contains(nodeName + affectation)) {
-					System.out.println(Integer.parseInt(part.substring((nodeName + affectation).length(), part.length())));
+					//System.out.println(Integer.parseInt(part.substring((nodeName + affectation).length(), part.length())));
 					return Integer.parseInt(part.substring((nodeName + affectation).length(), part.length()));
 				}
 			}
+		} else {
+			return Integer.parseInt(portProperty);
 		}
 		return 0;
+	}
+
+	private boolean parseFullUDPParameter() {
+		if (this.getDictionary().get("FullUDP").toString().equals("true")) {
+			return true;
+		}
+		return false;
+
 	}
 }

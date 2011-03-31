@@ -9,4 +9,5 @@ message Message {
     required string destChannelName =1;
     required bytes content = 2;
 	required string contentClass = 3;
+	required string destNodeName = 4;
 }
