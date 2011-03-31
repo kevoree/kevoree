@@ -10,11 +10,9 @@
     <version>1.0.0-SNAPSHOT</version>
     
     <properties>
-        <kevoree.version>1.0.0-RC3</kevoree.version>
+        <kevoree.version>1.1.0-BETA1</kevoree.version>
         <android.platform.version>8</android.platform.version>
         <android.platform>platforms/android-${android.platform.version}</android.platform>
-        <android.framework.aidl>${android.home}/${android.platform}/framework.aidl</android.framework.aidl>
-        <android.jar>${android.home}/${android.platform}/android.jar</android.jar>
         <android.tools.aapt>${android.home}/${android.platform}/tools/aapt</android.tools.aapt>
         <android.tools.dx>${android.home}/${android.platform}/tools/dx</android.tools.dx>
     </properties>
@@ -39,18 +37,21 @@
         <dependency>
             <groupId>org.kevoree.tools</groupId>
             <artifactId>org.kevoree.tools.android.framework</artifactId>
-        <!--Why Can't I use 1.0.0-RC2 ???-->
-            <version>1.0.0-RC1</version>
+            <version>${kevoree.version}</version>
         </dependency>
     </dependencies>
 
 
     <build>
         <plugins>
-            <plugin>
+             <plugin>
                 <groupId>org.kevoree.tools</groupId>
                 <artifactId>org.kevoree.tools.annotation.mavenplugin</artifactId>
+                <version>${kevoree.version}</version>
                 <extensions>true</extensions>
+                 <configuration>
+                    <nodeTypeNames>AndroidNode</nodeTypeNames>
+                </configuration>
                 <executions>
                     <execution>
                         <goals>

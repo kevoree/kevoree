@@ -18,13 +18,7 @@
 
 package org.kevoree.tools.marShell.parser.sub
 
-import org.kevoree.tools.marShell.ast.AddChannelInstanceStatment
-import org.kevoree.tools.marShell.ast.AddComponentInstanceStatment
-import org.kevoree.tools.marShell.ast.AddGroupStatment
-import org.kevoree.tools.marShell.ast.RemoveChannelInstanceStatment
-import org.kevoree.tools.marShell.ast.RemoveComponentInstanceStatment
-import org.kevoree.tools.marShell.ast.RemoveGroupStatment
-import org.kevoree.tools.marShell.ast.Statment
+import org.kevoree.tools.marShell.ast._
 
 trait KevsInstParser extends KevsAbstractParser with KevsPropertiesParser {
 
@@ -52,6 +46,11 @@ trait KevsInstParser extends KevsAbstractParser with KevsPropertiesParser {
       List(RemoveComponentInstanceStatment(cid))
   }
 
+  def parseMoveComponent : Parser[List[Statment]] = "moveComponent" ~ componentID ~ "=>" ~ ident  ^^{ case _ ~ cid ~ _ ~ targetNodeId  =>
+      List(MoveComponentInstanceStatment(cid,targetNodeId))
+  }
+
+
   //GROUP
   def parseAddGroup : Parser[List[Statment]] = "addGroup" ~ ident ~ ":" ~ ident ~ opt(parseProperties) ^^{ case _ ~ groupName ~ _ ~ groupTypeName ~ oprops =>
       oprops match {
@@ -62,6 +61,8 @@ trait KevsInstParser extends KevsAbstractParser with KevsPropertiesParser {
   def parseRemoveGroup : Parser[List[Statment]] = "removeGroup" ~ ident ^^{ case _ ~ groupName =>
       List(RemoveGroupStatment(groupName))
   }
+
+
 
 
 

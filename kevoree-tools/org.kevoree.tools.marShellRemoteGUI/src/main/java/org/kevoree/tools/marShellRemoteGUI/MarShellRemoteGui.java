@@ -17,6 +17,8 @@
  */
 package org.kevoree.tools.marShellRemoteGUI;
 
+import org.kevoree.tools.marShellGUI.KevsPanel;
+
 import java.awt.BorderLayout;
 import java.awt.Color;
 import javax.swing.BorderFactory;
@@ -47,10 +49,8 @@ public class MarShellRemoteGui extends JApplet {
     }
 
     private void createGUI() {
-        JLabel label = new JLabel(
-                "You are successfully running a Swing applet!");
-        label.setHorizontalAlignment(JLabel.CENTER);
-        label.setBorder(BorderFactory.createMatteBorder(1, 1, 1, 1, Color.black));
-        getContentPane().add(label, BorderLayout.CENTER);
+
+        KevsPanel kevsPanel = new KevsPanel();
+        getContentPane().add(kevsPanel, BorderLayout.CENTER);
     }
 }

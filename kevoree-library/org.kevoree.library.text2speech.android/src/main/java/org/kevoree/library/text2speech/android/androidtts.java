@@ -13,7 +13,7 @@ import org.osgi.framework.Bundle;
  *
  * @author cdiehlwa
  */
-@Library(name = "EnTiMid-android")
+@Library(name = "Kevoree::Android::TTS")
 @Provides({
     @ProvidedPort(name = "text", type = PortType.MESSAGE)
 })
@@ -76,16 +76,15 @@ public class androidtts extends AbstractComponentType implements TextToSpeech.On
             setTtsLanguage(lang);
         } else {
             ttsReady = false;
-            System.out.println(">>>>>>>>>>>>>>>>> Could not initialize TextToSpeech..<<<<<<<<<<<<<<<<<");
+            System.out.println("Could not initialize TextToSpeech.");
         }
     }
 
     private void setTtsLanguage(Locale lang) {
     // no return code : don't care if lang is not an available language
         int result = mTts.setLanguage(lang);
-        //int result = mTts.setLanguage(Locale.US);
         if (result == TextToSpeech.LANG_MISSING_DATA || result == TextToSpeech.LANG_NOT_SUPPORTED) {
-            System.out.println(">>>>>>>>>>>>>> Language data not available.<<<<<<<<<<<<<<<<<<<<<");
+            System.out.println("Language data not available.");
         } 
     }
 
