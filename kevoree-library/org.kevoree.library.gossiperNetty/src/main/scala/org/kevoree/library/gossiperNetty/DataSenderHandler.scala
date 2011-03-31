@@ -15,8 +15,11 @@ import org.kevoree.extra.marshalling.RichJSONObject
 import org.kevoree.library.gossip.Gossip
 import org.kevoree.library.gossip.Gossip.VersionedModel
 import org.kevoree.library.gossiperNetty.api.msg.KevoreeMessage.Message
+import org.slf4j.LoggerFactory
 
 class DataSenderHandler(channelFragment : NettyGossiperChannel,dataManager : DataManager) extends SimpleChannelUpstreamHandler{
+  
+  private var logger = LoggerFactory.getLogger(classOf[DataSenderHandler])
   
   override def messageReceived(ctx:ChannelHandlerContext, e:MessageEvent)={
 	println("message received")
@@ -38,8 +41,8 @@ class DataSenderHandler(channelFragment : NettyGossiperChannel,dataManager : Dat
   
   override def exceptionCaught(ctx:ChannelHandlerContext, e:ExceptionEvent)={
     //NOOP
-	println("Exception GossiperRequestReceiverHandler")
-	e.getCause().printStackTrace();
+	//println("Exception GossiperRequestReceiverHandler")
+	logger.debug(e.getCause.getStackTraceString)
 	e.getChannel.close.awaitUninterruptibly
   }
 }

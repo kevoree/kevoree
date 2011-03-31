@@ -87,6 +87,7 @@ class GossiperRequestSender(timeout : java.lang.Long,channelFragment : NettyGoss
 		//reactWithin(timeout.longValue){
 		case STOP_GOSSIPER() => {
 			//println("stop gossiper")
+			askForDataTCPActor.stop
 			channel.close.awaitUninterruptibly
 			bootstrap.releaseExternalResources
 			this.exit

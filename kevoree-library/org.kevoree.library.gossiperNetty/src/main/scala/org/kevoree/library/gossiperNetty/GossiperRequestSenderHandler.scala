@@ -8,8 +8,11 @@ import org.kevoree.library.gossip.Gossip.VectorClockUUID
 import org.kevoree.library.gossip.Gossip.VectorClockUUIDs
 import org.kevoree.library.gossip.Gossip.VersionedModel
 import org.kevoree.library.gossiperNetty.api.msg.KevoreeMessage.Message
+import org.slf4j.LoggerFactory
 
 class GossiperRequestSenderHandler(gossiperRequestSender : GossiperRequestSender) extends SimpleChannelUpstreamHandler {
+  
+  private var logger = LoggerFactory.getLogger(classOf[GossiperRequestSenderHandler])
   
   override def messageReceived(ctx:ChannelHandlerContext, e:MessageEvent)={
 	var message = e.getMessage.asInstanceOf[Message]
@@ -29,8 +32,8 @@ class GossiperRequestSenderHandler(gossiperRequestSender : GossiperRequestSender
   
   override def exceptionCaught(ctx:ChannelHandlerContext, e:ExceptionEvent)={
     //NOOP
-	println("Exception GossiperRequestSenderHandler")
-	e.getCause().printStackTrace();
+	//println("Exception GossiperRequestSenderHandler")
+	logger.debug(e.getCause.getStackTraceString)
 	//e.getChannel.close.awaitUninterruptibly
   }
 }

@@ -7,11 +7,14 @@ import org.jboss.netty.channel.MessageEvent
 import org.jboss.netty.channel.SimpleChannelUpstreamHandler
 import org.kevoree.library.gossip.Gossip.VersionedModel
 import org.kevoree.library.gossiperNetty.api.msg.KevoreeMessage.Message
+import org.slf4j.LoggerFactory
 
 class DataReceiverHandler(gossiperRequestSender : GossiperRequestSender) extends SimpleChannelUpstreamHandler{
   
+	private var logger = LoggerFactory.getLogger(classOf[DataReceiverHandler])
+  
   override def messageReceived(ctx:ChannelHandlerContext, e:MessageEvent)={
-	println("response received")
+	//println("response received")
 	var message = e.getMessage.asInstanceOf[Message]
 	if (message.getContentClass.equals(classOf[VersionedModel].getName)) {
 	  //var versionModel = RichString(message.getContent.toStringUtf8).fromJSON(classOf[VersionedModel])
@@ -23,8 +26,10 @@ class DataReceiverHandler(gossiperRequestSender : GossiperRequestSender) extends
   
   override def exceptionCaught(ctx:ChannelHandlerContext, e:ExceptionEvent)={
     //NOOP
-	println("Exception GossiperRequestReceiverHandler")
-	e.getCause().printStackTrace();
+	//println("Exception GossiperRequestReceiverHandler")
+	//e.getCause().printStackTrace();
+	//logger.debug("Exception in " + classOf[DataReceiverHandler].getName)
+	logger.debug(e.getCause.getStackTraceString)
 	e.getChannel.close.awaitUninterruptibly
   }
 }

@@ -5,9 +5,12 @@ import org.jboss.netty.channel.ExceptionEvent
 import org.jboss.netty.channel.MessageEvent
 import org.jboss.netty.channel.SimpleChannelUpstreamHandler
 import org.kevoree.library.gossiperNetty.api.msg.KevoreeMessage.Message
+import org.slf4j.LoggerFactory
 
 class GossiperRequestReceiverHandler(serverActor : GossiperRequestReceiver) extends SimpleChannelUpstreamHandler {
 
+  private var logger = LoggerFactory.getLogger(classOf[GossiperRequestReceiverHandler])
+  
   override def messageReceived(ctx:ChannelHandlerContext, e:MessageEvent)={
 	var message = e.getMessage.asInstanceOf[Message]
 	//println("Message received : " + message)
@@ -18,8 +21,8 @@ class GossiperRequestReceiverHandler(serverActor : GossiperRequestReceiver) exte
   
   override def exceptionCaught(ctx:ChannelHandlerContext, e:ExceptionEvent)={
     //NOOP
-	println("Exception GossiperRequestReceiverHandler")
-	e.getCause().printStackTrace();
+	//println("Exception GossiperRequestReceiverHandler")
+	logger.debug(e.getCause.getStackTraceString)
 	//e.getChannel.close
   }
 }

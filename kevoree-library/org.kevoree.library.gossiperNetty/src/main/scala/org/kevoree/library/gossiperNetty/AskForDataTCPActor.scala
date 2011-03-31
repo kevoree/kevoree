@@ -62,7 +62,7 @@ class AskForDataTCPActor(channelFragment : NettyGossiperChannel, requestSender :
 			channelGroup.close.awaitUninterruptibly
 			//println("stop gossiper")
 			//channel.close.awaitUninterruptibly
-			//bootstrap.releaseExternalResources
+			bootstrapTCP.releaseExternalResources
 			this.exit
 		  }
 		case ASK_FOR_DATA(uuid, remoteNodeName) => {
