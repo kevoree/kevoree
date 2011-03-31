@@ -78,6 +78,11 @@ case class RichContainerRoot(self : ContainerRoot) extends MergerTestSuiteHelper
     }
   }
 
+  def setLowerHashCode : ContainerRoot = {
+       self.getDeployUnits.foreach(du=> du.setHashcode(0+""))
+      self
+  }
+
   
 
 }

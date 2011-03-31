@@ -41,9 +41,18 @@ case class TypeDefinitionAspect(selfTD : TypeDefinition) {
     //SPECIAL CONSISTENCY CHECK
     pTD match {
       case otherTD : ComponentType => {
-          var selfCT = selfTD.asInstanceOf[ComponentType]
+          val selfCT = selfTD.asInstanceOf[ComponentType]
           if(otherTD.getProvided.size != selfCT.getProvided.size){return true}
           if(otherTD.getRequired.size != selfCT.getRequired.size){return true}
+          val providedEquality = selfCT.getProvided.forall(selfPTypeRef =>{
+            otherTD.getProvided.find(otherTypeRef => otherTypeRef.getName == selfPTypeRef.getName )match {
+              case Some(otherEquivalentTypeRef)=> {
+                true
+              }
+              case None=> false
+            }
+          })
+
       }
       case _ =>
     }
@@ -51,6 +60,7 @@ case class TypeDefinitionAspect(selfTD : TypeDefinition) {
   }
 
   def isUpdated(pTD : TypeDefinition) : Boolean = {
+
     if(selfTD.getDeployUnits != null){
       if(pTD.getDeployUnits != null){
         if(pTD.getDeployUnits.size == 0){
@@ -60,18 +70,21 @@ case class TypeDefinitionAspect(selfTD : TypeDefinition) {
         if(selfTD.getDeployUnits.size != pTD.getDeployUnits.size){
           return true
         }
-        var allNotUpdate = selfTD.getDeployUnits.forall(selfDU=>{
+        val allNotUpdate = selfTD.getDeployUnits.forall(selfDU=>{
             pTD.getDeployUnits.find(p=> p.isModelEquals(selfDU)) match {
               case Some(pDU)=> {
                   try{
-                    var pDUInteger = java.lang.Long.parseLong(pDU.getHashcode)
-                    var selfDUInteger = java.lang.Long.parseLong(selfDU.getHashcode)
-                    selfDUInteger > pDUInteger                 
+                    val pDUInteger = java.lang.Long.parseLong(pDU.getHashcode)
+                    val selfDUInteger = java.lang.Long.parseLong(selfDU.getHashcode)
+
+                       // println("kompareHashCode - "+selfDUInteger+">"+pDUInteger+"-"+(selfDUInteger <= pDUInteger))
+
+                    selfDUInteger <= pDUInteger
                   } catch {
                     case _@ e => {
                         e.printStackTrace
                         println("Bad HashCode - equiality verification - " +pDU.getHashcode + " - " +selfDU.getHashcode)
-                        pDU.getHashcode == selfDU.getHashcode
+                        pDU.getHashcode != selfDU.getHashcode
                         
                     }
                   }
@@ -79,7 +92,7 @@ case class TypeDefinitionAspect(selfTD : TypeDefinition) {
               case _ => false
             }
           })
-        !allNotUpdate   
+        !allNotUpdate
       } else {
         true
       }
