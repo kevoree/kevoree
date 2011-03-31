@@ -28,23 +28,58 @@ case class TypeDefinitionAspect(selfTD : TypeDefinition) {
     pct.getName == selfTD.getName
     /* deep compare */
   }
+  
+  /* Check if the new type definition define new deploy unit than self */
+  def contractChanged(pTD : TypeDefinition) : Boolean = {
+    if(pTD.getName != selfTD.getName){return true}
+    if(pTD.getFactoryBean != selfTD.getFactoryBean){return true}
+    //DICTIONARY TYPE CHECK  
+    if(pTD.getDictionaryType != null){
+      if(!pTD.getDictionaryType.isModelEquals(selfTD.getDictionaryType)){return true}
+    }
+
+    //SPECIAL CONSISTENCY CHECK
+    pTD match {
+      case otherTD : ComponentType => {
+          var selfCT = selfTD.asInstanceOf[ComponentType]
+          if(otherTD.getProvided.size != selfCT.getProvided.size){return true}
+          if(otherTD.getRequired.size != selfCT.getRequired.size){return true}
+      }
+      case _ =>
+    }
+    false
+  }
 
   def isUpdated(pTD : TypeDefinition) : Boolean = {
-    
     if(selfTD.getDeployUnits != null){
       if(pTD.getDeployUnits != null){
+        if(pTD.getDeployUnits.size == 0){
+          return false
+        }
+        
         if(selfTD.getDeployUnits.size != pTD.getDeployUnits.size){
           return true
         }
         var allNotUpdate = selfTD.getDeployUnits.forall(selfDU=>{
             pTD.getDeployUnits.find(p=> p.isModelEquals(selfDU)) match {
-              case Some(pDU)=> pDU.getHashcode == selfDU.getHashcode
+              case Some(pDU)=> {
+                  try{
+                    var pDUInteger = java.lang.Long.parseLong(pDU.getHashcode)
+                    var selfDUInteger = java.lang.Long.parseLong(selfDU.getHashcode)
+                    selfDUInteger > pDUInteger                 
+                  } catch {
+                    case _@ e => {
+                        e.printStackTrace
+                        println("Bad HashCode - equiality verification - " +pDU.getHashcode + " - " +selfDU.getHashcode)
+                        pDU.getHashcode == selfDU.getHashcode
+                        
+                    }
+                  }
+                } 
               case _ => false
             }
           })
-        
-        !allNotUpdate
-        
+        !allNotUpdate   
       } else {
         true
       }
@@ -66,9 +101,9 @@ case class TypeDefinitionAspect(selfTD : TypeDefinition) {
       }
     }
     /*
-    if(deployUnitfound == null){
-      deployUnitfound = selfTD.getDeployUnits.find(du => du.getTargetNodeType.getName == null).get
-    }*/
+     if(deployUnitfound == null){
+     deployUnitfound = selfTD.getDeployUnits.find(du => du.getTargetNodeType.getName == null).get
+     }*/
     if(deployUnitfound == null){
       deployUnitfound = selfTD.getDeployUnits.get(0)
     }
