@@ -26,5 +26,19 @@
             <version>${kevoree.version}</version>
         </dependency>
     </dependencies>
+    
+    <profiles>
+        <profile>
+            <activation>
+                <os>
+                    <family>!mac</family>
+                </os>
+            </activation>
+            <dependencies>
+                <dependency>
+                </dependency>
+            </dependencies>
+        </profile>
+    </profiles>
 
 </project>
