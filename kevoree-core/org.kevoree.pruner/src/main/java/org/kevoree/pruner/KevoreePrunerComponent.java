@@ -11,13 +11,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kevoree.framework;
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
+
+package org.kevoree.pruner;
 
 import org.kevoree.ContainerRoot;
-import org.kevoree.api.service.adaptation.deploy.KevoreeAdaptationDeployService;
 
-public abstract class AbstractNodeType implements KevoreeAdaptationDeployService {
+/**
+ *
+ * @author Gregory NAIN
+ */
+public class KevoreePrunerComponent {
 
-  public abstract void push(String targetNodeName,ContainerRoot root);
+    private Pruner pruner = new Pruner();
+    
+    public ContainerRoot prune(ContainerRoot actualModel, String filter) {
+
+        return pruner.prune(actualModel, filter);
+    }
 
 }

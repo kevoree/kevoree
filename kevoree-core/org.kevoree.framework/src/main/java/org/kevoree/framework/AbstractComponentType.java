@@ -34,6 +34,27 @@ public class AbstractComponentType implements ComponentType {
     public HashMap<String, Object> getDictionary() {
         return this.dictionary;
     }
+    private String nodeName = "";
+
+    @Override
+    public String getNodeName() {
+        return nodeName;
+    }
+
+    public void setNodeName(String pnodeName) {
+        nodeName = pnodeName;
+    }
+    private String name = "";
+
+    @Override
+    public String getName() {
+        return name;
+    }
+    
+    public void setName(String pname){
+        name = pname;
+    }
+    
 
     @Override
     public void setDictionary(HashMap<String, Object> dictionary) {
