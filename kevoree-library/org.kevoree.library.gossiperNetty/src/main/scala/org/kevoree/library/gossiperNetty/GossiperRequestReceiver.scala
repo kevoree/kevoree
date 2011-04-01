@@ -20,7 +20,7 @@ import org.jboss.netty.handler.codec.protobuf.ProtobufEncoder
 import org.kevoree.library.gossip.Gossip
 import scala.collection.JavaConversions._
 
-class GossiperRequestReceiver(channelFragment : NettyGossiperChannel,dataManager : DataManager, port : Int, gossiperRequestSender : GossiperRequestSender, fullUDP : Boolean) extends actors.DaemonActor {
+class GossiperRequestReceiver(channelFragment : NettyGossipAbstractElement,dataManager : DataManager[_], port : Int, gossiperRequestSender : GossiperRequestSender[_], fullUDP : Boolean) extends actors.DaemonActor {
 
   var self = this
   // define attributes used to define channel to listen request
@@ -85,7 +85,7 @@ class GossiperRequestReceiver(channelFragment : NettyGossiperChannel,dataManager
   
   private def doGossip(message : Message, address : SocketAddress,channel : Channel) /*: Channel*/ ={
 	//println(address)
-	var responseBuilder : Message.Builder = Message.newBuilder.setDestChannelName(channelFragment.getName).setDestNodeName(channelFragment.getNodeName)
+	var responseBuilder : Message.Builder = Message.newBuilder.setDestName(channelFragment.getName).setDestNodeName(channelFragment.getNodeName)
 	
 	message.getContentClass match {
 	  case "org.kevoree.library.gossip.Gossip$VectorClockUUIDsRequest" => {
@@ -98,7 +98,7 @@ class GossiperRequestReceiver(channelFragment : NettyGossiperChannel,dataManager
 		  uuidVectorClocks.keySet.foreach {uuid : UUID =>
 			vectorClockUUIDsBuilder.addVectorClockUUIDs(Gossip.VectorClockUUID.newBuilder.setUuid(uuid.toString).setVector(uuidVectorClocks.get(uuid)).build)
 			if (vectorClockUUIDsBuilder.getVectorClockUUIDsCount == 1) {// it is possible to increase the number of vectorClockUUID on each message
-			  responseBuilder = Message.newBuilder.setDestChannelName(channelFragment.getName).setDestNodeName(channelFragment.getNodeName)
+			  responseBuilder = Message.newBuilder.setDestName(channelFragment.getName).setDestNodeName(channelFragment.getNodeName)
 			  var modelBytes = vectorClockUUIDsBuilder.build.toByteString
 			  responseBuilder.setContentClass(classOf[Gossip.VectorClockUUIDs].getName).setContent(modelBytes)
 			  channel.write(responseBuilder.build, address)
@@ -137,14 +137,15 @@ class GossiperRequestReceiver(channelFragment : NettyGossiperChannel,dataManager
 		  //println("VersionedModel sent")
 		}
 	  case "org.kevoree.library.gossip.Gossip$UpdatedValueNotification" => {
-		  channelFragment.getOtherFragments.find (fragment => fragment.getName == message.getDestChannelName) match {
-			case Some(c) => {
-				gossiperRequestSender.initGossipAction(c.getNodeName)
+		  //channelFragment.getOtherFragments.find (fragment => fragment.getName == message.getDestNodeName) match {
+			//case Some(c) => {
+				//gossiperRequestSender.initGossipAction(c.getNodeName)
+				gossiperRequestSender.initGossipAction(message.getDestNodeName)
 				//channel.close
 				//println("requestReceiver initGossip")
-			  }
-			case None =>
-		  }
+			  //}
+			//case None =>
+		  //}
 		}
 	}
 	//channel.close.awaitUninterruptibly

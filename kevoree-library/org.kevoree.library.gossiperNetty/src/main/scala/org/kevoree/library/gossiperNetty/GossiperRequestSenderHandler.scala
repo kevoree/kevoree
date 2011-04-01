@@ -4,13 +4,12 @@ import org.jboss.netty.channel.ChannelHandlerContext
 import org.jboss.netty.channel.ExceptionEvent
 import org.jboss.netty.channel.MessageEvent
 import org.jboss.netty.channel.SimpleChannelUpstreamHandler
-import org.kevoree.library.gossip.Gossip.VectorClockUUID
 import org.kevoree.library.gossip.Gossip.VectorClockUUIDs
 import org.kevoree.library.gossip.Gossip.VersionedModel
 import org.kevoree.library.gossiperNetty.api.msg.KevoreeMessage.Message
 import org.slf4j.LoggerFactory
 
-class GossiperRequestSenderHandler(gossiperRequestSender : GossiperRequestSender) extends SimpleChannelUpstreamHandler {
+class GossiperRequestSenderHandler(gossiperRequestSender : GossiperRequestSender[_]) extends SimpleChannelUpstreamHandler {
   
   private var logger = LoggerFactory.getLogger(classOf[GossiperRequestSenderHandler])
   
@@ -33,7 +32,7 @@ class GossiperRequestSenderHandler(gossiperRequestSender : GossiperRequestSender
   override def exceptionCaught(ctx:ChannelHandlerContext, e:ExceptionEvent)={
     //NOOP
 	//println("Exception GossiperRequestSenderHandler")
-	logger.debug(e.getCause.getStackTraceString)
+	logger.error("GossiperRequestSenderHandler\n" + e.getCause.getStackTraceString)
 	//e.getChannel.close.awaitUninterruptibly
   }
 }

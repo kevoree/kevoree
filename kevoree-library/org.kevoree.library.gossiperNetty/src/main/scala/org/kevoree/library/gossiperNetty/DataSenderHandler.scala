@@ -17,12 +17,12 @@ import org.kevoree.library.gossip.Gossip.VersionedModel
 import org.kevoree.library.gossiperNetty.api.msg.KevoreeMessage.Message
 import org.slf4j.LoggerFactory
 
-class DataSenderHandler(channelFragment : NettyGossiperChannel,dataManager : DataManager) extends SimpleChannelUpstreamHandler{
+class DataSenderHandler(channelFragment : NettyGossipAbstractElement,dataManager : DataManager[_]) extends SimpleChannelUpstreamHandler{
   
   private var logger = LoggerFactory.getLogger(classOf[DataSenderHandler])
   
   override def messageReceived(ctx:ChannelHandlerContext, e:MessageEvent)={
-	println("message received")
+	//println("message received")
 	var message = e.getMessage.asInstanceOf[Message]
 	if (message.getContentClass.equals(classOf[Gossip.UUIDDataRequest].getName))  {
 	  var uuidDataRequest = Gossip.UUIDDataRequest.parseFrom(message.getContent)
@@ -32,17 +32,17 @@ class DataSenderHandler(channelFragment : NettyGossiperChannel,dataManager : Dat
 	  var modelBytes = ByteString.copyFromUtf8(res);
 		
 	  modelBytes = Gossip.VersionedModel.newBuilder.setUuid(uuidDataRequest.getUuid).setVector(data._1).setModel(modelBytes).build.toByteString
-	  var responseBuilder : Message.Builder = Message.newBuilder.setDestChannelName(message.getDestChannelName).setDestNodeName(channelFragment.getNodeName)
+	  var responseBuilder : Message.Builder = Message.newBuilder.setDestName(message.getDestName).setDestNodeName(channelFragment.getNodeName)
 	  responseBuilder.setContentClass(classOf[Gossip.VersionedModel].getName).setContent(modelBytes)
 	  e.getChannel.write(responseBuilder.build)
-	  println("response sent")
+	  //println("response sent")
 	}
   }
   
   override def exceptionCaught(ctx:ChannelHandlerContext, e:ExceptionEvent)={
     //NOOP
 	//println("Exception GossiperRequestReceiverHandler")
-	logger.debug(e.getCause.getStackTraceString)
+	logger.error("DataSenderHandler\n" + e.getCause.getMessage + "\n" + e.getCause.getStackTraceString)
 	e.getChannel.close.awaitUninterruptibly
   }
 }

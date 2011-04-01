@@ -22,7 +22,7 @@ class GossiperRequestReceiverHandler(serverActor : GossiperRequestReceiver) exte
   override def exceptionCaught(ctx:ChannelHandlerContext, e:ExceptionEvent)={
     //NOOP
 	//println("Exception GossiperRequestReceiverHandler")
-	logger.debug(e.getCause.getStackTraceString)
+	logger.error("GossiperRequestReceiverHandler\n" + e.getCause.getStackTraceString)
 	//e.getChannel.close
   }
 }

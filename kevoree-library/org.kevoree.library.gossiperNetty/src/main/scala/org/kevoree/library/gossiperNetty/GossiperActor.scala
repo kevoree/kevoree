@@ -9,9 +9,9 @@ import java.security.SecureRandom
 import scala.actors.TIMEOUT
 import scala.collection.JavaConversions._
 
-class GossiperActor(timeout : java.lang.Long,channel : NettyGossiperChannel,dataManager : DataManager, port : Int, fullUDP : Boolean) extends actors.DaemonActor {
+class GossiperActor[T](timeout : java.lang.Long,channel : NettyGossipAbstractElement,dataManager : DataManager[T], port : Int, fullUDP : Boolean,garbage : Boolean,generic : Class[_]) extends actors.DaemonActor {
 
-  private var gossiperRequestSender = new GossiperRequestSender(timeout, channel,dataManager,fullUDP)
+  private var gossiperRequestSender = new GossiperRequestSender[T](timeout, channel,dataManager,fullUDP,garbage,generic)
   private var notificationRequestSender = new NotificationRequestSender(channel)
   private var gossiperRequestReceiver = new GossiperRequestReceiver(channel,dataManager,port, gossiperRequestSender,fullUDP)
   this.start
@@ -47,9 +47,9 @@ class GossiperActor(timeout : java.lang.Long,channel : NettyGossiperChannel,data
         case DO_GOSSIP(targetNodeName) => doGossip(targetNodeName)
         case NOTIFY_PEERS() => notificationRequestSender.notifyPeersAction
         case TIMEOUT => {
-			var peer = selectPeer
+			var peer = channel.selectPeer
 			if (!peer.equals("")) {
-			  doGossip(selectPeer)
+			  doGossip(peer)
 			}
 		  }
 	  }
@@ -64,23 +64,6 @@ class GossiperActor(timeout : java.lang.Long,channel : NettyGossiperChannel,data
 	  //println("launch Gossip")
 	  gossiperRequestSender.initGossipAction(targetNodeName)
 	  
-	}
-  }
-  
-  /*private def doNotifyPeers() ={
-   channel.getOtherFragments.foreach{channelFragment =>
-   notificationRequestSender.notifyPeerAction(channelFragment.getNodeName)  
-   }
-   }*/
-  
-  def selectPeer() : String ={
-	var othersSize = channel.getOtherFragments().size();
-	if (othersSize > 0) {
-	  var diceRoller = new SecureRandom();
-	  var peerIndex = diceRoller.nextInt(othersSize);
-	  channel.getOtherFragments.get(peerIndex).getNodeName;
-	} else {
-	  ""
 	}
   }
 }

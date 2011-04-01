@@ -16,7 +16,7 @@ import org.kevoree.library.gossip.Gossip.UpdatedValueNotification
 import org.kevoree.library.gossiperNetty.api.msg.KevoreeMessage.Message
 import scala.collection.JavaConversions._
 
-class NotificationRequestSender(channelFragment : NettyGossiperChannel) extends actors.DaemonActor {
+class NotificationRequestSender(channelFragment : NettyGossipAbstractElement) extends actors.DaemonActor {
 
   
   // define attributes used to define channel to send notification message
@@ -73,7 +73,7 @@ class NotificationRequestSender(channelFragment : NettyGossiperChannel) extends 
   
   private def doNotifyPeers() ={
 	channelFragment.getAllPeers.foreach { peer =>
-	  var messageBuilder : Message.Builder = Message.newBuilder.setDestChannelName(channelFragment.getName).setDestNodeName(channelFragment.getNodeName)
+	  var messageBuilder : Message.Builder = Message.newBuilder.setDestName(channelFragment.getName).setDestNodeName(channelFragment.getNodeName)
 	  messageBuilder.setContentClass(classOf[UpdatedValueNotification].getName).setContent(UpdatedValueNotification.newBuilder.build.toByteString)
 	  //println("sending notification ...")
 	  //println(channelFragment.getAddress(peer) + ":" + channelFragment.parsePortNumber(peer))

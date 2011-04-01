@@ -9,7 +9,7 @@ import org.kevoree.library.gossip.Gossip.VersionedModel
 import org.kevoree.library.gossiperNetty.api.msg.KevoreeMessage.Message
 import org.slf4j.LoggerFactory
 
-class DataReceiverHandler(gossiperRequestSender : GossiperRequestSender) extends SimpleChannelUpstreamHandler{
+class DataReceiverHandler(gossiperRequestSender : GossiperRequestSender[_]) extends SimpleChannelUpstreamHandler{
   
 	private var logger = LoggerFactory.getLogger(classOf[DataReceiverHandler])
   
@@ -18,6 +18,7 @@ class DataReceiverHandler(gossiperRequestSender : GossiperRequestSender) extends
 	var message = e.getMessage.asInstanceOf[Message]
 	if (message.getContentClass.equals(classOf[VersionedModel].getName)) {
 	  //var versionModel = RichString(message.getContent.toStringUtf8).fromJSON(classOf[VersionedModel])
+	  println(message)
 	  gossiperRequestSender.endGossipAction(message)
 	  //e.getChannel.getCloseFuture.awaitUninterruptibly
 	  e.getChannel.getCloseFuture.addListener(ChannelFutureListener.CLOSE);
@@ -29,7 +30,7 @@ class DataReceiverHandler(gossiperRequestSender : GossiperRequestSender) extends
 	//println("Exception GossiperRequestReceiverHandler")
 	//e.getCause().printStackTrace();
 	//logger.debug("Exception in " + classOf[DataReceiverHandler].getName)
-	logger.debug(e.getCause.getStackTraceString)
+	logger.error("DataReceiverHandler\n" + e.getCause.getMessage + "\n" + e.getCause.getStackTraceString)
 	e.getChannel.close.awaitUninterruptibly
   }
 }
