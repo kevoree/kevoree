@@ -4,15 +4,71 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.kevoree.library</groupId>
     <artifactId>org.kevoree.library.arduino.nodeType</artifactId>
-    <packaging>bundle</packaging>
+    <packaging>jar</packaging>
     <name>Kevoree :: Library :: Arduino :: NodeType</name>
     <version>1.1.0-BETA1</version>
 
+    <properties>
+        <scala.version>2.8.1</scala.version>
+    </properties>
+
     <parent>
-        <artifactId>org.kevoree.library.root</artifactId>
+        <artifactId>org.kevoree.library.arduino.root</artifactId>
         <groupId>org.kevoree.library</groupId>
         <version>1.1.0-BETA1</version>
         <relativePath>../org.kevoree.library.root/pom.xml</relativePath>
     </parent>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.kevoree</groupId>
+            <artifactId>org.kevoree.framework</artifactId>
+            <version>${kevoree.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.kevoree</groupId>
+            <artifactId>org.kevoree.kompare</artifactId>
+            <version>${kevoree.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.kevoree.library</groupId>
+            <artifactId>org.kevoree.library.arduino.sensors</artifactId>
+            <version>${kevoree.version}</version>
+        </dependency>
+
+
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.scala-tools</groupId>
+                <artifactId>maven-scala-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>scala-compile-first</id>
+                        <phase>process-resources</phase>
+                        <goals>
+                            <goal>add-source</goal>
+                            <goal>compile</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>scala-test-compile</id>
+                        <phase>process-test-resources</phase>
+                        <goals>
+                            <goal>testCompile</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <jvmArgs>
+                        <jvmArg>-Xmx1024m</jvmArg>
+                    </jvmArgs>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 
 </project>

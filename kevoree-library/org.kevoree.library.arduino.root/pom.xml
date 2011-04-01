@@ -4,11 +4,10 @@
 
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.kevoree.library</groupId>
-    <artifactId>org.kevoree.library.root</artifactId>
+    <artifactId>org.kevoree.library.arduino.root</artifactId>
     <packaging>pom</packaging>
-    <name>Kevoree :: Library :: Root</name>
+    <name>Kevoree :: Library :: Arduino :: Root</name>
     <version>1.1.0-BETA1</version>
-
 
     <properties>
         <kevoree.version>${project.version}</kevoree.version>
@@ -16,23 +15,8 @@
     </properties>
 
     <modules>
-        <module>../org.kevoree.library.defaultNodeTypes</module>
-        <module>../org.kevoree.library.defaultChannels</module>
-        <module>../org.kevoree.library.gossiper</module>
-        <module>../org.kevoree.library.gossiperNetty</module>
-        <module>../org.kevoree.library.fakeDomo</module>
-        <module>../org.kevoree.library.sample</module>
-        <module>../org.kevoree.library.restChannels</module>
-        <module>../org.kevoree.library.xmpp</module>
-        <module>../org.kevoree.library.temper</module>
-        <!-- <module>../org.kevoree.library.logger.greg</module> -->
-        <module>../org.kevoree.library.logger.android</module>
-        <module>../org.kevoree.library.arduino.root</module>
-
-
-        <!-- Merge all -->
-        <module>../org.kevoree.library.models</module>
-
+        <module>../org.kevoree.library.arduino.nodeType</module>
+        <module>../org.kevoree.library.arduino.sensors</module>
     </modules>
 
     <distributionManagement>
@@ -63,7 +47,7 @@
                 <artifactId>org.kevoree.tools.annotation.mavenplugin</artifactId>
                 <extensions>true</extensions>
                 <configuration>
-                    <nodeTypeNames>JavaSENode</nodeTypeNames>
+                    <nodeTypeNames>ArduinoNode</nodeTypeNames>
                 </configuration>
                 <executions>
                     <execution>
@@ -73,13 +57,6 @@
                         </goals>
                     </execution>
                 </executions>
-            </plugin>
-            <!-- Felix BnD plugin : allow Bundle packaging : generate OSGi JAR  -->
-            <plugin>
-                <groupId>org.apache.felix</groupId>
-                <artifactId>maven-bundle-plugin</artifactId>
-                <version>2.1.0</version>
-                <extensions>true</extensions>
             </plugin>
             <!-- Java compiler plugin -->
             <plugin>
