@@ -41,4 +41,10 @@ public interface ComponentType {
     public <T> T getPortByName(String name, Class<T> type);
 
     public Boolean isPortBinded(String name);
+    
+    public String getNodeName();
+
+    public String getName();
+    
+    
 }
