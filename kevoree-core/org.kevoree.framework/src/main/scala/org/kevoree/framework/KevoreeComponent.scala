@@ -24,7 +24,7 @@ import scala.collection.JavaConversions._
 import org.kevoree.framework.aspects.KevoreeAspects._
 
 abstract class KevoreeComponent(c: AbstractComponentType) extends KevoreeActor {
-
+  
   def getKevoreeComponentType: ComponentType = c
 
   private var ct_started: Boolean = false
