@@ -14,9 +14,10 @@
 package org.kevoree.framework;
 
 import org.kevoree.ContainerRoot;
+import org.kevoree.api.service.adaptation.deploy.KevoreeAdaptationDeployService;
 
-public abstract class AbstractNodeType {
+public abstract class AbstractNodeType implements KevoreeAdaptationDeployService {
 
-  public abstract void deploy(String targetNodeName,ContainerRoot root);
+  public abstract void push(String targetNodeName,ContainerRoot root);
 
 }

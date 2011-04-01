@@ -8,6 +8,7 @@ package org.kevoree.library.defaultNodeTypes;
 import org.kevoree.ContainerRoot;
 import org.kevoree.annotation.NodeType;
 import org.kevoree.framework.AbstractNodeType;
+import org.kevoreeAdaptation.AdaptationModel;
 
 /**
  *
@@ -16,9 +17,15 @@ import org.kevoree.framework.AbstractNodeType;
 @NodeType
 public class JavaSENode extends AbstractNodeType {
 
+
     @Override
-    public void deploy(String string, ContainerRoot cr) {
-        System.out.println("Hello world");
+    public void push(String targetNodeName, ContainerRoot root) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public boolean deploy(AdaptationModel model, String nodeName) {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
 }
