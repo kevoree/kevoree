@@ -9,7 +9,12 @@ import org.kevoree.framework.AbstractComponentType;
 @DictionaryType({
         @DictionaryAttribute(name = "pin", defaultValue = "0", optional = true)
 })
-@ProvidedPort(name = "trigger", type = PortType.MESSAGE)
+@Provides({
+    @ProvidedPort(name = "trigger", type = PortType.MESSAGE)
+})
+@Requires({
+    @RequiredPort(name = "temp", type = PortType.MESSAGE)
+})
 public class TempSensor extends AbstractComponentType {
 
     @Start
@@ -18,11 +23,14 @@ public class TempSensor extends AbstractComponentType {
 
     @Stop
     public void stop() {
+
     }
 
     @Generate("header")
-    public void generateHeader(StringBuilder context) {
+    public void generateHeader(StringBuffer context) {
         context.append("#include <math.h> \n");
+        context.append("#include <Metro.h> \n");
+
         context.append("#define ThermistorPIN ");
         context.append(this.getDictionary().get("pin"));
         context.append(" \n");
@@ -32,32 +40,30 @@ public class TempSensor extends AbstractComponentType {
         context.append("float pad = 9850;\n");
         context.append("float thermr = 10000;\n");
     }
-    /*
-@Generate("globalVar")
-public void generateGlobalVar(StringBuilder context){
-
-}       */
 
     @Port(name = "trigger")
     public void triggerPort(Object o) {
-
+        StringBuffer context = (StringBuffer) o;
+        
         /* Generate code for port */
-        StringBuilder context = new StringBuilder();
-        context.append("long Resistance; \n");
-        context.append("float Temp; \n");
-        context.append("int RawADC; \n");
 
-        context.append("RawADC = analogRead(ThermistorPIN); \n");
-        context.append(
-                "Resistance=((1024 * thermr / RawADC) - pad); \n" +
-                        "Temp = log(Resistance);\n" +
-                        "Temp = 1 / (0.001129148 + (0.000234125 * Temp) + (0.0000000876741 * Temp * Temp * Temp));\n" +
-                        "Temp = Temp - 273.15;\n");
+        context.append("    long Resistance;  \n" +
+                "    float temp;  // Dual-Purpose variable to save space.\n" +
+                "    int RawADC = analogRead(ThermistorPIN);\n" +
+                "    Resistance=((1024 * thermr / RawADC) - pad); \n" +
+                "    temp = log(Resistance); // Saving the Log(resistance) so not to calculate  it 4 times later\n" +
+                "    temp = 1 / (0.001129148 + (0.000234125 * temp) + (0.0000000876741 * temp * temp * temp));\n" +
+                "    temp = temp - 273.15;  // Convert Kelvin to Celsius  \n" +
+                "    //send to output port\n" +
+                "    String result = String(int(temp*100));");
 
-        //GENERATE REQUIRED PORT CALL
-        context.append("tempOut(Temp+\"\");\n");
+
+          //TODO DO CALL TO OUTPUT PORT
+
+        //context.append("tempOut(Temp+\"\");\n");
 
     }
+
 
 
     /* ARDUINO CODE */

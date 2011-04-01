@@ -27,8 +27,8 @@
         <module>../org.kevoree.library.temper</module>
         <!-- <module>../org.kevoree.library.logger.greg</module> -->
         <module>../org.kevoree.library.logger.android</module>
-        <module>../org.kevoree.library.arduino.nodeType</module>
-        <module>../org.kevoree.library.arduino.sensors</module>
+        <module>../org.kevoree.library.arduino.root</module>
+
 
         <!-- Merge all -->
         <module>../org.kevoree.library.models</module>

@@ -1,0 +1,64 @@
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>org.kevoree.extra</groupId>
+    <artifactId>org.kevoree.extra.osgi.xbee</artifactId>
+    <packaging>bundle</packaging>
+    <name>Kevoree :: Extra :: OSGI XBee</name>
+    <version>0.9</version>
+
+
+    <parent>
+        <artifactId>org.kevoree.extra.root</artifactId>
+        <groupId>org.kevoree.extra</groupId>
+        <version>1.1.0-BETA1</version>
+        <relativePath>../org.kevoree.extra.root/pom.xml</relativePath>
+    </parent>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <version>1.4.3</version>
+                <extensions>true</extensions>
+                <configuration>
+                    <instructions>
+                        <Bundle-Version>${pom.version}</Bundle-Version>
+                        <Export-Package>com.rapplogic.*</Export-Package>
+                        <Import-Package>!com.rapplogic.*,gnu.io.*</Import-Package>
+                    </instructions>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>2.3.2</version>
+                <configuration>
+                    <source>1.6</source>
+                    <target>1.6</target>
+                    <encoding>${project.build.sourceEncoding}</encoding>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-resources-plugin</artifactId>
+                <version>2.4.3</version>
+                <configuration>
+                    <encoding>${project.build.sourceEncoding}</encoding>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+    <dependencies>
+        <dependency>
+            <groupId>org.kevoree.extra</groupId>
+            <artifactId>org.kevoree.extra.osgi.rxtx</artifactId>
+            <version>2.2.0</version>
+        </dependency>
+    </dependencies>
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+</project>

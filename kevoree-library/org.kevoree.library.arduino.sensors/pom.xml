@@ -4,15 +4,16 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.kevoree.library</groupId>
     <artifactId>org.kevoree.library.arduino.sensors</artifactId>
-    <packaging>bundle</packaging>
+    <packaging>jar</packaging>
     <name>Kevoree :: Library :: Arduino :: Sensors</name>
     <version>1.1.0-BETA1</version>
 
     <parent>
-        <artifactId>org.kevoree.library.root</artifactId>
+        <artifactId>org.kevoree.library.arduino.root</artifactId>
         <groupId>org.kevoree.library</groupId>
         <version>1.1.0-BETA1</version>
         <relativePath>../org.kevoree.library.root/pom.xml</relativePath>
     </parent>
+
 
 </project>
