@@ -2,10 +2,14 @@
 <kevoree:ContainerRoot xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:kevoree="http://kevoree/1.0">
   <nodes name="dukeSensor1" typeDefinition="//@typeDefinitions.0">
     <components name="TempSensor40911417" typeDefinition="//@typeDefinitions.2">
+      <dictionary/>
       <provided portTypeRef="//@typeDefinitions.2/@provided.0"/>
       <required portTypeRef="//@typeDefinitions.2/@required.0"/>
     </components>
     <components name="Timer172103160" typeDefinition="//@typeDefinitions.4">
+      <dictionary>
+        <values attribute="//@typeDefinitions.4/@dictionaryType/@attributes.0" value="100"/>
+      </dictionary>
       <required portTypeRef="//@typeDefinitions.4/@required.0"/>
     </components>
   </nodes>
@@ -29,12 +33,21 @@
     </dictionaryType>
     <required name="tick" ref="//@typeDefinitions.3" optional="false" noDependency="false"/>
   </typeDefinitions>
-  <repositories units="//@deployUnits.0 //@deployUnits.1" url="http://maven.kevoree.org/libs-release-local"/>
+  <typeDefinitions xsi:type="kevoree:ChannelType" name="LocalMsgArduino" deployUnits="//@deployUnits.2" factoryBean="org.kevoree.library.channels.LocalMsgArduinoFactory" bean="org.kevoree.library.channels.LocalMsgArduino" startMethod="lifeCycle" stopMethod="lifeCycle"/>
+  <typeDefinitions xsi:type="kevoree:ChannelType" name="SerialCT" deployUnits="//@deployUnits.2" factoryBean="org.kevoree.library.channels.SerialCTFactory" bean="org.kevoree.library.channels.SerialCT" startMethod="lifeCycle" stopMethod="lifeCycle"/>
+  <repositories units="//@deployUnits.0 //@deployUnits.1 //@deployUnits.2" url="http://maven.kevoree.org/libs-release-local"/>
   <repositories url="http://scala-tools.org/repo-releases"/>
   <repositories url="http://maven.kevoree.org/release"/>
   <repositories url="http://repo1.maven.org/maven2"/>
   <libraries name="KevoreeNodeType" subTypes="//@typeDefinitions.0"/>
-  <libraries name="KevoreeArduino" subTypes="//@typeDefinitions.1 //@typeDefinitions.2 //@typeDefinitions.4"/>
+  <libraries name="KevoreeArduino" subTypes="//@typeDefinitions.1 //@typeDefinitions.2 //@typeDefinitions.4 //@typeDefinitions.5"/>
+  <libraries name="KevoreeArduinoJava" subTypes="//@typeDefinitions.6"/>
+  <hubs name="hub1495367792" typeDefinition="//@typeDefinitions.5"/>
+  <hubs name="hub259067590" typeDefinition="//@typeDefinitions.6"/>
+  <mBindings port="//@nodes.0/@components.1/@required.0" hub="//@hubs.0"/>
+  <mBindings port="//@nodes.0/@components.0/@provided.0" hub="//@hubs.0"/>
+  <mBindings port="//@nodes.0/@components.0/@required.0" hub="//@hubs.1"/>
   <deployUnits groupName="org.kevoree.library" unitName="org.kevoree.library.arduino.nodeType" version="1.1.0-BETA1" hashcode="201103311359445" targetNodeType="//@typeDefinitions.0"/>
   <deployUnits groupName="org.kevoree.library" unitName="org.kevoree.library.arduino.sensors" version="1.1.0-BETA1" hashcode="201103311352041" targetNodeType="//@typeDefinitions.0"/>
+  <deployUnits groupName="org.kevoree.library" unitName="org.kevoree.library.arduino.channels" version="1.1.0-BETA1" hashcode="201104011638864" targetNodeType="//@typeDefinitions.0"/>
 </kevoree:ContainerRoot>

@@ -6,6 +6,7 @@ package org.kevoree.library.sensors;
 
 import org.kevoree.annotation.*;
 import org.kevoree.framework.AbstractComponentType;
+import org.kevoree.library.arduinoNodeType.ArduinoMethodHelper;
 
 /**
  *
@@ -33,17 +34,19 @@ public class Timer extends AbstractComponentType {
     public void generateHeader(StringBuffer context) {
         context.append("#include <Metro.h>\n");
         context.append("Metro ");
-        context.append("metroTimer"+this.getName());
-        context.append("= Metro("+this.getDictionary().get("period")+");\n");
-    }    
-    
+        context.append("metroTimer" + this.getName());
+        context.append("= Metro(" + this.getDictionary().get("period") + ");\n");
+    }
+
     @Generate("loop")
     public void generateLoop(StringBuffer context) {
-        context.append("if (ledMetro.check() == 1) {\n");
-        
+        context.append("if (");
+        context.append("metroTimer" + this.getName());
+        context.append(".check() == 1) {\n");
+
         //TODO CALL REQUIRED PORT
-        context.append("");
-        
+        context.append(ArduinoMethodHelper.generateMethodNameFromComponentPort(this.getName(), "tick", org.kevoree.library.arduinoNodeType.PortUsage.required()));
+        context.append("(\"tick\");\n");
         context.append("}\n");
     }
 }

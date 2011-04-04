@@ -34,9 +34,10 @@ object KevoreeRequiredPortGenerator {
     wrapper.append("package "+portPackage+"\n");
     wrapper.append("import org.kevoree.framework.port._\n");
     wrapper.append("import scala.{Unit=>void}\n")
-    wrapper.append("class "+portName+"() extends "+ref.getRef().getName()+" with KevoreeRequiredPort {\n");
+    wrapper.append("class "+portName+"(component : "+ct.getName+") extends "+ref.getRef().getName()+" with KevoreeRequiredPort {\n");
 
     wrapper.append("def getName : String = \""+ref.getName+"\"\n")
+    wrapper.append("def getComponentName : String = component.getName \n")
 
     ref.getRef match {
       case mPT : MessagePortType => {

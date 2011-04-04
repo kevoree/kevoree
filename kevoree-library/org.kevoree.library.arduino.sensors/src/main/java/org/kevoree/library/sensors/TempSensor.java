@@ -3,6 +3,8 @@ package org.kevoree.library.sensors;
 
 import org.kevoree.annotation.*;
 import org.kevoree.framework.AbstractComponentType;
+import org.kevoree.library.arduinoNodeType.ArduinoMethodHelper;
+import org.kevoree.library.arduinoNodeType.PortUsage;
 
 @Library(name = "KevoreeArduino")
 @ComponentType
@@ -46,7 +48,6 @@ public class TempSensor extends AbstractComponentType {
         StringBuffer context = (StringBuffer) o;
         
         /* Generate code for port */
-
         context.append("    long Resistance;  \n" +
                 "    float temp;  // Dual-Purpose variable to save space.\n" +
                 "    int RawADC = analogRead(ThermistorPIN);\n" +
@@ -56,17 +57,12 @@ public class TempSensor extends AbstractComponentType {
                 "    temp = temp - 273.15;  // Convert Kelvin to Celsius  \n" +
                 "    //send to output port\n" +
                 "    String result = String(int(temp*100));");
-
-
-          //TODO DO CALL TO OUTPUT PORT
-
-        //context.append("tempOut(Temp+\"\");\n");
+        
+        //GENERATE METHOD CALL
+        context.append(ArduinoMethodHelper.generateMethodNameFromComponentPort(this.getName(), "temp", PortUsage.required())); 
+        //GENERATE PARAMETER
+        context.append("(result);\n");
 
     }
-
-
-
-    /* ARDUINO CODE */
-
 
 }

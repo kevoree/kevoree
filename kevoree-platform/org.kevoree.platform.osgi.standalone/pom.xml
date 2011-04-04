@@ -104,7 +104,11 @@
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
             <version>1.6.1</version>
-            
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>log4j-over-slf4j</artifactId>
+            <version>1.6.1</version>
         </dependency>
         <dependency>
             <groupId>ch.qos.logback</groupId>
@@ -160,6 +164,7 @@
                             <filters>
                                 <filter>
                                     <includes>
+                                        <include>org.slf4j:*</include>
                                         <include>org.ops4j.pax.url:*</include>
                                         <include>org.osgi:*</include>
                                         <include>org.apache.felix:*</include>

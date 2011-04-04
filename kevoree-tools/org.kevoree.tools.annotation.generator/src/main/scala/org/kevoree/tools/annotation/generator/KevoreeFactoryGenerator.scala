@@ -75,7 +75,7 @@ object KevoreeFactoryGenerator {
         ct.getRequired.foreach {
           ref =>
             var portName = ct.getName() + "PORT" + ref.getName();
-            wrapper.append("newcomponent.getNeededPorts().put(\"" + ref.getName() + "\",create" + portName + "())\n")
+            wrapper.append("newcomponent.getNeededPorts().put(\"" + ref.getName() + "\",create" + portName + "(newcomponent))\n")
         }
         wrapper.append("newcomponent}\n")
 
@@ -94,7 +94,7 @@ object KevoreeFactoryGenerator {
             var portName = ct.getName() + "PORT" + ref.getName();
             //        var portNameProxy = ct.getName()+"PORTPROXY"+ref.getName();
 
-            wrapper.append("def create" + portName + "() : " + portName + " ={ return new " + portName + "();}\n")
+            wrapper.append("def create" + portName + "(component : " + ct.getName + ") : " + portName + " ={ return new " + portName + "(component);}\n")
 
           //wrapper.append("public static "+portName+" create"+portName+"(){ return new "+portName+"();}\n")
           //wrapper.append("def create"+portNameProxy+"() : "+portNameProxy+" ={ return new "+portNameProxy+"();}\n")
