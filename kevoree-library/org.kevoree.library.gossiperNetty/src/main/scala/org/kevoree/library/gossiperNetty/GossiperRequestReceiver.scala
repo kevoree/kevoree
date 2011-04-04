@@ -20,7 +20,7 @@ import org.jboss.netty.handler.codec.protobuf.ProtobufEncoder
 import org.kevoree.library.gossip.Gossip
 import scala.collection.JavaConversions._
 
-class GossiperRequestReceiver(channelFragment : NettyGossiperChannel,dataManager : DataManager, port : Int, gossiperRequestSender : GossiperRequestSender, fullUDP : Boolean) extends actors.DaemonActor {
+class GossiperRequestReceiver(channelFragment : NettyGossipAbstractElement,dataManager : DataManager[_], port : Int, gossiperRequestSender : GossiperRequestSender[_], fullUDP : Boolean) extends actors.DaemonActor {
 
   var self = this
   // define attributes used to define channel to listen request
@@ -28,7 +28,7 @@ class GossiperRequestReceiver(channelFragment : NettyGossiperChannel,dataManager
   var bootstrapForRequest = new ConnectionlessBootstrap(factoryForRequest)
   bootstrapForRequest.setPipelineFactory(new ChannelPipelineFactory(){
       override def getPipeline() : ChannelPipeline = {
-        var p : ChannelPipeline = Channels.pipeline()
+        val p : ChannelPipeline = Channels.pipeline()
 		p.addLast("protobufDecoder", new ProtobufDecoder(Message.getDefaultInstance()))
 		p.addLast("protobufEncoder", new ProtobufEncoder())
 		p.addLast("handler", new GossiperRequestReceiverHandler(self))
@@ -42,7 +42,7 @@ class GossiperRequestReceiver(channelFragment : NettyGossiperChannel,dataManager
   var bootstrapForRequestTCP = new ServerBootstrap(factoryForRequestTCP)
   bootstrapForRequestTCP.setPipelineFactory(new ChannelPipelineFactory(){
       override def getPipeline() : ChannelPipeline = {
-        var p : ChannelPipeline = Channels.pipeline()
+        val p : ChannelPipeline = Channels.pipeline()
 		p.addLast("protobufDecoder", new ProtobufDecoder(Message.getDefaultInstance()))
 		p.addLast("protobufEncoder", new ProtobufEncoder())
 		p.addLast("handler", new DataSenderHandler(channelFragment,dataManager))
@@ -85,21 +85,21 @@ class GossiperRequestReceiver(channelFragment : NettyGossiperChannel,dataManager
   
   private def doGossip(message : Message, address : SocketAddress,channel : Channel) /*: Channel*/ ={
 	//println(address)
-	var responseBuilder : Message.Builder = Message.newBuilder.setDestChannelName(channelFragment.getName).setDestNodeName(channelFragment.getNodeName)
+	var responseBuilder : Message.Builder = Message.newBuilder.setDestName(channelFragment.getName).setDestNodeName(channelFragment.getNodeName)
 	
 	message.getContentClass match {
 	  case "org.kevoree.library.gossip.Gossip$VectorClockUUIDsRequest" => {
 		  //var vectorClockUUIDsBuilder = Gossip.VectorClockUUIDs.newBuilder
 		  //println(vectorClockUUIDsBuilder)
 		  //println("before dataManager.getUUIDVectorClocks")
-		  var uuidVectorClocks = dataManager.getUUIDVectorClocks
+		  val uuidVectorClocks = dataManager.getUUIDVectorClocks
 		  var vectorClockUUIDsBuilder = Gossip.VectorClockUUIDs.newBuilder
 		  //println("after dataManager.getUUIDVectorClocks")
 		  uuidVectorClocks.keySet.foreach {uuid : UUID =>
 			vectorClockUUIDsBuilder.addVectorClockUUIDs(Gossip.VectorClockUUID.newBuilder.setUuid(uuid.toString).setVector(uuidVectorClocks.get(uuid)).build)
 			if (vectorClockUUIDsBuilder.getVectorClockUUIDsCount == 1) {// it is possible to increase the number of vectorClockUUID on each message
-			  responseBuilder = Message.newBuilder.setDestChannelName(channelFragment.getName).setDestNodeName(channelFragment.getNodeName)
-			  var modelBytes = vectorClockUUIDsBuilder.build.toByteString
+			  responseBuilder = Message.newBuilder.setDestName(channelFragment.getName).setDestNodeName(channelFragment.getNodeName)
+			  val modelBytes = vectorClockUUIDsBuilder.build.toByteString
 			  responseBuilder.setContentClass(classOf[Gossip.VectorClockUUIDs].getName).setContent(modelBytes)
 			  channel.write(responseBuilder.build, address)
 			  vectorClockUUIDsBuilder = Gossip.VectorClockUUIDs.newBuilder
@@ -125,10 +125,10 @@ class GossiperRequestReceiver(channelFragment : NettyGossiperChannel,dataManager
 		 println("response of secondStep")
 		 }*/
 	  case "org.kevoree.library.gossip.Gossip$UUIDDataRequest" => {
-		  var uuidDataRequest = Gossip.UUIDDataRequest.parseFrom(message.getContent)
-		  var data = dataManager.getData(UUID.fromString(uuidDataRequest.getUuid))
-		  var localObjJSON = new RichJSONObject(data._2);
-		  var res = localObjJSON.toJSON;
+		  val uuidDataRequest = Gossip.UUIDDataRequest.parseFrom(message.getContent)
+		  val data = dataManager.getData(UUID.fromString(uuidDataRequest.getUuid))
+		  val localObjJSON = new RichJSONObject(data._2);
+		  val res = localObjJSON.toJSON;
 		  var modelBytes = ByteString.copyFromUtf8(res);
 		
 		  modelBytes = Gossip.VersionedModel.newBuilder.setUuid(uuidDataRequest.getUuid).setVector(data._1).setModel(modelBytes).build.toByteString
@@ -137,14 +137,15 @@ class GossiperRequestReceiver(channelFragment : NettyGossiperChannel,dataManager
 		  //println("VersionedModel sent")
 		}
 	  case "org.kevoree.library.gossip.Gossip$UpdatedValueNotification" => {
-		  channelFragment.getOtherFragments.find (fragment => fragment.getName == message.getDestChannelName) match {
-			case Some(c) => {
-				gossiperRequestSender.initGossipAction(c.getNodeName)
+		  //channelFragment.getOtherFragments.find (fragment => fragment.getName == message.getDestNodeName) match {
+			//case Some(c) => {
+				//gossiperRequestSender.initGossipAction(c.getNodeName)
+				gossiperRequestSender.initGossipAction(message.getDestNodeName)
 				//channel.close
 				//println("requestReceiver initGossip")
-			  }
-			case None =>
-		  }
+			  //}
+			//case None =>
+		  //}
 		}
 	}
 	//channel.close.awaitUninterruptibly

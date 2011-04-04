@@ -29,7 +29,7 @@ import org.kevoree.library.gossiper.version.Occured
 
 import scala.collection.JavaConversions._
 
-class GossiperRequestSender(timeout : java.lang.Long,channelFragment : NettyGossiperChannel,dataManager : DataManager, fullUDP : Boolean) extends actors.DaemonActor {
+class GossiperRequestSender[T](timeout : java.lang.Long,channelFragment : NettyGossipAbstractElement,dataManager : DataManager[T], fullUDP : Boolean,garbage : Boolean,clazz : Class[_]) extends actors.DaemonActor {
 
   // define attributes used to define channel to send gossip request
   var factory =  new NioDatagramChannelFactory(Executors.newCachedThreadPool())
@@ -37,7 +37,7 @@ class GossiperRequestSender(timeout : java.lang.Long,channelFragment : NettyGoss
   var self = this
   bootstrap.setPipelineFactory(new ChannelPipelineFactory(){
       override def getPipeline() : ChannelPipeline = {
-        var p : ChannelPipeline = Channels.pipeline()
+        val p : ChannelPipeline = Channels.pipeline()
 		p.addLast("protobufDecoder", new ProtobufDecoder(Message.getDefaultInstance()))
 		p.addLast("protobufEncoder", new ProtobufEncoder())
 		p.addLast("handler", new GossiperRequestSenderHandler(self))
@@ -110,7 +110,7 @@ class GossiperRequestSender(timeout : java.lang.Long,channelFragment : NettyGoss
 	 channel = channelFuture.awaitUninterruptibly().getChannel()*/
 	
 	if (peer != null && peer != "") {
-	  var messageBuilder : Message.Builder = Message.newBuilder.setDestChannelName(channelFragment.getName).setDestNodeName(channelFragment.getNodeName)
+	  val messageBuilder : Message.Builder = Message.newBuilder.setDestName(channelFragment.getName).setDestNodeName(channelFragment.getNodeName)
 	  messageBuilder.setContentClass(classOf[VectorClockUUIDsRequest].getName).setContent(VectorClockUUIDsRequest.newBuilder.build.toByteString)
 	  //println("initGossip = " + channelFragment.getAddress(peer) + ":" + channelFragment.parsePortNumber(peer))
 	  channel.write(messageBuilder.build,new InetSocketAddress(channelFragment.getAddress(peer), channelFragment.parsePortNumber(peer)));
@@ -123,29 +123,31 @@ class GossiperRequestSender(timeout : java.lang.Long,channelFragment : NettyGoss
 	//println(message.getContentClass)
 	if (message.getContentClass.equals(classOf[VectorClockUUIDs].getName)) {
 	 
-	  var remoteVectorClockUUIDs = VectorClockUUIDs.parseFrom(message.getContent)
+	  val remoteVectorClockUUIDs = VectorClockUUIDs.parseFrom(message.getContent)
 	  if(remoteVectorClockUUIDs!=null){
 		/* check for new uuid values*/
 		remoteVectorClockUUIDs.getVectorClockUUIDsList.foreach{vectorClockUUID=>
-		  var uuid = UUID.fromString(vectorClockUUID.getUuid)
+		  val uuid = UUID.fromString(vectorClockUUID.getUuid)
 		  if(dataManager.getUUIDVectorClock(uuid)==null){
 			println("add empty local vectorClock with the uuid if it is not already defined")
 			dataManager.setData(uuid, 
-								Tuple2[VectorClock,org.kevoree.framework.message.Message](VectorClock.newBuilder.setTimestamp(System.currentTimeMillis).build,null))
+								Tuple2[VectorClock,T](VectorClock.newBuilder.setTimestamp(System.currentTimeMillis).build,null.asInstanceOf[T]))
 		  } 
 		}
-		/* check for deleted uuid values */
-		var localUUIDs = dataManager.getUUIDVectorClocks
-		localUUIDs.keySet.foreach{key=>
-		  if (!remoteVectorClockUUIDs.getVectorClockUUIDsList.contains(key)) {
-			if(dataManager.getUUIDVectorClock(key).getEntiesList.exists(e=> e.getNodeID == message.getDestChannelName)){
-			  //ALREADY SEEN VECTOR CLOCK - GARBAGE IT
-			  println("ALREADY SEEN VECTOR CLOCK - GARBAGE IT")
-			  dataManager.removeData(key)
-			} /*else {
-			   //NOOP - UNCOMPLETE VECTOR CLOCK
-			   }*/
-		  }	 
+		if (garbage) {
+		  /* check for deleted uuid values */
+		  val localUUIDs = dataManager.getUUIDVectorClocks
+		  localUUIDs.keySet.foreach{key=>
+			if (!remoteVectorClockUUIDs.getVectorClockUUIDsList.contains(key)) {
+			  if(dataManager.getUUIDVectorClock(key).getEntiesList.exists(e=> e.getNodeID == message.getDestName)){
+				//ALREADY SEEN VECTOR CLOCK - GARBAGE IT
+				println("ALREADY SEEN VECTOR CLOCK - GARBAGE IT")
+				dataManager.removeData(key)
+			  } /*else {
+				 //NOOP - UNCOMPLETE VECTOR CLOCK
+				 }*/
+			}	 
+		  }
 		}
 	  }
 	  
@@ -153,9 +155,9 @@ class GossiperRequestSender(timeout : java.lang.Long,channelFragment : NettyGoss
 	  remoteVectorClockUUIDs.getVectorClockUUIDsList.foreach {
 		remoteVectorClockUUID =>
 		
-		var uuid = UUID.fromString(remoteVectorClockUUID.getUuid)
-		var remoteVectorClock = remoteVectorClockUUID.getVector
-		var occured = VersionUtils.compare(dataManager.getUUIDVectorClock(uuid), remoteVectorClock)
+		val uuid = UUID.fromString(remoteVectorClockUUID.getUuid)
+		val remoteVectorClock = remoteVectorClockUUID.getVector
+		val occured = VersionUtils.compare(dataManager.getUUIDVectorClock(uuid), remoteVectorClock)
 		occured match {
 		  case Occured.AFTER=> {}
 		  case Occured.BEFORE=> {
@@ -166,87 +168,88 @@ class GossiperRequestSender(timeout : java.lang.Long,channelFragment : NettyGoss
 			   messageBuilder.setContentClass(classOf[UUIDDataRequest].getName).setContent(UUIDDataRequest.newBuilder.setUuid(uuid.toString).build.toByteString)
 			   channel.write(messageBuilder.build, address);*/
 			 
-			  //println("initSecondStep write")
+			   //println("initSecondStep write")
+			   }
+			   case Occured.CONCURRENTLY=> {
+					//updateValue(message.getDestChannelName,uuid,remoteVectorClock)
+					//var channel = bootstrap.bind(new InetSocketAddress(0)).asInstanceOf[DatagramChannel]
+					askForData(uuid,message.getDestNodeName,address)
+					/*var messageBuilder : Message.Builder = Message.newBuilder.setDestChannelName(channelFragment.getName)
+					 messageBuilder.setContentClass(classOf[UUIDDataRequest].getName).setContent(UUIDDataRequest.newBuilder.setUuid(uuid.toString).build.toByteString)
+					 channel.write(messageBuilder.build, address);*/
+					//println("initSecondStep write")
+				  }
+				case _ => println("unexpected match into initSecondStep")
+			  }
 			}
-		  case Occured.CONCURRENTLY=> {
-			  //updateValue(message.getDestChannelName,uuid,remoteVectorClock)
-			  //var channel = bootstrap.bind(new InetSocketAddress(0)).asInstanceOf[DatagramChannel]
-			  askForData(uuid,message.getDestNodeName,address)
-			  /*var messageBuilder : Message.Builder = Message.newBuilder.setDestChannelName(channelFragment.getName)
-			   messageBuilder.setContentClass(classOf[UUIDDataRequest].getName).setContent(UUIDDataRequest.newBuilder.setUuid(uuid.toString).build.toByteString)
-			   channel.write(messageBuilder.build, address);*/
-			  //println("initSecondStep write")
-			}
-		  case _ => println("unexpected match into initSecondStep")
+		} 
+	  }
+  
+	  private def askForData(uuid : UUID, remoteNodeName : String, address : SocketAddress) ={
+		val messageBuilder : Message.Builder = Message.newBuilder.setDestName(channelFragment.getName).setDestNodeName(channelFragment.getNodeName)
+		messageBuilder.setContentClass(classOf[UUIDDataRequest].getName).setContent(UUIDDataRequest.newBuilder.setUuid(uuid.toString).build.toByteString)
+		if (fullUDP) {
+		  channel.write(messageBuilder.build, address)
+		} else {
+		  /*println("TCP sending ...")
+		   // FIXME maybe we launch too many data request and channel will be destroyed before the end of the communication
+		   var channelFuture = bootstrapTCP.connect(new InetSocketAddress(channelFragment.getAddress(remoteNodeName),channelFragment.parsePortNumber(remoteNodeName))).asInstanceOf[ChannelFuture]
+		   var channel = channelFuture.awaitUninterruptibly.getChannel
+		   if (!channelFuture.isSuccess()) {
+		   channelFuture.getCause().printStackTrace
+		   bootstrapTCP.releaseExternalResources
+		   } else {
+		   var future = channel.write(messageBuilder.build) 
+		   //future.awaitUninterruptibly
+		   //channel.getCloseFuture.awaitUninterruptibly
+		   //future.addListener(ChannelFutureListener.CLOSE)
+		   //channel.close.awaitUninterruptibly
+		   println("TCP sent")
+		   }*/
+		  askForDataTCPActor.askForDataAction(uuid,remoteNodeName)
 		}
 	  }
-	} 
-  }
   
-  private def askForData(uuid : UUID, remoteNodeName : String, address : SocketAddress) ={
-	var messageBuilder : Message.Builder = Message.newBuilder.setDestChannelName(channelFragment.getName).setDestNodeName(channelFragment.getNodeName)
-	messageBuilder.setContentClass(classOf[UUIDDataRequest].getName).setContent(UUIDDataRequest.newBuilder.setUuid(uuid.toString).build.toByteString)
-	if (fullUDP) {
-	  channel.write(messageBuilder.build, address)
-	} else {
-	  /*println("TCP sending ...")
-	  // FIXME maybe we launch too many data request and channel will be destroyed before the end of the communication
-	  var channelFuture = bootstrapTCP.connect(new InetSocketAddress(channelFragment.getAddress(remoteNodeName),channelFragment.parsePortNumber(remoteNodeName))).asInstanceOf[ChannelFuture]
-	  var channel = channelFuture.awaitUninterruptibly.getChannel
-	  if (!channelFuture.isSuccess()) {
-		channelFuture.getCause().printStackTrace
-		bootstrapTCP.releaseExternalResources
-	  } else {
-		var future = channel.write(messageBuilder.build) 
-		//future.awaitUninterruptibly
-		//channel.getCloseFuture.awaitUninterruptibly
-		//future.addListener(ChannelFutureListener.CLOSE)
-		//channel.close.awaitUninterruptibly
-		println("TCP sent")
-	  }*/
-	 askForDataTCPActor.askForDataAction(uuid,remoteNodeName)
-	}
-  }
-  
-  private def endGossip(message : Message) ={
-	println("endGossip")
-	if (message.getContentClass.equals(classOf[VersionedModel].getName)) {
-	  println("VersionModel")
-	  var versionedModel = VersionedModel.parseFrom(message.getContent)
-	  var uuid = versionedModel.getUuid
-	  var vectorClock = versionedModel.getVector
-	  var data = RichString(versionedModel.getModel.toStringUtf8).fromJSON(classOf[org.kevoree.framework.message.Message])
+	  private def endGossip(message : Message) ={
+		println("endGossip")
+		if (message.getContentClass.equals(classOf[VersionedModel].getName)) {
+		  println("VersionModel")
+		  val versionedModel = VersionedModel.parseFrom(message.getContent)
+		  val uuid = versionedModel.getUuid
+		  var vectorClock = versionedModel.getVector
+		  val data : T = RichString(versionedModel.getModel.toStringUtf8).fromJSON(clazz).asInstanceOf[T]
 	 
-	  dataManager.setData(UUID.fromString(uuid), Tuple2[VectorClock,org.kevoree.framework.message.Message](vectorClock,data))
-	  channelFragment.localDelivery(data) 
+		  dataManager.setData(UUID.fromString(uuid), Tuple2[VectorClock,T](vectorClock,data))
+		  channelFragment.localNotification(data) 
 	  
-	  // UPDATE clock
-	  vectorClock.getEntiesList.find(p=> p.getNodeID == channelFragment.getNodeName) match {
-		case Some(p)=> //NOOP
-		case None => {
-			var newenties = ClockEntry.newBuilder.setNodeID(channelFragment.getNodeName).setTimestamp(System.currentTimeMillis).setVersion(1).build
-			vectorClock = VectorClock.newBuilder(vectorClock).addEnties(newenties).setTimestamp(System.currentTimeMillis).build
+		  // UPDATE clock
+		  vectorClock.getEntiesList.find(p=> p.getNodeID == channelFragment.getNodeName) match {
+			case Some(p)=> //NOOP
+			case None => {
+				val newenties = ClockEntry.newBuilder.setNodeID(channelFragment.getNodeName).setTimestamp(System.currentTimeMillis).setVersion(1).build
+				vectorClock = VectorClock.newBuilder(vectorClock).addEnties(newenties).setTimestamp(System.currentTimeMillis).build
+			  }
 		  }
-	  }
 	  
-	  var newMerged = dataManager.mergeClock(UUID.fromString(uuid), vectorClock)
+		  val newMerged = dataManager.mergeClock(UUID.fromString(uuid), vectorClock)
     
-	  //CHECK FOR GARBAGE
-	  if(newMerged.getEnties(0).getNodeID.equals(channelFragment.getNodeName)){
-		println("something may be garbage ...")
-		var allPresent = channelFragment.getAllPeers.forall(peer=>{
-			newMerged.getEntiesList.exists(e=> e.getNodeID == peer && e.getVersion > 0)
-		  })
-		if(allPresent){
-		  //THIS NODE IS MASTER ON THE MSG
-		  //ALL REMOTE NODE IN MY !PRESENT! M@R has rec a copy
-		  //DELETING
-		  //
-		  println("Garbage ="+uuid)
-		  dataManager.removeData(UUID.fromString(uuid))
+		  //CHECK FOR GARBAGE
+		  if (garbage) {
+			if(newMerged.getEnties(0).getNodeID.equals(channelFragment.getNodeName)){
+			  val allPresent = channelFragment.getAllPeers.forall(peer=>{
+				  newMerged.getEntiesList.exists(e=> e.getNodeID == peer && e.getVersion > 0)
+				})
+			  if(allPresent){
+				//THIS NODE IS MASTER ON THE MSG
+				//ALL REMOTE NODE IN MY !PRESENT! M@R has rec a copy
+				//DELETING
+				//
+				println("Garbage ="+uuid)
+				dataManager.removeData(UUID.fromString(uuid))
+			  }
+			}
+		  }
 		}
+		//channel.close.awaitUninterruptibly
 	  }
 	}
-	//channel.close.awaitUninterruptibly
-  }
-}

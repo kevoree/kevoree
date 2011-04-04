@@ -1,5 +1,7 @@
-package org.kevoree.library.gossiperNetty;
+package org.kevoree.library.gossiperNetty.channel;
 
+import org.kevoree.library.gossiperNetty.NettyGossipAbstractElement;
+import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -17,6 +19,9 @@ import org.kevoree.framework.KevoreeChannelFragment;
 import org.kevoree.framework.KevoreePlatformHelper;
 import org.kevoree.framework.NoopChannelFragmentSender;
 import org.kevoree.framework.message.Message;
+import org.kevoree.library.gossiperNetty.DataManager;
+import org.kevoree.library.gossiperNetty.DataManagerForChannel;
+import org.kevoree.library.gossiperNetty.GossiperActor;
 import org.kevoree.library.version.Version.ClockEntry;
 import org.kevoree.library.version.Version.VectorClock;
 import org.osgi.framework.Bundle;
@@ -37,10 +42,10 @@ import scala.Tuple2;
 	@DictionaryAttribute(name = "FullUDP", defaultValue = "true", optional = true)
 })
 @ChannelTypeFragment
-public class NettyGossiperChannel extends AbstractChannelFragment {
+public class NettyGossiperChannel extends AbstractChannelFragment implements NettyGossipAbstractElement {
 
-	private DataManager dataManager = null;//new DataManager();
-	private GossiperActor actor = null;
+	private DataManager<Message> dataManager = null;//new DataManager();
+	private GossiperActor<Message> actor = null;
 	private ServiceReference sr;
 	private KevoreeModelHandlerService modelHandlerService = null;
 	private Logger logger = LoggerFactory.getLogger(NettyGossiperChannel.class);
@@ -51,16 +56,15 @@ public class NettyGossiperChannel extends AbstractChannelFragment {
 		sr = bundle.getBundleContext().getServiceReference(KevoreeModelHandlerService.class.getName());
 		modelHandlerService = (KevoreeModelHandlerService) bundle.getBundleContext().getService(sr);
 
-		dataManager = new DataManager();
+		dataManager = new DataManagerForChannel();
 
-		actor = new GossiperActor(Long.parseLong(this.getDictionary().get("interval").toString()), this,
+		actor = new GossiperActor<Message>(Long.parseLong((String)this.getDictionary().get("interval")),
+				this,
 				dataManager,
 				parsePortNumber(getNodeName()),
-				parseFullUDPParameter());
-
-		// TODO continue
-
-		//START SERVER IF NECESSARY
+				parseFullUDPParameter(),
+				true,
+				Message.class);
 	}
 
 	@Stop
@@ -81,14 +85,13 @@ public class NettyGossiperChannel extends AbstractChannelFragment {
 
 	@Update
 	public void updateGossiperChannel() {
-		/*stopGossiperChannel();
-		startGossiperChannel();*/
+		// TODO how to update Gossiper Channel
 	}
 
 	@Override
 	public Object dispatch(Message msg) {
 		//Local delivery
-		localDelivery(msg);
+		localNotification(msg);
 
 		//CREATE NEW MESSAGE
 		long timestamp = System.currentTimeMillis();
@@ -107,12 +110,16 @@ public class NettyGossiperChannel extends AbstractChannelFragment {
 		return new NoopChannelFragmentSender();
 	}
 
-	public void localDelivery(Message o) {
-		for (org.kevoree.framework.KevoreePort p : getBindedPorts()) {
-			forward(p, o);
+	@Override
+	public void localNotification(Object o) {
+		if (o instanceof Message) {
+			for (org.kevoree.framework.KevoreePort p : getBindedPorts()) {
+				forward(p, (Message) o);
+			}
 		}
 	}
 
+	@Override
 	public List<String> getAllPeers() {
 		List<String> peers = new ArrayList<String>();
 		for (KevoreeChannelFragment fragment : getOtherFragments()) {
@@ -121,6 +128,7 @@ public class NettyGossiperChannel extends AbstractChannelFragment {
 		return peers;
 	}
 
+	@Override
 	public String getAddress(String remoteNodeName) {
 		String ip = KevoreePlatformHelper.getProperty(modelHandlerService.getLastModel(), remoteNodeName, org.kevoree.framework.Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP());
 		if (ip == null || ip.equals("")) {
@@ -128,13 +136,13 @@ public class NettyGossiperChannel extends AbstractChannelFragment {
 		}
 		return ip;
 	}
-	
 	private String name = "[A-Za-z0-9_]*";
 	private String portNumber = "(65535|5[0-9]{4}|4[0-9]{4}|3[0-9]{4}|2[0-9]{4}|1[0-9]{4}|[0-9]{0,4})";
 	private String separator = ",";
 	private String affectation = "=";
 	private String portPropertyRegex = "((" + name + affectation + portNumber + ")" + separator + ")*(" + name + affectation + portNumber + ")";
 
+	@Override
 	public int parsePortNumber(String nodeName) {
 		String portProperty = this.getDictionary().get("port").toString();
 		if (portProperty.matches(portPropertyRegex)) {
@@ -151,11 +159,24 @@ public class NettyGossiperChannel extends AbstractChannelFragment {
 		return 0;
 	}
 
-	private boolean parseFullUDPParameter() {
+	@Override
+	public boolean parseFullUDPParameter() {
 		if (this.getDictionary().get("FullUDP").toString().equals("true")) {
 			return true;
 		}
 		return false;
 
+	}
+
+	@Override
+	public String selectPeer() {
+		int othersSize = this.getOtherFragments().size();
+		if (othersSize > 0) {
+			SecureRandom diceRoller = new SecureRandom();
+			int peerIndex = diceRoller.nextInt(othersSize);
+			return this.getOtherFragments().get(peerIndex).getNodeName();
+		} else {
+			return "";
+		}
 	}
 }

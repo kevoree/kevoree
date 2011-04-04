@@ -67,7 +67,7 @@ class GossiperChannelActor(selfNodeName : String,timeout : java.lang.Long,group 
   }
   
   private def doGossip(targetNodeName : String)={
-    println("doGossip="+targetNodeName)
+    //println("doGossip="+targetNodeName)
     
     if(targetNodeName!= null && targetNodeName != ""){
        
@@ -95,7 +95,7 @@ class GossiperChannelActor(selfNodeName : String,timeout : java.lang.Long,group 
         }
       }
       
-      println("recUUID="+clocksActor.getUUIDS.mkString(","))
+      //println("recUUID="+clocksActor.getUUIDS.mkString(","))
       
         
       //FOREACH UUIs
@@ -130,7 +130,7 @@ class GossiperChannelActor(selfNodeName : String,timeout : java.lang.Long,group 
       }
     }
     //UPDATE CLOCK
-    println("msg distributed")
+    //println("msg distributed")
     
     finalVectorClock.getEntiesList.find(p=> p.getNodeID == selfNodeName) match {
       case Some(p)=> //NOOP
@@ -141,7 +141,7 @@ class GossiperChannelActor(selfNodeName : String,timeout : java.lang.Long,group 
     }
     
     var newMerged = clocksActor.merge(uuid, finalVectorClock)
-    println("msg merged ")
+    //println("msg merged ")
     implicit def vectorDebug(vc : VectorClock) = VectorClockAspect(vc) 
     newMerged.printDebug
     
@@ -155,7 +155,7 @@ class GossiperChannelActor(selfNodeName : String,timeout : java.lang.Long,group 
         //ALL REMOTE NODE IN MY !PRESENT! M@R has rec a copy
         //DELETING
         //
-        println("Garbage ="+uuid)
+        //println("Garbage ="+uuid)
         clocksActor.remove(uuid)
       }
     }

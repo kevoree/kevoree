@@ -10,13 +10,11 @@ import org.jboss.netty.channel.socket.DatagramChannel
 import org.jboss.netty.channel.socket.nio.NioDatagramChannelFactory
 import org.jboss.netty.handler.codec.protobuf.ProtobufDecoder
 import org.jboss.netty.handler.codec.protobuf.ProtobufEncoder
-import org.jboss.netty.handler.codec.protobuf.ProtobufVarint32FrameDecoder
-import org.jboss.netty.handler.codec.protobuf.ProtobufVarint32LengthFieldPrepender
 import org.kevoree.library.gossip.Gossip.UpdatedValueNotification
 import org.kevoree.library.gossiperNetty.api.msg.KevoreeMessage.Message
 import scala.collection.JavaConversions._
 
-class NotificationRequestSender(channelFragment : NettyGossiperChannel) extends actors.DaemonActor {
+class NotificationRequestSender(channelFragment : NettyGossipAbstractElement) extends actors.DaemonActor {
 
   
   // define attributes used to define channel to send notification message
@@ -24,9 +22,9 @@ class NotificationRequestSender(channelFragment : NettyGossiperChannel) extends 
   var bootstrapNotificationMessage = new ConnectionlessBootstrap(factoryNotificationMessage)
   bootstrapNotificationMessage.setPipelineFactory(new ChannelPipelineFactory(){
       override def getPipeline() : ChannelPipeline = {
-        var p : ChannelPipeline = Channels.pipeline()
+        val p : ChannelPipeline = Channels.pipeline()
 		//p.addLast("frameDecoder", new ProtobufVarint32FrameDecoder());
-		p.addLast("protobufDecoder", new ProtobufDecoder(Message.getDefaultInstance()))
+		p.addLast("protobufDecoder", new ProtobufDecoder(Message.getDefaultInstance))
 		//p.addLast("frameEncoder", new ProtobufVarint32LengthFieldPrepender());
 		p.addLast("protobufEncoder", new ProtobufEncoder())
 		return p
@@ -73,7 +71,7 @@ class NotificationRequestSender(channelFragment : NettyGossiperChannel) extends 
   
   private def doNotifyPeers() ={
 	channelFragment.getAllPeers.foreach { peer =>
-	  var messageBuilder : Message.Builder = Message.newBuilder.setDestChannelName(channelFragment.getName).setDestNodeName(channelFragment.getNodeName)
+	  val messageBuilder : Message.Builder = Message.newBuilder.setDestName(channelFragment.getName).setDestNodeName(channelFragment.getNodeName)
 	  messageBuilder.setContentClass(classOf[UpdatedValueNotification].getName).setContent(UpdatedValueNotification.newBuilder.build.toByteString)
 	  //println("sending notification ...")
 	  //println(channelFragment.getAddress(peer) + ":" + channelFragment.parsePortNumber(peer))

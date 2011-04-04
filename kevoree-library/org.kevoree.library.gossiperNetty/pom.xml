@@ -16,13 +16,19 @@
 		<relativePath>../org.kevoree.library.root/pom.xml</relativePath>
 	</parent>
 
+<!--
+    <properties>
+        <protoc.path>/opt/local/bin/protoc</protoc.path>
+    </properties>
+    -->
+
 	<build>
 		<plugins>
 			<plugin>
 				<groupId>com.google.protobuf.tools</groupId>
 				<artifactId>maven-protoc-plugin</artifactId>
 				<configuration>
-					<protocExecutable>/opt/local/bin/protoc</protocExecutable>
+					<protocExecutable>${protoc.path}</protocExecutable>
 				</configuration>
 				<executions>
 					<execution>
