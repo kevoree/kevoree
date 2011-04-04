@@ -242,7 +242,7 @@ class AssembliesTest extends MergerTestSuiteHelper  {
   }
 
   @Test def verifyServiceChanelRemoved() {
-    var mergedModel = component.merge(model("assemblies/PlusServiceChanel.art2"), model("assemblies/base-assembly.art2"))
+    val mergedModel = component.merge(model("assemblies/PlusServiceChanel.art2"), model("assemblies/base-assembly.art2"))
     mergedModel testSave ("assemblies","MinusServiceChanelMerged.art2")
 
     mergedModel.getHubs.find(hub => hub.getName == "hub-0") match {
