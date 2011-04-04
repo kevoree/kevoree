@@ -1,6 +1,29 @@
-/* commennt */
-tblock{
+/* file header */
+tblock {
 
-createComponentType fakeLight2
+/* this file contain KevScript syntax */
 
-}
+ //Test Type creation 
+ createComponentType myNewComponentType
+ createChannelType myNewChannelType
+ 
+ //Test node creation
+ addNode myArduinoNode,myArduinoNode2 : ArduinoNode
+ addNode myJavaNode : JavaSENode
+ removeNode myArduinoNode2
+ 
+ //Test instance creation
+ addComponent myNewComponent@myJavaNode : myNewComponentType { prop1="toto",timeout="3000"}
+ addChannel myNewChannel : myNewChannelType { timeout="3000"}
+ addChannel myNewChannel2 : myNewChannelType
+ addChannel myNewChannel3 : myNewChannelType
+ removeChannel myNewChannel3
+ addComponent myNewComponent2@myJavaNode : myNewComponentType
+ removeComponent myNewComponent2
+ 
+ //Test bindings
+ bind myNewComponent.on@myJavaNode => myNewChannel
+ bind myNewComponent.off@myJavaNode => myNewChannel2
+ unbind myNewComponent.off@myJavaNode => myNewChannel2
+ 
+ }

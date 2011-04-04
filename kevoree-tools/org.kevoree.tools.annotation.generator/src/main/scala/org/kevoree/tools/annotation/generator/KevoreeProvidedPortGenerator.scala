@@ -43,6 +43,7 @@ object KevoreeProvidedPortGenerator {
     wrapper.append("class "+portName+"(component : "+ct.getName+") extends "+ref.getRef().getName()+" with KevoreeProvidedPort {\n");
 
     wrapper.append("def getName : String = \""+ref.getName+"\"\n")
+    wrapper.append("def getComponentName : String = component.getName \n")
 
     ref.getRef match {
       case mPT : MessagePortType => {
