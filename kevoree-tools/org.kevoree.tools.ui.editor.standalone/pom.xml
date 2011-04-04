@@ -157,7 +157,7 @@
                         </inclusions>
                     </assembly>
                     <libs>
-                        <lib>&lt;java.home&gt;/../Classes/classes.jar</lib>
+                       <!-- <lib>&lt;java.home&gt;/../Classes/classes.jar</lib>-->
                     </libs>
                 </configuration>
             </plugin>
