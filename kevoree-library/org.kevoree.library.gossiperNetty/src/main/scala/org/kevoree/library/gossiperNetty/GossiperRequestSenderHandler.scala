@@ -14,7 +14,7 @@ class GossiperRequestSenderHandler(gossiperRequestSender : GossiperRequestSender
   private var logger = LoggerFactory.getLogger(classOf[GossiperRequestSenderHandler])
   
   override def messageReceived(ctx:ChannelHandlerContext, e:MessageEvent)={
-	var message = e.getMessage.asInstanceOf[Message]
+	val message = e.getMessage.asInstanceOf[Message]
 	println("response received" + message.getContentClass)
 	if (message.getContentClass.equals(classOf[VectorClockUUIDs].getName)) {
 	  //var vectorClockUUIDs = RichString(message.getContent.toStringUtf8).fromJSON(classOf[VectorClockUUIDs])
@@ -32,7 +32,7 @@ class GossiperRequestSenderHandler(gossiperRequestSender : GossiperRequestSender
   override def exceptionCaught(ctx:ChannelHandlerContext, e:ExceptionEvent)={
     //NOOP
 	//println("Exception GossiperRequestSenderHandler")
-	logger.error("GossiperRequestSenderHandler\n" + e.getCause.getStackTraceString)
+	logger.error(this.getClass + "\n" + e.getCause.getMessage + "\n" + e.getCause.getStackTraceString)
 	//e.getChannel.close.awaitUninterruptibly
   }
 }

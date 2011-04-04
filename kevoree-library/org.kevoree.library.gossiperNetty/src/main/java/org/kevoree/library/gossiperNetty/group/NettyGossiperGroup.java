@@ -43,8 +43,8 @@ import org.slf4j.LoggerFactory;
 })
 public class NettyGossiperGroup extends AbstractGroupType implements NettyGossipAbstractElement {
 
-	private DataManager<String> dataManager = null;//new DataManager();
-	private GossiperActor<String> actor = null;
+	private DataManager<byte[]> dataManager = null;//new DataManager();
+	private GossiperActor<byte[]> actor = null;
 	private ServiceReference sr;
 	private KevoreeModelHandlerService modelHandlerService = null;
 	private Logger logger = LoggerFactory.getLogger(NettyGossiperChannel.class);
@@ -57,12 +57,7 @@ public class NettyGossiperGroup extends AbstractGroupType implements NettyGossip
 
 		dataManager = new DataManagerForGroup(this.getName(), this.getNodeName(), modelHandlerService);
 
-		actor = new GossiperActor<String>(Long.parseLong(this.getDictionary().get("interval").toString()), this,
-				dataManager,
-				parsePortNumber(getNodeName()),
-				parseFullUDPParameter(),
-				false,
-				String.class);
+		actor = new GossiperActor<byte[]>(Long.parseLong((String)this.getDictionary().get("interval")),this, dataManager, parsePortNumber(getNodeName()), parseFullUDPParameter(), false, byte[].class);
 	}
 
 	@Stop
@@ -136,10 +131,7 @@ public class NettyGossiperGroup extends AbstractGroupType implements NettyGossip
 
 	@Override
 	public boolean parseFullUDPParameter() {
-		if (this.getDictionary().get("FullUDP").toString().equals("true")) {
-			return true;
-		}
-		return false;
+		return this.getDictionary().get("FullUDP").toString().equals("true");
 	}
 
 	@Override

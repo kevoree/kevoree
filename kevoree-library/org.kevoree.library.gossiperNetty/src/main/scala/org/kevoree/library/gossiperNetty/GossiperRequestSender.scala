@@ -37,7 +37,7 @@ class GossiperRequestSender[T](timeout : java.lang.Long,channelFragment : NettyG
   var self = this
   bootstrap.setPipelineFactory(new ChannelPipelineFactory(){
       override def getPipeline() : ChannelPipeline = {
-        var p : ChannelPipeline = Channels.pipeline()
+        val p : ChannelPipeline = Channels.pipeline()
 		p.addLast("protobufDecoder", new ProtobufDecoder(Message.getDefaultInstance()))
 		p.addLast("protobufEncoder", new ProtobufEncoder())
 		p.addLast("handler", new GossiperRequestSenderHandler(self))
@@ -110,7 +110,7 @@ class GossiperRequestSender[T](timeout : java.lang.Long,channelFragment : NettyG
 	 channel = channelFuture.awaitUninterruptibly().getChannel()*/
 	
 	if (peer != null && peer != "") {
-	  var messageBuilder : Message.Builder = Message.newBuilder.setDestName(channelFragment.getName).setDestNodeName(channelFragment.getNodeName)
+	  val messageBuilder : Message.Builder = Message.newBuilder.setDestName(channelFragment.getName).setDestNodeName(channelFragment.getNodeName)
 	  messageBuilder.setContentClass(classOf[VectorClockUUIDsRequest].getName).setContent(VectorClockUUIDsRequest.newBuilder.build.toByteString)
 	  //println("initGossip = " + channelFragment.getAddress(peer) + ":" + channelFragment.parsePortNumber(peer))
 	  channel.write(messageBuilder.build,new InetSocketAddress(channelFragment.getAddress(peer), channelFragment.parsePortNumber(peer)));
@@ -123,11 +123,11 @@ class GossiperRequestSender[T](timeout : java.lang.Long,channelFragment : NettyG
 	//println(message.getContentClass)
 	if (message.getContentClass.equals(classOf[VectorClockUUIDs].getName)) {
 	 
-	  var remoteVectorClockUUIDs = VectorClockUUIDs.parseFrom(message.getContent)
+	  val remoteVectorClockUUIDs = VectorClockUUIDs.parseFrom(message.getContent)
 	  if(remoteVectorClockUUIDs!=null){
 		/* check for new uuid values*/
 		remoteVectorClockUUIDs.getVectorClockUUIDsList.foreach{vectorClockUUID=>
-		  var uuid = UUID.fromString(vectorClockUUID.getUuid)
+		  val uuid = UUID.fromString(vectorClockUUID.getUuid)
 		  if(dataManager.getUUIDVectorClock(uuid)==null){
 			println("add empty local vectorClock with the uuid if it is not already defined")
 			dataManager.setData(uuid, 
@@ -136,7 +136,7 @@ class GossiperRequestSender[T](timeout : java.lang.Long,channelFragment : NettyG
 		}
 		if (garbage) {
 		  /* check for deleted uuid values */
-		  var localUUIDs = dataManager.getUUIDVectorClocks
+		  val localUUIDs = dataManager.getUUIDVectorClocks
 		  localUUIDs.keySet.foreach{key=>
 			if (!remoteVectorClockUUIDs.getVectorClockUUIDsList.contains(key)) {
 			  if(dataManager.getUUIDVectorClock(key).getEntiesList.exists(e=> e.getNodeID == message.getDestName)){
@@ -155,9 +155,9 @@ class GossiperRequestSender[T](timeout : java.lang.Long,channelFragment : NettyG
 	  remoteVectorClockUUIDs.getVectorClockUUIDsList.foreach {
 		remoteVectorClockUUID =>
 		
-		var uuid = UUID.fromString(remoteVectorClockUUID.getUuid)
-		var remoteVectorClock = remoteVectorClockUUID.getVector
-		var occured = VersionUtils.compare(dataManager.getUUIDVectorClock(uuid), remoteVectorClock)
+		val uuid = UUID.fromString(remoteVectorClockUUID.getUuid)
+		val remoteVectorClock = remoteVectorClockUUID.getVector
+		val occured = VersionUtils.compare(dataManager.getUUIDVectorClock(uuid), remoteVectorClock)
 		occured match {
 		  case Occured.AFTER=> {}
 		  case Occured.BEFORE=> {
@@ -186,7 +186,7 @@ class GossiperRequestSender[T](timeout : java.lang.Long,channelFragment : NettyG
 	  }
   
 	  private def askForData(uuid : UUID, remoteNodeName : String, address : SocketAddress) ={
-		var messageBuilder : Message.Builder = Message.newBuilder.setDestName(channelFragment.getName).setDestNodeName(channelFragment.getNodeName)
+		val messageBuilder : Message.Builder = Message.newBuilder.setDestName(channelFragment.getName).setDestNodeName(channelFragment.getNodeName)
 		messageBuilder.setContentClass(classOf[UUIDDataRequest].getName).setContent(UUIDDataRequest.newBuilder.setUuid(uuid.toString).build.toByteString)
 		if (fullUDP) {
 		  channel.write(messageBuilder.build, address)
@@ -214,10 +214,10 @@ class GossiperRequestSender[T](timeout : java.lang.Long,channelFragment : NettyG
 		println("endGossip")
 		if (message.getContentClass.equals(classOf[VersionedModel].getName)) {
 		  println("VersionModel")
-		  var versionedModel = VersionedModel.parseFrom(message.getContent)
-		  var uuid = versionedModel.getUuid
+		  val versionedModel = VersionedModel.parseFrom(message.getContent)
+		  val uuid = versionedModel.getUuid
 		  var vectorClock = versionedModel.getVector
-		  var data : T = RichString(versionedModel.getModel.toStringUtf8).fromJSON(clazz).asInstanceOf[T]
+		  val data : T = RichString(versionedModel.getModel.toStringUtf8).fromJSON(clazz).asInstanceOf[T]
 	 
 		  dataManager.setData(UUID.fromString(uuid), Tuple2[VectorClock,T](vectorClock,data))
 		  channelFragment.localNotification(data) 
@@ -226,17 +226,17 @@ class GossiperRequestSender[T](timeout : java.lang.Long,channelFragment : NettyG
 		  vectorClock.getEntiesList.find(p=> p.getNodeID == channelFragment.getNodeName) match {
 			case Some(p)=> //NOOP
 			case None => {
-				var newenties = ClockEntry.newBuilder.setNodeID(channelFragment.getNodeName).setTimestamp(System.currentTimeMillis).setVersion(1).build
+				val newenties = ClockEntry.newBuilder.setNodeID(channelFragment.getNodeName).setTimestamp(System.currentTimeMillis).setVersion(1).build
 				vectorClock = VectorClock.newBuilder(vectorClock).addEnties(newenties).setTimestamp(System.currentTimeMillis).build
 			  }
 		  }
 	  
-		  var newMerged = dataManager.mergeClock(UUID.fromString(uuid), vectorClock)
+		  val newMerged = dataManager.mergeClock(UUID.fromString(uuid), vectorClock)
     
 		  //CHECK FOR GARBAGE
 		  if (garbage) {
 			if(newMerged.getEnties(0).getNodeID.equals(channelFragment.getNodeName)){
-			  var allPresent = channelFragment.getAllPeers.forall(peer=>{
+			  val allPresent = channelFragment.getAllPeers.forall(peer=>{
 				  newMerged.getEntiesList.exists(e=> e.getNodeID == peer && e.getVersion > 0)
 				})
 			  if(allPresent){

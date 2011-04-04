@@ -28,7 +28,7 @@ class GossiperRequestReceiver(channelFragment : NettyGossipAbstractElement,dataM
   var bootstrapForRequest = new ConnectionlessBootstrap(factoryForRequest)
   bootstrapForRequest.setPipelineFactory(new ChannelPipelineFactory(){
       override def getPipeline() : ChannelPipeline = {
-        var p : ChannelPipeline = Channels.pipeline()
+        val p : ChannelPipeline = Channels.pipeline()
 		p.addLast("protobufDecoder", new ProtobufDecoder(Message.getDefaultInstance()))
 		p.addLast("protobufEncoder", new ProtobufEncoder())
 		p.addLast("handler", new GossiperRequestReceiverHandler(self))
@@ -42,7 +42,7 @@ class GossiperRequestReceiver(channelFragment : NettyGossipAbstractElement,dataM
   var bootstrapForRequestTCP = new ServerBootstrap(factoryForRequestTCP)
   bootstrapForRequestTCP.setPipelineFactory(new ChannelPipelineFactory(){
       override def getPipeline() : ChannelPipeline = {
-        var p : ChannelPipeline = Channels.pipeline()
+        val p : ChannelPipeline = Channels.pipeline()
 		p.addLast("protobufDecoder", new ProtobufDecoder(Message.getDefaultInstance()))
 		p.addLast("protobufEncoder", new ProtobufEncoder())
 		p.addLast("handler", new DataSenderHandler(channelFragment,dataManager))
@@ -92,14 +92,14 @@ class GossiperRequestReceiver(channelFragment : NettyGossipAbstractElement,dataM
 		  //var vectorClockUUIDsBuilder = Gossip.VectorClockUUIDs.newBuilder
 		  //println(vectorClockUUIDsBuilder)
 		  //println("before dataManager.getUUIDVectorClocks")
-		  var uuidVectorClocks = dataManager.getUUIDVectorClocks
+		  val uuidVectorClocks = dataManager.getUUIDVectorClocks
 		  var vectorClockUUIDsBuilder = Gossip.VectorClockUUIDs.newBuilder
 		  //println("after dataManager.getUUIDVectorClocks")
 		  uuidVectorClocks.keySet.foreach {uuid : UUID =>
 			vectorClockUUIDsBuilder.addVectorClockUUIDs(Gossip.VectorClockUUID.newBuilder.setUuid(uuid.toString).setVector(uuidVectorClocks.get(uuid)).build)
 			if (vectorClockUUIDsBuilder.getVectorClockUUIDsCount == 1) {// it is possible to increase the number of vectorClockUUID on each message
 			  responseBuilder = Message.newBuilder.setDestName(channelFragment.getName).setDestNodeName(channelFragment.getNodeName)
-			  var modelBytes = vectorClockUUIDsBuilder.build.toByteString
+			  val modelBytes = vectorClockUUIDsBuilder.build.toByteString
 			  responseBuilder.setContentClass(classOf[Gossip.VectorClockUUIDs].getName).setContent(modelBytes)
 			  channel.write(responseBuilder.build, address)
 			  vectorClockUUIDsBuilder = Gossip.VectorClockUUIDs.newBuilder
@@ -125,10 +125,10 @@ class GossiperRequestReceiver(channelFragment : NettyGossipAbstractElement,dataM
 		 println("response of secondStep")
 		 }*/
 	  case "org.kevoree.library.gossip.Gossip$UUIDDataRequest" => {
-		  var uuidDataRequest = Gossip.UUIDDataRequest.parseFrom(message.getContent)
-		  var data = dataManager.getData(UUID.fromString(uuidDataRequest.getUuid))
-		  var localObjJSON = new RichJSONObject(data._2);
-		  var res = localObjJSON.toJSON;
+		  val uuidDataRequest = Gossip.UUIDDataRequest.parseFrom(message.getContent)
+		  val data = dataManager.getData(UUID.fromString(uuidDataRequest.getUuid))
+		  val localObjJSON = new RichJSONObject(data._2);
+		  val res = localObjJSON.toJSON;
 		  var modelBytes = ByteString.copyFromUtf8(res);
 		
 		  modelBytes = Gossip.VersionedModel.newBuilder.setUuid(uuidDataRequest.getUuid).setVector(data._1).setModel(modelBytes).build.toByteString

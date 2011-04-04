@@ -13,24 +13,20 @@ class DataReceiverHandler(gossiperRequestSender : GossiperRequestSender[_]) exte
   
 	private var logger = LoggerFactory.getLogger(classOf[DataReceiverHandler])
   
-  override def messageReceived(ctx:ChannelHandlerContext, e:MessageEvent)={
+  override def messageReceived(ctx:ChannelHandlerContext, e:MessageEvent) {
 	//println("response received")
-	var message = e.getMessage.asInstanceOf[Message]
+	val message = e.getMessage.asInstanceOf[Message]
 	if (message.getContentClass.equals(classOf[VersionedModel].getName)) {
-	  //var versionModel = RichString(message.getContent.toStringUtf8).fromJSON(classOf[VersionedModel])
-	  println(message)
 	  gossiperRequestSender.endGossipAction(message)
 	  //e.getChannel.getCloseFuture.awaitUninterruptibly
 	  e.getChannel.getCloseFuture.addListener(ChannelFutureListener.CLOSE);
 	}
   }
   
-  override def exceptionCaught(ctx:ChannelHandlerContext, e:ExceptionEvent)={
+  override def exceptionCaught(ctx:ChannelHandlerContext, e:ExceptionEvent) {
     //NOOP
-	//println("Exception GossiperRequestReceiverHandler")
-	//e.getCause().printStackTrace();
-	//logger.debug("Exception in " + classOf[DataReceiverHandler].getName)
-	logger.error("DataReceiverHandler\n" + e.getCause.getMessage + "\n" + e.getCause.getStackTraceString)
+	logger.error(this.getClass + "\n" + e.getCause.getMessage + "\n" + e.getCause.getStackTraceString)
+		//e.getCause.printStackTrace
 	e.getChannel.close.awaitUninterruptibly
   }
 }

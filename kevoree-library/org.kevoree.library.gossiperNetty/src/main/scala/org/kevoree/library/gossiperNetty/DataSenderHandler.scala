@@ -1,8 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package org.kevoree.library.gossiperNetty
 
 import com.google.protobuf.ByteString
@@ -13,36 +8,36 @@ import org.jboss.netty.channel.MessageEvent
 import org.jboss.netty.channel.SimpleChannelUpstreamHandler
 import org.kevoree.extra.marshalling.RichJSONObject
 import org.kevoree.library.gossip.Gossip
-import org.kevoree.library.gossip.Gossip.VersionedModel
 import org.kevoree.library.gossiperNetty.api.msg.KevoreeMessage.Message
 import org.slf4j.LoggerFactory
 
-class DataSenderHandler(channelFragment : NettyGossipAbstractElement,dataManager : DataManager[_]) extends SimpleChannelUpstreamHandler{
-  
-  private var logger = LoggerFactory.getLogger(classOf[DataSenderHandler])
-  
-  override def messageReceived(ctx:ChannelHandlerContext, e:MessageEvent)={
-	//println("message received")
-	var message = e.getMessage.asInstanceOf[Message]
-	if (message.getContentClass.equals(classOf[Gossip.UUIDDataRequest].getName))  {
-	  var uuidDataRequest = Gossip.UUIDDataRequest.parseFrom(message.getContent)
-	  var data = dataManager.getData(UUID.fromString(uuidDataRequest.getUuid))
-	  var localObjJSON = new RichJSONObject(data._2);
-	  var res = localObjJSON.toJSON;
-	  var modelBytes = ByteString.copyFromUtf8(res);
-		
-	  modelBytes = Gossip.VersionedModel.newBuilder.setUuid(uuidDataRequest.getUuid).setVector(data._1).setModel(modelBytes).build.toByteString
-	  var responseBuilder : Message.Builder = Message.newBuilder.setDestName(message.getDestName).setDestNodeName(channelFragment.getNodeName)
-	  responseBuilder.setContentClass(classOf[Gossip.VersionedModel].getName).setContent(modelBytes)
-	  e.getChannel.write(responseBuilder.build)
-	  //println("response sent")
+class DataSenderHandler(channelFragment: NettyGossipAbstractElement, dataManager: DataManager[_]) extends SimpleChannelUpstreamHandler {
+
+	private var logger = LoggerFactory.getLogger(classOf[DataSenderHandler])
+
+	override def messageReceived(ctx: ChannelHandlerContext, e: MessageEvent) {
+		//println("message received")
+		val message = e.getMessage.asInstanceOf[Message]
+		if (message.getContentClass.equals(classOf[Gossip.UUIDDataRequest].getName)) {
+			val uuidDataRequest = Gossip.UUIDDataRequest.parseFrom(message.getContent)
+			val data = dataManager.getData(UUID.fromString(uuidDataRequest.getUuid))
+
+			val localObjJSON = new RichJSONObject(data._2)
+			val res = localObjJSON.toJSON
+			val modelBytes = ByteString.copyFromUtf8(res)
+			//val modelBytes = ByteString.copyFrom(data._2.toString.getBytes("UTF8"))
+
+			val modelBytes2 = Gossip.VersionedModel.newBuilder.setUuid(uuidDataRequest.getUuid).setVector(data._1).setModel(modelBytes).build.toByteString
+			val responseBuilder: Message.Builder = Message.newBuilder.setDestName(message.getDestName).setDestNodeName(channelFragment.getNodeName)
+			responseBuilder.setContentClass(classOf[Gossip.VersionedModel].getName).setContent(modelBytes2)
+			e.getChannel.write(responseBuilder.build)
+			//println("response sent")
+		}
 	}
-  }
-  
-  override def exceptionCaught(ctx:ChannelHandlerContext, e:ExceptionEvent)={
-    //NOOP
-	//println("Exception GossiperRequestReceiverHandler")
-	logger.error("DataSenderHandler\n" + e.getCause.getMessage + "\n" + e.getCause.getStackTraceString)
-	e.getChannel.close.awaitUninterruptibly
-  }
+
+	override def exceptionCaught(ctx: ChannelHandlerContext, e: ExceptionEvent) {
+		//NOOP
+		logger.error(this.getClass + "\n" + e.getCause.getMessage + "\n" + e.getCause.getStackTraceString)
+		e.getChannel.close.awaitUninterruptibly
+	}
 }

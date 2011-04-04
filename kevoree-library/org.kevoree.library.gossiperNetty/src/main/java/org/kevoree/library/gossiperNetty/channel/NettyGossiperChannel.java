@@ -58,7 +58,8 @@ public class NettyGossiperChannel extends AbstractChannelFragment implements Net
 
 		dataManager = new DataManagerForChannel();
 
-		actor = new GossiperActor<Message>(Long.parseLong(this.getDictionary().get("interval").toString()), this,
+		actor = new GossiperActor<Message>(Long.parseLong((String)this.getDictionary().get("interval")),
+				this,
 				dataManager,
 				parsePortNumber(getNodeName()),
 				parseFullUDPParameter(),

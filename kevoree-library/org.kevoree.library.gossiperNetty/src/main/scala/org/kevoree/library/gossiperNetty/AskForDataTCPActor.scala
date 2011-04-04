@@ -21,6 +21,7 @@ import org.jboss.netty.handler.codec.protobuf.ProtobufEncoder
 import org.kevoree.library.gossip.Gossip.UUIDDataRequest
 import org.kevoree.library.gossiperNetty.api.msg.KevoreeMessage.Message
 import scala.collection.JavaConversions._
+import org.slf4j.LoggerFactory
 
 class AskForDataTCPActor(channelFragment: NettyGossipAbstractElement, requestSender: GossiperRequestSender[_]) extends actors.DaemonActor {
   var factoryTCP = new NioClientSocketChannelFactory(Executors.newCachedThreadPool(), Executors.newCachedThreadPool())
@@ -39,6 +40,8 @@ class AskForDataTCPActor(channelFragment: NettyGossipAbstractElement, requestSen
 
   private var channelGroup = new DefaultChannelGroup
 
+	private var logger = LoggerFactory.getLogger(classOf[AskForDataTCPActor])
+
   this.start()
 
   /* PUBLIC PART */
@@ -50,7 +53,7 @@ class AskForDataTCPActor(channelFragment: NettyGossipAbstractElement, requestSen
     this ! STOP()
   }
 
-  def askForDataAction(uuid: UUID, remoteNodeName: String) = {
+  def askForDataAction(uuid: UUID, remoteNodeName: String) {
     this ! ASK_FOR_DATA(uuid, remoteNodeName)
   }
 
@@ -58,11 +61,8 @@ class AskForDataTCPActor(channelFragment: NettyGossipAbstractElement, requestSen
   def act() {
     loop {
       react {
-        //reactWithin(timeout.longValue){
         case STOP => {
           channelGroup.close.awaitUninterruptibly
-          //println("stop gossiper")
-          //channel.close.awaitUninterruptibly
           bootstrapTCP.releaseExternalResources
           this.exit
         }
@@ -79,7 +79,7 @@ class AskForDataTCPActor(channelFragment: NettyGossipAbstractElement, requestSen
 
   }
 
-  def closeUnusedChannels() = {
+  def closeUnusedChannels() {
     channelGroup.foreach {
       channel: Channel =>
         println("channel must be closed")
@@ -90,14 +90,14 @@ class AskForDataTCPActor(channelFragment: NettyGossipAbstractElement, requestSen
 
 
   def askForData(uuid: UUID, remoteNodeName: String) = {
-    var messageBuilder: Message.Builder = Message.newBuilder.setDestName(channelFragment.getName).setDestNodeName(channelFragment.getNodeName)
+    val messageBuilder: Message.Builder = Message.newBuilder.setDestName(channelFragment.getName).setDestNodeName(channelFragment.getNodeName)
     messageBuilder.setContentClass(classOf[UUIDDataRequest].getName).setContent(UUIDDataRequest.newBuilder.setUuid(uuid.toString).build.toByteString)
-    println("TCP sending ...")
-    // FIXME maybe we launch too many data request and channel will be destroyed before the end of the communication
-    var channelFuture = bootstrapTCP.connect(new InetSocketAddress(channelFragment.getAddress(remoteNodeName), channelFragment.parsePortNumber(remoteNodeName))).asInstanceOf[ChannelFuture]
-    var channel = channelFuture.awaitUninterruptibly.getChannel
-    if (!channelFuture.isSuccess()) {
-      channelFuture.getCause().printStackTrace
+    //println("TCP sending ...")
+    val channelFuture = bootstrapTCP.connect(new InetSocketAddress(channelFragment.getAddress(remoteNodeName), channelFragment.parsePortNumber(remoteNodeName))).asInstanceOf[ChannelFuture]
+    val channel = channelFuture.awaitUninterruptibly.getChannel
+    if (!channelFuture.isSuccess) {
+      //channelFuture.getCause.printStackTrace
+			logger.error(this.getClass + "\n" +channelFuture.getCause.getMessage + "\n" + channelFuture.getCause.getStackTraceString)
       bootstrapTCP.releaseExternalResources
     } else {
       /*var future = */ channel.write(messageBuilder.build)
@@ -106,7 +106,7 @@ class AskForDataTCPActor(channelFragment: NettyGossipAbstractElement, requestSen
       channelGroup.add(channel)
       //future.addListener(ChannelFutureListener.CLOSE)
       //channel.close.awaitUninterruptibly
-      println("TCP sent")
+      //println("TCP sent")
     }
   }
 }
