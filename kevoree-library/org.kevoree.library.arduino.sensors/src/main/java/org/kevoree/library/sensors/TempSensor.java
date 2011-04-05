@@ -33,10 +33,6 @@ public class TempSensor extends AbstractComponentType {
         context.append("#include <math.h> \n");
         context.append("#include <Metro.h> \n");
 
-        context.append("#define ThermistorPIN ");
-        context.append(this.getDictionary().get("pin"));
-        context.append(" \n");
-
         //GENERATE DEFAULT VALUES
         context.append("float vcc = 4.91;\n");
         context.append("float pad = 9850;\n");
@@ -50,7 +46,7 @@ public class TempSensor extends AbstractComponentType {
         /* Generate code for port */
         context.append("    long Resistance;  \n" +
                 "    float temp;  // Dual-Purpose variable to save space.\n" +
-                "    int RawADC = analogRead(ThermistorPIN);\n" +
+                "    int RawADC = analogRead("+this.getDictionary().get("pin")+");\n" +
                 "    Resistance=((1024 * thermr / RawADC) - pad); \n" +
                 "    temp = log(Resistance); // Saving the Log(resistance) so not to calculate  it 4 times later\n" +
                 "    temp = 1 / (0.001129148 + (0.000234125 * temp) + (0.0000000876741 * temp * temp * temp));\n" +
