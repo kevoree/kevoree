@@ -47,7 +47,7 @@ class NotificationRequestSender(channelFragment: NettyGossipAbstractElement) ext
 		this ! STOP_GOSSIPER()
 	}
 
-	def notifyPeersAction() = {
+	def notifyPeersAction() {
 		this ! NOTIFY_PEERS()
 	}
 
@@ -70,16 +70,14 @@ class NotificationRequestSender(channelFragment: NettyGossipAbstractElement) ext
 		}
 	}
 
-	private def doNotifyPeers() = {
+	private def doNotifyPeers() {
 		channelFragment.getAllPeers.foreach {
 			peer =>
-				val messageBuilder: Message.Builder = Message.newBuilder.setDestName(channelFragment.getName).setDestNodeName(channelFragment.getNodeName)
-				messageBuilder.setContentClass(classOf[UpdatedValueNotification].getName).setContent(UpdatedValueNotification.newBuilder.build.toByteString)
-				//println("sending notification ...")
-				//println(channelFragment.getAddress(peer) + ":" + channelFragment.parsePortNumber(peer))
-				channel.write(messageBuilder.build, new InetSocketAddress(channelFragment.getAddress(peer), channelFragment.parsePortNumber(peer)))
-				//println("notification send ...")
-			//channels.add(channel)
+				if (!peer.equals(channelFragment.getNodeName)) {
+					val messageBuilder: Message.Builder = Message.newBuilder.setDestName(channelFragment.getName).setDestNodeName(channelFragment.getNodeName)
+					messageBuilder.setContentClass(classOf[UpdatedValueNotification].getName).setContent(UpdatedValueNotification.newBuilder.build.toByteString)
+					channel.write(messageBuilder.build, new InetSocketAddress(channelFragment.getAddress(peer), channelFragment.parsePortNumber(peer)))
+				}
 		}
 	}
 }

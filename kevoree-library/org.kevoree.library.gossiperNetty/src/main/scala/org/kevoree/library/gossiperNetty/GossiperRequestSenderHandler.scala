@@ -16,16 +16,13 @@ class GossiperRequestSenderHandler(gossiperRequestSender: GossiperRequestSender)
 
 	override def messageReceived(ctx: ChannelHandlerContext, e: MessageEvent) {
 		val message = e.getMessage.asInstanceOf[Message]
-		//println("response received" + message.getContentClass)
 		if (message.getContentClass.equals(classOf[VectorClockUUIDs].getName)) {
-			//var vectorClockUUIDs = RichString(message.getContent.toStringUtf8).fromJSON(classOf[VectorClockUUIDs])
 			gossiperRequestSender.initSecondStepAction(message, e.getRemoteAddress /*, e.getChannel*/)
 		} /* else if (message.getContentClass.equals(classOf[VectorClockUUID].getName)) {
 	  //var vectorClockUUID = RichString(message.getContent.toStringUtf8).fromJSON(classOf[VectorClockUUID])
 	  gossiperRequestSender.initLastStepAction(message, e.getRemoteAddress, e.getChannel)
 	}*/
 		else if (message.getContentClass.equals(classOf[VersionedModel].getName)) {
-			//var versionModel = RichString(message.getContent.toStringUtf8).fromJSON(classOf[VersionedModel])
 			gossiperRequestSender.endGossipAction(message)
 			//e.getChannel.close.awaitUninterruptibly
 		}
@@ -33,7 +30,6 @@ class GossiperRequestSenderHandler(gossiperRequestSender: GossiperRequestSender)
 
 	override def exceptionCaught(ctx: ChannelHandlerContext, e: ExceptionEvent) {
 		//NOOP
-		//println("Exception GossiperRequestSenderHandler")
 		logger.error(this.getClass + "\n" + e.getCause.getMessage + "\n" + e.getCause.getStackTraceString)
 		//e.getChannel.close.awaitUninterruptibly
 	}

@@ -73,9 +73,7 @@ class AskForDataTCPActor(channelFragment: NettyGossipAbstractElement, requestSen
 				}
 				case ASK_FOR_DATA(uuid, remoteNodeName) => {
 					if (channelGroup.size > 10) {
-						println("too many opened channels : " + channelGroup.size)
 						closeUnusedChannels
-						println("some channels may be closed : " + channelGroup.size)
 					}
 					askForData(uuid, remoteNodeName)
 				}
@@ -86,9 +84,9 @@ class AskForDataTCPActor(channelFragment: NettyGossipAbstractElement, requestSen
 	def closeUnusedChannels() {
 		channelGroup.foreach {
 			channel: Channel =>
-				println("channel must be closed")
+				logger.debug("channel must be closed")
 				channel.close.awaitUninterruptibly
-				println("channel are closed")
+				logger.debug("channel are closed")
 		}
 	}
 
@@ -99,19 +97,11 @@ class AskForDataTCPActor(channelFragment: NettyGossipAbstractElement, requestSen
 		val channelFuture = bootstrapTCP.connect(new InetSocketAddress(channelFragment.getAddress(remoteNodeName), channelFragment.parsePortNumber(remoteNodeName))).asInstanceOf[ChannelFuture]
 		val channel = channelFuture.awaitUninterruptibly.getChannel
 		if (!channelFuture.isSuccess) {
-			//channelFuture.getCause.printStackTrace
 			logger.error(this.getClass + "\n" + channelFuture.getCause.getMessage + "\n" + channelFuture.getCause.getStackTraceString)
 			bootstrapTCP.releaseExternalResources
 		} else {
-			/*var future = */
-			//channel.write(messageBuilder.build)
 			channel.write(messageBuilder.build)
-			//future.awaitUninterruptibly
-			//channel.getCloseFuture.awaitUninterruptibly
 			channelGroup.add(channel)
-			//future.addListener(ChannelFutureListener.CLOSE)
-			//channel.close.awaitUninterruptibly
-			//println("TCP sent")
 		}
 	}
 }

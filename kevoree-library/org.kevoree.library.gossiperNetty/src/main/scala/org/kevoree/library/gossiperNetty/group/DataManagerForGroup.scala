@@ -125,13 +125,11 @@ class DataManagerForGroup(nameInstance: String, selfNodeName: String, modelServi
 	}*/
 
 	private def updateOrResolve(tuple: Tuple2[VectorClock, ContainerRoot]) = {
-		//val model = modelFromString(tuple._2)
 		val occured = VersionUtils.compare(vectorClock, tuple._1)
 		occured match {
 			case Occured.AFTER => {}
 			case Occured.BEFORE => {
 				updateModelOrHaraKiri(tuple._2)
-				//updateModelOrHaraKiri(tuple._2)
 				localMerge(tuple._1)
 			}
 			case Occured.CONCURRENTLY => {
@@ -140,7 +138,6 @@ class DataManagerForGroup(nameInstance: String, selfNodeName: String, modelServi
 				//TODO TO IMPROVE
 				if (localDate.before(remoteDate)) {
 					updateModelOrHaraKiri(tuple._2)
-					//updateModelOrHaraKiri(tuple._2)
 					localMerge(tuple._1)
 				}
 			}

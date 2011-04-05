@@ -33,7 +33,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  *
- * @author edaubert
+ * @author Erwan Daubert
  */
 @Library(name = "Kevoree-Android-JavaSE")
 @GroupType

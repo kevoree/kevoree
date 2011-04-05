@@ -24,6 +24,7 @@ import org.kevoree.library.gossiper.version.Occured
 import scala.collection.JavaConversions._
 import org.jboss.netty.handler.codec.compression.{ZlibDecoder, ZlibEncoder, ZlibWrapper}
 import org.jboss.netty.handler.codec.protobuf.{ProtobufEncoder, ProtobufVarint32LengthFieldPrepender, ProtobufDecoder, ProtobufVarint32FrameDecoder}
+import org.slf4j.LoggerFactory
 
 class GossiperRequestSender(timeout: java.lang.Long, channelFragment: NettyGossipAbstractElement, dataManager: DataManager, fullUDP: java.lang.Boolean, garbage: Boolean, serializer: Serializer) extends actors.DaemonActor {
 
@@ -47,6 +48,7 @@ class GossiperRequestSender(timeout: java.lang.Long, channelFragment: NettyGossi
 	}
 	)
 	private var channel: Channel = bootstrap.bind(new InetSocketAddress(0)).asInstanceOf[DatagramChannel]
+	private var logger = LoggerFactory.getLogger(classOf[GossiperRequestSender])
 
 	private var askForDataTCPActor = new AskForDataTCPActor(channelFragment, self)
 
@@ -90,16 +92,12 @@ class GossiperRequestSender(timeout: java.lang.Long, channelFragment: NettyGossi
 			react {
 				//reactWithin(timeout.longValue){
 				case STOP_GOSSIPER() => {
-					//println("stop gossiper")
 					askForDataTCPActor.stop
 					channel.close.awaitUninterruptibly
 					bootstrap.releaseExternalResources
 					this.exit
 				}
 				case INIT_GOSSIP(peer) => {
-					/*if (channel != null) {
-													 channel.close.awaitUninterruptibly
-													 }*/
 					initGossip(peer)
 				}
 				case INIT_SECOND_STEP(message, address /*,channel*/) => initSecondStep(message, address /*,channel*/)
@@ -109,13 +107,10 @@ class GossiperRequestSender(timeout: java.lang.Long, channelFragment: NettyGossi
 	}
 
 	private def initGossip(peer: String) = {
-		/*var channelFuture = bootstrap.connect(new InetSocketAddress(channelFragment.getAddress(peer), channelFragment.parsePortNumber(peer))).asInstanceOf[ChannelFuture]
-					 channel = channelFuture.awaitUninterruptibly().getChannel()*/
 
 		if (peer != null && peer != "") {
 			val messageBuilder: Message.Builder = Message.newBuilder.setDestName(channelFragment.getName).setDestNodeName(channelFragment.getNodeName)
 			messageBuilder.setContentClass(classOf[VectorClockUUIDsRequest].getName).setContent(VectorClockUUIDsRequest.newBuilder.build.toByteString)
-			//println("initGossip = " + channelFragment.getAddress(peer) + ":" + channelFragment.parsePortNumber(peer))
 			channel.write(messageBuilder.build, new InetSocketAddress(channelFragment.getAddress(peer), channelFragment.parsePortNumber(peer)));
 			//println("initGossip write")
 		}
@@ -132,7 +127,7 @@ class GossiperRequestSender(timeout: java.lang.Long, channelFragment: NettyGossi
 					vectorClockUUID =>
 						val uuid = UUID.fromString(vectorClockUUID.getUuid)
 						if (dataManager.getUUIDVectorClock(uuid) == null) {
-							println("add empty local vectorClock with the uuid if it is not already defined")
+							logger.debug("add empty local vectorClock with the uuid if it is not already defined")
 							dataManager.setData(uuid,
 								Tuple2[VectorClock, Any](VectorClock.newBuilder.setTimestamp(System.currentTimeMillis).build, null))
 						}
@@ -145,11 +140,9 @@ class GossiperRequestSender(timeout: java.lang.Long, channelFragment: NettyGossi
 							if (!remoteVectorClockUUIDs.getVectorClockUUIDsList.contains(key)) {
 								if (dataManager.getUUIDVectorClock(key).getEntiesList.exists(e => e.getNodeID == message.getDestName)) {
 									//ALREADY SEEN VECTOR CLOCK - GARBAGE IT
-									println("ALREADY SEEN VECTOR CLOCK - GARBAGE IT")
+									logger.debug("ALREADY SEEN VECTOR CLOCK - GARBAGE IT")
 									dataManager.removeData(key)
-								} /*else {
-				 //NOOP - UNCOMPLETE VECTOR CLOCK
-				 }*/
+								}
 							}
 					}
 				}
@@ -183,7 +176,7 @@ class GossiperRequestSender(timeout: java.lang.Long, channelFragment: NettyGossi
 																			 channel.write(messageBuilder.build, address);*/
 							//println("initSecondStep write")
 						}
-						case _ => println("unexpected match into initSecondStep")
+						case _ => logger.error("unexpected match into initSecondStep")
 					}
 			}
 		}
@@ -199,47 +192,48 @@ class GossiperRequestSender(timeout: java.lang.Long, channelFragment: NettyGossi
 		}
 	}
 
-	private def endGossip(message: Message) = {
-		println("endGossip")
+	private def endGossip(message: Message) {
+		//println("endGossip")
 		if (message.getContentClass.equals(classOf[VersionedModel].getName)) {
-			println("VersionModel")
+			//println("VersionModel")
 			val versionedModel = VersionedModel.parseFrom(message.getContent)
 			val uuid = versionedModel.getUuid
 			var vectorClock = versionedModel.getVector
 
 			val data = serializer.deserialize(versionedModel.getModel.toByteArray)
 
-			dataManager.setData(UUID.fromString(uuid), Tuple2[VectorClock, Any](vectorClock, data))
-			channelFragment.localNotification(data)
+			if (data != null) { // TODO include selector to define properties to choose the peer
+				dataManager.setData(UUID.fromString(uuid), Tuple2[VectorClock, Any](vectorClock, data))
+				channelFragment.localNotification(data)
 
-			// UPDATE clock
-			vectorClock.getEntiesList.find(p => p.getNodeID == channelFragment.getNodeName) match {
-				case Some(p) => //NOOP
-				case None => {
-					val newenties = ClockEntry.newBuilder.setNodeID(channelFragment.getNodeName).setTimestamp(System.currentTimeMillis).setVersion(1).build
-					vectorClock = VectorClock.newBuilder(vectorClock).addEnties(newenties).setTimestamp(System.currentTimeMillis).build
+				// UPDATE clock
+				vectorClock.getEntiesList.find(p => p.getNodeID == channelFragment.getNodeName) match {
+					case Some(p) => //NOOP
+					case None => {
+						val newenties = ClockEntry.newBuilder.setNodeID(channelFragment.getNodeName).setTimestamp(System.currentTimeMillis).setVersion(1).build
+						vectorClock = VectorClock.newBuilder(vectorClock).addEnties(newenties).setTimestamp(System.currentTimeMillis).build
+					}
 				}
-			}
 
-			val newMerged = dataManager.mergeClock(UUID.fromString(uuid), vectorClock)
+				val newMerged = dataManager.mergeClock(UUID.fromString(uuid), vectorClock)
 
-			//CHECK FOR GARBAGE
-			if (garbage) {
-				if (newMerged.getEnties(0).getNodeID.equals(channelFragment.getNodeName)) {
-					val allPresent = channelFragment.getAllPeers.forall(peer => {
-						newMerged.getEntiesList.exists(e => e.getNodeID == peer && e.getVersion > 0)
-					})
-					if (allPresent) {
-						//THIS NODE IS MASTER ON THE MSG
-						//ALL REMOTE NODE IN MY !PRESENT! M@R has rec a copy
-						//DELETING
-						//
-						println("Garbage =" + uuid)
-						dataManager.removeData(UUID.fromString(uuid))
+				//CHECK FOR GARBAGE
+				if (garbage) {
+					if (newMerged.getEnties(0).getNodeID.equals(channelFragment.getNodeName)) {
+						val allPresent = channelFragment.getAllPeers.forall(peer => {
+							newMerged.getEntiesList.exists(e => e.getNodeID == peer && e.getVersion > 0)
+						})
+						if (allPresent) {
+							//THIS NODE IS MASTER ON THE MSG
+							//ALL REMOTE NODE IN MY !PRESENT! M@R has rec a copy
+							//DELETING
+							//
+							logger.debug("Garbage =" + uuid)
+							dataManager.removeData(UUID.fromString(uuid))
+						}
 					}
 				}
 			}
 		}
-		//channel.close.awaitUninterruptibly
 	}
 }

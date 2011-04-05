@@ -1,8 +1,9 @@
 package org.kevoree.library.gossiperNetty.channel
 
-import org.kevoree.library.gossiperNetty.api.msg.KevoreeMessage.Message
 import org.slf4j.LoggerFactory
 import org.kevoree.library.gossiperNetty.Serializer
+import org.kevoree.framework.message.Message
+import org.kevoree.extra.marshalling.{RichString, RichJSONObject}
 
 /**
  * User: Erwan Daubert
@@ -19,7 +20,7 @@ class ChannelSerializer extends Serializer {
 			stringFromMessage(data.asInstanceOf[Message])
 		} catch {
 			case e => {
-				logger.error(e.getCause + "\n" + e.getCause.getStackTraceString)
+				logger.error(e.getMessage)
 				null
 			}
 		}
@@ -30,17 +31,18 @@ class ChannelSerializer extends Serializer {
 			messageFromString(data)
 		} catch {
 			case e => {
-				logger.error(e.getCause + "\n" + e.getCause.getStackTraceString)
+				logger.error(e.getMessage)
 				null
 			}
 		}
 	}
 
 	private def messageFromString(model: Array[Byte]): Message = {
-	  Message.parseFrom(model)
+		RichString(new String(model, "UTF8")).fromJSON(classOf[Message])
 	}
 
-	private def stringFromMessage(model: Message) : Array[Byte] = {
-	  model.toByteArray	
+	private def stringFromMessage(model: Message): Array[Byte] = {
+		val localObjJSON = new RichJSONObject(model)
+		localObjJSON.toJSON.getBytes("UTF8")
 	}
 }

@@ -5,7 +5,6 @@ import org.kevoree.framework.KevoreeXmiHelper
 import java.io.{ByteArrayOutputStream, ByteArrayInputStream}
 import org.slf4j.LoggerFactory
 import org.kevoree.library.gossiperNetty.Serializer
-import com.google.protobuf.ByteString
 
 /**
  * User: Erwan Daubert
@@ -18,12 +17,11 @@ class GroupSerializer extends Serializer {
 	private var logger = LoggerFactory.getLogger(classOf[GroupSerializer])
 
 	def serialize(data: Any): Array[Byte] = {
-		println("toto" + data)
 		try {
 			stringFromModel(data.asInstanceOf[ContainerRoot])
 		} catch {
 			case e => {
-				logger.error(e.getCause.getMessage /*+ "\n" + e.getCause.getStackTraceString*/)
+				logger.error(e.getMessage)
 				null
 			}
 		}
@@ -34,17 +32,13 @@ class GroupSerializer extends Serializer {
 			modelFromString(data)
 		} catch {
 			case e => {
-				e.printStackTrace()
-				logger.error(e.getCause.getMessage/* + "\n" + e.getCause.getStackTraceString*/)
+				logger.error(e.getMessage)
 				null
 			}
 		}
 	}
 
 	private def modelFromString(model: Array[Byte]): ContainerRoot = {
-		val bytesString = ByteString.copyFrom(model)
-		println("titi" + bytesString.toStringUtf8)
-
 		val stream = new ByteArrayInputStream(model)
 		KevoreeXmiHelper.loadStream(stream)
 	}

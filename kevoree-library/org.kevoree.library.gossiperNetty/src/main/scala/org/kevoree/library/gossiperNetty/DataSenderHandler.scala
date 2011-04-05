@@ -23,11 +23,6 @@ class DataSenderHandler(channelFragment: NettyGossipAbstractElement, dataManager
 
 			val modelBytes = ByteString.copyFrom(serializer.serialize(data._2))
 
-			//val localObjJSON = new RichJSONObject(data._2)
-			//val res = localObjJSON.toJSON
-			//val modelBytes = ByteString.copyFromUtf8(res)
-			//val modelBytes = ByteString.copyFrom(data._2.toString.getBytes("UTF8"))
-
 			val modelBytes2 = Gossip.VersionedModel.newBuilder.setUuid(uuidDataRequest.getUuid).setVector(data._1).setModel(modelBytes).build.toByteString
 			val responseBuilder: Message.Builder = Message.newBuilder.setDestName(message.getDestName).setDestNodeName(channelFragment.getNodeName)
 			responseBuilder.setContentClass(classOf[Gossip.VersionedModel].getName).setContent(modelBytes2)

@@ -86,7 +86,7 @@ class GossiperRequestReceiver(channelFragment: NettyGossipAbstractElement, dataM
 					bootstrapForRequest.releaseExternalResources
 					this.exit
 				}
-				case SendReply(message, address, channel) => /*println("something received");*/ doGossip(message, address, channel) /*;println("reply sent")*/
+				case SendReply(message, address, channel) => doGossip(message, address, channel)
 			}
 		}
 	}
@@ -97,12 +97,8 @@ class GossiperRequestReceiver(channelFragment: NettyGossipAbstractElement, dataM
 
 		message.getContentClass match {
 			case "org.kevoree.library.gossip.Gossip$VectorClockUUIDsRequest" => {
-				//var vectorClockUUIDsBuilder = Gossip.VectorClockUUIDs.newBuilder
-				//println(vectorClockUUIDsBuilder)
-				//println("before dataManager.getUUIDVectorClocks")
 				val uuidVectorClocks = dataManager.getUUIDVectorClocks
 				var vectorClockUUIDsBuilder = Gossip.VectorClockUUIDs.newBuilder
-				//println("after dataManager.getUUIDVectorClocks")
 				uuidVectorClocks.keySet.foreach {
 					uuid: UUID =>
 						vectorClockUUIDsBuilder.addVectorClockUUIDs(Gossip.VectorClockUUID.newBuilder.setUuid(uuid.toString).setVector(uuidVectorClocks.get(uuid)).build)
@@ -114,16 +110,7 @@ class GossiperRequestReceiver(channelFragment: NettyGossipAbstractElement, dataM
 							channel.write(responseBuilder.build, address)
 							vectorClockUUIDsBuilder = Gossip.VectorClockUUIDs.newBuilder
 						}
-					//println("send vector clock for uuid :" + uuid + " to address : " + address)
 				}
-				// DONE send many small packets instead of only one big packet
-				// How to define the appropriate size
-				// One VectorClockUUID = one packet
-
-				/*var modelBytes = vectorClockUUIDsBuilder.build.toByteString
-											 responseBuilder.setContentClass(classOf[Gossip.VectorClockUUIDs].getName).setContent(modelBytes)
-											 channel.write(responseBuilder.build, address);
-											 println("VectorClockUUIDs sent")*/
 			}
 			/*case "org.kevoree.library.gossip.Gossip$UUIDVectorClockRequest" => {
 								 var uuidVectorClockRequest = Gossip.UUIDVectorClockRequest.parseFrom(message.getContent.asInstanceOf[ByteString])
@@ -137,25 +124,14 @@ class GossiperRequestReceiver(channelFragment: NettyGossipAbstractElement, dataM
 			case "org.kevoree.library.gossip.Gossip$UUIDDataRequest" => {
 				val uuidDataRequest = Gossip.UUIDDataRequest.parseFrom(message.getContent)
 				val data = dataManager.getData(UUID.fromString(uuidDataRequest.getUuid))
-				val localObjJSON = new RichJSONObject(data._2);
-				val res = localObjJSON.toJSON;
-				var modelBytes = ByteString.copyFromUtf8(res);
+				val modelBytes = ByteString.copyFrom(serializer.serialize(data._2))
 
-				modelBytes = Gossip.VersionedModel.newBuilder.setUuid(uuidDataRequest.getUuid).setVector(data._1).setModel(modelBytes).build.toByteString
-				responseBuilder.setContentClass(classOf[Gossip.VersionedModel].getName).setContent(modelBytes)
+				val modelBytes2 = Gossip.VersionedModel.newBuilder.setUuid(uuidDataRequest.getUuid).setVector(data._1).setModel(modelBytes).build.toByteString
+				responseBuilder.setContentClass(classOf[Gossip.VersionedModel].getName).setContent(modelBytes2)
 				channel.write(responseBuilder.build, address);
-				//println("VersionedModel sent")
 			}
 			case "org.kevoree.library.gossip.Gossip$UpdatedValueNotification" => {
-				//channelFragment.getOtherFragments.find (fragment => fragment.getName == message.getDestNodeName) match {
-				//case Some(c) => {
-				//gossiperRequestSender.initGossipAction(c.getNodeName)
 				gossiperRequestSender.initGossipAction(message.getDestNodeName)
-				//channel.close
-				//println("requestReceiver initGossip")
-				//}
-				//case None =>
-				//}
 			}
 		}
 		//channel.close.awaitUninterruptibly
