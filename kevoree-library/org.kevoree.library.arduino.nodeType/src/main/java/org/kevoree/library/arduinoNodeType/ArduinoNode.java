@@ -6,6 +6,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.kevoree.ContainerRoot;
 import org.kevoree.KevoreeFactory;
+import org.kevoree.annotation.DictionaryAttribute;
+import org.kevoree.annotation.DictionaryType;
 import org.kevoree.annotation.Library;
 import org.kevoree.annotation.NodeType;
 import org.kevoree.framework.AbstractNodeType;
@@ -20,6 +22,9 @@ import org.wayoda.ang.project.TargetDirectoryService;
 
 @NodeType
 @Library(name = "KevoreeNodeType")
+@DictionaryType({
+    @DictionaryAttribute(name = "boardTypeName", defaultValue = "uno", optional = true)
+})
 public class ArduinoNode extends AbstractNodeType {
 
     @Override

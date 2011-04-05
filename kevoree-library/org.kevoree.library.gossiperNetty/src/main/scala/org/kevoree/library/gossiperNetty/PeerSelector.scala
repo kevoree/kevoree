@@ -29,14 +29,14 @@ class PeerSelector {
     }
   }
 
-  def getScore(nodeName: String): Long = {
+  private def getScore(nodeName: String): Long = {
     peerCheckMap.get(nodeName) match {
       case Some(nodeTuple) => nodeTuple._1
       case None => 0l //default
     }
   }
 
-  def initNodeScore(nodeName: String) {
+  private def initNodeScore(nodeName: String) {
     peerCheckMap.get(nodeName) match {
       case Some(nodeTuple) => {
             peerCheckMap.put(nodeName,Tuple2(System.currentTimeMillis,nodeTuple._2+1))
