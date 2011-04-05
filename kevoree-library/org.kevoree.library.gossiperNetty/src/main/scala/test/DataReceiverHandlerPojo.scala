@@ -20,11 +20,11 @@ class DataReceiverHandlerPojo() extends SimpleChannelUpstreamHandler {
 
 	override def messageReceived(ctx: ChannelHandlerContext, e: MessageEvent) {
 		//println("response received")
-		//val message = e.getMessage.asInstanceOf[Message]
-		println(e.getMessage)
-		val message = Message.parseFrom(ByteString.copyFromUtf8(e.getMessage.asInstanceOf[String]))
+		val message = e.getMessage.asInstanceOf[Message]
 		if (message.getContentClass.equals(classOf[VersionedModel].getName)) {
-			// TODO rebuild model and print it
+
+			println("versionModel received")
+
 			val versionedModel = VersionedModel.parseFrom(message.getContent)
 			val data : Array[Byte] = RichString(versionedModel.getModel.toStringUtf8).fromJSON(classOf[Array[Byte]]).asInstanceOf[Array[Byte]]
 

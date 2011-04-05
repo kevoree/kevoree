@@ -21,10 +21,11 @@ class DataSenderHandlerPojo(model : ContainerRoot) extends SimpleChannelUpstream
 
 	override def messageReceived(ctx: ChannelHandlerContext, e: MessageEvent) {
 		//println("message received")
-		//val message = e.getMessage.asInstanceOf[Message]
-		println(e.getMessage)
-		val message = Message.parseFrom(ByteString.copyFromUtf8(e.getMessage.asInstanceOf[String]))
+		val message = e.getMessage.asInstanceOf[Message]
 		if (message.getContentClass.equals(classOf[Gossip.UUIDDataRequest].getName)) {
+
+			println("request received")
+
 			val uuidDataRequest = Gossip.UUIDDataRequest.parseFrom(message.getContent)
 			//val data = dataManager.getData(UUID.fromString(uuidDataRequest.getUuid))
 
@@ -43,7 +44,7 @@ class DataSenderHandlerPojo(model : ContainerRoot) extends SimpleChannelUpstream
 
 			//e.getChannel.write(responseBuilder.build)
 			e.getChannel.write(responseBuilder.build)
-			//println("response sent")
+			println("response sent")
 		}
 	}
 

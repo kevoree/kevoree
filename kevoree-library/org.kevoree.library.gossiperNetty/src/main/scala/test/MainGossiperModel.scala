@@ -65,19 +65,11 @@ object MainGossiperModel {
 		val channelFuture = bootstrapTCP.connect(new InetSocketAddress("localhost", 9000)).asInstanceOf[ChannelFuture]
 		val channel = channelFuture.awaitUninterruptibly.getChannel
 		if (!channelFuture.isSuccess) {
-			//channelFuture.getCause.printStackTrace
 			println(this.getClass + "\n" + channelFuture.getCause.getMessage + "\n" + channelFuture.getCause.getStackTraceString)
 			bootstrapTCP.releaseExternalResources
 		} else {
-			/*var future = */
-			//channel.write(messageBuilder.build)
 			channel.write(messageBuilder.build)
-			//future.awaitUninterruptibly
-			//channel.getCloseFuture.awaitUninterruptibly
 			channelGroup.add(channel)
-			//future.addListener(ChannelFutureListener.CLOSE)
-			//channel.close.awaitUninterruptibly
-			//println("TCP sent")
 		}
 	}
 
