@@ -25,6 +25,8 @@ package org.kevoree.framework;
 public interface Port {
 
     public String getName();
+    public String getComponentName();
+    
     /*
     public String getComponentName();
 

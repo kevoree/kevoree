@@ -160,7 +160,7 @@ public class NettyGossiperChannel extends AbstractChannelFragment implements Net
 	}
 
 	@Override
-	public boolean parseFullUDPParameter() {
+	public Boolean parseFullUDPParameter() {
 		if (this.getDictionary().get("FullUDP").toString().equals("true")) {
 			return true;
 		}

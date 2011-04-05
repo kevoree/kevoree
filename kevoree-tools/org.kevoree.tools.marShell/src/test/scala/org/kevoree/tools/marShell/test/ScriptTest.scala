@@ -28,7 +28,7 @@ import org.kevoree.tools.marShell.parser.ParserUtil
 
 
 class ScriptTest {
-
+    /*
   @Test
   def primaryTest() {
 
@@ -56,7 +56,7 @@ class ScriptTest {
     val oscript =  parser.parseScript(textScript)
     oscript.get.interpret(KevsInterpreterContext(newModel))
     
-  }
+  }    */
 
 
 }

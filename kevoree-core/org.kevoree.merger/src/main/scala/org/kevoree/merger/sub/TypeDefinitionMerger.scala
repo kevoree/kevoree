@@ -35,7 +35,7 @@ trait TypeDefinitionMerger extends Merger with DictionaryMerger with PortTypeMer
         }) match {
           case Some(found_type_definition) => {
             //println(found_type_definition);
-            var root = found_type_definition.eContainer.asInstanceOf[ContainerRoot]
+            val root = found_type_definition.eContainer.asInstanceOf[ContainerRoot]
 
             if (found_type_definition.isUpdated(toMergeTypeDef)) {
               //updateTypeDefinition(found_type_definition,toMergeTypeDef)
@@ -57,6 +57,7 @@ trait TypeDefinitionMerger extends Merger with DictionaryMerger with PortTypeMer
 
 
   private def cleanCrossReference(actuelTypeDefinition: TypeDefinition, newTypeDefinition: TypeDefinition) = {
+    println("Just clean cross reference")
     if (actuelTypeDefinition.isInstanceOf[NodeType]) {
       val root = actuelTypeDefinition.eContainer.asInstanceOf[ContainerRoot]
       val root2 = newTypeDefinition.eContainer.asInstanceOf[ContainerRoot]
@@ -73,13 +74,13 @@ trait TypeDefinitionMerger extends Merger with DictionaryMerger with PortTypeMer
   private def mergeConsistency(root: ContainerRoot, actuelTypeDefinition: TypeDefinition, newTypeDefinition: TypeDefinition) = {
     //UPDATE & MERGE DEPLOYS UNIT
 
-    //println("merge consistency")
+    println("merge consistency")
 
-    var allDeployUnits = List() ++ newTypeDefinition.getDeployUnits.toList ++ actuelTypeDefinition.getDeployUnits.toList //CLONE LIS
+    val allDeployUnits = List() ++ newTypeDefinition.getDeployUnits.toList ++ actuelTypeDefinition.getDeployUnits.toList //CLONE LIS
     actuelTypeDefinition.getDeployUnits.clear
     allDeployUnits.foreach {
       ndu =>
-        var merged = mergeDeployUnit(root, ndu)
+        val merged = mergeDeployUnit(root, ndu)
         if (!actuelTypeDefinition.getDeployUnits.contains(merged)) {
           actuelTypeDefinition.getDeployUnits.add(merged)
         }
@@ -95,7 +96,7 @@ trait TypeDefinitionMerger extends Merger with DictionaryMerger with PortTypeMer
   }
 
   private def consistencyImpacted(root: ContainerRoot, actuelTypeDefinition: TypeDefinition, newTypeDefinition: TypeDefinition) = {
-    //println("mergeConsistencyImpacted - "+actuelTypeDefinition+ " - "+newTypeDefinition)
+    println("mergeConsistencyImpacted - "+actuelTypeDefinition+ " - "+newTypeDefinition)
     //REMOVE OLD AND ADD NEW TYPE
     root.getTypeDefinitions.remove(actuelTypeDefinition)
     mergeNewTypeDefinition(root, newTypeDefinition)

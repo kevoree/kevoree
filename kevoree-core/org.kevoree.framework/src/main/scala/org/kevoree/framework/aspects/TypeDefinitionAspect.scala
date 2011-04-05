@@ -45,15 +45,23 @@ case class TypeDefinitionAspect(selfTD : TypeDefinition) {
           if(otherTD.getProvided.size != selfCT.getProvided.size){return true}
           if(otherTD.getRequired.size != selfCT.getRequired.size){return true}
           val providedEquality = selfCT.getProvided.forall(selfPTypeRef =>{
-            otherTD.getProvided.find(otherTypeRef => otherTypeRef.getName == selfPTypeRef.getName )match {
-              case Some(otherEquivalentTypeRef)=> {
-                true
+              otherTD.getProvided.find(otherTypeRef => otherTypeRef.getName == selfPTypeRef.getName )match {
+                case Some(otherEquivalentTypeRef)=> {
+                    true
+                  }
+                case None=> false
               }
-              case None=> false
-            }
-          })
+            })
+          val requiredEquality = selfCT.getRequired.forall(selfRTypeRef =>{
+              otherTD.getRequired.find(otherTypeRef => otherTypeRef.getName == selfRTypeRef.getName )match {
+                case Some(otherEquivalentTypeRef)=> {
+                    true
+                  }
+                case None=> false
+              }
+            })
 
-      }
+        }
       case _ =>
     }
     false
@@ -77,16 +85,16 @@ case class TypeDefinitionAspect(selfTD : TypeDefinition) {
                     val pDUInteger = java.lang.Long.parseLong(pDU.getHashcode)
                     val selfDUInteger = java.lang.Long.parseLong(selfDU.getHashcode)
 
-                       // println("kompareHashCode - "+selfDUInteger+">"+pDUInteger+"-"+(selfDUInteger <= pDUInteger))
+                     //println("kompareHashCode - "+selfDUInteger+"<="+pDUInteger+"-"+(selfDUInteger <= pDUInteger))
 
-                    selfDUInteger <= pDUInteger
+                    selfDUInteger >= pDUInteger
                   } catch {
                     case _@ e => {
                         e.printStackTrace
                         println("Bad HashCode - equiality verification - " +pDU.getHashcode + " - " +selfDU.getHashcode)
                         pDU.getHashcode != selfDU.getHashcode
                         
-                    }
+                      }
                   }
                 } 
               case _ => false

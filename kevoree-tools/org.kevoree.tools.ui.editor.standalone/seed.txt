@@ -1,17 +1,3 @@
-====
-    Licensed under the GNU LESSER GENERAL PUBLIC LICENSE, Version 3, 29 June 2007;
-    you may not use this file except in compliance with the License.
-    You may obtain a copy of the License at
-
-    	http://www.gnu.org/licenses/lgpl-3.0.txt
-
-    Unless required by applicable law or agreed to in writing, software
-    distributed under the License is distributed on an "AS IS" BASIS,
-    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-    See the License for the specific language governing permissions and
-    limitations under the License.
-====
-
 org.kevoree.tools.ui.editor.standalone.App
 org.kevoree.tools.ui.editor.standalone.App: App()
 org.kevoree.tools.ui.editor.standalone.App: void main(java.lang.String[])
@@ -4160,6 +4146,88 @@ jsyntaxpane.DefaultSyntaxKit: java.lang.String getAbbreviation(java.lang.String)
 jsyntaxpane.DefaultSyntaxKit: void loadConfig(jsyntaxpane.util.Configuration,java.lang.Class)
 jsyntaxpane.DefaultSyntaxKit: java.lang.String getContentType()
 jsyntaxpane.DefaultSyntaxKit: void <clinit>()
+org.kevoree.tools.marShellGUI.KevsComboCompletionAction$$anonfun$getFirstDelimiter$1
+org.kevoree.tools.marShellGUI.KevsComboCompletionAction$$anonfun$getFirstDelimiter$1: long serialVersionUID
+org.kevoree.tools.marShellGUI.KevsComboCompletionAction$$anonfun$getFirstDelimiter$1: void <clinit>()
+org.kevoree.tools.marShellGUI.KevsComboCompletionAction$$anonfun$getFirstDelimiter$1: boolean apply(jsyntaxpane.Token)
+org.kevoree.tools.marShellGUI.KevsComboCompletionAction$$anonfun$getFirstDelimiter$1: java.lang.Object apply(java.lang.Object)
+org.kevoree.tools.marShellGUI.KevsComboCompletionAction$$anonfun$getFirstDelimiter$1: KevsComboCompletionAction$$anonfun$getFirstDelimiter$1(org.kevoree.tools.marShellGUI.KevsComboCompletionAction)
+scala.runtime.AbstractFunction1: void apply$mcVI$sp(int)
+scala.runtime.AbstractFunction1: boolean apply$mcZI$sp(int)
+scala.runtime.AbstractFunction1: int apply$mcII$sp(int)
+scala.runtime.AbstractFunction1: float apply$mcFI$sp(int)
+scala.runtime.AbstractFunction1: long apply$mcLI$sp(int)
+scala.runtime.AbstractFunction1: double apply$mcDI$sp(int)
+scala.runtime.AbstractFunction1: void apply$mcVL$sp(long)
+scala.runtime.AbstractFunction1: boolean apply$mcZL$sp(long)
+scala.runtime.AbstractFunction1: int apply$mcIL$sp(long)
+scala.runtime.AbstractFunction1: float apply$mcFL$sp(long)
+scala.runtime.AbstractFunction1: long apply$mcLL$sp(long)
+scala.runtime.AbstractFunction1: double apply$mcDL$sp(long)
+scala.runtime.AbstractFunction1: void apply$mcVF$sp(float)
+scala.runtime.AbstractFunction1: boolean apply$mcZF$sp(float)
+scala.runtime.AbstractFunction1: int apply$mcIF$sp(float)
+scala.runtime.AbstractFunction1: float apply$mcFF$sp(float)
+scala.runtime.AbstractFunction1: long apply$mcLF$sp(float)
+scala.runtime.AbstractFunction1: double apply$mcDF$sp(float)
+scala.runtime.AbstractFunction1: void apply$mcVD$sp(double)
+scala.runtime.AbstractFunction1: boolean apply$mcZD$sp(double)
+scala.runtime.AbstractFunction1: int apply$mcID$sp(double)
+scala.runtime.AbstractFunction1: float apply$mcFD$sp(double)
+scala.runtime.AbstractFunction1: long apply$mcLD$sp(double)
+scala.runtime.AbstractFunction1: double apply$mcDD$sp(double)
+scala.runtime.AbstractFunction1: java.lang.String toString()
+scala.runtime.AbstractFunction1: scala.Function1 compose(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 compose$mcVI$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 compose$mcZI$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 compose$mcII$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 compose$mcFI$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 compose$mcLI$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 compose$mcDI$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 compose$mcVL$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 compose$mcZL$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 compose$mcIL$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 compose$mcFL$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 compose$mcLL$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 compose$mcDL$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 compose$mcVF$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 compose$mcZF$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 compose$mcIF$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 compose$mcFF$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 compose$mcLF$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 compose$mcDF$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 compose$mcVD$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 compose$mcZD$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 compose$mcID$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 compose$mcFD$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 compose$mcLD$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 compose$mcDD$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 andThen(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 andThen$mcVI$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 andThen$mcZI$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 andThen$mcII$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 andThen$mcFI$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 andThen$mcLI$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 andThen$mcDI$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 andThen$mcVL$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 andThen$mcZL$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 andThen$mcIL$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 andThen$mcFL$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 andThen$mcLL$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 andThen$mcDL$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 andThen$mcVF$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 andThen$mcZF$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 andThen$mcIF$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 andThen$mcFF$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 andThen$mcLF$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 andThen$mcDF$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 andThen$mcVD$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 andThen$mcZD$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 andThen$mcID$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 andThen$mcFD$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 andThen$mcLD$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 andThen$mcDD$sp(scala.Function1)
+scala.runtime.AbstractFunction1: AbstractFunction1()
 org.kevoree.tools.marShellGUI.KevsPanel
 org.kevoree.tools.marShellGUI.KevsPanel: javax.swing.JEditorPane codeEditor
 org.kevoree.tools.marShellGUI.KevsPanel: javax.swing.JScrollPane scrPane
@@ -4280,6 +4348,9 @@ org.kevoree.tools.marShellGUI.KevsModelHandlers$: KevsModelHandlers$()
 org.kevoree.tools.marShellGUI.KevsComboCompletionAction
 org.kevoree.tools.marShellGUI.KevsComboCompletionAction: void actionPerformed(javax.swing.text.JTextComponent,jsyntaxpane.SyntaxDocument,int,java.awt.event.ActionEvent)
 org.kevoree.tools.marShellGUI.KevsComboCompletionAction: void refreshList(javax.swing.text.JTextComponent,jsyntaxpane.SyntaxDocument,int)
+org.kevoree.tools.marShellGUI.KevsComboCompletionAction: boolean isFirstDelimiter(jsyntaxpane.SyntaxDocument,int)
+org.kevoree.tools.marShellGUI.KevsComboCompletionAction: scala.Option getFirstDelimiter(jsyntaxpane.SyntaxDocument,int)
+org.kevoree.tools.marShellGUI.KevsComboCompletionAction: scala.Option getFirstKeyword(jsyntaxpane.SyntaxDocument,int)
 org.kevoree.tools.marShellGUI.KevsComboCompletionAction: void pushNodeId()
 org.kevoree.tools.marShellGUI.KevsComboCompletionAction: void pushTypeId()
 org.kevoree.tools.marShellGUI.KevsComboCompletionAction: void pushKeyword()
@@ -4313,6 +4384,88 @@ org.kevoree.tools.marShellGUI.KevsPanel$$anon$1: void insertUpdate(javax.swing.e
 org.kevoree.tools.marShellGUI.KevsPanel$$anon$1: void changedUpdate(javax.swing.event.DocumentEvent)
 org.kevoree.tools.marShellGUI.KevsPanel$$anon$1: void updateMarkers(java.lang.String)
 org.kevoree.tools.marShellGUI.KevsPanel$$anon$1: KevsPanel$$anon$1(org.kevoree.tools.marShellGUI.KevsPanel)
+org.kevoree.tools.marShellGUI.KevsComboCompletionAction$$anonfun$getFirstKeyword$1
+org.kevoree.tools.marShellGUI.KevsComboCompletionAction$$anonfun$getFirstKeyword$1: long serialVersionUID
+org.kevoree.tools.marShellGUI.KevsComboCompletionAction$$anonfun$getFirstKeyword$1: void <clinit>()
+org.kevoree.tools.marShellGUI.KevsComboCompletionAction$$anonfun$getFirstKeyword$1: boolean apply(jsyntaxpane.Token)
+org.kevoree.tools.marShellGUI.KevsComboCompletionAction$$anonfun$getFirstKeyword$1: java.lang.Object apply(java.lang.Object)
+org.kevoree.tools.marShellGUI.KevsComboCompletionAction$$anonfun$getFirstKeyword$1: KevsComboCompletionAction$$anonfun$getFirstKeyword$1(org.kevoree.tools.marShellGUI.KevsComboCompletionAction)
+scala.runtime.AbstractFunction1: void apply$mcVI$sp(int)
+scala.runtime.AbstractFunction1: boolean apply$mcZI$sp(int)
+scala.runtime.AbstractFunction1: int apply$mcII$sp(int)
+scala.runtime.AbstractFunction1: float apply$mcFI$sp(int)
+scala.runtime.AbstractFunction1: long apply$mcLI$sp(int)
+scala.runtime.AbstractFunction1: double apply$mcDI$sp(int)
+scala.runtime.AbstractFunction1: void apply$mcVL$sp(long)
+scala.runtime.AbstractFunction1: boolean apply$mcZL$sp(long)
+scala.runtime.AbstractFunction1: int apply$mcIL$sp(long)
+scala.runtime.AbstractFunction1: float apply$mcFL$sp(long)
+scala.runtime.AbstractFunction1: long apply$mcLL$sp(long)
+scala.runtime.AbstractFunction1: double apply$mcDL$sp(long)
+scala.runtime.AbstractFunction1: void apply$mcVF$sp(float)
+scala.runtime.AbstractFunction1: boolean apply$mcZF$sp(float)
+scala.runtime.AbstractFunction1: int apply$mcIF$sp(float)
+scala.runtime.AbstractFunction1: float apply$mcFF$sp(float)
+scala.runtime.AbstractFunction1: long apply$mcLF$sp(float)
+scala.runtime.AbstractFunction1: double apply$mcDF$sp(float)
+scala.runtime.AbstractFunction1: void apply$mcVD$sp(double)
+scala.runtime.AbstractFunction1: boolean apply$mcZD$sp(double)
+scala.runtime.AbstractFunction1: int apply$mcID$sp(double)
+scala.runtime.AbstractFunction1: float apply$mcFD$sp(double)
+scala.runtime.AbstractFunction1: long apply$mcLD$sp(double)
+scala.runtime.AbstractFunction1: double apply$mcDD$sp(double)
+scala.runtime.AbstractFunction1: java.lang.String toString()
+scala.runtime.AbstractFunction1: scala.Function1 compose(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 compose$mcVI$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 compose$mcZI$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 compose$mcII$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 compose$mcFI$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 compose$mcLI$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 compose$mcDI$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 compose$mcVL$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 compose$mcZL$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 compose$mcIL$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 compose$mcFL$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 compose$mcLL$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 compose$mcDL$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 compose$mcVF$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 compose$mcZF$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 compose$mcIF$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 compose$mcFF$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 compose$mcLF$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 compose$mcDF$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 compose$mcVD$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 compose$mcZD$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 compose$mcID$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 compose$mcFD$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 compose$mcLD$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 compose$mcDD$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 andThen(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 andThen$mcVI$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 andThen$mcZI$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 andThen$mcII$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 andThen$mcFI$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 andThen$mcLI$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 andThen$mcDI$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 andThen$mcVL$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 andThen$mcZL$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 andThen$mcIL$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 andThen$mcFL$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 andThen$mcLL$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 andThen$mcDL$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 andThen$mcVF$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 andThen$mcZF$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 andThen$mcIF$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 andThen$mcFF$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 andThen$mcLF$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 andThen$mcDF$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 andThen$mcVD$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 andThen$mcZD$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 andThen$mcID$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 andThen$mcFD$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 andThen$mcLD$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 andThen$mcDD$sp(scala.Function1)
+scala.runtime.AbstractFunction1: AbstractFunction1()
 org.kevoree.tools.marShellGUI.LogPanel
 org.kevoree.tools.marShellGUI.LogPanel: java.lang.String eol
 org.kevoree.tools.marShellGUI.LogPanel: javax.swing.JScrollPane scrollShell
@@ -4489,6 +4642,88 @@ jsyntaxpane.DefaultSyntaxKit: java.lang.String getAbbreviation(java.lang.String)
 jsyntaxpane.DefaultSyntaxKit: void loadConfig(jsyntaxpane.util.Configuration,java.lang.Class)
 jsyntaxpane.DefaultSyntaxKit: java.lang.String getContentType()
 jsyntaxpane.DefaultSyntaxKit: void <clinit>()
+org.kevoree.tools.marShellGUI.KevsComboCompletionAction$$anonfun$isFirstDelimiter$1
+org.kevoree.tools.marShellGUI.KevsComboCompletionAction$$anonfun$isFirstDelimiter$1: long serialVersionUID
+org.kevoree.tools.marShellGUI.KevsComboCompletionAction$$anonfun$isFirstDelimiter$1: void <clinit>()
+org.kevoree.tools.marShellGUI.KevsComboCompletionAction$$anonfun$isFirstDelimiter$1: void apply(jsyntaxpane.Token)
+org.kevoree.tools.marShellGUI.KevsComboCompletionAction$$anonfun$isFirstDelimiter$1: java.lang.Object apply(java.lang.Object)
+org.kevoree.tools.marShellGUI.KevsComboCompletionAction$$anonfun$isFirstDelimiter$1: KevsComboCompletionAction$$anonfun$isFirstDelimiter$1(org.kevoree.tools.marShellGUI.KevsComboCompletionAction)
+scala.runtime.AbstractFunction1: void apply$mcVI$sp(int)
+scala.runtime.AbstractFunction1: boolean apply$mcZI$sp(int)
+scala.runtime.AbstractFunction1: int apply$mcII$sp(int)
+scala.runtime.AbstractFunction1: float apply$mcFI$sp(int)
+scala.runtime.AbstractFunction1: long apply$mcLI$sp(int)
+scala.runtime.AbstractFunction1: double apply$mcDI$sp(int)
+scala.runtime.AbstractFunction1: void apply$mcVL$sp(long)
+scala.runtime.AbstractFunction1: boolean apply$mcZL$sp(long)
+scala.runtime.AbstractFunction1: int apply$mcIL$sp(long)
+scala.runtime.AbstractFunction1: float apply$mcFL$sp(long)
+scala.runtime.AbstractFunction1: long apply$mcLL$sp(long)
+scala.runtime.AbstractFunction1: double apply$mcDL$sp(long)
+scala.runtime.AbstractFunction1: void apply$mcVF$sp(float)
+scala.runtime.AbstractFunction1: boolean apply$mcZF$sp(float)
+scala.runtime.AbstractFunction1: int apply$mcIF$sp(float)
+scala.runtime.AbstractFunction1: float apply$mcFF$sp(float)
+scala.runtime.AbstractFunction1: long apply$mcLF$sp(float)
+scala.runtime.AbstractFunction1: double apply$mcDF$sp(float)
+scala.runtime.AbstractFunction1: void apply$mcVD$sp(double)
+scala.runtime.AbstractFunction1: boolean apply$mcZD$sp(double)
+scala.runtime.AbstractFunction1: int apply$mcID$sp(double)
+scala.runtime.AbstractFunction1: float apply$mcFD$sp(double)
+scala.runtime.AbstractFunction1: long apply$mcLD$sp(double)
+scala.runtime.AbstractFunction1: double apply$mcDD$sp(double)
+scala.runtime.AbstractFunction1: java.lang.String toString()
+scala.runtime.AbstractFunction1: scala.Function1 compose(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 compose$mcVI$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 compose$mcZI$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 compose$mcII$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 compose$mcFI$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 compose$mcLI$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 compose$mcDI$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 compose$mcVL$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 compose$mcZL$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 compose$mcIL$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 compose$mcFL$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 compose$mcLL$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 compose$mcDL$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 compose$mcVF$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 compose$mcZF$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 compose$mcIF$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 compose$mcFF$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 compose$mcLF$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 compose$mcDF$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 compose$mcVD$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 compose$mcZD$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 compose$mcID$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 compose$mcFD$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 compose$mcLD$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 compose$mcDD$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 andThen(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 andThen$mcVI$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 andThen$mcZI$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 andThen$mcII$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 andThen$mcFI$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 andThen$mcLI$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 andThen$mcDI$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 andThen$mcVL$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 andThen$mcZL$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 andThen$mcIL$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 andThen$mcFL$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 andThen$mcLL$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 andThen$mcDL$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 andThen$mcVF$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 andThen$mcZF$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 andThen$mcIF$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 andThen$mcFF$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 andThen$mcLF$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 andThen$mcDF$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 andThen$mcVD$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 andThen$mcZD$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 andThen$mcID$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 andThen$mcFD$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 andThen$mcLD$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 andThen$mcDD$sp(scala.Function1)
+scala.runtime.AbstractFunction1: AbstractFunction1()
 org.kevoree.tools.marShellGUI.KevsComboCompletionAction$$anonfun$pushTypeId$1
 org.kevoree.tools.marShellGUI.KevsComboCompletionAction$$anonfun$pushTypeId$1: long serialVersionUID
 org.kevoree.tools.marShellGUI.KevsComboCompletionAction$$anonfun$pushTypeId$1: java.util.ArrayList items$1
@@ -4577,86 +4812,3 @@ org.kevoree.tools.marShellGUI.MainRunner$: org.kevoree.tools.marShellGUI.MainRun
 org.kevoree.tools.marShellGUI.MainRunner$: void <clinit>()
 org.kevoree.tools.marShellGUI.MainRunner$: void main(java.lang.String[])
 org.kevoree.tools.marShellGUI.MainRunner$: MainRunner$()
-org.jdesktop.swingx.plaf.MonthViewUI
-org.jdesktop.swingx.plaf.basic.BasicMonthViewUI
-org.jdesktop.swingx.plaf.basic.BasicMonthViewUI: javax.swing.plaf.ComponentUI createUI(javax.swing.JComponent)
-org.jdesktop.swingx.plaf.DatePickerUI
-org.jdesktop.swingx.plaf.basic.BasicDatePickerUI
-org.jdesktop.swingx.plaf.basic.BasicDatePickerUI: javax.swing.plaf.ComponentUI createUI(javax.swing.JComponent)
-org.jdesktop.swingx.plaf.MultiThumbSliderUI
-org.jdesktop.swingx.plaf.basic.BasicMultiThumbSliderUI
-org.jdesktop.swingx.plaf.basic.BasicMultiThumbSliderUI: javax.swing.plaf.ComponentUI createUI(javax.swing.JComponent)
-org.jdesktop.swingx.plaf.StatusBarUI
-org.jdesktop.swingx.plaf.basic.BasicStatusBarUI
-org.jdesktop.swingx.plaf.basic.BasicStatusBarUI: javax.swing.plaf.ComponentUI createUI(javax.swing.JComponent)
-org.jdesktop.swingx.plaf.macosx.MacOSXStatusBarUI
-org.jdesktop.swingx.plaf.macosx.MacOSXStatusBarUI: javax.swing.plaf.ComponentUI createUI(javax.swing.JComponent)
-org.jdesktop.swingx.plaf.basic.BasicStatusBarUI: javax.swing.plaf.ComponentUI createUI(javax.swing.JComponent)
-org.jdesktop.swingx.plaf.metal.MetalStatusBarUI
-org.jdesktop.swingx.plaf.metal.MetalStatusBarUI: javax.swing.plaf.ComponentUI createUI(javax.swing.JComponent)
-org.jdesktop.swingx.plaf.basic.BasicStatusBarUI: javax.swing.plaf.ComponentUI createUI(javax.swing.JComponent)
-org.jdesktop.swingx.plaf.windows.WindowsStatusBarUI
-org.jdesktop.swingx.plaf.windows.WindowsStatusBarUI: javax.swing.plaf.ComponentUI createUI(javax.swing.JComponent)
-org.jdesktop.swingx.plaf.basic.BasicStatusBarUI: javax.swing.plaf.ComponentUI createUI(javax.swing.JComponent)
-org.jdesktop.swingx.plaf.windows.WindowsClassicStatusBarUI
-org.jdesktop.swingx.plaf.windows.WindowsClassicStatusBarUI: javax.swing.plaf.ComponentUI createUI(javax.swing.JComponent)
-org.jdesktop.swingx.plaf.basic.BasicStatusBarUI: javax.swing.plaf.ComponentUI createUI(javax.swing.JComponent)
-org.jdesktop.swingx.plaf.basic.core.BasicXListUI
-org.jdesktop.swingx.plaf.basic.core.BasicXListUI: javax.swing.plaf.ComponentUI createUI(javax.swing.JComponent)
-org.jdesktop.swingx.plaf.synth.SynthXListUI
-org.jdesktop.swingx.plaf.synth.SynthXListUI: javax.swing.plaf.ComponentUI createUI(javax.swing.JComponent)
-org.jdesktop.swingx.plaf.basic.core.BasicXListUI: javax.swing.plaf.ComponentUI createUI(javax.swing.JComponent)
-org.jdesktop.swingx.plaf.TaskPaneContainerUI
-org.jdesktop.swingx.plaf.basic.BasicTaskPaneContainerUI
-org.jdesktop.swingx.plaf.basic.BasicTaskPaneContainerUI: javax.swing.plaf.ComponentUI createUI(javax.swing.JComponent)
-org.jdesktop.swingx.plaf.ErrorPaneUI
-org.jdesktop.swingx.plaf.basic.BasicErrorPaneUI
-org.jdesktop.swingx.plaf.basic.BasicErrorPaneUI: javax.swing.plaf.ComponentUI createUI(javax.swing.JComponent)
-org.jdesktop.swingx.plaf.macosx.MacOSXErrorPaneUI
-org.jdesktop.swingx.plaf.macosx.MacOSXErrorPaneUI: javax.swing.plaf.ComponentUI createUI(javax.swing.JComponent)
-org.jdesktop.swingx.plaf.basic.BasicErrorPaneUI: javax.swing.plaf.ComponentUI createUI(javax.swing.JComponent)
-org.jdesktop.swingx.plaf.HeaderUI
-org.jdesktop.swingx.plaf.basic.BasicHeaderUI
-org.jdesktop.swingx.plaf.basic.BasicHeaderUI: javax.swing.plaf.ComponentUI createUI(javax.swing.JComponent)
-org.jdesktop.swingx.plaf.TipOfTheDayUI
-org.jdesktop.swingx.plaf.basic.BasicTipOfTheDayUI
-org.jdesktop.swingx.plaf.basic.BasicTipOfTheDayUI: javax.swing.plaf.ComponentUI createUI(javax.swing.JComponent)
-org.jdesktop.swingx.plaf.windows.WindowsTipOfTheDayUI
-org.jdesktop.swingx.plaf.windows.WindowsTipOfTheDayUI: javax.swing.plaf.ComponentUI createUI(javax.swing.JComponent)
-org.jdesktop.swingx.plaf.basic.BasicTipOfTheDayUI: javax.swing.plaf.ComponentUI createUI(javax.swing.JComponent)
-org.jdesktop.swingx.plaf.LoginPaneUI
-org.jdesktop.swingx.plaf.basic.BasicLoginPaneUI
-org.jdesktop.swingx.plaf.basic.BasicLoginPaneUI: javax.swing.plaf.ComponentUI createUI(javax.swing.JComponent)
-org.jdesktop.swingx.plaf.TaskPaneUI
-org.jdesktop.swingx.plaf.basic.BasicTaskPaneUI
-org.jdesktop.swingx.plaf.basic.BasicTaskPaneUI: javax.swing.plaf.ComponentUI createUI(javax.swing.JComponent)
-org.jdesktop.swingx.plaf.nimbus.NimbusTaskPaneUI
-org.jdesktop.swingx.plaf.nimbus.NimbusTaskPaneUI: javax.swing.plaf.ComponentUI createUI(javax.swing.JComponent)
-org.jdesktop.swingx.plaf.basic.BasicTaskPaneUI: javax.swing.plaf.ComponentUI createUI(javax.swing.JComponent)
-org.jdesktop.swingx.plaf.windows.WindowsTaskPaneUI
-org.jdesktop.swingx.plaf.windows.WindowsTaskPaneUI: javax.swing.plaf.ComponentUI createUI(javax.swing.JComponent)
-org.jdesktop.swingx.plaf.basic.BasicTaskPaneUI: javax.swing.plaf.ComponentUI createUI(javax.swing.JComponent)
-org.jdesktop.swingx.plaf.misc.GlossyTaskPaneUI
-org.jdesktop.swingx.plaf.misc.GlossyTaskPaneUI: javax.swing.plaf.ComponentUI createUI(javax.swing.JComponent)
-org.jdesktop.swingx.plaf.basic.BasicTaskPaneUI: javax.swing.plaf.ComponentUI createUI(javax.swing.JComponent)
-org.jdesktop.swingx.plaf.windows.WindowsClassicTaskPaneUI
-org.jdesktop.swingx.plaf.windows.WindowsClassicTaskPaneUI: javax.swing.plaf.ComponentUI createUI(javax.swing.JComponent)
-org.jdesktop.swingx.plaf.basic.BasicTaskPaneUI: javax.swing.plaf.ComponentUI createUI(javax.swing.JComponent)
-org.jdesktop.swingx.plaf.metal.MetalTaskPaneUI
-org.jdesktop.swingx.plaf.metal.MetalTaskPaneUI: javax.swing.plaf.ComponentUI createUI(javax.swing.JComponent)
-org.jdesktop.swingx.plaf.basic.BasicTaskPaneUI: javax.swing.plaf.ComponentUI createUI(javax.swing.JComponent)
-org.jdesktop.swingx.plaf.TitledPanelUI
-org.jdesktop.swingx.plaf.basic.BasicTitledPanelUI
-org.jdesktop.swingx.plaf.basic.BasicTitledPanelUI: javax.swing.plaf.ComponentUI createUI(javax.swing.JComponent)
-org.jdesktop.swingx.plaf.PromptTextUI
-org.jdesktop.swingx.plaf.PromptTextAreaUI
-org.jdesktop.swingx.plaf.PromptTextFieldUI
-org.jdesktop.swingx.plaf.BuddyTextFieldUI
-org.jdesktop.swingx.plaf.SearchFieldUI
-org.jdesktop.swingx.plaf.basic.BasicBusyLabelUI
-org.jdesktop.swingx.plaf.basic.BasicBusyLabelUI: javax.swing.plaf.ComponentUI createUI(javax.swing.JComponent)
-org.jdesktop.swingx.plaf.basic.BasicHyperlinkUI
-org.jdesktop.swingx.plaf.basic.BasicHyperlinkUI: javax.swing.plaf.ComponentUI createUI(javax.swing.JComponent)
-org.jdesktop.swingx.plaf.windows.WindowsHyperlinkUI
-org.jdesktop.swingx.plaf.windows.WindowsHyperlinkUI: javax.swing.plaf.ComponentUI createUI(javax.swing.JComponent)
-org.jdesktop.swingx.plaf.basic.BasicHyperlinkUI: javax.swing.plaf.ComponentUI createUI(javax.swing.JComponent)

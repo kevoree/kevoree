@@ -7,9 +7,13 @@ package org.kevoree.library.channels;
 
 import org.kevoree.annotation.ChannelTypeFragment;
 import org.kevoree.annotation.Library;
+import org.kevoree.annotation.Start;
+import org.kevoree.annotation.Stop;
 import org.kevoree.framework.AbstractChannelFragment;
 import org.kevoree.framework.ChannelFragmentSender;
 import org.kevoree.framework.message.Message;
+import org.kevoree.library.arduinoNodeType.ArduinoMethodHelper;
+import org.kevoree.library.arduinoNodeType.PortUsage;
 
 /**
  *
@@ -19,14 +23,18 @@ import org.kevoree.framework.message.Message;
 @ChannelTypeFragment
 public class LocalMsgArduino extends AbstractChannelFragment {
 
+    @Start
+    @Stop
+    public void lifeCycle(){}
+    
     @Override
     public Object dispatch(Message msg) {
-        StringBuilder context = (StringBuilder) msg.getContent();
+        StringBuffer context = (StringBuffer) msg.getContent();
         for (org.kevoree.framework.KevoreePort p : getBindedPorts()) {
-            //forward(p, msg);
+            context.append(ArduinoMethodHelper.generateMethodNameFromComponentPort(p.getComponentName(), p.getName(), PortUsage.provided()));
+            context.append("(param);\n");
         }
         return null;
-        
     }
 
     

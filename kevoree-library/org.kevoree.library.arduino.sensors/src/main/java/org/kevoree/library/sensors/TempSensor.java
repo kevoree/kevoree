@@ -3,6 +3,8 @@ package org.kevoree.library.sensors;
 
 import org.kevoree.annotation.*;
 import org.kevoree.framework.AbstractComponentType;
+import org.kevoree.library.arduinoNodeType.ArduinoMethodHelper;
+import org.kevoree.library.arduinoNodeType.PortUsage;
 
 @Library(name = "KevoreeArduino")
 @ComponentType
@@ -31,10 +33,6 @@ public class TempSensor extends AbstractComponentType {
         context.append("#include <math.h> \n");
         context.append("#include <Metro.h> \n");
 
-        context.append("#define ThermistorPIN ");
-        context.append(this.getDictionary().get("pin"));
-        context.append(" \n");
-
         //GENERATE DEFAULT VALUES
         context.append("float vcc = 4.91;\n");
         context.append("float pad = 9850;\n");
@@ -46,27 +44,21 @@ public class TempSensor extends AbstractComponentType {
         StringBuffer context = (StringBuffer) o;
         
         /* Generate code for port */
-
         context.append("    long Resistance;  \n" +
                 "    float temp;  // Dual-Purpose variable to save space.\n" +
-                "    int RawADC = analogRead(ThermistorPIN);\n" +
+                "    int RawADC = analogRead("+this.getDictionary().get("pin")+");\n" +
                 "    Resistance=((1024 * thermr / RawADC) - pad); \n" +
                 "    temp = log(Resistance); // Saving the Log(resistance) so not to calculate  it 4 times later\n" +
                 "    temp = 1 / (0.001129148 + (0.000234125 * temp) + (0.0000000876741 * temp * temp * temp));\n" +
                 "    temp = temp - 273.15;  // Convert Kelvin to Celsius  \n" +
                 "    //send to output port\n" +
                 "    String result = String(int(temp*100));");
-
-
-          //TODO DO CALL TO OUTPUT PORT
-
-        //context.append("tempOut(Temp+\"\");\n");
+        
+        //GENERATE METHOD CALL
+        context.append(ArduinoMethodHelper.generateMethodNameFromComponentPort(this.getName(), "temp", PortUsage.required())); 
+        //GENERATE PARAMETER
+        context.append("(result);\n");
 
     }
-
-
-
-    /* ARDUINO CODE */
-
 
 }

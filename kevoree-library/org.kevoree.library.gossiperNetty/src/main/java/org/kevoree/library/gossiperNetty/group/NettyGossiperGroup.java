@@ -132,7 +132,7 @@ public class NettyGossiperGroup extends AbstractGroupType implements NettyGossip
 	}
 
 	@Override
-	public boolean parseFullUDPParameter() {
+	public Boolean parseFullUDPParameter() {
 		return this.getDictionary().get("FullUDP").toString().equals("true");
 	}
 
