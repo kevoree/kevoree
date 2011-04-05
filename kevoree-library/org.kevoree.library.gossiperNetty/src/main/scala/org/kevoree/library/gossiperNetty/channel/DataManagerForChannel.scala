@@ -5,16 +5,18 @@ import java.util.UUID
 import org.kevoree.framework.message.Message
 import org.kevoree.library.version.Version.ClockEntry
 import org.kevoree.library.version.Version.VectorClock
+import org.slf4j.LoggerFactory
 import scala.collection.JavaConversions._
 
-class DataManagerForChannel extends DataManager[Message] with actors.DaemonActor  {
+class DataManagerForChannel extends DataManager with actors.DaemonActor  {
   
   private var datas = new HashMap[UUID,Tuple2[VectorClock,Message]]()
+  private var logger = LoggerFactory.getLogger(classOf[DataManagerForChannel])
   
   this.start
   
   case class GetData(uuid : UUID)
-  case class SetData(uuid : UUID, tuple : Tuple2[VectorClock,Message])
+  case class SetData(uuid : UUID, tuple : Tuple2[VectorClock,Any])
   case class RemoveData(uuid : UUID)
   case class GetUUIDVectorClock(uuid : UUID)
   case class GetUUIDVectorClocks()
@@ -25,11 +27,11 @@ class DataManagerForChannel extends DataManager[Message] with actors.DaemonActor
     this ! Stop()
   }
   
-  def getData(uuid : UUID) : Tuple2[VectorClock,Message] ={
-	(this !? GetData(uuid)).asInstanceOf[Tuple2[VectorClock,Message]]
+  def getData(uuid : UUID) : Tuple2[VectorClock,Any] ={
+	(this !? GetData(uuid)).asInstanceOf[Tuple2[VectorClock,Any]]
   }
   
-  def setData(uuid : UUID, tuple : Tuple2[VectorClock,Message]) ={
+  def setData(uuid : UUID, tuple : Tuple2[VectorClock,Any]) ={
 	this ! SetData(uuid, tuple)
   }
   
@@ -52,7 +54,11 @@ class DataManagerForChannel extends DataManager[Message] with actors.DaemonActor
 	  react {
 		case Stop() => this.exit
 		case GetData(uuid) => reply(datas.get(uuid)) // TODO maybe we need to clone the map
-		case SetData(uuid, tuple) => datas.put(uuid, tuple)
+		case SetData(uuid, tuple) => {
+			if (tuple._2.isInstanceOf[Message]) {
+			  datas.put(uuid, tuple.asInstanceOf[Tuple2[VectorClock,Message]])
+			}
+		}
 		case RemoveData(uuid) => datas.remove(uuid)
 		case GetUUIDVectorClock(uuid) => reply(getUUIDVectorClockFromUUID(uuid))
 		case GetUUIDVectorClocks() => reply(getAllUUIDVectorClocks())

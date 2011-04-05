@@ -10,15 +10,13 @@ import org.kevoree.library.gossiperNetty.api.msg.KevoreeMessage.Message
 import org.slf4j.LoggerFactory
 import com.google.protobuf.ByteString
 
-class GossiperRequestSenderHandler(gossiperRequestSender: GossiperRequestSender[_]) extends SimpleChannelUpstreamHandler {
+class GossiperRequestSenderHandler(gossiperRequestSender: GossiperRequestSender) extends SimpleChannelUpstreamHandler {
 
 	private var logger = LoggerFactory.getLogger(classOf[GossiperRequestSenderHandler])
 
 	override def messageReceived(ctx: ChannelHandlerContext, e: MessageEvent) {
-		//val message = e.getMessage.asInstanceOf[Message]
-		println(e.getMessage)
-		val message = Message.parseFrom(ByteString.copyFromUtf8(e.getMessage.asInstanceOf[String]))
-		println("response received" + message.getContentClass)
+		val message = e.getMessage.asInstanceOf[Message]
+		//println("response received" + message.getContentClass)
 		if (message.getContentClass.equals(classOf[VectorClockUUIDs].getName)) {
 			//var vectorClockUUIDs = RichString(message.getContent.toStringUtf8).fromJSON(classOf[VectorClockUUIDs])
 			gossiperRequestSender.initSecondStepAction(message, e.getRemoteAddress /*, e.getChannel*/)

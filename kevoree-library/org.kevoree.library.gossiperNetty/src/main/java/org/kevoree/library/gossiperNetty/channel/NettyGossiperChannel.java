@@ -22,6 +22,7 @@ import org.kevoree.framework.message.Message;
 import org.kevoree.library.gossiperNetty.DataManager;
 import org.kevoree.library.gossiperNetty.DataManagerForChannel;
 import org.kevoree.library.gossiperNetty.GossiperActor;
+import org.kevoree.library.gossiperNetty.Serializer;
 import org.kevoree.library.version.Version.ClockEntry;
 import org.kevoree.library.version.Version.VectorClock;
 import org.osgi.framework.Bundle;
@@ -44,8 +45,9 @@ import scala.Tuple2;
 @ChannelTypeFragment
 public class NettyGossiperChannel extends AbstractChannelFragment implements NettyGossipAbstractElement {
 
-	private DataManager<Message> dataManager = null;//new DataManager();
-	private GossiperActor<Message> actor = null;
+	private DataManager dataManager = null;//new DataManager();
+	private Serializer serializer = null;
+	private GossiperActor actor = null;
 	private ServiceReference sr;
 	private KevoreeModelHandlerService modelHandlerService = null;
 	private Logger logger = LoggerFactory.getLogger(NettyGossiperChannel.class);
@@ -57,14 +59,14 @@ public class NettyGossiperChannel extends AbstractChannelFragment implements Net
 		modelHandlerService = (KevoreeModelHandlerService) bundle.getBundleContext().getService(sr);
 
 		dataManager = new DataManagerForChannel();
+		serializer = new ChannelSerializer();
 
-		actor = new GossiperActor<Message>(Long.parseLong((String)this.getDictionary().get("interval")),
+		actor = new GossiperActor(Long.parseLong((String)this.getDictionary().get("interval")),
 				this,
 				dataManager,
 				parsePortNumber(getNodeName()),
 				parseFullUDPParameter(),
-				true,
-				Message.class);
+				true, serializer);
 	}
 
 	@Stop
@@ -96,7 +98,7 @@ public class NettyGossiperChannel extends AbstractChannelFragment implements Net
 		//CREATE NEW MESSAGE
 		long timestamp = System.currentTimeMillis();
 		UUID uuid = UUID.randomUUID();
-		Tuple2<VectorClock, Message> tuple = new Tuple2<VectorClock, Message>(VectorClock.newBuilder().
+		Tuple2<VectorClock, Object> tuple = new Tuple2<VectorClock, Object>(VectorClock.newBuilder().
 				addEnties(ClockEntry.newBuilder().setNodeID(this.getNodeName()).setTimestamp(timestamp).setVersion(2l).build()).setTimestamp(timestamp).build(), msg);
 		dataManager.setData(uuid, tuple);
 

@@ -22,7 +22,7 @@ import org.kevoree.library.gossiper.version.Occured
 import java.lang.Math
 import scala.collection.JavaConversions._
 
-class DataManagerForGroup(nameInstance: String, selfNodeName: String, modelService: KevoreeModelHandlerService) extends DataManager[Array[Byte]] with actors.DaemonActor {
+class DataManagerForGroup(nameInstance: String, selfNodeName: String, modelService: KevoreeModelHandlerService) extends DataManager with actors.DaemonActor {
 
 	private var lastCheckedTimeStamp = new Date(0l)
 	private var uuid: UUID = UUID.nameUUIDFromBytes(nameInstance.getBytes)
@@ -37,7 +37,7 @@ class DataManagerForGroup(nameInstance: String, selfNodeName: String, modelServi
 
 	case class GetData(uuid: UUID)
 
-	case class SetData(uuid: UUID, tuple: Tuple2[VectorClock, Array[Byte]])
+	case class SetData(uuid: UUID, tuple: Tuple2[VectorClock, Any])
 
 	case class RemoveData(uuid: UUID)
 
@@ -53,11 +53,11 @@ class DataManagerForGroup(nameInstance: String, selfNodeName: String, modelServi
 		this ! Stop()
 	}
 
-	def getData(uuid: UUID): Tuple2[VectorClock, Array[Byte]] = {
-		(this !? GetData(uuid)).asInstanceOf[Tuple2[VectorClock, Array[Byte]]]
+	def getData(uuid: UUID): Tuple2[VectorClock, Any] = {
+		(this !? GetData(uuid)).asInstanceOf[Tuple2[VectorClock, Any]]
 	}
 
-	def setData(uuid: UUID, tuple: Tuple2[VectorClock, Array[Byte]]) {
+	def setData(uuid: UUID, tuple: Tuple2[VectorClock, Any]) {
 		this ! SetData(uuid, tuple)
 	}
 
@@ -87,15 +87,15 @@ class DataManagerForGroup(nameInstance: String, selfNodeName: String, modelServi
 							vectorClock = increment()
 						}
 						//val tuple = new Tuple2[VectorClock, String](vectorClock, modelService.getLastModel)
-						val tuple = new Tuple2[VectorClock, Array[Byte]](vectorClock, stringFromModel)
+						val tuple = new Tuple2[VectorClock, ContainerRoot](vectorClock, modelService.getLastModel)
 						reply(tuple)
 					} else {
 						reply(null)
 					}
 				}
 				case SetData(uuid, tuple) => {
-					if (uuid.equals(this.uuid) && tuple._2 != null) {
-						updateOrResolve(tuple)
+					if (uuid.equals(this.uuid) && tuple._2 != null && tuple._2.isInstanceOf[ContainerRoot]) {
+					  updateOrResolve(tuple.asInstanceOf[Tuple2[VectorClock,ContainerRoot]])
 					}
 				}
 				case GetUUIDVectorClock(uuid) => reply(getUUIDVectorClockFromUUID(uuid))
@@ -110,7 +110,7 @@ class DataManagerForGroup(nameInstance: String, selfNodeName: String, modelServi
 		}
 	}
 
-	private def stringFromModel(): Array[Byte] = {
+	/*private def stringFromModel(): Array[Byte] = {
 		val out = new ByteArrayOutputStream
 		KevoreeXmiHelper.saveStream(out, modelService.getLastModel)
 		out.flush
@@ -122,15 +122,15 @@ class DataManagerForGroup(nameInstance: String, selfNodeName: String, modelServi
 	private def modelFromString(model: Array[Byte]): ContainerRoot = {
 		val stream = new ByteArrayInputStream(model)
 		KevoreeXmiHelper.loadStream(stream)
-	}
+	}*/
 
-	private def updateOrResolve(tuple: Tuple2[VectorClock, Array[Byte]]) = {
-		val model = modelFromString(tuple._2)
+	private def updateOrResolve(tuple: Tuple2[VectorClock, ContainerRoot]) = {
+		//val model = modelFromString(tuple._2)
 		val occured = VersionUtils.compare(vectorClock, tuple._1)
 		occured match {
 			case Occured.AFTER => {}
 			case Occured.BEFORE => {
-				updateModelOrHaraKiri(model)
+				updateModelOrHaraKiri(tuple._2)
 				//updateModelOrHaraKiri(tuple._2)
 				localMerge(tuple._1)
 			}
@@ -139,7 +139,7 @@ class DataManagerForGroup(nameInstance: String, selfNodeName: String, modelServi
 				val remoteDate = new Date(tuple._1.getTimestamp);
 				//TODO TO IMPROVE
 				if (localDate.before(remoteDate)) {
-					updateModelOrHaraKiri(model)
+					updateModelOrHaraKiri(tuple._2)
 					//updateModelOrHaraKiri(tuple._2)
 					localMerge(tuple._1)
 				}

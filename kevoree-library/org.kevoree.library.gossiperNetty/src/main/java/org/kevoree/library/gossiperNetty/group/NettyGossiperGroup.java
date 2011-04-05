@@ -24,6 +24,7 @@ import org.kevoree.framework.KevoreePlatformHelper;
 import org.kevoree.library.gossiperNetty.DataManager;
 import org.kevoree.library.gossiperNetty.GossiperActor;
 import org.kevoree.library.gossiperNetty.NettyGossipAbstractElement;
+import org.kevoree.library.gossiperNetty.Serializer;
 import org.kevoree.library.gossiperNetty.channel.NettyGossiperChannel;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.ServiceReference;
@@ -43,8 +44,8 @@ import org.slf4j.LoggerFactory;
 })
 public class NettyGossiperGroup extends AbstractGroupType implements NettyGossipAbstractElement {
 
-	private DataManager<byte[]> dataManager = null;//new DataManager();
-	private GossiperActor<byte[]> actor = null;
+	private DataManager dataManager = null;//new DataManager();
+	private GossiperActor actor = null;
 	private ServiceReference sr;
 	private KevoreeModelHandlerService modelHandlerService = null;
 	private Logger logger = LoggerFactory.getLogger(NettyGossiperChannel.class);
@@ -58,7 +59,8 @@ public class NettyGossiperGroup extends AbstractGroupType implements NettyGossip
 		dataManager = new DataManagerForGroup(this.getName(), this.getNodeName(), modelHandlerService);
 
         Long timeoutLong =  Long.parseLong((String)this.getDictionary().get("interval"));
-		actor = new GossiperActor<byte[]>(timeoutLong,this, dataManager, parsePortNumber(getNodeName()), parseFullUDPParameter(), false, byte[].class);
+		Serializer serializer = new GroupSerializer();
+		actor = new GossiperActor(timeoutLong,this, dataManager, parsePortNumber(getNodeName()), parseFullUDPParameter(), false,serializer);
 	}
 
 	@Stop

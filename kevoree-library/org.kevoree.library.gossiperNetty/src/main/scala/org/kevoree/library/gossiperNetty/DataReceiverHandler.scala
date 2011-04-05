@@ -8,17 +8,14 @@ import org.jboss.netty.channel.SimpleChannelUpstreamHandler
 import org.kevoree.library.gossip.Gossip.VersionedModel
 import org.kevoree.library.gossiperNetty.api.msg.KevoreeMessage.Message
 import org.slf4j.LoggerFactory
-import com.google.protobuf.ByteString
 
-class DataReceiverHandler(gossiperRequestSender: GossiperRequestSender[_]) extends SimpleChannelUpstreamHandler {
+class DataReceiverHandler(gossiperRequestSender: GossiperRequestSender) extends SimpleChannelUpstreamHandler {
 
 	private var logger = LoggerFactory.getLogger(classOf[DataReceiverHandler])
 
 	override def messageReceived(ctx: ChannelHandlerContext, e: MessageEvent) {
 		//println("response received")
-		//val message = e.getMessage.asInstanceOf[Message]
-		println(e.getMessage)
-		val message = Message.parseFrom(ByteString.copyFromUtf8(e.getMessage.asInstanceOf[String]))
+		val message = e.getMessage.asInstanceOf[Message]
 		if (message.getContentClass.equals(classOf[VersionedModel].getName)) {
 			gossiperRequestSender.endGossipAction(message)
 			//e.getChannel.getCloseFuture.awaitUninterruptibly

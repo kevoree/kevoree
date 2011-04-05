@@ -13,11 +13,8 @@ class GossiperRequestReceiverHandler(serverActor : GossiperRequestReceiver) exte
   private var logger = LoggerFactory.getLogger(classOf[GossiperRequestReceiverHandler])
   
   override def messageReceived(ctx:ChannelHandlerContext, e:MessageEvent) {
-		//val message = e.getMessage.asInstanceOf[Message]
-		println(e.getMessage)
-		val message = Message.parseFrom(ByteString.copyFromUtf8(e.getMessage.asInstanceOf[String]))
+		val message = e.getMessage.asInstanceOf[Message]
 	//println("Message received : " + message)
-	// TODO insert Actor into this
 	serverActor.sendReply(message, e.getRemoteAddress, e.getChannel)
 	//println("Message used")
   }
