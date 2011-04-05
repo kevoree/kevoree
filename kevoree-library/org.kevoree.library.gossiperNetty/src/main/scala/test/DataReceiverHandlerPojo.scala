@@ -26,9 +26,9 @@ class DataReceiverHandlerPojo() extends SimpleChannelUpstreamHandler {
 			println("versionModel received")
 
 			val versionedModel = VersionedModel.parseFrom(message.getContent)
-			val data : Array[Byte] = RichString(versionedModel.getModel.toStringUtf8).fromJSON(classOf[Array[Byte]]).asInstanceOf[Array[Byte]]
+		//	val data : Array[Byte] = RichString(versionedModel.getModel.toStringUtf8).fromJSON(classOf[Array[Byte]]).asInstanceOf[Array[Byte]]
 
-			val root = modelFromString(data)
+			val root = modelFromString(versionedModel.getModel.toByteArray)
 
 			println(root)
 			println(root.getGroups)
@@ -40,8 +40,8 @@ class DataReceiverHandlerPojo() extends SimpleChannelUpstreamHandler {
 
 	override def exceptionCaught(ctx: ChannelHandlerContext, e: ExceptionEvent) {
 		//NOOP
-		logger.error(this.getClass + "\n" + e.getCause.getMessage + "\n" + e.getCause.getStackTraceString)
-		//e.getCause.printStackTrace
+
+		e.getCause.printStackTrace
 		e.getChannel.close.awaitUninterruptibly
 	}
 

@@ -27,14 +27,38 @@ class DataSenderHandlerPojo(model : ContainerRoot) extends SimpleChannelUpstream
 			println("request received")
 
 			val uuidDataRequest = Gossip.UUIDDataRequest.parseFrom(message.getContent)
+
+            println("hello")
+
+
 			//val data = dataManager.getData(UUID.fromString(uuidDataRequest.getUuid))
 
 			//val localObjJSON = new RichJSONObject(data._2)
-			val localObjJSON = new RichJSONObject(stringFromModel)
 
-			val res = localObjJSON.toJSON
+
+
+			//val localObjJSON = new RichJSONObject(stringFromModel)
+
+
+      /*
+      var model = "<?xml version=\" 1.0 \" encoding=\" UTF -8 \"?>"
+      for(i <- 0 until 10){
+          model = model + model
+      } */
+
+
+
+     // println(stringFromModel)
+
+
+			val res = stringFromModel
+
+       println("hello2")
+
 			val modelBytes = ByteString.copyFromUtf8(res)
 			//val modelBytes = ByteString.copyFrom(data._2.toString.getBytes("UTF8"))
+
+
 
 			val vectorClock = VectorClock.newBuilder.setTimestamp(System.currentTimeMillis).build
 
@@ -50,16 +74,16 @@ class DataSenderHandlerPojo(model : ContainerRoot) extends SimpleChannelUpstream
 
 	override def exceptionCaught(ctx: ChannelHandlerContext, e: ExceptionEvent) {
 		//NOOP
-		logger.error(this.getClass + "\n" + e.getCause.getMessage + "\n" + e.getCause.getStackTraceString)
+		e.getCause.printStackTrace
 		e.getChannel.close.awaitUninterruptibly
 	}
 
-	private def stringFromModel(): Array[Byte] = {
+	private def stringFromModel() = {
 		val out = new ByteArrayOutputStream
 		KevoreeXmiHelper.saveStream(out, model)
 		out.flush
 		val bytes = out.toByteArray
 		out.close
-		bytes
+		new String(bytes)
 	}
 }
