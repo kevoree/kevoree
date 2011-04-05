@@ -9,7 +9,7 @@ import java.security.SecureRandom
 import scala.actors.TIMEOUT
 import scala.collection.JavaConversions._
 
-class GossiperActor[T](timeout: java.lang.Long, channel: NettyGossipAbstractElement, dataManager: DataManager[T], port: Int, fullUDP: Boolean, garbage: Boolean, generic: Class[_]) extends actors.DaemonActor {
+class GossiperActor[T](timeout: java.lang.Long, channel: NettyGossipAbstractElement, dataManager: DataManager[T], port: Int, fullUDP: java.lang.Boolean, garbage: Boolean, generic: Class[_]) extends actors.DaemonActor {
 
 	private var gossiperRequestSender = new GossiperRequestSender[T](timeout, channel, dataManager, fullUDP, garbage, generic)
 	private var notificationRequestSender = new NotificationRequestSender(channel)

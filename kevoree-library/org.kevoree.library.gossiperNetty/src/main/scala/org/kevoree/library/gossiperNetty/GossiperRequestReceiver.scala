@@ -20,7 +20,7 @@ import org.jboss.netty.handler.codec.protobuf.ProtobufEncoder
 import org.kevoree.library.gossip.Gossip
 import scala.collection.JavaConversions._
 
-class GossiperRequestReceiver(channelFragment : NettyGossipAbstractElement,dataManager : DataManager[_], port : Int, gossiperRequestSender : GossiperRequestSender[_], fullUDP : Boolean) extends actors.DaemonActor {
+class GossiperRequestReceiver(channelFragment : NettyGossipAbstractElement,dataManager : DataManager[_], port : Int, gossiperRequestSender : GossiperRequestSender[_], fullUDP : java.lang.Boolean) extends actors.DaemonActor {
 
   var self = this
   // define attributes used to define channel to listen request

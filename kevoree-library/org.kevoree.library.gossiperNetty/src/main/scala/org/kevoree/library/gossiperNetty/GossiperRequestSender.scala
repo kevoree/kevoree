@@ -29,7 +29,7 @@ import org.kevoree.library.gossiper.version.Occured
 
 import scala.collection.JavaConversions._
 
-class GossiperRequestSender[T](timeout : java.lang.Long,channelFragment : NettyGossipAbstractElement,dataManager : DataManager[T], fullUDP : Boolean,garbage : Boolean,clazz : Class[_]) extends actors.DaemonActor {
+class GossiperRequestSender[T](timeout : java.lang.Long,channelFragment : NettyGossipAbstractElement,dataManager : DataManager[T], fullUDP : java.lang.Boolean,garbage : Boolean,clazz : Class[_]) extends actors.DaemonActor {
 
   // define attributes used to define channel to send gossip request
   var factory =  new NioDatagramChannelFactory(Executors.newCachedThreadPool())
@@ -188,7 +188,7 @@ class GossiperRequestSender[T](timeout : java.lang.Long,channelFragment : NettyG
 	  private def askForData(uuid : UUID, remoteNodeName : String, address : SocketAddress) ={
 		val messageBuilder : Message.Builder = Message.newBuilder.setDestName(channelFragment.getName).setDestNodeName(channelFragment.getNodeName)
 		messageBuilder.setContentClass(classOf[UUIDDataRequest].getName).setContent(UUIDDataRequest.newBuilder.setUuid(uuid.toString).build.toByteString)
-		if (fullUDP) {
+		if (fullUDP.booleanValue) {
 		  channel.write(messageBuilder.build, address)
 		} else {
 		  /*println("TCP sending ...")
