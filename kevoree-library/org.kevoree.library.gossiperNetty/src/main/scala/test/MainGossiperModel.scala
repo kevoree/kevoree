@@ -1,16 +1,16 @@
 package test
 
-import java.net.InetSocketAddress
 import java.util.concurrent.Executors
-import org.jboss.netty.bootstrap.{ServerBootstrap, ClientBootstrap}
+import org.kevoree.library.gossiperNetty.api.msg.KevoreeMessage.Message
+import org.jboss.netty.handler.codec.protobuf.{ProtobufEncoder, ProtobufDecoder}
 import org.jboss.netty.channel.group.DefaultChannelGroup
 import org.jboss.netty.channel.socket.nio.{NioServerSocketChannelFactory, NioClientSocketChannelFactory}
+import org.jboss.netty.bootstrap.{ServerBootstrap, ClientBootstrap}
+import java.net.InetSocketAddress
+import org.kevoree.library.gossip.Gossip.UUIDDataRequest
 import org.jboss.netty.channel.{ChannelFuture, Channels, ChannelPipeline, ChannelPipelineFactory}
-import org.jboss.netty.handler.codec.protobuf.{ProtobufEncoder, ProtobufDecoder}
 import org.kevoree.ContainerRoot
 import org.kevoree.framework.KevoreeXmiHelper
-import org.kevoree.library.gossip.Gossip.UUIDDataRequest
-import org.kevoree.library.gossiperNetty.api.msg.KevoreeMessage.Message
 
 /**
  * User: Erwan Daubert
@@ -23,6 +23,7 @@ object MainGossiperModel {
 	//private var logger = LoggerFactory.getLogger(classOf[MainGossiperModel])
 
 	def main(args: Array[String]): Unit = {
+		println("starting ...")
 		val factoryTCP = new NioClientSocketChannelFactory(Executors.newCachedThreadPool(), Executors.newCachedThreadPool())
 		val bootstrapTCP = new ClientBootstrap(factoryTCP)
 		bootstrapTCP.setPipelineFactory(new ChannelPipelineFactory() {
