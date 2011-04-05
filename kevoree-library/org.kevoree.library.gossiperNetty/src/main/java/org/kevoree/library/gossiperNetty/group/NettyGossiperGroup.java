@@ -57,7 +57,8 @@ public class NettyGossiperGroup extends AbstractGroupType implements NettyGossip
 
 		dataManager = new DataManagerForGroup(this.getName(), this.getNodeName(), modelHandlerService);
 
-		actor = new GossiperActor<byte[]>(Long.parseLong((String)this.getDictionary().get("interval")),this, dataManager, parsePortNumber(getNodeName()), parseFullUDPParameter(), false, byte[].class);
+        Long timeoutLong =  Long.parseLong((String)this.getDictionary().get("interval"));
+		actor = new GossiperActor<byte[]>(timeoutLong,this, dataManager, parsePortNumber(getNodeName()), parseFullUDPParameter(), false, byte[].class);
 	}
 
 	@Stop
@@ -133,6 +134,9 @@ public class NettyGossiperGroup extends AbstractGroupType implements NettyGossip
 	public Boolean parseFullUDPParameter() {
 		return this.getDictionary().get("FullUDP").toString().equals("true");
 	}
+
+
+
 
 	@Override
 	public String selectPeer() {
