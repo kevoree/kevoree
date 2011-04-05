@@ -31,7 +31,7 @@ class PeerSelector {
 
   def getScore(nodeName: String): Long = {
     peerCheckMap.get(nodeName) match {
-      case Some(nodeTuple) =>
+      case Some(nodeTuple) => nodeTuple._1
       case None => 0l //default
     }
   }

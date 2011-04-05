@@ -51,7 +51,7 @@ object MainGossiperModel {
 				p.addLast("protobufDecoder", new ProtobufDecoder(Message.getDefaultInstance()))
 				//p.addLast("frameEncoder", new ProtobufVarint32LengthFieldPrepender)
 				p.addLast("protobufEncoder", new ProtobufEncoder())
-				p.addLast("handler", new DataSenderHandlerPojo(model("/home/edaubert/gossipGroupTest.kev")))
+				p.addLast("handler", new DataSenderHandlerPojo(model("/Users/ffouquet/Documents/DEV/dukeboard_github/kevoree/kevoree-library/org.kevoree.library.arduino.nodeType/src/test/resources/models/TempSensorAlone.kev")))
 				return p
 			}
 		}
