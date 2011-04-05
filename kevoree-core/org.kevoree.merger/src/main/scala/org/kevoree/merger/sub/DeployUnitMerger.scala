@@ -21,40 +21,57 @@ package org.kevoree.merger.sub
 import org.kevoree._
 import org.kevoree.merger.Merger
 import scala.collection.JavaConversions._
+import org.kevoree.framework.aspects.KevoreeAspects._
 
 trait DeployUnitMerger extends Merger {
 
 
-  def mergeDeployUnit(actualModel : ContainerRoot,tp : DeployUnit) : DeployUnit = {
-    actualModel.getDeployUnits.find({atp=> atp.getName == tp.getName}) match {
-      case Some(ftp)=> {
-        
-          //CHECK CONSISTENCY, IF NOT JUST ADD
-          if(tp.getUrl != ftp.getUrl || tp.getUnitName != ftp.getUnitName || tp.getGroupName != ftp.getGroupName || tp.getVersion != ftp.getVersion  ){
-            actualModel.getDeployUnits.add(tp);
-            mergeRequiredLibs(actualModel,tp)
-            tp
-          } else {
-            this.addPostProcess({ ()=> { ftp.setHashcode(tp.getHashcode) } })
-            mergeRequiredLibs(actualModel,ftp)
-            ftp
-          }
-        }
-      case None => {
-          actualModel.getDeployUnits.add(tp)
-          mergeRequiredLibs(actualModel,tp)
+  def mergeDeployUnit(actualModel: ContainerRoot, tp: DeployUnit): DeployUnit = {
+    actualModel.getDeployUnits.find({
+      atp =>
+        atp.isModelEquals(tp)
+    }) match {
+      case Some(ftp) => {
+
+        //CHECK CONSISTENCY, IF NOT JUST ADD
+        if (tp.getUrl != ftp.getUrl || tp.getUnitName != ftp.getUnitName || tp.getGroupName != ftp.getGroupName || tp.getVersion != ftp.getVersion) {
+
+          actualModel.getDeployUnits.add(tp);
+          mergeRequiredLibs(actualModel, tp)
           tp
+        } else {
+
+          val ftpTimeStamp = if(ftp.getHashcode != null) { java.lang.Long.parseLong(ftp.getHashcode)} else { 0l }
+          val tpTimeStamp = if(tp.getHashcode != null) { java.lang.Long.parseLong(tp.getHashcode) } else {0l}
+
+          if (tpTimeStamp > ftpTimeStamp) {
+            this.addPostProcess({
+              () => {
+                ftp.setHashcode(tpTimeStamp+"")
+              }
+            })
+          }
+          mergeRequiredLibs(actualModel, ftp)
+          ftp
         }
-    }
-  }
-    
-  def mergeRequiredLibs(actualModel : ContainerRoot,tp : DeployUnit)={
-    var requireds : List[DeployUnit] = List()++tp.getRequiredLibs.toList
-    tp.getRequiredLibs.clear
-    requireds.foreach{rLib=>
-      tp.getRequiredLibs.add(mergeDeployUnit(actualModel,rLib))
+      }
+      case None => {
+        println("enw "+tp)
+        actualModel.getDeployUnits.add(tp)
+        mergeRequiredLibs(actualModel, tp)
+        tp
+      }
     }
   }
 
-  
+  def mergeRequiredLibs(actualModel: ContainerRoot, tp: DeployUnit) = {
+    val requireds: List[DeployUnit] = List() ++ tp.getRequiredLibs.toList
+    tp.getRequiredLibs.clear
+    requireds.foreach {
+      rLib =>
+        tp.getRequiredLibs.add(mergeDeployUnit(actualModel, rLib))
+    }
+  }
+
+
 }

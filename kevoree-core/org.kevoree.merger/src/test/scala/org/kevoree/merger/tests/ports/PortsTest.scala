@@ -40,8 +40,10 @@ class PortsTest extends MergerTestSuiteHelper  {
 
 
   @Test def verifyProvidedMessagePortRemoved() {
-    var mergedModel = component.merge(model("artFragments/lib4test-base.art2"), model("artFragments/lib4test-MinusProvidedMessagePort.art2"))
+    val mergedModel = component.merge(model("artFragments/lib4test-base.art2").setLowerHashCode, model("artFragments/lib4test-MinusProvidedMessagePort.art2"))
     mergedModel testSave ("artFragments","lib4test-MinusProvidedMessagePortMerged.art2")
+
+    println("ok")
 
     mergedModel.getTypeDefinitions.toArray.find(typeDef =>
       typeDef.asInstanceOf[TypeDefinition].getName.equals("ComponentA")
@@ -66,6 +68,7 @@ class PortsTest extends MergerTestSuiteHelper  {
     }
 
   }
+
 
 
   @Test def verifyProvidedMessagePortAdded() {
@@ -428,5 +431,6 @@ class PortsTest extends MergerTestSuiteHelper  {
     if(mergedModel.getTypeDefinitions.size != 7) {
       fail("Number of ComponentTypes should be 7, " + mergedModel.getTypeDefinitions.size +" found.")
     }
-  }
+}
+
 }

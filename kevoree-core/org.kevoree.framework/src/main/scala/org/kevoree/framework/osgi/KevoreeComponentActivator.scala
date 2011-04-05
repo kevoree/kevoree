@@ -21,6 +21,7 @@ package org.kevoree.framework.osgi
 import java.util.Hashtable
 import org.kevoree.framework.KevoreeComponent
 import org.kevoree.framework.KevoreePort
+import org.kevoree.framework.AbstractComponentType
 import org.kevoree.framework.Constants
 import org.osgi.framework.BundleActivator
 import org.osgi.framework.BundleContext
@@ -49,6 +50,10 @@ abstract class KevoreeComponentActivator extends BundleActivator {
 
     /* PUT INITIAL PROPERTIES */
     componentActor.getKevoreeComponentType.getDictionary.put(Constants.KEVOREE_PROPERTY_OSGI_BUNDLE, bc.getBundle)
+    
+    componentActor.asInstanceOf[AbstractComponentType].setName(componentName)
+    componentActor.asInstanceOf[AbstractComponentType].setNodeName(nodeName)
+    
 
     /* Start actor */
     componentActor.start
@@ -61,11 +66,11 @@ abstract class KevoreeComponentActivator extends BundleActivator {
     /* Expose component provided port in OSGI */
     componentActor.getKevoreeComponentType.getHostedPorts.foreach{
       hpref =>
-        var portProps = new Hashtable[String, String]()
-        portProps.put(Constants.KEVOREE_NODE_NAME, nodeName)
-        portProps.put(Constants.KEVOREE_INSTANCE_NAME, componentName)
-        portProps.put(Constants.KEVOREE_PORT_NAME, hpref._1)
-        bc.registerService(classOf[KevoreePort].getName(), hpref._2, portProps);
+      var portProps = new Hashtable[String, String]()
+      portProps.put(Constants.KEVOREE_NODE_NAME, nodeName)
+      portProps.put(Constants.KEVOREE_INSTANCE_NAME, componentName)
+      portProps.put(Constants.KEVOREE_PORT_NAME, hpref._1)
+      bc.registerService(classOf[KevoreePort].getName(), hpref._2, portProps);
     }
 
     /* START NEEDPORT ACTOR */
@@ -76,7 +81,7 @@ abstract class KevoreeComponentActivator extends BundleActivator {
     /* START HOSTED ACTOR */
     componentActor.getKevoreeComponentType.getHostedPorts.foreach{
       hp =>
-        hp._2.asInstanceOf[KevoreePort].start
+      hp._2.asInstanceOf[KevoreePort].start
       //hp._2.asInstanceOf[KevoreePort].pause
     }
 

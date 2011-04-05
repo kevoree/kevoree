@@ -49,7 +49,7 @@ trait RepositoryMerger {
     toMergeUnits.foreach{unit=>
 
       //ACTUAL UNIT
-      var found_unit = actualRoot.getDeployUnits.find(du=>du.isModelEquals(unit) && du.getHashcode == unit.getHashcode)
+      var found_unit = actualRoot.getDeployUnits.find(du=>du.isModelEquals(unit) /*&& du.getHashcode == unit.getHashcode*/)
       found_unit match {
         case None => {
             println("Merger Error !!!!! Repository Incomplete")
@@ -59,7 +59,7 @@ trait RepositoryMerger {
         }
         case Some(funit)=> {
             //CLEAN REPO FROM OLD DEPLOY UNIT
-            actualRepository.getUnits.filter(u=> u.isModelEquals(funit) && u.getHashcode != funit.getHashcode  ).foreach{oldunit=>
+            actualRepository.getUnits.filter(u=> u.isModelEquals(funit) /*&& u.getHashcode != funit.getHashcode*/  ).foreach{oldunit=>
               actualRepository.getUnits.remove(oldunit)
             }
             //ADD NEW UNIT TO REPO
