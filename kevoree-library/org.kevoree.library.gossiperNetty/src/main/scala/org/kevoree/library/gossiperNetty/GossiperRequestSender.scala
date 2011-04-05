@@ -4,19 +4,13 @@ import java.net.InetSocketAddress
 import java.net.SocketAddress
 import java.util.UUID
 import java.util.concurrent.Executors
-import org.jboss.netty.bootstrap.ClientBootstrap
 import org.jboss.netty.bootstrap.ConnectionlessBootstrap
 import org.jboss.netty.channel.Channel
-import org.jboss.netty.channel.ChannelFuture
-import org.jboss.netty.channel.ChannelFutureListener
 import org.jboss.netty.channel.ChannelPipeline
 import org.jboss.netty.channel.ChannelPipelineFactory
 import org.jboss.netty.channel.Channels
 import org.jboss.netty.channel.socket.DatagramChannel
-import org.jboss.netty.channel.socket.nio.NioClientSocketChannelFactory
 import org.jboss.netty.channel.socket.nio.NioDatagramChannelFactory
-import org.jboss.netty.handler.codec.protobuf.ProtobufDecoder
-import org.jboss.netty.handler.codec.protobuf.ProtobufEncoder
 import org.kevoree.extra.marshalling.RichString
 import org.kevoree.library.gossip.Gossip.UUIDDataRequest
 import org.kevoree.library.gossip.Gossip.VectorClockUUIDs
@@ -28,6 +22,8 @@ import org.kevoree.library.gossip.Gossip.VersionedModel
 import org.kevoree.library.gossiper.version.Occured
 
 import scala.collection.JavaConversions._
+import org.jboss.netty.util.CharsetUtil
+import org.jboss.netty.handler.codec.string.{StringDecoder, StringEncoder}
 
 class GossiperRequestSender[T](timeout : java.lang.Long,channelFragment : NettyGossipAbstractElement,dataManager : DataManager[T], fullUDP : java.lang.Boolean,garbage : Boolean,clazz : Class[_]) extends actors.DaemonActor {
 
@@ -38,8 +34,12 @@ class GossiperRequestSender[T](timeout : java.lang.Long,channelFragment : NettyG
   bootstrap.setPipelineFactory(new ChannelPipelineFactory(){
       override def getPipeline() : ChannelPipeline = {
         val p : ChannelPipeline = Channels.pipeline()
-		p.addLast("protobufDecoder", new ProtobufDecoder(Message.getDefaultInstance()))
-		p.addLast("protobufEncoder", new ProtobufEncoder())
+		//p.addLast("frameDecoder", new ProtobufVarint32FrameDecoder)
+		//p.addLast("protobufDecoder", new ProtobufDecoder(Message.getDefaultInstance()))
+		//p.addLast("frameEncoder", new ProtobufVarint32LengthFieldPrepender)
+		//p.addLast("protobufEncoder", new ProtobufEncoder())
+			p.addLast("StringEncoder", new StringEncoder(CharsetUtil.UTF_8))
+			p.addLast("StringDecoder", new StringDecoder(CharsetUtil.UTF_8))
 		p.addLast("handler", new GossiperRequestSenderHandler(self))
 		return p
       }
@@ -113,7 +113,7 @@ class GossiperRequestSender[T](timeout : java.lang.Long,channelFragment : NettyG
 	  val messageBuilder : Message.Builder = Message.newBuilder.setDestName(channelFragment.getName).setDestNodeName(channelFragment.getNodeName)
 	  messageBuilder.setContentClass(classOf[VectorClockUUIDsRequest].getName).setContent(VectorClockUUIDsRequest.newBuilder.build.toByteString)
 	  //println("initGossip = " + channelFragment.getAddress(peer) + ":" + channelFragment.parsePortNumber(peer))
-	  channel.write(messageBuilder.build,new InetSocketAddress(channelFragment.getAddress(peer), channelFragment.parsePortNumber(peer)));
+	  channel.write(messageBuilder.build.toByteString.toStringUtf8,new InetSocketAddress(channelFragment.getAddress(peer), channelFragment.parsePortNumber(peer)));
 	  //println("initGossip write")
 	 
 	} 

@@ -13,6 +13,8 @@ import org.jboss.netty.handler.codec.protobuf.ProtobufEncoder
 import org.kevoree.library.gossip.Gossip.UpdatedValueNotification
 import org.kevoree.library.gossiperNetty.api.msg.KevoreeMessage.Message
 import scala.collection.JavaConversions._
+import org.jboss.netty.util.CharsetUtil
+import org.jboss.netty.handler.codec.string.{StringEncoder, StringDecoder}
 
 class NotificationRequestSender(channelFragment : NettyGossipAbstractElement) extends actors.DaemonActor {
 
@@ -24,9 +26,11 @@ class NotificationRequestSender(channelFragment : NettyGossipAbstractElement) ex
       override def getPipeline() : ChannelPipeline = {
         val p : ChannelPipeline = Channels.pipeline()
 		//p.addLast("frameDecoder", new ProtobufVarint32FrameDecoder());
-		p.addLast("protobufDecoder", new ProtobufDecoder(Message.getDefaultInstance))
+		//p.addLast("protobufDecoder", new ProtobufDecoder(Message.getDefaultInstance))
 		//p.addLast("frameEncoder", new ProtobufVarint32LengthFieldPrepender());
-		p.addLast("protobufEncoder", new ProtobufEncoder())
+		//p.addLast("protobufEncoder", new ProtobufEncoder())
+			p.addLast("StringEncoder", new StringEncoder(CharsetUtil.UTF_8))
+			p.addLast("StringDecoder", new StringDecoder(CharsetUtil.UTF_8))
 		return p
       }
     }
@@ -75,7 +79,7 @@ class NotificationRequestSender(channelFragment : NettyGossipAbstractElement) ex
 	  messageBuilder.setContentClass(classOf[UpdatedValueNotification].getName).setContent(UpdatedValueNotification.newBuilder.build.toByteString)
 	  //println("sending notification ...")
 	  //println(channelFragment.getAddress(peer) + ":" + channelFragment.parsePortNumber(peer))
-	  channel.write(messageBuilder.build, new InetSocketAddress(channelFragment.getAddress(peer), channelFragment.parsePortNumber(peer)));
+	  channel.write(messageBuilder.build.toByteString.toStringUtf8, new InetSocketAddress(channelFragment.getAddress(peer), channelFragment.parsePortNumber(peer)));
 	  //println("notification send ...")
 	  //channels.add(channel)
 	}

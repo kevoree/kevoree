@@ -1,18 +1,22 @@
-package org.kevoree.library.gossiperNetty
+package test
 
+import java.io.ByteArrayInputStream
 import org.jboss.netty.channel.ChannelFutureListener
 import org.jboss.netty.channel.ChannelHandlerContext
 import org.jboss.netty.channel.ExceptionEvent
 import org.jboss.netty.channel.MessageEvent
 import org.jboss.netty.channel.SimpleChannelUpstreamHandler
+import org.kevoree.ContainerRoot
+import org.kevoree.extra.marshalling.RichString
+import org.kevoree.framework.KevoreeXmiHelper
 import org.kevoree.library.gossip.Gossip.VersionedModel
 import org.kevoree.library.gossiperNetty.api.msg.KevoreeMessage.Message
 import org.slf4j.LoggerFactory
 import com.google.protobuf.ByteString
 
-class DataReceiverHandler(gossiperRequestSender: GossiperRequestSender[_]) extends SimpleChannelUpstreamHandler {
+class DataReceiverHandlerPojo() extends SimpleChannelUpstreamHandler {
 
-	private var logger = LoggerFactory.getLogger(classOf[DataReceiverHandler])
+	private var logger = LoggerFactory.getLogger(classOf[DataReceiverHandlerPojo])
 
 	override def messageReceived(ctx: ChannelHandlerContext, e: MessageEvent) {
 		//println("response received")
@@ -20,7 +24,15 @@ class DataReceiverHandler(gossiperRequestSender: GossiperRequestSender[_]) exten
 		println(e.getMessage)
 		val message = Message.parseFrom(ByteString.copyFromUtf8(e.getMessage.asInstanceOf[String]))
 		if (message.getContentClass.equals(classOf[VersionedModel].getName)) {
-			gossiperRequestSender.endGossipAction(message)
+			// TODO rebuild model and print it
+			val versionedModel = VersionedModel.parseFrom(message.getContent)
+			val data : Array[Byte] = RichString(versionedModel.getModel.toStringUtf8).fromJSON(classOf[Array[Byte]]).asInstanceOf[Array[Byte]]
+
+			val root = modelFromString(data)
+
+			println(root)
+			println(root.getGroups)
+			println(root.getNodes)
 			//e.getChannel.getCloseFuture.awaitUninterruptibly
 			e.getChannel.getCloseFuture.addListener(ChannelFutureListener.CLOSE);
 		}
@@ -31,5 +43,10 @@ class DataReceiverHandler(gossiperRequestSender: GossiperRequestSender[_]) exten
 		logger.error(this.getClass + "\n" + e.getCause.getMessage + "\n" + e.getCause.getStackTraceString)
 		//e.getCause.printStackTrace
 		e.getChannel.close.awaitUninterruptibly
+	}
+
+	private def modelFromString(model: Array[Byte]): ContainerRoot = {
+		val stream = new ByteArrayInputStream(model)
+		KevoreeXmiHelper.loadStream(stream)
 	}
 }

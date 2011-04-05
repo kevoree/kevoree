@@ -15,10 +15,10 @@ import org.jboss.netty.channel.socket.nio.NioDatagramChannelFactory
 import org.kevoree.extra.marshalling.RichJSONObject
 import org.kevoree.library.gossiperNetty.api.msg.KevoreeMessage.Message
 import org.jboss.netty.channel.socket.nio.NioServerSocketChannelFactory
-import org.jboss.netty.handler.codec.protobuf.ProtobufDecoder
-import org.jboss.netty.handler.codec.protobuf.ProtobufEncoder
 import org.kevoree.library.gossip.Gossip
 import scala.collection.JavaConversions._
+import org.jboss.netty.handler.codec.string.{StringDecoder, StringEncoder}
+import org.jboss.netty.util.CharsetUtil
 
 class GossiperRequestReceiver(channelFragment : NettyGossipAbstractElement,dataManager : DataManager[_], port : Int, gossiperRequestSender : GossiperRequestSender[_], fullUDP : java.lang.Boolean) extends actors.DaemonActor {
 
@@ -29,8 +29,12 @@ class GossiperRequestReceiver(channelFragment : NettyGossipAbstractElement,dataM
   bootstrapForRequest.setPipelineFactory(new ChannelPipelineFactory(){
       override def getPipeline() : ChannelPipeline = {
         val p : ChannelPipeline = Channels.pipeline()
-		p.addLast("protobufDecoder", new ProtobufDecoder(Message.getDefaultInstance()))
-		p.addLast("protobufEncoder", new ProtobufEncoder())
+		//p.addLast("frameDecoder", new ProtobufVarint32FrameDecoder)
+		//p.addLast("protobufDecoder", new ProtobufDecoder(Message.getDefaultInstance()))
+		//p.addLast("frameEncoder", new ProtobufVarint32LengthFieldPrepender)
+		//p.addLast("protobufEncoder", new ProtobufEncoder())
+			p.addLast("StringEncoder", new StringEncoder(CharsetUtil.UTF_8))
+			p.addLast("StringDecoder", new StringDecoder(CharsetUtil.UTF_8))
 		p.addLast("handler", new GossiperRequestReceiverHandler(self))
 		return p
       }
@@ -43,8 +47,13 @@ class GossiperRequestReceiver(channelFragment : NettyGossipAbstractElement,dataM
   bootstrapForRequestTCP.setPipelineFactory(new ChannelPipelineFactory(){
       override def getPipeline() : ChannelPipeline = {
         val p : ChannelPipeline = Channels.pipeline()
-		p.addLast("protobufDecoder", new ProtobufDecoder(Message.getDefaultInstance()))
-		p.addLast("protobufEncoder", new ProtobufEncoder())
+		//p.addLast("frameDecoder", new ProtobufVarint32FrameDecoder)
+		//p.addLast("protobufDecoder", new ProtobufDecoder(Message.getDefaultInstance()))
+		//p.addLast("frameEncoder", new ProtobufVarint32LengthFieldPrepender)
+		//p.addLast("protobufEncoder", new ProtobufEncoder())
+
+			p.addLast("StringEncoder", new StringEncoder(CharsetUtil.UTF_8))
+			p.addLast("StringDecoder", new StringDecoder(CharsetUtil.UTF_8))
 		p.addLast("handler", new DataSenderHandler(channelFragment,dataManager))
 		return p
       }
@@ -101,7 +110,7 @@ class GossiperRequestReceiver(channelFragment : NettyGossipAbstractElement,dataM
 			  responseBuilder = Message.newBuilder.setDestName(channelFragment.getName).setDestNodeName(channelFragment.getNodeName)
 			  val modelBytes = vectorClockUUIDsBuilder.build.toByteString
 			  responseBuilder.setContentClass(classOf[Gossip.VectorClockUUIDs].getName).setContent(modelBytes)
-			  channel.write(responseBuilder.build, address)
+			  channel.write(responseBuilder.build.toByteString.toStringUtf8, address)
 			  vectorClockUUIDsBuilder = Gossip.VectorClockUUIDs.newBuilder
 			}
 			//println("send vector clock for uuid :" + uuid + " to address : " + address)
@@ -133,7 +142,7 @@ class GossiperRequestReceiver(channelFragment : NettyGossipAbstractElement,dataM
 		
 		  modelBytes = Gossip.VersionedModel.newBuilder.setUuid(uuidDataRequest.getUuid).setVector(data._1).setModel(modelBytes).build.toByteString
 		  responseBuilder.setContentClass(classOf[Gossip.VersionedModel].getName).setContent(modelBytes)
-		  channel.write(responseBuilder.build, address);
+		  channel.write(responseBuilder.build.toByteString.toStringUtf8, address);
 		  //println("VersionedModel sent")
 		}
 	  case "org.kevoree.library.gossip.Gossip$UpdatedValueNotification" => {
