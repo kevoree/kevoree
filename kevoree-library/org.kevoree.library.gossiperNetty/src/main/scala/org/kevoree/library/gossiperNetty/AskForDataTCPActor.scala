@@ -24,7 +24,8 @@ import org.jboss.netty.util.CharsetUtil
 import org.jboss.netty.handler.codec.string.{StringEncoder, StringDecoder}
 
 class AskForDataTCPActor(channelFragment: NettyGossipAbstractElement, requestSender: GossiperRequestSender[_]) extends actors.DaemonActor {
-  var factoryTCP = new NioClientSocketChannelFactory(Executors.newCachedThreadPool(), Executors.newCachedThreadPool())
+
+	var factoryTCP = new NioClientSocketChannelFactory(Executors.newCachedThreadPool(), Executors.newCachedThreadPool())
   var bootstrapTCP = new ClientBootstrap(factoryTCP)
   bootstrapTCP.setPipelineFactory(new ChannelPipelineFactory() {
     override def getPipeline : ChannelPipeline = {
