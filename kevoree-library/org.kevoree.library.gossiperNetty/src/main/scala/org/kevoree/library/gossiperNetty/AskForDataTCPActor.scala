@@ -16,12 +16,12 @@ import org.jboss.netty.channel.ChannelPipelineFactory
 import org.jboss.netty.channel.Channels
 import org.jboss.netty.channel.group.DefaultChannelGroup
 import org.jboss.netty.channel.socket.nio.NioClientSocketChannelFactory
-import org.jboss.netty.handler.codec.protobuf.ProtobufDecoder
-import org.jboss.netty.handler.codec.protobuf.ProtobufEncoder
 import org.kevoree.library.gossip.Gossip.UUIDDataRequest
 import org.kevoree.library.gossiperNetty.api.msg.KevoreeMessage.Message
 import scala.collection.JavaConversions._
 import org.slf4j.LoggerFactory
+import org.jboss.netty.util.CharsetUtil
+import org.jboss.netty.handler.codec.string.{StringEncoder, StringDecoder}
 
 class AskForDataTCPActor(channelFragment: NettyGossipAbstractElement, requestSender: GossiperRequestSender[_]) extends actors.DaemonActor {
   var factoryTCP = new NioClientSocketChannelFactory(Executors.newCachedThreadPool(), Executors.newCachedThreadPool())
@@ -29,8 +29,12 @@ class AskForDataTCPActor(channelFragment: NettyGossipAbstractElement, requestSen
   bootstrapTCP.setPipelineFactory(new ChannelPipelineFactory() {
     override def getPipeline : ChannelPipeline = {
       val p: ChannelPipeline = Channels.pipeline()
-      p.addLast("protobufDecoder", new ProtobufDecoder(Message.getDefaultInstance))
-      p.addLast("protobufEncoder", new ProtobufEncoder())
+		//p.addLast("frameDecoder", new ProtobufVarint32FrameDecoder)
+      //p.addLast("protobufDecoder", new ProtobufDecoder(Message.getDefaultInstance))
+		//p.addLast("frameEncoder", new ProtobufVarint32LengthFieldPrepender)
+      //p.addLast("protobufEncoder", new ProtobufEncoder())
+			p.addLast("StringEncoder", new StringEncoder(CharsetUtil.UTF_8))
+			p.addLast("StringDecoder", new StringDecoder(CharsetUtil.UTF_8))
       p.addLast("handler", new DataReceiverHandler(requestSender))
       return p
     }
@@ -100,7 +104,9 @@ class AskForDataTCPActor(channelFragment: NettyGossipAbstractElement, requestSen
 			logger.error(this.getClass + "\n" +channelFuture.getCause.getMessage + "\n" + channelFuture.getCause.getStackTraceString)
       bootstrapTCP.releaseExternalResources
     } else {
-      /*var future = */ channel.write(messageBuilder.build)
+      /*var future = */
+			//channel.write(messageBuilder.build)
+			channel.write(messageBuilder.build.toByteString.toStringUtf8)
       //future.awaitUninterruptibly
       //channel.getCloseFuture.awaitUninterruptibly
       channelGroup.add(channel)

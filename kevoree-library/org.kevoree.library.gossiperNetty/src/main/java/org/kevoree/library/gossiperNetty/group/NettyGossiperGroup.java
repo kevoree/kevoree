@@ -5,9 +5,11 @@
 package org.kevoree.library.gossiperNetty.group;
 
 import com.google.protobuf.ByteString;
+
 import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.List;
+
 import org.kevoree.ContainerNode;
 import org.kevoree.ContainerRoot;
 import org.kevoree.Group;
@@ -31,15 +33,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- *
  * @author edaubert
  */
 @Library(name = "Kevoree-Android-JavaSE")
 @GroupType
 @DictionaryType({
-	@DictionaryAttribute(name = "interval", defaultValue = "30000", optional = true),
-	@DictionaryAttribute(name = "port", defaultValue = "9010", optional = true),
-	@DictionaryAttribute(name = "FullUDP", defaultValue = "false", optional = true)
+		@DictionaryAttribute(name = "interval", defaultValue = "30000", optional = true),
+		@DictionaryAttribute(name = "port", defaultValue = "9010", optional = true),
+		@DictionaryAttribute(name = "FullUDP", defaultValue = "false", optional = true)
 })
 public class NettyGossiperGroup extends AbstractGroupType implements NettyGossipAbstractElement {
 
@@ -57,7 +58,7 @@ public class NettyGossiperGroup extends AbstractGroupType implements NettyGossip
 
 		dataManager = new DataManagerForGroup(this.getName(), this.getNodeName(), modelHandlerService);
 
-		actor = new GossiperActor<byte[]>(Long.parseLong((String)this.getDictionary().get("interval")),this, dataManager, parsePortNumber(getNodeName()), parseFullUDPParameter(), false, byte[].class);
+		actor = new GossiperActor<byte[]>(Long.parseLong((String) this.getDictionary().get("interval")), this, dataManager, parsePortNumber(getNodeName()), parseFullUDPParameter(), false, byte[].class);
 	}
 
 	@Stop
@@ -106,6 +107,7 @@ public class NettyGossiperGroup extends AbstractGroupType implements NettyGossip
 		}
 		return ip;
 	}
+
 	private String name = "[A-Za-z0-9_]*";
 	private String portNumber = "(65535|5[0-9]{4}|4[0-9]{4}|3[0-9]{4}|2[0-9]{4}|1[0-9]{4}|[0-9]{0,4})";
 	private String separator = ",";
@@ -147,7 +149,7 @@ public class NettyGossiperGroup extends AbstractGroupType implements NettyGossip
 					int peerIndex = diceRoller.nextInt(othersSize);
 					if (!g.getSubNodes().get(peerIndex).getName().equals(this.getNodeName())) {
 						return g.getSubNodes().get(peerIndex).getName();
-					} else if (peerIndex < othersSize -1) {
+					} else if (peerIndex < othersSize - 1) {
 						return g.getSubNodes().get(peerIndex + 1).getName();
 					} else if (peerIndex > 0) {
 						return g.getSubNodes().get(peerIndex - 1).getName();
