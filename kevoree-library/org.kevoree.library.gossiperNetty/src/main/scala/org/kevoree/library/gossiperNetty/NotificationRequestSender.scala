@@ -22,8 +22,8 @@ class NotificationRequestSender(channelFragment: NettyGossipAbstractElement) ext
 	bootstrapNotificationMessage.setPipelineFactory(new ChannelPipelineFactory() {
 		override def getPipeline(): ChannelPipeline = {
 			val p: ChannelPipeline = Channels.pipeline()
-			p.addLast("deflater", new ZlibEncoder(ZlibWrapper.ZLIB))
-			p.addLast("inflater", new ZlibDecoder(ZlibWrapper.ZLIB))
+			//p.addLast("deflater", new ZlibEncoder(ZlibWrapper.ZLIB))
+			//p.addLast("inflater", new ZlibDecoder(ZlibWrapper.ZLIB))
 			p.addLast("frameDecoder", new ProtobufVarint32FrameDecoder)
 			p.addLast("protobufDecoder", new ProtobufDecoder(Message.getDefaultInstance))
 			p.addLast("frameEncoder", new ProtobufVarint32LengthFieldPrepender);
