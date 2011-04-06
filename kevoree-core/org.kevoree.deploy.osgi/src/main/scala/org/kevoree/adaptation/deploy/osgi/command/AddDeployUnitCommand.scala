@@ -43,7 +43,7 @@ case class AddDeployUnitCommand(deployUnit : DeployUnit, ctx : KevoreeDeployMana
         //FOR DEPLOY UNIT DO NOT USE ONLY NAME
         ctx.bundleMapping.append(KevoreeOSGiBundle(CommandHelper.buildKEY(deployUnit),deployUnit.getClass.getName,lastExecutionBundle.get))
         //lastExecutionBundle.get.start
-		//mustBeStarted = true
+				mustBeStarted = true
 		
         true
       } catch {
