@@ -46,426 +46,435 @@ import scala.collection.JavaConversions._
 
 class KevoreeAdaptationDeployServiceOSGi extends KevoreeAdaptationDeployService {
 
-  var ctx: KevoreeDeployManager = null
-  var logger = LoggerFactory.getLogger(this.getClass);
+	var ctx: KevoreeDeployManager = null
+	var logger = LoggerFactory.getLogger(this.getClass);
 
-  def setContext(context: KevoreeDeployManager) = {
-    ctx = context
-  }
-
-  def deploy(model: AdaptationModel, nodeName: String) = {
-    /*
-	 val phase = new KevoreeDeployPhase
-
-	 var executedCommandTP: List[PrimitiveCommand] = List()
-	 //var executedCommandCT :List[PrimitiveCommand] = List()
-	 //var executedCommandCI :List[PrimitiveCommand] = List()
-	 //  var executedCommandBI :List[PrimitiveCommand] = List()
-
-	 //DEPLOY UNIT COMMAND
-	 var command_add_deployUnit: List[PrimitiveCommand] = List()
-	 var command_remove_deployUnit: List[PrimitiveCommand] = List()
-
-	 //TYPE LIST
-	 var command_add_type: List[PrimitiveCommand] = List()
-	 var command_remove_type: List[PrimitiveCommand] = List()
-
-	 //INSTANCE LIST
-	 var command_add_instance: List[PrimitiveCommand] = List()
-	 var command_remove_instance: List[PrimitiveCommand] = List()
-
-	 //BINDING LIST
-	 var command_remove_binding: List[PrimitiveCommand] = List()
-	 var command_add_binding: List[PrimitiveCommand] = List()
-
-	 //Life cycle command COMMAND
-	 var stopCommand: List[LifeCycleCommand] = List()
-	 var startCommand: List[LifeCycleCommand] = List()
-
-	 var updateDictionaryCommand: List[PrimitiveCommand] = List()
-
-	 // var listPrimitive = plan(model)
-	 //println("plansize="+listPrimitive.size);
-	 model.getAdaptations foreach {
-	 p => p match {
-
-	 //DEPLOY UNIT CRUD ( TYPE PROVISIONNING )
-	 //ThirdParty CRUD
-	 case tpa: AddDeployUnit => command_add_deployUnit = command_add_deployUnit ++ List(AddDeployUnitCommand(tpa.getRef, ctx))
-	 case tpa: RemoveDeployUnit => command_remove_deployUnit = command_remove_deployUnit ++ List(RemoveDeployUnitCommand(tpa.getRef, ctx))
-	 //UPDATE US MAPPED ON REMOVE INSTALL
-	 case tpa: UpdateDeployUnit => {
-	 command_remove_deployUnit = command_remove_deployUnit ++ List(RemoveDeployUnitCommand(tpa.getRef, ctx))
-	 command_add_deployUnit = command_add_deployUnit ++ List(AddDeployUnitCommand(tpa.getRef, ctx))
-	 }
-
-	 //ThirdParty CRUD
-	 case tpa: AddThirdParty => executedCommandTP = executedCommandTP ++ List(AddThirdPartyCommand(tpa.getRef, ctx))
-	 case tpa: RemoveThirdParty => executedCommandTP = executedCommandTP ++ List(RemoveThirdPartyCommand(tpa.getRef, ctx))
-
-	 //Type CRUD
-	 case cta: AddType => command_add_type = command_add_type ++ List(AddTypeCommand(cta.getRef, ctx))
-	 case cta: RemoveType => command_remove_type = command_remove_type ++ List(RemoveTypeCommand(cta.getRef, ctx))
-	 case cta: UpdateType => {
-	 //UPDATE IS MAPPED UN REMOVE & INSTALL
-	 command_remove_type = command_remove_type ++ List(RemoveTypeCommand(cta.getRef, ctx))
-	 command_add_type = command_add_type ++ List(AddTypeCommand(cta.getRef, ctx))
-	 }
-	 //Instance CRUD
-	 case ca: AddInstance => {
-	 command_add_instance = command_add_instance ++ List(AddInstanceCommand(ca.getRef, ctx, nodeName))
-	 updateDictionaryCommand = updateDictionaryCommand ++ List(UpdateDictionaryCommand(ca.getRef, ctx, nodeName))
-	 // if(ca.getRef.isInstanceOf[ComponentInstance]){
-	 startCommand = startCommand ++ List(StartInstanceCommand(ca.getRef, ctx, nodeName))
-	 // }
-	 }
-	 case ca: RemoveInstance => {
-	 command_remove_instance = command_remove_instance ++ List(RemoveInstanceCommand(ca.getRef, ctx, nodeName))
-	 //if(ca.getRef.isInstanceOf[ComponentInstance]){
-	 stopCommand = stopCommand ++ List(StopInstanceCommand(ca.getRef, ctx, nodeName))
-	 //}
-	 }
-	 case ca: UpdateInstance => {
-	 //STOP & REMOVE
-	 command_remove_instance = command_remove_instance ++ List(RemoveInstanceCommand(ca.getRef, ctx, nodeName))
-	 //if(ca.getRef.isInstanceOf[ComponentInstance]){
-	 stopCommand = stopCommand ++ List(StopInstanceCommand(ca.getRef, ctx, nodeName))
-	 startCommand = startCommand ++ List(StartInstanceCommand(ca.getRef, ctx, nodeName))
-	 //}
-	 command_add_instance = command_add_instance ++ List(AddInstanceCommand(ca.getRef, ctx, nodeName))
-	 updateDictionaryCommand = updateDictionaryCommand ++ List(UpdateDictionaryCommand(ca.getRef, ctx, nodeName))
-	 }
-	 case ca: UpdateDictionaryInstance => {
-	 updateDictionaryCommand = updateDictionaryCommand ++ List(UpdateDictionaryCommand(ca.getRef, ctx, nodeName))
-	 }
-
-	 //Binding CRUD
-	 case ca: AddBinding => command_add_binding = command_add_binding ++ List(AddBindingCommand(ca.getRef, ctx, nodeName))
-	 case ca: RemoveBinding => command_remove_binding = command_remove_binding ++ List(RemoveBindingCommand(ca.getRef, ctx, nodeName))
-	 case ca: UpdateBinding => {
-	 //UPDATE MAP ON REMOVE & INSTALL
-	 command_add_binding = command_add_binding ++ List(AddBindingCommand(ca.getRef, ctx, nodeName))
-	 command_remove_binding = command_remove_binding ++ List(RemoveBindingCommand(ca.getRef, ctx, nodeName))
-	 }
-
-	 //Channel binding
-	 case ca: AddFragmentBinding => command_add_binding = command_add_binding ++ List(AddFragmentBindingCommand(ca.getRef, ca.getTargetNodeName, ctx, nodeName))
-	 case ca: RemoveFragmentBinding => command_remove_binding = command_remove_binding ++ List(RemoveFragmentBindingCommand(ca.getRef, ca.getTargetNodeName, ctx, nodeName))
-
-	 case _ => logger.error("Unknow Kevoree adaptation primitive"); false
-	 }
-	 }
-
-
-	 // scheduling of start and stop commands
-	 //var chocoScheduling : ChocoScheduling = new ChocoScheduling
-	 val initTime = System.currentTimeMillis
-	 var scheduling = new SchedulingWithTopologicalOrderAlgo
-
-	 stopCommand = scheduling.schedule(stopCommand, false).toList
-	 startCommand = scheduling.schedule(startCommand, true).toList
-
-	 var planTime = System.currentTimeMillis
-	 println("Plannification time = " + (planTime - initTime) + " ms");
-
-	 println("stop")
-	 stopCommand.foreach {
-	 c =>
-	 println(c.getInstance.getName)
-	 }
-
-	 println("start")
-	 startCommand.foreach {
-	 c =>
-	 println(c.getInstance.getName)
-	 }
-
-	 var executionResult = true
-
-	 if (executionResult) {
-	 executionResult = phase.phase(stopCommand, "Phase 0 STOP COMPONENT")
-	 }
-	 if (executionResult) {
-	 executionResult = phase.phase(command_remove_binding, "Phase 1 Remove Binding")
-	 }
-	 if (executionResult) {
-	 executionResult = phase.phase(command_remove_instance, "Phase 2 Remove Instance")
-	 }
-	 if (executionResult) {
-	 executionResult = phase.phase(command_remove_type, "Phase 3 Remove ComponentType")
-	 }
-	 if (executionResult) {
-	 executionResult = phase.phase(command_remove_deployUnit, "Phase 4 Remove TypeDefinition DeployUnit")
-	 }
-
-	 //INSTALL TYPE
-	 if (executionResult) {
-	 executionResult = phase.phase(executedCommandTP, "Phase 5 ThirdParty")
-	 }
-	 if (executionResult) {
-	 executionResult = phase.phase(command_add_deployUnit, "Phase 6 Add TypeDefinition DeployUnit")
-	 }
-	 if (executionResult) {
-	 executionResult = phase.phase(command_add_type, "Phase 7 Add ComponentType")
-	 }
-
-	 //INSTALL ISTANCE
-	 if (executionResult) {
-	 executionResult = phase.phase(command_add_instance, "Phase 8 install ComponentInstance")
-	 }
-	 if (executionResult) {
-	 executionResult = phase.phase(command_add_binding, "Phase 9 install Bindings")
-	 }
-	 if (executionResult) {
-	 executionResult = phase.phase(updateDictionaryCommand, "Phase 10 SET PROPERTY")
-	 }
-	 if (executionResult) {
-	 executionResult = phase.phase(startCommand, "Phase 11 START COMPONENT")
-	 }
-
-	 if (!executionResult) {
-	 phase.rollback
-	 }
-
-	 var deployTime = System.currentTimeMillis
-	 println("Deploy time = " + (deployTime - planTime) + " ms");
-	 executionResult
-
-	 */
-   
-	if(!model.getAdaptations.isEmpty){
-	  execute(schedule(buildCommandLists(model, nodeName)))
-	} else {
-	  true
+	def setContext(context: KevoreeDeployManager) = {
+		ctx = context
 	}
-    
-  }
 
-  def buildCommandLists(model: AdaptationModel, nodeName: String): scala.collection.mutable.Map[String, List[PrimitiveCommand]] = {
-    var executedCommandTP: List[PrimitiveCommand] = List()
+	def deploy(model: AdaptationModel, nodeName: String) = {
+		/*
+					 val phase = new KevoreeDeployPhase
 
-    //DEPLOY UNIT COMMAND
-    var command_add_deployUnit: List[PrimitiveCommand] = List()
-    var command_remove_deployUnit: List[PrimitiveCommand] = List()
+					 var executedCommandTP: List[PrimitiveCommand] = List()
+					 //var executedCommandCT :List[PrimitiveCommand] = List()
+					 //var executedCommandCI :List[PrimitiveCommand] = List()
+					 //  var executedCommandBI :List[PrimitiveCommand] = List()
 
-    //TYPE LIST
-    var command_add_type: List[PrimitiveCommand] = List()
-    var command_remove_type: List[PrimitiveCommand] = List()
+					 //DEPLOY UNIT COMMAND
+					 var command_add_deployUnit: List[PrimitiveCommand] = List()
+					 var command_remove_deployUnit: List[PrimitiveCommand] = List()
 
-    //INSTANCE LIST
-    var command_add_instance: List[PrimitiveCommand] = List()
-    var command_remove_instance: List[PrimitiveCommand] = List()
+					 //TYPE LIST
+					 var command_add_type: List[PrimitiveCommand] = List()
+					 var command_remove_type: List[PrimitiveCommand] = List()
 
-    //BINDING LIST
-    var command_remove_binding: List[PrimitiveCommand] = List()
-    var command_add_binding: List[PrimitiveCommand] = List()
+					 //INSTANCE LIST
+					 var command_add_instance: List[PrimitiveCommand] = List()
+					 var command_remove_instance: List[PrimitiveCommand] = List()
 
-    //Life cycle command COMMAND
-    var stopCommand: List[LifeCycleCommand] = List()
-    var startCommand: List[LifeCycleCommand] = List()
+					 //BINDING LIST
+					 var command_remove_binding: List[PrimitiveCommand] = List()
+					 var command_add_binding: List[PrimitiveCommand] = List()
 
-    var updateDictionaryCommand: List[PrimitiveCommand] = List()
+					 //Life cycle command COMMAND
+					 var stopCommand: List[LifeCycleCommand] = List()
+					 var startCommand: List[LifeCycleCommand] = List()
 
-    model.getAdaptations foreach {
-      p => p match {
+					 var updateDictionaryCommand: List[PrimitiveCommand] = List()
 
-		//DEPLOY UNIT CRUD ( TYPE PROVISIONNING )
-		//ThirdParty CRUD
-        case tpa: AddDeployUnit => command_add_deployUnit = command_add_deployUnit ++ List(AddDeployUnitCommand(tpa.getRef, ctx))
-        case tpa: RemoveDeployUnit => command_remove_deployUnit = command_remove_deployUnit ++ List(RemoveDeployUnitCommand(tpa.getRef, ctx))
-		  //UPDATE US MAPPED ON REMOVE INSTALL
-        case tpa: UpdateDeployUnit => {
-			command_remove_deployUnit = command_remove_deployUnit ++ List(RemoveDeployUnitCommand(tpa.getRef, ctx))
-			command_add_deployUnit = command_add_deployUnit ++ List(AddDeployUnitCommand(tpa.getRef, ctx))
-		  }
+					 // var listPrimitive = plan(model)
+					 //println("plansize="+listPrimitive.size);
+					 model.getAdaptations foreach {
+					 p => p match {
 
-		  //ThirdParty CRUD
-        case tpa: AddThirdParty => executedCommandTP = executedCommandTP ++ List(AddThirdPartyCommand(tpa.getRef, ctx))
-        case tpa: RemoveThirdParty => executedCommandTP = executedCommandTP ++ List(RemoveThirdPartyCommand(tpa.getRef, ctx))
+					 //DEPLOY UNIT CRUD ( TYPE PROVISIONNING )
+					 //ThirdParty CRUD
+					 case tpa: AddDeployUnit => command_add_deployUnit = command_add_deployUnit ++ List(AddDeployUnitCommand(tpa.getRef, ctx))
+					 case tpa: RemoveDeployUnit => command_remove_deployUnit = command_remove_deployUnit ++ List(RemoveDeployUnitCommand(tpa.getRef, ctx))
+					 //UPDATE US MAPPED ON REMOVE INSTALL
+					 case tpa: UpdateDeployUnit => {
+					 command_remove_deployUnit = command_remove_deployUnit ++ List(RemoveDeployUnitCommand(tpa.getRef, ctx))
+					 command_add_deployUnit = command_add_deployUnit ++ List(AddDeployUnitCommand(tpa.getRef, ctx))
+					 }
 
-		  //Type CRUD
-        case cta: AddType => command_add_type = command_add_type ++ List(AddTypeCommand(cta.getRef, ctx,nodeName))
-        case cta: RemoveType => command_remove_type = command_remove_type ++ List(RemoveTypeCommand(cta.getRef, ctx,nodeName))
-        case cta: UpdateType => {
-			//UPDATE IS MAPPED UN REMOVE & INSTALL
-			command_remove_type = command_remove_type ++ List(RemoveTypeCommand(cta.getRef, ctx,nodeName))
-			command_add_type = command_add_type ++ List(AddTypeCommand(cta.getRef, ctx,nodeName))
-		  }
-		  //Instance CRUD
-        case ca: AddInstance => {
-			command_add_instance = command_add_instance ++ List(AddInstanceCommand(ca.getRef, ctx, nodeName))
-			updateDictionaryCommand = updateDictionaryCommand ++ List(UpdateDictionaryCommand(ca.getRef, ctx, nodeName))
-			// if(ca.getRef.isInstanceOf[ComponentInstance]){
-			startCommand = startCommand ++ List(StartInstanceCommand(ca.getRef, ctx, nodeName))
-			// }
-		  }
-        case ca: RemoveInstance => {
-			command_remove_instance = command_remove_instance ++ List(RemoveInstanceCommand(ca.getRef, ctx, nodeName))
-			//if(ca.getRef.isInstanceOf[ComponentInstance]){
-			stopCommand = stopCommand ++ List(StopInstanceCommand(ca.getRef, ctx, nodeName))
-			//}
-		  }
-        case ca: UpdateInstance => {
-			//STOP & REMOVE
-			command_remove_instance = command_remove_instance ++ List(RemoveInstanceCommand(ca.getRef, ctx, nodeName))
-			//if(ca.getRef.isInstanceOf[ComponentInstance]){
-			stopCommand = stopCommand ++ List(StopInstanceCommand(ca.getRef, ctx, nodeName))
-			startCommand = startCommand ++ List(StartInstanceCommand(ca.getRef, ctx, nodeName))
-			//}
-			command_add_instance = command_add_instance ++ List(AddInstanceCommand(ca.getRef, ctx, nodeName))
-			updateDictionaryCommand = updateDictionaryCommand ++ List(UpdateDictionaryCommand(ca.getRef, ctx, nodeName))
-		  }
-        case ca: UpdateDictionaryInstance => {
-			updateDictionaryCommand = updateDictionaryCommand ++ List(UpdateDictionaryCommand(ca.getRef, ctx, nodeName))
-		  }
+					 //ThirdParty CRUD
+					 case tpa: AddThirdParty => executedCommandTP = executedCommandTP ++ List(AddThirdPartyCommand(tpa.getRef, ctx))
+					 case tpa: RemoveThirdParty => executedCommandTP = executedCommandTP ++ List(RemoveThirdPartyCommand(tpa.getRef, ctx))
 
-		  //Binding CRUD
-        case ca: AddBinding => command_add_binding = command_add_binding ++ List(AddBindingCommand(ca.getRef, ctx, nodeName))
-        case ca: RemoveBinding => command_remove_binding = command_remove_binding ++ List(RemoveBindingCommand(ca.getRef, ctx, nodeName))
-        case ca: UpdateBinding => {
-			//UPDATE MAP ON REMOVE & INSTALL
-			command_add_binding = command_add_binding ++ List(AddBindingCommand(ca.getRef, ctx, nodeName))
-			command_remove_binding = command_remove_binding ++ List(RemoveBindingCommand(ca.getRef, ctx, nodeName))
-		  }
+					 //Type CRUD
+					 case cta: AddType => command_add_type = command_add_type ++ List(AddTypeCommand(cta.getRef, ctx))
+					 case cta: RemoveType => command_remove_type = command_remove_type ++ List(RemoveTypeCommand(cta.getRef, ctx))
+					 case cta: UpdateType => {
+					 //UPDATE IS MAPPED UN REMOVE & INSTALL
+					 command_remove_type = command_remove_type ++ List(RemoveTypeCommand(cta.getRef, ctx))
+					 command_add_type = command_add_type ++ List(AddTypeCommand(cta.getRef, ctx))
+					 }
+					 //Instance CRUD
+					 case ca: AddInstance => {
+					 command_add_instance = command_add_instance ++ List(AddInstanceCommand(ca.getRef, ctx, nodeName))
+					 updateDictionaryCommand = updateDictionaryCommand ++ List(UpdateDictionaryCommand(ca.getRef, ctx, nodeName))
+					 // if(ca.getRef.isInstanceOf[ComponentInstance]){
+					 startCommand = startCommand ++ List(StartInstanceCommand(ca.getRef, ctx, nodeName))
+					 // }
+					 }
+					 case ca: RemoveInstance => {
+					 command_remove_instance = command_remove_instance ++ List(RemoveInstanceCommand(ca.getRef, ctx, nodeName))
+					 //if(ca.getRef.isInstanceOf[ComponentInstance]){
+					 stopCommand = stopCommand ++ List(StopInstanceCommand(ca.getRef, ctx, nodeName))
+					 //}
+					 }
+					 case ca: UpdateInstance => {
+					 //STOP & REMOVE
+					 command_remove_instance = command_remove_instance ++ List(RemoveInstanceCommand(ca.getRef, ctx, nodeName))
+					 //if(ca.getRef.isInstanceOf[ComponentInstance]){
+					 stopCommand = stopCommand ++ List(StopInstanceCommand(ca.getRef, ctx, nodeName))
+					 startCommand = startCommand ++ List(StartInstanceCommand(ca.getRef, ctx, nodeName))
+					 //}
+					 command_add_instance = command_add_instance ++ List(AddInstanceCommand(ca.getRef, ctx, nodeName))
+					 updateDictionaryCommand = updateDictionaryCommand ++ List(UpdateDictionaryCommand(ca.getRef, ctx, nodeName))
+					 }
+					 case ca: UpdateDictionaryInstance => {
+					 updateDictionaryCommand = updateDictionaryCommand ++ List(UpdateDictionaryCommand(ca.getRef, ctx, nodeName))
+					 }
 
-		  //Channel binding
-        case ca: AddFragmentBinding => command_add_binding = command_add_binding ++ List(AddFragmentBindingCommand(ca.getRef, ca.getTargetNodeName, ctx, nodeName))
-        case ca: RemoveFragmentBinding => command_remove_binding = command_remove_binding ++ List(RemoveFragmentBindingCommand(ca.getRef, ca.getTargetNodeName, ctx, nodeName))
+					 //Binding CRUD
+					 case ca: AddBinding => command_add_binding = command_add_binding ++ List(AddBindingCommand(ca.getRef, ctx, nodeName))
+					 case ca: RemoveBinding => command_remove_binding = command_remove_binding ++ List(RemoveBindingCommand(ca.getRef, ctx, nodeName))
+					 case ca: UpdateBinding => {
+					 //UPDATE MAP ON REMOVE & INSTALL
+					 command_add_binding = command_add_binding ++ List(AddBindingCommand(ca.getRef, ctx, nodeName))
+					 command_remove_binding = command_remove_binding ++ List(RemoveBindingCommand(ca.getRef, ctx, nodeName))
+					 }
 
-        case _ => logger.error("Unknow Kevoree adaptation primitive"); false
-      }
-    }
+					 //Channel binding
+					 case ca: AddFragmentBinding => command_add_binding = command_add_binding ++ List(AddFragmentBindingCommand(ca.getRef, ca.getTargetNodeName, ctx, nodeName))
+					 case ca: RemoveFragmentBinding => command_remove_binding = command_remove_binding ++ List(RemoveFragmentBindingCommand(ca.getRef, ca.getTargetNodeName, ctx, nodeName))
 
-    val result: scala.collection.mutable.Map[String, List[PrimitiveCommand]] = scala.collection.mutable.Map[String, List[PrimitiveCommand]]()
-    result.put("stop", stopCommand)
-    result.put("start", startCommand)
-    result.put("addDeployUnit", command_add_deployUnit)
-    result.put("removeDeployUnit", command_remove_deployUnit)
-    result.put("addType", command_add_type)
-    result.put("removeType", command_remove_type)
-    result.put("addInstance", command_add_instance)
-    result.put("removeInstance", command_remove_instance)
-    result.put("removeBinding", command_remove_binding)
-    result.put("addBinding", command_add_binding)
-    result.put("updateDictionary", updateDictionaryCommand)
-    result.put("thirdParty", executedCommandTP)
+					 case _ => logger.error("Unknow Kevoree adaptation primitive"); false
+					 }
+					 }
 
-    result
-  }
 
-  def schedule(commands: scala.collection.mutable.Map[String, List[PrimitiveCommand]]): scala.collection.mutable.Map[String, List[PrimitiveCommand]] = {
-    // scheduling of start and stop commands
-    val initTime = System.currentTimeMillis
-    val scheduling = new SchedulingWithTopologicalOrderAlgo
+					 // scheduling of start and stop commands
+					 //var chocoScheduling : ChocoScheduling = new ChocoScheduling
+					 val initTime = System.currentTimeMillis
+					 var scheduling = new SchedulingWithTopologicalOrderAlgo
 
-    commands.put("stop", scheduling.schedule(commands.get("stop").get.asInstanceOf[List[LifeCycleCommand]], false).toList)
-    //stopCommand = scheduling.schedule(commands.get("stop"), false).toList
-    commands.put("start", scheduling.schedule(commands.get("start").get.asInstanceOf[List[LifeCycleCommand]], true).toList)
-    //startCommand = scheduling.schedule(commands.get("start"), true).toList
+					 stopCommand = scheduling.schedule(stopCommand, false).toList
+					 startCommand = scheduling.schedule(startCommand, true).toList
 
-    val planTime = System.currentTimeMillis
+					 var planTime = System.currentTimeMillis
+					 println("Plannification time = " + (planTime - initTime) + " ms");
 
-    logger.debug("Plannification time = " + (planTime - initTime) + " ms");
+					 println("stop")
+					 stopCommand.foreach {
+					 c =>
+					 println(c.getInstance.getName)
+					 }
 
-    logger.debug("stop command")
-    commands.get("stop").get.asInstanceOf[List[LifeCycleCommand]].foreach {
-      c =>
-	  logger.debug(c.getInstance.getName)
-    }
+					 println("start")
+					 startCommand.foreach {
+					 c =>
+					 println(c.getInstance.getName)
+					 }
 
-    logger.debug("start")
-    commands.get("start").get.asInstanceOf[List[LifeCycleCommand]].foreach {
-      c =>
-	  logger.debug(c.getInstance.getName)
-    }
+					 var executionResult = true
 
-    commands
-  }
+					 if (executionResult) {
+					 executionResult = phase.phase(stopCommand, "Phase 0 STOP COMPONENT")
+					 }
+					 if (executionResult) {
+					 executionResult = phase.phase(command_remove_binding, "Phase 1 Remove Binding")
+					 }
+					 if (executionResult) {
+					 executionResult = phase.phase(command_remove_instance, "Phase 2 Remove Instance")
+					 }
+					 if (executionResult) {
+					 executionResult = phase.phase(command_remove_type, "Phase 3 Remove ComponentType")
+					 }
+					 if (executionResult) {
+					 executionResult = phase.phase(command_remove_deployUnit, "Phase 4 Remove TypeDefinition DeployUnit")
+					 }
 
-  def execute(commands: scala.collection.mutable.Map[String, List[PrimitiveCommand]]) = {
-    val initTime = System.currentTimeMillis
+					 //INSTALL TYPE
+					 if (executionResult) {
+					 executionResult = phase.phase(executedCommandTP, "Phase 5 ThirdParty")
+					 }
+					 if (executionResult) {
+					 executionResult = phase.phase(command_add_deployUnit, "Phase 6 Add TypeDefinition DeployUnit")
+					 }
+					 if (executionResult) {
+					 executionResult = phase.phase(command_add_type, "Phase 7 Add ComponentType")
+					 }
 
-    val phase = new KevoreeDeployPhase
-    var executionResult = true
+					 //INSTALL ISTANCE
+					 if (executionResult) {
+					 executionResult = phase.phase(command_add_instance, "Phase 8 install ComponentInstance")
+					 }
+					 if (executionResult) {
+					 executionResult = phase.phase(command_add_binding, "Phase 9 install Bindings")
+					 }
+					 if (executionResult) {
+					 executionResult = phase.phase(updateDictionaryCommand, "Phase 10 SET PROPERTY")
+					 }
+					 if (executionResult) {
+					 executionResult = phase.phase(startCommand, "Phase 11 START COMPONENT")
+					 }
 
-    if (executionResult) {
-      executionResult = phase.phase(commands.get("stop").get, "Phase 0 STOP COMPONENT")
-    }
-    if (executionResult) {
-      executionResult = phase.phase(commands.get("removeBinding").get, "Phase 1 Remove Binding")
-    }
-    if (executionResult) {
-      executionResult = phase.phase(commands.get("removeInstance").get, "Phase 2 Remove Instance")
-    }
-    if (executionResult) {
-      executionResult = phase.phase(commands.get("removeType").get, "Phase 3 Remove ComponentType")
-    }
-    if (executionResult) {
-      executionResult = phase.phase(commands.get("removeDeployUnit").get, "Phase 4 Remove TypeDefinition DeployUnit")
-    }
+					 if (!executionResult) {
+					 phase.rollback
+					 }
 
-    //INSTALL TYPE
-    if (executionResult) {
-      executionResult = phase.phase(commands.get("thirdParty").get, "Phase 5 ThirdParty")
-    }
-    if (executionResult) {
-      executionResult = phase.phase(commands.get("addDeployUnit").get, "Phase 6 Add TypeDefinition DeployUnit")
-    }
-	
-	if (executionResult) {
-      executionResult = phase.phase(commands.get("addType").get, "Phase 7 Add ComponentType")
-    }
-	
-	// test if there are adds
-	// resolve all bundles
-	var bundles = ctx.bundleContext.getBundles
-	logger.debug("resolving bundles ...")
-	var test = ctx.getServicePackageAdmin.resolveBundles(bundles)
-	logger.debug("bundles resolved: " + test)
-	
-	// start all bundles
-	logger.debug("starting bundles ...")
-	bundles.foreach{bundle =>
-	  bundle.start
+					 var deployTime = System.currentTimeMillis
+					 println("Deploy time = " + (deployTime - planTime) + " ms");
+					 executionResult
+
+					 */
+
+		if (!model.getAdaptations.isEmpty) {
+			execute(schedule(buildCommandLists(model, nodeName)))
+		} else {
+			true
+		}
 	}
-	logger.debug("bundles started")
-	
-    //INSTALL INSTANCE
-    if (executionResult) {
-      executionResult = phase.phase(commands.get("addInstance").get, "Phase 8 install ComponentInstance")
-    }
-    if (executionResult) {
-      executionResult = phase.phase(commands.get("addBinding").get, "Phase 9 install Bindings")
-    }
-    if (executionResult) {
-      executionResult = phase.phase(commands.get("updateDictionary").get, "Phase 10 SET PROPERTY")
-    }
-	
-    if (executionResult) {
-      executionResult = phase.phase(commands.get("start").get, "Phase 11 START COMPONENT")
-    }
 
-    if (!executionResult) {
-      phase.rollback
-    }
+	def buildCommandLists(model: AdaptationModel, nodeName: String): scala.collection.mutable.Map[String, List[PrimitiveCommand]] = {
+		var executedCommandTP: List[PrimitiveCommand] = List()
 
-    val deployTime = System.currentTimeMillis
-    //println("Deploy time = " + (deployTime - initTime) + " ms");
+		//DEPLOY UNIT COMMAND
+		var command_add_deployUnit: List[PrimitiveCommand] = List()
+		var command_remove_deployUnit: List[PrimitiveCommand] = List()
 
-    executionResult
-  }
+		//TYPE LIST
+		var command_add_type: List[PrimitiveCommand] = List()
+		var command_remove_type: List[PrimitiveCommand] = List()
 
+		//INSTANCE LIST
+		var command_add_instance: List[PrimitiveCommand] = List()
+		var command_remove_instance: List[PrimitiveCommand] = List()
 
-  /* Simple plan algorithme / separe primitive type */
-  /*
-   def plan(model : AdaptationModel) : List[AdaptationPrimitive] = {
-   var thirdPartiesAdaptations = model.getAdaptations.filter({a => a.isInstanceOf[ThirdPartyAdaptation] }).toList
-   var componentTypeAdaptations = model.getAdaptations.filter({a => a.isInstanceOf[TypeAdaptation] }).toList
-   var componentInstanceAdaptations = model.getAdaptations.filter({a => a.isInstanceOf[InstanceAdaptation] }).toList
-   var bindingAdaptations = model.getAdaptations.filter({a => a.isInstanceOf[BindingAdaptation] }).toList
-   var res = thirdPartiesAdaptations ++ componentTypeAdaptations ++ componentInstanceAdaptations ++ bindingAdaptations
-   res.toList
-   }*/
+		//BINDING LIST
+		var command_remove_binding: List[PrimitiveCommand] = List()
+		var command_add_binding: List[PrimitiveCommand] = List()
 
+		//Life cycle command COMMAND
+		var stopCommand: List[LifeCycleCommand] = List()
+		var startCommand: List[LifeCycleCommand] = List()
 
+		var updateDictionaryCommand: List[PrimitiveCommand] = List()
+
+		model.getAdaptations foreach {
+			p => p match {
+
+				//DEPLOY UNIT CRUD ( TYPE PROVISIONNING )
+				//ThirdParty CRUD
+				case tpa: AddDeployUnit => command_add_deployUnit = command_add_deployUnit ++ List(AddDeployUnitCommand(tpa.getRef, ctx))
+				case tpa: RemoveDeployUnit => command_remove_deployUnit = command_remove_deployUnit ++ List(RemoveDeployUnitCommand(tpa.getRef, ctx))
+				//UPDATE US MAPPED ON REMOVE INSTALL
+				case tpa: UpdateDeployUnit => {
+					command_remove_deployUnit = command_remove_deployUnit ++ List(RemoveDeployUnitCommand(tpa.getRef, ctx))
+					command_add_deployUnit = command_add_deployUnit ++ List(AddDeployUnitCommand(tpa.getRef, ctx))
+				}
+
+				//ThirdParty CRUD
+				case tpa: AddThirdParty => executedCommandTP = executedCommandTP ++ List(AddThirdPartyCommand(tpa.getRef, ctx))
+				case tpa: RemoveThirdParty => executedCommandTP = executedCommandTP ++ List(RemoveThirdPartyCommand(tpa.getRef, ctx))
+
+				//Type CRUD
+				case cta: AddType => command_add_type = command_add_type ++ List(AddTypeCommand(cta.getRef, ctx, nodeName))
+				case cta: RemoveType => command_remove_type = command_remove_type ++ List(RemoveTypeCommand(cta.getRef, ctx, nodeName))
+				case cta: UpdateType => {
+					//UPDATE IS MAPPED UN REMOVE & INSTALL
+					command_remove_type = command_remove_type ++ List(RemoveTypeCommand(cta.getRef, ctx, nodeName))
+					command_add_type = command_add_type ++ List(AddTypeCommand(cta.getRef, ctx, nodeName))
+				}
+				//Instance CRUD
+				case ca: AddInstance => {
+					command_add_instance = command_add_instance ++ List(AddInstanceCommand(ca.getRef, ctx, nodeName))
+					updateDictionaryCommand = updateDictionaryCommand ++ List(UpdateDictionaryCommand(ca.getRef, ctx, nodeName))
+					// if(ca.getRef.isInstanceOf[ComponentInstance]){
+					startCommand = startCommand ++ List(StartInstanceCommand(ca.getRef, ctx, nodeName))
+					// }
+				}
+				case ca: RemoveInstance => {
+					command_remove_instance = command_remove_instance ++ List(RemoveInstanceCommand(ca.getRef, ctx, nodeName))
+					//if(ca.getRef.isInstanceOf[ComponentInstance]){
+					stopCommand = stopCommand ++ List(StopInstanceCommand(ca.getRef, ctx, nodeName))
+					//}
+				}
+				case ca: UpdateInstance => {
+					//STOP & REMOVE
+					command_remove_instance = command_remove_instance ++ List(RemoveInstanceCommand(ca.getRef, ctx, nodeName))
+					//if(ca.getRef.isInstanceOf[ComponentInstance]){
+					stopCommand = stopCommand ++ List(StopInstanceCommand(ca.getRef, ctx, nodeName))
+					startCommand = startCommand ++ List(StartInstanceCommand(ca.getRef, ctx, nodeName))
+					//}
+					command_add_instance = command_add_instance ++ List(AddInstanceCommand(ca.getRef, ctx, nodeName))
+					updateDictionaryCommand = updateDictionaryCommand ++ List(UpdateDictionaryCommand(ca.getRef, ctx, nodeName))
+				}
+				case ca: UpdateDictionaryInstance => {
+					updateDictionaryCommand = updateDictionaryCommand ++ List(UpdateDictionaryCommand(ca.getRef, ctx, nodeName))
+				}
+
+				//Binding CRUD
+				case ca: AddBinding => command_add_binding = command_add_binding ++ List(AddBindingCommand(ca.getRef, ctx, nodeName))
+				case ca: RemoveBinding => command_remove_binding = command_remove_binding ++ List(RemoveBindingCommand(ca.getRef, ctx, nodeName))
+				case ca: UpdateBinding => {
+					//UPDATE MAP ON REMOVE & INSTALL
+					command_add_binding = command_add_binding ++ List(AddBindingCommand(ca.getRef, ctx, nodeName))
+					command_remove_binding = command_remove_binding ++ List(RemoveBindingCommand(ca.getRef, ctx, nodeName))
+				}
+
+				//Channel binding
+				case ca: AddFragmentBinding => command_add_binding = command_add_binding ++ List(AddFragmentBindingCommand(ca.getRef, ca.getTargetNodeName, ctx, nodeName))
+				case ca: RemoveFragmentBinding => command_remove_binding = command_remove_binding ++ List(RemoveFragmentBindingCommand(ca.getRef, ca.getTargetNodeName, ctx, nodeName))
+
+				case _ => logger.error("Unknow Kevoree adaptation primitive"); false
+			}
+		}
+
+		val result: scala.collection.mutable.Map[String, List[PrimitiveCommand]] = scala.collection.mutable.Map[String, List[PrimitiveCommand]]()
+		result.put("stop", stopCommand)
+		result.put("start", startCommand)
+		result.put("addDeployUnit", command_add_deployUnit)
+		result.put("removeDeployUnit", command_remove_deployUnit)
+		result.put("addType", command_add_type)
+		result.put("removeType", command_remove_type)
+		result.put("addInstance", command_add_instance)
+		result.put("removeInstance", command_remove_instance)
+		result.put("removeBinding", command_remove_binding)
+		result.put("addBinding", command_add_binding)
+		result.put("updateDictionary", updateDictionaryCommand)
+		result.put("thirdParty", executedCommandTP)
+
+		result
+	}
+
+	def schedule(commands: scala.collection.mutable.Map[String, List[PrimitiveCommand]]): scala.collection.mutable.Map[String, List[PrimitiveCommand]] = {
+		// scheduling of start and stop commands
+		val initTime = System.currentTimeMillis
+		val scheduling = new SchedulingWithTopologicalOrderAlgo
+
+		commands.put("stop", scheduling.schedule(commands.get("stop").get.asInstanceOf[List[LifeCycleCommand]], false).toList)
+		//stopCommand = scheduling.schedule(commands.get("stop"), false).toList
+		commands.put("start", scheduling.schedule(commands.get("start").get.asInstanceOf[List[LifeCycleCommand]], true).toList)
+		//startCommand = scheduling.schedule(commands.get("start"), true).toList
+
+		val planTime = System.currentTimeMillis
+
+		logger.debug("Plannification time = " + (planTime - initTime) + " ms");
+
+		logger.debug("stop command")
+		commands.get("stop").get.asInstanceOf[List[LifeCycleCommand]].foreach {
+			c =>
+				logger.debug(c.getInstance.getName)
+		}
+
+		logger.debug("start")
+		commands.get("start").get.asInstanceOf[List[LifeCycleCommand]].foreach {
+			c =>
+				logger.debug(c.getInstance.getName)
+		}
+
+		commands
+	}
+
+	def execute(commands: scala.collection.mutable.Map[String, List[PrimitiveCommand]]) = {
+		val initTime = System.currentTimeMillis
+
+		val phase = new KevoreeDeployPhase
+		var executionResult = true
+
+		if (executionResult) {
+			executionResult = phase.phase(commands.get("stop").get, "Phase 0 STOP COMPONENT")
+		}
+		if (executionResult) {
+			executionResult = phase.phase(commands.get("removeBinding").get, "Phase 1 Remove Binding")
+		}
+		if (executionResult) {
+			executionResult = phase.phase(commands.get("removeInstance").get, "Phase 2 Remove Instance")
+		}
+		if (executionResult) {
+			executionResult = phase.phase(commands.get("removeType").get, "Phase 3 Remove ComponentType")
+		}
+		if (executionResult) {
+			executionResult = phase.phase(commands.get("removeDeployUnit").get, "Phase 4 Remove TypeDefinition DeployUnit")
+		}
+
+		//INSTALL TYPE
+		if (executionResult) {
+			executionResult = phase.phase(commands.get("thirdParty").get, "Phase 5 ThirdParty")
+		}
+		if (executionResult) {
+			executionResult = phase.phase(commands.get("addDeployUnit").get, "Phase 6 Add TypeDefinition DeployUnit")
+		}
+
+		if (executionResult) {
+			executionResult = phase.phase(commands.get("addType").get, "Phase 7 Add ComponentType")
+		}
+
+		// test if there are adds
+		/*if (commands.get("thirdParty").get.size > 0 && commands.get("addDeployUnit").get.size > 0 && commands.get("addType").get.size > 0) {
+
+			val bundles = ctx.bundleContext.getBundles
+
+			// stop all bundles
+			logger.debug("stopping bundles ...")
+			bundles.filter(bundle => bundle.getState.equals(Bundle.ACTIVE) && bundle.getBundleId != 0).foreach {
+				bundle =>
+					bundle.stop
+			}
+			logger.debug("bundles stopped")
+
+			// resolve all bundles
+			logger.debug("resolving bundles ...")
+			val test = ctx.getServicePackageAdmin.resolveBundles(bundles)
+			logger.debug("bundles resolved: " + test)
+
+			// start all bundles
+			logger.debug("starting bundles ...")
+			bundles.foreach {
+				bundle =>
+					bundle.start
+			}
+			logger.debug("bundles started")
+		}*/
+
+		//INSTALL INSTANCE
+		if (executionResult) {
+			executionResult = phase.phase(commands.get("addInstance").get, "Phase 8 install ComponentInstance")
+		}
+		if (executionResult) {
+			executionResult = phase.phase(commands.get("addBinding").get, "Phase 9 install Bindings")
+		}
+		if (executionResult) {
+			executionResult = phase.phase(commands.get("updateDictionary").get, "Phase 10 SET PROPERTY")
+		}
+
+		if (executionResult) {
+			executionResult = phase.phase(commands.get("start").get, "Phase 11 START COMPONENT")
+		}
+
+		if (!executionResult) {
+			phase.rollback
+		}
+
+		val deployTime = System.currentTimeMillis
+		//println("Deploy time = " + (deployTime - initTime) + " ms");
+
+		executionResult
+	}
+
+	/* Simple plan algorithme / separe primitive type */
+	/*
+									 def plan(model : AdaptationModel) : List[AdaptationPrimitive] = {
+									 var thirdPartiesAdaptations = model.getAdaptations.filter({a => a.isInstanceOf[ThirdPartyAdaptation] }).toList
+									 var componentTypeAdaptations = model.getAdaptations.filter({a => a.isInstanceOf[TypeAdaptation] }).toList
+									 var componentInstanceAdaptations = model.getAdaptations.filter({a => a.isInstanceOf[InstanceAdaptation] }).toList
+									 var bindingAdaptations = model.getAdaptations.filter({a => a.isInstanceOf[BindingAdaptation] }).toList
+									 var res = thirdPartiesAdaptations ++ componentTypeAdaptations ++ componentInstanceAdaptations ++ bindingAdaptations
+									 res.toList
+									 }*/
 }
