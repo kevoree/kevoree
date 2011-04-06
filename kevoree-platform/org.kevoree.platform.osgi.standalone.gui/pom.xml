@@ -125,14 +125,6 @@
         </dependency>
     </dependencies>
 
-    <repositories>
-        <repository>
-            <id>apacheTemp</id>
-            <url>https://repository.apache.org/content/repositories/orgapachefelix-050</url>
-        </repository>
-    </repositories>
-
-
     <build>
         <plugins>
 
