@@ -16,4 +16,7 @@ trait DataManager {
   def getUUIDVectorClock(uuid : UUID) : VectorClock
   def getUUIDVectorClocks() : java.util.Map[UUID, VectorClock]
   def mergeClock(uid: UUID,v : VectorClock):VectorClock
+
+	// TODO include garbage into DataManager
+	//def garbage()
 }

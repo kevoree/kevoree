@@ -4,7 +4,6 @@
  */
 package org.kevoree.library.gossiperNetty.group;
 
-import com.google.protobuf.ByteString;
 import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.List;
@@ -48,7 +47,9 @@ public class NettyGossiperGroup extends AbstractGroupType implements NettyGossip
 	private GossiperActor actor = null;
 	private ServiceReference sr;
 	private KevoreeModelHandlerService modelHandlerService = null;
+	private org.kevoree.library.gossiperNetty.PeerSelector selector = null;
 	private Logger logger = LoggerFactory.getLogger(NettyGossiperChannel.class);
+
 
 	@Start
 	public void startGossiperGroup() {
@@ -60,7 +61,8 @@ public class NettyGossiperGroup extends AbstractGroupType implements NettyGossip
 
         Long timeoutLong =  Long.parseLong((String)this.getDictionary().get("interval"));
 		Serializer serializer = new GroupSerializer();
-		actor = new GossiperActor(timeoutLong,this, dataManager, parsePortNumber(getNodeName()), parseFullUDPParameter(), false,serializer);
+		selector = new GroupPeerSelector(timeoutLong, modelHandlerService, this.getName());
+		actor = new GossiperActor(timeoutLong,this, dataManager, parsePortNumber(getNodeName()), parseFullUDPParameter(), false,serializer,selector);
 	}
 
 	@Stop
@@ -140,7 +142,7 @@ public class NettyGossiperGroup extends AbstractGroupType implements NettyGossip
 
 
 
-	@Override
+	/*@Override
 	public String selectPeer() {
 		ContainerRoot model = this.getModelService().getLastModel();
 		//Group selfGroup = null;
@@ -162,7 +164,7 @@ public class NettyGossiperGroup extends AbstractGroupType implements NettyGossip
 			}
 		}
 		return "";
-	}
+	}*/
 
 	@Override
 	public void localNotification(Object data) {
