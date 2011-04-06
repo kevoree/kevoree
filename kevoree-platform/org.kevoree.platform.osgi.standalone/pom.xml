@@ -1,6 +1,5 @@
-
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <artifactId>org.kevoree.platform.osgi.standalone</artifactId>
     <packaging>jar</packaging>
@@ -13,7 +12,7 @@
         <version>1.1.0-BETA1</version>
         <relativePath>../org.kevoree.platform.root/pom.xml</relativePath>
     </parent>
-    
+
     <properties>
         <kevoree.version>${project.version}</kevoree.version>
         <org.osgi.framework.system.packages.extra>sun.misc</org.osgi.framework.system.packages.extra>
@@ -88,7 +87,7 @@
             <groupId>org.apache.felix</groupId>
             <artifactId>org.apache.felix.shell.remote</artifactId>
             <version>1.1.2</version>
-            
+
             <exclusions>
                 <exclusion>
                     <artifactId>org.apache.felix.gogo.runtime</artifactId>
@@ -114,21 +113,26 @@
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-core</artifactId>
             <version>0.9.24</version>
-            
+
         </dependency>
         <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-classic</artifactId>
             <version>0.9.24</version>
-            
         </dependency>
+
         <dependency>
             <groupId>org.kevoree</groupId>
             <artifactId>org.kevoree.remote</artifactId>
             <version>${kevoree.version}</version>
         </dependency>
-        
-        
+
+        <dependency>
+            <groupId>org.kevoree.tools</groupId>
+            <artifactId>org.kevoree.tools.marShell</artifactId>
+            <version>${kevoree.version}</version>
+        </dependency>
+
     </dependencies>
 
     <build>
@@ -145,7 +149,7 @@
                             <goal>generate</goal>
                         </goals>
                         <configuration>
-                            <filters>scala,org.ops4j,org.eclipse.emf,org.slf4j,org.kevoree,org.restlet</filters>
+                            <filters>scala,org.ops4j,org.eclipse.emf,org.slf4j,org.kevoree,org.restlet,org.kevoree.tools</filters>
                         </configuration>
                     </execution>
                 </executions>
@@ -171,6 +175,7 @@
                                         <include>ch.qos.logback:*</include>
                                         <include>org.kermeta.emf:*</include>
                                         <include>org.kevoree</include>
+                                        <include>org.kevoree.tools:*</include>
                                     </includes>
                                 </filter>
                                 <filter>
@@ -183,7 +188,8 @@
                                 </filter>
                             </filters>
                             <transformers>
-                                <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                                <transformer
+                                        implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
                                     <mainClass>org.kevoree.platform.osgi.standalone.App</mainClass>
                                 </transformer>
                             </transformers>
@@ -191,28 +197,28 @@
                     </execution>
                 </executions>
             </plugin>
-<!--
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>webstart-maven-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>jnlp</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <configuration>
-                    <excludeTransitive>true</excludeTransitive>
-                    <dependencies></dependencies>
-                    <jnlp>
-                        <mainClass>org.kevoree.platform.osgi.standalone.App</mainClass>
-                    </jnlp>
-                    <verbose>true</verbose>
+            <!--
+                        <plugin>
+                            <groupId>org.codehaus.mojo</groupId>
+                            <artifactId>webstart-maven-plugin</artifactId>
+                            <executions>
+                                <execution>
+                                    <goals>
+                                        <goal>jnlp</goal>
+                                    </goals>
+                                </execution>
+                            </executions>
+                            <configuration>
+                                <excludeTransitive>true</excludeTransitive>
+                                <dependencies></dependencies>
+                                <jnlp>
+                                    <mainClass>org.kevoree.platform.osgi.standalone.App</mainClass>
+                                </jnlp>
+                                <verbose>true</verbose>
 
-                </configuration>
-            </plugin>
--->
+                            </configuration>
+                        </plugin>
+            -->
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>exec-maven-plugin</artifactId>
@@ -227,7 +233,7 @@
                 <configuration>
                     <mainClass>org.kermeta.art2.platform.standalone.App</mainClass>
                     <arguments>
-                       <!-- <argument>argument1</argument> -->
+                        <!-- <argument>argument1</argument> -->
                     </arguments>
                     <systemProperties>
                         <systemProperty>
@@ -252,7 +258,7 @@
         <repository>
             <id>Akka</id>
             <name>Akka Maven2 Repository</name>
-            <url>http://www.scalablesolutions.se/akka/repository/ </url>
+            <url>http://www.scalablesolutions.se/akka/repository/</url>
         </repository>
     </repositories>
 

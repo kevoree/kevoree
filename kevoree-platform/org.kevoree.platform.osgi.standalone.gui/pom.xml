@@ -147,7 +147,7 @@
                             <goal>generate</goal>
                         </goals>
                         <configuration>
-                            <filters>scala,org.ops4j,org.eclipse.emf,org.slf4j,org.kevoree,org.restlet</filters>
+                            <filters>scala,org.ops4j,org.eclipse.emf,org.slf4j,org.kevoree,org.restlet,org.kevoree.tools</filters>
                         </configuration>
                     </execution>
                 </executions>

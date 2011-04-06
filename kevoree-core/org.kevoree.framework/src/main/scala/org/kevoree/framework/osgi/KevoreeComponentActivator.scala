@@ -51,8 +51,8 @@ abstract class KevoreeComponentActivator extends BundleActivator {
     /* PUT INITIAL PROPERTIES */
     componentActor.getKevoreeComponentType.getDictionary.put(Constants.KEVOREE_PROPERTY_OSGI_BUNDLE, bc.getBundle)
     
-    componentActor.asInstanceOf[AbstractComponentType].setName(componentName)
-    componentActor.asInstanceOf[AbstractComponentType].setNodeName(nodeName)
+    componentActor.getKevoreeComponentType.asInstanceOf[AbstractComponentType].setName(componentName)
+    componentActor.getKevoreeComponentType.asInstanceOf[AbstractComponentType].setNodeName(nodeName)
     
 
     /* Start actor */
