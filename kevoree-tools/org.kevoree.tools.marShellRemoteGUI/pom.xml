@@ -52,7 +52,7 @@
                 </os>
             </activation>
             <properties>
-                <java.lib.location>${java.home}/jre/lib/rt.jar</java.lib.location>
+                <java.lib.location>${java.home}/lib/rt.jar</java.lib.location>
              </properties>
         </profile>
     </profiles>
