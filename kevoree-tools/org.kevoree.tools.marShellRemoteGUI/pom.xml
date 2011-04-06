@@ -34,6 +34,7 @@
 
     <profiles>
         <profile>
+            <id>org.kevoree.tools.marShellRemoteGUI.mac</id>
             <activation>
                 <os>
                     <family>mac</family>
@@ -44,6 +45,7 @@
              </properties>
         </profile>
         <profile>
+            <id>org.kevoree.tools.marShellRemoteGUI.other</id>
             <activation>
                 <os>
                     <family>!mac</family>
