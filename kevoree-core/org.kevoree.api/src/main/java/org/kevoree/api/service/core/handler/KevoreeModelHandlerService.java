@@ -40,4 +40,8 @@ public interface KevoreeModelHandlerService {
 
     public String getNodeName();
 
+    public void registerModelListener(ModelListener listener);
+
+    public void unregisterModelListener(ModelListener listener);
+
 }

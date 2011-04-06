@@ -23,6 +23,7 @@ import org.kevoree.api.configuration.ConfigurationService;
 import org.kevoree.api.service.adaptation.deploy.KevoreeAdaptationDeployService;
 import org.kevoree.api.service.core.handler.KevoreeModelHandlerService;
 import org.kevoree.api.service.core.kompare.ModelKompareService;
+import org.kevoree.api.service.core.script.ScriptInterpreter;
 import org.kevoree.core.impl.KevoreeConfigServiceBean;
 import org.kevoree.core.impl.KevoreeCoreBean;
 import org.kevoree.kompare.KevoreeKompareBean;
@@ -66,7 +67,11 @@ public class BootstrapActivator implements BundleActivator {
             coreBean.setDeployService((KevoreeAdaptationDeployService) deployBean);
             coreBean.start();
 
+            //Kevoree script
+            KevScriptInterpreterService kevScriptBean = new KevScriptInterpreterService(coreBean);
+
             context.registerService(KevoreeModelHandlerService.class.getName(), coreBean, null);
+            context.registerService(ScriptInterpreter.class.getName(), kevScriptBean, null);
 
             System.out.println("Kevoree Started !");
 
