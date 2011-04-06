@@ -32,6 +32,29 @@
         </dependency>
     </dependencies>
 
+    <profiles>
+        <profile>
+            <activation>
+                <os>
+                    <family>mac</family>
+                </os>
+            </activation>
+            <properties>
+                <java.lib.location>&lt;java.home&gt;/../Classes/classes.jar</java.lib.location>
+             </properties>
+        </profile>
+        <profile>
+            <activation>
+                <os>
+                    <family>!mac</family>
+                </os>
+            </activation>
+            <properties>
+                <java.lib.location>${java.home}/jre/lib/rt.jar</java.lib.location>
+             </properties>
+        </profile>
+    </profiles>
+
     <build>
         <plugins>
            <plugin>
@@ -98,9 +121,9 @@
                             </inclusion>
                         </inclusions>
                     </assembly>
-                    <!--<libs>
-                        <lib>&lt;java.home&gt;/../Classes/classes.jar</lib>
-                    </libs>-->
+                    <libs>
+                        <lib>${java.lib.location}</lib>
+                    </libs>
                 </configuration>
             </plugin>
         </plugins>
