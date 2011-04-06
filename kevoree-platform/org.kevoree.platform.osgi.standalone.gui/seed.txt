@@ -23082,6 +23082,10 @@ org.kevoree.framework.KevoreeGroup$class: void updateGroup(org.kevoree.framework
 org.kevoree.framework.KevoreeGroup$class: void internal_process(org.kevoree.framework.KevoreeGroup,java.lang.Object)
 org.kevoree.framework.KevoreeGroup$class: boolean getIsStarted(org.kevoree.framework.KevoreeGroup)
 org.kevoree.framework.KevoreeGroup$class: org.kevoree.api.service.core.handler.KevoreeModelHandlerService getMhandler(org.kevoree.framework.KevoreeGroup)
+org.kevoree.framework.KevoreeGroup$class: boolean gd1$1(org.kevoree.framework.KevoreeGroup)
+org.kevoree.framework.KevoreeGroup$class: boolean gd2$1(org.kevoree.framework.KevoreeGroup)
+org.kevoree.framework.KevoreeGroup$class: boolean gd3$1(org.kevoree.framework.KevoreeGroup)
+org.kevoree.framework.KevoreeGroup$class: boolean gd4$1(org.kevoree.framework.KevoreeGroup)
 org.kevoree.framework.KevoreeGroup$class: void $init$(org.kevoree.framework.KevoreeGroup)
 org.kevoree.framework.osgi.KevoreeComponentActivator
 org.kevoree.framework.osgi.KevoreeComponentActivator: java.lang.String nodeName
@@ -24824,6 +24828,110 @@ scala.runtime.AbstractFunction1: scala.Function1 andThen$mcFD$sp(scala.Function1
 scala.runtime.AbstractFunction1: scala.Function1 andThen$mcLD$sp(scala.Function1)
 scala.runtime.AbstractFunction1: scala.Function1 andThen$mcDD$sp(scala.Function1)
 scala.runtime.AbstractFunction1: AbstractFunction1()
+org.kevoree.framework.ChannelTypeFragment$$anon$2
+org.kevoree.framework.ChannelTypeFragment$$anon$2: org.kevoree.framework.ChannelTypeFragment $outer
+org.kevoree.framework.ChannelTypeFragment$$anon$2: boolean scala$actors$Actor$$isSuspended
+org.kevoree.framework.ChannelTypeFragment$$anon$2: scala.Option scala$actors$Actor$$received
+org.kevoree.framework.ChannelTypeFragment$$anon$2: scala.collection.immutable.List links
+org.kevoree.framework.ChannelTypeFragment$$anon$2: boolean trapExit
+org.kevoree.framework.ChannelTypeFragment$$anon$2: java.lang.Object scala$actors$Actor$$exitReason
+org.kevoree.framework.ChannelTypeFragment$$anon$2: boolean shouldExit
+org.kevoree.framework.ChannelTypeFragment$$anon$2: scala.collection.immutable.List senders
+org.kevoree.framework.ChannelTypeFragment$$anon$2: scala.Option onTimeout
+org.kevoree.framework.ChannelTypeFragment$$anon$2: scala.actors.MQueue mailbox
+org.kevoree.framework.ChannelTypeFragment$$anon$2: scala.actors.MQueue sendBuffer
+org.kevoree.framework.ChannelTypeFragment$$anon$2: scala.PartialFunction waitingFor
+org.kevoree.framework.ChannelTypeFragment$$anon$2: scala.Enumeration$Value _state
+org.kevoree.framework.ChannelTypeFragment$$anon$2: scala.Function0 kill
+org.kevoree.framework.ChannelTypeFragment$$anon$2: scala.actors.Actor$blocker$ scala$actors$Actor$$blocker$module
+org.kevoree.framework.ChannelTypeFragment$$anon$2: boolean scala$actors$Actor$$isSuspended()
+org.kevoree.framework.ChannelTypeFragment$$anon$2: void scala$actors$Actor$$isSuspended_$eq(boolean)
+org.kevoree.framework.ChannelTypeFragment$$anon$2: scala.Option scala$actors$Actor$$received()
+org.kevoree.framework.ChannelTypeFragment$$anon$2: void scala$actors$Actor$$received_$eq(scala.Option)
+org.kevoree.framework.ChannelTypeFragment$$anon$2: scala.actors.Actor$blocker$ scala$actors$Actor$$blocker()
+org.kevoree.framework.ChannelTypeFragment$$anon$2: scala.collection.immutable.List links()
+org.kevoree.framework.ChannelTypeFragment$$anon$2: void links_$eq(scala.collection.immutable.List)
+org.kevoree.framework.ChannelTypeFragment$$anon$2: boolean trapExit()
+org.kevoree.framework.ChannelTypeFragment$$anon$2: void trapExit_$eq(boolean)
+org.kevoree.framework.ChannelTypeFragment$$anon$2: java.lang.Object scala$actors$Actor$$exitReason()
+org.kevoree.framework.ChannelTypeFragment$$anon$2: void scala$actors$Actor$$exitReason_$eq(java.lang.Object)
+org.kevoree.framework.ChannelTypeFragment$$anon$2: boolean shouldExit()
+org.kevoree.framework.ChannelTypeFragment$$anon$2: void shouldExit_$eq(boolean)
+org.kevoree.framework.ChannelTypeFragment$$anon$2: scala.Function0 scala$actors$Actor$$super$startSearch(java.lang.Object,scala.actors.OutputChannel,scala.PartialFunction)
+org.kevoree.framework.ChannelTypeFragment$$anon$2: scala.runtime.Nothing$ scala$actors$Actor$$super$react(scala.PartialFunction)
+org.kevoree.framework.ChannelTypeFragment$$anon$2: scala.runtime.Nothing$ scala$actors$Actor$$super$reactWithin(long,scala.PartialFunction)
+org.kevoree.framework.ChannelTypeFragment$$anon$2: void scala$actors$Actor$$super$dostart()
+org.kevoree.framework.ChannelTypeFragment$$anon$2: scala.actors.Reactor scala$actors$Actor$$super$start()
+org.kevoree.framework.ChannelTypeFragment$$anon$2: scala.Enumeration$Value scala$actors$Actor$$super$getState()
+org.kevoree.framework.ChannelTypeFragment$$anon$2: scala.runtime.Nothing$ scala$actors$Actor$$super$exit()
+org.kevoree.framework.ChannelTypeFragment$$anon$2: scala.actors.IScheduler scheduler()
+org.kevoree.framework.ChannelTypeFragment$$anon$2: scala.Function0 startSearch(java.lang.Object,scala.actors.OutputChannel,scala.PartialFunction)
+org.kevoree.framework.ChannelTypeFragment$$anon$2: void searchMailbox(scala.actors.MQueue,scala.PartialFunction,boolean)
+org.kevoree.framework.ChannelTypeFragment$$anon$2: java.lang.Runnable makeReaction(scala.Function0,scala.PartialFunction,java.lang.Object)
+org.kevoree.framework.ChannelTypeFragment$$anon$2: java.lang.Object receive(scala.PartialFunction)
+org.kevoree.framework.ChannelTypeFragment$$anon$2: java.lang.Object receiveWithin(long,scala.PartialFunction)
+org.kevoree.framework.ChannelTypeFragment$$anon$2: scala.runtime.Nothing$ react(scala.PartialFunction)
+org.kevoree.framework.ChannelTypeFragment$$anon$2: scala.runtime.Nothing$ reactWithin(long,scala.PartialFunction)
+org.kevoree.framework.ChannelTypeFragment$$anon$2: java.lang.Object $qmark()
+org.kevoree.framework.ChannelTypeFragment$$anon$2: void scheduleActor(scala.PartialFunction,java.lang.Object)
+org.kevoree.framework.ChannelTypeFragment$$anon$2: boolean exiting()
+org.kevoree.framework.ChannelTypeFragment$$anon$2: void dostart()
+org.kevoree.framework.ChannelTypeFragment$$anon$2: scala.actors.Actor start()
+org.kevoree.framework.ChannelTypeFragment$$anon$2: scala.Enumeration$Value getState()
+org.kevoree.framework.ChannelTypeFragment$$anon$2: scala.actors.AbstractActor link(scala.actors.AbstractActor)
+org.kevoree.framework.ChannelTypeFragment$$anon$2: scala.actors.Actor link(scala.Function0)
+org.kevoree.framework.ChannelTypeFragment$$anon$2: void linkTo(scala.actors.AbstractActor)
+org.kevoree.framework.ChannelTypeFragment$$anon$2: void unlink(scala.actors.AbstractActor)
+org.kevoree.framework.ChannelTypeFragment$$anon$2: void unlinkFrom(scala.actors.AbstractActor)
+org.kevoree.framework.ChannelTypeFragment$$anon$2: scala.runtime.Nothing$ exit(java.lang.Object)
+org.kevoree.framework.ChannelTypeFragment$$anon$2: scala.runtime.Nothing$ exit()
+org.kevoree.framework.ChannelTypeFragment$$anon$2: scala.Function0 exitLinked()
+org.kevoree.framework.ChannelTypeFragment$$anon$2: scala.Function0 exitLinked(java.lang.Object)
+org.kevoree.framework.ChannelTypeFragment$$anon$2: void exit(scala.actors.AbstractActor,java.lang.Object)
+org.kevoree.framework.ChannelTypeFragment$$anon$2: void onTerminate(scala.Function0)
+org.kevoree.framework.ChannelTypeFragment$$anon$2: java.lang.Object $bang$qmark(java.lang.Object)
+org.kevoree.framework.ChannelTypeFragment$$anon$2: scala.Option $bang$qmark(long,java.lang.Object)
+org.kevoree.framework.ChannelTypeFragment$$anon$2: scala.actors.Future $bang$bang(java.lang.Object,scala.PartialFunction)
+org.kevoree.framework.ChannelTypeFragment$$anon$2: scala.actors.Future $bang$bang(java.lang.Object)
+org.kevoree.framework.ChannelTypeFragment$$anon$2: scala.collection.immutable.List senders()
+org.kevoree.framework.ChannelTypeFragment$$anon$2: void senders_$eq(scala.collection.immutable.List)
+org.kevoree.framework.ChannelTypeFragment$$anon$2: scala.Option onTimeout()
+org.kevoree.framework.ChannelTypeFragment$$anon$2: void onTimeout_$eq(scala.Option)
+org.kevoree.framework.ChannelTypeFragment$$anon$2: void scala$actors$ReplyReactor$$super$resumeReceiver(scala.Tuple2,scala.PartialFunction,boolean)
+org.kevoree.framework.ChannelTypeFragment$$anon$2: scala.runtime.Nothing$ scala$actors$ReplyReactor$$super$react(scala.PartialFunction)
+org.kevoree.framework.ChannelTypeFragment$$anon$2: scala.actors.OutputChannel sender()
+org.kevoree.framework.ChannelTypeFragment$$anon$2: void reply(java.lang.Object)
+org.kevoree.framework.ChannelTypeFragment$$anon$2: void $bang(java.lang.Object)
+org.kevoree.framework.ChannelTypeFragment$$anon$2: void forward(java.lang.Object)
+org.kevoree.framework.ChannelTypeFragment$$anon$2: void resumeReceiver(scala.Tuple2,scala.PartialFunction,boolean)
+org.kevoree.framework.ChannelTypeFragment$$anon$2: scala.actors.MQueue mailbox()
+org.kevoree.framework.ChannelTypeFragment$$anon$2: scala.actors.MQueue sendBuffer()
+org.kevoree.framework.ChannelTypeFragment$$anon$2: scala.PartialFunction waitingFor()
+org.kevoree.framework.ChannelTypeFragment$$anon$2: void waitingFor_$eq(scala.PartialFunction)
+org.kevoree.framework.ChannelTypeFragment$$anon$2: scala.Enumeration$Value _state()
+org.kevoree.framework.ChannelTypeFragment$$anon$2: void _state_$eq(scala.Enumeration$Value)
+org.kevoree.framework.ChannelTypeFragment$$anon$2: scala.Function0 kill()
+org.kevoree.framework.ChannelTypeFragment$$anon$2: void kill_$eq(scala.Function0)
+org.kevoree.framework.ChannelTypeFragment$$anon$2: void scala$actors$Reactor$_setter_$mailbox_$eq(scala.actors.MQueue)
+org.kevoree.framework.ChannelTypeFragment$$anon$2: void scala$actors$Reactor$_setter_$sendBuffer_$eq(scala.actors.MQueue)
+org.kevoree.framework.ChannelTypeFragment$$anon$2: scala.PartialFunction exceptionHandler()
+org.kevoree.framework.ChannelTypeFragment$$anon$2: int mailboxSize()
+org.kevoree.framework.ChannelTypeFragment$$anon$2: void send(java.lang.Object,scala.actors.OutputChannel)
+org.kevoree.framework.ChannelTypeFragment$$anon$2: java.lang.Runnable makeReaction(scala.Function0)
+org.kevoree.framework.ChannelTypeFragment$$anon$2: scala.actors.Actor receiver()
+org.kevoree.framework.ChannelTypeFragment$$anon$2: void drainSendBuffer(scala.actors.MQueue)
+org.kevoree.framework.ChannelTypeFragment$$anon$2: void restart()
+org.kevoree.framework.ChannelTypeFragment$$anon$2: scala.actors.Actor$Body mkBody(scala.Function0)
+org.kevoree.framework.ChannelTypeFragment$$anon$2: void seq(scala.Function0,scala.Function0)
+org.kevoree.framework.ChannelTypeFragment$$anon$2: void terminated()
+org.kevoree.framework.ChannelTypeFragment$$anon$2: void loop(scala.Function0)
+org.kevoree.framework.ChannelTypeFragment$$anon$2: void loopWhile(scala.Function0,scala.Function0)
+org.kevoree.framework.ChannelTypeFragment$$anon$2: void continue()
+org.kevoree.framework.ChannelTypeFragment$$anon$2: void act()
+org.kevoree.framework.ChannelTypeFragment$$anon$2: scala.Function0 $bang$bang(java.lang.Object)
+org.kevoree.framework.ChannelTypeFragment$$anon$2: scala.Function0 $bang$bang(java.lang.Object,scala.PartialFunction)
+org.kevoree.framework.ChannelTypeFragment$$anon$2: scala.actors.Reactor start()
+org.kevoree.framework.ChannelTypeFragment$$anon$2: ChannelTypeFragment$$anon$2(org.kevoree.framework.ChannelTypeFragment)
 org.kevoree.framework.ChannelTypeFragment$$anon$1
 org.kevoree.framework.ChannelTypeFragment$$anon$1: org.kevoree.framework.ChannelTypeFragment $outer
 org.kevoree.framework.ChannelTypeFragment$$anon$1: boolean pauseState
@@ -28474,6 +28582,10 @@ org.kevoree.framework.ChannelTypeFragment$class: void startChannelFragment(org.k
 org.kevoree.framework.ChannelTypeFragment$class: void stopChannelFragment(org.kevoree.framework.ChannelTypeFragment)
 org.kevoree.framework.ChannelTypeFragment$class: void updateChannelFragment(org.kevoree.framework.ChannelTypeFragment)
 org.kevoree.framework.ChannelTypeFragment$class: boolean getIsStarted(org.kevoree.framework.ChannelTypeFragment)
+org.kevoree.framework.ChannelTypeFragment$class: boolean gd1$1(org.kevoree.framework.ChannelTypeFragment)
+org.kevoree.framework.ChannelTypeFragment$class: boolean gd2$1(org.kevoree.framework.ChannelTypeFragment)
+org.kevoree.framework.ChannelTypeFragment$class: boolean gd3$1(org.kevoree.framework.ChannelTypeFragment)
+org.kevoree.framework.ChannelTypeFragment$class: boolean gd4$1(org.kevoree.framework.ChannelTypeFragment)
 org.kevoree.framework.ChannelTypeFragment$class: void $init$(org.kevoree.framework.ChannelTypeFragment)
 org.kevoree.framework.message.FragmentBindMessage
 org.kevoree.framework.message.FragmentBindMessage: org.kevoree.framework.KevoreeChannelFragment proxy
@@ -28994,6 +29106,110 @@ org.kevoree.framework.AbstractGroupType: org.kevoree.api.service.core.handler.Ke
 org.kevoree.framework.AbstractGroupType: java.util.HashMap getDictionary()
 org.kevoree.framework.AbstractGroupType: java.lang.String getNodeName()
 org.kevoree.framework.AbstractGroupType: java.lang.String getName()
+org.kevoree.framework.KevoreeGroup$$anon$1
+org.kevoree.framework.KevoreeGroup$$anon$1: org.kevoree.framework.KevoreeGroup $outer
+org.kevoree.framework.KevoreeGroup$$anon$1: boolean scala$actors$Actor$$isSuspended
+org.kevoree.framework.KevoreeGroup$$anon$1: scala.Option scala$actors$Actor$$received
+org.kevoree.framework.KevoreeGroup$$anon$1: scala.collection.immutable.List links
+org.kevoree.framework.KevoreeGroup$$anon$1: boolean trapExit
+org.kevoree.framework.KevoreeGroup$$anon$1: java.lang.Object scala$actors$Actor$$exitReason
+org.kevoree.framework.KevoreeGroup$$anon$1: boolean shouldExit
+org.kevoree.framework.KevoreeGroup$$anon$1: scala.collection.immutable.List senders
+org.kevoree.framework.KevoreeGroup$$anon$1: scala.Option onTimeout
+org.kevoree.framework.KevoreeGroup$$anon$1: scala.actors.MQueue mailbox
+org.kevoree.framework.KevoreeGroup$$anon$1: scala.actors.MQueue sendBuffer
+org.kevoree.framework.KevoreeGroup$$anon$1: scala.PartialFunction waitingFor
+org.kevoree.framework.KevoreeGroup$$anon$1: scala.Enumeration$Value _state
+org.kevoree.framework.KevoreeGroup$$anon$1: scala.Function0 kill
+org.kevoree.framework.KevoreeGroup$$anon$1: scala.actors.Actor$blocker$ scala$actors$Actor$$blocker$module
+org.kevoree.framework.KevoreeGroup$$anon$1: boolean scala$actors$Actor$$isSuspended()
+org.kevoree.framework.KevoreeGroup$$anon$1: void scala$actors$Actor$$isSuspended_$eq(boolean)
+org.kevoree.framework.KevoreeGroup$$anon$1: scala.Option scala$actors$Actor$$received()
+org.kevoree.framework.KevoreeGroup$$anon$1: void scala$actors$Actor$$received_$eq(scala.Option)
+org.kevoree.framework.KevoreeGroup$$anon$1: scala.actors.Actor$blocker$ scala$actors$Actor$$blocker()
+org.kevoree.framework.KevoreeGroup$$anon$1: scala.collection.immutable.List links()
+org.kevoree.framework.KevoreeGroup$$anon$1: void links_$eq(scala.collection.immutable.List)
+org.kevoree.framework.KevoreeGroup$$anon$1: boolean trapExit()
+org.kevoree.framework.KevoreeGroup$$anon$1: void trapExit_$eq(boolean)
+org.kevoree.framework.KevoreeGroup$$anon$1: java.lang.Object scala$actors$Actor$$exitReason()
+org.kevoree.framework.KevoreeGroup$$anon$1: void scala$actors$Actor$$exitReason_$eq(java.lang.Object)
+org.kevoree.framework.KevoreeGroup$$anon$1: boolean shouldExit()
+org.kevoree.framework.KevoreeGroup$$anon$1: void shouldExit_$eq(boolean)
+org.kevoree.framework.KevoreeGroup$$anon$1: scala.Function0 scala$actors$Actor$$super$startSearch(java.lang.Object,scala.actors.OutputChannel,scala.PartialFunction)
+org.kevoree.framework.KevoreeGroup$$anon$1: scala.runtime.Nothing$ scala$actors$Actor$$super$react(scala.PartialFunction)
+org.kevoree.framework.KevoreeGroup$$anon$1: scala.runtime.Nothing$ scala$actors$Actor$$super$reactWithin(long,scala.PartialFunction)
+org.kevoree.framework.KevoreeGroup$$anon$1: void scala$actors$Actor$$super$dostart()
+org.kevoree.framework.KevoreeGroup$$anon$1: scala.actors.Reactor scala$actors$Actor$$super$start()
+org.kevoree.framework.KevoreeGroup$$anon$1: scala.Enumeration$Value scala$actors$Actor$$super$getState()
+org.kevoree.framework.KevoreeGroup$$anon$1: scala.runtime.Nothing$ scala$actors$Actor$$super$exit()
+org.kevoree.framework.KevoreeGroup$$anon$1: scala.actors.IScheduler scheduler()
+org.kevoree.framework.KevoreeGroup$$anon$1: scala.Function0 startSearch(java.lang.Object,scala.actors.OutputChannel,scala.PartialFunction)
+org.kevoree.framework.KevoreeGroup$$anon$1: void searchMailbox(scala.actors.MQueue,scala.PartialFunction,boolean)
+org.kevoree.framework.KevoreeGroup$$anon$1: java.lang.Runnable makeReaction(scala.Function0,scala.PartialFunction,java.lang.Object)
+org.kevoree.framework.KevoreeGroup$$anon$1: java.lang.Object receive(scala.PartialFunction)
+org.kevoree.framework.KevoreeGroup$$anon$1: java.lang.Object receiveWithin(long,scala.PartialFunction)
+org.kevoree.framework.KevoreeGroup$$anon$1: scala.runtime.Nothing$ react(scala.PartialFunction)
+org.kevoree.framework.KevoreeGroup$$anon$1: scala.runtime.Nothing$ reactWithin(long,scala.PartialFunction)
+org.kevoree.framework.KevoreeGroup$$anon$1: java.lang.Object $qmark()
+org.kevoree.framework.KevoreeGroup$$anon$1: void scheduleActor(scala.PartialFunction,java.lang.Object)
+org.kevoree.framework.KevoreeGroup$$anon$1: boolean exiting()
+org.kevoree.framework.KevoreeGroup$$anon$1: void dostart()
+org.kevoree.framework.KevoreeGroup$$anon$1: scala.actors.Actor start()
+org.kevoree.framework.KevoreeGroup$$anon$1: scala.Enumeration$Value getState()
+org.kevoree.framework.KevoreeGroup$$anon$1: scala.actors.AbstractActor link(scala.actors.AbstractActor)
+org.kevoree.framework.KevoreeGroup$$anon$1: scala.actors.Actor link(scala.Function0)
+org.kevoree.framework.KevoreeGroup$$anon$1: void linkTo(scala.actors.AbstractActor)
+org.kevoree.framework.KevoreeGroup$$anon$1: void unlink(scala.actors.AbstractActor)
+org.kevoree.framework.KevoreeGroup$$anon$1: void unlinkFrom(scala.actors.AbstractActor)
+org.kevoree.framework.KevoreeGroup$$anon$1: scala.runtime.Nothing$ exit(java.lang.Object)
+org.kevoree.framework.KevoreeGroup$$anon$1: scala.runtime.Nothing$ exit()
+org.kevoree.framework.KevoreeGroup$$anon$1: scala.Function0 exitLinked()
+org.kevoree.framework.KevoreeGroup$$anon$1: scala.Function0 exitLinked(java.lang.Object)
+org.kevoree.framework.KevoreeGroup$$anon$1: void exit(scala.actors.AbstractActor,java.lang.Object)
+org.kevoree.framework.KevoreeGroup$$anon$1: void onTerminate(scala.Function0)
+org.kevoree.framework.KevoreeGroup$$anon$1: java.lang.Object $bang$qmark(java.lang.Object)
+org.kevoree.framework.KevoreeGroup$$anon$1: scala.Option $bang$qmark(long,java.lang.Object)
+org.kevoree.framework.KevoreeGroup$$anon$1: scala.actors.Future $bang$bang(java.lang.Object,scala.PartialFunction)
+org.kevoree.framework.KevoreeGroup$$anon$1: scala.actors.Future $bang$bang(java.lang.Object)
+org.kevoree.framework.KevoreeGroup$$anon$1: scala.collection.immutable.List senders()
+org.kevoree.framework.KevoreeGroup$$anon$1: void senders_$eq(scala.collection.immutable.List)
+org.kevoree.framework.KevoreeGroup$$anon$1: scala.Option onTimeout()
+org.kevoree.framework.KevoreeGroup$$anon$1: void onTimeout_$eq(scala.Option)
+org.kevoree.framework.KevoreeGroup$$anon$1: void scala$actors$ReplyReactor$$super$resumeReceiver(scala.Tuple2,scala.PartialFunction,boolean)
+org.kevoree.framework.KevoreeGroup$$anon$1: scala.runtime.Nothing$ scala$actors$ReplyReactor$$super$react(scala.PartialFunction)
+org.kevoree.framework.KevoreeGroup$$anon$1: scala.actors.OutputChannel sender()
+org.kevoree.framework.KevoreeGroup$$anon$1: void reply(java.lang.Object)
+org.kevoree.framework.KevoreeGroup$$anon$1: void $bang(java.lang.Object)
+org.kevoree.framework.KevoreeGroup$$anon$1: void forward(java.lang.Object)
+org.kevoree.framework.KevoreeGroup$$anon$1: void resumeReceiver(scala.Tuple2,scala.PartialFunction,boolean)
+org.kevoree.framework.KevoreeGroup$$anon$1: scala.actors.MQueue mailbox()
+org.kevoree.framework.KevoreeGroup$$anon$1: scala.actors.MQueue sendBuffer()
+org.kevoree.framework.KevoreeGroup$$anon$1: scala.PartialFunction waitingFor()
+org.kevoree.framework.KevoreeGroup$$anon$1: void waitingFor_$eq(scala.PartialFunction)
+org.kevoree.framework.KevoreeGroup$$anon$1: scala.Enumeration$Value _state()
+org.kevoree.framework.KevoreeGroup$$anon$1: void _state_$eq(scala.Enumeration$Value)
+org.kevoree.framework.KevoreeGroup$$anon$1: scala.Function0 kill()
+org.kevoree.framework.KevoreeGroup$$anon$1: void kill_$eq(scala.Function0)
+org.kevoree.framework.KevoreeGroup$$anon$1: void scala$actors$Reactor$_setter_$mailbox_$eq(scala.actors.MQueue)
+org.kevoree.framework.KevoreeGroup$$anon$1: void scala$actors$Reactor$_setter_$sendBuffer_$eq(scala.actors.MQueue)
+org.kevoree.framework.KevoreeGroup$$anon$1: scala.PartialFunction exceptionHandler()
+org.kevoree.framework.KevoreeGroup$$anon$1: int mailboxSize()
+org.kevoree.framework.KevoreeGroup$$anon$1: void send(java.lang.Object,scala.actors.OutputChannel)
+org.kevoree.framework.KevoreeGroup$$anon$1: java.lang.Runnable makeReaction(scala.Function0)
+org.kevoree.framework.KevoreeGroup$$anon$1: scala.actors.Actor receiver()
+org.kevoree.framework.KevoreeGroup$$anon$1: void drainSendBuffer(scala.actors.MQueue)
+org.kevoree.framework.KevoreeGroup$$anon$1: void restart()
+org.kevoree.framework.KevoreeGroup$$anon$1: scala.actors.Actor$Body mkBody(scala.Function0)
+org.kevoree.framework.KevoreeGroup$$anon$1: void seq(scala.Function0,scala.Function0)
+org.kevoree.framework.KevoreeGroup$$anon$1: void terminated()
+org.kevoree.framework.KevoreeGroup$$anon$1: void loop(scala.Function0)
+org.kevoree.framework.KevoreeGroup$$anon$1: void loopWhile(scala.Function0,scala.Function0)
+org.kevoree.framework.KevoreeGroup$$anon$1: void continue()
+org.kevoree.framework.KevoreeGroup$$anon$1: void act()
+org.kevoree.framework.KevoreeGroup$$anon$1: scala.Function0 $bang$bang(java.lang.Object)
+org.kevoree.framework.KevoreeGroup$$anon$1: scala.Function0 $bang$bang(java.lang.Object,scala.PartialFunction)
+org.kevoree.framework.KevoreeGroup$$anon$1: scala.actors.Reactor start()
+org.kevoree.framework.KevoreeGroup$$anon$1: KevoreeGroup$$anon$1(org.kevoree.framework.KevoreeGroup)
 org.kevoree.framework.aspects.TypedElementAspect
 org.kevoree.framework.aspects.TypedElementAspect: org.kevoree.TypedElement e
 org.kevoree.framework.aspects.TypedElementAspect: scala.Function1 andThen(scala.Function1)
@@ -29821,6 +30037,8 @@ org.kevoree.framework.ChannelTypeFragment: java.util.HashMap getDictionary()
 org.kevoree.framework.ChannelTypeFragment: java.util.List getBindedPorts()
 org.kevoree.framework.ChannelTypeFragment: java.util.List getOtherFragments()
 org.kevoree.framework.ChannelTypeFragment: java.lang.Object forward(org.kevoree.framework.KevoreeActor,org.kevoree.framework.message.Message)
+org.kevoree.framework.ChannelTypeFragment: boolean org$kevoree$framework$ChannelTypeFragment$$ct_started()
+org.kevoree.framework.ChannelTypeFragment: void org$kevoree$framework$ChannelTypeFragment$$ct_started_$eq(boolean)
 org.kevoree.framework.ChannelTypeFragment: void internal_process(java.lang.Object)
 org.kevoree.framework.ChannelTypeFragment: org.kevoree.framework.KevoreeActor local_queue()
 org.kevoree.framework.ChannelTypeFragment: void startChannelFragment()
@@ -35730,7 +35948,6 @@ scala.actors.scheduler.ThreadPoolConfig$$anonfun$getIntegerProp$1: long serialVe
 scala.actors.Actor$$anonfun$$qmark$1: long serialVersionUID
 scala.actors.ReplyReactor$$anonfun$reactWithin$2: long serialVersionUID
 scala.collection.mutable.HashMap: long serialVersionUID
-org.kevoree.adaptation.deploy.osgi.KevoreeAdaptationDeployServiceOSGi$$anonfun$execute$1: long serialVersionUID
 scala.Function2$mcLLL$sp$$anonfun$tupled$mcLLL$sp$1: long serialVersionUID
 org.eclipse.emf.ecore.impl.EObjectImpl: int EDELIVER
 org.eclipse.emf.ecore.impl.EObjectImpl: int EDYNAMIC_CLASS
@@ -40711,7 +40928,6 @@ org.eclipse.emf.ecore.xmi.impl.EMOFExtendedMetaData: java.lang.String EMOF_PROPE
 org.eclipse.emf.ecore.xmi.impl.EMOFExtendedMetaData: java.lang.String CONTENT_TYPE
 org.eclipse.emf.ecore.util.BasicExtendedMetaData: int UNINITIALIZED_INT
 org.eclipse.emf.ecore.util.BasicExtendedMetaData: java.lang.String UNINITIALIZED_STRING
-org.kevoree.core.impl.KevoreeListeners$ListenerActor$$anonfun$act$2$$anonfun$apply$2: long serialVersionUID
 org.codehaus.jackson.JsonStreamContext: int TYPE_ROOT
 org.codehaus.jackson.JsonStreamContext: int TYPE_ARRAY
 org.codehaus.jackson.JsonStreamContext: int TYPE_OBJECT
@@ -44556,7 +44772,6 @@ org.kevoree.core.impl.KevoreeListeners$STOP_LISTENER$
 scala.actors.scheduler.ThreadPoolConfig$$anonfun$getIntegerProp$1
 scala.actors.Actor$$anonfun$$qmark$1
 scala.actors.ReplyReactor$$anonfun$reactWithin$2
-org.kevoree.adaptation.deploy.osgi.KevoreeAdaptationDeployServiceOSGi$$anonfun$execute$1
 org.kevoree.tools.marShell.lexer.KevsTokens$KIncomplet$
 scala.Function2$mcLLL$sp$$anonfun$tupled$mcLLL$sp$1
 org.kevoree.framework.KevoreeActor$ACTOR_ADMIN_MSG$
@@ -45775,11 +45990,13 @@ org.kevoree.framework.KevoreeChannelFragmentProxy
 org.kevoree.framework.KevoreePortOSGiProxy
 org.kevoree.core.impl.KevoreeCoreBean
 org.kevoree.framework.KevoreeGroup
+org.kevoree.framework.ChannelTypeFragment$$anon$2
 org.kevoree.framework.KevoreeComponent$$anon$1
 scala.actors.DaemonActor
 scala.actors.FutureActor
 org.kevoree.core.impl.KevoreeListeners
 org.kevoree.core.impl.KevoreeListeners$ListenerActor
+org.kevoree.framework.KevoreeGroup$$anon$1
 scala.actors.ActorProxy
 scala.actors.Actor$$anon$2
 scala.actors.Actor$$anon$1
@@ -46629,7 +46846,6 @@ org.kevoree.adaptation.deploy.osgi.command.RemoveTypeCommand
 org.scala_tools.vscaladoc.SourceHtmlizerOn$$anonfun$1
 scala.reflect.generic.Trees$DefDef$
 org.kevoree.core.impl.KevoreeListeners$ListenerActor$$anonfun$act$2$$anonfun$apply$4
-org.kevoree.core.impl.KevoreeListeners$ListenerActor$$anonfun$act$2$$anonfun$apply$2
 org.kevoree.tools.marShell.interpreter.sub.KevsRemoveComponentInstanceInterpreter$
 org.kevoree.framework.message.UpdateModel$
 net.lag.configgy.Config$$anonfun$fromMap$1$$anonfun$apply$1

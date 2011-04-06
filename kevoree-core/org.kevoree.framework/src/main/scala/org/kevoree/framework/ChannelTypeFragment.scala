@@ -110,6 +110,9 @@ trait ChannelTypeFragment extends KevoreeChannelFragment with ChannelFragment {
     }
   }
 
+
+   private var ct_started: Boolean = false
+
   override def internal_process(msgg: Any) = msgg match {
 
     case UpdateDictionaryMessage(d) => {
@@ -117,20 +120,26 @@ trait ChannelTypeFragment extends KevoreeChannelFragment with ChannelFragment {
         v =>
           dictionary.put(v, d.get(v))
       }
-      updateChannelFragment
+      //updateChannelFragment
+      if (ct_started) {
+        new Actor {
+          def act = updateChannelFragment
+        }.start()
+      }
+
       reply(true)
     }
 
-    case StartMessage => {
+    case StartMessage if(!ct_started) => {
      // new Actor {
       //  def act = {
           startChannelFragment;println("Starting Channel Internal queue");local_queue.start;isStarted=true
         //}
      // }.start
-
+      ct_started = true
       reply(true)
     }
-    case StopMessage => {
+    case StopMessage if(ct_started) => {
      // new Actor {
      //   def act = {
           //TODO CHECK QUEUE SIZE AND SAVE STATE
@@ -140,8 +149,12 @@ trait ChannelTypeFragment extends KevoreeChannelFragment with ChannelFragment {
      //   }
 
      // }.start
+
+      ct_started = false
       reply(true)
     }
+    case StopMessage if(!ct_started) =>
+    case StartMessage if(ct_started) =>
 
     case msg: FragmentBindMessage => {
       var sender = this.createSender(msg.getFragmentNodeName, msg.getChannelName)
