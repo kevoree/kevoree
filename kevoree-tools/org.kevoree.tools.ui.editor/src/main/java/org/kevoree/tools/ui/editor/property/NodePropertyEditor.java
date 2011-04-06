@@ -16,14 +16,16 @@
  * Copyright  : IRISA / INRIA / Universite de Rennes 1 */
 package org.kevoree.tools.ui.editor.property;
 
-import javax.swing.JTextField;
+import javax.swing.*;
+
 import org.kevoree.ContainerNode;
 import org.kevoree.tools.ui.editor.KevoreeUIKernel;
 import org.kevoree.tools.ui.editor.command.*;
 import org.kevoree.tools.ui.editor.widget.JCommandButton;
 
+import java.awt.*;
+
 /**
- *
  * @author ffouquet
  */
 public class NodePropertyEditor extends NamedElementPropertyEditor {
@@ -32,6 +34,15 @@ public class NodePropertyEditor extends NamedElementPropertyEditor {
         super(elem, _kernel);
 
         ContainerNode node = (ContainerNode) elem;
+
+        JTable table = new JTable(new InstanceTableModel(node));
+        JScrollPane scrollPane = new JScrollPane(table);
+        table.setFillsViewportHeight(true);
+
+        scrollPane.setPreferredSize(new Dimension(300, 150));
+
+        this.addCenter(scrollPane);
+
 
         this.addCenter(new NetworkPropertyEditor(node));
 
@@ -52,16 +63,16 @@ public class NodePropertyEditor extends NamedElementPropertyEditor {
         this.addCenter(btPushNode);
 */
 
-     //   JTextField ip = new JTextField("ip:port");
+        //   JTextField ip = new JTextField("ip:port");
         JCommandButton btPushNodeIP = new JCommandButton("Push");
         SynchNodeIPCommand sendNodeIP = new SynchNodeIPCommand();
         //sendNodeIP.setField(ip);
+
         sendNodeIP.setKernel(_kernel);
         sendNodeIP.setDestNodeName(node.getName());
         btPushNodeIP.setCommand(sendNodeIP);
         //this.addCenter(ip);
         this.addCenter(btPushNodeIP);
-
 
 
     }
