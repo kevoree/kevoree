@@ -19,6 +19,7 @@ import java.util.HashMap
 import scala.collection.JavaConversions._
 import org.kevoree.api.service.core.handler.KevoreeModelHandlerService
 import org.kevoree.ContainerRoot
+import actors.Actor
 
 
 trait KevoreeGroup extends AbstractGroupType with KevoreeActor {
@@ -34,7 +35,7 @@ trait KevoreeGroup extends AbstractGroupType with KevoreeActor {
   var nodeName: String = ""
 
   @BeanProperty
-  var isStarted : Boolean = false
+  var isStarted: Boolean = false
 
   override def getNodeName = nodeName
 
@@ -52,7 +53,9 @@ trait KevoreeGroup extends AbstractGroupType with KevoreeActor {
   }
 
   var dictionary: HashMap[String, Object] = new HashMap[String, Object]()
+
   def setDictionary(d: HashMap[String, Object]) = dictionary = d
+
   override def getDictionary(): HashMap[String, Object] = dictionary
 
 
@@ -69,19 +72,27 @@ trait KevoreeGroup extends AbstractGroupType with KevoreeActor {
         v =>
           dictionary.put(v, d.get(v))
       }
-      updateGroup
+      if (isStarted) {
+        new Actor {
+          def act = updateGroup
+        }.start()
+      }
+
       reply(true)
     }
-    case StartMessage => {
+    case StartMessage if (!isStarted) => {
       startGroup
       isStarted = true
       reply(true)
     }
-    case StopMessage => {
+    case StopMessage if (isStarted) => {
       stopGroup
       isStarted = false
       reply(true)
     }
+    case StopMessage if (!isStarted) =>
+    case StartMessage if (isStarted) =>
+
     case _@msg => println("Uncatch message group " + name)
   }
 
