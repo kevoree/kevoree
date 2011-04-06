@@ -22,7 +22,6 @@ import org.kevoree.KevoreeFactory
 import org.kevoree.ContainerRoot
 import org.kevoree.api.configuration.ConfigurationService
 import org.kevoree.api.service.adaptation.deploy.KevoreeAdaptationDeployService
-import org.kevoree.api.service.core.handler.KevoreeModelHandlerService
 import org.kevoree.api.service.core.kompare.ModelKompareService
 import org.kevoree.framework.KevoreeActor
 import org.kevoree.framework.KevoreeGroup
@@ -38,41 +37,49 @@ import scala.actors.Actor
 import scala.collection.JavaConversions._
 import org.kevoree.api.configuration.ConfigConstants
 import java.util.Date
+import org.kevoree.api.service.core.handler.{ModelListener, KevoreeModelHandlerService}
 
 class KevoreeCoreBean extends KevoreeModelHandlerService with KevoreeActor {
 
-  @BeanProperty var configService : ConfigurationService = null
-  @BeanProperty var bundleContext : BundleContext = null;
-  @BeanProperty var kompareService :org.kevoree.api.service.core.kompare.ModelKompareService = null
-  @BeanProperty var deployService :org.kevoree.api.service.adaptation.deploy.KevoreeAdaptationDeployService = null
-  @BeanProperty var nodeName : String = ""
+  @BeanProperty var configService: ConfigurationService = null
+  @BeanProperty var bundleContext: BundleContext = null;
+  @BeanProperty var kompareService: org.kevoree.api.service.core.kompare.ModelKompareService = null
+  @BeanProperty var deployService: org.kevoree.api.service.adaptation.deploy.KevoreeAdaptationDeployService = null
+  @BeanProperty var nodeName: String = ""
 
-  var models : java.util.ArrayList[ContainerRoot] = new java.util.ArrayList()
-  var model : ContainerRoot = KevoreeFactory.eINSTANCE.createContainerRoot()
+  var models: java.util.ArrayList[ContainerRoot] = new java.util.ArrayList()
+  var model: ContainerRoot = KevoreeFactory.eINSTANCE.createContainerRoot()
 
-  var lastDate : Date = new Date(System.currentTimeMillis)
+  var lastDate: Date = new Date(System.currentTimeMillis)
 
   def getLastModification = lastDate
 
   var logger = LoggerFactory.getLogger(this.getClass);
 
-  private def switchToNewModel(c : ContainerRoot)={
+  private def switchToNewModel(c: ContainerRoot) = {
     models.add(model)
     model = c
     lastDate = new Date(System.currentTimeMillis)
     //TODO ADD LISTENER
 
-    var srs = bundleContext.getServiceReferences(classOf[KevoreeGroup].getName,null)
-    if(srs != null){
-      srs.foreach{sr =>
-        bundleContext.getService(sr).asInstanceOf[KevoreeGroup].triggerModelUpdate
+
+    //NOTIFY LOCAL REASONER
+    listenerActor.notifyAllListener()
+
+
+    //NOTIFY GROUP
+    var srs = bundleContext.getServiceReferences(classOf[KevoreeGroup].getName, null)
+    if (srs != null) {
+      srs.foreach {
+        sr =>
+          bundleContext.getService(sr).asInstanceOf[KevoreeGroup].triggerModelUpdate
       }
     }
 
   }
 
-  override def start : Actor={
-    logger.info("Start event : node name = "+configService.getProperty(ConfigConstants.KEVOREE_NODE_NAME))
+  override def start: Actor = {
+    logger.info("Start event : node name = " + configService.getProperty(ConfigConstants.KEVOREE_NODE_NAME))
     setNodeName(configService.getProperty(ConfigConstants.KEVOREE_NODE_NAME));
     super.start
 
@@ -85,44 +92,66 @@ class KevoreeCoreBean extends KevoreeModelHandlerService with KevoreeActor {
     this
   }
 
-  override def stop() : Unit = {
+  override def stop(): Unit = {
+
+    listenerActor.stop()
+
+
     super[KevoreeActor].forceStop
     //TODO CLEAN AND REACTIVATE
 
     // KevoreeXmiHelper.save(bundleContext.getDataFile("lastModel.xmi").getAbsolutePath(), models.head);
   }
 
-  def internal_process(msg : Any) = msg match {
-    case updateMsg : PlatformModelUpdate => KevoreePlatformHelper.updateNodeLinkProp(model,nodeName, updateMsg.targetNodeName, updateMsg.key, updateMsg.value, updateMsg.networkType, updateMsg.weight)
+  def internal_process(msg: Any) = msg match {
+    case updateMsg: PlatformModelUpdate => KevoreePlatformHelper.updateNodeLinkProp(model, nodeName, updateMsg.targetNodeName, updateMsg.key, updateMsg.value, updateMsg.networkType, updateMsg.weight)
     case PreviousModel() => reply(models)
     case LastModel() => reply(model) /* TODO DEEP CLONE */
     case UpdateModel(newmodel) => {
-        if (newmodel == null) { logger.error("Null model")} else {
+      if (newmodel == null) {
+        logger.error("Null model")
+      } else {
 
-          var adaptationModel = kompareService.kompare(model, newmodel, nodeName);
-          var deployResult = deployService.deploy(adaptationModel,nodeName);
+        var adaptationModel = kompareService.kompare(model, newmodel, nodeName);
+        var deployResult = deployService.deploy(adaptationModel, nodeName);
 
-          if(deployResult){
-            //Merge previous model on new model for platform model
-            KevoreePlatformMerger.merge(newmodel,model)
-            switchToNewModel(newmodel)
-            logger.info("Deploy result " + deployResult)
-          } else {
-            //KEEP FAIL MODEL
-          }
-          reply(deployResult)
-
+        if (deployResult) {
+          //Merge previous model on new model for platform model
+          KevoreePlatformMerger.merge(newmodel, model)
+          switchToNewModel(newmodel)
+          logger.info("Deploy result " + deployResult)
+        } else {
+          //KEEP FAIL MODEL
         }
+        reply(deployResult)
+
       }
-    case _ @ unknow=> logger.warn("unknow message  "+unknow.toString+" - sender"+sender.toString+ "-"+this.getClass.getName)
+    }
+    case _@unknow => logger.warn("unknow message  " + unknow.toString + " - sender" + sender.toString + "-" + this.getClass.getName)
   }
 
-  
-  override def getLastModel : ContainerRoot = (this !? LastModel()).asInstanceOf[ContainerRoot]
-  override def updateModel(model : ContainerRoot) = this ! UpdateModel(model)
-  
-  override def atomicUpdateModel(model : ContainerRoot) = { (this !? UpdateModel(model));lastDate }
-  
-  override def getPreviousModel : java.util.List[ContainerRoot] = (this !? PreviousModel).asInstanceOf[java.util.List[ContainerRoot]]
+
+  override def getLastModel: ContainerRoot = (this !? LastModel()).asInstanceOf[ContainerRoot]
+
+  override def updateModel(model: ContainerRoot) = this ! UpdateModel(model)
+
+  override def atomicUpdateModel(model: ContainerRoot) = {
+    (this !? UpdateModel(model)); lastDate
+  }
+
+  override def getPreviousModel: java.util.List[ContainerRoot] = (this !? PreviousModel).asInstanceOf[java.util.List[ContainerRoot]]
+
+
+  val listenerActor = new KevoreeListeners
+  listenerActor.start()
+
+  override def registerModelListener(listener: ModelListener) {
+    listenerActor.addListener(listener)
+  }
+
+  override def unregisterModelListener(listener: ModelListener) {
+    listenerActor.removeListener(listener)
+  }
+
 
 }

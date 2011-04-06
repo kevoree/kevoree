@@ -19695,6 +19695,8 @@ org.kevoree.api.service.core.checker.CheckerViolation: java.util.List getTargetO
 org.kevoree.api.service.core.checker.CheckerViolation: void setTargetObjects(java.util.List)
 org.kevoree.api.configuration.ConfigurationService
 org.kevoree.api.configuration.ConfigurationService: java.lang.String getProperty(org.kevoree.api.configuration.ConfigConstants$ConfigConstant)
+org.kevoree.api.service.core.handler.ModelListener
+org.kevoree.api.service.core.handler.ModelListener: void modelUpdated()
 org.kevoree.api.configuration.ConfigConstants$
 org.kevoree.api.configuration.ConfigConstants$: org.kevoree.api.configuration.ConfigConstants$ MODULE$
 org.kevoree.api.configuration.ConfigConstants$: org.kevoree.api.configuration.ConfigConstants$ConfigConstant KEVOREE_NODE_NAME
@@ -19995,6 +19997,8 @@ org.kevoree.api.service.core.handler.KevoreeModelHandlerService: void updateMode
 org.kevoree.api.service.core.handler.KevoreeModelHandlerService: java.util.Date atomicUpdateModel(org.kevoree.ContainerRoot)
 org.kevoree.api.service.core.handler.KevoreeModelHandlerService: java.util.List getPreviousModel()
 org.kevoree.api.service.core.handler.KevoreeModelHandlerService: java.lang.String getNodeName()
+org.kevoree.api.service.core.handler.KevoreeModelHandlerService: void registerModelListener(org.kevoree.api.service.core.handler.ModelListener)
+org.kevoree.api.service.core.handler.KevoreeModelHandlerService: void unregisterModelListener(org.kevoree.api.service.core.handler.ModelListener)
 org.kevoree.api.service.core.script.ScriptInterpreter
 org.kevoree.api.service.core.script.ScriptInterpreter: java.lang.Boolean interpret(java.lang.String)
 org.kevoree.api.service.core.merger.MergerService
@@ -36677,6 +36681,7 @@ org.restlet.engine.header.CookieSettingReader: java.lang.String NAME_SET_PATH
 org.restlet.engine.header.CookieSettingReader: java.lang.String NAME_SET_PORT
 org.restlet.engine.header.CookieSettingReader: java.lang.String NAME_SET_SECURE
 org.restlet.engine.header.CookieSettingReader: java.lang.String NAME_SET_VERSION
+org.kevoree.core.impl.KevoreeListeners$$anonfun$act$1: long serialVersionUID
 org.eclipse.emf.ecore.xml.namespace.SpaceType: int DEFAULT
 org.eclipse.emf.ecore.xml.namespace.SpaceType: int PRESERVE
 scala.collection.immutable.Range: long serialVersionUID
@@ -37290,6 +37295,8 @@ org.kevoree.tools.marShell.parser.sub.KevsTypeParser$$anonfun$parseCreateCompone
 scala.xml.Utility$$anonfun$appendEscapedQuoted$1: long serialVersionUID
 scala.Tuple2$Zipped$$anonfun$flatMap$1: long serialVersionUID
 scala.util.parsing.combinator.PackratParsers$$anonfun$scala$util$parsing$combinator$PackratParsers$$setupLR$2$$anonfun$apply$1: long serialVersionUID
+org.kevoree.core.impl.KevoreeListeners$$anonfun$act$1$$anonfun$apply$1$$anonfun$apply$2: long serialVersionUID
+org.kevoree.core.impl.KevoreeListeners$$anonfun$act$1$$anonfun$apply$1$$anonfun$apply$3: long serialVersionUID
 scala.collection.immutable.ListMap: long serialVersionUID
 ch.qos.logback.classic.jmx.MBeanUtil: java.lang.String DOMAIN
 scala.xml.Node$$anonfun$descendant$1: long serialVersionUID
@@ -38724,6 +38731,7 @@ scala.xml.dtd.ElementValidator$$anonfun$check$1: long serialVersionUID
 org.kevoree.tools.marShell.parser.KevsParser$$anonfun$kevStatement$2: long serialVersionUID
 scala.collection.mutable.ArrayBuffer: long serialVersionUID
 org.kevoree.tools.marShell.parser.KevsParser$$anonfun$kevStatement$1: long serialVersionUID
+org.kevoree.core.impl.KevoreeListeners$ListenerActor$$anonfun$act$2: long serialVersionUID
 scala.xml.NamespaceBinding: long serialVersionUID
 scala.util.parsing.combinator.lexical.Lexical$$anonfun$digit$1: long serialVersionUID
 org.eclipse.emf.ecore.xmi.XMLHelper: int DATATYPE_SINGLE
@@ -40678,6 +40686,7 @@ scala.xml.dtd.ElementValidator$$anonfun$getIterable$1: long serialVersionUID
 org.apache.felix.shell.impl.SystemPropertiesCommandImpl: java.lang.String REMOVE_PROP_SWITCH
 org.eclipse.emf.common.util.BasicEList$BasicIndexOutOfBoundsException: long serialVersionUID
 org.eclipse.emf.common.util.AbstractEList$BasicIndexOutOfBoundsException: long serialVersionUID
+org.kevoree.core.impl.KevoreeListeners$ListenerActor$$anonfun$act$2$$anonfun$apply$4: long serialVersionUID
 org.eclipse.emf.ecore.xmi.impl.EMOFExtendedMetaData: java.lang.String EMOF_PACKAGE_NS_PREFIX
 org.eclipse.emf.ecore.xmi.impl.EMOFExtendedMetaData: java.lang.String EMOF_PACKAGE_NS_URI_2_0
 org.eclipse.emf.ecore.xmi.impl.EMOFExtendedMetaData: java.lang.String EMOF_PACKAGE_NS_URI
@@ -40702,10 +40711,10 @@ org.eclipse.emf.ecore.xmi.impl.EMOFExtendedMetaData: java.lang.String EMOF_PROPE
 org.eclipse.emf.ecore.xmi.impl.EMOFExtendedMetaData: java.lang.String CONTENT_TYPE
 org.eclipse.emf.ecore.util.BasicExtendedMetaData: int UNINITIALIZED_INT
 org.eclipse.emf.ecore.util.BasicExtendedMetaData: java.lang.String UNINITIALIZED_STRING
+org.kevoree.core.impl.KevoreeListeners$ListenerActor$$anonfun$act$2$$anonfun$apply$2: long serialVersionUID
 org.codehaus.jackson.JsonStreamContext: int TYPE_ROOT
 org.codehaus.jackson.JsonStreamContext: int TYPE_ARRAY
 org.codehaus.jackson.JsonStreamContext: int TYPE_OBJECT
-ch.qos.logback.core.sift.SiftingJoranConfiguratorBase: java.lang.String ONE_AND_ONLY_ONE_URL
 org.eclipse.emf.ecore.util.DelegatingEcoreEList$Dynamic: long serialVersionUID
 org.eclipse.emf.ecore.util.DelegatingEcoreEList$Generic: long serialVersionUID
 org.eclipse.emf.ecore.util.DelegatingEcoreEList$Generic: int IS_SET
@@ -40745,6 +40754,7 @@ org.eclipse.emf.ecore.xml.type.internal.RegEx$Op: int INDEPENDENT
 org.eclipse.emf.ecore.xml.type.internal.RegEx$Op: int MODIFIER
 org.eclipse.emf.ecore.xml.type.internal.RegEx$Op: int CONDITION
 org.eclipse.emf.ecore.xml.type.internal.RegEx$Op: boolean COUNT
+ch.qos.logback.core.sift.SiftingJoranConfiguratorBase: java.lang.String ONE_AND_ONLY_ONE_URL
 net.lag.configgy.Config$$anonfun$fromMap$1$$anonfun$apply$1: long serialVersionUID
 org.eclipse.emf.common.notify.impl.NotifyingListImpl: long serialVersionUID
 org.eclipse.emf.common.util.BasicEList: long serialVersionUID
@@ -41027,6 +41037,7 @@ org.eclipse.emf.ecore.impl.BasicEObjectImpl: int EVIRTUAL_GET
 org.eclipse.emf.ecore.impl.BasicEObjectImpl: int EVIRTUAL_IS_SET
 org.eclipse.emf.ecore.impl.BasicEObjectImpl: boolean $assertionsDisabled
 org.kevoree.tools.marShell.parser.sub.KevsComponentInstanceParser$$anonfun$parseCID$1$$anonfun$apply$1: long serialVersionUID
+org.kevoree.core.impl.KevoreeListeners$$anonfun$act$1$$anonfun$apply$1: long serialVersionUID
 scala.testing.SUnit$TestConsoleMain$$anonfun$main$1: long serialVersionUID
 net.lag.configgy.ConfigParser$$anonfun$stringList$1$$anonfun$apply$16$$anonfun$apply$18: long serialVersionUID
 scala.Enumeration$$anonfun$withName$1: long serialVersionUID
@@ -44261,6 +44272,7 @@ org.kevoree.framework.aspects.ChannelAspect$$anonfun$getRelatedBindings$1
 scala.Function$$anonfun$curried$4$$anonfun$apply$8$$anonfun$apply$9$$anonfun$apply$10$$anonfun$apply$11
 scala.util.regexp.PointedHedgeExp$TopIter$
 scala.collection.immutable.List$$anonfun$toStream$1
+org.kevoree.core.impl.KevoreeListeners$STOP_ACTOR
 scala.util.parsing.ast.Binders$$anon$4$$anonfun$gmap$4
 scala.util.control.TailCalls$Done$
 scala.io.BytePickle$$anonfun$ufixedList$1
@@ -44540,6 +44552,7 @@ scala.collection.JavaConverters$$anonfun$dictionaryAsScalaMapConverter$1
 org.kevoree.tools.marShell.lexer.KevsTokens$KError
 scala.collection.mutable.LinkedListLike$$anonfun$update$1
 org.scala_tools.compiler.reporters.MyConsoleReporter$$anonfun$printMessage$1
+org.kevoree.core.impl.KevoreeListeners$STOP_LISTENER$
 scala.actors.scheduler.ThreadPoolConfig$$anonfun$getIntegerProp$1
 scala.actors.Actor$$anonfun$$qmark$1
 scala.actors.ReplyReactor$$anonfun$reactWithin$2
@@ -44823,6 +44836,7 @@ scala.util.parsing.combinator.lexical.StdLexical$$anonfun$comment$3
 scala.util.parsing.combinator.lexical.StdLexical$$anonfun$comment$2
 scala.Tuple12$
 scala.util.parsing.combinator.lexical.StdLexical$$anonfun$comment$1
+org.kevoree.core.impl.KevoreeListeners$AddListener$
 org.kevoree.tools.marShell.ast.RemoveChannelInstanceStatment$
 scala.Tuple11$
 scala.collection.TraversableLike$$anonfun$groupBy$1$$anonfun$1
@@ -44890,6 +44904,7 @@ scala.xml.include.sax.Main$$anonfun$2$$anonfun$apply$3
 scala.Function2$mcFLL$sp$$anonfun$curried$mcFLL$sp$1$$anonfun$apply$29
 scala.xml.parsing.FactoryAdapter$$anonfun$2
 scala.collection.mutable.BitSet$
+org.kevoree.core.impl.KevoreeListeners$$anonfun$act$1
 scala.collection.immutable.Range
 scala.collection.immutable.Range$$anon$2
 scala.collection.immutable.Range$Inclusive
@@ -45141,11 +45156,14 @@ scala.xml.Utility$$anonfun$appendEscapedQuoted$1
 org.scala_tools.vscaladoc.Page4Overview$$anonfun$overviewComment$1
 scala.Tuple2$Zipped$$anonfun$flatMap$1
 scala.util.parsing.combinator.PackratParsers$$anonfun$scala$util$parsing$combinator$PackratParsers$$setupLR$2$$anonfun$apply$1
+org.kevoree.core.impl.KevoreeListeners$$anonfun$act$1$$anonfun$apply$1$$anonfun$apply$2
+org.kevoree.core.impl.KevoreeListeners$$anonfun$act$1$$anonfun$apply$1$$anonfun$apply$3
 scala.collection.immutable.ListMap
 scala.collection.immutable.ListMap$Node
 scala.xml.Node$$anonfun$descendant$1
 scala.util.parsing.combinator.lexical.StdLexical$$anonfun$token$5$$anonfun$apply$10$$anonfun$apply$11
 scala.Function20$$anonfun$curried$1
+org.kevoree.core.impl.KevoreeListeners$STOP_LISTENER
 scala.Function7$$anonfun$curried$1$$anonfun$apply$1
 scala.Function1$mcIL$sp$$anonfun$andThen$mcIL$sp$1
 scala.reflect.Field
@@ -45760,6 +45778,8 @@ org.kevoree.framework.KevoreeGroup
 org.kevoree.framework.KevoreeComponent$$anon$1
 scala.actors.DaemonActor
 scala.actors.FutureActor
+org.kevoree.core.impl.KevoreeListeners
+org.kevoree.core.impl.KevoreeListeners$ListenerActor
 scala.actors.ActorProxy
 scala.actors.Actor$$anon$2
 scala.actors.Actor$$anon$1
@@ -45781,6 +45801,7 @@ scala.util.parsing.combinator.syntactical.StdTokenParsers$$anonfun$numericLit$2
 scala.util.parsing.combinator.syntactical.StdTokenParsers$$anonfun$numericLit$1
 org.kevoree.tools.marShell.lexer.KevsTokens$StringLit$
 scala.util.parsing.combinator.Parsers$Error
+org.kevoree.core.impl.KevoreeListeners$STOP_ACTOR$
 scala.xml.dtd.ElementValidator$$anonfun$check$6
 scala.Function2$mcLII$sp$$anonfun$curried$mcLII$sp$1$$anonfun$apply$6
 scala.xml.dtd.ElementValidator$$anonfun$check$5
@@ -45791,6 +45812,7 @@ org.kevoree.tools.marShell.parser.KevsParser$$anonfun$kevStatement$3
 scala.xml.dtd.ElementValidator$$anonfun$check$1
 org.kevoree.tools.marShell.parser.KevsParser$$anonfun$kevStatement$2
 org.kevoree.tools.marShell.parser.KevsParser$$anonfun$kevStatement$1
+org.kevoree.core.impl.KevoreeListeners$ListenerActor$$anonfun$act$2
 scala.xml.NamespaceBinding
 scala.xml.TopScope$
 scala.util.parsing.combinator.lexical.Lexical$$anonfun$digit$1
@@ -45929,6 +45951,7 @@ scala.Function2$mcFLL$sp$$anonfun$curried$mcFLL$sp$1
 scala.collection.immutable.IntMap$Bin$
 scala.Function2$mcZDI$sp$$anonfun$tupled$mcZDI$sp$1
 scala.util.parsing.combinator.token.StdTokens$NumericLit$
+org.kevoree.core.impl.KevoreeListeners$Notify
 scala.math.BigInt$$anonfun$equals$1
 scala.xml.parsing.FatalError$
 scala.Function2$mcFDI$sp$$anonfun$tupled$mcFDI$sp$1
@@ -46097,6 +46120,7 @@ scala.collection.mutable.LinkedListLike$$anonfun$tail$1
 scala.reflect.generic.PickleBuffer$$anonfun$toIndexedSeq$1
 scala.util.control.Exception$$anonfun$ignoring$1
 org.kevoree.tools.marShell.parser.sub.KevsNodeParser$$anonfun$parseAddNode$1$$anonfun$apply$1
+org.kevoree.core.impl.KevoreeListeners$RemoveListener
 scala.collection.mutable.HashMap$
 org.eclipse.emf.common.util.ArrayDelegatingEList
 org.eclipse.emf.ecore.impl.MinimalEObjectImpl$1ArrayDelegatingAdapterList
@@ -46502,6 +46526,7 @@ scala.util.control.Exception$Catch$$anonfun$either$1
 scala.xml.parsing.MarkupParserCommon$$anonfun$xProcInstr$2
 scala.xml.parsing.MarkupParserCommon$$anonfun$xProcInstr$1
 scala.reflect.generic.Trees$This$
+org.kevoree.core.impl.KevoreeListeners$AddListener
 scala.collection.mutable.RevertibleHistory
 scala.reflect.generic.UnPickler$Scan$$anonfun$readNameRef$1
 scala.actors.threadpool.locks.ReentrantLock
@@ -46603,10 +46628,13 @@ scala.xml.dtd.ElementValidator$$anonfun$getIterable$1
 org.kevoree.adaptation.deploy.osgi.command.RemoveTypeCommand
 org.scala_tools.vscaladoc.SourceHtmlizerOn$$anonfun$1
 scala.reflect.generic.Trees$DefDef$
+org.kevoree.core.impl.KevoreeListeners$ListenerActor$$anonfun$act$2$$anonfun$apply$4
+org.kevoree.core.impl.KevoreeListeners$ListenerActor$$anonfun$act$2$$anonfun$apply$2
 org.kevoree.tools.marShell.interpreter.sub.KevsRemoveComponentInstanceInterpreter$
 org.kevoree.framework.message.UpdateModel$
 net.lag.configgy.Config$$anonfun$fromMap$1$$anonfun$apply$1
 scala.Tuple3$Zipped$$anonfun$filter$1
+org.kevoree.core.impl.KevoreeListeners$Notify$
 org.kevoree.framework.aspects.ChannelAspect$
 net.lag.logging.Logger$$anonfun$3$$anonfun$apply$12
 scala.util.parsing.combinator.Parsers$Failure$
@@ -46663,6 +46691,7 @@ scala.collection.immutable.Stream$$anonfun$partition$1
 scala.collection.immutable.Stream$$anonfun$partition$2
 scala.collection.immutable.Stream$$anonfun$make$1
 scala.Tuple2$mcLL$sp$$anonfun$zip$mcLL$sp$1
+org.kevoree.core.impl.KevoreeListeners$RemoveListener$
 org.kevoree.core.impl.KevoreeMetricsServiceBean
 scala.Array$$anonfun$fromFunction$3$$anonfun$apply$17
 scala.util.parsing.combinator.lexical.StdLexical$$anonfun$token$3$$anonfun$apply$3$$anonfun$apply$4
@@ -46729,6 +46758,7 @@ scala.Function14$$anonfun$curried$1$$anonfun$apply$1
 scala.io.BytePickle$$anonfun$upair$1
 scala.io.BytePickle$$anonfun$upair$2
 org.kevoree.tools.marShell.parser.sub.KevsComponentInstanceParser$$anonfun$parseCID$1$$anonfun$apply$1
+org.kevoree.core.impl.KevoreeListeners$$anonfun$act$1$$anonfun$apply$1
 scala.testing.SUnit$TestConsoleMain$$anonfun$main$1
 net.lag.configgy.ConfigParser$$anonfun$stringList$1$$anonfun$apply$16$$anonfun$apply$18
 scala.Enumeration$$anonfun$withName$1
@@ -47104,6 +47134,7 @@ org.kevoree.framework.KevoreePlatformHelper$$anonfun$8
 org.kevoree.framework.KevoreePlatformHelper$$anonfun$9
 scala.reflect.generic.Trees$TypeDef
 scala.Tuple9$
+org.kevoree.core.impl.KevoreeListeners$NotifyAll$
 scala.reflect.Field$
 org.kevoree.framework.KevoreePlatformHelper$$anonfun$2
 org.kevoree.framework.KevoreePlatformHelper$$anonfun$1
@@ -47516,6 +47547,7 @@ org.kevoree.kompare.sub.UpdateNodeKompare$$anonfun$getUpdateNodeAdaptationModel$
 scala.math.BigDecimal$$anonfun$to$1
 org.kevoree.tools.marShell.ast.Statment$
 org.kevoree.tools.marShell.interpreter.sub.KevsAddTBlockInterpreter$
+org.kevoree.core.impl.KevoreeListeners$NotifyAll
 org.kevoree.tools.marShell.lexer.KevsTokens$KIncomplet
 scala.reflect.generic.Trees$Star
 org.kevoree.kompare.sub.InitNodeKompare$$anonfun$getInitNodeAdaptationModel$1$$anonfun$apply$1
