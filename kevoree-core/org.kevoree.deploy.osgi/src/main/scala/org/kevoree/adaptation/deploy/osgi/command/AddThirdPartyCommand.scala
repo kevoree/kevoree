@@ -59,7 +59,7 @@ case class AddThirdPartyCommand(ct: DeployUnit, ctx: KevoreeDeployManager) exten
       val symbolicName: String = lastExecutionBundle.get.getSymbolicName
       ctx.bundleMapping.append(KevoreeOSGiBundle(ct.getName, ct.getClass.getName, lastExecutionBundle.get))
       // lastExecutionBundle.get.start
-      //mustBeStarted = true
+      mustBeStarted = true
       true
     } catch {
       case e: BundleException if (e.getType == BundleException.DUPLICATE_BUNDLE_ERROR) => {

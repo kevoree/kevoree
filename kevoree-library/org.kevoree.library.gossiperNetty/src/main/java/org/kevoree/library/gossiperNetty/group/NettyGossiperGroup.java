@@ -4,9 +4,12 @@
  */
 package org.kevoree.library.gossiperNetty.group;
 
-import java.security.SecureRandom;
 import java.util.ArrayList;
+import java.util.Map;
+import java.util.HashMap;
+import java.util.UUID;
 import java.util.List;
+
 import org.kevoree.ContainerNode;
 import org.kevoree.ContainerRoot;
 import org.kevoree.Group;
@@ -23,6 +26,7 @@ import org.kevoree.framework.KevoreePlatformHelper;
 import org.kevoree.library.gossiperNetty.DataManager;
 import org.kevoree.library.gossiperNetty.GossiperActor;
 import org.kevoree.library.gossiperNetty.NettyGossipAbstractElement;
+import org.kevoree.library.gossiperNetty.PeerSelector;
 import org.kevoree.library.gossiperNetty.Serializer;
 import org.kevoree.library.gossiperNetty.channel.NettyGossiperChannel;
 import org.osgi.framework.Bundle;
@@ -31,15 +35,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- *
  * @author Erwan Daubert
  */
 @Library(name = "Kevoree-Android-JavaSE")
 @GroupType
 @DictionaryType({
-	@DictionaryAttribute(name = "interval", defaultValue = "30000", optional = true),
-	@DictionaryAttribute(name = "port", defaultValue = "9010", optional = true),
-	@DictionaryAttribute(name = "FullUDP", defaultValue = "false", optional = true)
+		@DictionaryAttribute(name = "interval", defaultValue = "30000", optional = true),
+		@DictionaryAttribute(name = "port", defaultValue = "9010", optional = true),
+		@DictionaryAttribute(name = "FullUDP", defaultValue = "false", optional = true)
 })
 public class NettyGossiperGroup extends AbstractGroupType implements NettyGossipAbstractElement {
 
@@ -47,9 +50,8 @@ public class NettyGossiperGroup extends AbstractGroupType implements NettyGossip
 	private GossiperActor actor = null;
 	private ServiceReference sr;
 	private KevoreeModelHandlerService modelHandlerService = null;
-	private org.kevoree.library.gossiperNetty.PeerSelector selector = null;
+	private PeerSelector selector = null;
 	private Logger logger = LoggerFactory.getLogger(NettyGossiperChannel.class);
-
 
 	@Start
 	public void startGossiperGroup() {
@@ -59,10 +61,10 @@ public class NettyGossiperGroup extends AbstractGroupType implements NettyGossip
 
 		dataManager = new DataManagerForGroup(this.getName(), this.getNodeName(), modelHandlerService);
 
-        Long timeoutLong =  Long.parseLong((String)this.getDictionary().get("interval"));
+		Long timeoutLong = Long.parseLong((String) this.getDictionary().get("interval"));
 		Serializer serializer = new GroupSerializer();
 		selector = new GroupPeerSelector(timeoutLong, modelHandlerService, this.getName());
-		actor = new GossiperActor(timeoutLong,this, dataManager, parsePortNumber(getNodeName()), parseFullUDPParameter(), false,serializer,selector);
+		actor = new GossiperActor(timeoutLong, this, dataManager, parsePortNumber(getNodeName()), parseFullUDPParameter(), false, serializer, selector);
 	}
 
 	@Stop
@@ -83,7 +85,8 @@ public class NettyGossiperGroup extends AbstractGroupType implements NettyGossip
 
 	@Update
 	public void updateGossiperGroup() {
-		// TODO how to update Gossiper group
+		stopGossiperGroup();
+		startGossiperGroup();
 	}
 
 	@Override
@@ -111,6 +114,7 @@ public class NettyGossiperGroup extends AbstractGroupType implements NettyGossip
 		}
 		return ip;
 	}
+
 	private String name = "[A-Za-z0-9_]*";
 	private String portNumber = "(65535|5[0-9]{4}|4[0-9]{4}|3[0-9]{4}|2[0-9]{4}|1[0-9]{4}|[0-9]{0,4})";
 	private String separator = ",";
@@ -138,9 +142,6 @@ public class NettyGossiperGroup extends AbstractGroupType implements NettyGossip
 	public Boolean parseFullUDPParameter() {
 		return this.getDictionary().get("FullUDP").toString().equals("true");
 	}
-
-
-
 
 	/*@Override
 	public String selectPeer() {

@@ -59,7 +59,7 @@ class GossiperRequestReceiver(channelFragment: NettyGossipAbstractElement, dataM
 	}
 	)
 	bootstrapForRequestTCP.setOption("tcpNoDelay", true)
-	/*private var channelTCP = */ bootstrapForRequestTCP.bind(new InetSocketAddress(port));
+	private var channelTCP =  bootstrapForRequestTCP.bind(new InetSocketAddress(port));
 
 	this.start
 
@@ -81,7 +81,7 @@ class GossiperRequestReceiver(channelFragment: NettyGossipAbstractElement, dataM
 		loop {
 			react {
 				case STOP_GOSSIPER() => {
-					//channel.close.awaitUninterruptibly
+					channelTCP.close.awaitUninterruptibly
 					channel.close.awaitUninterruptibly
 					bootstrapForRequest.releaseExternalResources
 					this.exit

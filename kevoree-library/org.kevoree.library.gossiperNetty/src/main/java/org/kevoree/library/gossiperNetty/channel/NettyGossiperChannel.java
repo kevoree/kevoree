@@ -1,10 +1,13 @@
 package org.kevoree.library.gossiperNetty.channel;
 
 import org.kevoree.library.gossiperNetty.NettyGossipAbstractElement;
-import java.security.SecureRandom;
+
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.HashMap;
 import java.util.UUID;
+
 import org.kevoree.annotation.ChannelTypeFragment;
 import org.kevoree.annotation.DictionaryAttribute;
 import org.kevoree.annotation.DictionaryType;
@@ -32,15 +35,14 @@ import org.slf4j.LoggerFactory;
 import scala.Tuple2;
 
 /**
- *
  * @author Erwan Daubert
- * TODO add a DictionaryAttribute to define the number of uuids sent by response when a VectorClockUUIDsRequest is sent
+ *         TODO add a DictionaryAttribute to define the number of uuids sent by response when a VectorClockUUIDsRequest is sent
  */
 @Library(name = "Kevoree-Netty")
 @DictionaryType({
-	@DictionaryAttribute(name = "interval", defaultValue = "30000", optional = true),
-	@DictionaryAttribute(name = "port", defaultValue = "9000", optional = true),
-	@DictionaryAttribute(name = "FullUDP", defaultValue = "true", optional = true)
+		@DictionaryAttribute(name = "interval", defaultValue = "30000", optional = true),
+		@DictionaryAttribute(name = "port", defaultValue = "9000", optional = true),
+		@DictionaryAttribute(name = "FullUDP", defaultValue = "true", optional = true)
 })
 @ChannelTypeFragment
 public class NettyGossiperChannel extends AbstractChannelFragment implements NettyGossipAbstractElement {
@@ -59,7 +61,7 @@ public class NettyGossiperChannel extends AbstractChannelFragment implements Net
 		sr = bundle.getBundleContext().getServiceReference(KevoreeModelHandlerService.class.getName());
 		modelHandlerService = (KevoreeModelHandlerService) bundle.getBundleContext().getService(sr);
 
-		long timeout = Long.parseLong((String)this.getDictionary().get("interval"));
+		long timeout = Long.parseLong((String) this.getDictionary().get("interval"));
 
 		dataManager = new DataManagerForChannel();
 		serializer = new ChannelSerializer();
@@ -92,7 +94,19 @@ public class NettyGossiperChannel extends AbstractChannelFragment implements Net
 
 	@Update
 	public void updateGossiperChannel() {
-		// TODO how to update Gossiper Channel
+		// TODO use the garbage of the dataManager
+		Map<UUID, VectorClock> vectorClockUUIDs = dataManager.getUUIDVectorClocks();
+		Map<UUID, Tuple2<VectorClock, Object>> messages = new HashMap<UUID, Tuple2<VectorClock, Object>>();
+		for (UUID uuid : vectorClockUUIDs.keySet()) {
+			messages.put(uuid, dataManager.getData(uuid));
+		}
+
+		stopGossiperChannel();
+		startGossiperChannel();
+
+		for (UUID uuid : messages.keySet()) {
+			dataManager.setData(uuid, messages.get(uuid));
+		}
 	}
 
 	@Override
@@ -143,6 +157,7 @@ public class NettyGossiperChannel extends AbstractChannelFragment implements Net
 		}
 		return ip;
 	}
+
 	private String name = "[A-Za-z0-9_]*";
 	private String portNumber = "(65535|5[0-9]{4}|4[0-9]{4}|3[0-9]{4}|2[0-9]{4}|1[0-9]{4}|[0-9]{0,4})";
 	private String separator = ",";
@@ -172,7 +187,6 @@ public class NettyGossiperChannel extends AbstractChannelFragment implements Net
 			return true;
 		}
 		return false;
-
 	}
 
 	/*@Override

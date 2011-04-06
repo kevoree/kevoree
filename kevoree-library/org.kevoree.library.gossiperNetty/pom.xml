@@ -63,7 +63,7 @@
 					<instructions>
 						<Private-Package>org.kevoree.library.gossiper.version.*,org.kevoree.library.gossip.*,org.kevoree.library.version.*</Private-Package>
 						<Export-Package>org.kevoree.library.gossiperNetty.*</Export-Package>
-						<Import-Package>com.google.protobuf.*,!org.kevoree.library.gossiperNetty.*,!org.kevoree.library.gossiper.version.*,!org.kevoree.library.gossip.*,!org.kevoree.library.version.*,org.jboss.netty.*,*</Import-Package>
+						<Import-Package>!org.kevoree.library.gossiperNetty.*,!org.kevoree.library.gossiper.version.*,!org.kevoree.library.gossip.*,!org.kevoree.library.version.*,*</Import-Package>
 					</instructions>
 				</configuration>
 			</plugin>

@@ -34,9 +34,9 @@
 					<instructions>
 						<Bundle-SymbolicName>org.kevoree.extra.netty</Bundle-SymbolicName>
 						<Bundle-Version>${pom.version}</Bundle-Version>
-						<Dynamic-Import>com.google.protobuf.*,*</Dynamic-Import>
-						<Export-Package>org.jboss.netty.*</Export-Package>
-						<Import-Package>!org.jboss.netty.*,!com.google.protobuf.*,*;resolution="optional"</Import-Package>
+						<Dynamic-Import>*</Dynamic-Import>
+						<Export-Package>org.jboss.netty.*;version="3.2.4.Final"</Export-Package>
+						<Import-Package>!org.jboss.netty.*,*;resolution:="optional"</Import-Package>
 					</instructions>
 				</configuration>
 			</plugin>

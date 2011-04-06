@@ -35,7 +35,7 @@
 						<Bundle-SymbolicName>org.kevoree.extra.protobuf</Bundle-SymbolicName>
 						<Bundle-Version>${pom.version}</Bundle-Version>
 						<Dynamic-Import>*</Dynamic-Import>
-						<Export-Package>com.google.protobuf.*</Export-Package>
+						<Export-Package>com.google.protobuf.*;version="2.3.0"</Export-Package>
 						<Import-Package>!com.google.protobuf.*,*</Import-Package>
 					</instructions>
 				</configuration>
