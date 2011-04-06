@@ -20,7 +20,7 @@ public interface NettyGossipAbstractElement {
 
 	public Boolean parseFullUDPParameter();
 	
-	public String selectPeer();
+	//public String selectPeer();
 	
 	public String getName();
 	

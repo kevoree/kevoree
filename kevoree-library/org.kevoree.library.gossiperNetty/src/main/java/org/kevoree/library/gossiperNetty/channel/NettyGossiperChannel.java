@@ -47,6 +47,7 @@ public class NettyGossiperChannel extends AbstractChannelFragment implements Net
 
 	private DataManager dataManager = null;//new DataManager();
 	private Serializer serializer = null;
+	private org.kevoree.library.gossiperNetty.PeerSelector selector = null;
 	private GossiperActor actor = null;
 	private ServiceReference sr;
 	private KevoreeModelHandlerService modelHandlerService = null;
@@ -58,15 +59,19 @@ public class NettyGossiperChannel extends AbstractChannelFragment implements Net
 		sr = bundle.getBundleContext().getServiceReference(KevoreeModelHandlerService.class.getName());
 		modelHandlerService = (KevoreeModelHandlerService) bundle.getBundleContext().getService(sr);
 
+		long timeout = Long.parseLong((String)this.getDictionary().get("interval"));
+
 		dataManager = new DataManagerForChannel();
 		serializer = new ChannelSerializer();
+		selector = new ChannelPeerSelector(timeout, this);
 
-		actor = new GossiperActor(Long.parseLong((String)this.getDictionary().get("interval")),
+		actor = new GossiperActor(timeout,
 				this,
 				dataManager,
 				parsePortNumber(getNodeName()),
 				parseFullUDPParameter(),
-				true, serializer);
+				true, serializer,
+				selector);
 	}
 
 	@Stop
@@ -170,7 +175,7 @@ public class NettyGossiperChannel extends AbstractChannelFragment implements Net
 
 	}
 
-	@Override
+	/*@Override
 	public String selectPeer() {
 		int othersSize = this.getOtherFragments().size();
 		if (othersSize > 0) {
@@ -180,5 +185,5 @@ public class NettyGossiperChannel extends AbstractChannelFragment implements Net
 		} else {
 			return "";
 		}
-	}
+	}*/
 }

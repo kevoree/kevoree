@@ -9,7 +9,7 @@ import java.security.SecureRandom
 import scala.actors.TIMEOUT
 import scala.collection.JavaConversions._
 
-class GossiperActor(timeout: java.lang.Long, channel: NettyGossipAbstractElement, dataManager: DataManager, port: Int, fullUDP: java.lang.Boolean, garbage: Boolean,serializer : Serializer) extends actors.DaemonActor {
+class GossiperActor(timeout: java.lang.Long, channel: NettyGossipAbstractElement, dataManager: DataManager, port: Int, fullUDP: java.lang.Boolean, garbage: Boolean,serializer : Serializer, selector : PeerSelector) extends actors.DaemonActor {
 
 	private var gossiperRequestSender = new GossiperRequestSender(timeout, channel, dataManager, fullUDP, garbage,serializer)
 	private var notificationRequestSender = new NotificationRequestSender(channel)
@@ -48,7 +48,7 @@ class GossiperActor(timeout: java.lang.Long, channel: NettyGossipAbstractElement
 				case DO_GOSSIP(targetNodeName) => doGossip(targetNodeName)
 				case NOTIFY_PEERS() => notificationRequestSender.notifyPeersAction()
 				case TIMEOUT => {
-					var peer = channel.selectPeer
+					val peer = selector.selectPeer(channel.getName)//channel.selectPeer
 					if (!peer.equals("")) {
 						doGossip(peer)
 					}
