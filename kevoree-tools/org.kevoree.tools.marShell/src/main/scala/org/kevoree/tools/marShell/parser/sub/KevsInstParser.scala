@@ -22,7 +22,7 @@ import org.kevoree.tools.marShell.ast._
 
 trait KevsInstParser extends KevsAbstractParser with KevsPropertiesParser {
 
-  def parseInst : Parser[List[Statment]] = ( parseAddChannel | parseAddComponent | parseRemoveChannel | parseRemoveComponent | parseAddGroup | parseRemoveGroup )
+  def parseInst : Parser[List[Statment]] = ( parseAddChannel | parseAddComponent | parseRemoveChannel | parseRemoveComponent | parseAddGroup | parseRemoveGroup | parseMoveComponent  )
 
   //CHANNEL
   def parseAddChannel : Parser[List[Statment]] = "addChannel" ~ ident ~ ":" ~ ident ~ opt(parseProperties) ^^{ case _ ~ channelName ~ _ ~ channelTypeName ~ oprops =>

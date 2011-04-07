@@ -37,7 +37,9 @@ object MainRunner {
 
    // var newModel = KevoreeFactory.eINSTANCE.createContainerRoot
 
-    val newModel = KevoreeFactory.eINSTANCE.createContainerRoot//load("/Users/ffouquet/Desktop/emptyMerged.kev")
+    val newModel = load("/Users/ffouquet/Documents/DEV/dukeboard_github/kevoree/kevoree-tools/org.kevoree.tools.marShell/src/test/resources/baseModel/defaultLibrary.kev")
+
+
 
     val parser =new KevsParser();
     val oscript = parser.parseScript(ParserUtil.loadFile("/Users/ffouquet/Documents/DEV/dukeboard_github/kevoree/kevoree-tools/org.kevoree.tools.marShell/src/test/resources/scripts/t1.kevs"));
@@ -49,7 +51,7 @@ object MainRunner {
           println("Interpreter Result : "+script.interpret(KevsInterpreterContext(newModel)))
       }
     }
-    ParserUtil.save("/Users/ffouquet/Desktop/modified.kev", newModel)
+    ParserUtil.save("/Users/ffouquet/Documents/DEV/dukeboard_github/kevoree/kevoree-tools/org.kevoree.tools.marShell/src/test/resources/results/modified.kev", newModel)
   }
 
   def load(uri:String) : ContainerRoot = {

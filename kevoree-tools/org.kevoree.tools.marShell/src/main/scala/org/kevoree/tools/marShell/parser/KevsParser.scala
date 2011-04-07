@@ -24,31 +24,36 @@ import org.kevoree.tools.marShell.ast.Statment
 import sub._
 
 class KevsParser extends KevsAbstractParser
-                    with KevsInstParser
-                    with KevsComponentInstanceParser
-                    with KevsScriptParser
-                    with KevsNodeParser
-                    with KevsBindingParser
-                    with KevsTypeParser
-                    {
+with KevsInstParser
+with KevsComponentInstanceParser
+with KevsScriptParser
+with KevsNodeParser
+with KevsBindingParser
+with KevsTypeParser
+with KevsLibraryParser {
 
   /**
    * extend the fExpression parser with sub parser
    */
-  override def kevStatement : Parser[List[Statment]] = (parseInst | parseNode | parseBindingsStatments | parseType)
-  override def componentID : Parser[ComponentInstanceID] = parseCID
+  override def kevStatement: Parser[List[Statment]] = (parseInst | parseNode | parseBindingsStatments | parseType | parseLibrary )
 
-  def parseScript(content : String) : Option[Script] = {
+  override def componentID: Parser[ComponentInstanceID] = parseCID
 
-    val tokens = new lexical.Scanner(content+"\n")
+  def parseScript(content: String): Option[Script] = {
+
+    val tokens = new lexical.Scanner(content + "\n")
     val result = phrase(parseScript)(tokens)
     result match {
-      case Success(tree, _) => {Some(tree) }
-      case e: NoSuccess => {None}
+      case Success(tree, _) => {
+        Some(tree)
+      }
+      case e: NoSuccess => {
+        None
+      }
     }
   }
 
- // var e : NoSuccess = null
- // def getLastNoSucess = e
+  // var e : NoSuccess = null
+  // def getLastNoSucess = e
 
 }

@@ -1,0 +1,15 @@
+
+tblock {
+
+ addNode myJavaNode : ArduinoNode
+ addNode myJavaNode : ArduinoNode { boardTypeName = "uno" }
+
+ addComponent myFakeLight1@myJavaNode : FakeSimpleLight
+ addChannel gossiperChannel1 : NettyGossiperChannel
+ addGroup gossipGroup : NettyGossiperGroup
+
+ addComponent myFakeLight1@myJavaNode : FakeSimpleLight { param1="hello",param2="helloP2"}
+ addChannel gossiperChannel1 : NettyGossiperChannel { interval="3000"}
+ addGroup gossipGroup : NettyGossiperGroup { interval="2000" }
+
+ }

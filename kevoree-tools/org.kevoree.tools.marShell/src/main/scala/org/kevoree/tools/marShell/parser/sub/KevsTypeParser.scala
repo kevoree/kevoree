@@ -22,6 +22,7 @@ import org.kevoree.tools.marShell.ast.AddPortTypeStatment
 import org.kevoree.tools.marShell.ast.CreateComponentTypeStatment
 import org.kevoree.tools.marShell.ast.Statment
 
+
 trait KevsTypeParser extends KevsAbstractParser {
 
   def parseType : Parser[List[Statment]]= parseCreateComponentType | parseChannelComponentType | parseAddPortType

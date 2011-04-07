@@ -1,0 +1,12 @@
+
+tblock {
+
+ //Test node instance creation
+ addNode myJavaNode1,myJavaNode2 : JavaSENode
+
+ //Test instance creation
+ addComponent myFakeLight1@myJavaNode1 : FakeSimpleLight
+
+ moveComponent myFakeLight1@myJavaNode1 => myJavaNode2
+
+ }

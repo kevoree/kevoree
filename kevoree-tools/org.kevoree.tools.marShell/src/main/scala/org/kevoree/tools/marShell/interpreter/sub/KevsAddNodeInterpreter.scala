@@ -24,26 +24,38 @@ import org.kevoree.tools.marShell.ast.AddNodeStatment
 import org.kevoree.tools.marShell.interpreter.KevsAbstractInterpreter
 import org.kevoree.tools.marShell.interpreter.KevsInterpreterContext
 import scala.collection.JavaConversions._
+import org.kevoree.tools.marShell.interpreter.utils.Merger
 
-case class KevsAddNodeInterpreter(addN : AddNodeStatment) extends KevsAbstractInterpreter {
+case class KevsAddNodeInterpreter(addN: AddNodeStatment) extends KevsAbstractInterpreter {
 
-  def interpret(context : KevsInterpreterContext):Boolean={
+  def interpret(context: KevsInterpreterContext): Boolean = {
 
-    context.model.getTypeDefinitions.find(p=> p.getName == addN.nodeTypeName && p.isInstanceOf[NodeType] ) match {
-      case None => println("Node Type not found for name "+addN.nodeTypeName);false
-      case Some(nodeType)=> {
-          context.model.getNodes.find(n=>n.getName == addN.nodeName) match {
-            case Some(e)=> println("Node Already existe");true
-            case None => {
-              System.out.println("Add Node");
-                var newnode = KevoreeFactory.eINSTANCE.createContainerNode
-                newnode.setName(addN.nodeName)
-                newnode.setTypeDefinition(nodeType)
-                context.model.getNodes.add(newnode)
+    context.model.getTypeDefinitions.find(p => p.getName == addN.nodeTypeName && p.isInstanceOf[NodeType]) match {
+      case None => println("Node Type not found for name " + addN.nodeTypeName); false
+      case Some(nodeType) => {
+        context.model.getNodes.find(n => n.getName == addN.nodeName) match {
+          case Some(e) => {
+              println("Warning : Node Already exist with name "+e.getName)
+              if(e.getTypeDefinition.getName == addN.nodeTypeName){
+                  Merger.mergeDictionary(e, addN.props)
                 true
+              } else {
+                println("Error : Type != from previous created node")
+                false
               }
           }
+          case None => {
+            val newnode = KevoreeFactory.eINSTANCE.createContainerNode
+            newnode.setName(addN.nodeName)
+            newnode.setTypeDefinition(nodeType)
+
+            Merger.mergeDictionary(newnode, addN.props)
+
+            context.model.getNodes.add(newnode)
+            true
+          }
         }
+      }
     }
   }
 }
