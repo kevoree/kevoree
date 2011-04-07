@@ -33,43 +33,57 @@ case class KevsAddComponentInstanceInterpreter(addCompo: AddComponentInstanceSta
         //SEARCH NODE
         context.model.getNodes.find(n => n.getName == nodeID) match {
           case Some(targetNode) => {
-            //SEARCH TYPE
-            context.model.getTypeDefinitions.find(td => td.getName == addCompo.typeDefinitionName) match {
-              case Some(typeDef) if (typeDef.isInstanceOf[ComponentType]) => {
-                var componentDefinition = typeDef.asInstanceOf[ComponentType]
-                var newcomponent = KevoreeFactory.eINSTANCE.createComponentInstance
-                newcomponent.setTypeDefinition(typeDef)
-                newcomponent.setName(addCompo.cid.componentInstanceName)
 
-                //ADD PORTS
-                for (ref <- componentDefinition.getProvided) {
-                  val port: Port = KevoreeFactory.eINSTANCE.createPort
-                  newcomponent.getProvided.add(port)
-                  port.setPortTypeRef(ref)
-                }
-                for (ref <- componentDefinition.getRequired) {
-                  val port: Port = KevoreeFactory.eINSTANCE.createPort
-                  newcomponent.getRequired.add(port)
-                  port.setPortTypeRef(ref)
-                }
-                
-                //MERGE DICTIONARY
-                Merger.mergeDictionary(newcomponent, addCompo.props)
-                      
-                targetNode.getComponents.add(newcomponent)
+            targetNode.getComponents.find(component => component.getName == addCompo.cid.componentInstanceName) match {
 
+              case Some(previousComponent) => {
+                println("Warning : Component already exist with name " + previousComponent.getName);
+                if (previousComponent.getTypeDefinition.getName == addCompo.typeDefinitionName) {
+                  Merger.mergeDictionary(previousComponent, addCompo.props)
+                  true
+                } else {
+                  println("Error : Type != from previous created component")
+                  false
+                }
               }
-              case Some(typeDef) if (!typeDef.isInstanceOf[ComponentType]) => {
-                println("Type definition is not a componentType " + addCompo.typeDefinitionName);
-                false
-              }
-              case _ => {
-                println("Type definition not found " + addCompo.typeDefinitionName);
-                false
+              case None => {
+                //SEARCH TYPE
+                context.model.getTypeDefinitions.find(td => td.getName == addCompo.typeDefinitionName) match {
+                  case Some(typeDef) if (typeDef.isInstanceOf[ComponentType]) => {
+                    val componentDefinition = typeDef.asInstanceOf[ComponentType]
+                    val newcomponent = KevoreeFactory.eINSTANCE.createComponentInstance
+                    newcomponent.setTypeDefinition(typeDef)
+                    newcomponent.setName(addCompo.cid.componentInstanceName)
+
+                    //ADD PORTS
+                    for (ref <- componentDefinition.getProvided) {
+                      val port: Port = KevoreeFactory.eINSTANCE.createPort
+                      newcomponent.getProvided.add(port)
+                      port.setPortTypeRef(ref)
+                    }
+                    for (ref <- componentDefinition.getRequired) {
+                      val port: Port = KevoreeFactory.eINSTANCE.createPort
+                      newcomponent.getRequired.add(port)
+                      port.setPortTypeRef(ref)
+                    }
+
+                    //MERGE DICTIONARY
+                    Merger.mergeDictionary(newcomponent, addCompo.props)
+
+                    targetNode.getComponents.add(newcomponent)
+
+                  }
+                  case Some(typeDef) if (!typeDef.isInstanceOf[ComponentType]) => {
+                    println("Type definition is not a componentType " + addCompo.typeDefinitionName);
+                    false
+                  }
+                  case _ => {
+                    println("Type definition not found " + addCompo.typeDefinitionName);
+                    false
+                  }
+                }
               }
             }
-
-
           }
           case None => {
             println("Node not found " + nodeID);

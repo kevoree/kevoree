@@ -22,8 +22,9 @@
         <module>../org.kevoree.extra.osgi.sysgen</module>
         <module>../org.kevoree.extra.osgi.rxtx</module>
         <module>../org.kevoree.extra.marshalling</module>
-		<module>../org.kevoree.extra.netty</module>
 		<module>../org.kevoree.extra.protobuf</module>
+        <module>../org.kevoree.extra.netty</module>
+
 	</modules>
 
     <distributionManagement>

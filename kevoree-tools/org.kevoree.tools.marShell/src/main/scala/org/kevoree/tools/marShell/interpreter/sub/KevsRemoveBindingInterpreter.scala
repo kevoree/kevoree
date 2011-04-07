@@ -24,41 +24,43 @@ import org.kevoree.tools.marShell.interpreter.KevsInterpreterContext
 import scala.collection.JavaConversions._
 import org.kevoree.tools.marShell.ast.{RemoveBindingStatment, AddBindingStatment}
 
-case class KevsRemoveBindingInterpreter(addBinding : RemoveBindingStatment) extends KevsAbstractInterpreter {
+case class KevsRemoveBindingInterpreter(addBinding: RemoveBindingStatment) extends KevsAbstractInterpreter {
 
-  def interpret(context : KevsInterpreterContext):Boolean={
+  def interpret(context: KevsInterpreterContext): Boolean = {
     addBinding.cid.nodeName match {
-      case Some(searchNodeName)=> {
-          context.model.getNodes.find(node => node.getName == searchNodeName) match {
-            case Some(targetNode) => {
-                targetNode.getComponents.find(component => component.getName == addBinding.cid.componentInstanceName) match {
-                  case Some(targetComponent) => {
-                      context.model.getHubs.find(hub => hub.getName== addBinding.bindingInstanceName) match {
-                        case Some(targetHub)=> {
+      case Some(searchNodeName) => {
+        context.model.getNodes.find(node => node.getName == searchNodeName) match {
+          case Some(targetNode) => {
+            targetNode.getComponents.find(component => component.getName == addBinding.cid.componentInstanceName) match {
+              case Some(targetComponent) => {
+                context.model.getHubs.find(hub => hub.getName == addBinding.bindingInstanceName) match {
+                  case Some(targetHub) => {
 
-                          //LOOK for previous binding
-                          context.model.getMBindings.find(mb=> mb.getHub == targetHub && mb.getPort.eContainer == targetComponent) match {
-                            case Some(previousMB)=> context.model.getMBindings.remove(previousMB);true
-                            case None => println("Hub not found => "+addBinding.bindingInstanceName);false
-                          }
-
-                          }
-                        case None => println("Hub not found => "+addBinding.bindingInstanceName);false
+                    val cports = targetComponent.getProvided ++ targetComponent.getRequired
+                    cports.find(port => port.getPortTypeRef.getName == addBinding.portName) match {
+                      case Some(port) => {
+                        //LOOK for previous binding
+                        context.model.getMBindings.find(mb => mb.getHub == targetHub && mb.getPort == port) match {
+                          case Some(previousMB) => context.model.getMBindings.remove(previousMB); true
+                          case None => println("Hub not found => " + addBinding.bindingInstanceName); false
+                        }
                       }
-
+                      case None => println("Port not found => " + addBinding.portName); false
                     }
-                  case None => println("Component not found => "+addBinding.cid.componentInstanceName);false
+                  }
+                  case None => println("Hub not found => " + addBinding.bindingInstanceName); false
                 }
-
-
               }
-            case None => println("Node not found => "+addBinding.cid.nodeName);false
+              case None => println("Component not found => " + addBinding.cid.componentInstanceName); false
+            }
           }
+          case None => println("Node not found => " + addBinding.cid.nodeName); false
         }
-      case None => println("NodeName is mandatory !");false
+      }
+      case None => println("NodeName is mandatory !"); false
     }
 
-    
+
   }
 
 }

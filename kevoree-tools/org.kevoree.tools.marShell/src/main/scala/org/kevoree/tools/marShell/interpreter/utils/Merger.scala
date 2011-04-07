@@ -25,35 +25,43 @@ import scala.collection.JavaConversions._
 object Merger {
 
   /* Goal of this method is to merge dictionary definition with already exist instance defintion */
-  def mergeDictionary(inst : Instance,props : java.util.Properties)={
-    props.keySet.foreach{key=>
-      val newValue = props.get(key)
-      inst.getDictionary.getValues.find(value=> value.getAttribute.getName == key) match {
-        //UPDATE VALUE CASE
-        case Some(previousValue)=> {
-            previousValue.setValue(newValue.toString)
+  def mergeDictionary(inst: Instance, props: java.util.Properties) = {
+    props.keySet.foreach {
+      key =>
+        val newValue = props.get(key)
+
+        var dictionary = inst.getDictionary
+        if (dictionary == null) {
+          dictionary = KevoreeFactory.eINSTANCE.createDictionary
+          inst.setDictionary(dictionary)
         }
-        //MERGE NEW Dictionary Attribute
-        case None => {
+
+        inst.getDictionary.getValues.find(value => value.getAttribute.getName == key) match {
+          //UPDATE VALUE CASE
+          case Some(previousValue) => {
+            previousValue.setValue(newValue.toString)
+          }
+          //MERGE NEW Dictionary Attribute
+          case None => {
             //CHECK IF ATTRIBUTE ALREADY EXISTE WITHOUT VALUE
-            var att = inst.getTypeDefinition.getDictionaryType.getAttributes.find(att=> att.getName == key) match {
+            var att = inst.getTypeDefinition.getDictionaryType.getAttributes.find(att => att.getName == key) match {
               case None => {
-                  var newDictionaryValue = KevoreeFactory.eINSTANCE.createDictionaryAttribute
-                  newDictionaryValue.setName(key.toString)
-                  inst.getTypeDefinition.getDictionaryType.getAttributes.add(newDictionaryValue)
-                  newDictionaryValue
+                var newDictionaryValue = KevoreeFactory.eINSTANCE.createDictionaryAttribute
+                newDictionaryValue.setName(key.toString)
+                inst.getTypeDefinition.getDictionaryType.getAttributes.add(newDictionaryValue)
+                newDictionaryValue
               }
-              case Some(previousAtt)=>previousAtt
+              case Some(previousAtt) => previousAtt
             }
             var newDictionaryValue = KevoreeFactory.eINSTANCE.createDictionaryValue
             newDictionaryValue.setValue(newValue.toString)
             newDictionaryValue.setAttribute(att)
             inst.getDictionary.getValues.add(newDictionaryValue)
+          }
         }
-      }
-      
+
     }
-    
+
   }
-  
+
 }

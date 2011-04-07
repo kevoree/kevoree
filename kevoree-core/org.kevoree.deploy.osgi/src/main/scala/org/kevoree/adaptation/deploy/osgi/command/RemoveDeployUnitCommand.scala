@@ -31,6 +31,11 @@ case class RemoveDeployUnitCommand(deployUnit : DeployUnit, ctx : KevoreeDeployM
   def execute() : Boolean= {
     ctx.bundleMapping.find({bundleMapping =>bundleMapping.name==CommandHelper.buildKEY(deployUnit) && bundleMapping.objClassName==deployUnit.getClass.getName}) match {
       case Some(bundleMappingFound)=> {
+
+        println("found "+bundleMappingFound)
+        println("found "+bundleMappingFound.bundle)
+        println("found "+bundleMappingFound.bundle.getBundleContext)
+
           var osgibundleContext = bundleMappingFound.bundle.getBundleContext
           var bundle = osgibundleContext.getBundle
           bundle.uninstall

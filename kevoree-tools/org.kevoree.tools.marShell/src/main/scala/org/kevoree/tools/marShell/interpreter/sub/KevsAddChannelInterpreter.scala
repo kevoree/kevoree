@@ -23,13 +23,21 @@ import org.kevoree.tools.marShell.interpreter.KevsAbstractInterpreter
 import org.kevoree.tools.marShell.interpreter.KevsInterpreterContext
 import scala.collection.JavaConversions._
 import org.kevoree.{ChannelType, KevoreeFactory}
+import org.kevoree.tools.marShell.interpreter.utils.Merger
 
 case class KevsAddChannelInterpreter(addChannel: AddChannelInstanceStatment) extends KevsAbstractInterpreter {
 
   def interpret(context: KevsInterpreterContext): Boolean = {
     context.model.getHubs.find(n => n.getName == addChannel.channelName) match {
       case Some(target) => {
-        println("Channel already exist " + addChannel.channelName); false
+        println("Warning : Channel already exist with name " + addChannel.channelName);
+        if (target.getTypeDefinition.getName == addChannel.channelType) {
+          Merger.mergeDictionary(target, addChannel.props)
+          true
+        } else {
+          println("Error : Type != from previous created channel")
+          false
+        }
       }
       case None => {
         //SEARCH TYPE DEF
@@ -39,6 +47,9 @@ case class KevsAddChannelInterpreter(addChannel: AddChannelInstanceStatment) ext
             val newchannel = KevoreeFactory.eINSTANCE.createChannel
             newchannel.setTypeDefinition(targetChannelType)
             newchannel.setName(addChannel.channelName)
+
+            Merger.mergeDictionary(newchannel, addChannel.props)
+
             context.model.getHubs.add(newchannel)
 
           }

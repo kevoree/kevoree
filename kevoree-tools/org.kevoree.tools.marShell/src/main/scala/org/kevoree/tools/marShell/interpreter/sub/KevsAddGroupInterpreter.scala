@@ -23,13 +23,21 @@ import org.kevoree.tools.marShell.interpreter.KevsInterpreterContext
 import scala.collection.JavaConversions._
 import org.kevoree.tools.marShell.ast.{AddGroupStatment}
 import org.kevoree.{GroupType, ChannelType, KevoreeFactory}
+import org.kevoree.tools.marShell.interpreter.utils.Merger
 
 case class KevsAddGroupInterpreter(addGroup: AddGroupStatment) extends KevsAbstractInterpreter {
 
   def interpret(context: KevsInterpreterContext): Boolean = {
     context.model.getGroups.find(n => n.getName == addGroup.groupName) match {
       case Some(target) => {
-        println("group already exist " + addGroup.groupName); false
+        println("Warning : Group already exist with name " + addGroup.groupName);
+        if (target.getTypeDefinition.getName == addGroup.groupTypeName) {
+          Merger.mergeDictionary(target, addGroup.props)
+          true
+        } else {
+          println("Error : Type != from previous created group")
+          false
+        }
       }
       case None => {
         //SEARCH TYPE DEF
@@ -39,8 +47,8 @@ case class KevsAddGroupInterpreter(addGroup: AddGroupStatment) extends KevsAbstr
             val newGroup = KevoreeFactory.eINSTANCE.createGroup
             newGroup.setTypeDefinition(targetGroupType)
             newGroup.setName(addGroup.groupName)
+            Merger.mergeDictionary(newGroup, addGroup.props)
             context.model.getGroups.add(newGroup)
-
 
           }
           case Some(targetGroupType) if (!targetGroupType.isInstanceOf[GroupType]) => {

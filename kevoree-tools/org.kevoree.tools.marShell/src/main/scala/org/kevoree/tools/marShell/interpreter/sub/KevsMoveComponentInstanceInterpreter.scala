@@ -14,10 +14,45 @@
 package org.kevoree.tools.marShell.interpreter.sub
 
 import org.kevoree.tools.marShell.interpreter.{KevsInterpreterContext, KevsAbstractInterpreter}
+import org.kevoree.tools.marShell.ast.MoveComponentInstanceStatment
+import scala.collection.JavaConversions._
 
-class KevsMoveComponentInstanceInterpreter extends KevsAbstractInterpreter {
+case class KevsMoveComponentInstanceInterpreter(moveComponent: MoveComponentInstanceStatment) extends KevsAbstractInterpreter {
   def interpret(context: KevsInterpreterContext): Boolean = {
-    //TODO
-        true
+
+    moveComponent.cid.nodeName match {
+      case Some(nodeID) => {
+        context.model.getNodes.find(node => node.getName == nodeID) match {
+          case Some(sourceNode) => {
+            //SEARCH COMPONENT
+            sourceNode.getComponents.find(c => c.getName == moveComponent.cid.componentInstanceName) match {
+              case Some(targetComponent) => {
+                context.model.getNodes.find(node => node.getName == moveComponent.targetNodeName) match {
+                  case Some(targetNode) => {
+                    sourceNode.getComponents.remove(targetComponent)
+                    targetNode.getComponents.add(targetComponent)
+                    true
+                  }
+                  case None => {
+                    println("Target node not found " + moveComponent.cid.componentInstanceName);
+                    false
+                  }
+                }
+              }
+              case None => {
+                println("Component not found " + moveComponent.cid.componentInstanceName);
+                false
+              }
+            }
+          }
+          case None => {
+            println("Source Node not found " + nodeID);
+            false
+          }
+        }
+      }
+      case None => false //TODO solve ambiguity
+    }
+
   }
 }

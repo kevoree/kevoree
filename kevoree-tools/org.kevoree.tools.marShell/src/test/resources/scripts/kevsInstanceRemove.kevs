@@ -1,0 +1,20 @@
+
+tblock {
+
+ addNode myJavaNode1,myJavaNode2 : JavaSENode
+ addNode myJavaNode : JavaSENode
+ removeNode myJavaNode1
+
+ addComponent myFakeLight1@myJavaNode : FakeSimpleLight { param1="hello",param2="helloP2"}
+ addComponent myFakeLight2@myJavaNode : FakeSimpleLight
+ removeComponent myFakeLight2@myJavaNode
+
+ addChannel gossiperChannel1 : RestGossiperChannel { interval="3000"}
+ addChannel gossiperChannel2 : RestGossiperChannel
+ removeChannel gossiperChannel2
+
+ addGroup gossipGroup1 : RestGossipGroup { interval="2000" }
+ addGroup gossipGroup2 : RestGossipGroup
+ removeGroup gossipGroup2
+
+ }

@@ -1,0 +1,13 @@
+
+tblock {
+
+ addNode myJavaNode : JavaSENode
+ addComponent myFakeLight1@myJavaNode : FakeSimpleLight { param1="hello",param2="helloP2"}
+ addChannel gossiperChannel1 : RestGossiperChannel { interval="3000"}
+
+ bind myFakeLight1.on@myJavaNode => gossiperChannel1
+ bind myFakeLight1.off@myJavaNode => gossiperChannel1
+ unbind myFakeLight1.off@myJavaNode => gossiperChannel1
+
+
+ }

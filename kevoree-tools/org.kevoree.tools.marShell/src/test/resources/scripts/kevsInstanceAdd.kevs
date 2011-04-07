@@ -1,0 +1,14 @@
+
+tblock {
+
+ //Test node instance creation
+ addNode myJavaNode1,myJavaNode2 : JavaSENode
+ addNode myJavaNode : JavaSENode
+ removeNode myJavaNode1
+
+ //Test instance creation
+ addComponent myFakeLight1@myJavaNode : FakeSimpleLight { param1="hello",param2="helloP2"}
+ addChannel gossiperChannel1 : RestGossiperChannel { interval="3000"}
+ addGroup gossipGroup : RestGossipGroup { interval="2000" }
+
+ }
