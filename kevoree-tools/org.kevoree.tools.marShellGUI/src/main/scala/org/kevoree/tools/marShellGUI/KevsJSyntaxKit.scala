@@ -34,6 +34,11 @@ class KevsJSyntaxKit extends DefaultSyntaxKit(new KevsJSyntaxLexerWrapper()) {
   config.setProperty("Action.combo-completion.MenuText", "Completions")
   config.setProperty("Action.double-quotes", "jsyntaxpane.actions.PairAction, typed \"")
 
+  //config.setProperty("LineNumbers.CurrentBack","0x333300")
+
+
+
+
   this.setConfig(config)
 
 

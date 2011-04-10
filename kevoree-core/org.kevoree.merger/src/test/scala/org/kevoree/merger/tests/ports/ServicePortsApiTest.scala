@@ -45,7 +45,7 @@ class ServicePortsApiTest extends MergerTestSuiteHelper  {
   }
 
   @Test def verifyProvidedServiceMethodAdded() {
-    var mergedModel = component.merge( model("artFragments/lib4test-ProvidedServiceMethodRemoved.art2").setLowerHashCode, model("artFragments/lib4test-base.art2"))
+    val mergedModel = component.merge( model("artFragments/lib4test-ProvidedServiceMethodRemoved.art2").setLowerHashCode, model("artFragments/lib4test-base.art2"))
     mergedModel testSave ("artFragments","lib4test-ProvidedServiceMethodAddedMerged.art2")
 
     mergedModel.getTypeDefinitions.foreach(typeDef => typeDef.getName match {
@@ -82,8 +82,11 @@ class ServicePortsApiTest extends MergerTestSuiteHelper  {
 
   }
 
+
+
+
   @Test def verifyProvidedServiceMethodRemoved() {
-    var mergedModel = component.merge(model("artFragments/lib4test-base.art2"), model("artFragments/lib4test-ProvidedServiceMethodRemoved.art2"))
+    val mergedModel = component.merge(model("artFragments/lib4test-base.art2").setLowerHashCode, model("artFragments/lib4test-ProvidedServiceMethodRemoved.art2"))
     mergedModel testSave ("artFragments","lib4test-ProvidedServiceMethodRemovedMerged.art2")
 
     mergedModel.getTypeDefinitions.foreach(typeDef =>
@@ -122,7 +125,7 @@ class ServicePortsApiTest extends MergerTestSuiteHelper  {
   }
 
   @Test def verifyProvidedServiceMethodRenamed() {
-    var mergedModel = component.merge(model("artFragments/lib4test-base.art2"), model("artFragments/lib4test-ProvidedServiceMethodRenamed.art2"))
+    val mergedModel = component.merge(model("artFragments/lib4test-base.art2").setLowerHashCode, model("artFragments/lib4test-ProvidedServiceMethodRenamed.art2"))
     mergedModel testSave ("artFragments","lib4test-ProvidedServiceMethodRenamedMerged.art2")
 
     mergedModel.getTypeDefinitions.foreach(typeDef =>
@@ -165,7 +168,7 @@ class ServicePortsApiTest extends MergerTestSuiteHelper  {
   }
 
   @Test def verifyProvidedServiceMethodParameterAdded() {
-    var mergedModel = component.merge(model("artFragments/lib4test-ProvidedServiceMethodParameterRemoved.art2"), model("artFragments/lib4test-base.art2"))
+    val mergedModel = component.merge(model("artFragments/lib4test-ProvidedServiceMethodParameterRemoved.art2").setLowerHashCode, model("artFragments/lib4test-base.art2"))
     mergedModel testSave ("artFragments","lib4test-ProvidedServiceMethodParameterAddedMerged.art2")
 
     mergedModel.getTypeDefinitions.foreach(typeDef =>
@@ -188,7 +191,7 @@ class ServicePortsApiTest extends MergerTestSuiteHelper  {
   }
 
   @Test def verifyProvidedServiceMethodParameterRemoved() {
-    var mergedModel = component.merge(model("artFragments/lib4test-base.art2"), model("artFragments/lib4test-ProvidedServiceMethodParameterRemoved.art2"))
+    val mergedModel = component.merge(model("artFragments/lib4test-base.art2").setLowerHashCode, model("artFragments/lib4test-ProvidedServiceMethodParameterRemoved.art2"))
     mergedModel testSave ("artFragments","lib4test-ProvidedServiceMethodParameterRemovedMerged.art2")
 
     mergedModel.getTypeDefinitions.foreach(typeDef =>
@@ -211,7 +214,7 @@ class ServicePortsApiTest extends MergerTestSuiteHelper  {
   }
 
   @Test def verifyProvidedServiceMethodParameterRenamed() {
-    var mergedModel = component.merge(model("artFragments/lib4test-base.art2"), model("artFragments/lib4test-ProvidedServiceMethodParameterRenamed.art2"))
+    val mergedModel = component.merge(model("artFragments/lib4test-base.art2").setLowerHashCode, model("artFragments/lib4test-ProvidedServiceMethodParameterRenamed.art2"))
     mergedModel testSave ("artFragments","lib4test-ProvidedServiceMethodParameterRenamedMerged.art2")
 
     mergedModel.getTypeDefinitions.foreach(typeDef =>
@@ -239,7 +242,7 @@ class ServicePortsApiTest extends MergerTestSuiteHelper  {
   }
 
   @Test def verifyProvidedServiceMethodParameterTypeChanged() {
-    var mergedModel = component.merge(model("artFragments/lib4test-base.art2"), model("artFragments/lib4test-ProvidedServiceMethodParameterTypeChanged.art2"))
+    val mergedModel = component.merge(model("artFragments/lib4test-base.art2").setLowerHashCode, model("artFragments/lib4test-ProvidedServiceMethodParameterTypeChanged.art2"))
     mergedModel testSave ("artFragments","lib4test-ProvidedServiceMethodParameterTypeChangedMerged.art2")
 
     mergedModel.getTypeDefinitions.foreach(typeDef =>
@@ -271,7 +274,7 @@ class ServicePortsApiTest extends MergerTestSuiteHelper  {
   
 
   @Test def verifyProvidedServiceMethodReturnTypeChanged() {
-   var mergedModel = component.merge(model("artFragments/lib4test-base.art2"), model("artFragments/lib4test-ProvidedServiceMethodReturnTypeChanged.art2"))
+   val mergedModel = component.merge(model("artFragments/lib4test-base.art2").setLowerHashCode, model("artFragments/lib4test-ProvidedServiceMethodReturnTypeChanged.art2"))
     mergedModel testSave ("artFragments","lib4test-ProvidedServiceMethodReturnTypeChangedMerged.art2")
 
     mergedModel.getTypeDefinitions.foreach(typeDef =>
