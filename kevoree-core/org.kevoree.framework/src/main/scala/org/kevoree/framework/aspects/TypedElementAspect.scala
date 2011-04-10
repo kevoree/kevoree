@@ -25,14 +25,14 @@ import KevoreeAspects._
 case class TypedElementAspect(e : TypedElement) {
 
   def isModelEquals(remote : TypedElement) : Boolean = {
-    var nameEquality = e.getName == remote.getName
-    var genericEquality = e.getGenericTypes.forall(p=> remote.getGenericTypes.exists(remoteP => remoteP.isModelEquals(p)  )  )
-    var sizeEquality = e.getGenericTypes.size == remote.getGenericTypes.size
+    val nameEquality = e.getName == remote.getName
+    val genericEquality = e.getGenericTypes.forall(p=> remote.getGenericTypes.exists(remoteP => remoteP.isModelEquals(p)  )  )
+    val sizeEquality = e.getGenericTypes.size == remote.getGenericTypes.size
     nameEquality && genericEquality && sizeEquality
   }
 
   def print(openSep : Char,closeSep:Char) : String = {
-    var res : StringBuilder = new StringBuilder
+    val res : StringBuilder = new StringBuilder
     res.append(e.getName)
     if(e.getGenericTypes.size>0){ res.append(openSep) }
     e.getGenericTypes.foreach{gt=>

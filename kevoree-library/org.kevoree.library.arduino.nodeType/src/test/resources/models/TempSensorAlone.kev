@@ -6,13 +6,9 @@
       <provided portTypeRef="//@typeDefinitions.2/@provided.0"/>
       <required portTypeRef="//@typeDefinitions.2/@required.0"/>
     </components>
-    <components name="PushButton1385357193" typeDefinition="//@typeDefinitions.7">
-      <required portTypeRef="//@typeDefinitions.7/@required.0"/>
-      <required portTypeRef="//@typeDefinitions.7/@required.1"/>
-    </components>
     <components name="Timer2109760029" typeDefinition="//@typeDefinitions.4">
       <dictionary>
-        <values attribute="//@typeDefinitions.4/@dictionaryType/@attributes.0" value="5000"/>
+        <values attribute="//@typeDefinitions.4/@dictionaryType/@attributes.0" value="2000"/>
       </dictionary>
       <required portTypeRef="//@typeDefinitions.4/@required.0"/>
     </components>
@@ -59,7 +55,6 @@
   <mBindings port="//@nodes.0/@components.0/@provided.0" hub="//@hubs.0"/>
   <mBindings port="//@nodes.0/@components.0/@required.0" hub="//@hubs.1"/>
   <mBindings port="//@nodes.0/@components.1/@required.0" hub="//@hubs.0"/>
-  <mBindings port="//@nodes.0/@components.2/@required.0" hub="//@hubs.0"/>
   <deployUnits groupName="org.kevoree.library" unitName="org.kevoree.library.arduino.nodeType" version="1.1.0-BETA1" hashcode="201103311359445" targetNodeType="//@typeDefinitions.0"/>
   <deployUnits groupName="org.kevoree.library" unitName="org.kevoree.library.arduino.sensors" version="1.1.0-BETA1" hashcode="201103311352041" targetNodeType="//@typeDefinitions.0"/>
   <deployUnits groupName="org.kevoree.library" unitName="org.kevoree.library.arduino.channels" version="1.1.0-BETA1" hashcode="201104011638864" targetNodeType="//@typeDefinitions.0"/>

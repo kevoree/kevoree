@@ -3,30 +3,13 @@
 float vcc = 4.91;
 float pad = 9850;
 float thermr = 10000;
-int buttonState = LOW;
 #include <Metro.h>
-Metro metroTimerTimer2109760029= Metro(5000);
+Metro metroTimerTimer2109760029= Metro(2000);
 void setup(){
 Serial.begin(9600);
-pinMode(0, INPUT);
 }
 void loop(){
-int buttonState = 0;  int newButtonState = digitalRead(0);
-  
-  if (newButtonState == HIGH) { 
-    if(buttonState == LOW){
-      buttonState = HIGH;
-      //DO ACTION
-component_PushButton1385357193_requiredPort_click("click");
-    }
-  } else {
-    if(buttonState == HIGH){
-      buttonState = LOW;
-      //DO ACTION UNRELEASE ACTION
-component_PushButton1385357193_requiredPort_release("release");
-
-    }
-  }if (metroTimerTimer2109760029.check() == 1) {
+if (metroTimerTimer2109760029.check() == 1) {
 component_Timer2109760029_requiredPort_tick("tick");
 }
 }
@@ -51,12 +34,6 @@ void component_TempSensor40911417_providedPort_trigger (String param){
 void component_TempSensor40911417_requiredPort_temp (String param){
 channel_hub259067590_dispatch(param);
 
-}
-void component_PushButton1385357193_requiredPort_click (String param){
-channel_hub1495367792_dispatch(param);
-
-}
-void component_PushButton1385357193_requiredPort_release (String param){
 }
 void component_Timer2109760029_requiredPort_tick (String param){
 channel_hub1495367792_dispatch(param);

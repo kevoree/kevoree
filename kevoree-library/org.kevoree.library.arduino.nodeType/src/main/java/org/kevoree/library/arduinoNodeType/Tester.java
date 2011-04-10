@@ -10,7 +10,7 @@ public class Tester {
         System.setProperty("arduino.home", "/Applications/Arduino.app/Contents/Resources/Java");
         System.setProperty("avr.bin","/Applications/Arduino.app/Contents/Resources/Java/hardware/tools/avr/bin");
         System.setProperty("avrdude.config.path", "/Applications/Arduino.app/Contents/Resources/Java/hardware/tools/avr/etc/avrdude.conf");
-        System.setProperty("serial.port", "/dev/tty.usbmodem26221");
+        System.setProperty("serial.port", "/dev/tty.usbmodem411");
         
         String modelString = "/Users/ffouquet/Documents/DEV/dukeboard_github/kevoree/kevoree-library/org.kevoree.library.arduino.nodeType/src/test/resources/models/TempSensorAlone.kev";
 

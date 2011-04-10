@@ -22,84 +22,122 @@ import org.kevoree._
 import scala.collection.JavaConversions._
 import KevoreeAspects._
 
-case class TypeDefinitionAspect(selfTD : TypeDefinition) {
+case class TypeDefinitionAspect(selfTD: TypeDefinition) {
 
-  def isModelEquals(pct : TypeDefinition) : Boolean = {
+  def isModelEquals(pct: TypeDefinition): Boolean = {
     pct.getName == selfTD.getName
     /* deep compare */
   }
-  
+
   /* Check if the new type definition define new deploy unit than self */
-  def contractChanged(pTD : TypeDefinition) : Boolean = {
-    if(pTD.getName != selfTD.getName){return true}
-    if(pTD.getFactoryBean != selfTD.getFactoryBean){return true}
+  def contractChanged(pTD: TypeDefinition): Boolean = {
+
+    println("check Conract changed " + pTD + "-" + selfTD)
+
+    if (pTD.getName != selfTD.getName) {
+      return true
+    }
+    if (pTD.getFactoryBean != selfTD.getFactoryBean) {
+      return true
+    }
     //DICTIONARY TYPE CHECK  
-    if(pTD.getDictionaryType != null){
-      if(!pTD.getDictionaryType.isModelEquals(selfTD.getDictionaryType)){return true}
+    if (pTD.getDictionaryType != null) {
+      if (!pTD.getDictionaryType.isModelEquals(selfTD.getDictionaryType)) {
+        return true
+      }
     }
 
     //SPECIAL CONSISTENCY CHECK
     pTD match {
-      case otherTD : ComponentType => {
-          val selfCT = selfTD.asInstanceOf[ComponentType]
-          if(otherTD.getProvided.size != selfCT.getProvided.size){return true}
-          if(otherTD.getRequired.size != selfCT.getRequired.size){return true}
-          val providedEquality = selfCT.getProvided.forall(selfPTypeRef =>{
-              otherTD.getProvided.find(otherTypeRef => otherTypeRef.getName == selfPTypeRef.getName )match {
-                case Some(otherEquivalentTypeRef)=> {
-                    true
-                  }
-                case None=> false
+      case portType: PortType => {
+        portType match {
+          case otherMPT: MessagePortType => {
+            //NO DEEP COMPARE FOR MESSAGE PORT
+            false
+          }
+          case otherSPT: ServicePortType => {
+            val selfSPT = selfTD.asInstanceOf[ServicePortType]
+            "" match {
+              case _ if (selfSPT.getOperations.size != otherSPT.getOperations.size) => true
+              case _ => {
+                val interfaceChanged = selfSPT.getInterface != otherSPT.getInterface
+                val operationsChanged = selfSPT.getOperations.forall(selfOperation =>
+                    otherSPT.getOperations.find(otherOperation => otherOperation.getName == selfOperation.getName  ) match {
+                      case Some(otherOperation) => {
+                         selfOperation.contractChanged(otherOperation)
+                      }
+                      case None => true
+                    }
+                )
+                 interfaceChanged || operationsChanged
               }
-            })
-          val requiredEquality = selfCT.getRequired.forall(selfRTypeRef =>{
-              otherTD.getRequired.find(otherTypeRef => otherTypeRef.getName == selfRTypeRef.getName )match {
-                case Some(otherEquivalentTypeRef)=> {
-                    true
-                  }
-                case None=> false
-              }
-            })
-
+            }
+          }
         }
-      case _ =>
+      }
+      case otherTD: ComponentType => {
+        val selfCT = selfTD.asInstanceOf[ComponentType]
+        "" match {
+          case _ if (otherTD.getProvided.size != selfCT.getProvided.size) => true
+          case _ if (otherTD.getRequired.size != selfCT.getRequired.size) => true
+          case _ => {
+            val providedEquality = selfCT.getProvided.exists(selfPTypeRef => {
+              otherTD.getProvided.find(otherTypeRef => otherTypeRef.getName == selfPTypeRef.getName) match {
+                case Some(otherEquivalentTypeRef) => {
+                  selfPTypeRef.getRef.contractChanged(otherEquivalentTypeRef.getRef)
+                }
+                case None => false
+              }
+            })
+            val requiredEquality = selfCT.getRequired.exists(selfRTypeRef => {
+              otherTD.getRequired.find(otherTypeRef => otherTypeRef.getName == selfRTypeRef.getName) match {
+                case Some(otherEquivalentTypeRef) => {
+                  selfRTypeRef.getRef.contractChanged(otherEquivalentTypeRef.getRef)
+                }
+                case None => false
+              }
+            })
+            providedEquality || requiredEquality
+          }
+        }
+      }
+      case _@typeDef => println("uncatch portTypeDef"); true
     }
-    false
   }
 
-  def isUpdated(pTD : TypeDefinition) : Boolean = {
+  def isUpdated(pTD: TypeDefinition): Boolean = {
 
-    if(selfTD.getDeployUnits != null){
-      if(pTD.getDeployUnits != null){
-        if(pTD.getDeployUnits.size == 0){
+    if (selfTD.getDeployUnits != null) {
+      if (pTD.getDeployUnits != null) {
+        if (pTD.getDeployUnits.size == 0) {
           return false
         }
-        
-        if(selfTD.getDeployUnits.size != pTD.getDeployUnits.size){
+
+        if (selfTD.getDeployUnits.size != pTD.getDeployUnits.size) {
           return true
         }
-        val allNotUpdate = selfTD.getDeployUnits.forall(selfDU=>{
-            pTD.getDeployUnits.find(p=> p.isModelEquals(selfDU)) match {
-              case Some(pDU)=> {
-                  try{
-                    val pDUInteger = java.lang.Long.parseLong(pDU.getHashcode)
-                    val selfDUInteger = java.lang.Long.parseLong(selfDU.getHashcode)
+        val allNotUpdate = selfTD.getDeployUnits.forall(selfDU => {
+          pTD.getDeployUnits.find(p => p.isModelEquals(selfDU)) match {
+            case Some(pDU) => {
+              try {
+                val pDUInteger = java.lang.Long.parseLong(pDU.getHashcode)
+                val selfDUInteger = java.lang.Long.parseLong(selfDU.getHashcode)
 
-                     //println("kompareHashCode - "+selfDUInteger+"<="+pDUInteger+"-"+(selfDUInteger <= pDUInteger))
+                //println("kompareHashCode - "+selfDUInteger+"<="+pDUInteger+"-"+(selfDUInteger <= pDUInteger))
 
-                    selfDUInteger >= pDUInteger
-                  } catch {
-                    case _@ e => {
-                        e.printStackTrace
-                        println("Bad HashCode - equiality verification - " +pDU.getHashcode + " - " +selfDU.getHashcode)
-                        pDU.getHashcode != selfDU.getHashcode
-                        
-                      }
-                  }
-                } 
-              case _ => false
+                selfDUInteger >= pDUInteger
+              } catch {
+                case _@e => {
+                  e.printStackTrace
+                  println("Bad HashCode - equiality verification - " + pDU.getHashcode + " - " + selfDU.getHashcode)
+                  pDU.getHashcode != selfDU.getHashcode
+
+                }
+              }
             }
-          })
+            case _ => false
+          }
+        })
         !allNotUpdate
       } else {
         true
@@ -108,16 +146,15 @@ case class TypeDefinitionAspect(selfTD : TypeDefinition) {
       pTD.getDeployUnits != null
     }
   }
-  
-  
-  
-  def foundRelevantDeployUnit(node : ContainerNode) = {
-    
+
+
+  def foundRelevantDeployUnit(node: ContainerNode) = {
+
     /* add all reLib from found deploy Unit*/
-    var deployUnitfound : DeployUnit = null
-    if(node.getTypeDefinition != null){
+    var deployUnitfound: DeployUnit = null
+    if (node.getTypeDefinition != null) {
       selfTD.getDeployUnits.find(du => du.getTargetNodeType != null && du.getTargetNodeType.getName == node.getTypeDefinition.getName) match {
-        case Some(e)=> deployUnitfound = e
+        case Some(e) => deployUnitfound = e
         case _ =>
       }
     }
@@ -125,13 +162,13 @@ case class TypeDefinitionAspect(selfTD : TypeDefinition) {
      if(deployUnitfound == null){
      deployUnitfound = selfTD.getDeployUnits.find(du => du.getTargetNodeType.getName == null).get
      }*/
-    if(deployUnitfound == null){
+    if (deployUnitfound == null) {
       deployUnitfound = selfTD.getDeployUnits.get(0)
     }
-    
+
     deployUnitfound
-    
+
   }
-  
+
 
 }

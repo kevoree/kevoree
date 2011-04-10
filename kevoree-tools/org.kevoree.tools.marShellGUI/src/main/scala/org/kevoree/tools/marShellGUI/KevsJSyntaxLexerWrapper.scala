@@ -76,6 +76,9 @@ class KevsJSyntaxLexerWrapper extends KevsLexical with jsyntaxpane.Lexer {
       case c : Comment => TokenType.COMMENT
       case c : MLComment => TokenType.COMMENT
       case e : KError => TokenType.ERROR
+      case slit : StringLit => TokenType.STRING
+      case i : KIncomplet => TokenType.ERROR
+
       case _ => println(tok.getClass.getName);TokenType.DEFAULT
     }
   }
