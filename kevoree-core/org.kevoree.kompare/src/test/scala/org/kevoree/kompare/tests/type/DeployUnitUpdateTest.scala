@@ -24,31 +24,29 @@ import org.kevoree.kompare.tests.KompareSuite
 import org.junit._
 import org.kevoreeAdaptation._
 
-class TypeAndInstanceUpdateTest extends KompareSuite {
+class DeployUnitUpdateTest extends KompareSuite {
 
-  var component: ModelKompareService = null
+  var component : ModelKompareService = null
 
   @Before def initialize() {
     component = new KevoreeKompareBean
   }
 
-  @Test def testNoTypeInstall() = {
-    val kompareModel = component.kompare(model("test_type/updateBaseModel.art2").setLowerHashCode, model("test_type/update2ComponentOneBindingRemove.art2"), "duke")
+  @Test def testNoTypeInstall()={
+    val kompareModel = component.kompare(model("test_deployUnit/beforeUpdate.kev"), model("test_deployUnit/checkDeployUnitUpdateWihtoutContractChanged.kev"), "duke")
+    /*
+    kompareModel shouldContainSize(classOf[UpdateDeployUnit],1)
+    kompareModel shouldContain(classOf[UpdateType],"ComponentPrimitiveTypeService")
+    kompareModel shouldContain(classOf[UpdateType],"ComponentA")
 
-    kompareModel print
+    kompareModel shouldContain(classOf[UpdateInstance],"ComponentPrimitiveTypeService-193784848")
+    kompareModel shouldContain(classOf[UpdateInstance],"ComponentA-1649555745")
+    kompareModel shouldContainSize(classOf[UpdateBinding],2)
+    kompareModel shouldContainSize(classOf[RemoveBinding],1)
 
-    println(kompareModel.getAdaptations.size)
+    kompareModel.verifySize(8)   */
 
-    kompareModel shouldContainSize (classOf[UpdateDeployUnit], 1)
-    kompareModel shouldContain (classOf[UpdateType], "ComponentPrimitiveTypeService")
-    kompareModel shouldContain (classOf[UpdateType], "ComponentA")
-
-    kompareModel shouldContain (classOf[UpdateInstance], "ComponentPrimitiveTypeService-193784848")
-    kompareModel shouldContain (classOf[UpdateInstance], "ComponentA-1649555745")
-    kompareModel shouldContainSize (classOf[UpdateBinding], 2)
-    kompareModel shouldContainSize (classOf[RemoveBinding], 1)
-
-    //kompareModel.verifySize(8)
+    kompareModel.print
 
   }
 

@@ -40,10 +40,10 @@ trait MergerTestSuiteHelper extends JUnitSuite {
   def emptyModel = KevoreeFactory.eINSTANCE.createContainerRoot
 
   def hasNoRelativeReference(path:String, file:String) = {
-    var modelPath = this.getClass.getClassLoader.getResource(path).getPath+"/"+file
-    var bufferedReader = new BufferedReader(new FileReader(new File(modelPath)))
+    val modelPath = this.getClass.getClassLoader.getResource(path).getPath+"/"+file
+    val bufferedReader = new BufferedReader(new FileReader(new File(modelPath)))
 
-    var stringBuffer = new StringBuffer
+    val stringBuffer = new StringBuffer
     var line : String = bufferedReader.readLine
     while( line != null) {
       stringBuffer.append(line)

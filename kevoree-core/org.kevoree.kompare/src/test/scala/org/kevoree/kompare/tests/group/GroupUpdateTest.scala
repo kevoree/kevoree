@@ -44,6 +44,7 @@ class GroupUpdateTest extends AssertionsForJUnit with KompareSuite {
 
   @Test def verifyUPDATE_UpdateGroupAddBinding() {
     val kompareModel = component.kompare(model("test_instance/groupOneBinding.kev"), model("test_instance/groupInitAddOneTwoBinding.kev"), "duke")
+    kompareModel.print
     kompareModel.shouldContain(classOf[UpdateDictionaryInstance], "group1426020324")
   }
 

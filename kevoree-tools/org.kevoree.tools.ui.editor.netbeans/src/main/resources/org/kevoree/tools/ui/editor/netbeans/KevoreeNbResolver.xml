@@ -23,6 +23,6 @@ and open the template in the editor.
     <file>
         <ext name="kev"/>
         <ext name="kev"/>
-        <resolver mime="text/x-kev"/>
+        <resolver mime="text/x-kevoree"/>
     </file>
 </MIME-resolver>

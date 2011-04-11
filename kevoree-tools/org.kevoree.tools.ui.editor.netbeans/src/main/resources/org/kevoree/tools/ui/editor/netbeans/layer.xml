@@ -29,7 +29,7 @@
     </folder>
     <folder name="Loaders">
         <folder name="text">
-            <folder name="x-Kevoree">
+            <folder name="x-kevoree">
                 <folder name="Actions">
                     <file name="org-openide-actions-CopyAction.shadow">
                         <attr name="originalFile" stringvalue="Actions/Edit/org-openide-actions-CopyAction.instance"/>
@@ -90,10 +90,10 @@
                 </folder>
                 <folder name="Factories">
                     <file name="KevoreeNbDataLoader.instance">
-                        <attr name="SystemFileSystem.icon" urlvalue="nbresloc:/org/kevoree/tools/ui/editor/netbeans/socket162.png"/>
                         <attr name="dataObjectClass" stringvalue="org.kevoree.tools.ui.editor.netbeans.KevoreeNbDataObject"/>
+                        <attr name="iconBase" stringvalue="org/kevoree/tools/ui/editor/netbeans/kevFileLogo.png"/>
                         <attr name="instanceCreate" methodvalue="org.openide.loaders.DataLoaderPool.factory"/>
-                        <attr name="mimeType" stringvalue="text/x-Kevoree"/>
+                        <attr name="mimeType" stringvalue="text/x-kevoree"/>
                     </file>
                 </folder>
             </folder>
@@ -115,8 +115,8 @@
     </folder>
     <folder name="Templates">
         <folder name="Other">
-            <file name="KevoreeNbTemplate.Kevoree" url="KevoreeNbTemplate.Kevoree">
-                <attr name="displayName" bundlevalue="org.kevoree.tools.ui.editor.netbeans.Bundle#Templates/Other/KevoreeNbTemplate.Kevoree"/>
+            <file name="KevoreeNbTemplate.Kevoree" url="KevoreeNbTemplate.kev">
+                <attr name="displayName" bundlevalue="org.kevoree.tools.ui.editor.netbeans.Bundle#Templates/Other/KevoreeNbTemplate.kev"/>
                 <attr name="template" boolvalue="true"/>
             </file>
         </folder>

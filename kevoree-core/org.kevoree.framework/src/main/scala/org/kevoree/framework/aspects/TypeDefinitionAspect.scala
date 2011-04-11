@@ -107,6 +107,8 @@ case class TypeDefinitionAspect(selfTD: TypeDefinition) {
 
   def isUpdated(pTD: TypeDefinition): Boolean = {
 
+    //println("is UPdted ?")
+
     if (selfTD.getDeployUnits != null) {
       if (pTD.getDeployUnits != null) {
         if (pTD.getDeployUnits.size == 0) {
@@ -116,16 +118,16 @@ case class TypeDefinitionAspect(selfTD: TypeDefinition) {
         if (selfTD.getDeployUnits.size != pTD.getDeployUnits.size) {
           return true
         }
-        val allNotUpdate = selfTD.getDeployUnits.forall(selfDU => {
+        val oneUpdated = selfTD.getDeployUnits.exists(selfDU => {
           pTD.getDeployUnits.find(p => p.isModelEquals(selfDU)) match {
             case Some(pDU) => {
               try {
                 val pDUInteger = java.lang.Long.parseLong(pDU.getHashcode)
                 val selfDUInteger = java.lang.Long.parseLong(selfDU.getHashcode)
 
-                //println("kompareHashCode - "+selfDUInteger+"<="+pDUInteger+"-"+(selfDUInteger <= pDUInteger))
+                println("kompareHashCode - "+selfDUInteger+"<"+pDUInteger+"-"+(selfDUInteger < pDUInteger))
 
-                selfDUInteger >= pDUInteger
+                selfDUInteger < pDUInteger
               } catch {
                 case _@e => {
                   e.printStackTrace
@@ -135,10 +137,12 @@ case class TypeDefinitionAspect(selfTD: TypeDefinition) {
                 }
               }
             }
-            case _ => false
+            case _ => true
           }
         })
-        !allNotUpdate
+
+       // println(selfTD.getName+" result "+(oneUpdated))
+        oneUpdated
       } else {
         true
       }
