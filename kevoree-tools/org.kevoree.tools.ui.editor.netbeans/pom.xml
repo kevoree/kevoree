@@ -1,9 +1,8 @@
-
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <artifactId>org.kevoree.tools.ui.editor.netbeans</artifactId>
-    <packaging>jar</packaging>
+    <packaging>nbm</packaging>
     <name>Kevoree :: Tools :: UI :: Editor :: Netbeans</name>
     <version>1.1.0-BETA1</version>
 
@@ -38,56 +37,53 @@
         <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-openide-util</artifactId>
-            <version>RELEASE691</version>
+            <version>RELEASE70-BETA2</version>
         </dependency>
         <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-openide-windows</artifactId>
-            <version>RELEASE691</version>
+            <version>RELEASE70-BETA2</version>
         </dependency>
         
         <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-openide-util-lookup</artifactId>
-            <version>RELEASE691</version>
+            <version>RELEASE70-BETA2</version>
         </dependency>
         <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-openide-awt</artifactId>
-            <version>RELEASE691</version>
+            <version>RELEASE70-BETA2</version>
         </dependency>
         <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-netbeans-modules-settings</artifactId>
-            <version>RELEASE691</version>
+            <version>RELEASE70-BETA2</version>
         </dependency>
         <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-openide-filesystems</artifactId>
-            <version>RELEASE691</version>
+            <version>RELEASE70-BETA2</version>
         </dependency>
         <dependency>
             <artifactId>org-openide-text</artifactId>
             <groupId>org.netbeans.api</groupId>
-            <type>jar</type>
-            <version>RELEASE691</version>
+            <version>RELEASE70-BETA2</version>
         </dependency>
         <dependency>
             <artifactId>org-openide-nodes</artifactId>
             <groupId>org.netbeans.api</groupId>
-            <type>jar</type>
-            <version>RELEASE691</version>
+            <version>RELEASE70-BETA2</version>
         </dependency>
         <dependency>
             <artifactId>org-openide-loaders</artifactId>
             <groupId>org.netbeans.api</groupId>
-            <type>jar</type>
-            <version>RELEASE691</version>
+            <version>RELEASE70-BETA2</version>
         </dependency>
         <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>art2.ui.editor</artifactId>
-            <version>${project.version}</version>
+            <groupId>org.kevoree.tools</groupId>
+            <artifactId>org.kevoree.tools.ui.editor</artifactId>
+            <version>${kevoree.version}</version>
         </dependency>
         <dependency>
             <groupId>org.ops4j.pax.url</groupId>
@@ -104,7 +100,7 @@
                 <extensions>true</extensions>
                 <configuration>
                     <useOSGiDependencies>false</useOSGiDependencies>
-                    <netbeansInstallation>/Applications/NetBeans/NetBeans 6.9.1.app/Contents/Resources/NetBeans</netbeansInstallation>
+                    <netbeansInstallation>/Applications/NetBeans/NetBeans 7.0 Beta 2.app/Contents/Resources/NetBeans</netbeansInstallation>
                 </configuration>
             </plugin>
             <plugin>
