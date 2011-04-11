@@ -36,6 +36,15 @@ import org.kevoree.framework.MessagePort;
     @DictionaryAttribute(name = "param1"),
     @DictionaryAttribute(name = "param2", defaultValue = "defVal", optional = true)
 })
+   /*
+@Requires({
+        @RequiredPort(name = "ron", type = PortType.MESSAGE, noDependency=true),
+        //@RequiredPort(name = "on2", type=PortType.MESSAGE),
+        @RequiredPort(name = "roff", type = PortType.MESSAGE, noDependency=true),
+        @RequiredPort(name = "rtoggle", type = PortType.SERVICE, className = ToggleLightService.class, optional = true)
+})   */
+
+
 @ComponentType
 public class FakeSimpleLight extends AbstractFakeStuffComponent {
 
