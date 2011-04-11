@@ -1,0 +1,13 @@
+# Copyright 2006 by Sean Luke and George Mason University
+# Licensed under the Academic Free License version 3.0
+# See the file "LICENSE" for more information
+
+parent.0 = ../..//app/ant/ant.params
+
+exch = ec.exchange.IslandExchange
+exch.select = ec.select.TournamentSelection
+exch.compressed = true
+# This assumes all the islands are on the same machine.
+# You probably want to change this.
+exch.server-addr = localhost
+exch.server-port = 8999

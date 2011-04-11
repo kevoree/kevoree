@@ -1,0 +1,13 @@
+# Copyright 2010 by Sean Luke and George Mason University
+# Licensed under the Academic Free License version 3.0
+# See the file "LICENSE" for more information
+
+parent.0 = moosuite.params
+
+eval.problem.type = f2
+# Carlos Coello Coello & Nareli Cruz Cortes, 2002
+
+pop.subpop.0.species.min-gene = -5
+pop.subpop.0.species.max-gene = 10
+pop.subpop.0.species.genome-size = 1
+pop.subpop.0.species.mutation-prob = 1

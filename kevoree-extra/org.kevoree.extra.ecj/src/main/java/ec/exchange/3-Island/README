@@ -1,0 +1,31 @@
+In this model, three islands are created:
+Wallops, Assateague, and Chincoteague.
+Wallops will be the server.
+
+To run this example, launch three processes
+using the wallops.params, assateague.params, or 
+chincoteague.params parameter files respectively.
+If you're running them on the same machines, you can
+simply do:
+
+java ec.Evolve -file wallops.params
+
+java ec.Evolve -file assateague.params
+
+java ec.Evolve -file chincoteague.params
+
+If you're running the processes on different machines,  
+you'll need to modify the server address
+so the machines know where wallops (the server) is located:
+
+java ec.Evolve -file wallops.params 
+
+java ec.Evolve -file assateague.params \
+    -p exch.server-addr=address.of.wallops.com
+
+java ec.Evolve -file chincoteague.params \
+    -p exch.server-addr=address.of.wallops.com
+
+The parameter files have been set up to define different
+socket ports for each client; though this is only necessary
+if they're running on the same computer.

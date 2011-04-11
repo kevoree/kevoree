@@ -1,0 +1,12 @@
+# Copyright 2010 by Sean Luke and George Mason University
+# Licensed under the Academic Free License version 3.0
+# See the file "LICENSE" for more information
+
+parent.0 = moosuite.params
+
+eval.problem.type = zdt1
+pop.subpop.0.species.fitness.maximize = false
+pop.subpop.0.species.min-gene = 0
+pop.subpop.0.species.max-gene = 1
+pop.subpop.0.species.genome-size = 30
+pop.subpop.0.species.mutation-prob = 0.0333
