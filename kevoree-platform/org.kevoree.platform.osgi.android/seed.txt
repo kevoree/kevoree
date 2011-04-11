@@ -215,6 +215,7 @@ net.lag.configgy.ConfigMap$: net.lag.configgy.ConfigMap$ MODULE$
 scala.collection.immutable.Range$Int$: scala.collection.immutable.Range$Int$ MODULE$
 scala.xml.dtd.NotationDecl$: scala.xml.dtd.NotationDecl$ MODULE$
 scala.text.Document$: scala.text.Document$ MODULE$
+org.kevoree.framework.aspects.OperationAspect$: org.kevoree.framework.aspects.OperationAspect$ MODULE$
 scala.None$: scala.None$ MODULE$
 scala.Math$: scala.Math$ MODULE$
 scala.xml.dtd.PEReference$: scala.xml.dtd.PEReference$ MODULE$
@@ -18467,11 +18468,14 @@ org.kevoree.framework.aspects.TypeDefinitionAspect: java.lang.String productPref
 org.kevoree.framework.aspects.TypeDefinitionAspect: int productArity()
 org.kevoree.framework.aspects.TypeDefinitionAspect: java.lang.Object productElement(int)
 org.kevoree.framework.aspects.TypeDefinitionAspect: boolean canEqual(java.lang.Object)
-org.kevoree.framework.aspects.TypeDefinitionAspect: boolean gd1$1(org.kevoree.TypeDefinition)
+org.kevoree.framework.aspects.TypeDefinitionAspect: boolean gd1$1(org.kevoree.ServicePortType,org.kevoree.ServicePortType)
+org.kevoree.framework.aspects.TypeDefinitionAspect: boolean gd2$1(org.kevoree.ComponentType,org.kevoree.ComponentType)
+org.kevoree.framework.aspects.TypeDefinitionAspect: boolean gd3$1(org.kevoree.ComponentType,org.kevoree.ComponentType)
+org.kevoree.framework.aspects.TypeDefinitionAspect: boolean gd4$1(org.kevoree.TypeDefinition)
 org.kevoree.framework.aspects.TypeDefinitionAspect: TypeDefinitionAspect(org.kevoree.TypeDefinition)
 org.kevoree.framework.aspects.TypeDefinitionAspect$$anonfun$2$$anonfun$apply$2
 org.kevoree.framework.aspects.TypeDefinitionAspect$$anonfun$2$$anonfun$apply$2: long serialVersionUID
-org.kevoree.framework.aspects.TypeDefinitionAspect$$anonfun$2$$anonfun$apply$2: org.kevoree.PortTypeRef selfRTypeRef$1
+org.kevoree.framework.aspects.TypeDefinitionAspect$$anonfun$2$$anonfun$apply$2: org.kevoree.PortTypeRef selfPTypeRef$1
 org.kevoree.framework.aspects.TypeDefinitionAspect$$anonfun$2$$anonfun$apply$2: void <clinit>()
 org.kevoree.framework.aspects.TypeDefinitionAspect$$anonfun$2$$anonfun$apply$2: boolean apply(org.kevoree.PortTypeRef)
 org.kevoree.framework.aspects.TypeDefinitionAspect$$anonfun$2$$anonfun$apply$2: java.lang.Object apply(java.lang.Object)
@@ -20297,11 +20301,11 @@ org.kevoree.framework.KevoreeActor: org.kevoree.framework.KevoreeActor$STOP_ACTO
 org.kevoree.framework.KevoreeActor: org.kevoree.framework.KevoreeActor$ACTOR_ADMIN_MSG$ ACTOR_ADMIN_MSG()
 org.kevoree.framework.aspects.TypeDefinitionAspect$$anonfun$1
 org.kevoree.framework.aspects.TypeDefinitionAspect$$anonfun$1: long serialVersionUID
-org.kevoree.framework.aspects.TypeDefinitionAspect$$anonfun$1: org.kevoree.ComponentType otherTD$1
+org.kevoree.framework.aspects.TypeDefinitionAspect$$anonfun$1: org.kevoree.ServicePortType otherSPT$1
 org.kevoree.framework.aspects.TypeDefinitionAspect$$anonfun$1: void <clinit>()
-org.kevoree.framework.aspects.TypeDefinitionAspect$$anonfun$1: boolean apply(org.kevoree.PortTypeRef)
+org.kevoree.framework.aspects.TypeDefinitionAspect$$anonfun$1: boolean apply(org.kevoree.Operation)
 org.kevoree.framework.aspects.TypeDefinitionAspect$$anonfun$1: java.lang.Object apply(java.lang.Object)
-org.kevoree.framework.aspects.TypeDefinitionAspect$$anonfun$1: TypeDefinitionAspect$$anonfun$1(org.kevoree.framework.aspects.TypeDefinitionAspect,org.kevoree.ComponentType)
+org.kevoree.framework.aspects.TypeDefinitionAspect$$anonfun$1: TypeDefinitionAspect$$anonfun$1(org.kevoree.framework.aspects.TypeDefinitionAspect,org.kevoree.ServicePortType)
 scala.runtime.AbstractFunction1: void apply$mcVI$sp(int)
 scala.runtime.AbstractFunction1: boolean apply$mcZI$sp(int)
 scala.runtime.AbstractFunction1: int apply$mcII$sp(int)
@@ -20380,11 +20384,11 @@ scala.runtime.AbstractFunction1: scala.Function1 andThen$mcDD$sp(scala.Function1
 scala.runtime.AbstractFunction1: AbstractFunction1()
 org.kevoree.framework.aspects.TypeDefinitionAspect$$anonfun$3
 org.kevoree.framework.aspects.TypeDefinitionAspect$$anonfun$3: long serialVersionUID
-org.kevoree.framework.aspects.TypeDefinitionAspect$$anonfun$3: org.kevoree.TypeDefinition pTD$1
+org.kevoree.framework.aspects.TypeDefinitionAspect$$anonfun$3: org.kevoree.ComponentType otherTD$1
 org.kevoree.framework.aspects.TypeDefinitionAspect$$anonfun$3: void <clinit>()
-org.kevoree.framework.aspects.TypeDefinitionAspect$$anonfun$3: boolean apply(org.kevoree.DeployUnit)
+org.kevoree.framework.aspects.TypeDefinitionAspect$$anonfun$3: boolean apply(org.kevoree.PortTypeRef)
 org.kevoree.framework.aspects.TypeDefinitionAspect$$anonfun$3: java.lang.Object apply(java.lang.Object)
-org.kevoree.framework.aspects.TypeDefinitionAspect$$anonfun$3: TypeDefinitionAspect$$anonfun$3(org.kevoree.framework.aspects.TypeDefinitionAspect,org.kevoree.TypeDefinition)
+org.kevoree.framework.aspects.TypeDefinitionAspect$$anonfun$3: TypeDefinitionAspect$$anonfun$3(org.kevoree.framework.aspects.TypeDefinitionAspect,org.kevoree.ComponentType)
 scala.runtime.AbstractFunction1: void apply$mcVI$sp(int)
 scala.runtime.AbstractFunction1: boolean apply$mcZI$sp(int)
 scala.runtime.AbstractFunction1: int apply$mcII$sp(int)
@@ -20468,6 +20472,89 @@ org.kevoree.framework.aspects.TypeDefinitionAspect$$anonfun$2: void <clinit>()
 org.kevoree.framework.aspects.TypeDefinitionAspect$$anonfun$2: boolean apply(org.kevoree.PortTypeRef)
 org.kevoree.framework.aspects.TypeDefinitionAspect$$anonfun$2: java.lang.Object apply(java.lang.Object)
 org.kevoree.framework.aspects.TypeDefinitionAspect$$anonfun$2: TypeDefinitionAspect$$anonfun$2(org.kevoree.framework.aspects.TypeDefinitionAspect,org.kevoree.ComponentType)
+scala.runtime.AbstractFunction1: void apply$mcVI$sp(int)
+scala.runtime.AbstractFunction1: boolean apply$mcZI$sp(int)
+scala.runtime.AbstractFunction1: int apply$mcII$sp(int)
+scala.runtime.AbstractFunction1: float apply$mcFI$sp(int)
+scala.runtime.AbstractFunction1: long apply$mcLI$sp(int)
+scala.runtime.AbstractFunction1: double apply$mcDI$sp(int)
+scala.runtime.AbstractFunction1: void apply$mcVL$sp(long)
+scala.runtime.AbstractFunction1: boolean apply$mcZL$sp(long)
+scala.runtime.AbstractFunction1: int apply$mcIL$sp(long)
+scala.runtime.AbstractFunction1: float apply$mcFL$sp(long)
+scala.runtime.AbstractFunction1: long apply$mcLL$sp(long)
+scala.runtime.AbstractFunction1: double apply$mcDL$sp(long)
+scala.runtime.AbstractFunction1: void apply$mcVF$sp(float)
+scala.runtime.AbstractFunction1: boolean apply$mcZF$sp(float)
+scala.runtime.AbstractFunction1: int apply$mcIF$sp(float)
+scala.runtime.AbstractFunction1: float apply$mcFF$sp(float)
+scala.runtime.AbstractFunction1: long apply$mcLF$sp(float)
+scala.runtime.AbstractFunction1: double apply$mcDF$sp(float)
+scala.runtime.AbstractFunction1: void apply$mcVD$sp(double)
+scala.runtime.AbstractFunction1: boolean apply$mcZD$sp(double)
+scala.runtime.AbstractFunction1: int apply$mcID$sp(double)
+scala.runtime.AbstractFunction1: float apply$mcFD$sp(double)
+scala.runtime.AbstractFunction1: long apply$mcLD$sp(double)
+scala.runtime.AbstractFunction1: double apply$mcDD$sp(double)
+scala.runtime.AbstractFunction1: java.lang.String toString()
+scala.runtime.AbstractFunction1: scala.Function1 compose(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 compose$mcVI$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 compose$mcZI$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 compose$mcII$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 compose$mcFI$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 compose$mcLI$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 compose$mcDI$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 compose$mcVL$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 compose$mcZL$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 compose$mcIL$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 compose$mcFL$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 compose$mcLL$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 compose$mcDL$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 compose$mcVF$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 compose$mcZF$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 compose$mcIF$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 compose$mcFF$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 compose$mcLF$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 compose$mcDF$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 compose$mcVD$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 compose$mcZD$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 compose$mcID$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 compose$mcFD$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 compose$mcLD$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 compose$mcDD$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 andThen(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 andThen$mcVI$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 andThen$mcZI$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 andThen$mcII$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 andThen$mcFI$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 andThen$mcLI$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 andThen$mcDI$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 andThen$mcVL$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 andThen$mcZL$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 andThen$mcIL$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 andThen$mcFL$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 andThen$mcLL$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 andThen$mcDL$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 andThen$mcVF$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 andThen$mcZF$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 andThen$mcIF$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 andThen$mcFF$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 andThen$mcLF$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 andThen$mcDF$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 andThen$mcVD$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 andThen$mcZD$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 andThen$mcID$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 andThen$mcFD$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 andThen$mcLD$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 andThen$mcDD$sp(scala.Function1)
+scala.runtime.AbstractFunction1: AbstractFunction1()
+org.kevoree.framework.aspects.TypeDefinitionAspect$$anonfun$4
+org.kevoree.framework.aspects.TypeDefinitionAspect$$anonfun$4: long serialVersionUID
+org.kevoree.framework.aspects.TypeDefinitionAspect$$anonfun$4: org.kevoree.TypeDefinition pTD$1
+org.kevoree.framework.aspects.TypeDefinitionAspect$$anonfun$4: void <clinit>()
+org.kevoree.framework.aspects.TypeDefinitionAspect$$anonfun$4: boolean apply(org.kevoree.DeployUnit)
+org.kevoree.framework.aspects.TypeDefinitionAspect$$anonfun$4: java.lang.Object apply(java.lang.Object)
+org.kevoree.framework.aspects.TypeDefinitionAspect$$anonfun$4: TypeDefinitionAspect$$anonfun$4(org.kevoree.framework.aspects.TypeDefinitionAspect,org.kevoree.TypeDefinition)
 scala.runtime.AbstractFunction1: void apply$mcVI$sp(int)
 scala.runtime.AbstractFunction1: boolean apply$mcZI$sp(int)
 scala.runtime.AbstractFunction1: int apply$mcII$sp(int)
@@ -21316,11 +21403,11 @@ scala.runtime.AbstractFunction1: scala.Function1 andThen$mcDD$sp(scala.Function1
 scala.runtime.AbstractFunction1: AbstractFunction1()
 org.kevoree.framework.aspects.TypeDefinitionAspect$$anonfun$1$$anonfun$apply$1
 org.kevoree.framework.aspects.TypeDefinitionAspect$$anonfun$1$$anonfun$apply$1: long serialVersionUID
-org.kevoree.framework.aspects.TypeDefinitionAspect$$anonfun$1$$anonfun$apply$1: org.kevoree.PortTypeRef selfPTypeRef$1
+org.kevoree.framework.aspects.TypeDefinitionAspect$$anonfun$1$$anonfun$apply$1: org.kevoree.Operation selfOperation$1
 org.kevoree.framework.aspects.TypeDefinitionAspect$$anonfun$1$$anonfun$apply$1: void <clinit>()
-org.kevoree.framework.aspects.TypeDefinitionAspect$$anonfun$1$$anonfun$apply$1: boolean apply(org.kevoree.PortTypeRef)
+org.kevoree.framework.aspects.TypeDefinitionAspect$$anonfun$1$$anonfun$apply$1: boolean apply(org.kevoree.Operation)
 org.kevoree.framework.aspects.TypeDefinitionAspect$$anonfun$1$$anonfun$apply$1: java.lang.Object apply(java.lang.Object)
-org.kevoree.framework.aspects.TypeDefinitionAspect$$anonfun$1$$anonfun$apply$1: TypeDefinitionAspect$$anonfun$1$$anonfun$apply$1(org.kevoree.framework.aspects.TypeDefinitionAspect$$anonfun$1,org.kevoree.PortTypeRef)
+org.kevoree.framework.aspects.TypeDefinitionAspect$$anonfun$1$$anonfun$apply$1: TypeDefinitionAspect$$anonfun$1$$anonfun$apply$1(org.kevoree.framework.aspects.TypeDefinitionAspect$$anonfun$1,org.kevoree.Operation)
 scala.runtime.AbstractFunction1: void apply$mcVI$sp(int)
 scala.runtime.AbstractFunction1: boolean apply$mcZI$sp(int)
 scala.runtime.AbstractFunction1: int apply$mcII$sp(int)
@@ -21568,11 +21655,95 @@ org.kevoree.framework.aspects.TypedElementAspect$$anonfun$print$1: long serialVe
 org.kevoree.framework.aspects.TypedElementAspect$$anonfun$print$1: org.kevoree.framework.aspects.TypedElementAspect $outer
 org.kevoree.framework.aspects.TypedElementAspect$$anonfun$print$1: char openSep$1
 org.kevoree.framework.aspects.TypedElementAspect$$anonfun$print$1: char closeSep$1
-org.kevoree.framework.aspects.TypedElementAspect$$anonfun$print$1: scala.runtime.ObjectRef res$1
+org.kevoree.framework.aspects.TypedElementAspect$$anonfun$print$1: scala.collection.mutable.StringBuilder res$1
 org.kevoree.framework.aspects.TypedElementAspect$$anonfun$print$1: void <clinit>()
 org.kevoree.framework.aspects.TypedElementAspect$$anonfun$print$1: java.lang.Object apply(org.kevoree.TypedElement)
 org.kevoree.framework.aspects.TypedElementAspect$$anonfun$print$1: java.lang.Object apply(java.lang.Object)
-org.kevoree.framework.aspects.TypedElementAspect$$anonfun$print$1: TypedElementAspect$$anonfun$print$1(org.kevoree.framework.aspects.TypedElementAspect,char,char,scala.runtime.ObjectRef)
+org.kevoree.framework.aspects.TypedElementAspect$$anonfun$print$1: TypedElementAspect$$anonfun$print$1(org.kevoree.framework.aspects.TypedElementAspect,char,char,scala.collection.mutable.StringBuilder)
+scala.runtime.AbstractFunction1: void apply$mcVI$sp(int)
+scala.runtime.AbstractFunction1: boolean apply$mcZI$sp(int)
+scala.runtime.AbstractFunction1: int apply$mcII$sp(int)
+scala.runtime.AbstractFunction1: float apply$mcFI$sp(int)
+scala.runtime.AbstractFunction1: long apply$mcLI$sp(int)
+scala.runtime.AbstractFunction1: double apply$mcDI$sp(int)
+scala.runtime.AbstractFunction1: void apply$mcVL$sp(long)
+scala.runtime.AbstractFunction1: boolean apply$mcZL$sp(long)
+scala.runtime.AbstractFunction1: int apply$mcIL$sp(long)
+scala.runtime.AbstractFunction1: float apply$mcFL$sp(long)
+scala.runtime.AbstractFunction1: long apply$mcLL$sp(long)
+scala.runtime.AbstractFunction1: double apply$mcDL$sp(long)
+scala.runtime.AbstractFunction1: void apply$mcVF$sp(float)
+scala.runtime.AbstractFunction1: boolean apply$mcZF$sp(float)
+scala.runtime.AbstractFunction1: int apply$mcIF$sp(float)
+scala.runtime.AbstractFunction1: float apply$mcFF$sp(float)
+scala.runtime.AbstractFunction1: long apply$mcLF$sp(float)
+scala.runtime.AbstractFunction1: double apply$mcDF$sp(float)
+scala.runtime.AbstractFunction1: void apply$mcVD$sp(double)
+scala.runtime.AbstractFunction1: boolean apply$mcZD$sp(double)
+scala.runtime.AbstractFunction1: int apply$mcID$sp(double)
+scala.runtime.AbstractFunction1: float apply$mcFD$sp(double)
+scala.runtime.AbstractFunction1: long apply$mcLD$sp(double)
+scala.runtime.AbstractFunction1: double apply$mcDD$sp(double)
+scala.runtime.AbstractFunction1: java.lang.String toString()
+scala.runtime.AbstractFunction1: scala.Function1 compose(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 compose$mcVI$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 compose$mcZI$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 compose$mcII$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 compose$mcFI$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 compose$mcLI$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 compose$mcDI$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 compose$mcVL$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 compose$mcZL$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 compose$mcIL$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 compose$mcFL$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 compose$mcLL$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 compose$mcDL$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 compose$mcVF$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 compose$mcZF$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 compose$mcIF$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 compose$mcFF$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 compose$mcLF$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 compose$mcDF$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 compose$mcVD$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 compose$mcZD$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 compose$mcID$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 compose$mcFD$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 compose$mcLD$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 compose$mcDD$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 andThen(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 andThen$mcVI$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 andThen$mcZI$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 andThen$mcII$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 andThen$mcFI$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 andThen$mcLI$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 andThen$mcDI$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 andThen$mcVL$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 andThen$mcZL$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 andThen$mcIL$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 andThen$mcFL$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 andThen$mcLL$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 andThen$mcDL$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 andThen$mcVF$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 andThen$mcZF$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 andThen$mcIF$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 andThen$mcFF$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 andThen$mcLF$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 andThen$mcDF$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 andThen$mcVD$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 andThen$mcZD$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 andThen$mcID$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 andThen$mcFD$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 andThen$mcLD$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 andThen$mcDD$sp(scala.Function1)
+scala.runtime.AbstractFunction1: AbstractFunction1()
+org.kevoree.framework.aspects.OperationAspect$
+org.kevoree.framework.aspects.OperationAspect$: org.kevoree.framework.aspects.OperationAspect$ MODULE$
+org.kevoree.framework.aspects.OperationAspect$: void <clinit>()
+org.kevoree.framework.aspects.OperationAspect$: scala.Option unapply(org.kevoree.framework.aspects.OperationAspect)
+org.kevoree.framework.aspects.OperationAspect$: org.kevoree.framework.aspects.OperationAspect apply(org.kevoree.Operation)
+org.kevoree.framework.aspects.OperationAspect$: java.lang.Object readResolve()
+org.kevoree.framework.aspects.OperationAspect$: java.lang.Object apply(java.lang.Object)
+org.kevoree.framework.aspects.OperationAspect$: OperationAspect$()
 scala.runtime.AbstractFunction1: void apply$mcVI$sp(int)
 scala.runtime.AbstractFunction1: boolean apply$mcZI$sp(int)
 scala.runtime.AbstractFunction1: int apply$mcII$sp(int)
@@ -26146,11 +26317,11 @@ org.kevoree.framework.KevoreeXmiHelper$: void saveStream(java.io.OutputStream,or
 org.kevoree.framework.KevoreeXmiHelper$: KevoreeXmiHelper$()
 org.kevoree.framework.aspects.TypeDefinitionAspect$$anonfun$3$$anonfun$apply$3
 org.kevoree.framework.aspects.TypeDefinitionAspect$$anonfun$3$$anonfun$apply$3: long serialVersionUID
-org.kevoree.framework.aspects.TypeDefinitionAspect$$anonfun$3$$anonfun$apply$3: org.kevoree.DeployUnit selfDU$1
+org.kevoree.framework.aspects.TypeDefinitionAspect$$anonfun$3$$anonfun$apply$3: org.kevoree.PortTypeRef selfRTypeRef$1
 org.kevoree.framework.aspects.TypeDefinitionAspect$$anonfun$3$$anonfun$apply$3: void <clinit>()
-org.kevoree.framework.aspects.TypeDefinitionAspect$$anonfun$3$$anonfun$apply$3: boolean apply(org.kevoree.DeployUnit)
+org.kevoree.framework.aspects.TypeDefinitionAspect$$anonfun$3$$anonfun$apply$3: boolean apply(org.kevoree.PortTypeRef)
 org.kevoree.framework.aspects.TypeDefinitionAspect$$anonfun$3$$anonfun$apply$3: java.lang.Object apply(java.lang.Object)
-org.kevoree.framework.aspects.TypeDefinitionAspect$$anonfun$3$$anonfun$apply$3: TypeDefinitionAspect$$anonfun$3$$anonfun$apply$3(org.kevoree.framework.aspects.TypeDefinitionAspect$$anonfun$3,org.kevoree.DeployUnit)
+org.kevoree.framework.aspects.TypeDefinitionAspect$$anonfun$3$$anonfun$apply$3: TypeDefinitionAspect$$anonfun$3$$anonfun$apply$3(org.kevoree.framework.aspects.TypeDefinitionAspect$$anonfun$3,org.kevoree.PortTypeRef)
 scala.runtime.AbstractFunction1: void apply$mcVI$sp(int)
 scala.runtime.AbstractFunction1: boolean apply$mcZI$sp(int)
 scala.runtime.AbstractFunction1: int apply$mcII$sp(int)
@@ -26899,10 +27070,176 @@ scala.runtime.AbstractFunction1: scala.Function1 andThen$mcDD$sp(scala.Function1
 scala.runtime.AbstractFunction1: AbstractFunction1()
 org.kevoree.framework.ChannelException
 org.kevoree.framework.ChannelException: ChannelException()
+org.kevoree.framework.aspects.OperationAspect$$anonfun$1
+org.kevoree.framework.aspects.OperationAspect$$anonfun$1: long serialVersionUID
+org.kevoree.framework.aspects.OperationAspect$$anonfun$1: org.kevoree.framework.aspects.OperationAspect $outer
+org.kevoree.framework.aspects.OperationAspect$$anonfun$1: void <clinit>()
+org.kevoree.framework.aspects.OperationAspect$$anonfun$1: boolean apply(org.kevoree.Parameter)
+org.kevoree.framework.aspects.OperationAspect$$anonfun$1: java.lang.Object apply(java.lang.Object)
+org.kevoree.framework.aspects.OperationAspect$$anonfun$1: OperationAspect$$anonfun$1(org.kevoree.framework.aspects.OperationAspect)
+scala.runtime.AbstractFunction1: void apply$mcVI$sp(int)
+scala.runtime.AbstractFunction1: boolean apply$mcZI$sp(int)
+scala.runtime.AbstractFunction1: int apply$mcII$sp(int)
+scala.runtime.AbstractFunction1: float apply$mcFI$sp(int)
+scala.runtime.AbstractFunction1: long apply$mcLI$sp(int)
+scala.runtime.AbstractFunction1: double apply$mcDI$sp(int)
+scala.runtime.AbstractFunction1: void apply$mcVL$sp(long)
+scala.runtime.AbstractFunction1: boolean apply$mcZL$sp(long)
+scala.runtime.AbstractFunction1: int apply$mcIL$sp(long)
+scala.runtime.AbstractFunction1: float apply$mcFL$sp(long)
+scala.runtime.AbstractFunction1: long apply$mcLL$sp(long)
+scala.runtime.AbstractFunction1: double apply$mcDL$sp(long)
+scala.runtime.AbstractFunction1: void apply$mcVF$sp(float)
+scala.runtime.AbstractFunction1: boolean apply$mcZF$sp(float)
+scala.runtime.AbstractFunction1: int apply$mcIF$sp(float)
+scala.runtime.AbstractFunction1: float apply$mcFF$sp(float)
+scala.runtime.AbstractFunction1: long apply$mcLF$sp(float)
+scala.runtime.AbstractFunction1: double apply$mcDF$sp(float)
+scala.runtime.AbstractFunction1: void apply$mcVD$sp(double)
+scala.runtime.AbstractFunction1: boolean apply$mcZD$sp(double)
+scala.runtime.AbstractFunction1: int apply$mcID$sp(double)
+scala.runtime.AbstractFunction1: float apply$mcFD$sp(double)
+scala.runtime.AbstractFunction1: long apply$mcLD$sp(double)
+scala.runtime.AbstractFunction1: double apply$mcDD$sp(double)
+scala.runtime.AbstractFunction1: java.lang.String toString()
+scala.runtime.AbstractFunction1: scala.Function1 compose(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 compose$mcVI$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 compose$mcZI$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 compose$mcII$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 compose$mcFI$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 compose$mcLI$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 compose$mcDI$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 compose$mcVL$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 compose$mcZL$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 compose$mcIL$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 compose$mcFL$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 compose$mcLL$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 compose$mcDL$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 compose$mcVF$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 compose$mcZF$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 compose$mcIF$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 compose$mcFF$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 compose$mcLF$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 compose$mcDF$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 compose$mcVD$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 compose$mcZD$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 compose$mcID$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 compose$mcFD$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 compose$mcLD$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 compose$mcDD$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 andThen(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 andThen$mcVI$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 andThen$mcZI$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 andThen$mcII$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 andThen$mcFI$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 andThen$mcLI$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 andThen$mcDI$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 andThen$mcVL$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 andThen$mcZL$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 andThen$mcIL$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 andThen$mcFL$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 andThen$mcLL$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 andThen$mcDL$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 andThen$mcVF$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 andThen$mcZF$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 andThen$mcIF$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 andThen$mcFF$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 andThen$mcLF$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 andThen$mcDF$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 andThen$mcVD$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 andThen$mcZD$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 andThen$mcID$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 andThen$mcFD$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 andThen$mcLD$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 andThen$mcDD$sp(scala.Function1)
+scala.runtime.AbstractFunction1: AbstractFunction1()
 org.kevoree.framework.connector.ConnectorFactory$
 org.kevoree.framework.connector.ConnectorFactory$: org.kevoree.framework.connector.ConnectorFactory$ MODULE$
 org.kevoree.framework.connector.ConnectorFactory$: void <clinit>()
 org.kevoree.framework.connector.ConnectorFactory$: ConnectorFactory$()
+org.kevoree.framework.aspects.TypeDefinitionAspect$$anonfun$4$$anonfun$apply$4
+org.kevoree.framework.aspects.TypeDefinitionAspect$$anonfun$4$$anonfun$apply$4: long serialVersionUID
+org.kevoree.framework.aspects.TypeDefinitionAspect$$anonfun$4$$anonfun$apply$4: org.kevoree.DeployUnit selfDU$1
+org.kevoree.framework.aspects.TypeDefinitionAspect$$anonfun$4$$anonfun$apply$4: void <clinit>()
+org.kevoree.framework.aspects.TypeDefinitionAspect$$anonfun$4$$anonfun$apply$4: boolean apply(org.kevoree.DeployUnit)
+org.kevoree.framework.aspects.TypeDefinitionAspect$$anonfun$4$$anonfun$apply$4: java.lang.Object apply(java.lang.Object)
+org.kevoree.framework.aspects.TypeDefinitionAspect$$anonfun$4$$anonfun$apply$4: TypeDefinitionAspect$$anonfun$4$$anonfun$apply$4(org.kevoree.framework.aspects.TypeDefinitionAspect$$anonfun$4,org.kevoree.DeployUnit)
+scala.runtime.AbstractFunction1: void apply$mcVI$sp(int)
+scala.runtime.AbstractFunction1: boolean apply$mcZI$sp(int)
+scala.runtime.AbstractFunction1: int apply$mcII$sp(int)
+scala.runtime.AbstractFunction1: float apply$mcFI$sp(int)
+scala.runtime.AbstractFunction1: long apply$mcLI$sp(int)
+scala.runtime.AbstractFunction1: double apply$mcDI$sp(int)
+scala.runtime.AbstractFunction1: void apply$mcVL$sp(long)
+scala.runtime.AbstractFunction1: boolean apply$mcZL$sp(long)
+scala.runtime.AbstractFunction1: int apply$mcIL$sp(long)
+scala.runtime.AbstractFunction1: float apply$mcFL$sp(long)
+scala.runtime.AbstractFunction1: long apply$mcLL$sp(long)
+scala.runtime.AbstractFunction1: double apply$mcDL$sp(long)
+scala.runtime.AbstractFunction1: void apply$mcVF$sp(float)
+scala.runtime.AbstractFunction1: boolean apply$mcZF$sp(float)
+scala.runtime.AbstractFunction1: int apply$mcIF$sp(float)
+scala.runtime.AbstractFunction1: float apply$mcFF$sp(float)
+scala.runtime.AbstractFunction1: long apply$mcLF$sp(float)
+scala.runtime.AbstractFunction1: double apply$mcDF$sp(float)
+scala.runtime.AbstractFunction1: void apply$mcVD$sp(double)
+scala.runtime.AbstractFunction1: boolean apply$mcZD$sp(double)
+scala.runtime.AbstractFunction1: int apply$mcID$sp(double)
+scala.runtime.AbstractFunction1: float apply$mcFD$sp(double)
+scala.runtime.AbstractFunction1: long apply$mcLD$sp(double)
+scala.runtime.AbstractFunction1: double apply$mcDD$sp(double)
+scala.runtime.AbstractFunction1: java.lang.String toString()
+scala.runtime.AbstractFunction1: scala.Function1 compose(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 compose$mcVI$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 compose$mcZI$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 compose$mcII$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 compose$mcFI$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 compose$mcLI$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 compose$mcDI$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 compose$mcVL$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 compose$mcZL$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 compose$mcIL$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 compose$mcFL$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 compose$mcLL$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 compose$mcDL$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 compose$mcVF$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 compose$mcZF$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 compose$mcIF$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 compose$mcFF$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 compose$mcLF$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 compose$mcDF$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 compose$mcVD$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 compose$mcZD$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 compose$mcID$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 compose$mcFD$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 compose$mcLD$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 compose$mcDD$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 andThen(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 andThen$mcVI$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 andThen$mcZI$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 andThen$mcII$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 andThen$mcFI$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 andThen$mcLI$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 andThen$mcDI$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 andThen$mcVL$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 andThen$mcZL$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 andThen$mcIL$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 andThen$mcFL$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 andThen$mcLL$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 andThen$mcDL$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 andThen$mcVF$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 andThen$mcZF$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 andThen$mcIF$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 andThen$mcFF$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 andThen$mcLF$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 andThen$mcDF$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 andThen$mcVD$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 andThen$mcZD$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 andThen$mcID$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 andThen$mcFD$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 andThen$mcLD$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 andThen$mcDD$sp(scala.Function1)
+scala.runtime.AbstractFunction1: AbstractFunction1()
 org.kevoree.framework.FileHelper$
 org.kevoree.framework.FileHelper$: org.kevoree.framework.FileHelper$ MODULE$
 org.kevoree.framework.FileHelper$: void <clinit>()
@@ -27586,6 +27923,7 @@ org.kevoree.framework.KevoreePlatformHelper
 org.kevoree.framework.KevoreePlatformHelper: java.lang.String getProperty(org.kevoree.ContainerRoot,java.lang.String,java.lang.String)
 org.kevoree.framework.KevoreePlatformHelper: void updateNodeLinkProp(org.kevoree.ContainerRoot,java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String,int)
 org.kevoree.framework.aspects.KevoreeAspects
+org.kevoree.framework.aspects.KevoreeAspects: org.kevoree.framework.aspects.OperationAspect operationAspect(org.kevoree.Operation)
 org.kevoree.framework.aspects.KevoreeAspects: org.kevoree.framework.aspects.DeployUnitAspect deployUnitAspect(org.kevoree.DeployUnit)
 org.kevoree.framework.aspects.KevoreeAspects: org.kevoree.framework.aspects.DictionaryTypeAspect dictionaryTypeAspect(org.kevoree.DictionaryType)
 org.kevoree.framework.aspects.KevoreeAspects: org.kevoree.framework.aspects.DictionaryAspect dictionaryAspect(org.kevoree.Dictionary)
@@ -27606,6 +27944,26 @@ org.kevoree.framework.FileHelper: void foreachLine(scala.Function1)
 org.kevoree.framework.FileHelper: void deleteAll()
 org.kevoree.framework.FileHelper: void deleteFile$1(java.io.File)
 org.kevoree.framework.FileHelper: FileHelper(java.io.File)
+org.kevoree.framework.aspects.OperationAspect
+org.kevoree.framework.aspects.OperationAspect: org.kevoree.Operation selfOperation
+org.kevoree.framework.aspects.OperationAspect: scala.Function1 andThen(scala.Function1)
+org.kevoree.framework.aspects.OperationAspect: scala.Function1 compose(scala.Function1)
+org.kevoree.framework.aspects.OperationAspect: scala.collection.Iterator productIterator()
+org.kevoree.framework.aspects.OperationAspect: scala.collection.Iterator productElements()
+org.kevoree.framework.aspects.OperationAspect: org.kevoree.Operation copy$default$1()
+org.kevoree.framework.aspects.OperationAspect: org.kevoree.Operation selfOperation()
+org.kevoree.framework.aspects.OperationAspect: boolean contractChanged(org.kevoree.Operation)
+org.kevoree.framework.aspects.OperationAspect: org.kevoree.framework.aspects.OperationAspect copy(org.kevoree.Operation)
+org.kevoree.framework.aspects.OperationAspect: int hashCode()
+org.kevoree.framework.aspects.OperationAspect: java.lang.String toString()
+org.kevoree.framework.aspects.OperationAspect: boolean equals(java.lang.Object)
+org.kevoree.framework.aspects.OperationAspect: java.lang.String productPrefix()
+org.kevoree.framework.aspects.OperationAspect: int productArity()
+org.kevoree.framework.aspects.OperationAspect: java.lang.Object productElement(int)
+org.kevoree.framework.aspects.OperationAspect: boolean canEqual(java.lang.Object)
+org.kevoree.framework.aspects.OperationAspect: boolean gd1$1(org.kevoree.Operation)
+org.kevoree.framework.aspects.OperationAspect: boolean gd2$1(org.kevoree.Operation)
+org.kevoree.framework.aspects.OperationAspect: OperationAspect(org.kevoree.Operation)
 org.kevoree.framework.message.Message
 org.kevoree.framework.message.Message: java.lang.String destNodeName
 org.kevoree.framework.message.Message: java.lang.String destChannelName
@@ -29253,6 +29611,89 @@ org.kevoree.framework.aspects.ChannelAspect: java.lang.Object productElement(int
 org.kevoree.framework.aspects.ChannelAspect: boolean canEqual(java.lang.Object)
 org.kevoree.framework.aspects.ChannelAspect: boolean gd1$1(org.kevoree.Channel)
 org.kevoree.framework.aspects.ChannelAspect: ChannelAspect(org.kevoree.Channel)
+org.kevoree.framework.aspects.OperationAspect$$anonfun$1$$anonfun$apply$1
+org.kevoree.framework.aspects.OperationAspect$$anonfun$1$$anonfun$apply$1: long serialVersionUID
+org.kevoree.framework.aspects.OperationAspect$$anonfun$1$$anonfun$apply$1: org.kevoree.Parameter otherParam$1
+org.kevoree.framework.aspects.OperationAspect$$anonfun$1$$anonfun$apply$1: void <clinit>()
+org.kevoree.framework.aspects.OperationAspect$$anonfun$1$$anonfun$apply$1: boolean apply(org.kevoree.Parameter)
+org.kevoree.framework.aspects.OperationAspect$$anonfun$1$$anonfun$apply$1: java.lang.Object apply(java.lang.Object)
+org.kevoree.framework.aspects.OperationAspect$$anonfun$1$$anonfun$apply$1: OperationAspect$$anonfun$1$$anonfun$apply$1(org.kevoree.framework.aspects.OperationAspect$$anonfun$1,org.kevoree.Parameter)
+scala.runtime.AbstractFunction1: void apply$mcVI$sp(int)
+scala.runtime.AbstractFunction1: boolean apply$mcZI$sp(int)
+scala.runtime.AbstractFunction1: int apply$mcII$sp(int)
+scala.runtime.AbstractFunction1: float apply$mcFI$sp(int)
+scala.runtime.AbstractFunction1: long apply$mcLI$sp(int)
+scala.runtime.AbstractFunction1: double apply$mcDI$sp(int)
+scala.runtime.AbstractFunction1: void apply$mcVL$sp(long)
+scala.runtime.AbstractFunction1: boolean apply$mcZL$sp(long)
+scala.runtime.AbstractFunction1: int apply$mcIL$sp(long)
+scala.runtime.AbstractFunction1: float apply$mcFL$sp(long)
+scala.runtime.AbstractFunction1: long apply$mcLL$sp(long)
+scala.runtime.AbstractFunction1: double apply$mcDL$sp(long)
+scala.runtime.AbstractFunction1: void apply$mcVF$sp(float)
+scala.runtime.AbstractFunction1: boolean apply$mcZF$sp(float)
+scala.runtime.AbstractFunction1: int apply$mcIF$sp(float)
+scala.runtime.AbstractFunction1: float apply$mcFF$sp(float)
+scala.runtime.AbstractFunction1: long apply$mcLF$sp(float)
+scala.runtime.AbstractFunction1: double apply$mcDF$sp(float)
+scala.runtime.AbstractFunction1: void apply$mcVD$sp(double)
+scala.runtime.AbstractFunction1: boolean apply$mcZD$sp(double)
+scala.runtime.AbstractFunction1: int apply$mcID$sp(double)
+scala.runtime.AbstractFunction1: float apply$mcFD$sp(double)
+scala.runtime.AbstractFunction1: long apply$mcLD$sp(double)
+scala.runtime.AbstractFunction1: double apply$mcDD$sp(double)
+scala.runtime.AbstractFunction1: java.lang.String toString()
+scala.runtime.AbstractFunction1: scala.Function1 compose(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 compose$mcVI$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 compose$mcZI$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 compose$mcII$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 compose$mcFI$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 compose$mcLI$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 compose$mcDI$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 compose$mcVL$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 compose$mcZL$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 compose$mcIL$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 compose$mcFL$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 compose$mcLL$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 compose$mcDL$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 compose$mcVF$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 compose$mcZF$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 compose$mcIF$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 compose$mcFF$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 compose$mcLF$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 compose$mcDF$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 compose$mcVD$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 compose$mcZD$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 compose$mcID$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 compose$mcFD$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 compose$mcLD$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 compose$mcDD$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 andThen(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 andThen$mcVI$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 andThen$mcZI$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 andThen$mcII$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 andThen$mcFI$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 andThen$mcLI$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 andThen$mcDI$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 andThen$mcVL$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 andThen$mcZL$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 andThen$mcIL$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 andThen$mcFL$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 andThen$mcLL$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 andThen$mcDL$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 andThen$mcVF$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 andThen$mcZF$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 andThen$mcIF$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 andThen$mcFF$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 andThen$mcLF$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 andThen$mcDF$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 andThen$mcVD$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 andThen$mcZD$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 andThen$mcID$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 andThen$mcFD$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 andThen$mcLD$sp(scala.Function1)
+scala.runtime.AbstractFunction1: scala.Function1 andThen$mcDD$sp(scala.Function1)
+scala.runtime.AbstractFunction1: AbstractFunction1()
 org.kevoree.framework.aspects.PortAspect$$anonfun$getProxyURI$1
 org.kevoree.framework.aspects.PortAspect$$anonfun$getProxyURI$1: long serialVersionUID
 org.kevoree.framework.aspects.PortAspect$$anonfun$getProxyURI$1: org.kevoree.framework.aspects.PortAspect $outer
@@ -29517,6 +29958,7 @@ org.kevoree.framework.aspects.KevoreeAspects$: org.kevoree.framework.aspects.Cha
 org.kevoree.framework.aspects.KevoreeAspects$: org.kevoree.framework.aspects.DictionaryAspect dictionaryAspect(org.kevoree.Dictionary)
 org.kevoree.framework.aspects.KevoreeAspects$: org.kevoree.framework.aspects.DictionaryTypeAspect dictionaryTypeAspect(org.kevoree.DictionaryType)
 org.kevoree.framework.aspects.KevoreeAspects$: org.kevoree.framework.aspects.DeployUnitAspect deployUnitAspect(org.kevoree.DeployUnit)
+org.kevoree.framework.aspects.KevoreeAspects$: org.kevoree.framework.aspects.OperationAspect operationAspect(org.kevoree.Operation)
 org.kevoree.framework.aspects.KevoreeAspects$: KevoreeAspects$()
 org.kevoree.framework.merger.KevoreePlatformMerger$$anonfun$merge$1$$anonfun$apply$2
 org.kevoree.framework.merger.KevoreePlatformMerger$$anonfun$merge$1$$anonfun$apply$2: long serialVersionUID
@@ -34670,6 +35112,7 @@ net.lag.logging.Formatter$$anonfun$formatStackTrace$1: long serialVersionUID
 org.kevoree.framework.aspects.TypeDefinitionAspect$$anonfun$1: long serialVersionUID
 org.kevoree.framework.aspects.TypeDefinitionAspect$$anonfun$3: long serialVersionUID
 org.kevoree.framework.aspects.TypeDefinitionAspect$$anonfun$2: long serialVersionUID
+org.kevoree.framework.aspects.TypeDefinitionAspect$$anonfun$4: long serialVersionUID
 scala.xml.Utility$$anonfun$trimProper$1: long serialVersionUID
 org.eclipse.emf.ecore.impl.EObjectImpl: int EDELIVER
 org.eclipse.emf.ecore.impl.EObjectImpl: int EDYNAMIC_CLASS
@@ -38557,6 +39000,7 @@ org.eclipse.emf.ecore.util.NotifyingInternalEListImpl: long serialVersionUID
 org.eclipse.emf.common.notify.impl.NotifyingListImpl: long serialVersionUID
 org.eclipse.emf.common.util.BasicEList: long serialVersionUID
 scala.collection.mutable.HashMap: long serialVersionUID
+org.kevoree.framework.aspects.OperationAspect$$anonfun$1: long serialVersionUID
 org.osgi.framework.BundlePermissionCollection: long serialVersionUID
 scala.Function14$$anonfun$curried$1$$anonfun$apply$1: long serialVersionUID
 net.lag.configgy.ConfigParser$$anonfun$string$1: long serialVersionUID
@@ -38690,6 +39134,7 @@ org.restlet.routing.Filter: int SKIP
 org.restlet.routing.Filter: int STOP
 org.restlet.Restlet: java.lang.String UNABLE_TO_START
 scala.Function22$$anonfun$tupled$1: long serialVersionUID
+org.kevoree.framework.aspects.TypeDefinitionAspect$$anonfun$4$$anonfun$apply$4: long serialVersionUID
 scala.util.automata.SubsetConstruction$$anonfun$determinize$2$$anonfun$apply$1: long serialVersionUID
 scala.collection.mutable.HashTable$$anonfun$serializeTo$1: long serialVersionUID
 org.eclipse.emf.common.util.DelegatingEList: long serialVersionUID
@@ -39073,11 +39518,11 @@ org.eclipse.emf.ecore.impl.BasicEObjectImpl: int EVIRTUAL_GET
 org.eclipse.emf.ecore.impl.BasicEObjectImpl: int EVIRTUAL_IS_SET
 org.eclipse.emf.ecore.impl.BasicEObjectImpl: boolean $assertionsDisabled
 scala.collection.MapLike$DefaultValuesIterable$$anonfun$foreach$4: long serialVersionUID
-scala.collection.MapLike$DefaultValuesIterable$$anonfun$foreach$3: long serialVersionUID
 org.restlet.routing.Filter: int CONTINUE
 org.restlet.routing.Filter: int SKIP
 org.restlet.routing.Filter: int STOP
 org.restlet.Restlet: java.lang.String UNABLE_TO_START
+scala.collection.MapLike$DefaultValuesIterable$$anonfun$foreach$3: long serialVersionUID
 scala.actors.Reactor$$anonfun$seq$1: long serialVersionUID
 scala.util.parsing.json.Lexer$$anonfun$charSeq$6$$anonfun$apply$25: long serialVersionUID
 scala.xml.TextBuffer$$anonfun$append$1: long serialVersionUID
@@ -40807,6 +41252,7 @@ org.kevoree.kompare.sub.InitNodeKompare$$anonfun$getInitNodeAdaptationModel$1$$a
 scala.Function$$anonfun$untupled$1: long serialVersionUID
 scala.Function$$anonfun$untupled$2: long serialVersionUID
 scala.Function$$anonfun$untupled$3: long serialVersionUID
+org.kevoree.framework.aspects.OperationAspect$$anonfun$1$$anonfun$apply$1: long serialVersionUID
 scala.Function$$anonfun$untupled$4: long serialVersionUID
 org.kevoree.kompare.sub.InitNodeKompare$$anonfun$getInitNodeAdaptationModel$1$$anonfun$apply$2: long serialVersionUID
 scala.collection.JavaConversions$JListWrapper$$anonfun$insertAll$1: long serialVersionUID
@@ -41811,6 +42257,7 @@ net.lag.logging.Formatter$$anonfun$formatStackTrace$1
 org.kevoree.framework.aspects.TypeDefinitionAspect$$anonfun$1
 org.kevoree.framework.aspects.TypeDefinitionAspect$$anonfun$3
 org.kevoree.framework.aspects.TypeDefinitionAspect$$anonfun$2
+org.kevoree.framework.aspects.TypeDefinitionAspect$$anonfun$4
 scala.xml.Utility$$anonfun$trimProper$1
 scala.Tuple10$
 scala.util.grammar.EmptyHedgeRHS$
@@ -42264,6 +42711,7 @@ scala.collection.JavaConversions$JEnumerationWrapper
 scala.collection.mutable.ImmutableSetAdaptor
 org.kevoree.framework.aspects.TypedElementAspect$$anonfun$print$1
 scala.actors.threadpool.SynchronousQueue
+org.kevoree.framework.aspects.OperationAspect$
 scala.None$
 org.kevoree.framework.KevoreePlatformHelper$$anonfun$10
 scala.util.parsing.json.Lexer$$anonfun$charSeq$4$$anonfun$apply$23
@@ -43489,6 +43937,7 @@ scala.collection.SeqLike$$anonfun$diff$1
 scala.actors.remote.Locator$
 scala.collection.JavaConversions$MutableSeqWrapper$
 scala.reflect.generic.Trees$TypeDef$
+org.kevoree.framework.aspects.OperationAspect$$anonfun$1
 scala.Function14$$anonfun$curried$1$$anonfun$apply$1
 net.lag.configgy.ConfigParser$$anonfun$string$1
 scala.io.BytePickle$$anonfun$upair$1
@@ -43531,6 +43980,7 @@ net.lag.logging.Logger$$anonfun$clearHandlers$1$$anonfun$apply$6
 scala.collection.immutable.$colon$colon
 scala.Function2$mcFLD$sp$$anonfun$tupled$mcFLD$sp$1
 scala.Function22$$anonfun$tupled$1
+org.kevoree.framework.aspects.TypeDefinitionAspect$$anonfun$4$$anonfun$apply$4
 scala.util.automata.SubsetConstruction$$anonfun$determinize$2$$anonfun$apply$1
 scala.Either$RightProjection$
 scala.collection.mutable.HashTable$$anonfun$serializeTo$1
@@ -43740,6 +44190,7 @@ scala.testing.Show$$anonfun$test$1
 scala.reflect.TypeField$
 scala.Function2$mcZIL$sp$$anonfun$curried$mcZIL$sp$1
 scala.Function2$mcVLL$sp$$anonfun$curried$mcVLL$sp$1
+org.kevoree.framework.aspects.OperationAspect
 scala.util.parsing.combinator.Parsers$$anonfun$success$1
 scala.xml.Document
 scala.actors.remote.Apply0$
@@ -44166,6 +44617,7 @@ org.kevoree.kompare.sub.InitNodeKompare$$anonfun$getInitNodeAdaptationModel$1$$a
 scala.Function$$anonfun$untupled$1
 scala.Function$$anonfun$untupled$2
 scala.Function$$anonfun$untupled$3
+org.kevoree.framework.aspects.OperationAspect$$anonfun$1$$anonfun$apply$1
 scala.Function$$anonfun$untupled$4
 org.kevoree.kompare.sub.InitNodeKompare$$anonfun$getInitNodeAdaptationModel$1$$anonfun$apply$2
 scala.collection.JavaConversions$JListWrapper$$anonfun$insertAll$1
