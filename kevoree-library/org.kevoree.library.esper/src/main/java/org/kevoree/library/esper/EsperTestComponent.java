@@ -30,7 +30,7 @@ import org.kevoree.framework.MessagePort;
 })
 
 @Library(name = "Kevoree::Esper")
-@ComponentType(name="Esper Test")
+@ComponentType
 public class EsperTestComponent extends AbstractComponentType {
 
 
