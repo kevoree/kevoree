@@ -27,30 +27,30 @@ import org.kevoree.kompare.tests._
 
 class ComponentMoveTest extends AssertionsForJUnit with KompareSuite {
 
-  var component : ModelKompareService = null
+  var component: ModelKompareService = null
 
   @Before def initialize() {
     component = new KevoreeKompareBean
   }
 
   @Test def verifyNoComponentMoved() {
-    var kompareModel = component.kompare(model("test_instance/ComponentMove2.kev"),model("test_instance/ComponentMove1.kev"),  "node1")
+    var kompareModel = component.kompare(model("test_instance/ComponentMove2.kev"), model("test_instance/ComponentMove1.kev"), "node1")
 
-    //   kompareModel.print
-    assert (kompareModel.getAdaptations.size == 0)
-	kompareModel = component.kompare(model("test_instance/ComponentMove2.kev"),model("test_instance/ComponentMove1.kev"),  "node2")
-	assert (kompareModel.getAdaptations.size == 0)
-   // error("NOT IMPLEMENTED YET");
+       kompareModel.print
+    assert(kompareModel.getAdaptations.size == 0)
+    kompareModel = component.kompare(model("test_instance/ComponentMove2.kev"), model("test_instance/ComponentMove1.kev"), "node2")
+    assert(kompareModel.getAdaptations.size == 0)
+    // error("NOT IMPLEMENTED YET");
   }
 
   @Test def verifyComponentTypeRemoved() {
     //var kompareModel = component.kompare(model("test_ports/MinusProvidedMessagePort.art2"), model("test_ports/base.art2"), "nodeA")
-   // error("NOT IMPLEMENTED YET");
+    // error("NOT IMPLEMENTED YET");
   }
 
   @Test def verifyComponentTypeRenamed() {
     //var kompareModel = component.kompare(model("test_ports/MinusProvidedMessagePort.art2"), model("test_ports/base.art2"), "nodeA")
-   // error("NOT IMPLEMENTED YET");
+    // error("NOT IMPLEMENTED YET");
   }
 
 }

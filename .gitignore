@@ -1,3 +1,6 @@
+*/.svn/*
+**/.svn/*
+/.svn/
 target/
 .DS_Store
 .classpath

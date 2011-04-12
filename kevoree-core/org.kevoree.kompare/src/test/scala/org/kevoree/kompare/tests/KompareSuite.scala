@@ -30,63 +30,79 @@ import scala.collection.JavaConversions._
 trait KompareSuite extends JUnitSuite {
 
   /* UTILITY METHOD */
-  def model(url:String):ContainerRoot={
-    if(this.getClass.getClassLoader.getResource(url) == null){
+  def model(url: String): ContainerRoot = {
+    if (this.getClass.getClassLoader.getResource(url) == null) {
       println("Warning File not found for test !!!")
     }
     KevoreeXmiHelper.load(this.getClass.getClassLoader.getResource(url).getPath)
   }
 
-  implicit def utilityKompareModel(self : AdaptationModel) = RichAdaptationModel(self)
+  implicit def utilityKompareModel(self: AdaptationModel) = RichAdaptationModel(self)
+
+  implicit def richRoot(self: ContainerRoot) = RichContainerRoot(self)
 
   def emptyModel = KevoreeFactory.eINSTANCE.createContainerRoot
-  
+
 }
 
-case class RichAdaptationModel(self : AdaptationModel) {
+case class RichAdaptationModel(self: AdaptationModel) {
 
-  def verifySize(size : Int) = {
+  def verifySize(size: Int) = {
     assert(self.getAdaptations.size == size)
   }
 
-  def shouldContain[A](c:Class[A],refName:String)={
+  def shouldContain[A](c: Class[A], refName: String) = {
     assert(
-      self.getAdaptations.exists(adaptation=> {
-          adaptation match {
-            case e : InstanceAdaptation if(adaptation.getClass.getSimpleName.contains(c.getSimpleName)) => e.getRef.getName == refName
-            case e : TypeAdaptation if(adaptation.getClass.getSimpleName.contains(c.getSimpleName)) => e.getRef.getName == refName
-            case _ => false
-          }
-        } )
-    )
-  }
-
-  def shouldContainSize[A](c:Class[A],nb:Int)={
-    assert(
-      self.getAdaptations.filter(adaptation=> adaptation.getClass.getSimpleName.contains(c.getSimpleName)).size == nb
-    )
-  }
-
-
-  def shouldNotContain(c : Class[_])={
-    assert(
-      self.getAdaptations.forall(adaptation=> !adaptation.getClass.getSimpleName.contains(c.getSimpleName) )
-    )
-  }
-
-  def print ={
-    self.getAdaptations.toArray.foreach{adapt=>
-      println(adapt.getClass.getName)
-      adapt match {
-        case i : TypeAdaptation => println(i.getRef.getName)
-        case i : InstanceAdaptation => println(i.getRef.getName)
-        case i : BindingAdaptation => {
-            println(i.getRef.getHub.getName+"->"+i.getRef.getPort.getPortTypeRef.getName+"-"+i.getRef.getPort.eContainer.asInstanceOf[NamedElement].getName)
+      self.getAdaptations.exists(adaptation => {
+        adaptation match {
+          case e: InstanceAdaptation if (adaptation.getClass.getSimpleName.contains(c.getSimpleName)) => e.getRef.getName == refName
+          case e: TypeAdaptation if (adaptation.getClass.getSimpleName.contains(c.getSimpleName)) => e.getRef.getName == refName
+          case _ => false
         }
-        case _ =>
-      }
+      })
+    )
+  }
+
+  def shouldContainSize[A](c: Class[A], nb: Int) = {
+    assert(
+      self.getAdaptations.filter(adaptation => adaptation.getClass.getSimpleName.contains(c.getSimpleName)).size == nb
+    )
+  }
+
+
+  def shouldNotContain(c: Class[_]) = {
+    assert(
+      self.getAdaptations.forall(adaptation => !adaptation.getClass.getSimpleName.contains(c.getSimpleName))
+    )
+  }
+
+  def print = {
+
+    println("Adaptations")
+    self.getAdaptations.toArray.foreach {
+      adapt =>
+        println(adapt.getClass.getName)
+        adapt match {
+          case i: UpdateDeployUnit => println("=>" + i.getRef.getUnitName)
+          case i: TypeAdaptation => println("=>" + i.getRef.getName)
+          case i: InstanceAdaptation => println("=>" + i.getRef.getName)
+          case i: BindingAdaptation => {
+            println("=>" + i.getRef.getHub.getName + "->" + i.getRef.getPort.getPortTypeRef.getName + "-" + i.getRef.getPort.eContainer.asInstanceOf[NamedElement].getName)
+          }
+          case _ =>
+        }
 
     }
   }
+}
+
+
+case class RichContainerRoot(self: ContainerRoot) {
+
+  def setLowerHashCode: ContainerRoot = {
+    self.getDeployUnits.foreach(du => du.setHashcode(0 + ""))
+    self
+  }
+
 
 }

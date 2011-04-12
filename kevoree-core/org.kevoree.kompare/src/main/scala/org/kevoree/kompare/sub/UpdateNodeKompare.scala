@@ -144,8 +144,12 @@ trait UpdateNodeKompare extends AbstractKompare with UpdateChannelKompare {
           ac => ac.isModelEquals(uc)
         }) match {
         case Some(c) => {
+
+         // println("check instance "+c)
             //CHECK IF INSTANCE TYPE DEFINITION IS NOT UPDATED
-            if (uc.getTypeDefinition.isUpdated(c.getTypeDefinition)) {
+            if (c.getTypeDefinition.isUpdated(uc.getTypeDefinition)) {
+
+           //   println("is update")
               val adaptcmd = KevoreeAdaptationFactory.eINSTANCE.createUpdateInstance
               adaptcmd.setRef(uc)
               adaptationModel.getAdaptations.add(adaptcmd)
