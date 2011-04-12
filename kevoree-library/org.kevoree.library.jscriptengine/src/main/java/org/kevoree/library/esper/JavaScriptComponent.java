@@ -69,8 +69,9 @@ public class JavaScriptComponent extends AbstractComponentType {
 	}
 
 	@Port(name = "inport")
-	public void port1(Object message) {
+	public void port1(Object msg) {
 		try {
+			  jsEngine.put("msg", msg);
 			Object o = jsEngine.eval(code);
 			out(o);
 			booleanout(o);
