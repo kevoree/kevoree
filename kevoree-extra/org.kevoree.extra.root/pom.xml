@@ -5,7 +5,7 @@
     <groupId>org.kevoree.extra</groupId>
     <artifactId>org.kevoree.extra.root</artifactId>
     <packaging>pom</packaging>
-    <version>1.1.0-BETA1</version>
+    <version>1.1.0-BETA2</version>
     <name>Kevoree :: Extra :: Root</name>
     <url>https://github.com/dukeboard/kevoree</url>
 

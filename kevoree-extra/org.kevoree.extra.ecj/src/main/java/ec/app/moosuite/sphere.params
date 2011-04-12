@@ -1,0 +1,19 @@
+# Copyright 2010 by Sean Luke and George Mason University
+# Licensed under the Academic Free License version 3.0
+# See the file "LICENSE" for more information
+
+parent.0 = moosuite.params
+
+eval.problem.type = sphere
+pop.subpop.0.species.min-gene = -1000
+pop.subpop.0.species.max-gene = 1000
+#for greater genome-size, 100 generations will not suffice.
+#e.g. for genome-size = 10, try generations >= 1000
+pop.subpop.0.species.genome-size = 2
+pop.subpop.0.species.mutation-prob = 0.2
+pop.supbop.0.species.bounded = true
+
+# www.tik.ee.ethz.ch/sop/publicationListFiles/zlt2001a.pdf uses both 2 and 3 objectives
+#
+pop.subpop.0.species.fitness.num-objectives = 2
+#pop.subpop.0.species.fitness.num-objectives = 3

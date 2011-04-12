@@ -42,7 +42,10 @@ import org.kevoree.framework.MessagePort;
 })
 @Requires({
     @RequiredPort(name = "Out", type = PortType.MESSAGE)
+       , @RequiredPort(name = "Out2", type = PortType.MESSAGE)
 })
+
+
 @DictionaryType({
     @DictionaryAttribute(name = "chaine", optional = false)
 })
@@ -56,7 +59,7 @@ public class ComponentDemoContinuousIntegration extends AbstractComponentType {
 	
     @Start
     public void start() {
-        System.out.println("ComponentDemoContinuousIntegration::start() V5");
+        System.out.println("ComponentDemoContinuousIntegration::start() V7");
         for (String key : this.getDictionary().keySet()) {
             System.out.println("key=" + key + "=" + this.getDictionary().get(key));
         }

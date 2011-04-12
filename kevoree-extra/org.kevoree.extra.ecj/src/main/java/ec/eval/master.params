@@ -1,0 +1,65 @@
+# Copyright 2006 by Sean Luke and George Mason University
+# Licensed under the Academic Free License version 3.0
+# See the file "LICENSE" for more information
+
+# Note that the slave shares this file with the master, because they
+# have a number of parameters held in common.  See slave.params.  
+# You don't have to do this, but it's a convenient way to keep the
+# master and slave consistent with one another.
+
+
+
+
+# When eval.masterproblem is turned on, the system assumes
+# use of the master/slave evaluator.
+eval.masterproblem = ec.eval.MasterProblem
+
+
+# Turning this on will provide synchronization
+# information for debugging the master/slave evaluator
+eval.masterproblem.debug-info = false
+
+
+# How large should each slave's job queue be?  ECJ will
+# keep slaves' TCP/IP streams filled with jobs even if the
+# slaves haven't processed them yet, which has a significant
+# effect on network performance.  Increasing this number is
+# likely to be more efficient.  Note that once a job is
+# committed to a slave, a brand new slave coming on-line cannot
+# take it -- it'll have to sit and wait, which isn't particularly
+# efficient.  At the very least, it's probably helpful to have 2
+# or 3 jobs in the queue.
+eval.masterproblem.max-jobs-per-slave = 3
+
+
+# How large should our job be?  If you're doing ordinary
+# non-coevolutionary evolution, you can specify how many individuals
+# should be placed into a job (maximum) and sent to the slave
+# to be evaluated at one time, using the below parameter.
+# If your individuals are small in size, this can significantly
+# improve the network bandwidth.  If the individuals are large
+# in size, it'll have no real effect.  Furthermore, if your
+# slave is running in 'evolve' mode, this parameter will determine
+# the maximum (and typical) size of the "population" the slave is
+# evolving.  This works for both steady-state and generational evolution,
+# but if you're doing coevolution, the job size is ignored -- instead
+# the job will consist of the individuals to be coevolved together.
+eval.masterproblem.job-size = 100
+
+
+# This compresses the streams between the master and slaves.
+# Compression requires the zlib library.
+# See the ECJ main webpage or http://www.jcraft.com/jzlib/
+
+eval.compression=true
+
+
+# This defines the socket port that the master listens in
+# for incomoing Slaves to connect.
+eval.master.port = 15000
+
+
+# You do NOT want to set   eval.i-am-slave=true   in this file,
+# because then the master will think it's a slave.  Instead, set
+# that parameter in the slave.params file.
+

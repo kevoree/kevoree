@@ -5,12 +5,12 @@
     <artifactId>org.kevoree.extra.osgi.sysgen</artifactId>
     <packaging>maven-plugin</packaging>
     <name>Kevoree :: Extra :: OSGi System Package Gen</name>
-    <version>1.1.0-BETA1</version>
+    <version>1.1.0-BETA2</version>
 
     <parent>
         <artifactId>org.kevoree.extra.root</artifactId>
         <groupId>org.kevoree.extra</groupId>
-       <version>1.1.0-BETA1</version>
+       <version>1.1.0-BETA2</version>
         <relativePath>../org.kevoree.extra.root/pom.xml</relativePath>
     </parent>
     

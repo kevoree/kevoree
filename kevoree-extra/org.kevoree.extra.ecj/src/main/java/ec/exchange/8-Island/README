@@ -1,0 +1,57 @@
+Ellis, Gilligans, Coney, Fantasy, Rhode, Survivor, Temptation,
+and Treasure Island.  Survivor Island will be the server.
+
+To run this example, launch eight processes, each with
+the appropriate .params file for that island.  
+
+If you're running them on the same machines, you can
+simply do:
+
+java ec.Evolve -file survivor.params
+
+java ec.Evolve -file ellis.params
+
+java ec.Evolve -file gilligans.params
+
+java ec.Evolve -file coney.params
+
+java ec.Evolve -file fantasy.params
+
+java ec.Evolve -file rhode.params
+
+java ec.Evolve -file temptation.params
+
+java ec.Evolve -file treasure.params
+
+
+If you're running the processes on different machines,  
+you'll need to modify the server address
+so the machines know where Survivor Island (the server) is located:
+
+java ec.Evolve -file survivor.params 
+
+java ec.Evolve -file ellis.params \
+    -p exch.server-addr=address.of.survivor.com
+
+java ec.Evolve -file gilligans.params \
+    -p exch.server-addr=address.of.survivor.com
+
+java ec.Evolve -file coney.params \
+    -p exch.server-addr=address.of.survivor.com
+
+java ec.Evolve -file fantasy.params \
+    -p exch.server-addr=address.of.survivor.com
+
+java ec.Evolve -file rhode.params \
+    -p exch.server-addr=address.of.survivor.com
+
+java ec.Evolve -file temptation.params \
+    -p exch.server-addr=address.of.survivor.com
+
+java ec.Evolve -file treasure.params \
+    -p exch.server-addr=address.of.survivor.com
+
+
+The parameter files have been set up to define different
+socket ports for each client; though this is only necessary
+if they're running on the same computer.
