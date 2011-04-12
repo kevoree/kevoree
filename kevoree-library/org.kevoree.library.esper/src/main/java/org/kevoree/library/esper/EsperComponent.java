@@ -70,7 +70,7 @@ public class EsperComponent extends AbstractComponentType  implements UpdateList
     	
         Configuration cepConfig = new Configuration();
         for (String s : eventypes){
-            cepConfig.addEventType(s, s);
+            cepConfig.addEventType(s.split(":")[0], s.split(":")[1]);
         	
         }
         cep = EPServiceProviderManager.getProvider("myCEPEngine", cepConfig);
