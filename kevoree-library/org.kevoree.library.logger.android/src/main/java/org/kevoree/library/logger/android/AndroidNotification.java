@@ -28,9 +28,9 @@ public class AndroidNotification extends AbstractComponentType {
 
     @Start
     public void start() {
-        System.out.println("Hello ART2 Android v2.0 !!! ");
+        System.out.println("Hello Kevoree Android v2.0 !!! ");
 
-        KevoreeAndroidService uiService = UIServiceHandler.getUIService((Bundle) this.getDictionary().get("osgi.bundle"));
+        uiService = UIServiceHandler.getUIService((Bundle) this.getDictionary().get("osgi.bundle"));
 
 
         view = new TextView(uiService.getRootActivity());
@@ -46,11 +46,18 @@ public class AndroidNotification extends AbstractComponentType {
 
     @Port(name = "log")
     public void triggerLog(final Object logMsg) {
+
+        System.out.println("uiService"+uiService) ;
+        System.out.println("getRootActivity"+uiService.getRootActivity()) ;
+
         uiService.getRootActivity().runOnUiThread(new Runnable() {
 
             @Override
             public void run() {
-                Toast.makeText(uiService.getRootActivity(), "log="+logMsg.toString(), 2000);
+
+                view.setText(view.getText()+"\n"+logMsg);
+
+               // Toast.makeText(uiService.getRootActivity(), "log="+logMsg.toString(), 2000);
             }
         });
     }

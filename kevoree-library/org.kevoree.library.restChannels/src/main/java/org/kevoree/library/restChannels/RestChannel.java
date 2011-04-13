@@ -115,7 +115,7 @@ public class RestChannel extends AbstractChannelFragment {
                         remoteChannelResource.post(representation);
                     }
                 } catch (Exception e) {
-                    System.err.println("Fail to send to remote channel via =>"+lastUrl);
+                    System.err.println("Fail to send to remote channel via =>" + lastUrl);
                     System.err.println("Reply not implemented => message lost !!!");
                 }
                 return null;
@@ -123,11 +123,11 @@ public class RestChannel extends AbstractChannelFragment {
 
             public String buildURL() {
                 String ip = KevoreePlatformHelper.getProperty(modelHandlerService.getLastModel(), remoteNodeName, org.kevoree.framework.Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP());
-                if (ip == null) {
+                if (ip == null || ip.equals("")) {
                     ip = "127.0.0.1";
                 }
                 String port = KevoreePlatformHelper.getProperty(modelHandlerService.getLastModel(), remoteNodeName, org.kevoree.framework.Constants.KEVOREE_PLATFORM_REMOTE_NODE_MODELSYNCH_PORT());
-                if (port == null) {
+                if (port == null || port.equals("")) {
                     port = "8000";
                 }
                 return "http://" + ip + ":" + port + "/channels/" + remoteChannelName;

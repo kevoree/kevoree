@@ -277,6 +277,9 @@ public class AndroidFelixService extends Service {
                     felixFramework.start();
 
                     //TODO UI IDSCONNECT GESTURE
+
+                    System.out.println("KevoreeActivity="+KevoreeActivity.last);
+
                     felixFramework.getBundleContext().registerService(KevoreeAndroidService.class.getName(), KevoreeActivity.last, new Properties());
                     
                      /*

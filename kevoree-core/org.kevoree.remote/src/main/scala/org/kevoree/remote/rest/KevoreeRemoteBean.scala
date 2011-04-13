@@ -25,7 +25,7 @@ import org.restlet.Server
 import org.restlet.data.Protocol
 import scala.collection.JavaConversions._
 
-class KevoreeRemoteBean {
+class KevoreeRemoteBean2 {
 
  // System.setProperty("org.restlet.engine.loggerFacadeClass", "org.restlet.ext.slf4j.Slf4jLoggerFacade")
   
@@ -35,28 +35,29 @@ class KevoreeRemoteBean {
 
   println("Kevoree Remote Port => "+port)
 
-  var serverhttp = component.getServers().add(Protocol.HTTP, port);
+  component.getServers.add(Protocol.HTTP, port);
 
   Handler.setDefaultHost(component.getDefaultHost)
 
-  component.getDefaultHost().attach("/model/current",classOf[ModelHandlerResource])
+  component.getDefaultHost.attach("/model/current",classOf[ModelHandlerResource])
 
   if (System.getProperty("org.kevoree.remote.provisioning") != null) {
-    component.getClients().add(Protocol.FILE);
-    component.getContext().getParameters().add("timeToLive", "0");
-    component.getDefaultHost().attach("/provisioning",new FileServerApplication(System.getProperty("org.kevoree.remote.provisioning")))
+    component.getClients.add(Protocol.FILE);
+    component.getContext.getParameters.add("timeToLive", "0");
+
+   // component.getDefaultHost.attach("/provisioning",new FileServerApplication(System.getProperty("org.kevoree.remote.provisioning")))
     System.out.println("Provisioning server started => /provisioning");
   } else {
     component.getDefaultHost.attachDefault(classOf[ErrorResource])
   }
 
-  def start()={
+  def start(){
     component.start();
   }
-  def stop()={
+  def stop(){
     //serverhttp.stop
     component.getDefaultHost.detach(classOf[ModelHandlerResource])
-    component.stop
+    component.stop()
     
   }
 

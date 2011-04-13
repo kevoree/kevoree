@@ -3084,9 +3084,7 @@ org.restlet.resource.ServerResource: void commit()
 org.restlet.resource.ServerResource: org.restlet.representation.Representation delete()
 org.restlet.resource.ServerResource: org.restlet.representation.Representation delete(org.restlet.representation.Variant)
 org.restlet.resource.ServerResource: org.restlet.representation.Representation describeVariants()
-org.restlet.resource.ServerResource: void doCatch(java.lang.Throwable)
 org.restlet.resource.ServerResource: org.restlet.representation.Representation doConditionalHandle()
-org.restlet.resource.ServerResource: void doError(org.restlet.data.Status)
 org.restlet.resource.ServerResource: org.restlet.representation.RepresentationInfo doGetInfo()
 org.restlet.resource.ServerResource: org.restlet.representation.RepresentationInfo doGetInfo(org.restlet.representation.Variant)
 org.restlet.resource.ServerResource: org.restlet.representation.Representation doHandle()
@@ -3154,8 +3152,6 @@ org.restlet.resource.UniformResource: org.restlet.Request request
 org.restlet.resource.UniformResource: org.restlet.Response response
 org.restlet.resource.UniformResource: UniformResource()
 org.restlet.resource.UniformResource: void doCatch(java.lang.Throwable)
-org.restlet.resource.UniformResource: void doError(org.restlet.data.Status)
-org.restlet.resource.UniformResource: void doError(org.restlet.data.Status,java.lang.String)
 org.restlet.resource.UniformResource: void doInit()
 org.restlet.resource.UniformResource: void doRelease()
 org.restlet.resource.UniformResource: java.util.Set getAllowedMethods()
@@ -3184,11 +3180,9 @@ org.restlet.resource.UniformResource: org.restlet.data.Reference getReference()
 org.restlet.resource.UniformResource: org.restlet.data.Reference getReferrerRef()
 org.restlet.resource.UniformResource: org.restlet.Request getRequest()
 org.restlet.resource.UniformResource: java.util.Map getRequestAttributes()
-org.restlet.resource.UniformResource: java.util.List getRequestCacheDirectives()
 org.restlet.resource.UniformResource: org.restlet.representation.Representation getRequestEntity()
 org.restlet.resource.UniformResource: org.restlet.Response getResponse()
 org.restlet.resource.UniformResource: java.util.Map getResponseAttributes()
-org.restlet.resource.UniformResource: java.util.List getResponseCacheDirectives()
 org.restlet.resource.UniformResource: org.restlet.representation.Representation getResponseEntity()
 org.restlet.resource.UniformResource: org.restlet.data.Reference getRootRef()
 org.restlet.resource.UniformResource: org.restlet.data.ServerInfo getServerInfo()
@@ -3197,7 +3191,6 @@ org.restlet.resource.UniformResource: org.restlet.service.StatusService getStatu
 org.restlet.resource.UniformResource: org.restlet.representation.Representation handle()
 org.restlet.resource.UniformResource: void init(org.restlet.Context,org.restlet.Request,org.restlet.Response)
 org.restlet.resource.UniformResource: boolean isConfidential()
-org.restlet.resource.UniformResource: boolean isLoggable()
 org.restlet.resource.UniformResource: void release()
 org.restlet.resource.UniformResource: void setApplication(org.restlet.Application)
 org.restlet.resource.UniformResource: void setRequest(org.restlet.Request)
@@ -3241,7 +3234,6 @@ org.restlet.resource.ClientResource: org.restlet.Response createResponse(org.res
 org.restlet.resource.ClientResource: org.restlet.representation.Representation delete()
 org.restlet.resource.ClientResource: java.lang.Object delete(java.lang.Class)
 org.restlet.resource.ClientResource: org.restlet.representation.Representation delete(org.restlet.data.MediaType)
-org.restlet.resource.ClientResource: void doError(org.restlet.data.Status)
 org.restlet.resource.ClientResource: void doRelease()
 org.restlet.resource.ClientResource: void finalize()
 org.restlet.resource.ClientResource: org.restlet.representation.Representation get()
@@ -3291,7 +3283,6 @@ org.restlet.resource.ClientResource: void setCookies(org.restlet.util.Series)
 org.restlet.resource.ClientResource: void setFollowingRedirects(boolean)
 org.restlet.resource.ClientResource: void setHostRef(org.restlet.data.Reference)
 org.restlet.resource.ClientResource: void setHostRef(java.lang.String)
-org.restlet.resource.ClientResource: void setLoggable(boolean)
 org.restlet.resource.ClientResource: void setMethod(org.restlet.data.Method)
 org.restlet.resource.ClientResource: void setNext(org.restlet.Uniform)
 org.restlet.resource.ClientResource: void setOnResponse(org.restlet.Uniform)
@@ -3307,14 +3298,13 @@ org.restlet.resource.ClientResource: void setRetryAttempts(int)
 org.restlet.resource.ClientResource: void setRetryDelay(long)
 org.restlet.resource.ClientResource: void setRetryOnError(boolean)
 org.restlet.resource.ClientResource: java.lang.Object wrap(java.lang.Class)
+org.restlet.resource.ClientResource: org.restlet.Response access$000(org.restlet.resource.ClientResource,org.restlet.Request)
 org.restlet.resource.UniformResource: org.restlet.Application application
 org.restlet.resource.UniformResource: org.restlet.Context context
 org.restlet.resource.UniformResource: org.restlet.Request request
 org.restlet.resource.UniformResource: org.restlet.Response response
 org.restlet.resource.UniformResource: UniformResource()
 org.restlet.resource.UniformResource: void doCatch(java.lang.Throwable)
-org.restlet.resource.UniformResource: void doError(org.restlet.data.Status)
-org.restlet.resource.UniformResource: void doError(org.restlet.data.Status,java.lang.String)
 org.restlet.resource.UniformResource: void doInit()
 org.restlet.resource.UniformResource: void doRelease()
 org.restlet.resource.UniformResource: java.util.Set getAllowedMethods()
@@ -3343,11 +3333,9 @@ org.restlet.resource.UniformResource: org.restlet.data.Reference getReference()
 org.restlet.resource.UniformResource: org.restlet.data.Reference getReferrerRef()
 org.restlet.resource.UniformResource: org.restlet.Request getRequest()
 org.restlet.resource.UniformResource: java.util.Map getRequestAttributes()
-org.restlet.resource.UniformResource: java.util.List getRequestCacheDirectives()
 org.restlet.resource.UniformResource: org.restlet.representation.Representation getRequestEntity()
 org.restlet.resource.UniformResource: org.restlet.Response getResponse()
 org.restlet.resource.UniformResource: java.util.Map getResponseAttributes()
-org.restlet.resource.UniformResource: java.util.List getResponseCacheDirectives()
 org.restlet.resource.UniformResource: org.restlet.representation.Representation getResponseEntity()
 org.restlet.resource.UniformResource: org.restlet.data.Reference getRootRef()
 org.restlet.resource.UniformResource: org.restlet.data.ServerInfo getServerInfo()
@@ -3356,7 +3344,6 @@ org.restlet.resource.UniformResource: org.restlet.service.StatusService getStatu
 org.restlet.resource.UniformResource: org.restlet.representation.Representation handle()
 org.restlet.resource.UniformResource: void init(org.restlet.Context,org.restlet.Request,org.restlet.Response)
 org.restlet.resource.UniformResource: boolean isConfidential()
-org.restlet.resource.UniformResource: boolean isLoggable()
 org.restlet.resource.UniformResource: void release()
 org.restlet.resource.UniformResource: void setApplication(org.restlet.Application)
 org.restlet.resource.UniformResource: void setRequest(org.restlet.Request)
@@ -3406,7 +3393,6 @@ org.restlet.resource.Finder: org.restlet.resource.ServerResource find(org.restle
 org.restlet.resource.Finder: java.lang.Class getTargetClass()
 org.restlet.resource.Finder: void handle(org.restlet.Request,org.restlet.Response)
 org.restlet.resource.Finder: void setTargetClass(java.lang.Class)
-org.restlet.resource.Finder: java.lang.String toString()
 org.restlet.Restlet: java.lang.String UNABLE_TO_START
 org.restlet.Restlet: java.lang.String author
 org.restlet.Restlet: org.restlet.Context context
@@ -3441,8 +3427,6 @@ org.restlet.resource.UniformResource: org.restlet.Request request
 org.restlet.resource.UniformResource: org.restlet.Response response
 org.restlet.resource.UniformResource: UniformResource()
 org.restlet.resource.UniformResource: void doCatch(java.lang.Throwable)
-org.restlet.resource.UniformResource: void doError(org.restlet.data.Status)
-org.restlet.resource.UniformResource: void doError(org.restlet.data.Status,java.lang.String)
 org.restlet.resource.UniformResource: void doInit()
 org.restlet.resource.UniformResource: void doRelease()
 org.restlet.resource.UniformResource: java.util.Set getAllowedMethods()
@@ -3471,11 +3455,9 @@ org.restlet.resource.UniformResource: org.restlet.data.Reference getReference()
 org.restlet.resource.UniformResource: org.restlet.data.Reference getReferrerRef()
 org.restlet.resource.UniformResource: org.restlet.Request getRequest()
 org.restlet.resource.UniformResource: java.util.Map getRequestAttributes()
-org.restlet.resource.UniformResource: java.util.List getRequestCacheDirectives()
 org.restlet.resource.UniformResource: org.restlet.representation.Representation getRequestEntity()
 org.restlet.resource.UniformResource: org.restlet.Response getResponse()
 org.restlet.resource.UniformResource: java.util.Map getResponseAttributes()
-org.restlet.resource.UniformResource: java.util.List getResponseCacheDirectives()
 org.restlet.resource.UniformResource: org.restlet.representation.Representation getResponseEntity()
 org.restlet.resource.UniformResource: org.restlet.data.Reference getRootRef()
 org.restlet.resource.UniformResource: org.restlet.data.ServerInfo getServerInfo()
@@ -3484,7 +3466,6 @@ org.restlet.resource.UniformResource: org.restlet.service.StatusService getStatu
 org.restlet.resource.UniformResource: org.restlet.representation.Representation handle()
 org.restlet.resource.UniformResource: void init(org.restlet.Context,org.restlet.Request,org.restlet.Response)
 org.restlet.resource.UniformResource: boolean isConfidential()
-org.restlet.resource.UniformResource: boolean isLoggable()
 org.restlet.resource.UniformResource: void release()
 org.restlet.resource.UniformResource: void setApplication(org.restlet.Application)
 org.restlet.resource.UniformResource: void setRequest(org.restlet.Request)
@@ -3515,7 +3496,6 @@ org.restlet.resource.Finder: org.restlet.resource.ServerResource find(org.restle
 org.restlet.resource.Finder: java.lang.Class getTargetClass()
 org.restlet.resource.Finder: void handle(org.restlet.Request,org.restlet.Response)
 org.restlet.resource.Finder: void setTargetClass(java.lang.Class)
-org.restlet.resource.Finder: java.lang.String toString()
 org.restlet.Restlet: java.lang.String UNABLE_TO_START
 org.restlet.Restlet: java.lang.String author
 org.restlet.Restlet: org.restlet.Context context
@@ -31925,9 +31905,7 @@ org.restlet.resource.ServerResource: void commit()
 org.restlet.resource.ServerResource: org.restlet.representation.Representation delete()
 org.restlet.resource.ServerResource: org.restlet.representation.Representation delete(org.restlet.representation.Variant)
 org.restlet.resource.ServerResource: org.restlet.representation.Representation describeVariants()
-org.restlet.resource.ServerResource: void doCatch(java.lang.Throwable)
 org.restlet.resource.ServerResource: org.restlet.representation.Representation doConditionalHandle()
-org.restlet.resource.ServerResource: void doError(org.restlet.data.Status)
 org.restlet.resource.ServerResource: org.restlet.representation.RepresentationInfo doGetInfo()
 org.restlet.resource.ServerResource: org.restlet.representation.RepresentationInfo doGetInfo(org.restlet.representation.Variant)
 org.restlet.resource.ServerResource: org.restlet.representation.Representation doHandle()
@@ -31995,8 +31973,6 @@ org.restlet.resource.UniformResource: org.restlet.Request request
 org.restlet.resource.UniformResource: org.restlet.Response response
 org.restlet.resource.UniformResource: UniformResource()
 org.restlet.resource.UniformResource: void doCatch(java.lang.Throwable)
-org.restlet.resource.UniformResource: void doError(org.restlet.data.Status)
-org.restlet.resource.UniformResource: void doError(org.restlet.data.Status,java.lang.String)
 org.restlet.resource.UniformResource: void doInit()
 org.restlet.resource.UniformResource: void doRelease()
 org.restlet.resource.UniformResource: java.util.Set getAllowedMethods()
@@ -32025,11 +32001,9 @@ org.restlet.resource.UniformResource: org.restlet.data.Reference getReference()
 org.restlet.resource.UniformResource: org.restlet.data.Reference getReferrerRef()
 org.restlet.resource.UniformResource: org.restlet.Request getRequest()
 org.restlet.resource.UniformResource: java.util.Map getRequestAttributes()
-org.restlet.resource.UniformResource: java.util.List getRequestCacheDirectives()
 org.restlet.resource.UniformResource: org.restlet.representation.Representation getRequestEntity()
 org.restlet.resource.UniformResource: org.restlet.Response getResponse()
 org.restlet.resource.UniformResource: java.util.Map getResponseAttributes()
-org.restlet.resource.UniformResource: java.util.List getResponseCacheDirectives()
 org.restlet.resource.UniformResource: org.restlet.representation.Representation getResponseEntity()
 org.restlet.resource.UniformResource: org.restlet.data.Reference getRootRef()
 org.restlet.resource.UniformResource: org.restlet.data.ServerInfo getServerInfo()
@@ -32038,7 +32012,6 @@ org.restlet.resource.UniformResource: org.restlet.service.StatusService getStatu
 org.restlet.resource.UniformResource: org.restlet.representation.Representation handle()
 org.restlet.resource.UniformResource: void init(org.restlet.Context,org.restlet.Request,org.restlet.Response)
 org.restlet.resource.UniformResource: boolean isConfidential()
-org.restlet.resource.UniformResource: boolean isLoggable()
 org.restlet.resource.UniformResource: void release()
 org.restlet.resource.UniformResource: void setApplication(org.restlet.Application)
 org.restlet.resource.UniformResource: void setRequest(org.restlet.Request)
@@ -32055,7 +32028,7 @@ org.kevoree.remote.rest.FileServerApplication: org.restlet.Restlet createInbound
 org.kevoree.remote.rest.FileServerApplication: FileServerApplication(java.lang.String)
 org.restlet.Application: java.lang.ThreadLocal CURRENT
 org.restlet.Application: java.lang.Class finderClass
-org.restlet.Application: org.restlet.engine.application.ApplicationHelper helper
+org.restlet.Application: org.restlet.engine.RestletHelper helper
 org.restlet.Application: java.util.List roles
 org.restlet.Application: org.restlet.Restlet inboundRoot
 org.restlet.Application: org.restlet.Restlet outboundRoot
@@ -32069,9 +32042,8 @@ org.restlet.Application: org.restlet.Restlet createOutboundRoot()
 org.restlet.Application: org.restlet.service.ConnectorService getConnectorService()
 org.restlet.Application: org.restlet.service.ConverterService getConverterService()
 org.restlet.Application: org.restlet.service.DecoderService getDecoderService()
-org.restlet.Application: org.restlet.service.EncoderService getEncoderService()
 org.restlet.Application: java.lang.Class getFinderClass()
-org.restlet.Application: org.restlet.engine.application.ApplicationHelper getHelper()
+org.restlet.Application: org.restlet.engine.RestletHelper getHelper()
 org.restlet.Application: org.restlet.Restlet getInboundRoot()
 org.restlet.Application: org.restlet.service.MetadataService getMetadataService()
 org.restlet.Application: org.restlet.Restlet getOutboundRoot()
@@ -32083,17 +32055,16 @@ org.restlet.Application: org.restlet.service.StatusService getStatusService()
 org.restlet.Application: org.restlet.service.TaskService getTaskService()
 org.restlet.Application: org.restlet.service.TunnelService getTunnelService()
 org.restlet.Application: void handle(org.restlet.Request,org.restlet.Response)
+org.restlet.Application: void setOutboundRoot(java.lang.Class)
 org.restlet.Application: void setClientRoot(java.lang.Class)
 org.restlet.Application: void setConnectorService(org.restlet.service.ConnectorService)
 org.restlet.Application: void setContext(org.restlet.Context)
 org.restlet.Application: void setConverterService(org.restlet.service.ConverterService)
 org.restlet.Application: void setDecoderService(org.restlet.service.DecoderService)
-org.restlet.Application: void setEncoderService(org.restlet.service.EncoderService)
 org.restlet.Application: void setFinderClass(java.lang.Class)
 org.restlet.Application: void setInboundRoot(java.lang.Class)
 org.restlet.Application: void setInboundRoot(org.restlet.Restlet)
 org.restlet.Application: void setMetadataService(org.restlet.service.MetadataService)
-org.restlet.Application: void setOutboundRoot(java.lang.Class)
 org.restlet.Application: void setOutboundRoot(org.restlet.Restlet)
 org.restlet.Application: void setRangeService(org.restlet.service.RangeService)
 org.restlet.Application: void setRoles(java.util.List)
@@ -32173,9 +32144,7 @@ org.restlet.resource.ServerResource: void commit()
 org.restlet.resource.ServerResource: org.restlet.representation.Representation delete()
 org.restlet.resource.ServerResource: org.restlet.representation.Representation delete(org.restlet.representation.Variant)
 org.restlet.resource.ServerResource: org.restlet.representation.Representation describeVariants()
-org.restlet.resource.ServerResource: void doCatch(java.lang.Throwable)
 org.restlet.resource.ServerResource: org.restlet.representation.Representation doConditionalHandle()
-org.restlet.resource.ServerResource: void doError(org.restlet.data.Status)
 org.restlet.resource.ServerResource: org.restlet.representation.RepresentationInfo doGetInfo()
 org.restlet.resource.ServerResource: org.restlet.representation.RepresentationInfo doGetInfo(org.restlet.representation.Variant)
 org.restlet.resource.ServerResource: org.restlet.representation.Representation doHandle()
@@ -32243,8 +32212,6 @@ org.restlet.resource.UniformResource: org.restlet.Request request
 org.restlet.resource.UniformResource: org.restlet.Response response
 org.restlet.resource.UniformResource: UniformResource()
 org.restlet.resource.UniformResource: void doCatch(java.lang.Throwable)
-org.restlet.resource.UniformResource: void doError(org.restlet.data.Status)
-org.restlet.resource.UniformResource: void doError(org.restlet.data.Status,java.lang.String)
 org.restlet.resource.UniformResource: void doInit()
 org.restlet.resource.UniformResource: void doRelease()
 org.restlet.resource.UniformResource: java.util.Set getAllowedMethods()
@@ -32273,11 +32240,9 @@ org.restlet.resource.UniformResource: org.restlet.data.Reference getReference()
 org.restlet.resource.UniformResource: org.restlet.data.Reference getReferrerRef()
 org.restlet.resource.UniformResource: org.restlet.Request getRequest()
 org.restlet.resource.UniformResource: java.util.Map getRequestAttributes()
-org.restlet.resource.UniformResource: java.util.List getRequestCacheDirectives()
 org.restlet.resource.UniformResource: org.restlet.representation.Representation getRequestEntity()
 org.restlet.resource.UniformResource: org.restlet.Response getResponse()
 org.restlet.resource.UniformResource: java.util.Map getResponseAttributes()
-org.restlet.resource.UniformResource: java.util.List getResponseCacheDirectives()
 org.restlet.resource.UniformResource: org.restlet.representation.Representation getResponseEntity()
 org.restlet.resource.UniformResource: org.restlet.data.Reference getRootRef()
 org.restlet.resource.UniformResource: org.restlet.data.ServerInfo getServerInfo()
@@ -32286,7 +32251,6 @@ org.restlet.resource.UniformResource: org.restlet.service.StatusService getStatu
 org.restlet.resource.UniformResource: org.restlet.representation.Representation handle()
 org.restlet.resource.UniformResource: void init(org.restlet.Context,org.restlet.Request,org.restlet.Response)
 org.restlet.resource.UniformResource: boolean isConfidential()
-org.restlet.resource.UniformResource: boolean isLoggable()
 org.restlet.resource.UniformResource: void release()
 org.restlet.resource.UniformResource: void setApplication(org.restlet.Application)
 org.restlet.resource.UniformResource: void setRequest(org.restlet.Request)
@@ -39449,8 +39413,6 @@ org.jgrapht.graph.MaskSubgraph: boolean $assertionsDisabled
 org.jgrapht.graph.MaskSubgraph: java.lang.String UNMODIFIABLE
 org.kevoree.framework.aspects.PortAspect$$anonfun$removeAndUnbind$1: long serialVersionUID
 org.kevoree.framework.KevoreePlatformHelper$$anonfun$getProperty$1: long serialVersionUID
-org.restlet.service.EncoderService: int ANY_SIZE
-org.restlet.service.EncoderService: int DEFAULT_MINIMUM_SIZE
 scala.util.parsing.json.Lexer$$anonfun$token$2$$anonfun$apply$5: long serialVersionUID
 scala.util.parsing.json.Lexer$$anonfun$token$2$$anonfun$apply$6: long serialVersionUID
 scala.actors.Actor$$anonfun$unlinkFrom$1: long serialVersionUID
@@ -40620,7 +40582,7 @@ org.eclipse.emf.common.notify.impl.NotificationImpl: int IS_SET_CHANGE_INDEX
 scala.Function2$mcIIL$sp$$anonfun$curried$mcIIL$sp$1$$anonfun$apply$10: long serialVersionUID
 org.jgrapht.experimental.dag.DirectedAcyclicGraph$VisitedHashSetImpl: long serialVersionUID
 org.restlet.engine.io.IoUtils: int BUFFER_SIZE
-org.restlet.engine.io.IoUtils: int TIMEOUT_MS
+org.restlet.engine.io.IoUtils: int IO_TIMEOUT
 net.lag.configgy.ConfigParser$$anonfun$assignment$3: long serialVersionUID
 net.lag.configgy.ConfigParser$$anonfun$assignment$1: long serialVersionUID
 scala.collection.immutable.PagedSeq$$anonfun$fromReader$1: long serialVersionUID
@@ -42305,6 +42267,7 @@ org.eclipse.emf.ecore.impl.BasicEObjectImpl: boolean $assertionsDisabled
 org.kevoree.tools.marShell.lexer.KevsLexical$$anonfun$token$11: long serialVersionUID
 org.kevoree.tools.marShell.lexer.KevsLexical$$anonfun$token$10: long serialVersionUID
 scala.collection.MapLike$DefaultValuesIterable$$anonfun$foreach$4: long serialVersionUID
+org.restlet.engine.application.Encoder: int ENCODE_ALL_SIZES
 org.restlet.routing.Filter: int CONTINUE
 org.restlet.routing.Filter: int SKIP
 org.restlet.routing.Filter: int STOP
@@ -44272,10 +44235,6 @@ org.eclipse.emf.ecore.util.EcoreEList: long serialVersionUID
 org.eclipse.emf.ecore.util.NotifyingInternalEListImpl: long serialVersionUID
 org.eclipse.emf.common.notify.impl.NotifyingListImpl: long serialVersionUID
 org.eclipse.emf.common.util.BasicEList: long serialVersionUID
-org.restlet.routing.Filter: int CONTINUE
-org.restlet.routing.Filter: int SKIP
-org.restlet.routing.Filter: int STOP
-org.restlet.Restlet: java.lang.String UNABLE_TO_START
 org.eclipse.emf.ecore.util.AbstractSequentialInternalEList: long serialVersionUID
 org.kevoree.tools.marShell.interpreter.sub.KevsRemoveNodeInterpreter$$anonfun$interpret$1: long serialVersionUID
 org.kevoree.tools.marShell.interpreter.sub.KevsRemoveNodeInterpreter$$anonfun$interpret$2: long serialVersionUID
