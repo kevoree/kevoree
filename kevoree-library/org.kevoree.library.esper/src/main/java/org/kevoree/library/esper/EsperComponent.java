@@ -10,6 +10,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import net.sf.cglib.reflect.FastClass;
+
 import org.kevoree.annotation.ComponentType;
 import org.kevoree.annotation.DictionaryAttribute;
 import org.kevoree.annotation.DictionaryType;
@@ -68,17 +70,30 @@ public class EsperComponent extends AbstractComponentType  implements UpdateList
     	eventypes = Arrays.asList(this.getDictionary().get("eventypes").toString().split(","));	
     	request = (String) this.getDictionary().get("request").toString();
     	
+        
+
+
+     // get current context classloader                                                                                                                                  
+        ClassLoader contextClassloader = Thread.currentThread().getContextClassLoader();
+
+        // then alter the class-loader (but which one ? the one used to load this class itself) with:
+        Thread.currentThread().setContextClassLoader(Tick.class.getClassLoader());
         Configuration cepConfig = new Configuration();
-        for (String s : eventypes){
+        // create my Esper statement, and finally restore the class loader to its original value:
+         for (String s : eventypes){
             cepConfig.addEventType(s.split(":")[0], s.split(":")[1]);
-        	
+            
         }
+         
+
         cep = EPServiceProviderManager.getProvider("myCEPEngine", cepConfig);
         cepRT = cep.getEPRuntime();
-        cep.destroy();
+      
         EPAdministrator cepAdm = cep.getEPAdministrator();
         cepStatement = cepAdm.createEPL(request );
 
+        Thread.currentThread().setContextClassLoader(contextClassloader);
+        
         cepStatement.addListener(this);
         
        
@@ -122,7 +137,7 @@ public class EsperComponent extends AbstractComponentType  implements UpdateList
 	@Override
 	public void update(EventBean[] arg0, EventBean[] arg1) {
 		 if (this.isPortBinded("compositeMessage")) {
-	            this.getPortByName("compositeMessage", MessagePort.class).process(arg1);
+	            this.getPortByName("compositeMessage", MessagePort.class).process("Event received: " + arg0[0].getUnderlying());
 	        }
 		
 	}

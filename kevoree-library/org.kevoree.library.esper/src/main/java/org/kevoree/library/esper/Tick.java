@@ -2,11 +2,13 @@ package org.kevoree.library.esper;
 
 import java.util.Date;
 
-class Tick {
+public class Tick {
     String symbol;
     Double price;
     Date timeStamp;
-
+    public Tick(){
+    	
+    }
     public Tick(String s, double p, long t) {
         symbol = s;
         price = p;
