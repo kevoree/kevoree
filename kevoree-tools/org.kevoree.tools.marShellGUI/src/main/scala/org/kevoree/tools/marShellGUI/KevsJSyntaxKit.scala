@@ -33,10 +33,49 @@ class KevsJSyntaxKit extends DefaultSyntaxKit(new KevsJSyntaxLexerWrapper()) {
   config.setProperty("Action.combo-completion", "org.kevoree.tools.marShellGUI.KevsComboCompletionAction, control SPACE")
   config.setProperty("Action.combo-completion.MenuText", "Completions")
   config.setProperty("Action.double-quotes", "jsyntaxpane.actions.PairAction, typed \"")
+ // config.setProperty("Action.double-quotes", "jsyntaxpane.actions.PairAction, typed \"")
 
   //config.setProperty("LineNumbers.CurrentBack","0x333300")
 
 
+
+  config.setProperty("Style.IDENTIFIER","0xFFCE89, 1")
+  config.setProperty("Style.DELIMITER","0xFFFFFF, 1")
+  config.setProperty("Style.KEYWORD","0xFC6C1D, 1")
+  config.setProperty("Style.KEYWORD2","0xFC6C1D, 3")
+
+  config.setProperty("CaretColor","0xFFFFFF")
+  config.setProperty("TokenMarker.Color","0x6D788F")
+  config.setProperty("PairMarker.Color","0x6D788F")
+
+
+
+     /*
+
+     #
+# These are the various Attributes for each TokenType.
+# The keys of this map are the TokenType Strings, and the values are:
+# color (hex, or integer), Font.Style attribute
+# Style is one of: 0 = plain, 1=bold, 2=italic, 3=bold/italic
+Style.OPERATOR = 0x000000, 0
+Style.DELIMITER = 0x000000, 1
+Style.KEYWORD = 0x3333ee, 0
+Style.KEYWORD2 = 0x3333ee, 3
+Style.TYPE = 0x000000, 2
+Style.TYPE2 = 0x000000, 1
+Style.TYPE3 = 0x000000, 3
+Style.STRING = 0xcc6600, 0
+Style.STRING2 = 0xcc6600, 1
+Style.NUMBER = 0x999933, 1
+Style.REGEX = 0xcc6600, 0
+Style.IDENTIFIER = 0x000000, 0
+Style.COMMENT = 0x339933, 2
+Style.COMMENT2 = 0x339933, 3
+Style.DEFAULT = 0x000000, 0
+Style.WARNING = 0xCC0000, 0
+Style.ERROR = 0xCC0000, 3
+
+      */
 
 
   this.setConfig(config)

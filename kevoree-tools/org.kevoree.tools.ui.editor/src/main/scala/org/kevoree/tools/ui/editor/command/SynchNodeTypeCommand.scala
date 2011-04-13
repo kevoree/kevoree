@@ -15,6 +15,7 @@ package org.kevoree.tools.ui.editor.command
 
 import org.kevoree.tools.ui.editor.KevoreeUIKernel
 import reflect.BeanProperty
+import actors.DaemonActor
 
 class SynchNodeTypeCommand extends Command {
 
@@ -22,6 +23,12 @@ class SynchNodeTypeCommand extends Command {
   var kernel: KevoreeUIKernel = null
 
   def execute(p: AnyRef) {
+
+
+
+  }
+
+  def act () {
 
   }
 

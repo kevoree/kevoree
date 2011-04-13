@@ -27,7 +27,7 @@ import javax.swing.WindowConstants
 import javax.swing.event.DocumentEvent
 import javax.swing.event.DocumentListener
 import jsyntaxpane.components.Markers
-import org.kevoree.tools.marShell.parser.KevsParser
+import org.kevoree.tools.marShell.parser.{ParserUtil, KevsParser}
 
 object MainRunner {
 
@@ -37,7 +37,12 @@ object MainRunner {
   def main(args: Array[String]): Unit = {
     println("Hello, world!")
 
-    var f = new KevsFrame();
+    val model = ParserUtil.load("/Users/ffouquet/Documents/DEV/dukeboard_github/kevoree/kevoree-tools/org.kevoree.tools.marShellGUI/src/main/resources/baseModel.kev")
+    KevsModelHandlers.put(1,model)
+
+
+
+    val f = new KevsFrame();
     /*
     var c = f.getContentPane();
     c.setLayout(new BorderLayout());
