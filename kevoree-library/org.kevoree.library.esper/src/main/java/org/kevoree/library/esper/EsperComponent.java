@@ -6,12 +6,11 @@
  */
 package org.kevoree.library.esper;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import net.sf.cglib.reflect.FastClass;
-
+import org.kevoree.ClassLoaderInterface;
+import org.kevoree.ClassLoaderWrapper;
 import org.kevoree.annotation.ComponentType;
 import org.kevoree.annotation.DictionaryAttribute;
 import org.kevoree.annotation.DictionaryType;
@@ -27,6 +26,8 @@ import org.kevoree.annotation.Stop;
 import org.kevoree.annotation.Update;
 import org.kevoree.framework.AbstractComponentType;
 import org.kevoree.framework.MessagePort;
+import org.osgi.framework.Bundle;
+import org.osgi.framework.BundleContext;
 
 import com.espertech.esper.client.Configuration;
 import com.espertech.esper.client.EPAdministrator;
@@ -74,25 +75,29 @@ public class EsperComponent extends AbstractComponentType  implements UpdateList
 
 
      // get current context classloader                                                                                                                                  
-        ClassLoader contextClassloader = Thread.currentThread().getContextClassLoader();
-
-        // then alter the class-loader (but which one ? the one used to load this class itself) with:
-        Thread.currentThread().setContextClassLoader(Tick.class.getClassLoader());
+      // ClassLoader contextClassloader = Thread.currentThread().getContextClassLoader();
+       
+       
+       Bundle ctx = (Bundle) this.getDictionary().get("osgi.bundle");
+       ClassLoaderInterface itf = new OsgiClassLoader(ctx);
+       ((ClassLoaderWrapper)ClassLoaderInterface.instance).setWrap(itf);
+       
+       // then alter the class-loader (but which one ? the one used to load this class itself) with:
+    //   Thread.currentThread().setContextClassLoader(Tick.class.getClassLoader());
         Configuration cepConfig = new Configuration();
         // create my Esper statement, and finally restore the class loader to its original value:
          for (String s : eventypes){
-            cepConfig.addEventType(s.split(":")[0], s.split(":")[1]);
-            
+            cepConfig.addEventType(s.split(":")[0], Tick.class);//s.split(":")[1]);
         }
          
-
         cep = EPServiceProviderManager.getProvider("myCEPEngine", cepConfig);
+        
         cepRT = cep.getEPRuntime();
       
         EPAdministrator cepAdm = cep.getEPAdministrator();
         cepStatement = cepAdm.createEPL(request );
 
-        Thread.currentThread().setContextClassLoader(contextClassloader);
+  //      Thread.currentThread().setContextClassLoader(contextClassloader);
         
         cepStatement.addListener(this);
         
