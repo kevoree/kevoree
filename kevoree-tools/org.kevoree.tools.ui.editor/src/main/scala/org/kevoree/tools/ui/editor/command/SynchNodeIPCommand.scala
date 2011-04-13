@@ -46,7 +46,7 @@ class SynchNodeIPCommand extends Command {
 
   def execute(p :Object) {
     try {
-      var outStream = new ByteArrayOutputStream
+      val outStream = new ByteArrayOutputStream
       KevoreeXmiHelper.saveStream(outStream, kernel.getModelHandler.getActualModel)
       outStream.flush
       // var msg = outStream.toString
