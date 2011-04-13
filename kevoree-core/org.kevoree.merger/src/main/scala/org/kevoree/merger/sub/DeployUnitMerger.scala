@@ -41,19 +41,12 @@ trait DeployUnitMerger extends Merger {
           tp
         } else {
 
-
-
           val ftpTimeStamp = if(ftp.getHashcode != null) { java.lang.Long.parseLong(ftp.getHashcode)} else { 0l }
           val tpTimeStamp = if(tp.getHashcode != null) { java.lang.Long.parseLong(tp.getHashcode) } else {0l}
-
-          println("kompare timestamp "+ftp.getUnitName)
-          println(ftpTimeStamp)
-          println(tpTimeStamp)
 
           if (tpTimeStamp > ftpTimeStamp) {
             this.addPostProcess({
               () => {
-                println("post process "+ftp.getUnitName+"-"+tpTimeStamp)
                 ftp.setHashcode(tpTimeStamp+"")
               }
             })
@@ -63,7 +56,6 @@ trait DeployUnitMerger extends Merger {
         }
       }
       case None => {
-        println("enw "+tp)
         actualModel.getDeployUnits.add(tp)
         mergeRequiredLibs(actualModel, tp)
         tp
