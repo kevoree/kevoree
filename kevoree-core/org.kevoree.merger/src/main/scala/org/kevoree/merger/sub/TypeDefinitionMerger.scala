@@ -57,7 +57,7 @@ trait TypeDefinitionMerger extends Merger with DictionaryMerger with PortTypeMer
 
 
   private def cleanCrossReference(actuelTypeDefinition: TypeDefinition, newTypeDefinition: TypeDefinition) = {
-    println("Just clean cross reference")
+    //println("Just clean cross reference")
     if (actuelTypeDefinition.isInstanceOf[NodeType]) {
       val root = actuelTypeDefinition.eContainer.asInstanceOf[ContainerRoot]
       val root2 = newTypeDefinition.eContainer.asInstanceOf[ContainerRoot]
@@ -74,7 +74,7 @@ trait TypeDefinitionMerger extends Merger with DictionaryMerger with PortTypeMer
   private def mergeConsistency(root: ContainerRoot, actuelTypeDefinition: TypeDefinition, newTypeDefinition: TypeDefinition) = {
     //UPDATE & MERGE DEPLOYS UNIT
 
-    println("merge consistency")
+    //println("merge consistency")
 
     val allDeployUnits = List() ++ newTypeDefinition.getDeployUnits.toList ++ actuelTypeDefinition.getDeployUnits.toList //CLONE LIS
     actuelTypeDefinition.getDeployUnits.clear
@@ -96,7 +96,7 @@ trait TypeDefinitionMerger extends Merger with DictionaryMerger with PortTypeMer
   }
 
   private def consistencyImpacted(root: ContainerRoot, actuelTypeDefinition: TypeDefinition, newTypeDefinition: TypeDefinition) = {
-    println("mergeConsistencyImpacted - "+actuelTypeDefinition+ " - "+newTypeDefinition)
+    //println("mergeConsistencyImpacted - "+actuelTypeDefinition+ " - "+newTypeDefinition)
     //REMOVE OLD AND ADD NEW TYPE
     root.getTypeDefinitions.remove(actuelTypeDefinition)
     mergeNewTypeDefinition(root, newTypeDefinition)
