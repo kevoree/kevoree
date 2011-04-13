@@ -21,12 +21,14 @@ object MainTester {
   /**
    * @param args the command line arguments
    */
-  def main(args: Array[String]): Unit = {
+  def main(args: Array[String]) {
 
-    var component = new KevoreeRemoteBean
-    component.start
-    Thread.sleep(20*1000)
-    component.stop
+    System.setProperty("org.kevoree.remote.provisioning","file:///Users/ffouquet/.m2/repository")
+
+    val component = new KevoreeRemoteBean
+    component.start()
+    Thread.sleep(30*1000)
+    component.stop()
 
   }
 

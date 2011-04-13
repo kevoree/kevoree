@@ -23,6 +23,7 @@ import org.kevoree.api.configuration.ConfigurationService;
 import org.kevoree.api.service.adaptation.deploy.KevoreeAdaptationDeployService;
 import org.kevoree.api.service.core.handler.KevoreeModelHandlerService;
 import org.kevoree.api.service.core.kompare.ModelKompareService;
+import org.kevoree.api.service.core.script.ScriptInterpreter;
 import org.kevoree.core.impl.KevoreeCoreBean;
 import org.kevoree.kompare.KevoreeKompareBean;
 import org.kevoree.remote.rest.Handler;
@@ -33,7 +34,6 @@ import org.osgi.service.packageadmin.PackageAdmin;
 import org.kevoree.api.configuration.ConfigConstants;
 
 /**
- *
  * @author ffouquet
  */
 public class BootstrapActivator implements BundleActivator {
@@ -59,7 +59,7 @@ public class BootstrapActivator implements BundleActivator {
         deployBean.setContext(contextDeploy);
 
         KevoreeAndroidConfigService configBean = new KevoreeAndroidConfigService();//new KevoreeConfigServiceBean();
-         configBean.def.put("node.name", KevoreeActivity.nodeName);
+        configBean.def.put("node.name", KevoreeActivity.nodeName);
 
         coreBean = new KevoreeCoreBean();
         coreBean.setBundleContext(context);
@@ -67,8 +67,14 @@ public class BootstrapActivator implements BundleActivator {
         coreBean.setKompareService((ModelKompareService) kompareBean);
         coreBean.setDeployService((KevoreeAdaptationDeployService) deployBean);
         coreBean.start();
+
+        //Kevoree script
+        KevScriptInterpreterService kevScriptBean = new KevScriptInterpreterService(coreBean);
+
+        context.registerService(ScriptInterpreter.class.getName(), kevScriptBean, null);
         context.registerService(KevoreeModelHandlerService.class.getName(), coreBean, null);
         System.out.println("Kevoree Started !");
+
 
         Handler.setModelhandler((KevoreeModelHandlerService) coreBean);
         remoteBean = new KevoreeRemoteBean();
