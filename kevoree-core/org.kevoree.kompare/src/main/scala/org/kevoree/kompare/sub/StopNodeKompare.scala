@@ -27,15 +27,15 @@ import org.kevoree.framework.aspects.KevoreeAspects._
 trait StopNodeKompare extends AbstractKompare {
 
   def getStopNodeAdaptationModel(node:ContainerNode):AdaptationModel={
-    var adaptationModel = org.kevoreeAdaptation.KevoreeAdaptationFactory.eINSTANCE.createAdaptationModel
+    val adaptationModel = org.kevoreeAdaptation.KevoreeAdaptationFactory.eINSTANCE.createAdaptationModel
     logger.info("STOP NODE "+node.getName)
 
-    var root = node.eContainer.asInstanceOf[ContainerRoot] 
+    val root = node.eContainer.asInstanceOf[ContainerRoot]
 
     /* add remove FRAGMENT binding */
-    root.getHubs.foreach{channel =>
+    root.getHubs.filter(hub=> hub.usedByNode(node.getName)).foreach{channel =>
       channel.getOtherFragment(node.getName).foreach{remoteName =>
-        var addccmd = KevoreeAdaptationFactory.eINSTANCE.createRemoveFragmentBinding
+        val addccmd = KevoreeAdaptationFactory.eINSTANCE.createRemoveFragmentBinding
         addccmd.setRef(channel)
         addccmd.setTargetNodeName(remoteName)
         adaptationModel.getAdaptations.add(addccmd)
@@ -46,7 +46,7 @@ trait StopNodeKompare extends AbstractKompare {
     /* remove mbinding */
     root.getMBindings.foreach{b=>
       if(b.getPort.eContainer.eContainer == node){
-        var addcmd = KevoreeAdaptationFactory.eINSTANCE.createRemoveBinding
+        val addcmd = KevoreeAdaptationFactory.eINSTANCE.createRemoveBinding
         addcmd.setRef(b)
         adaptationModel.getAdaptations.add(addcmd)
       }
@@ -54,7 +54,7 @@ trait StopNodeKompare extends AbstractKompare {
 
     /* add component */
     node.getInstances.foreach({c =>
-        var cmd = KevoreeAdaptationFactory.eINSTANCE.createRemoveInstance
+        val cmd = KevoreeAdaptationFactory.eINSTANCE.createRemoveInstance
         cmd.setRef(c)
         adaptationModel.getAdaptations.add(cmd)
       })
@@ -62,12 +62,12 @@ trait StopNodeKompare extends AbstractKompare {
 
     /* remove type */
     node.getUsedTypeDefinition.foreach{ct=>
-      var rmctcmd = KevoreeAdaptationFactory.eINSTANCE.createRemoveType
+      val rmctcmd = KevoreeAdaptationFactory.eINSTANCE.createRemoveType
       rmctcmd.setRef(ct)
       adaptationModel.getAdaptations.add(rmctcmd)
       
       /* add all reLib from found deploy Unit*/
-      var deployUnitfound : DeployUnit = ct.foundRelevantDeployUnit(node)
+      val deployUnitfound : DeployUnit = ct.foundRelevantDeployUnit(node)
       
 
       /* remove all reLib */
@@ -76,7 +76,7 @@ trait StopNodeKompare extends AbstractKompare {
       /* add deploy unit if necessary */
       adaptationModel.getAdaptations.filter(adaptation => adaptation.isInstanceOf[RemoveDeployUnit]).find(adaptation=> adaptation.asInstanceOf[RemoveDeployUnit].getRef.isModelEquals(deployUnitfound) ) match {
         case None => {
-            var ctcmd = KevoreeAdaptationFactory.eINSTANCE.createRemoveDeployUnit
+            val ctcmd = KevoreeAdaptationFactory.eINSTANCE.createRemoveDeployUnit
             ctcmd.setRef(deployUnitfound)
             adaptationModel.getAdaptations.add(ctcmd)
           }

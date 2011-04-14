@@ -24,18 +24,39 @@ import jsyntaxpane.actions.ComboCompletionAction
 import scala.collection.JavaConversions._
 import org.kevoree.tools.marShell.lexer.KevsLexical
 import jsyntaxpane.{Token, TokenType, SyntaxDocument}
+import jsyntaxpane.actions.gui.ComboCompletionDialog
+import org.kevoree._
 
 class KevsComboCompletionAction extends ComboCompletionAction {
 
   this.setItems(new java.util.ArrayList[String]())
 
+
+  var ldlg: ComboCompletionDialog = null;
+
+
   @Override
-  override def actionPerformed(target: JTextComponent, sdoc: SyntaxDocument, dot: Int, e: ActionEvent) = {
+  override def actionPerformed(target: JTextComponent, sdoc: SyntaxDocument, dot: Int, e: ActionEvent): Unit = {
     refreshList(target, sdoc, dot)
-
-
-    super.actionPerformed(target, sdoc, dot, e)
-
+    // super.actionPerformed(target, sdoc, dot, e)
+    if (sdoc == null) {
+      return Unit;
+    }
+    val token = sdoc.getTokenAt(dot);
+    var abbrev = "";
+    if (token != null) {
+      token match {
+        case _@delim if (token.`type` == TokenType.DELIMITER) => //NOOP FOR DELIMITER
+        case _ => {
+          abbrev = token.getString(sdoc);
+          target.select(token.start, token.end());
+        }
+      }
+    }
+    if (ldlg == null) {
+      ldlg = new ComboCompletionDialog(target);
+    }
+    ldlg.displayFor(abbrev, getItems);
   }
 
   def refreshList(target: JTextComponent, sdoc: SyntaxDocument, dot: Int) = {
@@ -51,66 +72,168 @@ class KevsComboCompletionAction extends ComboCompletionAction {
     }
 
 
-    isFirstDelimiter(sdoc,dot)
-    println(getFirstDelimiter(sdoc,dot).get.getString(sdoc) )
-    println(getFirstKeyword(sdoc,dot).get.getString(sdoc) )
-
-    
     tokenPreviousS match {
-      case _ if(tokenPreviousS == ":" || tokens == ":") => pushTypeId
-      case _ if(tokenPreviousS == "@" || tokens == "@") => pushNodeId
-      case _ => pushKeyword
-      
+
+
+      case _ if (isFirstDelimiter(sdoc, dot, "=>")) => {
+        pushChannelId()
+      }
+      case _ if (isFirstDelimiter(sdoc, dot, ":")) => {
+        getFirstKeyword(sdoc, dot) match {
+          case Some(e) if (e.getString(sdoc) == "addComponent") => pushFilteredTypeId((tdef: TypeDefinition) =>
+            tdef match {
+              case e: ComponentType => true
+              case _@noType => false
+            })
+          case Some(e) if (e.getString(sdoc) == "addChannel") => pushFilteredTypeId((tdef: TypeDefinition) =>
+            tdef match {
+              case e: ChannelType => true
+              case _@noType => false
+            })
+          case Some(e) if (e.getString(sdoc) == "addGroup") => pushFilteredTypeId((tdef: TypeDefinition) =>
+            tdef match {
+              case e: GroupType => true
+              case _@noType => false
+            })
+          case _@e => pushTypeId()
+        }
+      }
+      case _ if (tokenPreviousS == "@" || tokens == "@") => pushNodeId()
+      case _ if (tokenPreviousS == "." || tokens == ".") => pushComponentPortRequireId(sdoc,dot)
+
+
+      case _ if (tokenPreviousS == "addChannel" && tokens != "addChannel") => pushComponentId()
+      case _ => pushKeyword()
+
     }
-    
 
 
   }
 
-  def isFirstDelimiter(sdoc: SyntaxDocument,dot: Int) : Boolean ={
-    sdoc.getTokens(0,dot).toList.reverse.foreach(t => println(t))
-    true
-          //sdoc.getTokens(0,dot).toList.reverse.find(tok=>tok.`type` == TokenType.DELIMITER)
+
+  def isFirstDelimiter(sdoc: SyntaxDocument, dot: Int, delimiterValue: String): Boolean = {
+    val firstTok = sdoc.getTokens(0, dot).toList.reverse.get(0)
+    if (firstTok == null) {
+      return false
+    } else {
+      firstTok.getString(sdoc) == delimiterValue
+    }
   }
 
-  def getFirstDelimiter(sdoc: SyntaxDocument,dot: Int) : Option[Token]={
-          sdoc.getTokens(0,dot).toList.reverse.find(tok=>tok.`type` == TokenType.DELIMITER)
+  def getFirstIdentifier(sdoc: SyntaxDocument, dot: Int): Option[Token] = {
+    sdoc.getTokens(0, dot).toList.reverse.find(tok => tok.`type` == TokenType.IDENTIFIER)
   }
-  def getFirstKeyword(sdoc: SyntaxDocument,dot: Int) : Option[Token]={
-          sdoc.getTokens(0,dot).toList.reverse.find(tok=>tok.`type` == TokenType.KEYWORD || tok.`type` == TokenType.KEYWORD2)
+
+  def getFirstDelimiter(sdoc: SyntaxDocument, dot: Int): Option[Token] = {
+    sdoc.getTokens(0, dot).toList.reverse.find(tok => tok.`type` == TokenType.DELIMITER)
+  }
+
+  def getFirstKeyword(sdoc: SyntaxDocument, dot: Int): Option[Token] = {
+    sdoc.getTokens(0, dot).toList.reverse.find(tok => tok.`type` == TokenType.KEYWORD || tok.`type` == TokenType.KEYWORD2)
   }
 
 
-  def pushNodeId = {
+  def pushComponentPortRequireId(sdoc: SyntaxDocument, dot: Int) {
+    val token = getFirstIdentifier(sdoc, dot)
     KevsModelHandlers.get(1) match {
       case Some(model) => {
-          val items = new java.util.ArrayList[String]()
-          model.getNodes.foreach {
-            node =>
+        val items = new java.util.ArrayList[String]()
+        token match {
+          case None =>
+          case Some(tokenFound) => {
+            model.getNodes.foreach(node => {
+              node.getComponents.filter(component => component.getName == tokenFound.getString(sdoc)).foreach(cinstance => {
+                cinstance.asInstanceOf[ComponentInstance].getProvided.foreach(port => items.add(port.getPortTypeRef.getName))
+                cinstance.asInstanceOf[ComponentInstance].getRequired.foreach(port => items.add(port.getPortTypeRef.getName))
+              })
+            })
+          }
+        }
+
+        this.setItems(items)
+      }
+      case None =>
+    }
+  }
+
+
+  def pushChannelId() {
+    KevsModelHandlers.get(1) match {
+      case Some(model) => {
+        val items = new java.util.ArrayList[String]()
+        model.getHubs.foreach {
+          hub =>
+            items.add(hub.getName)
+        }
+        this.setItems(items)
+      }
+      case None =>
+    }
+  }
+
+  def pushComponentId() {
+    KevsModelHandlers.get(1) match {
+      case Some(model) => {
+        val items = new java.util.ArrayList[String]()
+        model.getNodes.foreach {
+          node =>
+            node.getComponents.foreach {
+              component =>
+                items.add(component.getName)
+            }
+        }
+
+
+        this.setItems(items)
+      }
+      case None =>
+    }
+  }
+
+
+  def pushNodeId() {
+    KevsModelHandlers.get(1) match {
+      case Some(model) => {
+        val items = new java.util.ArrayList[String]()
+        model.getNodes.foreach {
+          node =>
             items.add(node.getName)
-          }
-          this.setItems(items)
         }
-      case None =>
-    }
-  }
-  
-  def pushTypeId = {
-    KevsModelHandlers.get(1) match {
-      case Some(model) => {
-          val items = new java.util.ArrayList[String]()
-          model.getTypeDefinitions.foreach {
-            tdef =>
-            items.add(tdef.getName)
-          }
-          this.setItems(items)
-        }
+        this.setItems(items)
+      }
       case None =>
     }
   }
 
-  def pushKeyword = {
-    var lex = new KevsLexical
+  def pushFilteredTypeId[C](filter: (TypeDefinition) => Boolean) {
+    KevsModelHandlers.get(1) match {
+      case Some(model) => {
+        val items = new java.util.ArrayList[String]()
+        model.getTypeDefinitions.filter(tdef => filter(tdef)).foreach {
+          tdef => items.add(tdef.getName)
+        }
+        this.setItems(items)
+      }
+      case None =>
+    }
+  }
+
+  def pushTypeId() {
+    KevsModelHandlers.get(1) match {
+      case Some(model) => {
+        val items = new java.util.ArrayList[String]()
+        model.getTypeDefinitions.foreach {
+          tdef =>
+            items.add(tdef.getName)
+        }
+        this.setItems(items)
+      }
+      case None =>
+    }
+  }
+
+  def pushKeyword() {
+    val lex = new KevsLexical
     this.setItems(lex.reserved.toList)
   }
 

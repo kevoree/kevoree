@@ -20,11 +20,13 @@ import org.kevoree.MBinding;
 import org.kevoree.NamedElement;
 import org.kevoree.Port;
 import org.kevoree.library.reasoner.ecj.dpa.AddComponentDPA;
+import org.kevoree.tools.marShell.ast.Block;
 import org.kevoree.tools.marShell.ast.Script;
 import org.kevoree.tools.marShell.interpreter.KevsInterpreterAspects;
 import org.kevoree.tools.marShell.interpreter.KevsInterpreterContext;
 import org.kevoree.tools.marShell.parser.KevsParser;
 import org.kevoree.tools.marShell.parser.ParserUtil;
+import org.kevoree.tools.marShellTransform.AdaptationModelWrapper;
 import org.kevoree.tools.ui.editor.KevoreeEditor;
 
 import scala.Option;
@@ -45,6 +47,11 @@ public class App {
         System.out.println("Communication Delay : " + evaluateCommunicationDelay(newModel));
         displayFitness(newModel);
         startEditor("target/classes/defaultLibrary.kev");
+        
+//        for(Block block : AdaptationModelWrapper.generateScriptFromAdaptModel(null).blocks()){
+//            block.l()
+//        }
+        
     }
     
     

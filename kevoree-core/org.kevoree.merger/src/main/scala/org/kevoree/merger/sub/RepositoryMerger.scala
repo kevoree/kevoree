@@ -53,9 +53,6 @@ trait RepositoryMerger {
       found_unit match {
         case None => {
             println("Merger Error !!!!! Repository Incomplete")
-            println(toMergeRepository.getUrl)
-            println(toMergeRepository.getName)
-            println(unit)
         }
         case Some(funit)=> {
             //CLEAN REPO FROM OLD DEPLOY UNIT

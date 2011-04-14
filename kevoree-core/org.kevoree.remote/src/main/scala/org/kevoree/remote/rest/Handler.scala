@@ -29,4 +29,6 @@ object Handler {
   @BeanProperty
   var defaultHost : org.restlet.routing.VirtualHost = null
 
+  def initHost(host : org.restlet.routing.VirtualHost) =  defaultHost = host
+
 }
