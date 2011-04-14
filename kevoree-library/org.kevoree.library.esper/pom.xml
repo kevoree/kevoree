@@ -13,14 +13,6 @@
 		<version>1.1.0-BETA2</version>
 		<relativePath>../org.kevoree.library.root/pom.xml</relativePath>
 	</parent>
-	<repositories>
-		<repository>
-			<id>codehaus</id>
-			<url>http://repository.codehaus.org/com/espertech/esper/</url>
-		</repository>
-	</repositories>
-
-
 	<dependencies>
 		<dependency>
 			<groupId>log4j</groupId>
@@ -40,55 +32,39 @@
 					<artifactId>jmxri</artifactId>
 				</exclusion>
 			</exclusions>
-			<systemPath>${basedir}/lib/log4j-1.2.16.jar</systemPath>
-			<scope>system</scope>
 		</dependency>
 
 		<dependency>
 			<groupId>commons-logging</groupId>
 			<artifactId>commons-logging</artifactId>
 			<version>1.1.1</version>
-			<systemPath>${basedir}/lib/commons-logging-1.1.1.jar</systemPath>
-			<scope>system</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.antlr</groupId>
 			<artifactId>antlr</artifactId>
 			<version>3.2</version>
-			<systemPath>${basedir}/lib/antlr-2.7.7.jar</systemPath>
-			<scope>system</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.antlr</groupId>
 			<artifactId>antlr-runtime</artifactId>
 			<version>3.2</version>
-			<systemPath>${basedir}/lib/antlr-runtime-3.2.jar</systemPath>
-			<scope>system</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.antlr</groupId>
 			<artifactId>stringtemplate</artifactId>
 			<version>3.2</version>
-			<systemPath>${basedir}/lib/stringtemplate-3.2.jar</systemPath>
-			<scope>system</scope>
 		</dependency>
 		<dependency>
 			<groupId>cglib</groupId>
 			<artifactId>cglib-nodep</artifactId>
 			<version>2.2</version>
-			<systemPath>${basedir}/lib/cglib-nodep-2.2.jar</systemPath>
-			<scope>system</scope>
 		</dependency>
 		<dependency>
-			<groupId>com.espertech</groupId>
-			<artifactId>esper</artifactId>
+			<groupId>org.kevoree.extra</groupId>
+			<artifactId>org.kevoree.extra.esper</artifactId>
 			<version>4.1.0</version>
-			<systemPath>${basedir}/lib/esper-4.0.0.jar</systemPath>
-			<scope>system</scope>
 		</dependency>
-
 	</dependencies>
-
 
 	<build>
 		<plugins>
@@ -100,11 +76,11 @@
 
 				<configuration>
 					<instructions>
-						<Embed-Dependency>esper,cglib-nodep,stringtemplate,antlr-runtime,antlr,commons-logging,log4j</Embed-Dependency>
+						<Embed-Dependency>org.kevoree.extra.esper,cglib-nodep,stringtemplate,antlr-runtime,antlr,commons-logging,log4j</Embed-Dependency>
 						<Bundle-ClassPath>.,{maven-dependencies} </Bundle-ClassPath>
 						<Bundle-SymbolicName>org.esper</Bundle-SymbolicName>
 						<Bundle-Version>${pom.version}</Bundle-Version>
-						<Private-Package>org.kevoree.library.esper</Private-Package>
+						<Private-Package>org.kevoree.library.esper, </Private-Package>
 						<DynamicImport-Package>*</DynamicImport-Package>
 						<Export-Package>org.kevoree.library.esper</Export-Package>
 						<Import-Package>org.kevoree.library.esper,javax.management,javax.naming,!javax.servlet,javax.sql,!com.ibm.uvm.tools,!com.sun.jdmk.comm,!com.sun.org.apache.xerces.internal.dom,!com.sun.org.apache.xerces.internal.impl.dv.xs,!com.sun.org.apache.xerces.internal.xs,!javax.jmdns,!javax.jms,!javax.mail,!javax.mail.internet,!javax.swing,!javax.swing.border,!javax.swing.event,!javax.swing.table,!javax.swing.text,!javax.swing.tree,javax.xml.namespace,javax.xml.parsers,javax.xml.transform,javax.xml.transform.dom,javax.xml.transform.stream,javax.xml.xpath,!junit.framework,!net.sf.cglib.asm.util,!org.apache.avalon.framework.logger,!org.apache.log,!org.apache.tools.ant,!org.apache.tools.ant.types,org.kevoree.framework,org.kevoree.framework.osgi,org.kevoree.framework.port,org.w3c.dom,org.w3c.dom.bootstrap,org.w3c.dom.ls,org.xml.sax,!org.xml.sax.helpers,scala,scala.actors,scala.collection.immutable,scala.reflect,scala.runtime</Import-Package>
@@ -113,7 +89,4 @@
 			</plugin>
 		</plugins>
 	</build>
-
-
-
 </project>
