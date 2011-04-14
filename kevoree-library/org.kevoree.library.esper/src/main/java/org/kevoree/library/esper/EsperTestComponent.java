@@ -29,22 +29,18 @@ import org.kevoree.framework.MessagePort;
     @RequiredPort(name = "fakeEvent", type = PortType.MESSAGE)
 })
 
+
 @Library(name = "Kevoree::Esper")
 @ComponentType
 public class EsperTestComponent extends AbstractComponentType {
-
-
     public EsperTestComponent(){
-
     }
-   
+
     @Start
     public void start() {
         for (int i = 0; i < 20; i++) {
             GenerateRandomTick();
         }
-        
-       
     }
 
     @Stop
@@ -66,21 +62,18 @@ public class EsperTestComponent extends AbstractComponentType {
 		 if (this.isPortBinded("fakeEvent")) {
 	            this.getPortByName("fakeEvent", MessagePort.class).process(tick);
 	        }
-		
 	}
 	
 
     private Random generator = new Random();
 
     public  void GenerateRandomTick() {
-
         double price = (double) generator.nextInt(10);
         long timeStamp = System.currentTimeMillis();
         String symbol = "AAPL";
         Tick tick = new Tick(symbol, price, timeStamp);
         System.out.println("Sending tick:" + tick);
         send(tick);
-
     }
 
 }

@@ -1,6 +1,6 @@
 package org.kevoree.library.esper;
 
-import org.kevoree.ClassLoaderInterface;
+import org.kevoree.classloader.ClassLoaderInterface;
 import org.osgi.framework.Bundle;
 
 public class OsgiClassLoader implements ClassLoaderInterface{

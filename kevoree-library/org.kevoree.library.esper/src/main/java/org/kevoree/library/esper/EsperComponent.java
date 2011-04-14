@@ -9,8 +9,6 @@ package org.kevoree.library.esper;
 import java.util.Arrays;
 import java.util.List;
 
-import org.kevoree.ClassLoaderInterface;
-import org.kevoree.ClassLoaderWrapper;
 import org.kevoree.annotation.ComponentType;
 import org.kevoree.annotation.DictionaryAttribute;
 import org.kevoree.annotation.DictionaryType;
@@ -24,10 +22,11 @@ import org.kevoree.annotation.Requires;
 import org.kevoree.annotation.Start;
 import org.kevoree.annotation.Stop;
 import org.kevoree.annotation.Update;
+import org.kevoree.classloader.ClassLoaderInterface;
+import org.kevoree.classloader.ClassLoaderWrapper;
 import org.kevoree.framework.AbstractComponentType;
 import org.kevoree.framework.MessagePort;
 import org.osgi.framework.Bundle;
-import org.osgi.framework.BundleContext;
 
 import com.espertech.esper.client.Configuration;
 import com.espertech.esper.client.EPAdministrator;
@@ -144,7 +143,6 @@ public class EsperComponent extends AbstractComponentType  implements UpdateList
 		 if (this.isPortBinded("compositeMessage")) {
 	            this.getPortByName("compositeMessage", MessagePort.class).process("Event received: " + arg0[0].getUnderlying());
 	        }
-		
 	}
 
 }
