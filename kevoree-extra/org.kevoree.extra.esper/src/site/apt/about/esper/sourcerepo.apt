@@ -1,0 +1,16 @@
+Source Repositories
+~~~~~~~~~~~~~~
+
+	You may access Esper source code including all regression test code and EsperIO source code from the {{{http://xircles.codehaus.org/projects/esper/repo}Codehaus Repository}}.
+	
+	The most recent release is always in the "trunk" wherein our branches are used for current development and bug fixes.
+	
+	Source code for the most recent NEsper release can be found in "trunknet".
+	
+	Please ensure you adhere to the GPL license when using the source code.
+	
+	You may browse the SVN repository via {{{http://svn.codehaus.org/esper/esper/trunk}Subversion Anonymous Browse}}.
+	
+	The download page also offers source code excluding all test code for download.
+		
+

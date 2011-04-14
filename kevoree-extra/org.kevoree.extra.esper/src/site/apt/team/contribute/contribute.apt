@@ -1,0 +1,31 @@
+How To Contribute
+~~~~~~~~~~~~~~
+
+	The team is constantly working on software and documentation. Please contact the team through the user or developer mailing lists to avoid duplicate efforts.
+	The developer mailing list is {{{mailto:dev-subscribe@esper.codehaus.org}dev@esper.codehaus.org}}.
+	
+	The {{{http://jira.codehaus.org/browse/ESPER}JIRA}} site is used for issue tracking.
+
+* Documentation
+
+	If you have any suggestions or find problems in the documentation, that feedback is also 
+	most welcome.
+
+* Examples
+
+ 	Esper is looking to expand it's base of good examples.
+ 	If you have a great example you would like to see implemented in Esper, contact the dev team please. 	
+
+* Feature Requests
+
+	We track feature requests through JIRA as well. Requests can also be mailed to the developer
+	or user mailing list.
+
+* Bug Reports and Bug Fixes
+	
+	These are also tracked through JIRA as above.
+
+* New Code
+
+	Become an Esper/NEsper developer by signing up via {{{http://docs.codehaus.org/display/HAUS/New+Hausmates}New Hausmates}}.
+	

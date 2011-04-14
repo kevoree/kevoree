@@ -1,0 +1,50 @@
+Building Esper
+~~~~~~~~~~~~~~
+  
+  You can start using Esper with the binary jar that is included in all distributions. 
+  There is no need to build your own kit at all unless your goal is to contribute.
+
+  You also do not need to build Esper to run the examples. Please follow the instructions in the readme file in the "examples/etc" folder
+  to run the examples.
+
+  In Esper, all module builds are managed by Apache Maven 2.0 or above. The Esper engine itself can be build and unit tested
+  via the below commands. The instructions below have last been tried using Maven 2.0.9. Maven can be
+  downloaded from {{http://maven.apache.org/}}.
+             
+  You will need to perform a checkout from the Subversion source code control system (see Source Repository page). 
+  
+  If you have a filewall, you will need to change the proxy entry in Maven's setting.xml under your Maven installation directory. 
+  
+  As a prerequisite, you should have a version of Java JDK 5 installed and set up.
+ 
+  The commands to compile Esper, run all tests and install a jar file into Maven's repository is:
+  
+----------------------------------------
+cd esper
+mvn install
+----------------------------------------	
+
+  <Note>, in order to run all tests successfully, the following preconditions must be met:
+  
+    * For tests performing database joins to work, MySQL must be installed and available at connection string 
+      "jdbc:mysql://localhost/test?user=root&password=password" and the test table must be created from etc/regression/create_testdb.sql
+      
+    * For performance tests that assert against execution times the recommended minimum configuration is 1GB and Dual Core 2x1.8 GHz
+    
+    * If you are running the test suite from within an IDE, please use the following parameters:
+      -Dlog4j.configuration=etc/infoonly_log4j.xml -Xms512M -Xmx512M
+    
+
+  Similarly, the Esper IO library for input output adapters also build by the same commands:
+  
+----------------------------------------
+cd esper/esperio
+mvn install
+----------------------------------------	
+
+  Esper examples are a separate Maven project. The example codebase are contains JUnit tests. All examples can be build and run via these commands:
+  
+----------------------------------------
+cd esper/examples
+mvn test
+----------------------------------------	
