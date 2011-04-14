@@ -24,8 +24,8 @@ import javax.swing.event.DocumentEvent
 import javax.swing.event.DocumentListener
 import jsyntaxpane.components.Markers
 import org.kevoree.tools.marShell.parser.KevsParser
-import javax.swing.{JSplitPane, JEditorPane, JPanel, JScrollPane}
 import org.kevoree.tools.marShell.ast.Script
+import javax.swing._
 
 class KevsPanel extends JPanel {
 
@@ -39,10 +39,13 @@ class KevsPanel extends JPanel {
   jsyntaxpane.DefaultSyntaxKit.initKit();
   jsyntaxpane.DefaultSyntaxKit.registerContentType("text/kevs", classOf[KevsJSyntaxKit].getName());
   var codeEditor = new JEditorPane();
-  
+
   var scrPane = new JScrollPane(codeEditor);
 
   codeEditor.setContentType("text/kevs");
+
+  codeEditor.setBackground(Color.DARK_GRAY)
+
   codeEditor.setText("tblock { \n //insert Kevoree Script here \n }");
 
   codeEditor.getDocument.addDocumentListener(new DocumentListener() {
@@ -70,13 +73,18 @@ class KevsPanel extends JPanel {
 
           logPanel.error(parser.lastNoSuccess.toString)
 
-          var highlighter = codeEditor.getHighlighter()
-          highlighter.addHighlight(parser.lastNoSuccess.next.offset, parser.lastNoSuccess.next.rest.offset, new Markers.SimpleMarker(Color.ORANGE));
+          val highlighter = codeEditor.getHighlighter()
+          highlighter.addHighlight(parser.lastNoSuccess.next.offset, parser.lastNoSuccess.next.rest.offset, new Markers.SimpleMarker(Color.GRAY));
           parser.lastNoSuccess.next.rest.offset
         }
       }
     }
   })
+              /*
+  var editorKit = codeEditor.getEditorKit
+  var toolPane = new JToolBar
+  editorKit.asInstanceOf[KevsJSyntaxKit].addToolBarActions(codeEditor,toolPane)
+                */
 
   var logPanel = new LogPanel
   var splitPane: JSplitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, scrPane, logPanel)
@@ -85,6 +93,7 @@ class KevsPanel extends JPanel {
   splitPane.setDividerSize(15)
   splitPane.setDividerLocation(0.99)
   splitPane.setResizeWeight(1.0)
+ // add(toolPane,BorderLayout.NORTH)
   add(splitPane, BorderLayout.CENTER);
 
 }

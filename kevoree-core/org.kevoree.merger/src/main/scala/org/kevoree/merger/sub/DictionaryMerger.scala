@@ -30,7 +30,7 @@ trait DictionaryMerger {
       var values = dictionary.getValues.toList ++ List()
       values.foreach{v=>
 
-        var newAttribute = newtype.getAttributes.find(att=> att.getName == v.getAttribute.getName)
+        val newAttribute = newtype.getAttributes.find(att=> att.getName == v.getAttribute.getName)
         newAttribute match {
           case None => {
               println("ART2 Merger remove unavailable Dictionary Value => "+v.getValue +" for old key => "+v.getAttribute.getName)

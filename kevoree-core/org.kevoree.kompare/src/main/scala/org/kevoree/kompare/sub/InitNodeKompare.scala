@@ -28,26 +28,26 @@ import org.kevoree.framework.aspects.KevoreeAspects._
 trait InitNodeKompare extends AbstractKompare {
 
   def getInitNodeAdaptationModel(node: ContainerNode): AdaptationModel = {
-    var adaptationModel = org.kevoreeAdaptation.KevoreeAdaptationFactory.eINSTANCE.createAdaptationModel
+    val adaptationModel = org.kevoreeAdaptation.KevoreeAdaptationFactory.eINSTANCE.createAdaptationModel
     logger.info("INIT NODE v2 " + node.getName)
     //UPDATE ALL COMPONENT TYPE
 
-    var root = node.eContainer.asInstanceOf[ContainerRoot]
+    val root = node.eContainer.asInstanceOf[ContainerRoot]
 
     /* add type */
     node.getUsedTypeDefinition.foreach {
       ct =>
-        var typecmd = KevoreeAdaptationFactory.eINSTANCE.createAddType
+        val typecmd = KevoreeAdaptationFactory.eINSTANCE.createAddType
         typecmd.setRef(ct)
         adaptationModel.getAdaptations.add(typecmd)
 
         /* add all reLib from found deploy Unit*/
-        var deployUnitfound : DeployUnit = ct.foundRelevantDeployUnit(node)
+        val deployUnitfound : DeployUnit = ct.foundRelevantDeployUnit(node)
         
       
         deployUnitfound.getRequiredLibs.foreach {
           rLib =>
-            var addcttp = KevoreeAdaptationFactory.eINSTANCE.createAddThirdParty
+            val addcttp = KevoreeAdaptationFactory.eINSTANCE.createAddThirdParty
             addcttp.setRef(rLib)
             adaptationModel.getAdaptations.add(addcttp)
         }
@@ -68,18 +68,18 @@ trait InitNodeKompare extends AbstractKompare {
     /* add component */
     node.getInstances.foreach({
       c =>
-        var addccmd = KevoreeAdaptationFactory.eINSTANCE.createAddInstance
+        val addccmd = KevoreeAdaptationFactory.eINSTANCE.createAddInstance
         addccmd.setRef(c)
         adaptationModel.getAdaptations.add(addccmd)
     })
 
 
     /* add FRAGMENT binding */
-    root.getHubs.foreach {
+    root.getHubs.filter(hub=> hub.usedByNode(node.getName)).foreach {
       channel =>
         channel.getOtherFragment(node.getName).foreach {
           remoteName =>
-            var addccmd = KevoreeAdaptationFactory.eINSTANCE.createAddFragmentBinding
+            val addccmd = KevoreeAdaptationFactory.eINSTANCE.createAddFragmentBinding
             addccmd.setRef(channel)
             addccmd.setTargetNodeName(remoteName)
             adaptationModel.getAdaptations.add(addccmd)
@@ -90,7 +90,7 @@ trait InitNodeKompare extends AbstractKompare {
     root.getMBindings.foreach {
       b =>
         if (b.getPort.eContainer.eContainer == node) {
-          var addcmd = KevoreeAdaptationFactory.eINSTANCE.createAddBinding
+          val addcmd = KevoreeAdaptationFactory.eINSTANCE.createAddBinding
           addcmd.setRef(b)
           adaptationModel.getAdaptations.add(addcmd)
         }
