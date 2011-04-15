@@ -15,9 +15,24 @@ package org.kevoree.framework;
 
 import org.kevoree.ContainerRoot;
 import org.kevoree.api.service.adaptation.deploy.KevoreeAdaptationDeployService;
+import org.osgi.framework.BundleContext;
+
+import java.util.HashMap;
 
 public abstract class AbstractNodeType implements KevoreeAdaptationDeployService {
 
-  public abstract void push(String targetNodeName,ContainerRoot root);
+    public abstract void push(String targetNodeName, ContainerRoot root, BundleContext context);
+
+    private HashMap<String, Object> dictionary = new HashMap<String, Object>();
+
+    public HashMap<String, Object> getDictionary() {
+        return this.dictionary;
+    }
+
+    public void setDictionary(HashMap<String, Object> dic){
+         dictionary = dic;
+    }
+
+
 
 }

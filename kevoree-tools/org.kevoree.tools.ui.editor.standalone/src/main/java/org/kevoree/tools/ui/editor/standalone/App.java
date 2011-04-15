@@ -28,6 +28,15 @@ public class App {
 
     public static void main(final String[] args) {
 
+        /* TEMP */
+        System.setProperty("arduino.home", "/Applications/Arduino.app/Contents/Resources/Java");
+     //   System.setProperty("avr.bin", "/Applications/Arduino.app/Contents/Resources/Java/hardware/tools/avr/bin");
+      //  System.setProperty("avrdude.config.path", "/Applications/Arduino.app/Contents/Resources/Java/hardware/tools/avr/etc/avrdude.conf");
+      //  System.setProperty("serial.port", "/dev/tty.usbmodem621");
+
+        /* TEMP */
+
+
         SwingUtilities.invokeLater(new Runnable() {
 
             @Override
@@ -35,7 +44,7 @@ public class App {
                 System.setProperty("apple.laf.useScreenMenuBar", "true");
 
                 KevoreeEditor artpanel = new KevoreeEditor();
-                
+
                 String frameName = "Kevoree Editor";
                 /*
                 if(!artpanel.getEditorVersion().equals("")) {
@@ -45,7 +54,7 @@ public class App {
                 JFrame jframe = new JFrame(frameName);
                 jframe.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
                 jframe.setPreferredSize(new Dimension(800, 600));
-                
+
 
                 jframe.setJMenuBar(artpanel.getMenuBar());
 

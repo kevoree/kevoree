@@ -22,22 +22,33 @@ import org.kevoree._
 import scala.collection.JavaConversions._
 import KevoreeAspects._
 
-case class DictionaryTypeAspect(selfDT : DictionaryType) {
+case class DictionaryTypeAspect(selfDT: DictionaryType) {
 
-  def isModelEquals(otherDT : DictionaryType) : Boolean = {
-    if(otherDT.getAttributes == null){
-      return selfDT.getAttributes == null
+  def isModelEquals(otherDT: DictionaryType): Boolean = {
+
+    if (selfDT != null) {
+      if (otherDT != null) {
+        if (otherDT.getAttributes == null) {
+          return selfDT.getAttributes == null
+        }
+
+        val selfRes = selfDT.getAttributes.forall(selfAtt => otherDT.getAttributes.exists(otherDTAtt => {
+          //TODO ATT TYPE
+          otherDTAtt.getName == selfAtt.getName
+        }))
+        val otherRes = otherDT.getAttributes.forall(otherDTAtt => selfDT.getAttributes.exists(selfAtt => {
+          //TODO ATT TYPE
+          otherDTAtt.getName == selfAtt.getName
+        }))
+        selfRes && otherRes
+      } else {
+        true
+      }
+    } else {
+      otherDT != null
     }
-    
-    var selfRes = selfDT.getAttributes.forall(selfAtt => otherDT.getAttributes.exists(otherDTAtt => {
-        //TODO ATT TYPE
-        otherDTAtt.getName == selfAtt.getName
-     }))
-    var otherRes = otherDT.getAttributes.forall(otherDTAtt => selfDT.getAttributes.exists(selfAtt => {
-        //TODO ATT TYPE
-        otherDTAtt.getName == selfAtt.getName
-     }))    
-    selfRes && otherRes
+
+
   }
-  
+
 }
