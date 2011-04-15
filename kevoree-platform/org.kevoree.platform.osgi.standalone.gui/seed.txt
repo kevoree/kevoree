@@ -12,6 +12,8 @@ org.eclipse.emf.ecore.xml.type.internal.RegEx$REUtil
 org.eclipse.emf.ecore.xml.type.internal.RegEx$REUtil: void main(java.lang.String[])
 org.jgrapht.demo.CompleteGraphDemo
 org.jgrapht.demo.CompleteGraphDemo: void main(java.lang.String[])
+org.kevoree.remote.fileserver.App
+org.kevoree.remote.fileserver.App: void main(java.lang.String[])
 scala.util.Properties
 scala.util.Properties: void main(java.lang.String[])
 scala.util.parsing.combinator.testing.RegexTest
@@ -30,8 +32,6 @@ org.jgrapht.demo.JGraphAdapterDemo
 org.jgrapht.demo.JGraphAdapterDemo: void main(java.lang.String[])
 org.jgrapht.experimental.touchgraph.SimpleTouchgraphApplet
 org.jgrapht.experimental.touchgraph.SimpleTouchgraphApplet: void main(java.lang.String[])
-org.restlet.engine.header.ChallengeRequestReader
-org.restlet.engine.header.ChallengeRequestReader: void main(java.lang.String[])
 ch.qos.logback.classic.net.SimpleSocketServer
 ch.qos.logback.classic.net.SimpleSocketServer: void main(java.lang.String[])
 org.jgrapht.demo.HelloJGraphT
@@ -3084,7 +3084,9 @@ org.restlet.resource.ServerResource: void commit()
 org.restlet.resource.ServerResource: org.restlet.representation.Representation delete()
 org.restlet.resource.ServerResource: org.restlet.representation.Representation delete(org.restlet.representation.Variant)
 org.restlet.resource.ServerResource: org.restlet.representation.Representation describeVariants()
+org.restlet.resource.ServerResource: void doCatch(java.lang.Throwable)
 org.restlet.resource.ServerResource: org.restlet.representation.Representation doConditionalHandle()
+org.restlet.resource.ServerResource: void doError(org.restlet.data.Status)
 org.restlet.resource.ServerResource: org.restlet.representation.RepresentationInfo doGetInfo()
 org.restlet.resource.ServerResource: org.restlet.representation.RepresentationInfo doGetInfo(org.restlet.representation.Variant)
 org.restlet.resource.ServerResource: org.restlet.representation.Representation doHandle()
@@ -3152,6 +3154,8 @@ org.restlet.resource.UniformResource: org.restlet.Request request
 org.restlet.resource.UniformResource: org.restlet.Response response
 org.restlet.resource.UniformResource: UniformResource()
 org.restlet.resource.UniformResource: void doCatch(java.lang.Throwable)
+org.restlet.resource.UniformResource: void doError(org.restlet.data.Status)
+org.restlet.resource.UniformResource: void doError(org.restlet.data.Status,java.lang.String)
 org.restlet.resource.UniformResource: void doInit()
 org.restlet.resource.UniformResource: void doRelease()
 org.restlet.resource.UniformResource: java.util.Set getAllowedMethods()
@@ -3180,9 +3184,11 @@ org.restlet.resource.UniformResource: org.restlet.data.Reference getReference()
 org.restlet.resource.UniformResource: org.restlet.data.Reference getReferrerRef()
 org.restlet.resource.UniformResource: org.restlet.Request getRequest()
 org.restlet.resource.UniformResource: java.util.Map getRequestAttributes()
+org.restlet.resource.UniformResource: java.util.List getRequestCacheDirectives()
 org.restlet.resource.UniformResource: org.restlet.representation.Representation getRequestEntity()
 org.restlet.resource.UniformResource: org.restlet.Response getResponse()
 org.restlet.resource.UniformResource: java.util.Map getResponseAttributes()
+org.restlet.resource.UniformResource: java.util.List getResponseCacheDirectives()
 org.restlet.resource.UniformResource: org.restlet.representation.Representation getResponseEntity()
 org.restlet.resource.UniformResource: org.restlet.data.Reference getRootRef()
 org.restlet.resource.UniformResource: org.restlet.data.ServerInfo getServerInfo()
@@ -3191,6 +3197,7 @@ org.restlet.resource.UniformResource: org.restlet.service.StatusService getStatu
 org.restlet.resource.UniformResource: org.restlet.representation.Representation handle()
 org.restlet.resource.UniformResource: void init(org.restlet.Context,org.restlet.Request,org.restlet.Response)
 org.restlet.resource.UniformResource: boolean isConfidential()
+org.restlet.resource.UniformResource: boolean isLoggable()
 org.restlet.resource.UniformResource: void release()
 org.restlet.resource.UniformResource: void setApplication(org.restlet.Application)
 org.restlet.resource.UniformResource: void setRequest(org.restlet.Request)
@@ -3204,8 +3211,11 @@ org.restlet.resource.Post
 org.restlet.resource.Post: java.lang.String value()
 org.restlet.resource.ClientResource
 org.restlet.resource.ClientResource: boolean followingRedirects
+org.restlet.resource.ClientResource: int maxRedirects
 org.restlet.resource.ClientResource: org.restlet.Uniform next
 org.restlet.resource.ClientResource: boolean nextCreated
+org.restlet.resource.ClientResource: boolean requestEntityBuffering
+org.restlet.resource.ClientResource: boolean responseEntityBuffering
 org.restlet.resource.ClientResource: int retryAttempts
 org.restlet.resource.ClientResource: long retryDelay
 org.restlet.resource.ClientResource: boolean retryOnError
@@ -3234,6 +3244,7 @@ org.restlet.resource.ClientResource: org.restlet.Response createResponse(org.res
 org.restlet.resource.ClientResource: org.restlet.representation.Representation delete()
 org.restlet.resource.ClientResource: java.lang.Object delete(java.lang.Class)
 org.restlet.resource.ClientResource: org.restlet.representation.Representation delete(org.restlet.data.MediaType)
+org.restlet.resource.ClientResource: void doError(org.restlet.data.Status)
 org.restlet.resource.ClientResource: void doRelease()
 org.restlet.resource.ClientResource: void finalize()
 org.restlet.resource.ClientResource: org.restlet.representation.Representation get()
@@ -3243,6 +3254,7 @@ org.restlet.resource.ClientResource: org.restlet.resource.ClientResource getChil
 org.restlet.resource.ClientResource: java.lang.Object getChild(org.restlet.data.Reference,java.lang.Class)
 org.restlet.resource.ClientResource: org.restlet.resource.ClientResource getChild(java.lang.String)
 org.restlet.resource.ClientResource: java.lang.Object getChild(java.lang.String,java.lang.Class)
+org.restlet.resource.ClientResource: int getMaxRedirects()
 org.restlet.resource.ClientResource: org.restlet.Uniform getNext()
 org.restlet.resource.ClientResource: org.restlet.Uniform getOnResponse()
 org.restlet.resource.ClientResource: org.restlet.Uniform getOnSent()
@@ -3255,6 +3267,7 @@ org.restlet.resource.ClientResource: org.restlet.representation.Representation h
 org.restlet.resource.ClientResource: java.lang.Object handle(org.restlet.data.Method,java.lang.Class)
 org.restlet.resource.ClientResource: org.restlet.representation.Representation handle(org.restlet.data.Method,org.restlet.data.MediaType)
 org.restlet.resource.ClientResource: java.lang.Object handle(org.restlet.data.Method,java.lang.Object,java.lang.Class)
+org.restlet.resource.ClientResource: org.restlet.representation.Representation handle(org.restlet.data.Method,org.restlet.representation.Representation)
 org.restlet.resource.ClientResource: org.restlet.representation.Representation handle(org.restlet.data.Method,org.restlet.representation.Representation,org.restlet.data.ClientInfo)
 org.restlet.resource.ClientResource: org.restlet.representation.Representation handle(org.restlet.data.Method,org.restlet.representation.Representation,org.restlet.data.MediaType)
 org.restlet.resource.ClientResource: org.restlet.Response handle(org.restlet.Request)
@@ -3263,6 +3276,8 @@ org.restlet.resource.ClientResource: boolean hasNext()
 org.restlet.resource.ClientResource: org.restlet.representation.Representation head()
 org.restlet.resource.ClientResource: org.restlet.representation.Representation head(org.restlet.data.MediaType)
 org.restlet.resource.ClientResource: boolean isFollowingRedirects()
+org.restlet.resource.ClientResource: boolean isRequestEntityBuffering()
+org.restlet.resource.ClientResource: boolean isResponseEntityBuffering()
 org.restlet.resource.ClientResource: boolean isRetryOnError()
 org.restlet.resource.ClientResource: org.restlet.representation.Representation options()
 org.restlet.resource.ClientResource: java.lang.Object options(java.lang.Class)
@@ -3280,9 +3295,12 @@ org.restlet.resource.ClientResource: void setChallengeResponse(org.restlet.data.
 org.restlet.resource.ClientResource: void setClientInfo(org.restlet.data.ClientInfo)
 org.restlet.resource.ClientResource: void setConditions(org.restlet.data.Conditions)
 org.restlet.resource.ClientResource: void setCookies(org.restlet.util.Series)
+org.restlet.resource.ClientResource: void setEntityBuffering(boolean)
 org.restlet.resource.ClientResource: void setFollowingRedirects(boolean)
 org.restlet.resource.ClientResource: void setHostRef(org.restlet.data.Reference)
 org.restlet.resource.ClientResource: void setHostRef(java.lang.String)
+org.restlet.resource.ClientResource: void setLoggable(boolean)
+org.restlet.resource.ClientResource: void setMaxRedirects(int)
 org.restlet.resource.ClientResource: void setMethod(org.restlet.data.Method)
 org.restlet.resource.ClientResource: void setNext(org.restlet.Uniform)
 org.restlet.resource.ClientResource: void setOnResponse(org.restlet.Uniform)
@@ -3294,17 +3312,20 @@ org.restlet.resource.ClientResource: void setReference(org.restlet.data.Referenc
 org.restlet.resource.ClientResource: void setReference(java.lang.String)
 org.restlet.resource.ClientResource: void setReferrerRef(org.restlet.data.Reference)
 org.restlet.resource.ClientResource: void setReferrerRef(java.lang.String)
+org.restlet.resource.ClientResource: void setRequestEntityBuffering(boolean)
+org.restlet.resource.ClientResource: void setResponseEntityBuffering(boolean)
 org.restlet.resource.ClientResource: void setRetryAttempts(int)
 org.restlet.resource.ClientResource: void setRetryDelay(long)
 org.restlet.resource.ClientResource: void setRetryOnError(boolean)
 org.restlet.resource.ClientResource: java.lang.Object wrap(java.lang.Class)
-org.restlet.resource.ClientResource: org.restlet.Response access$000(org.restlet.resource.ClientResource,org.restlet.Request)
 org.restlet.resource.UniformResource: org.restlet.Application application
 org.restlet.resource.UniformResource: org.restlet.Context context
 org.restlet.resource.UniformResource: org.restlet.Request request
 org.restlet.resource.UniformResource: org.restlet.Response response
 org.restlet.resource.UniformResource: UniformResource()
 org.restlet.resource.UniformResource: void doCatch(java.lang.Throwable)
+org.restlet.resource.UniformResource: void doError(org.restlet.data.Status)
+org.restlet.resource.UniformResource: void doError(org.restlet.data.Status,java.lang.String)
 org.restlet.resource.UniformResource: void doInit()
 org.restlet.resource.UniformResource: void doRelease()
 org.restlet.resource.UniformResource: java.util.Set getAllowedMethods()
@@ -3333,9 +3354,11 @@ org.restlet.resource.UniformResource: org.restlet.data.Reference getReference()
 org.restlet.resource.UniformResource: org.restlet.data.Reference getReferrerRef()
 org.restlet.resource.UniformResource: org.restlet.Request getRequest()
 org.restlet.resource.UniformResource: java.util.Map getRequestAttributes()
+org.restlet.resource.UniformResource: java.util.List getRequestCacheDirectives()
 org.restlet.resource.UniformResource: org.restlet.representation.Representation getRequestEntity()
 org.restlet.resource.UniformResource: org.restlet.Response getResponse()
 org.restlet.resource.UniformResource: java.util.Map getResponseAttributes()
+org.restlet.resource.UniformResource: java.util.List getResponseCacheDirectives()
 org.restlet.resource.UniformResource: org.restlet.representation.Representation getResponseEntity()
 org.restlet.resource.UniformResource: org.restlet.data.Reference getRootRef()
 org.restlet.resource.UniformResource: org.restlet.data.ServerInfo getServerInfo()
@@ -3344,6 +3367,7 @@ org.restlet.resource.UniformResource: org.restlet.service.StatusService getStatu
 org.restlet.resource.UniformResource: org.restlet.representation.Representation handle()
 org.restlet.resource.UniformResource: void init(org.restlet.Context,org.restlet.Request,org.restlet.Response)
 org.restlet.resource.UniformResource: boolean isConfidential()
+org.restlet.resource.UniformResource: boolean isLoggable()
 org.restlet.resource.UniformResource: void release()
 org.restlet.resource.UniformResource: void setApplication(org.restlet.Application)
 org.restlet.resource.UniformResource: void setRequest(org.restlet.Request)
@@ -3393,6 +3417,7 @@ org.restlet.resource.Finder: org.restlet.resource.ServerResource find(org.restle
 org.restlet.resource.Finder: java.lang.Class getTargetClass()
 org.restlet.resource.Finder: void handle(org.restlet.Request,org.restlet.Response)
 org.restlet.resource.Finder: void setTargetClass(java.lang.Class)
+org.restlet.resource.Finder: java.lang.String toString()
 org.restlet.Restlet: java.lang.String UNABLE_TO_START
 org.restlet.Restlet: java.lang.String author
 org.restlet.Restlet: org.restlet.Context context
@@ -3427,6 +3452,8 @@ org.restlet.resource.UniformResource: org.restlet.Request request
 org.restlet.resource.UniformResource: org.restlet.Response response
 org.restlet.resource.UniformResource: UniformResource()
 org.restlet.resource.UniformResource: void doCatch(java.lang.Throwable)
+org.restlet.resource.UniformResource: void doError(org.restlet.data.Status)
+org.restlet.resource.UniformResource: void doError(org.restlet.data.Status,java.lang.String)
 org.restlet.resource.UniformResource: void doInit()
 org.restlet.resource.UniformResource: void doRelease()
 org.restlet.resource.UniformResource: java.util.Set getAllowedMethods()
@@ -3455,9 +3482,11 @@ org.restlet.resource.UniformResource: org.restlet.data.Reference getReference()
 org.restlet.resource.UniformResource: org.restlet.data.Reference getReferrerRef()
 org.restlet.resource.UniformResource: org.restlet.Request getRequest()
 org.restlet.resource.UniformResource: java.util.Map getRequestAttributes()
+org.restlet.resource.UniformResource: java.util.List getRequestCacheDirectives()
 org.restlet.resource.UniformResource: org.restlet.representation.Representation getRequestEntity()
 org.restlet.resource.UniformResource: org.restlet.Response getResponse()
 org.restlet.resource.UniformResource: java.util.Map getResponseAttributes()
+org.restlet.resource.UniformResource: java.util.List getResponseCacheDirectives()
 org.restlet.resource.UniformResource: org.restlet.representation.Representation getResponseEntity()
 org.restlet.resource.UniformResource: org.restlet.data.Reference getRootRef()
 org.restlet.resource.UniformResource: org.restlet.data.ServerInfo getServerInfo()
@@ -3466,6 +3495,7 @@ org.restlet.resource.UniformResource: org.restlet.service.StatusService getStatu
 org.restlet.resource.UniformResource: org.restlet.representation.Representation handle()
 org.restlet.resource.UniformResource: void init(org.restlet.Context,org.restlet.Request,org.restlet.Response)
 org.restlet.resource.UniformResource: boolean isConfidential()
+org.restlet.resource.UniformResource: boolean isLoggable()
 org.restlet.resource.UniformResource: void release()
 org.restlet.resource.UniformResource: void setApplication(org.restlet.Application)
 org.restlet.resource.UniformResource: void setRequest(org.restlet.Request)
@@ -3496,6 +3526,7 @@ org.restlet.resource.Finder: org.restlet.resource.ServerResource find(org.restle
 org.restlet.resource.Finder: java.lang.Class getTargetClass()
 org.restlet.resource.Finder: void handle(org.restlet.Request,org.restlet.Response)
 org.restlet.resource.Finder: void setTargetClass(java.lang.Class)
+org.restlet.resource.Finder: java.lang.String toString()
 org.restlet.Restlet: java.lang.String UNABLE_TO_START
 org.restlet.Restlet: java.lang.String author
 org.restlet.Restlet: org.restlet.Context context
@@ -27062,8 +27093,11 @@ scala.runtime.AbstractFunction0: double apply$mcD$sp()
 scala.runtime.AbstractFunction0: java.lang.String toString()
 scala.runtime.AbstractFunction0: AbstractFunction0()
 org.kevoree.framework.AbstractNodeType
+org.kevoree.framework.AbstractNodeType: java.util.HashMap dictionary
 org.kevoree.framework.AbstractNodeType: AbstractNodeType()
-org.kevoree.framework.AbstractNodeType: void push(java.lang.String,org.kevoree.ContainerRoot)
+org.kevoree.framework.AbstractNodeType: void push(java.lang.String,org.kevoree.ContainerRoot,org.osgi.framework.BundleContext)
+org.kevoree.framework.AbstractNodeType: java.util.HashMap getDictionary()
+org.kevoree.framework.AbstractNodeType: void setDictionary(java.util.HashMap)
 org.kevoree.framework.KevoreePortOSGiProxy
 org.kevoree.framework.KevoreePortOSGiProxy: boolean pauseState
 org.kevoree.framework.KevoreePortOSGiProxy: boolean scala$actors$Actor$$isSuspended
@@ -31869,166 +31903,13 @@ org.kevoree.framework.KevoreeGroup: void updateGroup()
 org.kevoree.framework.KevoreeGroup: void internal_process(java.lang.Object)
 org.kevoree.framework.KevoreeGroup: boolean getIsStarted()
 org.kevoree.framework.KevoreeGroup: org.kevoree.api.service.core.handler.KevoreeModelHandlerService getMhandler()
-org.kevoree.remote.MainTester
-org.kevoree.remote.MainTester: void main(java.lang.String[])
-org.kevoree.remote.NetworkUtility$
-org.kevoree.remote.NetworkUtility$: org.kevoree.remote.NetworkUtility$ MODULE$
-org.kevoree.remote.NetworkUtility$: void <clinit>()
-org.kevoree.remote.NetworkUtility$: java.lang.Integer findNextAvailblePort(java.lang.Integer,java.lang.Integer)
-org.kevoree.remote.NetworkUtility$: boolean available(int)
-org.kevoree.remote.NetworkUtility$: NetworkUtility$()
-org.kevoree.remote.rest.Handler$
-org.kevoree.remote.rest.Handler$: org.kevoree.remote.rest.Handler$ MODULE$
-org.kevoree.remote.rest.Handler$: org.kevoree.api.service.core.handler.KevoreeModelHandlerService modelhandler
-org.kevoree.remote.rest.Handler$: org.restlet.routing.VirtualHost defaultHost
-org.kevoree.remote.rest.Handler$: void <clinit>()
-org.kevoree.remote.rest.Handler$: org.kevoree.api.service.core.handler.KevoreeModelHandlerService modelhandler()
-org.kevoree.remote.rest.Handler$: void modelhandler_$eq(org.kevoree.api.service.core.handler.KevoreeModelHandlerService)
-org.kevoree.remote.rest.Handler$: void setModelhandler(org.kevoree.api.service.core.handler.KevoreeModelHandlerService)
-org.kevoree.remote.rest.Handler$: org.restlet.routing.VirtualHost defaultHost()
-org.kevoree.remote.rest.Handler$: void defaultHost_$eq(org.restlet.routing.VirtualHost)
-org.kevoree.remote.rest.Handler$: void setDefaultHost(org.restlet.routing.VirtualHost)
-org.kevoree.remote.rest.Handler$: org.restlet.routing.VirtualHost getDefaultHost()
-org.kevoree.remote.rest.Handler$: org.kevoree.api.service.core.handler.KevoreeModelHandlerService getModelhandler()
-org.kevoree.remote.rest.Handler$: Handler$()
-org.kevoree.remote.rest.ErrorResource
-org.kevoree.remote.rest.ErrorResource: java.lang.String error()
-org.kevoree.remote.rest.ErrorResource: ErrorResource()
-org.restlet.resource.ServerResource: boolean annotated
-org.restlet.resource.ServerResource: boolean conditional
-org.restlet.resource.ServerResource: boolean existing
-org.restlet.resource.ServerResource: boolean negotiated
-org.restlet.resource.ServerResource: java.util.List variants
-org.restlet.resource.ServerResource: ServerResource()
-org.restlet.resource.ServerResource: void abort()
-org.restlet.resource.ServerResource: void commit()
-org.restlet.resource.ServerResource: org.restlet.representation.Representation delete()
-org.restlet.resource.ServerResource: org.restlet.representation.Representation delete(org.restlet.representation.Variant)
-org.restlet.resource.ServerResource: org.restlet.representation.Representation describeVariants()
-org.restlet.resource.ServerResource: org.restlet.representation.Representation doConditionalHandle()
-org.restlet.resource.ServerResource: org.restlet.representation.RepresentationInfo doGetInfo()
-org.restlet.resource.ServerResource: org.restlet.representation.RepresentationInfo doGetInfo(org.restlet.representation.Variant)
-org.restlet.resource.ServerResource: org.restlet.representation.Representation doHandle()
-org.restlet.resource.ServerResource: org.restlet.representation.Representation doHandle(org.restlet.engine.resource.AnnotationInfo,org.restlet.representation.Variant)
-org.restlet.resource.ServerResource: org.restlet.representation.Representation doHandle(org.restlet.data.Method,org.restlet.representation.Representation)
-org.restlet.resource.ServerResource: org.restlet.representation.Representation doHandle(org.restlet.representation.Variant)
-org.restlet.resource.ServerResource: org.restlet.representation.Representation doNegotiatedHandle()
-org.restlet.resource.ServerResource: org.restlet.representation.Representation get()
-org.restlet.resource.ServerResource: org.restlet.representation.Representation get(org.restlet.representation.Variant)
-org.restlet.resource.ServerResource: org.restlet.engine.resource.AnnotationInfo getAnnotation(org.restlet.data.Method)
-org.restlet.resource.ServerResource: org.restlet.engine.resource.AnnotationInfo getAnnotation(org.restlet.data.Method,org.restlet.representation.Representation)
-org.restlet.resource.ServerResource: java.util.List getAnnotations()
-org.restlet.resource.ServerResource: org.restlet.representation.RepresentationInfo getInfo()
-org.restlet.resource.ServerResource: org.restlet.representation.RepresentationInfo getInfo(org.restlet.representation.Variant)
-org.restlet.resource.ServerResource: org.restlet.Uniform getOnSent()
-org.restlet.resource.ServerResource: org.restlet.representation.Variant getPreferredVariant(java.util.List)
-org.restlet.resource.ServerResource: java.util.List getVariants()
-org.restlet.resource.ServerResource: java.util.List getVariants(org.restlet.data.Method)
-org.restlet.resource.ServerResource: org.restlet.representation.Representation handle()
-org.restlet.resource.ServerResource: boolean hasAnnotations()
-org.restlet.resource.ServerResource: org.restlet.representation.Representation head()
-org.restlet.resource.ServerResource: org.restlet.representation.Representation head(org.restlet.representation.Variant)
-org.restlet.resource.ServerResource: boolean isAnnotated()
-org.restlet.resource.ServerResource: boolean isAutoCommitting()
-org.restlet.resource.ServerResource: boolean isCommitted()
-org.restlet.resource.ServerResource: boolean isConditional()
-org.restlet.resource.ServerResource: boolean isExisting()
-org.restlet.resource.ServerResource: boolean isInRole(java.lang.String)
-org.restlet.resource.ServerResource: boolean isNegotiated()
-org.restlet.resource.ServerResource: org.restlet.representation.Representation options()
-org.restlet.resource.ServerResource: org.restlet.representation.Representation options(org.restlet.representation.Variant)
-org.restlet.resource.ServerResource: org.restlet.representation.Representation post(org.restlet.representation.Representation)
-org.restlet.resource.ServerResource: org.restlet.representation.Representation post(org.restlet.representation.Representation,org.restlet.representation.Variant)
-org.restlet.resource.ServerResource: org.restlet.representation.Representation put(org.restlet.representation.Representation)
-org.restlet.resource.ServerResource: org.restlet.representation.Representation put(org.restlet.representation.Representation,org.restlet.representation.Variant)
-org.restlet.resource.ServerResource: void redirectPermanent(org.restlet.data.Reference)
-org.restlet.resource.ServerResource: void redirectPermanent(java.lang.String)
-org.restlet.resource.ServerResource: void redirectSeeOther(org.restlet.data.Reference)
-org.restlet.resource.ServerResource: void redirectSeeOther(java.lang.String)
-org.restlet.resource.ServerResource: void redirectTemporary(org.restlet.data.Reference)
-org.restlet.resource.ServerResource: void redirectTemporary(java.lang.String)
-org.restlet.resource.ServerResource: void setAllowedMethods(java.util.Set)
-org.restlet.resource.ServerResource: void setAnnotated(boolean)
-org.restlet.resource.ServerResource: void setAutoCommitting(boolean)
-org.restlet.resource.ServerResource: void setChallengeRequests(java.util.List)
-org.restlet.resource.ServerResource: void setCommitted(boolean)
-org.restlet.resource.ServerResource: void setConditional(boolean)
-org.restlet.resource.ServerResource: void setCookieSettings(org.restlet.util.Series)
-org.restlet.resource.ServerResource: void setDimensions(java.util.Set)
-org.restlet.resource.ServerResource: void setExisting(boolean)
-org.restlet.resource.ServerResource: void setLocationRef(org.restlet.data.Reference)
-org.restlet.resource.ServerResource: void setLocationRef(java.lang.String)
-org.restlet.resource.ServerResource: void setNegotiated(boolean)
-org.restlet.resource.ServerResource: void setOnSent(org.restlet.Uniform)
-org.restlet.resource.ServerResource: void setServerInfo(org.restlet.data.ServerInfo)
-org.restlet.resource.ServerResource: void setStatus(org.restlet.data.Status)
-org.restlet.resource.ServerResource: void setStatus(org.restlet.data.Status,java.lang.String)
-org.restlet.resource.ServerResource: void setStatus(org.restlet.data.Status,java.lang.Throwable)
-org.restlet.resource.ServerResource: void setStatus(org.restlet.data.Status,java.lang.Throwable,java.lang.String)
-org.restlet.resource.ServerResource: void updateAllowedMethods()
-org.restlet.resource.ServerResource: void updateDimensions()
-org.restlet.resource.UniformResource: org.restlet.Application application
-org.restlet.resource.UniformResource: org.restlet.Context context
-org.restlet.resource.UniformResource: org.restlet.Request request
-org.restlet.resource.UniformResource: org.restlet.Response response
-org.restlet.resource.UniformResource: UniformResource()
-org.restlet.resource.UniformResource: void doCatch(java.lang.Throwable)
-org.restlet.resource.UniformResource: void doInit()
-org.restlet.resource.UniformResource: void doRelease()
-org.restlet.resource.UniformResource: java.util.Set getAllowedMethods()
-org.restlet.resource.UniformResource: org.restlet.Application getApplication()
-org.restlet.resource.UniformResource: java.util.List getChallengeRequests()
-org.restlet.resource.UniformResource: org.restlet.data.ChallengeResponse getChallengeResponse()
-org.restlet.resource.UniformResource: org.restlet.data.ClientInfo getClientInfo()
-org.restlet.resource.UniformResource: org.restlet.data.Conditions getConditions()
-org.restlet.resource.UniformResource: org.restlet.Context getContext()
-org.restlet.resource.UniformResource: org.restlet.service.ConverterService getConverterService()
-org.restlet.resource.UniformResource: org.restlet.util.Series getCookies()
-org.restlet.resource.UniformResource: org.restlet.util.Series getCookieSettings()
-org.restlet.resource.UniformResource: java.util.Set getDimensions()
-org.restlet.resource.UniformResource: org.restlet.data.Reference getHostRef()
-org.restlet.resource.UniformResource: org.restlet.data.Reference getLocationRef()
-org.restlet.resource.UniformResource: java.util.logging.Logger getLogger()
-org.restlet.resource.UniformResource: org.restlet.data.Form getMatrix()
-org.restlet.resource.UniformResource: int getMaxForwards()
-org.restlet.resource.UniformResource: org.restlet.service.MetadataService getMetadataService()
-org.restlet.resource.UniformResource: org.restlet.data.Method getMethod()
-org.restlet.resource.UniformResource: org.restlet.data.Reference getOriginalRef()
-org.restlet.resource.UniformResource: org.restlet.data.Protocol getProtocol()
-org.restlet.resource.UniformResource: org.restlet.data.Form getQuery()
-org.restlet.resource.UniformResource: java.util.List getRanges()
-org.restlet.resource.UniformResource: org.restlet.data.Reference getReference()
-org.restlet.resource.UniformResource: org.restlet.data.Reference getReferrerRef()
-org.restlet.resource.UniformResource: org.restlet.Request getRequest()
-org.restlet.resource.UniformResource: java.util.Map getRequestAttributes()
-org.restlet.resource.UniformResource: org.restlet.representation.Representation getRequestEntity()
-org.restlet.resource.UniformResource: org.restlet.Response getResponse()
-org.restlet.resource.UniformResource: java.util.Map getResponseAttributes()
-org.restlet.resource.UniformResource: org.restlet.representation.Representation getResponseEntity()
-org.restlet.resource.UniformResource: org.restlet.data.Reference getRootRef()
-org.restlet.resource.UniformResource: org.restlet.data.ServerInfo getServerInfo()
-org.restlet.resource.UniformResource: org.restlet.data.Status getStatus()
-org.restlet.resource.UniformResource: org.restlet.service.StatusService getStatusService()
-org.restlet.resource.UniformResource: org.restlet.representation.Representation handle()
-org.restlet.resource.UniformResource: void init(org.restlet.Context,org.restlet.Request,org.restlet.Response)
-org.restlet.resource.UniformResource: boolean isConfidential()
-org.restlet.resource.UniformResource: void release()
-org.restlet.resource.UniformResource: void setApplication(org.restlet.Application)
-org.restlet.resource.UniformResource: void setRequest(org.restlet.Request)
-org.restlet.resource.UniformResource: void setResponse(org.restlet.Response)
-org.restlet.resource.UniformResource: java.lang.Object toObject(org.restlet.representation.Representation,java.lang.Class)
-org.restlet.resource.UniformResource: org.restlet.representation.Representation toRepresentation(java.lang.Object,org.restlet.representation.Variant)
-org.restlet.resource.UniformResource: java.lang.String toString()
-org.kevoree.remote.NetworkUtility
-org.kevoree.remote.NetworkUtility: boolean available(int)
-org.kevoree.remote.NetworkUtility: java.lang.Integer findNextAvailblePort(java.lang.Integer,java.lang.Integer)
-org.kevoree.remote.rest.FileServerApplication
-org.kevoree.remote.rest.FileServerApplication: java.lang.String uri
-org.kevoree.remote.rest.FileServerApplication: org.restlet.Restlet createInboundRoot()
-org.kevoree.remote.rest.FileServerApplication: FileServerApplication(java.lang.String)
+org.kevoree.remote.fileserver.RestFileServerApplication
+org.kevoree.remote.fileserver.RestFileServerApplication: java.lang.String filePath
+org.kevoree.remote.fileserver.RestFileServerApplication: RestFileServerApplication(java.lang.String)
+org.kevoree.remote.fileserver.RestFileServerApplication: org.restlet.Restlet createInboundRoot()
 org.restlet.Application: java.lang.ThreadLocal CURRENT
 org.restlet.Application: java.lang.Class finderClass
-org.restlet.Application: org.restlet.engine.RestletHelper helper
+org.restlet.Application: org.restlet.engine.application.ApplicationHelper helper
 org.restlet.Application: java.util.List roles
 org.restlet.Application: org.restlet.Restlet inboundRoot
 org.restlet.Application: org.restlet.Restlet outboundRoot
@@ -32042,8 +31923,9 @@ org.restlet.Application: org.restlet.Restlet createOutboundRoot()
 org.restlet.Application: org.restlet.service.ConnectorService getConnectorService()
 org.restlet.Application: org.restlet.service.ConverterService getConverterService()
 org.restlet.Application: org.restlet.service.DecoderService getDecoderService()
+org.restlet.Application: org.restlet.service.EncoderService getEncoderService()
 org.restlet.Application: java.lang.Class getFinderClass()
-org.restlet.Application: org.restlet.engine.RestletHelper getHelper()
+org.restlet.Application: org.restlet.engine.application.ApplicationHelper getHelper()
 org.restlet.Application: org.restlet.Restlet getInboundRoot()
 org.restlet.Application: org.restlet.service.MetadataService getMetadataService()
 org.restlet.Application: org.restlet.Restlet getOutboundRoot()
@@ -32055,16 +31937,17 @@ org.restlet.Application: org.restlet.service.StatusService getStatusService()
 org.restlet.Application: org.restlet.service.TaskService getTaskService()
 org.restlet.Application: org.restlet.service.TunnelService getTunnelService()
 org.restlet.Application: void handle(org.restlet.Request,org.restlet.Response)
-org.restlet.Application: void setOutboundRoot(java.lang.Class)
 org.restlet.Application: void setClientRoot(java.lang.Class)
 org.restlet.Application: void setConnectorService(org.restlet.service.ConnectorService)
 org.restlet.Application: void setContext(org.restlet.Context)
 org.restlet.Application: void setConverterService(org.restlet.service.ConverterService)
 org.restlet.Application: void setDecoderService(org.restlet.service.DecoderService)
+org.restlet.Application: void setEncoderService(org.restlet.service.EncoderService)
 org.restlet.Application: void setFinderClass(java.lang.Class)
 org.restlet.Application: void setInboundRoot(java.lang.Class)
 org.restlet.Application: void setInboundRoot(org.restlet.Restlet)
 org.restlet.Application: void setMetadataService(org.restlet.service.MetadataService)
+org.restlet.Application: void setOutboundRoot(java.lang.Class)
 org.restlet.Application: void setOutboundRoot(org.restlet.Restlet)
 org.restlet.Application: void setRangeService(org.restlet.service.RangeService)
 org.restlet.Application: void setRoles(java.util.List)
@@ -32101,38 +31984,45 @@ org.restlet.Restlet: void setName(java.lang.String)
 org.restlet.Restlet: void setOwner(java.lang.String)
 org.restlet.Restlet: void start()
 org.restlet.Restlet: void stop()
-org.kevoree.remote.MainTester$
-org.kevoree.remote.MainTester$: org.kevoree.remote.MainTester$ MODULE$
-org.kevoree.remote.MainTester$: void <clinit>()
-org.kevoree.remote.MainTester$: void main(java.lang.String[])
-org.kevoree.remote.MainTester$: MainTester$()
-org.kevoree.remote.rest.KevoreeRemoteBean
-org.kevoree.remote.rest.KevoreeRemoteBean: org.restlet.Component component
-org.kevoree.remote.rest.KevoreeRemoteBean: int port
-org.kevoree.remote.rest.KevoreeRemoteBean: org.restlet.Server serverhttp
-org.kevoree.remote.rest.KevoreeRemoteBean: org.restlet.Component component()
-org.kevoree.remote.rest.KevoreeRemoteBean: void component_$eq(org.restlet.Component)
-org.kevoree.remote.rest.KevoreeRemoteBean: int port()
-org.kevoree.remote.rest.KevoreeRemoteBean: void port_$eq(int)
-org.kevoree.remote.rest.KevoreeRemoteBean: org.restlet.Server serverhttp()
-org.kevoree.remote.rest.KevoreeRemoteBean: void serverhttp_$eq(org.restlet.Server)
-org.kevoree.remote.rest.KevoreeRemoteBean: void start()
-org.kevoree.remote.rest.KevoreeRemoteBean: void stop()
-org.kevoree.remote.rest.KevoreeRemoteBean: KevoreeRemoteBean()
-org.kevoree.remote.rest.Handler
-org.kevoree.remote.rest.Handler: void setDefaultHost(org.restlet.routing.VirtualHost)
-org.kevoree.remote.rest.Handler: org.restlet.routing.VirtualHost getDefaultHost()
-org.kevoree.remote.rest.Handler: void defaultHost_$eq(org.restlet.routing.VirtualHost)
-org.kevoree.remote.rest.Handler: org.restlet.routing.VirtualHost defaultHost()
-org.kevoree.remote.rest.Handler: void setModelhandler(org.kevoree.api.service.core.handler.KevoreeModelHandlerService)
-org.kevoree.remote.rest.Handler: org.kevoree.api.service.core.handler.KevoreeModelHandlerService getModelhandler()
-org.kevoree.remote.rest.Handler: void modelhandler_$eq(org.kevoree.api.service.core.handler.KevoreeModelHandlerService)
-org.kevoree.remote.rest.Handler: org.kevoree.api.service.core.handler.KevoreeModelHandlerService modelhandler()
-org.kevoree.remote.rest.ModelHandlerResource
-org.kevoree.remote.rest.ModelHandlerResource: org.restlet.representation.Representation doHandle()
-org.kevoree.remote.rest.ModelHandlerResource: org.restlet.representation.Representation get()
-org.kevoree.remote.rest.ModelHandlerResource: org.restlet.representation.Representation post(org.restlet.representation.Representation)
-org.kevoree.remote.rest.ModelHandlerResource: ModelHandlerResource()
+org.kevoree.remote.MainTester
+org.kevoree.remote.MainTester: void main(java.lang.String[])
+org.kevoree.remote.NetworkUtility$
+org.kevoree.remote.NetworkUtility$: org.kevoree.remote.NetworkUtility$ MODULE$
+org.kevoree.remote.NetworkUtility$: void <clinit>()
+org.kevoree.remote.NetworkUtility$: java.lang.Integer findNextAvailblePort(java.lang.Integer,java.lang.Integer)
+org.kevoree.remote.NetworkUtility$: boolean available(int)
+org.kevoree.remote.NetworkUtility$: NetworkUtility$()
+org.kevoree.remote.fileserver.App
+org.kevoree.remote.fileserver.App: App()
+org.kevoree.remote.fileserver.App: void main(java.lang.String[])
+org.kevoree.remote.rest.Handler$
+org.kevoree.remote.rest.Handler$: org.kevoree.remote.rest.Handler$ MODULE$
+org.kevoree.remote.rest.Handler$: org.kevoree.api.service.core.handler.KevoreeModelHandlerService modelhandler
+org.kevoree.remote.rest.Handler$: org.restlet.routing.VirtualHost defaultHost
+org.kevoree.remote.rest.Handler$: void <clinit>()
+org.kevoree.remote.rest.Handler$: org.kevoree.api.service.core.handler.KevoreeModelHandlerService modelhandler()
+org.kevoree.remote.rest.Handler$: void modelhandler_$eq(org.kevoree.api.service.core.handler.KevoreeModelHandlerService)
+org.kevoree.remote.rest.Handler$: void setModelhandler(org.kevoree.api.service.core.handler.KevoreeModelHandlerService)
+org.kevoree.remote.rest.Handler$: org.restlet.routing.VirtualHost defaultHost()
+org.kevoree.remote.rest.Handler$: void defaultHost_$eq(org.restlet.routing.VirtualHost)
+org.kevoree.remote.rest.Handler$: void setDefaultHost(org.restlet.routing.VirtualHost)
+org.kevoree.remote.rest.Handler$: void initHost(org.restlet.routing.VirtualHost)
+org.kevoree.remote.rest.Handler$: org.restlet.routing.VirtualHost getDefaultHost()
+org.kevoree.remote.rest.Handler$: org.kevoree.api.service.core.handler.KevoreeModelHandlerService getModelhandler()
+org.kevoree.remote.rest.Handler$: Handler$()
+org.kevoree.remote.rest.KevoreeRemoteBean2
+org.kevoree.remote.rest.KevoreeRemoteBean2: org.restlet.Component component
+org.kevoree.remote.rest.KevoreeRemoteBean2: int port
+org.kevoree.remote.rest.KevoreeRemoteBean2: org.restlet.Component component()
+org.kevoree.remote.rest.KevoreeRemoteBean2: void component_$eq(org.restlet.Component)
+org.kevoree.remote.rest.KevoreeRemoteBean2: int port()
+org.kevoree.remote.rest.KevoreeRemoteBean2: void port_$eq(int)
+org.kevoree.remote.rest.KevoreeRemoteBean2: void start()
+org.kevoree.remote.rest.KevoreeRemoteBean2: void stop()
+org.kevoree.remote.rest.KevoreeRemoteBean2: KevoreeRemoteBean2()
+org.kevoree.remote.rest.ErrorResource
+org.kevoree.remote.rest.ErrorResource: java.lang.String error()
+org.kevoree.remote.rest.ErrorResource: ErrorResource()
 org.restlet.resource.ServerResource: boolean annotated
 org.restlet.resource.ServerResource: boolean conditional
 org.restlet.resource.ServerResource: boolean existing
@@ -32144,7 +32034,9 @@ org.restlet.resource.ServerResource: void commit()
 org.restlet.resource.ServerResource: org.restlet.representation.Representation delete()
 org.restlet.resource.ServerResource: org.restlet.representation.Representation delete(org.restlet.representation.Variant)
 org.restlet.resource.ServerResource: org.restlet.representation.Representation describeVariants()
+org.restlet.resource.ServerResource: void doCatch(java.lang.Throwable)
 org.restlet.resource.ServerResource: org.restlet.representation.Representation doConditionalHandle()
+org.restlet.resource.ServerResource: void doError(org.restlet.data.Status)
 org.restlet.resource.ServerResource: org.restlet.representation.RepresentationInfo doGetInfo()
 org.restlet.resource.ServerResource: org.restlet.representation.RepresentationInfo doGetInfo(org.restlet.representation.Variant)
 org.restlet.resource.ServerResource: org.restlet.representation.Representation doHandle()
@@ -32212,6 +32104,8 @@ org.restlet.resource.UniformResource: org.restlet.Request request
 org.restlet.resource.UniformResource: org.restlet.Response response
 org.restlet.resource.UniformResource: UniformResource()
 org.restlet.resource.UniformResource: void doCatch(java.lang.Throwable)
+org.restlet.resource.UniformResource: void doError(org.restlet.data.Status)
+org.restlet.resource.UniformResource: void doError(org.restlet.data.Status,java.lang.String)
 org.restlet.resource.UniformResource: void doInit()
 org.restlet.resource.UniformResource: void doRelease()
 org.restlet.resource.UniformResource: java.util.Set getAllowedMethods()
@@ -32240,9 +32134,11 @@ org.restlet.resource.UniformResource: org.restlet.data.Reference getReference()
 org.restlet.resource.UniformResource: org.restlet.data.Reference getReferrerRef()
 org.restlet.resource.UniformResource: org.restlet.Request getRequest()
 org.restlet.resource.UniformResource: java.util.Map getRequestAttributes()
+org.restlet.resource.UniformResource: java.util.List getRequestCacheDirectives()
 org.restlet.resource.UniformResource: org.restlet.representation.Representation getRequestEntity()
 org.restlet.resource.UniformResource: org.restlet.Response getResponse()
 org.restlet.resource.UniformResource: java.util.Map getResponseAttributes()
+org.restlet.resource.UniformResource: java.util.List getResponseCacheDirectives()
 org.restlet.resource.UniformResource: org.restlet.representation.Representation getResponseEntity()
 org.restlet.resource.UniformResource: org.restlet.data.Reference getRootRef()
 org.restlet.resource.UniformResource: org.restlet.data.ServerInfo getServerInfo()
@@ -32251,6 +32147,168 @@ org.restlet.resource.UniformResource: org.restlet.service.StatusService getStatu
 org.restlet.resource.UniformResource: org.restlet.representation.Representation handle()
 org.restlet.resource.UniformResource: void init(org.restlet.Context,org.restlet.Request,org.restlet.Response)
 org.restlet.resource.UniformResource: boolean isConfidential()
+org.restlet.resource.UniformResource: boolean isLoggable()
+org.restlet.resource.UniformResource: void release()
+org.restlet.resource.UniformResource: void setApplication(org.restlet.Application)
+org.restlet.resource.UniformResource: void setRequest(org.restlet.Request)
+org.restlet.resource.UniformResource: void setResponse(org.restlet.Response)
+org.restlet.resource.UniformResource: java.lang.Object toObject(org.restlet.representation.Representation,java.lang.Class)
+org.restlet.resource.UniformResource: org.restlet.representation.Representation toRepresentation(java.lang.Object,org.restlet.representation.Variant)
+org.restlet.resource.UniformResource: java.lang.String toString()
+org.kevoree.remote.NetworkUtility
+org.kevoree.remote.NetworkUtility: boolean available(int)
+org.kevoree.remote.NetworkUtility: java.lang.Integer findNextAvailblePort(java.lang.Integer,java.lang.Integer)
+org.kevoree.remote.MainTester$
+org.kevoree.remote.MainTester$: org.kevoree.remote.MainTester$ MODULE$
+org.kevoree.remote.MainTester$: void <clinit>()
+org.kevoree.remote.MainTester$: void main(java.lang.String[])
+org.kevoree.remote.MainTester$: MainTester$()
+org.kevoree.remote.rest.KevoreeRemoteBean
+org.kevoree.remote.rest.KevoreeRemoteBean: org.restlet.Component component
+org.kevoree.remote.rest.KevoreeRemoteBean: org.restlet.Application provisioning
+org.kevoree.remote.rest.KevoreeRemoteBean: KevoreeRemoteBean()
+org.kevoree.remote.rest.KevoreeRemoteBean: void start()
+org.kevoree.remote.rest.KevoreeRemoteBean: void stop()
+org.kevoree.remote.rest.Handler
+org.kevoree.remote.rest.Handler: void initHost(org.restlet.routing.VirtualHost)
+org.kevoree.remote.rest.Handler: void setDefaultHost(org.restlet.routing.VirtualHost)
+org.kevoree.remote.rest.Handler: org.restlet.routing.VirtualHost getDefaultHost()
+org.kevoree.remote.rest.Handler: void defaultHost_$eq(org.restlet.routing.VirtualHost)
+org.kevoree.remote.rest.Handler: org.restlet.routing.VirtualHost defaultHost()
+org.kevoree.remote.rest.Handler: void setModelhandler(org.kevoree.api.service.core.handler.KevoreeModelHandlerService)
+org.kevoree.remote.rest.Handler: org.kevoree.api.service.core.handler.KevoreeModelHandlerService getModelhandler()
+org.kevoree.remote.rest.Handler: void modelhandler_$eq(org.kevoree.api.service.core.handler.KevoreeModelHandlerService)
+org.kevoree.remote.rest.Handler: org.kevoree.api.service.core.handler.KevoreeModelHandlerService modelhandler()
+org.kevoree.remote.rest.ModelHandlerResource
+org.kevoree.remote.rest.ModelHandlerResource: org.restlet.representation.Representation doHandle()
+org.kevoree.remote.rest.ModelHandlerResource: org.restlet.representation.Representation get()
+org.kevoree.remote.rest.ModelHandlerResource: org.restlet.representation.Representation post(org.restlet.representation.Representation)
+org.kevoree.remote.rest.ModelHandlerResource: ModelHandlerResource()
+org.restlet.resource.ServerResource: boolean annotated
+org.restlet.resource.ServerResource: boolean conditional
+org.restlet.resource.ServerResource: boolean existing
+org.restlet.resource.ServerResource: boolean negotiated
+org.restlet.resource.ServerResource: java.util.List variants
+org.restlet.resource.ServerResource: ServerResource()
+org.restlet.resource.ServerResource: void abort()
+org.restlet.resource.ServerResource: void commit()
+org.restlet.resource.ServerResource: org.restlet.representation.Representation delete()
+org.restlet.resource.ServerResource: org.restlet.representation.Representation delete(org.restlet.representation.Variant)
+org.restlet.resource.ServerResource: org.restlet.representation.Representation describeVariants()
+org.restlet.resource.ServerResource: void doCatch(java.lang.Throwable)
+org.restlet.resource.ServerResource: org.restlet.representation.Representation doConditionalHandle()
+org.restlet.resource.ServerResource: void doError(org.restlet.data.Status)
+org.restlet.resource.ServerResource: org.restlet.representation.RepresentationInfo doGetInfo()
+org.restlet.resource.ServerResource: org.restlet.representation.RepresentationInfo doGetInfo(org.restlet.representation.Variant)
+org.restlet.resource.ServerResource: org.restlet.representation.Representation doHandle()
+org.restlet.resource.ServerResource: org.restlet.representation.Representation doHandle(org.restlet.engine.resource.AnnotationInfo,org.restlet.representation.Variant)
+org.restlet.resource.ServerResource: org.restlet.representation.Representation doHandle(org.restlet.data.Method,org.restlet.representation.Representation)
+org.restlet.resource.ServerResource: org.restlet.representation.Representation doHandle(org.restlet.representation.Variant)
+org.restlet.resource.ServerResource: org.restlet.representation.Representation doNegotiatedHandle()
+org.restlet.resource.ServerResource: org.restlet.representation.Representation get()
+org.restlet.resource.ServerResource: org.restlet.representation.Representation get(org.restlet.representation.Variant)
+org.restlet.resource.ServerResource: org.restlet.engine.resource.AnnotationInfo getAnnotation(org.restlet.data.Method)
+org.restlet.resource.ServerResource: org.restlet.engine.resource.AnnotationInfo getAnnotation(org.restlet.data.Method,org.restlet.representation.Representation)
+org.restlet.resource.ServerResource: java.util.List getAnnotations()
+org.restlet.resource.ServerResource: org.restlet.representation.RepresentationInfo getInfo()
+org.restlet.resource.ServerResource: org.restlet.representation.RepresentationInfo getInfo(org.restlet.representation.Variant)
+org.restlet.resource.ServerResource: org.restlet.Uniform getOnSent()
+org.restlet.resource.ServerResource: org.restlet.representation.Variant getPreferredVariant(java.util.List)
+org.restlet.resource.ServerResource: java.util.List getVariants()
+org.restlet.resource.ServerResource: java.util.List getVariants(org.restlet.data.Method)
+org.restlet.resource.ServerResource: org.restlet.representation.Representation handle()
+org.restlet.resource.ServerResource: boolean hasAnnotations()
+org.restlet.resource.ServerResource: org.restlet.representation.Representation head()
+org.restlet.resource.ServerResource: org.restlet.representation.Representation head(org.restlet.representation.Variant)
+org.restlet.resource.ServerResource: boolean isAnnotated()
+org.restlet.resource.ServerResource: boolean isAutoCommitting()
+org.restlet.resource.ServerResource: boolean isCommitted()
+org.restlet.resource.ServerResource: boolean isConditional()
+org.restlet.resource.ServerResource: boolean isExisting()
+org.restlet.resource.ServerResource: boolean isInRole(java.lang.String)
+org.restlet.resource.ServerResource: boolean isNegotiated()
+org.restlet.resource.ServerResource: org.restlet.representation.Representation options()
+org.restlet.resource.ServerResource: org.restlet.representation.Representation options(org.restlet.representation.Variant)
+org.restlet.resource.ServerResource: org.restlet.representation.Representation post(org.restlet.representation.Representation)
+org.restlet.resource.ServerResource: org.restlet.representation.Representation post(org.restlet.representation.Representation,org.restlet.representation.Variant)
+org.restlet.resource.ServerResource: org.restlet.representation.Representation put(org.restlet.representation.Representation)
+org.restlet.resource.ServerResource: org.restlet.representation.Representation put(org.restlet.representation.Representation,org.restlet.representation.Variant)
+org.restlet.resource.ServerResource: void redirectPermanent(org.restlet.data.Reference)
+org.restlet.resource.ServerResource: void redirectPermanent(java.lang.String)
+org.restlet.resource.ServerResource: void redirectSeeOther(org.restlet.data.Reference)
+org.restlet.resource.ServerResource: void redirectSeeOther(java.lang.String)
+org.restlet.resource.ServerResource: void redirectTemporary(org.restlet.data.Reference)
+org.restlet.resource.ServerResource: void redirectTemporary(java.lang.String)
+org.restlet.resource.ServerResource: void setAllowedMethods(java.util.Set)
+org.restlet.resource.ServerResource: void setAnnotated(boolean)
+org.restlet.resource.ServerResource: void setAutoCommitting(boolean)
+org.restlet.resource.ServerResource: void setChallengeRequests(java.util.List)
+org.restlet.resource.ServerResource: void setCommitted(boolean)
+org.restlet.resource.ServerResource: void setConditional(boolean)
+org.restlet.resource.ServerResource: void setCookieSettings(org.restlet.util.Series)
+org.restlet.resource.ServerResource: void setDimensions(java.util.Set)
+org.restlet.resource.ServerResource: void setExisting(boolean)
+org.restlet.resource.ServerResource: void setLocationRef(org.restlet.data.Reference)
+org.restlet.resource.ServerResource: void setLocationRef(java.lang.String)
+org.restlet.resource.ServerResource: void setNegotiated(boolean)
+org.restlet.resource.ServerResource: void setOnSent(org.restlet.Uniform)
+org.restlet.resource.ServerResource: void setServerInfo(org.restlet.data.ServerInfo)
+org.restlet.resource.ServerResource: void setStatus(org.restlet.data.Status)
+org.restlet.resource.ServerResource: void setStatus(org.restlet.data.Status,java.lang.String)
+org.restlet.resource.ServerResource: void setStatus(org.restlet.data.Status,java.lang.Throwable)
+org.restlet.resource.ServerResource: void setStatus(org.restlet.data.Status,java.lang.Throwable,java.lang.String)
+org.restlet.resource.ServerResource: void updateAllowedMethods()
+org.restlet.resource.ServerResource: void updateDimensions()
+org.restlet.resource.UniformResource: org.restlet.Application application
+org.restlet.resource.UniformResource: org.restlet.Context context
+org.restlet.resource.UniformResource: org.restlet.Request request
+org.restlet.resource.UniformResource: org.restlet.Response response
+org.restlet.resource.UniformResource: UniformResource()
+org.restlet.resource.UniformResource: void doCatch(java.lang.Throwable)
+org.restlet.resource.UniformResource: void doError(org.restlet.data.Status)
+org.restlet.resource.UniformResource: void doError(org.restlet.data.Status,java.lang.String)
+org.restlet.resource.UniformResource: void doInit()
+org.restlet.resource.UniformResource: void doRelease()
+org.restlet.resource.UniformResource: java.util.Set getAllowedMethods()
+org.restlet.resource.UniformResource: org.restlet.Application getApplication()
+org.restlet.resource.UniformResource: java.util.List getChallengeRequests()
+org.restlet.resource.UniformResource: org.restlet.data.ChallengeResponse getChallengeResponse()
+org.restlet.resource.UniformResource: org.restlet.data.ClientInfo getClientInfo()
+org.restlet.resource.UniformResource: org.restlet.data.Conditions getConditions()
+org.restlet.resource.UniformResource: org.restlet.Context getContext()
+org.restlet.resource.UniformResource: org.restlet.service.ConverterService getConverterService()
+org.restlet.resource.UniformResource: org.restlet.util.Series getCookies()
+org.restlet.resource.UniformResource: org.restlet.util.Series getCookieSettings()
+org.restlet.resource.UniformResource: java.util.Set getDimensions()
+org.restlet.resource.UniformResource: org.restlet.data.Reference getHostRef()
+org.restlet.resource.UniformResource: org.restlet.data.Reference getLocationRef()
+org.restlet.resource.UniformResource: java.util.logging.Logger getLogger()
+org.restlet.resource.UniformResource: org.restlet.data.Form getMatrix()
+org.restlet.resource.UniformResource: int getMaxForwards()
+org.restlet.resource.UniformResource: org.restlet.service.MetadataService getMetadataService()
+org.restlet.resource.UniformResource: org.restlet.data.Method getMethod()
+org.restlet.resource.UniformResource: org.restlet.data.Reference getOriginalRef()
+org.restlet.resource.UniformResource: org.restlet.data.Protocol getProtocol()
+org.restlet.resource.UniformResource: org.restlet.data.Form getQuery()
+org.restlet.resource.UniformResource: java.util.List getRanges()
+org.restlet.resource.UniformResource: org.restlet.data.Reference getReference()
+org.restlet.resource.UniformResource: org.restlet.data.Reference getReferrerRef()
+org.restlet.resource.UniformResource: org.restlet.Request getRequest()
+org.restlet.resource.UniformResource: java.util.Map getRequestAttributes()
+org.restlet.resource.UniformResource: java.util.List getRequestCacheDirectives()
+org.restlet.resource.UniformResource: org.restlet.representation.Representation getRequestEntity()
+org.restlet.resource.UniformResource: org.restlet.Response getResponse()
+org.restlet.resource.UniformResource: java.util.Map getResponseAttributes()
+org.restlet.resource.UniformResource: java.util.List getResponseCacheDirectives()
+org.restlet.resource.UniformResource: org.restlet.representation.Representation getResponseEntity()
+org.restlet.resource.UniformResource: org.restlet.data.Reference getRootRef()
+org.restlet.resource.UniformResource: org.restlet.data.ServerInfo getServerInfo()
+org.restlet.resource.UniformResource: org.restlet.data.Status getStatus()
+org.restlet.resource.UniformResource: org.restlet.service.StatusService getStatusService()
+org.restlet.resource.UniformResource: org.restlet.representation.Representation handle()
+org.restlet.resource.UniformResource: void init(org.restlet.Context,org.restlet.Request,org.restlet.Response)
+org.restlet.resource.UniformResource: boolean isConfidential()
+org.restlet.resource.UniformResource: boolean isLoggable()
 org.restlet.resource.UniformResource: void release()
 org.restlet.resource.UniformResource: void setApplication(org.restlet.Application)
 org.restlet.resource.UniformResource: void setRequest(org.restlet.Request)
@@ -34897,6 +34955,7 @@ org.eclipse.emf.ecore.xmi.XMIException: long serialVersionUID
 org.restlet.data.Method: java.lang.String BASE_HTTP
 org.restlet.data.Method: java.lang.String BASE_WEBDAV
 net.lag.configgy.Configgy$LoggingConfigSubscriber$$anonfun$validate$1: long serialVersionUID
+org.restlet.Restlet: java.lang.String UNABLE_TO_START
 ch.qos.logback.classic.joran.action.LoggerAction: java.lang.String LEVEL_ATTRIBUTE
 ch.qos.logback.core.joran.action.Action: java.lang.String NAME_ATTRIBUTE
 ch.qos.logback.core.joran.action.Action: java.lang.String KEY_ATTRIBUTE
@@ -35846,6 +35905,7 @@ org.eclipse.emf.ecore.impl.BasicEObjectImpl: int EVIRTUAL_GET
 org.eclipse.emf.ecore.impl.BasicEObjectImpl: int EVIRTUAL_IS_SET
 org.eclipse.emf.ecore.impl.BasicEObjectImpl: boolean $assertionsDisabled
 scala.Function1$mcIL$sp$$anonfun$compose$mcIL$sp$1: long serialVersionUID
+org.kevoree.impl.InstanceImpl: java.lang.String META_DATA_EDEFAULT
 org.kevoree.impl.NamedElementImpl: java.lang.String NAME_EDEFAULT
 org.eclipse.emf.ecore.impl.EObjectImpl: int EDELIVER
 org.eclipse.emf.ecore.impl.EObjectImpl: int EDYNAMIC_CLASS
@@ -35971,6 +36031,7 @@ scala.concurrent.forkjoin.ForkJoinPool: long syncStackOffset
 scala.concurrent.forkjoin.ForkJoinPool: long spareStackOffset
 scala.xml.NodeSeq$$anonfun$newBuilder$1: long serialVersionUID
 scala.Function1$mcFD$sp$$anonfun$compose$mcFD$sp$1: long serialVersionUID
+org.kevoree.impl.ChannelImpl: java.lang.String META_DATA_EDEFAULT
 org.kevoree.impl.NamedElementImpl: java.lang.String NAME_EDEFAULT
 org.eclipse.emf.ecore.impl.EObjectImpl: int EDELIVER
 org.eclipse.emf.ecore.impl.EObjectImpl: int EDYNAMIC_CLASS
@@ -36974,6 +37035,7 @@ org.eclipse.emf.ecore.util.EcoreUtil: java.lang.String OPERATION_VISIBILITY_KEY
 org.kevoree.framework.FileHelper$$anonfun$write$1: long serialVersionUID
 org.apache.felix.framework.ModuleImpl$ModuleClassLoader: int LIBNAME_IDX
 org.apache.felix.framework.ModuleImpl$ModuleClassLoader: int LIBPATH_IDX
+org.kevoree.impl.InstanceImpl: java.lang.String META_DATA_EDEFAULT
 org.kevoree.impl.NamedElementImpl: java.lang.String NAME_EDEFAULT
 org.eclipse.emf.ecore.impl.EObjectImpl: int EDELIVER
 org.eclipse.emf.ecore.impl.EObjectImpl: int EDYNAMIC_CLASS
@@ -37296,7 +37358,6 @@ ch.qos.logback.core.pattern.parser.OptionTokenizer: char COMMA_CHAR
 ch.qos.logback.core.pattern.parser.OptionTokenizer: char DOUBLE_QUOTE_CHAR
 ch.qos.logback.core.pattern.parser.OptionTokenizer: char SINGLE_QUOTE_CHAR
 scala.io.BufferedSource$$anonfun$3: long serialVersionUID
-org.kevoree.kompare.sub.StopNodeKompare$$anonfun$getStopNodeAdaptationModel$1$$anonfun$apply$1: long serialVersionUID
 org.kevoree.framework.KevoreeActor$$anonfun$act$1$$anonfun$apply$1: long serialVersionUID
 scala.xml.include.sax.Main$$anonfun$2$$anonfun$apply$2: long serialVersionUID
 scala.xml.parsing.FactoryAdapter$$anonfun$1: long serialVersionUID
@@ -37371,7 +37432,6 @@ org.kevoree.tools.marShell.parser.sub.KevsAbstractParser$$anonfun$stringLit$1: l
 org.kevoree.tools.marShell.parser.sub.KevsAbstractParser$$anonfun$stringLit$2: long serialVersionUID
 scala.Function2$mcDII$sp$$anonfun$curried$mcDII$sp$1$$anonfun$apply$7: long serialVersionUID
 org.apache.log4j.Log4jLoggerFactory: java.lang.String LOG4J_DELEGATION_LOOP_URL
-org.kevoree.kompare.sub.InitNodeKompare$$anonfun$getInitNodeAdaptationModel$3$$anonfun$apply$4: long serialVersionUID
 org.restlet.representation.Representation: long UNKNOWN_SIZE
 scala.util.parsing.combinator.Parsers$Parser$$anonfun$$up$up$up$1: long serialVersionUID
 scala.util.parsing.combinator.lexical.StdLexical$$anonfun$_delim$2: long serialVersionUID
@@ -37384,7 +37444,7 @@ org.ops4j.pax.url.maven.commons.MavenSettingsImpl: java.lang.String PROFILE_TAG
 org.ops4j.pax.url.maven.commons.MavenSettingsImpl: java.lang.String REPOSITORY_TAG
 org.ops4j.pax.url.maven.commons.MavenSettingsImpl: java.lang.String ACTIVE_PROFILES_TAG
 org.ops4j.pax.url.maven.commons.MavenSettingsImpl: java.lang.String PROXY_TAG
-org.ops4j.pax.url.maven.commons.MavenSettingsImpl: java.lang.String DEFAULT_REPOSITORIES
+org.ops4j.pax.url.maven.commons.MavenSettingsImpl: java.lang.String MIRROR_TAG
 org.ops4j.pax.url.maven.commons.MavenSettingsImpl: java.lang.String FALLBACK_REPOSITORIES
 org.restlet.representation.Representation: long UNKNOWN_SIZE
 scala.Function2$mcDDL$sp$$anonfun$curried$mcDDL$sp$1$$anonfun$apply$49: long serialVersionUID
@@ -37816,6 +37876,7 @@ org.jgrapht.graph.DefaultListenableGraph: long serialVersionUID
 org.jgrapht.graph.GraphDelegator: long serialVersionUID
 org.osgi.service.upnp.UPnPService: java.lang.String TYPE
 org.osgi.service.upnp.UPnPService: java.lang.String ID
+org.kevoree.impl.ComponentInstanceImpl: java.lang.String META_DATA_EDEFAULT
 org.kevoree.impl.NamedElementImpl: java.lang.String NAME_EDEFAULT
 org.eclipse.emf.ecore.impl.EObjectImpl: int EDELIVER
 org.eclipse.emf.ecore.impl.EObjectImpl: int EDYNAMIC_CLASS
@@ -37910,6 +37971,8 @@ scala.util.parsing.combinator.syntactical.StdTokenParsers$$anonfun$ident$1: long
 scala.collection.immutable.TreeSet$$anonfun$toStream$1: long serialVersionUID
 net.lag.configgy.ConfigParser$$anonfun$stringList$1$$anonfun$apply$15: long serialVersionUID
 net.lag.configgy.ConfigParser$$anonfun$stringList$1$$anonfun$apply$16: long serialVersionUID
+org.kevoree.kompare.sub.StopNodeKompare$$anonfun$getStopNodeAdaptationModel$5$$anonfun$apply$2: long serialVersionUID
+org.kevoree.kompare.sub.StopNodeKompare$$anonfun$getStopNodeAdaptationModel$5$$anonfun$apply$3: long serialVersionUID
 org.eclipse.emf.ecore.impl.EObjectImpl: int EDELIVER
 org.eclipse.emf.ecore.impl.EObjectImpl: int EDYNAMIC_CLASS
 org.eclipse.emf.ecore.impl.EObjectImpl: int EPROXY
@@ -37960,6 +38023,7 @@ org.eclipse.emf.ecore.impl.BasicEObjectImpl: int EVIRTUAL_GET
 org.eclipse.emf.ecore.impl.BasicEObjectImpl: int EVIRTUAL_IS_SET
 org.eclipse.emf.ecore.impl.BasicEObjectImpl: boolean $assertionsDisabled
 org.kevoree.tools.marShell.lexer.KevsLexical$$anonfun$comment$2$$anonfun$apply$4$$anonfun$apply$6$$anonfun$apply$7: long serialVersionUID
+org.ops4j.pax.url.maven.commons.MavenConstants: boolean PROPERTY_PROXY_SUPPORT_DEFAULT
 org.ops4j.pax.url.maven.commons.MavenConstants: java.lang.String PROPERTY_CERTIFICATE_CHECK
 org.ops4j.pax.url.maven.commons.MavenConstants: java.lang.String PROPERTY_SETTINGS_FILE
 org.ops4j.pax.url.maven.commons.MavenConstants: java.lang.String PROPERTY_LOCAL_REPOSITORY
@@ -37970,6 +38034,8 @@ org.ops4j.pax.url.maven.commons.MavenConstants: java.lang.String PROPERTY_PROXY_
 org.ops4j.pax.url.maven.commons.MavenConstants: java.lang.String OPTION_ALLOW_SNAPSHOTS
 org.ops4j.pax.url.maven.commons.MavenConstants: java.lang.String OPTION_DISALLOW_RELEASES
 org.ops4j.pax.url.maven.commons.MavenConstants: java.lang.String SEPARATOR_OPTIONS
+org.ops4j.pax.url.maven.commons.MavenConstants: java.lang.String PROPERTY_PROXIES
+org.ops4j.pax.url.maven.commons.MavenConstants: java.lang.String OPTION_ID
 org.jgrapht.graph.DirectedGraphUnion: long serialVersionUID
 org.jgrapht.graph.GraphUnion: long serialVersionUID
 org.jgrapht.graph.GraphUnion: java.lang.String READ_ONLY
@@ -38733,6 +38799,7 @@ org.jgrapht.graph.Subgraph: java.lang.String NO_SUCH_EDGE_IN_BASE
 org.jgrapht.graph.Subgraph: java.lang.String NO_SUCH_VERTEX_IN_BASE
 org.kevoree.framework.aspects.ContainerNodeAspect$$anonfun$getUsedTypeDefinition$2$$anonfun$apply$3: long serialVersionUID
 ch.qos.logback.classic.spi.PlatformInfo: int UNINITIALIZED
+org.restlet.representation.Representation: long UNKNOWN_SIZE
 scala.Function2$mcLDL$sp$$anonfun$curried$mcLDL$sp$1$$anonfun$apply$48: long serialVersionUID
 scala.io.Source$$anonfun$1: long serialVersionUID
 ch.qos.logback.core.rolling.helper.RenameUtil: int BUF_SIZE
@@ -38992,6 +39059,7 @@ org.slf4j.Marker: java.lang.String ANY_NON_NULL_MARKER
 net.lag.configgy.ConfigParser$$anonfun$sectionClose$1: long serialVersionUID
 org.kevoree.kompare.sub.StopNodeKompare$$anonfun$getStopNodeAdaptationModel$4: long serialVersionUID
 net.lag.configgy.ConfigParser$$anonfun$sectionClose$2: long serialVersionUID
+org.kevoree.kompare.sub.StopNodeKompare$$anonfun$getStopNodeAdaptationModel$5: long serialVersionUID
 org.kevoree.kompare.sub.StopNodeKompare$$anonfun$getStopNodeAdaptationModel$2: long serialVersionUID
 org.kevoree.kompare.sub.StopNodeKompare$$anonfun$getStopNodeAdaptationModel$3: long serialVersionUID
 org.jgrapht.graph.MaskSubgraph: boolean $assertionsDisabled
@@ -39163,8 +39231,8 @@ org.eclipse.emf.ecore.impl.BasicEObjectImpl: int EVIRTUAL_GET
 org.eclipse.emf.ecore.impl.BasicEObjectImpl: int EVIRTUAL_IS_SET
 org.eclipse.emf.ecore.impl.BasicEObjectImpl: boolean $assertionsDisabled
 scala.collection.immutable.HashMap: long serialVersionUID
-scala.collection.JavaConverters$$anonfun$asJavaSetConverter$1: long serialVersionUID
 scala.collection.mutable.OpenHashMap$$anonfun$foreach$1: long serialVersionUID
+scala.collection.JavaConverters$$anonfun$asJavaSetConverter$1: long serialVersionUID
 scala.util.parsing.combinator.Parsers$Parser$$anonfun$$plus$1: long serialVersionUID
 scala.collection.JavaConverters$$anonfun$asJavaSetConverter$2: long serialVersionUID
 org.codehaus.jackson.impl.WriterBasedGenerator: int SHORT_WRITE
@@ -39413,6 +39481,8 @@ org.jgrapht.graph.MaskSubgraph: boolean $assertionsDisabled
 org.jgrapht.graph.MaskSubgraph: java.lang.String UNMODIFIABLE
 org.kevoree.framework.aspects.PortAspect$$anonfun$removeAndUnbind$1: long serialVersionUID
 org.kevoree.framework.KevoreePlatformHelper$$anonfun$getProperty$1: long serialVersionUID
+org.restlet.service.EncoderService: int ANY_SIZE
+org.restlet.service.EncoderService: int DEFAULT_MINIMUM_SIZE
 scala.util.parsing.json.Lexer$$anonfun$token$2$$anonfun$apply$5: long serialVersionUID
 scala.util.parsing.json.Lexer$$anonfun$token$2$$anonfun$apply$6: long serialVersionUID
 scala.actors.Actor$$anonfun$unlinkFrom$1: long serialVersionUID
@@ -39582,6 +39652,7 @@ scala.Function2$mcILI$sp$$anonfun$curried$mcILI$sp$1$$anonfun$apply$22: long ser
 org.kevoree.kompare.sub.InitNodeKompare$$anonfun$getInitNodeAdaptationModel$3: long serialVersionUID
 org.kevoree.kompare.sub.InitNodeKompare$$anonfun$getInitNodeAdaptationModel$2: long serialVersionUID
 scala.collection.mutable.BufferLike$$anonfun$$less$less$1: long serialVersionUID
+org.kevoree.kompare.sub.InitNodeKompare$$anonfun$getInitNodeAdaptationModel$5: long serialVersionUID
 org.kevoree.kompare.sub.InitNodeKompare$$anonfun$getInitNodeAdaptationModel$4: long serialVersionUID
 org.kevoree.framework.aspects.ChannelAspect$$anonfun$getConnectedNode$1: long serialVersionUID
 org.kevoree.framework.aspects.ChannelAspect$$anonfun$getConnectedNode$2: long serialVersionUID
@@ -40582,7 +40653,7 @@ org.eclipse.emf.common.notify.impl.NotificationImpl: int IS_SET_CHANGE_INDEX
 scala.Function2$mcIIL$sp$$anonfun$curried$mcIIL$sp$1$$anonfun$apply$10: long serialVersionUID
 org.jgrapht.experimental.dag.DirectedAcyclicGraph$VisitedHashSetImpl: long serialVersionUID
 org.restlet.engine.io.IoUtils: int BUFFER_SIZE
-org.restlet.engine.io.IoUtils: int IO_TIMEOUT
+org.restlet.engine.io.IoUtils: int TIMEOUT_MS
 net.lag.configgy.ConfigParser$$anonfun$assignment$3: long serialVersionUID
 net.lag.configgy.ConfigParser$$anonfun$assignment$1: long serialVersionUID
 scala.collection.immutable.PagedSeq$$anonfun$fromReader$1: long serialVersionUID
@@ -41097,7 +41168,6 @@ net.lag.configgy.SubscriptionNode$$anonfun$validate$1: long serialVersionUID
 scala.collection.immutable.LongMap$$anonfun$unionWith$2: long serialVersionUID
 scala.collection.immutable.LongMap$$anonfun$unionWith$1: long serialVersionUID
 org.restlet.representation.Representation: long UNKNOWN_SIZE
-org.restlet.Restlet: java.lang.String UNABLE_TO_START
 scala.Array$$anonfun$apply$7: long serialVersionUID
 scala.Array$$anonfun$apply$8: long serialVersionUID
 scala.Array$$anonfun$apply$9: long serialVersionUID
@@ -41235,6 +41305,7 @@ org.eclipse.emf.ecore.util.EObjectValidator: int EOBJECT_DIAGNOSTIC_CODE_COUNT
 org.eclipse.emf.ecore.util.EObjectValidator: java.lang.String DIAGNOSTIC_SOURCE
 org.eclipse.emf.ecore.util.EObjectValidator: java.lang.String ROOT_OBJECT
 scala.actors.remote.DelegateActor$$anonfun$act$1$$anonfun$apply$1: long serialVersionUID
+org.kevoree.kompare.sub.InitNodeKompare$$anonfun$getInitNodeAdaptationModel$4$$anonfun$apply$4: long serialVersionUID
 ch.qos.logback.core.joran.action.Action: java.lang.String NAME_ATTRIBUTE
 ch.qos.logback.core.joran.action.Action: java.lang.String KEY_ATTRIBUTE
 ch.qos.logback.core.joran.action.Action: java.lang.String VALUE_ATTRIBUTE
@@ -41938,9 +42009,7 @@ org.eclipse.emf.ecore.util.EcoreUtil$CrossReferencer: long serialVersionUID
 org.restlet.data.Range: long INDEX_FIRST
 org.restlet.data.Range: long INDEX_LAST
 org.restlet.data.Range: long SIZE_MAX
-org.kevoree.kompare.sub.StopNodeKompare$$anonfun$getStopNodeAdaptationModel$4$$anonfun$apply$3: long serialVersionUID
 scala.Function21$$anonfun$curried$1: long serialVersionUID
-org.kevoree.kompare.sub.StopNodeKompare$$anonfun$getStopNodeAdaptationModel$4$$anonfun$apply$2: long serialVersionUID
 org.eclipse.emf.ecore.util.EObjectWithInverseResolvingEList: long serialVersionUID
 org.eclipse.emf.ecore.util.EObjectWithInverseEList: long serialVersionUID
 org.eclipse.emf.ecore.util.EObjectEList: long serialVersionUID
@@ -42267,7 +42336,6 @@ org.eclipse.emf.ecore.impl.BasicEObjectImpl: boolean $assertionsDisabled
 org.kevoree.tools.marShell.lexer.KevsLexical$$anonfun$token$11: long serialVersionUID
 org.kevoree.tools.marShell.lexer.KevsLexical$$anonfun$token$10: long serialVersionUID
 scala.collection.MapLike$DefaultValuesIterable$$anonfun$foreach$4: long serialVersionUID
-org.restlet.engine.application.Encoder: int ENCODE_ALL_SIZES
 org.restlet.routing.Filter: int CONTINUE
 org.restlet.routing.Filter: int SKIP
 org.restlet.routing.Filter: int STOP
@@ -42972,6 +43040,7 @@ org.kevoree.KevoreePackage: int COMPONENT_INSTANCE
 org.kevoree.KevoreePackage: int COMPONENT_INSTANCE__NAME
 org.kevoree.KevoreePackage: int COMPONENT_INSTANCE__TYPE_DEFINITION
 org.kevoree.KevoreePackage: int COMPONENT_INSTANCE__DICTIONARY
+org.kevoree.KevoreePackage: int COMPONENT_INSTANCE__META_DATA
 org.kevoree.KevoreePackage: int COMPONENT_INSTANCE__PROVIDED
 org.kevoree.KevoreePackage: int COMPONENT_INSTANCE__REQUIRED
 org.kevoree.KevoreePackage: int COMPONENT_INSTANCE__NAMESPACE
@@ -43011,6 +43080,7 @@ org.kevoree.KevoreePackage: int CONTAINER_NODE
 org.kevoree.KevoreePackage: int CONTAINER_NODE__NAME
 org.kevoree.KevoreePackage: int CONTAINER_NODE__TYPE_DEFINITION
 org.kevoree.KevoreePackage: int CONTAINER_NODE__DICTIONARY
+org.kevoree.KevoreePackage: int CONTAINER_NODE__META_DATA
 org.kevoree.KevoreePackage: int CONTAINER_NODE__COMPONENTS
 org.kevoree.KevoreePackage: int CONTAINER_NODE_FEATURE_COUNT
 org.kevoree.KevoreePackage: int CONTAINER_ROOT
@@ -43155,6 +43225,7 @@ org.kevoree.KevoreePackage: int CHANNEL
 org.kevoree.KevoreePackage: int CHANNEL__NAME
 org.kevoree.KevoreePackage: int CHANNEL__TYPE_DEFINITION
 org.kevoree.KevoreePackage: int CHANNEL__DICTIONARY
+org.kevoree.KevoreePackage: int CHANNEL__META_DATA
 org.kevoree.KevoreePackage: int CHANNEL_FEATURE_COUNT
 org.kevoree.KevoreePackage: int MBINDING
 org.kevoree.KevoreePackage: int MBINDING__PORT
@@ -43194,6 +43265,7 @@ org.kevoree.KevoreePackage: int INSTANCE
 org.kevoree.KevoreePackage: int INSTANCE__NAME
 org.kevoree.KevoreePackage: int INSTANCE__TYPE_DEFINITION
 org.kevoree.KevoreePackage: int INSTANCE__DICTIONARY
+org.kevoree.KevoreePackage: int INSTANCE__META_DATA
 org.kevoree.KevoreePackage: int INSTANCE_FEATURE_COUNT
 org.kevoree.KevoreePackage: int METRIC
 org.kevoree.KevoreePackage: int METRIC__VALUES
@@ -43235,6 +43307,7 @@ org.kevoree.KevoreePackage: int GROUP
 org.kevoree.KevoreePackage: int GROUP__NAME
 org.kevoree.KevoreePackage: int GROUP__TYPE_DEFINITION
 org.kevoree.KevoreePackage: int GROUP__DICTIONARY
+org.kevoree.KevoreePackage: int GROUP__META_DATA
 org.kevoree.KevoreePackage: int GROUP__SUB_NODES
 org.kevoree.KevoreePackage: int GROUP_FEATURE_COUNT
 org.kevoree.KevoreePackage: int GROUP_TYPE
@@ -43281,8 +43354,8 @@ org.eclipse.emf.ecore.xml.type.internal.RegEx$Op: int INDEPENDENT
 org.eclipse.emf.ecore.xml.type.internal.RegEx$Op: int MODIFIER
 org.eclipse.emf.ecore.xml.type.internal.RegEx$Op: int CONDITION
 org.eclipse.emf.ecore.xml.type.internal.RegEx$Op: boolean COUNT
-scala.collection.generic.TraversableFactory$$anonfun$tabulate$2$$anonfun$apply$2: long serialVersionUID
 scala.collection.mutable.OpenHashMap$$anonfun$growTable$1: long serialVersionUID
+scala.collection.generic.TraversableFactory$$anonfun$tabulate$2$$anonfun$apply$2: long serialVersionUID
 org.eclipse.emf.ecore.impl.EPackageImpl: boolean IS_ABSTRACT
 org.eclipse.emf.ecore.impl.EPackageImpl: boolean IS_INTERFACE
 org.eclipse.emf.ecore.impl.EPackageImpl: boolean IS_GENERATED_INSTANCE_CLASS
@@ -43522,6 +43595,7 @@ org.eclipse.emf.ecore.xmi.impl.XMLHandler: java.lang.String TYPE_ATTRIB
 org.eclipse.emf.ecore.xmi.impl.XMLHandler: java.lang.String NIL_ATTRIB
 org.eclipse.emf.ecore.xmi.impl.XMLHandler: java.lang.String SCHEMA_LOCATION_ATTRIB
 org.eclipse.emf.ecore.xmi.impl.XMLHandler: java.lang.String NO_NAMESPACE_SCHEMA_LOCATION_ATTRIB
+org.kevoree.impl.ContainerNodeImpl: java.lang.String META_DATA_EDEFAULT
 org.kevoree.impl.NamedElementImpl: java.lang.String NAME_EDEFAULT
 org.eclipse.emf.ecore.impl.EObjectImpl: int EDELIVER
 org.eclipse.emf.ecore.impl.EObjectImpl: int EDYNAMIC_CLASS
@@ -43682,7 +43756,6 @@ org.ops4j.pax.url.mvn.ServiceConstants: java.lang.String PROPERTY_REPOSITORIES
 org.ops4j.pax.url.mvn.ServiceConstants: java.lang.String PROPERTY_USE_FALLBACK_REPOSITORIES
 org.ops4j.pax.url.mvn.ServiceConstants: java.lang.String PROPERTY_PROXY_SUPPORT
 org.ops4j.pax.url.mvn.ServiceConstants: java.lang.String PROTOCOL
-org.restlet.representation.Representation: long UNKNOWN_SIZE
 scala.util.parsing.json.Lexer$$anonfun$hexDigit$1: long serialVersionUID
 scala.xml.parsing.XhtmlEntities$$anonfun$1: long serialVersionUID
 scala.Function1$mcVF$sp$$anonfun$andThen$mcVF$sp$1: long serialVersionUID
@@ -43847,6 +43920,7 @@ ch.qos.logback.core.pattern.FormattingConverter: int MAX_CAPACITY
 scala.Function2$mcVDD$sp$$anonfun$tupled$mcVDD$sp$1: long serialVersionUID
 scala.util.parsing.combinator.Parsers$Parser$$anonfun$map$1: long serialVersionUID
 scala.collection.TraversableLike$WithFilter$$anonfun$map$2: long serialVersionUID
+org.kevoree.kompare.sub.StopNodeKompare$$anonfun$getStopNodeAdaptationModel$2$$anonfun$apply$1: long serialVersionUID
 scala.xml.dtd.ElementValidator$$anonfun$isAllWhitespace$1$1: long serialVersionUID
 ch.qos.logback.core.db.dialect.PostgreSQLDialect: java.lang.String SELECT_CURRVAL
 org.eclipse.emf.ecore.impl.EObjectImpl: int EDELIVER
@@ -44235,6 +44309,10 @@ org.eclipse.emf.ecore.util.EcoreEList: long serialVersionUID
 org.eclipse.emf.ecore.util.NotifyingInternalEListImpl: long serialVersionUID
 org.eclipse.emf.common.notify.impl.NotifyingListImpl: long serialVersionUID
 org.eclipse.emf.common.util.BasicEList: long serialVersionUID
+org.restlet.routing.Filter: int CONTINUE
+org.restlet.routing.Filter: int SKIP
+org.restlet.routing.Filter: int STOP
+org.restlet.Restlet: java.lang.String UNABLE_TO_START
 org.eclipse.emf.ecore.util.AbstractSequentialInternalEList: long serialVersionUID
 org.kevoree.tools.marShell.interpreter.sub.KevsRemoveNodeInterpreter$$anonfun$interpret$1: long serialVersionUID
 org.kevoree.tools.marShell.interpreter.sub.KevsRemoveNodeInterpreter$$anonfun$interpret$2: long serialVersionUID
@@ -45551,7 +45629,6 @@ scala.io.BufferedSource$$anonfun$2
 scala.io.BufferedSource$$anonfun$1
 scala.Function15$$anonfun$curried$1
 scala.io.BufferedSource$$anonfun$3
-org.kevoree.kompare.sub.StopNodeKompare$$anonfun$getStopNodeAdaptationModel$1$$anonfun$apply$1
 org.kevoree.framework.KevoreeActor$$anonfun$act$1$$anonfun$apply$1
 scala.xml.include.sax.Main$$anonfun$2$$anonfun$apply$2
 scala.xml.parsing.FactoryAdapter$$anonfun$1
@@ -45592,7 +45669,6 @@ org.kevoree.tools.marShell.parser.sub.KevsAbstractParser$$anonfun$stringLit$2
 scala.reflect.generic.Trees$SingletonTypeTree$
 scala.Function2$mcDII$sp$$anonfun$curried$mcDII$sp$1$$anonfun$apply$7
 scala.reflect.generic.Trees$ClassDef$
-org.kevoree.kompare.sub.InitNodeKompare$$anonfun$getInitNodeAdaptationModel$3$$anonfun$apply$4
 scala.util.parsing.combinator.token.StdTokens$Keyword$
 scala.reflect.PrefixedType
 scala.util.parsing.combinator.Parsers$Parser$$anonfun$$up$up$up$1
@@ -45799,6 +45875,8 @@ scala.util.parsing.combinator.syntactical.StdTokenParsers$$anonfun$ident$1
 scala.collection.immutable.TreeSet$$anonfun$toStream$1
 net.lag.configgy.ConfigParser$$anonfun$stringList$1$$anonfun$apply$15
 net.lag.configgy.ConfigParser$$anonfun$stringList$1$$anonfun$apply$16
+org.kevoree.kompare.sub.StopNodeKompare$$anonfun$getStopNodeAdaptationModel$5$$anonfun$apply$2
+org.kevoree.kompare.sub.StopNodeKompare$$anonfun$getStopNodeAdaptationModel$5$$anonfun$apply$3
 org.kevoree.tools.marShell.ast.ComponentInstanceID
 org.kevoree.framework.aspects.TypeDefinitionAspect$$anonfun$1$$anonfun$apply$1
 org.kevoree.framework.aspects.ComponentInstanceAspect
@@ -45973,8 +46051,8 @@ net.lag.configgy.Config$$anonfun$reload$1
 scala.collection.BitSetLike$$anonfun$$amp$1
 scala.collection.generic.TraversableFactory$$anonfun$tabulate$1$$anonfun$apply$1
 scala.concurrent.ThreadRunner$$anon$1$$anonfun$run$1
-org.scala_tools.vscaladoc.LinkHelper$$anonfun$link$1
 scala.collection.mutable.OpenHashMap$$anonfun$retain$1
+org.scala_tools.vscaladoc.LinkHelper$$anonfun$link$1
 scala.xml.pull.EvElemStart$
 org.kevoree.tools.marShell.interpreter.sub.KevsRemoveGroupInterpreter
 scala.xml.dtd.DEFAULT
@@ -46284,6 +46362,7 @@ org.slf4j.helpers.BasicMarker
 net.lag.configgy.ConfigParser$$anonfun$sectionClose$1
 org.kevoree.kompare.sub.StopNodeKompare$$anonfun$getStopNodeAdaptationModel$4
 net.lag.configgy.ConfigParser$$anonfun$sectionClose$2
+org.kevoree.kompare.sub.StopNodeKompare$$anonfun$getStopNodeAdaptationModel$5
 org.kevoree.kompare.sub.StopNodeKompare$$anonfun$getStopNodeAdaptationModel$2
 org.kevoree.kompare.sub.StopNodeKompare$$anonfun$getStopNodeAdaptationModel$3
 scala.actors.ReactorCanReply$$anonfun$$bang$bang$1
@@ -46346,8 +46425,8 @@ scala.collection.JavaConversions$JEnumerationWrapper$
 scala.actors.Combinators$$anonfun$loop$1
 scala.util.continuations.ControlContext$$anonfun$1$$anonfun$2
 scala.Array$$anonfun$fromFunction$2$$anonfun$apply$16
-scala.collection.JavaConverters$$anonfun$asJavaSetConverter$1
 scala.collection.mutable.OpenHashMap$$anonfun$foreach$1
+scala.collection.JavaConverters$$anonfun$asJavaSetConverter$1
 scala.util.parsing.combinator.Parsers$Parser$$anonfun$$plus$1
 scala.text.DocCons$
 scala.collection.JavaConverters$$anonfun$asJavaSetConverter$2
@@ -46576,6 +46655,7 @@ scala.reflect.SingleType$
 org.kevoree.kompare.sub.InitNodeKompare$$anonfun$getInitNodeAdaptationModel$3
 org.kevoree.kompare.sub.InitNodeKompare$$anonfun$getInitNodeAdaptationModel$2
 scala.collection.mutable.BufferLike$$anonfun$$less$less$1
+org.kevoree.kompare.sub.InitNodeKompare$$anonfun$getInitNodeAdaptationModel$5
 org.kevoree.kompare.sub.InitNodeKompare$$anonfun$getInitNodeAdaptationModel$4
 org.kevoree.framework.aspects.ChannelAspect$$anonfun$getConnectedNode$1
 org.kevoree.framework.aspects.ChannelAspect$$anonfun$getConnectedNode$2
@@ -47274,6 +47354,7 @@ scala.Function5$$anonfun$curried$1
 org.kevoree.adaptation.deploy.osgi.command.AddInstanceCommand$$anonfun$1
 scala.Function2$mcVLD$sp$$anonfun$curried$mcVLD$sp$1
 scala.actors.remote.DelegateActor$$anonfun$act$1$$anonfun$apply$1
+org.kevoree.kompare.sub.InitNodeKompare$$anonfun$getInitNodeAdaptationModel$4$$anonfun$apply$4
 scala.collection.SeqLike$$anonfun$reverseMap$2
 scala.collection.SeqLike$$anonfun$reverseMap$1
 scala.collection.TraversableOnce$$anonfun$reduceLeft$1
@@ -47522,9 +47603,7 @@ scala.Function2$mcZDL$sp$$anonfun$tupled$mcZDL$sp$1
 scala.collection.TraversableLike$$anonfun$forall$1$$anonfun$apply$mcV$sp$2
 scala.collection.mutable.Publisher$$anonfun$publish$1
 scala.actors.remote.SendTo$
-org.kevoree.kompare.sub.StopNodeKompare$$anonfun$getStopNodeAdaptationModel$4$$anonfun$apply$3
 scala.Function21$$anonfun$curried$1
-org.kevoree.kompare.sub.StopNodeKompare$$anonfun$getStopNodeAdaptationModel$4$$anonfun$apply$2
 scala.actors.threadpool.SynchronousQueue$Node
 org.kevoree.tools.marShell.ast.TransactionalBloc$
 scala.xml.pull.ProducerConsumerIterator$$anonfun$fillBuffer$2
@@ -47917,8 +47996,8 @@ scala.io.BytePickle$Def$
 org.kevoree.tools.marShell.lexer.KevsLexical$$anonfun$token$7$$anonfun$apply$37
 scala.collection.immutable.List$$anonfun$separate$1
 scala.util.parsing.combinator.Parsers$$tilde
-scala.collection.generic.TraversableFactory$$anonfun$tabulate$2$$anonfun$apply$2
 scala.collection.mutable.OpenHashMap$$anonfun$growTable$1
+scala.collection.generic.TraversableFactory$$anonfun$tabulate$2$$anonfun$apply$2
 scala.Responder
 scala.actors.Future
 scala.actors.FutureActor
@@ -48128,6 +48207,7 @@ scala.util.control.TailCalls$Call
 scala.util.parsing.combinator.Parsers$Parser$$anonfun$map$1
 scala.collection.TraversableLike$WithFilter$$anonfun$map$2
 org.scala_tools.vscaladoc.Page4AllClasses$$anonfun$filtersBody$1
+org.kevoree.kompare.sub.StopNodeKompare$$anonfun$getStopNodeAdaptationModel$2$$anonfun$apply$1
 scala.xml.dtd.ElementValidator$$anonfun$isAllWhitespace$1$1
 scala.actors.Channel$$anonfun$reactWithin$1
 org.eclipse.emf.ecore.xml.type.internal.RegEx$Token$ClosureToken

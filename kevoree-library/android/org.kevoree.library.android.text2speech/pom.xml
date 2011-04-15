@@ -3,82 +3,22 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
     <modelVersion>4.0.0</modelVersion>
-    <groupId>org.kevoree.library</groupId>
+    <groupId>org.kevoree.library.android</groupId>
     <artifactId>org.kevoree.library.android.text2speech</artifactId>
     <packaging>bundle</packaging>
     <name>Kevoree :: Library :: Android :: Text2Speech</name>
-    <version>1.0.0-SNAPSHOT</version>
-    
-    <properties>
-        <kevoree.version>1.1.0-BETA1</kevoree.version>
-        <android.platform.version>8</android.platform.version>
-        <android.platform>platforms/android-${android.platform.version}</android.platform>
-        <android.tools.aapt>${android.home}/${android.platform}/tools/aapt</android.tools.aapt>
-        <android.tools.dx>${android.home}/${android.platform}/tools/dx</android.tools.dx>
-    </properties>
+    <version>1.1.0-RC1</version>
 
-    <dependencies>
-        <dependency>
-            <groupId>org.kevoree</groupId>
-            <artifactId>org.kevoree.framework</artifactId>
-            <version>${kevoree.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.kevoree.tools</groupId>
-            <artifactId>org.kevoree.tools.annotation.api</artifactId>
-            <version>${kevoree.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.google.android</groupId>
-            <artifactId>android</artifactId>
-            <version>2.2.1</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.kevoree.tools</groupId>
-            <artifactId>org.kevoree.tools.android.framework</artifactId>
-            <version>${kevoree.version}</version>
-        </dependency>
-    </dependencies>
-
+    <parent>
+        <artifactId>org.kevoree.library.android.root</artifactId>
+        <groupId>org.kevoree.library.android</groupId>
+        <version>1.1.0-RC1</version>
+        <relativePath>../org.kevoree.library.android.root/pom.xml</relativePath>
+    </parent>
 
     <build>
         <plugins>
-             <plugin>
-                <groupId>org.kevoree.tools</groupId>
-                <artifactId>org.kevoree.tools.annotation.mavenplugin</artifactId>
-                <version>${kevoree.version}</version>
-                <extensions>true</extensions>
-                 <configuration>
-                    <nodeTypeNames>AndroidNode</nodeTypeNames>
-                </configuration>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>generate</goal>
-                            <goal>compile</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-             <!-- Felix BnD plugin : allow Bundle packaging : generate OSGi JAR -->
-            <plugin>
-                <groupId>org.apache.felix</groupId>
-                <artifactId>maven-bundle-plugin</artifactId>
-                <version>2.1.0</version>
-                <extensions>true</extensions>
-            </plugin>
-            <!-- Java compiler plugin -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>2.3.2</version>
-                <configuration>
-                    <source>1.6</source>
-                    <target>1.6</target>
-                    <encoding>${project.build.sourceEncoding}</encoding>
-                </configuration>
-            </plugin>
+
     <!-- android dex phase -->
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
@@ -122,18 +62,5 @@
         </plugins>
     </build>
 
-    <repositories>
-        <repository>
-            <id>kevoree-libs-release-local</id>
-            <url>http://maven.kevoree.org/libs-release-local</url>
-        </repository>
-    </repositories>
-
-    <pluginRepositories>
-        <pluginRepository>
-            <id>plugin.kevoree-github</id>
-            <url>http://maven.kevoree.org/plugins-release-local</url>
-        </pluginRepository>
-    </pluginRepositories>
 </project>
 

@@ -25478,8 +25478,11 @@ scala.runtime.AbstractFunction0: double apply$mcD$sp()
 scala.runtime.AbstractFunction0: java.lang.String toString()
 scala.runtime.AbstractFunction0: AbstractFunction0()
 org.kevoree.framework.AbstractNodeType
+org.kevoree.framework.AbstractNodeType: java.util.HashMap dictionary
 org.kevoree.framework.AbstractNodeType: AbstractNodeType()
-org.kevoree.framework.AbstractNodeType: void push(java.lang.String,org.kevoree.ContainerRoot)
+org.kevoree.framework.AbstractNodeType: void push(java.lang.String,org.kevoree.ContainerRoot,org.osgi.framework.BundleContext)
+org.kevoree.framework.AbstractNodeType: java.util.HashMap getDictionary()
+org.kevoree.framework.AbstractNodeType: void setDictionary(java.util.HashMap)
 org.kevoree.framework.KevoreePortOSGiProxy
 org.kevoree.framework.KevoreePortOSGiProxy: boolean pauseState
 org.kevoree.framework.KevoreePortOSGiProxy: boolean scala$actors$Actor$$isSuspended
@@ -34023,6 +34026,7 @@ org.eclipse.emf.ecore.impl.BasicEObjectImpl: int EVIRTUAL_GET
 org.eclipse.emf.ecore.impl.BasicEObjectImpl: int EVIRTUAL_IS_SET
 org.eclipse.emf.ecore.impl.BasicEObjectImpl: boolean $assertionsDisabled
 scala.Function1$mcIL$sp$$anonfun$compose$mcIL$sp$1: long serialVersionUID
+org.kevoree.impl.InstanceImpl: java.lang.String META_DATA_EDEFAULT
 org.kevoree.impl.NamedElementImpl: java.lang.String NAME_EDEFAULT
 org.eclipse.emf.ecore.impl.EObjectImpl: int EDELIVER
 org.eclipse.emf.ecore.impl.EObjectImpl: int EDYNAMIC_CLASS
@@ -34141,6 +34145,7 @@ scala.concurrent.forkjoin.ForkJoinPool: long syncStackOffset
 scala.concurrent.forkjoin.ForkJoinPool: long spareStackOffset
 scala.xml.NodeSeq$$anonfun$newBuilder$1: long serialVersionUID
 scala.Function1$mcFD$sp$$anonfun$compose$mcFD$sp$1: long serialVersionUID
+org.kevoree.impl.ChannelImpl: java.lang.String META_DATA_EDEFAULT
 org.kevoree.impl.NamedElementImpl: java.lang.String NAME_EDEFAULT
 org.eclipse.emf.ecore.impl.EObjectImpl: int EDELIVER
 org.eclipse.emf.ecore.impl.EObjectImpl: int EDYNAMIC_CLASS
@@ -35114,6 +35119,7 @@ org.eclipse.emf.ecore.util.EcoreUtil: java.lang.String OPERATION_VISIBILITY_KEY
 org.kevoree.framework.FileHelper$$anonfun$write$1: long serialVersionUID
 org.apache.felix.framework.ModuleImpl$ModuleClassLoader: int LIBNAME_IDX
 org.apache.felix.framework.ModuleImpl$ModuleClassLoader: int LIBPATH_IDX
+org.kevoree.impl.InstanceImpl: java.lang.String META_DATA_EDEFAULT
 org.kevoree.impl.NamedElementImpl: java.lang.String NAME_EDEFAULT
 org.eclipse.emf.ecore.impl.EObjectImpl: int EDELIVER
 org.eclipse.emf.ecore.impl.EObjectImpl: int EDYNAMIC_CLASS
@@ -35372,7 +35378,6 @@ scala.io.BufferedSource$$anonfun$2: long serialVersionUID
 scala.io.BufferedSource$$anonfun$1: long serialVersionUID
 scala.Function15$$anonfun$curried$1: long serialVersionUID
 scala.io.BufferedSource$$anonfun$3: long serialVersionUID
-org.kevoree.kompare.sub.StopNodeKompare$$anonfun$getStopNodeAdaptationModel$1$$anonfun$apply$1: long serialVersionUID
 org.kevoree.framework.KevoreeActor$$anonfun$act$1$$anonfun$apply$1: long serialVersionUID
 scala.xml.include.sax.Main$$anonfun$2$$anonfun$apply$2: long serialVersionUID
 scala.xml.include.sax.Main$$anonfun$2$$anonfun$apply$3: long serialVersionUID
@@ -35431,7 +35436,6 @@ scala.util.PropertiesTrait$$anonfun$envOrElse$1: long serialVersionUID
 org.kevoree.tools.marShell.parser.sub.KevsAbstractParser$$anonfun$stringLit$1: long serialVersionUID
 org.kevoree.tools.marShell.parser.sub.KevsAbstractParser$$anonfun$stringLit$2: long serialVersionUID
 scala.Function2$mcDII$sp$$anonfun$curried$mcDII$sp$1$$anonfun$apply$7: long serialVersionUID
-org.kevoree.kompare.sub.InitNodeKompare$$anonfun$getInitNodeAdaptationModel$3$$anonfun$apply$4: long serialVersionUID
 org.restlet.representation.Representation: long UNKNOWN_SIZE
 scala.util.parsing.combinator.Parsers$Parser$$anonfun$$up$up$up$1: long serialVersionUID
 scala.util.parsing.combinator.lexical.StdLexical$$anonfun$_delim$2: long serialVersionUID
@@ -35820,6 +35824,7 @@ org.kevoree.tools.marShell.parser.sub.KevsTypeParser$$anonfun$parseAddPortType$3
 org.jgrapht.graph.ListenableUndirectedGraph: long serialVersionUID
 org.jgrapht.graph.DefaultListenableGraph: long serialVersionUID
 org.jgrapht.graph.GraphDelegator: long serialVersionUID
+org.kevoree.impl.ComponentInstanceImpl: java.lang.String META_DATA_EDEFAULT
 org.kevoree.impl.NamedElementImpl: java.lang.String NAME_EDEFAULT
 org.eclipse.emf.ecore.impl.EObjectImpl: int EDELIVER
 org.eclipse.emf.ecore.impl.EObjectImpl: int EDYNAMIC_CLASS
@@ -35914,6 +35919,8 @@ scala.util.parsing.combinator.syntactical.StdTokenParsers$$anonfun$ident$1: long
 scala.collection.immutable.TreeSet$$anonfun$toStream$1: long serialVersionUID
 net.lag.configgy.ConfigParser$$anonfun$stringList$1$$anonfun$apply$15: long serialVersionUID
 net.lag.configgy.ConfigParser$$anonfun$stringList$1$$anonfun$apply$16: long serialVersionUID
+org.kevoree.kompare.sub.StopNodeKompare$$anonfun$getStopNodeAdaptationModel$5$$anonfun$apply$2: long serialVersionUID
+org.kevoree.kompare.sub.StopNodeKompare$$anonfun$getStopNodeAdaptationModel$5$$anonfun$apply$3: long serialVersionUID
 org.eclipse.emf.ecore.impl.EObjectImpl: int EDELIVER
 org.eclipse.emf.ecore.impl.EObjectImpl: int EDYNAMIC_CLASS
 org.eclipse.emf.ecore.impl.EObjectImpl: int EPROXY
@@ -36838,6 +36845,7 @@ org.slf4j.Marker: java.lang.String ANY_MARKER
 org.slf4j.Marker: java.lang.String ANY_NON_NULL_MARKER
 org.kevoree.kompare.sub.StopNodeKompare$$anonfun$getStopNodeAdaptationModel$4: long serialVersionUID
 net.lag.configgy.ConfigParser$$anonfun$sectionClose$1: long serialVersionUID
+org.kevoree.kompare.sub.StopNodeKompare$$anonfun$getStopNodeAdaptationModel$5: long serialVersionUID
 net.lag.configgy.ConfigParser$$anonfun$sectionClose$2: long serialVersionUID
 org.kevoree.kompare.sub.StopNodeKompare$$anonfun$getStopNodeAdaptationModel$2: long serialVersionUID
 org.kevoree.kompare.sub.StopNodeKompare$$anonfun$getStopNodeAdaptationModel$3: long serialVersionUID
@@ -37366,6 +37374,7 @@ org.slf4j.helpers.MarkerIgnoringBase: long serialVersionUID
 org.slf4j.helpers.NamedLoggerBase: long serialVersionUID
 scala.collection.mutable.BufferLike$$anonfun$$less$less$1: long serialVersionUID
 org.kevoree.kompare.sub.InitNodeKompare$$anonfun$getInitNodeAdaptationModel$2: long serialVersionUID
+org.kevoree.kompare.sub.InitNodeKompare$$anonfun$getInitNodeAdaptationModel$5: long serialVersionUID
 org.kevoree.kompare.sub.InitNodeKompare$$anonfun$getInitNodeAdaptationModel$4: long serialVersionUID
 org.kevoree.framework.aspects.ChannelAspect$$anonfun$getConnectedNode$1: long serialVersionUID
 org.kevoree.framework.aspects.ChannelAspect$$anonfun$getConnectedNode$2: long serialVersionUID
@@ -38862,6 +38871,7 @@ org.eclipse.emf.ecore.util.EObjectValidator: int EOBJECT_DIAGNOSTIC_CODE_COUNT
 org.eclipse.emf.ecore.util.EObjectValidator: java.lang.String DIAGNOSTIC_SOURCE
 org.eclipse.emf.ecore.util.EObjectValidator: java.lang.String ROOT_OBJECT
 scala.actors.remote.DelegateActor$$anonfun$act$1$$anonfun$apply$1: long serialVersionUID
+org.kevoree.kompare.sub.InitNodeKompare$$anonfun$getInitNodeAdaptationModel$4$$anonfun$apply$4: long serialVersionUID
 scala.collection.SeqLike$$anonfun$reverseMap$2: long serialVersionUID
 scala.collection.SeqLike$$anonfun$reverseMap$1: long serialVersionUID
 scala.collection.TraversableOnce$$anonfun$reduceLeft$1: long serialVersionUID
@@ -39456,7 +39466,6 @@ org.eclipse.emf.ecore.util.EcoreUtil$CrossReferencer: long serialVersionUID
 org.restlet.data.Range: long INDEX_FIRST
 org.restlet.data.Range: long INDEX_LAST
 org.restlet.data.Range: long SIZE_MAX
-org.kevoree.kompare.sub.StopNodeKompare$$anonfun$getStopNodeAdaptationModel$4$$anonfun$apply$3: long serialVersionUID
 scala.Function21$$anonfun$curried$1: long serialVersionUID
 org.eclipse.emf.ecore.util.EObjectWithInverseResolvingEList: long serialVersionUID
 org.eclipse.emf.ecore.util.EObjectWithInverseEList: long serialVersionUID
@@ -39465,7 +39474,6 @@ org.eclipse.emf.ecore.util.EcoreEList: long serialVersionUID
 org.eclipse.emf.ecore.util.NotifyingInternalEListImpl: long serialVersionUID
 org.eclipse.emf.common.notify.impl.NotifyingListImpl: long serialVersionUID
 org.eclipse.emf.common.util.BasicEList: long serialVersionUID
-org.kevoree.kompare.sub.StopNodeKompare$$anonfun$getStopNodeAdaptationModel$4$$anonfun$apply$2: long serialVersionUID
 scala.actors.threadpool.SynchronousQueue$Node: long serialVersionUID
 scala.actors.threadpool.SynchronousQueue$Node: int ACK
 scala.actors.threadpool.SynchronousQueue$Node: int CANCEL
@@ -40318,6 +40326,7 @@ org.kevoree.KevoreePackage: int COMPONENT_INSTANCE
 org.kevoree.KevoreePackage: int COMPONENT_INSTANCE__NAME
 org.kevoree.KevoreePackage: int COMPONENT_INSTANCE__TYPE_DEFINITION
 org.kevoree.KevoreePackage: int COMPONENT_INSTANCE__DICTIONARY
+org.kevoree.KevoreePackage: int COMPONENT_INSTANCE__META_DATA
 org.kevoree.KevoreePackage: int COMPONENT_INSTANCE__PROVIDED
 org.kevoree.KevoreePackage: int COMPONENT_INSTANCE__REQUIRED
 org.kevoree.KevoreePackage: int COMPONENT_INSTANCE__NAMESPACE
@@ -40357,6 +40366,7 @@ org.kevoree.KevoreePackage: int CONTAINER_NODE
 org.kevoree.KevoreePackage: int CONTAINER_NODE__NAME
 org.kevoree.KevoreePackage: int CONTAINER_NODE__TYPE_DEFINITION
 org.kevoree.KevoreePackage: int CONTAINER_NODE__DICTIONARY
+org.kevoree.KevoreePackage: int CONTAINER_NODE__META_DATA
 org.kevoree.KevoreePackage: int CONTAINER_NODE__COMPONENTS
 org.kevoree.KevoreePackage: int CONTAINER_NODE_FEATURE_COUNT
 org.kevoree.KevoreePackage: int CONTAINER_ROOT
@@ -40501,6 +40511,7 @@ org.kevoree.KevoreePackage: int CHANNEL
 org.kevoree.KevoreePackage: int CHANNEL__NAME
 org.kevoree.KevoreePackage: int CHANNEL__TYPE_DEFINITION
 org.kevoree.KevoreePackage: int CHANNEL__DICTIONARY
+org.kevoree.KevoreePackage: int CHANNEL__META_DATA
 org.kevoree.KevoreePackage: int CHANNEL_FEATURE_COUNT
 org.kevoree.KevoreePackage: int MBINDING
 org.kevoree.KevoreePackage: int MBINDING__PORT
@@ -40540,6 +40551,7 @@ org.kevoree.KevoreePackage: int INSTANCE
 org.kevoree.KevoreePackage: int INSTANCE__NAME
 org.kevoree.KevoreePackage: int INSTANCE__TYPE_DEFINITION
 org.kevoree.KevoreePackage: int INSTANCE__DICTIONARY
+org.kevoree.KevoreePackage: int INSTANCE__META_DATA
 org.kevoree.KevoreePackage: int INSTANCE_FEATURE_COUNT
 org.kevoree.KevoreePackage: int METRIC
 org.kevoree.KevoreePackage: int METRIC__VALUES
@@ -40581,6 +40593,7 @@ org.kevoree.KevoreePackage: int GROUP
 org.kevoree.KevoreePackage: int GROUP__NAME
 org.kevoree.KevoreePackage: int GROUP__TYPE_DEFINITION
 org.kevoree.KevoreePackage: int GROUP__DICTIONARY
+org.kevoree.KevoreePackage: int GROUP__META_DATA
 org.kevoree.KevoreePackage: int GROUP__SUB_NODES
 org.kevoree.KevoreePackage: int GROUP_FEATURE_COUNT
 org.kevoree.KevoreePackage: int GROUP_TYPE
@@ -40851,6 +40864,7 @@ org.jgrapht.experimental.dag.DirectedAcyclicGraph$TopoVertexMap: long serialVers
 scala.xml.parsing.MarkupParser$$anonfun$2: long serialVersionUID
 scala.xml.dtd.ElementValidator$$anonfun$check$6$$anonfun$apply$1: long serialVersionUID
 scala.xml.parsing.MarkupParser$$anonfun$1: long serialVersionUID
+org.kevoree.impl.ContainerNodeImpl: java.lang.String META_DATA_EDEFAULT
 org.kevoree.impl.NamedElementImpl: java.lang.String NAME_EDEFAULT
 org.eclipse.emf.ecore.impl.EObjectImpl: int EDELIVER
 org.eclipse.emf.ecore.impl.EObjectImpl: int EDYNAMIC_CLASS
@@ -41165,6 +41179,7 @@ org.eclipse.emf.common.notify.impl.NotifierImpl: int ELAST_NOTIFIER_FLAG
 scala.Function2$mcVDD$sp$$anonfun$tupled$mcVDD$sp$1: long serialVersionUID
 scala.util.parsing.combinator.Parsers$Parser$$anonfun$map$1: long serialVersionUID
 scala.collection.TraversableLike$WithFilter$$anonfun$map$2: long serialVersionUID
+org.kevoree.kompare.sub.StopNodeKompare$$anonfun$getStopNodeAdaptationModel$2$$anonfun$apply$1: long serialVersionUID
 scala.xml.dtd.ElementValidator$$anonfun$isAllWhitespace$1$1: long serialVersionUID
 org.eclipse.emf.ecore.impl.EObjectImpl: int EDELIVER
 org.eclipse.emf.ecore.impl.EObjectImpl: int EDYNAMIC_CLASS
@@ -42733,7 +42748,6 @@ scala.io.BufferedSource$$anonfun$2
 scala.io.BufferedSource$$anonfun$1
 scala.Function15$$anonfun$curried$1
 scala.io.BufferedSource$$anonfun$3
-org.kevoree.kompare.sub.StopNodeKompare$$anonfun$getStopNodeAdaptationModel$1$$anonfun$apply$1
 org.kevoree.framework.KevoreeActor$$anonfun$act$1$$anonfun$apply$1
 scala.xml.include.sax.Main$$anonfun$2$$anonfun$apply$2
 scala.xml.include.sax.Main$$anonfun$2$$anonfun$apply$3
@@ -42771,7 +42785,6 @@ org.kevoree.tools.marShell.parser.sub.KevsAbstractParser$$anonfun$stringLit$2
 scala.reflect.generic.Trees$SingletonTypeTree$
 scala.Function2$mcDII$sp$$anonfun$curried$mcDII$sp$1$$anonfun$apply$7
 scala.reflect.generic.Trees$ClassDef$
-org.kevoree.kompare.sub.InitNodeKompare$$anonfun$getInitNodeAdaptationModel$3$$anonfun$apply$4
 scala.util.parsing.combinator.token.StdTokens$Keyword$
 scala.reflect.PrefixedType
 scala.util.parsing.combinator.Parsers$Parser$$anonfun$$up$up$up$1
@@ -42968,6 +42981,8 @@ scala.util.parsing.combinator.syntactical.StdTokenParsers$$anonfun$ident$1
 scala.collection.immutable.TreeSet$$anonfun$toStream$1
 net.lag.configgy.ConfigParser$$anonfun$stringList$1$$anonfun$apply$15
 net.lag.configgy.ConfigParser$$anonfun$stringList$1$$anonfun$apply$16
+org.kevoree.kompare.sub.StopNodeKompare$$anonfun$getStopNodeAdaptationModel$5$$anonfun$apply$2
+org.kevoree.kompare.sub.StopNodeKompare$$anonfun$getStopNodeAdaptationModel$5$$anonfun$apply$3
 org.kevoree.tools.marShell.ast.ComponentInstanceID
 org.kevoree.framework.aspects.TypeDefinitionAspect$$anonfun$1$$anonfun$apply$1
 org.kevoree.framework.aspects.ComponentInstanceAspect
@@ -43432,6 +43447,7 @@ org.slf4j.Marker
 org.slf4j.helpers.BasicMarker
 org.kevoree.kompare.sub.StopNodeKompare$$anonfun$getStopNodeAdaptationModel$4
 net.lag.configgy.ConfigParser$$anonfun$sectionClose$1
+org.kevoree.kompare.sub.StopNodeKompare$$anonfun$getStopNodeAdaptationModel$5
 net.lag.configgy.ConfigParser$$anonfun$sectionClose$2
 org.kevoree.kompare.sub.StopNodeKompare$$anonfun$getStopNodeAdaptationModel$2
 org.kevoree.kompare.sub.StopNodeKompare$$anonfun$getStopNodeAdaptationModel$3
@@ -43712,6 +43728,7 @@ scala.reflect.SingleType$
 org.kevoree.kompare.sub.InitNodeKompare$$anonfun$getInitNodeAdaptationModel$3
 scala.collection.mutable.BufferLike$$anonfun$$less$less$1
 org.kevoree.kompare.sub.InitNodeKompare$$anonfun$getInitNodeAdaptationModel$2
+org.kevoree.kompare.sub.InitNodeKompare$$anonfun$getInitNodeAdaptationModel$5
 org.kevoree.kompare.sub.InitNodeKompare$$anonfun$getInitNodeAdaptationModel$4
 org.kevoree.framework.aspects.ChannelAspect$$anonfun$getConnectedNode$1
 org.kevoree.framework.aspects.ChannelAspect$$anonfun$getConnectedNode$2
@@ -44377,6 +44394,7 @@ scala.Function5$$anonfun$curried$1
 org.kevoree.adaptation.deploy.osgi.command.AddInstanceCommand$$anonfun$1
 scala.Function2$mcVLD$sp$$anonfun$curried$mcVLD$sp$1
 scala.actors.remote.DelegateActor$$anonfun$act$1$$anonfun$apply$1
+org.kevoree.kompare.sub.InitNodeKompare$$anonfun$getInitNodeAdaptationModel$4$$anonfun$apply$4
 scala.collection.SeqLike$$anonfun$reverseMap$2
 scala.collection.SeqLike$$anonfun$reverseMap$1
 scala.collection.TraversableOnce$$anonfun$reduceLeft$1
@@ -44615,9 +44633,7 @@ scala.Function2$mcZDL$sp$$anonfun$tupled$mcZDL$sp$1
 scala.collection.TraversableLike$$anonfun$forall$1$$anonfun$apply$mcV$sp$2
 scala.collection.mutable.Publisher$$anonfun$publish$1
 scala.actors.remote.SendTo$
-org.kevoree.kompare.sub.StopNodeKompare$$anonfun$getStopNodeAdaptationModel$4$$anonfun$apply$3
 scala.Function21$$anonfun$curried$1
-org.kevoree.kompare.sub.StopNodeKompare$$anonfun$getStopNodeAdaptationModel$4$$anonfun$apply$2
 scala.actors.threadpool.SynchronousQueue$Node
 org.kevoree.tools.marShell.ast.TransactionalBloc$
 scala.xml.pull.ProducerConsumerIterator$$anonfun$fillBuffer$2
@@ -45200,6 +45216,7 @@ scala.Function2$mcVDD$sp$$anonfun$tupled$mcVDD$sp$1
 scala.util.control.TailCalls$Call
 scala.util.parsing.combinator.Parsers$Parser$$anonfun$map$1
 scala.collection.TraversableLike$WithFilter$$anonfun$map$2
+org.kevoree.kompare.sub.StopNodeKompare$$anonfun$getStopNodeAdaptationModel$2$$anonfun$apply$1
 scala.xml.dtd.ElementValidator$$anonfun$isAllWhitespace$1$1
 scala.actors.Channel$$anonfun$reactWithin$1
 org.eclipse.emf.ecore.xml.type.internal.RegEx$Token$ClosureToken

@@ -5,7 +5,7 @@
     <groupId>org.kevoree.extra</groupId>
     <artifactId>org.kevoree.extra.root</artifactId>
     <packaging>pom</packaging>
-    <version>1.1.0-BETA2</version>
+    <version>1.1.0-RC1</version>
     <name>Kevoree :: Extra :: Root</name>
     <url>https://github.com/dukeboard/kevoree</url>
 
@@ -26,6 +26,7 @@
         <module>../org.kevoree.extra.netty</module>
         <module>../org.kevoree.extra.osgi.xbee</module>
         <module>../org.kevoree.extra.esper</module>
+        <module>../org.kevoree.extra.ecj</module>
 	</modules>
 
     <distributionManagement>

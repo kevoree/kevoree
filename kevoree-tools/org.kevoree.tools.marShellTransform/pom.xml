@@ -5,12 +5,12 @@
     <artifactId>org.kevoree.tools.marShellTransform</artifactId>
     <packaging>jar</packaging>
     <name>Kevoree :: Tools :: M@R Shell Transformation</name>
-    <version>1.1.0-BETA2</version>
+    <version>1.1.0-RC1</version>
 
     <parent>
         <artifactId>org.kevoree.tools.root</artifactId>
         <groupId>org.kevoree.tools</groupId>
-        <version>1.1.0-BETA2</version>
+        <version>1.1.0-RC1</version>
         <relativePath>../org.kevoree.tools.root/pom.xml</relativePath>
     </parent>
 

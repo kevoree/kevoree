@@ -1,0 +1,18 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>org.kevoree.library.javase</groupId>
+    <artifactId>org.kevoree.library.javase.javaseNode</artifactId>
+    <packaging>bundle</packaging>
+    <name>Kevoree :: Library :: JavaSE :: JavaSENode</name>
+    <version>1.1.0-RC1</version>
+
+    <parent>
+        <artifactId>org.kevoree.library.javase.root</artifactId>
+        <groupId>org.kevoree.library.javase</groupId>
+        <version>1.1.0-RC1</version>
+        <relativePath>../org.kevoree.library.javase.root/pom.xml</relativePath>
+    </parent>
+
+</project>
