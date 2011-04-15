@@ -49,7 +49,7 @@ public class SaveActuelModelCommand implements Command {
     @Override
     public void execute(Object p) {
 
-        PositionedEMFHelper.updateModelUIMetaData(kernel.getModelHandler().getActualModel());
+        PositionedEMFHelper.updateModelUIMetaData(kernel);
 
         String location = "";
         if (defaultLocation == null) {
