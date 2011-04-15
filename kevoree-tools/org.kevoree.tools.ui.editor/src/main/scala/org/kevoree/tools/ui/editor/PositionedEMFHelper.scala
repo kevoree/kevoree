@@ -7,18 +7,21 @@ import org.kevoree.tools.ui.framework.elements.NodePanel
 
 object PositionedEMFHelper {
 
-  def updateModelUIMetaData(model : ContainerRoot) {
-                 //PREPROCESS UI POSITION
+  def updateModelUIMetaData(kernel: KevoreeUIKernel) {
+    //PREPROCESS UI POSITION
+    val model = kernel.getModelHandler.getActualModel
 
-    model.getNodes.foreach({node =>
-         var nodePanel = NodePanelkernel.getUifactory().getMapping().get(node).asInstanceOf[NodePanel];
+    model.getNodes.foreach(node => {
+      val nodePanel = kernel.getUifactory.getMapping.get(node).asInstanceOf[NodePanel];
+
+
     })
-
-        for(ContainerNode node : kernel.getModelHandler().getActualModel().getNodes()){
-            NodePanel nodePanel = (NodePanel) kernel.getUifactory().getMapping().get(node);
-            String metadata = "x="+nodePanel.getX()+","+"y="+nodePanel.getY();
-            node.setMetaData(metadata);
-        }
+    /*
+for(ContainerNode node : kernel.getModelHandler().getActualModel().getNodes()){
+   NodePanel nodePanel = (NodePanel) kernel.getUifactory().getMapping().get(node);
+   String metadata = "x="+nodePanel.getX()+","+"y="+nodePanel.getY();
+   node.setMetaData(metadata);
+}     */
   }
 
 }
