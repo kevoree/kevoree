@@ -2,8 +2,7 @@ package org.kevoree.tools.ui.editor
 
 import org.kevoree.ContainerRoot
 import scala.collection.JavaConversions._
-import org.kevoree.tools.ui.framework.elements.NodePanel
-
+import org.kevoree.tools.ui.framework.elements.{GroupPanel, ChannelPanel, NodePanel}
 
 object PositionedEMFHelper {
 
@@ -13,15 +12,19 @@ object PositionedEMFHelper {
 
     model.getNodes.foreach(node => {
       val nodePanel = kernel.getUifactory.getMapping.get(node).asInstanceOf[NodePanel];
-
-
+      val metadata = "x=" + nodePanel.getX + "," + "y=" + nodePanel.getY
+      node.setMetaData(metadata)
     })
-    /*
-for(ContainerNode node : kernel.getModelHandler().getActualModel().getNodes()){
-   NodePanel nodePanel = (NodePanel) kernel.getUifactory().getMapping().get(node);
-   String metadata = "x="+nodePanel.getX()+","+"y="+nodePanel.getY();
-   node.setMetaData(metadata);
-}     */
+    model.getHubs.foreach(hub => {
+      val hubPanel = kernel.getUifactory.getMapping.get(hub).asInstanceOf[ChannelPanel];
+      val metadata = "x=" + hubPanel.getX + "," + "y=" + hubPanel.getY
+      hub.setMetaData(metadata)
+    })
+    model.getGroups.foreach(group => {
+      val groupPanel = kernel.getUifactory.getMapping.get(group).asInstanceOf[GroupPanel];
+      val metadata = "x=" + groupPanel.getX + "," + "y=" + groupPanel.getY
+      group.setMetaData(metadata)
+    })
   }
 
 }

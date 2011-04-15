@@ -112,11 +112,10 @@ public class LoadModelCommand implements Command {
             NodePanel newnodepanel = kernel.getUifactory().createComponentNode(newnode);
             kernel.getModelPanel().addNode(newnodepanel);
             //UI
-            HashMap<String,String> metaData = MetaDataHelper.getMetaDataFromInstance(newnode);
-            if(MetaDataHelper.containKeys(Arrays.asList("x","y"),metaData)){
-              newnodepanel.setLocation(new Point(Integer.parseInt(metaData.get("x").toString()),Integer.parseInt(metaData.get("y").toString())));
+            HashMap<String, String> metaData = MetaDataHelper.getMetaDataFromInstance(newnode);
+            if (MetaDataHelper.containKeys(Arrays.asList("x", "y"), metaData)) {
+                newnodepanel.setLocation(new Point(Integer.parseInt(metaData.get("x").toString()), Integer.parseInt(metaData.get("y").toString())));
             }
-
 
             for (ComponentInstance ci : newnode.getComponents()) {
                 ComponentPanel insPanel = kernel.getUifactory().createComponentInstance(ci);
@@ -140,6 +139,12 @@ public class LoadModelCommand implements Command {
         for (Channel hub : kernel.getModelHandler().getActualModel().getHubs()) {
             ChannelPanel newhubpanel = kernel.getUifactory().createHub(hub);
             kernel.getModelPanel().addHub(newhubpanel);
+
+            HashMap<String, String> metaData = MetaDataHelper.getMetaDataFromInstance(hub);
+            if (MetaDataHelper.containKeys(Arrays.asList("x", "y"), metaData)) {
+                newhubpanel.setLocation(new Point(Integer.parseInt(metaData.get("x").toString()), Integer.parseInt(metaData.get("y").toString())));
+            }
+
         }
 
         //LOAD GROUP
@@ -154,6 +159,11 @@ public class LoadModelCommand implements Command {
                 uib.setTo(nodePanel);
                 kernel.getModelPanel().addBinding(uib);
             }
+            HashMap<String, String> metaData = MetaDataHelper.getMetaDataFromInstance(group);
+            if (MetaDataHelper.containKeys(Arrays.asList("x", "y"), metaData)) {
+                newgrouppanel.setLocation(new Point(Integer.parseInt(metaData.get("x").toString()), Integer.parseInt(metaData.get("y").toString())));
+            }
+
         }
 
 
