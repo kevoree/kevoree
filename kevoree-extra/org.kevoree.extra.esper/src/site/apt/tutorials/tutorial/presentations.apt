@@ -1,0 +1,115 @@
+Presentations, Articles and Books
+~~~~~~~~~~~~~~~~~~~~~~
+
+* Presentation Materials
+
+    The Esper and NEsper team as well as a number of others contributors have presented 
+    Complex Event Processing with Esper and NEsper at conferences.
+	
+*------------------------+----------------------------------------------------------------------------+
+| Presentation                       | Date
+*------------------------+----------------------------------------------------------------------------+
+| {{{http://www.slideshare.net/intelie/debs2010} HOLMES: An event-driven solution to monitor data centers through continuous queries and machine learning, by Pedro Teixeira et al, DEBS 2010}} | July, 2010
+*------------------------+-------------+---------------------------------------------------------------+
+| {{{http://www.youtube.com/watch?v=ngogsWCGOMw} Complex Event Processing: Queries on Speed Ignite presentation, Denver Open Source User Group}}
+and {{{www.slideshare.net/.../complex-event-processing-with-esper} Complex Event Processing with Esper by Nathan Reese}} | Feb., 2010
+*------------------------+-------------+---------------------------------------------------------------+
+| {{{http://www.slideshare.net/javasymposium/creating-an-eventdriven-soa} Creating an Event-Driven SOA - Java Symposium, by Eben Hewitt}}| March 17, 2010
+*------------------------+-------------+---------------------------------------------------------------+
+| {{{http://skillsmatter.com/podcast/cloud-grid/talk-on-esper-and-quickfixj} Open Source in Finance eXchange: David Vincent on Climbing mount complexity, one event at a time }}| December, 2009
+*------------------------+-------------+---------------------------------------------------------------+
+| {{{http://dist.codehaus.org/esper/FISL_IntelligentMonitoring.pdf} About Intelligent Monitoring (PDF)}} {{{http://www.slideshare.net/denao/fisl-monitoracao-inteligente} (click here for Portuguese)}} | June, 2009
+*------------------------+-------------+---------------------------------------------------------------+
+| {{{http://www.slideshare.net/prabathsiriwardena/complex-event-processing-with-esper-and-wso2-esb/}Complex Event Processing with Esper and WSO2 ESB}}
+and {{{http://www.slideshare.net/pizak/fast-soa-with-apache-synapse}Fast SOA With Apache Synapse}} | July, 2008
+*------------------------+-------------+---------------------------------------------------------------+
+| {{{http://dist.codehaus.org/esper/TSSJS_Event_Processing_in_Java_A_Financial_Services_Case_Study.pdf}The Server-Side Java Symposium 2008 - Event Processing in Java - A Financial Services Case Study (PDF)}} {{{http://dist.codehaus.org/esper/TSSJS_Event_Processing_in_Java_A_Financial_Services_Case_Study.zip}source (ZIP)}} | March, 2008
+*------------------------+----------------------------------------------------------------------------+
+| {{{http://saventech.com/flex/CEP%20and%20RIAs.pdf}CEP and RIAs: Bringing Together the Bold and the Beautiful}} by Shashank Tiwari from Saven Technologies presented at {{{http://ajax.sys-con.com/node/507330}AJAXWorld}} | March, 2008
+*------------------------+----------------------------------------------------------------------------+
+| {{{http://www.zepheira.com/presentations/2008/esper/esper.pdf}What's Going On? : Complex Event Processing with Esper by Brian Sletten from Zepheira}}, for {{{http://www.nofluffjuststuff.com}NoFluffJustStuff}} | March, 2008
+*------------------------+----------------------------------------------------------------------------+
+| {{{http://oio.de/public/presentations.htm} Complex Event Processing with Esper (German language), W-JAX 2007 und SOACON, by Christian Dedek and Papick Taboada}} and 
+{{{http://adminsight.de/2008/04/12/session-complex-event-processing-with-esper/} in English for the JAX India 2008}} | Nov, 2007 and April 2008
+*------------------------+----------------------------------------------------------------------------+
+| {{{http://dist.codehaus.org/esper/JavaOne_TS-1911_May_11_2007.pdf}JavaOne 2007 on Event-Driven Application Servers (PDF)}} | May, 2007
+*------------------------+----------------------------------------------------------------------------+
+| {{{http://dist.codehaus.org/esper/NYJavaSIG_May_30_2007.pdf}New York City Java Special Interest Group on CEP and ESP with Esper (PDF)}} | May, 2007
+*------------------------+----------------------------------------------------------------------------+
+
+
+* Technical Articles
+
+    The Esper and NEsper team has published a number of technical articles and tutorials in online medias.
+
+*------------------------+-----------+-----------------------------------------------------------------+
+| Article | Published by | Date
+*------------------------+-----------+-----------------------------------------------------------------+
+| {{{http://coffeeonesugar.wordpress.com/2009/07/21/getting-started-with-esper-in-5-minutes/}Getting started with Esper in 5 minutes.}} | CoffeeOneSugar’s Blog | July 2009 
+*------------------------+----------------------------------------------------------------------------+
+| {{{http://www.ociweb.com/jnb/jnbOct2008.html}Complex Event Processing with Esper}} | OCIWeb | October 2008 
+*------------------------+----------------------------------------------------------------------------+
+| {{{http://www.theserverside.com/tt/articles/article.tss?l=ComplexEventProcessing}Complex Event Processing made simple using Esper}} | The Server Side | April, 2008 
+*------------------------+-----------+-----------------------------------------------------------------+
+| {{{http://www.onjava.com/pub/a/onjava/2007/03/07/esper-event-stream-processing-and-correlation.html}Esper: Event Stream Processing and Correlation}} | O'Reilly OnJava | March, 2007
+*------------------------+-----------+-----------------------------------------------------------------+
+
+
+    There are researchers and other groups exploring advanced Complex Event Processing with Esper.
+
+*------------------------+-----------+-----------------------------------------------------------------+
+| Publication | Organization | Date
+*------------------------+-----------+-----------------------------------------------------------------+
+| {{{http://static.intelie.com.br/pedro-paper-acm-sac-2010.pdf} Data Stream Anomaly Detection through Principal Subspace Tracking}} | Dissertation by Pedro Teixeira, PUC Rio de Janeiro | Sept., 2009
+*------------------------+-----------+-----------------------------------------------------------------+
+| {{{http://www.slideshare.net/opher.etzion/debs2009-event-processing-languages-tutorial} DEBS conference 2009 Event Processing Languages Tutorial}} | DEBS conference | June, 2009
+*------------------------+-----------+-----------------------------------------------------------------+
+| {{{http://www.dfrc.ch/esper/}Data Fusion with Esper for aircraft flight path identification}} {{{http://dist.codehaus.org/esper/EsperDataFusion.jnlp}(Run live demo)}} | {{{http://www.dfrc.ch/}Data Fusion Research Center AG}} | October, 2008
+*------------------------+-----------+-----------------------------------------------------------------+
+|{{{http://www.cse.iitb.ac.in/~abhiroop/DDP/My%20Reports%20and%20Presentations/abhiroop_ddpstage3_report.pdf}Event Driven Architecture for Indian Power Systems}} Dual Degree Project Report By Abhiroop Medhekar | Indian Institute of Technology, Bombay, India | June, 2008
+*------------------------+-----------+-----------------------------------------------------------------+
+|{{{http://dist.codehaus.org/esper/CEP_MasterThesis_PaulDekkers_200709.pdf}Complex Event Processing}} Master Thesis By Paul Dekkers | Radboud University Nijmegen, Cordys | October, 2007
+*------------------------+-----------+-----------------------------------------------------------------+
+
+
+* Books
+
+    There are books with dedicated chapter on Complex Event Processing with Esper.
+	
+*------------------------+-----------+-----------------------------------------------------------------+
+| Title                  | Published by | Date
+*------------------------+-----------+-----------------------------------------------------------------+
+| {{{http://www.manning.com/etzion/}Event Processing in Action}} by Opher Etzion and Peter Niblett | Manning | July, 2010 
+*------------------------+-----------+-----------------------------------------------------------------+
+| {{{http://www.manning.com/davis/}Open Source SOA}} by Jeff Davis | Manning | March, 2009 
+*------------------------+-----------+-----------------------------------------------------------------+
+| {{{http://www.amazon.com/o/ASIN/1847191525/105-2169855-7435661?SubscriptionId=0MGFBM1Z93R5P4E1JRG2}OSWorkflow: A guide for Java developers and architects to integrating open-source Business Process Management}} by Diego Adrian Naya Lazo | Packt Publishing | August, 2007
+*------------------------+-----------+-----------------------------------------------------------------+
+
+
+* Articles and presentations in other languages
+	
+*-------------------------------------------+----------------------------------------------------------------------------+-----------------+
+| Presentation                              | Date                                                                       | Language
+*-------------------------------------------+----------------------------------------------------------------------------+-----------------+
+| {{{http://www.agimatec.de/blog/2008/05/event-stream-processing-einleitung-und-beispiele-zu-einer-technologie-die-jede-cocktailparty-bereichert/}Event Stream Processing: Einleitung und Beispiele zu einer Technologie}}agimatec| May, 2008 | German
+*-------------------------------------------+--------------+--------------------------------------------------------------+-----------------+
+| {{{http://dist.codehaus.org/esper/UESI_July_2_2008.pdf}OCTO Technology Université d’été du Système d’information - CEP}}| July 2008 | French
+*-------------------------------------------+----------------------------------------------------------------------------+-----------------+
+| {{{http://www.touilleur-express.fr/2008/05/19/presentation-d%E2%80%99esper-moteur-de-gestion-de-flux-d%E2%80%99evenements-en-java/}Présentation d’Esper, moteur de gestion de flux d’événements en Java, Le Touilleur Express}} | May 2008 | French
+*-------------------------------------------+----------------------------------------------------------------------------+-----------------+
+| {{{http://adminsight.de/2008/04/17/article-esper-als-eda-plattfrom}Esper als EDA-Plattform, Java Magazin }} | May 2008 | German
+*-------------------------------------------+----------------------------------------------------------------------------+-----------------+
+| {{{http://www.oio.de/m/konf/wjax2007/Esper-final.pdf}Complex Event Processing (CEP) mit Esper}} at W-JAX 2007, SOACON | November, 2007 | German
+*-------------------------------------------+--------------+--------------------------------------------------------------+-----------------+
+
+
+* Specifically for NEsper and .NET
+	
+*-------------------------------------------+----------------------------------------------------------------------------+
+| Presentation                       | Date 
+*-------------------------------------------+----------------------------------------------------------------------------+
+| {{{http://msdn.microsoft.com/en-gb/architecture/cc531255.aspx} Microsoft Architect Insight Conference 2008 (UK) (see Complex Event Processing, session 3 day 2)}} | April 2008
+*-------------------------------------------+----------------------------------------------------------------------------+
+
+

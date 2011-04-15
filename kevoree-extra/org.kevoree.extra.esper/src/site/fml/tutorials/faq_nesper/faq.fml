@@ -1,0 +1,255 @@
+<?xml version="1.0"?>
+<faqs id="General FAQ">
+
+  <part id="technical">
+  	<title>Technical</title>
+    <faq id="deployment-dependencies">
+      <question>What additional components does NEsper require to run?</question>
+      <answer>
+        <p>
+          Please see the feature list for this information. And the "lib" folder in the source distribution contains a readme file
+          that describes the dependencies.
+        </p>
+      </answer>
+    </faq>    
+    <faq id="performance">
+      <question>It claims to be fast...how does it do that? Has this claim been tested?</question>
+      <answer>
+        <p>
+          NEsper is based on the same framework as Esper.  It shares many of the same design considerations
+          that benefit Esper.  We have also made specific adjustments that allow us to obtain performance
+          benefits under the CLR.  We are currently working on a method that will generate accessors on the
+          fly for an even faster data access layer.  Currently there are no standard performance tests for
+          CEP/ESP engines.
+        </p>
+      </answer>
+    </faq>    
+    <faq id="testing">
+      <question>How has this been tested? What guarantees do I have that the next release works just as well?</question>
+      <answer>
+        <p>
+          NEsper uses the NUnit testing framework to automate testing of the system.
+          NEsper's build process runs the currently around 1300 unit test methods in 450 NUnit test classes when a build occurs.
+          The test classes test the Esper engine from an end-to-end perspective as well as perform tests against
+          individual classes and components. Tests are very detailed in asserting the expected results allowing us
+          to detect most problems before they can reach you. There is also a good set of tests for multithread-safety as well as
+          tests that assert performance of statements and configurability of the engine.
+          See the package "com.espertech.esper.regression" in the test source folder as the entry point for
+		  end-to-end testing against the client API.
+        </p>
+        <p>          
+          The Esper team follows the practice of test-driven development (TDD) rigorously, ensuring that each feature added has automated test coverage.
+          We develop and evolve the tests for each feature along with the feature that is currently being developed.
+        </p>
+        <p>
+          NEsper tests use a slightly different test model than their Esper bretheren.  NEsper is distributed
+          with its regression test data in the etc directory.  In order to support path searching, NEsper was
+          given a new class called the ResourceManager that searches in a set of defined places for your resources.
+          By default, these are the current directory, the application directory and the user application directory.
+          Under windows these are most commonly stored under Documents And Settings.  When running regression tests,
+          please be sure to drop the regression data files into a directory that can be reached by the ResourceManager.
+        </p>
+      </answer>
+    </faq>
+    <faq id="multithread-safety">
+      <question>Can I run it with multiple threads? What, if anything, is multithread-safe?</question>
+      <answer>
+        <p>
+	  NEsper is fully multi-thread safe and typically able to leverage all available CPUs. The engine provides advanced threading options for inbound threading, outbound threading, timer execution threading
+	  and route (internal event) threading. 
+	</p>
+        <p>
+          Like Esper, NEsper supports multiple independent Esper engines within a process and/or AppDomain. Thus
+          applications can segregate work to multiple engine instances allocating one or more threads to each engine instance.
+		</p>
+      </answer>
+    </faq>    
+    <faq id="tested on OS">
+      <question>What operating systems has it been tested on?</question>
+      <answer>
+        <p>
+          The engine has been tested on Windows XP using .NET 2.0.
+        </p>
+      </answer>
+    </faq>    
+  </part>
+
+  <part id="ESP and CEP">
+  	<title>ESP and CEP</title>
+    <faq id="windows">
+      <question>Could you explain the concept of windows for a database programmer?</question>
+      <answer>
+        <p>One could perhaps think of a table with a timestamp column containing the time when the row was inserted. We could create a view that sorts by timestamp descending and selects all rows between the current timestamp and say up to 1 minute prior to now. Every time we fire a query against this view, the view returns the recent rows added in the last 1 minute. The rows returned are the contents of a 1 minute time window. Every time the query is fired we get a new window. Older rows would seem to leave the window while new rows would seem to enter the window.
+		</p>
+      </answer>  
+    </faq>
+    <faq id="execution model">
+      <question>What is the difference between NEsper and an in-memory database?</question>
+      <answer>
+        <p>The NEsper engine works a bit like a database turned upside-down. Instead of storing the data and running queries
+			against stored data, the NEsper engine allows applications to store queries and run the data through. Response
+			from the NEsper engine is real-time when conditions occur that match queries. The execution model is thus continuous
+			rather then only when a query is submitted.
+		</p>
+      </answer>  
+    </faq>
+  </part>
+
+
+  <part id="general">
+  	<title>General</title>
+     <faq id="how-does-it-work">
+      <question>How does NEsper work? How does NEsper allow you to search and match patterns on temporal events?</question>
+      <answer>
+        <p>
+          NEsper is an event stream processing (ESP) and event correlation engine (CEP) written in C#.
+          It is a derivative port of the Esper mainline that has been ported to the CLR.
+		  Basically instead of working as a database where you put stuff in to later poll it using SQL queries, NEsper works as 
+		  real time engine that triggers actions when event conditions occur among event streams.
+		  A tailored Event Processing Language (EPL) allows registering queries in the engine, using objects to represent events. 
+		  A listener delegate - will then be called by the engine when the EPL condition is matched as 
+		  events come in. The EPL allows expressing complex matching conditions that include temporal windows, 
+		  and join different event streams, as well as filter and sort them.
+        </p>
+        <p>
+        Please note that while the Java version emphasizes the use of the Listener interface, the CLR
+        version stresses the use of a listener delegate.  Readers who are familiar with Java should
+        keep this in mind when porting applications.
+        </p>
+        <p>
+		  A simple example could be to compute the average stock price of the BEA tick on a sliding window of 30 seconds. 
+		  Given a StockTick event bean with a price and symbol property and the EPL 
+		  "select avg(price) from StockTick.win:time(30 sec) where symbol='BEA'", 
+		  a delegate would get notified as tick come in - and in real world millions of ticks can come in - 
+		  so there's no way to store them all to later query them using a classical database architecture.
+		  Statements can be much more complex, and also be combined together with "followed by" conditions.
+        </p>
+        <p>
+		  The internals of NEsper are made up of fairly complex algorithms primarily relying on state machines and delta networks in which only changes to data are communicated across object boundaries when required.
+        </p>
+      </answer>
+    </faq>
+     <faq id="advantage">
+      <question>What's the advantage of using NEsper over other products?</question>
+      <answer>
+        <p>
+          NEsper can easily be embedded in any CLR-based product. 
+          Events in NEsper can be represented as plain objects eliminating the need to format, feed and receive events 
+          into a separate possibly remote engine process. NEsper is an entirely free open-source component available under the 
+          GNU GPL license. The open-source nature of NEsper helps in tailoring the event processing language and other 
+          community driven features.
+        </p>
+      </answer>
+    </faq>
+     <faq id="users">
+      <question>Who's using NEsper?</question>
+      <answer>
+        <p>
+        	At this time it is probably better to ask who is using Esper.  As of 1.3, NEsper is the new variation
+        	of the Esper engine.  As with Esper, our user community is growing rapidly.
+        </p>
+      </answer>
+    </faq>
+    <faq id="problems-suited">
+      <question>What business areas/problems is NEsper best suited for?</question>
+      <answer>
+        <p>
+          NEsper is best suited for real-time event driven applications. Typical application areas are business process management and 
+          automation, finance, network and application monitoring and sensor network applications. NEsper take much of the complexity 
+          out of developing applications that detect patterns among events, filter events, aggregate time or length windows of events, 
+          join event streams, trigger based on absence of events etc. 
+        </p>
+        <p>          
+          A primary difference with system relying on classical SQL 
+          databases is that we do not query a repository for events matching some conditions, but instead trigger customized 
+          actions as the flow of events come in matching event conditions - hence drastically reducing the latency.
+        </p>
+      </answer>
+    </faq>
+    <faq id="problems-misuses">
+      <question>What might be some mis-uses for it?</question>
+      <answer>
+        <p>		
+			NEsper is not designed for storing and retrieval of fairly static data - that is better left to conventional databases. 
+			In-memory databases may be better suited to CEP applications than traditional relational databases as they generally have 
+			good query performance. Yet they are not optimized to provide immediate, real-time query results required for CEP and event 
+			stream analysis.
+        </p>
+      </answer>
+    </faq>
+    <faq id="audience">
+      <question>What is the intended audience and what is their interface?</question>
+      <answer>
+        <p>
+          NEsper doesn't have a GUI and access is via API only, currently. 
+          The intended audience is developers of CEP or ESP applications.
+        </p>
+      </answer>
+    </faq>
+    <faq id="hook-into-existing">
+      <question>How does NEsper hook into an existing event-based system?</question>
+      <answer>
+        <p>
+		  Today, event based system are often confused with message based system and/or 
+		  Enterprise Service Bus architectures(ESB). Messaging system are event based but usually 
+		  do not correlate events or process event streams at all. They simply process unitary events - and
+		  it becomes quickly complex if you need to correlate messages.
+		</p>
+        <p>
+		  NEsper can hook into any CLR based system as a message consumer - whose main purpose would be to listen 
+		  efficiently to everything whilst sending back other events when a matching condition has occured. On the 
+		  other hand, hooking NEsper in a classic messaging system allows having it correlate events even if those 
+		  come from non-CLR based systems. This is just an example. NEsper is completely container agnostic, can run 
+		  as a standalone component, and the 1.0 release simply assumes events to be plain objects. We are currently working on 
+		  providing native XML format support as well.
+        </p>
+      </answer>
+    </faq>
+    <faq id="other-solutions">
+      <question>How would you position NEsper next to existing solutions (or hacks) in the industry?</question>
+      <answer>
+        <p>
+        	Nesper shares the same positioning as its name-sake.
+        	Nesper is the only CLR-based open source Event Stream Processing out there - and this is not to be confused with 
+        	classical rules engines. Compared to commercial ESP engines implementations, 
+        	Nesper may lack high availability options in the 1.3 release, but its open source nature is a driver to get the 
+        	Event processing language right, and get the CLR community up to speed on those concepts - 
+        	before tackling enterprise grade requirements in upcoming versions.			
+		</p>
+		<p>
+			Generally Rete-based production rule engines can indeed be used to address part of what CEP coins. 
+			Especially triggering by correlating events, possibly including a temporal relationship between events.
+			That said the ESP side - Event Stream Processing - is a different beast, where what matters is the "S" for Stream. 
+			In this side of the Esper engine we provide several language facilities to build expressions using time not 
+			for temporal relationship (happened before etc) but for sliding window. As an example, this makes it very valuable 
+			for computing things like volume weighted average price (VWAP) of ticks -
+			which would possibly be awful using something Rete-based like a classical rule engine.
+		</p>
+      </answer>
+    </faq>
+     <faq id="philosophy">
+      <question>What is the concept or philosophy behind the design?</question>
+      <answer>
+        <p>
+          Esper was developed using test-driven development and excellent automated test coverage.
+          Esper's design evolved by refactoring with courage towards higher design quality. 
+          Favorite patterns are dependency injection/inversion of control, 
+          GOF patterns, Immutable, Specification.
+        </p>
+      </answer>
+    </faq>
+    <faq id="background">
+      <question>What is the history? Where did it start and come from?</question>
+      <answer>
+        <p>
+		  Thomas Bernhardt is the project founder and project lead. He works as a software architect for a major financial institution. 
+		  On a project in 2004 Thomas had been asked to evaluate different rules engines for use in an application for monitoring a 
+		  trading system. The rules engines proved cumbersome and slow. There was no budget for a CEP product, thus a custom application 
+		  to solve the monitoring problem was developed. The project lead's interest in CEP and ESP technologies lead to further 
+		  independent research into the knowledge space followed by prototypes build for no particular organization or purpose. 
+		  The prototypes evolved and the Esper project started.
+        </p>
+      </answer>
+    </faq>
+  </part>
+</faqs>

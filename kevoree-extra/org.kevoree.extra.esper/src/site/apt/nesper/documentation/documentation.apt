@@ -1,0 +1,98 @@
+NEsper Documentation
+~~~~~~~~~~~~~~
+ 	
+ 	Since NEsper is feature-equivalent to a given Esper version, the download links below point you to the appropriate Java Esper documentation.
+ 	
+
+* NEsper 4.0.0 - Feature-equivalent to Esper 4.0, the documentation is the same as the Java version
+	
+	<<Reference documentation>>
+	
+ 	{{{../../esper-4.0.0/doc/reference/en/pdf/esper_reference.pdf}PDF print version}} \
+ 	{{{../../esper-4.0.0/doc/reference/en/html/index.html}Online HTML}} \
+ 	{{{../../esper-4.0.0/doc/reference/en/html_single/index.html}Single page HTML}}
+
+
+* NEsper 3.4.1 - Feature-equivalent to Esper 3.4, the documentation is the same as the Java version
+	
+	<<Reference documentation>>
+	
+ 	{{{../../esper-3.4.0/doc/reference/en/pdf/esper_reference.pdf}PDF print version}} \
+ 	{{{../../esper-3.4.0/doc/reference/en/html/index.html}Online HTML}} \
+ 	{{{../../esper-3.4.0/doc/reference/en/html_single/index.html}Single page HTML}}
+
+
+* NEsper 3.3.0 - Feature-equivalent to Esper 3.3, the documentation is the same as the Java version
+	
+	<<Reference documentation>>
+	
+ 	{{{../../esper-3.3.0/doc/reference/en/pdf/esper_reference.pdf}PDF print version}} \
+ 	{{{../../esper-3.3.0/doc/reference/en/html/index.html}Online HTML}} \
+ 	{{{../../esper-3.3.0/doc/reference/en/html_single/index.html}Single page HTML}}
+
+
+* NEsper 3.2.x - Feature-equivalent to Esper 3.2, the documentation is the same as the Java version
+	
+	<<Reference documentation>>
+	
+ 	{{{../../esper-3.2.0/doc/reference/en/pdf/esper_reference.pdf}PDF print version}} \
+ 	{{{../../esper-3.2.0/doc/reference/en/html/index.html}Online HTML}} \
+ 	{{{../../esper-3.2.0/doc/reference/en/html_single/index.html}Single page HTML}}
+
+* NEsper 3.1.0 - Feature-equivalent to Esper 3.1, the documentation is the same as the Java version
+	
+	<<Reference documentation>>
+	
+ 	{{{../../esper-3.1.0/doc/reference/en/pdf/esper_reference.pdf}PDF print version}} \
+ 	{{{../../esper-3.1.0/doc/reference/en/html/index.html}Online HTML}} \
+ 	{{{../../esper-3.1.0/doc/reference/en/html_single/index.html}Single page HTML}}
+
+* NEsper 3.0.0 - Feature-equivalent to Esper 3.0, the documentation is the same as the Java version
+	
+	<<Reference documentation>>
+	
+ 	{{{../../esper-3.0.0/doc/reference/en/pdf/esper_reference.pdf}PDF print version}} \
+ 	{{{../../esper-3.0.0/doc/reference/en/html/index.html}Online HTML}} \
+ 	{{{../../esper-3.0.0/doc/reference/en/html_single/index.html}Single page HTML}}
+
+
+* NEsper 2.1.0 - Feature-equivalent to Esper 2.1, the documentation is the same as the Java version
+	
+	<<Reference documentation>>
+	
+ 	{{{../../esper-2.1.0/doc/reference/en/pdf/esper_reference.pdf}PDF print version}} \
+ 	{{{../../esper-2.1.0/doc/reference/en/html/index.html}Online HTML}} \
+ 	{{{../../esper-2.1.0/doc/reference/en/html_single/index.html}Single page HTML}}
+
+
+* NEsper 1.12.0 Beta-1 (feature-equivalent to Esper 1.12)
+	
+	<<NEsper API Doc>> : {{{http://esper.codehaus.org/nesper-1.12.0-beta-1/doc/NEsper.chm}NEsper.chm}}
+	
+	<<Reference documentation>>
+	
+ 	{{{../../esper-1.12.0/doc/reference/en/pdf/esper_reference.pdf}PDF print version}} \
+ 	{{{../../esper-1.12.0/doc/reference/en/html/index.html}Online HTML}} \
+ 	{{{../../esper-1.12.0/doc/reference/en/html_single/index.html}Single page HTML}}
+
+
+* NEsper 1.10.0 Beta-1 (feature-equivalent to Esper 1.10)
+	
+	<<NEsper API Doc>> : {{{http://esper.codehaus.org/nesper-1.10.0-beta-1/doc/NEsper.chm}NEsper.chm}}
+	
+	<<Reference documentation>>
+	
+ 	{{{../../esper-1.10.0/doc/reference/en/pdf/esper_reference.pdf}PDF print version}} \
+ 	{{{../../esper-1.10.0/doc/reference/en/html/index.html}Online HTML}} \
+ 	{{{../../esper-1.10.0/doc/reference/en/html_single/index.html}Single page HTML}}
+ 	
+
+* NEsper 1.3.0 Final (feature-equivalent to Esper 1.3)
+	
+	<<NEsper API Doc>> : {{{http://esper.codehaus.org/nesper-1.3.0/doc/NEsper.chm}NEsper.chm}}
+	
+	<<Reference documentation>>
+	
+ 	{{{../../esper-1.3.0/doc/reference/en/pdf/esper_reference.pdf}PDF print version}} \
+ 	{{{../../esper-1.3.0/doc/reference/en/html/index.html}Online HTML}} \
+ 	{{{../../esper-1.3.0/doc/reference/en/html_single/index.html}Single page HTML}}

@@ -1,0 +1,231 @@
+Tutorial
+~~~~~~~~~~~~~~
+
+* Introduction
+
+	Esper is an Event Stream Processing (ESP) and event correlation engine (CEP, Complex Event Processing). 
+	Targeted to real-time Event Driven Architectures (EDA), Esper is capable of triggering custom actions written as 
+	Plain Old Java Objects (POJO) when event conditions occur among event streams. 
+	It is designed for high-volume event correlation where millions of events coming in would make it impossible to store 
+	them all to later query them using classical database architecture. 
+	
+	A tailored Event Processing Language (EPL) allows expressing rich event conditions, correlation, possibly spanning time windows, 
+	thus minimizing the development effort required to set up a system that can react to complex situations.
+
+	Esper is a lightweight kernel written in Java which is fully embeddable into any Java process, JEE application server or 
+	Java-based Enterprise Service Bus. It enables rapid development of applications that process large volumes of incoming messages or events.
+
+* Introduction to event streams and complex events
+
+	Information is critical to make wise decisions. This is true in real life but also in computing, and especially critical in several 
+	areas, such as finance, fraud detection, business intelligence or battlefield operation. 
+	Information flows in from different sources in the form of messages or events, giving a hint on the state at a given time such as stock price. 
+	That said, looking at those discrete events is most of the time meaningless. 
+	A trader needs to look at the stock trend over a period, possibly combined with other information to make the best deal at the right time.
+
+	While discrete events when looked one by one might be meaningless, event streams--that is an infinite set of events--considered over a sliding 
+	window and further correlated, are highly meaningful, and reacting to them with the minimal latency is critical for effective action and competitive 
+	advantage.
+
+* Introduction to Esper
+	
+	Relational databases or message-based systems such as JMS make it really hard to deal with temporal data and real-time queries. 
+	Indeed, databases require explicit querying to return meaningful data and are not suited to push data as it changes. 
+	JMS systems are stateless and require the developer to implement the temporal and aggregation logic himself. 
+	By contrast, the Esper engine provides a higher abstraction and intelligence and can be thought of as a database turned upside-down: 
+	instead of storing the data and running queries against stored data, Esper allows applications to store queries and run the data through. 
+	Response from the Esper engine is real-time when conditions occur that match user defined queries. 
+	The execution model is thus continuous rather than only when a query is submitted.
+
+	Such concepts are a key foundation of EDA, and have been under active research in more than the last 10 years. 
+	Awareness of the importance of such systems in real-world architectures has started to emerge only recently.
+
+	In Esper, a tailored EPL allows registering queries in the engine. A listener class--which is basically a POJO--will then be called by the 
+	engine when the EPL condition is matched as events flow in. The EPL enables to express complex matching conditions that include temporal 
+	windows, joining of different event streams, as well as filtering, aggregation, and sorting. Esper statements can also be combined 
+	together with "followed by" conditions thus deriving complex events from more simple events. Events can be represented as JavaBean 
+	classes, legacy Java classes, XML document or java.util.Map, which promotes reuse of existing systems acting as messages publishers.
+
+	A trivial yet meaningful example is as follow: assume a trader wants to buy Google stock as soon as the price goes below some 
+	floor value-- not when looking at each tick but when the computation is done over a sliding time window--say of 30 seconds. 
+	Given a StockTick event bean with a price and symbol property and the EPL "select avg(price) from StockTick.win:time(30 sec) where symbol='GOOG'", a listener POJO would get notified as ticks come in to trigger the buy order.
+
+
+* Developing event-driven applications
+
+	Developing event-driven application is not hard using Esper. You may want to roughly follow these steps:
+
+	[[1]] Define the mission of your application by analyzing your business domain and defining the situations to be detected or information to be reported
+	
+	[[2]] Define your performance requirements, specifically throughput and latency 
+	
+	[[3]] Identify where events are coming from 
+	
+	[[4]] Identify lower level event formats and event content that is applicable to your domain 
+	
+	[[5]] Design the event relationships leading to complex events
+	
+	[[6]] Instrument your sources of events
+	
+	[[7]] Design how you want to represent events: as Java classes, as Maps, or as XML events
+	
+	[[8]] Define EPL statements for patterns and stream processing 
+	
+	[[9]] Use the CSV adapter as an event simulation tool, to test situations to be detected, or to generate to load
+	
+	[[10]] Test against your performance requirements: throughput and latency in your target environment 
+
+	With "Instrument your sources of events" we mean to plan for, design and implement hooks in the event source systems so that they can 
+	generate the events in the format defined in 4. 
+	Instrumentation is roughly placing hooks that don't change the nominal execution flow. 
+	There are several techniques for that, from custom code to aspect-oriented technology with in the middle a whole range of 
+	component-dependant and framework-dependant technology (servlet filter, proxy objects, decorators, topic-based architecture etc.). This 
+	can also be implemented at a more coarse grained level (pipeline derivation in an enterprise service bus or a BPEL/BPM process for example).
+
+
+* Designing event representations
+
+	Java classes are a simple, rich and versatile way to represent events in Esper. Java classes offer inheritance and polymorphism via
+	interfaces and super-classes, and can represent a complex business domain via an object graph. Maps and XML are an alternative way
+	of representing events.
+	    
+      
+* Event Stream Analysis
+	
+	EPL statements derive and aggregate information from one or more streams of events, to join or merge event streams,
+	and to feed results from one event stream to subsequent statements.  
+	
+	EPL is similar to SQL in it's use of the <select> clause and the <where> clause. However EPL statements instead of tables use event streams
+	and a concept called <views>. Similar to tables in an SQL statement, views define the data available for querying and filtering. 
+	Views can represent windows over a stream of events. Views can also sort events, derive statistics from event properties, 
+	group events or handle unique event property values.
+	
+	This is a sample EPL statement that computes the average price for the last 30 seconds of stock tick events:
+	
+----------------------------------------
+  select avg(price) from StockTickEvent.win:time(30 sec) 
+----------------------------------------	
+
+	A sample EPL that returns the average price per symbol for the last 100 stock ticks.
+		
+----------------------------------------
+select symbol, avg(price) as averagePrice
+    from StockTickEvent.win:length(100)
+group by symbol
+----------------------------------------	
+	
+	This example joins 2 event streams. The first event stream consists of fraud warning events for which we keep the last 30 minutes (1800 seconds). 
+	The second stream is withdrawal events for which we consider the last 30 seconds. The streams are joined on account number.
+
+----------------------------------------
+select fraud.accountNumber as accntNum, fraud.warning as warn, withdraw.amount as amount,
+	MAX(fraud.timestamp, withdraw.timestamp) as timestamp, 'withdrawlFraud' as desc
+from FraudWarningEvent.win:time(30 min) as fraud,
+	WithdrawalEvent.win:time(30 sec) as withdraw
+where fraud.accountNumber = withdraw.accountNumber
+----------------------------------------	
+
+* Event Pattern Matching
+
+	Event patterns match when an event or multiple events occur that match the pattern's definition. Patterns can also be temporal (time-based).
+	Pattern matching is implemented via state machines. 
+
+	Pattern expressions can consist of filter expressions combined with pattern operators. Expressions can contain further nested
+	pattern expressions by including the nested expression(s) in round brackets.
+
+	There are 5 types of operators:
+	
+	[[1]] Operators that control pattern finder creation and termination: <every>
+	
+	[[2]] Logical operators: <and, or, not>
+	
+	[[3]] Temporal operators that operate on event order: < -\> (followed-by) >
+	
+	[[4]] Guards are where-conditions that filter out events and cause termination of the pattern finder, such as <timer:within>
+	
+	[[5]] Observers observe time events as well as other events, such as <timer:interval, timer:at>
+	
+	[]
+	
+	
+	A sample pattern that alerts on each IBM stock tick with a price greater then 80 and within the next 60 seconds:
+	
+----------------------------------------
+every StockTickEvent(symbol="IBM", price>80) where timer:within(60 seconds)
+----------------------------------------	
+
+	A sample pattern that alerts every 5 minutes past the hour:
+	
+----------------------------------------
+every timer:at(5, *, *, *, *)
+----------------------------------------	
+
+	A sample pattern that alerts when event A occurs, followed by either event B or event C:
+	
+----------------------------------------
+A -> ( B or C )
+----------------------------------------	
+
+	An event pattern where a property of a following event must match a property from the first event: 
+ 
+----------------------------------------
+every a=EventX -> every b=EventY(objectID=a.objectID)
+----------------------------------------
+
+* Combining Patterns Matching with Event Stream Analysis
+
+	Patterns match when a sequence (or absence) of events is detected. Pattern match results are available for
+	further analysis and processing.
+	
+	The pattern below detects a situation where a Status event is not followed by another Status event with the same id within 10 seconds.
+	The statement further counts all such occurrences grouped per id. 
+
+----------------------------------------
+select a.id, count(*) from pattern [
+	every a=Status -> (timer:interval(10 sec) and not Status(id=a.id)
+] group by id
+----------------------------------------
+
+* Named windows
+	
+	A named window is a global data window that can take part in many statement queries, and that can be selected-from, inserted-
+	into and deleted-from by multiple statements. Named windows are similar to a table in a relational database system.
+	
+	One can create a named window for example as follows:
+
+----------------------------------------
+create window AlertNamedWindow as (origin string, priority string, alarmNumber long)
+----------------------------------------
+	
+	One can trigger a select, update or delete when an event arrives. Here we show a select that simply counts the number of rows:
+
+----------------------------------------
+on TriggerEvent select count(*) from AlertNamedWindow
+----------------------------------------
+	
+	Named windows can as well be queried with fire-and-forget queries through the API and inward-facing JDBC driver. 
+
+* Match-Recognize Pattern Matching
+
+	A match-recognize pattern is a regular-expression-based pattern-matching syntax proposed for inclusion in SQL standards.
+	
+	The below query is a sample match-recognize pattern. It detects a pattern that may be present in the events
+	held by the named window as declared above. It looks for two immediately-followed events, i.e. with no events in-between for the same origin.
+	The first of the two events must have high priority and the second of the two events must have medium priority.
+	
+----------------------------------------	
+select * from AlertNamedWindow
+  match_recognize (
+    partition by origin
+    measures a1.origin as origin, a1.alarmNumber as alarmNumber1, a2.alarmNumber as alarmNumber2
+    pattern (a1 a2)
+    define
+      a1 as a1.priority = 'high',
+      a2 as a2.priority = 'medium' 
+)
+----------------------------------------	
+
+* Variables
+	
+	A variable is a scalar, object or event value that is available for use in all statements including patterns. Variables
+can be used in an expression anywhere in EPL.

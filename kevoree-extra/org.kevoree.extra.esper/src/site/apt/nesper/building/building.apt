@@ -1,0 +1,13 @@
+Building NEsper
+~~~~~~~~~~~~~~
+  
+  Presently, NEsper can be built MSBuild or any IDE that can process Visual Studio 2008 Solution Files.
+  The NEsper engine can be built and unit tested via the below commands.
+  
+  NEsper requires the Microsoft .NET Framework 3.5.
+  
+  The examples are located in the src\NEsper directory of the distribution.
+  
+  The software prerequisites and the build instructions are on the 
+  {{{http://docs.codehaus.org/display/ESPER/NEsper++Release+Instructions}NEsper release instructions}} page.
+    

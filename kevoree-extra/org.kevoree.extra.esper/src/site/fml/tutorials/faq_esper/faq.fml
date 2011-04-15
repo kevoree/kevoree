@@ -1,0 +1,788 @@
+<?xml version="1.0"?>
+<faqs id="General FAQ">
+
+  <part id="general">
+  	<title>General</title>
+     <faq id="comparison">
+      <question>How does Esper compare to other CEP products?</question>
+      <answer>
+        <p>
+          Esper is an entirely free open-source component available under the 
+          GNU GPL license (GPL also known as GPL v2). The open-source nature of Esper helps in tailoring the event processing language and other 
+          community driven features.
+        </p>
+        <p>
+	  Esper and NEsper are embeddable components written in Java and C# and are therefore suitable for integration into any Java process 
+	  or .NET-based process including J2EE application servers or standalone Java applications. Esper and NEsper are not a server by itself but are designed to hook into any sort of server, 
+	  ranging from market standard JEE server (weblogic, websphere, jboss etc), service bus, or lightweight solutions (OSGi based, grid etc) 
+	  and also Microsoft based .Net technologies. NEsper is suitable for use in desktop end-user stations.
+        </p>
+        <p>
+          The other advantages this model offers is that the components can run standalone in your development environment making development 
+          and testing much easier, while for the target production environment this makes it much more tailored to what you really need, 
+          or possibly have already in place. End to end performance and latency is also enhanced as your application may then not need to 
+          transport events to a dedicated remote server process, but can process events at the event source saving marshalling/unmarshalling/network.
+        </p>
+        <p>
+	  Esper's pull query API is noteworthy, one of our customers recently remarked "Indeed one of the important feature of a Real-Time analytics is to be able to connect to 
+	  CEP on-demand, basically if the analytic is off-line, the server is continuing to calculate.". Most CEP products support a subscribe-only 
+	  model and for other products no state snapshot queries are possible against a running engine.
+        </p>
+        <p>
+          Events in Esper allow for a rich domain object representation since Esper supports all aspects of object-oriented design as well as dynamic
+          typing. Many other CEP products force a flat Map-like tuple-set definition of events which we think is not rich enough. Esper can thus handle schema
+          evolution well.
+        </p>
+        <p>
+          Esper features a Statement Object Model API, which is a set of classes to directly construct, manipulate or interrogate EPL statements. 
+        </p>
+        <p>
+          Esper does not currently have a GUI management, editor or portal application. Esper also does not currently have a server.
+          Esper provides only a small number of key input and output adapters through EsperIO, and provides an adapter framework.
+        </p>
+        <p>
+          One customer remarked "Many products expose just a GUI to input simple event definitions. EPL provides a way to express complex events."
+        </p>
+        <p>
+          Another user stated "Esper can detect all kinds of event patterns, from simple and/or/not to complicated state machines."
+        </p>        
+      </answer>
+    </faq>
+    <faq id="advantages_epl">
+      <question>What are the advantages of Esper's Event Processing Language (EPL)?</question>
+      <answer>
+        <p>
+		  The Esper event processing language (EPL) converges event stream processing (filtering, joins, aggregation) 
+		  and complex event processing (causality) into one single language. 
+		  The core language is SQL-like ensuring rapid learning, but is also highly oriented toward support of modern technologies 
+		  so it is for example object oriented (more than table oriented), enabling for simple extension. The language, of course, 
+		  includes event windows and causality patterns as first citizens. 
+		  We natively support several types of event formats, from Java/.Net object, maps, to XML documents.
+        </p>
+      </answer>
+    </faq>
+    <faq id="problems-suited">
+      <question>What business areas/problems is Esper best suited for?</question>
+      <answer>
+        <p>
+          Esper is best suited for real-time event driven applications. Typical application areas are business process management and 
+          automation, finance, network and application monitoring and sensor network applications. Esper take much of the complexity 
+          out of developing applications that detect patterns among events, filter events, aggregate time or length windows of events, 
+          join event streams, trigger based on absence of events etc. 
+        </p>
+        <p>          
+          A primary difference with system relying on classical SQL 
+          databases is that we do not query a repository for events matching some conditions, but instead trigger customized 
+          actions as the flow of events come in matching event conditions - hence drastically reducing the latency.
+        </p>
+      </answer>
+    </faq>
+    <faq id="problems-misuses">
+      <question>What might be some misuses for it?</question>
+      <answer>
+        <p>		
+			Esper is not designed for storing and retrieval of fairly static data - that is better left to conventional databases. 
+			In-memory databases may be better suited to CEP applications than traditional relational databases as they generally have 
+			good query performance. Yet they are not optimized to provide immediate, real-time query results required for CEP and event 
+			stream analysis.
+        </p>
+      </answer>
+    </faq>
+    <faq id="audience">
+      <question>What is the intended audience and what is their interface?</question>
+      <answer>
+        <p>
+          Esper doesn't have a GUI and access is via API only, currently. 
+          The intended audience is developers of CEP or ESP applications.
+        </p>
+      </answer>
+    </faq>
+    <faq id="whouses">
+      <question>Who uses Esper?</question>
+      <answer>
+        <p>
+        	We think Esper is the most widely-deployed CEP engine available. It's licensing and technical requirements have made it suitable for integration into
+        	many environments and software products. 	
+	</p>
+        <p>
+        	EsperTech provides redistribution licenses to software companies that incorporate Esper/NEsper under commercial (non-GPL) terms.
+        	Some of the comnpanies that agreed to be listed as licensors appear on the EsperTech web site.        	
+	</p>
+      </answer>    
+    </faq>
+    <faq id="other-solutions">
+      <question>How would you position Esper next to existing solutions (or hacks) in the industry?</question>
+      <answer>
+        <p>
+        	Esper is the only open source Event Stream Processing out there - and this is not to be confused with 
+        	classical rules engines. Compared to commercial ESP engines implementations, 
+        	Esper may lack high availability options in the 1.0 release, but its open source nature is a driver to get the 
+        	Event processing language right, and get the Java community up to speed on those concepts - 
+        	before tackling enterprise grade requirements in upcoming versions.			
+		</p>
+		<p>
+			Generally Rete-based production rule engines can indeed be used to address part of what CEP coins, 
+			especially triggering by correlating events, possibly including a temporal relationship between events.
+			That said the ESP side - Event Stream Processing - is a different beast, where what matters is the "S" for Stream. 
+			In this side of the Esper engine we provide several language facilities to build expressions using time not 
+			for temporal relationship (happened before etc) but for sliding window. As an example, this makes it very valuable 
+			for computing things like volume weighted average price (VWAP) of ticks -
+			which would possibly be awful using something Rete-based like a classical rule engine.
+		</p>
+      </answer>
+    </faq>
+     <faq id="philosophy">
+      <question>What is the concept or philosophy behind the design?</question>
+      <answer>
+        <p>
+          Esper was developed using test-driven development and excellent automated test coverage.
+          Esper design evolved by re-factoring with courage towards higher design quality. 
+          Favorite patterns are dependency injection/inversion of control by context injection, 
+          Immutable, Specification, GOF patterns (except Singleton :).
+        </p>
+      </answer>
+    </faq>
+    <faq id="background">
+      <question>What is the history? Where did it start and come from?</question>
+      <answer>
+        <p>
+		  Thomas Bernhardt is the project founder and project lead. He works as a software architect for a major financial institution. 
+		  On a project in 2004 Thomas had been asked to evaluate different rules engines for use in an application for monitoring a 
+		  trading system. The rules engines proved cumbersome and slow. There was no budget for a CEP product, thus a custom application 
+		  to solve the monitoring problem was developed. The project lead's interest in CEP and ESP technologies lead to further 
+		  independent research into the knowledge space followed by prototypes build for no particular organization or purpose. 
+		  The prototypes evolved and the Esper project started.
+        </p>
+      </answer>
+    </faq>
+    <faq id="testing">
+      <question>How has this been tested? What guarantees do I have that the next release works just as well?</question>
+      <answer>
+        <p>
+          Esper uses the JUnit testing framework to automate regression testing of the system.
+          Esper's build process runs the currently around 2830 unit test methods, many running multiple test scenarios, in 680 JUnit test classes when a build occurs.
+          The test classes test the Esper engine from an end-to-end perspective as well as perform tests against
+          individual classes and components. Tests are very detailed in asserting the expected results allowing us
+          to detect most problems before they can reach you. There is also a good set of tests for multithread-safety as well as
+          tests that assert performance of statements and configurability of the engine.
+          See the package "com.espertech.esper.regression" in the test source folder as the entry point for
+		  end-to-end testing against the client API.
+        </p>
+        <p>          
+          We certify that every minor release (for example 2.x to 2.y) does not break the public interface of the engine.
+          In the public interface we include the 
+        </p>
+        <p>          
+          The Esper team follows the practice of test-driven development (TDD) rigorously, ensuring that each feature added has automated test coverage.
+          We develop and evolve the tests for each feature along with the feature that is currently being developed.
+        </p>
+        <p>          
+		  We have received a recent test coverage result that we quote here:         
+			"I used Cobertura for this, the line coverage is 85% and the branch coverage is 93%. This gives me a good feeling, but one concern is that the tests take long time to run, but I can live with that."
+        </p>
+      </answer>
+    </faq>
+    <faq id="patches">
+      <question>How do you issue bug fixes or patches? How are problems tracked?</question>
+      <answer>
+        <p>
+          We track all known issues in <a href="http://jira.codehaus.org/browse/ESPER">JIRA</a>. Many of the improvement or feature requests are also tracked in JIRA as well as a roadmap.
+        </p>
+        <p>
+          Patches are attached to the specific JIRA issue for which we are issuing a patch. Patches are always cumulative and we always list the JIRA issues addressed by a patch.
+          Patches carry the file name "esper-[release_version]-[JIRAnumber].jar" or "esper-[release_version]-[JIRAnumber]-[subrelease-number].jar".
+          An example patch file name is "esper-4.0.0-JIRA520-1.jar".
+        </p>
+        <p>
+          For environments in which you have no control over classpath or jar loading order you may merge a patch into a release jar via the command 
+          "jar uf esper-[release_version].jar esper-[release_version]-[JIRAnumber].jar".
+          An example is "jar uf esper-4.0.0.jar esper-4.0.0-JIRA520-1.jar".
+        </p>
+      </answer>
+    </faq>
+    <faq id="tested-on-OS">
+      <question>What operating systems has it been tested on?</question>
+      <answer>
+        <p>
+          We test the engine each release on Windows XP and on Redhat Linux. Please see the change history notes
+          that indicate what JDK version(s) are used for building the release, and which we certified to pass all tests.
+        </p>
+      </answer>
+    </faq>    
+    <faq id="performance">
+      <question>It claims to be fast...how does it do that? Has this claim been tested?</question>
+      <answer>
+        <p>
+	  We have published benchmark kit results and have the benchmark kit itself available for download. The results are summarized with further links on the <a href="../../esper/performance/performance.html">performance page</a>.
+        </p>
+        <p>
+          Esper builds and maintains all data structures in memory. It does not use or require any internal or external database or disk drive to run. 
+          The internal data structures are optimized for minimal locking and high write speed thereby allowing the engine to process events at the speed of arrival
+          for most applications.
+        </p>
+        <p>
+	  Esper is fully multi-thread safe and typically able to leverage all available CPUs. The engine provides advanced threading options for inbound threading, outbound threading, timer execution threading
+	  and route (internal event) threading. 
+        </p>
+        <p>
+	  Esper does not provide any transports or protocols to bring events into the engine or to handle outgoing events. Most applications find event input and event output a bottleneck. 
+        </p>
+        <p>
+	  Esper internally builds all the indexes and uses many optimization techniques hidden to your application.
+          These techniques are verified as part of the performance-asserting regression tests that are part of the source code, and that are executed as part of our build process.
+        </p>
+        <p>
+          There is a chapter in the documentation dedicated to performance tips.
+        </p>
+        <p>
+          Currently no standard performance test exists for CEP engines.          
+        </p>
+      </answer>
+    </faq>    
+
+    <faq id="benchmarks">
+      <question>Do you have any benchmarks available for Esper?  Such as results from Linear Road?</question>
+      <answer>
+        <p>
+		  We have published benchmark kit results and have the benchmark kit itself available for download. The results are summarized with further links on the <a href="../../esper/performance/performance.html">performance page</a>.
+        </p>
+        <p>
+			There is no benchmark industry-wide that would allow easy comparison. 
+        </p>
+        <p>
+			We also have an RIFD demo example that is designed to do performance 
+			testing (we can for example run about 100 000 event per second against 2000 statements on a single dual core CPU 
+			of a commodity hardware - but one would argue this does not mean a lot if we don't look at event, statement complexity, 
+			underlying resiliency etc.). 
+        </p>
+        <p>
+			Compared to other software in the CEP space, (N)Esper can run on a very large number of platforms - 
+			basically any platforms that has a Java or .Net runtime, either 32bit or 64bit, with no lock-in with any operating system 
+			(slightly more true for Esper than NEsper of course). 
+			It is also possible to run Esper on modern compute appliances such as from Azul(R) technologies in the field of high performance 
+			computing (hundreds of core, real time capabilities, etc). This is strictly not possible for other CEP engines.
+        </p>
+      </answer>
+    </faq>    
+
+    <faq id="number_of_statements">
+      <question>Can Esper handle a large number of statements?</question>
+      <answer>
+        <p>
+        	The answer will depend on the types of statements required. The best approach may thus be to get familiar with the benchmark kit
+        	and use or customize it to test the specific type of statements needed.
+        </p>
+        <p>
+		The observation will likely be that a larger number of statements have very little implication on Esper itself 
+		- although the memory footprint due to internal bookkeeping will slightly increase.
+        </p>
+        <p>
+		The time to create new statements is usually very small, likely less then 1 millisecond or perhaps 2 to 3 milliseconds per statement.
+		The engine has been tested with a very large number of statements (large > 100k). 
+		The engine is very efficient in matching incoming events to the statement(s) that need to see an event.  
+		Also note the performance tips section in the documentation that provides additional hints.
+        </p>
+      </answer>
+    </faq>    
+
+    <faq id="cost_of_stopped_statements">
+      <question>What is cost for statements which are stopped?</question>
+      <answer>
+        <p>
+	 One question was raised in the past: "<i>I am running an app which has the need to create statements according to conditions of stocks (500), but I'm finding that the up-front cost of adding a statement can be 2-3 milliseconds on a really fast computer. If I'm creating 20 new statements at about the same time, it can put me behind the curve. Would it make sense to pre-create every possible statement (several thousand) and start them as necessary? Or would I be better off creating 50-60 and utilize variables for the
+variable factor in the statements?</i>".
+        </p>
+        <p>
+	  There is no CPU cost for stopped statements for processing events (sendEvent and related methods). Stopped statements are entirely 
+	  removed form the event processing path and their status is not checked. Thus pre-creating statements can be a smart move if one cares about the latency that dynamic statement creation can incur.	  
+        </p>
+        <p>
+	  Prepared statements could also help as via a prepared statement the parse time of an EPL text string is eliminated. 
+        </p>
+        <p>
+	  The statement object model is a further approach available which requires no parse time and can make it easier to programmatically
+	  generate EPL statements without string manipulation and without parameterization as required for prepared statements.
+        </p>
+      </answer>
+    </faq>    
+  </part>
+
+  <part id="howdoesitwork">
+  	<title>How does it work?</title>
+     <faq id="how-does-it-work-overview">
+      <question>How does Esper work? How does Esper allow you to search and match patterns on temporal events?</question>
+      <answer>
+        <p>
+          Esper is an event stream processing (ESP) and event correlation engine (CEP) written in Java.
+		  Basically instead of working as a database where you put stuff in to later poll it using SQL queries, Esper works as 
+		  real time engine that triggers actions when event conditions occur among event streams.
+		  A tailored Event Processing Language (EPL) allows registering queries in the engine, using Java objects (POJO, JavaBean) to represent events. 
+		  A listener class - which is basically also a POJO - will then be called by the engine when the EPL condition is matched as 
+		  events come in. The EPL allows expressing complex matching conditions that include temporal windows, 
+		  and join different event streams, as well as filter and sort them.
+        </p>
+        <p>
+		  A simple example could be to compute the average stock price of the BEA tick on a sliding window of 30 seconds. 
+		  Given a StockTick event bean with a price and symbol property and the EPL 
+		  "select avg(price) from StockTick.win:time(30 sec) where symbol='BEA'", 
+		  a POJO would get notified as tick come in - and in real world millions of ticks can come in - 
+		  so there's no way to store them all to later query them using a classical database architecture.
+		  Statements can be much more complex, and also be combined together with "followed by" conditions.
+        </p>
+        <p>
+		  The internals of Esper are made up of fairly complex algorithms primarily relying on state machines and delta networks in which only changes to data are communicated across object boundaries when required.
+        </p>
+      </answer>
+    </faq>
+    <faq id="execution model">
+      <question>What is the difference between Esper and an in-memory database?</question>
+      <answer>
+        <p>The Esper engine works a bit like a database turned upside-down. Instead of storing the data and running queries
+			against stored data, the Esper engine allows applications to store queries and run the data through. Response
+			from the Esper engine is real-time when conditions occur that match queries. The execution model is thus continuous
+			rather then only when a query is submitted.
+		</p>
+      </answer>  
+    </faq>
+     <faq id="retain-data">
+      <question>How does the engine discern which data to retain? Is it based solely on the queries registered with the engine at the time the event comes in?</question>
+      <answer>
+        <p>
+        	Yes, the data that the engine retains is based solely on the queries registered with the engine. 
+        	The engine retains the minimum needed events and/or derived data to satisfy any started statements. Thus, if one has an engine running and 
+        	consuming events, but has no queries registered with the engine, the engine does not retain any data.
+        </p>
+      </answer>
+    </faq>
+    <faq id="keep_in_memory">
+      <question>What or how many events does Esper keep in memory? Does Esper keep matching events of a query in memory?</question>
+      <answer>
+
+	<p>
+	  Memory use depends on the statements and the memory used by events. 
+	  Esper keeps pretty much the minimal information needed to satisfy a statement in memory, and also can share data windows between statements.
+	</p>
+
+        <p>
+        	Esper offers built-in data windows as part of the event processing language that instruct the engine how many or how long events must be considered. For example, a time window with an interval length of 10 seconds instructs the engine to retain the last 10 seconds of events as a moving data window. 
+        </p>
+        <p>
+        	There is quite a few different eviction policies for different situations. Most are row-count based or time-based but there is also multi-policy. A sort-based eviction policy is also possible, as is combining different data windows. And the engine can process events without any data windows as well.
+        </p>
+
+		<p>
+			The policy for holding events in memory depends on your statement, especially the data window used (sliding, tumbling and time or length etc), and whether it uses patterns, output rate limiting or is a join. 
+		</p>
+
+        <p>
+			For example, if your statement employs no data window, Esper keeps no events in memory. This is a sample query that keeps no events in memory:
+		</p>	  			
+		<div class="source"><pre>select * from Quote(price>100)</pre></div>  
+
+        <p>
+			Or if your statement uses a unique window on a property then Esper will keep the last event per property value in memory. Here the last event per 'assetId' is kept in memory:
+		</p>	  			
+		<div class="source"><pre>select * from RfidEvent.std:unique(assetId)</pre></div>  
+
+        <p>
+			Note that Esper also re-uses (shares) data windows between statements, if possible. For views that derive values from an event stream, no events are kept in memory. For aggregations, only the aggregation values are kept in memory. For patterns, the events that participate in the pattern are kept in memory only if tagged. For output rate limiting, events are buffered unless you use the "snapshot" keyword - There is a section in the output limiting doc explaining what is buffered and when for output rate limiting. For joins, if no data window is specified, the keep-all data window applies.
+		</p>	  			
+
+        <p>
+		Consider a test harness that generates an unlimited number of events as fast as an Esper engine can process each event. Since engine throughput is rather large, it is easily possible to populate for example a time window of 1 second with possibly hundreds of thousands of events. Therefore test design may need to throttle to realistic maxiumum rates.
+		</p>	  			
+
+        <p>
+		If unsure how many events are kept by a data window, consider adding a "count(*)" and use safeIterator to get the first row.
+		</p>	  			
+
+      </answer>
+    </faq>    
+
+     <faq id="engine-start-state">
+      <question>What happens on engine start? I assume that if I have a time based query, since there's no history within the engine, there's no way to get any events to fire until the time and events have been consumed?</question>
+      <answer>
+        <p>
+			The Named Window feature allows starting queries from a prior event history. Named windows are more similar to traditional tables and help to initialize new queries with data.
+        </p>
+        <p>
+			Currently the Esper engine itself does not provide state persistence, fail-over or recovery, or an event replay mechanism.
+			The Esper engine does not write to disk, cluster or persist in any other way engine state. Thus if your application process or your hardware system goes down, then the engine state is lost. 
+        </p>			
+        <p>
+			If you need fail-over and/or recovery capability, then the EsperHA (Esper High Availability) product by EsperTech can be a good solution. Please contact us for further information.
+        </p>			
+        <p>
+			Alternatively your application could replay events into the engine, but that is currently a process the application or middleware must do and that Esper has no facilities for.        	
+        </p>
+      </answer>
+    </faq>
+     <faq id="engine-new-queries">
+	  <question>Can queries be added to the system only on engine start, or can they be added dynamically? Will those queries work with any internally stored historical data when they're started?</question>
+	  <answer>
+		<p>
+			Queries can be added, stopped, started, or destroyed while the engine is running in a multithread-safe fashion. The facility to explicitly attach or initialize a new query from a prior query or data window is a feature of named windows.
+		</p>
+	  </answer>
+	</faq>
+     <faq id="engine-configuration">
+	  <question>The engine can be configured to work with DOM objects and many other event representations. Is that configuration static, or can those configurations be changed or added to on a running system?</question>
+	  <answer>
+		<p>
+			The runtime configuration API allows most configuration actions to be performed at runtime. This API is available via the administrative interface of the engine.
+		</p>
+	  </answer>
+	</faq>
+     <faq id="insert-into">
+	  <question>When working with composite streams, i.e. when using the 'insert into' mechanism, does the entity being inserted into have to be a registered object in the system or are those created simply by registering the query?</question>
+	  <answer>
+		<p>
+			No, there is no registration required. The creation of the query that contains the insert-into clause creates the new stream and makes it available to use in further statements.		
+		</p>
+	  </answer>
+	</faq>
+    <faq id="windows">
+      <question>Could you explain the concept of data windows for a database programmer?</question>
+      <answer>
+        <p>One could perhaps think of a table with a timestamp column containing the time when the row was inserted. We could create a view that sorts by timestamp descending and selects all rows between the current timestamp and say up to 1 minute prior to now. Every time we fire a query against this view, the view returns the recent rows added in the last 1 minute. The rows returned are the contents of a 1 minute time window. Every time the query is fired we get a new window. Older rows would seem to leave the window while new rows would seem to enter the window.
+		</p>
+      </answer>  
+    </faq>
+    <faq id="window_nowindow">
+      <question>What is the difference between "select * from MyEvent" and "select * from MyEvent.win:length(1)" and "select * from MyEvent.win:keepall()" ?</question>
+      <answer>
+        <p>
+			The statement "select * from MyEvent" retains no event data,  posts an insert stream and does not post a remove stream. If adding an aggregation function such as "select sum(qty) from MyEvent" then the statement returns the total quantity since the statement was started. The iterator method when used on the statement returns no events. The "previous" function is not available.
+		</p>
+        <p>
+			The statement "select * from MyEvent.win:length(1)" retains the last event and posts an insert and remove stream. If adding an aggregation function such as "select sum(qty) from MyEvent.win:length(1)" then the statement returns the quantity of the last event. The iterator method when used on the statement returns the last event. The "previous" function is available and can query the immediately previous event only.
+		</p>
+        <p>
+			The statement "select * from MyEvent.win:keepall()" retains all events since the statement was started. When using a named window, via on-select or on-delete one can do queries on such retained data. If adding an aggregation function such as "select sum(qty) from MyEvent.win:keepall()" then the statement returns the total quantity since the statement was started. The iterator method when used on the statement returns all events since statement start. The "previous" function is available and can query any depth of previous events.
+		</p>
+      </answer>  
+    </faq>
+    <faq id="event_no_interest">
+      <question>What happens if I send events to which no query is created yet? Can a time-to-live be specified to retry matching an event?</question>
+      <answer>
+        <p>
+	  Events that are of no interest to any started EPL statement are simply dropped. There is no internal queue they are retained in. There is also no concept of time-to-live for unmatched events.
+	</p>
+        <p>
+    	  Your application can use the UnmatchedEventListener interface to catch an event that is dropped because no EPL statement needs to see it. 
+    	  Your application would need to retain and retry such unmatched events to achieve a time-to-live for unmatched events.
+	</p>
+      </answer>  
+    </faq>
+    <faq id="arrival_time_concept">
+      <question>How can the timestamp for an event be explicitly controlled?</question>
+      <answer>
+        <p>
+	  In Esper the concept of time is under the control of an application via CurrentTimeEvent at the level of the runtime and at the level of statements via 
+	  isolated service provider. The event arrival time is the time the runtime or isolated service is currently at, when the event is made known to the runtime or isolated service. 
+	  This allows any number of time dimensions to be controlled separately, such as event originating time or transmitted time for example. 
+	</p>
+        <p>
+	  Use the time-order view (ext:time_order) to reorder events arriving out-of-order. The time order view can operate on a timestamp event property that is part of your event.	  
+	</p>
+      </answer>  
+    </faq>
+    <faq id="copy_events">
+      <question>Does the engine make a copy of events?</question>
+      <answer>
+        <p>
+	    The engine will not ever copy events unless modifying events using on-update or update-istream.
+	</p>
+	<p>
+            Assume the following example statement:
+	</p>
+    	<code>select * from pattern[A -> every B].win:time(1 min) as pair</code>
+        <p>
+	    For the above pattern, the engine internally generates one intermediate event for each combination of A and B (one could name this event 'pair'). 
+	    Each intermediate event is a Map that holds a reference to the original A event and a reference to the current B event. 
+	    The time window holds intermediate events. Depending on your select clause the intermediate events get transformed into output events or output directly.
+	</p>
+      </answer>  
+    </faq>
+  </part>
+
+  <part id="integration">
+  	<title>Integration</title>
+
+    <faq id="deployment-dependencies">
+      <question>What additional components does Esper require to run?</question>
+      <answer>
+        <p>
+          Please see the feature list for this information. And the "lib" folder in the source distribution contains a readme file
+          that describes the dependencies.
+        </p>
+        <p>
+          Esper builds and maintains all data structures in memory. It does not use or require any relational database or disk drive to run.
+        </p>
+      </answer>
+    </faq>    
+    
+    <faq id="hook-into-existing">
+      <question>How does Esper hook into an existing event-based system?</question>
+      <answer>
+        <p>
+		Today, event based system are often confused with message based system such as JMS and alike back-ends or 
+	  	Enterprise Service Bus (ESB). Messaging system are event based but usually do not correlate events or 
+	  	process event streams at all. They simply process unitary events - and it becomes quickly complex if you 
+	  	need to correlate messages.
+	</p>
+        <p>
+		  Esper can hook into any Java based system as a message consumer - whose main purpose would be to listen 
+		  efficiently to everything whilst sending back other events when a matching condition has occurred. On the 
+		  other hand, hooking Esper in a classic messaging system allows having it correlate events even if those 
+		  come from non-Java based systems. This is just an example. Esper is completely container agnostic, can run 
+		  as a standalone component, and the 1.0 release simply assumes events to be POJO. We are currently working on 
+		  providing native XML format support as well.
+        </p>
+      </answer>
+    </faq>
+    
+    <faq id="multithread-safety">
+      <question>Can I run it with multiple threads? What, if anything, is multithread-safe?</question>
+      <answer>
+        <p>
+          All administrative and runtime operations are multithread-safe as of release 1.5 for all types of statements.
+          Applications can perform multithreaded sends of events into the engine as well as 
+          create, start and stop statements during operation, while retaining full control over threading and 
+          efficiently sharing resources between statements.
+	</p>
+        <p>
+          Additionally, Esper supports multiple independent Esper engines per Java VM. Thus applications can 
+          segregate work to multiple engine instances allocating one or more threads to each engine instance.
+	</p>
+        <p>
+		  Iterating (pull-model) of result data by using a statement's safeIterator method concurrently to the statement's
+		  processing of events is also thread-safe.
+	</p>
+        <p>
+		  Not thread-safe are the following: iterating via iterator method (use safeIterator instead), configuration API, SODA API when sharing a statement object model instance between threads.
+	</p>
+      </answer>
+    </faq>    
+
+    <faq id="resource-consumption">
+      <question>What is the footprint of Esper in a typical installation, i.e. what is the RAM, disk and CPU usage?</question>
+      <answer>
+        <p>
+          The kernel itself if very lightweight and fits in a few MB heap (in RAM). The disk usage is also limited (logs, jar file of a about 2 MB incl. third party jars, and a few KB for configuration files).
+        </p>	  
+        <p>
+			The CPU consumption is a factor of the events entering and exiting the system, and also of the actual listeners you register with the statements.
+        </p>	 
+        <p>
+			  The heap consumption (RAM) is proportional to the number of streams and statements you deal with and the window sizes (correlating / computing average over 100 events or 100000 events, or
+			  for 10 seconds or 10 days).
+        </p>
+        <p>
+			  For more information, please check the performance section in the reference documentation.
+        </p>
+      </answer>
+    </faq>    
+    
+    <faq id="jms-and-internal-queue">
+      <question>If one overloads Esper with events through a JMS queue, will Esper queue events internally until it processes them or will events stay in the JMS queue until Esper process them?</question>
+      <answer>
+        <p>
+			Esper does not have an internal event queue. The threading is completely driven by the application that embeds Esper. The relevant doc chapter is 
+<a href="http://esper.codehaus.org/esper-3.1.0/doc/reference/en/html_single/index.html#api-threading">here</a>.
+		</p>	  
+			
+        <p>
+			Therefore, if your application uses the listener model to read messages that arrive from a JMS queue, then your JMS implementation MOM middleware (MOM=message-oriented middleware, i.e. ActiveMQ and many others) provides the threads that deliver messages.
+			Say you add N listeners (javax.jms.MessageListener) to JMS destination then the MOM supplies N threads that each deliver a message asynchronously, on message arrival. If your application has the JMS listener send one or more events per message into Esper, then the thread blocks until Esper has processed the event, and only after Esper has processed each event does your listener code return from the onMessage method, and the MOM delivers the next message to that listener. 
+		</p>	  
+
+        <p>
+          As part of the Esper distribution comes an example "JMS Server Shell" and client, which are a configurable JMS-based server and client to process events from JMS destinations.
+		</p>	  
+
+        <p>
+			One can of course also use the receive model (blocking calls) to receive from a JMS queue with N application threads each performing a blocking receive (see javax.jms.MessageConsumer to receive with timeout). When the consumer receives a message it can send the event(s) into Esper from the same thread. Again the application thread will call the next JMS receive after Esper has processed the event(s) completely. 
+		</p>	  
+		
+        <p>
+		    Another alternative is to de-couple JMS reads from Esper event processing by putting a blocking queue and a threadpool between the JMS
+			receivers or listeners and Esper event processing. The disadvantage lies in a larger number of thread context switches (not within Esper, but within your application and the MOM) which can overall lower performance. 
+		</p>	  
+
+        <p>
+		    The EsperIO package has JMS adapters that are based on the Spring framework and it's JMS template to configure JMS connectivity without the need to write code.
+		</p>	  
+      </answer>
+    </faq>    
+
+    <faq id="notification">
+      <question>Is there a way to send a bunch of events into Esper and get back a notification when it is done with processing all events?</question>
+      <answer>
+        <p>
+            As discussed before, there is no internal event queue, and the application threads process all events.
+			Esper does not have a built-in mechanism to bunch up messages, however the Java concurrent library provides very good infrastructure to do this. A bunch of messages can be collected into a list, and a  threadpool (see java.util.concurrent.Executors) and Callable, that takes the list and sends the events to Esper, could be used here, for example.
+		</p>	  			
+
+        <p>
+			Our benchmark kit provides an example built upon concurrent queues and thread pools.
+		</p>
+
+      </answer>
+    </faq>    
+
+    <faq id="blocking_listener">
+      <question>What is the policy you recommend on UpdateListener (or Observer) if UpdateListener does long processing? For example, why don't you create a thread or attach a JMS queue for output in some examples?</question>
+      <answer>
+        <p>
+			A blocking UpdateListener or subscriber blocks event processing for that thread, unless configuring the outbound threading option that the engine provides.
+			Decoupling output processing via a further threadpool may have an advantage if output listener processing can be very slow, but incurs the cost of further threads and context switching.		
+		</p>
+
+        <p>
+			One factor to consider is the number of output events. A second factor is the action that you application may perform for each output event, such as whether the event needs to be communicated to another system or simply displayed. 
+		</p>
+
+        <p>
+			The examples generally leave the transport and threading out of the picture, since that is specific to any application and particular integration environment as well as event stream density. We also want to keep examples simple.
+		</p>
+      </answer>
+    </faq>    
+
+    <faq id="classloader">
+      <question>Have you tested Esper in an OSGI container?</question>
+      <answer>
+        <p>
+		Yes we have tested in Equinox and Felix containers. The Esper and EsperIO jar files ship with OSGI-compliant manifests that 
+		can be used as they are or modified if necessary. Esper dependencies are available for download from an
+		OSGi bundle repository thus each dependent jar file can itself be a bundle and resolved by the OSGi container.
+	</p>
+        <p>
+		The next FAQ entry answers the ClassLoader question. If using Java classes as events in an OSGi container
+		then such event classes may need to be on the system classpath or the thread's ClassLoader may need to be set
+		explicitly by your application.
+	</p>
+        <p>
+		When using nested-Map or XML DOM as events then a regular import of the exported Esper packages should suffice.
+	</p>
+      </answer>
+    </faq>    
+
+    <faq id="classloader">
+      <question>What ClassLoader does it use? How do I get the class loading right in OSGI, Apache Axis or other containers?</question>
+      <answer>
+        <p>
+		We have users that use Esper in an OSGi container and therefore consistently use the thread's context classloader
+		as the following examples show:
+	</p>
+	<div class="source"><pre>
+FastClass.create(Thread.currentThread().getContextClassLoader(), class); // CGLIB
+Class.forName(name, true, Thread.currentThread().getContextClassLoader()); // Java Reflection</pre></div>      
+	
+        <p>
+		We recommend that you use the same classloader with all entry points to Esper: Creating and configuring the Esper engine instance,
+		creating a statement and supplying a subscriber or listener to it and sending data to the esper runtime via sendEvent() and route().
+	</p>
+	<p>
+		One user is using Esper inside an Axis2 web-service. The class defining the service compiles and loads just fine; 
+		but the user got a runtime error from Esper "Error configuring engine:  Event type .. was not found".
+		For reasons the user didn't completely understand, Axis2 changes the classloader when starting the service.
+		The user didn't know why, but expected that it would be critical for other Axis2 processing.
+		So, he copied a solution used by a collegue working on this project with a similar class loader issue:
+	</p>
+	<div class="source"><pre>
+// get current context classloader                                                                                                                                  
+ClassLoader contextClassloader = Thread.currentThread().getContextClassLoader();
+
+// then alter the class-loader (but which one ? the one used to load this class itself) with:
+Thread.currentThread().setContextClassLoader(this.class.getClassLoader());
+
+// create my Esper statement, and finally restore the class loader to its original value:
+ Thread.currentThread().setContextClassLoader(contextClassloader);</pre></div>      
+
+	<p>
+		When sending events into an Esper engine in a bundle, in the default configuration the thread that calls the send event method
+		performs all the work, which may also require additional class loading. Consider configuring Esper with an inbound and outbound threadpool
+		to have engine threads perform this work. Please see the documentation on advanced threading options.
+	</p>
+
+	</answer>
+    </faq>    
+
+    <faq id="small_devices">
+      <question>Can Esper run on small devices?</question>
+      <answer>
+        <p>
+Esper is a 100% Java component and works anywhere Java 5 or 6 is fully supported. The list of dependencies is fairly small and it is also possible to reduce Esper jar itself to the minimal classes needed, if required. It has no disk or other device or storage dependency and its memory and CPU use requirements depend only on what statements are needed.
+	</p>
+	</answer>
+    </faq>    
+
+    <faq id="unit_test">
+      <question>How do I test EPL? Is there an integration with a testing framework?</question>
+      <answer>
+        <p>
+	The best source of examples for testing is the regression test suite under folder "src/test/java/com/espertech/esper/regression",
+	accessible via Subversion browser or repository.	
+	</p>
+        <p>
+	When controlling time in a test case, use the CurrentTimeEvent class to set or advance time. You would want to set time before
+	creating a statement and advance time between events as needed (make sure you turn the internal timer off via configuration).
+	</p>
+        <p>
+	To help make the test cases in your test suite independent of each other, and independent of the order in which they are executed,
+	use the initialize method to reset engine state to the last provided configuration.
+	</p>
+        <p>
+	Consider implementing multi-threaded tests and/or a good simulator for production data to simulate production-like
+	conditions early on.
+	</p>
+        <p>
+	In below code snippet we provide a possible layout for test cases using the JUnit test suite:
+	</p>
+	<div class="source"><pre>
+public class TestSampleJUnit extends TestCase {
+    private EPServiceProvider epService;
+
+    // Called by the testing framework
+    public void setUp() {
+    	// configure with timer disabled, leaving the concept of time in control of this test
+        Configuration config = new Configuration();
+        config.getEngineDefaults().getThreading().setInternalTimerEnabled(false);
+
+	// use the initialize method to reset the engine to pristine state before each test, if desired
+        epService = EPServiceProviderManager.getDefaultProvider(config);
+        epService.initialize();
+    }
+
+    public void testSampleOne() {
+        // set time to a start time, lets say time zero (0) but could be any time or System.currentTimeMillis 
+        epService.getEPRuntime().sendEvent(new CurrentTimeEvent(0));
+        
+        EPStatement stmt = epService.getEPAdministrator().createEPL("...my statement here...");
+        // add a listener or subscriber to the statement, or iterate the statement 
+
+        // send a new event object for each event
+        epService.getEPRuntime().sendEvent(new MyEvent());
+
+        // advance time as needed, here we pretend 1 second passed
+        epService.getEPRuntime().sendEvent(new CurrentTimeEvent(1000));
+
+        // send more events and assert as needed
+    }
+
+    public void testSampleTwo() {...}
+}</pre></div>      
+
+	</answer>
+    </faq>    
+  </part>
+
+</faqs>
+
+
+
+
+
+
+

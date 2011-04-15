@@ -1,0 +1,36 @@
+Getting Help
+~~~~~~~~~~~~~~
+
+
+* How to get support
+
+	* Please contact {{{http://www.espertech.com}EsperTech}} for support, training and services for Esper.
+
+        * Consider the solution patterns page on this site.
+
+        * Consider checking the regression test suite for specific questions, see Source Repository, under folder "src/test/java/com/espertech/esper/regression"
+
+	* File an issue using {{{http://jira.codehaus.org/browse/ESPER}JIRA}}.
+	
+	* Use the user mailing list for usage-related questions {{{mailto:user@esper.codehaus.org}user@esper.codehaus.org}}.
+	
+	* File a feature request, also through {{{http://jira.codehaus.org/browse/ESPER}JIRA}}.
+	
+	* Look through the {{{http://xircles.codehaus.org/projects/esper/lists}mailing list archives}}.
+	
+
+* When contacting us, please provide 
+	
+	* The version used.
+	
+	* The complete stack trace of any exception, if an exception is reported.
+	
+	* A snippet of Java code or a unit test to reproduce the issue or question.
+	  Keep this code very simple and minimal without any additional classes, in the style of our regression test suite.
+	  	
+	
+* Please consider obtaining support from EsperTech.
+
+	When we get questions on the mailing lists that ask for a complete solution, we can often only provide short summarized answers as
+	we don't usually have the time to look into each inquiry in the detail required. EsperTech support will spend the time
+	needed to get you to a desired solution.

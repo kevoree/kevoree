@@ -1,0 +1,51 @@
+NEsper for .NET
+~~~~~~~~~~~~~~
+
+	NEsper is a CLR-based component for building CEP and ESP engines.
+	NEsper is based upon the Esper baseline, but includes customizations
+	that are specific to the .NET CLR.
+
+	NEsper is open-source software available under the {{{http://www.opensource.org/licenses/gpl-2.0.php}GNU General Public License (GPL)}}.
+	The GPL v2 licenses you the right to redistribute NEsper under specific terms. Please {{{http://www.espertech.com/partners/embedded.php}contact us}} for any inquiry.
+	
+Guiding Philosophy
+
+	NEsper is derived from Esper and to that end we want to ensure that
+	NEsper is inline with the design, spirit and influence that drives
+	Esper.  However, NEsper strives to provide a CEP-ESP component for
+	.NET applications.  To that end, we strive to ensure that the APIs,
+	interfaces and other constructs that we use properly reflect the
+	way that the CLR is designed.
+
+	NEsper and Esper share the same grammar.  Users should find the
+	two environments to be compatible.  However, users should keep in
+	mind that NEsper and Esper are case sensitive and canonization
+	practices differ between the Java and .NET.
+
+Features
+
+	All of the features found in Esper are also available in NEsper. A NEsper version is
+	feature-equivalent to the same-version Esper (Java) component.
+
+Summary
+	
+	Like its namesake, NEsper was created to make it easier to build CEP
+	and ESP applications.  NEsper is open-source software available under
+	the GNU General Public License (GPL) license.
+
+
+Note on ADO.NET and ODBC Support
+
+	NEsper has been tested with both ADO.NET and ODBC drivers to relational database access.
+	As part of the regular build, NEsper tests against a MySQL database and Microsoft SQL Server 2005.
+	
+	The ADO.NET database model has one huge quirk: In ADO.NET parameters and their format are dictated by the driver.  
+	As such, you can end up with a driver like the MySQL driver which is a named-parameter driver. 
+	Parameters have to be written as @name in order to be processed.  
+	ODBC is a positional-parameter driver which means that parameters must be written using ? as their parameter.  
+	
+	What makes this even worse is that the prefix (the ? or @) is defined by the driver.  
+	Oracle, SQL Server and MySQL all have potentially different prefixes.  
+	The NEsper tests exercise code that allows the user to change the the provider and positional parameter style. 
+
+

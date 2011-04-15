@@ -1,0 +1,52 @@
+Download Esper
+~~~~~~~~~~~~~~
+
+	Esper is distributed in several packaged formats for your convenience.
+
+*------------------------+----------------------------------------------------------------------------+-----------------------------------------------------------------------------------+--------------------------------------------------------------------------------------+---------------------------+
+|                        | Download                                                                   | Checksum                                                                          | Signature                                                                            | License
+*------------------------+----------------------------------------------------------------------------+-----------------------------------------------------------------------------------+--------------------------------------------------------------------------------------+---------------------------+
+| Esper 4.1.0 (tar.gz)   | {{{http://dist.codehaus.org/esper/esper-4.1.0.tar.gz}esper-4.1.0.tar.gz}}  | {{{http://dist.codehaus.org/esper/esper-4.1.0.tar.gz.md5}esper-4.1.0.tar.gz.md5}} | {{{http://dist.codehaus.org/esper/esper-4.1.0.tar.gz.asc}esper-4.1.0.tar.gz.asc}}    | {{{http://www.opensource.org/licenses/gpl-2.0.php}GNU GPL}} (GPL v2)
+*------------------------+----------------------------------------------------------------------------+-----------------------------------------------------------------------------------+--------------------------------------------------------------------------------------+---------------------------+
+| Esper 4.1.0 (zip)      | {{{http://dist.codehaus.org/esper/esper-4.1.0.zip}esper-4.1.0.zip}}        | {{{http://dist.codehaus.org/esper/esper-4.1.0.zip.md5}esper-4.1.0.zip.md5}}       | {{{http://dist.codehaus.org/esper/esper-4.1.0.zip.asc}esper-4.1.0.zip.asc}}          | {{{http://www.opensource.org/licenses/gpl-2.0.php}GNU GPL}} (GPL v2)
+*------------------------+----------------------------------------------------------------------------+-----------------------------------------------------------------------------------+--------------------------------------------------------------------------------------+---------------------------+
+
+
+* Maven Repository Information
+	
+	Each release gets published to the {{{http://repository.codehaus.org/com/espertech/esper}Codehaus Maven repository}} which synchronizes in time with other repositories.
+	Use the following dependency in your Maven POM:
+	
+----------------------------------------
+	<dependency>
+		<groupId>com.espertech</groupId>
+		<artifactId>esper</artifactId>
+		<version> ... </version>
+	</dependency>
+----------------------------------------
+
+* Bug Fix Service Packs
+	
+	Please navigate to {{{http://jira.codehaus.org/browse/ESPER}JIRA}} and select Resolved on the right hand side to see resolved issues for the current release.
+	When service packs are issued they are cumulative and can be downloaded from {{{http://dist.codehaus.org/esper}here}}.	
+
+* Previous Releases
+	
+	Earlier versions of Esper can be downloaded from {{{http://dist.codehaus.org/esper/prior-releases}here}}.
+
+* Source Code Access
+	
+	 The source code for the Esper project is available through anonymous {{{http://xircles.codehaus.org/projects/esper/repo}Subversion}} and can also be downloaded from {{{http://dist.codehaus.org/esper}here}}.
+
+
+Download Article Example
+~~~~~~~~~~~~~~~~~~~~~~
+
+	Esper examples are distributed with Esper bundled in binary form for your convenience.
+	You don't need to download Esper separately.
+
+*------------------------+----------------------------------------------------------------------------+-----------------------+
+|                        | Download                                                                   | Read related article
+*------------------------+----------------------------------------------------------------------------+-----------------------+
+| Terminal Service (JSE) | {{{http://dist.codehaus.org/esper/esper-example-terminalsvc-jse.zip}zip (includes Esper 1.6.0)}}  | {{{http://www.onjava.com/pub/a/onjava/2007/03/07/esper-event-stream-processing-and-correlation.html}ONJava.com article titled "Esper: Event Stream Processing and Correlation" from 3/8/2007}}
+*------------------------+----------------------------------------------------------------------------+-----------------------+

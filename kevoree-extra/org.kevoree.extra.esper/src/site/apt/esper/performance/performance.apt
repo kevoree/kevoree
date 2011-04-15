@@ -1,0 +1,25 @@
+Performance-Related Information
+~~~~~~~~~~~~~~		
+
+* Performance key figures
+
+            Esper exceeds over 500 000 event/s on a dual CPU 2GHz Intel based hardware, with engine latency below 3 microseconds average (below 10us with more than 99% predictability) on a VWAP benchmark with 1000 statements registered in the system - this tops at 70 Mbit/s at 85% CPU usage.
+            Esper also demonstrates linear scalability from 100 000 to 500 000 event/s on this hardware, with consistent results accross different statements.
+
+* The Esper Benchmark kit
+
+	We have put a small benchmark kit together to enable you to measure and tune Esper performance 
+	in your environment, and for the purpose of comparing Esper performance to the performance of other CEP/ESP solutions.
+	
+	The benchmark kit is described in detail in the documentation in the chapter on performance.
+	
+	We are collecting platform-specific data obtained by the benchmark kit on our 
+	{{{http://docs.codehaus.org/display/ESPER/Esper+performance}Esper Performance Wiki}} page.
+	
+		
+* Performance tuning tips
+
+	We are providing performance tuning tips in the chapter on performance in the documentation.
+	
+	If you have suggestions, or want to disuss performance of statements, please use the user mailing list for discussions.
+
