@@ -5,11 +5,11 @@
     <packaging>bundle</packaging>
     <name>Kevoree :: Deploy OSGI</name>
 
-    <version>1.1.0-BETA2</version>
+    <version>1.1.0-RC1</version>
     <parent>
         <artifactId>org.kevoree.root</artifactId>
         <groupId>org.kevoree</groupId>
-        <version>1.1.0-BETA2</version>
+        <version>1.1.0-RC1</version>
         <relativePath>../org.kevoree.root/pom.xml</relativePath>
     </parent>
 

@@ -25,7 +25,7 @@ mvn versions:set -DnewVersion=$KEVOREE_RELEASE -DgenerateBackupPoms=false
 cd $BASE_RELEASE_DIR
 
 #CHANGE LIBRARY VERSION
-cd kevoree-library/org.kevoree.library.root
+cd kevoree-library
 mvn versions:set -DnewVersion=$KEVOREE_RELEASE -DgenerateBackupPoms=false
 
 cd $BASE_RELEASE_DIR
