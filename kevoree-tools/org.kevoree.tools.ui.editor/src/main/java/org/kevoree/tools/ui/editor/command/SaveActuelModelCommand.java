@@ -17,12 +17,15 @@
 package org.kevoree.tools.ui.editor.command;
 
 import javax.swing.JFileChooser;
+
+import org.kevoree.ContainerNode;
 import org.kevoree.framework.KevoreeXmiHelper;
 
 import org.kevoree.tools.ui.editor.KevoreeUIKernel;
+import org.kevoree.tools.ui.editor.PositionedEMFHelper;
+import org.kevoree.tools.ui.framework.elements.NodePanel;
 
 /**
- *
  * @author ffouquet
  */
 public class SaveActuelModelCommand implements Command {
@@ -30,6 +33,7 @@ public class SaveActuelModelCommand implements Command {
     public void setKernel(KevoreeUIKernel kernel) {
         this.kernel = kernel;
     }
+
     private KevoreeUIKernel kernel;
     private JFileChooser filechooser = new JFileChooser();
     private static String defaultLocation = null;
@@ -44,6 +48,9 @@ public class SaveActuelModelCommand implements Command {
 
     @Override
     public void execute(Object p) {
+
+        PositionedEMFHelper.updateModelUIMetaData(kernel.getModelHandler().getActualModel());
+
         String location = "";
         if (defaultLocation == null) {
             filechooser.showSaveDialog(kernel.getModelPanel());
@@ -53,9 +60,9 @@ public class SaveActuelModelCommand implements Command {
         } else {
             location = defaultLocation;
         }
-        try{
-          KevoreeXmiHelper.save(location.toString(), kernel.getModelHandler().getActualModel());
-        } catch (Exception e){
+        try {
+            KevoreeXmiHelper.save(location.toString(), kernel.getModelHandler().getActualModel());
+        } catch (Exception e) {
             System.out.println("Can save model !");
         }
 

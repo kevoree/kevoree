@@ -24,6 +24,7 @@
         <module>../org.kevoree.extra.marshalling</module>
 		<module>../org.kevoree.extra.protobuf</module>
         <module>../org.kevoree.extra.netty</module>
+        <module>../org.kevoree.extra.osgi.xbee</module>
 
 	</modules>
 

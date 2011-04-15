@@ -18,33 +18,33 @@
 
 package org.kevoree.platform.osgi.standalone;
 
+import org.osgi.framework.BundleActivator;
+
 import java.util.Arrays;
 import java.util.List;
 
-import org.osgi.framework.BundleActivator;
-
 /**
- *
  * @author ffouquet
  */
 public class EmbeddedActivators {
 
     private static List<BundleActivator> activators = Arrays.asList(
-                (BundleActivator)new org.apache.felix.shell.remote.Activator(),
-                (BundleActivator)new org.apache.felix.shell.tui.Activator(),
-                (BundleActivator)new org.apache.felix.shell.tui.Activator(),
-       //         (BundleActivator)new org.apache.felix.shell.remote.Activator(),
-                (BundleActivator)new org.apache.felix.shell.impl.Activator(),
-                (BundleActivator)new org.kevoree.platform.osgi.standalone.BootstrapActivator()
-                );
+
+            (BundleActivator)new org.apache.felix.shell.impl.Activator(),
+            (BundleActivator)new org.apache.felix.shell.tui.Activator(),
+            (BundleActivator)new org.apache.felix.shell.remote.Activator(),
+            (BundleActivator) new org.ops4j.pax.url.mvn.internal.Activator(),
+            (BundleActivator) new org.ops4j.pax.url.assembly.internal.Activator(),
+            (BundleActivator) new org.kevoree.platform.osgi.standalone.BootstrapActivator()
+            );
 
 
-    public static List<BundleActivator> getActivators(){
+    public static List<BundleActivator> getActivators() {
         return activators;
     }
 
-    public static void setActivators(List<BundleActivator> newActs){
-                 activators = newActs;
+    public static void setActivators(List<BundleActivator> newActs) {
+        activators = newActs;
     }
 
 

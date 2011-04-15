@@ -62,6 +62,14 @@ public class NodePropertyEditor extends NamedElementPropertyEditor {
         btPushNode.setCommand(sendNode);
         this.addCenter(btPushNode);
 */
+        JCommandButton btPushNodeType = new JCommandButton("PushModelUsingNodeType");
+        SynchNodeTypeCommand sendNodeType = new SynchNodeTypeCommand();
+        sendNodeType.setKernel(_kernel);
+        sendNodeType.setDestNodeName(node.getName());
+        btPushNodeType.setCommand(sendNodeType);
+        this.addCenter(btPushNodeType);
+
+
 
         //   JTextField ip = new JTextField("ip:port");
         JCommandButton btPushNodeIP = new JCommandButton("Push");

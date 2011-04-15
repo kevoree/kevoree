@@ -639,6 +639,10 @@
   <children xmi:type="notation:Node" xmi:id="_hMT9IFBrEeCFn-V72gGNbA" type="1001">
     <children xmi:type="notation:Node" xmi:id="_hMT9I1BrEeCFn-V72gGNbA" type="4001"/>
     <children xmi:type="notation:Node" xmi:id="_hMT9JFBrEeCFn-V72gGNbA" type="5001">
+      <children xmi:type="notation:Node" xmi:id="_hkQ-gWcyEeCd1Poyu4dUsA" type="2001">
+        <element xmi:type="ecore:EAttribute" href="kevoree.ecore#//Instance/metaData"/>
+        <layoutConstraint xmi:type="notation:Location" xmi:id="_hkRlkGcyEeCd1Poyu4dUsA"/>
+      </children>
       <styles xmi:type="notation:DrawerStyle" xmi:id="_hMT9JVBrEeCFn-V72gGNbA"/>
       <styles xmi:type="notation:SortingStyle" xmi:id="_hMT9JlBrEeCFn-V72gGNbA"/>
       <styles xmi:type="notation:FilteringStyle" xmi:id="_hMT9J1BrEeCFn-V72gGNbA"/>

@@ -49,7 +49,7 @@ case class KevsAddBindingInterpreter(addBinding : AddBindingStatment) extends Ke
                             if(newbinding.getPort != null){
                               context.model.getMBindings.add(newbinding);true
                             } else {
-                              println("Port not found")
+                              println("àPort not found")
                               false
                             }
                           }

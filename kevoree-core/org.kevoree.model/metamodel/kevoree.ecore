@@ -202,6 +202,7 @@
         eType="#//TypeDefinition"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="dictionary" eType="#//Dictionary"
         containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="metaData" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Metric">
     <eStructuralFeatures xsi:type="ecore:EReference" name="values" upperBound="-1"

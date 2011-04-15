@@ -20,10 +20,14 @@ package org.kevoree.tools.ui.editor.command;
 import org.kevoree.*;
 import org.kevoree.framework.KevoreeXmiHelper;
 import org.kevoree.tools.ui.editor.KevoreeUIKernel;
+import org.kevoree.tools.ui.editor.MetaDataHelper;
 import org.kevoree.tools.ui.framework.elements.*;
 import org.kevoree.tools.ui.framework.elements.PortPanel.PortType;
 
+import java.awt.*;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 
 
@@ -107,6 +111,13 @@ public class LoadModelCommand implements Command {
         for (ContainerNode newnode : kernel.getModelHandler().getActualModel().getNodes()) {
             NodePanel newnodepanel = kernel.getUifactory().createComponentNode(newnode);
             kernel.getModelPanel().addNode(newnodepanel);
+            //UI
+            HashMap<String,String> metaData = MetaDataHelper.getMetaDataFromInstance(newnode);
+            if(MetaDataHelper.containKeys(Arrays.asList("x","y"),metaData)){
+              newnodepanel.setLocation(new Point(Integer.parseInt(metaData.get("x").toString()),Integer.parseInt(metaData.get("y").toString())));
+            }
+
+
             for (ComponentInstance ci : newnode.getComponents()) {
                 ComponentPanel insPanel = kernel.getUifactory().createComponentInstance(ci);
                 for (Port portP : ci.getProvided()) {
@@ -150,7 +161,7 @@ public class LoadModelCommand implements Command {
         /*
         for (Binding binding : kernel.getModelHandler().getActualModel().getBindings()) {
         org.kevoree.ui.framework.elements.Binding uib = kernel.getUifactory().createBinding(binding);
-        kernel.getModelPanel().addBinding(uib);
+        kernel.getModelPanel().removeBinding(uib);
         }*/
 
         //LOAD MBINDING

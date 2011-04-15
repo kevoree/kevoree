@@ -1,4 +1,3 @@
-
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
@@ -19,7 +18,7 @@
         <kevoree.version>${project.version}</kevoree.version>
     </properties>
 
-<profiles>
+    <profiles>
         <profile>
             <id>org.kevoree.tools.ui.editor.standalone.mac</id>
             <activation>
@@ -111,16 +110,16 @@
                             }
                         </option>
                         <option>-keep class jsyntaxpane.** { *; }</option>
-                       <option>-keep class org.kevoree.tools.marShellGUI.** { *; }</option> 
-                        
-                        
+                        <option>-keep class org.kevoree.tools.marShellGUI.** { *; }</option>
+
+
                     </options>
                     <assembly>
                         <inclusions>
                             <inclusion>
                                 <groupId>org.kevoree.tools</groupId>
                                 <artifactId>org.kevoree.tools.ui.editor</artifactId>
-                              <!--  <filter>META-INF/maven/**</filter> -->
+                                <!--  <filter>META-INF/maven/**</filter> -->
                             </inclusion>
                             <inclusion>
                                 <groupId>org.kevoree.tools</groupId>
@@ -149,6 +148,12 @@
                             </inclusion>
                             <inclusion>
                                 <groupId>org.kevoree</groupId>
+                                <artifactId>org.kevoree.kompare</artifactId>
+                            </inclusion>
+
+
+                            <inclusion>
+                                <groupId>org.kevoree</groupId>
                                 <artifactId>org.kevoree.basechecker</artifactId>
                             </inclusion>
                             <inclusion>
@@ -172,13 +177,24 @@
                                 <groupId>org.kevoree.tools</groupId>
                                 <artifactId>org.kevoree.tools.marShellGUI</artifactId>
                             </inclusion>
-                            
+
                             <inclusion>
                                 <groupId>jsyntaxpane</groupId>
                                 <artifactId>jsyntaxpane</artifactId>
                                 <filter>!META-INF/services/jsyntaxpane/kitsfortypes.properties</filter>
                             </inclusion>
-                            
+
+
+                            <inclusion>
+                                <groupId>org.apache.felix</groupId>
+                                <artifactId>org.apache.felix.framework</artifactId>
+                            </inclusion>
+                            <inclusion>
+                                <groupId>org.ops4j.pax.url</groupId>
+                                <artifactId>pax-url-mvn</artifactId>
+                            </inclusion>
+
+
                         </inclusions>
                     </assembly>
                     <libs>
@@ -211,8 +227,8 @@
                             <alias>kevoree</alias>
                             <storepass>kevoree</storepass>
                             <signedjar>${project.build.directory}/${project.build.finalName}.jar</signedjar>
-                           <!-- <signedjar>${basedir}/../../../kevoreePages/releases/lib/KevoreeEditor.jar</signedjar>  -->
-                          <!--  <signedjar>${project.build.directory}/signed/${project.build.finalName}.jar</signedjar> -->
+                            <!-- <signedjar>${basedir}/../../../kevoreePages/releases/lib/KevoreeEditor.jar</signedjar>  -->
+                            <!--  <signedjar>${project.build.directory}/signed/${project.build.finalName}.jar</signedjar> -->
                             <verify>true</verify>
                         </configuration>
                     </execution>
@@ -221,14 +237,14 @@
         </plugins>
     </build>
 
-     <!--
-    <pluginRepositories>
-        <pluginRepository>
-            <id>lafros.com</id>
-            <url>http://lafros.com/m2arts</url>
-        </pluginRepository>
-    </pluginRepositories>
-         -->
+    <!--
+<pluginRepositories>
+   <pluginRepository>
+       <id>lafros.com</id>
+       <url>http://lafros.com/m2arts</url>
+   </pluginRepository>
+</pluginRepositories>
+    -->
 
     <dependencies>
         <dependency>

@@ -32,7 +32,7 @@ case class TypeDefinitionAspect(selfTD: TypeDefinition) {
   /* Check if the new type definition define new deploy unit than self */
   def contractChanged(pTD: TypeDefinition): Boolean = {
 
-    println("check Conract changed " + pTD + "-" + selfTD)
+    //println("check Conract changed " + pTD + "-" + selfTD)
 
     if (pTD.getName != selfTD.getName) {
       return true
@@ -125,7 +125,7 @@ case class TypeDefinitionAspect(selfTD: TypeDefinition) {
                 val pDUInteger = java.lang.Long.parseLong(pDU.getHashcode)
                 val selfDUInteger = java.lang.Long.parseLong(selfDU.getHashcode)
 
-                println("kompareHashCode - "+selfDUInteger+"<"+pDUInteger+"-"+(selfDUInteger < pDUInteger))
+                //println("kompareHashCode - "+selfDUInteger+"<"+pDUInteger+"-"+(selfDUInteger < pDUInteger))
 
                 selfDUInteger < pDUInteger
               } catch {

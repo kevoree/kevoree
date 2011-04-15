@@ -47,9 +47,28 @@
             <version>${kevoree.version}</version>
         </dependency>
         <dependency>
+            <groupId>org.kevoree</groupId>
+            <artifactId>org.kevoree.kompare</artifactId>
+            <version>${kevoree.version}</version>
+        </dependency>
+
+
+        <dependency>
             <groupId>org.apache.felix</groupId>
             <artifactId>org.apache.felix.framework</artifactId>
             <version>3.2.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.ops4j.pax.url</groupId>
+            <artifactId>pax-url-mvn</artifactId>
+            <version>1.3.2</version>
+        </dependency>
+
+
+        <dependency>
+            <groupId>org.kevoree.tools</groupId>
+            <artifactId>org.kevoree.tools.annotation.api</artifactId>
+            <version>${kevoree.version}</version>
         </dependency>
         <dependency>
             <groupId>org.kevoree.tools</groupId>
@@ -74,6 +93,26 @@
 
     <build>
         <plugins>
+
+            <plugin>
+                <groupId>org.kevoree.extra</groupId>
+                <artifactId>org.kevoree.extra.osgi.sysgen</artifactId>
+                <version>${kevoree.version}</version>
+                <extensions>true</extensions>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <configuration>
+                            <filters>
+                                scala,org.ops4j,org.eclipse.emf,org.slf4j,org.kevoree,org.kevoree.tools
+                            </filters>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
             <!--
             <plugin>
                 <groupId>org.apache.felix</groupId>
