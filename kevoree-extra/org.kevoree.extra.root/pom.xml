@@ -25,7 +25,7 @@
 		<module>../org.kevoree.extra.protobuf</module>
         <module>../org.kevoree.extra.netty</module>
         <module>../org.kevoree.extra.osgi.xbee</module>
-
+        <module>../org.kevoree.extra.esper</module>
 	</modules>
 
     <distributionManagement>

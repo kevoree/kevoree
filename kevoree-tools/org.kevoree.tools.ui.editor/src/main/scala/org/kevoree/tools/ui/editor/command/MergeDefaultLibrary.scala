@@ -13,11 +13,11 @@
  */
 package org.kevoree.tools.ui.editor.command
 
-import org.kevoree.tools.ui.editor.KevoreeUIKernel
 import java.net.URL
 import org.kevoree.framework.KevoreeXmiHelper
 import java.io.{File, BufferedReader, InputStreamReader, OutputStreamWriter}
 import org.eclipse.emf.common.util.URI
+import org.kevoree.tools.ui.editor.{PositionedEMFHelper, KevoreeUIKernel}
 
 class MergeDefaultLibrary extends Command {
 
@@ -60,11 +60,12 @@ class MergeDefaultLibrary extends Command {
         kernel.getModelHandler().merge(newmodel);
 
         //CREATE TEMP FILE FROM ACTUAL MODEL
-        var tempFile = File.createTempFile("kevoreeEditorTemp", ".kev");
+        val tempFile = File.createTempFile("kevoreeEditorTemp", ".kev");
+        PositionedEMFHelper.updateModelUIMetaData(kernel);
         KevoreeXmiHelper.save(URI.createFileURI(tempFile.getAbsolutePath()).toString(), kernel.getModelHandler().getActualModel);
 
         //LOAD MODEL
-        var loadCmd = new LoadModelCommand();
+        val loadCmd = new LoadModelCommand();
         loadCmd.setKernel(kernel);
         loadCmd.execute(URI.createFileURI(tempFile.getAbsolutePath()).toString());
 
