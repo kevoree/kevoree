@@ -32,6 +32,7 @@ import org.eclipse.emf.common.util.URI;
 import org.kevoree.ContainerRoot;
 import org.kevoree.framework.KevoreeXmiHelper;
 import org.kevoree.tools.ui.editor.KevoreeUIKernel;
+import org.kevoree.tools.ui.editor.PositionedEMFHelper;
 
 /**
  *
@@ -69,6 +70,7 @@ public class LoadNewLibCommand implements Command {
                     //CREATE TEMP FILE FROM ACTUAL MODEL
                     File tempFile = File.createTempFile("kevoreeEditorTemp", ".kev");
                     //System.out.println("path="+tempFile);
+                    PositionedEMFHelper.updateModelUIMetaData(kernel);
                     KevoreeXmiHelper.save(URI.createFileURI(tempFile.getAbsolutePath()).toString(),kernel.getModelHandler().getActualModel());
 
                     //LOAD MODEL
