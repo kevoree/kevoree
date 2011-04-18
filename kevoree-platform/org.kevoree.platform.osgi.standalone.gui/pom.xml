@@ -54,12 +54,12 @@
         <dependency>
             <groupId>org.ops4j.pax.url</groupId>
             <artifactId>pax-url-mvn</artifactId>
-            <version>1.2.5</version>
+            <version>1.3.2</version>
         </dependency>
         <dependency>
             <groupId>org.ops4j.pax.url</groupId>
             <artifactId>pax-url-assembly</artifactId>
-            <version>1.2.4</version>
+            <version>1.2.5</version>
             <exclusions>
                 <exclusion>
                     <artifactId>jackson-core-asl</artifactId>
@@ -307,6 +307,8 @@
                         <option>-keep class org.osgi.** { *; }</option>
                         <option>-keep class org.restlet.resource.** { *; }</option>
                         <option>-keep class scala.runtime.** { *; }</option>
+                        <option>-keep class scala.Tuple2 { *; }</option>
+                        <option>-keep class scala.collection.immutable.List { *; }</option>
                         
                      <!--   <option>-keep class choco.cp.** { *; }</option>   -->
                         <option>-keep class org.kevoree.api.** { *; }</option>
