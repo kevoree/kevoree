@@ -1,0 +1,64 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>org.kevoree.library.model</groupId>
+    <artifactId>org.kevoree.library.model.root</artifactId>
+    <packaging>pom</packaging>
+    <name>Kevoree :: Library :: Model :: Root</name>
+    <version>1.1.0-RC1</version>
+
+    <parent>
+        <artifactId>org.kevoree.library</artifactId>
+        <groupId>org.kevoree.library</groupId>
+        <version>1.1.0-RC1</version>
+        <relativePath>../../pom.xml</relativePath>
+    </parent>
+
+    <properties>
+        <kevoree.version>${project.version}</kevoree.version>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+
+    <modules>
+        <module>../org.kevoree.library.model.all</module>
+    </modules>
+
+    <distributionManagement>
+        <repository>
+            <id>maven.kevoree.org-releases</id>
+            <name>maven.kevoree.org-releases</name>
+            <url>http://maven.kevoree.org/libs-release-local</url>
+        </repository>
+    </distributionManagement>
+
+    <build>
+
+    </build>
+
+    <repositories>
+        <repository>
+            <id>scala-tools.org</id>
+            <name>Scala-tools Maven2 Repository</name>
+            <url>http://scala-tools.org/repo-releases</url>
+        </repository>
+        <repository>
+            <id>kevoree-libs-release-local</id>
+            <url>http://maven.kevoree.org/release</url>
+        </repository>
+    </repositories>
+
+    <pluginRepositories>
+        <pluginRepository>
+            <id>plugin.scala-tools.org</id>
+            <name>Plugin Scala-tools Maven2 Repository</name>
+            <url>http://scala-tools.org/repo-releases</url>
+        </pluginRepository>
+        <pluginRepository>
+            <id>plugin.kevoree-github</id>
+            <url>http://maven.kevoree.org/release</url>
+        </pluginRepository>
+    </pluginRepositories>
+
+
+</project>

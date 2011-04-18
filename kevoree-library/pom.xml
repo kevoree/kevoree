@@ -15,9 +15,10 @@
     </properties>
 
     <modules>
-   <module>./javase/org.kevoree.library.javase.root</module>
+    <module>./javase/org.kevoree.library.javase.root</module>
     <module>./arduino/org.kevoree.library.arduino.root</module>
-   <module>./android/org.kevoree.library.android.root</module>
+    <module>./android/org.kevoree.library.android.root</module>
+    <module>./android/org.kevoree.library.model.root</module>
   </modules>
 
     <distributionManagement>

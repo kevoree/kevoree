@@ -2,7 +2,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
     <modelVersion>4.0.0</modelVersion>
-    <groupId>org.kevoree.library</groupId>
+    <groupId>org.kevoree.library.model</groupId>
     <artifactId>org.kevoree.library.model.all</artifactId>
     <packaging>jar</packaging>
     <name>Kevoree :: Library :: Model :: All</name>
@@ -13,19 +13,19 @@
     </properties>
 
 
-    <!--
-        <parent>
-            <artifactId>org.kevoree.library.root</artifactId>
-            <groupId>org.kevoree.library</groupId>
-            <version>1.1.0-BETA2</version>
-            <relativePath>../org.kevoree.library.root/pom.xml</relativePath>
-        </parent>
-    -->
+    <parent>
+        <artifactId>org.kevoree.library.model.root</artifactId>
+        <groupId>org.kevoree.library.model</groupId>
+        <version>1.1.0-RC1</version>
+        <relativePath>../org.kevoree.library.model.root/pom.xml</relativePath>
+    </parent>
+
     <build>
         <plugins>
             <plugin>
                 <groupId>org.kevoree.tools</groupId>
                 <artifactId>org.kevoree.tools.merger.mavenplugin</artifactId>
+                <version>${kevoree.version}</version>
                 <extensions>true</extensions>
                 <executions>
                     <execution>
@@ -57,6 +57,39 @@
                     </execution>
                 </executions>
             </plugin>
+
+            <plugin>
+                <artifactId>maven-deploy-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>deploy-jar-apk</id>
+                        <phase>deploy</phase>
+                        <goals>
+                            <goal>deploy</goal>
+                        </goals>
+                        <configuration>
+                            <skip>true</skip>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>deploy-apk</id>
+                        <phase>deploy</phase>
+                        <goals>
+                            <goal>deploy-file</goal>
+                        </goals>
+                        <configuration>
+                            <file>${project.build.directory}/classes/defaultLibrary.kev</file>
+                            <url>http://maven.kevoree.org/libs-release-local/</url>
+                            <packaging>kev</packaging>
+                            <groupId>${project.groupId}</groupId>
+                            <artifactId>${project.artifactId}</artifactId>
+                            <version>${kevoree.version}</version>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+
         </plugins>
     </build>
 
@@ -105,8 +138,6 @@
             <artifactId>org.kevoree.library.javase.gossiper</artifactId>
             <version>${kevoree.version}</version>
         </dependency>
-
-
 
 
     </dependencies>
