@@ -111,7 +111,13 @@
                         </option>
                         <option>-keep class jsyntaxpane.** { *; }</option>
                         <option>-keep class org.kevoree.tools.marShellGUI.** { *; }</option>
-
+                        <option>-keep class org.apache.felix.framework.** { *; }</option>
+                        <option>-keep class org.kevoree.kompare.** { *; }</option>
+                        <option>-keep class scala.collection.immutable.HashMap { *; }</option>
+                        <option>-keep class scala.Predef** { *; }</option>
+                        <option>-keep class scala.collection.immutable.** { *; }</option>
+                        <option>-keep class scala.actors.** { *; }</option>
+                        <option>-keep class org.kevoree.** { *; }</option>
 
                     </options>
                     <assembly>
@@ -150,8 +156,6 @@
                                 <groupId>org.kevoree</groupId>
                                 <artifactId>org.kevoree.kompare</artifactId>
                             </inclusion>
-
-
                             <inclusion>
                                 <groupId>org.kevoree</groupId>
                                 <artifactId>org.kevoree.basechecker</artifactId>
@@ -168,7 +172,6 @@
                                 <groupId>jgrapht</groupId>
                                 <artifactId>jgrapht</artifactId>
                             </inclusion>
-
                             <inclusion>
                                 <groupId>org.kevoree.tools</groupId>
                                 <artifactId>org.kevoree.tools.marShell</artifactId>
@@ -192,6 +195,25 @@
                             <inclusion>
                                 <groupId>org.ops4j.pax.url</groupId>
                                 <artifactId>pax-url-mvn</artifactId>
+                            </inclusion>
+
+
+                            <inclusion>
+                                <groupId>org.slf4j</groupId>
+                                <artifactId>slf4j-api</artifactId>
+                            </inclusion>
+                            <inclusion>
+                                <groupId>ch.qos.logback</groupId>
+                                <artifactId>logback-core</artifactId>
+                            </inclusion>
+                            <inclusion>
+                                <groupId>ch.qos.logback</groupId>
+                                <artifactId>logback-classic</artifactId>
+                            </inclusion>
+                            <inclusion>
+                                <groupId>org.kevoree</groupId>
+                                <artifactId>org.kevoree.adaptation.model</artifactId>
+                                <filter>!metamodel/**</filter>
                             </inclusion>
 
 
