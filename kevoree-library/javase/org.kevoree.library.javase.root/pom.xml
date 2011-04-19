@@ -35,8 +35,10 @@
         <module>../org.kevoree.library.javase.esper</module>
         <module>../org.kevoree.library.javase.defaultChannels</module>
         <module>../org.kevoree.library.javase.com.skype</module>
+        <module>../org.kevoree.library.javase.serialCT</module>
+        <module>../org.kevoree.library.javase.hidrfid</module>
 
-    </modules>
+	</modules>
 
     <distributionManagement>
         <repository>
