@@ -21,13 +21,17 @@ import org.kevoree.tools.marShell.parser.ParserUtil;
 public class GeneticAlgorithm {
     
     public static void main(String[] args){
-        ContainerRoot myModel = load("target/classes/baseMyNode.kev");
-        ParserUtil.save("target/classes/kevoreeIndividualModel.kev", myModel);
+
+        String basePath = GeneticAlgorithm.class.getClassLoader().getResource(".").getPath();
+
+
+        ContainerRoot myModel = load(basePath+"baseMyNode.kev");
+        ParserUtil.save(basePath +"kevoreeIndividualModel.kev", myModel);
         KevoreeGeneticAlgorithm kga = new KevoreeGeneticAlgorithm ();
         KevoreeIndividual ki = kga.start();
         if (ki!=null){
-            ParserUtil.save("target/classes/kevoreeIndividualModel.kev", ki.myModel);
-            App.startEditor("target/classes/kevoreeIndividualModel.kev");
+            ParserUtil.save(basePath +"kevoreeIndividualModel.kev", ki.myModel);
+            App.startEditor(basePath+"kevoreeIndividualModel.kev");
 //            KevoreeMultipleGeneticAlgorithm kmga = new KevoreeMultipleGeneticAlgorithm ();
 //            deleteAllOldModels();
 //            printBestParetoFront();

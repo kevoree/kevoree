@@ -22,7 +22,7 @@ public class AddProvidedBindingDPA implements DPA {
     public final static String channelName = "channel";
     public final static String nodeName = "node";
 
-    public final static String scriptPath = "target/classes/addBinding.kevs";
+    public final static String scriptPath = "addBinding.kevs";
 
     public List<Map<String, NamedElement>> applyPointcut(ContainerRoot myModel) {
         List<Map<String, NamedElement>> results = new ArrayList();
@@ -63,7 +63,7 @@ public class AddProvidedBindingDPA implements DPA {
     }
 
     public String getScript(Map<String, NamedElement> myMap) {
-        String script = ParserUtil.loadFile(scriptPath);
+        String script = ParserUtil.loadFile(this.getClass().getClassLoader().getResource(scriptPath).getFile());
         for (String name : myMap.keySet()) {
             script = script.replace("${" + name + "}", myMap.get(name).getName());
         }

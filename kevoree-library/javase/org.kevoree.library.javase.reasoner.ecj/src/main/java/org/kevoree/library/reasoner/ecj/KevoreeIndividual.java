@@ -1,5 +1,6 @@
 package org.kevoree.library.reasoner.ecj;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -143,7 +144,7 @@ public class KevoreeIndividual extends Individual {
     }
     
     public void setup(final EvolutionState state, final Parameter base){
-        myModel = load("target/classes/kevoreeIndividualModel.kev");
+        myModel = load(this.getClass().getClassLoader().getResource(".")+ File.separator+"kevoreeIndividualModel.kev");
     }
     
     public static ContainerRoot load(String uri) {
