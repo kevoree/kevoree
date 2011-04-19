@@ -1,0 +1,5 @@
+tblock {
+ //insert Kevoree Script here
+ addNode myNode : JavaSENode
+
+ }

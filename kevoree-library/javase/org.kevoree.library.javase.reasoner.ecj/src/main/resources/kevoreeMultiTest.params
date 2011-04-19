@@ -7,16 +7,16 @@ parent.0 = nsga2.params
 pop.subpop.0.size = 300
 generations = 150
 
-pop.subpop.0.species		= org.kevoree.tools.kevoreegeneticpoc.KevoreeModelSpecies
-pop.subpop.0.species.ind	= org.kevoree.tools.kevoreegeneticpoc.KevoreeIndividual	
+pop.subpop.0.species		= org.kevoree.library.reasoner.ecj.KevoreeModelSpecies
+pop.subpop.0.species.ind	= org.kevoree.library.reasoner.ecj.KevoreeIndividual	
 pop.subpop.0.species.mutation-prob	= 1.0
-eval.problem            = org.kevoree.tools.kevoreegeneticpoc.MultiObjectiveKevoreeProblem
+eval.problem            = org.kevoree.library.reasoner.ecj.MultiObjectiveKevoreeProblem
 pop.subpop.0.species.fitness.num-objectives = 6
 pop.subpop.0.species.fitness.maximize = false
 
 
 # Use our own custom mutation class
-pop.subpop.0.species.pipe			= org.kevoree.tools.kevoreegeneticpoc.KevoreeMutationPipeline
+pop.subpop.0.species.pipe			= org.kevoree.library.reasoner.ecj.KevoreeMutationPipeline
 
 # Use for basic GA
 pop.subpop.0.species.pipe.source.0		= ec.select.TournamentSelection
@@ -26,7 +26,7 @@ select.tournament.size		= 2
 
 
 # Use for mu + Lambda
-# pop.subpop.0.species.pipe			= org.kevoree.tools.kevoreegeneticpoc.KevoreeMutationPipeline
+# pop.subpop.0.species.pipe			= org.kevoree.library.reasoner.ecj.KevoreeMutationPipeline
 # pop.subpop.0.species.pipe.source.0		= ec.es.ESSelection
 # breed = ec.es.MuCommaLambdaBreeder
 # es.mu.0 = 1
