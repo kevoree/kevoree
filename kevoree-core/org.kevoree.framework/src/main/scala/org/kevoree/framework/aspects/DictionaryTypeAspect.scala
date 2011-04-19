@@ -26,6 +26,10 @@ case class DictionaryTypeAspect(selfDT: DictionaryType) {
 
   def isModelEquals(otherDT: DictionaryType): Boolean = {
 
+    //println(selfDT)
+    //println(otherDT)
+
+
     if (selfDT != null) {
       if (otherDT != null) {
         if (otherDT.getAttributes == null) {
@@ -33,7 +37,7 @@ case class DictionaryTypeAspect(selfDT: DictionaryType) {
         }
 
         val selfRes = selfDT.getAttributes.forall(selfAtt => otherDT.getAttributes.exists(otherDTAtt => {
-          //TODO ATT TYPE
+          //println(otherDTAtt.getName+"=="+selfAtt.getName)
           otherDTAtt.getName == selfAtt.getName
         }))
         val otherRes = otherDT.getAttributes.forall(otherDTAtt => selfDT.getAttributes.exists(selfAtt => {
@@ -45,6 +49,8 @@ case class DictionaryTypeAspect(selfDT: DictionaryType) {
         true
       }
     } else {
+
+
       otherDT != null
     }
 

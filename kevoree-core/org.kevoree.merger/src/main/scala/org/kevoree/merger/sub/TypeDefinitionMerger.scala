@@ -115,7 +115,7 @@ trait TypeDefinitionMerger extends Merger with DictionaryMerger with PortTypeMer
       }
     }
     //UPDATE DEPLOYS UNIT
-    var allDeployUnits = List() ++ newTypeDefinition.getDeployUnits.toList //CLONE LIST -- !!! REMOVE OLD DEPLOY UNIT OBSOLET
+    val allDeployUnits = List() ++ newTypeDefinition.getDeployUnits.toList //CLONE LIST -- !!! REMOVE OLD DEPLOY UNIT OBSOLET
     newTypeDefinition.getDeployUnits.clear
     allDeployUnits.foreach {
       ndu =>

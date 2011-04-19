@@ -1,1 +1,1 @@
-mvn:http://maven.kevoree.org/libs-release-local!org.kevoree.library/org.kevoree.library.arduino.sensors/1.1.0-BETA2
+mvn:http://maven.kevoree.org/libs-release-local!org.kevoree.library.arduino/org.kevoree.library.arduino.sensors/1.1.0-RC1

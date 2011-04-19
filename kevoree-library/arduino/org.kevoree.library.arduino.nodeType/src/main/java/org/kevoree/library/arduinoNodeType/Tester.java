@@ -12,11 +12,13 @@ public class Tester {
         System.setProperty("avrdude.config.path", "/Applications/Arduino.app/Contents/Resources/Java/hardware/tools/avr/etc/avrdude.conf");
         System.setProperty("serial.port", "/dev/tty.usbmodem621");
         
-        String modelString = "/Users/ffouquet/Documents/DEV/dukeboard_github/kevoree/kevoree-library/org.kevoree.library.arduino.nodeType/src/test/resources/models/TempSensorAlone.kev";
+        String modelString = "/Users/ffouquet/Desktop/infiniteLoop.kev";
 
         ContainerRoot model = KevoreeXmiHelper.load(modelString);
 
         ArduinoNode node = new ArduinoNode();
+        node.getDictionary().put("boardTypeName","uno");
+        node.getDictionary().put("boardPortName","/dev/tty.usbmodem411");
 
         node.push("dukeSensor1",model,null);
            
