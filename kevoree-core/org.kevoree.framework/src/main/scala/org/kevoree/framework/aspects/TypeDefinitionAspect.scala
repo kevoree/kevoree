@@ -45,7 +45,14 @@ case class TypeDefinitionAspect(selfTD: TypeDefinition) {
       if (!pTD.getDictionaryType.isModelEquals(selfTD.getDictionaryType)) {
         return true
       }
+    } else {
+       if(selfTD.getDictionaryType != null){
+         return true
+       }
     }
+
+    //println(pTD.getDictionaryType)
+
 
     //SPECIAL CONSISTENCY CHECK
     pTD match {
@@ -101,7 +108,12 @@ case class TypeDefinitionAspect(selfTD: TypeDefinition) {
           }
         }
       }
-      case _@typeDef => println("uncatch portTypeDef"); true
+      case otherTD : ChannelType => {
+         val selfCT = selfTD.asInstanceOf[ChannelType]
+         false
+      }
+
+      case _@typeDef => println("uncatch portTypeDef "+typeDef); true
     }
   }
 
