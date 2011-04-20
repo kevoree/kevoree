@@ -70,10 +70,13 @@ public class LogPanel extends JPanel {
                 public void run() {
                     try {
                         _textArea.append(((char) i) + "", _color, false);
-                         _textArea.selectAll();
-                        _textArea.setSelectionStart(_textArea.getDocument().getEndPosition().getOffset());
+                        // _textArea.selectAll();
+                        //_textArea.setSelectionStart(_textArea.getDocument().getEndPosition().getOffset());
                        // _textArea.setSelectionColor(_color);
                        // _textArea.append( ((char) i) + "");
+
+                      //  _textArea.setCaretPosition(doc.getLength());
+
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
