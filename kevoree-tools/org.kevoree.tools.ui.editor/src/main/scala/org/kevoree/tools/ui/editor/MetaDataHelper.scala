@@ -20,19 +20,22 @@ object MetaDataHelper {
 
   def getMetaDataFromInstance(i: Instance): java.util.HashMap[String, String] = {
     val res = new java.util.HashMap[String, String]()
-    i.getMetaData.split(',').foreach {
-      meta =>
+    if (i.getMetaData != null) {
+      i.getMetaData.split(',').foreach {
+        meta =>
 
-        val values = meta.split('=')
-        if (values.size >= 2) {
-            res.put(values(0),values(1))
-        }
+          val values = meta.split('=')
+          if (values.size >= 2) {
+            res.put(values(0), values(1))
+          }
 
+      }
     }
+
     res
   }
 
-  def containKeys(keys : java.util.List[String],map:java.util.HashMap[String, String]) : Boolean = {
+  def containKeys(keys: java.util.List[String], map: java.util.HashMap[String, String]): Boolean = {
     keys.forall(key => map.contains(key))
   }
 

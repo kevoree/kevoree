@@ -47,7 +47,15 @@ object Generator {
           //val jclazz: Class[_] = loader.loadClass(instance.getTypeDefinition.getBean)
 
           //CREATE NEW INSTANCE
-          val clazzFactory: Class[_] = bundleContext.getBundle.loadClass(instance.getTypeDefinition.getFactoryBean.replaceAll("Factory", "Activator"))
+        var clazzFactory: Class[_] = null
+        val activatorClassName = instance.getTypeDefinition.getFactoryBean.replaceAll("Factory", "Activator")
+        if(bundleContext != null){
+            clazzFactory = bundleContext.getBundle.loadClass(activatorClassName)
+        }else {
+            clazzFactory = this.getClass.getClassLoader.loadClass(activatorClassName)
+        }
+
+
           val activatorInstance = clazzFactory.newInstance
 
           val reflectiveInstanceActor = clazzFactory.getMethod("callFactory").invoke(activatorInstance)
@@ -132,12 +140,12 @@ object Generator {
                         println("provided port "+binding.getPort.getPortTypeRef.getName)
                         
                         //ADD COLLOCATED MBINDING
-                        var tempPort = new KevoreePort(){
+                        val tempPort = new KevoreePort(){
                           def getComponentName = binding.getPort.eContainer.asInstanceOf[ComponentInstance].getName
                           def getName = binding.getPort.getPortTypeRef.getName
                           def internal_process(msg:Any) = {}
                         }
-                        var bindmsg = new PortBindMessage
+                        val bindmsg = new PortBindMessage
                         bindmsg.setComponentName(binding.getPort.eContainer.asInstanceOf[ComponentInstance].getName)
                         bindmsg.setNodeName(nodeName)
                         bindmsg.setPortName(binding.getPort.getPortTypeRef.getName)
@@ -152,7 +160,7 @@ object Generator {
                       println("Remote detected")
                       
                       //ADD REMOTE MBINDING
-                      var fbindmsg = new FragmentBindMessage
+                      val fbindmsg = new FragmentBindMessage
                       fbindmsg.setChannelName(binding.getHub.getName)
                       fbindmsg.setFragmentNodeName(binding.getPort.eContainer.eContainer.asInstanceOf[ContainerNode].getName)
                       channelInstance !? fbindmsg
@@ -169,7 +177,7 @@ object Generator {
                 
               }
             case ci: ComponentInstance => {
-                var typeDef = ci.getTypeDefinition.asInstanceOf[ComponentType]
+                val typeDef = ci.getTypeDefinition.asInstanceOf[ComponentType]
                 ci.getProvided.foreach {
                   provided =>
                   provided.getPortTypeRef.getRef match {

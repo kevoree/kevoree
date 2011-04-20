@@ -19,7 +19,7 @@ public class AddComponentDPA implements DPA {
     public final static String typeDefinition = "type";
     public final static String nodeName = "node";
 
-    public final static String scriptPath = "target/classes/addComponent.kevs";
+    public final static String scriptPath = "addComponent.kevs";
     private static int increment = 0;
 
     public List<Map<String, NamedElement>> applyPointcut(ContainerRoot myModel) {
@@ -38,7 +38,7 @@ public class AddComponentDPA implements DPA {
     }
 
     public String getScript(Map<String, NamedElement> myMap) {
-        String script = ParserUtil.loadFile(scriptPath);
+        String script = ParserUtil.loadFile(this.getClass().getClassLoader().getResource(scriptPath).getFile());
         for (String name : myMap.keySet()) {
             String replacedString = "${" + name + "}";
             script = script.replace(replacedString, myMap.get(name).getName());

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kevoree:ContainerRoot xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:kevoree="http://kevoree/1.0">
+  <typeDefinitions xsi:type="kevoree:ChannelType" name="SerialCT" deployUnits="//@deployUnits.0" factoryBean="org.kevoree.library.channels.SerialCTFactory" bean="org.kevoree.library.channels.SerialCT" startMethod="startRxTxChannel" stopMethod="stopRxTxChannel" updateMethod="updateRxTxChannel">
+    <dictionaryType>
+      <attributes name="PORT"/>
+      <defaultValues attribute="//@typeDefinitions.0/@dictionaryType/@attributes.0" value="/dev/ttyS0"/>
+    </dictionaryType>
+  </typeDefinitions>
+  <typeDefinitions xsi:type="kevoree:NodeType" name="JavaSENode"/>
+  <repositories units="//@deployUnits.0" url="http://maven.kevoree.org/libs-release-local"/>
+  <repositories url="http://scala-tools.org/repo-releases"/>
+  <repositories url="http://maven.kevoree.org/release"/>
+  <repositories url="http://repo1.maven.org/maven2"/>
+  <libraries name="KevoreeArduinoJava" subTypes="//@typeDefinitions.0"/>
+  <deployUnits groupName="org.kevoree.library.javase" unitName="org.kevoree.library.javase.serialCT" version="1.1.0-RC1" hashcode="201104190927177" requiredLibs="//@deployUnits.1" targetNodeType="//@typeDefinitions.1"/>
+  <deployUnits name="org.kevoree.extra.org.kevoree.extra.osgi.rxtx" url="mvn:org.kevoree.extra/org.kevoree.extra.osgi.rxtx/2.2.0" targetNodeType="//@typeDefinitions.1"/>
+</kevoree:ContainerRoot>

@@ -112,8 +112,8 @@ class KevoreeCoreBean extends KevoreeModelHandlerService with KevoreeActor {
         logger.error("Null model")
       } else {
 
-        var adaptationModel = kompareService.kompare(model, newmodel, nodeName);
-        var deployResult = deployService.deploy(adaptationModel, nodeName);
+        val adaptationModel = kompareService.kompare(model, newmodel, nodeName);
+        val deployResult = deployService.deploy(adaptationModel, nodeName);
 
         if (deployResult) {
           //Merge previous model on new model for platform model
@@ -139,7 +139,7 @@ class KevoreeCoreBean extends KevoreeModelHandlerService with KevoreeActor {
     (this !? UpdateModel(model)); lastDate
   }
 
-  override def getPreviousModel: java.util.List[ContainerRoot] = (this !? PreviousModel).asInstanceOf[java.util.List[ContainerRoot]]
+  override def getPreviousModel : java.util.List[ContainerRoot] = (this !? PreviousModel()).asInstanceOf[java.util.List[ContainerRoot]]
 
 
   val listenerActor = new KevoreeListeners

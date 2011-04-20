@@ -366,8 +366,7 @@ public class KevoreeGeneticAlgorithm {
         KevoreeIndividual ki = null;
         EvolutionState state;
         ParameterDatabase parameters;
-        String[] args = new String[] { "-file",
-                "target/classes/kevoreeTest.params" };
+        String[] args = new String[] { "-file",this.getClass().getClassLoader().getResource("kevoreeTest.params").getFile() };
         int currentJob = 0; // the next job number (0 by default)
 
         parameters = loadParameterDatabase(args);
