@@ -32,18 +32,18 @@
         </dependency>
 
         <!-- Temp dependency -->
-        <!--
+
                 <dependency>
-                    <groupId>org.kevoree.library</groupId>
+                    <groupId>org.kevoree.library.arduino</groupId>
                     <artifactId>org.kevoree.library.arduino.sensors</artifactId>
                     <version>${kevoree.version}</version>
                 </dependency>
                 <dependency>
-                    <groupId>org.kevoree.library</groupId>
+                    <groupId>org.kevoree.library.arduino</groupId>
                     <artifactId>org.kevoree.library.arduino.channels</artifactId>
                     <version>${kevoree.version}</version>
                 </dependency>
-        -->
+
     </dependencies>
 
     <build>

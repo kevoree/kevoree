@@ -4,18 +4,22 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import gnu.io.SerialPortEvent;
+import gnu.io.SerialPortEventListener;
 import org.kevoree.framework.AbstractChannelFragment;
+import org.kevoree.framework.message.Message;
 import org.kevoree.library.channels.SerialCT;
 
 public class SerialReader extends Thread {
 
+    SerialCT channelFragment;
     InputStream in;
     boolean alive;
-    SerialCT channelFragment;
 
-    public SerialReader(InputStream in, SerialCT channel) {
+    public SerialReader(InputStream in, SerialCT device) {
         this.in = in;
-        this.channelFragment = channel;
+        this.channelFragment = device;
         alive = true;
     }
 
@@ -31,7 +35,7 @@ public class SerialReader extends Thread {
         }
     }
 
-    private void restart(){
+    private void restart() {
         shutdown();
         channelFragment.restartSerialReader();
     }
@@ -49,17 +53,28 @@ public class SerialReader extends Thread {
                         break;
                     }
                 }
-                device.push(data.trim().replace("\u0002", "").replace("\u0003", "").replace("\u0a0d", ""));
+
+                Message message = new Message();
+                message.setContent(data.trim());
+                message.setInOut(false);
+                message.getPassedNodes().add("unamedNode");
+
+                channelFragment.remoteDispatch(message);
+
+
+               // device.push(data.trim().replace("\u0002", "").replace("\u0003", "").replace("\u0a0d", ""));
                 sleep(100);
                 //System.out.println();
             } catch (InterruptedException ex) {
                 Logger.getLogger(SerialReader.class.getName()).log(Level.SEVERE, null, ex);
                 restart();
             } catch (IOException ex) {
-                 Logger.getLogger(SerialReader.class.getName()).log(Level.SEVERE, null, ex);
-                 restart();
+                Logger.getLogger(SerialReader.class.getName()).log(Level.SEVERE, null, ex);
+                restart();
             }
         }
         //System.out.println(device.getClass().getName()+".SerialReader has been shut down");
     }
+
+
 }

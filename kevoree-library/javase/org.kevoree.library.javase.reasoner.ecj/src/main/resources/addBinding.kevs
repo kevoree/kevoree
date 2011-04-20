@@ -1,0 +1,3 @@
+tblock { 
+ bind ${component}.${port}@${node} => ${channel}
+ }

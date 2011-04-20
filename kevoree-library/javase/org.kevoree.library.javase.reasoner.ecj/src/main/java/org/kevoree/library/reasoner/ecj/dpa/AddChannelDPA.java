@@ -21,7 +21,7 @@ public class AddChannelDPA implements DPA {
     public final static String channelName = "channel";
     public final static String typeDefinition = "type";
 
-    public final static String scriptPath = "target/classes/addChannel.kevs";
+    public final static String scriptPath = "addChannel.kevs";
     private static int increment = 0;
 
     public List<Map<String, NamedElement>> applyPointcut(ContainerRoot myModel) {
@@ -37,7 +37,7 @@ public class AddChannelDPA implements DPA {
     }
 
     public String getScript(Map<String, NamedElement> myMap) {
-        String script = ParserUtil.loadFile(scriptPath);
+        String script = ParserUtil.loadFile(this.getClass().getClassLoader().getResource(scriptPath).getFile());
         for (String name : myMap.keySet()) {
             script = script.replace("${" + name + "}", myMap.get(name).getName());
         }
