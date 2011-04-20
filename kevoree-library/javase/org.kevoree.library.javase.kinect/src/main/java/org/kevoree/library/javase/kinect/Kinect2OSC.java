@@ -175,11 +175,7 @@ public class Kinect2OSC extends AbstractComponentType {
 				return "linux/x86_64";
 			}
 		} else if (isMac()) {
-			if (!is64()) {
-				return "macosx/x86";
-			} else if (is64()) {
-				return "macosx/x86_64";
-			}
+				return "macos";
 		} else if (isWindows()) {
 			if (!is64()) {
 				return "windows/x86";
