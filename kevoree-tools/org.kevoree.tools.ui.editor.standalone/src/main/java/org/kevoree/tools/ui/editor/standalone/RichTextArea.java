@@ -37,6 +37,9 @@ public class RichTextArea extends JTextPane {
         int len = doc.getLength();
         try {
             doc.insertString(len, msg, style);
+
+            this.setCaretPosition(doc.getLength());
+
         } catch (Exception e) {
             System.out.print("Failed to append msg [" + msg + "]");
         }
