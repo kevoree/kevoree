@@ -83,7 +83,7 @@ public class ProxProRFIDReader extends AbstractComponentType implements SerialPo
 	@Override
 	public void serialEvent(SerialPortEvent serialPortEvent) {
 		int data;
-		byte[] buffer = new byte [1024];
+		byte[] buffer = new byte [16];
 
 		try {
 			int len = 0;
