@@ -1,0 +1,3 @@
+tblock { 
+ move ${component}@${node1} => ${node2}
+ }

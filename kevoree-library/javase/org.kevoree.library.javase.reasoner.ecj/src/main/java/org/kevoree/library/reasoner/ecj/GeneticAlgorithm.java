@@ -27,10 +27,9 @@ public class GeneticAlgorithm {
         KevoreeIndividual ki = kga.start();
         if (ki!=null){
             ParserUtil.save("target/classes/kevoreeIndividualModel.kev", ki.myModel);
-            App.startEditor("target/classes/kevoreeIndividualModel.kev");
-//            KevoreeMultipleGeneticAlgorithm kmga = new KevoreeMultipleGeneticAlgorithm ();
-//            deleteAllOldModels();
-//            printBestParetoFront();
+            KevoreeMultipleGeneticAlgorithm kmga = new KevoreeMultipleGeneticAlgorithm ();
+            deleteAllOldModels();
+            printBestParetoFront();
         }
     }
 
