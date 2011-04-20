@@ -35,7 +35,7 @@ public class defMSG extends AbstractChannelFragment {
     @Override
     public Object dispatch(Message msg) {
 
-        System.out.println("Local node bsize" + getBindedPorts().size());
+        //System.out.println("Local node bsize" + getBindedPorts().size());
 
         if (getBindedPorts().isEmpty() && getOtherFragments().isEmpty()) {
             System.out.println("No consumer, msg lost=" + msg.getContent());
