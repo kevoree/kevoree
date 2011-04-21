@@ -5,6 +5,8 @@ import org.kevoree.annotation.*;
 import org.kevoree.framework.AbstractComponentType;
 import org.kevoree.framework.MessagePort;
 import org.kevoree.library.javase.kinect.osc.OscServer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -37,7 +39,14 @@ public class Kinect2OSC extends AbstractComponentType {
 
 	private OscServer oscServer;
 	private String osceletonExecPath;
+	private String killProcessPath;
 	private Process process;
+
+	private Thread outputThread;
+	private Thread errorThread;
+	private boolean stop;
+
+	private Logger logger = LoggerFactory.getLogger(Kinect2OSC.class);
 
 	private int parseAttributeToInt(String name) {
 		String property = this.getDictionary().get(name).toString();
@@ -56,7 +65,9 @@ public class Kinect2OSC extends AbstractComponentType {
 	@Start
 	public void start() {
 		try {
+			stop = false;
 			process = Runtime.getRuntime().exec(defineAttributes());
+			getProcessOutput();
 			oscServer = new OscServer(parseAttributeToInt("port"), this);
 			oscServer.start();
 		} catch (IOException e) {
@@ -66,7 +77,29 @@ public class Kinect2OSC extends AbstractComponentType {
 
 	@Stop
 	public void stop() {
+		stop = true;
 		process.destroy();
+		try {
+			process.wait(2000);
+			process.exitValue();
+		} /*catch (IllegalThreadStateException e) {
+			try {
+				Runtime.getRuntime().exec(new String[] {killProcessPath, osceletonExecPath});
+			} catch (IOException e1) {
+				
+			}
+		} catch (InterruptedException e) {
+			try {
+				Runtime.getRuntime().exec(new String[] {killProcessPath, osceletonExecPath});
+			} catch (IOException e1) {
+				
+			}
+		}*/ catch (Exception e) {
+			try {
+				Runtime.getRuntime().exec(new String[]{killProcessPath, osceletonExecPath});
+			} catch (IOException e1) {
+			}
+		}
 		oscServer.killServer();
 		oscServer = null;
 	}
@@ -75,10 +108,64 @@ public class Kinect2OSC extends AbstractComponentType {
 		if (isPortBinded("osc")) {
 			getPortByName("osc", MessagePort.class).process(message);
 		}
+		/*if (message.contains("joint")) {
+			System.out.println(message);
+		}*/
 		//System.out.println(message);
 	}
 
-	private String[] defineAttributes() {
+	private void getProcessOutput() {
+		outputThread = new Thread() {
+
+			public void run() {
+				try {
+					BufferedReader stdInput = new BufferedReader(new
+							InputStreamReader(process.getInputStream()));
+					String s;
+					// read the output from the command
+					System.out.println("before starting print output of osceleton");
+					s = stdInput.readLine();
+					System.out.println(s);
+					while (!stop && (s = stdInput.readLine()) != null) {
+						System.out.println("OSCELETON: " + s);
+						logger.debug(s);
+					}
+				} catch (IOException e) {
+					//System.out.println("exception happened - here's what I know: ");
+					//e.printStackTrace();
+				}
+			}
+		};
+		errorThread = new Thread() {
+			boolean stop = false;
+
+			public void run() {
+				try {
+					BufferedReader stdError = new BufferedReader(new
+							InputStreamReader(process.getErrorStream()));
+					String s;
+					// read any errors from the attempted command
+					System.out.println("before starting print error of osceleton");
+					while (!stop && (s = stdError.readLine()) != null) {
+						System.out.println("OSCELETON: " + s);
+						logger.error(s);
+					}
+				} catch (IOException e) {
+					//System.out.println("exception happened - here's what I know: ");
+					//e.printStackTrace();
+				}
+			}
+		};
+		outputThread.setDaemon(true);
+		errorThread.setDaemon(true);
+
+		outputThread.start();
+		errorThread.start();
+
+	}
+
+	private String[] defineAttributes
+			() {
 		List<String> attributes = new ArrayList<String>();
 		attributes.add(getOSCeletonExec());
 		attributes.add("-p");
@@ -88,33 +175,39 @@ public class Kinect2OSC extends AbstractComponentType {
 		try {
 			int value = parseAttributeToInt("mx");
 			attributes.add("-mx");
-			attributes.add(""+value);
-		} catch (NumberFormatException e) {}
+			attributes.add("" + value);
+		} catch (NumberFormatException e) {
+		}
 		try {
 			int value = parseAttributeToInt("my");
 			attributes.add("-my");
-			attributes.add(""+value);
-		} catch (NumberFormatException e) {}
+			attributes.add("" + value);
+		} catch (NumberFormatException e) {
+		}
 		try {
 			int value = parseAttributeToInt("mz");
 			attributes.add("-mz");
-			attributes.add(""+value);
-		} catch (NumberFormatException e) {}
+			attributes.add("" + value);
+		} catch (NumberFormatException e) {
+		}
 		try {
 			int value = parseAttributeToInt("ox");
 			attributes.add("-ox");
-			attributes.add(""+value);
-		} catch (NumberFormatException e) {}
+			attributes.add("" + value);
+		} catch (NumberFormatException e) {
+		}
 		try {
 			int value = parseAttributeToInt("oy");
 			attributes.add("-oy");
-			attributes.add(""+value);
-		} catch (NumberFormatException e) {}
+			attributes.add("" + value);
+		} catch (NumberFormatException e) {
+		}
 		try {
 			int value = parseAttributeToInt("oz");
 			attributes.add("-oz");
-			attributes.add(""+value);
-		} catch (NumberFormatException e) {}
+			attributes.add("" + value);
+		} catch (NumberFormatException e) {
+		}
 
 		if (parseAttributeToBoolean("w")) {
 			attributes.add("-w");
@@ -138,7 +231,7 @@ public class Kinect2OSC extends AbstractComponentType {
 	private String getOSCeletonExec() {
 		try {
 			if (osceletonExecPath == null) {
-				File osceletonExec = File.createTempFile("osceleton", "");
+				File osceletonExec = File.createTempFile("osceleton", "");//new File(System.getProperty("java.io.tmpdir") + File.separator + "osceleton");
 				osceletonExec.setExecutable(true);
 				OutputStream osceletonStream = new FileOutputStream(osceletonExec);
 				InputStream stream = getStream();
@@ -152,6 +245,20 @@ public class Kinect2OSC extends AbstractComponentType {
 				osceletonStream.flush();
 				osceletonStream.close();
 				osceletonExecPath = osceletonExec.getAbsolutePath();
+
+				File osceletonKillScriptFile = File.createTempFile("osceletonKill", "");//new File(System.getProperty("java.io.tmpdir") + File.separator + "osceletonKill");
+				osceletonKillScriptFile.setExecutable(true);
+				osceletonStream = new FileOutputStream(osceletonExec);
+				stream = getStream();
+
+				bytes = new byte[1024];
+				while ((length = stream.read(bytes)) > -1) {
+					osceletonStream.write(bytes, 0, length);
+				}
+				stream.close();
+				osceletonStream.flush();
+				osceletonStream.close();
+				killProcessPath = osceletonKillScriptFile.getAbsolutePath();
 			}
 			return osceletonExecPath;
 		} catch (FileNotFoundException e) {
@@ -175,7 +282,7 @@ public class Kinect2OSC extends AbstractComponentType {
 				return "linux/x86_64";
 			}
 		} else if (isMac()) {
-				return "macos";
+			return "macos";
 		} else if (isWindows()) {
 			if (!is64()) {
 				return "windows/x86";
