@@ -111,7 +111,7 @@ public class Kinect2OSC extends AbstractComponentType {
 		/*if (message.contains("joint")) {
 			System.out.println(message);
 		}*/
-		//System.out.println(message);
+		System.out.println(message);
 	}
 
 	private void getProcessOutput() {
@@ -132,7 +132,7 @@ public class Kinect2OSC extends AbstractComponentType {
 					}
 				} catch (IOException e) {
 					//System.out.println("exception happened - here's what I know: ");
-					//e.printStackTrace();
+					e.printStackTrace();
 				}
 			}
 		};
@@ -152,7 +152,7 @@ public class Kinect2OSC extends AbstractComponentType {
 					}
 				} catch (IOException e) {
 					//System.out.println("exception happened - here's what I know: ");
-					//e.printStackTrace();
+					e.printStackTrace();
 				}
 			}
 		};
@@ -271,6 +271,7 @@ public class Kinect2OSC extends AbstractComponentType {
 
 	private InputStream getStream() {
 		String resourcePath = foundOSPath() + "/osceleton";
+        System.out.println("Found path ="+resourcePath);
 		return this.getClass().getClassLoader().getResourceAsStream(resourcePath);
 	}
 
