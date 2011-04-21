@@ -2,7 +2,7 @@
 char inBytes[BUFFERSIZE];
 int serialIndex = 0;
 #include <Metro.h>
-Metro metroTimerTimer1393826676= Metro(10000);
+Metro metroTimerTimer1393826676= Metro(6000);
 #include <LiquidCrystal.h> 
 LiquidCrystal lcd(10, 11, 12, 13, 14, 15, 16);
 void setup(){
@@ -36,14 +36,14 @@ component_Timer1393826676_requiredPort_tick("tick");
 }
 }
 void channel_hub847052608_dispatch(String param){
-component_LCDDisplay1071577092_providedPort_input(param);
+component_LCDDisplay1612362524_providedPort_input(param);
 Serial.println(param);
 }
 void component_Timer1393826676_requiredPort_tick (String param){
 channel_hub847052608_dispatch(param);
 
 }
-void component_LCDDisplay1071577092_providedPort_input (String param){
+void component_LCDDisplay1612362524_providedPort_input (String param){
 lcd.clear();
 lcd.print(param);
 

@@ -176,6 +176,7 @@ public class FakeConsole extends AbstractFakeStuffComponent {
             try {
                 StyledDocument doc = screen.getStyledDocument();
                 doc.insertString(doc.getLength(), formatForPrint(text), doc.getStyle("incoming"));
+                screen.setCaretPosition(doc.getLength());
             } catch (BadLocationException ex) {
                 ex.printStackTrace();
                 //getLoggerLocal().error(ex.getClass().getSimpleName() + " occured while trying to append text in the terminal.", ex);
