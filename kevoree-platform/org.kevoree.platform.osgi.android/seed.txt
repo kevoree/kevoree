@@ -89,6 +89,7 @@ org.kevoree.adaptation.deploy.osgi.command.generator.AddComponentInstanceGenerat
 scala.util.matching.Regex$Match$: scala.util.matching.Regex$Match$ MODULE$
 scala.collection.JavaConversions$IteratorWrapper$: scala.collection.JavaConversions$IteratorWrapper$ MODULE$
 scala.text.DocNil$: scala.text.DocNil$ MODULE$
+org.kevoree.tools.marShell.ast.AstHelper$: org.kevoree.tools.marShell.ast.AstHelper$ MODULE$
 scala.collection.script.Update$: scala.collection.script.Update$ MODULE$
 org.kevoree.adaptation.deploy.osgi.command.RemoveFragmentBindingCommand$: org.kevoree.adaptation.deploy.osgi.command.RemoveFragmentBindingCommand$ MODULE$
 net.lag.configgy.Attributes$AttributesCell$: net.lag.configgy.Attributes$AttributesCell$ MODULE$
@@ -35440,6 +35441,7 @@ org.restlet.representation.Representation: long UNKNOWN_SIZE
 scala.util.parsing.combinator.Parsers$Parser$$anonfun$$up$up$up$1: long serialVersionUID
 scala.util.parsing.combinator.lexical.StdLexical$$anonfun$_delim$2: long serialVersionUID
 scala.util.parsing.combinator.lexical.StdLexical$$anonfun$_delim$1: long serialVersionUID
+org.kevoree.adaptation.deploy.osgi.command.AddDeployUnitCommand$$anonfun$execute$1$$anonfun$1: long serialVersionUID
 org.ops4j.pax.url.maven.commons.MavenSettingsImpl: java.lang.String LOCAL_REPOSITORY_TAG
 org.ops4j.pax.url.maven.commons.MavenSettingsImpl: java.lang.String SERVER_TAG
 org.ops4j.pax.url.maven.commons.MavenSettingsImpl: java.lang.String PROFILE_TAG
@@ -40023,6 +40025,7 @@ scala.Function2$mcZIL$sp$$anonfun$curried$mcZIL$sp$1: long serialVersionUID
 scala.Function2$mcVLL$sp$$anonfun$curried$mcVLL$sp$1: long serialVersionUID
 scala.util.parsing.combinator.Parsers$$anonfun$success$1: long serialVersionUID
 scala.xml.Document: long serialVersionUID
+org.kevoree.adaptation.deploy.osgi.command.AddDeployUnitCommand$$anonfun$execute$1$$anonfun$apply$1: long serialVersionUID
 scala.util.control.Exception$$anonfun$catching$1: long serialVersionUID
 org.kevoree.tools.marShell.parser.sub.KevsNodeParser$$anonfun$parseRemoveNode$1$$anonfun$apply$5: long serialVersionUID
 org.jgrapht.traverse.TopologicalOrderIterator$LinkedListQueue: long serialVersionUID
@@ -42790,6 +42793,7 @@ scala.reflect.PrefixedType
 scala.util.parsing.combinator.Parsers$Parser$$anonfun$$up$up$up$1
 scala.util.parsing.combinator.lexical.StdLexical$$anonfun$_delim$2
 scala.util.parsing.combinator.lexical.StdLexical$$anonfun$_delim$1
+org.kevoree.adaptation.deploy.osgi.command.AddDeployUnitCommand$$anonfun$execute$1$$anonfun$1
 scala.reflect.ClassManifest$
 scala.Function2$mcDDL$sp$$anonfun$curried$mcDDL$sp$1$$anonfun$apply$49
 scala.actors.scheduler.TerminationMonitor$$anonfun$1
@@ -44822,6 +44826,7 @@ scala.util.parsing.combinator.Parsers$$anonfun$success$1
 scala.xml.Document
 scala.actors.remote.Apply0$
 scala.reflect.generic.Trees$UnApply
+org.kevoree.adaptation.deploy.osgi.command.AddDeployUnitCommand$$anonfun$execute$1$$anonfun$apply$1
 scala.util.control.Exception$$anonfun$catching$1
 org.kevoree.tools.marShell.parser.sub.KevsNodeParser$$anonfun$parseRemoveNode$1$$anonfun$apply$5
 org.kevoree.tools.marShell.parser.sub.KevsNodeParser$$anonfun$parseRemoveNode$1$$anonfun$apply$6
