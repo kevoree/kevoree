@@ -134,7 +134,6 @@ public class Kinect2OSC extends AbstractComponentType {
 			getPortByName("osc", MessagePort.class).process(message);
 		}
 		timestamp = System.currentTimeMillis();
-		System.out.println(message);
 	}
 
 	private void watchDog() {
@@ -275,7 +274,7 @@ public class Kinect2OSC extends AbstractComponentType {
 				File osceletonExec = File.createTempFile("osceleton", "");//new File(System.getProperty("java.io.tmpdir") + File.separator + "osceleton");
 				osceletonExec.setExecutable(true);
 				OutputStream osceletonStream = new FileOutputStream(osceletonExec);
-				InputStream stream = getStream();
+				InputStream stream = getStream("");
 
 				byte[] bytes = new byte[1024];
 				int length = 0;
@@ -289,8 +288,8 @@ public class Kinect2OSC extends AbstractComponentType {
 
 				File osceletonKillScriptFile = File.createTempFile("osceletonKill", "");//new File(System.getProperty("java.io.tmpdir") + File.separator + "osceletonKill");
 				osceletonKillScriptFile.setExecutable(true);
-				osceletonStream = new FileOutputStream(osceletonExec);
-				stream = getStream();
+				osceletonStream = new FileOutputStream(osceletonKillScriptFile);
+				stream = getStream("Script");
 
 				bytes = new byte[1024];
 				while ((length = stream.read(bytes)) > -1) {
@@ -310,8 +309,8 @@ public class Kinect2OSC extends AbstractComponentType {
 		return "";
 	}
 
-	private InputStream getStream() {
-		String resourcePath = foundOSPath() + "/osceleton";
+	private InputStream getStream(String suffixe) {
+		String resourcePath = foundOSPath() + "/osceleton"+suffixe;
         System.out.println("Found path ="+resourcePath);
 		return this.getClass().getClassLoader().getResourceAsStream(resourcePath);
 	}
