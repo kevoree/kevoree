@@ -33,7 +33,7 @@ def buildKEY(du: DeployUnit): String = {
       case List() => println("Add default location"); res = res ++ List(buildQuery(du, None))
       case _ =>
     } */
-    res = res ++ List(buildQuery(du, None))
+    res = List(buildQuery(du, None)) ++ res
 
     //DEBUG
     /*

@@ -118,6 +118,8 @@
                         <option>-keep class scala.collection.immutable.** { *; }</option>
                         <option>-keep class scala.actors.** { *; }</option>
                         <option>-keep class org.kevoree.** { *; }</option>
+                        <option>-keepattributes *Annotation*</option>
+                        <option>-keepattributes **</option>
 
                     </options>
                     <assembly>
@@ -125,7 +127,6 @@
                             <inclusion>
                                 <groupId>org.kevoree.tools</groupId>
                                 <artifactId>org.kevoree.tools.ui.editor</artifactId>
-                                <!--  <filter>META-INF/maven/**</filter> -->
                             </inclusion>
                             <inclusion>
                                 <groupId>org.kevoree.tools</groupId>
@@ -215,7 +216,10 @@
                                 <artifactId>org.kevoree.adaptation.model</artifactId>
                                 <filter>!metamodel/**</filter>
                             </inclusion>
-
+                            <inclusion>
+                                <groupId>org.kevoree.tools</groupId>
+                                <artifactId>org.kevoree.tools.annotation.api</artifactId>
+                            </inclusion>
 
                         </inclusions>
                     </assembly>
