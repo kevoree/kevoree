@@ -50,7 +50,7 @@ class KevoreeDeployPhase {
           try{
             c.getLastExecutionBundle match {
               case None => false
-              case Some(b) => b.start;true
+              case Some(b) => b.resolve;b.start;true
             }
           } catch {
             case _ @ e => logger.error("Kevoree START ERROR="+e);false
