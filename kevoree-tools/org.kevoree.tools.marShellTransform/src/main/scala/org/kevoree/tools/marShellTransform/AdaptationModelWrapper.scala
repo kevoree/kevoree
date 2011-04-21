@@ -53,7 +53,7 @@ object AdaptationModelWrapper {
               case c: Group => statments.add(RemoveGroupStatment(c.getName))
               case c: Channel => statments.add(RemoveChannelInstanceStatment(c.getName))
               case c: ComponentInstance => {
-                val cid = ComponentInstanceID(c.getName, Some(c.eContainer.eContainer.asInstanceOf[ContainerNode].getName))
+                val cid = ComponentInstanceID(c.getName, Some(c.eContainer.asInstanceOf[ContainerNode].getName))
                 statments.add(RemoveComponentInstanceStatment(cid))
               }
 
