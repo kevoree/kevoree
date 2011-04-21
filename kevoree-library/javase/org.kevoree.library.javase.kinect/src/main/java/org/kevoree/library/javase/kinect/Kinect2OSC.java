@@ -42,9 +42,6 @@ public class Kinect2OSC extends AbstractComponentType {
 	private String osceletonExecPath;
 	private String killProcessPath;
 	private Process process;
-
-	/*private Thread outputThread;
-	private Thread errorThread;*/
 	private boolean stop;
 	private Thread watchDog;
 
@@ -82,7 +79,6 @@ public class Kinect2OSC extends AbstractComponentType {
 	public void internalStart() {
 		try {
 			process = Runtime.getRuntime().exec(defineAttributes());
-			//getProcessOutput();
 			oscServer = new OscServer(parseAttributeToInt("port"), this);
 			oscServer.start();
 		} catch (IOException e) {
@@ -95,19 +91,7 @@ public class Kinect2OSC extends AbstractComponentType {
 		try {
 			process.wait(2000);
 			process.exitValue();
-		} /*catch (IllegalThreadStateException e) {
-			try {
-				Runtime.getRuntime().exec(new String[] {killProcessPath, osceletonExecPath});
-			} catch (IOException e1) {
-
-			}
-		} catch (InterruptedException e) {
-			try {
-				Runtime.getRuntime().exec(new String[] {killProcessPath, osceletonExecPath});
-			} catch (IOException e1) {
-
-			}
-		}*/ catch (Exception e) {
+		} catch (Exception e) {
 			try {
 				Runtime.getRuntime().exec(new String[]{killProcessPath, osceletonExecPath});
 			} catch (IOException e1) {
@@ -144,65 +128,16 @@ public class Kinect2OSC extends AbstractComponentType {
 					while (!stop) {
 						sleep(watchDogTime);
 						if (timestamp + watchDogTime < System.currentTimeMillis()) {
-							System.out.println("need to restart component"); // TODO replace by logger.info
+							logger.info(this.getName() + " need to be restart!");
 							Kinect2OSC.this.internalUpdate();
 						}
 					}
 				} catch (InterruptedException e) {
-					e.printStackTrace();
 				}
 			}
 		};
 		watchDog.start();
 	}
-
-	/*private void getProcessOutput() {
-		outputThread = new Thread() {
-
-			public void run() {
-				try {
-					BufferedReader stdInput = new BufferedReader(new
-							InputStreamReader(process.getInputStream()));
-					String s;
-					// read the output from the command
-					System.out.println("before starting print output of osceleton");
-					s = stdInput.readLine();
-					System.out.println(s);
-					while (!stop && (s = stdInput.readLine()) != null) {
-						System.out.println("OSCELETON: " + s);
-						logger.debug(s);
-					}
-				} catch (IOException e) {
-					//System.out.println("exception happened - here's what I know: ");
-					e.printStackTrace();
-				}
-			}
-		};
-		errorThread = new Thread() {
-
-			public void run() {
-				try {
-					BufferedReader stdError = new BufferedReader(new
-							InputStreamReader(process.getErrorStream()));
-					String s;
-					// read any errors from the attempted command
-					System.out.println("before starting print error of osceleton");
-					while (!stop && (s = stdError.readLine()) != null) {
-						System.out.println("OSCELETON: " + s);
-						logger.error(s);
-					}
-				} catch (IOException e) {
-					//System.out.println("exception happened - here's what I know: ");
-					e.printStackTrace();
-				}
-			}
-		};
-		outputThread.setDaemon(true);
-		errorThread.setDaemon(true);
-
-		outputThread.start();
-		errorThread.start();
-	}*/
 
 	private String[] defineAttributes
 			() {
@@ -271,7 +206,7 @@ public class Kinect2OSC extends AbstractComponentType {
 	private String getOSCeletonExec() {
 		try {
 			if (osceletonExecPath == null) {
-				File osceletonExec = File.createTempFile("osceleton", "");//new File(System.getProperty("java.io.tmpdir") + File.separator + "osceleton");
+				File osceletonExec = File.createTempFile("osceleton", "");
 				osceletonExec.setExecutable(true);
 				OutputStream osceletonStream = new FileOutputStream(osceletonExec);
 				InputStream stream = getStream("");
@@ -286,7 +221,7 @@ public class Kinect2OSC extends AbstractComponentType {
 				osceletonStream.close();
 				osceletonExecPath = osceletonExec.getAbsolutePath();
 
-				File osceletonKillScriptFile = File.createTempFile("osceletonKill", "");//new File(System.getProperty("java.io.tmpdir") + File.separator + "osceletonKill");
+				File osceletonKillScriptFile = File.createTempFile("osceletonKill", "");
 				osceletonKillScriptFile.setExecutable(true);
 				osceletonStream = new FileOutputStream(osceletonKillScriptFile);
 				stream = getStream("Script");
@@ -310,8 +245,8 @@ public class Kinect2OSC extends AbstractComponentType {
 	}
 
 	private InputStream getStream(String suffixe) {
-		String resourcePath = foundOSPath() + "/osceleton"+suffixe;
-        System.out.println("Found path ="+resourcePath);
+		String resourcePath = foundOSPath() + "/osceleton" + suffixe;
+		System.out.println("Found path =" + resourcePath);
 		return this.getClass().getClassLoader().getResourceAsStream(resourcePath);
 	}
 
@@ -336,19 +271,16 @@ public class Kinect2OSC extends AbstractComponentType {
 
 	public boolean isWindows() {
 		String os = System.getProperty("os.name").toLowerCase();
-		//windows
 		return (os.indexOf("win") >= 0);
 	}
 
 	public boolean isMac() {
 		String os = System.getProperty("os.name").toLowerCase();
-		//Mac
 		return (os.indexOf("mac") >= 0);
 	}
 
 	public boolean isUnix() {
 		String os = System.getProperty("os.name").toLowerCase();
-		//linux or unix
 		return (os.indexOf("nix") >= 0 || os.indexOf("nux") >= 0);
 	}
 
