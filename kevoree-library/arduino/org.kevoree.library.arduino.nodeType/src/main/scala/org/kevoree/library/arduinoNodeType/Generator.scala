@@ -214,7 +214,7 @@ object Generator {
     }
 
 
-    var finalResult = contextMap.get("header").get.toString + generateSetupMethod(contextMap.get("setup").get) + generateLoopMethod(contextMap.get("loop").get) + contextMap.get("body").get.toString
+    val finalResult = contextMap.get("header").get.toString + generateSetupMethod(contextMap.get("setup").get) + generateLoopMethod(contextMap.get("loop").get) + contextMap.get("body").get.toString
    // println(finalResult)
 
     val writer = new PrintWriter( new BufferedWriter(new FileWriter(outputDir+"/arduinoGenerated"+nodeName+".pde",false)));

@@ -134,7 +134,7 @@ public class Kinect2OSC extends AbstractComponentType {
 			getPortByName("osc", MessagePort.class).process(message);
 		}
 		timestamp = System.currentTimeMillis();
-		//System.out.println(message);
+		System.out.println(message);
 	}
 
 	private void watchDog() {
