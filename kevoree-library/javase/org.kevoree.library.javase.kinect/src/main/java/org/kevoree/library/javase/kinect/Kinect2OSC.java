@@ -24,11 +24,12 @@ import java.util.List;
 		@DictionaryAttribute(name = "oz", optional = true, defaultValue = ""),
 		@DictionaryAttribute(name = "w", optional = true, defaultValue = "false"),
 		@DictionaryAttribute(name = "r", optional = true, defaultValue = "false"),
-		@DictionaryAttribute(name = "f", optional = true, defaultValue = "false"),
+		@DictionaryAttribute(name = "f", optional = true, defaultValue = "true"),
 		@DictionaryAttribute(name = "k", optional = true, defaultValue = "false"),
 		@DictionaryAttribute(name = "q", optional = true, defaultValue = "false")/*,
 		@DictionaryAttribute(name = "s", optional = true, defaultValue = "/tmp/osceleton.oni"),
-		@DictionaryAttribute(name = "i", optional = true, defaultValue = "/tmp/osceleton.oni")*/
+		@DictionaryAttribute(name = "i", optional = true, defaultValue = "/tmp/osceleton.oni")*/,
+		@DictionaryAttribute(name = "watchDog", optional = true, defaultValue = "15000")
 })
 @Requires({
 		@RequiredPort(name = "osc", type = PortType.MESSAGE)
@@ -42,9 +43,12 @@ public class Kinect2OSC extends AbstractComponentType {
 	private String killProcessPath;
 	private Process process;
 
-	private Thread outputThread;
-	private Thread errorThread;
+	/*private Thread outputThread;
+	private Thread errorThread;*/
 	private boolean stop;
+	private Thread watchDog;
+
+	private long timestamp = 0;
 
 	private Logger logger = LoggerFactory.getLogger(Kinect2OSC.class);
 
@@ -64,10 +68,21 @@ public class Kinect2OSC extends AbstractComponentType {
 
 	@Start
 	public void start() {
+		stop = false;
+		internalStart();
+		watchDog();
+	}
+
+	@Stop
+	public void stop() {
+		stop = true;
+		internalStop();
+	}
+
+	public void internalStart() {
 		try {
-			stop = false;
 			process = Runtime.getRuntime().exec(defineAttributes());
-			getProcessOutput();
+			//getProcessOutput();
 			oscServer = new OscServer(parseAttributeToInt("port"), this);
 			oscServer.start();
 		} catch (IOException e) {
@@ -75,9 +90,7 @@ public class Kinect2OSC extends AbstractComponentType {
 		}
 	}
 
-	@Stop
-	public void stop() {
-		stop = true;
+	public void internalStop() {
 		process.destroy();
 		try {
 			process.wait(2000);
@@ -86,13 +99,13 @@ public class Kinect2OSC extends AbstractComponentType {
 			try {
 				Runtime.getRuntime().exec(new String[] {killProcessPath, osceletonExecPath});
 			} catch (IOException e1) {
-				
+
 			}
 		} catch (InterruptedException e) {
 			try {
 				Runtime.getRuntime().exec(new String[] {killProcessPath, osceletonExecPath});
 			} catch (IOException e1) {
-				
+
 			}
 		}*/ catch (Exception e) {
 			try {
@@ -104,17 +117,47 @@ public class Kinect2OSC extends AbstractComponentType {
 		oscServer = null;
 	}
 
+
+	@Update
+	public void update() {
+		stop();
+		start();
+	}
+
+	public void internalUpdate() {
+		internalStop();
+		internalStart();
+	}
+
 	public void send(String message) {
 		if (isPortBinded("osc")) {
 			getPortByName("osc", MessagePort.class).process(message);
 		}
-		/*if (message.contains("joint")) {
-			System.out.println(message);
-		}*/
-		System.out.println(message);
+		timestamp = System.currentTimeMillis();
+		//System.out.println(message);
 	}
 
-	private void getProcessOutput() {
+	private void watchDog() {
+		watchDog = new Thread() {
+			public void run() {
+				try {
+					int watchDogTime = parseAttributeToInt("watchDog");
+					while (!stop) {
+						sleep(watchDogTime);
+						if (timestamp + watchDogTime < System.currentTimeMillis()) {
+							System.out.println("need to restart component");
+							Kinect2OSC.this.internalUpdate();
+						}
+					}
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+			}
+		};
+		watchDog.start();
+	}
+
+	/*private void getProcessOutput() {
 		outputThread = new Thread() {
 
 			public void run() {
@@ -137,7 +180,6 @@ public class Kinect2OSC extends AbstractComponentType {
 			}
 		};
 		errorThread = new Thread() {
-			boolean stop = false;
 
 			public void run() {
 				try {
@@ -161,8 +203,7 @@ public class Kinect2OSC extends AbstractComponentType {
 
 		outputThread.start();
 		errorThread.start();
-
-	}
+	}*/
 
 	private String[] defineAttributes
 			() {
