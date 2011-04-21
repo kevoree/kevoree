@@ -145,7 +145,7 @@ public class Kinect2OSC extends AbstractComponentType {
 					while (!stop) {
 						sleep(watchDogTime);
 						if (timestamp + watchDogTime < System.currentTimeMillis()) {
-							System.out.println("need to restart component");
+							System.out.println("need to restart component"); // TODO replace by logger.info
 							Kinect2OSC.this.internalUpdate();
 						}
 					}

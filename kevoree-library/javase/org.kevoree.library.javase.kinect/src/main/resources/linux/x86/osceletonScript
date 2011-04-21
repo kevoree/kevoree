@@ -1,4 +1,4 @@
 #!/bin/sh
 
-PID=`ps axu | grep "$1" | grep -v "grep" | cut -d" " -f2`
+PID=`ps axu | grep "$1" | grep -v "grep" | awk '{print $2}'`
 kill -9 $PID
