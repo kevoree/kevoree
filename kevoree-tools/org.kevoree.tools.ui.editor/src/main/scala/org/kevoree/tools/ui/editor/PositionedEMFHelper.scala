@@ -25,13 +25,17 @@ object PositionedEMFHelper {
 
     model.getNodes.foreach(node => {
       val nodePanel = kernel.getUifactory.getMapping.get(node).asInstanceOf[NodePanel];
-      val metadata = "x=" + nodePanel.getX + "," + "y=" + nodePanel.getY
-      node.setMetaData(metadata)
+      if (nodePanel != null) {
+        val metadata = "x=" + nodePanel.getX + "," + "y=" + nodePanel.getY
+        node.setMetaData(metadata)
+      }
     })
     model.getHubs.foreach(hub => {
       val hubPanel = kernel.getUifactory.getMapping.get(hub).asInstanceOf[ChannelPanel];
-      val metadata = "x=" + hubPanel.getX + "," + "y=" + hubPanel.getY
-      hub.setMetaData(metadata)
+      if (hubPanel != null) {
+        val metadata = "x=" + hubPanel.getX + "," + "y=" + hubPanel.getY
+        hub.setMetaData(metadata)
+      }
     })
     model.getGroups.foreach(group => {
       val groupPanel = kernel.getUifactory.getMapping.get(group).asInstanceOf[GroupPanel];
