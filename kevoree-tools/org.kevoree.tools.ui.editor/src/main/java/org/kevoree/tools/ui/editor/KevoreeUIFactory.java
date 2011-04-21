@@ -109,8 +109,11 @@ public class KevoreeUIFactory {
     public NodePanel createComponentNode(org.kevoree.ContainerNode node) {
         NodePanel nui = new NodePanel();
         ((Component) nui).setDropTarget(new NodeDragTargetListener(nui, kernel));
-        nui.setTitle(node.getName() + " : Node");
-
+        if(node.getTypeDefinition() != null){
+            nui.setTitle(node.getName(),node.getTypeDefinition().getName());
+        } else {
+            nui.setTitle(node.getName() + " : Node");
+        }
 
         CommandMouseListener listener = new CommandMouseListener();
         SelectInstanceCommand command = new SelectInstanceCommand();

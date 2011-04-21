@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>org.kevoree.experiment</groupId>
+    <artifactId>org.kevoree.experiment.library.gossiperNetty</artifactId>
+    <packaging>jar</packaging>
+    <name>Kevoree :: Experiment :: Library :: GossiperNettyLogger</name>
+    <version>1.0.0</version>
+
+    <properties>
+        <kevoree.version>1.1.0-RC1</kevoree.version>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.kevoree.library.javase</groupId>
+            <artifactId>org.kevoree.library.javase.gossiperNetty</artifactId>
+            <version>${kevoree.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.greg</groupId>
+            <artifactId>greg-client-java</artifactId>
+            <version>0.1</version>
+        </dependency>
+
+    </dependencies>
+
+    <parent>
+        <artifactId>org.kevoree.library.javase.root</artifactId>
+        <groupId>org.kevoree.library.javase</groupId>
+        <version>1.1.0-RC1</version>
+    </parent>
+
+
+</project>

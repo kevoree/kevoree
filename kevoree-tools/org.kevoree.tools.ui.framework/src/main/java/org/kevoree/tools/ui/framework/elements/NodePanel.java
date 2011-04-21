@@ -28,10 +28,18 @@ import org.kevoree.tools.ui.framework.SelectElement;
  */
 public class NodePanel extends RoundedTitledPanel implements SelectElement, ErrorHighlightableElement {
 
+    private String nodeTypeName = "Node";
+
+    public void setTitle(String nodeName,String _nodeTypeName){
+        this.nodeTypeName = _nodeTypeName;
+        this.setTitle(nodeName);
+    }
+
+
     @Override
     public void setTitle(String _title) {
-        super.setTitle(_title);
-        this.setToolTipText("Node "+_title);
+        super.setTitle(_title+" : "+nodeTypeName);
+        this.setToolTipText("Node "+_title+" : "+nodeTypeName);
     }
 
     public NodePanel() {

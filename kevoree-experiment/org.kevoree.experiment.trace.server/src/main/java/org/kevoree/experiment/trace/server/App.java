@@ -5,12 +5,18 @@ import org.greg.server.GregServer;
 import org.greg.server.Trace;
 
 import java.util.Arrays;
+import java.util.List;
 
 public class App {
 
    public static void main(String [] args)
 	{
-       GregServer.main(new String[0]);
+       System.out.println("Greg Server start ...");
+
+        List<String> gregArgs = Arrays.asList("-port","5676","-calibrationPort","5677");
+
+
+       GregServer.main(gregArgs.toArray(new String[0]));
     }
 
 }
