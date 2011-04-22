@@ -19,16 +19,12 @@ import java.awt.BorderLayout
 import java.awt.event.{MouseEvent, MouseAdapter}
 import org.kevoree.tools.marShell.interpreter.KevsInterpreterContext
 import org.kevoree.framework.KevoreeXmiHelper
-import java.io.BufferedReader
-import java.io.File
-import java.io.FileInputStream
-import java.io.FileOutputStream
-import java.io.InputStreamReader
-import java.io.PrintWriter
 import java.util.Random
 import org.kevoree.tools.marShell.parser.ParserUtil
 import org.kevoree.tools.marShellGUI.{KevsModelHandlers, KevsFrame}
 import org.kevoree.tools.ui.editor.{PositionedEMFHelper, KevoreeUIKernel}
+import com.sun.xml.internal.messaging.saaj.util.ByteOutputStream
+import java.io._
 
 class OpenKevsShell extends Command {
 
@@ -44,120 +40,125 @@ class OpenKevsShell extends Command {
 
     var btSave = new JButton("Save");
     btSave.addMouseListener(new MouseAdapter() {
-        override def mouseClicked(p1: MouseEvent) = {
-          //Save Script
+      override def mouseClicked(p1: MouseEvent) = {
+        //Save Script
 
-          val fileChooser = new JFileChooser
-          fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY)
-          fileChooser.setMultiSelectionEnabled(false)
-          fileChooser.setAcceptAllFileFilterUsed(true)
-          fileChooser.setFileHidingEnabled(true)
-          fileChooser.addChoosableFileFilter(new FileFilter() {
+        val fileChooser = new JFileChooser
+        fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY)
+        fileChooser.setMultiSelectionEnabled(false)
+        fileChooser.setAcceptAllFileFilterUsed(true)
+        fileChooser.setFileHidingEnabled(true)
+        fileChooser.addChoosableFileFilter(new FileFilter() {
 
-              override def getDescription() : String = "KevScript Files"
+          override def getDescription(): String = "KevScript Files"
 
-              override def accept(f : File) : Boolean = {
-                if (f.isDirectory()) {
-                  return false;
-                }
-
-                val extension = f.getName.substring(f.getName.lastIndexOf(".")+1)
-                if (extension != null) {
-                  if (extension.equals("kevs")) {
-                    return true;
-                  } else {
-                    return false;
-                  }
-                }
-
-                return false;
-              }
-            })
-          var result = fileChooser.showSaveDialog(kevsPanel);
-          if(result == JFileChooser.APPROVE_OPTION) {
-            var destFile = fileChooser.getSelectedFile
-            if( !destFile.exists) {
-              destFile.createNewFile
+          override def accept(f: File): Boolean = {
+            if (f.isDirectory()) {
+              return false;
             }
 
-            var pr = new PrintWriter(new FileOutputStream(destFile))
-            pr.append(kevsPanel.codeEditor.getText)
-            pr.flush
-            pr.close
+            val extension = f.getName.substring(f.getName.lastIndexOf(".") + 1)
+            if (extension != null) {
+              if (extension.equals("kevs")) {
+                return true;
+              } else {
+                return false;
+              }
+            }
+
+            return false;
+          }
+        })
+        var result = fileChooser.showSaveDialog(kevsPanel);
+        if (result == JFileChooser.APPROVE_OPTION) {
+          var destFile = fileChooser.getSelectedFile
+          if (!destFile.exists) {
+            destFile.createNewFile
           }
 
+          var pr = new PrintWriter(new FileOutputStream(destFile))
+          pr.append(kevsPanel.codeEditor.getText)
+          pr.flush
+          pr.close
         }
-      })
+
+      }
+    })
     buttons.add(btSave)
 
     var btLoad = new JButton("Load");
     btLoad.addMouseListener(new MouseAdapter() {
-        override def mouseClicked(p1: MouseEvent) = {
-          //Save Script
-          val fileChooser = new JFileChooser
-          fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY)
-          fileChooser.setMultiSelectionEnabled(false)
-          fileChooser.setAcceptAllFileFilterUsed(true)
-          fileChooser.setFileHidingEnabled(true)
-          fileChooser.addChoosableFileFilter(new FileFilter() {
-              
-              override def getDescription() : String = "KevScript Files"
+      override def mouseClicked(p1: MouseEvent) = {
+        //Save Script
+        val fileChooser = new JFileChooser
+        fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY)
+        fileChooser.setMultiSelectionEnabled(false)
+        fileChooser.setAcceptAllFileFilterUsed(true)
+        fileChooser.setFileHidingEnabled(true)
+        fileChooser.addChoosableFileFilter(new FileFilter() {
 
-              override def accept(f : File) : Boolean = {
-                if (f.isDirectory()) {
-                  return false;
-                }
+          override def getDescription(): String = "KevScript Files"
 
-                val extension = f.getName.substring(f.getName.lastIndexOf(".")+1)
-                if (extension != null) {
-                  if (extension.equals("kevs")) {
-                    return true;
-                  } else {
-                    return false;
-                  }
-                }
+          override def accept(f: File): Boolean = {
+            if (f.isDirectory()) {
+              return false;
+            }
 
+            val extension = f.getName.substring(f.getName.lastIndexOf(".") + 1)
+            if (extension != null) {
+              if (extension.equals("kevs")) {
+                return true;
+              } else {
                 return false;
               }
-            })
-          var result = fileChooser.showOpenDialog(kevsPanel);
-          if(result == JFileChooser.APPROVE_OPTION) {
-            val loadFilePath = fileChooser.getSelectedFile.getAbsolutePath()
-            val kevsContent = ParserUtil.loadFile(loadFilePath)
-            kevsPanel.codeEditor.setText(null)
-            kevsPanel.codeEditor.setText(kevsContent.toString.trim)
-            kevsPanel.repaint()
+            }
+
+            return false;
           }
+        })
+        var result = fileChooser.showOpenDialog(kevsPanel);
+        if (result == JFileChooser.APPROVE_OPTION) {
+          val loadFilePath = fileChooser.getSelectedFile.getAbsolutePath()
+          val kevsContent = ParserUtil.loadFile(loadFilePath)
+          kevsPanel.codeEditor.setText(null)
+          kevsPanel.codeEditor.setText(kevsContent.toString.trim)
+          kevsPanel.repaint()
         }
-      })
+      }
+    })
     buttons.add(btLoad)
 
 
     var btExecution = new JButton("execute");
     btExecution.addMouseListener(new MouseAdapter() {
-        override def mouseClicked(p1: MouseEvent) = {
-          //TODO SAVE CURRENT MODEL
-          val script = kevsPanel.getModel
-          if (script != null) {
-            import org.kevoree.tools.marShell.interpreter.KevsInterpreterAspects._
-            PositionedEMFHelper.updateModelUIMetaData(kernel)
-            var result = script.interpret(KevsInterpreterContext(kernel.getModelHandler.getActualModel))
-            println("Interpreter Result : " + result)
-            if (result) {
-              //reload
-              val file = File.createTempFile("kev", new Random().nextInt + "")
+      override def mouseClicked(p1: MouseEvent) = {
+        //TODO SAVE CURRENT MODEL
+        val script = kevsPanel.getModel
+        if (script != null) {
+          import org.kevoree.tools.marShell.interpreter.KevsInterpreterAspects._
+          PositionedEMFHelper.updateModelUIMetaData(kernel)
 
-              KevoreeXmiHelper.save("file:///"+file.getAbsolutePath, kernel.getModelHandler().getActualModel);
+          val outputStream: ByteOutputStream = new ByteOutputStream
+          KevoreeXmiHelper.saveStream(outputStream, kernel.getModelHandler.getActualModel)
+          val ghostModel = KevoreeXmiHelper.loadStream(outputStream.newInputStream())
 
-              var loadCMD = new LoadModelCommand
-              loadCMD.setKernel(kernel)
-              loadCMD.execute("file:///"+file.getAbsolutePath)
+          val result = script.interpret(KevsInterpreterContext(ghostModel))
+          println("Interpreter Result : " + result)
+          if (result) {
+            //reload
+            val file = File.createTempFile("kev", new Random().nextInt + "")
+
+            KevoreeXmiHelper.save("file:///" + file.getAbsolutePath, ghostModel);
+
+            val loadCMD = new LoadModelCommand
+            loadCMD.setKernel(kernel)
+            loadCMD.execute("file:///" + file.getAbsolutePath)
 
 
-            }
           }
         }
-      })
+      }
+    })
     buttons.add(btExecution)
 
 
@@ -168,10 +169,10 @@ class OpenKevsShell extends Command {
 
   def execute(p: Object) = {
 
-    KevsModelHandlers.put(1,kernel.getModelHandler.getActualModel)
-    kernel.getModelHandler.addListenerCommand(new Command{
-      def execute(p:java.lang.Object): Unit = {
-          KevsModelHandlers.put(1,kernel.getModelHandler.getActualModel)
+    KevsModelHandlers.put(1, kernel.getModelHandler.getActualModel)
+    kernel.getModelHandler.addListenerCommand(new Command {
+      def execute(p: java.lang.Object): Unit = {
+        KevsModelHandlers.put(1, kernel.getModelHandler.getActualModel)
       }
     })
 

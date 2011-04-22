@@ -1,17 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <kevoree:ContainerRoot xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:kevoree="http://kevoree/1.0">
-  <nodes name="myArduinoNode" typeDefinition="//@typeDefinitions.7"/>
-  <nodes name="myJavaNode" typeDefinition="//@typeDefinitions.7">
-    <components name="myFakeLight1" typeDefinition="//@typeDefinitions.0">
-      <dictionary>
-        <values attribute="//@typeDefinitions.0/@dictionaryType/@attributes.1" value="helloP2"/>
-        <values attribute="//@typeDefinitions.0/@dictionaryType/@attributes.0" value="hello"/>
-      </dictionary>
-      <provided portTypeRef="//@typeDefinitions.0/@provided.0"/>
-      <provided portTypeRef="//@typeDefinitions.0/@provided.1"/>
-      <provided portTypeRef="//@typeDefinitions.0/@provided.2"/>
-    </components>
-  </nodes>
   <typeDefinitions xsi:type="kevoree:ComponentType" name="FakeSimpleLight" deployUnits="//@deployUnits.0" factoryBean="org.kevoree.library.fakedomo.FakeSimpleLightFactory" bean="org.kevoree.library.fakedomo.FakeSimpleLight" startMethod="start" stopMethod="stop" updateMethod="update">
     <dictionaryType>
       <attributes name="param1"/>
@@ -86,11 +74,6 @@
   <dataTypes name="java.lang.String"/>
   <libraries name="Kevoree-Components" subTypes="//@typeDefinitions.0 //@typeDefinitions.3 //@typeDefinitions.4"/>
   <libraries name="Kevoree-Android-JavaSE" subTypes="//@typeDefinitions.5 //@typeDefinitions.6 //@typeDefinitions.8 //@typeDefinitions.9 //@typeDefinitions.10 //@typeDefinitions.11 //@typeDefinitions.12 //@typeDefinitions.13"/>
-  <hubs name="gossiperChannel1" typeDefinition="//@typeDefinitions.9">
-    <dictionary>
-      <values attribute="//@typeDefinitions.9/@dictionaryType/@attributes.0" value="3000"/>
-    </dictionary>
-  </hubs>
   <deployUnits groupName="org.kevoree.library" unitName="org.kevoree.library.fakeDomo" version="1.1.0-BETA1" hashcode="201104070916244" targetNodeType="//@typeDefinitions.7"/>
   <deployUnits groupName="org.kevoree.library" unitName="org.kevoree.library.defaultChannels" version="1.1.0-BETA1" hashcode="201104070915536" targetNodeType="//@typeDefinitions.7"/>
   <deployUnits groupName="org.kevoree.library" unitName="org.kevoree.library.defaultNodeTypes" version="1.1.0-BETA1" hashcode="201104070915880" targetNodeType="//@typeDefinitions.7"/>

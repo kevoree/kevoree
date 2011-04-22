@@ -42,10 +42,10 @@ class KevsPanel extends JPanel {
 
   var scrPane = new JScrollPane(codeEditor);
 
-  codeEditor.setContentType("text/kevs");
+  codeEditor.setContentType("text/kevs; charset=UTF-8");
+
 
   codeEditor.setBackground(Color.DARK_GRAY)
-
   codeEditor.setText("tblock { \n //insert Kevoree Script here \n }");
 
   codeEditor.getDocument.addDocumentListener(new DocumentListener() {

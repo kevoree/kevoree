@@ -36,7 +36,11 @@ trait KevsInstParser extends KevsAbstractParser with KevsPropertiesParser {
   }
 
   //COMPONENT
-  def parseAddComponent : Parser[List[Statment]] = "addComponent" ~ componentID ~ ":" ~ ident ~ opt(parseProperties) ^^{ case _ ~ cid ~ _ ~ typeid ~ oprops  =>
+
+  val expectCommand = "addComponent <ComponentInstanceName> [@<nodeName>] :<ComponentTypeName>"
+  def orFailure[A](a:Parser[A],msg:String) : Parser[A] = ( a | failure(msg) )
+
+  def parseAddComponent : Parser[List[Statment]] = "addComponent" ~ orFailure(componentID,expectCommand) ~ orFailure(":",expectCommand) ~ ident ~ opt(parseProperties) ^^{ case _ ~ cid ~ _ ~ typeid ~ oprops  =>
       oprops match {
         case None => List(AddComponentInstanceStatment(cid,typeid,new java.util.Properties))
         case Some(props)=>List(AddComponentInstanceStatment(cid,typeid,props))
