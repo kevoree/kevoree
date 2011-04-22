@@ -95,6 +95,11 @@ class KevsComboCompletionAction extends ComboCompletionAction {
               case e: GroupType => true
               case _@noType => false
             })
+          case Some(e) if (e.getString(sdoc) == "addNode") => pushFilteredTypeId((tdef: TypeDefinition) =>
+            tdef match {
+              case e: NodeType => true
+              case _@noType => false
+            })
           case _@e => pushTypeId()
         }
       }
