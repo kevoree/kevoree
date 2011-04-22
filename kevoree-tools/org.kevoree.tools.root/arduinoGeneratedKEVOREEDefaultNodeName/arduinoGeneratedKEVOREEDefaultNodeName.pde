@@ -5,7 +5,7 @@ lcd.begin(16, 2);
 }
 void loop(){
 }
-void component_LCDDisplay2121477704_providedPort_input (String param){
+void component_LCDDisplay263385554_providedPort_input (String param){
 lcd.clear();
 lcd.print(param);
 

@@ -35,7 +35,6 @@ import org.kevoree.tools.ui.editor.KevoreeUIKernel;
 import org.kevoree.tools.ui.editor.PositionedEMFHelper;
 
 /**
- *
  * @author ffouquet
  */
 public class LoadNewLibCommand implements Command {
@@ -45,66 +44,50 @@ public class LoadNewLibCommand implements Command {
     public void setKernel(KevoreeUIKernel kernel) {
         this.kernel = kernel;
     }
+
     private KevoreeUIKernel kernel;
 
     @Override
     public void execute(Object p) {
         filechooser.showOpenDialog(kernel.getModelPanel());
         if (filechooser.getSelectedFile() != null) {
-            JarFile jar;
             try {
+                Boolean jarFile = filechooser.getSelectedFile().getAbsoluteFile().getPath().endsWith("jar");
+                Boolean kevFile = filechooser.getSelectedFile().getAbsoluteFile().getPath().endsWith("kev");
+                String path = null;
+                if (kevFile) {
+                    path = filechooser.getSelectedFile().getAbsolutePath();
+                }
+                if (jarFile) {
+                    JarFile jar;
 
-                jar = new JarFile(filechooser.getSelectedFile().getAbsoluteFile()); //new JarFile(filechooser.getSelectedFile().getAbsoluteFile().toURI().toString());
-                JarEntry entry = jar.getJarEntry("KEV-INF/lib.kev");
-                if (entry != null) {
-                    String path = convertStreamToFile(jar.getInputStream(entry));
-                    //kernel.getEditorPanel().loadLib(path);
-                    //System.out.println(path);
+                    jar = new JarFile(filechooser.getSelectedFile().getAbsoluteFile()); //new JarFile(filechooser.getSelectedFile().getAbsoluteFile().toURI().toString());
+                    JarEntry entry = jar.getJarEntry("KEV-INF/lib.kev");
+                    if (entry != null) {
+                        path = convertStreamToFile(jar.getInputStream(entry));
+                    }
 
-                    //Load
+                }
+                if (path != null) {
                     ContainerRoot nroot = KevoreeXmiHelper.load(path);
-
                     //Merge
                     kernel.getModelHandler().merge(nroot);
-
                     //CREATE TEMP FILE FROM ACTUAL MODEL
                     File tempFile = File.createTempFile("kevoreeEditorTemp", ".kev");
                     //System.out.println("path="+tempFile);
                     PositionedEMFHelper.updateModelUIMetaData(kernel);
-                    KevoreeXmiHelper.save(URI.createFileURI(tempFile.getAbsolutePath()).toString(),kernel.getModelHandler().getActualModel());
-
+                    KevoreeXmiHelper.save(URI.createFileURI(tempFile.getAbsolutePath()).toString(), kernel.getModelHandler().getActualModel());
                     //LOAD MODEL
                     LoadModelCommand loadCmd = new LoadModelCommand();
                     loadCmd.setKernel(kernel);
                     loadCmd.execute(URI.createFileURI(tempFile.getAbsolutePath()).toString());
-
-
-                    /*
-                    kernel.getEditorPanel().getPalette().clear();
-                    for (org.kevoree.TypeLibrary ctl : kernel.getModelHandler().getActualModel().getLibraries()) {
-                        for (org.kevoree.TypeDefinition ct : ctl.getSubTypes()) {
-                            if (ct instanceof ComponentType) {
-                                ComponentTypePanel ctp = kernel.getUifactory().createComponentTypeUI((ComponentType) ct);
-                                kernel.getEditorPanel().getPalette().addTypeDefinitionPanel(ctp, ctl.getName());
-                            }
-                            if (ct instanceof ChannelType) {
-                                ChannelTypePanel ctp = kernel.getUifactory().createChannelTypeUI((ChannelType) ct);
-                                kernel.getEditorPanel().getPalette().addTypeDefinitionPanel(ctp, ctl.getName());
-                            }
-                        }
-                    }
-                    kernel.getEditorPanel().doLayout();
-                    kernel.getEditorPanel().repaint();
-                    kernel.getEditorPanel().revalidate();
-*/
-
-
                 }
             } catch (IOException ex) {
                 Logger.getLogger(LoadNewLibCommand.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
     }
+
 
     private String convertStreamToFile(InputStream inputStream) throws IOException {
         Random rand = new Random();
