@@ -19,6 +19,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
 import java.net.URL;
+import java.util.regex.PatternSyntaxException;
 
 public class KevoreeGUIFrame extends JFrame {
 
@@ -47,7 +48,7 @@ public class KevoreeGUIFrame extends JFrame {
         }
 
         String response = (String) JOptionPane.showInputDialog(this,
-                "Kevoree node name ?",
+                "Kevoree node name ? (format : name[:port])",
                 "Kevoree node runtime",
                 JOptionPane.QUESTION_MESSAGE, smallIcon, null, "");
 
@@ -56,8 +57,33 @@ public class KevoreeGUIFrame extends JFrame {
             System.exit(0);
         }
 
+		if (response.contains(":")) {
+			try {
+				String[] splitted = response.split(":");
+				Integer.parseInt(splitted[1]); // use to check if the port parameter is valid
+				System.setProperty("node.port", splitted[1]);
+				response = splitted[0];
+			} catch (PatternSyntaxException e) {}
+			catch (NumberFormatException e){}
+		}
+		String nodeName = response;
+
         System.setProperty("node.name", response);
-        this.setTitle(response + " : KevoreeNode");
+
+
+		/*//////// add to allow user to set the port number
+		 response = (String) JOptionPane.showInputDialog(this,
+                "Kevoree node port number ?",
+                "Kevoree node runtime",
+                JOptionPane.QUESTION_MESSAGE, smallIcon, null, "");
+
+		if (response == null) {
+            System.exit(0);
+        }
+
+        System.setProperty("node.port", response);*/
+
+        this.setTitle(nodeName + " : KevoreeNode");
         singleton.setVisible(true);
     }
 

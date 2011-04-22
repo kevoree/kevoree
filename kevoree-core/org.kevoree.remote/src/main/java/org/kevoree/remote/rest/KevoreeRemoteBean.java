@@ -28,57 +28,65 @@ import org.restlet.data.Protocol;
  */
 public class KevoreeRemoteBean {
 
-    private Component component;
-    private Application provisioning = null;
+	private Component component;
+	private Application provisioning = null;
 
-    public KevoreeRemoteBean() {
+	public KevoreeRemoteBean() {
+		Integer port = NetworkUtility.findNextAvailblePort(8000, 60000);
 
-        Integer port = NetworkUtility.findNextAvailblePort(8000, 60000);
-        System.out.println("Kevoree Remote Port => " + port);
+		try {
+			String port_number = System.getProperty("node.port");
+		if (port_number == null) {
+			port_number = "8000";
+		}
+			Integer tmpPort = Integer.parseInt(port_number);
+			port = tmpPort;
+		} catch (NumberFormatException e) {}
 
-        component = new Component();
+		System.out.println("Kevoree Remote Port => " + port);
 
-        component.getServers().add(Protocol.HTTP, port);
-        component.getClients().add(Protocol.FILE);
-        component.getContext().getParameters().add("timeToLive", "0");
+		component = new Component();
 
-        component.getDefaultHost().attach("/model/current", ModelHandlerResource.class);
+		component.getServers().add(Protocol.HTTP, port);
+		component.getClients().add(Protocol.FILE);
+		component.getContext().getParameters().add("timeToLive", "0");
 
-
-
-        if (System.getProperty("org.kevoree.remote.provisioning") != null) {
-             provisioning = new RestFileServerApplication(System.getProperty("org.kevoree.remote.provisioning"));
-            component.getDefaultHost().attach("/provisioning", provisioning);
-            System.out.println("Provisioning server started => /provisioning");
-        } //else {
-        //component.getDefaultHost.attachDefault(classOf[ErrorResource])
-        // }
-
-
-    }
-
-    public void start() {
-        try {
-            component.start();
-            Handler.initHost(component.getDefaultHost());
-        } catch (Exception e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-        }
-    }
-
-    public void stop() {
-        component.getDefaultHost().detach(ModelHandlerResource.class);
-        if(provisioning !=null){
-            component.getDefaultHost().detach(provisioning);
-        }
+		component.getDefaultHost().attach("/model/current", ModelHandlerResource.class);
 
 
-        try {
-            component.stop();
-        } catch (Exception e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-        }
-    }
+		if (System.getProperty("org.kevoree.remote.provisioning") != null) {
+			provisioning = new RestFileServerApplication(System.getProperty("org.kevoree.remote.provisioning"));
+			component.getDefaultHost().attach("/provisioning", provisioning);
+			System.out.println("Provisioning server started => /provisioning");
+		} //else {
+		//component.getDefaultHost.attachDefault(classOf[ErrorResource])
+		// }
+
+
+	}
+
+	public void start() {
+		try {
+			component.start();
+			Handler.initHost(component.getDefaultHost());
+		} catch (Exception e) {
+			e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+		}
+	}
+
+	public void stop() {
+		component.getDefaultHost().detach(ModelHandlerResource.class);
+		if (provisioning != null) {
+			component.getDefaultHost().detach(provisioning);
+		}
+
+
+		try {
+			component.stop();
+		} catch (Exception e) {
+			e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+		}
+	}
 
 
 }
