@@ -103,10 +103,15 @@ class KevsComboCompletionAction extends ComboCompletionAction {
           case _@e => pushTypeId()
         }
       }
+
+
+      case _ if (isFirstDelimiter(sdoc, dot, ".")) => {
+        pushComponentPortRequireId(sdoc, dot)
+      }
+
+    //  case _ if (tokenPreviousS == "." || tokens == ".") => pushComponentPortRequireId(sdoc, dot)
+
       case _ if (tokenPreviousS == "@" || tokens == "@") => pushNodeId()
-      case _ if (tokenPreviousS == "." || tokens == ".") => pushComponentPortRequireId(sdoc,dot)
-
-
       case _ if (tokenPreviousS == "bind" && tokens != "bind") => pushComponentId()
       case _ if (tokenPreviousS == "unbind" && tokens != "unbind") => pushComponentId()
       case _ => pushKeyword()
@@ -140,6 +145,9 @@ class KevsComboCompletionAction extends ComboCompletionAction {
 
 
   def pushComponentPortRequireId(sdoc: SyntaxDocument, dot: Int) {
+
+    println("pushComponentPortRequireId")
+
     val token = getFirstIdentifier(sdoc, dot)
     KevsModelHandlers.get(1) match {
       case Some(model) => {

@@ -28,9 +28,9 @@ import javax.swing.JTextField
 import org.kevoree.framework.Constants
 import org.kevoree.framework.KevoreePlatformHelper
 import org.kevoree.framework.KevoreeXmiHelper
-import org.kevoree.tools.ui.editor.KevoreeUIKernel
 import scala.reflect.BeanProperty
 import scala.collection.JavaConversions._
+import org.kevoree.tools.ui.editor.{PositionedEMFHelper, KevoreeUIKernel}
 
 class SynchNodeIPCommand extends Command {
 
@@ -47,6 +47,7 @@ class SynchNodeIPCommand extends Command {
   def execute(p :Object) {
     try {
       val outStream = new ByteArrayOutputStream
+      PositionedEMFHelper.updateModelUIMetaData(kernel);
       KevoreeXmiHelper.saveStream(outStream, kernel.getModelHandler.getActualModel)
       outStream.flush
       // var msg = outStream.toString

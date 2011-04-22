@@ -23,7 +23,7 @@ import jsyntaxpane.util.Configuration
 
 class KevsJSyntaxKit extends DefaultSyntaxKit(new KevsJSyntaxLexerWrapper()) {
 
-  override def getContentType = "text/kevs"
+  override def getContentType = "text/kevs; charset=UTF-8"
 
   var config = new java.util.Properties
   config.setProperty("RightMarginColumn", "80")

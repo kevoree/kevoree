@@ -25,7 +25,7 @@ import org.kevoree.tools.marShell.ast.Statment
 trait KevsNodeParser extends KevsAbstractParser with KevsPropertiesParser {
 
   //example : addNode node1,node2 : JavaSENode
-  def parseAddNode : Parser[List[Statment]] = "addNode" ~ repsep(ident,",") ~ ":" ~ ident ~ opt(parseProperties) ^^{ case _ ~ nodeIDs ~ _ ~ nodeTypeName ~ oprops =>
+  def parseAddNode : Parser[List[Statment]] = "addNode" ~ rep1sep(ident,",") ~ ":" ~ ident ~ opt(parseProperties) ^^{ case _ ~ nodeIDs ~ _ ~ nodeTypeName ~ oprops =>
       var props = oprops.getOrElse{new java.util.Properties}
       var res : List[Statment] = List()
       nodeIDs.foreach{nodeID=>
@@ -35,7 +35,7 @@ trait KevsNodeParser extends KevsAbstractParser with KevsPropertiesParser {
   }
 
   //example : removeNode node1,node2
-  def parseRemoveNode : Parser[List[Statment]] = "removeNode" ~ repsep(ident,",") ^^{ case _ ~ nodeIDs =>
+  def parseRemoveNode : Parser[List[Statment]] = "removeNode" ~ rep1sep(ident,",") ^^{ case _ ~ nodeIDs =>
       var res : List[Statment] = List()
       nodeIDs.foreach{nodeID=>
         res = res ++ List(RemoveNodeStatment(nodeID))
