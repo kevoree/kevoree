@@ -102,7 +102,7 @@ public class SerialCT extends AbstractChannelFragment {
             public Object sendMessageToRemote(Message message) {
                 if (serialWriter != null) {
                     logger.info("Send message = " + message.getContent());
-                    serialWriter.sendMsg(message.getContent().toString());
+                    serialWriter.sendMsg(message.getContent().toString()+";");
                 }
                 return null;
             }

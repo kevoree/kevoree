@@ -16,7 +16,6 @@ package org.kevoree.tools.ui.editor.command
 import javax.swing.filechooser.FileFilter
 import javax.swing.{JButton, BoxLayout, JPanel, JFileChooser}
 import java.awt.BorderLayout
-import org.kevoree.tools.ui.editor.KevoreeUIKernel
 import java.awt.event.{MouseEvent, MouseAdapter}
 import org.kevoree.tools.marShell.interpreter.KevsInterpreterContext
 import org.kevoree.framework.KevoreeXmiHelper
@@ -29,6 +28,7 @@ import java.io.PrintWriter
 import java.util.Random
 import org.kevoree.tools.marShell.parser.ParserUtil
 import org.kevoree.tools.marShellGUI.{KevsModelHandlers, KevsFrame}
+import org.kevoree.tools.ui.editor.{PositionedEMFHelper, KevoreeUIKernel}
 
 class OpenKevsShell extends Command {
 
@@ -47,7 +47,7 @@ class OpenKevsShell extends Command {
         override def mouseClicked(p1: MouseEvent) = {
           //Save Script
 
-          var fileChooser = new JFileChooser
+          val fileChooser = new JFileChooser
           fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY)
           fileChooser.setMultiSelectionEnabled(false)
           fileChooser.setAcceptAllFileFilterUsed(true)
@@ -94,8 +94,7 @@ class OpenKevsShell extends Command {
     btLoad.addMouseListener(new MouseAdapter() {
         override def mouseClicked(p1: MouseEvent) = {
           //Save Script
-
-          var fileChooser = new JFileChooser
+          val fileChooser = new JFileChooser
           fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY)
           fileChooser.setMultiSelectionEnabled(false)
           fileChooser.setAcceptAllFileFilterUsed(true)
@@ -123,8 +122,8 @@ class OpenKevsShell extends Command {
             })
           var result = fileChooser.showOpenDialog(kevsPanel);
           if(result == JFileChooser.APPROVE_OPTION) {
-            var loadFilePath = fileChooser.getSelectedFile.getAbsolutePath()
-            var kevsContent = ParserUtil.loadFile(loadFilePath)
+            val loadFilePath = fileChooser.getSelectedFile.getAbsolutePath()
+            val kevsContent = ParserUtil.loadFile(loadFilePath)
             kevsPanel.codeEditor.setText(null)
             kevsPanel.codeEditor.setText(kevsContent.toString.trim)
             kevsPanel.repaint()
@@ -138,10 +137,10 @@ class OpenKevsShell extends Command {
     btExecution.addMouseListener(new MouseAdapter() {
         override def mouseClicked(p1: MouseEvent) = {
           //TODO SAVE CURRENT MODEL
-          var script = kevsPanel.getModel
+          val script = kevsPanel.getModel
           if (script != null) {
             import org.kevoree.tools.marShell.interpreter.KevsInterpreterAspects._
-
+            PositionedEMFHelper.updateModelUIMetaData(kernel)
             var result = script.interpret(KevsInterpreterContext(kernel.getModelHandler.getActualModel))
             println("Interpreter Result : " + result)
             if (result) {
@@ -170,6 +169,12 @@ class OpenKevsShell extends Command {
   def execute(p: Object) = {
 
     KevsModelHandlers.put(1,kernel.getModelHandler.getActualModel)
+    kernel.getModelHandler.addListenerCommand(new Command{
+      def execute(p:java.lang.Object): Unit = {
+          KevsModelHandlers.put(1,kernel.getModelHandler.getActualModel)
+      }
+    })
+
 
     if (current == null) {
       current = new KevsEditorFrame

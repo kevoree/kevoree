@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>org.kevoree.experiment</groupId>
+    <artifactId>org.kevoree.experiment.trace.server</artifactId>
+    <packaging>jar</packaging>
+    <name>Kevoree :: Experiment :: Trace :: Server</name>
+    <version>1.0.0</version>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.greg</groupId>
+            <artifactId>greg-server</artifactId>
+            <version>0.1</version>
+        </dependency>
+    </dependencies>
+
+</project>

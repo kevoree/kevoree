@@ -109,8 +109,10 @@ object Generator {
 
           clazz.getMethods.foreach {
             method =>
+              println("method="+method)
             method.getAnnotations.foreach {
               annotation =>
+                println("annotation="+annotation)
               if (annotation.annotationType.toString.contains("org.kevoree.annotation.Generate")) {
                 val generateAnnotation = annotation.asInstanceOf[KGenerate]
                 contextMap.get(generateAnnotation.value.toString) match {

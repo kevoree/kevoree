@@ -131,6 +131,7 @@ public class Main {
         c2.addRight(p24);
 
         node1.setTitle("node1");
+        node1.setTitle("myNode","ArduinoNode");
 
 
         node1.add(c1);
