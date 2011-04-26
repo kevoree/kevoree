@@ -5,9 +5,9 @@ import org.jboss.netty.channel.ChannelHandlerContext
 import org.jboss.netty.channel.ExceptionEvent
 import org.jboss.netty.channel.MessageEvent
 import org.jboss.netty.channel.SimpleChannelUpstreamHandler
-import org.kevoree.library.gossip.Gossip.VersionedModel
 import org.kevoree.library.gossiperNetty.api.msg.KevoreeMessage.Message
 import org.slf4j.LoggerFactory
+import version.Gossip.VersionedModel
 
 class DataReceiverHandler(gossiperRequestSender: GossiperRequestSender) extends SimpleChannelUpstreamHandler {
 

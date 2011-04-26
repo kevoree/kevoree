@@ -24,12 +24,24 @@
             <artifactId>greg-client-java</artifactId>
             <version>0.1</version>
         </dependency>
-        		<dependency>
-			<groupId>org.kevoree.extra</groupId>
-			<artifactId>org.kevoree.extra.protobuf</artifactId>
-			<version>2.3.0</version>
-			<scope>provided</scope>
-		</dependency>
+        <dependency>
+            <groupId>org.kevoree.extra</groupId>
+            <artifactId>org.kevoree.extra.protobuf</artifactId>
+            <version>2.3.0</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.kevoree.extra</groupId>
+            <artifactId>org.kevoree.extra.netty</artifactId>
+            <version>3.2.4.Final</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.kevoree.extra</groupId>
+            <artifactId>org.kevoree.extra.marshalling</artifactId>
+            <version>${kevoree.version}</version>
+            <scope>provided</scope>
+        </dependency>
 
     </dependencies>
 
@@ -48,10 +60,6 @@
                 <configuration>
                     <instructions>
                         <Private-Package>
-                            greg.client
-                            org.kevoree.library.gossiper.version.*,
-                            org.kevoree.library.gossip.*,
-                            org.kevoree.library.version.*,
                             org.greg.client.*
                         </Private-Package>
                         <Export-Package>
@@ -61,10 +69,7 @@
                         <Import-Package>
                             !org.kevoree.experiment.library.gossiperNetty.*,
                             !org.kevoree.library.gossiperNetty.*,
-                            !org.kevoree.library.gossiper.version.*,
-                            !org.kevoree.library.gossip.*,
-                            !org.kevoree.library.version.*,
-                            !greg.client.*,
+                            !org.greg.client.*,
                             *
                         </Import-Package>
                     </instructions>

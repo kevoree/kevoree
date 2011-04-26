@@ -5,22 +5,15 @@
 
 package org.kevoree.library.gossiperNetty.group
 
-import java.io.ByteArrayInputStream
-import java.io.ByteArrayOutputStream
-import java.io.InputStream
 import java.util.Date
 import java.util.HashMap
 import java.util.UUID
 import org.kevoree.ContainerRoot
 import org.kevoree.api.service.core.handler.KevoreeModelHandlerService
-import org.kevoree.library.gossiperNetty.DataManager
-import org.kevoree.library.gossiperNetty.VersionUtils
-import org.kevoree.library.version.Version.ClockEntry
-import org.kevoree.library.version.Version.VectorClock
-import org.kevoree.framework.KevoreeXmiHelper
-import org.kevoree.library.gossiper.version.Occured
 import java.lang.Math
 import scala.collection.JavaConversions._
+import org.kevoree.library.gossiperNetty._
+import version.Version.{VectorClock, ClockEntry}
 
 class DataManagerForGroup(nameInstance: String, selfNodeName: String, modelService: KevoreeModelHandlerService) extends DataManager with actors.DaemonActor {
 

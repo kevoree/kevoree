@@ -36347,6 +36347,7 @@ org.eclipse.emf.ecore.impl.BasicEObjectImpl: int EVIRTUAL_IS_SET
 org.eclipse.emf.ecore.impl.BasicEObjectImpl: boolean $assertionsDisabled
 scala.Function2$mcILL$sp$$anonfun$curried$mcILL$sp$1$$anonfun$apply$28: long serialVersionUID
 org.jgrapht.alg.BellmanFordShortestPath: double DEFAULT_EPSILON
+org.kevoree.adaptation.deploy.osgi.context.KevoreeDeployManager$$anonfun$garbage$1: long serialVersionUID
 org.eclipse.emf.ecore.util.EObjectValidator: int EOBJECT__EVERY_MULTIPCITY_CONFORMS
 org.eclipse.emf.ecore.util.EObjectValidator: int EOBJECT__EVERY_DATA_VALUE_CONFORMS
 org.eclipse.emf.ecore.util.EObjectValidator: int EOBJECT__EVERY_REFERENCE_IS_CONTAINED
@@ -40316,6 +40317,7 @@ org.eclipse.emf.ecore.impl.EStructuralFeatureImpl$InternalSettingDelegateMany: i
 org.eclipse.emf.ecore.impl.EStructuralFeatureImpl$InternalSettingDelegateMany: int EMAP_UNSETTABLE
 scala.collection.MapLike$$anonfun$$plus$plus$1: long serialVersionUID
 net.lag.configgy.ConfigMap$$anonfun$getString$1: long serialVersionUID
+org.kevoree.tools.marShell.parser.sub.KevsInstParser$$anonfun$orFailure$1: long serialVersionUID
 org.osgi.framework.InvalidSyntaxException: long serialVersionUID
 org.restlet.data.LocalReference: int CLAP_DEFAULT
 org.restlet.data.LocalReference: int CLAP_CLASS
@@ -45610,6 +45612,7 @@ net.lag.ConfiggyString$$anonfun$regexSub$1
 org.kevoree.tools.marShell.interpreter.sub.KevsRemoveLibraryInterpreter
 scala.runtime.CharRef
 scala.Function2$mcILL$sp$$anonfun$curried$mcILL$sp$1$$anonfun$apply$28
+org.kevoree.adaptation.deploy.osgi.context.KevoreeDeployManager$$anonfun$garbage$1
 scala.util.parsing.json.Lexer$$anonfun$expPart$3
 scala.util.parsing.json.Lexer$$anonfun$expPart$1
 scala.util.parsing.json.Lexer$$anonfun$expPart$2
@@ -47097,6 +47100,7 @@ scala.collection.TraversableViewLike$$anonfun$scanRight$1
 scala.util.parsing.combinator.Parsers$$anonfun$guard$1
 scala.collection.MapLike$$anonfun$$plus$plus$1
 net.lag.configgy.ConfigMap$$anonfun$getString$1
+org.kevoree.tools.marShell.parser.sub.KevsInstParser$$anonfun$orFailure$1
 org.kevoree.tools.marShell.lexer.KevsTokens$NumericLit$
 scala.Function1$mcVD$sp$$anonfun$andThen$mcVD$sp$1
 scala.collection.JavaConversions$JIterableWrapper

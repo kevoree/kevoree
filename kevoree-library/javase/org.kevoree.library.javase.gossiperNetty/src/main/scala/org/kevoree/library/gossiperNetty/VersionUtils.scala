@@ -5,9 +5,8 @@
 
 package org.kevoree.library.gossiperNetty
 
-import org.kevoree.library.version.Version.VectorClock
-import org.kevoree.library.gossiper.version.Occured
 import scala.collection.JavaConversions._
+import version.Version.VectorClock
 
 object VersionUtils {
 

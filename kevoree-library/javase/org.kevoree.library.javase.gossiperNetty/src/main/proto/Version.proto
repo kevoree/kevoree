@@ -1,6 +1,6 @@
-package org.kevoree.library.version;
+package org.kevoree.library.gossiperNetty.version;
 
-option java_package = "org.kevoree.library.version";
+option java_package = "org.kevoree.library.gossiperNetty.version";
 option java_outer_classname = "Version";
 
 option optimize_for = LITE_RUNTIME;

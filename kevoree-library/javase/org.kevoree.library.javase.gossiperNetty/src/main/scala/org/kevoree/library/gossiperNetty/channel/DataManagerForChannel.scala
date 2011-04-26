@@ -3,10 +3,9 @@ package org.kevoree.library.gossiperNetty
 import java.util.HashMap
 import java.util.UUID
 import org.kevoree.framework.message.Message
-import org.kevoree.library.version.Version.ClockEntry
-import org.kevoree.library.version.Version.VectorClock
 import org.slf4j.LoggerFactory
 import scala.collection.JavaConversions._
+import version.Version.{ClockEntry, VectorClock}
 
 class DataManagerForChannel extends DataManager with actors.DaemonActor  {
   
@@ -93,13 +92,13 @@ class DataManagerForChannel extends DataManager with actors.DaemonActor  {
   
   private def localMerge(vc1 : VectorClock,vc2 : VectorClock) : VectorClock = {
     var enties = vc1.getEntiesList.toList
-    var timeStamp = System.currentTimeMillis
+    val timeStamp = System.currentTimeMillis
     //ADD VC2
     vc2.getEntiesList.foreach{clockEntry =>
       enties.find(p=> p.getNodeID == clockEntry.getNodeID) match {
         case Some(toUpdate) => {
 			//CHECK MAX VALUE
-			var newClock = ClockEntry.newBuilder(toUpdate).setVersion(java.lang.Math.max(toUpdate.getVersion,clockEntry.getVersion)).setTimestamp(timeStamp).build
+			val newClock = ClockEntry.newBuilder(toUpdate).setVersion(java.lang.Math.max(toUpdate.getVersion,clockEntry.getVersion)).setTimestamp(timeStamp).build
 			enties = ((enties -- List(toUpdate)) ++ List(newClock)) 
 		  }
         case None => enties = enties ++ List(clockEntry)

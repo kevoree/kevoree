@@ -16,12 +16,12 @@ import org.jboss.netty.channel.ChannelPipelineFactory
 import org.jboss.netty.channel.Channels
 import org.jboss.netty.channel.group.DefaultChannelGroup
 import org.jboss.netty.channel.socket.nio.NioClientSocketChannelFactory
-import org.kevoree.library.gossip.Gossip.UUIDDataRequest
 import org.kevoree.library.gossiperNetty.api.msg.KevoreeMessage.Message
 import scala.collection.JavaConversions._
 import org.slf4j.LoggerFactory
 import org.jboss.netty.handler.codec.compression.{ZlibDecoder, ZlibEncoder, ZlibWrapper}
 import org.jboss.netty.handler.codec.protobuf.{ProtobufVarint32LengthFieldPrepender, ProtobufDecoder, ProtobufVarint32FrameDecoder, ProtobufEncoder}
+import version.Gossip.UUIDDataRequest
 
 class AskForDataTCPActor(channelFragment: NettyGossipAbstractElement, requestSender: GossiperRequestSender) extends actors.DaemonActor {
 

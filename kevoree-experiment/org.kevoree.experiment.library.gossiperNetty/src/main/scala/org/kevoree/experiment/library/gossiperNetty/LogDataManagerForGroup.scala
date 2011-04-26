@@ -1,10 +1,10 @@
 package org.kevoree.experiment.library.gossiperNetty
 
 import org.kevoree.library.gossiperNetty.group.DataManagerForGroup
-import org.kevoree.library.version.Version.VectorClock
 import java.util.UUID
 import org.greg.client.ForkedGregClient
 import scala.collection.JavaConversions._
+import org.kevoree.library.gossiperNetty.version.Version.VectorClock
 
 class LogDataManagerForGroup(logClient : ForkedGregClient,nameInstance : scala.Predef.String, selfNodeName : scala.Predef.String, modelService : org.kevoree.api.service.core.handler.KevoreeModelHandlerService)
   extends DataManagerForGroup(nameInstance,selfNodeName,modelService) {

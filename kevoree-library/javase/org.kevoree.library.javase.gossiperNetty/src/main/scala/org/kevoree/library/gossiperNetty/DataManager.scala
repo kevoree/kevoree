@@ -6,7 +6,7 @@
 package org.kevoree.library.gossiperNetty
 
 import java.util.UUID
-import org.kevoree.library.version.Version.VectorClock
+import version.Version.VectorClock
 
 trait DataManager {
   def stop()

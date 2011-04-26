@@ -37,11 +37,13 @@ class KevoreeDeployManager {
     l.foreach {
       mapping =>
         if (bundle != null) {
-           if(bundle.getState == Bundle.UNINSTALLED){
-              bundleMapping.remove(mapping)
-           }
+          if (bundle.getState == Bundle.UNINSTALLED) {
+            bundleMapping.remove(mapping)
+            println("Garbage bundle binding")
+          }
         } else {
           bundleMapping.remove(mapping)
+          println("Garbage bundle binding")
         }
     }
   }

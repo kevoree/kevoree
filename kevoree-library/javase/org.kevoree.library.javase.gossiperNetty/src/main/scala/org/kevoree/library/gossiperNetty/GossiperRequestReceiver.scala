@@ -15,10 +15,10 @@ import org.jboss.netty.channel.socket.nio.NioDatagramChannelFactory
 import org.kevoree.extra.marshalling.RichJSONObject
 import org.kevoree.library.gossiperNetty.api.msg.KevoreeMessage.Message
 import org.jboss.netty.channel.socket.nio.NioServerSocketChannelFactory
-import org.kevoree.library.gossip.Gossip
 import scala.collection.JavaConversions._
 import org.jboss.netty.handler.codec.compression.{ZlibDecoder, ZlibEncoder, ZlibWrapper}
 import org.jboss.netty.handler.codec.protobuf.{ProtobufEncoder, ProtobufVarint32LengthFieldPrepender, ProtobufDecoder, ProtobufVarint32FrameDecoder}
+import version.Gossip
 
 class GossiperRequestReceiver(channelFragment: NettyGossipAbstractElement, dataManager: DataManager, port: Int, gossiperRequestSender: GossiperRequestSender, fullUDP: java.lang.Boolean, serializer: Serializer) extends actors.DaemonActor {
 

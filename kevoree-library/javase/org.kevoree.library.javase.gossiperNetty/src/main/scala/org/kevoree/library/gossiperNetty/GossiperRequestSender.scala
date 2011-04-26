@@ -12,19 +12,14 @@ import org.jboss.netty.channel.Channels
 import org.jboss.netty.channel.socket.DatagramChannel
 import org.jboss.netty.channel.socket.nio.NioDatagramChannelFactory
 import org.kevoree.extra.marshalling.RichString
-import org.kevoree.library.gossip.Gossip.UUIDDataRequest
-import org.kevoree.library.gossip.Gossip.VectorClockUUIDs
-import org.kevoree.library.gossip.Gossip.VectorClockUUIDsRequest
 import org.kevoree.library.gossiperNetty.api.msg.KevoreeMessage.Message
-import org.kevoree.library.version.Version.ClockEntry
-import org.kevoree.library.version.Version.VectorClock
-import org.kevoree.library.gossip.Gossip.VersionedModel
-import org.kevoree.library.gossiper.version.Occured
 
 import scala.collection.JavaConversions._
 import org.jboss.netty.handler.codec.compression.{ZlibDecoder, ZlibEncoder, ZlibWrapper}
 import org.jboss.netty.handler.codec.protobuf.{ProtobufEncoder, ProtobufVarint32LengthFieldPrepender, ProtobufDecoder, ProtobufVarint32FrameDecoder}
 import org.slf4j.LoggerFactory
+import version.Gossip.{VersionedModel, UUIDDataRequest, VectorClockUUIDs, VectorClockUUIDsRequest}
+import version.Version.{ClockEntry, VectorClock}
 
 class GossiperRequestSender(timeout: java.lang.Long, channelFragment: NettyGossipAbstractElement, dataManager: DataManager, fullUDP: java.lang.Boolean, garbage: Boolean, serializer: Serializer) extends actors.DaemonActor {
 

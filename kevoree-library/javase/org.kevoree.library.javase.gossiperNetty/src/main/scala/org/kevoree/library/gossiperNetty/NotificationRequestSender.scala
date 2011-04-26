@@ -8,11 +8,11 @@ import org.jboss.netty.channel.ChannelPipelineFactory
 import org.jboss.netty.channel.Channels
 import org.jboss.netty.channel.socket.DatagramChannel
 import org.jboss.netty.channel.socket.nio.NioDatagramChannelFactory
-import org.kevoree.library.gossip.Gossip.UpdatedValueNotification
 import org.kevoree.library.gossiperNetty.api.msg.KevoreeMessage.Message
 import scala.collection.JavaConversions._
 import org.jboss.netty.handler.codec.compression.{ZlibDecoder, ZlibEncoder, ZlibWrapper}
 import org.jboss.netty.handler.codec.protobuf.{ProtobufVarint32LengthFieldPrepender, ProtobufVarint32FrameDecoder, ProtobufDecoder, ProtobufEncoder}
+import version.Gossip.UpdatedValueNotification
 
 class NotificationRequestSender(channelFragment: NettyGossipAbstractElement) extends actors.DaemonActor {
 
