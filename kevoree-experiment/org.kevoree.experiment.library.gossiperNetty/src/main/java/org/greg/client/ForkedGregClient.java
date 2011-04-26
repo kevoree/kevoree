@@ -46,10 +46,10 @@ public class ForkedGregClient {
 
     public void stop() {
         if (pushMessages != null) {
-            pushMessages.destroy();
+            pushMessages.stop();
         }
         if (initCalibration != null) {
-            initCalibration.destroy();
+            initCalibration.stop();
         }
     }
 
