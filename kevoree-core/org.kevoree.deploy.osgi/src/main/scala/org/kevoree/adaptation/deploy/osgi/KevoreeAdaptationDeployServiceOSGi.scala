@@ -384,7 +384,7 @@ class KevoreeAdaptationDeployServiceOSGi extends KevoreeAdaptationDeployService 
 	def execute(commands: scala.collection.mutable.Map[String, List[PrimitiveCommand]]) = {
 		val initTime = System.currentTimeMillis
 
-		val phase = new KevoreeDeployPhase
+		val phase = new KevoreeDeployPhase(ctx)
 		var executionResult = true
 
 		if (executionResult) {

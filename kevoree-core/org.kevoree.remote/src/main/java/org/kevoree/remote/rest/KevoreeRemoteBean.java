@@ -36,12 +36,10 @@ public class KevoreeRemoteBean {
 
 		try {
 			String port_number = System.getProperty("node.port");
-		if (port_number == null) {
-			port_number = "8000";
-		}
 			Integer tmpPort = Integer.parseInt(port_number);
 			port = tmpPort;
-		} catch (NumberFormatException e) {}
+		} catch (NumberFormatException e) {
+		}
 
 		System.out.println("Kevoree Remote Port => " + port);
 
