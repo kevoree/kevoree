@@ -18,10 +18,12 @@
 
 package org.kevoree.adaptation.deploy.osgi
 
+import context.KevoreeDeployManager
 import org.kevoree.adaptation.deploy.osgi.command.PrimitiveCommand
 import org.slf4j.LoggerFactory
+import scala.Array._
 
-class KevoreeDeployPhase {
+class KevoreeDeployPhase(ctx : KevoreeDeployManager) {
 
   var logger = LoggerFactory.getLogger(this.getClass);
 
@@ -50,7 +52,12 @@ class KevoreeDeployPhase {
           try{
             c.getLastExecutionBundle match {
               case None => false
-              case Some(b) => b.start;true
+              case Some(b) => {
+              logger.info("Resolving bundle: " + b.getSymbolicName)
+              ctx.getServicePackageAdmin.resolveBundles(Array(b));
+              println("bundle resolved")
+              b.start;true
+              }
             }
           } catch {
             case _ @ e => logger.error("Kevoree START ERROR="+e);false
