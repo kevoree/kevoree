@@ -19,6 +19,7 @@ import scala.collection.JavaConversions._
 import org.jboss.netty.handler.codec.compression.{ZlibDecoder, ZlibEncoder, ZlibWrapper}
 import org.jboss.netty.handler.codec.protobuf.{ProtobufEncoder, ProtobufVarint32LengthFieldPrepender, ProtobufDecoder, ProtobufVarint32FrameDecoder}
 import version.Gossip
+import version.Gossip.{UpdatedValueNotification, UUIDDataRequest, VectorClockUUIDsRequest}
 
 class GossiperRequestReceiver(channelFragment: NettyGossipAbstractElement, dataManager: DataManager, port: Int, gossiperRequestSender: GossiperRequestSender, fullUDP: java.lang.Boolean, serializer: Serializer) extends actors.DaemonActor {
 
@@ -96,7 +97,7 @@ class GossiperRequestReceiver(channelFragment: NettyGossipAbstractElement, dataM
 		var responseBuilder: Message.Builder = Message.newBuilder.setDestName(channelFragment.getName).setDestNodeName(channelFragment.getNodeName)
 
 		message.getContentClass match {
-			case "org.kevoree.library.gossip.Gossip$VectorClockUUIDsRequest" => {
+			case s : String if(s == classOf[VectorClockUUIDsRequest].getName) => {
 				val uuidVectorClocks = dataManager.getUUIDVectorClocks
 				var vectorClockUUIDsBuilder = Gossip.VectorClockUUIDs.newBuilder
 				uuidVectorClocks.keySet.foreach {
@@ -112,7 +113,7 @@ class GossiperRequestReceiver(channelFragment: NettyGossipAbstractElement, dataM
 						}
 				}
 			}
-			/*case "org.kevoree.library.gossip.Gossip$UUIDVectorClockRequest" => {
+			/*case "org.kevoree.library.gossiperNetty.version.Gossip$UUIDVectorClockRequest" => {
 								 var uuidVectorClockRequest = Gossip.UUIDVectorClockRequest.parseFrom(message.getContent.asInstanceOf[ByteString])
 								 var vectorClock =dataManager.getUUIDVectorClock(UUID.fromString(uuidVectorClockRequest.getUuid))
 
@@ -121,7 +122,7 @@ class GossiperRequestReceiver(channelFragment: NettyGossipAbstractElement, dataM
 								 channel.write(responseBuilder.build, address);
 								 println("response of secondStep")
 								 }*/
-			case "org.kevoree.library.gossip.Gossip$UUIDDataRequest" => {
+			case s : String if(s == classOf[UUIDDataRequest].getName) => {
 				val uuidDataRequest = Gossip.UUIDDataRequest.parseFrom(message.getContent)
 				val data = dataManager.getData(UUID.fromString(uuidDataRequest.getUuid))
 				val modelBytes = ByteString.copyFrom(serializer.serialize(data._2))
@@ -130,7 +131,7 @@ class GossiperRequestReceiver(channelFragment: NettyGossipAbstractElement, dataM
 				responseBuilder.setContentClass(classOf[Gossip.VersionedModel].getName).setContent(modelBytes2)
 				channel.write(responseBuilder.build, address);
 			}
-			case "org.kevoree.library.gossip.Gossip$UpdatedValueNotification" => {
+			case s : String if(s == classOf[UpdatedValueNotification].getName) => {
 				gossiperRequestSender.initGossipAction(message.getDestNodeName)
 			}
 		}
