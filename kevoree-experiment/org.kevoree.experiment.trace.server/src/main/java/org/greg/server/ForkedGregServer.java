@@ -2,6 +2,7 @@ package org.greg.server;
 
 import org.apache.commons.math.MathException;
 import org.apache.commons.math.distribution.TDistributionImpl;
+import org.kevoree.experiment.trace.TraceMessages;
 
 import java.io.*;
 import java.net.ServerSocket;
@@ -13,7 +14,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.zip.GZIPInputStream;
 
 public class ForkedGregServer {
-  private static String get(String[] args, String arg, String def) {
+    private static String get(String[] args, String arg, String def) {
         for (int i = 0; i < args.length - 1; ++i) {
             if (args[i].equals("-" + arg))
                 return args[i + 1];
@@ -45,7 +46,7 @@ public class ForkedGregServer {
         conf.maxPendingUncalibrated = get(args, "maxPendingUncalibrated", 100000);
         conf.timeWindowSec = get(args, "timeWindowSec", 5);
 
-        if(Boolean.parseBoolean(get(args, "verbose", "false"))) {
+        if (Boolean.parseBoolean(get(args, "verbose", "false"))) {
             Trace.ENABLED = true;
         }
 
@@ -83,17 +84,26 @@ public class ForkedGregServer {
                             continue;
                         }
 
+                        //TraceMessages.Traces.Builder builder = TraceMessages.Traces.newBuilder();
+
                         for (Record rec : records) {
-                            os.write(rec.machine.array, rec.machine.offset, rec.machine.len);
-                            os.write(' ');
-                            os.write(rec.clientId.array, rec.clientId.offset, rec.clientId.len);
-                            os.write(' ');
-                            byte[] ts = rec.timestamp.toBytes();
-                            os.write(ts);
-                            os.write(' ');
-                            os.write(rec.message.array, rec.message.offset, rec.message.len);
+
+                            TraceMessages.Trace trace = TraceMessages.Trace.newBuilder()
+                                    .setMachine(new String(rec.machine.array, rec.machine.offset, rec.machine.len))
+                                    .setClientId(new String(rec.clientId.array, rec.clientId.offset, rec.clientId.len))
+                                    .setTimestamp(rec.timestamp.toUtcNanos())
+                                    .setBody(new String(rec.message.array, rec.message.offset, rec.message.len)).build();
+                           // builder.addTrace(trace);
+
+                            os.write(trace.toByteArray());
                             os.write(newline);
+
                         }
+
+                        //os.write(builder.build().toByteArray());
+                        //os.write("<tracesSeparator/>".getBytes("utf-8"));
+
+
                         os.flush();
                     }
                 } catch (Exception e) {
@@ -185,7 +195,7 @@ public class ForkedGregServer {
             clientRecords.putIfAbsent(uuid, new ConcurrentLinkedQueue<Record>());
             final Queue<Record> q = clientRecords.get(uuid);
 
-            final boolean[] skipping = new boolean[] {false};
+            final boolean[] skipping = new boolean[]{false};
             final int[] numRead = {0};
             final int[] numSkipped = {0};
 
@@ -198,7 +208,7 @@ public class ForkedGregServer {
                 public void consume(Record rec) {
                     numRead[0]++;
 
-                    if(lateness == null) {
+                    if (lateness == null) {
                         int numPending = numPendingUncalibratedEntries.incrementAndGet();
                         if (numPending < conf.maxPendingUncalibrated) {
                             uncalibrated.add(rec);
@@ -382,18 +392,18 @@ public class ForkedGregServer {
 
     private void flushCalibratedMessages() {
         Thread.currentThread().setPriority(7); // above normal
-        while(true) {
+        while (true) {
             List<Pair<PreciseDateTime, Record>> snapshot = new ArrayList<Pair<PreciseDateTime, Record>>(10000);
             for (Map.Entry<UUID, TimeSpan> p : clientLateness.entrySet()) {
                 UUID client = p.getKey();
                 TimeSpan lateness = p.getValue();
 
                 Queue<Record> q = clientRecords.get(client);
-                if(q != null) {
+                if (q != null) {
                     snapshot.clear();
-                    for(int i = 0; i < 10000; ++i) {
+                    for (int i = 0; i < 10000; ++i) {
                         Record r = q.poll();
-                        if(r == null) {
+                        if (r == null) {
                             break;
                         }
                         snapshot.add(absolutizeTime(r, lateness));

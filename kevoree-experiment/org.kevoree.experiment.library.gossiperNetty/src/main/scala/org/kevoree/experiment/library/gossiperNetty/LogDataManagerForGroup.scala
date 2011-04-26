@@ -11,11 +11,7 @@ class LogDataManagerForGroup(logClient : ForkedGregClient,nameInstance : scala.P
   override def mergeClock(uid: UUID, v: VectorClock): VectorClock = {
 		val result = (this !? MergeClock(uid, v)).asInstanceOf[VectorClock]
 
-    val message = new StringBuilder
-    result.getEntiesList.foreach{ clockEntry=>
-       message.append(clockEntry.getNodeID+":"+clockEntry.getVersion+",")
-    }
-    logClient.log(message.toString)
+    logClient.log(result.toByteString.toStringUtf8)
 
     result
 	}
