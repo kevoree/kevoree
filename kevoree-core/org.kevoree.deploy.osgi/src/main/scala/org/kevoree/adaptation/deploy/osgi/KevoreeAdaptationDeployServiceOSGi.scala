@@ -459,6 +459,7 @@ class KevoreeAdaptationDeployServiceOSGi extends KevoreeAdaptationDeployService 
 
 		if (!executionResult) {
 			phase.rollback
+      ctx.garbage()
 		}
 
 		val deployTime = System.currentTimeMillis

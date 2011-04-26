@@ -30,25 +30,35 @@ import org.kevoree.framework.annotation.processor.visitor.sub.LifeCycleMethodPro
 import org.kevoree.framework.annotation.processor.visitor.sub.ThirdPartyProcessor
 import org.kevoree.{GroupType}
 
-case class GroupTypeVisitor(groupType : GroupType,env : AnnotationProcessorEnvironment)
-extends SimpleDeclarationVisitor 
-   with DeployUnitProcessor
-   with DictionaryProcessor
-   with LibraryProcessor
-   with ThirdPartyProcessor
-   with LifeCycleMethodProcessor{
+case class GroupTypeVisitor(groupType: GroupType, env: AnnotationProcessorEnvironment)
+  extends SimpleDeclarationVisitor
+  with DeployUnitProcessor
+  with DictionaryProcessor
+  with LibraryProcessor
+  with ThirdPartyProcessor
+  with LifeCycleMethodProcessor {
 
-  override def visitClassDeclaration(classdef : ClassDeclaration) = {
+  override def visitClassDeclaration(classdef: ClassDeclaration) = {
+
+    if (classdef.getSuperclass != null) {
+      val annotFragment = classdef.getSuperclass.getDeclaration.getAnnotation(classOf[org.kevoree.annotation.GroupType])
+      if (annotFragment != null) {
+        classdef.getSuperclass.getDeclaration.accept(this)
+      }
+    }
+
     //SUB PROCESSOR
-    processDictionary(groupType,classdef)
-    processDeployUnit(groupType,classdef,env)
-    processLibrary(groupType,classdef)
-    processThirdParty(groupType,classdef,env)
-    classdef.getMethods().foreach{method => method.accept(this) }
+    processDictionary(groupType, classdef)
+    processDeployUnit(groupType, classdef, env)
+    processLibrary(groupType, classdef)
+    processThirdParty(groupType, classdef, env)
+    classdef.getMethods().foreach {
+      method => method.accept(this)
+    }
   }
 
-  override def visitMethodDeclaration(methoddef : MethodDeclaration) = {
-    processLifeCycleMethod(groupType,methoddef)
+  override def visitMethodDeclaration(methoddef: MethodDeclaration) = {
+    processLifeCycleMethod(groupType, methoddef)
   }
 
 }

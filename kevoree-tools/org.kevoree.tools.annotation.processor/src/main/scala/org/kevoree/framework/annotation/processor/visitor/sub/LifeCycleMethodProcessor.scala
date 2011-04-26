@@ -26,9 +26,9 @@ trait LifeCycleMethodProcessor {
 
       case lctd : LifeCycleTypeDefinition =>{
           /* STEP 1 : PROCESS START & STOP METHOD */
-          var startAnnot = methoddef.getAnnotation(classOf[org.kevoree.annotation.Start])
-          var stopAnnot = methoddef.getAnnotation(classOf[org.kevoree.annotation.Stop])
-          var updateAnnot = methoddef.getAnnotation(classOf[org.kevoree.annotation.Update])
+          val startAnnot = methoddef.getAnnotation(classOf[org.kevoree.annotation.Start])
+          val stopAnnot = methoddef.getAnnotation(classOf[org.kevoree.annotation.Stop])
+          val updateAnnot = methoddef.getAnnotation(classOf[org.kevoree.annotation.Update])
           if(startAnnot != null){ lctd.setStartMethod(methoddef.getSimpleName)}
           if(stopAnnot != null){ lctd.setStopMethod(methoddef.getSimpleName)}
           if(updateAnnot != null){ lctd.setUpdateMethod(methoddef.getSimpleName)}
