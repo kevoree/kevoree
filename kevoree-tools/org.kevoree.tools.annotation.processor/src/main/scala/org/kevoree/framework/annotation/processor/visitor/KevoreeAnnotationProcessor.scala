@@ -66,7 +66,7 @@ class KevoreeAnnotationProcessor(env: AnnotationProcessorEnvironment) extends An
 
 
     //POST APT PROCESS CHECKER
-    var checker: PostAptChecker = new PostAptChecker(root, env)
+    val checker: PostAptChecker = new PostAptChecker(root, env)
     val errorsInChecker = !checker.check
 
 
@@ -99,7 +99,7 @@ class KevoreeAnnotationProcessor(env: AnnotationProcessorEnvironment) extends An
       //RUN VISITOR
       typeDecl.accept(NodeTypeVisitor(nodeType, env))
     } else {
-      env.getMessager.printWarning("GroupType ignored " + typeDecl.getQualifiedName + " , reason=Must extend " + classOf[AbstractChannelFragment].getName)
+      env.getMessager.printWarning("NodeType ignored " + typeDecl.getQualifiedName + " , reason=Must extend " + classOf[AbstractNodeType].getName)
     }
   }
 
@@ -123,7 +123,7 @@ class KevoreeAnnotationProcessor(env: AnnotationProcessorEnvironment) extends An
       //RUN VISITOR
       typeDecl.accept(GroupTypeVisitor(groupType, env))
     } else {
-      env.getMessager.printWarning("GroupType ignored " + typeDecl.getQualifiedName + " , reason=Must extend " + classOf[AbstractChannelFragment].getName)
+      env.getMessager.printWarning("GroupType ignored " + typeDecl.getQualifiedName + " , reason=Must extend " + classOf[AbstractGroupType].getName)
     }
   }
 
@@ -135,7 +135,7 @@ class KevoreeAnnotationProcessor(env: AnnotationProcessorEnvironment) extends An
     typeDecl.accept(superTypeChecker)
     if (superTypeChecker.result) {
 
-      var channelType = KevoreeFactory.eINSTANCE.createChannelType();
+      val channelType = KevoreeFactory.eINSTANCE.createChannelType();
       var ctname = channelTypeAnnotation.name
       if (ctname.equals("empty")) {
         ctname = typeDecl.getSimpleName
@@ -173,7 +173,7 @@ class KevoreeAnnotationProcessor(env: AnnotationProcessorEnvironment) extends An
     }
 
     if (superTypeChecker.result && !isAbstract) {
-      var componentType = KevoreeFactory.eINSTANCE.createComponentType();
+      val componentType = KevoreeFactory.eINSTANCE.createComponentType();
       var ctname = componentTypeAnnotation.name
       if (ctname.equals("empty")) {
         ctname = typeDecl.getSimpleName

@@ -46,12 +46,12 @@ import org.slf4j.LoggerFactory;
 })
 public class NettyGossiperGroup extends AbstractGroupType implements NettyGossipAbstractElement {
 
-	private DataManager dataManager = null;//new DataManager();
-	private GossiperActor actor = null;
-	private ServiceReference sr;
-	private KevoreeModelHandlerService modelHandlerService = null;
-	private PeerSelector selector = null;
-	private Logger logger = LoggerFactory.getLogger(NettyGossiperChannel.class);
+	protected DataManager dataManager = null;//new DataManager();
+	protected GossiperActor actor = null;
+	protected ServiceReference sr;
+	protected KevoreeModelHandlerService modelHandlerService = null;
+	protected PeerSelector selector = null;
+	protected Logger logger = LoggerFactory.getLogger(NettyGossiperChannel.class);
 
 	@Start
 	public void startGossiperGroup() {

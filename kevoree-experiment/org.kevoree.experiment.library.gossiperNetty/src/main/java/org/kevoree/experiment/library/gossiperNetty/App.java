@@ -20,15 +20,12 @@ public class App {
 
         ForkedGregClient client = new ForkedGregClient(clientConfig);
 
-
-
-
-
-
         for(int i = 0 ; i < 20 ; i ++ ){
             client.log("hello "+i);
             Thread.sleep(2000);
         }
+
+        client.stop();
 
 
     }

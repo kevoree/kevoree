@@ -52,7 +52,7 @@ extends SimpleDeclarationVisitor
 
   override def visitClassDeclaration(classdef : ClassDeclaration) = {
     if(classdef.getSuperclass != null){
-      var annotFragment = classdef.getSuperclass.getDeclaration.getAnnotation(classOf[org.kevoree.annotation.ComponentFragment])
+      val annotFragment = classdef.getSuperclass.getDeclaration.getAnnotation(classOf[org.kevoree.annotation.ComponentFragment])
       if(annotFragment != null){
         classdef.getSuperclass.getDeclaration.accept(this)
       }
@@ -67,7 +67,7 @@ extends SimpleDeclarationVisitor
 
   def commonProcess(typeDecl : TypeDeclaration) = {
     typeDecl.getSuperinterfaces.foreach{it=>
-      var annotFragment = it.getDeclaration.getAnnotation(classOf[org.kevoree.annotation.ComponentFragment])
+      val annotFragment = it.getDeclaration.getAnnotation(classOf[org.kevoree.annotation.ComponentFragment])
       it.getDeclaration.accept(this)
     }
     processLibrary(componentType,typeDecl)

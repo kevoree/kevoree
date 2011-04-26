@@ -21,38 +21,67 @@ package org.kevoree.adaptation.deploy.osgi.context
 import org.kevoree.api.service.adaptation.deploy.KevoreeAdaptationDeployService
 import org.kevoree.api.service.core.handler.KevoreeModelHandlerService
 import org.osgi.framework.Bundle;
-import org.osgi.framework.BundleContext;import org.osgi.service.packageadmin.PackageAdmin
+import org.osgi.framework.BundleContext;
+import org.osgi.service.packageadmin.PackageAdmin
 import org.osgi.util.tracker.ServiceTracker
+import scala.collection.JavaConversions._
 
 
 class KevoreeDeployManager {
 
-  var bundle : Bundle = null
-  def setBundle(b : Bundle)  = { bundle = b }
-  var bundleContext : BundleContext = null;
-  def setBundleContext(bc : BundleContext) = bundleContext = bc
+  /*
+    Garbage unsed mapping
+  */
+  def garbage(): Unit = {
+    val l = List() ++ bundleMapping.toList
+    l.foreach {
+      mapping =>
+        if (bundle != null) {
+           if(bundle.getState == Bundle.UNINSTALLED){
+              bundleMapping.remove(mapping)
+           }
+        } else {
+          bundleMapping.remove(mapping)
+        }
+    }
+  }
+
+  var bundle: Bundle = null
+
+  def setBundle(b: Bundle) = {
+    bundle = b
+  }
+
+  var bundleContext: BundleContext = null;
+
+  def setBundleContext(bc: BundleContext) = bundleContext = bc
+
   //var bundleContainer : BlueprintContainer = null;
   // def setBundleContainer(bc : BlueprintContainer) = bundleContainer = bc
   // var modelHandler : KevoreeModelHandlerService = null;
-//  def setModelHandler(mh : KevoreeModelHandlerService) = modelHandler = mh
+  //  def setModelHandler(mh : KevoreeModelHandlerService) = modelHandler = mh
 
-  var bundleMapping : java.util.List[KevoreeOSGiBundle] = new java.util.ArrayList[KevoreeOSGiBundle]();
+  var bundleMapping: java.util.List[KevoreeOSGiBundle] = new java.util.ArrayList[KevoreeOSGiBundle]();
 
-  def setModelHandlerServiceTracker(st : ServiceTracker) = modelHandlerServiceTracker = st
-  private var modelHandlerServiceTracker : ServiceTracker = null
-  def getServiceHandler : KevoreeModelHandlerService = modelHandlerServiceTracker.getService.asInstanceOf[KevoreeModelHandlerService]
+  def setModelHandlerServiceTracker(st: ServiceTracker) = modelHandlerServiceTracker = st
 
-  def setPackageAdminServiceTracker(st : ServiceTracker) = packageAdminServiceTracker = st
-  private var packageAdminServiceTracker : ServiceTracker = null
-  var servicePackageAdmin : Option[PackageAdmin] = null
-  def setServicePackageAdmin(pa:PackageAdmin)= servicePackageAdmin = Some(pa)
-  def getServicePackageAdmin : PackageAdmin = {
-    servicePackageAdmin.getOrElse{
-      servicePackageAdmin = Some(packageAdminServiceTracker.getService.asInstanceOf[PackageAdmin] )
-      packageAdminServiceTracker.getService.asInstanceOf[PackageAdmin] 
+  private var modelHandlerServiceTracker: ServiceTracker = null
+
+  def getServiceHandler: KevoreeModelHandlerService = modelHandlerServiceTracker.getService.asInstanceOf[KevoreeModelHandlerService]
+
+  def setPackageAdminServiceTracker(st: ServiceTracker) = packageAdminServiceTracker = st
+
+  private var packageAdminServiceTracker: ServiceTracker = null
+  var servicePackageAdmin: Option[PackageAdmin] = null
+
+  def setServicePackageAdmin(pa: PackageAdmin) = servicePackageAdmin = Some(pa)
+
+  def getServicePackageAdmin: PackageAdmin = {
+    servicePackageAdmin.getOrElse {
+      servicePackageAdmin = Some(packageAdminServiceTracker.getService.asInstanceOf[PackageAdmin])
+      packageAdminServiceTracker.getService.asInstanceOf[PackageAdmin]
     }
-  } 
-
+  }
 
 
 }
