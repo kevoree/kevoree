@@ -44,7 +44,7 @@ public class NettyGossiperChannel extends AbstractChannelFragment implements Net
 
         long timeout = Long.parseLong((String) this.getDictionary().get("interval"));
 
-        dataManager = new org.kevoree.library.gossiperNetty.DataManagerForChannel();
+        dataManager = new DataManagerForChannel();
         serializer = new ChannelSerializer();
         selector = new ChannelPeerSelector(timeout, this);
 

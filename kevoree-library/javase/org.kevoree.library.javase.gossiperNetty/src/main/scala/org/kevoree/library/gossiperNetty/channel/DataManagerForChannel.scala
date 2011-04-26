@@ -1,11 +1,12 @@
-package org.kevoree.library.gossiperNetty
+package org.kevoree.library.gossiperNetty.channel
 
 import java.util.HashMap
 import java.util.UUID
 import org.kevoree.framework.message.Message
 import org.slf4j.LoggerFactory
 import scala.collection.JavaConversions._
-import version.Version.{ClockEntry, VectorClock}
+import org.kevoree.library.gossiperNetty.DataManager
+import org.kevoree.library.gossiperNetty.version.Version.{ClockEntry, VectorClock}
 
 class DataManagerForChannel extends DataManager with actors.DaemonActor  {
   
