@@ -8,5 +8,33 @@
     <artifactId>org.kevoree.experiment.trace.gui</artifactId>
     <version>1.0</version>
 
-    
+    <dependencies>
+        <dependency>
+            <groupId>jfreechart</groupId>
+            <artifactId>jfreechart</artifactId>
+            <version>1.0.13</version>
+            <scope>system</scope>
+            <systemPath>${basedir}/src/main/resources/jfreechart-1.0.13.jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>jfreechart</groupId>
+            <artifactId>jcommon</artifactId>
+            <version>1.0.16</version>
+            <scope>system</scope>
+            <systemPath>${basedir}/src/main/resources/jcommon-1.0.16.jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>jfreechart</groupId>
+            <artifactId>jcommon</artifactId>
+            <version>1.0.16</version>
+            <scope>system</scope>
+            <systemPath>${basedir}/src/main/resources/jcommon-1.0.16.jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>org.kevoree.experiment</groupId>
+            <artifactId>org.kevoree.experiment.trace.server</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+    </dependencies>
+
 </project>
