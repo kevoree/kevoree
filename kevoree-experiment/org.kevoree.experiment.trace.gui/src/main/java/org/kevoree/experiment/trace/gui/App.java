@@ -20,7 +20,7 @@ public class App {
 		traceBuilder.setMachine("localhost");
 		traceBuilder.setClientId("duke");
 		traceBuilder.setTimestamp(System.currentTimeMillis() - 10000);
-		traceBuilder.setBody("ma vectorClock");
+		traceBuilder.setBody("ma vectorClock0");
 
 		tracesBuilder.addTrace(traceBuilder.build());
 
@@ -28,7 +28,7 @@ public class App {
 		traceBuilder.setMachine("localhost");
 		traceBuilder.setClientId("duke2");
 		traceBuilder.setTimestamp(System.currentTimeMillis());
-		traceBuilder.setBody("ma vectorClock");
+		traceBuilder.setBody("ma vectorClock1");
 
 		tracesBuilder.addTrace(traceBuilder.build());
 
@@ -36,7 +36,7 @@ public class App {
 		traceBuilder.setMachine("localhost");
 		traceBuilder.setClientId("duke2");
 		traceBuilder.setTimestamp(System.currentTimeMillis() - 5000);
-		traceBuilder.setBody("ma vectorClock");
+		traceBuilder.setBody("ma vectorClock2");
 
 		tracesBuilder.addTrace(traceBuilder.build());
 
