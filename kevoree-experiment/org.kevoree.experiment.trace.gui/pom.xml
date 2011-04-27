@@ -10,17 +10,6 @@
     <name>Kevoree :: Experiment :: Trace :: GUI</name>
 
     <dependencies>
-
-        <dependency>
-            <groupId>org.kevoree.experiment</groupId>
-            <artifactId>org.kevoree.experiment.trace.server</artifactId>
-            <version>1.0.0</version>
-        </dependency>
-
-    </dependencies>
-
-<<<<<<< HEAD
-    <dependencies>
         <dependency>
             <groupId>jfreechart</groupId>
             <artifactId>jfreechart</artifactId>
@@ -36,19 +25,9 @@
             <systemPath>${basedir}/src/main/resources/jcommon-1.0.16.jar</systemPath>
         </dependency>
         <dependency>
-            <groupId>jfreechart</groupId>
-            <artifactId>jcommon</artifactId>
-            <version>1.0.16</version>
-            <scope>system</scope>
-            <systemPath>${basedir}/src/main/resources/jcommon-1.0.16.jar</systemPath>
-        </dependency>
-        <dependency>
             <groupId>org.kevoree.experiment</groupId>
             <artifactId>org.kevoree.experiment.trace.server</artifactId>
             <version>1.0.0</version>
         </dependency>
     </dependencies>
-
-=======
->>>>>>> origin/master
 </project>
