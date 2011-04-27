@@ -16,6 +16,12 @@
             <artifactId>org.kevoree.experiment.trace.server</artifactId>
             <version>1.0.0</version>
         </dependency>
+        <dependency>
+            <groupId>org.kevoree.experiment</groupId>
+            <artifactId>org.kevoree.experiment.library.gossiperNetty</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+
 
     </dependencies>
 

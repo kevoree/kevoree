@@ -2,7 +2,8 @@ package org.kevoree.experiment.trace.gui;
 
 import org.kevoree.experiment.trace.TraceMessages;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.InputStream;
 
 public class AppSample {
 
@@ -10,44 +11,26 @@ public class AppSample {
 
         InputStream input = AppSample.class.getClassLoader().getResourceAsStream("./trace_out");
 
-            TraceMessages.Traces traces = TraceMessages.Traces.parseFrom(input);
-
-            System.out.println(traces.getTraceCount());
+        TraceMessages.Traces traces = TraceMessages.Traces.parseFrom(input);
 
 
+        for (TraceMessages.Trace trace : traces.getTraceList()) {
 
-     //
+            //UNSERIALIZE VECTOR CLOCK
 
-
-    }
-
-
-    public static String convertStreamToString(InputStream is)
-            throws IOException {
-        /*
-         * To convert the InputStream to String we use the
-         * Reader.read(char[] buffer) method. We iterate until the
-         * Reader return -1 which means there's no more data to
-         * read. We use the StringWriter class to produce the string.
-         */
-        if (is != null) {
-            Writer writer = new StringWriter();
-
-            char[] buffer = new char[1024];
-            try {
-                Reader reader = new BufferedReader(
-                        new InputStreamReader(is, "UTF-8"));
-                int n;
-                while ((n = reader.read(buffer)) != -1) {
-                    writer.write(buffer, 0, n);
+            String[] clockEntries = trace.getBody().split(",");
+            for (int i = 0; i < clockEntries.length; i++) {
+                String[] values = clockEntries[i].split(":");
+                if (values.length >= 2) {
+                    System.out.println(values[0] + "=>" + values[1]);
                 }
-            } finally {
-                is.close();
             }
-            return writer.toString();
-        } else {
-            return "";
         }
+
+
+        //
+
+
     }
 
 
