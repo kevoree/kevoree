@@ -4,10 +4,22 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>org.kevoree.experiment.trace.gui</groupId>
+    <groupId>org.kevoree.experiment</groupId>
     <artifactId>org.kevoree.experiment.trace.gui</artifactId>
     <version>1.0</version>
+    <name>Kevoree :: Experiment :: Trace :: GUI</name>
 
+    <dependencies>
+
+        <dependency>
+            <groupId>org.kevoree.experiment</groupId>
+            <artifactId>org.kevoree.experiment.trace.server</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+
+    </dependencies>
+
+<<<<<<< HEAD
     <dependencies>
         <dependency>
             <groupId>jfreechart</groupId>
@@ -37,4 +49,6 @@
         </dependency>
     </dependencies>
 
+=======
+>>>>>>> origin/master
 </project>
