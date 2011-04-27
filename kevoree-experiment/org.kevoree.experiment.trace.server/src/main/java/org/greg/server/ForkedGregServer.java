@@ -84,8 +84,7 @@ public class ForkedGregServer {
                             continue;
                         }
 
-                        //TraceMessages.Traces.Builder builder = TraceMessages.Traces.newBuilder();
-
+                        TraceMessages.Traces.Builder builder = TraceMessages.Traces.newBuilder();
                         for (Record rec : records) {
 
                             TraceMessages.Trace trace = TraceMessages.Trace.newBuilder()
@@ -93,16 +92,15 @@ public class ForkedGregServer {
                                     .setClientId(new String(rec.clientId.array, rec.clientId.offset, rec.clientId.len))
                                     .setTimestamp(rec.timestamp.toUtcNanos())
                                     .setBody(new String(rec.message.array, rec.message.offset, rec.message.len)).build();
-                           // builder.addTrace(trace);
+                            builder.addTrace(trace);
 
-                            os.write(trace.toByteArray());
-                            os.write(newline);
+                           // os.write(trace.toByteArray());
+                            //os.write("<tracesSeparator/>".getBytes("utf-8"));
+                            //os.write(newline);
 
                         }
-
-                        //os.write(builder.build().toByteArray());
-                        //os.write("<tracesSeparator/>".getBytes("utf-8"));
-
+                         System.out.println("write "+records.size()+" traces");
+                        os.write(builder.build().toByteArray());
 
                         os.flush();
                     }
