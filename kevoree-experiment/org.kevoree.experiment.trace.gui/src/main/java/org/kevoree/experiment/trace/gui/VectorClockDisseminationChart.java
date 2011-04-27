@@ -12,6 +12,8 @@ import org.jfree.data.category.DefaultCategoryDataset;
 import org.kevoree.experiment.trace.TraceMessages;
 
 import java.io.*;
+import java.text.DateFormat;
+import java.text.ParseException;
 import java.util.*;
 
 /**
@@ -71,8 +73,22 @@ public class VectorClockDisseminationChart {
 		DefaultCategoryDataset defaultcategorydataset = new DefaultCategoryDataset();
 		// TODO
 		for (int i = 0; i < nodeIds.size(); i++) {
+			long firstTime = 0;
+			try {
+				firstTime = Long.parseLong(timeRepresentations.iterator().next());
+			} catch (NumberFormatException e) {
+				e.printStackTrace(); // TODO must not appears
+			}
 			for (String time : timeRepresentations) {
-				if (vectorClockUpdates.get(nodeIds.get(i)).contains(time)) {
+				String oldTimeRepresentation = time;
+				try {
+					Calendar calendar = Calendar.getInstance();
+					calendar.setTimeInMillis(Long.parseLong(time) - firstTime);
+					time = "" + calendar.get(Calendar.MINUTE) + ":" + calendar.get(Calendar.SECOND);
+				} catch (NumberFormatException e) {
+					e.printStackTrace(); // TODO must not appears
+				}
+				if (vectorClockUpdates.get(nodeIds.get(i)).contains(oldTimeRepresentation)) {
 					defaultcategorydataset.addValue(i, nodeIds.get(i), time);
 				} else {
 					defaultcategorydataset.addValue(null, nodeIds.get(i), time);
