@@ -25,44 +25,50 @@ trait KevsInstParser extends KevsAbstractParser with KevsPropertiesParser {
   def parseInst : Parser[List[Statment]] = ( parseAddChannel | parseAddComponent | parseRemoveChannel | parseRemoveComponent | parseAddGroup | parseRemoveGroup | parseMoveComponent  )
 
   //CHANNEL
-  def parseAddChannel : Parser[List[Statment]] = "addChannel" ~ ident ~ ":" ~ ident ~ opt(parseProperties) ^^{ case _ ~ channelName ~ _ ~ channelTypeName ~ oprops =>
+  val addChannelCommandFormat = "addChannel <ChannelInstanceName> : <ChannelTypeName> [{ key = \"value\" (, key = \"value\") }]"
+  def parseAddChannel : Parser[List[Statment]] = "addChannel" ~ orFailure(ident,addChannelCommandFormat) ~ orFailure(":",addChannelCommandFormat) ~ orFailure(ident,addChannelCommandFormat) ~ opt(parseProperties) ^^{ case _ ~ channelName ~ _ ~ channelTypeName ~ oprops =>
       oprops match {
         case None => List(AddChannelInstanceStatment(channelName,channelTypeName,new java.util.Properties))
         case Some(props)=>List(AddChannelInstanceStatment(channelName,channelTypeName,props))
       }
   }
-  def parseRemoveChannel : Parser[List[Statment]] = "removeChannel" ~ ident ^^{ case _ ~ channelName =>
+  val removeChannelCommandFormat = "removeChannel <ChannelInstanceName>"
+  def parseRemoveChannel : Parser[List[Statment]] = "removeChannel" ~ orFailure(ident,removeChannelCommandFormat) ^^{ case _ ~ channelName =>
       List(RemoveChannelInstanceStatment(channelName))
   }
 
   //COMPONENT
 
-  val expectCommand = "addComponent <ComponentInstanceName> [@<nodeName>] :<ComponentTypeName>"
-  def orFailure[A](a:Parser[A],msg:String) : Parser[A] = ( a | failure(msg) )
-
-  def parseAddComponent : Parser[List[Statment]] = "addComponent" ~ orFailure(componentID,expectCommand) ~ orFailure(":",expectCommand) ~ ident ~ opt(parseProperties) ^^{ case _ ~ cid ~ _ ~ typeid ~ oprops  =>
+  val addComponentCommandFormat = "addComponent <ComponentInstanceName> [@<nodeName>] : <ComponentTypeName> [{ key = \"value\" (, key = \"value\") }]"
+  def parseAddComponent : Parser[List[Statment]] = "addComponent" ~ orFailure(componentID,addComponentCommandFormat) ~ orFailure(":",addComponentCommandFormat) ~ orFailure(ident,addComponentCommandFormat) ~ opt(parseProperties) ^^{ case _ ~ cid ~ _ ~ typeid ~ oprops  =>
       oprops match {
         case None => List(AddComponentInstanceStatment(cid,typeid,new java.util.Properties))
         case Some(props)=>List(AddComponentInstanceStatment(cid,typeid,props))
       }
   }
-  def parseRemoveComponent : Parser[List[Statment]] = "removeComponent" ~ componentID  ^^{ case _ ~ cid  =>
+
+  val removeComponentCommandFormat = "removeComponent <ComponentInstanceName>"
+  def parseRemoveComponent : Parser[List[Statment]] = "removeComponent" ~ orFailure(componentID,removeComponentCommandFormat)  ^^{ case _ ~ cid  =>
       List(RemoveComponentInstanceStatment(cid))
   }
 
-  def parseMoveComponent : Parser[List[Statment]] = "moveComponent" ~ componentID ~ "=>" ~ ident  ^^{ case _ ~ cid ~ _ ~ targetNodeId  =>
+  val moveComponentCommandFormat = "moveComponent <ComponentInstanceName> => <NodeName>"
+  def parseMoveComponent : Parser[List[Statment]] = "moveComponent" ~ orFailure(componentID,moveComponentCommandFormat) ~ orFailure("=>",moveComponentCommandFormat) ~ orFailure(ident,moveComponentCommandFormat)  ^^{ case _ ~ cid ~ _ ~ targetNodeId  =>
       List(MoveComponentInstanceStatment(cid,targetNodeId))
   }
 
 
   //GROUP
-  def parseAddGroup : Parser[List[Statment]] = "addGroup" ~ ident ~ ":" ~ ident ~ opt(parseProperties) ^^{ case _ ~ groupName ~ _ ~ groupTypeName ~ oprops =>
+  val addGroupCommandFormat = "addGroup <GroupName> : <GroupTypeName> [{ key = \"value\" (, key = \"value\") }]"
+  def parseAddGroup : Parser[List[Statment]] = "addGroup" ~ orFailure(ident,addGroupCommandFormat) ~ orFailure(":",addGroupCommandFormat) ~ orFailure(ident,addGroupCommandFormat) ~ opt(parseProperties) ^^{ case _ ~ groupName ~ _ ~ groupTypeName ~ oprops =>
       oprops match {
         case None => List(AddGroupStatment(groupName,groupTypeName,new java.util.Properties))
         case Some(props)=>List(AddGroupStatment(groupName,groupTypeName,props))
       }
   }
-  def parseRemoveGroup : Parser[List[Statment]] = "removeGroup" ~ ident ^^{ case _ ~ groupName =>
+
+  val removeGroupCommandFormat = "removeGroup <GroupName>"
+  def parseRemoveGroup : Parser[List[Statment]] = "removeGroup" ~ orFailure(ident,removeGroupCommandFormat) ^^{ case _ ~ groupName =>
       List(RemoveGroupStatment(groupName))
   }
 

@@ -48,7 +48,8 @@ trait KevsAbstractParser extends TokenParsers {
   def ident: Parser[String] =
     elem("identifier", _.isInstanceOf[Identifier]) ^^ (_.chars)
 
-
+  //Error handling
+  def orFailure[A](a:Parser[A],msg:String) : Parser[A] = ( a | failure(msg) )
   
 
 

@@ -25,7 +25,8 @@ import org.kevoree.tools.marShell.ast.Statment
 trait KevsNodeParser extends KevsAbstractParser with KevsPropertiesParser {
 
   //example : addNode node1,node2 : JavaSENode
-  def parseAddNode : Parser[List[Statment]] = "addNode" ~ rep1sep(ident,",") ~ ":" ~ ident ~ opt(parseProperties) ^^{ case _ ~ nodeIDs ~ _ ~ nodeTypeName ~ oprops =>
+  val addNodeCommandFormat = "addNode <nodeName> [ , <nodeName> ] : <NodeType>  [{ key = \"value\" (, key = \"value\") }]"
+  def parseAddNode : Parser[List[Statment]] = "addNode" ~ orFailure(rep1sep(ident,","),addNodeCommandFormat) ~ orFailure(":",addNodeCommandFormat) ~ orFailure(ident,addNodeCommandFormat) ~ opt(parseProperties) ^^{ case _ ~ nodeIDs ~ _ ~ nodeTypeName ~ oprops =>
       var props = oprops.getOrElse{new java.util.Properties}
       var res : List[Statment] = List()
       nodeIDs.foreach{nodeID=>
@@ -35,7 +36,8 @@ trait KevsNodeParser extends KevsAbstractParser with KevsPropertiesParser {
   }
 
   //example : removeNode node1,node2
-  def parseRemoveNode : Parser[List[Statment]] = "removeNode" ~ rep1sep(ident,",") ^^{ case _ ~ nodeIDs =>
+  val removeNodeCommandFormat = "removeNode <nodeName>"
+  def parseRemoveNode : Parser[List[Statment]] = "removeNode" ~ orFailure(rep1sep(ident,","),removeNodeCommandFormat) ^^{ case _ ~ nodeIDs =>
       var res : List[Statment] = List()
       nodeIDs.foreach{nodeID=>
         res = res ++ List(RemoveNodeStatment(nodeID))
