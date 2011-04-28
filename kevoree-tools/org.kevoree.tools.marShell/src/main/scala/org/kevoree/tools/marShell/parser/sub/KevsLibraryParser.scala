@@ -17,7 +17,8 @@ import org.kevoree.tools.marShell.ast.{RemoveLibraryStatment, AddLibraryStatment
 
 trait KevsLibraryParser extends KevsAbstractParser {
 
-  def parseAddLibrary : Parser[List[Statment]] = "addLibrary" ~ repsep(ident,",") ^^{ case _ ~ libIDS =>
+  val addLibraryCommandFormat = "addLibrary <LibraryName>"
+  def parseAddLibrary : Parser[List[Statment]] = "addLibrary" ~ orFailure(repsep(ident,","),addLibraryCommandFormat) ^^{ case _ ~ libIDS =>
       var res : List[Statment] = List()
       libIDS.foreach{libID=>
         res = res ++ List(AddLibraryStatment(libID))
@@ -25,7 +26,8 @@ trait KevsLibraryParser extends KevsAbstractParser {
       res
   }
 
-  def parseRemoveLibrary : Parser[List[Statment]] = "removeLibrary" ~ repsep(ident,",") ^^{ case _ ~ libIDS =>
+  val removeLibraryCommandFormat = "removeLibrary <LibraryName>"
+  def parseRemoveLibrary : Parser[List[Statment]] = "removeLibrary" ~ orFailure(repsep(ident,","),removeLibraryCommandFormat) ^^{ case _ ~ libIDS =>
       var res : List[Statment] = List()
       libIDS.foreach{libID=>
         res = res ++ List(RemoveLibraryStatment(libID))
