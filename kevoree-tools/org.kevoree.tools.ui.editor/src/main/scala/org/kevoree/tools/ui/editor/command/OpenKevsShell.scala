@@ -34,6 +34,7 @@ class OpenKevsShell extends Command {
 
   private var current: KevsEditorFrame = null;
   var kernel: KevoreeUIKernel = null
+  private var lastSaveFile : File = null
 
   def setKernel(k: KevoreeUIKernel) = kernel = k
 
@@ -47,43 +48,47 @@ class OpenKevsShell extends Command {
         override def mouseClicked(p1: MouseEvent) = {
           //Save Script
 
-          val fileChooser = new JFileChooser
+          varl fileChooser = new JFileChooser
           fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY)
           fileChooser.setMultiSelectionEnabled(false)
-          fileChooser.setAcceptAllFileFilterUsed(true)
-          fileChooser.setFileHidingEnabled(true)
+
+          //Uncomment to show files/folders starting with a '.'
+          //fileChooser.setFileHidingEnabled(false)
           fileChooser.addChoosableFileFilter(new FileFilter() {
 
               override def getDescription() : String = "KevScript Files"
 
               override def accept(f : File) : Boolean = {
-                if (f.isDirectory()) {
-                  return false;
-                }
+                if(f.isDirectory)
+                  return true
 
                 val extension = f.getName.substring(f.getName.lastIndexOf(".")+1)
                 if (extension != null) {
+
                   if (extension.equals("kevs")) {
                     return true;
-                  } else {
-                    return false;
                   }
                 }
 
-                return false;
+                return false
               }
             })
+          if(lastSaveFile != null) {
+            fileChooser.setSelectedFile(lastSaveFile)
+          }
+
           var result = fileChooser.showSaveDialog(kevsPanel);
           if(result == JFileChooser.APPROVE_OPTION) {
-            var destFile = fileChooser.getSelectedFile
+            val destFile = fileChooser.getSelectedFile
             if( !destFile.exists) {
               destFile.createNewFile
             }
 
-            var pr = new PrintWriter(new FileOutputStream(destFile))
+            val pr = new PrintWriter(new FileOutputStream(destFile))
             pr.append(kevsPanel.codeEditor.getText)
             pr.flush
             pr.close
+            lastSaveFile = destFile
           }
 
         }
@@ -97,15 +102,13 @@ class OpenKevsShell extends Command {
           val fileChooser = new JFileChooser
           fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY)
           fileChooser.setMultiSelectionEnabled(false)
-          fileChooser.setAcceptAllFileFilterUsed(true)
-          fileChooser.setFileHidingEnabled(true)
           fileChooser.addChoosableFileFilter(new FileFilter() {
               
               override def getDescription() : String = "KevScript Files"
 
               override def accept(f : File) : Boolean = {
                 if (f.isDirectory()) {
-                  return false;
+                  return true;
                 }
 
                 val extension = f.getName.substring(f.getName.lastIndexOf(".")+1)
