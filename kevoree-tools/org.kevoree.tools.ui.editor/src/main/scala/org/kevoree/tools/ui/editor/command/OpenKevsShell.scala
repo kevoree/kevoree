@@ -48,7 +48,7 @@ class OpenKevsShell extends Command {
         override def mouseClicked(p1: MouseEvent) = {
           //Save Script
 
-          varl fileChooser = new JFileChooser
+          val fileChooser = new JFileChooser
           fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY)
           fileChooser.setMultiSelectionEnabled(false)
 
