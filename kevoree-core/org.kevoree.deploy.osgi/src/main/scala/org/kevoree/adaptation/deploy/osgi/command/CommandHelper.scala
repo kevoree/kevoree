@@ -32,12 +32,21 @@ object CommandHelper {
   def buildAllQuery(du: DeployUnit): List[String] = {
     var res: List[String] = List()
     val root = du.eContainer.asInstanceOf[ContainerRoot]
+
+    //add First the repo where the artifact have been deployed
     root.getRepositories.foreach {
       repo =>
         if (repo.getUnits.exists(p => p == du)) {
           res = res ++ List(buildQuery(du, Some(repo.getUrl)))
         }
     }
+
+    //Add other available repos
+    root.getRepositories.foreach {
+      repo =>
+        res = res ++ List(buildQuery(du,Some(repo.getUrl)))
+    }
+
     root.getNodes.foreach {
       node =>
         res = res ++ List(buildQuery(du, Some(buildURL(root, node.getName))))

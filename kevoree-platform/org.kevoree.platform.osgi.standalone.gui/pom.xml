@@ -125,6 +125,32 @@
         </dependency>
     </dependencies>
 
+    <profiles>
+        <profile>
+            <id>org.kevoree.tools.ui.editor.standalone.mac</id>
+            <activation>
+                <os>
+                    <family>mac</family>
+                </os>
+            </activation>
+            <properties>
+                <java.lib.location>&lt;java.home&gt;/../Classes/classes.jar</java.lib.location>
+            </properties>
+        </profile>
+        <profile>
+            <id>org.kevoree.tools.ui.editor.standalone.other</id>
+            <activation>
+                <os>
+                    <family>!mac</family>
+                </os>
+            </activation>
+            <properties>
+                <java.lib.location>${java.home}/lib/rt.jar</java.lib.location>
+            </properties>
+        </profile>
+    </profiles>
+
+
     <build>
         <plugins>
 
@@ -458,7 +484,7 @@
                         </inclusions>
                     </assembly>
                     <libs>
-                        <lib>${java.home}/lib/rt.jar</lib>
+                        <lib>${java.lib.location}</lib>
                     </libs>
                 </configuration>
             </plugin>

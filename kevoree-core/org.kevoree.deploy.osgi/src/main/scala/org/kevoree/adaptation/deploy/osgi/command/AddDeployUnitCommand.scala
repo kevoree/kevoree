@@ -34,7 +34,15 @@ case class AddDeployUnitCommand(deployUnit: DeployUnit, ctx: KevoreeDeployManage
   def execute(): Boolean = {
     logger.info("CMD ADD DEPLOY UNIT EXECUTION ");
 
-    CommandHelper.buildAllQuery(deployUnit).exists {
+    var urls = CommandHelper.buildAllQuery(deployUnit)
+
+    //DEBUG
+    urls.foreach({
+		u =>
+        logger.debug("potential url=" + u)
+	  })
+
+      urls.exists {
       query =>
         try {
           logger.info("Try to install from URI, " + query)
