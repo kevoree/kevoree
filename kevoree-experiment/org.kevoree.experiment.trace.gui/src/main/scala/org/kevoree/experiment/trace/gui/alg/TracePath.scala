@@ -38,15 +38,15 @@ object TracePath {
   /* Build recursively successor for trace en precise nodeID & Version  */
   protected def buildLinkedFor(traces: List[Trace], trace: Trace, nodeID: String, version: Int): LinkedTrace = {
     val successors = lookForSuccessor(traces, nodeID, version, List())
-    var result = LinkedTrace(trace, List())
+    
+    println(nodeID+"-"+successors.size)
+    
+    var result = LinkedTrace(trace, List()) 
     successors.foreach {
-      suc =>
-      println("suc for = "+nodeID+"-"+suc)
-      val optimizedTraces = traces.slice(traces.indexOf(trace), traces.indexOf(traces.last))
-      println("slicedSize "+optimizedTraces.size)
+      suc => 
+      var optimizedTraces = traces.slice(traces.indexOf(suc._2), traces.indexOf(traces.last))
       val linkedSuccessor = buildLinkedFor(optimizedTraces, suc._2, suc._1._1, suc._1._2)
       result = LinkedTrace(trace, result.sucessors ++ List(buildLinkedFor(optimizedTraces, suc._2, suc._1._1, suc._1._2)))
-      println(result.sucessors.size+"-"+linkedSuccessor)
     }
     result
   }
@@ -63,13 +63,13 @@ object TracePath {
     var foundDirectSuccessors2 = foundDirectSuccessors
     if (containPrevious && notContainPrevious ) {
       
-      println("solfound="+traces.head)
+      //println("solfound="+traces.head)
       foundDirectSuccessors2 = foundDirectSuccessors2 ++ List((traces.head.getClientId, headVector.versionForNode(traces.head.getClientId).get))
       lvalue = List(((traces.head.getClientId, headVector.versionForNode(traces.head.getClientId).get), traces.head))
     }
  
     if (!traces.tail.isEmpty) {
-      println(traces.tail.size)
+      //println(traces.tail.size)
       lvalue ++ lookForSuccessor(traces.tail, nodeID, version, foundDirectSuccessors2)
     } else {
       lvalue
