@@ -42,7 +42,7 @@ object TracePath {
     println(nodeID+"-"+successors.size)
     
     var result = LinkedTrace(trace, List()) 
-    successors.foreach {
+    successors.foreach{
       suc => 
       var optimizedTraces = traces.slice(traces.indexOf(suc._2), traces.indexOf(traces.last))
       val linkedSuccessor = buildLinkedFor(optimizedTraces, suc._2, suc._1._1, suc._1._2)
