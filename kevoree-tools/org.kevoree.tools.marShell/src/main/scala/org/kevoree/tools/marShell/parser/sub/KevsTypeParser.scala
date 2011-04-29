@@ -25,25 +25,30 @@ import org.kevoree.tools.marShell.ast.Statment
 
 trait KevsTypeParser extends KevsAbstractParser {
 
-  def parseType : Parser[List[Statment]]= parseCreateComponentType | parseChannelComponentType | parseAddPortType
+  def parseType : Parser[List[Statment]]= parseCreateComponentType | parseCreateChannelType | parseAddPortType
   
   
   //example : removeNode node1,node2
-  def parseCreateComponentType : Parser[List[Statment]] = "createComponentType" ~ repsep(ident,",") ^^{ case _ ~ nodeIDs =>
+  val createComponentTypeCommandFormat = "createComponentType <ComponentTypeName> "
+  def parseCreateComponentType : Parser[List[Statment]] = "createComponentType" ~ orFailure(repsep(ident,","),createComponentTypeCommandFormat) ^^{ case _ ~ nodeIDs =>
       var res : List[Statment] = List()
       nodeIDs.foreach{typeName=>
         res = res ++ List(CreateComponentTypeStatment(typeName))
       }
       res
   }
-  def parseChannelComponentType : Parser[List[Statment]] = "createChannelType" ~ repsep(ident,",") ^^{ case _ ~ nodeIDs =>
+
+  val createChannelTypeCommandFormat = "createChannelType <ChannelTypeName> "
+  def parseCreateChannelType : Parser[List[Statment]] = "createChannelType" ~ orFailure(repsep(ident,","),createChannelTypeCommandFormat) ^^{ case _ ~ nodeIDs =>
       var res : List[Statment] = List()
       nodeIDs.foreach{typeName=>
         res = res ++ List(CreateComponentTypeStatment(typeName))
       }
       res
   }
-  def parseAddPortType : Parser[List[Statment]] = "addPortType" ~ ident ~ parsePortType ~ "=>" ~ ident ^^{ case _ ~ portTypeName ~ oPTClassName ~ _ ~ targetTypeName =>
+
+  val addPortTypeCommandFormat = "addPortType <PortName> : <PortType> => <ComponentTypeName> "
+  def parseAddPortType : Parser[List[Statment]] = "addPortType" ~ orFailure(ident,addPortTypeCommandFormat) ~ orFailure(parsePortType, addPortTypeCommandFormat) ~ orFailure("=>",addPortTypeCommandFormat) ~ orFailure(ident,addPortTypeCommandFormat) ^^{ case _ ~ portTypeName ~ oPTClassName ~ _ ~ targetTypeName =>
     List(AddPortTypeStatment(portTypeName,targetTypeName,oPTClassName))
   }
   def parsePortType : Parser[Option[String]] = opt( ":" ~> ident )

@@ -26,18 +26,18 @@ import org.slf4j.LoggerFactory
 import scala.collection.JavaConversions._
 import org.kevoree.{ContainerRoot, DeployUnit}
 
-case class AddThirdPartyCommand(ct: DeployUnit, ctx: KevoreeDeployManager) extends PrimitiveCommand {
+case class AddThirdPartyCommand(deployUnit: DeployUnit, ctx: KevoreeDeployManager) extends PrimitiveCommand {
 
   var logger = LoggerFactory.getLogger(this.getClass)
 
   def execute(): Boolean = {
 
     var url: List[String] = List()
-    url = url ++ List(ct.getUrl)
-    if (ct.getUrl.contains("mvn:")) {
-      CommandHelper.buildPotentialMavenURL(ct.eContainer.asInstanceOf[ContainerRoot]).foreach {
+    url = url ++ List(deployUnit.getUrl)
+    if (deployUnit.getUrl.contains("mvn:")) {
+      CommandHelper.buildPotentialMavenURL(deployUnit.eContainer.asInstanceOf[ContainerRoot]).foreach {
         urlRepo =>
-		url = url ++ List(ct.getUrl.replace("mvn:", "mvn:" + urlRepo + "!"))
+		url = url ++ List(deployUnit.getUrl.replace("mvn:", "mvn:" + urlRepo + "!"))
       }
     }
     //DEBUG
@@ -57,7 +57,7 @@ case class AddThirdPartyCommand(ct: DeployUnit, ctx: KevoreeDeployManager) exten
     try {
       lastExecutionBundle = Some(ctx.bundleContext.installBundle(url));
       val symbolicName: String = lastExecutionBundle.get.getSymbolicName
-      ctx.bundleMapping.append(KevoreeOSGiBundle(ct.getName, ct.getClass.getName, lastExecutionBundle.get))
+      ctx.bundleMapping.append(KevoreeOSGiBundle(deployUnit.getName, deployUnit.getClass.getName, lastExecutionBundle.get))
       // lastExecutionBundle.get.start
       mustBeStarted = true
       true
