@@ -69,6 +69,10 @@ class DataManagerForGroup(nameInstance: String, selfNodeName: String, modelServi
   def mergeClock(uid: UUID, v: VectorClock): VectorClock = {
     (this !? MergeClock(uid, v)).asInstanceOf[VectorClock]
   }
+  
+  protected def setVectorClock(vc : VectorClock)={
+    vectorClock = vc
+  }
 
   def act() {
     loop {
@@ -77,7 +81,7 @@ class DataManagerForGroup(nameInstance: String, selfNodeName: String, modelServi
         case GetData(uuid) => {
           if (uuid.equals(this.uuid)) {
             if ((vectorClock.getEntiesCount == 0) || modelService.getLastModification.after(lastCheckedTimeStamp)) {
-              vectorClock = increment()
+              setVectorClock(increment())
             }
             //val tuple = new Tuple2[VectorClock, String](vectorClock, modelService.getLastModel)
             val tuple = new Tuple2[VectorClock, ContainerRoot](vectorClock, modelService.getLastModel)
@@ -107,7 +111,7 @@ class DataManagerForGroup(nameInstance: String, selfNodeName: String, modelServi
           mergedVC.getEntiesList.foreach {
             v => println(v.getNodeID + "\t" + v.getVersion + "\t" + v.getTimestamp)
           }*/
-          vectorClock = mergedVC
+          setVectorClock(mergedVC)
           reply(mergedVC)
         }
         case RemoveData(uuid) => // We do nothing because the model cannot be deleted
