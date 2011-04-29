@@ -102,6 +102,10 @@ public class VectorClockDisseminationChart {
 		JFreeChart jfreechart = ChartFactory.createLineChart("VectorClock updates", "Time", "Count", categorydataset, PlotOrientation.VERTICAL, false, true, false);
 		CategoryPlot categoryplot = (CategoryPlot) jfreechart.getPlot();
 
+
+
+
+
 		ChartUtilities.applyCurrentTheme(jfreechart);
 		LineAndShapeRenderer lineandshaperenderer = (LineAndShapeRenderer) categoryplot.getRenderer();
 		String[] nodes = new String[nodeIds.size()];

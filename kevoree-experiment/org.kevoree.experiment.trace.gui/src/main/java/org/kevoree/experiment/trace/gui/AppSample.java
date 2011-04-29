@@ -11,7 +11,7 @@ public class AppSample {
 
 	public static void main(String[] args) throws IOException, URISyntaxException {
 
-		/*InputStream input = AppSample.class.getClassLoader().getResourceAsStream("./trace_out");
+		InputStream input = AppSample.class.getClassLoader().getResourceAsStream("./trace_out");
 
 		TraceMessages.Traces traces = TraceMessages.Traces.parseFrom(input);
 
@@ -23,10 +23,11 @@ public class AppSample {
             for (int i = 0; i < clockEntries.length; i++) {
                 String[] values = clockEntries[i].split(":");
                 if (values.length >= 2) {
-                    System.out.println(values[0] + "=>" + values[1]);
+                    Integer.parseInt(values[1].trim());
+                    System.out.println(values[0] + "=>" + values[1].trim());
                 }
             }
-        }*/
+        }
 
 		JFrame frame = new JFrame();
 		frame.setSize(400, 400);
