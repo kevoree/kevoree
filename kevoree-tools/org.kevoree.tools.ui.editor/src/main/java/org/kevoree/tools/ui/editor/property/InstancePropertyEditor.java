@@ -25,13 +25,19 @@ import org.kevoree.tools.ui.editor.KevoreeUIKernel;
 /**
  *
  * @author ffouquet
+ * @contibutor gnain
  */
 public class InstancePropertyEditor extends NamedElementPropertyEditor {
 
     public InstancePropertyEditor(org.kevoree.Instance elem, KevoreeUIKernel _kernel) {
         super(elem, _kernel);
 
-        JTable table = new JTable(new InstanceTableModel(elem));     
+        JTable table = new JTable(new InstanceTableModel(elem));
+
+        //Column resizing management on property editor
+        table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+        table.getColumnModel().getColumn(0).setResizable(true);
+
         JScrollPane scrollPane = new JScrollPane(table);
         table.setFillsViewportHeight(true);
 

@@ -23,8 +23,8 @@ public class AppSample {
             for (int i = 0; i < clockEntries.length; i++) {
                 String[] values = clockEntries[i].split(":");
                 if (values.length >= 2) {
-                    Integer.parseInt(values[1].trim());
                     System.out.println(values[0] + "=>" + values[1].trim());
+					Integer.parseInt(values[1].trim());
                 }
             }
         }
@@ -43,8 +43,6 @@ public class AppSample {
 
 		frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 		frame.setVisible(true);
-
-		//
 
 
 	}
