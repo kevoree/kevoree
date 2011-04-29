@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?><jnlp spec="1.0" codebase="http://dist.kevoree.org/" >
+   <information>
+      <title>Kevoree Runtime</title>
+      <vendor>INRIA</vendor>
+      <icon href="icon/kev-logo-full.png" width="64" height="64"/>
+    <!-- allow app to run without Internet access -->
+    <offline-allowed/>
+    
+    <shortcut online="false">
+      <!-- create desktop shortcut -->
+      <desktop/>
+      <menu submenu="Kevoree"/>
+    </shortcut>
+	  <association mime-type="application-x/kevmodel" extensions="kev"/>
+   </information>
+   <resources>
+      <jar href="http://maven.kevoree.org/libs-release-local/org/kevoree/platform/org.kevoree.platform.osgi.standalone.gui/1.1.0-RC1/org.kevoree.platform.osgi.standalone.gui-1.1.0-RC1.jar" main="true" />   </resources>
+   <application-desc main-class="org.kevoree.platform.osgi.standalone.gui.App">
+<update check="background"/>
+   </application-desc>
+   <security>
+     <all-permissions/>
+  </security>
+</jnlp>

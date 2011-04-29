@@ -19,10 +19,10 @@ case class LinkedTrace(trace:Trace, sucessors:List[LinkedTrace]) {
     result.append(trace.getClientId)
     result.append("[")
     result.append(TracePath.stringToVectorClock(trace.getBody).toString)
-    result.append("]=>")
+    result.append("]=>"+sucessors.size)
     result.append(lineSeparator)
     sucessors.foreach{ successor=>
-         successor.toString(indice+1)
+         result.append(successor.toString(indice+1))
     }
     result.toString
   }

@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kevoree:ContainerRoot xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:kevoree="http://kevoree/1.0">
+  <nodes name="duke" typeDefinition="//@typeDefinitions.1" metaData="x=29,y=30"/>
+  <nodes name="duke3" typeDefinition="//@typeDefinitions.1" metaData="x=408,y=386"/>
+  <nodes name="duke2" typeDefinition="//@typeDefinitions.1" metaData="x=43,y=375"/>
+  <typeDefinitions xsi:type="kevoree:GroupType" name="LogNettyGossiperGroup" deployUnits="//@deployUnits.0" factoryBean="org.kevoree.experiment.library.gossiperNetty.LogNettyGossiperGroupFactory" bean="org.kevoree.experiment.library.gossiperNetty.LogNettyGossiperGroup" startMethod="startGossiperGroup" stopMethod="stopGossiperGroup" updateMethod="updateGossiperGroup">
+    <dictionaryType>
+      <attributes name="interval" optional="true"/>
+      <attributes name="port" optional="true"/>
+      <attributes name="FullUDP" optional="true"/>
+      <attributes name="loggerServerIP"/>
+      <defaultValues attribute="//@typeDefinitions.0/@dictionaryType/@attributes.0" value="30000"/>
+      <defaultValues attribute="//@typeDefinitions.0/@dictionaryType/@attributes.1" value="9010"/>
+      <defaultValues attribute="//@typeDefinitions.0/@dictionaryType/@attributes.2" value="false"/>
+      <defaultValues attribute="//@typeDefinitions.0/@dictionaryType/@attributes.3" value="127.0.0.1"/>
+    </dictionaryType>
+  </typeDefinitions>
+  <typeDefinitions xsi:type="kevoree:NodeType" name="JavaSENode"/>
+  <repositories units="//@deployUnits.0" url="http://maven.kevoree.org/libs-release-local"/>
+  <repositories url="http://scala-tools.org/repo-releases"/>
+  <repositories url="http://maven.kevoree.org/release"/>
+  <repositories url="http://repo1.maven.org/maven2"/>
+  <libraries name="Kevoree-Android-JavaSE" subTypes="//@typeDefinitions.0"/>
+  <libraries name="KevoreeExperiment" subTypes="//@typeDefinitions.0"/>
+  <deployUnits groupName="org.kevoree.experiment" unitName="org.kevoree.experiment.library.gossiperNetty" version="1.0.0" hashcode="201104271230757" requiredLibs="//@deployUnits.1 //@deployUnits.2 //@deployUnits.3" targetNodeType="//@typeDefinitions.1"/>
+  <deployUnits name="org.kevoree.extra.org.kevoree.extra.protobuf" url="mvn:org.kevoree.extra/org.kevoree.extra.protobuf/2.3.0" targetNodeType="//@typeDefinitions.1"/>
+  <deployUnits name="org.kevoree.extra.org.kevoree.extra.netty" url="mvn:org.kevoree.extra/org.kevoree.extra.netty/3.2.4.Final" targetNodeType="//@typeDefinitions.1"/>
+  <deployUnits name="org.kevoree.extra.org.kevoree.extra.marshalling" url="mvn:org.kevoree.extra/org.kevoree.extra.marshalling/1.1.0-RC1" targetNodeType="//@typeDefinitions.1"/>
+  <nodeNetworks initBy="//@nodes.0" target="//@nodes.0">
+    <link networkType="" estimatedRate="100">
+      <networkProperties name="KEVOREE.remote.node.modelsynch.port" value="8000" lastCheck="1304063818674"/>
+    </link>
+  </nodeNetworks>
+  <nodeNetworks initBy="//@nodes.1" target="//@nodes.1">
+    <link networkType="" estimatedRate="100">
+      <networkProperties name="KEVOREE.remote.node.modelsynch.port" value="8002" lastCheck="1304063796365"/>
+    </link>
+  </nodeNetworks>
+  <nodeNetworks initBy="//@nodes.2" target="//@nodes.2">
+    <link networkType="" estimatedRate="100">
+      <networkProperties name="KEVOREE.remote.node.modelsynch.port" value="8001" lastCheck="1304063810062"/>
+    </link>
+  </nodeNetworks>
+  <groups name="group1444150284" typeDefinition="//@typeDefinitions.0" metaData="x=333,y=56" subNodes="//@nodes.2 //@nodes.1 //@nodes.0">
+    <dictionary>
+      <values attribute="//@typeDefinitions.0/@dictionaryType/@attributes.1" value="duke=9010,duke2=9011,duke3=9012"/>
+    </dictionary>
+  </groups>
+</kevoree:ContainerRoot>
