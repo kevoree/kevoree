@@ -39,24 +39,6 @@
 				</executions>
 			</plugin>
 			<plugin>
-				<groupId>org.kevoree.tools</groupId>
-				<artifactId>org.kevoree.tools.annotation.mavenplugin</artifactId>
-				<version>${kevoree.version}</version>
-				<extensions>true</extensions>
-				<configuration>
-					
-				</configuration>
-				<executions>
-					<execution>
-						<goals>
-							<goal>generate</goal>
-							<goal>compile</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-            
-			<plugin>
 				<groupId>org.apache.felix</groupId>
 				<artifactId>maven-bundle-plugin</artifactId>
 				<configuration>

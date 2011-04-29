@@ -139,7 +139,7 @@ class DataManagerForGroup(nameInstance: String, selfNodeName: String, modelServi
       case Occured.AFTER => {}
       case Occured.BEFORE => {
         updateModelOrHaraKiri(tuple._2)
-        localMerge(tuple._1)
+        setVectorClock(localMerge(tuple._1))
       }
       case Occured.CONCURRENTLY => {
         val localDate = new Date(vectorClock.getTimestamp);
@@ -147,7 +147,7 @@ class DataManagerForGroup(nameInstance: String, selfNodeName: String, modelServi
         //TODO TO IMPROVE
         if (localDate.before(remoteDate)) {
           updateModelOrHaraKiri(tuple._2)
-          localMerge(tuple._1)
+          setVectorClock(localMerge(tuple._1))
         }
       }
       case _ =>
