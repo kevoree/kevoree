@@ -49,7 +49,7 @@
 					</instructions>
 				</configuration>
 			</plugin>
-            
+
 			<plugin>
 				<groupId>org.scala-tools</groupId>
 				<artifactId>maven-scala-plugin</artifactId>
@@ -76,11 +76,11 @@
 					</jvmArgs>
 				</configuration>
 			</plugin>
-            
+
 		</plugins>
 	</build>
-    
-    
+
+
 	<pluginRepositories>
 		<pluginRepository>
 			<id>dtrott</id>
@@ -96,8 +96,8 @@
 			</snapshots>
 		</repository>
 	</repositories>
-    
-    
+
+
 
 	<dependencies>
 		<dependency>
