@@ -14,7 +14,8 @@ class GossiperActor(timeout: java.lang.Long, channel: NettyGossipAbstractElement
 	private var gossiperRequestSender = new GossiperRequestSender(timeout, channel, dataManager, fullUDP, garbage,serializer)
 	private var notificationRequestSender = new NotificationRequestSender(channel)
 	private var gossiperRequestReceiver = new GossiperRequestReceiver(channel, dataManager, port, gossiperRequestSender, fullUDP, serializer)
-	this.start()
+
+  this.start()
 
 	/* PUBLIC PART */
 	case class STOP_GOSSIPER()

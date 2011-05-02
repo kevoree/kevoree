@@ -59,12 +59,15 @@ public class NettyGossiperGroup extends AbstractGroupType implements NettyGossip
 		sr = bundle.getBundleContext().getServiceReference(KevoreeModelHandlerService.class.getName());
 		modelHandlerService = (KevoreeModelHandlerService) bundle.getBundleContext().getService(sr);
 
+		System.out.println("starting gossiper group...");
+
 		dataManager = new DataManagerForGroup(this.getName(), this.getNodeName(), modelHandlerService);
 
 		Long timeoutLong = Long.parseLong((String) this.getDictionary().get("interval"));
 		Serializer serializer = new GroupSerializer();
 		selector = new GroupPeerSelector(timeoutLong, modelHandlerService, this.getName());
 		actor = new GossiperActor(timeoutLong, this, dataManager, parsePortNumber(getNodeName()), parseFullUDPParameter(), false, serializer, selector);
+		System.out.println("starting gossiper group... done");
 	}
 
 	@Stop
