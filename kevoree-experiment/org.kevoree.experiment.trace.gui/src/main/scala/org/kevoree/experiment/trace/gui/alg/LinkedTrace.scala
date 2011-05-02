@@ -1,6 +1,5 @@
 package org.kevoree.experiment.trace.gui.alg
 
-import java.util.Date
 import org.kevoree.experiment.trace.TraceMessages.{Trace}
 
 case class LinkedTrace(trace:Trace, sucessors:List[LinkedTrace]) {

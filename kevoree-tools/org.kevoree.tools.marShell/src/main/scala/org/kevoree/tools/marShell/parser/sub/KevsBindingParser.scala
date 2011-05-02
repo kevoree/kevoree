@@ -26,12 +26,12 @@ import org.kevoree.tools.marShell.ast.Statment
 trait KevsBindingParser extends KevsAbstractParser {
 
   val bindCommandFormat = "bind <ComponentInstanceName>.<PortName>@<NodeName> => <ChannelName>"
-  def parseAddBinding : Parser[List[Statment]] = "bind" ~ orFailure(ident,bindCommandFormat) ~ orFailure(".",bindCommandFormat) ~ orFailure(ident,bindCommandFormat) ~ orFailure("@",bindCommandFormat) ~ orFailure(ident,bindCommandFormat) ~ orFailure("=>",bindCommandFormat) ~ orFailure(ident,bindCommandFormat) ^^{ case _ ~ compoID ~ _ ~ portid ~ _ ~ nodeID ~ _ ~ channelid =>
+  def parseAddBinding : Parser[List[Statment]] = "bind" ~ orFailure(identOrWildcard,bindCommandFormat) ~ orFailure(".",bindCommandFormat) ~ orFailure(ident,bindCommandFormat) ~ orFailure("@",bindCommandFormat) ~ orFailure(ident,bindCommandFormat) ~ orFailure("=>",bindCommandFormat) ~ orFailure(ident,bindCommandFormat) ^^{ case _ ~ compoID ~ _ ~ portid ~ _ ~ nodeID ~ _ ~ channelid =>
       List(AddBindingStatment(ComponentInstanceID(compoID,Some(nodeID)),portid,channelid))
   }
 
   val unbindCommandFormat = "unbind <ComponentInstanceName>.<PortName>@<NodeName> => <ChannelName>"
-  def parseRemoveBinding : Parser[List[Statment]] = "unbind" ~ orFailure(ident,unbindCommandFormat) ~ orFailure(".",unbindCommandFormat) ~ orFailure(ident,unbindCommandFormat) ~ orFailure("@",unbindCommandFormat) ~ orFailure(ident,unbindCommandFormat) ~ orFailure("=>",unbindCommandFormat) ~ orFailure(ident,unbindCommandFormat) ^^{ case _ ~ compoID ~ _ ~ portid ~ _ ~ nodeID ~ _ ~ channelid =>
+  def parseRemoveBinding : Parser[List[Statment]] = "unbind" ~ orFailure(identOrWildcard,unbindCommandFormat) ~ orFailure(".",unbindCommandFormat) ~ orFailure(ident,unbindCommandFormat) ~ orFailure("@",unbindCommandFormat) ~ orFailure(ident,unbindCommandFormat) ~ orFailure("=>",unbindCommandFormat) ~ orFailure(ident,unbindCommandFormat) ^^{ case _ ~ compoID ~ _ ~ portid ~ _ ~ nodeID ~ _ ~ channelid =>
       List(RemoveBindingStatment(ComponentInstanceID(compoID,Some(nodeID)),portid,channelid))
   }
 
