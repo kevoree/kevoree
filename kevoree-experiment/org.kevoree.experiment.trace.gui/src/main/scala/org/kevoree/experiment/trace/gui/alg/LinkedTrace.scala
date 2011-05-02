@@ -1,5 +1,6 @@
 package org.kevoree.experiment.trace.gui.alg
 
+import java.util.Date
 import org.kevoree.experiment.trace.TraceMessages.{Trace}
 
 case class LinkedTrace(trace:Trace, sucessors:List[LinkedTrace]) {
@@ -7,10 +8,10 @@ case class LinkedTrace(trace:Trace, sucessors:List[LinkedTrace]) {
   val lineSeparator = System.getProperty("line.separator").toString
 
   override def toString : java.lang.String = {
-    toString(0)
+    toString(0,trace.getTimestamp)
   }
 
-  def toString(indice:Int):String ={
+  def toString(indice:Int,beginTime:Long):String ={
     val result = new StringBuffer
 
     for(i <- 0 until indice){
@@ -19,16 +20,16 @@ case class LinkedTrace(trace:Trace, sucessors:List[LinkedTrace]) {
     result.append(trace.getClientId)
     result.append("[")
     result.append(TracePath.stringToVectorClock(trace.getBody).toString)
-    result.append("]=>"+sucessors.size)
+    result.append("]")
+    result.append(":")
+    var nanoTime = trace.getTimestamp - beginTime
+    result.append(nanoTime/1000)
+    result.append(trace.getTimestamp+"=>"+sucessors.size)
     result.append(lineSeparator)
     sucessors.foreach{ successor=>
-         result.append(successor.toString(indice+1))
+         result.append(successor.toString(indice+1,beginTime))
     }
     result.toString
   }
-
-
-
-
 
 }
