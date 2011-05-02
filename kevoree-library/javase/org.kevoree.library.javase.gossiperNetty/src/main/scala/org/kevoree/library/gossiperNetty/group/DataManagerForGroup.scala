@@ -21,11 +21,11 @@ class DataManagerForGroup(nameInstance: String, selfNodeName: String, modelServi
   private var uuid: UUID = UUID.nameUUIDFromBytes(nameInstance.getBytes)
   println(nameInstance)
   private var vectorClock: VectorClock = VectorClock.newBuilder
-    .setTimestamp(System.currentTimeMillis)
-    .addEnties(
-                ClockEntry.newBuilder.setNodeID(selfNodeName).setVersion(1)
-                  .setTimestamp(System.currentTimeMillis()).build)
-    .build
+  .setTimestamp(System.currentTimeMillis)
+  .addEnties(
+    ClockEntry.newBuilder.setNodeID(selfNodeName).setVersion(1)
+    .setTimestamp(System.currentTimeMillis()).build)
+  .build
 
   this.start()
 
@@ -80,41 +80,41 @@ class DataManagerForGroup(nameInstance: String, selfNodeName: String, modelServi
       react {
         case Stop() => this.exit
         case GetData(uuid) => {
-          if (uuid.equals(this.uuid)) {
-            if ((vectorClock.getEntiesCount == 0) || modelService.getLastModification.after(lastCheckedTimeStamp)) {
-              setVectorClock(increment())
+            if (uuid.equals(this.uuid)) {
+              if ((vectorClock.getEntiesCount == 0) || modelService.getLastModification.after(lastCheckedTimeStamp)) {
+                setVectorClock(increment())
+              }
+              //val tuple = new Tuple2[VectorClock, String](vectorClock, modelService.getLastModel)
+              val tuple = new Tuple2[VectorClock, ContainerRoot](vectorClock, modelService.getLastModel)
+              reply(tuple)
+            } else {
+              reply(null)
             }
-            //val tuple = new Tuple2[VectorClock, String](vectorClock, modelService.getLastModel)
-            val tuple = new Tuple2[VectorClock, ContainerRoot](vectorClock, modelService.getLastModel)
-            reply(tuple)
-          } else {
-            reply(null)
           }
-        }
         case SetData(uuid, tuple) => {
-          if (uuid.equals(this.uuid) && tuple._2 != null && tuple._2.isInstanceOf[ContainerRoot]) {
-            updateOrResolve(tuple.asInstanceOf[Tuple2[VectorClock, ContainerRoot]])
+            if (uuid.equals(this.uuid) && tuple._2 != null && tuple._2.isInstanceOf[ContainerRoot]) {
+              updateOrResolve(tuple.asInstanceOf[Tuple2[VectorClock, ContainerRoot]])
+            }
           }
-        }
         case GetUUIDVectorClock(uuid) => reply(getUUIDVectorClockFromUUID(uuid))
         case GetUUIDVectorClocks() => reply(getAllUUIDVectorClocks)
         case MergeClock(uuid, newClock) => {
-          /*println("localClock")
-          vectorClock.getEntiesList.foreach {
-            v => println(v.getNodeID + "\t" + v.getVersion + "\t" + v.getTimestamp)
+            /*println("localClock")
+             vectorClock.getEntiesList.foreach {
+             v => println(v.getNodeID + "\t" + v.getVersion + "\t" + v.getTimestamp)
+             }
+             println("newClock")
+             newClock.getEntiesList.foreach {
+             v => println(v.getNodeID + "\t" + v.getVersion + "\t" + v.getTimestamp)
+             }*/
+            val mergedVC = localMerge(newClock)
+            /*println("merged clock")
+             mergedVC.getEntiesList.foreach {
+             v => println(v.getNodeID + "\t" + v.getVersion + "\t" + v.getTimestamp)
+             }*/
+            setVectorClock(mergedVC)
+            reply(mergedVC)
           }
-          println("newClock")
-          newClock.getEntiesList.foreach {
-            v => println(v.getNodeID + "\t" + v.getVersion + "\t" + v.getTimestamp)
-          }*/
-          val mergedVC = localMerge(newClock)
-          /*println("merged clock")
-          mergedVC.getEntiesList.foreach {
-            v => println(v.getNodeID + "\t" + v.getVersion + "\t" + v.getTimestamp)
-          }*/
-          setVectorClock(mergedVC)
-          reply(mergedVC)
-        }
         case RemoveData(uuid) => // We do nothing because the model cannot be deleted
       }
     }
@@ -127,30 +127,30 @@ class DataManagerForGroup(nameInstance: String, selfNodeName: String, modelServi
    val bytes = out.toByteArray
    out.close
    bytes
- }
+   }
 
- private def modelFromString(model: Array[Byte]): ContainerRoot = {
+   private def modelFromString(model: Array[Byte]): ContainerRoot = {
    val stream = new ByteArrayInputStream(model)
    KevoreeXmiHelper.loadStream(stream)
- }*/
+   }*/
 
   private def updateOrResolve(tuple: Tuple2[VectorClock, ContainerRoot]) = {
     val occured = VersionUtils.compare(vectorClock, tuple._1)
     occured match {
       case Occured.AFTER => {}
       case Occured.BEFORE => {
-        updateModelOrHaraKiri(tuple._2)
-        setVectorClock(localMerge(tuple._1))
-      }
-      case Occured.CONCURRENTLY => {
-        val localDate = new Date(vectorClock.getTimestamp);
-        val remoteDate = new Date(tuple._1.getTimestamp);
-        //TODO TO IMPROVE
-        if (localDate.before(remoteDate)) {
           updateModelOrHaraKiri(tuple._2)
           setVectorClock(localMerge(tuple._1))
         }
-      }
+      case Occured.CONCURRENTLY => {
+          val localDate = new Date(vectorClock.getTimestamp);
+          val remoteDate = new Date(tuple._1.getTimestamp);
+          //TODO TO IMPROVE
+          if (localDate.before(remoteDate)) {
+            updateModelOrHaraKiri(tuple._2)
+            setVectorClock(localMerge(tuple._1))
+          }
+        }
       case _ =>
     }
   }
@@ -170,17 +170,17 @@ class DataManagerForGroup(nameInstance: String, selfNodeName: String, modelServi
     var selfFound = false;
     vectorClock.getEntiesList.foreach {
       clock =>
-        if (clock.getNodeID.equals(selfNodeName)) {
-          selfFound = true;
-          if (lastCheckedTimeStamp.before(modelService.getLastModification)) {
-            incrementedEntries.add(ClockEntry.newBuilder(clock).setVersion(clock.getVersion + 1).setTimestamp(currentTimeStamp).build());
-            lastCheckedTimeStamp = modelService.getLastModification
-          } else {
-            incrementedEntries.add(clock);
-          }
+      if (clock.getNodeID.equals(selfNodeName)) {
+        selfFound = true;
+        if (lastCheckedTimeStamp.before(modelService.getLastModification)) {
+          incrementedEntries.add(ClockEntry.newBuilder(clock).setVersion(clock.getVersion + 1).setTimestamp(currentTimeStamp).build());
+          lastCheckedTimeStamp = modelService.getLastModification
         } else {
           incrementedEntries.add(clock);
         }
+      } else {
+        incrementedEntries.add(clock);
+      }
     }
     if (!selfFound) {
       incrementedEntries.add(ClockEntry.newBuilder().setNodeID(selfNodeName).setVersion(1).setTimestamp(currentTimeStamp).build());
@@ -189,13 +189,12 @@ class DataManagerForGroup(nameInstance: String, selfNodeName: String, modelServi
   }
 
   private def getUUIDVectorClockFromUUID(uuid: UUID): VectorClock = {
-    //println(this.uuid)
-    //println("remoteUUID : " + uuid)
     if (uuid.equals(this.uuid)) {
-      //println("is equals")
-      return vectorClock
+       vectorClock
+    } else {
+      null
     }
-    null
+    
   }
 
   private def getAllUUIDVectorClocks: java.util.Map[UUID, VectorClock] = {
@@ -220,58 +219,58 @@ class DataManagerForGroup(nameInstance: String, selfNodeName: String, modelServi
 
       clock match {
         case _ if (i >= clock.getEntiesCount) => {
-          addOrUpdate(orderedNodeID, values, timestamps, clock2.getEnties(j), currentTimeMillis)
-          j = j + 1;
-        }
-        case _ if (j >= clock2.getEntiesCount) => {
-          addOrUpdate(orderedNodeID, values, timestamps, clock.getEnties(i), currentTimeMillis)
-          i = i + 1;
-        }
-        case _ => {
-          val v1 = clock.getEnties(i);
-          val v2 = clock2.getEnties(j);
-          if (v1.getNodeID.equals(v2.getNodeID)) {
-            values.put(v1.getNodeID, Math.max(v1.getVersion, v2.getVersion));
-            timestamps.put(v1.getNodeID, currentTimeMillis);
-            if (!orderedNodeID.contains(v1.getNodeID)) {
-              orderedNodeID.add(v1.getNodeID);
-            }
-            i = i + 1;
+            addOrUpdate(orderedNodeID, values, timestamps, clock2.getEnties(j), currentTimeMillis)
             j = j + 1;
-          } else {
-            if (j < i) {
-              if (!orderedNodeID.contains(v2.getNodeID)) {
-                orderedNodeID.add(v2.getNodeID);
-                values.put(v2.getNodeID, v2.getVersion);
-                timestamps.put(v2.getNodeID, v2.getTimestamp);
-              } else {
-                values.put(v2.getNodeID, Math.max(v2.getVersion, values.get(v2.getNodeID)));
-                timestamps.put(v2.getNodeID, currentTimeMillis);
-              }
-              j = j + 1;
-            } else {
+          }
+        case _ if (j >= clock2.getEntiesCount) => {
+            addOrUpdate(orderedNodeID, values, timestamps, clock.getEnties(i), currentTimeMillis)
+            i = i + 1;
+          }
+        case _ => {
+            val v1 = clock.getEnties(i);
+            val v2 = clock2.getEnties(j);
+            if (v1.getNodeID.equals(v2.getNodeID)) {
+              values.put(v1.getNodeID, Math.max(v1.getVersion, v2.getVersion));
+              timestamps.put(v1.getNodeID, currentTimeMillis);
               if (!orderedNodeID.contains(v1.getNodeID)) {
                 orderedNodeID.add(v1.getNodeID);
-                values.put(v1.getNodeID, v1.getVersion);
-                timestamps.put(v1.getNodeID, v1.getTimestamp);
-              } else {
-                values.put(v1.getNodeID, Math.max(v1.getVersion, values.get(v1.getNodeID)));
-                timestamps.put(v1.getNodeID, currentTimeMillis);
               }
               i = i + 1;
+              j = j + 1;
+            } else {
+              if (j < i) {
+                if (!orderedNodeID.contains(v2.getNodeID)) {
+                  orderedNodeID.add(v2.getNodeID);
+                  values.put(v2.getNodeID, v2.getVersion);
+                  timestamps.put(v2.getNodeID, v2.getTimestamp);
+                } else {
+                  values.put(v2.getNodeID, Math.max(v2.getVersion, values.get(v2.getNodeID)));
+                  timestamps.put(v2.getNodeID, currentTimeMillis);
+                }
+                j = j + 1;
+              } else {
+                if (!orderedNodeID.contains(v1.getNodeID)) {
+                  orderedNodeID.add(v1.getNodeID);
+                  values.put(v1.getNodeID, v1.getVersion);
+                  timestamps.put(v1.getNodeID, v1.getTimestamp);
+                } else {
+                  values.put(v1.getNodeID, Math.max(v1.getVersion, values.get(v1.getNodeID)));
+                  timestamps.put(v1.getNodeID, currentTimeMillis);
+                }
+                i = i + 1;
+              }
             }
           }
-        }
       }
     }
     // int index = 0;
     orderedNodeID.foreach {
       nodeId =>
-        val entry = ClockEntry.newBuilder().
-          setNodeID(nodeId).
-          setVersion(values.get(nodeId)).
-          setTimestamp(timestamps.get(nodeId)).build();
-        newClockBuilder.addEnties(entry);
+      val entry = ClockEntry.newBuilder().
+      setNodeID(nodeId).
+      setVersion(values.get(nodeId)).
+      setTimestamp(timestamps.get(nodeId)).build();
+      newClockBuilder.addEnties(entry);
     }
     return newClockBuilder.setTimestamp(currentTimeMillis).build();
   }
