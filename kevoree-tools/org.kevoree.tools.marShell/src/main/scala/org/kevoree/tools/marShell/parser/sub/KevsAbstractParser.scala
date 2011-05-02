@@ -50,7 +50,9 @@ trait KevsAbstractParser extends TokenParsers {
 
   //Error handling
   def orFailure[A](a:Parser[A],msg:String) : Parser[A] = ( a | failure(msg) )
-  
+
+
+  def identOrWildcard = ident | "*"
 
 
   //an implicit keyword function that gives a warning when a given word is not in the reserved/delimiters list

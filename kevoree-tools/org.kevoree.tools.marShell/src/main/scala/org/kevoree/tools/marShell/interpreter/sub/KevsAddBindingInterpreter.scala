@@ -35,7 +35,7 @@ case class KevsAddBindingInterpreter(addBinding : AddBindingStatment) extends Ke
                   case Some(targetComponent) => {
                       context.model.getHubs.find(hub => hub.getName== addBinding.bindingInstanceName) match {
                         case Some(targetHub)=> {
-                            var newbinding = KevoreeFactory.eINSTANCE.createMBinding
+                            val newbinding = KevoreeFactory.eINSTANCE.createMBinding
                             newbinding.setHub(targetHub)
                             //SEARCH TARGET PORT
                             targetComponent.getProvided.find(port => port.getPortTypeRef.getName == addBinding.portName) match {
