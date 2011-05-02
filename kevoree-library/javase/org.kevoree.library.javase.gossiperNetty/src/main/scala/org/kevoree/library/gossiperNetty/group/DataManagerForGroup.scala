@@ -99,11 +99,17 @@ class DataManagerForGroup(nameInstance: String, selfNodeName: String, modelServi
           }
         }
         case GetUUIDVectorClock(uuid) => {
-          setVectorClock(increment())
+          if ((vectorClock.getEntiesCount == 0) || modelService.getLastModification.after(lastCheckedTimeStamp)) {
+              setVectorClock(increment())
+            }
+          //setVectorClock(increment())
           reply(getUUIDVectorClockFromUUID(uuid))
         }
         case GetUUIDVectorClocks() => {
-          setVectorClock(increment())
+          if ((vectorClock.getEntiesCount == 0) || modelService.getLastModification.after(lastCheckedTimeStamp)) {
+              setVectorClock(increment())
+            }
+          //setVectorClock(increment())
           reply(getAllUUIDVectorClocks)
         }
         case MergeClock(uuid, newClock) => {
