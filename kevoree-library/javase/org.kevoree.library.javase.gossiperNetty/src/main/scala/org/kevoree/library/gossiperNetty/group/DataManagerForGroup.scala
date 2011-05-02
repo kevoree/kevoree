@@ -70,8 +70,8 @@ class DataManagerForGroup(nameInstance: String, selfNodeName: String, modelServi
   def mergeClock(uid: UUID, v: VectorClock): VectorClock = {
     (this !? MergeClock(uid, v)).asInstanceOf[VectorClock]
   }
-  
-  protected def setVectorClock(vc : VectorClock)={
+
+  protected def setVectorClock(vc: VectorClock) = {
     vectorClock = vc
   }
 
@@ -189,7 +189,10 @@ class DataManagerForGroup(nameInstance: String, selfNodeName: String, modelServi
   }
 
   private def getUUIDVectorClockFromUUID(uuid: UUID): VectorClock = {
+    println(this.uuid)
+    println("remoteUUID : " + uuid)
     if (uuid.equals(this.uuid)) {
+      println("is equals")
       vectorClock
     }
     null
