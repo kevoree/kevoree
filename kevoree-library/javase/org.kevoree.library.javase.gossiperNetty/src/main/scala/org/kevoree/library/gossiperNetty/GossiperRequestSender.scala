@@ -149,15 +149,11 @@ class GossiperRequestSender(timeout: java.lang.Long, channelFragment: NettyGossi
 
 					val uuid = UUID.fromString(remoteVectorClockUUID.getUuid)
 					val remoteVectorClock = remoteVectorClockUUID.getVector
-          println(dataManager.getUUIDVectorClock(uuid))
-          println(remoteVectorClock)
 					val occured = VersionUtils.compare(dataManager.getUUIDVectorClock(uuid), remoteVectorClock)
 					occured match {
 						case Occured.AFTER => {
-              println("AFTER")
             }
 						case Occured.BEFORE => {
-              println("BEFORE")
 							//updateValue(message.getDestChannelName,uuid,remoteVectorClock)
 							//var channel = bootstrap.bind(new InetSocketAddress(0)).asInstanceOf[DatagramChannel]
 							askForData(uuid, message.getDestNodeName, address)
@@ -168,8 +164,6 @@ class GossiperRequestSender(timeout: java.lang.Long, channelFragment: NettyGossi
 							//println("initSecondStep write")
 						}
 						case Occured.CONCURRENTLY => {
-
-              println("CONCURRENTLY")
 							//updateValue(message.getDestChannelName,uuid,remoteVectorClock)
 							//var channel = bootstrap.bind(new InetSocketAddress(0)).asInstanceOf[DatagramChannel]
 							askForData(uuid, message.getDestNodeName, address)

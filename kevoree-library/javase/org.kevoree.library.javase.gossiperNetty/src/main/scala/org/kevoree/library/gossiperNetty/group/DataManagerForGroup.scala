@@ -20,12 +20,12 @@ class DataManagerForGroup(nameInstance: String, selfNodeName: String, modelServi
   private var lastCheckedTimeStamp = new Date(0l)
   private var uuid: UUID = UUID.nameUUIDFromBytes(nameInstance.getBytes)
   println(nameInstance)
-  private var vectorClock: VectorClock/* = VectorClock.newBuilder
+  private var vectorClock: VectorClock = VectorClock.newBuilder
     .setTimestamp(System.currentTimeMillis)
-    .addEnties(
+    /*.addEnties(
                 ClockEntry.newBuilder.setNodeID(selfNodeName).setVersion(1)
-                  .setTimestamp(System.currentTimeMillis()).build)
-    .build*/
+                  .setTimestamp(System.currentTimeMillis()).build)*/
+    .build
 
   this.start()
 
@@ -96,8 +96,14 @@ class DataManagerForGroup(nameInstance: String, selfNodeName: String, modelServi
             updateOrResolve(tuple.asInstanceOf[Tuple2[VectorClock, ContainerRoot]])
           }
         }
-        case GetUUIDVectorClock(uuid) => reply(getUUIDVectorClockFromUUID(uuid))
-        case GetUUIDVectorClocks() => reply(getAllUUIDVectorClocks)
+        case GetUUIDVectorClock(uuid) => {
+          setVectorClock(increment())
+          reply(getUUIDVectorClockFromUUID(uuid))
+        }
+        case GetUUIDVectorClocks() => {
+          setVectorClock(increment())
+          reply(getAllUUIDVectorClocks)
+        }
         case MergeClock(uuid, newClock) => {
           /*println("localClock")
           vectorClock.getEntiesList.foreach {
@@ -184,6 +190,7 @@ class DataManagerForGroup(nameInstance: String, selfNodeName: String, modelServi
     }
     if (!selfFound) {
       incrementedEntries.add(ClockEntry.newBuilder().setNodeID(selfNodeName).setVersion(1).setTimestamp(currentTimeStamp).build());
+      lastCheckedTimeStamp = modelService.getLastModification
     }
     VectorClock.newBuilder().addAllEnties(incrementedEntries).setTimestamp(currentTimeStamp).build()
   }
