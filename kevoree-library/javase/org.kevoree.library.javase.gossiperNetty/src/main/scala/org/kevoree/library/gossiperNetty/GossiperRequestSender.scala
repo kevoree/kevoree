@@ -122,7 +122,7 @@ class GossiperRequestSender(timeout: java.lang.Long, channelFragment: NettyGossi
 					vectorClockUUID =>
 						val uuid = UUID.fromString(vectorClockUUID.getUuid)
 						if (dataManager.getUUIDVectorClock(uuid) == null) {
-							logger.debug("add empty local vectorClock with the uuid if it is not already defined : " + dataManager.getUUIDVectorClock(uuid))
+							logger.debug("add empty local vectorClock with the uuid if it is not already defined")
 							dataManager.setData(uuid,
 								Tuple2[VectorClock, Any](VectorClock.newBuilder.setTimestamp(System.currentTimeMillis).build, null))
 						}

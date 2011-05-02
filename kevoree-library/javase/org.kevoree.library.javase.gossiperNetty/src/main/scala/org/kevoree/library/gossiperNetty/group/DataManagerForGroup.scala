@@ -193,9 +193,10 @@ class DataManagerForGroup(nameInstance: String, selfNodeName: String, modelServi
     //println("remoteUUID : " + uuid)
     if (uuid.equals(this.uuid)) {
       //println("is equals")
-      return vectorClock
+      vectorClock
+    } else {
+      null
     }
-    null
   }
 
   private def getAllUUIDVectorClocks: java.util.Map[UUID, VectorClock] = {
