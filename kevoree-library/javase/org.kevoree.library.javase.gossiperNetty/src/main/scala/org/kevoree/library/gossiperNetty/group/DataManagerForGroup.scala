@@ -20,12 +20,7 @@ class DataManagerForGroup(nameInstance: String, selfNodeName: String, modelServi
   private var lastCheckedTimeStamp = new Date(0l)
   private var uuid: UUID = UUID.nameUUIDFromBytes(nameInstance.getBytes)
   println(nameInstance)
-  private var vectorClock: VectorClock/* = VectorClock.newBuilder
-    .setTimestamp(System.currentTimeMillis)
-    .addEnties(
-                ClockEntry.newBuilder.setNodeID(selfNodeName).setVersion(1)
-                  .setTimestamp(System.currentTimeMillis()).build)
-    .build*/
+  private var vectorClock: VectorClock = VectorClock.newBuilder.setTimestamp(System.currentTimeMillis).build
 
   this.start()
 
