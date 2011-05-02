@@ -141,8 +141,11 @@ class DataManagerForGroup(nameInstance: String, selfNodeName: String, modelServi
    val stream = new ByteArrayInputStream(model)
    KevoreeXmiHelper.loadStream(stream)
  }*/
+  implicit def vectorDebug(vc : VectorClock) = VectorClockAspect(vc)
 
   private def updateOrResolve(tuple: Tuple2[VectorClock, ContainerRoot]) = {
+    vectorClock.printDebug
+     tuple._1.printDebug
     val occured = VersionUtils.compare(vectorClock, tuple._1)
     occured match {
       case Occured.AFTER => {
@@ -195,7 +198,7 @@ class DataManagerForGroup(nameInstance: String, selfNodeName: String, modelServi
     }
     if (!selfFound) {
       incrementedEntries.add(ClockEntry.newBuilder().setNodeID(selfNodeName).setVersion(1).setTimestamp(currentTimeStamp).build());
-      lastCheckedTimeStamp = modelService.getLastModification
+      //lastCheckedTimeStamp = modelService.getLastModification
     }
     VectorClock.newBuilder().addAllEnties(incrementedEntries).setTimestamp(currentTimeStamp).build()
   }
