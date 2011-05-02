@@ -189,10 +189,7 @@ class DataManagerForGroup(nameInstance: String, selfNodeName: String, modelServi
   }
 
   private def getUUIDVectorClockFromUUID(uuid: UUID): VectorClock = {
-    //println(this.uuid)
-    //println("remoteUUID : " + uuid)
     if (uuid.equals(this.uuid)) {
-      //println("is equals")
       vectorClock
     } else {
       null
