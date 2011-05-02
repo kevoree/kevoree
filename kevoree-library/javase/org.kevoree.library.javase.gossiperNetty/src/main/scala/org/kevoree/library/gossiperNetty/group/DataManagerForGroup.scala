@@ -14,6 +14,7 @@ import java.lang.Math
 import scala.collection.JavaConversions._
 import org.kevoree.library.gossiperNetty._
 import version.Version.{VectorClock, ClockEntry}
+import org.slf4j.LoggerFactory
 
 class DataManagerForGroup(nameInstance: String, selfNodeName: String, modelService: KevoreeModelHandlerService) extends DataManager with actors.DaemonActor {
 
@@ -26,6 +27,7 @@ class DataManagerForGroup(nameInstance: String, selfNodeName: String, modelServi
                 ClockEntry.newBuilder.setNodeID(selfNodeName).setVersion(1)
                   .setTimestamp(System.currentTimeMillis()).build)*/
     .build
+	private var logger = LoggerFactory.getLogger(classOf[DataManagerForGroup])
 
   this.start()
 
@@ -143,12 +145,15 @@ class DataManagerForGroup(nameInstance: String, selfNodeName: String, modelServi
   private def updateOrResolve(tuple: Tuple2[VectorClock, ContainerRoot]) = {
     val occured = VersionUtils.compare(vectorClock, tuple._1)
     occured match {
-      case Occured.AFTER => {}
+      case Occured.AFTER => {
+          logger.debug("VectorClocks comparison into DataManager give us: AFTER")}
       case Occured.BEFORE => {
+              logger.debug("VectorClocks comparison into DataManager give us: BEFORE")
         updateModelOrHaraKiri(tuple._2)
         setVectorClock(localMerge(tuple._1))
       }
       case Occured.CONCURRENTLY => {
+              logger.debug("VectorClocks comparison into DataManager give us: CONCURRENTLY")
         val localDate = new Date(vectorClock.getTimestamp);
         val remoteDate = new Date(tuple._1.getTimestamp);
         //TODO TO IMPROVE

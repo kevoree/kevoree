@@ -174,7 +174,6 @@ public class NettyGossiperGroup extends AbstractGroupType implements NettyGossip
 
 	@Override
 	public void triggerModelUpdate() {
-		System.out.println("trigger Model update");
 		actor.notifyPeers();
 	}
 }

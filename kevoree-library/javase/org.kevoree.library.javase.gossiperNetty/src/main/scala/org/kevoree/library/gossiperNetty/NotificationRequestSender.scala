@@ -13,6 +13,7 @@ import scala.collection.JavaConversions._
 import org.jboss.netty.handler.codec.compression.{ZlibDecoder, ZlibEncoder, ZlibWrapper}
 import org.jboss.netty.handler.codec.protobuf.{ProtobufVarint32LengthFieldPrepender, ProtobufVarint32FrameDecoder, ProtobufDecoder, ProtobufEncoder}
 import version.Gossip.UpdatedValueNotification
+import org.slf4j.LoggerFactory
 
 class NotificationRequestSender(channelFragment: NettyGossipAbstractElement) extends actors.DaemonActor {
 
@@ -32,6 +33,7 @@ class NotificationRequestSender(channelFragment: NettyGossipAbstractElement) ext
 		}
 	}
 	)
+  private var logger = LoggerFactory.getLogger(classOf[NotificationRequestSender])
 
 	//private var channels : ChannelGroup = new DefaultChannelGroup
 	private var channel = bootstrapNotificationMessage.bind(new InetSocketAddress(0)).asInstanceOf[DatagramChannel]
@@ -74,6 +76,7 @@ class NotificationRequestSender(channelFragment: NettyGossipAbstractElement) ext
 		channelFragment.getAllPeers.foreach {
 			peer =>
 				if (!peer.equals(channelFragment.getNodeName)) {
+          logger.debug("send notification to " + peer)
 					val messageBuilder: Message.Builder = Message.newBuilder.setDestName(channelFragment.getName).setDestNodeName(channelFragment.getNodeName)
 					messageBuilder.setContentClass(classOf[UpdatedValueNotification].getName).setContent(UpdatedValueNotification.newBuilder.build.toByteString)
 					channel.write(messageBuilder.build, new InetSocketAddress(channelFragment.getAddress(peer), channelFragment.parsePortNumber(peer)))
