@@ -82,11 +82,10 @@ class AskForDataTCPActor(channelFragment: NettyGossipAbstractElement, requestSen
 	}
 
 	def closeUnusedChannels() {
+    logger.debug("garbage some channels...")
 		channelGroup.foreach {
 			channel: Channel =>
-				logger.debug("channel must be closed")
 				channel.close.awaitUninterruptibly
-				logger.debug("channel are closed")
 		}
 	}
 
