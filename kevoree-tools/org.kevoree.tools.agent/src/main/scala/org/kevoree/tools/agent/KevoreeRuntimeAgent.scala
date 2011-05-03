@@ -20,7 +20,15 @@ import org.kevoree.framework.{Constants, KevoreePlatformHelper}
 
 class KevoreeRuntimeAgent {
 
-  def detectLocalNodeFromRuntime(model: ContainerRoot): List[(String,Int)] = {
+  def processModel(model:ContainerRoot){
+    KevoreeNodeRunnerHandler.closeAllRunners()
+    detectLocalNodeFromRuntime(model).foreach{ t=>
+        KevoreeNodeRunnerHandler.addRunner(t._1,t._2)
+    }
+  }
+
+
+  private def detectLocalNodeFromRuntime(model: ContainerRoot): List[(String,Int)] = {
 
     var localIPS: List[String] = List()
     NetworkInterface.getNetworkInterfaces.foreach {

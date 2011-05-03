@@ -15,16 +15,16 @@ package org.kevoree.tools.agent;
 
 public class KevoreeNodeRunner {
 
-    public KevoreeNodeRunner(String nodeName , Integer basePort){
+    public KevoreeNodeRunner(String nodeName, Integer basePort) {
 
     }
 
-    public void startNode(){
-
+    public void startNode() {
+        System.out.println("StartNodeCommand");
     }
 
-    public void stopKillNode(){
-
+    public void stopKillNode() {
+        System.out.println("KillNodeCommand");
     }
 
 }
