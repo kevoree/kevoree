@@ -9,7 +9,7 @@ object AppPath extends Application {
 
   var input: InputStream = this.getClass.getClassLoader.getResourceAsStream("./trace_out")
   var traces: TraceMessages.Traces = TraceMessages.Traces.parseFrom(input)
-  var linkedTrace = TracePath.getPathFrom("duke", 2, traces)
+  var linkedTrace = TracePath.getPathFrom("duke", 4, traces)
   linkedTrace match {
     case Some(ltrace) => {
       println(ltrace.toString)

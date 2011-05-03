@@ -36,14 +36,17 @@ object TracePath {
   }
 
   /* Build recursively successor for trace en precise nodeID & Version  */
-  protected def buildLinkedFor(traces: List[Trace], trace: Trace, nodeID: String, version: Int): LinkedTrace = { 
-    val tracesWithoutTrace = traces.slice(traces.indexOf(trace)+1, traces.indexOf(traces.last))
-    val successors = lookForSuccessor(tracesWithoutTrace, nodeID, version, List())
+  protected def buildLinkedFor(traces: List[Trace], trace: Trace, nodeID: String, version: Int): LinkedTrace = {
 
-    var result = LinkedTrace(trace, List()) 
+    val tracesWithoutTrace = traces.slice(traces.indexOf(trace)+1, traces.size+1)
+
+    //println(traces.)
+
+    val successors = lookForSuccessor(tracesWithoutTrace, nodeID, version, List())
+    var result = LinkedTrace(trace, List())
     successors.foreach{
-      suc => 
-      var optimizedTraces = traces.slice(traces.indexOf(suc._2), traces.indexOf(traces.last))
+      suc =>
+      val optimizedTraces = traces.slice(traces.indexOf(suc._2)+1, traces.size+1)
       result = LinkedTrace(trace, result.sucessors ++ List(buildLinkedFor(optimizedTraces, suc._2, suc._1._1, suc._1._2)))
     }
     result
@@ -53,20 +56,16 @@ object TracePath {
   protected def lookForSuccessor(traces: List[Trace], nodeID: String, version: Int, foundDirectSuccessors: List[(String, Int)]): List[((String, Int), Trace)] = {
     if(traces.isEmpty){
       return List()
-    }  
+    }
     val headVector = stringToVectorClock(traces.head.getBody)
     val containPrevious = headVector.containEntry(nodeID, version)
     val notContainPrevious = foundDirectSuccessors.forall(t => (!headVector.containEntry(t._1, t._2)))
-    
     var lvalue : List[((String, Int), Trace)] = List()
     var foundDirectSuccessors2 = foundDirectSuccessors
     if (containPrevious && notContainPrevious ) {
-      
-      //println("solfound="+traces.head)
       foundDirectSuccessors2 = foundDirectSuccessors2 ++ List((traces.head.getClientId, headVector.versionForNode(traces.head.getClientId).get))
       lvalue = List(((traces.head.getClientId, headVector.versionForNode(traces.head.getClientId).get), traces.head))
     }
- 
     if (!traces.tail.isEmpty) {
       lvalue ++ lookForSuccessor(traces.tail, nodeID, version, foundDirectSuccessors2)
     } else {
