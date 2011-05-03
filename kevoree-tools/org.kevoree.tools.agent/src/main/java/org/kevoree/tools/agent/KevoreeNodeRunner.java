@@ -1,4 +1,4 @@
-package org;
+package org.kevoree.tools.agent;
 
 public class KevoreeNodeRunner {
 
