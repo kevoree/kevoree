@@ -9,6 +9,6 @@ tblock {
  //Test instance creation
  addComponent myFakeLight1@myJavaNode : FakeSimpleLight { param1="hello",param2="helloP2"}
  addChannel gossiperChannel1 : RestGossiperChannel { interval="3000"}
- addGroup gossipGroup : RestGossipGroup { interval="2000" }
+ addGroup gossipGroup : RestGossipGroup { "interval"="2000" }
 
  }
