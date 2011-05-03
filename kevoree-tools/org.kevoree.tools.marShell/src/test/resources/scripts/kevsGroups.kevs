@@ -1,0 +1,13 @@
+
+tblock {
+
+ addNode duke : JavaSENode
+ addNode duke2 : JavaSENode
+ addNode duke3 : JavaSENode
+ addGroup gossipGroup : RestGossipGroup { interval="2000" }
+
+ addToGroup gossipGroup duke3
+ addToGroup gossipGroup *
+ removeFromGroup * duke2
+
+ }
