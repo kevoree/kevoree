@@ -1,6 +1,7 @@
 package org.kevoree.experiment.trace.gui.alg
 
 import org.kevoree.experiment.trace.TraceMessages.{Trace}
+import java.util.Calendar
 
 case class LinkedTrace(trace:Trace, sucessors:List[LinkedTrace]) {
 
@@ -20,10 +21,16 @@ case class LinkedTrace(trace:Trace, sucessors:List[LinkedTrace]) {
     result.append("[")
     result.append(TracePath.stringToVectorClock(trace.getBody).toString)
     result.append("]")
-    result.append(":")
-    var nanoTime = trace.getTimestamp - beginTime
-    result.append(nanoTime/1000)
-    result.append(trace.getTimestamp+"=>"+sucessors.size)
+    result.append("")
+
+
+
+    val calendar: Calendar = Calendar.getInstance
+    calendar.setTimeInMillis( (trace.getTimestamp - beginTime ) / 1000000 )
+    val timeRepresentation = "" + calendar.get(Calendar.MINUTE) + ":" + calendar.get(Calendar.SECOND) + ":" + calendar.get(Calendar.MILLISECOND)
+
+    result.append(timeRepresentation)
+    result.append("=>"+sucessors.size)
     result.append(lineSeparator)
     sucessors.foreach{ successor=>
          result.append(successor.toString(indice+1,beginTime))

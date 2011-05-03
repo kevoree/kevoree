@@ -16,7 +16,7 @@ class VectorClockSingleDisseminationChartScala(ltrace: LinkedTrace) {
   private def buildPlot(idCateg: java.lang.Integer, beginningOfTime: Long, ltrace: LinkedTrace, defaultCategoryDataset: DefaultCategoryDataset, previousTimeStamps: List[java.lang.Long]) {
 
     val calendar: Calendar = Calendar.getInstance
-    calendar.setTimeInMillis(ltrace.trace.getTimestamp - beginningOfTime)
+    calendar.setTimeInMillis( (ltrace.trace.getTimestamp - beginningOfTime ) / 1000000 )
     val timeRepresentation = "" + calendar.get(Calendar.MINUTE) + ":" + calendar.get(Calendar.SECOND) + ":" + calendar.get(Calendar.MILLISECOND)
 
     if (!nodes.contains(ltrace.trace.getClientId)) {
