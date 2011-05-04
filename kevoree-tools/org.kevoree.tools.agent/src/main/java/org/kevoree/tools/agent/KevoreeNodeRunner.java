@@ -26,6 +26,8 @@ import java.net.URLStreamHandlerFactory;
 
 public class KevoreeNodeRunner {
 
+	private static final String defaultJarFilePath = System.getProperty("java.io.tmpdir") + "org.kevoree.platform.osgi.stanhdalone.jar";
+
 	private Logger logger = LoggerFactory.getLogger(KevoreeNodeRunner.class);
 
 	private Process nodePlatformProcess;
@@ -48,7 +50,7 @@ public class KevoreeNodeRunner {
 			getJar();
 		}
 		try {
-			nodePlatformProcess = Runtime.getRuntime().exec(new String[] {"java", "-Dnode.name=" + nodeName,"-Dnode.port=" + basePort, "-jar", platformJARPath});
+			nodePlatformProcess = Runtime.getRuntime().exec(new String[]{"java", "-Dnode.name=" + nodeName, "-Dnode.port=" + basePort, "-jar", platformJARPath});
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -67,7 +69,7 @@ public class KevoreeNodeRunner {
 		}
 	}
 
-	private void getJar() {
+	/*private void getJar() { // from maven
 		try {
 			URL mvnURL = new URL("mvn:http://maven.kevoree.org/release!org.kevoree.platform/org.kevoree.platform.osgi.standalone");
 			InputStream stream = mvnURL.openConnection().getInputStream();
@@ -78,6 +80,31 @@ public class KevoreeNodeRunner {
 
 			byte[] bytes = new byte[1024];
 			int length = 0;
+			while ((length = stream.read()) != -1) {
+				outputStream.write(bytes, 0, length);
+			}
+			outputStream.flush();
+			outputStream.close();
+			stream.close();
+
+			platformJARPath = f.getAbsolutePath();
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}*/
+
+	private void getJar() { // from the availables resources
+		try {
+			InputStream stream = this.getClass().getClassLoader().getResourceAsStream("org.kevoree.platform.osgi.standalone.jar");
+
+			File f = new File(defaultJarFilePath);
+			f.deleteOnExit();
+			OutputStream outputStream = new FileOutputStream(f);
+
+			byte[] bytes = new byte[1024];
+			int length;
 			while ((length = stream.read()) != -1) {
 				outputStream.write(bytes, 0, length);
 			}
@@ -103,7 +130,7 @@ public class KevoreeNodeRunner {
 
 		@Override
 		public URLStreamHandler createURLStreamHandler(String protocol) {
-				return handler;
+			return handler;
 		}
 	}
 }
