@@ -71,7 +71,7 @@ public class KevoreeNodeRunner {
 
 	/*private void getJar() { // from maven
 		try {
-			URL mvnURL = new URL("mvn:http://maven.kevoree.org/release!org.kevoree.platform/org.kevoree.platform.osgi.standalone");
+			URL mvnURL = new URL("mvn:http://maven.kevoree.org/release/!org.kevoree.platform/org.kevoree.platform.osgi.standalone");
 			InputStream stream = mvnURL.openConnection().getInputStream();
 
 			File f = File.createTempFile("org.kevoree.platform.osgi.standalone", ".jar");
