@@ -14,6 +14,7 @@
         <module>../org.kevoree.experiment.library.gossiperNetty</module>
         <module>../org.kevoree.experiment.trace.server</module>
         <module>../org.kevoree.experiment.trace.gui</module>
+        <module>../org.kevoree.experiment.modelScript</module>
 	</modules>
 
     <distributionManagement>

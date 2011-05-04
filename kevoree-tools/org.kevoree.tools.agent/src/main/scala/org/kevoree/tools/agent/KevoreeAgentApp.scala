@@ -13,4 +13,44 @@
  */
 package org.kevoree.tools.agent
 
-object KevoreeAgentApp extends Application
+import com.twitter.finagle.Service
+import org.jboss.netty.handler.codec.http.{HttpResponse, HttpRequest}
+import java.net.InetSocketAddress
+import com.twitter.finagle.builder.{Http, ServerBuilder, Server}
+import org.kevoree.tools.agent.HttpServer.Respond
+
+object KevoreeAgentApp extends Application {
+
+  val agent = new KevoreeRuntimeAgent
+
+
+
+  val respond = new Respond(agent)
+
+    // compose the Filters and Service together:
+    val myService: Service[HttpRequest, HttpResponse] = /*handleExceptions andThen authorize andThen */ respond
+
+    val server: Server = ServerBuilder()
+      .codec(Http)
+      .bindTo(new InetSocketAddress(8080))
+      .build(myService)
+
+    println("Kevoree Agent started !")
+
+    println("press q to quit !")
+
+
+
+  while(System.in.read != 'q'){
+    //NOOP
+  }
+
+  println("Kill all runners")
+
+  KevoreeNodeRunnerHandler.closeAllRunners()
+
+  server.close()
+
+
+
+}
