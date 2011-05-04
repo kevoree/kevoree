@@ -13,8 +13,6 @@
  */
 package org.kevoree.platform.osgi.standalone;
 
-import com.sun.xml.internal.messaging.saaj.util.ByteInputStream;
-import com.sun.xml.internal.messaging.saaj.util.ByteOutputStream;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.kevoree.ContainerRoot;
 import org.kevoree.KevoreeFactory;
@@ -28,6 +26,8 @@ import org.kevoree.tools.marShell.parser.KevsParser;
 import org.kevoreeAdaptation.KevoreeAdaptationFactory;
 import scala.Option;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
 
@@ -47,9 +47,11 @@ public class KevScriptInterpreterService implements ScriptInterpreter {
 
         if (script.isDefined()) {
 
-            ByteOutputStream outputStream = new ByteOutputStream();
+            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
             KevoreeXmiHelper.saveStream(outputStream,handler.getLastModel());
-            ContainerRoot model = KevoreeXmiHelper.loadStream(outputStream.newInputStream());
+
+            ByteArrayInputStream input = new ByteArrayInputStream(outputStream.toByteArray());
+            ContainerRoot model = KevoreeXmiHelper.loadStream(input);
 
             //ContainerRoot model = EcoreUtil.copy(handler.getLastModel());
 
