@@ -4,14 +4,14 @@
     <modelVersion>4.0.0</modelVersion>
     <artifactId>org.kevoree.platform.agent</artifactId>
     <packaging>jar</packaging>
-    <name>Kevoree :: Tools :: Agent</name>
+    <name>Kevoree :: Platform :: Agent</name>
     <version>1.1.0-RC1</version>
 
     <parent>
-        <artifactId>org.kevoree.tools.root</artifactId>
-        <groupId>org.kevoree.tools</groupId>
+        <artifactId>org.kevoree.platform.root</artifactId>
+        <groupId>org.kevoree.platform</groupId>
         <version>1.1.0-RC1</version>
-        <relativePath>../org.kevoree.tools.root/pom.xml</relativePath>
+        <relativePath>../org.kevoree.platform.root/pom.xml</relativePath>
     </parent>
 
     <repositories>
@@ -59,10 +59,17 @@
             <artifactId>finagle-core</artifactId>
             <version>1.4.0</version>
         </dependency>
+
+        <dependency>
+            <groupId>org.kevoree.platform</groupId>
+            <artifactId>org.kevoree.platform.osgi.standalone</artifactId>
+            <version>${kevoree.version}</version>
+        </dependency>
+
     </dependencies>
 
 
-        <build>
+    <build>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
