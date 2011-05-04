@@ -47,6 +47,9 @@ object KevsInterpreterAspects {
         case addGroup : AddGroupStatment => KevsAddGroupInterpreter(addGroup)
         case removeGroup : RemoveGroupStatment => KevsRemoveGroupInterpreter(removeGroup)
 
+        case addToGroupStatement : AddToGroupStatement => KevsAddToGroupInterpreter(addToGroupStatement)
+        case removeFromGroupStatement : RemoveFromGroupStatement => KevsRemoveFromGroupInterpreter(removeFromGroupStatement)
+
         case moveComponent : MoveComponentInstanceStatment => KevsMoveComponentInstanceInterpreter(moveComponent)
 
           //Library aspect
@@ -56,6 +59,10 @@ object KevsInterpreterAspects {
           //TYPE ASPECT
         case createComponentType : CreateComponentTypeStatment => KevsCreateComponentTypeInterpreter(createComponentType)
         case createChannelType : CreateChannelTypeStatment => KevsCreateChannelTypeInterpreter(createChannelType)
+
+        //Network
+        case networkStatement : NetworkPropertyStatement => KevsNetworkInterpreter(networkStatement)
+
 
       }
     case _ @ e => println(e);null

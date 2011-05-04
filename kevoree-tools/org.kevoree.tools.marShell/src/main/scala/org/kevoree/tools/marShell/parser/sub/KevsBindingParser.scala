@@ -19,8 +19,10 @@
 package org.kevoree.tools.marShell.parser.sub
 
 import org.kevoree.tools.marShell.ast.AddBindingStatment
+import org.kevoree.tools.marShell.ast.AddToGroupStatement
 import org.kevoree.tools.marShell.ast.ComponentInstanceID
 import org.kevoree.tools.marShell.ast.RemoveBindingStatment
+import org.kevoree.tools.marShell.ast.RemoveFromGroupStatement
 import org.kevoree.tools.marShell.ast.Statment
 
 trait KevsBindingParser extends KevsAbstractParser {
@@ -35,7 +37,19 @@ trait KevsBindingParser extends KevsAbstractParser {
       List(RemoveBindingStatment(ComponentInstanceID(compoID,Some(nodeID)),portid,channelid))
   }
 
-  def parseBindingsStatments : Parser[List[Statment]] = parseRemoveBinding | parseAddBinding
+
+  val addToGroupFormat = "addToGroup <GroupInstanceName> <NodeInstanceName>"
+  def parseAddToGroup : Parser[List[Statment]] = "addToGroup" ~ orFailure(identOrWildcard,addToGroupFormat) ~ orFailure(identOrWildcard,addToGroupFormat) ^^ { case _ ~ groupInstanceName ~ nodeInstanceName =>
+        List(AddToGroupStatement(groupInstanceName,nodeInstanceName))
+  }
+
+  val removeFromGroupFormat = "removeFromGroup <GroupInstanceName> <NodeInstanceName>"
+  def parseRemoveFromGroup : Parser[List[Statment]] = "removeFromGroup" ~ orFailure(identOrWildcard,removeFromGroupFormat) ~ orFailure(identOrWildcard,removeFromGroupFormat) ^^ { case _ ~ groupInstanceName ~ nodeInstanceName =>
+        List(RemoveFromGroupStatement(groupInstanceName,nodeInstanceName))
+  }
+  //RemoveFromGroupStatement
+
+  def parseBindingsStatments : Parser[List[Statment]] = parseRemoveBinding | parseAddBinding  | parseAddToGroup | parseRemoveFromGroup
 
 
 }

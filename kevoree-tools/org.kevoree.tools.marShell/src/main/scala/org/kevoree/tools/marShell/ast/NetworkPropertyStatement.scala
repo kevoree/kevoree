@@ -11,14 +11,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package org.kevoree.tools.marShell.ast
 
-case class CreateComponentTypeStatment(newTypeName : String) extends TypeStatment {
+case class NetworkPropertyStatement(targetNodeName : String,props : java.util.Properties) extends Statment {
+
 
 
 
