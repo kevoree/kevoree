@@ -11,15 +11,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
+package org.kevoree.tools.marShell.parser.sub
 
-package org.kevoree.tools.marShell.ast
+import org.kevoree.tools.marShell.ast.{NetworkPropertyStatement, RemoveLibraryStatment, AddLibraryStatment, Statment}
 
-case class CreateComponentTypeStatment(newTypeName : String) extends TypeStatment {
+trait KevsNetworkPropertyParser extends KevsAbstractParser with KevsPropertiesParser {
 
+  val networkPropertyFormat = "network <NodeInstanceName> {key=\"val\",\"key2\"=\"val2\"}"
+  def parseNetworkProperty : Parser[List[Statment]] = "network" ~ orFailure(ident,networkPropertyFormat) ~ parseProperties ^^{ case _ ~ nodeName ~ props =>
+      List(NetworkPropertyStatement(nodeName,props))
+  }
 
 
 }

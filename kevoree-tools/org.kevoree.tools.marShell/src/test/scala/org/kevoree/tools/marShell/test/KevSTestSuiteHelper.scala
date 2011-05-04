@@ -58,6 +58,11 @@ trait KevSTestSuiteHelper extends JUnitSuite {
   def getScript(url:String) : Script = {
     val parser =new KevsParser();
     val script = parser.parseScript(ParserUtil.loadFile(this.getClass.getClassLoader.getResource(url).getPath))
+
+    if(!script.isDefined) {
+      println(parser.lastNoSuccess)
+    }
+
     assertTrue(script.isDefined)
     script.get
   }

@@ -21,14 +21,14 @@ package org.kevoree.tools.marShell.parser.sub
 trait KevsPropertiesParser extends KevsAbstractParser {
 
   def parseProperties : Parser[java.util.Properties] = "{" ~ repsep(parseProperty,",") ~ "}" ^^{ case _ ~ propsParsed ~ _ =>
-      var props = new java.util.Properties
+      val props = new java.util.Properties
       propsParsed.foreach{prop =>
         props.put(prop._1, prop._2)
       }
       props
   }
 
-  def parseProperty : Parser[Tuple2[String,String]] = ident ~ "=" ~ stringLit ^^{ case id ~ _ ~ content =>
+  def parseProperty : Parser[Tuple2[String,String]] = ( ident | stringLit ) ~ "=" ~ stringLit ^^{ case id ~ _ ~ content =>
       Tuple2(id,content)
   }
 
