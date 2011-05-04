@@ -13,6 +13,7 @@
  */
 package org.kevoree.tools.agent;
 
+import com.sun.tools.javac.resources.version;
 import org.ops4j.pax.url.mvn.Handler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,8 +27,6 @@ import java.net.URLStreamHandlerFactory;
 
 public class KevoreeNodeRunner {
 
-	private static final String defaultJarFilePath = System.getProperty("java.io.tmpdir") + "org.kevoree.platform.osgi.stanhdalone.jar";
-
 	private Logger logger = LoggerFactory.getLogger(KevoreeNodeRunner.class);
 
 	private Process nodePlatformProcess;
@@ -40,19 +39,22 @@ public class KevoreeNodeRunner {
 
 		//URL url = new URL(null,"cvs://server/project/folder#version", new PaxMvnUrlStreamHandlerFactory());
 		//System.setProperty("org.ops4j.pax.url.mvn.defaultRepositories", "http://maven.kevoree.org/release");
-		URL.setURLStreamHandlerFactory(new PaxMvnUrlStreamHandlerFactory());
+		//URL.setURLStreamHandlerFactory(new PaxMvnUrlStreamHandlerFactory()); // to use the maven URL handler
+		this.nodeName = nodeName;
+		this.basePort = basePort;
 
 	}
 
 	public void startNode() {
-		System.out.println("StartNodeCommand");
-		if (platformJARPath == null) {
-			getJar();
-		}
 		try {
+			System.out.println("StartNodeCommand");
+			if (platformJARPath == null) {
+				getJar();
+			}
 			nodePlatformProcess = Runtime.getRuntime().exec(new String[]{"java", "-Dnode.name=" + nodeName, "-Dnode.port=" + basePort, "-jar", platformJARPath});
 		} catch (IOException e) {
 			e.printStackTrace();
+			System.exit(1);
 		}
 
 	}
@@ -69,7 +71,7 @@ public class KevoreeNodeRunner {
 		}
 	}
 
-	/*private void getJar() { // from maven
+	/*private void getJar() { // from maven(doesn't work ...)
 		try {
 			URL mvnURL = new URL("mvn:http://maven.kevoree.org/release/!org.kevoree.platform/org.kevoree.platform.osgi.standalone");
 			InputStream stream = mvnURL.openConnection().getInputStream();
@@ -95,7 +97,7 @@ public class KevoreeNodeRunner {
 		}
 	}*/
 
-	private void getJar() { // from the availables resources
+	/*private void getJar() { // from the availables resources into the jar
 		try {
 			InputStream stream = this.getClass().getClassLoader().getResourceAsStream("org.kevoree.platform.osgi.standalone.jar");
 
@@ -118,9 +120,45 @@ public class KevoreeNodeRunner {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+	}*/
+
+	private void getJar() throws IOException {
+		String jarLocation = System.getProperty("kevoree.location");
+		if (jarLocation == null) {
+			jarLocation = System.getProperty("user.dir") + "org.kevoree.platform.osgi.standalone" + getVersion() + ".jar";
+		}
+		if (new File(jarLocation).exists()) {
+			platformJARPath = jarLocation;
+		} else {
+			throw new FileNotFoundException(jarLocation + " doesn't exist");
+		}
 	}
 
-	public class PaxMvnUrlStreamHandlerFactory implements URLStreamHandlerFactory {
+	private String getVersion() throws IOException {
+		InputStream stream = this.getClass().getClassLoader().getResourceAsStream("META-INF/maven/org.kevoree.platform/org.kevoree.platform.agent/pom.properties");
+		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+
+		byte[] bytes = new byte[1024];
+		int length;
+		while ((length = stream.read()) != -1) {
+			outputStream.write(bytes, 0, length);
+		}
+		outputStream.flush();
+		outputStream.close();
+		stream.close();
+
+		StringBuilder builder = new StringBuilder(outputStream.toString());
+		int index = builder.indexOf("version=");
+		builder.delete(0, index);
+		int end = builder.indexOf(System.getProperty("line.separator"));
+		builder.delete(end, builder.length());
+		int equalsSign = builder.indexOf("=");
+		builder.delete(0, equalsSign + 1);
+
+		return builder.toString();
+	}
+
+	/*public class PaxMvnUrlStreamHandlerFactory implements URLStreamHandlerFactory {
 
 		Handler handler;
 
@@ -132,5 +170,5 @@ public class KevoreeNodeRunner {
 		public URLStreamHandler createURLStreamHandler(String protocol) {
 			return handler;
 		}
-	}
+	}*/
 }
