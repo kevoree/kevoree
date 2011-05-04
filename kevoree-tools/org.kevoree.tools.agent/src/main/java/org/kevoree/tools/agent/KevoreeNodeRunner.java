@@ -38,7 +38,8 @@ public class KevoreeNodeRunner {
 
 	}
 
-	public void startNode(String nodeName, Integer basePort) {
+	public void startNode() {
+		System.out.println("StartNodeCommand");
 		if (platformJARPath == null) {
 			getJar();
 		}
@@ -47,6 +48,7 @@ public class KevoreeNodeRunner {
 	}
 
 	public void stopKillNode() {
+		System.out.println("KillNodeCommand");
 		try {
 			nodePlatformProcess.getOutputStream().write("stop 0".getBytes());
 			nodePlatformProcess.getOutputStream().flush();
@@ -59,7 +61,7 @@ public class KevoreeNodeRunner {
 
 	private void getJar() {
 		try {
-			URL mvnURL = new URL("mvn:org.kevoree.platform/org.kevoree.platform.osgi.standalone	");
+			URL mvnURL = new URL("mvn:http://maven.kevoree.org/release!org.kevoree.platform/org.kevoree.platform.osgi.standalone");
 			InputStream stream = mvnURL.openConnection().getInputStream();
 
 			File f = File.createTempFile("org.kevoree.platform.osgi.standalone", ".jar");
@@ -94,5 +96,4 @@ public class KevoreeNodeRunner {
 				return handler;
 		}
 	}
-
 }
