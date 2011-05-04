@@ -31,9 +31,13 @@ public class KevoreeNodeRunner {
 	private Process nodePlatformProcess;
 	private String platformJARPath;
 
+	private String nodeName;
+	private Integer basePort;
+
 	public KevoreeNodeRunner(String nodeName, Integer basePort) {
 
 		//URL url = new URL(null,"cvs://server/project/folder#version", new PaxMvnUrlStreamHandlerFactory());
+		//System.setProperty("org.ops4j.pax.url.mvn.defaultRepositories", "http://maven.kevoree.org/release");
 		URL.setURLStreamHandlerFactory(new PaxMvnUrlStreamHandlerFactory());
 
 	}
@@ -43,7 +47,11 @@ public class KevoreeNodeRunner {
 		if (platformJARPath == null) {
 			getJar();
 		}
-		System.out.println("");
+		try {
+			nodePlatformProcess = Runtime.getRuntime().exec(new String[] {"java", "-Dnode.name=" + nodeName,"-Dnode.port=" + basePort, "-jar", platformJARPath});
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 
 	}
 
@@ -76,6 +84,8 @@ public class KevoreeNodeRunner {
 			outputStream.flush();
 			outputStream.close();
 			stream.close();
+
+			platformJARPath = f.getAbsolutePath();
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
