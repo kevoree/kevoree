@@ -11,24 +11,26 @@ object BootStrapApp extends Application {
 
   tscript append "tblock {"
 
-
-  tscript append generatePhysicalNodeScript("duke", "192.1", 8000, 10)
-  tscript append generatePhysicalNodeScript("paraisseux", "192.1", 8000, 10)
-
+  val dukeIP = "131.254.15.214"
+  val paraisseuxIP = "131.254.12.28"
 
 
-
-  //COMPUT GGROUP FRAGEMENT PORT
-
+  tscript append generatePhysicalNodeScript("duke", dukeIP, 8000, 10)
+  tscript append generatePhysicalNodeScript("paraisseux", paraisseuxIP, 8000, 10)
 
   //ADD GLOBAL GROUP
   tscript append "addGroup gossipGroup : LogNettyGossiperGroup {"
-  tscript append "port=\"" + generateGroupFragmentPort( List(("duke",10,9000),("paraisseux",10,9000))  )
-  tscript append "\"}\n"
+  tscript append "port=\"" + generateGroupFragmentPort( List(("duke",10,9000),("paraisseux",10,9000))  )+"\"\n"
+  tscript append ",loggerServerIP=\""+dukeIP+"\""
+
+
+  tscript append "}\n"
   //BIND ALL NODE TO GROUP
   tscript append "addToGroup gossipGroup * \n"
 
   tscript append "}\n"
+
+  //println(tscript)
 
   val parser = new KevsParser();
   val script = parser.parseScript(tscript.toString())
@@ -85,7 +87,7 @@ object BootStrapApp extends Application {
       tscript append firstPort + i
       tscript append "\"}\n"
 
-      tscript append "network duke"
+      tscript append "network "+prefixeName
       tscript append i
       tscript append " { \"KEVOREE.remote.node.ip\"= \""
       tscript append ip
