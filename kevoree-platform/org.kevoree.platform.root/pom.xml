@@ -91,6 +91,8 @@
        <module>../org.kevoree.platform.osgi.bundle.full</module>
        <module>../org.kevoree.platform.osgi.android</module>
       <!-- <module>../org.kevoree.platform.osgi.standalone.minigui</module>-->
+       <module>../org.kevoree.platform.agent</module>
+      
     </modules>
     
     <repositories>

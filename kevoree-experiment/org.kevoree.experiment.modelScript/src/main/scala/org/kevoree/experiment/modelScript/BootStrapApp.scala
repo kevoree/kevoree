@@ -11,39 +11,19 @@ object BootStrapApp extends Application {
 
   tscript append "tblock {"
 
-  //Add 20 node duke
-  for (i <- 0 until 20) {
-    //ADD NODE
-    tscript append "\n"
-    tscript append "addNode duke"
-    tscript append i
-    tscript append " : "
-    tscript append "JavaSENode"
-    tscript.append("\n")
 
-    tscript append "network duke"
-    tscript append i
-    tscript append " { \"KEVOREE.remote.node.modelsynch.port\"= \""
-    tscript append 8000+i
-    tscript append "\"}\n"
-  }
+  tscript append generatePhysicalNodeScript("duke", "192.1", 8000, 10)
+  tscript append generatePhysicalNodeScript("paraisseux", "192.1", 8000, 10)
+
+
+
 
   //COMPUT GGROUP FRAGEMENT PORT
-  var groupPort = new StringBuilder
-  for (i <- 0 until 20) {
-    if (!groupPort.isEmpty) {
-      groupPort.append(",")
-    }
-    groupPort.append("duke")
-    groupPort.append(i)
-    groupPort.append("=")
-    groupPort.append(9080+i)
 
-  }
 
   //ADD GLOBAL GROUP
   tscript append "addGroup gossipGroup : LogNettyGossiperGroup {"
-  tscript append "port=\""+groupPort.toString
+  tscript append "port=\"" + generateGroupFragmentPort( List(("duke",10,9000),("paraisseux",10,9000))  )
   tscript append "\"}\n"
   //BIND ALL NODE TO GROUP
   tscript append "addToGroup gossipGroup * \n"
@@ -66,6 +46,54 @@ object BootStrapApp extends Application {
       println("DTC Error !")
       println(parser.lastNoSuccess)
     }
+  }
+
+
+  def generateGroupFragmentPort(p: List[(String, Int, Int)]): String = {
+    val groupPort = new StringBuilder
+    p.foreach {
+      param =>
+        for (i <- 0 until param._2) {
+          if (!groupPort.isEmpty) {
+            groupPort.append(",")
+          }
+          groupPort.append(param._1)
+          groupPort.append(i)
+          groupPort.append("=")
+          groupPort.append(param._3 + i)
+
+        }
+    }
+    groupPort.toString()
+  }
+
+
+  def generatePhysicalNodeScript(prefixeName: String, ip: String, firstPort: Int, subNodesNumber: Int): String = {
+    val tscript = new StringBuilder
+    for (i <- 0 until subNodesNumber) {
+      //ADD NODE
+      tscript append "\n"
+      tscript append "addNode " + prefixeName
+      tscript append i
+      tscript append " : "
+      tscript append "JavaSENode"
+      tscript.append("\n")
+
+      tscript append "network duke"
+      tscript append i
+      tscript append " { \"KEVOREE.remote.node.modelsynch.port\"= \""
+      tscript append firstPort + i
+      tscript append "\"}\n"
+
+      tscript append "network duke"
+      tscript append i
+      tscript append " { \"KEVOREE.remote.node.ip\"= \""
+      tscript append ip
+      tscript append "\"}\n"
+
+    }
+
+    tscript.toString()
   }
 
 
