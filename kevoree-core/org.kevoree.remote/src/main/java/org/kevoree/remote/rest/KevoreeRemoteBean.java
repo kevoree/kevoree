@@ -41,6 +41,8 @@ public class KevoreeRemoteBean {
 		} catch (NumberFormatException e) {
 		}
 
+        System.setProperty("node.port",port+"");
+
 		System.out.println("Kevoree Remote Port => " + port);
 
 		component = new Component();

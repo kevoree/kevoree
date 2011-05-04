@@ -27,6 +27,7 @@
         <module>../org.kevoree.extra.osgi.xbee</module>
         <module>../org.kevoree.extra.esper</module>
         <module>../org.kevoree.extra.ecj</module>
+        <module>../org.kevoree.extra.osgi.jmdns</module>
 	</modules>
 
     <distributionManagement>
