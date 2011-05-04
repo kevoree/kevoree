@@ -3,6 +3,8 @@ package org.kevoree.experiment.modelScript
 import org.kevoree.tools.marShell.interpreter.KevsInterpreterContext
 import org.kevoree.tools.marShell.parser.{ParserUtil, KevsParser}
 import org.kevoree.framework.KevoreeXmiHelper
+import java.net.URL
+import java.io.{ByteArrayOutputStream, BufferedReader, InputStreamReader, OutputStreamWriter}
 
 object BootStrapApp extends Application {
 
@@ -13,6 +15,7 @@ object BootStrapApp extends Application {
 
   val dukeIP = "131.254.15.214"
   val paraisseuxIP = "131.254.12.28"
+  val ips = List(dukeIP, paraisseuxIP)
 
 
   tscript append generatePhysicalNodeScript("duke", dukeIP, 8000, 10)
@@ -20,8 +23,8 @@ object BootStrapApp extends Application {
 
   //ADD GLOBAL GROUP
   tscript append "addGroup gossipGroup : LogNettyGossiperGroup {"
-  tscript append "port=\"" + generateGroupFragmentPort( List(("duke",10,9000),("paraisseux",10,9000))  )+"\"\n"
-  tscript append ",loggerServerIP=\""+dukeIP+"\""
+  tscript append "port=\"" + generateGroupFragmentPort(List(("duke", 10, 9000), ("paraisseux", 10, 9000))) + "\"\n"
+  tscript append ",loggerServerIP=\"" + dukeIP + "\""
 
 
   tscript append "}\n"
@@ -39,6 +42,41 @@ object BootStrapApp extends Application {
       import org.kevoree.tools.marShell.interpreter.KevsInterpreterAspects._
       if (validScript.interpret(KevsInterpreterContext(model))) {
         ParserUtil.save("bootStrap.kev", model)
+        val outStream = new ByteArrayOutputStream
+
+        KevoreeXmiHelper.saveStream(outStream, model)
+        outStream.flush
+
+
+        //Try to push to all
+        ips.foreach {
+          ip =>
+            try {
+            val url = new URL("http://" + ip + ":8080");
+              println("send to "+url)
+            val conn = url.openConnection();
+            conn.setConnectTimeout(2000);
+            conn.setDoOutput(true);
+            val wr = new OutputStreamWriter(conn.getOutputStream())
+            wr.write(outStream.toString);
+            wr.flush();
+
+            // Get the response
+            val rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+            var line: String = rd.readLine;
+            while (line != null) {
+              println("ipReturn"+line)
+              line = rd.readLine
+            }
+            wr.close();
+            rd.close();
+
+            } catch {
+              case _ @ e => e.printStackTrace
+            }
+        }
+
+
       } else {
         println("Interpreter Error")
       }
@@ -87,7 +125,7 @@ object BootStrapApp extends Application {
       tscript append firstPort + i
       tscript append "\"}\n"
 
-      tscript append "network "+prefixeName
+      tscript append "network " + prefixeName
       tscript append i
       tscript append " { \"KEVOREE.remote.node.ip\"= \""
       tscript append ip
