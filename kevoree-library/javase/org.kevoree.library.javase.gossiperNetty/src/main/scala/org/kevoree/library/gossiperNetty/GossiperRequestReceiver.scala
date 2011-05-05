@@ -20,121 +20,130 @@ import org.jboss.netty.handler.codec.compression.{ZlibDecoder, ZlibEncoder, Zlib
 import org.jboss.netty.handler.codec.protobuf.{ProtobufEncoder, ProtobufVarint32LengthFieldPrepender, ProtobufDecoder, ProtobufVarint32FrameDecoder}
 import version.Gossip
 import version.Gossip.{UpdatedValueNotification, UUIDDataRequest, VectorClockUUIDsRequest}
+import org.slf4j.LoggerFactory
 
 class GossiperRequestReceiver(channelFragment: NettyGossipAbstractElement, dataManager: DataManager, port: Int, gossiperRequestSender: GossiperRequestSender, fullUDP: java.lang.Boolean, serializer: Serializer) extends actors.DaemonActor {
 
-	var self = this
-	// define attributes used to define channel to listen request
-	var factoryForRequest = new NioDatagramChannelFactory(Executors.newCachedThreadPool())
-	var bootstrapForRequest = new ConnectionlessBootstrap(factoryForRequest)
-	bootstrapForRequest.setPipelineFactory(new ChannelPipelineFactory() {
-		override def getPipeline(): ChannelPipeline = {
-			val p: ChannelPipeline = Channels.pipeline()
-			//p.addLast("deflater", new ZlibEncoder(ZlibWrapper.ZLIB))
-			//p.addLast("inflater", new ZlibDecoder(ZlibWrapper.ZLIB))
-			p.addLast("frameDecoder", new ProtobufVarint32FrameDecoder)
-			p.addLast("protobufDecoder", new ProtobufDecoder(Message.getDefaultInstance()))
-			p.addLast("frameEncoder", new ProtobufVarint32LengthFieldPrepender)
-			p.addLast("protobufEncoder", new ProtobufEncoder())
-			p.addLast("handler", new GossiperRequestReceiverHandler(self))
-			return p
-		}
-	}
-	)
-	private var channel = bootstrapForRequest.bind(new InetSocketAddress(port));
+  private var logger = LoggerFactory.getLogger(classOf[GossiperRequestReceiver])
 
-	var factoryForRequestTCP = new NioServerSocketChannelFactory(Executors.newCachedThreadPool(), Executors.newCachedThreadPool())
-	var bootstrapForRequestTCP = new ServerBootstrap(factoryForRequestTCP)
-	bootstrapForRequestTCP.setPipelineFactory(new ChannelPipelineFactory() {
-		override def getPipeline(): ChannelPipeline = {
-			val p: ChannelPipeline = Channels.pipeline()
-			p.addLast("deflater", new ZlibEncoder(ZlibWrapper.ZLIB))
-			p.addLast("inflater", new ZlibDecoder(ZlibWrapper.ZLIB))
-			p.addLast("frameDecoder", new ProtobufVarint32FrameDecoder)
-			p.addLast("protobufDecoder", new ProtobufDecoder(Message.getDefaultInstance()))
-			p.addLast("frameEncoder", new ProtobufVarint32LengthFieldPrepender)
-			p.addLast("protobufEncoder", new ProtobufEncoder)
-			p.addLast("handler", new DataSenderHandler(channelFragment, dataManager, serializer))
-			return p
-		}
-	}
-	)
-	bootstrapForRequestTCP.setOption("tcpNoDelay", true)
-	private var channelTCP =  bootstrapForRequestTCP.bind(new InetSocketAddress(port));
+  var self = this
+  // define attributes used to define channel to listen request
+  var factoryForRequest = new NioDatagramChannelFactory(Executors.newCachedThreadPool())
+  var bootstrapForRequest = new ConnectionlessBootstrap(factoryForRequest)
+  bootstrapForRequest.setPipelineFactory(new ChannelPipelineFactory() {
+    override def getPipeline(): ChannelPipeline = {
+      val p: ChannelPipeline = Channels.pipeline()
+      //p.addLast("deflater", new ZlibEncoder(ZlibWrapper.ZLIB))
+      //p.addLast("inflater", new ZlibDecoder(ZlibWrapper.ZLIB))
+      p.addLast("frameDecoder", new ProtobufVarint32FrameDecoder)
+      p.addLast("protobufDecoder", new ProtobufDecoder(Message.getDefaultInstance()))
+      p.addLast("frameEncoder", new ProtobufVarint32LengthFieldPrepender)
+      p.addLast("protobufEncoder", new ProtobufEncoder())
+      p.addLast("handler", new GossiperRequestReceiverHandler(self))
+      return p
+    }
+  }
+                                        )
+  private var channel = bootstrapForRequest.bind(new InetSocketAddress(port));
 
-	this.start
+  var factoryForRequestTCP = new NioServerSocketChannelFactory(Executors.newCachedThreadPool(), Executors.newCachedThreadPool())
+  var bootstrapForRequestTCP = new ServerBootstrap(factoryForRequestTCP)
+  bootstrapForRequestTCP.setPipelineFactory(new ChannelPipelineFactory() {
+    override def getPipeline(): ChannelPipeline = {
+      val p: ChannelPipeline = Channels.pipeline()
+      p.addLast("deflater", new ZlibEncoder(ZlibWrapper.ZLIB))
+      p.addLast("inflater", new ZlibDecoder(ZlibWrapper.ZLIB))
+      p.addLast("frameDecoder", new ProtobufVarint32FrameDecoder)
+      p.addLast("protobufDecoder", new ProtobufDecoder(Message.getDefaultInstance()))
+      p.addLast("frameEncoder", new ProtobufVarint32LengthFieldPrepender)
+      p.addLast("protobufEncoder", new ProtobufEncoder)
+      p.addLast("handler", new DataSenderHandler(channelFragment, dataManager, serializer))
+      return p
+    }
+  }
+                                           )
+  bootstrapForRequestTCP.setOption("tcpNoDelay", true)
+  private var channelTCP = bootstrapForRequestTCP.bind(new InetSocketAddress(port));
 
-	case class SendReply(message: Message, address: SocketAddress, channel: Channel)
+  this.start
 
-	//case class RETURN_MSG()
-	case class STOP_GOSSIPER()
+  case class SendReply(message: Message, address: SocketAddress, channel: Channel)
 
-	def stop() {
-		this ! STOP_GOSSIPER()
-	}
+  //case class RETURN_MSG()
+  case class STOP_GOSSIPER()
 
-	def sendReply(message: Message, address: SocketAddress, channel: Channel) = {
-		this ! SendReply(message, address, channel)
-	}
+  def stop() {
+    this ! STOP_GOSSIPER()
+  }
 
-	/* PRIVATE PROCESS PART */
-	def act() {
-		loop {
-			react {
-				case STOP_GOSSIPER() => {
-					channelTCP.close.awaitUninterruptibly
-					channel.close.awaitUninterruptibly
-					bootstrapForRequest.releaseExternalResources
-					this.exit
-				}
-				case SendReply(message, address, channel) => doGossip(message, address, channel)
-			}
-		}
-	}
+  def sendReply(message: Message, address: SocketAddress, channel: Channel) = {
+    this ! SendReply(message, address, channel)
+  }
 
-	private def doGossip(message: Message, address: SocketAddress, channel: Channel) /*: Channel*/ = {
-		//println(address)
-		var responseBuilder: Message.Builder = Message.newBuilder.setDestName(channelFragment.getName).setDestNodeName(channelFragment.getNodeName)
+  /* PRIVATE PROCESS PART */
+  def act() {
+    loop {
+      react {
+        case STOP_GOSSIPER() => {
+          channelTCP.close.awaitUninterruptibly
+          channel.close.awaitUninterruptibly
+          bootstrapForRequest.releaseExternalResources
+          this.exit
+        }
+        case SendReply(message, address, channel) => doGossip(message, address, channel)
+      }
+    }
+  }
 
-		message.getContentClass match {
-			case s : String if(s == classOf[VectorClockUUIDsRequest].getName) => {
-				val uuidVectorClocks = dataManager.getUUIDVectorClocks
-				var vectorClockUUIDsBuilder = Gossip.VectorClockUUIDs.newBuilder
-				uuidVectorClocks.keySet.foreach {
-					uuid: UUID =>
-						vectorClockUUIDsBuilder.addVectorClockUUIDs(Gossip.VectorClockUUID.newBuilder.setUuid(uuid.toString).setVector(uuidVectorClocks.get(uuid)).build)
-						if (vectorClockUUIDsBuilder.getVectorClockUUIDsCount == 1) {
-							// it is possible to increase the number of vectorClockUUID on each message
-							responseBuilder = Message.newBuilder.setDestName(channelFragment.getName).setDestNodeName(channelFragment.getNodeName)
-							val modelBytes = vectorClockUUIDsBuilder.build.toByteString
-							responseBuilder.setContentClass(classOf[Gossip.VectorClockUUIDs].getName).setContent(modelBytes)
-							channel.write(responseBuilder.build, address)
-							vectorClockUUIDsBuilder = Gossip.VectorClockUUIDs.newBuilder
-						}
-				}
-			}
-			/*case "org.kevoree.library.gossiperNetty.version.Gossip$UUIDVectorClockRequest" => {
-								 var uuidVectorClockRequest = Gossip.UUIDVectorClockRequest.parseFrom(message.getContent.asInstanceOf[ByteString])
-								 var vectorClock =dataManager.getUUIDVectorClock(UUID.fromString(uuidVectorClockRequest.getUuid))
+  private def doGossip(message: Message, address: SocketAddress, channel: Channel) /*: Channel*/ = {
+    //println(address)
+    var responseBuilder: Message.Builder = Message.newBuilder.setDestName(channelFragment.getName).setDestNodeName(channelFragment.getNodeName)
 
-								 var modelBytes = Gossip.VectorClockUUID.newBuilder.setUuid(uuidVectorClockRequest.getUuid).setVector(vectorClock).build.toByteString
-								 responseBuilder.setContentClass(classOf[Gossip.VectorClockUUID].getName).setContent(modelBytes)
-								 channel.write(responseBuilder.build, address);
-								 println("response of secondStep")
-								 }*/
-			case s : String if(s == classOf[UUIDDataRequest].getName) => {
-				val uuidDataRequest = Gossip.UUIDDataRequest.parseFrom(message.getContent)
-				val data = dataManager.getData(UUID.fromString(uuidDataRequest.getUuid))
-				val modelBytes = ByteString.copyFrom(serializer.serialize(data._2))
+    message.getContentClass match {
+      case s: String if (s == classOf[VectorClockUUIDsRequest].getName) => {
+        val uuidVectorClocks = dataManager.getUUIDVectorClocks
+        var vectorClockUUIDsBuilder = Gossip.VectorClockUUIDs.newBuilder
+        uuidVectorClocks.keySet.foreach {
+          uuid: UUID =>
+            vectorClockUUIDsBuilder.addVectorClockUUIDs(Gossip.VectorClockUUID.newBuilder.setUuid(uuid.toString).setVector(uuidVectorClocks.get(uuid)).build)
+            if (vectorClockUUIDsBuilder.getVectorClockUUIDsCount == 1) {
+              // it is possible to increase the number of vectorClockUUID on each message
+              responseBuilder = Message.newBuilder.setDestName(channelFragment.getName).setDestNodeName(channelFragment.getNodeName)
+              val modelBytes = vectorClockUUIDsBuilder.build.toByteString
+              responseBuilder.setContentClass(classOf[Gossip.VectorClockUUIDs].getName).setContent(modelBytes)
+              channel.write(responseBuilder.build, address)
+              vectorClockUUIDsBuilder = Gossip.VectorClockUUIDs.newBuilder
+            }
+        }
+      }
+      /*case "org.kevoree.library.gossiperNetty.version.Gossip$UUIDVectorClockRequest" => {
+                       var uuidVectorClockRequest = Gossip.UUIDVectorClockRequest.parseFrom(message.getContent.asInstanceOf[ByteString])
+                       var vectorClock =dataManager.getUUIDVectorClock(UUID.fromString(uuidVectorClockRequest.getUuid))
 
-				val modelBytes2 = Gossip.VersionedModel.newBuilder.setUuid(uuidDataRequest.getUuid).setVector(data._1).setModel(modelBytes).build.toByteString
-				responseBuilder.setContentClass(classOf[Gossip.VersionedModel].getName).setContent(modelBytes2)
-				channel.write(responseBuilder.build, address);
-			}
-			case s : String if(s == classOf[UpdatedValueNotification].getName) => {
-				gossiperRequestSender.initGossipAction(message.getDestNodeName)
-			}
-		}
-		//channel.close.awaitUninterruptibly
-	}
+                       var modelBytes = Gossip.VectorClockUUID.newBuilder.setUuid(uuidVectorClockRequest.getUuid).setVector(vectorClock).build.toByteString
+                       responseBuilder.setContentClass(classOf[Gossip.VectorClockUUID].getName).setContent(modelBytes)
+                       channel.write(responseBuilder.build, address);
+                       println("response of secondStep")
+                       }*/
+      case s: String if (s == classOf[UUIDDataRequest].getName) => {
+        val uuidDataRequest = Gossip.UUIDDataRequest.parseFrom(message.getContent)
+        val data = dataManager.getData(UUID.fromString(uuidDataRequest.getUuid))
+        val bytes : Array[Byte] = serializer.serialize(data._2);
+        if (bytes != null) {
+          val modelBytes = ByteString.copyFrom(bytes)
+
+          val modelBytes2 = Gossip.VersionedModel.newBuilder.setUuid(uuidDataRequest.getUuid).setVector(data._1).setModel(modelBytes).build.toByteString
+          responseBuilder.setContentClass(classOf[Gossip.VersionedModel].getName).setContent(modelBytes2)
+          channel.write(responseBuilder.build, address);
+        } else {
+          logger.warning("Serialization failed !")
+        }
+
+      }
+      case s: String if (s == classOf[UpdatedValueNotification].getName) => {
+        gossiperRequestSender.initGossipAction(message.getDestNodeName)
+      }
+    }
+    //channel.close.awaitUninterruptibly
+  }
 }

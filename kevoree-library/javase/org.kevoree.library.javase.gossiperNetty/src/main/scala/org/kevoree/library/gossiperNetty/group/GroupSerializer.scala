@@ -21,7 +21,7 @@ class GroupSerializer extends Serializer {
 			stringFromModel(data.asInstanceOf[ContainerRoot])
 		} catch {
 			case e => {
-				logger.error(e.getMessage)
+				logger.error("Model cannot be serialize: " + e.getCause.getClass + "\t" + e.getCause.getMessage)
 				null
 			}
 		}
@@ -32,7 +32,7 @@ class GroupSerializer extends Serializer {
 			modelFromString(data)
 		} catch {
 			case e => {
-				logger.error(e.getMessage)
+				logger.error("Model cannot be deserialize: " + e.getCause.getClass + "\t" + e.getCause.getMessage)
 				null
 			}
 		}
@@ -46,9 +46,9 @@ class GroupSerializer extends Serializer {
 	private def stringFromModel(model: ContainerRoot) : Array[Byte] = {
 		val out = new ByteArrayOutputStream
 		KevoreeXmiHelper.saveStream(out, model)
-		out.flush
+		out.flush()
 		val bytes = out.toByteArray
-		out.close
+		out.close()
 		bytes
 	}
 }
