@@ -58,19 +58,21 @@ class KevoreeCoreBean extends KevoreeModelHandlerService with KevoreeActor {
     lastDate = new Date(System.currentTimeMillis)
     //TODO ADD LISTENER
 
-
-    //NOTIFY LOCAL REASONER
-    listenerActor.notifyAllListener()
-
-
-    //NOTIFY GROUP
-    var srs = bundleContext.getServiceReferences(classOf[KevoreeGroup].getName, null)
-    if (srs != null) {
-      srs.foreach {
-        sr =>
-          bundleContext.getService(sr).asInstanceOf[KevoreeGroup].triggerModelUpdate
+    new Actor {
+      def act() {
+        //NOTIFY LOCAL REASONER
+        listenerActor.notifyAllListener()
+        //NOTIFY GROUP
+        var srs = bundleContext.getServiceReferences(classOf[KevoreeGroup].getName, null)
+        if (srs != null) {
+          srs.foreach {
+            sr =>
+              bundleContext.getService(sr).asInstanceOf[KevoreeGroup].triggerModelUpdate
+          }
+        }
       }
-    }
+    }.start()
+
 
   }
 
