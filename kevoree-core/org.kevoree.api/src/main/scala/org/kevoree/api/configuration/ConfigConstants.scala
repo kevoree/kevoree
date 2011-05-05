@@ -25,6 +25,7 @@ object ConfigConstants extends Enumeration {
     def getDefaultValue = defaultValue
   }
   val KEVOREE_NODE_NAME = ConfigConstant("node.name","KEVOREEDefaultNodeName")
+  val KEVOREE_NODE_BOOTSTRAP = ConfigConstant("node.bootstrap","")
   val KEVOREE_NODE_MODELSYNC_PORT = ConfigConstant("node.modelsync.port","auto")
   val KEVOREE_NODE_DISPATCHER_PORT = ConfigConstant("node.dispatcher.port","auto")
   val KEVOREE_CONFIG = ConfigConstant("KEVOREE.config",null)
