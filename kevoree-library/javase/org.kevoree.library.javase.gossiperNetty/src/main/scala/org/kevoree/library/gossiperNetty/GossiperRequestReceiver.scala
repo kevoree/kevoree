@@ -136,7 +136,7 @@ class GossiperRequestReceiver(channelFragment: NettyGossipAbstractElement, dataM
           responseBuilder.setContentClass(classOf[Gossip.VersionedModel].getName).setContent(modelBytes2)
           channel.write(responseBuilder.build, address);
         } else {
-          logger.warning("Serialization failed !")
+          logger.warn("Serialization failed !")
         }
 
       }
