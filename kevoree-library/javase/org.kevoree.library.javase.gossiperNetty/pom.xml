@@ -109,19 +109,14 @@
 			<groupId>org.kevoree.extra</groupId>
 			<artifactId>org.kevoree.extra.netty</artifactId>
 			<version>3.2.4.Final</version>
-			<!--<scope>provided</scope>-->
+			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.kevoree.extra</groupId>
 			<artifactId>org.kevoree.extra.protobuf</artifactId>
 			<version>2.3.0</version>
-			<!--<scope>provided</scope>-->
+			<scope>provided</scope>
 		</dependency>
-		<!--<dependency>
-			<groupId>com.google.protobuf</groupId>
-			<artifactId>protobuf-java</artifactId>
-			<version>2.3.0</version>
-		</dependency>-->
 		<dependency>
 			<groupId>org.kevoree</groupId>
 			<artifactId>org.kevoree.framework</artifactId>
@@ -132,12 +127,6 @@
 			<artifactId>org.kevoree.tools.annotation.api</artifactId>
 			<version>${kevoree.version}</version>
 		</dependency>
-		<!--<dependency>
-			<groupId>org.jboss.netty</groupId>
-			<artifactId>netty</artifactId>
-			<version>3.2.4.Final</version>
-			<scope>provided</scope>
-		</dependency>-->
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
@@ -150,11 +139,5 @@
 			<version>${kevoree.version}</version>
 			<scope>provided</scope>
 		</dependency>
-		<!--<dependency>
-			<groupId>org.ops4j.pax.url</groupId>
-			<artifactId>pax-url-wrap</artifactId>
-			<version>1.2.5</version>
-			<scope>provided</scope>
-		</dependency>-->
 	</dependencies>
 </project>
