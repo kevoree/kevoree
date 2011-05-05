@@ -119,7 +119,7 @@ object BootStrapApp extends Application {
       tscript append "JavaSENode"
       tscript.append("\n")
 
-      tscript append "network duke"
+      tscript append "network " + prefixeName
       tscript append i
       tscript append " { \"KEVOREE.remote.node.modelsynch.port\"= \""
       tscript append firstPort + i
