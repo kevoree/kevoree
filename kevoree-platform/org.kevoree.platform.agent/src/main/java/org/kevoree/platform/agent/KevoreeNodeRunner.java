@@ -11,19 +11,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kevoree.tools.agent;
+package org.kevoree.platform.agent;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.*;
+import java.util.Properties;
 
 public class KevoreeNodeRunner {
 
 	private Logger logger = LoggerFactory.getLogger(KevoreeNodeRunner.class);
 
 	private Process nodePlatformProcess;
-	private String platformJARPath;
+	private static String platformJARPath;
 
 	private String nodeName;
 	private Integer basePort;
@@ -42,10 +43,12 @@ public class KevoreeNodeRunner {
 		try {
 			System.out.println("StartNodeCommand");
 			if (platformJARPath == null) {
-				getJar();
+                getJar();
 			}
 			nodePlatformProcess = Runtime.getRuntime().exec(new String[]{"java", "-Dnode.name=" + nodeName, "-Dnode.port=" + basePort, "-jar", platformJARPath});
-		} catch (IOException e) {
+
+            System.out.println("Node Started ! "+ nodePlatformProcess.toString());
+        } catch (IOException e) {
 			e.printStackTrace();
 			System.exit(1);
 		}
@@ -116,39 +119,26 @@ public class KevoreeNodeRunner {
 	}*/
 
 	private void getJar() throws IOException {
-		String jarLocation = System.getProperty("kevoree.location");
+		System.out.println("Init jar platform");
+        String jarLocation = System.getProperty("kevoree.location");
 		if (jarLocation == null) {
-			jarLocation = System.getProperty("user.dir") + "org.kevoree.platform.osgi.standalone" + getVersion() + ".jar";
+			jarLocation = System.getProperty("user.dir") +File.separatorChar+ "org.kevoree.platform.osgi.standalone"+"-" + getVersion() + ".jar";
 		}
 		if (new File(jarLocation).exists()) {
 			platformJARPath = jarLocation;
 		} else {
 			throw new FileNotFoundException(jarLocation + " doesn't exist");
 		}
+        System.out.println("Init jar platform => OK");
 	}
 
 	private String getVersion() throws IOException {
+        System.out.println("GetVErsion");
 		InputStream stream = this.getClass().getClassLoader().getResourceAsStream("META-INF/maven/org.kevoree.platform/org.kevoree.platform.agent/pom.properties");
-		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+		Properties prop = new Properties();
+        prop.load(stream);
 
-		byte[] bytes = new byte[1024];
-		int length;
-		while ((length = stream.read()) != -1) {
-			outputStream.write(bytes, 0, length);
-		}
-		outputStream.flush();
-		outputStream.close();
-		stream.close();
-
-		StringBuilder builder = new StringBuilder(outputStream.toString());
-		int index = builder.indexOf("version=");
-		builder.delete(0, index);
-		int end = builder.indexOf(System.getProperty("line.separator"));
-		builder.delete(end, builder.length());
-		int equalsSign = builder.indexOf("=");
-		builder.delete(0, equalsSign + 1);
-
-		return builder.toString();
+       return prop.getProperty("version");
 	}
 
 	/*public class PaxMvnUrlStreamHandlerFactory implements URLStreamHandlerFactory {
