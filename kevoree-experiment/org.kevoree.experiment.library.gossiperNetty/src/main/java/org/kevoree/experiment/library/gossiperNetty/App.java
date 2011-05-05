@@ -1,11 +1,8 @@
 package org.kevoree.experiment.library.gossiperNetty;
 
 
-import org.greg.client.Configuration;
 import org.greg.client.ForkedConfiguration;
 import org.greg.client.ForkedGregClient;
-import org.greg.client.Greg;
-import sun.util.calendar.Gregorian;
 
 public class App {
 

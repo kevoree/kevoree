@@ -22,5 +22,6 @@ public class App {
 
 	public static void main(String[] args) {
 		new KevoreeNodeRunner("duke", 8000).startNode();
+		new KevoreeNodeRunner("duke1", 8001).startNode();
 	}
 }
