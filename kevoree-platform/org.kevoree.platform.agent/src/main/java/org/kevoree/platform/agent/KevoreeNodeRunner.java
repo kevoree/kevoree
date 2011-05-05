@@ -47,6 +47,7 @@ public class KevoreeNodeRunner {
 				getJar();
 			}
 			nodePlatformProcess = Runtime.getRuntime().exec(new String[]{"java","-Dnode.bootstrap="+bootStrapModel, "-Dnode.name=" + nodeName, "-Dnode.port=" + basePort, "-jar", platformJARPath});
+			//nodePlatformProcess = Runtime.getRuntime().exec(new String[]{"screen", "-A", "-m", "-d", "-S", nodeName, "java", "-Dnode.bootstrap="+bootStrapModel, "-Dnode.name="+nodeName, "-Dnode.port="+basePort, "-jar", platformJARPath, "2>&1", "|", "tee file.txt"});
 
 			System.out.println("Node Started ! " + nodePlatformProcess.toString());
 		} catch (IOException e) {
