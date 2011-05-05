@@ -133,7 +133,7 @@ public class KevoreeNodeRunner {
 	}
 
 	private String getVersion() throws IOException {
-        System.out.println("GetVErsion");
+        System.out.println("GetVersion");
 		InputStream stream = this.getClass().getClassLoader().getResourceAsStream("META-INF/maven/org.kevoree.platform/org.kevoree.platform.agent/pom.properties");
 		Properties prop = new Properties();
         prop.load(stream);
