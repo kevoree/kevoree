@@ -22,7 +22,6 @@ public class LogNettyGossiperGroup extends NettyGossiperGroup {
     private ForkedGregClient client = null;
 
     @Override
-	@Start
     public void startGossiperGroup() {
         ForkedConfiguration clientConfig = new ForkedConfiguration();
         clientConfig.clientId = this.getNodeName();
@@ -46,7 +45,6 @@ public class LogNettyGossiperGroup extends NettyGossiperGroup {
     }
 
     @Override
-	@Stop
     public void stopGossiperGroup() {
         super.stopGossiperGroup();
         client.stop();
