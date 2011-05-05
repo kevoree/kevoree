@@ -60,14 +60,15 @@ public class KevoreeNodeRunner {
 		try {
 			nodePlatformProcess.getOutputStream().write("stop 0".getBytes());
 			nodePlatformProcess.getOutputStream().flush();
-			nodePlatformProcess.wait(5000);
+			Thread.sleep(1000);
+			int exitValue = nodePlatformProcess.exitValue();
 		} catch (IOException e) {
 			//e.printStackTrace();
-			logger.error("The node cannot be killed. Try to force kill", e.getCause());
+			logger.error("The node cannot be killed. Try to force kill");
 			nodePlatformProcess.destroy();
 		} catch (InterruptedException e) {
 			//e.printStackTrace();
-			logger.error("The node cannot be killed. Try to force kill", e.getCause());
+			logger.error("The node cannot be killed. Try to force kill");
 			nodePlatformProcess.destroy();
 		}
 	}
