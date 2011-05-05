@@ -70,6 +70,10 @@ public class KevoreeNodeRunner {
 			//e.printStackTrace();
 			logger.error("The node cannot be killed. Try to force kill");
 			nodePlatformProcess.destroy();
+		} catch (IllegalThreadStateException e) {
+			//e.printStackTrace();
+			logger.error("The node cannot be killed. Try to force kill");
+			nodePlatformProcess.destroy();
 		}
 	}
 
