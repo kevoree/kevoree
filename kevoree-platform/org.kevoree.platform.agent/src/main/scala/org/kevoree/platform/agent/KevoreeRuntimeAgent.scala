@@ -1,3 +1,5 @@
+package org.kevoree.platform.agent
+
 /**
  * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE, Version 3, 29 June 2007;
  * you may not use this file except in compliance with the License.
@@ -11,24 +13,39 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kevoree.tools.agent
-
 import org.kevoree.ContainerRoot
 import scala.collection.JavaConversions._
 import java.net.NetworkInterface
 import org.kevoree.framework.{Constants, KevoreePlatformHelper}
+import actors.DaemonActor
 
-class KevoreeRuntimeAgent {
+class KevoreeRuntimeAgent extends DaemonActor {
 
-  def processModel(model:ContainerRoot){
-    KevoreeNodeRunnerHandler.closeAllRunners()
-    detectLocalNodeFromRuntime(model).foreach{ t=>
-        KevoreeNodeRunnerHandler.addRunner(t._1,t._2)
+  start()
+
+  case class NEW_MODEL(model : ContainerRoot)
+
+  def act() {
+    loop {
+      react {
+        case NEW_MODEL(model) => {
+          KevoreeNodeRunnerHandler.closeAllRunners()
+          detectLocalNodeFromRuntime(model).foreach {
+            t =>
+              KevoreeNodeRunnerHandler.addRunner(t._1, t._2)
+          }
+        }
+      }
     }
   }
 
 
-  private def detectLocalNodeFromRuntime(model: ContainerRoot): List[(String,Int)] = {
+  def processModel(model: ContainerRoot) {
+       this ! NEW_MODEL(model)
+  }
+
+
+  private def detectLocalNodeFromRuntime(model: ContainerRoot): List[(String, Int)] = {
 
     var localIPS: List[String] = List()
     NetworkInterface.getNetworkInterfaces.foreach {
@@ -41,7 +58,7 @@ class KevoreeRuntimeAgent {
         }
     }
 
-    var result: List[(String,Int)] = List()
+    var result: List[(String, Int)] = List()
     model.getNodes.foreach {
       node =>
         var IP = KevoreePlatformHelper.getProperty(model, node.getName, Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP);
@@ -54,7 +71,7 @@ class KevoreeRuntimeAgent {
         }
 
         if (localIPS.exists(localIP => localIP.contains(IP))) {
-          result = result :+ (node.getName,Integer.parseInt(PORT))
+          result = result :+ (node.getName, Integer.parseInt(PORT))
         }
 
     }
