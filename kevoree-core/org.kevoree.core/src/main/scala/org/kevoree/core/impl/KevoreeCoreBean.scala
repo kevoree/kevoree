@@ -21,8 +21,6 @@ package org.kevoree.core.impl
 import org.kevoree.KevoreeFactory
 import org.kevoree.ContainerRoot
 import org.kevoree.api.configuration.ConfigurationService
-import org.kevoree.api.service.adaptation.deploy.KevoreeAdaptationDeployService
-import org.kevoree.api.service.core.kompare.ModelKompareService
 import org.kevoree.framework.KevoreeActor
 import org.kevoree.framework.KevoreeGroup
 import org.kevoree.framework.KevoreePlatformHelper
@@ -31,10 +29,8 @@ import org.osgi.framework.BundleContext
 import org.slf4j.LoggerFactory
 import scala.reflect.BeanProperty
 import org.kevoree.framework.merger.KevoreePlatformMerger
-import org.kevoree.framework.message.PlatformModelUpdate
 import org.kevoree.framework.message._
 import scala.actors.Actor
-import scala.collection.JavaConversions._
 import org.kevoree.api.configuration.ConfigConstants
 import java.util.Date
 import org.kevoree.api.service.core.handler.{ModelListener, KevoreeModelHandlerService}
@@ -83,12 +79,26 @@ class KevoreeCoreBean extends KevoreeModelHandlerService with KevoreeActor {
     setNodeName(configService.getProperty(ConfigConstants.KEVOREE_NODE_NAME));
     super.start
 
-    var lastModelssaved = bundleContext.getDataFile("lastModel.xmi");
+    //State recovery phase
+    val lastModelssaved = bundleContext.getDataFile("lastModel.xmi");
     if (lastModelssaved.length() != 0) {
       /* Load previous state */
-      var model = KevoreeXmiHelper.load(lastModelssaved.getAbsolutePath());
+      val model = KevoreeXmiHelper.load(lastModelssaved.getAbsolutePath());
       switchToNewModel(model)
     }
+    //Bootstrap model phase
+    if (!configService.getProperty(ConfigConstants.KEVOREE_NODE_BOOTSTRAP).equals("")) {
+      try {
+        logger.info("Try to bootstrap platform")
+        val model = KevoreeXmiHelper.load(configService.getProperty(ConfigConstants.KEVOREE_NODE_BOOTSTRAP));
+        this ! UpdateModel(model)
+
+      } catch {
+        case _@e => logger.warn("Bootstrap failed !", e)
+      }
+    }
+
+
     this
   }
 
@@ -136,10 +146,11 @@ class KevoreeCoreBean extends KevoreeModelHandlerService with KevoreeActor {
   override def updateModel(model: ContainerRoot) = this ! UpdateModel(model)
 
   override def atomicUpdateModel(model: ContainerRoot) = {
-    (this !? UpdateModel(model)); lastDate
+    (this !? UpdateModel(model));
+    lastDate
   }
 
-  override def getPreviousModel : java.util.List[ContainerRoot] = (this !? PreviousModel()).asInstanceOf[java.util.List[ContainerRoot]]
+  override def getPreviousModel: java.util.List[ContainerRoot] = (this !? PreviousModel()).asInstanceOf[java.util.List[ContainerRoot]]
 
 
   val listenerActor = new KevoreeListeners
