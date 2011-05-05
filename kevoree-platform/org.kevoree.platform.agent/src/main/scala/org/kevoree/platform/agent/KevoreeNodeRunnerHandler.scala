@@ -15,16 +15,17 @@ package org.kevoree.platform.agent
  */
 object KevoreeNodeRunnerHandler {
 
-  private var runnners : List[KevoreeNodeRunner] = List()
+  private var runnners: List[KevoreeNodeRunner] = List()
 
   def closeAllRunners() {
-     runnners.foreach{ runner =>
-         runner.stopKillNode()
-     }
+    runnners.foreach {
+      runner =>
+        runner.stopKillNode()
+    }
   }
 
-  def addRunner( nodeName:String, port : Int){
-     val newRunner = new KevoreeNodeRunner(nodeName,port)
+  def addRunner(nodeName: String, port: Int, model: String) {
+    val newRunner = new KevoreeNodeRunner(nodeName, port, model)
     newRunner.startNode()
     runnners = runnners :+ newRunner
   }
