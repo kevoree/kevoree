@@ -43,12 +43,12 @@ public class KevoreeNodeRunner {
 		try {
 			System.out.println("StartNodeCommand");
 			if (platformJARPath == null) {
-                getJar();
+				getJar();
 			}
 			nodePlatformProcess = Runtime.getRuntime().exec(new String[]{"java", "-Dnode.name=" + nodeName, "-Dnode.port=" + basePort, "-jar", platformJARPath});
 
-            System.out.println("Node Started ! "+ nodePlatformProcess.toString());
-        } catch (IOException e) {
+			System.out.println("Node Started ! " + nodePlatformProcess.toString());
+		} catch (IOException e) {
 			e.printStackTrace();
 			System.exit(1);
 		}
@@ -60,7 +60,12 @@ public class KevoreeNodeRunner {
 		try {
 			nodePlatformProcess.getOutputStream().write("stop 0".getBytes());
 			nodePlatformProcess.getOutputStream().flush();
+			nodePlatformProcess.wait(5000);
 		} catch (IOException e) {
+			//e.printStackTrace();
+			logger.error("The node cannot be killed. Try to force kill", e.getCause());
+			nodePlatformProcess.destroy();
+		} catch (InterruptedException e) {
 			//e.printStackTrace();
 			logger.error("The node cannot be killed. Try to force kill", e.getCause());
 			nodePlatformProcess.destroy();
@@ -120,25 +125,25 @@ public class KevoreeNodeRunner {
 
 	private void getJar() throws IOException {
 		System.out.println("Init jar platform");
-        String jarLocation = System.getProperty("kevoree.location");
+		String jarLocation = System.getProperty("kevoree.location");
 		if (jarLocation == null) {
-			jarLocation = System.getProperty("user.dir") +File.separatorChar+ "org.kevoree.platform.osgi.standalone"+"-" + getVersion() + ".jar";
+			jarLocation = System.getProperty("user.dir") + File.separatorChar + "org.kevoree.platform.osgi.standalone" + "-" + getVersion() + ".jar";
 		}
 		if (new File(jarLocation).exists()) {
 			platformJARPath = jarLocation;
 		} else {
 			throw new FileNotFoundException(jarLocation + " doesn't exist");
 		}
-        System.out.println("Init jar platform => OK");
+		System.out.println("Init jar platform => OK");
 	}
 
 	private String getVersion() throws IOException {
-        System.out.println("GetVersion");
+		System.out.println("GetVersion");
 		InputStream stream = this.getClass().getClassLoader().getResourceAsStream("META-INF/maven/org.kevoree.platform/org.kevoree.platform.agent/pom.properties");
 		Properties prop = new Properties();
-        prop.load(stream);
+		prop.load(stream);
 
-       return prop.getProperty("version");
+		return prop.getProperty("version");
 	}
 
 	/*public class PaxMvnUrlStreamHandlerFactory implements URLStreamHandlerFactory {
