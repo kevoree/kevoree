@@ -16,8 +16,9 @@ package org.kevoree.platform.agent
 import org.kevoree.ContainerRoot
 import scala.collection.JavaConversions._
 import java.net.NetworkInterface
-import org.kevoree.framework.{Constants, KevoreePlatformHelper}
 import actors.DaemonActor
+import org.kevoree.framework.{KevoreeXmiHelper, Constants, KevoreePlatformHelper}
+import java.io.File
 
 class KevoreeRuntimeAgent extends DaemonActor {
 
@@ -29,10 +30,17 @@ class KevoreeRuntimeAgent extends DaemonActor {
     loop {
       react {
         case NEW_MODEL(model) => {
+          val file = new File("bootStrap.kev")
+          if(file.exists){
+            file.delete
+          }
+
+          KevoreeXmiHelper.save("bootStrap.kev",model)
+
           KevoreeNodeRunnerHandler.closeAllRunners()
           detectLocalNodeFromRuntime(model).foreach {
             t =>
-              KevoreeNodeRunnerHandler.addRunner(t._1, t._2)
+              KevoreeNodeRunnerHandler.addRunner(t._1, t._2,"bootStrap.kev")
           }
         }
       }

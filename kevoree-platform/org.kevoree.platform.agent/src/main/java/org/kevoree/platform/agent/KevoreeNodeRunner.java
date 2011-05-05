@@ -28,15 +28,16 @@ public class KevoreeNodeRunner {
 
 	private String nodeName;
 	private Integer basePort;
+    private String bootStrapModel;
 
-	public KevoreeNodeRunner(String nodeName, Integer basePort) {
+	public KevoreeNodeRunner(String nodeName, Integer basePort, String bootStrapModel) {
 
 		//URL url = new URL(null,"cvs://server/project/folder#version", new PaxMvnUrlStreamHandlerFactory());
 		//System.setProperty("org.ops4j.pax.url.mvn.defaultRepositories", "http://maven.kevoree.org/release");
 		//URL.setURLStreamHandlerFactory(new PaxMvnUrlStreamHandlerFactory()); // to use the maven URL handler
 		this.nodeName = nodeName;
 		this.basePort = basePort;
-
+        this.bootStrapModel = bootStrapModel;
 	}
 
 	public void startNode() {
@@ -45,7 +46,7 @@ public class KevoreeNodeRunner {
 			if (platformJARPath == null) {
 				getJar();
 			}
-			nodePlatformProcess = Runtime.getRuntime().exec(new String[]{"java", "-Dnode.name=" + nodeName, "-Dnode.port=" + basePort, "-jar", platformJARPath});
+			nodePlatformProcess = Runtime.getRuntime().exec(new String[]{"java","-Dnode.bootstrap="+bootStrapModel, "-Dnode.name=" + nodeName, "-Dnode.port=" + basePort, "-jar", platformJARPath});
 
 			System.out.println("Node Started ! " + nodePlatformProcess.toString());
 		} catch (IOException e) {
