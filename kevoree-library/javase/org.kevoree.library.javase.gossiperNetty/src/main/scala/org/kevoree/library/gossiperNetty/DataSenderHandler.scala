@@ -2,13 +2,10 @@ package org.kevoree.library.gossiperNetty
 
 import com.google.protobuf.ByteString
 import java.util.UUID
-import org.jboss.netty.channel.ChannelHandlerContext
-import org.jboss.netty.channel.ExceptionEvent
-import org.jboss.netty.channel.MessageEvent
-import org.jboss.netty.channel.SimpleChannelUpstreamHandler
 import org.kevoree.library.gossiperNetty.api.msg.KevoreeMessage.Message
 import org.slf4j.LoggerFactory
 import version.Gossip
+import org.jboss.netty.channel._
 
 class DataSenderHandler(channelFragment: NettyGossipAbstractElement, dataManager: DataManager, serializer : Serializer) extends SimpleChannelUpstreamHandler {
 
@@ -36,6 +33,7 @@ class DataSenderHandler(channelFragment: NettyGossipAbstractElement, dataManager
 	override def exceptionCaught(ctx: ChannelHandlerContext, e: ExceptionEvent) {
 		//NOOP
 		logger.warn("Communication failed between " + ctx.getChannel.getLocalAddress + " and " + ctx.getChannel.getRemoteAddress)
-		e.getChannel.close.awaitUninterruptibly
+		//e.getChannel.close.awaitUninterruptibly
+    e.getChannel.close().addListener(ChannelFutureListener.CLOSE)
 	}
 }

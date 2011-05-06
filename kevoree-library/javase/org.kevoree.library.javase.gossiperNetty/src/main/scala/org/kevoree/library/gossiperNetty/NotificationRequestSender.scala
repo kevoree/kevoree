@@ -3,9 +3,6 @@ package org.kevoree.library.gossiperNetty
 import java.net.InetSocketAddress
 import java.util.concurrent.Executors
 import org.jboss.netty.bootstrap.ConnectionlessBootstrap
-import org.jboss.netty.channel.ChannelPipeline
-import org.jboss.netty.channel.ChannelPipelineFactory
-import org.jboss.netty.channel.Channels
 import org.jboss.netty.channel.socket.DatagramChannel
 import org.jboss.netty.channel.socket.nio.NioDatagramChannelFactory
 import org.kevoree.library.gossiperNetty.api.msg.KevoreeMessage.Message
@@ -14,6 +11,7 @@ import org.jboss.netty.handler.codec.compression.{ZlibDecoder, ZlibEncoder, Zlib
 import org.jboss.netty.handler.codec.protobuf.{ProtobufVarint32LengthFieldPrepender, ProtobufVarint32FrameDecoder, ProtobufDecoder, ProtobufEncoder}
 import version.Gossip.UpdatedValueNotification
 import org.slf4j.LoggerFactory
+import org.jboss.netty.channel.{ChannelFutureListener, ChannelPipeline, ChannelPipelineFactory, Channels}
 
 class NotificationRequestSender(channelFragment: NettyGossipAbstractElement) extends actors.DaemonActor {
 
@@ -21,7 +19,7 @@ class NotificationRequestSender(channelFragment: NettyGossipAbstractElement) ext
 	var factoryNotificationMessage = new NioDatagramChannelFactory(Executors.newCachedThreadPool())
 	var bootstrapNotificationMessage = new ConnectionlessBootstrap(factoryNotificationMessage)
 	bootstrapNotificationMessage.setPipelineFactory(new ChannelPipelineFactory() {
-		override def getPipeline(): ChannelPipeline = {
+		override def getPipeline: ChannelPipeline = {
 			val p: ChannelPipeline = Channels.pipeline()
 			//p.addLast("deflater", new ZlibEncoder(ZlibWrapper.ZLIB))
 			//p.addLast("inflater", new ZlibDecoder(ZlibWrapper.ZLIB))
@@ -38,7 +36,7 @@ class NotificationRequestSender(channelFragment: NettyGossipAbstractElement) ext
 	//private var channels : ChannelGroup = new DefaultChannelGroup
 	private var channel = bootstrapNotificationMessage.bind(new InetSocketAddress(0)).asInstanceOf[DatagramChannel]
 
-	this.start
+	this.start()
 
 	/* PUBLIC PART */
 	case class STOP_GOSSIPER()
@@ -60,9 +58,10 @@ class NotificationRequestSender(channelFragment: NettyGossipAbstractElement) ext
 				//reactWithin(timeout.longValue){
 				case STOP_GOSSIPER() => {
 					//println("stop gossiper")
-					channel.close.awaitUninterruptibly
-					bootstrapNotificationMessage.releaseExternalResources
-					this.exit
+					//channel.close.awaitUninterruptibly // TODO do not block on actor
+          channel.close().addListener(ChannelFutureListener.CLOSE)
+					bootstrapNotificationMessage.releaseExternalResources()
+					this.exit()
 				}
 				case NOTIFY_PEERS() => {
 					//channels.close.awaitUninterruptibly

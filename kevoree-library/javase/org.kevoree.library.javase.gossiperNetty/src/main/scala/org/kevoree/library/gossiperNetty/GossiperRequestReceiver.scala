@@ -6,11 +6,7 @@ import com.google.protobuf.ByteString
 import java.net.InetSocketAddress
 import java.net.SocketAddress
 import org.jboss.netty.bootstrap.ConnectionlessBootstrap
-import org.jboss.netty.channel.ChannelPipelineFactory
 import org.jboss.netty.bootstrap.ServerBootstrap
-import org.jboss.netty.channel.Channel
-import org.jboss.netty.channel.ChannelPipeline
-import org.jboss.netty.channel.Channels
 import org.jboss.netty.channel.socket.nio.NioDatagramChannelFactory
 import org.kevoree.extra.marshalling.RichJSONObject
 import org.kevoree.library.gossiperNetty.api.msg.KevoreeMessage.Message
@@ -21,6 +17,7 @@ import org.jboss.netty.handler.codec.protobuf.{ProtobufEncoder, ProtobufVarint32
 import version.Gossip
 import version.Gossip.{UpdatedValueNotification, UUIDDataRequest, VectorClockUUIDsRequest}
 import org.slf4j.LoggerFactory
+import org.jboss.netty.channel._
 
 class GossiperRequestReceiver(channelFragment: NettyGossipAbstractElement, dataManager: DataManager, port: Int, gossiperRequestSender: GossiperRequestSender, fullUDP: java.lang.Boolean, serializer: Serializer) extends actors.DaemonActor {
 
@@ -31,12 +28,12 @@ class GossiperRequestReceiver(channelFragment: NettyGossipAbstractElement, dataM
   var factoryForRequest = new NioDatagramChannelFactory(Executors.newCachedThreadPool())
   var bootstrapForRequest = new ConnectionlessBootstrap(factoryForRequest)
   bootstrapForRequest.setPipelineFactory(new ChannelPipelineFactory() {
-    override def getPipeline(): ChannelPipeline = {
+    override def getPipeline: ChannelPipeline = {
       val p: ChannelPipeline = Channels.pipeline()
       //p.addLast("deflater", new ZlibEncoder(ZlibWrapper.ZLIB))
       //p.addLast("inflater", new ZlibDecoder(ZlibWrapper.ZLIB))
       p.addLast("frameDecoder", new ProtobufVarint32FrameDecoder)
-      p.addLast("protobufDecoder", new ProtobufDecoder(Message.getDefaultInstance()))
+      p.addLast("protobufDecoder", new ProtobufDecoder(Message.getDefaultInstance))
       p.addLast("frameEncoder", new ProtobufVarint32LengthFieldPrepender)
       p.addLast("protobufEncoder", new ProtobufEncoder())
       p.addLast("handler", new GossiperRequestReceiverHandler(self))
@@ -49,12 +46,12 @@ class GossiperRequestReceiver(channelFragment: NettyGossipAbstractElement, dataM
   var factoryForRequestTCP = new NioServerSocketChannelFactory(Executors.newCachedThreadPool(), Executors.newCachedThreadPool())
   var bootstrapForRequestTCP = new ServerBootstrap(factoryForRequestTCP)
   bootstrapForRequestTCP.setPipelineFactory(new ChannelPipelineFactory() {
-    override def getPipeline(): ChannelPipeline = {
+    override def getPipeline: ChannelPipeline = {
       val p: ChannelPipeline = Channels.pipeline()
       p.addLast("deflater", new ZlibEncoder(ZlibWrapper.ZLIB))
       p.addLast("inflater", new ZlibDecoder(ZlibWrapper.ZLIB))
       p.addLast("frameDecoder", new ProtobufVarint32FrameDecoder)
-      p.addLast("protobufDecoder", new ProtobufDecoder(Message.getDefaultInstance()))
+      p.addLast("protobufDecoder", new ProtobufDecoder(Message.getDefaultInstance))
       p.addLast("frameEncoder", new ProtobufVarint32LengthFieldPrepender)
       p.addLast("protobufEncoder", new ProtobufEncoder)
       p.addLast("handler", new DataSenderHandler(channelFragment, dataManager, serializer))
@@ -65,7 +62,7 @@ class GossiperRequestReceiver(channelFragment: NettyGossipAbstractElement, dataM
   bootstrapForRequestTCP.setOption("tcpNoDelay", true)
   private var channelTCP = bootstrapForRequestTCP.bind(new InetSocketAddress(port));
 
-  this.start
+  this.start()
 
   case class SendReply(message: Message, address: SocketAddress, channel: Channel)
 
@@ -85,10 +82,12 @@ class GossiperRequestReceiver(channelFragment: NettyGossipAbstractElement, dataM
     loop {
       react {
         case STOP_GOSSIPER() => {
-          channelTCP.close.awaitUninterruptibly
-          channel.close.awaitUninterruptibly
-          bootstrapForRequest.releaseExternalResources
-          this.exit
+          //channelTCP.close.awaitUninterruptibly
+          //channel.close.awaitUninterruptibly // TODO do not block on actor
+          channelTCP.close().addListener(ChannelFutureListener.CLOSE)
+          channel.close().addListener(ChannelFutureListener.CLOSE)
+          bootstrapForRequest.releaseExternalResources()
+          this.exit()
         }
         case SendReply(message, address, channel) => doGossip(message, address, channel)
       }
@@ -101,7 +100,7 @@ class GossiperRequestReceiver(channelFragment: NettyGossipAbstractElement, dataM
 
     message.getContentClass match {
       case s: String if (s == classOf[VectorClockUUIDsRequest].getName) => {
-        val uuidVectorClocks = dataManager.getUUIDVectorClocks
+        val uuidVectorClocks = dataManager.getUUIDVectorClocks()
         var vectorClockUUIDsBuilder = Gossip.VectorClockUUIDs.newBuilder
         uuidVectorClocks.keySet.foreach {
           uuid: UUID =>

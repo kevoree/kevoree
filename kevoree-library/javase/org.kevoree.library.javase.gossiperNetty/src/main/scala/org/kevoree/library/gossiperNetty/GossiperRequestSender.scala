@@ -5,10 +5,6 @@ import java.net.SocketAddress
 import java.util.UUID
 import java.util.concurrent.Executors
 import org.jboss.netty.bootstrap.ConnectionlessBootstrap
-import org.jboss.netty.channel.Channel
-import org.jboss.netty.channel.ChannelPipeline
-import org.jboss.netty.channel.ChannelPipelineFactory
-import org.jboss.netty.channel.Channels
 import org.jboss.netty.channel.socket.DatagramChannel
 import org.jboss.netty.channel.socket.nio.NioDatagramChannelFactory
 import org.kevoree.extra.marshalling.RichString
@@ -20,6 +16,7 @@ import org.jboss.netty.handler.codec.protobuf.{ProtobufEncoder, ProtobufVarint32
 import org.slf4j.LoggerFactory
 import version.Gossip.{VersionedModel, UUIDDataRequest, VectorClockUUIDs, VectorClockUUIDsRequest}
 import version.Version.{ClockEntry, VectorClock}
+import org.jboss.netty.channel._
 
 class GossiperRequestSender(timeout: java.lang.Long, channelFragment: NettyGossipAbstractElement, dataManager: DataManager, fullUDP: java.lang.Boolean, garbage: Boolean, serializer: Serializer) extends actors.DaemonActor {
 
@@ -47,7 +44,7 @@ class GossiperRequestSender(timeout: java.lang.Long, channelFragment: NettyGossi
 
   private var askForDataTCPActor = new AskForDataTCPActor(channelFragment, self)
 
-  this.start
+  this.start()
 
   private var peerName: String = null
 
@@ -87,10 +84,11 @@ class GossiperRequestSender(timeout: java.lang.Long, channelFragment: NettyGossi
       react {
         //reactWithin(timeout.longValue){
         case STOP_GOSSIPER() => {
-          askForDataTCPActor.stop
-          channel.close.awaitUninterruptibly
-          bootstrap.releaseExternalResources
-          this.exit
+          askForDataTCPActor.stop()
+          //channel.close.awaitUninterruptibly // TODO do not block on actor
+          channel.close().addListener(ChannelFutureListener.CLOSE)
+          bootstrap.releaseExternalResources()
+          this.exit()
         }
         case INIT_GOSSIP(peer) => {
           initGossip(peer)
@@ -131,7 +129,7 @@ class GossiperRequestSender(timeout: java.lang.Long, channelFragment: NettyGossi
         }
         if (garbage) {
           /* check for deleted uuid values */
-          val localUUIDs = dataManager.getUUIDVectorClocks
+          val localUUIDs = dataManager.getUUIDVectorClocks()
           localUUIDs.keySet.foreach {
             key =>
               if (!remoteVectorClockUUIDs.getVectorClockUUIDsList.contains(key)) {
