@@ -170,6 +170,8 @@ class DataManagerForGroup(nameInstance: String, selfNodeName: String, modelServi
           updateModelOrHaraKiri(tuple._2)
           setVectorClock(localMerge(tuple._1))
         }
+
+        logger.debug("Local date is after, do nothing")
       }
       case _ =>
     }
