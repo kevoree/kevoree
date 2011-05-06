@@ -32,7 +32,6 @@ class AskForDataTCPActor(channelFragment: NettyGossipAbstractElement, requestSen
           p.addLast("protobufDecoder", new ProtobufDecoder(Message.getDefaultInstance))
           p.addLast("frameEncoder", new ProtobufVarint32LengthFieldPrepender)
           p.addLast("protobufEncoder", new ProtobufEncoder)
-          p.addLast("handler", new DataReceiverHandler(requestSender))
           p
         }
       }
@@ -86,6 +85,8 @@ class AskForDataTCPActor(channelFragment: NettyGossipAbstractElement, requestSen
       .hosts(new InetSocketAddress(channelFragment.getAddress(remoteNodeName), channelFragment.parsePortNumber(remoteNodeName)))
       .hostConnectionLimit(1)
       .build()
+
+    logger.debug("client build ! ")
 
     client(messageBuilder.build) onSuccess {
       result =>
