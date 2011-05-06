@@ -334,6 +334,11 @@
                         <option>-keep class org.restlet.resource.** { *; }</option>
                         <option>-keep class scala.runtime.** { *; }</option>
                         <option>-keep class scala.Tuple2 { *; }</option>
+
+                        <option>-keep class scala.package.** { *; }</option>
+                        <option>-keep class scala.math.** { *; }</option>
+
+
                         <option>-keep class scala.collection.immutable.List { *; }</option>
 
                         <option>-keep class ch.qos.logback.core.** { * ; }</option>

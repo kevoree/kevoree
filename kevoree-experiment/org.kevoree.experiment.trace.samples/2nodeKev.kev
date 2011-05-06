@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <kevoree:ContainerRoot xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:kevoree="http://kevoree/1.0">
-  <nodes name="duke0" typeDefinition="//@typeDefinitions.1"/>
-  <nodes name="duke1" typeDefinition="//@typeDefinitions.1"/>
-  <nodes name="paraisseux0" typeDefinition="//@typeDefinitions.1"/>
-  <nodes name="paraisseux1" typeDefinition="//@typeDefinitions.1"/>
+  <nodes name="duke" typeDefinition="//@typeDefinitions.1" metaData="x=211,y=197"/>
+  <nodes name="paraisseux" typeDefinition="//@typeDefinitions.1" metaData="x=674,y=376"/>
   <typeDefinitions xsi:type="kevoree:GroupType" name="LogNettyGossiperGroup" deployUnits="//@deployUnits.0" factoryBean="org.kevoree.experiment.library.gossiperNetty.LogNettyGossiperGroupFactory" bean="org.kevoree.experiment.library.gossiperNetty.LogNettyGossiperGroup" startMethod="startGossiperGroup" stopMethod="stopGossiperGroup" updateMethod="updateGossiperGroup">
     <dictionaryType>
       <attributes name="interval" optional="true"/>
@@ -23,37 +21,25 @@
   <repositories url="http://repo1.maven.org/maven2"/>
   <libraries name="Kevoree-Android-JavaSE" subTypes="//@typeDefinitions.0"/>
   <libraries name="KevoreeExperiment" subTypes="//@typeDefinitions.0"/>
-  <deployUnits groupName="org.kevoree.experiment" unitName="org.kevoree.experiment.library.gossiperNetty" version="1.0.0" hashcode="201105021806692" requiredLibs="//@deployUnits.1 //@deployUnits.2 //@deployUnits.3" targetNodeType="//@typeDefinitions.1"/>
+  <deployUnits groupName="org.kevoree.experiment" unitName="org.kevoree.experiment.library.gossiperNetty" version="1.0.0" hashcode="201105060938828" requiredLibs="//@deployUnits.1 //@deployUnits.2 //@deployUnits.3" targetNodeType="//@typeDefinitions.1"/>
   <deployUnits name="org.kevoree.extra.org.kevoree.extra.protobuf" url="mvn:org.kevoree.extra/org.kevoree.extra.protobuf/2.3.0" targetNodeType="//@typeDefinitions.1"/>
   <deployUnits name="org.kevoree.extra.org.kevoree.extra.netty" url="mvn:org.kevoree.extra/org.kevoree.extra.netty/3.2.4.Final" targetNodeType="//@typeDefinitions.1"/>
   <deployUnits name="org.kevoree.extra.org.kevoree.extra.marshalling" url="mvn:org.kevoree.extra/org.kevoree.extra.marshalling/1.1.0-RC1" targetNodeType="//@typeDefinitions.1"/>
   <nodeNetworks initBy="//@nodes.0" target="//@nodes.0">
     <link networkType="" estimatedRate="100">
-      <networkProperties name="KEVOREE.remote.node.modelsynch.port" value="8000" lastCheck="1304677233372"/>
-      <networkProperties name="KEVOREE.remote.node.ip" value="131.254.15.214" lastCheck="1304677233372"/>
+      <networkProperties name="KEVOREE.remote.node.ip" value="131.254.15.214" lastCheck="1304668309729"/>
+      <networkProperties name="KEVOREE.remote.node.modelsynch.port" value="8000" lastCheck="1304668313686"/>
     </link>
   </nodeNetworks>
   <nodeNetworks initBy="//@nodes.1" target="//@nodes.1">
     <link networkType="" estimatedRate="100">
-      <networkProperties name="KEVOREE.remote.node.modelsynch.port" value="8001" lastCheck="1304677233372"/>
-      <networkProperties name="KEVOREE.remote.node.ip" value="131.254.15.214" lastCheck="1304677233372"/>
+      <networkProperties name="KEVOREE.remote.node.ip" value="131.254.12.28" lastCheck="1304668330054"/>
+      <networkProperties name="KEVOREE.remote.node.modelsynch.port" value="8002" lastCheck="1304668334341"/>
     </link>
   </nodeNetworks>
-  <nodeNetworks initBy="//@nodes.2" target="//@nodes.2">
-    <link networkType="" estimatedRate="100">
-      <networkProperties name="KEVOREE.remote.node.modelsynch.port" value="8000" lastCheck="1304677233373"/>
-      <networkProperties name="KEVOREE.remote.node.ip" value="131.254.12.28" lastCheck="1304677233373"/>
-    </link>
-  </nodeNetworks>
-  <nodeNetworks initBy="//@nodes.3" target="//@nodes.3">
-    <link networkType="" estimatedRate="100">
-      <networkProperties name="KEVOREE.remote.node.modelsynch.port" value="8001" lastCheck="1304677233373"/>
-      <networkProperties name="KEVOREE.remote.node.ip" value="131.254.12.28" lastCheck="1304677233373"/>
-    </link>
-  </nodeNetworks>
-  <groups name="gossipGroup" typeDefinition="//@typeDefinitions.0" subNodes="//@nodes.0 //@nodes.1 //@nodes.2 //@nodes.3">
+  <groups name="group245422877" typeDefinition="//@typeDefinitions.0" metaData="x=649,y=135" subNodes="//@nodes.0 //@nodes.1">
     <dictionary>
-      <values attribute="//@typeDefinitions.0/@dictionaryType/@attributes.1" value="duke0=9000,duke1=9001,paraisseux0=9000,paraisseux1=9001"/>
+      <values attribute="//@typeDefinitions.0/@dictionaryType/@attributes.1" value="duke=9010,paraisseux=9011"/>
       <values attribute="//@typeDefinitions.0/@dictionaryType/@attributes.3" value="131.254.15.214"/>
     </dictionary>
   </groups>
