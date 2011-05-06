@@ -17,6 +17,12 @@
 
     <dependencies>
         <dependency>
+            <groupId>com.twitter</groupId>
+            <artifactId>finagle-core</artifactId>
+            <version>1.4.0</version>
+        </dependency>
+
+        <dependency>
             <groupId>org.jboss.netty</groupId>
             <artifactId>netty</artifactId>
             <version>3.2.4.Final</version>
@@ -35,8 +41,8 @@
                         <Bundle-SymbolicName>org.kevoree.extra.netty</Bundle-SymbolicName>
                         <Bundle-Version>${pom.version}</Bundle-Version>
                         <Dynamic-Import>*</Dynamic-Import>
-                        <Export-Package>org.jboss.netty.*;version="3.2.4.Final"</Export-Package>
-                        <Import-Package>!org.jboss.netty.*,*;resolution:="optional"</Import-Package>
+                        <Export-Package>com.twitter.*,org.jboss.netty.*;version="3.2.4.Final"</Export-Package>
+                        <Import-Package>!com.twitter.*,!org.jboss.netty.*,*;resolution:="optional"</Import-Package>
                     </instructions>
                 </configuration>
             </plugin>
@@ -44,6 +50,10 @@
     </build>
 
     <repositories>
+        <repository>
+            <id>maven.twttr.com</id>
+            <url>http://maven.twttr.com/</url>
+        </repository>
         <repository>
             <id>repository.jboss.org</id>
             <url>http://repository.jboss.org/nexus/content/groups/public/</url>
