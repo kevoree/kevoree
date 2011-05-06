@@ -63,7 +63,12 @@ class AskForDataTCPActor(channelFragment: NettyGossipAbstractElement, requestSen
           this.exit()
         }
         case ASK_FOR_DATA(uuid, remoteNodeName) => {
-          askForData(uuid, remoteNodeName)
+          try {
+             askForData(uuid, remoteNodeName)
+          } catch {
+            case _ @ e => logger.warn("error in ack For data",e)
+          }
+
         }
       }
     }
