@@ -335,6 +335,8 @@
                         <option>-keep class scala.runtime.** { *; }</option>
                         <option>-keep class scala.Tuple2 { *; }</option>
                         <option>-keep class scala.collection.immutable.List { *; }</option>
+
+                        <option>-keep class ch.qos.logback.core.** { * ; }</option>
                         
                      <!--   <option>-keep class choco.cp.** { *; }</option>   -->
                         <option>-keep class org.kevoree.api.** { *; }</option>
