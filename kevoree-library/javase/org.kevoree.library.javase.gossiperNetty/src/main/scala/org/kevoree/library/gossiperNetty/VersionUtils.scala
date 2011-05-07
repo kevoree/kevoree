@@ -51,9 +51,9 @@ println(compare(local,remote))
     var largerClock : VectorClock = null
     var smallerClock : VectorClock = null
     
-    var sizeEquals = v1.getEntiesCount() == v2.getEntiesCount()
+    val sizeEquals = v1.getEntiesCount == v2.getEntiesCount
 
-    if (v1.getEntiesCount() >= v2.getEntiesCount()) {
+    if (v1.getEntiesCount >= v2.getEntiesCount) {
       largerClock = v1
       smallerClock = v2
       largerIsV1 = true
@@ -63,15 +63,15 @@ println(compare(local,remote))
       largerIsV1 = false
     }
 
-    for (entry1 <- largerClock.getEntiesList()) {
+    for (entry1 <- largerClock.getEntiesList) {
       var check = false
-      var ite = smallerClock.getEntiesList().iterator
+      val ite = smallerClock.getEntiesList.iterator
       while (!check && ite.hasNext) {
-        var entry2 = ite.next
-        if (entry1.getNodeID().equals(entry2.getNodeID())) {
-          if (entry1.getVersion() > entry2.getVersion()) {
+        val entry2 = ite.next
+        if (entry1.getNodeID.equals(entry2.getNodeID)) {
+          if (entry1.getVersion > entry2.getVersion) {
             largerBigger = true
-          } else if (entry2.getVersion() > entry1.getVersion()) {
+          } else if (entry2.getVersion > entry1.getVersion) {
             smallerBigger = true
           }
           larger = larger + 1
@@ -95,10 +95,10 @@ println(compare(local,remote))
     }
 
     /* Okay, now check for left overs */
-    if (larger < largerClock.getEntiesCount()) {
+    if (larger < largerClock.getEntiesCount) {
       largerBigger = true
     }
-    if (smaller < smallerClock.getEntiesCount()) {
+    if (smaller < smallerClock.getEntiesCount) {
       smallerBigger = true
     }
 
