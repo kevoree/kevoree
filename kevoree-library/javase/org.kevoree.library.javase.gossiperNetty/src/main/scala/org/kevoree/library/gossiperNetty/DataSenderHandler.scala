@@ -32,7 +32,7 @@ class DataSenderHandler(channelFragment: NettyGossipAbstractElement, dataManager
 
 	override def exceptionCaught(ctx: ChannelHandlerContext, e: ExceptionEvent) {
 		//NOOP
-		logger.warn("Communication failed between " + ctx.getChannel.getLocalAddress + " and " + ctx.getChannel.getRemoteAddress)
+		logger.warn("Communication failed between ",  e)
 		//e.getChannel.close.awaitUninterruptibly
     e.getChannel.close().addListener(ChannelFutureListener.CLOSE)
 	}

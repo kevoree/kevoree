@@ -25,7 +25,7 @@ class DataReceiverHandler(gossiperRequestSender: GossiperRequestSender) extends 
 
 	override def exceptionCaught(ctx: ChannelHandlerContext, e: ExceptionEvent) {
 		//NOOP
-		logger.warn("Communication failed between " + ctx.getChannel.getLocalAddress + " and " + ctx.getChannel.getRemoteAddress)
+		logger.warn("Communication failed between ", e)
 		//e.getCause.printStackTrace
 		e.getChannel.close.awaitUninterruptibly
 	}

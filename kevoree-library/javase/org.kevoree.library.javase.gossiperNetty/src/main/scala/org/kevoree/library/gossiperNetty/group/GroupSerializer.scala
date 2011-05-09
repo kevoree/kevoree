@@ -21,7 +21,7 @@ class GroupSerializer extends Serializer {
 			stringFromModel(data.asInstanceOf[ContainerRoot])
 		} catch {
 			case e => {
-				logger.error("Model cannot be serialize: " + e.getCause.getClass + "\t" + e.getCause.getMessage)
+				logger.error("Model cannot be serialize: ",  e)
 				null
 			}
 		}
@@ -32,7 +32,7 @@ class GroupSerializer extends Serializer {
 			modelFromString(data)
 		} catch {
 			case e => {
-				logger.error("Model cannot be deserialize: " + e.getCause.getClass + "\t" + e.getCause.getMessage)
+				logger.error("Model cannot be deserialize: ", e)
 				null
 			}
 		}
