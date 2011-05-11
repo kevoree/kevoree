@@ -56,6 +56,25 @@ class KevoreeDeployPhase(ctx : KevoreeDeployManager) {
               logger.info("Resolving bundle: " + b.getSymbolicName)
               ctx.getServicePackageAdmin.resolveBundles(Array(b));
               println("bundle resolved")
+               c.startLevel match {
+                 case Some(level)=> {
+                   ctx.getStartLevelServer.setBundleStartLevel(b,level)
+                   println(ctx.getStartLevelServer.getBundleStartLevel(b))
+                   println("->"+ctx.getStartLevelServer.getStartLevel)
+
+                   if(ctx.getStartLevelServer.getStartLevel < level){
+                     ctx.getStartLevelServer.setStartLevel(level)
+                     while(ctx.getStartLevelServer.getStartLevel != level){
+                       //TODO REFAIRE
+                       Thread.sleep(10)
+                     }
+
+
+                   }
+
+                 }
+                 case None =>
+               }
               b.start;true
               }
             }

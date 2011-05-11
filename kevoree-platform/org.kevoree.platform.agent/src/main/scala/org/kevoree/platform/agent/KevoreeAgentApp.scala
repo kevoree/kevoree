@@ -21,6 +21,8 @@ import org.kevoree.platform.agent.HttpServer.Respond
 
 object KevoreeAgentApp extends Application {
 
+  CacheHelper.cleanupCacheDirectories()
+
   val agent = new KevoreeRuntimeAgent
 
 
@@ -50,6 +52,10 @@ object KevoreeAgentApp extends Application {
   KevoreeNodeRunnerHandler.closeAllRunners()
 
   server.close()
+
+  /* Cleanup cache directory */
+   CacheHelper.cleanupCacheDirectories()
+
 
 
 

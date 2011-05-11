@@ -63,7 +63,7 @@ class KevoreeCoreBean extends KevoreeModelHandlerService with KevoreeActor {
         //NOTIFY LOCAL REASONER
         listenerActor.notifyAllListener()
         //NOTIFY GROUP
-        var srs = bundleContext.getServiceReferences(classOf[KevoreeGroup].getName, null)
+        val srs = bundleContext.getServiceReferences(classOf[KevoreeGroup].getName, null)
         if (srs != null) {
           srs.foreach {
             sr =>
@@ -124,17 +124,24 @@ class KevoreeCoreBean extends KevoreeModelHandlerService with KevoreeActor {
         logger.error("Null model")
       } else {
 
+        val milli =System.currentTimeMillis
+        logger.debug("Begin update model "+milli)
+
         val adaptationModel = kompareService.kompare(model, newmodel, nodeName);
         val deployResult = deployService.deploy(adaptationModel, nodeName);
 
         if (deployResult) {
           //Merge previous model on new model for platform model
-          KevoreePlatformMerger.merge(newmodel, model)
+          //KevoreePlatformMerger.merge(newmodel, model)
           switchToNewModel(newmodel)
           logger.info("Deploy result " + deployResult)
         } else {
           //KEEP FAIL MODEL
         }
+
+        val milliEnd = System.currentTimeMillis - milli
+        logger.debug("End deploy result="+deployResult+"-"+milliEnd)
+
         reply(deployResult)
 
       }

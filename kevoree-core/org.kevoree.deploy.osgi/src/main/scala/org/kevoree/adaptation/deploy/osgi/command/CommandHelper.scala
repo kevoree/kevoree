@@ -33,6 +33,8 @@ object CommandHelper {
     var res: List[String] = List()
     val root = du.eContainer.asInstanceOf[ContainerRoot]
 
+    res = res ++ List(buildQuery(du, None))
+
     //add First the repo where the artifact have been deployed
     root.getRepositories.foreach {
       repo =>
@@ -56,7 +58,7 @@ object CommandHelper {
       case List() => println("Add default location"); res = res ++ List(buildQuery(du, None))
       case _ =>
     } */
-    res = res ++ List(buildQuery(du, None))
+
 
     //DEBUG
     /*

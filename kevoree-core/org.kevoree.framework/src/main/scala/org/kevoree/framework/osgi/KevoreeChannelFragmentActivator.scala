@@ -62,8 +62,8 @@ abstract class KevoreeChannelFragmentActivator extends BundleActivator {
   }
 
   def stop(bc: BundleContext) {
-    if(channelActor.asInstanceOf[ChannelTypeFragment].getIsStarted){
-      channelActor ! StopMessage
+    if(channelActor.asInstanceOf[ChannelTypeFragment].isStarted){
+      channelActor !? StopMessage
       println("Stopping => " + instanceName)
     }
 

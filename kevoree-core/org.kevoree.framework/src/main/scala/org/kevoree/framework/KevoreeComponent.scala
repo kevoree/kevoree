@@ -28,6 +28,7 @@ abstract class KevoreeComponent(c: AbstractComponentType) extends KevoreeActor {
   def getKevoreeComponentType: ComponentType = c
 
   private var ct_started: Boolean = false
+    def isStarted : Boolean = ct_started
 
   override def internal_process(msg: Any) = msg match {
 

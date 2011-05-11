@@ -30,4 +30,6 @@ trait PrimitiveCommand {
 
   var mustBeStarted = false
 
+  var startLevel : Option[Int] = None
+
 }

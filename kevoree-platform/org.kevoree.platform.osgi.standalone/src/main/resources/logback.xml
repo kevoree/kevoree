@@ -20,12 +20,10 @@
         </encoder>
     </appender>
 
-    <timestamp key="bySecond" datePattern="yyyyMMdd'T'HHmmss"/>
-
     <appender name="FILE" class="ch.qos.logback.core.FileAppender">
         <!-- use the previously created timestamp to create a uniquely
      named log file -->
-        <file>log-${node.name}-${bySecond}.txt</file>
+        <file>log-${node.name}.txt</file>
         <encoder>
             <pattern>%logger{35} - %msg%n</pattern>
         </encoder>
