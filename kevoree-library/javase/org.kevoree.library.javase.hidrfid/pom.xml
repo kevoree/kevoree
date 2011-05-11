@@ -10,6 +10,7 @@
 	</parent>
 	<modelVersion>4.0.0</modelVersion>
 	<packaging>bundle</packaging>
+    <name>Kevoree :: Library :: JavaSE :: HIDrfid</name>
 
 	<artifactId>org.kevoree.library.javase.hidrfid</artifactId>
 

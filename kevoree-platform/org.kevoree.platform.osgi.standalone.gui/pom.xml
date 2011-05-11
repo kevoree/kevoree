@@ -335,8 +335,8 @@
                         <option>-keep class scala.runtime.** { *; }</option>
                         <option>-keep class scala.Tuple2 { *; }</option>
 
-                        <option>-keep class scala.package.** { *; }</option>
-                        <option>-keep class scala.math.** { *; }</option>
+                        <option>-keep class scala.** { *; }</option>
+
 
 
                         <option>-keep class scala.collection.immutable.List { *; }</option>

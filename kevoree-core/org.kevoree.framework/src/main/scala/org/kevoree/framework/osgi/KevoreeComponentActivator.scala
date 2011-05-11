@@ -50,10 +50,10 @@ abstract class KevoreeComponentActivator extends BundleActivator {
 
     /* PUT INITIAL PROPERTIES */
     componentActor.getKevoreeComponentType.getDictionary.put(Constants.KEVOREE_PROPERTY_OSGI_BUNDLE, bc.getBundle)
-    
+
     componentActor.getKevoreeComponentType.asInstanceOf[AbstractComponentType].setName(componentName)
     componentActor.getKevoreeComponentType.asInstanceOf[AbstractComponentType].setNodeName(nodeName)
-    
+
 
     /* Start actor */
     componentActor.start
@@ -64,24 +64,24 @@ abstract class KevoreeComponentActivator extends BundleActivator {
     bc.registerService(classOf[KevoreeComponent].getName(), componentActor, props);
 
     /* Expose component provided port in OSGI */
-    componentActor.getKevoreeComponentType.getHostedPorts.foreach{
+    componentActor.getKevoreeComponentType.getHostedPorts.foreach {
       hpref =>
-      var portProps = new Hashtable[String, String]()
-      portProps.put(Constants.KEVOREE_NODE_NAME, nodeName)
-      portProps.put(Constants.KEVOREE_INSTANCE_NAME, componentName)
-      portProps.put(Constants.KEVOREE_PORT_NAME, hpref._1)
-      bc.registerService(classOf[KevoreePort].getName(), hpref._2, portProps);
+        var portProps = new Hashtable[String, String]()
+        portProps.put(Constants.KEVOREE_NODE_NAME, nodeName)
+        portProps.put(Constants.KEVOREE_INSTANCE_NAME, componentName)
+        portProps.put(Constants.KEVOREE_PORT_NAME, hpref._1)
+        bc.registerService(classOf[KevoreePort].getName(), hpref._2, portProps);
     }
 
     /* START NEEDPORT ACTOR */
-    componentActor.getKevoreeComponentType.getNeededPorts.foreach{
+    componentActor.getKevoreeComponentType.getNeededPorts.foreach {
       np => np._2.asInstanceOf[KevoreePort].start
     }
 
     /* START HOSTED ACTOR */
-    componentActor.getKevoreeComponentType.getHostedPorts.foreach{
+    componentActor.getKevoreeComponentType.getHostedPorts.foreach {
       hp =>
-      hp._2.asInstanceOf[KevoreePort].start
+        hp._2.asInstanceOf[KevoreePort].start
       //hp._2.asInstanceOf[KevoreePort].pause
     }
 
@@ -90,16 +90,17 @@ abstract class KevoreeComponentActivator extends BundleActivator {
 
   def stop(bc: BundleContext) {
 
-    componentActor ! StopMessage
-    println("Stopping => "+componentName)
-
+    if (componentActor.isStarted) {
+      componentActor !? StopMessage
+      println("Stopping => " + componentName)
+    }
 
     /* STOP NEEDED PORT */
-    componentActor.getKevoreeComponentType.getNeededPorts.foreach{
+    componentActor.getKevoreeComponentType.getNeededPorts.foreach {
       np => np._2.asInstanceOf[KevoreePort].stop
     }
     /* STOP NEEDED PORT */
-    componentActor.getKevoreeComponentType.getHostedPorts.foreach{
+    componentActor.getKevoreeComponentType.getHostedPorts.foreach {
       hp => hp._2.asInstanceOf[KevoreePort].stop
     }
     componentActor.stop

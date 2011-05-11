@@ -22,8 +22,6 @@ import java.util.HashMap
 import org.kevoree.framework.message._
 import scala.actors.Actor
 import scala.collection.JavaConversions._
-import scala.reflect.BeanProperty
-
 trait ChannelTypeFragment extends KevoreeChannelFragment with ChannelFragment {
 
   override def remoteDispatch(msg: Message): Object = {
@@ -41,8 +39,8 @@ trait ChannelTypeFragment extends KevoreeChannelFragment with ChannelFragment {
   //@BeanProperty
   var nodeName: String = ""
 
-  @BeanProperty
-  var isStarted : Boolean = false
+  // @BeanProperty
+  def isStarted: Boolean = ct_started
 
   override def getNodeName = nodeName
 
@@ -111,12 +109,12 @@ trait ChannelTypeFragment extends KevoreeChannelFragment with ChannelFragment {
   }
 
 
-   private var ct_started: Boolean = false
+  private var ct_started: Boolean = false
 
   override def internal_process(msgg: Any) = msgg match {
 
     case UpdateDictionaryMessage(d) => {
-      d.keySet.foreach{
+      d.keySet.foreach {
         v =>
           dictionary.put(v, d.get(v))
       }
@@ -130,31 +128,33 @@ trait ChannelTypeFragment extends KevoreeChannelFragment with ChannelFragment {
       reply(true)
     }
 
-    case StartMessage if(!ct_started) => {
-     // new Actor {
+    case StartMessage if (!ct_started) => {
+      // new Actor {
       //  def act = {
-          startChannelFragment;println("Starting Channel Internal queue");local_queue.start;isStarted=true
-        //}
-     // }.start
+      startChannelFragment;
+      println("Starting Channel Internal queue");
+      local_queue.start; //isStarted=true
+      //}
+      // }.start
       ct_started = true
       reply(true)
     }
-    case StopMessage if(ct_started) => {
-     // new Actor {
-     //   def act = {
-          //TODO CHECK QUEUE SIZE AND SAVE STATE
-          local_queue.forceStop
-          stopChannelFragment
-          isStarted=false
-     //   }
+    case StopMessage if (ct_started) => {
+      // new Actor {
+      //   def act = {
+      //TODO CHECK QUEUE SIZE AND SAVE STATE
+      local_queue.forceStop
+      stopChannelFragment
+      //isStarted=false
+      //   }
 
-     // }.start
+      // }.start
 
       ct_started = false
       reply(true)
     }
-    case StopMessage if(!ct_started) =>
-    case StartMessage if(ct_started) =>
+    case StopMessage if (!ct_started) =>
+    case StartMessage if (ct_started) =>
 
     case msg: FragmentBindMessage => {
       var sender = this.createSender(msg.getFragmentNodeName, msg.getChannelName)

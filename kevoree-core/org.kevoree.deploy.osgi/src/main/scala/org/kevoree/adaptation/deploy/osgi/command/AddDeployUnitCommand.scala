@@ -34,7 +34,7 @@ case class AddDeployUnitCommand(deployUnit: DeployUnit, ctx: KevoreeDeployManage
   def execute(): Boolean = {
     logger.info("CMD ADD DEPLOY UNIT EXECUTION ");
 
-    var urls = CommandHelper.buildAllQuery(deployUnit)
+    val urls = CommandHelper.buildAllQuery(deployUnit)
 
     //DEBUG
     urls.foreach({
@@ -47,7 +47,7 @@ case class AddDeployUnitCommand(deployUnit: DeployUnit, ctx: KevoreeDeployManage
         try {
           logger.info("Try to install from URI, " + query)
           lastExecutionBundle = Some(ctx.bundleContext.installBundle(query));
-          var symbolicName: String = lastExecutionBundle.get.getSymbolicName
+          val symbolicName: String = lastExecutionBundle.get.getSymbolicName
 
           //FOR DEPLOY UNIT DO NOT USE ONLY NAME
           ctx.bundleMapping.append(KevoreeOSGiBundle(CommandHelper.buildKEY(deployUnit), deployUnit.getClass.getName, lastExecutionBundle.get))
@@ -115,10 +115,10 @@ case class AddDeployUnitCommand(deployUnit: DeployUnit, ctx: KevoreeDeployManage
   def undo() = {
     lastExecutionBundle match {
       case Some(bundle) => {
-        bundle.stop;
-        bundle.uninstall
-        var srPackageAdmin = ctx.bundleContext.getServiceReference(classOf[PackageAdmin].getName)
-        var padmin: PackageAdmin = ctx.bundleContext.getService(srPackageAdmin).asInstanceOf[PackageAdmin]
+        bundle.stop()
+        bundle.uninstall()
+        val srPackageAdmin = ctx.bundleContext.getServiceReference(classOf[PackageAdmin].getName)
+        val padmin: PackageAdmin = ctx.bundleContext.getService(srPackageAdmin).asInstanceOf[PackageAdmin]
         padmin.resolveBundles(Array(bundle))
       }
       case None => //NOTHING CAN BE DOING HERE

@@ -19,7 +19,7 @@ object GroupUtils {
           oldModel.getGroups.find(group => group.getName==instanceGroupName && group.getSubNodes.exists(sub=>sub.getName == nodeName)) match {
             case Some(currentGroup)=> {
                 //TYPE DEF HASHCODE COMPARE
-                var node = newModel.getNodes.find(node=>node.getName==nodeName).get
+                val node = newModel.getNodes.find(node=>node.getName==nodeName).get
                 
                 
                 return (newGroup.getTypeDefinition.foundRelevantDeployUnit(node).getHashcode != currentGroup.getTypeDefinition.foundRelevantDeployUnit(node).getHashcode)

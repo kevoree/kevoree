@@ -62,7 +62,7 @@ abstract class KevoreeGroupActivator extends BundleActivator {
 
   def stop(bc: BundleContext) {
     if (groupActor.asInstanceOf[KevoreeGroup].getIsStarted) {
-      groupActor ! StopMessage
+      groupActor !? StopMessage
       println("Stopping => " + instanceName)
     }
 

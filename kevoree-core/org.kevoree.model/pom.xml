@@ -22,6 +22,7 @@
             <resource>
                 <directory>metamodel</directory>
                 <targetPath>metamodel</targetPath>
+                <excludes><exclude>**/*.pdf</exclude></excludes>
             </resource>
         </resources>
 
