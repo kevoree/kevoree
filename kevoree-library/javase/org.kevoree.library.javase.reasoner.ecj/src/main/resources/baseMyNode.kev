@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <kevoree:ContainerRoot xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:kevoree="http://kevoree/1.0">
-  <nodes name="KEVOREEDefaultNodeName" typeDefinition="//@typeDefinitions.0" metaData="x=62,y=153"/>
-  <nodes name="node1" typeDefinition="//@typeDefinitions.10" metaData="x=344,y=155"/>
+  <nodes name="Arduino" typeDefinition="//@typeDefinitions.0" metaData="x=108,y=228">
+    <dictionary/>
+  </nodes>
+  <nodes name="JavaSeNode" typeDefinition="//@typeDefinitions.10" metaData="x=522,y=219"/>
+  <nodes name="node2" typeDefinition="//@typeDefinitions.10" metaData="x=318,y=21"/>
   <typeDefinitions xsi:type="kevoree:NodeType" name="ArduinoNode" deployUnits="//@deployUnits.0" factoryBean="org.kevoree.library.arduinoNodeType.ArduinoNodeFactory" bean="org.kevoree.library.arduinoNodeType.ArduinoNode">
     <dictionaryType>
       <attributes name="boardTypeName" optional="true"/>

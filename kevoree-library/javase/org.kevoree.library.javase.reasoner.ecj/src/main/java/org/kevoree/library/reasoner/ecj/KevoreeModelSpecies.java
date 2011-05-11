@@ -18,9 +18,7 @@ public class KevoreeModelSpecies extends Species {
     public Individual newIndividual(final EvolutionState state, int thread) 
     
     {
-    KevoreeIndividual newind = (KevoreeIndividual)(super.newIndividual(state, thread));
-    // TODO add mutation here ?           
-    return newind;
+        return super.newIndividual(state, thread);
     }
 
 }

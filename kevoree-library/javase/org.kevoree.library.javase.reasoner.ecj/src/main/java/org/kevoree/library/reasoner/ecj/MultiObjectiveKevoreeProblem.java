@@ -21,12 +21,13 @@ public class MultiObjectiveKevoreeProblem extends Problem implements SimpleProbl
             int subpopulation, int threadnum) {
         if (ind.evaluated) return;
 
-        if (!(ind instanceof KevoreeIndividual))
+        if (!(ind instanceof KevoreeMultiIndividual))
             state.output.fatal("Whoa!  It's not a KevoreeIndividual!!!",null);
-        KevoreeIndividual ki = (KevoreeIndividual)ind;    
+        KevoreeMultiIndividual ki = (KevoreeMultiIndividual)ind;
         
         
-        float[] newObjectives = {evaluateFunctionnality(ki, functionnalityValue, -functionnalityValue/4), evaluateCommunicationDelay(ki), evaluateUnusedHubs(ki), evaluateLoadBalancing(ki), evaluateUnusefullComponent(ki), evaluatearchitectureSize(ki)};
+       // float[] newObjectives = {evaluateFunctionnality(ki, functionnalityValue, -functionnalityValue/4), evaluateCommunicationDelay(ki), evaluateUnusedHubs(ki), evaluateLoadBalancing(ki), evaluateUnusefullComponent(ki), evaluatearchitectureSize(ki)};
+        float[] newObjectives = {evaluateFunctionnality(ki, functionnalityValue, -functionnalityValue/4), evaluatearchitectureSize(ki)};
         setFitness(state, ki, newObjectives);
     }
 

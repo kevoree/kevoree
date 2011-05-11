@@ -5,13 +5,13 @@
 parent.0 = nsga2.params
 # parent.0 = spea2.params
 pop.subpop.0.size = 300
-generations = 150
+generations = 100
 
 pop.subpop.0.species		= org.kevoree.library.reasoner.ecj.KevoreeModelSpecies
-pop.subpop.0.species.ind	= org.kevoree.library.reasoner.ecj.KevoreeIndividual	
+pop.subpop.0.species.ind	= org.kevoree.library.reasoner.ecj.KevoreeMultiIndividual
 pop.subpop.0.species.mutation-prob	= 1.0
 eval.problem            = org.kevoree.library.reasoner.ecj.MultiObjectiveKevoreeProblem
-pop.subpop.0.species.fitness.num-objectives = 6
+pop.subpop.0.species.fitness.num-objectives = 2
 pop.subpop.0.species.fitness.maximize = false
 
 

@@ -67,7 +67,9 @@ public class GeneticAlgorithm {
                 App.startEditor(path);
             }
         }else {
-            App.startEditor(bestsIndividualsFile[0]);
+            for (int i=0; i<10; i++){
+                App.startEditor(bestsIndividualsFile[i]);
+            }
         }
     }
 
@@ -126,12 +128,12 @@ public class GeneticAlgorithm {
                     minFitness = kevoreeMultipleRepresentation.getFitness()[0];
                 }
             }
-            List<float[]> representativeBestFitness = new ArrayList<float[]>();
+//            List<float[]> representativeBestFitness = new ArrayList<float[]>();
             for (KevoreeMultipleRepresentation kevoreeMultipleRepresentation : paretoFront) {
                 if (minFitness == kevoreeMultipleRepresentation.getFitness()[0]){
-                    for (float[] fs : representativeBestFitness) {
-                        kevoreeMultipleRepresentation.getFitness().equals(fs);
-                    }
+//                    for (float[] fs : representativeBestFitness) {
+//                        kevoreeMultipleRepresentation.getFitness().equals(fs);
+//                    }
                     kevoreeMultipleRepresentation.getFitness();
                     bestIndividualsFile.add(kevoreeMultipleRepresentation.getPathToFile());
                 }
