@@ -38,6 +38,7 @@
         <module>../org.kevoree.library.javase.hidrfid</module>
         <module>../org.kevoree.library.javase.kinect</module>
         <module>../org.kevoree.library.javase.autodiscovery</module>
+        <module>../org.kevoree.library.javase.derby</module>
 	</modules>
 
     <distributionManagement>
