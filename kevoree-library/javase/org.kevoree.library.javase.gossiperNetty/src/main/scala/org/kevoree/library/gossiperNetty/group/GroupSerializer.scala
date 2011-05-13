@@ -46,17 +46,17 @@ class GroupSerializer (modelService: KevoreeModelHandlerService) extends Seriali
     }
   }
 
-  private def modelFromString (model: Array[Byte]) {
+  private def modelFromString (model: Array[Byte]): ContainerRoot = {
     val stream = new ByteArrayInputStream (model)
     KevoreeXmiHelper.loadStream (stream)
   }
 
-  private def stringFromModel (model: ContainerRoot): Array[Byte] = {
+  private def stringFromModel (model: ContainerRoot) {
     val out = new ByteArrayOutputStream
     KevoreeXmiHelper.saveStream (out, model)
     out.flush ()
     bytes = out.toByteArray
     out.close ()
-    lastSerialization = System.currentTimeMillis
+    lastSerialization = new Date(System.currentTimeMillis)
   }
 }
