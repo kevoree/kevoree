@@ -19733,6 +19733,7 @@ org.kevoree.framework.KevoreeComponent: void continue()
 org.kevoree.framework.KevoreeComponent: org.kevoree.framework.ComponentType getKevoreeComponentType()
 org.kevoree.framework.KevoreeComponent: boolean ct_started()
 org.kevoree.framework.KevoreeComponent: void ct_started_$eq(boolean)
+org.kevoree.framework.KevoreeComponent: boolean isStarted()
 org.kevoree.framework.KevoreeComponent: void internal_process(java.lang.Object)
 org.kevoree.framework.KevoreeComponent: void startComponent()
 org.kevoree.framework.KevoreeComponent: void stopComponent()
@@ -27317,7 +27318,7 @@ org.kevoree.framework.KevoreeDictionary: java.lang.Object switchKey(java.lang.St
 org.kevoree.framework.KevoreeDictionary: KevoreeDictionary()
 org.kevoree.framework.ChannelTypeFragment$class
 org.kevoree.framework.ChannelTypeFragment$class: java.lang.Object remoteDispatch(org.kevoree.framework.ChannelTypeFragment,org.kevoree.framework.message.Message)
-org.kevoree.framework.ChannelTypeFragment$class: void setIsStarted(org.kevoree.framework.ChannelTypeFragment,boolean)
+org.kevoree.framework.ChannelTypeFragment$class: boolean isStarted(org.kevoree.framework.ChannelTypeFragment)
 org.kevoree.framework.ChannelTypeFragment$class: java.lang.String getNodeName(org.kevoree.framework.ChannelTypeFragment)
 org.kevoree.framework.ChannelTypeFragment$class: void setNodeName(org.kevoree.framework.ChannelTypeFragment,java.lang.String)
 org.kevoree.framework.ChannelTypeFragment$class: java.lang.String getName(org.kevoree.framework.ChannelTypeFragment)
@@ -27332,7 +27333,6 @@ org.kevoree.framework.ChannelTypeFragment$class: void internal_process(org.kevor
 org.kevoree.framework.ChannelTypeFragment$class: void startChannelFragment(org.kevoree.framework.ChannelTypeFragment)
 org.kevoree.framework.ChannelTypeFragment$class: void stopChannelFragment(org.kevoree.framework.ChannelTypeFragment)
 org.kevoree.framework.ChannelTypeFragment$class: void updateChannelFragment(org.kevoree.framework.ChannelTypeFragment)
-org.kevoree.framework.ChannelTypeFragment$class: boolean getIsStarted(org.kevoree.framework.ChannelTypeFragment)
 org.kevoree.framework.ChannelTypeFragment$class: boolean gd1$1(org.kevoree.framework.ChannelTypeFragment)
 org.kevoree.framework.ChannelTypeFragment$class: boolean gd2$1(org.kevoree.framework.ChannelTypeFragment)
 org.kevoree.framework.ChannelTypeFragment$class: boolean gd3$1(org.kevoree.framework.ChannelTypeFragment)
@@ -28794,8 +28794,6 @@ org.kevoree.framework.ChannelTypeFragment: void org$kevoree$framework$ChannelTyp
 org.kevoree.framework.ChannelTypeFragment: java.lang.String nodeName()
 org.kevoree.framework.ChannelTypeFragment: void nodeName_$eq(java.lang.String)
 org.kevoree.framework.ChannelTypeFragment: boolean isStarted()
-org.kevoree.framework.ChannelTypeFragment: void isStarted_$eq(boolean)
-org.kevoree.framework.ChannelTypeFragment: void setIsStarted(boolean)
 org.kevoree.framework.ChannelTypeFragment: java.lang.String getNodeName()
 org.kevoree.framework.ChannelTypeFragment: void setNodeName(java.lang.String)
 org.kevoree.framework.ChannelTypeFragment: java.lang.String name()
@@ -28816,7 +28814,6 @@ org.kevoree.framework.ChannelTypeFragment: org.kevoree.framework.KevoreeActor lo
 org.kevoree.framework.ChannelTypeFragment: void startChannelFragment()
 org.kevoree.framework.ChannelTypeFragment: void stopChannelFragment()
 org.kevoree.framework.ChannelTypeFragment: void updateChannelFragment()
-org.kevoree.framework.ChannelTypeFragment: boolean getIsStarted()
 org.kevoree.framework.aspects.ComponentInstanceAspect$$anonfun$isUpdated$1$$anonfun$apply$1
 org.kevoree.framework.aspects.ComponentInstanceAspect$$anonfun$isUpdated$1$$anonfun$apply$1: long serialVersionUID
 org.kevoree.framework.aspects.ComponentInstanceAspect$$anonfun$isUpdated$1$$anonfun$apply$1: org.kevoree.Port p$1
@@ -33038,7 +33035,6 @@ scala.collection.TraversableOnce$$anonfun$foldRight$1: long serialVersionUID
 scala.xml.include.sax.Main$$anonfun$main$1$$anonfun$apply$1: long serialVersionUID
 scala.xml.include.sax.Main$$anonfun$main$1$$anonfun$apply$4: long serialVersionUID
 scala.collection.immutable.HashSet$HashSetCollision1$$anonfun$updated0$1: long serialVersionUID
-org.kevoree.core.impl.KevoreeCoreBean$$anonfun$switchToNewModel$1: long serialVersionUID
 org.eclipse.emf.ecore.xmi.util.XMLProcessor: java.lang.String XML_EXTENSION
 org.eclipse.emf.ecore.xmi.util.XMLProcessor: java.lang.String STAR_EXTENSION
 org.eclipse.emf.ecore.xml.type.internal.RegEx$Op: int DOT
@@ -36572,6 +36568,7 @@ org.eclipse.emf.ecore.impl.BasicEObjectImpl: int EVIRTUAL_UNSET
 org.eclipse.emf.ecore.impl.BasicEObjectImpl: int EVIRTUAL_GET
 org.eclipse.emf.ecore.impl.BasicEObjectImpl: int EVIRTUAL_IS_SET
 org.eclipse.emf.ecore.impl.BasicEObjectImpl: boolean $assertionsDisabled
+org.kevoree.adaptation.deploy.osgi.context.KevoreeDeployManager$$anonfun$getStartLevelServer$1: long serialVersionUID
 org.codehaus.jackson.io.NumberInput: long L_BILLION
 org.eclipse.emf.ecore.xml.type.util.XMLTypeUtil$CharArrayThreadLocal: int MAX_CACHE_CAPACITY
 org.kevoree.framework.aspects.ContainerNodeAspect$$anonfun$getComponentTypes$1$$anonfun$apply$1: long serialVersionUID
@@ -42038,7 +42035,6 @@ scala.xml.include.sax.Main$$anonfun$main$1$$anonfun$apply$1
 scala.xml.include.sax.Main$$anonfun$main$1$$anonfun$apply$4
 scala.reflect.generic.Constants$Constant
 scala.collection.immutable.HashSet$HashSetCollision1$$anonfun$updated0$1
-org.kevoree.core.impl.KevoreeCoreBean$$anonfun$switchToNewModel$1
 org.kevoree.framework.aspects.TypeDefinitionAspect
 net.lag.configgy.ConfigMap$$anonfun$getDouble$2$$anonfun$apply$3
 scala.Function2$mcDIL$sp$$anonfun$tupled$mcDIL$sp$1
@@ -43365,6 +43361,7 @@ org.kevoree.tools.marShell.parser.sub.KevsInstParser$$anonfun$parseInst$3
 scala.util.matching.Regex$Groups$$anonfun$unapplySeq$2
 org.kevoree.tools.marShell.parser.sub.KevsInstParser$$anonfun$parseInst$6
 org.kevoree.tools.marShell.parser.sub.KevsInstParser$$anonfun$parseInst$5
+org.kevoree.adaptation.deploy.osgi.context.KevoreeDeployManager$$anonfun$getStartLevelServer$1
 scala.UninitializedFieldError$
 org.kevoree.framework.aspects.ContainerNodeAspect$$anonfun$getComponentTypes$1$$anonfun$apply$1
 scala.util.parsing.combinator.Parsers$Parser$$anonfun$$up$qmark$1
