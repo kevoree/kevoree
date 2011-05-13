@@ -12,15 +12,15 @@ public class Tester {
         System.setProperty("avrdude.config.path", "/Applications/Arduino.app/Contents/Resources/Java/hardware/tools/avr/etc/avrdude.conf");
         System.setProperty("serial.port", "/dev/tty.usbmodem621");
         
-        String modelString = "/Users/ffouquet/Desktop/infiniteLoop.kev";
+        String modelString = "/Users/ffouquet/Documents/DEV/dukeboard_github/kevoree/kevoree-library/arduino/org.kevoree.library.arduino.nodeType/src/test/resources/models/RF433Poc.kev";
 
         ContainerRoot model = KevoreeXmiHelper.load(modelString);
 
         ArduinoNode node = new ArduinoNode();
-        node.getDictionary().put("boardTypeName","uno");
-        node.getDictionary().put("boardPortName","/dev/tty.usbmodem411");
+        node.getDictionary().put("boardTypeName","atmega328");
+        node.getDictionary().put("boardPortName","/dev/tty.usbserial-A400g2AP");
 
-        node.push("dukeSensor1",model,null);
+        node.push("KEVOREEDefaultNodeName",model,null);
            
     }
 

@@ -31,6 +31,7 @@
             <groupId>org.kevoree.extra</groupId>
             <artifactId>org.kevoree.extra.marshalling</artifactId>
             <version>${kevoree.version}</version>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
 
