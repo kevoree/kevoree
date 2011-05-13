@@ -84,6 +84,9 @@ public class ArduinoNode extends AbstractNodeType {
             arduinoCompilation.compileCore(sketch, target, core);
 
             for (org.wayoda.ang.libraries.Library library : sketch.getLibraries()) {
+
+                System.out.println("----Lib "+library.getName());
+
                 arduinoCompilation.compileLibrary(sketch, target, library, core);
             }
 

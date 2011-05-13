@@ -17,7 +17,7 @@
         <kevoree.version>${project.version}</kevoree.version>
         <!--<org.osgi.framework.system.packages.extra>sun.misc</org.osgi.framework.system.packages.extra>-->
         <!--<java.net.preferIPv4Stack>true</java.net.preferIPv4Stack>-->
-       <!-- <node.name>duke</node.name>
+        <!-- <node.name>duke</node.name>
         <osgi.base>${project.build.directory}/duke_cache</osgi.base>
         <bootstrap.bundles>${project.build.directory}/kevoreeBundles</bootstrap.bundles>
         <bootstrap.version>${kevoree.version}</bootstrap.version>-->
@@ -49,12 +49,20 @@
             <artifactId>org.kevoree.core</artifactId>
             <version>${kevoree.version}</version>
         </dependency>
-
+           <!--
         <dependency>
             <groupId>org.ops4j.pax.url</groupId>
             <artifactId>pax-url-mvn</artifactId>
             <version>1.3.2</version>
         </dependency>
+              -->
+        <dependency>
+            <groupId>org.ops4j.pax.url</groupId>
+            <artifactId>pax-url-aether</artifactId>
+            <version>1.3.2</version>
+        </dependency>
+
+
         <dependency>
             <groupId>org.ops4j.pax.url</groupId>
             <artifactId>pax-url-assembly</artifactId>
@@ -149,7 +157,9 @@
                             <goal>generate</goal>
                         </goals>
                         <configuration>
-                            <filters>scala,org.ops4j,org.eclipse.emf,org.slf4j,org.kevoree,org.restlet,org.kevoree.tools</filters>
+                            <filters>
+                                scala,org.ops4j,org.eclipse.emf,org.slf4j,org.kevoree,org.restlet,org.kevoree.tools
+                            </filters>
                         </configuration>
                     </execution>
                 </executions>

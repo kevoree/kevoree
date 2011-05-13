@@ -39,9 +39,10 @@ import org.restlet.resource.ClientResource;
  */
 @Library(name = "Kevoree-Android-JavaSE")
 @ChannelTypeFragment
+/*
 @ThirdParties({
         @ThirdParty(name = "org.kevoree.extra.marshalling", url = "mvn:org.kevoree.extra/org.kevoree.extra.marshalling")
-})
+}) */
 public class RestChannel extends AbstractChannelFragment {
 
     @Override

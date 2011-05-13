@@ -26,7 +26,7 @@ class DataManagerForGroup(nameInstance: String, selfNodeName: String, modelServi
                 ClockEntry.newBuilder.setNodeID(selfNodeName).setVersion(1)
                   .setTimestamp(System.currentTimeMillis()).build)*/
     .build
-	private var logger = LoggerFactory.getLogger(classOf[DataManagerForGroup])
+  private var logger = LoggerFactory.getLogger(classOf[DataManagerForGroup])
 
   this.start()
 
@@ -49,7 +49,10 @@ class DataManagerForGroup(nameInstance: String, selfNodeName: String, modelServi
   }
 
   def getData(uuid: UUID): Tuple2[VectorClock, Any] = {
-    (this !? GetData(uuid)).asInstanceOf[Tuple2[VectorClock, Any]]
+    logger.debug("getData")
+    val result = (this !? GetData(uuid)).asInstanceOf[Tuple2[VectorClock, Any]]
+    logger.debug("getData end")
+    result
   }
 
   def setData(uuid: UUID, tuple: Tuple2[VectorClock, Any]) {
@@ -61,15 +64,24 @@ class DataManagerForGroup(nameInstance: String, selfNodeName: String, modelServi
   }
 
   def getUUIDVectorClock(uuid: UUID): VectorClock = {
-    (this !? GetUUIDVectorClock(uuid)).asInstanceOf[VectorClock]
+    logger.debug("getUUIDVectorClock")
+    val result = (this !? GetUUIDVectorClock(uuid)).asInstanceOf[VectorClock]
+    logger.debug("getUUIDVectorClock end")
+    result
   }
 
   def getUUIDVectorClocks(): java.util.Map[UUID, VectorClock] = {
-    (this !? GetUUIDVectorClocks()).asInstanceOf[java.util.Map[UUID, VectorClock]]
+    logger.debug("getUUIDVectorClocks")
+    val result = (this !? GetUUIDVectorClocks()).asInstanceOf[java.util.Map[UUID, VectorClock]]
+    logger.debug("getUUIDVectorClocks end")
+    result
   }
 
   def mergeClock(uid: UUID, v: VectorClock): VectorClock = {
-    (this !? MergeClock(uid, v)).asInstanceOf[VectorClock]
+    logger.debug("mergeClock")
+    val result = (this !? MergeClock(uid, v)).asInstanceOf[VectorClock]
+    logger.debug("mergeClock end")
+    result
   }
 
   protected def setVectorClock(vc: VectorClock) = {
@@ -99,15 +111,15 @@ class DataManagerForGroup(nameInstance: String, selfNodeName: String, modelServi
         }
         case GetUUIDVectorClock(uuid) => {
           if ((vectorClock.getEntiesCount == 0) || modelService.getLastModification.after(lastCheckedTimeStamp)) {
-              setVectorClock(increment())
-            }
+            setVectorClock(increment())
+          }
           //setVectorClock(increment())
           reply(getUUIDVectorClockFromUUID(uuid))
         }
         case GetUUIDVectorClocks() => {
           if ((vectorClock.getEntiesCount == 0) || modelService.getLastModification.after(lastCheckedTimeStamp)) {
-              setVectorClock(increment())
-            }
+            setVectorClock(increment())
+          }
           //setVectorClock(increment())
           reply(getAllUUIDVectorClocks)
         }
@@ -146,22 +158,23 @@ class DataManagerForGroup(nameInstance: String, selfNodeName: String, modelServi
    val stream = new ByteArrayInputStream(model)
    KevoreeXmiHelper.loadStream(stream)
  }*/
-  implicit def vectorDebug(vc : VectorClock) = VectorClockAspect(vc)
+  implicit def vectorDebug(vc: VectorClock) = VectorClockAspect(vc)
 
   private def updateOrResolve(tuple: Tuple2[VectorClock, ContainerRoot]) = {
     vectorClock.printDebug
-     tuple._1.printDebug
+    tuple._1.printDebug
     val occured = VersionUtils.compare(vectorClock, tuple._1)
     occured match {
       case Occured.AFTER => {
-          logger.debug("VectorClocks comparison into DataManager give us: AFTER")}
+        logger.debug("VectorClocks comparison into DataManager give us: AFTER")
+      }
       case Occured.BEFORE => {
-              logger.debug("VectorClocks comparison into DataManager give us: BEFORE")
+        logger.debug("VectorClocks comparison into DataManager give us: BEFORE")
         updateModelOrHaraKiri(tuple._2)
         setVectorClock(localMerge(tuple._1))
       }
       case Occured.CONCURRENTLY => {
-              logger.debug("VectorClocks comparison into DataManager give us: CONCURRENTLY")
+        logger.debug("VectorClocks comparison into DataManager give us: CONCURRENTLY")
         val localDate = new Date(vectorClock.getTimestamp);
         val remoteDate = new Date(tuple._1.getTimestamp);
         //TODO TO IMPROVE
@@ -186,6 +199,7 @@ class DataManagerForGroup(nameInstance: String, selfNodeName: String, modelServi
   }
 
   private def increment(): VectorClock = {
+    logger.debug("Increment")
     val currentTimeStamp = System.currentTimeMillis
     val incrementedEntries = new java.util.ArrayList[ClockEntry]
     var selfFound = false;
@@ -207,6 +221,7 @@ class DataManagerForGroup(nameInstance: String, selfNodeName: String, modelServi
       incrementedEntries.add(ClockEntry.newBuilder().setNodeID(selfNodeName).setVersion(1).setTimestamp(currentTimeStamp).build());
       //lastCheckedTimeStamp = modelService.getLastModification
     }
+    logger.debug("End increment")
     VectorClock.newBuilder().addAllEnties(incrementedEntries).setTimestamp(currentTimeStamp).build()
   }
 
