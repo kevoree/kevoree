@@ -11,8 +11,8 @@ import org.kevoree.library.arduinoNodeType.PortUsage;
 @Library(name = "KevoreeArduinoJava")
 @ChannelTypeFragment
 @DictionaryType({
-        @DictionaryAttribute(name = "TX_PIN", optional = false, defaultValue = "7"),
-        @DictionaryAttribute(name = "RX_PIN", optional = false, defaultValue = "8")
+        @DictionaryAttribute(name = "TX_PIN", optional = false, defaultValue = "6"),
+        @DictionaryAttribute(name = "RX_PIN", optional = false, defaultValue = "5")
 })
 public class SRF433 extends AbstractChannelFragment {
 
@@ -52,14 +52,17 @@ public class SRF433 extends AbstractChannelFragment {
 
         context.append("if (vw_get_message(buf, &buflen)){\n");
 
-            context.append("int i;\n");
-            context.append("char msg[buflen+10];\n");
-            context.append("for (i = 0; i < buflen; i++){\n");
-                context.append("msg[i] = buf[i];\n");
-            context.append("}\n");
+        context.append("int i;\n");
+        context.append("char msg[buflen+10];\n");
+        context.append("for (i = 0; i < buflen; i++){\n");
+        context.append("msg[i] = buf[i];\n");
+        context.append("}\n");
 
-            context.append("String contentString = String(\"r:\"+msg) ;\n");
+        context.append("String msgString =  String(msg);\n");
+        context.append("if(msgString.startsWith(\""+this.getName()+":\")){\n");
+            context.append("String contentString = String(\"r:\")+ msgString ;\n");
             context.append(ArduinoMethodHelper.generateMethodNameChannelDispatch(this.getName()) + "(contentString);\n");
+        context.append("}\n");
 
 
         context.append("}\n");
@@ -76,14 +79,16 @@ public class SRF433 extends AbstractChannelFragment {
             context.append("(param);\n");
         }
 
-        context.append("if(param.startsWith(\"r:\")){\n");
-                      //COPY PARAM TO CHAR*
-            context.append("char msgContent[param.length()+10];\n");
-            context.append("param.toCharArray(msgContent, param.length()+1);\n");
+        context.append("if(!param.startsWith(\"r:\")){\n");
+        //COPY PARAM TO CHAR*
 
-            //SEND TO RF 433
-            context.append("vw_send((uint8_t *)msgContent, strlen(msgContent));\n");
-            context.append("vw_wait_tx();\n");
+        context.append("String toSendMsg =  String(\""+this.getName()+":\")+param;\n");
+        context.append("char msgContent[toSendMsg.length()+10];\n");
+        context.append("toSendMsg.toCharArray(msgContent, toSendMsg.length()+1);\n");
+
+        //SEND TO RF 433
+        context.append("vw_send((uint8_t *)msgContent, strlen(msgContent));\n");
+        context.append("vw_wait_tx();\n");
 
         context.append("}\n");
 

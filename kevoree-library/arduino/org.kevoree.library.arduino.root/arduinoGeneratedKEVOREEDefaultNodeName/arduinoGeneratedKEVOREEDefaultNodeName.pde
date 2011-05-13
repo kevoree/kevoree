@@ -7,8 +7,8 @@
 #include <Metro.h>
 Metro metroTimerTimer1665635963= Metro(1000);
 void setup(){
-vw_set_rx_pin(8);
-vw_set_tx_pin(7);
+vw_set_rx_pin(5);
+vw_set_tx_pin(6);
 vw_setup(1200);
 vw_rx_start();
 }
@@ -21,17 +21,21 @@ char msg[buflen+10];
 for (i = 0; i < buflen; i++){
 msg[i] = buf[i];
 }
-String contentString = String("r:"+msg) ;
+String msgString =  String(msg);
+if(msgString.startsWith("hub1064120763:")){
+String contentString = String("r:")+ msgString ;
 channel_hub1064120763_dispatch(contentString);
+}
 }
 if (metroTimerTimer1665635963.check() == 1) {
 component_Timer1665635963_requiredPort_tick("tick");
 }
 }
 void channel_hub1064120763_dispatch(String param){
-if(param.startsWith("r:")){
-char msgContent[param.length()+10];
-param.toCharArray(msgContent, param.length()+1);
+if(!param.startsWith("r:")){
+String toSendMsg =  String("hub1064120763:")+param;
+char msgContent[toSendMsg.length()+10];
+toSendMsg.toCharArray(msgContent, toSendMsg.length()+1);
 vw_send((uint8_t *)msgContent, strlen(msgContent));
 vw_wait_tx();
 }
