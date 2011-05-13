@@ -68,6 +68,7 @@ case class AddThirdPartyCommand(deployUnit: DeployUnit, ctx: KevoreeDeployManage
 		  true
 		}
       case _@e => {
+        logger.error("Install error => ",e)
 		  false
 		}
     }

@@ -28,7 +28,6 @@ import org.kevoree.framework.KevoreeXmiHelper
 import org.osgi.framework.BundleContext
 import org.slf4j.LoggerFactory
 import scala.reflect.BeanProperty
-import org.kevoree.framework.merger.KevoreePlatformMerger
 import org.kevoree.framework.message._
 import scala.actors.Actor
 import org.kevoree.api.configuration.ConfigConstants
@@ -122,6 +121,7 @@ class KevoreeCoreBean extends KevoreeModelHandlerService with KevoreeActor {
     case UpdateModel(newmodel) => {
       if (newmodel == null) {
         logger.error("Null model")
+        reply(false)
       } else {
 
         val milli =System.currentTimeMillis
@@ -150,12 +150,24 @@ class KevoreeCoreBean extends KevoreeModelHandlerService with KevoreeActor {
   }
 
 
-  override def getLastModel: ContainerRoot = (this !? LastModel()).asInstanceOf[ContainerRoot]
+  override def getLastModel: ContainerRoot = {
+    logger.debug("getLastModel asked tiny")
+    //val result = (this !? LastModel()).asInstanceOf[ContainerRoot]
+    logger.debug("getLastModel end")
+   // result
+    model
+  }
 
-  override def updateModel(model: ContainerRoot) = this ! UpdateModel(model)
+  override def updateModel(model: ContainerRoot) {
+    logger.debug("update asked")
+    this ! UpdateModel(model)
+    logger.debug("update end")
+  }
 
   override def atomicUpdateModel(model: ContainerRoot) = {
+    logger.debug("Atomic update asked")
     (this !? UpdateModel(model));
+    logger.debug("Atomic update end")
     lastDate
   }
 
