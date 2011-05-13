@@ -18,7 +18,7 @@ class GroupSerializer (modelService: KevoreeModelHandlerService) extends Seriali
 
   private var logger = LoggerFactory.getLogger (classOf[GroupSerializer])
 
-  private var lastSerialization: Date = null
+  private var lastSerialization: Date = new Date(1l)
   private var bytes: Array[Byte] = null
 
   def serialize (data: Any): Array[Byte] = {
