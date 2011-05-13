@@ -19,8 +19,8 @@
     <dictionaryType>
       <attributes name="TX_PIN"/>
       <attributes name="RX_PIN"/>
-      <defaultValues attribute="//@typeDefinitions.2/@dictionaryType/@attributes.0" value="7"/>
-      <defaultValues attribute="//@typeDefinitions.2/@dictionaryType/@attributes.1" value="8"/>
+      <defaultValues attribute="//@typeDefinitions.2/@dictionaryType/@attributes.0" value="6"/>
+      <defaultValues attribute="//@typeDefinitions.2/@dictionaryType/@attributes.1" value="5"/>
     </dictionaryType>
   </typeDefinitions>
   <typeDefinitions xsi:type="kevoree:NodeType" name="ArduinoNode" deployUnits="//@deployUnits.1" factoryBean="org.kevoree.library.arduinoNodeType.ArduinoNodeFactory" bean="org.kevoree.library.arduinoNodeType.ArduinoNode">
