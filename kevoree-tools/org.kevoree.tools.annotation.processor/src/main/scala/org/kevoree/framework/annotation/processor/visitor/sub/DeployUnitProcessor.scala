@@ -29,26 +29,26 @@ import scala.collection.JavaConversions._
 trait DeployUnitProcessor {
 
   def processDeployUnit(typeDef : TypeDefinition,classdef : TypeDeclaration,env : AnnotationProcessorEnvironment)={
-    var root : ContainerRoot = typeDef.eContainer.asInstanceOf[ContainerRoot]
+    val root : ContainerRoot = typeDef.eContainer.asInstanceOf[ContainerRoot]
 
     /* CREATE COMPONENT TYPE DEPLOY UNIT IF NEEDED */
     var unitName = env.getOptions.find({op => op._1.contains("kevoree.lib.id")}).getOrElse{("key=","")}._1.split('=').toList.get(1)
     var groupName = env.getOptions.find({op => op._1.contains("kevoree.lib.group")}).getOrElse{("key=","")}._1.split('=').toList.get(1)
     var version = env.getOptions.find({op => op._1.contains("kevoree.lib.version")}).getOrElse{("key=","")}._1.split('=').toList.get(1)
-    var tag = env.getOptions.find({op => op._1.contains("tag")}).getOrElse{("key=","")}._1.split('=').toList.get(1)
+    val tag = env.getOptions.find({op => op._1.contains("kevoree.lib.tag")}).getOrElse{("key=","")}._1.split('=').toList.get(1)
 
-    var repositories = env.getOptions.find({op => op._1.contains("repositories")}).getOrElse{("key=","")}._1.split('=').toList.get(1)
-    var repositoriesList : List[String] = repositories.split(";").filter(r=> r != null && r != "").toList
+    val repositories = env.getOptions.find({op => op._1.contains("repositories")}).getOrElse{("key=","")}._1.split('=').toList.get(1)
+    val repositoriesList : List[String] = repositories.split(";").filter(r=> r != null && r != "").toList
 
-    var tRepositories = env.getOptions.find({op => op._1.contains("otherRepositories")}).getOrElse{("key=","")}._1.split('=').toList.get(1)
-    var tRepositoriesList : List[String] = tRepositories.split(";").filter(r=> r != null && r != "").toList
+    val tRepositories = env.getOptions.find({op => op._1.contains("otherRepositories")}).getOrElse{("key=","")}._1.split('=').toList.get(1)
+    val tRepositoriesList : List[String] = tRepositories.split(";").filter(r=> r != null && r != "").toList
 
-    var nodeTypeNames = env.getOptions.find({op => op._1.contains("nodeTypeNames")}).getOrElse{("key=","")}._1.split('=').toList.get(1)
-    var nodeTypeNameList : List[String] = nodeTypeNames.split(";").filter(r=> r != null && r != "").toList
+    val nodeTypeNames = env.getOptions.find({op => op._1.contains("nodeTypeNames")}).getOrElse{("key=","")}._1.split('=').toList.get(1)
+    val nodeTypeNameList : List[String] = nodeTypeNames.split(";").filter(r=> r != null && r != "").toList
 
-    var ctdeployunit = root.getDeployUnits.find({du => du.getUnitName == unitName && du.getGroupName == groupName && du.getVersion == version }) match {
+    val ctdeployunit = root.getDeployUnits.find({du => du.getUnitName == unitName && du.getGroupName == groupName && du.getVersion == version }) match {
       case None => {
-          var newdeploy = KevoreeFactory.eINSTANCE.createDeployUnit
+          val newdeploy = KevoreeFactory.eINSTANCE.createDeployUnit
           newdeploy.setUnitName(unitName)
           newdeploy.setGroupName(groupName)
           newdeploy.setVersion(version)
@@ -59,7 +59,7 @@ trait DeployUnitProcessor {
             root.getTypeDefinitions.filter(p=> p.isInstanceOf[NodeType]).find(nt => nt.getName == nodeTypeName) match {
               case Some(existingNodeType)=>newdeploy.setTargetNodeType(existingNodeType.asInstanceOf[NodeType])
               case None => {
-                  var nodeType = KevoreeFactory.eINSTANCE.createNodeType
+                  val nodeType = KevoreeFactory.eINSTANCE.createNodeType
                   nodeType.setName(nodeTypeName)
                   root.getTypeDefinitions.add(nodeType)
                   newdeploy.setTargetNodeType(nodeType)
@@ -77,7 +77,7 @@ trait DeployUnitProcessor {
     /* ADD DEPLOY UNIT to RepositoryList */
     repositoriesList.foreach{repoUrl=>
       if(repoUrl != ""){
-        var repo = root.getRepositories.find(r => r.getUrl == repoUrl) match {
+        val repo = root.getRepositories.find(r => r.getUrl == repoUrl) match {
           case None => {
               var newrepo = KevoreeFactory.eINSTANCE.createRepository
               newrepo.setUrl(repoUrl)

@@ -55,7 +55,6 @@ public class App {
                 jframe.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
                 jframe.setPreferredSize(new Dimension(800, 600));
 
-
                 jframe.setJMenuBar(artpanel.getMenuBar());
 
                 // jframe.add(artpanel.getPanel(), BorderLayout.CENTER);

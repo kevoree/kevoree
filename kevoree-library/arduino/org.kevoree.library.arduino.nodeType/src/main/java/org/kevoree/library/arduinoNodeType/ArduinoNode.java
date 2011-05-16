@@ -22,6 +22,8 @@ import org.wayoda.ang.project.Sketch;
 import org.wayoda.ang.project.Target;
 import org.wayoda.ang.project.TargetDirectoryService;
 
+import javax.swing.*;
+
 @NodeType
 @Library(name = "KevoreeNodeType")
 @DictionaryType({
@@ -31,81 +33,112 @@ import org.wayoda.ang.project.TargetDirectoryService;
 public class ArduinoNode extends AbstractNodeType {
 
     @Override
-    public void push(String targetNodeName, ContainerRoot root, BundleContext bundle) {
-        System.out.println("I'm the arduino deployer");
+    public void push(final String targetNodeName, final ContainerRoot root, final BundleContext bundle) {
+
+        new Thread() {
+
+            @Override
+            public void run() {
+                ArduinoGuiProgressBar progress = new ArduinoGuiProgressBar();
+                JFrame frame = new JFrame("Arduino model push");
+                frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+                frame.setContentPane(progress);
+                frame.pack();
+                frame.setVisible(true);
+
+                bcontext = bundle;
 
 
-
-        bcontext = bundle;
-
-        //STEP 0 : FOUND ARDUINO COMMUNICATION CHANNEL
-
-        //  ContainerRoot newModel = KevoreeXmiHelper.load("/Users/ffouquet/Documents/DEV/dukeboard_github/kevoree/kevoree-library/org.kevoree.library.arduino.nodeType/src/test/resources/models/TempSensorAlone.kev");
-
-        // Generator.generate(containerRoot);
-        KevoreeKompareBean kompare = new KevoreeKompareBean();
-        AdaptationModel kompareModel = kompare.kompare(KevoreeFactory.eINSTANCE.createContainerRoot(), root, targetNodeName);
-
-        //STEP 1 : GENERATE FLAT CODE - MODEL SPECIFIQUE
-        //STEP 2 : COMPILE to PDE Target
-        File newdir = new File("arduinoGenerated" + targetNodeName);
-
-        File newdirTarget = new File("arduinoGenerated" + targetNodeName + "/target");
-        newdirTarget.mkdir();
-        TargetDirectoryService.rootPath = newdirTarget.getAbsolutePath();
-
-        newdir.mkdir();
-
-        outputPath = newdir.getAbsolutePath();
-        System.out.println("outDir=" + outputPath);
-        deploy(kompareModel, targetNodeName);
+                progress.beginTask("Build diff model", 10);
+                KevoreeKompareBean kompare = new KevoreeKompareBean();
+                AdaptationModel kompareModel = kompare.kompare(KevoreeFactory.eINSTANCE.createContainerRoot(), root, targetNodeName);
+                progress.endTask();
 
 
-        //STEP 3 : Deploy by commnication channel
-        ArduinoCompilation arduinoCompilation = new ArduinoCompilation();
-        ArduinoLink arduinoLink = new ArduinoLink();
-        ArduinoArchive arduinoArchive = new ArduinoArchive();
-        ArduinoPostCompilation arduinoPostCompilation = new ArduinoPostCompilation();
-        ArduinoDeploy arduinoDeploy = new ArduinoDeploy();
-        arduinoCompilation.prepareCommands();
-        arduinoLink.prepareCommands();
-        arduinoArchive.prepareCommands();
-        arduinoPostCompilation.prepareCommands();
-        arduinoDeploy.prepareCommands();
+                progress.beginTask("Prepare model generation", 20);
+                File newdir = new File("arduinoGenerated" + targetNodeName);
+                File newdirTarget = new File("arduinoGenerated" + targetNodeName + "/target");
+                newdirTarget.mkdir();
+                TargetDirectoryService.rootPath = newdirTarget.getAbsolutePath();
+                newdir.mkdir();
+                outputPath = newdir.getAbsolutePath();
+                System.out.println("outDir=" + outputPath);
+                progress.endTask();
+
+                progress.beginTask("Generate firmware", 30);
+                try {
+                    if (deploy(kompareModel, targetNodeName)) {
+                        progress.endTask();
+                    } else {
+                        progress.failTask();
+                    }
+                } catch (Exception e) {
+                    progress.failTask();
+                }
+
+                //STEP 3 : Deploy by commnication channel
+
+                progress.beginTask("Prepare compilation", 40);
+                ArduinoCompilation arduinoCompilation = new ArduinoCompilation();
+                ArduinoLink arduinoLink = new ArduinoLink();
+                ArduinoArchive arduinoArchive = new ArduinoArchive();
+                ArduinoPostCompilation arduinoPostCompilation = new ArduinoPostCompilation();
+                ArduinoDeploy arduinoDeploy = new ArduinoDeploy();
+                arduinoCompilation.prepareCommands();
+                arduinoLink.prepareCommands();
+                arduinoArchive.prepareCommands();
+                arduinoPostCompilation.prepareCommands();
+                arduinoDeploy.prepareCommands();
+                ArduinoBuildEnvironment arduinoBuildEnvironment = ArduinoBuildEnvironment.getInstance();
+                Target target = arduinoBuildEnvironment.getDefaultTargetList().getTarget(getDictionary().get("boardTypeName").toString());
+                progress.endTask();
+
+                try {
+
+                    progress.beginTask("Prepare sketch", 50);
+                    Sketch sketch = new Sketch(newdir);
+                    sketch.preprocess(target);
+                    progress.endTask();
 
 
-        ArduinoBuildEnvironment arduinoBuildEnvironment = ArduinoBuildEnvironment.getInstance();
-        Target target = arduinoBuildEnvironment.getDefaultTargetList().getTarget(this.getDictionary().get("boardTypeName").toString());
-        try {
-            Sketch sketch = new Sketch(newdir);
-            sketch.preprocess(target);
+                    Core core = CodeManager.getInstance().getCore(target);
+                    arduinoCompilation.compileCore(sketch, target, core);
 
-            Core core = CodeManager.getInstance().getCore(target);
-            arduinoCompilation.compileCore(sketch, target, core);
+                    progress.beginTask("Library processing", 60);
+                    for (org.wayoda.ang.libraries.Library library : sketch.getLibraries()) {
 
-            for (org.wayoda.ang.libraries.Library library : sketch.getLibraries()) {
+                        System.out.println("----Lib " + library.getName());
 
-                System.out.println("----Lib "+library.getName());
+                        arduinoCompilation.compileLibrary(sketch, target, library, core);
+                    }
+                    progress.endTask();
 
-                arduinoCompilation.compileLibrary(sketch, target, library, core);
+                    progress.beginTask("Firmware compilation", 70);
+                    arduinoCompilation.compileSketch(sketch, target, core);
+                    arduinoArchive.archiveSketch(sketch, target);
+                    progress.endTask();
+
+                    progress.beginTask("Firmware linkage", 80);
+                    arduinoLink.linkSketch(sketch, target);
+                    arduinoPostCompilation.postCompileSketch(sketch, target);
+                    progress.endTask();
+
+                    System.out.println("boardPortName=" + getDictionary().get("boardPortName"));
+
+                    progress.beginTask("Upload to arduino board", 90);
+                    arduinoDeploy.uploadSketch(sketch, target, getDictionary().get("boardPortName").toString());
+                    progress.endTask();
+
+                    frame.setVisible(false);
+                    frame.dispose();
+
+                } catch (FileNotFoundException ex) {
+                    Logger.getLogger(ArduinoNode.class.getName()).log(Level.SEVERE, null, ex);
+                    progress.failTask();
+                }
             }
 
-            arduinoCompilation.compileSketch(sketch, target, core);
-
-            arduinoArchive.archiveSketch(sketch, target);
-
-            arduinoLink.linkSketch(sketch, target);
-
-            arduinoPostCompilation.postCompileSketch(sketch, target);
-
-            System.out.println("boardPortName="+this.getDictionary().get("boardPortName"));
-
-            arduinoDeploy.uploadSketch(sketch, target,this.getDictionary().get("boardPortName").toString());
-
-
-        } catch (FileNotFoundException ex) {
-            Logger.getLogger(ArduinoNode.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        }.start();
 
 
     }
@@ -128,7 +161,7 @@ public class ArduinoNode extends AbstractNodeType {
         }
 
         //Step : Generate firmware code to output path
-        Generator.generate(model, nodeName, outputPath,bcontext);
+        Generator.generate(model, nodeName, outputPath, bcontext);
 
         return true;
     }

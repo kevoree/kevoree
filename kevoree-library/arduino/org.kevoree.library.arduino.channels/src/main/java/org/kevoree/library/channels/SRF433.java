@@ -39,6 +39,7 @@ public class SRF433 extends AbstractChannelFragment {
     public void generateSetup(StringBuffer context) {
         context.append("vw_set_rx_pin(" + this.getDictionary().get("RX_PIN").toString() + ");\n");
         context.append("vw_set_tx_pin(" + this.getDictionary().get("TX_PIN").toString() + ");\n");
+        context.append("vw_set_ptt_pin(-1);");
         context.append("vw_setup(1200);\n");
         context.append("vw_rx_start();\n");
 

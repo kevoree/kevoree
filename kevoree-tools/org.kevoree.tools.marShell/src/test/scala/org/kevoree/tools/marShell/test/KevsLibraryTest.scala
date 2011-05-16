@@ -18,11 +18,18 @@ import scala.collection.JavaConversions._
 import org.kevoree.tools.marShell.interpreter.KevsInterpreterAspects._
 import org.kevoree.tools.marShell.interpreter.KevsInterpreterContext
 import org.kevoree.ComponentInstance
+import org.eclipse.emf.ecore.util.EcoreUtil
 
 class KevsLibraryTest extends KevSTestSuiteHelper {
 
   @Test def libraryTest() {
     val baseModel = model("baseModel/defaultLibrary.kev")
+
+    println(baseModel.eResource())
+    val baseModelCopy = EcoreUtil.copy(baseModel)
+    println("copyRes="+baseModelCopy.eResource())
+
+
     val oscript = getScript("scripts/kevsLibrary.kevs");
 
     assert(oscript.interpret(KevsInterpreterContext(baseModel)))
