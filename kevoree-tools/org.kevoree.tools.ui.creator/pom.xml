@@ -5,12 +5,12 @@
     <artifactId>org.kevoree.tools.ui.creator</artifactId>
     <packaging>jar</packaging>
     <name>Kevoree :: Tools :: UI Creator</name>
-    <version>1.1.0-RC1</version>
+    <version>1.1.0-RC2</version>
 
     <parent>
         <artifactId>org.kevoree.tools.root</artifactId>
         <groupId>org.kevoree.tools</groupId>
-        <version>1.1.0-RC1</version>
+        <version>1.1.0-RC2</version>
         <relativePath>../org.kevoree.tools.root/pom.xml</relativePath>
     </parent>
 

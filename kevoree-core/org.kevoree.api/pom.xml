@@ -7,11 +7,11 @@
     <packaging>bundle</packaging>
     <name>Kevoree :: Api</name>
 
-    <version>1.1.0-RC1</version>
+    <version>1.1.0-RC2</version>
     <parent>
         <artifactId>org.kevoree.root</artifactId>
         <groupId>org.kevoree</groupId>
-        <version>1.1.0-RC1</version>
+        <version>1.1.0-RC2</version>
         <relativePath>../org.kevoree.root/pom.xml</relativePath>
     </parent>
 

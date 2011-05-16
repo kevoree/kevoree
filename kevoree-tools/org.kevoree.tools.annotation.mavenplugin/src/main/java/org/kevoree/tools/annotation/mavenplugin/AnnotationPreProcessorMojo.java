@@ -267,7 +267,7 @@ public class AnnotationPreProcessorMojo extends AbstractMojo {
                 "kevoree.lib.group=" + this.project.getGroupId(),
                 "kevoree.lib.version=" + this.project.getVersion(),
                 "kevoree.lib.target=" + sourceOutputDirectory.getPath() + "/KEV-INF/lib.kev",
-                "tag=" + dateFormat.format(new Date()),
+                "kevoree.lib.tag=" + dateFormat.format(new Date()),
                 "repositories=" + repositories,
                 "otherRepositories=" + otherRepositories,
                 "thirdParties="+thirdParties,

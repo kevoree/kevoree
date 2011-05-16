@@ -29,6 +29,7 @@ import org.restlet.representation.Representation
 import org.restlet.representation.StringRepresentation
 import org.restlet.representation.Variant
 import org.restlet.resource.UniformResource
+import org.slf4j.LoggerFactory
 
 
 class ModelHandlerResource extends ServerResource {
@@ -36,6 +37,8 @@ class ModelHandlerResource extends ServerResource {
    override def doInit()={
    println("INIT")
    }*/
+
+  val logger = LoggerFactory.getLogger(classOf[ModelHandlerResource])
 
   override def doHandle():Representation={
     var method = getMethod();
@@ -48,7 +51,9 @@ class ModelHandlerResource extends ServerResource {
 
   override def get():Representation = {
     var ouput = new ByteArrayOutputStream
+    logger.debug("Before EMF Serialisation")
     KevoreeXmiHelper.saveStream(ouput, Handler.getModelhandler.getLastModel)
+    logger.debug("after EMF Serialisation")
     new StringRepresentation(ouput.toString)
   }
 

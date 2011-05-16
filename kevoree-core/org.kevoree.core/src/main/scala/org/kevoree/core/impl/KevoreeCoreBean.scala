@@ -33,6 +33,7 @@ import scala.actors.Actor
 import org.kevoree.api.configuration.ConfigConstants
 import java.util.Date
 import org.kevoree.api.service.core.handler.{ModelListener, KevoreeModelHandlerService}
+import org.eclipse.emf.ecore.util.EcoreUtil
 
 class KevoreeCoreBean extends KevoreeModelHandlerService with KevoreeActor {
 
@@ -151,22 +152,19 @@ class KevoreeCoreBean extends KevoreeModelHandlerService with KevoreeActor {
 
 
   override def getLastModel: ContainerRoot = {
-    logger.debug("getLastModel asked tiny")
-    //val result = (this !? LastModel()).asInstanceOf[ContainerRoot]
-    logger.debug("getLastModel end")
-   // result
-    model
+    val result = (this !? LastModel()).asInstanceOf[ContainerRoot]
+    EcoreUtil.copy(result)
   }
 
   override def updateModel(model: ContainerRoot) {
     logger.debug("update asked")
-    this ! UpdateModel(model)
+    this ! UpdateModel(EcoreUtil.copy(model))
     logger.debug("update end")
   }
 
   override def atomicUpdateModel(model: ContainerRoot) = {
     logger.debug("Atomic update asked")
-    (this !? UpdateModel(model));
+    (this !? UpdateModel(EcoreUtil.copy(model)))
     logger.debug("Atomic update end")
     lastDate
   }
