@@ -29,7 +29,7 @@ class GroupSerializer (modelService: KevoreeModelHandlerService) extends Seriali
       bytes
     } catch {
       case e => {
-        logger.error ("Model cannot be serialize: ", e)
+        logger.error ("Model cannot be serialized: ", e)
         null
       }
     }
@@ -40,7 +40,7 @@ class GroupSerializer (modelService: KevoreeModelHandlerService) extends Seriali
       modelFromString (data)
     } catch {
       case e => {
-        logger.error ("Model cannot be deserialize: ", e)
+        logger.error ("Model cannot be deserialized: ", e)
         null
       }
     }
