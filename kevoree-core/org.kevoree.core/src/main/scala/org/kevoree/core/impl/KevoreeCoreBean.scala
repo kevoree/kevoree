@@ -107,7 +107,11 @@ class KevoreeCoreBean extends KevoreeModelHandlerService with KevoreeActor {
   def internal_process(msg: Any) = msg match {
     case updateMsg: PlatformModelUpdate => KevoreePlatformHelper.updateNodeLinkProp(model, nodeName, updateMsg.targetNodeName, updateMsg.key, updateMsg.value, updateMsg.networkType, updateMsg.weight)
     case PreviousModel() => reply(models)
-    case LastModel() => reply(EcoreUtil.copy(model)) /* TODO DEEP CLONE */
+    case LastModel() => {
+      logger.debug("Before get copy model")
+      reply(EcoreUtil.copy(model))
+    }
+
     case UpdateModel(pnewmodel) => {
       if (pnewmodel == null) {
         logger.error("Null model")
@@ -116,14 +120,14 @@ class KevoreeCoreBean extends KevoreeModelHandlerService with KevoreeActor {
 
         try {
 
-          logger.debug("Actor size "+this.mailboxSize)
+          logger.debug("Actor size " + this.mailboxSize)
 
           logger.debug("Copy Model")
           val newmodel = EcoreUtil.copy(pnewmodel)
 
           val milli = System.currentTimeMillis
           logger.debug("Begin update model " + milli)
-           logger.debug("Before kompare")
+          logger.debug("Before kompare")
           val adaptationModel = kompareService.kompare(model, newmodel, nodeName);
           logger.debug("Before deploy")
           val deployResult = deployService.deploy(adaptationModel, nodeName);
@@ -147,8 +151,8 @@ class KevoreeCoreBean extends KevoreeModelHandlerService with KevoreeActor {
 
           reply(deployResult)
         } catch {
-          case _ @ e =>
-            logger.error("Error while update",e)
+          case _@e =>
+            logger.error("Error while update", e)
             reply(false)
         }
 
