@@ -16,14 +16,6 @@
         <module>../org.kevoree.experiment.trace.gui</module>
         <module>../org.kevoree.experiment.modelScript</module>
 	</modules>
-
-    <distributionManagement>
-    <repository>
-        <id>maven.kevoree.org-releases</id>
-        <name>maven.kevoree.org-releases</name>
-        <url>${releaseUrl}</url>
-    </repository>
-	</distributionManagement>
     
     <repositories>
         <repository>
