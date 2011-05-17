@@ -132,7 +132,6 @@ jsyntaxpane.lexers.JavaScriptLexer: int ZZ_BUFFERSIZE
 jsyntaxpane.lexers.JavaScriptLexer: int STRING
 jsyntaxpane.lexers.JavaScriptLexer: int YYINITIAL
 jsyntaxpane.lexers.JavaScriptLexer: int SSTRING
-jsyntaxpane.lexers.JavaScriptLexer: int[] ZZ_LEXSTATE
 jsyntaxpane.lexers.JavaScriptLexer: java.lang.String ZZ_CMAP_PACKED
 jsyntaxpane.lexers.JavaScriptLexer: char[] ZZ_CMAP
 jsyntaxpane.lexers.JavaScriptLexer: int[] ZZ_ACTION
@@ -152,6 +151,7 @@ jsyntaxpane.lexers.JavaScriptLexer: int zzState
 jsyntaxpane.lexers.JavaScriptLexer: int zzLexicalState
 jsyntaxpane.lexers.JavaScriptLexer: char[] zzBuffer
 jsyntaxpane.lexers.JavaScriptLexer: int zzMarkedPos
+jsyntaxpane.lexers.JavaScriptLexer: int zzPushbackPos
 jsyntaxpane.lexers.JavaScriptLexer: int zzCurrentPos
 jsyntaxpane.lexers.JavaScriptLexer: int zzStartRead
 jsyntaxpane.lexers.JavaScriptLexer: int zzEndRead
@@ -160,7 +160,6 @@ jsyntaxpane.lexers.JavaScriptLexer: int yychar
 jsyntaxpane.lexers.JavaScriptLexer: int yycolumn
 jsyntaxpane.lexers.JavaScriptLexer: boolean zzAtBOL
 jsyntaxpane.lexers.JavaScriptLexer: boolean zzAtEOF
-jsyntaxpane.lexers.JavaScriptLexer: boolean zzEOFDone
 jsyntaxpane.lexers.JavaScriptLexer: byte PARAN
 jsyntaxpane.lexers.JavaScriptLexer: byte BRACKET
 jsyntaxpane.lexers.JavaScriptLexer: byte CURLY
@@ -267,7 +266,6 @@ jsyntaxpane.lexers.DOSBatchLexer: int YYEOF
 jsyntaxpane.lexers.DOSBatchLexer: int ZZ_BUFFERSIZE
 jsyntaxpane.lexers.DOSBatchLexer: int ECHO_TEXT
 jsyntaxpane.lexers.DOSBatchLexer: int YYINITIAL
-jsyntaxpane.lexers.DOSBatchLexer: int[] ZZ_LEXSTATE
 jsyntaxpane.lexers.DOSBatchLexer: java.lang.String ZZ_CMAP_PACKED
 jsyntaxpane.lexers.DOSBatchLexer: char[] ZZ_CMAP
 jsyntaxpane.lexers.DOSBatchLexer: int[] ZZ_ACTION
@@ -287,6 +285,7 @@ jsyntaxpane.lexers.DOSBatchLexer: int zzState
 jsyntaxpane.lexers.DOSBatchLexer: int zzLexicalState
 jsyntaxpane.lexers.DOSBatchLexer: char[] zzBuffer
 jsyntaxpane.lexers.DOSBatchLexer: int zzMarkedPos
+jsyntaxpane.lexers.DOSBatchLexer: int zzPushbackPos
 jsyntaxpane.lexers.DOSBatchLexer: int zzCurrentPos
 jsyntaxpane.lexers.DOSBatchLexer: int zzStartRead
 jsyntaxpane.lexers.DOSBatchLexer: int zzEndRead
@@ -295,7 +294,6 @@ jsyntaxpane.lexers.DOSBatchLexer: int yychar
 jsyntaxpane.lexers.DOSBatchLexer: int yycolumn
 jsyntaxpane.lexers.DOSBatchLexer: boolean zzAtBOL
 jsyntaxpane.lexers.DOSBatchLexer: boolean zzAtEOF
-jsyntaxpane.lexers.DOSBatchLexer: boolean zzEOFDone
 jsyntaxpane.lexers.DOSBatchLexer: int[] zzUnpackAction()
 jsyntaxpane.lexers.DOSBatchLexer: int zzUnpackAction(java.lang.String,int,int[])
 jsyntaxpane.lexers.DOSBatchLexer: int[] zzUnpackRowMap()
@@ -414,7 +412,6 @@ jsyntaxpane.lexers.XPathLexer: int ZZ_BUFFERSIZE
 jsyntaxpane.lexers.XPathLexer: int STRING_SINGLE
 jsyntaxpane.lexers.XPathLexer: int YYINITIAL
 jsyntaxpane.lexers.XPathLexer: int STRING_DOUBLE
-jsyntaxpane.lexers.XPathLexer: int[] ZZ_LEXSTATE
 jsyntaxpane.lexers.XPathLexer: java.lang.String ZZ_CMAP_PACKED
 jsyntaxpane.lexers.XPathLexer: char[] ZZ_CMAP
 jsyntaxpane.lexers.XPathLexer: int[] ZZ_ACTION
@@ -434,6 +431,7 @@ jsyntaxpane.lexers.XPathLexer: int zzState
 jsyntaxpane.lexers.XPathLexer: int zzLexicalState
 jsyntaxpane.lexers.XPathLexer: char[] zzBuffer
 jsyntaxpane.lexers.XPathLexer: int zzMarkedPos
+jsyntaxpane.lexers.XPathLexer: int zzPushbackPos
 jsyntaxpane.lexers.XPathLexer: int zzCurrentPos
 jsyntaxpane.lexers.XPathLexer: int zzStartRead
 jsyntaxpane.lexers.XPathLexer: int zzEndRead
@@ -442,7 +440,6 @@ jsyntaxpane.lexers.XPathLexer: int yychar
 jsyntaxpane.lexers.XPathLexer: int yycolumn
 jsyntaxpane.lexers.XPathLexer: boolean zzAtBOL
 jsyntaxpane.lexers.XPathLexer: boolean zzAtEOF
-jsyntaxpane.lexers.XPathLexer: boolean zzEOFDone
 jsyntaxpane.lexers.XPathLexer: byte PARAN
 jsyntaxpane.lexers.XPathLexer: byte BRACKET
 jsyntaxpane.lexers.XPathLexer: byte CURLY
@@ -494,7 +491,6 @@ jsyntaxpane.lexers.JavaLexer: int JDOC_TAG
 jsyntaxpane.lexers.JavaLexer: int JDOC
 jsyntaxpane.lexers.JavaLexer: int YYINITIAL
 jsyntaxpane.lexers.JavaLexer: int CHARLITERAL
-jsyntaxpane.lexers.JavaLexer: int[] ZZ_LEXSTATE
 jsyntaxpane.lexers.JavaLexer: java.lang.String ZZ_CMAP_PACKED
 jsyntaxpane.lexers.JavaLexer: char[] ZZ_CMAP
 jsyntaxpane.lexers.JavaLexer: int[] ZZ_ACTION
@@ -514,6 +510,7 @@ jsyntaxpane.lexers.JavaLexer: int zzState
 jsyntaxpane.lexers.JavaLexer: int zzLexicalState
 jsyntaxpane.lexers.JavaLexer: char[] zzBuffer
 jsyntaxpane.lexers.JavaLexer: int zzMarkedPos
+jsyntaxpane.lexers.JavaLexer: int zzPushbackPos
 jsyntaxpane.lexers.JavaLexer: int zzCurrentPos
 jsyntaxpane.lexers.JavaLexer: int zzStartRead
 jsyntaxpane.lexers.JavaLexer: int zzEndRead
@@ -522,7 +519,6 @@ jsyntaxpane.lexers.JavaLexer: int yychar
 jsyntaxpane.lexers.JavaLexer: int yycolumn
 jsyntaxpane.lexers.JavaLexer: boolean zzAtBOL
 jsyntaxpane.lexers.JavaLexer: boolean zzAtEOF
-jsyntaxpane.lexers.JavaLexer: boolean zzEOFDone
 jsyntaxpane.lexers.JavaLexer: byte PARAN
 jsyntaxpane.lexers.JavaLexer: byte BRACKET
 jsyntaxpane.lexers.JavaLexer: byte CURLY
@@ -609,7 +605,6 @@ jsyntaxpane.lexers.PythonLexer: int ML_STRING
 jsyntaxpane.lexers.PythonLexer: int STRING
 jsyntaxpane.lexers.PythonLexer: int SQML_STRING
 jsyntaxpane.lexers.PythonLexer: int YYINITIAL
-jsyntaxpane.lexers.PythonLexer: int[] ZZ_LEXSTATE
 jsyntaxpane.lexers.PythonLexer: java.lang.String ZZ_CMAP_PACKED
 jsyntaxpane.lexers.PythonLexer: char[] ZZ_CMAP
 jsyntaxpane.lexers.PythonLexer: int[] ZZ_ACTION
@@ -629,6 +624,7 @@ jsyntaxpane.lexers.PythonLexer: int zzState
 jsyntaxpane.lexers.PythonLexer: int zzLexicalState
 jsyntaxpane.lexers.PythonLexer: char[] zzBuffer
 jsyntaxpane.lexers.PythonLexer: int zzMarkedPos
+jsyntaxpane.lexers.PythonLexer: int zzPushbackPos
 jsyntaxpane.lexers.PythonLexer: int zzCurrentPos
 jsyntaxpane.lexers.PythonLexer: int zzStartRead
 jsyntaxpane.lexers.PythonLexer: int zzEndRead
@@ -637,7 +633,6 @@ jsyntaxpane.lexers.PythonLexer: int yychar
 jsyntaxpane.lexers.PythonLexer: int yycolumn
 jsyntaxpane.lexers.PythonLexer: boolean zzAtBOL
 jsyntaxpane.lexers.PythonLexer: boolean zzAtEOF
-jsyntaxpane.lexers.PythonLexer: boolean zzEOFDone
 jsyntaxpane.lexers.PythonLexer: byte PARAN
 jsyntaxpane.lexers.PythonLexer: byte BRACKET
 jsyntaxpane.lexers.PythonLexer: byte CURLY
@@ -689,7 +684,6 @@ jsyntaxpane.lexers.XmlLexer: int YYINITIAL
 jsyntaxpane.lexers.XmlLexer: int COMMENT
 jsyntaxpane.lexers.XmlLexer: int CDATA
 jsyntaxpane.lexers.XmlLexer: int TAG
-jsyntaxpane.lexers.XmlLexer: int[] ZZ_LEXSTATE
 jsyntaxpane.lexers.XmlLexer: java.lang.String ZZ_CMAP_PACKED
 jsyntaxpane.lexers.XmlLexer: char[] ZZ_CMAP
 jsyntaxpane.lexers.XmlLexer: int[] ZZ_ACTION
@@ -709,6 +703,7 @@ jsyntaxpane.lexers.XmlLexer: int zzState
 jsyntaxpane.lexers.XmlLexer: int zzLexicalState
 jsyntaxpane.lexers.XmlLexer: char[] zzBuffer
 jsyntaxpane.lexers.XmlLexer: int zzMarkedPos
+jsyntaxpane.lexers.XmlLexer: int zzPushbackPos
 jsyntaxpane.lexers.XmlLexer: int zzCurrentPos
 jsyntaxpane.lexers.XmlLexer: int zzStartRead
 jsyntaxpane.lexers.XmlLexer: int zzEndRead
@@ -717,7 +712,6 @@ jsyntaxpane.lexers.XmlLexer: int yychar
 jsyntaxpane.lexers.XmlLexer: int yycolumn
 jsyntaxpane.lexers.XmlLexer: boolean zzAtBOL
 jsyntaxpane.lexers.XmlLexer: boolean zzAtEOF
-jsyntaxpane.lexers.XmlLexer: boolean zzEOFDone
 jsyntaxpane.lexers.XmlLexer: byte TAG_OPEN
 jsyntaxpane.lexers.XmlLexer: byte TAG_CLOSE
 jsyntaxpane.lexers.XmlLexer: byte INSTR_OPEN
@@ -905,7 +899,6 @@ jsyntaxpane.lexers.SqlLexer: int ZZ_BUFFERSIZE
 jsyntaxpane.lexers.SqlLexer: int YYINITIAL
 jsyntaxpane.lexers.SqlLexer: int DQ_STRING
 jsyntaxpane.lexers.SqlLexer: int SQ_STRING
-jsyntaxpane.lexers.SqlLexer: int[] ZZ_LEXSTATE
 jsyntaxpane.lexers.SqlLexer: java.lang.String ZZ_CMAP_PACKED
 jsyntaxpane.lexers.SqlLexer: char[] ZZ_CMAP
 jsyntaxpane.lexers.SqlLexer: int[] ZZ_ACTION
@@ -925,6 +918,7 @@ jsyntaxpane.lexers.SqlLexer: int zzState
 jsyntaxpane.lexers.SqlLexer: int zzLexicalState
 jsyntaxpane.lexers.SqlLexer: char[] zzBuffer
 jsyntaxpane.lexers.SqlLexer: int zzMarkedPos
+jsyntaxpane.lexers.SqlLexer: int zzPushbackPos
 jsyntaxpane.lexers.SqlLexer: int zzCurrentPos
 jsyntaxpane.lexers.SqlLexer: int zzStartRead
 jsyntaxpane.lexers.SqlLexer: int zzEndRead
@@ -933,7 +927,6 @@ jsyntaxpane.lexers.SqlLexer: int yychar
 jsyntaxpane.lexers.SqlLexer: int yycolumn
 jsyntaxpane.lexers.SqlLexer: boolean zzAtBOL
 jsyntaxpane.lexers.SqlLexer: boolean zzAtEOF
-jsyntaxpane.lexers.SqlLexer: boolean zzEOFDone
 jsyntaxpane.lexers.SqlLexer: int[] zzUnpackAction()
 jsyntaxpane.lexers.SqlLexer: int zzUnpackAction(java.lang.String,int,int[])
 jsyntaxpane.lexers.SqlLexer: int[] zzUnpackRowMap()
@@ -1059,7 +1052,6 @@ jsyntaxpane.lexers.XHTMLLexer: int COMMENT
 jsyntaxpane.lexers.XHTMLLexer: int CDATA
 jsyntaxpane.lexers.XHTMLLexer: int TAG
 jsyntaxpane.lexers.XHTMLLexer: int DOCTYPE
-jsyntaxpane.lexers.XHTMLLexer: int[] ZZ_LEXSTATE
 jsyntaxpane.lexers.XHTMLLexer: java.lang.String ZZ_CMAP_PACKED
 jsyntaxpane.lexers.XHTMLLexer: char[] ZZ_CMAP
 jsyntaxpane.lexers.XHTMLLexer: int[] ZZ_ACTION
@@ -1079,6 +1071,7 @@ jsyntaxpane.lexers.XHTMLLexer: int zzState
 jsyntaxpane.lexers.XHTMLLexer: int zzLexicalState
 jsyntaxpane.lexers.XHTMLLexer: char[] zzBuffer
 jsyntaxpane.lexers.XHTMLLexer: int zzMarkedPos
+jsyntaxpane.lexers.XHTMLLexer: int zzPushbackPos
 jsyntaxpane.lexers.XHTMLLexer: int zzCurrentPos
 jsyntaxpane.lexers.XHTMLLexer: int zzStartRead
 jsyntaxpane.lexers.XHTMLLexer: int zzEndRead
@@ -1087,7 +1080,6 @@ jsyntaxpane.lexers.XHTMLLexer: int yychar
 jsyntaxpane.lexers.XHTMLLexer: int yycolumn
 jsyntaxpane.lexers.XHTMLLexer: boolean zzAtBOL
 jsyntaxpane.lexers.XHTMLLexer: boolean zzAtEOF
-jsyntaxpane.lexers.XHTMLLexer: boolean zzEOFDone
 jsyntaxpane.lexers.XHTMLLexer: byte TAG_OPEN
 jsyntaxpane.lexers.XHTMLLexer: byte TAG_CLOSE
 jsyntaxpane.lexers.XHTMLLexer: byte INSTR_OPEN
@@ -1172,7 +1164,6 @@ jsyntaxpane.lexers.CLexer
 jsyntaxpane.lexers.CLexer: int YYEOF
 jsyntaxpane.lexers.CLexer: int ZZ_BUFFERSIZE
 jsyntaxpane.lexers.CLexer: int YYINITIAL
-jsyntaxpane.lexers.CLexer: int[] ZZ_LEXSTATE
 jsyntaxpane.lexers.CLexer: java.lang.String ZZ_CMAP_PACKED
 jsyntaxpane.lexers.CLexer: char[] ZZ_CMAP
 jsyntaxpane.lexers.CLexer: int[] ZZ_ACTION
@@ -1192,6 +1183,7 @@ jsyntaxpane.lexers.CLexer: int zzState
 jsyntaxpane.lexers.CLexer: int zzLexicalState
 jsyntaxpane.lexers.CLexer: char[] zzBuffer
 jsyntaxpane.lexers.CLexer: int zzMarkedPos
+jsyntaxpane.lexers.CLexer: int zzPushbackPos
 jsyntaxpane.lexers.CLexer: int zzCurrentPos
 jsyntaxpane.lexers.CLexer: int zzStartRead
 jsyntaxpane.lexers.CLexer: int zzEndRead
@@ -1200,7 +1192,6 @@ jsyntaxpane.lexers.CLexer: int yychar
 jsyntaxpane.lexers.CLexer: int yycolumn
 jsyntaxpane.lexers.CLexer: boolean zzAtBOL
 jsyntaxpane.lexers.CLexer: boolean zzAtEOF
-jsyntaxpane.lexers.CLexer: boolean zzEOFDone
 jsyntaxpane.lexers.CLexer: byte PARAN
 jsyntaxpane.lexers.CLexer: byte BRACKET
 jsyntaxpane.lexers.CLexer: byte CURLY
@@ -1413,7 +1404,6 @@ jsyntaxpane.lexers.RubyLexer: int ZZ_BUFFERSIZE
 jsyntaxpane.lexers.RubyLexer: int ML_STRING
 jsyntaxpane.lexers.RubyLexer: int STRING
 jsyntaxpane.lexers.RubyLexer: int YYINITIAL
-jsyntaxpane.lexers.RubyLexer: int[] ZZ_LEXSTATE
 jsyntaxpane.lexers.RubyLexer: java.lang.String ZZ_CMAP_PACKED
 jsyntaxpane.lexers.RubyLexer: char[] ZZ_CMAP
 jsyntaxpane.lexers.RubyLexer: int[] ZZ_ACTION
@@ -1433,6 +1423,7 @@ jsyntaxpane.lexers.RubyLexer: int zzState
 jsyntaxpane.lexers.RubyLexer: int zzLexicalState
 jsyntaxpane.lexers.RubyLexer: char[] zzBuffer
 jsyntaxpane.lexers.RubyLexer: int zzMarkedPos
+jsyntaxpane.lexers.RubyLexer: int zzPushbackPos
 jsyntaxpane.lexers.RubyLexer: int zzCurrentPos
 jsyntaxpane.lexers.RubyLexer: int zzStartRead
 jsyntaxpane.lexers.RubyLexer: int zzEndRead
@@ -1441,7 +1432,6 @@ jsyntaxpane.lexers.RubyLexer: int yychar
 jsyntaxpane.lexers.RubyLexer: int yycolumn
 jsyntaxpane.lexers.RubyLexer: boolean zzAtBOL
 jsyntaxpane.lexers.RubyLexer: boolean zzAtEOF
-jsyntaxpane.lexers.RubyLexer: boolean zzEOFDone
 jsyntaxpane.lexers.RubyLexer: byte PARAN
 jsyntaxpane.lexers.RubyLexer: byte BRACKET
 jsyntaxpane.lexers.RubyLexer: byte CURLY
@@ -1585,7 +1575,6 @@ jsyntaxpane.lexers.TALLexer
 jsyntaxpane.lexers.TALLexer: int YYEOF
 jsyntaxpane.lexers.TALLexer: int ZZ_BUFFERSIZE
 jsyntaxpane.lexers.TALLexer: int YYINITIAL
-jsyntaxpane.lexers.TALLexer: int[] ZZ_LEXSTATE
 jsyntaxpane.lexers.TALLexer: java.lang.String ZZ_CMAP_PACKED
 jsyntaxpane.lexers.TALLexer: char[] ZZ_CMAP
 jsyntaxpane.lexers.TALLexer: int[] ZZ_ACTION
@@ -1605,6 +1594,7 @@ jsyntaxpane.lexers.TALLexer: int zzState
 jsyntaxpane.lexers.TALLexer: int zzLexicalState
 jsyntaxpane.lexers.TALLexer: char[] zzBuffer
 jsyntaxpane.lexers.TALLexer: int zzMarkedPos
+jsyntaxpane.lexers.TALLexer: int zzPushbackPos
 jsyntaxpane.lexers.TALLexer: int zzCurrentPos
 jsyntaxpane.lexers.TALLexer: int zzStartRead
 jsyntaxpane.lexers.TALLexer: int zzEndRead
@@ -1613,7 +1603,6 @@ jsyntaxpane.lexers.TALLexer: int yychar
 jsyntaxpane.lexers.TALLexer: int yycolumn
 jsyntaxpane.lexers.TALLexer: boolean zzAtBOL
 jsyntaxpane.lexers.TALLexer: boolean zzAtEOF
-jsyntaxpane.lexers.TALLexer: boolean zzEOFDone
 jsyntaxpane.lexers.TALLexer: int[] zzUnpackAction()
 jsyntaxpane.lexers.TALLexer: int zzUnpackAction(java.lang.String,int,int[])
 jsyntaxpane.lexers.TALLexer: int[] zzUnpackRowMap()
@@ -1730,7 +1719,6 @@ jsyntaxpane.lexers.ClojureLexer: int ZZ_BUFFERSIZE
 jsyntaxpane.lexers.ClojureLexer: int STRING
 jsyntaxpane.lexers.ClojureLexer: int YYINITIAL
 jsyntaxpane.lexers.ClojureLexer: int CHARLITERAL
-jsyntaxpane.lexers.ClojureLexer: int[] ZZ_LEXSTATE
 jsyntaxpane.lexers.ClojureLexer: java.lang.String ZZ_CMAP_PACKED
 jsyntaxpane.lexers.ClojureLexer: char[] ZZ_CMAP
 jsyntaxpane.lexers.ClojureLexer: int[] ZZ_ACTION
@@ -1750,6 +1738,7 @@ jsyntaxpane.lexers.ClojureLexer: int zzState
 jsyntaxpane.lexers.ClojureLexer: int zzLexicalState
 jsyntaxpane.lexers.ClojureLexer: char[] zzBuffer
 jsyntaxpane.lexers.ClojureLexer: int zzMarkedPos
+jsyntaxpane.lexers.ClojureLexer: int zzPushbackPos
 jsyntaxpane.lexers.ClojureLexer: int zzCurrentPos
 jsyntaxpane.lexers.ClojureLexer: int zzStartRead
 jsyntaxpane.lexers.ClojureLexer: int zzEndRead
@@ -1758,7 +1747,6 @@ jsyntaxpane.lexers.ClojureLexer: int yychar
 jsyntaxpane.lexers.ClojureLexer: int yycolumn
 jsyntaxpane.lexers.ClojureLexer: boolean zzAtBOL
 jsyntaxpane.lexers.ClojureLexer: boolean zzAtEOF
-jsyntaxpane.lexers.ClojureLexer: boolean zzEOFDone
 jsyntaxpane.lexers.ClojureLexer: byte PARAN
 jsyntaxpane.lexers.ClojureLexer: byte BRACKET
 jsyntaxpane.lexers.ClojureLexer: byte CURLY
@@ -2195,7 +2183,6 @@ jsyntaxpane.lexers.PropertiesLexer
 jsyntaxpane.lexers.PropertiesLexer: int YYEOF
 jsyntaxpane.lexers.PropertiesLexer: int ZZ_BUFFERSIZE
 jsyntaxpane.lexers.PropertiesLexer: int YYINITIAL
-jsyntaxpane.lexers.PropertiesLexer: int[] ZZ_LEXSTATE
 jsyntaxpane.lexers.PropertiesLexer: java.lang.String ZZ_CMAP_PACKED
 jsyntaxpane.lexers.PropertiesLexer: char[] ZZ_CMAP
 jsyntaxpane.lexers.PropertiesLexer: int[] ZZ_ACTION
@@ -2215,6 +2202,7 @@ jsyntaxpane.lexers.PropertiesLexer: int zzState
 jsyntaxpane.lexers.PropertiesLexer: int zzLexicalState
 jsyntaxpane.lexers.PropertiesLexer: char[] zzBuffer
 jsyntaxpane.lexers.PropertiesLexer: int zzMarkedPos
+jsyntaxpane.lexers.PropertiesLexer: int zzPushbackPos
 jsyntaxpane.lexers.PropertiesLexer: int zzCurrentPos
 jsyntaxpane.lexers.PropertiesLexer: int zzStartRead
 jsyntaxpane.lexers.PropertiesLexer: int zzEndRead
@@ -2223,7 +2211,6 @@ jsyntaxpane.lexers.PropertiesLexer: int yychar
 jsyntaxpane.lexers.PropertiesLexer: int yycolumn
 jsyntaxpane.lexers.PropertiesLexer: boolean zzAtBOL
 jsyntaxpane.lexers.PropertiesLexer: boolean zzAtEOF
-jsyntaxpane.lexers.PropertiesLexer: boolean zzEOFDone
 jsyntaxpane.lexers.PropertiesLexer: int[] zzUnpackAction()
 jsyntaxpane.lexers.PropertiesLexer: int zzUnpackAction(java.lang.String,int,int[])
 jsyntaxpane.lexers.PropertiesLexer: int[] zzUnpackRowMap()
@@ -2345,7 +2332,6 @@ jsyntaxpane.lexers.CppLexer
 jsyntaxpane.lexers.CppLexer: int YYEOF
 jsyntaxpane.lexers.CppLexer: int ZZ_BUFFERSIZE
 jsyntaxpane.lexers.CppLexer: int YYINITIAL
-jsyntaxpane.lexers.CppLexer: int[] ZZ_LEXSTATE
 jsyntaxpane.lexers.CppLexer: java.lang.String ZZ_CMAP_PACKED
 jsyntaxpane.lexers.CppLexer: char[] ZZ_CMAP
 jsyntaxpane.lexers.CppLexer: int[] ZZ_ACTION
@@ -2365,6 +2351,7 @@ jsyntaxpane.lexers.CppLexer: int zzState
 jsyntaxpane.lexers.CppLexer: int zzLexicalState
 jsyntaxpane.lexers.CppLexer: char[] zzBuffer
 jsyntaxpane.lexers.CppLexer: int zzMarkedPos
+jsyntaxpane.lexers.CppLexer: int zzPushbackPos
 jsyntaxpane.lexers.CppLexer: int zzCurrentPos
 jsyntaxpane.lexers.CppLexer: int zzStartRead
 jsyntaxpane.lexers.CppLexer: int zzEndRead
@@ -2373,7 +2360,6 @@ jsyntaxpane.lexers.CppLexer: int yychar
 jsyntaxpane.lexers.CppLexer: int yycolumn
 jsyntaxpane.lexers.CppLexer: boolean zzAtBOL
 jsyntaxpane.lexers.CppLexer: boolean zzAtEOF
-jsyntaxpane.lexers.CppLexer: boolean zzEOFDone
 jsyntaxpane.lexers.CppLexer: byte PARAN
 jsyntaxpane.lexers.CppLexer: byte BRACKET
 jsyntaxpane.lexers.CppLexer: byte CURLY
@@ -2515,7 +2501,6 @@ jsyntaxpane.lexers.BashLexer
 jsyntaxpane.lexers.BashLexer: int YYEOF
 jsyntaxpane.lexers.BashLexer: int ZZ_BUFFERSIZE
 jsyntaxpane.lexers.BashLexer: int YYINITIAL
-jsyntaxpane.lexers.BashLexer: int[] ZZ_LEXSTATE
 jsyntaxpane.lexers.BashLexer: java.lang.String ZZ_CMAP_PACKED
 jsyntaxpane.lexers.BashLexer: char[] ZZ_CMAP
 jsyntaxpane.lexers.BashLexer: int[] ZZ_ACTION
@@ -2535,6 +2520,7 @@ jsyntaxpane.lexers.BashLexer: int zzState
 jsyntaxpane.lexers.BashLexer: int zzLexicalState
 jsyntaxpane.lexers.BashLexer: char[] zzBuffer
 jsyntaxpane.lexers.BashLexer: int zzMarkedPos
+jsyntaxpane.lexers.BashLexer: int zzPushbackPos
 jsyntaxpane.lexers.BashLexer: int zzCurrentPos
 jsyntaxpane.lexers.BashLexer: int zzStartRead
 jsyntaxpane.lexers.BashLexer: int zzEndRead
@@ -2543,7 +2529,6 @@ jsyntaxpane.lexers.BashLexer: int yychar
 jsyntaxpane.lexers.BashLexer: int yycolumn
 jsyntaxpane.lexers.BashLexer: boolean zzAtBOL
 jsyntaxpane.lexers.BashLexer: boolean zzAtEOF
-jsyntaxpane.lexers.BashLexer: boolean zzEOFDone
 jsyntaxpane.lexers.BashLexer: byte PARAN
 jsyntaxpane.lexers.BashLexer: byte BRACKET
 jsyntaxpane.lexers.BashLexer: byte CURLY
@@ -2699,7 +2684,6 @@ jsyntaxpane.lexers.ScalaLexer: int JDOC_TAG
 jsyntaxpane.lexers.ScalaLexer: int JDOC
 jsyntaxpane.lexers.ScalaLexer: int YYINITIAL
 jsyntaxpane.lexers.ScalaLexer: int CHARLITERAL
-jsyntaxpane.lexers.ScalaLexer: int[] ZZ_LEXSTATE
 jsyntaxpane.lexers.ScalaLexer: java.lang.String ZZ_CMAP_PACKED
 jsyntaxpane.lexers.ScalaLexer: char[] ZZ_CMAP
 jsyntaxpane.lexers.ScalaLexer: int[] ZZ_ACTION
@@ -2719,6 +2703,7 @@ jsyntaxpane.lexers.ScalaLexer: int zzState
 jsyntaxpane.lexers.ScalaLexer: int zzLexicalState
 jsyntaxpane.lexers.ScalaLexer: char[] zzBuffer
 jsyntaxpane.lexers.ScalaLexer: int zzMarkedPos
+jsyntaxpane.lexers.ScalaLexer: int zzPushbackPos
 jsyntaxpane.lexers.ScalaLexer: int zzCurrentPos
 jsyntaxpane.lexers.ScalaLexer: int zzStartRead
 jsyntaxpane.lexers.ScalaLexer: int zzEndRead
@@ -2727,7 +2712,6 @@ jsyntaxpane.lexers.ScalaLexer: int yychar
 jsyntaxpane.lexers.ScalaLexer: int yycolumn
 jsyntaxpane.lexers.ScalaLexer: boolean zzAtBOL
 jsyntaxpane.lexers.ScalaLexer: boolean zzAtEOF
-jsyntaxpane.lexers.ScalaLexer: boolean zzEOFDone
 jsyntaxpane.lexers.ScalaLexer: byte PARAN
 jsyntaxpane.lexers.ScalaLexer: byte BRACKET
 jsyntaxpane.lexers.ScalaLexer: byte CURLY
@@ -3119,7 +3103,6 @@ jsyntaxpane.lexers.LuaLexer: int LONGSTRING
 jsyntaxpane.lexers.LuaLexer: int STRING2
 jsyntaxpane.lexers.LuaLexer: int LINECOMMENT
 jsyntaxpane.lexers.LuaLexer: int STRING1
-jsyntaxpane.lexers.LuaLexer: int[] ZZ_LEXSTATE
 jsyntaxpane.lexers.LuaLexer: java.lang.String ZZ_CMAP_PACKED
 jsyntaxpane.lexers.LuaLexer: char[] ZZ_CMAP
 jsyntaxpane.lexers.LuaLexer: int[] ZZ_ACTION
@@ -3139,6 +3122,7 @@ jsyntaxpane.lexers.LuaLexer: int zzState
 jsyntaxpane.lexers.LuaLexer: int zzLexicalState
 jsyntaxpane.lexers.LuaLexer: char[] zzBuffer
 jsyntaxpane.lexers.LuaLexer: int zzMarkedPos
+jsyntaxpane.lexers.LuaLexer: int zzPushbackPos
 jsyntaxpane.lexers.LuaLexer: int zzCurrentPos
 jsyntaxpane.lexers.LuaLexer: int zzStartRead
 jsyntaxpane.lexers.LuaLexer: int zzEndRead
@@ -3147,7 +3131,6 @@ jsyntaxpane.lexers.LuaLexer: int yychar
 jsyntaxpane.lexers.LuaLexer: int yycolumn
 jsyntaxpane.lexers.LuaLexer: boolean zzAtBOL
 jsyntaxpane.lexers.LuaLexer: boolean zzAtEOF
-jsyntaxpane.lexers.LuaLexer: boolean zzEOFDone
 jsyntaxpane.lexers.LuaLexer: byte PARAN
 jsyntaxpane.lexers.LuaLexer: byte BRACKET
 jsyntaxpane.lexers.LuaLexer: byte CURLY
@@ -3384,7 +3367,6 @@ jsyntaxpane.lexers.GroovyLexer: int ML_STRING
 jsyntaxpane.lexers.GroovyLexer: int YYINITIAL
 jsyntaxpane.lexers.GroovyLexer: int JDOC_TAG
 jsyntaxpane.lexers.GroovyLexer: int ML_STRING_EXPR
-jsyntaxpane.lexers.GroovyLexer: int[] ZZ_LEXSTATE
 jsyntaxpane.lexers.GroovyLexer: java.lang.String ZZ_CMAP_PACKED
 jsyntaxpane.lexers.GroovyLexer: char[] ZZ_CMAP
 jsyntaxpane.lexers.GroovyLexer: int[] ZZ_ACTION
@@ -3404,6 +3386,7 @@ jsyntaxpane.lexers.GroovyLexer: int zzState
 jsyntaxpane.lexers.GroovyLexer: int zzLexicalState
 jsyntaxpane.lexers.GroovyLexer: char[] zzBuffer
 jsyntaxpane.lexers.GroovyLexer: int zzMarkedPos
+jsyntaxpane.lexers.GroovyLexer: int zzPushbackPos
 jsyntaxpane.lexers.GroovyLexer: int zzCurrentPos
 jsyntaxpane.lexers.GroovyLexer: int zzStartRead
 jsyntaxpane.lexers.GroovyLexer: int zzEndRead
@@ -3412,7 +3395,6 @@ jsyntaxpane.lexers.GroovyLexer: int yychar
 jsyntaxpane.lexers.GroovyLexer: int yycolumn
 jsyntaxpane.lexers.GroovyLexer: boolean zzAtBOL
 jsyntaxpane.lexers.GroovyLexer: boolean zzAtEOF
-jsyntaxpane.lexers.GroovyLexer: boolean zzEOFDone
 jsyntaxpane.lexers.GroovyLexer: byte PARAN
 jsyntaxpane.lexers.GroovyLexer: byte BRACKET
 jsyntaxpane.lexers.GroovyLexer: byte CURLY
@@ -3858,7 +3840,6 @@ jsyntaxpane.lexers.JFlexLexer: int JDOC_TAG
 jsyntaxpane.lexers.JFlexLexer: int JDOC
 jsyntaxpane.lexers.JFlexLexer: int YYINITIAL
 jsyntaxpane.lexers.JFlexLexer: int CHARLITERAL
-jsyntaxpane.lexers.JFlexLexer: int[] ZZ_LEXSTATE
 jsyntaxpane.lexers.JFlexLexer: java.lang.String ZZ_CMAP_PACKED
 jsyntaxpane.lexers.JFlexLexer: char[] ZZ_CMAP
 jsyntaxpane.lexers.JFlexLexer: int[] ZZ_ACTION
@@ -3878,6 +3859,7 @@ jsyntaxpane.lexers.JFlexLexer: int zzState
 jsyntaxpane.lexers.JFlexLexer: int zzLexicalState
 jsyntaxpane.lexers.JFlexLexer: char[] zzBuffer
 jsyntaxpane.lexers.JFlexLexer: int zzMarkedPos
+jsyntaxpane.lexers.JFlexLexer: int zzPushbackPos
 jsyntaxpane.lexers.JFlexLexer: int zzCurrentPos
 jsyntaxpane.lexers.JFlexLexer: int zzStartRead
 jsyntaxpane.lexers.JFlexLexer: int zzEndRead
@@ -3886,7 +3868,6 @@ jsyntaxpane.lexers.JFlexLexer: int yychar
 jsyntaxpane.lexers.JFlexLexer: int yycolumn
 jsyntaxpane.lexers.JFlexLexer: boolean zzAtBOL
 jsyntaxpane.lexers.JFlexLexer: boolean zzAtEOF
-jsyntaxpane.lexers.JFlexLexer: boolean zzEOFDone
 jsyntaxpane.lexers.JFlexLexer: int[] zzUnpackAction()
 jsyntaxpane.lexers.JFlexLexer: int zzUnpackAction(java.lang.String,int,int[])
 jsyntaxpane.lexers.JFlexLexer: int[] zzUnpackRowMap()

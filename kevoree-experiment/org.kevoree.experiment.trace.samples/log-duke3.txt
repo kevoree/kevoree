@@ -1,0 +1,347 @@
+o.o.p.u.c.handler.HandlerActivator - Handler for protocols [mvn] started
+o.o.p.u.c.handler.HandlerActivator - Handler for protocols [assembly, assemblyref] started
+o.kevoree.core.impl.KevoreeCoreBean - Start event : node name = duke3
+o.kevoree.core.impl.KevoreeCoreBean - Try to bootstrap platform
+o.kevoree.core.impl.KevoreeCoreBean - Begin update model 1305628231795
+o.k.kompare.KevoreeKompareBean - INIT NODE v2 duke3
+o.k.a.d.o.KevoreeAdaptationDeployServiceOSGi - Plannification time = 1 ms
+o.k.a.d.o.KevoreeAdaptationDeployServiceOSGi - stop command
+o.k.a.d.o.KevoreeAdaptationDeployServiceOSGi - start
+o.k.a.d.o.KevoreeAdaptationDeployServiceOSGi - gossipGroup
+o.k.a.d.osgi.KevoreeDeployPhase - Phase 0 STOP COMPONENT=0
+o.k.a.d.osgi.KevoreeDeployPhase - Result : true
+o.k.a.d.osgi.KevoreeDeployPhase - Phase 1 Remove Binding=0
+o.k.a.d.osgi.KevoreeDeployPhase - Result : true
+o.k.a.d.osgi.KevoreeDeployPhase - Phase 2 Remove Instance=0
+o.k.a.d.osgi.KevoreeDeployPhase - Result : true
+o.k.a.d.osgi.KevoreeDeployPhase - Phase 3 Remove ComponentType=0
+o.k.a.d.osgi.KevoreeDeployPhase - Result : true
+o.k.a.d.osgi.KevoreeDeployPhase - Phase 4 Remove TypeDefinition DeployUnit=0
+o.k.a.d.osgi.KevoreeDeployPhase - Result : true
+o.k.a.d.osgi.KevoreeDeployPhase - Phase 5 ThirdParty=3
+o.k.a.d.osgi.KevoreeDeployPhase - Execute command org.kevoree.adaptation.deploy.osgi.command.AddThirdPartyCommand
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:org.kevoree.extra/org.kevoree.extra.protobuf/2.3.0
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://maven.kevoree.org/libs-release-local!org.kevoree.extra/org.kevoree.extra.protobuf/2.3.0
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://scala-tools.org/repo-releases!org.kevoree.extra/org.kevoree.extra.protobuf/2.3.0
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://maven.kevoree.org/release!org.kevoree.extra/org.kevoree.extra.protobuf/2.3.0
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://repo1.maven.org/maven2!org.kevoree.extra/org.kevoree.extra.protobuf/2.3.0
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://131.254.15.214:8000/provisioning/!org.kevoree.extra/org.kevoree.extra.protobuf/2.3.0
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://131.254.15.214:8001/provisioning/!org.kevoree.extra/org.kevoree.extra.protobuf/2.3.0
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://131.254.15.214:8002/provisioning/!org.kevoree.extra/org.kevoree.extra.protobuf/2.3.0
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://131.254.15.214:8003/provisioning/!org.kevoree.extra/org.kevoree.extra.protobuf/2.3.0
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://131.254.12.28:8000/provisioning/!org.kevoree.extra/org.kevoree.extra.protobuf/2.3.0
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://131.254.12.28:8001/provisioning/!org.kevoree.extra/org.kevoree.extra.protobuf/2.3.0
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://131.254.12.28:8002/provisioning/!org.kevoree.extra/org.kevoree.extra.protobuf/2.3.0
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://131.254.12.28:8003/provisioning/!org.kevoree.extra/org.kevoree.extra.protobuf/2.3.0
+o.k.a.d.o.c.AddThirdPartyCommand - CMD ADD ThirdParty EXECUTION => url=mvn:org.kevoree.extra/org.kevoree.extra.protobuf/2.3.0
+o.o.p.u.m.c.MavenConfigurationImpl - Using repositories [[file:/Users/ffouquet/.m2/repository/,releases=true,snapshots=true, http://osgi.sonatype.org/content/groups/pax-runner/,releases=true,snapshots=false, http://repo1.maven.org/maven2/,releases=true,snapshots=false, http://repository.ops4j.org/maven2/,releases=true,snapshots=false, http://repository.springsource.com/maven/bundles/release/,releases=true,snapshots=false, http://repository.springsource.com/maven/bundles/external/,releases=true,snapshots=false]]
+o.o.pax.url.mvn.internal.Connection - Resolving [mvn:org.kevoree.extra/org.kevoree.extra.protobuf/2.3.0]
+o.o.pax.url.mvn.internal.LogAdapter - Using manager SimpleLocalRepositoryManager with priority 0 for /Users/ffouquet/.m2/repository
+o.o.p.u.m.i.AetherBasedResolver - Resolved (org.kevoree.extra:org.kevoree.extra.protobuf:jar:2.3.0) as /Users/ffouquet/.m2/repository/org/kevoree/extra/org.kevoree.extra.protobuf/2.3.0/org.kevoree.extra.protobuf-2.3.0.jar
+o.k.a.d.osgi.KevoreeDeployPhase - Execute command org.kevoree.adaptation.deploy.osgi.command.AddThirdPartyCommand
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:org.kevoree.extra/org.kevoree.extra.netty/3.2.4
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://maven.kevoree.org/libs-release-local!org.kevoree.extra/org.kevoree.extra.netty/3.2.4
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://scala-tools.org/repo-releases!org.kevoree.extra/org.kevoree.extra.netty/3.2.4
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://maven.kevoree.org/release!org.kevoree.extra/org.kevoree.extra.netty/3.2.4
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://repo1.maven.org/maven2!org.kevoree.extra/org.kevoree.extra.netty/3.2.4
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://131.254.15.214:8000/provisioning/!org.kevoree.extra/org.kevoree.extra.netty/3.2.4
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://131.254.15.214:8001/provisioning/!org.kevoree.extra/org.kevoree.extra.netty/3.2.4
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://131.254.15.214:8002/provisioning/!org.kevoree.extra/org.kevoree.extra.netty/3.2.4
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://131.254.15.214:8003/provisioning/!org.kevoree.extra/org.kevoree.extra.netty/3.2.4
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://131.254.12.28:8000/provisioning/!org.kevoree.extra/org.kevoree.extra.netty/3.2.4
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://131.254.12.28:8001/provisioning/!org.kevoree.extra/org.kevoree.extra.netty/3.2.4
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://131.254.12.28:8002/provisioning/!org.kevoree.extra/org.kevoree.extra.netty/3.2.4
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://131.254.12.28:8003/provisioning/!org.kevoree.extra/org.kevoree.extra.netty/3.2.4
+o.k.a.d.o.c.AddThirdPartyCommand - CMD ADD ThirdParty EXECUTION => url=mvn:org.kevoree.extra/org.kevoree.extra.netty/3.2.4
+o.o.pax.url.mvn.internal.Connection - Resolving [mvn:org.kevoree.extra/org.kevoree.extra.netty/3.2.4]
+o.o.pax.url.mvn.internal.LogAdapter - Using manager SimpleLocalRepositoryManager with priority 0 for /Users/ffouquet/.m2/repository
+o.o.p.u.m.i.AetherBasedResolver - Resolved (org.kevoree.extra:org.kevoree.extra.netty:jar:3.2.4) as /Users/ffouquet/.m2/repository/org/kevoree/extra/org.kevoree.extra.netty/3.2.4/org.kevoree.extra.netty-3.2.4.jar
+o.k.a.d.osgi.KevoreeDeployPhase - Execute command org.kevoree.adaptation.deploy.osgi.command.AddThirdPartyCommand
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:org.kevoree.extra/org.kevoree.extra.marshalling/1.1.0-RC2
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://maven.kevoree.org/libs-release-local!org.kevoree.extra/org.kevoree.extra.marshalling/1.1.0-RC2
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://scala-tools.org/repo-releases!org.kevoree.extra/org.kevoree.extra.marshalling/1.1.0-RC2
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://maven.kevoree.org/release!org.kevoree.extra/org.kevoree.extra.marshalling/1.1.0-RC2
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://repo1.maven.org/maven2!org.kevoree.extra/org.kevoree.extra.marshalling/1.1.0-RC2
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://131.254.15.214:8000/provisioning/!org.kevoree.extra/org.kevoree.extra.marshalling/1.1.0-RC2
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://131.254.15.214:8001/provisioning/!org.kevoree.extra/org.kevoree.extra.marshalling/1.1.0-RC2
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://131.254.15.214:8002/provisioning/!org.kevoree.extra/org.kevoree.extra.marshalling/1.1.0-RC2
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://131.254.15.214:8003/provisioning/!org.kevoree.extra/org.kevoree.extra.marshalling/1.1.0-RC2
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://131.254.12.28:8000/provisioning/!org.kevoree.extra/org.kevoree.extra.marshalling/1.1.0-RC2
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://131.254.12.28:8001/provisioning/!org.kevoree.extra/org.kevoree.extra.marshalling/1.1.0-RC2
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://131.254.12.28:8002/provisioning/!org.kevoree.extra/org.kevoree.extra.marshalling/1.1.0-RC2
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://131.254.12.28:8003/provisioning/!org.kevoree.extra/org.kevoree.extra.marshalling/1.1.0-RC2
+o.k.a.d.o.c.AddThirdPartyCommand - CMD ADD ThirdParty EXECUTION => url=mvn:org.kevoree.extra/org.kevoree.extra.marshalling/1.1.0-RC2
+o.o.pax.url.mvn.internal.Connection - Resolving [mvn:org.kevoree.extra/org.kevoree.extra.marshalling/1.1.0-RC2]
+o.o.pax.url.mvn.internal.LogAdapter - Using manager SimpleLocalRepositoryManager with priority 0 for /Users/ffouquet/.m2/repository
+o.o.p.u.m.i.AetherBasedResolver - Resolved (org.kevoree.extra:org.kevoree.extra.marshalling:jar:1.1.0-RC2) as /Users/ffouquet/.m2/repository/org/kevoree/extra/org.kevoree.extra.marshalling/1.1.0-RC2/org.kevoree.extra.marshalling-1.1.0-RC2.jar
+o.k.a.d.osgi.KevoreeDeployPhase - Resolving bundle: org.kevoree.extra.protobuf
+o.k.a.d.osgi.KevoreeDeployPhase - Resolving bundle: org.kevoree.extra.netty
+o.k.a.d.osgi.KevoreeDeployPhase - Resolving bundle: org.kevoree.extra.org.kevoree.extra.marshalling
+o.k.a.d.osgi.KevoreeDeployPhase - Result : true
+o.k.a.d.osgi.KevoreeDeployPhase - Phase 6 Add TypeDefinition DeployUnit=1
+o.k.a.d.osgi.KevoreeDeployPhase - Execute command org.kevoree.adaptation.deploy.osgi.command.AddDeployUnitCommand
+o.k.a.d.o.c.AddDeployUnitCommand - CMD ADD DEPLOY UNIT EXECUTION 
+o.k.a.d.o.c.AddDeployUnitCommand - potential url=mvn:org.kevoree.experiment/org.kevoree.experiment.library.gossiperNetty/1.1.0-RC2
+o.k.a.d.o.c.AddDeployUnitCommand - potential url=mvn:http://maven.kevoree.org/libs-release-local!org.kevoree.experiment/org.kevoree.experiment.library.gossiperNetty/1.1.0-RC2
+o.k.a.d.o.c.AddDeployUnitCommand - potential url=mvn:http://maven.kevoree.org/libs-release-local!org.kevoree.experiment/org.kevoree.experiment.library.gossiperNetty/1.1.0-RC2
+o.k.a.d.o.c.AddDeployUnitCommand - potential url=mvn:http://scala-tools.org/repo-releases!org.kevoree.experiment/org.kevoree.experiment.library.gossiperNetty/1.1.0-RC2
+o.k.a.d.o.c.AddDeployUnitCommand - potential url=mvn:http://maven.kevoree.org/release!org.kevoree.experiment/org.kevoree.experiment.library.gossiperNetty/1.1.0-RC2
+o.k.a.d.o.c.AddDeployUnitCommand - potential url=mvn:http://repo1.maven.org/maven2!org.kevoree.experiment/org.kevoree.experiment.library.gossiperNetty/1.1.0-RC2
+o.k.a.d.o.c.AddDeployUnitCommand - potential url=mvn:http://131.254.15.214:8000/provisioning/!org.kevoree.experiment/org.kevoree.experiment.library.gossiperNetty/1.1.0-RC2
+o.k.a.d.o.c.AddDeployUnitCommand - potential url=mvn:http://131.254.15.214:8001/provisioning/!org.kevoree.experiment/org.kevoree.experiment.library.gossiperNetty/1.1.0-RC2
+o.k.a.d.o.c.AddDeployUnitCommand - potential url=mvn:http://131.254.15.214:8002/provisioning/!org.kevoree.experiment/org.kevoree.experiment.library.gossiperNetty/1.1.0-RC2
+o.k.a.d.o.c.AddDeployUnitCommand - potential url=mvn:http://131.254.15.214:8003/provisioning/!org.kevoree.experiment/org.kevoree.experiment.library.gossiperNetty/1.1.0-RC2
+o.k.a.d.o.c.AddDeployUnitCommand - potential url=mvn:http://131.254.12.28:8000/provisioning/!org.kevoree.experiment/org.kevoree.experiment.library.gossiperNetty/1.1.0-RC2
+o.k.a.d.o.c.AddDeployUnitCommand - potential url=mvn:http://131.254.12.28:8001/provisioning/!org.kevoree.experiment/org.kevoree.experiment.library.gossiperNetty/1.1.0-RC2
+o.k.a.d.o.c.AddDeployUnitCommand - potential url=mvn:http://131.254.12.28:8002/provisioning/!org.kevoree.experiment/org.kevoree.experiment.library.gossiperNetty/1.1.0-RC2
+o.k.a.d.o.c.AddDeployUnitCommand - potential url=mvn:http://131.254.12.28:8003/provisioning/!org.kevoree.experiment/org.kevoree.experiment.library.gossiperNetty/1.1.0-RC2
+o.k.a.d.o.c.AddDeployUnitCommand - Try to install from URI, mvn:org.kevoree.experiment/org.kevoree.experiment.library.gossiperNetty/1.1.0-RC2
+o.o.pax.url.mvn.internal.Connection - Resolving [mvn:org.kevoree.experiment/org.kevoree.experiment.library.gossiperNetty/1.1.0-RC2]
+o.o.pax.url.mvn.internal.LogAdapter - Using manager SimpleLocalRepositoryManager with priority 0 for /Users/ffouquet/.m2/repository
+o.o.p.u.m.i.AetherBasedResolver - Resolved (org.kevoree.experiment:org.kevoree.experiment.library.gossiperNetty:jar:1.1.0-RC2) as /Users/ffouquet/.m2/repository/org/kevoree/experiment/org.kevoree.experiment.library.gossiperNetty/1.1.0-RC2/org.kevoree.experiment.library.gossiperNetty-1.1.0-RC2.jar
+o.k.a.d.osgi.KevoreeDeployPhase - Resolving bundle: org.kevoree.experiment.org.kevoree.experiment.library.gossiperNetty
+o.k.a.d.osgi.KevoreeDeployPhase - Result : true
+o.k.a.d.osgi.KevoreeDeployPhase - Phase 7 Add ComponentType=1
+o.k.a.d.osgi.KevoreeDeployPhase - Execute command org.kevoree.adaptation.deploy.osgi.command.AddTypeCommand
+o.k.a.d.osgi.command.AddTypeCommand - CMD ADD CT EXECUTION 
+o.k.a.d.osgi.KevoreeDeployPhase - Result : true
+o.k.a.d.osgi.KevoreeDeployPhase - Phase 8 install ComponentInstance=1
+o.k.a.d.osgi.KevoreeDeployPhase - Execute command org.kevoree.adaptation.deploy.osgi.command.AddInstanceCommand
+o.o.p.u.a.internal.ResourceAssembly - Searching for [/Users/ffouquet/Documents/DEV/dukeboard_github/kevoree/kevoree-experiment/org.kevoree.experiment.trace.samples/./felixCache_duke3/bundle0/dyanmicBundle_gossipGroup includes([.*]) excludes([])]
+o.o.p.u.a.internal.ResourceAssembly - Path [/Users/ffouquet/Documents/DEV/dukeboard_github/kevoree/kevoree-experiment/org.kevoree.experiment.trace.samples/./felixCache_duke3/bundle0/dyanmicBundle_gossipGroup] is not a valid url. Reason: no protocol: /Users/ffouquet/Documents/DEV/dukeboard_github/kevoree/kevoree-experiment/org.kevoree.experiment.trace.samples/./felixCache_duke3/bundle0/dyanmicBundle_gossipGroup. Continue discovery...
+o.k.a.d.osgi.KevoreeDeployPhase - Resolving bundle: gossipGroup
+o.k.a.d.osgi.KevoreeDeployPhase - Result : true
+o.k.a.d.osgi.KevoreeDeployPhase - Phase 9 install Bindings=0
+o.k.a.d.osgi.KevoreeDeployPhase - Result : true
+o.k.a.d.osgi.KevoreeDeployPhase - Phase 10 SET PROPERTY=1
+o.k.a.d.osgi.KevoreeDeployPhase - Execute command org.kevoree.adaptation.deploy.osgi.command.UpdateDictionaryCommand
+o.k.a.d.osgi.KevoreeDeployPhase - Result : true
+o.k.a.d.osgi.KevoreeDeployPhase - Phase 11 START COMPONENT=1
+o.k.a.d.osgi.KevoreeDeployPhase - Execute command org.kevoree.adaptation.deploy.osgi.command.StartInstanceCommand
+o.k.a.d.osgi.KevoreeDeployPhase - Result : true
+o.kevoree.core.impl.KevoreeCoreBean - Deploy result true
+o.kevoree.core.impl.KevoreeCoreBean - End deploy result=true-2111
+o.k.l.g.NotificationRequestSender - send notification to duke0
+o.k.l.g.NotificationRequestSender - send notification to duke1
+o.k.l.g.NotificationRequestSender - send notification to duke2
+o.k.l.g.NotificationRequestSender - send notification to paraisseux0
+o.k.l.g.NotificationRequestSender - send notification to paraisseux1
+o.k.l.g.NotificationRequestSender - send notification to paraisseux2
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock
+o.k.l.g.group.DataManagerForGroup - Increment
+o.k.l.g.group.DataManagerForGroup - End increment
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClocks
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock end
+o.k.l.g.NotificationRequestSender - send notification to paraisseux3
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock
+o.k.l.g.group.DataManagerForGroup - Increment
+o.k.l.g.group.DataManagerForGroup - End increment
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClocks end
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock end
+o.k.l.g.VectorClockAspect - VectorClock - 1 - 1305628233945
+o.k.l.g.VectorClockAspect - duke3-2-1305628233945
+o.k.l.g.VectorClockAspect - -- end vector clock --
+o.k.l.g.VectorClockAspect - VectorClock - 1 - 1305628233842
+o.k.l.g.VectorClockAspect - duke2-2-1305628233842
+o.k.l.g.VectorClockAspect - -- end vector clock --
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClocks
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClocks end
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClocks
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClocks end
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClocks
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock end
+o.k.l.g.GossiperRequestSender - VectorClocks comparison into GossiperRequestSender give us: CONCURRENTLY
+o.k.l.g.AskForDataTCPActor - TCP sending ... :-)
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClocks end
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClocks
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClocks end
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClocks
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock end
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClocks end
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock end
+o.k.l.g.VectorClockAspect - VectorClock - 1 - 1305628233945
+o.k.l.g.VectorClockAspect - duke3-2-1305628233945
+o.k.l.g.VectorClockAspect - -- end vector clock --
+o.k.l.g.VectorClockAspect - VectorClock - 1 - 1305628233830
+o.k.l.g.VectorClockAspect - duke0-2-1305628233830
+o.k.l.g.VectorClockAspect - -- end vector clock --
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock end
+o.k.l.g.GossiperRequestSender - VectorClocks comparison into GossiperRequestSender give us: CONCURRENTLY
+o.k.l.g.group.DataManagerForGroup - getData
+o.k.l.g.group.DataManagerForGroup - getData
+o.k.l.g.group.DataManagerForGroup - getData
+o.k.l.g.group.DataManagerForGroup - getData end
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock
+o.k.l.g.group.DataManagerForGroup - getData end
+o.k.l.g.group.DataManagerForGroup - getData end
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock end
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock end
+o.k.l.g.VectorClockAspect - VectorClock - 1 - 1305628233945
+o.k.l.g.VectorClockAspect - duke3-2-1305628233945
+o.k.l.g.VectorClockAspect - -- end vector clock --
+o.k.l.g.VectorClockAspect - VectorClock - 5 - 1305628217480
+o.k.l.g.VectorClockAspect - paraisseux1-2-1305628217480
+o.k.l.g.VectorClockAspect - duke0-2-1305628217480
+o.k.l.g.VectorClockAspect - paraisseux2-2-1305628215052
+o.k.l.g.VectorClockAspect - paraisseux0-2-1305628215067
+o.k.l.g.VectorClockAspect - paraisseux3-2-1305628215283
+o.k.l.g.VectorClockAspect - -- end vector clock --
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock end
+o.k.l.g.GossiperRequestSender - VectorClocks comparison into GossiperRequestSender give us: CONCURRENTLY
+o.k.l.g.group.DataManagerForGroup - getData
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock
+o.k.l.g.group.DataManagerForGroup - getData end
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock end
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock end
+o.k.l.g.VectorClockAspect - VectorClock - 1 - 1305628233945
+o.k.l.g.VectorClockAspect - duke3-2-1305628233945
+o.k.l.g.VectorClockAspect - -- end vector clock --
+o.k.l.g.VectorClockAspect - VectorClock - 6 - 1305628217591
+o.k.l.g.VectorClockAspect - paraisseux0-2-1305628217591
+o.k.l.g.VectorClockAspect - duke2-2-1305628217591
+o.k.l.g.VectorClockAspect - duke0-2-1305628217503
+o.k.l.g.VectorClockAspect - paraisseux1-2-1305628216047
+o.k.l.g.VectorClockAspect - paraisseux2-2-1305628216047
+o.k.l.g.VectorClockAspect - paraisseux3-2-1305628216047
+o.k.l.g.VectorClockAspect - -- end vector clock --
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock end
+o.k.l.g.GossiperRequestSender - VectorClocks comparison into GossiperRequestSender give us: CONCURRENTLY
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock end
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock end
+o.k.l.g.VectorClockAspect - VectorClock - 1 - 1305628233945
+o.k.l.g.VectorClockAspect - duke3-2-1305628233945
+o.k.l.g.VectorClockAspect - -- end vector clock --
+o.k.l.g.VectorClockAspect - VectorClock - 6 - 1305628217650
+o.k.l.g.VectorClockAspect - paraisseux2-2-1305628217650
+o.k.l.g.VectorClockAspect - duke2-2-1305628217650
+o.k.l.g.VectorClockAspect - duke0-2-1305628217606
+o.k.l.g.VectorClockAspect - paraisseux1-2-1305628215985
+o.k.l.g.VectorClockAspect - paraisseux0-2-1305628215985
+o.k.l.g.VectorClockAspect - paraisseux3-2-1305628215985
+o.k.l.g.VectorClockAspect - -- end vector clock --
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock end
+o.k.l.g.GossiperRequestSender - VectorClocks comparison into GossiperRequestSender give us: CONCURRENTLY
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock end
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock end
+o.k.l.g.VectorClockAspect - VectorClock - 1 - 1305628233945
+o.k.l.g.VectorClockAspect - duke3-2-1305628233945
+o.k.l.g.VectorClockAspect - -- end vector clock --
+o.k.l.g.VectorClockAspect - VectorClock - 6 - 1305628217616
+o.k.l.g.VectorClockAspect - paraisseux3-2-1305628217616
+o.k.l.g.VectorClockAspect - duke2-2-1305628217616
+o.k.l.g.VectorClockAspect - duke0-2-1305628217570
+o.k.l.g.VectorClockAspect - paraisseux1-2-1305628216006
+o.k.l.g.VectorClockAspect - paraisseux2-2-1305628216006
+o.k.l.g.VectorClockAspect - paraisseux0-2-1305628216006
+o.k.l.g.VectorClockAspect - -- end vector clock --
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock end
+o.k.l.g.GossiperRequestSender - VectorClocks comparison into GossiperRequestSender give us: CONCURRENTLY
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock end
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock end
+o.k.l.g.VectorClockAspect - VectorClock - 1 - 1305628233945
+o.k.l.g.VectorClockAspect - duke3-2-1305628233945
+o.k.l.g.VectorClockAspect - -- end vector clock --
+o.k.l.g.VectorClockAspect - VectorClock - 7 - 1305628217775
+o.k.l.g.VectorClockAspect - paraisseux3-2-1305628217775
+o.k.l.g.VectorClockAspect - duke3-2-1305628217775
+o.k.l.g.VectorClockAspect - paraisseux1-2-1305628217718
+o.k.l.g.VectorClockAspect - duke2-2-1305628217616
+o.k.l.g.VectorClockAspect - duke0-2-1305628217718
+o.k.l.g.VectorClockAspect - paraisseux2-2-1305628217718
+o.k.l.g.VectorClockAspect - paraisseux0-2-1305628217718
+o.k.l.g.VectorClockAspect - -- end vector clock --
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock end
+o.k.l.g.GossiperRequestSender - VectorClocks comparison into GossiperRequestSender give us: BEFORE
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock end
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock end
+o.k.l.g.VectorClockAspect - VectorClock - 1 - 1305628233945
+o.k.l.g.VectorClockAspect - duke3-2-1305628233945
+o.k.l.g.VectorClockAspect - -- end vector clock --
+o.k.l.g.VectorClockAspect - VectorClock - 6 - 1305628217591
+o.k.l.g.VectorClockAspect - paraisseux0-2-1305628217591
+o.k.l.g.VectorClockAspect - duke2-2-1305628217591
+o.k.l.g.VectorClockAspect - duke0-2-1305628217503
+o.k.l.g.VectorClockAspect - paraisseux1-2-1305628216047
+o.k.l.g.VectorClockAspect - paraisseux2-2-1305628216047
+o.k.l.g.VectorClockAspect - paraisseux3-2-1305628216047
+o.k.l.g.VectorClockAspect - -- end vector clock --
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock end
+o.k.l.g.GossiperRequestSender - VectorClocks comparison into GossiperRequestSender give us: CONCURRENTLY
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock end
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock end
+o.k.l.g.VectorClockAspect - VectorClock - 1 - 1305628233945
+o.k.l.g.VectorClockAspect - duke3-2-1305628233945
+o.k.l.g.VectorClockAspect - -- end vector clock --
+o.k.l.g.VectorClockAspect - VectorClock - 6 - 1305628217735
+o.k.l.g.VectorClockAspect - paraisseux1-2-1305628217735
+o.k.l.g.VectorClockAspect - paraisseux0-2-1305628217735
+o.k.l.g.VectorClockAspect - duke2-2-1305628217735
+o.k.l.g.VectorClockAspect - duke0-2-1305628217735
+o.k.l.g.VectorClockAspect - paraisseux2-2-1305628217735
+o.k.l.g.VectorClockAspect - paraisseux3-2-1305628217735
+o.k.l.g.VectorClockAspect - -- end vector clock --
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock end
+o.k.l.g.GossiperRequestSender - VectorClocks comparison into GossiperRequestSender give us: CONCURRENTLY
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock end
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock end
+o.k.l.g.VectorClockAspect - VectorClock - 1 - 1305628233945
+o.k.l.g.VectorClockAspect - duke3-2-1305628233945
+o.k.l.g.VectorClockAspect - -- end vector clock --
+o.k.l.g.VectorClockAspect - VectorClock - 6 - 1305628217792
+o.k.l.g.VectorClockAspect - paraisseux2-2-1305628217792
+o.k.l.g.VectorClockAspect - paraisseux1-2-1305628217792
+o.k.l.g.VectorClockAspect - duke2-2-1305628217650
+o.k.l.g.VectorClockAspect - duke0-2-1305628217792
+o.k.l.g.VectorClockAspect - paraisseux0-2-1305628217792
+o.k.l.g.VectorClockAspect - paraisseux3-2-1305628217792
+o.k.l.g.VectorClockAspect - -- end vector clock --
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock end
+o.k.l.g.GossiperRequestSender - VectorClocks comparison into GossiperRequestSender give us: CONCURRENTLY
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock end
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock
+o.k.l.g.AskForDataTCPActor - client build ! 
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock end
+o.k.l.g.VectorClockAspect - VectorClock - 1 - 1305628233945
+o.k.l.g.VectorClockAspect - duke3-2-1305628233945
+o.k.l.g.VectorClockAspect - -- end vector clock --
+o.k.l.g.VectorClockAspect - VectorClock - 7 - 1305628217829
+o.k.l.g.VectorClockAspect - paraisseux0-2-1305628217829
+o.k.l.g.VectorClockAspect - duke3-2-1305628217829
+o.k.l.g.VectorClockAspect - duke2-2-1305628217591
+o.k.l.g.VectorClockAspect - duke0-2-1305628217503
+o.k.l.g.VectorClockAspect - paraisseux1-2-1305628216047
+o.k.l.g.VectorClockAspect - paraisseux2-2-1305628216047
+o.k.l.g.VectorClockAspect - paraisseux3-2-1305628216047
+o.k.l.g.VectorClockAspect - -- end vector clock --
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock end
+o.k.l.g.GossiperRequestSender - VectorClocks comparison into GossiperRequestSender give us: BEFORE
+o.o.p.u.c.handler.HandlerActivator - Handler for protocols [mvn] stopped
+o.o.p.u.c.handler.HandlerActivator - Handler for protocols [assembly, assemblyref] stopped
