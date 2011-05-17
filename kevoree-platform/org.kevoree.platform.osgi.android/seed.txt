@@ -30572,6 +30572,8 @@ org.kevoree.remote.rest.Handler: org.kevoree.api.service.core.handler.KevoreeMod
 org.kevoree.remote.rest.Handler: void modelhandler_$eq(org.kevoree.api.service.core.handler.KevoreeModelHandlerService)
 org.kevoree.remote.rest.Handler: org.kevoree.api.service.core.handler.KevoreeModelHandlerService modelhandler()
 org.kevoree.remote.rest.ModelHandlerResource
+org.kevoree.remote.rest.ModelHandlerResource: org.slf4j.Logger logger
+org.kevoree.remote.rest.ModelHandlerResource: org.slf4j.Logger logger()
 org.kevoree.remote.rest.ModelHandlerResource: org.restlet.representation.Representation doHandle()
 org.kevoree.remote.rest.ModelHandlerResource: org.restlet.representation.Representation get()
 org.kevoree.remote.rest.ModelHandlerResource: org.restlet.representation.Representation post(org.restlet.representation.Representation)
