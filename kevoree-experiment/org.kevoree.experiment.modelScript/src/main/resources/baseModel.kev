@@ -25,8 +25,8 @@
   <repositories url="http://repo1.maven.org/maven2"/>
   <libraries name="Kevoree-Android-JavaSE" subTypes="//@typeDefinitions.0"/>
   <libraries name="KevoreeExperiment" subTypes="//@typeDefinitions.0"/>
-  <deployUnits groupName="org.kevoree.experiment" unitName="org.kevoree.experiment.library.gossiperNetty" version="1.1.0-RC2" hashcode="201105171121987" requiredLibs="//@deployUnits.1 //@deployUnits.2 //@deployUnits.3" targetNodeType="//@typeDefinitions.1"/>
+  <deployUnits groupName="org.kevoree.experiment" unitName="org.kevoree.experiment.library.gossiperNetty" version="1.1.0-RC2" hashcode="201105171446848" requiredLibs="//@deployUnits.1 //@deployUnits.2 //@deployUnits.3" targetNodeType="//@typeDefinitions.1"/>
   <deployUnits name="org.kevoree.extra.org.kevoree.extra.protobuf" url="mvn:org.kevoree.extra/org.kevoree.extra.protobuf/2.3.0" targetNodeType="//@typeDefinitions.1"/>
-  <deployUnits name="org.kevoree.extra.org.kevoree.extra.netty" url="mvn:org.kevoree.extra/org.kevoree.extra.netty/3.2.4.Final" targetNodeType="//@typeDefinitions.1"/>
+  <deployUnits name="org.kevoree.extra.org.kevoree.extra.netty" url="mvn:org.kevoree.extra/org.kevoree.extra.netty/3.2.4" targetNodeType="//@typeDefinitions.1"/>
   <deployUnits name="org.kevoree.extra.org.kevoree.extra.marshalling" url="mvn:org.kevoree.extra/org.kevoree.extra.marshalling/1.1.0-RC2" targetNodeType="//@typeDefinitions.1"/>
 </kevoree:ContainerRoot>
