@@ -39,50 +39,50 @@
   <deployUnits name="org.kevoree.extra.org.kevoree.extra.marshalling" url="mvn:org.kevoree.extra/org.kevoree.extra.marshalling/1.1.0-RC2" targetNodeType="//@typeDefinitions.1"/>
   <nodeNetworks initBy="//@nodes.0" target="//@nodes.0">
     <link networkType="" estimatedRate="100">
-      <networkProperties name="KEVOREE.remote.node.modelsynch.port" value="8000" lastCheck="1305637355539"/>
-      <networkProperties name="KEVOREE.remote.node.ip" value="131.254.15.214" lastCheck="1305637355539"/>
+      <networkProperties name="KEVOREE.remote.node.modelsynch.port" value="8000" lastCheck="1305640898097"/>
+      <networkProperties name="KEVOREE.remote.node.ip" value="131.254.15.214" lastCheck="1305640898097"/>
     </link>
   </nodeNetworks>
   <nodeNetworks initBy="//@nodes.1" target="//@nodes.1">
     <link networkType="" estimatedRate="100">
-      <networkProperties name="KEVOREE.remote.node.modelsynch.port" value="8001" lastCheck="1305637355540"/>
-      <networkProperties name="KEVOREE.remote.node.ip" value="131.254.15.214" lastCheck="1305637355540"/>
+      <networkProperties name="KEVOREE.remote.node.modelsynch.port" value="8001" lastCheck="1305640898097"/>
+      <networkProperties name="KEVOREE.remote.node.ip" value="131.254.15.214" lastCheck="1305640898097"/>
     </link>
   </nodeNetworks>
   <nodeNetworks initBy="//@nodes.2" target="//@nodes.2">
     <link networkType="" estimatedRate="100">
-      <networkProperties name="KEVOREE.remote.node.modelsynch.port" value="8002" lastCheck="1305637355540"/>
-      <networkProperties name="KEVOREE.remote.node.ip" value="131.254.15.214" lastCheck="1305637355540"/>
+      <networkProperties name="KEVOREE.remote.node.modelsynch.port" value="8002" lastCheck="1305640898097"/>
+      <networkProperties name="KEVOREE.remote.node.ip" value="131.254.15.214" lastCheck="1305640898097"/>
     </link>
   </nodeNetworks>
   <nodeNetworks initBy="//@nodes.3" target="//@nodes.3">
     <link networkType="" estimatedRate="100">
-      <networkProperties name="KEVOREE.remote.node.modelsynch.port" value="8003" lastCheck="1305637355540"/>
-      <networkProperties name="KEVOREE.remote.node.ip" value="131.254.15.214" lastCheck="1305637355540"/>
+      <networkProperties name="KEVOREE.remote.node.modelsynch.port" value="8003" lastCheck="1305640898097"/>
+      <networkProperties name="KEVOREE.remote.node.ip" value="131.254.15.214" lastCheck="1305640898097"/>
     </link>
   </nodeNetworks>
   <nodeNetworks initBy="//@nodes.4" target="//@nodes.4">
     <link networkType="" estimatedRate="100">
-      <networkProperties name="KEVOREE.remote.node.modelsynch.port" value="8000" lastCheck="1305637355540"/>
-      <networkProperties name="KEVOREE.remote.node.ip" value="131.254.12.28" lastCheck="1305637355540"/>
+      <networkProperties name="KEVOREE.remote.node.modelsynch.port" value="8000" lastCheck="1305640898097"/>
+      <networkProperties name="KEVOREE.remote.node.ip" value="131.254.12.28" lastCheck="1305640898097"/>
     </link>
   </nodeNetworks>
   <nodeNetworks initBy="//@nodes.5" target="//@nodes.5">
     <link networkType="" estimatedRate="100">
-      <networkProperties name="KEVOREE.remote.node.modelsynch.port" value="8001" lastCheck="1305637355540"/>
-      <networkProperties name="KEVOREE.remote.node.ip" value="131.254.12.28" lastCheck="1305637355540"/>
+      <networkProperties name="KEVOREE.remote.node.modelsynch.port" value="8001" lastCheck="1305640898097"/>
+      <networkProperties name="KEVOREE.remote.node.ip" value="131.254.12.28" lastCheck="1305640898097"/>
     </link>
   </nodeNetworks>
   <nodeNetworks initBy="//@nodes.6" target="//@nodes.6">
     <link networkType="" estimatedRate="100">
-      <networkProperties name="KEVOREE.remote.node.modelsynch.port" value="8002" lastCheck="1305637355540"/>
-      <networkProperties name="KEVOREE.remote.node.ip" value="131.254.12.28" lastCheck="1305637355540"/>
+      <networkProperties name="KEVOREE.remote.node.modelsynch.port" value="8002" lastCheck="1305640898098"/>
+      <networkProperties name="KEVOREE.remote.node.ip" value="131.254.12.28" lastCheck="1305640898098"/>
     </link>
   </nodeNetworks>
   <nodeNetworks initBy="//@nodes.7" target="//@nodes.7">
     <link networkType="" estimatedRate="100">
-      <networkProperties name="KEVOREE.remote.node.modelsynch.port" value="8003" lastCheck="1305637355540"/>
-      <networkProperties name="KEVOREE.remote.node.ip" value="131.254.12.28" lastCheck="1305637355541"/>
+      <networkProperties name="KEVOREE.remote.node.modelsynch.port" value="8003" lastCheck="1305640898098"/>
+      <networkProperties name="KEVOREE.remote.node.ip" value="131.254.12.28" lastCheck="1305640898098"/>
     </link>
   </nodeNetworks>
   <groups name="gossipGroup" typeDefinition="//@typeDefinitions.0" subNodes="//@nodes.0 //@nodes.1 //@nodes.2 //@nodes.3 //@nodes.4 //@nodes.5 //@nodes.6 //@nodes.7">

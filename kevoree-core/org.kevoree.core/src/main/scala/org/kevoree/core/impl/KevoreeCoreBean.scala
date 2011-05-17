@@ -118,12 +118,14 @@ class KevoreeCoreBean extends KevoreeModelHandlerService with KevoreeActor {
   def internal_process(msg: Any) = msg match {
     case updateMsg: PlatformModelUpdate => KevoreePlatformHelper.updateNodeLinkProp(model, nodeName, updateMsg.targetNodeName, updateMsg.key, updateMsg.value, updateMsg.networkType, updateMsg.weight)
     case PreviousModel() => reply(models)
-    case LastModel() => reply(model) /* TODO DEEP CLONE */
-    case UpdateModel(newmodel) => {
-      if (newmodel == null) {
+    case LastModel() => reply(EcoreUtil.copy(model)) /* TODO DEEP CLONE */
+    case UpdateModel(pnewmodel) => {
+      if (pnewmodel == null) {
         logger.error("Null model")
         reply(false)
       } else {
+
+        val newmodel = EcoreUtil.copy(pnewmodel)
 
         val milli =System.currentTimeMillis
         logger.debug("Begin update model "+milli)
@@ -152,19 +154,18 @@ class KevoreeCoreBean extends KevoreeModelHandlerService with KevoreeActor {
 
 
   override def getLastModel: ContainerRoot = {
-    val result = (this !? LastModel()).asInstanceOf[ContainerRoot]
-    EcoreUtil.copy(result)
+    (this !? LastModel()).asInstanceOf[ContainerRoot]
   }
 
   override def updateModel(model: ContainerRoot) {
     logger.debug("update asked")
-    this ! UpdateModel(EcoreUtil.copy(model))
+    this ! UpdateModel(model)
     logger.debug("update end")
   }
 
   override def atomicUpdateModel(model: ContainerRoot) = {
     logger.debug("Atomic update asked")
-    (this !? UpdateModel(EcoreUtil.copy(model)))
+    (this !? UpdateModel(model))
     logger.debug("Atomic update end")
     lastDate
   }
