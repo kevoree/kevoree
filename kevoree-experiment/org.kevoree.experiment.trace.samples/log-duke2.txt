@@ -1,0 +1,92 @@
+o.kevoree.core.impl.KevoreeCoreBean - Start event : node name = duke2
+o.k.p.o.s.BootstrapActivator - Try to bootstrap platform
+o.kevoree.core.impl.KevoreeCoreBean - update asked
+o.kevoree.core.impl.KevoreeCoreBean - Copy Model
+o.kevoree.core.impl.KevoreeCoreBean - Begin update model 1305647023331
+o.kevoree.core.impl.KevoreeCoreBean - Before kompare
+o.kevoree.core.impl.KevoreeCoreBean - update end
+o.k.kompare.KevoreeKompareBean - INIT NODE v2 duke2
+o.kevoree.core.impl.KevoreeCoreBean - Before deploy
+o.kevoree.core.impl.KevoreeCoreBean - Deploy result true
+o.kevoree.core.impl.KevoreeCoreBean - End deploy result=true-90
+o.kevoree.core.impl.KevoreeCoreBean - Start event : node name = duke2
+o.k.p.o.s.BootstrapActivator - Try to bootstrap platform
+o.kevoree.core.impl.KevoreeCoreBean - update asked
+o.kevoree.core.impl.KevoreeCoreBean - update end
+o.kevoree.core.impl.KevoreeCoreBean - Copy Model
+o.kevoree.core.impl.KevoreeCoreBean - Begin update model 1305647191509
+o.kevoree.core.impl.KevoreeCoreBean - Before kompare
+o.k.kompare.KevoreeKompareBean - INIT NODE v2 duke2
+o.kevoree.core.impl.KevoreeCoreBean - Before deploy
+o.kevoree.core.impl.KevoreeCoreBean - Deploy result true
+o.kevoree.core.impl.KevoreeCoreBean - End deploy result=true-58
+o.kevoree.core.impl.KevoreeCoreBean - Start event : node name = duke2
+o.k.p.o.s.BootstrapActivator - Try to bootstrap platform
+o.kevoree.core.impl.KevoreeCoreBean - update asked
+o.kevoree.core.impl.KevoreeCoreBean - update end
+o.kevoree.core.impl.KevoreeCoreBean - Copy Model
+o.kevoree.core.impl.KevoreeCoreBean - Begin update model 1305647256860
+o.kevoree.core.impl.KevoreeCoreBean - Before kompare
+o.k.kompare.KevoreeKompareBean - INIT NODE v2 duke2
+o.kevoree.core.impl.KevoreeCoreBean - Before deploy
+o.kevoree.core.impl.KevoreeCoreBean - Deploy result true
+o.kevoree.core.impl.KevoreeCoreBean - End deploy result=true-34
+o.kevoree.core.impl.KevoreeCoreBean - Start event : node name = duke2
+o.k.p.o.s.BootstrapActivator - Try to bootstrap platform
+o.kevoree.core.impl.KevoreeCoreBean - update asked
+o.kevoree.core.impl.KevoreeCoreBean - update end
+o.kevoree.core.impl.KevoreeCoreBean - Copy Model
+o.kevoree.core.impl.KevoreeCoreBean - Begin update model 1305647690605
+o.kevoree.core.impl.KevoreeCoreBean - Before kompare
+o.k.kompare.KevoreeKompareBean - INIT NODE v2 duke2
+o.kevoree.core.impl.KevoreeCoreBean - Before deploy
+o.kevoree.core.impl.KevoreeCoreBean - Deploy result true
+o.kevoree.core.impl.KevoreeCoreBean - End deploy result=true-110
+o.kevoree.core.impl.KevoreeCoreBean - Start event : node name = duke2
+o.k.p.o.s.BootstrapActivator - Try to bootstrap platform
+o.kevoree.core.impl.KevoreeCoreBean - update asked
+o.kevoree.core.impl.KevoreeCoreBean - Actor size 0
+o.kevoree.core.impl.KevoreeCoreBean - Copy Model
+o.kevoree.core.impl.KevoreeCoreBean - Begin update model 1305647830354
+o.kevoree.core.impl.KevoreeCoreBean - Before kompare
+o.k.kompare.KevoreeKompareBean - INIT NODE v2 duke2
+o.kevoree.core.impl.KevoreeCoreBean - update end
+o.kevoree.core.impl.KevoreeCoreBean - Before deploy
+o.kevoree.core.impl.KevoreeCoreBean - Deploy result true
+o.kevoree.core.impl.KevoreeCoreBean - End deploy result=true-92
+o.kevoree.core.impl.KevoreeCoreBean - Start event : node name = duke2
+o.k.p.o.s.BootstrapActivator - Try to bootstrap platform
+o.kevoree.core.impl.KevoreeCoreBean - update asked
+o.kevoree.core.impl.KevoreeCoreBean - Actor size 0
+o.kevoree.core.impl.KevoreeCoreBean - Copy Model
+o.kevoree.core.impl.KevoreeCoreBean - Begin update model 1305648403386
+o.kevoree.core.impl.KevoreeCoreBean - Before kompare
+o.kevoree.core.impl.KevoreeCoreBean - update end
+o.k.kompare.KevoreeKompareBean - INIT NODE v2 duke2
+o.kevoree.core.impl.KevoreeCoreBean - Before deploy
+o.kevoree.core.impl.KevoreeCoreBean - Deploy result true
+o.kevoree.core.impl.KevoreeCoreBean - End deploy result=true-35
+o.kevoree.core.impl.KevoreeCoreBean - Start event : node name = duke2
+o.k.p.o.s.BootstrapActivator - Try to bootstrap platform
+o.kevoree.core.impl.KevoreeCoreBean - update asked
+o.kevoree.core.impl.KevoreeCoreBean - update end
+o.kevoree.core.impl.KevoreeCoreBean - Actor size 0
+o.kevoree.core.impl.KevoreeCoreBean - Copy Model
+o.kevoree.core.impl.KevoreeCoreBean - Begin update model 1305648569060
+o.kevoree.core.impl.KevoreeCoreBean - Before kompare
+o.k.kompare.KevoreeKompareBean - INIT NODE v2 duke2
+o.kevoree.core.impl.KevoreeCoreBean - Before deploy
+o.kevoree.core.impl.KevoreeCoreBean - Deploy result true
+o.kevoree.core.impl.KevoreeCoreBean - End deploy result=true-25
+o.kevoree.core.impl.KevoreeCoreBean - Start event : node name = duke2
+o.k.p.o.s.BootstrapActivator - Try to bootstrap platform
+o.kevoree.core.impl.KevoreeCoreBean - update asked
+o.kevoree.core.impl.KevoreeCoreBean - Actor size 0
+o.kevoree.core.impl.KevoreeCoreBean - Copy Model
+o.kevoree.core.impl.KevoreeCoreBean - update end
+o.kevoree.core.impl.KevoreeCoreBean - Begin update model 1305648725986
+o.kevoree.core.impl.KevoreeCoreBean - Before kompare
+o.k.kompare.KevoreeKompareBean - INIT NODE v2 duke2
+o.kevoree.core.impl.KevoreeCoreBean - Before deploy
+o.kevoree.core.impl.KevoreeCoreBean - Deploy result true
+o.kevoree.core.impl.KevoreeCoreBean - End deploy result=true-67

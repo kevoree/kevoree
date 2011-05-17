@@ -24,16 +24,18 @@ object BootStrapApp extends Application {
   tscript append generatePhysicalNodeScript("duke", dukeIP, 8000, 4)
   tscript append generatePhysicalNodeScript("paraisseux", paraisseuxIP, 8000, 4)
 
-  //ADD GLOBAL GROUP
-  tscript append "addGroup gossipGroup : LogNettyGossiperGroup {"
-  tscript append "port=\"" + generateGroupFragmentPort(List(("duke", 4, 9000), ("paraisseux", 4, 9000))) + "\"\n"
-  tscript append ",loggerServerIP=\"" + dukeIP + "\""
+
+  /*
+//ADD GLOBAL GROUP
+tscript append "addGroup gossipGroup : LogNettyGossiperGroup {"
+tscript append "port=\"" + generateGroupFragmentPort(List(("duke", 4, 9000), ("paraisseux", 4, 9000))) + "\"\n"
+tscript append ",loggerServerIP=\"" + dukeIP + "\""
 
 
-  tscript append "}\n"
-  //BIND ALL NODE TO GROUP
-  tscript append "addToGroup gossipGroup * \n"
-
+tscript append "}\n"
+//BIND ALL NODE TO GROUP
+tscript append "addToGroup gossipGroup * \n"
+  */
   tscript append "}\n"
 
   println(tscript)
@@ -55,28 +57,61 @@ object BootStrapApp extends Application {
         ips.foreach {
           ip =>
             try {
-            val url = new URL("http://" + ip + ":8080");
-              println("send to "+url)
+              val url = new URL("http://" + ip + ":8080");
+              println("send to " + url)
+              val conn = url.openConnection();
+              conn.setConnectTimeout(2000);
+              conn.setDoOutput(true);
+              val wr = new OutputStreamWriter(conn.getOutputStream())
+              wr.write(outStream.toString);
+              wr.flush();
+
+              // Get the response
+              val rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+              var line: String = rd.readLine;
+              while (line != null) {
+                println("ipReturn" + line)
+                line = rd.readLine
+              }
+              wr.close();
+              rd.close();
+
+            } catch {
+              case _@e => e.printStackTrace
+            }
+        }
+
+        var i = 0
+        while (true) {
+          try {
+            val url = new URL("http://"+dukeIP+":8000/model/current")
             val conn = url.openConnection();
+
             conn.setConnectTimeout(2000);
             conn.setDoOutput(true);
-            val wr = new OutputStreamWriter(conn.getOutputStream())
+            var wr = new OutputStreamWriter(conn.getOutputStream())
             wr.write(outStream.toString);
             wr.flush();
 
             // Get the response
-            val rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+            var rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
             var line: String = rd.readLine;
             while (line != null) {
-              println("ipReturn"+line)
+              println(line)
+              println(i)
               line = rd.readLine
             }
             wr.close();
             rd.close();
 
-            } catch {
-              case _ @ e => e.printStackTrace
-            }
+            i = i +1
+            Thread.sleep(500)
+
+          } catch {
+            case _@e => e.printStackTrace()
+          }
+
+
         }
 
 
