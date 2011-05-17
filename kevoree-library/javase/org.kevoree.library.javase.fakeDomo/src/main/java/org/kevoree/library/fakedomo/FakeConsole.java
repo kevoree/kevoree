@@ -158,7 +158,7 @@ public class FakeConsole extends AbstractFakeStuffComponent {
 
             add(new JScrollPane(screen), BorderLayout.CENTER);
             add(bottomPanel, BorderLayout.SOUTH);
-
+            this.setDefaultCloseOperation (JFrame.DO_NOTHING_ON_CLOSE);
             pack();
             setVisible(true);
         }

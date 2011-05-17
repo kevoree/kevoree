@@ -1,0 +1,1791 @@
+o.kevoree.core.impl.KevoreeCoreBean - Start event : node name = duke0
+o.kevoree.core.impl.KevoreeCoreBean - Try to bootstrap platform
+o.kevoree.core.impl.KevoreeCoreBean - Begin update model 1305635770781
+o.k.kompare.KevoreeKompareBean - INIT NODE v2 duke0
+o.k.a.d.o.KevoreeAdaptationDeployServiceOSGi - Plannification time = 1 ms
+o.k.a.d.o.KevoreeAdaptationDeployServiceOSGi - stop command
+o.k.a.d.o.KevoreeAdaptationDeployServiceOSGi - start
+o.k.a.d.o.KevoreeAdaptationDeployServiceOSGi - gossipGroup
+o.k.a.d.osgi.KevoreeDeployPhase - Phase 0 STOP COMPONENT=0
+o.k.a.d.osgi.KevoreeDeployPhase - Result : true
+o.k.a.d.osgi.KevoreeDeployPhase - Phase 1 Remove Binding=0
+o.k.a.d.osgi.KevoreeDeployPhase - Result : true
+o.k.a.d.osgi.KevoreeDeployPhase - Phase 2 Remove Instance=0
+o.k.a.d.osgi.KevoreeDeployPhase - Result : true
+o.k.a.d.osgi.KevoreeDeployPhase - Phase 3 Remove ComponentType=0
+o.k.a.d.osgi.KevoreeDeployPhase - Result : true
+o.k.a.d.osgi.KevoreeDeployPhase - Phase 4 Remove TypeDefinition DeployUnit=0
+o.k.a.d.osgi.KevoreeDeployPhase - Result : true
+o.k.a.d.osgi.KevoreeDeployPhase - Phase 5 ThirdParty=3
+o.k.a.d.osgi.KevoreeDeployPhase - Execute command org.kevoree.adaptation.deploy.osgi.command.AddThirdPartyCommand
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:org.kevoree.extra/org.kevoree.extra.protobuf/2.3.0
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://maven.kevoree.org/libs-release-local!org.kevoree.extra/org.kevoree.extra.protobuf/2.3.0
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://scala-tools.org/repo-releases!org.kevoree.extra/org.kevoree.extra.protobuf/2.3.0
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://maven.kevoree.org/release!org.kevoree.extra/org.kevoree.extra.protobuf/2.3.0
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://repo1.maven.org/maven2!org.kevoree.extra/org.kevoree.extra.protobuf/2.3.0
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://131.254.15.214:8000/provisioning/!org.kevoree.extra/org.kevoree.extra.protobuf/2.3.0
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://131.254.15.214:8001/provisioning/!org.kevoree.extra/org.kevoree.extra.protobuf/2.3.0
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://131.254.15.214:8002/provisioning/!org.kevoree.extra/org.kevoree.extra.protobuf/2.3.0
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://131.254.15.214:8003/provisioning/!org.kevoree.extra/org.kevoree.extra.protobuf/2.3.0
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://131.254.12.28:8000/provisioning/!org.kevoree.extra/org.kevoree.extra.protobuf/2.3.0
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://131.254.12.28:8001/provisioning/!org.kevoree.extra/org.kevoree.extra.protobuf/2.3.0
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://131.254.12.28:8002/provisioning/!org.kevoree.extra/org.kevoree.extra.protobuf/2.3.0
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://131.254.12.28:8003/provisioning/!org.kevoree.extra/org.kevoree.extra.protobuf/2.3.0
+o.k.a.d.o.c.AddThirdPartyCommand - CMD ADD ThirdParty EXECUTION => url=mvn:org.kevoree.extra/org.kevoree.extra.protobuf/2.3.0
+o.k.a.d.osgi.KevoreeDeployPhase - Execute command org.kevoree.adaptation.deploy.osgi.command.AddThirdPartyCommand
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:org.kevoree.extra/org.kevoree.extra.netty/3.2.4
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://maven.kevoree.org/libs-release-local!org.kevoree.extra/org.kevoree.extra.netty/3.2.4
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://scala-tools.org/repo-releases!org.kevoree.extra/org.kevoree.extra.netty/3.2.4
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://maven.kevoree.org/release!org.kevoree.extra/org.kevoree.extra.netty/3.2.4
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://repo1.maven.org/maven2!org.kevoree.extra/org.kevoree.extra.netty/3.2.4
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://131.254.15.214:8000/provisioning/!org.kevoree.extra/org.kevoree.extra.netty/3.2.4
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://131.254.15.214:8001/provisioning/!org.kevoree.extra/org.kevoree.extra.netty/3.2.4
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://131.254.15.214:8002/provisioning/!org.kevoree.extra/org.kevoree.extra.netty/3.2.4
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://131.254.15.214:8003/provisioning/!org.kevoree.extra/org.kevoree.extra.netty/3.2.4
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://131.254.12.28:8000/provisioning/!org.kevoree.extra/org.kevoree.extra.netty/3.2.4
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://131.254.12.28:8001/provisioning/!org.kevoree.extra/org.kevoree.extra.netty/3.2.4
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://131.254.12.28:8002/provisioning/!org.kevoree.extra/org.kevoree.extra.netty/3.2.4
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://131.254.12.28:8003/provisioning/!org.kevoree.extra/org.kevoree.extra.netty/3.2.4
+o.k.a.d.o.c.AddThirdPartyCommand - CMD ADD ThirdParty EXECUTION => url=mvn:org.kevoree.extra/org.kevoree.extra.netty/3.2.4
+o.k.a.d.osgi.KevoreeDeployPhase - Execute command org.kevoree.adaptation.deploy.osgi.command.AddThirdPartyCommand
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:org.kevoree.extra/org.kevoree.extra.marshalling/1.1.0-RC2
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://maven.kevoree.org/libs-release-local!org.kevoree.extra/org.kevoree.extra.marshalling/1.1.0-RC2
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://scala-tools.org/repo-releases!org.kevoree.extra/org.kevoree.extra.marshalling/1.1.0-RC2
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://maven.kevoree.org/release!org.kevoree.extra/org.kevoree.extra.marshalling/1.1.0-RC2
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://repo1.maven.org/maven2!org.kevoree.extra/org.kevoree.extra.marshalling/1.1.0-RC2
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://131.254.15.214:8000/provisioning/!org.kevoree.extra/org.kevoree.extra.marshalling/1.1.0-RC2
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://131.254.15.214:8001/provisioning/!org.kevoree.extra/org.kevoree.extra.marshalling/1.1.0-RC2
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://131.254.15.214:8002/provisioning/!org.kevoree.extra/org.kevoree.extra.marshalling/1.1.0-RC2
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://131.254.15.214:8003/provisioning/!org.kevoree.extra/org.kevoree.extra.marshalling/1.1.0-RC2
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://131.254.12.28:8000/provisioning/!org.kevoree.extra/org.kevoree.extra.marshalling/1.1.0-RC2
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://131.254.12.28:8001/provisioning/!org.kevoree.extra/org.kevoree.extra.marshalling/1.1.0-RC2
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://131.254.12.28:8002/provisioning/!org.kevoree.extra/org.kevoree.extra.marshalling/1.1.0-RC2
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://131.254.12.28:8003/provisioning/!org.kevoree.extra/org.kevoree.extra.marshalling/1.1.0-RC2
+o.k.a.d.o.c.AddThirdPartyCommand - CMD ADD ThirdParty EXECUTION => url=mvn:org.kevoree.extra/org.kevoree.extra.marshalling/1.1.0-RC2
+o.k.a.d.osgi.KevoreeDeployPhase - Resolving bundle: org.kevoree.extra.protobuf
+o.k.a.d.osgi.KevoreeDeployPhase - Resolving bundle: org.kevoree.extra.netty
+o.k.a.d.osgi.KevoreeDeployPhase - Resolving bundle: org.kevoree.extra.org.kevoree.extra.marshalling
+o.k.a.d.osgi.KevoreeDeployPhase - Result : true
+o.k.a.d.osgi.KevoreeDeployPhase - Phase 6 Add TypeDefinition DeployUnit=1
+o.k.a.d.osgi.KevoreeDeployPhase - Execute command org.kevoree.adaptation.deploy.osgi.command.AddDeployUnitCommand
+o.k.a.d.o.c.AddDeployUnitCommand - CMD ADD DEPLOY UNIT EXECUTION 
+o.k.a.d.o.c.AddDeployUnitCommand - potential url=mvn:org.kevoree.experiment/org.kevoree.experiment.library.gossiperNetty/1.1.0-RC2
+o.k.a.d.o.c.AddDeployUnitCommand - potential url=mvn:http://maven.kevoree.org/libs-release-local!org.kevoree.experiment/org.kevoree.experiment.library.gossiperNetty/1.1.0-RC2
+o.k.a.d.o.c.AddDeployUnitCommand - potential url=mvn:http://maven.kevoree.org/libs-release-local!org.kevoree.experiment/org.kevoree.experiment.library.gossiperNetty/1.1.0-RC2
+o.k.a.d.o.c.AddDeployUnitCommand - potential url=mvn:http://scala-tools.org/repo-releases!org.kevoree.experiment/org.kevoree.experiment.library.gossiperNetty/1.1.0-RC2
+o.k.a.d.o.c.AddDeployUnitCommand - potential url=mvn:http://maven.kevoree.org/release!org.kevoree.experiment/org.kevoree.experiment.library.gossiperNetty/1.1.0-RC2
+o.k.a.d.o.c.AddDeployUnitCommand - potential url=mvn:http://repo1.maven.org/maven2!org.kevoree.experiment/org.kevoree.experiment.library.gossiperNetty/1.1.0-RC2
+o.k.a.d.o.c.AddDeployUnitCommand - potential url=mvn:http://131.254.15.214:8000/provisioning/!org.kevoree.experiment/org.kevoree.experiment.library.gossiperNetty/1.1.0-RC2
+o.k.a.d.o.c.AddDeployUnitCommand - potential url=mvn:http://131.254.15.214:8001/provisioning/!org.kevoree.experiment/org.kevoree.experiment.library.gossiperNetty/1.1.0-RC2
+o.k.a.d.o.c.AddDeployUnitCommand - potential url=mvn:http://131.254.15.214:8002/provisioning/!org.kevoree.experiment/org.kevoree.experiment.library.gossiperNetty/1.1.0-RC2
+o.k.a.d.o.c.AddDeployUnitCommand - potential url=mvn:http://131.254.15.214:8003/provisioning/!org.kevoree.experiment/org.kevoree.experiment.library.gossiperNetty/1.1.0-RC2
+o.k.a.d.o.c.AddDeployUnitCommand - potential url=mvn:http://131.254.12.28:8000/provisioning/!org.kevoree.experiment/org.kevoree.experiment.library.gossiperNetty/1.1.0-RC2
+o.k.a.d.o.c.AddDeployUnitCommand - potential url=mvn:http://131.254.12.28:8001/provisioning/!org.kevoree.experiment/org.kevoree.experiment.library.gossiperNetty/1.1.0-RC2
+o.k.a.d.o.c.AddDeployUnitCommand - potential url=mvn:http://131.254.12.28:8002/provisioning/!org.kevoree.experiment/org.kevoree.experiment.library.gossiperNetty/1.1.0-RC2
+o.k.a.d.o.c.AddDeployUnitCommand - potential url=mvn:http://131.254.12.28:8003/provisioning/!org.kevoree.experiment/org.kevoree.experiment.library.gossiperNetty/1.1.0-RC2
+o.k.a.d.o.c.AddDeployUnitCommand - Try to install from URI, mvn:org.kevoree.experiment/org.kevoree.experiment.library.gossiperNetty/1.1.0-RC2
+o.k.a.d.o.c.AddDeployUnitCommand - failed to perform CMD ADD CT EXECUTION
+o.k.a.d.o.c.AddDeployUnitCommand - Try to install from URI, mvn:http://maven.kevoree.org/libs-release-local!org.kevoree.experiment/org.kevoree.experiment.library.gossiperNetty/1.1.0-RC2
+o.k.a.d.osgi.KevoreeDeployPhase - Resolving bundle: org.kevoree.experiment.org.kevoree.experiment.library.gossiperNetty
+o.k.a.d.osgi.KevoreeDeployPhase - Result : true
+o.k.a.d.osgi.KevoreeDeployPhase - Phase 7 Add ComponentType=1
+o.k.a.d.osgi.KevoreeDeployPhase - Execute command org.kevoree.adaptation.deploy.osgi.command.AddTypeCommand
+o.k.a.d.osgi.command.AddTypeCommand - CMD ADD CT EXECUTION 
+o.k.a.d.osgi.KevoreeDeployPhase - Result : true
+o.k.a.d.osgi.KevoreeDeployPhase - Phase 8 install ComponentInstance=1
+o.k.a.d.osgi.KevoreeDeployPhase - Execute command org.kevoree.adaptation.deploy.osgi.command.AddInstanceCommand
+o.k.a.d.osgi.KevoreeDeployPhase - Resolving bundle: gossipGroup
+o.k.a.d.osgi.KevoreeDeployPhase - Result : true
+o.k.a.d.osgi.KevoreeDeployPhase - Phase 9 install Bindings=0
+o.k.a.d.osgi.KevoreeDeployPhase - Result : true
+o.k.a.d.osgi.KevoreeDeployPhase - Phase 10 SET PROPERTY=1
+o.k.a.d.osgi.KevoreeDeployPhase - Execute command org.kevoree.adaptation.deploy.osgi.command.UpdateDictionaryCommand
+o.k.a.d.osgi.KevoreeDeployPhase - Result : true
+o.k.a.d.osgi.KevoreeDeployPhase - Phase 11 START COMPONENT=1
+o.k.a.d.osgi.KevoreeDeployPhase - Execute command org.kevoree.adaptation.deploy.osgi.command.StartInstanceCommand
+o.k.a.d.osgi.KevoreeDeployPhase - Result : true
+o.kevoree.core.impl.KevoreeCoreBean - Deploy result true
+o.kevoree.core.impl.KevoreeCoreBean - End deploy result=true-4330
+o.k.l.g.NotificationRequestSender - send notification to duke1
+o.k.l.g.NotificationRequestSender - send notification to duke2
+o.k.l.g.NotificationRequestSender - send notification to duke3
+o.k.l.g.NotificationRequestSender - send notification to paraisseux0
+o.k.l.g.NotificationRequestSender - send notification to paraisseux1
+o.k.l.g.NotificationRequestSender - send notification to paraisseux2
+o.k.l.g.NotificationRequestSender - send notification to paraisseux3
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClocks
+o.k.l.g.group.DataManagerForGroup - Increment
+o.k.l.g.group.DataManagerForGroup - End increment
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClocks end
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClocks
+o.k.l.g.group.DataManagerForGroup - Increment
+o.k.l.g.group.DataManagerForGroup - End increment
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClocks end
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClocks
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClocks end
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClocks
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClocks end
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClocks
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClocks end
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock end
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock end
+o.k.l.g.VectorClockAspect - VectorClock - 1 - 1305635775222
+o.k.l.g.VectorClockAspect - duke0-2-1305635775222
+o.k.l.g.VectorClockAspect - -- end vector clock --
+o.k.l.g.VectorClockAspect - VectorClock - 1 - 1305635775161
+o.k.l.g.VectorClockAspect - duke1-2-1305635775161
+o.k.l.g.VectorClockAspect - -- end vector clock --
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock end
+o.k.l.g.GossiperRequestSender - VectorClocks comparison into GossiperRequestSender give us: CONCURRENTLY
+o.k.l.g.AskForDataTCPActor - TCP sending ... :-)
+o.k.l.g.group.DataManagerForGroup - getData
+o.k.l.g.group.DataManagerForGroup - getData
+o.k.l.g.group.DataManagerForGroup - getData
+o.k.l.g.group.DataManagerForGroup - getData
+o.k.l.g.group.DataManagerForGroup - getData end
+o.k.l.g.group.DataManagerForGroup - getData end
+o.k.l.g.group.DataManagerForGroup - getData end
+o.k.l.g.group.DataManagerForGroup - getData end
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock end
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock end
+o.k.l.g.VectorClockAspect - VectorClock - 1 - 1305635775222
+o.k.l.g.VectorClockAspect - duke0-2-1305635775222
+o.k.l.g.VectorClockAspect - -- end vector clock --
+o.k.l.g.VectorClockAspect - VectorClock - 5 - 1305635758719
+o.k.l.g.VectorClockAspect - paraisseux3-2-1305635758719
+o.k.l.g.VectorClockAspect - duke0-2-1305635758719
+o.k.l.g.VectorClockAspect - paraisseux0-2-1305635754560
+o.k.l.g.VectorClockAspect - paraisseux2-2-1305635754560
+o.k.l.g.VectorClockAspect - paraisseux1-2-1305635754560
+o.k.l.g.VectorClockAspect - -- end vector clock --
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock end
+o.k.l.g.GossiperRequestSender - VectorClocks comparison into GossiperRequestSender give us: BEFORE
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock end
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock end
+o.k.l.g.VectorClockAspect - VectorClock - 1 - 1305635775222
+o.k.l.g.VectorClockAspect - duke0-2-1305635775222
+o.k.l.g.VectorClockAspect - -- end vector clock --
+o.k.l.g.VectorClockAspect - VectorClock - 5 - 1305635758765
+o.k.l.g.VectorClockAspect - paraisseux0-2-1305635758765
+o.k.l.g.VectorClockAspect - duke0-2-1305635758765
+o.k.l.g.VectorClockAspect - paraisseux3-2-1305635753355
+o.k.l.g.VectorClockAspect - paraisseux1-2-1305635753352
+o.k.l.g.VectorClockAspect - paraisseux2-2-1305635754268
+o.k.l.g.VectorClockAspect - -- end vector clock --
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock end
+o.k.l.g.GossiperRequestSender - VectorClocks comparison into GossiperRequestSender give us: BEFORE
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock end
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock end
+o.k.l.g.VectorClockAspect - VectorClock - 1 - 1305635775222
+o.k.l.g.VectorClockAspect - duke0-2-1305635775222
+o.k.l.g.VectorClockAspect - -- end vector clock --
+o.k.l.g.VectorClockAspect - VectorClock - 5 - 1305635758807
+o.k.l.g.VectorClockAspect - paraisseux1-2-1305635758807
+o.k.l.g.VectorClockAspect - duke0-2-1305635758807
+o.k.l.g.VectorClockAspect - paraisseux0-2-1305635754526
+o.k.l.g.VectorClockAspect - paraisseux3-2-1305635754526
+o.k.l.g.VectorClockAspect - paraisseux2-2-1305635754526
+o.k.l.g.VectorClockAspect - -- end vector clock --
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock end
+o.k.l.g.GossiperRequestSender - VectorClocks comparison into GossiperRequestSender give us: BEFORE
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock end
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock end
+o.k.l.g.VectorClockAspect - VectorClock - 1 - 1305635775222
+o.k.l.g.VectorClockAspect - duke0-2-1305635775222
+o.k.l.g.VectorClockAspect - -- end vector clock --
+o.k.l.g.VectorClockAspect - VectorClock - 6 - 1305635758840
+o.k.l.g.VectorClockAspect - paraisseux3-2-1305635758840
+o.k.l.g.VectorClockAspect - duke1-2-1305635758840
+o.k.l.g.VectorClockAspect - duke0-2-1305635758719
+o.k.l.g.VectorClockAspect - paraisseux0-2-1305635754560
+o.k.l.g.VectorClockAspect - paraisseux2-2-1305635754560
+o.k.l.g.VectorClockAspect - paraisseux1-2-1305635754560
+o.k.l.g.VectorClockAspect - -- end vector clock --
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock end
+o.k.l.g.GossiperRequestSender - VectorClocks comparison into GossiperRequestSender give us: BEFORE
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock end
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock end
+o.k.l.g.VectorClockAspect - VectorClock - 1 - 1305635775222
+o.k.l.g.VectorClockAspect - duke0-2-1305635775222
+o.k.l.g.VectorClockAspect - -- end vector clock --
+o.k.l.g.VectorClockAspect - VectorClock - 6 - 1305635758890
+o.k.l.g.VectorClockAspect - paraisseux1-2-1305635758890
+o.k.l.g.VectorClockAspect - duke1-2-1305635758890
+o.k.l.g.VectorClockAspect - duke0-2-1305635758807
+o.k.l.g.VectorClockAspect - paraisseux0-2-1305635754526
+o.k.l.g.VectorClockAspect - paraisseux3-2-1305635754526
+o.k.l.g.VectorClockAspect - paraisseux2-2-1305635754526
+o.k.l.g.VectorClockAspect - -- end vector clock --
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock end
+o.k.l.g.GossiperRequestSender - VectorClocks comparison into GossiperRequestSender give us: BEFORE
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock end
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock end
+o.k.l.g.VectorClockAspect - VectorClock - 1 - 1305635775222
+o.k.l.g.VectorClockAspect - duke0-2-1305635775222
+o.k.l.g.VectorClockAspect - -- end vector clock --
+o.k.l.g.VectorClockAspect - VectorClock - 6 - 1305635758904
+o.k.l.g.VectorClockAspect - paraisseux2-2-1305635758904
+o.k.l.g.VectorClockAspect - duke0-2-1305635758904
+o.k.l.g.VectorClockAspect - duke1-2-1305635758879
+o.k.l.g.VectorClockAspect - paraisseux0-2-1305635754550
+o.k.l.g.VectorClockAspect - paraisseux3-2-1305635754550
+o.k.l.g.VectorClockAspect - paraisseux1-2-1305635754550
+o.k.l.g.VectorClockAspect - -- end vector clock --
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock end
+o.k.l.g.GossiperRequestSender - VectorClocks comparison into GossiperRequestSender give us: BEFORE
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock end
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock end
+o.k.l.g.VectorClockAspect - VectorClock - 1 - 1305635775222
+o.k.l.g.VectorClockAspect - duke0-2-1305635775222
+o.k.l.g.VectorClockAspect - -- end vector clock --
+o.k.l.g.VectorClockAspect - VectorClock - 1 - 1305635775597
+o.k.l.g.VectorClockAspect - duke2-2-1305635775597
+o.k.l.g.VectorClockAspect - -- end vector clock --
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock end
+o.k.l.g.GossiperRequestSender - VectorClocks comparison into GossiperRequestSender give us: CONCURRENTLY
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock end
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock end
+o.k.l.g.VectorClockAspect - VectorClock - 1 - 1305635775222
+o.k.l.g.VectorClockAspect - duke0-2-1305635775222
+o.k.l.g.VectorClockAspect - -- end vector clock --
+o.k.l.g.VectorClockAspect - VectorClock - 6 - 1305635758942
+o.k.l.g.VectorClockAspect - paraisseux0-2-1305635758942
+o.k.l.g.VectorClockAspect - duke1-2-1305635758942
+o.k.l.g.VectorClockAspect - duke0-2-1305635758765
+o.k.l.g.VectorClockAspect - paraisseux3-2-1305635753355
+o.k.l.g.VectorClockAspect - paraisseux1-2-1305635753352
+o.k.l.g.VectorClockAspect - paraisseux2-2-1305635754268
+o.k.l.g.VectorClockAspect - -- end vector clock --
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock end
+o.k.l.g.GossiperRequestSender - VectorClocks comparison into GossiperRequestSender give us: BEFORE
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock end
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock end
+o.k.l.g.VectorClockAspect - VectorClock - 1 - 1305635775222
+o.k.l.g.VectorClockAspect - duke0-2-1305635775222
+o.k.l.g.VectorClockAspect - -- end vector clock --
+o.k.l.g.VectorClockAspect - VectorClock - 6 - 1305635758924
+o.k.l.g.VectorClockAspect - paraisseux2-2-1305635758924
+o.k.l.g.VectorClockAspect - paraisseux3-2-1305635758924
+o.k.l.g.VectorClockAspect - duke0-2-1305635758924
+o.k.l.g.VectorClockAspect - duke1-2-1305635758879
+o.k.l.g.VectorClockAspect - paraisseux0-2-1305635758924
+o.k.l.g.VectorClockAspect - paraisseux1-2-1305635758924
+o.k.l.g.VectorClockAspect - -- end vector clock --
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock end
+o.k.l.g.GossiperRequestSender - VectorClocks comparison into GossiperRequestSender give us: BEFORE
+o.k.l.g.AskForDataTCPActor - client build ! 
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock end
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock end
+o.k.l.g.VectorClockAspect - VectorClock - 1 - 1305635775222
+o.k.l.g.VectorClockAspect - duke0-2-1305635775222
+o.k.l.g.VectorClockAspect - -- end vector clock --
+o.k.l.g.VectorClockAspect - VectorClock - 7 - 1305635759190
+o.k.l.g.VectorClockAspect - paraisseux0-2-1305635759190
+o.k.l.g.VectorClockAspect - duke2-2-1305635759190
+o.k.l.g.VectorClockAspect - duke1-2-1305635758942
+o.k.l.g.VectorClockAspect - duke0-2-1305635758765
+o.k.l.g.VectorClockAspect - paraisseux3-2-1305635753355
+o.k.l.g.VectorClockAspect - paraisseux1-2-1305635753352
+o.k.l.g.VectorClockAspect - paraisseux2-2-1305635754268
+o.k.l.g.VectorClockAspect - -- end vector clock --
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock end
+o.k.l.g.GossiperRequestSender - VectorClocks comparison into GossiperRequestSender give us: BEFORE
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock end
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock end
+o.k.l.g.VectorClockAspect - VectorClock - 1 - 1305635775222
+o.k.l.g.VectorClockAspect - duke0-2-1305635775222
+o.k.l.g.VectorClockAspect - -- end vector clock --
+o.k.l.g.VectorClockAspect - VectorClock - 7 - 1305635759198
+o.k.l.g.VectorClockAspect - paraisseux2-2-1305635759198
+o.k.l.g.VectorClockAspect - duke2-2-1305635759198
+o.k.l.g.VectorClockAspect - paraisseux3-2-1305635758924
+o.k.l.g.VectorClockAspect - duke0-2-1305635758924
+o.k.l.g.VectorClockAspect - duke1-2-1305635758879
+o.k.l.g.VectorClockAspect - paraisseux0-2-1305635758924
+o.k.l.g.VectorClockAspect - paraisseux1-2-1305635758924
+o.k.l.g.VectorClockAspect - -- end vector clock --
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock end
+o.k.l.g.GossiperRequestSender - VectorClocks comparison into GossiperRequestSender give us: BEFORE
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock end
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock end
+o.k.l.g.VectorClockAspect - VectorClock - 1 - 1305635775222
+o.k.l.g.VectorClockAspect - duke0-2-1305635775222
+o.k.l.g.VectorClockAspect - -- end vector clock --
+o.k.l.g.VectorClockAspect - VectorClock - 1 - 1305635775927
+o.k.l.g.VectorClockAspect - duke3-2-1305635775927
+o.k.l.g.VectorClockAspect - -- end vector clock --
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock end
+o.k.l.g.GossiperRequestSender - VectorClocks comparison into GossiperRequestSender give us: CONCURRENTLY
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock end
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock end
+o.k.l.g.VectorClockAspect - VectorClock - 1 - 1305635775222
+o.k.l.g.VectorClockAspect - duke0-2-1305635775222
+o.k.l.g.VectorClockAspect - -- end vector clock --
+o.k.l.g.VectorClockAspect - VectorClock - 7 - 1305635759316
+o.k.l.g.VectorClockAspect - paraisseux3-2-1305635759316
+o.k.l.g.VectorClockAspect - duke2-2-1305635759316
+o.k.l.g.VectorClockAspect - duke1-2-1305635758840
+o.k.l.g.VectorClockAspect - duke0-2-1305635758719
+o.k.l.g.VectorClockAspect - paraisseux0-2-1305635754560
+o.k.l.g.VectorClockAspect - paraisseux2-2-1305635754560
+o.k.l.g.VectorClockAspect - paraisseux1-2-1305635754560
+o.k.l.g.VectorClockAspect - -- end vector clock --
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock end
+o.k.l.g.GossiperRequestSender - VectorClocks comparison into GossiperRequestSender give us: BEFORE
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock end
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock end
+o.k.l.g.VectorClockAspect - VectorClock - 1 - 1305635775222
+o.k.l.g.VectorClockAspect - duke0-2-1305635775222
+o.k.l.g.VectorClockAspect - -- end vector clock --
+o.k.l.g.VectorClockAspect - VectorClock - 7 - 1305635759279
+o.k.l.g.VectorClockAspect - paraisseux1-2-1305635759279
+o.k.l.g.VectorClockAspect - paraisseux0-2-1305635759279
+o.k.l.g.VectorClockAspect - duke2-2-1305635759279
+o.k.l.g.VectorClockAspect - paraisseux3-2-1305635759279
+o.k.l.g.VectorClockAspect - duke1-2-1305635759279
+o.k.l.g.VectorClockAspect - duke0-2-1305635759279
+o.k.l.g.VectorClockAspect - paraisseux2-2-1305635759279
+o.k.l.g.VectorClockAspect - -- end vector clock --
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock end
+o.k.l.g.GossiperRequestSender - VectorClocks comparison into GossiperRequestSender give us: BEFORE
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock end
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock end
+o.k.l.g.VectorClockAspect - VectorClock - 1 - 1305635775222
+o.k.l.g.VectorClockAspect - duke0-2-1305635775222
+o.k.l.g.VectorClockAspect - -- end vector clock --
+o.k.l.g.VectorClockAspect - VectorClock - 8 - 1305635759484
+o.k.l.g.VectorClockAspect - paraisseux2-2-1305635759198
+o.k.l.g.VectorClockAspect - duke3-2-1305635775927
+o.k.l.g.VectorClockAspect - duke2-2-1305635759198
+o.k.l.g.VectorClockAspect - paraisseux3-2-1305635758924
+o.k.l.g.VectorClockAspect - duke0-2-1305635758924
+o.k.l.g.VectorClockAspect - duke1-2-1305635758879
+o.k.l.g.VectorClockAspect - paraisseux0-2-1305635758924
+o.k.l.g.VectorClockAspect - paraisseux1-2-1305635758924
+o.k.l.g.VectorClockAspect - -- end vector clock --
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock
+o.k.l.g.AskForDataTCPActor - warn TCP error 
+com.twitter.finagle.TimedoutRequestException: null
+	at com.twitter.finagle.service.TimeoutFilter$$anonfun$apply$1.apply(TimeoutFilter.scala:20) ~[3.2.4:na]
+	at com.twitter.finagle.service.TimeoutFilter$$anonfun$apply$1.apply(TimeoutFilter.scala:20) ~[3.2.4:na]
+	at com.twitter.finagle.util.RichFuture$$anonfun$1.apply$mcV$sp(RichFuture.scala:11) [3.2.4:na]
+	at com.twitter.finagle.util.Timer$$anon$3.run(Timer.scala:68) [3.2.4:na]
+	at org.jboss.netty.util.HashedWheelTimer$HashedWheelTimeout.expire(HashedWheelTimer.java:519) [3.2.4:na]
+	at org.jboss.netty.util.HashedWheelTimer$Worker.notifyExpiredTimeouts(HashedWheelTimer.java:440) [3.2.4:na]
+	at org.jboss.netty.util.HashedWheelTimer$Worker.run(HashedWheelTimer.java:379) [3.2.4:na]
+	at org.jboss.netty.util.ThreadRenamingRunnable.run(ThreadRenamingRunnable.java:108) [3.2.4:na]
+	at java.lang.Thread.run(Thread.java:680) [na:1.6.0_24]
+o.k.l.g.AskForDataTCPActor - TCP sending ... :-)
+o.k.l.g.group.DataManagerForGroup - getData
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock end
+o.k.l.g.GossiperRequestSender - VectorClocks comparison into GossiperRequestSender give us: BEFORE
+o.k.l.g.AskForDataTCPActor - client build ! 
+o.k.l.g.group.DataManagerForGroup - getData end
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock
+o.k.l.g.AskForDataTCPActor - TCP sending ... :-)
+o.k.l.g.AskForDataTCPActor - error in ack For data
+java.lang.NullPointerException: null
+	at org.kevoree.library.gossiperNetty.group.NettyGossiperGroup.getAddress(NettyGossiperGroup.java:104) ~[1.1.0-RC2:na]
+	at org.kevoree.library.gossiperNetty.AskForDataTCPActor.askForData(AskForDataTCPActor.scala:85) ~[1.1.0-RC2:na]
+	at org.kevoree.library.gossiperNetty.AskForDataTCPActor$$anonfun$act$1$$anonfun$apply$1.apply(AskForDataTCPActor.scala:66) [1.1.0-RC2:na]
+	at org.kevoree.library.gossiperNetty.AskForDataTCPActor$$anonfun$act$1$$anonfun$apply$1.apply(AskForDataTCPActor.scala:60) [1.1.0-RC2:na]
+	at scala.actors.ReactorTask.run(ReactorTask.scala:34) [org.kevoree.platform.osgi.standalone-1.1.0-RC2.jar:na]
+	at scala.actors.ReactorTask.compute(ReactorTask.scala:66) [org.kevoree.platform.osgi.standalone-1.1.0-RC2.jar:na]
+	at scala.concurrent.forkjoin.RecursiveAction.exec(RecursiveAction.java:147) [org.kevoree.platform.osgi.standalone-1.1.0-RC2.jar:na]
+	at scala.concurrent.forkjoin.ForkJoinTask.quietlyExec(ForkJoinTask.java:422) [org.kevoree.platform.osgi.standalone-1.1.0-RC2.jar:na]
+	at scala.concurrent.forkjoin.ForkJoinWorkerThread.mainLoop(ForkJoinWorkerThread.java:340) [org.kevoree.platform.osgi.standalone-1.1.0-RC2.jar:na]
+	at scala.concurrent.forkjoin.ForkJoinWorkerThread.run(ForkJoinWorkerThread.java:325) [org.kevoree.platform.osgi.standalone-1.1.0-RC2.jar:na]
+o.k.l.g.AskForDataTCPActor - TCP sending ... :-)
+o.k.l.g.AskForDataTCPActor - error in ack For data
+java.lang.NullPointerException: null
+	at org.kevoree.library.gossiperNetty.group.NettyGossiperGroup.getAddress(NettyGossiperGroup.java:104) ~[1.1.0-RC2:na]
+	at org.kevoree.library.gossiperNetty.AskForDataTCPActor.askForData(AskForDataTCPActor.scala:85) ~[1.1.0-RC2:na]
+	at org.kevoree.library.gossiperNetty.AskForDataTCPActor$$anonfun$act$1$$anonfun$apply$1.apply(AskForDataTCPActor.scala:66) [1.1.0-RC2:na]
+	at org.kevoree.library.gossiperNetty.AskForDataTCPActor$$anonfun$act$1$$anonfun$apply$1.apply(AskForDataTCPActor.scala:60) [1.1.0-RC2:na]
+	at scala.actors.ReactorTask.run(ReactorTask.scala:34) [org.kevoree.platform.osgi.standalone-1.1.0-RC2.jar:na]
+	at scala.actors.ReactorTask.compute(ReactorTask.scala:66) [org.kevoree.platform.osgi.standalone-1.1.0-RC2.jar:na]
+	at scala.concurrent.forkjoin.RecursiveAction.exec(RecursiveAction.java:147) [org.kevoree.platform.osgi.standalone-1.1.0-RC2.jar:na]
+	at scala.concurrent.forkjoin.ForkJoinTask.quietlyExec(ForkJoinTask.java:422) [org.kevoree.platform.osgi.standalone-1.1.0-RC2.jar:na]
+	at scala.concurrent.forkjoin.ForkJoinWorkerThread.mainLoop(ForkJoinWorkerThread.java:340) [org.kevoree.platform.osgi.standalone-1.1.0-RC2.jar:na]
+	at scala.concurrent.forkjoin.ForkJoinWorkerThread.run(ForkJoinWorkerThread.java:325) [org.kevoree.platform.osgi.standalone-1.1.0-RC2.jar:na]
+o.k.l.g.AskForDataTCPActor - TCP sending ... :-)
+o.k.l.g.AskForDataTCPActor - error in ack For data
+java.lang.NullPointerException: null
+	at org.kevoree.library.gossiperNetty.group.NettyGossiperGroup.getAddress(NettyGossiperGroup.java:104) ~[1.1.0-RC2:na]
+	at org.kevoree.library.gossiperNetty.AskForDataTCPActor.askForData(AskForDataTCPActor.scala:85) ~[1.1.0-RC2:na]
+	at org.kevoree.library.gossiperNetty.AskForDataTCPActor$$anonfun$act$1$$anonfun$apply$1.apply(AskForDataTCPActor.scala:66) [1.1.0-RC2:na]
+	at org.kevoree.library.gossiperNetty.AskForDataTCPActor$$anonfun$act$1$$anonfun$apply$1.apply(AskForDataTCPActor.scala:60) [1.1.0-RC2:na]
+	at scala.actors.ReactorTask.run(ReactorTask.scala:34) [org.kevoree.platform.osgi.standalone-1.1.0-RC2.jar:na]
+	at scala.actors.ReactorTask.compute(ReactorTask.scala:66) [org.kevoree.platform.osgi.standalone-1.1.0-RC2.jar:na]
+	at scala.concurrent.forkjoin.RecursiveAction.exec(RecursiveAction.java:147) [org.kevoree.platform.osgi.standalone-1.1.0-RC2.jar:na]
+	at scala.concurrent.forkjoin.ForkJoinTask.quietlyExec(ForkJoinTask.java:422) [org.kevoree.platform.osgi.standalone-1.1.0-RC2.jar:na]
+	at scala.concurrent.forkjoin.ForkJoinWorkerThread.mainLoop(ForkJoinWorkerThread.java:340) [org.kevoree.platform.osgi.standalone-1.1.0-RC2.jar:na]
+	at scala.concurrent.forkjoin.ForkJoinWorkerThread.run(ForkJoinWorkerThread.java:325) [org.kevoree.platform.osgi.standalone-1.1.0-RC2.jar:na]
+o.k.l.g.AskForDataTCPActor - TCP sending ... :-)
+o.k.l.g.AskForDataTCPActor - error in ack For data
+java.lang.NullPointerException: null
+	at org.kevoree.library.gossiperNetty.group.NettyGossiperGroup.getAddress(NettyGossiperGroup.java:104) ~[1.1.0-RC2:na]
+	at org.kevoree.library.gossiperNetty.AskForDataTCPActor.askForData(AskForDataTCPActor.scala:85) ~[1.1.0-RC2:na]
+	at org.kevoree.library.gossiperNetty.AskForDataTCPActor$$anonfun$act$1$$anonfun$apply$1.apply(AskForDataTCPActor.scala:66) [1.1.0-RC2:na]
+	at org.kevoree.library.gossiperNetty.AskForDataTCPActor$$anonfun$act$1$$anonfun$apply$1.apply(AskForDataTCPActor.scala:60) [1.1.0-RC2:na]
+	at scala.actors.ReactorTask.run(ReactorTask.scala:34) [org.kevoree.platform.osgi.standalone-1.1.0-RC2.jar:na]
+	at scala.actors.ReactorTask.compute(ReactorTask.scala:66) [org.kevoree.platform.osgi.standalone-1.1.0-RC2.jar:na]
+	at scala.concurrent.forkjoin.RecursiveAction.exec(RecursiveAction.java:147) [org.kevoree.platform.osgi.standalone-1.1.0-RC2.jar:na]
+	at scala.concurrent.forkjoin.ForkJoinTask.quietlyExec(ForkJoinTask.java:422) [org.kevoree.platform.osgi.standalone-1.1.0-RC2.jar:na]
+	at scala.concurrent.forkjoin.ForkJoinWorkerThread.mainLoop(ForkJoinWorkerThread.java:340) [org.kevoree.platform.osgi.standalone-1.1.0-RC2.jar:na]
+	at scala.concurrent.forkjoin.ForkJoinWorkerThread.run(ForkJoinWorkerThread.java:325) [org.kevoree.platform.osgi.standalone-1.1.0-RC2.jar:na]
+o.k.l.g.AskForDataTCPActor - TCP sending ... :-)
+o.k.l.g.AskForDataTCPActor - error in ack For data
+java.lang.NullPointerException: null
+	at org.kevoree.library.gossiperNetty.group.NettyGossiperGroup.getAddress(NettyGossiperGroup.java:104) ~[1.1.0-RC2:na]
+	at org.kevoree.library.gossiperNetty.AskForDataTCPActor.askForData(AskForDataTCPActor.scala:85) ~[1.1.0-RC2:na]
+	at org.kevoree.library.gossiperNetty.AskForDataTCPActor$$anonfun$act$1$$anonfun$apply$1.apply(AskForDataTCPActor.scala:66) [1.1.0-RC2:na]
+	at org.kevoree.library.gossiperNetty.AskForDataTCPActor$$anonfun$act$1$$anonfun$apply$1.apply(AskForDataTCPActor.scala:60) [1.1.0-RC2:na]
+	at scala.actors.ReactorTask.run(ReactorTask.scala:34) [org.kevoree.platform.osgi.standalone-1.1.0-RC2.jar:na]
+	at scala.actors.ReactorTask.compute(ReactorTask.scala:66) [org.kevoree.platform.osgi.standalone-1.1.0-RC2.jar:na]
+	at scala.concurrent.forkjoin.RecursiveAction.exec(RecursiveAction.java:147) [org.kevoree.platform.osgi.standalone-1.1.0-RC2.jar:na]
+	at scala.concurrent.forkjoin.ForkJoinTask.quietlyExec(ForkJoinTask.java:422) [org.kevoree.platform.osgi.standalone-1.1.0-RC2.jar:na]
+	at scala.concurrent.forkjoin.ForkJoinWorkerThread.mainLoop(ForkJoinWorkerThread.java:340) [org.kevoree.platform.osgi.standalone-1.1.0-RC2.jar:na]
+	at scala.concurrent.forkjoin.ForkJoinWorkerThread.run(ForkJoinWorkerThread.java:325) [org.kevoree.platform.osgi.standalone-1.1.0-RC2.jar:na]
+o.k.l.g.AskForDataTCPActor - TCP sending ... :-)
+o.k.l.g.AskForDataTCPActor - error in ack For data
+java.lang.NullPointerException: null
+	at org.kevoree.library.gossiperNetty.group.NettyGossiperGroup.getAddress(NettyGossiperGroup.java:104) ~[1.1.0-RC2:na]
+	at org.kevoree.library.gossiperNetty.AskForDataTCPActor.askForData(AskForDataTCPActor.scala:85) ~[1.1.0-RC2:na]
+	at org.kevoree.library.gossiperNetty.AskForDataTCPActor$$anonfun$act$1$$anonfun$apply$1.apply(AskForDataTCPActor.scala:66) [1.1.0-RC2:na]
+	at org.kevoree.library.gossiperNetty.AskForDataTCPActor$$anonfun$act$1$$anonfun$apply$1.apply(AskForDataTCPActor.scala:60) [1.1.0-RC2:na]
+	at scala.actors.ReactorTask.run(ReactorTask.scala:34) [org.kevoree.platform.osgi.standalone-1.1.0-RC2.jar:na]
+	at scala.actors.ReactorTask.compute(ReactorTask.scala:66) [org.kevoree.platform.osgi.standalone-1.1.0-RC2.jar:na]
+	at scala.concurrent.forkjoin.RecursiveAction.exec(RecursiveAction.java:147) [org.kevoree.platform.osgi.standalone-1.1.0-RC2.jar:na]
+	at scala.concurrent.forkjoin.ForkJoinTask.quietlyExec(ForkJoinTask.java:422) [org.kevoree.platform.osgi.standalone-1.1.0-RC2.jar:na]
+	at scala.concurrent.forkjoin.ForkJoinWorkerThread.mainLoop(ForkJoinWorkerThread.java:340) [org.kevoree.platform.osgi.standalone-1.1.0-RC2.jar:na]
+	at scala.concurrent.forkjoin.ForkJoinWorkerThread.run(ForkJoinWorkerThread.java:325) [org.kevoree.platform.osgi.standalone-1.1.0-RC2.jar:na]
+o.k.l.g.AskForDataTCPActor - TCP sending ... :-)
+o.k.l.g.AskForDataTCPActor - error in ack For data
+java.lang.NullPointerException: null
+	at org.kevoree.library.gossiperNetty.group.NettyGossiperGroup.getAddress(NettyGossiperGroup.java:104) ~[1.1.0-RC2:na]
+	at org.kevoree.library.gossiperNetty.AskForDataTCPActor.askForData(AskForDataTCPActor.scala:85) ~[1.1.0-RC2:na]
+	at org.kevoree.library.gossiperNetty.AskForDataTCPActor$$anonfun$act$1$$anonfun$apply$1.apply(AskForDataTCPActor.scala:66) [1.1.0-RC2:na]
+	at org.kevoree.library.gossiperNetty.AskForDataTCPActor$$anonfun$act$1$$anonfun$apply$1.apply(AskForDataTCPActor.scala:60) [1.1.0-RC2:na]
+	at scala.actors.ReactorTask.run(ReactorTask.scala:34) [org.kevoree.platform.osgi.standalone-1.1.0-RC2.jar:na]
+	at scala.actors.ReactorTask.compute(ReactorTask.scala:66) [org.kevoree.platform.osgi.standalone-1.1.0-RC2.jar:na]
+	at scala.concurrent.forkjoin.RecursiveAction.exec(RecursiveAction.java:147) [org.kevoree.platform.osgi.standalone-1.1.0-RC2.jar:na]
+	at scala.concurrent.forkjoin.ForkJoinTask.quietlyExec(ForkJoinTask.java:422) [org.kevoree.platform.osgi.standalone-1.1.0-RC2.jar:na]
+	at scala.concurrent.forkjoin.ForkJoinWorkerThread.mainLoop(ForkJoinWorkerThread.java:340) [org.kevoree.platform.osgi.standalone-1.1.0-RC2.jar:na]
+	at scala.concurrent.forkjoin.ForkJoinWorkerThread.run(ForkJoinWorkerThread.java:325) [org.kevoree.platform.osgi.standalone-1.1.0-RC2.jar:na]
+o.k.l.g.AskForDataTCPActor - TCP sending ... :-)
+o.k.l.g.AskForDataTCPActor - error in ack For data
+java.lang.NullPointerException: null
+	at org.kevoree.library.gossiperNetty.group.NettyGossiperGroup.getAddress(NettyGossiperGroup.java:104) ~[1.1.0-RC2:na]
+	at org.kevoree.library.gossiperNetty.AskForDataTCPActor.askForData(AskForDataTCPActor.scala:85) ~[1.1.0-RC2:na]
+	at org.kevoree.library.gossiperNetty.AskForDataTCPActor$$anonfun$act$1$$anonfun$apply$1.apply(AskForDataTCPActor.scala:66) [1.1.0-RC2:na]
+	at org.kevoree.library.gossiperNetty.AskForDataTCPActor$$anonfun$act$1$$anonfun$apply$1.apply(AskForDataTCPActor.scala:60) [1.1.0-RC2:na]
+	at scala.actors.ReactorTask.run(ReactorTask.scala:34) [org.kevoree.platform.osgi.standalone-1.1.0-RC2.jar:na]
+	at scala.actors.ReactorTask.compute(ReactorTask.scala:66) [org.kevoree.platform.osgi.standalone-1.1.0-RC2.jar:na]
+	at scala.concurrent.forkjoin.RecursiveAction.exec(RecursiveAction.java:147) [org.kevoree.platform.osgi.standalone-1.1.0-RC2.jar:na]
+	at scala.concurrent.forkjoin.ForkJoinTask.quietlyExec(ForkJoinTask.java:422) [org.kevoree.platform.osgi.standalone-1.1.0-RC2.jar:na]
+	at scala.concurrent.forkjoin.ForkJoinWorkerThread.mainLoop(ForkJoinWorkerThread.java:340) [org.kevoree.platform.osgi.standalone-1.1.0-RC2.jar:na]
+	at scala.concurrent.forkjoin.ForkJoinWorkerThread.run(ForkJoinWorkerThread.java:325) [org.kevoree.platform.osgi.standalone-1.1.0-RC2.jar:na]
+o.k.l.g.AskForDataTCPActor - TCP sending ... :-)
+o.k.l.g.AskForDataTCPActor - error in ack For data
+java.lang.NullPointerException: null
+	at org.kevoree.library.gossiperNetty.group.NettyGossiperGroup.getAddress(NettyGossiperGroup.java:104) ~[1.1.0-RC2:na]
+	at org.kevoree.library.gossiperNetty.AskForDataTCPActor.askForData(AskForDataTCPActor.scala:85) ~[1.1.0-RC2:na]
+	at org.kevoree.library.gossiperNetty.AskForDataTCPActor$$anonfun$act$1$$anonfun$apply$1.apply(AskForDataTCPActor.scala:66) [1.1.0-RC2:na]
+	at org.kevoree.library.gossiperNetty.AskForDataTCPActor$$anonfun$act$1$$anonfun$apply$1.apply(AskForDataTCPActor.scala:60) [1.1.0-RC2:na]
+	at scala.actors.ReactorTask.run(ReactorTask.scala:34) [org.kevoree.platform.osgi.standalone-1.1.0-RC2.jar:na]
+	at scala.actors.ReactorTask.compute(ReactorTask.scala:66) [org.kevoree.platform.osgi.standalone-1.1.0-RC2.jar:na]
+	at scala.concurrent.forkjoin.RecursiveAction.exec(RecursiveAction.java:147) [org.kevoree.platform.osgi.standalone-1.1.0-RC2.jar:na]
+	at scala.concurrent.forkjoin.ForkJoinTask.quietlyExec(ForkJoinTask.java:422) [org.kevoree.platform.osgi.standalone-1.1.0-RC2.jar:na]
+	at scala.concurrent.forkjoin.ForkJoinWorkerThread.mainLoop(ForkJoinWorkerThread.java:340) [org.kevoree.platform.osgi.standalone-1.1.0-RC2.jar:na]
+	at scala.concurrent.forkjoin.ForkJoinWorkerThread.run(ForkJoinWorkerThread.java:325) [org.kevoree.platform.osgi.standalone-1.1.0-RC2.jar:na]
+o.k.l.g.AskForDataTCPActor - TCP sending ... :-)
+o.k.l.g.AskForDataTCPActor - error in ack For data
+java.lang.NullPointerException: null
+	at org.kevoree.library.gossiperNetty.group.NettyGossiperGroup.getAddress(NettyGossiperGroup.java:104) ~[1.1.0-RC2:na]
+	at org.kevoree.library.gossiperNetty.AskForDataTCPActor.askForData(AskForDataTCPActor.scala:85) ~[1.1.0-RC2:na]
+	at org.kevoree.library.gossiperNetty.AskForDataTCPActor$$anonfun$act$1$$anonfun$apply$1.apply(AskForDataTCPActor.scala:66) [1.1.0-RC2:na]
+	at org.kevoree.library.gossiperNetty.AskForDataTCPActor$$anonfun$act$1$$anonfun$apply$1.apply(AskForDataTCPActor.scala:60) [1.1.0-RC2:na]
+	at scala.actors.ReactorTask.run(ReactorTask.scala:34) [org.kevoree.platform.osgi.standalone-1.1.0-RC2.jar:na]
+	at scala.actors.ReactorTask.compute(ReactorTask.scala:66) [org.kevoree.platform.osgi.standalone-1.1.0-RC2.jar:na]
+	at scala.concurrent.forkjoin.RecursiveAction.exec(RecursiveAction.java:147) [org.kevoree.platform.osgi.standalone-1.1.0-RC2.jar:na]
+	at scala.concurrent.forkjoin.ForkJoinTask.quietlyExec(ForkJoinTask.java:422) [org.kevoree.platform.osgi.standalone-1.1.0-RC2.jar:na]
+	at scala.concurrent.forkjoin.ForkJoinWorkerThread.mainLoop(ForkJoinWorkerThread.java:340) [org.kevoree.platform.osgi.standalone-1.1.0-RC2.jar:na]
+	at scala.concurrent.forkjoin.ForkJoinWorkerThread.run(ForkJoinWorkerThread.java:325) [org.kevoree.platform.osgi.standalone-1.1.0-RC2.jar:na]
+o.k.l.g.AskForDataTCPActor - TCP sending ... :-)
+o.k.l.g.AskForDataTCPActor - error in ack For data
+java.lang.NullPointerException: null
+	at org.kevoree.library.gossiperNetty.group.NettyGossiperGroup.getAddress(NettyGossiperGroup.java:104) ~[1.1.0-RC2:na]
+	at org.kevoree.library.gossiperNetty.AskForDataTCPActor.askForData(AskForDataTCPActor.scala:85) ~[1.1.0-RC2:na]
+	at org.kevoree.library.gossiperNetty.AskForDataTCPActor$$anonfun$act$1$$anonfun$apply$1.apply(AskForDataTCPActor.scala:66) [1.1.0-RC2:na]
+	at org.kevoree.library.gossiperNetty.AskForDataTCPActor$$anonfun$act$1$$anonfun$apply$1.apply(AskForDataTCPActor.scala:60) [1.1.0-RC2:na]
+	at scala.actors.ReactorTask.run(ReactorTask.scala:34) [org.kevoree.platform.osgi.standalone-1.1.0-RC2.jar:na]
+	at scala.actors.ReactorTask.compute(ReactorTask.scala:66) [org.kevoree.platform.osgi.standalone-1.1.0-RC2.jar:na]
+	at scala.concurrent.forkjoin.RecursiveAction.exec(RecursiveAction.java:147) [org.kevoree.platform.osgi.standalone-1.1.0-RC2.jar:na]
+	at scala.concurrent.forkjoin.ForkJoinTask.quietlyExec(ForkJoinTask.java:422) [org.kevoree.platform.osgi.standalone-1.1.0-RC2.jar:na]
+	at scala.concurrent.forkjoin.ForkJoinWorkerThread.mainLoop(ForkJoinWorkerThread.java:340) [org.kevoree.platform.osgi.standalone-1.1.0-RC2.jar:na]
+	at scala.concurrent.forkjoin.ForkJoinWorkerThread.run(ForkJoinWorkerThread.java:325) [org.kevoree.platform.osgi.standalone-1.1.0-RC2.jar:na]
+o.k.l.g.AskForDataTCPActor - TCP sending ... :-)
+o.k.l.g.AskForDataTCPActor - error in ack For data
+java.lang.NullPointerException: null
+	at org.kevoree.library.gossiperNetty.group.NettyGossiperGroup.getAddress(NettyGossiperGroup.java:104) ~[1.1.0-RC2:na]
+	at org.kevoree.library.gossiperNetty.AskForDataTCPActor.askForData(AskForDataTCPActor.scala:85) ~[1.1.0-RC2:na]
+	at org.kevoree.library.gossiperNetty.AskForDataTCPActor$$anonfun$act$1$$anonfun$apply$1.apply(AskForDataTCPActor.scala:66) [1.1.0-RC2:na]
+	at org.kevoree.library.gossiperNetty.AskForDataTCPActor$$anonfun$act$1$$anonfun$apply$1.apply(AskForDataTCPActor.scala:60) [1.1.0-RC2:na]
+	at scala.actors.ReactorTask.run(ReactorTask.scala:34) [org.kevoree.platform.osgi.standalone-1.1.0-RC2.jar:na]
+	at scala.actors.ReactorTask.compute(ReactorTask.scala:66) [org.kevoree.platform.osgi.standalone-1.1.0-RC2.jar:na]
+	at scala.concurrent.forkjoin.RecursiveAction.exec(RecursiveAction.java:147) [org.kevoree.platform.osgi.standalone-1.1.0-RC2.jar:na]
+	at scala.concurrent.forkjoin.ForkJoinTask.quietlyExec(ForkJoinTask.java:422) [org.kevoree.platform.osgi.standalone-1.1.0-RC2.jar:na]
+	at scala.concurrent.forkjoin.ForkJoinWorkerThread.mainLoop(ForkJoinWorkerThread.java:340) [org.kevoree.platform.osgi.standalone-1.1.0-RC2.jar:na]
+	at scala.concurrent.forkjoin.ForkJoinWorkerThread.run(ForkJoinWorkerThread.java:325) [org.kevoree.platform.osgi.standalone-1.1.0-RC2.jar:na]
+o.k.l.g.AskForDataTCPActor - TCP sending ... :-)
+o.k.l.g.AskForDataTCPActor - error in ack For data
+java.lang.NullPointerException: null
+	at org.kevoree.library.gossiperNetty.group.NettyGossiperGroup.getAddress(NettyGossiperGroup.java:104) ~[1.1.0-RC2:na]
+	at org.kevoree.library.gossiperNetty.AskForDataTCPActor.askForData(AskForDataTCPActor.scala:85) ~[1.1.0-RC2:na]
+	at org.kevoree.library.gossiperNetty.AskForDataTCPActor$$anonfun$act$1$$anonfun$apply$1.apply(AskForDataTCPActor.scala:66) [1.1.0-RC2:na]
+	at org.kevoree.library.gossiperNetty.AskForDataTCPActor$$anonfun$act$1$$anonfun$apply$1.apply(AskForDataTCPActor.scala:60) [1.1.0-RC2:na]
+	at scala.actors.ReactorTask.run(ReactorTask.scala:34) [org.kevoree.platform.osgi.standalone-1.1.0-RC2.jar:na]
+	at scala.actors.ReactorTask.compute(ReactorTask.scala:66) [org.kevoree.platform.osgi.standalone-1.1.0-RC2.jar:na]
+	at scala.concurrent.forkjoin.RecursiveAction.exec(RecursiveAction.java:147) [org.kevoree.platform.osgi.standalone-1.1.0-RC2.jar:na]
+	at scala.concurrent.forkjoin.ForkJoinTask.quietlyExec(ForkJoinTask.java:422) [org.kevoree.platform.osgi.standalone-1.1.0-RC2.jar:na]
+	at scala.concurrent.forkjoin.ForkJoinWorkerThread.mainLoop(ForkJoinWorkerThread.java:340) [org.kevoree.platform.osgi.standalone-1.1.0-RC2.jar:na]
+	at scala.concurrent.forkjoin.ForkJoinWorkerThread.run(ForkJoinWorkerThread.java:325) [org.kevoree.platform.osgi.standalone-1.1.0-RC2.jar:na]
+o.k.l.g.AskForDataTCPActor - TCP sending ... :-)
+o.k.l.g.AskForDataTCPActor - error in ack For data
+java.lang.NullPointerException: null
+	at org.kevoree.library.gossiperNetty.group.NettyGossiperGroup.getAddress(NettyGossiperGroup.java:104) ~[1.1.0-RC2:na]
+	at org.kevoree.library.gossiperNetty.AskForDataTCPActor.askForData(AskForDataTCPActor.scala:85) ~[1.1.0-RC2:na]
+	at org.kevoree.library.gossiperNetty.AskForDataTCPActor$$anonfun$act$1$$anonfun$apply$1.apply(AskForDataTCPActor.scala:66) [1.1.0-RC2:na]
+	at org.kevoree.library.gossiperNetty.AskForDataTCPActor$$anonfun$act$1$$anonfun$apply$1.apply(AskForDataTCPActor.scala:60) [1.1.0-RC2:na]
+	at scala.actors.ReactorTask.run(ReactorTask.scala:34) [org.kevoree.platform.osgi.standalone-1.1.0-RC2.jar:na]
+	at scala.actors.ReactorTask.compute(ReactorTask.scala:66) [org.kevoree.platform.osgi.standalone-1.1.0-RC2.jar:na]
+	at scala.concurrent.forkjoin.RecursiveAction.exec(RecursiveAction.java:147) [org.kevoree.platform.osgi.standalone-1.1.0-RC2.jar:na]
+	at scala.concurrent.forkjoin.ForkJoinTask.quietlyExec(ForkJoinTask.java:422) [org.kevoree.platform.osgi.standalone-1.1.0-RC2.jar:na]
+	at scala.concurrent.forkjoin.ForkJoinWorkerThread.mainLoop(ForkJoinWorkerThread.java:340) [org.kevoree.platform.osgi.standalone-1.1.0-RC2.jar:na]
+	at scala.concurrent.forkjoin.ForkJoinWorkerThread.run(ForkJoinWorkerThread.java:325) [org.kevoree.platform.osgi.standalone-1.1.0-RC2.jar:na]
+o.kevoree.core.impl.KevoreeCoreBean - Start event : node name = duke0
+o.kevoree.core.impl.KevoreeCoreBean - Try to bootstrap platform
+o.kevoree.core.impl.KevoreeCoreBean - Begin update model 1305636026725
+o.k.kompare.KevoreeKompareBean - INIT NODE v2 duke0
+o.k.a.d.o.KevoreeAdaptationDeployServiceOSGi - Plannification time = 1 ms
+o.k.a.d.o.KevoreeAdaptationDeployServiceOSGi - stop command
+o.k.a.d.o.KevoreeAdaptationDeployServiceOSGi - start
+o.k.a.d.o.KevoreeAdaptationDeployServiceOSGi - gossipGroup
+o.k.a.d.osgi.KevoreeDeployPhase - Phase 0 STOP COMPONENT=0
+o.k.a.d.osgi.KevoreeDeployPhase - Result : true
+o.k.a.d.osgi.KevoreeDeployPhase - Phase 1 Remove Binding=0
+o.k.a.d.osgi.KevoreeDeployPhase - Result : true
+o.k.a.d.osgi.KevoreeDeployPhase - Phase 2 Remove Instance=0
+o.k.a.d.osgi.KevoreeDeployPhase - Result : true
+o.k.a.d.osgi.KevoreeDeployPhase - Phase 3 Remove ComponentType=0
+o.k.a.d.osgi.KevoreeDeployPhase - Result : true
+o.k.a.d.osgi.KevoreeDeployPhase - Phase 4 Remove TypeDefinition DeployUnit=0
+o.k.a.d.osgi.KevoreeDeployPhase - Result : true
+o.k.a.d.osgi.KevoreeDeployPhase - Phase 5 ThirdParty=3
+o.k.a.d.osgi.KevoreeDeployPhase - Execute command org.kevoree.adaptation.deploy.osgi.command.AddThirdPartyCommand
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:org.kevoree.extra/org.kevoree.extra.protobuf/2.3.0
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://maven.kevoree.org/libs-release-local!org.kevoree.extra/org.kevoree.extra.protobuf/2.3.0
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://maven.kevoree.org/libs-snapshot-local!org.kevoree.extra/org.kevoree.extra.protobuf/2.3.0
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://www.kermeta.org/maven2!org.kevoree.extra/org.kevoree.extra.protobuf/2.3.0
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://www.kermeta.org/maven2-snapshots!org.kevoree.extra/org.kevoree.extra.protobuf/2.3.0
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://scala-tools.org/repo-releases!org.kevoree.extra/org.kevoree.extra.protobuf/2.3.0
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:https://repository.jboss.org/nexus/content/repositories/releases/!org.kevoree.extra/org.kevoree.extra.protobuf/2.3.0
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://akka.io/repository/!org.kevoree.extra/org.kevoree.extra.protobuf/2.3.0
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://maven.ow2.org/maven2/!org.kevoree.extra/org.kevoree.extra.protobuf/2.3.0
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://repository.ops4j.org/mvn-3rdparty!org.kevoree.extra/org.kevoree.extra.protobuf/2.3.0
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://repo1.maven.org/maven2!org.kevoree.extra/org.kevoree.extra.protobuf/2.3.0
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://131.254.15.214:8000/provisioning/!org.kevoree.extra/org.kevoree.extra.protobuf/2.3.0
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://131.254.15.214:8001/provisioning/!org.kevoree.extra/org.kevoree.extra.protobuf/2.3.0
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://131.254.15.214:8002/provisioning/!org.kevoree.extra/org.kevoree.extra.protobuf/2.3.0
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://131.254.15.214:8003/provisioning/!org.kevoree.extra/org.kevoree.extra.protobuf/2.3.0
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://131.254.12.28:8000/provisioning/!org.kevoree.extra/org.kevoree.extra.protobuf/2.3.0
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://131.254.12.28:8001/provisioning/!org.kevoree.extra/org.kevoree.extra.protobuf/2.3.0
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://131.254.12.28:8002/provisioning/!org.kevoree.extra/org.kevoree.extra.protobuf/2.3.0
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://131.254.12.28:8003/provisioning/!org.kevoree.extra/org.kevoree.extra.protobuf/2.3.0
+o.k.a.d.o.c.AddThirdPartyCommand - CMD ADD ThirdParty EXECUTION => url=mvn:org.kevoree.extra/org.kevoree.extra.protobuf/2.3.0
+o.k.a.d.osgi.KevoreeDeployPhase - Execute command org.kevoree.adaptation.deploy.osgi.command.AddThirdPartyCommand
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:org.kevoree.extra/org.kevoree.extra.netty/3.2.4.Final
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://maven.kevoree.org/libs-release-local!org.kevoree.extra/org.kevoree.extra.netty/3.2.4.Final
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://maven.kevoree.org/libs-snapshot-local!org.kevoree.extra/org.kevoree.extra.netty/3.2.4.Final
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://www.kermeta.org/maven2!org.kevoree.extra/org.kevoree.extra.netty/3.2.4.Final
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://www.kermeta.org/maven2-snapshots!org.kevoree.extra/org.kevoree.extra.netty/3.2.4.Final
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://scala-tools.org/repo-releases!org.kevoree.extra/org.kevoree.extra.netty/3.2.4.Final
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:https://repository.jboss.org/nexus/content/repositories/releases/!org.kevoree.extra/org.kevoree.extra.netty/3.2.4.Final
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://akka.io/repository/!org.kevoree.extra/org.kevoree.extra.netty/3.2.4.Final
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://maven.ow2.org/maven2/!org.kevoree.extra/org.kevoree.extra.netty/3.2.4.Final
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://repository.ops4j.org/mvn-3rdparty!org.kevoree.extra/org.kevoree.extra.netty/3.2.4.Final
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://repo1.maven.org/maven2!org.kevoree.extra/org.kevoree.extra.netty/3.2.4.Final
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://131.254.15.214:8000/provisioning/!org.kevoree.extra/org.kevoree.extra.netty/3.2.4.Final
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://131.254.15.214:8001/provisioning/!org.kevoree.extra/org.kevoree.extra.netty/3.2.4.Final
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://131.254.15.214:8002/provisioning/!org.kevoree.extra/org.kevoree.extra.netty/3.2.4.Final
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://131.254.15.214:8003/provisioning/!org.kevoree.extra/org.kevoree.extra.netty/3.2.4.Final
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://131.254.12.28:8000/provisioning/!org.kevoree.extra/org.kevoree.extra.netty/3.2.4.Final
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://131.254.12.28:8001/provisioning/!org.kevoree.extra/org.kevoree.extra.netty/3.2.4.Final
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://131.254.12.28:8002/provisioning/!org.kevoree.extra/org.kevoree.extra.netty/3.2.4.Final
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://131.254.12.28:8003/provisioning/!org.kevoree.extra/org.kevoree.extra.netty/3.2.4.Final
+o.k.a.d.o.c.AddThirdPartyCommand - CMD ADD ThirdParty EXECUTION => url=mvn:org.kevoree.extra/org.kevoree.extra.netty/3.2.4.Final
+o.k.a.d.o.c.AddThirdPartyCommand - Install error => 
+org.osgi.framework.BundleException: Unable to cache bundle: mvn:org.kevoree.extra/org.kevoree.extra.netty/3.2.4.Final
+	at org.apache.felix.framework.Felix.installBundle(Felix.java:2493) ~[org.kevoree.platform.osgi.standalone-1.1.0-RC2.jar:na]
+	at org.apache.felix.framework.Felix.installBundle(Felix.java:2449) ~[org.kevoree.platform.osgi.standalone-1.1.0-RC2.jar:na]
+	at org.apache.felix.framework.BundleContextImpl.installBundle(BundleContextImpl.java:150) ~[org.kevoree.platform.osgi.standalone-1.1.0-RC2.jar:na]
+	at org.apache.felix.framework.BundleContextImpl.installBundle(BundleContextImpl.java:123) ~[org.kevoree.platform.osgi.standalone-1.1.0-RC2.jar:na]
+	at org.kevoree.adaptation.deploy.osgi.command.AddThirdPartyCommand.installBundle(AddThirdPartyCommand.scala:58) [org.kevoree.platform.osgi.standalone-1.1.0-RC2.jar:na]
+	at org.kevoree.adaptation.deploy.osgi.command.AddThirdPartyCommand$$anonfun$execute$3.apply(AddThirdPartyCommand.scala:50) [org.kevoree.platform.osgi.standalone-1.1.0-RC2.jar:na]
+	at org.kevoree.adaptation.deploy.osgi.command.AddThirdPartyCommand$$anonfun$execute$3.apply(AddThirdPartyCommand.scala:49) [org.kevoree.platform.osgi.standalone-1.1.0-RC2.jar:na]
+	at scala.collection.LinearSeqOptimized$class.exists(LinearSeqOptimized.scala:81) [org.kevoree.platform.osgi.standalone-1.1.0-RC2.jar:na]
+	at scala.collection.immutable.List.exists(List.scala:45) [org.kevoree.platform.osgi.standalone-1.1.0-RC2.jar:na]
+	at org.kevoree.adaptation.deploy.osgi.command.AddThirdPartyCommand.execute(AddThirdPartyCommand.scala:48) [org.kevoree.platform.osgi.standalone-1.1.0-RC2.jar:na]
+	at org.kevoree.adaptation.deploy.osgi.KevoreeDeployPhase$$anonfun$1.apply(KevoreeDeployPhase.scala:48) [org.kevoree.platform.osgi.standalone-1.1.0-RC2.jar:na]
+	at org.kevoree.adaptation.deploy.osgi.KevoreeDeployPhase$$anonfun$1.apply(KevoreeDeployPhase.scala:46) [org.kevoree.platform.osgi.standalone-1.1.0-RC2.jar:na]
+	at scala.collection.LinearSeqOptimized$class.forall(LinearSeqOptimized.scala:71) [org.kevoree.platform.osgi.standalone-1.1.0-RC2.jar:na]
+	at scala.collection.immutable.List.forall(List.scala:45) [org.kevoree.platform.osgi.standalone-1.1.0-RC2.jar:na]
+	at org.kevoree.adaptation.deploy.osgi.KevoreeDeployPhase.phase(KevoreeDeployPhase.scala:46) [org.kevoree.platform.osgi.standalone-1.1.0-RC2.jar:na]
+	at org.kevoree.adaptation.deploy.osgi.KevoreeAdaptationDeployServiceOSGi.execute(KevoreeAdaptationDeployServiceOSGi.scala:408) [org.kevoree.platform.osgi.standalone-1.1.0-RC2.jar:na]
+	at org.kevoree.adaptation.deploy.osgi.KevoreeAdaptationDeployServiceOSGi.deploy(KevoreeAdaptationDeployServiceOSGi.scala:237) [org.kevoree.platform.osgi.standalone-1.1.0-RC2.jar:na]
+	at org.kevoree.core.impl.KevoreeCoreBean.internal_process(KevoreeCoreBean.scala:132) [org.kevoree.platform.osgi.standalone-1.1.0-RC2.jar:na]
+	at org.kevoree.framework.KevoreeActor$$anonfun$act$1$$anonfun$apply$1.apply(KevoreeActor.scala:66) [org.kevoree.platform.osgi.standalone-1.1.0-RC2.jar:na]
+	at org.kevoree.framework.KevoreeActor$$anonfun$act$1$$anonfun$apply$1.apply(KevoreeActor.scala:57) [org.kevoree.platform.osgi.standalone-1.1.0-RC2.jar:na]
+	at scala.actors.ReactorTask.run(ReactorTask.scala:34) [org.kevoree.platform.osgi.standalone-1.1.0-RC2.jar:na]
+	at scala.actors.Reactor$class.resumeReceiver(Reactor.scala:129) [org.kevoree.platform.osgi.standalone-1.1.0-RC2.jar:na]
+	at org.kevoree.core.impl.KevoreeCoreBean.scala$actors$ReplyReactor$$super$resumeReceiver(KevoreeCoreBean.scala:38) [org.kevoree.platform.osgi.standalone-1.1.0-RC2.jar:na]
+	at scala.actors.ReplyReactor$class.resumeReceiver(ReplyReactor.scala:69) [org.kevoree.platform.osgi.standalone-1.1.0-RC2.jar:na]
+	at org.kevoree.core.impl.KevoreeCoreBean.resumeReceiver(KevoreeCoreBean.scala:38) [org.kevoree.platform.osgi.standalone-1.1.0-RC2.jar:na]
+	at scala.actors.Actor$class.searchMailbox(Actor.scala:478) [org.kevoree.platform.osgi.standalone-1.1.0-RC2.jar:na]
+	at org.kevoree.core.impl.KevoreeCoreBean.searchMailbox(KevoreeCoreBean.scala:38) [org.kevoree.platform.osgi.standalone-1.1.0-RC2.jar:na]
+	at scala.actors.Reactor$$anonfun$startSearch$1$$anonfun$apply$mcV$sp$1.apply(Reactor.scala:114) [org.kevoree.platform.osgi.standalone-1.1.0-RC2.jar:na]
+	at scala.actors.Reactor$$anonfun$startSearch$1$$anonfun$apply$mcV$sp$1.apply(Reactor.scala:114) [org.kevoree.platform.osgi.standalone-1.1.0-RC2.jar:na]
+	at scala.actors.ReactorTask.run(ReactorTask.scala:36) [org.kevoree.platform.osgi.standalone-1.1.0-RC2.jar:na]
+	at scala.concurrent.forkjoin.ForkJoinPool$AdaptedRunnable.exec(ForkJoinPool.java:611) [org.kevoree.platform.osgi.standalone-1.1.0-RC2.jar:na]
+	at scala.concurrent.forkjoin.ForkJoinTask.quietlyExec(ForkJoinTask.java:422) [org.kevoree.platform.osgi.standalone-1.1.0-RC2.jar:na]
+	at scala.concurrent.forkjoin.ForkJoinWorkerThread.mainLoop(ForkJoinWorkerThread.java:340) [org.kevoree.platform.osgi.standalone-1.1.0-RC2.jar:na]
+	at scala.concurrent.forkjoin.ForkJoinWorkerThread.run(ForkJoinWorkerThread.java:325) [org.kevoree.platform.osgi.standalone-1.1.0-RC2.jar:na]
+Caused by: java.lang.RuntimeException: URL [mvn:org.kevoree.extra/org.kevoree.extra.netty/3.2.4.Final] could not be resolved.
+	at org.ops4j.pax.url.mvn.internal.Connection.getInputStream(Connection.java:195) ~[org.kevoree.platform.osgi.standalone-1.1.0-RC2.jar:na]
+	at org.apache.felix.framework.util.SecureAction.getURLConnectionInputStream(SecureAction.java:508) ~[org.kevoree.platform.osgi.standalone-1.1.0-RC2.jar:na]
+	at org.apache.felix.framework.cache.JarRevision.initialize(JarRevision.java:170) ~[org.kevoree.platform.osgi.standalone-1.1.0-RC2.jar:na]
+	at org.apache.felix.framework.cache.JarRevision.<init>(JarRevision.java:82) ~[org.kevoree.platform.osgi.standalone-1.1.0-RC2.jar:na]
+	at org.apache.felix.framework.cache.JarRevision.<init>(JarRevision.java:60) ~[org.kevoree.platform.osgi.standalone-1.1.0-RC2.jar:na]
+	at org.apache.felix.framework.cache.BundleArchive.createRevisionFromLocation(BundleArchive.java:868) ~[org.kevoree.platform.osgi.standalone-1.1.0-RC2.jar:na]
+	at org.apache.felix.framework.cache.BundleArchive.reviseInternal(BundleArchive.java:549) ~[org.kevoree.platform.osgi.standalone-1.1.0-RC2.jar:na]
+	at org.apache.felix.framework.cache.BundleArchive.<init>(BundleArchive.java:148) ~[org.kevoree.platform.osgi.standalone-1.1.0-RC2.jar:na]
+	at org.apache.felix.framework.cache.BundleCache.create(BundleCache.java:251) ~[org.kevoree.platform.osgi.standalone-1.1.0-RC2.jar:na]
+	at org.apache.felix.framework.Felix.installBundle(Felix.java:2489) ~[org.kevoree.platform.osgi.standalone-1.1.0-RC2.jar:na]
+	... 33 common frames omitted
+o.k.a.d.o.c.AddThirdPartyCommand - CMD ADD ThirdParty EXECUTION => url=mvn:http://maven.kevoree.org/libs-release-local!org.kevoree.extra/org.kevoree.extra.netty/3.2.4.Final
+o.k.a.d.osgi.KevoreeDeployPhase - Execute command org.kevoree.adaptation.deploy.osgi.command.AddThirdPartyCommand
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:org.kevoree.extra/org.kevoree.extra.marshalling/1.1.0-RC2
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://maven.kevoree.org/libs-release-local!org.kevoree.extra/org.kevoree.extra.marshalling/1.1.0-RC2
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://maven.kevoree.org/libs-snapshot-local!org.kevoree.extra/org.kevoree.extra.marshalling/1.1.0-RC2
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://www.kermeta.org/maven2!org.kevoree.extra/org.kevoree.extra.marshalling/1.1.0-RC2
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://www.kermeta.org/maven2-snapshots!org.kevoree.extra/org.kevoree.extra.marshalling/1.1.0-RC2
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://scala-tools.org/repo-releases!org.kevoree.extra/org.kevoree.extra.marshalling/1.1.0-RC2
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:https://repository.jboss.org/nexus/content/repositories/releases/!org.kevoree.extra/org.kevoree.extra.marshalling/1.1.0-RC2
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://akka.io/repository/!org.kevoree.extra/org.kevoree.extra.marshalling/1.1.0-RC2
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://maven.ow2.org/maven2/!org.kevoree.extra/org.kevoree.extra.marshalling/1.1.0-RC2
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://repository.ops4j.org/mvn-3rdparty!org.kevoree.extra/org.kevoree.extra.marshalling/1.1.0-RC2
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://repo1.maven.org/maven2!org.kevoree.extra/org.kevoree.extra.marshalling/1.1.0-RC2
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://131.254.15.214:8000/provisioning/!org.kevoree.extra/org.kevoree.extra.marshalling/1.1.0-RC2
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://131.254.15.214:8001/provisioning/!org.kevoree.extra/org.kevoree.extra.marshalling/1.1.0-RC2
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://131.254.15.214:8002/provisioning/!org.kevoree.extra/org.kevoree.extra.marshalling/1.1.0-RC2
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://131.254.15.214:8003/provisioning/!org.kevoree.extra/org.kevoree.extra.marshalling/1.1.0-RC2
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://131.254.12.28:8000/provisioning/!org.kevoree.extra/org.kevoree.extra.marshalling/1.1.0-RC2
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://131.254.12.28:8001/provisioning/!org.kevoree.extra/org.kevoree.extra.marshalling/1.1.0-RC2
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://131.254.12.28:8002/provisioning/!org.kevoree.extra/org.kevoree.extra.marshalling/1.1.0-RC2
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://131.254.12.28:8003/provisioning/!org.kevoree.extra/org.kevoree.extra.marshalling/1.1.0-RC2
+o.k.a.d.o.c.AddThirdPartyCommand - CMD ADD ThirdParty EXECUTION => url=mvn:org.kevoree.extra/org.kevoree.extra.marshalling/1.1.0-RC2
+o.k.a.d.osgi.KevoreeDeployPhase - Resolving bundle: org.kevoree.extra.protobuf
+o.k.a.d.osgi.KevoreeDeployPhase - Resolving bundle: org.kevoree.extra.netty
+o.k.a.d.osgi.KevoreeDeployPhase - Resolving bundle: org.kevoree.extra.org.kevoree.extra.marshalling
+o.k.a.d.osgi.KevoreeDeployPhase - Result : true
+o.k.a.d.osgi.KevoreeDeployPhase - Phase 6 Add TypeDefinition DeployUnit=1
+o.k.a.d.osgi.KevoreeDeployPhase - Execute command org.kevoree.adaptation.deploy.osgi.command.AddDeployUnitCommand
+o.k.a.d.o.c.AddDeployUnitCommand - CMD ADD DEPLOY UNIT EXECUTION 
+o.k.a.d.o.c.AddDeployUnitCommand - potential url=mvn:org.kevoree.experiment/org.kevoree.experiment.library.gossiperNetty/1.1.0-RC2
+o.k.a.d.o.c.AddDeployUnitCommand - potential url=mvn:http://maven.kevoree.org/libs-release-local!org.kevoree.experiment/org.kevoree.experiment.library.gossiperNetty/1.1.0-RC2
+o.k.a.d.o.c.AddDeployUnitCommand - potential url=mvn:http://maven.kevoree.org/libs-release-local!org.kevoree.experiment/org.kevoree.experiment.library.gossiperNetty/1.1.0-RC2
+o.k.a.d.o.c.AddDeployUnitCommand - potential url=mvn:http://maven.kevoree.org/libs-snapshot-local!org.kevoree.experiment/org.kevoree.experiment.library.gossiperNetty/1.1.0-RC2
+o.k.a.d.o.c.AddDeployUnitCommand - potential url=mvn:http://www.kermeta.org/maven2!org.kevoree.experiment/org.kevoree.experiment.library.gossiperNetty/1.1.0-RC2
+o.k.a.d.o.c.AddDeployUnitCommand - potential url=mvn:http://www.kermeta.org/maven2-snapshots!org.kevoree.experiment/org.kevoree.experiment.library.gossiperNetty/1.1.0-RC2
+o.k.a.d.o.c.AddDeployUnitCommand - potential url=mvn:http://scala-tools.org/repo-releases!org.kevoree.experiment/org.kevoree.experiment.library.gossiperNetty/1.1.0-RC2
+o.k.a.d.o.c.AddDeployUnitCommand - potential url=mvn:https://repository.jboss.org/nexus/content/repositories/releases/!org.kevoree.experiment/org.kevoree.experiment.library.gossiperNetty/1.1.0-RC2
+o.k.a.d.o.c.AddDeployUnitCommand - potential url=mvn:http://akka.io/repository/!org.kevoree.experiment/org.kevoree.experiment.library.gossiperNetty/1.1.0-RC2
+o.k.a.d.o.c.AddDeployUnitCommand - potential url=mvn:http://maven.ow2.org/maven2/!org.kevoree.experiment/org.kevoree.experiment.library.gossiperNetty/1.1.0-RC2
+o.k.a.d.o.c.AddDeployUnitCommand - potential url=mvn:http://repository.ops4j.org/mvn-3rdparty!org.kevoree.experiment/org.kevoree.experiment.library.gossiperNetty/1.1.0-RC2
+o.k.a.d.o.c.AddDeployUnitCommand - potential url=mvn:http://repo1.maven.org/maven2!org.kevoree.experiment/org.kevoree.experiment.library.gossiperNetty/1.1.0-RC2
+o.k.a.d.o.c.AddDeployUnitCommand - potential url=mvn:http://131.254.15.214:8000/provisioning/!org.kevoree.experiment/org.kevoree.experiment.library.gossiperNetty/1.1.0-RC2
+o.k.a.d.o.c.AddDeployUnitCommand - potential url=mvn:http://131.254.15.214:8001/provisioning/!org.kevoree.experiment/org.kevoree.experiment.library.gossiperNetty/1.1.0-RC2
+o.k.a.d.o.c.AddDeployUnitCommand - potential url=mvn:http://131.254.15.214:8002/provisioning/!org.kevoree.experiment/org.kevoree.experiment.library.gossiperNetty/1.1.0-RC2
+o.k.a.d.o.c.AddDeployUnitCommand - potential url=mvn:http://131.254.15.214:8003/provisioning/!org.kevoree.experiment/org.kevoree.experiment.library.gossiperNetty/1.1.0-RC2
+o.k.r.rest.ModelHandlerResource - Before EMF Serialisation
+o.k.a.d.o.c.AddDeployUnitCommand - potential url=mvn:http://131.254.12.28:8000/provisioning/!org.kevoree.experiment/org.kevoree.experiment.library.gossiperNetty/1.1.0-RC2
+o.k.a.d.o.c.AddDeployUnitCommand - potential url=mvn:http://131.254.12.28:8001/provisioning/!org.kevoree.experiment/org.kevoree.experiment.library.gossiperNetty/1.1.0-RC2
+o.k.a.d.o.c.AddDeployUnitCommand - potential url=mvn:http://131.254.12.28:8002/provisioning/!org.kevoree.experiment/org.kevoree.experiment.library.gossiperNetty/1.1.0-RC2
+o.k.a.d.o.c.AddDeployUnitCommand - potential url=mvn:http://131.254.12.28:8003/provisioning/!org.kevoree.experiment/org.kevoree.experiment.library.gossiperNetty/1.1.0-RC2
+o.k.r.rest.ModelHandlerResource - Before EMF Serialisation
+o.k.a.d.o.c.AddDeployUnitCommand - Try to install from URI, mvn:org.kevoree.experiment/org.kevoree.experiment.library.gossiperNetty/1.1.0-RC2
+o.k.a.d.o.c.AddDeployUnitCommand - failed to perform CMD ADD CT EXECUTION
+o.k.a.d.o.c.AddDeployUnitCommand - Try to install from URI, mvn:http://maven.kevoree.org/libs-release-local!org.kevoree.experiment/org.kevoree.experiment.library.gossiperNetty/1.1.0-RC2
+o.k.a.d.o.c.AddDeployUnitCommand - failed to perform CMD ADD CT EXECUTION
+o.k.a.d.o.c.AddDeployUnitCommand - Try to install from URI, mvn:http://maven.kevoree.org/libs-release-local!org.kevoree.experiment/org.kevoree.experiment.library.gossiperNetty/1.1.0-RC2
+o.k.a.d.o.c.AddDeployUnitCommand - failed to perform CMD ADD CT EXECUTION
+o.k.a.d.o.c.AddDeployUnitCommand - Try to install from URI, mvn:http://maven.kevoree.org/libs-snapshot-local!org.kevoree.experiment/org.kevoree.experiment.library.gossiperNetty/1.1.0-RC2
+o.k.a.d.o.c.AddDeployUnitCommand - failed to perform CMD ADD CT EXECUTION
+o.k.a.d.o.c.AddDeployUnitCommand - Try to install from URI, mvn:http://www.kermeta.org/maven2!org.kevoree.experiment/org.kevoree.experiment.library.gossiperNetty/1.1.0-RC2
+o.k.a.d.o.c.AddDeployUnitCommand - failed to perform CMD ADD CT EXECUTION
+o.k.a.d.o.c.AddDeployUnitCommand - Try to install from URI, mvn:http://www.kermeta.org/maven2-snapshots!org.kevoree.experiment/org.kevoree.experiment.library.gossiperNetty/1.1.0-RC2
+o.k.a.d.o.c.AddDeployUnitCommand - failed to perform CMD ADD CT EXECUTION
+o.k.a.d.o.c.AddDeployUnitCommand - Try to install from URI, mvn:http://scala-tools.org/repo-releases!org.kevoree.experiment/org.kevoree.experiment.library.gossiperNetty/1.1.0-RC2
+o.k.a.d.o.c.AddDeployUnitCommand - failed to perform CMD ADD CT EXECUTION
+o.k.a.d.o.c.AddDeployUnitCommand - Try to install from URI, mvn:https://repository.jboss.org/nexus/content/repositories/releases/!org.kevoree.experiment/org.kevoree.experiment.library.gossiperNetty/1.1.0-RC2
+o.k.a.d.o.c.AddDeployUnitCommand - failed to perform CMD ADD CT EXECUTION
+o.k.a.d.o.c.AddDeployUnitCommand - Try to install from URI, mvn:http://akka.io/repository/!org.kevoree.experiment/org.kevoree.experiment.library.gossiperNetty/1.1.0-RC2
+o.k.a.d.o.c.AddDeployUnitCommand - failed to perform CMD ADD CT EXECUTION
+o.k.a.d.o.c.AddDeployUnitCommand - Try to install from URI, mvn:http://maven.ow2.org/maven2/!org.kevoree.experiment/org.kevoree.experiment.library.gossiperNetty/1.1.0-RC2
+o.k.a.d.o.c.AddDeployUnitCommand - failed to perform CMD ADD CT EXECUTION
+o.k.a.d.o.c.AddDeployUnitCommand - Try to install from URI, mvn:http://repository.ops4j.org/mvn-3rdparty!org.kevoree.experiment/org.kevoree.experiment.library.gossiperNetty/1.1.0-RC2
+o.k.a.d.o.c.AddDeployUnitCommand - failed to perform CMD ADD CT EXECUTION
+o.k.a.d.o.c.AddDeployUnitCommand - Try to install from URI, mvn:http://repo1.maven.org/maven2!org.kevoree.experiment/org.kevoree.experiment.library.gossiperNetty/1.1.0-RC2
+o.k.a.d.o.c.AddDeployUnitCommand - failed to perform CMD ADD CT EXECUTION
+o.k.a.d.o.c.AddDeployUnitCommand - Try to install from URI, mvn:http://131.254.15.214:8000/provisioning/!org.kevoree.experiment/org.kevoree.experiment.library.gossiperNetty/1.1.0-RC2
+o.k.a.d.o.c.AddDeployUnitCommand - failed to perform CMD ADD CT EXECUTION
+o.k.a.d.o.c.AddDeployUnitCommand - Try to install from URI, mvn:http://131.254.15.214:8001/provisioning/!org.kevoree.experiment/org.kevoree.experiment.library.gossiperNetty/1.1.0-RC2
+o.k.a.d.o.c.AddDeployUnitCommand - failed to perform CMD ADD CT EXECUTION
+o.k.a.d.o.c.AddDeployUnitCommand - Try to install from URI, mvn:http://131.254.15.214:8002/provisioning/!org.kevoree.experiment/org.kevoree.experiment.library.gossiperNetty/1.1.0-RC2
+o.k.a.d.o.c.AddDeployUnitCommand - failed to perform CMD ADD CT EXECUTION
+o.k.a.d.o.c.AddDeployUnitCommand - Try to install from URI, mvn:http://131.254.15.214:8003/provisioning/!org.kevoree.experiment/org.kevoree.experiment.library.gossiperNetty/1.1.0-RC2
+o.k.a.d.o.c.AddDeployUnitCommand - failed to perform CMD ADD CT EXECUTION
+o.k.a.d.o.c.AddDeployUnitCommand - Try to install from URI, mvn:http://131.254.12.28:8000/provisioning/!org.kevoree.experiment/org.kevoree.experiment.library.gossiperNetty/1.1.0-RC2
+o.k.a.d.o.c.AddDeployUnitCommand - failed to perform CMD ADD CT EXECUTION
+o.k.a.d.o.c.AddDeployUnitCommand - Try to install from URI, mvn:http://131.254.12.28:8001/provisioning/!org.kevoree.experiment/org.kevoree.experiment.library.gossiperNetty/1.1.0-RC2
+o.k.a.d.o.c.AddDeployUnitCommand - failed to perform CMD ADD CT EXECUTION
+o.k.a.d.o.c.AddDeployUnitCommand - Try to install from URI, mvn:http://131.254.12.28:8002/provisioning/!org.kevoree.experiment/org.kevoree.experiment.library.gossiperNetty/1.1.0-RC2
+o.k.a.d.o.c.AddDeployUnitCommand - failed to perform CMD ADD CT EXECUTION
+o.k.a.d.o.c.AddDeployUnitCommand - Try to install from URI, mvn:http://131.254.12.28:8003/provisioning/!org.kevoree.experiment/org.kevoree.experiment.library.gossiperNetty/1.1.0-RC2
+o.k.a.d.o.c.AddDeployUnitCommand - failed to perform CMD ADD CT EXECUTION
+o.k.a.d.osgi.KevoreeDeployPhase - Result : false
+o.kevoree.core.impl.KevoreeCoreBean - End deploy result=false-132282
+o.kevoree.core.impl.KevoreeCoreBean - Start event : node name = duke0
+o.kevoree.core.impl.KevoreeCoreBean - Try to bootstrap platform
+o.kevoree.core.impl.KevoreeCoreBean - Begin update model 1305636603936
+o.k.kompare.KevoreeKompareBean - INIT NODE v2 duke0
+o.k.a.d.o.KevoreeAdaptationDeployServiceOSGi - Plannification time = 21 ms
+o.k.a.d.o.KevoreeAdaptationDeployServiceOSGi - stop command
+o.k.a.d.o.KevoreeAdaptationDeployServiceOSGi - start
+o.k.a.d.o.KevoreeAdaptationDeployServiceOSGi - gossipGroup
+o.k.a.d.osgi.KevoreeDeployPhase - Phase 0 STOP COMPONENT=0
+o.k.a.d.osgi.KevoreeDeployPhase - Result : true
+o.k.a.d.osgi.KevoreeDeployPhase - Phase 1 Remove Binding=0
+o.k.a.d.osgi.KevoreeDeployPhase - Result : true
+o.k.a.d.osgi.KevoreeDeployPhase - Phase 2 Remove Instance=0
+o.k.a.d.osgi.KevoreeDeployPhase - Result : true
+o.k.a.d.osgi.KevoreeDeployPhase - Phase 3 Remove ComponentType=0
+o.k.a.d.osgi.KevoreeDeployPhase - Result : true
+o.k.a.d.osgi.KevoreeDeployPhase - Phase 4 Remove TypeDefinition DeployUnit=0
+o.k.a.d.osgi.KevoreeDeployPhase - Result : true
+o.k.a.d.osgi.KevoreeDeployPhase - Phase 5 ThirdParty=3
+o.k.a.d.osgi.KevoreeDeployPhase - Execute command org.kevoree.adaptation.deploy.osgi.command.AddThirdPartyCommand
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:org.kevoree.extra/org.kevoree.extra.protobuf/2.3.0
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://maven.kevoree.org/libs-release-local!org.kevoree.extra/org.kevoree.extra.protobuf/2.3.0
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://maven.kevoree.org/libs-snapshot-local!org.kevoree.extra/org.kevoree.extra.protobuf/2.3.0
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://www.kermeta.org/maven2!org.kevoree.extra/org.kevoree.extra.protobuf/2.3.0
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://www.kermeta.org/maven2-snapshots!org.kevoree.extra/org.kevoree.extra.protobuf/2.3.0
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://scala-tools.org/repo-releases!org.kevoree.extra/org.kevoree.extra.protobuf/2.3.0
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:https://repository.jboss.org/nexus/content/repositories/releases/!org.kevoree.extra/org.kevoree.extra.protobuf/2.3.0
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://akka.io/repository/!org.kevoree.extra/org.kevoree.extra.protobuf/2.3.0
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://maven.ow2.org/maven2/!org.kevoree.extra/org.kevoree.extra.protobuf/2.3.0
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://repository.ops4j.org/mvn-3rdparty!org.kevoree.extra/org.kevoree.extra.protobuf/2.3.0
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://repo1.maven.org/maven2!org.kevoree.extra/org.kevoree.extra.protobuf/2.3.0
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://131.254.15.214:8000/provisioning/!org.kevoree.extra/org.kevoree.extra.protobuf/2.3.0
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://131.254.15.214:8001/provisioning/!org.kevoree.extra/org.kevoree.extra.protobuf/2.3.0
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://131.254.15.214:8002/provisioning/!org.kevoree.extra/org.kevoree.extra.protobuf/2.3.0
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://131.254.15.214:8003/provisioning/!org.kevoree.extra/org.kevoree.extra.protobuf/2.3.0
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://131.254.12.28:8000/provisioning/!org.kevoree.extra/org.kevoree.extra.protobuf/2.3.0
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://131.254.12.28:8001/provisioning/!org.kevoree.extra/org.kevoree.extra.protobuf/2.3.0
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://131.254.12.28:8002/provisioning/!org.kevoree.extra/org.kevoree.extra.protobuf/2.3.0
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://131.254.12.28:8003/provisioning/!org.kevoree.extra/org.kevoree.extra.protobuf/2.3.0
+o.k.a.d.o.c.AddThirdPartyCommand - CMD ADD ThirdParty EXECUTION => url=mvn:org.kevoree.extra/org.kevoree.extra.protobuf/2.3.0
+o.k.a.d.osgi.KevoreeDeployPhase - Execute command org.kevoree.adaptation.deploy.osgi.command.AddThirdPartyCommand
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:org.kevoree.extra/org.kevoree.extra.netty/3.2.4
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://maven.kevoree.org/libs-release-local!org.kevoree.extra/org.kevoree.extra.netty/3.2.4
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://maven.kevoree.org/libs-snapshot-local!org.kevoree.extra/org.kevoree.extra.netty/3.2.4
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://www.kermeta.org/maven2!org.kevoree.extra/org.kevoree.extra.netty/3.2.4
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://www.kermeta.org/maven2-snapshots!org.kevoree.extra/org.kevoree.extra.netty/3.2.4
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://scala-tools.org/repo-releases!org.kevoree.extra/org.kevoree.extra.netty/3.2.4
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:https://repository.jboss.org/nexus/content/repositories/releases/!org.kevoree.extra/org.kevoree.extra.netty/3.2.4
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://akka.io/repository/!org.kevoree.extra/org.kevoree.extra.netty/3.2.4
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://maven.ow2.org/maven2/!org.kevoree.extra/org.kevoree.extra.netty/3.2.4
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://repository.ops4j.org/mvn-3rdparty!org.kevoree.extra/org.kevoree.extra.netty/3.2.4
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://repo1.maven.org/maven2!org.kevoree.extra/org.kevoree.extra.netty/3.2.4
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://131.254.15.214:8000/provisioning/!org.kevoree.extra/org.kevoree.extra.netty/3.2.4
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://131.254.15.214:8001/provisioning/!org.kevoree.extra/org.kevoree.extra.netty/3.2.4
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://131.254.15.214:8002/provisioning/!org.kevoree.extra/org.kevoree.extra.netty/3.2.4
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://131.254.15.214:8003/provisioning/!org.kevoree.extra/org.kevoree.extra.netty/3.2.4
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://131.254.12.28:8000/provisioning/!org.kevoree.extra/org.kevoree.extra.netty/3.2.4
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://131.254.12.28:8001/provisioning/!org.kevoree.extra/org.kevoree.extra.netty/3.2.4
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://131.254.12.28:8002/provisioning/!org.kevoree.extra/org.kevoree.extra.netty/3.2.4
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://131.254.12.28:8003/provisioning/!org.kevoree.extra/org.kevoree.extra.netty/3.2.4
+o.k.a.d.o.c.AddThirdPartyCommand - CMD ADD ThirdParty EXECUTION => url=mvn:org.kevoree.extra/org.kevoree.extra.netty/3.2.4
+o.k.a.d.osgi.KevoreeDeployPhase - Execute command org.kevoree.adaptation.deploy.osgi.command.AddThirdPartyCommand
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:org.kevoree.extra/org.kevoree.extra.marshalling/1.1.0-RC2
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://maven.kevoree.org/libs-release-local!org.kevoree.extra/org.kevoree.extra.marshalling/1.1.0-RC2
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://maven.kevoree.org/libs-snapshot-local!org.kevoree.extra/org.kevoree.extra.marshalling/1.1.0-RC2
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://www.kermeta.org/maven2!org.kevoree.extra/org.kevoree.extra.marshalling/1.1.0-RC2
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://www.kermeta.org/maven2-snapshots!org.kevoree.extra/org.kevoree.extra.marshalling/1.1.0-RC2
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://scala-tools.org/repo-releases!org.kevoree.extra/org.kevoree.extra.marshalling/1.1.0-RC2
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:https://repository.jboss.org/nexus/content/repositories/releases/!org.kevoree.extra/org.kevoree.extra.marshalling/1.1.0-RC2
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://akka.io/repository/!org.kevoree.extra/org.kevoree.extra.marshalling/1.1.0-RC2
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://maven.ow2.org/maven2/!org.kevoree.extra/org.kevoree.extra.marshalling/1.1.0-RC2
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://repository.ops4j.org/mvn-3rdparty!org.kevoree.extra/org.kevoree.extra.marshalling/1.1.0-RC2
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://repo1.maven.org/maven2!org.kevoree.extra/org.kevoree.extra.marshalling/1.1.0-RC2
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://131.254.15.214:8000/provisioning/!org.kevoree.extra/org.kevoree.extra.marshalling/1.1.0-RC2
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://131.254.15.214:8001/provisioning/!org.kevoree.extra/org.kevoree.extra.marshalling/1.1.0-RC2
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://131.254.15.214:8002/provisioning/!org.kevoree.extra/org.kevoree.extra.marshalling/1.1.0-RC2
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://131.254.15.214:8003/provisioning/!org.kevoree.extra/org.kevoree.extra.marshalling/1.1.0-RC2
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://131.254.12.28:8000/provisioning/!org.kevoree.extra/org.kevoree.extra.marshalling/1.1.0-RC2
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://131.254.12.28:8001/provisioning/!org.kevoree.extra/org.kevoree.extra.marshalling/1.1.0-RC2
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://131.254.12.28:8002/provisioning/!org.kevoree.extra/org.kevoree.extra.marshalling/1.1.0-RC2
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://131.254.12.28:8003/provisioning/!org.kevoree.extra/org.kevoree.extra.marshalling/1.1.0-RC2
+o.k.a.d.o.c.AddThirdPartyCommand - CMD ADD ThirdParty EXECUTION => url=mvn:org.kevoree.extra/org.kevoree.extra.marshalling/1.1.0-RC2
+o.k.a.d.osgi.KevoreeDeployPhase - Resolving bundle: org.kevoree.extra.protobuf
+o.k.a.d.osgi.KevoreeDeployPhase - Resolving bundle: org.kevoree.extra.netty
+o.k.a.d.osgi.KevoreeDeployPhase - Resolving bundle: org.kevoree.extra.org.kevoree.extra.marshalling
+o.k.a.d.osgi.KevoreeDeployPhase - Result : true
+o.k.a.d.osgi.KevoreeDeployPhase - Phase 6 Add TypeDefinition DeployUnit=1
+o.k.a.d.osgi.KevoreeDeployPhase - Execute command org.kevoree.adaptation.deploy.osgi.command.AddDeployUnitCommand
+o.k.a.d.o.c.AddDeployUnitCommand - CMD ADD DEPLOY UNIT EXECUTION 
+o.k.a.d.o.c.AddDeployUnitCommand - potential url=mvn:org.kevoree.experiment/org.kevoree.experiment.library.gossiperNetty/1.1.0-RC2
+o.k.a.d.o.c.AddDeployUnitCommand - potential url=mvn:http://maven.kevoree.org/libs-release-local!org.kevoree.experiment/org.kevoree.experiment.library.gossiperNetty/1.1.0-RC2
+o.k.a.d.o.c.AddDeployUnitCommand - potential url=mvn:http://maven.kevoree.org/libs-release-local!org.kevoree.experiment/org.kevoree.experiment.library.gossiperNetty/1.1.0-RC2
+o.k.a.d.o.c.AddDeployUnitCommand - potential url=mvn:http://maven.kevoree.org/libs-snapshot-local!org.kevoree.experiment/org.kevoree.experiment.library.gossiperNetty/1.1.0-RC2
+o.k.a.d.o.c.AddDeployUnitCommand - potential url=mvn:http://www.kermeta.org/maven2!org.kevoree.experiment/org.kevoree.experiment.library.gossiperNetty/1.1.0-RC2
+o.k.a.d.o.c.AddDeployUnitCommand - potential url=mvn:http://www.kermeta.org/maven2-snapshots!org.kevoree.experiment/org.kevoree.experiment.library.gossiperNetty/1.1.0-RC2
+o.k.a.d.o.c.AddDeployUnitCommand - potential url=mvn:http://scala-tools.org/repo-releases!org.kevoree.experiment/org.kevoree.experiment.library.gossiperNetty/1.1.0-RC2
+o.k.a.d.o.c.AddDeployUnitCommand - potential url=mvn:https://repository.jboss.org/nexus/content/repositories/releases/!org.kevoree.experiment/org.kevoree.experiment.library.gossiperNetty/1.1.0-RC2
+o.k.a.d.o.c.AddDeployUnitCommand - potential url=mvn:http://akka.io/repository/!org.kevoree.experiment/org.kevoree.experiment.library.gossiperNetty/1.1.0-RC2
+o.k.a.d.o.c.AddDeployUnitCommand - potential url=mvn:http://maven.ow2.org/maven2/!org.kevoree.experiment/org.kevoree.experiment.library.gossiperNetty/1.1.0-RC2
+o.k.a.d.o.c.AddDeployUnitCommand - potential url=mvn:http://repository.ops4j.org/mvn-3rdparty!org.kevoree.experiment/org.kevoree.experiment.library.gossiperNetty/1.1.0-RC2
+o.k.a.d.o.c.AddDeployUnitCommand - potential url=mvn:http://repo1.maven.org/maven2!org.kevoree.experiment/org.kevoree.experiment.library.gossiperNetty/1.1.0-RC2
+o.k.a.d.o.c.AddDeployUnitCommand - potential url=mvn:http://131.254.15.214:8000/provisioning/!org.kevoree.experiment/org.kevoree.experiment.library.gossiperNetty/1.1.0-RC2
+o.k.a.d.o.c.AddDeployUnitCommand - potential url=mvn:http://131.254.15.214:8001/provisioning/!org.kevoree.experiment/org.kevoree.experiment.library.gossiperNetty/1.1.0-RC2
+o.k.a.d.o.c.AddDeployUnitCommand - potential url=mvn:http://131.254.15.214:8002/provisioning/!org.kevoree.experiment/org.kevoree.experiment.library.gossiperNetty/1.1.0-RC2
+o.k.a.d.o.c.AddDeployUnitCommand - potential url=mvn:http://131.254.15.214:8003/provisioning/!org.kevoree.experiment/org.kevoree.experiment.library.gossiperNetty/1.1.0-RC2
+o.k.a.d.o.c.AddDeployUnitCommand - potential url=mvn:http://131.254.12.28:8000/provisioning/!org.kevoree.experiment/org.kevoree.experiment.library.gossiperNetty/1.1.0-RC2
+o.k.a.d.o.c.AddDeployUnitCommand - potential url=mvn:http://131.254.12.28:8001/provisioning/!org.kevoree.experiment/org.kevoree.experiment.library.gossiperNetty/1.1.0-RC2
+o.k.a.d.o.c.AddDeployUnitCommand - potential url=mvn:http://131.254.12.28:8002/provisioning/!org.kevoree.experiment/org.kevoree.experiment.library.gossiperNetty/1.1.0-RC2
+o.k.a.d.o.c.AddDeployUnitCommand - potential url=mvn:http://131.254.12.28:8003/provisioning/!org.kevoree.experiment/org.kevoree.experiment.library.gossiperNetty/1.1.0-RC2
+o.k.a.d.o.c.AddDeployUnitCommand - Try to install from URI, mvn:org.kevoree.experiment/org.kevoree.experiment.library.gossiperNetty/1.1.0-RC2
+o.k.a.d.o.c.AddDeployUnitCommand - failed to perform CMD ADD CT EXECUTION
+o.k.a.d.o.c.AddDeployUnitCommand - Try to install from URI, mvn:http://maven.kevoree.org/libs-release-local!org.kevoree.experiment/org.kevoree.experiment.library.gossiperNetty/1.1.0-RC2
+o.k.a.d.osgi.KevoreeDeployPhase - Resolving bundle: org.kevoree.experiment.org.kevoree.experiment.library.gossiperNetty
+o.k.a.d.osgi.KevoreeDeployPhase - Result : true
+o.k.a.d.osgi.KevoreeDeployPhase - Phase 7 Add ComponentType=1
+o.k.a.d.osgi.KevoreeDeployPhase - Execute command org.kevoree.adaptation.deploy.osgi.command.AddTypeCommand
+o.k.a.d.osgi.command.AddTypeCommand - CMD ADD CT EXECUTION 
+o.k.a.d.osgi.KevoreeDeployPhase - Result : true
+o.k.a.d.osgi.KevoreeDeployPhase - Phase 8 install ComponentInstance=1
+o.k.a.d.osgi.KevoreeDeployPhase - Execute command org.kevoree.adaptation.deploy.osgi.command.AddInstanceCommand
+o.k.a.d.osgi.KevoreeDeployPhase - Resolving bundle: gossipGroup
+o.k.a.d.osgi.KevoreeDeployPhase - Result : true
+o.k.a.d.osgi.KevoreeDeployPhase - Phase 9 install Bindings=0
+o.k.a.d.osgi.KevoreeDeployPhase - Result : true
+o.k.a.d.osgi.KevoreeDeployPhase - Phase 10 SET PROPERTY=1
+o.k.a.d.osgi.KevoreeDeployPhase - Execute command org.kevoree.adaptation.deploy.osgi.command.UpdateDictionaryCommand
+o.k.a.d.osgi.KevoreeDeployPhase - Result : true
+o.k.a.d.osgi.KevoreeDeployPhase - Phase 11 START COMPONENT=1
+o.k.a.d.osgi.KevoreeDeployPhase - Execute command org.kevoree.adaptation.deploy.osgi.command.StartInstanceCommand
+o.k.a.d.osgi.KevoreeDeployPhase - Result : true
+o.kevoree.core.impl.KevoreeCoreBean - Deploy result true
+o.kevoree.core.impl.KevoreeCoreBean - End deploy result=true-5915
+o.k.l.g.NotificationRequestSender - send notification to duke1
+o.k.l.g.NotificationRequestSender - send notification to duke2
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClocks
+o.k.l.g.NotificationRequestSender - send notification to duke3
+o.k.l.g.group.DataManagerForGroup - Increment
+o.k.l.g.group.DataManagerForGroup - End increment
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClocks end
+o.k.l.g.NotificationRequestSender - send notification to paraisseux0
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClocks
+o.k.l.g.group.DataManagerForGroup - Increment
+o.k.l.g.group.DataManagerForGroup - End increment
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClocks end
+o.k.l.g.NotificationRequestSender - send notification to paraisseux1
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClocks
+o.k.l.g.NotificationRequestSender - send notification to paraisseux2
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClocks end
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClocks
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClocks end
+o.k.l.g.NotificationRequestSender - send notification to paraisseux3
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClocks
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClocks end
+o.k.l.g.group.DataManagerForGroup - getData
+o.k.l.g.group.DataManagerForGroup - getData end
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClocks
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClocks end
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock
+o.k.l.g.group.DataManagerForGroup - getData
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock end
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock
+o.k.l.g.group.DataManagerForGroup - getData end
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock end
+o.k.l.g.VectorClockAspect - VectorClock - 1 - 1305636609910
+o.k.l.g.VectorClockAspect - duke0-2-1305636609910
+o.k.l.g.VectorClockAspect - -- end vector clock --
+o.k.l.g.VectorClockAspect - VectorClock - 6 - 1305636593295
+o.k.l.g.VectorClockAspect - paraisseux1-2-1305636593295
+o.k.l.g.VectorClockAspect - duke1-2-1305636593295
+o.k.l.g.VectorClockAspect - duke3-2-1305636592810
+o.k.l.g.VectorClockAspect - paraisseux0-2-1305636586438
+o.k.l.g.VectorClockAspect - paraisseux3-2-1305636586337
+o.k.l.g.VectorClockAspect - paraisseux2-2-1305636587221
+o.k.l.g.VectorClockAspect - -- end vector clock --
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock end
+o.k.l.g.GossiperRequestSender - VectorClocks comparison into GossiperRequestSender give us: CONCURRENTLY
+o.k.l.g.AskForDataTCPActor - TCP sending ... :-)
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock
+o.k.l.g.group.DataManagerForGroup - getData
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock end
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock
+o.k.l.g.group.DataManagerForGroup - getData end
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock end
+o.k.l.g.VectorClockAspect - VectorClock - 1 - 1305636609910
+o.k.l.g.VectorClockAspect - duke0-2-1305636609910
+o.k.l.g.VectorClockAspect - -- end vector clock --
+o.k.l.g.VectorClockAspect - VectorClock - 6 - 1305636593352
+o.k.l.g.VectorClockAspect - paraisseux0-2-1305636593352
+o.k.l.g.VectorClockAspect - duke1-2-1305636593352
+o.k.l.g.VectorClockAspect - duke3-2-1305636592837
+o.k.l.g.VectorClockAspect - paraisseux1-2-1305636587587
+o.k.l.g.VectorClockAspect - paraisseux2-2-1305636587587
+o.k.l.g.VectorClockAspect - paraisseux3-2-1305636587587
+o.k.l.g.VectorClockAspect - -- end vector clock --
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock end
+o.k.l.g.GossiperRequestSender - VectorClocks comparison into GossiperRequestSender give us: CONCURRENTLY
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock end
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock end
+o.k.l.g.VectorClockAspect - VectorClock - 1 - 1305636609910
+o.k.l.g.VectorClockAspect - duke0-2-1305636609910
+o.k.l.g.VectorClockAspect - -- end vector clock --
+o.k.l.g.VectorClockAspect - VectorClock - 6 - 1305636593303
+o.k.l.g.VectorClockAspect - paraisseux3-2-1305636593303
+o.k.l.g.VectorClockAspect - duke1-2-1305636593303
+o.k.l.g.VectorClockAspect - duke3-2-1305636592846
+o.k.l.g.VectorClockAspect - paraisseux1-2-1305636587546
+o.k.l.g.VectorClockAspect - paraisseux0-2-1305636587546
+o.k.l.g.VectorClockAspect - paraisseux2-2-1305636587546
+o.k.l.g.VectorClockAspect - -- end vector clock --
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock end
+o.k.l.g.GossiperRequestSender - VectorClocks comparison into GossiperRequestSender give us: CONCURRENTLY
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock end
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock end
+o.k.l.g.VectorClockAspect - VectorClock - 1 - 1305636609910
+o.k.l.g.VectorClockAspect - duke0-2-1305636609910
+o.k.l.g.VectorClockAspect - -- end vector clock --
+o.k.l.g.VectorClockAspect - VectorClock - 6 - 1305636593367
+o.k.l.g.VectorClockAspect - paraisseux2-2-1305636593367
+o.k.l.g.VectorClockAspect - duke1-2-1305636593367
+o.k.l.g.VectorClockAspect - duke3-2-1305636592872
+o.k.l.g.VectorClockAspect - paraisseux1-2-1305636587592
+o.k.l.g.VectorClockAspect - paraisseux0-2-1305636587592
+o.k.l.g.VectorClockAspect - paraisseux3-2-1305636587592
+o.k.l.g.VectorClockAspect - -- end vector clock --
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock end
+o.k.l.g.GossiperRequestSender - VectorClocks comparison into GossiperRequestSender give us: CONCURRENTLY
+o.k.l.g.group.DataManagerForGroup - getData
+o.k.l.g.group.DataManagerForGroup - getData end
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock end
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock end
+o.k.l.g.VectorClockAspect - VectorClock - 1 - 1305636609910
+o.k.l.g.VectorClockAspect - duke0-2-1305636609910
+o.k.l.g.VectorClockAspect - -- end vector clock --
+o.k.l.g.VectorClockAspect - VectorClock - 7 - 1305636593479
+o.k.l.g.VectorClockAspect - paraisseux3-2-1305636593479
+o.k.l.g.VectorClockAspect - duke0-2-1305636593479
+o.k.l.g.VectorClockAspect - duke1-2-1305636593303
+o.k.l.g.VectorClockAspect - duke3-2-1305636592846
+o.k.l.g.VectorClockAspect - paraisseux1-2-1305636587546
+o.k.l.g.VectorClockAspect - paraisseux0-2-1305636587546
+o.k.l.g.VectorClockAspect - paraisseux2-2-1305636587546
+o.k.l.g.VectorClockAspect - -- end vector clock --
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock end
+o.k.l.g.GossiperRequestSender - VectorClocks comparison into GossiperRequestSender give us: BEFORE
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock end
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock end
+o.k.l.g.VectorClockAspect - VectorClock - 1 - 1305636609910
+o.k.l.g.VectorClockAspect - duke0-2-1305636609910
+o.k.l.g.VectorClockAspect - -- end vector clock --
+o.k.l.g.VectorClockAspect - VectorClock - 7 - 1305636593472
+o.k.l.g.VectorClockAspect - paraisseux1-2-1305636593295
+o.k.l.g.VectorClockAspect - duke0-2-1305636609910
+o.k.l.g.VectorClockAspect - duke1-2-1305636593295
+o.k.l.g.VectorClockAspect - duke3-2-1305636592810
+o.k.l.g.VectorClockAspect - paraisseux0-2-1305636586438
+o.k.l.g.VectorClockAspect - paraisseux3-2-1305636586337
+o.k.l.g.VectorClockAspect - paraisseux2-2-1305636587221
+o.k.l.g.VectorClockAspect - -- end vector clock --
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock end
+o.k.l.g.GossiperRequestSender - VectorClocks comparison into GossiperRequestSender give us: BEFORE
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock end
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock end
+o.k.l.g.VectorClockAspect - VectorClock - 1 - 1305636609910
+o.k.l.g.VectorClockAspect - duke0-2-1305636609910
+o.k.l.g.VectorClockAspect - -- end vector clock --
+o.k.l.g.VectorClockAspect - VectorClock - 7 - 1305636593526
+o.k.l.g.VectorClockAspect - paraisseux0-2-1305636593526
+o.k.l.g.VectorClockAspect - duke0-2-1305636593526
+o.k.l.g.VectorClockAspect - duke1-2-1305636593352
+o.k.l.g.VectorClockAspect - duke3-2-1305636592837
+o.k.l.g.VectorClockAspect - paraisseux1-2-1305636587587
+o.k.l.g.VectorClockAspect - paraisseux2-2-1305636587587
+o.k.l.g.VectorClockAspect - paraisseux3-2-1305636587587
+o.k.l.g.VectorClockAspect - -- end vector clock --
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock end
+o.k.l.g.GossiperRequestSender - VectorClocks comparison into GossiperRequestSender give us: BEFORE
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock end
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock end
+o.k.l.g.VectorClockAspect - VectorClock - 1 - 1305636609910
+o.k.l.g.VectorClockAspect - duke0-2-1305636609910
+o.k.l.g.VectorClockAspect - -- end vector clock --
+o.k.l.g.VectorClockAspect - VectorClock - 7 - 1305636593563
+o.k.l.g.VectorClockAspect - paraisseux2-2-1305636593563
+o.k.l.g.VectorClockAspect - duke0-2-1305636593563
+o.k.l.g.VectorClockAspect - duke1-2-1305636593367
+o.k.l.g.VectorClockAspect - duke3-2-1305636592872
+o.k.l.g.VectorClockAspect - paraisseux1-2-1305636587592
+o.k.l.g.VectorClockAspect - paraisseux0-2-1305636587592
+o.k.l.g.VectorClockAspect - paraisseux3-2-1305636587592
+o.k.l.g.VectorClockAspect - -- end vector clock --
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock end
+o.k.l.g.GossiperRequestSender - VectorClocks comparison into GossiperRequestSender give us: BEFORE
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock end
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock end
+o.k.l.g.VectorClockAspect - VectorClock - 1 - 1305636609910
+o.k.l.g.VectorClockAspect - duke0-2-1305636609910
+o.k.l.g.VectorClockAspect - -- end vector clock --
+o.k.l.g.VectorClockAspect - VectorClock - 1 - 1305636610226
+o.k.l.g.VectorClockAspect - duke2-2-1305636610226
+o.k.l.g.VectorClockAspect - -- end vector clock --
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock end
+o.k.l.g.GossiperRequestSender - VectorClocks comparison into GossiperRequestSender give us: CONCURRENTLY
+o.k.l.g.AskForDataTCPActor - client build ! 
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock end
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock end
+o.k.l.g.VectorClockAspect - VectorClock - 1 - 1305636609910
+o.k.l.g.VectorClockAspect - duke0-2-1305636609910
+o.k.l.g.VectorClockAspect - -- end vector clock --
+o.k.l.g.VectorClockAspect - VectorClock - 8 - 1305636593787
+o.k.l.g.VectorClockAspect - paraisseux2-2-1305636593563
+o.k.l.g.VectorClockAspect - duke2-2-1305636610226
+o.k.l.g.VectorClockAspect - duke0-2-1305636593563
+o.k.l.g.VectorClockAspect - duke1-2-1305636593367
+o.k.l.g.VectorClockAspect - duke3-2-1305636592872
+o.k.l.g.VectorClockAspect - paraisseux1-2-1305636587592
+o.k.l.g.VectorClockAspect - paraisseux0-2-1305636587592
+o.k.l.g.VectorClockAspect - paraisseux3-2-1305636587592
+o.k.l.g.VectorClockAspect - -- end vector clock --
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock end
+o.k.l.g.GossiperRequestSender - VectorClocks comparison into GossiperRequestSender give us: BEFORE
+o.kevoree.core.impl.KevoreeCoreBean - Start event : node name = duke0
+o.kevoree.core.impl.KevoreeCoreBean - Try to bootstrap platform
+o.kevoree.core.impl.KevoreeCoreBean - Begin update model 1305636842233
+o.k.kompare.KevoreeKompareBean - INIT NODE v2 duke0
+o.k.a.d.o.KevoreeAdaptationDeployServiceOSGi - Plannification time = 1 ms
+o.k.a.d.o.KevoreeAdaptationDeployServiceOSGi - stop command
+o.k.a.d.o.KevoreeAdaptationDeployServiceOSGi - start
+o.k.a.d.o.KevoreeAdaptationDeployServiceOSGi - gossipGroup
+o.k.a.d.osgi.KevoreeDeployPhase - Phase 0 STOP COMPONENT=0
+o.k.a.d.osgi.KevoreeDeployPhase - Result : true
+o.k.a.d.osgi.KevoreeDeployPhase - Phase 1 Remove Binding=0
+o.k.a.d.osgi.KevoreeDeployPhase - Result : true
+o.k.a.d.osgi.KevoreeDeployPhase - Phase 2 Remove Instance=0
+o.k.a.d.osgi.KevoreeDeployPhase - Result : true
+o.k.a.d.osgi.KevoreeDeployPhase - Phase 3 Remove ComponentType=0
+o.k.a.d.osgi.KevoreeDeployPhase - Result : true
+o.k.a.d.osgi.KevoreeDeployPhase - Phase 4 Remove TypeDefinition DeployUnit=0
+o.k.a.d.osgi.KevoreeDeployPhase - Result : true
+o.k.a.d.osgi.KevoreeDeployPhase - Phase 5 ThirdParty=3
+o.k.a.d.osgi.KevoreeDeployPhase - Execute command org.kevoree.adaptation.deploy.osgi.command.AddThirdPartyCommand
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:org.kevoree.extra/org.kevoree.extra.protobuf/2.3.0
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://maven.kevoree.org/libs-release-local!org.kevoree.extra/org.kevoree.extra.protobuf/2.3.0
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://maven.kevoree.org/libs-snapshot-local!org.kevoree.extra/org.kevoree.extra.protobuf/2.3.0
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://www.kermeta.org/maven2!org.kevoree.extra/org.kevoree.extra.protobuf/2.3.0
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://www.kermeta.org/maven2-snapshots!org.kevoree.extra/org.kevoree.extra.protobuf/2.3.0
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://scala-tools.org/repo-releases!org.kevoree.extra/org.kevoree.extra.protobuf/2.3.0
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:https://repository.jboss.org/nexus/content/repositories/releases/!org.kevoree.extra/org.kevoree.extra.protobuf/2.3.0
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://akka.io/repository/!org.kevoree.extra/org.kevoree.extra.protobuf/2.3.0
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://maven.ow2.org/maven2/!org.kevoree.extra/org.kevoree.extra.protobuf/2.3.0
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://repository.ops4j.org/mvn-3rdparty!org.kevoree.extra/org.kevoree.extra.protobuf/2.3.0
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://repo1.maven.org/maven2!org.kevoree.extra/org.kevoree.extra.protobuf/2.3.0
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://131.254.15.214:8000/provisioning/!org.kevoree.extra/org.kevoree.extra.protobuf/2.3.0
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://131.254.15.214:8001/provisioning/!org.kevoree.extra/org.kevoree.extra.protobuf/2.3.0
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://131.254.15.214:8002/provisioning/!org.kevoree.extra/org.kevoree.extra.protobuf/2.3.0
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://131.254.15.214:8003/provisioning/!org.kevoree.extra/org.kevoree.extra.protobuf/2.3.0
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://131.254.12.28:8000/provisioning/!org.kevoree.extra/org.kevoree.extra.protobuf/2.3.0
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://131.254.12.28:8001/provisioning/!org.kevoree.extra/org.kevoree.extra.protobuf/2.3.0
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://131.254.12.28:8002/provisioning/!org.kevoree.extra/org.kevoree.extra.protobuf/2.3.0
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://131.254.12.28:8003/provisioning/!org.kevoree.extra/org.kevoree.extra.protobuf/2.3.0
+o.k.a.d.o.c.AddThirdPartyCommand - CMD ADD ThirdParty EXECUTION => url=mvn:org.kevoree.extra/org.kevoree.extra.protobuf/2.3.0
+o.k.a.d.osgi.KevoreeDeployPhase - Execute command org.kevoree.adaptation.deploy.osgi.command.AddThirdPartyCommand
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:org.kevoree.extra/org.kevoree.extra.netty/3.2.4.Final
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://maven.kevoree.org/libs-release-local!org.kevoree.extra/org.kevoree.extra.netty/3.2.4.Final
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://maven.kevoree.org/libs-snapshot-local!org.kevoree.extra/org.kevoree.extra.netty/3.2.4.Final
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://www.kermeta.org/maven2!org.kevoree.extra/org.kevoree.extra.netty/3.2.4.Final
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://www.kermeta.org/maven2-snapshots!org.kevoree.extra/org.kevoree.extra.netty/3.2.4.Final
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://scala-tools.org/repo-releases!org.kevoree.extra/org.kevoree.extra.netty/3.2.4.Final
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:https://repository.jboss.org/nexus/content/repositories/releases/!org.kevoree.extra/org.kevoree.extra.netty/3.2.4.Final
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://akka.io/repository/!org.kevoree.extra/org.kevoree.extra.netty/3.2.4.Final
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://maven.ow2.org/maven2/!org.kevoree.extra/org.kevoree.extra.netty/3.2.4.Final
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://repository.ops4j.org/mvn-3rdparty!org.kevoree.extra/org.kevoree.extra.netty/3.2.4.Final
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://repo1.maven.org/maven2!org.kevoree.extra/org.kevoree.extra.netty/3.2.4.Final
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://131.254.15.214:8000/provisioning/!org.kevoree.extra/org.kevoree.extra.netty/3.2.4.Final
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://131.254.15.214:8001/provisioning/!org.kevoree.extra/org.kevoree.extra.netty/3.2.4.Final
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://131.254.15.214:8002/provisioning/!org.kevoree.extra/org.kevoree.extra.netty/3.2.4.Final
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://131.254.15.214:8003/provisioning/!org.kevoree.extra/org.kevoree.extra.netty/3.2.4.Final
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://131.254.12.28:8000/provisioning/!org.kevoree.extra/org.kevoree.extra.netty/3.2.4.Final
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://131.254.12.28:8001/provisioning/!org.kevoree.extra/org.kevoree.extra.netty/3.2.4.Final
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://131.254.12.28:8002/provisioning/!org.kevoree.extra/org.kevoree.extra.netty/3.2.4.Final
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://131.254.12.28:8003/provisioning/!org.kevoree.extra/org.kevoree.extra.netty/3.2.4.Final
+o.k.a.d.o.c.AddThirdPartyCommand - CMD ADD ThirdParty EXECUTION => url=mvn:org.kevoree.extra/org.kevoree.extra.netty/3.2.4.Final
+o.k.a.d.o.c.AddThirdPartyCommand - Install error => 
+org.osgi.framework.BundleException: Unable to cache bundle: mvn:org.kevoree.extra/org.kevoree.extra.netty/3.2.4.Final
+	at org.apache.felix.framework.Felix.installBundle(Felix.java:2493) ~[org.kevoree.platform.osgi.standalone-1.1.0-RC2.jar:na]
+	at org.apache.felix.framework.Felix.installBundle(Felix.java:2449) ~[org.kevoree.platform.osgi.standalone-1.1.0-RC2.jar:na]
+	at org.apache.felix.framework.BundleContextImpl.installBundle(BundleContextImpl.java:150) ~[org.kevoree.platform.osgi.standalone-1.1.0-RC2.jar:na]
+	at org.apache.felix.framework.BundleContextImpl.installBundle(BundleContextImpl.java:123) ~[org.kevoree.platform.osgi.standalone-1.1.0-RC2.jar:na]
+	at org.kevoree.adaptation.deploy.osgi.command.AddThirdPartyCommand.installBundle(AddThirdPartyCommand.scala:58) [org.kevoree.platform.osgi.standalone-1.1.0-RC2.jar:na]
+	at org.kevoree.adaptation.deploy.osgi.command.AddThirdPartyCommand$$anonfun$execute$3.apply(AddThirdPartyCommand.scala:50) [org.kevoree.platform.osgi.standalone-1.1.0-RC2.jar:na]
+	at org.kevoree.adaptation.deploy.osgi.command.AddThirdPartyCommand$$anonfun$execute$3.apply(AddThirdPartyCommand.scala:49) [org.kevoree.platform.osgi.standalone-1.1.0-RC2.jar:na]
+	at scala.collection.LinearSeqOptimized$class.exists(LinearSeqOptimized.scala:81) [org.kevoree.platform.osgi.standalone-1.1.0-RC2.jar:na]
+	at scala.collection.immutable.List.exists(List.scala:45) [org.kevoree.platform.osgi.standalone-1.1.0-RC2.jar:na]
+	at org.kevoree.adaptation.deploy.osgi.command.AddThirdPartyCommand.execute(AddThirdPartyCommand.scala:48) [org.kevoree.platform.osgi.standalone-1.1.0-RC2.jar:na]
+	at org.kevoree.adaptation.deploy.osgi.KevoreeDeployPhase$$anonfun$1.apply(KevoreeDeployPhase.scala:48) [org.kevoree.platform.osgi.standalone-1.1.0-RC2.jar:na]
+	at org.kevoree.adaptation.deploy.osgi.KevoreeDeployPhase$$anonfun$1.apply(KevoreeDeployPhase.scala:46) [org.kevoree.platform.osgi.standalone-1.1.0-RC2.jar:na]
+	at scala.collection.LinearSeqOptimized$class.forall(LinearSeqOptimized.scala:71) [org.kevoree.platform.osgi.standalone-1.1.0-RC2.jar:na]
+	at scala.collection.immutable.List.forall(List.scala:45) [org.kevoree.platform.osgi.standalone-1.1.0-RC2.jar:na]
+	at org.kevoree.adaptation.deploy.osgi.KevoreeDeployPhase.phase(KevoreeDeployPhase.scala:46) [org.kevoree.platform.osgi.standalone-1.1.0-RC2.jar:na]
+	at org.kevoree.adaptation.deploy.osgi.KevoreeAdaptationDeployServiceOSGi.execute(KevoreeAdaptationDeployServiceOSGi.scala:408) [org.kevoree.platform.osgi.standalone-1.1.0-RC2.jar:na]
+	at org.kevoree.adaptation.deploy.osgi.KevoreeAdaptationDeployServiceOSGi.deploy(KevoreeAdaptationDeployServiceOSGi.scala:237) [org.kevoree.platform.osgi.standalone-1.1.0-RC2.jar:na]
+	at org.kevoree.core.impl.KevoreeCoreBean.internal_process(KevoreeCoreBean.scala:132) [org.kevoree.platform.osgi.standalone-1.1.0-RC2.jar:na]
+	at org.kevoree.framework.KevoreeActor$$anonfun$act$1$$anonfun$apply$1.apply(KevoreeActor.scala:66) [org.kevoree.platform.osgi.standalone-1.1.0-RC2.jar:na]
+	at org.kevoree.framework.KevoreeActor$$anonfun$act$1$$anonfun$apply$1.apply(KevoreeActor.scala:57) [org.kevoree.platform.osgi.standalone-1.1.0-RC2.jar:na]
+	at scala.actors.ReactorTask.run(ReactorTask.scala:34) [org.kevoree.platform.osgi.standalone-1.1.0-RC2.jar:na]
+	at scala.actors.Reactor$class.resumeReceiver(Reactor.scala:129) [org.kevoree.platform.osgi.standalone-1.1.0-RC2.jar:na]
+	at org.kevoree.core.impl.KevoreeCoreBean.scala$actors$ReplyReactor$$super$resumeReceiver(KevoreeCoreBean.scala:38) [org.kevoree.platform.osgi.standalone-1.1.0-RC2.jar:na]
+	at scala.actors.ReplyReactor$class.resumeReceiver(ReplyReactor.scala:69) [org.kevoree.platform.osgi.standalone-1.1.0-RC2.jar:na]
+	at org.kevoree.core.impl.KevoreeCoreBean.resumeReceiver(KevoreeCoreBean.scala:38) [org.kevoree.platform.osgi.standalone-1.1.0-RC2.jar:na]
+	at scala.actors.Actor$class.searchMailbox(Actor.scala:478) [org.kevoree.platform.osgi.standalone-1.1.0-RC2.jar:na]
+	at org.kevoree.core.impl.KevoreeCoreBean.searchMailbox(KevoreeCoreBean.scala:38) [org.kevoree.platform.osgi.standalone-1.1.0-RC2.jar:na]
+	at scala.actors.Reactor$$anonfun$startSearch$1$$anonfun$apply$mcV$sp$1.apply(Reactor.scala:114) [org.kevoree.platform.osgi.standalone-1.1.0-RC2.jar:na]
+	at scala.actors.Reactor$$anonfun$startSearch$1$$anonfun$apply$mcV$sp$1.apply(Reactor.scala:114) [org.kevoree.platform.osgi.standalone-1.1.0-RC2.jar:na]
+	at scala.actors.ReactorTask.run(ReactorTask.scala:36) [org.kevoree.platform.osgi.standalone-1.1.0-RC2.jar:na]
+	at scala.concurrent.forkjoin.ForkJoinPool$AdaptedRunnable.exec(ForkJoinPool.java:611) [org.kevoree.platform.osgi.standalone-1.1.0-RC2.jar:na]
+	at scala.concurrent.forkjoin.ForkJoinTask.quietlyExec(ForkJoinTask.java:422) [org.kevoree.platform.osgi.standalone-1.1.0-RC2.jar:na]
+	at scala.concurrent.forkjoin.ForkJoinWorkerThread.mainLoop(ForkJoinWorkerThread.java:340) [org.kevoree.platform.osgi.standalone-1.1.0-RC2.jar:na]
+	at scala.concurrent.forkjoin.ForkJoinWorkerThread.run(ForkJoinWorkerThread.java:325) [org.kevoree.platform.osgi.standalone-1.1.0-RC2.jar:na]
+Caused by: java.lang.RuntimeException: URL [mvn:org.kevoree.extra/org.kevoree.extra.netty/3.2.4.Final] could not be resolved.
+	at org.ops4j.pax.url.mvn.internal.Connection.getInputStream(Connection.java:195) ~[org.kevoree.platform.osgi.standalone-1.1.0-RC2.jar:na]
+	at org.apache.felix.framework.util.SecureAction.getURLConnectionInputStream(SecureAction.java:508) ~[org.kevoree.platform.osgi.standalone-1.1.0-RC2.jar:na]
+	at org.apache.felix.framework.cache.JarRevision.initialize(JarRevision.java:170) ~[org.kevoree.platform.osgi.standalone-1.1.0-RC2.jar:na]
+	at org.apache.felix.framework.cache.JarRevision.<init>(JarRevision.java:82) ~[org.kevoree.platform.osgi.standalone-1.1.0-RC2.jar:na]
+	at org.apache.felix.framework.cache.JarRevision.<init>(JarRevision.java:60) ~[org.kevoree.platform.osgi.standalone-1.1.0-RC2.jar:na]
+	at org.apache.felix.framework.cache.BundleArchive.createRevisionFromLocation(BundleArchive.java:868) ~[org.kevoree.platform.osgi.standalone-1.1.0-RC2.jar:na]
+	at org.apache.felix.framework.cache.BundleArchive.reviseInternal(BundleArchive.java:549) ~[org.kevoree.platform.osgi.standalone-1.1.0-RC2.jar:na]
+	at org.apache.felix.framework.cache.BundleArchive.<init>(BundleArchive.java:148) ~[org.kevoree.platform.osgi.standalone-1.1.0-RC2.jar:na]
+	at org.apache.felix.framework.cache.BundleCache.create(BundleCache.java:251) ~[org.kevoree.platform.osgi.standalone-1.1.0-RC2.jar:na]
+	at org.apache.felix.framework.Felix.installBundle(Felix.java:2489) ~[org.kevoree.platform.osgi.standalone-1.1.0-RC2.jar:na]
+	... 33 common frames omitted
+o.k.a.d.o.c.AddThirdPartyCommand - CMD ADD ThirdParty EXECUTION => url=mvn:http://maven.kevoree.org/libs-release-local!org.kevoree.extra/org.kevoree.extra.netty/3.2.4.Final
+o.k.a.d.osgi.KevoreeDeployPhase - Execute command org.kevoree.adaptation.deploy.osgi.command.AddThirdPartyCommand
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:org.kevoree.extra/org.kevoree.extra.marshalling/1.1.0-RC2
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://maven.kevoree.org/libs-release-local!org.kevoree.extra/org.kevoree.extra.marshalling/1.1.0-RC2
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://maven.kevoree.org/libs-snapshot-local!org.kevoree.extra/org.kevoree.extra.marshalling/1.1.0-RC2
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://www.kermeta.org/maven2!org.kevoree.extra/org.kevoree.extra.marshalling/1.1.0-RC2
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://www.kermeta.org/maven2-snapshots!org.kevoree.extra/org.kevoree.extra.marshalling/1.1.0-RC2
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://scala-tools.org/repo-releases!org.kevoree.extra/org.kevoree.extra.marshalling/1.1.0-RC2
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:https://repository.jboss.org/nexus/content/repositories/releases/!org.kevoree.extra/org.kevoree.extra.marshalling/1.1.0-RC2
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://akka.io/repository/!org.kevoree.extra/org.kevoree.extra.marshalling/1.1.0-RC2
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://maven.ow2.org/maven2/!org.kevoree.extra/org.kevoree.extra.marshalling/1.1.0-RC2
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://repository.ops4j.org/mvn-3rdparty!org.kevoree.extra/org.kevoree.extra.marshalling/1.1.0-RC2
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://repo1.maven.org/maven2!org.kevoree.extra/org.kevoree.extra.marshalling/1.1.0-RC2
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://131.254.15.214:8000/provisioning/!org.kevoree.extra/org.kevoree.extra.marshalling/1.1.0-RC2
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://131.254.15.214:8001/provisioning/!org.kevoree.extra/org.kevoree.extra.marshalling/1.1.0-RC2
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://131.254.15.214:8002/provisioning/!org.kevoree.extra/org.kevoree.extra.marshalling/1.1.0-RC2
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://131.254.15.214:8003/provisioning/!org.kevoree.extra/org.kevoree.extra.marshalling/1.1.0-RC2
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://131.254.12.28:8000/provisioning/!org.kevoree.extra/org.kevoree.extra.marshalling/1.1.0-RC2
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://131.254.12.28:8001/provisioning/!org.kevoree.extra/org.kevoree.extra.marshalling/1.1.0-RC2
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://131.254.12.28:8002/provisioning/!org.kevoree.extra/org.kevoree.extra.marshalling/1.1.0-RC2
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://131.254.12.28:8003/provisioning/!org.kevoree.extra/org.kevoree.extra.marshalling/1.1.0-RC2
+o.k.a.d.o.c.AddThirdPartyCommand - CMD ADD ThirdParty EXECUTION => url=mvn:org.kevoree.extra/org.kevoree.extra.marshalling/1.1.0-RC2
+o.k.a.d.osgi.KevoreeDeployPhase - Resolving bundle: org.kevoree.extra.protobuf
+o.k.a.d.osgi.KevoreeDeployPhase - Resolving bundle: org.kevoree.extra.netty
+o.k.a.d.osgi.KevoreeDeployPhase - Resolving bundle: org.kevoree.extra.org.kevoree.extra.marshalling
+o.k.a.d.osgi.KevoreeDeployPhase - Result : true
+o.k.a.d.osgi.KevoreeDeployPhase - Phase 6 Add TypeDefinition DeployUnit=1
+o.k.a.d.osgi.KevoreeDeployPhase - Execute command org.kevoree.adaptation.deploy.osgi.command.AddDeployUnitCommand
+o.k.a.d.o.c.AddDeployUnitCommand - CMD ADD DEPLOY UNIT EXECUTION 
+o.k.a.d.o.c.AddDeployUnitCommand - potential url=mvn:org.kevoree.experiment/org.kevoree.experiment.library.gossiperNetty/1.1.0-RC2
+o.k.a.d.o.c.AddDeployUnitCommand - potential url=mvn:http://maven.kevoree.org/libs-release-local!org.kevoree.experiment/org.kevoree.experiment.library.gossiperNetty/1.1.0-RC2
+o.k.a.d.o.c.AddDeployUnitCommand - potential url=mvn:http://maven.kevoree.org/libs-release-local!org.kevoree.experiment/org.kevoree.experiment.library.gossiperNetty/1.1.0-RC2
+o.k.a.d.o.c.AddDeployUnitCommand - potential url=mvn:http://maven.kevoree.org/libs-snapshot-local!org.kevoree.experiment/org.kevoree.experiment.library.gossiperNetty/1.1.0-RC2
+o.k.a.d.o.c.AddDeployUnitCommand - potential url=mvn:http://www.kermeta.org/maven2!org.kevoree.experiment/org.kevoree.experiment.library.gossiperNetty/1.1.0-RC2
+o.k.a.d.o.c.AddDeployUnitCommand - potential url=mvn:http://www.kermeta.org/maven2-snapshots!org.kevoree.experiment/org.kevoree.experiment.library.gossiperNetty/1.1.0-RC2
+o.k.a.d.o.c.AddDeployUnitCommand - potential url=mvn:http://scala-tools.org/repo-releases!org.kevoree.experiment/org.kevoree.experiment.library.gossiperNetty/1.1.0-RC2
+o.k.a.d.o.c.AddDeployUnitCommand - potential url=mvn:https://repository.jboss.org/nexus/content/repositories/releases/!org.kevoree.experiment/org.kevoree.experiment.library.gossiperNetty/1.1.0-RC2
+o.k.a.d.o.c.AddDeployUnitCommand - potential url=mvn:http://akka.io/repository/!org.kevoree.experiment/org.kevoree.experiment.library.gossiperNetty/1.1.0-RC2
+o.k.a.d.o.c.AddDeployUnitCommand - potential url=mvn:http://maven.ow2.org/maven2/!org.kevoree.experiment/org.kevoree.experiment.library.gossiperNetty/1.1.0-RC2
+o.k.a.d.o.c.AddDeployUnitCommand - potential url=mvn:http://repository.ops4j.org/mvn-3rdparty!org.kevoree.experiment/org.kevoree.experiment.library.gossiperNetty/1.1.0-RC2
+o.k.a.d.o.c.AddDeployUnitCommand - potential url=mvn:http://repo1.maven.org/maven2!org.kevoree.experiment/org.kevoree.experiment.library.gossiperNetty/1.1.0-RC2
+o.k.a.d.o.c.AddDeployUnitCommand - potential url=mvn:http://131.254.15.214:8000/provisioning/!org.kevoree.experiment/org.kevoree.experiment.library.gossiperNetty/1.1.0-RC2
+o.k.a.d.o.c.AddDeployUnitCommand - potential url=mvn:http://131.254.15.214:8001/provisioning/!org.kevoree.experiment/org.kevoree.experiment.library.gossiperNetty/1.1.0-RC2
+o.k.a.d.o.c.AddDeployUnitCommand - potential url=mvn:http://131.254.15.214:8002/provisioning/!org.kevoree.experiment/org.kevoree.experiment.library.gossiperNetty/1.1.0-RC2
+o.k.a.d.o.c.AddDeployUnitCommand - potential url=mvn:http://131.254.15.214:8003/provisioning/!org.kevoree.experiment/org.kevoree.experiment.library.gossiperNetty/1.1.0-RC2
+o.k.a.d.o.c.AddDeployUnitCommand - potential url=mvn:http://131.254.12.28:8000/provisioning/!org.kevoree.experiment/org.kevoree.experiment.library.gossiperNetty/1.1.0-RC2
+o.k.a.d.o.c.AddDeployUnitCommand - potential url=mvn:http://131.254.12.28:8001/provisioning/!org.kevoree.experiment/org.kevoree.experiment.library.gossiperNetty/1.1.0-RC2
+o.k.a.d.o.c.AddDeployUnitCommand - potential url=mvn:http://131.254.12.28:8002/provisioning/!org.kevoree.experiment/org.kevoree.experiment.library.gossiperNetty/1.1.0-RC2
+o.k.a.d.o.c.AddDeployUnitCommand - potential url=mvn:http://131.254.12.28:8003/provisioning/!org.kevoree.experiment/org.kevoree.experiment.library.gossiperNetty/1.1.0-RC2
+o.k.a.d.o.c.AddDeployUnitCommand - Try to install from URI, mvn:org.kevoree.experiment/org.kevoree.experiment.library.gossiperNetty/1.1.0-RC2
+o.k.a.d.o.c.AddDeployUnitCommand - failed to perform CMD ADD CT EXECUTION
+o.k.a.d.o.c.AddDeployUnitCommand - Try to install from URI, mvn:http://maven.kevoree.org/libs-release-local!org.kevoree.experiment/org.kevoree.experiment.library.gossiperNetty/1.1.0-RC2
+o.k.a.d.o.c.AddDeployUnitCommand - failed to perform CMD ADD CT EXECUTION
+o.k.a.d.o.c.AddDeployUnitCommand - Try to install from URI, mvn:http://maven.kevoree.org/libs-release-local!org.kevoree.experiment/org.kevoree.experiment.library.gossiperNetty/1.1.0-RC2
+o.k.a.d.o.c.AddDeployUnitCommand - failed to perform CMD ADD CT EXECUTION
+o.k.a.d.o.c.AddDeployUnitCommand - Try to install from URI, mvn:http://maven.kevoree.org/libs-snapshot-local!org.kevoree.experiment/org.kevoree.experiment.library.gossiperNetty/1.1.0-RC2
+o.k.a.d.o.c.AddDeployUnitCommand - failed to perform CMD ADD CT EXECUTION
+o.k.a.d.o.c.AddDeployUnitCommand - Try to install from URI, mvn:http://www.kermeta.org/maven2!org.kevoree.experiment/org.kevoree.experiment.library.gossiperNetty/1.1.0-RC2
+o.k.a.d.o.c.AddDeployUnitCommand - failed to perform CMD ADD CT EXECUTION
+o.k.a.d.o.c.AddDeployUnitCommand - Try to install from URI, mvn:http://www.kermeta.org/maven2-snapshots!org.kevoree.experiment/org.kevoree.experiment.library.gossiperNetty/1.1.0-RC2
+o.k.a.d.o.c.AddDeployUnitCommand - failed to perform CMD ADD CT EXECUTION
+o.k.a.d.o.c.AddDeployUnitCommand - Try to install from URI, mvn:http://scala-tools.org/repo-releases!org.kevoree.experiment/org.kevoree.experiment.library.gossiperNetty/1.1.0-RC2
+o.k.a.d.o.c.AddDeployUnitCommand - failed to perform CMD ADD CT EXECUTION
+o.k.a.d.o.c.AddDeployUnitCommand - Try to install from URI, mvn:https://repository.jboss.org/nexus/content/repositories/releases/!org.kevoree.experiment/org.kevoree.experiment.library.gossiperNetty/1.1.0-RC2
+o.k.a.d.o.c.AddDeployUnitCommand - failed to perform CMD ADD CT EXECUTION
+o.k.a.d.o.c.AddDeployUnitCommand - Try to install from URI, mvn:http://akka.io/repository/!org.kevoree.experiment/org.kevoree.experiment.library.gossiperNetty/1.1.0-RC2
+o.k.a.d.o.c.AddDeployUnitCommand - failed to perform CMD ADD CT EXECUTION
+o.k.a.d.o.c.AddDeployUnitCommand - Try to install from URI, mvn:http://maven.ow2.org/maven2/!org.kevoree.experiment/org.kevoree.experiment.library.gossiperNetty/1.1.0-RC2
+o.k.a.d.o.c.AddDeployUnitCommand - failed to perform CMD ADD CT EXECUTION
+o.k.a.d.o.c.AddDeployUnitCommand - Try to install from URI, mvn:http://repository.ops4j.org/mvn-3rdparty!org.kevoree.experiment/org.kevoree.experiment.library.gossiperNetty/1.1.0-RC2
+o.k.a.d.o.c.AddDeployUnitCommand - failed to perform CMD ADD CT EXECUTION
+o.k.a.d.o.c.AddDeployUnitCommand - Try to install from URI, mvn:http://repo1.maven.org/maven2!org.kevoree.experiment/org.kevoree.experiment.library.gossiperNetty/1.1.0-RC2
+o.k.a.d.o.c.AddDeployUnitCommand - failed to perform CMD ADD CT EXECUTION
+o.k.a.d.o.c.AddDeployUnitCommand - Try to install from URI, mvn:http://131.254.15.214:8000/provisioning/!org.kevoree.experiment/org.kevoree.experiment.library.gossiperNetty/1.1.0-RC2
+o.k.a.d.o.c.AddDeployUnitCommand - failed to perform CMD ADD CT EXECUTION
+o.k.a.d.o.c.AddDeployUnitCommand - Try to install from URI, mvn:http://131.254.15.214:8001/provisioning/!org.kevoree.experiment/org.kevoree.experiment.library.gossiperNetty/1.1.0-RC2
+o.k.a.d.o.c.AddDeployUnitCommand - failed to perform CMD ADD CT EXECUTION
+o.k.a.d.o.c.AddDeployUnitCommand - Try to install from URI, mvn:http://131.254.15.214:8002/provisioning/!org.kevoree.experiment/org.kevoree.experiment.library.gossiperNetty/1.1.0-RC2
+o.k.a.d.o.c.AddDeployUnitCommand - failed to perform CMD ADD CT EXECUTION
+o.k.a.d.o.c.AddDeployUnitCommand - Try to install from URI, mvn:http://131.254.15.214:8003/provisioning/!org.kevoree.experiment/org.kevoree.experiment.library.gossiperNetty/1.1.0-RC2
+o.k.a.d.o.c.AddDeployUnitCommand - failed to perform CMD ADD CT EXECUTION
+o.k.a.d.o.c.AddDeployUnitCommand - Try to install from URI, mvn:http://131.254.12.28:8000/provisioning/!org.kevoree.experiment/org.kevoree.experiment.library.gossiperNetty/1.1.0-RC2
+o.k.a.d.o.c.AddDeployUnitCommand - failed to perform CMD ADD CT EXECUTION
+o.k.a.d.o.c.AddDeployUnitCommand - Try to install from URI, mvn:http://131.254.12.28:8001/provisioning/!org.kevoree.experiment/org.kevoree.experiment.library.gossiperNetty/1.1.0-RC2
+o.k.a.d.o.c.AddDeployUnitCommand - failed to perform CMD ADD CT EXECUTION
+o.k.a.d.o.c.AddDeployUnitCommand - Try to install from URI, mvn:http://131.254.12.28:8002/provisioning/!org.kevoree.experiment/org.kevoree.experiment.library.gossiperNetty/1.1.0-RC2
+o.k.a.d.o.c.AddDeployUnitCommand - failed to perform CMD ADD CT EXECUTION
+o.k.a.d.o.c.AddDeployUnitCommand - Try to install from URI, mvn:http://131.254.12.28:8003/provisioning/!org.kevoree.experiment/org.kevoree.experiment.library.gossiperNetty/1.1.0-RC2
+o.k.a.d.o.c.AddDeployUnitCommand - failed to perform CMD ADD CT EXECUTION
+o.k.a.d.osgi.KevoreeDeployPhase - Result : false
+o.kevoree.core.impl.KevoreeCoreBean - Start event : node name = duke0
+o.kevoree.core.impl.KevoreeCoreBean - Try to bootstrap platform
+o.kevoree.core.impl.KevoreeCoreBean - Begin update model 1305636921758
+o.k.kompare.KevoreeKompareBean - INIT NODE v2 duke0
+o.k.a.d.o.KevoreeAdaptationDeployServiceOSGi - Plannification time = 2 ms
+o.k.a.d.o.KevoreeAdaptationDeployServiceOSGi - stop command
+o.k.a.d.o.KevoreeAdaptationDeployServiceOSGi - start
+o.k.a.d.o.KevoreeAdaptationDeployServiceOSGi - gossipGroup
+o.k.a.d.osgi.KevoreeDeployPhase - Phase 0 STOP COMPONENT=0
+o.k.a.d.osgi.KevoreeDeployPhase - Result : true
+o.k.a.d.osgi.KevoreeDeployPhase - Phase 1 Remove Binding=0
+o.k.a.d.osgi.KevoreeDeployPhase - Result : true
+o.k.a.d.osgi.KevoreeDeployPhase - Phase 2 Remove Instance=0
+o.k.a.d.osgi.KevoreeDeployPhase - Result : true
+o.k.a.d.osgi.KevoreeDeployPhase - Phase 3 Remove ComponentType=0
+o.k.a.d.osgi.KevoreeDeployPhase - Result : true
+o.k.a.d.osgi.KevoreeDeployPhase - Phase 4 Remove TypeDefinition DeployUnit=0
+o.k.a.d.osgi.KevoreeDeployPhase - Result : true
+o.k.a.d.osgi.KevoreeDeployPhase - Phase 5 ThirdParty=3
+o.k.a.d.osgi.KevoreeDeployPhase - Execute command org.kevoree.adaptation.deploy.osgi.command.AddThirdPartyCommand
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:org.kevoree.extra/org.kevoree.extra.protobuf/2.3.0
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://maven.kevoree.org/libs-release-local!org.kevoree.extra/org.kevoree.extra.protobuf/2.3.0
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://maven.kevoree.org/libs-snapshot-local!org.kevoree.extra/org.kevoree.extra.protobuf/2.3.0
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://www.kermeta.org/maven2!org.kevoree.extra/org.kevoree.extra.protobuf/2.3.0
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://www.kermeta.org/maven2-snapshots!org.kevoree.extra/org.kevoree.extra.protobuf/2.3.0
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://scala-tools.org/repo-releases!org.kevoree.extra/org.kevoree.extra.protobuf/2.3.0
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:https://repository.jboss.org/nexus/content/repositories/releases/!org.kevoree.extra/org.kevoree.extra.protobuf/2.3.0
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://akka.io/repository/!org.kevoree.extra/org.kevoree.extra.protobuf/2.3.0
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://maven.ow2.org/maven2/!org.kevoree.extra/org.kevoree.extra.protobuf/2.3.0
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://repository.ops4j.org/mvn-3rdparty!org.kevoree.extra/org.kevoree.extra.protobuf/2.3.0
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://repo1.maven.org/maven2!org.kevoree.extra/org.kevoree.extra.protobuf/2.3.0
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://131.254.15.214:8000/provisioning/!org.kevoree.extra/org.kevoree.extra.protobuf/2.3.0
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://131.254.15.214:8001/provisioning/!org.kevoree.extra/org.kevoree.extra.protobuf/2.3.0
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://131.254.15.214:8002/provisioning/!org.kevoree.extra/org.kevoree.extra.protobuf/2.3.0
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://131.254.15.214:8003/provisioning/!org.kevoree.extra/org.kevoree.extra.protobuf/2.3.0
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://131.254.12.28:8000/provisioning/!org.kevoree.extra/org.kevoree.extra.protobuf/2.3.0
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://131.254.12.28:8001/provisioning/!org.kevoree.extra/org.kevoree.extra.protobuf/2.3.0
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://131.254.12.28:8002/provisioning/!org.kevoree.extra/org.kevoree.extra.protobuf/2.3.0
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://131.254.12.28:8003/provisioning/!org.kevoree.extra/org.kevoree.extra.protobuf/2.3.0
+o.k.a.d.o.c.AddThirdPartyCommand - CMD ADD ThirdParty EXECUTION => url=mvn:org.kevoree.extra/org.kevoree.extra.protobuf/2.3.0
+o.k.a.d.osgi.KevoreeDeployPhase - Execute command org.kevoree.adaptation.deploy.osgi.command.AddThirdPartyCommand
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:org.kevoree.extra/org.kevoree.extra.netty/3.2.4
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://maven.kevoree.org/libs-release-local!org.kevoree.extra/org.kevoree.extra.netty/3.2.4
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://maven.kevoree.org/libs-snapshot-local!org.kevoree.extra/org.kevoree.extra.netty/3.2.4
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://www.kermeta.org/maven2!org.kevoree.extra/org.kevoree.extra.netty/3.2.4
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://www.kermeta.org/maven2-snapshots!org.kevoree.extra/org.kevoree.extra.netty/3.2.4
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://scala-tools.org/repo-releases!org.kevoree.extra/org.kevoree.extra.netty/3.2.4
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:https://repository.jboss.org/nexus/content/repositories/releases/!org.kevoree.extra/org.kevoree.extra.netty/3.2.4
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://akka.io/repository/!org.kevoree.extra/org.kevoree.extra.netty/3.2.4
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://maven.ow2.org/maven2/!org.kevoree.extra/org.kevoree.extra.netty/3.2.4
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://repository.ops4j.org/mvn-3rdparty!org.kevoree.extra/org.kevoree.extra.netty/3.2.4
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://repo1.maven.org/maven2!org.kevoree.extra/org.kevoree.extra.netty/3.2.4
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://131.254.15.214:8000/provisioning/!org.kevoree.extra/org.kevoree.extra.netty/3.2.4
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://131.254.15.214:8001/provisioning/!org.kevoree.extra/org.kevoree.extra.netty/3.2.4
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://131.254.15.214:8002/provisioning/!org.kevoree.extra/org.kevoree.extra.netty/3.2.4
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://131.254.15.214:8003/provisioning/!org.kevoree.extra/org.kevoree.extra.netty/3.2.4
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://131.254.12.28:8000/provisioning/!org.kevoree.extra/org.kevoree.extra.netty/3.2.4
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://131.254.12.28:8001/provisioning/!org.kevoree.extra/org.kevoree.extra.netty/3.2.4
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://131.254.12.28:8002/provisioning/!org.kevoree.extra/org.kevoree.extra.netty/3.2.4
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://131.254.12.28:8003/provisioning/!org.kevoree.extra/org.kevoree.extra.netty/3.2.4
+o.k.a.d.o.c.AddThirdPartyCommand - CMD ADD ThirdParty EXECUTION => url=mvn:org.kevoree.extra/org.kevoree.extra.netty/3.2.4
+o.k.a.d.osgi.KevoreeDeployPhase - Execute command org.kevoree.adaptation.deploy.osgi.command.AddThirdPartyCommand
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:org.kevoree.extra/org.kevoree.extra.marshalling/1.1.0-RC2
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://maven.kevoree.org/libs-release-local!org.kevoree.extra/org.kevoree.extra.marshalling/1.1.0-RC2
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://maven.kevoree.org/libs-snapshot-local!org.kevoree.extra/org.kevoree.extra.marshalling/1.1.0-RC2
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://www.kermeta.org/maven2!org.kevoree.extra/org.kevoree.extra.marshalling/1.1.0-RC2
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://www.kermeta.org/maven2-snapshots!org.kevoree.extra/org.kevoree.extra.marshalling/1.1.0-RC2
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://scala-tools.org/repo-releases!org.kevoree.extra/org.kevoree.extra.marshalling/1.1.0-RC2
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:https://repository.jboss.org/nexus/content/repositories/releases/!org.kevoree.extra/org.kevoree.extra.marshalling/1.1.0-RC2
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://akka.io/repository/!org.kevoree.extra/org.kevoree.extra.marshalling/1.1.0-RC2
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://maven.ow2.org/maven2/!org.kevoree.extra/org.kevoree.extra.marshalling/1.1.0-RC2
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://repository.ops4j.org/mvn-3rdparty!org.kevoree.extra/org.kevoree.extra.marshalling/1.1.0-RC2
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://repo1.maven.org/maven2!org.kevoree.extra/org.kevoree.extra.marshalling/1.1.0-RC2
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://131.254.15.214:8000/provisioning/!org.kevoree.extra/org.kevoree.extra.marshalling/1.1.0-RC2
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://131.254.15.214:8001/provisioning/!org.kevoree.extra/org.kevoree.extra.marshalling/1.1.0-RC2
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://131.254.15.214:8002/provisioning/!org.kevoree.extra/org.kevoree.extra.marshalling/1.1.0-RC2
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://131.254.15.214:8003/provisioning/!org.kevoree.extra/org.kevoree.extra.marshalling/1.1.0-RC2
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://131.254.12.28:8000/provisioning/!org.kevoree.extra/org.kevoree.extra.marshalling/1.1.0-RC2
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://131.254.12.28:8001/provisioning/!org.kevoree.extra/org.kevoree.extra.marshalling/1.1.0-RC2
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://131.254.12.28:8002/provisioning/!org.kevoree.extra/org.kevoree.extra.marshalling/1.1.0-RC2
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://131.254.12.28:8003/provisioning/!org.kevoree.extra/org.kevoree.extra.marshalling/1.1.0-RC2
+o.k.a.d.o.c.AddThirdPartyCommand - CMD ADD ThirdParty EXECUTION => url=mvn:org.kevoree.extra/org.kevoree.extra.marshalling/1.1.0-RC2
+o.k.a.d.osgi.KevoreeDeployPhase - Resolving bundle: org.kevoree.extra.protobuf
+o.k.a.d.osgi.KevoreeDeployPhase - Resolving bundle: org.kevoree.extra.netty
+o.k.a.d.osgi.KevoreeDeployPhase - Resolving bundle: org.kevoree.extra.org.kevoree.extra.marshalling
+o.k.a.d.osgi.KevoreeDeployPhase - Result : true
+o.k.a.d.osgi.KevoreeDeployPhase - Phase 6 Add TypeDefinition DeployUnit=1
+o.k.a.d.osgi.KevoreeDeployPhase - Execute command org.kevoree.adaptation.deploy.osgi.command.AddDeployUnitCommand
+o.k.a.d.o.c.AddDeployUnitCommand - CMD ADD DEPLOY UNIT EXECUTION 
+o.k.a.d.o.c.AddDeployUnitCommand - potential url=mvn:org.kevoree.experiment/org.kevoree.experiment.library.gossiperNetty/1.1.0-RC2
+o.k.a.d.o.c.AddDeployUnitCommand - potential url=mvn:http://maven.kevoree.org/libs-release-local!org.kevoree.experiment/org.kevoree.experiment.library.gossiperNetty/1.1.0-RC2
+o.k.a.d.o.c.AddDeployUnitCommand - potential url=mvn:http://maven.kevoree.org/libs-release-local!org.kevoree.experiment/org.kevoree.experiment.library.gossiperNetty/1.1.0-RC2
+o.k.a.d.o.c.AddDeployUnitCommand - potential url=mvn:http://maven.kevoree.org/libs-snapshot-local!org.kevoree.experiment/org.kevoree.experiment.library.gossiperNetty/1.1.0-RC2
+o.k.a.d.o.c.AddDeployUnitCommand - potential url=mvn:http://www.kermeta.org/maven2!org.kevoree.experiment/org.kevoree.experiment.library.gossiperNetty/1.1.0-RC2
+o.k.a.d.o.c.AddDeployUnitCommand - potential url=mvn:http://www.kermeta.org/maven2-snapshots!org.kevoree.experiment/org.kevoree.experiment.library.gossiperNetty/1.1.0-RC2
+o.k.a.d.o.c.AddDeployUnitCommand - potential url=mvn:http://scala-tools.org/repo-releases!org.kevoree.experiment/org.kevoree.experiment.library.gossiperNetty/1.1.0-RC2
+o.k.a.d.o.c.AddDeployUnitCommand - potential url=mvn:https://repository.jboss.org/nexus/content/repositories/releases/!org.kevoree.experiment/org.kevoree.experiment.library.gossiperNetty/1.1.0-RC2
+o.k.a.d.o.c.AddDeployUnitCommand - potential url=mvn:http://akka.io/repository/!org.kevoree.experiment/org.kevoree.experiment.library.gossiperNetty/1.1.0-RC2
+o.k.a.d.o.c.AddDeployUnitCommand - potential url=mvn:http://maven.ow2.org/maven2/!org.kevoree.experiment/org.kevoree.experiment.library.gossiperNetty/1.1.0-RC2
+o.k.a.d.o.c.AddDeployUnitCommand - potential url=mvn:http://repository.ops4j.org/mvn-3rdparty!org.kevoree.experiment/org.kevoree.experiment.library.gossiperNetty/1.1.0-RC2
+o.k.a.d.o.c.AddDeployUnitCommand - potential url=mvn:http://repo1.maven.org/maven2!org.kevoree.experiment/org.kevoree.experiment.library.gossiperNetty/1.1.0-RC2
+o.k.a.d.o.c.AddDeployUnitCommand - potential url=mvn:http://131.254.15.214:8000/provisioning/!org.kevoree.experiment/org.kevoree.experiment.library.gossiperNetty/1.1.0-RC2
+o.k.a.d.o.c.AddDeployUnitCommand - potential url=mvn:http://131.254.15.214:8001/provisioning/!org.kevoree.experiment/org.kevoree.experiment.library.gossiperNetty/1.1.0-RC2
+o.k.a.d.o.c.AddDeployUnitCommand - potential url=mvn:http://131.254.15.214:8002/provisioning/!org.kevoree.experiment/org.kevoree.experiment.library.gossiperNetty/1.1.0-RC2
+o.k.a.d.o.c.AddDeployUnitCommand - potential url=mvn:http://131.254.15.214:8003/provisioning/!org.kevoree.experiment/org.kevoree.experiment.library.gossiperNetty/1.1.0-RC2
+o.k.a.d.o.c.AddDeployUnitCommand - potential url=mvn:http://131.254.12.28:8000/provisioning/!org.kevoree.experiment/org.kevoree.experiment.library.gossiperNetty/1.1.0-RC2
+o.k.a.d.o.c.AddDeployUnitCommand - potential url=mvn:http://131.254.12.28:8001/provisioning/!org.kevoree.experiment/org.kevoree.experiment.library.gossiperNetty/1.1.0-RC2
+o.k.a.d.o.c.AddDeployUnitCommand - potential url=mvn:http://131.254.12.28:8002/provisioning/!org.kevoree.experiment/org.kevoree.experiment.library.gossiperNetty/1.1.0-RC2
+o.k.a.d.o.c.AddDeployUnitCommand - potential url=mvn:http://131.254.12.28:8003/provisioning/!org.kevoree.experiment/org.kevoree.experiment.library.gossiperNetty/1.1.0-RC2
+o.k.a.d.o.c.AddDeployUnitCommand - Try to install from URI, mvn:org.kevoree.experiment/org.kevoree.experiment.library.gossiperNetty/1.1.0-RC2
+o.k.a.d.o.c.AddDeployUnitCommand - failed to perform CMD ADD CT EXECUTION
+o.k.a.d.o.c.AddDeployUnitCommand - Try to install from URI, mvn:http://maven.kevoree.org/libs-release-local!org.kevoree.experiment/org.kevoree.experiment.library.gossiperNetty/1.1.0-RC2
+o.k.a.d.osgi.KevoreeDeployPhase - Resolving bundle: org.kevoree.experiment.org.kevoree.experiment.library.gossiperNetty
+o.k.a.d.osgi.KevoreeDeployPhase - Result : true
+o.k.a.d.osgi.KevoreeDeployPhase - Phase 7 Add ComponentType=1
+o.k.a.d.osgi.KevoreeDeployPhase - Execute command org.kevoree.adaptation.deploy.osgi.command.AddTypeCommand
+o.k.a.d.osgi.command.AddTypeCommand - CMD ADD CT EXECUTION 
+o.k.a.d.osgi.KevoreeDeployPhase - Result : true
+o.k.a.d.osgi.KevoreeDeployPhase - Phase 8 install ComponentInstance=1
+o.k.a.d.osgi.KevoreeDeployPhase - Execute command org.kevoree.adaptation.deploy.osgi.command.AddInstanceCommand
+o.k.a.d.osgi.KevoreeDeployPhase - Resolving bundle: gossipGroup
+o.k.a.d.osgi.KevoreeDeployPhase - Result : true
+o.k.a.d.osgi.KevoreeDeployPhase - Phase 9 install Bindings=0
+o.k.a.d.osgi.KevoreeDeployPhase - Result : true
+o.k.a.d.osgi.KevoreeDeployPhase - Phase 10 SET PROPERTY=1
+o.k.a.d.osgi.KevoreeDeployPhase - Execute command org.kevoree.adaptation.deploy.osgi.command.UpdateDictionaryCommand
+o.k.a.d.osgi.KevoreeDeployPhase - Result : true
+o.k.a.d.osgi.KevoreeDeployPhase - Phase 11 START COMPONENT=1
+o.k.a.d.osgi.KevoreeDeployPhase - Execute command org.kevoree.adaptation.deploy.osgi.command.StartInstanceCommand
+o.k.a.d.osgi.KevoreeDeployPhase - Result : true
+o.kevoree.core.impl.KevoreeCoreBean - Deploy result true
+o.kevoree.core.impl.KevoreeCoreBean - End deploy result=true-6178
+o.k.l.g.NotificationRequestSender - send notification to duke1
+o.k.l.g.NotificationRequestSender - send notification to duke2
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock
+o.k.l.g.NotificationRequestSender - send notification to duke3
+o.k.l.g.group.DataManagerForGroup - Increment
+o.k.l.g.NotificationRequestSender - send notification to paraisseux0
+o.k.l.g.group.DataManagerForGroup - End increment
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock end
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock
+o.k.l.g.group.DataManagerForGroup - Increment
+o.k.l.g.NotificationRequestSender - send notification to paraisseux1
+o.k.l.g.group.DataManagerForGroup - End increment
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock end
+o.k.l.g.VectorClockAspect - VectorClock - 1 - 1305636927977
+o.k.l.g.VectorClockAspect - duke0-2-1305636927977
+o.k.l.g.VectorClockAspect - -- end vector clock --
+o.k.l.g.VectorClockAspect - VectorClock - 7 - 1305636911126
+o.k.l.g.VectorClockAspect - paraisseux1-2-1305636911126
+o.k.l.g.VectorClockAspect - duke3-2-1305636911126
+o.k.l.g.VectorClockAspect - duke1-2-1305636911051
+o.k.l.g.VectorClockAspect - duke2-2-1305636910415
+o.k.l.g.VectorClockAspect - paraisseux0-2-1305636906356
+o.k.l.g.VectorClockAspect - paraisseux2-2-1305636906356
+o.k.l.g.VectorClockAspect - paraisseux3-2-1305636906356
+o.k.l.g.VectorClockAspect - -- end vector clock --
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock
+o.k.l.g.NotificationRequestSender - send notification to paraisseux2
+o.k.l.g.NotificationRequestSender - send notification to paraisseux3
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock end
+o.k.l.g.GossiperRequestSender - VectorClocks comparison into GossiperRequestSender give us: CONCURRENTLY
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock
+o.k.l.g.AskForDataTCPActor - TCP sending ... :-)
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock end
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock end
+o.k.l.g.VectorClockAspect - VectorClock - 1 - 1305636927977
+o.k.l.g.VectorClockAspect - duke0-2-1305636927977
+o.k.l.g.VectorClockAspect - -- end vector clock --
+o.k.l.g.VectorClockAspect - VectorClock - 7 - 1305636911182
+o.k.l.g.VectorClockAspect - paraisseux0-2-1305636911182
+o.k.l.g.VectorClockAspect - duke3-2-1305636911182
+o.k.l.g.VectorClockAspect - duke1-2-1305636911054
+o.k.l.g.VectorClockAspect - duke2-2-1305636910445
+o.k.l.g.VectorClockAspect - paraisseux2-2-1305636904970
+o.k.l.g.VectorClockAspect - paraisseux1-2-1305636904896
+o.k.l.g.VectorClockAspect - paraisseux3-2-1305636905908
+o.k.l.g.VectorClockAspect - -- end vector clock --
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock end
+o.k.l.g.GossiperRequestSender - VectorClocks comparison into GossiperRequestSender give us: CONCURRENTLY
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock end
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock end
+o.k.l.g.VectorClockAspect - VectorClock - 1 - 1305636927977
+o.k.l.g.VectorClockAspect - duke0-2-1305636927977
+o.k.l.g.VectorClockAspect - -- end vector clock --
+o.k.l.g.VectorClockAspect - VectorClock - 6 - 1305636911105
+o.k.l.g.VectorClockAspect - paraisseux2-2-1305636911105
+o.k.l.g.VectorClockAspect - duke3-2-1305636911105
+o.k.l.g.VectorClockAspect - duke2-2-1305636910472
+o.k.l.g.VectorClockAspect - paraisseux0-2-1305636906340
+o.k.l.g.VectorClockAspect - paraisseux3-2-1305636906340
+o.k.l.g.VectorClockAspect - paraisseux1-2-1305636906340
+o.k.l.g.VectorClockAspect - -- end vector clock --
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock end
+o.k.l.g.GossiperRequestSender - VectorClocks comparison into GossiperRequestSender give us: CONCURRENTLY
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock end
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock end
+o.k.l.g.VectorClockAspect - VectorClock - 1 - 1305636927977
+o.k.l.g.VectorClockAspect - duke0-2-1305636927977
+o.k.l.g.VectorClockAspect - -- end vector clock --
+o.k.l.g.VectorClockAspect - VectorClock - 7 - 1305636911182
+o.k.l.g.VectorClockAspect - paraisseux0-2-1305636911182
+o.k.l.g.VectorClockAspect - duke3-2-1305636911182
+o.k.l.g.VectorClockAspect - duke1-2-1305636911054
+o.k.l.g.VectorClockAspect - duke2-2-1305636910445
+o.k.l.g.VectorClockAspect - paraisseux2-2-1305636904970
+o.k.l.g.VectorClockAspect - paraisseux1-2-1305636904896
+o.k.l.g.VectorClockAspect - paraisseux3-2-1305636905908
+o.k.l.g.VectorClockAspect - -- end vector clock --
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock end
+o.k.l.g.GossiperRequestSender - VectorClocks comparison into GossiperRequestSender give us: CONCURRENTLY
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock end
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock end
+o.k.l.g.VectorClockAspect - VectorClock - 1 - 1305636927977
+o.k.l.g.VectorClockAspect - duke0-2-1305636927977
+o.k.l.g.VectorClockAspect - -- end vector clock --
+o.k.l.g.VectorClockAspect - VectorClock - 7 - 1305636911126
+o.k.l.g.VectorClockAspect - paraisseux1-2-1305636911126
+o.k.l.g.VectorClockAspect - duke3-2-1305636911126
+o.k.l.g.VectorClockAspect - duke1-2-1305636911051
+o.k.l.g.VectorClockAspect - duke2-2-1305636910415
+o.k.l.g.VectorClockAspect - paraisseux0-2-1305636906356
+o.k.l.g.VectorClockAspect - paraisseux2-2-1305636906356
+o.k.l.g.VectorClockAspect - paraisseux3-2-1305636906356
+o.k.l.g.VectorClockAspect - -- end vector clock --
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock end
+o.k.l.g.GossiperRequestSender - VectorClocks comparison into GossiperRequestSender give us: CONCURRENTLY
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock end
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock end
+o.k.l.g.VectorClockAspect - VectorClock - 1 - 1305636927977
+o.k.l.g.VectorClockAspect - duke0-2-1305636927977
+o.k.l.g.VectorClockAspect - -- end vector clock --
+o.k.l.g.VectorClockAspect - VectorClock - 7 - 1305636911216
+o.k.l.g.VectorClockAspect - paraisseux3-2-1305636911216
+o.k.l.g.VectorClockAspect - duke3-2-1305636911216
+o.k.l.g.VectorClockAspect - duke1-2-1305636911061
+o.k.l.g.VectorClockAspect - duke2-2-1305636910485
+o.k.l.g.VectorClockAspect - paraisseux0-2-1305636906391
+o.k.l.g.VectorClockAspect - paraisseux2-2-1305636906391
+o.k.l.g.VectorClockAspect - paraisseux1-2-1305636906391
+o.k.l.g.VectorClockAspect - -- end vector clock --
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock end
+o.k.l.g.GossiperRequestSender - VectorClocks comparison into GossiperRequestSender give us: CONCURRENTLY
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock end
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock end
+o.k.l.g.VectorClockAspect - VectorClock - 1 - 1305636927977
+o.k.l.g.VectorClockAspect - duke0-2-1305636927977
+o.k.l.g.VectorClockAspect - -- end vector clock --
+o.k.l.g.VectorClockAspect - VectorClock - 7 - 1305636911216
+o.k.l.g.VectorClockAspect - paraisseux3-2-1305636911216
+o.k.l.g.VectorClockAspect - duke3-2-1305636911216
+o.k.l.g.VectorClockAspect - duke1-2-1305636911061
+o.k.l.g.VectorClockAspect - duke2-2-1305636910485
+o.k.l.g.VectorClockAspect - paraisseux0-2-1305636906391
+o.k.l.g.VectorClockAspect - paraisseux2-2-1305636906391
+o.k.l.g.VectorClockAspect - paraisseux1-2-1305636906391
+o.k.l.g.VectorClockAspect - -- end vector clock --
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock end
+o.k.l.g.GossiperRequestSender - VectorClocks comparison into GossiperRequestSender give us: CONCURRENTLY
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClocks
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClocks end
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClocks
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock end
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClocks end
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock end
+o.k.l.g.VectorClockAspect - VectorClock - 1 - 1305636927977
+o.k.l.g.VectorClockAspect - duke0-2-1305636927977
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClocks
+o.k.l.g.VectorClockAspect - -- end vector clock --
+o.k.l.g.VectorClockAspect - VectorClock - 7 - 1305636911288
+o.k.l.g.VectorClockAspect - paraisseux2-2-1305636911288
+o.k.l.g.VectorClockAspect - duke1-2-1305636911288
+o.k.l.g.VectorClockAspect - duke3-2-1305636911105
+o.k.l.g.VectorClockAspect - duke2-2-1305636910472
+o.k.l.g.VectorClockAspect - paraisseux0-2-1305636906340
+o.k.l.g.VectorClockAspect - paraisseux3-2-1305636906340
+o.k.l.g.VectorClockAspect - paraisseux1-2-1305636906340
+o.k.l.g.VectorClockAspect - -- end vector clock --
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock end
+o.k.l.g.GossiperRequestSender - VectorClocks comparison into GossiperRequestSender give us: CONCURRENTLY
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClocks end
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClocks
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClocks end
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClocks
+o.k.l.g.group.DataManagerForGroup - getData
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClocks end
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClocks
+o.k.l.g.group.DataManagerForGroup - getData end
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClocks end
+o.k.l.g.group.DataManagerForGroup - getData
+o.k.l.g.group.DataManagerForGroup - getData end
+o.k.l.g.group.DataManagerForGroup - getData
+o.k.l.g.group.DataManagerForGroup - getData end
+o.k.l.g.group.DataManagerForGroup - getData
+o.k.l.g.group.DataManagerForGroup - getData end
+o.k.l.g.AskForDataTCPActor - client build ! 
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock end
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock end
+o.k.l.g.VectorClockAspect - VectorClock - 1 - 1305636927977
+o.k.l.g.VectorClockAspect - duke0-2-1305636927977
+o.k.l.g.VectorClockAspect - -- end vector clock --
+o.k.l.g.VectorClockAspect - VectorClock - 8 - 1305636911563
+o.k.l.g.VectorClockAspect - paraisseux0-2-1305636911563
+o.k.l.g.VectorClockAspect - duke0-2-1305636911563
+o.k.l.g.VectorClockAspect - paraisseux1-2-1305636911302
+o.k.l.g.VectorClockAspect - duke3-2-1305636911302
+o.k.l.g.VectorClockAspect - duke1-2-1305636911302
+o.k.l.g.VectorClockAspect - duke2-2-1305636911302
+o.k.l.g.VectorClockAspect - paraisseux2-2-1305636911302
+o.k.l.g.VectorClockAspect - paraisseux3-2-1305636911302
+o.k.l.g.VectorClockAspect - -- end vector clock --
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock
+o.k.l.g.group.DataManagerForGroup - getUUIDVectorClock end
+o.k.l.g.GossiperRequestSender - VectorClocks comparison into GossiperRequestSender give us: BEFORE
+o.k.r.rest.ModelHandlerResource - Before EMF Serialisation
+o.k.l.g.AskForDataTCPActor - TCP sending ... :-)
+o.k.r.rest.ModelHandlerResource - after EMF Serialisation
+o.k.l.g.AskForDataTCPActor - client build ! 
+o.k.l.g.AskForDataTCPActor - TCP sending ... :-)
+o.k.l.g.AskForDataTCPActor - error in ack For data
+java.lang.NullPointerException: null
+	at org.kevoree.library.gossiperNetty.group.NettyGossiperGroup.getAddress(NettyGossiperGroup.java:104) ~[1.1.0-RC2:na]
+	at org.kevoree.library.gossiperNetty.AskForDataTCPActor.askForData(AskForDataTCPActor.scala:85) ~[1.1.0-RC2:na]
+	at org.kevoree.library.gossiperNetty.AskForDataTCPActor$$anonfun$act$1$$anonfun$apply$1.apply(AskForDataTCPActor.scala:66) [1.1.0-RC2:na]
+	at org.kevoree.library.gossiperNetty.AskForDataTCPActor$$anonfun$act$1$$anonfun$apply$1.apply(AskForDataTCPActor.scala:60) [1.1.0-RC2:na]
+	at scala.actors.ReactorTask.run(ReactorTask.scala:34) [org.kevoree.platform.osgi.standalone-1.1.0-RC2.jar:na]
+	at scala.actors.ReactorTask.compute(ReactorTask.scala:66) [org.kevoree.platform.osgi.standalone-1.1.0-RC2.jar:na]
+	at scala.concurrent.forkjoin.RecursiveAction.exec(RecursiveAction.java:147) [org.kevoree.platform.osgi.standalone-1.1.0-RC2.jar:na]
+	at scala.concurrent.forkjoin.ForkJoinTask.quietlyExec(ForkJoinTask.java:422) [org.kevoree.platform.osgi.standalone-1.1.0-RC2.jar:na]
+	at scala.concurrent.forkjoin.ForkJoinWorkerThread.mainLoop(ForkJoinWorkerThread.java:340) [org.kevoree.platform.osgi.standalone-1.1.0-RC2.jar:na]
+	at scala.concurrent.forkjoin.ForkJoinWorkerThread.run(ForkJoinWorkerThread.java:325) [org.kevoree.platform.osgi.standalone-1.1.0-RC2.jar:na]
+o.k.l.g.AskForDataTCPActor - TCP sending ... :-)
+o.k.l.g.AskForDataTCPActor - error in ack For data
+java.lang.NullPointerException: null
+	at org.kevoree.library.gossiperNetty.group.NettyGossiperGroup.getAddress(NettyGossiperGroup.java:104) ~[1.1.0-RC2:na]
+	at org.kevoree.library.gossiperNetty.AskForDataTCPActor.askForData(AskForDataTCPActor.scala:85) ~[1.1.0-RC2:na]
+	at org.kevoree.library.gossiperNetty.AskForDataTCPActor$$anonfun$act$1$$anonfun$apply$1.apply(AskForDataTCPActor.scala:66) [1.1.0-RC2:na]
+	at org.kevoree.library.gossiperNetty.AskForDataTCPActor$$anonfun$act$1$$anonfun$apply$1.apply(AskForDataTCPActor.scala:60) [1.1.0-RC2:na]
+	at scala.actors.ReactorTask.run(ReactorTask.scala:34) [org.kevoree.platform.osgi.standalone-1.1.0-RC2.jar:na]
+	at scala.actors.ReactorTask.compute(ReactorTask.scala:66) [org.kevoree.platform.osgi.standalone-1.1.0-RC2.jar:na]
+	at scala.concurrent.forkjoin.RecursiveAction.exec(RecursiveAction.java:147) [org.kevoree.platform.osgi.standalone-1.1.0-RC2.jar:na]
+	at scala.concurrent.forkjoin.ForkJoinTask.quietlyExec(ForkJoinTask.java:422) [org.kevoree.platform.osgi.standalone-1.1.0-RC2.jar:na]
+	at scala.concurrent.forkjoin.ForkJoinWorkerThread.mainLoop(ForkJoinWorkerThread.java:340) [org.kevoree.platform.osgi.standalone-1.1.0-RC2.jar:na]
+	at scala.concurrent.forkjoin.ForkJoinWorkerThread.run(ForkJoinWorkerThread.java:325) [org.kevoree.platform.osgi.standalone-1.1.0-RC2.jar:na]
+o.k.l.g.AskForDataTCPActor - TCP sending ... :-)
+o.k.l.g.AskForDataTCPActor - error in ack For data
+java.lang.NullPointerException: null
+	at org.kevoree.library.gossiperNetty.group.NettyGossiperGroup.getAddress(NettyGossiperGroup.java:104) ~[1.1.0-RC2:na]
+	at org.kevoree.library.gossiperNetty.AskForDataTCPActor.askForData(AskForDataTCPActor.scala:85) ~[1.1.0-RC2:na]
+	at org.kevoree.library.gossiperNetty.AskForDataTCPActor$$anonfun$act$1$$anonfun$apply$1.apply(AskForDataTCPActor.scala:66) [1.1.0-RC2:na]
+	at org.kevoree.library.gossiperNetty.AskForDataTCPActor$$anonfun$act$1$$anonfun$apply$1.apply(AskForDataTCPActor.scala:60) [1.1.0-RC2:na]
+	at scala.actors.ReactorTask.run(ReactorTask.scala:34) [org.kevoree.platform.osgi.standalone-1.1.0-RC2.jar:na]
+	at scala.actors.ReactorTask.compute(ReactorTask.scala:66) [org.kevoree.platform.osgi.standalone-1.1.0-RC2.jar:na]
+	at scala.concurrent.forkjoin.RecursiveAction.exec(RecursiveAction.java:147) [org.kevoree.platform.osgi.standalone-1.1.0-RC2.jar:na]
+	at scala.concurrent.forkjoin.ForkJoinTask.quietlyExec(ForkJoinTask.java:422) [org.kevoree.platform.osgi.standalone-1.1.0-RC2.jar:na]
+	at scala.concurrent.forkjoin.ForkJoinWorkerThread.mainLoop(ForkJoinWorkerThread.java:340) [org.kevoree.platform.osgi.standalone-1.1.0-RC2.jar:na]
+	at scala.concurrent.forkjoin.ForkJoinWorkerThread.run(ForkJoinWorkerThread.java:325) [org.kevoree.platform.osgi.standalone-1.1.0-RC2.jar:na]
+o.k.l.g.AskForDataTCPActor - TCP sending ... :-)
+o.k.l.g.AskForDataTCPActor - error in ack For data
+java.lang.NullPointerException: null
+	at org.kevoree.library.gossiperNetty.group.NettyGossiperGroup.getAddress(NettyGossiperGroup.java:104) ~[1.1.0-RC2:na]
+	at org.kevoree.library.gossiperNetty.AskForDataTCPActor.askForData(AskForDataTCPActor.scala:85) ~[1.1.0-RC2:na]
+	at org.kevoree.library.gossiperNetty.AskForDataTCPActor$$anonfun$act$1$$anonfun$apply$1.apply(AskForDataTCPActor.scala:66) [1.1.0-RC2:na]
+	at org.kevoree.library.gossiperNetty.AskForDataTCPActor$$anonfun$act$1$$anonfun$apply$1.apply(AskForDataTCPActor.scala:60) [1.1.0-RC2:na]
+	at scala.actors.ReactorTask.run(ReactorTask.scala:34) [org.kevoree.platform.osgi.standalone-1.1.0-RC2.jar:na]
+	at scala.actors.ReactorTask.compute(ReactorTask.scala:66) [org.kevoree.platform.osgi.standalone-1.1.0-RC2.jar:na]
+	at scala.concurrent.forkjoin.RecursiveAction.exec(RecursiveAction.java:147) [org.kevoree.platform.osgi.standalone-1.1.0-RC2.jar:na]
+	at scala.concurrent.forkjoin.ForkJoinTask.quietlyExec(ForkJoinTask.java:422) [org.kevoree.platform.osgi.standalone-1.1.0-RC2.jar:na]
+	at scala.concurrent.forkjoin.ForkJoinWorkerThread.mainLoop(ForkJoinWorkerThread.java:340) [org.kevoree.platform.osgi.standalone-1.1.0-RC2.jar:na]
+	at scala.concurrent.forkjoin.ForkJoinWorkerThread.run(ForkJoinWorkerThread.java:325) [org.kevoree.platform.osgi.standalone-1.1.0-RC2.jar:na]
+o.k.l.g.AskForDataTCPActor - TCP sending ... :-)
+o.k.l.g.AskForDataTCPActor - error in ack For data
+java.lang.NullPointerException: null
+	at org.kevoree.library.gossiperNetty.group.NettyGossiperGroup.getAddress(NettyGossiperGroup.java:104) ~[1.1.0-RC2:na]
+	at org.kevoree.library.gossiperNetty.AskForDataTCPActor.askForData(AskForDataTCPActor.scala:85) ~[1.1.0-RC2:na]
+	at org.kevoree.library.gossiperNetty.AskForDataTCPActor$$anonfun$act$1$$anonfun$apply$1.apply(AskForDataTCPActor.scala:66) [1.1.0-RC2:na]
+	at org.kevoree.library.gossiperNetty.AskForDataTCPActor$$anonfun$act$1$$anonfun$apply$1.apply(AskForDataTCPActor.scala:60) [1.1.0-RC2:na]
+	at scala.actors.ReactorTask.run(ReactorTask.scala:34) [org.kevoree.platform.osgi.standalone-1.1.0-RC2.jar:na]
+	at scala.actors.ReactorTask.compute(ReactorTask.scala:66) [org.kevoree.platform.osgi.standalone-1.1.0-RC2.jar:na]
+	at scala.concurrent.forkjoin.RecursiveAction.exec(RecursiveAction.java:147) [org.kevoree.platform.osgi.standalone-1.1.0-RC2.jar:na]
+	at scala.concurrent.forkjoin.ForkJoinTask.quietlyExec(ForkJoinTask.java:422) [org.kevoree.platform.osgi.standalone-1.1.0-RC2.jar:na]
+	at scala.concurrent.forkjoin.ForkJoinWorkerThread.mainLoop(ForkJoinWorkerThread.java:340) [org.kevoree.platform.osgi.standalone-1.1.0-RC2.jar:na]
+	at scala.concurrent.forkjoin.ForkJoinWorkerThread.run(ForkJoinWorkerThread.java:325) [org.kevoree.platform.osgi.standalone-1.1.0-RC2.jar:na]
+o.k.l.g.AskForDataTCPActor - TCP sending ... :-)
+o.k.l.g.AskForDataTCPActor - error in ack For data
+java.lang.NullPointerException: null
+	at org.kevoree.library.gossiperNetty.group.NettyGossiperGroup.getAddress(NettyGossiperGroup.java:104) ~[1.1.0-RC2:na]
+	at org.kevoree.library.gossiperNetty.AskForDataTCPActor.askForData(AskForDataTCPActor.scala:85) ~[1.1.0-RC2:na]
+	at org.kevoree.library.gossiperNetty.AskForDataTCPActor$$anonfun$act$1$$anonfun$apply$1.apply(AskForDataTCPActor.scala:66) [1.1.0-RC2:na]
+	at org.kevoree.library.gossiperNetty.AskForDataTCPActor$$anonfun$act$1$$anonfun$apply$1.apply(AskForDataTCPActor.scala:60) [1.1.0-RC2:na]
+	at scala.actors.ReactorTask.run(ReactorTask.scala:34) [org.kevoree.platform.osgi.standalone-1.1.0-RC2.jar:na]
+	at scala.actors.ReactorTask.compute(ReactorTask.scala:66) [org.kevoree.platform.osgi.standalone-1.1.0-RC2.jar:na]
+	at scala.concurrent.forkjoin.RecursiveAction.exec(RecursiveAction.java:147) [org.kevoree.platform.osgi.standalone-1.1.0-RC2.jar:na]
+	at scala.concurrent.forkjoin.ForkJoinTask.quietlyExec(ForkJoinTask.java:422) [org.kevoree.platform.osgi.standalone-1.1.0-RC2.jar:na]
+	at scala.concurrent.forkjoin.ForkJoinWorkerThread.mainLoop(ForkJoinWorkerThread.java:340) [org.kevoree.platform.osgi.standalone-1.1.0-RC2.jar:na]
+	at scala.concurrent.forkjoin.ForkJoinWorkerThread.run(ForkJoinWorkerThread.java:325) [org.kevoree.platform.osgi.standalone-1.1.0-RC2.jar:na]
+o.k.l.g.AskForDataTCPActor - TCP sending ... :-)
+o.k.l.g.AskForDataTCPActor - error in ack For data
+java.lang.NullPointerException: null
+	at org.kevoree.library.gossiperNetty.group.NettyGossiperGroup.getAddress(NettyGossiperGroup.java:104) ~[1.1.0-RC2:na]
+	at org.kevoree.library.gossiperNetty.AskForDataTCPActor.askForData(AskForDataTCPActor.scala:85) ~[1.1.0-RC2:na]
+	at org.kevoree.library.gossiperNetty.AskForDataTCPActor$$anonfun$act$1$$anonfun$apply$1.apply(AskForDataTCPActor.scala:66) [1.1.0-RC2:na]
+	at org.kevoree.library.gossiperNetty.AskForDataTCPActor$$anonfun$act$1$$anonfun$apply$1.apply(AskForDataTCPActor.scala:60) [1.1.0-RC2:na]
+	at scala.actors.ReactorTask.run(ReactorTask.scala:34) [org.kevoree.platform.osgi.standalone-1.1.0-RC2.jar:na]
+	at scala.actors.ReactorTask.compute(ReactorTask.scala:66) [org.kevoree.platform.osgi.standalone-1.1.0-RC2.jar:na]
+	at scala.concurrent.forkjoin.RecursiveAction.exec(RecursiveAction.java:147) [org.kevoree.platform.osgi.standalone-1.1.0-RC2.jar:na]
+	at scala.concurrent.forkjoin.ForkJoinTask.quietlyExec(ForkJoinTask.java:422) [org.kevoree.platform.osgi.standalone-1.1.0-RC2.jar:na]
+	at scala.concurrent.forkjoin.ForkJoinWorkerThread.mainLoop(ForkJoinWorkerThread.java:340) [org.kevoree.platform.osgi.standalone-1.1.0-RC2.jar:na]
+	at scala.concurrent.forkjoin.ForkJoinWorkerThread.run(ForkJoinWorkerThread.java:325) [org.kevoree.platform.osgi.standalone-1.1.0-RC2.jar:na]

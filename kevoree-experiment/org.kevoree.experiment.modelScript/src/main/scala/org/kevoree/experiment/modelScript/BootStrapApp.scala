@@ -36,7 +36,7 @@ object BootStrapApp extends Application {
 
   tscript append "}\n"
 
-  //println(tscript)
+  println(tscript)
 
   val parser = new KevsParser();
   val script = parser.parseScript(tscript.toString())

@@ -135,6 +135,7 @@ public class FakeSimpleLight extends AbstractFakeStuffComponent {
             super("Couleur " + c.toString());
             this.c = c;
             setPreferredSize(new Dimension(FRAME_WIDTH, FRAME_HEIGHT));
+            this.setDefaultCloseOperation (JFrame.DO_NOTHING_ON_CLOSE);
             pack();
         }
 

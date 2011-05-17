@@ -50,9 +50,11 @@ class ModelHandlerResource extends ServerResource {
 
 
   override def get():Representation = {
-    var ouput = new ByteArrayOutputStream
+    val ouput = new ByteArrayOutputStream
+    logger.debug("Before obtain model")
+    val model = Handler.getModelhandler.getLastModel
     logger.debug("Before EMF Serialisation")
-    KevoreeXmiHelper.saveStream(ouput, Handler.getModelhandler.getLastModel)
+    KevoreeXmiHelper.saveStream(ouput, model)
     logger.debug("after EMF Serialisation")
     new StringRepresentation(ouput.toString)
   }
