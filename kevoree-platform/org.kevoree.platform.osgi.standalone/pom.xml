@@ -15,12 +15,6 @@
 
     <properties>
         <kevoree.version>${project.version}</kevoree.version>
-        <!--<org.osgi.framework.system.packages.extra>sun.misc</org.osgi.framework.system.packages.extra>-->
-        <!--<java.net.preferIPv4Stack>true</java.net.preferIPv4Stack>-->
-        <!-- <node.name>duke</node.name>
-        <osgi.base>${project.build.directory}/duke_cache</osgi.base>
-        <bootstrap.bundles>${project.build.directory}/kevoreeBundles</bootstrap.bundles>
-        <bootstrap.version>${kevoree.version}</bootstrap.version>-->
     </properties>
 
     <dependencies>
@@ -50,20 +44,21 @@
             <version>${kevoree.version}</version>
         </dependency>
 
-        <!--
+
                 <dependency>
             <groupId>org.ops4j.pax.url</groupId>
             <artifactId>pax-url-mvn</artifactId>
             <version>1.3.2</version>
         </dependency>
-              -->
+
+        <!--
 
         <dependency>
             <groupId>org.ops4j.pax.url</groupId>
             <artifactId>pax-url-aether</artifactId>
             <version>1.3.2</version>
         </dependency>
-
+              -->
 
         <dependency>
             <groupId>org.ops4j.pax.url</groupId>
@@ -266,12 +261,6 @@
         </plugins>
     </build>
 
-    <repositories>
-        <repository>
-            <id>Akka</id>
-            <name>Akka Maven2 Repository</name>
-            <url>http://www.scalablesolutions.se/akka/repository/</url>
-        </repository>
-    </repositories>
+
 
 </project>
