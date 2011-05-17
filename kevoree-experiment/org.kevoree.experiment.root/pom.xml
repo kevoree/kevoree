@@ -3,12 +3,11 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.kevoree.experiment</groupId>
-    <artifactId>oorg.kevoree.experiment.root</artifactId>
+    <artifactId>org.kevoree.experiment.root</artifactId>
     <packaging>pom</packaging>
-    <version>1.0.0</version>
+    <version>1.1.0-RC2</version>
     <name>Kevoree :: Experiment :: Root</name>
     <url>https://github.com/dukeboard/kevoree</url>
-
 
     <modules>
         <module>../org.kevoree.experiment.library.gossiperNetty</module>
@@ -16,6 +15,10 @@
         <module>../org.kevoree.experiment.trace.gui</module>
         <module>../org.kevoree.experiment.modelScript</module>
 	</modules>
+
+    <properties>
+        <kevoree.version>${project.version}</kevoree.version>
+    </properties>
     
     <repositories>
         <repository>

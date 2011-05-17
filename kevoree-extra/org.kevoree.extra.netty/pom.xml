@@ -41,8 +41,10 @@
                         <Bundle-SymbolicName>org.kevoree.extra.netty</Bundle-SymbolicName>
                         <Bundle-Version>${pom.version}</Bundle-Version>
                         <Dynamic-Import>*</Dynamic-Import>
-                        <Export-Package>com.google.common.*,com.twitter.*,org.jboss.netty.*;version="3.2.4.Final"</Export-Package>
-                        <Import-Package>!com.google.common.*,!com.twitter.*,!org.jboss.netty.*,*;resolution:="optional"</Import-Package>
+                        <Export-Package>com.google.common.*,com.twitter.*,org.jboss.netty.*;version="3.2.4.Final"
+                        </Export-Package>
+                        <Import-Package>!com.google.common.*,!com.twitter.*,!org.jboss.netty.*,*;resolution:="optional"
+                        </Import-Package>
                     </instructions>
                 </configuration>
             </plugin>
@@ -56,7 +58,7 @@
         </repository>
         <repository>
             <id>repository.jboss.org</id>
-            <url>http://repository.jboss.org/nexus/content/groups/public/</url>
+            <url>https://repository.jboss.org/nexus/content/repositories/releases/</url>
             <snapshots>
                 <enabled>false</enabled>
             </snapshots>

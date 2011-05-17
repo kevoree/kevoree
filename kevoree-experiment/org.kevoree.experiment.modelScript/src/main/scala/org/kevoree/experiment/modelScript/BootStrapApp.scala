@@ -13,11 +13,11 @@ object BootStrapApp extends Application {
 
   tscript append "tblock {"
 
-  val dukeIP = "192.168.1.123"
+  //val dukeIP = "192.168.1.123"
 
 
-  //val dukeIP = "127.0.0.1"
-  val paraisseuxIP = "192.168.1.118"
+  val dukeIP = "131.254.15.214"
+  val paraisseuxIP = "131.254.12.28"
   val ips = List(dukeIP, paraisseuxIP)
 
 
