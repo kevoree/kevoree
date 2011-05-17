@@ -88,18 +88,6 @@ class KevoreeCoreBean extends KevoreeModelHandlerService with KevoreeActor {
       val model = KevoreeXmiHelper.load(lastModelssaved.getAbsolutePath());
       switchToNewModel(model)
     }
-    //Bootstrap model phase
-    if (!configService.getProperty(ConfigConstants.KEVOREE_NODE_BOOTSTRAP).equals("")) {
-      try {
-        logger.info("Try to bootstrap platform")
-        val model = KevoreeXmiHelper.load(configService.getProperty(ConfigConstants.KEVOREE_NODE_BOOTSTRAP));
-        this ! UpdateModel(model)
-
-      } catch {
-        case _@e => logger.warn("Bootstrap failed !", e)
-      }
-    }
-
 
     this
   }
