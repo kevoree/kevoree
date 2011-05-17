@@ -29,7 +29,7 @@
         <dependency>
             <groupId>org.kevoree.extra</groupId>
             <artifactId>org.kevoree.extra.netty</artifactId>
-            <version>3.2.4.Final</version>
+            <version>3.2.4</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
