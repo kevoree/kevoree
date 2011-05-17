@@ -127,7 +127,9 @@ class GossiperRequestReceiver(channelFragment: NettyGossipAbstractElement, dataM
       case s: String if (s == classOf[UUIDDataRequest].getName) => {
         val uuidDataRequest = Gossip.UUIDDataRequest.parseFrom(message.getContent)
         val data = dataManager.getData(UUID.fromString(uuidDataRequest.getUuid))
+        logger.debug("before serializing data")
         val bytes : Array[Byte] = serializer.serialize(data._2);
+        logger.debug("after serializing data")
         if (bytes != null) {
           val modelBytes = ByteString.copyFrom(bytes)
 
