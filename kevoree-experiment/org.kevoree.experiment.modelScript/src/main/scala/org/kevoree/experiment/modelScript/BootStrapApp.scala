@@ -25,7 +25,7 @@ object BootStrapApp extends Application {
   tscript append generatePhysicalNodeScript("paraisseux", paraisseuxIP, 8000, 4)
 
 
-  /*
+
 //ADD GLOBAL GROUP
 tscript append "addGroup gossipGroup : LogNettyGossiperGroup {"
 tscript append "port=\"" + generateGroupFragmentPort(List(("duke", 4, 9000), ("paraisseux", 4, 9000))) + "\"\n"
@@ -35,7 +35,7 @@ tscript append ",loggerServerIP=\"" + dukeIP + "\""
 tscript append "}\n"
 //BIND ALL NODE TO GROUP
 tscript append "addToGroup gossipGroup * \n"
-  */
+
   tscript append "}\n"
 
   println(tscript)
@@ -105,7 +105,7 @@ tscript append "addToGroup gossipGroup * \n"
             rd.close();
 
             i = i +1
-            Thread.sleep(500)
+            Thread.sleep(1000)
 
           } catch {
             case _@e => e.printStackTrace()
