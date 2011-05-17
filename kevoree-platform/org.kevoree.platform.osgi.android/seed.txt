@@ -49,7 +49,6 @@ scala.math.Numeric$DoubleIsFractional$: scala.math.Numeric$DoubleIsFractional$ M
 scala.package$: scala.package$ MODULE$
 org.kevoree.framework.aspects.TypeDefinitionAspect$: org.kevoree.framework.aspects.TypeDefinitionAspect$ MODULE$
 scala.collection.mutable.Iterable$: scala.collection.mutable.Iterable$ MODULE$
-net.lag.package$: net.lag.package$ MODULE$
 scala.xml.dtd.UnparsedEntityDecl$: scala.xml.dtd.UnparsedEntityDecl$ MODULE$
 scala.reflect.MethodType$: scala.reflect.MethodType$ MODULE$
 scala.runtime.Boolean$: scala.runtime.Boolean$ MODULE$
@@ -92,7 +91,6 @@ scala.text.DocNil$: scala.text.DocNil$ MODULE$
 org.kevoree.tools.marShell.ast.AstHelper$: org.kevoree.tools.marShell.ast.AstHelper$ MODULE$
 scala.collection.script.Update$: scala.collection.script.Update$ MODULE$
 org.kevoree.adaptation.deploy.osgi.command.RemoveFragmentBindingCommand$: org.kevoree.adaptation.deploy.osgi.command.RemoveFragmentBindingCommand$ MODULE$
-net.lag.configgy.Attributes$AttributesCell$: net.lag.configgy.Attributes$AttributesCell$ MODULE$
 scala.collection.JavaConversions$JIteratorWrapper$: scala.collection.JavaConversions$JIteratorWrapper$ MODULE$
 scala.collection.immutable.$colon$colon$: scala.collection.immutable.$colon$colon$ MODULE$
 scala.Predef$$less$percent$less$: scala.Predef$$less$percent$less$ MODULE$
@@ -102,6 +100,7 @@ org.kevoree.tools.marShell.ast.AddToGroupStatement$: org.kevoree.tools.marShell.
 scala.util.parsing.input.OffsetPosition$: scala.util.parsing.input.OffsetPosition$ MODULE$
 org.kevoree.framework.KevoreeUtility$: org.kevoree.framework.KevoreeUtility$ MODULE$
 net.lag.logging.Level$ALL$: net.lag.logging.Level$ALL$ MODULE$
+net.lag.configgy.StringCell$: net.lag.configgy.StringCell$ MODULE$
 scala.reflect.If$: scala.reflect.If$ MODULE$
 scala.collection.script.Reset$: scala.collection.script.Reset$ MODULE$
 org.kevoree.tools.marShell.interpreter.sub.KevsAddComponentInstanceInterpreter$: org.kevoree.tools.marShell.interpreter.sub.KevsAddComponentInstanceInterpreter$ MODULE$
@@ -168,7 +167,6 @@ scala.Tuple21$: scala.Tuple21$ MODULE$
 scala.collection.SeqView$: scala.collection.SeqView$ MODULE$
 scala.collection.LinearSeq$: scala.collection.LinearSeq$ MODULE$
 scala.Tuple22$: scala.Tuple22$ MODULE$
-net.lag.configgy.Attributes$StringCell$: net.lag.configgy.Attributes$StringCell$ MODULE$
 scala.reflect.Method$: scala.reflect.Method$ MODULE$
 org.kevoree.adaptation.deploy.osgi.command.UpdateDictionaryCommand$: org.kevoree.adaptation.deploy.osgi.command.UpdateDictionaryCommand$ MODULE$
 scala.Tuple20$: scala.Tuple20$ MODULE$
@@ -199,6 +197,7 @@ scala.math.Ordering$Double$: scala.math.Ordering$Double$ MODULE$
 org.kevoree.adaptation.deploy.osgi.command.generator.AddComponentInstanceWrapperGenerator$: org.kevoree.adaptation.deploy.osgi.command.generator.AddComponentInstanceWrapperGenerator$ MODULE$
 scala.collection.mutable.Seq$: scala.collection.mutable.Seq$ MODULE$
 org.kevoree.framework.aspects.ContainerNodeAspect$: org.kevoree.framework.aspects.ContainerNodeAspect$ MODULE$
+net.lag.configgy.StringListCell$: net.lag.configgy.StringListCell$ MODULE$
 scala.xml.ProcInstr$: scala.xml.ProcInstr$ MODULE$
 scala.Product21$: scala.Product21$ MODULE$
 scala.Product20$: scala.Product20$ MODULE$
@@ -232,7 +231,6 @@ scala.Product2$: scala.Product2$ MODULE$
 scala.Product1$: scala.Product1$ MODULE$
 scala.Predef$: scala.Predef$ MODULE$
 scala.xml.pull.EvElemStart$: scala.xml.pull.EvElemStart$ MODULE$
-net.lag.configgy.ConfigMap$: net.lag.configgy.ConfigMap$ MODULE$
 scala.collection.immutable.Range$Int$: scala.collection.immutable.Range$Int$ MODULE$
 scala.xml.dtd.NotationDecl$: scala.xml.dtd.NotationDecl$ MODULE$
 scala.text.Document$: scala.text.Document$ MODULE$
@@ -334,6 +332,7 @@ scala.reflect.TypeBounds$: scala.reflect.TypeBounds$ MODULE$
 scala.actors.Reactor$: scala.actors.Reactor$ MODULE$
 scala.xml.Utility$: scala.xml.Utility$ MODULE$
 scala.collection.mutable.HashSet$: scala.collection.mutable.HashSet$ MODULE$
+net.lag.configgy.AttributesCell$: net.lag.configgy.AttributesCell$ MODULE$
 scala.reflect.This$: scala.reflect.This$ MODULE$
 scala.xml.pull.package$: scala.xml.pull.package$ MODULE$
 net.lag.logging.Formatter$: net.lag.logging.Formatter$ MODULE$
@@ -473,7 +472,6 @@ org.kevoree.tools.marShell.ast.AddBindingStatment$: org.kevoree.tools.marShell.a
 scala.collection.immutable.Vector$: scala.collection.immutable.Vector$ MODULE$
 scala.collection.JavaConversions$IterableWrapper$: scala.collection.JavaConversions$IterableWrapper$ MODULE$
 scala.collection.mutable.LinkedList$: scala.collection.mutable.LinkedList$ MODULE$
-net.lag.configgy.Attributes$: net.lag.configgy.Attributes$ MODULE$
 scala.xml.MalformedAttributeException$: scala.xml.MalformedAttributeException$ MODULE$
 scala.collection.mutable.Buffer$: scala.collection.mutable.Buffer$ MODULE$
 scala.reflect.TypeField$: scala.reflect.TypeField$ MODULE$
@@ -485,7 +483,6 @@ net.lag.logging.Hourly$: net.lag.logging.Hourly$ MODULE$
 scala.Tuple1$: scala.Tuple1$ MODULE$
 scala.xml.EntityRef$: scala.xml.EntityRef$ MODULE$
 org.kevoree.tools.marShell.interpreter.KevsInterpreterAspects$: org.kevoree.tools.marShell.interpreter.KevsInterpreterAspects$ MODULE$
-net.lag.configgy.Attributes$StringListCell$: net.lag.configgy.Attributes$StringListCell$ MODULE$
 scala.xml.Group$: scala.xml.Group$ MODULE$
 scala.collection.JavaConversions$JSetWrapper$: scala.collection.JavaConversions$JSetWrapper$ MODULE$
 scala.collection.immutable.HashSet$: scala.collection.immutable.HashSet$ MODULE$
@@ -33021,7 +33018,6 @@ org.eclipse.emf.ecore.xml.type.internal.XMLCalendar: int INDETERMINATE
 org.eclipse.emf.ecore.xml.type.internal.XMLCalendar: boolean FIX_GMONTH_PARSE
 org.eclipse.emf.ecore.xml.type.internal.XMLCalendar: boolean FIX_GMONTH_PRINT
 org.restlet.representation.Representation: long UNKNOWN_SIZE
-net.lag.configgy.Config$$anonfun$fromString$1: long serialVersionUID
 scala.util.parsing.combinator.Parsers$$anonfun$acceptSeq$1: long serialVersionUID
 scala.actors.Channel$$anonfun$1$$anonfun$apply$1: long serialVersionUID
 scala.util.control.Exception$Catch$$anonfun$toOption$1: long serialVersionUID
@@ -33060,7 +33056,6 @@ org.eclipse.emf.ecore.xml.type.internal.RegEx$Op: int INDEPENDENT
 org.eclipse.emf.ecore.xml.type.internal.RegEx$Op: int MODIFIER
 org.eclipse.emf.ecore.xml.type.internal.RegEx$Op: int CONDITION
 org.eclipse.emf.ecore.xml.type.internal.RegEx$Op: boolean COUNT
-net.lag.configgy.ConfigMap$$anonfun$getDouble$2$$anonfun$apply$3: long serialVersionUID
 org.restlet.representation.Representation: long UNKNOWN_SIZE
 org.eclipse.emf.ecore.impl.EObjectImpl: int EDELIVER
 org.eclipse.emf.ecore.impl.EObjectImpl: int EDYNAMIC_CLASS
@@ -33103,8 +33098,6 @@ org.eclipse.emf.ecore.xmi.impl.XMLMapImpl: java.lang.String XSD2ECORE
 scala.collection.immutable.List$$anonfun$unzip$1: long serialVersionUID
 org.eclipse.emf.ecore.xml.type.InvalidDatatypeValueException: long serialVersionUID
 org.kevoree.framework.aspects.ContainerNodeAspect$$anonfun$getComponentTypes$1: long serialVersionUID
-net.lag.configgy.ConfigMap$$anonfun$getInt$1: long serialVersionUID
-net.lag.configgy.ConfigMap$$anonfun$getInt$2: long serialVersionUID
 scala.Function6$$anonfun$curried$1: long serialVersionUID
 scala.Function1$mcLF$sp$$anonfun$compose$mcLF$sp$1: long serialVersionUID
 org.kevoree.adaptation.deploy.osgi.command.AddTypeCommand$$anonfun$2: long serialVersionUID
@@ -33160,7 +33153,6 @@ org.eclipse.emf.ecore.xml.type.internal.RegEx$Token: java.lang.String viramaStri
 org.jgrapht.traverse.CrossComponentIterator: int CCS_BEFORE_COMPONENT
 org.jgrapht.traverse.CrossComponentIterator: int CCS_WITHIN_COMPONENT
 org.jgrapht.traverse.CrossComponentIterator: int CCS_AFTER_COMPONENT
-net.lag.logging.Logger$$anonfun$configure$5$$anonfun$apply$11: long serialVersionUID
 org.eclipse.emf.ecore.impl.EStoreEObjectImpl$EStoreFeatureMap: long serialVersionUID
 org.eclipse.emf.ecore.impl.EStoreEObjectImpl$BasicEStoreFeatureMap: long serialVersionUID
 org.eclipse.emf.ecore.util.DelegatingFeatureMap: long serialVersionUID
@@ -33225,7 +33217,6 @@ org.osgi.service.url.URLConstants: java.lang.String URL_CONTENT_MIMETYPE
 scala.collection.BitSetLike$$anonfun$foreach$1: long serialVersionUID
 net.lag.logging.Logger$$anonfun$1: long serialVersionUID
 net.lag.logging.Logger$$anonfun$2: long serialVersionUID
-net.lag.logging.Logger$$anonfun$3: long serialVersionUID
 org.eclipse.emf.ecore.impl.MinimalEObjectImpl: int NO_DELIVER
 org.eclipse.emf.ecore.impl.MinimalEObjectImpl: int CONTAINER
 org.eclipse.emf.ecore.impl.MinimalEObjectImpl: int ADAPTER
@@ -33283,11 +33274,13 @@ scala.concurrent.forkjoin.ForkJoinTask: int INTERNAL_SIGNAL_MASK
 scala.concurrent.forkjoin.ForkJoinTask: int EXTERNAL_SIGNAL
 scala.concurrent.forkjoin.ForkJoinTask: long serialVersionUID
 scala.concurrent.forkjoin.ForkJoinTask: long statusOffset
-net.lag.configgy.Config$$anonfun$liftedTree1$1$1: long serialVersionUID
 org.restlet.routing.Filter: int CONTINUE
 org.restlet.routing.Filter: int SKIP
 org.restlet.routing.Filter: int STOP
 org.restlet.Restlet: java.lang.String UNABLE_TO_START
+net.lag.configgy.Attributes$$anonfun$net$lag$configgy$Attributes$$toConfigList$1$$anonfun$apply$4: long serialVersionUID
+net.lag.configgy.Attributes$$anonfun$net$lag$configgy$Attributes$$toConfigList$1$$anonfun$apply$3: long serialVersionUID
+net.lag.configgy.Attributes$$anonfun$net$lag$configgy$Attributes$$toConfigList$1$$anonfun$apply$2: long serialVersionUID
 org.eclipse.emf.ecore.impl.EObjectImpl: int EDELIVER
 org.eclipse.emf.ecore.impl.EObjectImpl: int EDYNAMIC_CLASS
 org.eclipse.emf.ecore.impl.EObjectImpl: int EPROXY
@@ -33298,6 +33291,7 @@ org.eclipse.emf.ecore.impl.BasicEObjectImpl: int EVIRTUAL_UNSET
 org.eclipse.emf.ecore.impl.BasicEObjectImpl: int EVIRTUAL_GET
 org.eclipse.emf.ecore.impl.BasicEObjectImpl: int EVIRTUAL_IS_SET
 org.eclipse.emf.ecore.impl.BasicEObjectImpl: boolean $assertionsDisabled
+net.lag.configgy.Attributes$$anonfun$net$lag$configgy$Attributes$$toConfigList$1$$anonfun$apply$5: long serialVersionUID
 scala.util.parsing.json.JSON$$anonfun$parse$2: long serialVersionUID
 scala.util.parsing.json.JSON$$anonfun$parse$1: long serialVersionUID
 org.kevoree.framework.port.KevoreeProvidedPort$$anonfun$act$1$$anonfun$apply$1$$anonfun$apply$2: long serialVersionUID
@@ -33433,7 +33427,6 @@ org.jgrapht.graph.GraphDelegator: long serialVersionUID
 scala.util.parsing.ast.Binders$$anon$4$$anonfun$gmap$4: long serialVersionUID
 scala.io.BytePickle$$anonfun$ufixedList$1: long serialVersionUID
 scala.io.BytePickle$$anonfun$ufixedList$2: long serialVersionUID
-net.lag.configgy.Configgy$$anonfun$configLogging$1: long serialVersionUID
 scala.util.parsing.json.Lexer$$anonfun$string$3: long serialVersionUID
 scala.concurrent.forkjoin.LinkedTransferQueue: long serialVersionUID
 scala.concurrent.forkjoin.LinkedTransferQueue: int NOWAIT
@@ -33540,6 +33533,7 @@ org.kevoreeAdaptation.KevoreeAdaptationPackage: java.lang.String eNAME
 org.kevoreeAdaptation.KevoreeAdaptationPackage: java.lang.String eNS_URI
 org.kevoreeAdaptation.KevoreeAdaptationPackage: java.lang.String eNS_PREFIX
 scala.Function2$mcIDL$sp$$anonfun$curried$mcIDL$sp$1$$anonfun$apply$46: long serialVersionUID
+net.lag.configgy.ConfigParser$$anonfun$trueFalse$2$$anonfun$apply$21: long serialVersionUID
 scala.reflect.ScalaBeanInfo$$anonfun$1$$anonfun$apply$1: long serialVersionUID
 scala.util.parsing.combinator.lexical.StdLexical$$anonfun$token$4$$anonfun$apply$6$$anonfun$apply$7: long serialVersionUID
 org.jgrapht.graph.SimpleWeightedGraph: long serialVersionUID
@@ -33753,14 +33747,12 @@ org.eclipse.emf.ecore.resource.impl.ResourceSetImpl$1: long serialVersionUID
 org.eclipse.emf.common.util.BasicEList: long serialVersionUID
 scala.util.parsing.combinator.syntactical.StdTokenParsers$$anonfun$keyword$1$$anonfun$apply$1: long serialVersionUID
 scala.collection.immutable.MapLike$$anon$1$$anonfun$iterator$1: long serialVersionUID
-net.lag.logging.LazyLogRecord$$anonfun$generate$1: long serialVersionUID
 org.restlet.representation.Representation: long UNKNOWN_SIZE
 scala.util.parsing.combinator.lexical.StdLexical$$anonfun$identChar$1: long serialVersionUID
 scala.collection.immutable.Stream$$anonfun$distinct$1: long serialVersionUID
 org.apache.felix.framework.util.EventDispatcher$Request: int FRAMEWORK_EVENT
 org.apache.felix.framework.util.EventDispatcher$Request: int BUNDLE_EVENT
 org.apache.felix.framework.util.EventDispatcher$Request: int SERVICE_EVENT
-net.lag.configgy.Config$$anonfun$registerWithJmx$5: long serialVersionUID
 net.lag.configgy.Config$$anonfun$registerWithJmx$4: long serialVersionUID
 scala.Function16$$anonfun$tupled$1: long serialVersionUID
 net.lag.configgy.Config$$anonfun$registerWithJmx$3: long serialVersionUID
@@ -33770,6 +33762,7 @@ scala.util.parsing.combinator.Parsers$$anonfun$repN$1: long serialVersionUID
 org.jgrapht.WeightedGraph: double DEFAULT_EDGE_WEIGHT
 scala.collection.immutable.Stream$$anonfun$loop$4$2: long serialVersionUID
 scala.collection.immutable.Stream$$anonfun$loop$4$1: long serialVersionUID
+net.lag.configgy.Configgy$LoggingConfigSubscriber$$anonfun$validate$1$$anonfun$apply$1$$anonfun$apply$2: long serialVersionUID
 org.kevoree.impl.NodeLinkImpl: java.lang.String NETWORK_TYPE_EDEFAULT
 org.kevoree.impl.NodeLinkImpl: java.lang.String LAST_CHECK_EDEFAULT
 org.eclipse.emf.ecore.impl.EObjectImpl: int EDELIVER
@@ -33799,7 +33792,6 @@ org.kevoree.kompare.sub.UpdateNodeKompare$$anonfun$getUpdateNodeAdaptationModel$
 scala.testing.Benchmark$$anonfun$main$1: long serialVersionUID
 scala.concurrent.MailBox$$anonfun$scanSentMsgs$1: long serialVersionUID
 org.kevoree.framework.aspects.TypeDefinitionAspect$$anonfun$foundRelevantDeployUnit$1: long serialVersionUID
-net.lag.configgy.Attributes$$anonfun$recurse$1: long serialVersionUID
 scala.collection.Iterator$GroupedIterator$$anonfun$padding$1: long serialVersionUID
 scala.xml.parsing.TokenTests$$anonfun$checkPubID$1: long serialVersionUID
 org.eclipse.emf.ecore.impl.EStoreEObjectImpl$EStoreEList: long serialVersionUID
@@ -33880,7 +33872,6 @@ scala.Array$$anonfun$ofDim$4: long serialVersionUID
 net.lag.configgy.Attributes$$anonfun$asMap$1: long serialVersionUID
 scala.Function2$mcDDI$sp$$anonfun$curried$mcDDI$sp$1$$anonfun$apply$43: long serialVersionUID
 org.ungoverned.osgi.service.shell.CdCommand: java.lang.String BASE_URL_PROPERTY
-net.lag.configgy.ConfigMap$$anonfun$getInt$2$$anonfun$apply$1: long serialVersionUID
 org.eclipse.emf.ecore.xml.type.impl.SimpleAnyTypeImpl: java.lang.String RAW_VALUE_EDEFAULT
 org.eclipse.emf.ecore.impl.EObjectImpl: int EDELIVER
 org.eclipse.emf.ecore.impl.EObjectImpl: int EDYNAMIC_CLASS
@@ -33956,7 +33947,6 @@ org.eclipse.emf.common.util.URI: java.lang.String ARCHIVE_SEPARATOR
 scala.collection.immutable.LongMap$$anonfun$intersection$1: long serialVersionUID
 scala.collection.immutable.Stream$$anonfun$flatMap$1: long serialVersionUID
 scala.util.parsing.combinator.Parsers$Parser$$anonfun$append$1: long serialVersionUID
-net.lag.configgy.Attributes$$anonfun$net$lag$configgy$Attributes$$lookupCell$1: long serialVersionUID
 scala.util.parsing.combinator.Parsers$$anonfun$elem$1: long serialVersionUID
 scala.collection.TraversableOnce$$anonfun$max$1: long serialVersionUID
 scala.collection.immutable.HashMap$SerializationProxy: long serialVersionUID
@@ -34553,7 +34543,6 @@ scala.util.parsing.json.Lexer$$anonfun$fracPart$1$$anonfun$apply$18: long serial
 scala.util.parsing.combinator.lexical.StdLexical$$anonfun$whitespace$1$$anonfun$apply$23$$anonfun$apply$25: long serialVersionUID
 scala.util.parsing.combinator.lexical.StdLexical$$anonfun$whitespace$1$$anonfun$apply$23$$anonfun$apply$24: long serialVersionUID
 scala.collection.immutable.PagedSeq$$anonfun$fromStrings$1: long serialVersionUID
-net.lag.configgy.ConfigMap$$anonfun$apply$6: long serialVersionUID
 org.kevoree.framework.aspects.ComponentInstanceAspect$$anonfun$isUpdated$2$$anonfun$apply$2: long serialVersionUID
 scala.util.parsing.json.Lexer$$anonfun$charSeq$7$$anonfun$apply$26: long serialVersionUID
 org.kevoree.tools.marShell.parser.sub.KevsNodeParser$$anonfun$parseAddNode$1: long serialVersionUID
@@ -34617,7 +34606,6 @@ org.eclipse.emf.ecore.impl.BasicEObjectImpl: int EVIRTUAL_IS_SET
 org.eclipse.emf.ecore.impl.BasicEObjectImpl: boolean $assertionsDisabled
 org.kevoree.tools.marShell.parser.sub.KevsAbstractParser$$anonfun$orFailure$1: long serialVersionUID
 scala.xml.PrettyPrinter$$anonfun$doPreserve$2: long serialVersionUID
-net.lag.configgy.ConfigMap$$anonfun$getDouble$1: long serialVersionUID
 scala.xml.PrettyPrinter$$anonfun$doPreserve$1: long serialVersionUID
 org.eclipse.emf.ecore.resource.ContentHandler: java.lang.String OPTION_REQUESTED_PROPERTIES
 org.eclipse.emf.ecore.resource.ContentHandler: java.lang.String VALIDITY_PROPERTY
@@ -34626,7 +34614,6 @@ org.eclipse.emf.ecore.resource.ContentHandler: java.lang.String UNSPECIFIED_CONT
 org.eclipse.emf.ecore.resource.ContentHandler: java.lang.String CHARSET_PROPERTY
 org.eclipse.emf.ecore.resource.ContentHandler: java.lang.String BYTE_ORDER_MARK_PROPERTY
 scala.collection.TraversableLike$$anonfun$slice$1: long serialVersionUID
-net.lag.configgy.ConfigMap$$anonfun$getDouble$2: long serialVersionUID
 scala.reflect.generic.UnPickler$Scan$$anonfun$14$$anonfun$apply$5: long serialVersionUID
 scala.util.parsing.json.Lexer$$anonfun$token$3: long serialVersionUID
 scala.util.parsing.json.Lexer$$anonfun$token$2: long serialVersionUID
@@ -34650,8 +34637,8 @@ org.eclipse.emf.ecore.xml.type.util.XMLTypeUtil: int GREATER_THAN
 org.eclipse.emf.ecore.xml.type.util.XMLTypeUtil: int INDETERMINATE
 scala.collection.immutable.HashMap$SerializationProxy$$anonfun$writeObject$1: long serialVersionUID
 scala.util.parsing.json.Lexer$$anonfun$expPart$2$$anonfun$apply$20: long serialVersionUID
-org.kevoree.tools.marShell.parser.sub.KevsInstParser$$anonfun$parseMoveComponent$4: long serialVersionUID
 scala.collection.immutable.RedBlack: long serialVersionUID
+org.kevoree.tools.marShell.parser.sub.KevsInstParser$$anonfun$parseMoveComponent$4: long serialVersionUID
 org.kevoree.tools.marShell.parser.sub.KevsInstParser$$anonfun$parseMoveComponent$3: long serialVersionUID
 org.kevoree.tools.marShell.parser.sub.KevsInstParser$$anonfun$parseMoveComponent$2: long serialVersionUID
 org.kevoree.tools.marShell.parser.sub.KevsInstParser$$anonfun$parseMoveComponent$1: long serialVersionUID
@@ -34696,7 +34683,6 @@ scala.concurrent.pilib$UChan$$anonfun$1: long serialVersionUID
 scala.collection.SeqLike$$anonfun$hashCode$1: long serialVersionUID
 org.eclipse.emf.ecore.resource.impl.ContentHandlerImpl$Describer: java.lang.String CONTENT_TYPE_ID
 org.eclipse.emf.ecore.resource.impl.ContentHandlerImpl$Describer: java.lang.String EXTENSIONS
-net.lag.configgy.Config$$anonfun$deepChange$1: long serialVersionUID
 scala.Responder$$anonfun$loopWhile$1$$anonfun$apply$2: long serialVersionUID
 org.slf4j.Logger: java.lang.String ROOT_LOGGER_NAME
 scala.util.parsing.combinator.lexical.StdLexical$$anonfun$whitespace$1: long serialVersionUID
@@ -35385,7 +35371,6 @@ org.kevoree.tools.marShell.parser.sub.KevsBindingParser$$anonfun$parseBindingsSt
 org.kevoree.tools.marShell.parser.sub.KevsBindingParser$$anonfun$parseBindingsStatments$2: long serialVersionUID
 org.kevoree.tools.marShell.parser.sub.KevsBindingParser$$anonfun$parseBindingsStatments$3: long serialVersionUID
 scala.xml.parsing.TokenTests$$anonfun$isValidIANAEncoding$1: long serialVersionUID
-net.lag.configgy.ConfigMap$$anonfun$copyInto$1$$anonfun$apply$4$$anonfun$1: long serialVersionUID
 scala.Function1$mcLD$sp$$anonfun$andThen$mcLD$sp$1: long serialVersionUID
 scala.actors.threadpool.AbstractExecutorService: boolean $assertionsDisabled
 scala.io.BufferedSource$$anonfun$2: long serialVersionUID
@@ -35488,7 +35473,6 @@ org.eclipse.emf.common.util.BasicEList: long serialVersionUID
 scala.util.parsing.combinator.Parsers$$anonfun$rep1sep$1: long serialVersionUID
 net.lag.configgy.Attributes$$anonfun$copyInto$1: long serialVersionUID
 scala.util.parsing.combinator.Parsers$$anonfun$rep1sep$2: long serialVersionUID
-net.lag.configgy.Attributes$$anonfun$copyInto$2: long serialVersionUID
 scala.Enumeration$Val$$anonfun$$init$$1: long serialVersionUID
 org.eclipse.emf.ecore.impl.EPackageImpl: boolean IS_ABSTRACT
 org.eclipse.emf.ecore.impl.EPackageImpl: boolean IS_INTERFACE
@@ -35638,12 +35622,10 @@ org.restlet.routing.Filter: int CONTINUE
 org.restlet.routing.Filter: int SKIP
 org.restlet.routing.Filter: int STOP
 org.restlet.Restlet: java.lang.String UNABLE_TO_START
-net.lag.configgy.ConfigMap$$anonfun$copyInto$1$$anonfun$apply$4$$anonfun$apply$5: long serialVersionUID
 scala.util.parsing.combinator.Parsers$Parser$$anonfun$$times$1: long serialVersionUID
 org.codehaus.jackson.util.ByteArrayBuilder: int INITIAL_BLOCK_SIZE
 org.codehaus.jackson.util.ByteArrayBuilder: int MAX_BLOCK_SIZE
 org.codehaus.jackson.util.ByteArrayBuilder: int DEFAULT_BLOCK_ARRAY_SIZE
-net.lag.logging.Logger$$anonfun$get$1$$anonfun$newLogger$1$1: long serialVersionUID
 scala.Function2$mcVDI$sp$$anonfun$curried$mcVDI$sp$1$$anonfun$apply$38: long serialVersionUID
 scala.xml.Xhtml$$anonfun$sequenceToXML$1: long serialVersionUID
 org.eclipse.emf.ecore.resource.impl.ExtensibleURIConverterImpl$1: long serialVersionUID
@@ -35672,6 +35654,7 @@ scala.util.parsing.combinator.Parsers$Parser$$anonfun$$times$2: long serialVersi
 scala.mobile.Code$$anonfun$apply$9: long serialVersionUID
 net.lag.logging.ScribeHandler$$anonfun$1: long serialVersionUID
 scala.collection.SeqViewLike$Filtered$$anonfun$index$2: long serialVersionUID
+net.lag.configgy.ConfigMap$$anonfun$copyInto$1$$anonfun$apply$1$$anonfun$apply$2: long serialVersionUID
 org.jgrapht.experimental.dag.DirectedAcyclicGraph$TopoComparator: long serialVersionUID
 scala.collection.immutable.HashSet: long serialVersionUID
 org.eclipse.emf.common.notify.impl.NotificationImpl: int PRIMITIVE_TYPE_OBJECT
@@ -35748,6 +35731,7 @@ scala.concurrent.forkjoin.ForkJoinWorkerThread: long qBase
 scala.concurrent.forkjoin.ForkJoinWorkerThread: int qShift
 net.lag.configgy.Attributes$$anonfun$asJmxAttributes$1: long serialVersionUID
 scala.io.BytePickle$$anonfun$triple$2$$anonfun$apply$6: long serialVersionUID
+net.lag.configgy.Attributes$$anonfun$asJmxAttributes$2: long serialVersionUID
 org.eclipse.emf.ecore.xml.type.internal.RegEx$Token$ParenToken: long serialVersionUID
 org.eclipse.emf.ecore.xml.type.internal.RegEx$Token: long serialVersionUID
 org.eclipse.emf.ecore.xml.type.internal.RegEx$Token: boolean COUNTTOKENS
@@ -35791,7 +35775,6 @@ org.osgi.util.tracker.AbstractTracked: boolean DEBUG
 scala.io.BytePickle$$anonfun$triple$2$$anonfun$apply$5: long serialVersionUID
 scala.collection.mutable.HashMap$$anonfun$readObject$1: long serialVersionUID
 scala.util.control.Exception$$anonfun$failing$1: long serialVersionUID
-net.lag.logging.Logger$$anonfun$configure$6$$anonfun$apply$13: long serialVersionUID
 org.kevoree.tools.marShell.lexer.KevsLexical$$anonfun$token$1$$anonfun$apply$12$$anonfun$apply$13$$anonfun$apply$14: long serialVersionUID
 scala.Function4$$anonfun$curried$1$$anonfun$apply$1: long serialVersionUID
 org.kevoree.framework.KevoreeUtility$$anonfun$getRelatedBinding$2: long serialVersionUID
@@ -36171,7 +36154,6 @@ scala.io.BytePickle$$anonfun$bytearray$1: long serialVersionUID
 scala.io.BytePickle$$anonfun$bytearray$2: long serialVersionUID
 net.lag.ConfiggyString$$anonfun$quoteC$1: long serialVersionUID
 scala.util.parsing.json.Lexer$$anonfun$charSeq$9$$anonfun$apply$29: long serialVersionUID
-net.lag.configgy.Attributes$$anonfun$6: long serialVersionUID
 scala.util.parsing.json.Lexer$$anonfun$charSeq$9$$anonfun$apply$28: long serialVersionUID
 scala.actors.Futures$$anon$1$$anonfun$7: long serialVersionUID
 scala.actors.Futures$$anon$1$$anonfun$8: long serialVersionUID
@@ -36263,10 +36245,8 @@ scala.collection.IndexedSeqOptimized$$anonfun$indexWhere$1: long serialVersionUI
 scala.Tuple3$$anonfun$zip$1: long serialVersionUID
 org.restlet.engine.util.InternetDateFormat: long serialVersionUID
 org.kevoree.framework.KevoreePlatformHelper$$anonfun$getProperty$1$$anonfun$apply$2: long serialVersionUID
-net.lag.configgy.Attributes$$anonfun$toString$2: long serialVersionUID
 net.lag.configgy.Attributes$$anonfun$toString$1: long serialVersionUID
 net.lag.configgy.Attributes$$anonfun$net$lag$configgy$Attributes$$toConfigList$1: long serialVersionUID
-net.lag.configgy.Attributes$$anonfun$net$lag$configgy$Attributes$$toConfigList$2: long serialVersionUID
 org.eclipse.emf.ecore.xml.type.internal.RegEx$Op: int DOT
 org.eclipse.emf.ecore.xml.type.internal.RegEx$Op: int CHAR
 org.eclipse.emf.ecore.xml.type.internal.RegEx$Op: int RANGE
@@ -36534,25 +36514,24 @@ org.eclipse.emf.ecore.util.EcoreUtil$4: long serialVersionUID
 org.eclipse.emf.ecore.util.EcoreUtil$ContentTreeIterator: long serialVersionUID
 org.eclipse.emf.common.util.AbstractTreeIterator: long serialVersionUID
 org.eclipse.emf.common.util.BasicEList: long serialVersionUID
-org.kevoree.tools.marShell.parser.sub.KevsInstParser$$anonfun$parseInst$2: long serialVersionUID
 org.eclipse.emf.ecore.util.EcoreUtil$3: long serialVersionUID
 org.eclipse.emf.ecore.util.EcoreUtil$ContentTreeIterator: long serialVersionUID
 org.eclipse.emf.common.util.AbstractTreeIterator: long serialVersionUID
 org.eclipse.emf.common.util.BasicEList: long serialVersionUID
-org.kevoree.tools.marShell.parser.sub.KevsInstParser$$anonfun$parseInst$1: long serialVersionUID
+org.kevoree.tools.marShell.parser.sub.KevsInstParser$$anonfun$parseInst$2: long serialVersionUID
 org.eclipse.emf.ecore.util.EcoreUtil$2: long serialVersionUID
 org.eclipse.emf.ecore.util.EcoreUtil$ContentTreeIterator: long serialVersionUID
 org.eclipse.emf.common.util.AbstractTreeIterator: long serialVersionUID
 org.eclipse.emf.common.util.BasicEList: long serialVersionUID
-org.kevoree.tools.marShell.parser.sub.KevsInstParser$$anonfun$parseInst$4: long serialVersionUID
+org.kevoree.tools.marShell.parser.sub.KevsInstParser$$anonfun$parseInst$1: long serialVersionUID
 org.eclipse.emf.ecore.util.EcoreUtil$1: long serialVersionUID
 org.eclipse.emf.ecore.util.EcoreUtil$ContentTreeIterator: long serialVersionUID
 org.eclipse.emf.common.util.AbstractTreeIterator: long serialVersionUID
 org.eclipse.emf.common.util.BasicEList: long serialVersionUID
-org.kevoree.tools.marShell.parser.sub.KevsInstParser$$anonfun$parseInst$3: long serialVersionUID
+org.kevoree.tools.marShell.parser.sub.KevsInstParser$$anonfun$parseInst$4: long serialVersionUID
 scala.util.matching.Regex$Groups$$anonfun$unapplySeq$2: long serialVersionUID
+org.kevoree.tools.marShell.parser.sub.KevsInstParser$$anonfun$parseInst$3: long serialVersionUID
 org.kevoree.tools.marShell.parser.sub.KevsInstParser$$anonfun$parseInst$6: long serialVersionUID
-org.kevoree.tools.marShell.parser.sub.KevsInstParser$$anonfun$parseInst$5: long serialVersionUID
 org.eclipse.emf.ecore.impl.EModelElementImpl: int EFROZEN
 org.eclipse.emf.ecore.impl.EModelElementImpl: int ELAST_EMODEL_ELEMENT_FLAG
 org.eclipse.emf.ecore.impl.EModelElementImpl: boolean $assertionsDisabled
@@ -36570,6 +36549,7 @@ org.eclipse.emf.ecore.impl.BasicEObjectImpl: int EVIRTUAL_UNSET
 org.eclipse.emf.ecore.impl.BasicEObjectImpl: int EVIRTUAL_GET
 org.eclipse.emf.ecore.impl.BasicEObjectImpl: int EVIRTUAL_IS_SET
 org.eclipse.emf.ecore.impl.BasicEObjectImpl: boolean $assertionsDisabled
+org.kevoree.tools.marShell.parser.sub.KevsInstParser$$anonfun$parseInst$5: long serialVersionUID
 org.kevoree.adaptation.deploy.osgi.context.KevoreeDeployManager$$anonfun$getStartLevelServer$1: long serialVersionUID
 org.codehaus.jackson.io.NumberInput: long L_BILLION
 org.eclipse.emf.ecore.xml.type.util.XMLTypeUtil$CharArrayThreadLocal: int MAX_CACHE_CAPACITY
@@ -36735,6 +36715,7 @@ scala.collection.IterableViewLike$$anonfun$grouped$1: long serialVersionUID
 org.eclipse.emf.ecore.xml.type.internal.DataValue$URI$MalformedURIException: long serialVersionUID
 scala.util.parsing.combinator.Parsers$Parser$$anonfun$$tilde$greater$1$$anonfun$apply$3: long serialVersionUID
 scala.Function2$mcVDL$sp$$anonfun$curried$mcVDL$sp$1: long serialVersionUID
+net.lag.configgy.Attributes$$anonfun$equals$1: long serialVersionUID
 scala.Function2$mcZDD$sp$$anonfun$tupled$mcZDD$sp$1: long serialVersionUID
 org.eclipse.emf.ecore.plugin.SettingDelegateFactoryRegistryReader: java.lang.String TAG_FACTORY
 org.eclipse.emf.ecore.plugin.SettingDelegateFactoryRegistryReader: java.lang.String ATT_URI
@@ -36944,7 +36925,6 @@ net.lag.configgy.RuntimeEnvironment$$anonfun$load$1: long serialVersionUID
 scala.Enumeration$$anonfun$1: long serialVersionUID
 org.apache.felix.framework.resolver.Module: int EAGER_ACTIVATION
 org.apache.felix.framework.resolver.Module: int LAZY_ACTIVATION
-net.lag.logging.Logger$$anonfun$clearHandlers$1$$anonfun$apply$6$$anonfun$apply$7: long serialVersionUID
 org.kevoree.tools.marShell.parser.sub.KevsInstParser$$anonfun$parseRemoveChannel$2: long serialVersionUID
 org.kevoree.tools.marShell.interpreter.sub.KevsRemoveLibraryInterpreter$$anonfun$interpret$1: long serialVersionUID
 scala.Function2$mcVLD$sp$$anonfun$tupled$mcVLD$sp$1: long serialVersionUID
@@ -36963,6 +36943,7 @@ org.eclipse.emf.ecore.impl.BasicEObjectImpl: int EVIRTUAL_UNSET
 org.eclipse.emf.ecore.impl.BasicEObjectImpl: int EVIRTUAL_GET
 org.eclipse.emf.ecore.impl.BasicEObjectImpl: int EVIRTUAL_IS_SET
 org.eclipse.emf.ecore.impl.BasicEObjectImpl: boolean $assertionsDisabled
+net.lag.configgy.Attributes$$anonfun$getJmxNodes$1: long serialVersionUID
 scala.actors.FutureActor$$anonfun$respond$1: long serialVersionUID
 scala.collection.generic.BitSetFactory$$anonfun$apply$1: long serialVersionUID
 org.kevoree.tools.marShell.lexer.KevsLexical$$anonfun$token$11$$anonfun$apply$44$$anonfun$apply$45: long serialVersionUID
@@ -37093,7 +37074,6 @@ scala.util.automata.SubsetConstruction$$anonfun$determinize$1: long serialVersio
 scala.util.parsing.combinator.Parsers$$anonfun$failure$1: long serialVersionUID
 scala.Function2$mcLIL$sp$$anonfun$tupled$mcLIL$sp$1: long serialVersionUID
 scala.collection.IndexedSeqOptimized$$anonfun$forall$1: long serialVersionUID
-net.lag.configgy.Configgy$LoggingConfigSubscriber$$anonfun$net$lag$configgy$Configgy$LoggingConfigSubscriber$$runReplacement$1$$anonfun$apply$1: long serialVersionUID
 org.restlet.routing.Filter: int CONTINUE
 org.restlet.routing.Filter: int SKIP
 org.restlet.routing.Filter: int STOP
@@ -37114,7 +37094,6 @@ org.kevoree.tools.marShell.parser.sub.KevsNodeParser$$anonfun$parseRemoveNode$1:
 scala.reflect.generic.Trees$Traverser$$anonfun$traverseStats$1: long serialVersionUID
 scala.Function21$$anonfun$tupled$1: long serialVersionUID
 scala.Function2$mcLDI$sp$$anonfun$curried$mcLDI$sp$1: long serialVersionUID
-net.lag.configgy.Attributes$$anonfun$lookup$1$1: long serialVersionUID
 scala.collection.immutable.SortedMap$$anonfun$$plus$plus$1: long serialVersionUID
 scala.collection.mutable.FlatHashTable$$anonfun$serializeTo$1: long serialVersionUID
 org.restlet.engine.io.PipeStream: long QUEUE_TIMEOUT
@@ -37339,6 +37318,7 @@ scala.collection.immutable.HashSet$SerializationProxy$$anonfun$readObject$1: lon
 org.eclipse.emf.common.EMFPlugin: boolean IS_ECLIPSE_RUNNING
 org.eclipse.emf.common.EMFPlugin: boolean IS_RESOURCES_BUNDLE_AVAILABLE
 scala.util.parsing.combinator.lexical.Lexical$$anonfun$chrExcept$1$$anonfun$apply$1: long serialVersionUID
+net.lag.configgy.Config$$anonfun$subscribe$1: long serialVersionUID
 scala.collection.mutable.MutableList$$anonfun$tail$1: long serialVersionUID
 org.codehaus.jackson.impl.JsonNumericParserBase: int NR_UNKNOWN
 org.codehaus.jackson.impl.JsonNumericParserBase: int NR_INT
@@ -37393,7 +37373,6 @@ org.codehaus.jackson.impl.JsonParserBase: int INT_u
 scala.collection.MapLike$DefaultKeySet$$anonfun$foreach$1: long serialVersionUID
 scala.util.parsing.json.Lexer$$anonfun$intList$1$$anonfun$apply$17: long serialVersionUID
 scala.collection.MapLike$DefaultKeySet$$anonfun$foreach$2: long serialVersionUID
-net.lag.configgy.ConfigMap$$anonfun$getLong$2$$anonfun$apply$2: long serialVersionUID
 scala.Function2$mcILI$sp$$anonfun$curried$mcILI$sp$1$$anonfun$apply$22: long serialVersionUID
 org.kevoree.kompare.sub.InitNodeKompare$$anonfun$getInitNodeAdaptationModel$3: long serialVersionUID
 org.slf4j.impl.AndroidLogger: long serialVersionUID
@@ -37434,6 +37413,7 @@ scala.io.Source$$anonfun$fromInputStream$1: long serialVersionUID
 scala.collection.mutable.ArrayOps$$anonfun$flatten$1: long serialVersionUID
 scala.Function2$mcVIL$sp$$anonfun$curried$mcVIL$sp$1$$anonfun$apply$8: long serialVersionUID
 scala.io.Source$$anonfun$fromInputStream$2: long serialVersionUID
+net.lag.logging.Logger$$anonfun$configure$6$$anonfun$apply$9: long serialVersionUID
 scala.util.parsing.combinator.lexical.StdLexical$$anonfun$token$8$$anonfun$apply$15: long serialVersionUID
 scala.Responder$$anonfun$loop$1: long serialVersionUID
 org.restlet.engine.util.AlphabeticalComparator: long serialVersionUID
@@ -37626,7 +37606,6 @@ org.eclipse.emf.ecore.impl.EStructuralFeatureImpl$InternalSettingDelegateMany: i
 org.eclipse.emf.ecore.impl.EStructuralFeatureImpl$InternalSettingDelegateMany: int CONTAINMENT_INVERSE_RESOLVE
 org.eclipse.emf.ecore.impl.EStructuralFeatureImpl$InternalSettingDelegateMany: int EMAP_UNSETTABLE
 scala.collection.MapLike$$anonfun$$plus$plus$1: long serialVersionUID
-net.lag.configgy.ConfigMap$$anonfun$getString$1: long serialVersionUID
 org.osgi.framework.InvalidSyntaxException: long serialVersionUID
 org.restlet.data.LocalReference: int CLAP_DEFAULT
 org.restlet.data.LocalReference: int CLAP_CLASS
@@ -37661,8 +37640,6 @@ scala.collection.mutable.HashMap: long serialVersionUID
 scala.collection.TraversableLike$$anonfun$filter$1: long serialVersionUID
 scala.collection.IterableLike$$anonfun$zipWithIndex$1: long serialVersionUID
 scala.collection.TraversableLike$$anonfun$scanRight$1: long serialVersionUID
-net.lag.logging.Logger$$anonfun$get$1$$anonfun$apply$9: long serialVersionUID
-net.lag.logging.Logger$$anonfun$get$1$$anonfun$apply$8: long serialVersionUID
 scala.util.parsing.combinator.Parsers$$anonfun$commit$1: long serialVersionUID
 scala.collection.immutable.IntMap$$anonfun$toList$1: long serialVersionUID
 scala.Function2$mcZDL$sp$$anonfun$curried$mcZDL$sp$1$$anonfun$apply$45: long serialVersionUID
@@ -37702,9 +37679,6 @@ org.eclipse.emf.ecore.util.EcoreEList: long serialVersionUID
 org.eclipse.emf.ecore.util.NotifyingInternalEListImpl: long serialVersionUID
 org.eclipse.emf.common.notify.impl.NotifyingListImpl: long serialVersionUID
 org.eclipse.emf.common.util.BasicEList: long serialVersionUID
-net.lag.logging.Logger$$anonfun$elements$1: long serialVersionUID
-net.lag.logging.Logger$$anonfun$elements$2: long serialVersionUID
-net.lag.logging.Logger$$anonfun$elements$3: long serialVersionUID
 scala.util.parsing.json.Lexer$$anonfun$nonzero$1: long serialVersionUID
 scala.collection.mutable.LinkedListLike$$anonfun$apply$1: long serialVersionUID
 org.kevoree.tools.marShell.lexer.KevsLexical$$anonfun$_delim$2: long serialVersionUID
@@ -37958,8 +37932,6 @@ org.slf4j.helpers.MarkerIgnoringBase: long serialVersionUID
 org.slf4j.helpers.NamedLoggerBase: long serialVersionUID
 org.eclipse.emf.ecore.resource.impl.DESCipherImpl: java.lang.String ENCRYPTION_SCHEME
 org.eclipse.emf.ecore.resource.impl.DESCipherImpl: java.lang.String UNICODE_FORMAT
-net.lag.configgy.ConfigMap$$anonfun$getLong$2: long serialVersionUID
-net.lag.configgy.ConfigMap$$anonfun$getLong$1: long serialVersionUID
 scala.collection.mutable.MutableList: long serialVersionUID
 scala.io.Codec$$anonfun$decoder$1: long serialVersionUID
 scala.io.Codec$$anonfun$decoder$2: long serialVersionUID
@@ -38048,10 +38020,10 @@ org.eclipse.emf.ecore.plugin.InvocationDelegateFactoryRegistryReader: java.lang.
 org.eclipse.emf.ecore.plugin.InvocationDelegateFactoryRegistryReader: java.lang.String ATT_URI
 org.eclipse.emf.ecore.plugin.InvocationDelegateFactoryRegistryReader: java.lang.String ATT_CLASS
 org.eclipse.emf.ecore.plugin.RegistryReader: java.lang.String TAG_DESCRIPTION
+net.lag.configgy.ConfigMap$$anonfun$copyInto$1$$anonfun$apply$1$$anonfun$1: long serialVersionUID
 net.lag.configgy.ConfigParser$$anonfun$stringList$2: long serialVersionUID
 net.lag.configgy.ConfigParser$$anonfun$stringList$1: long serialVersionUID
 net.lag.configgy.ConfigParser$$anonfun$stringList$3: long serialVersionUID
-net.lag.configgy.Configgy$LoggingConfigSubscriber$$anonfun$net$lag$configgy$Configgy$LoggingConfigSubscriber$$runReplacement$1: long serialVersionUID
 org.eclipse.emf.common.notify.Notification: int CREATE
 org.eclipse.emf.common.notify.Notification: int SET
 org.eclipse.emf.common.notify.Notification: int UNSET
@@ -38065,7 +38037,6 @@ org.eclipse.emf.common.notify.Notification: int RESOLVE
 org.eclipse.emf.common.notify.Notification: int EVENT_TYPE_COUNT
 org.eclipse.emf.common.notify.Notification: int NO_FEATURE_ID
 org.eclipse.emf.common.notify.Notification: int NO_INDEX
-net.lag.configgy.Attributes$$anonfun$net$lag$configgy$Attributes$$toConfigList$2$$anonfun$3: long serialVersionUID
 org.eclipse.emf.ecore.xmi.impl.XMLSaveImpl: int MAX_UTF_MAPPABLE_CODEPOINT
 org.eclipse.emf.ecore.xmi.impl.XMLSaveImpl: int MAX_LATIN1_MAPPABLE_CODEPOINT
 org.eclipse.emf.ecore.xmi.impl.XMLSaveImpl: int MAX_ASCII_MAPPABLE_CODEPOINT
@@ -38218,12 +38189,10 @@ org.eclipse.emf.ecore.xml.type.internal.DataValue$Base64: int FOURBYTE
 org.eclipse.emf.ecore.xml.type.internal.DataValue$Base64: int SIGN
 org.eclipse.emf.ecore.xml.type.internal.DataValue$Base64: char PAD
 org.eclipse.emf.ecore.xml.type.internal.DataValue$Base64: boolean fDebug
-net.lag.configgy.Attributes$$anonfun$net$lag$configgy$Attributes$$toConfigList$2$$anonfun$5: long serialVersionUID
 org.eclipse.emf.ecore.util.EcoreEList$UnmodifiableEList: long serialVersionUID
 org.eclipse.emf.common.util.BasicEList$UnmodifiableEList: long serialVersionUID
 org.eclipse.emf.common.util.BasicEList: long serialVersionUID
-net.lag.configgy.Attributes$$anonfun$net$lag$configgy$Attributes$$toConfigList$2$$anonfun$4: long serialVersionUID
-net.lag.configgy.ConfigMap$$anonfun$copyInto$1$$anonfun$apply$4: long serialVersionUID
+net.lag.configgy.ConfigMap$$anonfun$copyInto$1$$anonfun$apply$1: long serialVersionUID
 org.restlet.routing.Filter: int CONTINUE
 org.restlet.routing.Filter: int SKIP
 org.restlet.routing.Filter: int STOP
@@ -38333,7 +38302,6 @@ scala.Function2$mcFID$sp$$anonfun$tupled$mcFID$sp$1: long serialVersionUID
 scala.Function2$mcFDL$sp$$anonfun$curried$mcFDL$sp$1$$anonfun$apply$47: long serialVersionUID
 net.lag.configgy.JmxWrapper$$anonfun$setAttributes$1: long serialVersionUID
 scala.util.parsing.json.Lexer$$anonfun$token$1$$anonfun$apply$2: long serialVersionUID
-net.lag.configgy.Attributes$$anonfun$parentLookup$1$1: long serialVersionUID
 scala.util.parsing.json.Lexer$$anonfun$token$1$$anonfun$apply$1: long serialVersionUID
 scala.collection.SeqViewLike$$anonfun$union$1: long serialVersionUID
 org.eclipse.emf.ecore.impl.EModelElementImpl: int EFROZEN
@@ -38648,7 +38616,6 @@ org.eclipse.emf.ecore.xml.namespace.XMLNamespacePackage: java.lang.String eNAME
 org.eclipse.emf.ecore.xml.namespace.XMLNamespacePackage: java.lang.String eNS_URI
 org.eclipse.emf.ecore.xml.namespace.XMLNamespacePackage: java.lang.String eNS_PREFIX
 scala.Tuple3$Zipped$$anonfun$foreach$1: long serialVersionUID
-net.lag.configgy.ConfigMap$$anonfun$sortedKeys$1: long serialVersionUID
 scala.collection.mutable.OpenHashMap$$anonfun$apply$1: long serialVersionUID
 org.kevoree.kompare.sub.UpdateNodeKompare$$anonfun$getUpdateNodeAdaptationModel$9: long serialVersionUID
 org.kevoree.kompare.sub.UpdateNodeKompare$$anonfun$getUpdateNodeAdaptationModel$8: long serialVersionUID
@@ -38728,9 +38695,7 @@ org.eclipse.emf.common.notify.impl.NotifierImpl: int ELAST_NOTIFIER_FLAG
 scala.util.automata.BaseBerrySethi$$anonfun$compLast$1: long serialVersionUID
 scala.Responder$$anon$2$$anonfun$respond$2: long serialVersionUID
 scala.xml.PrettyPrinter$$anonfun$format$1: long serialVersionUID
-net.lag.logging.Logger$$anonfun$get$1: long serialVersionUID
 scala.Function2$mcDIL$sp$$anonfun$curried$mcDIL$sp$1$$anonfun$apply$13: long serialVersionUID
-net.lag.configgy.JmxWrapper$$anonfun$invoke$1: long serialVersionUID
 org.restlet.representation.Representation: long UNKNOWN_SIZE
 org.kevoree.tools.marShell.lexer.KevsLexical$$anonfun$comment$1: long serialVersionUID
 scala.Tuple2$Zipped$$anonfun$map$1: long serialVersionUID
@@ -38846,6 +38811,7 @@ org.kevoree.adaptation.deploy.osgi.KevoreeDeployPhase$$anonfun$phase$1: long ser
 org.kevoree.adaptation.deploy.osgi.KevoreeDeployPhase$$anonfun$phase$2: long serialVersionUID
 org.kevoree.adaptation.deploy.osgi.KevoreeDeployPhase$$anonfun$phase$3: long serialVersionUID
 net.lag.configgy.ConfigParser$$anonfun$trueFalse$1: long serialVersionUID
+net.lag.configgy.ConfigParser$$anonfun$trueFalse$2: long serialVersionUID
 org.kevoree.impl.NamedElementImpl: java.lang.String NAME_EDEFAULT
 org.eclipse.emf.ecore.impl.EObjectImpl: int EDELIVER
 org.eclipse.emf.ecore.impl.EObjectImpl: int EDYNAMIC_CLASS
@@ -39043,11 +39009,9 @@ org.eclipse.emf.ecore.xml.type.internal.RegEx$Op: int INDEPENDENT
 org.eclipse.emf.ecore.xml.type.internal.RegEx$Op: int MODIFIER
 org.eclipse.emf.ecore.xml.type.internal.RegEx$Op: int CONDITION
 org.eclipse.emf.ecore.xml.type.internal.RegEx$Op: boolean COUNT
-net.lag.configgy.Config$$anonfun$fromMap$1$$anonfun$apply$1: long serialVersionUID
 org.eclipse.emf.common.notify.impl.NotifyingListImpl: long serialVersionUID
 org.eclipse.emf.common.util.BasicEList: long serialVersionUID
 scala.Tuple3$Zipped$$anonfun$filter$1: long serialVersionUID
-net.lag.logging.Logger$$anonfun$3$$anonfun$apply$12: long serialVersionUID
 scala.actors.Channel$$anonfun$1: long serialVersionUID
 scala.actors.Channel$$anonfun$2: long serialVersionUID
 scala.collection.MapLike$$anon$2$$anonfun$foreach$7: long serialVersionUID
@@ -39197,11 +39161,11 @@ org.osgi.framework.PackagePermissionCollection: long serialVersionUID
 scala.actors.Futures$$anonfun$awaitEither$1: long serialVersionUID
 org.kevoree.framework.osgi.KevoreeGroupActivator$$anonfun$start$2: long serialVersionUID
 org.kevoree.framework.osgi.KevoreeGroupActivator$$anonfun$start$1: long serialVersionUID
+net.lag.logging.ScribeHandler$$anonfun$close$1: long serialVersionUID
 scala.collection.TraversableLike$$anonfun$copyToArray$1$$anonfun$apply$mcV$sp$9: long serialVersionUID
+net.lag.configgy.Config$$anonfun$1: long serialVersionUID
 net.lag.configgy.ConfigParser$$anonfun$toggle$2: long serialVersionUID
 net.lag.configgy.ConfigParser$$anonfun$sectionOpenBrace$1$$anonfun$apply$10: long serialVersionUID
-net.lag.configgy.Config$$anonfun$3: long serialVersionUID
-net.lag.configgy.Config$$anonfun$4: long serialVersionUID
 net.lag.configgy.ConfigParser$$anonfun$toggle$1: long serialVersionUID
 org.kevoree.tools.marShell.lexer.KevsLexical$$anonfun$token$6$$anonfun$apply$32: long serialVersionUID
 net.lag.configgy.ConfigMap$$anonfun$copyInto$1$$anonfun$3: long serialVersionUID
@@ -39507,6 +39471,7 @@ org.eclipse.emf.ecore.util.EcoreUtil$CrossReferencer: long serialVersionUID
 org.restlet.data.Range: long INDEX_FIRST
 org.restlet.data.Range: long INDEX_LAST
 org.restlet.data.Range: long SIZE_MAX
+net.lag.configgy.Configgy$LoggingConfigSubscriber$$anonfun$commit$1$$anonfun$apply$3$$anonfun$apply$4: long serialVersionUID
 scala.Function21$$anonfun$curried$1: long serialVersionUID
 org.eclipse.emf.ecore.util.EObjectWithInverseResolvingEList: long serialVersionUID
 org.eclipse.emf.ecore.util.EObjectWithInverseEList: long serialVersionUID
@@ -39716,6 +39681,7 @@ scala.runtime.BoxesRunTime: int DOUBLE
 scala.runtime.BoxesRunTime: int OTHER
 scala.xml.Utility$$anonfun$unescape$1: long serialVersionUID
 scala.xml.parsing.MarkupHandler$$anonfun$parsedEntityDecl$1: long serialVersionUID
+net.lag.logging.Logger$$anonfun$configure$5$$anonfun$apply$8: long serialVersionUID
 scala.Function1$mcLL$sp$$anonfun$compose$mcLL$sp$1: long serialVersionUID
 org.ops4j.net.Base64Encoder: int I6O2
 org.ops4j.net.Base64Encoder: int O6I2
@@ -39807,6 +39773,7 @@ org.eclipse.emf.ecore.impl.BasicEObjectImpl: int EVIRTUAL_UNSET
 org.eclipse.emf.ecore.impl.BasicEObjectImpl: int EVIRTUAL_GET
 org.eclipse.emf.ecore.impl.BasicEObjectImpl: int EVIRTUAL_IS_SET
 org.eclipse.emf.ecore.impl.BasicEObjectImpl: boolean $assertionsDisabled
+net.lag.configgy.Configgy$LoggingConfigSubscriber$$anonfun$commit$1$$anonfun$apply$3: long serialVersionUID
 org.kevoree.tools.marShell.lexer.KevsLexical$$anonfun$token$11: long serialVersionUID
 org.kevoree.tools.marShell.lexer.KevsLexical$$anonfun$token$10: long serialVersionUID
 scala.collection.MapLike$DefaultValuesIterable$$anonfun$foreach$4: long serialVersionUID
@@ -39830,7 +39797,6 @@ scala.util.parsing.combinator.lexical.StdLexical$$anonfun$token$5$$anonfun$apply
 scala.util.parsing.combinator.lexical.StdLexical$$anonfun$token$5$$anonfun$apply$13: long serialVersionUID
 scala.util.parsing.combinator.lexical.StdLexical$$anonfun$token$5$$anonfun$apply$10: long serialVersionUID
 org.kevoree.tools.marShell.parser.sub.KevsInstParser$$anonfun$parseAddChannel$5: long serialVersionUID
-net.lag.configgy.Config$$anonfun$fromResource$1: long serialVersionUID
 org.kevoree.tools.marShell.parser.sub.KevsInstParser$$anonfun$parseAddChannel$2: long serialVersionUID
 org.kevoree.tools.marShell.parser.sub.KevsInstParser$$anonfun$parseAddChannel$1: long serialVersionUID
 org.kevoree.tools.marShell.parser.sub.KevsInstParser$$anonfun$parseAddChannel$4: long serialVersionUID
@@ -39890,7 +39856,6 @@ scala.util.automata.WordBerrySethi$$anonfun$3$$anonfun$apply$2: long serialVersi
 org.kevoree.kompare.sub.UpdateNodeKompare$$anonfun$getUpdateNodeAdaptationModel$6$$anonfun$apply$25: long serialVersionUID
 scala.Function1$mcDF$sp$$anonfun$andThen$mcDF$sp$1: long serialVersionUID
 org.restlet.representation.Representation: long UNKNOWN_SIZE
-net.lag.logging.Logger$$anonfun$configure$3$$anonfun$apply$10: long serialVersionUID
 scala.collection.TraversableViewLike$$anonfun$groupBy$1: long serialVersionUID
 scala.Function2$mcDDD$sp$$anonfun$tupled$mcDDD$sp$1: long serialVersionUID
 scala.collection.TraversableViewLike$TakenWhile$$anonfun$foreach$7: long serialVersionUID
@@ -40107,8 +40072,6 @@ org.jgrapht.event.GraphVertexChangeEvent: int VERTEX_REMOVED
 org.jgrapht.event.GraphChangeEvent: long serialVersionUID
 org.kevoree.tools.marShell.parser.sub.KevsPropertiesParser$$anonfun$parseProperty$1: long serialVersionUID
 org.kevoree.tools.marShell.parser.sub.KevsPropertiesParser$$anonfun$parseProperty$2: long serialVersionUID
-net.lag.configgy.ConfigMap$$anonfun$getBool$1: long serialVersionUID
-net.lag.configgy.ConfigMap$$anonfun$getBool$2: long serialVersionUID
 org.kevoree.framework.merger.KevoreePlatformMerger$$anonfun$merge$1$$anonfun$apply$2$$anonfun$apply$4: long serialVersionUID
 scala.reflect.generic.Trees$Traverser$$anonfun$traverseTrees$1: long serialVersionUID
 org.kevoree.framework.merger.KevoreePlatformMerger$$anonfun$merge$1$$anonfun$apply$2$$anonfun$apply$3: long serialVersionUID
@@ -40124,7 +40087,6 @@ org.eclipse.emf.ecore.resource.impl.ContentHandlerImpl$Describer: java.lang.Stri
 scala.xml.persistent.SetStorage$$anonfun$1: long serialVersionUID
 scala.collection.mutable.MutableList: long serialVersionUID
 scala.collection.TraversableViewLike$$anonfun$collect$1: long serialVersionUID
-net.lag.logging.ScribeHandler$$anonfun$liftedTree1$1$1: long serialVersionUID
 scala.Function13$$anonfun$tupled$1: long serialVersionUID
 scala.concurrent.forkjoin.ForkJoinTask: int COMPLETION_MASK
 scala.concurrent.forkjoin.ForkJoinTask: int NORMAL
@@ -40292,6 +40254,7 @@ scala.concurrent.ops$$anonfun$getOrThrow$1: long serialVersionUID
 scala.actors.threadpool.ExecutionException: long serialVersionUID
 scala.util.parsing.combinator.lexical.StdLexical$$anonfun$_delim$2$$anonfun$apply$27: long serialVersionUID
 scala.actors.Reactor$$anonfun$dostart$1: long serialVersionUID
+net.lag.configgy.Configgy$LoggingConfigSubscriber$$anonfun$validate$1$$anonfun$apply$1: long serialVersionUID
 org.apache.felix.shell.remote.Listener: java.lang.String INUSE_MESSAGE
 scala.Function2$mcFIL$sp$$anonfun$curried$mcFIL$sp$1: long serialVersionUID
 scala.actors.ReplyReactor$$anonfun$searchMailbox$1: long serialVersionUID
@@ -40874,6 +40837,7 @@ org.codehaus.jackson.sym.BytesToNameCanonicalizer: int MIN_HASH_SIZE
 org.codehaus.jackson.sym.BytesToNameCanonicalizer: int INITIAL_COLLISION_LEN
 org.codehaus.jackson.sym.BytesToNameCanonicalizer: int LAST_VALID_BUCKET
 scala.util.parsing.json.Lexer$$anonfun$string$1$$anonfun$apply$13: long serialVersionUID
+net.lag.configgy.ConfigParser$$anonfun$sectionCloseBrace$1: long serialVersionUID
 scala.util.parsing.combinator.Parsers$Parser$$anonfun$$tilde$bang$1: long serialVersionUID
 org.eclipse.emf.ecore.impl.EObjectImpl: int EDELIVER
 org.eclipse.emf.ecore.impl.EObjectImpl: int EDYNAMIC_CLASS
@@ -41054,6 +41018,7 @@ org.eclipse.emf.ecore.impl.BasicEObjectImpl: int EVIRTUAL_UNSET
 org.eclipse.emf.ecore.impl.BasicEObjectImpl: int EVIRTUAL_GET
 org.eclipse.emf.ecore.impl.BasicEObjectImpl: int EVIRTUAL_IS_SET
 org.eclipse.emf.ecore.impl.BasicEObjectImpl: boolean $assertionsDisabled
+net.lag.logging.Logger$$anonfun$configure$3$$anonfun$apply$7: long serialVersionUID
 org.eclipse.emf.ecore.impl.EObjectImpl: int EDELIVER
 org.eclipse.emf.ecore.impl.EObjectImpl: int EDYNAMIC_CLASS
 org.eclipse.emf.ecore.impl.EObjectImpl: int EPROXY
@@ -41219,6 +41184,7 @@ scala.collection.immutable.StringLike$$anonfun$1: long serialVersionUID
 scala.util.parsing.combinator.Parsers$$anonfun$acceptSeq$1$$anonfun$apply$6: long serialVersionUID
 scala.Function2$mcZID$sp$$anonfun$curried$mcZID$sp$1$$anonfun$apply$15: long serialVersionUID
 net.lag.configgy.RuntimeEnvironment$$anonfun$jarPath$1: long serialVersionUID
+net.lag.configgy.RuntimeEnvironment$$anonfun$jarPath$2: long serialVersionUID
 org.eclipse.emf.common.notify.impl.NotifierImpl: int EDELIVER
 org.eclipse.emf.common.notify.impl.NotifierImpl: int ELAST_NOTIFIER_FLAG
 scala.Function2$mcVDD$sp$$anonfun$tupled$mcVDD$sp$1: long serialVersionUID
@@ -41426,7 +41392,6 @@ org.restlet.resource.ResourceException: long serialVersionUID
 scala.Function2$mcVIL$sp$$anonfun$tupled$mcVIL$sp$1: long serialVersionUID
 org.jgrapht.graph.MaskSubgraph: boolean $assertionsDisabled
 org.jgrapht.graph.MaskSubgraph: java.lang.String UNMODIFIABLE
-net.lag.configgy.SubscriptionNode$$anonfun$get$1: long serialVersionUID
 org.eclipse.emf.ecore.impl.EPackageImpl: boolean IS_ABSTRACT
 org.eclipse.emf.ecore.impl.EPackageImpl: boolean IS_INTERFACE
 org.eclipse.emf.ecore.impl.EPackageImpl: boolean IS_GENERATED_INSTANCE_CLASS
@@ -41498,8 +41463,6 @@ org.restlet.routing.Filter: int STOP
 org.restlet.Restlet: java.lang.String UNABLE_TO_START
 org.jgrapht.event.EdgeTraversalEvent: long serialVersionUID
 scala.collection.mutable.MapLike$$anonfun$transform$1: long serialVersionUID
-net.lag.logging.GenericFormatter$$anonfun$2: long serialVersionUID
-net.lag.logging.GenericFormatter$$anonfun$1: long serialVersionUID
 org.jgrapht.experimental.dag.DirectedAcyclicGraph: long serialVersionUID
 org.jgrapht.graph.SimpleDirectedGraph: long serialVersionUID
 org.jgrapht.graph.AbstractBaseGraph: long serialVersionUID
@@ -41661,8 +41624,6 @@ scala.Function2$mcZID$sp$$anonfun$curried$mcZID$sp$1: long serialVersionUID
 org.kevoree.tools.marShell.parser.sub.KevsAbstractParser$$anon$1$$anonfun$whitespace$1: long serialVersionUID
 scala.actors.FutureActor$$anonfun$act$2$$anonfun$apply$mcV$sp$1: long serialVersionUID
 scala.xml.PrettyPrinter$$anonfun$traverse$1: long serialVersionUID
-net.lag.configgy.SubscriptionNode$$anonfun$validate$2$$anonfun$2: long serialVersionUID
-net.lag.configgy.SubscriptionNode$$anonfun$validate$2$$anonfun$1: long serialVersionUID
 org.restlet.Restlet: java.lang.String UNABLE_TO_START
 scala.collection.generic.Growable$$anonfun$$plus$plus$eq$1: long serialVersionUID
 net.lag.logging.ThrottledLogger$$anonfun$1: long serialVersionUID
@@ -42027,7 +41988,6 @@ org.eclipse.emf.ecore.xml.type.internal.XMLCalendar
 scala.reflect.TypeApply$
 net.lag.logging.Level$CRITICAL$
 scala.reflect.NoSymbol$
-net.lag.configgy.Config$$anonfun$fromString$1
 scala.util.parsing.combinator.Parsers$$anonfun$acceptSeq$1
 org.kevoree.framework.aspects.PortAspect
 scala.actors.Channel$$anonfun$1$$anonfun$apply$1
@@ -42038,7 +41998,6 @@ scala.xml.include.sax.Main$$anonfun$main$1$$anonfun$apply$4
 scala.reflect.generic.Constants$Constant
 scala.collection.immutable.HashSet$HashSetCollision1$$anonfun$updated0$1
 org.kevoree.framework.aspects.TypeDefinitionAspect
-net.lag.configgy.ConfigMap$$anonfun$getDouble$2$$anonfun$apply$3
 scala.Function2$mcDIL$sp$$anonfun$tupled$mcDIL$sp$1
 scala.collection.Iterator$$anonfun$filterNot$1
 org.kevoree.framework.aspects.TypeDefinitionAspect$$anonfun$2$$anonfun$apply$2
@@ -42056,8 +42015,6 @@ org.kevoree.framework.osgi.KevoreeChannelFragmentActivator$$anonfun$start$1
 scala.collection.immutable.List$$anonfun$unzip$1
 scala.collection.immutable.Set$EmptySet
 org.kevoree.framework.aspects.ContainerNodeAspect$$anonfun$getComponentTypes$1
-net.lag.configgy.ConfigMap$$anonfun$getInt$1
-net.lag.configgy.ConfigMap$$anonfun$getInt$2
 scala.Function6$$anonfun$curried$1
 scala.Function1$mcLF$sp$$anonfun$compose$mcLF$sp$1
 org.kevoree.adaptation.deploy.osgi.command.AddTypeCommand$$anonfun$2
@@ -42081,7 +42038,6 @@ org.kevoree.tools.marShell.parser.sub.KevsLibraryParser$$anonfun$parseLibrary$1
 scala.util.control.Exception$$anon$5$$anonfun$$init$$1
 org.eclipse.emf.ecore.xml.type.internal.RegEx$Token$ConditionToken
 scala.reflect.generic.Trees$ModuleDef$
-net.lag.logging.Logger$$anonfun$configure$5$$anonfun$apply$11
 org.kevoree.framework.aspects.TypeDefinitionAspect$
 net.lag.configgy.Configgy$LoggingConfigSubscriber$$anonfun$validate$1
 scala.collection.immutable.List$$anonfun$rights$1
@@ -42139,7 +42095,6 @@ org.kevoree.framework.KevoreeActor$$anonfun$org$kevoree$framework$KevoreeActor$$
 scala.collection.BitSetLike$$anonfun$foreach$1
 net.lag.logging.Logger$$anonfun$1
 net.lag.logging.Logger$$anonfun$2
-net.lag.logging.Logger$$anonfun$3
 scala.collection.immutable.HashSet
 scala.collection.immutable.HashSet$EmptyHashSet$
 scala.collection.immutable.HashSet$HashSetCollision1
@@ -42170,7 +42125,10 @@ scala.Function1$mcZD$sp$$anonfun$compose$mcZD$sp$1
 scala.collection.JavaConverters$$anonfun$asJavaIterableConverter$1
 org.kevoree.framework.merger.KevoreePlatformMerger$$anonfun$merge$1$$anonfun$apply$2$$anonfun$apply$4$$anonfun$apply$5
 scala.Function1$mcVF$sp$$anonfun$compose$mcVF$sp$1
-net.lag.configgy.Config$$anonfun$liftedTree1$1$1
+net.lag.configgy.Attributes$$anonfun$net$lag$configgy$Attributes$$toConfigList$1$$anonfun$apply$4
+net.lag.configgy.Attributes$$anonfun$net$lag$configgy$Attributes$$toConfigList$1$$anonfun$apply$3
+net.lag.configgy.Attributes$$anonfun$net$lag$configgy$Attributes$$toConfigList$1$$anonfun$apply$2
+net.lag.configgy.Attributes$$anonfun$net$lag$configgy$Attributes$$toConfigList$1$$anonfun$apply$5
 scala.util.parsing.json.JSON$$anonfun$parse$2
 scala.util.parsing.json.JSON$$anonfun$parse$1
 scala.reflect.Literal
@@ -42200,7 +42158,6 @@ scala.util.parsing.ast.Binders$$anon$4$$anonfun$gmap$4
 scala.util.control.TailCalls$Done$
 scala.io.BytePickle$$anonfun$ufixedList$1
 scala.io.BytePickle$$anonfun$ufixedList$2
-net.lag.configgy.Configgy$$anonfun$configLogging$1
 scala.util.parsing.json.Lexer$$anonfun$string$3
 scala.concurrent.forkjoin.LinkedTransferQueue
 scala.util.parsing.json.Lexer$$anonfun$string$2
@@ -42209,6 +42166,7 @@ org.kevoree.tools.marShell.parser.sub.KevsInstParser$$anonfun$parseRemoveCompone
 scala.util.parsing.json.Lexer$$anonfun$string$1
 scala.collection.immutable.RedBlack$RedTree$
 scala.Function2$mcIDL$sp$$anonfun$curried$mcIDL$sp$1$$anonfun$apply$46
+net.lag.configgy.ConfigParser$$anonfun$trueFalse$2$$anonfun$apply$21
 org.kevoree.adaptation.deploy.osgi.command.AddBindingCommand
 scala.text.DocNest$
 scala.reflect.ScalaBeanInfo$$anonfun$1$$anonfun$apply$1
@@ -42307,12 +42265,10 @@ scala.io.BytePickle$$anonfun$upair$2$$anonfun$apply$2
 scala.collection.immutable.Stream$$anonfun$$plus$plus$1
 scala.util.parsing.combinator.syntactical.StdTokenParsers$$anonfun$keyword$1$$anonfun$apply$1
 scala.collection.immutable.MapLike$$anon$1$$anonfun$iterator$1
-net.lag.logging.LazyLogRecord$$anonfun$generate$1
 org.kevoree.tools.marShell.ast.AddNodeStatment$
 scala.util.parsing.combinator.lexical.StdLexical$$anonfun$identChar$1
 scala.collection.immutable.Stream$$anonfun$distinct$1
 scala.actors.remote.Node
-net.lag.configgy.Config$$anonfun$registerWithJmx$5
 net.lag.configgy.Config$$anonfun$registerWithJmx$4
 scala.Function16$$anonfun$tupled$1
 net.lag.configgy.Config$$anonfun$registerWithJmx$3
@@ -42323,6 +42279,7 @@ org.kevoree.adaptation.deploy.osgi.command.RemoveInstanceCommand
 scala.collection.immutable.Stream$$anonfun$loop$4$2
 scala.collection.immutable.Stream$$anonfun$loop$4$1
 org.kevoree.adaptation.deploy.osgi.context.KevoreeOSGiBundle
+net.lag.configgy.Configgy$LoggingConfigSubscriber$$anonfun$validate$1$$anonfun$apply$1$$anonfun$apply$2
 scala.collection.SeqViewLike$$anonfun$intersect$1
 org.kevoree.tools.marShell.lexer.KevsLexical$$anonfun$identChar$1
 scala.Function$$anonfun$curried$1$$anonfun$apply$2
@@ -42342,7 +42299,6 @@ scala.testing.Benchmark$$anonfun$main$1
 scala.concurrent.MailBox$$anonfun$scanSentMsgs$1
 org.kevoree.framework.aspects.TypeDefinitionAspect$$anonfun$foundRelevantDeployUnit$1
 scala.reflect.generic.Trees$DefDef
-net.lag.configgy.Attributes$$anonfun$recurse$1
 scala.collection.Iterator$GroupedIterator$$anonfun$padding$1
 scala.xml.parsing.TokenTests$$anonfun$checkPubID$1
 net.lag.logging.Weekly
@@ -42368,7 +42324,6 @@ net.lag.configgy.Attributes$$anonfun$asMap$1
 org.kevoree.tools.marShell.interpreter.sub.KevsMoveComponentInstanceInterpreter
 scala.Function2$mcDDI$sp$$anonfun$curried$mcDDI$sp$1$$anonfun$apply$43
 scala.util.parsing.combinator.PackratParsers$LR$
-net.lag.configgy.ConfigMap$$anonfun$getInt$2$$anonfun$apply$1
 org.kevoree.framework.aspects.PortAspect$$anonfun$isBind$1
 org.kevoree.tools.marShell.parser.sub.KevsLibraryParser$$anonfun$parseRemoveLibrary$2$$anonfun$apply$6
 scala.Function2$mcDIL$sp$$anonfun$curried$mcDIL$sp$1
@@ -42386,7 +42341,6 @@ scala.xml.dtd.UnparsedEntityDecl
 scala.collection.immutable.LongMap$$anonfun$intersection$1
 scala.collection.immutable.Stream$$anonfun$flatMap$1
 scala.util.parsing.combinator.Parsers$Parser$$anonfun$append$1
-net.lag.configgy.Attributes$$anonfun$net$lag$configgy$Attributes$$lookupCell$1
 scala.util.parsing.combinator.Parsers$$anonfun$elem$1
 org.kevoree.tools.marShell.interpreter.sub.KevsAddGroupInterpreter$
 scala.collection.TraversableOnce$$anonfun$max$1
@@ -42473,7 +42427,6 @@ scala.util.parsing.json.Lexer$$anonfun$fracPart$1$$anonfun$apply$18
 scala.util.parsing.combinator.lexical.StdLexical$$anonfun$whitespace$1$$anonfun$apply$23$$anonfun$apply$25
 scala.util.parsing.combinator.lexical.StdLexical$$anonfun$whitespace$1$$anonfun$apply$23$$anonfun$apply$24
 scala.collection.immutable.PagedSeq$$anonfun$fromStrings$1
-net.lag.configgy.ConfigMap$$anonfun$apply$6
 org.kevoree.framework.aspects.ComponentInstanceAspect$$anonfun$isUpdated$2$$anonfun$apply$2
 scala.util.parsing.json.Lexer$$anonfun$charSeq$7$$anonfun$apply$26
 org.kevoree.tools.marShell.parser.sub.KevsNodeParser$$anonfun$parseAddNode$1
@@ -42505,10 +42458,8 @@ scala.reflect.Super
 org.kevoree.tools.marShell.ast.AddToGroupStatement$
 org.kevoree.tools.marShell.parser.sub.KevsAbstractParser$$anonfun$orFailure$1
 scala.xml.PrettyPrinter$$anonfun$doPreserve$2
-net.lag.configgy.ConfigMap$$anonfun$getDouble$1
 scala.xml.PrettyPrinter$$anonfun$doPreserve$1
 scala.collection.TraversableLike$$anonfun$slice$1
-net.lag.configgy.ConfigMap$$anonfun$getDouble$2
 scala.reflect.generic.UnPickler$Scan$$anonfun$14$$anonfun$apply$5
 scala.reflect.generic.Trees$EmptyTree$
 scala.util.parsing.json.Lexer$$anonfun$token$3
@@ -42530,13 +42481,13 @@ scala.io.BytePickle$Def
 scala.collection.immutable.HashMap$SerializationProxy$$anonfun$writeObject$1
 scala.util.parsing.json.Lexer$$anonfun$expPart$2$$anonfun$apply$20
 scala.reflect.If$
-org.kevoree.tools.marShell.parser.sub.KevsInstParser$$anonfun$parseMoveComponent$4
 scala.collection.immutable.TreeMap
-org.kevoree.tools.marShell.parser.sub.KevsInstParser$$anonfun$parseMoveComponent$3
+org.kevoree.tools.marShell.parser.sub.KevsInstParser$$anonfun$parseMoveComponent$4
 scala.collection.script.Reset$
+org.kevoree.tools.marShell.parser.sub.KevsInstParser$$anonfun$parseMoveComponent$3
 org.kevoree.tools.marShell.parser.sub.KevsInstParser$$anonfun$parseMoveComponent$2
-org.kevoree.tools.marShell.parser.sub.KevsInstParser$$anonfun$parseMoveComponent$1
 org.kevoree.tools.marShell.interpreter.sub.KevsAddComponentInstanceInterpreter$
+org.kevoree.tools.marShell.parser.sub.KevsInstParser$$anonfun$parseMoveComponent$1
 scala.collection.mutable.SetLike$$anonfun$clear$1
 scala.collection.TraversableViewLike$FlatMapped$$anonfun$foreach$3$$anonfun$apply$1
 scala.math.BigDecimal$$anonfun$until$1
@@ -42547,7 +42498,6 @@ scala.collection.immutable.Stream$StreamWithFilter$$anonfun$map$2
 scala.collection.mutable.WrappedArray$ofFloat
 scala.concurrent.pilib$UChan$$anonfun$1
 scala.collection.SeqLike$$anonfun$hashCode$1
-net.lag.configgy.Config$$anonfun$deepChange$1
 scala.Responder$$anonfun$loopWhile$1$$anonfun$apply$2
 scala.util.parsing.combinator.lexical.StdLexical$$anonfun$whitespace$1
 org.kevoree.tools.marShell.ast.CreateComponentTypeStatment
@@ -42677,7 +42627,6 @@ scala.xml.dtd.NotationDecl
 scala.util.parsing.combinator.Parsers$$anonfun$err$1
 scala.xml.parsing.MarkupParserCommon$$anonfun$peek$1
 scala.Tuple2$mcID$sp$$anonfun$zip$mcID$sp$1
-net.lag.configgy.Attributes$StringCell
 org.kevoree.framework.port.KevoreeRequiredPort$$anonfun$internal_process$1
 scala.Function2$mcZDI$sp$$anonfun$curried$mcZDI$sp$1
 scala.collection.immutable.HashMap$HashMapCollision1$$anonfun$updated0$1
@@ -42797,7 +42746,6 @@ scala.collection.immutable.Queue$
 scala.xml.pull.EvComment$
 org.kevoree.tools.marShell.parser.sub.KevsBindingParser$$anonfun$parseBindingsStatments$3
 scala.xml.parsing.TokenTests$$anonfun$isValidIANAEncoding$1
-net.lag.configgy.ConfigMap$$anonfun$copyInto$1$$anonfun$apply$4$$anonfun$1
 org.kevoree.tools.marShell.ast.RemoveNodeStatment$
 scala.util.parsing.combinator.Parsers$$tilde$
 scala.Function1$mcLD$sp$$anonfun$andThen$mcLD$sp$1
@@ -42860,12 +42808,12 @@ scala.math.Ordering$$anonfun$by$1
 scala.util.parsing.combinator.Parsers$$anonfun$rep1sep$1
 net.lag.configgy.Attributes$$anonfun$copyInto$1
 scala.util.parsing.combinator.Parsers$$anonfun$rep1sep$2
-net.lag.configgy.Attributes$$anonfun$copyInto$2
 scala.reflect.Function
 scala.Enumeration$Val$$anonfun$$init$$1
 scala.xml.dtd.ParsedEntityDecl
 org.kevoree.tools.marShell.ast.Script
 scala.util.parsing.combinator.lexical.StdLexical$$anonfun$parseDelim$1$1
+net.lag.configgy.StringCell
 scala.reflect.Method
 net.lag.configgy.EnvironmentAttributes$$anonfun$getSystemProperties$1
 scala.xml.MetaData$
@@ -42908,9 +42856,7 @@ scala.xml.dtd.AttrDecl
 scala.collection.JavaConversions$IterableWrapper
 org.kevoree.adaptation.deploy.osgi.command.RemoveDeployUnitCommand
 scala.Function7$$anonfun$curried$1
-net.lag.configgy.ConfigMap$$anonfun$copyInto$1$$anonfun$apply$4$$anonfun$apply$5
 scala.util.parsing.combinator.Parsers$Parser$$anonfun$$times$1
-net.lag.logging.Logger$$anonfun$get$1$$anonfun$newLogger$1$1
 scala.Function2$mcVDI$sp$$anonfun$curried$mcVDI$sp$1$$anonfun$apply$38
 scala.Symbol$
 scala.collection.immutable.Stack$
@@ -42941,6 +42887,7 @@ scala.reflect.RootSymbol$
 net.lag.logging.ScribeHandler$$anonfun$1
 scala.collection.SeqViewLike$Filtered$$anonfun$index$2
 net.lag.logging.Level$FATAL$
+net.lag.configgy.ConfigMap$$anonfun$copyInto$1$$anonfun$apply$1$$anonfun$apply$2
 org.jgrapht.experimental.dag.DirectedAcyclicGraph$TopoComparator
 scala.util.parsing.ast.Binders$$anonfun$unsequence$1
 org.kevoree.tools.marShell.ast.TypeStatment$
@@ -42964,12 +42911,12 @@ scala.xml.dtd.ContentModel$$anonfun$isMixed$1
 scala.Function2$mcIID$sp$$anonfun$curried$mcIID$sp$1$$anonfun$apply$16
 net.lag.configgy.Attributes$$anonfun$asJmxAttributes$1
 scala.io.BytePickle$$anonfun$triple$2$$anonfun$apply$6
+net.lag.configgy.Attributes$$anonfun$asJmxAttributes$2
 org.eclipse.emf.ecore.xml.type.internal.RegEx$Token$ParenToken
 scala.io.BytePickle$$anonfun$triple$2$$anonfun$apply$5
 scala.collection.mutable.HashMap$$anonfun$readObject$1
 scala.util.control.Exception$$anonfun$failing$1
 org.kevoree.tools.marShell.ast.CreateChannelTypeStatment$
-net.lag.logging.Logger$$anonfun$configure$6$$anonfun$apply$13
 org.kevoree.tools.marShell.lexer.KevsLexical$$anonfun$token$1$$anonfun$apply$12$$anonfun$apply$13$$anonfun$apply$14
 scala.Function4$$anonfun$curried$1$$anonfun$apply$1
 scala.reflect.generic.Trees$Alternative
@@ -43144,7 +43091,6 @@ scala.io.BytePickle$$anonfun$bytearray$1
 scala.io.BytePickle$$anonfun$bytearray$2
 net.lag.ConfiggyString$$anonfun$quoteC$1
 scala.util.parsing.json.Lexer$$anonfun$charSeq$9$$anonfun$apply$29
-net.lag.configgy.Attributes$$anonfun$6
 scala.util.parsing.json.Lexer$$anonfun$charSeq$9$$anonfun$apply$28
 scala.actors.Futures$$anon$1$$anonfun$7
 scala.Either$RightProjection
@@ -43183,10 +43129,8 @@ scala.reflect.Manifest$$anon$11
 scala.reflect.Manifest$$anon$12
 scala.reflect.generic.Constants$Constant$
 org.kevoree.framework.KevoreePlatformHelper$$anonfun$getProperty$1$$anonfun$apply$2
-net.lag.configgy.Attributes$$anonfun$toString$2
 net.lag.configgy.Attributes$$anonfun$toString$1
 net.lag.configgy.Attributes$$anonfun$net$lag$configgy$Attributes$$toConfigList$1
-net.lag.configgy.Attributes$$anonfun$net$lag$configgy$Attributes$$toConfigList$2
 scala.collection.generic.Subtractable$$anonfun$$minus$minus$1
 scala.collection.immutable.NumericRange
 scala.collection.immutable.NumericRange$$anon$1
@@ -43359,8 +43303,8 @@ scala.Function2$mcZDD$sp$$anonfun$curried$mcZDD$sp$1$$anonfun$apply$51
 org.kevoree.tools.marShell.parser.sub.KevsInstParser$$anonfun$parseInst$2
 org.kevoree.tools.marShell.parser.sub.KevsInstParser$$anonfun$parseInst$1
 org.kevoree.tools.marShell.parser.sub.KevsInstParser$$anonfun$parseInst$4
-org.kevoree.tools.marShell.parser.sub.KevsInstParser$$anonfun$parseInst$3
 scala.util.matching.Regex$Groups$$anonfun$unapplySeq$2
+org.kevoree.tools.marShell.parser.sub.KevsInstParser$$anonfun$parseInst$3
 org.kevoree.tools.marShell.parser.sub.KevsInstParser$$anonfun$parseInst$6
 org.kevoree.tools.marShell.parser.sub.KevsInstParser$$anonfun$parseInst$5
 org.kevoree.adaptation.deploy.osgi.context.KevoreeDeployManager$$anonfun$getStartLevelServer$1
@@ -43455,6 +43399,7 @@ scala.collection.IterableViewLike$$anonfun$grouped$1
 scala.util.parsing.combinator.Parsers$Parser$$anonfun$$tilde$greater$1$$anonfun$apply$3
 scala.Function2$mcVDL$sp$$anonfun$curried$mcVDL$sp$1
 scala.xml.dtd.AttListDecl
+net.lag.configgy.Attributes$$anonfun$equals$1
 scala.Function2$mcZDD$sp$$anonfun$tupled$mcZDD$sp$1
 scala.collection.TraversableOnce$$anonfun$product$1
 scala.collection.JavaConversions$MutableSeqWrapper
@@ -43537,7 +43482,6 @@ net.lag.configgy.RuntimeEnvironment$$anonfun$load$1
 scala.Enumeration$$anonfun$1
 scala.Cell
 org.kevoree.framework.MethodCallMessage
-net.lag.logging.Logger$$anonfun$clearHandlers$1$$anonfun$apply$6$$anonfun$apply$7
 org.kevoree.tools.marShell.parser.sub.KevsInstParser$$anonfun$parseRemoveChannel$2
 org.kevoree.tools.marShell.interpreter.sub.KevsRemoveLibraryInterpreter$$anonfun$interpret$1
 scala.Function2$mcVLD$sp$$anonfun$tupled$mcVLD$sp$1
@@ -43546,6 +43490,7 @@ org.kevoree.tools.marShell.parser.sub.KevsInstParser$$anonfun$parseRemoveChannel
 scala.Function11$$anonfun$curried$1
 scala.util.continuations.ControlContext$$anonfun$foreach$1
 scala.concurrent.TIMEOUT$
+net.lag.configgy.Attributes$$anonfun$getJmxNodes$1
 scala.actors.FutureActor$$anonfun$respond$1
 scala.collection.generic.BitSetFactory$$anonfun$apply$1
 scala.reflect.MethodType
@@ -43620,7 +43565,6 @@ scala.util.parsing.combinator.Parsers$$anonfun$failure$1
 scala.Function2$mcLIL$sp$$anonfun$tupled$mcLIL$sp$1
 scala.collection.IndexedSeqOptimized$$anonfun$forall$1
 org.kevoree.framework.message.MetricsPortUpdate$
-net.lag.configgy.Configgy$LoggingConfigSubscriber$$anonfun$net$lag$configgy$Configgy$LoggingConfigSubscriber$$runReplacement$1$$anonfun$apply$1
 scala.collection.immutable.IntMap$Tip$
 scala.Array$$anonfun$apply$10
 org.kevoree.framework.KevoreeActor$RESUME_ACTOR
@@ -43635,7 +43579,6 @@ org.kevoree.tools.marShell.parser.sub.KevsNodeParser$$anonfun$parseRemoveNode$1
 scala.reflect.generic.Trees$Traverser$$anonfun$traverseStats$1
 scala.Function21$$anonfun$tupled$1
 scala.Function2$mcLDI$sp$$anonfun$curried$mcLDI$sp$1
-net.lag.configgy.Attributes$$anonfun$lookup$1$1
 scala.collection.immutable.SortedMap$$anonfun$$plus$plus$1
 scala.collection.mutable.FlatHashTable$$anonfun$serializeTo$1
 org.kevoree.framework.message.StopMessage
@@ -43785,13 +43728,13 @@ scala.util.parsing.ast.Binders$BoundElement
 scala.collection.immutable.HashSet$SerializationProxy$$anonfun$readObject$1
 org.kevoree.tools.marShell.interpreter.sub.KevsAddTBlockInterpreter
 scala.util.parsing.combinator.lexical.Lexical$$anonfun$chrExcept$1$$anonfun$apply$1
+net.lag.configgy.Config$$anonfun$subscribe$1
 scala.collection.mutable.MutableList$$anonfun$tail$1
 scala.reflect.TypeField
 scala.collection.MapLike$DefaultKeySet$$anonfun$foreach$1
 scala.util.parsing.json.Lexer$$anonfun$intList$1$$anonfun$apply$17
 scala.collection.immutable.ListSet$
 scala.collection.MapLike$DefaultKeySet$$anonfun$foreach$2
-net.lag.configgy.ConfigMap$$anonfun$getLong$2$$anonfun$apply$2
 scala.Function2$mcILI$sp$$anonfun$curried$mcILI$sp$1$$anonfun$apply$22
 scala.Either$LeftProjection$
 scala.actors.TIMEOUT$
@@ -43811,7 +43754,6 @@ scala.Function12$$anonfun$curried$1
 scala.io.Source$$anonfun$fromFile$1
 scala.util.parsing.combinator.lexical.StdLexical$$anonfun$token$1$$anonfun$apply$1
 scala.util.parsing.combinator.Parsers$$anonfun$chainl1$2$$anonfun$apply$9
-net.lag.configgy.Attributes$AttributesCell
 org.kevoree.framework.aspects.MBindingAspect$
 org.kevoree.adaptation.deploy.osgi.command.AddDeployUnitCommand
 scala.io.Source$$anonfun$fromInputStream$1
@@ -43820,6 +43762,7 @@ org.kevoree.tools.marShell.interpreter.sub.KevsRemoveComponentInstanceInterprete
 scala.Function2$mcVIL$sp$$anonfun$curried$mcVIL$sp$1$$anonfun$apply$8
 scala.io.Source$$anonfun$fromInputStream$2
 scala.Right$
+net.lag.logging.Logger$$anonfun$configure$6$$anonfun$apply$9
 scala.util.parsing.combinator.lexical.StdLexical$$anonfun$token$8$$anonfun$apply$15
 scala.Responder$$anonfun$loop$1
 org.restlet.engine.util.AlphabeticalComparator
@@ -43862,7 +43805,6 @@ scala.collection.TraversableViewLike$$anonfun$scanRight$1
 scala.util.parsing.combinator.Parsers$$anonfun$chainr1$2$$anonfun$apply$11
 scala.util.parsing.combinator.Parsers$$anonfun$guard$1
 scala.collection.MapLike$$anonfun$$plus$plus$1
-net.lag.configgy.ConfigMap$$anonfun$getString$1
 org.kevoree.tools.marShell.lexer.KevsTokens$NumericLit$
 scala.Function1$mcVD$sp$$anonfun$andThen$mcVD$sp$1
 scala.collection.JavaConversions$JIterableWrapper
@@ -43889,8 +43831,6 @@ scala.xml.dtd.ParsedEntityDecl$
 scala.collection.TraversableLike$$anonfun$filter$1
 scala.collection.IterableLike$$anonfun$zipWithIndex$1
 scala.collection.TraversableLike$$anonfun$scanRight$1
-net.lag.logging.Logger$$anonfun$get$1$$anonfun$apply$9
-net.lag.logging.Logger$$anonfun$get$1$$anonfun$apply$8
 scala.reflect.generic.Trees$CaseDef$
 scala.util.parsing.combinator.Parsers$$anonfun$commit$1
 scala.collection.immutable.IntMap$$anonfun$toList$1
@@ -43911,9 +43851,6 @@ scala.collection.TraversableLike$$anonfun$isEmpty$1$$anonfun$apply$mcV$sp$1
 scala.util.parsing.combinator.token.StdTokens$StringLit$
 scala.Function2$mcDLD$sp$$anonfun$curried$mcDLD$sp$1
 org.kevoree.framework.aspects.InstanceAspect
-net.lag.logging.Logger$$anonfun$elements$1
-net.lag.logging.Logger$$anonfun$elements$2
-net.lag.logging.Logger$$anonfun$elements$3
 scala.util.parsing.json.Lexer$$anonfun$nonzero$1
 scala.collection.mutable.ListMap
 scala.collection.mutable.LinkedListLike$$anonfun$apply$1
@@ -43983,6 +43920,16 @@ net.lag.configgy.ConfigParser$$anonfun$tagAttribute$1
 net.lag.configgy.ConfigParser$$anonfun$tagAttribute$2
 scala.io.BytePickle$$anonfun$uwrap$1
 net.lag.configgy.ConfigParser$$anonfun$tagAttribute$3
+net.lag.logging.Level
+net.lag.logging.Level$CRITICAL$
+net.lag.logging.Level$ALL$
+net.lag.logging.Level$INFO$
+net.lag.logging.Level$OFF$
+net.lag.logging.Level$FATAL$
+net.lag.logging.Level$DEBUG$
+net.lag.logging.Level$ERROR$
+net.lag.logging.Level$WARNING$
+net.lag.logging.Level$TRACE$
 scala.Function2$mcIID$sp$$anonfun$curried$mcIID$sp$1
 scala.actors.Channel$$anonfun$$bang$qmark$2
 scala.actors.Channel$$anonfun$$bang$qmark$1
@@ -44036,8 +43983,6 @@ scala.collection.immutable.Stream$$anonfun$filteredTail$1
 org.kevoree.framework.message.UpdateDictionaryMessage$
 scala.Function2$mcVLI$sp$$anonfun$curried$mcVLI$sp$1$$anonfun$apply$20
 scala.reflect.Apply
-net.lag.configgy.ConfigMap$$anonfun$getLong$2
-net.lag.configgy.ConfigMap$$anonfun$getLong$1
 scala.io.Codec$$anonfun$decoder$1
 scala.io.Codec$$anonfun$decoder$2
 scala.reflect.ClassManifest$$anonfun$subtype$1$1
@@ -44088,11 +44033,11 @@ scala.Function2$mcZIL$sp$$anonfun$tupled$mcZIL$sp$1
 org.kevoree.adaptation.deploy.osgi.command.StopInstanceCommand$
 org.kevoree.tools.marShell.interpreter.sub.KevsRemoveBindingInterpreter$$anonfun$interpret$1
 scala.Function1$mcZI$sp$$anonfun$compose$mcZI$sp$1
+net.lag.configgy.ConfigMap$$anonfun$copyInto$1$$anonfun$apply$1$$anonfun$1
 net.lag.configgy.ConfigParser$$anonfun$stringList$2
 net.lag.configgy.ConfigParser$$anonfun$stringList$1
 net.lag.configgy.ConfigParser$$anonfun$stringList$3
-net.lag.configgy.Configgy$LoggingConfigSubscriber$$anonfun$net$lag$configgy$Configgy$LoggingConfigSubscriber$$runReplacement$1
-net.lag.configgy.Attributes$$anonfun$net$lag$configgy$Attributes$$toConfigList$2$$anonfun$3
+net.lag.configgy.AttributesCell
 scala.xml.PrettyPrinter$Para
 scala.util.automata.WordBerrySethi$$anonfun$initialize$1
 scala.util.regexp.Base$Sequ$$anonfun$2
@@ -44132,9 +44077,7 @@ scala.xml.MalformedAttributeException
 scala.collection.generic.GenericTraversableTemplate$$anonfun$unzip$1
 net.lag.configgy.Configgy$LoggingConfigSubscriber$$anonfun$commit$1
 scala.concurrent.pilib$UGP
-net.lag.configgy.Attributes$$anonfun$net$lag$configgy$Attributes$$toConfigList$2$$anonfun$5
-net.lag.configgy.Attributes$$anonfun$net$lag$configgy$Attributes$$toConfigList$2$$anonfun$4
-net.lag.configgy.ConfigMap$$anonfun$copyInto$1$$anonfun$apply$4
+net.lag.configgy.ConfigMap$$anonfun$copyInto$1$$anonfun$apply$1
 org.kevoree.tools.marShell.ast.AddPortTypeStatment$
 scala.Function1$mcZL$sp$$anonfun$compose$mcZL$sp$1
 org.kevoree.tools.marShell.lexer.KevsLexical$$anonfun$token$2$$anonfun$apply$16
@@ -44264,7 +44207,6 @@ scala.Function2$mcFID$sp$$anonfun$tupled$mcFID$sp$1
 scala.Function2$mcFDL$sp$$anonfun$curried$mcFDL$sp$1$$anonfun$apply$47
 net.lag.configgy.JmxWrapper$$anonfun$setAttributes$1
 scala.util.parsing.json.Lexer$$anonfun$token$1$$anonfun$apply$2
-net.lag.configgy.Attributes$$anonfun$parentLookup$1$1
 scala.util.parsing.json.Lexer$$anonfun$token$1$$anonfun$apply$1
 org.kevoree.framework.KevoreeActor$STOP_ACTOR$
 org.kevoree.framework.message.LastModel$
@@ -44340,7 +44282,6 @@ scala.testing.Show$$anonfun$1
 scala.Function1$$anonfun$andThen$1
 org.kevoree.tools.marShell.ast.RemoveLibraryStatment$
 scala.Tuple3$Zipped$$anonfun$foreach$1
-net.lag.configgy.ConfigMap$$anonfun$sortedKeys$1
 scala.collection.mutable.OpenHashMap$$anonfun$apply$1
 org.kevoree.kompare.sub.UpdateNodeKompare$$anonfun$getUpdateNodeAdaptationModel$9
 org.kevoree.kompare.sub.UpdateNodeKompare$$anonfun$getUpdateNodeAdaptationModel$8
@@ -44376,11 +44317,10 @@ scala.util.parsing.json.Lexer$$anonfun$string$1$$anonfun$apply$13$$anonfun$apply
 scala.util.automata.BaseBerrySethi$$anonfun$compLast$1
 scala.reflect.LabelSymbol$
 scala.Responder$$anon$2$$anonfun$respond$2
+net.lag.configgy.StringListCell
 scala.xml.PrettyPrinter$$anonfun$format$1
-net.lag.logging.Logger$$anonfun$get$1
 scala.text.DocText
 scala.Function2$mcDIL$sp$$anonfun$curried$mcDIL$sp$1$$anonfun$apply$13
-net.lag.configgy.JmxWrapper$$anonfun$invoke$1
 org.kevoree.tools.marShell.lexer.KevsLexical$$anonfun$comment$1
 scala.Tuple2$Zipped$$anonfun$map$1
 net.lag.configgy.SubscriptionNode$$anonfun$validate$2
@@ -44459,6 +44399,7 @@ org.kevoree.adaptation.deploy.osgi.KevoreeDeployPhase$$anonfun$phase$1
 org.kevoree.adaptation.deploy.osgi.KevoreeDeployPhase$$anonfun$phase$2
 org.kevoree.adaptation.deploy.osgi.KevoreeDeployPhase$$anonfun$phase$3
 net.lag.configgy.ConfigParser$$anonfun$trueFalse$1
+net.lag.configgy.ConfigParser$$anonfun$trueFalse$2
 scala.xml.dtd.AttListDecl$
 scala.Function5$$anonfun$curried$1
 org.kevoree.adaptation.deploy.osgi.command.AddInstanceCommand$$anonfun$1
@@ -44493,11 +44434,9 @@ scala.reflect.generic.Trees$DefDef$
 org.kevoree.core.impl.KevoreeListeners$ListenerActor$$anonfun$act$2$$anonfun$apply$4
 org.kevoree.tools.marShell.interpreter.sub.KevsRemoveComponentInstanceInterpreter$
 org.kevoree.framework.message.UpdateModel$
-net.lag.configgy.Config$$anonfun$fromMap$1$$anonfun$apply$1
 scala.Tuple3$Zipped$$anonfun$filter$1
 org.kevoree.framework.aspects.ChannelAspect$
 org.kevoree.core.impl.KevoreeListeners$Notify$
-net.lag.logging.Logger$$anonfun$3$$anonfun$apply$12
 scala.util.parsing.combinator.Parsers$Failure$
 scala.actors.Channel$$anonfun$1
 scala.actors.Channel$$anonfun$2
@@ -44562,20 +44501,19 @@ scala.util.parsing.combinator.lexical.StdLexical$$anonfun$token$3$$anonfun$apply
 scala.actors.Futures$$anonfun$awaitEither$1
 org.kevoree.framework.osgi.KevoreeGroupActivator$$anonfun$start$2
 org.kevoree.framework.osgi.KevoreeGroupActivator$$anonfun$start$1
+net.lag.logging.ScribeHandler$$anonfun$close$1
 scala.xml.dtd.IMPLIED$
 scala.collection.TraversableLike$$anonfun$copyToArray$1$$anonfun$apply$mcV$sp$9
 org.kevoree.adaptation.deploy.osgi.context.KevoreeOSGiBundle$
+net.lag.configgy.Config$$anonfun$1
 net.lag.configgy.ConfigParser$$anonfun$toggle$2
 net.lag.configgy.ConfigParser$$anonfun$sectionOpenBrace$1$$anonfun$apply$10
-net.lag.configgy.Config$$anonfun$3
-net.lag.configgy.Config$$anonfun$4
 org.kevoree.adaptation.deploy.osgi.command.AddFragmentBindingCommand$
 net.lag.configgy.ConfigParser$$anonfun$toggle$1
 org.kevoree.tools.marShell.lexer.KevsLexical$$anonfun$token$6$$anonfun$apply$32
 scala.concurrent.pilib$Sum
 net.lag.configgy.ConfigMap$$anonfun$copyInto$1$$anonfun$3
 scala.collection.mutable.StringBuilder
-net.lag.configgy.Attributes$StringListCell
 scala.xml.dtd.SystemID
 scala.collection.TraversableLike$$anonfun$takeWhile$1
 scala.actors.threadpool.SynchronousQueue$WaitQueue
@@ -44722,6 +44660,7 @@ scala.Function2$mcZDL$sp$$anonfun$tupled$mcZDL$sp$1
 scala.collection.TraversableLike$$anonfun$forall$1$$anonfun$apply$mcV$sp$2
 scala.collection.mutable.Publisher$$anonfun$publish$1
 scala.actors.remote.SendTo$
+net.lag.configgy.Configgy$LoggingConfigSubscriber$$anonfun$commit$1$$anonfun$apply$3$$anonfun$apply$4
 scala.Function21$$anonfun$curried$1
 scala.actors.threadpool.SynchronousQueue$Node
 org.kevoree.tools.marShell.ast.TransactionalBloc$
@@ -44760,6 +44699,7 @@ org.kevoree.tools.marShell.ast.RemoveNodeStatment
 org.kevoree.tools.marShell.lexer.KevsTokens$Delimiter
 scala.xml.Utility$$anonfun$unescape$1
 scala.xml.parsing.MarkupHandler$$anonfun$parsedEntityDecl$1
+net.lag.logging.Logger$$anonfun$configure$5$$anonfun$apply$8
 scala.Function1$mcLL$sp$$anonfun$compose$mcLL$sp$1
 net.lag.logging.Logger$$anonfun$configure$5$$anonfun$apply$3
 net.lag.logging.Logger$$anonfun$configure$5$$anonfun$apply$2
@@ -44790,6 +44730,7 @@ org.kevoree.tools.marShell.lexer.KevsLexical$$anonfun$token$8$$anonfun$apply$39
 scala.Enumeration$$anonfun$values$1
 scala.collection.immutable.TreeSet
 scala.reflect.generic.UnPickler$Scan$$anonfun$readConstantRef$1
+net.lag.configgy.Configgy$LoggingConfigSubscriber$$anonfun$commit$1$$anonfun$apply$3
 org.kevoree.tools.marShell.lexer.KevsLexical$$anonfun$token$11
 org.kevoree.tools.marShell.interpreter.sub.KevsRemoveGroupInterpreter$
 org.kevoree.tools.marShell.lexer.KevsLexical$$anonfun$token$10
@@ -44815,7 +44756,6 @@ scala.util.parsing.combinator.lexical.StdLexical$$anonfun$token$5$$anonfun$apply
 org.kevoree.tools.marShell.ast.CreateComponentTypeStatment$
 scala.util.parsing.combinator.lexical.StdLexical$$anonfun$token$5$$anonfun$apply$10
 org.kevoree.tools.marShell.parser.sub.KevsInstParser$$anonfun$parseAddChannel$5
-net.lag.configgy.Config$$anonfun$fromResource$1
 org.kevoree.tools.marShell.parser.sub.KevsInstParser$$anonfun$parseAddChannel$2
 org.kevoree.tools.marShell.parser.sub.KevsInstParser$$anonfun$parseAddChannel$1
 org.kevoree.tools.marShell.parser.sub.KevsInstParser$$anonfun$parseAddChannel$4
@@ -44844,7 +44784,6 @@ scala.util.automata.NondetWordAutom$$anonfun$isEmpty$1
 scala.util.automata.WordBerrySethi$$anonfun$3$$anonfun$apply$2
 org.kevoree.kompare.sub.UpdateNodeKompare$$anonfun$getUpdateNodeAdaptationModel$6$$anonfun$apply$25
 scala.Function1$mcDF$sp$$anonfun$andThen$mcDF$sp$1
-net.lag.logging.Logger$$anonfun$configure$3$$anonfun$apply$10
 scala.collection.TraversableViewLike$$anonfun$groupBy$1
 scala.Function2$mcDDD$sp$$anonfun$tupled$mcDDD$sp$1
 scala.collection.TraversableViewLike$TakenWhile$$anonfun$foreach$7
@@ -44940,8 +44879,6 @@ org.kevoree.tools.marShell.parser.sub.KevsPropertiesParser$$anonfun$parsePropert
 org.kevoree.tools.marShell.parser.sub.KevsPropertiesParser$$anonfun$parseProperty$4
 org.kevoree.tools.marShell.parser.sub.KevsPropertiesParser$$anonfun$parseProperty$1
 org.kevoree.tools.marShell.parser.sub.KevsPropertiesParser$$anonfun$parseProperty$2
-net.lag.configgy.ConfigMap$$anonfun$getBool$1
-net.lag.configgy.ConfigMap$$anonfun$getBool$2
 org.kevoree.framework.merger.KevoreePlatformMerger$$anonfun$merge$1$$anonfun$apply$2$$anonfun$apply$4
 scala.reflect.generic.Trees$Traverser$$anonfun$traverseTrees$1
 org.kevoree.framework.merger.KevoreePlatformMerger$$anonfun$merge$1$$anonfun$apply$2$$anonfun$apply$3
@@ -44953,7 +44890,6 @@ scala.util.parsing.combinator.Parsers$$anonfun$acceptMatch$1
 scala.xml.Group$
 scala.xml.persistent.SetStorage$$anonfun$1
 scala.collection.TraversableViewLike$$anonfun$collect$1
-net.lag.logging.ScribeHandler$$anonfun$liftedTree1$1$1
 scala.Function13$$anonfun$tupled$1
 scala.collection.JavaConversions$JSetWrapper$
 org.kevoree.adaptation.deploy.osgi.command.StartInstanceCommand$$anonfun$execute$1
@@ -45074,6 +45010,7 @@ scala.reflect.New$
 scala.util.parsing.combinator.lexical.StdLexical$$anonfun$_delim$2$$anonfun$apply$27
 scala.reflect.Goto$
 scala.actors.Reactor$$anonfun$dostart$1
+net.lag.configgy.Configgy$LoggingConfigSubscriber$$anonfun$validate$1$$anonfun$apply$1
 scala.Function2$mcFIL$sp$$anonfun$curried$mcFIL$sp$1
 scala.actors.ReplyReactor$$anonfun$searchMailbox$1
 scala.collection.immutable.StringLike$$anonfun$$times$1
@@ -45200,6 +45137,7 @@ org.kevoree.tools.marShell.ast.TransactionalBloc
 org.kevoree.adaptation.deploy.osgi.command.StopInstanceCommand$$anonfun$execute$1
 org.kevoree.adaptation.deploy.osgi.command.StopInstanceCommand$$anonfun$execute$2
 scala.util.parsing.json.Lexer$$anonfun$string$1$$anonfun$apply$13
+net.lag.configgy.ConfigParser$$anonfun$sectionCloseBrace$1
 scala.util.parsing.combinator.Parsers$Parser$$anonfun$$tilde$bang$1
 scala.reflect.generic.Trees$Tree$$anonfun$subtrees$1$1
 scala.xml.parsing.MarkupParser$$anonfun$2
@@ -45234,6 +45172,7 @@ org.kevoree.kompare.sub.UpdateNodeKompare$$anonfun$getUpdateNodeAdaptationModel$
 scala.reflect.Template
 scala.collection.immutable.MapLike$$anon$1$$anonfun$foreach$1
 scala.actors.threadpool.locks.ReentrantReadWriteLock$ReadLock
+net.lag.logging.Logger$$anonfun$configure$3$$anonfun$apply$7
 scala.reflect.Block
 net.lag.logging.Logger$$anonfun$configure$3$$anonfun$apply$1
 scala.collection.BitSetLike$$anonfun$$amp$tilde$1
@@ -45308,6 +45247,7 @@ scala.collection.immutable.StringLike$$anonfun$1
 scala.util.parsing.combinator.Parsers$$anonfun$acceptSeq$1$$anonfun$apply$6
 scala.Function2$mcZID$sp$$anonfun$curried$mcZID$sp$1$$anonfun$apply$15
 net.lag.configgy.RuntimeEnvironment$$anonfun$jarPath$1
+net.lag.configgy.RuntimeEnvironment$$anonfun$jarPath$2
 scala.reflect.NamedType$
 scala.reflect.generic.Trees$Annotated$
 scala.Function2$mcVDD$sp$$anonfun$tupled$mcVDD$sp$1
@@ -45353,7 +45293,6 @@ scala.reflect.If
 org.kevoree.tools.marShell.lexer.KevsLexical$$anonfun$eof$1
 scala.Function2$mcILD$sp$$anonfun$curried$mcILD$sp$1
 scala.Function2$mcVIL$sp$$anonfun$tupled$mcVIL$sp$1
-net.lag.configgy.SubscriptionNode$$anonfun$get$1
 net.lag.logging.Logger$$anonfun$clearHandlers$1
 scala.Function2$mcVLI$sp$$anonfun$tupled$mcVLI$sp$1
 scala.xml.factory.NodeFactory$$anonfun$makeNode$1
@@ -45377,8 +45316,6 @@ scala.util.automata.BaseBerrySethi$$anonfun$doComp$3
 scala.util.automata.BaseBerrySethi$$anonfun$doComp$1
 scala.collection.mutable.MapLike$$anonfun$transform$1
 scala.reflect.Manifest$
-net.lag.logging.GenericFormatter$$anonfun$2
-net.lag.logging.GenericFormatter$$anonfun$1
 scala.util.parsing.combinator.token.StdTokens$Keyword
 scala.xml.PCData$
 org.kevoree.tools.marShell.interpreter.sub.KevsCreateComponentTypeInterpreter$$anonfun$interpret$1
@@ -45456,8 +45393,6 @@ net.lag.logging.Level$TRACE$
 org.kevoree.tools.marShell.parser.sub.KevsAbstractParser$$anon$1$$anonfun$whitespace$1
 scala.actors.FutureActor$$anonfun$act$2$$anonfun$apply$mcV$sp$1
 scala.xml.PrettyPrinter$$anonfun$traverse$1
-net.lag.configgy.SubscriptionNode$$anonfun$validate$2$$anonfun$2
-net.lag.configgy.SubscriptionNode$$anonfun$validate$2$$anonfun$1
 scala.collection.generic.Growable$$anonfun$$plus$plus$eq$1
 net.lag.logging.ThrottledLogger$$anonfun$1
 scala.util.parsing.combinator.Parsers$$anonfun$acceptIf$1
@@ -45645,7 +45580,6 @@ scala.Function1$mcDI$sp$$anonfun$compose$mcDI$sp$1
 scala.Function2$mcFLL$sp$$anonfun$tupled$mcFLL$sp$1
 scala.actors.Reaction$$anonfun$$init$$1
 scala.collection.immutable.LongMap$Nil$
-org.eclipse.emf.common.util.AbstractEnumerator$AbstractEnumeratorExternalizeable
 org.codehaus.jackson.JsonParser$Feature
 org.eclipse.emf.ecore.resource.ContentHandler$Validity
 org.eclipse.emf.ecore.resource.impl.BinaryResourceImpl$BinaryIO$Version
@@ -45672,8 +45606,6 @@ org.restlet.engine.io.BufferState
 org.eclipse.emf.ecore.resource.impl.BinaryResourceImpl$BinaryIO$FeatureKind
 org.eclipse.emf.ecore.resource.impl.BinaryResourceImpl$EObjectOutputStream$Check
 org.jgrapht.traverse.CrossComponentIterator$VisitColor
-org.jgrapht.experimental.touchgraph.SimpleTouchgraphApplet
-org.jgrapht.demo.JGraphAdapterDemo
 org.jgrapht.util.ArrayUnenforcedSet
 net.lag.logging.Level
 net.lag.logging.Level$CRITICAL$
@@ -45689,10 +45621,6 @@ org.osgi.framework.ServicePermissionCollection
 org.osgi.framework.PackagePermissionCollection
 org.osgi.framework.BundlePermissionCollection
 org.osgi.framework.AdminPermissionCollection
-scala.concurrent.forkjoin.LinkedTransferQueue$PaddedAtomicReference
-scala.concurrent.forkjoin.LinkedTransferQueue$QNode
-net.lag.logging.LazyLogRecord
-org.eclipse.emf.ecore.resource.impl.ContentHandlerRegistryImpl
 scala.actors.scheduler.QuitControl
 scala.runtime.NonLocalReturnControl
 scala.runtime.Nothing$
@@ -45726,12 +45654,6 @@ scala.xml.include.UnavailableResourceException
 scala.actors.threadpool.ExecutionException
 org.eclipse.emf.common.util.DiagnosticException
 net.lag.logging.LoggingException
-org.eclipse.emf.ecore.xml.type.internal.DataValue$URI$MalformedURIException
-org.ops4j.io.HierarchicalIOException
-org.codehaus.jackson.JsonProcessingException
-org.codehaus.jackson.JsonGenerationException
-org.codehaus.jackson.JsonParseException
-org.eclipse.emf.ecore.resource.Resource$IOWrappedException
 org.eclipse.emf.ecore.xml.type.InvalidDatatypeValueException
 scala.xml.parsing.FatalError
 scala.UninitializedError
@@ -45757,16 +45679,12 @@ org.ops4j.lang.NullArgumentException
 scala.actors.threadpool.CancellationException
 org.eclipse.emf.common.util.AbstractEList$BasicIndexOutOfBoundsException
 org.eclipse.emf.common.util.BasicEList$BasicIndexOutOfBoundsException
-scala.concurrent.forkjoin.ThreadLocalRandom
-org.osgi.framework.PackagePermission
-org.osgi.framework.BundlePermission
-org.osgi.framework.AdminPermission
-org.osgi.framework.ServicePermission
-org.restlet.engine.util.ImmutableDate
-org.restlet.engine.util.InternetDateFormat
-org.eclipse.emf.ecore.impl.EFactoryImpl$SafeSimpleDateFormat
-org.eclipse.emf.ecore.xml.type.impl.XMLTypeFactoryImpl$SafeSimpleDateFormat
-org.eclipse.emf.ecore.xml.type.internal.XMLCalendar$SafeSimpleDateFormat
+org.eclipse.emf.ecore.xml.type.internal.DataValue$URI$MalformedURIException
+org.ops4j.io.HierarchicalIOException
+org.codehaus.jackson.JsonProcessingException
+org.codehaus.jackson.JsonGenerationException
+org.codehaus.jackson.JsonParseException
+org.eclipse.emf.ecore.resource.Resource$IOWrappedException
 org.osgi.framework.FrameworkEvent
 org.osgi.framework.BundleEvent
 org.jgrapht.event.ConnectedComponentTraversalEvent
@@ -45796,8 +45714,6 @@ org.eclipse.emf.ecore.util.EcoreUtil$Copier
 org.eclipse.emf.ecore.xmi.impl.EMOFHelperImpl$1
 org.eclipse.emf.common.util.URI$URICache
 org.codehaus.jackson.util.InternCache
-org.jgrapht.traverse.TopologicalOrderIterator$LinkedListQueue
-org.eclipse.emf.ecore.xml.type.internal.QName
 org.osgi.framework.PackagePermission
 org.osgi.framework.BundlePermission
 org.osgi.framework.AdminPermission
@@ -45807,5 +45723,24 @@ scala.math.BigInt
 scala.math.BigDecimal
 scala.actors.threadpool.AtomicInteger
 org.jgrapht.util.ModifiableInteger
+org.eclipse.emf.common.util.AbstractEnumerator$AbstractEnumeratorExternalizeable
+org.jgrapht.experimental.touchgraph.SimpleTouchgraphApplet
+org.jgrapht.demo.JGraphAdapterDemo
+scala.concurrent.forkjoin.LinkedTransferQueue$PaddedAtomicReference
+scala.concurrent.forkjoin.LinkedTransferQueue$QNode
+net.lag.logging.LazyLogRecord
+org.eclipse.emf.ecore.resource.impl.ContentHandlerRegistryImpl
+scala.concurrent.forkjoin.ThreadLocalRandom
+org.osgi.framework.PackagePermission
+org.osgi.framework.BundlePermission
+org.osgi.framework.AdminPermission
+org.osgi.framework.ServicePermission
+org.restlet.engine.util.ImmutableDate
+org.restlet.engine.util.InternetDateFormat
+org.eclipse.emf.ecore.impl.EFactoryImpl$SafeSimpleDateFormat
+org.eclipse.emf.ecore.xml.type.impl.XMLTypeFactoryImpl$SafeSimpleDateFormat
+org.eclipse.emf.ecore.xml.type.internal.XMLCalendar$SafeSimpleDateFormat
+org.jgrapht.traverse.TopologicalOrderIterator$LinkedListQueue
+org.eclipse.emf.ecore.xml.type.internal.QName
 org.kevoree.platform.osgi.android.KevoreeActivity
 org.kevoree.platform.osgi.android.AndroidFelixService
