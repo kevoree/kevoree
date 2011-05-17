@@ -21,12 +21,12 @@ object BootStrapApp extends Application {
   val ips = List(dukeIP, paraisseuxIP)
 
 
-  tscript append generatePhysicalNodeScript("duke", dukeIP, 8000, 10)
-  tscript append generatePhysicalNodeScript("paraisseux", paraisseuxIP, 8000, 10)
+  tscript append generatePhysicalNodeScript("duke", dukeIP, 8000, 4)
+  tscript append generatePhysicalNodeScript("paraisseux", paraisseuxIP, 8000, 4)
 
   //ADD GLOBAL GROUP
   tscript append "addGroup gossipGroup : LogNettyGossiperGroup {"
-  tscript append "port=\"" + generateGroupFragmentPort(List(("duke", 10, 9000), ("paraisseux", 10, 9000))) + "\"\n"
+  tscript append "port=\"" + generateGroupFragmentPort(List(("duke", 4, 9000), ("paraisseux", 4, 9000))) + "\"\n"
   tscript append ",loggerServerIP=\"" + dukeIP + "\""
 
 
