@@ -34,6 +34,7 @@ import org.kevoree.api.configuration.ConfigConstants
 import java.util.Date
 import org.kevoree.api.service.core.handler.{ModelListener, KevoreeModelHandlerService}
 import org.eclipse.emf.ecore.util.EcoreUtil
+import sun.security.krb5.internal.rcache.ReplayCache
 
 class KevoreeCoreBean extends KevoreeModelHandlerService with KevoreeActor {
 
@@ -113,27 +114,44 @@ class KevoreeCoreBean extends KevoreeModelHandlerService with KevoreeActor {
         reply(false)
       } else {
 
-        val newmodel = EcoreUtil.copy(pnewmodel)
+        try {
 
-        val milli =System.currentTimeMillis
-        logger.debug("Begin update model "+milli)
+          logger.debug("Actor size "+this.mailboxSize)
 
-        val adaptationModel = kompareService.kompare(model, newmodel, nodeName);
-        val deployResult = deployService.deploy(adaptationModel, nodeName);
+          logger.debug("Copy Model")
+          val newmodel = EcoreUtil.copy(pnewmodel)
 
-        if (deployResult) {
-          //Merge previous model on new model for platform model
-          //KevoreePlatformMerger.merge(newmodel, model)
-          switchToNewModel(newmodel)
-          logger.info("Deploy result " + deployResult)
-        } else {
-          //KEEP FAIL MODEL
+          val milli = System.currentTimeMillis
+          logger.debug("Begin update model " + milli)
+           logger.debug("Before kompare")
+          val adaptationModel = kompareService.kompare(model, newmodel, nodeName);
+          logger.debug("Before deploy")
+          val deployResult = deployService.deploy(adaptationModel, nodeName);
+
+
+
+          if (deployResult) {
+            //Merge previous model on new model for platform model
+            //KevoreePlatformMerger.merge(newmodel, model)
+            switchToNewModel(newmodel)
+            logger.info("Deploy result " + deployResult)
+          } else {
+            //KEEP FAIL MODEL
+
+            logger.warn("Failed model")
+
+          }
+
+          val milliEnd = System.currentTimeMillis - milli
+          logger.debug("End deploy result=" + deployResult + "-" + milliEnd)
+
+          reply(deployResult)
+        } catch {
+          case _ @ e =>
+            logger.error("Error while update",e)
+            reply(false)
         }
 
-        val milliEnd = System.currentTimeMillis - milli
-        logger.debug("End deploy result="+deployResult+"-"+milliEnd)
-
-        reply(deployResult)
 
       }
     }
