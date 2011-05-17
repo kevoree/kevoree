@@ -114,6 +114,8 @@ public class FakeSimpleSwitch extends AbstractFakeStuffComponent {
             add(off);
             add(toogle);
 
+			this.setDefaultCloseOperation (JFrame.DO_NOTHING_ON_CLOSE);
+
             pack();
             setVisible(true);
         }
