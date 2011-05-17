@@ -6,6 +6,8 @@ import org.kevoree.framework.KevoreeXmiHelper
 import org.kevoree.ContainerRoot
 import java.io.ByteArrayOutputStream
 import java.util.Date
+import org.eclipse.emf.ecore.util.EcoreUtil
+import actors.DaemonActor
 
 /**
  * User: Erwan Daubert - erwan.daubert@gmail.com
@@ -15,88 +17,147 @@ import java.util.Date
 
 class ModelSerializationTest extends AssertionsForJUnit {
 
-  @Test def concurrentSerialization () {
+  object MyHandler extends DaemonActor {
 
     val containerRoot = KevoreeXmiHelper.load ("src/test/resources/concurrentModel.kev")
+    start ()
+
+    case class GETTOTO ()
+
+    def get (): ContainerRoot = {
+      (this !? GETTOTO ()).asInstanceOf[ContainerRoot]
+    }
+
+    /* PRIVATE PROCESS PART */
+    def act () {
+      loop {
+        react {
+          case GETTOTO () => {
+            println("ça va bloquer")
+            reply (EcoreUtil.copy (containerRoot))
+            println("en fait nan")
+
+          }
+        }
+      }
+    }
+  }
+
+  @Test def concurrentSerialization () {
+
+
+    println ("toto")
 
     val t1 = new Thread () {
       override def run () {
-        serialize (containerRoot)
+        println ("t1" + System.currentTimeMillis ())
+        serialize (MyHandler.get ())
+        println ("t1" + System.currentTimeMillis ())
       }
     }
     val t2 = new Thread () {
       override def run () {
-        serialize (containerRoot)
+        //println("t2" + System.currentTimeMillis())
+        serialize (MyHandler.get ())
+        //println("t2" + System.currentTimeMillis())
       }
     }
     val t3 = new Thread () {
       override def run () {
-        serialize (containerRoot)
+        //println("t3" + System.currentTimeMillis())
+        serialize (MyHandler.get ())
+        //println("t3" + System.currentTimeMillis())
       }
     }
     val t4 = new Thread () {
       override def run () {
-        serialize (containerRoot)
+        //println("t4" + System.currentTimeMillis())
+        serialize (MyHandler.get ())
+        //println("t4" + System.currentTimeMillis())
       }
     }
     val t5 = new Thread () {
       override def run () {
-        serialize (containerRoot)
+        //println("t5" + System.currentTimeMillis())
+        serialize (MyHandler.get ())
+        //println("t5" + System.currentTimeMillis())
       }
     }
     val t6 = new Thread () {
       override def run () {
-        serialize (containerRoot)
+        //println("t6" + System.currentTimeMillis())
+        serialize (MyHandler.get ())
+        //println("t6" + System.currentTimeMillis())
       }
     }
     val t7 = new Thread () {
       override def run () {
-        serialize (containerRoot)
+        //println("t7" + System.currentTimeMillis())
+        serialize (MyHandler.get ())
+        //println("t7" + System.currentTimeMillis())
       }
     }
     val t8 = new Thread () {
       override def run () {
-        serialize (containerRoot)
+        //println("t8" + System.currentTimeMillis())
+        serialize (MyHandler.get ())
+        //println("t8" + System.currentTimeMillis())
       }
     }
     val t9 = new Thread () {
       override def run () {
-        serialize (containerRoot)
+        println ("t9" + System.currentTimeMillis ())
+        serialize (MyHandler.get ())
+        println ("t9" + System.currentTimeMillis ())
       }
     }
     val t10 = new Thread () {
       override def run () {
-        serialize (containerRoot)
+        println ("t10" + System.currentTimeMillis ())
+        serialize (MyHandler.get ())
+        println ("t10" + System.currentTimeMillis ())
       }
     }
     val t11 = new Thread () {
       override def run () {
-        serialize (containerRoot)
+        //println("t11" + System.currentTimeMillis())
+        serialize (MyHandler.get ())
+        //println("t11" + System.currentTimeMillis())
       }
     }
     val t12 = new Thread () {
       override def run () {
-        serialize (containerRoot)
+        //println("t12" + System.currentTimeMillis())
+        serialize (MyHandler.get ())
+        //println("t12" + System.currentTimeMillis())
       }
     }
     val t13 = new Thread () {
       override def run () {
-        serialize (containerRoot)
+        //println("t13" + System.currentTimeMillis())
+        serialize (MyHandler.get ())
+        //println("t13" + System.currentTimeMillis())
       }
     }
     val t14 = new Thread () {
       override def run () {
-        serialize (containerRoot)
+        //println("t14" + System.currentTimeMillis())
+        serialize (MyHandler.get ())
+        //println("t14" + System.currentTimeMillis())
       }
     }
     val t15 = new Thread () {
       override def run () {
-        serialize (containerRoot)
+        //println("t15" + System.currentTimeMillis())
+        serialize (MyHandler.get ())
+        //println("t15" + System.currentTimeMillis())
       }
     }
     val t16 = new Thread () {
       override def run () {
-        serialize (containerRoot)
+        println ("t16 " + System.currentTimeMillis ())
+        serialize (MyHandler.get ())
+        println ("t16 " + System.currentTimeMillis ())
       }
     }
 
@@ -121,11 +182,14 @@ class ModelSerializationTest extends AssertionsForJUnit {
   }
 
   private def serialize (model: ContainerRoot) {
+    println ("start serilaierr ...")
     val out = new ByteArrayOutputStream
     KevoreeXmiHelper.saveStream (out, model)
     out.flush ()
     val bytes = out.toByteArray
     out.close ()
     val lastSerialization = new Date (System.currentTimeMillis)
+    println ("end serilaierr ...")
   }
+
 }
