@@ -6,7 +6,6 @@ import java.io.{ByteArrayOutputStream, ByteArrayInputStream}
 import org.slf4j.LoggerFactory
 import org.kevoree.library.gossiperNetty.Serializer
 import org.kevoree.api.service.core.handler.KevoreeModelHandlerService
-import java.util.Date
 
 /**
  * User: Erwan Daubert
@@ -18,15 +17,10 @@ class GroupSerializer (modelService: KevoreeModelHandlerService) extends Seriali
 
   private val logger = LoggerFactory.getLogger (classOf[GroupSerializer])
 
-  //private var lastSerialization: Date = new Date(1l)
-  private var bytes: Array[Byte] = null
 
   def serialize (data: Any): Array[Byte] = {
     try {
-      if (bytes == null) {
         stringFromModel (data.asInstanceOf[ContainerRoot])
-      }
-      bytes
     } catch {
       case e => {
         logger.error ("Model cannot be serialized: ", e)
@@ -56,7 +50,7 @@ class GroupSerializer (modelService: KevoreeModelHandlerService) extends Seriali
     val out = new ByteArrayOutputStream
     KevoreeXmiHelper.saveStream (out, model)
     out.flush ()
-    bytes = out.toByteArray
+    val bytes  = out.toByteArray
     out.close ()
     //lastSerialization = new Date(System.currentTimeMillis)
     bytes

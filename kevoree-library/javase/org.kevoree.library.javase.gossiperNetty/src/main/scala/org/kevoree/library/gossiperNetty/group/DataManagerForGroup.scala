@@ -20,14 +20,14 @@ class DataManagerForGroup (nameInstance: String, selfNodeName: String, modelServ
   extends DataManager with actors.DaemonActor {
 
   private var lastCheckedTimeStamp = new Date (0l)
-  private var uuid: UUID = UUID.nameUUIDFromBytes (nameInstance.getBytes)
+  private val uuid: UUID = UUID.nameUUIDFromBytes (nameInstance.getBytes)
   private var vectorClock: VectorClock = VectorClock.newBuilder
     .setTimestamp (System.currentTimeMillis)
     /*.addEnties(
                 ClockEntry.newBuilder.setNodeID(selfNodeName).setVersion(1)
                   .setTimestamp(System.currentTimeMillis()).build)*/
     .build
-  private var logger = LoggerFactory.getLogger (classOf[DataManagerForGroup])
+  private val logger = LoggerFactory.getLogger (classOf[DataManagerForGroup])
 
   private var model: ContainerRoot = null
 
@@ -101,11 +101,11 @@ class DataManagerForGroup (nameInstance: String, selfNodeName: String, modelServ
               setVectorClock (increment ())
             }
             //val tuple = new Tuple2[VectorClock, String](vectorClock, modelService.getLastModel)
-            //val tuple = new Tuple2[VectorClock, ContainerRoot](vectorClock, modelService.getLastModel)
-            if (model == null) {
+            val tuple = new Tuple2[VectorClock, ContainerRoot](vectorClock, modelService.getLastModel)
+            /*if (model == null) {
               model = modelService.getLastModel
             }
-            val tuple = new Tuple2[VectorClock, ContainerRoot] (vectorClock, model) // FIXME
+            val tuple = new Tuple2[VectorClock, ContainerRoot] (vectorClock, model)*/
             reply (tuple)
           } else {
             reply (null)
