@@ -26,15 +26,23 @@ object BootStrapApp extends Application {
 
 
 
-//ADD GLOBAL GROUP
-tscript append "addGroup gossipGroup : LogNettyGossiperGroup {"
-tscript append "port=\"" + generateGroupFragmentPort(List(("duke", 4, 9000), ("paraisseux", 4, 9000))) + "\"\n"
-tscript append ",loggerServerIP=\"" + dukeIP + "\""
+  //ADD GLOBAL GROUP
+  tscript append "addGroup gossipGroup : LogNettyGossiperGroup {"
+  tscript append "port=\"" + generateGroupFragmentPort(List(("duke", 4, 9000), ("paraisseux", 4, 9000))) + "\"\n"
+  tscript append ",loggerServerIP=\"" + dukeIP + "\""
 
 
-tscript append "}\n"
-//BIND ALL NODE TO GROUP
-tscript append "addToGroup gossipGroup * \n"
+  tscript append "}\n"
+  //BIND ALL NODE TO GROUP
+  tscript append "addToGroup gossipGroup * \n"
+
+
+  tscript append "addComponent "
+  tscript append "myFakeLight1"
+  tscript append "@"
+  tscript append "duke0"
+  tscript append ":"
+  tscript append "FakeSimpleLight"
 
   tscript append "}\n"
 
@@ -80,39 +88,39 @@ tscript append "addToGroup gossipGroup * \n"
               case _@e => e.printStackTrace
             }
         }
-         /*
-        var i = 0
-        while (true) {
-          try {
-            val url = new URL("http://"+dukeIP+":8000/model/current")
-            val conn = url.openConnection();
+        /*
+       var i = 0
+       while (true) {
+         try {
+           val url = new URL("http://"+dukeIP+":8000/model/current")
+           val conn = url.openConnection();
 
-            conn.setConnectTimeout(2000);
-            conn.setDoOutput(true);
-            var wr = new OutputStreamWriter(conn.getOutputStream())
-            wr.write(outStream.toString);
-            wr.flush();
+           conn.setConnectTimeout(2000);
+           conn.setDoOutput(true);
+           var wr = new OutputStreamWriter(conn.getOutputStream())
+           wr.write(outStream.toString);
+           wr.flush();
 
-            // Get the response
-            var rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-            var line: String = rd.readLine;
-            while (line != null) {
-              println(line)
-              println(i)
-              line = rd.readLine
-            }
-            wr.close();
-            rd.close();
+           // Get the response
+           var rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+           var line: String = rd.readLine;
+           while (line != null) {
+             println(line)
+             println(i)
+             line = rd.readLine
+           }
+           wr.close();
+           rd.close();
 
-            i = i +1
-            Thread.sleep(1000)
+           i = i +1
+           Thread.sleep(1000)
 
-          } catch {
-            case _@e => e.printStackTrace()
-          }
+         } catch {
+           case _@e => e.printStackTrace()
+         }
 
 
-        } */
+       } */
 
 
       } else {
