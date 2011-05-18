@@ -2,10 +2,10 @@ package org.kevoree.experiment.trace.gui.alg
 
 import actors.{TIMEOUT, DaemonActor}
 import org.jfree.chart.ChartPanel
-import java.io.{InputStream, File}
 import org.kevoree.experiment.trace.TraceMessages
 import javax.swing.{JPanel, WindowConstants, JFrame}
 import java.awt.BorderLayout
+import java.io.{FileInputStream, InputStream, File}
 
 class TraceFileLookup(traceFile: File, frame: JFrame, nodeName: String,maxVal:Int) extends DaemonActor {
 
@@ -14,7 +14,7 @@ class TraceFileLookup(traceFile: File, frame: JFrame, nodeName: String,maxVal:In
   var previousPanel: JPanel = null
 
   def update() {
-    val input: InputStream = this.getClass.getClassLoader.getResourceAsStream("./trace_out")
+    val input: InputStream = new FileInputStream(traceFile)
     val traces: TraceMessages.Traces = TraceMessages.Traces.parseFrom(input)
     val linkedTrace = TracePath.getPathFrom(nodeName, maxVal, traces)
     linkedTrace match {
