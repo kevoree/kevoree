@@ -28,6 +28,8 @@ class DataManagerForGroup(nameInstance: String, selfNodeName: String, modelServi
     .build
   private var logger = LoggerFactory.getLogger(classOf[DataManagerForGroup])
 
+  private val model = modelService.getLastModel
+
   this.start()
 
   case class GetData(uuid: UUID)
@@ -98,7 +100,8 @@ class DataManagerForGroup(nameInstance: String, selfNodeName: String, modelServi
               setVectorClock(increment())
             }
             //val tuple = new Tuple2[VectorClock, String](vectorClock, modelService.getLastModel)
-            val tuple = new Tuple2[VectorClock, ContainerRoot](vectorClock, modelService.getLastModel)
+            //val tuple = new Tuple2[VectorClock, ContainerRoot](vectorClock, modelService.getLastModel)
+            val tuple = new Tuple2[VectorClock, ContainerRoot](vectorClock, model) // FIXME
             reply(tuple)
           } else {
             reply(null)
