@@ -19,14 +19,14 @@ class GroupSerializer (modelService: KevoreeModelHandlerService) extends Seriali
   private val logger = LoggerFactory.getLogger (classOf[GroupSerializer])
 
   //private var lastSerialization: Date = new Date(1l)
-  //private var bytes: Array[Byte] = null
+  private var bytes: Array[Byte] = null
 
   def serialize (data: Any): Array[Byte] = {
     try {
-      //if (lastSerialization.before (modelService.getLastModification)) {
+      if (bytes == null) {
         stringFromModel (data.asInstanceOf[ContainerRoot])
-      //}
-      //bytes
+      }
+      bytes
     } catch {
       case e => {
         logger.error ("Model cannot be serialized: ", e)
@@ -37,7 +37,8 @@ class GroupSerializer (modelService: KevoreeModelHandlerService) extends Seriali
 
   def deserialize (data: Array[Byte]): Any = {
     try {
-      modelFromString (data)
+      //modelFromString (data)
+
     } catch {
       case e => {
         logger.error ("Model cannot be deserialized: ", e)
@@ -55,7 +56,7 @@ class GroupSerializer (modelService: KevoreeModelHandlerService) extends Seriali
     val out = new ByteArrayOutputStream
     KevoreeXmiHelper.saveStream (out, model)
     out.flush ()
-    val bytes = out.toByteArray
+    bytes = out.toByteArray
     out.close ()
     //lastSerialization = new Date(System.currentTimeMillis)
     bytes
