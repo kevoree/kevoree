@@ -18,7 +18,7 @@
     </parent>
 
     <build>
-     	<plugins>
+        <plugins>
             <!-- Creation of the bundle jar and its manifest -->
             <!--
             <plugin>
@@ -37,14 +37,21 @@
                     </instructions>
                 </configuration>	
             </plugin>-->
-    	</plugins>
-	</build>
+        </plugins>
+    </build>
     <dependencies>
         <dependency>
             <groupId>org.swinglabs</groupId>
             <artifactId>swingx</artifactId>
             <version>1.6.1</version>
         </dependency>
+        <dependency>
+            <groupId>org.swinglabs</groupId>
+            <artifactId>jxlayer</artifactId>
+            <version>3.0.4</version>
+        </dependency>
+
+
     </dependencies>
 
 </project>

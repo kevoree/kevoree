@@ -110,6 +110,7 @@ class KevoreeCoreBean extends KevoreeModelHandlerService with KevoreeActor {
     case LastModel() => {
       logger.debug("Before get copy model")
       reply(EcoreUtil.copy(model))
+      logger.debug("After get Copy model")
     }
 
     case UpdateModel(pnewmodel) => {
