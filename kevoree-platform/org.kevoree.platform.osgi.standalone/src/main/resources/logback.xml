@@ -20,6 +20,7 @@
         </encoder>
     </appender>
 
+
     <appender name="FILE" class="ch.qos.logback.core.FileAppender">
         <!-- use the previously created timestamp to create a uniquely
      named log file -->
@@ -29,9 +30,17 @@
         </encoder>
     </appender>
 
+    <appender name="ASYNC" class="org.kevoree.platform.osgi.standalone.AsyncAppender">
+        <param name="QueueCapacity" value="5000"/>
+        <!-- Default is 1000 -->
+        <param name="IncludeCallerData" value="true"/>
+        <!-- Default is false -->
+        <appender-ref ref="FILE"/>
+    </appender>
+
 
     <root level="${root-level:-DEBUG}">
-      <!--  <appender-ref ref="CONSOLE"/>
-        <appender-ref ref="FILE" />  -->
+        <appender-ref ref="CONSOLE"/>
+        <appender-ref ref="ASYNC"/>
     </root>
 </configuration>
