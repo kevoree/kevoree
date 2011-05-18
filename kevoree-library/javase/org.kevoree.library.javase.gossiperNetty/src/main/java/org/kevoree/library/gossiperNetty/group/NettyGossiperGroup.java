@@ -42,23 +42,31 @@ public class NettyGossiperGroup extends AbstractGroupType implements NettyGossip
 	protected PeerSelector selector = null;
 	protected Logger logger = LoggerFactory.getLogger (NettyGossiperChannel.class);
 
-	private boolean sendNotification;
+	protected boolean sendNotification;
 
 	@Start
 	public void startGossiperGroup () {
+		//logger.debug("starting gossiperNetty group " + this.getName());
 		Bundle bundle = (Bundle) this.getDictionary ().get ("osgi.bundle");
 		sr = bundle.getBundleContext ().getServiceReference (KevoreeModelHandlerService.class.getName ());
 		modelHandlerService = (KevoreeModelHandlerService) bundle.getBundleContext ().getService (sr);
 
+		//logger.debug("gossiperNetty group " + this.getName() + ": initialize dataManagerForGroup");
 		dataManager = new DataManagerForGroup (this.getName (), this.getNodeName (), modelHandlerService);
 
+		//logger.debug("gossiperNetty group " + this.getName() + ": get the value of the property sendNotification");
 		sendNotification = parseBooleanProperty ("sendNotification");
 
 		Long timeoutLong = Long.parseLong ((String) this.getDictionary ().get ("interval"));
 		Serializer serializer = new GroupSerializer (modelHandlerService);
 		selector = new GroupPeerSelector (timeoutLong, modelHandlerService, this.getName ());
+
+		//logger.debug("gossiperNetty group " + this.getName() + ": initialize GossiperActor");
+
 		actor = new GossiperActor (timeoutLong, this, dataManager, parsePortNumber (getNodeName ()),
 				parseBooleanProperty ("FullUDP"), false, serializer, selector, parseBooleanProperty ("alwaysAskModel"));
+
+		//logger.debug("gossiperNetty group " + this.getName() + " is started");
 	}
 
 	@Stop

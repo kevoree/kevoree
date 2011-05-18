@@ -31,10 +31,10 @@ class NotificationRequestSender(channelFragment: NettyGossipAbstractElement) ext
 		}
 	}
 	)
-  private var logger = LoggerFactory.getLogger(classOf[NotificationRequestSender])
+  private val logger = LoggerFactory.getLogger(classOf[NotificationRequestSender])
 
 	//private var channels : ChannelGroup = new DefaultChannelGroup
-	private var channel = bootstrapNotificationMessage.bind(new InetSocketAddress(0)).asInstanceOf[DatagramChannel]
+	private val channel = bootstrapNotificationMessage.bind(new InetSocketAddress(0)).asInstanceOf[DatagramChannel]
 
 	this.start()
 

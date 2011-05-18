@@ -37,10 +37,14 @@ public class LogNettyGossiperGroup extends NettyGossiperGroup {
 
         dataManager = new LogDataManagerForGroup(client,this.getName(), this.getNodeName(), modelHandlerService);
 
+		sendNotification = parseBooleanProperty ("sendNotification");
+
         Long timeoutLong = Long.parseLong((String) this.getDictionary().get("interval"));
         Serializer serializer = new GroupSerializer(modelHandlerService);
         selector = new GroupPeerSelector(timeoutLong, modelHandlerService, this.getName());
-        actor = new GossiperActor(timeoutLong, this, dataManager, parsePortNumber(getNodeName()), parseFullUDPParameter(), false, serializer, selector);
+        actor = new GossiperActor (timeoutLong, this, dataManager, parsePortNumber (getNodeName ()),
+				parseBooleanProperty ("FullUDP"), false, serializer, selector, parseBooleanProperty ("alwaysAskModel"));
+
 
     }
 

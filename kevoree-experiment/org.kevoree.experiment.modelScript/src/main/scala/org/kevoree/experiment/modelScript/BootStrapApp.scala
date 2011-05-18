@@ -8,7 +8,7 @@ import java.io.{ByteArrayOutputStream, BufferedReader, InputStreamReader, Output
 
 object BootStrapApp extends Application {
 
-  var model = KevoreeXmiHelper.loadStream(this.getClass.getClassLoader.getResourceAsStream("baseModel.kev"))
+  var model = KevoreeXmiHelper.loadStream(this.getClass.getClassLoader.getResourceAsStream("baseModelEvolution.kev"))
   var tscript = new StringBuilder
 
   tscript append "tblock {"
