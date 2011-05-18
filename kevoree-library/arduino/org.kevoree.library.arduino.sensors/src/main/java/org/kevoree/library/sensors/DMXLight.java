@@ -46,8 +46,17 @@ public class DMXLight extends AbstractComponentType {
     @Port(name = "intensity")
     public void triggerOn(Object o) {
         StringBuffer context = (StringBuffer) o;
-        context.append("DmxSimple.write(1,int(param));\n");
+
+        context.append("  " +
+                "char msg[param.length()+10];\n" +
+                "param.toCharArray(msg, param.length()+1);\n" +
+                "int value = atoi(msg);\n");
+
+        context.append("int outputIntensity = (127 * value) / 100 ; \n ");
+        context.append("DmxSimple.write(1,outputIntensity);\n");
     }
+
+
     @Port(name = "color")
     public void triggerColor(Object o) {
         StringBuffer context = (StringBuffer) o;

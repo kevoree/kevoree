@@ -40,7 +40,7 @@ public class LightSensor extends AbstractComponentType {
         //GENERATE METHOD CALL
         context.append(ArduinoMethodHelper.generateMethodNameFromComponentPort(this.getName(), "light", PortUsage.required()));
         //GENERATE PARAMETER
-        context.append("(String(photocellReading)+\" lux\");\n");
+        context.append("(String(photocellReading));\n");
 
     }
 

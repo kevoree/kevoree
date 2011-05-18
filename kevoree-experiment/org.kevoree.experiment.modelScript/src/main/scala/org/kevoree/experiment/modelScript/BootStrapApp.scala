@@ -80,7 +80,7 @@ tscript append "addToGroup gossipGroup * \n"
               case _@e => e.printStackTrace
             }
         }
-
+         /*
         var i = 0
         while (true) {
           try {
@@ -112,7 +112,7 @@ tscript append "addToGroup gossipGroup * \n"
           }
 
 
-        }
+        } */
 
 
       } else {
