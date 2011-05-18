@@ -31,8 +31,7 @@ class GroupSerializer (modelService: KevoreeModelHandlerService) extends Seriali
 
   def deserialize (data: Array[Byte]): Any = {
     try {
-      //modelFromString (data)
-
+      modelFromString (data)
     } catch {
       case e => {
         logger.error ("Model cannot be deserialized: ", e)
