@@ -18,7 +18,7 @@ public interface NettyGossipAbstractElement {
 
 	public int parsePortNumber(String nodeName);
 
-	public Boolean parseFullUDPParameter();
+	public Boolean parseBooleanProperty(String name);
 	
 	//public String selectPeer();
 	
