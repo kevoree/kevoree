@@ -119,7 +119,7 @@ public class ForkedGregServer {
             }
         }.start();
 
-
+        /*
         try {
             System.out.println("Type any char to shutdown !");
             System.in.read();
@@ -127,7 +127,7 @@ public class ForkedGregServer {
             System.out.println("bye !");
         }
         catch(Exception e) {
-        }
+        } */
 
 
     }

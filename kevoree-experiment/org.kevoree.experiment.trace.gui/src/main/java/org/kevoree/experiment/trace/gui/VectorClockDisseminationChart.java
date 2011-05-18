@@ -32,23 +32,14 @@ public class VectorClockDisseminationChart {
 
 	private boolean updated;
 
-	public void loadTrace(String traceFilePath) throws IOException {
-		File traceFile = new File(traceFilePath);
-		if (traceFile.exists()) {
-			InputStream input = new FileInputStream(traceFile);
-			TraceMessages.Traces traces = TraceMessages.Traces.parseFrom(input);
-			loadTrace(traces/*, true*/);
-		} else {
-			throw new FileNotFoundException(traceFilePath);
-		}
-	}
-
 	public void saveChart(String chartPath) {
 		// TODO
-
 	}
 
 	public void loadTrace(TraceMessages.Traces traces/*, boolean cleanBefore*/) {
+
+        defaultcategorydataset.clear();
+
 		if (/*cleanBefore ||*/ nodeIds == null || timeRepresentations == null || vectorClockUpdates == null || vectorClocks == null) {
 			nodeIds = new ArrayList<String>();
 			timeRepresentations = new TreeSet<String>();
@@ -76,10 +67,14 @@ public class VectorClockDisseminationChart {
 			vectorClocks.put(nodeId, vectorclockForNode);
 		}
 		updated = true;
+
+        buildPlotDataset();
 	}
 
-	private CategoryDataset buildPlotDataset() {
-		DefaultCategoryDataset defaultcategorydataset = new DefaultCategoryDataset();
+    DefaultCategoryDataset defaultcategorydataset = new DefaultCategoryDataset();
+
+	private void buildPlotDataset() {
+
 		// TODO
 		for (int i = 0; i < nodeIds.size(); i++) {
 			long firstTime = 0;
@@ -107,7 +102,7 @@ public class VectorClockDisseminationChart {
 
 
 
-		return defaultcategorydataset;
+		//return defaultcategorydataset;
 	}
 
 	/*private CategoryDataset buildLineDataset() {
@@ -151,7 +146,7 @@ public class VectorClockDisseminationChart {
 
 	public JFreeChart getChart() {
 		if (updated) {
-			chart = createChart(buildPlotDataset());
+			chart = createChart(defaultcategorydataset);
 			//chart = updateChart(buildLineDataset(), chart);
 			updated = false;
 		}

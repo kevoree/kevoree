@@ -1,3 +1,4 @@
+/*
 package org.kevoree.experiment.trace.gui;
 
 import org.jfree.chart.ChartPanel;
@@ -33,7 +34,11 @@ public class AppSample {
         frame.setSize(400, 400);
 
         VectorClockDisseminationChart chart = new VectorClockDisseminationChart();
-        //chart.loadTrace(traces*//*, true*//*);
+        //chart.loadTrace(traces*//*
+*/
+/*, true*//*
+*/
+/*);
         chart.loadTrace(new File(AppSample.class.getClassLoader().getResource("./trace_out").toURI()).getAbsolutePath());
 
 
@@ -49,12 +54,14 @@ public class AppSample {
 
     public static String convertStreamToString(InputStream is)
             throws IOException {
-        /*
+        */
+/*
          * To convert the InputStream to String we use the
          * Reader.read(char[] buffer) method. We iterate until the
          * Reader return -1 which means there's no more data to
          * read. We use the StringWriter class to produce the string.
-         */
+         *//*
+
         if (is != null) {
             Writer writer = new StringWriter();
 
@@ -75,3 +82,4 @@ public class AppSample {
         }
     }
 }
+*/
