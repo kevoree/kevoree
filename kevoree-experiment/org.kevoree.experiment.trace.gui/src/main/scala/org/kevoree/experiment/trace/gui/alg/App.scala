@@ -6,7 +6,7 @@ import scala.collection.JavaConversions._
 import javax.swing.{JOptionPane, WindowConstants, JFrame}
 import scala.Some
 import java.io.{FileInputStream, File, InputStream}
-import org.kevoree.experiment.modelScript.{BootStrapApp, ModelEvolutionApp}
+import org.kevoree.experiment.modelScript.{BootStrapAppComplex, NodePacket, BootStrapApp, ModelEvolutionApp}
 
 object App extends Application {
 
@@ -21,8 +21,30 @@ object App extends Application {
   ForkedGregServer.startServer(gregArgs.toArray, outTraceFile)
   println("Greg server started")
 
-  BootStrapApp.main(null)
+  //BootStrapApp.main(null)
   //Thread.sleep(5000);
+
+
+  val dukeIP = "131.254.15.214"
+  val paraisseuxIP = "131.254.12.28"
+  val packets = List(
+                      NodePacket("duke", dukeIP, 8000, 4),
+                      NodePacket("duke2", dukeIP, 8100, 4),
+                      NodePacket("duke3", dukeIP, 8200, 4),
+                      NodePacket("duke4", dukeIP, 8300, 4),
+                      NodePacket("duke5", dukeIP, 8400, 4),
+                      NodePacket("duke6", dukeIP, 8500, 4),
+                      NodePacket("paraisseux", paraisseuxIP, 8000, 4)
+                    )
+  var nbNodes = 0
+  packets.foreach {
+    p =>
+      nbNodes = nbNodes + p.nbElem
+  }
+
+
+  BootStrapAppComplex.bootStrap(packets)
+
 
   val inputValue = JOptionPane.showInputDialog("Trace next update from node");
 
@@ -64,29 +86,32 @@ object App extends Application {
   //Run modification
   def notifyFromStabilization () {
 
-    Thread.sleep(2000);
+    Thread.sleep(1000);
 
-    // look for the version number which represent the stabilization
     val input: InputStream = new FileInputStream(outTraceFile)
     val traces: TraceMessages.Traces = TraceMessages.Traces.parseFrom(input)
-    var maxVal = 0
-    traces.getTraceList.filter(trace => trace.getClientId == inputValue).foreach {
-      trace =>
-        println("trace=" + TracePath.stringToVectorClock(trace.getBody).toString)
+    if (TracePath.isStable(traces.getTraceList.toList, inputValue, maxVal, nbNodes)) {
 
-        TracePath.stringToVectorClock(trace.getBody).versionForNode(inputValue) match {
-          case None =>
-          case Some(vval) => if (vval > maxVal) {
-            maxVal = vval
+      // look for the version number which represent the stabilization
+      var maxVal = 0
+      traces.getTraceList.filter(trace => trace.getClientId == inputValue).foreach {
+        trace =>
+          println("trace=" + TracePath.stringToVectorClock(trace.getBody).toString)
+
+          TracePath.stringToVectorClock(trace.getBody).versionForNode(inputValue) match {
+            case None =>
+            case Some(vval) => if (vval > maxVal) {
+              maxVal = vval
+            }
           }
-        }
+      }
+
+      // update the TraceFileLookup to look for a new value
+      lookup.setMaxVal(maxVal + 1)
+
+      // launch a new modification
+      modif.doAction(inputValue)
     }
-
-    // update the TraceFileLookup to look for a new value
-    lookup.setMaxVal(maxVal + 1)
-
-    // launch a new modification
-    modif.doAction(inputValue)
   }
 
 }

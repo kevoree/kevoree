@@ -1,6 +1,7 @@
 package org.kevoree.experiment.trace.gui.alg
 
 import org.kevoree.experiment.trace.TraceMessages.{Trace, Traces}
+import org.kevoree.experiment.modelScript.NodePacket
 
 //import scala.collection.JavaConversions._
 
@@ -110,6 +111,25 @@ object TracePath {
     t
   }
 
+
+
+  /**
+   * the state of the system is stable when we find into the traces at least one trace for each node where
+   * the version for nodeId is equals to version
+   *
+   */
+  def isStable (traces: List[Trace], nodeId: String, version: Int, nbNodes : Int): Boolean = {
+    val reverseTraces = traces.reverse
+    var found : List[String] = List[String]()
+    var i = 0
+    while (found.size <= nbNodes && i < traces.size) {
+      if (TracePath.stringToVectorClock(reverseTraces(i).getBody).containEntry(nodeId, version) && !found.contains(reverseTraces(i).getClientId)) {
+        found = found ++ List(reverseTraces(i).getClientId)
+      }
+      i = i + 1
+    }
+    found.size == nbNodes
+  }
 
 
 }

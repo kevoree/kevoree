@@ -7,17 +7,17 @@ import javax.swing.{JPanel, WindowConstants, JFrame}
 import java.awt.BorderLayout
 import java.io.{FileInputStream, InputStream, File}
 
-class TraceFileLookup(traceFile: File, frame: JFrame, nodeName: String,var maxVal:Int) extends DaemonActor {
+class TraceFileLookup (traceFile: File, frame: JFrame, nodeName: String, var maxVal: Int) extends DaemonActor {
 
   var previousCheck: Long = 0l
 
   var previousPanel: JPanel = null
 
-  def setMaxVal(maxVal : Int) {
+  def setMaxVal (maxVal: Int) {
     this.maxVal = maxVal
   }
 
-  def update() {
+  def update () {
     val input: InputStream = new FileInputStream(traceFile)
     val traces: TraceMessages.Traces = TraceMessages.Traces.parseFrom(input)
     val linkedTrace = TracePath.getPathFrom(nodeName, maxVal, traces)
@@ -47,15 +47,16 @@ class TraceFileLookup(traceFile: File, frame: JFrame, nodeName: String,var maxVa
       }
       case None => println("Not found")
     }
+    App.notifyFromStabilization()
   }
 
 
-  def act() {
+  def act () {
     loop {
       reactWithin(4000) {
         case TIMEOUT => {
           if (traceFile.lastModified() > previousCheck) {
-             update()
+            update()
           }
         }
       }
