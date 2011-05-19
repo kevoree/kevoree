@@ -107,7 +107,8 @@ object App extends Application {
       }
 
       // update the TraceFileLookup to look for a new value
-      lookup.setMaxVal(maxVal + 1)
+      maxVal = maxVal + 1
+      lookup.setMaxVal(maxVal)
 
       // launch a new modification
       modif.doAction(inputValue)
