@@ -12,6 +12,8 @@ import org.kevoree.library.gossiperNetty.group.GroupSerializer;
 import org.kevoree.library.gossiperNetty.group.NettyGossiperGroup;
 import org.osgi.framework.Bundle;
 
+import java.util.List;
+
 @GroupType
 @Library(name = "KevoreeExperiment")
 @DictionaryType({
@@ -41,11 +43,9 @@ public class LogNettyGossiperGroup extends NettyGossiperGroup {
 
         Long timeoutLong = Long.parseLong((String) this.getDictionary().get("interval"));
         Serializer serializer = new GroupSerializer(modelHandlerService);
-        selector = new GroupPeerSelector(timeoutLong, modelHandlerService, this.getName());
+        selector = new StrictGroupPeerSelector(timeoutLong, modelHandlerService, this.getName());
         actor = new GossiperActor (timeoutLong, this, dataManager, parsePortNumber (getNodeName ()),
 				parseBooleanProperty ("FullUDP"), false, serializer, selector, parseBooleanProperty ("alwaysAskModel"));
-
-
     }
 
     @Override
@@ -53,4 +53,9 @@ public class LogNettyGossiperGroup extends NettyGossiperGroup {
         super.stopGossiperGroup();
         client.stop();
     }
+
+	@Override
+	public List<String> getAllPeers () {
+		return PeersHelper.getPeers(modelHandlerService.getLastModel(), this.getName(), this.getNodeName());
+	}
 }

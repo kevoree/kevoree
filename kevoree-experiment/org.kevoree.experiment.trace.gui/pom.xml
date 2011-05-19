@@ -44,6 +44,16 @@
             <version>${kevoree.version}</version>
         </dependency>
 
+        <dependency>
+            <groupId>jgrapht</groupId>
+            <artifactId>jgrapht</artifactId>
+            <version>0.8.2</version>
+        </dependency>
+        <dependency>
+            <groupId>jgraph</groupId>
+            <artifactId>jgraph</artifactId>
+            <version>0.8.2</version>
+        </dependency>
 
         <dependency>
             <groupId>org.scala-lang</groupId>

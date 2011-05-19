@@ -7,11 +7,15 @@ import javax.swing.{JPanel, WindowConstants, JFrame}
 import java.awt.BorderLayout
 import java.io.{FileInputStream, InputStream, File}
 
-class TraceFileLookup(traceFile: File, frame: JFrame, nodeName: String,maxVal:Int) extends DaemonActor {
+class TraceFileLookup(traceFile: File, frame: JFrame, nodeName: String,var maxVal:Int) extends DaemonActor {
 
   var previousCheck: Long = 0l
 
   var previousPanel: JPanel = null
+
+  def setMaxVal(maxVal : Int) {
+    this.maxVal = maxVal
+  }
 
   def update() {
     val input: InputStream = new FileInputStream(traceFile)
