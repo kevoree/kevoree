@@ -59,10 +59,12 @@ object TracePath {
     }
     val headVector = stringToVectorClock(traces.head.getBody)
     val containPrevious = headVector.containEntry(nodeID, version)
-    val notContainPrevious = foundDirectSuccessors.forall(t => (!headVector.containEntry(t._1, t._2)))
+   // val notContainPrevious = foundDirectSuccessors.forall(t => (!headVector.containEntry(t._1, t._2)))
+    val previousTrace = findPreviousTrace(traces.head, traces)
+    val alreadyNew  = isAlreadyNew(previousTrace, traces.head, nodeID, version)
     var lvalue : List[((String, Int), Trace)] = List()
     var foundDirectSuccessors2 = foundDirectSuccessors
-    if (containPrevious && notContainPrevious ) {
+    if (containPrevious /*&& notContainPrevious*/ && alreadyNew) {
       foundDirectSuccessors2 = foundDirectSuccessors2 ++ List((traces.head.getClientId, headVector.versionForNode(traces.head.getClientId).get))
       lvalue = List(((traces.head.getClientId, headVector.versionForNode(traces.head.getClientId).get), traces.head))
     }
@@ -73,6 +75,40 @@ object TracePath {
     }
   }
 
+  /**
+   *
+   * @return true if there is only one difference between previous and current trace. This difference is about version of nodeId (equals to version -1 for the previous trace), false else
+   */
+  private def isAlreadyNew(previousTrace : Trace, currentTrace : Trace, nodeId : String, version : Int) : Boolean ={
+    val currentTraceVectorClock = stringToVectorClock(currentTrace.getBody)
+    val previousTraceVectorClock = stringToVectorClock(previousTrace.getBody)
+    currentTraceVectorClock.entries.forall{
+      t =>
+        (t._1.equals(nodeId) && t._2.equals(version - 1)) || previousTraceVectorClock.containEntry(t._1, t._2)
+    }
+  }
+
+
+  /**
+   * look for the previous trace where the version for nodeId is equals to version -1 compared to the current trace
+   */
+  private def findPreviousTrace(trace : Trace, traces : List[Trace]) : Trace = {
+    val nodeId = trace.getClientId
+    val versionOption  = stringToVectorClock(trace.getBody).versionForNode(nodeId)
+    var version = 0
+    if (versionOption.isEmpty) {
+      version = 1
+    } else {
+      version = versionOption.get
+    }
+    var reverseTraces = traces.reverse
+    var t = reverseTraces.head
+    while (!t.getClientId.equals(trace.getClientId) && !stringToVectorClock(t.getBody).containEntry(nodeId, version -1)) {
+      reverseTraces = reverseTraces.tail
+      t = reverseTraces.head
+    }
+    t
+  }
 
 
 
