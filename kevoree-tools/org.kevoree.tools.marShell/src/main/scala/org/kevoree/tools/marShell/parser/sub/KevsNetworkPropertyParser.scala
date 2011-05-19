@@ -17,10 +17,12 @@ import org.kevoree.tools.marShell.ast.{NetworkPropertyStatement, RemoveLibrarySt
 
 trait KevsNetworkPropertyParser extends KevsAbstractParser with KevsPropertiesParser {
 
-  val networkPropertyFormat = "network <NodeInstanceName> {key=\"val\",\"key2\"=\"val2\"}"
-  def parseNetworkProperty : Parser[List[Statment]] = "network" ~ orFailure(ident,networkPropertyFormat) ~ parseProperties ^^{ case _ ~ nodeName ~ props =>
-      List(NetworkPropertyStatement(nodeName,props))
+  val networkPropertyFormat = "network [<NodeSrc> =>] <NodeInstanceName> {key=\"val\",\"key2\"=\"val2\"}"
+  def parseNetworkProperty : Parser[List[Statment]] = "network" ~ opt(parseNetworkPropertySrc) ~ orFailure(ident,networkPropertyFormat) ~ parseProperties ^^{ case _~ optNodeSrc ~ nodeName ~ props =>
+    List(NetworkPropertyStatement(optNodeSrc,nodeName,props))
   }
+
+  def parseNetworkPropertySrc : Parser[String] = ident ~ "=>" ^^{ case id ~ _ => id }
 
 
 }

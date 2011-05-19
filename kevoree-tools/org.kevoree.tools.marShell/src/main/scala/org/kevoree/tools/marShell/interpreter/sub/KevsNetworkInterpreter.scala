@@ -23,8 +23,10 @@ case class KevsNetworkInterpreter(networkStatement: NetworkPropertyStatement) ex
 
     networkStatement.props.foreach {
       prop =>
-
-        updateNodeLinkProp(context.model, networkStatement.targetNodeName, networkStatement.targetNodeName, prop._1, prop._2, "", 100);
+        networkStatement.srcNodeName match {
+          case Some(srcNode)=> updateNodeLinkProp(context.model, srcNode, networkStatement.targetNodeName, prop._1, prop._2, "", 100);
+          case None => updateNodeLinkProp(context.model, networkStatement.targetNodeName, networkStatement.targetNodeName, prop._1, prop._2, "", 100);
+        }
     }
     true
   }

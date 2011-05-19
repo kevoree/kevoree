@@ -13,7 +13,7 @@
  */
 package org.kevoree.tools.marShell.ast
 
-case class NetworkPropertyStatement(targetNodeName : String,props : java.util.Properties) extends Statment {
+case class NetworkPropertyStatement(srcNodeName : Option[String], targetNodeName : String,props : java.util.Properties) extends Statment {
 
 
 
