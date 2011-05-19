@@ -32,6 +32,8 @@ public class ZoomPanel extends JPanel {
     private AffineTransform scaleXform, inverseXform;
 
     //Override super.paint()
+    
+    @Override
     public void paint(Graphics g) {
         super.paintComponent(g); // clears background
         Graphics2D g2 = (Graphics2D) g;
