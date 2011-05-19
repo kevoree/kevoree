@@ -35,14 +35,31 @@ case class KevsAddNodeInterpreter(addN: AddNodeStatment) extends KevsAbstractInt
       case Some(nodeType) => {
         context.model.getNodes.find(n => n.getName == addN.nodeName) match {
           case Some(e) => {
-              println("Warning : Node Already exist with name "+e.getName)
-              if(e.getTypeDefinition.getName == addN.nodeTypeName){
+            println("Warning : Node Already exist with name " + e.getName)
+            if (e.getTypeDefinition == null) {
+              context.model.getTypeDefinitions.find(td => td.getName == addN.nodeTypeName) match {
+                case Some(td) => {
+                  e.setTypeDefinition(td)
                   Merger.mergeDictionary(e, addN.props)
+                  true
+                }
+                case None => {
+                  println("Error : Type definition not found "+addN.nodeTypeName)
+                  false
+                }
+              }
+
+            } else {
+              if (e.getTypeDefinition.getName == addN.nodeTypeName) {
+                Merger.mergeDictionary(e, addN.props)
                 true
               } else {
                 println("Error : Type != from previous created node")
                 false
               }
+            }
+
+
           }
           case None => {
             val newnode = KevoreeFactory.eINSTANCE.createContainerNode
