@@ -46,7 +46,7 @@ object TopologyGeneratorScript {
           groupPort.append(packet.name)
           groupPort.append(i)
           groupPort.append("=")
-          groupPort.append(packet.firstPort + i)
+          groupPort.append(packet.firstPort + i + 1000)
         }
       }
       //GENERATE PACKET LINK

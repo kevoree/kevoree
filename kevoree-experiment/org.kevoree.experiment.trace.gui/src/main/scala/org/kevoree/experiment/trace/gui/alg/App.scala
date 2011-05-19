@@ -5,8 +5,9 @@ import org.greg.server.ForkedGregServer
 import scala.collection.JavaConversions._
 import javax.swing.{JOptionPane, WindowConstants, JFrame}
 import scala.Some
-import java.io.{FileInputStream, File, InputStream}
 import org.kevoree.experiment.modelScript.{BootStrapAppComplex, NodePacket, BootStrapApp, ModelEvolutionApp}
+import java.net.URL
+import java.io._
 
 object App extends Application {
 
@@ -27,13 +28,14 @@ object App extends Application {
 
   val dukeIP = "131.254.15.214"
   val paraisseuxIP = "131.254.12.28"
+  val ips = List(dukeIP, paraisseuxIP)
   val packets = List(
                       NodePacket("duke", dukeIP, 8000, 4),
-                      NodePacket("duke2", dukeIP, 8100, 4),
-                      NodePacket("duke3", dukeIP, 8200, 4),
-                      NodePacket("duke4", dukeIP, 8300, 4),
-                      NodePacket("duke5", dukeIP, 8400, 4),
-                      NodePacket("duke6", dukeIP, 8500, 4),
+                      //NodePacket("duke2", dukeIP, 8100, 4),
+                      //NodePacket("duke3", dukeIP, 8200, 4),
+                      //NodePacket("duke4", dukeIP, 8300, 4),
+                      //NodePacket("duke5", dukeIP, 8400, 4),
+                      //NodePacket("duke6", dukeIP, 8500, 4),
                       NodePacket("paraisseux", paraisseuxIP, 8000, 4)
                     )
   var nbNodes = 0
@@ -43,7 +45,7 @@ object App extends Application {
   }
 
 
-  BootStrapAppComplex.bootStrap(packets)
+  BootStrapAppComplex.bootStrap(packets, paraisseuxIP, ips)
 
 
   val inputValue = JOptionPane.showInputDialog("Trace next update from node");

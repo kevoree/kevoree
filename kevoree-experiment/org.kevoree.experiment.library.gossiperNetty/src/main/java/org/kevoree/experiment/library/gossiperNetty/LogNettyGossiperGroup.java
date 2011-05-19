@@ -11,6 +11,8 @@ import org.kevoree.library.gossiperNetty.group.GroupPeerSelector;
 import org.kevoree.library.gossiperNetty.group.GroupSerializer;
 import org.kevoree.library.gossiperNetty.group.NettyGossiperGroup;
 import org.osgi.framework.Bundle;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
@@ -22,9 +24,11 @@ import java.util.List;
 public class LogNettyGossiperGroup extends NettyGossiperGroup {
 
     private ForkedGregClient client = null;
+	private Logger logger = LoggerFactory.getLogger(LogNettyGossiperGroup.class);
 
     @Override
     public void startGossiperGroup() {
+		logger.debug("starting group instance");
         ForkedConfiguration clientConfig = new ForkedConfiguration();
         clientConfig.clientId = this.getNodeName();
         clientConfig.server = this.getDictionary().get("loggerServerIP").toString();
@@ -46,6 +50,8 @@ public class LogNettyGossiperGroup extends NettyGossiperGroup {
         selector = new StrictGroupPeerSelector(timeoutLong, modelHandlerService, this.getName());
         actor = new GossiperActor (timeoutLong, this, dataManager, parsePortNumber (getNodeName ()),
 				parseBooleanProperty ("FullUDP"), false, serializer, selector, parseBooleanProperty ("alwaysAskModel"));
+
+		logger.debug("group instance started");
     }
 
     @Override
