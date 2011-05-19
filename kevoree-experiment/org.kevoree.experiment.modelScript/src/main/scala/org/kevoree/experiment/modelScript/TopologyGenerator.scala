@@ -6,6 +6,8 @@
 package org.kevoree.experiment.modelScript
 
 
+import scala.collection.mutable.HashMap
+
 case class NodePacket(name : String,ip : String, firstPort : Int,nbElem:Int)
 
 object TopologyGeneratorScript {
@@ -14,6 +16,8 @@ object TopologyGeneratorScript {
     //STEP GENERATE NODE
     val tscript = new StringBuilder
     val groupPort = new StringBuilder
+    val links = new HashMap[NodePacket,Int]
+    
     
     //GENERATE PACKET
     packets.foreach{packet =>      
@@ -46,6 +50,22 @@ object TopologyGeneratorScript {
         }
       }
       //GENERATE PACKET LINK
+      packets.filterNot(p=> p == packet)
+      .find(packet => links.get(packet).getOrElse{ 0 } < 3 ) match {
+        case Some(otherPacket)=> {
+            links.put(otherPacket, links.get(otherPacket).getOrElse{0} +1 )
+            links.put(packet, links.get(packet).getOrElse{0} +1 )
+            
+            tscript append generateLink( packet.name+"0" , otherPacket.name+"0" , otherPacket.ip, otherPacket.firstPort)
+            tscript append generateLink( otherPacket.name+"0" , packet.name+"0" , packet.ip, packet.firstPort)
+            
+          }
+        case None => println("Error")
+      }
+      
+      
+      
+      
       //TODO
 
     }
