@@ -1,7 +1,6 @@
 package org.kevoree.experiment.trace.gui.alg
 
 import org.kevoree.experiment.trace.TraceMessages
-import org.jfree.chart.ChartPanel
 import org.greg.server.ForkedGregServer
 import scala.collection.JavaConversions._
 import javax.swing.{JOptionPane, WindowConstants, JFrame}
@@ -12,51 +11,44 @@ import org.kevoree.experiment.modelScript.{BootStrapApp, ModelEvolutionApp}
 object App extends Application {
 
 
-
-  //LAUNCH TRACE SERVER
-
-
-
-
-
-
   var outTraceFile = new File("trace_out")
-  if(outTraceFile.exists()){
+  if (outTraceFile.exists()) {
     outTraceFile.delete();
   }
 
-
+  //LAUNCH TRACE SERVER
   var gregArgs: List[String] = java.util.Arrays.asList("-port", "5676", "-calibrationPort", "5677").toList
   ForkedGregServer.startServer(gregArgs.toArray, outTraceFile)
   println("Greg server started")
 
-
   BootStrapApp.main(null)
-
-  Thread.sleep(5000);
-
-
+  //Thread.sleep(5000);
 
   val inputValue = JOptionPane.showInputDialog("Trace next update from node");
 
   val input: InputStream = new FileInputStream(outTraceFile)
   val traces: TraceMessages.Traces = TraceMessages.Traces.parseFrom(input)
   var maxVal = 0
-  traces.getTraceList.filter(trace => trace.getClientId == inputValue).foreach{trace =>
-    println("trace="+TracePath.stringToVectorClock(trace.getBody).toString)
+  traces.getTraceList.filter(trace => trace.getClientId == inputValue).foreach {
+    trace =>
+      println("trace=" + TracePath.stringToVectorClock(trace.getBody).toString)
 
-    TracePath.stringToVectorClock(trace.getBody).versionForNode(inputValue) match {
+      TracePath.stringToVectorClock(trace.getBody).versionForNode(inputValue) match {
         case None =>
-        case Some(vval)=>  if(vval > maxVal){ maxVal = vval}
+        case Some(vval) => if (vval > maxVal) {
+          maxVal = vval
+        }
       }
   }
 
-  println(inputValue+" current max value found => "+maxVal)
-
+  println(inputValue + " current max value found => " + maxVal)
 
   val modif = new ModelEvolutionApp
-  modif.doAction(inputValue)
+  // register listener to be notified from stabilization
 
+
+  // launch the first modification 
+  modif.doAction(inputValue)
 
 
   val frame = new JFrame();
@@ -66,13 +58,35 @@ object App extends Application {
   frame.setVisible(true);
 
 
-  val lookup = new TraceFileLookup(outTraceFile, frame, inputValue,maxVal+1)
+  val lookup = new TraceFileLookup(outTraceFile, frame, inputValue, maxVal + 1)
   lookup.start()
 
   //Run modification
+  def notifyFromStabilization () {
 
+    Thread.sleep(2000);
 
+    // look for the version number which represent the stabilization
+    val input: InputStream = new FileInputStream(outTraceFile)
+    val traces: TraceMessages.Traces = TraceMessages.Traces.parseFrom(input)
+    var maxVal = 0
+    traces.getTraceList.filter(trace => trace.getClientId == inputValue).foreach {
+      trace =>
+        println("trace=" + TracePath.stringToVectorClock(trace.getBody).toString)
 
+        TracePath.stringToVectorClock(trace.getBody).versionForNode(inputValue) match {
+          case None =>
+          case Some(vval) => if (vval > maxVal) {
+            maxVal = vval
+          }
+        }
+    }
 
+    // update the TraceFileLookup to look for a new value
+    lookup.setMaxVal(maxVal + 1)
+
+    // launch a new modification
+    modif.doAction(inputValue)
+  }
 
 }
