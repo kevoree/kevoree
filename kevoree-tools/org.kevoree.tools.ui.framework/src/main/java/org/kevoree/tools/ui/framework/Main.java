@@ -17,20 +17,15 @@
  */
 package org.kevoree.tools.ui.framework;
 
-import org.jdesktop.swingx.JXMultiSplitPane;
 import org.kevoree.tools.ui.framework.elements.*;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
+import javax.swing.*;
 
 import org.kevoree.tools.ui.framework.elements.PortPanel.PortType;
 
 /**
- *
  * @author ffouquet
  */
 public class Main {
@@ -39,18 +34,21 @@ public class Main {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
+
+
+
+
         JFrame jframe = new JFrame("Art2 UI Tester");
         jframe.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         jframe.setPreferredSize(new Dimension(800, 600));
 
 
-
         ModelPanel model = new ModelPanel();
 
         //Test Group Panel
-         GroupPanel groupPanel = new GroupPanel();
+        GroupPanel groupPanel = new GroupPanel();
         groupPanel.setTitle("G1");
-         model.addGroup(groupPanel);
+        model.addGroup(groupPanel);
 
 
         NodePanel node1 = new NodePanel();
@@ -93,8 +91,6 @@ public class Main {
         p24.setNature(PortPanel.PortNature.MESSAGE);
 
 
-
-
         p11.setTitle("P11");
         p12.setTitle("P12");
         p21.setTitle("P21");
@@ -131,7 +127,7 @@ public class Main {
         c2.addRight(p24);
 
         node1.setTitle("node1");
-        node1.setTitle("myNode","ArduinoNode");
+        node1.setTitle("myNode", "ArduinoNode");
 
 
         node1.add(c1);
@@ -145,10 +141,12 @@ public class Main {
         EditableModelPanel epanel = new EditableModelPanel(scrollPane);
 
 
-        jframe.add(epanel, BorderLayout.CENTER);
-
-
-
+        //jframe.add(epanel, BorderLayout.CENTER);
+        ZoomPanel zpanel = new ZoomPanel();
+        zpanel.setLayout(new BorderLayout());
+        zpanel.add(epanel,BorderLayout.CENTER);
+        zpanel.changeZoom(1.5);
+        jframe.add(zpanel, BorderLayout.CENTER);
 
 
         JPanel prop = new JPanel();
@@ -159,8 +157,6 @@ public class Main {
 
         jframe.pack();
         jframe.setVisible(true);
-
-
 
 
     }

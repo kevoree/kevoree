@@ -6,6 +6,7 @@ import org.kevoree.experiment.trace.TraceMessages.{Trace, Traces}
 
 object TracePath {
 
+  //HELPER
   def stringToVectorClock(content: String): VectorClock = {
     var result = VectorClock(List())
     content.split(',').foreach {
@@ -21,6 +22,7 @@ object TracePath {
   }
 
 
+  //INIT SEARCH PATH
   def getPathFrom(nodeID: String, nodeVersion: Int, traces: Traces): Option[LinkedTrace] = {
     import scala.collection.JavaConversions._
     val sortedTraces = traces.getTraceList.toList.sortWith((x, y) => x.getTimestamp < y.getTimestamp)
@@ -35,12 +37,10 @@ object TracePath {
     }
   }
 
-  /* Build recursively successor for trace en precise nodeID & Version  */
+  /* Build recursively successor for trace with precise nodeID & Version  */
   protected def buildLinkedFor(traces: List[Trace], trace: Trace, nodeID: String, version: Int): LinkedTrace = {
 
     val tracesWithoutTrace = traces.slice(traces.indexOf(trace)+1, traces.size+1)
-
-    //println(traces.)
 
     val successors = lookForSuccessor(tracesWithoutTrace, nodeID, version, List())
     var result = LinkedTrace(trace, List())
@@ -71,7 +71,9 @@ object TracePath {
     } else {
       lvalue
     }
-    
   }
+
+
+
 
 }

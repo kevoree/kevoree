@@ -49,21 +49,27 @@ public class AutoNormalizer extends AbstractComponentType {
                 "" +
                 "  char msg[param.length()+10];\n" +
                 "  param.toCharArray(msg, param.length()+1);\n" +
-                "  int value = atoi(msg);\n");
+                "  float value = atof(msg);\n");
 
         context.append("if(value < " + "minValue" + this.getName() + "){ " + "minValue" + this.getName() + " = value; }\n");
         context.append("if(value > " + "maxValue" + this.getName() + "){ " + "maxValue" + this.getName() + " = value; }\n");
         if (this.getDictionary().get("inverted").equals("0")) {
-            context.append(" String result = String(abs((value*100) / (" + "maxValue" + this.getName() + " - " + "minValue" + this.getName() + ")));\n");
+
+            context.append("float result=");
+            context.append(" (value-"+"minValue" + this.getName()+")");
+            context.append(" / ("+"maxValue" + this.getName()+"-"+"minValue" + this.getName()+")");
+            context.append(";\n");
+
+           // context.append(" float result = abs(((float)value - ) / (" + "maxValue" + this.getName() + " - " + "minValue" + this.getName() + ") * 100);\n");
         } else {
-            context.append(" String result = String(abs(100 - ( (value*100) / (" + "maxValue" + this.getName() + " - " + "minValue" + this.getName() + "))));\n");
+            context.append(" float result = abs(100 - ( ((float)value) / (" + "maxValue" + this.getName() + " - " + "minValue" + this.getName() + ")) * 100);\n");
         }
 
 
         //GENERATE METHOD CALL
         context.append(ArduinoMethodHelper.generateMethodNameFromComponentPort(this.getName(), "norm", PortUsage.required()));
         //GENERATE PARAMETER
-        context.append("(result);\n");
+        context.append("(String(result));\n");
 
     }
 
