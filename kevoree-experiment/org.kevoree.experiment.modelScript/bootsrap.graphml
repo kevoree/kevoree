@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<graphml xsi:schemaLocation="http://graphml.graphdrawing.org/xmlns http://graphml.graphdrawing.org/xmlns/1.0/graphml.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://graphml.graphdrawing.org/xmlns">
+        <graph edgedefault="directed">   
+          <!-- GENERATE NODES NAME -->
+          <node id="duke0"></node><node id="duke1"></node><node id="duke2"></node><node id="duke3"></node><node id="paraisseux0"></node><node id="paraisseux1"></node><node id="paraisseux2"></node><node id="paraisseux3"></node> 
+          <!-- GENERATE EDGES NAME -->
+          <edge target="duke0" source="duke0" id="220467482"></edge><edge target="duke1" source="duke1" id="987678899"></edge><edge target="duke2" source="duke2" id="2018147830"></edge><edge target="duke3" source="duke3" id="1653858092"></edge><edge target="paraisseux0" source="paraisseux0" id="1512109123"></edge><edge target="paraisseux1" source="paraisseux1" id="696551663"></edge><edge target="paraisseux2" source="paraisseux2" id="1010440244"></edge><edge target="paraisseux3" source="paraisseux3" id="168500432"></edge>
+        </graph>
+      </graphml>

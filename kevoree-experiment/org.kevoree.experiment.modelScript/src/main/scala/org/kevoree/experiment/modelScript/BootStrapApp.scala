@@ -88,6 +88,10 @@ object BootStrapApp extends Application {
               case _@e => e.printStackTrace
             }
         }
+        
+          
+          Kev2GraphML.toGraphMLFile("bootsrap", model)
+          
         /*
        var i = 0
        while (true) {
