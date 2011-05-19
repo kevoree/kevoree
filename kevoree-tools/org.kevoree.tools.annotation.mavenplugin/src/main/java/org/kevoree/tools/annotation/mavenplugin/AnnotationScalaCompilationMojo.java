@@ -61,9 +61,12 @@ public class AnnotationScalaCompilationMojo extends AbstractMojo {
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
         try {
-            ScalaCompiler.compile(sourceOutputDirectory.getPath(),outputClasses.getPath(),project.getCompileClasspathElements());
+            Integer result = ScalaCompiler.compile(sourceOutputDirectory.getPath(),outputClasses.getPath(),project.getCompileClasspathElements());
+            if(result != 0){
+                getLog().error("Embedded Scala compilation error !");
+            }
         } catch (DependencyResolutionRequiredException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            getLog().error(e);
         }
     }
 
