@@ -1,5 +1,7 @@
 package org.kevoree.platform.agent
 
+import org.junit.runners.model.RunnerScheduler
+
 /**
  * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE, Version 3, 29 June 2007;
  * you may not use this file except in compliance with the License.
@@ -22,6 +24,7 @@ object KevoreeNodeRunnerHandler {
       runner =>
         runner.stopKillNode()
     }
+    runnners = List()
   }
 
   def addRunner(nodeName: String, port: Int, model: String) {
