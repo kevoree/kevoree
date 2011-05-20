@@ -36,7 +36,6 @@ class NotificationRequestSender(channelFragment: NettyGossipAbstractElement) ext
 	//private var channels : ChannelGroup = new DefaultChannelGroup
 	private val channel = bootstrapNotificationMessage.bind(new InetSocketAddress(0)).asInstanceOf[DatagramChannel]
 
-	this.start()
 
 	/* PUBLIC PART */
 	case class STOP_GOSSIPER()

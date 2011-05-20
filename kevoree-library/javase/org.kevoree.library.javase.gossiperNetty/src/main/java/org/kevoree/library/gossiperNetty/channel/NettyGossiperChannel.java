@@ -57,6 +57,7 @@ public class NettyGossiperChannel extends AbstractChannelFragment implements Net
 				parseBooleanProperty ("FullUDP"),
 				true, serializer,
 				selector, parseBooleanProperty ("alwaysAskModel"));
+		actor.start();
 	}
 
 	@Stop

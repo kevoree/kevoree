@@ -21,7 +21,7 @@ import org.jboss.netty.channel._
 
 class GossiperRequestReceiver(channelFragment: NettyGossipAbstractElement, dataManager: DataManager, port: Int, gossiperRequestSender: GossiperRequestSender, fullUDP: java.lang.Boolean, serializer: Serializer) extends actors.DaemonActor {
 
-  private var logger = LoggerFactory.getLogger(classOf[GossiperRequestReceiver])
+  private val logger = LoggerFactory.getLogger(classOf[GossiperRequestReceiver])
 
   var self = this
   // define attributes used to define channel to listen request
@@ -41,7 +41,7 @@ class GossiperRequestReceiver(channelFragment: NettyGossipAbstractElement, dataM
     }
   }
                                         )
-  private var channel = bootstrapForRequest.bind(new InetSocketAddress(port));
+  private val channel = bootstrapForRequest.bind(new InetSocketAddress(port));
 
   var factoryForRequestTCP = new NioServerSocketChannelFactory(Executors.newCachedThreadPool(), Executors.newCachedThreadPool())
   var bootstrapForRequestTCP = new ServerBootstrap(factoryForRequestTCP)
@@ -60,9 +60,8 @@ class GossiperRequestReceiver(channelFragment: NettyGossipAbstractElement, dataM
   }
                                            )
   bootstrapForRequestTCP.setOption("tcpNoDelay", true)
-  private var channelTCP = bootstrapForRequestTCP.bind(new InetSocketAddress(port));
+  private val channelTCP = bootstrapForRequestTCP.bind(new InetSocketAddress(port));
 
-  this.start()
 
   case class SendReply(message: Message, address: SocketAddress, channel: Channel)
 

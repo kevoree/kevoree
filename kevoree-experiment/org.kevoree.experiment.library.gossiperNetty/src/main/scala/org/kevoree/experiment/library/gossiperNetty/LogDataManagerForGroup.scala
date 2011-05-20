@@ -14,7 +14,7 @@ class LogDataManagerForGroup (logClient: ForkedGregClient, nameInstance: scala.P
     super.setVectorClock(vc)
     val logMsg = new StringBuffer
 
-    logMsg append super.lastNodeSynchronization
+    logMsg append lastNodeSynchronization
     logMsg append "!"
     var first = true
     vc.getEntiesList.foreach {

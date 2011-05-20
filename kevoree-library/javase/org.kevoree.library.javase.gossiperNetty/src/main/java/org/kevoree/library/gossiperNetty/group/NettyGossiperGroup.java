@@ -40,49 +40,51 @@ public class NettyGossiperGroup extends AbstractGroupType implements NettyGossip
 	protected ServiceReference sr;
 	protected KevoreeModelHandlerService modelHandlerService = null;
 	protected PeerSelector selector = null;
-	protected Logger logger = LoggerFactory.getLogger (NettyGossiperChannel.class);
+	protected Logger logger = LoggerFactory.getLogger(NettyGossiperChannel.class);
 
 	protected boolean sendNotification;
 
 	@Start
 	public void startGossiperGroup () {
 		//logger.debug("starting gossiperNetty group " + this.getName());
-		Bundle bundle = (Bundle) this.getDictionary ().get ("osgi.bundle");
-		sr = bundle.getBundleContext ().getServiceReference (KevoreeModelHandlerService.class.getName ());
-		modelHandlerService = (KevoreeModelHandlerService) bundle.getBundleContext ().getService (sr);
+		Bundle bundle = (Bundle) this.getDictionary().get("osgi.bundle");
+		sr = bundle.getBundleContext().getServiceReference(KevoreeModelHandlerService.class.getName());
+		modelHandlerService = (KevoreeModelHandlerService) bundle.getBundleContext().getService(sr);
 
 		//logger.debug("gossiperNetty group " + this.getName() + ": initialize dataManagerForGroup");
-		dataManager = new DataManagerForGroup (this.getName (), this.getNodeName (), modelHandlerService);
+		dataManager = new DataManagerForGroup(this.getName(), this.getNodeName(), modelHandlerService);
 
 		//logger.debug("gossiperNetty group " + this.getName() + ": get the value of the property sendNotification");
-		sendNotification = parseBooleanProperty ("sendNotification");
+		sendNotification = parseBooleanProperty("sendNotification");
 
-		Long timeoutLong = Long.parseLong ((String) this.getDictionary ().get ("interval"));
-		Serializer serializer = new GroupSerializer (modelHandlerService);
-		selector = new GroupPeerSelector (timeoutLong, modelHandlerService, this.getName ());
+		Long timeoutLong = Long.parseLong((String) this.getDictionary().get("interval"));
+		Serializer serializer = new GroupSerializer(modelHandlerService);
+		selector = new GroupPeerSelector(timeoutLong, modelHandlerService, this.getName());
 
 		//logger.debug("gossiperNetty group " + this.getName() + ": initialize GossiperActor");
 
-		actor = new GossiperActor (timeoutLong, this, dataManager, parsePortNumber (getNodeName ()),
-				parseBooleanProperty ("FullUDP"), false, serializer, selector, parseBooleanProperty ("alwaysAskModel"));
+		actor = new GossiperActor(timeoutLong, this, dataManager, parsePortNumber(getNodeName()),
+				parseBooleanProperty("FullUDP"), false, serializer, selector, parseBooleanProperty("alwaysAskModel"));
 
 		//logger.debug("gossiperNetty group " + this.getName() + " is started");
+
+		actor.start();
 	}
 
 	@Stop
 	public void stopGossiperGroup () {
 		if (actor != null) {
-			actor.stop ();
+			actor.stop();
 			actor = null;
 		}
 		if (dataManager != null) {
-			dataManager.stop ();
+			dataManager.stop();
 		}
 		if (modelHandlerService != null) {
-			Bundle bundle = (Bundle) this.getDictionary ().get ("osgi.bundle");
+			Bundle bundle = (Bundle) this.getDictionary().get("osgi.bundle");
 			if (bundle != null) {
-				if (bundle.getBundleContext () != null) {
-					bundle.getBundleContext ().ungetService (sr);
+				if (bundle.getBundleContext() != null) {
+					bundle.getBundleContext().ungetService(sr);
 					modelHandlerService = null;
 				}
 
@@ -93,32 +95,32 @@ public class NettyGossiperGroup extends AbstractGroupType implements NettyGossip
 
 	@Update
 	public void updateGossiperGroup () {
-		stopGossiperGroup ();
-		startGossiperGroup ();
+		stopGossiperGroup();
+		startGossiperGroup();
 	}
 
 	@Override
 	public List<String> getAllPeers () {
-		ContainerRoot model = this.getModelService ().getLastModel ();
+		ContainerRoot model = this.getModelService().getLastModel();
 		//Group selfGroup = null;
-		for (Object o : model.getGroups ()) {
+		for (Object o : model.getGroups()) {
 			Group g = (Group) o;
-			if (g.getName ().equals (this.getName ())) {
-				List<String> peers = new ArrayList<String> (g.getSubNodes ().size ());
-				for (ContainerNode node : g.getSubNodes ()) {
-					peers.add (node.getName ());
+			if (g.getName().equals(this.getName())) {
+				List<String> peers = new ArrayList<String>(g.getSubNodes().size());
+				for (ContainerNode node : g.getSubNodes()) {
+					peers.add(node.getName());
 				}
 				return peers;
 			}
 		}
-		return new ArrayList<String> ();
+		return new ArrayList<String>();
 	}
 
 	@Override
 	public String getAddress (String remoteNodeName) {
-		String ip = KevoreePlatformHelper.getProperty (modelHandlerService.getLastModel (), remoteNodeName,
-				org.kevoree.framework.Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP ());
-		if (ip == null || ip.equals ("")) {
+		String ip = KevoreePlatformHelper.getProperty(modelHandlerService.getLastModel(), remoteNodeName,
+				org.kevoree.framework.Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP());
+		if (ip == null || ip.equals("")) {
 			ip = "127.0.0.1";
 		}
 		return ip;
@@ -133,24 +135,24 @@ public class NettyGossiperGroup extends AbstractGroupType implements NettyGossip
 
 	@Override
 	public int parsePortNumber (String nodeName) {
-		String portProperty = this.getDictionary ().get ("port").toString ();
-		if (portProperty.matches (portPropertyRegex)) {
-			String[] definitionParts = portProperty.split (separator);
+		String portProperty = this.getDictionary().get("port").toString();
+		if (portProperty.matches(portPropertyRegex)) {
+			String[] definitionParts = portProperty.split(separator);
 			for (String part : definitionParts) {
-				if (part.contains (nodeName + affectation)) {
+				if (part.contains(nodeName + affectation)) {
 					//System.out.println(Integer.parseInt(part.substring((nodeName + affectation).length(), part.length())));
-					return Integer.parseInt (part.substring ((nodeName + affectation).length (), part.length ()));
+					return Integer.parseInt(part.substring((nodeName + affectation).length(), part.length()));
 				}
 			}
 		} else {
-			return Integer.parseInt (portProperty);
+			return Integer.parseInt(portProperty);
 		}
 		return 0;
 	}
 
 	@Override
 	public Boolean parseBooleanProperty (String name) {
-		return this.getDictionary ().get (name) != null && this.getDictionary ().get (name).toString ().equals ("true");
+		return this.getDictionary().get(name) != null && this.getDictionary().get(name).toString().equals("true");
 	}
 
 	/*@Override
@@ -185,7 +187,7 @@ public class NettyGossiperGroup extends AbstractGroupType implements NettyGossip
 	@Override
 	public void triggerModelUpdate () {
 		if (sendNotification) {
-			actor.notifyPeers ();
+			actor.notifyPeers();
 		}
 	}
 }

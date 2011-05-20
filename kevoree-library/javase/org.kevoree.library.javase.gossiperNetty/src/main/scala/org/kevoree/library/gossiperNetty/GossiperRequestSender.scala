@@ -45,7 +45,6 @@ class GossiperRequestSender (timeout: java.lang.Long, channelFragment: NettyGoss
 
   private val askForDataTCPActor = new AskForDataTCPActor (channelFragment, self)
 
-  this.start ()
 
   /* PUBLIC PART */
   case class STOP_GOSSIPER ()
