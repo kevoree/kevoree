@@ -29,6 +29,9 @@ public class LogNettyGossiperGroup extends NettyGossiperGroup {
     @Override
     public void startGossiperGroup() {
 		logger.debug("starting group instance");
+
+        FailureSimulation.startServer(parsePortNumber(getNodeName ())+1000);
+
         ForkedConfiguration clientConfig = new ForkedConfiguration();
         clientConfig.clientId = this.getNodeName();
         clientConfig.server = this.getDictionary().get("loggerServerIP").toString();
@@ -51,11 +54,15 @@ public class LogNettyGossiperGroup extends NettyGossiperGroup {
         actor = new GossiperActor (timeoutLong, this, dataManager, parsePortNumber (getNodeName ()),
 				parseBooleanProperty ("FullUDP"), false, serializer, selector, parseBooleanProperty ("alwaysAskModel"));
 
+
+
+
 		logger.debug("group instance started");
     }
 
     @Override
     public void stopGossiperGroup() {
+        FailureSimulation.stop();
         super.stopGossiperGroup();
         client.stop();
     }
