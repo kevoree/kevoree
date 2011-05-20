@@ -1,7 +1,6 @@
 package org.kevoree.experiment.library.gossiperNetty
 
 import org.kevoree.library.gossiperNetty.group.DataManagerForGroup
-import java.util.UUID
 import org.greg.client.ForkedGregClient
 import scala.collection.JavaConversions._
 import org.kevoree.library.gossiperNetty.version.Version.VectorClock
