@@ -11,7 +11,7 @@ object TracePath {
   def stringToVectorClock(content: String): VectorClock = {
     var tmps = content.split("!")
     var result = VectorClock(List(), tmps(0))
-    content.split(',').foreach {
+    tmps(1).split(',').foreach {
       entry =>
       val values = entry.split(':')
       if (values.size >= 2) {
@@ -43,7 +43,6 @@ object TracePath {
   protected def buildLinkedFor(traces: List[Trace], trace: Trace, nodeID: String, version: Int): LinkedTrace = {
 
     val tracesWithoutTrace = traces.slice(traces.indexOf(trace)+1, traces.size+1)
-
     val successors = lookForSuccessor(tracesWithoutTrace, nodeID, version, List())
     var result = LinkedTrace(trace, List())
     successors.foreach{
@@ -55,7 +54,7 @@ object TracePath {
   }
 
   /* Look for direct successor of a precise version */
-  protected def lookForSuccessor(traces: List[Trace], nodeID: String, version: Int, foundDirectSuccessors: List[(String, Int)]): List[((String, Int), Trace)] = {
+  protected def lookForSuccessor(traces: List[Trace], nodeID: String, version: Int): List[((String, Int), Trace)] = {
     if(traces.isEmpty){
       return List()
     }
