@@ -442,9 +442,7 @@ public class ForkedGregServer {
 
     private static Pair<PreciseDateTime, Record> absolutizeTime(Record rec, TimeSpan lateness) {
         PreciseDateTime t = new PreciseDateTime(rec.timestamp.toUtcNanos() - lateness.toNanos());
-
         rec.timestamp = t;
-
         return new Pair<PreciseDateTime, Record>(t, rec);
     }
 }

@@ -1,14 +1,14 @@
 package org.kevoree.experiment.trace.gui.alg
 
+import org.kevoree.experiment.modelScript.BootStrapAppComplex
+import org.kevoree.experiment.modelScript.ModelEvolutionApp
+import org.kevoree.experiment.modelScript.NodePacket
 import org.kevoree.experiment.trace.TraceMessages
 import org.greg.server.ForkedGregServer
 import scala.collection.JavaConversions._
 import javax.swing.{JOptionPane, WindowConstants, JFrame}
 import scala.Some
-import org.kevoree.experiment.modelScript.{BootStrapAppComplex, NodePacket, BootStrapApp, ModelEvolutionApp}
-import java.net.URL
 import java.io._
-import org.kevoree.experiment.modelScript.NodePacket._
 
 object App extends Application {
 

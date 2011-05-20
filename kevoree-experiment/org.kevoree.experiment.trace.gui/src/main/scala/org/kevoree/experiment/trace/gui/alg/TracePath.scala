@@ -9,7 +9,11 @@ object TracePath {
 
   //HELPER
   def stringToVectorClock(content: String): VectorClock = {
-    var tmps = content.split("!")
+    val tmps = content.split("!")
+
+    println(tmps(0))
+    println(tmps(1))
+
     var result = VectorClock(List(), tmps(0))
     tmps(1).split(',').foreach {
       entry =>
