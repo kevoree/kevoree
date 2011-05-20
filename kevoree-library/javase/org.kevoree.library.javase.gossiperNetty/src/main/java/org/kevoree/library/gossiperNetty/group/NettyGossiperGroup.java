@@ -53,6 +53,7 @@ public class NettyGossiperGroup extends AbstractGroupType implements NettyGossip
 
 		//logger.debug("gossiperNetty group " + this.getName() + ": initialize dataManagerForGroup");
 		dataManager = new DataManagerForGroup(this.getName(), this.getNodeName(), modelHandlerService);
+		((DataManagerForGroup)dataManager).start();
 
 		//logger.debug("gossiperNetty group " + this.getName() + ": get the value of the property sendNotification");
 		sendNotification = parseBooleanProperty("sendNotification");

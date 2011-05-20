@@ -40,7 +40,7 @@ class GossiperRequestSender (timeout: java.lang.Long, channelFragment: NettyGoss
     }
   }
                                )
-  private val channel: Channel = bootstrap.bind (new InetSocketAddress (0)).asInstanceOf[DatagramChannel]
+  protected val channel: Channel = bootstrap.bind (new InetSocketAddress (0)).asInstanceOf[DatagramChannel]
   private val logger = LoggerFactory.getLogger (classOf[GossiperRequestSender])
 
   private val askForDataTCPActor = new AskForDataTCPActor (channelFragment, self)
@@ -111,7 +111,8 @@ class GossiperRequestSender (timeout: java.lang.Long, channelFragment: NettyGoss
           .setDestNodeName (channelFragment.getNodeName)
         messageBuilder.setContentClass (classOf[VectorClockUUIDsRequest].getName)
           .setContent (VectorClockUUIDsRequest.newBuilder.build.toByteString)
-        channel.write (messageBuilder.build, address);
+        //channel.write (messageBuilder.build, address);
+        writeMessage(messageBuilder.build, address)
       }
     }
   }
@@ -199,10 +200,15 @@ class GossiperRequestSender (timeout: java.lang.Long, channelFragment: NettyGoss
     messageBuilder.setContentClass (classOf[UUIDDataRequest].getName)
       .setContent (UUIDDataRequest.newBuilder.setUuid (uuid.toString).build.toByteString)
     if (fullUDP.booleanValue) {
-      channel.write (messageBuilder.build, address)
+      //channel.write (messageBuilder.build, address)
+      writeMessage(messageBuilder.build, address)
     } else {
       askForDataTCPActor.askForDataAction (uuid, remoteNodeName)
     }
+  }
+
+  protected def writeMessage(o : Object, address : SocketAddress) {
+    channel.write (o, address)
   }
 
   private def endGossip (message: Message) {

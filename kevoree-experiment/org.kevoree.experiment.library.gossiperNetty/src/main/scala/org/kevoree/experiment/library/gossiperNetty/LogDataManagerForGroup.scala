@@ -9,7 +9,7 @@ class LogDataManagerForGroup (logClient: ForkedGregClient, nameInstance: scala.P
   selfNodeName: scala.Predef.String, modelService: org.kevoree.api.service.core.handler.KevoreeModelHandlerService)
   extends DataManagerForGroup(nameInstance, selfNodeName, modelService) {
 
-  override protected def setVectorClock (vc: VectorClock) = {
+  override protected def setVectorClock (vc: VectorClock) {
     super.setVectorClock(vc)
     val logMsg = new StringBuffer
 
@@ -28,7 +28,7 @@ class LogDataManagerForGroup (logClient: ForkedGregClient, nameInstance: scala.P
     }
 
 
-    logClient.log(logMsg.toString())
+    logClient.log(logMsg.toString)
 
     //vectorClock = vc
   }

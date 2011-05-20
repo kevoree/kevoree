@@ -11,10 +11,10 @@ class GossiperActor (timeout: java.lang.Long, channel: NettyGossipAbstractElemen
   fullUDP: java.lang.Boolean, garbage: Boolean, serializer: Serializer, selector: PeerSelector, alwaysAskModel: Boolean)
   extends actors.DaemonActor {
 
-  private val gossiperRequestSender = new
+  protected var gossiperRequestSender = new
       GossiperRequestSender(timeout, channel, dataManager, fullUDP, garbage, serializer, alwaysAskModel)
-  private val notificationRequestSender = new NotificationRequestSender(channel)
-  private val gossiperRequestReceiver = new
+  protected var notificationRequestSender = new NotificationRequestSender(channel)
+  protected var gossiperRequestReceiver = new
       GossiperRequestReceiver(channel, dataManager, port, gossiperRequestSender, fullUDP, serializer)
 
   //this.start()

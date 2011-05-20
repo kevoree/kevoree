@@ -5,7 +5,10 @@ import org.kevoree.annotation.*;
 import org.kevoree.api.service.core.handler.KevoreeModelHandlerService;
 import org.kevoree.framework.*;
 import org.kevoree.framework.message.Message;
-import org.kevoree.library.gossiperNetty.*;
+import org.kevoree.library.gossiperNetty.DataManager;
+import org.kevoree.library.gossiperNetty.GossiperActor;
+import org.kevoree.library.gossiperNetty.NettyGossipAbstractElement;
+import org.kevoree.library.gossiperNetty.Serializer;
 import org.kevoree.library.gossiperNetty.version.Version;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.ServiceReference;
@@ -36,42 +39,44 @@ public class NettyGossiperChannel extends AbstractChannelFragment implements Net
 	private GossiperActor actor = null;
 	private ServiceReference sr;
 	private KevoreeModelHandlerService modelHandlerService = null;
-	private Logger logger = LoggerFactory.getLogger (NettyGossiperChannel.class);
+	private Logger logger = LoggerFactory.getLogger(NettyGossiperChannel.class);
 
 	@Start
 	public void startGossiperChannel () {
-		Bundle bundle = (Bundle) this.getDictionary ().get ("osgi.bundle");
-		sr = bundle.getBundleContext ().getServiceReference (KevoreeModelHandlerService.class.getName ());
-		modelHandlerService = (KevoreeModelHandlerService) bundle.getBundleContext ().getService (sr);
+		Bundle bundle = (Bundle) this.getDictionary().get("osgi.bundle");
+		sr = bundle.getBundleContext().getServiceReference(KevoreeModelHandlerService.class.getName());
+		modelHandlerService = (KevoreeModelHandlerService) bundle.getBundleContext().getService(sr);
 
-		long timeout = Long.parseLong ((String) this.getDictionary ().get ("interval"));
+		long timeout = Long.parseLong((String) this.getDictionary().get("interval"));
 
-		dataManager = new DataManagerForChannel ();
-		serializer = new ChannelSerializer ();
-		selector = new ChannelPeerSelector (timeout, this);
+		dataManager = new DataManagerForChannel();
+		((DataManagerForChannel) dataManager).start();
 
-		actor = new GossiperActor (timeout,
+		serializer = new ChannelSerializer();
+		selector = new ChannelPeerSelector(timeout, this);
+
+		actor = new GossiperActor(timeout,
 				this,
 				dataManager,
-				parsePortNumber (getNodeName ()),
-				parseBooleanProperty ("FullUDP"),
+				parsePortNumber(getNodeName()),
+				parseBooleanProperty("FullUDP"),
 				true, serializer,
-				selector, parseBooleanProperty ("alwaysAskModel"));
+				selector, parseBooleanProperty("alwaysAskModel"));
 		actor.start();
 	}
 
 	@Stop
 	public void stopGossiperChannel () {
 		if (actor != null) {
-			actor.stop ();
+			actor.stop();
 			actor = null;
 		}
 		if (dataManager != null) {
-			dataManager.stop ();
+			dataManager.stop();
 		}
 		if (modelHandlerService != null) {
-			Bundle bundle = (Bundle) this.getDictionary ().get ("osgi.bundle");
-			bundle.getBundleContext ().ungetService (sr);
+			Bundle bundle = (Bundle) this.getDictionary().get("osgi.bundle");
+			bundle.getBundleContext().ungetService(sr);
 			modelHandlerService = null;
 		}
 	}
@@ -79,68 +84,68 @@ public class NettyGossiperChannel extends AbstractChannelFragment implements Net
 	@Update
 	public void updateGossiperChannel () {
 		// TODO use the garbage of the dataManager
-		Map<UUID, Version.VectorClock> vectorClockUUIDs = dataManager.getUUIDVectorClocks ();
-		Map<UUID, Tuple2<Version.VectorClock, Object>> messages = new HashMap<UUID, Tuple2<Version.VectorClock, Object>> ();
-		for (UUID uuid : vectorClockUUIDs.keySet ()) {
-			messages.put (uuid, dataManager.getData (uuid));
+		Map<UUID, Version.VectorClock> vectorClockUUIDs = dataManager.getUUIDVectorClocks();
+		Map<UUID, Tuple2<Version.VectorClock, Object>> messages = new HashMap<UUID, Tuple2<Version.VectorClock, Object>>();
+		for (UUID uuid : vectorClockUUIDs.keySet()) {
+			messages.put(uuid, dataManager.getData(uuid));
 		}
 
-		stopGossiperChannel ();
-		startGossiperChannel ();
+		stopGossiperChannel();
+		startGossiperChannel();
 
-		for (UUID uuid : messages.keySet ()) {
-			dataManager.setData (uuid, messages.get (uuid));
+		for (UUID uuid : messages.keySet()) {
+			dataManager.setData(uuid, messages.get(uuid));
 		}
 	}
 
 	@Override
 	public Object dispatch (Message msg) {
 		//Local delivery
-		localNotification (msg);
+		localNotification(msg);
 
 		//CREATE NEW MESSAGE
-		long timestamp = System.currentTimeMillis ();
-		UUID uuid = UUID.randomUUID ();
-		Tuple2<Version.VectorClock, Object> tuple = new Tuple2<Version.VectorClock, Object> (
-				Version.VectorClock.newBuilder ().
-						addEnties (Version.ClockEntry.newBuilder ().setNodeID (this.getNodeName ())
-								.setTimestamp (timestamp).setVersion (2l).build ()).setTimestamp (timestamp).build (),
+		long timestamp = System.currentTimeMillis();
+		UUID uuid = UUID.randomUUID();
+		Tuple2<Version.VectorClock, Object> tuple = new Tuple2<Version.VectorClock, Object>(
+				Version.VectorClock.newBuilder().
+						addEnties(Version.ClockEntry.newBuilder().setNodeID(this.getNodeName())
+								.setTimestamp(timestamp).setVersion(2l).build()).setTimestamp(timestamp).build(),
 				msg);
-		dataManager.setData (uuid, tuple);
+		dataManager.setData(uuid, tuple);
 
-		actor.notifyPeers ();
+		actor.notifyPeers();
 		//SYNCHRONOUS NON IMPLEMENTED
 		return null;
 	}
 
 	@Override
 	public ChannelFragmentSender createSender (String remoteNodeName, String remoteChannelName) {
-		return new NoopChannelFragmentSender ();
+		return new NoopChannelFragmentSender();
 	}
 
 	@Override
 	public void localNotification (Object o) {
 		if (o instanceof Message) {
-			for (org.kevoree.framework.KevoreePort p : getBindedPorts ()) {
-				forward (p, (Message) o);
+			for (org.kevoree.framework.KevoreePort p : getBindedPorts()) {
+				forward(p, (Message) o);
 			}
 		}
 	}
 
 	@Override
 	public List<String> getAllPeers () {
-		List<String> peers = new ArrayList<String> ();
-		for (KevoreeChannelFragment fragment : getOtherFragments ()) {
-			peers.add (fragment.getNodeName ());
+		List<String> peers = new ArrayList<String>();
+		for (KevoreeChannelFragment fragment : getOtherFragments()) {
+			peers.add(fragment.getNodeName());
 		}
 		return peers;
 	}
 
 	@Override
 	public String getAddress (String remoteNodeName) {
-		String ip = KevoreePlatformHelper.getProperty (modelHandlerService.getLastModel (), remoteNodeName,
-				org.kevoree.framework.Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP ());
-		if (ip == null || ip.equals ("")) {
+		String ip = KevoreePlatformHelper.getProperty(modelHandlerService.getLastModel(), remoteNodeName,
+				org.kevoree.framework.Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP());
+		if (ip == null || ip.equals("")) {
 			ip = "127.0.0.1";
 		}
 		return ip;
@@ -155,24 +160,24 @@ public class NettyGossiperChannel extends AbstractChannelFragment implements Net
 
 	@Override
 	public int parsePortNumber (String nodeName) {
-		String portProperty = this.getDictionary ().get ("port").toString ();
-		if (portProperty.matches (portPropertyRegex)) {
-			String[] definitionParts = portProperty.split (separator);
+		String portProperty = this.getDictionary().get("port").toString();
+		if (portProperty.matches(portPropertyRegex)) {
+			String[] definitionParts = portProperty.split(separator);
 			for (String part : definitionParts) {
-				if (part.contains (nodeName + affectation)) {
+				if (part.contains(nodeName + affectation)) {
 					//System.out.println(Integer.parseInt(part.substring((nodeName + affectation).length(), part.length())));
-					return Integer.parseInt (part.substring ((nodeName + affectation).length (), part.length ()));
+					return Integer.parseInt(part.substring((nodeName + affectation).length(), part.length()));
 				}
 			}
 		} else {
-			return Integer.parseInt (portProperty);
+			return Integer.parseInt(portProperty);
 		}
 		return 0;
 	}
 
 	@Override
 	public Boolean parseBooleanProperty (String name) {
-		return this.getDictionary ().get (name) != null && this.getDictionary ().get (name).toString ().equals ("true");
+		return this.getDictionary().get(name) != null && this.getDictionary().get(name).toString().equals("true");
 	}
 
 	/*@Override

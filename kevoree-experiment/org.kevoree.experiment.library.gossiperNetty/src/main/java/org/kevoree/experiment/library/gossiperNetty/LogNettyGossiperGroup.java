@@ -45,14 +45,16 @@ public class LogNettyGossiperGroup extends NettyGossiperGroup {
         modelHandlerService = (KevoreeModelHandlerService) bundle.getBundleContext().getService(sr);
 
         dataManager = new LogDataManagerForGroup(client, this.getName(), this.getNodeName(), modelHandlerService);
+		((LogDataManagerForGroup)dataManager).start();
 
         sendNotification = parseBooleanProperty("sendNotification");
 
         Long timeoutLong = Long.parseLong((String) this.getDictionary().get("interval"));
         Serializer serializer = new GroupSerializer(modelHandlerService);
         selector = new StrictGroupPeerSelector(timeoutLong, modelHandlerService, this.getName());
-        actor = new GossiperActor(timeoutLong, this, dataManager, parsePortNumber(getNodeName()),
+        actor = new LogGossiperActor(timeoutLong, this, dataManager, parsePortNumber(getNodeName()),
                 parseBooleanProperty("FullUDP"), false, serializer, selector, parseBooleanProperty("alwaysAskModel"));
+		actor.start();
         logger.debug("group instance started");
     }
 

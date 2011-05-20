@@ -6,7 +6,7 @@ import org.kevoree.framework.KevoreeXmiHelper
 import java.net.URL
 import java.io.{InputStreamReader, BufferedReader, OutputStreamWriter, ByteArrayOutputStream}
 
-object BootStrapAppComplex extends Application {
+object BootStrapAppComplex  {
 
   def bootStrap (packets : List[NodePacket], ip : String, ips : List[String]) {
     val model = KevoreeXmiHelper.loadStream(this.getClass.getClassLoader.getResourceAsStream("baseModelEvolution.kev"))

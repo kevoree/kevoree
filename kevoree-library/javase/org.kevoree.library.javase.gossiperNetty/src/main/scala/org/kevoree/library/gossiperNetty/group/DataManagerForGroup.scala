@@ -31,7 +31,6 @@ class DataManagerForGroup (nameInstance: String, selfNodeName: String, modelServ
 
   private var model: ContainerRoot = null
 
-  this.start ()
 
   case class GetData (uuid: UUID)
 
@@ -80,7 +79,7 @@ class DataManagerForGroup (nameInstance: String, selfNodeName: String, modelServ
     result
   }
 
-  protected var lastNodeSynchronization : String = ""
+  protected var lastNodeSynchronization : String = selfNodeName
   def mergeClock (uid: UUID, v: VectorClock, source : String): VectorClock = {
     logger.debug ("mergeClock")
     val result = (this !? MergeClock (uid, v, source)).asInstanceOf[VectorClock]
@@ -88,7 +87,7 @@ class DataManagerForGroup (nameInstance: String, selfNodeName: String, modelServ
     result
   }
 
-  protected def setVectorClock (vc: VectorClock) = {
+  protected def setVectorClock (vc: VectorClock) {
     vectorClock = vc
   }
 
@@ -169,9 +168,9 @@ class DataManagerForGroup (nameInstance: String, selfNodeName: String, modelServ
  }*/
   implicit def vectorDebug (vc: VectorClock) = VectorClockAspect (vc)
 
-  private def updateOrResolve (tuple: Tuple2[VectorClock, ContainerRoot]) = {
-    vectorClock.printDebug
-    tuple._1.printDebug
+  private def updateOrResolve (tuple: Tuple2[VectorClock, ContainerRoot]) {
+    vectorClock.printDebug()
+    tuple._1.printDebug()
     val occured = VersionUtils.compare (vectorClock, tuple._1)
     occured match {
       case Occured.AFTER => {
@@ -321,7 +320,7 @@ class DataManagerForGroup (nameInstance: String, selfNodeName: String, modelServ
           setTimestamp (timestamps.get (nodeId)).build ();
         newClockBuilder.addEnties (entry);
     }
-    return newClockBuilder.setTimestamp (currentTimeMillis).build ();
+    newClockBuilder.setTimestamp (currentTimeMillis).build ();
   }
 
   private def addOrUpdate (orderedNodeID: java.util.ArrayList[String], values: java.util.HashMap[String, Long],
