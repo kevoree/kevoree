@@ -19,18 +19,18 @@ import java.util.List;
 @GroupType
 @Library(name = "KevoreeExperiment")
 @DictionaryType({
-        @DictionaryAttribute(name = "loggerServerIP", defaultValue = "127.0.0.1")
+    @DictionaryAttribute(name = "loggerServerIP", defaultValue = "127.0.0.1")
 })
 public class LogNettyGossiperGroup extends NettyGossiperGroup {
 
     private ForkedGregClient client = null;
-	private Logger logger = LoggerFactory.getLogger(LogNettyGossiperGroup.class);
+    private Logger logger = LoggerFactory.getLogger(LogNettyGossiperGroup.class);
 
     @Override
     public void startGossiperGroup() {
-		logger.debug("starting group instance");
+        logger.debug("starting group instance");
 
-        FailureSimulation.startServer(parsePortNumber(getNodeName ())+1000);
+        FailureSimulation.startServer(parsePortNumber(getNodeName()) + 1000);
 
         ForkedConfiguration clientConfig = new ForkedConfiguration();
         clientConfig.clientId = this.getNodeName();
@@ -44,20 +44,16 @@ public class LogNettyGossiperGroup extends NettyGossiperGroup {
         sr = bundle.getBundleContext().getServiceReference(KevoreeModelHandlerService.class.getName());
         modelHandlerService = (KevoreeModelHandlerService) bundle.getBundleContext().getService(sr);
 
-        dataManager = new LogDataManagerForGroup(client,this.getName(), this.getNodeName(), modelHandlerService);
+        dataManager = new LogDataManagerForGroup(client, this.getName(), this.getNodeName(), modelHandlerService);
 
-		sendNotification = parseBooleanProperty ("sendNotification");
+        sendNotification = parseBooleanProperty("sendNotification");
 
         Long timeoutLong = Long.parseLong((String) this.getDictionary().get("interval"));
         Serializer serializer = new GroupSerializer(modelHandlerService);
         selector = new StrictGroupPeerSelector(timeoutLong, modelHandlerService, this.getName());
-        actor = new GossiperActor (timeoutLong, this, dataManager, parsePortNumber (getNodeName ()),
-				parseBooleanProperty ("FullUDP"), false, serializer, selector, parseBooleanProperty ("alwaysAskModel"));
-
-
-
-
-		logger.debug("group instance started");
+        actor = new GossiperActor(timeoutLong, this, dataManager, parsePortNumber(getNodeName()),
+                parseBooleanProperty("FullUDP"), false, serializer, selector, parseBooleanProperty("alwaysAskModel"));
+        logger.debug("group instance started");
     }
 
     @Override
@@ -67,8 +63,8 @@ public class LogNettyGossiperGroup extends NettyGossiperGroup {
         client.stop();
     }
 
-	@Override
-	public List<String> getAllPeers () {
-		return PeersHelper.getPeers(modelHandlerService.getLastModel(), this.getName(), this.getNodeName());
-	}
+    @Override
+    public List<String> getAllPeers() {
+        return PeersHelper.getPeers(modelHandlerService.getLastModel(), this.getName(), this.getNodeName());
+    }
 }

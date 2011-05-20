@@ -9,7 +9,7 @@ import org.slf4j.LoggerFactory
 
 class GossiperRequestReceiverHandler (serverActor: GossiperRequestReceiver) extends SimpleChannelUpstreamHandler {
 
-  private var logger = LoggerFactory.getLogger (classOf[GossiperRequestReceiverHandler])
+  private val logger = LoggerFactory.getLogger (classOf[GossiperRequestReceiverHandler])
 
   override def messageReceived (ctx: ChannelHandlerContext, e: MessageEvent) {
     val message = e.getMessage.asInstanceOf[Message]
