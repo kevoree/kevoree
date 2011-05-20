@@ -2,6 +2,7 @@ package org.kevoree.experiment.library.gossiperNetty
 
 import org.kevoree.library.gossiperNetty.group.DataManagerForGroup
 import org.greg.client.ForkedGregClient
+import org.slf4j.LoggerFactory
 import scala.collection.JavaConversions._
 import org.kevoree.library.gossiperNetty.version.Version.VectorClock
 
@@ -27,6 +28,7 @@ class LogDataManagerForGroup (logClient: ForkedGregClient, nameInstance: scala.P
         first = false
     }
 
+    LoggerFactory.getLogger(classOf[LogDataManagerForGroup]).debug("Send Trace =>"+logMsg.toString)
 
     logClient.log(logMsg.toString)
 
