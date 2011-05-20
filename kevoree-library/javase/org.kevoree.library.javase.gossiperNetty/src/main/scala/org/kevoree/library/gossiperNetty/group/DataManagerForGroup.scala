@@ -45,7 +45,7 @@ class DataManagerForGroup (nameInstance: String, selfNodeName: String, modelServ
 
   case class Stop ()
 
-  case class MergeClock (uuid: UUID, newclock: VectorClock)
+  case class MergeClock (uuid: UUID, newclock: VectorClock, source : String)
 
   def stop () {
     this ! Stop ()
@@ -80,9 +80,10 @@ class DataManagerForGroup (nameInstance: String, selfNodeName: String, modelServ
     result
   }
 
-  def mergeClock (uid: UUID, v: VectorClock): VectorClock = {
+  protected var lastNodeSynchronization : String = ""
+  def mergeClock (uid: UUID, v: VectorClock, source : String): VectorClock = {
     logger.debug ("mergeClock")
-    val result = (this !? MergeClock (uid, v)).asInstanceOf[VectorClock]
+    val result = (this !? MergeClock (uid, v, source)).asInstanceOf[VectorClock]
     logger.debug ("mergeClock end")
     result
   }
@@ -130,7 +131,7 @@ class DataManagerForGroup (nameInstance: String, selfNodeName: String, modelServ
           //setVectorClock(increment())
           reply (getAllUUIDVectorClocks)
         }
-        case MergeClock (uuid, newClock) => {
+        case MergeClock (uuid, newClock, source) => {
           /*println("localClock")
           vectorClock.getEntiesList.foreach {
             v => println(v.getNodeID + "\t" + v.getVersion + "\t" + v.getTimestamp)
@@ -139,6 +140,7 @@ class DataManagerForGroup (nameInstance: String, selfNodeName: String, modelServ
           newClock.getEntiesList.foreach {
             v => println(v.getNodeID + "\t" + v.getVersion + "\t" + v.getTimestamp)
           }*/
+          lastNodeSynchronization = source
           val mergedVC = localMerge (newClock)
           /*println("merged clock")
           mergedVC.getEntiesList.foreach {

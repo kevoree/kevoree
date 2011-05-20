@@ -9,14 +9,15 @@ object TracePath {
 
   //HELPER
   def stringToVectorClock(content: String): VectorClock = {
-    var result = VectorClock(List())
+    var tmps = content.split("!")
+    var result = VectorClock(List(), tmps(0))
     content.split(',').foreach {
       entry =>
       val values = entry.split(':')
       if (values.size >= 2) {
         val nodeID = values(0)
         val nodeVersion = Integer.parseInt(values(1).trim)
-        result = VectorClock(result.entries.toList ++ List((nodeID, nodeVersion)))
+        result = VectorClock(result.entries.toList ++ List((nodeID, nodeVersion)), tmps(0))
       }
     }
     result
@@ -60,9 +61,13 @@ object TracePath {
     }
     val headVector = stringToVectorClock(traces.head.getBody)
     val containPrevious = headVector.containEntry(nodeID, version)
+    /*println("currentTrace contains " + nodeID + " and " + version)
+    println("trace => " + traces.head.getBody)*/
    // val notContainPrevious = foundDirectSuccessors.forall(t => (!headVector.containEntry(t._1, t._2)))
-    val previousTrace = findPreviousTrace(traces.head, traces)
+    val previousTrace = findPreviousTrace(traces.head, traces, nodeID, version)
     val alreadyNew  = isAlreadyNew(previousTrace, traces.head, nodeID, version)
+    println("previous trace is also an updated trace so the current trace is not a direct successor")
+    println("trace => " + previousTrace.getBody)
     var lvalue : List[((String, Int), Trace)] = List()
     var foundDirectSuccessors2 = foundDirectSuccessors
     if (containPrevious /*&& notContainPrevious*/ && alreadyNew) {
@@ -93,15 +98,7 @@ object TracePath {
   /**
    * look for the previous trace where the version for nodeId is equals to version -1 compared to the current trace
    */
-  private def findPreviousTrace(trace : Trace, traces : List[Trace]) : Trace = {
-    val nodeId = trace.getClientId
-    val versionOption  = stringToVectorClock(trace.getBody).versionForNode(nodeId)
-    var version = 0
-    if (versionOption.isEmpty) {
-      version = 1
-    } else {
-      version = versionOption.get
-    }
+  private def findPreviousTrace(trace : Trace, traces : List[Trace], nodeId : String, version : Int) : Trace = {
     var reverseTraces = traces.reverse
     var t = reverseTraces.head
     while (!t.getClientId.equals(trace.getClientId) && !stringToVectorClock(t.getBody).containEntry(nodeId, version -1)) {

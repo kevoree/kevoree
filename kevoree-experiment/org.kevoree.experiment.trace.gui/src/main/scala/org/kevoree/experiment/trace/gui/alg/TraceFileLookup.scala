@@ -23,7 +23,7 @@ class TraceFileLookup (traceFile: File, frame: JFrame, nodeName: String, var max
     val linkedTrace = TracePath.getPathFrom(nodeName, maxVal, traces)
     linkedTrace match {
       case Some(ltrace) => {
-        println(ltrace.toString)
+        //println(ltrace.toString)
 
         val chart = new VectorClockSingleDisseminationChartScala(ltrace);
         val chartPanel = new ChartPanel(chart.buildChart());
@@ -45,9 +45,10 @@ class TraceFileLookup (traceFile: File, frame: JFrame, nodeName: String, var max
 
 
       }
-      case None => println("Not found")
+      case None => {
+        println("no outdate found into traces")
+      }
     }
-    App.notifyFromStabilization()
   }
 
 

@@ -232,7 +232,7 @@ class GossiperRequestSender (timeout: java.lang.Long, channelFragment: NettyGoss
           }
         }
 
-        val newMerged = dataManager.mergeClock (UUID.fromString (uuid), vectorClock)
+        val newMerged = dataManager.mergeClock (UUID.fromString (uuid), vectorClock, message.getDestNodeName)
 
         //CHECK FOR GARBAGE
         if (garbage) {

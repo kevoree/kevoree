@@ -30,9 +30,9 @@ class StrictGroupPeerSelector (timeout: Long, modelHandlerService: KevoreeModelH
                  )
           .foreach {
           subNode => {
-            //if (getScore(subNode.getName) < minScore) {
+            if (getScore(subNode.getName) < minScore) {
               foundNodeName = subNode.getName
-            //}
+            }
           }
         }
         //Init node score

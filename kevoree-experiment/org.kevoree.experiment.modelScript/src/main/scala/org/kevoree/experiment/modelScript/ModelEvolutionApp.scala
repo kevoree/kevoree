@@ -10,7 +10,7 @@ import java.net.URL
 import java.io._
 import org.kevoree.framework.{KevoreePlatformHelper, KevoreeXmiHelper}
 
-class ModelEvolutionApp {
+class ModelEvolutionApp(ips : List[String]) {
 
   var model: ContainerRoot = null
   var kevScript: StringBuilder = null
@@ -19,9 +19,9 @@ class ModelEvolutionApp {
 
   //val addresses: Array[String] = new Array[String] ()
 
-  val dukeIP = "131.254.15.214"
+  /*val dukeIP = "131.254.15.214"
   val paraisseuxIP = "131.254.12.28"
-  val ips = List(dukeIP, paraisseuxIP)
+  val ips = List(dukeIP, paraisseuxIP)*/
 
 
   def doAction(nodeName:String) {

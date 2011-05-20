@@ -1,7 +1,7 @@
 package org.kevoree.experiment.trace.gui.alg
 
 
-case class VectorClock(entries: List[(String, Int)]) {
+case class VectorClock(entries: List[(String, Int)], source : String) {
 
   def containEntry(nodeID: String, version: Int): Boolean = {
     entries.find {

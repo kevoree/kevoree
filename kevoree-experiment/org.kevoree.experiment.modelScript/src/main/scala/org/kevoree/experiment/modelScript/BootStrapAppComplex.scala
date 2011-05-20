@@ -8,22 +8,18 @@ import java.io.{InputStreamReader, BufferedReader, OutputStreamWriter, ByteArray
 
 object BootStrapAppComplex extends Application {
 
-  def bootStrap (packets : List[NodePacket], dukeIP : String, ips : List[String]) {
-    var model = KevoreeXmiHelper.loadStream(this.getClass.getClassLoader.getResourceAsStream("baseModelEvolution.kev"))
-    var tscript = new StringBuilder
+  def bootStrap (packets : List[NodePacket], ip : String, ips : List[String]) {
+    val model = KevoreeXmiHelper.loadStream(this.getClass.getClassLoader.getResourceAsStream("baseModelEvolution.kev"))
+    val tscript = new StringBuilder
 
     tscript append "tblock {"
 
-    //val dukeIP = "192.168.1.123"
-
-
-
-    tscript.append(TopologyGeneratorScript.generate(packets, dukeIP))
+    tscript.append(TopologyGeneratorScript.generate(packets, ip))
 
     tscript append "addComponent "
     tscript append "myFakeLight1"
     tscript append "@"
-    tscript append "duke0"
+    tscript append findNodeName(tscript) //"duke0"
     tscript append ":"
     tscript append "FakeSimpleLight"
 
@@ -81,6 +77,17 @@ object BootStrapAppComplex extends Application {
         println("DTC Error !")
         println(parser.lastNoSuccess)
       }
+    }
+  }
+
+  def findNodeName(script : StringBuilder) : String = {
+    val index = script.indexOf("addNode ")
+    if (index > -1) {
+      //println(script.substring(index + "addNode ".length(), script.indexOf("\n", index + 1) - " : JavaSENode".length()))
+      script.substring(index + "addNode ".length(), script.indexOf("\n", index + 1) - " : JavaSENode".length())
+    } else {
+      println("there is no node available so we cannot add a component")
+      "duke0"
     }
   }
 
