@@ -169,6 +169,7 @@ public class ForkedGregClient {
 
         ByteBuffer maxMsg = ByteBuffer.allocate(1);
         for (Record rec : records) {
+            //maxMsg.clear();
             w.writeInt(1);
             w.writeLong(rec.timestamp.toUtcNanos());
             w.writeInt(machineBytes.length);
@@ -182,8 +183,8 @@ public class ForkedGregClient {
             enc.encode(CharBuffer.wrap(rec.message), maxMsg, true);
             maxMsg.position(0);
 
-            w.writeInt(maxMsg.limit());
-            w.write(maxMsg.array(), maxMsg.arrayOffset(), maxMsg.limit());
+            w.writeInt(rec.message.length());
+            w.write(maxMsg.array(), maxMsg.arrayOffset(), rec.message.length());
 
             if (++recordsWritten == maxBatchSize)
                 break;
