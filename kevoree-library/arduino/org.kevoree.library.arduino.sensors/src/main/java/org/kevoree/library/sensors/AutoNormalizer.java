@@ -32,7 +32,7 @@ public class AutoNormalizer extends AbstractComponentType {
     public void generateHeader(StringBuffer context) {
         context.append("int ");
         context.append("minValue" + this.getName());
-        context.append("= 0;\n");
+        context.append("= 1024;\n");
 
         context.append("int ");
         context.append("maxValue" + this.getName());
@@ -53,23 +53,19 @@ public class AutoNormalizer extends AbstractComponentType {
 
         context.append("if(value < " + "minValue" + this.getName() + "){ " + "minValue" + this.getName() + " = value; }\n");
         context.append("if(value > " + "maxValue" + this.getName() + "){ " + "maxValue" + this.getName() + " = value; }\n");
-        if (this.getDictionary().get("inverted").equals("0")) {
-
             context.append("float result=");
-            context.append(" (value-"+"minValue" + this.getName()+")");
-            context.append(" / ("+"maxValue" + this.getName()+"-"+"minValue" + this.getName()+")");
+            context.append(" ((value-" + "minValue" + this.getName() + ")");
+            context.append(" / (" + "maxValue" + this.getName() + "-" + "minValue" + this.getName() + "))*100");
             context.append(";\n");
 
-           // context.append(" float result = abs(((float)value - ) / (" + "maxValue" + this.getName() + " - " + "minValue" + this.getName() + ") * 100);\n");
-        } else {
-            context.append(" float result = abs(100 - ( ((float)value) / (" + "maxValue" + this.getName() + " - " + "minValue" + this.getName() + ")) * 100);\n");
+        if (this.getDictionary().get("inverted").equals("1")) {
+            context.append("  result = abs(100 - result  );\n");
         }
-
 
         //GENERATE METHOD CALL
         context.append(ArduinoMethodHelper.generateMethodNameFromComponentPort(this.getName(), "norm", PortUsage.required()));
         //GENERATE PARAMETER
-        context.append("(String(result));\n");
+        context.append("(String(int(result)));\n");
 
     }
 

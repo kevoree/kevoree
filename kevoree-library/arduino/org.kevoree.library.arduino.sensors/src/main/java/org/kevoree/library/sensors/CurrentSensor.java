@@ -30,35 +30,15 @@ public class CurrentSensor extends AbstractComponentType {
 
     @Generate("header")
     public void generateHeader(StringBuffer context) {
-        context.append("" +
-                "   //For analog read\n" +
-                "   double value;\n" +
-                "\n" +
-                "   //Constants to convert ADC divisions into mains current values.\n" +
-                "   double ADCvoltsperdiv = 0.0048;\n" +
-                "   double VDoffset = 2.4476; //Initial value (corrected as program runs)\n" +
-                "\n" +
-                "   //Equation of the line calibration values\n" +
-                "   double factorA = 15.2; //factorA = CT reduction factor / rsens\n" +
-                "   double Ioffset = -0.08;\n" +
-                "     \n" +
-                "   //Constants set voltage waveform amplitude.\n" +
+        context.append("\n" +
                 "   double SetV = 230.0;\n" +
-                "\n" +
-                "   //Counter\n" +
-                "   int i=0;\n" +
-                "\n" +
-                "   int samplenumber = 4000;\n" +
-                " \n" +
-                "   //Used for calculating real, apparent power, Irms and Vrms.\n" +
-                "   double sumI=0.0;\n" +
-                " \n" +
-                "   int sum1i=0;\n" +
-                "   double sumVadc=0.0;\n" +
-                "\n" +
-                "   double Vadc,Vsens,Isens,Imains,sqI,Irms;\n" +
-                "   double apparentPower;" +
-                "");
+                "   int samplenumber = 2500;\n" +
+                "   double ADCvoltsperdiv = 0.0048;\n" +
+                "   double VDoffset = 2.4476; \n" +
+                "   double factorA = 10.5; \n" +
+                "   double Ioffset = -0.013;\n" +
+
+                "\n");
     }
 
     @Port(name = "trigger")
@@ -66,55 +46,43 @@ public class CurrentSensor extends AbstractComponentType {
         StringBuffer context = (StringBuffer) o;
         
         /* Generate code for port */
-        context.append("" +
-                "value = analogRead(1);\n" +
+        context.append("\n" +
+                "  int i=0;\n" +
+                "   double sumI=0.0;\n" +
+                "   double Vadc,Vsens,Isens,Imains,sqI,Irms;\n" +
+                "   double sumVadc=0.0;\n" +
                 "   \n" +
-                "   //Summing counter\n" +
-                "   i++;\n" +
-                "\n" +
-                "   //Voltage at ADC\n" +
-                "   Vadc = value * ADCvoltsperdiv;\n" +
-                "\n" +
-                "   //Remove voltage divider offset\n" +
-                "   Vsens = Vadc-VDoffset;\n" +
-                "\n" +
-                "   //Current transformer scale to find Imains\n" +
-                "   Imains = Vsens;\n" +
-                "                  \n" +
-                "   //Calculates Voltage divider offset.\n" +
-                "   sum1i++; sumVadc = sumVadc + Vadc;\n" +
-                "   if (sum1i>=1000) {VDoffset = sumVadc/sum1i; sum1i = 0; sumVadc=0.0;}\n" +
-                "\n" +
-                "   //Root-mean-square method current\n" +
-                "   //1) square current values\n" +
-                "   sqI = Imains*Imains;\n" +
-                "   //2) sum \n" +
-                "   sumI=sumI+sqI;\n" +
-                "\n" +
-                "   if (i>=samplenumber) \n" +
-                "   {  \n" +
-                "      i=0;\n" +
-                "      //Calculation of the root of the mean of the current squared (rms)\n" +
-                "      Irms = factorA*sqrt(sumI/samplenumber)+Ioffset;\n" +
-                "\n" +
-                "      //Calculation of the root of the mean of the voltage squared (rms)                     \n" +
-                "      apparentPower = Irms * SetV;\n" +
+                "   int sum1i=0;\n" +
+                "  double apparentPower;\n" +
+                "  while(i<samplenumber){\n" +
+                "    double value = analogRead(1);\n" +
+                "    i++;\n" +
+                "    //Voltage at ADC\n" +
+                "    Vadc = value * ADCvoltsperdiv;\n" +
+                "    //Remove voltage divider offset\n" +
+                "    Vsens = Vadc-VDoffset;\n" +
+                "    //Current transformer scale to find Imains\n" +
+                "    Imains = Vsens;          \n" +
+                "    //Calculates Voltage divider offset.\n" +
+                "    sum1i++; sumVadc = sumVadc + Vadc;\n" +
+                "    if (sum1i>=1000) {VDoffset = sumVadc/sum1i; sum1i = 0; sumVadc=0.0;}\n" +
+                "    //Root-mean-square method current\n" +
+                "    //1) square current values\n" +
+                "    sqI = Imains*Imains;\n" +
+                "    //2) sum \n" +
+                "    sumI=sumI+sqI;\n" +
+                "  }\n" +
+                "  Irms = factorA*sqrt(sumI/samplenumber)+Ioffset;\n" +
+                "  apparentPower = Irms * SetV;\n" +
+                "  if(apparentPower < 0){apparentPower = 0;}\n" +
+                "  if(apparentPower > 3000){apparentPower = 0;}" +
+
                 "\n");
 
         context.append(ArduinoMethodHelper.generateMethodNameFromComponentPort(this.getName(), "currentW", PortUsage.required()));
         //GENERATE PARAMETER
-        context.append("(String(Irms));\n");
+        context.append("(String(int(apparentPower)));\n");
 
-        context.append(
-
-                " \n" +
-                "      //Reset values ready for next sample.\n" +
-                "      sumI=0.0;\n" +
-                " \n" +
-                "   }");
-
-        
-        //GENERATE METHOD CALL
 
 
     }
