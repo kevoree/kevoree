@@ -14,9 +14,9 @@ import org.kevoree.library.arduinoNodeType.PortUsage;
     @ProvidedPort(name = "trigger", type = PortType.MESSAGE)
 })
 @Requires({
-    @RequiredPort(name = "light", type = PortType.MESSAGE)
+    @RequiredPort(name = "out", type = PortType.MESSAGE)
 })
-public class NonInvCurrentSensor extends AbstractComponentType {
+public class FlexSensor extends AbstractComponentType {
 
 
     @Start
@@ -34,13 +34,15 @@ public class NonInvCurrentSensor extends AbstractComponentType {
         StringBuffer context = (StringBuffer) o;
 
         /* Generate code for port */
-        context.append(
-                "int photocellReading = analogRead("+this.getDictionary().get("pin")+");\n");
+        context.append("int value = analogRead("+this.getDictionary().get("pin")+");\n");
+
+
+
 
         //GENERATE METHOD CALL
         context.append(ArduinoMethodHelper.generateMethodNameFromComponentPort(this.getName(), "light", PortUsage.required()));
         //GENERATE PARAMETER
-        context.append("(String(photocellReading));\n");
+        context.append("(String(value));\n");
 
     }
 
