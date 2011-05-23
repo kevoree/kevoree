@@ -9,9 +9,8 @@ import org.kevoree.library.gossiperNetty._
  */
 
 class LogGossiperActor (timeout: java.lang.Long, channel: NettyGossipAbstractElement, dataManager: DataManager,
-  port: Int,
-  fullUDP: java.lang.Boolean, garbage: Boolean, serializer: Serializer, selector: PeerSelector, alwaysAskModel: Boolean)
-  extends GossiperActor(timeout, this, dataManager, port, fullUDP, false, serializer, selector, alwaysAskModel) {
+  port: Int, fullUDP: java.lang.Boolean, garbage: Boolean, serializer: Serializer, selector: PeerSelector, alwaysAskModel: Boolean)
+  extends GossiperActor(timeout, channel, dataManager, port, fullUDP, false, serializer, selector, alwaysAskModel) {
 
   gossiperRequestSender = new
       LogGossiperRequestSender(timeout, channel, dataManager, fullUDP, garbage, serializer, alwaysAskModel)

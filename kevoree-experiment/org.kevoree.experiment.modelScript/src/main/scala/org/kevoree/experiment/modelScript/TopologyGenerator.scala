@@ -39,7 +39,7 @@ object TopologyGeneratorScript {
           }
         }
         //GENERATE GROUP PORT
-        for (i <- 0 until packet.nbElem) {
+        //for (i <- 0 until packet.nbElem) {
           if (!groupPort.isEmpty) {
             groupPort.append(",")
           }
@@ -47,7 +47,7 @@ object TopologyGeneratorScript {
           groupPort.append(i)
           groupPort.append("=")
           groupPort.append(packet.firstPort + i + 1000)
-        }
+        //}
       }
       //GENERATE PACKET LINK
       packets.filterNot(p=> p == packet)

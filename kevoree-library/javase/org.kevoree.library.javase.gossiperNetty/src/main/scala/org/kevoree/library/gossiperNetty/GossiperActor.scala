@@ -22,9 +22,11 @@ class GossiperActor (timeout: java.lang.Long, channel: NettyGossipAbstractElemen
 
   /* PUBLIC PART */
   override def start () = {
+    gossiperRequestReceiver.start()
     gossiperRequestSender.start()
     notificationRequestSender.start()
-    gossiperRequestReceiver.start()
+    super.start()
+    this
   }
 
   case class STOP_GOSSIPER ()

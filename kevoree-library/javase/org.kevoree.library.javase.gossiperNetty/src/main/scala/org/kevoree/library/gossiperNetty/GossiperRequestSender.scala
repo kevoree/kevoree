@@ -1,11 +1,9 @@
 package org.kevoree.library.gossiperNetty
 
 import java.net.InetSocketAddress
-import java.net.SocketAddress
 import java.util.UUID
 import java.util.concurrent.Executors
 import org.jboss.netty.bootstrap.ConnectionlessBootstrap
-import org.jboss.netty.channel.socket.DatagramChannel
 import org.jboss.netty.channel.socket.nio.NioDatagramChannelFactory
 import org.kevoree.library.gossiperNetty.api.msg.KevoreeMessage.Message
 
@@ -16,7 +14,7 @@ import version.Gossip.{VersionedModel, UUIDDataRequest, VectorClockUUIDs, Vector
 import version.Version.{ClockEntry, VectorClock}
 import org.jboss.netty.channel._
 
-class GossiperRequestSender (timeout: java.lang.Long, channelFragment: NettyGossipAbstractElement,
+class GossiperRequestSender (timeout: java.lang.Long, protected val channelFragment: NettyGossipAbstractElement,
   dataManager: DataManager, fullUDP: java.lang.Boolean, garbage: Boolean, serializer: Serializer,
   alwaysAskModel: Boolean)
   extends actors.DaemonActor {
@@ -38,20 +36,26 @@ class GossiperRequestSender (timeout: java.lang.Long, channelFragment: NettyGoss
       p.addLast ("handler", new GossiperRequestSenderHandler (self))
       p
     }
-  }
-                               )
-  protected val channel: Channel = bootstrap.bind (new InetSocketAddress (0)).asInstanceOf[DatagramChannel]
+  })
   private val logger = LoggerFactory.getLogger (classOf[GossiperRequestSender])
+  protected var channel: Channel = null //bootstrap.bind (new InetSocketAddress (0)).asInstanceOf[DatagramChannel]
 
-  private val askForDataTCPActor = new AskForDataTCPActor (channelFragment, self)
-
+  protected var askForDataTCPActor : AskForDataTCPActor = null //new AskForDataTCPActor (channelFragment, self)
 
   /* PUBLIC PART */
+  override def start () = {
+    channel = bootstrap.bind (new InetSocketAddress (0))//.asInstanceOf[DatagramChannel]
+    askForDataTCPActor = new AskForDataTCPActor (channelFragment, self)
+    askForDataTCPActor.start()
+    super.start()
+    this
+  }
+
   case class STOP_GOSSIPER ()
 
   case class INIT_GOSSIP (peer: String)
 
-  case class INIT_SECOND_STEP (message: Message, address: SocketAddress /*, channel : Channel*/)
+  case class INIT_SECOND_STEP (message: Message, address: InetSocketAddress /*, channel : Channel*/)
 
   //case class INIT_LAST_STEP(message : Message, address : SocketAddress, channel : Channel)
   case class END_GOSSIP (message: Message)
@@ -64,7 +68,7 @@ class GossiperRequestSender (timeout: java.lang.Long, channelFragment: NettyGoss
     this ! INIT_GOSSIP (peer)
   }
 
-  def initSecondStepAction (message: Message, address: SocketAddress /*, channel : Channel*/) {
+  def initSecondStepAction (message: Message, address: InetSocketAddress /*, channel : Channel*/) {
     this ! INIT_SECOND_STEP (message, address /*,channel*/)
   }
 
@@ -119,7 +123,7 @@ class GossiperRequestSender (timeout: java.lang.Long, channelFragment: NettyGoss
 
   implicit def vectorDebug (vc: VectorClock) = VectorClockAspect (vc)
 
-  private def initSecondStep (message: Message, address: SocketAddress /*, removeChannel : Channel*/) {
+  private def initSecondStep (message: Message, address: InetSocketAddress /*, removeChannel : Channel*/) {
 
     if (message.getContentClass.equals (classOf[VectorClockUUIDs].getName)) {
 
@@ -194,7 +198,7 @@ class GossiperRequestSender (timeout: java.lang.Long, channelFragment: NettyGoss
     }
   }
 
-  private def askForData (uuid: UUID, remoteNodeName: String, address: SocketAddress) = {
+  private def askForData (uuid: UUID, remoteNodeName: String, address: InetSocketAddress) = {
     val messageBuilder: Message.Builder = Message.newBuilder.setDestName (channelFragment.getName)
       .setDestNodeName (channelFragment.getNodeName)
     messageBuilder.setContentClass (classOf[UUIDDataRequest].getName)
@@ -207,7 +211,8 @@ class GossiperRequestSender (timeout: java.lang.Long, channelFragment: NettyGoss
     }
   }
 
-  protected def writeMessage(o : Object, address : SocketAddress) {
+  protected def writeMessage(o : Object, address : InetSocketAddress) {
+    logger.debug("message sent")
     channel.write (o, address)
   }
 

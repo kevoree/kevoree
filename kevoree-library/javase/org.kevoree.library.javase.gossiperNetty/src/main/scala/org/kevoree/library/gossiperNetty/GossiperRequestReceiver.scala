@@ -8,7 +8,6 @@ import java.net.SocketAddress
 import org.jboss.netty.bootstrap.ConnectionlessBootstrap
 import org.jboss.netty.bootstrap.ServerBootstrap
 import org.jboss.netty.channel.socket.nio.NioDatagramChannelFactory
-import org.kevoree.extra.marshalling.RichJSONObject
 import org.kevoree.library.gossiperNetty.api.msg.KevoreeMessage.Message
 import org.jboss.netty.channel.socket.nio.NioServerSocketChannelFactory
 import scala.collection.JavaConversions._
@@ -18,8 +17,9 @@ import version.Gossip
 import version.Gossip.{UpdatedValueNotification, UUIDDataRequest, VectorClockUUIDsRequest}
 import org.slf4j.LoggerFactory
 import org.jboss.netty.channel._
+import socket.DatagramChannel
 
-class GossiperRequestReceiver(channelFragment: NettyGossipAbstractElement, dataManager: DataManager, port: Int, gossiperRequestSender: GossiperRequestSender, fullUDP: java.lang.Boolean, serializer: Serializer) extends actors.DaemonActor {
+class GossiperRequestReceiver(protected var channelFragment: NettyGossipAbstractElement, dataManager: DataManager, port: Int, gossiperRequestSender: GossiperRequestSender, fullUDP: java.lang.Boolean, serializer: Serializer) extends actors.DaemonActor {
 
   private val logger = LoggerFactory.getLogger(classOf[GossiperRequestReceiver])
 
@@ -37,11 +37,11 @@ class GossiperRequestReceiver(channelFragment: NettyGossipAbstractElement, dataM
       p.addLast("frameEncoder", new ProtobufVarint32LengthFieldPrepender)
       p.addLast("protobufEncoder", new ProtobufEncoder())
       p.addLast("handler", new GossiperRequestReceiverHandler(self))
-      return p
+      p
     }
   }
                                         )
-  private val channel = bootstrapForRequest.bind(new InetSocketAddress(port));
+  private var channel : Channel = null //bootstrapForRequest.bind(new InetSocketAddress(port));
 
   var factoryForRequestTCP = new NioServerSocketChannelFactory(Executors.newCachedThreadPool(), Executors.newCachedThreadPool())
   var bootstrapForRequestTCP = new ServerBootstrap(factoryForRequestTCP)
@@ -55,15 +55,23 @@ class GossiperRequestReceiver(channelFragment: NettyGossipAbstractElement, dataM
       p.addLast("frameEncoder", new ProtobufVarint32LengthFieldPrepender)
       p.addLast("protobufEncoder", new ProtobufEncoder)
       p.addLast("handler", new DataSenderHandler(channelFragment, dataManager, serializer))
-      return p
+      p
     }
   }
                                            )
   bootstrapForRequestTCP.setOption("tcpNoDelay", true)
-  private val channelTCP = bootstrapForRequestTCP.bind(new InetSocketAddress(port));
+  private var channelTCP : Channel = null //bootstrapForRequestTCP.bind(new InetSocketAddress(port))
 
 
-  case class SendReply(message: Message, address: SocketAddress, channel: Channel)
+  /* PUBLIC PART */
+  override def start () = {
+    channel = bootstrapForRequest.bind (new InetSocketAddress (port))//.asInstanceOf[DatagramChannel]
+    channelTCP = bootstrapForRequestTCP.bind(new InetSocketAddress(port))
+    super.start()
+    this
+  }
+
+  case class SendReply(message: Message, address: InetSocketAddress, channel: Channel)
 
   //case class RETURN_MSG()
   case class STOP_GOSSIPER()
@@ -72,7 +80,7 @@ class GossiperRequestReceiver(channelFragment: NettyGossipAbstractElement, dataM
     this ! STOP_GOSSIPER()
   }
 
-  def sendReply(message: Message, address: SocketAddress, channel: Channel) = {
+  def sendReply(message: Message, address: InetSocketAddress, channel: Channel) = {
     this ! SendReply(message, address, channel)
   }
 
@@ -93,7 +101,7 @@ class GossiperRequestReceiver(channelFragment: NettyGossipAbstractElement, dataM
     }
   }
 
-  private def doGossip(message: Message, address: SocketAddress, channel: Channel) /*: Channel*/ = {
+  private def doGossip(message: Message, address: InetSocketAddress, channel: Channel) /*: Channel*/ = {
     //println(address)
     var responseBuilder: Message.Builder = Message.newBuilder.setDestName(channelFragment.getName).setDestNodeName(channelFragment.getNodeName)
 
@@ -109,7 +117,7 @@ class GossiperRequestReceiver(channelFragment: NettyGossipAbstractElement, dataM
               responseBuilder = Message.newBuilder.setDestName(channelFragment.getName).setDestNodeName(channelFragment.getNodeName)
               val modelBytes = vectorClockUUIDsBuilder.build.toByteString
               responseBuilder.setContentClass(classOf[Gossip.VectorClockUUIDs].getName).setContent(modelBytes)
-              channel.write(responseBuilder.build, address)
+              writeMessage(responseBuilder.build, address, channel)
               vectorClockUUIDsBuilder = Gossip.VectorClockUUIDs.newBuilder
             }
         }
@@ -134,7 +142,7 @@ class GossiperRequestReceiver(channelFragment: NettyGossipAbstractElement, dataM
 
           val modelBytes2 = Gossip.VersionedModel.newBuilder.setUuid(uuidDataRequest.getUuid).setVector(data._1).setModel(modelBytes).build.toByteString
           responseBuilder.setContentClass(classOf[Gossip.VersionedModel].getName).setContent(modelBytes2)
-          channel.write(responseBuilder.build, address);
+          writeMessage(responseBuilder.build, address, channel)
         } else {
           logger.warn("Serialization failed !")
         }
@@ -145,5 +153,10 @@ class GossiperRequestReceiver(channelFragment: NettyGossipAbstractElement, dataM
       }
     }
     //channel.close.awaitUninterruptibly
+  }
+
+  protected def writeMessage(o : Object, address : InetSocketAddress, channel : Channel) {
+    logger.debug("message sent")
+    channel.write (o, address)
   }
 }

@@ -94,7 +94,7 @@ class DataManagerForGroup (nameInstance: String, selfNodeName: String, modelServ
   def act () {
     loop {
       react {
-        case Stop () => this.exit
+        case Stop () => this.exit()
         case GetData (uuid) => {
           if (uuid.equals (this.uuid)) {
             if ((vectorClock.getEntiesCount == 0) || modelService.getLastModification.after (lastCheckedTimeStamp)) {

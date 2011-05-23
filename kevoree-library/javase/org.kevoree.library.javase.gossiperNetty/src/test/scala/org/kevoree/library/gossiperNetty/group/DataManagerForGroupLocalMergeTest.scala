@@ -39,7 +39,7 @@ class DataManagerForGroupLocalMergeTest extends AssertionsForJUnit {
 
     ExtendedDataManagerForGroup.setNewVectorClock (local);
     val clock: Version.VectorClock = ExtendedDataManagerForGroup
-      .mergeClock (UUID.nameUUIDFromBytes ("duke2".getBytes), remote);
+      .mergeClock (UUID.nameUUIDFromBytes ("duke2".getBytes), remote, "");
 
     clock.getEntiesList.foreach {
       clockEntry: ClockEntry =>
@@ -75,7 +75,7 @@ class DataManagerForGroupLocalMergeTest extends AssertionsForJUnit {
 
     ExtendedDataManagerForGroup.setNewVectorClock (local);
     val clock: Version.VectorClock = ExtendedDataManagerForGroup
-      .mergeClock (UUID.nameUUIDFromBytes ("duke2".getBytes), remote);
+      .mergeClock (UUID.nameUUIDFromBytes ("duke2".getBytes), remote, "");
 
     clock.getEntiesList.foreach {
       clockEntry: ClockEntry =>
@@ -112,7 +112,7 @@ class DataManagerForGroupLocalMergeTest extends AssertionsForJUnit {
 
     ExtendedDataManagerForGroup.setNewVectorClock (local);
     val clock: Version.VectorClock = ExtendedDataManagerForGroup
-      .mergeClock (UUID.nameUUIDFromBytes ("duke2".getBytes), remote);
+      .mergeClock (UUID.nameUUIDFromBytes ("duke2".getBytes), remote, "");
 
     clock.getEntiesList.foreach {
       clockEntry: ClockEntry =>
@@ -147,7 +147,7 @@ class DataManagerForGroupLocalMergeTest extends AssertionsForJUnit {
 
     ExtendedDataManagerForGroup.setNewVectorClock (local);
     val clock: Version.VectorClock = ExtendedDataManagerForGroup
-      .mergeClock (UUID.nameUUIDFromBytes ("duke2".getBytes), remote);
+      .mergeClock (UUID.nameUUIDFromBytes ("duke2".getBytes), remote, "");
 
     clock.getEntiesList.foreach {
       clockEntry: ClockEntry =>
@@ -182,7 +182,7 @@ class DataManagerForGroupLocalMergeTest extends AssertionsForJUnit {
 
     ExtendedDataManagerForGroup.setNewVectorClock (local);
     val clock: Version.VectorClock = ExtendedDataManagerForGroup
-      .mergeClock (UUID.nameUUIDFromBytes ("duke2".getBytes), remote);
+      .mergeClock (UUID.nameUUIDFromBytes ("duke2".getBytes), remote, "");
 
     clock.getEntiesList.foreach {
       clockEntry: ClockEntry =>
@@ -218,7 +218,7 @@ class DataManagerForGroupLocalMergeTest extends AssertionsForJUnit {
 
     ExtendedDataManagerForGroup.setNewVectorClock (local);
     val clock: Version.VectorClock = ExtendedDataManagerForGroup
-      .mergeClock (UUID.nameUUIDFromBytes ("duke2".getBytes), remote);
+      .mergeClock (UUID.nameUUIDFromBytes ("duke2".getBytes), remote, "");
 
     clock.getEntiesList.foreach {
       clockEntry: ClockEntry =>
@@ -255,7 +255,7 @@ class DataManagerForGroupLocalMergeTest extends AssertionsForJUnit {
 
     ExtendedDataManagerForGroup.setNewVectorClock (local);
     val clock: Version.VectorClock = ExtendedDataManagerForGroup
-      .mergeClock (UUID.nameUUIDFromBytes ("duke2".getBytes), remote);
+      .mergeClock (UUID.nameUUIDFromBytes ("duke2".getBytes), remote, "");
 
     clock.getEntiesList.foreach {
       clockEntry: ClockEntry =>
@@ -289,7 +289,7 @@ class DataManagerForGroupLocalMergeTest extends AssertionsForJUnit {
     //assertTrue(VersionUtils.compare(local, remote).equals(Occured.BEFORE));
     ExtendedDataManagerForGroup.setNewVectorClock (local);
     val clock: Version.VectorClock = ExtendedDataManagerForGroup
-      .mergeClock (UUID.nameUUIDFromBytes ("duke2".getBytes), remote);
+      .mergeClock (UUID.nameUUIDFromBytes ("duke2".getBytes), remote, "");
 
     clock.getEntiesList.foreach {
       clockEntry: ClockEntry =>
@@ -305,6 +305,8 @@ class DataManagerForGroupLocalMergeTest extends AssertionsForJUnit {
   }
 
   object ExtendedDataManagerForGroup extends DataManagerForGroup ("group1", "duke2", null) {
+
+    this.start()
 
     def setNewVectorClock (vc: Version.VectorClock) {
       setVectorClock (vc)

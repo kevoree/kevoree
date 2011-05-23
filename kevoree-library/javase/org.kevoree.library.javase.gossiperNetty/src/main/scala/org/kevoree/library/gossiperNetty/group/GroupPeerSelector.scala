@@ -8,7 +8,7 @@ import org.kevoree.api.service.core.handler.KevoreeModelHandlerService
 
 class GroupPeerSelector(timeout: Long, modelHandlerService : KevoreeModelHandlerService, nodeName : String) extends PeerSelector {
 
-  private var peerCheckMap = new HashMap[String, Tuple2[Long, Int]]
+  private val peerCheckMap = new HashMap[String, Tuple2[Long, Int]]
 
   def selectPeer(groupName: String): String = {
 		val model = modelHandlerService.getLastModel

@@ -3,8 +3,7 @@ package org.kevoree.experiment.library.gossiperNetty
 import scala.collection.JavaConversions._
 import java.net.{InetAddress, InetSocketAddress}
 import org.slf4j.LoggerFactory
-import org.kevoree.library.gossiperNetty._
-import actors.DaemonActor
+import org.kevoree.library.gossiperNetty.{NettyGossipAbstractElement, NotificationRequestSender}
 
 /**
  * User: Erwan Daubert - erwan.daubert@gmail.com
@@ -12,23 +11,10 @@ import actors.DaemonActor
  * Time: 14:14
  */
 
-class LogGossiperRequestSender (timeout: java.lang.Long, channelFragment: NettyGossipAbstractElement,
-  dataManager: DataManager, fullUDP: java.lang.Boolean, garbage: Boolean, serializer: Serializer,
-  alwaysAskModel: Boolean) extends GossiperRequestSender(timeout, channelFragment,
-                                                          dataManager, fullUDP, garbage, serializer, alwaysAskModel) {
-  private val logger = LoggerFactory.getLogger(classOf[LogGossiperRequestSender])
-
-
-  override def start () = {
-    channel = bootstrap.bind(new InetSocketAddress(0)) //.asInstanceOf[DatagramChannel]
-    askForDataTCPActor = new LogAskForDataTCPActor(channelFragment, self)
-    askForDataTCPActor.start()
-    this.asInstanceOf[DaemonActor].start()
-    this
-  }
+class LogNotificationRequestSender (channelFragment: NettyGossipAbstractElement) extends NotificationRequestSender (channelFragment: NettyGossipAbstractElement) {
+  private val logger = LoggerFactory.getLogger(classOf[LogNotificationRequestSender])
 
   override protected def writeMessage (o: Object, address: InetSocketAddress) {
-    logger.debug("before to send message, we need to test if the node is available")
     var networkIsDown = false
     var targetNodeName = ""
     FailureSimulation.failureOutNode.foreach {
@@ -42,7 +28,7 @@ class LogGossiperRequestSender (timeout: java.lang.Long, channelFragment: NettyG
         }
     }
     if (!networkIsDown) {
-      logger.debug("message is sent by LogRequestSender.")
+      logger.debug("message is sent by LogNotification.")
       channel.write(o, address)
     } else {
       logger.debug("message is not sent because the link with " + targetNodeName + " is broken")
