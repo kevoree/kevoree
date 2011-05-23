@@ -38,10 +38,8 @@ class AskForDataTCPActor(channelFragment: NettyGossipAbstractElement, requestSen
     }
   }
 
-  private var logger = LoggerFactory.getLogger(classOf[AskForDataTCPActor])
-  this.start()
+  private val logger = LoggerFactory.getLogger(classOf[AskForDataTCPActor])
 
-  /* PUBLIC PART */
   case class STOP()
 
   case class ASK_FOR_DATA(uuid: UUID, remoteNodeName: String)
@@ -73,7 +71,7 @@ class AskForDataTCPActor(channelFragment: NettyGossipAbstractElement, requestSen
     }
   }
 
-  def askForData(uuid: UUID, remoteNodeName: String) {
+  protected def askForData(uuid: UUID, remoteNodeName: String) {
 
     val messageBuilder: Message.Builder = Message.newBuilder.setDestName(channelFragment.getName).setDestNodeName(channelFragment.getNodeName)
     messageBuilder.setContentClass(classOf[UUIDDataRequest].getName).setContent(UUIDDataRequest.newBuilder.setUuid(uuid.toString).build.toByteString)
