@@ -242,7 +242,7 @@ class GossiperRequestSender (timeout: java.lang.Long, protected val channelFragm
           }
         }
 
-        val newMerged = dataManager.mergeClock(UUID.fromString(uuid), vectorClock, message.getDestNodeName)
+        val newMerged = dataManager.getUUIDVectorClock(UUID.fromString(uuid))//dataManager.mergeClock(UUID.fromString(uuid), vectorClock, message.getDestNodeName)
 
         //CHECK FOR GARBAGE
         if (garbage) {
