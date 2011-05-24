@@ -19,7 +19,7 @@ import com.twitter.finagle.builder.ClientBuilder
  * Time: 16:33
  */
 
-class LogAskForDataTCPActor (channelFragment: NettyGossipAbstractElement, requestSender: GossiperRequestSender)
+class LogAskForDataTCPActor (channelFragment: NettyGossipAbstractElement, requestSender: GossiperRequestSender, peerSelector : StrictGroupPeerSelector)
   extends AskForDataTCPActor(channelFragment, requestSender) {
   private val logger = LoggerFactory.getLogger(classOf[LogAskForDataTCPActor])
 
@@ -68,8 +68,11 @@ class LogAskForDataTCPActor (channelFragment: NettyGossipAbstractElement, reques
         // All done! Close TCP connection(s):
         client.release()
       }
+      peerSelector.resetNodeFailureAction(targetNodeName)
     } else {
       logger.debug("message is not sent because the link with " + targetNodeName + " is broken")
+      peerSelector.modifyNodeScoreAction(targetNodeName)
+
     }
 
 

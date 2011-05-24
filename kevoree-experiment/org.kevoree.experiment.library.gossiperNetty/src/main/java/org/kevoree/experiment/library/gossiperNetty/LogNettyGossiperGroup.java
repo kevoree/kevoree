@@ -51,9 +51,9 @@ public class LogNettyGossiperGroup extends NettyGossiperGroup {
 
         Long timeoutLong = Long.parseLong((String) this.getDictionary().get("interval"));
         Serializer serializer = new GroupSerializer(modelHandlerService);
-        selector = new StrictGroupPeerSelector(timeoutLong, modelHandlerService, this.getName());
+        selector = new StrictGroupPeerSelector(timeoutLong, modelHandlerService, this.getNodeName());
         actor = new LogGossiperActor(timeoutLong, this, dataManager, parsePortNumber(getNodeName()),
-                parseBooleanProperty("FullUDP"), false, serializer, selector, parseBooleanProperty("alwaysAskModel"));
+                parseBooleanProperty("FullUDP"), false, serializer, selector, parseBooleanProperty("alwaysAskModel"), (StrictGroupPeerSelector)selector);
 		actor.start();
         logger.debug("group instance started");
     }

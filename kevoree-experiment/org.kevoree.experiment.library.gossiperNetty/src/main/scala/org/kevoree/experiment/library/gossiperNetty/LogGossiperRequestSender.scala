@@ -14,16 +14,16 @@ import actors.DaemonActor
 
 class LogGossiperRequestSender (timeout: java.lang.Long, channelFragment: NettyGossipAbstractElement,
   dataManager: DataManager, fullUDP: java.lang.Boolean, garbage: Boolean, serializer: Serializer,
-  alwaysAskModel: Boolean) extends GossiperRequestSender(timeout, channelFragment,
+  alwaysAskModel: Boolean, peerSelector : StrictGroupPeerSelector) extends GossiperRequestSender(timeout, channelFragment,
                                                           dataManager, fullUDP, garbage, serializer, alwaysAskModel) {
   private val logger = LoggerFactory.getLogger(classOf[LogGossiperRequestSender])
 
+  askForDataTCPActor = new LogAskForDataTCPActor(channelFragment, this, peerSelector)
 
   override def start () = {
-    channel = bootstrap.bind(new InetSocketAddress(0)) //.asInstanceOf[DatagramChannel]
-    askForDataTCPActor = new LogAskForDataTCPActor(channelFragment, self)
-    askForDataTCPActor.start()
-    this.asInstanceOf[DaemonActor].start()
+    //channel = bootstrap.bind(new InetSocketAddress(0)) //.asInstanceOf[DatagramChannel]
+    //askForDataTCPActor.start()
+    super.start()
     this
   }
 
@@ -33,7 +33,7 @@ class LogGossiperRequestSender (timeout: java.lang.Long, channelFragment: NettyG
     var targetNodeName = ""
     FailureSimulation.failureOutNode.foreach {
       nodeName =>
-        logger.debug(nodeName + " is one of the node available from here")
+        logger.debug(nodeName + " is one of the node available from here but the communication link is down")
         if (channelFragment.parsePortNumber(nodeName).equals(address.getPort) &&
           isEquals(channelFragment.getAddress(nodeName), address.getAddress)) {
           networkIsDown = true
@@ -44,8 +44,10 @@ class LogGossiperRequestSender (timeout: java.lang.Long, channelFragment: NettyG
     if (!networkIsDown) {
       logger.debug("message is sent by LogRequestSender.")
       channel.write(o, address)
+      peerSelector.resetNodeFailureAction(targetNodeName)
     } else {
       logger.debug("message is not sent because the link with " + targetNodeName + " is broken")
+      peerSelector.modifyNodeScoreAction(targetNodeName)
     }
   }
 

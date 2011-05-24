@@ -13,7 +13,7 @@ import org.kevoree.library.gossiperNetty._
  */
 
 class LogGossiperRequestReceiver (channelFragment: NettyGossipAbstractElement, dataManager: DataManager, port: Int,
-  gossiperRequestSender: GossiperRequestSender, fullUDP: java.lang.Boolean, serializer: Serializer)
+  gossiperRequestSender: GossiperRequestSender, fullUDP: java.lang.Boolean, serializer: Serializer, peerSelector : StrictGroupPeerSelector)
   extends GossiperRequestReceiver(channelFragment, dataManager, port, gossiperRequestSender, fullUDP, serializer) {
 
   private val logger = LoggerFactory.getLogger(classOf[LogGossiperRequestReceiver])
@@ -34,8 +34,10 @@ class LogGossiperRequestReceiver (channelFragment: NettyGossipAbstractElement, d
     if (!networkIsDown) {
       logger.debug("message is sent by LogRequestReceiver.")
       channel.write(o, address)
+      peerSelector.resetNodeFailureAction(targetNodeName)
     } else {
       logger.debug("message is not sent because the link with " + targetNodeName + " is broken")
+      peerSelector.modifyNodeScoreAction(targetNodeName)
     }
   }
 

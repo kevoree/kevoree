@@ -35,6 +35,14 @@
         </dependency>
     </dependencies>
 
+
+    <repositories>
+        <repository>
+            <id>reslet</id>
+            <url>http://maven.restlet.org/</url>
+        </repository>
+    </repositories>
+
     <build>
         <plugins>
          <!-- android dex phase -->

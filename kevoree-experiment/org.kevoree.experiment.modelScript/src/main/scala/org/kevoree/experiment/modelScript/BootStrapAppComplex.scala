@@ -25,6 +25,8 @@ object BootStrapAppComplex  {
 
     tscript append "}\n"
 
+    //println(tscript.toString())
+
     val parser = new KevsParser();
     val script = parser.parseScript(tscript.toString())
     script match {

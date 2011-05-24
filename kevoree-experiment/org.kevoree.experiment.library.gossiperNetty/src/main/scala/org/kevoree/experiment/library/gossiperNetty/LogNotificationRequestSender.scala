@@ -11,7 +11,7 @@ import org.kevoree.library.gossiperNetty.{NettyGossipAbstractElement, Notificati
  * Time: 14:14
  */
 
-class LogNotificationRequestSender (channelFragment: NettyGossipAbstractElement) extends NotificationRequestSender (channelFragment: NettyGossipAbstractElement) {
+class LogNotificationRequestSender (channelFragment: NettyGossipAbstractElement, peerSelector : StrictGroupPeerSelector) extends NotificationRequestSender (channelFragment: NettyGossipAbstractElement) {
   private val logger = LoggerFactory.getLogger(classOf[LogNotificationRequestSender])
 
   override protected def writeMessage (o: Object, address: InetSocketAddress) {
@@ -30,8 +30,10 @@ class LogNotificationRequestSender (channelFragment: NettyGossipAbstractElement)
     if (!networkIsDown) {
       logger.debug("message is sent by LogNotification.")
       channel.write(o, address)
+      peerSelector.resetNodeFailureAction(targetNodeName)
     } else {
       logger.debug("message is not sent because the link with " + targetNodeName + " is broken")
+      peerSelector.modifyNodeScoreAction(targetNodeName)
     }
   }
 

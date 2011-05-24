@@ -9,13 +9,13 @@ import org.kevoree.library.gossiperNetty._
  */
 
 class LogGossiperActor (timeout: java.lang.Long, channel: NettyGossipAbstractElement, dataManager: DataManager,
-  port: Int, fullUDP: java.lang.Boolean, garbage: Boolean, serializer: Serializer, selector: PeerSelector, alwaysAskModel: Boolean)
+  port: Int, fullUDP: java.lang.Boolean, garbage: Boolean, serializer: Serializer, selector: PeerSelector, alwaysAskModel: Boolean, peerSelector : StrictGroupPeerSelector)
   extends GossiperActor(timeout, channel, dataManager, port, fullUDP, false, serializer, selector, alwaysAskModel) {
 
   gossiperRequestSender = new
-      LogGossiperRequestSender(timeout, channel, dataManager, fullUDP, garbage, serializer, alwaysAskModel)
-  notificationRequestSender = new LogNotificationRequestSender(channel)
+      LogGossiperRequestSender(timeout, channel, dataManager, fullUDP, garbage, serializer, alwaysAskModel, peerSelector)
+  notificationRequestSender = new LogNotificationRequestSender(channel, peerSelector)
   gossiperRequestReceiver = new
-      LogGossiperRequestReceiver(channel, dataManager, port, gossiperRequestSender, fullUDP, serializer)
+      LogGossiperRequestReceiver(channel, dataManager, port, gossiperRequestSender, fullUDP, serializer, peerSelector)
 
 }
