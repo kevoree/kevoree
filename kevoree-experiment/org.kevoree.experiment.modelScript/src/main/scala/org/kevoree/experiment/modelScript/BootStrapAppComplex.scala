@@ -37,7 +37,7 @@ object BootStrapAppComplex  {
           val outStream = new ByteArrayOutputStream
 
           KevoreeXmiHelper.saveStream(outStream, model)
-          outStream.flush
+          outStream.flush()
 
           Kev2GraphML.toGraphMLFile("bootStrapComplex", model)
 
@@ -50,12 +50,12 @@ object BootStrapAppComplex  {
               val conn = url.openConnection();
               conn.setConnectTimeout(2000);
               conn.setDoOutput(true);
-              val wr = new OutputStreamWriter(conn.getOutputStream())
+              val wr = new OutputStreamWriter(conn.getOutputStream)
               wr.write(outStream.toString);
               wr.flush();
 
               // Get the response
-              val rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+              val rd = new BufferedReader(new InputStreamReader(conn.getInputStream));
               var line: String = rd.readLine;
               while (line != null) {
                 println("ipReturn" + line)
@@ -65,7 +65,7 @@ object BootStrapAppComplex  {
               rd.close();
 
             } catch {
-              case _@e => e.printStackTrace
+              case _@e => e.printStackTrace()
             }
         }
 
