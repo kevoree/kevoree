@@ -14,10 +14,11 @@
 package org.kevoree.tools.ui.editor.command
 
 import org.kevoree.tools.ui.editor.KevoreeUIKernel
-import reflect.BeanProperty
 import org.kevoree.core.basechecker.RootChecker
 import scala.collection.JavaConversions._
 import org.kevoree.tools.ui.framework.ErrorHighlightableElement
+import actors.DaemonActor
+import org.omg.CORBA.TIMEOUT
 
 
 class CheckCurrentModel extends Command {
@@ -27,28 +28,39 @@ class CheckCurrentModel extends Command {
   def setKernel(k: KevoreeUIKernel) = kernel = k
 
   var checker = new RootChecker
-
   var objectInError: List[ErrorHighlightableElement] = List()
 
-  def execute(p: Object) {
+  object notificationSeamless extends DaemonActor {
+    start()
+    var checkNeeded = false
+    def act() {
+      loop {
+        reactWithin(1000) {
+          case scala.actors.TIMEOUT => if(checkNeeded){ effectiveCheck();checkNeeded=false }
+          case _ => checkNeeded = true
+        }
+      }
+    }
+  }
 
+  def execute(p: Object) {
+      notificationSeamless ! "checkNeeded"
+  }
+
+  def effectiveCheck() {
     objectInError.foreach(o => o.setState(ErrorHighlightableElement.STATE.NO_ERROR))
     objectInError = List()
-    var result = checker.check(kernel.getModelHandler.getActualModel)
+    val result = checker.check(kernel.getModelHandler.getActualModel)
     result.foreach({
       res =>
         println("Violation msg=" + res.getMessage)
-
         //AGFFICHE OBJET ERROR
         res.getTargetObjects.foreach {
           target =>
             println(target)
-
             val uiObj = kernel.getUifactory.getMapping.get(target);
             if (uiObj != null) {
-
-              println("ui="+uiObj)
-
+              println("ui=" + uiObj)
               uiObj match {
                 case hobj: ErrorHighlightableElement => {
                   objectInError = objectInError ++ List(hobj)
@@ -57,17 +69,12 @@ class CheckCurrentModel extends Command {
                 case _@e => println("Error checker obj = " + e)
               }
             }
-
         }
     })
 
-    if (result.size == 0) {
-      println("Model checked !")
-    }
-
     kernel.getModelPanel.repaint()
     kernel.getModelPanel.revalidate()
-
   }
+
 
 }
