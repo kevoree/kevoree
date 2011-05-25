@@ -29,12 +29,12 @@ class DataManagerForGroup (nameInstance: String, selfNodeName: String, modelServ
     .build
   private val logger = LoggerFactory.getLogger (classOf[DataManagerForGroup])
 
-  private var model: ContainerRoot = null
+  //private var model: ContainerRoot = null
 
 
   case class GetData (uuid: UUID)
 
-  case class SetData (uuid: UUID, tuple: Tuple2[VectorClock, Any])
+  case class SetData (uuid: UUID, tuple: Tuple2[VectorClock, Any], source : String)
 
   case class RemoveData (uuid: UUID)
 
@@ -57,8 +57,8 @@ class DataManagerForGroup (nameInstance: String, selfNodeName: String, modelServ
     result
   }
 
-  def setData (uuid: UUID, tuple: Tuple2[VectorClock, Any]) {
-    this ! SetData (uuid, tuple)
+  def setData (uuid: UUID, tuple: Tuple2[VectorClock, Any], source : String) {
+    this ! SetData (uuid, tuple, source)
   }
 
   def removeData (uuid: UUID) {
@@ -111,9 +111,9 @@ class DataManagerForGroup (nameInstance: String, selfNodeName: String, modelServ
             reply (null)
           }
         }
-        case SetData (uuid, tuple) => {
+        case SetData (uuid, tuple, source) => {
           if (uuid.equals (this.uuid) && tuple._2 != null && tuple._2.isInstanceOf[ContainerRoot]) {
-            updateOrResolve (tuple.asInstanceOf[Tuple2[VectorClock, ContainerRoot]])
+            updateOrResolve (tuple.asInstanceOf[Tuple2[VectorClock, ContainerRoot]], source)
           }
         }
         case GetUUIDVectorClock (uuid) => {
@@ -168,7 +168,7 @@ class DataManagerForGroup (nameInstance: String, selfNodeName: String, modelServ
  }*/
   implicit def vectorDebug (vc: VectorClock) = VectorClockAspect (vc)
 
-  private def updateOrResolve (tuple: Tuple2[VectorClock, ContainerRoot]) {
+  private def updateOrResolve (tuple: Tuple2[VectorClock, ContainerRoot], source : String) {
     vectorClock.printDebug()
     tuple._1.printDebug()
     val occured = VersionUtils.compare (vectorClock, tuple._1)
@@ -179,6 +179,7 @@ class DataManagerForGroup (nameInstance: String, selfNodeName: String, modelServ
       case Occured.BEFORE => {
         logger.debug ("VectorClocks comparison into DataManager give us: BEFORE")
         updateModelOrHaraKiri (tuple._2)
+        lastNodeSynchronization = source
         setVectorClock (localMerge (tuple._1))
       }
       case Occured.CONCURRENTLY => {
@@ -188,6 +189,7 @@ class DataManagerForGroup (nameInstance: String, selfNodeName: String, modelServ
         //TODO TO IMPROVE
         if (localDate.before (remoteDate)) {
           updateModelOrHaraKiri (tuple._2)
+          lastNodeSynchronization = source
           setVectorClock (localMerge (tuple._1))
         }
 

@@ -101,7 +101,7 @@ class GossiperRequestSender (timeout: java.lang.Long, protected val channelFragm
     }
   }
 
-  private def initGossip (peer: String) = {
+  private def initGossip (peer: String) {
     if (peer != null && peer != "") {
       val address = new
           InetSocketAddress(channelFragment.getAddress(peer), channelFragment.parsePortNumber(peer))
@@ -137,7 +137,7 @@ class GossiperRequestSender (timeout: java.lang.Long, protected val channelFragm
               logger.debug("add empty local vectorClock with the uuid if it is not already defined")
               dataManager.setData(uuid,
                                    Tuple2[VectorClock, Any](VectorClock.newBuilder
-                                     .setTimestamp(System.currentTimeMillis).build, null))
+                                     .setTimestamp(System.currentTimeMillis).build, null), "")
             }
         }
         if (garbage) {
@@ -228,7 +228,7 @@ class GossiperRequestSender (timeout: java.lang.Long, protected val channelFragm
 
       if (data != null) {
         // TODO include selector to define properties to choose the peer
-        dataManager.setData(UUID.fromString(uuid), Tuple2[VectorClock, Any](vectorClock, data))
+        dataManager.setData(UUID.fromString(uuid), Tuple2[VectorClock, Any](vectorClock, data), message.getDestNodeName)
         channelFragment.localNotification(data)
 
         // UPDATE clock

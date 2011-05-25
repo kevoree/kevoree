@@ -11,7 +11,7 @@ import version.Version.VectorClock
 trait DataManager {
   def stop()
   def getData(uuid : UUID) : Tuple2[VectorClock,Any]
-  def setData(uuid : UUID, tuple : Tuple2[VectorClock,Any])
+  def setData(uuid : UUID, tuple : Tuple2[VectorClock,Any], source : String)
   def removeData(uuid : UUID)
   def getUUIDVectorClock(uuid : UUID) : VectorClock
   def getUUIDVectorClocks() : java.util.Map[UUID, VectorClock]

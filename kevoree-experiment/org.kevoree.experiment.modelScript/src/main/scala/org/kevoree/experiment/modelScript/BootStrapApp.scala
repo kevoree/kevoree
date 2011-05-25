@@ -12,7 +12,7 @@ object BootStrapApp extends Application {
 
   val dukeIP = "131.254.15.214"
   //val paraisseuxIP = "131.254.12.28"
-  val paraisseuxIP = "192.168.1.102"
+  val paraisseuxIP = "192.168.1.101"
   val ksparkIP = "192.168.1.140"
   val ips = List(/*dukeIP,*/ paraisseuxIP, ksparkIP)
   val packets = List(
