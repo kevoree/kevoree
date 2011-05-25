@@ -102,7 +102,7 @@
 			   -->
 
 
-						<Export-Package>!nativelib.*,gnu.io.*;version=2.2.0</Export-Package>
+						<Export-Package>!nativelib.*,gnu.io.*;version=2.2.0,org.kevoree.extra.osgi.rxtx.*</Export-Package>
 					</instructions>
 				</configuration>
 			</plugin>

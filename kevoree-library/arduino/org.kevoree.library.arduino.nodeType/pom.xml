@@ -30,20 +30,27 @@
             <artifactId>org.kevoree.kompare</artifactId>
             <version>${kevoree.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.kevoree.extra</groupId>
+            <artifactId>org.kevoree.extra.osgi.rxtx</artifactId>
+            <version>2.2.0</version>
+            <scope>provided</scope>
+        </dependency>
+
 
         <!-- Temp dependency -->
-               <!--
-                <dependency>
-                    <groupId>org.kevoree.library.arduino</groupId>
-                    <artifactId>org.kevoree.library.arduino.sensors</artifactId>
-                    <version>${kevoree.version}</version>
-                </dependency>
-                <dependency>
-                    <groupId>org.kevoree.library.arduino</groupId>
-                    <artifactId>org.kevoree.library.arduino.channels</artifactId>
-                    <version>${kevoree.version}</version>
-                </dependency>
-                    -->
+        <!--
+    <dependency>
+        <groupId>org.kevoree.library.arduino</groupId>
+        <artifactId>org.kevoree.library.arduino.sensors</artifactId>
+        <version>${kevoree.version}</version>
+    </dependency>
+    <dependency>
+        <groupId>org.kevoree.library.arduino</groupId>
+        <artifactId>org.kevoree.library.arduino.channels</artifactId>
+        <version>${kevoree.version}</version>
+    </dependency>
+        -->
     </dependencies>
 
     <build>
@@ -54,7 +61,7 @@
                 <extensions>true</extensions>
                 <configuration>
                     <instructions>
-                     <!--   <Bundle-Activator>org.kevoree.kompare.KevoreeKompareActivator</Bundle-Activator>  -->
+                        <!--   <Bundle-Activator>org.kevoree.kompare.KevoreeKompareActivator</Bundle-Activator>  -->
                         <Import-Package>!org.wayoda.*,!org.kevoree.library.arduinoNodeType.*,*</Import-Package>
                         <Export-Package>org.kevoree.library.arduinoNodeType.*,org.wayoda.*</Export-Package>
                         <DynamicImport-Package>*</DynamicImport-Package>

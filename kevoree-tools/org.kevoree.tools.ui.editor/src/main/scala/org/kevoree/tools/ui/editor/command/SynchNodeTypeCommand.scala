@@ -19,6 +19,7 @@ import scala.collection.JavaConversions._
 import org.kevoree.{NodeType, DeployUnit, ContainerRoot}
 import org.osgi.framework.{Bundle, BundleException}
 import org.kevoree.framework.AbstractNodeType
+import collection.immutable.List._
 
 class SynchNodeTypeCommand extends Command {
 
@@ -85,14 +86,40 @@ class SynchNodeTypeCommand extends Command {
 
   /* Bootstrap node type bundle in local osgi environment */
   def installNodeTyp(ct: DeployUnit): Boolean = {
-    val url: List[String] = CommandHelper.buildAllQuery(ct)
-    url.exists(u => installBundle(u))
+
+    val tpResul = ct.getRequiredLibs.forall {
+      tp =>
+        var url: List[String] = List();
+        if (tp.getUrl.contains("mvn:")) {
+          CommandHelper.buildPotentialMavenURL(ct.eContainer.asInstanceOf[ContainerRoot]).foreach {
+            urlRepo =>
+              url = url ++ List(tp.getUrl.replace("mvn:", "mvn:" + urlRepo + "!"))
+          }
+        }
+        url.exists(tpu => {
+          installBundle(tpu)
+        }
+        )
+    }
+
+    if (tpResul) {
+      val url: List[String] = CommandHelper.buildAllQuery(ct)
+      url.exists(u => installBundle(u))
+    } else {
+      false
+    }
+
   }
 
   def installBundle(url: String): Boolean = {
     try {
+
+      val previousBundle = EmbeddedOSGiEnv.getFwk.getBundleContext.getBundles
       bundle = EmbeddedOSGiEnv.getFwk.getBundleContext.installBundle(url)
-      bundle.update
+      if (previousBundle.exists(b => b.getBundleId == bundle.getBundleId)) {
+        bundle.uninstall();
+        bundle = EmbeddedOSGiEnv.getFwk.getBundleContext.installBundle(url)
+      }
 
       bundle.start()
       true

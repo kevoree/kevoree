@@ -36,11 +36,8 @@ public class FlexSensor extends AbstractComponentType {
         /* Generate code for port */
         context.append("int value = analogRead("+this.getDictionary().get("pin")+");\n");
 
-
-
-
         //GENERATE METHOD CALL
-        context.append(ArduinoMethodHelper.generateMethodNameFromComponentPort(this.getName(), "light", PortUsage.required()));
+        context.append(ArduinoMethodHelper.generateMethodNameFromComponentPort(this.getName(), "out", PortUsage.required()));
         //GENERATE PARAMETER
         context.append("(String(value));\n");
 
