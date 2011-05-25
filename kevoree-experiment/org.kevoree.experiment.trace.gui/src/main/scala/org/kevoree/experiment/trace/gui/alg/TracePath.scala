@@ -41,13 +41,6 @@ object TracePath {
     import scala.collection.JavaConversions._
     val sortedTraces = traces.getTraceList.toList.sortWith((x, y) => x.getTimestamp < y.getTimestamp)
 
-    sortedTraces.foreach{ trace =>
-         println(stringToVectorClock(trace.getBody))
-        println(trace.getClientId == nodeID)
-      println(stringToVectorClock(trace.getBody).containEntry(nodeID, nodeVersion))
-      println(stringToVectorClock(trace.getBody).source != "")
-    }
-
     //SEARCH FOR FIRST TRACE OCCURENCE
     sortedTraces.find(trace => trace.getClientId == nodeID
       && stringToVectorClock(trace.getBody).containEntry(nodeID, nodeVersion)

@@ -5,6 +5,7 @@ import java.io.FileNotFoundException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.sun.tools.example.debug.gui.GUI;
 import org.kevoree.ContainerRoot;
 import org.kevoree.KevoreeFactory;
 import org.kevoree.annotation.DictionaryAttribute;
@@ -123,10 +124,21 @@ public class ArduinoNode extends AbstractNodeType {
                     arduinoPostCompilation.postCompileSketch(sketch, target);
                     progress.endTask();
 
-                    System.out.println("boardPortName=" + getDictionary().get("boardPortName"));
+                    String boardName = "";
+                    if(getDictionary().get("boardPortName") != null){
+                         boardName = getDictionary().get("boardPortName").toString();
+                    }
+
+                    if(boardName == null ||boardName.equals("")){
+                         boardName = GuiAskForComPort.askPORT();
+                    }
+
+                    System.out.println("boardPortName=" + boardName);
+
+
 
                     progress.beginTask("Upload to arduino board", 90);
-                    arduinoDeploy.uploadSketch(sketch, target, getDictionary().get("boardPortName").toString());
+                    arduinoDeploy.uploadSketch(sketch, target, boardName);
                     progress.endTask();
 
                     frame.setVisible(false);

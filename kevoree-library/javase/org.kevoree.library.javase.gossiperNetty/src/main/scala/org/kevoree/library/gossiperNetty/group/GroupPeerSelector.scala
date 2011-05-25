@@ -17,7 +17,7 @@ class GroupPeerSelector(timeout: Long, modelHandlerService : KevoreeModelHandler
         //Found minima score node name
         var foundNodeName = "";
         val minScore = Long.MaxValue
-        group.getSubNodes.filter(node => !node.getName.equals(nodeName)).foreach {
+        group.getSubNodes.filter(node => node.getName != nodeName ).foreach {
           subNode => {
             if (getScore(subNode.getName) < minScore) {
               foundNodeName = subNode.getName

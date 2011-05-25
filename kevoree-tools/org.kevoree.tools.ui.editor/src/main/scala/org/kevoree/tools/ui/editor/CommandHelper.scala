@@ -41,18 +41,6 @@ object CommandHelper {
       node =>
         res = res ++ List(buildQuery(du, Some(buildURL(root, node.getName))))
     }
-    /*
-    res match {
-      case List() => println("Add default location"); res = res ++ List(buildQuery(du, None))
-      case _ =>
-    } */
-
-
-    //DEBUG
-    /*
-    res.foreach({u=>
-      println("potential url="+u)
-    })  */
 
     res
   }
