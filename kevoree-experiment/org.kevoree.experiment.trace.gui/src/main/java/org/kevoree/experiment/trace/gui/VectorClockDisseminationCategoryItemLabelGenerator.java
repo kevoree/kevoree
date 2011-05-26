@@ -32,9 +32,6 @@ class VectorClockDisseminationCategoryItemLabelGenerator extends StandardCategor
 
 
 	public String generateLabel(CategoryDataset dataset, int row, int column) {
-		/*System.out.println("row : " + row);
-		System.out.println("column : " + column);
-		System.out.println(vectorClocks.get(nodeIds.get(row)).get(timeRepresentations.get(column)));*/
         return "<" + vectorClocks.get(nodeIds.get(row)).get(timeRepresentations.get(column)) + ">";
     }
 }
