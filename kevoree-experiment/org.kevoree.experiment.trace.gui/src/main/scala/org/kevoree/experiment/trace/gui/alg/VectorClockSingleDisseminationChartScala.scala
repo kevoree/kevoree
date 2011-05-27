@@ -8,8 +8,9 @@ import java.awt.Color
 import util.Random
 import scala.collection.JavaConversions._
 import java.lang.Long
-import java.util._
 import collection.immutable.List
+import collection.immutable.List._
+import java.util._
 
 //import org.kevoree.experiment.trace.gui.VectorClockDisseminationCategoryItemLabelGenerator
 
@@ -27,13 +28,13 @@ class VectorClockSingleDisseminationChartScala (ltrace: LinkedTrace) {
   var timeRepresentations: Set[Long] = new TreeSet[Long]
 
   private def buildCategory (beginningOfTime: java.lang.Long, trace: LinkedTrace) {
-    /*if (!nodes.contains(ltrace.trace.getClientId)) {
+    if (!nodes.contains(ltrace.trace.getClientId)) {
       nodes.add(ltrace.trace.getClientId)
-    }*/
+    }
     println("newCateg=" + gidCateg + "," + trace.trace.getClientId)
 
 
-    val timeStampMilli: Long = ((trace.trace.getTimestamp.longValue() - beginningOfTime.longValue()) /
+    /*val timeStampMilli: Long = ((trace.trace.getTimestamp.longValue() - beginningOfTime.longValue()) /
       1000000)
     timeRepresentations.find(t => t == timeStampMilli) match {
       case Some(set) => // NOOP
@@ -44,22 +45,22 @@ class VectorClockSingleDisseminationChartScala (ltrace: LinkedTrace) {
       values = List[(String, Long)]()
     }
     values = values ++ List((trace.trace.getClientId, timeStampMilli))
-    categoryRepresentations.put(gidCateg + "", values)
+    categoryRepresentations.put(gidCateg + "", values)*/
 
-
-    var i: java.lang.Integer = 0
+    //var i: java.lang.Integer = 0
     trace.sucessors.foreach {
       successor =>
-        println(successor.trace.getClientId)
-        if (i.intValue() > 0) {
-          gidCateg = gidCateg.intValue() + 1
-        }
-        i = i.intValue() + 1
+      //println(currentCategory + " => " + successor.trace.getClientId)
+      //if (i.intValue() > 0) {
+        gidCateg = gidCateg.intValue() + 1
+        //}
+        //i = i.intValue() + 1
 
         if (!nodes.contains(successor.trace.getClientId)) {
           nodes.add(successor.trace.getClientId)
         }
-        val timeStampMilli: Long = ((successor.trace.getTimestamp.longValue() - beginningOfTime.longValue()) /
+
+        var timeStampMilli: Long = ((trace.trace.getTimestamp.longValue() - beginningOfTime.longValue()) /
           1000000)
         timeRepresentations.find(t => t == timeStampMilli) match {
           case Some(set) => // NOOP
@@ -69,10 +70,26 @@ class VectorClockSingleDisseminationChartScala (ltrace: LinkedTrace) {
         if (values == null) {
           values = List[(String, Long)]()
         }
+        values = values ++ List((trace.trace.getClientId, timeStampMilli))
+        categoryRepresentations.put(gidCateg + "", values)
+
+
+        timeStampMilli = ((successor.trace.getTimestamp.longValue() - beginningOfTime.longValue()) /
+          1000000)
+        timeRepresentations.find(t => t == timeStampMilli) match {
+          case Some(set) => // NOOP
+          case None => timeRepresentations.add(timeStampMilli)
+        }
+        values = categoryRepresentations.get(gidCateg + "")
+        if (values == null) {
+          values = List[(String, Long)]()
+        }
         values = values ++ List((successor.trace.getClientId, timeStampMilli))
         categoryRepresentations.put(gidCateg + "", values)
 
-        buildCategory(beginningOfTime, successor)
+        if (successor.sucessors.size > 0) {
+          buildCategory(beginningOfTime, successor)
+        }
     }
   }
 
@@ -148,10 +165,10 @@ class VectorClockSingleDisseminationChartScala (ltrace: LinkedTrace) {
         // if (i != 0) {
         //INIT NULL VALUE
         /*
-                  previousTimeStamps.foreach {
-                    time =>
-                      defaultCategoryDataset.addValue(null, new java.lang.Integer(i.intValue), time)
-                  } */
+                          previousTimeStamps.foreach {
+                            time =>
+                              defaultCategoryDataset.addValue(null, new java.lang.Integer(i.intValue), time)
+                          } */
 
         //}
         i = new java.lang.Integer(i.intValue + 1)
@@ -182,6 +199,7 @@ class VectorClockSingleDisseminationChartScala (ltrace: LinkedTrace) {
     val lineandshaperenderer: LineAndShapeRenderer = categoryplot.getRenderer.asInstanceOf[LineAndShapeRenderer]
 
     import scala.collection.JavaConversions._
+
     for (i <- 0 until gidCateg.intValue() + 1) {
       lineandshaperenderer.setSeriesShapesVisible(i, true)
       lineandshaperenderer.setSeriesLinesVisible(i, true)
