@@ -31,7 +31,7 @@ class VectorClockSingleDisseminationChartScala (ltrace: LinkedTrace) {
     if (!nodes.contains(ltrace.trace.getClientId)) {
       nodes.add(ltrace.trace.getClientId)
     }
-    println("newCateg=" + gidCateg + "," + trace.trace.getClientId)
+    //println("newCateg=" + gidCateg + "," + trace.trace.getClientId)
 
 
     /*val timeStampMilli: Long = ((trace.trace.getTimestamp.longValue() - beginningOfTime.longValue()) /
@@ -62,6 +62,7 @@ class VectorClockSingleDisseminationChartScala (ltrace: LinkedTrace) {
 
         var timeStampMilli: Long = ((trace.trace.getTimestamp.longValue() - beginningOfTime.longValue()) /
           1000000)
+        println("timeStampMilli = " + timeStampMilli)
         timeRepresentations.find(t => t == timeStampMilli) match {
           case Some(set) => // NOOP
           case None => timeRepresentations.add(timeStampMilli)
@@ -84,7 +85,10 @@ class VectorClockSingleDisseminationChartScala (ltrace: LinkedTrace) {
         if (values == null) {
           values = List[(String, Long)]()
         }
-        values = values ++ List((successor.trace.getClientId, timeStampMilli))
+        values.find(tuple => tuple._1 == successor.trace.getClientId) match {
+          case Some(v) => // NO OP
+          case None => values = values ++ List((successor.trace.getClientId, timeStampMilli))
+        }
         categoryRepresentations.put(gidCateg + "", values)
 
         if (successor.sucessors.size > 0) {
@@ -94,15 +98,35 @@ class VectorClockSingleDisseminationChartScala (ltrace: LinkedTrace) {
   }
 
   private def buildGraphCategory (defaultCategoryDataset: DefaultCategoryDataset) {
-
     categoryRepresentations.foreach {
+      tuple: (String, List[(String, Long)]) =>
+        println("categ => " + tuple._1 + " : ")
+        timeRepresentations.foreach {
+          time: java.lang.Long =>
+            tuple._2.foreach {
+              tupleValue: (String, Long) =>
+                if (time == tupleValue._2) {
+                  defaultCategoryDataset.addValue(nodes.indexOf(tupleValue._1), tuple._1, tupleValue._2)
+                  println("\t" + tupleValue._1)
+                } else if (time.longValue() < tupleValue._2.longValue()) {
+                  //defaultCategoryDataset.addValue(null, tuple._1, time)
+                }
+            }
+        }
+    }
+
+
+
+
+    /*categoryRepresentations.foreach {
       tuple: (String, List[(String, Long)]) =>
         println("categ => " + tuple._1 + " : ")
         tuple._2.foreach {
           var currentTime: Long = 0
           tupleValue: (String, Long) =>
             println("\t" + tupleValue._1)
-            timeRepresentations.filter(t => t.longValue() > currentTime.longValue()).foreach {
+            //timeRepresentations.filter(t => t.longValue() > currentTime.longValue()).foreach {
+            timeRepresentations.foreach {
               time: java.lang.Long =>
                 if (time == tupleValue._2) {
                   defaultCategoryDataset.addValue(nodes.indexOf(tupleValue._1), tuple._1, tupleValue._2)
@@ -110,6 +134,7 @@ class VectorClockSingleDisseminationChartScala (ltrace: LinkedTrace) {
                 } else if (time.longValue() < tupleValue._2.longValue()) {
                   defaultCategoryDataset.addValue(null, tuple._1, time)
                 }
+
               /*timeRepresentations.filter(t => t == tupleValue._2) match {
                 case Some(v) => defaultCategoryDataset.addValue(nodes.indexOf(tupleValue._1), tuple._1, tupleValue._2)
                 case None => defaultCategoryDataset.addValue(null, tuple._1, tupleValue._2)
@@ -125,7 +150,7 @@ class VectorClockSingleDisseminationChartScala (ltrace: LinkedTrace) {
           }*/
 
         }
-    }
+    }*/
   }
 
   private def buildPlot (beginningOfTime: Long, ltrace: LinkedTrace, defaultCategoryDataset: DefaultCategoryDataset,
