@@ -302,8 +302,8 @@ class VectorClockSingleDisseminationChartScala (ltrace: LinkedTrace) {
       xyplot.getRenderer.setSeriesPaint(i, color)
     }
 
-    /*val symbolaxis: SymbolAxis = new SymbolAxis("Nodes", nodes.toArray(List("").toArray))
-    xyplot.setRangeAxis(symbolaxis)*/
+    val symbolaxis: SymbolAxis = new SymbolAxis("Nodes", nodes.toArray(List("").toArray))
+    xyplot.setRangeAxis(symbolaxis)
     jfreechart
   }
 }
