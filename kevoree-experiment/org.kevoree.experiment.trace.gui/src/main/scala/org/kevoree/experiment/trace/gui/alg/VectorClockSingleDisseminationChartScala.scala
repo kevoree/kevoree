@@ -1,7 +1,6 @@
 package org.kevoree.experiment.trace.gui.alg
 
 import org.jfree.data.category.{DefaultCategoryDataset, CategoryDataset}
-import org.jfree.chart.plot.{CategoryPlot, PlotOrientation}
 import org.jfree.chart.{ChartUtilities, ChartFactory, JFreeChart}
 import org.jfree.chart.renderer.category.LineAndShapeRenderer
 import java.awt.Color
@@ -11,11 +10,12 @@ import java.lang.Long
 import collection.immutable.List
 import collection.immutable.List._
 import java.util._
+import org.jfree.chart.axis.{NumberAxis, SymbolAxis}
+import org.jfree.data.xy.{XYSeriesCollection, XYSeries, XYDataset}
+import org.jfree.chart.plot.{XYPlot, CategoryPlot, PlotOrientation}
+import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer
 
 //import org.kevoree.experiment.trace.gui.VectorClockDisseminationCategoryItemLabelGenerator
-
-import org.jfree.chart.axis.SymbolAxis
-
 
 class VectorClockSingleDisseminationChartScala (ltrace: LinkedTrace) {
 
@@ -97,7 +97,7 @@ class VectorClockSingleDisseminationChartScala (ltrace: LinkedTrace) {
     }
   }
 
-  private def buildGraphCategory (defaultCategoryDataset: DefaultCategoryDataset) {
+  /*private def buildGraphCategory (defaultCategoryDataset: DefaultCategoryDataset) {
     categoryRepresentations.foreach {
       tuple: (String, List[(String, Long)]) =>
         println("categ => " + tuple._1 + " : ")
@@ -107,51 +107,50 @@ class VectorClockSingleDisseminationChartScala (ltrace: LinkedTrace) {
               tupleValue: (String, Long) =>
                 if (time == tupleValue._2) {
                   defaultCategoryDataset.addValue(nodes.indexOf(tupleValue._1), tuple._1, tupleValue._2)
-                  println("\t" + tupleValue._1)
-                } else if (time.longValue() < tupleValue._2.longValue()) {
-                  //defaultCategoryDataset.addValue(null, tuple._1, time)
-                }
+                  println("\t" + tupleValue._1 + "(" + tupleValue._2 + ")")
+                } /*else if (time.longValue() < tupleValue._2.longValue()) {
+                  defaultCategoryDataset.addValue(null, tuple._1, time)
+                }*/
             }
         }
     }
-
-
-
-
-    /*categoryRepresentations.foreach {
-      tuple: (String, List[(String, Long)]) =>
-        println("categ => " + tuple._1 + " : ")
-        tuple._2.foreach {
-          var currentTime: Long = 0
-          tupleValue: (String, Long) =>
-            println("\t" + tupleValue._1)
-            //timeRepresentations.filter(t => t.longValue() > currentTime.longValue()).foreach {
-            timeRepresentations.foreach {
-              time: java.lang.Long =>
-                if (time == tupleValue._2) {
-                  defaultCategoryDataset.addValue(nodes.indexOf(tupleValue._1), tuple._1, tupleValue._2)
-                  currentTime = time
-                } else if (time.longValue() < tupleValue._2.longValue()) {
-                  defaultCategoryDataset.addValue(null, tuple._1, time)
-                }
-
-              /*timeRepresentations.filter(t => t == tupleValue._2) match {
-                case Some(v) => defaultCategoryDataset.addValue(nodes.indexOf(tupleValue._1), tuple._1, tupleValue._2)
-                case None => defaultCategoryDataset.addValue(null, tuple._1, tupleValue._2)
-              }*/
-
-
-            }
-          /*if (vectorClockUpdates.get(nodeIds.get(i)).contains(oldTimeRepresentation)) {
-            defaultcategorydataset.addValue(i, nodeIds.get(i), time)
-          }
-          else {
-            defaultcategorydataset.addValue(null, nodeIds.get(i), time)
-          }*/
-
-        }
     }*/
-  }
+
+
+  /*categoryRepresentations.foreach {
+        tuple: (String, List[(String, Long)]) =>
+          println("categ => " + tuple._1 + " : ")
+          tuple._2.foreach {
+            var currentTime: Long = 0
+            tupleValue: (String, Long) =>
+              println("\t" + tupleValue._1)
+              //timeRepresentations.filter(t => t.longValue() > currentTime.longValue()).foreach {
+              timeRepresentations.foreach {
+                time: java.lang.Long =>
+                  if (time == tupleValue._2) {
+                    defaultCategoryDataset.addValue(nodes.indexOf(tupleValue._1), tuple._1, tupleValue._2)
+                    currentTime = time
+                  } else if (time.longValue() < tupleValue._2.longValue()) {
+                    defaultCategoryDataset.addValue(null, tuple._1, time)
+                  }
+
+                /*timeRepresentations.filter(t => t == tupleValue._2) match {
+                  case Some(v) => defaultCategoryDataset.addValue(nodes.indexOf(tupleValue._1), tuple._1, tupleValue._2)
+                  case None => defaultCategoryDataset.addValue(null, tuple._1, tupleValue._2)
+                }*/
+
+
+              }
+            /*if (vectorClockUpdates.get(nodeIds.get(i)).contains(oldTimeRepresentation)) {
+              defaultcategorydataset.addValue(i, nodeIds.get(i), time)
+            }
+            else {
+              defaultcategorydataset.addValue(null, nodeIds.get(i), time)
+            }*/
+
+          }
+      }*/
+
 
   private def buildPlot (beginningOfTime: Long, ltrace: LinkedTrace, defaultCategoryDataset: DefaultCategoryDataset,
     previousTimeStamps: List[java.lang.Long]) {
@@ -206,18 +205,18 @@ class VectorClockSingleDisseminationChartScala (ltrace: LinkedTrace) {
     defaultcategorydataset
   }*/
 
-  private def buildCateg (): CategoryDataset = {
+  /*private def buildCateg (): CategoryDataset = {
     val defaultcategorydataset = new DefaultCategoryDataset
     buildCategory(ltrace.trace.getTimestamp, ltrace);
     buildGraphCategory(defaultcategorydataset)
     //buildPlot(ltrace.trace.getTimestamp, ltrace, defaultcategorydataset, List())
     defaultcategorydataset
-  }
+  }*/
 
 
-  def buildChart (): JFreeChart = {
+  /*def buildChart (): JFreeChart = {
     val jfreechart: JFreeChart = ChartFactory
-      .createLineChart("VectorClock updates", "Time", "nodes", buildCateg(), PlotOrientation.VERTICAL, false, true,
+      .createLineChart("VectorClock updates", "Times", "nodes", buildCateg(), PlotOrientation.VERTICAL, false, true,
                         false)
     val categoryplot: CategoryPlot = jfreechart.getPlot.asInstanceOf[CategoryPlot]
     ChartUtilities.applyCurrentTheme(jfreechart)
@@ -227,6 +226,7 @@ class VectorClockSingleDisseminationChartScala (ltrace: LinkedTrace) {
 
     for (i <- 0 until gidCateg.intValue() + 1) {
       lineandshaperenderer.setSeriesShapesVisible(i, true)
+
       lineandshaperenderer.setSeriesLinesVisible(i, true)
 
       val rand = new Random
@@ -237,6 +237,73 @@ class VectorClockSingleDisseminationChartScala (ltrace: LinkedTrace) {
 
     val symbolaxis: SymbolAxis = new SymbolAxis("Nodes", nodes.toArray(List("").toArray))
     categoryplot.setRangeAxis(symbolaxis)
-    return jfreechart
+    jfreechart
+  }*/
+
+  private def buildDataset() : XYDataset = {
+    val xyseriescollection: XYSeriesCollection = new XYSeriesCollection
+    buildCategory(ltrace.trace.getTimestamp, ltrace)
+    populateCollection(xyseriescollection)
+    xyseriescollection
+  }
+
+  private def populateCollection(dataset : XYSeriesCollection) {
+    categoryRepresentations.foreach {
+      tuple: (String, List[(String, Long)]) =>
+        val xyseries: XYSeries = new XYSeries(tuple._1)
+        println("categ => " + tuple._1 + " : ")
+        /*timeRepresentations.foreach {
+          time: java.lang.Long =>*/
+            tuple._2.foreach {
+              tupleValue: (String, Long) =>
+                //if (time == tupleValue._2) {
+                  xyseries.add(tupleValue._2, nodes.indexOf(tupleValue._1))
+                  println("\t" + tupleValue._1 + "(" + tupleValue._2 + ")")
+                //}
+                /*else if (time.longValue() < tupleValue._2.longValue()) {
+                  defaultCategoryDataset.addValue(null, tuple._1, time)
+                }*/
+            }
+        dataset.addSeries(xyseries)
+        //}
+    }
+  }
+
+  def buildChart (): JFreeChart = {
+    val jfreechart: JFreeChart = ChartFactory
+      .createXYLineChart("VectorClock updates", "Times", "nodes", buildDataset(), PlotOrientation.VERTICAL, false, true,
+                        false)
+    /*val categoryplot: CategoryPlot = jfreechart.getPlot.asInstanceOf[CategoryPlot]
+    ChartUtilities.applyCurrentTheme(jfreechart)
+    val lineandshaperenderer: LineAndShapeRenderer = categoryplot.getRenderer.asInstanceOf[LineAndShapeRenderer]
+
+    import scala.collection.JavaConversions._
+
+    for (i <- 0 until gidCateg.intValue() + 1) {
+      lineandshaperenderer.setSeriesShapesVisible(i, true)
+
+      lineandshaperenderer.setSeriesLinesVisible(i, true)
+
+      val rand = new Random
+      val color = new Color(rand.nextFloat(), rand.nextFloat(), rand.nextFloat());
+
+      categoryplot.getRenderer.setSeriesPaint(i, color)
+    }
+
+    val symbolaxis: SymbolAxis = new SymbolAxis("Nodes", nodes.toArray(List("").toArray))
+    categoryplot.setRangeAxis(symbolaxis)*/
+    val xyplot: XYPlot = jfreechart.getPlot.asInstanceOf[XYPlot]
+    val xylineandshaperenderer: XYLineAndShapeRenderer = xyplot.getRenderer.asInstanceOf[XYLineAndShapeRenderer]
+    xylineandshaperenderer.setBaseShapesVisible(true)
+
+    for (i <- 0 until gidCateg.intValue() + 1) {
+      val rand = new Random
+      val color = new Color(rand.nextFloat(), rand.nextFloat(), rand.nextFloat());
+      xyplot.getRenderer.setSeriesPaint(i, color)
+    }
+
+    /*val symbolaxis: SymbolAxis = new SymbolAxis("Nodes", nodes.toArray(List("").toArray))
+    xyplot.setRangeAxis(symbolaxis)*/
+    jfreechart
   }
 }
