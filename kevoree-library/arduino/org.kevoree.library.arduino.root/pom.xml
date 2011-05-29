@@ -22,6 +22,7 @@
 
 
     <modules>
+        <module>../org.kevoree.library.arduino.nodeType2</module>
         <module>../org.kevoree.library.arduino.nodeType</module>
         <module>../org.kevoree.library.arduino.sensors</module>
         <module>../org.kevoree.library.arduino.channels</module>
