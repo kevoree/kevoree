@@ -16,7 +16,7 @@ object BootStrapApp extends Application {
   }
 
 
-  BootStrapAppComplex.bootStrap(Configuration.packets, Configuration.paraisseuxIP, Configuration.ips)
+  BootStrapAppComplex.bootStrap(Configuration.packets, Configuration.paraisseuxIP, Configuration.ips, false, false, 10000)
 
 
 }

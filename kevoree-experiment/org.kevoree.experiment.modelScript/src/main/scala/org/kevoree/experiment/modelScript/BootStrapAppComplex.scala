@@ -8,13 +8,13 @@ import java.io.{InputStreamReader, BufferedReader, OutputStreamWriter, ByteArray
 
 object BootStrapAppComplex  {
 
-  def bootStrap (packets : List[NodePacket], ip : String, ips : List[String]) {
+  def bootStrap (packets : List[NodePacket], ip : String, ips : List[String], sendNotification : Boolean, alwaysAskModel : Boolean, delay : java.lang.Integer) {
     val model = KevoreeXmiHelper.loadStream(this.getClass.getClassLoader.getResourceAsStream("baseModelEvolution.kev"))
     val tscript = new StringBuilder
 
     tscript append "tblock {"
 
-    tscript.append(TopologyGeneratorScript.generate(packets, ip))
+    tscript.append(TopologyGeneratorScript.generate(packets, ip, sendNotification, alwaysAskModel, delay))
 
     tscript append "addComponent "
     tscript append "myFakeLight1"

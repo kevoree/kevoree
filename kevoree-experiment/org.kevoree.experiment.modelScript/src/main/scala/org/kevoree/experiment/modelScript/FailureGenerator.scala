@@ -35,7 +35,7 @@ class FailureGenerator (ips: List[String]) {
       }
       save(currentModel)
 
-      println("failures: ")
+      println("\nfailures: ")
       removedNodeNetworks.foreach {
         nn =>
           println(nn.getInitBy.getName + " -> " + nn.getTarget.getName)
@@ -50,7 +50,7 @@ class FailureGenerator (ips: List[String]) {
       nn =>
         model.getNodeNetworks.remove(nn)
     }
-    println("number of NodeNetworks after update according to removedNodeNetworks: " + model.getNodeNetworks.size())
+    //println("number of NodeNetworks after update according to removedNodeNetworks: " + model.getNodeNetworks.size())
     model
   }
 
@@ -60,11 +60,11 @@ class FailureGenerator (ips: List[String]) {
     ip = selectRandomlyIntoList(ips).asInstanceOf[String]
 
     val url = "http://" + ip + ":" + port + "/model/current"
-    println("ask model to " + url)
+    //println("ask model to " + url)
 
     val model = KevoreeXmiHelper.load(url)
 
-    println("number of NodeNetworks before update according to removedNodeNetworks: " + model.getNodeNetworks.size())
+    //println("number of NodeNetworks before update according to removedNodeNetworks: " + model.getNodeNetworks.size())
     model
   }
 
@@ -129,7 +129,7 @@ class FailureGenerator (ips: List[String]) {
 
   def sendOrder (urlString: String) {
     val url = new URL(urlString);
-    println("send order: " + urlString)
+    //println("send order: " + urlString)
     val conn = url.openConnection();
     conn.setConnectTimeout(2000);
     //conn.setDoOutput(true);
@@ -142,7 +142,7 @@ class FailureGenerator (ips: List[String]) {
     var line: String = rd.readLine;
     while (line != null) {
       //println("ipReturn" + line)
-      println(line)
+      //println(line)
       line = rd.readLine
     }
     //wr.close();

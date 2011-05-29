@@ -45,7 +45,7 @@ object App extends Application {
   }
 
 
-  BootStrapAppComplex.bootStrap(packets, dukeIP, ips)
+  BootStrapAppComplex.bootStrap(packets, dukeIP, ips, true, false, 30000)
 
 
   val inputValue = JOptionPane.showInputDialog("Trace next update from node");
