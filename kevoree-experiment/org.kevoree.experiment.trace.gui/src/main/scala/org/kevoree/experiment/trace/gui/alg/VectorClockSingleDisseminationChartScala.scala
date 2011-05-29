@@ -47,14 +47,14 @@ class VectorClockSingleDisseminationChartScala (ltrace: LinkedTrace) {
     values = values ++ List((trace.trace.getClientId, timeStampMilli))
     categoryRepresentations.put(gidCateg + "", values)*/
 
-    //var i: java.lang.Integer = 0
+    var i: java.lang.Integer = 0
     trace.sucessors.foreach {
       successor =>
       //println(currentCategory + " => " + successor.trace.getClientId)
-      //if (i.intValue() > 0) {
+      if (i.intValue() > 0) {
         gidCateg = gidCateg.intValue() + 1
-        //}
-        //i = i.intValue() + 1
+        }
+        i = i.intValue() + 1
 
         if (!nodes.contains(successor.trace.getClientId)) {
           nodes.add(successor.trace.getClientId)

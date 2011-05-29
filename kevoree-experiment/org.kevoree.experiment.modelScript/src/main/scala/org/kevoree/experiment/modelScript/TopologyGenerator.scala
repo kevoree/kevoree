@@ -7,12 +7,13 @@ package org.kevoree.experiment.modelScript
 
 
 import scala.collection.mutable.HashMap
+import java.lang.Boolean
 
 case class NodePacket(name : String,ip : String, firstPort : Int,nbElem:Int)
 
 object TopologyGeneratorScript {
 
-  def generate(packets : List[NodePacket], logSrvIP:String) : String = {
+  def generate(packets : List[NodePacket], logSrvIP:String, sendNotification : Boolean, alwaysAskMoldel : Boolean, delay : java.lang.Integer) : String = {
     //STEP GENERATE NODE
     val tscript = new StringBuilder
     val groupPort = new StringBuilder
@@ -76,6 +77,9 @@ object TopologyGeneratorScript {
     tscript append "addGroup gossipGroup : LogNettyGossiperGroup {"
     tscript append "port=\"" + groupPort.toString + "\"\n"
     tscript append ",loggerServerIP=\"" + logSrvIP + "\""
+    tscript append ",sendNotification=\"" + sendNotification + "\""
+    tscript append ",alwaysAskModel=\"" + alwaysAskMoldel + "\""
+    tscript append ",interval=\"" + delay + "\""
     tscript append "}\n"
     //BIND ALL NODE TO GROUP
     tscript append "addToGroup gossipGroup * \n"
