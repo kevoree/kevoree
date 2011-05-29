@@ -22,7 +22,7 @@ object Kev2GraphML {
         <graph edgedefault="directed">   
           <!-- GENERATE NODES NAME -->
           {
-            var nodes : scala.collection.mutable.ArrayBuffer[scala.xml.Elem] = new scala.collection.mutable.ArrayBuffer[scala.xml.Elem]
+            val nodes : scala.collection.mutable.ArrayBuffer[scala.xml.Elem] = new scala.collection.mutable.ArrayBuffer[scala.xml.Elem]
             model.getNodes.foreach{ node =>
               nodes.add(<node id= {node.getName}/>)
             }
@@ -30,7 +30,7 @@ object Kev2GraphML {
           } 
           <!-- GENERATE EDGES NAME -->
           {
-            var edges : scala.collection.mutable.ArrayBuffer[scala.xml.Elem] = new scala.collection.mutable.ArrayBuffer[scala.xml.Elem]
+            val edges : scala.collection.mutable.ArrayBuffer[scala.xml.Elem] = new scala.collection.mutable.ArrayBuffer[scala.xml.Elem]
             model.getNodeNetworks.foreach{ nodeNetwork =>
               edges.add(<edge id={nodeNetwork.hashCode+""} source={nodeNetwork.getInitBy.getName} target={nodeNetwork.getTarget.getName}/>)
             }
@@ -41,11 +41,11 @@ object Kev2GraphML {
     "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" + content.toString
   }
   
-  def toGraphMLFile(stringName : String,model: ContainerRoot)={
+  def toGraphMLFile(stringName : String,model: ContainerRoot) {
     val file = new File(stringName+".graphml")
     val fw = new FileWriter(file)
     fw.write(model)
-    fw.close
+    fw.close()
   }
   
   

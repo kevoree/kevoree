@@ -1,14 +1,12 @@
 package org.kevoree.experiment.trace.gui.alg
 
-import org.kevoree.experiment.modelScript.BootStrapAppComplex
-import org.kevoree.experiment.modelScript.ModelEvolutionApp
-import org.kevoree.experiment.modelScript.NodePacket
 import org.kevoree.experiment.trace.TraceMessages
 import org.greg.server.ForkedGregServer
 import scala.collection.JavaConversions._
 import javax.swing.{JOptionPane, WindowConstants, JFrame}
 import scala.Some
 import java.io._
+import org.kevoree.experiment.modelScript.{ModificationGenerator, BootStrapAppComplex, NodePacket}
 
 object App extends Application {
 
@@ -69,7 +67,7 @@ object App extends Application {
 
   println(inputValue + " current max value found => " + maxVal)
 
-  val modif = new ModelEvolutionApp(ips)
+  val modif = new ModificationGenerator(ips)
   // register listener to be notified from stabilization
 
 
