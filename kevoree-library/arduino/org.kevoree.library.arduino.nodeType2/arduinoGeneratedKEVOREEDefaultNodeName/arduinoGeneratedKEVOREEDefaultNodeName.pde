@@ -45,49 +45,64 @@ class kbindings {
   return true;  
  } 
 };
-class LED : public KevoreeType {
+class TempSensor : public KevoreeType {
  public : 
-QueueList<kmessage> * on;
-QueueList<kmessage> * off;
+float vcc;
+float pad;
+float thermr;
+
+QueueList<kmessage> * trigger;
+QueueList<kmessage> * temp;
 char * pin;
 void init(){
-on = (QueueList<kmessage>*) malloc(sizeof(QueueList<kmessage>));
-if(on){
-   memset(on, 0, sizeof(QueueList<kmessage>));
+trigger = (QueueList<kmessage>*) malloc(sizeof(QueueList<kmessage>));
+if(trigger){
+   memset(trigger, 0, sizeof(QueueList<kmessage>));
 }
-off = (QueueList<kmessage>*) malloc(sizeof(QueueList<kmessage>));
-if(off){
-   memset(off, 0, sizeof(QueueList<kmessage>));
-}
+vcc = 4.91;
+pad = 9850;
+thermr = 10000;
+
 }
 void runInstance(){
-if(!on->isEmpty()){
-kmessage * msg = &(on->pop());
-LED::on_pport(msg);
-}
-if(!off->isEmpty()){
-kmessage * msg = &(off->pop());
-LED::off_pport(msg);
+if(!trigger->isEmpty()){
+kmessage * msg = &(trigger->pop());
+TempSensor::trigger_pport(msg);
 }
 }
-void on_pport(kmessage * msg){
-pinMode(atoi(pin), OUTPUT);digitalWrite(atoi(pin), HIGH);
-
+void temp_rport(kmessage * msg){
+  Serial.println(String(msg->value));
+if(temp){
+temp->push(*msg);
 }
-void off_pport(kmessage * msg){
-pinMode(atoi(pin), OUTPUT);digitalWrite(atoi(pin), LOW);
-
+}
+void trigger_pport(kmessage * msg){
+    long Resistance;  
+    float temp;  // Dual-Purpose variable to save space.
+    int RawADC = analogRead(atoi(pin));
+    Resistance=((1024 * thermr / RawADC) - pad); 
+    temp = log(Resistance); // Saving the Log(resistance) so not to calculate  it 4 times later
+    temp = 1 / (0.001129148 + (0.000234125 * temp) + (0.0000000876741 * temp * temp * temp));
+    temp = temp - 273.15;  // Convert Kelvin to Celsius  
+    //send to output port
+kmessage * smsg = (kmessage*) malloc(sizeof(kmessage));if (smsg){memset(smsg, 0, sizeof(kmessage));}char buf[255];
+sprintf(buf,"%d",int(temp));
+smsg->value = buf;
+smsg->metric="c";temp_rport(smsg);free(smsg);
 }
 char * instanceName;
 };
 class Timer : public KevoreeType {
  public : 
+unsigned long nextExecution;
 QueueList<kmessage> * tick;
 char * period;
 void init(){
+nextExecution = millis();
 }
 void runInstance(){
 kmessage * msg = (kmessage*) malloc(sizeof(kmessage));if (msg){memset(msg, 0, sizeof(kmessage));}tick_rport(msg);free(msg);
+nextExecution += atol(period);
 }
 void tick_rport(kmessage * msg){
 if(tick){
@@ -152,7 +167,7 @@ nbInstances--;return true;
 void updateParam(int index,int typeCode,char * key,char * val){
  switch(typeCode){
 case 1:{
-LED * instance = (LED*) instances[index];
+TempSensor * instance = (TempSensor*) instances[index];
 if(String(key) == "pin"){
 instance->pin = val;
 }
@@ -184,10 +199,10 @@ void updateParams(int index,char* params){
   }
 }
 int createInstance(char* typeName,char* instanceName,char* params){
-if(typeName == "LED"){
-  LED * newInstance = (LED*) malloc(sizeof(LED));
+if(typeName == "TempSensor"){
+  TempSensor * newInstance = (TempSensor*) malloc(sizeof(TempSensor));
   if (newInstance){
-    memset(newInstance, 0, sizeof(LED));
+    memset(newInstance, 0, sizeof(TempSensor));
   } 
   newInstance->instanceName = instanceName;
   newInstance->init();
@@ -232,7 +247,7 @@ void runInstance(int index){
 int typeCode = instances[index]->subTypeCode;
  switch(typeCode){
 case 1:{
-LED * instance = (LED*) instances[index];
+TempSensor * instance = (TempSensor*) instances[index];
 instance->runInstance();
 break;}
 case 2:{
@@ -253,14 +268,13 @@ int componentTypeCode = instances[indexComponent]->subTypeCode;
 int channelTypeCode = instances[indexChannel]->subTypeCode;
  switch(componentTypeCode){
 case 1:{
-LED * instance = (LED*) instances[indexComponent];
-if(String(portName) == "on"){
-   providedPort=instance->on;
+TempSensor * instance = (TempSensor*) instances[indexComponent];
+if(String(portName) == "trigger"){
+   providedPort=instance->trigger;
 componentInstanceName=instance->instanceName;
 }
-if(String(portName) == "off"){
-   providedPort=instance->off;
-componentInstanceName=instance->instanceName;
+if(String(portName) == "temp"){
+   requiredPort=&instance->temp;
 }
 break;}
 case 2:{
@@ -282,18 +296,43 @@ if(requiredPort){
 break;}
 }
 }
+boolean periodicExecution(int index){
+ switch(instances[index]->subTypeCode){
+case 2:{
+return millis() > (((Timer *) instances[index] )->nextExecution);
+}
+}
+return false;
+}
+int getPortQueuesSize(int index){
+ switch(instances[index]->subTypeCode){
+case 1:{
+return (((TempSensor *)instances[index])->trigger->count());
+}
+case 3:{
+return (((LocalChannel *)instances[index])->input->count());
+}
+}
+return 0;
+}
 void setup(){
 Serial.begin(9600);
-int indexhub1893998446 = createInstance("LocalChannel","hub1893998446","");
-int indexLED827713166 = createInstance("LED","LED827713166","pin=8,");
-int indexTimer18823271 = createInstance("Timer","Timer18823271","period=1000,");
-bind(indexLED827713166,indexhub1893998446,"on");
-bind(indexTimer18823271,indexhub1893998446,"tick");
+int indexhub972603619 = createInstance("LocalChannel","hub972603619","");
+int indexTempSensor752027732 = createInstance("TempSensor","TempSensor752027732","pin=0,");
+int indexTimer1691007619 = createInstance("Timer","Timer1691007619","period=1000,");
+bind(indexTimer1691007619,indexhub972603619,"tick");
+bind(indexTempSensor752027732,indexhub972603619,"trigger");
 }
 void loop(){
-delay(1000);
 for(int i=0;i<nbInstances;i++){
-runInstance(i);
+  if(periodicExecution(i)){
+    runInstance(i);
+  }
+}
+for(int i=0;i<nbInstances;i++){
+  if(getPortQueuesSize(i)>0){
+    runInstance(i);
+  }
 }
 }
 

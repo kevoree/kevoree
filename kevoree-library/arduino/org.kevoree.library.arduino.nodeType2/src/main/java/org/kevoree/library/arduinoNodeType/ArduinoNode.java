@@ -80,7 +80,7 @@ public class ArduinoNode extends AbstractNodeType {
                 }
 
                 //TODO REMOVE
-                System.exit(0);
+                //System.exit(0);
 
                 //STEP 3 : Deploy by commnication channel
 

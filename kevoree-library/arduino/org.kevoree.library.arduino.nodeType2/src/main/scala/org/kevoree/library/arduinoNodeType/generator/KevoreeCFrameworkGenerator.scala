@@ -247,9 +247,15 @@ trait KevoreeCFrameworkGenerator extends KevoreeCAbstractGenerator {
  
   def generateLoop : Unit = {
     context b "void loop(){"
-    context b "delay(1000);"//TO REMOVE DEBUG ONLY
     context b "for(int i=0;i<nbInstances;i++){"
-    context b "runInstance(i);"
+    context b "  if(periodicExecution(i)){"
+    context b "    runInstance(i);"
+    context b "  }"
+    context b "}"
+    context b "for(int i=0;i<nbInstances;i++){"
+    context b "  if(getPortQueuesSize(i)>0){"
+    context b "    runInstance(i);"
+    context b "  }"
     context b "}"
     context b "}"  
   }
@@ -267,6 +273,11 @@ trait KevoreeCFrameworkGenerator extends KevoreeCAbstractGenerator {
             dictionary.put(dv.getAttribute.getName, dv.getValue)
           }
         }
+        if(instance.getDictionary != null){
+          instance.getDictionary.getValues.foreach{value =>
+            dictionary.put(value.getAttribute.getName,value.getValue)
+          }
+        }
       }
       val dictionaryResult = new StringBuffer
       dictionary.foreach{dic=> dictionaryResult.append(dic._1+"="+dic._2+",");}
@@ -281,6 +292,57 @@ trait KevoreeCFrameworkGenerator extends KevoreeCAbstractGenerator {
       }
     }
     context b "}"  
+  }
+  
+  def generatePeriodicExecutionMethod(types : List[TypeDefinition]) : Unit = {
+    context b "boolean periodicExecution(int index){"
+    var i = 1
+    context b " switch(instances[index]->subTypeCode){"
+    types.foreach{ktype =>
+      if(ktype.getDictionaryType != null){
+        if(ktype.getDictionaryType.getAttributes.exists(att => att.getName == "period")){
+          context b "case "+i+":{"
+          context b "return millis() > ((("+ktype.getName+" *) instances[index] )->nextExecution);"
+          context b "}" 
+        }
+      }
+      i = i +1
+    }
+    context b "}"//end break
+    context b "return false;"
+    context b "}"//END FONCTION
+  }
+  
+  def generatePortQueuesSizeMethod(types : List[TypeDefinition]) : Unit = {
+    context b "int getPortQueuesSize(int index){"
+    var i = 1
+    context b " switch(instances[index]->subTypeCode){"
+    types.foreach{ktype =>
+      ktype match {
+        case ct :ComponentType => {
+            if(ct.getProvided != null && ct.getProvided.size > 0){
+              context b "case "+i+":{"
+              var computeSize = ""
+              ct.getProvided.foreach{ providedPort =>
+                if(computeSize != ""){computeSize = computeSize + "+"}
+                computeSize = computeSize + "((("+ct.getName+" *)instances[index])->"+providedPort.getName+"->count())"
+              }
+              context b "return "+computeSize+";"
+              context b "}"
+            }
+          }
+        case ct :ChannelType => {
+            context b "case "+i+":{"
+            context b "return ((("+ct.getName+" *)instances[index])->input->count());"
+            context b "}"
+          }
+        case _ =>
+      }
+      i = i +1
+    }
+    context b "}"//end break
+    context b "return 0;"
+    context b "}"//END FONCTION
   }
   
   

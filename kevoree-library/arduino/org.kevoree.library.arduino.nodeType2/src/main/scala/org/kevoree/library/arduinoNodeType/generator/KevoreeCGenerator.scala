@@ -50,6 +50,10 @@ extends KevoreeComponentTypeClassGenerator
     }
     
     generateBindMethod(ktypes)
+    
+    generatePeriodicExecutionMethod(ktypes)
+    generatePortQueuesSizeMethod(ktypes)
+    
     generateSetup(instances,nodeName)
     generateLoop
     

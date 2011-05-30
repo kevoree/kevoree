@@ -21,6 +21,31 @@ trait KevoreeComponentTypeClassGenerator extends KevoreeCAbstractGenerator with 
     //GENERATE CLASS HEADER
     context b "class "+ct.getName+" : public KevoreeType {"
     context b " public : "
+    
+    var nextExecutionMustBeInit = false
+    if(ct.getDictionaryType!=null){
+      if(ct.getDictionaryType.getAttributes.exists(att => att.getName == "period")){
+        context b "unsigned long nextExecution;"
+        nextExecutionMustBeInit = true;
+      }
+    }
+    
+    //INVOKE CLASS HEADER
+    clazz.getMethods.foreach {method =>
+      method.getAnnotations.foreach {annotation =>
+        if (annotation.annotationType.toString.contains("org.kevoree.annotation.Generate")) {
+          val generateAnnotation = annotation.asInstanceOf[KGenerate]
+          if(generateAnnotation.value == "classheader"){
+            var localContext = new StringBuffer
+            method.invoke(instance, localContext)
+            context b localContext.toString
+          }
+        }
+      }
+    }
+    
+    
+    
     ct.getProvided.foreach{ providedPort => //GENERATE PROVIDED PORT QUEUES
       context b "QueueList<kmessage> * "+providedPort.getName+";"
     }
@@ -42,6 +67,22 @@ trait KevoreeComponentTypeClassGenerator extends KevoreeCAbstractGenerator with 
       context b "   memset("+providedPort.getName+", 0, sizeof(QueueList<kmessage>));"
       context b "}"
     }
+    //USER INIT
+    clazz.getMethods.foreach {method =>
+      method.getAnnotations.foreach {annotation =>
+        if (annotation.annotationType.toString.contains("org.kevoree.annotation.Generate")) {
+          val generateAnnotation = annotation.asInstanceOf[KGenerate]
+          if(generateAnnotation.value == "classinit"){
+            var localContext = new StringBuffer
+            method.invoke(instance, localContext)
+            context b localContext.toString
+          }
+        }
+      }
+    }
+    
+    
+    if(nextExecutionMustBeInit){context b "nextExecution = millis();"}
     context b "}" //END INIT METHOD
     
     context b "void runInstance(){" //GENERATE SPECIFIQUE RUN METHOD
@@ -66,9 +107,9 @@ trait KevoreeComponentTypeClassGenerator extends KevoreeCAbstractGenerator with 
       }
     }
     
-    
-    
-    
+    if(nextExecutionMustBeInit){
+      context b "nextExecution += atol(period);"
+    }
     
     context b "}" //END RUN METHOD
 

@@ -1,23 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <kevoree:ContainerRoot xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:kevoree="http://kevoree/1.0">
   <nodes name="KEVOREEDefaultNodeName" typeDefinition="//@typeDefinitions.2" metaData="x=314,y=98">
-    <components name="LED827713166" typeDefinition="//@typeDefinitions.4">
-      <dictionary>
-        <values attribute="//@typeDefinitions.4/@dictionaryType/@attributes.0" value="8"/>
-      </dictionary>
-      <provided portTypeRef="//@typeDefinitions.4/@provided.0"/>
-      <provided portTypeRef="//@typeDefinitions.4/@provided.1"/>
-      <provided portTypeRef="//@typeDefinitions.4/@provided.2"/>
-    </components>
     <components name="Timer18823271" typeDefinition="//@typeDefinitions.0">
       <dictionary>
         <values attribute="//@typeDefinitions.0/@dictionaryType/@attributes.0" value="10000"/>
       </dictionary>
       <required portTypeRef="//@typeDefinitions.0/@required.0"/>
     </components>
-    <components name="PushButton2050948738" typeDefinition="//@typeDefinitions.5">
-      <required portTypeRef="//@typeDefinitions.5/@required.0"/>
-      <required portTypeRef="//@typeDefinitions.5/@required.1"/>
+    <components name="CurrentSensor819774592" typeDefinition="//@typeDefinitions.6">
+      <dictionary>
+        <values attribute="//@typeDefinitions.6/@dictionaryType/@attributes.0" value="1"/>
+      </dictionary>
+      <provided portTypeRef="//@typeDefinitions.6/@provided.0"/>
+      <required portTypeRef="//@typeDefinitions.6/@required.0"/>
     </components>
   </nodes>
   <typeDefinitions xsi:type="kevoree:ComponentType" name="Timer" deployUnits="//@deployUnits.0" factoryBean="org.kevoree.library.sensors.TimerFactory" bean="org.kevoree.library.sensors.Timer" startMethod="start" stopMethod="stop">
@@ -55,19 +50,23 @@
     <required name="click" ref="//@typeDefinitions.1" optional="false" noDependency="false"/>
     <required name="release" ref="//@typeDefinitions.1" optional="false" noDependency="false"/>
   </typeDefinitions>
+  <typeDefinitions xsi:type="kevoree:ComponentType" name="CurrentSensor" deployUnits="//@deployUnits.0" factoryBean="org.kevoree.library.sensors.CurrentSensorFactory" bean="org.kevoree.library.sensors.CurrentSensor" startMethod="dummy" stopMethod="dummy">
+    <dictionaryType>
+      <attributes name="pin" optional="true"/>
+      <defaultValues attribute="//@typeDefinitions.6/@dictionaryType/@attributes.0" value="0"/>
+    </dictionaryType>
+    <required name="currentW" ref="//@typeDefinitions.1" optional="false" noDependency="false"/>
+    <provided name="trigger" ref="//@typeDefinitions.1">
+      <mappings beanMethodName="triggerPort" serviceMethodName="process"/>
+    </provided>
+  </typeDefinitions>
   <repositories units="//@deployUnits.0" url="http://maven.kevoree.org/libs-release-local"/>
   <repositories url="http://scala-tools.org/repo-releases"/>
   <repositories url="http://maven.kevoree.org/release"/>
   <repositories url="http://repo1.maven.org/maven2"/>
-  <libraries name="KevoreeArduino" subTypes="//@typeDefinitions.0 //@typeDefinitions.3 //@typeDefinitions.4 //@typeDefinitions.5"/>
-  <hubs name="hub1309735188" typeDefinition="//@typeDefinitions.3" metaData="x=741,y=185"/>
-  <hubs name="hub1543461968" typeDefinition="//@typeDefinitions.3" metaData="x=111,y=140"/>
-  <hubs name="hub109760904" typeDefinition="//@typeDefinitions.3" metaData="x=100,y=241"/>
-  <mBindings port="//@nodes.0/@components.1/@required.0" hub="//@hubs.0"/>
-  <mBindings port="//@nodes.0/@components.0/@provided.2" hub="//@hubs.0"/>
-  <mBindings port="//@nodes.0/@components.0/@provided.0" hub="//@hubs.1"/>
-  <mBindings port="//@nodes.0/@components.2/@required.0" hub="//@hubs.1"/>
-  <mBindings port="//@nodes.0/@components.0/@provided.1" hub="//@hubs.2"/>
-  <mBindings port="//@nodes.0/@components.2/@required.1" hub="//@hubs.2"/>
-  <deployUnits groupName="org.kevoree.library.arduino" unitName="org.kevoree.library.arduino.components" version="1.1.0-RC2" hashcode="201105291934093" targetNodeType="//@typeDefinitions.2"/>
+  <libraries name="KevoreeArduino" subTypes="//@typeDefinitions.0 //@typeDefinitions.3 //@typeDefinitions.4 //@typeDefinitions.5 //@typeDefinitions.6"/>
+  <hubs name="hub1309735188" typeDefinition="//@typeDefinitions.3" metaData="x=181,y=81"/>
+  <mBindings port="//@nodes.0/@components.0/@required.0" hub="//@hubs.0"/>
+  <mBindings port="//@nodes.0/@components.1/@provided.0" hub="//@hubs.0"/>
+  <deployUnits groupName="org.kevoree.library.arduino" unitName="org.kevoree.library.arduino.components" version="1.1.0-RC2" hashcode="201105291959073" targetNodeType="//@typeDefinitions.2"/>
 </kevoree:ContainerRoot>
