@@ -26,14 +26,12 @@ public class LCDDisplay extends AbstractComponentType {
 
     @Generate("classheader")
     public void generateClassHeader(StringBuffer context) {
-        context.append("#include <LiquidCrystal.h> \n");
         context.append("LiquidCrystal * lcd;\n");
     }
 
     @Generate("classinit")
     public void generateClassInit(StringBuffer context) {
-        context.append("#include <LiquidCrystal.h> \n");
-        context.append("LiquidCrystal lcd(10, 11, 12, 13, 14, 15, 16);\n");
+        context.append("lcd = &LiquidCrystal lcd(10, 11, 12, 13, 14, 15, 16);\n");
     }
 
     @Generate("setup")
