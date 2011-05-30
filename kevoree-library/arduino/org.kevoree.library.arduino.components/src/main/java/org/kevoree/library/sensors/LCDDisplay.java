@@ -30,19 +30,18 @@ public class LCDDisplay extends AbstractComponentType {
     }
 
     @Generate("classinit")
-    public void generateClassInit(StringBuffer context) {
-        context.append("lcd = &LiquidCrystal lcd(10, 11, 12, 13, 14, 15, 16);\n");
-    }
-
-    @Generate("setup")
-    public void generateSetup(StringBuffer context) {
-        context.append("lcd.begin(16, 2);\n");
+    public void generateClassInit(StringBuffer context) {     
+        context.append("lcd = (LiquidCrystal*) malloc(sizeof(LiquidCrystal));\n");
+        context.append("if (lcd){memset(lcd, 0, sizeof(LiquidCrystal));}");
+        context.append("LiquidCrystal lcdObj(10, 11, 12, 13, 14, 15, 16);");
+        context.append("memcpy (lcd,&lcdObj,sizeof(LiquidCrystal));");
+        context.append("lcd->begin(16, 2);");
     }
 
     @Port(name = "input")
     public void inputPort(Object o) {
         StringBuffer context = (StringBuffer) o;
-        context.append("lcd.clear();\n");
-        context.append("lcd.print(param);\n");
+        context.append("lcd->clear();\n");
+        context.append("lcd->print(String(msg->value)+String(\":\")+String(msg->metric));\n");
     }
 }

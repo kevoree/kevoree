@@ -11,8 +11,7 @@ import java.awt.geom.Rectangle2D
 
 object AppPath extends Application {
 
-
-  var input: InputStream = this.getClass.getClassLoader.getResourceAsStream("./trace_out")
+  var input: InputStream = this.getClass.getClassLoader.getResourceAsStream("./trace_out.concurrency.-notification")
   var traces: TraceMessages.Traces = TraceMessages.Traces.parseFrom(input)
   var linkedTrace = TracePath.getPathFrom("kspark0", 3, traces)
   linkedTrace match {

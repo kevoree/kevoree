@@ -43,7 +43,19 @@ trait KevoreeComponentTypeClassGenerator extends KevoreeCAbstractGenerator with 
         }
       }
     }
-    
+    //INVOKE GLOABL HEADER
+    clazz.getMethods.foreach {method =>
+      method.getAnnotations.foreach {annotation =>
+        if (annotation.annotationType.toString.contains("org.kevoree.annotation.Generate")) {
+          val generateAnnotation = annotation.asInstanceOf[KGenerate]
+          if(generateAnnotation.value == "header"){
+            var localContext = new StringBuffer
+            method.invoke(instance, localContext)
+            context h localContext.toString
+          }
+        }
+      }
+    }   
     
     
     ct.getProvided.foreach{ providedPort => //GENERATE PROVIDED PORT QUEUES
@@ -147,7 +159,7 @@ trait KevoreeComponentTypeClassGenerator extends KevoreeCAbstractGenerator with 
       context b "}";
     }
 
-    context b "char * instanceName;" //GENERATE INSTANCE ATTRIBUTES
+   // context b "char * instanceName;" //GENERATE INSTANCE ATTRIBUTES
     context b "};" //END CLASS
   }
   

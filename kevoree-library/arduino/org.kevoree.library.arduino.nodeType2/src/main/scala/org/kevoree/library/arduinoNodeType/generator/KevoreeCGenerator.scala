@@ -18,7 +18,8 @@ import scala.collection.JavaConversions._
 class KevoreeCGenerator 
 extends KevoreeComponentTypeClassGenerator
    with KevoreeCFrameworkGenerator
-   with KevoreeChannelTypeClassGenerator {
+   with KevoreeChannelTypeClassGenerator
+  with KevoreeCRemoteAdminGenerator {
 
   def generate(adaptModel: AdaptationModel, nodeName: String,outputDir : String,bundleContext : BundleContext)= {    
     this.generateKcFramework
@@ -50,9 +51,14 @@ extends KevoreeComponentTypeClassGenerator
     }
     
     generateBindMethod(ktypes)
+    generateUnBindMethod(ktypes)
     
     generatePeriodicExecutionMethod(ktypes)
     generatePortQueuesSizeMethod(ktypes)
+    
+    generateNameToIndexMethod()
+    generateConcatKevscriptParser()
+    generateCheckForAdminMsg();
     
     generateSetup(instances,nodeName)
     generateLoop

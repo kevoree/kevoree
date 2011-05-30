@@ -118,7 +118,7 @@ trait KevoreeChannelTypeClassGenerator extends KevoreeCAbstractGenerator with Ke
       
      }*/
 
-    context b "char * instanceName;" //GENERATE INSTANCE ATTRIBUTES
+    //context b "char * instanceName;" //GENERATE INSTANCE ATTRIBUTES
     context b "};" //END CLASS
   }
   

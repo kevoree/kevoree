@@ -1,7 +1,9 @@
 #include <QueueList.h>
+#include <LiquidCrystal.h> 
+
 
 struct kmessage {char* value;char* metric;};
-class KevoreeType { public : char* subTypeName; int subTypeCode; };
+class KevoreeType { public : char* subTypeName; int subTypeCode; char * instanceName; };
 struct kbinding { char* instanceName;char * portName; QueueList<kmessage> * port;   };
 class kbindings {
  public:
@@ -45,52 +47,30 @@ class kbindings {
   return true;  
  } 
 };
-class TempSensor : public KevoreeType {
+class LCDDisplay : public KevoreeType {
  public : 
-float vcc;
-float pad;
-float thermr;
+LiquidCrystal * lcd;
 
-QueueList<kmessage> * trigger;
-QueueList<kmessage> * temp;
-char * pin;
+QueueList<kmessage> * input;
 void init(){
-trigger = (QueueList<kmessage>*) malloc(sizeof(QueueList<kmessage>));
-if(trigger){
-   memset(trigger, 0, sizeof(QueueList<kmessage>));
+input = (QueueList<kmessage>*) malloc(sizeof(QueueList<kmessage>));
+if(input){
+   memset(input, 0, sizeof(QueueList<kmessage>));
 }
-vcc = 4.91;
-pad = 9850;
-thermr = 10000;
-
+lcd = (LiquidCrystal*) malloc(sizeof(LiquidCrystal));
+if (lcd){memset(lcd, 0, sizeof(LiquidCrystal));}LiquidCrystal lcdObj(10, 11, 12, 13, 14, 15, 16);memcpy (lcd,&lcdObj,sizeof(LiquidCrystal));lcd->begin(16, 2);
 }
 void runInstance(){
-if(!trigger->isEmpty()){
-kmessage * msg = &(trigger->pop());
-TempSensor::trigger_pport(msg);
+if(!input->isEmpty()){
+kmessage * msg = &(input->pop());
+LCDDisplay::input_pport(msg);
 }
 }
-void temp_rport(kmessage * msg){
-  Serial.println(String(msg->value));
-if(temp){
-temp->push(*msg);
+void input_pport(kmessage * msg){
+lcd->clear();
+lcd->print(String(msg->value)+String(":")+String(msg->metric));
+
 }
-}
-void trigger_pport(kmessage * msg){
-    long Resistance;  
-    float temp;  // Dual-Purpose variable to save space.
-    int RawADC = analogRead(atoi(pin));
-    Resistance=((1024 * thermr / RawADC) - pad); 
-    temp = log(Resistance); // Saving the Log(resistance) so not to calculate  it 4 times later
-    temp = 1 / (0.001129148 + (0.000234125 * temp) + (0.0000000876741 * temp * temp * temp));
-    temp = temp - 273.15;  // Convert Kelvin to Celsius  
-    //send to output port
-kmessage * smsg = (kmessage*) malloc(sizeof(kmessage));if (smsg){memset(smsg, 0, sizeof(kmessage));}char buf[255];
-sprintf(buf,"%d",int(temp));
-smsg->value = buf;
-smsg->metric="c";temp_rport(smsg);free(smsg);
-}
-char * instanceName;
 };
 class Timer : public KevoreeType {
  public : 
@@ -101,7 +81,9 @@ void init(){
 nextExecution = millis();
 }
 void runInstance(){
-kmessage * msg = (kmessage*) malloc(sizeof(kmessage));if (msg){memset(msg, 0, sizeof(kmessage));}tick_rport(msg);free(msg);
+kmessage * msg = (kmessage*) malloc(sizeof(kmessage));
+if (msg){memset(msg, 0, sizeof(kmessage));}
+msg->value = "tick";msg->metric = "t";tick_rport(msg);free(msg);
 nextExecution += atol(period);
 }
 void tick_rport(kmessage * msg){
@@ -109,7 +91,6 @@ if(tick){
 tick->push(*msg);
 }
 }
-char * instanceName;
 };
 class LocalChannel : public KevoreeType {
  public : 
@@ -134,7 +115,6 @@ LocalChannel::dispatch(msg);
 void dispatch(kmessage * msg){
 for(int i=0;i<bindings->nbBindings;i++){    bindings->bindings[i]->port->push(*msg);}
 }
-char * instanceName;
 };
 KevoreeType ** instances; //GLOBAL INSTANCE DYNAMIC ARRAY
 int nbInstances = 0; //GLOBAL NB INSTANCE
@@ -167,10 +147,7 @@ nbInstances--;return true;
 void updateParam(int index,int typeCode,char * key,char * val){
  switch(typeCode){
 case 1:{
-TempSensor * instance = (TempSensor*) instances[index];
-if(String(key) == "pin"){
-instance->pin = val;
-}
+LCDDisplay * instance = (LCDDisplay*) instances[index];
 break;}
 case 2:{
 Timer * instance = (Timer*) instances[index];
@@ -199,10 +176,10 @@ void updateParams(int index,char* params){
   }
 }
 int createInstance(char* typeName,char* instanceName,char* params){
-if(typeName == "TempSensor"){
-  TempSensor * newInstance = (TempSensor*) malloc(sizeof(TempSensor));
+if(typeName == "LCDDisplay"){
+  LCDDisplay * newInstance = (LCDDisplay*) malloc(sizeof(LCDDisplay));
   if (newInstance){
-    memset(newInstance, 0, sizeof(TempSensor));
+    memset(newInstance, 0, sizeof(LCDDisplay));
   } 
   newInstance->instanceName = instanceName;
   newInstance->init();
@@ -247,7 +224,7 @@ void runInstance(int index){
 int typeCode = instances[index]->subTypeCode;
  switch(typeCode){
 case 1:{
-TempSensor * instance = (TempSensor*) instances[index];
+LCDDisplay * instance = (LCDDisplay*) instances[index];
 instance->runInstance();
 break;}
 case 2:{
@@ -268,13 +245,10 @@ int componentTypeCode = instances[indexComponent]->subTypeCode;
 int channelTypeCode = instances[indexChannel]->subTypeCode;
  switch(componentTypeCode){
 case 1:{
-TempSensor * instance = (TempSensor*) instances[indexComponent];
-if(String(portName) == "trigger"){
-   providedPort=instance->trigger;
+LCDDisplay * instance = (LCDDisplay*) instances[indexComponent];
+if(String(portName) == "input"){
+   providedPort=instance->input;
 componentInstanceName=instance->instanceName;
-}
-if(String(portName) == "temp"){
-   requiredPort=&instance->temp;
 }
 break;}
 case 2:{
@@ -296,6 +270,9 @@ if(requiredPort){
 break;}
 }
 }
+void unbind(int indexComponent,int indexChannel,char * portName){
+Serial.println("Not supported yet !");
+}
 boolean periodicExecution(int index){
  switch(instances[index]->subTypeCode){
 case 2:{
@@ -307,7 +284,7 @@ return false;
 int getPortQueuesSize(int index){
  switch(instances[index]->subTypeCode){
 case 1:{
-return (((TempSensor *)instances[index])->trigger->count());
+return (((LCDDisplay *)instances[index])->input->count());
 }
 case 3:{
 return (((LocalChannel *)instances[index])->input->count());
@@ -315,13 +292,77 @@ return (((LocalChannel *)instances[index])->input->count());
 }
 return 0;
 }
+  int getIndexFromName(char * id){
+ for(int i=0;i<nbInstances;i++){
+  if(String(instances[i]->instanceName) == id){ return i; }
+ } 
+ return -1;
+}
+    boolean parseForAdminMsg(char * msgToTest){
+  String adminMsg = String(msgToTest);
+  if(adminMsg.length() < 3){return false;}
+  if(adminMsg.charAt(0) == 'b' && adminMsg.charAt(1) == '{' ){
+     int i = 2;
+     char currentChar = adminMsg.charAt(i);
+     char block[1000];
+     while(currentChar != '}' && currentChar != ' '){
+      block[i-2] = currentChar;
+      i++;currentChar = adminMsg.charAt(i);
+     }
+     block[i-2] = ' ';   
+     char * str;
+     char *p = block;
+     while ((str = strtok_r(p, "/", &p)) != NULL){
+      char * str2;
+      char* values[5];
+      int valueIndex = 0;
+      while ((str2 = strtok_r(str, ":", &str)) != NULL){
+        values[valueIndex] = str2;
+        valueIndex ++;
+      }  
+      if(String(values[0]) == "aco" && valueIndex  >= 3){//ACO CHECK
+        if(valueIndex == 4){
+           createInstance(values[2],values[1],values[3]);
+        } else {
+           createInstance(values[2],values[1],""); 
+        }
+      } //END ACO CHECK      
+      if(String(values[0]) == "abi" && valueIndex  == 4){//ACO CHECK
+           bind(getIndexFromName(values[1]),getIndexFromName(values[2]),values[3]);
+      } //END ACO CHECK     
+      if(String(values[0]) == "rbi" && valueIndex  == 4){//ACO CHECK
+           unbind(getIndexFromName(values[1]),getIndexFromName(values[2]),values[3]);
+      } //END ACO CHECK   
+     }
+     return true;
+  }
+  return false;
+}
+  int serialIndex = 0;
+  char inBytes[1000];
+void checkForAdminMsg(){
+  while(Serial.available()>0 && serialIndex < 1000) {
+      inBytes[serialIndex] = Serial.read();
+      if (inBytes[serialIndex] == '\n' || inBytes[serialIndex] == ';') {
+        inBytes[serialIndex] = '\0';
+Serial.println(inBytes);
+        parseForAdminMsg(inBytes);
+        serialIndex = 0;
+      } else {
+        serialIndex++;
+      }
+  }
+  if(serialIndex >= 1000){
+      serialIndex = 0;
+  }
+}
 void setup(){
 Serial.begin(9600);
-int indexhub972603619 = createInstance("LocalChannel","hub972603619","");
-int indexTempSensor752027732 = createInstance("TempSensor","TempSensor752027732","pin=0,");
-int indexTimer1691007619 = createInstance("Timer","Timer1691007619","period=1000,");
-bind(indexTimer1691007619,indexhub972603619,"tick");
-bind(indexTempSensor752027732,indexhub972603619,"trigger");
+int indexhub770604526 = createInstance("LocalChannel","hub770604526","");
+int indexLCDDisplay1841411741 = createInstance("LCDDisplay","LCDDisplay1841411741","");
+int indexTimer1126388677 = createInstance("Timer","Timer1126388677","period=1000,");
+bind(indexTimer1126388677,indexhub770604526,"tick");
+bind(indexLCDDisplay1841411741,indexhub770604526,"input");
 }
 void loop(){
 for(int i=0;i<nbInstances;i++){
@@ -334,6 +375,7 @@ for(int i=0;i<nbInstances;i++){
     runInstance(i);
   }
 }
+checkForAdminMsg();
 }
 
 

@@ -6,7 +6,6 @@ package org.kevoree.library.sensors;
 
 import org.kevoree.annotation.*;
 import org.kevoree.framework.AbstractComponentType;
-import org.kevoree.library.arduinoNodeType.ArduinoMethodHelper;
 
 /**
  *
@@ -30,8 +29,10 @@ public class Timer extends AbstractComponentType {
 
     @Generate("periodic")
     public void generatePeriodic(StringBuffer context) {
-        context.append("kmessage * msg = (kmessage*) malloc(sizeof(kmessage));");
-        context.append("if (msg){memset(msg, 0, sizeof(kmessage));}");  
+        context.append("kmessage * msg = (kmessage*) malloc(sizeof(kmessage));\n");
+        context.append("if (msg){memset(msg, 0, sizeof(kmessage));}\n"); 
+        context.append("msg->value = \"tick\";");
+        context.append("msg->metric = \"t\";");
         context.append("tick_rport(msg);");  
         context.append("free(msg);");
     }

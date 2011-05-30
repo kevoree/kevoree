@@ -21,7 +21,7 @@ trait KevoreeCFrameworkGenerator extends KevoreeCAbstractGenerator {
   def generateKcFramework : Unit = {  
     context h "#include <QueueList.h>"
     context b "struct kmessage {char* value;char* metric;};"
-    context b "class KevoreeType { public : char* subTypeName; int subTypeCode; };"  
+    context b "class KevoreeType { public : char* subTypeName; int subTypeCode; char * instanceName; };"  
     
     //GENERATE kbinding framework
     context b "struct kbinding { char* instanceName;char * portName; QueueList<kmessage> * port;   };"
@@ -165,7 +165,7 @@ trait KevoreeCFrameworkGenerator extends KevoreeCAbstractGenerator {
     context b "int createInstance(char* typeName,char* instanceName,char* params){"
     var i = 1;
     types.foreach{ ktype =>
-      context b "if(typeName == \""+ktype.getName+"\"){"
+      context b "if(String(typeName) == \""+ktype.getName+"\"){"
       context b "  "+ktype.getName+" * newInstance = ("+ktype.getName+"*) malloc(sizeof("+ktype.getName+"));"
       context b "  if (newInstance){"
       context b "    memset(newInstance, 0, sizeof("+ktype.getName+"));"
@@ -182,6 +182,14 @@ trait KevoreeCFrameworkGenerator extends KevoreeCAbstractGenerator {
       i = i + 1
     }
     context b " return -1;"
+    context b "}"
+  }
+  
+  def generateUnBindMethod(types : List[TypeDefinition]) : Unit = {
+    context b "void unbind(int indexComponent,int indexChannel,char * portName){"
+    
+    context b "Serial.println(\"Not supported yet !\");"
+    
     context b "}"
   }
   
@@ -257,6 +265,7 @@ trait KevoreeCFrameworkGenerator extends KevoreeCAbstractGenerator {
     context b "    runInstance(i);"
     context b "  }"
     context b "}"
+    context b "checkForAdminMsg();"
     context b "}"  
   }
   
@@ -343,6 +352,15 @@ trait KevoreeCFrameworkGenerator extends KevoreeCAbstractGenerator {
     context b "}"//end break
     context b "return 0;"
     context b "}"//END FONCTION
+  }
+  
+  def generateNameToIndexMethod() : Unit = {
+    context b "  int getIndexFromName(char * id){"
+    context b " for(int i=0;i<nbInstances;i++){"
+    context b "  if(String(instances[i]->instanceName) == id){ return i; }"
+    context b " } "
+    context b " return -1;"
+    context b "}"
   }
   
   
