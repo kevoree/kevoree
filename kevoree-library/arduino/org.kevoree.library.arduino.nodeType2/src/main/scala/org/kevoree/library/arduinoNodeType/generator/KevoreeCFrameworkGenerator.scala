@@ -12,7 +12,6 @@ import org.kevoree.ComponentType
 import org.kevoree.ContainerNode
 import org.kevoree.ContainerRoot
 import org.kevoree.Instance
-import org.kevoree.MBinding
 import org.kevoree.TypeDefinition
 import scala.collection.JavaConversions._
 
@@ -21,7 +20,7 @@ trait KevoreeCFrameworkGenerator extends KevoreeCAbstractGenerator {
   def generateKcFramework : Unit = {  
     context h "#include <QueueList.h>"
     context b "struct kmessage {char* value;char* metric;};"
-    context b "class KevoreeType { public : char* subTypeName; int subTypeCode; char * instanceName; };"  
+    context b "class KevoreeType { public : char subTypeName[50]; int subTypeCode; char instanceName[50]; };"  
     
     //GENERATE kbinding framework
     context b "struct kbinding { char* instanceName;char * portName; QueueList<kmessage> * port;   };"
@@ -114,7 +113,9 @@ trait KevoreeCFrameworkGenerator extends KevoreeCAbstractGenerator {
       if(ktype.getDictionaryType != null){
         ktype.getDictionaryType.getAttributes.foreach{ attribute =>
           context b "if(String(key) == \""+attribute.getName+"\"){"
-          context b "instance->"+attribute.getName+" = val;"
+          //context b "instance->"+attribute.getName+" = val;"
+          context b "strcpy (instance->"+attribute.getName+",val);"
+          
           context b "}"
         }
       }
@@ -170,10 +171,10 @@ trait KevoreeCFrameworkGenerator extends KevoreeCAbstractGenerator {
       context b "  if (newInstance){"
       context b "    memset(newInstance, 0, sizeof("+ktype.getName+"));"
       context b "  } "
-      context b "  newInstance->instanceName = instanceName;"
+      context b "  strcpy(newInstance->instanceName,instanceName);"
       context b "  newInstance->init();"
       context b "  tempInstance = newInstance;"
-      context b "  tempInstance->subTypeName = typeName; "
+      context b "  strcpy(tempInstance->subTypeName,typeName); "
       context b "  tempInstance->subTypeCode = "+i+"; "
       context b "  int newIndex = addInstance();"
       context b "  updateParams(newIndex,params);"

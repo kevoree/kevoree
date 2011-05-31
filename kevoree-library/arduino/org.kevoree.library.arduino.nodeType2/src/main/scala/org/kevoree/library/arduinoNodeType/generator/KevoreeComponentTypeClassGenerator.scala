@@ -68,7 +68,7 @@ trait KevoreeComponentTypeClassGenerator extends KevoreeCAbstractGenerator with 
     //GENERATE DICTIONARY VALUES POINTERS
     if(ct.getDictionaryType != null){
       ct.getDictionaryType.getAttributes.foreach{ attribute =>
-        context b "char * "+attribute.getName+";"
+        context b "char "+attribute.getName+"[50];"
       }
     }
 

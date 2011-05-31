@@ -1,9 +1,7 @@
 #include <QueueList.h>
-#include <LiquidCrystal.h> 
-
 
 struct kmessage {char* value;char* metric;};
-class KevoreeType { public : char* subTypeName; int subTypeCode; char * instanceName; };
+class KevoreeType { public : char subTypeName[50]; int subTypeCode; char instanceName[50]; };
 struct kbinding { char* instanceName;char * portName; QueueList<kmessage> * port;   };
 class kbindings {
  public:
@@ -47,36 +45,11 @@ class kbindings {
   return true;  
  } 
 };
-class LCDDisplay : public KevoreeType {
- public : 
-LiquidCrystal * lcd;
-
-QueueList<kmessage> * input;
-void init(){
-input = (QueueList<kmessage>*) malloc(sizeof(QueueList<kmessage>));
-if(input){
-   memset(input, 0, sizeof(QueueList<kmessage>));
-}
-lcd = (LiquidCrystal*) malloc(sizeof(LiquidCrystal));
-if (lcd){memset(lcd, 0, sizeof(LiquidCrystal));}LiquidCrystal lcdObj(10, 11, 12, 13, 14, 15, 16);memcpy (lcd,&lcdObj,sizeof(LiquidCrystal));lcd->begin(16, 2);
-}
-void runInstance(){
-if(!input->isEmpty()){
-kmessage * msg = &(input->pop());
-LCDDisplay::input_pport(msg);
-}
-}
-void input_pport(kmessage * msg){
-lcd->clear();
-lcd->print(String(msg->value)+String(":")+String(msg->metric));
-
-}
-};
 class Timer : public KevoreeType {
  public : 
 unsigned long nextExecution;
 QueueList<kmessage> * tick;
-char * period;
+char period[50];
 void init(){
 nextExecution = millis();
 }
@@ -90,6 +63,56 @@ void tick_rport(kmessage * msg){
 if(tick){
 tick->push(*msg);
 }
+}
+};
+class DigitalLight : public KevoreeType {
+ public : 
+boolean state ;
+
+QueueList<kmessage> * on;
+QueueList<kmessage> * off;
+QueueList<kmessage> * toggle;
+char pin[50];
+void init(){
+on = (QueueList<kmessage>*) malloc(sizeof(QueueList<kmessage>));
+if(on){
+   memset(on, 0, sizeof(QueueList<kmessage>));
+}
+off = (QueueList<kmessage>*) malloc(sizeof(QueueList<kmessage>));
+if(off){
+   memset(off, 0, sizeof(QueueList<kmessage>));
+}
+toggle = (QueueList<kmessage>*) malloc(sizeof(QueueList<kmessage>));
+if(toggle){
+   memset(toggle, 0, sizeof(QueueList<kmessage>));
+}
+}
+void runInstance(){
+if(!on->isEmpty()){
+kmessage * msg = &(on->pop());
+DigitalLight::on_pport(msg);
+}
+if(!off->isEmpty()){
+kmessage * msg = &(off->pop());
+DigitalLight::off_pport(msg);
+}
+if(!toggle->isEmpty()){
+kmessage * msg = &(toggle->pop());
+DigitalLight::toggle_pport(msg);
+}
+}
+void on_pport(kmessage * msg){
+pinMode(atoi(pin), OUTPUT);digitalWrite(atoi(pin), HIGH);
+
+}
+void off_pport(kmessage * msg){
+pinMode(atoi(pin), OUTPUT);digitalWrite(atoi(pin), LOW);
+
+}
+void toggle_pport(kmessage * msg){
+int newState = 0;
+if(state){ newState = LOW; } else { newState=HIGH; }state = ! state; pinMode(atoi(pin), OUTPUT);digitalWrite(atoi(pin), newState);
+
 }
 };
 class LocalChannel : public KevoreeType {
@@ -147,12 +170,15 @@ nbInstances--;return true;
 void updateParam(int index,int typeCode,char * key,char * val){
  switch(typeCode){
 case 1:{
-LCDDisplay * instance = (LCDDisplay*) instances[index];
-break;}
-case 2:{
 Timer * instance = (Timer*) instances[index];
 if(String(key) == "period"){
-instance->period = val;
+strcpy (instance->period,val);
+}
+break;}
+case 2:{
+DigitalLight * instance = (DigitalLight*) instances[index];
+if(String(key) == "pin"){
+strcpy (instance->pin,val);
 }
 break;}
 case 3:{
@@ -176,43 +202,43 @@ void updateParams(int index,char* params){
   }
 }
 int createInstance(char* typeName,char* instanceName,char* params){
-if(typeName == "LCDDisplay"){
-  LCDDisplay * newInstance = (LCDDisplay*) malloc(sizeof(LCDDisplay));
+if(String(typeName) == "Timer"){
+  Timer * newInstance = (Timer*) malloc(sizeof(Timer));
   if (newInstance){
-    memset(newInstance, 0, sizeof(LCDDisplay));
+    memset(newInstance, 0, sizeof(Timer));
   } 
-  newInstance->instanceName = instanceName;
+  strcpy(newInstance->instanceName,instanceName);
   newInstance->init();
   tempInstance = newInstance;
-  tempInstance->subTypeName = typeName; 
+  strcpy(tempInstance->subTypeName,typeName); 
   tempInstance->subTypeCode = 1; 
   int newIndex = addInstance();
   updateParams(newIndex,params);
   return newIndex;
 }
-if(typeName == "Timer"){
-  Timer * newInstance = (Timer*) malloc(sizeof(Timer));
+if(String(typeName) == "DigitalLight"){
+  DigitalLight * newInstance = (DigitalLight*) malloc(sizeof(DigitalLight));
   if (newInstance){
-    memset(newInstance, 0, sizeof(Timer));
+    memset(newInstance, 0, sizeof(DigitalLight));
   } 
-  newInstance->instanceName = instanceName;
+  strcpy(newInstance->instanceName,instanceName);
   newInstance->init();
   tempInstance = newInstance;
-  tempInstance->subTypeName = typeName; 
+  strcpy(tempInstance->subTypeName,typeName); 
   tempInstance->subTypeCode = 2; 
   int newIndex = addInstance();
   updateParams(newIndex,params);
   return newIndex;
 }
-if(typeName == "LocalChannel"){
+if(String(typeName) == "LocalChannel"){
   LocalChannel * newInstance = (LocalChannel*) malloc(sizeof(LocalChannel));
   if (newInstance){
     memset(newInstance, 0, sizeof(LocalChannel));
   } 
-  newInstance->instanceName = instanceName;
+  strcpy(newInstance->instanceName,instanceName);
   newInstance->init();
   tempInstance = newInstance;
-  tempInstance->subTypeName = typeName; 
+  strcpy(tempInstance->subTypeName,typeName); 
   tempInstance->subTypeCode = 3; 
   int newIndex = addInstance();
   updateParams(newIndex,params);
@@ -224,11 +250,11 @@ void runInstance(int index){
 int typeCode = instances[index]->subTypeCode;
  switch(typeCode){
 case 1:{
-LCDDisplay * instance = (LCDDisplay*) instances[index];
+Timer * instance = (Timer*) instances[index];
 instance->runInstance();
 break;}
 case 2:{
-Timer * instance = (Timer*) instances[index];
+DigitalLight * instance = (DigitalLight*) instances[index];
 instance->runInstance();
 break;}
 case 3:{
@@ -245,16 +271,24 @@ int componentTypeCode = instances[indexComponent]->subTypeCode;
 int channelTypeCode = instances[indexChannel]->subTypeCode;
  switch(componentTypeCode){
 case 1:{
-LCDDisplay * instance = (LCDDisplay*) instances[indexComponent];
-if(String(portName) == "input"){
-   providedPort=instance->input;
-componentInstanceName=instance->instanceName;
-}
-break;}
-case 2:{
 Timer * instance = (Timer*) instances[indexComponent];
 if(String(portName) == "tick"){
    requiredPort=&instance->tick;
+}
+break;}
+case 2:{
+DigitalLight * instance = (DigitalLight*) instances[indexComponent];
+if(String(portName) == "on"){
+   providedPort=instance->on;
+componentInstanceName=instance->instanceName;
+}
+if(String(portName) == "off"){
+   providedPort=instance->off;
+componentInstanceName=instance->instanceName;
+}
+if(String(portName) == "toggle"){
+   providedPort=instance->toggle;
+componentInstanceName=instance->instanceName;
 }
 break;}
 }
@@ -275,7 +309,7 @@ Serial.println("Not supported yet !");
 }
 boolean periodicExecution(int index){
  switch(instances[index]->subTypeCode){
-case 2:{
+case 1:{
 return millis() > (((Timer *) instances[index] )->nextExecution);
 }
 }
@@ -283,8 +317,8 @@ return false;
 }
 int getPortQueuesSize(int index){
  switch(instances[index]->subTypeCode){
-case 1:{
-return (((LCDDisplay *)instances[index])->input->count());
+case 2:{
+return (((DigitalLight *)instances[index])->on->count())+(((DigitalLight *)instances[index])->off->count())+(((DigitalLight *)instances[index])->toggle->count());
 }
 case 3:{
 return (((LocalChannel *)instances[index])->input->count());
@@ -304,7 +338,7 @@ return 0;
   if(adminMsg.charAt(0) == 'b' && adminMsg.charAt(1) == '{' ){
      int i = 2;
      char currentChar = adminMsg.charAt(i);
-     char block[1000];
+     char * block = (char *)calloc(200,sizeof (char));
      while(currentChar != '}' && currentChar != ' '){
       block[i-2] = currentChar;
       i++;currentChar = adminMsg.charAt(i);
@@ -333,15 +367,18 @@ return 0;
       if(String(values[0]) == "rbi" && valueIndex  == 4){//ACO CHECK
            unbind(getIndexFromName(values[1]),getIndexFromName(values[2]),values[3]);
       } //END ACO CHECK   
+      if(String(values[0]) == "udi" && valueIndex  == 3){//ACO CHECK
+           updateParams(getIndexFromName(values[1]),values[2]);
+      } //END ACO CHECK   
      }
-     return true;
+     free(block);return true;
   }
   return false;
 }
   int serialIndex = 0;
-  char inBytes[1000];
+  char inBytes[200];
 void checkForAdminMsg(){
-  while(Serial.available()>0 && serialIndex < 1000) {
+  while(Serial.available()>0 && serialIndex < 200) {
       inBytes[serialIndex] = Serial.read();
       if (inBytes[serialIndex] == '\n' || inBytes[serialIndex] == ';') {
         inBytes[serialIndex] = '\0';
@@ -352,17 +389,17 @@ Serial.println(inBytes);
         serialIndex++;
       }
   }
-  if(serialIndex >= 1000){
+  if(serialIndex >= 200){
       serialIndex = 0;
   }
 }
 void setup(){
 Serial.begin(9600);
-int indexhub770604526 = createInstance("LocalChannel","hub770604526","");
-int indexLCDDisplay1841411741 = createInstance("LCDDisplay","LCDDisplay1841411741","");
-int indexTimer1126388677 = createInstance("Timer","Timer1126388677","period=1000,");
-bind(indexTimer1126388677,indexhub770604526,"tick");
-bind(indexLCDDisplay1841411741,indexhub770604526,"input");
+int indexhub92542879 = createInstance("LocalChannel","hub92542879","");
+int indext1 = createInstance("Timer","t1","period=1000,");
+int indexDigitalLight1823264205 = createInstance("DigitalLight","DigitalLight1823264205","pin=9,");
+bind(indext1,indexhub92542879,"tick");
+bind(indexDigitalLight1823264205,indexhub92542879,"toggle");
 }
 void loop(){
 for(int i=0;i<nbInstances;i++){
