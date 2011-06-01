@@ -1,0 +1,8 @@
+
+tblock {
+
+ addNode myJavaNode : ArduinoNode { boardTypeName = "uno" }
+ addComponent myFakeLight1@myJavaNode : FakeSimpleLight { param1="hello",param2="helloP2"}
+ updateDictionary myFakeLight1@myJavaNode { param2="helloP2Updated" }
+
+ }
