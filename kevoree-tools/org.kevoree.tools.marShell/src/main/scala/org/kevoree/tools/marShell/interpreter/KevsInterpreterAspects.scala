@@ -43,6 +43,8 @@ object KevsInterpreterAspects {
         case removeNodest : RemoveNodeStatment => KevsRemoveNodeInterpreter(removeNodest)
         case addBinding : AddBindingStatment => KevsAddBindingInterpreter(addBinding)
         case removeBinding : RemoveBindingStatment => KevsRemoveBindingInterpreter(removeBinding)
+          
+        case updateDictionary : UpdateDictionaryStatement => KevsUpdateDictionaryInterpreter(updateDictionary)
 
         case addGroup : AddGroupStatment => KevsAddGroupInterpreter(addGroup)
         case removeGroup : RemoveGroupStatment => KevsRemoveGroupInterpreter(removeGroup)

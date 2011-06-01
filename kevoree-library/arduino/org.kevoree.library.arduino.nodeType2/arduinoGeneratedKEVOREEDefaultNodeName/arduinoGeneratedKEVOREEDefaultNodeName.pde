@@ -1,20 +1,55 @@
 #include <QueueList.h>
+#include <avr/pgmspace.h>
+//Global Kevoree Type Defintion declaration
+prog_char digitallight[] PROGMEM = "DigitalLight";
+prog_char timer[] PROGMEM = "Timer";
+prog_char localchannel[] PROGMEM = "LocalChannel";
+PROGMEM const char * typedefinition[] = { 
+digitallight
+,timer
+,localchannel
+};
+//Global Kevoree Port Type Defintion declaration
+prog_char on[] PROGMEM = "on";
+prog_char off[] PROGMEM = "off";
+prog_char toggle[] PROGMEM = "toggle";
+prog_char tick[] PROGMEM = "tick";
+PROGMEM const char * portdefinition[] = { 
+on
+,off
+,toggle
+,tick
+};
 
+const int nbPortType = 4;
+int getIDFromPortName(char * portName){
+  for(int i=0;i<nbPortType;i++){
+   if(strcmp_P(portName, (char*)pgm_read_word(&(portdefinition[i]))  )==0) { return i; }
+  }
+  return -1;
+}
+const int nbTypeDef = 3;
+int getIDFromType(char * typeName){
+  for(int i=0;i<nbTypeDef;i++){
+   if(strcmp_P(typeName, (char*)pgm_read_word(&(typedefinition[i]))  )==0) { return i; }
+  }
+  return -1;
+}
 struct kmessage {char* value;char* metric;};
-class KevoreeType { public : char subTypeName[50]; int subTypeCode; char instanceName[50]; };
-struct kbinding { char* instanceName;char * portName; QueueList<kmessage> * port;   };
+class KevoreeType { public : int subTypeCode; char instanceName[50]; };
+struct kbinding { char instanceName[50];int portCode; QueueList<kmessage> * port;   };
 class kbindings {
  public:
  kbinding ** bindings;
  int nbBindings;
  void init(){ nbBindings = 0; }
- int addBinding( char * instanceName , char * portName , QueueList<kmessage> * port){
+ int addBinding( char * instanceName , int portCode , QueueList<kmessage> * port){
    kbinding * newBinding = (kbinding*) malloc(sizeof(kbinding));
    if(newBinding){
       memset(newBinding, 0, sizeof(kbinding));
    }
-   newBinding->instanceName = instanceName;
-   newBinding->portName = portName;
+   strcpy(newBinding->instanceName,instanceName);
+   newBinding->portCode,portCode;
    newBinding->port = port;
    kbinding ** newBindings =  (kbinding**) malloc(  (nbBindings+1) * sizeof(kbinding*) );
    if (!newBindings) { return -1;}
@@ -25,14 +60,14 @@ class kbindings {
    nbBindings ++;
    return nbBindings-1;
  }
- boolean removeBinding( char * instanceName , char * portName ){
+ boolean removeBinding( char * instanceName , int portCode ){
    //SEARCH INDEX
    int indexToRemove = -1;
    for(int i=0;i<nbBindings;i++){
      kbinding * binding = bindings[i];
-     if(binding->instanceName == instanceName && binding->portName == portName){ indexToRemove = i; }
+     if( String(binding->instanceName) == String(instanceName) && binding->portCode == portCode){ indexToRemove = i; }
    }
-   if(indexToRemove == -1){return -1;}
+   if(indexToRemove == -1){return -1;} else { free(bindings[indexToRemove]); }
    kbinding** newBindings =  (kbinding**) malloc(  (nbBindings-1) *sizeof(kbinding*) );
    if (!newBindings) { return false;}
    for (int idx=0;idx < nbBindings ; idx++ ){ 
@@ -44,25 +79,9 @@ class kbindings {
   nbBindings--;
   return true;  
  } 
-};
-class Timer : public KevoreeType {
- public : 
-unsigned long nextExecution;
-QueueList<kmessage> * tick;
-char period[50];
-void init(){
-nextExecution = millis();
-}
-void runInstance(){
-kmessage * msg = (kmessage*) malloc(sizeof(kmessage));
-if (msg){memset(msg, 0, sizeof(kmessage));}
-msg->value = "tick";msg->metric = "t";tick_rport(msg);free(msg);
-nextExecution += atol(period);
-}
-void tick_rport(kmessage * msg){
-if(tick){
-tick->push(*msg);
-}
+void destroy(){
+ for(int i=0;i<nbBindings;i++){ free(bindings[i]); } 
+ free(bindings);
 }
 };
 class DigitalLight : public KevoreeType {
@@ -86,6 +105,11 @@ toggle = (QueueList<kmessage>*) malloc(sizeof(QueueList<kmessage>));
 if(toggle){
    memset(toggle, 0, sizeof(QueueList<kmessage>));
 }
+}
+void destroy(){
+free(on);
+free(off);
+free(toggle);
 }
 void runInstance(){
 if(!on->isEmpty()){
@@ -115,6 +139,28 @@ if(state){ newState = LOW; } else { newState=HIGH; }state = ! state; pinMode(ato
 
 }
 };
+class Timer : public KevoreeType {
+ public : 
+unsigned long nextExecution;
+QueueList<kmessage> * tick;
+char period[50];
+void init(){
+nextExecution = millis();
+}
+void destroy(){
+}
+void runInstance(){
+kmessage * msg = (kmessage*) malloc(sizeof(kmessage));
+if (msg){memset(msg, 0, sizeof(kmessage));}
+msg->value = "tick";msg->metric = "t";tick_rport(msg);free(msg);
+nextExecution += atol(period);
+}
+void tick_rport(kmessage * msg){
+if(tick){
+tick->push(*msg);
+}
+}
+};
 class LocalChannel : public KevoreeType {
  public : 
 QueueList<kmessage> * input;
@@ -128,6 +174,11 @@ bindings = (kbindings *) malloc(sizeof(kbindings));
 if(bindings){
    memset(bindings, 0, sizeof(kbindings));
 }
+}
+void destroy(){
+free(input);
+bindings->destroy();
+free(bindings);
 }
 void runInstance(){
 if(!input->isEmpty()){
@@ -157,6 +208,7 @@ int addInstance(){ //TECHNICAL HELPER ADD INSTANCE
   return -1;
 }
 boolean removeInstance(int index){
+destroyInstance(index);
 KevoreeType** newInstances =  (KevoreeType**) malloc(  (nbInstances-1) *sizeof(KevoreeType*) );
 if (!newInstances) { return false;}
 for (int idx=0;idx < nbInstances ; idx++ ){ 
@@ -167,18 +219,33 @@ if(instances){ free(instances); }
 instances = newInstances; 
 nbInstances--;return true;
 }
+boolean destroyInstance(int index){
+KevoreeType * instance = instances[index];
+ switch(instance->subTypeCode){
+case 1:{
+((DigitalLight*) instances[index])->destroy();
+break;}
+case 2:{
+((Timer*) instances[index])->destroy();
+break;}
+case 3:{
+((LocalChannel*) instances[index])->destroy();
+break;}
+}
+free(instance);
+}
 void updateParam(int index,int typeCode,char * key,char * val){
  switch(typeCode){
 case 1:{
-Timer * instance = (Timer*) instances[index];
-if(String(key) == "period"){
-strcpy (instance->period,val);
-}
-break;}
-case 2:{
 DigitalLight * instance = (DigitalLight*) instances[index];
 if(String(key) == "pin"){
 strcpy (instance->pin,val);
+}
+break;}
+case 2:{
+Timer * instance = (Timer*) instances[index];
+if(String(key) == "period"){
+strcpy (instance->period,val);
 }
 break;}
 case 3:{
@@ -201,22 +268,9 @@ void updateParams(int index,char* params){
     updateParam(index,typeCode,keyval[0],keyval[1]);
   }
 }
-int createInstance(char* typeName,char* instanceName,char* params){
-if(String(typeName) == "Timer"){
-  Timer * newInstance = (Timer*) malloc(sizeof(Timer));
-  if (newInstance){
-    memset(newInstance, 0, sizeof(Timer));
-  } 
-  strcpy(newInstance->instanceName,instanceName);
-  newInstance->init();
-  tempInstance = newInstance;
-  strcpy(tempInstance->subTypeName,typeName); 
-  tempInstance->subTypeCode = 1; 
-  int newIndex = addInstance();
-  updateParams(newIndex,params);
-  return newIndex;
-}
-if(String(typeName) == "DigitalLight"){
+int createInstance(int typeCode,char* instanceName,char* params){
+switch(typeCode){
+case 0:{
   DigitalLight * newInstance = (DigitalLight*) malloc(sizeof(DigitalLight));
   if (newInstance){
     memset(newInstance, 0, sizeof(DigitalLight));
@@ -224,13 +278,25 @@ if(String(typeName) == "DigitalLight"){
   strcpy(newInstance->instanceName,instanceName);
   newInstance->init();
   tempInstance = newInstance;
-  strcpy(tempInstance->subTypeName,typeName); 
-  tempInstance->subTypeCode = 2; 
+  tempInstance->subTypeCode = 0; 
   int newIndex = addInstance();
   updateParams(newIndex,params);
   return newIndex;
-}
-if(String(typeName) == "LocalChannel"){
+break;}
+case 1:{
+  Timer * newInstance = (Timer*) malloc(sizeof(Timer));
+  if (newInstance){
+    memset(newInstance, 0, sizeof(Timer));
+  } 
+  strcpy(newInstance->instanceName,instanceName);
+  newInstance->init();
+  tempInstance = newInstance;
+  tempInstance->subTypeCode = 1; 
+  int newIndex = addInstance();
+  updateParams(newIndex,params);
+  return newIndex;
+break;}
+case 2:{
   LocalChannel * newInstance = (LocalChannel*) malloc(sizeof(LocalChannel));
   if (newInstance){
     memset(newInstance, 0, sizeof(LocalChannel));
@@ -238,11 +304,11 @@ if(String(typeName) == "LocalChannel"){
   strcpy(newInstance->instanceName,instanceName);
   newInstance->init();
   tempInstance = newInstance;
-  strcpy(tempInstance->subTypeName,typeName); 
-  tempInstance->subTypeCode = 3; 
+  tempInstance->subTypeCode = 2; 
   int newIndex = addInstance();
   updateParams(newIndex,params);
   return newIndex;
+break;}
 }
  return -1;
 }
@@ -250,11 +316,11 @@ void runInstance(int index){
 int typeCode = instances[index]->subTypeCode;
  switch(typeCode){
 case 1:{
-Timer * instance = (Timer*) instances[index];
+DigitalLight * instance = (DigitalLight*) instances[index];
 instance->runInstance();
 break;}
 case 2:{
-DigitalLight * instance = (DigitalLight*) instances[index];
+Timer * instance = (Timer*) instances[index];
 instance->runInstance();
 break;}
 case 3:{
@@ -263,7 +329,7 @@ instance->runInstance();
 break;}
 }
 }
-void bind(int indexComponent,int indexChannel,char * portName){
+void bind(int indexComponent,int indexChannel,int portCode){
 QueueList<kmessage> * providedPort = 0;
 QueueList<kmessage> ** requiredPort = 0;
 char * componentInstanceName;
@@ -271,24 +337,28 @@ int componentTypeCode = instances[indexComponent]->subTypeCode;
 int channelTypeCode = instances[indexChannel]->subTypeCode;
  switch(componentTypeCode){
 case 1:{
-Timer * instance = (Timer*) instances[indexComponent];
-if(String(portName) == "tick"){
-   requiredPort=&instance->tick;
+DigitalLight * instance = (DigitalLight*) instances[indexComponent];
+switch(portCode){
+case 0:{
+   providedPort=instance->on;
+componentInstanceName=instance->instanceName;
+break;}
+case 1:{
+   providedPort=instance->off;
+componentInstanceName=instance->instanceName;
+break;}
+case 2:{
+   providedPort=instance->toggle;
+componentInstanceName=instance->instanceName;
+break;}
 }
 break;}
 case 2:{
-DigitalLight * instance = (DigitalLight*) instances[indexComponent];
-if(String(portName) == "on"){
-   providedPort=instance->on;
-componentInstanceName=instance->instanceName;
-}
-if(String(portName) == "off"){
-   providedPort=instance->off;
-componentInstanceName=instance->instanceName;
-}
-if(String(portName) == "toggle"){
-   providedPort=instance->toggle;
-componentInstanceName=instance->instanceName;
+Timer * instance = (Timer*) instances[indexComponent];
+switch(portCode){
+case 3:{
+   requiredPort=&instance->tick;
+break;}
 }
 break;}
 }
@@ -296,7 +366,7 @@ break;}
 case 3:{
 LocalChannel * instance = (LocalChannel*) instances[indexChannel];
 if(providedPort){
-instance->bindings->addBinding(componentInstanceName,portName,providedPort);
+instance->bindings->addBinding(componentInstanceName,portCode,providedPort);
 }
 if(requiredPort){
 *requiredPort = instance->input;
@@ -304,12 +374,30 @@ if(requiredPort){
 break;}
 }
 }
-void unbind(int indexComponent,int indexChannel,char * portName){
-Serial.println("Not supported yet !");
+void unbind(int indexComponent,int indexChannel,int portCode){
+QueueList<kmessage> ** requiredPort = 0;
+ switch(instances[indexComponent]->subTypeCode){
+case 2:{
+switch(portCode){
+case 3:{
+   requiredPort=&(((Timer*)instances[indexComponent])->tick);
+break;}
+}
+break;}
+}
+if(requiredPort){
+     *requiredPort=NULL;
+} else {
+ switch(instances[indexChannel]->subTypeCode){
+case 3:{
+((LocalChannel*)instances[indexChannel])->bindings->removeBinding(instances[indexComponent]->instanceName,portCode);
+break;}
+}
+}
 }
 boolean periodicExecution(int index){
  switch(instances[index]->subTypeCode){
-case 1:{
+case 2:{
 return millis() > (((Timer *) instances[index] )->nextExecution);
 }
 }
@@ -317,7 +405,7 @@ return false;
 }
 int getPortQueuesSize(int index){
  switch(instances[index]->subTypeCode){
-case 2:{
+case 1:{
 return (((DigitalLight *)instances[index])->on->count())+(((DigitalLight *)instances[index])->off->count())+(((DigitalLight *)instances[index])->toggle->count());
 }
 case 3:{
@@ -332,74 +420,99 @@ return 0;
  } 
  return -1;
 }
-    boolean parseForAdminMsg(char * msgToTest){
-  String adminMsg = String(msgToTest);
-  if(adminMsg.length() < 3){return false;}
-  if(adminMsg.charAt(0) == 'b' && adminMsg.charAt(1) == '{' ){
-     int i = 2;
-     char currentChar = adminMsg.charAt(i);
-     char * block = (char *)calloc(200,sizeof (char));
-     while(currentChar != '}' && currentChar != ' '){
-      block[i-2] = currentChar;
-      i++;currentChar = adminMsg.charAt(i);
-     }
-     block[i-2] = ' ';   
-     char * str;
-     char *p = block;
-     while ((str = strtok_r(p, "/", &p)) != NULL){
-      char * str2;
-      char* values[5];
-      int valueIndex = 0;
-      while ((str2 = strtok_r(str, ":", &str)) != NULL){
-        values[valueIndex] = str2;
-        valueIndex ++;
-      }  
-      if(String(values[0]) == "aco" && valueIndex  >= 3){//ACO CHECK
-        if(valueIndex == 4){
-           createInstance(values[2],values[1],values[3]);
-        } else {
-           createInstance(values[2],values[1],""); 
-        }
-      } //END ACO CHECK      
-      if(String(values[0]) == "abi" && valueIndex  == 4){//ACO CHECK
-           bind(getIndexFromName(values[1]),getIndexFromName(values[2]),values[3]);
-      } //END ACO CHECK     
-      if(String(values[0]) == "rbi" && valueIndex  == 4){//ACO CHECK
-           unbind(getIndexFromName(values[1]),getIndexFromName(values[2]),values[3]);
-      } //END ACO CHECK   
-      if(String(values[0]) == "udi" && valueIndex  == 3){//ACO CHECK
-           updateParams(getIndexFromName(values[1]),values[2]);
-      } //END ACO CHECK   
-     }
-     free(block);return true;
-  }
-  return false;
-}
-  int serialIndex = 0;
-  char inBytes[200];
-void checkForAdminMsg(){
-  while(Serial.available()>0 && serialIndex < 200) {
-      inBytes[serialIndex] = Serial.read();
-      if (inBytes[serialIndex] == '\n' || inBytes[serialIndex] == ';') {
-        inBytes[serialIndex] = '\0';
-Serial.println(inBytes);
-        parseForAdminMsg(inBytes);
-        serialIndex = 0;
-      } else {
-        serialIndex++;
-      }
-  }
-  if(serialIndex >= 200){
-      serialIndex = 0;
-  }
-}
+//ARDUINO SERIAL INPUT READ 
+#define BUFFERSIZE 100      
+int serialIndex = 0;        
+char inBytes[BUFFERSIZE];   
+void checkForAdminMsg(){     
+  if(Serial.available()>0 && serialIndex < BUFFERSIZE) { 
+    inBytes[serialIndex] = Serial.read();                 
+    if (inBytes[serialIndex] == '\n' || inBytes[serialIndex] == ';') {  
+              inBytes[serialIndex] = ' ';  
+              parseForAdminMsg();                
+               for(int i=0;i<serialIndex;i++){   
+                    inBytes[serialIndex];       
+                }                               
+                serialIndex = 0;                
+               Serial.println(freeRam());        
+    } else {      
+      serialIndex++;   
+    }       
+  }          
+  if(serialIndex >= BUFFERSIZE){   
+    Serial.println("Buffer overflow");  
+      for(int i=0;i<serialIndex;i++){   
+          inBytes[serialIndex];         
+      }                                
+      serialIndex = 0;                
+  }                                   
+}                                    
+char * insID;  
+char * typeID; 
+char * params;   
+char * chID;        
+char * portID;            
+const char delims[] = ":";    
+boolean parseForAdminMsg(){       
+  if(serialIndex < 7){return false;}    
+  Serial.println(inBytes);          
+  if(inBytes[0] == 'b' && inBytes[1] == '{' && inBytes[serialIndex-1] == '}'  ){  
+    inBytes[serialIndex-1] = '\0';   
+    if( inBytes[2]=='u' && inBytes[3]=='d' && inBytes[4]=='i' && inBytes[5]==':' ){  
+      insID = strtok(&inBytes[6], delims);  
+      params = strtok(NULL, delims);    
+      updateParams(getIndexFromName(insID),params);   
+      return true;      
+    }   
+    if( inBytes[2]=='a' && inBytes[3]=='i' && inBytes[4]=='n' && inBytes[5]==':' ){ 
+      insID = strtok(&inBytes[6], delims); 
+      typeID = strtok(NULL, delims);
+      params = strtok(NULL, delims); 
+      Serial.println(insID);
+      Serial.println(typeID); 
+      Serial.println(params); 
+      //createInstance(typeID,insID,params);  
+      return true;
+    }      
+    if( inBytes[2]=='r' && inBytes[3]=='i' && inBytes[4]=='n' && inBytes[5]==':' ){    
+      insID = strtok(&inBytes[6], delims);   
+      Serial.println(insID);                
+      //removeInstance(getIndexFromName(insID));  
+      return true;   
+    }               
+    if( inBytes[2]=='a' && inBytes[3]=='b' && inBytes[4]=='i' && inBytes[5]==':' ){   
+      insID = strtok(&inBytes[6], delims);                                             
+      chID = strtok(NULL, delims);                                                      
+      portID = strtok(NULL, delims);                                                     
+      Serial.println(insID);                                                              
+      Serial.println(chID);                                                                
+      Serial.println(portID);                                                               
+      //bind(getIndexFromName(insID),getIndexFromName(chID),portID);                         
+      return true;                                                                            
+    }                                                                                         
+    if( inBytes[2]=='r' && inBytes[3]=='b' && inBytes[4]=='i' && inBytes[5]==':' ){           
+      insID = strtok(&inBytes[6], delims);                                                    
+      chID = strtok(NULL, delims);                                                            
+      portID = strtok(NULL, delims);                                                          
+      Serial.println(insID);                                                                  
+      Serial.println(chID);                                                                   
+      Serial.println(portID);                                                                 
+      //unbind(getIndexFromName(insID),getIndexFromName(chID),portID);                        
+      return true;                                                                            
+    }                                                                                         
+  }                                                                                           
+  return false;                                                                               
+}                                                                                             
 void setup(){
 Serial.begin(9600);
-int indexhub92542879 = createInstance("LocalChannel","hub92542879","");
-int indext1 = createInstance("Timer","t1","period=1000,");
-int indexDigitalLight1823264205 = createInstance("DigitalLight","DigitalLight1823264205","pin=9,");
-bind(indext1,indexhub92542879,"tick");
-bind(indexDigitalLight1823264205,indexhub92542879,"toggle");
+int indexhub846068439 = createInstance(2,"hub846068439","");
+int indexDigitalLight138771701 = createInstance(0,"DigitalLight138771701","pin=9,");
+int indext1 = createInstance(1,"t1","period=1000,");
+int indexDigitalLight1083761075 = createInstance(0,"DigitalLight1083761075","pin=10,");
+bind(indexDigitalLight138771701,indexhub846068439,2);
+bind(indext1,indexhub846068439,3);
+bind(indexDigitalLight1083761075,indexhub846068439,2);
+Serial.println(freeRam());
 }
 void loop(){
 for(int i=0;i<nbInstances;i++){
@@ -413,6 +526,11 @@ for(int i=0;i<nbInstances;i++){
   }
 }
 checkForAdminMsg();
+}
+    int freeRam () {
+ extern int __heap_start, *__brkval;
+  int v;
+  return (int) &v - (__brkval == 0 ? (int) &__heap_start : (int) __brkval);
 }
 
 

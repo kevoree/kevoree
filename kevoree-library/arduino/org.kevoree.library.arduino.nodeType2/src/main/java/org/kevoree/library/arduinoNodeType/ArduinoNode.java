@@ -25,6 +25,8 @@ import org.wayoda.ang.project.TargetDirectoryService;
 
 import javax.swing.*;
 import org.kevoree.library.arduinoNodeType.generator.KevoreeCGenerator;
+import org.kevoreeAdaptation.AdaptationPrimitive;
+import org.kevoreeAdaptation.TypeAdaptation;
 
 @NodeType
 @Library(name = "KevoreeNodeType")
@@ -164,20 +166,35 @@ public class ArduinoNode extends AbstractNodeType {
     @Override
     public boolean deploy(AdaptationModel model, String nodeName) {
 
-        //Step : Type Bundle preparation step
-        if (bcontext != null) {
-
-            System.out.println("Install Type definition");
-
-            TypeBundleBootstrap.bootstrapTypeBundle(model, bcontext);
-        } else {
-            System.out.println("Warning no OSGi runtime available");
+        boolean typeAdaptationFound = false;
+        for (AdaptationPrimitive p : model.getAdaptations()) {
+            if (p instanceof TypeAdaptation) {
+                typeAdaptationFound = true;
+            }
         }
 
-        //Step : Generate firmware code to output path
+        if (typeAdaptationFound) {
+            System.out.println("Type adaptation detected -> full firmware update needed !");
+            //Step : Type Bundle preparation step
+            if (bcontext != null) {
+                System.out.println("Install Type definition");
+                TypeBundleBootstrap.bootstrapTypeBundle(model, bcontext);
+            } else {
+                System.out.println("Warning no OSGi runtime available");
+            }
+            //Step : Generate firmware code to output path
+            KevoreeCGenerator generator = new KevoreeCGenerator();
+            generator.generate(model, nodeName, outputPath, bcontext);
+        } else {
+            System.out.println("incremental update availble -> try to generate KevScript !");
+            
+            
+        }
 
-        KevoreeCGenerator generator = new KevoreeCGenerator();
-        generator.generate(model, nodeName, outputPath, bcontext);
+
+
+
+
 
         return true;
     }

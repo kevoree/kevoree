@@ -45,6 +45,28 @@ trait KevoreeChannelTypeClassGenerator extends KevoreeCAbstractGenerator with Ke
 
     context b "}" //END INIT METHOD
     
+    context b "void destroy(){" //GENERATE DESTROY METHOD
+    //USER DESTROY
+    clazz.getMethods.foreach {method =>
+      method.getAnnotations.foreach {annotation =>
+        if (annotation.annotationType.toString.contains("org.kevoree.annotation.Generate")) {
+          val generateAnnotation = annotation.asInstanceOf[KGenerate]
+          if(generateAnnotation.value == "classdestroy"){
+            var localContext = new StringBuffer
+            method.invoke(instance, localContext)
+            context b localContext.toString
+          }
+        }
+      }
+    }
+    context b "free(input);"
+    context b "bindings->destroy();"
+    context b "free(bindings);"
+    context b "}" //END DESTROY METHOD
+    
+    
+    
+    
     context b "void runInstance(){" //GENERATE SPECIFIQUE RUN METHOD
     context b "if(!input->isEmpty()){"
     context b "kmessage * msg = &(input->pop());"

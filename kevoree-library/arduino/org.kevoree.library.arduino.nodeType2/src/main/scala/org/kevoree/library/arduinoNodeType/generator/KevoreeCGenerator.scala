@@ -19,13 +19,20 @@ class KevoreeCGenerator
 extends KevoreeComponentTypeClassGenerator
    with KevoreeCFrameworkGenerator
    with KevoreeChannelTypeClassGenerator
-  with KevoreeCRemoteAdminGenerator {
+   with KevoreeCRemoteAdminGenerator {
 
   def generate(adaptModel: AdaptationModel, nodeName: String,outputDir : String,bundleContext : BundleContext)= {    
-    this.generateKcFramework
+    
     val componentTypes = adaptModel.getAdaptations.filter(adt => adt.isInstanceOf[AddType] && adt.asInstanceOf[AddType].getRef.isInstanceOf[ComponentType] )
     val channelTypes = adaptModel.getAdaptations.filter(adt => adt.isInstanceOf[AddType] && adt.asInstanceOf[AddType].getRef.isInstanceOf[ChannelType] )
+    var ktypes : List[TypeDefinition] = List()
+    componentTypes.foreach{ctype=> ktypes = ktypes ++ List(ctype.asInstanceOf[AddType].getRef)}
+    channelTypes.foreach{ctype=> ktypes = ktypes ++ List(ctype.asInstanceOf[AddType].getRef)}
     
+    generateKcFrameworkHeaders(ktypes)
+    generateKcConstMethods(ktypes);
+    generateKcFramework
+
     componentTypes.foreach{componentTypeAdaptation =>
       generateComponentType(componentTypeAdaptation.asInstanceOf[AddType].getRef.asInstanceOf[ComponentType],bundleContext)
     }
@@ -34,11 +41,10 @@ extends KevoreeComponentTypeClassGenerator
     }
     
     
-    var ktypes : List[TypeDefinition] = List()
-    componentTypes.foreach{ctype=> ktypes = ktypes ++ List(ctype.asInstanceOf[AddType].getRef)}
-    channelTypes.foreach{ctype=> ktypes = ktypes ++ List(ctype.asInstanceOf[AddType].getRef)}
+
     
     generateGlobalInstanceState
+    generateDestroyInstanceMethod(ktypes)
     generateParamMethod(ktypes)
     generateParamsMethod
     generateGlobalInstanceFactory(ktypes)
@@ -57,11 +63,15 @@ extends KevoreeComponentTypeClassGenerator
     generatePortQueuesSizeMethod(ktypes)
     
     generateNameToIndexMethod()
+    
+    generateCheckForAdminMsg()
     generateConcatKevscriptParser()
-    generateCheckForAdminMsg();
     
     generateSetup(instances,nodeName)
     generateLoop
+    
+    
+    generateFreeRamMethod
     
     
     //GENERATE OUTPUT FILE

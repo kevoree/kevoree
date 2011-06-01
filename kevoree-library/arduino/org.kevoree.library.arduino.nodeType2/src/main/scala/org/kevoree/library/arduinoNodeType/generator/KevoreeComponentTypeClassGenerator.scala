@@ -92,10 +92,32 @@ trait KevoreeComponentTypeClassGenerator extends KevoreeCAbstractGenerator with 
         }
       }
     }
-    
-    
     if(nextExecutionMustBeInit){context b "nextExecution = millis();"}
     context b "}" //END INIT METHOD
+    
+    
+    context b "void destroy(){" //GENERATE DESTROY METHOD
+    ct.getProvided.foreach{ providedPort =>
+      context b "free("+providedPort.getName+");"
+    }
+    //USER DESTROY
+    clazz.getMethods.foreach {method =>
+      method.getAnnotations.foreach {annotation =>
+        if (annotation.annotationType.toString.contains("org.kevoree.annotation.Generate")) {
+          val generateAnnotation = annotation.asInstanceOf[KGenerate]
+          if(generateAnnotation.value == "classdestroy"){
+            var localContext = new StringBuffer
+            method.invoke(instance, localContext)
+            context b localContext.toString
+          }
+        }
+      }
+    }
+    context b "}" //END DESTROY METHOD
+    
+    
+    
+
     
     context b "void runInstance(){" //GENERATE SPECIFIQUE RUN METHOD
     ct.getProvided.foreach{ providedPort =>
@@ -159,7 +181,7 @@ trait KevoreeComponentTypeClassGenerator extends KevoreeCAbstractGenerator with 
       context b "}";
     }
 
-   // context b "char * instanceName;" //GENERATE INSTANCE ATTRIBUTES
+    // context b "char * instanceName;" //GENERATE INSTANCE ATTRIBUTES
     context b "};" //END CLASS
   }
   
