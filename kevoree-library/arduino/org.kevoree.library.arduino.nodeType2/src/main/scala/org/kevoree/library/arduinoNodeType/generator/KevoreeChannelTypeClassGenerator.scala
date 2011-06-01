@@ -29,7 +29,7 @@ trait KevoreeChannelTypeClassGenerator extends KevoreeCAbstractGenerator with Ke
     //GENERATE DICTIONARY VALUES POINTERS
     if(ct.getDictionaryType != null){
       ct.getDictionaryType.getAttributes.foreach{ attribute =>
-        context b "char "+attribute.getName+"[50];"
+        context b "char "+attribute.getName+"[20];"
       }
     }
 

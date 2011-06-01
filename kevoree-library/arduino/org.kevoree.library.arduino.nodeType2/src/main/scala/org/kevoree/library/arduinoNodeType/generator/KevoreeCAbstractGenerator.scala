@@ -24,7 +24,7 @@ trait KevoreeCAbstractGenerator {
   
   val portCodeMap = new scala.collection.mutable.HashMap[String,Int]()
   val typeCodeMap = new scala.collection.mutable.HashMap[String,Int]()
-  
+  val propsCodeMap = new scala.collection.mutable.HashMap[String,Int]()
 }
 class GeneratorContext {
   

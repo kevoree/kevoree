@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <kevoree:ContainerRoot xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:kevoree="http://kevoree/1.0">
-  <nodes name="KEVOREEDefaultNodeName" typeDefinition="//@typeDefinitions.0" metaData="x=455,y=233">
-    <dictionary>
-      <values attribute="//@typeDefinitions.0/@dictionaryType/@attributes.0" value="atmega328"/>
-    </dictionary>
+  <nodes name="KEVOREEDefaultNodeName" typeDefinition="//@typeDefinitions.0" metaData="x=283,y=35">
+    <dictionary/>
     <components name="led1" typeDefinition="//@typeDefinitions.6">
       <dictionary>
         <values attribute="//@typeDefinitions.6/@dictionaryType/@attributes.0" value="9"/>
@@ -12,12 +10,6 @@
       <provided portTypeRef="//@typeDefinitions.6/@provided.1"/>
       <provided portTypeRef="//@typeDefinitions.6/@provided.2"/>
     </components>
-    <components name="t1" typeDefinition="//@typeDefinitions.3">
-      <dictionary>
-        <values attribute="//@typeDefinitions.3/@dictionaryType/@attributes.0" value="1000"/>
-      </dictionary>
-      <required portTypeRef="//@typeDefinitions.3/@required.0"/>
-    </components>
     <components name="led2" typeDefinition="//@typeDefinitions.6">
       <dictionary>
         <values attribute="//@typeDefinitions.6/@dictionaryType/@attributes.0" value="10"/>
@@ -25,6 +17,32 @@
       <provided portTypeRef="//@typeDefinitions.6/@provided.0"/>
       <provided portTypeRef="//@typeDefinitions.6/@provided.1"/>
       <provided portTypeRef="//@typeDefinitions.6/@provided.2"/>
+    </components>
+    <components name="led3" typeDefinition="//@typeDefinitions.6">
+      <dictionary>
+        <values attribute="//@typeDefinitions.6/@dictionaryType/@attributes.0" value="11"/>
+      </dictionary>
+      <provided portTypeRef="//@typeDefinitions.6/@provided.0"/>
+      <provided portTypeRef="//@typeDefinitions.6/@provided.1"/>
+      <provided portTypeRef="//@typeDefinitions.6/@provided.2"/>
+    </components>
+    <components name="led4" typeDefinition="//@typeDefinitions.6">
+      <dictionary>
+        <values attribute="//@typeDefinitions.6/@dictionaryType/@attributes.0" value="12"/>
+      </dictionary>
+      <provided portTypeRef="//@typeDefinitions.6/@provided.0"/>
+      <provided portTypeRef="//@typeDefinitions.6/@provided.1"/>
+      <provided portTypeRef="//@typeDefinitions.6/@provided.2"/>
+    </components>
+    <components name="t1" typeDefinition="//@typeDefinitions.3">
+      <dictionary/>
+      <required portTypeRef="//@typeDefinitions.3/@required.0"/>
+    </components>
+    <components name="t2" typeDefinition="//@typeDefinitions.3">
+      <dictionary>
+        <values attribute="//@typeDefinitions.3/@dictionaryType/@attributes.0" value="500"/>
+      </dictionary>
+      <required portTypeRef="//@typeDefinitions.3/@required.0"/>
     </components>
   </nodes>
   <typeDefinitions xsi:type="kevoree:NodeType" name="ArduinoNode" deployUnits="//@deployUnits.0" factoryBean="org.kevoree.library.arduinoNodeType.ArduinoNodeFactory" bean="org.kevoree.library.arduinoNodeType.ArduinoNode">
@@ -109,11 +127,15 @@
   <repositories url="http://repo1.maven.org/maven2"/>
   <libraries name="KevoreeNodeType" subTypes="//@typeDefinitions.0"/>
   <libraries name="KevoreeArduino" subTypes="//@typeDefinitions.1 //@typeDefinitions.3 //@typeDefinitions.4 //@typeDefinitions.5 //@typeDefinitions.6 //@typeDefinitions.7 //@typeDefinitions.8 //@typeDefinitions.9"/>
-  <hubs name="hub1" typeDefinition="//@typeDefinitions.8" metaData="x=256,y=342"/>
-  <mBindings port="//@nodes.0/@components.0/@provided.2" hub="//@hubs.0"/>
-  <mBindings port="//@nodes.0/@components.1/@required.0" hub="//@hubs.0"/>
+  <hubs name="hub2" typeDefinition="//@typeDefinitions.8" metaData="x=15,y=492"/>
+  <hubs name="hub1" typeDefinition="//@typeDefinitions.8" metaData="x=80,y=154"/>
+  <mBindings port="//@nodes.0/@components.4/@required.0" hub="//@hubs.0"/>
+  <mBindings port="//@nodes.0/@components.3/@provided.2" hub="//@hubs.0"/>
   <mBindings port="//@nodes.0/@components.2/@provided.2" hub="//@hubs.0"/>
-  <deployUnits groupName="org.kevoree.library.arduino" unitName="org.kevoree.library.arduino.nodeType2" version="1.1.0-RC2" hashcode="201105301230947" requiredLibs="//@deployUnits.1" targetNodeType="//@typeDefinitions.0"/>
+  <mBindings port="//@nodes.0/@components.5/@required.0" hub="//@hubs.1"/>
+  <mBindings port="//@nodes.0/@components.1/@provided.2" hub="//@hubs.1"/>
+  <mBindings port="//@nodes.0/@components.0/@provided.2" hub="//@hubs.1"/>
+  <deployUnits groupName="org.kevoree.library.arduino" unitName="org.kevoree.library.arduino.nodeType2" version="1.1.0-RC2" hashcode="201105311522744" requiredLibs="//@deployUnits.1" targetNodeType="//@typeDefinitions.0"/>
   <deployUnits name="org.kevoree.extra.org.kevoree.extra.osgi.rxtx" url="mvn:org.kevoree.extra/org.kevoree.extra.osgi.rxtx/2.2.0" targetNodeType="//@typeDefinitions.0"/>
   <deployUnits groupName="org.kevoree.library.arduino" unitName="org.kevoree.library.arduino.components" version="1.1.0-RC2" hashcode="201105301231065" targetNodeType="//@typeDefinitions.0"/>
 </kevoree:ContainerRoot>

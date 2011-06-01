@@ -56,8 +56,25 @@ trait KevoreeCFrameworkGenerator extends KevoreeCAbstractGenerator {
         if(first){ context h ptRef.getName.toLowerCase } else { context h ","+ptRef.getName.toLowerCase } 
         first = false
       }
-    }   
+    }
     context h "};"
+    //GENERATE ALL PROPERTIES NAME
+    index = 0
+    var propertiesGenerated : List[String] = List()
+    types.foreach{ktype=>
+      if(ktype.getDictionaryType != null){
+        ktype.getDictionaryType.getAttributes.foreach{att =>
+          var propName = att.getName
+          propsCodeMap.put(propName, index)
+          propertiesGenerated = propertiesGenerated ++ List(propName)
+          context h "prog_char "+propName.toLowerCase+"[] PROGMEM = \""+propName+"\";"
+          index = index + 1
+        }   
+      }
+    }
+    //GENERATE Global PROPERTIES Tab
+    context h "PROGMEM const char * properties[] = { "+propertiesGenerated.mkString(",")+"};"
+
   }
   
   
@@ -68,6 +85,15 @@ trait KevoreeCFrameworkGenerator extends KevoreeCAbstractGenerator {
       val ct = ktype.asInstanceOf[ComponentType]
       nbPorts = nbPorts + (ct.getProvided.toList ++ ct.getRequired.toList).size
     }
+    var propertiesGenerated : List[String] = List()
+    types.foreach{ktype=>
+      if(ktype.getDictionaryType != null){
+        ktype.getDictionaryType.getAttributes.foreach{att =>
+          propertiesGenerated = propertiesGenerated ++ List(att.getName)
+        }   
+      }
+    }
+
     context b "const int nbPortType = "+nbPorts+";"
     context b "int getIDFromPortName(char * portName){"
     context b "  for(int i=0;i<nbPortType;i++){"
@@ -82,6 +108,13 @@ trait KevoreeCFrameworkGenerator extends KevoreeCAbstractGenerator {
     context b "  }"
     context b "  return -1;"
     context b "}"
+    context b "const int nbProps = "+propertiesGenerated.size+";"
+    context b "int getIDFromProps(char * propName){"
+    context b "  for(int i=0;i<nbProps;i++){"
+    context b "   if(strcmp_P(propName, (char*)pgm_read_word(&(properties[i]))  )==0) { return i; }"
+    context b "  }"
+    context b "  return -1;"
+    context b "}"
     
   }
   
@@ -89,9 +122,9 @@ trait KevoreeCFrameworkGenerator extends KevoreeCAbstractGenerator {
   def generateKcFramework : Unit = {  
     
     context b "struct kmessage {char* value;char* metric;};"
-    context b "class KevoreeType { public : int subTypeCode; char instanceName[50]; };"  
+    context b "class KevoreeType { public : int subTypeCode; char instanceName[20]; };"  
     //GENERATE kbinding framework
-    context b "struct kbinding { char instanceName[50];int portCode; QueueList<kmessage> * port;   };"
+    context b "struct kbinding { char instanceName[20];int portCode; QueueList<kmessage> * port;   };"
     context b "class kbindings {"
     context b " public:"
     context b " kbinding ** bindings;"
@@ -103,7 +136,7 @@ trait KevoreeCFrameworkGenerator extends KevoreeCAbstractGenerator {
     context b "      memset(newBinding, 0, sizeof(kbinding));"
     context b "   }"
     context b "   strcpy(newBinding->instanceName,instanceName);"
-    context b "   newBinding->portCode,portCode;"
+    context b "   newBinding->portCode=portCode;"
     context b "   newBinding->port = port;"
     context b "   kbinding ** newBindings =  (kbinding**) malloc(  (nbBindings+1) * sizeof(kbinding*) );"
     context b "   if (!newBindings) { return -1;}"
@@ -119,7 +152,7 @@ trait KevoreeCFrameworkGenerator extends KevoreeCAbstractGenerator {
     context b "   int indexToRemove = -1;"
     context b "   for(int i=0;i<nbBindings;i++){"
     context b "     kbinding * binding = bindings[i];"
-    context b "     if( String(binding->instanceName) == String(instanceName) && binding->portCode == portCode){ indexToRemove = i; }"
+    context b "     if( (strcmp(binding->instanceName,instanceName) == 0 ) && binding->portCode == portCode){ indexToRemove = i; }"
     context b "   }"
     context b "   if(indexToRemove == -1){return -1;} else { free(bindings[indexToRemove]); }"
     context b "   kbinding** newBindings =  (kbinding**) malloc(  (nbBindings-1) *sizeof(kbinding*) );"
@@ -142,15 +175,13 @@ trait KevoreeCFrameworkGenerator extends KevoreeCAbstractGenerator {
 
   def generateRunInstanceMethod(types : List[TypeDefinition]){
     context b "void runInstance(int index){"
-    var i = 1; //ASSUME LIST ORDER SIMILAR TO GENERATE FACTORY !!!
     context b "int typeCode = instances[index]->subTypeCode;"
     context b " switch(typeCode){"
     types.foreach{ktype =>
-      context b "case "+i+":{"
+      context b "case "+typeCodeMap.get(ktype.getName).get+":{"
       context b ktype.getName+" * instance = ("+ktype.getName+"*) instances[index];"
       context b "instance->runInstance();"
       context b "break;}"
-      i = i +1
     }
     context b "}"  
     context b "}"
@@ -170,29 +201,27 @@ trait KevoreeCFrameworkGenerator extends KevoreeCAbstractGenerator {
     context b "      keyval[keyvalIndex] = str2;"
     context b "      keyvalIndex ++;"
     context b "    }"
-    context b "    updateParam(index,typeCode,keyval[0],keyval[1]);"
+    context b "    updateParam(index,typeCode,getIDFromProps(keyval[0]),keyval[1]);"
     context b "  }"  
     context b "}"  
   }
   
   def generateParamMethod(types : List[TypeDefinition]) : Unit = {
-    context b "void updateParam(int index,int typeCode,char * key,char * val){"
-    var i = 1; //ASSUME LIST ORDER SIMILAR TO GENERATE FACTORY !!!
+    context b "void updateParam(int index,int typeCode,int keyCode,char * val){"
     context b " switch(typeCode){"
     types.foreach{ktype =>
-      context b "case "+i+":{"
+      context b "case "+typeCodeMap.get(ktype.getName).get+":{"
       context b ktype.getName+" * instance = ("+ktype.getName+"*) instances[index];"
       if(ktype.getDictionaryType != null){
+        context b " switch(keyCode){"
         ktype.getDictionaryType.getAttributes.foreach{ attribute =>
-          context b "if(String(key) == \""+attribute.getName+"\"){"
-          //context b "instance->"+attribute.getName+" = val;"
+          context b "case "+propsCodeMap.get(attribute.getName).get+":{"
           context b "strcpy (instance->"+attribute.getName+",val);"
-          
-          context b "}"
+          context b "break;}"
         }
+        context b "}" 
       }
       context b "break;}"
-      i = i +1
     }
     context b "}"
     context b "}"
@@ -238,12 +267,10 @@ trait KevoreeCFrameworkGenerator extends KevoreeCAbstractGenerator {
     context b "boolean destroyInstance(int index){"
     context b "KevoreeType * instance = instances[index];"
     context b " switch(instance->subTypeCode){"
-    var i = 1
     types.foreach{ktype =>
-      context b "case "+i+":{"
+      context b "case "+typeCodeMap.get(ktype.getName).get+":{"
       context b "(("+ktype.getName+"*) instances[index])->destroy();"
       context b "break;}"
-      i = i + 1
     }
     context b "}"
     context b "free(instance);"
@@ -280,10 +307,9 @@ trait KevoreeCFrameworkGenerator extends KevoreeCAbstractGenerator {
     
     context b "QueueList<kmessage> ** requiredPort = 0;"
     context b " switch(instances[indexComponent]->subTypeCode){"
-    var i = 1
     types.foreach{ktype =>
       if(ktype.isInstanceOf[ComponentType] && ktype.asInstanceOf[ComponentType].getRequired != null && ktype.asInstanceOf[ComponentType].getRequired.size > 0){
-        context b "case "+i+":{"
+        context b "case "+typeCodeMap.get(ktype.getName).get+":{"
         context b "switch(portCode){"
         ktype.asInstanceOf[ComponentType].getRequired.foreach{ required =>
           context b "case "+portCodeMap.get(required.getName).get+":{"
@@ -293,7 +319,6 @@ trait KevoreeCFrameworkGenerator extends KevoreeCAbstractGenerator {
         context b "}"//END SWITCH PORT CODE
         context b "break;}"
       }
-      i = i +1
     }
     context b "}"//END SWITCH COMPONENT TYPE CODE
     
@@ -302,14 +327,12 @@ trait KevoreeCFrameworkGenerator extends KevoreeCAbstractGenerator {
     context b "} else {"
     
     context b " switch(instances[indexChannel]->subTypeCode){"
-    i = 1
     types.foreach{ktype =>
       if(ktype.isInstanceOf[ChannelType]){
-        context b "case "+i+":{"
+        context b "case "+typeCodeMap.get(ktype.getName).get+":{"
         context b "(("+ktype.getName+"*)instances[indexChannel])->bindings->removeBinding(instances[indexComponent]->instanceName,portCode);"
         context b "break;}"
       }
-      i = i +1
     }
     context b "}"//END SWITCH CHANNEL TYPE CODE
     
@@ -325,12 +348,11 @@ trait KevoreeCFrameworkGenerator extends KevoreeCAbstractGenerator {
     context b "int componentTypeCode = instances[indexComponent]->subTypeCode;"
     context b "int channelTypeCode = instances[indexChannel]->subTypeCode;"
     //FOR ALL COMPONENT LOOK FOR TYPE
-    var i = 1
     context b " switch(componentTypeCode){"
     types.foreach{ktype =>
       if(ktype.isInstanceOf[ComponentType]){
         var kcomponentType = ktype.asInstanceOf[ComponentType]
-        context b "case "+i+":{"
+        context b "case "+typeCodeMap.get(ktype.getName).get+":{"
         context b ktype.getName+" * instance = ("+ktype.getName+"*) instances[indexComponent];"
         context b "switch(portCode){"
         if(kcomponentType.getProvided != null){
@@ -351,18 +373,16 @@ trait KevoreeCFrameworkGenerator extends KevoreeCAbstractGenerator {
         context b "}"
         context b "break;}"  
       }
-      i = i +1
     }
     context b "}" //END SWITCH COMPONENT TYPE
     
     
     //FOR ALL Channel LOOK FOR TYPE
-    i = 1
     context b " switch(channelTypeCode){"
     types.foreach{ktype =>
       if(ktype.isInstanceOf[ChannelType]){
         var kcomponentType = ktype.asInstanceOf[ChannelType]
-        context b "case "+i+":{"
+        context b "case "+typeCodeMap.get(ktype.getName).get+":{"
         context b ktype.getName+" * instance = ("+ktype.getName+"*) instances[indexChannel];"       
         context b "if(providedPort){"
         context b "instance->bindings->addBinding(componentInstanceName,portCode,providedPort);"
@@ -372,7 +392,6 @@ trait KevoreeCFrameworkGenerator extends KevoreeCAbstractGenerator {
         context b "}" 
         context b "break;}"
       }
-      i = i +1
     }
     context b "}" //END SWITCH Channel TYPE
 
@@ -432,17 +451,15 @@ trait KevoreeCFrameworkGenerator extends KevoreeCAbstractGenerator {
   
   def generatePeriodicExecutionMethod(types : List[TypeDefinition]) : Unit = {
     context b "boolean periodicExecution(int index){"
-    var i = 1
     context b " switch(instances[index]->subTypeCode){"
     types.foreach{ktype =>
       if(ktype.getDictionaryType != null){
         if(ktype.getDictionaryType.getAttributes.exists(att => att.getName == "period")){
-          context b "case "+i+":{"
+          context b "case "+typeCodeMap.get(ktype.getName).get+":{"
           context b "return millis() > ((("+ktype.getName+" *) instances[index] )->nextExecution);"
           context b "}" 
         }
       }
-      i = i +1
     }
     context b "}"//end break
     context b "return false;"
@@ -451,13 +468,12 @@ trait KevoreeCFrameworkGenerator extends KevoreeCAbstractGenerator {
   
   def generatePortQueuesSizeMethod(types : List[TypeDefinition]) : Unit = {
     context b "int getPortQueuesSize(int index){"
-    var i = 1
     context b " switch(instances[index]->subTypeCode){"
     types.foreach{ktype =>
       ktype match {
         case ct :ComponentType => {
             if(ct.getProvided != null && ct.getProvided.size > 0){
-              context b "case "+i+":{"
+              context b "case "+typeCodeMap.get(ktype.getName).get+":{"
               var computeSize = ""
               ct.getProvided.foreach{ providedPort =>
                 if(computeSize != ""){computeSize = computeSize + "+"}
@@ -468,13 +484,12 @@ trait KevoreeCFrameworkGenerator extends KevoreeCAbstractGenerator {
             }
           }
         case ct :ChannelType => {
-            context b "case "+i+":{"
+            context b "case "+typeCodeMap.get(ktype.getName).get+":{"
             context b "return ((("+ct.getName+" *)instances[index])->input->count());"
             context b "}"
           }
         case _ =>
       }
-      i = i +1
     }
     context b "}"//end break
     context b "return 0;"
