@@ -2,8 +2,7 @@ package org.kevoree.library.sensors;
 
 import org.kevoree.annotation.*;
 import org.kevoree.framework.AbstractComponentType;
-import org.kevoree.library.arduinoNodeType.ArduinoMethodHelper;
-import org.kevoree.library.arduinoNodeType.PortUsage;
+
 
 @Library(name = "KevoreeArduino")
 @ComponentType

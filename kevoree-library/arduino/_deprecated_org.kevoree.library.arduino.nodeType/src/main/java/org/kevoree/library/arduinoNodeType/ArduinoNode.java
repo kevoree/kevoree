@@ -24,15 +24,12 @@ import org.wayoda.ang.project.Target;
 import org.wayoda.ang.project.TargetDirectoryService;
 
 import javax.swing.*;
-import org.kevoree.library.arduinoNodeType.generator.KevoreeCGenerator;
-import org.kevoreeAdaptation.AdaptationPrimitive;
-import org.kevoreeAdaptation.TypeAdaptation;
 
 @NodeType
 @Library(name = "KevoreeNodeType")
 @DictionaryType({
-    @DictionaryAttribute(name = "boardTypeName", defaultValue = "uno", optional = true),
-    @DictionaryAttribute(name = "boardPortName")
+        @DictionaryAttribute(name = "boardTypeName", defaultValue = "uno", optional = true),
+        @DictionaryAttribute(name = "boardPortName")
 })
 public class ArduinoNode extends AbstractNodeType {
 
@@ -78,11 +75,7 @@ public class ArduinoNode extends AbstractNodeType {
                     }
                 } catch (Exception e) {
                     progress.failTask();
-                    e.printStackTrace();
                 }
-
-                //TODO REMOVE
-                //System.exit(0);
 
                 //STEP 3 : Deploy by commnication channel
 
@@ -132,12 +125,12 @@ public class ArduinoNode extends AbstractNodeType {
                     progress.endTask();
 
                     String boardName = "";
-                    if (getDictionary().get("boardPortName") != null) {
-                        boardName = getDictionary().get("boardPortName").toString();
+                    if(getDictionary().get("boardPortName") != null){
+                         boardName = getDictionary().get("boardPortName").toString();
                     }
 
-                    if (boardName == null || boardName.equals("")) {
-                        boardName = GuiAskForComPort.askPORT();
+                    if(boardName == null ||boardName.equals("")){
+                         boardName = GuiAskForComPort.askPORT();
                     }
 
                     System.out.println("boardPortName=" + boardName);
@@ -156,45 +149,31 @@ public class ArduinoNode extends AbstractNodeType {
                     progress.failTask();
                 }
             }
+
         }.start();
 
 
     }
+
     private String outputPath = "";
+
     private BundleContext bcontext = null;
 
     @Override
     public boolean deploy(AdaptationModel model, String nodeName) {
 
-        boolean typeAdaptationFound = false;
-        for (AdaptationPrimitive p : model.getAdaptations()) {
-            if (p instanceof TypeAdaptation) {
-                typeAdaptationFound = true;
-            }
-        }
+        //Step : Type Bundle preparation step
+        if (bcontext != null) {
 
-        if (typeAdaptationFound) {
-            System.out.println("Type adaptation detected -> full firmware update needed !");
-            //Step : Type Bundle preparation step
-            if (bcontext != null) {
-                System.out.println("Install Type definition");
-                TypeBundleBootstrap.bootstrapTypeBundle(model, bcontext);
-            } else {
-                System.out.println("Warning no OSGi runtime available");
-            }
-            //Step : Generate firmware code to output path
-            KevoreeCGenerator generator = new KevoreeCGenerator();
-            generator.generate(model, nodeName, outputPath, bcontext);
+            System.out.println("Install Type definition");
+
+            TypeBundleBootstrap.bootstrapTypeBundle(model, bcontext);
         } else {
-            System.out.println("incremental update availble -> try to generate KevScript !");
-            
-            
+            System.out.println("Warning no OSGi runtime available");
         }
 
-
-
-
-
+        //Step : Generate firmware code to output path
+        Generator.generate(model, nodeName, outputPath, bcontext);
 
         return true;
     }
