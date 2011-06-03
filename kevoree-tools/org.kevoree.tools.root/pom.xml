@@ -7,7 +7,7 @@
     <packaging>pom</packaging>
     <name>Kevoree :: Tools :: Root</name>
     <url>https://github.com/dukeboard/kevoree</url>
-    <version>1.1.0-RC2</version>
+    <version>1.2.0-SNAPSHOT</version>
     
     <dependencies>
         <dependency>
@@ -142,6 +142,10 @@
             <id>kevoree-libs-release-local</id>
             <url>http://maven.kevoree.org/libs-release-local</url>
         </repository>
+                <repository>
+            <id>kevoree-snapshots</id>
+            <url>http://maven.kevoree.org/snapshots</url>
+        </repository> 
     </repositories>
 
     <pluginRepositories>
@@ -154,6 +158,11 @@
             <id>plugin.kevoree-github</id>
             <url>http://maven.kevoree.org/plugins-release-local</url>
         </pluginRepository>
+        <pluginRepository>
+            <id>plugin.kevoree-snapshots</id>
+            <url>http://maven.kevoree.org/snapshots</url>
+        </pluginRepository> 
+        
     </pluginRepositories>
 
 
@@ -193,7 +202,7 @@
     
     <properties>
         <emf.version>2.6.0</emf.version>
-        <scala.version>2.8.1</scala.version>
+        <scala.version>2.9.0-1</scala.version>
         <bundle.vendor>IRISA/INRIA</bundle.vendor>
         <releaseUrl>http://maven.kevoree.org/libs-release-local</releaseUrl>
     </properties>
@@ -205,6 +214,12 @@
         <name>maven.kevoree.org-releases</name>
         <url>${releaseUrl}</url>
     </repository>
+            <snapshotRepository>
+        <id>maven.kevoree.org-snapshots</id>
+        <name>maven.kevoree.org-snapshots</name>
+        <url>http://maven.kevoree.org/libs-snapshot-local</url>
+    	</snapshotRepository>
+    
 	</distributionManagement>
 
 </project>
