@@ -73,6 +73,8 @@ public class KevoreeEditor {
     public String getEditorVersion() {
 
         InputStream is = getClass().getResourceAsStream("/META-INF/maven/org.kevoree.tools/org.kevoree.tools.ui.editor/pom.properties");
+        System.out.println("VErsion ???"+is);
+
         String version = null;
 
         if(is != null) {
