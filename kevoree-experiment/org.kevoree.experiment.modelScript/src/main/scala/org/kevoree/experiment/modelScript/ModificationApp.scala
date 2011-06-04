@@ -8,12 +8,15 @@ package org.kevoree.experiment.modelScript
 
 object ModificationApp extends Application {
 
-  val modificationGenerator = new ModificationGenerator(Configuration.ips)
+  override def main (args: Array[String]) {
+    val modificationGenerator = new ModificationGenerator(Configuration.ips)
 
-  val stream = System.in
-  var b = 0
-  while ((b = stream.read()) != -1 && b != 'q') {
-    modificationGenerator.doAction("kspark0")
+    val stream = System.in
+    var b = stream.read()
+    while (b != -1 && b != 'q') {
+      modificationGenerator.doAction("kspark0")
+      b = stream.read()
+    }
   }
 
 }

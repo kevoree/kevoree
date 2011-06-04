@@ -1,13 +1,13 @@
 package org.kevoree.experiment.trace.gui.alg
 
 import org.kevoree.experiment.trace.TraceMessages
-import javax.swing.{WindowConstants, JFrame}
-import java.io.{FileOutputStream, BufferedOutputStream, File, InputStream}
+import java.io.{FileOutputStream, BufferedOutputStream, InputStream}
 import org.jfree.chart.{JFreeChart, ChartPanel}
 import com.lowagie.text.pdf.{DefaultFontMapper, PdfTemplate, PdfContentByte, PdfWriter}
 import com.lowagie.text.Rectangle
 import java.awt.Graphics2D
 import java.awt.geom.Rectangle2D
+import javax.swing.{JScrollBar, WindowConstants, JFrame}
 
 object AppPath extends Application {
 
@@ -21,12 +21,16 @@ object AppPath extends Application {
       val frame = new JFrame();
       frame.setSize(400, 400);
 
-      val chart = new VectorClockSingleDisseminationChartScala(ltrace);
+      val chart = new VectorClockSingleDisseminationChartScala(ltrace)
       val jchart = chart.buildChart()
-      val chartPanel = new ChartPanel(jchart);
+      //val chartPanel=new ChartScrollBar(0,jchart);
+      val chartPanel = new ChartPanel(jchart)
+      val scroller = new JScrollBar(0, 0, 10, 0, 50)
+      scroller.getModel.addChangeListener(this)
+      chartPanel.add(scroller)
       chartPanel.setOpaque(false);
       frame.add(chartPanel);
-      frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+      frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE)
       frame.setVisible(true);
 
       saveChartToPDF(jchart, "trace_out.pdf", 600, 600)

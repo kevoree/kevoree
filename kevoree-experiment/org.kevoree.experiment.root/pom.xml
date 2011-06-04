@@ -14,7 +14,8 @@
         <module>../org.kevoree.experiment.trace.server</module>
         <module>../org.kevoree.experiment.trace.gui</module>
         <module>../org.kevoree.experiment.modelScript</module>
-	</modules>
+        <module>../org.kevoree.experiment.fake</module>
+    </modules>
 
     <properties>
         <kevoree.version>${project.version}</kevoree.version>

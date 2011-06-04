@@ -11,11 +11,14 @@ import java.io.{InputStreamReader, BufferedReader, BufferedInputStream, InputStr
  */
 object FailureApp extends Application {
 
-  val failureGenerator = new FailureGenerator(Configuration.ips)
+  override def main (args: Array[String]) {
+    val failureGenerator = new FailureGenerator(Configuration.ips)
 
-  val stream = new BufferedReader(new InputStreamReader((System.in)))
-  var line = ""
-  while ((line = stream.readLine()) != -1 && !line.equals("q")) {
-    failureGenerator.doAction(line)
+    val stream = new BufferedReader(new InputStreamReader((System.in)))
+    var line = stream.readLine()
+    while (line != null && !line.equals("q")) {
+      failureGenerator.doAction(line)
+      line = stream.readLine()
+    }
   }
 }
