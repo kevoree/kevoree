@@ -5,13 +5,13 @@
     <groupId>org.kevoree.library.javase</groupId>
     <artifactId>org.kevoree.library.javase.autodiscovery</artifactId>
     <packaging>bundle</packaging>
-    <version>1.1.0-RC2</version>
+    <version>1.2.0-SNAPSHOT</version>
     <name>Kevoree :: Library :: JavaSE :: AutoDiscovery</name>
 
     <parent>
         <artifactId>org.kevoree.library.javase.root</artifactId>
         <groupId>org.kevoree.library.javase</groupId>
-        <version>1.1.0-RC2</version>
+        <version>1.2.0-SNAPSHOT</version>
         <relativePath>../org.kevoree.library.javase.root/pom.xml</relativePath>
     </parent>
 

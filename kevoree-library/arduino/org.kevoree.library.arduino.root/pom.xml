@@ -6,7 +6,7 @@
     <artifactId>org.kevoree.library.arduino.root</artifactId>
     <packaging>pom</packaging>
     <name>Kevoree :: Library :: Arduino :: Root</name>
-    <version>1.1.0-RC2</version>
+    <version>1.2.0-SNAPSHOT</version>
 
     <properties>
         <kevoree.version>${project.version}</kevoree.version>
@@ -16,16 +16,14 @@
     <parent>
         <artifactId>org.kevoree.library</artifactId>
         <groupId>org.kevoree.library</groupId>
-        <version>1.1.0-RC2</version>
+        <version>1.2.0-SNAPSHOT</version>
         <relativePath>../../pom.xml</relativePath>
     </parent>
 
 
     <modules>
-        <module>../org.kevoree.library.arduino.nodeType2</module>
         <module>../org.kevoree.library.arduino.nodeType</module>
-        <module>../org.kevoree.library.arduino.sensors</module>
-        <module>../org.kevoree.library.arduino.channels</module>
+        <module>../org.kevoree.library.arduino.components</module>
     </modules>
 
     <distributionManagement>
@@ -61,6 +59,7 @@
             <plugin>
                 <groupId>org.kevoree.tools</groupId>
                 <artifactId>org.kevoree.tools.annotation.mavenplugin</artifactId>
+                <version>${kevoree.version}</version>
                 <extensions>true</extensions>
                 <configuration>
                     <nodeTypeNames>ArduinoNode</nodeTypeNames>
@@ -98,6 +97,10 @@
             <id>kevoree-libs-release-local</id>
             <url>http://maven.kevoree.org/release</url>
         </repository>
+        <repository>
+            <id>kevoree-snapshots</id>
+            <url>http://maven.kevoree.org/snapshots</url>
+        </repository>
     </repositories>
 
     <pluginRepositories>
@@ -110,6 +113,11 @@
             <id>plugin.kevoree-github</id>
             <url>http://maven.kevoree.org/release</url>
         </pluginRepository>
+        <pluginRepository>
+            <id>plugin.kevoree-snapshots</id>
+            <url>http://maven.kevoree.org/snapshots</url>
+        </pluginRepository>
+
     </pluginRepositories>
 
 

@@ -8,8 +8,6 @@ import org.kevoree.annotation.Stop;
 import org.kevoree.framework.AbstractChannelFragment;
 import org.kevoree.framework.ChannelFragmentSender;
 import org.kevoree.framework.message.Message;
-import org.kevoree.library.arduinoNodeType.ArduinoMethodHelper;
-import org.kevoree.library.arduinoNodeType.PortUsage;
 
 /**
  *

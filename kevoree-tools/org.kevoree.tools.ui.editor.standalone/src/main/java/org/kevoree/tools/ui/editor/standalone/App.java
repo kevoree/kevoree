@@ -46,10 +46,10 @@ public class App {
                 KevoreeEditor artpanel = new KevoreeEditor();
 
                 String frameName = "Kevoree Editor";
-                /*
+
                 if(!artpanel.getEditorVersion().equals("")) {
                     frameName += " - " + artpanel.getEditorVersion();
-                }*/
+                }
 
                 JFrame jframe = new JFrame(frameName);
                 jframe.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
