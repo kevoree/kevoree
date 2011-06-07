@@ -27,13 +27,16 @@ public class ComSender {
 
         TwoWayActors com = map.get(portName);
 
-        char token = (char) (Math.random() * 26);
+
+        int token = new Random().nextInt(10);
+
+        String msgToSend = "$"+token+msg;
 
 
-        boolean result = com.sendAndWait(token + msg, "ack" + token, 3000);
+        boolean result = com.sendAndWait(msgToSend, "ack" + token, 3000);
 
 
-        System.out.println("Send => " + msg);
+        System.out.println("Send => " + msgToSend);
         System.out.println("Result => " + result);
 
 

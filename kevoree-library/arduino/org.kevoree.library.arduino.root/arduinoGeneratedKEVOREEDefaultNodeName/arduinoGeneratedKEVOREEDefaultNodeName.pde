@@ -1,6 +1,9 @@
 #include <QueueList.h>
 #include <avr/pgmspace.h>
 #include <avr/wdt.h>
+#include <EEPROM.h>
+#define kevoreeID1 9
+#define kevoreeID2 6
 //Global Kevoree Type Defintion declaration
 const prog_char digitallight[] PROGMEM = "DigitalLight";
 const prog_char timer[] PROGMEM = "Timer";
@@ -428,92 +431,123 @@ return 0;
  } 
  return -1;
 }
-//ARDUINO SERIAL INPUT READ 
-#define BUFFERSIZE 100      
-int serialIndex = 0;        
-char inBytes[BUFFERSIZE];   
-void checkForAdminMsg(){     
-  if(Serial.available()>0 && serialIndex < BUFFERSIZE) { 
-    inBytes[serialIndex] = Serial.read();                 
-    if (inBytes[serialIndex] == '\n' || inBytes[serialIndex] == ';') {  
-              inBytes[serialIndex] = ' ';  
-              parseForAdminMsg();                
-               for(int i=0;i<serialIndex;i++){   
-                    inBytes[serialIndex];       
-                }                               
-                serialIndex = 0;                
-               Serial.println(freeRam());        
-    } else {      
-      serialIndex++;   
-    }       
-  }          
-  if(serialIndex >= BUFFERSIZE){   
-    Serial.println("Buffer overflow");  
-      for(int i=0;i<serialIndex;i++){   
-          inBytes[serialIndex];         
-      }                                
-      serialIndex = 0;                
-  }                                   
-}                                    
+//ARDUINO SERIAL INPUT READ                                       
+#define BUFFERSIZE 100                                            
+int serialIndex = 0;                                              
+char inBytes[BUFFERSIZE];                                         
+const char startBAdminChar = '{';                                 
+const char endAdminChar = '}';                                    
+const char startAdminChar = '$';                                  
+const char sepAdminChar = '/';                                    
+char ackToken;                                                    
+boolean parsingAdmin = false;                                     
+void checkForAdminMsg(){                                          
+  if(Serial.peek() == startAdminChar){                            
+    Serial.read();//DROP ADMIN START CHAR                         
+    while(!Serial.available()>0){delay(10);}                      
+    ackToken = Serial.read();                                     
+    while(!Serial.available()>0){delay(10);}                      
+    if(Serial.read() == startBAdminChar){                         
+      parsingAdmin = true;                                        
+      while(parsingAdmin){                                        
+        if(Serial.available()>0 && serialIndex < BUFFERSIZE) {    
+            inBytes[serialIndex] = Serial.read();                 
+            if(inBytes[serialIndex] == sepAdminChar){             
+                inBytes[serialIndex] = '\0';                      
+                saveScriptCommand();parseForAdminMsg();                               
+                flushAdminBuffer();                               
+            } else {                                              
+              if(inBytes[serialIndex] == endAdminChar){           
+                 parsingAdmin = false;                            
+                 inBytes[serialIndex] = '\0';                     
+                 saveScriptCommand();parseForAdminMsg();                              
+                 flushAdminBuffer();                              
+                 Serial.print("ack");                             
+                 Serial.println(ackToken);                        
+                 Serial.println(freeRam());
+              } else {                                            
+                serialIndex++;                                    
+              }                                                   
+            }                                                     
+        }                                                         
+        if(serialIndex >= BUFFERSIZE){                            
+          Serial.println("BFO");  
+          flushAdminBuffer();                                     
+          Serial.flush();                                         
+          parsingAdmin=false;//KILL PARSING ADMIN                 
+        }                                                         
+      }                                                           
+  } else {                                                        
+          Serial.println("BAM");                  
+          flushAdminBuffer();                                     
+          Serial.flush();                                         
+  }                                                               
+}                                                                 
+}                                                                 
+void flushAdminBuffer(){                                          
+  for(int i=0;i<serialIndex;i++){                                 
+     inBytes[serialIndex];                                        
+  }                                                               
+  serialIndex = 0;                                                
+}                                                                 
+//END SECTION ADMIN DETECTION 1 SPLIT                             
+int eepromIndex;                                                                
+void saveScriptCommand(){                                                       
+  if(eepromIndex == 2){ EEPROM.write(eepromIndex,startBAdminChar);eepromIndex++;}
+  if(eepromIndex+serialIndex+1 < 512){                                          
+    EEPROM.write(eepromIndex,sepAdminChar);eepromIndex++;                       
+    for(int i=0;i<serialIndex;i++){                                             
+      EEPROM.write(eepromIndex,inBytes[i]);                                     
+      eepromIndex++;                                                            
+    }                                                                           
+    EEPROM.write(eepromIndex,endAdminChar);                                     
+  } else {                                                                      
+    Serial.println("OME");                                                      
+  }                                                                             
+}                                                                               
 char * insID;  
 char * typeID; 
 char * params;   
 char * chID;        
-char * portID;
-char ackToken;
+char * portID;            
 const char delims[] = ":";    
-void (*pseudoReset)(void)=0;
-
 boolean parseForAdminMsg(){       
   if(serialIndex < 6){return false;}    
-if( inBytes[2]=='r' && inBytes[3]=='s' && inBytes[4]=='t' ){//SOFTWARE RESET 
-        pseudoReset ():                                     
- }                                                           
-  if( inBytes[1] == '{' && inBytes[serialIndex-1] == '}'  ){  //MODIF
-    ackToken = inBytes[0];                                    //MODIF
-    inBytes[serialIndex-1] = '\0';   
-    
-    if( inBytes[2]=='p' && inBytes[3]=='i' && inBytes[4]=='n' && inBytes[5]=='g'){
-      Serial.print("ack");
-      Serial.println(ackToken);
-    }
-    
-    
-    if( inBytes[2]=='u' && inBytes[3]=='d' && inBytes[4]=='i' && inBytes[5]==':' ){  
-      insID = strtok(&inBytes[6], delims);  
-      params = strtok(NULL, delims);    
-      updateParams(getIndexFromName(insID),params);
-      Serial.print("ack");
-      Serial.println(ackToken);
+    if( inBytes[0]=='p' && inBytes[1]=='i' && inBytes[2]=='n' && inBytes[3]=='g' ){  
       return true;      
     }   
-    if( inBytes[2]=='a' && inBytes[3]=='i' && inBytes[4]=='n' && inBytes[5]==':' ){ 
-      insID = strtok(&inBytes[6], delims); 
+    if( inBytes[0]=='u' && inBytes[1]=='d' && inBytes[2]=='i' && inBytes[3]==':' ){  
+      insID = strtok(&inBytes[4], delims);  
+      params = strtok(NULL, delims);    
+      updateParams(getIndexFromName(insID),params);   
+      return true;      
+    }   
+    if( inBytes[0]=='a' && inBytes[1]=='i' && inBytes[2]=='n' && inBytes[3]==':' ){ 
+      insID = strtok(&inBytes[4], delims); 
       typeID = strtok(NULL, delims);
       params = strtok(NULL, delims); 
       createInstance(getIDFromType(typeID),insID,params);  
       return true;
     }      
-    if( inBytes[2]=='r' && inBytes[3]=='i' && inBytes[4]=='n' && inBytes[5]==':' ){    
-      insID = strtok(&inBytes[6], delims);   
+    if( inBytes[0]=='r' && inBytes[1]=='i' && inBytes[2]=='n' && inBytes[3]==':' ){    
+      insID = strtok(&inBytes[4], delims);   
       removeInstance(getIndexFromName(insID));  
       return true;   
     }               
-    if( inBytes[2]=='a' && inBytes[3]=='b' && inBytes[4]=='i' && inBytes[5]==':' ){   
-      insID = strtok(&inBytes[6], delims);                                             
+    if( inBytes[0]=='a' && inBytes[1]=='b' && inBytes[2]=='i' && inBytes[3]==':' ){   
+      insID = strtok(&inBytes[4], delims);                                             
       chID = strtok(NULL, delims);                                                      
       portID = strtok(NULL, delims);                                                     
       bind(getIndexFromName(insID),getIndexFromName(chID),getIDFromPortName(portID));                        
       return true;                                                                            
     }                                                                                         
-    if( inBytes[2]=='r' && inBytes[3]=='b' && inBytes[4]=='i' && inBytes[5]==':' ){           
-      insID = strtok(&inBytes[6], delims);                                                    
+    if( inBytes[0]=='r' && inBytes[1]=='b' && inBytes[2]=='i' && inBytes[3]==':' ){           
+      insID = strtok(&inBytes[4], delims);                                                    
       chID = strtok(NULL, delims);                                                            
       portID = strtok(NULL, delims);                                                          
       unbind(getIndexFromName(insID),getIndexFromName(chID),getIDFromPortName(portID));                        
       return true;                                                                            
     }                                                                                         
-  }                                                                                           
   return false;                                                                               
 }                                                                                             
 void setup(){
@@ -523,6 +557,36 @@ int indexled1 = createInstance(0,"led1","pin=9,");
 int indext1 = createInstance(1,"t1","period=1000,");
 bind(indext1,indexhub1,3);
 bind(indexled1,indexhub1,2);
+//STATE RECOVERY                                                         
+if(EEPROM.read(0) != kevoreeID1 || EEPROM.read(1) != kevoreeID2){            
+  for (int i = 0; i < 512; i++){EEPROM.write(i, 0);}                         
+  EEPROM.write(0,kevoreeID1);                                                
+  EEPROM.write(1,kevoreeID2);                                                
+}                                                                            
+eepromIndex = 2;                                                             
+inBytes[serialIndex] = EEPROM.read(eepromIndex);                         
+if (inBytes[serialIndex] == startBAdminChar) {                           
+  eepromIndex ++;                                                        
+  Serial.println("PSTATE");                         
+  inBytes[serialIndex] = EEPROM.read(eepromIndex);                       
+  while (inBytes[serialIndex] != endAdminChar && eepromIndex < 512) {    
+    if (inBytes[serialIndex] == sepAdminChar) {                          
+      inBytes[serialIndex] = '\0';                                       
+      parseForAdminMsg();                                                
+     flushAdminBuffer();                                                 
+    } else {                                                             
+      serialIndex ++;                                                    
+    }                                                                    
+    eepromIndex ++;                                                      
+    inBytes[serialIndex] = EEPROM.read(eepromIndex);                     
+  }                                                                      
+  //PROCESS LAST CMD                                                     
+  if (inBytes[serialIndex] == endAdminChar) {                            
+    inBytes[serialIndex] = '\0';                                         
+    parseForAdminMsg();                                                  
+    flushAdminBuffer();                                                  
+  }                                                                      
+}                                                                        
 Serial.println(freeRam());
 }
 long nextExecutionGap(int index){

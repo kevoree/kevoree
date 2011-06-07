@@ -32,7 +32,7 @@ public class SerialSender implements Runnable {
         try {
             Thread.sleep(2000); //LET MICROCONTROLER REBOOT IF NECESSARY
         } catch (InterruptedException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            e.printStackTrace();
         }
         while (running) {
             if (!queue.isEmpty()) {

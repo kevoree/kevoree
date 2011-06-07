@@ -79,7 +79,7 @@ object KevScriptWrapper {
         
       }
     }
-    content append "};"
+    content append "}"
     content.toString  
   }
   
