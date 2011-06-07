@@ -25,10 +25,20 @@ class MergeDefaultLibrary extends Command {
 
   def setKernel(k: KevoreeUIKernel) = kernel = k
 
+  var snapshot : Boolean = false
+
+  def setSnapshot(p : Boolean) = { snapshot = p }
+
   def execute(p: Object) {
 
     try {
-      val url = new URL("http://dist.kevoree.org/KevoreeLibrary.php");
+
+      var url : URL = null
+      if(snapshot){
+         url = new URL("http://dist.kevoree.org/KevoreeLibrarySnapshot.php");
+      } else {
+         url = new URL("http://dist.kevoree.org/KevoreeLibraryStable.php");
+      }
       val conn = url.openConnection();
       conn.setConnectTimeout(2000);
       conn.setDoOutput(true);

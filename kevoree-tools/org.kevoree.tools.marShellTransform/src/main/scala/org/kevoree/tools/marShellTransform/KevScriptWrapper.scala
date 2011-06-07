@@ -25,41 +25,58 @@ object KevScriptWrapper {
 
   val paramSep = ":"
   val instrSep = "/" 
+  
+  def generateDictionaryString(dictionary : java.util.Properties) : String= {
+    if(dictionary == null){ return "" }
+    var content = new StringBuilder 
+    var first = true
+    dictionary.foreach{ dic =>
+      if(first){
+        content append dic._1+"="+dic._2
+        first = false
+      } else {
+        content append ","+dic._1+"="+dic._2
+      }
+    }
+    content.toString
+  }
+  
   def generateKevScriptCompressed(script : Script) : String = {
-    var content = new StringBuilder
-    content append "b{"
-    script.blocks.foreach{ block =>     
-      block.l.foreach{ statement =>        
+    if(script.blocks.isEmpty) return ""
+
+    val content = new StringBuilder
+    content append "{"
+    script.blocks.foreach{ block =>   
+      var firstStatment = true
+      block.l.foreach{ statement => 
+        if(firstStatment){
+          firstStatment = false
+        } else {
+          content append instrSep
+        }
+        
         statement match {
           case s : UpdateDictionaryStatement => {
-              content append "udi"+paramSep+s.instanceName+paramSep
-              s.dictionary.foreach{ dic =>
-                content append dic._1+"="+dic._2+","
-              }
-              content append instrSep
+              content append "udi"+paramSep+s.instanceName+paramSep+generateDictionaryString(s.dictionary)
             }
           case s : AddComponentInstanceStatment => {
-              content append "ain"+paramSep+s.cid.componentInstanceName+paramSep+s.typeDefinitionName+paramSep
+              content append "ain"+paramSep+s.cid.componentInstanceName+paramSep+s.typeDefinitionName
               if(s.dictionary != null){
-                s.dictionary.foreach{ dic =>
-                  content append dic._1+"="+dic._2+","
-                }
+                  content append paramSep+generateDictionaryString(s.dictionary)
               }
-              content append instrSep
             }
           case s : AddChannelInstanceStatment => {
-              content append "ain"+paramSep+s.channelName+paramSep+s.channelType+paramSep
+              content append "ain"+paramSep+s.channelName+paramSep+s.channelType
               if(s.dictionary != null){
-                s.dictionary.foreach{ dic =>
-                  content append dic._1+"="+dic._2+","
-                }
+                  content append paramSep+generateDictionaryString(s.dictionary)
               }
-              content append instrSep
             }
-          case s : AddBindingStatment => { content append "abi"+paramSep+s.cid.componentInstanceName+paramSep+s.bindingInstanceName+paramSep+s.portName+instrSep }
-          case s : RemoveBindingStatment => { content append "rbi"+paramSep+s.cid.componentInstanceName+paramSep+s.bindingInstanceName+paramSep+s.portName+instrSep }
+          case s : AddBindingStatment => { content append "abi"+paramSep+s.cid.componentInstanceName+paramSep+s.bindingInstanceName+paramSep+s.portName }
+          case s : RemoveBindingStatment => { content append "rbi"+paramSep+s.cid.componentInstanceName+paramSep+s.bindingInstanceName+paramSep+s.portName }
           case _ @ s => println("Uncatch "+s) //DO NOTHING FOR OTHER STATEMENT
         }
+        
+        
       }
     }
     content append "};"
