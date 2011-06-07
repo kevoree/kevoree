@@ -24,17 +24,9 @@
         <module>../org.kevoree.library.model.all</module>
     </modules>
 
-    <distributionManagement>
-        <repository>
-            <id>maven.kevoree.org-releases</id>
-            <name>maven.kevoree.org-releases</name>
-            <url>http://maven.kevoree.org/libs-release-local</url>
-        </repository>
-    </distributionManagement>
 
-    <build>
 
-    </build>
+    <build></build>
 
     <repositories>
         <repository>
@@ -45,6 +37,10 @@
         <repository>
             <id>kevoree-libs-release-local</id>
             <url>http://maven.kevoree.org/release</url>
+        </repository>
+        <repository>
+            <id>kevoree-snapshots</id>
+            <url>http://maven.kevoree.org/snapshots</url>
         </repository>
     </repositories>
 
@@ -58,6 +54,10 @@
             <id>plugin.kevoree-github</id>
             <url>http://maven.kevoree.org/release</url>
         </pluginRepository>
+        <pluginRepository>
+            <id>plugin.kevoree-snapshots</id>
+            <url>http://maven.kevoree.org/snapshots</url>
+        </pluginRepository> 
     </pluginRepositories>
 
 

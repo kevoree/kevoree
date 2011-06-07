@@ -20,6 +20,7 @@ trait KevoreeCFrameworkGenerator extends KevoreeCAbstractGenerator {
   def generateKcFrameworkHeaders(types : List[TypeDefinition]) : Unit = {
     context h "#include <QueueList.h>"
     context h "#include <avr/pgmspace.h>"
+    context h "#include <avr/wdt.h>"
     context h "//Global Kevoree Type Defintion declaration" 
     //GENERATE ALL TypeDefinition
     var index = 0
@@ -211,6 +212,20 @@ trait KevoreeCFrameworkGenerator extends KevoreeCAbstractGenerator {
   
   def generateParamsMethod : Unit = {
     //GENERATE GLOBAL UPDATE METHOD
+    
+context b "const char delimsEQ[] = \"=\";"
+context b "char * key;"
+context b "char * val;"
+context b "char * str;"
+context b "void updateParams(int index,char* params){"
+context b "  while ((str = strtok_r(params, \",\", &params)) != NULL){"
+context b "    key = strtok(str, delimsEQ);"
+context b "    val = strtok(NULL, delimsEQ);"
+context b "    updateParam(index,instances[index]->subTypeCode,getIDFromProps(key),val);"
+context b "  }"
+context b "}"
+    
+    /*
     context b "void updateParams(int index,char* params){"
     context b "  int typeCode = instances[index]->subTypeCode;"
     context b "  char *p = params;"
@@ -226,6 +241,8 @@ trait KevoreeCFrameworkGenerator extends KevoreeCAbstractGenerator {
     context b "    updateParam(index,typeCode,getIDFromProps(keyval[0]),keyval[1]);"
     context b "  }"  
     context b "}"  
+    */
+    
   }
   
   def generateParamMethod(types : List[TypeDefinition]) : Unit = {
@@ -419,22 +436,7 @@ trait KevoreeCFrameworkGenerator extends KevoreeCAbstractGenerator {
 
     context b "}"
   }
- 
-  def generateLoop : Unit = {
-    context b "void loop(){"
-    context b "for(int i=0;i<nbInstances;i++){"
-    context b "  if(periodicExecution(i)){"
-    context b "    runInstance(i);"
-    context b "  }"
-    context b "}"
-    context b "for(int i=0;i<nbInstances;i++){"
-    context b "  if(getPortQueuesSize(i)>0){"
-    context b "    runInstance(i);"
-    context b "  }"
-    context b "}"
-    context b "checkForAdminMsg();"
-    context b "}"  
-  }
+
   
   def generateSetup(initInstances : List[Instance],nodeName:String) : Unit = { //DUMMY SCHEDULER FOR TEST
     context b "void setup(){"
@@ -460,7 +462,7 @@ trait KevoreeCFrameworkGenerator extends KevoreeCAbstractGenerator {
       context b "int index"+instance.getName+" = createInstance("+typeCodeMap.get(instance.getTypeDefinition.getName).get+",\""+instance.getName+"\",\""+dictionaryResult.toString+"\");"
     }
     if(initInstances.filter(i=>i.isInstanceOf[Channel]).size > 0){
-      var i0 = initInstances.filter(i=>i.isInstanceOf[Channel]).get(0)
+      val i0 = initInstances.filter(i=>i.isInstanceOf[Channel]).get(0)
       i0.eContainer.asInstanceOf[ContainerRoot].getMBindings.foreach{binding=>
         if(binding.getPort.eContainer.eContainer.asInstanceOf[ContainerNode].getName == nodeName){
           context b "bind(index"+binding.getPort.eContainer.asInstanceOf[ComponentInstance].getName+",index"+binding.getHub.getName+","+portCodeMap.get(binding.getPort.getPortTypeRef.getName).get+");"

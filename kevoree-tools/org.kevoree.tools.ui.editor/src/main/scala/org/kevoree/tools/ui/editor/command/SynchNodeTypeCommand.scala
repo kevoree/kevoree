@@ -104,23 +104,25 @@ class SynchNodeTypeCommand extends Command {
 
     if (tpResul) {
       val url: List[String] = CommandHelper.buildAllQuery(ct)
-      url.exists(u => installBundle(u))
+      url.exists(u => installBundle(u, false)) //NOT FORCE UPDATE NODE TYPE //TO FIX
     } else {
       false
     }
 
   }
 
-  def installBundle(url: String): Boolean = {
+  def installBundle(url: String, forceUpdate: Boolean = true): Boolean = {
     try {
 
       val previousBundle = EmbeddedOSGiEnv.getFwk.getBundleContext.getBundles
       bundle = EmbeddedOSGiEnv.getFwk.getBundleContext.installBundle(url)
-      if (previousBundle.exists(b => b.getBundleId == bundle.getBundleId)) {
-        bundle.uninstall();
-        bundle = EmbeddedOSGiEnv.getFwk.getBundleContext.installBundle(url)
+      if (forceUpdate) {
+        if (previousBundle.exists(b => b.getBundleId == bundle.getBundleId)) {
+          bundle.uninstall();
+          bundle = EmbeddedOSGiEnv.getFwk.getBundleContext.installBundle(url)
+          System.out.println("Install => " + url);
+        }
       }
-
       bundle.start()
       true
     } catch {
