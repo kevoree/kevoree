@@ -54,7 +54,7 @@ trait DictionaryProcessor {
 
         //INIT DEF VALUE
         //TODO ALLOW MORE TYPE THAN STRING
-        //if(dictionaryAtt.defaultValue != Constants.getDefaultStringValue){
+        if(dictionaryAtt.defaultValue != "defaultKevoreeNonSetValue"){
           typeDef.getDictionaryType.getDefaultValues.find(defV => defV.getAttribute == processDictionaryAtt) match {
             case None => {
                 var newVal = KevoreeFactory.eINSTANCE.createDictionaryValue
@@ -64,7 +64,7 @@ trait DictionaryProcessor {
             }
           case Some(edefV)=> edefV.setValue(dictionaryAtt.defaultValue.toString)
           }
-        //}
+        }
         processDictionaryAtt
       }
     }

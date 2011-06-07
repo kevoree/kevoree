@@ -33,7 +33,7 @@ class KevS2CompressedKevsTest extends KevSTestSuiteHelper {
     val baseScript = KevScriptWrapper.miniPlanKevScript(AdaptationModelWrapper.generateScriptFromAdaptModel(adaptModel))
     val result = KevScriptWrapper.generateKevScriptCompressed(baseScript)
     println(result)
-    assert(result == "{udi:t1:period=100};")
+    assert(result == "{udi:t1:period=100}")
   }
 
   @Test def update1Pin() {
@@ -44,7 +44,7 @@ class KevS2CompressedKevsTest extends KevSTestSuiteHelper {
     val baseScript = KevScriptWrapper.miniPlanKevScript(AdaptationModelWrapper.generateScriptFromAdaptModel(adaptModel))
     val result = KevScriptWrapper.generateKevScriptCompressed(baseScript)
     println(result)
-    assert(result == "{udi:DigitalLight138771701:pin=10};")
+    assert(result == "{udi:DigitalLight138771701:pin=10}")
   }
 
   @Test def update2Param() {
@@ -55,7 +55,7 @@ class KevS2CompressedKevsTest extends KevSTestSuiteHelper {
     val baseScript = KevScriptWrapper.miniPlanKevScript(AdaptationModelWrapper.generateScriptFromAdaptModel(adaptModel))
     val result = KevScriptWrapper.generateKevScriptCompressed(baseScript)
     println(result)
-    assert(result == "{udi:DigitalLight138771701:pin=10/udi:t1:period=100};")
+    assert(result == "{udi:DigitalLight138771701:pin=10/udi:t1:period=100}")
   }
 
   @Test def update_1ain_1abi() {
@@ -66,7 +66,7 @@ class KevS2CompressedKevsTest extends KevSTestSuiteHelper {
     val baseScript = KevScriptWrapper.miniPlanKevScript(AdaptationModelWrapper.generateScriptFromAdaptModel(adaptModel))
     val result = KevScriptWrapper.generateKevScriptCompressed(baseScript)
     println(result)
-    assert(result == "{ain:DigitalLight1925293585:DigitalLight:pin=10/abi:DigitalLight1925293585:hub846068439:toggle};")
+    assert(result == "{ain:DigitalLight1925293585:DigitalLight:pin=10/abi:DigitalLight1925293585:hub846068439:toggle}")
   }
 
 }
