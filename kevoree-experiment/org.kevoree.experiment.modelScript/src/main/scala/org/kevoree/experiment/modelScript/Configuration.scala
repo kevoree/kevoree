@@ -25,13 +25,16 @@ object Configuration {
           var first = true
           var line: String = reader.readLine()
           while (line != null) {
-            println("add " + line + " as machine")
-            ips = ips ++ List(line)
-            packets = packets ++ List(NodePacket(line.replaceAll("-", "").replaceAll("\\.", ""), line, 8000, 4))
-            if (first) {
-              logServer = line
-              println("logServer = " + logServer)
-              first = false
+            //line = line.replaceAll("\\.", "").replaceAll("-", "")
+            if (!ips.contains(line)) {
+              println("add " + line + " as machine")
+              ips = ips ++ List(line)
+              packets = packets ++ List(NodePacket(line.replaceAll("-", "").replaceAll("\\.", ""), line, 8000, 4))
+              if (first) {
+                logServer = line
+                println("logServer = " + logServer)
+                first = false
+              }
             }
             line = reader.readLine()
           }

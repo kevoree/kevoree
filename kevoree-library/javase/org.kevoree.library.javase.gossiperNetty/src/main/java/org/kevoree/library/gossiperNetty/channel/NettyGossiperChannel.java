@@ -94,7 +94,7 @@ public class NettyGossiperChannel extends AbstractChannelFragment implements Net
 		startGossiperChannel();
 
 		for (UUID uuid : messages.keySet()) {
-			dataManager.setData(uuid, messages.get(uuid));
+			dataManager.setData(uuid, messages.get(uuid), "");
 		}
 	}
 
@@ -111,7 +111,7 @@ public class NettyGossiperChannel extends AbstractChannelFragment implements Net
 						addEnties(Version.ClockEntry.newBuilder().setNodeID(this.getNodeName())
 								.setTimestamp(timestamp).setVersion(2l).build()).setTimestamp(timestamp).build(),
 				msg);
-		dataManager.setData(uuid, tuple);
+		dataManager.setData(uuid, tuple, "");
 
 		actor.notifyPeers();
 		//SYNCHRONOUS NON IMPLEMENTED

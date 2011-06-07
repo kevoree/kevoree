@@ -61,7 +61,7 @@ object TopologyGeneratorScript {
             tscript append generateLink( otherPacket.name+"0" , packet.name+"0" , packet.ip, packet.firstPort)
             
           }
-        case None => println("There is no packet which correspond to " + packet.name  + "and which has less than 3 links with others packets")
+        case None => println("There is no packet which correspond to " + packet.name  + " and which has less than 3 links with others packets")
       }
       
       

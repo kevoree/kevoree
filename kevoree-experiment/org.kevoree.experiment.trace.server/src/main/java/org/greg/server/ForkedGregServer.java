@@ -119,15 +119,17 @@ public class ForkedGregServer {
             }
         }.start();
 
-        /*
+
         try {
             System.out.println("Type any char to shutdown !");
             System.in.read();
             running = false;
             System.out.println("bye !");
+			Thread.sleep(2000);
+			System.exit(0);
         }
         catch(Exception e) {
-        } */
+        }
 
 
     }
@@ -169,7 +171,7 @@ public class ForkedGregServer {
 
         Executor pool = Executors.newFixedThreadPool(16);
 
-        while (true) {
+        while (running) {
             try {
                 sem.acquire();
             } catch (InterruptedException e) {
@@ -314,7 +316,7 @@ public class ForkedGregServer {
 
         Executor executor = Executors.newFixedThreadPool(16);
 
-        while (true) {
+        while (running) {
             final Socket client;
             try {
                 client = calibrationServer.accept();
@@ -411,7 +413,7 @@ public class ForkedGregServer {
 
     private void flushCalibratedMessages() {
         Thread.currentThread().setPriority(7); // above normal
-        while (true) {
+        while (running) {
             List<Pair<PreciseDateTime, Record>> snapshot = new ArrayList<Pair<PreciseDateTime, Record>>(10000);
             for (Map.Entry<UUID, TimeSpan> p : clientLateness.entrySet()) {
                 UUID client = p.getKey();
@@ -435,7 +437,7 @@ public class ForkedGregServer {
             try {
                 Thread.sleep(10);
             } catch (InterruptedException e) {
-                continue;
+                //continue;
             }
         }
     }
