@@ -2,8 +2,12 @@ package org.kevoree.library.arduinoNodeType;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import gnu.io.NoSuchPortException;
+import gnu.io.PortInUseException;
 import org.kevoree.ContainerRoot;
 import org.kevoree.KevoreeFactory;
 import org.kevoree.annotation.DictionaryAttribute;
@@ -12,6 +16,7 @@ import org.kevoree.annotation.Library;
 import org.kevoree.annotation.NodeType;
 import org.kevoree.framework.AbstractNodeType;
 import org.kevoree.kompare.KevoreeKompareBean;
+import org.kevoree.library.arduinoNodeType.utils.ComSender;
 import org.kevoreeAdaptation.AdaptationModel;
 import org.osgi.framework.BundleContext;
 import org.wayoda.ang.libraries.CodeManager;
@@ -22,23 +27,27 @@ import org.wayoda.ang.project.Target;
 import org.wayoda.ang.project.TargetDirectoryService;
 
 import javax.swing.*;
+
 import org.kevoree.framework.KevoreeXmiHelper;
 import org.kevoree.library.arduinoNodeType.generator.KevoreeCGenerator;
+import org.kevoree.tools.marShell.ast.Script;
+import org.kevoree.tools.marShellTransform.AdaptationModelWrapper;
+import org.kevoree.tools.marShellTransform.KevScriptWrapper;
 import org.kevoreeAdaptation.AdaptationPrimitive;
 import org.kevoreeAdaptation.TypeAdaptation;
 
 @NodeType
 @Library(name = "KevoreeNodeType")
 @DictionaryType({
-    @DictionaryAttribute(name = "boardTypeName", defaultValue = "uno", optional = true),
-    @DictionaryAttribute(name = "boardPortName"),
-    @DictionaryAttribute(name = "incremental", defaultValue = "true", optional = true)
+        @DictionaryAttribute(name = "boardTypeName", defaultValue = "uno", optional = true),
+        @DictionaryAttribute(name = "boardPortName"),
+        @DictionaryAttribute(name = "incremental", defaultValue = "true", optional = true)
 })
 public class ArduinoNode extends AbstractNodeType {
 
     ArduinoGuiProgressBar progress = null;
     File newdir = null;
-    
+
     @Override
     public void push(final String targetNodeName, final ContainerRoot root, final BundleContext bundle) {
 
@@ -71,8 +80,8 @@ public class ArduinoNode extends AbstractNodeType {
                 if (getDictionary().get("incremental") != null && getDictionary().get("incremental").equals("true")) {
 
                     System.out.println("Incremental search");
-                    
-                    
+
+
                     File lastModelFile = null;
                     for (File f : newdir.listFiles()) {
                         if (f.getName().endsWith(".kev")) {
@@ -91,8 +100,15 @@ public class ArduinoNode extends AbstractNodeType {
                     try {
                         lastVersionModel = KevoreeXmiHelper.load("file:///" + lastModelFile.getAbsolutePath());
                     } catch (Exception e) {
-                        e.printStackTrace();
                     }
+                } else {
+                    //CLEAR PREVIOUS SAVED MODEL
+                    for (File f : newdir.listFiles()) {
+                        if (f.getName().endsWith(".kev")) {
+                            f.delete();
+                        }
+                    }
+
                 }
 
 
@@ -122,7 +138,6 @@ public class ArduinoNode extends AbstractNodeType {
                 }
 
 
-
                 progress.beginTask("Save model for incremental deployment", 100);
                 KevoreeXmiHelper.save("file:///" + newdir.getAbsolutePath() + "/" + targetNodeName + "_" + (lastVersion + 1) + ".kev", root);
                 progress.endTask();
@@ -136,10 +151,10 @@ public class ArduinoNode extends AbstractNodeType {
 
 
     }
+
     private String outputPath = "";
     private BundleContext bcontext = null;
 
-    
     @Override
     public boolean deploy(AdaptationModel model, String nodeName) {
         boolean typeAdaptationFound = false;
@@ -213,6 +228,9 @@ public class ArduinoNode extends AbstractNodeType {
                 System.out.println("boardPortName=" + boardName);
 
                 progress.beginTask("Upload to arduino board", 90);
+
+                ComSender.closeAllPreviousPort();
+
                 arduinoDeploy.uploadSketch(sketch, target, boardName);
                 progress.endTask();
 
@@ -223,13 +241,25 @@ public class ArduinoNode extends AbstractNodeType {
 
         } else {
             System.out.println("incremental update availble -> try to generate KevScript !");
+            Script baseScript = KevScriptWrapper.miniPlanKevScript(AdaptationModelWrapper.generateScriptFromAdaptModel(model));
+            String resultScript = KevScriptWrapper.generateKevScriptCompressed(baseScript);
+            System.out.println(resultScript);
+            String boardName = "";
+            if (getDictionary().get("boardPortName") != null) {
+                boardName = getDictionary().get("boardPortName").toString();
+            }
+            if (boardName == null || boardName.equals("")) {
+                boardName = GuiAskForComPort.askPORT();
+            }
+
+            try {
+                ComSender.send(resultScript, boardName);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
 
 
         }
-
-
-
-
 
 
         return true;

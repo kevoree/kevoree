@@ -15,67 +15,80 @@ import org.kevoreeAdaptation.AddType
 import org.osgi.framework.BundleContext
 import scala.collection.JavaConversions._
 
-class KevoreeCGenerator 
-extends KevoreeComponentTypeClassGenerator
-   with KevoreeCFrameworkGenerator
-   with KevoreeChannelTypeClassGenerator
-   with KevoreeCRemoteAdminGenerator {
+class KevoreeCGenerator
+  extends KevoreeComponentTypeClassGenerator
+  with KevoreeCFrameworkGenerator
+  with KevoreeChannelTypeClassGenerator
+  with KevoreeCRemoteAdminGenerator
+  with KevoreeCSchedulerGenerator {
 
-  def generate(adaptModel: AdaptationModel, nodeName: String,outputDir : String,bundleContext : BundleContext)= {    
-    
-    val componentTypes = adaptModel.getAdaptations.filter(adt => adt.isInstanceOf[AddType] && adt.asInstanceOf[AddType].getRef.isInstanceOf[ComponentType] )
-    val channelTypes = adaptModel.getAdaptations.filter(adt => adt.isInstanceOf[AddType] && adt.asInstanceOf[AddType].getRef.isInstanceOf[ChannelType] )
-    var ktypes : List[TypeDefinition] = List()
-    componentTypes.foreach{ctype=> ktypes = ktypes ++ List(ctype.asInstanceOf[AddType].getRef)}
-    channelTypes.foreach{ctype=> ktypes = ktypes ++ List(ctype.asInstanceOf[AddType].getRef)}
-    
+  def generate(adaptModel: AdaptationModel, nodeName: String, outputDir: String, bundleContext: BundleContext) = {
+
+    val componentTypes = adaptModel.getAdaptations.filter(adt => adt.isInstanceOf[AddType] && adt.asInstanceOf[AddType].getRef.isInstanceOf[ComponentType])
+    val channelTypes = adaptModel.getAdaptations.filter(adt => adt.isInstanceOf[AddType] && adt.asInstanceOf[AddType].getRef.isInstanceOf[ChannelType])
+    var ktypes: List[TypeDefinition] = List()
+    componentTypes.foreach {
+      ctype => ktypes = ktypes ++ List(ctype.asInstanceOf[AddType].getRef)
+    }
+    channelTypes.foreach {
+      ctype => ktypes = ktypes ++ List(ctype.asInstanceOf[AddType].getRef)
+    }
+
     generateKcFrameworkHeaders(ktypes)
     generateKcConstMethods(ktypes);
     generateKcFramework
 
-    componentTypes.foreach{componentTypeAdaptation =>
-      generateComponentType(componentTypeAdaptation.asInstanceOf[AddType].getRef.asInstanceOf[ComponentType],bundleContext)
+    componentTypes.foreach {
+      componentTypeAdaptation =>
+        generateComponentType(componentTypeAdaptation.asInstanceOf[AddType].getRef.asInstanceOf[ComponentType], bundleContext)
     }
-    channelTypes.foreach{channelTypeAdaptation =>
-      generateChannelType(channelTypeAdaptation.asInstanceOf[AddType].getRef.asInstanceOf[ChannelType],bundleContext)
+    channelTypes.foreach {
+      channelTypeAdaptation =>
+        generateChannelType(channelTypeAdaptation.asInstanceOf[AddType].getRef.asInstanceOf[ChannelType], bundleContext)
     }
-    
-    
 
-    
+
+
+
     generateGlobalInstanceState
     generateDestroyInstanceMethod(ktypes)
     generateParamMethod(ktypes)
     generateParamsMethod
     generateGlobalInstanceFactory(ktypes)
     generateRunInstanceMethod(ktypes)
-    
-    val instancesAdaption = adaptModel.getAdaptations.filter(adt => adt.isInstanceOf[AddInstance] )
-    var instances : List[Instance] = List()
-    instancesAdaption.foreach{instanceAdaption=>
-      instances = instances ++ List(instanceAdaption.asInstanceOf[AddInstance].getRef)
+
+    val instancesAdaption = adaptModel.getAdaptations.filter(adt => adt.isInstanceOf[AddInstance])
+    var instances: List[Instance] = List()
+    instancesAdaption.foreach {
+      instanceAdaption =>
+        instances = instances ++ List(instanceAdaption.asInstanceOf[AddInstance].getRef)
     }
-    
+
     generateBindMethod(ktypes)
     generateUnBindMethod(ktypes)
-    
+
     generatePeriodicExecutionMethod(ktypes)
     generatePortQueuesSizeMethod(ktypes)
-    
+
     generateNameToIndexMethod()
-    
+
     generateCheckForAdminMsg()
     generateConcatKevscriptParser()
-    
-    generateSetup(instances,nodeName)
+
+    generateSetup(instances, nodeName)
+
+
+    generateNextExecutionGap(ktypes)
+    generateCurrentTimeMethod()
+    generateSleepMethod()
     generateLoop
-    
-    
-    generateFreeRamMethod
-    
-    
+
+
+    generateFreeRamMethod()
+
+
     //GENERATE OUTPUT FILE
     context.toFile(outputDir, nodeName)
-                       
+
   }
 }

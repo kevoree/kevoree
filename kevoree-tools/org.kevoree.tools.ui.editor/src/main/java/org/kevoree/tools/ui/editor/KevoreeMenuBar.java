@@ -27,21 +27,21 @@ public class KevoreeMenuBar extends JMenuBar {
         JMenu file, model, kevs = null;
 
         file = new JMenu("File");
-        
+
         /* Load command */
         JMenuItem fileOpen = new JMenuItem("Open");
         LoadModelCommandUI cmdLM = new LoadModelCommandUI();
         cmdLM.setKernel(kernel);
         fileOpen.addActionListener(new CommandActionListener(cmdLM));
         file.add(fileOpen);
-        
+
         /* Load remote ui command */
         JMenuItem fileOpenRemote = new JMenuItem("Open from node");
         LoadRemoteModelUICommand cmdLMRemote = new LoadRemoteModelUICommand();
         cmdLMRemote.setKernel(kernel);
         fileOpenRemote.addActionListener(new CommandActionListener(cmdLMRemote));
         file.add(fileOpenRemote);
-        
+
         JMenuItem fileSave = new JMenuItem("Save");
         SaveActuelModelCommand cmdSM = new SaveActuelModelCommand();
         cmdSM.setKernel(kernel);
@@ -54,11 +54,11 @@ public class KevoreeMenuBar extends JMenuBar {
         file.add(refresh);
 
         model = new JMenu("Model");
-       // JMenuItem addNode = new JMenuItem("Add node");
-      //  AddNodeCommand cmdAN = new AddNodeCommand();
-      //  cmdAN.setKernel(kernel);
-       // addNode.addActionListener(new CommandActionListener(cmdAN));
-      // model.add(addNode);
+        // JMenuItem addNode = new JMenuItem("Add node");
+        //  AddNodeCommand cmdAN = new AddNodeCommand();
+        //  cmdAN.setKernel(kernel);
+        // addNode.addActionListener(new CommandActionListener(cmdAN));
+        // model.add(addNode);
         JMenuItem clearModel = new JMenuItem("Clear");
         ClearModelCommand cmdCM = new ClearModelCommand();
         cmdCM.setKernel(kernel);
@@ -69,11 +69,20 @@ public class KevoreeMenuBar extends JMenuBar {
         cmdLL.setKernel(kernel);
         mergeLib.addActionListener(new CommandActionListener(cmdLL));
         model.add(mergeLib);
-        JMenuItem mergeDefLib = new JMenuItem("Merge default Lib");
+
+
+        JMenuItem mergeDefLib = new JMenuItem("Merge Base Stable Lib");
         MergeDefaultLibrary cmdLDEFL = new MergeDefaultLibrary();
         cmdLDEFL.setKernel(kernel);
+        cmdLDEFL.setSnapshot(false);
         mergeDefLib.addActionListener(new CommandActionListener(cmdLDEFL));
         model.add(mergeDefLib);
+        JMenuItem mergeDefLibSnap = new JMenuItem("Merge Base Snapshot Lib");
+        MergeDefaultLibrary cmdLDEFL2 = new MergeDefaultLibrary();
+        cmdLDEFL2.setKernel(kernel);
+        cmdLDEFL2.setSnapshot(true);
+        mergeDefLibSnap.addActionListener(new CommandActionListener(cmdLDEFL2));
+        model.add(mergeDefLibSnap);
 
 
         JMenuItem checkModel = new JMenuItem("Check");

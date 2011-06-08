@@ -26,14 +26,6 @@
         <module>../org.kevoree.library.arduino.components</module>
     </modules>
 
-    <distributionManagement>
-        <repository>
-            <id>maven.kevoree.org-releases</id>
-            <name>maven.kevoree.org-releases</name>
-            <url>http://maven.kevoree.org/libs-release-local</url>
-        </repository>
-    </distributionManagement>
-
     <dependencies>
         <dependency>
             <groupId>org.kevoree</groupId>

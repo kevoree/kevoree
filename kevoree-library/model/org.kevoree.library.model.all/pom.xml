@@ -62,7 +62,7 @@
                 <artifactId>maven-deploy-plugin</artifactId>
                 <executions>
                     <execution>
-                        <id>deploy-jar-apk</id>
+                        <id>deploy-kev</id>
                         <phase>deploy</phase>
                         <goals>
                             <goal>deploy</goal>
@@ -79,7 +79,7 @@
                         </goals>
                         <configuration>
                             <file>${project.build.directory}/classes/defaultLibrary.kev</file>
-                            <url>http://maven.kevoree.org/libs-release-local/</url>
+                            <url>http://maven.kevoree.org/libs-snapshot-local/</url>
                             <packaging>kev</packaging>
                             <groupId>${project.groupId}</groupId>
                             <artifactId>${project.artifactId}</artifactId>
@@ -102,15 +102,9 @@
         </dependency>
         <dependency>
             <groupId>org.kevoree.library.arduino</groupId>
-            <artifactId>org.kevoree.library.arduino.sensors</artifactId>
+            <artifactId>org.kevoree.library.arduino.components</artifactId>
             <version>${kevoree.version}</version>
         </dependency>
-        <dependency>
-            <groupId>org.kevoree.library.arduino</groupId>
-            <artifactId>org.kevoree.library.arduino.channels</artifactId>
-            <version>${kevoree.version}</version>
-        </dependency>
-
 
         <!-- JavaSE -->
         <dependency>

@@ -24,7 +24,7 @@ import java.util.logging.Level;
  */
 @Library(name = "KevoreeArduinoJava")
 @DictionaryType({
-        @DictionaryAttribute(name = "PORT", optional = false, defaultValue = "/dev/ttyS0")
+        @DictionaryAttribute(name = "PORT", optional = false, defaultValue = "/dev/tty0")
 })
 @ChannelTypeFragment
 public class SerialCT extends AbstractChannelFragment {
@@ -103,6 +103,8 @@ public class SerialCT extends AbstractChannelFragment {
                 if (serialWriter != null) {
                     logger.info("Send message = " + message.getContent());
                     serialWriter.sendMsg(message.getContent().toString()+";");
+                } else {
+
                 }
                 return null;
             }

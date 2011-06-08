@@ -49,6 +49,7 @@ public class ArduinoDeploy {
 
         ArrayList<String> cmd = new ArrayList<String>();
         cmd.addAll(baseCmd);
+        //cmd.add("-e");
         cmd.add("-c");
         cmd.add("stk500v1");
         cmd.add("-p");
