@@ -1,7 +1,9 @@
-package org.kevoree.library.arduinoNodeType.com
+package org.kevoree.library.channels
 
 import actors.{TIMEOUT, DaemonActor}
 import gnu.io._
+import org.kevoree.framework.ChannelFragment
+import org.kevoree.framework.message.Message
 
 /**
  * User: ffouquet
@@ -9,7 +11,7 @@ import gnu.io._
  * Time: 15:27
  */
 
-class TwoWayActors(portName: String) extends SerialPortEventListener {
+class TwoWayActors(portName: String, channel: ChannelFragment) extends SerialPortEventListener {
 
   //RXTXPort.staticSetDTR(portName, false)
   //RXTXPort.staticSetRTS(portName, false)
@@ -38,13 +40,11 @@ class TwoWayActors(portName: String) extends SerialPortEventListener {
   }
   Thread.sleep(2000)
 
-
-  def sendAndWait(msg: String, waitMsg: String, timeout: Long): java.lang.Boolean = {
-    (replyActor !? (timeout, Tuple3(msg, waitMsg, timeout))) match {
-      case Some(e) => true
-      case None => false
-    }
+  def sendMsg(msg: String) {
+    val msgToSend = "["+msg+"]"
+    serialPort.getOutputStream.write(msgToSend.getBytes)
   }
+
 
   case class CLOSEPORT()
 
@@ -52,8 +52,9 @@ class TwoWayActors(portName: String) extends SerialPortEventListener {
 
   def killConnection() {
     readerActor ! CLOSEPORT()
-    replyActor ! CLOSEPORT()
     if (serialPort != null) {
+      serialPort.getInputStream.close()
+      serialPort.getOutputStream.close()
       serialPort.close()
     }
   }
@@ -67,34 +68,21 @@ class TwoWayActors(portName: String) extends SerialPortEventListener {
           case _ => {
             if (serialPort.getInputStream.available() > 0) {
               recString = recString + (serialPort.getInputStream.read().toChar);
-              replyActor ! CONTENTREC()
-            }
-          }
-        }
-      }
-
-    }
-
-  }.start()
-  var replyActor = new DaemonActor {
-    def act() {
-      loop {
-        react {
-          case CLOSEPORT() => exit()
-          case msg: Tuple3[String, String, Long] => {
-            val originalSender = sender
-            serialPort.getOutputStream.write(msg._1.getBytes)
-            reactWithin(msg._3) {
-              case CONTENTREC() if (recString.contains(msg._2)) => {
-                originalSender ! true
+              if (recString.contains("]") || recString.contains("\n")) {
+                val message = new Message();
+                message.setContent(recString.trim());
+                message.setInOut(false);
+                message.getPassedNodes().add("unamedNode");
+                channel.remoteDispatch(message);
+                recString = "";
               }
-              case TIMEOUT => //LOST NEXT MESSAGE
-              case CLOSEPORT() => exit()
             }
           }
         }
       }
+
     }
+
   }.start()
 
 

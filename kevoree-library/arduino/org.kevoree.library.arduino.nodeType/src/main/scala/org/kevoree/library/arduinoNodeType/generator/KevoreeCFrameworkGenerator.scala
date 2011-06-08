@@ -25,8 +25,8 @@ trait KevoreeCFrameworkGenerator extends KevoreeCAbstractGenerator {
     context h "#include <EEPROM.h>"
 
     val random = new Random
-    context h ("#define kevoreeID1 "+random.nextInt(10))
-    context h ("#define kevoreeID2 "+random.nextInt(10))
+    context h ("#define kevoreeID1 " + random.nextInt(10))
+    context h ("#define kevoreeID2 " + random.nextInt(10))
 
 
     context h "//Global Kevoree Type Defintion declaration"
@@ -54,33 +54,25 @@ trait KevoreeCFrameworkGenerator extends KevoreeCAbstractGenerator {
     context h "//Global Kevoree Port Type Defintion declaration"
     //GENERATE ALL Port
     index = 0
+    var portNameGenerated: List[String] = List()
     types.filter(p => p.isInstanceOf[ComponentType]).foreach {
       ktype =>
         val ct = ktype.asInstanceOf[ComponentType]
         (ct.getProvided.toList ++ ct.getRequired.toList).toList.foreach {
           ptRef =>
-            portCodeMap.put(ptRef.getName, index)
-            context h "const prog_char " + ptRef.getName.toLowerCase + "[] PROGMEM = \"" + ptRef.getName + "\";"
-            index = index + 1
+            val portName = ptRef.getName
+            val portNamePrefix = ("port_"+portName).toLowerCase
+            if (!portNameGenerated.contains(portNamePrefix)) {
+              portCodeMap.put(portName, index)
+              portNameGenerated = portNameGenerated ++ List(portNamePrefix)
+              context h "const prog_char " + portNamePrefix + "[] PROGMEM = \"" + portName + "\";"
+              index = index + 1
+            }
         }
     }
     //GENERATE Global PORT Tab
-    context h "PROGMEM const char * portdefinition[] = { "
-    first = true
-    types.filter(p => p.isInstanceOf[ComponentType]).foreach {
-      ktype =>
-        val ct = ktype.asInstanceOf[ComponentType]
-        (ct.getProvided.toList ++ ct.getRequired.toList).toList.foreach {
-          ptRef =>
-            if (first) {
-              context h ptRef.getName.toLowerCase
-            } else {
-              context h "," + ptRef.getName.toLowerCase
-            }
-            first = false
-        }
-    }
-    context h "};"
+    context h "PROGMEM const char * portdefinition[] = { " + portNameGenerated.mkString(",") + "};"
+
     //GENERATE ALL PROPERTIES NAME
     index = 0
     var propertiesGenerated: List[String] = List()
@@ -89,11 +81,14 @@ trait KevoreeCFrameworkGenerator extends KevoreeCAbstractGenerator {
         if (ktype.getDictionaryType != null) {
           ktype.getDictionaryType.getAttributes.foreach {
             att =>
-              var propName = att.getName
-              propsCodeMap.put(propName, index)
-              propertiesGenerated = propertiesGenerated ++ List(propName)
-              context h "const prog_char " + propName.toLowerCase + "[] PROGMEM = \"" + propName + "\";"
-              index = index + 1
+              val propName = att.getName
+              val propNamePrefix = ("prop_"+propName).toLowerCase
+              if (!propertiesGenerated.contains(propNamePrefix)) {
+                propsCodeMap.put(propName, index)
+                propertiesGenerated = propertiesGenerated ++ List(propNamePrefix)
+                context h "const prog_char " + propNamePrefix + "[] PROGMEM = \"" + propName + "\";"
+                index = index + 1
+              }
           }
         }
     }

@@ -14,13 +14,18 @@ object Tester extends App {
 
 
 
-  var tester = new TwoWayActors("/dev/tty.usbserial-A400g2se");
+  var tester = new TwoWayActors("/dev/tty.usbserial-A400g2AP");
 
-  println(tester.sendAndWait("$6{ping};","ack6",2000))
-  println(tester.sendAndWait("$7{udi:t1:period=50};","ack7",2000))
+  println(tester.recString)
+
+  println(tester.sendAndWait("$6{ping}","ack6",2000))
+
+  println(tester.recString)
+
+  println(tester.sendAndWait("$5{rbi:light2:hub1:toggle/abi:light4:hub1:toggle}","ack5",2000))
+
+  println(tester.recString)
 
   tester.killConnection()
-
-
 
 }

@@ -2,28 +2,29 @@
 #include <avr/pgmspace.h>
 #include <avr/wdt.h>
 #include <EEPROM.h>
-#define kevoreeID1 5
-#define kevoreeID2 3
+#define kevoreeID1 0
+#define kevoreeID2 1
 //Global Kevoree Type Defintion declaration
 const prog_char digitallight[] PROGMEM = "DigitalLight";
-const prog_char timer[] PROGMEM = "Timer";
+const prog_char pushbutton[] PROGMEM = "PushButton";
 const prog_char localchannel[] PROGMEM = "LocalChannel";
 PROGMEM const char * typedefinition[] = { 
 digitallight
-,timer
+,pushbutton
 ,localchannel
 };
 //Global Kevoree Port Type Defintion declaration
 const prog_char port_on[] PROGMEM = "on";
 const prog_char port_off[] PROGMEM = "off";
 const prog_char port_toggle[] PROGMEM = "toggle";
-const prog_char port_tick[] PROGMEM = "tick";
-PROGMEM const char * portdefinition[] = { port_on,port_off,port_toggle,port_tick};
+const prog_char port_click[] PROGMEM = "click";
+const prog_char port_release[] PROGMEM = "release";
+PROGMEM const char * portdefinition[] = { port_on,port_off,port_toggle,port_click,port_release};
 const prog_char prop_pin[] PROGMEM = "pin";
 const prog_char prop_period[] PROGMEM = "period";
 PROGMEM const char * properties[] = { prop_pin,prop_period};
 
-const int nbPortType = 4;
+const int nbPortType = 5;
 int getIDFromPortName(char * portName){
   for(int i=0;i<nbPortType;i++){
    if(strcmp_P(portName, (char*)pgm_read_word(&(portdefinition[i]))  )==0) { return i; }
@@ -37,7 +38,7 @@ int getIDFromType(char * typeName){
   }
   return -1;
 }
-const int nbProps = 2;
+const int nbProps = 3;
 int getIDFromProps(char * propName){
   for(int i=0;i<nbProps;i++){
    if(strcmp_P(propName, (char*)pgm_read_word(&(properties[i]))  )==0) { return i; }
@@ -145,10 +146,14 @@ if(state){ newState = LOW; } else { newState=HIGH; }state = ! state; pinMode(ato
 
 }
 };
-class Timer : public KevoreeType {
+class PushButton : public KevoreeType {
  public : 
 unsigned long nextExecution;
-QueueList<kmessage> * tick;
+int buttonState ;
+
+QueueList<kmessage> * click;
+QueueList<kmessage> * release;
+char pin[20];
 char period[20];
 void init(){
 nextExecution = millis();
@@ -156,14 +161,29 @@ nextExecution = millis();
 void destroy(){
 }
 void runInstance(){
-kmessage * msg = (kmessage*) malloc(sizeof(kmessage));
-if (msg){memset(msg, 0, sizeof(kmessage));}
-msg->value = "tick";msg->metric = "t";tick_rport(msg);free(msg);
+pinMode(atoi(pin), INPUT);
+int newButtonState = digitalRead(atoi(pin));
+  if (newButtonState == HIGH) { 
+    if(buttonState == LOW){
+      buttonState = HIGH;
+kmessage * msg = (kmessage*) malloc(sizeof(kmessage));if (msg){memset(msg, 0, sizeof(kmessage));}msg->value = "click";click_rport(msg);free(msg);    }
+  } else {
+    if(buttonState == HIGH){
+      buttonState = LOW;
+      //DO ACTION UNRELEASE ACTION
+kmessage * msg = (kmessage*) malloc(sizeof(kmessage));if (msg){memset(msg, 0, sizeof(kmessage));}msg->value = "release";release_rport(msg);free(msg);
+    }
+  }
 nextExecution += atol(period);
 }
-void tick_rport(kmessage * msg){
-if(tick){
-tick->push(*msg);
+void click_rport(kmessage * msg){
+if(click){
+click->push(*msg);
+}
+}
+void release_rport(kmessage * msg){
+if(release){
+release->push(*msg);
 }
 }
 };
@@ -232,7 +252,7 @@ case 0:{
 ((DigitalLight*) instances[index])->destroy();
 break;}
 case 1:{
-((Timer*) instances[index])->destroy();
+((PushButton*) instances[index])->destroy();
 break;}
 case 2:{
 ((LocalChannel*) instances[index])->destroy();
@@ -251,8 +271,11 @@ break;}
 }
 break;}
 case 1:{
-Timer * instance = (Timer*) instances[index];
+PushButton * instance = (PushButton*) instances[index];
  switch(keyCode){
+case 0:{
+strcpy (instance->pin,val);
+break;}
 case 1:{
 strcpy (instance->period,val);
 break;}
@@ -290,9 +313,9 @@ case 0:{
   return newIndex;
 break;}
 case 1:{
-  Timer * newInstance = (Timer*) malloc(sizeof(Timer));
+  PushButton * newInstance = (PushButton*) malloc(sizeof(PushButton));
   if (newInstance){
-    memset(newInstance, 0, sizeof(Timer));
+    memset(newInstance, 0, sizeof(PushButton));
   } 
   strcpy(newInstance->instanceName,instanceName);
   newInstance->init();
@@ -326,7 +349,7 @@ DigitalLight * instance = (DigitalLight*) instances[index];
 instance->runInstance();
 break;}
 case 1:{
-Timer * instance = (Timer*) instances[index];
+PushButton * instance = (PushButton*) instances[index];
 instance->runInstance();
 break;}
 case 2:{
@@ -360,10 +383,13 @@ break;}
 }
 break;}
 case 1:{
-Timer * instance = (Timer*) instances[indexComponent];
+PushButton * instance = (PushButton*) instances[indexComponent];
 switch(portCode){
 case 3:{
-   requiredPort=&instance->tick;
+   requiredPort=&instance->click;
+break;}
+case 4:{
+   requiredPort=&instance->release;
 break;}
 }
 break;}
@@ -386,7 +412,10 @@ QueueList<kmessage> ** requiredPort = 0;
 case 1:{
 switch(portCode){
 case 3:{
-   requiredPort=&(((Timer*)instances[indexComponent])->tick);
+   requiredPort=&(((PushButton*)instances[indexComponent])->click);
+break;}
+case 4:{
+   requiredPort=&(((PushButton*)instances[indexComponent])->release);
 break;}
 }
 break;}
@@ -404,7 +433,7 @@ break;}
 boolean periodicExecution(int index){
  switch(instances[index]->subTypeCode){
 case 1:{
-return millis() > (((Timer *) instances[index] )->nextExecution);
+return millis() > (((PushButton *) instances[index] )->nextExecution);
 }
 }
 return false;
@@ -548,10 +577,10 @@ boolean parseForAdminMsg(){
 void setup(){
 Serial.begin(9600);
 int indexhub1 = createInstance(2,"hub1","");
-int indexled1 = createInstance(0,"led1","pin=9,");
-int indext1 = createInstance(1,"t1","period=1000,");
-bind(indext1,indexhub1,3);
+int indexled1 = createInstance(0,"led1","pin=13,");
+int indexbt1 = createInstance(1,"bt1","pin=2,period=100,");
 bind(indexled1,indexhub1,2);
+bind(indexbt1,indexhub1,3);
 //STATE RECOVERY                                                         
 if(EEPROM.read(0) != kevoreeID1 || EEPROM.read(1) != kevoreeID2){            
   for (int i = 0; i < 512; i++){EEPROM.write(i, 0);}                         
@@ -587,7 +616,7 @@ Serial.println(freeRam());
 long nextExecutionGap(int index){
  switch(instances[index]->subTypeCode){
 case 1:{
-return ((((Timer *) instances[index] )->nextExecution)- currentMillis());
+return ((((PushButton *) instances[index] )->nextExecution)- currentMillis());
 }
 }
 return -1;
