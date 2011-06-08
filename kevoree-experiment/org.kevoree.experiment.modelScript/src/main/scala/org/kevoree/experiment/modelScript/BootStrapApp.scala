@@ -1,13 +1,6 @@
 package org.kevoree.experiment.modelScript
 
-import org.kevoree.tools.marShell.interpreter.KevsInterpreterContext
-import org.kevoree.tools.marShell.parser.{ParserUtil, KevsParser}
-import org.kevoree.framework.KevoreeXmiHelper
-import java.net.URL
-import java.io.{ByteArrayOutputStream, BufferedReader, InputStreamReader, OutputStreamWriter}
-import org.kevoree.experiment.modelScript.NodePacket._
-
-object BootStrapApp extends Application {
+object BootStrapApp extends App {
 
   override def main (args: Array[String]) {
     if (args.length == 1) {

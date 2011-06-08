@@ -5,21 +5,22 @@
     <parent>
         <artifactId>org.kevoree.experiment.root</artifactId>
         <groupId>org.kevoree.experiment</groupId>
-        <version>1.1.0-RC2</version>
+        <version>1.2.0-SNAPSHOT</version>
+        <relativePath>../org.kevoree.experiment.root</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
     <packaging>bundle</packaging>
-    <version>1.1.0-RC2</version>
+    <version>1.2.0-SNAPSHOT</version>
     <properties>
         <kevoree.version>${project.version}</kevoree.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
-    <artifactId>org.kevoree.exeperiment.fake</artifactId>
+    <artifactId>org.kevoree.experiment.fake</artifactId>
 
 
-    <repositories>
+   <repositories>
         <repository>
             <id>scala-tools.org</id>
             <name>Scala-tools Maven2 Repository</name>
@@ -28,6 +29,10 @@
         <repository>
             <id>kevoree-libs-release-local</id>
             <url>http://maven.kevoree.org/release</url>
+        </repository>
+        <repository>
+            <id>kevoree-snapshots</id>
+            <url>http://maven.kevoree.org/snapshots</url>
         </repository>
     </repositories>
 
@@ -41,6 +46,10 @@
             <id>plugin.kevoree-github</id>
             <url>http://maven.kevoree.org/release</url>
         </pluginRepository>
+        <pluginRepository>
+            <id>plugin.kevoree-snapshots</id>
+            <url>http://maven.kevoree.org/snapshots</url>
+        </pluginRepository>
     </pluginRepositories>
 
      <build>
@@ -48,6 +57,7 @@
             <plugin>
                 <groupId>org.kevoree.tools</groupId>
                 <artifactId>org.kevoree.tools.annotation.mavenplugin</artifactId>
+                <version>${kevoree.version}</version>
                 <extensions>true</extensions>
                 <configuration>
                     <nodeTypeNames>JavaSENode</nodeTypeNames>
