@@ -15,6 +15,7 @@ package org.kevoree.tools.ui.editor.standalone;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.io.File;
 import javax.swing.*;
 
 import org.jdesktop.swingx.JXMultiSplitPane;
@@ -28,11 +29,12 @@ public class App {
 
     public static void main(final String[] args) {
 
-        /* TEMP */
-        System.setProperty("arduino.home", "/Applications/Arduino.app/Contents/Resources/Java");
-     //   System.setProperty("avr.bin", "/Applications/Arduino.app/Contents/Resources/Java/hardware/tools/avr/bin");
-      //  System.setProperty("avrdude.config.path", "/Applications/Arduino.app/Contents/Resources/Java/hardware/tools/avr/etc/avrdude.conf");
-      //  System.setProperty("serial.port", "/dev/tty.usbmodem621");
+
+
+
+        //   System.setProperty("avr.bin", "/Applications/Arduino.app/Contents/Resources/Java/hardware/tools/avr/bin");
+        //  System.setProperty("avrdude.config.path", "/Applications/Arduino.app/Contents/Resources/Java/hardware/tools/avr/etc/avrdude.conf");
+        //  System.setProperty("serial.port", "/dev/tty.usbmodem621");
 
         /* TEMP */
 
@@ -47,7 +49,7 @@ public class App {
 
                 String frameName = "Kevoree Editor";
 
-                if(!artpanel.getEditorVersion().equals("")) {
+                if (!artpanel.getEditorVersion().equals("")) {
                     frameName += " - " + artpanel.getEditorVersion();
                 }
 

@@ -2,8 +2,8 @@
 #include <avr/pgmspace.h>
 #include <avr/wdt.h>
 #include <EEPROM.h>
-#define kevoreeID1 5
-#define kevoreeID2 3
+#define kevoreeID1 3
+#define kevoreeID2 2
 //Global Kevoree Type Defintion declaration
 const prog_char digitallight[] PROGMEM = "DigitalLight";
 const prog_char timer[] PROGMEM = "Timer";

@@ -13,7 +13,18 @@ public class ArduinoHomeFinder {
     public static boolean checkArduinoHome() {
 
         if (System.getProperty("arduino.home") == null) {
-            System.setProperty("arduino.home", guiAskForArduinoHome());
+
+            if (System.getProperty("os.name").toString().toLowerCase().contains("mac")) {
+                if (new File("/Applications/Arduino.app/Contents/Resources/Java").exists()) {
+                    System.out.println("OSX Default Path");
+                    System.setProperty("arduino.home", "/Applications/Arduino.app/Contents/Resources/Java");
+                }
+            } else {
+                System.setProperty("arduino.home", guiAskForArduinoHome());
+            }
+
+
+
         }
         String previousArduinoHome = System.getProperty("arduino.home");
         File f = new File(previousArduinoHome);

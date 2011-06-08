@@ -1,0 +1,20 @@
+#######################################
+# Syntax Coloring Map For QueueList
+#######################################
+
+#######################################
+# Datatypes (KEYWORD1)
+#######################################
+
+QueueList	KEYWORD1
+
+#######################################
+# Methods and Functions (KEYWORD2)
+#######################################
+
+push	KEYWORD2
+pop	KEYWORD2
+peek	KEYWORD2
+isEmpty	KEYWORD2
+count	KEYWORD2
+setPrinter      KEYWORD2
