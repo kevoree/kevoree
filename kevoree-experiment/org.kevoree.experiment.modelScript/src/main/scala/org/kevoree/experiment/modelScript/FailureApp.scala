@@ -9,9 +9,15 @@ import java.io.{InputStreamReader, BufferedReader, BufferedInputStream, InputStr
  * Date: 28/05/11
  * Time: 15:00
  */
-object FailureApp extends Application {
+object FailureApp extends App {
 
   override def main (args: Array[String]) {
+    if (args.length != 0 && args(0).equals("true")) {
+      //println("modification process is executed on Grid5000...")
+      Configuration.grid5000 = true
+    }
+    Configuration.build()
+
     val failureGenerator = new FailureGenerator(Configuration.ips)
 
     val stream = new BufferedReader(new InputStreamReader((System.in)))

@@ -65,8 +65,6 @@ class ModificationGenerator(ips : List[String]) {
   }
 
   def updateModelFromKevScript(kevScript: String, nodeName: String) {
-
-
     var ip: String = KevoreePlatformHelper.getProperty(model, nodeName, org.kevoree.framework.Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP)
     if (ip == null || (ip == "")) {
       ip = "127.0.0.1"

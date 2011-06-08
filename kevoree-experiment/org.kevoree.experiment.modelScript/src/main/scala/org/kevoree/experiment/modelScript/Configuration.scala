@@ -38,6 +38,7 @@ object Configuration {
             }
             line = reader.readLine()
           }
+          reader.close()
         } else {
           println("file is missing.\nBootstrap is not possible")
         }

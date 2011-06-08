@@ -7,7 +7,7 @@
     <artifactId>org.kevoree.experiment.library.gossiperNetty</artifactId>
     <packaging>bundle</packaging>
     <name>Kevoree :: Experiment :: Library :: GossiperNettyLogger</name>
-    <version>1.1.0-RC2</version>
+    <version>1.2.0-SNAPSHOT</version>
 
     <dependencies>
         <dependency>
@@ -44,7 +44,7 @@
     <parent>
         <artifactId>org.kevoree.library.javase.root</artifactId>
         <groupId>org.kevoree.library.javase</groupId>
-        <version>1.1.0-RC2</version>
+        <version>1.2.0-SNAPSHOT</version>
         <relativePath>../../kevoree-library/javase/org.kevoree.library.javase.root</relativePath>
     </parent>
 
