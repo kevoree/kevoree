@@ -19,25 +19,24 @@ public class ArduinoHomeFinder {
         if (System.getProperty("arduino.home") == null) {
 
             String userDir = System.getProperty("user.home");
-            File kevoreeProps = new File(userDir+"/kevoree.config");
+            File kevoreeProps = new File(userDir + "/kevoree.config");
             Properties properties = new Properties();
-            if(kevoreeProps.exists()){
+            if (kevoreeProps.exists()) {
                 try {
                     properties.load(new FileInputStream(kevoreeProps));
-                    System.setProperty("arduino.home",properties.getProperty("arduino.home")) ;
+                    System.setProperty("arduino.home", properties.getProperty("arduino.home"));
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-            }
-
-
-            if (System.getProperty("os.name").toString().toLowerCase().contains("mac")) {
-                if (new File("/Applications/Arduino.app/Contents/Resources/Java").exists()) {
-                    System.out.println("OSX Default Path");
-                    System.setProperty("arduino.home", "/Applications/Arduino.app/Contents/Resources/Java");
-                }
             } else {
-                System.setProperty("arduino.home", guiAskForArduinoHome());
+                if (System.getProperty("os.name").toString().toLowerCase().contains("mac")) {
+                    if (new File("/Applications/Arduino.app/Contents/Resources/Java").exists()) {
+                        System.out.println("OSX Default Path");
+                        System.setProperty("arduino.home", "/Applications/Arduino.app/Contents/Resources/Java");
+                    }
+                } else {
+                    System.setProperty("arduino.home", guiAskForArduinoHome());
+                }
             }
 
 
@@ -65,18 +64,18 @@ public class ArduinoHomeFinder {
         if (result == JFileChooser.APPROVE_OPTION) {
             //STORE TO USER DIR
             String userDir = System.getProperty("user.home");
-            File kevoreeProps = new File(userDir+"/kevoree.config");
+            File kevoreeProps = new File(userDir + "/kevoree.config");
             Properties properties = new Properties();
-            if(kevoreeProps.exists()){
+            if (kevoreeProps.exists()) {
                 try {
                     properties.load(new FileInputStream(kevoreeProps));
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
             }
-            properties.setProperty("arduino.home",arduinoHomeFinder.getSelectedFile().getAbsolutePath());
+            properties.setProperty("arduino.home", arduinoHomeFinder.getSelectedFile().getAbsolutePath());
             try {
-                properties.store(new FileOutputStream(kevoreeProps),"Kevoree configuration file");
+                properties.store(new FileOutputStream(kevoreeProps), "Kevoree configuration file");
             } catch (IOException e) {
                 e.printStackTrace();
             }
