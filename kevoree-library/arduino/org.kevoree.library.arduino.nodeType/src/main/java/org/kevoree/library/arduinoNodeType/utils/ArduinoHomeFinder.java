@@ -24,7 +24,6 @@ public class ArduinoHomeFinder {
             }
 
 
-
         }
         String previousArduinoHome = System.getProperty("arduino.home");
         File f = new File(previousArduinoHome);
@@ -43,6 +42,8 @@ public class ArduinoHomeFinder {
 
     private static String guiAskForArduinoHome() {
         JFileChooser arduinoHomeFinder = new JFileChooser();
+        arduinoHomeFinder.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+        arduinoHomeFinder.setDialogTitle("Please select Arduino Home base directory or executable");
         int result = arduinoHomeFinder.showOpenDialog(null);
         if (result == JFileChooser.APPROVE_OPTION) {
             return arduinoHomeFinder.getSelectedFile().getAbsolutePath();
