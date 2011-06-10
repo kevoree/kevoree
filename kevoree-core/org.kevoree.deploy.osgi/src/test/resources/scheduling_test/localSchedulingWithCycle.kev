@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kevoree:ContainerRoot xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:kevoree="http://kevoree/1.0">
+  <nodes name="test" typeDefinition="//@typeDefinitions.2" metaData="x=260,y=117">
+    <components name="TemperTestManager1" typeDefinition="//@typeDefinitions.0">
+      <provided portTypeRef="//@typeDefinitions.0/@provided.0"/>
+      <required portTypeRef="//@typeDefinitions.0/@required.0"/>
+    </components>
+    <components name="temperDevice" typeDefinition="//@typeDefinitions.4">
+      <dictionary>
+        <values attribute="//@typeDefinitions.4/@dictionaryType/@attributes.0" value="2"/>
+      </dictionary>
+      <required portTypeRef="//@typeDefinitions.4/@required.0"/>
+      <required portTypeRef="//@typeDefinitions.4/@required.1"/>
+    </components>
+    <components name="TemperDeviceStub2" typeDefinition="//@typeDefinitions.3">
+      <dictionary>
+        <values attribute="//@typeDefinitions.3/@dictionaryType/@attributes.0" value="2"/>
+      </dictionary>
+      <provided portTypeRef="//@typeDefinitions.3/@provided.0"/>
+      <provided portTypeRef="//@typeDefinitions.3/@provided.1"/>
+      <required portTypeRef="//@typeDefinitions.3/@required.0"/>
+    </components>
+  </nodes>
+  <typeDefinitions xsi:type="kevoree:ComponentType" name="TemperTestManager" deployUnits="//@deployUnits.0" factoryBean="org.entimid.test.temper.devices.TemperTestManagerFactory" bean="org.entimid.test.temper.devices.TemperTestManager" startMethod="start" stopMethod="stop" updateMethod="update">
+    <required name="startTest" ref="//@typeDefinitions.1" optional="false" noDependency="false"/>
+    <provided name="testResult" ref="//@typeDefinitions.1">
+      <mappings beanMethodName="processTestResult" serviceMethodName="process"/>
+    </provided>
+  </typeDefinitions>
+  <typeDefinitions xsi:type="kevoree:MessagePortType" name="org.kevoree.framework.MessagePort"/>
+  <typeDefinitions xsi:type="kevoree:NodeType" name="JavaSENode"/>
+  <typeDefinitions xsi:type="kevoree:ComponentType" name="TemperDeviceStub" deployUnits="//@deployUnits.0" factoryBean="org.entimid.test.temper.devices.TemperDeviceStubFactory" bean="org.entimid.test.temper.devices.TemperDeviceStub" startMethod="start" stopMethod="stop" updateMethod="update">
+    <dictionaryType>
+      <attributes name="expectedPeriod"/>
+    </dictionaryType>
+    <required name="testResult" ref="//@typeDefinitions.1" optional="false" noDependency="false"/>
+    <provided name="temperatureInput" ref="//@typeDefinitions.1">
+      <mappings beanMethodName="processTemperatureInput" serviceMethodName="process"/>
+    </provided>
+    <provided name="startTest" ref="//@typeDefinitions.1">
+      <mappings beanMethodName="processStartTest" serviceMethodName="process"/>
+    </provided>
+  </typeDefinitions>
+  <typeDefinitions xsi:type="kevoree:ComponentType" name="TemperDevice" deployUnits="//@deployUnits.2" factoryBean="org.entimid.temper.devices.TemperDeviceFactory" bean="org.entimid.temper.devices.TemperDevice" startMethod="start" stopMethod="stop" updateMethod="update">
+    <dictionaryType>
+      <attributes name="period" optional="true"/>
+      <defaultValues attribute="//@typeDefinitions.4/@dictionaryType/@attributes.0" value="1"/>
+    </dictionaryType>
+    <required name="log" ref="//@typeDefinitions.1" optional="true" noDependency="false"/>
+    <required name="temperature" ref="//@typeDefinitions.1" optional="false" noDependency="false"/>
+  </typeDefinitions>
+  <typeDefinitions xsi:type="kevoree:ChannelType" name="defSERVICE" deployUnits="//@deployUnits.3" factoryBean="org.kevoree.library.defaultChannels.defSERVICEFactory" bean="org.kevoree.library.defaultChannels.defSERVICE" startMethod="startHello" stopMethod="stopHello"/>
+  <typeDefinitions xsi:type="kevoree:ChannelType" name="defMSG" deployUnits="//@deployUnits.3" factoryBean="org.kevoree.library.defaultChannels.defMSGFactory" bean="org.kevoree.library.defaultChannels.defMSG" startMethod="startHello" stopMethod="stopHello" updateMethod="updateHello"/>
+  <repositories units="//@deployUnits.0 //@deployUnits.2" url="http://maven.entimid.org/entimid-snapshot"/>
+  <repositories url="http://maven.kevoree.org/release"/>
+  <repositories url="http://authreader:pass@maven.entimid.org/entimid-release"/>
+  <repositories url="http://authreader:pass@maven.entimid.org/entimid-snapshot"/>
+  <repositories url="http://repo1.maven.org/maven2"/>
+  <repositories units="//@deployUnits.3" url="http://maven.kevoree.org/libs-release-local"/>
+  <repositories url="http://scala-tools.org/repo-releases"/>
+  <libraries name="EnTiMid-Test-Temper" subTypes="//@typeDefinitions.0 //@typeDefinitions.3"/>
+  <libraries name="EnTiMid-Temper" subTypes="//@typeDefinitions.4"/>
+  <libraries name="Kevoree-Android-JavaSE" subTypes="//@typeDefinitions.5 //@typeDefinitions.6"/>
+  <hubs name="hub1972466058" typeDefinition="//@typeDefinitions.6" metaData="x=675,y=289"/>
+  <hubs name="hub264327274" typeDefinition="//@typeDefinitions.6" metaData="x=23,y=260"/>
+  <hubs name="hub2023143542" typeDefinition="//@typeDefinitions.6" metaData="x=715,y=132"/>
+  <mBindings port="//@nodes.0/@components.0/@required.0" hub="//@hubs.0"/>
+  <mBindings port="//@nodes.0/@components.2/@provided.1" hub="//@hubs.0"/>
+  <mBindings port="//@nodes.0/@components.0/@provided.0" hub="//@hubs.1"/>
+  <mBindings port="//@nodes.0/@components.2/@required.0" hub="//@hubs.1"/>
+  <mBindings port="//@nodes.0/@components.1/@required.1" hub="//@hubs.2"/>
+  <mBindings port="//@nodes.0/@components.2/@provided.0" hub="//@hubs.2"/>
+  <deployUnits groupName="org.entimid" unitName="test.temper" version="3.0.0-SNAPSHOT" hashcode="201106061522452" requiredLibs="//@deployUnits.1" targetNodeType="//@typeDefinitions.2"/>
+  <deployUnits name="org.entimid.framework" url="mvn:org.entimid/framework/3.0.0-SNAPSHOT" targetNodeType="//@typeDefinitions.2"/>
+  <deployUnits groupName="org.entimid" unitName="temper" version="3.0.0-SNAPSHOT" hashcode="201106061401004" requiredLibs="//@deployUnits.1" targetNodeType="//@typeDefinitions.2"/>
+  <deployUnits groupName="org.kevoree.library.javase" unitName="org.kevoree.library.javase.defaultChannels" version="1.1.0-RC2" hashcode="201105171343344" targetNodeType="//@typeDefinitions.2"/>
+</kevoree:ContainerRoot>
