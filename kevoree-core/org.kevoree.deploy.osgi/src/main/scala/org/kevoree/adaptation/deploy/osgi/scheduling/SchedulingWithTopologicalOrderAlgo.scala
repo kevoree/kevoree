@@ -30,7 +30,6 @@ class SchedulingWithTopologicalOrderAlgo {
   private val logger : Logger = LoggerFactory.getLogger(classOf[SchedulingWithTopologicalOrderAlgo])
 
   def schedule (commands: List[LifeCycleCommand], start: Boolean): List[LifeCycleCommand] = {
-    try {
       if (commands.size > 1) {
         val graph: DefaultDirectedGraph[LifeCycleCommand, (LifeCycleCommand, LifeCycleCommand)] = buildGraph(commands, start)
         val topologicAlgorithm: TopologicalOrderIterator[LifeCycleCommand, (LifeCycleCommand, LifeCycleCommand)] = new TopologicalOrderIterator(graph)
@@ -43,10 +42,6 @@ class SchedulingWithTopologicalOrderAlgo {
           return listCommands
         }
       }
-    } catch {
-      case e : AssertionError => logger.info("There is at least one cycle between components to install.\nScheduling cannot be done.\nMaybe the deployment will fail!")
-
-    }
     commands
   }
 
