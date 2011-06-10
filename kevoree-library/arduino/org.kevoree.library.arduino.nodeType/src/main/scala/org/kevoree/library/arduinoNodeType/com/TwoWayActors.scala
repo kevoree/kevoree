@@ -11,9 +11,9 @@ import gnu.io._
 
 class TwoWayActors(portName: String) extends SerialPortEventListener {
 
-  RXTXPort.staticSetDTR(portName, false)
-  RXTXPort.staticSetRTS(portName, false)
-  RXTXPort.staticSetDSR(portName, false)
+  //RXTXPort.staticSetDTR(portName, false)
+  //RXTXPort.staticSetRTS(portName, false)
+  //RXTXPort.staticSetDSR(portName, false)
 
   var serialPort: SerialPort = null
   var portIdentifier = CommPortIdentifier.getPortIdentifier(portName);
@@ -23,7 +23,7 @@ class TwoWayActors(portName: String) extends SerialPortEventListener {
     val commPort = portIdentifier.open(portName, 2000);
     if (commPort.isInstanceOf[SerialPort]) {
       serialPort = commPort.asInstanceOf[SerialPort];
-      serialPort.setDTR(false)
+      //serialPort.setDTR(false)
       serialPort.setFlowControlMode(SerialPort.FLOWCONTROL_NONE);
       serialPort.setSerialPortParams(9600, SerialPort.DATABITS_8, SerialPort.STOPBITS_1, SerialPort.PARITY_NONE);
       //serialPort.disableReceiveTimeout();

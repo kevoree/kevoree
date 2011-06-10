@@ -16,6 +16,8 @@ import org.kevoree.annotation.Library;
 import org.kevoree.annotation.NodeType;
 import org.kevoree.framework.AbstractNodeType;
 import org.kevoree.kompare.KevoreeKompareBean;
+import org.kevoree.library.arduinoNodeType.utils.ArduinoDefaultLibraryManager;
+import org.kevoree.library.arduinoNodeType.utils.ArduinoHomeFinder;
 import org.kevoree.library.arduinoNodeType.utils.ComSender;
 import org.kevoreeAdaptation.AdaptationModel;
 import org.osgi.framework.BundleContext;
@@ -64,6 +66,10 @@ public class ArduinoNode extends AbstractNodeType {
 
                 bcontext = bundle;
 
+
+                //SEARCH ARDUINO HOME
+                ArduinoHomeFinder.checkArduinoHome();
+                ArduinoDefaultLibraryManager.copyDefaultLibrary();
 
                 progress.beginTask("Build diff model", 10);
                 KevoreeKompareBean kompare = new KevoreeKompareBean();

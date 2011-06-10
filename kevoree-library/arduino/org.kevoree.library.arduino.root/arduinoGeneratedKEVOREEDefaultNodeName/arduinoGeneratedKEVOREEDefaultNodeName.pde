@@ -2,8 +2,8 @@
 #include <avr/pgmspace.h>
 #include <avr/wdt.h>
 #include <EEPROM.h>
-#define kevoreeID1 9
-#define kevoreeID2 6
+#define kevoreeID1 3
+#define kevoreeID2 2
 //Global Kevoree Type Defintion declaration
 const prog_char digitallight[] PROGMEM = "DigitalLight";
 const prog_char timer[] PROGMEM = "Timer";
@@ -14,19 +14,14 @@ digitallight
 ,localchannel
 };
 //Global Kevoree Port Type Defintion declaration
-const prog_char on[] PROGMEM = "on";
-const prog_char off[] PROGMEM = "off";
-const prog_char toggle[] PROGMEM = "toggle";
-const prog_char tick[] PROGMEM = "tick";
-PROGMEM const char * portdefinition[] = { 
-on
-,off
-,toggle
-,tick
-};
-const prog_char pin[] PROGMEM = "pin";
-const prog_char period[] PROGMEM = "period";
-PROGMEM const char * properties[] = { pin,period};
+const prog_char port_on[] PROGMEM = "on";
+const prog_char port_off[] PROGMEM = "off";
+const prog_char port_toggle[] PROGMEM = "toggle";
+const prog_char port_tick[] PROGMEM = "tick";
+PROGMEM const char * portdefinition[] = { port_on,port_off,port_toggle,port_tick};
+const prog_char prop_pin[] PROGMEM = "pin";
+const prog_char prop_period[] PROGMEM = "period";
+PROGMEM const char * properties[] = { prop_pin,prop_period};
 
 const int nbPortType = 4;
 int getIDFromPortName(char * portName){

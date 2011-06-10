@@ -7,11 +7,11 @@ package org.kevoree.library.arduinoNodeType;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+
 import org.wayoda.ang.project.Sketch;
 import org.wayoda.ang.project.Target;
 
 /**
- *
  * @author ffouquet
  */
 public class ArduinoPostCompilation {
@@ -20,13 +20,21 @@ public class ArduinoPostCompilation {
     private List<String> hexCmd;
 
     public void prepareCommands() {
-        String binPrefix = System.getProperty("arduino.home")+"/hardware/tools/avr/bin";
+        String binPrefix = System.getProperty("arduino.home") + "/hardware/tools/avr/bin";
         if (binPrefix != null && !binPrefix.endsWith(File.separator)) {
             binPrefix += File.separator;
         }
 
         eepromCmd = new ArrayList<String>();
-        eepromCmd.add(binPrefix + "avr-objcopy");
+
+
+        if (System.getProperty("os.name").toLowerCase().contains("win")) {
+            eepromCmd.add(binPrefix + "avr-objcopy.exe");
+        } else {
+            eepromCmd.add(binPrefix + "avr-objcopy");
+        }
+
+
         eepromCmd.add("-O");
         eepromCmd.add("ihex");
         eepromCmd.add("-j");

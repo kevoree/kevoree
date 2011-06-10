@@ -130,8 +130,8 @@ class SynchNodeTypeCommand extends Command {
         bundle.update
         true
       }
-      case _@e => {
-        e.printStackTrace()
+      case _ @ e => {
+        //e.printStackTrace()
         false
       }
     }

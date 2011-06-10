@@ -7,11 +7,11 @@ package org.kevoree.library.arduinoNodeType;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+
 import org.wayoda.ang.project.Sketch;
 import org.wayoda.ang.project.Target;
 
 /**
- *
  * @author ffouquet
  */
 public class ArduinoDeploy {
@@ -24,22 +24,28 @@ public class ArduinoDeploy {
 
     public void prepareCommands() {
 
-        String binPrefix = System.getProperty("arduino.home")+"/hardware/tools/avr/bin";
+        String binPrefix = System.getProperty("arduino.home") + "/hardware/tools/avr/bin";
         if (binPrefix != null && !binPrefix.endsWith(File.separator)) {
             binPrefix += File.separator;
         }
 
         baseCmd = new ArrayList<String>();
-        baseCmd.add(binPrefix + "avrdude");
 
-        String confPath = System.getProperty("arduino.home")+"/hardware/tools/avr/etc/avrdude.conf";
+
+        if (System.getProperty("os.name").toLowerCase().contains("win")) {
+            baseCmd.add(binPrefix + "avrdude.exe");
+        } else {
+            baseCmd.add(binPrefix + "avrdude");
+        }
+
+        String confPath = System.getProperty("arduino.home") + "/hardware/tools/avr/etc/avrdude.conf";
         if (confPath != null) {
             baseCmd.add("-C");
             baseCmd.add(confPath);
         }
     }
 
-    public final void uploadSketch(Sketch sketch, Target target,String portName) {
+    public final void uploadSketch(Sketch sketch, Target target, String portName) {
 
         File hexFile = sketch.getFlash(target);
         if (hexFile == null) {
@@ -49,7 +55,8 @@ public class ArduinoDeploy {
 
         ArrayList<String> cmd = new ArrayList<String>();
         cmd.addAll(baseCmd);
-        //cmd.add("-e");
+        cmd.add("-q");
+        cmd.add("-q");
         cmd.add("-c");
         cmd.add("stk500v1");
         cmd.add("-p");
