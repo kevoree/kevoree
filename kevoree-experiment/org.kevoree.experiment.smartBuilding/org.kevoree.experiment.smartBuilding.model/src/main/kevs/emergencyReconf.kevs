@@ -1,0 +1,36 @@
+tblock { 
+    //Add new nodes
+    addNode Firefighter35 : AndroidNode
+    //AddTemp Sensor
+    addComponent tempChair@JohnOfficeNode :TempSensor
+    addComponent tempChair@PeterOfficeNode :TempSensor
+    //BindToSerialChannel
+    bind tempChair.value@JohnOfficeNode=>johnSerialCom
+    bind tempChair.value@PeterOfficeNode=>peterSerialCom
+            
+    //Add emergency logger on office nodes
+    addComponent elog@JohnOfficeNode :EmergencyLog
+    addComponent elog@PeterOfficeNode :EmergencyLog
+    bind elog.sdata@JohnOfficeNode=>johnSerialCom
+    bind elog.sdata@PeterOfficeNode=>peterSerialCom
+    addChannel elogGossiper : GossipRF
+    bind elog.forward@JohnOfficeNode=>elogGossiper
+    bind elog.forward@PeterOfficeNode=>elogGossiper
+    bind elog.synch@JohnOfficeNode=>elogGossiper
+    bind elog.synch@PeterOfficeNode=>elogGossiper
+    
+ 
+    //Add emergency logger on superNodes
+    addComponent elog@FloorASuperNode :EmergencyLog
+    bind elog.synch@FloorASuperNode=>elogGossiper
+    bind elog.forward@FloorASuperNode=>elogGossiper
+    addComponent elog@GlobalSuperNode1 :EmergencyLog
+    bind elog.synch@GlobalSuperNode1=>elogGossiper
+    bind elog.forward@GlobalSuperNode1=>elogGossiper
+    
+    //Add emergency map on firefighterNodes
+    addComponent etmap@Firefighter35 :BuildingTempMap
+    bind etmap.datas@Firefighter35=>elogGossiper
+ 
+ 
+ }

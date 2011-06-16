@@ -13,10 +13,19 @@ import org.kevoree.framework.AbstractComponentType;
  */
 @Library(name = "SmartBuilding")
 @ComponentType
+@Provides({
+    @ProvidedPort(name = "datas", type = PortType.MESSAGE)
+})
 public class BuildingTempMap extends AbstractComponentType {
 
     @Start
     @Stop
     public void lifeCycle() {
+    }
+
+    @Ports({
+        @Port(name = "datas")
+    })
+    public void trigger(Object o) {
     }
 }

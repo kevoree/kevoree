@@ -1,0 +1,29 @@
+
+tblock { 
+	//Kevoree Nodes
+	addNode JohnOfficeNode : ArduinoNode
+    addNode PeterOfficeNode : ArduinoNode
+    addNode FloorASuperNode : JavaSENode 
+	addNode GlobalSuperNode1 : JavaSENode
+	//Kevoree Components
+    addComponent localAlarm@FloorASuperNode : FloorAlarm
+    addComponent globalAlarm@GlobalSuperNode1 : GlobalAlarm    
+    addComponent motionSensor@JohnOfficeNode : MotionSensor  
+    addComponent motionSensor@PeterOfficeNode : MotionSensor
+    addComponent smokeSensor@JohnOfficeNode : SmokeSensor  
+    addComponent smokeSensor@PeterOfficeNode : SmokeSensor     
+	//Kevoree Channels
+    addChannel peterSerialCom : SerialCom
+    addChannel johnSerialCom : SerialCom
+    addChannel alarmIP : IPMultiCast
+    //Kevoree bindings     
+    bind smokeSensor.value@JohnOfficeNode=>johnSerialCom  
+    bind smokeSensor.value@PeterOfficeNode=>peterSerialCom
+    bind motionSensor.out@JohnOfficeNode=>johnSerialCom  
+    bind motionSensor.out@PeterOfficeNode=>peterSerialCom                
+    bind localAlarm.sdata@FloorASuperNode=>peterSerialCom
+    bind localAlarm.sdata@FloorASuperNode=>johnSerialCom
+    bind localAlarm.forward@FloorASuperNode=>alarmIP
+    bind globalAlarm.sdata@GlobalSuperNode1=>alarmIP
+
+ }

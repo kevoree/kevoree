@@ -13,10 +13,19 @@ import org.kevoree.framework.AbstractComponentType;
  */
 @Library(name = "SmartBuilding")
 @ComponentType
+@Provides({
+    @ProvidedPort(name = "sdata", type = PortType.MESSAGE)
+})
 public class GlobalAlarm extends AbstractComponentType {
 
     @Start
     @Stop
     public void lifeCycle() {
+    }
+
+    @Ports({
+        @Port(name = "sdata")
+    })
+    public void trigger(Object o) {
     }
 }
