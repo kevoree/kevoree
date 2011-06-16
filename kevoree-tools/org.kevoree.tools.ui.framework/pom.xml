@@ -42,9 +42,16 @@
     <dependencies>
         <dependency>
             <groupId>org.swinglabs</groupId>
-            <artifactId>swingx</artifactId>
-            <version>1.6.1</version>
+            <artifactId>swingx-core</artifactId>
+            <version>1.6.2-2</version>
         </dependency>
+               <!--
+        <dependency>
+            <groupId>org.swinglabs</groupId>
+            <artifactId>jxlayer</artifactId>
+            <version>3.0.4</version>
+        </dependency>
+                -->
     </dependencies>
 
 </project>

@@ -36,8 +36,6 @@ public class Main {
     public static void main(String[] args) {
 
 
-
-
         JFrame jframe = new JFrame("Art2 UI Tester");
         jframe.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         jframe.setPreferredSize(new Dimension(800, 600));
@@ -136,17 +134,22 @@ public class Main {
         node2.add(c4);
 
 
-        JScrollPane scrollPane = new JScrollPane(model, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
+        ZoomPanel zpanel = new ZoomPanel();
+        zpanel.setLayout(new BorderLayout());
+        zpanel.add(model, BorderLayout.CENTER);
+        zpanel.changeZoom(1);
+
+
+        JScrollPane scrollPane = new JScrollPane(zpanel, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
 
         EditableModelPanel epanel = new EditableModelPanel(scrollPane);
 
 
         //jframe.add(epanel, BorderLayout.CENTER);
-        ZoomPanel zpanel = new ZoomPanel();
-        zpanel.setLayout(new BorderLayout());
-        zpanel.add(epanel,BorderLayout.CENTER);
-        zpanel.changeZoom(1.5);
-        jframe.add(zpanel, BorderLayout.CENTER);
+
+
+
+        jframe.add(epanel, BorderLayout.CENTER);
 
 
         JPanel prop = new JPanel();

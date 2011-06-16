@@ -31,7 +31,7 @@ import scala.util.Random;
 public class AddChannelCommand implements Command {
 
     private KevoreeUIKernel kernel;
-    private Random random = new Random();
+    //private Random random = new Random();
 
     private Point point = null;
 
@@ -50,7 +50,10 @@ public class AddChannelCommand implements Command {
         newhub.setTypeDefinition(type);
 
         //CREATE NEW NAME
-        newhub.setName("hub" + Math.abs(random.nextInt()));
+        //newhub.setName("hub" + Math.abs(random.nextInt()));
+        newhub.setName(type.getName().substring(0,Math.min(type.getName().length(),9))+""+Math.abs(new java.util.Random().nextInt(999)));
+
+
         ChannelPanel newhubpanel = kernel.getUifactory().createHub(newhub);
         kernel.getModelHandler().getActualModel().getHubs().add(newhub);
         kernel.getModelPanel().addHub(newhubpanel);

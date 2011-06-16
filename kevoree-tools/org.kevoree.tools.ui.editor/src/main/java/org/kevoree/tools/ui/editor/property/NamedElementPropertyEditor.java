@@ -16,13 +16,14 @@
  * Copyright  : IRISA / INRIA / Universite de Rennes 1 */
 package org.kevoree.tools.ui.editor.property;
 
+import java.awt.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.JLabel;
-import javax.swing.JTextField;
+import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.text.BadLocationException;
+
 import org.kevoree.tools.ui.editor.KevoreeUIKernel;
 import org.kevoree.tools.ui.editor.command.RemoveInstanceCommand;
 import org.kevoree.tools.ui.editor.widget.JCommandButton;
@@ -30,7 +31,6 @@ import org.kevoree.tools.ui.framework.ThreePartRoundedPanel;
 import org.kevoree.tools.ui.framework.TitledElement;
 
 /**
- *
  * @author ffouquet
  */
 public class NamedElementPropertyEditor extends ThreePartRoundedPanel {
@@ -44,11 +44,26 @@ public class NamedElementPropertyEditor extends ThreePartRoundedPanel {
         kernel = _kernel;
         gui = (TitledElement) kernel.getUifactory().getMapping().get(namedElem);
 
-        JLabel label = new JLabel("name");
-        JTextField namefield = new JTextField(20);
 
-        this.addCenter(label);
-        this.addCenter(namefield);
+
+        JPanel p = new JPanel(new SpringLayout());
+        p.setOpaque(false);
+        JLabel l = new JLabel("Name", JLabel.TRAILING);
+        l.setOpaque(false);
+        l.setForeground(Color.WHITE);
+        p.add(l);
+        JTextField textField = new JTextField(10);
+        textField.setOpaque(false);
+        l.setLabelFor(textField);
+        p.add(textField);
+        textField.setText(namedElem.getName());
+
+        this.addCenter(p);
+        SpringUtilities.makeCompactGrid(p,
+                1, 2, //rows, cols
+                6, 6,        //initX, initY
+                6, 6);       //xPad, yPad
+
 
         JCommandButton btDelete = new JCommandButton("Delete");
         RemoveInstanceCommand removecmd = new RemoveInstanceCommand(elem);
@@ -56,9 +71,7 @@ public class NamedElementPropertyEditor extends ThreePartRoundedPanel {
         btDelete.setCommand(removecmd);
         this.addCenter(btDelete);
 
-        namefield.setText(namedElem.getName());
-
-        namefield.getDocument().addDocumentListener(new DocumentListener() {
+        textField.getDocument().addDocumentListener(new DocumentListener() {
 
             @Override
             public void insertUpdate(DocumentEvent e) {
