@@ -23,13 +23,13 @@ public class ArduinoCommandExec {
             
 	    // run the Unix "ps -ef" command
             // using the Runtime exec method:
-            System.out.println(cmd);
+            //System.out.println(cmd);
             Process p = Runtime.getRuntime().exec(cmd);
             
-            BufferedReader stdInput = new BufferedReader(new 
+            BufferedReader stdInput = new BufferedReader(new
                  InputStreamReader(p.getInputStream()));
 
-            BufferedReader stdError = new BufferedReader(new 
+            BufferedReader stdError = new BufferedReader(new
                  InputStreamReader(p.getErrorStream()));
            // try {
                 // read the output from the command
@@ -43,7 +43,7 @@ public class ArduinoCommandExec {
                 while ((s = stdError.readLine()) != null) {
                     System.out.println(s);
                 }
-                
+
                 /*p.waitFor();
                 //System.exit(0);
             } catch (InterruptedException ex) {

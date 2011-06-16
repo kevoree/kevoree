@@ -43,7 +43,7 @@ object GuiAskForComPort {
         ""
       }
     } else {
-      JOptionPane.showMessageDialog(null, "No available serial port", "JArduino", JOptionPane.ERROR_MESSAGE);
+      JOptionPane.showMessageDialog(null, "No available serial port", "Kevoree", JOptionPane.ERROR_MESSAGE);
       "";
     }
   }

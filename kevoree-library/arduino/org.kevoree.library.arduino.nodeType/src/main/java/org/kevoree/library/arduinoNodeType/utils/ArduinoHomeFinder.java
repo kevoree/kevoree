@@ -14,6 +14,10 @@ import java.util.Properties;
  */
 public class ArduinoHomeFinder {
 
+
+
+
+
     public static boolean checkArduinoHome() {
 
         if (System.getProperty("arduino.home") == null) {

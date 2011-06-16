@@ -20,21 +20,8 @@ public class ArduinoPostCompilation {
     private List<String> hexCmd;
 
     public void prepareCommands() {
-        String binPrefix = System.getProperty("arduino.home") + "/hardware/tools/avr/bin";
-        if (binPrefix != null && !binPrefix.endsWith(File.separator)) {
-            binPrefix += File.separator;
-        }
-
         eepromCmd = new ArrayList<String>();
-
-
-        if (System.getProperty("os.name").toLowerCase().contains("win")) {
-            eepromCmd.add(binPrefix + "avr-objcopy.exe");
-        } else {
-            eepromCmd.add(binPrefix + "avr-objcopy");
-        }
-
-
+        eepromCmd.add(ArduinoToolChainExecutables.getAVR_OBJCOPY());
         eepromCmd.add("-O");
         eepromCmd.add("ihex");
         eepromCmd.add("-j");
@@ -45,7 +32,7 @@ public class ArduinoPostCompilation {
         eepromCmd.add(".eeprom=0");
 
         hexCmd = new ArrayList<String>();
-        hexCmd.add(binPrefix + "avr-objcopy");
+        hexCmd.add(ArduinoToolChainExecutables.getAVR_OBJCOPY());
         hexCmd.add("-O");
         hexCmd.add("ihex");
         hexCmd.add("-R");

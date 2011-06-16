@@ -22,20 +22,8 @@ public class ArduinoArchive {
     private List<String> archCmd;
 
     public void prepareCommands() {
-        String binPrefix = System.getProperty("arduino.home") + "/hardware/tools/avr/bin";
-        if (binPrefix != null && !binPrefix.endsWith(File.separator)) {
-            binPrefix += File.separator;
-        }
         archCmd = new ArrayList<String>();
-
-
-        if (System.getProperty("os.name").toLowerCase().contains("win")) {
-            archCmd.add(binPrefix + "avr-ar.exe");
-        } else {
-            archCmd.add(binPrefix + "avr-ar");
-        }
-
-
+        archCmd.add(ArduinoToolChainExecutables.getAVR_AR());
         archCmd.add("rcs");
     }
 

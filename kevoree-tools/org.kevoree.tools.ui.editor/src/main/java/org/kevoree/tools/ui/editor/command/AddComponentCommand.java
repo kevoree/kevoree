@@ -52,7 +52,7 @@ public class AddComponentCommand implements Command {
             ContainerNode node = (ContainerNode) kernel.getUifactory().getMapping().get(nodepanel);
             ComponentType type = (ComponentType) kernel.getUifactory().getMapping().get(p);
             instance.setTypeDefinition(type);
-            instance.setName(type.getName()+""+Math.abs(new Random().nextInt()));
+            instance.setName(type.getName().substring(0,Math.min(type.getName().length(),9))+""+Math.abs(new Random().nextInt(999)));
             ComponentPanel insPanel = kernel.getUifactory().createComponentInstance(instance);
 
             for(PortTypeRef ref : type.getProvided()){

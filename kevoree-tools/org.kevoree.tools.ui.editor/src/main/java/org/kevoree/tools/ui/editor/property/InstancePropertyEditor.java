@@ -17,33 +17,129 @@
  */
 package org.kevoree.tools.ui.editor.property;
 
-import java.awt.Dimension;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
+import java.awt.*;
+import javax.swing.*;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
+import javax.swing.text.BadLocationException;
+
+import org.kevoree.DictionaryValue;
+import org.kevoree.KevoreeFactory;
 import org.kevoree.tools.ui.editor.KevoreeUIKernel;
 
 /**
- *
  * @author ffouquet
  * @contibutor gnain
  */
 public class InstancePropertyEditor extends NamedElementPropertyEditor {
 
-    public InstancePropertyEditor(org.kevoree.Instance elem, KevoreeUIKernel _kernel) {
+    public InstancePropertyEditor(final org.kevoree.Instance elem, KevoreeUIKernel _kernel) {
         super(elem, _kernel);
 
-        JTable table = new JTable(new InstanceTableModel(elem));
+        JPanel p = new JPanel(new SpringLayout());
+        if (elem.getTypeDefinition().getDictionaryType() != null) {
+            for (final org.kevoree.DictionaryAttribute att : elem.getTypeDefinition().getDictionaryType().getAttributes()) {
+                JLabel l = new JLabel(att.getName(), JLabel.TRAILING);
+                l.setOpaque(false);
+                l.setForeground(Color.WHITE);
+                p.add(l);
+                JTextField textField = new JTextField(10);
+                textField.getDocument().addDocumentListener(new DocumentListener() {
+
+                    @Override
+                    public void insertUpdate(DocumentEvent documentEvent) {
+                        try {
+                            setValue(documentEvent.getDocument().getText(0, documentEvent.getDocument().getLength()),elem,att);
+                        } catch (BadLocationException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                    @Override
+                    public void removeUpdate(DocumentEvent documentEvent) {
+                        try {
+                            setValue(documentEvent.getDocument().getText(0, documentEvent.getDocument().getLength()),elem,att);
+                        } catch (BadLocationException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                    @Override
+                    public void changedUpdate(DocumentEvent documentEvent) {
+                        try {
+                            setValue(documentEvent.getDocument().getText(0, documentEvent.getDocument().getLength()),elem,att);
+                        } catch (BadLocationException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                });
+
+                textField.setOpaque(false);
+                l.setLabelFor(textField);
+                p.add(textField);
+                textField.setText(getValue(elem, att));
+
+            }
+
+            SpringUtilities.makeCompactGrid(p,
+                    elem.getTypeDefinition().getDictionaryType().getAttributes().size(), 2, //rows, cols
+                    6, 6,        //initX, initY
+                    6, 6);       //xPad, yPad
+        }
+        p.setOpaque(false);
+
+
+        // JTable table = new JTable(new InstanceTableModel(elem));
+        // table.putClientProperty("terminateEditOnFocusLost", Boolean.TRUE);
+
 
         //Column resizing management on property editor
-        table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-        table.getColumnModel().getColumn(0).setResizable(true);
+        // table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+        // table.getColumnModel().getColumn(0).setResizable(true);
 
-        JScrollPane scrollPane = new JScrollPane(table);
-        table.setFillsViewportHeight(true);
+        JScrollPane scrollPane = new JScrollPane(p);
+        scrollPane.getViewport().setOpaque(false);
+        scrollPane.setOpaque(false);
+        // p.setFillsViewportHeight(true);
 
-        scrollPane.setPreferredSize(new Dimension(300,150));
+        scrollPane.setPreferredSize(new Dimension(300, 150));
 
         this.addCenter(scrollPane);
 
     }
+
+    public String getValue(org.kevoree.Instance instance, org.kevoree.DictionaryAttribute att) {
+        DictionaryValue value = null;
+        if (instance.getDictionary() == null) {
+            instance.setDictionary(KevoreeFactory.eINSTANCE.createDictionary());
+        }
+        for (DictionaryValue v : instance.getDictionary().getValues()) {
+            if (v.getAttribute().equals(att)) {
+                return v.getValue();
+            }
+        }
+        for (DictionaryValue v : instance.getTypeDefinition().getDictionaryType().getDefaultValues()) {
+            if (v.getAttribute().equals(att)) {
+                return v.getValue();
+            }
+        }
+        return "";
+    }
+
+    public void setValue(Object aValue,org.kevoree.Instance instance, org.kevoree.DictionaryAttribute att) {
+            DictionaryValue value = null;
+            for (DictionaryValue v : instance.getDictionary().getValues()) {
+                if (v.getAttribute().equals(att)) {
+                    value = v;
+                }
+            }
+            if (value == null) {
+                value = KevoreeFactory.eINSTANCE.createDictionaryValue();
+                value.setAttribute(att);
+                instance.getDictionary().getValues().add(value);
+            }
+            value.setValue(aValue.toString());
+    }
+
+
 }

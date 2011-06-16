@@ -19,6 +19,7 @@ package org.kevoree.tools.ui.editor.property;
 import javax.swing.*;
 
 import org.kevoree.ContainerNode;
+import org.kevoree.Instance;
 import org.kevoree.tools.ui.editor.KevoreeUIKernel;
 import org.kevoree.tools.ui.editor.command.*;
 import org.kevoree.tools.ui.editor.widget.JCommandButton;
@@ -28,13 +29,14 @@ import java.awt.*;
 /**
  * @author ffouquet
  */
-public class NodePropertyEditor extends NamedElementPropertyEditor {
+public class NodePropertyEditor extends InstancePropertyEditor {
 
-    public NodePropertyEditor(org.kevoree.NamedElement elem, KevoreeUIKernel _kernel) {
+    public NodePropertyEditor(Instance elem, KevoreeUIKernel _kernel) {
         super(elem, _kernel);
 
-        ContainerNode node = (ContainerNode) elem;
 
+        ContainerNode node = (ContainerNode) elem;
+        /*
         JTable table = new JTable(new InstanceTableModel(node));
         JScrollPane scrollPane = new JScrollPane(table);
         table.setFillsViewportHeight(true);
@@ -42,7 +44,7 @@ public class NodePropertyEditor extends NamedElementPropertyEditor {
         scrollPane.setPreferredSize(new Dimension(300, 150));
 
         this.addCenter(scrollPane);
-
+           */
 
         this.addCenter(new NetworkPropertyEditor(node));
 

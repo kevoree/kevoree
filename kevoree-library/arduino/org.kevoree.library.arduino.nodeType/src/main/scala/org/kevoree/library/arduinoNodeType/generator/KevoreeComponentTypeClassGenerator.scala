@@ -13,9 +13,9 @@ import org.kevoree.annotation.{Generate => KGenerate}
 
 trait KevoreeComponentTypeClassGenerator extends KevoreeCAbstractGenerator with KevoreeReflectiveHelper {
 
-  def generateComponentType(ct:ComponentType,bundleContext : BundleContext) = {
+  def generateComponentType(ct:ComponentType,bundleContext : BundleContext,nodeName:String) = {
     
-    val instance = createStandaloneInstance(ct,bundleContext)
+    val instance = createStandaloneInstance(ct,bundleContext,nodeName)
     val clazz = instance.getClass
     
     //GENERATE CLASS HEADER

@@ -40,11 +40,11 @@ class KevoreeCGenerator
 
     componentTypes.foreach {
       componentTypeAdaptation =>
-        generateComponentType(componentTypeAdaptation.asInstanceOf[AddType].getRef.asInstanceOf[ComponentType], bundleContext)
+        generateComponentType(componentTypeAdaptation.asInstanceOf[AddType].getRef.asInstanceOf[ComponentType], bundleContext,nodeName)
     }
     channelTypes.foreach {
       channelTypeAdaptation =>
-        generateChannelType(channelTypeAdaptation.asInstanceOf[AddType].getRef.asInstanceOf[ChannelType], bundleContext)
+        generateChannelType(channelTypeAdaptation.asInstanceOf[AddType].getRef.asInstanceOf[ChannelType], bundleContext,nodeName)
     }
 
 
