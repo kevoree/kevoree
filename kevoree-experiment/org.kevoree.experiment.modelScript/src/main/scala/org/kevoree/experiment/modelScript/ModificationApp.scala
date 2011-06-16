@@ -39,7 +39,7 @@ object ModificationApp extends App {
             b = stream.read()
           }
         } else {
-          println("file is missing.\nModification is not possible")
+          println("file \"" + file.getAbsolutePath + "\" is missing.\nModification is not possible")
         }
       } else {
         println("missing $OAR_NODE_FILE variables")
