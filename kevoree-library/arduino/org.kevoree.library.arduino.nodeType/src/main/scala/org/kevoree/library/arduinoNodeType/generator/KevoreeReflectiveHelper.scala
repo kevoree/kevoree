@@ -10,13 +10,13 @@ import org.osgi.framework.BundleContext
 
 trait KevoreeReflectiveHelper {
 
-  def createStandaloneInstance(ct : TypeDefinition,bundleContext : BundleContext) : Object = {
+  def createStandaloneInstance(ct: TypeDefinition, bundleContext: BundleContext,nodeName:String): Object = {
     //CREATE NEW INSTANCE
     var clazzFactory: Class[_] = null
     val activatorClassName = ct.getFactoryBean.replaceAll("Factory", "Activator")
-    if(bundleContext != null){
+    if (bundleContext != null) {
       clazzFactory = bundleContext.getBundle.loadClass(activatorClassName)
-    }else {
+    } else {
       clazzFactory = this.getClass.getClassLoader.loadClass(activatorClassName)
     }
     val activatorInstance = clazzFactory.newInstance
@@ -25,16 +25,27 @@ trait KevoreeReflectiveHelper {
     val clazzActor = reflectiveInstanceActor.getClass
 
     val reflectiveInstance = clazzActor.getMethods.find(method => {
-        method.getName == "getKevoreeComponentType"
-      }) match {
+      method.getName == "getKevoreeComponentType"
+    }) match {
       case Some(method) => {
-          method.invoke(reflectiveInstanceActor)
-        }
+        method.invoke(reflectiveInstanceActor)
+      }
       case None => reflectiveInstanceActor
     }
+
+    //REFLEXIVE SET NODENAME
+    reflectiveInstance.getClass.getMethods.find(method => method.getName == "setNodeName") match {
+      case Some(method) => method.invoke(reflectiveInstance, nodeName)
+      case None => println("NodeName not set !")
+    }
+
+
+
+
+
     //val clazz = reflectiveInstance.getClass
-    
-    
+
+
     reflectiveInstance
 
 
@@ -72,8 +83,8 @@ trait KevoreeReflectiveHelper {
       case Some(method)=> method.invoke(reflectiveInstance, nodeName)
       case None => println("Dictionary not set !")
     } */
-   
-    
+
+
   }
-  
+
 }

@@ -4,6 +4,9 @@ import actors.{TIMEOUT, DaemonActor}
 import gnu.io._
 import org.kevoree.framework.ChannelFragment
 import org.kevoree.framework.message.Message
+import util.matching.Regex
+import scala.collection.JavaConversions._
+import java.lang.StringBuffer
 
 /**
  * User: ffouquet
@@ -11,7 +14,87 @@ import org.kevoree.framework.message.Message
  * Time: 15:27
  */
 
-class TwoWayActors(portName: String, channel: ChannelFragment) extends SerialPortEventListener {
+class TwoWayActors(portName: String) extends SerialPortEventListener with DaemonActor {
+
+  private var observers: List[ChannelFragment] = List()
+
+  def getObserversSize = observers.size
+
+  def addObserver(c: ChannelFragment) {
+    observers = observers ++ List(c)
+  }
+
+  def removeObserver(c: ChannelFragment) {
+    observers = observers.filterNot(p => p == c)
+  }
+
+  case class CLOSEPORT()
+
+  case class CONTENTREC()
+
+  case class MSGTOSEND(msg: String)
+
+  def act() {
+    loop {
+      react {
+        case MSGTOSEND(msg: String) => {
+          serialPort.getOutputStream.write(msg.getBytes)
+        }
+        case CLOSEPORT() => {
+          exit()
+        }
+        case CONTENTREC() => {
+          if (serialPort.getInputStream.available() > 0) {
+            recString = recString + (serialPort.getInputStream.read().toChar);
+            if ( /*recString.contains("]") ||*/ recString.contains("\n") ) {
+
+              recString.trim() match {
+                case KevSerialMessageRegex(srcChannelName, nodeName, contentBody) => {
+                  val message = new Message();
+                  val buffer = new StringBuffer()
+                  var metric : String = null
+                  contentBody.trim().split('/').foreach{ v =>
+                    if(metric == null){
+                      metric = v
+                    } else {
+                      if(buffer.length() > 0){
+                        buffer.append(",")
+                      }
+                      buffer.append(metric)
+                      buffer.append("=")
+                      buffer.append(v)
+                    }
+                  }
+                  message.setContent(buffer.toString());
+                  message.setInOut(false);
+                  message.getPassedNodes().add(nodeName);
+                  observers.foreach{ ct =>
+                      if(ct.getOtherFragments.exists(ofrag=> ofrag.getName == srcChannelName)){
+                         ct.remoteDispatch(message);
+                      }
+                  }
+
+                }
+                case _ => {
+                  println("Msg format error => " + recString)
+                  println("Msg lost")
+                  recString = ""
+                }
+              }
+              recString = "";
+            }
+          }
+        }
+      }
+    }
+  }
+
+  def sendMessage(instanceName: String, nodeName: String, msg: String) {
+    val messageTosSend = instanceName + ":" + nodeName + "[" + msg + "]"
+    this ! MSGTOSEND(messageTosSend)
+  }
+
+  def getPortName = portName
 
   //RXTXPort.staticSetDTR(portName, false)
   //RXTXPort.staticSetRTS(portName, false)
@@ -39,19 +122,11 @@ class TwoWayActors(portName: String, channel: ChannelFragment) extends SerialPor
     }
   }
   Thread.sleep(2000)
+  start()
 
-  def sendMsg(msg: String) {
-    val msgToSend = "["+msg+"]"
-    serialPort.getOutputStream.write(msgToSend.getBytes)
-  }
-
-
-  case class CLOSEPORT()
-
-  case class CONTENTREC()
 
   def killConnection() {
-    readerActor ! CLOSEPORT()
+    this ! CLOSEPORT()
     if (serialPort != null) {
       serialPort.getInputStream.close()
       serialPort.getOutputStream.close()
@@ -60,36 +135,13 @@ class TwoWayActors(portName: String, channel: ChannelFragment) extends SerialPor
   }
 
   var recString = ""
-  var readerActor = new DaemonActor {
-    def act() {
-      loop {
-        react {
-          case CLOSEPORT() => exit()
-          case _ => {
-            if (serialPort.getInputStream.available() > 0) {
-              recString = recString + (serialPort.getInputStream.read().toChar);
-              if (recString.contains("]") || recString.contains("\n")) {
-                val message = new Message();
-                message.setContent(recString.trim());
-                message.setInOut(false);
-                message.getPassedNodes().add("unamedNode");
-                channel.remoteDispatch(message);
-                recString = "";
-              }
-            }
-          }
-        }
-      }
-
-    }
-
-  }.start()
+  val KevSerialMessageRegex = new Regex("(.+):(.+)\\[(.*)\\]")
 
 
   def serialEvent(p1: SerialPortEvent) {
     p1.getEventType match {
       case SerialPortEvent.DATA_AVAILABLE => {
-        readerActor ! "trigger"
+        this ! CONTENTREC()
       }
     }
 

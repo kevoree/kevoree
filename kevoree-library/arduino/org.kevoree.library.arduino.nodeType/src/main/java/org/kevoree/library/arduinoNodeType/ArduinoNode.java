@@ -66,7 +66,6 @@ public class ArduinoNode extends AbstractNodeType {
 
                 bcontext = bundle;
 
-
                 //SEARCH ARDUINO HOME
                 ArduinoHomeFinder.checkArduinoHome();
                 ArduinoDefaultLibraryManager.copyDefaultLibrary();

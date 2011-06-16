@@ -13,8 +13,11 @@
  */
 package org.kevoree.tools.ui.framework;
 
+import sun.tools.tree.ThisExpression;
+
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.*;
 import java.awt.geom.AffineTransform;
 
 /**
@@ -26,41 +29,39 @@ import java.awt.geom.AffineTransform;
  */
 public class ZoomPanel extends JPanel {
 
+    public ZoomPanel() {
+
+        //this.enableEvents(AWTEvent.MOUSE_EVENT_MASK);
+        enableEvents(AWTEvent.MOUSE_EVENT_MASK |
+                     AWTEvent.MOUSE_MOTION_EVENT_MASK);
+
+    }
+
+
+    public void paint(Graphics g) {
+			Graphics2D g2 = (Graphics2D)g;
+			AffineTransform oldTransform = g2.getTransform();
+			AffineTransform transform = AffineTransform.getScaleInstance(zoomFactor, zoomFactor);
+			g2.setTransform(transform);
+			super.paint(g);
+			g2.setTransform(oldTransform);
+		}
+
 
     /*Variables*/
-    private double zoomFactor = 2.0;   //<-- Change zoom factor to see effect
-    private AffineTransform scaleXform, inverseXform;
+    private double zoomFactor = 1.0;   //<-- Change zoom factor to see effect
+       /*
 
-    //Override super.paint()
-    
     @Override
-    public void paint(Graphics g) {
+    protected void paintComponent(Graphics g) {
         super.paintComponent(g); // clears background
         Graphics2D g2 = (Graphics2D) g;
-
-        /*1) Backup current transform*/
-        AffineTransform backup = g2.getTransform();
-        scaleXform = new AffineTransform(this.zoomFactor,
-                0.0, 0.0,
-                this.zoomFactor,
-                0.0, 0.0);
-
-        /*3) Create the inverse of scale (used on mouse evt points)*/
-        try {
-            inverseXform = new AffineTransform();
-            inverseXform = scaleXform.createInverse();
-        } catch (Exception ex) {
-        }
-
-        /*4) Apply transformation*/
-        g2.transform(scaleXform);
-
-        super.paint(g);
-
-        /*After drawing do*/
-        g2.setTransform(backup);
+        AffineTransform tx2 = new AffineTransform();
+        tx2.scale(zoomFactor, zoomFactor);
+        g2.transform(tx2);
+        //  System.out.println("Scale");
     }//end paint()
-
+     */
 
     /**
      * Change zoom factor
@@ -90,6 +91,9 @@ public class ZoomPanel extends JPanel {
 
 
     public Dimension getPreferredSize() {
+
+        // System.out.println("GetDIm");
+
         Dimension unzoomed
                 = getLayout().preferredLayoutSize(this);
         Dimension zoomed
@@ -100,6 +104,24 @@ public class ZoomPanel extends JPanel {
     }//end method
 
 
+    @Override
+    protected void processMouseEvent(MouseEvent e) {
+        translateMouseLocation(e);
+        super.processMouseEvent(e);
+    }
+
+    @Override
+    public void processMouseMotionEvent(MouseEvent e) {
+        translateMouseLocation(e);
+        super.processMouseEvent(e);
+    }
+
+    private void translateMouseLocation(final MouseEvent e) {
+        System.out.println("Translate " + e.getLocationOnScreen());
+        final Point p = e.getPoint();
+        p.setLocation((int) (p.x / this.zoomFactor),
+                (int) (p.y / this.zoomFactor));
+    }
 
 
 }

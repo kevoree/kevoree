@@ -21,17 +21,8 @@ public class ArduinoLink {
     private List<String> lCmd;
 
     public void prepareCommands() {
-        String binPrefix = System.getProperty("arduino.home") + "/hardware/tools/avr/bin";
-        if (binPrefix != null && !binPrefix.endsWith(File.separator)) {
-            binPrefix += File.separator;
-        }
         lCmd = new ArrayList<String>();
-
-        if (System.getProperty("os.name").toLowerCase().contains("win")) {
-            lCmd.add(binPrefix + "avr-gcc.exe");
-        } else {
-            lCmd.add(binPrefix + "avr-gcc");
-        }
+        lCmd.add(ArduinoToolChainExecutables.getAVR_GCC());
 
         lCmd.add("-Os");
         lCmd.add("-Wl,--gc-sections");

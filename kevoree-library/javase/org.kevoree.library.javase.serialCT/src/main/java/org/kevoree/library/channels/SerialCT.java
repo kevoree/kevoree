@@ -1,5 +1,6 @@
 package org.kevoree.library.channels;
 
+import gnu.io.CommPort;
 import org.kevoree.annotation.*;
 import org.kevoree.framework.AbstractChannelFragment;
 import org.kevoree.framework.ChannelFragmentSender;
@@ -18,11 +19,9 @@ import org.kevoree.framework.message.Message;
 @ChannelTypeFragment
 public class SerialCT extends AbstractChannelFragment {
 
-    TwoWayActors twA = null;
-
     @Start
     public void startRxTxChannel() {
-        twA = new TwoWayActors((String) this.getDictionary().get("PORT"), this);
+         ComPortHandler.addListener((String) this.getDictionary().get("PORT"),this);
     }
 
     @Update
@@ -33,8 +32,7 @@ public class SerialCT extends AbstractChannelFragment {
 
     @Stop
     public void stopRxTxChannel() {
-        twA.killConnection();
-        twA = null;
+        ComPortHandler.removeListener((String) this.getDictionary().get("PORT"),this);
     }
 
 
@@ -58,9 +56,12 @@ public class SerialCT extends AbstractChannelFragment {
 
             @Override
             public Object sendMessageToRemote(Message message) {
-                if (twA != null) {
-                    twA.sendMsg(message.getContent().toString());
-                }
+
+                 ComPortHandler.getPortByName((String) getDictionary().get("PORT")).sendMessage(getName(),getNodeName(),message.getContent().toString());
+
+               // if (twA != null) {
+               //     twA.sendMsg(message.getContent().toString());
+               // }
                 return null;
             }
         };

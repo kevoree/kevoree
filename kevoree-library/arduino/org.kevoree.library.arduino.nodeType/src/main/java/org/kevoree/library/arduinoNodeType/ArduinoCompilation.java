@@ -24,19 +24,8 @@ public class ArduinoCompilation {
 
     public void prepareCommands() {
 
-        String binPrefix = System.getProperty("arduino.home") + "/hardware/tools/avr/bin";
-        if (binPrefix != null && !binPrefix.endsWith(File.separator)) {
-            binPrefix += File.separator;
-        }
-
         cCmd = new ArrayList<String>();
-
-        if (System.getProperty("os.name").toLowerCase().contains("win")) {
-            cCmd.add(binPrefix + "avr-gcc.exe");
-        } else {
-            cCmd.add(binPrefix + "avr-gcc");
-        }
-
+        cCmd.add(ArduinoToolChainExecutables.getAVR_GCC());
         cCmd.add("-c");
         cCmd.add("-g");
         cCmd.add("-Os");
@@ -45,7 +34,7 @@ public class ArduinoCompilation {
         cCmd.add("-fdata-sections");
 
         cppCmd = new ArrayList<String>();
-        cppCmd.add(binPrefix + "avr-g++");
+        cppCmd.add(ArduinoToolChainExecutables.getAVR_GPP());
         cppCmd.add("-c");
         cppCmd.add("-g");
         cppCmd.add("-Os");

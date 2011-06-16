@@ -15,19 +15,15 @@ object TypeBundleBootstrap {
 
   def bootstrapTypeBundle(adaptationModel : AdaptationModel,ctx:BundleContext){
     //Add All ThirdParty
-
-    adaptationModel.getAdaptations.foreach({
-      adapt=> println(adapt)
-    })
-
-
     adaptationModel.getAdaptations.filter(adaptation => adaptation.isInstanceOf[AddThirdParty]).foreach{adaptation=>
-      AddThirdPartyCommand(ctx,adaptation.asInstanceOf[AddThirdParty].getRef).execute
+      AddThirdPartyCommand(ctx,adaptation.asInstanceOf[AddThirdParty].getRef).execute()
     }
     //Add All TypeDefinitionBundle
     adaptationModel.getAdaptations.filter(adaptation => adaptation.isInstanceOf[AddDeployUnit]).foreach{adaptation=>
-      AddThirdPartyCommand(ctx,adaptation.asInstanceOf[AddDeployUnit].getRef).execute
+      AddThirdPartyCommand(ctx,adaptation.asInstanceOf[AddDeployUnit].getRef).execute()
     }
+
+
   }
   
 }

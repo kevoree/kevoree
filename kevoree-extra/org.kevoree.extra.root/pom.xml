@@ -29,6 +29,7 @@
         <module>../org.kevoree.extra.ecj</module>
         <module>../org.kevoree.extra.osgi.jmdns</module>
         <module>../org.kevoree.extra.jaas</module>
+        <module>../org.kevoree.extra.chart2d</module>
 	</modules>
 
     <distributionManagement>

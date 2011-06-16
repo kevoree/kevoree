@@ -40,6 +40,7 @@
         <module>../org.kevoree.library.javase.kinect</module>
         <module>../org.kevoree.library.javase.autodiscovery</module>
         <module>../org.kevoree.library.javase.derby</module>
+        <module>../org.kevoree.library.javase.grapher</module>
     </modules>
 
 

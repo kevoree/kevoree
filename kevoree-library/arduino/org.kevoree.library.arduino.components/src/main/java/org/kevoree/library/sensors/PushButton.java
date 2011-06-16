@@ -36,6 +36,7 @@ public class PushButton extends AbstractComponentType {
         context.append("kmessage * msg = (kmessage*) malloc(sizeof(kmessage));");
         context.append("if (msg){memset(msg, 0, sizeof(kmessage));}");
         context.append("msg->value = \"click\";");
+        context.append("msg->metric = \"event\";");
         context.append("click_rport(msg);");
         context.append("free(msg);");
 
@@ -49,6 +50,7 @@ public class PushButton extends AbstractComponentType {
         context.append("kmessage * msg = (kmessage*) malloc(sizeof(kmessage));");
         context.append("if (msg){memset(msg, 0, sizeof(kmessage));}");
         context.append("msg->value = \"release\";");
+        context.append("msg->metric = \"event\";");
         context.append("release_rport(msg);");
         context.append("free(msg);");
 

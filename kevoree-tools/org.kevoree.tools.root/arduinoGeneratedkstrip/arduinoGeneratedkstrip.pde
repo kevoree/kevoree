@@ -2,51 +2,46 @@
 #include <avr/pgmspace.h>
 #include <avr/wdt.h>
 #include <EEPROM.h>
-#define kevoreeID1 0
-#define kevoreeID2 1
+#define kevoreeID1 2
+#define kevoreeID2 7
 //Global Kevoree Type Defintion declaration
-const prog_char digitallight[] PROGMEM = "DigitalLight";
-const prog_char pushbutton[] PROGMEM = "PushButton";
-const prog_char localchannel[] PROGMEM = "LocalChannel";
+const prog_char timer[] PROGMEM = "Timer";
+const prog_char serialct[] PROGMEM = "SerialCT";
 PROGMEM const char * typedefinition[] = { 
-digitallight
-,pushbutton
-,localchannel
+timer
+,serialct
 };
 //Global Kevoree Port Type Defintion declaration
-const prog_char port_on[] PROGMEM = "on";
-const prog_char port_off[] PROGMEM = "off";
-const prog_char port_toggle[] PROGMEM = "toggle";
-const prog_char port_click[] PROGMEM = "click";
-const prog_char port_release[] PROGMEM = "release";
-PROGMEM const char * portdefinition[] = { port_on,port_off,port_toggle,port_click,port_release};
-const prog_char prop_pin[] PROGMEM = "pin";
+const prog_char port_tick[] PROGMEM = "tick";
+PROGMEM const char * portdefinition[] = { port_tick};
 const prog_char prop_period[] PROGMEM = "period";
-PROGMEM const char * properties[] = { prop_pin,prop_period};
+const prog_char prop_port[] PROGMEM = "PORT";
+PROGMEM const char * properties[] = { prop_period,prop_port};
 
-const int nbPortType = 5;
+const int nbPortType = 1;
 int getIDFromPortName(char * portName){
   for(int i=0;i<nbPortType;i++){
    if(strcmp_P(portName, (char*)pgm_read_word(&(portdefinition[i]))  )==0) { return i; }
   }
   return -1;
 }
-const int nbTypeDef = 3;
+const int nbTypeDef = 2;
 int getIDFromType(char * typeName){
   for(int i=0;i<nbTypeDef;i++){
    if(strcmp_P(typeName, (char*)pgm_read_word(&(typedefinition[i]))  )==0) { return i; }
   }
   return -1;
 }
-const int nbProps = 3;
+const int nbProps = 2;
 int getIDFromProps(char * propName){
   for(int i=0;i<nbProps;i++){
    if(strcmp_P(propName, (char*)pgm_read_word(&(properties[i]))  )==0) { return i; }
   }
   return -1;
 }
+
 struct kmessage {char* value;char* metric;};
-class KevoreeType { public : int subTypeCode; char instanceName[15]; };
+class KevoreeType { public : int subTypeCode; char instanceName[20]; };
 struct kbinding { KevoreeType * instance;int portCode; QueueList<kmessage> * port;   };
 #define BDYNSTEP 3
 class kbindings {
@@ -91,106 +86,40 @@ void destroy(){
  free(bindings);
 }
 };
-class DigitalLight : public KevoreeType {
- public : 
-boolean state ;
-
-QueueList<kmessage> * on;
-QueueList<kmessage> * off;
-QueueList<kmessage> * toggle;
-char pin[20];
-void init(){
-on = (QueueList<kmessage>*) malloc(sizeof(QueueList<kmessage>));
-if(on){
-   memset(on, 0, sizeof(QueueList<kmessage>));
-}
-off = (QueueList<kmessage>*) malloc(sizeof(QueueList<kmessage>));
-if(off){
-   memset(off, 0, sizeof(QueueList<kmessage>));
-}
-toggle = (QueueList<kmessage>*) malloc(sizeof(QueueList<kmessage>));
-if(toggle){
-   memset(toggle, 0, sizeof(QueueList<kmessage>));
-}
-}
-void destroy(){
-free(on);
-free(off);
-free(toggle);
-}
-void runInstance(){
-if(!on->isEmpty()){
-kmessage * msg = &(on->pop());
-DigitalLight::on_pport(msg);
-}
-if(!off->isEmpty()){
-kmessage * msg = &(off->pop());
-DigitalLight::off_pport(msg);
-}
-if(!toggle->isEmpty()){
-kmessage * msg = &(toggle->pop());
-DigitalLight::toggle_pport(msg);
-}
-}
-void on_pport(kmessage * msg){
-pinMode(atoi(pin), OUTPUT);digitalWrite(atoi(pin), HIGH);
-
-}
-void off_pport(kmessage * msg){
-pinMode(atoi(pin), OUTPUT);digitalWrite(atoi(pin), LOW);
-
-}
-void toggle_pport(kmessage * msg){
-int newState = 0;
-if(state){ newState = LOW; } else { newState=HIGH; }state = ! state; pinMode(atoi(pin), OUTPUT);digitalWrite(atoi(pin), newState);
-
-}
-};
-class PushButton : public KevoreeType {
+class Timer : public KevoreeType {
  public : 
 unsigned long nextExecution;
-int buttonState ;
-
-QueueList<kmessage> * click;
-QueueList<kmessage> * release;
-char pin[20];
+QueueList<kmessage> * tick;
 char period[20];
 void init(){
 nextExecution = millis();
+  strcpy(tickMsg,"tick2");
+  strcpy(tickMetric,"t2");
 }
 void destroy(){
 }
+
+char tickMsg[10] ;
+char tickMetric[10];
+kmessage * msg;
 void runInstance(){
-pinMode(atoi(pin), INPUT);
-int newButtonState = digitalRead(atoi(pin));
-  if (newButtonState == HIGH) { 
-    if(buttonState == LOW){
-      buttonState = HIGH;
-kmessage * msg = (kmessage*) malloc(sizeof(kmessage));if (msg){memset(msg, 0, sizeof(kmessage));}msg->value = "click";click_rport(msg);free(msg);    }
-  } else {
-    if(buttonState == HIGH){
-      buttonState = LOW;
-      //DO ACTION UNRELEASE ACTION
-kmessage * msg = (kmessage*) malloc(sizeof(kmessage));if (msg){memset(msg, 0, sizeof(kmessage));}msg->value = "release";release_rport(msg);free(msg);
-    }
-  }
+
+msg->value = tickMsg;
+msg->metric = tickMetric;
+tick_rport(msg);
 nextExecution += atol(period);
 }
-void click_rport(kmessage * msg){
-if(click){
-click->push(*msg);
-}
-}
-void release_rport(kmessage * msg){
-if(release){
-release->push(*msg);
+void tick_rport(kmessage * msg){
+if(tick){
+tick->push(*msg);
 }
 }
 };
-class LocalChannel : public KevoreeType {
+class SerialCT : public KevoreeType {
  public : 
 QueueList<kmessage> * input;
 kbindings * bindings;
+char PORT[20];
 void init(){
 input = (QueueList<kmessage>*) malloc(sizeof(QueueList<kmessage>));
 if(input){
@@ -207,13 +136,31 @@ bindings->destroy();
 free(bindings);
 }
 void runInstance(){
+  Serial.println(instanceName);
+  Serial.println(input->isEmpty());
+  delay(500);
 if(!input->isEmpty()){
 kmessage * msg = &(input->pop());
-LocalChannel::dispatch(msg);
+SerialCT::dispatch(msg);
 }
 }
 void dispatch(kmessage * msg){
 for(int i=0;i<bindings->nbBindings;i++){    bindings->bindings[i]->port->push(*msg);}
+Serial.print(instanceName);
+Serial.print(":");
+Serial.print("kstrip");
+Serial.print("[");
+if(msg->metric){
+//  Serial.print(msg->metric);
+}
+//Serial.print(msg->metric);
+Serial.print("/");
+if(msg->value){
+  Serial.print(msg->value);
+}
+
+//Serial.print(msg->value);
+Serial.println("]");
 }
 };
 KevoreeType ** instances; //GLOBAL INSTANCE DYNAMIC ARRAY
@@ -249,13 +196,10 @@ boolean destroyInstance(int index){
 KevoreeType * instance = instances[index];
  switch(instance->subTypeCode){
 case 0:{
-((DigitalLight*) instances[index])->destroy();
+((Timer*) instances[index])->destroy();
 break;}
 case 1:{
-((PushButton*) instances[index])->destroy();
-break;}
-case 2:{
-((LocalChannel*) instances[index])->destroy();
+((SerialCT*) instances[index])->destroy();
 break;}
 }
 free(instance);
@@ -263,26 +207,20 @@ free(instance);
 void updateParam(int index,int typeCode,int keyCode,char * val){
  switch(typeCode){
 case 0:{
-DigitalLight * instance = (DigitalLight*) instances[index];
+Timer * instance = (Timer*) instances[index];
  switch(keyCode){
 case 0:{
-strcpy (instance->pin,val);
-break;}
-}
-break;}
-case 1:{
-PushButton * instance = (PushButton*) instances[index];
- switch(keyCode){
-case 0:{
-strcpy (instance->pin,val);
-break;}
-case 1:{
 strcpy (instance->period,val);
 break;}
 }
 break;}
-case 2:{
-LocalChannel * instance = (LocalChannel*) instances[index];
+case 1:{
+SerialCT * instance = (SerialCT*) instances[index];
+ switch(keyCode){
+case 1:{
+strcpy (instance->PORT,val);
+break;}
+}
 break;}
 }
 }
@@ -300,9 +238,9 @@ void updateParams(int index,char* params){
 int createInstance(int typeCode,char* instanceName,char* params){
 switch(typeCode){
 case 0:{
-  DigitalLight * newInstance = (DigitalLight*) malloc(sizeof(DigitalLight));
+  Timer * newInstance = (Timer*) malloc(sizeof(Timer));
   if (newInstance){
-    memset(newInstance, 0, sizeof(DigitalLight));
+    memset(newInstance, 0, sizeof(Timer));
   } 
   strcpy(newInstance->instanceName,instanceName);
   newInstance->init();
@@ -313,27 +251,14 @@ case 0:{
   return newIndex;
 break;}
 case 1:{
-  PushButton * newInstance = (PushButton*) malloc(sizeof(PushButton));
+  SerialCT * newInstance = (SerialCT*) malloc(sizeof(SerialCT));
   if (newInstance){
-    memset(newInstance, 0, sizeof(PushButton));
+    memset(newInstance, 0, sizeof(SerialCT));
   } 
   strcpy(newInstance->instanceName,instanceName);
   newInstance->init();
   tempInstance = newInstance;
   tempInstance->subTypeCode = 1; 
-  int newIndex = addInstance();
-  updateParams(newIndex,params);
-  return newIndex;
-break;}
-case 2:{
-  LocalChannel * newInstance = (LocalChannel*) malloc(sizeof(LocalChannel));
-  if (newInstance){
-    memset(newInstance, 0, sizeof(LocalChannel));
-  } 
-  strcpy(newInstance->instanceName,instanceName);
-  newInstance->init();
-  tempInstance = newInstance;
-  tempInstance->subTypeCode = 2; 
   int newIndex = addInstance();
   updateParams(newIndex,params);
   return newIndex;
@@ -345,15 +270,11 @@ void runInstance(int index){
 int typeCode = instances[index]->subTypeCode;
  switch(typeCode){
 case 0:{
-DigitalLight * instance = (DigitalLight*) instances[index];
+Timer * instance = (Timer*) instances[index];
 instance->runInstance();
 break;}
 case 1:{
-PushButton * instance = (PushButton*) instances[index];
-instance->runInstance();
-break;}
-case 2:{
-LocalChannel * instance = (LocalChannel*) instances[index];
+SerialCT * instance = (SerialCT*) instances[index];
 instance->runInstance();
 break;}
 }
@@ -366,37 +287,17 @@ int componentTypeCode = instances[indexComponent]->subTypeCode;
 int channelTypeCode = instances[indexChannel]->subTypeCode;
  switch(componentTypeCode){
 case 0:{
-DigitalLight * instance = (DigitalLight*) instances[indexComponent];
+Timer * instance = (Timer*) instances[indexComponent];
 switch(portCode){
 case 0:{
-   providedPort=instance->on;
-componentInstanceName=instance->instanceName;
-break;}
-case 1:{
-   providedPort=instance->off;
-componentInstanceName=instance->instanceName;
-break;}
-case 2:{
-   providedPort=instance->toggle;
-componentInstanceName=instance->instanceName;
-break;}
-}
-break;}
-case 1:{
-PushButton * instance = (PushButton*) instances[indexComponent];
-switch(portCode){
-case 3:{
-   requiredPort=&instance->click;
-break;}
-case 4:{
-   requiredPort=&instance->release;
+   requiredPort=&instance->tick;
 break;}
 }
 break;}
 }
  switch(channelTypeCode){
-case 2:{
-LocalChannel * instance = (LocalChannel*) instances[indexChannel];
+case 1:{
+SerialCT * instance = (SerialCT*) instances[indexChannel];
 if(providedPort){
 instance->bindings->addBinding(instances[indexComponent],portCode,providedPort);
 }
@@ -409,13 +310,10 @@ break;}
 void unbind(int indexComponent,int indexChannel,int portCode){
 QueueList<kmessage> ** requiredPort = 0;
  switch(instances[indexComponent]->subTypeCode){
-case 1:{
+case 0:{
 switch(portCode){
-case 3:{
-   requiredPort=&(((PushButton*)instances[indexComponent])->click);
-break;}
-case 4:{
-   requiredPort=&(((PushButton*)instances[indexComponent])->release);
+case 0:{
+   requiredPort=&(((Timer*)instances[indexComponent])->tick);
 break;}
 }
 break;}
@@ -424,27 +322,24 @@ if(requiredPort){
      *requiredPort=NULL;
 } else {
  switch(instances[indexChannel]->subTypeCode){
-case 2:{
-((LocalChannel*)instances[indexChannel])->bindings->removeBinding(instances[indexComponent],portCode);
+case 1:{
+((SerialCT*)instances[indexChannel])->bindings->removeBinding(instances[indexComponent],portCode);
 break;}
 }
 }
 }
 boolean periodicExecution(int index){
  switch(instances[index]->subTypeCode){
-case 1:{
-return millis() > (((PushButton *) instances[index] )->nextExecution);
+case 0:{
+return millis() > (((Timer *) instances[index] )->nextExecution);
 }
 }
 return false;
 }
 int getPortQueuesSize(int index){
  switch(instances[index]->subTypeCode){
-case 0:{
-return (((DigitalLight *)instances[index])->on->count())+(((DigitalLight *)instances[index])->off->count())+(((DigitalLight *)instances[index])->toggle->count());
-}
-case 2:{
-return (((LocalChannel *)instances[index])->input->count());
+case 1:{
+return (((SerialCT *)instances[index])->input->count());
 }
 }
 return 0;
@@ -478,13 +373,15 @@ void checkForAdminMsg(){
             inBytes[serialIndex] = Serial.read();                 
             if(inBytes[serialIndex] == sepAdminChar){             
                 inBytes[serialIndex] = '\0';                      
-                saveScriptCommand();parseForAdminMsg();                               
+                //saveScriptCommand();
+                parseForAdminMsg();                               
                 flushAdminBuffer();                               
             } else {                                              
               if(inBytes[serialIndex] == endAdminChar){           
                  parsingAdmin = false;                            
                  inBytes[serialIndex] = '\0';                     
-                 saveScriptCommand();parseForAdminMsg();                              
+                 //saveScriptCommand();
+                 parseForAdminMsg();                              
                  flushAdminBuffer();                              
                  Serial.print("ack");                             
                  Serial.println(ackToken);                        
@@ -514,7 +411,8 @@ void flushAdminBuffer(){
   }                                                               
   serialIndex = 0;                                                
 }                                                                 
-//END SECTION ADMIN DETECTION 1 SPLIT                             
+//END SECTION ADMIN DETECTION 1 SPLIT
+/*
 int eepromIndex;                                                                
 void saveScriptCommand(){                                                       
   if(eepromIndex == 2){ EEPROM.write(eepromIndex,startBAdminChar);eepromIndex++;}
@@ -528,7 +426,7 @@ void saveScriptCommand(){
   } else {                                                                      
     Serial.println("OME");                                                      
   }                                                                             
-}                                                                               
+} */                                                                              
 char * insID;  
 char * typeID; 
 char * params;   
@@ -576,17 +474,17 @@ boolean parseForAdminMsg(){
 }                                                                                             
 void setup(){
 Serial.begin(9600);
-int indexhub1 = createInstance(2,"hub1","");
-int indexled1 = createInstance(0,"led1","pin=13,");
-int indexbt1 = createInstance(1,"bt1","pin=2,period=100,");
-bind(indexled1,indexhub1,2);
-bind(indexbt1,indexhub1,3);
-//STATE RECOVERY                                                         
-if(EEPROM.read(0) != kevoreeID1 || EEPROM.read(1) != kevoreeID2){            
-  for (int i = 0; i < 512; i++){EEPROM.write(i, 0);}                         
-  EEPROM.write(0,kevoreeID1);                                                
-  EEPROM.write(1,kevoreeID2);                                                
-}                                                                            
+int indexTimer58 = createInstance(0,"Timer58","period=1000");
+int indexSerialCT790 = createInstance(1,"SerialCT790","PORT=/dev/tty.usbserial-A400g2AP");
+bind(indexTimer58,indexSerialCT790,0);
+//STATE RECOVERY        
+
+//if(EEPROM.read(0) != kevoreeID1 || EEPROM.read(1) != kevoreeID2){            
+//  for (int i = 0; i < 512; i++){EEPROM.write(i, 0);}                         
+//  EEPROM.write(0,kevoreeID1);                                                
+//  EEPROM.write(1,kevoreeID2);                                                
+//}
+/*
 eepromIndex = 2;                                                             
 inBytes[serialIndex] = EEPROM.read(eepromIndex);                         
 if (inBytes[serialIndex] == startBAdminChar) {                           
@@ -610,13 +508,13 @@ if (inBytes[serialIndex] == startBAdminChar) {
     parseForAdminMsg();                                                  
     flushAdminBuffer();                                                  
   }                                                                      
-}                                                                        
+}*/                                                                        
 Serial.println(freeRam());
 }
 long nextExecutionGap(int index){
  switch(instances[index]->subTypeCode){
-case 1:{
-return ((((PushButton *) instances[index] )->nextExecution)- currentMillis());
+case 0:{
+return ((((Timer *) instances[index] )->nextExecution)- currentMillis());
 }
 }
 return -1;

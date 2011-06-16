@@ -15,9 +15,9 @@ import org.kevoree.annotation.{Generate => KGenerate}
 
 trait KevoreeChannelTypeClassGenerator extends KevoreeCAbstractGenerator with KevoreeReflectiveHelper {
 
-  def generateChannelType(ct:ChannelType,bundleContext : BundleContext) = {
+  def generateChannelType(ct:ChannelType,bundleContext : BundleContext,nodeName:String) = {
     
-    val instance = createStandaloneInstance(ct,bundleContext)
+    val instance = createStandaloneInstance(ct,bundleContext,nodeName)
     val clazz = instance.getClass
     
     //GENERATE CLASS HEADER

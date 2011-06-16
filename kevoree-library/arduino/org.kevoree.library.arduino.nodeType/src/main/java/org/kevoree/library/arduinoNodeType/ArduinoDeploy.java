@@ -24,20 +24,14 @@ public class ArduinoDeploy {
 
     public void prepareCommands() {
 
+        /*
         String binPrefix = System.getProperty("arduino.home") + "/hardware/tools/avr/bin";
         if (binPrefix != null && !binPrefix.endsWith(File.separator)) {
             binPrefix += File.separator;
-        }
+        } */
 
         baseCmd = new ArrayList<String>();
-
-
-        if (System.getProperty("os.name").toLowerCase().contains("win")) {
-            baseCmd.add(binPrefix + "avrdude.exe");
-        } else {
-            baseCmd.add(binPrefix + "avrdude");
-        }
-
+        baseCmd.add(ArduinoToolChainExecutables.getAVRDUDE());
         String confPath = System.getProperty("arduino.home") + "/hardware/tools/avr/etc/avrdude.conf";
         if (confPath != null) {
             baseCmd.add("-C");

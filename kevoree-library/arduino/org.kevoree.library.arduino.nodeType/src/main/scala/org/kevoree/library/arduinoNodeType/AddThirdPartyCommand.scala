@@ -31,7 +31,7 @@ case class AddThirdPartyCommand(ctx:BundleContext,ct: DeployUnit) {
 
       true
     } catch {
-      case _@e => e.printStackTrace;false
+      case _@e => /*e.printStackTrace;*/false
     }
   }
   
