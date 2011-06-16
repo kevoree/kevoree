@@ -137,7 +137,7 @@ public class Main {
         ZoomPanel zpanel = new ZoomPanel();
         zpanel.setLayout(new BorderLayout());
         zpanel.add(model, BorderLayout.CENTER);
-        zpanel.changeZoom(1.5);
+        zpanel.changeZoom(1);
 
 
         JScrollPane scrollPane = new JScrollPane(zpanel, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);

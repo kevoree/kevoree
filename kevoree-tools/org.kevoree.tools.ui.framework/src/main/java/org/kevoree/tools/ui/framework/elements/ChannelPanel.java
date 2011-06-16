@@ -126,9 +126,17 @@ public class ChannelPanel extends JPanel implements TitledElement,SelectElement 
         g2.drawOval(x, y, w, h);//, arc, arc);
 
         g2.setColor(Color.WHITE);
-        g2.setFont(new Font("Monospaced", Font.BOLD, 10));
+        g2.setFont(new Font("Monospaced", Font.BOLD, 9));
         //g2.drawChars(title.toCharArray(), 0, title.length(), 0, 5);
-        g2.drawString(title, (int)(getWidth()/2-title.length()*3),(getHeight()/2)+5);
+
+
+        String[] titles = title.split(":");
+        for(int i = 0 ; i < titles.length ; i ++){
+           g2.drawString(titles[i].trim(),(int)( (getWidth()/2)-(title.trim().length()/2)*2.6),40+i*25);
+           if(i != 0){g2.drawString(":",(int)( (getWidth()/2)-1),30+(i*25));}
+        }
+
+        //g2.drawString(title, (int)(getWidth()/2-title.length()*3),(getHeight()/2)+5);
         g2.dispose();
     }
 

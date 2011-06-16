@@ -163,7 +163,7 @@
                             </inclusion>
                             <inclusion>
                                 <groupId>org.swinglabs</groupId>
-                                <artifactId>swingx</artifactId>
+                                <artifactId>swingx-core</artifactId>
                             </inclusion>
                             <inclusion>
                                 <groupId>org.kevoree.extra</groupId>
