@@ -15,7 +15,6 @@ package org.kevoree.deploy.osgi.tests
  */
 
 import org.scalatest.junit.AssertionsForJUnit
-import scala.collection.JavaConversions._
 import org.junit._
 import org.kevoree.adaptation.deploy.osgi.KevoreeAdaptationDeployServiceOSGi
 import org.kevoree.adaptation.deploy.osgi.command.LifeCycleCommand
@@ -28,25 +27,26 @@ import org.kevoreeAdaptation.AdaptationModel
 
 class SchedulingTest extends AssertionsForJUnit with SchedulingSuite {
 
-  var component : KevoreeKompareBean = null
-  var adaptationDeploy : KevoreeAdaptationDeployServiceOSGi = null
+  var component: KevoreeKompareBean = null
+  var adaptationDeploy: KevoreeAdaptationDeployServiceOSGi = null
+
   def emptyModel = "scheduling_test/emptyModel.kev"
 
-  @Before def initialize() {
-	component = new KevoreeKompareBean
-	adaptationDeploy = new KevoreeAdaptationDeployServiceOSGi
+  @Before def initialize () {
+    component = new KevoreeKompareBean
+    adaptationDeploy = new KevoreeAdaptationDeployServiceOSGi
   }
 
-  def adaptationModelStart(url1 : String, nodeName : String):AdaptationModel={
-	var node = KevoreeFactory.eINSTANCE.createContainerNode()
-	component.kompare(model(emptyModel), model(url1), nodeName)
+  def adaptationModelStart (url1: String, nodeName: String): AdaptationModel = {
+    var node = KevoreeFactory.eINSTANCE.createContainerNode()
+    component.kompare(model(emptyModel), model(url1), nodeName)
   }
-  
-  def adaptationModelStop(url1 : String, nodeName : String):AdaptationModel={
-	var node = KevoreeFactory.eINSTANCE.createContainerNode()
-	/*node.setName(nodeName);
-	 emptyModel.getNodes.add(node)*/
-	component.kompare(model(url1), model(emptyModel), nodeName)
+
+  def adaptationModelStop (url1: String, nodeName: String): AdaptationModel = {
+    var node = KevoreeFactory.eINSTANCE.createContainerNode()
+    /*node.setName(nodeName);
+       emptyModel.getNodes.add(node)*/
+    component.kompare(model(url1), model(emptyModel), nodeName)
   }
 
   /*@Test def noSchedule() {
@@ -94,39 +94,53 @@ class SchedulingTest extends AssertionsForJUnit with SchedulingSuite {
    error("NOT IMPLEMENTED YET")
    }*/
 
-  @Test def schedulingComplexModelTest() {
-	val scheduler = new SchedulingWithTopologicalOrderAlgo()
-	
-	var adaptationSchedule = adaptationModelStart("scheduling_test/complexScheduling.kev", "node0")
-	var commands = adaptationDeploy.buildCommandLists(adaptationSchedule, "node0")
-	
-	var stopCommands = commands.getOrElse("stop", List())
-	assert(stopCommands.isEmpty)
-	
-	var startCommands = commands.getOrElse("start", List())
-	assert(startCommands.size == 3)
-	if (!startCommands.isEmpty) {
-	  var tmpCommands = scheduler.schedule(startCommands.asInstanceOf[List[LifeCycleCommand]], true)
-	  assert(tmpCommands.size == startCommands.size)
-	  assert(tmpCommands.apply(0).getInstance.getName.equals("TOBECHANGED"))
-	  assert(tmpCommands.apply(1).getInstance.getName.equals("hubuiService1"))
-	  assert(tmpCommands.apply(2).getInstance.getName.equals("SimpleLight1"))
-	}
-	
-	adaptationSchedule = adaptationModelStop("scheduling_test/complexScheduling.kev", "node0")
-	commands = adaptationDeploy.buildCommandLists(adaptationSchedule, "node0")
-	
-	startCommands = commands.getOrElse("start", List())
-	assert(startCommands.isEmpty)
-	
-	stopCommands = commands.getOrElse("stop", List())
-	assert(stopCommands.size == 3)
-	if (!stopCommands.isEmpty) {
-	  var tmpCommands = scheduler.schedule(stopCommands.asInstanceOf[List[LifeCycleCommand]], false)
-	  assert(tmpCommands.size == stopCommands.size)
-	  assert(tmpCommands.apply(0).getInstance.getName.equals("SimpleLight1"))
-	  assert(tmpCommands.apply(1).getInstance.getName.equals("hubuiService1"))
-	  assert(tmpCommands.apply(2).getInstance.getName.equals("TOBECHANGED"))
-	}
+ /* @Test def schedulingComplexModelTest () {
+    val scheduler = new SchedulingWithTopologicalOrderAlgo()
+
+    var adaptationSchedule = adaptationModelStart("scheduling_test/complexScheduling.kev", "node0")
+    var commands = adaptationDeploy.buildCommandLists(adaptationSchedule, "node0")
+
+    var stopCommands = commands.getOrElse("stop", List())
+    assert(stopCommands.isEmpty)
+
+    var startCommands = commands.getOrElse("start", List())
+    assert(startCommands.size == 3)
+    if (!startCommands.isEmpty) {
+      val tmpCommands = scheduler.schedule(startCommands.asInstanceOf[List[LifeCycleCommand]], true)
+      assert(tmpCommands.size == startCommands.size)
+      assert(tmpCommands.apply(0).getInstance.getName.equals("TOBECHANGED"))
+      assert(tmpCommands.apply(1).getInstance.getName.equals("hubuiService1"))
+      assert(tmpCommands.apply(2).getInstance.getName.equals("SimpleLight1"))
+    }
+
+    adaptationSchedule = adaptationModelStop("scheduling_test/complexScheduling.kev", "node0")
+    commands = adaptationDeploy.buildCommandLists(adaptationSchedule, "node0")
+
+    startCommands = commands.getOrElse("start", List())
+    assert(startCommands.isEmpty)
+
+    stopCommands = commands.getOrElse("stop", List())
+    assert(stopCommands.size == 3)
+    if (!stopCommands.isEmpty) {
+      val tmpCommands = scheduler.schedule(stopCommands.asInstanceOf[List[LifeCycleCommand]], false)
+      assert(tmpCommands.size == stopCommands.size)
+      assert(tmpCommands.apply(0).getInstance.getName.equals("SimpleLight1"))
+      assert(tmpCommands.apply(1).getInstance.getName.equals("hubuiService1"))
+      assert(tmpCommands.apply(2).getInstance.getName.equals("TOBECHANGED"))
+    }
+  }*/
+
+  @Test def localSchedulingWithCycle () {
+    val scheduler = new SchedulingWithTopologicalOrderAlgo()
+
+    val adaptationSchedule = adaptationModelStart("scheduling_test/localSchedulingWithCycle.kev", "test")
+    val commands = adaptationDeploy.buildCommandLists(adaptationSchedule, "test")
+
+    val stopCommands = commands.getOrElse("stop", List())
+    assert(stopCommands.isEmpty)
+
+    val startCommands = commands.getOrElse("start", List())
+    assert(scheduler.schedule(startCommands.asInstanceOf[List[LifeCycleCommand]], true).forall(c => startCommands.contains(c)))
+    //assert(startCommands.equals(scheduler.schedule(startCommands.asInstanceOf[List[LifeCycleCommand]], true)))
   }
 }
