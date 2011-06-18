@@ -17,6 +17,9 @@
  */
 package org.kevoree.tools.ui.framework;
 
+import com.explodingpixels.macwidgets.HudWidgetFactory;
+import com.explodingpixels.macwidgets.HudWindow;
+import com.explodingpixels.macwidgets.IAppWidgetFactory;
 import org.kevoree.tools.ui.framework.elements.*;
 
 import java.awt.BorderLayout;
@@ -141,12 +144,13 @@ public class Main {
 
 
         JScrollPane scrollPane = new JScrollPane(zpanel, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
+        IAppWidgetFactory.makeIAppScrollPane(scrollPane);
+
 
         EditableModelPanel epanel = new EditableModelPanel(scrollPane);
 
 
         //jframe.add(epanel, BorderLayout.CENTER);
-
 
 
         jframe.add(epanel, BorderLayout.CENTER);
@@ -160,6 +164,19 @@ public class Main {
 
         jframe.pack();
         jframe.setVisible(true);
+
+
+        HudWindow hud = new HudWindow("Window");
+        hud.getJDialog().setSize(300, 350);
+        hud.getJDialog().setLocationRelativeTo(jframe);
+        hud.getJDialog().setResizable(true);
+        hud.getJDialog().setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        hud.getJDialog().setVisible(true);
+
+        JTextField textField = HudWidgetFactory.createHudTextField("Text field");
+         hud.getJDialog().add(textField);
+
+
 
 
     }
