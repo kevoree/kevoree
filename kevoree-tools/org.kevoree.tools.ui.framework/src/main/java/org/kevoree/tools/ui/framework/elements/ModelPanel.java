@@ -142,13 +142,20 @@ public class ModelPanel extends JLayeredPane {
         return bindingPanel.getBindings();
     }
 
+    private JPanel flyPanel = null;
     public void setFlightObject(JPanel fobject) {
         dragPanel.add(fobject);
+        flyPanel =  fobject;
     }
 
     public void unsetFlightObject(JPanel fobject) {
         dragPanel.remove(fobject);
+        flyPanel = null;
     }
+    public JPanel getFlightObject(){
+        return  flyPanel;
+    }
+
 
     @Override
     public Dimension getPreferredSize() {

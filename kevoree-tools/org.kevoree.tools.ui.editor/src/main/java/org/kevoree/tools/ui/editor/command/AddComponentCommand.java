@@ -24,6 +24,7 @@ import org.kevoree.Port;
 import org.kevoree.PortTypeRef;
 import java.util.Random;
 import org.kevoree.tools.ui.editor.KevoreeUIKernel;
+import org.kevoree.tools.ui.editor.ModelHelper;
 import org.kevoree.tools.ui.framework.elements.*;
 import org.kevoree.tools.ui.framework.elements.PortPanel.PortType;
 
@@ -82,6 +83,7 @@ public class AddComponentCommand implements Command {
 
             nodepanel.add(insPanel);
             node.getComponents().add(instance);
+                    kernel.getEditorPanel().getPalette().updateTypeValue(ModelHelper.getTypeNbInstance(kernel.getModelHandler().getActualModel(), type),type.getName());
         } 
     }
 

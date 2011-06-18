@@ -24,6 +24,9 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.text.BadLocationException;
 
+import com.explodingpixels.macwidgets.HudWidgetFactory;
+import com.explodingpixels.macwidgets.plaf.HudLabelUI;
+import com.explodingpixels.macwidgets.plaf.HudTextFieldUI;
 import org.kevoree.tools.ui.editor.KevoreeUIKernel;
 import org.kevoree.tools.ui.editor.command.RemoveInstanceCommand;
 import org.kevoree.tools.ui.editor.widget.JCommandButton;
@@ -33,27 +36,37 @@ import org.kevoree.tools.ui.framework.TitledElement;
 /**
  * @author ffouquet
  */
-public class NamedElementPropertyEditor extends ThreePartRoundedPanel {
+public class NamedElementPropertyEditor extends /*ThreePartRoundedPanel*/ JPanel {
 
     private org.kevoree.NamedElement namedElem = null;
     private TitledElement gui = null;
     protected KevoreeUIKernel kernel;
 
+
+    public void addCenter(JComponent p) {
+        this.add(p);
+    }
+
     public NamedElementPropertyEditor(org.kevoree.NamedElement elem, KevoreeUIKernel _kernel) {
+        this.setOpaque(false);
+        this.setBorder(null);
+
         namedElem = elem;
         kernel = _kernel;
         gui = (TitledElement) kernel.getUifactory().getMapping().get(namedElem);
-
-
-
         JPanel p = new JPanel(new SpringLayout());
+        p.setBorder(null);
         p.setOpaque(false);
         JLabel l = new JLabel("Name", JLabel.TRAILING);
-        l.setOpaque(false);
-        l.setForeground(Color.WHITE);
+        l.setUI(new HudLabelUI());
+
+       // l.setOpaque(false);
+       // l.setForeground(Color.WHITE);
         p.add(l);
-        JTextField textField = new JTextField(10);
-        textField.setOpaque(false);
+        JTextField textField = new JTextField(15);
+        textField.setUI(new HudTextFieldUI());
+
+       // textField.setOpaque(false);
         l.setLabelFor(textField);
         p.add(textField);
         textField.setText(namedElem.getName());
@@ -63,6 +76,7 @@ public class NamedElementPropertyEditor extends ThreePartRoundedPanel {
                 1, 2, //rows, cols
                 6, 6,        //initX, initY
                 6, 6);       //xPad, yPad
+
 
 
         JCommandButton btDelete = new JCommandButton("Delete");

@@ -2,28 +2,30 @@
 #include <avr/pgmspace.h>
 #include <avr/wdt.h>
 #include <EEPROM.h>
-#define kevoreeID1 0
-#define kevoreeID2 1
+#define kevoreeID1 2
+#define kevoreeID2 2
 //Global Kevoree Type Defintion declaration
 const prog_char timer[] PROGMEM = "Timer";
-const prog_char lightsensor[] PROGMEM = "LightSensor";
+const prog_char tempsensor[] PROGMEM = "TempSensor";
 const prog_char localchannel[] PROGMEM = "LocalChannel";
 const prog_char serialct[] PROGMEM = "SerialCT";
 PROGMEM const char * typedefinition[] = { 
 timer
-,lightsensor
+,tempsensor
 ,localchannel
 ,serialct
 };
 //Global Kevoree Port Type Defintion declaration
 const prog_char port_tick[] PROGMEM = "tick";
 const prog_char port_trigger[] PROGMEM = "trigger";
-const prog_char port_light[] PROGMEM = "light";
-PROGMEM const char * portdefinition[] = { port_tick,port_trigger,port_light};
+const prog_char port_temp[] PROGMEM = "temp";
+PROGMEM const char * portdefinition[] = { port_tick,port_trigger,port_temp};
 const prog_char prop_period[] PROGMEM = "period";
 const prog_char prop_pin[] PROGMEM = "pin";
 const prog_char prop_port[] PROGMEM = "PORT";
 PROGMEM const char * properties[] = { prop_period,prop_pin,prop_port};
+#include <math.h> 
+
 
 const int nbPortType = 3;
 int getIDFromPortName(char * portName){
@@ -114,16 +116,26 @@ tick->push(*msg);
 }
 }
 };
-class LightSensor : public KevoreeType {
+class TempSensor : public KevoreeType {
  public : 
+float vcc;
+float pad;
+float thermr;
+float tempValue;
+char buf[10];
+
 QueueList<kmessage> * trigger;
-QueueList<kmessage> * light;
+QueueList<kmessage> * temp;
 char pin[20];
 void init(){
 trigger = (QueueList<kmessage>*) malloc(sizeof(QueueList<kmessage>));
 if(trigger){
    memset(trigger, 0, sizeof(QueueList<kmessage>));
 }
+vcc = 5.05;
+pad = 9850;
+thermr = 10000;
+
 }
 void destroy(){
 free(trigger);
@@ -131,20 +143,25 @@ free(trigger);
 void runInstance(){
 if(!trigger->isEmpty()){
 kmessage * msg = &(trigger->pop());
-LightSensor::trigger_pport(msg);
+TempSensor::trigger_pport(msg);
 }
 }
-void light_rport(kmessage * msg){
-if(light){
-light->push(*msg);
+void temp_rport(kmessage * msg){
+if(temp){
+temp->push(*msg);
 }
 }
 void trigger_pport(kmessage * msg){
-int photocellReading = analogRead(atoi(pin));
-kmessage * smsg = (kmessage*) malloc(sizeof(kmessage));if (smsg){memset(smsg, 0, sizeof(kmessage));}char buf[255];
-sprintf(buf,"%d",photocellReading);
+    long Resistance;  
+    int RawADC = analogRead(atoi(pin));
+    Resistance=((1024 * thermr / RawADC) - pad); 
+    tempValue = log(Resistance); // Saving the Log(resistance) so not to calculate  it 4 times later
+    tempValue = 1 / (0.001129148 + (0.000234125 * tempValue) + (0.0000000876741 * tempValue * tempValue * tempValue));
+    tempValue = tempValue - 273.15;  // Convert Kelvin to Celsius  
+    //send to output port
+kmessage * smsg = (kmessage*) malloc(sizeof(kmessage));if (smsg){memset(smsg, 0, sizeof(kmessage));}sprintf(buf,"%d",int(tempValue));
 smsg->value = buf;
-smsg->metric="alux";light_rport(smsg);free(smsg);
+smsg->metric="c";temp_rport(smsg);free(smsg);
 }
 };
 class LocalChannel : public KevoreeType {
@@ -242,7 +259,7 @@ case 0:{
 ((Timer*) instances[index])->destroy();
 break;}
 case 1:{
-((LightSensor*) instances[index])->destroy();
+((TempSensor*) instances[index])->destroy();
 break;}
 case 2:{
 ((LocalChannel*) instances[index])->destroy();
@@ -264,7 +281,7 @@ break;}
 }
 break;}
 case 1:{
-LightSensor * instance = (LightSensor*) instances[index];
+TempSensor * instance = (TempSensor*) instances[index];
  switch(keyCode){
 case 1:{
 strcpy (instance->pin,val);
@@ -311,9 +328,9 @@ case 0:{
   return newIndex;
 break;}
 case 1:{
-  LightSensor * newInstance = (LightSensor*) malloc(sizeof(LightSensor));
+  TempSensor * newInstance = (TempSensor*) malloc(sizeof(TempSensor));
   if (newInstance){
-    memset(newInstance, 0, sizeof(LightSensor));
+    memset(newInstance, 0, sizeof(TempSensor));
   } 
   strcpy(newInstance->instanceName,instanceName);
   newInstance->init();
@@ -360,7 +377,7 @@ Timer * instance = (Timer*) instances[index];
 instance->runInstance();
 break;}
 case 1:{
-LightSensor * instance = (LightSensor*) instances[index];
+TempSensor * instance = (TempSensor*) instances[index];
 instance->runInstance();
 break;}
 case 2:{
@@ -389,14 +406,14 @@ break;}
 }
 break;}
 case 1:{
-LightSensor * instance = (LightSensor*) instances[indexComponent];
+TempSensor * instance = (TempSensor*) instances[indexComponent];
 switch(portCode){
 case 1:{
    providedPort=instance->trigger;
 componentInstanceName=instance->instanceName;
 break;}
 case 2:{
-   requiredPort=&instance->light;
+   requiredPort=&instance->temp;
 break;}
 }
 break;}
@@ -435,7 +452,7 @@ break;}
 case 1:{
 switch(portCode){
 case 2:{
-   requiredPort=&(((LightSensor*)instances[indexComponent])->light);
+   requiredPort=&(((TempSensor*)instances[indexComponent])->temp);
 break;}
 }
 break;}
@@ -464,7 +481,7 @@ return false;
 int getPortQueuesSize(int index){
  switch(instances[index]->subTypeCode){
 case 1:{
-return (((LightSensor *)instances[index])->trigger->count());
+return (((TempSensor *)instances[index])->trigger->count());
 }
 case 2:{
 return (((LocalChannel *)instances[index])->input->count());
@@ -602,13 +619,13 @@ boolean parseForAdminMsg(){
 }                                                                                             
 void setup(){
 Serial.begin(9600);
-int indexlhub1 = createInstance(2,"lhub1","");
-int indexhubSerial = createInstance(3,"hubSerial","PORT=/dev/tty.usbserial-A400g2AP,");
-int indext1 = createInstance(0,"t1","period=1000,");
-int indexlux1 = createInstance(1,"lux1","pin=2,");
-bind(indext1,indexlhub1,0);
-bind(indexlux1,indexlhub1,1);
-bind(indexlux1,indexhubSerial,2);
+int indexLocalChan775 = createInstance(2,"LocalChan775","");
+int indexSerialCT187 = createInstance(3,"SerialCT187","PORT=devttyS0,");
+int indexTimer823 = createInstance(0,"Timer823","period=1000,");
+int indexTempSenso350 = createInstance(1,"TempSenso350","pin=0,");
+bind(indexTimer823,indexLocalChan775,0);
+bind(indexTempSenso350,indexLocalChan775,1);
+bind(indexTempSenso350,indexSerialCT187,2);
 //STATE RECOVERY                                                         
 if(EEPROM.read(0) != kevoreeID1 || EEPROM.read(1) != kevoreeID2){            
   for (int i = 0; i < 512; i++){EEPROM.write(i, 0);}                         

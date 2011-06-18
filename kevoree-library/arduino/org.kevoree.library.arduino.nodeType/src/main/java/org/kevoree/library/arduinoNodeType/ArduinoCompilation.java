@@ -166,6 +166,8 @@ public class ArduinoCompilation {
         includePathList.add("-I" + core.getDirectory().getPath());
 
         /* Add the source directory of every library referenced from our code */
+
+
         for (Library library : sketch.getLibraries()) {
             includePathList.add("-I" + library.getDirectory().getPath());
             if (library.getUtilDirectory() != null) {

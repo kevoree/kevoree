@@ -32,6 +32,8 @@ public class TempSensor extends AbstractComponentType {
         context.append("float vcc;\n");
         context.append("float pad;\n");
         context.append("float thermr;\n");
+        context.append("float tempValue;\n");
+        context.append("char buf[10];\n");
     }
 
     @Generate("classinit")
@@ -45,19 +47,17 @@ public class TempSensor extends AbstractComponentType {
     public void triggerPort(Object o) {
         StringBuffer context = (StringBuffer) o;
         context.append("    long Resistance;  \n"
-                + "    float temp;  // Dual-Purpose variable to save space.\n"
                 + "    int RawADC = analogRead(atoi(pin));\n"
                 + "    Resistance=((1024 * thermr / RawADC) - pad); \n"
-                + "    temp = log(Resistance); // Saving the Log(resistance) so not to calculate  it 4 times later\n"
-                + "    temp = 1 / (0.001129148 + (0.000234125 * temp) + (0.0000000876741 * temp * temp * temp));\n"
-                + "    temp = temp - 273.15;  // Convert Kelvin to Celsius  \n"
+                + "    tempValue = log(Resistance); // Saving the Log(resistance) so not to calculate  it 4 times later\n"
+                + "    tempValue = 1 / (0.001129148 + (0.000234125 * tempValue) + (0.0000000876741 * tempValue * tempValue * tempValue));\n"
+                + "    tempValue = tempValue - 273.15;  // Convert Kelvin to Celsius  \n"
                 + "    //send to output port\n");
 
 
         context.append("kmessage * smsg = (kmessage*) malloc(sizeof(kmessage));");
         context.append("if (smsg){memset(smsg, 0, sizeof(kmessage));}");
-        context.append("char buf[255];\n");
-        context.append("sprintf(buf,\"%d\",int(temp));\n");
+        context.append("sprintf(buf,\"%d\",int(tempValue));\n");
         context.append("smsg->value = buf;\n");
         context.append("smsg->metric=\"c\";");
         context.append("temp_rport(smsg);");

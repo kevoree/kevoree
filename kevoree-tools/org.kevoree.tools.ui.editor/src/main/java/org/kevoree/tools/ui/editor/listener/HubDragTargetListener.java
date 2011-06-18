@@ -17,6 +17,7 @@
  */
 package org.kevoree.tools.ui.editor.listener;
 
+import java.awt.*;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.dnd.DropTarget;
 import java.awt.dnd.DropTargetDragEvent;
@@ -24,12 +25,16 @@ import java.awt.dnd.DropTargetDropEvent;
 import java.awt.dnd.DropTargetEvent;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import org.kevoree.tools.ui.editor.KevoreeUIKernel;
 import org.kevoree.tools.ui.editor.command.AddMBindingCommand;
 import org.kevoree.tools.ui.framework.elements.ChannelPanel;
 
+import javax.swing.*;
+
 /**
  * implementation of the target listener
+ *
  * @author francoisfouquet
  */
 public class HubDragTargetListener extends DropTarget {
@@ -39,6 +44,7 @@ public class HubDragTargetListener extends DropTarget {
 
     /**
      * constructor
+     *
      * @param _kernel the table view panel
      * @param _target the view of the component
      */
@@ -49,6 +55,7 @@ public class HubDragTargetListener extends DropTarget {
 
     /**
      * callback when DnD is finished
+     *
      * @param arg0
      */
     @Override
@@ -68,6 +75,7 @@ public class HubDragTargetListener extends DropTarget {
 
     /**
      * not implemented
+     *
      * @param dtde
      */
     //@Override
@@ -76,6 +84,7 @@ public class HubDragTargetListener extends DropTarget {
 
     /**
      * not implemented
+     *
      * @param arg0
      */
     //@Override
@@ -84,14 +93,31 @@ public class HubDragTargetListener extends DropTarget {
 
     /**
      * not implemented
+     *
      * @param arg0
      */
     //@Override
     public void dragOver(DropTargetDragEvent arg0) {
+
+        if (kernel.getModelPanel().getFlightObject() != null) {
+
+            Point p2 = arg0.getLocation();
+            SwingUtilities.convertPointToScreen(p2, target);
+            SwingUtilities.convertPointFromScreen(p2, kernel.getModelPanel().getFlightObject().getParent());
+
+            kernel.getModelPanel().getFlightObject().setBounds(
+                    (int) p2.getX() - (kernel.getModelPanel().getFlightObject().getWidth() / 2),
+                    (int) p2.getY() - (kernel.getModelPanel().getFlightObject().getHeight() / 2),
+                    kernel.getModelPanel().getFlightObject().getWidth(),
+                    kernel.getModelPanel().getFlightObject().getHeight());
+            kernel.getModelPanel().repaint();
+        }
+
     }
 
     /**
      * not implemented
+     *
      * @param arg0
      */
     //@Override

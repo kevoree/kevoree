@@ -23,6 +23,8 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.text.BadLocationException;
 
+import com.explodingpixels.macwidgets.plaf.HudLabelUI;
+import com.explodingpixels.macwidgets.plaf.HudTextFieldUI;
 import org.kevoree.DictionaryValue;
 import org.kevoree.KevoreeFactory;
 import org.kevoree.tools.ui.editor.KevoreeUIKernel;
@@ -37,19 +39,23 @@ public class InstancePropertyEditor extends NamedElementPropertyEditor {
         super(elem, _kernel);
 
         JPanel p = new JPanel(new SpringLayout());
+        p.setBorder(null);
         if (elem.getTypeDefinition().getDictionaryType() != null) {
             for (final org.kevoree.DictionaryAttribute att : elem.getTypeDefinition().getDictionaryType().getAttributes()) {
                 JLabel l = new JLabel(att.getName(), JLabel.TRAILING);
-                l.setOpaque(false);
-                l.setForeground(Color.WHITE);
+                l.setUI(new HudLabelUI());
+                //l.setOpaque(false);
+                //l.setForeground(Color.WHITE);
                 p.add(l);
                 JTextField textField = new JTextField(10);
+                textField.setUI(new HudTextFieldUI());
+
                 textField.getDocument().addDocumentListener(new DocumentListener() {
 
                     @Override
                     public void insertUpdate(DocumentEvent documentEvent) {
                         try {
-                            setValue(documentEvent.getDocument().getText(0, documentEvent.getDocument().getLength()),elem,att);
+                            setValue(documentEvent.getDocument().getText(0, documentEvent.getDocument().getLength()), elem, att);
                         } catch (BadLocationException e) {
                             e.printStackTrace();
                         }
@@ -58,7 +64,7 @@ public class InstancePropertyEditor extends NamedElementPropertyEditor {
                     @Override
                     public void removeUpdate(DocumentEvent documentEvent) {
                         try {
-                            setValue(documentEvent.getDocument().getText(0, documentEvent.getDocument().getLength()),elem,att);
+                            setValue(documentEvent.getDocument().getText(0, documentEvent.getDocument().getLength()), elem, att);
                         } catch (BadLocationException e) {
                             e.printStackTrace();
                         }
@@ -67,14 +73,14 @@ public class InstancePropertyEditor extends NamedElementPropertyEditor {
                     @Override
                     public void changedUpdate(DocumentEvent documentEvent) {
                         try {
-                            setValue(documentEvent.getDocument().getText(0, documentEvent.getDocument().getLength()),elem,att);
+                            setValue(documentEvent.getDocument().getText(0, documentEvent.getDocument().getLength()), elem, att);
                         } catch (BadLocationException e) {
                             e.printStackTrace();
                         }
                     }
                 });
 
-                textField.setOpaque(false);
+                //textField.setOpaque(false);
                 l.setLabelFor(textField);
                 p.add(textField);
                 textField.setText(getValue(elem, att));
@@ -100,6 +106,7 @@ public class InstancePropertyEditor extends NamedElementPropertyEditor {
         JScrollPane scrollPane = new JScrollPane(p);
         scrollPane.getViewport().setOpaque(false);
         scrollPane.setOpaque(false);
+        scrollPane.setBorder(null);
         // p.setFillsViewportHeight(true);
 
         scrollPane.setPreferredSize(new Dimension(300, 150));
@@ -126,19 +133,19 @@ public class InstancePropertyEditor extends NamedElementPropertyEditor {
         return "";
     }
 
-    public void setValue(Object aValue,org.kevoree.Instance instance, org.kevoree.DictionaryAttribute att) {
-            DictionaryValue value = null;
-            for (DictionaryValue v : instance.getDictionary().getValues()) {
-                if (v.getAttribute().equals(att)) {
-                    value = v;
-                }
+    public void setValue(Object aValue, org.kevoree.Instance instance, org.kevoree.DictionaryAttribute att) {
+        DictionaryValue value = null;
+        for (DictionaryValue v : instance.getDictionary().getValues()) {
+            if (v.getAttribute().equals(att)) {
+                value = v;
             }
-            if (value == null) {
-                value = KevoreeFactory.eINSTANCE.createDictionaryValue();
-                value.setAttribute(att);
-                instance.getDictionary().getValues().add(value);
-            }
-            value.setValue(aValue.toString());
+        }
+        if (value == null) {
+            value = KevoreeFactory.eINSTANCE.createDictionaryValue();
+            value.setAttribute(att);
+            instance.getDictionary().getValues().add(value);
+        }
+        value.setValue(aValue.toString());
     }
 
 

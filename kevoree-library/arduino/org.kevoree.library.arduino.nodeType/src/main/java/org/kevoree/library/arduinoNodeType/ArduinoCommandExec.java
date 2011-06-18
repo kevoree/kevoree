@@ -49,6 +49,9 @@ public class ArduinoCommandExec {
             } catch (InterruptedException ex) {
                 Logger.getLogger(ArduinoCommandExec.class.getName()).log(Level.SEVERE, null, ex);
             }*/
+
+            //System.out.println("Cmd out !");
+
         }
         catch (IOException e) {
             System.out.println("exception happened - here's what I know: ");

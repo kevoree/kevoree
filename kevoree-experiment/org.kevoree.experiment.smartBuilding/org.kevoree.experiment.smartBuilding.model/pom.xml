@@ -103,6 +103,5 @@
             <artifactId>org.kevoree.experiment.smartBuilding.android</artifactId>
             <version>${project.version}</version>
         </dependency>
-        
     </dependencies>
 </project>

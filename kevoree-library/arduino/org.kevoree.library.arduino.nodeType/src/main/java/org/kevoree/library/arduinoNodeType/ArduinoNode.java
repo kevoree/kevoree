@@ -2,12 +2,9 @@ package org.kevoree.library.arduinoNodeType;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import gnu.io.NoSuchPortException;
-import gnu.io.PortInUseException;
 import org.kevoree.ContainerRoot;
 import org.kevoree.KevoreeFactory;
 import org.kevoree.annotation.DictionaryAttribute;
@@ -123,7 +120,12 @@ public class ArduinoNode extends AbstractNodeType {
 
                 progress.beginTask("Prepare model generation", 20);
                 File newdirTarget = new File("arduinoGenerated" + targetNodeName + "/target");
-                newdirTarget.mkdir();
+
+                org.kevoree.library.arduinoNodeType.FileHelper.createAndCleanDirectory(newdirTarget);
+
+                //DO RECURSIVE CLEAN
+
+
                 TargetDirectoryService.rootPath = newdirTarget.getAbsolutePath();
 
                 outputPath = newdir.getAbsolutePath();
@@ -161,14 +163,23 @@ public class ArduinoNode extends AbstractNodeType {
     private BundleContext bcontext = null;
 
     @Override
-    public boolean deploy(AdaptationModel model, String nodeName) {
+    public boolean deploy(AdaptationModel modelIn, String nodeName) {
         boolean typeAdaptationFound = false;
-        for (AdaptationPrimitive p : model.getAdaptations()) {
+        ContainerRoot rootModel = null;
+        for (AdaptationPrimitive p : modelIn.getAdaptations()) {
             if (p instanceof TypeAdaptation) {
                 typeAdaptationFound = true;
+                rootModel = (ContainerRoot) ((TypeAdaptation) p).getRef().eContainer();
             }
         }
         if (typeAdaptationFound) {
+            KevoreeKompareBean kompare = new KevoreeKompareBean();
+            ContainerRoot lastVersionModel = KevoreeFactory.eINSTANCE.createContainerRoot();
+            AdaptationModel model = kompare.kompare(lastVersionModel, rootModel, nodeName);
+
+            //Must compute a dif from scratch model
+
+
             System.out.println("Type adaptation detected -> full firmware update needed !");
             //Step : Type Bundle preparation step
             if (bcontext != null) {
@@ -204,9 +215,9 @@ public class ArduinoNode extends AbstractNodeType {
                 Core core = CodeManager.getInstance().getCore(target);
                 arduinoCompilation.compileCore(sketch, target, core);
                 progress.beginTask("Library processing", 60);
+
                 for (org.wayoda.ang.libraries.Library library : sketch.getLibraries()) {
                     System.out.println("----Lib " + library.getName());
-
                     arduinoCompilation.compileLibrary(sketch, target, library, core);
                 }
                 progress.endTask();
@@ -246,7 +257,7 @@ public class ArduinoNode extends AbstractNodeType {
 
         } else {
             System.out.println("incremental update availble -> try to generate KevScript !");
-            Script baseScript = KevScriptWrapper.miniPlanKevScript(AdaptationModelWrapper.generateScriptFromAdaptModel(model));
+            Script baseScript = KevScriptWrapper.miniPlanKevScript(AdaptationModelWrapper.generateScriptFromAdaptModel(modelIn));
             String resultScript = KevScriptWrapper.generateKevScriptCompressed(baseScript);
             System.out.println(resultScript);
             String boardName = "";
