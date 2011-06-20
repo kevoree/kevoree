@@ -187,6 +187,7 @@ public class MultiObjectiveKevoreeProblem extends Problem implements SimpleProbl
         float fitness = functionnalityValue;
         boolean onToOnBinding = false, onToShowTextBinding = false, offToOffBinding = false, toggleToToggleBinding = false;
         for (MBinding myBinding : ki.myModel.getMBindings()) {
+            //find a link between a on port of a FakeSimpleSwitch and a on port of a FakeSimpleLight
             if (!onToOnBinding && myBinding.getPort().getPortTypeRef().getName().equalsIgnoreCase("on") && ((ComponentInstance)myBinding.getPort().eContainer()).getTypeDefinition().getName().equalsIgnoreCase("FakeSimpleLight")){
                 for (MBinding myBinding1 : ki.myModel.getMBindings()){
                     if (!onToOnBinding && !myBinding.equals(myBinding1)){
@@ -197,6 +198,7 @@ public class MultiObjectiveKevoreeProblem extends Problem implements SimpleProbl
                     }
                 }
             }
+            //find a link between a on port of a FakeSimpleSwitch and a showtext port of a console
             if (!onToShowTextBinding && myBinding.getPort().getPortTypeRef().getName().equalsIgnoreCase("on") && ((ComponentInstance)myBinding.getPort().eContainer()).getTypeDefinition().getName().equalsIgnoreCase("FakeSimpleSwitch")){
                 for (MBinding myBinding1 : ki.myModel.getMBindings()){
                     if (!onToShowTextBinding && !myBinding.equals(myBinding1)){
@@ -207,6 +209,7 @@ public class MultiObjectiveKevoreeProblem extends Problem implements SimpleProbl
                     }
                 }
             }
+            //find a link between a off port of a FakeSimpleSwitch and a off port of a FakeSimpleLight
             if (!offToOffBinding && myBinding.getPort().getPortTypeRef().getName().equalsIgnoreCase("off") && ((ComponentInstance)myBinding.getPort().eContainer()).getTypeDefinition().getName().equalsIgnoreCase("FakeSimpleLight")){
                 for (MBinding myBinding1 : ki.myModel.getMBindings()){
                     if (!offToOffBinding && !myBinding.equals(myBinding1)){
@@ -217,6 +220,7 @@ public class MultiObjectiveKevoreeProblem extends Problem implements SimpleProbl
                     }
                 }
             }
+            //find a link between a off port of a FakeSimpleSwitch and a on port of a FakeSimpleLight ==> drop the fitness to 0
             if (myBinding.getPort().getPortTypeRef().getName().equalsIgnoreCase("on") && ((ComponentInstance)myBinding.getPort().eContainer()).getTypeDefinition().getName().equalsIgnoreCase("FakeSimpleLight")){
                 for (MBinding myBinding1 : ki.myModel.getMBindings()){
                     if (!myBinding.equals(myBinding1)){
@@ -227,6 +231,7 @@ public class MultiObjectiveKevoreeProblem extends Problem implements SimpleProbl
                     }
                 }
             }
+            //find a link between a on port of a FakeSimpleSwitch and a off port of a FakeSimpleLight ==> drop the fitness to 0
             if (myBinding.getPort().getPortTypeRef().getName().equalsIgnoreCase("off") && ((ComponentInstance)myBinding.getPort().eContainer()).getTypeDefinition().getName().equalsIgnoreCase("FakeSimpleLight")){
                 for (MBinding myBinding1 : ki.myModel.getMBindings()){
                     if (!myBinding.equals(myBinding1)){
@@ -237,6 +242,7 @@ public class MultiObjectiveKevoreeProblem extends Problem implements SimpleProbl
                     }
                 }
             }
+            //find a link between a toggle port of a FakeSimpleSwitch and a toggle port of a FakeSimpleLight
             if (!toggleToToggleBinding && myBinding.getPort().getPortTypeRef().getName().equalsIgnoreCase("toggle") && ((ComponentInstance)myBinding.getPort().eContainer()).getTypeDefinition().getName().equalsIgnoreCase("FakeSimpleLight")){
                 for (MBinding myBinding1 : ki.myModel.getMBindings()){
                     if (!toggleToToggleBinding && !myBinding.equals(myBinding1)){
@@ -247,6 +253,7 @@ public class MultiObjectiveKevoreeProblem extends Problem implements SimpleProbl
                     }
                 }
             }
+            //find a link between a toggle port of a FakeSimpleSwitch and a on port of a FakeSimpleLight ==> drop the fitness to 0
             if (myBinding.getPort().getPortTypeRef().getName().equalsIgnoreCase("on") && ((ComponentInstance)myBinding.getPort().eContainer()).getTypeDefinition().getName().equalsIgnoreCase("FakeSimpleLight")){
                 for (MBinding myBinding1 : ki.myModel.getMBindings()){
                     if (!myBinding.equals(myBinding1)){
@@ -257,6 +264,7 @@ public class MultiObjectiveKevoreeProblem extends Problem implements SimpleProbl
                     }
                 }
             }
+            //find a link between a toggle port of a FakeSimpleSwitch and a off port of a FakeSimpleLight ==> drop the fitness to 0
             if (myBinding.getPort().getPortTypeRef().getName().equalsIgnoreCase("off") && ((ComponentInstance)myBinding.getPort().eContainer()).getTypeDefinition().getName().equalsIgnoreCase("FakeSimpleLight")){
                 for (MBinding myBinding1 : ki.myModel.getMBindings()){
                     if (!myBinding.equals(myBinding1)){
@@ -267,6 +275,7 @@ public class MultiObjectiveKevoreeProblem extends Problem implements SimpleProbl
                     }
                 }
             }
+            //find a link between a on port of a FakeSimpleSwitch and a toggle port of a FakeSimpleLight ==> drop the fitness to 0
             if (myBinding.getPort().getPortTypeRef().getName().equalsIgnoreCase("toggle") && ((ComponentInstance)myBinding.getPort().eContainer()).getTypeDefinition().getName().equalsIgnoreCase("FakeSimpleLight")){
                 for (MBinding myBinding1 : ki.myModel.getMBindings()){
                     if (!myBinding.equals(myBinding1)){
@@ -277,6 +286,7 @@ public class MultiObjectiveKevoreeProblem extends Problem implements SimpleProbl
                     }
                 }
             }
+            //find a link between a off port of a FakeSimpleSwitch and a toggle port of a FakeSimpleLight ==> drop the fitness to 0
             if (myBinding.getPort().getPortTypeRef().getName().equalsIgnoreCase("toggle") && ((ComponentInstance)myBinding.getPort().eContainer()).getTypeDefinition().getName().equalsIgnoreCase("FakeSimpleLight")){
                 for (MBinding myBinding1 : ki.myModel.getMBindings()){
                     if (!myBinding.equals(myBinding1)){
