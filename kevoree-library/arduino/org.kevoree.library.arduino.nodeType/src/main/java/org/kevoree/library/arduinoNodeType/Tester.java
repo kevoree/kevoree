@@ -26,7 +26,7 @@ public class Tester {
        // System.setProperty("serial.port", "/dev/tty.usbmodem621");
 
 
-        String modelString = "/Users/ffouquet/Desktop/KStripAndDuke";
+        String modelString = "/Users/ffouquet/Desktop/fullDualTemp.kev";
 
         ContainerRoot model = KevoreeXmiHelper.load(modelString);
 

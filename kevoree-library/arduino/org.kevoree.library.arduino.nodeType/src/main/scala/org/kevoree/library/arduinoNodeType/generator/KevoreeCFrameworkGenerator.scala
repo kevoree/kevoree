@@ -61,7 +61,7 @@ trait KevoreeCFrameworkGenerator extends KevoreeCAbstractGenerator {
         (ct.getProvided.toList ++ ct.getRequired.toList).toList.foreach {
           ptRef =>
             val portName = ptRef.getName
-            val portNamePrefix = ("port_"+portName).toLowerCase
+            val portNamePrefix = ("port_" + portName).toLowerCase
             if (!portNameGenerated.contains(portNamePrefix)) {
               portCodeMap.put(portName, index)
               portNameGenerated = portNameGenerated ++ List(portNamePrefix)
@@ -82,7 +82,7 @@ trait KevoreeCFrameworkGenerator extends KevoreeCAbstractGenerator {
           ktype.getDictionaryType.getAttributes.foreach {
             att =>
               val propName = att.getName
-              val propNamePrefix = ("prop_"+propName).toLowerCase
+              val propNamePrefix = ("prop_" + propName).toLowerCase
               if (!propertiesGenerated.contains(propNamePrefix)) {
                 propsCodeMap.put(propName, index)
                 propertiesGenerated = propertiesGenerated ++ List(propNamePrefix)
@@ -496,7 +496,11 @@ trait KevoreeCFrameworkGenerator extends KevoreeCAbstractGenerator {
         }
         val dictionaryResult = new StringBuffer
         dictionary.foreach {
-          dic => dictionaryResult.append(dic._1 + "=" + dic._2 + ",");
+          dic =>
+            val key = dic._1.filter(keyC => Character.isLetterOrDigit(keyC))
+            val value = dic._2.filter(keyC => Character.isLetterOrDigit(keyC))
+
+            dictionaryResult.append(key + "=" + value + ",");
         }
         context b "int index" + instance.getName + " = createInstance(" + typeCodeMap.get(instance.getTypeDefinition.getName).get + ",\"" + instance.getName + "\",\"" + dictionaryResult.toString + "\");"
     }
