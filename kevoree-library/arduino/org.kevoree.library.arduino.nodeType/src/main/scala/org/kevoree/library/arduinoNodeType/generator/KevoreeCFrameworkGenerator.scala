@@ -23,10 +23,18 @@ trait KevoreeCFrameworkGenerator extends KevoreeCAbstractGenerator {
     context h "#include <avr/pgmspace.h>"
     context h "#include <avr/wdt.h>"
     context h "#include <EEPROM.h>"
+    context h "#define UDI_C 0"
+    context h "#define AIN_C 1"
+    context h "#define RIN_C 2"
+    context h "#define ABI_C 3"
+    context h "#define RBI_C 4"
+    context h "#define EEPROM_MAX_SIZE 1024"
 
     val random = new Random
     context h ("#define kevoreeID1 " + random.nextInt(10))
     context h ("#define kevoreeID2 " + random.nextInt(10))
+
+    context h "int eepromIndex;"
 
 
     context h "//Global Kevoree Type Defintion declaration"
@@ -235,19 +243,45 @@ trait KevoreeCFrameworkGenerator extends KevoreeCAbstractGenerator {
 
   def generateParamsMethod: Unit = {
     //GENERATE GLOBAL UPDATE METHOD
-
+    //V3 :-) - One day it will be ok for sure !!!
     context b "const char delimsEQ[] = \"=\";"
     context b "char * key;"
     context b "char * val;"
-    context b "char * str;"
-    context b "void updateParams(int index,char* params){"
-    context b "  while ((str = strtok_r(params, \",\", &params)) != NULL){"
-    context b "    key = strtok(str, delimsEQ);"
-    context b "    val = strtok(NULL, delimsEQ);"
-    context b "    updateParam(index,instances[index]->subTypeCode,getIDFromProps(key),val);"
-    context b "  }"
-    context b "}"
+    context b "byte paramCode;                                                                           "
+    context b "void updateParams (int index, char * params) {                                            "
+    context b "   if ((params[ 0] == '\\0') &&(params[ 1] != '=') )                                       "
+    context b "   {                                                                                      "
+    context b "     return;                                                                              "
+    context b "   }                                                                                      "
+    context b "   paramCode = params[ 0];                                                                "
+    context b "   int i = 2;                                                                             "
+    context b "   while (params[i] != '\\0' && params[i] != ',') {                                        "
+    context b "     i ++;                                                                                "
+    context b "   }                                                                                      "
+    context b "   if (params[i] == ',') {                                                                "
+    context b "     params[i] = '\\0';                                                                    "
+    context b "     updateParam(index, instances[index] -> subTypeCode, paramCode, & params[ 2] );       "
+    context b "     updateParams(index, & params[i + 1] ); //recursive call                              "
+    context b "  } else {                                                                               "
+    context b "     updateParam(index, instances[index] -> subTypeCode, paramCode, & params[ 2] );       "
+    context b "   }                                                                                      "
+    context b " }                                                                                        "
 
+
+
+    /*
+   context b "const char delimsEQ[] = \"=\";"
+   context b "char * key;"
+   context b "char * val;"
+   context b "char * str;"
+   context b "void updateParams(int index,char* params){"
+   context b "  while ((str = strtok_r(params, \",\", &params)) != NULL){"
+   context b "    key = strtok(str, delimsEQ);"
+   context b "    val = strtok(NULL, delimsEQ);"
+   context b "    updateParam(index,instances[index]->subTypeCode,getIDFromProps(key),val);"
+   context b "  }"
+   context b "}"
+    */
     /*
     context b "void updateParams(int index,char* params){"
     context b "  int typeCode = instances[index]->subTypeCode;"
@@ -371,7 +405,7 @@ trait KevoreeCFrameworkGenerator extends KevoreeCAbstractGenerator {
   def generateUnBindMethod(types: List[TypeDefinition]): Unit = {
     context b "void unbind(int indexComponent,int indexChannel,int portCode){"
 
-    context b "QueueList<kmessage> ** requiredPort = 0;"
+    context b "kbinding * requiredPort = 0;"
     context b " switch(instances[indexComponent]->subTypeCode){"
     types.foreach {
       ktype =>
@@ -381,7 +415,7 @@ trait KevoreeCFrameworkGenerator extends KevoreeCAbstractGenerator {
           ktype.asInstanceOf[ComponentType].getRequired.foreach {
             required =>
               context b "case " + portCodeMap.get(required.getName).get + ":{"
-              context b "   requiredPort=&(((" + ktype.getName + "*)instances[indexComponent])->" + required.getName + ");";
+              context b "   requiredPort=(((" + ktype.getName + "*)instances[indexComponent])->" + required.getName + ");";
               context b "break;}"
           }
           context b "}" //END SWITCH PORT CODE
@@ -391,7 +425,9 @@ trait KevoreeCFrameworkGenerator extends KevoreeCAbstractGenerator {
     context b "}" //END SWITCH COMPONENT TYPE CODE
 
     context b "if(requiredPort){"
-    context b "     *requiredPort=NULL;"
+    context b "     requiredPort->instance=NULL;"
+    context b "     requiredPort->port=NULL;"
+    context b "     requiredPort->portCode=0;"
     context b "} else {"
 
     context b " switch(instances[indexChannel]->subTypeCode){"
@@ -412,7 +448,9 @@ trait KevoreeCFrameworkGenerator extends KevoreeCAbstractGenerator {
   def generateBindMethod(types: List[TypeDefinition]): Unit = {
     context b "void bind(int indexComponent,int indexChannel,int portCode){"
     context b "QueueList<kmessage> * providedPort = 0;"
-    context b "QueueList<kmessage> ** requiredPort = 0;"
+    //context b "QueueList<kmessage> ** requiredPort = 0;"
+
+    context b "kbinding * requiredPort = 0;"
     context b "char * componentInstanceName;"
     context b "int componentTypeCode = instances[indexComponent]->subTypeCode;"
     context b "int channelTypeCode = instances[indexChannel]->subTypeCode;"
@@ -438,7 +476,7 @@ trait KevoreeCFrameworkGenerator extends KevoreeCAbstractGenerator {
             kcomponentType.getRequired.foreach {
               required =>
                 context b "case " + portCodeMap.get(required.getName).get + ":{"
-                context b "   requiredPort=&instance->" + required.getName + ";";
+                context b "   requiredPort=instance->" + required.getName + ";";
                 context b "break;}"
             }
           }
@@ -461,7 +499,12 @@ trait KevoreeCFrameworkGenerator extends KevoreeCAbstractGenerator {
           context b "instance->bindings->addBinding(instances[indexComponent],portCode,providedPort);"
           context b "}"
           context b "if(requiredPort){"
-          context b "*requiredPort = instance->input;"
+
+          context b "requiredPort->portCode = portCode;"
+          context b "requiredPort->instance = instance;"
+          context b "requiredPort->port = instance->input;"
+
+          //context b "*requiredPort = instance->input;"
           context b "}"
           context b "break;}"
         }
@@ -473,12 +516,35 @@ trait KevoreeCFrameworkGenerator extends KevoreeCAbstractGenerator {
 
 
   def generateSetup(initInstances: List[Instance], nodeName: String): Unit = {
-    //DUMMY SCHEDULER FOR TEST
-    context b "void setup(){"
-    context b "Serial.begin(9600);" //TO REMOVE DEBUG ONLY
+
+    var instanceCODE: List[String] = List()
     initInstances.foreach {
       instance =>
-      //GENERATE INIT DICTIONARY  
+        instanceCODE = instanceCODE ++ List("init_" + instance.getName.toLowerCase)
+        context b "const prog_char init_" + instance.getName.toLowerCase + "[] PROGMEM = \"" + instance.getName + "\";"
+    }
+    context b "PROGMEM const char * init_tables[] = {" + instanceCODE.mkString(",") + "};"
+
+    //DUMMY SCHEDULER FOR TEST
+
+    context b "char instNameBuf[15];"
+    context b "char instNameBuf2[15];"
+    context b "void setup(){"
+    context b "Serial.begin(9600);" //TO REMOVE DEBUG ONLY
+
+
+    context b "//STATE RECOVERY                                                         "
+    context b "if(EEPROM.read(0) != kevoreeID1 || EEPROM.read(1) != kevoreeID2){            "
+    //context b "  for (int i = 0; i < 512; i++){EEPROM.write(i, 0);}                         " //USELESS NOW
+    context b "  EEPROM.write(0,kevoreeID1);                                                "
+    context b "  EEPROM.write(1,kevoreeID2);                                                "
+    //SAVE INIT STATE
+    context b "eepromIndex = 2;"
+    context b "save2Memory(startBAdminChar);"
+    var isFirst = true
+    initInstances.foreach {
+      instance =>
+      //GENERATE INIT DICTIONARY
         val dictionary: java.util.HashMap[String, String] = new java.util.HashMap[String, String]
         if (instance.getTypeDefinition.getDictionaryType != null) {
           if (instance.getTypeDefinition.getDictionaryType.getDefaultValues != null) {
@@ -494,62 +560,203 @@ trait KevoreeCFrameworkGenerator extends KevoreeCAbstractGenerator {
             }
           }
         }
+
+        //GENERATE CMD
+        if (!isFirst) {
+          context b "save2Memory(sepAdminChar);"
+        }
+        isFirst = false
+
+
+
         val dictionaryResult = new StringBuffer
         dictionary.foreach {
           dic =>
+          //context b "EEPROM.write(eepromIndex," + propsCodeMap.get(dic._1).get + ");eepromIndex++;"
+          //context b "EEPROM.write(eepromIndex,delimsEQ[0]);eepromIndex++;"
             val key = dic._1.filter(keyC => Character.isLetterOrDigit(keyC))
             val value = dic._2.filter(keyC => Character.isLetterOrDigit(keyC))
-
-            dictionaryResult.append(key + "=" + value + ",");
+            if (dictionaryResult.length() != 0) {
+              dictionaryResult.append(",")
+            }
+            dictionaryResult.append(key + "=" + value)
         }
-        context b "int index" + instance.getName + " = createInstance(" + typeCodeMap.get(instance.getTypeDefinition.getName).get + ",\"" + instance.getName + "\",\"" + dictionaryResult.toString + "\");"
+        context b "        strcpy_P(instNameBuf, (char *) pgm_read_word (&(init_tables[" + instanceCODE.indexOf("init_" + instance.getName.toLowerCase) + "])));        "
+        context b "        saveAIN_CMD(instNameBuf, " + typeCodeMap.get(instance.getTypeDefinition.getName).get + ", \"" + dictionaryResult.toString + "\");                                             "
+
+
+
+      /*
+      context b "EEPROM.write(eepromIndex,AIN_C);eepromIndex++;"
+      context b "EEPROM.write(eepromIndex,delims[0]);eepromIndex++;"
+      context b "for(int i=0;i<" + instance.getName.length() + ";i++){"
+      context b "EEPROM.write(eepromIndex,pgm_read_byte(&init_" + instance.getName.toLowerCase + "[i]));eepromIndex++;"
+      context b "}"
+      context b "EEPROM.write(eepromIndex,delims[0]);eepromIndex++;"
+      context b "EEPROM.write(eepromIndex," + typeCodeMap.get(instance.getTypeDefinition.getName).get + ");eepromIndex++;"
+      context b "EEPROM.write(eepromIndex,delims[0]);eepromIndex++;"
+      */
+
+      //GENERATE DICTIONARY
+
+
+      //context b "int index" + instance.getName + " = createInstance(" + typeCodeMap.get(instance.getTypeDefinition.getName).get + ",\"" + instance.getName + "\",\"" + dictionaryResult.toString + "\");"
     }
+
+
     if (initInstances.filter(i => i.isInstanceOf[Channel]).size > 0) {
       val i0 = initInstances.filter(i => i.isInstanceOf[Channel]).get(0)
       i0.eContainer.asInstanceOf[ContainerRoot].getMBindings.foreach {
         binding =>
           if (binding.getPort.eContainer.eContainer.asInstanceOf[ContainerNode].getName == nodeName) {
-            context b "bind(index" + binding.getPort.eContainer.asInstanceOf[ComponentInstance].getName + ",index" + binding.getHub.getName + "," + portCodeMap.get(binding.getPort.getPortTypeRef.getName).get + ");"
+            context b "save2Memory(sepAdminChar);"
+            context b "strcpy_P(instNameBuf, (char *) pgm_read_word (&(init_tables[" + instanceCODE.indexOf("init_" + binding.getPort.eContainer.asInstanceOf[ComponentInstance].getName.toLowerCase) + "])));        "
+            context b "strcpy_P(instNameBuf2, (char *) pgm_read_word (&(init_tables[" + instanceCODE.indexOf("init_" + binding.getHub.getName.toLowerCase) + "])));        "
+            context b "saveBI_CMD(true,instNameBuf, instNameBuf2, " + portCodeMap.get(binding.getPort.getPortTypeRef.getName).get + ");"
           }
       }
     }
 
-    context b "//STATE RECOVERY                                                         "
-    context b "if(EEPROM.read(0) != kevoreeID1 || EEPROM.read(1) != kevoreeID2){            "
-    context b "  for (int i = 0; i < 512; i++){EEPROM.write(i, 0);}                         "
-    context b "  EEPROM.write(0,kevoreeID1);                                                "
-    context b "  EEPROM.write(1,kevoreeID2);                                                "
+    context b "save2Memory(endAdminChar);"
+
+
     context b "}                                                                            "
     context b "eepromIndex = 2;                                                             "
 
-
-    context b "inBytes[serialIndex] = EEPROM.read(eepromIndex);                         "
-    context b "if (inBytes[serialIndex] == startBAdminChar) {                           "
-    context b "  eepromIndex ++;                                                        "
-    context b "  Serial.println(\"PSTATE\");                         "
-    context b "  inBytes[serialIndex] = EEPROM.read(eepromIndex);                       "
-    context b "  while (inBytes[serialIndex] != endAdminChar && eepromIndex < 512) {    "
-    context b "    if (inBytes[serialIndex] == sepAdminChar) {                          "
-    context b "      inBytes[serialIndex] = '\\0';                                       "
-    context b "      parseForAdminMsg();                                                "
-    context b "     flushAdminBuffer();                                                 "
-    context b "    } else {                                                             "
-    context b "      serialIndex ++;                                                    "
-    context b "    }                                                                    "
-    context b "    eepromIndex ++;                                                      "
-    context b "    inBytes[serialIndex] = EEPROM.read(eepromIndex);                     "
-    context b "  }                                                                      "
-    context b "  //PROCESS LAST CMD                                                     "
-    context b "  if (inBytes[serialIndex] == endAdminChar) {                            "
-    context b "    inBytes[serialIndex] = '\\0';                                         "
-    context b "    parseForAdminMsg();                                                  "
-    context b "    flushAdminBuffer();                                                  "
-    context b "  }                                                                      "
-    context b "}                                                                        "
+    //context b "Serial.println(\"Try to recover from state\");                                 "
+    context b "inBytes[serialIndex] = EEPROM.read(eepromIndex);                             "
+    context b "if (inBytes[serialIndex] == startBAdminChar) {                               "
+    context b "  eepromIndex ++;                                                            "
+    context b "  executeScriptFromEEPROM();                                                 "
+    context b "}                                                                            "
 
 
+    /*
+  context b "Serial.println(\"Try to recover from state\");                                  "
+  context b "inBytes[serialIndex] = EEPROM.read(eepromIndex);                              "
+  context b "if (inBytes[serialIndex] == startBAdminChar) {                                "
+
+  context b "  eepromIndex ++;                                                             "
+  context b "  Serial.println(\"PSTATE\");                                                   "
+  context b "  inBytes[serialIndex] = EEPROM.read(eepromIndex);                            "
+  context b "  while (inBytes[serialIndex] != endAdminChar && eepromIndex < 512) {         "
+  context b "    if (inBytes[serialIndex] == sepAdminChar) {                               "
+  context b "      inBytes[serialIndex] = '\\0';                                            "
+  context b "      Serial.println(\"Found CMD\");                                            "
+  context b "      parseForCAdminMsg();                                                    "
+  context b "      flushAdminBuffer();                                                     "
+  context b "    } else {                                                                  "
+  context b "      serialIndex ++;                                                         "
+  context b "    }                                                                         "
+  context b "    eepromIndex ++;                                                           "
+  context b "    inBytes[serialIndex] = EEPROM.read(eepromIndex);                          "
+  context b "  }                                                                           "
+  context b "  //PROCESS LAST CMD                                                          "
+  context b "  if (inBytes[serialIndex] == endAdminChar) {                                 "
+  context b "    inBytes[serialIndex] = '\\0';                                              "
+  context b "    parseForCAdminMsg();                                                      "
+  context b "    Serial.println(\"Found LAST CMD\");                                         "
+  context b "    flushAdminBuffer();                                                       "
+  context b "  }                                                                           "
+  context b "}                                                                             "
+    */
+    /*
+  context b "inBytes[serialIndex] = EEPROM.read(eepromIndex);                         "
+  context b "if (inBytes[serialIndex] == startBAdminChar) {                           "
+  context b "  eepromIndex ++;                                                        "
+  context b "  Serial.println(\"PSTATE\");                         "
+  context b "  inBytes[serialIndex] = EEPROM.read(eepromIndex);                       "
+  context b "  while (inBytes[serialIndex] != endAdminChar && eepromIndex < 512) {    "
+  context b "    if (inBytes[serialIndex] == sepAdminChar) {                          "
+  context b "      inBytes[serialIndex] = '\\0';                                       "
+  context b "      parseForAdminMsg();                                                "
+  context b "     flushAdminBuffer();                                                 "
+  context b "    } else {                                                             "
+  context b "      serialIndex ++;                                                    "
+  context b "    }                                                                    "
+  context b "    eepromIndex ++;                                                      "
+  context b "    inBytes[serialIndex] = EEPROM.read(eepromIndex);                     "
+  context b "  }                                                                      "
+  context b "  //PROCESS LAST CMD                                                     "
+  context b "  if (inBytes[serialIndex] == endAdminChar) {                            "
+  context b "    inBytes[serialIndex] = '\\0';                                         "
+  context b "    parseForAdminMsg();                                                  "
+  context b "    flushAdminBuffer();                                                  "
+  context b "  }                                                                      "
+  context b "}                                                                        "
+    */
+    context b "Serial.print(\"mem\");"
     context b "Serial.println(freeRam());"
     context b "}"
+  }
+
+
+  def generateScriptFromEEPROM(): Unit = {
+    context b "    void executeScriptFromEEPROM () {                                           "
+    context b "      inBytes[serialIndex] = EEPROM.read(eepromIndex);                          "
+    context b "      while (inBytes[serialIndex] != endAdminChar && eepromIndex < EEPROM_MAX_SIZE) {       "
+    context b "        if (inBytes[serialIndex] == sepAdminChar) {                             "
+    context b "          inBytes[serialIndex] = '\\0';                                          "
+    context b "          parseForCAdminMsg();                                                  "
+    context b "          flushAdminBuffer();                                                   "
+    context b "        } else {                                                                "
+    context b "          serialIndex ++;                                                       "
+    context b "        }                                                                       "
+    context b "        eepromIndex ++;                                                         "
+    context b "        inBytes[serialIndex] = EEPROM.read(eepromIndex);                        "
+    context b "      }                                                                         "
+    context b "      //PROCESS LAST CMD                                                        "
+    context b "      if (inBytes[serialIndex] == endAdminChar) {                               "
+    context b "        inBytes[serialIndex] = '\\0';                                            "
+    context b "        parseForCAdminMsg();                                                    "
+    context b "        flushAdminBuffer();                                                     "
+    context b "      }                                                                         "
+    context b "    }                                                                           "
+
+
+  }
+
+  def generateParseCAdminMsg(): Unit = {
+    context b "byte typeIDB;                                         "
+    context b "byte portIDB;                                         "
+    context b "boolean parseForCAdminMsg(){                          "
+    context b "  switch((byte)inBytes[0]){                           "
+    context b "    case AIN_C: {                                     "
+    context b "      insID = strtok(&inBytes[1], delims);            "
+    context b "      typeIDB = (byte)inBytes[strlen(insID)+3];       "
+    context b "      params = &inBytes[strlen(insID)+5];             "
+    context b "      createInstance(typeIDB,insID,params);           "
+    context b "      return true;                                    "
+    context b "      break;                                          "
+    context b "    }                                                 "
+    context b "    case RIN_C: {                                             "
+    context b "      insID = strtok (& inBytes[1], delims);                  "
+    context b "      removeInstance (getIndexFromName (insID) );             "
+    context b "      return true;                                            "
+    context b "      break;                                                  "
+    context b "    }                                                         "
+    context b "    case ABI_C: {                                                          "
+    context b "        insID = strtok(&inBytes[1], delims);                               "
+    context b "        chID = strtok(NULL, delims);                                       "
+    context b "        portIDB = (byte)chID[strlen(chID)+1];                              "
+    context b "        bind(getIndexFromName(insID),getIndexFromName(chID),portIDB);      "
+    context b "        return true;break;                                                 "
+    context b "      }                                                                    "
+    context b "    case RBI_C: {                                                          "
+    context b "        insID = strtok(&inBytes[1], delims);                               "
+    context b "        chID = strtok(NULL, delims);                                       "
+    context b "        portIDB = (byte)chID[strlen(chID)+1];                              "
+    context b "        unbind(getIndexFromName(insID),getIndexFromName(chID),portIDB);      "
+    context b "        return true;break;                                                 "
+    context b "      }                                                                    "
+    context b "    case UDI_C: {                                                                "
+    context b "      insID = strtok (& inBytes[1], delims);                                     "
+    context b "      params = & inBytes[strlen (insID) + 3];                                    "
+    context b "      updateParams (getIndexFromName (insID), params);                           "
+    context b "    }                                                                            "
+
+    context b "  }                                                   "
+    context b "}                                                     "
   }
 
   def generatePeriodicExecutionMethod(types: List[TypeDefinition]): Unit = {
@@ -605,7 +812,7 @@ trait KevoreeCFrameworkGenerator extends KevoreeCAbstractGenerator {
   }
 
   def generateNameToIndexMethod(): Unit = {
-    context b "  int getIndexFromName(char * id){"
+    context b "int getIndexFromName(char * id){"
     context b " for(int i=0;i<nbInstances;i++){"
     context b "  if(String(instances[i]->instanceName) == id){ return i; }"
     context b " } "
@@ -614,11 +821,88 @@ trait KevoreeCFrameworkGenerator extends KevoreeCAbstractGenerator {
   }
 
   def generateFreeRamMethod(): Unit = {
-    context b "    int freeRam () {"
+    context b "int freeRam () {"
     context b " extern int __heap_start, *__brkval;"
     context b "  int v;"
     context b "  return (int) &v - (__brkval == 0 ? (int) &__heap_start : (int) __brkval);"
     context b "}"
+  }
+
+  def generateCompressEEPROM(): Unit = {
+    context b "void compressEEPROM(){                                                              "
+    context b "eepromIndex=2;                                                                      "
+    context b "save2Memory(startBAdminChar);                            "
+    context b "for(int i=0;i<nbInstances;i++){                                                     "
+    context b " if(i != 0){save2Memory(sepAdminChar);}                  "
+    context b " save2Memory(AIN_C);                                       "
+    context b " save2Memory(':');                                       "
+    context b " for(int j=0;j<(sizeof(instances[i]->instanceName) - 1);j++){                       "
+    context b "   if(instances[i]->instanceName[j]!='\\0'){                                         "
+    context b "     save2Memory(instances[i]->instanceName[j]);;         "
+    context b "   }                                                                                "
+    context b " }                                                                                  "
+    context b " save2Memory(':');                                       "
+    context b " save2Memory(instances[i]->subTypeCode);                 "
+    context b " save2Memory(':');                                       "
+    context b " savePropertiesToEEPROM(i);                                                                "
+    context b "}                                                                                   "
+
+    context b "for (int i = 0;i < nbInstances;i ++){"
+    context b "  save2Memory(sepAdminChar);         "
+    context b "  saveInstancesBindings(i);          "
+    context b "}                                    "
+
+    context b "save2Memory(endAdminChar);                               "
+    context b "eepromIndex--;"
+    context b " }                                                                                  "
+  }
+
+  def generateSaveInstancesBindings(types: List[TypeDefinition]): Unit = {
+    context b "  void saveInstancesBindings(int instanceIndex){      "
+    context b "   switch(instances[instanceIndex]->subTypeCode){     "
+    types.foreach {
+      ktype =>
+        ktype match {
+          case ct: ComponentType => {
+            if (ct.getRequired != null && ct.getRequired.size > 0) {
+              context b "case " + typeCodeMap.get(ktype.getName).get + ":{"
+              ct.getRequired.foreach {
+                requiredPort => {
+                  context b "                  if ((((" + ct.getName + " *) instances[instanceIndex]) -> " + requiredPort.getName + " -> port))                          "
+                  context b "                  {                                                                                    "
+                  context b "                    saveBI_CMD(                                                                        "
+                  context b "                      true,                                                                            "
+                  context b "                      instances[instanceIndex] -> instanceName,                                        "
+                  context b "                      ((" + ct.getName + " *) instances[instanceIndex]) -> " + requiredPort.getName + " -> instance -> instanceName,        "
+                  context b "                    ((" + ct.getName + " *) instances[instanceIndex]) -> " + requiredPort.getName + " -> portCode                           "
+                  context b "                    );                                                                                 "
+                  context b "                  }                                                                                    "
+                }
+              }
+              context b "break;"
+              context b "}"
+            }
+          }
+          case ct: ChannelType => {
+            context b "case " + typeCodeMap.get(ktype.getName).get + ":{"
+
+            context b "  for(int i=0;i<((("+ ct.getName +" *)instances[instanceIndex])->bindings->nbBindings);i++){                   "
+            context b "       saveBI_CMD(                                                                                         "
+            context b "         true,                                                                                             "
+            context b "         (("+ ct.getName +" *)instances[instanceIndex])->bindings->bindings[i]->instance->instanceName,        "
+            context b "         instances[instanceIndex]->instanceName,                                                           "
+            context b "         (("+ ct.getName +" *)instances[instanceIndex])->bindings->bindings[i]->portCode                       "
+            context b "       );                                                                                                  "
+            context b "  }                                                                                                        "
+
+            context b "break;"
+            context b "}"
+          }
+          case _ =>
+        }
+    }
+    context b "}" //end break
+    context b "}" //END FONCTION
   }
 
 

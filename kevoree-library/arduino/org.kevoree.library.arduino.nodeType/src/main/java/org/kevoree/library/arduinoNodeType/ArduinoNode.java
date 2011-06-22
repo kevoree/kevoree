@@ -44,8 +44,8 @@ import org.kevoreeAdaptation.TypeAdaptation;
 })
 public class ArduinoNode extends AbstractNodeType {
 
-    ArduinoGuiProgressBar progress = null;
-    File newdir = null;
+    public ArduinoGuiProgressBar progress = null;
+    public File newdir = null;
 
     @Override
     public void push(final String targetNodeName, final ContainerRoot root, final BundleContext bundle) {
@@ -159,7 +159,7 @@ public class ArduinoNode extends AbstractNodeType {
 
     }
 
-    private String outputPath = "";
+    public String outputPath = "";
     private BundleContext bcontext = null;
 
     @Override
