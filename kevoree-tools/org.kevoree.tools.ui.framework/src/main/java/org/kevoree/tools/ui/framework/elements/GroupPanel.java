@@ -94,8 +94,8 @@ public class GroupPanel extends JPanel implements TitledElement, SelectElement {
         g2.fillOval(x, y, w, h);
         //g2.fillRoundRect(x, y, w, h, arc, arc);
 
-        float dash1[] = {6.0f};
-        BasicStroke dashed = new BasicStroke(5.0f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER, 6.0f, dash1, 0.0f);
+        float dash1[] = {5.0f};
+        BasicStroke dashed = new BasicStroke(5.0f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER, 5.0f, dash1, 0.0f);
         g2.setStroke(dashed);
 
 
@@ -146,7 +146,7 @@ public class GroupPanel extends JPanel implements TitledElement, SelectElement {
         g2.dispose();
     }
 
-    private static final int SHADOW_SIZE = 20;
+    private static final int SHADOW_SIZE = 12;
     private BufferedImage shadow;
     protected boolean active = false;
 

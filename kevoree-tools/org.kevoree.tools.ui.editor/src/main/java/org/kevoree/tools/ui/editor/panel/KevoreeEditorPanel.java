@@ -24,12 +24,14 @@ import java.util.Arrays;
 import java.util.List;
 import javax.swing.*;
 
+import com.explodingpixels.macwidgets.IAppWidgetFactory;
 import org.jdesktop.swingx.JXMultiSplitPane;
 import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.MultiSplitLayout;
 import org.jdesktop.swingx.painter.CompoundPainter;
 import org.jdesktop.swingx.painter.MattePainter;
 import org.kevoree.tools.ui.editor.KevoreeUIKernel;
+import org.kevoree.tools.ui.editor.TypeDefinitionSourceList;
 import org.kevoree.tools.ui.editor.property.InstancePropertyEditor;
 import org.kevoree.tools.ui.editor.property.NodePropertyEditor;
 import org.kevoree.tools.ui.framework.elements.*;
@@ -47,12 +49,12 @@ public class KevoreeEditorPanel extends JPanel {
 
     private JXPanel leftpanel = new JXPanel();
     //private JXPanel southpanel = new JXPanel();
-    private TypeDefinitionPalette palette = new TypeDefinitionPalette();
+    private TypeDefinitionSourceList palette = null;
 
 
     private EditableModelPanel editableModelPanel = null;
 
-    public TypeDefinitionPalette getPalette() {
+    public TypeDefinitionSourceList getPalette() {
         return palette;
     }
     //private CommandPanel commandPanel;
@@ -71,15 +73,29 @@ public class KevoreeEditorPanel extends JPanel {
 
         this.setLayout(new BorderLayout());
 
-
         JScrollPane scrollpane = new JScrollPane();
-        scrollpane = new JScrollPane();
+        IAppWidgetFactory.makeIAppScrollPane(scrollpane);
+        editableModelPanel = new EditableModelPanel(scrollpane);
+        JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,
+                leftpanel, editableModelPanel);
+
+        palette = new TypeDefinitionSourceList(splitPane,kernel);
+
+
+        //   splitPane.setResizeWeight(1);
+        splitPane.setOneTouchExpandable(true);
+        splitPane.setContinuousLayout(true);
+        splitPane.setDividerSize(0);
+        splitPane.setDividerLocation(180);
+        splitPane.setResizeWeight(0.0);
+        splitPane.setBorder(null);
+
+
         scrollpane.setOpaque(false);
         //scrollpane.setPreferredSize(new Dimension(200, 400));
         //scrollpane.setLayout(new ScrollPaneLayout());
         scrollpane.getViewport().add(kernel.getModelPanel());
 
-        editableModelPanel = new EditableModelPanel(scrollpane);
 
         //scrollpane.setAutoscrolls(true);
 
@@ -89,7 +105,7 @@ public class KevoreeEditorPanel extends JPanel {
         /* LEFT BAR GENERATION */
         //commandPanel = new CommandPanel(kernel);
         //TrashPanel trash = new TrashPanel();
-        leftpanel.add(palette, BorderLayout.CENTER);
+        leftpanel.add(palette.getComponent(), BorderLayout.CENTER);
         //leftpanel.add(commandPanel, BorderLayout.NORTH);
         //leftpanel.add(trash);
 
@@ -112,14 +128,6 @@ multiSplitPane.add(leftpanel, "left");
 multiSplitPane.add(editableModelPanel, "right");
         */
 
-        JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,
-                leftpanel, editableModelPanel);
-     //   splitPane.setResizeWeight(1);
-        splitPane.setOneTouchExpandable(true);
-        splitPane.setContinuousLayout(true);
-        splitPane.setDividerSize(7);
-        splitPane.setDividerLocation(150);
-        splitPane.setResizeWeight(0.0);
 
         this.add(splitPane, BorderLayout.CENTER);
 

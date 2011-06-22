@@ -18,6 +18,7 @@ package org.kevoree.tools.ui.editor.property;
 
 import javax.swing.*;
 
+import com.explodingpixels.macwidgets.plaf.HudLabelUI;
 import org.kevoree.ContainerNode;
 import org.kevoree.Instance;
 import org.kevoree.tools.ui.editor.KevoreeUIKernel;
@@ -75,6 +76,7 @@ public class NodePropertyEditor extends InstancePropertyEditor {
 
         //   JTextField ip = new JTextField("ip:port");
         JCommandButton btPushNodeIP = new JCommandButton("Push");
+        //btPushNodeIP.setUI(new HudLabelUI());
         SynchNodeIPCommand sendNodeIP = new SynchNodeIPCommand();
         //sendNodeIP.setField(ip);
 
