@@ -34,8 +34,8 @@ import org.kevoree.library.sample.service.ServiceGenerics;
     @ProvidedPort(name = "req3", type = PortType.SERVICE, className = ServiceGenerics.class)
 })
 @Requires({
-    @RequiredPort(name = "req1", type = PortType.MESSAGE),
-    @RequiredPort(name = "req2", type = PortType.SERVICE, className = ServiceB.class)
+    @RequiredPort(name = "req1", type = PortType.MESSAGE, optional = true, noDependency = true),
+    @RequiredPort(name = "req2", type = PortType.SERVICE, className = ServiceB.class, optional = true, noDependency = true)
 })
 @DictionaryType({
     @DictionaryAttribute(name = "mandatory1", optional = false),
