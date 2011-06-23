@@ -18,28 +18,33 @@
 
 package org.kevoree.tools.ui.editor.command
 
-import org.kevoree.tools.ui.editor.KevoreeUIKernel
 import scala.reflect.BeanProperty
 import scala.collection.JavaConversions._
 import org.kevoree.tools.ui.editor.aspects.Art2UIAspects._
-import org.kevoree.{Group, Channel, ComponentInstance, ContainerNode}
+import org.kevoree.tools.ui.editor.{ModelHelper, KevoreeUIKernel}
+import org.kevoree._
 
-class RemoveInstanceCommand(elem : org.kevoree.NamedElement) extends Command {
+class RemoveInstanceCommand(elem: org.kevoree.NamedElement) extends Command {
 
   @BeanProperty
-  var kernel : KevoreeUIKernel = null
+  var kernel: KevoreeUIKernel = null
 
-  def execute(p :Object) {
+  def execute(p: Object) {
 
     elem match {
-      case inst : Channel => inst.removeModelAndUI(kernel)
-      case inst : ComponentInstance => inst.removeModelAndUI(kernel)
-      case inst : ContainerNode => inst.removeModelAndUI(kernel)
-      case inst : Group => inst.removeModelAndUI(kernel)
+      case inst: Channel => {inst.removeModelAndUI(kernel); updateType(inst) }
+      case inst: ComponentInstance => {inst.removeModelAndUI(kernel) ; updateType(inst) }
+      case inst: ContainerNode => {inst.removeModelAndUI(kernel); updateType(inst)    }
+      case inst: Group => {inst.removeModelAndUI(kernel) ; updateType(inst)      }
     }
 
     kernel.getEditorPanel.unshowPropertyEditor()
 
+
+  }
+
+  def updateType(i: Instance) {
+    kernel.getEditorPanel.getPalette.updateTypeValue(ModelHelper.getTypeNbInstance(kernel.getModelHandler.getActualModel, i.getTypeDefinition), i.getTypeDefinition.getName)
   }
 
 

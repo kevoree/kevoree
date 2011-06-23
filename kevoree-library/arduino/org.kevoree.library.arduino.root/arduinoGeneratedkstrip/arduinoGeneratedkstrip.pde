@@ -3,7 +3,7 @@
 #include <avr/wdt.h>
 #include <EEPROM.h>
 #define kevoreeID1 2
-#define kevoreeID2 2
+#define kevoreeID2 7
 //Global Kevoree Type Defintion declaration
 const prog_char timer[] PROGMEM = "Timer";
 const prog_char tempsensor[] PROGMEM = "TempSensor";
@@ -49,7 +49,7 @@ int getIDFromProps(char * propName){
   return -1;
 }
 struct kmessage {char* value;char* metric;};
-class KevoreeType { public : int subTypeCode; char instanceName[15]; };
+class KevoreeType { public : byte subTypeCode; char instanceName[15]; };
 struct kbinding { KevoreeType * instance;int portCode; QueueList<kmessage> * port;   };
 #define BDYNSTEP 3
 class kbindings {
@@ -531,7 +531,7 @@ void checkForAdminMsg(){
                  flushAdminBuffer();                              
                  Serial.print("ack");                             
                  Serial.println(ackToken);                        
-                 Serial.println(freeRam());
+                 //Serial.println(freeRam());
               } else {                                            
                 serialIndex++;                                    
               }                                                   
@@ -579,7 +579,18 @@ char * chID;
 char * portID;            
 const char delims[] = ":";    
 boolean parseForAdminMsg(){       
-  if(serialIndex < 6){return false;}    
+  if(serialIndex < 6){return false;} 
+
+    if( inBytes[0]=='m' && inBytes[1]=='e' && inBytes[2]=='m' && inBytes[3]=='o' && inBytes[4]=='r' && inBytes[5]=='y' ){
+      Serial.println(freeRam());
+      return true;      
+    }   
+    if( inBytes[0]=='v' && inBytes[1]=='e' && inBytes[2]=='r' && inBytes[3]=='s' && inBytes[4]=='i' && inBytes[5]=='o' && inBytes[6]=='n' ){
+      Serial.print(kevoreeID1);
+      Serial.println(kevoreeID2);
+      return true;      
+    }   
+
     if( inBytes[0]=='p' && inBytes[1]=='i' && inBytes[2]=='n' && inBytes[3]=='g' ){  
       return true;      
     }   
@@ -616,7 +627,39 @@ boolean parseForAdminMsg(){
       return true;                                                                            
     }                                                                                         
   return false;                                                                               
-}                                                                                             
+} 
+
+void compressEEPROM(){
+ eepromIndex=2;
+ EEPROM.write(eepromIndex,startBAdminChar);eepromIndex++;
+ for(int i=0;i<nbInstances;i++){
+  if(i != 0){EEPROM.write(eepromIndex,sepAdminChar);eepromIndex++;}
+  EEPROM.write(eepromIndex,'a');eepromIndex++;
+  EEPROM.write(eepromIndex,'i');eepromIndex++;
+  EEPROM.write(eepromIndex,'n');eepromIndex++;
+  EEPROM.write(eepromIndex,':');eepromIndex++;
+  for(int j=0;j<(sizeof(instances[i]->instanceName) - 1);j++){
+    if(instances[i]->instanceName[j]!='\0'){
+      EEPROM.write(eepromIndex,instances[i]->instanceName[j]);eepromIndex++;
+    }
+  }
+  EEPROM.write(eepromIndex,':');eepromIndex++;
+  Serial.println(instances[i]->subTypeCode,DEC);
+  EEPROM.write(eepromIndex,instances[i]->subTypeCode);eepromIndex++;
+  EEPROM.write(eepromIndex,':');eepromIndex++;
+  //TODO STORE PARAMS 
+ }
+ EEPROM.write(eepromIndex,endAdminChar);eepromIndex++;
+}
+void printEEPROM(){
+  for(int i=0;i<eepromIndex;i++){
+    Serial.print(EEPROM.read(i));
+  }
+  Serial.println();
+  
+}
+
+
 void setup(){
 Serial.begin(9600);
 int indexLocalChan775 = createInstance(2,"LocalChan775","");
@@ -626,12 +669,19 @@ int indexTempSenso350 = createInstance(1,"TempSenso350","pin=0,");
 bind(indexTimer823,indexLocalChan775,0);
 bind(indexTempSenso350,indexLocalChan775,1);
 bind(indexTempSenso350,indexSerialCT187,2);
-//STATE RECOVERY                                                         
+//STATE RECOVERY      
+
+compressEEPROM();
+printEEPROM();
+
+/*
 if(EEPROM.read(0) != kevoreeID1 || EEPROM.read(1) != kevoreeID2){            
   for (int i = 0; i < 512; i++){EEPROM.write(i, 0);}                         
   EEPROM.write(0,kevoreeID1);                                                
   EEPROM.write(1,kevoreeID2);                                                
-}                                                                            
+} */
+
+/*
 eepromIndex = 2;                                                             
 inBytes[serialIndex] = EEPROM.read(eepromIndex);                         
 if (inBytes[serialIndex] == startBAdminChar) {                           
@@ -655,7 +705,7 @@ if (inBytes[serialIndex] == startBAdminChar) {
     parseForAdminMsg();                                                  
     flushAdminBuffer();                                                  
   }                                                                      
-}                                                                        
+}  */                                                                      
 Serial.println(freeRam());
 }
 long nextExecutionGap(int index){

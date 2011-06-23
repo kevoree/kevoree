@@ -24,12 +24,17 @@ public class CurrentSensor extends AbstractComponentType {
     @Generate("classheader")
     public void generateHeader(StringBuffer context) {
         context.append(
-                "   double SetV;\n"
+                "     char buf[10]; \n"
+                + "   double SetV;\n"
                 + "   int samplenumber;\n"
                 + "   double ADCvoltsperdiv;\n"
                 + "   double VDoffset; \n"
                 + "   double factorA; \n"
                 + "   double Ioffset;\n");
+        context.append("double Vadc,Vsens,Isens,Imains,sqI,Irms;\n");
+        context.append("double sumI;double value;\n");
+        context.append("double sumVadc;double apparentPower;\n");
+        context.append("int i;int sum1i;\n");
     }
 
     @Generate("classinit")
@@ -47,15 +52,9 @@ public class CurrentSensor extends AbstractComponentType {
     public void triggerPort(Object o) {
         StringBuffer context = (StringBuffer) o;
         context.append("\n"
-                + "  int i=0;\n"
-                + "   double sumI=0.0;\n"
-                + "   double Vadc,Vsens,Isens,Imains,sqI,Irms;\n"
-                + "   double sumVadc=0.0;\n"
-                + "   \n"
-                + "   int sum1i=0;\n"
-                + "  double apparentPower;\n"
+                + "   i=0;sumI=0.0;sumVadc=0.0;sum1i=0;\n"
                 + "  while(i<samplenumber){\n"
-                + "    double value = analogRead(atoi(pin));\n"
+                + "    value = analogRead(atoi(pin));\n"
                 + "    i++;\n"
                 + "    //Voltage at ADC\n"
                 + "    Vadc = value * ADCvoltsperdiv;\n"
@@ -81,7 +80,6 @@ public class CurrentSensor extends AbstractComponentType {
 
         context.append("kmessage * smsg = (kmessage*) malloc(sizeof(kmessage));");
         context.append("if (smsg){memset(smsg, 0, sizeof(kmessage));}");
-        context.append("char buf[255];\n");
         context.append("sprintf(buf,\"%d\",int(apparentPower));\n");
         context.append("smsg->value = buf;\n");
         context.append("smsg->metric=\"watt\";");

@@ -18,7 +18,7 @@ public class Tester {
 
         ArduinoHomeFinder.checkArduinoHome();
 
-        System.out.println(ArduinoToolChainExecutables.getAVR_GCC());
+        //System.out.println(ArduinoToolChainExecutables.getAVR_GCC());
 
         //System.setProperty("arduino.home", "/Applications/Arduino.app/Contents/Resources/Java");
         //System.setProperty("avr.bin","/Applications/Arduino.app/Contents/Resources/Java/hardware/tools/avr/bin");
@@ -26,15 +26,15 @@ public class Tester {
        // System.setProperty("serial.port", "/dev/tty.usbmodem621");
 
 
-        String modelString = "/Users/ffouquet/Desktop/fullDualTemp.kev";
+        String modelString = "/Users/ffouquet/Desktop/ksensor1_1.kev";
 
         ContainerRoot model = KevoreeXmiHelper.load(modelString);
 
         ArduinoNode node = new ArduinoNode();
         node.getDictionary().put("boardTypeName","atmega328");
-        node.getDictionary().put("boardPortName","/dev/tty.usbserial-A400g2AP");
+        node.getDictionary().put("boardPortName","/dev/tty.usbserial-A400g2se");
         node.getDictionary().put("incremental","false");
-        node.push("kstrip",model,null);
+        node.push("ksensor1",model,null);
 
     }
 

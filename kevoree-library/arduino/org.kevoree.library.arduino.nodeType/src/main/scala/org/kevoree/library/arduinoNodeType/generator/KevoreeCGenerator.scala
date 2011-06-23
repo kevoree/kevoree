@@ -20,7 +20,8 @@ class KevoreeCGenerator
   with KevoreeCFrameworkGenerator
   with KevoreeChannelTypeClassGenerator
   with KevoreeCRemoteAdminGenerator
-  with KevoreeCSchedulerGenerator {
+  with KevoreeCSchedulerGenerator
+  with KevoreePersistenceGenerator {
 
   def generate(adaptModel: AdaptationModel, nodeName: String, outputDir: String, bundleContext: BundleContext) = {
 
@@ -75,6 +76,20 @@ class KevoreeCGenerator
     generateCheckForAdminMsg()
     generateConcatKevscriptParser()
 
+
+    generateUDICommandSave();
+    generateAINCommandSave();
+    generateBICommandSave();
+    generateRINCommandSave();
+    generateSave2Memory();
+
+
+    generateSavePropertiesMethod(ktypes)
+    generateCompressEEPROM()
+    generateSaveInstancesBindings(ktypes)
+
+    generateParseCAdminMsg()
+    generateScriptFromEEPROM()
     generateSetup(instances, nodeName)
 
 
