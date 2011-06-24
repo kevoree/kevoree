@@ -15,14 +15,7 @@ package org.kevoree.core.basechecker.cyclechecker
 
 import org.kevoree.{Channel, MBinding}
 
-/**
- * Created by IntelliJ IDEA.
- * User: edaubert
- * Date: 24/02/11
- * Time: 16:16
- * To change this template use File | Settings | File Templates.
- */
 
+case class ChannelFragment (channel: Channel, binding: MBinding) {}
 
-	case class ChannelFragment(channel: Channel, binding : MBinding) {}
-	case class BindingFragment(binding : MBinding, binding1 : MBinding) {}
+case class BindingFragment (binding: MBinding, binding1: MBinding) {}

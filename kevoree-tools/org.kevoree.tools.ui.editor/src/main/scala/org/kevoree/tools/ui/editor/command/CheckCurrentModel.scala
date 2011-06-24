@@ -18,7 +18,6 @@ import org.kevoree.core.basechecker.RootChecker
 import scala.collection.JavaConversions._
 import org.kevoree.tools.ui.framework.ErrorHighlightableElement
 import actors.DaemonActor
-import org.omg.CORBA.TIMEOUT
 
 
 class CheckCurrentModel extends Command {
@@ -58,7 +57,7 @@ class CheckCurrentModel extends Command {
         res.getTargetObjects.foreach {
           target =>
             println(target)
-            val uiObj = kernel.getUifactory.getMapping.get(target);
+            val uiObj = kernel.getUifactory.getMapping.get(target)
             if (uiObj != null) {
               println("ui=" + uiObj)
               uiObj match {
