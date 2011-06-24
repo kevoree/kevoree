@@ -18,8 +18,8 @@ import org.osgi.framework.Bundle;
     @ProvidedPort(name = "p2", type = PortType.MESSAGE)
 })
 @Requires({
-    @RequiredPort(name = "r1", type = PortType.MESSAGE, optional = false),
-    @RequiredPort(name = "r2", type = PortType.MESSAGE, optional = false)
+    @RequiredPort(name = "r1", type = PortType.MESSAGE, optional = false, noDependency = true),
+    @RequiredPort(name = "r2", type = PortType.MESSAGE, optional = false, noDependency = true)
 })
 @Library(name = "Kevoree-Samples")
 @ComponentType
@@ -30,8 +30,8 @@ public class PlanNightmarePipe extends AbstractComponentType {
         if (isStarted) {
             System.out.println("rec " + name + " = " + o.toString());
 
-            getPortByName("r1", MessagePort.class).process(o.toString() + "-" + name.toString());
-            getPortByName("r2", MessagePort.class).process(o.toString() + "-" + name.toString());
+            getPortByName("r1", MessagePort.class).process(o.toString() + "-" + name);
+            getPortByName("r2", MessagePort.class).process(o.toString() + "-" + name);
 
         } else {
             System.out.println("Error, call on stop component");
@@ -43,8 +43,8 @@ public class PlanNightmarePipe extends AbstractComponentType {
         if (isStarted) {
             System.out.println("rec " + name + " = " + o.toString());
 
-            getPortByName("r1", MessagePort.class).process(o.toString() + "-" + name.toString());
-            getPortByName("r2", MessagePort.class).process(o.toString() + "-" + name.toString());
+            getPortByName("r1", MessagePort.class).process(o.toString() + "-" + name);
+            getPortByName("r2", MessagePort.class).process(o.toString() + "-" + name);
 
         } else {
             System.out.println("Error, call on stop component");

@@ -1,8 +1,6 @@
 package org.kevoree.experiment.modelScript
 
-import java.lang.Character
-import util.control.Breaks
-import java.io.{InputStreamReader, BufferedReader, BufferedInputStream, InputStream}
+import java.io.{InputStreamReader, BufferedReader}
 
 /**
  * User: Erwan Daubert - erwan.daubert@gmail.com

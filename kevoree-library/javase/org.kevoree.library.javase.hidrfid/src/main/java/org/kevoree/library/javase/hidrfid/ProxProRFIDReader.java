@@ -93,7 +93,6 @@ public class ProxProRFIDReader extends AbstractComponentType implements SerialPo
 				}
 				buffer[len++] = (byte) data;
 			}
-			// TODO send buffer into TAG port
 			if (isPortBinded("TAG")) {
 				getPortByName("TAG", MessagePort.class).process(new String(buffer, 0, len));
 			} else {

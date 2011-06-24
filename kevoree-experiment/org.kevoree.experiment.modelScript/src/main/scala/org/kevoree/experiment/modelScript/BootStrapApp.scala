@@ -2,7 +2,7 @@ package org.kevoree.experiment.modelScript
 
 object BootStrapApp extends App {
 
-  override def main (args: Array[String]) {
+  override def main (args: Array[String]) { // TODO define precise parameters organization
     if (args.length == 1) {
       Configuration.grid5000 = true
       Configuration.build()

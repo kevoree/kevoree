@@ -32,7 +32,7 @@ import java.util.List;
 		@DictionaryAttribute(name = "watchDog", optional = true, defaultValue = "15000")
 })
 @Requires({
-		@RequiredPort(name = "osc", type = PortType.MESSAGE)
+		@RequiredPort(name = "osc", type = PortType.MESSAGE, optional = true)
 })
 @Library(name = "JavaSE")
 @ComponentType

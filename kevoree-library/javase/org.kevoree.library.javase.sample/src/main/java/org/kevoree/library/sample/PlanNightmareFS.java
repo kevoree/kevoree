@@ -14,8 +14,8 @@ import org.osgi.framework.Bundle;
  * @author ffouquet
  */
 @Requires({
-    @RequiredPort(name = "r1", type = PortType.MESSAGE),
-    @RequiredPort(name = "r2", type = PortType.MESSAGE)
+    @RequiredPort(name = "r1", type = PortType.MESSAGE, optional = false, noDependency = false),
+    @RequiredPort(name = "r2", type = PortType.MESSAGE, optional = false, noDependency = false)
 })
 @Library(name = "Kevoree-Samples")
 @ComponentType

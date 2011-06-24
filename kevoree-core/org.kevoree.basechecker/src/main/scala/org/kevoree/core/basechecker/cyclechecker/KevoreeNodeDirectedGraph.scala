@@ -39,7 +39,7 @@ case class KevoreeNodeDirectedGraph(model: ContainerRoot) extends DefaultDirecte
 								component.getRelatedBindings.foreach {
 									binding =>
 										if (binding.getPort.getPortTypeRef.getNoDependency == null || binding.getPort.getPortTypeRef.getNoDependency == false) {
-											if (binding.getHub() == channel) {
+											if (binding.getHub == channel) {
 												connectedNodes.foreach {
 													node1 =>
 														node1.getInstances.filter(p => p.isInstanceOf[ComponentInstance]).foreach {
@@ -47,7 +47,7 @@ case class KevoreeNodeDirectedGraph(model: ContainerRoot) extends DefaultDirecte
 																val component1 = instance2.asInstanceOf[ComponentInstance]
 																component1.getRelatedBindings.foreach {
 																	binding1 =>
-																		if (binding1.getHub() == channel) {
+																		if (binding1.getHub == channel) {
 																			if (component.getProvided.contains(binding.getPort) && component1.getRequired.contains(binding1.getPort)) {
 																				val fragment = new ChannelFragment(binding.getHub, binding)
 																				val fragment1 = new ChannelFragment(binding1.getHub, binding1)
