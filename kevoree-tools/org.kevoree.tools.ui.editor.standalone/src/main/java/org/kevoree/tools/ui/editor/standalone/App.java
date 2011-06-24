@@ -61,6 +61,9 @@ public class App {
                     frameName += " - " + artpanel.getEditorVersion();
                 }
 
+                //frameName += ("Argument "+args[0]);
+
+
                 JFrame jframe = new JFrame(frameName);
                 MacUtils.makeWindowLeopardStyle(jframe.getRootPane());
 
