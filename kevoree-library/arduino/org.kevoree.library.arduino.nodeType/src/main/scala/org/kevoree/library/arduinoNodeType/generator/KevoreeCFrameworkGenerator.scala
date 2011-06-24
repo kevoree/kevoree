@@ -29,6 +29,7 @@ trait KevoreeCFrameworkGenerator extends KevoreeCAbstractGenerator {
     context h "#define ABI_C 3"
     context h "#define RBI_C 4"
     context h "#define EEPROM_MAX_SIZE 1024"
+    context h "#define MAX_INST_ID 5"
 
     val random = new Random
     context h ("#define kevoreeID1 " + random.nextInt(10))
@@ -153,7 +154,7 @@ trait KevoreeCFrameworkGenerator extends KevoreeCAbstractGenerator {
   def generateKcFramework: Unit = {
 
     context b "struct kmessage {char* value;char* metric;};"
-    context b "class KevoreeType { public : int subTypeCode; char instanceName[15]; };"
+    context b "class KevoreeType { public : int subTypeCode; char instanceName[MAX_INST_ID]; };"
     //GENERATE kbinding framework
     context b "struct kbinding { KevoreeType * instance;int portCode; QueueList<kmessage> * port;   };"
     context b "#define BDYNSTEP 3"
@@ -527,8 +528,9 @@ trait KevoreeCFrameworkGenerator extends KevoreeCAbstractGenerator {
 
     //DUMMY SCHEDULER FOR TEST
 
-    context b "char instNameBuf[15];"
-    context b "char instNameBuf2[15];"
+    context b "char instNameBuf[MAX_INST_ID];"
+    context b "char instNameBuf2[MAX_INST_ID];"
+    context b "   unsigned long previousBootTime;"
     context b "void setup(){"
     context b "Serial.begin(9600);" //TO REMOVE DEBUG ONLY
 
@@ -627,7 +629,13 @@ trait KevoreeCFrameworkGenerator extends KevoreeCAbstractGenerator {
     context b "inBytes[serialIndex] = EEPROM.read(eepromIndex);                             "
     context b "if (inBytes[serialIndex] == startBAdminChar) {                               "
     context b "  eepromIndex ++;                                                            "
+    context b "previousBootTime = millis();"
     context b "  executeScriptFromEEPROM();                                                 "
+    context b "                  Serial.print(\"bootms\");                                                 "
+    context b "                  Serial.println( millis() - previousBootTime );                      "
+
+
+
     context b "}                                                                            "
 
 
@@ -693,6 +701,9 @@ trait KevoreeCFrameworkGenerator extends KevoreeCAbstractGenerator {
 
   def generateScriptFromEEPROM(): Unit = {
     context b "    void executeScriptFromEEPROM () {                                           "
+
+
+
     context b "      inBytes[serialIndex] = EEPROM.read(eepromIndex);                          "
     context b "      while (inBytes[serialIndex] != endAdminChar && eepromIndex < EEPROM_MAX_SIZE) {       "
     context b "        if (inBytes[serialIndex] == sepAdminChar) {                             "
@@ -711,6 +722,7 @@ trait KevoreeCFrameworkGenerator extends KevoreeCAbstractGenerator {
     context b "        parseForCAdminMsg();                                                    "
     context b "        flushAdminBuffer();                                                     "
     context b "      }                                                                         "
+
     context b "    }                                                                           "
 
 
@@ -814,7 +826,7 @@ trait KevoreeCFrameworkGenerator extends KevoreeCAbstractGenerator {
   def generateNameToIndexMethod(): Unit = {
     context b "int getIndexFromName(char * id){"
     context b " for(int i=0;i<nbInstances;i++){"
-    context b "  if(String(instances[i]->instanceName) == id){ return i; }"
+    context b "  if(strcmp(instances[i]->instanceName,id)==0){ return i; }"
     context b " } "
     context b " return -1;"
     context b "}"
@@ -886,12 +898,12 @@ trait KevoreeCFrameworkGenerator extends KevoreeCAbstractGenerator {
           case ct: ChannelType => {
             context b "case " + typeCodeMap.get(ktype.getName).get + ":{"
 
-            context b "  for(int i=0;i<((("+ ct.getName +" *)instances[instanceIndex])->bindings->nbBindings);i++){                   "
+            context b "  for(int i=0;i<(((" + ct.getName + " *)instances[instanceIndex])->bindings->nbBindings);i++){                   "
             context b "       saveBI_CMD(                                                                                         "
             context b "         true,                                                                                             "
-            context b "         (("+ ct.getName +" *)instances[instanceIndex])->bindings->bindings[i]->instance->instanceName,        "
+            context b "         ((" + ct.getName + " *)instances[instanceIndex])->bindings->bindings[i]->instance->instanceName,        "
             context b "         instances[instanceIndex]->instanceName,                                                           "
-            context b "         (("+ ct.getName +" *)instances[instanceIndex])->bindings->bindings[i]->portCode                       "
+            context b "         ((" + ct.getName + " *)instances[instanceIndex])->bindings->bindings[i]->portCode                       "
             context b "       );                                                                                                  "
             context b "  }                                                                                                        "
 
