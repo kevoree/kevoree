@@ -217,7 +217,7 @@ context b "}                                                                    
     context b "char * portID;            "
     context b "const char delims[] = \":\";    "
     context b "boolean parseAndSaveAdminMsg(){       "
-    context b "  if(serialIndex < 6){return false;}    "
+    //context b "  if(serialIndex < 6){return false;}    "
 
     /*
     context b "if( inBytes[2]=='r' && inBytes[3]=='s' && inBytes[4]=='t' ){//SOFTWARE RESET "

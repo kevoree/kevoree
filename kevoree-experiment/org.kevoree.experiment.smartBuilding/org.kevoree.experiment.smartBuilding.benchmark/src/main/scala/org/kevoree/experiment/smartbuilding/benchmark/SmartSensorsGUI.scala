@@ -19,12 +19,12 @@ object SmartSensorsGUI {
   //chartMem.setGridColor(Color.ORANGE)
 
   var axisXMem = chartMem.getAxisX();
- // axisXMem.setPaintGrid(true)
+  // axisXMem.setPaintGrid(true)
 
   var axisYMem = chartMem.getAxisY();
   axisXMem.setStartMajorTick(false);
   axisXMem.setMajorTickSpacing(10);
- // axisXMem.setRangePolicy(new RangePolicyMinimumViewport(new info.monitorenter.util.Range(0,1700)));
+  // axisXMem.setRangePolicy(new RangePolicyMinimumViewport(new info.monitorenter.util.Range(0,1700)));
 
   //axisYMem.setRange(new info.monitorenter.util.Range(0,1700))
   var traceMem = new Trace2DSimple();
@@ -49,23 +49,35 @@ object SmartSensorsGUI {
   traceTTime.setColor(Color.ORANGE);
   chartRTime.addTrace(traceTTime);
 
+  var p: JPanel = null
+
   def getPanel = {
-    val p = new JPanel()
-    p.setLayout(new BoxLayout(p,BoxLayout.PAGE_AXIS))
-    p.add(chartMem)
-    p.add(chartEMem)
-    p.add(chartRTime)
+    if (p == null) {
+      p = new JPanel()
+      p.setLayout(new BoxLayout(p, BoxLayout.PAGE_AXIS))
+      p.add(chartMem)
+      p.add(chartEMem)
+      p.add(chartRTime)
+    }
     p
   }
 
-  def putMemValue(index:Int,i : Int){
-       traceMem.addPoint(index,i)
+  def clear() {
+    traceMem.removeAllPoints()
+    traceEMem.removeAllPoints()
+    traceTTime.removeAllPoints()
   }
-  def putEMemValue(index:Int,i : Int){
-       traceEMem.addPoint(index,i)
+
+  def putMemValue(index: Int, i: Int) {
+    traceMem.addPoint(index, i)
   }
-  def putRTimeValue(index:Int,i : Int){
-       traceTTime.addPoint(index,i)
+
+  def putEMemValue(index: Int, i: Int) {
+    traceEMem.addPoint(index, i)
+  }
+
+  def putRTimeValue(index: Int, i: Int) {
+    traceTTime.addPoint(index, i)
   }
 
 
