@@ -20,8 +20,10 @@ package org.kevoree.tools.marShellTransform
 
 import org.kevoree.tools.marShell.ast._
 import scala.collection.JavaConversions._
+import org.slf4j.LoggerFactory
 
 object KevScriptWrapper {
+	var logger = LoggerFactory.getLogger(this.getClass);
 
   val paramSep = ":"
   val instrSep = "/"
@@ -30,7 +32,7 @@ object KevScriptWrapper {
     if (dictionary == null) {
       return ""
     }
-    var content = new StringBuilder
+    val content = new StringBuilder
     var first = true
     dictionary.foreach {
       dic =>
@@ -41,7 +43,7 @@ object KevScriptWrapper {
           content append "," + dic._1 + "=" + dic._2
         }
     }
-    content.toString
+    content.toString()
   }
 
   def generateKevScriptCompressed(script: Script): String = {
@@ -96,14 +98,14 @@ object KevScriptWrapper {
                 firstStatment = false
                 content append "rbi" + paramSep + s.cid.componentInstanceName + paramSep + s.bindingInstanceName + paramSep + s.portName
               }
-              case _@s => println("Uncatch " + s) //DO NOTHING FOR OTHER STATEMENT
+              case _@s => logger.warn("Uncatch " + s) //DO NOTHING FOR OTHER STATEMENT
             }
 
 
         }
     }
     content append "}"
-    content.toString
+    content.toString()
   }
 
   def miniPlanKevScript(s: Script): Script = {

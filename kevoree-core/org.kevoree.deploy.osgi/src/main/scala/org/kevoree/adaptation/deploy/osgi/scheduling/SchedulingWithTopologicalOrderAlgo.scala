@@ -118,7 +118,7 @@ class SchedulingWithTopologicalOrderAlgo {
               while (pit.hasNext) {
                 val port = pit.next
                 // !port.getPortTypeRef.getNoDependency is used to be sure that we need to know if the use of this port on the start or stop method of the component can introduce deadlock or not
-                if (binding.getPort.equals(port) && !port.getPortTypeRef.getNoDependency) {
+                if (binding.getPort.equals(port) && (port.getPortTypeRef.getNoDependency == null || !port.getPortTypeRef.getNoDependency)) {
                   val newL = instanceDependencies.get(instance).getOrElse(new java.util.ArrayList())
                   newL.add(binding.getHub)
                   instanceDependencies.update(instance, newL)
@@ -130,7 +130,7 @@ class SchedulingWithTopologicalOrderAlgo {
               while (rit.hasNext) {
                 val port = rit.next
                 // !port.getPortTypeRef.getNoDependency is used to be sure that we need to know if the use of this port on the start or stop method of the component can introduce deadlock or not
-                if (binding.getPort.equals(port) && !port.getPortTypeRef.getNoDependency) {
+                if (binding.getPort.equals(port) && (port.getPortTypeRef.getNoDependency == null || !port.getPortTypeRef.getNoDependency)) {
                   val newL = instanceDependencies.get(binding.getHub).getOrElse(new java.util.ArrayList())
                   newL.add(instance)
                   instanceDependencies.update(binding.getHub, newL)
