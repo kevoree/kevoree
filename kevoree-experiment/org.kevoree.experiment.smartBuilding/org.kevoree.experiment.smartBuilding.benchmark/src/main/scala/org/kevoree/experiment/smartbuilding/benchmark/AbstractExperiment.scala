@@ -9,6 +9,9 @@ import org.apache.poi.hssf.usermodel.HSSFWorkbook
 import java.io.{FileOutputStream, File}
 import java.awt.image.BufferedImage
 import javax.imageio.ImageIO
+import java.lang.StringBuffer
+import java.nio.charset.Charset
+import scala.collection.JavaConversions._
 
 /**
  * User: ffouquet
@@ -20,11 +23,14 @@ abstract class AbstractExperiment {
 
   var kompare: KevoreeKompareBean = new KevoreeKompareBean
 
-  def initNode(knodeName: String, model: ContainerRoot) = {
+  var boardTypeName = "atmega328"
+  var boardPortName = "/dev/tty.usbserial-A400g2se"
+
+  def initNode(knodeName: String, model: ContainerRoot) {
     val baseTime = System.currentTimeMillis()
     val node: ArduinoNode = new ArduinoNode
-    node.getDictionary.put("boardTypeName", "atmega328")
-    node.getDictionary.put("boardPortName", "/dev/tty.usbserial-A400g2se")
+    node.getDictionary.put("boardTypeName", boardTypeName)
+    node.getDictionary.put("boardPortName", boardPortName)
     node.getDictionary.put("incremental", "false")
     node.newdir = new File("arduinoGenerated" + knodeName)
     if (!node.newdir.exists) {
@@ -59,6 +65,32 @@ abstract class AbstractExperiment {
     }
     valueMap.put(typeID, value)
     values.put(index, valueMap)
+  }
+
+  def saveRScript() {
+    val script = new StringBuffer()
+    val hashVal = new HashMap[String, List[Int]]()
+    values.keySet.toList.sortWith((e1, e2) => (e1 compareTo e2) < 0).foreach {
+      key =>
+        values.get(key).get.foreach {
+          vv =>
+            var plist = hashVal.get(vv._1).getOrElse(List())
+            plist = plist ++ List(vv._2)
+            hashVal.put(vv._1, plist)
+        }
+
+    }
+    hashVal.foreach {
+      hv =>
+        script.append(hv._1.toLowerCase)
+        script.append(" <-c(")
+        script.append(hv._2.mkString(","))
+        script.append(")\n")
+    }
+    val fo = new FileOutputStream(this.getClass.getName + ".r")
+    fo.write(script.toString.getBytes(Charset.forName("utf-8")))
+    fo.close()
+
   }
 
   def saveRawDump() {
@@ -110,7 +142,7 @@ abstract class AbstractExperiment {
     val bi = new BufferedImage(size.width, size.height, BufferedImage.TYPE_INT_ARGB);
     val g2 = bi.createGraphics();
     SmartSensorsGUI.getPanel.paint(g2);
-    ImageIO.write(bi, "PNG", new File(this.getClass.getName+".png"))
+    ImageIO.write(bi, "PNG", new File(this.getClass.getName + ".png"))
   }
 
 

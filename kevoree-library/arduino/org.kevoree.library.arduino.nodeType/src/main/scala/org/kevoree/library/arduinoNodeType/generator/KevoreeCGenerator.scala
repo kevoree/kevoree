@@ -14,6 +14,7 @@ import org.kevoreeAdaptation.AddInstance
 import org.kevoreeAdaptation.AddType
 import org.osgi.framework.BundleContext
 import scala.collection.JavaConversions._
+import org.kevoree.library.arduinoNodeType.ArduinoBoardType
 
 class KevoreeCGenerator
   extends KevoreeComponentTypeClassGenerator
@@ -23,7 +24,7 @@ class KevoreeCGenerator
   with KevoreeCSchedulerGenerator
   with KevoreePersistenceGenerator {
 
-  def generate(adaptModel: AdaptationModel, nodeName: String, outputDir: String, bundleContext: BundleContext) = {
+  def generate(adaptModel: AdaptationModel, nodeName: String, outputDir: String, bundleContext: BundleContext,boardName:String) = {
 
     val componentTypes = adaptModel.getAdaptations.filter(adt => adt.isInstanceOf[AddType] && adt.asInstanceOf[AddType].getRef.isInstanceOf[ComponentType])
     val channelTypes = adaptModel.getAdaptations.filter(adt => adt.isInstanceOf[AddType] && adt.asInstanceOf[AddType].getRef.isInstanceOf[ChannelType])
@@ -35,7 +36,7 @@ class KevoreeCGenerator
       ctype => ktypes = ktypes ++ List(ctype.asInstanceOf[AddType].getRef)
     }
 
-    generateKcFrameworkHeaders(ktypes)
+    generateKcFrameworkHeaders(ktypes,ArduinoBoardType.getFromTypeName(boardName))
     generateKcConstMethods(ktypes);
     generateKcFramework
 

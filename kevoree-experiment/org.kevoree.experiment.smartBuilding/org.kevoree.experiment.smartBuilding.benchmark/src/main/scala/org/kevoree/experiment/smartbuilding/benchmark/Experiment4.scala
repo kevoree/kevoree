@@ -37,7 +37,7 @@ class Experiment4 extends AbstractExperiment {
 
   def runExperiment(_twa: TwoWayActors) {
     twa = _twa;
-    for (i <- 0 until 25) {
+    for (i <- 0 until 100) {
       doPhase(i)
     }
   }
@@ -52,7 +52,7 @@ class Experiment4 extends AbstractExperiment {
     val script = kevsParser.parseScript(sb.toString)
     script.get.interpret(KevsInterpreterContext(model))
     doStep(previousModel, model, i);
-    Thread.sleep(50)
+    Thread.sleep(100)
     interpetResult(i, twa.recString)
   }
 

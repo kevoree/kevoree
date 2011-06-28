@@ -54,7 +54,7 @@ class Experiment5 extends AbstractExperiment {
     }
     doStep(previousModel, newModel, i);
     previousModel = newModel
-    Thread.sleep(100)
+    Thread.sleep(50)
   }
 
   def doStep(modelA: ContainerRoot, modelB: ContainerRoot, i: Int) {
