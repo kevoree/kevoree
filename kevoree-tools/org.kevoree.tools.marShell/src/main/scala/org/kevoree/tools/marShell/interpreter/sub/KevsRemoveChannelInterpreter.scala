@@ -23,8 +23,11 @@ import org.kevoree.tools.marShell.interpreter.KevsAbstractInterpreter
 import org.kevoree.tools.marShell.interpreter.KevsInterpreterContext
 import scala.collection.JavaConversions._
 import org.kevoree.{MBinding, ContainerRoot, Channel}
+import org.slf4j.LoggerFactory
 
 case class KevsRemoveChannelInterpreter(removeChannel: RemoveChannelInstanceStatment) extends KevsAbstractInterpreter {
+
+  var logger = LoggerFactory.getLogger(this.getClass)
 
   def interpret(context: KevsInterpreterContext): Boolean = {
     context.model.getHubs.find(n => n.getName == removeChannel.channelName) match {
@@ -39,7 +42,7 @@ case class KevsRemoveChannelInterpreter(removeChannel: RemoveChannelInstanceStat
         true
       }
       case None => {
-        println("Channel not exist " + removeChannel.channelName);
+        logger.error("Channel not exist " + removeChannel.channelName);
         false
       }
     }

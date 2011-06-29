@@ -20,53 +20,60 @@ package org.kevoree.tools.marShell.interpreter
 
 import sub._
 import org.kevoree.tools.marShell.ast._
+import org.slf4j.LoggerFactory
 
 object KevsInterpreterAspects {
 
-  implicit def rich(o : Script) = KevsScriptInterpreter(o)
-  implicit def rich(o : TransactionalBloc) = KevsAddTBlockInterpreter(o)
-  implicit def rich(o : AddNodeStatment) = KevsAddNodeInterpreter(o)
+  implicit def rich (o: Script) = KevsScriptInterpreter(o)
+
+  implicit def rich (o: TransactionalBloc) = KevsAddTBlockInterpreter(o)
+
+  implicit def rich (o: AddNodeStatment) = KevsAddNodeInterpreter(o)
 
 
-  implicit def rich(o : Object) : KevsAbstractInterpreter  = o match {
-    
-    case b : Block => b match {
-        case tb : TransactionalBloc => KevsAddTBlockInterpreter(tb)
+  implicit def rich (o: Object): KevsAbstractInterpreter = {
+    var logger = LoggerFactory.getLogger(this.getClass)
+
+
+    o match {
+      case b: Block => b match {
+        case tb: TransactionalBloc => KevsAddTBlockInterpreter(tb)
       }
-    case st : Statment => st match {
-        case addst : AddComponentInstanceStatment => KevsAddComponentInstanceInterpreter(addst)
-        case removest : RemoveComponentInstanceStatment => KevsRemoveComponentInstanceInterpreter(removest)
-          
-        case addChannel : AddChannelInstanceStatment => KevsAddChannelInterpreter(addChannel)
-        case removeChannel : RemoveChannelInstanceStatment => KevsRemoveChannelInterpreter(removeChannel)
-        case addNodest : AddNodeStatment => KevsAddNodeInterpreter(addNodest)
-        case removeNodest : RemoveNodeStatment => KevsRemoveNodeInterpreter(removeNodest)
-        case addBinding : AddBindingStatment => KevsAddBindingInterpreter(addBinding)
-        case removeBinding : RemoveBindingStatment => KevsRemoveBindingInterpreter(removeBinding)
-          
-        case updateDictionary : UpdateDictionaryStatement => KevsUpdateDictionaryInterpreter(updateDictionary)
+      case st: Statment => st match {
+        case addst: AddComponentInstanceStatment => KevsAddComponentInstanceInterpreter(addst)
+        case removest: RemoveComponentInstanceStatment => KevsRemoveComponentInstanceInterpreter(removest)
 
-        case addGroup : AddGroupStatment => KevsAddGroupInterpreter(addGroup)
-        case removeGroup : RemoveGroupStatment => KevsRemoveGroupInterpreter(removeGroup)
+        case addChannel: AddChannelInstanceStatment => KevsAddChannelInterpreter(addChannel)
+        case removeChannel: RemoveChannelInstanceStatment => KevsRemoveChannelInterpreter(removeChannel)
+        case addNodest: AddNodeStatment => KevsAddNodeInterpreter(addNodest)
+        case removeNodest: RemoveNodeStatment => KevsRemoveNodeInterpreter(removeNodest)
+        case addBinding: AddBindingStatment => KevsAddBindingInterpreter(addBinding)
+        case removeBinding: RemoveBindingStatment => KevsRemoveBindingInterpreter(removeBinding)
 
-        case addToGroupStatement : AddToGroupStatement => KevsAddToGroupInterpreter(addToGroupStatement)
-        case removeFromGroupStatement : RemoveFromGroupStatement => KevsRemoveFromGroupInterpreter(removeFromGroupStatement)
+        case updateDictionary: UpdateDictionaryStatement => KevsUpdateDictionaryInterpreter(updateDictionary)
 
-        case moveComponent : MoveComponentInstanceStatment => KevsMoveComponentInstanceInterpreter(moveComponent)
+        case addGroup: AddGroupStatment => KevsAddGroupInterpreter(addGroup)
+        case removeGroup: RemoveGroupStatment => KevsRemoveGroupInterpreter(removeGroup)
 
-          //Library aspect
-        case addLibrary : AddLibraryStatment => KevsAddLibraryInterpreter(addLibrary)
-        case removeLibrary : RemoveLibraryStatment => KevsRemoveLibraryInterpreter(removeLibrary)
+        case addToGroupStatement: AddToGroupStatement => KevsAddToGroupInterpreter(addToGroupStatement)
+        case removeFromGroupStatement: RemoveFromGroupStatement => KevsRemoveFromGroupInterpreter(removeFromGroupStatement)
 
-          //TYPE ASPECT
-        case createComponentType : CreateComponentTypeStatment => KevsCreateComponentTypeInterpreter(createComponentType)
-        case createChannelType : CreateChannelTypeStatment => KevsCreateChannelTypeInterpreter(createChannelType)
+        case moveComponent: MoveComponentInstanceStatment => KevsMoveComponentInstanceInterpreter(moveComponent)
+
+        //Library aspect
+        case addLibrary: AddLibraryStatment => KevsAddLibraryInterpreter(addLibrary)
+        case removeLibrary: RemoveLibraryStatment => KevsRemoveLibraryInterpreter(removeLibrary)
+
+        //TYPE ASPECT
+        case createComponentType: CreateComponentTypeStatment => KevsCreateComponentTypeInterpreter(createComponentType)
+        case createChannelType: CreateChannelTypeStatment => KevsCreateChannelTypeInterpreter(createChannelType)
 
         //Network
-        case networkStatement : NetworkPropertyStatement => KevsNetworkInterpreter(networkStatement)
+        case networkStatement: NetworkPropertyStatement => KevsNetworkInterpreter(networkStatement)
 
 
       }
-    case _ @ e => println(e);null
+      case _@e => logger.error("", e); null
+    }
   }
 }

@@ -23,8 +23,11 @@ import org.kevoree.tools.marShell.interpreter.KevsAbstractInterpreter
 import org.kevoree.tools.marShell.interpreter.KevsInterpreterContext
 import scala.collection.JavaConversions._
 import org.kevoree.tools.marShell.ast.{RemoveNodeStatment, AddNodeStatment}
+import org.slf4j.LoggerFactory
 
 case class KevsRemoveNodeInterpreter(addN: RemoveNodeStatment) extends KevsAbstractInterpreter {
+
+  var logger = LoggerFactory.getLogger(this.getClass)
 
   def interpret(context: KevsInterpreterContext): Boolean = {
 
@@ -45,7 +48,7 @@ case class KevsRemoveNodeInterpreter(addN: RemoveNodeStatment) extends KevsAbstr
         true
       }
       case None => {
-        println("Node Already existe"); false
+        logger.error("Node Already existe"); false
       }
     }
   }

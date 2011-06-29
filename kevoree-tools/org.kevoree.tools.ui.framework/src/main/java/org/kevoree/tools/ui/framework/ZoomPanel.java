@@ -117,7 +117,7 @@ public class ZoomPanel extends JPanel {
     }
 
     private void translateMouseLocation(final MouseEvent e) {
-        System.out.println("Translate " + e.getLocationOnScreen());
+        //System.out.println("Translate " + e.getLocationOnScreen());
         final Point p = e.getPoint();
         p.setLocation((int) (p.x / this.zoomFactor),
                 (int) (p.y / this.zoomFactor));

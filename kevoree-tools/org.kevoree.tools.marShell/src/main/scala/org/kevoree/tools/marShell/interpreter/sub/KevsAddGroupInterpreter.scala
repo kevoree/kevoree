@@ -24,18 +24,21 @@ import scala.collection.JavaConversions._
 import org.kevoree.tools.marShell.ast.{AddGroupStatment}
 import org.kevoree.{GroupType, ChannelType, KevoreeFactory}
 import org.kevoree.tools.marShell.interpreter.utils.Merger
+import org.slf4j.LoggerFactory
 
 case class KevsAddGroupInterpreter(addGroup: AddGroupStatment) extends KevsAbstractInterpreter {
+
+  var logger = LoggerFactory.getLogger(this.getClass);
 
   def interpret(context: KevsInterpreterContext): Boolean = {
     context.model.getGroups.find(n => n.getName == addGroup.groupName) match {
       case Some(target) => {
-        println("Warning : Group already exist with name " + addGroup.groupName);
+        logger.warn("Group already exist with name " + addGroup.groupName);
         if (target.getTypeDefinition.getName == addGroup.groupTypeName) {
           Merger.mergeDictionary(target, addGroup.props)
           true
         } else {
-          println("Error : Type != from previous created group")
+          logger.error("Type != from previous created group")
           false
         }
       }
@@ -52,11 +55,11 @@ case class KevsAddGroupInterpreter(addGroup: AddGroupStatment) extends KevsAbstr
 
           }
           case Some(targetGroupType) if (!targetGroupType.isInstanceOf[GroupType]) => {
-            println("Type definition is not a groupType " + addGroup.groupTypeName);
+            logger.error("Type definition is not a groupType " + addGroup.groupTypeName);
             false
           }
           case _ => {
-            println("Type definition not found " + addGroup.groupTypeName);
+            logger.error("Type definition not found " + addGroup.groupTypeName);
             false
           }
         }
