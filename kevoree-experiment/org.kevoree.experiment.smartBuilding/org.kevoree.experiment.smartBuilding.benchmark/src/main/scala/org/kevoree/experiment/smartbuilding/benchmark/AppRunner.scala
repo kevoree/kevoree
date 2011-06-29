@@ -27,11 +27,16 @@ object AppRunner extends App {
 
   ArduinoHomeFinder.checkArduinoHome()
 
-  val expes = List(new Experiment1,new Experiment2,new Experiment3,new Experiment4,new Experiment5)
+  val expes = List(new Experiment1, new Experiment2, new Experiment3, new Experiment4, new Experiment5)
 
-  expes.foreach{ expe =>
-     runExperiment(expe);
-  }
+  var expe = expes(3)
+  expe.boardPortName = "/dev/tty.usbmodem411"
+  expe.boardTypeName = "mega2560"
+
+
+  // expes.foreach{ expe =>
+  runExperiment(expe);
+  // }
 
 
 
@@ -39,17 +44,18 @@ object AppRunner extends App {
 
 
   def runExperiment(absExp: AbstractExperiment) {
-    val frame = new JFrame("Kevoree Arduino Benchmark => "+absExp.getClass.getName);
+    val frame = new JFrame("Kevoree Arduino Benchmark => " + absExp.getClass.getName);
     frame.getContentPane.add(SmartSensorsGUI.getPanel);
     frame.setSize(1024, 768);
     frame.setVisible(true);
     absExp.init()
     NativeLibUtil.standaloneRxTx()
-    val tester = new TwoWayActors("/dev/tty.usbserial-A400g2se");
+    val tester = new TwoWayActors(expe.boardPortName);
     absExp.runExperiment(tester)
     tester.killConnection()
     absExp.saveRawDump()
     absExp.saveRowImage()
+    absExp.saveRScript()
     frame.dispose()
     SmartSensorsGUI.clear()
   }

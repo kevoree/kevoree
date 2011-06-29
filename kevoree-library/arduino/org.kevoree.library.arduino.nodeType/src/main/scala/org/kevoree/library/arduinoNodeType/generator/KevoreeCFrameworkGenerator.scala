@@ -15,10 +15,12 @@ import org.kevoree.Instance
 import org.kevoree.TypeDefinition
 import scala.collection.JavaConversions._
 import util.Random
+import org.kevoree.library.arduinoNodeType.ArduinoBoardType._
+import org.kevoree.library.arduinoNodeType.ArduinoBoardType
 
 trait KevoreeCFrameworkGenerator extends KevoreeCAbstractGenerator {
 
-  def generateKcFrameworkHeaders(types: List[TypeDefinition]): Unit = {
+  def generateKcFrameworkHeaders(types: List[TypeDefinition],boardType : ArduinoBoardType): Unit = {
     context h "#include <QueueList.h>"
     context h "#include <avr/pgmspace.h>"
     context h "#include <avr/wdt.h>"
@@ -28,7 +30,17 @@ trait KevoreeCFrameworkGenerator extends KevoreeCAbstractGenerator {
     context h "#define RIN_C 2"
     context h "#define ABI_C 3"
     context h "#define RBI_C 4"
-    context h "#define EEPROM_MAX_SIZE 1024"
+
+    boardType match {
+      case ArduinoBoardType.atmega328 => { context h "#define EEPROM_MAX_SIZE 1024" }
+      case ArduinoBoardType.atmega1280 => { context h "#define EEPROM_MAX_SIZE 4096" }
+      case ArduinoBoardType.uno => { context h "#define EEPROM_MAX_SIZE 1024" }
+      case ArduinoBoardType.mega2560 => { context h "#define EEPROM_MAX_SIZE 4096" }
+      case _ => { context h "#define EEPROM_MAX_SIZE 1024" }
+    }
+
+
+
     context h "#define MAX_INST_ID 5"
 
     val random = new Random

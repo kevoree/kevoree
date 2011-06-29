@@ -7,8 +7,10 @@
 #define RIN_C 2
 #define ABI_C 3
 #define RBI_C 4
-#define kevoreeID1 4
-#define kevoreeID2 2
+#define EEPROM_MAX_SIZE 4096
+#define MAX_INST_ID 5
+#define kevoreeID1 2
+#define kevoreeID2 9
 int eepromIndex;
 //Global Kevoree Type Defintion declaration
 const prog_char timer[] PROGMEM = "Timer";
@@ -51,7 +53,7 @@ int getIDFromProps(char * propName){
   return -1;
 }
 struct kmessage {char* value;char* metric;};
-class KevoreeType { public : int subTypeCode; char instanceName[15]; };
+class KevoreeType { public : int subTypeCode; char instanceName[MAX_INST_ID]; };
 struct kbinding { KevoreeType * instance;int portCode; QueueList<kmessage> * port;   };
 #define BDYNSTEP 3
 class kbindings {
@@ -448,7 +450,7 @@ return 0;
 }
 int getIndexFromName(char * id){
  for(int i=0;i<nbInstances;i++){
-  if(String(instances[i]->instanceName) == id){ return i; }
+  if(strcmp(instances[i]->instanceName,id)==0){ return i; }
  } 
  return -1;
 }
@@ -504,10 +506,21 @@ unsigned long timeBeforeScript;
                   }                                                                  
                   parseAndSaveAdminMsg();                                            
                   flushAdminBuffer();                                                
+          //DO COMPLEX CODE ;-)                                                      
+          EEPROM.write(eepromIndex, endAdminChar);                                   
+          eepromIndex = eepromPreviousIndex + 1;                                     
+          executeScriptFromEEPROM();                                                 
+                                                                                     
+          EEPROM.write(eepromPreviousIndex, sepAdminChar); //CLOSE TRANSACTION       
+          if(eepromIndex > (EEPROM_MAX_SIZE-100)){        
+            compressEEPROM();            
+          }                              
                   Serial.print("ms");                                                 
                   Serial.println( millis() - timeBeforeScript );                      
                   Serial.print("mem");                                                
                   Serial.println(freeRam());                                         
+                  Serial.print("emem");                                                
+                  Serial.println(eepromIndex);                                         
                   Serial.print("ack");                                               
                   Serial.println(ackToken);                                          
                   firstAdd = false;                                                  
@@ -523,15 +536,6 @@ unsigned long timeBeforeScript;
               parsingAdmin = false; //KILL PARSING ADMIN                             
             }                                                                        
           }                                                                          
-          //DO COMPLEX CODE ;-)                                                      
-          EEPROM.write(eepromIndex, endAdminChar);                                   
-          eepromIndex = eepromPreviousIndex + 1;                                     
-          executeScriptFromEEPROM();                                                 
-                                                                                     
-          EEPROM.write(eepromPreviousIndex, sepAdminChar); //CLOSE TRANSACTION       
-          if(eepromIndex > 1000){        
-            compressEEPROM();            
-          }                              
                                                                                      
         } else {                                                                     
           Serial.println("BAM");                                                      
@@ -554,7 +558,6 @@ char * chID;
 char * portID;            
 const char delims[] = ":";    
 boolean parseAndSaveAdminMsg(){       
-  if(serialIndex < 6){return false;}    
     if( inBytes[0]=='p' && inBytes[1]=='i' && inBytes[2]=='n' && inBytes[3]=='g' ){  
       return true;      
     }   
@@ -808,7 +811,7 @@ boolean parseForCAdminMsg(){
 }                                                     
     void executeScriptFromEEPROM () {                                           
       inBytes[serialIndex] = EEPROM.read(eepromIndex);                          
-      while (inBytes[serialIndex] != endAdminChar && eepromIndex < 512) {       
+      while (inBytes[serialIndex] != endAdminChar && eepromIndex < EEPROM_MAX_SIZE) {       
         if (inBytes[serialIndex] == sepAdminChar) {                             
           inBytes[serialIndex] = '\0';                                          
           parseForCAdminMsg();                                                  
@@ -830,8 +833,9 @@ const prog_char init_localchan545[] PROGMEM = "LocalChan545";
 const prog_char init_timer245[] PROGMEM = "Timer245";
 const prog_char init_digitalli43[] PROGMEM = "DigitalLi43";
 PROGMEM const char * init_tables[] = {init_localchan545,init_timer245,init_digitalli43};
-char instNameBuf[15];
-char instNameBuf2[15];
+char instNameBuf[MAX_INST_ID];
+char instNameBuf2[MAX_INST_ID];
+   unsigned long previousBootTime;
 void setup(){
 Serial.begin(9600);
 //STATE RECOVERY                                                         
@@ -862,7 +866,10 @@ eepromIndex = 2;
 inBytes[serialIndex] = EEPROM.read(eepromIndex);                             
 if (inBytes[serialIndex] == startBAdminChar) {                               
   eepromIndex ++;                                                            
+previousBootTime = millis();
   executeScriptFromEEPROM();                                                 
+                  Serial.print("bootms");                                                 
+                  Serial.println( millis() - previousBootTime );                      
 }                                                                            
 Serial.print("mem");
 Serial.println(freeRam());

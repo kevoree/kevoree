@@ -190,7 +190,7 @@ public class ArduinoNode extends AbstractNodeType {
             }
             //Step : Generate firmware code to output path
             KevoreeCGenerator generator = new KevoreeCGenerator();
-            generator.generate(model, nodeName, outputPath, bcontext);
+            generator.generate(model, nodeName, outputPath, bcontext,getDictionary().get("boardTypeName").toString());
 
 //STEP 3 : Deploy by commnication channel
             progress.beginTask("Prepare compilation", 40);

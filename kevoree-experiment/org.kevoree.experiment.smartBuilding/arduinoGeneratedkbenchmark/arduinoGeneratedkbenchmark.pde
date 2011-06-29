@@ -7,53 +7,45 @@
 #define RIN_C 2
 #define ABI_C 3
 #define RBI_C 4
-#define EEPROM_MAX_SIZE 1024
+#define EEPROM_MAX_SIZE 4096
 #define MAX_INST_ID 5
-#define kevoreeID1 6
-#define kevoreeID2 4
+#define kevoreeID1 2
+#define kevoreeID2 0
 int eepromIndex;
 //Global Kevoree Type Defintion declaration
-const prog_char pushbutton[] PROGMEM = "PushButton";
-const prog_char digitallight[] PROGMEM = "DigitalLight";
-const prog_char lightsensor[] PROGMEM = "LightSensor";
 const prog_char timer[] PROGMEM = "Timer";
+const prog_char digitallight[] PROGMEM = "DigitalLight";
 const prog_char localchannel[] PROGMEM = "LocalChannel";
 PROGMEM const char * typedefinition[] = { 
-pushbutton
+timer
 ,digitallight
-,lightsensor
-,timer
 ,localchannel
 };
 //Global Kevoree Port Type Defintion declaration
-const prog_char port_click[] PROGMEM = "click";
-const prog_char port_release[] PROGMEM = "release";
+const prog_char port_tick[] PROGMEM = "tick";
 const prog_char port_on[] PROGMEM = "on";
 const prog_char port_off[] PROGMEM = "off";
 const prog_char port_toggle[] PROGMEM = "toggle";
-const prog_char port_trigger[] PROGMEM = "trigger";
-const prog_char port_light[] PROGMEM = "light";
-const prog_char port_tick[] PROGMEM = "tick";
-PROGMEM const char * portdefinition[] = { port_click,port_release,port_on,port_off,port_toggle,port_trigger,port_light,port_tick};
-const prog_char prop_pin[] PROGMEM = "pin";
+PROGMEM const char * portdefinition[] = { port_tick,port_on,port_off,port_toggle};
 const prog_char prop_period[] PROGMEM = "period";
-PROGMEM const char * properties[] = { prop_pin,prop_period};
+const prog_char prop_pin[] PROGMEM = "pin";
+PROGMEM const char * properties[] = { prop_period,prop_pin};
 
-const int nbPortType = 8;
+const int nbPortType = 4;
 int getIDFromPortName(char * portName){
   for(int i=0;i<nbPortType;i++){
    if(strcmp_P(portName, (char*)pgm_read_word(&(portdefinition[i]))  )==0) { return i; }
   }
   return -1;
 }
-const int nbTypeDef = 5;
+const int nbTypeDef = 3;
 int getIDFromType(char * typeName){
   for(int i=0;i<nbTypeDef;i++){
    if(strcmp_P(typeName, (char*)pgm_read_word(&(typedefinition[i]))  )==0) { return i; }
   }
   return -1;
 }
-const int nbProps = 5;
+const int nbProps = 2;
 int getIDFromProps(char * propName){
   for(int i=0;i<nbProps;i++){
    if(strcmp_P(propName, (char*)pgm_read_word(&(properties[i]))  )==0) { return i; }
@@ -106,54 +98,30 @@ void destroy(){
  free(bindings);
 }
 };
-class PushButton : public KevoreeType {
+class Timer : public KevoreeType {
  public : 
 unsigned long nextExecution;
-int buttonState ;
-
-kbinding * click;
-kbinding * release;
-char pin[20];
+kbinding * tick;
 char period[20];
 void init(){
-click = (kbinding*) malloc(sizeof(kbinding));
-if(click){
-   memset(click, 0, sizeof(kbinding));
-}
-release = (kbinding*) malloc(sizeof(kbinding));
-if(release){
-   memset(release, 0, sizeof(kbinding));
+tick = (kbinding*) malloc(sizeof(kbinding));
+if(tick){
+   memset(tick, 0, sizeof(kbinding));
 }
 nextExecution = millis();
 }
 void destroy(){
-free(click);
-free(release);
+free(tick);
 }
 void runInstance(){
-pinMode(atoi(pin), INPUT);
-int newButtonState = digitalRead(atoi(pin));
-  if (newButtonState == HIGH) { 
-    if(buttonState == LOW){
-      buttonState = HIGH;
-kmessage * msg = (kmessage*) malloc(sizeof(kmessage));if (msg){memset(msg, 0, sizeof(kmessage));}msg->value = "click";msg->metric = "event";click_rport(msg);free(msg);    }
-  } else {
-    if(buttonState == HIGH){
-      buttonState = LOW;
-      //DO ACTION UNRELEASE ACTION
-kmessage * msg = (kmessage*) malloc(sizeof(kmessage));if (msg){memset(msg, 0, sizeof(kmessage));}msg->value = "release";msg->metric = "event";release_rport(msg);free(msg);
-    }
-  }
+kmessage * msg = (kmessage*) malloc(sizeof(kmessage));
+if (msg){memset(msg, 0, sizeof(kmessage));}
+msg->value = "tick";msg->metric = "t";tick_rport(msg);free(msg);
 nextExecution += atol(period);
 }
-void click_rport(kmessage * msg){
-if(click->port){
-click->port->push(*msg);
-}
-}
-void release_rport(kmessage * msg){
-if(release->port){
-release->port->push(*msg);
+void tick_rport(kmessage * msg){
+if(tick->port){
+tick->port->push(*msg);
 }
 }
 };
@@ -210,73 +178,6 @@ void toggle_pport(kmessage * msg){
 int newState = 0;
 if(state){ newState = LOW; } else { newState=HIGH; }state = ! state; pinMode(atoi(pin), OUTPUT);digitalWrite(atoi(pin), newState);
 
-}
-};
-class LightSensor : public KevoreeType {
- public : 
-int photocellReading;
-char buf[10];
-
-QueueList<kmessage> * trigger;
-kbinding * light;
-char pin[20];
-void init(){
-trigger = (QueueList<kmessage>*) malloc(sizeof(QueueList<kmessage>));
-if(trigger){
-   memset(trigger, 0, sizeof(QueueList<kmessage>));
-}
-light = (kbinding*) malloc(sizeof(kbinding));
-if(light){
-   memset(light, 0, sizeof(kbinding));
-}
-}
-void destroy(){
-free(trigger);
-free(light);
-}
-void runInstance(){
-if(!trigger->isEmpty()){
-kmessage * msg = &(trigger->pop());
-LightSensor::trigger_pport(msg);
-}
-}
-void light_rport(kmessage * msg){
-if(light->port){
-light->port->push(*msg);
-}
-}
-void trigger_pport(kmessage * msg){
-photocellReading = analogRead(atoi(pin));
-kmessage * smsg = (kmessage*) malloc(sizeof(kmessage));if (smsg){memset(smsg, 0, sizeof(kmessage));}sprintf(buf,"%d",photocellReading);
-smsg->value = buf;
-smsg->metric="alux";light_rport(smsg);free(smsg);
-}
-};
-class Timer : public KevoreeType {
- public : 
-unsigned long nextExecution;
-kbinding * tick;
-char period[20];
-void init(){
-tick = (kbinding*) malloc(sizeof(kbinding));
-if(tick){
-   memset(tick, 0, sizeof(kbinding));
-}
-nextExecution = millis();
-}
-void destroy(){
-free(tick);
-}
-void runInstance(){
-kmessage * msg = (kmessage*) malloc(sizeof(kmessage));
-if (msg){memset(msg, 0, sizeof(kmessage));}
-msg->value = "tick";msg->metric = "t";tick_rport(msg);free(msg);
-nextExecution += atol(period);
-}
-void tick_rport(kmessage * msg){
-if(tick->port){
-tick->port->push(*msg);
-}
 }
 };
 class LocalChannel : public KevoreeType {
@@ -341,18 +242,12 @@ boolean destroyInstance(int index){
 KevoreeType * instance = instances[index];
  switch(instance->subTypeCode){
 case 0:{
-((PushButton*) instances[index])->destroy();
+((Timer*) instances[index])->destroy();
 break;}
 case 1:{
 ((DigitalLight*) instances[index])->destroy();
 break;}
 case 2:{
-((LightSensor*) instances[index])->destroy();
-break;}
-case 3:{
-((Timer*) instances[index])->destroy();
-break;}
-case 4:{
 ((LocalChannel*) instances[index])->destroy();
 break;}
 }
@@ -361,12 +256,9 @@ free(instance);
 void updateParam(int index,int typeCode,int keyCode,char * val){
  switch(typeCode){
 case 0:{
-PushButton * instance = (PushButton*) instances[index];
+Timer * instance = (Timer*) instances[index];
  switch(keyCode){
 case 0:{
-strcpy (instance->pin,val);
-break;}
-case 1:{
 strcpy (instance->period,val);
 break;}
 }
@@ -374,28 +266,12 @@ break;}
 case 1:{
 DigitalLight * instance = (DigitalLight*) instances[index];
  switch(keyCode){
-case 0:{
+case 1:{
 strcpy (instance->pin,val);
 break;}
 }
 break;}
 case 2:{
-LightSensor * instance = (LightSensor*) instances[index];
- switch(keyCode){
-case 0:{
-strcpy (instance->pin,val);
-break;}
-}
-break;}
-case 3:{
-Timer * instance = (Timer*) instances[index];
- switch(keyCode){
-case 1:{
-strcpy (instance->period,val);
-break;}
-}
-break;}
-case 4:{
 LocalChannel * instance = (LocalChannel*) instances[index];
 break;}
 }
@@ -425,9 +301,9 @@ void updateParams (int index, char * params) {
 int createInstance(int typeCode,char* instanceName,char* params){
 switch(typeCode){
 case 0:{
-  PushButton * newInstance = (PushButton*) malloc(sizeof(PushButton));
+  Timer * newInstance = (Timer*) malloc(sizeof(Timer));
   if (newInstance){
-    memset(newInstance, 0, sizeof(PushButton));
+    memset(newInstance, 0, sizeof(Timer));
   } 
   strcpy(newInstance->instanceName,instanceName);
   newInstance->init();
@@ -451,32 +327,6 @@ case 1:{
   return newIndex;
 break;}
 case 2:{
-  LightSensor * newInstance = (LightSensor*) malloc(sizeof(LightSensor));
-  if (newInstance){
-    memset(newInstance, 0, sizeof(LightSensor));
-  } 
-  strcpy(newInstance->instanceName,instanceName);
-  newInstance->init();
-  tempInstance = newInstance;
-  tempInstance->subTypeCode = 2; 
-  int newIndex = addInstance();
-  updateParams(newIndex,params);
-  return newIndex;
-break;}
-case 3:{
-  Timer * newInstance = (Timer*) malloc(sizeof(Timer));
-  if (newInstance){
-    memset(newInstance, 0, sizeof(Timer));
-  } 
-  strcpy(newInstance->instanceName,instanceName);
-  newInstance->init();
-  tempInstance = newInstance;
-  tempInstance->subTypeCode = 3; 
-  int newIndex = addInstance();
-  updateParams(newIndex,params);
-  return newIndex;
-break;}
-case 4:{
   LocalChannel * newInstance = (LocalChannel*) malloc(sizeof(LocalChannel));
   if (newInstance){
     memset(newInstance, 0, sizeof(LocalChannel));
@@ -484,7 +334,7 @@ case 4:{
   strcpy(newInstance->instanceName,instanceName);
   newInstance->init();
   tempInstance = newInstance;
-  tempInstance->subTypeCode = 4; 
+  tempInstance->subTypeCode = 2; 
   int newIndex = addInstance();
   updateParams(newIndex,params);
   return newIndex;
@@ -496,7 +346,7 @@ void runInstance(int index){
 int typeCode = instances[index]->subTypeCode;
  switch(typeCode){
 case 0:{
-PushButton * instance = (PushButton*) instances[index];
+Timer * instance = (Timer*) instances[index];
 instance->runInstance();
 break;}
 case 1:{
@@ -504,14 +354,6 @@ DigitalLight * instance = (DigitalLight*) instances[index];
 instance->runInstance();
 break;}
 case 2:{
-LightSensor * instance = (LightSensor*) instances[index];
-instance->runInstance();
-break;}
-case 3:{
-Timer * instance = (Timer*) instances[index];
-instance->runInstance();
-break;}
-case 4:{
 LocalChannel * instance = (LocalChannel*) instances[index];
 instance->runInstance();
 break;}
@@ -525,56 +367,33 @@ int componentTypeCode = instances[indexComponent]->subTypeCode;
 int channelTypeCode = instances[indexChannel]->subTypeCode;
  switch(componentTypeCode){
 case 0:{
-PushButton * instance = (PushButton*) instances[indexComponent];
+Timer * instance = (Timer*) instances[indexComponent];
 switch(portCode){
 case 0:{
-   requiredPort=instance->click;
-break;}
-case 1:{
-   requiredPort=instance->release;
+   requiredPort=instance->tick;
 break;}
 }
 break;}
 case 1:{
 DigitalLight * instance = (DigitalLight*) instances[indexComponent];
 switch(portCode){
-case 2:{
+case 1:{
    providedPort=instance->on;
 componentInstanceName=instance->instanceName;
 break;}
-case 3:{
+case 2:{
    providedPort=instance->off;
 componentInstanceName=instance->instanceName;
 break;}
-case 4:{
+case 3:{
    providedPort=instance->toggle;
 componentInstanceName=instance->instanceName;
 break;}
 }
 break;}
-case 2:{
-LightSensor * instance = (LightSensor*) instances[indexComponent];
-switch(portCode){
-case 5:{
-   providedPort=instance->trigger;
-componentInstanceName=instance->instanceName;
-break;}
-case 6:{
-   requiredPort=instance->light;
-break;}
-}
-break;}
-case 3:{
-Timer * instance = (Timer*) instances[indexComponent];
-switch(portCode){
-case 7:{
-   requiredPort=instance->tick;
-break;}
-}
-break;}
 }
  switch(channelTypeCode){
-case 4:{
+case 2:{
 LocalChannel * instance = (LocalChannel*) instances[indexChannel];
 if(providedPort){
 instance->bindings->addBinding(instances[indexComponent],portCode,providedPort);
@@ -593,23 +412,6 @@ kbinding * requiredPort = 0;
 case 0:{
 switch(portCode){
 case 0:{
-   requiredPort=(((PushButton*)instances[indexComponent])->click);
-break;}
-case 1:{
-   requiredPort=(((PushButton*)instances[indexComponent])->release);
-break;}
-}
-break;}
-case 2:{
-switch(portCode){
-case 6:{
-   requiredPort=(((LightSensor*)instances[indexComponent])->light);
-break;}
-}
-break;}
-case 3:{
-switch(portCode){
-case 7:{
    requiredPort=(((Timer*)instances[indexComponent])->tick);
 break;}
 }
@@ -621,7 +423,7 @@ if(requiredPort){
      requiredPort->portCode=0;
 } else {
  switch(instances[indexChannel]->subTypeCode){
-case 4:{
+case 2:{
 ((LocalChannel*)instances[indexChannel])->bindings->removeBinding(instances[indexComponent],portCode);
 break;}
 }
@@ -630,9 +432,6 @@ break;}
 boolean periodicExecution(int index){
  switch(instances[index]->subTypeCode){
 case 0:{
-return millis() > (((PushButton *) instances[index] )->nextExecution);
-}
-case 3:{
 return millis() > (((Timer *) instances[index] )->nextExecution);
 }
 }
@@ -644,9 +443,6 @@ case 1:{
 return (((DigitalLight *)instances[index])->on->count())+(((DigitalLight *)instances[index])->off->count())+(((DigitalLight *)instances[index])->toggle->count());
 }
 case 2:{
-return (((LightSensor *)instances[index])->trigger->count());
-}
-case 4:{
 return (((LocalChannel *)instances[index])->input->count());
 }
 }
@@ -908,38 +704,16 @@ void savePropertiesToEEPROM(int instanceIndex){
 case 0:{
 save2Memory(0);
 save2Memory(delimsEQ[0]);
-for(int i=0;i<strlen(((PushButton *) instances[instanceIndex])->pin);i++){
-save2Memory(((PushButton *) instances[instanceIndex])->pin[i]);
-}
-save2Memory(',');
-save2Memory(1);
-save2Memory(delimsEQ[0]);
-for(int i=0;i<strlen(((PushButton *) instances[instanceIndex])->period);i++){
-save2Memory(((PushButton *) instances[instanceIndex])->period[i]);
+for(int i=0;i<strlen(((Timer *) instances[instanceIndex])->period);i++){
+save2Memory(((Timer *) instances[instanceIndex])->period[i]);
 }
 break;
 }
 case 1:{
-save2Memory(0);
+save2Memory(1);
 save2Memory(delimsEQ[0]);
 for(int i=0;i<strlen(((DigitalLight *) instances[instanceIndex])->pin);i++){
 save2Memory(((DigitalLight *) instances[instanceIndex])->pin[i]);
-}
-break;
-}
-case 2:{
-save2Memory(0);
-save2Memory(delimsEQ[0]);
-for(int i=0;i<strlen(((LightSensor *) instances[instanceIndex])->pin);i++){
-save2Memory(((LightSensor *) instances[instanceIndex])->pin[i]);
-}
-break;
-}
-case 3:{
-save2Memory(1);
-save2Memory(delimsEQ[0]);
-for(int i=0;i<strlen(((Timer *) instances[instanceIndex])->period);i++){
-save2Memory(((Timer *) instances[instanceIndex])->period[i]);
 }
 break;
 }
@@ -972,39 +746,6 @@ eepromIndex--;
   void saveInstancesBindings(int instanceIndex){      
    switch(instances[instanceIndex]->subTypeCode){     
 case 0:{
-                  if ((((PushButton *) instances[instanceIndex]) -> click -> port))                          
-                  {                                                                                    
-                    saveBI_CMD(                                                                        
-                      true,                                                                            
-                      instances[instanceIndex] -> instanceName,                                        
-                      ((PushButton *) instances[instanceIndex]) -> click -> instance -> instanceName,        
-                    ((PushButton *) instances[instanceIndex]) -> click -> portCode                           
-                    );                                                                                 
-                  }                                                                                    
-                  if ((((PushButton *) instances[instanceIndex]) -> release -> port))                          
-                  {                                                                                    
-                    saveBI_CMD(                                                                        
-                      true,                                                                            
-                      instances[instanceIndex] -> instanceName,                                        
-                      ((PushButton *) instances[instanceIndex]) -> release -> instance -> instanceName,        
-                    ((PushButton *) instances[instanceIndex]) -> release -> portCode                           
-                    );                                                                                 
-                  }                                                                                    
-break;
-}
-case 2:{
-                  if ((((LightSensor *) instances[instanceIndex]) -> light -> port))                          
-                  {                                                                                    
-                    saveBI_CMD(                                                                        
-                      true,                                                                            
-                      instances[instanceIndex] -> instanceName,                                        
-                      ((LightSensor *) instances[instanceIndex]) -> light -> instance -> instanceName,        
-                    ((LightSensor *) instances[instanceIndex]) -> light -> portCode                           
-                    );                                                                                 
-                  }                                                                                    
-break;
-}
-case 3:{
                   if ((((Timer *) instances[instanceIndex]) -> tick -> port))                          
                   {                                                                                    
                     saveBI_CMD(                                                                        
@@ -1016,7 +757,7 @@ case 3:{
                   }                                                                                    
 break;
 }
-case 4:{
+case 2:{
   for(int i=0;i<(((LocalChannel *)instances[instanceIndex])->bindings->nbBindings);i++){                   
        saveBI_CMD(                                                                                         
          true,                                                                                             
@@ -1088,16 +829,10 @@ boolean parseForCAdminMsg(){
         flushAdminBuffer();                                                     
       }                                                                         
     }                                                                           
-const prog_char init_c[] PROGMEM = "c";
-const prog_char init_b[] PROGMEM = "b";
-const prog_char init_a[] PROGMEM = "a";
-const prog_char init_d[] PROGMEM = "d";
-const prog_char init_e[] PROGMEM = "e";
-const prog_char init_f[] PROGMEM = "f";
-const prog_char init_g[] PROGMEM = "g";
-const prog_char init_h[] PROGMEM = "h";
-const prog_char init_i[] PROGMEM = "i";
-PROGMEM const char * init_tables[] = {init_c,init_b,init_a,init_d,init_e,init_f,init_g,init_h,init_i};
+const prog_char init_ch[] PROGMEM = "ch";
+const prog_char init_t1[] PROGMEM = "t1";
+const prog_char init_li[] PROGMEM = "li";
+PROGMEM const char * init_tables[] = {init_ch,init_t1,init_li};
 char instNameBuf[MAX_INST_ID];
 char instNameBuf2[MAX_INST_ID];
    unsigned long previousBootTime;
@@ -1110,59 +845,21 @@ if(EEPROM.read(0) != kevoreeID1 || EEPROM.read(1) != kevoreeID2){
 eepromIndex = 2;
 save2Memory(startBAdminChar);
         strcpy_P(instNameBuf, (char *) pgm_read_word (&(init_tables[0])));        
-        saveAIN_CMD(instNameBuf, 4, "");                                             
+        saveAIN_CMD(instNameBuf, 2, "");                                             
 save2Memory(sepAdminChar);
         strcpy_P(instNameBuf, (char *) pgm_read_word (&(init_tables[1])));        
-        saveAIN_CMD(instNameBuf, 4, "");                                             
+        saveAIN_CMD(instNameBuf, 0, "period=50");                                             
 save2Memory(sepAdminChar);
         strcpy_P(instNameBuf, (char *) pgm_read_word (&(init_tables[2])));        
-        saveAIN_CMD(instNameBuf, 4, "");                                             
-save2Memory(sepAdminChar);
-        strcpy_P(instNameBuf, (char *) pgm_read_word (&(init_tables[3])));        
-        saveAIN_CMD(instNameBuf, 0, "pin=12,period=100");                                             
-save2Memory(sepAdminChar);
-        strcpy_P(instNameBuf, (char *) pgm_read_word (&(init_tables[4])));        
         saveAIN_CMD(instNameBuf, 1, "pin=9");                                             
 save2Memory(sepAdminChar);
-        strcpy_P(instNameBuf, (char *) pgm_read_word (&(init_tables[5])));        
-        saveAIN_CMD(instNameBuf, 2, "pin=0");                                             
-save2Memory(sepAdminChar);
-        strcpy_P(instNameBuf, (char *) pgm_read_word (&(init_tables[6])));        
-        saveAIN_CMD(instNameBuf, 1, "pin=10");                                             
-save2Memory(sepAdminChar);
-        strcpy_P(instNameBuf, (char *) pgm_read_word (&(init_tables[7])));        
-        saveAIN_CMD(instNameBuf, 3, "period=1000");                                             
-save2Memory(sepAdminChar);
-        strcpy_P(instNameBuf, (char *) pgm_read_word (&(init_tables[8])));        
-        saveAIN_CMD(instNameBuf, 3, "period=200");                                             
-save2Memory(sepAdminChar);
-strcpy_P(instNameBuf, (char *) pgm_read_word (&(init_tables[7])));        
+strcpy_P(instNameBuf, (char *) pgm_read_word (&(init_tables[1])));        
 strcpy_P(instNameBuf2, (char *) pgm_read_word (&(init_tables[0])));        
-saveBI_CMD(true,instNameBuf, instNameBuf2, 7);
-save2Memory(sepAdminChar);
-strcpy_P(instNameBuf, (char *) pgm_read_word (&(init_tables[5])));        
-strcpy_P(instNameBuf2, (char *) pgm_read_word (&(init_tables[0])));        
-saveBI_CMD(true,instNameBuf, instNameBuf2, 5);
-save2Memory(sepAdminChar);
-strcpy_P(instNameBuf, (char *) pgm_read_word (&(init_tables[4])));        
-strcpy_P(instNameBuf2, (char *) pgm_read_word (&(init_tables[1])));        
-saveBI_CMD(true,instNameBuf, instNameBuf2, 4);
-save2Memory(sepAdminChar);
-strcpy_P(instNameBuf, (char *) pgm_read_word (&(init_tables[3])));        
-strcpy_P(instNameBuf2, (char *) pgm_read_word (&(init_tables[2])));        
 saveBI_CMD(true,instNameBuf, instNameBuf2, 0);
 save2Memory(sepAdminChar);
-strcpy_P(instNameBuf, (char *) pgm_read_word (&(init_tables[4])));        
-strcpy_P(instNameBuf2, (char *) pgm_read_word (&(init_tables[2])));        
-saveBI_CMD(true,instNameBuf, instNameBuf2, 2);
-save2Memory(sepAdminChar);
-strcpy_P(instNameBuf, (char *) pgm_read_word (&(init_tables[6])));        
-strcpy_P(instNameBuf2, (char *) pgm_read_word (&(init_tables[2])));        
-saveBI_CMD(true,instNameBuf, instNameBuf2, 2);
-save2Memory(sepAdminChar);
-strcpy_P(instNameBuf, (char *) pgm_read_word (&(init_tables[8])));        
-strcpy_P(instNameBuf2, (char *) pgm_read_word (&(init_tables[1])));        
-saveBI_CMD(true,instNameBuf, instNameBuf2, 7);
+strcpy_P(instNameBuf, (char *) pgm_read_word (&(init_tables[2])));        
+strcpy_P(instNameBuf2, (char *) pgm_read_word (&(init_tables[0])));        
+saveBI_CMD(true,instNameBuf, instNameBuf2, 3);
 save2Memory(endAdminChar);
 }                                                                            
 eepromIndex = 2;                                                             
@@ -1180,9 +877,6 @@ Serial.println(freeRam());
 long nextExecutionGap(int index){
  switch(instances[index]->subTypeCode){
 case 0:{
-return ((((PushButton *) instances[index] )->nextExecution)- currentMillis());
-}
-case 3:{
 return ((((Timer *) instances[index] )->nextExecution)- currentMillis());
 }
 }

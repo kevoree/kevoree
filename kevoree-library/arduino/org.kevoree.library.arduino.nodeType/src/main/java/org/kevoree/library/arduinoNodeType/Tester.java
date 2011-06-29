@@ -31,8 +31,11 @@ public class Tester {
         ContainerRoot model = KevoreeXmiHelper.load(modelString);
 
         ArduinoNode node = new ArduinoNode();
-        node.getDictionary().put("boardTypeName","atmega328");
-        node.getDictionary().put("boardPortName","/dev/tty.usbserial-A400g2se");
+        node.getDictionary().put("boardTypeName","mega2560");
+        node.getDictionary().put("boardPortName","/dev/tty.usbmodem411");
+       // node.getDictionary().put("boardPortName","/dev/tty.usbserial-A400g2se");
+
+
         node.getDictionary().put("incremental","false");
         node.push("ksensor1",model,null);
 
