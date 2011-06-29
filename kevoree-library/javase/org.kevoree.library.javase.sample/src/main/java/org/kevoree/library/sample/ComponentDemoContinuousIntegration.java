@@ -40,8 +40,8 @@ import org.kevoree.framework.MessagePort;
 		@ProvidedPort(name = "In", type = PortType.MESSAGE)
 })
 @Requires({
-		@RequiredPort(name = "Out", type = PortType.MESSAGE, noDependency = true, optional = true),
-		@RequiredPort(name = "Out2", type = PortType.MESSAGE, noDependency = true, optional = true)
+		@RequiredPort(name = "Out", type = PortType.MESSAGE, needCheckDependency = true, optional = true),
+		@RequiredPort(name = "Out2", type = PortType.MESSAGE, needCheckDependency = true, optional = true)
 })
 
 

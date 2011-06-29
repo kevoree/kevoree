@@ -31,8 +31,8 @@ import org.kevoree.library.sample.service.ServiceB;
     @ProvidedPort(name="prov1", type=PortType.SERVICE, className=ServiceB.class)
 })
 @Requires({
-    @RequiredPort(name="req2", type=PortType.MESSAGE, optional = true, noDependency = true),
-    @RequiredPort(name="req3", type=PortType.MESSAGE, optional = true, noDependency = true)
+    @RequiredPort(name="req2", type=PortType.MESSAGE, optional = true, needCheckDependency = true),
+    @RequiredPort(name="req3", type=PortType.MESSAGE, optional = true, needCheckDependency = true)
 })
 @Library(name = "Kevoree-Samples")
 @ComponentType

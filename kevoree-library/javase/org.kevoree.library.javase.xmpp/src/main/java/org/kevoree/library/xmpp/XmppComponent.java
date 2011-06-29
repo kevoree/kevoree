@@ -17,7 +17,7 @@ import org.kevoree.framework.MessagePort;
     @ProvidedPort(name = "send", type = PortType.MESSAGE)
 })
 @Requires({
-    @RequiredPort(name = "messageReceived", type = PortType.MESSAGE, noDependency = true, optional = false)
+    @RequiredPort(name = "messageReceived", type = PortType.MESSAGE, needCheckDependency = true, optional = false)
 })
 @Library(name = "Kevoree-Android-JavaSE")
 @DictionaryType({@DictionaryAttribute(name = "login"),@DictionaryAttribute(name = "password")})

@@ -18,8 +18,8 @@ import org.osgi.framework.Bundle;
     @ProvidedPort(name = "p2", type = PortType.MESSAGE)
 })
 @Requires({
-    @RequiredPort(name = "r1", type = PortType.MESSAGE, optional = false, noDependency = true),
-    @RequiredPort(name = "r2", type = PortType.MESSAGE, optional = false, noDependency = true)
+    @RequiredPort(name = "r1", type = PortType.MESSAGE, optional = false, needCheckDependency = true),
+    @RequiredPort(name = "r2", type = PortType.MESSAGE, optional = false, needCheckDependency = true)
 })
 @Library(name = "Kevoree-Samples")
 @ComponentType
