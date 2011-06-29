@@ -14,7 +14,7 @@ import org.kevoreeAdaptation.AddInstance
 import org.kevoreeAdaptation.AddType
 import org.osgi.framework.BundleContext
 import scala.collection.JavaConversions._
-import org.kevoree.library.arduinoNodeType.ArduinoBoardType
+import org.kevoree.library.arduinoNodeType.{PMemory, ArduinoBoardType}
 
 class KevoreeCGenerator
   extends KevoreeComponentTypeClassGenerator
@@ -24,7 +24,14 @@ class KevoreeCGenerator
   with KevoreeCSchedulerGenerator
   with KevoreePersistenceGenerator {
 
-  def generate(adaptModel: AdaptationModel, nodeName: String, outputDir: String, bundleContext: BundleContext,boardName:String) = {
+  def generate(
+                adaptModel: AdaptationModel,
+                nodeName: String,
+                outputDir: String,
+                bundleContext: BundleContext,
+                boardName: String,
+                pmem: PMemory
+                ) {
 
     val componentTypes = adaptModel.getAdaptations.filter(adt => adt.isInstanceOf[AddType] && adt.asInstanceOf[AddType].getRef.isInstanceOf[ComponentType])
     val channelTypes = adaptModel.getAdaptations.filter(adt => adt.isInstanceOf[AddType] && adt.asInstanceOf[AddType].getRef.isInstanceOf[ChannelType])
@@ -36,17 +43,17 @@ class KevoreeCGenerator
       ctype => ktypes = ktypes ++ List(ctype.asInstanceOf[AddType].getRef)
     }
 
-    generateKcFrameworkHeaders(ktypes,ArduinoBoardType.getFromTypeName(boardName))
+    generateKcFrameworkHeaders(ktypes, ArduinoBoardType.getFromTypeName(boardName))
     generateKcConstMethods(ktypes);
     generateKcFramework
 
     componentTypes.foreach {
       componentTypeAdaptation =>
-        generateComponentType(componentTypeAdaptation.asInstanceOf[AddType].getRef.asInstanceOf[ComponentType], bundleContext,nodeName)
+        generateComponentType(componentTypeAdaptation.asInstanceOf[AddType].getRef.asInstanceOf[ComponentType], bundleContext, nodeName)
     }
     channelTypes.foreach {
       channelTypeAdaptation =>
-        generateChannelType(channelTypeAdaptation.asInstanceOf[AddType].getRef.asInstanceOf[ChannelType], bundleContext,nodeName)
+        generateChannelType(channelTypeAdaptation.asInstanceOf[AddType].getRef.asInstanceOf[ChannelType], bundleContext, nodeName)
     }
 
 
@@ -66,6 +73,7 @@ class KevoreeCGenerator
         instances = instances ++ List(instanceAdaption.asInstanceOf[AddInstance].getRef)
     }
 
+    generateReadPMemory(pmem);
     generateBindMethod(ktypes)
     generateUnBindMethod(ktypes)
 
@@ -82,7 +90,10 @@ class KevoreeCGenerator
     generateAINCommandSave();
     generateBICommandSave();
     generateRINCommandSave();
-    generateSave2Memory();
+    generateSave2Memory(pmem);
+    generateSave2MemoryNoInc(pmem);
+    generatePMemInit(pmem);
+
 
 
     generateSavePropertiesMethod(ktypes)

@@ -2,6 +2,7 @@ package org.kevoree.library.arduinoNodeType.generator
 
 import org.kevoree.TypeDefinition
 import scala.collection.JavaConversions._
+import org.kevoree.library.arduinoNodeType.PMemory
 
 /**
  * User: ffouquet
@@ -11,9 +12,64 @@ import scala.collection.JavaConversions._
 
 trait KevoreePersistenceGenerator extends KevoreeCAbstractGenerator {
 
-  def generateSave2Memory(): Unit = {
+
+  def generateReadPMemory(pm: PMemory): Unit = {
+    context b "byte readPMemory(int preciseIndex){                                "
+    if (pm.equals(PMemory.EEPROM)) {
+      context b "  return EEPROM.read(preciseIndex);"
+    }
+    if (pm.equals(PMemory.SD)) {
+      context b "  file.seekSet(preciseIndex);                             "
+      context b "  return file.read();                                         "
+    }
+    context b "}                                                        "
+  }
+
+  def generateSave2MemoryNoInc(pm: PMemory): Unit = {
+    context b "void save2MemoryNoInc(int preciseIndex,byte b){                                "
+    if (pm.equals(PMemory.EEPROM)) {
+      context b "  EEPROM.write(preciseIndex,b);"
+    }
+    if (pm.equals(PMemory.SD)) {
+      context b "  file.seekSet(preciseIndex);                             "
+      context b "  file.write(b);                                         "
+      context b "  file.sync();                                         "
+    }
+    context b "}                                                        "
+  }
+
+  def generateSave2Memory(pm: PMemory): Unit = {
     context b "void save2Memory(byte b){                                "
-    context b "  EEPROM.write(eepromIndex,b);eepromIndex++;  "
+    if (pm.equals(PMemory.EEPROM)) {
+      context b "  EEPROM.write(eepromIndex,b);eepromIndex++;  "
+    }
+    if (pm.equals(PMemory.SD)) {
+      context b "  file.seekSet(eepromIndex);                             "
+      context b "  file.write(b);                                         "
+      context b "  file.sync();                                         "
+      context b "  eepromIndex++;                                         "
+    }
+    context b "}                                                        "
+  }
+
+  def generatePMemInit(pm: PMemory): Unit = {
+    context b "    void initPMEM() {               "
+    if (pm.equals(PMemory.SD)) {
+      context h "#include <Fat16.h>"
+      context h "#include <Fat16util.h>"
+      context h "SdCard card;"
+      context h "Fat16 file;"
+      context b "if (!card.init()) Serial.println(\"error.card.init\"); "
+      context b "if (!Fat16 :: init(& card)) Serial.println(\"Fat16::init\");    "
+      context b "if (file.open(\"PKEVS\", O_CREAT | O_SYNC |O_RDWR)) Serial.println(\"Fat16::open\");  "
+
+      context b "  file.writeError = false;                        "
+      context b "  file.rewind();                                   "
+      context b "  for (int i = 0; i < EEPROM_MAX_SIZE; i++) {       "
+      context b "    file.write((byte)'=');                           "
+      context b "  }                                                   "
+      context b "  file.rewind();                                       "
+    }
     context b "}                                                        "
   }
 

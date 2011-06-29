@@ -7,10 +7,10 @@
 #define RIN_C 2
 #define ABI_C 3
 #define RBI_C 4
-#define EEPROM_MAX_SIZE 4096
-#define MAX_INST_ID 5
-#define kevoreeID1 2
-#define kevoreeID2 9
+#define EEPROM_MAX_SIZE 1024
+#define MAX_INST_ID 15
+#define kevoreeID1 4
+#define kevoreeID2 4
 int eepromIndex;
 //Global Kevoree Type Defintion declaration
 const prog_char timer[] PROGMEM = "Timer";
@@ -30,6 +30,10 @@ PROGMEM const char * portdefinition[] = { port_tick,port_on,port_off,port_toggle
 const prog_char prop_period[] PROGMEM = "period";
 const prog_char prop_pin[] PROGMEM = "pin";
 PROGMEM const char * properties[] = { prop_period,prop_pin};
+#include <Fat16.h>
+#include <Fat16util.h>
+SdCard card;
+Fat16 file;
 
 const int nbPortType = 4;
 int getIDFromPortName(char * portName){
@@ -359,6 +363,10 @@ instance->runInstance();
 break;}
 }
 }
+byte readPMemory(int preciseIndex){                                
+  file.seekSet(preciseIndex);                             
+  return file.read();                                         
+}                                                        
 void bind(int indexComponent,int indexChannel,int portCode){
 QueueList<kmessage> * providedPort = 0;
 kbinding * requiredPort = 0;
@@ -506,12 +514,11 @@ unsigned long timeBeforeScript;
                   }                                                                  
                   parseAndSaveAdminMsg();                                            
                   flushAdminBuffer();                                                
-          //DO COMPLEX CODE ;-)                                                      
-          EEPROM.write(eepromIndex, endAdminChar);                                   
+          save2MemoryNoInc(eepromIndex, endAdminChar);                                   
           eepromIndex = eepromPreviousIndex + 1;                                     
           executeScriptFromEEPROM();                                                 
                                                                                      
-          EEPROM.write(eepromPreviousIndex, sepAdminChar); //CLOSE TRANSACTION       
+          save2MemoryNoInc(eepromPreviousIndex, sepAdminChar); //CLOSE TRANSACTION       
           if(eepromIndex > (EEPROM_MAX_SIZE-100)){        
             compressEEPROM();            
           }                              
@@ -697,7 +704,26 @@ void saveUDI_CMD(char * instName,char * params){
       }                                                
     }                                                  
 void save2Memory(byte b){                                
-  EEPROM.write(eepromIndex,b);eepromIndex++;  
+  file.seekSet(eepromIndex);                             
+  file.write(b);                                         
+  file.sync();                                         
+  eepromIndex++;                                         
+}                                                        
+void save2MemoryNoInc(int preciseIndex,byte b){                                
+  file.seekSet(preciseIndex);                             
+  file.write(b);                                         
+  file.sync();                                         
+}                                                        
+    void initPMEM() {               
+if (!card.init()) Serial.println("error.card.init"); 
+if (!Fat16 :: init(& card)) Serial.println("Fat16::init");    
+if (file.open("PKEVS", O_CREAT | O_SYNC |O_RDWR)) Serial.println("Fat16::open");  
+  file.writeError = false;                        
+  file.rewind();                                   
+  for (int i = 0; i < EEPROM_MAX_SIZE; i++) {       
+    file.write((byte)'=');                           
+  }                                                   
+  file.rewind();                                       
 }                                                        
 void savePropertiesToEEPROM(int instanceIndex){
  switch(instances[instanceIndex]->subTypeCode){
@@ -810,7 +836,7 @@ boolean parseForCAdminMsg(){
   }                                                   
 }                                                     
     void executeScriptFromEEPROM () {                                           
-      inBytes[serialIndex] = EEPROM.read(eepromIndex);                          
+      inBytes[serialIndex] = readPMemory(eepromIndex);                          
       while (inBytes[serialIndex] != endAdminChar && eepromIndex < EEPROM_MAX_SIZE) {       
         if (inBytes[serialIndex] == sepAdminChar) {                             
           inBytes[serialIndex] = '\0';                                          
@@ -820,7 +846,7 @@ boolean parseForCAdminMsg(){
           serialIndex ++;                                                       
         }                                                                       
         eepromIndex ++;                                                         
-        inBytes[serialIndex] = EEPROM.read(eepromIndex);                        
+        inBytes[serialIndex] = readPMemory(eepromIndex);                        
       }                                                                         
       //PROCESS LAST CMD                                                        
       if (inBytes[serialIndex] == endAdminChar) {                               
@@ -838,10 +864,11 @@ char instNameBuf2[MAX_INST_ID];
    unsigned long previousBootTime;
 void setup(){
 Serial.begin(9600);
+initPMEM();
 //STATE RECOVERY                                                         
-if(EEPROM.read(0) != kevoreeID1 || EEPROM.read(1) != kevoreeID2){            
-  EEPROM.write(0,kevoreeID1);                                                
-  EEPROM.write(1,kevoreeID2);                                                
+if(readPMemory(0) != kevoreeID1 || readPMemory(1) != kevoreeID2){            
+  save2MemoryNoInc(0,kevoreeID1);                                                
+  save2MemoryNoInc(1,kevoreeID2);                                                
 eepromIndex = 2;
 save2Memory(startBAdminChar);
         strcpy_P(instNameBuf, (char *) pgm_read_word (&(init_tables[0])));        
@@ -863,7 +890,7 @@ saveBI_CMD(true,instNameBuf, instNameBuf2, 3);
 save2Memory(endAdminChar);
 }                                                                            
 eepromIndex = 2;                                                             
-inBytes[serialIndex] = EEPROM.read(eepromIndex);                             
+inBytes[serialIndex] = readPMemory(eepromIndex);                             
 if (inBytes[serialIndex] == startBAdminChar) {                               
   eepromIndex ++;                                                            
 previousBootTime = millis();
@@ -928,10 +955,20 @@ void loop(){
     }                                              
   }//END IF Qeue size null                         
 }                                                  
-int freeRam () {
- extern int __heap_start, *__brkval;
-  int v;
-  return (int) &v - (__brkval == 0 ? (int) &__heap_start : (int) __brkval);
+static int freeRam () {
+extern int  __bss_end;                                     
+extern int* __brkval;                                      
+int free_memory;                                           
+if (reinterpret_cast<int>(__brkval) == 0) {                
+  // if no heap use from end of bss section                
+  free_memory = reinterpret_cast<int>(&free_memory)        
+                - reinterpret_cast<int>(&__bss_end);       
+} else {                                                   
+  // use from top of stack to heap                         
+  free_memory = reinterpret_cast<int>(&free_memory)        
+                - reinterpret_cast<int>(__brkval);         
+}                                                          
+return free_memory;                                        
 }
 
 

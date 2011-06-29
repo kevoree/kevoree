@@ -29,10 +29,11 @@ object AppRunner extends App {
 
   val expes = List(new Experiment1, new Experiment2, new Experiment3, new Experiment4, new Experiment5)
 
-  var expe = expes(3)
-  expe.boardPortName = "/dev/tty.usbmodem411"
-  expe.boardTypeName = "mega2560"
-
+  var expe = expes(4)
+ // expe.boardPortName = "/dev/tty.usbmodem411"
+ // expe.boardTypeName = "mega2560"
+  expe.boardPortName = "/dev/tty.usbserial-A400g2se"
+  expe.boardTypeName = "atmega328"
 
   // expes.foreach{ expe =>
   runExperiment(expe);

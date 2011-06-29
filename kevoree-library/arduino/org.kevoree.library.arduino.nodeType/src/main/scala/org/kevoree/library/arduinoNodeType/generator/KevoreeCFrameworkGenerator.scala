@@ -41,7 +41,7 @@ trait KevoreeCFrameworkGenerator extends KevoreeCAbstractGenerator {
 
 
 
-    context h "#define MAX_INST_ID 5"
+    context h "#define MAX_INST_ID 15"
 
     val random = new Random
     context h ("#define kevoreeID1 " + random.nextInt(10))
@@ -546,12 +546,13 @@ trait KevoreeCFrameworkGenerator extends KevoreeCAbstractGenerator {
     context b "void setup(){"
     context b "Serial.begin(9600);" //TO REMOVE DEBUG ONLY
 
+    context b "initPMEM();"
 
     context b "//STATE RECOVERY                                                         "
-    context b "if(EEPROM.read(0) != kevoreeID1 || EEPROM.read(1) != kevoreeID2){            "
+    context b "if(readPMemory(0) != kevoreeID1 || readPMemory(1) != kevoreeID2){            "
     //context b "  for (int i = 0; i < 512; i++){EEPROM.write(i, 0);}                         " //USELESS NOW
-    context b "  EEPROM.write(0,kevoreeID1);                                                "
-    context b "  EEPROM.write(1,kevoreeID2);                                                "
+    context b "  save2MemoryNoInc(0,kevoreeID1);                                                "
+    context b "  save2MemoryNoInc(1,kevoreeID2);                                                "
     //SAVE INIT STATE
     context b "eepromIndex = 2;"
     context b "save2Memory(startBAdminChar);"
@@ -638,7 +639,7 @@ trait KevoreeCFrameworkGenerator extends KevoreeCAbstractGenerator {
     context b "eepromIndex = 2;                                                             "
 
     //context b "Serial.println(\"Try to recover from state\");                                 "
-    context b "inBytes[serialIndex] = EEPROM.read(eepromIndex);                             "
+    context b "inBytes[serialIndex] = readPMemory(eepromIndex);                             "
     context b "if (inBytes[serialIndex] == startBAdminChar) {                               "
     context b "  eepromIndex ++;                                                            "
     context b "previousBootTime = millis();"
@@ -716,7 +717,7 @@ trait KevoreeCFrameworkGenerator extends KevoreeCAbstractGenerator {
 
 
 
-    context b "      inBytes[serialIndex] = EEPROM.read(eepromIndex);                          "
+    context b "      inBytes[serialIndex] = readPMemory(eepromIndex);                          "
     context b "      while (inBytes[serialIndex] != endAdminChar && eepromIndex < EEPROM_MAX_SIZE) {       "
     context b "        if (inBytes[serialIndex] == sepAdminChar) {                             "
     context b "          inBytes[serialIndex] = '\\0';                                          "
@@ -726,7 +727,7 @@ trait KevoreeCFrameworkGenerator extends KevoreeCAbstractGenerator {
     context b "          serialIndex ++;                                                       "
     context b "        }                                                                       "
     context b "        eepromIndex ++;                                                         "
-    context b "        inBytes[serialIndex] = EEPROM.read(eepromIndex);                        "
+    context b "        inBytes[serialIndex] = readPMemory(eepromIndex);                        "
     context b "      }                                                                         "
     context b "      //PROCESS LAST CMD                                                        "
     context b "      if (inBytes[serialIndex] == endAdminChar) {                               "
@@ -845,10 +846,27 @@ trait KevoreeCFrameworkGenerator extends KevoreeCAbstractGenerator {
   }
 
   def generateFreeRamMethod(): Unit = {
-    context b "int freeRam () {"
+    context b "static int freeRam () {"
+
+  context b "extern int  __bss_end;                                     "
+  context b "extern int* __brkval;                                      "
+  context b "int free_memory;                                           "
+  context b "if (reinterpret_cast<int>(__brkval) == 0) {                "
+  context b "  // if no heap use from end of bss section                "
+  context b "  free_memory = reinterpret_cast<int>(&free_memory)        "
+  context b "                - reinterpret_cast<int>(&__bss_end);       "
+  context b "} else {                                                   "
+  context b "  // use from top of stack to heap                         "
+  context b "  free_memory = reinterpret_cast<int>(&free_memory)        "
+  context b "                - reinterpret_cast<int>(__brkval);         "
+  context b "}                                                          "
+  context b "return free_memory;                                        "
+
+ /*
     context b " extern int __heap_start, *__brkval;"
     context b "  int v;"
     context b "  return (int) &v - (__brkval == 0 ? (int) &__heap_start : (int) __brkval);"
+ */
     context b "}"
   }
 

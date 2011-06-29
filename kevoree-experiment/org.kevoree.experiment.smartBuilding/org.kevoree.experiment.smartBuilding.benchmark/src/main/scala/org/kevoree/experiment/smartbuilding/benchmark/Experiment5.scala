@@ -42,7 +42,7 @@ class Experiment5 extends AbstractExperiment {
 
   def runExperiment(_twa: TwoWayActors) {
     twa = _twa;
-    for (i <- 0 until 500) {
+    for (i <- 0 until 50) {
       doPhase(i)
     }
   }
@@ -54,7 +54,7 @@ class Experiment5 extends AbstractExperiment {
     }
     doStep(previousModel, newModel, i);
     previousModel = newModel
-    Thread.sleep(50)
+    Thread.sleep(100)
   }
 
   def doStep(modelA: ContainerRoot, modelB: ContainerRoot, i: Int) {

@@ -32,6 +32,9 @@ abstract class AbstractExperiment {
     node.getDictionary.put("boardTypeName", boardTypeName)
     node.getDictionary.put("boardPortName", boardPortName)
     node.getDictionary.put("incremental", "false")
+   //  node.getDictionary.put("pmem", "sd")
+
+
     node.newdir = new File("arduinoGenerated" + knodeName)
     if (!node.newdir.exists) {
       node.newdir.mkdir

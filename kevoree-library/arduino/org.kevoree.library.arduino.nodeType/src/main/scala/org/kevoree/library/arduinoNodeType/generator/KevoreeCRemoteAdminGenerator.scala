@@ -90,19 +90,16 @@ trait KevoreeCRemoteAdminGenerator extends KevoreeCAbstractGenerator {
     context b "                  parseAndSaveAdminMsg();                                            "
     context b "                  flushAdminBuffer();                                                "
 
-    context b "          //DO COMPLEX CODE ;-)                                                      "
-    context b "          EEPROM.write(eepromIndex, endAdminChar);                                   "
+    context b "          save2MemoryNoInc(eepromIndex, endAdminChar);                                   "
     context b "          eepromIndex = eepromPreviousIndex + 1;                                     "
     context b "          executeScriptFromEEPROM();                                                 "
     context b "                                                                                     "
-    context b "          EEPROM.write(eepromPreviousIndex, sepAdminChar); //CLOSE TRANSACTION       "
+    context b "          save2MemoryNoInc(eepromPreviousIndex, sepAdminChar); //CLOSE TRANSACTION       "
 
     //COMPRESS EEPROM IF NECESSARY , DON'T GO TO LIMIT
     context b "          if(eepromIndex > (EEPROM_MAX_SIZE-100)){        "
     context b "            compressEEPROM();            "
     context b "          }                              "
-
-
 
     context b "                  Serial.print(\"ms\");                                                 "
     context b "                  Serial.println( millis() - timeBeforeScript );                      "

@@ -40,7 +40,8 @@ import org.kevoreeAdaptation.TypeAdaptation;
 @DictionaryType({
         @DictionaryAttribute(name = "boardTypeName", defaultValue = "uno", optional = true),
         @DictionaryAttribute(name = "boardPortName"),
-        @DictionaryAttribute(name = "incremental", defaultValue = "true", optional = true)
+        @DictionaryAttribute(name = "incremental", defaultValue = "true", optional = true),
+        @DictionaryAttribute(name = "pmem", defaultValue = "eeprom", optional = true)
 })
 public class ArduinoNode extends AbstractNodeType {
 
@@ -190,7 +191,20 @@ public class ArduinoNode extends AbstractNodeType {
             }
             //Step : Generate firmware code to output path
             KevoreeCGenerator generator = new KevoreeCGenerator();
-            generator.generate(model, nodeName, outputPath, bcontext,getDictionary().get("boardTypeName").toString());
+
+            PMemory pm = PMemory.EEPROM;
+            if(this.getDictionary().get("pmem") != null){
+                String s = this.getDictionary().get("pmem").toString();
+                if(s.toLowerCase().equals("eeprom")){
+                    pm = PMemory.EEPROM;
+                }
+                if(s.toLowerCase().equals("sd")){
+                    pm = PMemory.SD;
+                }
+            }
+
+
+            generator.generate(model, nodeName, outputPath, bcontext,getDictionary().get("boardTypeName").toString(),pm);
 
 //STEP 3 : Deploy by commnication channel
             progress.beginTask("Prepare compilation", 40);
