@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kevoree:ContainerRoot xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:kevoree="http://kevoree/1.0">
+  <nodes name="home" metaData="x=50,y=50">
+    <components name="homeDrawing1" typeDefinition="//@typeDefinitions.4">
+      <provided portTypeRef="//@typeDefinitions.4/@provided.0"/>
+    </components>
+    <components name="ElderlyScreen1408131145" typeDefinition="//@typeDefinitions.10">
+      <dictionary>
+        <values attribute="//@typeDefinitions.10/@dictionaryType/@attributes.0" value="FZ"/>
+      </dictionary>
+      <provided portTypeRef="//@typeDefinitions.10/@provided.0"/>
+      <required portTypeRef="//@typeDefinitions.10/@required.0"/>
+    </components>
+    <components name="LightsPanelAdaptor1893122194" typeDefinition="//@typeDefinitions.12"/>
+    <components name="EnTiMidUiFrame511730691" typeDefinition="//@typeDefinitions.13">
+      <provided portTypeRef="//@typeDefinitions.13/@provided.0"/>
+      <required portTypeRef="//@typeDefinitions.13/@required.0"/>
+    </components>
+    <components name="OnOffSwitch507421312" typeDefinition="//@typeDefinitions.7">
+      <dictionary>
+        <values attribute="//@typeDefinitions.7/@dictionaryType/@attributes.0" value="OnOffSwitch"/>
+        <values attribute="//@typeDefinitions.7/@dictionaryType/@attributes.1" value="542"/>
+        <values attribute="//@typeDefinitions.7/@dictionaryType/@attributes.2" value="558"/>
+      </dictionary>
+      <required portTypeRef="//@typeDefinitions.7/@required.0"/>
+      <required portTypeRef="//@typeDefinitions.7/@required.1"/>
+      <required portTypeRef="//@typeDefinitions.7/@required.2"/>
+    </components>
+    <components name="SimpleLight293707815" typeDefinition="//@typeDefinitions.5">
+      <dictionary>
+        <values attribute="//@typeDefinitions.5/@dictionaryType/@attributes.0" value="SimpleLight"/>
+        <values attribute="//@typeDefinitions.5/@dictionaryType/@attributes.1" value="518"/>
+        <values attribute="//@typeDefinitions.5/@dictionaryType/@attributes.2" value="318"/>
+      </dictionary>
+      <provided portTypeRef="//@typeDefinitions.5/@provided.0"/>
+      <provided portTypeRef="//@typeDefinitions.5/@provided.1"/>
+      <provided portTypeRef="//@typeDefinitions.5/@provided.2"/>
+      <required portTypeRef="//@typeDefinitions.5/@required.0"/>
+      <required portTypeRef="//@typeDefinitions.5/@required.1"/>
+    </components>
+    <components name="LCSimpleLight293707815" typeDefinition="//@typeDefinitions.11">
+      <provided portTypeRef="//@typeDefinitions.11/@provided.0"/>
+      <required portTypeRef="//@typeDefinitions.11/@required.0"/>
+      <required portTypeRef="//@typeDefinitions.11/@required.1"/>
+      <required portTypeRef="//@typeDefinitions.11/@required.2"/>
+    </components>
+  </nodes>
+  <typeDefinitions xsi:type="kevoree:ComponentType" name="TimeSwitch" deployUnits="//@deployUnits.0" factoryBean="org.entimid.homesimulator.devices.TimeSwitchFactory" bean="org.entimid.homesimulator.devices.TimeSwitch" startMethod="start" stopMethod="stop" updateMethod="update">
+    <dictionaryType>
+      <attributes name="name"/>
+      <attributes name="xPosition" optional="true"/>
+      <attributes name="yPosition" optional="true"/>
+      <attributes name="login"/>
+      <attributes name="password"/>
+      <defaultValues attribute="//@typeDefinitions.0/@dictionaryType/@attributes.1" value="0"/>
+      <defaultValues attribute="//@typeDefinitions.0/@dictionaryType/@attributes.2" value="0"/>
+      <defaultValues attribute="//@typeDefinitions.0/@dictionaryType/@attributes.3" value="claire@entimid.org"/>
+      <defaultValues attribute="//@typeDefinitions.0/@dictionaryType/@attributes.4" value="000000@"/>
+    </dictionaryType>
+    <required name="on" ref="//@typeDefinitions.1" optional="true" noDependency="false"/>
+    <required name="off" ref="//@typeDefinitions.1" optional="true" noDependency="false"/>
+    <required name="uiService" ref="//@typeDefinitions.2" optional="false" noDependency="false"/>
+  </typeDefinitions>
+  <typeDefinitions xsi:type="kevoree:MessagePortType" name="org.kevoree.framework.MessagePort"/>
+  <typeDefinitions xsi:type="kevoree:ServicePortType" name="org.entimid.homesimulator.services.HomeDrawingService"/>
+  <typeDefinitions xsi:type="kevoree:NodeType" name="JavaSENode"/>
+  <typeDefinitions xsi:type="kevoree:ComponentType" name="HomeDrawing" deployUnits="//@deployUnits.0" factoryBean="org.entimid.homesimulator.HomeDrawingFactory" bean="org.entimid.homesimulator.HomeDrawing" startMethod="start" stopMethod="stop" updateMethod="update">
+    <dictionaryType>
+      <attributes name="name"/>
+      <attributes name="xPosition" optional="true"/>
+      <attributes name="yPosition" optional="true"/>
+      <defaultValues attribute="//@typeDefinitions.4/@dictionaryType/@attributes.1" value="0"/>
+      <defaultValues attribute="//@typeDefinitions.4/@dictionaryType/@attributes.2" value="0"/>
+    </dictionaryType>
+    <provided name="uiService" ref="//@typeDefinitions.2">
+      <mappings beanMethodName="repaint" serviceMethodName="repaint"/>
+      <mappings beanMethodName="addComponent" serviceMethodName="addComponent"/>
+      <mappings beanMethodName="removeComponent" serviceMethodName="removeComponent"/>
+    </provided>
+  </typeDefinitions>
+  <typeDefinitions xsi:type="kevoree:ComponentType" name="SimpleLight" deployUnits="//@deployUnits.0" factoryBean="org.entimid.homesimulator.devices.SimpleLightFactory" bean="org.entimid.homesimulator.devices.SimpleLight" startMethod="start" stopMethod="stop" updateMethod="update">
+    <dictionaryType>
+      <attributes name="name"/>
+      <attributes name="xPosition" optional="true"/>
+      <attributes name="yPosition" optional="true"/>
+      <defaultValues attribute="//@typeDefinitions.5/@dictionaryType/@attributes.1" value="0"/>
+      <defaultValues attribute="//@typeDefinitions.5/@dictionaryType/@attributes.2" value="0"/>
+    </dictionaryType>
+    <required name="uiService" ref="//@typeDefinitions.2" optional="false" noDependency="false"/>
+    <required name="status" ref="//@typeDefinitions.1" optional="false" noDependency="false"/>
+    <provided name="on" ref="//@typeDefinitions.1">
+      <mappings beanMethodName="lightOn" serviceMethodName="process"/>
+    </provided>
+    <provided name="off" ref="//@typeDefinitions.1">
+      <mappings beanMethodName="lightOff" serviceMethodName="process"/>
+    </provided>
+    <provided name="onoff" ref="//@typeDefinitions.6">
+      <mappings beanMethodName="lightOn" serviceMethodName="on"/>
+      <mappings beanMethodName="lightOff" serviceMethodName="off"/>
+    </provided>
+  </typeDefinitions>
+  <typeDefinitions xsi:type="kevoree:ServicePortType" name="org.entimid.framework.service.OnOffService">
+    <operations name="on" returnType="//@dataTypes.0"/>
+    <operations name="off" returnType="//@dataTypes.0"/>
+  </typeDefinitions>
+  <typeDefinitions xsi:type="kevoree:ComponentType" name="OnOffSwitch" deployUnits="//@deployUnits.0" factoryBean="org.entimid.homesimulator.devices.OnOffSwitchFactory" bean="org.entimid.homesimulator.devices.OnOffSwitch" startMethod="start" stopMethod="stop" updateMethod="update">
+    <dictionaryType>
+      <attributes name="name"/>
+      <attributes name="xPosition" optional="true"/>
+      <attributes name="yPosition" optional="true"/>
+      <defaultValues attribute="//@typeDefinitions.7/@dictionaryType/@attributes.1" value="0"/>
+      <defaultValues attribute="//@typeDefinitions.7/@dictionaryType/@attributes.2" value="0"/>
+    </dictionaryType>
+    <required name="on" ref="//@typeDefinitions.1" optional="false" noDependency="false"/>
+    <required name="off" ref="//@typeDefinitions.1" optional="false" noDependency="false"/>
+    <required name="uiService" ref="//@typeDefinitions.2" optional="false" noDependency="false"/>
+  </typeDefinitions>
+  <typeDefinitions xsi:type="kevoree:ChannelType" name="defSERVICE" deployUnits="//@deployUnits.2" factoryBean="org.kevoree.library.defaultChannels.defSERVICEFactory" bean="org.kevoree.library.defaultChannels.defSERVICE" startMethod="startHello" stopMethod="stopHello"/>
+  <typeDefinitions xsi:type="kevoree:ChannelType" name="defMSG" deployUnits="//@deployUnits.2" factoryBean="org.kevoree.library.defaultChannels.defMSGFactory" bean="org.kevoree.library.defaultChannels.defMSG" startMethod="startHello" stopMethod="stopHello" updateMethod="updateHello"/>
+  <typeDefinitions xsi:type="kevoree:ComponentType" name="ElderlyScreen" deployUnits="//@deployUnits.3" factoryBean="org.entimid.ui.elderly.ElderlyScreenFactory" bean="org.entimid.ui.elderly.ElderlyScreen" startMethod="start" stopMethod="stop" updateMethod="update">
+    <dictionaryType>
+      <attributes name="navigationMode"/>
+      <defaultValues attribute="//@typeDefinitions.10/@dictionaryType/@attributes.0" value="FZ"/>
+    </dictionaryType>
+    <required name="screen" ref="//@typeDefinitions.1" optional="false" noDependency="false"/>
+    <provided name="uiLightPanel" ref="//@typeDefinitions.1">
+      <mappings beanMethodName="processUiLightPanel" serviceMethodName="process"/>
+    </provided>
+  </typeDefinitions>
+  <typeDefinitions xsi:type="kevoree:ComponentType" name="LightControl" deployUnits="//@deployUnits.3" factoryBean="org.entimid.ui.elderly.LightControlFactory" bean="org.entimid.ui.elderly.LightControl" startMethod="start" stopMethod="stop" updateMethod="update">
+    <required name="on" ref="//@typeDefinitions.1" optional="false" noDependency="true"/>
+    <required name="off" ref="//@typeDefinitions.1" optional="false" noDependency="true"/>
+    <required name="uiLightPanel" ref="//@typeDefinitions.1" optional="false" noDependency="false"/>
+    <provided name="status" ref="//@typeDefinitions.1">
+      <mappings beanMethodName="processStatus" serviceMethodName="process"/>
+    </provided>
+  </typeDefinitions>
+  <typeDefinitions xsi:type="kevoree:ComponentType" name="LightsPanelAdaptor" deployUnits="//@deployUnits.3" factoryBean="org.entimid.ui.elderly.Reasoner.LightsPanelAdaptorFactory" bean="org.entimid.ui.elderly.Reasoner.LightsPanelAdaptor" startMethod="start" stopMethod="stop" updateMethod="update"/>
+  <typeDefinitions xsi:type="kevoree:ComponentType" name="EnTiMidUiFrame" deployUnits="//@deployUnits.5" factoryBean="org.entimid.ui.main.EnTiMidUiFrameFactory" bean="org.entimid.ui.main.EnTiMidUiFrame" startMethod="start" stopMethod="stop" updateMethod="update">
+    <required name="log" ref="//@typeDefinitions.1" optional="true" noDependency="false"/>
+    <provided name="screen" ref="//@typeDefinitions.1">
+      <mappings beanMethodName="handleScreenPortMessage" serviceMethodName="process"/>
+    </provided>
+  </typeDefinitions>
+  <repositories units="//@deployUnits.0" url="http://authreader:pass@maven.entimid.org/neociti-snapshot/"/>
+  <repositories url="http://maven.kevoree.org/release"/>
+  <repositories url="http://authreader:pass@maven.entimid.org/entimid-release/"/>
+  <repositories url="http://authreader:pass@maven.entimid.org/entimid-snapshot/"/>
+  <repositories url="http://repo1.maven.org/maven2"/>
+  <repositories units="//@deployUnits.2" url="http://maven.kevoree.org/libs-release-local"/>
+  <repositories url="http://scala-tools.org/repo-releases"/>
+  <repositories units="//@deployUnits.3 //@deployUnits.5" url="http://maven.entimid.org/entimid-snapshot"/>
+  <repositories url="http://maven.kevoree.org/libs-snapshot-local"/>
+  <repositories url="http://authreader:pass@maven.entimid.org/entimid-release"/>
+  <repositories url="http://authreader:pass@maven.entimid.org/entimid-snapshot"/>
+  <dataTypes name="void"/>
+  <dataTypes name="javax.swing.JComponent"/>
+  <libraries name="EnTiMid-HomeSimulator" subTypes="//@typeDefinitions.0 //@typeDefinitions.4 //@typeDefinitions.5 //@typeDefinitions.7"/>
+  <libraries name="Kevoree-Android-JavaSE" subTypes="//@typeDefinitions.8 //@typeDefinitions.9"/>
+  <libraries name="EnTiMid - UI" subTypes="//@typeDefinitions.10 //@typeDefinitions.11 //@typeDefinitions.12 //@typeDefinitions.13"/>
+  <hubs name="uiHub20134230" typeDefinition="//@typeDefinitions.8" metaData="x=50,y=50"/>
+  <hubs name="hub1895423629" typeDefinition="//@typeDefinitions.9" metaData="x=50,y=50"/>
+  <hubs name="SimpleLight293707815uiLightPanel" typeDefinition="//@typeDefinitions.9" metaData="x=50,y=50"/>
+  <hubs name="SimpleLight293707815on" typeDefinition="//@typeDefinitions.9" metaData="x=50,y=50"/>
+  <hubs name="SimpleLight293707815off" typeDefinition="//@typeDefinitions.9" metaData="x=50,y=50"/>
+  <hubs name="SimpleLight293707815status" typeDefinition="//@typeDefinitions.9" metaData="x=50,y=50"/>
+  <mBindings port="//@nodes.0/@components.0/@provided.0" hub="//@hubs.0"/>
+  <mBindings port="//@nodes.0/@components.1/@required.0" hub="//@hubs.1"/>
+  <mBindings port="//@nodes.0/@components.3/@provided.0" hub="//@hubs.1"/>
+  <mBindings port="//@nodes.0/@components.4/@required.2" hub="//@hubs.0"/>
+  <mBindings port="//@nodes.0/@components.5/@required.0" hub="//@hubs.0"/>
+  <mBindings port="//@nodes.0/@components.6/@required.2" hub="//@hubs.2"/>
+  <mBindings port="//@nodes.0/@components.1/@provided.0" hub="//@hubs.2"/>
+  <mBindings port="//@nodes.0/@components.6/@required.0" hub="//@hubs.3"/>
+  <mBindings port="//@nodes.0/@components.5/@provided.0" hub="//@hubs.3"/>
+  <mBindings port="//@nodes.0/@components.6/@required.1" hub="//@hubs.4"/>
+  <mBindings port="//@nodes.0/@components.5/@provided.1" hub="//@hubs.4"/>
+  <mBindings port="//@nodes.0/@components.6/@provided.0" hub="//@hubs.5"/>
+  <mBindings port="//@nodes.0/@components.5/@required.1" hub="//@hubs.5"/>
+  <deployUnits groupName="org.entimid" unitName="org.entimid.homesimulator" version="1.0.0-RC3-SNAPSHOT" hashcode="201105311519740" requiredLibs="//@deployUnits.1" targetNodeType="//@typeDefinitions.3"/>
+  <deployUnits name="org.entimid.framework" url="mvn:org.entimid/framework/3.0.0-SNAPSHOT" targetNodeType="//@typeDefinitions.3"/>
+  <deployUnits groupName="org.kevoree.library.javase" unitName="org.kevoree.library.javase.defaultChannels" version="1.1.0-RC2" hashcode="201105171343344" targetNodeType="//@typeDefinitions.3"/>
+  <deployUnits groupName="org.entimid" unitName="ui.elderly" version="3.0.0-SNAPSHOT" hashcode="201106281640322" requiredLibs="//@deployUnits.1 //@deployUnits.4" targetNodeType="//@typeDefinitions.3"/>
+  <deployUnits name="org.entimid.ui.main" url="mvn:org.entimid/ui.main/3.0.0-SNAPSHOT" targetNodeType="//@typeDefinitions.3"/>
+  <deployUnits groupName="org.entimid" unitName="ui.main" version="3.0.0-SNAPSHOT" hashcode="201106281639034" requiredLibs="//@deployUnits.1" targetNodeType="//@typeDefinitions.3"/>
+</kevoree:ContainerRoot>

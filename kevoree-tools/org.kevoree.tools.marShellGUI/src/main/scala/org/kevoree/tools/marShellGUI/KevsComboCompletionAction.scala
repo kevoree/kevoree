@@ -176,7 +176,7 @@ class KevsComboCompletionAction extends ComboCompletionAction {
       case Some(model) => {
         val items = new java.util.ArrayList[String]()
         model.getHubs.foreach {
-          hub =>
+          hub =>println
             items.add(hub.getName)
         }
         this.setItems(items)

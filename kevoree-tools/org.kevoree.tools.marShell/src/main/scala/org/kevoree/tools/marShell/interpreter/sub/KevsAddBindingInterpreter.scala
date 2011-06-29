@@ -23,8 +23,11 @@ import org.kevoree.tools.marShell.ast.AddBindingStatment
 import org.kevoree.tools.marShell.interpreter.KevsAbstractInterpreter
 import org.kevoree.tools.marShell.interpreter.KevsInterpreterContext
 import scala.collection.JavaConversions._
+import org.slf4j.LoggerFactory
 
 case class KevsAddBindingInterpreter(addBinding : AddBindingStatment) extends KevsAbstractInterpreter {
+
+  var logger = LoggerFactory.getLogger(this.getClass);
 
   def interpret(context : KevsInterpreterContext):Boolean={
     addBinding.cid.nodeName match {
@@ -49,23 +52,23 @@ case class KevsAddBindingInterpreter(addBinding : AddBindingStatment) extends Ke
                             if(newbinding.getPort != null){
                               context.model.getMBindings.add(newbinding);true
                             } else {
-                              println("Port not found => "+addBinding.portName)
+                              logger.error("Port not found => "+addBinding.portName)
                               false
                             }
                           }
-                        case None => println("Hub not found => "+addBinding.bindingInstanceName);false
+                        case None => logger.error("Hub not found => "+addBinding.bindingInstanceName);false
                       }
 
                     }
-                  case None => println("Component not found => "+addBinding.cid.componentInstanceName);false
+                  case None => logger.error("Component not found => "+addBinding.cid.componentInstanceName);false
                 }
 
 
               }
-            case None => println("Node not found => "+addBinding.cid.nodeName);false
+            case None => logger.error("Node not found => "+addBinding.cid.nodeName);false
           }
         }
-      case None => println("NodeName is mandatory !");false
+      case None => logger.error("NodeName is mandatory !");false
     }
 
     

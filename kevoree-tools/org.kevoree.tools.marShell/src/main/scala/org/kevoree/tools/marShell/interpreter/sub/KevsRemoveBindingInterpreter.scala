@@ -23,8 +23,11 @@ import org.kevoree.tools.marShell.interpreter.KevsAbstractInterpreter
 import org.kevoree.tools.marShell.interpreter.KevsInterpreterContext
 import scala.collection.JavaConversions._
 import org.kevoree.tools.marShell.ast.{RemoveBindingStatment, AddBindingStatment}
+import org.slf4j.LoggerFactory
 
 case class KevsRemoveBindingInterpreter(removeBinding: RemoveBindingStatment) extends KevsAbstractInterpreter {
+
+  var logger = LoggerFactory.getLogger(this.getClass)
 
   def interpret(context: KevsInterpreterContext): Boolean = {
     removeBinding.cid.nodeName match {
@@ -41,22 +44,22 @@ case class KevsRemoveBindingInterpreter(removeBinding: RemoveBindingStatment) ex
                         //LOOK for previous binding
                         context.model.getMBindings.find(mb => mb.getHub == targetHub && mb.getPort == port) match {
                           case Some(previousMB) => context.model.getMBindings.remove(previousMB); true
-                          case None => println("Previous binding not found => " + removeBinding.bindingInstanceName); false
+                          case None => logger.error("Previous binding not found => " + removeBinding.bindingInstanceName); false
                         }
                       }
-                      case None => println("Port not found => " + removeBinding.portName); false
+                      case None => logger.error("Port not found => " + removeBinding.portName); false
                     }
                   }
-                  case None => println("Hub not found => " + removeBinding.bindingInstanceName); false
+                  case None => logger.error("Hub not found => " + removeBinding.bindingInstanceName); false
                 }
               }
-              case None => println("Component not found => " + removeBinding.cid.componentInstanceName); false
+              case None => logger.error("Component not found => " + removeBinding.cid.componentInstanceName); false
             }
           }
-          case None => println("Node not found => " + removeBinding.cid.nodeName); false
+          case None => logger.error("Node not found => " + removeBinding.cid.nodeName); false
         }
       }
-      case None => println("NodeName is mandatory !"); false
+      case None => logger.error("NodeName is mandatory !"); false
     }
 
 

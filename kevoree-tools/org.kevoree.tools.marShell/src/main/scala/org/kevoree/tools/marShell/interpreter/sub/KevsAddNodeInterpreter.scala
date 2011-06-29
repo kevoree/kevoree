@@ -25,17 +25,20 @@ import org.kevoree.tools.marShell.interpreter.KevsAbstractInterpreter
 import org.kevoree.tools.marShell.interpreter.KevsInterpreterContext
 import scala.collection.JavaConversions._
 import org.kevoree.tools.marShell.interpreter.utils.Merger
+import org.slf4j.LoggerFactory
 
 case class KevsAddNodeInterpreter(addN: AddNodeStatment) extends KevsAbstractInterpreter {
+
+  var logger = LoggerFactory.getLogger(this.getClass)
 
   def interpret(context: KevsInterpreterContext): Boolean = {
 
     context.model.getTypeDefinitions.find(p => p.getName == addN.nodeTypeName && p.isInstanceOf[NodeType]) match {
-      case None => println("Node Type not found for name " + addN.nodeTypeName); false
+      case None => logger.error("Node Type not found for name " + addN.nodeTypeName); false
       case Some(nodeType) => {
         context.model.getNodes.find(n => n.getName == addN.nodeName) match {
           case Some(e) => {
-            println("Warning : Node Already exist with name " + e.getName)
+            logger.warn("Node Already exist with name " + e.getName)
             if (e.getTypeDefinition == null) {
               context.model.getTypeDefinitions.find(td => td.getName == addN.nodeTypeName) match {
                 case Some(td) => {
@@ -44,7 +47,7 @@ case class KevsAddNodeInterpreter(addN: AddNodeStatment) extends KevsAbstractInt
                   true
                 }
                 case None => {
-                  println("Error : Type definition not found "+addN.nodeTypeName)
+                  logger.error("Type definition not found "+addN.nodeTypeName)
                   false
                 }
               }
@@ -54,7 +57,7 @@ case class KevsAddNodeInterpreter(addN: AddNodeStatment) extends KevsAbstractInt
                 Merger.mergeDictionary(e, addN.props)
                 true
               } else {
-                println("Error : Type != from previous created node")
+                logger.error("Type != from previous created node")
                 false
               }
             }

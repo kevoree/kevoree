@@ -23,11 +23,12 @@ import jsyntaxpane.components.Markers
 import jsyntaxpane.{Token => JTOK }
 import jsyntaxpane.TokenType;import org.kevoree.tools.marShell.lexer.KevsLexical
 import org.kevoree.tools.marShell.parser.KevsParser
+import org.slf4j.LoggerFactory
 
 
 class KevsJSyntaxLexerWrapper extends KevsLexical with jsyntaxpane.Lexer {
 
-
+  var logger = LoggerFactory.getLogger(this.getClass)
 
   override def parse(sgmnt:Segment , i : Int, list: java.util.List[JTOK] ) = {
 
@@ -79,7 +80,7 @@ class KevsJSyntaxLexerWrapper extends KevsLexical with jsyntaxpane.Lexer {
       case slit : StringLit => TokenType.STRING
       case i : KIncomplet => TokenType.ERROR
 
-      case _ => println(tok.getClass.getName);TokenType.DEFAULT
+      case _ => logger.info(tok.getClass.getName);TokenType.DEFAULT
     }
   }
 
