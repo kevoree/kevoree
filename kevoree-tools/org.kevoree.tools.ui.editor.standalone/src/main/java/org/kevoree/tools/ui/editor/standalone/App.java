@@ -28,6 +28,7 @@ import com.explodingpixels.macwidgets.*;
 import org.jdesktop.swingx.JXMultiSplitPane;
 import org.jdesktop.swingx.MultiSplitLayout;
 import org.kevoree.tools.ui.editor.KevoreeEditor;
+import sun.awt.SunHints;
 
 /**
  * Hello world!
@@ -35,7 +36,9 @@ import org.kevoree.tools.ui.editor.KevoreeEditor;
 public class App {
 
     static Boolean consoleShow = false;
+    static Boolean kevsShow = false;
     static int dividerPos = 0;
+    static LocalKevsShell kevsPanel = new LocalKevsShell();
 
     public static void main(final String[] args) {
 
@@ -54,6 +57,7 @@ public class App {
                 System.setProperty("apple.laf.useScreenMenuBar", "true");
 
                 final KevoreeEditor artpanel = new KevoreeEditor();
+                kevsPanel.setKernel(artpanel.getPanel().getKernel());
 
                 String frameName = "Kevoree Editor";
 
@@ -69,17 +73,14 @@ public class App {
 
 
                 UnifiedToolBar toolBar = new UnifiedToolBar();
-               // JButton button = new JButton("Toogle console");
-               // button.putClientProperty("JButton.buttonType", "textured");
+                // JButton button = new JButton("Toogle console");
+                // button.putClientProperty("JButton.buttonType", "textured");
 
 
                 AbstractButton toogleConsole = null;
                 try {
                     java.net.URL url = App.class.getClassLoader().getResource("terminal.png");
                     ImageIcon icon = new ImageIcon(url);
-                    //button.setIcon(icon);
-
-
                     toogleConsole =
                             MacButtonFactory.makeUnifiedToolBarButton(
                                     new JButton("Console", icon));
@@ -90,7 +91,18 @@ public class App {
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-
+                AbstractButton toogleKevScriptEditor = null;
+                try {
+                    java.net.URL url = App.class.getClassLoader().getResource("runprog.png");
+                    ImageIcon icon = new ImageIcon(url);
+                    toogleKevScriptEditor =
+                            MacButtonFactory.makeUnifiedToolBarButton(
+                                    new JButton("KevScript", icon));
+                    toogleKevScriptEditor.setEnabled(false);
+                    toolBar.addComponentToLeft(toogleKevScriptEditor);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
 
 
                 jframe.add(toolBar.getComponent(), BorderLayout.NORTH);
@@ -119,13 +131,15 @@ public class App {
               multiSplitPane.add(new LogPanel(), "bottom");
                 */
 
+                final LogPanel logPanel = new LogPanel() ;
+
                 final JSplitPane splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT,
-                        artpanel.getPanel(), new LogPanel());
+                        artpanel.getPanel(), logPanel);
                 //splitPane.setResizeWeight(0.3);
                 splitPane.setOneTouchExpandable(true);
                 splitPane.setContinuousLayout(true);
                 splitPane.setDividerSize(6);
-                splitPane.setDividerLocation(500);
+                splitPane.setDividerLocation(-100);
                 splitPane.setResizeWeight(1.0);
                 splitPane.setBorder(null);
 
@@ -149,11 +163,15 @@ public class App {
 
                 assert toogleConsole != null;
                 final AbstractButton finalToogleConsole = toogleConsole;
+                assert toogleKevScriptEditor != null;
+                final AbstractButton finalToogleKevScriptEditor = toogleKevScriptEditor ;
                 toogleConsole.addMouseListener(new MouseAdapter() {
                     @Override
                     public void mouseClicked(MouseEvent mouseEvent) {
 
                         finalToogleConsole.setEnabled(!finalToogleConsole.isEnabled());
+                        finalToogleKevScriptEditor.setEnabled(false);
+                        kevsShow = false;
                         if (consoleShow) {
                             dividerPos = splitPane.getDividerLocation();
                             p.removeAll();
@@ -162,9 +180,11 @@ public class App {
                             p.revalidate();
 
                         } else {
+                            dividerPos = splitPane.getDividerLocation();
                             p.removeAll();
                             p.add(splitPane, BorderLayout.CENTER);
                             splitPane.setTopComponent(artpanel.getPanel());
+                            splitPane.setBottomComponent(logPanel);
                             splitPane.setDividerLocation(dividerPos);
                             p.repaint();
                             p.revalidate();
@@ -173,7 +193,39 @@ public class App {
                         consoleShow = !consoleShow;
                     }
                 });
+                toogleKevScriptEditor.addMouseListener(new MouseAdapter() {
+                    @Override
+                    public void mouseClicked(MouseEvent mouseEvent) {
+                        finalToogleKevScriptEditor.setEnabled(!finalToogleKevScriptEditor.isEnabled());
+                        finalToogleConsole.setEnabled(false);
+                        consoleShow = false;
+                        if (kevsShow) {
+                            dividerPos = splitPane.getDividerLocation();
+                            p.removeAll();
+                            p.add(artpanel.getPanel(), BorderLayout.CENTER);
+                            p.repaint();
+                            p.revalidate();
+
+                        } else {
+                            dividerPos = splitPane.getDividerLocation();
+                            p.removeAll();
+                            p.add(splitPane, BorderLayout.CENTER);
+                            splitPane.setTopComponent(artpanel.getPanel());
+                            //LocalKevsShell kevsPanel = new LocalKevsShell();
+
+                            splitPane.setBottomComponent(kevsPanel);
+                            splitPane.setDividerLocation(dividerPos);
+                            p.repaint();
+                            p.revalidate();
+
+                        }
+                        kevsShow = !kevsShow;
+                    }
+                });
+
+
                 dividerPos = splitPane.getDividerLocation();
+
 
             }
         });

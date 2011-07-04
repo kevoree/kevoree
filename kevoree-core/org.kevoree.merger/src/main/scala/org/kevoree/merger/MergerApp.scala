@@ -36,12 +36,12 @@ object MergerApp {
 
   
     //var model1 = KevoreeXmiHelper.load("/Users/ffouquet/Documents/DEV/dukeboard_github/kevoree/kevoree-core/org.kevoree.merger/src/test/resources/nodeType/defchannels1.1.0.kev")
-    var model1 = KevoreeXmiHelper.load("/Users/ffouquet/Documents/DEV/dukeboard_github/kevoree/kevoree-library/org.kevoree.library.arduino.nodeType/src/test/resources/models/TempSensorAlone.kev")
-    var model2 = KevoreeXmiHelper.load("/Users/ffouquet/Documents/DEV/dukeboard_github/kevoree/kevoree-library/org.kevoree.library.arduino.channels/target/generated-sources/kevoree/KEV-INF/lib.kev")
+    var model1 = KevoreeXmiHelper.load("/Users/ffouquet/Downloads/initial.kev")
+    var model2 = KevoreeXmiHelper.load("/Users/ffouquet/Downloads/tmp.kev")
     
     merger.merge(model1, model2)
 
-    KevoreeXmiHelper.save("/Users/ffouquet/Documents/DEV/dukeboard_github/kevoree/kevoree-core/org.kevoree.merger/src/test/resources/deployUnit/merged.kev", model1)
+    KevoreeXmiHelper.save("/Users/ffouquet/Downloads/merged.kev", model1)
 
   }
   

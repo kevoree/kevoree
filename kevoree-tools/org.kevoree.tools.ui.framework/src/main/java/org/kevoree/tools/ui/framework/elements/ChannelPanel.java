@@ -125,7 +125,7 @@ public class ChannelPanel extends JPanel implements TitledElement,SelectElement 
         }
         g2.drawOval(x, y, w, h);//, arc, arc);
 
-        g2.setColor(Color.BLACK);
+        g2.setColor(Color.WHITE);
         g2.setFont(new Font("Monospaced", Font.BOLD, 9));
         //g2.drawChars(title.toCharArray(), 0, title.length(), 0, 5);
 

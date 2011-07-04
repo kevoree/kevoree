@@ -107,13 +107,13 @@ public class Main {
         model.addBinding(b);
 
         Binding sb = new Binding(Binding.Type.input);
-        sb.setSelected(true);
+        sb.setSelected(false);
         sb.setFrom(p12);
         sb.setTo(p23);
         model.addBinding(sb);
 
         Binding mb = new Binding(Binding.Type.ouput);
-        mb.setSelected(true);
+        mb.setSelected(false);
         mb.setFrom(p24);
         mb.setTo(hub1);
         model.addBinding(mb);
@@ -137,13 +137,13 @@ public class Main {
         node2.add(c4);
 
 
-        ZoomPanel zpanel = new ZoomPanel();
-        zpanel.setLayout(new BorderLayout());
-        zpanel.add(model, BorderLayout.CENTER);
-        zpanel.changeZoom(1);
+      //  ZoomPanel zpanel = new ZoomPanel();
+       // zpanel.setLayout(new BorderLayout());
+       // zpanel.add(model, BorderLayout.CENTER);
+      //  zpanel.changeZoom(1);
 
 
-        JScrollPane scrollPane = new JScrollPane(zpanel, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
+        JScrollPane scrollPane = new JScrollPane(model, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
         IAppWidgetFactory.makeIAppScrollPane(scrollPane);
 
 
