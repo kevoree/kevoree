@@ -26,6 +26,9 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.RenderingHints;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseMotionAdapter;
 import java.awt.geom.QuadCurve2D;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -40,8 +43,68 @@ public class BindingPanel extends JPanel {
 
     private Collection<Binding> bindings = new ArrayList();
 
+    private JPanel mySelf;
+
+
+    @Override
+    public boolean contains(int x, int y) {
+        for (Binding b : bindings) {
+            Point p1 = null;
+            Point ptemp = new Point();
+            ptemp = b.getFrom().getLocationOnScreen();
+            ptemp.setLocation(ptemp.getX() + (b.getFrom().getWidth() / 2), ptemp.getY() + (b.getFrom().getHeight() / 2));
+            SwingUtilities.convertPointFromScreen(ptemp, mySelf);
+            p1 = ptemp;
+            Point p2 = null;
+            ptemp = b.getTo().getLocationOnScreen();
+            ptemp.setLocation(ptemp.getX() + (b.getTo().getWidth() / 2), ptemp.getY() + (b.getTo().getHeight() / 2));
+            SwingUtilities.convertPointFromScreen(ptemp, mySelf);
+            p2 = ptemp;
+            if (p1 != null && p2 != null) {
+                Point intermed = new Point();
+                intermed.y = Math.max(p2.y, p1.y) + 15;
+                intermed.x = (p2.x + p1.x) / 2;
+                QuadCurve2D curve = new QuadCurve2D.Float(p1.x, p1.y, intermed.x, intermed.y, p2.x, p2.y);
+                if (curve.contains(x, y)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
     public BindingPanel() {
         this.setOpaque(false);
+        mySelf = this;
+        this.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent mouseEvent) {
+
+               // System.out.println("Hi" + mouseEvent.getPoint().getX() + "-" + mouseEvent.getPoint().getY());
+                for (Binding b : bindings) {
+                    Point p1 = null;
+                    Point ptemp = new Point();
+                    ptemp = b.getFrom().getLocationOnScreen();
+                    ptemp.setLocation(ptemp.getX() + (b.getFrom().getWidth() / 2), ptemp.getY() + (b.getFrom().getHeight() / 2));
+                    SwingUtilities.convertPointFromScreen(ptemp, mySelf);
+                    p1 = ptemp;
+                    Point p2 = null;
+                    ptemp = b.getTo().getLocationOnScreen();
+                    ptemp.setLocation(ptemp.getX() + (b.getTo().getWidth() / 2), ptemp.getY() + (b.getTo().getHeight() / 2));
+                    SwingUtilities.convertPointFromScreen(ptemp, mySelf);
+                    p2 = ptemp;
+                    if (p1 != null && p2 != null) {
+                        Point intermed = new Point();
+                        intermed.y = Math.max(p2.y, p1.y) + 15;
+                        intermed.x = (p2.x + p1.x) / 2;
+                        QuadCurve2D curve = new QuadCurve2D.Float(p1.x, p1.y, intermed.x, intermed.y, p2.x, p2.y);
+                        if (curve.contains(mouseEvent.getX(), mouseEvent.getY())) {
+                            b.triggerListeners();
+                        }
+                    }
+                }
+            }
+        });
     }
 
     public void addBinding(Binding b) {
@@ -66,7 +129,7 @@ public class BindingPanel extends JPanel {
 
     public void drawCable(Graphics2D g2D, Point start, Point end) {
         Point intermed = new Point();
-        intermed.y = Math.max(end.y, start.y) + 30;
+        intermed.y = Math.max(end.y, start.y) + 15;
         intermed.x = (end.x + start.x) / 2;
         g2D.draw(new QuadCurve2D.Float(start.x, start.y, intermed.x, intermed.y, end.x, end.y));
     }

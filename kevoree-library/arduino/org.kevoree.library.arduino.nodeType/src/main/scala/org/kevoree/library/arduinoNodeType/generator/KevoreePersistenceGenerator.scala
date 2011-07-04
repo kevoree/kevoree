@@ -33,7 +33,7 @@ trait KevoreePersistenceGenerator extends KevoreeCAbstractGenerator {
     if (pm.equals(PMemory.SD)) {
       context b "  file.seekSet(preciseIndex);                             "
       context b "  file.write(b);                                         "
-      context b "  file.sync();                                         "
+      context b "  if(b == endAdminChar | b == sepAdminChar) file.sync();                                         "
     }
     context b "}                                                        "
   }
@@ -46,7 +46,7 @@ trait KevoreePersistenceGenerator extends KevoreeCAbstractGenerator {
     if (pm.equals(PMemory.SD)) {
       context b "  file.seekSet(eepromIndex);                             "
       context b "  file.write(b);                                         "
-      context b "  file.sync();                                         "
+      context b "  if(b == endAdminChar | b == sepAdminChar) file.sync();                                         "
       context b "  eepromIndex++;                                         "
     }
     context b "}                                                        "
@@ -61,7 +61,7 @@ trait KevoreePersistenceGenerator extends KevoreeCAbstractGenerator {
       context h "Fat16 file;"
       context b "if (!card.init()) Serial.println(\"error.card.init\"); "
       context b "if (!Fat16 :: init(& card)) Serial.println(\"Fat16::init\");    "
-      context b "if (file.open(\"PKEVS\", O_CREAT | O_SYNC |O_RDWR)) Serial.println(\"Fat16::open\");  "
+      context b "if (file.open(\"PKEVS\", O_CREAT |O_RDWR)) Serial.println(\"Fat16::open\");  "
 
       context b "  file.writeError = false;                        "
       context b "  file.rewind();                                   "

@@ -27,13 +27,13 @@ object AppRunner extends App {
 
   ArduinoHomeFinder.checkArduinoHome()
 
-  val expes = List(new Experiment1, new Experiment2, new Experiment3, new Experiment4, new Experiment5)
+ // val expes = List(new Experiment1, new Experiment2, new Experiment3, new Experiment4, new Experiment5)
 
-  var expe = expes(4)
+  var expe = new BootInfluenceMega//expes(4)
  // expe.boardPortName = "/dev/tty.usbmodem411"
  // expe.boardTypeName = "mega2560"
-  expe.boardPortName = "/dev/tty.usbserial-A400g2se"
-  expe.boardTypeName = "atmega328"
+ // expe.boardPortName = "/dev/tty.usbserial-A400g2se"
+ // expe.boardTypeName = "atmega328"
 
   // expes.foreach{ expe =>
   runExperiment(expe);

@@ -44,7 +44,7 @@ abstract class AbstractExperiment {
 
       override def beginTask(s: String, i: java.lang.Integer) {}
     }
-    var newdirTarget: File = new File("arduinoGenerated" + knodeName + "/target")
+    val newdirTarget: File = new File("arduinoGenerated" + knodeName + "/target")
     org.kevoree.library.arduinoNodeType.FileHelper.createAndCleanDirectory(newdirTarget)
 
     TargetDirectoryService.rootPath = newdirTarget.getAbsolutePath

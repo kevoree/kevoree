@@ -44,7 +44,7 @@ public class KevoreeEditor {
         menubar = new KevoreeMenuBar(panel.getKernel());
     }
 
-    public JPanel getPanel(){
+    public KevoreeEditorPanel getPanel(){
         return panel;
     }
 

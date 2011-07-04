@@ -41,7 +41,7 @@ trait KevoreeCFrameworkGenerator extends KevoreeCAbstractGenerator {
 
 
 
-    context h "#define MAX_INST_ID 15"
+    context h "#define MAX_INST_ID 15"  //TO CHANGE
 
     val random = new Random
     context h ("#define kevoreeID1 " + random.nextInt(10))

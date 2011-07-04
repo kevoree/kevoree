@@ -42,7 +42,7 @@ class Experiment5 extends AbstractExperiment {
 
   def runExperiment(_twa: TwoWayActors) {
     twa = _twa;
-    for (i <- 0 until 50) {
+    for (i <- 0 until 100) {
       doPhase(i)
     }
   }

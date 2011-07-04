@@ -146,11 +146,11 @@
         </repository>
         <repository>
             <id>kevoree-libs-release-local</id>
-            <url>http://maven.kevoree.org/libs-release-local</url>
+            <url>http://maven2.kevoree.org/release</url>
         </repository>
                 <repository>
             <id>kevoree-snapshots</id>
-            <url>http://maven.kevoree.org/snapshots</url>
+            <url>http://maven2.kevoree.org/snapshots</url>
         </repository> 
     </repositories>
 
@@ -162,15 +162,14 @@
         </pluginRepository>
         <pluginRepository>
             <id>plugin.kevoree-github</id>
-            <url>http://maven.kevoree.org/plugins-release-local</url>
+            <url>http://maven2.kevoree.org/release</url>
         </pluginRepository>
         <pluginRepository>
             <id>plugin.kevoree-snapshots</id>
-            <url>http://maven.kevoree.org/snapshots</url>
+            <url>http://maven2.kevoree.org/snapshots</url>
         </pluginRepository> 
         
     </pluginRepositories>
-
 
     <modules>
         <module>../org.kevoree.tools.annotation.api</module>
@@ -188,23 +187,7 @@
         <module>../org.kevoree.tools.marShellRemoteGUI</module>
         <module>../org.kevoree.tools.dpa</module>
         <module>../org.kevoree.tools.ui.editor.standalone</module>
-        
     </modules>
-
-<!--
-    <distributionManagement>
-        <repository>
-            <id>embedded-repo</id>
-            <url>file:${basedir}/../../../kevoreePages/maven</url>
-            <uniqueVersion>false</uniqueVersion>
-        </repository>
-        <snapshotRepository>
-            <id>embedded-repo-snapshot</id>
-            <url>file:${basedir}/../../../kevoreePages/maven</url>
-            <uniqueVersion>false</uniqueVersion>
-        </snapshotRepository>
-    </distributionManagement>
-    -->
     
     <properties>
         <emf.version>2.6.0</emf.version>
@@ -218,17 +201,14 @@
     
    
     <distributionManagement>
-    <repository>
-        <id>maven.kevoree.org-releases</id>
-        <name>maven.kevoree.org-releases</name>
-        <url>${releaseUrl}</url>
-    </repository>
-            <snapshotRepository>
-        <id>maven.kevoree.org-snapshots</id>
-        <name>maven.kevoree.org-snapshots</name>
-        <url>http://maven.kevoree.org/libs-snapshot-local</url>
-    	</snapshotRepository>
-    
-	</distributionManagement>
+        <repository>
+            <id>maven2.kevoree.release</id>
+            <url>http://maven2.kevoree.org/archiva/repository/release/</url>
+        </repository>
+        <snapshotRepository>
+            <id>maven2.kevoree.snapshots</id>
+            <url>http://maven2.kevoree.org/archiva/repository/snapshots/</url>
+        </snapshotRepository>
+    </distributionManagement>
 
 </project>
