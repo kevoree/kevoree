@@ -115,9 +115,13 @@
                         <option>-keep class org.kevoree.kompare.** { *; }</option>
                         <option>-keep class scala.collection.immutable.HashMap { *; }</option>
                         <option>-keep class scala.Predef** { *; }</option>
-                        <option>-keep class scala.collection.immutable.** { *; }</option>
+                        <option>-keep class scala.collection.** { *; }</option>
                         <option>-keep class scala.actors.** { *; }</option>
+                        <option>-keep class scala.io.** { *; }</option>
+                        <option>-keep class scala.util.control.** { *; }</option>
+                        <option>-keep class scala.util.parsing.** { *; }</option>
                         <option>-keep class org.kevoree.** { *; }</option>
+                        <option>-keep class org.slf4j.** { *; }</option>
                         <option>-keepattributes *Annotation*</option>
                         <option>-keepattributes **</option>
 
@@ -229,6 +233,10 @@
                                 <groupId>com.jgoodies</groupId>
                                 <artifactId>forms</artifactId>
                             </inclusion>
+                            <inclusion>
+                                <groupId>com.apple</groupId>
+                                <artifactId>AppleJavaExtensions</artifactId>
+                            </inclusion>
 
                         </inclusions>
                     </assembly>
@@ -287,5 +295,20 @@
             <artifactId>org.kevoree.tools.ui.editor</artifactId>
             <version>${kevoree.version}</version>
         </dependency>
+        <dependency>
+            <groupId>com.apple</groupId>
+            <artifactId>AppleJavaExtensions</artifactId>
+            <version>1.4</version>
+        </dependency>
     </dependencies>
+
+    <repositories>
+        <repository>
+            <id>java.net-m2</id>
+            <name>java.net - Maven 2</name>
+            <url>https://repository.jboss.org/nexus/content/repositories/java.net-m2</url>
+        </repository>
+    </repositories>
+
+
 </project>

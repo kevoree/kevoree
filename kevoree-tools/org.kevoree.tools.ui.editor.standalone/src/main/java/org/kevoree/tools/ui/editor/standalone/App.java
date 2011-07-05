@@ -59,6 +59,13 @@ public class App {
                 final KevoreeEditor artpanel = new KevoreeEditor();
                 kevsPanel.setKernel(artpanel.getPanel().getKernel());
 
+
+                if(System.getProperty("os.name").toLowerCase().contains("mac")){
+                    System.out.println("Mac detected");
+                    MacIntegration.addOSXIntegration(artpanel);
+                }
+
+
                 String frameName = "Kevoree Editor";
 
                 if (!artpanel.getEditorVersion().equals("")) {
