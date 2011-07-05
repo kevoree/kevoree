@@ -14,13 +14,14 @@ import org.kevoree.ContainerRoot
 import org.kevoree.Instance
 import org.kevoree.TypeDefinition
 import scala.collection.JavaConversions._
+import templates.SimpleCopyTemplate
 import util.Random
 import org.kevoree.library.arduinoNodeType.ArduinoBoardType._
 import org.kevoree.library.arduinoNodeType.ArduinoBoardType
 
 trait KevoreeCFrameworkGenerator extends KevoreeCAbstractGenerator {
 
-  def generateKcFrameworkHeaders(types: List[TypeDefinition],boardType : ArduinoBoardType): Unit = {
+  def generateKcFrameworkHeaders(types: List[TypeDefinition], boardType: ArduinoBoardType): Unit = {
     context h "#include <QueueList.h>"
     context h "#include <avr/pgmspace.h>"
     context h "#include <avr/wdt.h>"
@@ -32,16 +33,26 @@ trait KevoreeCFrameworkGenerator extends KevoreeCAbstractGenerator {
     context h "#define RBI_C 4"
 
     boardType match {
-      case ArduinoBoardType.atmega328 => { context h "#define EEPROM_MAX_SIZE 1024" }
-      case ArduinoBoardType.atmega1280 => { context h "#define EEPROM_MAX_SIZE 4096" }
-      case ArduinoBoardType.uno => { context h "#define EEPROM_MAX_SIZE 1024" }
-      case ArduinoBoardType.mega2560 => { context h "#define EEPROM_MAX_SIZE 4096" }
-      case _ => { context h "#define EEPROM_MAX_SIZE 1024" }
+      case ArduinoBoardType.atmega328 => {
+        context h "#define EEPROM_MAX_SIZE 1024"
+      }
+      case ArduinoBoardType.atmega1280 => {
+        context h "#define EEPROM_MAX_SIZE 4096"
+      }
+      case ArduinoBoardType.uno => {
+        context h "#define EEPROM_MAX_SIZE 1024"
+      }
+      case ArduinoBoardType.mega2560 => {
+        context h "#define EEPROM_MAX_SIZE 4096"
+      }
+      case _ => {
+        context h "#define EEPROM_MAX_SIZE 1024"
+      }
     }
 
 
 
-    context h "#define MAX_INST_ID 15"  //TO CHANGE
+    context h "#define MAX_INST_ID 15" //TO CHANGE
 
     val random = new Random
     context h ("#define kevoreeID1 " + random.nextInt(10))
@@ -164,79 +175,8 @@ trait KevoreeCFrameworkGenerator extends KevoreeCAbstractGenerator {
 
 
   def generateKcFramework: Unit = {
+    context b SimpleCopyTemplate.copyFromClassPath("templates/KevFrameworkBase.c")
 
-    context b "struct kmessage {char* value;char* metric;};"
-    context b "class KevoreeType { public : int subTypeCode; char instanceName[MAX_INST_ID]; };"
-    //GENERATE kbinding framework
-    context b "struct kbinding { KevoreeType * instance;int portCode; QueueList<kmessage> * port;   };"
-    context b "#define BDYNSTEP 3"
-    context b "class kbindings {"
-    context b " public:"
-    context b " kbinding ** bindings;"
-    context b " int nbBindings;"
-    context b " void init(){ nbBindings = 0; }"
-    context b " int addBinding( KevoreeType * instance , int portCode , QueueList<kmessage> * port){"
-    context b "   kbinding * newBinding = (kbinding*) malloc(sizeof(kbinding));"
-    context b "   if(newBinding){"
-    context b "      memset(newBinding, 0, sizeof(kbinding));"
-    context b "   }"
-    context b "   newBinding->instance=instance;"
-    context b "   newBinding->portCode=portCode;"
-    context b "   newBinding->port = port;"
-
-    /*
-    context b "   kbinding ** newBindings =  (kbinding**) malloc(  (nbBindings+1) * sizeof(kbinding*) );"
-    context b "   if (!newBindings) { return -1;}"
-    context b "   for (int idx=0;idx < nbBindings ; idx++ ){ newBindings[idx] = bindings[idx]; }"
-    context b "   newBindings[nbBindings] = newBinding;"
-    context b "   if(bindings){ free(bindings); }"
-    context b "   bindings = newBindings;"
-    */
-
-    context b "if(nbBindings % BDYNSTEP == 0){"
-    context b "  bindings = (kbinding**) realloc(bindings, (nbBindings+BDYNSTEP) * sizeof(kbinding*) );"
-    context b "}"
-    context b "bindings[nbBindings] = newBinding;"
-
-
-    context b "   nbBindings ++;"
-    context b "   return nbBindings-1;"
-    context b " }"
-    context b " boolean removeBinding( KevoreeType * instance , int portCode ){"
-    context b "   //SEARCH INDEX"
-    context b "   int indexToRemove = -1;"
-    context b "   for(int i=0;i<nbBindings;i++){"
-    context b "     kbinding * binding = bindings[i];"
-    context b "     if( (strcmp(binding->instance->instanceName,instance->instanceName) == 0 ) && binding->portCode == portCode){ indexToRemove = i; }"
-    context b "   }"
-    context b "   if(indexToRemove == -1){return -1;} else { free(bindings[indexToRemove]); }"
-
-    context b "if(indexToRemove != nbBindings-1){"
-    context b "  bindings[indexToRemove] = bindings[nbBindings-1];"
-    context b "}"
-    context b "if(nbBindings % BDYNSTEP == 0){"
-    context b "  bindings = (kbinding**) realloc(bindings, (nbBindings) * sizeof(kbinding*) );"
-    context b "}"
-
-
-    /*
-    context b "   kbinding** newBindings =  (kbinding**) malloc(  (nbBindings-1) *sizeof(kbinding*) );"
-    context b "   if (!newBindings) { return false;}"
-    context b "   for (int idx=0;idx < nbBindings ; idx++ ){ "
-    context b "    if(idx < indexToRemove){ newBindings[idx] = bindings[idx]; }"
-    context b "    if(idx > indexToRemove){ newBindings[idx-1] = bindings[idx]; }"
-    context b "   }"
-    context b "   if(bindings){ free(bindings); }"
-    context b "   bindings = newBindings; "
-    */
-    context b "  nbBindings--;"
-    context b "  return true;  "
-    context b " } "
-    context b "void destroy(){"
-    context b " for(int i=0;i<nbBindings;i++){ free(bindings[i]); } "
-    context b " free(bindings);"
-    context b "}"
-    context b "};"
   }
 
   def generateRunInstanceMethod(types: List[TypeDefinition]) {
@@ -254,66 +194,7 @@ trait KevoreeCFrameworkGenerator extends KevoreeCAbstractGenerator {
     context b "}"
   }
 
-  def generateParamsMethod: Unit = {
-    //GENERATE GLOBAL UPDATE METHOD
-    //V3 :-) - One day it will be ok for sure !!!
-    context b "const char delimsEQ[] = \"=\";"
-    context b "char * key;"
-    context b "char * val;"
-    context b "byte paramCode;                                                                           "
-    context b "void updateParams (int index, char * params) {                                            "
-    context b "   if ((params[ 0] == '\\0') &&(params[ 1] != '=') )                                       "
-    context b "   {                                                                                      "
-    context b "     return;                                                                              "
-    context b "   }                                                                                      "
-    context b "   paramCode = params[ 0];                                                                "
-    context b "   int i = 2;                                                                             "
-    context b "   while (params[i] != '\\0' && params[i] != ',') {                                        "
-    context b "     i ++;                                                                                "
-    context b "   }                                                                                      "
-    context b "   if (params[i] == ',') {                                                                "
-    context b "     params[i] = '\\0';                                                                    "
-    context b "     updateParam(index, instances[index] -> subTypeCode, paramCode, & params[ 2] );       "
-    context b "     updateParams(index, & params[i + 1] ); //recursive call                              "
-    context b "  } else {                                                                               "
-    context b "     updateParam(index, instances[index] -> subTypeCode, paramCode, & params[ 2] );       "
-    context b "   }                                                                                      "
-    context b " }                                                                                        "
 
-
-
-    /*
-   context b "const char delimsEQ[] = \"=\";"
-   context b "char * key;"
-   context b "char * val;"
-   context b "char * str;"
-   context b "void updateParams(int index,char* params){"
-   context b "  while ((str = strtok_r(params, \",\", &params)) != NULL){"
-   context b "    key = strtok(str, delimsEQ);"
-   context b "    val = strtok(NULL, delimsEQ);"
-   context b "    updateParam(index,instances[index]->subTypeCode,getIDFromProps(key),val);"
-   context b "  }"
-   context b "}"
-    */
-    /*
-    context b "void updateParams(int index,char* params){"
-    context b "  int typeCode = instances[index]->subTypeCode;"
-    context b "  char *p = params;"
-    context b "  char * str;"
-    context b "  while ((str = strtok_r(p, \",\", &p)) != NULL){"
-    context b "    char * str2;"
-    context b "    char* keyval[2];"
-    context b "    int keyvalIndex = 0;"
-    context b "    while ((str2 = strtok_r(str, \"=\", &str)) != NULL){"
-    context b "      keyval[keyvalIndex] = str2;"
-    context b "      keyvalIndex ++;"
-    context b "    }"
-    context b "    updateParam(index,typeCode,getIDFromProps(keyval[0]),keyval[1]);"
-    context b "  }"  
-    context b "}"  
-    */
-
-  }
 
   def generateParamMethod(types: List[TypeDefinition]): Unit = {
     context b "void updateParam(int index,int typeCode,int keyCode,char * val){"
@@ -338,41 +219,6 @@ trait KevoreeCFrameworkGenerator extends KevoreeCAbstractGenerator {
     context b "}"
   }
 
-
-  def generateGlobalInstanceState: Unit = {
-    //GENERATE GLOBAL VARIABLE
-    context b "KevoreeType ** instances; //GLOBAL INSTANCE DYNAMIC ARRAY"
-    context b "int nbInstances = 0; //GLOBAL NB INSTANCE"
-    context b "KevoreeType * tempInstance; //TEMP INSTANCE POINTER"
-    //GENERATE ADD INSTANCE HELPER
-    context b "int addInstance(){ //TECHNICAL HELPER ADD INSTANCE"
-    context b "  if(tempInstance){"
-    context b "    KevoreeType** newInstances =  (KevoreeType**) malloc(  (nbInstances+1) *sizeof(KevoreeType*) );"
-    context b "    if (!newInstances) { return -1;}"
-    context b "    for (int idx=0;idx < nbInstances ; idx++ ){ newInstances[idx] = instances[idx]; }"
-    context b "    newInstances[nbInstances] = tempInstance;"
-    context b "    if(instances){ free(instances); }"
-    context b "    instances = newInstances;"
-    context b "    tempInstance = NULL;"
-    context b "    nbInstances ++;"
-    context b "    return nbInstances-1;"
-    context b "  }"
-    context b "  return -1;"
-    context b "}"
-    //GENERATE REMOVE INSTANCE HELPER
-    context b "boolean removeInstance(int index){"
-    context b "destroyInstance(index);"
-    context b "KevoreeType** newInstances =  (KevoreeType**) malloc(  (nbInstances-1) *sizeof(KevoreeType*) );"
-    context b "if (!newInstances) { return false;}"
-    context b "for (int idx=0;idx < nbInstances ; idx++ ){ "
-    context b "  if(idx < index){ newInstances[idx] = instances[idx]; }"
-    context b "  if(idx > index){ newInstances[idx-1] = instances[idx]; }"
-    context b "}"
-    context b "if(instances){ free(instances); }"
-    context b "instances = newInstances; "
-    context b "nbInstances--;return true;"
-    context b "}"
-  }
 
   def generateDestroyInstanceMethod(types: List[TypeDefinition]): Unit = {
     context b "boolean destroyInstance(int index){"
@@ -598,24 +444,6 @@ trait KevoreeCFrameworkGenerator extends KevoreeCAbstractGenerator {
         }
         context b "        strcpy_P(instNameBuf, (char *) pgm_read_word (&(init_tables[" + instanceCODE.indexOf("init_" + instance.getName.toLowerCase) + "])));        "
         context b "        saveAIN_CMD(instNameBuf, " + typeCodeMap.get(instance.getTypeDefinition.getName).get + ", \"" + dictionaryResult.toString + "\");                                             "
-
-
-
-      /*
-      context b "EEPROM.write(eepromIndex,AIN_C);eepromIndex++;"
-      context b "EEPROM.write(eepromIndex,delims[0]);eepromIndex++;"
-      context b "for(int i=0;i<" + instance.getName.length() + ";i++){"
-      context b "EEPROM.write(eepromIndex,pgm_read_byte(&init_" + instance.getName.toLowerCase + "[i]));eepromIndex++;"
-      context b "}"
-      context b "EEPROM.write(eepromIndex,delims[0]);eepromIndex++;"
-      context b "EEPROM.write(eepromIndex," + typeCodeMap.get(instance.getTypeDefinition.getName).get + ");eepromIndex++;"
-      context b "EEPROM.write(eepromIndex,delims[0]);eepromIndex++;"
-      */
-
-      //GENERATE DICTIONARY
-
-
-      //context b "int index" + instance.getName + " = createInstance(" + typeCodeMap.get(instance.getTypeDefinition.getName).get + ",\"" + instance.getName + "\",\"" + dictionaryResult.toString + "\");"
     }
 
 
@@ -651,137 +479,13 @@ trait KevoreeCFrameworkGenerator extends KevoreeCAbstractGenerator {
 
     context b "}                                                                            "
 
-
-    /*
-  context b "Serial.println(\"Try to recover from state\");                                  "
-  context b "inBytes[serialIndex] = EEPROM.read(eepromIndex);                              "
-  context b "if (inBytes[serialIndex] == startBAdminChar) {                                "
-
-  context b "  eepromIndex ++;                                                             "
-  context b "  Serial.println(\"PSTATE\");                                                   "
-  context b "  inBytes[serialIndex] = EEPROM.read(eepromIndex);                            "
-  context b "  while (inBytes[serialIndex] != endAdminChar && eepromIndex < 512) {         "
-  context b "    if (inBytes[serialIndex] == sepAdminChar) {                               "
-  context b "      inBytes[serialIndex] = '\\0';                                            "
-  context b "      Serial.println(\"Found CMD\");                                            "
-  context b "      parseForCAdminMsg();                                                    "
-  context b "      flushAdminBuffer();                                                     "
-  context b "    } else {                                                                  "
-  context b "      serialIndex ++;                                                         "
-  context b "    }                                                                         "
-  context b "    eepromIndex ++;                                                           "
-  context b "    inBytes[serialIndex] = EEPROM.read(eepromIndex);                          "
-  context b "  }                                                                           "
-  context b "  //PROCESS LAST CMD                                                          "
-  context b "  if (inBytes[serialIndex] == endAdminChar) {                                 "
-  context b "    inBytes[serialIndex] = '\\0';                                              "
-  context b "    parseForCAdminMsg();                                                      "
-  context b "    Serial.println(\"Found LAST CMD\");                                         "
-  context b "    flushAdminBuffer();                                                       "
-  context b "  }                                                                           "
-  context b "}                                                                             "
-    */
-    /*
-  context b "inBytes[serialIndex] = EEPROM.read(eepromIndex);                         "
-  context b "if (inBytes[serialIndex] == startBAdminChar) {                           "
-  context b "  eepromIndex ++;                                                        "
-  context b "  Serial.println(\"PSTATE\");                         "
-  context b "  inBytes[serialIndex] = EEPROM.read(eepromIndex);                       "
-  context b "  while (inBytes[serialIndex] != endAdminChar && eepromIndex < 512) {    "
-  context b "    if (inBytes[serialIndex] == sepAdminChar) {                          "
-  context b "      inBytes[serialIndex] = '\\0';                                       "
-  context b "      parseForAdminMsg();                                                "
-  context b "     flushAdminBuffer();                                                 "
-  context b "    } else {                                                             "
-  context b "      serialIndex ++;                                                    "
-  context b "    }                                                                    "
-  context b "    eepromIndex ++;                                                      "
-  context b "    inBytes[serialIndex] = EEPROM.read(eepromIndex);                     "
-  context b "  }                                                                      "
-  context b "  //PROCESS LAST CMD                                                     "
-  context b "  if (inBytes[serialIndex] == endAdminChar) {                            "
-  context b "    inBytes[serialIndex] = '\\0';                                         "
-  context b "    parseForAdminMsg();                                                  "
-  context b "    flushAdminBuffer();                                                  "
-  context b "  }                                                                      "
-  context b "}                                                                        "
-    */
     context b "Serial.print(\"mem\");"
     context b "Serial.println(freeRam());"
     context b "}"
   }
 
-
-  def generateScriptFromEEPROM(): Unit = {
-    context b "    void executeScriptFromEEPROM () {                                           "
-
-
-
-    context b "      inBytes[serialIndex] = readPMemory(eepromIndex);                          "
-    context b "      while (inBytes[serialIndex] != endAdminChar && eepromIndex < EEPROM_MAX_SIZE) {       "
-    context b "        if (inBytes[serialIndex] == sepAdminChar) {                             "
-    context b "          inBytes[serialIndex] = '\\0';                                          "
-    context b "          parseForCAdminMsg();                                                  "
-    context b "          flushAdminBuffer();                                                   "
-    context b "        } else {                                                                "
-    context b "          serialIndex ++;                                                       "
-    context b "        }                                                                       "
-    context b "        eepromIndex ++;                                                         "
-    context b "        inBytes[serialIndex] = readPMemory(eepromIndex);                        "
-    context b "      }                                                                         "
-    context b "      //PROCESS LAST CMD                                                        "
-    context b "      if (inBytes[serialIndex] == endAdminChar) {                               "
-    context b "        inBytes[serialIndex] = '\\0';                                            "
-    context b "        parseForCAdminMsg();                                                    "
-    context b "        flushAdminBuffer();                                                     "
-    context b "      }                                                                         "
-
-    context b "    }                                                                           "
-
-
-  }
-
   def generateParseCAdminMsg(): Unit = {
-    context b "byte typeIDB;                                         "
-    context b "byte portIDB;                                         "
-    context b "boolean parseForCAdminMsg(){                          "
-    context b "  switch((byte)inBytes[0]){                           "
-    context b "    case AIN_C: {                                     "
-    context b "      insID = strtok(&inBytes[1], delims);            "
-    context b "      typeIDB = (byte)inBytes[strlen(insID)+3];       "
-    context b "      params = &inBytes[strlen(insID)+5];             "
-    context b "      createInstance(typeIDB,insID,params);           "
-    context b "      return true;                                    "
-    context b "      break;                                          "
-    context b "    }                                                 "
-    context b "    case RIN_C: {                                             "
-    context b "      insID = strtok (& inBytes[1], delims);                  "
-    context b "      removeInstance (getIndexFromName (insID) );             "
-    context b "      return true;                                            "
-    context b "      break;                                                  "
-    context b "    }                                                         "
-    context b "    case ABI_C: {                                                          "
-    context b "        insID = strtok(&inBytes[1], delims);                               "
-    context b "        chID = strtok(NULL, delims);                                       "
-    context b "        portIDB = (byte)chID[strlen(chID)+1];                              "
-    context b "        bind(getIndexFromName(insID),getIndexFromName(chID),portIDB);      "
-    context b "        return true;break;                                                 "
-    context b "      }                                                                    "
-    context b "    case RBI_C: {                                                          "
-    context b "        insID = strtok(&inBytes[1], delims);                               "
-    context b "        chID = strtok(NULL, delims);                                       "
-    context b "        portIDB = (byte)chID[strlen(chID)+1];                              "
-    context b "        unbind(getIndexFromName(insID),getIndexFromName(chID),portIDB);      "
-    context b "        return true;break;                                                 "
-    context b "      }                                                                    "
-    context b "    case UDI_C: {                                                                "
-    context b "      insID = strtok (& inBytes[1], delims);                                     "
-    context b "      params = & inBytes[strlen (insID) + 3];                                    "
-    context b "      updateParams (getIndexFromName (insID), params);                           "
-    context b "    }                                                                            "
-
-    context b "  }                                                   "
-    context b "}                                                     "
+    context b SimpleCopyTemplate.copyFromClassPath("templates/KevFrameworkCAdminParser.c")
   }
 
   def generatePeriodicExecutionMethod(types: List[TypeDefinition]): Unit = {
@@ -848,25 +552,25 @@ trait KevoreeCFrameworkGenerator extends KevoreeCAbstractGenerator {
   def generateFreeRamMethod(): Unit = {
     context b "static int freeRam () {"
 
-  context b "extern int  __bss_end;                                     "
-  context b "extern int* __brkval;                                      "
-  context b "int free_memory;                                           "
-  context b "if (reinterpret_cast<int>(__brkval) == 0) {                "
-  context b "  // if no heap use from end of bss section                "
-  context b "  free_memory = reinterpret_cast<int>(&free_memory)        "
-  context b "                - reinterpret_cast<int>(&__bss_end);       "
-  context b "} else {                                                   "
-  context b "  // use from top of stack to heap                         "
-  context b "  free_memory = reinterpret_cast<int>(&free_memory)        "
-  context b "                - reinterpret_cast<int>(__brkval);         "
-  context b "}                                                          "
-  context b "return free_memory;                                        "
+    context b "extern int  __bss_end;                                     "
+    context b "extern int* __brkval;                                      "
+    context b "int free_memory;                                           "
+    context b "if (reinterpret_cast<int>(__brkval) == 0) {                "
+    context b "  // if no heap use from end of bss section                "
+    context b "  free_memory = reinterpret_cast<int>(&free_memory)        "
+    context b "                - reinterpret_cast<int>(&__bss_end);       "
+    context b "} else {                                                   "
+    context b "  // use from top of stack to heap                         "
+    context b "  free_memory = reinterpret_cast<int>(&free_memory)        "
+    context b "                - reinterpret_cast<int>(__brkval);         "
+    context b "}                                                          "
+    context b "return free_memory;                                        "
 
- /*
-    context b " extern int __heap_start, *__brkval;"
-    context b "  int v;"
-    context b "  return (int) &v - (__brkval == 0 ? (int) &__heap_start : (int) __brkval);"
- */
+    /*
+       context b " extern int __heap_start, *__brkval;"
+       context b "  int v;"
+       context b "  return (int) &v - (__brkval == 0 ? (int) &__heap_start : (int) __brkval);"
+    */
     context b "}"
   }
 

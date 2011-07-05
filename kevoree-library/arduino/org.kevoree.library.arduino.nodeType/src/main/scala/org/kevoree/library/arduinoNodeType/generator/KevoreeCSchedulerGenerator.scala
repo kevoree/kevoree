@@ -12,22 +12,6 @@ import scala.collection.JavaConversions._
 trait KevoreeCSchedulerGenerator extends KevoreeCAbstractGenerator {
 
   def generateLoop: Unit = {
-    /*
-    context b "void loop(){"
-    context b "for(int i=0;i<nbInstances;i++){"
-    context b "  if(periodicExecution(i)){"
-    context b "    runInstance(i);"
-    context b "  }"
-    context b "}"
-    context b "for(int i=0;i<nbInstances;i++){"
-    context b "  if(getPortQueuesSize(i)>0){"
-    context b "    runInstance(i);"
-    context b "  }"
-    context b "}"
-    context b "checkForAdminMsg();"
-    context b "}"
-    */
-
     context b "#define minSleepDuration 80                        "
     context b "long minNextOp;                                    "
     context b "boolean allEmptyQueue;                             "

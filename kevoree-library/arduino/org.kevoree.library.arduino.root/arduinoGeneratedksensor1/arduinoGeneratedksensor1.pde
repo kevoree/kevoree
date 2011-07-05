@@ -9,8 +9,8 @@
 #define RBI_C 4
 #define EEPROM_MAX_SIZE 1024
 #define MAX_INST_ID 15
-#define kevoreeID1 4
-#define kevoreeID2 4
+#define kevoreeID1 3
+#define kevoreeID2 6
 int eepromIndex;
 //Global Kevoree Type Defintion declaration
 const prog_char timer[] PROGMEM = "Timer";
@@ -56,52 +56,116 @@ int getIDFromProps(char * propName){
   }
   return -1;
 }
-struct kmessage {char* value;char* metric;};
-class KevoreeType { public : int subTypeCode; char instanceName[MAX_INST_ID]; };
-struct kbinding { KevoreeType * instance;int portCode; QueueList<kmessage> * port;   };
-#define BDYNSTEP 3
-class kbindings {
- public:
- kbinding ** bindings;
- int nbBindings;
- void init(){ nbBindings = 0; }
- int addBinding( KevoreeType * instance , int portCode , QueueList<kmessage> * port){
-   kbinding * newBinding = (kbinding*) malloc(sizeof(kbinding));
-   if(newBinding){
-      memset(newBinding, 0, sizeof(kbinding));
-   }
-   newBinding->instance=instance;
-   newBinding->portCode=portCode;
-   newBinding->port = port;
-if(nbBindings % BDYNSTEP == 0){
-  bindings = (kbinding**) realloc(bindings, (nbBindings+BDYNSTEP) * sizeof(kbinding*) );
-}
-bindings[nbBindings] = newBinding;
-   nbBindings ++;
-   return nbBindings-1;
- }
- boolean removeBinding( KevoreeType * instance , int portCode ){
-   //SEARCH INDEX
-   int indexToRemove = -1;
-   for(int i=0;i<nbBindings;i++){
-     kbinding * binding = bindings[i];
-     if( (strcmp(binding->instance->instanceName,instance->instanceName) == 0 ) && binding->portCode == portCode){ indexToRemove = i; }
-   }
-   if(indexToRemove == -1){return -1;} else { free(bindings[indexToRemove]); }
-if(indexToRemove != nbBindings-1){
-  bindings[indexToRemove] = bindings[nbBindings-1];
-}
-if(nbBindings % BDYNSTEP == 0){
-  bindings = (kbinding**) realloc(bindings, (nbBindings) * sizeof(kbinding*) );
-}
-  nbBindings--;
-  return true;  
- } 
-void destroy(){
- for(int i=0;i<nbBindings;i++){ free(bindings[i]); } 
- free(bindings);
-}
-};
+     struct kmessage {char* value;char* metric;}; 
+     class KevoreeType { public : int subTypeCode; char instanceName[MAX_INST_ID]; }; 
+    //GENERATE kbinding framework
+     struct kbinding { KevoreeType * instance;int portCode; QueueList<kmessage> * port;   }; 
+     #define BDYNSTEP 3 
+     class kbindings { 
+      public: 
+      kbinding ** bindings; 
+      int nbBindings; 
+      void init(){ nbBindings = 0; } 
+      int addBinding( KevoreeType * instance , int portCode , QueueList<kmessage> * port){ 
+        kbinding * newBinding = (kbinding*) malloc(sizeof(kbinding)); 
+        if(newBinding){ 
+           memset(newBinding, 0, sizeof(kbinding)); 
+        } 
+        newBinding->instance=instance; 
+        newBinding->portCode=portCode; 
+        newBinding->port = port; 
+     if(nbBindings % BDYNSTEP == 0){ 
+       bindings = (kbinding**) realloc(bindings, (nbBindings+BDYNSTEP) * sizeof(kbinding*) ); 
+     } 
+     bindings[nbBindings] = newBinding; 
+        nbBindings ++; 
+        return nbBindings-1; 
+      } 
+      boolean removeBinding( KevoreeType * instance , int portCode ){ 
+        //SEARCH INDEX 
+        int indexToRemove = -1; 
+        for(int i=0;i<nbBindings;i++){ 
+          kbinding * binding = bindings[i]; 
+          if( (strcmp(binding->instance->instanceName,instance->instanceName) == 0 ) && binding->portCode == portCode){ indexToRemove = i; } 
+        } 
+        if(indexToRemove == -1){return -1;} else { free(bindings[indexToRemove]); } 
+     if(indexToRemove != nbBindings-1){ 
+       bindings[indexToRemove] = bindings[nbBindings-1]; 
+     } 
+     if(nbBindings % BDYNSTEP == 0){ 
+       bindings = (kbinding**) realloc(bindings, (nbBindings) * sizeof(kbinding*) ); 
+     } 
+       nbBindings--; 
+       return true;   
+      }  
+     void destroy(){ 
+      for(int i=0;i<nbBindings;i++){ free(bindings[i]); }  
+      free(bindings); 
+     } 
+     };
+
+
+
+
+
+
+
+    //GENERATE GLOBAL VARIABLE
+      KevoreeType ** instances; //GLOBAL INSTANCE DYNAMIC ARRAY 
+      int nbInstances = 0; //GLOBAL NB INSTANCE 
+      KevoreeType * tempInstance; //TEMP INSTANCE POINTER 
+    //GENERATE ADD INSTANCE HELPER
+      int addInstance(){ //TECHNICAL HELPER ADD INSTANCE 
+        if(tempInstance){ 
+          KevoreeType** newInstances =  (KevoreeType**) malloc(  (nbInstances+1) *sizeof(KevoreeType*) ); 
+          if (!newInstances) { return -1;} 
+          for (int idx=0;idx < nbInstances ; idx++ ){ newInstances[idx] = instances[idx]; } 
+          newInstances[nbInstances] = tempInstance; 
+          if(instances){ free(instances); } 
+          instances = newInstances; 
+          tempInstance = NULL; 
+          nbInstances ++; 
+          return nbInstances-1; 
+        } 
+        return -1; 
+      } 
+    //GENERATE REMOVE INSTANCE HELPER
+      boolean removeInstance(int index){ 
+      destroyInstance(index); 
+      KevoreeType** newInstances =  (KevoreeType**) malloc(  (nbInstances-1) *sizeof(KevoreeType*) ); 
+      if (!newInstances) { return false;} 
+      for (int idx=0;idx < nbInstances ; idx++ ){  
+        if(idx < index){ newInstances[idx] = instances[idx]; } 
+        if(idx > index){ newInstances[idx-1] = instances[idx]; } 
+      } 
+      if(instances){ free(instances); } 
+      instances = newInstances;  
+      nbInstances--;return true; 
+      }
+
+
+           const char delimsEQ[] =  "="  ;
+           char * key;
+           char * val;
+           byte paramCode;
+           void updateParams (int index, char * params) {
+              if ((params[ 0] == '\0') &&(params[ 1] != '=') )
+              {
+                return;
+              }
+              paramCode = params[ 0];
+              int i = 2;
+              while (params[i] != '\0' && params[i] != ',') {
+                i ++;
+              }
+              if (params[i] == ',') {
+                params[i] = '\0';
+                updateParam(index, instances[index] -> subTypeCode, paramCode, & params[ 2] );
+                updateParams(index, & params[i + 1] ); //recursive call
+             } else {
+                updateParam(index, instances[index] -> subTypeCode, paramCode, & params[ 2] );
+              }
+            }
 class Timer : public KevoreeType {
  public : 
 unsigned long nextExecution;
@@ -213,35 +277,6 @@ void dispatch(kmessage * msg){
 for(int i=0;i<bindings->nbBindings;i++){    bindings->bindings[i]->port->push(*msg);}
 }
 };
-KevoreeType ** instances; //GLOBAL INSTANCE DYNAMIC ARRAY
-int nbInstances = 0; //GLOBAL NB INSTANCE
-KevoreeType * tempInstance; //TEMP INSTANCE POINTER
-int addInstance(){ //TECHNICAL HELPER ADD INSTANCE
-  if(tempInstance){
-    KevoreeType** newInstances =  (KevoreeType**) malloc(  (nbInstances+1) *sizeof(KevoreeType*) );
-    if (!newInstances) { return -1;}
-    for (int idx=0;idx < nbInstances ; idx++ ){ newInstances[idx] = instances[idx]; }
-    newInstances[nbInstances] = tempInstance;
-    if(instances){ free(instances); }
-    instances = newInstances;
-    tempInstance = NULL;
-    nbInstances ++;
-    return nbInstances-1;
-  }
-  return -1;
-}
-boolean removeInstance(int index){
-destroyInstance(index);
-KevoreeType** newInstances =  (KevoreeType**) malloc(  (nbInstances-1) *sizeof(KevoreeType*) );
-if (!newInstances) { return false;}
-for (int idx=0;idx < nbInstances ; idx++ ){ 
-  if(idx < index){ newInstances[idx] = instances[idx]; }
-  if(idx > index){ newInstances[idx-1] = instances[idx]; }
-}
-if(instances){ free(instances); }
-instances = newInstances; 
-nbInstances--;return true;
-}
 boolean destroyInstance(int index){
 KevoreeType * instance = instances[index];
  switch(instance->subTypeCode){
@@ -280,28 +315,6 @@ LocalChannel * instance = (LocalChannel*) instances[index];
 break;}
 }
 }
-const char delimsEQ[] = "=";
-char * key;
-char * val;
-byte paramCode;                                                                           
-void updateParams (int index, char * params) {                                            
-   if ((params[ 0] == '\0') &&(params[ 1] != '=') )                                       
-   {                                                                                      
-     return;                                                                              
-   }                                                                                      
-   paramCode = params[ 0];                                                                
-   int i = 2;                                                                             
-   while (params[i] != '\0' && params[i] != ',') {                                        
-     i ++;                                                                                
-   }                                                                                      
-   if (params[i] == ',') {                                                                
-     params[i] = '\0';                                                                    
-     updateParam(index, instances[index] -> subTypeCode, paramCode, & params[ 2] );       
-     updateParams(index, & params[i + 1] ); //recursive call                              
-  } else {                                                                               
-     updateParam(index, instances[index] -> subTypeCode, paramCode, & params[ 2] );       
-   }                                                                                      
- }                                                                                        
 int createInstance(int typeCode,char* instanceName,char* params){
 switch(typeCode){
 case 0:{
@@ -462,262 +475,269 @@ int getIndexFromName(char * id){
  } 
  return -1;
 }
-//ARDUINO SERIAL INPUT READ                                       
-#define BUFFERSIZE 100                                            
-int serialIndex = 0;                                              
-char inBytes[BUFFERSIZE];                                         
-const char startBAdminChar = '{';                                 
-const char endAdminChar = '}';                                    
-const char startAdminChar = '$';                                  
-const char sepAdminChar = '/';                                    
-char ackToken;                                                    
-boolean parsingAdmin = false;                                     
-int eepromPreviousIndex;                                              
-boolean firstAdd ;                                                    
-unsigned long timeBeforeScript;
-    void checkForAdminMsg () {                                                      
-      if (Serial.peek() == startAdminChar) {                                        
-        timeBeforeScript = millis();
-        Serial.read(); //DROP ADMIN START CHAR                                      
-        while (!Serial.available() > 0) {                                           
-          delay(10);                                                                
-        }                                                                           
-        ackToken = Serial.read();                                                   
-        while (!Serial.available() > 0) {                                           
-          delay(10);                                                                
-        }                                                                            
-        if (Serial.read() == startBAdminChar) {                                      
-          parsingAdmin = true;                                                       
-          eepromPreviousIndex = eepromIndex;                                         
-          eepromIndex ++;                                                            
-          firstAdd = true;                                                           
-          while (parsingAdmin) {                                                     
-            if (Serial.available() > 0 && serialIndex < BUFFERSIZE) {                
-              inBytes[serialIndex] = Serial.read();                                  
-              if (inBytes[serialIndex] == sepAdminChar) {                            
-                inBytes[serialIndex] = '\0';                                         
-                //saveScriptCommand();                                               
-                if (!firstAdd) {                                                     
-                  save2Memory(sepAdminChar);           
-                }                                                                    
-                parseAndSaveAdminMsg();                                              
-                flushAdminBuffer();                                                  
-                firstAdd = false;                                                    
-              } else {                                                               
-                if (inBytes[serialIndex] == endAdminChar) {                          
-                  parsingAdmin = false;                                              
-                  inBytes[serialIndex] = '\0';                                       
-                  //saveScriptCommand();                                             
-                                                                                     
-                  if (!firstAdd) {                                                   
-                    save2Memory(sepAdminChar);         
-                  }                                                                  
-                  parseAndSaveAdminMsg();                                            
-                  flushAdminBuffer();                                                
-          save2MemoryNoInc(eepromIndex, endAdminChar);                                   
-          eepromIndex = eepromPreviousIndex + 1;                                     
-          executeScriptFromEEPROM();                                                 
-                                                                                     
-          save2MemoryNoInc(eepromPreviousIndex, sepAdminChar); //CLOSE TRANSACTION       
-          if(eepromIndex > (EEPROM_MAX_SIZE-100)){        
-            compressEEPROM();            
-          }                              
-                  Serial.print("ms");                                                 
-                  Serial.println( millis() - timeBeforeScript );                      
-                  Serial.print("mem");                                                
-                  Serial.println(freeRam());                                         
-                  Serial.print("emem");                                                
-                  Serial.println(eepromIndex);                                         
-                  Serial.print("ack");                                               
-                  Serial.println(ackToken);                                          
-                  firstAdd = false;                                                  
-                } else {                                                             
-                  serialIndex ++;                                                    
-                }                                                                    
-              }                                                                       
-            }                                                                        
-            if (serialIndex >= BUFFERSIZE) {                                         
-              Serial.println("BFO");                                                 
-              flushAdminBuffer();                                                    
-              Serial.flush();                                                        
-              parsingAdmin = false; //KILL PARSING ADMIN                             
-            }                                                                        
-          }                                                                          
-                                                                                     
-        } else {                                                                     
-          Serial.println("BAM");                                                      
-          flushAdminBuffer();                                                         
-          Serial.flush();                                                             
-        }                                                                             
-      }                                                                               
-    }                                                                                 
-void flushAdminBuffer(){                                          
-  for(int i=0;i<serialIndex;i++){                                 
-     inBytes[serialIndex];                                        
-  }                                                               
-  serialIndex = 0;                                                
-}                                                                 
-//END SECTION ADMIN DETECTION 1 SPLIT                             
-char * insID;  
-char * typeID; 
-char * params;   
-char * chID;        
-char * portID;            
-const char delims[] = ":";    
-boolean parseAndSaveAdminMsg(){       
-    if( inBytes[0]=='p' && inBytes[1]=='i' && inBytes[2]=='n' && inBytes[3]=='g' ){  
-      return true;      
-    }   
-    if( inBytes[0]=='u' && inBytes[1]=='d' && inBytes[2]=='i' && inBytes[3]==':' ){  
-      insID = strtok(&inBytes[4], delims);  
-      params = strtok(NULL, delims);    
-      saveUDI_CMD(insID,params);      
-      return true;      
-    }   
-    if( inBytes[0]=='a' && inBytes[1]=='i' && inBytes[2]=='n' && inBytes[3]==':' ){ 
-      insID = strtok(&inBytes[4], delims); 
-      typeID = strtok(NULL, delims);
-      params = strtok(NULL, delims); 
-      saveAIN_CMD(insID,getIDFromType(typeID),params);
-      return true;
-    }      
-    if( inBytes[0]=='r' && inBytes[1]=='i' && inBytes[2]=='n' && inBytes[3]==':' ){    
-      insID = strtok(&inBytes[4], delims);   
-       saveRIN_CMD(insID);
-      return true;   
-    }               
-    if( inBytes[0]=='a' && inBytes[1]=='b' && inBytes[2]=='i' && inBytes[3]==':' ){      
-      insID = strtok(&inBytes[4], delims);                                               
-      chID = strtok(NULL, delims);                                                       
-      portID = strtok(NULL, delims);                                                     
-      saveBI_CMD(true,insID,chID,getIDFromPortName(portID));                             
-      return true;                                                                            
-    }                                                                                         
-    if( inBytes[0]=='r' && inBytes[1]=='b' && inBytes[2]=='i' && inBytes[3]==':' ){           
-      insID = strtok(&inBytes[4], delims);                                                    
-      chID = strtok(NULL, delims);                                                            
-      portID = strtok(NULL, delims);                                                          
-      saveBI_CMD(false,insID,chID,getIDFromPortName(portID));                             
-      return true;                                                                            
-    }                                                                                         
-  return false;                                                                               
-}                                                                                             
-char * str;
-boolean first = true;                                                              
-void saveUDI_CMD(char * instName,char * params){                                   
- save2Memory(UDI_C);                                    
- save2Memory(':');                                     
- for(int j=0;j<strlen(instName);j++){                                        
-   if(instName[j]!='\0'){                                                          
-     save2Memory(instName[j]);                         
-   }                                                                               
- }                                                                                 
- save2Memory(':');                                      
- first = true;                                                                     
- while ((str = strtok_r(params, ",", &params)) != NULL){                           
-    if(!first){                                                                    
-      save2Memory(',');                                 
-    }                                                                              
-    first = false;                                                                 
-    key = strtok(str, delimsEQ);                                                   
-    val = strtok(NULL, delimsEQ);                                                  
-    save2Memory(getIDFromProps(key));                   
-    save2Memory('=');                                   
-    for(int j=0;j<strlen(val);j++){                                          
-      if(val[j]!='\0'){                                                            
-        save2Memory(val[j]);                            
-      }                                                                            
-    }                                                                              
-  }                                                                                
-}                                                                                  
-    void saveAIN_CMD (char * instanceName, int typeID,char * params) {                 
-      save2Memory(AIN_C);                                                
-      save2Memory(delims[0]);                                          
-      for (int i = 0;                                                                  
-      i < strlen(instanceName);                                                        
-      i ++)                                                                            
-      {                                                                                
-        save2Memory(instanceName[i]);                                    
-      }                                                                                
-      save2Memory(delims[0]);                                          
-      save2Memory(typeID);                                               
-      save2Memory(delims[0]);                                          
-      first = true;                                                                    
-      while ((str = strtok_r(params, ",", & params)) != NULL) {                        
-        if (!first) {                                                                  
-          save2Memory(',');                                              
-        }                                                                              
-        first = false;                                                                 
-        key = strtok(str, delimsEQ);                                                   
-        val = strtok(NULL, delimsEQ);                                                  
-        save2Memory(getIDFromProps(key));                                
-        save2Memory('=');                                                
-        for (int j = 0;                                                                
-        j < strlen( val);                                                              
-        j ++)                                                                          
-        {                                                                              
-          if ( val[j] != '\0')                                                         
-          {                                                                            
-            save2Memory(val[j] );                                        
-          }                                                                            
-        }                                                                              
-      }                                                                                
-    }                                                                                  
-    void saveBI_CMD (boolean abiCmd, char * compName, char * chaName, int portCode) {      
-      if (abiCmd) {                                                                        
-        save2Memory(ABI_C);                                                  
-      } else {                                                                             
-        save2Memory(RBI_C);                                                  
-      }                                                                                    
-      save2Memory(delims[0]);                                              
-      for (int j = 0;                                                                      
-      j < strlen(compName);                                                                
-      j ++)                                                                                
-      {                                                                                    
-        if (compName[j] != '\0') {                                                         
-          save2Memory(compName[j]);                                          
-        }                                                                                  
-      }                                                                                     
-      save2Memory(delims[0] );                                               
-      for (int j = 0;                                                                      
-      j < strlen(chaName);                                                                 
-      j ++)                                                                                
-      {                                                                                    
-        if (chaName[j] != '\0') {                                                          
-          save2Memory(chaName[j]);                                           
-        }                                                                                  
-      }                                                                                    
-      save2Memory(delims[0] );                                              
-      save2Memory(portCode);                                                 
-    }                                                                                      
-    void saveRIN_CMD (char * instName) {               
-      save2Memory(RIN_C);                
-      save2Memory(':');                  
-      for (int j = 0;                                  
-      j < strlen(instName);                            
-      j ++)                                            
-      {                                                
-        if (instName[j] != '\0 ')                    
-        {                                              
-          save2Memory(instName[j]);      
-        }                                              
-      }                                                
-    }                                                  
+     //ARDUINO SERIAL INPUT READ                                        
+     #define BUFFERSIZE 100                                             
+     int serialIndex = 0;                                               
+     char inBytes[BUFFERSIZE];                                          
+     const char startBAdminChar = '{';                                  
+     const char endAdminChar = '}';                                     
+     const char startAdminChar = '$';                                   
+     const char sepAdminChar = '/';                                     
+     char ackToken;                                                     
+     boolean parsingAdmin = false;                                      
+     int eepromPreviousIndex;                                               
+     boolean firstAdd ;                                                     
+     unsigned long timeBeforeScript; 
+         void checkForAdminMsg () {                                                       
+           if (Serial.peek() == startAdminChar) {                                         
+             timeBeforeScript = millis(); 
+             Serial.read(); //DROP ADMIN START CHAR                                       
+             while (!Serial.available() > 0) {                                            
+               delay(10);                                                                 
+             }                                                                            
+             ackToken = Serial.read();                                                    
+             while (!Serial.available() > 0) {                                            
+               delay(10);                                                                 
+             }                                                                             
+             if (Serial.read() == startBAdminChar) {                                       
+               parsingAdmin = true;                                                        
+               eepromPreviousIndex = eepromIndex;                                          
+               eepromIndex ++;                                                             
+               firstAdd = true;                                                            
+               while (parsingAdmin) {                                                      
+                 if (Serial.available() > 0 && serialIndex < BUFFERSIZE) {                 
+                   inBytes[serialIndex] = Serial.read();                                   
+                   if (inBytes[serialIndex] == sepAdminChar) {                             
+                     inBytes[serialIndex] = '\0';
+                     //saveScriptCommand();                                                
+                     if (!firstAdd) {                                                      
+                       save2Memory(sepAdminChar);            
+                     }                                                                     
+                     parseAndSaveAdminMsg();                                               
+                     flushAdminBuffer();                                                   
+                     firstAdd = false;                                                     
+                   } else {                                                                
+                     if (inBytes[serialIndex] == endAdminChar) {                           
+                       parsingAdmin = false;                                               
+                       inBytes[serialIndex] = '\0';
+                       //saveScriptCommand();                                              
+                                                                                           
+                       if (!firstAdd) {                                                    
+                         save2Memory(sepAdminChar);          
+                       }                                                                   
+                       parseAndSaveAdminMsg();                                             
+                       flushAdminBuffer();                                                 
+               save2MemoryNoInc(eepromIndex, endAdminChar);                                    
+               eepromIndex = eepromPreviousIndex + 1;                                      
+               executeScriptFromEEPROM();                                                  
+                                                                                           
+               save2MemoryNoInc(eepromPreviousIndex, sepAdminChar); //CLOSE TRANSACTION        
+    //COMPRESS EEPROM IF NECESSARY , DON'T GO TO LIMIT
+               if(eepromIndex > (EEPROM_MAX_SIZE-100)){         
+                 compressEEPROM();             
+               }                               
+                       Serial.print("ms");
+                       Serial.println( millis() - timeBeforeScript );                       
+                       Serial.print("mem");
+                       Serial.println(freeRam());                                          
+                       Serial.print("emem");
+                       Serial.println(eepromIndex);                                          
+                       Serial.print("ack");
+                       Serial.println(ackToken);                                           
+                       firstAdd = false;                                                   
+                     } else {                                                              
+                       serialIndex ++;                                                     
+                     }                                                                     
+                   }                                                                        
+                 }                                                                         
+                 if (serialIndex >= BUFFERSIZE) {                                          
+                   Serial.println("BFO");
+                   flushAdminBuffer();                                                     
+                   Serial.flush();                                                         
+                   parsingAdmin = false; //KILL PARSING ADMIN                              
+                 }                                                                         
+               }                                                                           
+                                                                                           
+             } else {                                                                      
+               Serial.println("BAM");
+               flushAdminBuffer();                                                          
+               Serial.flush();                                                              
+             }                                                                              
+           }                                                                                
+         }                                                                                  
+     void flushAdminBuffer(){                                           
+       for(int i=0;i<serialIndex;i++){                                  
+          inBytes[serialIndex];                                         
+       }                                                                
+       serialIndex = 0;                                                 
+     }                                                                  
+     //END SECTION ADMIN DETECTION 1 SPLIT                              
+
+     char * insID;
+     char * typeID;
+     char * params;
+     char * chID;
+     char * portID;
+     const char delims[] = ":";
+     boolean parseAndSaveAdminMsg(){
+         if( inBytes[0]=='p' && inBytes[1]=='i' && inBytes[2]=='n' && inBytes[3]=='g' ){
+           return true;
+         }
+         if( inBytes[0]=='u' && inBytes[1]=='d' && inBytes[2]=='i' && inBytes[3]==':' ){
+           insID = strtok(&inBytes[4], delims);
+           params = strtok(NULL, delims);
+           saveUDI_CMD(insID,params);
+           return true;
+         }
+         if( inBytes[0]=='a' && inBytes[1]=='i' && inBytes[2]=='n' && inBytes[3]==':' ){
+           insID = strtok(&inBytes[4], delims);
+           typeID = strtok(NULL, delims);
+           params = strtok(NULL, delims);
+           saveAIN_CMD(insID,getIDFromType(typeID),params);
+           return true;
+         }
+         if( inBytes[0]=='r' && inBytes[1]=='i' && inBytes[2]=='n' && inBytes[3]==':' ){
+           insID = strtok(&inBytes[4], delims);
+            saveRIN_CMD(insID);
+           return true;
+         }
+         if( inBytes[0]=='a' && inBytes[1]=='b' && inBytes[2]=='i' && inBytes[3]==':' ){
+           insID = strtok(&inBytes[4], delims);
+           chID = strtok(NULL, delims);
+           portID = strtok(NULL, delims);
+           saveBI_CMD(true,insID,chID,getIDFromPortName(portID));
+           return true;
+         }
+         if( inBytes[0]=='r' && inBytes[1]=='b' && inBytes[2]=='i' && inBytes[3]==':' ){
+           insID = strtok(&inBytes[4], delims);
+           chID = strtok(NULL, delims);
+           portID = strtok(NULL, delims);
+           saveBI_CMD(false,insID,chID,getIDFromPortName(portID));
+           return true;
+         }
+       return false;
+     }
+
+         void saveRIN_CMD (char * instName) {                
+           save2Memory(RIN_C);                 
+           save2Memory(':');                   
+           for (int j = 0;                                   
+           j < strlen(instName);                             
+           j ++)                                             
+           {                                                 
+             if (instName[j] != '\0 ')
+             {                                               
+               save2Memory(instName[j]);       
+             }                                               
+           }                                                 
+         }                                                   
+    
+             void saveBI_CMD (boolean abiCmd, char * compName, char * chaName, int portCode) {       
+               if (abiCmd) {                                                                         
+                 save2Memory(ABI_C);                                                   
+               } else {                                                                              
+                 save2Memory(RBI_C);                                                   
+               }                                                                                     
+               save2Memory(delims[0]);                                               
+               for (int j = 0;                                                                       
+               j < strlen(compName);                                                                 
+               j ++)                                                                                 
+               {                                                                                     
+                 if (compName[j] != '\0') {
+                   save2Memory(compName[j]);                                           
+                 }                                                                                   
+               }                                                                                      
+               save2Memory(delims[0] );                                                
+               for (int j = 0;                                                                       
+               j < strlen(chaName);                                                                  
+               j ++)                                                                                 
+               {                                                                                     
+                 if (chaName[j] != '\0') {
+                   save2Memory(chaName[j]);                                            
+                 }                                                                                   
+               }                                                                                     
+               save2Memory(delims[0] );                                               
+               save2Memory(portCode);                                                  
+             }                                                                                       
+
+
+         char * str; 
+         boolean first = true;                                                               
+         void saveUDI_CMD(char * instName,char * params){                                    
+          save2Memory(UDI_C);                                     
+          save2Memory(':');                                      
+          for(int j=0;j<strlen(instName);j++){                                         
+            if(instName[j]!='\0'){
+              save2Memory(instName[j]);                          
+            }                                                                                
+          }                                                                                  
+          save2Memory(':');                                       
+          first = true;                                                                      
+          while ((str = strtok_r(params, "," , &params)) != NULL){
+             if(!first){                                                                     
+               save2Memory(',');                                  
+             }                                                                               
+             first = false;                                                                  
+             key = strtok(str, delimsEQ);                                                    
+             val = strtok(NULL, delimsEQ);                                                   
+             save2Memory(getIDFromProps(key));                    
+             save2Memory('=');                                    
+             for(int j=0;j<strlen(val);j++){                                           
+               if(val[j]!='\0'){
+                 save2Memory(val[j]);                             
+               }                                                                             
+             }                                                                               
+           }                                                                                 
+         }                                                                                   
+
+             void saveAIN_CMD (char * instanceName, int typeID,char * params) {                  
+           save2Memory(AIN_C);                                                 
+           save2Memory(delims[0]);                                           
+           for (int i = 0;                                                                   
+           i < strlen(instanceName);                                                         
+           i ++)                                                                             
+           {                                                                                 
+             save2Memory(instanceName[i]);                                     
+           }                                                                                 
+           save2Memory(delims[0]);                                           
+           save2Memory(typeID);                                                
+           save2Memory(delims[0]);                                           
+           first = true;                                                                     
+           while ((str = strtok_r(params, "," , & params)) != NULL) {
+             if (!first) {                                                                   
+               save2Memory(',');                                               
+             }                                                                               
+             first = false;                                                                  
+             key = strtok(str, delimsEQ);                                                    
+             val = strtok(NULL, delimsEQ);                                                   
+             save2Memory(getIDFromProps(key));                                 
+             save2Memory('=');                                                 
+             for (int j = 0;                                                                 
+             j < strlen( val);                                                               
+             j ++)                                                                           
+             {                                                                               
+               if ( val[j] != '\0')
+               {                                                                             
+                 save2Memory(val[j] );                                         
+               }                                                                             
+             }                                                                               
+           }                                                                                 
+         }                                                                                   
 void save2Memory(byte b){                                
   file.seekSet(eepromIndex);                             
   file.write(b);                                         
-  file.sync();                                         
+  if(b == endAdminChar | b == sepAdminChar) file.sync();                                         
   eepromIndex++;                                         
 }                                                        
 void save2MemoryNoInc(int preciseIndex,byte b){                                
   file.seekSet(preciseIndex);                             
   file.write(b);                                         
-  file.sync();                                         
+  if(b == endAdminChar | b == sepAdminChar) file.sync();                                         
 }                                                        
     void initPMEM() {               
 if (!card.init()) Serial.println("error.card.init"); 
 if (!Fat16 :: init(& card)) Serial.println("Fat16::init");    
-if (file.open("PKEVS", O_CREAT | O_SYNC |O_RDWR)) Serial.println("Fat16::open");  
+if (file.open("PKEVS", O_CREAT |O_RDWR)) Serial.println("Fat16::open");  
   file.writeError = false;                        
   file.rewind();                                   
   for (int i = 0; i < EEPROM_MAX_SIZE; i++) {       
@@ -796,65 +816,71 @@ break;
 }
 }
 }
-byte typeIDB;                                         
-byte portIDB;                                         
-boolean parseForCAdminMsg(){                          
-  switch((byte)inBytes[0]){                           
-    case AIN_C: {                                     
-      insID = strtok(&inBytes[1], delims);            
-      typeIDB = (byte)inBytes[strlen(insID)+3];       
-      params = &inBytes[strlen(insID)+5];             
-      createInstance(typeIDB,insID,params);           
-      return true;                                    
-      break;                                          
-    }                                                 
-    case RIN_C: {                                             
-      insID = strtok (& inBytes[1], delims);                  
-      removeInstance (getIndexFromName (insID) );             
-      return true;                                            
-      break;                                                  
-    }                                                         
-    case ABI_C: {                                                          
-        insID = strtok(&inBytes[1], delims);                               
-        chID = strtok(NULL, delims);                                       
-        portIDB = (byte)chID[strlen(chID)+1];                              
-        bind(getIndexFromName(insID),getIndexFromName(chID),portIDB);      
-        return true;break;                                                 
-      }                                                                    
-    case RBI_C: {                                                          
-        insID = strtok(&inBytes[1], delims);                               
-        chID = strtok(NULL, delims);                                       
-        portIDB = (byte)chID[strlen(chID)+1];                              
-        unbind(getIndexFromName(insID),getIndexFromName(chID),portIDB);      
-        return true;break;                                                 
-      }                                                                    
-    case UDI_C: {                                                                
-      insID = strtok (& inBytes[1], delims);                                     
-      params = & inBytes[strlen (insID) + 3];                                    
-      updateParams (getIndexFromName (insID), params);                           
-    }                                                                            
-  }                                                   
-}                                                     
-    void executeScriptFromEEPROM () {                                           
-      inBytes[serialIndex] = readPMemory(eepromIndex);                          
-      while (inBytes[serialIndex] != endAdminChar && eepromIndex < EEPROM_MAX_SIZE) {       
-        if (inBytes[serialIndex] == sepAdminChar) {                             
-          inBytes[serialIndex] = '\0';                                          
-          parseForCAdminMsg();                                                  
-          flushAdminBuffer();                                                   
-        } else {                                                                
-          serialIndex ++;                                                       
-        }                                                                       
-        eepromIndex ++;                                                         
-        inBytes[serialIndex] = readPMemory(eepromIndex);                        
-      }                                                                         
-      //PROCESS LAST CMD                                                        
-      if (inBytes[serialIndex] == endAdminChar) {                               
-        inBytes[serialIndex] = '\0';                                            
-        parseForCAdminMsg();                                                    
-        flushAdminBuffer();                                                     
-      }                                                                         
-    }                                                                           
+
+    byte typeIDB;                                          
+    byte portIDB;                                          
+    boolean parseForCAdminMsg(){                           
+      switch((byte)inBytes[0]){                            
+        case AIN_C: {                                      
+          insID = strtok(&inBytes[1], delims);             
+          typeIDB = (byte)inBytes[strlen(insID)+3];        
+          params = &inBytes[strlen(insID)+5];              
+          createInstance(typeIDB,insID,params);            
+          return true;                                     
+          break;                                           
+        }                                                  
+        case RIN_C: {                                              
+          insID = strtok (& inBytes[1], delims);                   
+          removeInstance (getIndexFromName (insID) );              
+          return true;                                             
+          break;                                                   
+        }                                                          
+        case ABI_C: {                                                           
+            insID = strtok(&inBytes[1], delims);                                
+            chID = strtok(NULL, delims);                                        
+            portIDB = (byte)chID[strlen(chID)+1];                               
+            bind(getIndexFromName(insID),getIndexFromName(chID),portIDB);       
+            return true;break;                                                  
+          }                                                                     
+        case RBI_C: {                                                           
+            insID = strtok(&inBytes[1], delims);                                
+            chID = strtok(NULL, delims);                                        
+            portIDB = (byte)chID[strlen(chID)+1];                               
+            unbind(getIndexFromName(insID),getIndexFromName(chID),portIDB);       
+            return true;break;                                                  
+          }                                                                     
+        case UDI_C: {                                                                 
+          insID = strtok (& inBytes[1], delims);                                      
+          params = & inBytes[strlen (insID) + 3];                                     
+          updateParams (getIndexFromName (insID), params);                            
+        }                                                                             
+      }                                                    
+    }
+                                                          
+                                                          
+            void executeScriptFromEEPROM () {                                            
+              inBytes[serialIndex] = readPMemory(eepromIndex);                           
+              while (inBytes[serialIndex] != endAdminChar && eepromIndex < EEPROM_MAX_SIZE) {        
+                if (inBytes[serialIndex] == sepAdminChar) {                              
+                  inBytes[serialIndex] = '\0';                                           
+                  parseForCAdminMsg();                                                   
+                  flushAdminBuffer();                                                    
+                } else {                                                                 
+                  serialIndex ++;                                                        
+                }                                                                        
+                eepromIndex ++;                                                          
+                inBytes[serialIndex] = readPMemory(eepromIndex);                         
+              }                                                                          
+              //PROCESS LAST CMD                                                         
+              if (inBytes[serialIndex] == endAdminChar) {                                
+                inBytes[serialIndex] = '\0';                                             
+                parseForCAdminMsg();                                                     
+                flushAdminBuffer();                                                      
+              }                                                                          
+   
+            }                                                                            
+                                                          
+                                                          
 const prog_char init_localchan545[] PROGMEM = "LocalChan545";
 const prog_char init_timer245[] PROGMEM = "Timer245";
 const prog_char init_digitalli43[] PROGMEM = "DigitalLi43";

@@ -59,10 +59,10 @@ class KevoreeCGenerator
 
 
 
-    generateGlobalInstanceState
+
     generateDestroyInstanceMethod(ktypes)
     generateParamMethod(ktypes)
-    generateParamsMethod
+
     generateGlobalInstanceFactory(ktypes)
     generateRunInstanceMethod(ktypes)
 
@@ -86,10 +86,7 @@ class KevoreeCGenerator
     generateConcatKevscriptParser()
 
 
-    generateUDICommandSave();
-    generateAINCommandSave();
-    generateBICommandSave();
-    generateRINCommandSave();
+    generatePrimitivesPersistence();
     generateSave2Memory(pmem);
     generateSave2MemoryNoInc(pmem);
     generatePMemInit(pmem);
@@ -101,7 +98,6 @@ class KevoreeCGenerator
     generateSaveInstancesBindings(ktypes)
 
     generateParseCAdminMsg()
-    generateScriptFromEEPROM()
     generateSetup(instances, nodeName)
 
 
