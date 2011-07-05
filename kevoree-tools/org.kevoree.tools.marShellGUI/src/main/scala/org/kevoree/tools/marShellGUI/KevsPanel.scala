@@ -67,8 +67,14 @@ class KevsPanel extends JPanel {
       notificationSeamless ! "checkNeeded"
       //updateMarkers(e.getDocument.getText(0, e.getDocument.getLength - 1))
     }
+  });
 
-    def updateMarkers(content: String) {
+
+  object notificationSeamless extends DaemonActor {
+    start()
+    var checkNeeded = false
+
+    private def updateMarkers(content: String) {
       val parser = new KevsParser();
       val result = parser.parseScript(codeEditor.getText);
       Markers.removeMarkers(codeEditor)
@@ -98,43 +104,38 @@ class KevsPanel extends JPanel {
       }
     }
 
-    object notificationSeamless extends DaemonActor {
-      start()
-      var checkNeeded = false
+    def act() {
+      loop {
+        reactWithin(150) {
+          case scala.actors.TIMEOUT => if (checkNeeded) {
 
-      def act() {
-        loop {
-          reactWithin(150) {
-            case scala.actors.TIMEOUT => if (checkNeeded) {
-
-              if (codeEditor.getDocument.getLength > 1) {
-                updateMarkers(codeEditor.getDocument.getText(0, codeEditor.getDocument.getLength - 1));
-              }
-
-              checkNeeded = false
+            if (codeEditor.getDocument.getLength > 1) {
+              updateMarkers(codeEditor.getDocument.getText(0, codeEditor.getDocument.getLength - 1));
             }
-            case _ => checkNeeded = true
+
+            checkNeeded = false
           }
+          case _ => checkNeeded = true
         }
       }
     }
+  }
 
 
-  })
-  /*
+/*
 var editorKit = codeEditor.getEditorKit
 var toolPane = new JToolBar
 editorKit.asInstanceOf[KevsJSyntaxKit].addToolBarActions(codeEditor,toolPane)
-  */
+*/
 
-  //var logPanel = new LogPanel
-  //var splitPane: JSplitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, scrPane, logPanel)
-  // splitPane.setOneTouchExpandable(true)
-  //splitPane.setContinuousLayout(true)
-  //splitPane.setDividerSize(15)
-  // splitPane.setDividerLocation(0.99)
-  //splitPane.setResizeWeight(1.0)
-  // add(toolPane,BorderLayout.NORTH)
-  add(scrPane, BorderLayout.CENTER);
+//var logPanel = new LogPanel
+//var splitPane: JSplitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, scrPane, logPanel)
+// splitPane.setOneTouchExpandable(true)
+//splitPane.setContinuousLayout(true)
+//splitPane.setDividerSize(15)
+// splitPane.setDividerLocation(0.99)
+//splitPane.setResizeWeight(1.0)
+// add(toolPane,BorderLayout.NORTH)
+add (scrPane, BorderLayout.CENTER);
 
 }
