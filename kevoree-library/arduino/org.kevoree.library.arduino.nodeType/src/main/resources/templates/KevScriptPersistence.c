@@ -1,7 +1,7 @@
 
          void saveRIN_CMD (char * instName) {                
            save2Memory(RIN_C);                 
-           save2Memory(':');                   
+           save2Memory(':');
            for (int j = 0;                                   
            j < strlen(instName);                             
            j ++)                                             
@@ -46,23 +46,23 @@
          boolean first = true;                                                               
          void saveUDI_CMD(char * instName,char * params){                                    
           save2Memory(UDI_C);                                     
-          save2Memory(':');                                      
+          save2Memory(':');
           for(int j=0;j<strlen(instName);j++){                                         
             if(instName[j]!='\0'){
               save2Memory(instName[j]);                          
             }                                                                                
           }                                                                                  
-          save2Memory(':');                                       
+          save2Memory(':');
           first = true;                                                                      
           while ((str = strtok_r(params, "," , &params)) != NULL){
              if(!first){                                                                     
-               save2Memory(',');                                  
+               save2Memory(',');
              }                                                                               
              first = false;                                                                  
              key = strtok(str, delimsEQ);                                                    
              val = strtok(NULL, delimsEQ);                                                   
              save2Memory(getIDFromProps(key));                    
-             save2Memory('=');                                    
+             save2Memory('=');
              for(int j=0;j<strlen(val);j++){                                           
                if(val[j]!='\0'){
                  save2Memory(val[j]);                             
@@ -86,13 +86,13 @@
            first = true;                                                                     
            while ((str = strtok_r(params, "," , & params)) != NULL) {
              if (!first) {                                                                   
-               save2Memory(',');                                               
+               save2Memory(',');
              }                                                                               
              first = false;                                                                  
              key = strtok(str, delimsEQ);                                                    
              val = strtok(NULL, delimsEQ);                                                   
              save2Memory(getIDFromProps(key));                                 
-             save2Memory('=');                                                 
+             save2Memory('=');
              for (int j = 0;                                                                 
              j < strlen( val);                                                               
              j ++)                                                                           

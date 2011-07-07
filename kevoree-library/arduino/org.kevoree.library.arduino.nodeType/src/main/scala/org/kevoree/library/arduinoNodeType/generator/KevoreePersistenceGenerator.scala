@@ -13,70 +13,43 @@ import templates.SimpleCopyTemplate
 
 trait KevoreePersistenceGenerator extends KevoreeCAbstractGenerator {
 
-
-  def generateReadPMemory(pm: PMemory): Unit = {
-    context b "byte readPMemory(int preciseIndex){                                "
+  def generatePMemoryPrimitives(pm: PMemory): Unit = {
     if (pm.equals(PMemory.EEPROM)) {
-      context b "  return EEPROM.read(preciseIndex);"
+      context b SimpleCopyTemplate.copyFromClassPath("templates/KevScriptPersistenceStorageEEPROM.c")
     }
     if (pm.equals(PMemory.SD)) {
-      context b "  file.seekSet(preciseIndex);                             "
-      context b "  return file.read();                                         "
+      context b SimpleCopyTemplate.copyFromClassPath("templates/KevScriptPersistenceStorageSD.c")
     }
-    context b "}                                                        "
-  }
-
-  def generateSave2MemoryNoInc(pm: PMemory): Unit = {
-    context b "void save2MemoryNoInc(int preciseIndex,byte b){                                "
-    if (pm.equals(PMemory.EEPROM)) {
-      context b "  EEPROM.write(preciseIndex,b);"
-    }
-    if (pm.equals(PMemory.SD)) {
-      context b "  file.seekSet(preciseIndex);                             "
-      context b "  file.write(b);                                         "
-      context b "  if(b == endAdminChar | b == sepAdminChar) file.sync();                                         "
-    }
-    context b "}                                                        "
-  }
-
-  def generateSave2Memory(pm: PMemory): Unit = {
-    context b "void save2Memory(byte b){                                "
-    if (pm.equals(PMemory.EEPROM)) {
-      context b "  EEPROM.write(eepromIndex,b);eepromIndex++;  "
-    }
-    if (pm.equals(PMemory.SD)) {
-      context b "  file.seekSet(eepromIndex);                             "
-      context b "  file.write(b);                                         "
-      context b "  if(b == endAdminChar | b == sepAdminChar) file.sync();                                         "
-      context b "  eepromIndex++;                                         "
-    }
-    context b "}                                                        "
   }
 
   def generatePMemInit(pm: PMemory): Unit = {
     context b "    void initPMEM() {               "
     if (pm.equals(PMemory.SD)) {
       context h "#include <Fat16.h>"
-      context h "#include <Fat16util.h>"
+      //  context h "#include <Fat16util.h>"
       context h "SdCard card;"
       context h "Fat16 file;"
-      context b "if (!card.init()) Serial.println(\"error.card.init\"); "
-      context b "if (!Fat16 :: init(& card)) Serial.println(\"Fat16::init\");    "
-      context b "if (file.open(\"PKEVS\", O_CREAT |O_RDWR)) Serial.println(\"Fat16::open\");  "
+      context b "if (!card.init()) kprintln(\"error.card.init\"); "
+      context b "if (!Fat16 :: init(& card)) kprintln(\"Fat16::init\");    "
+      context b "if (file.open(\"PKEVS\", O_CREAT |O_RDWR)) kprintln(\"Fat16::open\");  "
 
       context b "  file.writeError = false;                        "
       context b "  file.rewind();                                   "
-      context b "  for (int i = 0; i < EEPROM_MAX_SIZE; i++) {       "
-      context b "    file.write((byte)'=');                           "
-      context b "  }                                                   "
-      context b "  file.rewind();                                       "
+      context b "    if(file.fileSize() !=  EEPROM_MAX_SIZE){                   "
+      context b "    for (int i = 0; i < EEPROM_MAX_SIZE; i++) {                 "
+      context b "      file.write((byte)'=');                                     "
+      context b "    }                                                             "
+      context b "    file.rewind();                                                 "
+      context b "  }                                                                 "
+
+    } else {
+      context h "#include <EEPROM.h>"
     }
     context b "}                                                        "
   }
 
 
-
-   def generatePrimitivesPersistence(): Unit = {
+  def generatePrimitivesPersistence(): Unit = {
     context b SimpleCopyTemplate.copyFromClassPath("templates/KevScriptPersistence.c")
   }
 

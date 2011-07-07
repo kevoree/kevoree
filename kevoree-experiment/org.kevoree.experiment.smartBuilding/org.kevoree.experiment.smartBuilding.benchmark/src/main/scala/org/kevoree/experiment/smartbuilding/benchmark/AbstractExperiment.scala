@@ -25,6 +25,8 @@ abstract class AbstractExperiment {
 
   var boardTypeName = "atmega328"
   var boardPortName = "/dev/tty.usbserial-A400g2se"
+  var pmemType = "EEPROM"
+  var psize = "MAX"
 
   def initNode(knodeName: String, model: ContainerRoot) {
     val baseTime = System.currentTimeMillis()
@@ -32,7 +34,8 @@ abstract class AbstractExperiment {
     node.getDictionary.put("boardTypeName", boardTypeName)
     node.getDictionary.put("boardPortName", boardPortName)
     node.getDictionary.put("incremental", "false")
-   //  node.getDictionary.put("pmem", "sd")
+    node.getDictionary.put("pmem", pmemType)
+    node.getDictionary.put("psize", psize)
 
 
     node.newdir = new File("arduinoGenerated" + knodeName)

@@ -30,7 +30,8 @@ class KevoreeCGenerator
                 outputDir: String,
                 bundleContext: BundleContext,
                 boardName: String,
-                pmem: PMemory
+                pmem: PMemory,
+                pmax: String
                 ) {
 
     val componentTypes = adaptModel.getAdaptations.filter(adt => adt.isInstanceOf[AddType] && adt.asInstanceOf[AddType].getRef.isInstanceOf[ComponentType])
@@ -43,7 +44,7 @@ class KevoreeCGenerator
       ctype => ktypes = ktypes ++ List(ctype.asInstanceOf[AddType].getRef)
     }
 
-    generateKcFrameworkHeaders(ktypes, ArduinoBoardType.getFromTypeName(boardName))
+    generateKcFrameworkHeaders(ktypes, ArduinoBoardType.getFromTypeName(boardName),pmax)
     generateKcConstMethods(ktypes);
     generateKcFramework
 
@@ -73,40 +74,26 @@ class KevoreeCGenerator
         instances = instances ++ List(instanceAdaption.asInstanceOf[AddInstance].getRef)
     }
 
-    generateReadPMemory(pmem);
+    generatePMemoryPrimitives(pmem);
     generateBindMethod(ktypes)
     generateUnBindMethod(ktypes)
 
     generatePeriodicExecutionMethod(ktypes)
     generatePortQueuesSizeMethod(ktypes)
-
     generateNameToIndexMethod()
-
     generateCheckForAdminMsg()
     generateConcatKevscriptParser()
-
-
     generatePrimitivesPersistence();
-    generateSave2Memory(pmem);
-    generateSave2MemoryNoInc(pmem);
     generatePMemInit(pmem);
-
-
-
     generateSavePropertiesMethod(ktypes)
     generateCompressEEPROM()
     generateSaveInstancesBindings(ktypes)
-
     generateParseCAdminMsg()
     generateSetup(instances, nodeName)
-
-
     generateNextExecutionGap(ktypes)
     generateCurrentTimeMethod()
     generateSleepMethod()
     generateLoop
-
-
     generateFreeRamMethod()
 
 

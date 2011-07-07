@@ -203,9 +203,13 @@ public class ArduinoNode extends AbstractNodeType {
                     pm = PMemory.SD;
                 }
             }
+            String psize = "";
+            if(this.getDictionary().get("psize") != null && this.getDictionary().get("psize") != "MAX" ){
+                psize = this.getDictionary().get("psize").toString();
+            }
 
 
-            generator.generate(model, nodeName, outputPath, bcontext,getDictionary().get("boardTypeName").toString(),pm);
+            generator.generate(model, nodeName, outputPath, bcontext,getDictionary().get("boardTypeName").toString(),pm,psize);
 
 //STEP 3 : Deploy by commnication channel
             progress.beginTask("Prepare compilation", 40);
@@ -271,7 +275,7 @@ public class ArduinoNode extends AbstractNodeType {
             }
 
         } else {
-            System.out.println("incremental update availble -> try to generate KevScript !");
+            System.out.println("incremental update available -> try to generate KevScript !");
             Script baseScript = KevScriptWrapper.miniPlanKevScript(AdaptationModelWrapper.generateScriptFromAdaptModel(modelIn));
             String resultScript = KevScriptWrapper.generateKevScriptCompressed(baseScript);
             System.out.println(resultScript);

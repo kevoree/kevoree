@@ -34,6 +34,7 @@ public class Tester {
         node.getDictionary().put("boardTypeName","atmega328");
         node.getDictionary().put("boardPortName","/dev/tty.usbserial-A400g2se");
         node.getDictionary().put("pmem","sd");
+        node.getDictionary().put("psize","16384");
        // node.getDictionary().put("boardPortName","/dev/tty.usbserial-A400g2se");
 
 

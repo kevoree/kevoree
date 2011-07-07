@@ -21,37 +21,33 @@ import org.kevoree.library.arduinoNodeType.ArduinoBoardType
 
 trait KevoreeCFrameworkGenerator extends KevoreeCAbstractGenerator {
 
-  def generateKcFrameworkHeaders(types: List[TypeDefinition], boardType: ArduinoBoardType): Unit = {
-    context h "#include <QueueList.h>"
-    context h "#include <avr/pgmspace.h>"
-    context h "#include <avr/wdt.h>"
-    context h "#include <EEPROM.h>"
-    context h "#define UDI_C 0"
-    context h "#define AIN_C 1"
-    context h "#define RIN_C 2"
-    context h "#define ABI_C 3"
-    context h "#define RBI_C 4"
+  def generateKcFrameworkHeaders(types: List[TypeDefinition], boardType: ArduinoBoardType, pmax: String): Unit = {
 
-    boardType match {
-      case ArduinoBoardType.atmega328 => {
-        context h "#define EEPROM_MAX_SIZE 1024"
+    context h SimpleCopyTemplate.copyFromClassPath("templates/KevFrameworkHeaders.c")
+
+    val maxSize = pmax match {
+      case "" => {
+        boardType match {
+          case ArduinoBoardType.atmega328 => {
+            "1024"
+          }
+          case ArduinoBoardType.atmega1280 => {
+            "4096"
+          }
+          case ArduinoBoardType.uno => {
+            "1024"
+          }
+          case ArduinoBoardType.mega2560 => {
+            "4096"
+          }
+          case _ => {
+            "1024"
+          }
+        }
       }
-      case ArduinoBoardType.atmega1280 => {
-        context h "#define EEPROM_MAX_SIZE 4096"
-      }
-      case ArduinoBoardType.uno => {
-        context h "#define EEPROM_MAX_SIZE 1024"
-      }
-      case ArduinoBoardType.mega2560 => {
-        context h "#define EEPROM_MAX_SIZE 4096"
-      }
-      case _ => {
-        context h "#define EEPROM_MAX_SIZE 1024"
-      }
+      case _ => pmax
     }
-
-
-
+    context h "#define EEPROM_MAX_SIZE " + maxSize
     context h "#define MAX_INST_ID 15" //TO CHANGE
 
     val random = new Random
@@ -175,6 +171,7 @@ trait KevoreeCFrameworkGenerator extends KevoreeCAbstractGenerator {
 
 
   def generateKcFramework: Unit = {
+    context b SimpleCopyTemplate.copyFromClassPath("templates/KevFrameworkUtil.c")
     context b SimpleCopyTemplate.copyFromClassPath("templates/KevFrameworkBase.c")
 
   }
@@ -193,7 +190,6 @@ trait KevoreeCFrameworkGenerator extends KevoreeCAbstractGenerator {
     context b "}"
     context b "}"
   }
-
 
 
   def generateParamMethod(types: List[TypeDefinition]): Unit = {
@@ -472,15 +468,18 @@ trait KevoreeCFrameworkGenerator extends KevoreeCAbstractGenerator {
     context b "  eepromIndex ++;                                                            "
     context b "previousBootTime = millis();"
     context b "  executeScriptFromEEPROM();                                                 "
-    context b "                  Serial.print(\"bootms\");                                                 "
+    context b "                  kprint(\"bootms\");                                                 "
     context b "                  Serial.println( millis() - previousBootTime );                      "
 
 
 
     context b "}                                                                            "
 
-    context b "Serial.print(\"mem\");"
+    context b "kprint(\"mem\");"
     context b "Serial.println(freeRam());"
+    context b "kprint(\"emem\");"
+    context b "Serial.println(eepromIndex);"
+
     context b "}"
   }
 

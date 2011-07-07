@@ -1,11 +1,5 @@
      //ARDUINO SERIAL INPUT READ                                        
-     #define BUFFERSIZE 100                                             
-     int serialIndex = 0;                                               
-     char inBytes[BUFFERSIZE];                                          
-     const char startBAdminChar = '{';                                  
-     const char endAdminChar = '}';                                     
-     const char startAdminChar = '$';                                   
-     const char sepAdminChar = '/';                                     
+
      char ackToken;                                                     
      boolean parsingAdmin = false;                                      
      int eepromPreviousIndex;                                               
@@ -59,14 +53,14 @@
                if(eepromIndex > (EEPROM_MAX_SIZE-100)){         
                  compressEEPROM();             
                }                               
-                       Serial.print("ms");
-                       Serial.println( millis() - timeBeforeScript );                       
-                       Serial.print("mem");
-                       Serial.println(freeRam());                                          
-                       Serial.print("emem");
-                       Serial.println(eepromIndex);                                          
-                       Serial.print("ack");
-                       Serial.println(ackToken);                                           
+                       kprint("ms");
+                       Serial.println( millis() - timeBeforeScript );
+                       kprint("mem");
+                       Serial.println(freeRam());
+                       kprint("emem");
+                       Serial.println(eepromIndex);
+                       kprint("ack");
+                       Serial.println(ackToken);
                        firstAdd = false;                                                   
                      } else {                                                              
                        serialIndex ++;                                                     
@@ -74,7 +68,7 @@
                    }                                                                        
                  }                                                                         
                  if (serialIndex >= BUFFERSIZE) {                                          
-                   Serial.println("BFO");
+                   kprintln("BFO");
                    flushAdminBuffer();                                                     
                    Serial.flush();                                                         
                    parsingAdmin = false; //KILL PARSING ADMIN                              
@@ -82,7 +76,7 @@
                }                                                                           
                                                                                            
              } else {                                                                      
-               Serial.println("BAM");
+               kprintln("BAM");
                flushAdminBuffer();                                                          
                Serial.flush();                                                              
              }                                                                              

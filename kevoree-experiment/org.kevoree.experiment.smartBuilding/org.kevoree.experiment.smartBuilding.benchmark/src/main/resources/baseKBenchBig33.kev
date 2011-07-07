@@ -1,21 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <kevoree:ContainerRoot xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:kevoree="http://kevoree/1.0">
-  <nodes name="kbenchmark" typeDefinition="//@typeDefinitions.0" metaData="x=665,y=329">
+  <nodes name="kbenchmark" typeDefinition="//@typeDefinitions.0" metaData="x=461,y=107">
     <dictionary>
       <values attribute="//@typeDefinitions.0/@dictionaryType/@attributes.0" value="atmega328"/>
-      <values attribute="//@typeDefinitions.0/@dictionaryType/@attributes.2" value="true"/>
+      <values attribute="//@typeDefinitions.0/@dictionaryType/@attributes.2" value="false"/>
     </dictionary>
-    <components name="li1" typeDefinition="//@typeDefinitions.7">
+    <components name="e" typeDefinition="//@typeDefinitions.7">
       <dictionary>
-        <values attribute="//@typeDefinitions.7/@dictionaryType/@attributes.0" value="9"/>
+        <values attribute="//@typeDefinitions.7/@dictionaryType/@attributes.0" value="3"/>
       </dictionary>
       <provided portTypeRef="//@typeDefinitions.7/@provided.0"/>
       <provided portTypeRef="//@typeDefinitions.7/@provided.1"/>
       <provided portTypeRef="//@typeDefinitions.7/@provided.2"/>
     </components>
-    <components name="t1" typeDefinition="//@typeDefinitions.3">
+    <components name="i" typeDefinition="//@typeDefinitions.3">
       <dictionary>
-        <values attribute="//@typeDefinitions.3/@dictionaryType/@attributes.0" value="1000"/>
+        <values attribute="//@typeDefinitions.3/@dictionaryType/@attributes.0" value="40"/>
       </dictionary>
       <required portTypeRef="//@typeDefinitions.3/@required.0"/>
     </components>
@@ -173,7 +173,7 @@
   <libraries name="Kevoree-Android-JavaSE" subTypes="//@typeDefinitions.12 //@typeDefinitions.13 //@typeDefinitions.14 //@typeDefinitions.20"/>
   <libraries name="Kevoree-Components" subTypes="//@typeDefinitions.15 //@typeDefinitions.17 //@typeDefinitions.18"/>
   <libraries name="Kevoree-Netty" subTypes="//@typeDefinitions.19"/>
-  <hubs name="ch1" typeDefinition="//@typeDefinitions.9" metaData="x=433,y=335"/>
+  <hubs name="b" typeDefinition="//@typeDefinitions.9" metaData="x=49,y=350"/>
   <mBindings port="//@nodes.0/@components.0/@provided.2" hub="//@hubs.0"/>
   <mBindings port="//@nodes.0/@components.1/@required.0" hub="//@hubs.0"/>
   <deployUnits groupName="org.kevoree.library.arduino" unitName="org.kevoree.library.arduino.nodeType" version="1.2.0-SNAPSHOT" hashcode="201106132205992" requiredLibs="//@deployUnits.1" targetNodeType="//@typeDefinitions.0"/>
