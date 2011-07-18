@@ -91,8 +91,7 @@ class KevoreeCGenerator
     generateParseCAdminMsg()
     generateSetup(instances, nodeName)
     generateNextExecutionGap(ktypes)
-    generateCurrentTimeMethod()
-    generateSleepMethod()
+    generateTimeMethods()
     generateLoop
     generateFreeRamMethod()
 

@@ -30,7 +30,7 @@ object AppRunner extends App {
 
  // val expes = List(new Experiment1, new Experiment2, new Experiment3, new Experiment4, new Experiment5)
 
-  var expe = new BootInfluence328P_SD_16K//expes(4)
+  var expe = new Random5_328_SD_16K//expes(4)
  // expe.boardPortName = "/dev/tty.usbmodem411"
  // expe.boardTypeName = "mega2560"
  // expe.boardPortName = "/dev/tty.usbserial-A400g2se"
