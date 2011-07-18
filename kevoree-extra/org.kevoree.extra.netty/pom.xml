@@ -19,7 +19,15 @@
         <dependency>
             <groupId>com.twitter</groupId>
             <artifactId>finagle-core</artifactId>
-            <version>1.6.2</version>
+            <version>1.7.1</version>
+
+            <exclusions>
+                <exclusion>
+                    <artifactId>scala-library</artifactId>
+                    <groupId>org.scala-lang</groupId>
+                </exclusion>
+            </exclusions>
+
         </dependency>
 
         <dependency>
