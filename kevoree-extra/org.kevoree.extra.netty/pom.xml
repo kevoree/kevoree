@@ -19,7 +19,15 @@
         <dependency>
             <groupId>com.twitter</groupId>
             <artifactId>finagle-core</artifactId>
-            <version>1.5.0</version>
+            <version>1.7.1</version>
+
+            <exclusions>
+                <exclusion>
+                    <artifactId>scala-library</artifactId>
+                    <groupId>org.scala-lang</groupId>
+                </exclusion>
+            </exclusions>
+
         </dependency>
 
         <dependency>
@@ -41,7 +49,7 @@
                         <Bundle-SymbolicName>org.kevoree.extra.netty</Bundle-SymbolicName>
                         <Bundle-Version>${pom.version}</Bundle-Version>
                         <Dynamic-Import>*</Dynamic-Import>
-                        <Export-Package>com.google.common.*,org.jboss.netty.*;version="3.2.4.Final",,com.twitter.*;version="1.5.0"
+                        <Export-Package>com.google.common.*,com.twitter.*,org.jboss.netty.*;version="3.2.4.Final"
                         </Export-Package>
                         <Import-Package>!com.google.common.*,!com.twitter.*,!org.jboss.netty.*,*;resolution:="optional"
                         </Import-Package>
