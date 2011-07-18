@@ -38,7 +38,6 @@
             <version>${kevoree.version}</version>
             <scope>provided</scope>
         </dependency>
-
     </dependencies>
 
     <parent>

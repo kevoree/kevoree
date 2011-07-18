@@ -30,9 +30,9 @@ import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
 
 public class GeneticAlgorithm {
-    public static int forestWidth = 5;
-    public static int generations = 50;
-    public static int populations = 100;
+    public static int forestWidth = 10;
+    public static int generations = 100;
+    public static int populations = 200;
 
     public static String folderToStoreTempFile = "generated";
 
@@ -290,7 +290,11 @@ public class GeneticAlgorithm {
                     }
                     current.setFitness(fit);
                     fitness = false;
+                    rank = true;
+                } else
+                if (pareto && rank) {
                     file = true;
+                    rank = false;
                 } else
                 if (pareto && file) {
                     current.setPathToFile(line);

@@ -40,4 +40,9 @@ case class LinkedTrace (trace: Trace, sucessors: List[LinkedTrace]) {
     }
     result.toString
   }
+
+
+
+
+
 }
