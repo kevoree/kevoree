@@ -31,10 +31,10 @@ import java.awt.datatransfer.DataFlavor;
 import java.awt.dnd.DnDConstants;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
+
 import org.kevoree.tools.ui.framework.elements.ModelPanel;
 
 /**
- *
  * @author ffouquet
  */
 public class InstanceDragSourceListener extends DragSourceAdapter implements DragSourceMotionListener, DragGestureListener {
@@ -91,10 +91,18 @@ public class InstanceDragSourceListener extends DragSourceAdapter implements Dra
             //tempPanel.setLocation(new Point(p2.x - origin2.x, p2.y - origin2.y));
             // kernel.getModelPanel().setFlightObject(flightComponent, new Point(p2.x - origin2.x, p2.y - origin2.y));
 
-            flightComponent.setBounds(p2.x - origin2.x, p2.y - origin2.y, flightComponent.getWidth(), flightComponent.getHeight());
+          //  System.out.println((p2.x - origin2.x) + "-" + (p2.y - origin2.y));
+
+            int newX = (p2.x - origin2.x);
+            if(newX < 0){newX = 0;}
+            int newY = (p2.y - origin2.y);
+            if(newY < 0){newY = 0;}
+
+                flightComponent.setBounds(newX, newY, flightComponent.getWidth(), flightComponent.getHeight());
+                ((ModelPanel) this.flightComponent.getParent().getParent()).update();
 
 
-            ((ModelPanel)this.flightComponent.getParent().getParent()).update();
+
         }
 
     }

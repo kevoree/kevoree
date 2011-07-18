@@ -45,9 +45,11 @@ public class BindingPanel extends JPanel {
 
     private JPanel mySelf;
 
-
     @Override
     public boolean contains(int x, int y) {
+        Boolean containsResult = false;
+        Boolean changeDetected = false;
+
         for (Binding b : bindings) {
             Point p1 = null;
             Point ptemp = new Point();
@@ -64,13 +66,28 @@ public class BindingPanel extends JPanel {
                 Point intermed = new Point();
                 intermed.y = Math.max(p2.y, p1.y) + 15;
                 intermed.x = (p2.x + p1.x) / 2;
-                QuadCurve2D curve = new QuadCurve2D.Float(p1.x, p1.y, intermed.x, intermed.y, p2.x, p2.y);
-                if (curve.contains(x, y)) {
-                    return true;
+
+                QuadCurve2D curve = new QuadCurve2D.Float(p1.x, p1.y - 3, intermed.x, intermed.y - 3, p2.x, p2.y - 3);
+                QuadCurve2D curve2 = new QuadCurve2D.Float(p1.x, p1.y + 3, intermed.x, intermed.y + 3, p2.x, p2.y + 3);
+                if (curve2.contains(x, y) && !curve.contains(x, y)) {
+                    containsResult = true;
+                    if (!b.isFocused) {
+                        changeDetected = true;
+                        b.isFocused = true;
+                    }
+                } else {
+                    if (b.isFocused) {
+                        changeDetected = true;
+                        b.isFocused = false;
+                    }
                 }
             }
         }
-        return false;
+        if (changeDetected) {
+            this.repaint();
+            this.revalidate();
+        }
+        return containsResult;
     }
 
     public BindingPanel() {
@@ -80,7 +97,7 @@ public class BindingPanel extends JPanel {
             @Override
             public void mouseClicked(MouseEvent mouseEvent) {
 
-               // System.out.println("Hi" + mouseEvent.getPoint().getX() + "-" + mouseEvent.getPoint().getY());
+                // System.out.println("Hi" + mouseEvent.getPoint().getX() + "-" + mouseEvent.getPoint().getY());
                 for (Binding b : bindings) {
                     Point p1 = null;
                     Point ptemp = new Point();
@@ -97,10 +114,19 @@ public class BindingPanel extends JPanel {
                         Point intermed = new Point();
                         intermed.y = Math.max(p2.y, p1.y) + 15;
                         intermed.x = (p2.x + p1.x) / 2;
-                        QuadCurve2D curve = new QuadCurve2D.Float(p1.x, p1.y, intermed.x, intermed.y, p2.x, p2.y);
-                        if (curve.contains(mouseEvent.getX(), mouseEvent.getY())) {
+                        /*
+                       QuadCurve2D curve = new QuadCurve2D.Float(p1.x, p1.y, intermed.x, intermed.y, p2.x, p2.y);
+                       if (curve.contains(mouseEvent.getX(), mouseEvent.getY())) {
+                           b.triggerListeners();
+                       } */
+
+                        QuadCurve2D curve = new QuadCurve2D.Float(p1.x, p1.y - 3, intermed.x, intermed.y - 3, p2.x, p2.y - 3);
+                        QuadCurve2D curve2 = new QuadCurve2D.Float(p1.x, p1.y + 3, intermed.x, intermed.y + 3, p2.x, p2.y + 3);
+                        if (curve2.contains(mouseEvent.getX(), mouseEvent.getY()) && !curve.contains(mouseEvent.getX(), mouseEvent.getY())) {
                             b.triggerListeners();
                         }
+
+
                     }
                 }
             }
@@ -132,12 +158,13 @@ public class BindingPanel extends JPanel {
         intermed.y = Math.max(end.y, start.y) + 15;
         intermed.x = (end.x + start.x) / 2;
         g2D.draw(new QuadCurve2D.Float(start.x, start.y, intermed.x, intermed.y, end.x, end.y));
+        //g2D.draw(new QuadCurve2D.Float(start.x, start.y - 3, intermed.x, intermed.y - 3, end.x, end.y - 3));
+        //g2D.draw(new QuadCurve2D.Float(start.x, start.y + 3, intermed.x, intermed.y + 3, end.x, end.y + 3));
     }
 
 
     @Override
     public void paint(Graphics g) {
-
         super.paint(g);
         g.setPaintMode();
         Graphics2D g2d = (Graphics2D) g;
@@ -172,8 +199,12 @@ public class BindingPanel extends JPanel {
                     g2d.setStroke(dashed);
                 } else {
                     //g2d.setStroke(new BasicStroke(5, BasicStroke.CAP_SQUARE, BasicStroke.JOIN_ROUND));
+                    if (b.isFocused) {
+                      g2d.setStroke(b.getFocusedStroke());
+                    } else {
+                      g2d.setStroke(b.getStroke());
+                    }
 
-                    g2d.setStroke(b.getStroke());
                 }
 
                 g2d.setColor(b.getActualColor());

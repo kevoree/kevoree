@@ -21,8 +21,8 @@
 
 #define EEPROM_MAX_SIZE 16000
 #define MAX_INST_ID 15
-#define kevoreeID1 2
-#define kevoreeID2 4
+#define kevoreeID1 6
+#define kevoreeID2 3
 int eepromIndex;
 //Global Kevoree Type Defintion declaration
 const prog_char pushbutton[] PROGMEM = "PushButton";
@@ -1203,16 +1203,16 @@ save2Memory(sepAdminChar);
         saveAIN_CMD(instNameBuf, 4, "");                                             
 save2Memory(sepAdminChar);
         strcpy_P(instNameBuf, (char *) pgm_read_word (&(init_tables[3])));        
-        saveAIN_CMD(instNameBuf, 0, "pin=5,period=100");                                             
+        saveAIN_CMD(instNameBuf, 0, "pin=12,period=100");                                             
 save2Memory(sepAdminChar);
         strcpy_P(instNameBuf, (char *) pgm_read_word (&(init_tables[4])));        
-        saveAIN_CMD(instNameBuf, 1, "pin=3");                                             
+        saveAIN_CMD(instNameBuf, 1, "pin=9");                                             
 save2Memory(sepAdminChar);
         strcpy_P(instNameBuf, (char *) pgm_read_word (&(init_tables[5])));        
-        saveAIN_CMD(instNameBuf, 2, "pin=6");                                             
+        saveAIN_CMD(instNameBuf, 2, "pin=0");                                             
 save2Memory(sepAdminChar);
         strcpy_P(instNameBuf, (char *) pgm_read_word (&(init_tables[6])));        
-        saveAIN_CMD(instNameBuf, 1, "pin=4");                                             
+        saveAIN_CMD(instNameBuf, 1, "pin=10");                                             
 save2Memory(sepAdminChar);
         strcpy_P(instNameBuf, (char *) pgm_read_word (&(init_tables[7])));        
         saveAIN_CMD(instNameBuf, 3, "period=1000");                                             

@@ -46,7 +46,7 @@ class Random5_328_SD_16K extends AbstractExperiment {
 
   def runExperiment(_twa: TwoWayActors) {
     twa = _twa;
-    for (i <- 0 until 400) {
+    for (i <- 0 until 500) {
       doPhase(i)
     }
   }

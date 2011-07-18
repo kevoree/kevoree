@@ -21,30 +21,38 @@ import org.kevoree.library.arduinoNodeType.ArduinoBoardType
 
 trait KevoreeCFrameworkGenerator extends KevoreeCAbstractGenerator {
 
+  def generateMaxSize(boardType: ArduinoBoardType) : String = {
+    boardType match {
+      case ArduinoBoardType.atmega328 => {
+        "1024"
+      }
+      case ArduinoBoardType.atmega1280 => {
+        "4096"
+      }
+      case ArduinoBoardType.uno => {
+        "1024"
+      }
+      case ArduinoBoardType.mega2560 => {
+        "4096"
+      }
+      case _ => {
+        "1024"
+      }
+    }
+  }
+
   def generateKcFrameworkHeaders(types: List[TypeDefinition], boardType: ArduinoBoardType, pmax: String): Unit = {
 
     context h SimpleCopyTemplate.copyFromClassPath("templates/KevFrameworkHeaders.c")
 
     val maxSize = pmax match {
       case "" => {
-        boardType match {
-          case ArduinoBoardType.atmega328 => {
-            "1024"
-          }
-          case ArduinoBoardType.atmega1280 => {
-            "4096"
-          }
-          case ArduinoBoardType.uno => {
-            "1024"
-          }
-          case ArduinoBoardType.mega2560 => {
-            "4096"
-          }
-          case _ => {
-            "1024"
-          }
-        }
+        generateMaxSize(boardType)
       }
+      case "MAX" => {
+        generateMaxSize(boardType)
+      }
+
       case _ => pmax
     }
     context h "#define EEPROM_MAX_SIZE " + maxSize
