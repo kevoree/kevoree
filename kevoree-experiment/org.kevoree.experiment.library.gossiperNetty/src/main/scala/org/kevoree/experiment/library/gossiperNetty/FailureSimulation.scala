@@ -6,7 +6,8 @@ import org.jboss.netty.handler.codec.http.HttpVersion.HTTP_1_1
 import org.jboss.netty.buffer.ChannelBuffers.copiedBuffer
 import org.jboss.netty.util.CharsetUtil.UTF_8
 import com.twitter.util.Future
-import com.twitter.finagle.builder.{Server, Http, ServerBuilder}
+import com.twitter.finagle.builder.{Server, ServerBuilder}
+import com.twitter.finagle.http.Http
 import scala.collection.JavaConversions._
 import org.slf4j.LoggerFactory
 import com.twitter.finagle.{SimpleFilter, Service}
@@ -81,7 +82,7 @@ object FailureSimulation {
   def startServer(port: Int) {
     logger.info("Start Failure simulation server on port " + port)
     server = ServerBuilder()
-      .codec(Http)
+      .codec(Http.get()).name("FailureSimulator")
       .bindTo(new InetSocketAddress(port))
       .build(myService)
   }
