@@ -24,6 +24,8 @@ public class KevoreeNodeRunner {
 	private Logger logger = LoggerFactory.getLogger(KevoreeNodeRunner.class);
 
 	private Process nodePlatformProcess;
+	private Thread outputStreamReader;
+	private Thread errorStreamReader;
 	private static String platformJARPath;
 
 	private String nodeName;
@@ -50,6 +52,59 @@ public class KevoreeNodeRunner {
 			//System.out.println(java + " -Dnode.bootstrap="+bootStrapModel + " -Dnode.name=" + nodeName + " -Dnode.port=" + basePort + "-jar" + platformJARPath);
 			nodePlatformProcess = Runtime.getRuntime().exec(new String[]{java,"-Dnode.bootstrap="+bootStrapModel, "-Dnode.name=" + nodeName, "-Dnode.port=" + basePort, "-jar", platformJARPath});
 			//nodePlatformProcess = Runtime.getRuntime().exec(new String[]{"screen", "-A", "-m", "-d", "-S", nodeName, "java", "-Dnode.bootstrap="+bootStrapModel, "-Dnode.name="+nodeName, "-Dnode.port="+basePort, "-jar", platformJARPath, "2>&1", "|", "tee file.txt"});
+
+			outputStreamReader = new Thread() {
+
+				//private OutputStream outputStream;
+				private InputStream stream = nodePlatformProcess.getInputStream();
+
+				@Override
+				public void run () {
+					try {
+				byte[] bytes = new byte[512];
+				int i;
+				while (true) {
+					i = stream.read(bytes);
+					/*if (i != -1) {
+						//System.out.print(line);
+						//outputStream.write(bytes, 0, i);
+
+					}*/
+
+				}
+			} catch (IOException e) {
+				// e.printStackTrace();
+			}
+				}
+			};
+
+			errorStreamReader = new Thread() {
+
+				//private OutputStream outputStream;
+				private InputStream stream = nodePlatformProcess.getErrorStream();
+
+				@Override
+				public void run () {
+					try {
+				byte[] bytes = new byte[512];
+				int i;
+				while (true) {
+					i = stream.read(bytes);
+					/*if (i != -1) {
+						//System.out.print(line);
+						//outputStream.write(bytes, 0, i);
+
+					}*/
+
+				}
+			} catch (IOException e) {
+				// e.printStackTrace();
+			}
+				}
+			};
+
+			outputStreamReader.start();
+			errorStreamReader.start();
 
 			//System.out.println("Node Started ! ");
 
