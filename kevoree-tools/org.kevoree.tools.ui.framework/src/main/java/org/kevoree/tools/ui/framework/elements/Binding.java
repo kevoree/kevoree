@@ -35,6 +35,7 @@ public class Binding extends AbstractSelectElement implements ErrorHighlightable
     public Color selectedcolor = null;
     public Color unselectedcolor = null;
 
+    public Boolean isFocused = false;
 
     private java.util.List<BindingListener> listeners = new ArrayList<BindingListener>();
 
@@ -53,11 +54,15 @@ public class Binding extends AbstractSelectElement implements ErrorHighlightable
     }
 
 
+    private Stroke stroke = null;
+    private Stroke focusedStroke = null;
+    public Stroke getFocusedStroke() {
+        return focusedStroke;
+    }
     public Stroke getStroke() {
         return stroke;
     }
 
-    private Stroke stroke = null;
 
     private STATE currentState = STATE.NO_ERROR;
 
@@ -80,18 +85,20 @@ public class Binding extends AbstractSelectElement implements ErrorHighlightable
             selectedcolor = new Color(254, 238, 100, 180);
             unselectedcolor = new Color(200, 238, 39, 180);
             stroke = new BasicStroke(5, BasicStroke.CAP_SQUARE, BasicStroke.JOIN_ROUND);
+            focusedStroke  = new BasicStroke(8, BasicStroke.CAP_SQUARE, BasicStroke.JOIN_ROUND);
         }
         if (t.equals(Type.ouput)) {
             selectedcolor = new Color(254, 0, 0, 180);
             unselectedcolor = new Color(200, 0, 0, 180);
             stroke = new BasicStroke(5, BasicStroke.CAP_SQUARE, BasicStroke.JOIN_ROUND);
+            focusedStroke  = new BasicStroke(8, BasicStroke.CAP_SQUARE, BasicStroke.JOIN_ROUND);
         }
         if (t.equals(Type.groupLink)) {
             selectedcolor = new Color(45, 236, 64, 200);
             unselectedcolor = new Color(45, 236, 64, 200);
             float dash1[] = {8.0f};
             stroke = new BasicStroke(5.0f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER, 8.0f, dash1, 0.0f);
-
+            focusedStroke = new BasicStroke(8.0f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER, 8.0f, dash1, 0.0f);
         }
     }
 
