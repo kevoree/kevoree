@@ -15,6 +15,7 @@
         <module>../org.kevoree.experiment.trace.gui</module>
         <module>../org.kevoree.experiment.modelScript</module>
         <module>../org.kevoree.experiment.fake</module>
+        <module>../org.kevoree.experiment.smartForest</module>
     </modules>
 
     <properties>

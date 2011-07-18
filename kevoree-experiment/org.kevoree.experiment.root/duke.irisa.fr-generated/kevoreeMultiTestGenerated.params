@@ -1,0 +1,37 @@
+# Copyright 2006 by Sean Luke and George Mason University
+# Licensed under the Academic Free License version 3.0
+# See the file "LICENSE" for more information
+
+parent.0 = nsga2.params
+# parent.0 = spea2.params
+breedthreads = auto
+evalthreads = auto
+
+pop.subpop.0.size = 200
+generations = 100
+
+pop.subpop.0.species		= org.kevoree.library.reasoner.ecj.KevoreeModelSpecies
+pop.subpop.0.species.ind	= org.kevoree.library.reasoner.ecj.KevoreeMultiIndividual
+pop.subpop.0.species.crossover-type	= two
+pop.subpop.0.species.crossover-prob	= 1
+pop.subpop.0.species.mutation-prob	= 0,25
+
+# Folder to store the models of the population
+pop.subpop.0.species.ind.models-folder = mm
+
+# Use our own custom mutation class
+pop.subpop.0.species.pipe = org.kevoree.library.reasoner.ecj.KevoreeMutationPipeline
+pop.subpop.0.species.pipe.source.0	= org.kevoree.library.reasoner.ecj.KevoreeCrossoverPipeline
+# Toss the second child
+pop.subpop.0.species.pipe.source.0.toss = true
+pop.subpop.0.species.pipe.source.0.source.0 = ec.select.TournamentSelection
+pop.subpop.0.species.pipe.source.0.source.0.size = 2
+pop.subpop.0.species.pipe.source.0.source.1 = ec.select.TournamentSelection
+pop.subpop.0.species.pipe.source.0.source.1.size = 2
+
+
+eval.problem            = org.kevoree.library.reasoner.ecj.MultiObjectiveKevoreeProblem
+pop.subpop.0.species.fitness.num-objectives = 2
+pop.subpop.0.species.fitness.maximize = false
+
+

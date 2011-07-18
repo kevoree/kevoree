@@ -12,6 +12,7 @@ import org.kevoree.ContainerNode;
 import org.kevoree.ContainerRoot;
 import org.kevoree.NamedElement;
 import org.kevoree.library.tools.dpa.DPA;
+import org.kevoree.tools.marShell.ast.Script;
 import org.kevoree.tools.marShell.parser.ParserUtil;
 
 public class RemoveComponentDPA implements DPA {
@@ -45,5 +46,11 @@ public class RemoveComponentDPA implements DPA {
         }
         return script;
     }
+
+    @Override
+    public Script getASTScript(Map<String, NamedElement> stringNamedElementMap) {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
 
 }

@@ -11,10 +11,15 @@ import org.eclipse.emf.ecore.xmi.XMIResource;
 import org.eclipse.emf.ecore.xmi.XMLResource;
 import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl;
 import org.kevoree.*;
+import org.kevoree.experiment.smartForest.dpa.AddComponentDPA;
+import org.kevoree.experiment.smartForest.dpa.AddComponentDPAO;
+import org.kevoree.experiment.smartForest.dpa.RemoveComponentDPA;
+import org.kevoree.experiment.smartForest.dpa.RemoveComponentDPAO;
 import org.kevoree.kompare.KevoreeKompareBean;
-import org.kevoree.library.reasoner.ecj.dpa.*;
 import org.kevoree.library.tools.dpa.DPA;
-import org.kevoree.tools.marShell.ast.*;
+import org.kevoree.tools.marShell.ast.Block;
+import org.kevoree.tools.marShell.ast.Script;
+import org.kevoree.tools.marShell.ast.Statment;
 import org.kevoree.tools.marShell.interpreter.KevsInterpreterAspects;
 import org.kevoree.tools.marShell.interpreter.KevsInterpreterContext;
 import org.kevoree.tools.marShell.parser.KevsParser;
@@ -55,26 +60,32 @@ public class KevoreeIndividual extends Individual {
         DPA removeDPA = new RemoveComponentDPA();
         for (Map<String, NamedElement> map : dm.getAddInstance()) {
             if (state.random[thread].nextBoolean()) {
+
+                Script script = addDPA.getASTScript(map);
+                  /*
                 String scriptString = addDPA.getScript(map);
                 KevsParser parser = new KevsParser();
                 Option<Script> currentScript = parser
-                        .parseScript(scriptString);
-                if (!currentScript.isEmpty()) {
-                    Script script = (Script) currentScript.get();
+                        .parseScript(scriptString);    */
+                //if (!currentScript.isEmpty()) {
+               //     Script script = (Script) currentScript.get();
                     KevsInterpreterAspects.rich(script).interpret(context);
-                }
+               // }
             }
         }
         for (Map<String, NamedElement> map : dm.getRemoveInstance()) {
             if (state.random[thread].nextBoolean()) {
+
+                Script script = removeDPA.getASTScript(map);
+                /*
                 String scriptString = removeDPA.getScript(map);
                 KevsParser parser = new KevsParser();
                 Option<Script> currentScript = parser
                         .parseScript(scriptString);
                 if (!currentScript.isEmpty()) {
-                    Script script = (Script) currentScript.get();
+                    Script script = (Script) currentScript.get();   */
                     KevsInterpreterAspects.rich(script).interpret(context);
-                }
+                //}
             }
         }
     }
@@ -87,15 +98,19 @@ public class KevoreeIndividual extends Individual {
         List<Map<String, NamedElement>> myLists = myDPA.applyPointcut(myModel);
         if (!myLists.isEmpty()) {
             Map<String, NamedElement> myMap = myLists.get(state.random[thread].nextInt(myLists.size()));
+
+            Script script = myDPA.getASTScript(myMap);
+
+          /*
             String scriptString = myDPA.getScript(myMap);
             KevsParser parser = new KevsParser();
             Option<Script> currentScript = parser
                     .parseScript(scriptString);
             if (!currentScript.isEmpty()) {
-                Script script = (Script) currentScript.get();
+                Script script = (Script) currentScript.get();   */
                 KevsInterpreterContext context = new KevsInterpreterContext(myModel);
                 KevsInterpreterAspects.rich(script).interpret(context);
-            }
+            //}
         }
     }
 
@@ -109,15 +124,18 @@ public class KevoreeIndividual extends Individual {
             List<Map<String, NamedElement>> myList = rcDPA.applyPointcut(myModel);
             if (myList.size()<=0)
                 return;
+
+            Script script = rcDPA.getASTScript(myList.get(state.random[thread].nextInt(myList.size())));
+            /*
             String scriptString = rcDPA.getScript(myList.get(state.random[thread].nextInt(myList.size())));
             KevsParser parser = new KevsParser();
             Option<Script> currentScript = parser
                     .parseScript(scriptString);
             if (!currentScript.isEmpty()) {
-                Script script = (Script) currentScript.get();
+                Script script = (Script) currentScript.get();      */
                 KevsInterpreterContext context = new KevsInterpreterContext(myModel);
                 KevsInterpreterAspects.rich(script).interpret(context);
-            }
+            //}
         }
     }
 
@@ -269,9 +287,9 @@ public class KevoreeIndividual extends Individual {
             for (ComponentInstance ci : myNode.getComponents()){
                 if (!MultiObjectiveKevoreeProblem.containsInstance(otherNode,ci.getTypeDefinition().getName())) {
                     Map<String, NamedElement> myMap = new HashMap<String, NamedElement>();
-                    myMap.put(RemoveComponentDPA.componentName,
+                    myMap.put(RemoveComponentDPAO.componentName(),
                         (NamedElement) ci);
-                    myMap.put(RemoveComponentDPA.nodeName,
+                    myMap.put(RemoveComponentDPAO.nodeName(),
                         (NamedElement) myNode);
                     removeList.add(myMap);
                 }
@@ -280,8 +298,8 @@ public class KevoreeIndividual extends Individual {
             for (ComponentInstance ci : otherNode.getComponents()){
                 if (!MultiObjectiveKevoreeProblem.containsInstance(myNode,ci.getTypeDefinition().getName())){
                     Map<String, NamedElement> myMap = new HashMap<String, NamedElement>();
-                    myMap.put(AddComponentDPA.typeDefinition, (NamedElement) ci.getTypeDefinition());
-                    myMap.put(AddComponentDPA.nodeName,
+                    myMap.put(AddComponentDPAO.typeDefinition(), (NamedElement) ci.getTypeDefinition());
+                    myMap.put(AddComponentDPAO.nodeName(),
                         (NamedElement) myNode);
                     addList.add(myMap);
                 }

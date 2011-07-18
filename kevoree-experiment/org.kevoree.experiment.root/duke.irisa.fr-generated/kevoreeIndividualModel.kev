@@ -1,0 +1,1183 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kevoree:ContainerRoot xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:kevoree="http://kevoree/1.0">
+  <nodes name="node0" typeDefinition="//@typeDefinitions.7">
+    <components name="temp0" typeDefinition="//@typeDefinitions.9">
+      <required portTypeRef="//@typeDefinitions.9/@required.0"/>
+    </components>
+    <components name="smoke0" typeDefinition="//@typeDefinitions.13">
+      <required portTypeRef="//@typeDefinitions.13/@required.0"/>
+    </components>
+    <components name="humidity0" typeDefinition="//@typeDefinitions.14">
+      <required portTypeRef="//@typeDefinitions.14/@required.0"/>
+    </components>
+  </nodes>
+  <nodes name="node1" typeDefinition="//@typeDefinitions.7">
+    <components name="temp1" typeDefinition="//@typeDefinitions.9">
+      <required portTypeRef="//@typeDefinitions.9/@required.0"/>
+    </components>
+    <components name="smoke1" typeDefinition="//@typeDefinitions.13">
+      <required portTypeRef="//@typeDefinitions.13/@required.0"/>
+    </components>
+    <components name="humidity1" typeDefinition="//@typeDefinitions.14">
+      <required portTypeRef="//@typeDefinitions.14/@required.0"/>
+    </components>
+  </nodes>
+  <nodes name="node2" typeDefinition="//@typeDefinitions.7">
+    <components name="temp2" typeDefinition="//@typeDefinitions.9">
+      <required portTypeRef="//@typeDefinitions.9/@required.0"/>
+    </components>
+    <components name="smoke2" typeDefinition="//@typeDefinitions.13">
+      <required portTypeRef="//@typeDefinitions.13/@required.0"/>
+    </components>
+    <components name="humidity2" typeDefinition="//@typeDefinitions.14">
+      <required portTypeRef="//@typeDefinitions.14/@required.0"/>
+    </components>
+  </nodes>
+  <nodes name="node3" typeDefinition="//@typeDefinitions.7">
+    <components name="temp3" typeDefinition="//@typeDefinitions.9">
+      <required portTypeRef="//@typeDefinitions.9/@required.0"/>
+    </components>
+    <components name="smoke3" typeDefinition="//@typeDefinitions.13">
+      <required portTypeRef="//@typeDefinitions.13/@required.0"/>
+    </components>
+    <components name="humidity3" typeDefinition="//@typeDefinitions.14">
+      <required portTypeRef="//@typeDefinitions.14/@required.0"/>
+    </components>
+  </nodes>
+  <nodes name="node4" typeDefinition="//@typeDefinitions.7">
+    <components name="temp4" typeDefinition="//@typeDefinitions.9">
+      <required portTypeRef="//@typeDefinitions.9/@required.0"/>
+    </components>
+    <components name="smoke4" typeDefinition="//@typeDefinitions.13">
+      <required portTypeRef="//@typeDefinitions.13/@required.0"/>
+    </components>
+    <components name="humidity4" typeDefinition="//@typeDefinitions.14">
+      <required portTypeRef="//@typeDefinitions.14/@required.0"/>
+    </components>
+  </nodes>
+  <nodes name="node5" typeDefinition="//@typeDefinitions.7">
+    <components name="temp5" typeDefinition="//@typeDefinitions.9">
+      <required portTypeRef="//@typeDefinitions.9/@required.0"/>
+    </components>
+    <components name="smoke5" typeDefinition="//@typeDefinitions.13">
+      <required portTypeRef="//@typeDefinitions.13/@required.0"/>
+    </components>
+    <components name="humidity5" typeDefinition="//@typeDefinitions.14">
+      <required portTypeRef="//@typeDefinitions.14/@required.0"/>
+    </components>
+  </nodes>
+  <nodes name="node6" typeDefinition="//@typeDefinitions.7">
+    <components name="temp6" typeDefinition="//@typeDefinitions.9">
+      <required portTypeRef="//@typeDefinitions.9/@required.0"/>
+    </components>
+    <components name="smoke6" typeDefinition="//@typeDefinitions.13">
+      <required portTypeRef="//@typeDefinitions.13/@required.0"/>
+    </components>
+    <components name="humidity6" typeDefinition="//@typeDefinitions.14">
+      <required portTypeRef="//@typeDefinitions.14/@required.0"/>
+    </components>
+  </nodes>
+  <nodes name="node7" typeDefinition="//@typeDefinitions.7">
+    <components name="temp7" typeDefinition="//@typeDefinitions.9">
+      <required portTypeRef="//@typeDefinitions.9/@required.0"/>
+    </components>
+    <components name="smoke7" typeDefinition="//@typeDefinitions.13">
+      <required portTypeRef="//@typeDefinitions.13/@required.0"/>
+    </components>
+    <components name="humidity7" typeDefinition="//@typeDefinitions.14">
+      <required portTypeRef="//@typeDefinitions.14/@required.0"/>
+    </components>
+  </nodes>
+  <nodes name="node8" typeDefinition="//@typeDefinitions.7">
+    <components name="temp8" typeDefinition="//@typeDefinitions.9">
+      <required portTypeRef="//@typeDefinitions.9/@required.0"/>
+    </components>
+    <components name="smoke8" typeDefinition="//@typeDefinitions.13">
+      <required portTypeRef="//@typeDefinitions.13/@required.0"/>
+    </components>
+    <components name="humidity8" typeDefinition="//@typeDefinitions.14">
+      <required portTypeRef="//@typeDefinitions.14/@required.0"/>
+    </components>
+  </nodes>
+  <nodes name="node9" typeDefinition="//@typeDefinitions.7">
+    <components name="temp9" typeDefinition="//@typeDefinitions.9">
+      <required portTypeRef="//@typeDefinitions.9/@required.0"/>
+    </components>
+    <components name="smoke9" typeDefinition="//@typeDefinitions.13">
+      <required portTypeRef="//@typeDefinitions.13/@required.0"/>
+    </components>
+    <components name="humidity9" typeDefinition="//@typeDefinitions.14">
+      <required portTypeRef="//@typeDefinitions.14/@required.0"/>
+    </components>
+  </nodes>
+  <nodes name="node10" typeDefinition="//@typeDefinitions.7">
+    <components name="temp10" typeDefinition="//@typeDefinitions.9">
+      <required portTypeRef="//@typeDefinitions.9/@required.0"/>
+    </components>
+    <components name="smoke10" typeDefinition="//@typeDefinitions.13">
+      <required portTypeRef="//@typeDefinitions.13/@required.0"/>
+    </components>
+    <components name="humidity10" typeDefinition="//@typeDefinitions.14">
+      <required portTypeRef="//@typeDefinitions.14/@required.0"/>
+    </components>
+  </nodes>
+  <nodes name="node11" typeDefinition="//@typeDefinitions.7">
+    <components name="temp11" typeDefinition="//@typeDefinitions.9">
+      <required portTypeRef="//@typeDefinitions.9/@required.0"/>
+    </components>
+    <components name="smoke11" typeDefinition="//@typeDefinitions.13">
+      <required portTypeRef="//@typeDefinitions.13/@required.0"/>
+    </components>
+    <components name="humidity11" typeDefinition="//@typeDefinitions.14">
+      <required portTypeRef="//@typeDefinitions.14/@required.0"/>
+    </components>
+  </nodes>
+  <nodes name="node12" typeDefinition="//@typeDefinitions.7">
+    <components name="temp12" typeDefinition="//@typeDefinitions.9">
+      <required portTypeRef="//@typeDefinitions.9/@required.0"/>
+    </components>
+    <components name="smoke12" typeDefinition="//@typeDefinitions.13">
+      <required portTypeRef="//@typeDefinitions.13/@required.0"/>
+    </components>
+    <components name="humidity12" typeDefinition="//@typeDefinitions.14">
+      <required portTypeRef="//@typeDefinitions.14/@required.0"/>
+    </components>
+  </nodes>
+  <nodes name="node13" typeDefinition="//@typeDefinitions.7">
+    <components name="temp13" typeDefinition="//@typeDefinitions.9">
+      <required portTypeRef="//@typeDefinitions.9/@required.0"/>
+    </components>
+    <components name="smoke13" typeDefinition="//@typeDefinitions.13">
+      <required portTypeRef="//@typeDefinitions.13/@required.0"/>
+    </components>
+    <components name="humidity13" typeDefinition="//@typeDefinitions.14">
+      <required portTypeRef="//@typeDefinitions.14/@required.0"/>
+    </components>
+  </nodes>
+  <nodes name="node14" typeDefinition="//@typeDefinitions.7">
+    <components name="temp14" typeDefinition="//@typeDefinitions.9">
+      <required portTypeRef="//@typeDefinitions.9/@required.0"/>
+    </components>
+    <components name="smoke14" typeDefinition="//@typeDefinitions.13">
+      <required portTypeRef="//@typeDefinitions.13/@required.0"/>
+    </components>
+    <components name="humidity14" typeDefinition="//@typeDefinitions.14">
+      <required portTypeRef="//@typeDefinitions.14/@required.0"/>
+    </components>
+  </nodes>
+  <nodes name="node15" typeDefinition="//@typeDefinitions.7">
+    <components name="temp15" typeDefinition="//@typeDefinitions.9">
+      <required portTypeRef="//@typeDefinitions.9/@required.0"/>
+    </components>
+    <components name="smoke15" typeDefinition="//@typeDefinitions.13">
+      <required portTypeRef="//@typeDefinitions.13/@required.0"/>
+    </components>
+    <components name="humidity15" typeDefinition="//@typeDefinitions.14">
+      <required portTypeRef="//@typeDefinitions.14/@required.0"/>
+    </components>
+  </nodes>
+  <nodes name="node16" typeDefinition="//@typeDefinitions.7">
+    <components name="temp16" typeDefinition="//@typeDefinitions.9">
+      <required portTypeRef="//@typeDefinitions.9/@required.0"/>
+    </components>
+    <components name="smoke16" typeDefinition="//@typeDefinitions.13">
+      <required portTypeRef="//@typeDefinitions.13/@required.0"/>
+    </components>
+    <components name="humidity16" typeDefinition="//@typeDefinitions.14">
+      <required portTypeRef="//@typeDefinitions.14/@required.0"/>
+    </components>
+  </nodes>
+  <nodes name="node17" typeDefinition="//@typeDefinitions.7">
+    <components name="temp17" typeDefinition="//@typeDefinitions.9">
+      <required portTypeRef="//@typeDefinitions.9/@required.0"/>
+    </components>
+    <components name="smoke17" typeDefinition="//@typeDefinitions.13">
+      <required portTypeRef="//@typeDefinitions.13/@required.0"/>
+    </components>
+    <components name="humidity17" typeDefinition="//@typeDefinitions.14">
+      <required portTypeRef="//@typeDefinitions.14/@required.0"/>
+    </components>
+  </nodes>
+  <nodes name="node18" typeDefinition="//@typeDefinitions.7">
+    <components name="temp18" typeDefinition="//@typeDefinitions.9">
+      <required portTypeRef="//@typeDefinitions.9/@required.0"/>
+    </components>
+    <components name="smoke18" typeDefinition="//@typeDefinitions.13">
+      <required portTypeRef="//@typeDefinitions.13/@required.0"/>
+    </components>
+    <components name="humidity18" typeDefinition="//@typeDefinitions.14">
+      <required portTypeRef="//@typeDefinitions.14/@required.0"/>
+    </components>
+  </nodes>
+  <nodes name="node19" typeDefinition="//@typeDefinitions.7">
+    <components name="temp19" typeDefinition="//@typeDefinitions.9">
+      <required portTypeRef="//@typeDefinitions.9/@required.0"/>
+    </components>
+    <components name="smoke19" typeDefinition="//@typeDefinitions.13">
+      <required portTypeRef="//@typeDefinitions.13/@required.0"/>
+    </components>
+    <components name="humidity19" typeDefinition="//@typeDefinitions.14">
+      <required portTypeRef="//@typeDefinitions.14/@required.0"/>
+    </components>
+  </nodes>
+  <nodes name="node20" typeDefinition="//@typeDefinitions.7">
+    <components name="temp20" typeDefinition="//@typeDefinitions.9">
+      <required portTypeRef="//@typeDefinitions.9/@required.0"/>
+    </components>
+    <components name="smoke20" typeDefinition="//@typeDefinitions.13">
+      <required portTypeRef="//@typeDefinitions.13/@required.0"/>
+    </components>
+    <components name="humidity20" typeDefinition="//@typeDefinitions.14">
+      <required portTypeRef="//@typeDefinitions.14/@required.0"/>
+    </components>
+  </nodes>
+  <nodes name="node21" typeDefinition="//@typeDefinitions.7">
+    <components name="temp21" typeDefinition="//@typeDefinitions.9">
+      <required portTypeRef="//@typeDefinitions.9/@required.0"/>
+    </components>
+    <components name="smoke21" typeDefinition="//@typeDefinitions.13">
+      <required portTypeRef="//@typeDefinitions.13/@required.0"/>
+    </components>
+    <components name="humidity21" typeDefinition="//@typeDefinitions.14">
+      <required portTypeRef="//@typeDefinitions.14/@required.0"/>
+    </components>
+  </nodes>
+  <nodes name="node22" typeDefinition="//@typeDefinitions.7">
+    <components name="temp22" typeDefinition="//@typeDefinitions.9">
+      <required portTypeRef="//@typeDefinitions.9/@required.0"/>
+    </components>
+    <components name="smoke22" typeDefinition="//@typeDefinitions.13">
+      <required portTypeRef="//@typeDefinitions.13/@required.0"/>
+    </components>
+    <components name="humidity22" typeDefinition="//@typeDefinitions.14">
+      <required portTypeRef="//@typeDefinitions.14/@required.0"/>
+    </components>
+  </nodes>
+  <nodes name="node23" typeDefinition="//@typeDefinitions.7">
+    <components name="temp23" typeDefinition="//@typeDefinitions.9">
+      <required portTypeRef="//@typeDefinitions.9/@required.0"/>
+    </components>
+    <components name="smoke23" typeDefinition="//@typeDefinitions.13">
+      <required portTypeRef="//@typeDefinitions.13/@required.0"/>
+    </components>
+    <components name="humidity23" typeDefinition="//@typeDefinitions.14">
+      <required portTypeRef="//@typeDefinitions.14/@required.0"/>
+    </components>
+  </nodes>
+  <nodes name="node24" typeDefinition="//@typeDefinitions.7">
+    <components name="temp24" typeDefinition="//@typeDefinitions.9">
+      <required portTypeRef="//@typeDefinitions.9/@required.0"/>
+    </components>
+    <components name="smoke24" typeDefinition="//@typeDefinitions.13">
+      <required portTypeRef="//@typeDefinitions.13/@required.0"/>
+    </components>
+    <components name="humidity24" typeDefinition="//@typeDefinitions.14">
+      <required portTypeRef="//@typeDefinitions.14/@required.0"/>
+    </components>
+  </nodes>
+  <nodes name="node25" typeDefinition="//@typeDefinitions.7">
+    <components name="temp25" typeDefinition="//@typeDefinitions.9">
+      <required portTypeRef="//@typeDefinitions.9/@required.0"/>
+    </components>
+    <components name="smoke25" typeDefinition="//@typeDefinitions.13">
+      <required portTypeRef="//@typeDefinitions.13/@required.0"/>
+    </components>
+    <components name="humidity25" typeDefinition="//@typeDefinitions.14">
+      <required portTypeRef="//@typeDefinitions.14/@required.0"/>
+    </components>
+  </nodes>
+  <nodes name="node26" typeDefinition="//@typeDefinitions.7">
+    <components name="temp26" typeDefinition="//@typeDefinitions.9">
+      <required portTypeRef="//@typeDefinitions.9/@required.0"/>
+    </components>
+    <components name="smoke26" typeDefinition="//@typeDefinitions.13">
+      <required portTypeRef="//@typeDefinitions.13/@required.0"/>
+    </components>
+    <components name="humidity26" typeDefinition="//@typeDefinitions.14">
+      <required portTypeRef="//@typeDefinitions.14/@required.0"/>
+    </components>
+  </nodes>
+  <nodes name="node27" typeDefinition="//@typeDefinitions.7">
+    <components name="temp27" typeDefinition="//@typeDefinitions.9">
+      <required portTypeRef="//@typeDefinitions.9/@required.0"/>
+    </components>
+    <components name="smoke27" typeDefinition="//@typeDefinitions.13">
+      <required portTypeRef="//@typeDefinitions.13/@required.0"/>
+    </components>
+    <components name="humidity27" typeDefinition="//@typeDefinitions.14">
+      <required portTypeRef="//@typeDefinitions.14/@required.0"/>
+    </components>
+  </nodes>
+  <nodes name="node28" typeDefinition="//@typeDefinitions.7">
+    <components name="temp28" typeDefinition="//@typeDefinitions.9">
+      <required portTypeRef="//@typeDefinitions.9/@required.0"/>
+    </components>
+    <components name="smoke28" typeDefinition="//@typeDefinitions.13">
+      <required portTypeRef="//@typeDefinitions.13/@required.0"/>
+    </components>
+    <components name="humidity28" typeDefinition="//@typeDefinitions.14">
+      <required portTypeRef="//@typeDefinitions.14/@required.0"/>
+    </components>
+  </nodes>
+  <nodes name="node29" typeDefinition="//@typeDefinitions.7">
+    <components name="temp29" typeDefinition="//@typeDefinitions.9">
+      <required portTypeRef="//@typeDefinitions.9/@required.0"/>
+    </components>
+    <components name="smoke29" typeDefinition="//@typeDefinitions.13">
+      <required portTypeRef="//@typeDefinitions.13/@required.0"/>
+    </components>
+    <components name="humidity29" typeDefinition="//@typeDefinitions.14">
+      <required portTypeRef="//@typeDefinitions.14/@required.0"/>
+    </components>
+  </nodes>
+  <nodes name="node30" typeDefinition="//@typeDefinitions.7">
+    <components name="temp30" typeDefinition="//@typeDefinitions.9">
+      <required portTypeRef="//@typeDefinitions.9/@required.0"/>
+    </components>
+    <components name="smoke30" typeDefinition="//@typeDefinitions.13">
+      <required portTypeRef="//@typeDefinitions.13/@required.0"/>
+    </components>
+    <components name="humidity30" typeDefinition="//@typeDefinitions.14">
+      <required portTypeRef="//@typeDefinitions.14/@required.0"/>
+    </components>
+  </nodes>
+  <nodes name="node31" typeDefinition="//@typeDefinitions.7">
+    <components name="temp31" typeDefinition="//@typeDefinitions.9">
+      <required portTypeRef="//@typeDefinitions.9/@required.0"/>
+    </components>
+    <components name="smoke31" typeDefinition="//@typeDefinitions.13">
+      <required portTypeRef="//@typeDefinitions.13/@required.0"/>
+    </components>
+    <components name="humidity31" typeDefinition="//@typeDefinitions.14">
+      <required portTypeRef="//@typeDefinitions.14/@required.0"/>
+    </components>
+  </nodes>
+  <nodes name="node32" typeDefinition="//@typeDefinitions.7">
+    <components name="temp32" typeDefinition="//@typeDefinitions.9">
+      <required portTypeRef="//@typeDefinitions.9/@required.0"/>
+    </components>
+    <components name="smoke32" typeDefinition="//@typeDefinitions.13">
+      <required portTypeRef="//@typeDefinitions.13/@required.0"/>
+    </components>
+    <components name="humidity32" typeDefinition="//@typeDefinitions.14">
+      <required portTypeRef="//@typeDefinitions.14/@required.0"/>
+    </components>
+  </nodes>
+  <nodes name="node33" typeDefinition="//@typeDefinitions.7">
+    <components name="temp33" typeDefinition="//@typeDefinitions.9">
+      <required portTypeRef="//@typeDefinitions.9/@required.0"/>
+    </components>
+    <components name="smoke33" typeDefinition="//@typeDefinitions.13">
+      <required portTypeRef="//@typeDefinitions.13/@required.0"/>
+    </components>
+    <components name="humidity33" typeDefinition="//@typeDefinitions.14">
+      <required portTypeRef="//@typeDefinitions.14/@required.0"/>
+    </components>
+  </nodes>
+  <nodes name="node34" typeDefinition="//@typeDefinitions.7">
+    <components name="temp34" typeDefinition="//@typeDefinitions.9">
+      <required portTypeRef="//@typeDefinitions.9/@required.0"/>
+    </components>
+    <components name="smoke34" typeDefinition="//@typeDefinitions.13">
+      <required portTypeRef="//@typeDefinitions.13/@required.0"/>
+    </components>
+    <components name="humidity34" typeDefinition="//@typeDefinitions.14">
+      <required portTypeRef="//@typeDefinitions.14/@required.0"/>
+    </components>
+  </nodes>
+  <nodes name="node35" typeDefinition="//@typeDefinitions.7">
+    <components name="temp35" typeDefinition="//@typeDefinitions.9">
+      <required portTypeRef="//@typeDefinitions.9/@required.0"/>
+    </components>
+    <components name="smoke35" typeDefinition="//@typeDefinitions.13">
+      <required portTypeRef="//@typeDefinitions.13/@required.0"/>
+    </components>
+    <components name="humidity35" typeDefinition="//@typeDefinitions.14">
+      <required portTypeRef="//@typeDefinitions.14/@required.0"/>
+    </components>
+  </nodes>
+  <nodes name="node36" typeDefinition="//@typeDefinitions.7">
+    <components name="temp36" typeDefinition="//@typeDefinitions.9">
+      <required portTypeRef="//@typeDefinitions.9/@required.0"/>
+    </components>
+    <components name="smoke36" typeDefinition="//@typeDefinitions.13">
+      <required portTypeRef="//@typeDefinitions.13/@required.0"/>
+    </components>
+    <components name="humidity36" typeDefinition="//@typeDefinitions.14">
+      <required portTypeRef="//@typeDefinitions.14/@required.0"/>
+    </components>
+  </nodes>
+  <nodes name="node37" typeDefinition="//@typeDefinitions.7">
+    <components name="temp37" typeDefinition="//@typeDefinitions.9">
+      <required portTypeRef="//@typeDefinitions.9/@required.0"/>
+    </components>
+    <components name="smoke37" typeDefinition="//@typeDefinitions.13">
+      <required portTypeRef="//@typeDefinitions.13/@required.0"/>
+    </components>
+    <components name="humidity37" typeDefinition="//@typeDefinitions.14">
+      <required portTypeRef="//@typeDefinitions.14/@required.0"/>
+    </components>
+  </nodes>
+  <nodes name="node38" typeDefinition="//@typeDefinitions.7">
+    <components name="temp38" typeDefinition="//@typeDefinitions.9">
+      <required portTypeRef="//@typeDefinitions.9/@required.0"/>
+    </components>
+    <components name="smoke38" typeDefinition="//@typeDefinitions.13">
+      <required portTypeRef="//@typeDefinitions.13/@required.0"/>
+    </components>
+    <components name="humidity38" typeDefinition="//@typeDefinitions.14">
+      <required portTypeRef="//@typeDefinitions.14/@required.0"/>
+    </components>
+  </nodes>
+  <nodes name="node39" typeDefinition="//@typeDefinitions.7">
+    <components name="temp39" typeDefinition="//@typeDefinitions.9">
+      <required portTypeRef="//@typeDefinitions.9/@required.0"/>
+    </components>
+    <components name="smoke39" typeDefinition="//@typeDefinitions.13">
+      <required portTypeRef="//@typeDefinitions.13/@required.0"/>
+    </components>
+    <components name="humidity39" typeDefinition="//@typeDefinitions.14">
+      <required portTypeRef="//@typeDefinitions.14/@required.0"/>
+    </components>
+  </nodes>
+  <nodes name="node40" typeDefinition="//@typeDefinitions.7">
+    <components name="temp40" typeDefinition="//@typeDefinitions.9">
+      <required portTypeRef="//@typeDefinitions.9/@required.0"/>
+    </components>
+    <components name="smoke40" typeDefinition="//@typeDefinitions.13">
+      <required portTypeRef="//@typeDefinitions.13/@required.0"/>
+    </components>
+    <components name="humidity40" typeDefinition="//@typeDefinitions.14">
+      <required portTypeRef="//@typeDefinitions.14/@required.0"/>
+    </components>
+  </nodes>
+  <nodes name="node41" typeDefinition="//@typeDefinitions.7">
+    <components name="temp41" typeDefinition="//@typeDefinitions.9">
+      <required portTypeRef="//@typeDefinitions.9/@required.0"/>
+    </components>
+    <components name="smoke41" typeDefinition="//@typeDefinitions.13">
+      <required portTypeRef="//@typeDefinitions.13/@required.0"/>
+    </components>
+    <components name="humidity41" typeDefinition="//@typeDefinitions.14">
+      <required portTypeRef="//@typeDefinitions.14/@required.0"/>
+    </components>
+  </nodes>
+  <nodes name="node42" typeDefinition="//@typeDefinitions.7">
+    <components name="temp42" typeDefinition="//@typeDefinitions.9">
+      <required portTypeRef="//@typeDefinitions.9/@required.0"/>
+    </components>
+    <components name="smoke42" typeDefinition="//@typeDefinitions.13">
+      <required portTypeRef="//@typeDefinitions.13/@required.0"/>
+    </components>
+    <components name="humidity42" typeDefinition="//@typeDefinitions.14">
+      <required portTypeRef="//@typeDefinitions.14/@required.0"/>
+    </components>
+  </nodes>
+  <nodes name="node43" typeDefinition="//@typeDefinitions.7">
+    <components name="temp43" typeDefinition="//@typeDefinitions.9">
+      <required portTypeRef="//@typeDefinitions.9/@required.0"/>
+    </components>
+    <components name="smoke43" typeDefinition="//@typeDefinitions.13">
+      <required portTypeRef="//@typeDefinitions.13/@required.0"/>
+    </components>
+    <components name="humidity43" typeDefinition="//@typeDefinitions.14">
+      <required portTypeRef="//@typeDefinitions.14/@required.0"/>
+    </components>
+  </nodes>
+  <nodes name="node44" typeDefinition="//@typeDefinitions.7">
+    <components name="temp44" typeDefinition="//@typeDefinitions.9">
+      <required portTypeRef="//@typeDefinitions.9/@required.0"/>
+    </components>
+    <components name="smoke44" typeDefinition="//@typeDefinitions.13">
+      <required portTypeRef="//@typeDefinitions.13/@required.0"/>
+    </components>
+    <components name="humidity44" typeDefinition="//@typeDefinitions.14">
+      <required portTypeRef="//@typeDefinitions.14/@required.0"/>
+    </components>
+  </nodes>
+  <nodes name="node45" typeDefinition="//@typeDefinitions.7">
+    <components name="temp45" typeDefinition="//@typeDefinitions.9">
+      <required portTypeRef="//@typeDefinitions.9/@required.0"/>
+    </components>
+    <components name="smoke45" typeDefinition="//@typeDefinitions.13">
+      <required portTypeRef="//@typeDefinitions.13/@required.0"/>
+    </components>
+    <components name="humidity45" typeDefinition="//@typeDefinitions.14">
+      <required portTypeRef="//@typeDefinitions.14/@required.0"/>
+    </components>
+  </nodes>
+  <nodes name="node46" typeDefinition="//@typeDefinitions.7">
+    <components name="temp46" typeDefinition="//@typeDefinitions.9">
+      <required portTypeRef="//@typeDefinitions.9/@required.0"/>
+    </components>
+    <components name="smoke46" typeDefinition="//@typeDefinitions.13">
+      <required portTypeRef="//@typeDefinitions.13/@required.0"/>
+    </components>
+    <components name="humidity46" typeDefinition="//@typeDefinitions.14">
+      <required portTypeRef="//@typeDefinitions.14/@required.0"/>
+    </components>
+  </nodes>
+  <nodes name="node47" typeDefinition="//@typeDefinitions.7">
+    <components name="temp47" typeDefinition="//@typeDefinitions.9">
+      <required portTypeRef="//@typeDefinitions.9/@required.0"/>
+    </components>
+    <components name="smoke47" typeDefinition="//@typeDefinitions.13">
+      <required portTypeRef="//@typeDefinitions.13/@required.0"/>
+    </components>
+    <components name="humidity47" typeDefinition="//@typeDefinitions.14">
+      <required portTypeRef="//@typeDefinitions.14/@required.0"/>
+    </components>
+  </nodes>
+  <nodes name="node48" typeDefinition="//@typeDefinitions.7">
+    <components name="temp48" typeDefinition="//@typeDefinitions.9">
+      <required portTypeRef="//@typeDefinitions.9/@required.0"/>
+    </components>
+    <components name="smoke48" typeDefinition="//@typeDefinitions.13">
+      <required portTypeRef="//@typeDefinitions.13/@required.0"/>
+    </components>
+    <components name="humidity48" typeDefinition="//@typeDefinitions.14">
+      <required portTypeRef="//@typeDefinitions.14/@required.0"/>
+    </components>
+  </nodes>
+  <nodes name="node49" typeDefinition="//@typeDefinitions.7">
+    <components name="temp49" typeDefinition="//@typeDefinitions.9">
+      <required portTypeRef="//@typeDefinitions.9/@required.0"/>
+    </components>
+    <components name="smoke49" typeDefinition="//@typeDefinitions.13">
+      <required portTypeRef="//@typeDefinitions.13/@required.0"/>
+    </components>
+    <components name="humidity49" typeDefinition="//@typeDefinitions.14">
+      <required portTypeRef="//@typeDefinitions.14/@required.0"/>
+    </components>
+  </nodes>
+  <nodes name="node50" typeDefinition="//@typeDefinitions.7">
+    <components name="temp50" typeDefinition="//@typeDefinitions.9">
+      <required portTypeRef="//@typeDefinitions.9/@required.0"/>
+    </components>
+    <components name="smoke50" typeDefinition="//@typeDefinitions.13">
+      <required portTypeRef="//@typeDefinitions.13/@required.0"/>
+    </components>
+    <components name="humidity50" typeDefinition="//@typeDefinitions.14">
+      <required portTypeRef="//@typeDefinitions.14/@required.0"/>
+    </components>
+  </nodes>
+  <nodes name="node51" typeDefinition="//@typeDefinitions.7">
+    <components name="temp51" typeDefinition="//@typeDefinitions.9">
+      <required portTypeRef="//@typeDefinitions.9/@required.0"/>
+    </components>
+    <components name="smoke51" typeDefinition="//@typeDefinitions.13">
+      <required portTypeRef="//@typeDefinitions.13/@required.0"/>
+    </components>
+    <components name="humidity51" typeDefinition="//@typeDefinitions.14">
+      <required portTypeRef="//@typeDefinitions.14/@required.0"/>
+    </components>
+  </nodes>
+  <nodes name="node52" typeDefinition="//@typeDefinitions.7">
+    <components name="temp52" typeDefinition="//@typeDefinitions.9">
+      <required portTypeRef="//@typeDefinitions.9/@required.0"/>
+    </components>
+    <components name="smoke52" typeDefinition="//@typeDefinitions.13">
+      <required portTypeRef="//@typeDefinitions.13/@required.0"/>
+    </components>
+    <components name="humidity52" typeDefinition="//@typeDefinitions.14">
+      <required portTypeRef="//@typeDefinitions.14/@required.0"/>
+    </components>
+  </nodes>
+  <nodes name="node53" typeDefinition="//@typeDefinitions.7">
+    <components name="temp53" typeDefinition="//@typeDefinitions.9">
+      <required portTypeRef="//@typeDefinitions.9/@required.0"/>
+    </components>
+    <components name="smoke53" typeDefinition="//@typeDefinitions.13">
+      <required portTypeRef="//@typeDefinitions.13/@required.0"/>
+    </components>
+    <components name="humidity53" typeDefinition="//@typeDefinitions.14">
+      <required portTypeRef="//@typeDefinitions.14/@required.0"/>
+    </components>
+  </nodes>
+  <nodes name="node54" typeDefinition="//@typeDefinitions.7">
+    <components name="temp54" typeDefinition="//@typeDefinitions.9">
+      <required portTypeRef="//@typeDefinitions.9/@required.0"/>
+    </components>
+    <components name="smoke54" typeDefinition="//@typeDefinitions.13">
+      <required portTypeRef="//@typeDefinitions.13/@required.0"/>
+    </components>
+    <components name="humidity54" typeDefinition="//@typeDefinitions.14">
+      <required portTypeRef="//@typeDefinitions.14/@required.0"/>
+    </components>
+  </nodes>
+  <nodes name="node55" typeDefinition="//@typeDefinitions.7">
+    <components name="temp55" typeDefinition="//@typeDefinitions.9">
+      <required portTypeRef="//@typeDefinitions.9/@required.0"/>
+    </components>
+    <components name="smoke55" typeDefinition="//@typeDefinitions.13">
+      <required portTypeRef="//@typeDefinitions.13/@required.0"/>
+    </components>
+    <components name="humidity55" typeDefinition="//@typeDefinitions.14">
+      <required portTypeRef="//@typeDefinitions.14/@required.0"/>
+    </components>
+  </nodes>
+  <nodes name="node56" typeDefinition="//@typeDefinitions.7">
+    <components name="temp56" typeDefinition="//@typeDefinitions.9">
+      <required portTypeRef="//@typeDefinitions.9/@required.0"/>
+    </components>
+    <components name="smoke56" typeDefinition="//@typeDefinitions.13">
+      <required portTypeRef="//@typeDefinitions.13/@required.0"/>
+    </components>
+    <components name="humidity56" typeDefinition="//@typeDefinitions.14">
+      <required portTypeRef="//@typeDefinitions.14/@required.0"/>
+    </components>
+  </nodes>
+  <nodes name="node57" typeDefinition="//@typeDefinitions.7">
+    <components name="temp57" typeDefinition="//@typeDefinitions.9">
+      <required portTypeRef="//@typeDefinitions.9/@required.0"/>
+    </components>
+    <components name="smoke57" typeDefinition="//@typeDefinitions.13">
+      <required portTypeRef="//@typeDefinitions.13/@required.0"/>
+    </components>
+    <components name="humidity57" typeDefinition="//@typeDefinitions.14">
+      <required portTypeRef="//@typeDefinitions.14/@required.0"/>
+    </components>
+  </nodes>
+  <nodes name="node58" typeDefinition="//@typeDefinitions.7">
+    <components name="temp58" typeDefinition="//@typeDefinitions.9">
+      <required portTypeRef="//@typeDefinitions.9/@required.0"/>
+    </components>
+    <components name="smoke58" typeDefinition="//@typeDefinitions.13">
+      <required portTypeRef="//@typeDefinitions.13/@required.0"/>
+    </components>
+    <components name="humidity58" typeDefinition="//@typeDefinitions.14">
+      <required portTypeRef="//@typeDefinitions.14/@required.0"/>
+    </components>
+  </nodes>
+  <nodes name="node59" typeDefinition="//@typeDefinitions.7">
+    <components name="temp59" typeDefinition="//@typeDefinitions.9">
+      <required portTypeRef="//@typeDefinitions.9/@required.0"/>
+    </components>
+    <components name="smoke59" typeDefinition="//@typeDefinitions.13">
+      <required portTypeRef="//@typeDefinitions.13/@required.0"/>
+    </components>
+    <components name="humidity59" typeDefinition="//@typeDefinitions.14">
+      <required portTypeRef="//@typeDefinitions.14/@required.0"/>
+    </components>
+  </nodes>
+  <nodes name="node60" typeDefinition="//@typeDefinitions.7">
+    <components name="temp60" typeDefinition="//@typeDefinitions.9">
+      <required portTypeRef="//@typeDefinitions.9/@required.0"/>
+    </components>
+    <components name="smoke60" typeDefinition="//@typeDefinitions.13">
+      <required portTypeRef="//@typeDefinitions.13/@required.0"/>
+    </components>
+    <components name="humidity60" typeDefinition="//@typeDefinitions.14">
+      <required portTypeRef="//@typeDefinitions.14/@required.0"/>
+    </components>
+  </nodes>
+  <nodes name="node61" typeDefinition="//@typeDefinitions.7">
+    <components name="temp61" typeDefinition="//@typeDefinitions.9">
+      <required portTypeRef="//@typeDefinitions.9/@required.0"/>
+    </components>
+    <components name="smoke61" typeDefinition="//@typeDefinitions.13">
+      <required portTypeRef="//@typeDefinitions.13/@required.0"/>
+    </components>
+    <components name="humidity61" typeDefinition="//@typeDefinitions.14">
+      <required portTypeRef="//@typeDefinitions.14/@required.0"/>
+    </components>
+  </nodes>
+  <nodes name="node62" typeDefinition="//@typeDefinitions.7">
+    <components name="temp62" typeDefinition="//@typeDefinitions.9">
+      <required portTypeRef="//@typeDefinitions.9/@required.0"/>
+    </components>
+    <components name="smoke62" typeDefinition="//@typeDefinitions.13">
+      <required portTypeRef="//@typeDefinitions.13/@required.0"/>
+    </components>
+    <components name="humidity62" typeDefinition="//@typeDefinitions.14">
+      <required portTypeRef="//@typeDefinitions.14/@required.0"/>
+    </components>
+  </nodes>
+  <nodes name="node63" typeDefinition="//@typeDefinitions.7">
+    <components name="temp63" typeDefinition="//@typeDefinitions.9">
+      <required portTypeRef="//@typeDefinitions.9/@required.0"/>
+    </components>
+    <components name="smoke63" typeDefinition="//@typeDefinitions.13">
+      <required portTypeRef="//@typeDefinitions.13/@required.0"/>
+    </components>
+    <components name="humidity63" typeDefinition="//@typeDefinitions.14">
+      <required portTypeRef="//@typeDefinitions.14/@required.0"/>
+    </components>
+  </nodes>
+  <nodes name="node64" typeDefinition="//@typeDefinitions.7">
+    <components name="temp64" typeDefinition="//@typeDefinitions.9">
+      <required portTypeRef="//@typeDefinitions.9/@required.0"/>
+    </components>
+    <components name="smoke64" typeDefinition="//@typeDefinitions.13">
+      <required portTypeRef="//@typeDefinitions.13/@required.0"/>
+    </components>
+    <components name="humidity64" typeDefinition="//@typeDefinitions.14">
+      <required portTypeRef="//@typeDefinitions.14/@required.0"/>
+    </components>
+  </nodes>
+  <nodes name="node65" typeDefinition="//@typeDefinitions.7">
+    <components name="temp65" typeDefinition="//@typeDefinitions.9">
+      <required portTypeRef="//@typeDefinitions.9/@required.0"/>
+    </components>
+    <components name="smoke65" typeDefinition="//@typeDefinitions.13">
+      <required portTypeRef="//@typeDefinitions.13/@required.0"/>
+    </components>
+    <components name="humidity65" typeDefinition="//@typeDefinitions.14">
+      <required portTypeRef="//@typeDefinitions.14/@required.0"/>
+    </components>
+  </nodes>
+  <nodes name="node66" typeDefinition="//@typeDefinitions.7">
+    <components name="temp66" typeDefinition="//@typeDefinitions.9">
+      <required portTypeRef="//@typeDefinitions.9/@required.0"/>
+    </components>
+    <components name="smoke66" typeDefinition="//@typeDefinitions.13">
+      <required portTypeRef="//@typeDefinitions.13/@required.0"/>
+    </components>
+    <components name="humidity66" typeDefinition="//@typeDefinitions.14">
+      <required portTypeRef="//@typeDefinitions.14/@required.0"/>
+    </components>
+  </nodes>
+  <nodes name="node67" typeDefinition="//@typeDefinitions.7">
+    <components name="temp67" typeDefinition="//@typeDefinitions.9">
+      <required portTypeRef="//@typeDefinitions.9/@required.0"/>
+    </components>
+    <components name="smoke67" typeDefinition="//@typeDefinitions.13">
+      <required portTypeRef="//@typeDefinitions.13/@required.0"/>
+    </components>
+    <components name="humidity67" typeDefinition="//@typeDefinitions.14">
+      <required portTypeRef="//@typeDefinitions.14/@required.0"/>
+    </components>
+  </nodes>
+  <nodes name="node68" typeDefinition="//@typeDefinitions.7">
+    <components name="temp68" typeDefinition="//@typeDefinitions.9">
+      <required portTypeRef="//@typeDefinitions.9/@required.0"/>
+    </components>
+    <components name="smoke68" typeDefinition="//@typeDefinitions.13">
+      <required portTypeRef="//@typeDefinitions.13/@required.0"/>
+    </components>
+    <components name="humidity68" typeDefinition="//@typeDefinitions.14">
+      <required portTypeRef="//@typeDefinitions.14/@required.0"/>
+    </components>
+  </nodes>
+  <nodes name="node69" typeDefinition="//@typeDefinitions.7">
+    <components name="temp69" typeDefinition="//@typeDefinitions.9">
+      <required portTypeRef="//@typeDefinitions.9/@required.0"/>
+    </components>
+    <components name="smoke69" typeDefinition="//@typeDefinitions.13">
+      <required portTypeRef="//@typeDefinitions.13/@required.0"/>
+    </components>
+    <components name="humidity69" typeDefinition="//@typeDefinitions.14">
+      <required portTypeRef="//@typeDefinitions.14/@required.0"/>
+    </components>
+  </nodes>
+  <nodes name="node70" typeDefinition="//@typeDefinitions.7">
+    <components name="temp70" typeDefinition="//@typeDefinitions.9">
+      <required portTypeRef="//@typeDefinitions.9/@required.0"/>
+    </components>
+    <components name="smoke70" typeDefinition="//@typeDefinitions.13">
+      <required portTypeRef="//@typeDefinitions.13/@required.0"/>
+    </components>
+    <components name="humidity70" typeDefinition="//@typeDefinitions.14">
+      <required portTypeRef="//@typeDefinitions.14/@required.0"/>
+    </components>
+  </nodes>
+  <nodes name="node71" typeDefinition="//@typeDefinitions.7">
+    <components name="temp71" typeDefinition="//@typeDefinitions.9">
+      <required portTypeRef="//@typeDefinitions.9/@required.0"/>
+    </components>
+    <components name="smoke71" typeDefinition="//@typeDefinitions.13">
+      <required portTypeRef="//@typeDefinitions.13/@required.0"/>
+    </components>
+    <components name="humidity71" typeDefinition="//@typeDefinitions.14">
+      <required portTypeRef="//@typeDefinitions.14/@required.0"/>
+    </components>
+  </nodes>
+  <nodes name="node72" typeDefinition="//@typeDefinitions.7">
+    <components name="temp72" typeDefinition="//@typeDefinitions.9">
+      <required portTypeRef="//@typeDefinitions.9/@required.0"/>
+    </components>
+    <components name="smoke72" typeDefinition="//@typeDefinitions.13">
+      <required portTypeRef="//@typeDefinitions.13/@required.0"/>
+    </components>
+    <components name="humidity72" typeDefinition="//@typeDefinitions.14">
+      <required portTypeRef="//@typeDefinitions.14/@required.0"/>
+    </components>
+  </nodes>
+  <nodes name="node73" typeDefinition="//@typeDefinitions.7">
+    <components name="temp73" typeDefinition="//@typeDefinitions.9">
+      <required portTypeRef="//@typeDefinitions.9/@required.0"/>
+    </components>
+    <components name="smoke73" typeDefinition="//@typeDefinitions.13">
+      <required portTypeRef="//@typeDefinitions.13/@required.0"/>
+    </components>
+    <components name="humidity73" typeDefinition="//@typeDefinitions.14">
+      <required portTypeRef="//@typeDefinitions.14/@required.0"/>
+    </components>
+  </nodes>
+  <nodes name="node74" typeDefinition="//@typeDefinitions.7">
+    <components name="temp74" typeDefinition="//@typeDefinitions.9">
+      <required portTypeRef="//@typeDefinitions.9/@required.0"/>
+    </components>
+    <components name="smoke74" typeDefinition="//@typeDefinitions.13">
+      <required portTypeRef="//@typeDefinitions.13/@required.0"/>
+    </components>
+    <components name="humidity74" typeDefinition="//@typeDefinitions.14">
+      <required portTypeRef="//@typeDefinitions.14/@required.0"/>
+    </components>
+  </nodes>
+  <nodes name="node75" typeDefinition="//@typeDefinitions.7">
+    <components name="temp75" typeDefinition="//@typeDefinitions.9">
+      <required portTypeRef="//@typeDefinitions.9/@required.0"/>
+    </components>
+    <components name="smoke75" typeDefinition="//@typeDefinitions.13">
+      <required portTypeRef="//@typeDefinitions.13/@required.0"/>
+    </components>
+    <components name="humidity75" typeDefinition="//@typeDefinitions.14">
+      <required portTypeRef="//@typeDefinitions.14/@required.0"/>
+    </components>
+  </nodes>
+  <nodes name="node76" typeDefinition="//@typeDefinitions.7">
+    <components name="temp76" typeDefinition="//@typeDefinitions.9">
+      <required portTypeRef="//@typeDefinitions.9/@required.0"/>
+    </components>
+    <components name="smoke76" typeDefinition="//@typeDefinitions.13">
+      <required portTypeRef="//@typeDefinitions.13/@required.0"/>
+    </components>
+    <components name="humidity76" typeDefinition="//@typeDefinitions.14">
+      <required portTypeRef="//@typeDefinitions.14/@required.0"/>
+    </components>
+  </nodes>
+  <nodes name="node77" typeDefinition="//@typeDefinitions.7">
+    <components name="temp77" typeDefinition="//@typeDefinitions.9">
+      <required portTypeRef="//@typeDefinitions.9/@required.0"/>
+    </components>
+    <components name="smoke77" typeDefinition="//@typeDefinitions.13">
+      <required portTypeRef="//@typeDefinitions.13/@required.0"/>
+    </components>
+    <components name="humidity77" typeDefinition="//@typeDefinitions.14">
+      <required portTypeRef="//@typeDefinitions.14/@required.0"/>
+    </components>
+  </nodes>
+  <nodes name="node78" typeDefinition="//@typeDefinitions.7">
+    <components name="temp78" typeDefinition="//@typeDefinitions.9">
+      <required portTypeRef="//@typeDefinitions.9/@required.0"/>
+    </components>
+    <components name="smoke78" typeDefinition="//@typeDefinitions.13">
+      <required portTypeRef="//@typeDefinitions.13/@required.0"/>
+    </components>
+    <components name="humidity78" typeDefinition="//@typeDefinitions.14">
+      <required portTypeRef="//@typeDefinitions.14/@required.0"/>
+    </components>
+  </nodes>
+  <nodes name="node79" typeDefinition="//@typeDefinitions.7">
+    <components name="temp79" typeDefinition="//@typeDefinitions.9">
+      <required portTypeRef="//@typeDefinitions.9/@required.0"/>
+    </components>
+    <components name="smoke79" typeDefinition="//@typeDefinitions.13">
+      <required portTypeRef="//@typeDefinitions.13/@required.0"/>
+    </components>
+    <components name="humidity79" typeDefinition="//@typeDefinitions.14">
+      <required portTypeRef="//@typeDefinitions.14/@required.0"/>
+    </components>
+  </nodes>
+  <nodes name="node80" typeDefinition="//@typeDefinitions.7">
+    <components name="temp80" typeDefinition="//@typeDefinitions.9">
+      <required portTypeRef="//@typeDefinitions.9/@required.0"/>
+    </components>
+    <components name="smoke80" typeDefinition="//@typeDefinitions.13">
+      <required portTypeRef="//@typeDefinitions.13/@required.0"/>
+    </components>
+    <components name="humidity80" typeDefinition="//@typeDefinitions.14">
+      <required portTypeRef="//@typeDefinitions.14/@required.0"/>
+    </components>
+  </nodes>
+  <nodes name="node81" typeDefinition="//@typeDefinitions.7">
+    <components name="temp81" typeDefinition="//@typeDefinitions.9">
+      <required portTypeRef="//@typeDefinitions.9/@required.0"/>
+    </components>
+    <components name="smoke81" typeDefinition="//@typeDefinitions.13">
+      <required portTypeRef="//@typeDefinitions.13/@required.0"/>
+    </components>
+    <components name="humidity81" typeDefinition="//@typeDefinitions.14">
+      <required portTypeRef="//@typeDefinitions.14/@required.0"/>
+    </components>
+  </nodes>
+  <nodes name="node82" typeDefinition="//@typeDefinitions.7">
+    <components name="temp82" typeDefinition="//@typeDefinitions.9">
+      <required portTypeRef="//@typeDefinitions.9/@required.0"/>
+    </components>
+    <components name="smoke82" typeDefinition="//@typeDefinitions.13">
+      <required portTypeRef="//@typeDefinitions.13/@required.0"/>
+    </components>
+    <components name="humidity82" typeDefinition="//@typeDefinitions.14">
+      <required portTypeRef="//@typeDefinitions.14/@required.0"/>
+    </components>
+  </nodes>
+  <nodes name="node83" typeDefinition="//@typeDefinitions.7">
+    <components name="temp83" typeDefinition="//@typeDefinitions.9">
+      <required portTypeRef="//@typeDefinitions.9/@required.0"/>
+    </components>
+    <components name="smoke83" typeDefinition="//@typeDefinitions.13">
+      <required portTypeRef="//@typeDefinitions.13/@required.0"/>
+    </components>
+    <components name="humidity83" typeDefinition="//@typeDefinitions.14">
+      <required portTypeRef="//@typeDefinitions.14/@required.0"/>
+    </components>
+  </nodes>
+  <nodes name="node84" typeDefinition="//@typeDefinitions.7">
+    <components name="temp84" typeDefinition="//@typeDefinitions.9">
+      <required portTypeRef="//@typeDefinitions.9/@required.0"/>
+    </components>
+    <components name="smoke84" typeDefinition="//@typeDefinitions.13">
+      <required portTypeRef="//@typeDefinitions.13/@required.0"/>
+    </components>
+    <components name="humidity84" typeDefinition="//@typeDefinitions.14">
+      <required portTypeRef="//@typeDefinitions.14/@required.0"/>
+    </components>
+  </nodes>
+  <nodes name="node85" typeDefinition="//@typeDefinitions.7">
+    <components name="temp85" typeDefinition="//@typeDefinitions.9">
+      <required portTypeRef="//@typeDefinitions.9/@required.0"/>
+    </components>
+    <components name="smoke85" typeDefinition="//@typeDefinitions.13">
+      <required portTypeRef="//@typeDefinitions.13/@required.0"/>
+    </components>
+    <components name="humidity85" typeDefinition="//@typeDefinitions.14">
+      <required portTypeRef="//@typeDefinitions.14/@required.0"/>
+    </components>
+  </nodes>
+  <nodes name="node86" typeDefinition="//@typeDefinitions.7">
+    <components name="temp86" typeDefinition="//@typeDefinitions.9">
+      <required portTypeRef="//@typeDefinitions.9/@required.0"/>
+    </components>
+    <components name="smoke86" typeDefinition="//@typeDefinitions.13">
+      <required portTypeRef="//@typeDefinitions.13/@required.0"/>
+    </components>
+    <components name="humidity86" typeDefinition="//@typeDefinitions.14">
+      <required portTypeRef="//@typeDefinitions.14/@required.0"/>
+    </components>
+  </nodes>
+  <nodes name="node87" typeDefinition="//@typeDefinitions.7">
+    <components name="temp87" typeDefinition="//@typeDefinitions.9">
+      <required portTypeRef="//@typeDefinitions.9/@required.0"/>
+    </components>
+    <components name="smoke87" typeDefinition="//@typeDefinitions.13">
+      <required portTypeRef="//@typeDefinitions.13/@required.0"/>
+    </components>
+    <components name="humidity87" typeDefinition="//@typeDefinitions.14">
+      <required portTypeRef="//@typeDefinitions.14/@required.0"/>
+    </components>
+  </nodes>
+  <nodes name="node88" typeDefinition="//@typeDefinitions.7">
+    <components name="temp88" typeDefinition="//@typeDefinitions.9">
+      <required portTypeRef="//@typeDefinitions.9/@required.0"/>
+    </components>
+    <components name="smoke88" typeDefinition="//@typeDefinitions.13">
+      <required portTypeRef="//@typeDefinitions.13/@required.0"/>
+    </components>
+    <components name="humidity88" typeDefinition="//@typeDefinitions.14">
+      <required portTypeRef="//@typeDefinitions.14/@required.0"/>
+    </components>
+  </nodes>
+  <nodes name="node89" typeDefinition="//@typeDefinitions.7">
+    <components name="temp89" typeDefinition="//@typeDefinitions.9">
+      <required portTypeRef="//@typeDefinitions.9/@required.0"/>
+    </components>
+    <components name="smoke89" typeDefinition="//@typeDefinitions.13">
+      <required portTypeRef="//@typeDefinitions.13/@required.0"/>
+    </components>
+    <components name="humidity89" typeDefinition="//@typeDefinitions.14">
+      <required portTypeRef="//@typeDefinitions.14/@required.0"/>
+    </components>
+  </nodes>
+  <nodes name="node90" typeDefinition="//@typeDefinitions.7">
+    <components name="temp90" typeDefinition="//@typeDefinitions.9">
+      <required portTypeRef="//@typeDefinitions.9/@required.0"/>
+    </components>
+    <components name="smoke90" typeDefinition="//@typeDefinitions.13">
+      <required portTypeRef="//@typeDefinitions.13/@required.0"/>
+    </components>
+    <components name="humidity90" typeDefinition="//@typeDefinitions.14">
+      <required portTypeRef="//@typeDefinitions.14/@required.0"/>
+    </components>
+  </nodes>
+  <nodes name="node91" typeDefinition="//@typeDefinitions.7">
+    <components name="temp91" typeDefinition="//@typeDefinitions.9">
+      <required portTypeRef="//@typeDefinitions.9/@required.0"/>
+    </components>
+    <components name="smoke91" typeDefinition="//@typeDefinitions.13">
+      <required portTypeRef="//@typeDefinitions.13/@required.0"/>
+    </components>
+    <components name="humidity91" typeDefinition="//@typeDefinitions.14">
+      <required portTypeRef="//@typeDefinitions.14/@required.0"/>
+    </components>
+  </nodes>
+  <nodes name="node92" typeDefinition="//@typeDefinitions.7">
+    <components name="temp92" typeDefinition="//@typeDefinitions.9">
+      <required portTypeRef="//@typeDefinitions.9/@required.0"/>
+    </components>
+    <components name="smoke92" typeDefinition="//@typeDefinitions.13">
+      <required portTypeRef="//@typeDefinitions.13/@required.0"/>
+    </components>
+    <components name="humidity92" typeDefinition="//@typeDefinitions.14">
+      <required portTypeRef="//@typeDefinitions.14/@required.0"/>
+    </components>
+  </nodes>
+  <nodes name="node93" typeDefinition="//@typeDefinitions.7">
+    <components name="temp93" typeDefinition="//@typeDefinitions.9">
+      <required portTypeRef="//@typeDefinitions.9/@required.0"/>
+    </components>
+    <components name="smoke93" typeDefinition="//@typeDefinitions.13">
+      <required portTypeRef="//@typeDefinitions.13/@required.0"/>
+    </components>
+    <components name="humidity93" typeDefinition="//@typeDefinitions.14">
+      <required portTypeRef="//@typeDefinitions.14/@required.0"/>
+    </components>
+  </nodes>
+  <nodes name="node94" typeDefinition="//@typeDefinitions.7">
+    <components name="temp94" typeDefinition="//@typeDefinitions.9">
+      <required portTypeRef="//@typeDefinitions.9/@required.0"/>
+    </components>
+    <components name="smoke94" typeDefinition="//@typeDefinitions.13">
+      <required portTypeRef="//@typeDefinitions.13/@required.0"/>
+    </components>
+    <components name="humidity94" typeDefinition="//@typeDefinitions.14">
+      <required portTypeRef="//@typeDefinitions.14/@required.0"/>
+    </components>
+  </nodes>
+  <nodes name="node95" typeDefinition="//@typeDefinitions.7">
+    <components name="temp95" typeDefinition="//@typeDefinitions.9">
+      <required portTypeRef="//@typeDefinitions.9/@required.0"/>
+    </components>
+    <components name="smoke95" typeDefinition="//@typeDefinitions.13">
+      <required portTypeRef="//@typeDefinitions.13/@required.0"/>
+    </components>
+    <components name="humidity95" typeDefinition="//@typeDefinitions.14">
+      <required portTypeRef="//@typeDefinitions.14/@required.0"/>
+    </components>
+  </nodes>
+  <nodes name="node96" typeDefinition="//@typeDefinitions.7">
+    <components name="temp96" typeDefinition="//@typeDefinitions.9">
+      <required portTypeRef="//@typeDefinitions.9/@required.0"/>
+    </components>
+    <components name="smoke96" typeDefinition="//@typeDefinitions.13">
+      <required portTypeRef="//@typeDefinitions.13/@required.0"/>
+    </components>
+    <components name="humidity96" typeDefinition="//@typeDefinitions.14">
+      <required portTypeRef="//@typeDefinitions.14/@required.0"/>
+    </components>
+  </nodes>
+  <nodes name="node97" typeDefinition="//@typeDefinitions.7">
+    <components name="temp97" typeDefinition="//@typeDefinitions.9">
+      <required portTypeRef="//@typeDefinitions.9/@required.0"/>
+    </components>
+    <components name="smoke97" typeDefinition="//@typeDefinitions.13">
+      <required portTypeRef="//@typeDefinitions.13/@required.0"/>
+    </components>
+    <components name="humidity97" typeDefinition="//@typeDefinitions.14">
+      <required portTypeRef="//@typeDefinitions.14/@required.0"/>
+    </components>
+  </nodes>
+  <nodes name="node98" typeDefinition="//@typeDefinitions.7">
+    <components name="temp98" typeDefinition="//@typeDefinitions.9">
+      <required portTypeRef="//@typeDefinitions.9/@required.0"/>
+    </components>
+    <components name="smoke98" typeDefinition="//@typeDefinitions.13">
+      <required portTypeRef="//@typeDefinitions.13/@required.0"/>
+    </components>
+    <components name="humidity98" typeDefinition="//@typeDefinitions.14">
+      <required portTypeRef="//@typeDefinitions.14/@required.0"/>
+    </components>
+  </nodes>
+  <nodes name="node99" typeDefinition="//@typeDefinitions.7">
+    <components name="temp99" typeDefinition="//@typeDefinitions.9">
+      <required portTypeRef="//@typeDefinitions.9/@required.0"/>
+    </components>
+    <components name="smoke99" typeDefinition="//@typeDefinitions.13">
+      <required portTypeRef="//@typeDefinitions.13/@required.0"/>
+    </components>
+    <components name="humidity99" typeDefinition="//@typeDefinitions.14">
+      <required portTypeRef="//@typeDefinitions.14/@required.0"/>
+    </components>
+  </nodes>
+  <typeDefinitions xsi:type="kevoree:ChannelType" name="LBroadC" deployUnits="//@deployUnits.0 //@deployUnits.1" factoryBean="org.kevoree.experiment.smartbuilding.LBroadCFactory" bean="org.kevoree.experiment.smartbuilding.LBroadC" startMethod="lifeCycle" stopMethod="lifeCycle"/>
+  <typeDefinitions xsi:type="kevoree:NodeType" name="JavaSENode"/>
+  <typeDefinitions xsi:type="kevoree:ChannelType" name="IPMultiCast" deployUnits="//@deployUnits.2 //@deployUnits.1" factoryBean="org.kevoree.experiment.smartbuilding.IPMultiCastFactory" bean="org.kevoree.experiment.smartbuilding.IPMultiCast" startMethod="lifeCycle" stopMethod="lifeCycle"/>
+  <typeDefinitions xsi:type="kevoree:ComponentType" name="FloorAlarm" deployUnits="//@deployUnits.1" factoryBean="org.kevoree.experiment.smartbuilding.FloorAlarmFactory" bean="org.kevoree.experiment.smartbuilding.FloorAlarm" startMethod="lifeCycle" stopMethod="lifeCycle">
+    <required name="forward" ref="//@typeDefinitions.4" optional="false" noDependency="false"/>
+    <provided name="sdata" ref="//@typeDefinitions.4">
+      <mappings beanMethodName="trigger" serviceMethodName="process"/>
+    </provided>
+  </typeDefinitions>
+  <typeDefinitions xsi:type="kevoree:MessagePortType" name="org.kevoree.framework.MessagePort"/>
+  <typeDefinitions xsi:type="kevoree:ComponentType" name="GlobalAlarm" deployUnits="//@deployUnits.1" factoryBean="org.kevoree.experiment.smartbuilding.GlobalAlarmFactory" bean="org.kevoree.experiment.smartbuilding.GlobalAlarm" startMethod="lifeCycle" stopMethod="lifeCycle">
+    <provided name="sdata" ref="//@typeDefinitions.4">
+      <mappings beanMethodName="trigger" serviceMethodName="process"/>
+    </provided>
+  </typeDefinitions>
+  <typeDefinitions xsi:type="kevoree:ComponentType" name="LuxOrch" deployUnits="//@deployUnits.0" factoryBean="org.kevoree.experiment.smartbuilding.LuxOrchFactory" bean="org.kevoree.experiment.smartbuilding.LuxOrch" startMethod="lifeCycle" stopMethod="lifeCycle">
+    <required name="on" ref="//@typeDefinitions.4" optional="false" noDependency="false"/>
+    <required name="off" ref="//@typeDefinitions.4" optional="false" noDependency="false"/>
+    <provided name="sdata" ref="//@typeDefinitions.4">
+      <mappings beanMethodName="trigger" serviceMethodName="process"/>
+    </provided>
+  </typeDefinitions>
+  <typeDefinitions xsi:type="kevoree:NodeType" name="ArduinoNode"/>
+  <typeDefinitions xsi:type="kevoree:ComponentType" name="Switch" deployUnits="//@deployUnits.0" factoryBean="org.kevoree.experiment.smartbuilding.SwitchFactory" bean="org.kevoree.experiment.smartbuilding.Switch" startMethod="lifeCycle" stopMethod="lifeCycle">
+    <required name="click" ref="//@typeDefinitions.4" optional="false" noDependency="false"/>
+    <required name="release" ref="//@typeDefinitions.4" optional="false" noDependency="false"/>
+  </typeDefinitions>
+  <typeDefinitions xsi:type="kevoree:ComponentType" name="TempSensor" deployUnits="//@deployUnits.0" factoryBean="org.kevoree.experiment.smartbuilding.TempSensorFactory" bean="org.kevoree.experiment.smartbuilding.TempSensor" startMethod="lifeCycle" stopMethod="lifeCycle">
+    <required name="value" ref="//@typeDefinitions.4" optional="false" noDependency="false"/>
+  </typeDefinitions>
+  <typeDefinitions xsi:type="kevoree:ChannelType" name="SerialCom" deployUnits="//@deployUnits.2 //@deployUnits.0" factoryBean="org.kevoree.experiment.smartbuilding.SerialComFactory" bean="org.kevoree.experiment.smartbuilding.SerialCom" startMethod="lifeCycle" stopMethod="lifeCycle"/>
+  <typeDefinitions xsi:type="kevoree:ComponentType" name="Light" deployUnits="//@deployUnits.0" factoryBean="org.kevoree.experiment.smartbuilding.LightFactory" bean="org.kevoree.experiment.smartbuilding.Light" startMethod="lifeCycle" stopMethod="lifeCycle">
+    <provided name="on" ref="//@typeDefinitions.4">
+      <mappings beanMethodName="trigger" serviceMethodName="process"/>
+    </provided>
+    <provided name="off" ref="//@typeDefinitions.4">
+      <mappings beanMethodName="trigger" serviceMethodName="process"/>
+    </provided>
+  </typeDefinitions>
+  <typeDefinitions xsi:type="kevoree:ComponentType" name="MotionSensor" deployUnits="//@deployUnits.0" factoryBean="org.kevoree.experiment.smartbuilding.MotionSensorFactory" bean="org.kevoree.experiment.smartbuilding.MotionSensor" startMethod="lifeCycle" stopMethod="lifeCycle">
+    <required name="out" ref="//@typeDefinitions.4" optional="false" noDependency="false"/>
+  </typeDefinitions>
+  <typeDefinitions xsi:type="kevoree:ComponentType" name="SmokeSensor" deployUnits="//@deployUnits.0" factoryBean="org.kevoree.experiment.smartbuilding.SmokeSensorFactory" bean="org.kevoree.experiment.smartbuilding.SmokeSensor" startMethod="lifeCycle" stopMethod="lifeCycle">
+    <required name="value" ref="//@typeDefinitions.4" optional="false" noDependency="false"/>
+  </typeDefinitions>
+  <typeDefinitions xsi:type="kevoree:ComponentType" name="HumiditySensor" deployUnits="//@deployUnits.0" factoryBean="org.kevoree.experiment.smartbuilding.HumiditySensorFactory" bean="org.kevoree.experiment.smartbuilding.HumiditySensor" startMethod="lifeCycle" stopMethod="lifeCycle">
+    <required name="value" ref="//@typeDefinitions.4" optional="false" noDependency="false"/>
+  </typeDefinitions>
+  <typeDefinitions xsi:type="kevoree:ComponentType" name="LightSensor" deployUnits="//@deployUnits.0" factoryBean="org.kevoree.experiment.smartbuilding.LightSensorFactory" bean="org.kevoree.experiment.smartbuilding.LightSensor" startMethod="lifeCycle" stopMethod="lifeCycle">
+    <required name="value" ref="//@typeDefinitions.4" optional="false" noDependency="false"/>
+  </typeDefinitions>
+  <typeDefinitions xsi:type="kevoree:ComponentType" name="BuildingTempMap" deployUnits="//@deployUnits.2" factoryBean="org.kevoree.experiment.smartbuilding.BuildingTempMapFactory" bean="org.kevoree.experiment.smartbuilding.BuildingTempMap" startMethod="lifeCycle" stopMethod="lifeCycle">
+    <provided name="datas" ref="//@typeDefinitions.4">
+      <mappings beanMethodName="trigger" serviceMethodName="process"/>
+    </provided>
+  </typeDefinitions>
+  <typeDefinitions xsi:type="kevoree:NodeType" name="AndroidNode"/>
+  <typeDefinitions xsi:type="kevoree:ComponentType" name="EmergencyLog" deployUnits="//@deployUnits.2 //@deployUnits.0 //@deployUnits.1" factoryBean="org.kevoree.experiment.smartbuilding.EmergencyLogFactory" bean="org.kevoree.experiment.smartbuilding.EmergencyLog" startMethod="lifeCycle" stopMethod="lifeCycle">
+    <required name="forward" ref="//@typeDefinitions.4" optional="false" noDependency="false"/>
+    <provided name="sdata" ref="//@typeDefinitions.4">
+      <mappings beanMethodName="trigger" serviceMethodName="process"/>
+    </provided>
+    <provided name="synch" ref="//@typeDefinitions.4">
+      <mappings beanMethodName="trigger" serviceMethodName="process"/>
+    </provided>
+  </typeDefinitions>
+  <typeDefinitions xsi:type="kevoree:ChannelType" name="GossipRF" deployUnits="//@deployUnits.0" factoryBean="org.kevoree.experiment.smartbuilding.GossipRFFactory" bean="org.kevoree.experiment.smartbuilding.GossipRF" startMethod="lifeCycle" stopMethod="lifeCycle"/>
+  <repositories url="http://maven.kevoree.org/snapshots"/>
+  <repositories url="http://scala-tools.org/repo-releases"/>
+  <repositories url="http://maven.kevoree.org/release"/>
+  <repositories url="http://repo1.maven.org/maven2"/>
+  <libraries name="SmartBuilding" subTypes="//@typeDefinitions.0 //@typeDefinitions.2 //@typeDefinitions.3 //@typeDefinitions.5 //@typeDefinitions.6 //@typeDefinitions.8 //@typeDefinitions.9 //@typeDefinitions.10 //@typeDefinitions.11 //@typeDefinitions.12 //@typeDefinitions.13 //@typeDefinitions.14 //@typeDefinitions.15 //@typeDefinitions.16 //@typeDefinitions.18 //@typeDefinitions.19"/>
+  <deployUnits groupName="org.kevoree.experiment.smartBuilding" unitName="org.kevoree.experiment.smartBuilding.arduino" version="1.2.0-SNAPSHOT" hashcode="201106161317336" targetNodeType="//@typeDefinitions.7"/>
+  <deployUnits groupName="org.kevoree.experiment.smartBuilding" unitName="org.kevoree.experiment.smartBuilding.javase" version="1.2.0-SNAPSHOT" hashcode="201106161317183" targetNodeType="//@typeDefinitions.1"/>
+  <deployUnits groupName="org.kevoree.experiment.smartBuilding" unitName="org.kevoree.experiment.smartBuilding.android" version="1.2.0-SNAPSHOT" hashcode="201106161317748" targetNodeType="//@typeDefinitions.17"/>
+  <nodeNetworks>
+    <link networkType="" estimatedRate="100">
+      <networkProperties name="KEVOREE.remote.node.ip" value="" lastCheck="1308563120165"/>
+    </link>
+  </nodeNetworks>
+</kevoree:ContainerRoot>

@@ -14,6 +14,7 @@ import org.kevoree.NamedElement;
 import org.kevoree.Port;
 import org.kevoree.library.tools.dpa.DPA;
 import org.kevoree.tools.marShell.parser.ParserUtil;
+import sun.font.Script;
 
 public class AddBindingDPA implements DPA {
 
@@ -87,5 +88,11 @@ public class AddBindingDPA implements DPA {
         }
         return script;
     }
+
+    @Override
+    public org.kevoree.tools.marShell.ast.Script getASTScript(Map<String, NamedElement> stringNamedElementMap) {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
 
 }

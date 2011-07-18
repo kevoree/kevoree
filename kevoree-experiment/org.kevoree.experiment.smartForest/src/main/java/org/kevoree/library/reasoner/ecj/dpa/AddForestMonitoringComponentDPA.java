@@ -4,6 +4,7 @@ import org.eclipse.emf.common.util.EList;
 import org.kevoree.*;
 import org.kevoree.library.tools.dpa.DPA;
 import org.kevoree.tools.marShell.parser.ParserUtil;
+import sun.font.Script;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -77,6 +78,11 @@ public class AddForestMonitoringComponentDPA implements DPA {
         // the next line should be removed if we enable script without specifying componentName
         script = script.replace("${" + this.componentName + "}", myMap.get(this.typeDefinition).getName()+increment++ );
         return script;
+    }
+
+    @Override
+    public org.kevoree.tools.marShell.ast.Script getASTScript(Map<String, NamedElement> stringNamedElementMap) {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
 }
