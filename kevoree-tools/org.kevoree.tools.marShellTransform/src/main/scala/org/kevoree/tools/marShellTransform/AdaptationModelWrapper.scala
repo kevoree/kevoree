@@ -17,8 +17,11 @@ import scala.collection.JavaConversions._
 import org.kevoree.tools.marShell.ast._
 import org.kevoreeAdaptation._
 import org.kevoree.{Group, Channel, ComponentInstance, ContainerNode}
+import org.slf4j.LoggerFactory
 
 object AdaptationModelWrapper {
+
+	var logger = LoggerFactory.getLogger(this.getClass);
 
   def generateScriptFromAdaptModel(model: AdaptationModel): Script = {
     val statments = new java.util.ArrayList[Statment]()
@@ -57,7 +60,7 @@ object AdaptationModelWrapper {
                   statments.add(AddComponentInstanceStatment(cid, c.getTypeDefinition.getName, props))
                 }
                 //TODO
-              case _@uncatchInstance => println("warning : uncatched=" + uncatchInstance)
+              case _@uncatchInstance => logger.warn("uncatched=" + uncatchInstance)
             }
           }
         case statement: RemoveBinding => statments.add(RemoveBindingStatment(ComponentInstanceID(statement.getRef.getPort.eContainer.asInstanceOf[ComponentInstance].getName, Some(statement.getRef.getPort.eContainer.eContainer.asInstanceOf[ContainerNode].getName)), statement.getRef.getPort.getPortTypeRef.getName, statement.getRef.getHub.getName))
@@ -70,10 +73,10 @@ object AdaptationModelWrapper {
                   statments.add(RemoveComponentInstanceStatment(cid))
                 }
 
-              case _@uncatchInstance => println("warning : uncatched=" + uncatchInstance)
+              case _@uncatchInstance => logger.warn("uncatched=" + uncatchInstance)
             }
           }
-        case _@unCatched => println("warning : uncatched=" + unCatched)
+        case _@unCatched => logger.warn("uncatched=" + unCatched)
       }
 
     }

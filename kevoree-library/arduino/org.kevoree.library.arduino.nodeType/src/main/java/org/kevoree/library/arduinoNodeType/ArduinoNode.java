@@ -40,12 +40,14 @@ import org.kevoreeAdaptation.TypeAdaptation;
 @DictionaryType({
         @DictionaryAttribute(name = "boardTypeName", defaultValue = "uno", optional = true),
         @DictionaryAttribute(name = "boardPortName"),
-        @DictionaryAttribute(name = "incremental", defaultValue = "true", optional = true)
+        @DictionaryAttribute(name = "incremental", defaultValue = "true", optional = true),
+        @DictionaryAttribute(name = "pmem", defaultValue = "eeprom", optional = true),
+        @DictionaryAttribute(name = "psize", defaultValue = "MAX", optional = true)
 })
 public class ArduinoNode extends AbstractNodeType {
 
-    ArduinoGuiProgressBar progress = null;
-    File newdir = null;
+    public ArduinoGuiProgressBar progress = null;
+    public File newdir = null;
 
     @Override
     public void push(final String targetNodeName, final ContainerRoot root, final BundleContext bundle) {
@@ -159,7 +161,7 @@ public class ArduinoNode extends AbstractNodeType {
 
     }
 
-    private String outputPath = "";
+    public String outputPath = "";
     private BundleContext bcontext = null;
 
     @Override
@@ -190,7 +192,24 @@ public class ArduinoNode extends AbstractNodeType {
             }
             //Step : Generate firmware code to output path
             KevoreeCGenerator generator = new KevoreeCGenerator();
-            generator.generate(model, nodeName, outputPath, bcontext);
+
+            PMemory pm = PMemory.EEPROM;
+            if(this.getDictionary().get("pmem") != null){
+                String s = this.getDictionary().get("pmem").toString();
+                if(s.toLowerCase().equals("eeprom")){
+                    pm = PMemory.EEPROM;
+                }
+                if(s.toLowerCase().equals("sd")){
+                    pm = PMemory.SD;
+                }
+            }
+            String psize = "";
+            if(this.getDictionary().get("psize") != null && this.getDictionary().get("psize") != "MAX" ){
+                psize = this.getDictionary().get("psize").toString();
+            }
+
+
+            generator.generate(model, nodeName, outputPath, bcontext,getDictionary().get("boardTypeName").toString(),pm,psize);
 
 //STEP 3 : Deploy by commnication channel
             progress.beginTask("Prepare compilation", 40);
@@ -256,7 +275,7 @@ public class ArduinoNode extends AbstractNodeType {
             }
 
         } else {
-            System.out.println("incremental update availble -> try to generate KevScript !");
+            System.out.println("incremental update available -> try to generate KevScript !");
             Script baseScript = KevScriptWrapper.miniPlanKevScript(AdaptationModelWrapper.generateScriptFromAdaptModel(modelIn));
             String resultScript = KevScriptWrapper.generateKevScriptCompressed(baseScript);
             System.out.println(resultScript);

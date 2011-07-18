@@ -32,14 +32,14 @@ object ModificationApp extends App {
 
           // TODO register the node we use to push update
 
-          val stream = System.in
+          /*val stream = System.in
           var b = stream.read()
-          while (b != -1 && b != 'q') {
+          while (b != -1 && b != 'q') {*/
             modificationGenerator.doAction(line)
-            b = stream.read()
-          }
+            /*b = stream.read()
+          }*/
         } else {
-          println("file is missing.\nModification is not possible")
+          println("file \"" + file.getAbsolutePath + "\" is missing.\nModification is not possible")
         }
       } else {
         println("missing $OAR_NODE_FILE variables")

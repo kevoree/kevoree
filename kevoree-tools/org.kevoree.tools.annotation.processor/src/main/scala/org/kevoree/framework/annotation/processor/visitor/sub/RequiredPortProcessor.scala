@@ -46,7 +46,15 @@ trait RequiredPortProcessor {
             var ptreqREF = KevoreeFactory.eINSTANCE.createPortTypeRef
             ptreqREF.setName(req.name)
             ptreqREF.setOptional(req.optional)
-            ptreqREF.setNoDependency(req.noDependency)
+          /*
+          we replace the annotation parameter "noDependency" by "needCheckDependency but we do not replace noDependency on the model
+          noDependency = true (equivalent to needCheckDependency = false) means the required port is not use during critical start and stop operations of the container component
+          and so we do not need to take it into account when we try to schedule starts and stops to avoid some deadlocks.
+          noDependency = false (equivalent to needCheckDependency = true) means that the required port is used on start or stop operations of the container component
+          and so we need to check dependency to avoid some deadlocks
+           */
+            //ptreqREF.setNoDependency(req.noDependency)
+          ptreqREF.setNoDependency(!req.needCheckDependency())
 
             ptreqREF.setRef(LocalUtility.getOraddPortType(req.`type` match {
                   case org.kevoree.annotation.PortType.SERVICE => {

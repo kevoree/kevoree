@@ -2,6 +2,7 @@ package org.kevoree.library.arduinoNodeType.generator
 
 import org.kevoree.TypeDefinition
 import scala.collection.JavaConversions._
+import templates.SimpleCopyTemplate
 
 /**
  * User: ffouquet
@@ -12,22 +13,6 @@ import scala.collection.JavaConversions._
 trait KevoreeCSchedulerGenerator extends KevoreeCAbstractGenerator {
 
   def generateLoop: Unit = {
-    /*
-    context b "void loop(){"
-    context b "for(int i=0;i<nbInstances;i++){"
-    context b "  if(periodicExecution(i)){"
-    context b "    runInstance(i);"
-    context b "  }"
-    context b "}"
-    context b "for(int i=0;i<nbInstances;i++){"
-    context b "  if(getPortQueuesSize(i)>0){"
-    context b "    runInstance(i);"
-    context b "  }"
-    context b "}"
-    context b "checkForAdminMsg();"
-    context b "}"
-    */
-
     context b "#define minSleepDuration 80                        "
     context b "long minNextOp;                                    "
     context b "boolean allEmptyQueue;                             "
@@ -73,19 +58,11 @@ trait KevoreeCSchedulerGenerator extends KevoreeCAbstractGenerator {
 
   }
 
-  def generateSleepMethod() {
-    context b "void sleepNowFor(long duration){ "
-    //context b "   Narcoleptic.delay(duration);  "  //TO IMPROVE
-    context b "}                                "
+
+  def generateTimeMethods(){
+    context b SimpleCopyTemplate.copyFromClassPath("templates/KevScheduler.c")
   }
 
-  def generateCurrentTimeMethod() {
-    context b "unsigned long currentMillis(){                          "
-    //context b "unsigned long time = (millis() + Narcoleptic.millis()); "
-    //context b "return time;                                            "
-    context b "return millis();"
-    context b "}"
-  }
 
   def generateNextExecutionGap(types : List[TypeDefinition]) : Unit = {
     context b "long nextExecutionGap(int index){"

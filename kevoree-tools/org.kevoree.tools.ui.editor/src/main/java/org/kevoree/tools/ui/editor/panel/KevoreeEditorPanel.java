@@ -30,8 +30,10 @@ import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.MultiSplitLayout;
 import org.jdesktop.swingx.painter.CompoundPainter;
 import org.jdesktop.swingx.painter.MattePainter;
+import org.kevoree.MBinding;
 import org.kevoree.tools.ui.editor.KevoreeUIKernel;
 import org.kevoree.tools.ui.editor.TypeDefinitionSourceList;
+import org.kevoree.tools.ui.editor.property.BindingPropertyEditor;
 import org.kevoree.tools.ui.editor.property.InstancePropertyEditor;
 import org.kevoree.tools.ui.editor.property.NodePropertyEditor;
 import org.kevoree.tools.ui.framework.elements.*;
@@ -152,7 +154,7 @@ multiSplitPane.add(editableModelPanel, "right");
 
     //Art2XmiHelper.save("/Users/ffouquet/NetBeansProjects/Entimid/org.entimid.fakeStuff/art2Merged.xmi", kernel.getModelHandler().getActualModel());
     }*/
-    public void showPropertyFor(JPanel p) {
+    public void showPropertyFor(Object p) {
         // southpanel.setVisible(true);
         // southpanel.removeAll();
         if (p instanceof NodePanel) {
@@ -167,6 +169,13 @@ multiSplitPane.add(editableModelPanel, "right");
             //southpanel.add(prop);
             editableModelPanel.displayProperties(prop);
         }
+        if(p instanceof Binding){
+            MBinding elem = (MBinding) kernel.getUifactory().getMapping().get(p);
+            BindingPropertyEditor prop = new BindingPropertyEditor(elem, kernel);
+            //southpanel.add(prop);
+            editableModelPanel.displayProperties(prop);
+        }
+
 
         // southpanel.repaint();
         // southpanel.revalidate();

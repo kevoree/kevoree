@@ -69,22 +69,22 @@ public class Grapher extends AbstractComponentType {
     @Port(name = "input")
     public void appendIncoming(Object msg) {
 
-        System.out.println(msg);
+      //  System.out.println(msg);
 
         try {
             String[] values = msg.toString().split(",");
-            System.out.println(values.length);;
+            //System.out.println(values.length);;
             for (int i = 0; i < values.length; i++) {
                 String[] lvl = values[i].split("=");
-                System.out.println(values[i]);
-                System.out.println(lvl.length);
+                //System.out.println(values[i]);
+                //System.out.println(lvl.length);
                 if (lvl.length >= 2) {
                     Double value = Double.parseDouble(lvl[1].toString());
                     Long time = new Long(System.currentTimeMillis());
 
-                    System.out.println(lvl[0]);
-                    System.out.println(value);
-                    System.out.println(time);
+                    //System.out.println(lvl[0]);
+                   // System.out.println(value);
+                   // System.out.println(time);
 
                     getTraceByName(lvl[0]).addPoint(time.doubleValue(),value);
                 }

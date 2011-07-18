@@ -18,10 +18,12 @@ import org.kevoree.core.basechecker.RootChecker
 import scala.collection.JavaConversions._
 import org.kevoree.tools.ui.framework.ErrorHighlightableElement
 import actors.DaemonActor
-import org.omg.CORBA.TIMEOUT
+import org.slf4j.LoggerFactory
 
 
 class CheckCurrentModel extends Command {
+
+  var logger = LoggerFactory.getLogger(this.getClass)
 
   var kernel: KevoreeUIKernel = null
 
@@ -53,20 +55,20 @@ class CheckCurrentModel extends Command {
     val result = checker.check(kernel.getModelHandler.getActualModel)
     result.foreach({
       res =>
-        println("Violation msg=" + res.getMessage)
+        logger.warn("Violation msg=" + res.getMessage)
         //AGFFICHE OBJET ERROR
         res.getTargetObjects.foreach {
           target =>
-            println(target)
-            val uiObj = kernel.getUifactory.getMapping.get(target);
+            //println(target)
+            val uiObj = kernel.getUifactory.getMapping.get(target)
             if (uiObj != null) {
-              println("ui=" + uiObj)
+              //println("ui=" + uiObj)
               uiObj match {
                 case hobj: ErrorHighlightableElement => {
                   objectInError = objectInError ++ List(hobj)
                   hobj.setState(ErrorHighlightableElement.STATE.IN_ERROR)
                 }
-                case _@e => println("Error checker obj = " + e)
+                case _@e => logger.error("checker obj = " + e)
               }
             }
         }

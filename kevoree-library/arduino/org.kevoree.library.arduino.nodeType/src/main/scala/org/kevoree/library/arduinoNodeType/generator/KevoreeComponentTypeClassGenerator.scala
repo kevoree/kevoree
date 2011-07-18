@@ -49,7 +49,7 @@ trait KevoreeComponentTypeClassGenerator extends KevoreeCAbstractGenerator with 
         if (annotation.annotationType.toString.contains("org.kevoree.annotation.Generate")) {
           val generateAnnotation = annotation.asInstanceOf[KGenerate]
           if(generateAnnotation.value == "header"){
-            var localContext = new StringBuffer
+            val localContext = new StringBuffer
             method.invoke(instance, localContext)
             context h localContext.toString
           }
@@ -62,7 +62,7 @@ trait KevoreeComponentTypeClassGenerator extends KevoreeCAbstractGenerator with 
       context b "QueueList<kmessage> * "+providedPort.getName+";"
     }
     ct.getRequired.foreach{ requiredPort =>
-      context b "QueueList<kmessage> * "+requiredPort.getName+";" //GENERATE REQUIRED PORT QUEUES
+      context b "kbinding * "+requiredPort.getName+";" //GENERATE REQUIRED PORT QUEUES
     }
      
     //GENERATE DICTIONARY VALUES POINTERS
@@ -79,6 +79,13 @@ trait KevoreeComponentTypeClassGenerator extends KevoreeCAbstractGenerator with 
       context b "   memset("+providedPort.getName+", 0, sizeof(QueueList<kmessage>));"
       context b "}"
     }
+    ct.getRequired.foreach{ requiredPort =>
+      context b requiredPort.getName+" = (kbinding*) malloc(sizeof(kbinding));"
+      context b "if("+requiredPort.getName+"){"
+      context b "   memset("+requiredPort.getName+", 0, sizeof(kbinding));"
+      context b "}"
+    }
+
     //USER INIT
     clazz.getMethods.foreach {method =>
       method.getAnnotations.foreach {annotation =>
@@ -100,6 +107,10 @@ trait KevoreeComponentTypeClassGenerator extends KevoreeCAbstractGenerator with 
     ct.getProvided.foreach{ providedPort =>
       context b "free("+providedPort.getName+");"
     }
+    ct.getRequired.foreach{ requiredPort =>
+      context b "free("+requiredPort.getName+");"
+    }
+
     //USER DESTROY
     clazz.getMethods.foreach {method =>
       method.getAnnotations.foreach {annotation =>
@@ -149,8 +160,8 @@ trait KevoreeComponentTypeClassGenerator extends KevoreeCAbstractGenerator with 
 
     ct.getRequired.foreach{ requiredPort =>
       context b "void "+requiredPort.getName+"_rport(kmessage * msg){"
-      context b "if("+requiredPort.getName+"){" 
-      context b requiredPort.getName+"->push(*msg);"
+      context b "if("+requiredPort.getName+"->port){"
+      context b requiredPort.getName+"->port->push(*msg);"
       context b "}" 
       context b "}"
     }

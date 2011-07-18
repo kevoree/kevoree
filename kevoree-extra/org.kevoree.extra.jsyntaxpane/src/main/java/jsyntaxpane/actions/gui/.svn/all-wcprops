@@ -1,0 +1,107 @@
+K 25
+svn:wc:ra_dav:version-url
+V 81
+/svn/!svn/ver/138/branches/r095/jsyntaxpane/src/main/java/jsyntaxpane/actions/gui
+END
+GotoLineDialog.java
+K 25
+svn:wc:ra_dav:version-url
+V 101
+/svn/!svn/ver/138/branches/r095/jsyntaxpane/src/main/java/jsyntaxpane/actions/gui/GotoLineDialog.java
+END
+HTMLPreviewFrame.form
+K 25
+svn:wc:ra_dav:version-url
+V 103
+/svn/!svn/ver/138/branches/r095/jsyntaxpane/src/main/java/jsyntaxpane/actions/gui/HTMLPreviewFrame.form
+END
+EscapeListener.java
+K 25
+svn:wc:ra_dav:version-url
+V 101
+/svn/!svn/ver/112/branches/r095/jsyntaxpane/src/main/java/jsyntaxpane/actions/gui/EscapeListener.java
+END
+MemberCell.java
+K 25
+svn:wc:ra_dav:version-url
+V 97
+/svn/!svn/ver/112/branches/r095/jsyntaxpane/src/main/java/jsyntaxpane/actions/gui/MemberCell.java
+END
+ComboCompletionDialog.java
+K 25
+svn:wc:ra_dav:version-url
+V 108
+/svn/!svn/ver/112/branches/r095/jsyntaxpane/src/main/java/jsyntaxpane/actions/gui/ComboCompletionDialog.java
+END
+ShowAbbsDialog.form
+K 25
+svn:wc:ra_dav:version-url
+V 101
+/svn/!svn/ver/138/branches/r095/jsyntaxpane/src/main/java/jsyntaxpane/actions/gui/ShowAbbsDialog.form
+END
+MembersListRenderer.java
+K 25
+svn:wc:ra_dav:version-url
+V 105
+/svn/!svn/ver/80/branches/r095/jsyntaxpane/src/main/java/jsyntaxpane/actions/gui/MembersListRenderer.java
+END
+ReplaceDialog.form
+K 25
+svn:wc:ra_dav:version-url
+V 100
+/svn/!svn/ver/138/branches/r095/jsyntaxpane/src/main/java/jsyntaxpane/actions/gui/ReplaceDialog.form
+END
+QuickFindDialog.form
+K 25
+svn:wc:ra_dav:version-url
+V 102
+/svn/!svn/ver/138/branches/r095/jsyntaxpane/src/main/java/jsyntaxpane/actions/gui/QuickFindDialog.form
+END
+ReflectCompletionDialog.form
+K 25
+svn:wc:ra_dav:version-url
+V 110
+/svn/!svn/ver/138/branches/r095/jsyntaxpane/src/main/java/jsyntaxpane/actions/gui/ReflectCompletionDialog.form
+END
+HTMLPreviewFrame.java
+K 25
+svn:wc:ra_dav:version-url
+V 103
+/svn/!svn/ver/138/branches/r095/jsyntaxpane/src/main/java/jsyntaxpane/actions/gui/HTMLPreviewFrame.java
+END
+GotoLineDialog.form
+K 25
+svn:wc:ra_dav:version-url
+V 101
+/svn/!svn/ver/138/branches/r095/jsyntaxpane/src/main/java/jsyntaxpane/actions/gui/GotoLineDialog.form
+END
+ShowAbbsDialog.java
+K 25
+svn:wc:ra_dav:version-url
+V 101
+/svn/!svn/ver/138/branches/r095/jsyntaxpane/src/main/java/jsyntaxpane/actions/gui/ShowAbbsDialog.java
+END
+ReplaceDialog.java
+K 25
+svn:wc:ra_dav:version-url
+V 100
+/svn/!svn/ver/138/branches/r095/jsyntaxpane/src/main/java/jsyntaxpane/actions/gui/ReplaceDialog.java
+END
+ComboCompletionDialog.form
+K 25
+svn:wc:ra_dav:version-url
+V 108
+/svn/!svn/ver/138/branches/r095/jsyntaxpane/src/main/java/jsyntaxpane/actions/gui/ComboCompletionDialog.form
+END
+QuickFindDialog.java
+K 25
+svn:wc:ra_dav:version-url
+V 102
+/svn/!svn/ver/138/branches/r095/jsyntaxpane/src/main/java/jsyntaxpane/actions/gui/QuickFindDialog.java
+END
+ReflectCompletionDialog.java
+K 25
+svn:wc:ra_dav:version-url
+V 110
+/svn/!svn/ver/136/branches/r095/jsyntaxpane/src/main/java/jsyntaxpane/actions/gui/ReflectCompletionDialog.java
+END

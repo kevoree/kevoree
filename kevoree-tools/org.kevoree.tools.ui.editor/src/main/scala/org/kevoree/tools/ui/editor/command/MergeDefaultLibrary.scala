@@ -18,8 +18,11 @@ import org.kevoree.framework.KevoreeXmiHelper
 import java.io.{File, BufferedReader, InputStreamReader, OutputStreamWriter}
 import org.eclipse.emf.common.util.URI
 import org.kevoree.tools.ui.editor.{PositionedEMFHelper, KevoreeUIKernel}
+import org.slf4j.LoggerFactory
 
 class MergeDefaultLibrary extends Command {
+
+  var logger = LoggerFactory.getLogger(this.getClass)
 
   var kernel: KevoreeUIKernel = null
 
@@ -81,13 +84,13 @@ class MergeDefaultLibrary extends Command {
 
 
       } else {
-        System.out.println("Error while loading model");
+        logger.error("Error while loading model");
       }
 
 
     } catch {
 
-      case _@e => println("Could not load default lib !")
+      case _@e => logger.error("Could not load default lib !")
     }
 
 

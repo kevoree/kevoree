@@ -22,6 +22,7 @@ import java.awt.Component;
 
 import org.kevoree.framework.aspects.PortAspect;
 import org.kevoree.tools.ui.editor.command.ContextualMenuCommand;
+import org.kevoree.tools.ui.editor.command.SelectBindingCommand;
 import org.kevoree.tools.ui.editor.command.SelectInstanceCommand;
 import org.kevoree.tools.ui.editor.command.UnSelectPropertyEditor;
 import org.kevoree.tools.ui.editor.listener.*;
@@ -109,8 +110,8 @@ public class KevoreeUIFactory {
     public NodePanel createComponentNode(org.kevoree.ContainerNode node) {
         NodePanel nui = new NodePanel();
         ((Component) nui).setDropTarget(new NodeDragTargetListener(nui, kernel));
-        if(node.getTypeDefinition() != null){
-            nui.setTitle(node.getName(),node.getTypeDefinition().getName());
+        if (node.getTypeDefinition() != null) {
+            nui.setTitle(node.getName(), node.getTypeDefinition().getName());
         } else {
             nui.setTitle(node.getName() + " : Node");
         }
@@ -213,6 +214,20 @@ public class KevoreeUIFactory {
         bui.setFrom(fromPortPanel);
         bui.setTo(toPortPanel);
         mapping.bind(bui, mb);
+
+
+        /* ADD SELECT COMMAND */
+        final SelectBindingCommand command = new SelectBindingCommand();
+        command.setKernel(kernel);
+        final Binding buiFinal = bui;
+        bui.addListener(new BindingListener() {
+            @Override
+            public void clicked() {
+                System.out.println("Clicked!!");
+                command.execute(buiFinal);
+            }
+        });
+
         return bui;
     }
 }

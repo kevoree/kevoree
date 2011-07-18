@@ -111,6 +111,7 @@
         <module>./org.kevoree.experiment.smartBuilding.arduino</module>
         <module>./org.kevoree.experiment.smartBuilding.android</module>
         <module>./org.kevoree.experiment.smartBuilding.model</module>
+        <module>./org.kevoree.experiment.smartBuilding.benchmark</module>
     </modules>
 
 </project>

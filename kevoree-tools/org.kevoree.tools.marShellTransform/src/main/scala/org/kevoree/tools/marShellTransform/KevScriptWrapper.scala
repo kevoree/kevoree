@@ -20,101 +20,133 @@ package org.kevoree.tools.marShellTransform
 
 import org.kevoree.tools.marShell.ast._
 import scala.collection.JavaConversions._
+import org.slf4j.LoggerFactory
 
 object KevScriptWrapper {
+	var logger = LoggerFactory.getLogger(this.getClass);
 
   val paramSep = ":"
-  val instrSep = "/" 
-  
-  def generateDictionaryString(dictionary : java.util.Properties) : String= {
-    if(dictionary == null){ return "" }
-    var content = new StringBuilder 
-    var first = true
-    dictionary.foreach{ dic =>
-      if(first){
-        content append dic._1+"="+dic._2
-        first = false
-      } else {
-        content append ","+dic._1+"="+dic._2
-      }
+  val instrSep = "/"
+
+  def generateDictionaryString(dictionary: java.util.Properties): String = {
+    if (dictionary == null) {
+      return ""
     }
-    content.toString
+    val content = new StringBuilder
+    var first = true
+    dictionary.foreach {
+      dic =>
+        if (first) {
+          content append dic._1 + "=" + dic._2
+          first = false
+        } else {
+          content append "," + dic._1 + "=" + dic._2
+        }
+    }
+    content.toString()
   }
-  
-  def generateKevScriptCompressed(script : Script) : String = {
-    if(script.blocks.isEmpty) return ""
+
+  def generateKevScriptCompressed(script: Script): String = {
+    if (script.blocks.isEmpty) return ""
 
     val content = new StringBuilder
     content append "{"
-    script.blocks.foreach{ block =>   
-      var firstStatment = true
-      block.l.foreach{ statement => 
-        if(firstStatment){
-          firstStatment = false
-        } else {
-          content append instrSep
-        }
-        
-        statement match {
-          case s : UpdateDictionaryStatement => {
-              content append "udi"+paramSep+s.instanceName+paramSep+generateDictionaryString(s.dictionary)
-            }
-          case s : AddComponentInstanceStatment => {
-              content append "ain"+paramSep+s.cid.componentInstanceName+paramSep+s.typeDefinitionName
-              if(s.dictionary != null){
-                  content append paramSep+generateDictionaryString(s.dictionary)
+    var firstStatment = true
+    script.blocks.foreach {
+      block =>
+        block.l.foreach {
+          statement =>
+            statement match {
+              case s: UpdateDictionaryStatement => {
+                if (!firstStatment) {content append instrSep }
+                firstStatment = false
+                content append "udi" + paramSep + s.instanceName + paramSep + generateDictionaryString(s.dictionary)
               }
-            }
-          case s : AddChannelInstanceStatment => {
-              content append "ain"+paramSep+s.channelName+paramSep+s.channelType
-              if(s.dictionary != null){
-                  content append paramSep+generateDictionaryString(s.dictionary)
+              case s: AddComponentInstanceStatment => {
+                if (!firstStatment) {content append instrSep }
+                firstStatment = false
+                content append "ain" + paramSep + s.cid.componentInstanceName + paramSep + s.typeDefinitionName
+                if (s.dictionary != null) {
+                  content append paramSep + generateDictionaryString(s.dictionary)
+                }
               }
+              case s: AddChannelInstanceStatment => {
+                if (!firstStatment) {content append instrSep }
+                firstStatment = false
+                content append "ain" + paramSep + s.channelName + paramSep + s.channelType
+                if (s.dictionary != null) {
+                  content append paramSep + generateDictionaryString(s.dictionary)
+                }
+              }
+              case s : RemoveComponentInstanceStatment => {
+                if (!firstStatment) {content append instrSep }
+                firstStatment = false
+                content append "rin" + paramSep + s.cid.componentInstanceName
+              }
+              case s : RemoveChannelInstanceStatment => {
+                if (!firstStatment) {content append instrSep }
+                firstStatment = false
+                content append "rin" + paramSep + s.channelName
+              }
+              case s: AddBindingStatment => {
+                if (!firstStatment) {content append instrSep }
+                firstStatment = false
+                content append "abi" + paramSep + s.cid.componentInstanceName + paramSep + s.bindingInstanceName + paramSep + s.portName
+              }
+              case s: RemoveBindingStatment => {
+                if (!firstStatment) {content append instrSep }
+                firstStatment = false
+                content append "rbi" + paramSep + s.cid.componentInstanceName + paramSep + s.bindingInstanceName + paramSep + s.portName
+              }
+              case _@s => logger.warn("Uncatch " + s) //DO NOTHING FOR OTHER STATEMENT
             }
-          case s : AddBindingStatment => { content append "abi"+paramSep+s.cid.componentInstanceName+paramSep+s.bindingInstanceName+paramSep+s.portName }
-          case s : RemoveBindingStatment => { content append "rbi"+paramSep+s.cid.componentInstanceName+paramSep+s.bindingInstanceName+paramSep+s.portName }
-          case _ @ s => println("Uncatch "+s) //DO NOTHING FOR OTHER STATEMENT
+
+
         }
-        
-        
-      }
     }
     content append "}"
-    content.toString  
+    content.toString()
   }
-  
-  def miniPlanKevScript(s : Script) : Script = {
-    var resultStatmentList : List[Statment] = List()
+
+  def miniPlanKevScript(s: Script): Script = {
+    var resultStatmentList: List[Statment] = List()
     //REMOVE BINDING FIRST
-    s.blocks.foreach{ block =>
-      resultStatmentList = resultStatmentList ++ block.l.filter(statement => statement.isInstanceOf[RemoveBindingStatment])
+    s.blocks.foreach {
+      block =>
+        resultStatmentList = resultStatmentList ++ block.l.filter(statement => statement.isInstanceOf[RemoveBindingStatment])
     }
     //REMOVE CHANNEL INST
-    s.blocks.foreach{ block =>
-      resultStatmentList = resultStatmentList ++ block.l.filter(statement => statement.isInstanceOf[RemoveChannelInstanceStatment])
-    }    
+    s.blocks.foreach {
+      block =>
+        resultStatmentList = resultStatmentList ++ block.l.filter(statement => statement.isInstanceOf[RemoveChannelInstanceStatment])
+    }
     //REMOVE COMPONENT INST 
-    s.blocks.foreach{ block =>
-      resultStatmentList = resultStatmentList ++ block.l.filter(statement => statement.isInstanceOf[RemoveComponentInstanceStatment])
-    } 
+    s.blocks.foreach {
+      block =>
+        resultStatmentList = resultStatmentList ++ block.l.filter(statement => statement.isInstanceOf[RemoveComponentInstanceStatment])
+    }
     //ADD COMPONENT INST 
-    s.blocks.foreach{ block =>
-      resultStatmentList = resultStatmentList ++ block.l.filter(statement => statement.isInstanceOf[AddComponentInstanceStatment])
-    }      
+    s.blocks.foreach {
+      block =>
+        resultStatmentList = resultStatmentList ++ block.l.filter(statement => statement.isInstanceOf[AddComponentInstanceStatment])
+    }
     //ADD CHANNEL INST 
-    s.blocks.foreach{ block =>
-      resultStatmentList = resultStatmentList ++ block.l.filter(statement => statement.isInstanceOf[AddChannelInstanceStatment])
-    }    
+    s.blocks.foreach {
+      block =>
+        resultStatmentList = resultStatmentList ++ block.l.filter(statement => statement.isInstanceOf[AddChannelInstanceStatment])
+    }
     //ADD BINDING INST 
-    s.blocks.foreach{ block =>
-      resultStatmentList = resultStatmentList ++ block.l.filter(statement => statement.isInstanceOf[AddBindingStatment])
-    }    
+    s.blocks.foreach {
+      block =>
+        resultStatmentList = resultStatmentList ++ block.l.filter(statement => statement.isInstanceOf[AddBindingStatment])
+    }
     //Update Param INST 
-    s.blocks.foreach{ block =>
-      resultStatmentList = resultStatmentList ++ block.l.filter(statement => statement.isInstanceOf[UpdateDictionaryStatement])
-    }   
+    s.blocks.foreach {
+      block =>
+        resultStatmentList = resultStatmentList ++ block.l.filter(statement => statement.isInstanceOf[UpdateDictionaryStatement])
+    }
     Script(List(TransactionalBloc(resultStatmentList)))
   }
-  
-  
+
+
 }

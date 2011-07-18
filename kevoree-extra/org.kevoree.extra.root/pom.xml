@@ -30,21 +30,19 @@
         <module>../org.kevoree.extra.osgi.jmdns</module>
         <module>../org.kevoree.extra.jaas</module>
         <module>../org.kevoree.extra.chart2d</module>
+        <module>../org.kevoree.extra.jsyntaxpane</module>
 	</modules>
 
     <distributionManagement>
-    <repository>
-        <id>maven.kevoree.org-releases</id>
-        <name>maven.kevoree.org-releases</name>
-        <url>${releaseUrl}</url>
-    </repository>
-            <snapshotRepository>
-        <id>maven.kevoree.org-snapshots</id>
-        <name>maven.kevoree.org-snapshots</name>
-        <url>http://maven.kevoree.org/libs-snapshot-local</url>
-    </snapshotRepository>
-    
-	</distributionManagement>
+        <repository>
+            <id>maven2.kevoree.release</id>
+            <url>http://maven2.kevoree.org/archiva/repository/release/</url>
+        </repository>
+        <snapshotRepository>
+            <id>maven2.kevoree.snapshots</id>
+            <url>http://maven2.kevoree.org/archiva/repository/snapshots/</url>
+        </snapshotRepository>
+    </distributionManagement>
     
     <repositories>
         <repository>
@@ -54,11 +52,11 @@
         </repository>
         <repository>
             <id>kevoree-libs-release-local</id>
-            <url>http://maven.kevoree.org/libs-release-local</url>
+            <url>http://maven2.kevoree.org/libs-release-local</url>
         </repository>
                 <repository>
             <id>kevoree-snapshots</id>
-            <url>http://maven.kevoree.org/snapshots</url>
+            <url>http://maven2.kevoree.org/snapshots</url>
         </repository>  
         
     </repositories>
@@ -71,11 +69,11 @@
         </pluginRepository>
         <pluginRepository>
             <id>plugin.kevoree-github</id>
-            <url>http://maven.kevoree.org/plugins-release-local</url>
+            <url>http://maven2.kevoree.org/plugins-release-local</url>
         </pluginRepository>
                 <pluginRepository>
             <id>plugin.kevoree-snapshots</id>
-            <url>http://maven.kevoree.org/snapshots</url>
+            <url>http://maven2.kevoree.org/snapshots</url>
         </pluginRepository>  
         
     </pluginRepositories>

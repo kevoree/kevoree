@@ -24,11 +24,15 @@ import org.kevoree.framework.KevoreeXmiHelper;
 import org.kevoree.tools.ui.editor.KevoreeUIKernel;
 import org.kevoree.tools.ui.editor.PositionedEMFHelper;
 import org.kevoree.tools.ui.framework.elements.NodePanel;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author ffouquet
  */
 public class SaveActuelModelCommand implements Command {
+
+	Logger logger = LoggerFactory.getLogger(SaveActuelModelCommand.class);
 
     public void setKernel(KevoreeUIKernel kernel) {
         this.kernel = kernel;
@@ -63,7 +67,7 @@ public class SaveActuelModelCommand implements Command {
         try {
             KevoreeXmiHelper.save(location.toString(), kernel.getModelHandler().getActualModel());
         } catch (Exception e) {
-            System.out.println("Can save model !");
+            logger.error("Can't save model !", e);
         }
 
     }

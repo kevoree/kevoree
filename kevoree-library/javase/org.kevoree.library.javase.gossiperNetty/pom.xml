@@ -151,11 +151,11 @@
             <groupId>org.kevoree.tools</groupId>
             <type>jar</type>
             <version>${kevoree.version}</version>
-        </dependency>
+        </dependency><!--
         <dependency>
             <artifactId>org.kevoree.framework</artifactId>
             <groupId>org.kevoree</groupId>
             <version>${kevoree.version}</version>
-        </dependency>
+        </dependency>-->
     </dependencies>
 </project>

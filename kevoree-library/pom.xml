@@ -22,19 +22,14 @@
   </modules>
 
     <distributionManagement>
-    
         <repository>
-            <id>maven.kevoree.org-releases</id>
-            <name>maven.kevoree.org-releases</name>
-            <url>http://maven.kevoree.org/libs-release-local</url>
+            <id>maven2.kevoree.release</id>
+            <url>http://maven2.kevoree.org/archiva/repository/release/</url>
         </repository>
-        
         <snapshotRepository>
-        	<id>maven.kevoree.org-snapshots</id>
-        	<name>maven.kevoree.org-snapshots</name>
-        	<url>http://maven.kevoree.org/libs-snapshot-local</url>
-    	</snapshotRepository>
-        
+            <id>maven2.kevoree.snapshots</id>
+            <url>http://maven2.kevoree.org/archiva/repository/snapshots/</url>
+        </snapshotRepository>
     </distributionManagement>
 
 

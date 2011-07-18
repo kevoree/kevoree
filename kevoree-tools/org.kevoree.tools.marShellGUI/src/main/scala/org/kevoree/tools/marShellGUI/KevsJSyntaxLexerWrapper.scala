@@ -20,14 +20,15 @@ package org.kevoree.tools.marShellGUI
 
 import javax.swing.text.Segment
 import jsyntaxpane.components.Markers
-import jsyntaxpane.{Token => JTOK }
-import jsyntaxpane.TokenType;import org.kevoree.tools.marShell.lexer.KevsLexical
+import org.kevoree.tools.marShell.lexer.KevsLexical
 import org.kevoree.tools.marShell.parser.KevsParser
+import org.slf4j.LoggerFactory
+import jsyntaxpane.{TokenTypes, Token => JTOK, TokenType}
 
 
 class KevsJSyntaxLexerWrapper extends KevsLexical with jsyntaxpane.Lexer {
 
-
+  var logger = LoggerFactory.getLogger(this.getClass)
 
   override def parse(sgmnt:Segment , i : Int, list: java.util.List[JTOK] ) = {
 
@@ -40,46 +41,20 @@ class KevsJSyntaxLexerWrapper extends KevsLexical with jsyntaxpane.Lexer {
       list.add(newtok)
       tokens = tokens.rest
     }
-
-
-
-
-    /*
-     list.clear()
-     List<IKToken> tokens = loader.lex(sgmnt.toString());
-     for (IKToken tok : tokens) {
-     TokenType type = getType(tok);
-     Token t = new Token(type,tok.getOffset(),tok.toString().length()  );
-     System.out.println("Tok,"+tok.toString());
-
-     // Markers.markToken(, t, null)
-
-     list.add(t);
-     }
-
-     try{
-     parser.parseSynch(sgmnt.toString());
-     } catch(Exception e) {
-     e.printStackTrace();
-     }
-     //loader.
-     */
-    // System.out.println("Must call parser "+i);
-
   }
 
   def getType(tok: Token) : TokenType = {
     tok match {
-      case k : Keyword =>TokenType.KEYWORD
-      case i : Identifier => TokenType.IDENTIFIER
-      case d : Delimiter => TokenType.DELIMITER
-      case c : Comment => TokenType.COMMENT
-      case c : MLComment => TokenType.COMMENT
-      case e : KError => TokenType.ERROR
-      case slit : StringLit => TokenType.STRING
-      case i : KIncomplet => TokenType.ERROR
+      case k : Keyword =>TokenTypes.KEYWORD
+      case i : Identifier => TokenTypes.IDENTIFIER
+      case d : Delimiter => TokenTypes.DELIMITER
+      case c : Comment => TokenTypes.COMMENT
+      case c : MLComment => TokenTypes.COMMENT
+      case e : KError => TokenTypes.ERROR
+      case slit : StringLit => TokenTypes.STRING
+      case i : KIncomplet => TokenTypes.ERROR
 
-      case _ => println(tok.getClass.getName);TokenType.DEFAULT
+      case _ => logger.info(tok.getClass.getName);TokenTypes.DEFAULT
     }
   }
 
