@@ -2,8 +2,8 @@
 # Licensed under the Academic Free License version 3.0
 # See the file "LICENSE" for more information
 
-# parent.0 = nsga2.params
-parent.0 = spea2.params
+parent.0 = nsga2.params
+# parent.0 = spea2.params
 breedthreads = auto
 evalthreads = auto
 
@@ -24,9 +24,9 @@ pop.subpop.0.species.pipe = org.kevoree.library.reasoner.ecj.KevoreeMutationPipe
 pop.subpop.0.species.pipe.source.0	= org.kevoree.library.reasoner.ecj.KevoreeCrossoverPipeline
 # Toss the second child
 pop.subpop.0.species.pipe.source.0.toss = true
-pop.subpop.0.species.pipe.source.0.source.0 = ec.multiobjective.spea2.SPEA2TournamentSelection
+pop.subpop.0.species.pipe.source.0.source.0 = ec.select.TournamentSelection
 pop.subpop.0.species.pipe.source.0.source.0.size = 2
-pop.subpop.0.species.pipe.source.0.source.1 = ec.multiobjective.spea2.SPEA2TournamentSelection
+pop.subpop.0.species.pipe.source.0.source.1 = ec.select.TournamentSelection
 pop.subpop.0.species.pipe.source.0.source.1.size = 2
 
 
@@ -34,5 +34,4 @@ eval.problem            = org.kevoree.library.reasoner.ecj.MultiObjectiveKevoree
 pop.subpop.0.species.fitness.num-objectives = 2
 pop.subpop.0.species.fitness.maximize = false
 
-breed.elite.0 = 100
 
