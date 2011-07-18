@@ -1,3 +1,0 @@
-<start> ::= <op>
-<op> ::= (progn2 <op> <op>) | (v8a <op> <op>) | (frog <op>)
-<op> ::= (mow) | (left) | (ERC) | (ADF0) | (ADF1 <op>)
