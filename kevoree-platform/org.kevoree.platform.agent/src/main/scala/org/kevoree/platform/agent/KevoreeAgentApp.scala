@@ -13,11 +13,13 @@ package org.kevoree.platform.agent
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 import com.twitter.finagle.Service
 import org.jboss.netty.handler.codec.http.{HttpResponse, HttpRequest}
 import java.net.InetSocketAddress
-import com.twitter.finagle.builder.{Http, ServerBuilder, Server}
+import com.twitter.finagle.builder.{ServerBuilder, Server}
 import org.kevoree.platform.agent.HttpServer.Respond
+import com.twitter.finagle.http.Http
 
 object KevoreeAgentApp extends Application {
 
@@ -26,24 +28,20 @@ object KevoreeAgentApp extends Application {
   val agent = new KevoreeRuntimeAgent
 
 
-
   val respond = new Respond(agent)
 
-    // compose the Filters and Service together:
-    val myService: Service[HttpRequest, HttpResponse] = /*handleExceptions andThen authorize andThen */ respond
+  // compose the Filters and Service together:
+  val myService: Service[HttpRequest, HttpResponse] = /*handleExceptions andThen authorize andThen */ respond
 
-    val server: Server = ServerBuilder()
-      .codec(Http)
-      .bindTo(new InetSocketAddress(8080))
-      .build(myService)
+  val server: Server = ServerBuilder().codec(Http.get()).bindTo(new InetSocketAddress(8080)).name("KevoreeAgent").build(myService)
 
-    println("Kevoree Agent started !")
+  println("Kevoree Agent started !")
 
-    println("press q to quit !")
+  println("press q to quit !")
 
 
 
-  while(System.in.read != 'q'){
+  while (System.in.read != 'q') {
     //NOOP
   }
 
@@ -54,9 +52,7 @@ object KevoreeAgentApp extends Application {
   server.close()
 
   /* Cleanup cache directory */
-   CacheHelper.cleanupCacheDirectories()
-
-
+  CacheHelper.cleanupCacheDirectories()
 
 
 }
