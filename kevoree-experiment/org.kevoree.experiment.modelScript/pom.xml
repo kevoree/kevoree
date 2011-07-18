@@ -62,7 +62,7 @@
                     </execution>
                 </executions>
             </plugin>
-            <plugin>
+            <!--<plugin>
                 <groupId>org.scala-tools</groupId>
                 <artifactId>maven-scala-plugin</artifactId>
                 <executions>
@@ -87,7 +87,7 @@
                         <jvmArg>-Xmx1024m</jvmArg>
                     </jvmArgs>
                 </configuration>
-            </plugin>
+            </plugin>-->
         </plugins>
     </build>
 
