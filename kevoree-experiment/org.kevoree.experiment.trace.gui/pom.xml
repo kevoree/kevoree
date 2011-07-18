@@ -40,7 +40,7 @@
         </dependency>
         <dependency>
             <groupId>org.kevoree.experiment</groupId>
-            <artifactId>org.kevoree.experiment.modelScript.gui</artifactId>
+            <artifactId>org.kevoree.experiment.modelScript</artifactId>
             <version>${kevoree.version}</version>
         </dependency>
 
