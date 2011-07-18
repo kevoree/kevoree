@@ -20,9 +20,13 @@ object FailureApp extends App {
 
     val stream = new BufferedReader(new InputStreamReader((System.in)))
     var line = stream.readLine()
-    while (line != null && !line.equals("q")) {
-      failureGenerator.doAction(line)
-      line = stream.readLine()
+    if (args.length == 2) {
+      failureGenerator.doAction(args(1))
+    } else {
+      while (line != null && !line.equals("q")) {
+        failureGenerator.doAction(line)
+        line = stream.readLine()
+      }
     }
   }
 }

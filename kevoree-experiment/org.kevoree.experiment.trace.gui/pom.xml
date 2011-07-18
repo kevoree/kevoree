@@ -14,8 +14,12 @@
         <artifactId>org.kevoree.experiment.root</artifactId>
         <groupId>org.kevoree.experiment</groupId>
         <version>1.2.0-SNAPSHOT</version>
-        <relativePath>../org.kevoree.experiment.root</relativePath>
+        <relativePath>../org.kevoree.experiment.root/pom.xml</relativePath>
     </parent>
+
+    <properties>
+        <kevoree.version>1.2.0-SNAPSHOT</kevoree.version>
+    </properties>
 
 
     <dependencies>
@@ -40,7 +44,7 @@
         </dependency>
         <dependency>
             <groupId>org.kevoree.experiment</groupId>
-            <artifactId>org.kevoree.experiment.modelScript.gui</artifactId>
+            <artifactId>org.kevoree.experiment.modelScript</artifactId>
             <version>${kevoree.version}</version>
         </dependency>
 

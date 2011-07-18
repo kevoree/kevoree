@@ -18,15 +18,18 @@
   </typeDefinitions>
   <typeDefinitions xsi:type="kevoree:NodeType" name="JavaSENode"/>
   <typeDefinitions xsi:type="kevoree:ComponentType" name="FakeConsole" deployUnits="//@deployUnits.4" factoryBean="org.kevoree.experiment.fake.FakeConsoleFactory" bean="org.kevoree.experiment.fake.FakeConsole" startMethod="start" stopMethod="stop" updateMethod="update"/>
-  <repositories units="//@deployUnits.0" url="http://maven.kevoree.org/libs-release-local"/>
+  <repositories units="//@deployUnits.0 //@deployUnits.4" url="http://maven2.kevoree.org/archiva/repository/snapshots/"/>
   <repositories url="http://scala-tools.org/repo-releases"/>
-  <repositories url="http://maven.kevoree.org/release"/>
+  <repositories url="http://maven2.kevoree.org/release"/>
+  <repositories url="http://maven2.kevoree.org/snapshots"/>
   <repositories url="http://repo1.maven.org/maven2"/>
+  <repositories url="http://maven.kevoree.org/release"/>
+  <repositories url="http://maven.kevoree.org/snapshots"/>
   <libraries name="Kevoree-Android-JavaSE" subTypes="//@typeDefinitions.0"/>
   <libraries name="KevoreeExperiment" subTypes="//@typeDefinitions.0 //@typeDefinitions.2"/>
-  <deployUnits groupName="org.kevoree.experiment" unitName="org.kevoree.experiment.library.gossiperNetty" version="1.1.0-RC2" hashcode="201105281507162" requiredLibs="//@deployUnits.1 //@deployUnits.2 //@deployUnits.3" targetNodeType="//@typeDefinitions.1"/>
+  <deployUnits groupName="org.kevoree.experiment" unitName="org.kevoree.experiment.library.gossiperNetty" version="1.2.0-SNAPSHOT" hashcode="201107081135750" requiredLibs="//@deployUnits.1 //@deployUnits.2 //@deployUnits.3" targetNodeType="//@typeDefinitions.1"/>
   <deployUnits name="org.kevoree.extra.org.kevoree.extra.protobuf" url="mvn:org.kevoree.extra/org.kevoree.extra.protobuf/2.3.0" targetNodeType="//@typeDefinitions.1"/>
   <deployUnits name="org.kevoree.extra.org.kevoree.extra.netty" url="mvn:org.kevoree.extra/org.kevoree.extra.netty/3.2.4" targetNodeType="//@typeDefinitions.1"/>
-  <deployUnits name="org.kevoree.extra.org.kevoree.extra.marshalling" url="mvn:org.kevoree.extra/org.kevoree.extra.marshalling/1.1.0-RC2" targetNodeType="//@typeDefinitions.1"/>
-  <deployUnits groupName="org.kevoree.experiment" unitName="org.kevoree.exeperiment.fake" version="1.1.0-RC2" hashcode="201106011707895" targetNodeType="//@typeDefinitions.1"/>
+  <deployUnits name="org.kevoree.extra.org.kevoree.extra.marshalling" url="mvn:org.kevoree.extra/org.kevoree.extra.marshalling/1.2.0-SNAPSHOT" targetNodeType="//@typeDefinitions.1"/>
+  <deployUnits groupName="org.kevoree.experiment" unitName="org.kevoree.experiment.fake" version="1.2.0-SNAPSHOT" hashcode="201107081139942" targetNodeType="//@typeDefinitions.1"/>
 </kevoree:ContainerRoot>

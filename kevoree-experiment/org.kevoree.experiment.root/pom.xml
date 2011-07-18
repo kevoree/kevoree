@@ -28,8 +28,12 @@
             <url>http://scala-tools.org/repo-releases</url>
         </repository>
         <repository>
-            <id>kevoree-libs-release-local</id>
-            <url>http://maven.kevoree.org/libs-release-local</url>
+            <id>kevoree</id>
+            <url>http://maven.kevoree.org/release</url>
+        </repository>
+         <repository>
+            <id>kevoree-snapshots</id>
+            <url>http://maven.kevoree.org/snapshots</url>
         </repository>
     </repositories>
 
@@ -40,9 +44,24 @@
             <url>http://scala-tools.org/repo-releases</url>
         </pluginRepository>
         <pluginRepository>
-            <id>plugin.kevoree-github</id>
-            <url>http://maven.kevoree.org/plugins-release-local</url>
+            <id>plugin.kevoree/snapshots</id>
+            <url>http://maven.kevoree.org/snapshots</url>
+        </pluginRepository>
+         <pluginRepository>
+            <id>plugin.kevoree</id>
+            <url>http://maven.kevoree.org/release</url>
         </pluginRepository>
     </pluginRepositories>
+
+    <distributionManagement>
+        <repository>
+            <id>maven2.kevoree.release</id>
+            <url>http://maven2.kevoree.org/archiva/repository/release/</url>
+        </repository>
+        <snapshotRepository>
+            <id>maven2.kevoree.snapshots</id>
+            <url>http://maven2.kevoree.org/archiva/repository/snapshots/</url>
+        </snapshotRepository>
+    </distributionManagement>
 
 </project>
