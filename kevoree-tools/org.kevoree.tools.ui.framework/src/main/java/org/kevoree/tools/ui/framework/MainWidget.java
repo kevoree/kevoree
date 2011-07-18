@@ -56,7 +56,7 @@ public class MainWidget {
         modelpanel.setDropTarget(new DropTarget(){
             @Override
             public void drop(DropTargetDropEvent dropTargetDropEvent) {
-                System.out.println("DROP");
+                //System.out.println("DROP");
                 super.drop(dropTargetDropEvent);    //To change body of overridden methods use File | Settings | File Templates.
             }
         });

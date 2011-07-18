@@ -16,8 +16,10 @@ package org.kevoree.tools.marShell.interpreter.sub
 import org.kevoree.tools.marShell.interpreter.{KevsInterpreterContext, KevsAbstractInterpreter}
 import org.kevoree.tools.marShell.ast.MoveComponentInstanceStatment
 import scala.collection.JavaConversions._
+import org.slf4j.LoggerFactory
 
 case class KevsMoveComponentInstanceInterpreter(moveComponent: MoveComponentInstanceStatment) extends KevsAbstractInterpreter {
+  var logger = LoggerFactory.getLogger(this.getClass);
   def interpret(context: KevsInterpreterContext): Boolean = {
 
     moveComponent.cid.nodeName match {
@@ -34,19 +36,19 @@ case class KevsMoveComponentInstanceInterpreter(moveComponent: MoveComponentInst
                     true
                   }
                   case None => {
-                    println("Target node not found " + moveComponent.cid.componentInstanceName);
+                    logger.error("Target node not found " + moveComponent.cid.componentInstanceName);
                     false
                   }
                 }
               }
               case None => {
-                println("Component not found " + moveComponent.cid.componentInstanceName);
+                logger.error("Component not found " + moveComponent.cid.componentInstanceName);
                 false
               }
             }
           }
           case None => {
-            println("Source Node not found " + nodeID);
+            logger.error("Source Node not found " + nodeID);
             false
           }
         }

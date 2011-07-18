@@ -20,8 +20,11 @@ import org.kevoree.{NodeType, DeployUnit, ContainerRoot}
 import org.osgi.framework.{Bundle, BundleException}
 import org.kevoree.framework.AbstractNodeType
 import collection.immutable.List._
+import org.slf4j.LoggerFactory
 
 class SynchNodeTypeCommand extends Command {
+
+  var logger = LoggerFactory.getLogger(this.getClass)
 
   @BeanProperty
   var kernel: KevoreeUIKernel = null
@@ -43,7 +46,7 @@ class SynchNodeTypeCommand extends Command {
         case Some(node) => {
           val nodeTypeDeployUnitList = node.getTypeDefinition.getDeployUnits.toList
           if (nodeTypeDeployUnitList.size > 0) {
-            println("nodeType installation => " + installNodeTyp(nodeTypeDeployUnitList.get(0)))
+            logger.info("nodeType installation => " + installNodeTyp(nodeTypeDeployUnitList.get(0)))
 
             val clazz: Class[_] = bundle.loadClass(node.getTypeDefinition.getBean)
             val nodeType = clazz.newInstance.asInstanceOf[AbstractNodeType]
@@ -71,14 +74,14 @@ class SynchNodeTypeCommand extends Command {
             nodeType.push(destNodeName, model, bundle.getBundleContext)
 
           } else {
-            println("NodeType deploy unit not found , have you forgotten to merge nodetype library ?")
+            logger.error("NodeType deploy unit not found , have you forgotten to merge nodetype library ?")
           }
         }
-        case None => println("NodeType not found for name " + destNodeName)
+        case None => logger.error("NodeType not found for name " + destNodeName)
       }
 
     } catch {
-      case _@e => e.printStackTrace()
+      case _@e => logger.error("", e)
     }
 
   }
@@ -120,7 +123,7 @@ class SynchNodeTypeCommand extends Command {
         if (previousBundle.exists(b => b.getBundleId == bundle.getBundleId)) {
           bundle.uninstall();
           bundle = EmbeddedOSGiEnv.getFwk.getBundleContext.installBundle(url)
-          System.out.println("Install => " + url);
+          logger.info("Install => " + url);
         }
       }
       bundle.start()

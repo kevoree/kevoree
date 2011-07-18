@@ -331,7 +331,7 @@ class KevoreeAdaptationDeployServiceOSGi extends KevoreeAdaptationDeployService 
 				case ca: AddFragmentBinding => command_add_binding = command_add_binding ++ List(AddFragmentBindingCommand(ca.getRef, ca.getTargetNodeName, ctx, nodeName))
 				case ca: RemoveFragmentBinding => command_remove_binding = command_remove_binding ++ List(RemoveFragmentBindingCommand(ca.getRef, ca.getTargetNodeName, ctx, nodeName))
 
-				case _ => logger.error("Unknow Kevoree adaptation primitive"); false
+				case _ => logger.error("Unknown Kevoree adaptation primitive"); false
 			}
 		}
 
@@ -366,13 +366,13 @@ class KevoreeAdaptationDeployServiceOSGi extends KevoreeAdaptationDeployService 
 
 		logger.debug("Plannification time = " + (planTime - initTime) + " ms");
 
-		logger.debug("stop command")
+		logger.debug("stop command: ")
 		commands.get("stop").get.asInstanceOf[List[LifeCycleCommand]].foreach {
 			c =>
 				logger.debug(c.getInstance.getName)
 		}
 
-		logger.debug("start")
+		logger.debug("start commands: ")
 		commands.get("start").get.asInstanceOf[List[LifeCycleCommand]].foreach {
 			c =>
 				logger.debug(c.getInstance.getName)
@@ -387,83 +387,60 @@ class KevoreeAdaptationDeployServiceOSGi extends KevoreeAdaptationDeployService 
 		val phase = new KevoreeDeployPhase(ctx)
 		var executionResult = true
 
+    // STOP INSTANCES
 		if (executionResult) {
 			executionResult = phase.phase(commands.get("stop").get, "Phase 0 STOP COMPONENT")
 		}
+    // REMOVE BINDINGS
 		if (executionResult) {
 			executionResult = phase.phase(commands.get("removeBinding").get, "Phase 1 Remove Binding")
 		}
+    // REMOVE INSTANCES
 		if (executionResult) {
 			executionResult = phase.phase(commands.get("removeInstance").get, "Phase 2 Remove Instance")
 		}
+    // REMOVE TYPES
 		if (executionResult) {
 			executionResult = phase.phase(commands.get("removeType").get, "Phase 3 Remove ComponentType")
 		}
 		if (executionResult) {
 			executionResult = phase.phase(commands.get("removeDeployUnit").get, "Phase 4 Remove TypeDefinition DeployUnit")
 		}
-
-		//INSTALL TYPE
+		//INSTALL TYPES
 		if (executionResult) {
 			executionResult = phase.phase(commands.get("thirdParty").get, "Phase 5 ThirdParty")
 		}
 		if (executionResult) {
 			executionResult = phase.phase(commands.get("addDeployUnit").get, "Phase 6 Add TypeDefinition DeployUnit")
 		}
-
 		if (executionResult) {
 			executionResult = phase.phase(commands.get("addType").get, "Phase 7 Add ComponentType")
 		}
-
-		// test if there are adds
-		/*if (commands.get("thirdParty").get.size > 0 && commands.get("addDeployUnit").get.size > 0 && commands.get("addType").get.size > 0) {
-
-			val bundles = ctx.bundleContext.getBundles
-
-			// stop all bundles
-			logger.debug("stopping bundles ...")
-			bundles.filter(bundle => bundle.getState.equals(Bundle.ACTIVE) && bundle.getBundleId != 0).foreach {
-				bundle =>
-					bundle.stop
-			}
-			logger.debug("bundles stopped")
-
-			// resolve all bundles
-			logger.debug("resolving bundles ...")
-			val test = ctx.getServicePackageAdmin.resolveBundles(bundles)
-			logger.debug("bundles resolved: " + test)
-
-			// start all bundles
-			logger.debug("starting bundles ...")
-			bundles.foreach {
-				bundle =>
-					bundle.start
-			}
-			logger.debug("bundles started")
-		}*/
-
-		//INSTALL INSTANCE
+		//INSTALL INSTANCES
 		if (executionResult) {
 			executionResult = phase.phase(commands.get("addInstance").get, "Phase 8 install ComponentInstance")
 		}
+    // INSTALL BINDINGS
 		if (executionResult) {
 			executionResult = phase.phase(commands.get("addBinding").get, "Phase 9 install Bindings")
 		}
+    // UPDATE PROPERTIES
 		if (executionResult) {
 			executionResult = phase.phase(commands.get("updateDictionary").get, "Phase 10 SET PROPERTY")
 		}
-
+    // START INSTANCES
 		if (executionResult) {
 			executionResult = phase.phase(commands.get("start").get, "Phase 11 START COMPONENT")
 		}
 
 		if (!executionResult) {
-			phase.rollback
+			phase.rollback()
       ctx.garbage()
 		}
 
 		val deployTime = System.currentTimeMillis
 		//println("Deploy time = " + (deployTime - initTime) + " ms");
+    logger.debug("execution time = " + (deployTime - initTime) + " ms");
 
 		executionResult
 	}

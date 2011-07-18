@@ -27,21 +27,23 @@ import org.kevoree.adaptation.deploy.osgi.command.LifeCycleCommand
 
 class SchedulingWithTopologicalOrderAlgo {
 
-  private val logger : Logger = LoggerFactory.getLogger(classOf[SchedulingWithTopologicalOrderAlgo])
+  private val logger: Logger = LoggerFactory.getLogger(classOf[SchedulingWithTopologicalOrderAlgo])
 
   def schedule (commands: List[LifeCycleCommand], start: Boolean): List[LifeCycleCommand] = {
-      if (commands.size > 1) {
-        val graph: DefaultDirectedGraph[LifeCycleCommand, (LifeCycleCommand, LifeCycleCommand)] = buildGraph(commands, start)
-        val topologicAlgorithm: TopologicalOrderIterator[LifeCycleCommand, (LifeCycleCommand, LifeCycleCommand)] = new TopologicalOrderIterator(graph)
+    if (commands.size > 1) {
+      val graph: DefaultDirectedGraph[LifeCycleCommand, (LifeCycleCommand, LifeCycleCommand)] = buildGraph(commands,
+                                                                                                            start)
+      val topologicAlgorithm: TopologicalOrderIterator[LifeCycleCommand, (LifeCycleCommand, LifeCycleCommand)] = new
+          TopologicalOrderIterator(graph)
 
-        var listCommands = List[LifeCycleCommand]()
-        while (topologicAlgorithm.hasNext) {
-          listCommands = listCommands ++ List(topologicAlgorithm.next)
-        }
-        if (listCommands.size == commands.size) {
-          return listCommands
-        }
+      var listCommands = List[LifeCycleCommand]()
+      while (topologicAlgorithm.hasNext) {
+        listCommands = listCommands ++ List(topologicAlgorithm.next)
       }
+      if (listCommands.size == commands.size) {
+        return listCommands
+      }
+    }
     commands
   }
 
@@ -64,25 +66,12 @@ class SchedulingWithTopologicalOrderAlgo {
               if (cmdDep.contains(command.getInstance)) {
                 if (start) {
                   graph.addEdge(command2, command, (command2, command))
-                  //constraint1 = Choco.lt(variables.get(command2).get, variables.get(command).get)
-                  //println(command2.getInstance.getName+"<"+command.getInstance.getName)
-                }
-                else {
+                } else {
                   graph.addEdge(command, command2, (command, command2))
-                  //constraint1 = Choco.lt(variables.get(command).get, variables.get(command2).get)
                 }
-
-              } /* else {
-								   //println(command.getInstance.getName + "!="+command2.getInstance.getName)
-								   constraint1 = Choco.neq(variables.get(command).get, variables.get(command2).get)
-								   }*/
-              //model.addConstraint(constraint1)
+              }
             }
-            case _ => {
-              //println(command.getInstance.getName + "!="+command2.getInstance.getName)
-              /*var constraint1: Constraint = Choco.neq(variables.get(command).get, variables.get(command2).get)
-                               model.addConstraint(constraint1)*/
-            }
+            case _ =>
           }
         }
 
@@ -123,26 +112,31 @@ class SchedulingWithTopologicalOrderAlgo {
         for (command <- commands) {
           command.getInstance match {
             case instance: ComponentInstance => {
-              // test all provided port
-              // the instance of the provided port must be stopped before those which are connected to him
-              val pit = instance.getProvided.iterator
-              while (pit.hasNext) {
-                val port = pit.next
-                if (binding.getPort.equals(port)) {
-                  val newL = instanceDependencies.get(instance).getOrElse(new java.util.ArrayList())
-                  newL.add(binding.getHub)
-                  instanceDependencies.update(instance, newL)
+              // test if instance is the container of the port of the binding
+              if (instance.equals(binding.getPort.eContainer())) {
+                // test all provided port
+                // the instance of the provided port must be stopped before those which are connected to him
+                val pit = instance.getProvided.iterator
+                while (pit.hasNext) {
+                  val port = pit.next
+                  if (binding.getPort.equals(port)) {
+                    val newL = instanceDependencies.get(instance).getOrElse(new java.util.ArrayList())
+                    newL.add(binding.getHub)
+                    instanceDependencies.update(instance, newL)
+                  }
                 }
-              }
-              // test all required port
-              // the instance wait stops of all of those which are connected to him
-              val rit = instance.getRequired.iterator
-              while (rit.hasNext) {
-                val port = rit.next
-                if (binding.getPort.equals(port)) {
-                  val newL = instanceDependencies.get(binding.getHub).getOrElse(new java.util.ArrayList())
-                  newL.add(instance)
-                  instanceDependencies.update(binding.getHub, newL)
+                // test all required port
+                // the instance wait stops of all of those which are connected to him
+                val rit = instance.getRequired.iterator
+                while (rit.hasNext) {
+                  val port = rit.next
+                  // !port.getPortTypeRef.getNoDependency is used to be sure that we need to know if the use of this port on the start or stop method of the component can introduce deadlock or not
+                  if (binding.getPort.equals(port) &&
+                    (port.getPortTypeRef.getNoDependency == null || !port.getPortTypeRef.getNoDependency)) {
+                    val newL = instanceDependencies.get(binding.getHub).getOrElse(new java.util.ArrayList())
+                    newL.add(instance)
+                    instanceDependencies.update(binding.getHub, newL)
+                  }
                 }
               }
             }

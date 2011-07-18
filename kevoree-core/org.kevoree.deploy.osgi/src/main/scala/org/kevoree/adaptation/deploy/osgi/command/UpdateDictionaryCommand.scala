@@ -71,7 +71,7 @@ case class UpdateDictionaryCommand(c: Instance, ctx: KevoreeDeployManager, nodeN
 
   }
 
-  def undo() = {
+  def undo() {
     logger.warn("Not implemented")
   }
 

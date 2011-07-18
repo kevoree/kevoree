@@ -24,18 +24,21 @@ import org.kevoree.tools.marShell.interpreter.KevsInterpreterContext
 import scala.collection.JavaConversions._
 import org.kevoree.{ChannelType, KevoreeFactory}
 import org.kevoree.tools.marShell.interpreter.utils.Merger
+import org.slf4j.LoggerFactory
 
 case class KevsAddChannelInterpreter(addChannel: AddChannelInstanceStatment) extends KevsAbstractInterpreter {
+
+  var logger = LoggerFactory.getLogger(this.getClass);
 
   def interpret(context: KevsInterpreterContext): Boolean = {
     context.model.getHubs.find(n => n.getName == addChannel.channelName) match {
       case Some(target) => {
-        println("Warning : Channel already exist with name " + addChannel.channelName);
+        logger.warn("Channel already exist with name " + addChannel.channelName);
         if (target.getTypeDefinition.getName == addChannel.channelType) {
           Merger.mergeDictionary(target, addChannel.props)
           true
         } else {
-          println("Error : Type != from previous created channel")
+          logger.error("Type != from previous created channel")
           false
         }
       }
@@ -54,11 +57,11 @@ case class KevsAddChannelInterpreter(addChannel: AddChannelInstanceStatment) ext
 
           }
           case Some(targetChannelType) if (!targetChannelType.isInstanceOf[ChannelType]) => {
-            println("Type definition is not a channelType " + addChannel.channelType);
+            logger.error("Type definition is not a channelType " + addChannel.channelType);
             false
           }
           case _ => {
-            println("Type definition not found " + addChannel.channelType);
+            logger.error("Type definition not found " + addChannel.channelType);
             false
           }
         }

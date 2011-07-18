@@ -19,9 +19,16 @@ import org.junit._
 import org.kevoree.adaptation.deploy.osgi.KevoreeAdaptationDeployServiceOSGi
 import org.kevoree.adaptation.deploy.osgi.command.LifeCycleCommand
 import org.kevoree.adaptation.deploy.osgi.scheduling.SchedulingWithTopologicalOrderAlgo
-import org.kevoree.KevoreeFactory
 import org.kevoree.kompare.KevoreeKompareBean
 import org.kevoreeAdaptation.AdaptationModel
+import org.kevoree.framework.KevoreeXmiHelper
+import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl
+import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl
+import org.kevoree.{KevoreePackage, ContainerRoot, KevoreeFactory}
+import org.eclipse.emf.common.util.URI
+import org.eclipse.emf.ecore.resource.Resource
+import org.eclipse.emf.ecore.xmi.{XMLResource, XMIResource}
+import java.util.HashMap
 
 //import scala.collection.JavaConversions._
 
@@ -130,7 +137,7 @@ class SchedulingTest extends AssertionsForJUnit with SchedulingSuite {
     }
   }*/
 
-  @Test def localSchedulingWithCycle () {
+  /*@Test def localSchedulingWithCycle () {
     val scheduler = new SchedulingWithTopologicalOrderAlgo()
 
     val adaptationSchedule = adaptationModelStart("scheduling_test/localSchedulingWithCycle.kev", "test")
@@ -142,5 +149,33 @@ class SchedulingTest extends AssertionsForJUnit with SchedulingSuite {
     val startCommands = commands.getOrElse("start", List())
     assert(scheduler.schedule(startCommands.asInstanceOf[List[LifeCycleCommand]], true).forall(c => startCommands.contains(c)))
     //assert(startCommands.equals(scheduler.schedule(startCommands.asInstanceOf[List[LifeCycleCommand]], true)))
+  }*/
+
+  @Test def localScheduling () {
+    val scheduler = new SchedulingWithTopologicalOrderAlgo()
+
+    val adaptationSchedule = component.kompare(model("scheduling_test/m1.kev"), model("scheduling_test/m2.kev"), "home")
+    //save("adaptationModel", adaptationSchedule)
+    
+    //val adaptationSchedule = adaptationModelStart("scheduling_test/m1", "home")
+    val commands = adaptationDeploy.buildCommandLists(adaptationSchedule, "home")
+
+    var stopCommands = commands.getOrElse("stop", List())
+    stopCommands = scheduler.schedule(stopCommands.asInstanceOf[List[LifeCycleCommand]], false)
+    stopCommands.foreach(c => println(c))
+
   }
+
+  /*def save(uri:String,root : AdaptationModel) {
+    val rs :ResourceSetImpl = new ResourceSetImpl();
+
+    rs.getResourceFactoryRegistry.getExtensionToFactoryMap.put("*",new XMIResourceFactoryImpl())
+    rs.getPackageRegistry.put(KevoreePackage.eNS_URI, KevoreePackage.eINSTANCE)
+    val uri1:URI   = URI.createURI(uri)
+    val res : Resource = rs.createResource(uri1)
+    res.asInstanceOf[XMIResource].getDefaultLoadOptions.put(XMLResource.OPTION_ENCODING, "UTF-8")
+    res.asInstanceOf[XMIResource].getDefaultSaveOptions.put(XMLResource.OPTION_ENCODING, "UTF-8")
+    res.getContents.add(root)
+    res.save(new HashMap())
+  }*/
 }

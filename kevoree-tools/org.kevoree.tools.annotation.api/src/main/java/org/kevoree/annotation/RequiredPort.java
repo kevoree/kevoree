@@ -34,7 +34,7 @@ public @interface RequiredPort {
 
     boolean optional() default false;
 
-    boolean noDependency() default false;
+    boolean needCheckDependency() default false; // replace noDependency
             /*
     boolean async() default false;  */
 }
