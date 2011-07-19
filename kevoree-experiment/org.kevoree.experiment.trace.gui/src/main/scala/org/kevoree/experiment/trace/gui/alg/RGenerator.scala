@@ -19,7 +19,9 @@ object RGenerator {
      diff = diff ++ List(0l)
 
      def recusiveCall(traces:List[LinkedTrace]){
+        traces.foreach{ trace =>
 
+        }
      }
 
      recusiveCall(trace.sucessors)
