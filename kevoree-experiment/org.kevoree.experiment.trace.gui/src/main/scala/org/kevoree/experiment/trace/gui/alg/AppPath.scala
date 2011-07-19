@@ -34,6 +34,8 @@ object AppPath extends Application {
 
       saveChartToPDF(jchart, "trace_out.pdf", 600, 600)
 
+      RGenerator.generateFile(RGenerator.generatePropagationTimeScript(ltrace))
+
     }
     case None => println("Not found")
   }
