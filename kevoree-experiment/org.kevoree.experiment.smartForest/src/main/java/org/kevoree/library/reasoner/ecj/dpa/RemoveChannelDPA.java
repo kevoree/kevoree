@@ -11,6 +11,7 @@ import org.kevoree.ContainerRoot;
 import org.kevoree.NamedElement;
 import org.kevoree.library.tools.dpa.DPA;
 import org.kevoree.tools.marShell.parser.ParserUtil;
+import sun.font.Script;
 
 public class RemoveChannelDPA implements DPA {
 
@@ -37,6 +38,11 @@ public class RemoveChannelDPA implements DPA {
             script = script.replace("${" + name + "}", myMap.get(name).getName());
         }
         return script;
+    }
+
+    @Override
+    public org.kevoree.tools.marShell.ast.Script getASTScript(Map<String, NamedElement> stringNamedElementMap) {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
 }
