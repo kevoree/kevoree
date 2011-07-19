@@ -25,7 +25,7 @@ object AppPath extends Application {
       //val chartPanel=new ChartScrollBar(0,jchart);
       val chartPanel = new ChartPanel(jchart)
       val scroller = new JScrollBar(0, 0, 10, 0, 50)
-      scroller.getModel.addChangeListener(this)
+      //scroller.getModel.addChangeListener(scroller)
       chartPanel.add(scroller)
       chartPanel.setOpaque(false);
       frame.add(chartPanel);
@@ -33,6 +33,8 @@ object AppPath extends Application {
       frame.setVisible(true);
 
       saveChartToPDF(jchart, "trace_out.pdf", 600, 600)
+
+      RGenerator.generateFile(RGenerator.generatePropagationTimeScript(ltrace))
 
     }
     case None => println("Not found")

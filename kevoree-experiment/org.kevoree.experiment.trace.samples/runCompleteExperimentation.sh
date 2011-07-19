@@ -1,21 +1,25 @@
 #!/bin/sh
 
-if [[ $# == 2 ]]; then
+if [[ $# == 3 ]]; then
+
+echo $1
+echo $2
+echo $3
 
 dir=`pwd`
 echo $dir
 
-$dir/runGregLoggerServer.sh start
+#$dir/runGregLoggerServer.sh start
 
 sleep 1
 
 $dir/runKevoreeAgents.sh start
 
-sleep 5
+sleep 15
 
-$dir/runBootStrap.sh
+$dir/runBootStrap.sh $3
 
-sleep 5
+sleep 15
 
 time=0
 delay=$2
@@ -26,9 +30,11 @@ while [[ $1 > $time ]]; do
 	sleep $delay
 done
 
+sleep 120
+
 $dir/runKevoreeAgents.sh stop
 
-$dir/runGregLoggerServer.sh stop
+#$dir/runGregLoggerServer.sh stop
 
 fi
 
