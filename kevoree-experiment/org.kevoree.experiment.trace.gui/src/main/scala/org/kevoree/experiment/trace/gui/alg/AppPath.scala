@@ -25,7 +25,7 @@ object AppPath extends Application {
       //val chartPanel=new ChartScrollBar(0,jchart);
       val chartPanel = new ChartPanel(jchart)
       val scroller = new JScrollBar(0, 0, 10, 0, 50)
-      scroller.getModel.addChangeListener(this)
+      //scroller.getModel.addChangeListener(scroller)
       chartPanel.add(scroller)
       chartPanel.setOpaque(false);
       frame.add(chartPanel);
