@@ -64,7 +64,7 @@ class AddComponentDPA extends DPA {
         TransactionalBloc(
           List(
             AddComponentInstanceStatment(
-              ComponentInstanceID(stringNamedElementMap.get(AddComponentDPAO.componentName).getName, Some(stringNamedElementMap.get(AddComponentDPAO.nodeName).getName)),
+              ComponentInstanceID(stringNamedElementMap.get(AddComponentDPAO.typeDefinition).getName+ ({increment += 1;increment}), Some(stringNamedElementMap.get(AddComponentDPAO.nodeName).getName)),
               stringNamedElementMap.get(AddComponentDPAO.typeDefinition).getName,
               new java.util.Properties()
             )

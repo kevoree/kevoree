@@ -88,12 +88,13 @@ class AddForestMonitoringComponentDPA extends DPA {
   }
 
   def getASTScript(myMap: java.util.Map[String, NamedElement]): Script = {
+    increment += 1;
     Script(
       List(
         TransactionalBloc(
           List(
             AddComponentInstanceStatment(
-              ComponentInstanceID(myMap.get(componentName).getName, Some(myMap.get(nodeName).getName)),
+              ComponentInstanceID(myMap.get(AddComponentDPAO.typeDefinition).getName+increment, Some(myMap.get(nodeName).getName)),
               myMap.get(typeDefinition).getName,
               new java.util.Properties()
             )

@@ -1,19 +1,16 @@
 package org.kevoree.library.reasoner.ecj.dpa;
 
-import java.net.URL;
-import java.net.URLDecoder;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import org.kevoree.ComponentInstance;
 import org.kevoree.ContainerNode;
 import org.kevoree.ContainerRoot;
 import org.kevoree.NamedElement;
 import org.kevoree.library.tools.dpa.DPA;
 import org.kevoree.tools.marShell.ast.Script;
-import org.kevoree.tools.marShell.parser.ParserUtil;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class RemoveComponentDPA implements DPA {
 
