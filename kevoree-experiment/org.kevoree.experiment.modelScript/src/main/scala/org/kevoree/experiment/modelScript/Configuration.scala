@@ -47,13 +47,14 @@ object Configuration {
       }
     } else {
       val dukeIP = "131.254.15.214"
-      //val paraisseuxIP = "131.254.12.28"
-      val paraisseuxIP = "192.168.0.14"
-      val ksparkIP = "192.168.0.16"
-      val theogalIP = "192.168.0.11"
-      val faineantosIP = "192.168.0.17"
-      logServer = paraisseuxIP
-      ips = List(/*dukeIP,*/ paraisseuxIP, ksparkIP, theogalIP, faineantosIP)
+      val paraisseuxIP = "131.254.12.28"
+//      val paraisseuxIP = "192.168.0.14"
+//      val ksparkIP = "192.168.0.16"
+//      val theogalIP = "192.168.0.11"
+//      val faineantosIP = "192.168.0.17"
+//      logServer = paraisseuxIP
+      logServer = dukeIP
+      ips = List(/*dukeIP,*/ paraisseuxIP/*, ksparkIP, theogalIP, faineantosIP*/)
       packets = List(
                       //NodePacket("duke", dukeIP, 8000, 4),
                       //NodePacket("duke2", dukeIP, 8100, 4),
