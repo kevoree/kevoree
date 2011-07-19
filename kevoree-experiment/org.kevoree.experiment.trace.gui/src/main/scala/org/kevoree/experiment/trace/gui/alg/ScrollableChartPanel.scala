@@ -1,7 +1,7 @@
 package org.kevoree.experiment.trace.gui.alg
 
-import org.jfree.chart.ChartPanel
 import javax.swing.event.{ChangeEvent, ChangeListener}
+import org.jfree.chart.{JFreeChart, ChartPanel}
 
 /**
  * User: Erwan Daubert - erwan.daubert@gmail.com
@@ -9,7 +9,7 @@ import javax.swing.event.{ChangeEvent, ChangeListener}
  * Time: 11:40
  */
 
-class ScrollableChartPanel extends ChartPanel with ChangeListener {
+class ScrollableChartPanel(chart : JFreeChart) extends ChartPanel with ChangeListener {
   def stateChanged (e: ChangeEvent) {
 
   }
