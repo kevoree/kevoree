@@ -23,6 +23,7 @@ import java.util.Map;
 
 import org.kevoree.ContainerRoot;
 import org.kevoree.NamedElement;
+import org.kevoree.tools.marShell.ast.Script;
 
 /**
  *
@@ -33,5 +34,7 @@ public interface DPA {
     public List<Map<String,NamedElement>> applyPointcut(ContainerRoot model);
     
     public String getScript(Map<String,NamedElement> vars);
+
+    public Script getASTScript(Map<String,NamedElement> vars);
     
 }
