@@ -9,7 +9,7 @@ import org.jfree.chart.{JFreeChart, ChartPanel}
  * Time: 11:40
  */
 
-class ScrollableChartPanel(chart : JFreeChart) extends ChartPanel with ChangeListener {
+class ScrollableChartPanel(chart : JFreeChart) extends ChartPanel(chart) with ChangeListener {
   def stateChanged (e: ChangeEvent) {
 
   }
