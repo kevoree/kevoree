@@ -1,19 +1,25 @@
 package org.kevoree.experiment.trace.gui.alg
 
-import org.kevoree.experiment.trace.TraceMessages
-import java.io.{FileOutputStream, BufferedOutputStream, InputStream}
 import org.jfree.chart.{JFreeChart, ChartPanel}
 import com.lowagie.text.pdf.{DefaultFontMapper, PdfTemplate, PdfContentByte, PdfWriter}
 import com.lowagie.text.Rectangle
 import java.awt.Graphics2D
 import java.awt.geom.Rectangle2D
 import javax.swing.{JScrollBar, WindowConstants, JFrame}
+import org.kevoree.experiment.trace.TraceMessages
+import java.io._
 
-object AppPath extends Application {
+object AppPath extends App {
 
-  var input: InputStream = this.getClass.getClassLoader.getResourceAsStream("./trace_out.concurrency.-notification")
+  //var input: InputStream = this.getClass.getClassLoader.getResourceAsStream("./trace_out.concurrency.-notification")
+
+ //var input: InputStream = new FileInputStream(new File("/Users/ffouquet/Documents/DEV/dukeboard_github/kevoree/kevoree-experiment/org.kevoree.experiment.root/trace_out"))
+ var input: InputStream = new FileInputStream(new File("/Users/ffouquet/Desktop/trace_out"))
+
+
+
   var traces: TraceMessages.Traces = TraceMessages.Traces.parseFrom(input)
-  var linkedTrace = TracePath.getPathFrom("kspark0", 3, traces)
+  var linkedTrace = TracePath.getPathFrom("parapluie21rennesgrid5000fr0", 3, traces)
   linkedTrace match {
     case Some(ltrace) => {
       println(ltrace.toString)
