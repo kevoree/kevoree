@@ -30,7 +30,7 @@ import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
 
 public class GeneticAlgorithm {
-    public static int forestWidth = 20;
+    public static int forestWidth = 10;
     public static int generations = 1000;
     public static int populations = 200;
 
@@ -81,7 +81,7 @@ public class GeneticAlgorithm {
         }
 
         try {
-            InputStream ips=classLoader.getResourceAsStream("kevoreeMultiTest.params");
+            InputStream ips=classLoader.getResourceAsStream("kevoreeMultiCrossOverTest.params");
             InputStreamReader ipsr=new InputStreamReader(ips);
             BufferedReader br=new BufferedReader(ipsr);
             String line;
@@ -290,12 +290,13 @@ public class GeneticAlgorithm {
                     }
                     current.setFitness(fit);
                     fitness = false;
-                    rank = true;
-                } else
-                if (pareto && rank) {
+                    //rank = true;
                     file = true;
-                    rank = false;
                 } else
+//                if (pareto && rank) {
+//                    file = true;
+//                    rank = false;
+//                } else
                 if (pareto && file) {
                     current.setPathToFile(line);
                     paretoFront.add(current);

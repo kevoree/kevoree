@@ -9,7 +9,7 @@ parent.1 = simple.params
 # Likewise note tht ../multiobjective.params sets the statistics
 
 # We also use a special version of MultiObjectiveFitness
-pop.subpop.0.species.fitness =				ec.multiobjective.nsga2.NSGA2MultiObjectiveFitness
+pop.subpop.0.species.fitness =				org.kevoree.library.reasoner.ecj.NSGA2MultiObjectiveFitness
 
 # We have our own evaluator and breeder
 eval =						ec.multiobjective.nsga2.NSGA2Evaluator
