@@ -30,8 +30,8 @@ import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
 
 public class GeneticAlgorithm {
-    public static int forestWidth = 10;
-    public static int generations = 100;
+    public static int forestWidth = 20;
+    public static int generations = 1000;
     public static int populations = 200;
 
     public static String folderToStoreTempFile = "generated";
@@ -81,7 +81,7 @@ public class GeneticAlgorithm {
         }
 
         try {
-            InputStream ips=classLoader.getResourceAsStream("kevoreeMultiCrossOverTest.params");
+            InputStream ips=classLoader.getResourceAsStream("kevoreeMultiTest.params");
             InputStreamReader ipsr=new InputStreamReader(ips);
             BufferedReader br=new BufferedReader(ipsr);
             String line;

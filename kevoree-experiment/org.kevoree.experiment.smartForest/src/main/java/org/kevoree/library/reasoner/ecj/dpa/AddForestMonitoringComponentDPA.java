@@ -1,10 +1,7 @@
 package org.kevoree.library.reasoner.ecj.dpa;
 
-import org.eclipse.emf.common.util.EList;
 import org.kevoree.*;
 import org.kevoree.library.tools.dpa.DPA;
-import org.kevoree.tools.marShell.parser.ParserUtil;
-import sun.font.Script;
 
 import java.util.ArrayList;
 import java.util.HashMap;
