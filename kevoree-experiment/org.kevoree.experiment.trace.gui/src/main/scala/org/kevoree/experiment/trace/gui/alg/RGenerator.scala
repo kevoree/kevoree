@@ -10,6 +10,9 @@ import java.io.{File, FileWriter}
 
 object RGenerator {
 
+  val scriptEnd = "\nlibrary(Hmisc)\nbpplot(propDelais,main=\"Downtime propagation delay\")"
+
+
    def generatePropagationTimeScript(trace:LinkedTrace) : String = {
 
      var nodes : List[String] = List()
@@ -24,14 +27,15 @@ object RGenerator {
         traces.foreach{ trace =>
           if(!nodes.contains(trace.trace.getClientId)){
             nodes = nodes ++ List(trace.trace.getClientId)
-            diff = diff ++ List(firstTime - trace.trace.getTimestamp)
+            val mili = ((trace.trace.getTimestamp-firstTime)/1000000)
+            diff = diff ++ List(mili)
           }
           recusiveCall(trace.sucessors)
         }
      }
 
      recusiveCall(trace.sucessors)
-     "nodeNames <- c(" + nodes.mkString(",") +")"
+     "nodeNames <- c(\"" + nodes.mkString("\",\"") +"\")" + "\npropDelais <- c(" + diff.mkString(",") +")"+scriptEnd
 
    }
 

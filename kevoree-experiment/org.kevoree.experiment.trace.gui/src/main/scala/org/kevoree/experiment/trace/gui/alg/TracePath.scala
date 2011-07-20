@@ -42,6 +42,12 @@ object TracePath {
     val sortedTraces = traces.getTraceList.toList.sortWith((x, y) => x.getTimestamp < y.getTimestamp)
 
     //SEARCH FOR FIRST TRACE OCCURENCE
+   /*   println("hihi"+sortedTraces.size)
+    sortedTraces.foreach{trace =>
+      println(trace.getClientId)
+
+    }   */
+
     sortedTraces.find(trace => trace.getClientId == nodeID
       && stringToVectorClock(trace.getBody).containEntry(nodeID, nodeVersion)
       && stringToVectorClock(trace.getBody).source != ""
