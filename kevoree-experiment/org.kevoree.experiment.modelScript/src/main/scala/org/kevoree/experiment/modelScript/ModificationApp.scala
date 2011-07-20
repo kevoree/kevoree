@@ -48,7 +48,7 @@ object ModificationApp extends App {
       val stream = System.in
       var b = stream.read()
       while (b != -1 && b != 'q') {
-        modificationGenerator.doAction("kspark0")
+        modificationGenerator.doAction("duke0")
         b = stream.read()
       }
     }
