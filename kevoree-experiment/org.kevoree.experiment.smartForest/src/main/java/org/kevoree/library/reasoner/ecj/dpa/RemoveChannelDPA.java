@@ -1,17 +1,14 @@
 package org.kevoree.library.reasoner.ecj.dpa;
 
+import org.kevoree.Channel;
+import org.kevoree.ContainerRoot;
+import org.kevoree.NamedElement;
+import org.kevoree.library.tools.dpa.DPA;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import org.kevoree.Channel;
-import org.kevoree.ChannelType;
-import org.kevoree.ContainerRoot;
-import org.kevoree.NamedElement;
-import org.kevoree.library.tools.dpa.DPA;
-import org.kevoree.tools.marShell.parser.ParserUtil;
-import sun.font.Script;
 
 public class RemoveChannelDPA implements DPA {
 
