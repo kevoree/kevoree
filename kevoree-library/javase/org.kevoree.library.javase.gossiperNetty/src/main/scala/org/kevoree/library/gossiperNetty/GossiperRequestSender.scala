@@ -87,7 +87,7 @@ class GossiperRequestSender (timeout: java.lang.Long, protected val channelFragm
         //reactWithin(timeout.longValue){
         case STOP_GOSSIPER() => {
           askForDataTCPActor.stop()
-          //channel.close.awaitUninterruptibly // TODO do not block on actor
+          //channel.close.awaitUninterruptibly
           channel.close().addListener(ChannelFutureListener.CLOSE)
           bootstrap.releaseExternalResources()
           this.exit()
