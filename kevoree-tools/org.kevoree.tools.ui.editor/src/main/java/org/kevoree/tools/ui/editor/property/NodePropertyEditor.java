@@ -65,7 +65,7 @@ public class NodePropertyEditor extends InstancePropertyEditor {
         btPushNode.setCommand(sendNode);
         this.addCenter(btPushNode);
 */
-        JCommandButton btPushNodeType = new JCommandButton("PushModelUsingNodeType");
+        JCommandButton btPushNodeType = new JCommandButton("Push");
         SynchNodeTypeCommand sendNodeType = new SynchNodeTypeCommand();
         sendNodeType.setKernel(_kernel);
         sendNodeType.setDestNodeName(node.getName());
@@ -75,17 +75,17 @@ public class NodePropertyEditor extends InstancePropertyEditor {
 
 
         //   JTextField ip = new JTextField("ip:port");
+        /*
         JCommandButton btPushNodeIP = new JCommandButton("Push");
-        //btPushNodeIP.setUI(new HudLabelUI());
         SynchNodeIPCommand sendNodeIP = new SynchNodeIPCommand();
-        //sendNodeIP.setField(ip);
+
 
         sendNodeIP.setKernel(_kernel);
         sendNodeIP.setDestNodeName(node.getName());
         btPushNodeIP.setCommand(sendNodeIP);
         //this.addCenter(ip);
         this.addCenter(btPushNodeIP);
-
+              */
 
     }
 }

@@ -14,13 +14,13 @@
 package org.kevoree.tools.ui.editor.command
 
 import reflect.BeanProperty
-import org.kevoree.tools.ui.editor.{EmbeddedOSGiEnv, CommandHelper, KevoreeUIKernel}
 import scala.collection.JavaConversions._
 import org.kevoree.{NodeType, DeployUnit, ContainerRoot}
 import org.osgi.framework.{Bundle, BundleException}
 import org.kevoree.framework.AbstractNodeType
 import collection.immutable.List._
 import org.slf4j.LoggerFactory
+import org.kevoree.tools.ui.editor.{PositionedEMFHelper, EmbeddedOSGiEnv, CommandHelper, KevoreeUIKernel}
 
 class SynchNodeTypeCommand extends Command {
 
@@ -38,8 +38,9 @@ class SynchNodeTypeCommand extends Command {
   def execute(p: AnyRef) {
 
     try {
-
+      PositionedEMFHelper.updateModelUIMetaData(kernel);
       val model: ContainerRoot = kernel.getModelHandler.getActualModel
+
       //LOCATE NODE
       val node = model.getNodes.find(node => node.getName == destNodeName)
       node match {
@@ -133,7 +134,7 @@ class SynchNodeTypeCommand extends Command {
         bundle.update
         true
       }
-      case _ @ e => {
+      case _@e => {
         //e.printStackTrace()
         false
       }

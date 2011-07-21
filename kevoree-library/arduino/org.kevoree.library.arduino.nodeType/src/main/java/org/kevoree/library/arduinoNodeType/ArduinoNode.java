@@ -7,10 +7,7 @@ import java.util.logging.Logger;
 
 import org.kevoree.ContainerRoot;
 import org.kevoree.KevoreeFactory;
-import org.kevoree.annotation.DictionaryAttribute;
-import org.kevoree.annotation.DictionaryType;
-import org.kevoree.annotation.Library;
-import org.kevoree.annotation.NodeType;
+import org.kevoree.annotation.*;
 import org.kevoree.framework.AbstractNodeType;
 import org.kevoree.kompare.KevoreeKompareBean;
 import org.kevoree.library.arduinoNodeType.utils.ArduinoDefaultLibraryManager;
@@ -48,6 +45,17 @@ public class ArduinoNode extends AbstractNodeType {
 
     public ArduinoGuiProgressBar progress = null;
     public File newdir = null;
+
+    @Start
+    public void startNode() {
+
+    }
+
+    @Stop
+    public void stopNode() {
+
+    }
+
 
     @Override
     public void push(final String targetNodeName, final ContainerRoot root, final BundleContext bundle) {
@@ -194,22 +202,22 @@ public class ArduinoNode extends AbstractNodeType {
             KevoreeCGenerator generator = new KevoreeCGenerator();
 
             PMemory pm = PMemory.EEPROM;
-            if(this.getDictionary().get("pmem") != null){
+            if (this.getDictionary().get("pmem") != null) {
                 String s = this.getDictionary().get("pmem").toString();
-                if(s.toLowerCase().equals("eeprom")){
+                if (s.toLowerCase().equals("eeprom")) {
                     pm = PMemory.EEPROM;
                 }
-                if(s.toLowerCase().equals("sd")){
+                if (s.toLowerCase().equals("sd")) {
                     pm = PMemory.SD;
                 }
             }
             String psize = "";
-            if(this.getDictionary().get("psize") != null && this.getDictionary().get("psize") != "MAX" ){
+            if (this.getDictionary().get("psize") != null && this.getDictionary().get("psize") != "MAX") {
                 psize = this.getDictionary().get("psize").toString();
             }
 
 
-            generator.generate(model, nodeName, outputPath, bcontext,getDictionary().get("boardTypeName").toString(),pm,psize);
+            generator.generate(model, nodeName, outputPath, bcontext, getDictionary().get("boardTypeName").toString(), pm, psize);
 
 //STEP 3 : Deploy by commnication channel
             progress.beginTask("Prepare compilation", 40);

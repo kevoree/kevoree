@@ -44,11 +44,11 @@ extends SimpleDeclarationVisitor
     processDeployUnit(nodeType,classdef,env)
     processLibrary(nodeType,classdef)
     processThirdParty(nodeType,classdef,env)
-   // classdef.getMethods().foreach{method => method.accept(this) }
+    classdef.getMethods().foreach{method => method.accept(this) }
   }
 
   override def visitMethodDeclaration(methoddef : MethodDeclaration) = {
-   // processLifeCycleMethod(nodeType,methoddef)
+    processLifeCycleMethod(nodeType,methoddef)
   }
 
 }
