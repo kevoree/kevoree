@@ -58,6 +58,7 @@
             <artifactId>org.apache.felix.framework</artifactId>
             <version>3.2.0</version>
         </dependency>
+
         <dependency>
             <groupId>org.ops4j.pax.url</groupId>
             <artifactId>pax-url-mvn</artifactId>
@@ -97,10 +98,12 @@
             <version>0.9.24</version>
         </dependency>
 
+
+        <!-- AETHER EMBEDDED REPO API -->
         <dependency>
-            <groupId>org.sonatype.aether</groupId>
-            <artifactId>aether-api</artifactId>
-            <version>1.12</version>
+            <groupId>org.kevoree.tools</groupId>
+            <artifactId>org.kevoree.tools.aether.framework</artifactId>
+            <version>${kevoree.version}</version>
         </dependency>
 
 

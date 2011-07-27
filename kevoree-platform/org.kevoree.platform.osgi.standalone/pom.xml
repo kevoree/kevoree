@@ -132,13 +132,13 @@
             <version>0.9.28</version>
         </dependency>
 
-         <!--
-        <dependency>
-            <groupId>org.clapper</groupId>
-            <artifactId>avsl_2.8.1</artifactId>
-            <version>0.3.2</version>
-        </dependency>
-         -->
+        <!--
+       <dependency>
+           <groupId>org.clapper</groupId>
+           <artifactId>avsl_2.8.1</artifactId>
+           <version>0.3.2</version>
+       </dependency>
+        -->
 
         <dependency>
             <groupId>org.kevoree</groupId>
@@ -151,6 +151,15 @@
             <artifactId>org.kevoree.tools.marShell</artifactId>
             <version>${kevoree.version}</version>
         </dependency>
+
+           <!--
+        <dependency>
+            <groupId>org.kevoree.library.model</groupId>
+            <artifactId>org.kevoree.library.model.all</artifactId>
+            <version>${kevoree.version}</version>
+            <type>jar</type>
+        </dependency>
+             -->
 
     </dependencies>
 
