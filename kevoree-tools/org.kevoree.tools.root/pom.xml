@@ -110,6 +110,7 @@
             <plugin>
                 <groupId>org.scala-tools</groupId>
                 <artifactId>maven-scala-plugin</artifactId>
+                <version>2.15.2</version>
                 <executions>
                     <execution>
                         <id>scala-compile-first</id>
@@ -172,6 +173,7 @@
     </pluginRepositories>
 
     <modules>
+        <module>../org.kevoree.tools.aether.framework</module>
         <module>../org.kevoree.tools.annotation.api</module>
         <module>../org.kevoree.tools.annotation.generator</module>
         <module>../org.kevoree.tools.annotation.processor</module>

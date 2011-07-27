@@ -112,6 +112,7 @@
                         <option>-keep class jsyntaxpane.** { *; }</option>
                         <option>-keep class org.kevoree.tools.marShellGUI.** { *; }</option>
                         <option>-keep class org.apache.felix.framework.** { *; }</option>
+                        <option>-keep class org.osgi.framework.**{ *; }</option>
                         <option>-keep class org.kevoree.kompare.** { *; }</option>
                         <option>-keep class scala.collection.immutable.HashMap { *; }</option>
                         <option>-keep class scala.Predef** { *; }</option>
@@ -185,7 +186,10 @@
                                 <groupId>org.kevoree.tools</groupId>
                                 <artifactId>org.kevoree.tools.marShellGUI</artifactId>
                             </inclusion>
-
+                            <inclusion>
+                                <groupId>org.kevoree.tools</groupId>
+                                <artifactId>org.kevoree.tools.aether.framework</artifactId>
+                            </inclusion>
                             <inclusion>
                                 <groupId>org.kevoree.extra</groupId>
                                 <artifactId>org.kevoree.extra.jsyntaxpane</artifactId>
@@ -197,6 +201,7 @@
                                 <groupId>org.apache.felix</groupId>
                                 <artifactId>org.apache.felix.framework</artifactId>
                             </inclusion>
+
                             <inclusion>
                                 <groupId>org.ops4j.pax.url</groupId>
                                 <artifactId>pax-url-mvn</artifactId>
@@ -277,9 +282,6 @@
                     </execution>
                 </executions>
             </plugin>
-
-
-
 
 
         </plugins>

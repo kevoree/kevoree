@@ -20,7 +20,9 @@ import org.osgi.framework.{Bundle, BundleException}
 import org.kevoree.framework.AbstractNodeType
 import collection.immutable.List._
 import org.slf4j.LoggerFactory
-import org.kevoree.tools.ui.editor.{PositionedEMFHelper, EmbeddedOSGiEnv, CommandHelper, KevoreeUIKernel}
+import org.kevoree.tools.ui.editor._
+import java.io.FileInputStream
+import org.kevoree.tools.aether.framework.AetherUtil
 
 class SynchNodeTypeCommand extends Command {
 
@@ -92,28 +94,44 @@ class SynchNodeTypeCommand extends Command {
   def installNodeTyp(ct: DeployUnit): Boolean = {
 
     val tpResul = ct.getRequiredLibs.forall {
-      tp =>
-        var url: List[String] = List();
-        if (tp.getUrl.contains("mvn:")) {
-          CommandHelper.buildPotentialMavenURL(ct.eContainer.asInstanceOf[ContainerRoot]).foreach {
-            urlRepo =>
-              url = url ++ List(tp.getUrl.replace("mvn:", "mvn:" + urlRepo + "!"))
-          }
-        }
-        url.exists(tpu => {
-          installBundle(tpu)
-        }
-        )
+      tp => {
+         installDeployUnit(tp)
+      }
     }
 
     if (tpResul) {
-      val url: List[String] = CommandHelper.buildAllQuery(ct)
-      url.exists(u => installBundle(u, false)) //NOT FORCE UPDATE NODE TYPE //TO FIX
+
+      installDeployUnit(ct)
+      //val url: List[String] = CommandHelper.buildAllQuery(ct)
+      //url.exists(u => installBundle(u, false)) //NOT FORCE UPDATE NODE TYPE //TO FIX
     } else {
       false
     }
 
   }
+
+
+  def installDeployUnit(du: DeployUnit):Boolean={
+     try {
+       val arteFile = AetherUtil.resolveDeployUnit(du)
+       bundle = EmbeddedOSGiEnv.getFwk.getBundleContext.installBundle("file:///"+arteFile.getAbsolutePath,new FileInputStream(arteFile))
+       bundle.start()
+       true
+    } catch {
+      case e: BundleException if (e.getType == BundleException.DUPLICATE_BUNDLE_ERROR) => {
+        bundle.update
+        true
+      }
+      case _@e => {
+        e.printStackTrace()
+        false
+      }
+    }
+  }
+
+
+
+                /*
 
   def installBundle(url: String, forceUpdate: Boolean = true): Boolean = {
     try {
@@ -139,7 +157,7 @@ class SynchNodeTypeCommand extends Command {
         false
       }
     }
-  }
+  }*/
 
 
 }

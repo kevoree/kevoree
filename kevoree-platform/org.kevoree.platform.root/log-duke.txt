@@ -312,3 +312,8 @@ gnu.io.NoSuchPortException: null
 o.k.a.d.osgi.KevoreeDeployPhase - Result : true
 o.kevoree.core.impl.KevoreeCoreBean - Deploy result true
 o.kevoree.core.impl.KevoreeCoreBean - End deploy result=true-731
+o.o.p.u.c.handler.HandlerActivator - Handler for protocols [mvn] started
+o.o.p.u.c.handler.HandlerActivator - Handler for protocols [assembly, assemblyref] started
+o.kevoree.core.impl.KevoreeCoreBean - Start event : node name = duke
+o.o.p.u.c.handler.HandlerActivator - Handler for protocols [mvn] stopped
+o.o.p.u.c.handler.HandlerActivator - Handler for protocols [assembly, assemblyref] stopped
