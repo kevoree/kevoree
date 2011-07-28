@@ -34,6 +34,7 @@ import org.kevoree.api.configuration.ConfigConstants
 import java.util.Date
 import org.kevoree.api.service.core.handler.{ModelListener, KevoreeModelHandlerService}
 import org.eclipse.emf.ecore.util.EcoreUtil
+import sun.security.krb5.internal.rcache.ReplayCache
 
 class KevoreeCoreBean extends KevoreeModelHandlerService with KevoreeActor {
 
@@ -88,18 +89,6 @@ class KevoreeCoreBean extends KevoreeModelHandlerService with KevoreeActor {
       val model = KevoreeXmiHelper.load(lastModelssaved.getAbsolutePath());
       switchToNewModel(model)
     }
-    //Bootstrap model phase
-    if (!configService.getProperty(ConfigConstants.KEVOREE_NODE_BOOTSTRAP).equals("")) {
-      try {
-        logger.info("Try to bootstrap platform")
-        val model = KevoreeXmiHelper.load(configService.getProperty(ConfigConstants.KEVOREE_NODE_BOOTSTRAP));
-        this ! UpdateModel(model)
-
-      } catch {
-        case _@e => logger.warn("Bootstrap failed !", e)
-      }
-    }
-
 
     this
   }
@@ -118,32 +107,56 @@ class KevoreeCoreBean extends KevoreeModelHandlerService with KevoreeActor {
   def internal_process(msg: Any) = msg match {
     case updateMsg: PlatformModelUpdate => KevoreePlatformHelper.updateNodeLinkProp(model, nodeName, updateMsg.targetNodeName, updateMsg.key, updateMsg.value, updateMsg.networkType, updateMsg.weight)
     case PreviousModel() => reply(models)
-    case LastModel() => reply(model) /* TODO DEEP CLONE */
-    case UpdateModel(newmodel) => {
-      if (newmodel == null) {
+    case LastModel() => {
+      logger.debug("Before get copy model")
+      reply(EcoreUtil.copy(model))
+      logger.debug("After get Copy model")
+    }
+
+    case UpdateModel(pnewmodel) => {
+      if (pnewmodel == null) {
         logger.error("Null model")
         reply(false)
       } else {
 
-        val milli =System.currentTimeMillis
-        logger.debug("Begin update model "+milli)
+        try {
 
-        val adaptationModel = kompareService.kompare(model, newmodel, nodeName);
-        val deployResult = deployService.deploy(adaptationModel, nodeName);
+          logger.debug("Actor size " + this.mailboxSize)
 
-        if (deployResult) {
-          //Merge previous model on new model for platform model
-          //KevoreePlatformMerger.merge(newmodel, model)
-          switchToNewModel(newmodel)
-          logger.info("Deploy result " + deployResult)
-        } else {
-          //KEEP FAIL MODEL
+          logger.debug("Copy Model")
+          val newmodel = EcoreUtil.copy(pnewmodel)
+
+          val milli = System.currentTimeMillis
+          logger.debug("Begin update model " + milli)
+          logger.debug("Before kompare")
+          val adaptationModel = kompareService.kompare(model, newmodel, nodeName);
+          logger.debug("Before deploy")
+          val deployResult = deployService.deploy(adaptationModel, nodeName);
+
+
+
+          if (deployResult) {
+            //Merge previous model on new model for platform model
+            //KevoreePlatformMerger.merge(newmodel, model)
+            switchToNewModel(newmodel)
+            logger.info("Deploy result " + deployResult)
+          } else {
+            //KEEP FAIL MODEL
+
+            logger.warn("Failed model")
+
+          }
+
+          val milliEnd = System.currentTimeMillis - milli
+          logger.debug("End deploy result=" + deployResult + "-" + milliEnd)
+
+          reply(deployResult)
+        } catch {
+          case _@e =>
+            logger.error("Error while update", e)
+            reply(false)
         }
 
-        val milliEnd = System.currentTimeMillis - milli
-        logger.debug("End deploy result="+deployResult+"-"+milliEnd)
-
-        reply(deployResult)
 
       }
     }
@@ -152,19 +165,18 @@ class KevoreeCoreBean extends KevoreeModelHandlerService with KevoreeActor {
 
 
   override def getLastModel: ContainerRoot = {
-    val result = (this !? LastModel()).asInstanceOf[ContainerRoot]
-    EcoreUtil.copy(result)
+    (this !? LastModel()).asInstanceOf[ContainerRoot]
   }
 
   override def updateModel(model: ContainerRoot) {
     logger.debug("update asked")
-    this ! UpdateModel(EcoreUtil.copy(model))
+    this ! UpdateModel(model)
     logger.debug("update end")
   }
 
   override def atomicUpdateModel(model: ContainerRoot) = {
     logger.debug("Atomic update asked")
-    (this !? UpdateModel(EcoreUtil.copy(model)))
+    (this !? UpdateModel(model))
     logger.debug("Atomic update end")
     lastDate
   }

@@ -17,8 +17,10 @@
  */
 package org.kevoree.platform.osgi.standalone;
 
+import org.kevoree.ContainerRoot;
 import org.kevoree.adaptation.deploy.osgi.KevoreeAdaptationDeployServiceOSGi;
 import org.kevoree.adaptation.deploy.osgi.context.KevoreeDeployManager;
+import org.kevoree.api.configuration.ConfigConstants;
 import org.kevoree.api.configuration.ConfigurationService;
 import org.kevoree.api.service.adaptation.deploy.KevoreeAdaptationDeployService;
 import org.kevoree.api.service.core.handler.KevoreeModelHandlerService;
@@ -26,6 +28,7 @@ import org.kevoree.api.service.core.kompare.ModelKompareService;
 import org.kevoree.api.service.core.script.ScriptInterpreter;
 import org.kevoree.core.impl.KevoreeConfigServiceBean;
 import org.kevoree.core.impl.KevoreeCoreBean;
+import org.kevoree.framework.KevoreeXmiHelper;
 import org.kevoree.kompare.KevoreeKompareBean;
 import org.kevoree.remote.rest.Handler;
 import org.kevoree.remote.rest.KevoreeRemoteBean;
@@ -33,6 +36,8 @@ import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.service.packageadmin.PackageAdmin;
 import org.osgi.service.startlevel.StartLevel;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author ffouquet
@@ -43,6 +48,8 @@ public class BootstrapActivator implements BundleActivator {
     private KevoreeCoreBean coreBean = null;
     private KevoreeAdaptationDeployServiceOSGi deployBean = null;
     private KevoreeRemoteBean remoteBean = null;
+
+    Logger logger = LoggerFactory.getLogger(BootstrapActivator.class);
 
     @Override
     public void start(BundleContext context) throws Exception {
@@ -84,6 +91,26 @@ public class BootstrapActivator implements BundleActivator {
             remoteBean = new KevoreeRemoteBean();
             remoteBean.start();
             System.out.println("Kevoree Remote Started !");
+
+
+            /* Boot strap */
+
+            //Bootstrap model phase
+            if (!configBean.getProperty(ConfigConstants.KEVOREE_NODE_BOOTSTRAP()).equals("")) {
+                try {
+                    logger.info("Try to bootstrap platform") ;
+                    ContainerRoot model = KevoreeXmiHelper.load(configBean.getProperty(ConfigConstants.KEVOREE_NODE_BOOTSTRAP()));
+                    coreBean.updateModel(model);
+
+                } catch (Exception e)
+                {
+                    logger.error("Bootstrap failed",e);
+                }
+            }
+
+
+
+
 
         } catch (Exception e) {
             e.printStackTrace();

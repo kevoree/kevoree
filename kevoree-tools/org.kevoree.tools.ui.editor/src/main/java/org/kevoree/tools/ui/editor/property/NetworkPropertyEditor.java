@@ -30,6 +30,10 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.border.LineBorder;
+
+import com.explodingpixels.macwidgets.plaf.HudButtonUI;
+import com.explodingpixels.macwidgets.plaf.HudComboBoxUI;
+import com.explodingpixels.macwidgets.plaf.HudTextFieldUI;
 import org.kevoree.ContainerNode;
 import org.kevoree.ContainerRoot;
 import org.kevoree.NetworkProperty;
@@ -53,9 +57,12 @@ public class NetworkPropertyEditor extends JPanel {
         this.setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
         this.setBorder(new LineBorder(Color.WHITE));
         add(add_form_panel);
+        add_form_panel.setBorder(null);
         this.setOpaque(false);
         listPanel.setOpaque(false);
+        listPanel.setBorder(null);
         add(listPanel);
+        this.setBorder(null);
         this.refresh();
     }
 
@@ -73,7 +80,8 @@ public class NetworkPropertyEditor extends JPanel {
         }
         JList list = new JList(listModel);
         JScrollPane pane = new JScrollPane(list);
-        pane.setPreferredSize(new Dimension(300, 70));
+        pane.setBorder(null);
+        pane.setPreferredSize(new Dimension(270, 70));
         listPanel.removeAll();
         listPanel.add(pane);
         listPanel.repaint();
@@ -90,16 +98,26 @@ public class NetworkPropertyEditor extends JPanel {
         };
         JComboBox attlist = new JComboBox(attlistString);
         JTextField value = new JTextField();
-        JButton bt_add = new JButton("ADD");
+        JButton bt_add = new JButton("Add");
 
         public NetworkAddFormEditor(ContainerNode node, final NetworkPropertyEditor parent) {
             _node = node;
+            attlist.setUI(new HudComboBoxUI());
+            value.setUI(new HudTextFieldUI());
+            bt_add.setUI(new HudButtonUI());
+            this.setBorder(null);
+
             this.setOpaque(false);
-            this.setLayout(new BoxLayout(this, BoxLayout.LINE_AXIS));
+            this.setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
             this.add(attlist);
             value.setColumns(10);
-            this.add(value);
-            this.add(bt_add);
+
+            JPanel lineValueAdd = new JPanel();
+            lineValueAdd.setOpaque(false);
+            lineValueAdd.setLayout(new BoxLayout(lineValueAdd, BoxLayout.LINE_AXIS));
+            lineValueAdd.add(value);
+            lineValueAdd.add(bt_add);
+            this.add(lineValueAdd);
 
             bt_add.addMouseListener(new MouseAdapter() {
 

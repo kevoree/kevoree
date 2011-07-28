@@ -23,13 +23,16 @@ import org.kevoree.tools.marShell.interpreter.KevsAbstractInterpreter
 import org.kevoree.tools.marShell.interpreter.KevsInterpreterContext
 import scala.collection.JavaConversions._
 import org.kevoree.tools.marShell.ast.{AddLibraryStatment, AddBindingStatment}
+import org.slf4j.LoggerFactory
 
 case class KevsAddLibraryInterpreter(statment : AddLibraryStatment) extends KevsAbstractInterpreter {
+
+  var logger = LoggerFactory.getLogger(this.getClass);
 
   def interpret(context : KevsInterpreterContext):Boolean={
 
     context.model.getLibraries.find(lib=> lib.getName == statment.libraryName) match {
-      case Some(library) =>  println("Warning : Library already exist");true
+      case Some(library) =>  logger.warn("Library already exist");true
       case None => {
         val newLibrary = KevoreeFactory.eINSTANCE.createTypeLibrary
         newLibrary.setName(statment.libraryName)

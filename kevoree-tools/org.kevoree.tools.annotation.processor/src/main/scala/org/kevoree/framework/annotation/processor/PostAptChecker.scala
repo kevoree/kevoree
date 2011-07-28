@@ -19,9 +19,8 @@
 package org.kevoree.framework.annotation.processor
 
 import com.sun.mirror.apt.AnnotationProcessorEnvironment
-import org.kevoree.ContainerRoot
-import org.kevoree.LifeCycleTypeDefinition
 import scala.collection.JavaConversions._
+import org.kevoree.{NodeType, ContainerRoot, LifeCycleTypeDefinition}
 
 class PostAptChecker(root : ContainerRoot, env : AnnotationProcessorEnvironment) {
 
@@ -36,6 +35,8 @@ class PostAptChecker(root : ContainerRoot, env : AnnotationProcessorEnvironment)
 
     root.getTypeDefinitions.foreach{typeDef =>
       typeDef match {
+
+        case ntype : NodeType => //IGNORE CHECK FOR NODE TYPE
 
         case lctd : LifeCycleTypeDefinition => {
             if(lctd.getStartMethod == null) {

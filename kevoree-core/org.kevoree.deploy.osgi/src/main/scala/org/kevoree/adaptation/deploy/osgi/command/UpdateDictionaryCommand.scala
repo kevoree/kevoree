@@ -55,18 +55,23 @@ case class UpdateDictionaryCommand(c: Instance, ctx: KevoreeDeployManager, nodeN
       case None => false
       case Some(mapfound) => {
         val componentBundle = mapfound.bundle
-        componentBundle.getRegisteredServices.find({
-          sr => sr.getProperty(Constants.KEVOREE_NODE_NAME) == nodeName && sr.getProperty(Constants.KEVOREE_INSTANCE_NAME) == c.getName
-        }) match {
-          case None => false
-          case Some(sr) => (componentBundle.getBundleContext.getService(sr).asInstanceOf[KevoreeActor] !? UpdateDictionaryMessage(dictionary)).asInstanceOf[Boolean]
+        if (componentBundle.getRegisteredServices != null) {
+          componentBundle.getRegisteredServices.find({
+            sr => sr.getProperty(Constants.KEVOREE_NODE_NAME) == nodeName && sr.getProperty(Constants.KEVOREE_INSTANCE_NAME) == c.getName
+          }) match {
+            case None => false
+            case Some(sr) => (componentBundle.getBundleContext.getService(sr).asInstanceOf[KevoreeActor] !? UpdateDictionaryMessage(dictionary)).asInstanceOf[Boolean]
+          }
+        } else {
+          false
         }
+
       }
     }
 
   }
 
-  def undo() = {
+  def undo() {
     logger.warn("Not implemented")
   }
 

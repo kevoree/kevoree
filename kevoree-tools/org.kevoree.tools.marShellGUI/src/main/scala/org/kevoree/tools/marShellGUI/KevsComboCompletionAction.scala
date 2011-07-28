@@ -23,9 +23,9 @@ import javax.swing.text.JTextComponent
 import jsyntaxpane.actions.ComboCompletionAction
 import scala.collection.JavaConversions._
 import org.kevoree.tools.marShell.lexer.KevsLexical
-import jsyntaxpane.{Token, TokenType, SyntaxDocument}
 import jsyntaxpane.actions.gui.ComboCompletionDialog
 import org.kevoree._
+import jsyntaxpane.{TokenTypes, Token, TokenType, SyntaxDocument}
 
 class KevsComboCompletionAction extends ComboCompletionAction {
 
@@ -46,7 +46,7 @@ class KevsComboCompletionAction extends ComboCompletionAction {
     var abbrev = "";
     if (token != null) {
       token match {
-        case _@delim if (token.`type` == TokenType.DELIMITER) => //NOOP FOR DELIMITER
+        case _@delim if (token.`type` == TokenTypes.DELIMITER) => //NOOP FOR DELIMITER
         case _ => {
           abbrev = token.getString(sdoc);
           target.select(token.start, token.end());
@@ -132,15 +132,15 @@ class KevsComboCompletionAction extends ComboCompletionAction {
   }
 
   def getFirstIdentifier(sdoc: SyntaxDocument, dot: Int): Option[Token] = {
-    sdoc.getTokens(0, dot).toList.reverse.find(tok => tok.`type` == TokenType.IDENTIFIER)
+    sdoc.getTokens(0, dot).toList.reverse.find(tok => tok.`type` == TokenTypes.IDENTIFIER)
   }
 
   def getFirstDelimiter(sdoc: SyntaxDocument, dot: Int): Option[Token] = {
-    sdoc.getTokens(0, dot).toList.reverse.find(tok => tok.`type` == TokenType.DELIMITER)
+    sdoc.getTokens(0, dot).toList.reverse.find(tok => tok.`type` == TokenTypes.DELIMITER)
   }
 
   def getFirstKeyword(sdoc: SyntaxDocument, dot: Int): Option[Token] = {
-    sdoc.getTokens(0, dot).toList.reverse.find(tok => tok.`type` == TokenType.KEYWORD || tok.`type` == TokenType.KEYWORD2)
+    sdoc.getTokens(0, dot).toList.reverse.find(tok => tok.`type` == TokenTypes.KEYWORD || tok.`type` == TokenTypes.KEYWORD2)
   }
 
 
@@ -176,7 +176,7 @@ class KevsComboCompletionAction extends ComboCompletionAction {
       case Some(model) => {
         val items = new java.util.ArrayList[String]()
         model.getHubs.foreach {
-          hub =>
+          hub =>println
             items.add(hub.getName)
         }
         this.setItems(items)

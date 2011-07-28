@@ -23,8 +23,11 @@ import org.kevoree.tools.marShell.interpreter.KevsInterpreterContext
 import scala.collection.JavaConversions._
 import org.kevoree.tools.marShell.ast.{RemoveComponentInstanceStatment}
 import org.kevoree.{ContainerNode, ContainerRoot, ComponentInstance, MBinding}
+import org.slf4j.LoggerFactory
 
 case class KevsRemoveComponentInstanceInterpreter(removeComponent: RemoveComponentInstanceStatment) extends KevsAbstractInterpreter {
+
+  var logger = LoggerFactory.getLogger(this.getClass)
 
   def deleteComponent(targetNode: ContainerNode, targetComponent: ComponentInstance): Boolean = {
     val root = targetComponent.eContainer.eContainer.asInstanceOf[ContainerRoot]
@@ -46,13 +49,13 @@ case class KevsRemoveComponentInstanceInterpreter(removeComponent: RemoveCompone
             targetNode.getComponents.find(c => c.getName == removeComponent.cid.componentInstanceName) match {
               case Some(targetComponent) => deleteComponent(targetNode,targetComponent)
               case None => {
-                println("Component not found " + removeComponent.cid.componentInstanceName);
+                logger.error("Component not found " + removeComponent.cid.componentInstanceName);
                 false
               }
             }
           }
           case None => {
-            println("Node not found " + nodeID);
+            logger.error("Node not found " + nodeID);
             false
           }
         }

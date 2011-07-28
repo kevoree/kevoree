@@ -40,7 +40,7 @@ case class StartInstanceCommand(c : Instance, ctx : KevoreeDeployManager,nodeNam
     }
   }
 
-  def undo() = {
+  def undo() {
     StopInstanceCommand(c,ctx,nodeName)
   }
 

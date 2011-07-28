@@ -17,6 +17,7 @@
  */
 package org.kevoree.tools.ui.editor.listener;
 
+import java.awt.*;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.dnd.DropTarget;
 import java.awt.dnd.DropTargetDragEvent;
@@ -25,6 +26,7 @@ import java.awt.dnd.DropTargetEvent;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.jdesktop.swingx.SwingXUtilities;
 import org.kevoree.ComponentInstance;
 import org.kevoree.ContainerNode;
 import org.kevoree.tools.ui.editor.KevoreeUIKernel;
@@ -33,6 +35,8 @@ import org.kevoree.tools.ui.editor.command.AddGroupBindingCommand;
 import org.kevoree.tools.ui.editor.command.MoveComponentCommand;
 import org.kevoree.tools.ui.framework.elements.*;
 import org.kevoreeAdaptation.AddBinding;
+
+import javax.swing.*;
 
 /**
  * implementation of the target listener
@@ -141,6 +145,22 @@ public class NodeDragTargetListener extends DropTarget {
      */
     @Override
     public void dragOver(DropTargetDragEvent arg0) {
+
+        if (kernel.getModelPanel().getFlightObject() != null) {
+
+            Point p2 = arg0.getLocation();
+            SwingUtilities.convertPointToScreen(p2,target);
+            SwingUtilities.convertPointFromScreen(p2,kernel.getModelPanel().getFlightObject().getParent());
+
+            kernel.getModelPanel().getFlightObject().setBounds(
+                    (int) p2.getX() - (kernel.getModelPanel().getFlightObject().getWidth() / 2),
+                    (int) p2.getY() - (kernel.getModelPanel().getFlightObject().getHeight() / 2),
+                    kernel.getModelPanel().getFlightObject().getWidth(),
+                    kernel.getModelPanel().getFlightObject().getHeight());
+            kernel.getModelPanel().repaint();
+        }
+
+
     }
 
     /**

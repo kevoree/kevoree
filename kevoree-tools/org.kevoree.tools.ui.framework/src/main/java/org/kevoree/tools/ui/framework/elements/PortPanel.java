@@ -17,6 +17,8 @@
  */
 package org.kevoree.tools.ui.framework.elements;
 
+import org.kevoree.tools.ui.framework.ErrorHighlightableElement;
+
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -32,9 +34,21 @@ import javax.swing.JPanel;
  *
  * @author ffouquet
  */
-public class PortPanel extends JPanel {
+public class PortPanel extends JPanel implements ErrorHighlightableElement {
 
-    public enum PortType {
+	 private STATE currentState = STATE.NO_ERROR;
+
+    @Override
+    public void setState(STATE state) {
+        currentState = state;
+    }
+
+    @Override
+    public STATE getCurrentState() {
+        return currentState;
+    }
+
+	public enum PortType {
         REQUIRED, PROVIDED
     }
     public enum PortNature {
@@ -87,7 +101,6 @@ public class PortPanel extends JPanel {
 
     /**
      * contructor
-     * @param _control
      */
     public PortPanel() {
 
@@ -99,6 +112,7 @@ public class PortPanel extends JPanel {
         this.setSize(new Dimension(30, 30));
     }
     private Color actualFillColor = new Color(0, 0, 0, 150);
+	private Color errorFillColor = new Color(150, 150, 0, 150);
 
     protected void paintComponent(Graphics g) {
 
@@ -129,7 +143,12 @@ public class PortPanel extends JPanel {
 
         //g2.setColor(Color.WHITE);
 
-        GradientPaint grad = new GradientPaint(new Point(0, 0), actualFillColor, new Point(0, getHeight()), new Color(150, 150, 150, 180));
+        GradientPaint grad;
+		if (getCurrentState().equals(ErrorHighlightableElement.STATE.IN_ERROR)) {
+			grad = new GradientPaint(new Point(0, 0), errorFillColor, new Point(0, getHeight()), new Color(150, 150, 150, 180));
+		} else {
+			grad = new GradientPaint(new Point(0, 0), actualFillColor, new Point(0, getHeight()), new Color(150, 150, 150, 180));
+		}
         g2.setPaint(grad);
         g2.fillRoundRect(x, y, w, h, arc, arc);
         g2.setStroke(new BasicStroke(3f));

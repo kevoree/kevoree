@@ -44,16 +44,16 @@ object Merger {
           //MERGE NEW Dictionary Attribute
           case None => {
             //CHECK IF ATTRIBUTE ALREADY EXISTE WITHOUT VALUE
-            var att = inst.getTypeDefinition.getDictionaryType.getAttributes.find(att => att.getName == key) match {
+            val att = inst.getTypeDefinition.getDictionaryType.getAttributes.find(att => att.getName == key) match {
               case None => {
-                var newDictionaryValue = KevoreeFactory.eINSTANCE.createDictionaryAttribute
+                val newDictionaryValue = KevoreeFactory.eINSTANCE.createDictionaryAttribute
                 newDictionaryValue.setName(key.toString)
                 inst.getTypeDefinition.getDictionaryType.getAttributes.add(newDictionaryValue)
                 newDictionaryValue
               }
               case Some(previousAtt) => previousAtt
             }
-            var newDictionaryValue = KevoreeFactory.eINSTANCE.createDictionaryValue
+            val newDictionaryValue = KevoreeFactory.eINSTANCE.createDictionaryValue
             newDictionaryValue.setValue(newValue.toString)
             newDictionaryValue.setAttribute(att)
             inst.getDictionary.getValues.add(newDictionaryValue)

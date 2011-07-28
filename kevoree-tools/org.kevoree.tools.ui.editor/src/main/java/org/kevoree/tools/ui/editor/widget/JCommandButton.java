@@ -20,6 +20,8 @@ package org.kevoree.tools.ui.editor.widget;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import javax.swing.JButton;
+
+import com.explodingpixels.macwidgets.plaf.HudButtonUI;
 import org.kevoree.tools.ui.editor.command.Command;
 
 /**
@@ -41,6 +43,7 @@ public class JCommandButton extends JButton {
     public JCommandButton(final String title){
         this.setText(title);
         this.setOpaque(false);
+        this.setUI(new HudButtonUI());
         this.addMouseListener(new MouseAdapter() {
         @Override
             public void mouseClicked(MouseEvent e) {

@@ -15,6 +15,7 @@ package org.kevoree.tools.ui.editor.command;
 
 import org.kevoree.*;
 import org.kevoree.tools.ui.editor.KevoreeUIKernel;
+import org.kevoree.tools.ui.editor.ModelHelper;
 import org.kevoree.tools.ui.framework.elements.ChannelPanel;
 import org.kevoree.tools.ui.framework.elements.GroupPanel;
 import scala.util.Random;
@@ -54,5 +55,7 @@ public class AddGroupCommand implements Command {
             newgrouppanel.setLocation(point.x, point.y);
         }
 
+
+        kernel.getEditorPanel().getPalette().updateTypeValue(ModelHelper.getTypeNbInstance(kernel.getModelHandler().getActualModel(), type), type.getName());
     }
 }
