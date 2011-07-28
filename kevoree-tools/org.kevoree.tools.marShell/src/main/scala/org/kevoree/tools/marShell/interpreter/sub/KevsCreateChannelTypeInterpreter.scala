@@ -23,13 +23,16 @@ import org.kevoree.tools.marShell.ast.CreateChannelTypeStatment
 import org.kevoree.tools.marShell.interpreter.KevsAbstractInterpreter
 import org.kevoree.tools.marShell.interpreter.KevsInterpreterContext
 import scala.collection.JavaConversions._
+import org.slf4j.LoggerFactory
 
 case class KevsCreateChannelTypeInterpreter(self : CreateChannelTypeStatment) extends KevsAbstractInterpreter {
+
+  var logger = LoggerFactory.getLogger(this.getClass)
 
   def interpret(context: KevsInterpreterContext): Boolean = {
     //LOOK FOR PREVIOUSLY EXSITING COMPONENT TYPE
     context.model.getTypeDefinitions.find(tdef => tdef.getName == self.newTypeName) match {
-      case Some(e)=> println("TypeDefinition already exist with name => "+self.newTypeName);false
+      case Some(e)=> logger.error("TypeDefinition already exist with name => "+self.newTypeName);false
       case None => {
           var newComponentTypeDef = KevoreeFactory.eINSTANCE.createChannelType
           newComponentTypeDef.setName(self.newTypeName)

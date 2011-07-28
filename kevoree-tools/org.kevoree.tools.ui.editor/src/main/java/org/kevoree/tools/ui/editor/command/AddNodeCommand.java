@@ -20,6 +20,7 @@ import org.kevoree.ContainerNode;
 import org.kevoree.KevoreeFactory;
 import org.kevoree.NodeType;
 import org.kevoree.tools.ui.editor.KevoreeUIKernel;
+import org.kevoree.tools.ui.editor.ModelHelper;
 import org.kevoree.tools.ui.framework.elements.NodePanel;
 
 import java.awt.*;
@@ -63,10 +64,13 @@ public class AddNodeCommand implements Command {
         kernel.getModelPanel().addNode(newnodepanel);
 
         if ((point.x - newnodepanel.getPreferredSize().getHeight() / 2 > 0) && (point.y - newnodepanel.getPreferredSize().getHeight() / 2 > 0)) {
-            newnodepanel.setLocation((int) (point.x - newnodepanel.getPreferredSize().getHeight() / 2), (int) (point.y - newnodepanel.getPreferredSize().getWidth() / 2));
+            newnodepanel.setLocation((int) (point.x - newnodepanel.getPreferredSize().getWidth() / 2), (int) (point.y - newnodepanel.getPreferredSize().getHeight() / 2));
         } else {
             newnodepanel.setLocation(point.x, point.y);
         }
+
+        kernel.getEditorPanel().getPalette().updateTypeValue(ModelHelper.getTypeNbInstance(kernel.getModelHandler().getActualModel(), type),type.getName());
+
 
 
     }

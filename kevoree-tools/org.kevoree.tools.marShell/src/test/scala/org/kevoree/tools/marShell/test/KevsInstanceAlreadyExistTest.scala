@@ -20,8 +20,8 @@ import org.kevoree.tools.marShell.interpreter.KevsInterpreterAspects._
 import org.kevoree.tools.marShell.interpreter.KevsInterpreterContext
 import org.scalatest.AbstractSuite
 
-class KevsInstanceAlreadyExistTest extends KevSTestSuiteHelper {
-
+class KevsInstanceAlreadyExistTest extends KevSTestSuiteHelper {  
+  
   @Test def InstanceAlreadyExistMerge() {
     val baseModel = model("baseModel/arduinoDomoGossip.kev")
     val oscript = getScript("scripts/kevsInstanceAlreadyExistMerge.kevs");

@@ -37,8 +37,8 @@ case class RemoveInstanceCommand(c: Instance, ctx: KevoreeDeployManager, nodeNam
 
     bundles.forall {
       mp =>
-        mp.bundle.stop;
-        mp.bundle.uninstall;
+        mp.bundle.stop();
+        mp.bundle.uninstall();
         //REFRESH OSGI PACKAGE
         ctx.getServicePackageAdmin.refreshPackages(Array(mp.bundle))
         true
@@ -46,9 +46,9 @@ case class RemoveInstanceCommand(c: Instance, ctx: KevoreeDeployManager, nodeNam
     ctx.bundleMapping.removeAll(bundles)
   }
 
-  def undo() = {
+  def undo() {
     try {
-      AddInstanceCommand(c, ctx, nodeName).execute
+      AddInstanceCommand(c, ctx, nodeName).execute()
     } catch {
       case _ =>
     }

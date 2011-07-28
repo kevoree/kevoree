@@ -24,8 +24,11 @@ import org.kevoree.tools.marShell.interpreter.KevsInterpreterContext
 import org.kevoree.tools.marShell.interpreter.utils.Merger
 import scala.collection.JavaConversions._
 import org.kevoree._
+import org.slf4j.LoggerFactory
 
 case class KevsAddComponentInstanceInterpreter(addCompo: AddComponentInstanceStatment) extends KevsAbstractInterpreter {
+
+  var logger = LoggerFactory.getLogger(this.getClass);
 
   def interpret(context: KevsInterpreterContext): Boolean = {
     addCompo.cid.nodeName match {
@@ -37,12 +40,12 @@ case class KevsAddComponentInstanceInterpreter(addCompo: AddComponentInstanceSta
             targetNode.getComponents.find(component => component.getName == addCompo.cid.componentInstanceName) match {
 
               case Some(previousComponent) => {
-                println("Warning : Component already exist with name " + previousComponent.getName);
+                logger.warn("Component already exist with name " + previousComponent.getName);
                 if (previousComponent.getTypeDefinition.getName == addCompo.typeDefinitionName) {
                   Merger.mergeDictionary(previousComponent, addCompo.props)
                   true
                 } else {
-                  println("Error : Type != from previous created component")
+                  logger.error("Type != from previous created component")
                   false
                 }
               }
@@ -74,11 +77,11 @@ case class KevsAddComponentInstanceInterpreter(addCompo: AddComponentInstanceSta
 
                   }
                   case Some(typeDef) if (!typeDef.isInstanceOf[ComponentType]) => {
-                    println("Type definition is not a componentType " + addCompo.typeDefinitionName);
+                    logger.error("Type definition is not a componentType " + addCompo.typeDefinitionName);
                     false
                   }
                   case _ => {
-                    println("Type definition not found " + addCompo.typeDefinitionName);
+                    logger.error("Type definition not found " + addCompo.typeDefinitionName);
                     false
                   }
                 }
@@ -86,7 +89,7 @@ case class KevsAddComponentInstanceInterpreter(addCompo: AddComponentInstanceSta
             }
           }
           case None => {
-            println("Node not found " + nodeID);
+            logger.error("Node not found " + nodeID);
             false
           }
         }

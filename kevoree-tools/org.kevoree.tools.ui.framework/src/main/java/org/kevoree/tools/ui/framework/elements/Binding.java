@@ -18,26 +18,51 @@
 package org.kevoree.tools.ui.framework.elements;
 
 import java.awt.*;
+import java.util.ArrayDeque;
+import java.util.ArrayList;
 import javax.swing.JComponent;
+
 import org.kevoree.tools.ui.framework.AbstractSelectElement;
 import org.kevoree.tools.ui.framework.ErrorHighlightableElement;
 
 /**
- *
  * @author ffouquet
  */
 public class Binding extends AbstractSelectElement implements ErrorHighlightableElement {
 
     private JComponent from = null;
     private JComponent to = null;
-    private Color selectedcolor = null;
-    private Color unselectedcolor = null;
+    public Color selectedcolor = null;
+    public Color unselectedcolor = null;
 
+    public Boolean isFocused = false;
+
+    private java.util.List<BindingListener> listeners = new ArrayList<BindingListener>();
+
+    public void addListener(BindingListener l) {
+        listeners.add(l);
+    }
+
+    public void removeListener(BindingListener l) {
+        listeners.remove(l);
+    }
+
+    public void triggerListeners() {
+        for (BindingListener l : listeners) {
+            l.clicked();
+        }
+    }
+
+
+    private Stroke stroke = null;
+    private Stroke focusedStroke = null;
+    public Stroke getFocusedStroke() {
+        return focusedStroke;
+    }
     public Stroke getStroke() {
         return stroke;
     }
 
-    private Stroke stroke = null;
 
     private STATE currentState = STATE.NO_ERROR;
 
@@ -52,7 +77,7 @@ public class Binding extends AbstractSelectElement implements ErrorHighlightable
     }
 
     public enum Type {
-        input, ouput , groupLink
+        input, ouput, groupLink
     }
 
     public Binding(Type t) {
@@ -60,18 +85,20 @@ public class Binding extends AbstractSelectElement implements ErrorHighlightable
             selectedcolor = new Color(254, 238, 100, 180);
             unselectedcolor = new Color(200, 238, 39, 180);
             stroke = new BasicStroke(5, BasicStroke.CAP_SQUARE, BasicStroke.JOIN_ROUND);
+            focusedStroke  = new BasicStroke(8, BasicStroke.CAP_SQUARE, BasicStroke.JOIN_ROUND);
         }
         if (t.equals(Type.ouput)) {
             selectedcolor = new Color(254, 0, 0, 180);
             unselectedcolor = new Color(200, 0, 0, 180);
             stroke = new BasicStroke(5, BasicStroke.CAP_SQUARE, BasicStroke.JOIN_ROUND);
+            focusedStroke  = new BasicStroke(8, BasicStroke.CAP_SQUARE, BasicStroke.JOIN_ROUND);
         }
-        if(t.equals(Type.groupLink)){
-            selectedcolor = new Color(45, 236, 64,200);
-            unselectedcolor = new Color(45, 236, 64,200);
-             float dash1[] = {8.0f};
+        if (t.equals(Type.groupLink)) {
+            selectedcolor = new Color(45, 236, 64, 200);
+            unselectedcolor = new Color(45, 236, 64, 200);
+            float dash1[] = {8.0f};
             stroke = new BasicStroke(5.0f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER, 8.0f, dash1, 0.0f);
-
+            focusedStroke = new BasicStroke(8.0f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER, 8.0f, dash1, 0.0f);
         }
     }
 
@@ -94,4 +121,5 @@ public class Binding extends AbstractSelectElement implements ErrorHighlightable
     public Color getActualColor() {
         return this.getSelected() ? selectedcolor : unselectedcolor;
     }
+
 }

@@ -35,11 +35,11 @@ public class KevoreeUIKernel {
         //Art2Cluster.start();
 
         //INIT PERIODIQUE COMMAND
-        /*
+
         CheckCurrentModel checker = new CheckCurrentModel();
         checker.setKernel(this);
         modelHandler.addListenerCommand(checker);
-        */
+
     }
 
     private KevoreeUIFactory uifactory;

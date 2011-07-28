@@ -22,7 +22,7 @@ import scala.collection.JavaConversions._
 
 class ScalaCompiler {
 
-  def compile(src: String, target: String, classpath: java.util.List[String]) = {
+  def compile(src: String, target: String, classpath: java.util.List[String]) : Int = {
 
     EmbettedScalaCompiler.compile(src, target, classpath.toList);
 

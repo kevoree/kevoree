@@ -24,6 +24,8 @@ public class KevoreeNodeRunner {
 	private Logger logger = LoggerFactory.getLogger(KevoreeNodeRunner.class);
 
 	private Process nodePlatformProcess;
+	private Thread outputStreamReader;
+	private Thread errorStreamReader;
 	private static String platformJARPath;
 
 	private String nodeName;
@@ -46,13 +48,72 @@ public class KevoreeNodeRunner {
 			if (platformJARPath == null) {
 				getJar();
 			}
-			nodePlatformProcess = Runtime.getRuntime().exec(new String[]{"java","-Dnode.bootstrap="+bootStrapModel, "-Dnode.name=" + nodeName, "-Dnode.port=" + basePort, "-jar", platformJARPath});
+			String java = getJava();
+			//System.out.println(java + " -Dnode.bootstrap="+bootStrapModel + " -Dnode.name=" + nodeName + " -Dnode.port=" + basePort + "-jar" + platformJARPath);
+			nodePlatformProcess = Runtime.getRuntime().exec(new String[]{java,"-Dnode.bootstrap="+bootStrapModel, "-Dnode.name=" + nodeName, "-Dnode.port=" + basePort, "-jar", platformJARPath});
 			//nodePlatformProcess = Runtime.getRuntime().exec(new String[]{"screen", "-A", "-m", "-d", "-S", nodeName, "java", "-Dnode.bootstrap="+bootStrapModel, "-Dnode.name="+nodeName, "-Dnode.port="+basePort, "-jar", platformJARPath, "2>&1", "|", "tee file.txt"});
 
-			System.out.println("Node Started ! " + nodePlatformProcess.toString());
+			outputStreamReader = new Thread() {
+
+				//private OutputStream outputStream;
+				private InputStream stream = nodePlatformProcess.getInputStream();
+
+				@Override
+				public void run () {
+					try {
+				byte[] bytes = new byte[512];
+				int i;
+				while (true) {
+					i = stream.read(bytes);
+					/*if (i != -1) {
+						//System.out.print(line);
+						//outputStream.write(bytes, 0, i);
+
+					}*/
+
+				}
+			} catch (IOException e) {
+				// e.printStackTrace();
+			}
+				}
+			};
+
+			errorStreamReader = new Thread() {
+
+				//private OutputStream outputStream;
+				private InputStream stream = nodePlatformProcess.getErrorStream();
+
+				@Override
+				public void run () {
+					try {
+				byte[] bytes = new byte[512];
+				int i;
+				while (true) {
+					i = stream.read(bytes);
+					/*if (i != -1) {
+						//System.out.print(line);
+						//outputStream.write(bytes, 0, i);
+
+					}*/
+
+				}
+			} catch (IOException e) {
+				// e.printStackTrace();
+			}
+				}
+			};
+
+			outputStreamReader.start();
+			errorStreamReader.start();
+
+			//System.out.println("Node Started ! ");
+
+			 System.out.println(nodePlatformProcess.exitValue());
 		} catch (IOException e) {
 			e.printStackTrace();
-			System.exit(1);
+			//System.exit(1);
+		} catch (IllegalThreadStateException e) {
+			System.out.println("platform " + nodeName + ":" + basePort + " is running");
 		}
 
 	}
@@ -141,16 +202,22 @@ public class KevoreeNodeRunner {
 		} else {
 			throw new FileNotFoundException(jarLocation + " doesn't exist");
 		}
-		System.out.println("Init jar platform => OK");
+		System.out.println("Init jar platform: " + platformJARPath + " => OK");
 	}
 
 	private String getVersion() throws IOException {
-		System.out.println("GetVersion");
+		//System.out.println("GetVersion");
 		InputStream stream = this.getClass().getClassLoader().getResourceAsStream("META-INF/maven/org.kevoree.platform/org.kevoree.platform.agent/pom.properties");
 		Properties prop = new Properties();
 		prop.load(stream);
 
 		return prop.getProperty("version");
+	}
+
+	private String getJava() {
+		String java_home = System.getProperty("java.home");
+		//System.out.println(java_home + File.separator + "bin" + File.separator + "java");
+		return java_home + File.separator + "bin" + File.separator + "java";
 	}
 
 	/*public class PaxMvnUrlStreamHandlerFactory implements URLStreamHandlerFactory {

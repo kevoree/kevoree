@@ -18,17 +18,30 @@ import org.kevoree.framework.KevoreeXmiHelper
 import java.io.{File, BufferedReader, InputStreamReader, OutputStreamWriter}
 import org.eclipse.emf.common.util.URI
 import org.kevoree.tools.ui.editor.{PositionedEMFHelper, KevoreeUIKernel}
+import org.slf4j.LoggerFactory
 
 class MergeDefaultLibrary extends Command {
+
+  var logger = LoggerFactory.getLogger(this.getClass)
 
   var kernel: KevoreeUIKernel = null
 
   def setKernel(k: KevoreeUIKernel) = kernel = k
 
+  var snapshot : Boolean = false
+
+  def setSnapshot(p : Boolean) = { snapshot = p }
+
   def execute(p: Object) {
 
     try {
-      val url = new URL("http://dist.kevoree.org/KevoreeLibrary.php");
+
+      var url : URL = null
+      if(snapshot){
+         url = new URL("http://dist.kevoree.org/KevoreeLibrarySnapshot.php");
+      } else {
+         url = new URL("http://dist.kevoree.org/KevoreeLibraryStable.php");
+      }
       val conn = url.openConnection();
       conn.setConnectTimeout(2000);
       conn.setDoOutput(true);
@@ -71,13 +84,13 @@ class MergeDefaultLibrary extends Command {
 
 
       } else {
-        System.out.println("Error while loading model");
+        logger.error("Error while loading model");
       }
 
 
     } catch {
 
-      case _@e => println("Could not load default lib !")
+      case _@e => logger.error("Could not load default lib !")
     }
 
 

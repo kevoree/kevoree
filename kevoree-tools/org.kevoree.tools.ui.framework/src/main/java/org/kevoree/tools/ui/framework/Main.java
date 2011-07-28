@@ -17,20 +17,18 @@
  */
 package org.kevoree.tools.ui.framework;
 
-import org.jdesktop.swingx.JXMultiSplitPane;
+import com.explodingpixels.macwidgets.HudWidgetFactory;
+import com.explodingpixels.macwidgets.HudWindow;
+import com.explodingpixels.macwidgets.IAppWidgetFactory;
 import org.kevoree.tools.ui.framework.elements.*;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
+import javax.swing.*;
 
 import org.kevoree.tools.ui.framework.elements.PortPanel.PortType;
 
 /**
- *
  * @author ffouquet
  */
 public class Main {
@@ -39,18 +37,19 @@ public class Main {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
+
+
         JFrame jframe = new JFrame("Art2 UI Tester");
         jframe.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         jframe.setPreferredSize(new Dimension(800, 600));
 
 
-
         ModelPanel model = new ModelPanel();
 
         //Test Group Panel
-         GroupPanel groupPanel = new GroupPanel();
+        GroupPanel groupPanel = new GroupPanel();
         groupPanel.setTitle("G1");
-         model.addGroup(groupPanel);
+        model.addGroup(groupPanel);
 
 
         NodePanel node1 = new NodePanel();
@@ -93,8 +92,6 @@ public class Main {
         p24.setNature(PortPanel.PortNature.MESSAGE);
 
 
-
-
         p11.setTitle("P11");
         p12.setTitle("P12");
         p21.setTitle("P21");
@@ -110,13 +107,13 @@ public class Main {
         model.addBinding(b);
 
         Binding sb = new Binding(Binding.Type.input);
-        sb.setSelected(true);
+        sb.setSelected(false);
         sb.setFrom(p12);
         sb.setTo(p23);
         model.addBinding(sb);
 
         Binding mb = new Binding(Binding.Type.ouput);
-        mb.setSelected(true);
+        mb.setSelected(false);
         mb.setFrom(p24);
         mb.setTo(hub1);
         model.addBinding(mb);
@@ -131,7 +128,7 @@ public class Main {
         c2.addRight(p24);
 
         node1.setTitle("node1");
-        node1.setTitle("myNode","ArduinoNode");
+        node1.setTitle("myNode", "ArduinoNode");
 
 
         node1.add(c1);
@@ -140,15 +137,23 @@ public class Main {
         node2.add(c4);
 
 
+      //  ZoomPanel zpanel = new ZoomPanel();
+       // zpanel.setLayout(new BorderLayout());
+       // zpanel.add(model, BorderLayout.CENTER);
+      //  zpanel.changeZoom(1);
+
+
         JScrollPane scrollPane = new JScrollPane(model, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
+        IAppWidgetFactory.makeIAppScrollPane(scrollPane);
+
 
         EditableModelPanel epanel = new EditableModelPanel(scrollPane);
 
 
+        //jframe.add(epanel, BorderLayout.CENTER);
+
+
         jframe.add(epanel, BorderLayout.CENTER);
-
-
-
 
 
         JPanel prop = new JPanel();
@@ -159,6 +164,17 @@ public class Main {
 
         jframe.pack();
         jframe.setVisible(true);
+
+
+        HudWindow hud = new HudWindow("Window");
+        hud.getJDialog().setSize(300, 350);
+        hud.getJDialog().setLocationRelativeTo(jframe);
+        hud.getJDialog().setResizable(true);
+        hud.getJDialog().setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        hud.getJDialog().setVisible(true);
+
+        JTextField textField = HudWidgetFactory.createHudTextField("Text field");
+         hud.getJDialog().add(textField);
 
 
 

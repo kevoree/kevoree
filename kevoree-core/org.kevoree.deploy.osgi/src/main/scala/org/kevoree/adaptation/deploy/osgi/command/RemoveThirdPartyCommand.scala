@@ -31,7 +31,7 @@ case class RemoveThirdPartyCommand(ct : DeployUnit, ctx : KevoreeDeployManager) 
     true
   }
 
-  def undo() = {
+  def undo() {
     logger.warn("Not implemented")
   }
 

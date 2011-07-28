@@ -3,5 +3,6 @@ tblock {
 
  addNode myJavaNode : JavaSENode
  network myJavaNode { "KEVOREE.remote.node.modelsynch.port" = "8000" }
+ network mySrcJavaNode => myTargetJavaNode { "KEVOREE.remote.node.modelsynch.port" = "8000" }
 
  }
