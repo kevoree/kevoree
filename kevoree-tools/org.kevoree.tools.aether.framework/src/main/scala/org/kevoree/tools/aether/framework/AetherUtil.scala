@@ -18,7 +18,6 @@ import org.sonatype.aether.RepositorySystem
 import org.apache.maven.repository.internal.DefaultServiceLocator
 import org.sonatype.aether.spi.connector.RepositoryConnectorFactory
 import org.sonatype.aether.connector.file.FileRepositoryConnectorFactory
-import org.sonatype.aether.connector.async.AsyncRepositoryConnectorFactory
 import org.sonatype.aether.resolution.ArtifactRequest
 import org.sonatype.aether.util.artifact.DefaultArtifact
 import org.apache.maven.repository.internal.MavenRepositorySystemSession
@@ -28,6 +27,7 @@ import org.sonatype.aether.repository.{RepositoryPolicy, RemoteRepository, Local
 import org.sonatype.aether.artifact.Artifact
 import org.kevoree.framework.KevoreePlatformHelper
 import scala.collection.JavaConversions._
+import org.sonatype.aether.connector.wagon.WagonRepositoryConnectorFactory
 
 /**
  * User: ffouquet
@@ -40,7 +40,9 @@ object AetherUtil {
   val newRepositorySystem: RepositorySystem = {
     val locator = new DefaultServiceLocator()
     locator.addService(classOf[RepositoryConnectorFactory], classOf[FileRepositoryConnectorFactory])
-    locator.addService(classOf[RepositoryConnectorFactory], classOf[AsyncRepositoryConnectorFactory])
+    //locator.addService(classOf[RepositoryConnectorFactory], classOf[AsyncRepositoryConnectorFactory])
+    locator.addService(classOf[RepositoryConnectorFactory], classOf[WagonRepositoryConnectorFactory])
+
     locator.getService(classOf[RepositorySystem])
   }
 
@@ -63,6 +65,7 @@ object AetherUtil {
         val repo = new RemoteRepository
         repo.setId(url)
         repo.setUrl(url)
+        repo.setContentType("default")
         val repositoryPolicy = new RepositoryPolicy()
         repositoryPolicy.setChecksumPolicy(RepositoryPolicy.CHECKSUM_POLICY_WARN)
         repositoryPolicy.setUpdatePolicy(RepositoryPolicy.UPDATE_POLICY_ALWAYS)

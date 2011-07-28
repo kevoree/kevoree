@@ -55,7 +55,8 @@
         </dependency>
         <dependency>
             <groupId>org.sonatype.aether</groupId>
-            <artifactId>aether-connector-asynchttpclient</artifactId>
+          <!---  <artifactId>aether-connector-asynchttpclient</artifactId>   -->
+            <artifactId>aether-connector-wagon</artifactId>
             <version>1.12</version>
         </dependency>
 
@@ -95,10 +96,12 @@
                             org.sonatype.*,
                             org.apache.maven.repository.*,
                             org.apache.maven.model.*,
+                            org.apache.maven.http.*,
                             org.apache.maven.artifact.*,
                             org.codehaus.plexus.interpolation.*,
                             org.codehaus.plexus.util.*,
-                            com.ning.http.*
+                            com.ning.http.*,
+                            org.apache.maven.wagon.*
                         </Export-Package>
                     </instructions>
                 </configuration>
