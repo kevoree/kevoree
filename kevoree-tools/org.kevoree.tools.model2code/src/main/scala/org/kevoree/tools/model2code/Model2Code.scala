@@ -30,6 +30,9 @@ import org.kevoree.ComponentType
 import org.kevoree.ContainerRoot
 import scala.collection.JavaConversions._
 
+/**
+ * @author Gregory NAIN
+ */
 class Model2Code {
 
   def modelToCode(model : ContainerRoot, componentType : ComponentType, srcRoot : URI) {

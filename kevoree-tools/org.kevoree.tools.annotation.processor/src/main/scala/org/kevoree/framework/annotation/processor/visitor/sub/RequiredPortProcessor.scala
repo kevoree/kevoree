@@ -25,58 +25,82 @@ import org.kevoree.KevoreeFactory
 import org.kevoree.framework.annotation.processor.LocalUtility
 import org.kevoree.framework.annotation.processor.visitor.ServicePortTypeVisitor
 import scala.collection.JavaConversions._
+import com.sun.mirror.`type`.{InterfaceType, ClassType}
 
 trait RequiredPortProcessor {
   def processRequiredPort(componentType: ComponentType, classdef: TypeDeclaration, env: AnnotationProcessorEnvironment) = {
-    /* CHECK REQUIRED PORTS */
-    var requiredPortAnnotations : List[org.kevoree.annotation.RequiredPort] = Nil
 
-    var annotationRequired = classdef.getAnnotation(classOf[org.kevoree.annotation.RequiredPort])
-    if(annotationRequired != null){ requiredPortAnnotations = requiredPortAnnotations ++ List(annotationRequired) }
+    //Collects all RequidedPort annotations and creates a list
+    var requiredPortAnnotations: List[org.kevoree.annotation.RequiredPort] = Nil
 
-    var annotationRequires = classdef.getAnnotation(classOf[org.kevoree.annotation.Requires])
-    if(annotationRequires != null){ requiredPortAnnotations = requiredPortAnnotations ++ annotationRequires.value.toList }
+    val annotationRequired = classdef.getAnnotation(classOf[org.kevoree.annotation.RequiredPort])
+    if (annotationRequired != null) {
+      requiredPortAnnotations = requiredPortAnnotations ++ List(annotationRequired)
+    }
 
+    val annotationRequires = classdef.getAnnotation(classOf[org.kevoree.annotation.Requires])
+    if (annotationRequires != null) {
+      requiredPortAnnotations = requiredPortAnnotations ++ annotationRequires.value.toList
+    }
+
+    //For each annotation in the list
     requiredPortAnnotations.foreach {
-      req =>
+      requiredPort =>
 
-      var portAll: List[org.kevoree.PortTypeRef] = componentType.getRequired.toList ++ componentType.getProvided.toList
-      portAll.find(alR => alR.getName == req.name) match {
-        case None => {
-            var ptreqREF = KevoreeFactory.eINSTANCE.createPortTypeRef
-            ptreqREF.setName(req.name)
-            ptreqREF.setOptional(req.optional)
-            ptreqREF.setNoDependency(req.noDependency)
+      //Check if a port with the same name exist in the component scope
+        val portAll: List[org.kevoree.PortTypeRef] = componentType.getRequired.toList ++ componentType.getProvided.toList
+        portAll.find(existingPort => existingPort.getName == requiredPort.name) match {
 
-            ptreqREF.setRef(LocalUtility.getOraddPortType(req.`type` match {
-                  case org.kevoree.annotation.PortType.SERVICE => {
-                      var tv = new ServicePortTypeVisitor
-                      try {
-                        req.className
-                      } catch {
-                        case e: com.sun.mirror.`type`.MirroredTypeException => e.getTypeMirror.accept(tv)
+          //Port is unique and can be created
+          case None => {
+            val portTypeRef = KevoreeFactory.eINSTANCE.createPortTypeRef
+            portTypeRef.setName(requiredPort.name)
+            portTypeRef.setOptional(requiredPort.optional)
+
+            //TODO:verify this behavior
+            portTypeRef.setNoDependency(!requiredPort.needCheckDependency())
+
+            //sets the reference to the type of the port
+            portTypeRef.setRef(LocalUtility.getOraddPortType(requiredPort.`type` match {
+              case org.kevoree.annotation.PortType.SERVICE => {
+                val visitor = new ServicePortTypeVisitor
+                try {
+                  requiredPort.className
+                } catch {
+                  case e: com.sun.mirror.`type`.MirroredTypeException =>
+
+                    //Checks the kind of the className attribute of the annotation
+                    e.getTypeMirror.getClass match {
+                      case mirrorType: ClassType => mirrorType.accept(visitor)
+                      case mirrorType: InterfaceType => mirrorType.accept(visitor)
+                      case _ => {
+                        env.getMessager.printError("The className attribute of a Required ServicePort declaration is mandatory, and must be a Class or an Interface.\n"
+                          + "Have a check on RequiredPort[name=" + requiredPort.name + "] of " + componentType.getBean)
                       }
-                      tv.getDataType
                     }
-                  case org.kevoree.annotation.PortType.MESSAGE => {
-                      var mpt = KevoreeFactory.eINSTANCE.createMessagePortType
-                      mpt.setName("org.kevoree.framework.MessagePort")
-                      req.filter.foreach {
-                        ndts =>
-                        var ndt = KevoreeFactory.eINSTANCE.createTypedElement
-                        ndt.setName(ndts)
-                        mpt.getFilters.add(LocalUtility.getOraddDataType(ndt))
-                      }
-                      mpt
-                    }
-                  case _ => null
-                }))
-            componentType.getRequired.add(ptreqREF)
+
+                }
+                visitor.getDataType
+              }
+              case org.kevoree.annotation.PortType.MESSAGE => {
+                val mpt = KevoreeFactory.eINSTANCE.createMessagePortType
+                mpt.setName("org.kevoree.framework.MessagePort")
+                requiredPort.filter.foreach {
+                  ndts =>
+                    val ndt = KevoreeFactory.eINSTANCE.createTypedElement
+                    ndt.setName(ndts)
+                    mpt.getFilters.add(LocalUtility.getOraddDataType(ndt))
+                }
+                mpt
+              }
+              case _ => null
+            }))
+            componentType.getRequired.add(portTypeRef)
           }
-        case Some(e) => {
-            env.getMessager.printError("Port name duplicated in " + componentType.getName + " Scope => " + req.name)
+          case Some(e) => {
+            env.getMessager.printError("Port name duplicated in " + componentType.getName + " Scope => " + requiredPort.name)
           }
-      }
+        }
     }
   }
 }
