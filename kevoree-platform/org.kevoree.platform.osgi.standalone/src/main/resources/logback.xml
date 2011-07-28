@@ -14,11 +14,14 @@
 
 -->
 <configuration>
+
+
     <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
             <pattern>%msg%n</pattern>
         </encoder>
     </appender>
+
 
     <appender name="FILE" class="ch.qos.logback.core.FileAppender">
         <!-- use the previously created timestamp to create a uniquely
@@ -29,9 +32,20 @@
         </encoder>
     </appender>
 
+    <!--
+    <appender name="ASYNC" class="org.kevoree.platform.osgi.standalone.AsyncAppender">
+        <param name="QueueCapacity" value="5000"/>
+        <param name="IncludeCallerData" value="true"/>
+        <appender-ref ref="FILE"/>
+    </appender>
+     -->
 
     <root level="${root-level:-DEBUG}">
-        <appender-ref ref="CONSOLE"/>
-        <appender-ref ref="FILE" />
+        <!--<appender-ref ref="ASYNC"/>   -->
+
+
+        <!--<appender-ref ref="CONSOLE"/>-->
+        <appender-ref ref="FILE"/>
+       <!-- <appender-ref ref="ASYNC"/>   -->
     </root>
 </configuration>

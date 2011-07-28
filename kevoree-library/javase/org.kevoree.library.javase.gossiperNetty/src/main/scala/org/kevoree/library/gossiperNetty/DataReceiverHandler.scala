@@ -11,7 +11,7 @@ import version.Gossip.VersionedModel
 
 class DataReceiverHandler(gossiperRequestSender: GossiperRequestSender) extends SimpleChannelUpstreamHandler {
 
-	private var logger = LoggerFactory.getLogger(classOf[DataReceiverHandler])
+	private val logger = LoggerFactory.getLogger(classOf[DataReceiverHandler])
 
 	override def messageReceived(ctx: ChannelHandlerContext, e: MessageEvent) {
 		//println("response received")

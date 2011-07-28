@@ -22,8 +22,17 @@ import org.kevoree.tools.marShell.ast._
 
 trait KevsInstParser extends KevsAbstractParser with KevsPropertiesParser {
 
-  def parseInst : Parser[List[Statment]] = ( parseAddChannel | parseAddComponent | parseRemoveChannel | parseRemoveComponent | parseAddGroup | parseRemoveGroup | parseMoveComponent  )
+  def parseInst : Parser[List[Statment]] = ( parseUpdateDictionary | parseAddChannel | parseAddComponent | parseRemoveChannel | parseRemoveComponent | parseAddGroup | parseRemoveGroup | parseMoveComponent  )
 
+  //UPDATE DICTIONARY
+  val updateDictionaryCommandFormat = "updateDictionary <InstanceName>[@<NodeName>] [{ key = \"value\" (, key = \"value\") }]"
+  def parseUpdateDictionary : Parser[List[Statment]] = "updateDictionary" ~ orFailure(ident,updateDictionaryCommandFormat) ~ opt("@"~>ident) ~ opt(parseProperties) ^^{ case _ ~ instanceName ~ optNodeName ~ optProps  =>
+      optProps match {
+        case None => List(UpdateDictionaryStatement(instanceName,optNodeName,new java.util.Properties))
+        case Some(props)=>List(UpdateDictionaryStatement(instanceName,optNodeName,props))
+      }
+  }
+  
   //CHANNEL
   val addChannelCommandFormat = "addChannel <ChannelInstanceName> : <ChannelTypeName> [{ key = \"value\" (, key = \"value\") }]"
   def parseAddChannel : Parser[List[Statment]] = "addChannel" ~ orFailure(ident,addChannelCommandFormat) ~ orFailure(":",addChannelCommandFormat) ~ orFailure(ident,addChannelCommandFormat) ~ opt(parseProperties) ^^{ case _ ~ channelName ~ _ ~ channelTypeName ~ oprops =>

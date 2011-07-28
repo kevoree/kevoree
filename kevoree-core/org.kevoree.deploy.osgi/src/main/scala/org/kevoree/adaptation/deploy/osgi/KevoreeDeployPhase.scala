@@ -30,10 +30,10 @@ class KevoreeDeployPhase(ctx : KevoreeDeployManager) {
 
   var executed : List[PrimitiveCommand] = List()
 
-  def rollback={
+  def rollback() {
     executed.reverse.foreach(c=>{
         try{
-          c.undo
+          c.undo()
         } catch {
           case _ @ e => logger.error("Kevoree Phase ROLLBACK Error !!!! DEPLOYERROR=",e);
         }
@@ -45,7 +45,7 @@ class KevoreeDeployPhase(ctx : KevoreeDeployManager) {
     logger.debug(desc+"="+cmds.size)
     var intermediate = cmds.forall(c=> {
         logger.debug("Execute command "+c.getClass.getName)
-        try{ c.execute } catch { case _ @ e => logger.error("Kevoree DEPLOY ERROR=",e);false }
+        try{ c.execute() } catch { case _ @ e => logger.error("Kevoree DEPLOY ERROR=",e);false }
       })
 
     if(intermediate){
@@ -76,7 +76,7 @@ class KevoreeDeployPhase(ctx : KevoreeDeployManager) {
                  }
                  case None =>
                }
-              b.start;true
+              b.start();true
               }
             }
           } catch {
@@ -88,7 +88,7 @@ class KevoreeDeployPhase(ctx : KevoreeDeployManager) {
     if(!intermediate){
       cmds.foreach(c=>{
           try{
-            c.undo
+            c.undo()
           } catch {
             case _ @ e => logger.error("Kevoree PHase ROLLBACK !!!! DEPLOYERROR="+e);
           }

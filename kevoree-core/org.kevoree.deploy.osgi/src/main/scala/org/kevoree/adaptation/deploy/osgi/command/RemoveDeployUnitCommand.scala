@@ -36,9 +36,9 @@ case class RemoveDeployUnitCommand(deployUnit : DeployUnit, ctx : KevoreeDeployM
         println("found "+bundleMappingFound.bundle)
         println("found "+bundleMappingFound.bundle.getBundleContext)
 
-          var osgibundleContext = bundleMappingFound.bundle.getBundleContext
-          var bundle = osgibundleContext.getBundle
-          bundle.uninstall
+          val osgibundleContext = bundleMappingFound.bundle.getBundleContext
+          val bundle = osgibundleContext.getBundle
+          bundle.uninstall()
           logger.info("Deploy Unit Bundle remove , try to refresh package")
 
           ctx.getServicePackageAdmin.refreshPackages(Array(bundle))
@@ -51,7 +51,7 @@ case class RemoveDeployUnitCommand(deployUnit : DeployUnit, ctx : KevoreeDeployM
     }
   }
 
-  def undo() = {
-    AddDeployUnitCommand(deployUnit,ctx).execute
+  def undo() {
+    AddDeployUnitCommand(deployUnit,ctx).execute()
   }
 }

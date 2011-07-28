@@ -34,20 +34,19 @@ import org.kevoree.framework.AbstractComponentType;
 import org.kevoree.framework.MessagePort;
 
 /**
- *
  * @author gnain
  */
 @Provides({
-    @ProvidedPort(name = "In", type = PortType.MESSAGE)
+		@ProvidedPort(name = "In", type = PortType.MESSAGE)
 })
 @Requires({
-    @RequiredPort(name = "Out", type = PortType.MESSAGE)
-       , @RequiredPort(name = "Out2", type = PortType.MESSAGE)
+		@RequiredPort(name = "Out", type = PortType.MESSAGE, needCheckDependency = true, optional = true),
+		@RequiredPort(name = "Out2", type = PortType.MESSAGE, needCheckDependency = true, optional = true)
 })
 
 
 @DictionaryType({
-    @DictionaryAttribute(name = "chaine", optional = false)
+		@DictionaryAttribute(name = "chaine", optional = false)
 })
 
 @Library(name = "Kevoree-Samples")
@@ -56,37 +55,37 @@ public class ComponentDemoContinuousIntegration extends AbstractComponentType {
 
 
 	String chaine;
-	
-    @Start
-    public void start() {
-        System.out.println("ComponentDemoContinuousIntegration::start() V7");
-        for (String key : this.getDictionary().keySet()) {
-            System.out.println("key=" + key + "=" + this.getDictionary().get(key));
-        }
-        chaine =  (String) this.getDictionary().get("chaine");
 
-    }
+	@Start
+	public void start () {
+		System.out.println("ComponentDemoContinuousIntegration::start() V7");
+		for (String key : this.getDictionary().keySet()) {
+			System.out.println("key=" + key + "=" + this.getDictionary().get(key));
+		}
+		chaine = (String) this.getDictionary().get("chaine");
 
-    @Stop
-    public void stop() {
-        System.out.println("ComponentDemoContinuousIntegration::stop()");
-    }
+	}
 
-    @Update
-    public void update() {
-        System.out.println("ComponentDemoContinuousIntegration::update()");
-        chaine =  (String) this.getDictionary().get("chaine");
-    }
-    
-    @Port(name = "In")
-    public void prov1Processor(Object o) {
-        forward("" + o);
-    }
+	@Stop
+	public void stop () {
+		System.out.println("ComponentDemoContinuousIntegration::stop()");
+	}
 
-    private void forward(String msg) {
-        if (this.isPortBinded("Out")) {
-            this.getPortByName("Out", MessagePort.class).process(chaine + msg.toUpperCase());
-        }
-    }
- 
+	@Update
+	public void update () {
+		System.out.println("ComponentDemoContinuousIntegration::update()");
+		chaine = (String) this.getDictionary().get("chaine");
+	}
+
+	@Port(name = "In")
+	public void prov1Processor (Object o) {
+		forward("" + o);
+	}
+
+	private void forward (String msg) {
+		if (this.isPortBinded("Out")) {
+			this.getPortByName("Out", MessagePort.class).process(chaine + msg.toUpperCase());
+		}
+	}
+
 }

@@ -32,9 +32,9 @@ import java.util.HashMap;
  */
 
 @Requires({
-        @RequiredPort(name = "on", type = PortType.MESSAGE, noDependency=true),
+        @RequiredPort(name = "on", type = PortType.MESSAGE),
         //@RequiredPort(name = "on2", type=PortType.MESSAGE),
-        @RequiredPort(name = "off", type = PortType.MESSAGE, noDependency=true),
+        @RequiredPort(name = "off", type = PortType.MESSAGE),
         @RequiredPort(name = "toggle", type = PortType.SERVICE, className = ToggleLightService.class, optional = true)
 })
 @ComponentType
@@ -113,6 +113,8 @@ public class FakeSimpleSwitch extends AbstractFakeStuffComponent {
             add(on);
             add(off);
             add(toogle);
+
+			this.setDefaultCloseOperation (JFrame.DO_NOTHING_ON_CLOSE);
 
             pack();
             setVisible(true);

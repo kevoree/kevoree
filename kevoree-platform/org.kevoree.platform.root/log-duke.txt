@@ -1,0 +1,319 @@
+====
+    Licensed under the GNU LESSER GENERAL PUBLIC LICENSE, Version 3, 29 June 2007;
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+    	http://www.gnu.org/licenses/lgpl-3.0.txt
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+====
+
+o.o.p.u.c.handler.HandlerActivator - Handler for protocols [mvn] started
+o.o.p.u.c.handler.HandlerActivator - Handler for protocols [assembly, assemblyref] started
+o.kevoree.core.impl.KevoreeCoreBean - Start event : node name = duke
+o.kevoree.core.impl.KevoreeCoreBean - update asked
+o.kevoree.core.impl.KevoreeCoreBean - Actor size 0
+o.kevoree.core.impl.KevoreeCoreBean - Copy Model
+o.kevoree.core.impl.KevoreeCoreBean - Begin update model 1307524929780
+o.kevoree.core.impl.KevoreeCoreBean - Before kompare
+o.kevoree.core.impl.KevoreeCoreBean - update end
+o.k.kompare.KevoreeKompareBean - INIT NODE v2 duke
+o.kevoree.core.impl.KevoreeCoreBean - Before deploy
+o.k.a.d.o.KevoreeAdaptationDeployServiceOSGi - Plannification time = 65 ms
+o.k.a.d.o.KevoreeAdaptationDeployServiceOSGi - stop command
+o.k.a.d.o.KevoreeAdaptationDeployServiceOSGi - start
+o.k.a.d.o.KevoreeAdaptationDeployServiceOSGi - FakeConsole1544511805
+o.k.a.d.o.KevoreeAdaptationDeployServiceOSGi - hub2
+o.k.a.d.osgi.KevoreeDeployPhase - Phase 0 STOP COMPONENT=0
+o.k.a.d.osgi.KevoreeDeployPhase - Result : true
+o.k.a.d.osgi.KevoreeDeployPhase - Phase 1 Remove Binding=0
+o.k.a.d.osgi.KevoreeDeployPhase - Result : true
+o.k.a.d.osgi.KevoreeDeployPhase - Phase 2 Remove Instance=0
+o.k.a.d.osgi.KevoreeDeployPhase - Result : true
+o.k.a.d.osgi.KevoreeDeployPhase - Phase 3 Remove ComponentType=0
+o.k.a.d.osgi.KevoreeDeployPhase - Result : true
+o.k.a.d.osgi.KevoreeDeployPhase - Phase 4 Remove TypeDefinition DeployUnit=0
+o.k.a.d.osgi.KevoreeDeployPhase - Result : true
+o.k.a.d.osgi.KevoreeDeployPhase - Phase 5 ThirdParty=1
+o.k.a.d.osgi.KevoreeDeployPhase - Execute command org.kevoree.adaptation.deploy.osgi.command.AddThirdPartyCommand
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:org.kevoree.extra/org.kevoree.extra.osgi.rxtx/2.2.0
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://maven.kevoree.org/libs-snapshot-local!org.kevoree.extra/org.kevoree.extra.osgi.rxtx/2.2.0
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://maven.kevoree.org/snapshots!org.kevoree.extra/org.kevoree.extra.osgi.rxtx/2.2.0
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://scala-tools.org/repo-releases!org.kevoree.extra/org.kevoree.extra.osgi.rxtx/2.2.0
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://maven.kevoree.org/release!org.kevoree.extra/org.kevoree.extra.osgi.rxtx/2.2.0
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://repo1.maven.org/maven2!org.kevoree.extra/org.kevoree.extra.osgi.rxtx/2.2.0
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://127.0.0.1:8000/provisioning/!org.kevoree.extra/org.kevoree.extra.osgi.rxtx/2.2.0
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://127.0.0.1:8000/provisioning/!org.kevoree.extra/org.kevoree.extra.osgi.rxtx/2.2.0
+o.k.a.d.o.c.AddThirdPartyCommand - CMD ADD ThirdParty EXECUTION => url=mvn:org.kevoree.extra/org.kevoree.extra.osgi.rxtx/2.2.0
+o.o.p.u.m.c.MavenConfigurationImpl - Using repositories [[file:/Users/ffouquet/.m2/repository/,releases=true,snapshots=true, http://maven.kevoree.org/snapshots/,releases=true,snapshots=false, http://osgi.sonatype.org/content/groups/pax-runner/,releases=true,snapshots=false, http://repo1.maven.org/maven2/,releases=true,snapshots=false, http://repository.ops4j.org/maven2/,releases=true,snapshots=false, http://repository.springsource.com/maven/bundles/release/,releases=true,snapshots=false, http://repository.springsource.com/maven/bundles/external/,releases=true,snapshots=false]]
+o.o.pax.url.mvn.internal.Connection - Resolving [mvn:org.kevoree.extra/org.kevoree.extra.osgi.rxtx/2.2.0]
+o.o.pax.url.mvn.internal.LogAdapter - Using manager SimpleLocalRepositoryManager with priority 0 for /Users/ffouquet/.m2/repository
+o.o.p.u.m.i.AetherBasedResolver - Resolved (org.kevoree.extra:org.kevoree.extra.osgi.rxtx:jar:2.2.0) as /Users/ffouquet/.m2/repository/org/kevoree/extra/org.kevoree.extra.osgi.rxtx/2.2.0/org.kevoree.extra.osgi.rxtx-2.2.0.jar
+o.k.a.d.osgi.KevoreeDeployPhase - Resolving bundle: org.rxtx
+o.k.a.d.osgi.KevoreeDeployPhase - Result : true
+o.k.a.d.osgi.KevoreeDeployPhase - Phase 6 Add TypeDefinition DeployUnit=2
+o.k.a.d.osgi.KevoreeDeployPhase - Execute command org.kevoree.adaptation.deploy.osgi.command.AddDeployUnitCommand
+o.k.a.d.o.c.AddDeployUnitCommand - CMD ADD DEPLOY UNIT EXECUTION 
+o.k.a.d.o.c.AddDeployUnitCommand - potential url=mvn:org.kevoree.library.javase/org.kevoree.library.javase.fakeDomo/1.2.0-SNAPSHOT
+o.k.a.d.o.c.AddDeployUnitCommand - potential url=mvn:http://maven.kevoree.org/libs-snapshot-local!org.kevoree.library.javase/org.kevoree.library.javase.fakeDomo/1.2.0-SNAPSHOT
+o.k.a.d.o.c.AddDeployUnitCommand - potential url=mvn:http://maven.kevoree.org/libs-snapshot-local!org.kevoree.library.javase/org.kevoree.library.javase.fakeDomo/1.2.0-SNAPSHOT
+o.k.a.d.o.c.AddDeployUnitCommand - potential url=mvn:http://maven.kevoree.org/snapshots!org.kevoree.library.javase/org.kevoree.library.javase.fakeDomo/1.2.0-SNAPSHOT
+o.k.a.d.o.c.AddDeployUnitCommand - potential url=mvn:http://scala-tools.org/repo-releases!org.kevoree.library.javase/org.kevoree.library.javase.fakeDomo/1.2.0-SNAPSHOT
+o.k.a.d.o.c.AddDeployUnitCommand - potential url=mvn:http://maven.kevoree.org/release!org.kevoree.library.javase/org.kevoree.library.javase.fakeDomo/1.2.0-SNAPSHOT
+o.k.a.d.o.c.AddDeployUnitCommand - potential url=mvn:http://repo1.maven.org/maven2!org.kevoree.library.javase/org.kevoree.library.javase.fakeDomo/1.2.0-SNAPSHOT
+o.k.a.d.o.c.AddDeployUnitCommand - potential url=mvn:http://127.0.0.1:8000/provisioning/!org.kevoree.library.javase/org.kevoree.library.javase.fakeDomo/1.2.0-SNAPSHOT
+o.k.a.d.o.c.AddDeployUnitCommand - potential url=mvn:http://127.0.0.1:8000/provisioning/!org.kevoree.library.javase/org.kevoree.library.javase.fakeDomo/1.2.0-SNAPSHOT
+o.k.a.d.o.c.AddDeployUnitCommand - Try to install from URI, mvn:org.kevoree.library.javase/org.kevoree.library.javase.fakeDomo/1.2.0-SNAPSHOT
+o.o.pax.url.mvn.internal.Connection - Resolving [mvn:org.kevoree.library.javase/org.kevoree.library.javase.fakeDomo/1.2.0-SNAPSHOT]
+o.o.pax.url.mvn.internal.LogAdapter - Using manager SimpleLocalRepositoryManager with priority 0 for /Users/ffouquet/.m2/repository
+o.o.pax.url.mvn.internal.LogAdapter - Using connector WagonRepositoryConnector with priority 0 for http://maven.kevoree.org/snapshots/
+o.o.pax.url.mvn.internal.LogAdapter - Using connector WagonRepositoryConnector with priority 0 for http://repo1.maven.org/maven2/
+o.o.pax.url.mvn.internal.LogAdapter - Using connector WagonRepositoryConnector with priority 0 for http://osgi.sonatype.org/content/groups/pax-runner/
+o.o.pax.url.mvn.internal.LogAdapter - Using connector WagonRepositoryConnector with priority 0 for file:/Users/ffouquet/.m2/repository/
+o.o.pax.url.mvn.internal.LogAdapter - Reading resolution tracking file /Users/ffouquet/.m2/repository/org/kevoree/library/javase/org.kevoree.library.javase.fakeDomo/1.2.0-SNAPSHOT/resolver-status.properties
+o.o.pax.url.mvn.internal.LogAdapter - Writing resolution tracking file /Users/ffouquet/.m2/repository/org/kevoree/library/javase/org.kevoree.library.javase.fakeDomo/1.2.0-SNAPSHOT/resolver-status.properties
+o.o.pax.url.mvn.internal.LogAdapter - Using connector WagonRepositoryConnector with priority 0 for http://repository.ops4j.org/maven2/
+o.o.pax.url.mvn.internal.LogAdapter - Reading resolution tracking file /Users/ffouquet/.m2/repository/org/kevoree/library/javase/org.kevoree.library.javase.fakeDomo/1.2.0-SNAPSHOT/resolver-status.properties
+o.o.pax.url.mvn.internal.LogAdapter - Writing resolution tracking file /Users/ffouquet/.m2/repository/org/kevoree/library/javase/org.kevoree.library.javase.fakeDomo/1.2.0-SNAPSHOT/resolver-status.properties
+o.o.pax.url.mvn.internal.LogAdapter - Using connector WagonRepositoryConnector with priority 0 for http://repository.springsource.com/maven/bundles/release/
+o.o.pax.url.mvn.internal.LogAdapter - Reading resolution tracking file /Users/ffouquet/.m2/repository/org/kevoree/library/javase/org.kevoree.library.javase.fakeDomo/1.2.0-SNAPSHOT/resolver-status.properties
+o.o.pax.url.mvn.internal.LogAdapter - Writing resolution tracking file /Users/ffouquet/.m2/repository/org/kevoree/library/javase/org.kevoree.library.javase.fakeDomo/1.2.0-SNAPSHOT/resolver-status.properties
+o.o.pax.url.mvn.internal.LogAdapter - Using connector WagonRepositoryConnector with priority 0 for http://repository.springsource.com/maven/bundles/external/
+o.o.pax.url.mvn.internal.LogAdapter - Reading resolution tracking file /Users/ffouquet/.m2/repository/org/kevoree/library/javase/org.kevoree.library.javase.fakeDomo/1.2.0-SNAPSHOT/resolver-status.properties
+o.o.pax.url.mvn.internal.LogAdapter - Writing resolution tracking file /Users/ffouquet/.m2/repository/org/kevoree/library/javase/org.kevoree.library.javase.fakeDomo/1.2.0-SNAPSHOT/resolver-status.properties
+o.o.pax.url.mvn.internal.LogAdapter - Reading resolution tracking file /Users/ffouquet/.m2/repository/org/kevoree/library/javase/org.kevoree.library.javase.fakeDomo/1.2.0-SNAPSHOT/resolver-status.properties
+o.o.pax.url.mvn.internal.LogAdapter - Writing resolution tracking file /Users/ffouquet/.m2/repository/org/kevoree/library/javase/org.kevoree.library.javase.fakeDomo/1.2.0-SNAPSHOT/resolver-status.properties
+o.o.pax.url.mvn.internal.LogAdapter - Reading resolution tracking file /Users/ffouquet/.m2/repository/org/kevoree/library/javase/org.kevoree.library.javase.fakeDomo/1.2.0-SNAPSHOT/resolver-status.properties
+o.o.pax.url.mvn.internal.LogAdapter - Writing resolution tracking file /Users/ffouquet/.m2/repository/org/kevoree/library/javase/org.kevoree.library.javase.fakeDomo/1.2.0-SNAPSHOT/resolver-status.properties
+o.o.pax.url.mvn.internal.LogAdapter - Reading resolution tracking file /Users/ffouquet/.m2/repository/org/kevoree/library/javase/org.kevoree.library.javase.fakeDomo/1.2.0-SNAPSHOT/resolver-status.properties
+o.o.pax.url.mvn.internal.LogAdapter - Writing resolution tracking file /Users/ffouquet/.m2/repository/org/kevoree/library/javase/org.kevoree.library.javase.fakeDomo/1.2.0-SNAPSHOT/resolver-status.properties
+o.o.p.u.m.i.AetherBasedResolver - Resolved (org.kevoree.library.javase:org.kevoree.library.javase.fakeDomo:jar:1.2.0-SNAPSHOT) as /Users/ffouquet/.m2/repository/org/kevoree/library/javase/org.kevoree.library.javase.fakeDomo/1.2.0-SNAPSHOT/org.kevoree.library.javase.fakeDomo-1.2.0-SNAPSHOT.jar
+o.k.a.d.osgi.KevoreeDeployPhase - Execute command org.kevoree.adaptation.deploy.osgi.command.AddDeployUnitCommand
+o.k.a.d.o.c.AddDeployUnitCommand - CMD ADD DEPLOY UNIT EXECUTION 
+o.k.a.d.o.c.AddDeployUnitCommand - potential url=mvn:org.kevoree.library.javase/org.kevoree.library.javase.serialCT/1.2.0-SNAPSHOT
+o.k.a.d.o.c.AddDeployUnitCommand - potential url=mvn:http://maven.kevoree.org/libs-snapshot-local!org.kevoree.library.javase/org.kevoree.library.javase.serialCT/1.2.0-SNAPSHOT
+o.k.a.d.o.c.AddDeployUnitCommand - potential url=mvn:http://maven.kevoree.org/libs-snapshot-local!org.kevoree.library.javase/org.kevoree.library.javase.serialCT/1.2.0-SNAPSHOT
+o.k.a.d.o.c.AddDeployUnitCommand - potential url=mvn:http://maven.kevoree.org/snapshots!org.kevoree.library.javase/org.kevoree.library.javase.serialCT/1.2.0-SNAPSHOT
+o.k.a.d.o.c.AddDeployUnitCommand - potential url=mvn:http://scala-tools.org/repo-releases!org.kevoree.library.javase/org.kevoree.library.javase.serialCT/1.2.0-SNAPSHOT
+o.k.a.d.o.c.AddDeployUnitCommand - potential url=mvn:http://maven.kevoree.org/release!org.kevoree.library.javase/org.kevoree.library.javase.serialCT/1.2.0-SNAPSHOT
+o.k.a.d.o.c.AddDeployUnitCommand - potential url=mvn:http://repo1.maven.org/maven2!org.kevoree.library.javase/org.kevoree.library.javase.serialCT/1.2.0-SNAPSHOT
+o.k.a.d.o.c.AddDeployUnitCommand - potential url=mvn:http://127.0.0.1:8000/provisioning/!org.kevoree.library.javase/org.kevoree.library.javase.serialCT/1.2.0-SNAPSHOT
+o.k.a.d.o.c.AddDeployUnitCommand - potential url=mvn:http://127.0.0.1:8000/provisioning/!org.kevoree.library.javase/org.kevoree.library.javase.serialCT/1.2.0-SNAPSHOT
+o.k.a.d.o.c.AddDeployUnitCommand - Try to install from URI, mvn:org.kevoree.library.javase/org.kevoree.library.javase.serialCT/1.2.0-SNAPSHOT
+o.o.pax.url.mvn.internal.Connection - Resolving [mvn:org.kevoree.library.javase/org.kevoree.library.javase.serialCT/1.2.0-SNAPSHOT]
+o.o.pax.url.mvn.internal.LogAdapter - Using manager SimpleLocalRepositoryManager with priority 0 for /Users/ffouquet/.m2/repository
+o.o.pax.url.mvn.internal.LogAdapter - Skipped remote update check for org.kevoree.library.javase:org.kevoree.library.javase.serialCT:1.2.0-SNAPSHOT/maven-metadata.xml, locally built metadata up-to-date.
+o.o.pax.url.mvn.internal.LogAdapter - Skipped remote update check for org.kevoree.library.javase:org.kevoree.library.javase.serialCT:1.2.0-SNAPSHOT/maven-metadata.xml, locally built metadata up-to-date.
+o.o.pax.url.mvn.internal.LogAdapter - Skipped remote update check for org.kevoree.library.javase:org.kevoree.library.javase.serialCT:1.2.0-SNAPSHOT/maven-metadata.xml, locally built metadata up-to-date.
+o.o.pax.url.mvn.internal.LogAdapter - Skipped remote update check for org.kevoree.library.javase:org.kevoree.library.javase.serialCT:1.2.0-SNAPSHOT/maven-metadata.xml, locally built metadata up-to-date.
+o.o.pax.url.mvn.internal.LogAdapter - Skipped remote update check for org.kevoree.library.javase:org.kevoree.library.javase.serialCT:1.2.0-SNAPSHOT/maven-metadata.xml, locally built metadata up-to-date.
+o.o.pax.url.mvn.internal.LogAdapter - Skipped remote update check for org.kevoree.library.javase:org.kevoree.library.javase.serialCT:1.2.0-SNAPSHOT/maven-metadata.xml, locally built metadata up-to-date.
+o.o.pax.url.mvn.internal.LogAdapter - Skipped remote update check for org.kevoree.library.javase:org.kevoree.library.javase.serialCT:1.2.0-SNAPSHOT/maven-metadata.xml, locally built metadata up-to-date.
+o.o.p.u.m.i.AetherBasedResolver - Resolved (org.kevoree.library.javase:org.kevoree.library.javase.serialCT:jar:1.2.0-SNAPSHOT) as /Users/ffouquet/.m2/repository/org/kevoree/library/javase/org.kevoree.library.javase.serialCT/1.2.0-SNAPSHOT/org.kevoree.library.javase.serialCT-1.2.0-SNAPSHOT.jar
+o.k.a.d.osgi.KevoreeDeployPhase - Resolving bundle: org.kevoree.library.javase.org.kevoree.library.javase.fakeDomo
+o.k.a.d.osgi.KevoreeDeployPhase - Resolving bundle: org.kevoree.library.javase.org.kevoree.library.javase.serialCT
+o.k.a.d.osgi.KevoreeDeployPhase - Result : true
+o.k.a.d.osgi.KevoreeDeployPhase - Phase 7 Add ComponentType=2
+o.k.a.d.osgi.KevoreeDeployPhase - Execute command org.kevoree.adaptation.deploy.osgi.command.AddTypeCommand
+o.k.a.d.osgi.command.AddTypeCommand - CMD ADD CT EXECUTION 
+o.k.a.d.osgi.KevoreeDeployPhase - Execute command org.kevoree.adaptation.deploy.osgi.command.AddTypeCommand
+o.k.a.d.osgi.command.AddTypeCommand - CMD ADD CT EXECUTION 
+o.k.a.d.osgi.KevoreeDeployPhase - Result : true
+o.k.a.d.osgi.KevoreeDeployPhase - Phase 8 install ComponentInstance=2
+o.k.a.d.osgi.KevoreeDeployPhase - Execute command org.kevoree.adaptation.deploy.osgi.command.AddInstanceCommand
+o.o.p.u.a.internal.ResourceAssembly - Searching for [/var/folders/Ba/BaM3d1ftEQmAmfHRSFKFwk+++TM/-Tmp-/temp75916067006185402831307524886438547000/felixCache_duke/bundle0/dyanmicBundle_hub2 includes([.*]) excludes([])]
+o.o.p.u.a.internal.ResourceAssembly - Path [/var/folders/Ba/BaM3d1ftEQmAmfHRSFKFwk+++TM/-Tmp-/temp75916067006185402831307524886438547000/felixCache_duke/bundle0/dyanmicBundle_hub2] is not a valid url. Reason: no protocol: /var/folders/Ba/BaM3d1ftEQmAmfHRSFKFwk+++TM/-Tmp-/temp75916067006185402831307524886438547000/felixCache_duke/bundle0/dyanmicBundle_hub2. Continue discovery...
+o.k.a.d.osgi.KevoreeDeployPhase - Execute command org.kevoree.adaptation.deploy.osgi.command.AddInstanceCommand
+o.o.p.u.a.internal.ResourceAssembly - Searching for [/var/folders/Ba/BaM3d1ftEQmAmfHRSFKFwk+++TM/-Tmp-/temp75916067006185402831307524886438547000/felixCache_duke/bundle0/dyanmicBundle_FakeConsole1544511805 includes([.*]) excludes([])]
+o.o.p.u.a.internal.ResourceAssembly - Path [/var/folders/Ba/BaM3d1ftEQmAmfHRSFKFwk+++TM/-Tmp-/temp75916067006185402831307524886438547000/felixCache_duke/bundle0/dyanmicBundle_FakeConsole1544511805] is not a valid url. Reason: no protocol: /var/folders/Ba/BaM3d1ftEQmAmfHRSFKFwk+++TM/-Tmp-/temp75916067006185402831307524886438547000/felixCache_duke/bundle0/dyanmicBundle_FakeConsole1544511805. Continue discovery...
+o.k.a.d.osgi.KevoreeDeployPhase - Resolving bundle: hub2
+o.k.a.d.osgi.KevoreeDeployPhase - Resolving bundle: FakeConsole1544511805
+o.k.a.d.osgi.KevoreeDeployPhase - Result : true
+o.k.a.d.osgi.KevoreeDeployPhase - Phase 9 install Bindings=2
+o.k.a.d.osgi.KevoreeDeployPhase - Execute command org.kevoree.adaptation.deploy.osgi.command.AddFragmentBindingCommand
+o.k.a.d.osgi.KevoreeDeployPhase - Execute command org.kevoree.adaptation.deploy.osgi.command.AddBindingCommand
+o.k.a.d.osgi.KevoreeDeployPhase - Result : true
+o.k.a.d.osgi.KevoreeDeployPhase - Phase 10 SET PROPERTY=2
+o.k.a.d.osgi.KevoreeDeployPhase - Execute command org.kevoree.adaptation.deploy.osgi.command.UpdateDictionaryCommand
+o.k.a.d.osgi.KevoreeDeployPhase - Execute command org.kevoree.adaptation.deploy.osgi.command.UpdateDictionaryCommand
+o.k.a.d.osgi.KevoreeDeployPhase - Result : true
+o.k.a.d.osgi.KevoreeDeployPhase - Phase 11 START COMPONENT=2
+o.k.a.d.osgi.KevoreeDeployPhase - Execute command org.kevoree.adaptation.deploy.osgi.command.StartInstanceCommand
+o.k.a.d.osgi.KevoreeDeployPhase - Execute command org.kevoree.adaptation.deploy.osgi.command.StartInstanceCommand
+o.kevoree.library.channels.SerialCT - Starting org.kevoree.library.channels.SerialCTFactory$$anon$1 hub2
+o.kevoree.library.channels.SerialCT - Error : 
+gnu.io.NoSuchPortException: null
+	at gnu.io.CommPortIdentifier.getPortIdentifier(CommPortIdentifier.java:269) ~[2.2.0:na]
+	at org.kevoree.library.channels.SerialCT.startRxTxChannel(SerialCT.java:43) ~[1.2.0-SNAPSHOT:na]
+	at org.kevoree.library.channels.SerialCTFactory$$anon$1.startChannelFragment(SerialCTFactory.scala:5) [1.2.0-SNAPSHOT:na]
+	at org.kevoree.framework.ChannelTypeFragment$class.internal_process(ChannelTypeFragment.scala:134) [org.kevoree.framework-1.2.0-SNAPSHOT.jar:na]
+	at org.kevoree.library.channels.SerialCTFactory$$anon$1.internal_process(SerialCTFactory.scala:4) [1.2.0-SNAPSHOT:na]
+	at org.kevoree.framework.KevoreeActor$$anonfun$act$1$$anonfun$apply$1.apply(KevoreeActor.scala:66) [org.kevoree.framework-1.2.0-SNAPSHOT.jar:na]
+	at org.kevoree.framework.KevoreeActor$$anonfun$act$1$$anonfun$apply$1.apply(KevoreeActor.scala:57) [org.kevoree.framework-1.2.0-SNAPSHOT.jar:na]
+	at scala.actors.ReactorTask.run(ReactorTask.scala:31) [scala-library-2.9.0-1.jar:na]
+	at scala.actors.Reactor$class.resumeReceiver(Reactor.scala:129) [scala-library-2.9.0-1.jar:na]
+	at org.kevoree.library.channels.SerialCTFactory$$anon$1.scala$actors$ReplyReactor$$super$resumeReceiver(SerialCTFactory.scala:4) [1.2.0-SNAPSHOT:na]
+	at scala.actors.ReplyReactor$class.resumeReceiver(ReplyReactor.scala:68) [scala-library-2.9.0-1.jar:na]
+	at org.kevoree.library.channels.SerialCTFactory$$anon$1.resumeReceiver(SerialCTFactory.scala:4) [1.2.0-SNAPSHOT:na]
+	at scala.actors.Actor$class.searchMailbox(Actor.scala:500) [scala-library-2.9.0-1.jar:na]
+	at org.kevoree.library.channels.SerialCTFactory$$anon$1.searchMailbox(SerialCTFactory.scala:4) [1.2.0-SNAPSHOT:na]
+	at scala.actors.Reactor$$anonfun$startSearch$1$$anonfun$apply$mcV$sp$1.apply$mcV$sp(Reactor.scala:117) [scala-library-2.9.0-1.jar:na]
+	at scala.actors.Reactor$$anonfun$startSearch$1$$anonfun$apply$mcV$sp$1.apply(Reactor.scala:114) [scala-library-2.9.0-1.jar:na]
+	at scala.actors.Reactor$$anonfun$startSearch$1$$anonfun$apply$mcV$sp$1.apply(Reactor.scala:114) [scala-library-2.9.0-1.jar:na]
+	at scala.actors.ReactorTask.run(ReactorTask.scala:33) [scala-library-2.9.0-1.jar:na]
+	at scala.concurrent.forkjoin.ForkJoinPool$AdaptedRunnable.exec(ForkJoinPool.java:611) [scala-library-2.9.0-1.jar:na]
+	at scala.concurrent.forkjoin.ForkJoinTask.quietlyExec(ForkJoinTask.java:422) [scala-library-2.9.0-1.jar:na]
+	at scala.concurrent.forkjoin.ForkJoinWorkerThread.mainLoop(ForkJoinWorkerThread.java:340) [scala-library-2.9.0-1.jar:na]
+	at scala.concurrent.forkjoin.ForkJoinWorkerThread.run(ForkJoinWorkerThread.java:325) [scala-library-2.9.0-1.jar:na]
+o.k.a.d.osgi.KevoreeDeployPhase - Result : true
+o.kevoree.core.impl.KevoreeCoreBean - Deploy result true
+o.kevoree.core.impl.KevoreeCoreBean - End deploy result=true-4068
+o.o.p.u.c.handler.HandlerActivator - Handler for protocols [mvn] started
+o.o.p.u.c.handler.HandlerActivator - Handler for protocols [assembly, assemblyref] started
+o.kevoree.core.impl.KevoreeCoreBean - Start event : node name = duke
+o.kevoree.core.impl.KevoreeCoreBean - update asked
+o.kevoree.core.impl.KevoreeCoreBean - update end
+o.kevoree.core.impl.KevoreeCoreBean - Actor size 0
+o.kevoree.core.impl.KevoreeCoreBean - Copy Model
+o.kevoree.core.impl.KevoreeCoreBean - Begin update model 1307525234218
+o.kevoree.core.impl.KevoreeCoreBean - Before kompare
+o.k.kompare.KevoreeKompareBean - INIT NODE v2 duke
+o.kevoree.core.impl.KevoreeCoreBean - Before deploy
+o.k.a.d.o.KevoreeAdaptationDeployServiceOSGi - Plannification time = 37 ms
+o.k.a.d.o.KevoreeAdaptationDeployServiceOSGi - stop command
+o.k.a.d.o.KevoreeAdaptationDeployServiceOSGi - start
+o.k.a.d.o.KevoreeAdaptationDeployServiceOSGi - FakeConsole1544511805
+o.k.a.d.o.KevoreeAdaptationDeployServiceOSGi - hub2
+o.k.a.d.osgi.KevoreeDeployPhase - Phase 0 STOP COMPONENT=0
+o.k.a.d.osgi.KevoreeDeployPhase - Result : true
+o.k.a.d.osgi.KevoreeDeployPhase - Phase 1 Remove Binding=0
+o.k.a.d.osgi.KevoreeDeployPhase - Result : true
+o.k.a.d.osgi.KevoreeDeployPhase - Phase 2 Remove Instance=0
+o.k.a.d.osgi.KevoreeDeployPhase - Result : true
+o.k.a.d.osgi.KevoreeDeployPhase - Phase 3 Remove ComponentType=0
+o.k.a.d.osgi.KevoreeDeployPhase - Result : true
+o.k.a.d.osgi.KevoreeDeployPhase - Phase 4 Remove TypeDefinition DeployUnit=0
+o.k.a.d.osgi.KevoreeDeployPhase - Result : true
+o.k.a.d.osgi.KevoreeDeployPhase - Phase 5 ThirdParty=1
+o.k.a.d.osgi.KevoreeDeployPhase - Execute command org.kevoree.adaptation.deploy.osgi.command.AddThirdPartyCommand
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:org.kevoree.extra/org.kevoree.extra.osgi.rxtx/2.2.0
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://maven.kevoree.org/libs-snapshot-local!org.kevoree.extra/org.kevoree.extra.osgi.rxtx/2.2.0
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://maven.kevoree.org/snapshots!org.kevoree.extra/org.kevoree.extra.osgi.rxtx/2.2.0
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://scala-tools.org/repo-releases!org.kevoree.extra/org.kevoree.extra.osgi.rxtx/2.2.0
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://maven.kevoree.org/release!org.kevoree.extra/org.kevoree.extra.osgi.rxtx/2.2.0
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://repo1.maven.org/maven2!org.kevoree.extra/org.kevoree.extra.osgi.rxtx/2.2.0
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://127.0.0.1:8000/provisioning/!org.kevoree.extra/org.kevoree.extra.osgi.rxtx/2.2.0
+o.k.a.d.o.c.AddThirdPartyCommand - potential url=mvn:http://127.0.0.1:8000/provisioning/!org.kevoree.extra/org.kevoree.extra.osgi.rxtx/2.2.0
+o.k.a.d.o.c.AddThirdPartyCommand - CMD ADD ThirdParty EXECUTION => url=mvn:org.kevoree.extra/org.kevoree.extra.osgi.rxtx/2.2.0
+o.o.p.u.m.c.MavenConfigurationImpl - Using repositories [[file:/Users/ffouquet/.m2/repository/,releases=true,snapshots=true, http://maven.kevoree.org/snapshots/,releases=true,snapshots=false, http://osgi.sonatype.org/content/groups/pax-runner/,releases=true,snapshots=false, http://repo1.maven.org/maven2/,releases=true,snapshots=false, http://repository.ops4j.org/maven2/,releases=true,snapshots=false, http://repository.springsource.com/maven/bundles/release/,releases=true,snapshots=false, http://repository.springsource.com/maven/bundles/external/,releases=true,snapshots=false]]
+o.o.pax.url.mvn.internal.Connection - Resolving [mvn:org.kevoree.extra/org.kevoree.extra.osgi.rxtx/2.2.0]
+o.o.pax.url.mvn.internal.LogAdapter - Using manager SimpleLocalRepositoryManager with priority 0 for /Users/ffouquet/.m2/repository
+o.o.p.u.m.i.AetherBasedResolver - Resolved (org.kevoree.extra:org.kevoree.extra.osgi.rxtx:jar:2.2.0) as /Users/ffouquet/.m2/repository/org/kevoree/extra/org.kevoree.extra.osgi.rxtx/2.2.0/org.kevoree.extra.osgi.rxtx-2.2.0.jar
+o.k.a.d.osgi.KevoreeDeployPhase - Resolving bundle: org.rxtx
+o.k.a.d.osgi.KevoreeDeployPhase - Result : true
+o.k.a.d.osgi.KevoreeDeployPhase - Phase 6 Add TypeDefinition DeployUnit=2
+o.k.a.d.osgi.KevoreeDeployPhase - Execute command org.kevoree.adaptation.deploy.osgi.command.AddDeployUnitCommand
+o.k.a.d.o.c.AddDeployUnitCommand - CMD ADD DEPLOY UNIT EXECUTION 
+o.k.a.d.o.c.AddDeployUnitCommand - potential url=mvn:org.kevoree.library.javase/org.kevoree.library.javase.fakeDomo/1.2.0-SNAPSHOT
+o.k.a.d.o.c.AddDeployUnitCommand - potential url=mvn:http://maven.kevoree.org/libs-snapshot-local!org.kevoree.library.javase/org.kevoree.library.javase.fakeDomo/1.2.0-SNAPSHOT
+o.k.a.d.o.c.AddDeployUnitCommand - potential url=mvn:http://maven.kevoree.org/libs-snapshot-local!org.kevoree.library.javase/org.kevoree.library.javase.fakeDomo/1.2.0-SNAPSHOT
+o.k.a.d.o.c.AddDeployUnitCommand - potential url=mvn:http://maven.kevoree.org/snapshots!org.kevoree.library.javase/org.kevoree.library.javase.fakeDomo/1.2.0-SNAPSHOT
+o.k.a.d.o.c.AddDeployUnitCommand - potential url=mvn:http://scala-tools.org/repo-releases!org.kevoree.library.javase/org.kevoree.library.javase.fakeDomo/1.2.0-SNAPSHOT
+o.k.a.d.o.c.AddDeployUnitCommand - potential url=mvn:http://maven.kevoree.org/release!org.kevoree.library.javase/org.kevoree.library.javase.fakeDomo/1.2.0-SNAPSHOT
+o.k.a.d.o.c.AddDeployUnitCommand - potential url=mvn:http://repo1.maven.org/maven2!org.kevoree.library.javase/org.kevoree.library.javase.fakeDomo/1.2.0-SNAPSHOT
+o.k.a.d.o.c.AddDeployUnitCommand - potential url=mvn:http://127.0.0.1:8000/provisioning/!org.kevoree.library.javase/org.kevoree.library.javase.fakeDomo/1.2.0-SNAPSHOT
+o.k.a.d.o.c.AddDeployUnitCommand - potential url=mvn:http://127.0.0.1:8000/provisioning/!org.kevoree.library.javase/org.kevoree.library.javase.fakeDomo/1.2.0-SNAPSHOT
+o.k.a.d.o.c.AddDeployUnitCommand - Try to install from URI, mvn:org.kevoree.library.javase/org.kevoree.library.javase.fakeDomo/1.2.0-SNAPSHOT
+o.o.pax.url.mvn.internal.Connection - Resolving [mvn:org.kevoree.library.javase/org.kevoree.library.javase.fakeDomo/1.2.0-SNAPSHOT]
+o.o.pax.url.mvn.internal.LogAdapter - Using manager SimpleLocalRepositoryManager with priority 0 for /Users/ffouquet/.m2/repository
+o.o.pax.url.mvn.internal.LogAdapter - Skipped remote update check for org.kevoree.library.javase:org.kevoree.library.javase.fakeDomo:1.2.0-SNAPSHOT/maven-metadata.xml, locally cached metadata up-to-date.
+o.o.p.u.m.i.AetherBasedResolver - Resolved (org.kevoree.library.javase:org.kevoree.library.javase.fakeDomo:jar:1.2.0-SNAPSHOT) as /Users/ffouquet/.m2/repository/org/kevoree/library/javase/org.kevoree.library.javase.fakeDomo/1.2.0-SNAPSHOT/org.kevoree.library.javase.fakeDomo-1.2.0-SNAPSHOT.jar
+o.k.a.d.osgi.KevoreeDeployPhase - Execute command org.kevoree.adaptation.deploy.osgi.command.AddDeployUnitCommand
+o.k.a.d.o.c.AddDeployUnitCommand - CMD ADD DEPLOY UNIT EXECUTION 
+o.k.a.d.o.c.AddDeployUnitCommand - potential url=mvn:org.kevoree.library.javase/org.kevoree.library.javase.serialCT/1.2.0-SNAPSHOT
+o.k.a.d.o.c.AddDeployUnitCommand - potential url=mvn:http://maven.kevoree.org/libs-snapshot-local!org.kevoree.library.javase/org.kevoree.library.javase.serialCT/1.2.0-SNAPSHOT
+o.k.a.d.o.c.AddDeployUnitCommand - potential url=mvn:http://maven.kevoree.org/libs-snapshot-local!org.kevoree.library.javase/org.kevoree.library.javase.serialCT/1.2.0-SNAPSHOT
+o.k.a.d.o.c.AddDeployUnitCommand - potential url=mvn:http://maven.kevoree.org/snapshots!org.kevoree.library.javase/org.kevoree.library.javase.serialCT/1.2.0-SNAPSHOT
+o.k.a.d.o.c.AddDeployUnitCommand - potential url=mvn:http://scala-tools.org/repo-releases!org.kevoree.library.javase/org.kevoree.library.javase.serialCT/1.2.0-SNAPSHOT
+o.k.a.d.o.c.AddDeployUnitCommand - potential url=mvn:http://maven.kevoree.org/release!org.kevoree.library.javase/org.kevoree.library.javase.serialCT/1.2.0-SNAPSHOT
+o.k.a.d.o.c.AddDeployUnitCommand - potential url=mvn:http://repo1.maven.org/maven2!org.kevoree.library.javase/org.kevoree.library.javase.serialCT/1.2.0-SNAPSHOT
+o.k.a.d.o.c.AddDeployUnitCommand - potential url=mvn:http://127.0.0.1:8000/provisioning/!org.kevoree.library.javase/org.kevoree.library.javase.serialCT/1.2.0-SNAPSHOT
+o.k.a.d.o.c.AddDeployUnitCommand - potential url=mvn:http://127.0.0.1:8000/provisioning/!org.kevoree.library.javase/org.kevoree.library.javase.serialCT/1.2.0-SNAPSHOT
+o.k.a.d.o.c.AddDeployUnitCommand - Try to install from URI, mvn:org.kevoree.library.javase/org.kevoree.library.javase.serialCT/1.2.0-SNAPSHOT
+o.o.pax.url.mvn.internal.Connection - Resolving [mvn:org.kevoree.library.javase/org.kevoree.library.javase.serialCT/1.2.0-SNAPSHOT]
+o.o.pax.url.mvn.internal.LogAdapter - Using manager SimpleLocalRepositoryManager with priority 0 for /Users/ffouquet/.m2/repository
+o.o.pax.url.mvn.internal.LogAdapter - Skipped remote update check for org.kevoree.library.javase:org.kevoree.library.javase.serialCT:1.2.0-SNAPSHOT/maven-metadata.xml, locally built metadata up-to-date.
+o.o.pax.url.mvn.internal.LogAdapter - Skipped remote update check for org.kevoree.library.javase:org.kevoree.library.javase.serialCT:1.2.0-SNAPSHOT/maven-metadata.xml, locally built metadata up-to-date.
+o.o.pax.url.mvn.internal.LogAdapter - Skipped remote update check for org.kevoree.library.javase:org.kevoree.library.javase.serialCT:1.2.0-SNAPSHOT/maven-metadata.xml, locally built metadata up-to-date.
+o.o.pax.url.mvn.internal.LogAdapter - Skipped remote update check for org.kevoree.library.javase:org.kevoree.library.javase.serialCT:1.2.0-SNAPSHOT/maven-metadata.xml, locally built metadata up-to-date.
+o.o.pax.url.mvn.internal.LogAdapter - Skipped remote update check for org.kevoree.library.javase:org.kevoree.library.javase.serialCT:1.2.0-SNAPSHOT/maven-metadata.xml, locally built metadata up-to-date.
+o.o.pax.url.mvn.internal.LogAdapter - Skipped remote update check for org.kevoree.library.javase:org.kevoree.library.javase.serialCT:1.2.0-SNAPSHOT/maven-metadata.xml, locally built metadata up-to-date.
+o.o.pax.url.mvn.internal.LogAdapter - Skipped remote update check for org.kevoree.library.javase:org.kevoree.library.javase.serialCT:1.2.0-SNAPSHOT/maven-metadata.xml, locally built metadata up-to-date.
+o.o.p.u.m.i.AetherBasedResolver - Resolved (org.kevoree.library.javase:org.kevoree.library.javase.serialCT:jar:1.2.0-SNAPSHOT) as /Users/ffouquet/.m2/repository/org/kevoree/library/javase/org.kevoree.library.javase.serialCT/1.2.0-SNAPSHOT/org.kevoree.library.javase.serialCT-1.2.0-SNAPSHOT.jar
+o.k.a.d.osgi.KevoreeDeployPhase - Resolving bundle: org.kevoree.library.javase.org.kevoree.library.javase.fakeDomo
+o.k.a.d.osgi.KevoreeDeployPhase - Resolving bundle: org.kevoree.library.javase.org.kevoree.library.javase.serialCT
+o.k.a.d.osgi.KevoreeDeployPhase - Result : true
+o.k.a.d.osgi.KevoreeDeployPhase - Phase 7 Add ComponentType=2
+o.k.a.d.osgi.KevoreeDeployPhase - Execute command org.kevoree.adaptation.deploy.osgi.command.AddTypeCommand
+o.k.a.d.osgi.command.AddTypeCommand - CMD ADD CT EXECUTION 
+o.k.a.d.osgi.KevoreeDeployPhase - Execute command org.kevoree.adaptation.deploy.osgi.command.AddTypeCommand
+o.k.a.d.osgi.command.AddTypeCommand - CMD ADD CT EXECUTION 
+o.k.a.d.osgi.KevoreeDeployPhase - Result : true
+o.k.a.d.osgi.KevoreeDeployPhase - Phase 8 install ComponentInstance=2
+o.k.a.d.osgi.KevoreeDeployPhase - Execute command org.kevoree.adaptation.deploy.osgi.command.AddInstanceCommand
+o.o.p.u.a.internal.ResourceAssembly - Searching for [/var/folders/Ba/BaM3d1ftEQmAmfHRSFKFwk+++TM/-Tmp-/temp71088230525971337181307525210665168000/felixCache_duke/bundle0/dyanmicBundle_hub2 includes([.*]) excludes([])]
+o.o.p.u.a.internal.ResourceAssembly - Path [/var/folders/Ba/BaM3d1ftEQmAmfHRSFKFwk+++TM/-Tmp-/temp71088230525971337181307525210665168000/felixCache_duke/bundle0/dyanmicBundle_hub2] is not a valid url. Reason: no protocol: /var/folders/Ba/BaM3d1ftEQmAmfHRSFKFwk+++TM/-Tmp-/temp71088230525971337181307525210665168000/felixCache_duke/bundle0/dyanmicBundle_hub2. Continue discovery...
+o.k.a.d.osgi.KevoreeDeployPhase - Execute command org.kevoree.adaptation.deploy.osgi.command.AddInstanceCommand
+o.o.p.u.a.internal.ResourceAssembly - Searching for [/var/folders/Ba/BaM3d1ftEQmAmfHRSFKFwk+++TM/-Tmp-/temp71088230525971337181307525210665168000/felixCache_duke/bundle0/dyanmicBundle_FakeConsole1544511805 includes([.*]) excludes([])]
+o.o.p.u.a.internal.ResourceAssembly - Path [/var/folders/Ba/BaM3d1ftEQmAmfHRSFKFwk+++TM/-Tmp-/temp71088230525971337181307525210665168000/felixCache_duke/bundle0/dyanmicBundle_FakeConsole1544511805] is not a valid url. Reason: no protocol: /var/folders/Ba/BaM3d1ftEQmAmfHRSFKFwk+++TM/-Tmp-/temp71088230525971337181307525210665168000/felixCache_duke/bundle0/dyanmicBundle_FakeConsole1544511805. Continue discovery...
+o.k.a.d.osgi.KevoreeDeployPhase - Resolving bundle: hub2
+o.k.a.d.osgi.KevoreeDeployPhase - Resolving bundle: FakeConsole1544511805
+o.k.a.d.osgi.KevoreeDeployPhase - Result : true
+o.k.a.d.osgi.KevoreeDeployPhase - Phase 9 install Bindings=2
+o.k.a.d.osgi.KevoreeDeployPhase - Execute command org.kevoree.adaptation.deploy.osgi.command.AddFragmentBindingCommand
+o.k.a.d.osgi.KevoreeDeployPhase - Execute command org.kevoree.adaptation.deploy.osgi.command.AddBindingCommand
+o.k.a.d.osgi.KevoreeDeployPhase - Result : true
+o.k.a.d.osgi.KevoreeDeployPhase - Phase 10 SET PROPERTY=2
+o.k.a.d.osgi.KevoreeDeployPhase - Execute command org.kevoree.adaptation.deploy.osgi.command.UpdateDictionaryCommand
+o.k.a.d.osgi.KevoreeDeployPhase - Execute command org.kevoree.adaptation.deploy.osgi.command.UpdateDictionaryCommand
+o.k.a.d.osgi.KevoreeDeployPhase - Result : true
+o.k.a.d.osgi.KevoreeDeployPhase - Phase 11 START COMPONENT=2
+o.k.a.d.osgi.KevoreeDeployPhase - Execute command org.kevoree.adaptation.deploy.osgi.command.StartInstanceCommand
+o.k.a.d.osgi.KevoreeDeployPhase - Execute command org.kevoree.adaptation.deploy.osgi.command.StartInstanceCommand
+o.kevoree.library.channels.SerialCT - Starting org.kevoree.library.channels.SerialCTFactory$$anon$1 hub2
+o.kevoree.library.channels.SerialCT - Error : 
+gnu.io.NoSuchPortException: null
+	at gnu.io.CommPortIdentifier.getPortIdentifier(CommPortIdentifier.java:269) ~[2.2.0:na]
+	at org.kevoree.library.channels.SerialCT.startRxTxChannel(SerialCT.java:43) ~[1.2.0-SNAPSHOT:na]
+	at org.kevoree.library.channels.SerialCTFactory$$anon$1.startChannelFragment(SerialCTFactory.scala:5) [1.2.0-SNAPSHOT:na]
+	at org.kevoree.framework.ChannelTypeFragment$class.internal_process(ChannelTypeFragment.scala:134) [org.kevoree.framework-1.2.0-SNAPSHOT.jar:na]
+	at org.kevoree.library.channels.SerialCTFactory$$anon$1.internal_process(SerialCTFactory.scala:4) [1.2.0-SNAPSHOT:na]
+	at org.kevoree.framework.KevoreeActor$$anonfun$act$1$$anonfun$apply$1.apply(KevoreeActor.scala:66) [org.kevoree.framework-1.2.0-SNAPSHOT.jar:na]
+	at org.kevoree.framework.KevoreeActor$$anonfun$act$1$$anonfun$apply$1.apply(KevoreeActor.scala:57) [org.kevoree.framework-1.2.0-SNAPSHOT.jar:na]
+	at scala.actors.ReactorTask.run(ReactorTask.scala:31) [scala-library-2.9.0-1.jar:na]
+	at scala.actors.Reactor$class.resumeReceiver(Reactor.scala:129) [scala-library-2.9.0-1.jar:na]
+	at org.kevoree.library.channels.SerialCTFactory$$anon$1.scala$actors$ReplyReactor$$super$resumeReceiver(SerialCTFactory.scala:4) [1.2.0-SNAPSHOT:na]
+	at scala.actors.ReplyReactor$class.resumeReceiver(ReplyReactor.scala:68) [scala-library-2.9.0-1.jar:na]
+	at org.kevoree.library.channels.SerialCTFactory$$anon$1.resumeReceiver(SerialCTFactory.scala:4) [1.2.0-SNAPSHOT:na]
+	at scala.actors.Actor$class.searchMailbox(Actor.scala:500) [scala-library-2.9.0-1.jar:na]
+	at org.kevoree.library.channels.SerialCTFactory$$anon$1.searchMailbox(SerialCTFactory.scala:4) [1.2.0-SNAPSHOT:na]
+	at scala.actors.Reactor$$anonfun$startSearch$1$$anonfun$apply$mcV$sp$1.apply$mcV$sp(Reactor.scala:117) [scala-library-2.9.0-1.jar:na]
+	at scala.actors.Reactor$$anonfun$startSearch$1$$anonfun$apply$mcV$sp$1.apply(Reactor.scala:114) [scala-library-2.9.0-1.jar:na]
+	at scala.actors.Reactor$$anonfun$startSearch$1$$anonfun$apply$mcV$sp$1.apply(Reactor.scala:114) [scala-library-2.9.0-1.jar:na]
+	at scala.actors.ReactorTask.run(ReactorTask.scala:33) [scala-library-2.9.0-1.jar:na]
+	at scala.concurrent.forkjoin.ForkJoinPool$AdaptedRunnable.exec(ForkJoinPool.java:611) [scala-library-2.9.0-1.jar:na]
+	at scala.concurrent.forkjoin.ForkJoinTask.quietlyExec(ForkJoinTask.java:422) [scala-library-2.9.0-1.jar:na]
+	at scala.concurrent.forkjoin.ForkJoinWorkerThread.mainLoop(ForkJoinWorkerThread.java:340) [scala-library-2.9.0-1.jar:na]
+	at scala.concurrent.forkjoin.ForkJoinWorkerThread.run(ForkJoinWorkerThread.java:325) [scala-library-2.9.0-1.jar:na]
+o.k.a.d.osgi.KevoreeDeployPhase - Result : true
+o.kevoree.core.impl.KevoreeCoreBean - Deploy result true
+o.kevoree.core.impl.KevoreeCoreBean - End deploy result=true-731
+o.o.p.u.c.handler.HandlerActivator - Handler for protocols [mvn] started
+o.o.p.u.c.handler.HandlerActivator - Handler for protocols [assembly, assemblyref] started
+o.kevoree.core.impl.KevoreeCoreBean - Start event : node name = duke
+o.o.p.u.c.handler.HandlerActivator - Handler for protocols [mvn] stopped
+o.o.p.u.c.handler.HandlerActivator - Handler for protocols [assembly, assemblyref] stopped

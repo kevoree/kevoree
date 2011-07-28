@@ -22,14 +22,17 @@ import org.kevoree.tools.marShell.interpreter.KevsAbstractInterpreter
 import org.kevoree.tools.marShell.interpreter.KevsInterpreterContext
 import org.kevoree.tools.marShell.ast.{RemoveLibraryStatment}
 import scala.collection.JavaConversions._
+import org.slf4j.LoggerFactory
 
 case class KevsRemoveLibraryInterpreter(statment : RemoveLibraryStatment) extends KevsAbstractInterpreter {
+
+  var logger = LoggerFactory.getLogger(this.getClass)
 
   def interpret(context : KevsInterpreterContext):Boolean={
     context.model.getLibraries.find(lib=> lib.getName == statment.libraryName) match {
       case Some(library) =>  context.model.getLibraries.remove(library);true
       case None => {
-        println("Error : Library not found with name "+statment.libraryName)
+        logger.error("Error : Library not found with name "+statment.libraryName)
         false
       }
     }

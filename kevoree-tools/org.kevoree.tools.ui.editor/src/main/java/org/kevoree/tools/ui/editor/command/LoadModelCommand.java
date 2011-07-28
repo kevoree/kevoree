@@ -19,8 +19,7 @@ package org.kevoree.tools.ui.editor.command;
 
 import org.kevoree.*;
 import org.kevoree.framework.KevoreeXmiHelper;
-import org.kevoree.tools.ui.editor.KevoreeUIKernel;
-import org.kevoree.tools.ui.editor.MetaDataHelper;
+import org.kevoree.tools.ui.editor.*;
 import org.kevoree.tools.ui.framework.elements.*;
 import org.kevoree.tools.ui.framework.elements.PortPanel.PortType;
 
@@ -65,19 +64,19 @@ public class LoadModelCommand implements Command {
                 //System.out.println(ct.getName());
                 if (ct instanceof ComponentType) {
                     ComponentTypePanel ctp = kernel.getUifactory().createComponentTypeUI((ComponentType) ct);
-                    kernel.getEditorPanel().getPalette().addTypeDefinitionPanel(ctp, ctl.getName());
+                    kernel.getEditorPanel().getPalette().addTypeDefinitionPanel(ctp, ctl.getName(),ct.getName());
                 }
                 if (ct instanceof ChannelType) {
                     ChannelTypePanel ctp = kernel.getUifactory().createChannelTypeUI((ChannelType) ct);
-                    kernel.getEditorPanel().getPalette().addTypeDefinitionPanel(ctp, ctl.getName());
+                    kernel.getEditorPanel().getPalette().addTypeDefinitionPanel(ctp, ctl.getName(),ct.getName());
                 }
                 if (ct instanceof NodeType) {
                     NodeTypePanel ctp = kernel.getUifactory().createNodeTypeUI((NodeType) ct);
-                    kernel.getEditorPanel().getPalette().addTypeDefinitionPanel(ctp, ctl.getName());
+                    kernel.getEditorPanel().getPalette().addTypeDefinitionPanel(ctp, ctl.getName(),ct.getName());
                 }
                 if (ct instanceof GroupType) {
                     GroupTypePanel ctp = kernel.getUifactory().createGroupTypeUI((GroupType) ct);
-                    kernel.getEditorPanel().getPalette().addTypeDefinitionPanel(ctp, ctl.getName());
+                    kernel.getEditorPanel().getPalette().addTypeDefinitionPanel(ctp, ctl.getName(),ct.getName());
                 }
                 loadedLib.add(ct);
             }
@@ -88,22 +87,26 @@ public class LoadModelCommand implements Command {
             if (!loadedLib.contains(ct)) {
                 if (ct instanceof ComponentType) {
                     ComponentTypePanel ctp = kernel.getUifactory().createComponentTypeUI((ComponentType) ct);
-                    kernel.getEditorPanel().getPalette().addTypeDefinitionPanel(ctp, "default");
+                    kernel.getEditorPanel().getPalette().addTypeDefinitionPanel(ctp, "default",ct.getName());
                 }
                 if (ct instanceof ChannelType) {
                     ChannelTypePanel ctp = kernel.getUifactory().createChannelTypeUI((ChannelType) ct);
-                    kernel.getEditorPanel().getPalette().addTypeDefinitionPanel(ctp, "default");
+                    kernel.getEditorPanel().getPalette().addTypeDefinitionPanel(ctp, "default",ct.getName());
                 }
                 if (ct instanceof NodeType) {
                     NodeTypePanel ctp = kernel.getUifactory().createNodeTypeUI((NodeType) ct);
-                    kernel.getEditorPanel().getPalette().addTypeDefinitionPanel(ctp, "default");
+                    kernel.getEditorPanel().getPalette().addTypeDefinitionPanel(ctp, "default",ct.getName());
                 }
                 if (ct instanceof GroupType) {
                     GroupTypePanel ctp = kernel.getUifactory().createGroupTypeUI((GroupType) ct);
-                    kernel.getEditorPanel().getPalette().addTypeDefinitionPanel(ctp, "default");
+                    kernel.getEditorPanel().getPalette().addTypeDefinitionPanel(ctp, "default",ct.getName());
                 }
 
             }
+        }
+
+        for (TypeDefinition ct : kernel.getModelHandler().getActualModel().getTypeDefinitions()) {
+            kernel.getEditorPanel().getPalette().updateTypeValue(ModelHelper.getTypeNbInstance(kernel.getModelHandler().getActualModel(),ct),ct.getName());
         }
 
 

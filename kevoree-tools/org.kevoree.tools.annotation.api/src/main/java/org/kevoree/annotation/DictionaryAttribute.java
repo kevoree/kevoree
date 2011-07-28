@@ -28,6 +28,6 @@ public @interface DictionaryAttribute {
 
     String name();
 
-    String defaultValue() default "default";
+    String defaultValue() default "defaultKevoreeNonSetValue";
 
 }

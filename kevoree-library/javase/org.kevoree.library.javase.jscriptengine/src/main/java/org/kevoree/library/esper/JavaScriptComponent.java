@@ -33,8 +33,8 @@ import org.kevoree.framework.MessagePort;
  * @copyright INRIA
  */
 @Provides({ @ProvidedPort(name = "inport", type = PortType.MESSAGE) })
-@Requires({ @RequiredPort(name = "outport", type = PortType.MESSAGE),
-		@RequiredPort(name = "booleanoutport", type = PortType.MESSAGE)
+@Requires({ @RequiredPort(name = "outport", type = PortType.MESSAGE, needCheckDependency = false),
+		@RequiredPort(name = "booleanoutport", type = PortType.MESSAGE, needCheckDependency = false)
 })
 @DictionaryType({ @DictionaryAttribute(name = "code") })
 @Library(name = "Kevoree::JScript")

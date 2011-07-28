@@ -26,10 +26,12 @@ import jsyntaxpane.components.Markers
 import org.kevoree.tools.marShell.parser.KevsParser
 import org.kevoree.tools.marShell.ast.Script
 import javax.swing._
+import actors.DaemonActor
+import util.parsing.input.OffsetPosition
 
 class KevsPanel extends JPanel {
 
-  def getModel : Script = {
+  def getModel: Script = {
     val parser = new KevsParser();
     val result = parser.parseScript(codeEditor.getText);
     result.get
@@ -45,55 +47,95 @@ class KevsPanel extends JPanel {
   codeEditor.setContentType("text/kevs; charset=UTF-8");
 
 
+  //codeEditor.setBackground(new Color(80, 80, 80))
   codeEditor.setBackground(Color.DARK_GRAY)
-  codeEditor.setText("tblock { \n //insert Kevoree Script here \n }");
+
+  codeEditor.setText("tblock { \n  \n }");
 
   codeEditor.getDocument.addDocumentListener(new DocumentListener() {
-    def removeUpdate(e: DocumentEvent) = {
-      updateMarkers(e.getDocument.getText(0, e.getDocument.getLength - 1))
+    def removeUpdate(e: DocumentEvent) {
+      notificationSeamless ! "checkNeeded"
+      //updateMarkers(e.getDocument.getText(0, e.getDocument.getLength - 1))
     }
 
-    def insertUpdate(e: DocumentEvent) = {
-      updateMarkers(e.getDocument.getText(0, e.getDocument.getLength - 1))
+    def insertUpdate(e: DocumentEvent) {
+      notificationSeamless ! "checkNeeded"
+      //updateMarkers(e.getDocument.getText(0, e.getDocument.getLength - 1))
     }
 
     def changedUpdate(e: DocumentEvent) {
-      updateMarkers(e.getDocument.getText(0, e.getDocument.getLength - 1))
+      notificationSeamless ! "checkNeeded"
+      //updateMarkers(e.getDocument.getText(0, e.getDocument.getLength - 1))
     }
+  });
 
-    def updateMarkers(content: String) {
+
+  object notificationSeamless extends DaemonActor {
+    start()
+    var checkNeeded = false
+
+    private def updateMarkers(content: String) {
       val parser = new KevsParser();
       val result = parser.parseScript(codeEditor.getText);
       Markers.removeMarkers(codeEditor)
 
-      logPanel.clear
+      //logPanel.clear
       result match {
         case Some(e) => Markers.removeMarkers(codeEditor);
         case None => {
 
-          logPanel.error(parser.lastNoSuccess.toString)
+          //   logPanel.error(parser.lastNoSuccess.toString)
 
-          val highlighter = codeEditor.getHighlighter()
-          highlighter.addHighlight(parser.lastNoSuccess.next.offset, parser.lastNoSuccess.next.rest.offset, new Markers.SimpleMarker(Color.GRAY));
-          parser.lastNoSuccess.next.rest.offset
+          //val highlighter = codeEditor.getHighlighter()
+          try {
+            val marker = new Markers.SimpleMarker(Color.RED, parser.lastNoSuccess.toString)
+
+            //  println(parser.lastNoSuccess.next.offset)
+            //  println(parser.lastNoSuccess.next.rest.offset)
+            //  println(parser.lastNoSuccess.next.pos.asInstanceOf[OffsetPosition].offset)
+            //  println(parser.lastNoSuccess.next.rest.pos.asInstanceOf[OffsetPosition].offset)
+
+            Markers.markText(codeEditor, parser.lastNoSuccess.next.pos.asInstanceOf[OffsetPosition].offset, parser.lastNoSuccess.next.rest.offset, marker)
+          } catch {
+            case _@e => e.printStackTrace()
+          }
+          //  highlighter.addHighlight(parser.lastNoSuccess.next.offset, parser.lastNoSuccess.next.rest.offset, new Markers.SimpleMarker(Color.RED,parser.lastNoSuccess.toString));
         }
       }
     }
-  })
-              /*
-  var editorKit = codeEditor.getEditorKit
-  var toolPane = new JToolBar
-  editorKit.asInstanceOf[KevsJSyntaxKit].addToolBarActions(codeEditor,toolPane)
-                */
 
-  var logPanel = new LogPanel
-  var splitPane: JSplitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, scrPane, logPanel)
-  splitPane.setOneTouchExpandable(true)
-  splitPane.setContinuousLayout(true)
-  splitPane.setDividerSize(15)
-  splitPane.setDividerLocation(0.99)
-  splitPane.setResizeWeight(1.0)
- // add(toolPane,BorderLayout.NORTH)
-  add(splitPane, BorderLayout.CENTER);
+    def act() {
+      loop {
+        reactWithin(150) {
+          case scala.actors.TIMEOUT => if (checkNeeded) {
+
+            if (codeEditor.getDocument.getLength > 1) {
+              updateMarkers(codeEditor.getDocument.getText(0, codeEditor.getDocument.getLength - 1));
+            }
+
+            checkNeeded = false
+          }
+          case _ => checkNeeded = true
+        }
+      }
+    }
+  }
+
+
+/*
+var editorKit = codeEditor.getEditorKit
+var toolPane = new JToolBar
+editorKit.asInstanceOf[KevsJSyntaxKit].addToolBarActions(codeEditor,toolPane)
+*/
+
+//var logPanel = new LogPanel
+//var splitPane: JSplitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, scrPane, logPanel)
+// splitPane.setOneTouchExpandable(true)
+//splitPane.setContinuousLayout(true)
+//splitPane.setDividerSize(15)
+// splitPane.setDividerLocation(0.99)
+//splitPane.setResizeWeight(1.0)
+// add(toolPane,BorderLayout.NORTH)
+add (scrPane, BorderLayout.CENTER);
 
 }

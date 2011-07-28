@@ -34,7 +34,7 @@ case class RemoveTypeCommand(ct : TypeDefinition, ctx : KevoreeDeployManager,nod
     }
   }
 
-  def undo() = {
-    AddTypeCommand(ct,ctx,nodeName).execute
+  def undo() {
+    AddTypeCommand(ct,ctx,nodeName).execute()
   }
 }

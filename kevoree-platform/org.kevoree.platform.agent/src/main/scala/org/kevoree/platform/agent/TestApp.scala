@@ -19,13 +19,6 @@ import com.twitter.finagle.Service
 import com.twitter.util.Duration
 import java.util.concurrent.TimeUnit
 
-/**
- * Created by IntelliJ IDEA.
- * User: ffouquet
- * Date: 06/05/11
- * Time: 10:37
- * To change this template use File | Settings | File Templates.
- */
 
 object TestApp extends Application {
 

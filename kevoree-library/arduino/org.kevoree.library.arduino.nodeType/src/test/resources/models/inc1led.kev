@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kevoree:ContainerRoot xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:kevoree="http://kevoree/1.0">
+  <nodes name="KEVOREEDefaultNodeName" typeDefinition="//@typeDefinitions.0" metaData="x=419,y=323">
+    <dictionary/>
+    <components name="led1" typeDefinition="//@typeDefinitions.6">
+      <dictionary>
+        <values attribute="//@typeDefinitions.6/@dictionaryType/@attributes.0" value="9"/>
+      </dictionary>
+      <provided portTypeRef="//@typeDefinitions.6/@provided.0"/>
+      <provided portTypeRef="//@typeDefinitions.6/@provided.1"/>
+      <provided portTypeRef="//@typeDefinitions.6/@provided.2"/>
+    </components>
+    <components name="t1" typeDefinition="//@typeDefinitions.3">
+      <dictionary/>
+      <required portTypeRef="//@typeDefinitions.3/@required.0"/>
+    </components>
+  </nodes>
+  <typeDefinitions xsi:type="kevoree:NodeType" name="ArduinoNode" deployUnits="//@deployUnits.0" factoryBean="org.kevoree.library.arduinoNodeType.ArduinoNodeFactory" bean="org.kevoree.library.arduinoNodeType.ArduinoNode">
+    <dictionaryType>
+      <attributes name="boardTypeName" optional="true"/>
+      <attributes name="boardPortName"/>
+      <attributes name="incremental" optional="true"/>
+      <defaultValues attribute="//@typeDefinitions.0/@dictionaryType/@attributes.0" value="uno"/>
+      <defaultValues attribute="//@typeDefinitions.0/@dictionaryType/@attributes.2" value="true"/>
+    </dictionaryType>
+  </typeDefinitions>
+  <typeDefinitions xsi:type="kevoree:ComponentType" name="LCDDisplay" deployUnits="//@deployUnits.2" factoryBean="org.kevoree.library.sensors.LCDDisplayFactory" bean="org.kevoree.library.sensors.LCDDisplay" startMethod="dummy" stopMethod="dummy">
+    <provided name="input" ref="//@typeDefinitions.2">
+      <mappings beanMethodName="inputPort" serviceMethodName="process"/>
+    </provided>
+  </typeDefinitions>
+  <typeDefinitions xsi:type="kevoree:MessagePortType" name="org.kevoree.framework.MessagePort"/>
+  <typeDefinitions xsi:type="kevoree:ComponentType" name="Timer" deployUnits="//@deployUnits.2" factoryBean="org.kevoree.library.sensors.TimerFactory" bean="org.kevoree.library.sensors.Timer" startMethod="start" stopMethod="stop">
+    <dictionaryType>
+      <attributes name="period" optional="true"/>
+      <defaultValues attribute="//@typeDefinitions.3/@dictionaryType/@attributes.0" value="1000"/>
+    </dictionaryType>
+    <required name="tick" ref="//@typeDefinitions.2" optional="false" noDependency="false"/>
+  </typeDefinitions>
+  <typeDefinitions xsi:type="kevoree:ComponentType" name="PushButton" deployUnits="//@deployUnits.2" factoryBean="org.kevoree.library.sensors.PushButtonFactory" bean="org.kevoree.library.sensors.PushButton" startMethod="dummy" stopMethod="dummy">
+    <dictionaryType>
+      <attributes name="pin" optional="true"/>
+      <attributes name="period" optional="true"/>
+      <defaultValues attribute="//@typeDefinitions.4/@dictionaryType/@attributes.0" value="0"/>
+      <defaultValues attribute="//@typeDefinitions.4/@dictionaryType/@attributes.1" value="100"/>
+    </dictionaryType>
+    <required name="click" ref="//@typeDefinitions.2" optional="false" noDependency="false"/>
+    <required name="release" ref="//@typeDefinitions.2" optional="false" noDependency="false"/>
+  </typeDefinitions>
+  <typeDefinitions xsi:type="kevoree:ComponentType" name="CurrentSensor" deployUnits="//@deployUnits.2" factoryBean="org.kevoree.library.sensors.CurrentSensorFactory" bean="org.kevoree.library.sensors.CurrentSensor" startMethod="dummy" stopMethod="dummy">
+    <dictionaryType>
+      <attributes name="pin" optional="true"/>
+      <defaultValues attribute="//@typeDefinitions.5/@dictionaryType/@attributes.0" value="0"/>
+    </dictionaryType>
+    <required name="currentW" ref="//@typeDefinitions.2" optional="false" noDependency="false"/>
+    <provided name="trigger" ref="//@typeDefinitions.2">
+      <mappings beanMethodName="triggerPort" serviceMethodName="process"/>
+    </provided>
+  </typeDefinitions>
+  <typeDefinitions xsi:type="kevoree:ComponentType" name="DigitalLight" deployUnits="//@deployUnits.2" factoryBean="org.kevoree.library.sensors.DigitalLightFactory" bean="org.kevoree.library.sensors.DigitalLight" startMethod="dummy" stopMethod="dummy">
+    <dictionaryType>
+      <attributes name="pin" optional="true"/>
+      <defaultValues attribute="//@typeDefinitions.6/@dictionaryType/@attributes.0" value="0"/>
+    </dictionaryType>
+    <provided name="on" ref="//@typeDefinitions.2">
+      <mappings beanMethodName="triggerOn" serviceMethodName="process"/>
+    </provided>
+    <provided name="off" ref="//@typeDefinitions.2">
+      <mappings beanMethodName="triggerOff" serviceMethodName="process"/>
+    </provided>
+    <provided name="toggle" ref="//@typeDefinitions.2">
+      <mappings beanMethodName="triggerToggle" serviceMethodName="process"/>
+    </provided>
+  </typeDefinitions>
+  <typeDefinitions xsi:type="kevoree:ComponentType" name="LightSensor" deployUnits="//@deployUnits.2" factoryBean="org.kevoree.library.sensors.LightSensorFactory" bean="org.kevoree.library.sensors.LightSensor" startMethod="start" stopMethod="start">
+    <dictionaryType>
+      <attributes name="pin" optional="true"/>
+      <defaultValues attribute="//@typeDefinitions.7/@dictionaryType/@attributes.0" value="0"/>
+    </dictionaryType>
+    <required name="light" ref="//@typeDefinitions.2" optional="false" noDependency="false"/>
+    <provided name="trigger" ref="//@typeDefinitions.2">
+      <mappings beanMethodName="triggerPort" serviceMethodName="process"/>
+    </provided>
+  </typeDefinitions>
+  <typeDefinitions xsi:type="kevoree:ChannelType" name="LocalChannel" deployUnits="//@deployUnits.2" factoryBean="org.kevoree.library.sensors.LocalChannelFactory" bean="org.kevoree.library.sensors.LocalChannel" startMethod="lifeCycle" stopMethod="lifeCycle"/>
+  <typeDefinitions xsi:type="kevoree:ComponentType" name="TempSensor" deployUnits="//@deployUnits.2" factoryBean="org.kevoree.library.sensors.TempSensorFactory" bean="org.kevoree.library.sensors.TempSensor" startMethod="dummy" stopMethod="dummy">
+    <dictionaryType>
+      <attributes name="pin" optional="true"/>
+      <defaultValues attribute="//@typeDefinitions.9/@dictionaryType/@attributes.0" value="0"/>
+    </dictionaryType>
+    <required name="temp" ref="//@typeDefinitions.2" optional="false" noDependency="false"/>
+    <provided name="trigger" ref="//@typeDefinitions.2">
+      <mappings beanMethodName="triggerPort" serviceMethodName="process"/>
+    </provided>
+  </typeDefinitions>
+  <repositories units="//@deployUnits.0 //@deployUnits.2" url="http://maven.kevoree.org/libs-snapshot-local"/>
+  <repositories url="http://maven.kevoree.org/snapshots"/>
+  <repositories url="http://scala-tools.org/repo-releases"/>
+  <repositories url="http://maven.kevoree.org/release"/>
+  <repositories url="http://repo1.maven.org/maven2"/>
+  <libraries name="KevoreeNodeType" subTypes="//@typeDefinitions.0"/>
+  <libraries name="KevoreeArduino" subTypes="//@typeDefinitions.1 //@typeDefinitions.3 //@typeDefinitions.4 //@typeDefinitions.5 //@typeDefinitions.6 //@typeDefinitions.7 //@typeDefinitions.8 //@typeDefinitions.9"/>
+  <hubs name="hub1" typeDefinition="//@typeDefinitions.8" metaData="x=207,y=402"/>
+  <mBindings port="//@nodes.0/@components.1/@required.0" hub="//@hubs.0"/>
+  <mBindings port="//@nodes.0/@components.0/@provided.2" hub="//@hubs.0"/>
+  <deployUnits groupName="org.kevoree.library.arduino" unitName="org.kevoree.library.arduino.nodeType" version="1.2.0-SNAPSHOT" hashcode="201106031341762" requiredLibs="//@deployUnits.1" targetNodeType="//@typeDefinitions.0"/>
+  <deployUnits name="org.kevoree.extra.org.kevoree.extra.osgi.rxtx" url="mvn:org.kevoree.extra/org.kevoree.extra.osgi.rxtx/2.2.0" targetNodeType="//@typeDefinitions.0"/>
+  <deployUnits groupName="org.kevoree.library.arduino" unitName="org.kevoree.library.arduino.components" version="1.2.0-SNAPSHOT" hashcode="201106031341149" targetNodeType="//@typeDefinitions.0"/>
+</kevoree:ContainerRoot>

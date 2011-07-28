@@ -17,19 +17,18 @@ import org.kevoree.remote.NetworkUtility;
 import org.kevoree.remote.fileserver.RestFileServerApplication;
 import org.restlet.Application;
 import org.restlet.Component;
+import org.restlet.Restlet;
 import org.restlet.data.Protocol;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-/**
- * Created by IntelliJ IDEA.
- * User: ffouquet
- * Date: 12/04/11
- * Time: 15:34
- * To change this template use File | Settings | File Templates.
- */
+
 public class KevoreeRemoteBean {
 
 	private Component component;
 	private Application provisioning = null;
+
+    private Logger logger = LoggerFactory.getLogger(KevoreeRemoteBean.class);
 
 	public KevoreeRemoteBean() {
 		Integer port = NetworkUtility.findNextAvailblePort(8000, 60000);
@@ -52,7 +51,7 @@ public class KevoreeRemoteBean {
 		component.getContext().getParameters().add("timeToLive", "0");
 
 		component.getDefaultHost().attach("/model/current", ModelHandlerResource.class);
-
+        component.getDefaultHost().attach("/hello", AModelHandlerResource.class);
 
 		if (System.getProperty("org.kevoree.remote.provisioning") != null) {
 			provisioning = new RestFileServerApplication(System.getProperty("org.kevoree.remote.provisioning"));
@@ -70,7 +69,7 @@ public class KevoreeRemoteBean {
 			component.start();
 			Handler.initHost(component.getDefaultHost());
 		} catch (Exception e) {
-			e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+			logger.error("Restlet Start Error",e);
 		}
 	}
 
@@ -84,7 +83,7 @@ public class KevoreeRemoteBean {
 		try {
 			component.stop();
 		} catch (Exception e) {
-			e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+			logger.error("Restlet Stop Error",e);
 		}
 	}
 

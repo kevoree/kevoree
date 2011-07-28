@@ -9,7 +9,7 @@ import org.jboss.netty.channel._
 
 class DataSenderHandler(channelFragment: NettyGossipAbstractElement, dataManager: DataManager, serializer : Serializer) extends SimpleChannelUpstreamHandler {
 
-	private var logger = LoggerFactory.getLogger(classOf[DataSenderHandler])
+	private val logger = LoggerFactory.getLogger(classOf[DataSenderHandler])
 
 	override def messageReceived(ctx: ChannelHandlerContext, e: MessageEvent) {
 		//println("message received")

@@ -47,18 +47,23 @@ trait RequiredPortProcessor {
     requiredPortAnnotations.foreach {
       requiredPort =>
 
+
       //Check if a port with the same name exist in the component scope
         val portAll: List[org.kevoree.PortTypeRef] = componentType.getRequired.toList ++ componentType.getProvided.toList
         portAll.find(existingPort => existingPort.getName == requiredPort.name) match {
 
-          //Port is unique and can be created
-          case None => {
+        case None => {
             val portTypeRef = KevoreeFactory.eINSTANCE.createPortTypeRef
             portTypeRef.setName(requiredPort.name)
             portTypeRef.setOptional(requiredPort.optional)
-
-            //TODO:verify this behavior
-            portTypeRef.setNoDependency(!requiredPort.needCheckDependency())
+          /*
+          we replace the annotation parameter "noDependency" by "needCheckDependency but we do not replace noDependency on the model
+          noDependency = true (equivalent to needCheckDependency = false) means the required port is not use during critical start and stop operations of the container component
+          and so we do not need to take it into account when we try to schedule starts and stops to avoid some deadlocks.
+          noDependency = false (equivalent to needCheckDependency = true) means that the required port is used on start or stop operations of the container component
+          and so we need to check dependency to avoid some deadlocks
+           */
+          portTypeRef.setNoDependency(!requiredPort.needCheckDependency())
 
             //sets the reference to the type of the port
             portTypeRef.setRef(LocalUtility.getOraddPortType(requiredPort.`type` match {

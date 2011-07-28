@@ -13,6 +13,7 @@ package org.kevoree.platform.agent
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 import org.kevoree.ContainerRoot
 import scala.collection.JavaConversions._
 import java.net.NetworkInterface
@@ -24,23 +25,28 @@ class KevoreeRuntimeAgent extends DaemonActor {
 
   start()
 
-  case class NEW_MODEL(model : ContainerRoot)
+  case class NEW_MODEL (model: ContainerRoot)
 
-  def act() {
+  def act () {
     loop {
       react {
         case NEW_MODEL(model) => {
-          val file = new File("bootStrap.kev")
-          if(file.exists){
-            file.delete
-          }
+          try {
+            val file = new File("bootStrap.kev")
+            if (file.exists) {
+              file.delete
+            }
 
-          KevoreeXmiHelper.save("bootStrap.kev",model)
+            KevoreeXmiHelper.save("bootStrap.kev", model)
 
-          KevoreeNodeRunnerHandler.closeAllRunners()
-          detectLocalNodeFromRuntime(model).foreach {
-            t =>
-              KevoreeNodeRunnerHandler.addRunner(t._1, t._2,"bootStrap.kev")
+            KevoreeNodeRunnerHandler.closeAllRunners()
+            detectLocalNodeFromRuntime(model).foreach {
+              t =>
+                KevoreeNodeRunnerHandler.addRunner(t._1, t._2, "bootStrap.kev")
+            }
+          } catch {
+            case _@e => e.printStackTrace()
+
           }
         }
       }
@@ -48,12 +54,12 @@ class KevoreeRuntimeAgent extends DaemonActor {
   }
 
 
-  def processModel(model: ContainerRoot) {
-       this ! NEW_MODEL(model)
+  def processModel (model: ContainerRoot) {
+    this ! NEW_MODEL(model)
   }
 
 
-  private def detectLocalNodeFromRuntime(model: ContainerRoot): List[(String, Int)] = {
+  private def detectLocalNodeFromRuntime (model: ContainerRoot): List[(String, Int)] = {
 
     var localIPS: List[String] = List()
     NetworkInterface.getNetworkInterfaces.foreach {
@@ -73,7 +79,8 @@ class KevoreeRuntimeAgent extends DaemonActor {
         if (IP == "") {
           IP = "127.0.0.1"
         }
-        var PORT = KevoreePlatformHelper.getProperty(model, node.getName, Constants.KEVOREE_PLATFORM_REMOTE_NODE_MODELSYNCH_PORT);
+        var PORT = KevoreePlatformHelper
+          .getProperty(model, node.getName, Constants.KEVOREE_PLATFORM_REMOTE_NODE_MODELSYNCH_PORT);
         if (PORT == "") {
           PORT = "8000"
         }

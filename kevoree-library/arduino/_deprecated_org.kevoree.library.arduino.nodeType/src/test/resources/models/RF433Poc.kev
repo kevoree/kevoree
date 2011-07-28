@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kevoree:ContainerRoot xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:kevoree="http://kevoree/1.0">
+  <nodes name="KEVOREEDefaultNodeName" typeDefinition="//@typeDefinitions.3" metaData="x=444,y=208">
+    <dictionary>
+      <values attribute="//@typeDefinitions.3/@dictionaryType/@attributes.0" value="atmega328"/>
+    </dictionary>
+    <components name="Timer1665635963" typeDefinition="//@typeDefinitions.6">
+      <required portTypeRef="//@typeDefinitions.6/@required.0"/>
+    </components>
+  </nodes>
+  <typeDefinitions xsi:type="kevoree:ChannelType" name="SerialCT" deployUnits="//@deployUnits.0" factoryBean="org.kevoree.library.channels.SerialCTFactory" bean="org.kevoree.library.channels.SerialCT" startMethod="lifeCycle" stopMethod="lifeCycle">
+    <dictionaryType>
+      <attributes name="PORT"/>
+      <defaultValues attribute="//@typeDefinitions.0/@dictionaryType/@attributes.0" value="/dev/ttyS0"/>
+    </dictionaryType>
+  </typeDefinitions>
+  <typeDefinitions xsi:type="kevoree:ChannelType" name="LocalMsgArduino" deployUnits="//@deployUnits.0" factoryBean="org.kevoree.library.channels.LocalMsgArduinoFactory" bean="org.kevoree.library.channels.LocalMsgArduino" startMethod="lifeCycle" stopMethod="lifeCycle"/>
+  <typeDefinitions xsi:type="kevoree:ChannelType" name="SRF433" deployUnits="//@deployUnits.0" factoryBean="org.kevoree.library.channels.SRF433Factory" bean="org.kevoree.library.channels.SRF433" startMethod="lifeCycle" stopMethod="lifeCycle">
+    <dictionaryType>
+      <attributes name="TX_PIN"/>
+      <attributes name="RX_PIN"/>
+      <defaultValues attribute="//@typeDefinitions.2/@dictionaryType/@attributes.0" value="6"/>
+      <defaultValues attribute="//@typeDefinitions.2/@dictionaryType/@attributes.1" value="5"/>
+    </dictionaryType>
+  </typeDefinitions>
+  <typeDefinitions xsi:type="kevoree:NodeType" name="ArduinoNode" deployUnits="//@deployUnits.1" factoryBean="org.kevoree.library.arduinoNodeType.ArduinoNodeFactory" bean="org.kevoree.library.arduinoNodeType.ArduinoNode">
+    <dictionaryType>
+      <attributes name="boardTypeName" optional="true"/>
+      <attributes name="boardPortName"/>
+      <defaultValues attribute="//@typeDefinitions.3/@dictionaryType/@attributes.0" value="uno"/>
+    </dictionaryType>
+  </typeDefinitions>
+  <typeDefinitions xsi:type="kevoree:ComponentType" name="PushButton" deployUnits="//@deployUnits.2" factoryBean="org.kevoree.library.sensors.PushButtonFactory" bean="org.kevoree.library.sensors.PushButton" startMethod="start" stopMethod="stop">
+    <dictionaryType>
+      <attributes name="pin" optional="true"/>
+      <defaultValues attribute="//@typeDefinitions.4/@dictionaryType/@attributes.0" value="0"/>
+    </dictionaryType>
+    <required name="click" ref="//@typeDefinitions.5" optional="false" noDependency="false"/>
+    <required name="release" ref="//@typeDefinitions.5" optional="false" noDependency="false"/>
+  </typeDefinitions>
+  <typeDefinitions xsi:type="kevoree:MessagePortType" name="org.kevoree.framework.MessagePort"/>
+  <typeDefinitions xsi:type="kevoree:ComponentType" name="Timer" deployUnits="//@deployUnits.2" factoryBean="org.kevoree.library.sensors.TimerFactory" bean="org.kevoree.library.sensors.Timer" startMethod="start" stopMethod="stop">
+    <dictionaryType>
+      <attributes name="period" optional="true"/>
+      <defaultValues attribute="//@typeDefinitions.6/@dictionaryType/@attributes.0" value="1000"/>
+    </dictionaryType>
+    <required name="tick" ref="//@typeDefinitions.5" optional="false" noDependency="false"/>
+  </typeDefinitions>
+  <typeDefinitions xsi:type="kevoree:ComponentType" name="LCDDisplay" deployUnits="//@deployUnits.2" factoryBean="org.kevoree.library.sensors.LCDDisplayFactory" bean="org.kevoree.library.sensors.LCDDisplay" startMethod="stub" stopMethod="stub">
+    <provided name="input" ref="//@typeDefinitions.5">
+      <mappings beanMethodName="inputPort" serviceMethodName="process"/>
+    </provided>
+  </typeDefinitions>
+  <typeDefinitions xsi:type="kevoree:ComponentType" name="LightSensor" deployUnits="//@deployUnits.2" factoryBean="org.kevoree.library.sensors.LightSensorFactory" bean="org.kevoree.library.sensors.LightSensor" startMethod="start" stopMethod="stop">
+    <dictionaryType>
+      <attributes name="pin" optional="true"/>
+      <defaultValues attribute="//@typeDefinitions.8/@dictionaryType/@attributes.0" value="0"/>
+    </dictionaryType>
+    <required name="light" ref="//@typeDefinitions.5" optional="false" noDependency="false"/>
+    <provided name="trigger" ref="//@typeDefinitions.5">
+      <mappings beanMethodName="triggerPort" serviceMethodName="process"/>
+    </provided>
+  </typeDefinitions>
+  <typeDefinitions xsi:type="kevoree:ComponentType" name="TempSensor" deployUnits="//@deployUnits.2" factoryBean="org.kevoree.library.sensors.TempSensorFactory" bean="org.kevoree.library.sensors.TempSensor" startMethod="start" stopMethod="stop">
+    <dictionaryType>
+      <attributes name="pin" optional="true"/>
+      <defaultValues attribute="//@typeDefinitions.9/@dictionaryType/@attributes.0" value="0"/>
+    </dictionaryType>
+    <required name="temp" ref="//@typeDefinitions.5" optional="false" noDependency="false"/>
+    <provided name="trigger" ref="//@typeDefinitions.5">
+      <mappings beanMethodName="triggerPort" serviceMethodName="process"/>
+    </provided>
+  </typeDefinitions>
+  <typeDefinitions xsi:type="kevoree:ComponentType" name="LED" deployUnits="//@deployUnits.2" factoryBean="org.kevoree.library.sensors.LEDFactory" bean="org.kevoree.library.sensors.LED" startMethod="start" stopMethod="stop">
+    <dictionaryType>
+      <attributes name="pin" optional="true"/>
+      <defaultValues attribute="//@typeDefinitions.10/@dictionaryType/@attributes.0" value="0"/>
+    </dictionaryType>
+    <provided name="on" ref="//@typeDefinitions.5">
+      <mappings beanMethodName="triggerOn" serviceMethodName="process"/>
+    </provided>
+    <provided name="off" ref="//@typeDefinitions.5">
+      <mappings beanMethodName="triggerOff" serviceMethodName="process"/>
+    </provided>
+  </typeDefinitions>
+  <repositories units="//@deployUnits.0 //@deployUnits.1 //@deployUnits.2" url="http://maven.kevoree.org/libs-release-local"/>
+  <repositories url="http://scala-tools.org/repo-releases"/>
+  <repositories url="http://maven.kevoree.org/release"/>
+  <repositories url="http://repo1.maven.org/maven2"/>
+  <libraries name="KevoreeArduinoJava" subTypes="//@typeDefinitions.0 //@typeDefinitions.2"/>
+  <libraries name="KevoreeArduino" subTypes="//@typeDefinitions.1 //@typeDefinitions.4 //@typeDefinitions.6 //@typeDefinitions.7 //@typeDefinitions.8 //@typeDefinitions.9 //@typeDefinitions.10"/>
+  <libraries name="KevoreeNodeType" subTypes="//@typeDefinitions.3"/>
+  <hubs name="hub1064120763" typeDefinition="//@typeDefinitions.2" metaData="x=174,y=105"/>
+  <mBindings port="//@nodes.0/@components.0/@required.0" hub="//@hubs.0"/>
+  <deployUnits groupName="org.kevoree.library.arduino" unitName="org.kevoree.library.arduino.channels" version="1.1.0-RC1" hashcode="201105131043270" targetNodeType="//@typeDefinitions.3"/>
+  <deployUnits groupName="org.kevoree.library.arduino" unitName="org.kevoree.library.arduino.nodeType" version="1.1.0-RC1" hashcode="201105131042883" targetNodeType="//@typeDefinitions.3"/>
+  <deployUnits groupName="org.kevoree.library.arduino" unitName="org.kevoree.library.arduino.sensors" version="1.1.0-RC1" hashcode="201105131042694" targetNodeType="//@typeDefinitions.3"/>
+</kevoree:ContainerRoot>

@@ -238,5 +238,5 @@
         eType="#//ContainerNode"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="GroupType" eSuperTypes="#//LifeCycleTypeDefinition"/>
-  <eClassifiers xsi:type="ecore:EClass" name="NodeType" eSuperTypes="#//TypeDefinition"/>
+  <eClassifiers xsi:type="ecore:EClass" name="NodeType" eSuperTypes="#//LifeCycleTypeDefinition"/>
 </ecore:EPackage>

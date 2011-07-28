@@ -13,19 +13,10 @@
  */
 package org.kevoree.core.basechecker.cyclechecker
 
-import org.kevoree.MBinding
 import org.jgrapht.DirectedGraph
 import org.jgrapht.alg.CycleDetector
 import org.kevoree.api.service.core.checker.CheckerViolation
 import scala.collection.JavaConversions._
-
-/**
- * Created by IntelliJ IDEA.
- * User: edaubert
- * Date: 24/02/11
- * Time: 09:33
- * To change this template use File | Settings | File Templates.
- */
 
 case class CheckCycle[A,B](graph: DirectedGraph[A, B]) {
 	
