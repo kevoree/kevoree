@@ -6,7 +6,7 @@
     <artifactId>org.kevoree.library.model.all</artifactId>
     <packaging>jar</packaging>
     <name>Kevoree :: Library :: Model :: All</name>
-    <version>1.1.0-RC2</version>
+    <version>1.2.0-SNAPSHOT</version>
 
     <properties>
         <kevoree.version>${project.version}</kevoree.version>
@@ -16,7 +16,7 @@
     <parent>
         <artifactId>org.kevoree.library.model.root</artifactId>
         <groupId>org.kevoree.library.model</groupId>
-        <version>1.1.0-RC2</version>
+        <version>1.2.0-SNAPSHOT</version>
         <relativePath>../org.kevoree.library.model.root/pom.xml</relativePath>
     </parent>
 
@@ -62,7 +62,7 @@
                 <artifactId>maven-deploy-plugin</artifactId>
                 <executions>
                     <execution>
-                        <id>deploy-jar-apk</id>
+                        <id>deploy-kev</id>
                         <phase>deploy</phase>
                         <goals>
                             <goal>deploy</goal>
@@ -79,7 +79,7 @@
                         </goals>
                         <configuration>
                             <file>${project.build.directory}/classes/defaultLibrary.kev</file>
-                            <url>http://maven.kevoree.org/libs-release-local/</url>
+                            <url>http://maven2.kevoree.org/archiva/repository/snapshots/</url>
                             <packaging>kev</packaging>
                             <groupId>${project.groupId}</groupId>
                             <artifactId>${project.artifactId}</artifactId>
@@ -102,15 +102,9 @@
         </dependency>
         <dependency>
             <groupId>org.kevoree.library.arduino</groupId>
-            <artifactId>org.kevoree.library.arduino.sensors</artifactId>
+            <artifactId>org.kevoree.library.arduino.components</artifactId>
             <version>${kevoree.version}</version>
         </dependency>
-        <dependency>
-            <groupId>org.kevoree.library.arduino</groupId>
-            <artifactId>org.kevoree.library.arduino.channels</artifactId>
-            <version>${kevoree.version}</version>
-        </dependency>
-
 
         <!-- JavaSE -->
         <dependency>
@@ -133,9 +127,19 @@
             <artifactId>org.kevoree.library.javase.fakeDomo</artifactId>
             <version>${kevoree.version}</version>
         </dependency>
-        <dependency>
+        <!--   <dependency>
             <groupId>org.kevoree.library.javase</groupId>
             <artifactId>org.kevoree.library.javase.gossiper</artifactId>
+            <version>${kevoree.version}</version>
+        </dependency>-->
+        <dependency>
+            <groupId>org.kevoree.library.javase</groupId>
+            <artifactId>org.kevoree.library.javase.gossiperNetty</artifactId>
+            <version>${kevoree.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.kevoree.library.javase</groupId>
+            <artifactId>org.kevoree.library.javase.serialCT</artifactId>
             <version>${kevoree.version}</version>
         </dependency>
 

@@ -26,8 +26,8 @@ class KevsJSyntaxKit extends DefaultSyntaxKit(new KevsJSyntaxLexerWrapper()) {
   override def getContentType = "text/kevs; charset=UTF-8"
 
   var config = new java.util.Properties
-  config.setProperty("RightMarginColumn", "80")
-  config.setProperty("RightMarginColor", "0xdddddd")
+  //config.setProperty("RightMarginColumn", "80")
+  //config.setProperty("RightMarginColor", "0xdddddd")
 
   config.setProperty("Action.indent.WordRegex", "\\w+|\\/(\\*)+")
   config.setProperty("Action.combo-completion", "org.kevoree.tools.marShellGUI.KevsComboCompletionAction, control SPACE")
@@ -47,6 +47,12 @@ class KevsJSyntaxKit extends DefaultSyntaxKit(new KevsJSyntaxLexerWrapper()) {
   config.setProperty("CaretColor","0xFFFFFF")
   config.setProperty("TokenMarker.Color","0x6D788F")
   config.setProperty("PairMarker.Color","0x6D788F")
+
+  config.setProperty("LineNumbers.Background","0x646464")
+  config.setProperty("LineNumbers.Foreground","0xFFFFFF")
+  config.setProperty("LineNumbers.CurrentBack","0xF4A460")
+
+
 
 
 

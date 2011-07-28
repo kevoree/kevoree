@@ -18,7 +18,9 @@ package org.kevoree.tools.ui.editor.property;
 
 import javax.swing.*;
 
+import com.explodingpixels.macwidgets.plaf.HudLabelUI;
 import org.kevoree.ContainerNode;
+import org.kevoree.Instance;
 import org.kevoree.tools.ui.editor.KevoreeUIKernel;
 import org.kevoree.tools.ui.editor.command.*;
 import org.kevoree.tools.ui.editor.widget.JCommandButton;
@@ -28,13 +30,14 @@ import java.awt.*;
 /**
  * @author ffouquet
  */
-public class NodePropertyEditor extends NamedElementPropertyEditor {
+public class NodePropertyEditor extends InstancePropertyEditor {
 
-    public NodePropertyEditor(org.kevoree.NamedElement elem, KevoreeUIKernel _kernel) {
+    public NodePropertyEditor(Instance elem, KevoreeUIKernel _kernel) {
         super(elem, _kernel);
 
-        ContainerNode node = (ContainerNode) elem;
 
+        ContainerNode node = (ContainerNode) elem;
+        /*
         JTable table = new JTable(new InstanceTableModel(node));
         JScrollPane scrollPane = new JScrollPane(table);
         table.setFillsViewportHeight(true);
@@ -42,7 +45,7 @@ public class NodePropertyEditor extends NamedElementPropertyEditor {
         scrollPane.setPreferredSize(new Dimension(300, 150));
 
         this.addCenter(scrollPane);
-
+           */
 
         this.addCenter(new NetworkPropertyEditor(node));
 
@@ -62,7 +65,7 @@ public class NodePropertyEditor extends NamedElementPropertyEditor {
         btPushNode.setCommand(sendNode);
         this.addCenter(btPushNode);
 */
-        JCommandButton btPushNodeType = new JCommandButton("PushModelUsingNodeType");
+        JCommandButton btPushNodeType = new JCommandButton("Push");
         SynchNodeTypeCommand sendNodeType = new SynchNodeTypeCommand();
         sendNodeType.setKernel(_kernel);
         sendNodeType.setDestNodeName(node.getName());
@@ -72,16 +75,17 @@ public class NodePropertyEditor extends NamedElementPropertyEditor {
 
 
         //   JTextField ip = new JTextField("ip:port");
+        /*
         JCommandButton btPushNodeIP = new JCommandButton("Push");
         SynchNodeIPCommand sendNodeIP = new SynchNodeIPCommand();
-        //sendNodeIP.setField(ip);
+
 
         sendNodeIP.setKernel(_kernel);
         sendNodeIP.setDestNodeName(node.getName());
         btPushNodeIP.setCommand(sendNodeIP);
         //this.addCenter(ip);
         this.addCenter(btPushNodeIP);
-
+              */
 
     }
 }

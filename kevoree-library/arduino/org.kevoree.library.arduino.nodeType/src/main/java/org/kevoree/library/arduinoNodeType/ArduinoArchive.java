@@ -7,6 +7,7 @@ package org.kevoree.library.arduinoNodeType;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+
 import org.wayoda.ang.libraries.Core;
 import org.wayoda.ang.project.Sketch;
 import org.wayoda.ang.project.Target;
@@ -14,7 +15,6 @@ import org.wayoda.ang.utils.FileSelector;
 import org.wayoda.ang.utils.FileUtils;
 
 /**
- *
  * @author ffouquet
  */
 public class ArduinoArchive {
@@ -22,12 +22,8 @@ public class ArduinoArchive {
     private List<String> archCmd;
 
     public void prepareCommands() {
-        String binPrefix = System.getProperty("arduino.home")+"/hardware/tools/avr/bin";
-        if (binPrefix != null && !binPrefix.endsWith(File.separator)) {
-            binPrefix += File.separator;
-        }
         archCmd = new ArrayList<String>();
-        archCmd.add(binPrefix + "avr-ar");
+        archCmd.add(ArduinoToolChainExecutables.getAVR_AR());
         archCmd.add("rcs");
     }
 

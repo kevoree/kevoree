@@ -44,7 +44,7 @@ public class RoundPanel extends JPanel {
     private JPanel right = new JPanel();
     protected JPanel up = new JPanel();
     private JPanel down = new JPanel();
-    private static final int SHADOW_SIZE = 20;
+    private static final int SHADOW_SIZE = 12;
     private BufferedImage shadow;
     protected boolean active = false;
     private Color backgroundColor = new Color(0, 0, 0, 200);
@@ -112,7 +112,7 @@ public class RoundPanel extends JPanel {
         //GradientPaint grad = new GradientPaint(new Point(0, 0), new Color(0, 0, 0, 180), new Point(0, getHeight()), new Color(51, 51, 51, 180));
         //g2.setPaint(grad);
         g2.fillRoundRect(x, y, w, h, arc, arc);
-        g2.setStroke(new BasicStroke(3f));
+        g2.setStroke(new BasicStroke(2f));
         if (active) {
             g2.setColor(new Color(243, 238, 39, 150));
         } else {

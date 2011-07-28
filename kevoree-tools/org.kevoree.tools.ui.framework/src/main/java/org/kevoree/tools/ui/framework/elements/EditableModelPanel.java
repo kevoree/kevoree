@@ -26,16 +26,13 @@ import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import javax.swing.Box;
-import javax.swing.BoxLayout;
-import javax.swing.JButton;
-import javax.swing.JComponent;
-import javax.swing.JLayeredPane;
-import javax.swing.JPanel;
+import javax.swing.*;
+
+import com.explodingpixels.macwidgets.HudWindow;
+import com.explodingpixels.macwidgets.plaf.HudButtonUI;
 import org.jdesktop.swingx.JXPanel;
 
 /**
- *
  * @author ffouquet
  */
 public class EditableModelPanel extends JLayeredPane {
@@ -74,57 +71,47 @@ public class EditableModelPanel extends JLayeredPane {
         add(modelPanel, JLayeredPane.DEFAULT_LAYER);
         add(propertiesPanel, JLayeredPane.POPUP_LAYER);
     }
+
     private JPanel previousPropertiesPanel = null;
 
-    public void displayProperties(JPanel prop) {
-        //propertiesPanel.add(closeProperties,BorderLayout.EAST);
+    HudWindow hud = new HudWindow("Properties editor");
 
+    public void displayProperties(JPanel prop) {
+
+
+        hud.getJDialog().setSize(320, 370);
+        hud.getJDialog().setLocationRelativeTo(null);
+        hud.getJDialog().setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        hud.setContentPane(prop);
+        hud.getJDialog().setVisible(true);
+
+
+        /*
         if (previousPropertiesPanel != null) {
             previousPropertiesPanel.setVisible(false);
             propertiesPanel.remove(previousPropertiesPanel);
             previousPropertiesPanel = null;
         }
-
         JPanel tempLayout = new JPanel();
         tempLayout.setOpaque(false);
         tempLayout.add(Box.createGlue());
         tempLayout.add(prop);
         tempLayout.add(Box.createGlue());
-
-
         propertiesPanel.add(tempLayout, BorderLayout.EAST);
         previousPropertiesPanel = prop;
-
-//        Component[] childs = previousPropertiesPanel.getComponents();
-//        for (int i = 0; i < childs.length; i++) {
-//            System.out.println("Layout");
-//            childs[i].doLayout();
-//            childs[i].repaint();
-//            childs[i].validate();
-//
-//            Component[] childs2 = ((Container) childs[i]).getComponents();
-//            for (int i2 = 0; i2 < childs2.length; i2++) {
-//                System.out.println("Layout");
-//                childs2[i2].doLayout();
-//                childs2[i2].repaint();
-//                childs2[i2].validate();
-//            }
-//
-//        }
-
-        //propertiesPanel.setBounds(propertiesPanel.getX(), propertiesPanel.getY(), propertiesPanel.getWidth(), propertiesPanel.getHeight());
-
         propertiesPanel.doLayout();
         this.doLayout();
         propertiesPanel.revalidate();
         propertiesPanel.repaint();
         repaint();
         revalidate();
-
-
+        */
     }
 
     public void undisplayProperties() {
+        hud.getJDialog().setVisible(false);
+
+        /*
         if (previousPropertiesPanel != null) {
             previousPropertiesPanel.setVisible(false);
             propertiesPanel.remove(previousPropertiesPanel);
@@ -133,6 +120,6 @@ public class EditableModelPanel extends JLayeredPane {
         propertiesPanel.repaint();
         propertiesPanel.revalidate();
         repaint();
-        revalidate();
+        revalidate();*/
     }
 }

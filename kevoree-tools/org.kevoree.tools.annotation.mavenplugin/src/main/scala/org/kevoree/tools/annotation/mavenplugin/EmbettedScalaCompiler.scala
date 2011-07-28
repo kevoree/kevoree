@@ -36,13 +36,16 @@ object EmbettedScalaCompiler {
       classpath.append(path+File.pathSeparator)
     }
 		
-    var compilParams = List("-nowarn","-encoding","UTF8","-g:none","-optimise","-d",outputPATH,"-classpath",classpath.toString) ++ listSrcFiles
+    val compilParams = List("-nowarn","-encoding","UTF8","-g:none","-optimise","-d",outputPATH,"-classpath",classpath.toString) ++ listSrcFiles
 
-    //println(compilParams)
+    //println("hi"+compilParams)
     /* Compilation step */
    // if(fsc){
    //   try scala.tools.nsc.CompileClient.main0(compilParams.toArray) catch { case e : Exception => compilationResult = 1 }
    // } else {
+
+
+
       _root_.scala.tools.nsc.Main.process(compilParams.toArray)
       compilationResult = if (scala.tools.nsc.Main.reporter.hasErrors) 1 else 0
    // }

@@ -16,12 +16,12 @@ class DataManagerForChannel extends DataManager with actors.DaemonActor  {
   this.start
   
   case class GetData(uuid : UUID)
-  case class SetData(uuid : UUID, tuple : Tuple2[VectorClock,Any])
+  case class SetData(uuid : UUID, tuple : Tuple2[VectorClock,Any], source : String)
   case class RemoveData(uuid : UUID)
   case class GetUUIDVectorClock(uuid : UUID)
   case class GetUUIDVectorClocks()
   case class Stop()
-  case class MergeClock(uuid: UUID,newclock : VectorClock)
+  case class MergeClock(uuid: UUID,newclock : VectorClock, source : String)
   
   def stop(){
     this ! Stop()
@@ -31,8 +31,8 @@ class DataManagerForChannel extends DataManager with actors.DaemonActor  {
 	(this !? GetData(uuid)).asInstanceOf[Tuple2[VectorClock,Any]]
   }
   
-  def setData(uuid : UUID, tuple : Tuple2[VectorClock,Any]) ={
-	this ! SetData(uuid, tuple)
+  def setData(uuid : UUID, tuple : Tuple2[VectorClock,Any], source : String) ={
+	this ! SetData(uuid, tuple, source)
   }
   
   def removeData(uuid : UUID) ={
@@ -47,14 +47,14 @@ class DataManagerForChannel extends DataManager with actors.DaemonActor  {
 	(this !? GetUUIDVectorClocks()).asInstanceOf[java.util.Map[UUID, VectorClock]]
   }
   
-  def mergeClock(uid: UUID,v : VectorClock):VectorClock = {(this !? MergeClock(uid,v)).asInstanceOf[VectorClock] }
+  def mergeClock(uid: UUID,v : VectorClock, source : String):VectorClock = {(this !? MergeClock(uid,v, source)).asInstanceOf[VectorClock] }
   
   def act(){
 	loop {
 	  react {
 		case Stop() => this.exit
 		case GetData(uuid) => reply(datas.get(uuid)) // TODO maybe we need to clone the map
-		case SetData(uuid, tuple) => {
+		case SetData(uuid, tuple, source) => {
 			if (tuple._2.isInstanceOf[Message]) {
 			  datas.put(uuid, tuple.asInstanceOf[Tuple2[VectorClock,Message]])
 			}
@@ -62,9 +62,9 @@ class DataManagerForChannel extends DataManager with actors.DaemonActor  {
 		case RemoveData(uuid) => datas.remove(uuid)
 		case GetUUIDVectorClock(uuid) => reply(getUUIDVectorClockFromUUID(uuid))
 		case GetUUIDVectorClocks() => reply(getAllUUIDVectorClocks())
-		case MergeClock(uuid,newClock)=> {
+		case MergeClock(uuid,newClock, source)=> {
 			//println("clock must be merged")
-			var mergedVC = localMerge(datas.get(uuid)._1,newClock)
+			val mergedVC = localMerge(datas.get(uuid)._1,newClock)
 			datas.put(uuid, Tuple2[VectorClock,Message](mergedVC,datas.get(uuid)._2))
 			//println("clock has been merged")
 			reply(mergedVC)

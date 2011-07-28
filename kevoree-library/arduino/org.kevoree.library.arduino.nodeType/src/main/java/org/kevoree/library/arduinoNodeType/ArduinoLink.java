@@ -7,13 +7,13 @@ package org.kevoree.library.arduinoNodeType;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+
 import org.wayoda.ang.libraries.Core;
 import org.wayoda.ang.libraries.Library;
 import org.wayoda.ang.project.Sketch;
 import org.wayoda.ang.project.Target;
 
 /**
- *
  * @author ffouquet
  */
 public class ArduinoLink {
@@ -21,12 +21,9 @@ public class ArduinoLink {
     private List<String> lCmd;
 
     public void prepareCommands() {
-        String binPrefix = System.getProperty("arduino.home")+"/hardware/tools/avr/bin";
-        if (binPrefix != null && !binPrefix.endsWith(File.separator)) {
-            binPrefix += File.separator;
-        }
         lCmd = new ArrayList<String>();
-        lCmd.add(binPrefix + "avr-gcc");
+        lCmd.add(ArduinoToolChainExecutables.getAVR_GCC());
+
         lCmd.add("-Os");
         lCmd.add("-Wl,--gc-sections");
     }

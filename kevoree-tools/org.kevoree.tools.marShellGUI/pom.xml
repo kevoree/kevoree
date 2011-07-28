@@ -6,12 +6,12 @@
     <artifactId>org.kevoree.tools.marShellGUI</artifactId>
     <packaging>jar</packaging>
     <name>Kevoree :: Tools :: M@R Shell GUI</name>
-    <version>1.1.0-RC2</version>
+    <version>1.2.0-SNAPSHOT</version>
 
     <parent>
         <artifactId>org.kevoree.tools.root</artifactId>
         <groupId>org.kevoree.tools</groupId>
-        <version>1.1.0-RC2</version>
+        <version>1.2.0-SNAPSHOT</version>
         <relativePath>../org.kevoree.tools.root/pom.xml</relativePath>
     </parent>
 
@@ -26,9 +26,9 @@
             <version>${kevoree.version}</version>
         </dependency>
         <dependency>
-            <groupId>jsyntaxpane</groupId>
-            <artifactId>jsyntaxpane</artifactId>
-            <version>0.9.6</version>
+            <groupId>org.kevoree.extra</groupId>
+            <artifactId>org.kevoree.extra.jsyntaxpane</artifactId>
+            <version>0.9.6-SNAPSHOT</version>
         </dependency>
     </dependencies>
 

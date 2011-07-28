@@ -25,8 +25,11 @@ import org.kevoree.tools.marShellGUI.{KevsModelHandlers, KevsFrame}
 import org.kevoree.tools.ui.editor.{PositionedEMFHelper, KevoreeUIKernel}
 import com.sun.xml.internal.messaging.saaj.util.ByteOutputStream
 import java.io._
+import org.slf4j.LoggerFactory
 
 class OpenKevsShell extends Command {
+
+  var logger = LoggerFactory.getLogger(this.getClass)
 
   private var current: KevsEditorFrame = null;
   var kernel: KevoreeUIKernel = null
@@ -143,7 +146,7 @@ class OpenKevsShell extends Command {
           val ghostModel = KevoreeXmiHelper.loadStream(outputStream.newInputStream())
 
           val result = script.interpret(KevsInterpreterContext(ghostModel))
-          println("Interpreter Result : " + result)
+          logger.info("Interpreter Result : " + result)
           if (result) {
             //reload
             val file = File.createTempFile("kev", new Random().nextInt + "")

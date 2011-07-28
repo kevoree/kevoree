@@ -17,21 +17,22 @@
 package org.kevoree.tools.ui.editor.command;
 
 import java.awt.Point;
+
 import org.kevoree.Channel;
 import org.kevoree.ChannelType;
 import org.kevoree.KevoreeFactory;
 import org.kevoree.tools.ui.editor.KevoreeUIKernel;
+import org.kevoree.tools.ui.editor.ModelHelper;
 import org.kevoree.tools.ui.framework.elements.ChannelPanel;
 import scala.util.Random;
 
 /**
- *
  * @author ffouquet
  */
 public class AddChannelCommand implements Command {
 
     private KevoreeUIKernel kernel;
-    private Random random = new Random();
+    //private Random random = new Random();
 
     private Point point = null;
 
@@ -50,16 +51,20 @@ public class AddChannelCommand implements Command {
         newhub.setTypeDefinition(type);
 
         //CREATE NEW NAME
-        newhub.setName("hub" + Math.abs(random.nextInt()));
+        //newhub.setName("hub" + Math.abs(random.nextInt()));
+        newhub.setName(type.getName().substring(0, Math.min(type.getName().length(), 9)) + "" + Math.abs(new java.util.Random().nextInt(999)));
+
+
         ChannelPanel newhubpanel = kernel.getUifactory().createHub(newhub);
         kernel.getModelHandler().getActualModel().getHubs().add(newhub);
         kernel.getModelPanel().addHub(newhubpanel);
 
-        if ((point.x - newhubpanel.getPreferredSize().getHeight()/2 > 0 ) && (point.y - newhubpanel.getPreferredSize().getHeight()/2 > 0 )  ){
-            newhubpanel.setLocation( (int)(point.x - newhubpanel.getPreferredSize().getHeight()/2), (int)(point.y - newhubpanel.getPreferredSize().getWidth()/2));
+        if ((point.x - newhubpanel.getPreferredSize().getHeight() / 2 > 0) && (point.y - newhubpanel.getPreferredSize().getHeight() / 2 > 0)) {
+            newhubpanel.setLocation((int) (point.x - newhubpanel.getPreferredSize().getHeight() / 2), (int) (point.y - newhubpanel.getPreferredSize().getWidth() / 2));
         } else {
             newhubpanel.setLocation(point.x, point.y);
         }
+        kernel.getEditorPanel().getPalette().updateTypeValue(ModelHelper.getTypeNbInstance(kernel.getModelHandler().getActualModel(), type), type.getName());
 
     }
 }

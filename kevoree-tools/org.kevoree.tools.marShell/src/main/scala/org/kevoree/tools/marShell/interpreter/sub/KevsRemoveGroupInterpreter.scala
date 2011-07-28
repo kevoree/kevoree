@@ -23,8 +23,11 @@ import org.kevoree.tools.marShell.interpreter.KevsInterpreterContext
 import scala.collection.JavaConversions._
 import org.kevoree.{MBinding, ContainerRoot, Channel}
 import org.kevoree.tools.marShell.ast.{RemoveGroupStatment, RemoveChannelInstanceStatment}
+import org.slf4j.LoggerFactory
 
 case class KevsRemoveGroupInterpreter(removeGroup: RemoveGroupStatment) extends KevsAbstractInterpreter {
+
+  var logger = LoggerFactory.getLogger(this.getClass)
 
   def interpret(context: KevsInterpreterContext): Boolean = {
     context.model.getGroups.find(n => n.getName == removeGroup.groupName) match {
@@ -33,7 +36,7 @@ case class KevsRemoveGroupInterpreter(removeGroup: RemoveGroupStatment) extends 
         true
       }
       case None => {
-        println("Group not exist " + removeGroup.groupName);
+        logger.error("Group not exist " + removeGroup.groupName);
         false
       }
     }

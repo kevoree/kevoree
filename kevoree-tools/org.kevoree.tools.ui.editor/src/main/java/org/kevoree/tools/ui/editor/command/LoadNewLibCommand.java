@@ -57,7 +57,7 @@ public class LoadNewLibCommand implements Command {
                 Boolean kevFile = filechooser.getSelectedFile().getAbsoluteFile().getPath().endsWith("kev");
                 String path = null;
                 if (kevFile) {
-                    path = filechooser.getSelectedFile().getAbsolutePath();
+                    path = URI.createFileURI(filechooser.getSelectedFile().getAbsolutePath()).toString();
                 } else if (jarFile) {
                     JarFile jar;
 

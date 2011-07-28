@@ -4,6 +4,8 @@ import gnu.io.*;
 import org.kevoree.annotation.*;
 import org.kevoree.framework.AbstractComponentType;
 import org.kevoree.framework.MessagePort;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -18,7 +20,7 @@ import java.util.TooManyListenersException;
 		@DictionaryAttribute(name = "PORT", optional = false, defaultValue = "/dev/ttyS0")
 })
 @Requires({
-		@RequiredPort(name = "TAG", optional = true, type = PortType.MESSAGE)
+		@RequiredPort(name = "TAG", optional = true, type = PortType.MESSAGE, needCheckDependency = false)
 })
 @ComponentType
 @Library(name = "HID_RFID")
@@ -26,6 +28,8 @@ public class ProxProRFIDReader extends AbstractComponentType implements SerialPo
 
 	private InputStream inputStream;
 	private SerialPort serialPort;
+
+	private Logger logger = LoggerFactory.getLogger(ProxProRFIDReader.class);
 
 	@Start
 	public void start() {
@@ -45,7 +49,7 @@ public class ProxProRFIDReader extends AbstractComponentType implements SerialPo
 				serialPort.notifyOnDataAvailable(true);
 			} else {
 				// TODO log
-				System.out.println("Error: Only serial ports are handled by this component.");
+				logger.error("Only serial ports are handled by this component.");
 				commPort.close();
 			}
 		} catch (NoSuchPortException e) {
@@ -93,12 +97,11 @@ public class ProxProRFIDReader extends AbstractComponentType implements SerialPo
 				}
 				buffer[len++] = (byte) data;
 			}
-			// TODO send buffer into TAG port
 			if (isPortBinded("TAG")) {
 				getPortByName("TAG", MessagePort.class).process(new String(buffer, 0, len));
 			} else {
-				System.out.println(new String(buffer, 0, len));
-				System.out.println(" length : " + len);
+				logger.info(new String(buffer, 0, len));
+				//logger.info(" length : " + len);
 			}
 		} catch (IOException e) {
 			e.printStackTrace();

@@ -6,12 +6,12 @@
     <artifactId>org.kevoree.library.model.root</artifactId>
     <packaging>pom</packaging>
     <name>Kevoree :: Library :: Model :: Root</name>
-    <version>1.1.0-RC2</version>
+    <version>1.2.0-SNAPSHOT</version>
 
     <parent>
         <artifactId>org.kevoree.library</artifactId>
         <groupId>org.kevoree.library</groupId>
-        <version>1.1.0-RC2</version>
+        <version>1.2.0-SNAPSHOT</version>
         <relativePath>../../pom.xml</relativePath>
     </parent>
 
@@ -24,18 +24,6 @@
         <module>../org.kevoree.library.model.all</module>
     </modules>
 
-    <distributionManagement>
-        <repository>
-            <id>maven.kevoree.org-releases</id>
-            <name>maven.kevoree.org-releases</name>
-            <url>http://maven.kevoree.org/libs-release-local</url>
-        </repository>
-    </distributionManagement>
-
-    <build>
-
-    </build>
-
     <repositories>
         <repository>
             <id>scala-tools.org</id>
@@ -44,7 +32,11 @@
         </repository>
         <repository>
             <id>kevoree-libs-release-local</id>
-            <url>http://maven.kevoree.org/release</url>
+            <url>http://maven2.kevoree.org/release</url>
+        </repository>
+        <repository>
+            <id>kevoree-snapshots</id>
+            <url>http://maven2.kevoree.org/snapshots</url>
         </repository>
     </repositories>
 
@@ -56,8 +48,12 @@
         </pluginRepository>
         <pluginRepository>
             <id>plugin.kevoree-github</id>
-            <url>http://maven.kevoree.org/release</url>
+            <url>http://maven2.kevoree.org/release</url>
         </pluginRepository>
+        <pluginRepository>
+            <id>plugin.kevoree-snapshots</id>
+            <url>http://maven2.kevoree.org/snapshots</url>
+        </pluginRepository> 
     </pluginRepositories>
 
 

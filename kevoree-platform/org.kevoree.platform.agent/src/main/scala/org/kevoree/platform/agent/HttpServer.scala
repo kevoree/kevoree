@@ -20,7 +20,6 @@ import org.jboss.netty.handler.codec.http.HttpVersion.HTTP_1_1
 import org.jboss.netty.buffer.ChannelBuffers.copiedBuffer
 import org.jboss.netty.util.CharsetUtil.UTF_8
 import com.twitter.util.Future
-import java.nio.charset.Charset
 import org.kevoree.framework.KevoreeXmiHelper
 import org.jboss.netty.buffer.ChannelBufferInputStream
 

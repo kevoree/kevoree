@@ -22,6 +22,7 @@ object KevoreeNodeRunnerHandler {
       runner =>
         runner.stopKillNode()
     }
+    runnners = List()
   }
 
   def addRunner(nodeName: String, port: Int, model: String) {

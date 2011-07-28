@@ -7,7 +7,7 @@
     <artifactId>org.kevoree.library</artifactId>
     <packaging>pom</packaging>
     <name>Kevoree :: Library</name>
-    <version>1.1.0-RC2</version>
+    <version>1.2.0-SNAPSHOT</version>
 
     <properties>
         <kevoree.version>${project.version}</kevoree.version>
@@ -23,10 +23,13 @@
 
     <distributionManagement>
         <repository>
-            <id>maven.kevoree.org-releases</id>
-            <name>maven.kevoree.org-releases</name>
-            <url>http://maven.kevoree.org/libs-release-local</url>
+            <id>maven2.kevoree.release</id>
+            <url>http://maven2.kevoree.org/archiva/repository/release/</url>
         </repository>
+        <snapshotRepository>
+            <id>maven2.kevoree.snapshots</id>
+            <url>http://maven2.kevoree.org/archiva/repository/snapshots/</url>
+        </snapshotRepository>
     </distributionManagement>
 
 

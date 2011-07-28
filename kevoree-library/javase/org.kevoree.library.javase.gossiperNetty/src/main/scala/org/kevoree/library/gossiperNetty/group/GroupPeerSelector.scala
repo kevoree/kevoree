@@ -8,7 +8,7 @@ import org.kevoree.api.service.core.handler.KevoreeModelHandlerService
 
 class GroupPeerSelector(timeout: Long, modelHandlerService : KevoreeModelHandlerService, nodeName : String) extends PeerSelector {
 
-  private var peerCheckMap = new HashMap[String, Tuple2[Long, Int]]
+  private val peerCheckMap = new HashMap[String, Tuple2[Long, Int]]
 
   def selectPeer(groupName: String): String = {
 		val model = modelHandlerService.getLastModel
@@ -17,7 +17,7 @@ class GroupPeerSelector(timeout: Long, modelHandlerService : KevoreeModelHandler
         //Found minima score node name
         var foundNodeName = "";
         val minScore = Long.MaxValue
-        group.getSubNodes.filter(node => !node.getName.equals(nodeName)).foreach {
+        group.getSubNodes.filter(node => node.getName != nodeName ).foreach {
           subNode => {
             if (getScore(subNode.getName) < minScore) {
               foundNodeName = subNode.getName

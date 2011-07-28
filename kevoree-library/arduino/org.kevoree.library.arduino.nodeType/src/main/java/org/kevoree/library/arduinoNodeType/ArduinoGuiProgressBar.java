@@ -1,7 +1,5 @@
 package org.kevoree.library.arduinoNodeType;
 
-import sun.applet.resources.MsgAppletViewer;
-
 import java.awt.*;
 import javax.swing.*;
 
