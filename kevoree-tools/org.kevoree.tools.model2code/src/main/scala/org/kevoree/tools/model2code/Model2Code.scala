@@ -23,7 +23,6 @@ import japa.parser.ast.CompilationUnit
 import java.io.File
 import java.io.FileInputStream
 import java.io.FileOutputStream
-import java.io.FileWriter
 import java.io.PrintWriter
 import java.net.URI
 import org.kevoree.ComponentType
@@ -41,18 +40,18 @@ class Model2Code {
   
   def modelToCode(model : ContainerRoot, componentType : ComponentType, srcRoot : URI, targetRoot : URI) {
     
-    var fileSrcLocation = srcRoot.toString + componentType.getBean.replace(".", "/").concat(".java")
-    var fileSrcLocationUri = new URI(fileSrcLocation)
+    val fileSrcLocation = srcRoot.toString + componentType.getBean.replace(".", "/").concat(".java")
+    val fileSrcLocationUri = new URI(fileSrcLocation)
     
-    var fileTargetLocation = targetRoot.toString + componentType.getBean.replace(".", "/").concat(".java")
-    var fileTargetLocationUri = new URI(fileTargetLocation)
+    val fileTargetLocation = targetRoot.toString + componentType.getBean.replace(".", "/").concat(".java")
+    val fileTargetLocationUri = new URI(fileTargetLocation)
     
     //Load CU
-    var compilationUnit = compilationUnitLoader(fileSrcLocationUri)
+    val compilationUnit = compilationUnitLoader(fileSrcLocationUri)
     
     if(compilationUnit != null) {
     
-      var ctw = new ComponentTypeWorker(model, componentType, compilationUnit)
+      val ctw = new ComponentTypeWorker(model, componentType, compilationUnit)
       ctw.synchronize
       
       //Save CU
@@ -66,7 +65,7 @@ class Model2Code {
    
     val srcLocation = deployUnitRoot.toString + "/src/main/java/"
     val srcLocationUri = new URI(srcLocation)
-    var srcFolder = new File(srcLocationUri)
+    val srcFolder = new File(srcLocationUri)
     if(!srcFolder.exists) {
       srcFolder.mkdirs
     }
@@ -76,7 +75,7 @@ class Model2Code {
     model.getTypeDefinitions.filter(typeDef => typeDef.isInstanceOf[ComponentType]).foreach { componentType =>
       System.out.println("Model2Code on " + componentType.getBean)
 
-      var outputFolder = new File("target/test-classes/generated")
+      //var outputFolder = new File("target/test-classes/generated")
 
       modelToCode(model, componentType.asInstanceOf[ComponentType], srcLocationUri)
 
@@ -88,12 +87,12 @@ class Model2Code {
 
     val pomLocation = deployUnitRoot.toString + "/pom.xml"
     val pomLocationUri = new URI(pomLocation)
-    var pomFile = new File(pomLocationUri)
+    val pomFile = new File(pomLocationUri)
     if(!pomFile.exists) {
       pomFile.createNewFile
     }
 
-    var pr = new PrintWriter(new FileOutputStream(pomFile))
+    val pr = new PrintWriter(new FileOutputStream(pomFile))
 
     pr.println("<project xmlns=\"http://maven.apache.org/POM/4.0.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd\">")
     pr.println("");
@@ -209,27 +208,27 @@ class Model2Code {
   }
   
   private def compilationUnitLoader(fileLocation : URI) = {
-    var file = new File(fileLocation)
+    val file = new File(fileLocation)
     if(!file.exists) {
       new CompilationUnit
     } else {
-      var in = new FileInputStream(file)
-      var cu = JavaParser.parse(in)
+      val in = new FileInputStream(file)
+      val cu = JavaParser.parse(in)
       cu
     }
   }
   
   private def compilationUnitWriter(cu : CompilationUnit, fileLocation : URI) = {
         
-    var file = new File(fileLocation)
+    val file = new File(fileLocation)
     if(!file.exists) {
-      var folders = new File(new URI(fileLocation.toString.substring(0, fileLocation.toString.lastIndexOf("/"))))
+      val folders = new File(new URI(fileLocation.toString.substring(0, fileLocation.toString.lastIndexOf("/"))))
       folders.mkdirs
       file.createNewFile
     }
             
-    var out = new FileOutputStream(file)
-    var br = new PrintWriter(out)
+    val out = new FileOutputStream(file)
+    val br = new PrintWriter(out)
             
     br.print(cu.toString)
     br.flush

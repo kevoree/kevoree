@@ -18,7 +18,6 @@ import japa.parser.ast.body.BodyDeclaration
 import japa.parser.ast.expr._
 import java.util.ArrayList
 import japa.parser.ast.CompilationUnit
-import org.kevoree.annotation._
 
 /**
  * Created by IntelliJ IDEA.
@@ -31,7 +30,7 @@ trait AnnotationsSynchMethods extends ImportSynchMethods {
 
 
   def compilationUnit : CompilationUnit
-  def componentType : ComponentType
+  def componentType : org.kevoree.ComponentType
 
 
   def checkOrRemoveAnnotation(declaration : BodyDeclaration, annQName : String) {

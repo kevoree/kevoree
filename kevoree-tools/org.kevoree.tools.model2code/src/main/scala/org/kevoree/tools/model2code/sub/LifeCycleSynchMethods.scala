@@ -14,9 +14,10 @@
 package org.kevoree.tools.model2code.sub
 
 import japa.parser.ast.body.{MethodDeclaration, TypeDeclaration}
-import org.kevoree.annotation.{ComponentType, Update, Stop, Start}
+import org.kevoree.annotation.{Update, Stop, Start}
 import scala.collection.JavaConversions._
 import japa.parser.ast.CompilationUnit
+import org.kevoree.ComponentType
 
 /**
  * Created by IntelliJ IDEA.
@@ -29,7 +30,8 @@ trait LifeCycleSynchMethods
   extends GenericSynchMethods
   with AnnotationsSynchMethods {
 
-    def compilationUnit : CompilationUnit
+
+  def compilationUnit : CompilationUnit
   def componentType : ComponentType
 
   /**

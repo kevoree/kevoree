@@ -14,17 +14,15 @@
 package org.kevoree.tools.model2code.sub
 
 import scala.collection.JavaConversions._
-import org.kevoree.tools.model2code.sub.AnnotationsSynchMethods._
 import java.util.ArrayList
-import org.kevoree.tools.model2code.sub.ImportSynchMethods._
 import japa.parser.ast.expr._
-import japa.parser.ast.body.{MethodDeclaration, TypeDeclaration}
-import org.kevoree.tools.model2code.sub.GenericSynchMethods._
-import org.kevoree.tools.model2code.sub.ImportSynchMethods._
-import org.kevoree.annotation._
-import org.kevoree.tools.model2code.sub.AnnotationsSynchMethods._
 import japa.parser.ast.CompilationUnit
-import org.kevoree.tools.model2code.sub.ImportSynchMethods._
+import org.kevoree.annotation._
+import org.kevoree.{ComponentType, Operation, ServicePortType, MessagePortType, PortTypeRef}
+import japa.parser.ASTHelper
+import japa.parser.ast.`type`.ClassOrInterfaceType
+import japa.parser.ast.stmt.BlockStmt
+import japa.parser.ast.body._
 
 /**
  * Created by IntelliJ IDEA.
@@ -37,7 +35,7 @@ trait ProvidedPortSynchMethods
   extends ImportSynchMethods {
 
   def compilationUnit : CompilationUnit
-  def componentType : ComponentType
+  def componentType : org.kevoree.ComponentType
 
   def checkOrAddProvidedPortAnnotation(annotList : java.util.List[AnnotationExpr], providedPort : PortTypeRef, td : TypeDeclaration) {
     val annotation : NormalAnnotationExpr = annotList.filter({annot =>
@@ -152,7 +150,7 @@ trait ProvidedPortSynchMethods
             case None => {
 
                 //Find a method name not already used
-                val methodName = providedPort.getName.substring(0,1).capitalize
+                var methodName = providedPort.getName.substring(0,1).capitalize
                 methodName += providedPort.getName.substring(1);
 
                 //Add Mapping
@@ -182,7 +180,7 @@ trait ProvidedPortSynchMethods
     }
 
     //retreive concerned mapping
-    val mapping = providedPort.getMappings.find({mapping =>
+    providedPort.getMappings.find({mapping =>
         mapping.getServiceMethodName.equals(operationName)}).head
 
     //creates the new annotation
@@ -320,10 +318,48 @@ trait ProvidedPortSynchMethods
   }
 
 
-
   def createProvidesAnnotation : SingleMemberAnnotationExpr = {
     val newAnnot = new SingleMemberAnnotationExpr(new NameExpr(classOf[Provides].getSimpleName), null)
     checkOrAddImport(classOf[Provides].getName)
     newAnnot
   }
+
+  def createProvidedServicePortMethod(operation : Operation, methodName : String, td : TypeDeclaration) : MethodDeclaration = {
+    val newMethod = new MethodDeclaration(ModifierSet.PUBLIC, ASTHelper.VOID_TYPE, methodName);
+    newMethod.setType(new ClassOrInterfaceType(operation.getReturnType.getName))
+
+    //Method body block
+    val block = new BlockStmt();
+    newMethod.setBody(block);
+
+    val parameterList = new ArrayList[Parameter]
+
+    operation.getParameters.foreach{parameter =>
+      val param = new Parameter(0,
+                                new ClassOrInterfaceType(parameter.getType.toString),
+                                new VariableDeclaratorId(parameter.getName))
+      parameterList.add(param)
+
+    }
+    newMethod.setParameters(parameterList)
+    ASTHelper.addMember(td, newMethod);
+    newMethod
+  }
+
+  def createProvidedMessagePortMethod(methodName : String, td : TypeDeclaration) : MethodDeclaration = {
+    val newMethod = new MethodDeclaration(ModifierSet.PUBLIC, ASTHelper.VOID_TYPE, methodName);
+
+    //Method body block
+    val block = new BlockStmt();
+    newMethod.setBody(block);
+
+    val parameterList = new ArrayList[Parameter]
+    val param = new Parameter(0, new ClassOrInterfaceType("Object"), new VariableDeclaratorId("msg"))
+    parameterList.add(param)
+    newMethod.setParameters(parameterList)
+
+    ASTHelper.addMember(td, newMethod);
+    newMethod
+  }
+
 }

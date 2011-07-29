@@ -15,10 +15,11 @@ package org.kevoree.tools.model2code.sub
 
 import scala.collection.JavaConversions._
 import japa.parser.ast.body.TypeDeclaration
-import org.kevoree.annotation.Library
-import org.kevoree.tools.model2code.sub.ImportSynchMethods._
 import java.util.ArrayList
 import japa.parser.ast.expr.{StringLiteralExpr, MemberValuePair, NameExpr, NormalAnnotationExpr}
+import japa.parser.ast.CompilationUnit
+import org.kevoree.annotation.Library
+import org.kevoree.{ComponentType, TypeLibrary}
 
 /**
  * Created by IntelliJ IDEA.
@@ -29,6 +30,8 @@ import japa.parser.ast.expr.{StringLiteralExpr, MemberValuePair, NameExpr, Norma
 
 trait LibrarySynchMethods extends ImportSynchMethods{
 
+  def compilationUnit : CompilationUnit
+  def componentType : ComponentType
 
 
   def checkOrAddLibraryAnnotation(td : TypeDeclaration, lib : TypeLibrary) {
