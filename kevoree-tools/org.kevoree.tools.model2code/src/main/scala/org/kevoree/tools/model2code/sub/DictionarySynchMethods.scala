@@ -17,7 +17,7 @@ import scala.collection.JavaConversions._
 import japa.parser.ast.body.TypeDeclaration
 import java.util.ArrayList
 import japa.parser.ast.expr._
-import org.kevoree.tools.model2code.sub.ImportSynchMethods._
+import japa.parser.ast.CompilationUnit
 import org.kevoree.annotation.{DictionaryAttribute, DictionaryType}
 
 /**
@@ -28,6 +28,10 @@ import org.kevoree.annotation.{DictionaryAttribute, DictionaryType}
  */
 
 trait DictionarySynchMethods extends ImportSynchMethods {
+
+  def compilationUnit : CompilationUnit
+  def componentType : org.kevoree.ComponentType
+
 
   def checkOrUpdateDictionary(td : TypeDeclaration, dicAnnot : SingleMemberAnnotationExpr) {
     //for each attribute in the model

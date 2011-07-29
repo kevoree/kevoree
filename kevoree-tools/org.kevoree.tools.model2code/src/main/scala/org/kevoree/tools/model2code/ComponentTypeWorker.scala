@@ -25,46 +25,25 @@ import japa.parser.ast.ImportDeclaration
 import japa.parser.ast.PackageDeclaration
 import japa.parser.ast.body.BodyDeclaration
 import japa.parser.ast.body.ClassOrInterfaceDeclaration
-import japa.parser.ast.body.MethodDeclaration
 import japa.parser.ast.body.ModifierSet
-import japa.parser.ast.body.Parameter
 import japa.parser.ast.body.TypeDeclaration
-import japa.parser.ast.body.VariableDeclaratorId
 import japa.parser.ast.expr.AnnotationExpr
-import japa.parser.ast.expr.ArrayInitializerExpr
-import japa.parser.ast.expr.BooleanLiteralExpr
-import japa.parser.ast.expr.Expression
-import japa.parser.ast.expr.FieldAccessExpr
-import japa.parser.ast.expr.MarkerAnnotationExpr
-import japa.parser.ast.expr.MemberValuePair
 import japa.parser.ast.expr.NameExpr
-import japa.parser.ast.TypeParameter
-import japa.parser.ast.`type`.Type
 import japa.parser.ast.`type`.ClassOrInterfaceType
-import japa.parser.ast.expr.NormalAnnotationExpr
 import japa.parser.ast.expr.SingleMemberAnnotationExpr
-import japa.parser.ast.expr.StringLiteralExpr
-import japa.parser.ast.stmt.BlockStmt
 import java.util.ArrayList
-import java.util.Collections
 import org.kevoree.ComponentType
 import org.kevoree.ContainerRoot
-import org.kevoree.MessagePortType
-import org.kevoree.Operation
-import org.kevoree.PortTypeMapping
 import org.kevoree.PortTypeRef
-import org.kevoree.ServicePortType
-import org.kevoree.TypeLibrary
 import org.kevoree.annotation._
 import org.kevoree.framework.AbstractComponentType
-import org.kevoree.framework.MessagePort
 import scala.collection.JavaConversions._
-import org.kevoree.tools.model2code.sub._
+import sub._
 
 /**
  * @author Gregory NAIN
  */
-case class ComponentTypeWorker(root : ContainerRoot, _componentType : ComponentType, _compilationUnit : CompilationUnit)
+case class ComponentTypeWorker(root : ContainerRoot, _componentType : org.kevoree.ComponentType, _compilationUnit : CompilationUnit)
   extends LifeCycleSynchMethods
   with ImportSynchMethods
   with DictionarySynchMethods

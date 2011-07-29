@@ -15,14 +15,11 @@ package org.kevoree.tools.model2code.sub
 
 import scala.collection.JavaConversions._
 import japa.parser.ast.body.TypeDeclaration
-import org.kevoree.tools.model2code.sub.AnnotationsSynchMethods._
 import java.util.ArrayList
-import org.kevoree.tools.model2code.sub.AnnotationsSynchMethods._
-import org.kevoree.tools.model2code.sub.ImportSynchMethods._
 import japa.parser.ast.expr._
 import japa.parser.ast.CompilationUnit
-import org.kevoree.annotation.{ComponentType, PortType, RequiredPort, Requires}
-import org.kevoree.tools.model2code.sub.ImportSynchMethods._
+import org.kevoree.annotation.{PortType, RequiredPort, Requires}
+import org.kevoree.{ServicePortType, MessagePortType, PortTypeRef}
 
 /**
  * Created by IntelliJ IDEA.
@@ -34,7 +31,7 @@ import org.kevoree.tools.model2code.sub.ImportSynchMethods._
 trait RequiredPortSynchMethods extends ImportSynchMethods {
 
   def compilationUnit : CompilationUnit
-  def componentType : ComponentType
+  def componentType : org.kevoree.ComponentType
 
   def checkOrAddRequiresAnnotation(td : TypeDeclaration) {
     val annotation : SingleMemberAnnotationExpr = td.getAnnotations.find({annot =>
@@ -84,7 +81,7 @@ trait RequiredPortSynchMethods extends ImportSynchMethods {
     val portName = new MemberValuePair("name", new StringLiteralExpr(requiredPort.getName))
     pairs.add(portName)
 
-    checkOrAddImport(compilationUnit, classOf[PortType].getName)
+    checkOrAddImport(classOf[PortType].getName)
     requiredPort.getRef match {
       case portTypeRef:MessagePortType => {
           val portType = new MemberValuePair("type", new FieldAccessExpr(new NameExpr("PortType"),"MESSAGE"))
@@ -99,7 +96,7 @@ trait RequiredPortSynchMethods extends ImportSynchMethods {
               new NameExpr(portTypeRef.getName.substring(portTypeRef.getName.lastIndexOf(".")+1)),
               "class") )
           pairs.add(serviceClass)
-          checkOrAddImport(compilationUnit, portTypeRef.getName)
+          checkOrAddImport(portTypeRef.getName)
         }
       case _ =>
     }
@@ -113,13 +110,13 @@ trait RequiredPortSynchMethods extends ImportSynchMethods {
 
   def createRequiresAnnotation : SingleMemberAnnotationExpr = {
     val newAnnot = new SingleMemberAnnotationExpr(new NameExpr(classOf[Requires].getSimpleName), null)
-    checkOrAddImport(compilationUnit, classOf[Requires].getName)
+    checkOrAddImport( classOf[Requires].getName)
     newAnnot
   }
   
   def createRequiredPortAnnotation : NormalAnnotationExpr = {
     val newAnnot = new NormalAnnotationExpr(new NameExpr(classOf[RequiredPort].getSimpleName), null)
-    checkOrAddImport(compilationUnit, classOf[RequiredPort].getName)
+    checkOrAddImport( classOf[RequiredPort].getName)
     newAnnot
   }
 

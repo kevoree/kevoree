@@ -15,12 +15,8 @@ package org.kevoree.tools.model2code.sub
 
 import japa.parser.ASTHelper
 import japa.parser.ast.stmt.BlockStmt
-import scala.collection.JavaConversions._
-import japa.parser.ast.`type`.ClassOrInterfaceType
-import java.util.ArrayList
 import japa.parser.ast.body._
-
-import org.kevoree.Operation
+import japa.parser.ast.CompilationUnit
 
 /**
  * Created by IntelliJ IDEA.
@@ -30,6 +26,10 @@ import org.kevoree.Operation
  */
 
 trait GenericSynchMethods {
+
+  def compilationUnit : CompilationUnit
+  def componentType : org.kevoree.ComponentType
+
 
   def addDefaultMethod(td : TypeDeclaration, methodName : String) : MethodDeclaration = {
     //Method declaration
@@ -44,45 +44,6 @@ trait GenericSynchMethods {
     ASTHelper.addMember(td, method);
 
     method
-  }
-
-
-  def createProvidedServicePortMethod(operation : Operation, methodName : String, td : TypeDeclaration) : MethodDeclaration = {
-    val newMethod = new MethodDeclaration(ModifierSet.PUBLIC, ASTHelper.VOID_TYPE, methodName);
-    newMethod.setType(new ClassOrInterfaceType(operation.getReturnType.getName))
-
-    //Method body block
-    val block = new BlockStmt();
-    newMethod.setBody(block);
-
-    val parameterList = new ArrayList[Parameter]
-
-    operation.getParameters.foreach{parameter =>
-      val param = new Parameter(0,
-                                new ClassOrInterfaceType(parameter.getType.toString),
-                                new VariableDeclaratorId(parameter.getName))
-      parameterList.add(param)
-
-    }
-    newMethod.setParameters(parameterList)
-    ASTHelper.addMember(td, newMethod);
-    newMethod
-  }
-
-  def createProvidedMessagePortMethod(methodName : String, td : TypeDeclaration) : MethodDeclaration = {
-    val newMethod = new MethodDeclaration(ModifierSet.PUBLIC, ASTHelper.VOID_TYPE, methodName);
-
-    //Method body block
-    val block = new BlockStmt();
-    newMethod.setBody(block);
-
-    val parameterList = new ArrayList[Parameter]
-    val param = new Parameter(0, new ClassOrInterfaceType("Object"), new VariableDeclaratorId("msg"))
-    parameterList.add(param)
-    newMethod.setParameters(parameterList)
-
-    ASTHelper.addMember(td, newMethod);
-    newMethod
   }
 
 }
