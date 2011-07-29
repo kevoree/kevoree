@@ -58,14 +58,23 @@ class MandatoryChecksTest {
     System.out.println(buffer.toString)
 
 
-    assert(executionTrace.toString.contains("error: The className attribute of a Provided ServicePort"))
+    assert(executionTrace.toString.contains("5 errors"))
 
-    assert(executionTrace.toString.contains("error: The className attribute of a Required ServicePort"))
+    assert(executionTrace.toString.contains("ProvidedPort[name=prov1]"))
+
+    assert(executionTrace.toString.contains("RequiredPort[name=req1]"))
+
+    assert(executionTrace.toString.contains("mapping to a ProvidedPort \"onoff\""))
+
+    assert(executionTrace.toString.contains("@Start method"))
+
+    assert(executionTrace.toString.contains("@Stop method"))
 
 
-    assert(executionTrace.toString.contains("error: @Stop method is mandatory"))
+    assert(executionTrace.toString.contains("1 warning"))
 
-    assert(executionTrace.toString.contains("error: @Start method is mandatory"))
+    assert(executionTrace.toString.contains("@Update method"))
+
   }
 
 

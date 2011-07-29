@@ -21,15 +21,17 @@ import org.kevoree.framework.AbstractComponentType;
  * @author Gregory NAIN
  */
 @Provides({
-        @ProvidedPort(name = "onoff", type = PortType.SERVICE),
-        @ProvidedPort(name = "onoffok", type = PortType.SERVICE,className = TestIt.class)
+        @ProvidedPort(name = "prov1", type = PortType.SERVICE),
+        @ProvidedPort(name = "prov2", type = PortType.SERVICE,className = TestIt.class)
 })
-@RequiredPort(name="req1", type = PortType.SERVICE)
+@Requires({
+        @RequiredPort(name="req1", type = PortType.SERVICE),
+        @RequiredPort(name="req2", type = PortType.SERVICE, className = TestIt.class)
+})
 @ComponentType
 public class VoidServicePortType extends AbstractComponentType {
 
     public void start() {
-
     }
 
     public void stop() {

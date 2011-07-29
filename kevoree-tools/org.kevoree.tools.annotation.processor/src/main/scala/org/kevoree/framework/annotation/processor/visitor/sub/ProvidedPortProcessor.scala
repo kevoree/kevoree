@@ -25,7 +25,6 @@ import org.kevoree.ComponentType
 import org.kevoree.framework.annotation.processor.LocalUtility
 import org.kevoree.framework.annotation.processor.visitor.ServicePortTypeVisitor
 import scala.collection.JavaConversions._
-import com.sun.mirror.`type`.{InterfaceType, ClassType}
 
 trait ProvidedPortProcessor {
 
@@ -69,14 +68,13 @@ trait ProvidedPortProcessor {
                 } catch {
                   case e: com.sun.mirror.`type`.MirroredTypeException =>
 
-                    //Checks the kind of the className attribute of the annotation
-                    e.getTypeMirror match {
-                      case mirrorType: com.sun.tools.apt.mirror.`type`.ClassTypeImpl => mirrorType.accept(visitor)
-                      case mirrorType: com.sun.tools.apt.mirror.`type`.InterfaceTypeImpl => mirrorType.accept(visitor)
-                      case _ => {
-                        env.getMessager.printError("The className attribute of a Provided ServicePort declaration is mandatory, and must be a Class or an Interface.\n"
-                          + "Have a check on ProvidedPort[name=" + providedPort.name + "] of " + componentType.getBean)
-                      }
+                     //Checks the kind of the className attribute of the annotation
+                    if (!e.getTypeMirror.toString.equals("java.lang.Void")) {
+                      e.getTypeMirror.accept(visitor)
+                    } else {
+                      env.getMessager.printError("The className attribute of a Provided ServicePort declaration is mandatory, and must be a Class or an Interface.\n"
+                        + "Have a check on ProvidedPort[name=" + providedPort.name + "] of " + componentType.getBean + "\n"
+                        + "TypeMirror of " + providedPort.name + ", typeMirror : " + e.getTypeMirror + ",  qualifiedName : " + e.getQualifiedName + ", typeMirrorClass : " + e.getTypeMirror.getClass + "\n")
                     }
 
                 }

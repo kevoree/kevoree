@@ -40,15 +40,15 @@ class PostAptChecker(root : ContainerRoot, env : AnnotationProcessorEnvironment)
 
         case lctd : LifeCycleTypeDefinition => {
             if(lctd.getStartMethod == null) {
-              env.getMessager.printError("@Start method is mandatory in " + typeDef.getBean + ".")
+              env.getMessager.printError("@Start method is mandatory in " + typeDef.getBean + "." + "\n")
               errors += 1
             }
             if(lctd.getStopMethod == null) {
-              env.getMessager.printError("@Stop method is mandatory in " + typeDef.getBean + ".")
+              env.getMessager.printError("@Stop method is mandatory in " + typeDef.getBean + "." + "\n")
               errors += 1
             }
             if(lctd.getUpdateMethod == null) {
-              env.getMessager.printWarning("@Update method is missing in " + typeDef.getBean + ".")
+              env.getMessager.printWarning("@Update method is missing in " + typeDef.getBean + "." + "\n")
             }
 
           }

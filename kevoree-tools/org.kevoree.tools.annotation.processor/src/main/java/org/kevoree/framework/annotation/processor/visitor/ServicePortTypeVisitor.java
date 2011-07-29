@@ -62,12 +62,14 @@ public class ServicePortTypeVisitor implements TypeVisitor {
 
     @Override
     public void visitPrimitiveType(PrimitiveType t) {
-        dataType.setName(t.getKind().name());
+        //dataType.setName(t.getKind().name());
+        throw new UnsupportedOperationException("A service port typed can not be a PrimitiveType(" + t.getKind().name() + ")");
     }
 
     @Override
     public void visitVoidType(VoidType t) {
-        dataType.setName("void");
+        //dataType.setName("void");
+        throw new UnsupportedOperationException("A service port type can not be void.");
     }
 
     @Override
