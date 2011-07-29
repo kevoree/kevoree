@@ -79,7 +79,7 @@ public class EditableModelPanel extends JLayeredPane {
     public void displayProperties(JPanel prop) {
 
 
-        hud.getJDialog().setSize(320, 370);
+        hud.getJDialog().setSize(320, 390);
         hud.getJDialog().setLocationRelativeTo(null);
         hud.getJDialog().setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         hud.setContentPane(prop);

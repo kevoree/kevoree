@@ -109,7 +109,7 @@ public class InstancePropertyEditor extends NamedElementPropertyEditor {
         scrollPane.setBorder(null);
         // p.setFillsViewportHeight(true);
 
-        scrollPane.setPreferredSize(new Dimension(300, 150));
+        scrollPane.setPreferredSize(new Dimension(250, 150));
 
         this.addCenter(scrollPane);
 

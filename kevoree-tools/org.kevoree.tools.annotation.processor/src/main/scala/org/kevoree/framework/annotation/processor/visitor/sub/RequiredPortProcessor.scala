@@ -75,10 +75,11 @@ trait RequiredPortProcessor {
                   case e: com.sun.mirror.`type`.MirroredTypeException =>
 
                     //Checks the kind of the className attribute of the annotation
-                    e.getTypeMirror.getClass match {
-                      case mirrorType: ClassType => mirrorType.accept(visitor)
-                      case mirrorType: InterfaceType => mirrorType.accept(visitor)
-                      case _ => {
+                    e.getTypeMirror match {
+                      case mirrorType: com.sun.tools.apt.mirror.`type`.ClassTypeImpl => mirrorType.accept(visitor)
+                      case mirrorType: com.sun.tools.apt.mirror.`type`.InterfaceTypeImpl => mirrorType.accept(visitor)
+                      case _ @ e => {
+                        println(e)
                         env.getMessager.printError("The className attribute of a Required ServicePort declaration is mandatory, and must be a Class or an Interface.\n"
                           + "Have a check on RequiredPort[name=" + requiredPort.name + "] of " + componentType.getBean)
                       }

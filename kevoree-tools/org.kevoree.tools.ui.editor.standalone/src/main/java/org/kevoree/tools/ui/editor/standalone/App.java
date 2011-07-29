@@ -61,8 +61,8 @@ public class App {
 
 
                 if(System.getProperty("os.name").toLowerCase().contains("mac")){
-                    System.out.println("Mac detected");
-                    MacIntegration.addOSXIntegration(artpanel);
+                   // System.out.println("Mac detected");
+                   // MacIntegration.addOSXIntegration(artpanel);
                 }
 
 
@@ -110,6 +110,18 @@ public class App {
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
+                AbstractButton toogleTypeEditionMode = null;
+                try {
+                    java.net.URL url = App.class.getClassLoader().getResource("package.png");
+                    ImageIcon icon = new ImageIcon(url);
+                    toogleTypeEditionMode =MacButtonFactory.makeUnifiedToolBarButton(new JButton("TypeMode", icon));
+                    toogleTypeEditionMode.setEnabled(false);
+                    toolBar.addComponentToLeft(toogleTypeEditionMode);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+
 
 
                 jframe.add(toolBar.getComponent(), BorderLayout.NORTH);

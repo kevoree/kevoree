@@ -17,8 +17,12 @@
 package org.kevoree.tools.ui.editor.property;
 
 import javax.swing.*;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
+import javax.swing.text.BadLocationException;
 
 import com.explodingpixels.macwidgets.plaf.HudLabelUI;
+import com.explodingpixels.macwidgets.plaf.HudTextFieldUI;
 import org.kevoree.ContainerNode;
 import org.kevoree.Instance;
 import org.kevoree.tools.ui.editor.KevoreeUIKernel;
@@ -26,6 +30,8 @@ import org.kevoree.tools.ui.editor.command.*;
 import org.kevoree.tools.ui.editor.widget.JCommandButton;
 
 import java.awt.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * @author ffouquet
@@ -33,19 +39,79 @@ import java.awt.*;
 public class NodePropertyEditor extends InstancePropertyEditor {
 
     public NodePropertyEditor(Instance elem, KevoreeUIKernel _kernel) {
+
         super(elem, _kernel);
 
-
         ContainerNode node = (ContainerNode) elem;
+
+
+        JPanel pnameLayout = new JPanel(new SpringLayout());
+        pnameLayout.setBorder(null);
+        pnameLayout.setOpaque(false);
+        JLabel physicalNodeNameLabel = new JLabel("PhysicalNode", JLabel.TRAILING);
+        physicalNodeNameLabel.setUI(new HudLabelUI());
+        pnameLayout.add(physicalNodeNameLabel);
+        JTextField physicalNodeNameField = new JTextField(15);
+        physicalNodeNameField.setUI(new HudTextFieldUI());
+        physicalNodeNameLabel.setLabelFor(physicalNodeNameField);
+        pnameLayout.add(physicalNodeNameField);
+
+        SpringUtilities.makeCompactGrid(pnameLayout,
+                1, 2, //rows, cols
+                6, 6,        //initX, initY
+                6, 6);
+
+        this.addCenter(pnameLayout);
+
+        final UpdatePhysicalNode commandUpdate = new UpdatePhysicalNode();
+        commandUpdate.setKernel(kernel);
+        commandUpdate.setTargetCNode(node);
+
+        physicalNodeNameField.setText(commandUpdate.getCurrentPhysName());
+
+        physicalNodeNameField.getDocument().addDocumentListener(new DocumentListener() {
+
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                try {
+                    commandUpdate.execute(e.getDocument().getText(0, e.getDocument().getLength()));
+                } catch (BadLocationException ex) {
+                    Logger.getLogger(NamedElementPropertyEditor.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                try {
+                    commandUpdate.execute(e.getDocument().getText(0, e.getDocument().getLength()));
+                } catch (BadLocationException ex) {
+                    Logger.getLogger(NamedElementPropertyEditor.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+                try {
+                    commandUpdate.execute(e.getDocument().getText(0, e.getDocument().getLength()));
+                } catch (BadLocationException ex) {
+                    Logger.getLogger(NamedElementPropertyEditor.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        });
+
+
+        //textField.setText(namedElem.getName());
+
+
         /*
-        JTable table = new JTable(new InstanceTableModel(node));
-        JScrollPane scrollPane = new JScrollPane(table);
-        table.setFillsViewportHeight(true);
+     JTable table = new JTable(new InstanceTableModel(node));
+     JScrollPane scrollPane = new JScrollPane(table);
+     table.setFillsViewportHeight(true);
 
-        scrollPane.setPreferredSize(new Dimension(300, 150));
+     scrollPane.setPreferredSize(new Dimension(300, 150));
 
-        this.addCenter(scrollPane);
-           */
+     this.addCenter(scrollPane);
+        */
 
         this.addCenter(new NetworkPropertyEditor(node));
 
@@ -71,7 +137,6 @@ public class NodePropertyEditor extends InstancePropertyEditor {
         sendNodeType.setDestNodeName(node.getName());
         btPushNodeType.setCommand(sendNodeType);
         this.addCenter(btPushNodeType);
-
 
 
         //   JTextField ip = new JTextField("ip:port");

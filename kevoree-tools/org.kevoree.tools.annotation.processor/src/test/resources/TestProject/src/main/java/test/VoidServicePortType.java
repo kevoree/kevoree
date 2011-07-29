@@ -13,6 +13,7 @@
  */
 package test;
 
+import TestProject.src.main.java.test.TestIt;
 import org.kevoree.annotation.*;
 import org.kevoree.framework.AbstractComponentType;
 
@@ -20,7 +21,8 @@ import org.kevoree.framework.AbstractComponentType;
  * @author Gregory NAIN
  */
 @Provides({
-        @ProvidedPort(name = "onoff", type = PortType.SERVICE)
+        @ProvidedPort(name = "onoff", type = PortType.SERVICE),
+        @ProvidedPort(name = "onoffok", type = PortType.SERVICE,className = TestIt.class)
 })
 @RequiredPort(name="req1", type = PortType.SERVICE)
 @ComponentType

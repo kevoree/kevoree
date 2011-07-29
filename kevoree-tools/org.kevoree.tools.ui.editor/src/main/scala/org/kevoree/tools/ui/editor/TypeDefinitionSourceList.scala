@@ -13,14 +13,16 @@
  */
 package org.kevoree.tools.ui.editor
 
+import command.{ReloadTypePalette, RefreshModelCommand}
 import scala.collection.JavaConversions._
 import com.explodingpixels.macwidgets._
 import javax.swing._
 import java.awt.datatransfer.{DataFlavor, Transferable}
 import java.util.HashMap
 import org.kevoree.tools.ui.framework.elements.{GroupTypePanel, NodeTypePanel, ChannelTypePanel, ComponentTypePanel}
-import java.awt.event.InputEvent
 import java.awt.{Cursor, Color, Graphics, Component}
+import javax.imageio.ImageIO
+import java.awt.event.{ActionEvent, ActionListener, InputEvent}
 ;
 
 /**
@@ -28,6 +30,15 @@ import java.awt.{Cursor, Color, Graphics, Component}
  * Date: 16/06/11
  * Time: 22:38
  */
+
+object TypeDefinitionPaletteMode {
+   var currentMode : PaletteMode = LibraryMode
+   def changeMode(mode : PaletteMode) = currentMode = mode
+   def getCurrentMode = currentMode
+}
+abstract sealed class PaletteMode
+object LibraryMode extends PaletteMode
+object DeployUnitMode extends PaletteMode
 
 class TypeIcon(c: Color) extends Icon {
   def getIconHeight = 12
@@ -40,6 +51,18 @@ class TypeIcon(c: Color) extends Icon {
   }
 }
 
+object LibraryIcon extends Icon {
+  def getIconHeight = 16
+
+  def getIconWidth = 16
+
+  def paintIcon(p1: Component, p2: Graphics, p3: Int, p4: Int) {
+
+  }
+
+}
+
+
 object channelIcon extends TypeIcon(new Color(255, 127, 36, 200))
 
 object componentIcon extends TypeIcon(new Color(0, 0, 0, 200))
@@ -51,7 +74,10 @@ object groupIcon extends TypeIcon(new Color(56, 171, 67, 200))
 class TypeDefinitionSourceList(pane: JSplitPane, kernel: KevoreeUIKernel) {
 
   val model = new SourceListModel()
-  val sourceList = new SourceList(model);
+  val sourceList = new SourceList(model)
+
+  val refreshCmd = new ReloadTypePalette
+  refreshCmd.setKernel(kernel)
 
   def getTypeIcon(p: JPanel): TypeIcon = {
     p match {
@@ -104,6 +130,33 @@ class TypeDefinitionSourceList(pane: JSplitPane, kernel: KevoreeUIKernel) {
   var controlBar = new SourceListControlBar();
   sourceList.installSourceListControlBar(controlBar)
   controlBar.installDraggableWidgetOnSplitPane(pane)
+
+  var imageProject = ImageIO.read(this.getClass.getClassLoader.getResourceAsStream("com/explodingpixels/macwidgets/images/itunes_star_unselected.png"))
+  var iconProject = new ImageIcon(imageProject)
+  var imageProject2 = ImageIO.read(this.getClass.getClassLoader.getResourceAsStream("com/explodingpixels/macwidgets/images/source_list_down_arrow.png"))
+  var iconProject2 = new ImageIcon(imageProject2)
+  var imageProjectAdd = ImageIO.read(this.getClass.getClassLoader.getResourceAsStream("com/explodingpixels/macwidgets/images/plus.png"))
+  var iconProjectAdd = new ImageIcon(imageProjectAdd)
+
+
+  controlBar.createAndAddButton(iconProjectAdd, new ActionListener {
+    def actionPerformed(p1: ActionEvent) {
+
+    }
+  })
+  controlBar.createAndAddButton(iconProject, new ActionListener {
+    def actionPerformed(p1: ActionEvent) {
+      TypeDefinitionPaletteMode.changeMode(LibraryMode)
+      refreshCmd.execute(null)
+    }
+  })
+  controlBar.createAndAddButton(iconProject2, new ActionListener {
+    def actionPerformed(p1: ActionEvent) {
+      TypeDefinitionPaletteMode.changeMode(DeployUnitMode)
+      refreshCmd.execute(null)
+    }
+  })
+
   sourceList.setColorScheme(new SourceListDarkColorScheme());
   sourceList.useIAppStyleScrollBars()
 
@@ -135,17 +188,19 @@ class TypeDefinitionSourceList(pane: JSplitPane, kernel: KevoreeUIKernel) {
   }
 
 
-
-  def updateTypeValue(value:Int,typeName : String){
-      model.getCategories.foreach{ categ =>
-          categ.getItems.foreach{ item =>
-              if(item.getText == typeName){
-                item.setCounterValue(value)
-              }
-          }
-      }
+  def updateTypeValue(value: Int, typeName: String) {
+    model.getCategories.foreach {
+      categ =>
+        categ.getItems.foreach {
+          item =>
+            if (item.getText == typeName) {
+              item.setCounterValue(value)
+            }
+        }
+    }
 
   }
+
   def addTypeDefinitionPanel(ctp: JPanel, libName: String, typeName: String) {
     val categ = getCategoryOrAdd(libName)
     categ.getItems.find(item => item.getText == typeName) match {
