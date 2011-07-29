@@ -81,7 +81,7 @@ public class NetworkPropertyEditor extends JPanel {
         JList list = new JList(listModel);
         JScrollPane pane = new JScrollPane(list);
         pane.setBorder(null);
-        pane.setPreferredSize(new Dimension(270, 70));
+        pane.setPreferredSize(new Dimension(270, 60));
         listPanel.removeAll();
         listPanel.add(pane);
         listPanel.repaint();

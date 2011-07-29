@@ -303,11 +303,11 @@
             <artifactId>org.kevoree.tools.ui.editor</artifactId>
             <version>${kevoree.version}</version>
         </dependency>
-        <dependency>
+       <!-- <dependency>
             <groupId>com.apple</groupId>
             <artifactId>AppleJavaExtensions</artifactId>
             <version>1.4</version>
-        </dependency>
+        </dependency>  -->
     </dependencies>
 
     <repositories>

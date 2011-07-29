@@ -35,8 +35,12 @@ import java.util.List;
  */
 public class LoadModelCommand implements Command {
 
+
+    ReloadTypePalette subCommand = new ReloadTypePalette();
+
     public void setKernel(KevoreeUIKernel kernel) {
         this.kernel = kernel;
+        subCommand.setKernel(this.kernel);
     }
 
     private KevoreeUIKernel kernel;
@@ -55,59 +59,7 @@ public class LoadModelCommand implements Command {
 
         /* Synch every UI Component */
         //LOAD COMPONENT TYPE
-        List<org.kevoree.TypeDefinition> loadedLib = new ArrayList<org.kevoree.TypeDefinition>();
-
-        kernel.getEditorPanel().getPalette().clear();
-        for (org.kevoree.TypeLibrary ctl : kernel.getModelHandler().getActualModel().getLibraries()) {
-            //System.out.println(ctl.getName());
-            for (org.kevoree.TypeDefinition ct : ctl.getSubTypes()) {
-                //System.out.println(ct.getName());
-                if (ct instanceof ComponentType) {
-                    ComponentTypePanel ctp = kernel.getUifactory().createComponentTypeUI((ComponentType) ct);
-                    kernel.getEditorPanel().getPalette().addTypeDefinitionPanel(ctp, ctl.getName(),ct.getName());
-                }
-                if (ct instanceof ChannelType) {
-                    ChannelTypePanel ctp = kernel.getUifactory().createChannelTypeUI((ChannelType) ct);
-                    kernel.getEditorPanel().getPalette().addTypeDefinitionPanel(ctp, ctl.getName(),ct.getName());
-                }
-                if (ct instanceof NodeType) {
-                    NodeTypePanel ctp = kernel.getUifactory().createNodeTypeUI((NodeType) ct);
-                    kernel.getEditorPanel().getPalette().addTypeDefinitionPanel(ctp, ctl.getName(),ct.getName());
-                }
-                if (ct instanceof GroupType) {
-                    GroupTypePanel ctp = kernel.getUifactory().createGroupTypeUI((GroupType) ct);
-                    kernel.getEditorPanel().getPalette().addTypeDefinitionPanel(ctp, ctl.getName(),ct.getName());
-                }
-                loadedLib.add(ct);
-            }
-        }
-
-        //LOAD COMPONENTTYPE WITHOUT LIB
-        for (TypeDefinition ct : kernel.getModelHandler().getActualModel().getTypeDefinitions()) {
-            if (!loadedLib.contains(ct)) {
-                if (ct instanceof ComponentType) {
-                    ComponentTypePanel ctp = kernel.getUifactory().createComponentTypeUI((ComponentType) ct);
-                    kernel.getEditorPanel().getPalette().addTypeDefinitionPanel(ctp, "default",ct.getName());
-                }
-                if (ct instanceof ChannelType) {
-                    ChannelTypePanel ctp = kernel.getUifactory().createChannelTypeUI((ChannelType) ct);
-                    kernel.getEditorPanel().getPalette().addTypeDefinitionPanel(ctp, "default",ct.getName());
-                }
-                if (ct instanceof NodeType) {
-                    NodeTypePanel ctp = kernel.getUifactory().createNodeTypeUI((NodeType) ct);
-                    kernel.getEditorPanel().getPalette().addTypeDefinitionPanel(ctp, "default",ct.getName());
-                }
-                if (ct instanceof GroupType) {
-                    GroupTypePanel ctp = kernel.getUifactory().createGroupTypeUI((GroupType) ct);
-                    kernel.getEditorPanel().getPalette().addTypeDefinitionPanel(ctp, "default",ct.getName());
-                }
-
-            }
-        }
-
-        for (TypeDefinition ct : kernel.getModelHandler().getActualModel().getTypeDefinitions()) {
-            kernel.getEditorPanel().getPalette().updateTypeValue(ModelHelper.getTypeNbInstance(kernel.getModelHandler().getActualModel(),ct),ct.getName());
-        }
+        subCommand.execute(null);
 
 
         //LOAD NODE
