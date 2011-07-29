@@ -1,3 +1,5 @@
+package org.kevoree.tools.model2code.genericSub
+
 /**
  * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE, Version 3, 29 June 2007;
  * you may not use this file except in compliance with the License.
@@ -11,14 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kevoree.tools.model2code.sub
-
 import scala.collection.JavaConversions._
 import japa.parser.ast.body.TypeDeclaration
 import java.util.ArrayList
 import japa.parser.ast.expr._
-import japa.parser.ast.CompilationUnit
 import org.kevoree.annotation.{DictionaryAttribute, DictionaryType}
+import org.kevoree.TypeDefinition
 
 /**
  * Created by IntelliJ IDEA.
@@ -29,13 +29,26 @@ import org.kevoree.annotation.{DictionaryAttribute, DictionaryType}
 
 trait DictionarySynchMethods extends ImportSynchMethods {
 
-  def compilationUnit : CompilationUnit
-  def componentType : org.kevoree.ComponentType
+  def synchronizeDictionary(td: TypeDeclaration, typeDef : TypeDefinition) {
 
+    if (typeDef.getDictionaryType != null) {
+      val dic: SingleMemberAnnotationExpr = td.getAnnotations.find({
+        annot => annot.getName.toString.equals(classOf[DictionaryType].getSimpleName)
+      }) match {
+        case Some(annot) => annot.asInstanceOf[SingleMemberAnnotationExpr]
+        case None => {
+          val newDic = createDictionaryAnnotation()
+          td.getAnnotations.add(newDic)
+          newDic
+        }
+      }
+      checkOrUpdateDictionary(td, typeDef, dic)
+    }
+  }
 
-  def checkOrUpdateDictionary(td : TypeDeclaration, dicAnnot : SingleMemberAnnotationExpr) {
+  def checkOrUpdateDictionary(td : TypeDeclaration, typeDef : TypeDefinition, dicAnnot : SingleMemberAnnotationExpr) {
     //for each attribute in the model
-    componentType.getDictionaryType.getAttributes.foreach{dicAtt =>
+    typeDef.getDictionaryType.getAttributes.foreach{dicAtt =>
       //retreive or create the attribute annotation
       dicAnnot.getMemberValue.asInstanceOf[ArrayInitializerExpr].getValues.find({member =>
           member.asInstanceOf[NormalAnnotationExpr].getPairs.find({pair =>
@@ -46,7 +59,7 @@ trait DictionarySynchMethods extends ImportSynchMethods {
 
         case Some(ann)=>updateDictionaryAtribute(ann.asInstanceOf[NormalAnnotationExpr], dicAtt)
         case None => dicAnnot.getMemberValue.asInstanceOf[ArrayInitializerExpr].getValues.add(
-            createDictionaryAttributeAnnotation(componentType.getDictionaryType, dicAtt))
+            createDictionaryAttributeAnnotation(typeDef.getDictionaryType, dicAtt))
       }
     }
   }

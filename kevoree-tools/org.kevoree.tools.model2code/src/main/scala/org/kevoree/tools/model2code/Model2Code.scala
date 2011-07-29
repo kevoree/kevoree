@@ -18,77 +18,114 @@
 
 package org.kevoree.tools.model2code
 
-import japa.parser.JavaParser
-import japa.parser.ast.CompilationUnit
 import java.io.File
-import java.io.FileInputStream
 import java.io.FileOutputStream
 import java.io.PrintWriter
 import java.net.URI
-import org.kevoree.ComponentType
-import org.kevoree.ContainerRoot
 import scala.collection.JavaConversions._
+import org.kevoree._
 
 /**
  * @author Gregory NAIN
  */
-class Model2Code {
+class Model2Code extends CompilationUnitHelpers {
 
-  def modelToCode(model : ContainerRoot, componentType : ComponentType, srcRoot : URI) {
-    modelToCode(model, componentType, srcRoot, srcRoot)
-  }
-  
-  def modelToCode(model : ContainerRoot, componentType : ComponentType, srcRoot : URI, targetRoot : URI) {
-    
-    val fileSrcLocation = srcRoot.toString + componentType.getBean.replace(".", "/").concat(".java")
-    val fileSrcLocationUri = new URI(fileSrcLocation)
-    
-    val fileTargetLocation = targetRoot.toString + componentType.getBean.replace(".", "/").concat(".java")
-    val fileTargetLocationUri = new URI(fileTargetLocation)
-    
-    //Load CU
-    val compilationUnit = compilationUnitLoader(fileSrcLocationUri)
-    
-    if(compilationUnit != null) {
-    
-      val ctw = new ComponentTypeWorker(model, componentType, compilationUnit)
-      ctw.synchronize
-      
-      //Save CU
-      compilationUnitWriter(compilationUnit, fileTargetLocationUri)
-      
+  /**
+   * Synchronizes or generates for all TypeDefinition in the given model. Overrides original files.
+   */
+  def modelToCode(model: ContainerRoot, srcRoot: URI) {
+    model.getTypeDefinitions.foreach {
+      typeDefninition =>
+        modelToCode(model, typeDefninition, srcRoot)
     }
-    
   }
 
-  def modelToDeployUnit(model : ContainerRoot, deployUnitRoot : URI) {
-   
+  /**
+   * Synchronizes or generates for all TypeDefinition in the given model. Does NOT override original files.
+   */
+  def modelToCode(model: ContainerRoot, srcRoot: URI, targetRoot: URI) {
+    model.getTypeDefinitions.foreach {
+      typeDefninition =>
+        modelToCode(model, typeDefninition, srcRoot, targetRoot)
+    }
+  }
+
+
+  /**
+   * Synchronizes or generates the given TypeDefinition in the given model. Overrides original files.
+   */
+  def modelToCode(model: ContainerRoot, typeDef: TypeDefinition, srcRoot: URI) {
+    modelToCode(model, typeDef, srcRoot, srcRoot)
+  }
+
+  /**
+   * Synchronizes or generates the given TypeDefinition in the given model. Does NOT override original files.
+   */
+  def modelToCode(model: ContainerRoot, typeDef: TypeDefinition, srcRoot: URI, targetRoot: URI) {
+
+    if (typeDef.getBean == null) {
+      System.err.println("Can not generate code of TypeDefinition with no bean attribute. " + typeDef.getName + " ignored.")
+    } else {
+
+      val fileSrcLocation = srcRoot.toString + typeDef.getBean.replace(".", "/").concat(".java")
+      val fileSrcLocationUri = new URI(fileSrcLocation)
+
+      val fileTargetLocation = targetRoot.toString + typeDef.getBean.replace(".", "/").concat(".java")
+      val fileTargetLocationUri = new URI(fileTargetLocation)
+
+      //Load Java File
+      val compilationUnit = compilationUnitLoader(fileSrcLocationUri)
+
+      if (compilationUnit != null) {
+        typeDef match {
+          case componentType: ComponentType => {
+            val ctw = new ComponentTypeWorker(model, componentType, compilationUnit)
+            ctw.synchronize()
+          }
+          case channelType: ChannelType => {
+            val ctw = new ChannelTypeWorker(model, channelType, compilationUnit)
+            ctw.synchronize()
+          }
+          case nodeType: NodeType => {
+            val ntw = new NodeTypeWorker(model, nodeType, compilationUnit)
+            ntw.synchronize()
+          }
+          case groupType: GroupType => {
+            val gtw = new GroupTypeWorker(model, groupType, compilationUnit)
+            gtw.synchronize()
+          }
+          case _ => throw new UnsupportedOperationException("Synchronization of " + typeDef.getClass.getName + " is not available.")
+        }
+
+        //Save CU
+        compilationUnitWriter(compilationUnit, fileTargetLocationUri)
+
+      }
+    }
+  }
+
+  def modelToDeployUnit(model: ContainerRoot, deployUnitRoot: URI) {
+
     val srcLocation = deployUnitRoot.toString + "/src/main/java/"
     val srcLocationUri = new URI(srcLocation)
     val srcFolder = new File(srcLocationUri)
-    if(!srcFolder.exists) {
+    if (!srcFolder.exists) {
       srcFolder.mkdirs
     }
 
+    System.out.print("Generating DeployUnit...")
     generatePom(model, deployUnitRoot)
-
-    model.getTypeDefinitions.filter(typeDef => typeDef.isInstanceOf[ComponentType]).foreach { componentType =>
-      System.out.println("Model2Code on " + componentType.getBean)
-
-      //var outputFolder = new File("target/test-classes/generated")
-
-      modelToCode(model, componentType.asInstanceOf[ComponentType], srcLocationUri)
-
-      System.out.println("Model2Code done for " + componentType.getBean)
-    }
+    System.out.println("Done.")
+    System.out.println("Generating Code...")
+    modelToCode(model, srcLocationUri)
   }
 
-  private def generatePom(model : ContainerRoot, deployUnitRoot : URI) {
+  private def generatePom(model: ContainerRoot, deployUnitRoot: URI) {
 
     val pomLocation = deployUnitRoot.toString + "/pom.xml"
     val pomLocationUri = new URI(pomLocation)
     val pomFile = new File(pomLocationUri)
-    if(!pomFile.exists) {
+    if (!pomFile.exists) {
       pomFile.createNewFile
     }
 
@@ -97,10 +134,10 @@ class Model2Code {
     pr.println("<project xmlns=\"http://maven.apache.org/POM/4.0.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd\">")
     pr.println("");
     pr.println("  <modelVersion>4.0.0</modelVersion>")
-    pr.println("  <groupId>"+model.getDeployUnits.head.getGroupName+"</groupId>")
-    pr.println("  <artifactId>"+model.getDeployUnits.head.getUnitName+"</artifactId>")
-    pr.println("  <version>"+model.getDeployUnits.head.getVersion+"</version>")
-    pr.println("  <name>"+model.getDeployUnits.head.getUnitName+" Generated by Kevoree</name>")
+    pr.println("  <groupId>" + model.getDeployUnits.head.getGroupName + "</groupId>")
+    pr.println("  <artifactId>" + model.getDeployUnits.head.getUnitName + "</artifactId>")
+    pr.println("  <version>" + model.getDeployUnits.head.getVersion + "</version>")
+    pr.println("  <name>" + model.getDeployUnits.head.getUnitName + " Generated by Kevoree</name>")
 
     generateDependencies(model, pr)
 
@@ -112,10 +149,10 @@ class Model2Code {
 
     pr.flush
     pr.close
-    
+
   }
 
-  private def generateDependencies(model : ContainerRoot, pr : PrintWriter) {
+  private def generateDependencies(model: ContainerRoot, pr: PrintWriter) {
     pr.println("")
     pr.println("  <dependencies>")
     pr.println("    <dependency>")
@@ -125,34 +162,38 @@ class Model2Code {
     pr.println("      <scope>compile</scope>")
     pr.println("    </dependency>")
 
-    model.getDeployUnits.filter({du => du.getUrl != null && !du.getUrl.equals("")}).foreach {du =>
-      val duVals = du.getUrl.split(":").last.split("/").toArray
+    model.getDeployUnits.filter({
+      du => du.getUrl != null && !du.getUrl.equals("")
+    }).foreach {
+      du =>
+        val duVals = du.getUrl.split(":").last.split("/").toArray
 
-      pr.println("    <dependency>")
-      pr.println("      <groupId>"+duVals(0)+"</groupId>")
-      pr.println("      <artifactId>"+duVals(1)+"</artifactId>")
-      if(duVals(2) != null) {
-        pr.println("      <version>"+duVals(2)+"</version>")
-      }
-      pr.println("      <scope>provided</scope>")
-      pr.println("    </dependency>")
+        pr.println("    <dependency>")
+        pr.println("      <groupId>" + duVals(0) + "</groupId>")
+        pr.println("      <artifactId>" + duVals(1) + "</artifactId>")
+        if (duVals(2) != null) {
+          pr.println("      <version>" + duVals(2) + "</version>")
+        }
+        pr.println("      <scope>provided</scope>")
+        pr.println("    </dependency>")
     }
 
     pr.println("  </dependencies>")
     pr.println("")
   }
 
-  private def generateRepositories(model : ContainerRoot, pr : PrintWriter) {
+  private def generateRepositories(model: ContainerRoot, pr: PrintWriter) {
     pr.println("")
     pr.println("  <repositories>")
-    model.getRepositories.foreach{repo =>
-      pr.println("    <repository>")
-      pr.println("      <id>"+repo.getUrl+"</id>")
-      pr.println("      <name>"+repo.getUrl+"</name>")
-      pr.println("      <url>"+repo.getUrl+"</url>")
-      pr.println("      <releases><enabled>true</enabled></releases>")
-      pr.println("      <snapshots><enabled>true</enabled></snapshots>")
-      pr.println("    </repository>")
+    model.getRepositories.foreach {
+      repo =>
+        pr.println("    <repository>")
+        pr.println("      <id>" + repo.getUrl + "</id>")
+        pr.println("      <name>" + repo.getUrl + "</name>")
+        pr.println("      <url>" + repo.getUrl + "</url>")
+        pr.println("      <releases><enabled>true</enabled></releases>")
+        pr.println("      <snapshots><enabled>true</enabled></snapshots>")
+        pr.println("    </repository>")
     }
     pr.println("  </repositories> ")
     pr.println("")
@@ -165,7 +206,7 @@ class Model2Code {
     pr.println("")
   }
 
-  private def generateBuild(model : ContainerRoot, pr : PrintWriter) {
+  private def generateBuild(model: ContainerRoot, pr: PrintWriter) {
     pr.println("")
     pr.println("  <build>")
     pr.println("    <plugins>")
@@ -206,34 +247,5 @@ class Model2Code {
     pr.println("  </build>")
     pr.println("")
   }
-  
-  private def compilationUnitLoader(fileLocation : URI) = {
-    val file = new File(fileLocation)
-    if(!file.exists) {
-      new CompilationUnit
-    } else {
-      val in = new FileInputStream(file)
-      val cu = JavaParser.parse(in)
-      cu
-    }
-  }
-  
-  private def compilationUnitWriter(cu : CompilationUnit, fileLocation : URI) = {
-        
-    val file = new File(fileLocation)
-    if(!file.exists) {
-      val folders = new File(new URI(fileLocation.toString.substring(0, fileLocation.toString.lastIndexOf("/"))))
-      folders.mkdirs
-      file.createNewFile
-    }
-            
-    val out = new FileOutputStream(file)
-    val br = new PrintWriter(out)
-            
-    br.print(cu.toString)
-    br.flush
-    br.close
-    out.close
-  }
-  
+
 }

@@ -1,3 +1,5 @@
+package org.kevoree.tools.model2code.genericSub
+
 /**
  * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE, Version 3, 29 June 2007;
  * you may not use this file except in compliance with the License.
@@ -11,15 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kevoree.tools.model2code.sub
-
 import scala.collection.JavaConversions._
 import japa.parser.ast.body.TypeDeclaration
 import java.util.ArrayList
 import japa.parser.ast.expr.{StringLiteralExpr, MemberValuePair, NameExpr, NormalAnnotationExpr}
 import japa.parser.ast.CompilationUnit
 import org.kevoree.annotation.Library
-import org.kevoree.{ComponentType, TypeLibrary}
+import org.kevoree.{ContainerRoot, TypeLibrary}
 
 /**
  * Created by IntelliJ IDEA.
@@ -31,8 +31,24 @@ import org.kevoree.{ComponentType, TypeLibrary}
 trait LibrarySynchMethods extends ImportSynchMethods{
 
   def compilationUnit : CompilationUnit
-  def componentType : ComponentType
 
+  def synchronizeLibrary(root : ContainerRoot, td: TypeDeclaration, typedElementName : String) {
+    root.getLibraries.find({
+      libraryType =>
+        libraryType.getSubTypes.find({
+          subType => subType.getName.equals(typedElementName)
+        }) match {
+          case Some(s) => true
+          case None => false
+        }
+    }) match {
+      case Some(lib : TypeLibrary) => {
+        //Check Annotation
+        checkOrAddLibraryAnnotation(td, lib)
+      }
+      case None =>
+    }
+  }
 
   def checkOrAddLibraryAnnotation(td : TypeDeclaration, lib : TypeLibrary) {
     td.getAnnotations.find({annot => annot.getName.toString.equals(classOf[Library].getSimpleName)}) match {

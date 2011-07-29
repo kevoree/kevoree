@@ -11,18 +11,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kevoree.tools.model2code.sub
+package org.kevoree.tools.model2code.componentTypeSub
 
 import scala.collection.JavaConversions._
 import java.util.ArrayList
 import japa.parser.ast.expr._
 import japa.parser.ast.CompilationUnit
 import org.kevoree.annotation._
-import org.kevoree.{ComponentType, Operation, ServicePortType, MessagePortType, PortTypeRef}
+import org.kevoree.{ Operation, ServicePortType, MessagePortType, PortTypeRef}
 import japa.parser.ASTHelper
 import japa.parser.ast.`type`.ClassOrInterfaceType
 import japa.parser.ast.stmt.BlockStmt
 import japa.parser.ast.body._
+import org.kevoree.tools.model2code.genericSub.ImportSynchMethods
 
 /**
  * Created by IntelliJ IDEA.
@@ -303,7 +304,7 @@ trait ProvidedPortSynchMethods
     }
 
     componentType.getProvided.foreach { providedPort =>
-      printf("Dealing with " + providedPort.getName + " ProvidedPort")
+      
       checkOrAddProvidedPortAnnotation(providedPortAnnotationsList, providedPort, td)
     }
 

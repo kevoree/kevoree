@@ -1,3 +1,5 @@
+package org.kevoree.tools.model2code.genericSub
+
 /**
  * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE, Version 3, 29 June 2007;
  * you may not use this file except in compliance with the License.
@@ -11,8 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kevoree.tools.model2code.sub
-
 import japa.parser.ASTHelper
 import japa.parser.ast.stmt.BlockStmt
 import japa.parser.ast.body._
@@ -28,8 +28,6 @@ import japa.parser.ast.CompilationUnit
 trait GenericSynchMethods {
 
   def compilationUnit : CompilationUnit
-  def componentType : org.kevoree.ComponentType
-
 
   def addDefaultMethod(td : TypeDeclaration, methodName : String) : MethodDeclaration = {
     //Method declaration
