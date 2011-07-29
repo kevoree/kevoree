@@ -11,7 +11,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kevoree.tools.model2code.sub
+package org.kevoree.tools.model2code.componentTypeSub
 
 import scala.collection.JavaConversions._
 import japa.parser.ast.body.TypeDeclaration
@@ -20,6 +20,7 @@ import japa.parser.ast.expr._
 import japa.parser.ast.CompilationUnit
 import org.kevoree.annotation.{PortType, RequiredPort, Requires}
 import org.kevoree.{ServicePortType, MessagePortType, PortTypeRef}
+import org.kevoree.tools.model2code.genericSub.ImportSynchMethods
 
 /**
  * Created by IntelliJ IDEA.
@@ -54,7 +55,6 @@ trait RequiredPortSynchMethods extends ImportSynchMethods {
     }
 
     componentType.getRequired.foreach { requiredPort =>
-      printf("Dealing with " + requiredPort.getName + " RequiredPort")
       checkOrAddRequiredPortAnnotation(requiredPortAnnotationsList, requiredPort, td)
     }
 

@@ -1,3 +1,5 @@
+package org.kevoree.tools.model2code.genericSub
+
 /**
  * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE, Version 3, 29 June 2007;
  * you may not use this file except in compliance with the License.
@@ -11,8 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kevoree.tools.model2code.sub
-
 import japa.parser.ast.expr.NameExpr
 import japa.parser.ast.{CompilationUnit, ImportDeclaration}
 import scala.collection.JavaConversions._
@@ -28,7 +28,6 @@ import org.kevoree.ComponentType
 trait ImportSynchMethods {
 
   def compilationUnit : CompilationUnit
-  def componentType : ComponentType
 
    def checkOrAddImport(classQName : String) {
     compilationUnit.getImports.find({importDecl => importDecl.getName.toString.equals(classQName)}) match {

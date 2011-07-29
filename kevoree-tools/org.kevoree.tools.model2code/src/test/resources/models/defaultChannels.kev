@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kevoree:ContainerRoot xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:kevoree="http://kevoree/1.0">
+  <typeDefinitions xsi:type="kevoree:ChannelType" name="defSERVICE" deployUnits="//@deployUnits.0" factoryBean="org.kevoree.library.defaultChannels.defSERVICEFactory" bean="org.kevoree.library.defaultChannels.defSERVICE" startMethod="startHello" stopMethod="stopHello"/>
+  <typeDefinitions xsi:type="kevoree:NodeType" name="JavaSENode"/>
+  <typeDefinitions xsi:type="kevoree:ChannelType" name="defMSG" deployUnits="//@deployUnits.0" factoryBean="org.kevoree.library.defaultChannels.defMSGFactory" bean="org.kevoree.library.defaultChannels.defMSG" startMethod="startHello" stopMethod="stopHello" updateMethod="updateHello"/>
+  <repositories units="//@deployUnits.0" url="http://maven2.kevoree.org/archiva/repository/snapshots/"/>
+  <repositories url="http://scala-tools.org/repo-releases"/>
+  <repositories url="http://maven2.kevoree.org/release"/>
+  <repositories url="http://maven2.kevoree.org/snapshots"/>
+  <repositories url="http://repo1.maven.org/maven2"/>
+  <libraries name="Kevoree-Android-JavaSE" subTypes="//@typeDefinitions.0 //@typeDefinitions.2"/>
+  <deployUnits groupName="org.kevoree.library.javase" unitName="org.kevoree.library.javase.defaultChannels" version="1.2.0-SNAPSHOT" hashcode="201107291720508" targetNodeType="//@typeDefinitions.1"/>
+</kevoree:ContainerRoot>

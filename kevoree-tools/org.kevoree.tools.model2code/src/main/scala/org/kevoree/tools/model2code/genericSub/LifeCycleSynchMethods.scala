@@ -1,3 +1,5 @@
+package org.kevoree.tools.model2code.genericSub
+
 /**
  * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE, Version 3, 29 June 2007;
  * you may not use this file except in compliance with the License.
@@ -11,13 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kevoree.tools.model2code.sub
-
 import japa.parser.ast.body.{MethodDeclaration, TypeDeclaration}
 import org.kevoree.annotation.{Update, Stop, Start}
 import scala.collection.JavaConversions._
 import japa.parser.ast.CompilationUnit
-import org.kevoree.ComponentType
 
 /**
  * Created by IntelliJ IDEA.
@@ -32,21 +31,20 @@ trait LifeCycleSynchMethods
 
 
   def compilationUnit : CompilationUnit
-  def componentType : ComponentType
 
   /**
    * Synchronizes the start method
    */
-   def synchronizeStart(td : TypeDeclaration) {
+   def synchronizeStart(td : TypeDeclaration, methodName : String) {
     //Check method presence
     var startMethod : MethodDeclaration = null
 
-    if(componentType.getStartMethod == null || componentType.getStartMethod.equals("")) {
+    if(methodName == null || methodName.equals("")) {
 
       startMethod = new MethodDeclaration
 
       //No start method in the model
-      val possibleMethodNames = List("start", "startComponent", "startKevoreeComponent")
+      val possibleMethodNames = List("start", "startChannel", "startKevoreeChannel")
       val methods = td.getMembers.filter({member => member.isInstanceOf[MethodDeclaration]})
 
       //Check available names for start method
@@ -65,9 +63,9 @@ trait LifeCycleSynchMethods
 
     } else {
       startMethod = td.getMembers.filter({member => member.isInstanceOf[MethodDeclaration]}).find({method =>
-          method.asInstanceOf[MethodDeclaration].getName.equals(componentType.getStartMethod)}) match {
+          method.asInstanceOf[MethodDeclaration].getName.equals(methodName)}) match {
         case Some(m:MethodDeclaration) => m
-        case None=> addDefaultMethod(td, componentType.getStartMethod)
+        case None=> addDefaultMethod(td, methodName)
       }
     }
 
@@ -77,16 +75,16 @@ trait LifeCycleSynchMethods
     }
   }
 
-   def synchronizeStop(td : TypeDeclaration) {
+   def synchronizeStop(td : TypeDeclaration, methodName : String) {
     //Check method presence
     var stopMethod : MethodDeclaration = null
 
-    if(componentType.getStopMethod == null || componentType.getStopMethod.equals("")) {
+    if(methodName == null || methodName.equals("")) {
 
       stopMethod = new MethodDeclaration
 
       //No start method in the model
-      val possibleMethodNames = List("stop", "stopComponent", "stopKevoreeComponent")
+      val possibleMethodNames = List("stop", "stopChannel", "stopKevoreeChannel")
       val methods = td.getMembers.filter({member => member.isInstanceOf[MethodDeclaration]})
 
       //Check available names for start method
@@ -105,9 +103,9 @@ trait LifeCycleSynchMethods
 
     } else {
       stopMethod = td.getMembers.filter({member => member.isInstanceOf[MethodDeclaration]}).find({method =>
-          method.asInstanceOf[MethodDeclaration].getName.equals(componentType.getStopMethod)}) match {
+          method.asInstanceOf[MethodDeclaration].getName.equals(methodName)}) match {
         case Some(m:MethodDeclaration) => m
-        case None=> addDefaultMethod(td, componentType.getStopMethod)
+        case None=> addDefaultMethod(td, methodName)
       }
     }
 
@@ -117,14 +115,14 @@ trait LifeCycleSynchMethods
     }
   }
 
-  def synchronizeUpdate(td : TypeDeclaration) {
+  def synchronizeUpdate(td : TypeDeclaration, methodName : String) {
     //Check method presence
     var updateMethod = new MethodDeclaration
 
-    if(componentType.getUpdateMethod == null || componentType.getUpdateMethod.equals("")) {
+    if(methodName == null || methodName.equals("")) {
 
       //No start method in the model
-      val possibleMethodNames = List("update", "updateComponent", "updateKevoreeComponent")
+      val possibleMethodNames = List("update", "updateChannel", "updateKevoreeChannel")
       val methods = td.getMembers.filter({member => member.isInstanceOf[MethodDeclaration]})
 
       //Check available names for start method
@@ -143,9 +141,9 @@ trait LifeCycleSynchMethods
 
     } else {
       updateMethod = td.getMembers.filter({member => member.isInstanceOf[MethodDeclaration]}).find({method =>
-          method.asInstanceOf[MethodDeclaration].getName.equals(componentType.getStopMethod)}) match {
+          method.asInstanceOf[MethodDeclaration].getName.equals(methodName)}) match {
         case Some(m:MethodDeclaration) => m
-        case None=> addDefaultMethod(td, componentType.getUpdateMethod)
+        case None=> addDefaultMethod(td, methodName)
       }
     }
 
