@@ -53,13 +53,13 @@ public class ExportModelImage implements Command {
 
                 Dimension size = kernel.getModelPanel().getSize();
                 BufferedImage bi = new BufferedImage(size.width, size.height, BufferedImage.TYPE_INT_ARGB);
-                Graphics2D g2 = bi.createGraphics();
+                final Graphics2D g2 = bi.createGraphics();
+
+                kernel.getModelPanel().paintComponents(g2);
                 kernel.getModelPanel().paint(g2);
 
 
-
-
-                 ImageIO.write(bi, "PNG", filechooser.getSelectedFile().getAbsoluteFile());
+                ImageIO.write(bi, "PNG", filechooser.getSelectedFile().getAbsoluteFile());
 
             } catch (Exception e) {
                 e.printStackTrace();
