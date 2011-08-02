@@ -66,7 +66,6 @@ public class KevoreeNodeRunner {
 						byte[] bytes = new byte[512];
 						int i;
 						while ((i = stream.read(bytes)) > -1) {
-							Thread.sleep(1000);
 							/*if (i != -1) {
 						  //System.out.print(line);
 						  //outputStream.write(bytes, 0, i);
@@ -76,7 +75,6 @@ public class KevoreeNodeRunner {
 						}
 					} catch (IOException e) {
 						// e.printStackTrace();
-					} catch (InterruptedException e) {
 						e.printStackTrace();
 					}
 				}
@@ -93,7 +91,6 @@ public class KevoreeNodeRunner {
 						byte[] bytes = new byte[512];
 						int i;
 						while ((i = stream.read(bytes)) > -1) {
-							Thread.sleep(1000);
 							/*if (i != -1) {
 						  //System.out.print(line);
 						  //outputStream.write(bytes, 0, i);
@@ -103,7 +100,6 @@ public class KevoreeNodeRunner {
 						}
 					} catch (IOException e) {
 						// e.printStackTrace();
-					} catch (InterruptedException e) {
 						e.printStackTrace();
 					}
 				}
