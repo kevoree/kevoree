@@ -239,11 +239,11 @@
                                 <groupId>com.jgoodies</groupId>
                                 <artifactId>forms</artifactId>
                             </inclusion>
-                            <inclusion>
+                          <!--  <inclusion>
                                 <groupId>com.apple</groupId>
                                 <artifactId>AppleJavaExtensions</artifactId>
                             </inclusion>
-
+                            -->
                         </inclusions>
                     </assembly>
                     <libs>
