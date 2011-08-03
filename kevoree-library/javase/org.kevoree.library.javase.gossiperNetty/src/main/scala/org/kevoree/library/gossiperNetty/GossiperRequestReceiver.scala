@@ -107,7 +107,7 @@ class GossiperRequestReceiver(protected var channelFragment: NettyGossipAbstract
 
     message.getContentClass match {
       case s: String if (s == classOf[VectorClockUUIDsRequest].getName) => {
-        logger.debug("notification received from " + address)
+        logger.debug("vectorcclock request received from " + address)
         val uuidVectorClocks = dataManager.getUUIDVectorClocks()
         var vectorClockUUIDsBuilder = Gossip.VectorClockUUIDs.newBuilder
         uuidVectorClocks.keySet.foreach {
@@ -150,6 +150,7 @@ class GossiperRequestReceiver(protected var channelFragment: NettyGossipAbstract
 
       }
       case s: String if (s == classOf[UpdatedValueNotification].getName) => {
+        println("notification received from " + address)
         gossiperRequestSender.initGossipAction(message.getDestNodeName)
       }
     }
