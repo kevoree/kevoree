@@ -27,6 +27,8 @@ class NotificationRequestSender (protected var channelFragment: NettyGossipAbstr
       p.addLast("protobufDecoder", new ProtobufDecoder(Message.getDefaultInstance))
       p.addLast("frameEncoder", new ProtobufVarint32LengthFieldPrepender);
       p.addLast("protobufEncoder", new ProtobufEncoder)
+
+      p.addLast("handler", new GossiperRequestSenderHandler(null))
       p
     }
   }

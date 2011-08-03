@@ -107,6 +107,7 @@ class GossiperRequestReceiver(protected var channelFragment: NettyGossipAbstract
 
     message.getContentClass match {
       case s: String if (s == classOf[VectorClockUUIDsRequest].getName) => {
+        logger.debug("notification received from " + address)
         val uuidVectorClocks = dataManager.getUUIDVectorClocks()
         var vectorClockUUIDsBuilder = Gossip.VectorClockUUIDs.newBuilder
         uuidVectorClocks.keySet.foreach {
@@ -156,7 +157,9 @@ class GossiperRequestReceiver(protected var channelFragment: NettyGossipAbstract
   }
 
   protected def writeMessage(o : Object, address : InetSocketAddress, channel : Channel) {
-    logger.debug("message sent")
-    channel.write (o, address)
+    if (address != null && channel != null) {
+      logger.debug("message sent")
+      channel.write (o, address)
+    }
   }
 }

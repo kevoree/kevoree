@@ -23,7 +23,7 @@ class GossiperRequestSender (timeout: java.lang.Long, protected val channelFragm
   var factory = new NioDatagramChannelFactory(Executors.newCachedThreadPool())
   var bootstrap = new ConnectionlessBootstrap(factory)
   var self = this
-  bootstrap.setPipelineFactory(new ChannelPipelineFactory() {
+  bootstrap.setPipelineFactory(new ChannelPipelineFactory() { // TODO refactor with an object for all pipelineFactories
     override def getPipeline: ChannelPipeline = {
       val p: ChannelPipeline = Channels.pipeline()
       //p.addLast("deflater", new ZlibEncoder(ZlibWrapper.ZLIB))
