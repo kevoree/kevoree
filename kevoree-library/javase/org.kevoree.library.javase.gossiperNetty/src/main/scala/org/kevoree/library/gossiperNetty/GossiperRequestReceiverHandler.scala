@@ -20,8 +20,7 @@ class GossiperRequestReceiverHandler (serverActor: GossiperRequestReceiver) exte
   override def exceptionCaught (ctx: ChannelHandlerContext, e: ExceptionEvent) {
     //NOOP
     try {
-      logger.warn ("Communication failed between " + ctx.getChannel.getLocalAddress + " and " +
-        ctx.getChannel.getRemoteAddress)
+      logger.warn ("Communication failed between " + ctx.getChannel.getLocalAddress + " and " ,e.getCause)
     } catch {
       case _ =>
     }
