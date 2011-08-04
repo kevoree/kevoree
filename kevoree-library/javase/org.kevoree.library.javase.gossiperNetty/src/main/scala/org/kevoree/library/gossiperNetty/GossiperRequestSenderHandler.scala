@@ -36,6 +36,6 @@ class GossiperRequestSenderHandler (gossiperRequestSender: GossiperRequestSender
     } catch {
       case _ =>
     }
-    //e.getChannel.close.awaitUninterruptibly
+    e.getChannel.close.awaitUninterruptibly
   }
 }
