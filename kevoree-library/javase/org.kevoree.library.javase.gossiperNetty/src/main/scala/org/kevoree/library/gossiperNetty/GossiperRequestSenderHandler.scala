@@ -31,11 +31,10 @@ class GossiperRequestSenderHandler (gossiperRequestSender: GossiperRequestSender
     //NOOP
 
     try {
-      logger.warn ("Communication failed between " + ctx.getChannel.getLocalAddress + " and " +
-        ctx.getChannel.getRemoteAddress)
+      logger.warn ("Communication failed between " + ctx.getChannel.getLocalAddress + " and " ,e.getCause)
     } catch {
       case _ =>
     }
-    e.getChannel.close.awaitUninterruptibly
+    //e.getChannel.close.awaitUninterruptibly
   }
 }
