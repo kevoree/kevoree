@@ -4,7 +4,6 @@ import java.util.UUID
 import java.util.concurrent.Executors
 import com.google.protobuf.ByteString
 import java.net.InetSocketAddress
-import java.net.SocketAddress
 import org.jboss.netty.bootstrap.ConnectionlessBootstrap
 import org.jboss.netty.bootstrap.ServerBootstrap
 import org.jboss.netty.channel.socket.nio.NioDatagramChannelFactory
@@ -17,8 +16,6 @@ import version.Gossip
 import version.Gossip.{UpdatedValueNotification, UUIDDataRequest, VectorClockUUIDsRequest}
 import org.slf4j.LoggerFactory
 import org.jboss.netty.channel._
-import socket.DatagramChannel
-
 class GossiperRequestReceiver(protected var channelFragment: NettyGossipAbstractElement, dataManager: DataManager, port: Int, gossiperRequestSender: GossiperRequestSender, fullUDP: java.lang.Boolean, serializer: Serializer) extends actors.DaemonActor {
 
   private val logger = LoggerFactory.getLogger(classOf[GossiperRequestReceiver])
@@ -30,8 +27,8 @@ class GossiperRequestReceiver(protected var channelFragment: NettyGossipAbstract
   bootstrapForRequest.setPipelineFactory(new ChannelPipelineFactory() {
     override def getPipeline: ChannelPipeline = {
       val p: ChannelPipeline = Channels.pipeline()
-      //p.addLast("deflater", new ZlibEncoder(ZlibWrapper.ZLIB))
-      //p.addLast("inflater", new ZlibDecoder(ZlibWrapper.ZLIB))
+      p.addLast("deflater", new ZlibEncoder(ZlibWrapper.ZLIB))
+      p.addLast("inflater", new ZlibDecoder(ZlibWrapper.ZLIB))
       p.addLast("frameDecoder", new ProtobufVarint32FrameDecoder)
       p.addLast("protobufDecoder", new ProtobufDecoder(Message.getDefaultInstance))
       p.addLast("frameEncoder", new ProtobufVarint32LengthFieldPrepender)

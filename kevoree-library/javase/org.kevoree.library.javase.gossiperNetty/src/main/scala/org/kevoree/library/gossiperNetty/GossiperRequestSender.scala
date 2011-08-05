@@ -13,6 +13,7 @@ import org.slf4j.LoggerFactory
 import version.Gossip.{VersionedModel, UUIDDataRequest, VectorClockUUIDs, VectorClockUUIDsRequest}
 import version.Version.{ClockEntry, VectorClock}
 import org.jboss.netty.channel._
+import org.jboss.netty.handler.codec.compression.{ZlibDecoder, ZlibEncoder, ZlibWrapper}
 
 class GossiperRequestSender (timeout: java.lang.Long, protected val channelFragment: NettyGossipAbstractElement,
   dataManager: DataManager, fullUDP: java.lang.Boolean, garbage: Boolean, serializer: Serializer,
@@ -26,8 +27,8 @@ class GossiperRequestSender (timeout: java.lang.Long, protected val channelFragm
   bootstrap.setPipelineFactory(new ChannelPipelineFactory() { // TODO refactor with an object for all pipelineFactories
     override def getPipeline: ChannelPipeline = {
       val p: ChannelPipeline = Channels.pipeline()
-      //p.addLast("deflater", new ZlibEncoder(ZlibWrapper.ZLIB))
-      //p.addLast("inflater", new ZlibDecoder(ZlibWrapper.ZLIB))
+      p.addLast("deflater", new ZlibEncoder(ZlibWrapper.ZLIB))
+      p.addLast("inflater", new ZlibDecoder(ZlibWrapper.ZLIB))
       p.addLast("frameDecoder", new ProtobufVarint32FrameDecoder)
       p.addLast("protobufDecoder", new ProtobufDecoder(Message.getDefaultInstance))
       p.addLast("frameEncoder", new ProtobufVarint32LengthFieldPrepender)
