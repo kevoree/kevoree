@@ -34,11 +34,9 @@ case class AddTypeCommand(ct : TypeDefinition, ctx : KevoreeDeployManager,nodeNa
   def execute() : Boolean= {
     logger.debug("CMD ADD CT EXECUTION ");
 
-    
-    var node = ct.eContainer.asInstanceOf[ContainerRoot].getNodes.find(n=>n.getName == nodeName).get
-    var deployUnit = ct.foundRelevantDeployUnit(node)
-    
-    
+    val node = ct.eContainer.asInstanceOf[ContainerRoot].getNodes.find(n=>n.getName == nodeName).get
+    val deployUnit = ct.foundRelevantDeployUnit(node)
+
     //FOUND TYPE DEFINITION DEPLOY UNIT BUNDLE
     val mappingFound =  ctx.bundleMapping.find({bundle =>bundle.name==CommandHelper.buildKEY(deployUnit) && bundle.objClassName==deployUnit.getClass.getName}) match {
       case Some(bundle)=> bundle
