@@ -58,13 +58,13 @@
             <artifactId>org.apache.felix.framework</artifactId>
             <version>3.2.0</version>
         </dependency>
-
+                <!--
         <dependency>
             <groupId>org.ops4j.pax.url</groupId>
             <artifactId>pax-url-mvn</artifactId>
             <version>1.3.2</version>
         </dependency>
-
+                  -->
 
         <dependency>
             <groupId>org.kevoree.tools</groupId>
@@ -132,7 +132,7 @@
                         </goals>
                         <configuration>
                             <filters>
-                                scala,org.ops4j,org.eclipse.emf,org.slf4j,org.kevoree,org.kevoree.tools
+                                scala,org.ops4j,org.eclipse.emf,org.slf4j,org.kevoree,org.kevoree.tools,org.apache,org.sonatype,org.codehaus,org.apache.http
                             </filters>
                         </configuration>
                     </execution>

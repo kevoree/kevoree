@@ -55,9 +55,20 @@
         </dependency>
         <dependency>
             <groupId>org.sonatype.aether</groupId>
-          <!---  <artifactId>aether-connector-asynchttpclient</artifactId>   -->
+            <!---  <artifactId>aether-connector-asynchttpclient</artifactId>   -->
             <artifactId>aether-connector-wagon</artifactId>
             <version>1.12</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.maven.wagon</groupId>
+            <artifactId>wagon-http-lightweight</artifactId>
+            <version>1.0-beta-6</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.maven.wagon</groupId>
+            <artifactId>wagon-http-shared</artifactId>
+            <version>1.0-beta-6</version>
         </dependency>
 
         <dependency>
@@ -76,7 +87,7 @@
         <dependency>
             <groupId>org.codehaus.plexus</groupId>
             <artifactId>plexus-component-annotations</artifactId>
-            <version>1.0-beta-3.0.6</version>
+            <version>1.5.5</version>
         </dependency>
     </dependencies>
 
