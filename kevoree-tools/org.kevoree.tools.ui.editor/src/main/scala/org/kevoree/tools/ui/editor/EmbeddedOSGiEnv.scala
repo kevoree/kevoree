@@ -34,7 +34,7 @@ object EmbeddedOSGiEnv {
   configProps.put(Constants.FRAMEWORK_SYSTEMPACKAGES_EXTRA, SysPackageConstants.getProperty() + ",sun.misc");
   configProps.put(Constants.FRAMEWORK_STORAGE_CLEAN, Constants.FRAMEWORK_STORAGE_CLEAN_ONFIRSTINIT);
 
-  var activators = Arrays.asList((new org.ops4j.pax.url.mvn.internal.Activator).asInstanceOf[BundleActivator])
+  var activators = Arrays.asList()//(new org.ops4j.pax.url.mvn.internal.Activator).asInstanceOf[BundleActivator])
 
 
   configProps.put(FelixConstants.SYSTEMBUNDLE_ACTIVATORS_PROP, activators);

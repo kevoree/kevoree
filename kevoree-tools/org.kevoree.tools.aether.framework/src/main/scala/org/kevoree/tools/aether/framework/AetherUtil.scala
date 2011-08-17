@@ -27,7 +27,7 @@ import org.sonatype.aether.repository.{RepositoryPolicy, RemoteRepository, Local
 import org.sonatype.aether.artifact.Artifact
 import org.kevoree.framework.KevoreePlatformHelper
 import scala.collection.JavaConversions._
-import org.sonatype.aether.connector.wagon.WagonRepositoryConnectorFactory
+import org.sonatype.aether.connector.wagon.{WagonProvider, WagonRepositoryConnectorFactory}
 
 /**
  * User: ffouquet
@@ -41,12 +41,13 @@ object AetherUtil {
     val locator = new DefaultServiceLocator()
     locator.addService(classOf[RepositoryConnectorFactory], classOf[FileRepositoryConnectorFactory])
     //locator.addService(classOf[RepositoryConnectorFactory], classOf[AsyncRepositoryConnectorFactory])
-    locator.addService(classOf[RepositoryConnectorFactory], classOf[WagonRepositoryConnectorFactory])
-
+    locator.setServices(classOf[WagonProvider], new ManualWagonProvider())
+    locator.addService(classOf[RepositoryConnectorFactory], classOf[WagonRepositoryConnectorFactoryFork])
     locator.getService(classOf[RepositorySystem])
   }
 
   def resolveDeployUnit(du: DeployUnit): File = {
+
 
     var artifact: Artifact = null
     if (du.getUrl != null && du.getUrl.contains("mvn:")) {
@@ -69,6 +70,7 @@ object AetherUtil {
         val repositoryPolicy = new RepositoryPolicy()
         repositoryPolicy.setChecksumPolicy(RepositoryPolicy.CHECKSUM_POLICY_WARN)
         repositoryPolicy.setUpdatePolicy(RepositoryPolicy.UPDATE_POLICY_ALWAYS)
+        repositoryPolicy.setEnabled(true)
         repo.setPolicy(true, repositoryPolicy)
         repositories.add(repo)
     }

@@ -72,9 +72,22 @@ class KevoreeAnnotationProcessor(env: AnnotationProcessorEnvironment) extends An
 
     if (!errorsInChecker) {
       //TODO SEPARATE MAVEN PLUGIN
-      KevoreeGenerator.generatePort(root, env.getFiler());
-      KevoreeFactoryGenerator.generateFactory(root, env.getFiler());
-      KevoreeActivatorGenerator.generateActivator(root, env.getFiler());
+
+      val nodeTypeNames = env.getOptions.find({
+        op => op._1.contains("nodeTypeNames")
+      }).getOrElse {
+        ("key=", "")
+      }._1.split('=').toList.get(1)
+      val nodeTypeNameList: List[String] = nodeTypeNames.split(";").filter(r => r != null && r != "").toList
+
+      println("l=>"+nodeTypeNameList.mkString(","))
+
+      nodeTypeNameList.foreach {
+        targetNodeName =>
+          KevoreeGenerator.generatePort(root, env.getFiler,targetNodeName);
+          KevoreeFactoryGenerator.generateFactory(root, env.getFiler,targetNodeName);
+          KevoreeActivatorGenerator.generateActivator(root, env.getFiler,targetNodeName);
+      }
       KevoreeXmiHelper.save(LocalUtility.generateLibURI(env), root);
     }
   }

@@ -23,17 +23,20 @@ import java.io.File
 import scala.collection.JavaConversions._
 import org.kevoree.framework.aspects.KevoreeAspects._
 import org.kevoree.{GroupType, ContainerRoot, ChannelType, ComponentType}
+import org.kevoree.framework.KevoreeGeneratorHelper
 
 object KevoreeFactoryGenerator {
 
   /* GENERATE FACTORY FOR COMPONENT & PORT  */
-  def generateFactory(root: ContainerRoot, filer: Filer) {
+  def generateFactory(root: ContainerRoot, filer: Filer,targetNodeType : String) {
 
     /* STEP COMPONENT TYPE DEFINITION */
     root.getTypeDefinitions.filter(p => p.isInstanceOf[ComponentType]).foreach {
       ctt =>
         val ct = ctt.asInstanceOf[ComponentType]
-        val componentPackage = ct.getFactoryBean().substring(0, ct.getFactoryBean().lastIndexOf("."));
+        //val componentPackage = ct.getFactoryBean().substring(0, ct.getFactoryBean().lastIndexOf("."));
+
+        val componentPackage = KevoreeGeneratorHelper.getTypeDefinitionGeneratedPackage(ct,targetNodeType)
         val factoryName = ct.getFactoryBean.substring(ct.getFactoryBean.lastIndexOf(".") + 1)
         val componentBean = ct.getFactoryBean.substring(0, ct.getFactoryBean.indexOf("Factory"))
         val wrapper = filer.createTextFile(com.sun.mirror.apt.Filer.Location.SOURCE_TREE, "", new File(componentPackage.replace(".", "/") + "/" + factoryName + ".scala"), "UTF-8");
@@ -41,6 +44,7 @@ object KevoreeFactoryGenerator {
         //var wrapper = filer.createSourceFile(ct.getFactoryBean);
         wrapper.append("package " + componentPackage + "\n");
         wrapper.append("import org.kevoree.framework._\n")
+        wrapper.append("import "+KevoreeGeneratorHelper.getTypeDefinitionBasePackage(ct)+"._\n")
         wrapper.append("object " + factoryName + "{\n")
 
         /* create Component Actor */
@@ -107,8 +111,8 @@ object KevoreeFactoryGenerator {
     /* STEP CHANNEL TYPE DEFINITION */
     root.getTypeDefinitions.filter(p => p.isInstanceOf[ChannelType]).foreach {
       ctt =>
-        var ct = ctt.asInstanceOf[ChannelType]
-        var channelTypePackage = ct.getFactoryBean().substring(0, ct.getFactoryBean().lastIndexOf("."));
+        val ct = ctt.asInstanceOf[ChannelType]
+        val channelTypePackage = KevoreeGeneratorHelper.getTypeDefinitionGeneratedPackage(ct,targetNodeType)
         var factoryName = ct.getFactoryBean.substring(ct.getFactoryBean.lastIndexOf(".") + 1)
         var componentBean = ct.getFactoryBean.substring(0, ct.getFactoryBean.indexOf("Factory"))
         var wrapper = filer.createTextFile(com.sun.mirror.apt.Filer.Location.SOURCE_TREE, "", new File(channelTypePackage.replace(".", "/") + "/" + factoryName + ".scala"), "UTF-8");
@@ -139,7 +143,8 @@ object KevoreeFactoryGenerator {
     root.getTypeDefinitions.filter(p => p.isInstanceOf[GroupType]).foreach {
       gt =>
         val ct = gt.asInstanceOf[GroupType]
-        val groupTypePackage = ct.getFactoryBean().substring(0, ct.getFactoryBean().lastIndexOf("."));
+        //val groupTypePackage = ct.getFactoryBean().substring(0, ct.getFactoryBean().lastIndexOf("."));
+        val groupTypePackage = KevoreeGeneratorHelper.getTypeDefinitionGeneratedPackage(ct,targetNodeType)
         val factoryName = ct.getFactoryBean.substring(ct.getFactoryBean.lastIndexOf(".") + 1)
         val componentBean = ct.getFactoryBean.substring(0, ct.getFactoryBean.indexOf("Factory"))
         val wrapper = filer.createTextFile(com.sun.mirror.apt.Filer.Location.SOURCE_TREE, "", new File(groupTypePackage.replace(".", "/") + "/" + factoryName + ".scala"), "UTF-8");
