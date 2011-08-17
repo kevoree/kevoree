@@ -8,6 +8,7 @@ import java.util.logging.Logger;
 import org.kevoree.ContainerRoot;
 import org.kevoree.KevoreeFactory;
 import org.kevoree.annotation.*;
+import org.kevoree.extra.osgi.rxtx.KevoreeSharedCom;
 import org.kevoree.framework.AbstractNodeType;
 import org.kevoree.kompare.KevoreeKompareBean;
 import org.kevoree.library.arduinoNodeType.utils.ArduinoDefaultLibraryManager;
@@ -271,10 +272,12 @@ public class ArduinoNode extends AbstractNodeType {
                 System.out.println("boardPortName=" + boardName);
 
                 progress.beginTask("Upload to arduino board", 90);
-
-                ComSender.closeAllPreviousPort();
+                KevoreeSharedCom.lockPort(boardName) ;
 
                 arduinoDeploy.uploadSketch(sketch, target, boardName);
+
+                KevoreeSharedCom.unlockPort(boardName) ;
+
                 progress.endTask();
 
             } catch (FileNotFoundException ex) {

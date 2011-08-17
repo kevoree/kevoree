@@ -6,19 +6,20 @@
 package org.kevoree.library.arduinoNodeType
 
 import org.kevoree.DeployUnit
-import org.osgi.framework.BundleContext
 import org.kevoree.tools.aether.framework.AetherUtil
 import java.io.FileInputStream
+import org.osgi.framework.{Bundle, BundleContext}
 
 case class AddThirdPartyCommand(ctx: BundleContext, ct: DeployUnit) {
 
+  var lastBundle : Bundle = null
 
   def execute(): Boolean = {
     try {
       val arteFile = AetherUtil.resolveDeployUnit(ct)
-      val bundle = ctx.installBundle("file:///"+arteFile.getAbsolutePath, new FileInputStream(arteFile))
-      bundle.update()
-      bundle.start()
+      lastBundle = ctx.installBundle("file:///"+arteFile.getAbsolutePath, new FileInputStream(arteFile))
+      lastBundle.update()
+      lastBundle.start()
       true
     } catch {
       case _@e => e.printStackTrace; false

@@ -41,7 +41,7 @@ public class App {
         final JFrame frame = new KevoreeGUIFrame();
 
         EmbeddedActivators.setActivators(Arrays.asList(
-                (BundleActivator) new org.ops4j.pax.url.mvn.internal.Activator(),
+          //      (BundleActivator) new org.ops4j.pax.url.mvn.internal.Activator(),
                 (BundleActivator) new org.apache.felix.shell.impl.Activator(),
                 (BundleActivator) new ConsoleActivator(),
                 (BundleActivator) new org.ops4j.pax.url.assembly.internal.Activator(),

@@ -5,15 +5,22 @@
 
 package org.kevoree.library.arduinoNodeType.generator
 
-import org.kevoree.TypeDefinition
 import org.osgi.framework.BundleContext
+import org.kevoree.framework.KevoreeGeneratorHelper
+import org.kevoree.{ContainerRoot, TypeDefinition}
+import scala.collection.JavaConversions._
 
 trait KevoreeReflectiveHelper {
 
-  def createStandaloneInstance(ct: TypeDefinition, bundleContext: BundleContext,nodeName:String): Object = {
+  def createStandaloneInstance(ct: TypeDefinition, bundleContext: BundleContext, nodeName: String): Object = {
     //CREATE NEW INSTANCE
     var clazzFactory: Class[_] = null
-    val activatorClassName = ct.getFactoryBean.replaceAll("Factory", "Activator")
+
+    val nodeTypeName = ct.eContainer().asInstanceOf[ContainerRoot].getNodes.find(n => n.getName == nodeName).get.getTypeDefinition
+    val genPackage = KevoreeGeneratorHelper.getTypeDefinitionGeneratedPackage(ct, nodeTypeName.getName)
+    val activatorName = ct.getName + "Activator"
+
+    val activatorClassName = genPackage + "." + activatorName
     if (bundleContext != null) {
       clazzFactory = bundleContext.getBundle.loadClass(activatorClassName)
     } else {

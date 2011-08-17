@@ -23,14 +23,15 @@ import java.io.File
 import scala.collection.JavaConversions._
 import org.kevoree.framework.aspects.KevoreeAspects._
 import org.kevoree.{GroupType, ContainerRoot, ChannelType, ComponentType}
+import org.kevoree.framework.KevoreeGeneratorHelper
 
 object KevoreeActivatorGenerator {
-  def generateActivator(root: ContainerRoot, filer: Filer) {
+  def generateActivator(root: ContainerRoot, filer: Filer, targetNodeType : String) {
     root.getTypeDefinitions.filter(p => p.isInstanceOf[ComponentType]).foreach {
       ctt =>
         val ct = ctt.asInstanceOf[ComponentType]
-        val activatorPackage = ct.getFactoryBean().substring(0, ct.getFactoryBean().lastIndexOf("."))
-        val activatorName = ct.getName() + "Activator"
+        val activatorPackage = KevoreeGeneratorHelper.getTypeDefinitionGeneratedPackage(ct,targetNodeType)
+        val activatorName = ct.getName + "Activator"
         val wrapper = filer.createTextFile(com.sun.mirror.apt.Filer.Location.SOURCE_TREE, "", new File(activatorPackage.replace(".", "/") + "/" + activatorName + ".scala"), "UTF-8")
         /* GENERATE CONTENT */
         wrapper.append("package " + activatorPackage + ";\n");
@@ -44,6 +45,7 @@ object KevoreeActivatorGenerator {
         wrapper.append("import org.kevoree.framework.KevoreeActor\n")
         wrapper.append("import org.kevoree.framework.KevoreeComponent\n")
         wrapper.append("import org.kevoree.framework._\n")
+        wrapper.append("import "+KevoreeGeneratorHelper.getTypeDefinitionBasePackage(ct)+"._\n")
         wrapper.append("class " + activatorName + " extends org.kevoree.framework.osgi.KevoreeComponentActivator {\n")
         val factoryName = ct.getFactoryBean.substring(ct.getFactoryBean.lastIndexOf(".") + 1)
         wrapper.append("def callFactory() : KevoreeComponent = { " + factoryName + ".createComponentActor() } ")
@@ -57,7 +59,7 @@ object KevoreeActivatorGenerator {
     root.getTypeDefinitions.filter(p => p.isInstanceOf[ChannelType]).foreach {
       ctt =>
         val ct = ctt.asInstanceOf[ChannelType]
-        val activatorPackage = ct.getFactoryBean().substring(0, ct.getFactoryBean().lastIndexOf("."))
+        val activatorPackage = KevoreeGeneratorHelper.getTypeDefinitionGeneratedPackage(ct,targetNodeType)
         val activatorName = ct.getName() + "Activator"
         val wrapper = filer.createTextFile(com.sun.mirror.apt.Filer.Location.SOURCE_TREE, "", new File(activatorPackage.replace(".", "/") + "/" + activatorName + ".scala"), "UTF-8")
         /* GENERATE CONTENT */
@@ -83,7 +85,7 @@ object KevoreeActivatorGenerator {
     root.getTypeDefinitions.filter(p => p.isInstanceOf[GroupType]).foreach {
       gt =>
         val groupType = gt.asInstanceOf[GroupType]
-        val activatorPackage = groupType.getFactoryBean().substring(0, groupType.getFactoryBean().lastIndexOf("."))
+        val activatorPackage = KevoreeGeneratorHelper.getTypeDefinitionGeneratedPackage(gt,targetNodeType)
         val activatorName = groupType.getName() + "Activator"
         val wrapper = filer.createTextFile(com.sun.mirror.apt.Filer.Location.SOURCE_TREE, "", new File(activatorPackage.replace(".", "/") + "/" + activatorName + ".scala"), "UTF-8")
         /* GENERATE CONTENT */

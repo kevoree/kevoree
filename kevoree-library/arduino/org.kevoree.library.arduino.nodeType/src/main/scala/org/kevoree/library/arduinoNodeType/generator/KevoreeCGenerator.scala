@@ -5,16 +5,13 @@
 
 package org.kevoree.library.arduinoNodeType.generator
 
-import org.kevoree.ChannelType
-import org.kevoree.ComponentType
-import org.kevoree.Instance
-import org.kevoree.TypeDefinition
 import org.kevoreeAdaptation.AdaptationModel
 import org.kevoreeAdaptation.AddInstance
 import org.kevoreeAdaptation.AddType
 import org.osgi.framework.BundleContext
 import scala.collection.JavaConversions._
 import org.kevoree.library.arduinoNodeType.{PMemory, ArduinoBoardType}
+import org.kevoree._
 
 class KevoreeCGenerator
   extends KevoreeComponentTypeClassGenerator
@@ -67,7 +64,7 @@ class KevoreeCGenerator
     generateGlobalInstanceFactory(ktypes)
     generateRunInstanceMethod(ktypes)
 
-    val instancesAdaption = adaptModel.getAdaptations.filter(adt => adt.isInstanceOf[AddInstance])
+    val instancesAdaption = adaptModel.getAdaptations.filter(adt => adt.isInstanceOf[AddInstance]).filter(adt => !adt.asInstanceOf[AddInstance].getRef.getTypeDefinition.isInstanceOf[GroupType])
     var instances: List[Instance] = List()
     instancesAdaption.foreach {
       instanceAdaption =>
