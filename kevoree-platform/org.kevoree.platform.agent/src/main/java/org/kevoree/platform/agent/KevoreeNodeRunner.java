@@ -67,7 +67,7 @@ public class KevoreeNodeRunner {
 						while (true) {
 							stream.read(bytes);
 							/*if (i != -1) {
-						  //System.out.print(line);
+						  System.out.print(line);
 						  //outputStream.write(bytes, 0, i);
 
 					  }*/
