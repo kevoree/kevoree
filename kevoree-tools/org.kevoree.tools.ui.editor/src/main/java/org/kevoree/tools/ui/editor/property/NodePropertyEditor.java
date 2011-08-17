@@ -38,11 +38,11 @@ import java.util.logging.Logger;
  */
 public class NodePropertyEditor extends InstancePropertyEditor {
 
-    public NodePropertyEditor(Instance elem, KevoreeUIKernel _kernel) {
+    public NodePropertyEditor(final Instance elem, KevoreeUIKernel _kernel) {
 
         super(elem, _kernel);
 
-        ContainerNode node = (ContainerNode) elem;
+        final ContainerNode node = (ContainerNode) elem;
 
 
         JPanel pnameLayout = new JPanel(new SpringLayout());
@@ -131,8 +131,14 @@ public class NodePropertyEditor extends InstancePropertyEditor {
         btPushNode.setCommand(sendNode);
         this.addCenter(btPushNode);
 */
-        JCommandButton btPushNodeType = new JCommandButton("Push");
-        SynchNodeTypeCommand sendNodeType = new SynchNodeTypeCommand();
+        final SynchNodeTypeCommand sendNodeType = new SynchNodeTypeCommand();
+        JCommandButton btPushNodeType = new JCommandButton("Push"){
+            @Override
+            public void doBeforeExecution() {
+                sendNodeType.setDestNodeName(elem.getName());
+            }
+        };
+
         sendNodeType.setKernel(_kernel);
         sendNodeType.setDestNodeName(node.getName());
         btPushNodeType.setCommand(sendNodeType);
