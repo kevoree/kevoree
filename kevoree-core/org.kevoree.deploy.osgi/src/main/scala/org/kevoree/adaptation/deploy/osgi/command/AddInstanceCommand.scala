@@ -20,9 +20,9 @@ package org.kevoree.adaptation.deploy.osgi.command
 
 import java.io.File
 import org.kevoree._
+import framework.{KevoreeGeneratorHelper, Constants}
 import org.kevoree.adaptation.deploy.osgi.context.KevoreeDeployManager
 import org.kevoree.adaptation.deploy.osgi.context.KevoreeOSGiBundle
-import org.kevoree.framework.Constants
 import org.kevoree.framework.FileHelper._
 import scala.collection.JavaConversions._
 import org.slf4j.LoggerFactory
@@ -34,10 +34,10 @@ case class AddInstanceCommand(c : Instance, ctx : KevoreeDeployManager,nodeName:
   def execute() : Boolean= {
 
     /* create bundle cache structure */
-    var directory = ctx.bundle.getBundleContext.getDataFile("dyanmicBundle_"+c.getName)
+    val directory = ctx.bundle.getBundleContext.getDataFile("dyanmicBundle_"+c.getName)
     directory.mkdir
 
-    var METAINFDIR = new File(directory.getAbsolutePath+"/"+"META-INF")
+    val METAINFDIR = new File(directory.getAbsolutePath+"/"+"META-INF")
     METAINFDIR.mkdir
 
     // var directoryWrapper = ctx.bundle.getBundleContext.getDataFile("dyanmicBundle_"+c.getName+"Wrapper")
@@ -53,12 +53,17 @@ case class AddInstanceCommand(c : Instance, ctx : KevoreeDeployManager,nodeName:
       case None => logger.error("Type Not Found"); return false; null;
     }
 
+    //FOUND CURRENT NODE TYPE
+    val nodeTypeName = c.getTypeDefinition.eContainer().asInstanceOf[ContainerRoot].getNodes.find(tn => tn.getName == nodeName).get.getTypeDefinition.getName
+
     /* STEP GENERATE COMPONENT INSTANCE BUNDLE */
     /* Generate File */
     val MANIFEST = new File(METAINFDIR+"/"+"MANIFEST.MF")
 
-    val activatorPackage = c.getTypeDefinition.getFactoryBean().substring(0, c.getTypeDefinition.getFactoryBean().lastIndexOf("."))
-    val activatorName = c.getTypeDefinition.getName()+"Activator"
+    val activatorPackage = KevoreeGeneratorHelper.getTypeDefinitionGeneratedPackage(c.getTypeDefinition,nodeTypeName)
+
+   // val activatorPackage = c.getTypeDefinition.getFactoryBean.substring(0, c.getTypeDefinition.getFactoryBean.lastIndexOf("."))
+    val activatorName = c.getTypeDefinition.getName+"Activator"
     MANIFEST.write(List("Manifest-Version: 1.0",
                         "Bundle-SymbolicName: "+c.getName,
                         "Bundle-Version: 1",
@@ -67,65 +72,28 @@ case class AddInstanceCommand(c : Instance, ctx : KevoreeDeployManager,nodeName:
                         "Bundle-Activator: "+activatorPackage+"."+activatorName,
                         Constants.KEVOREE_INSTANCE_NAME_HEADER+": "+c.getName,
                         Constants.KEVOREE_NODE_NAME_HEADER+": "+nodeName,
-                        //   "Bundle-Blueprint: component.xml",
                         "Require-Bundle: "+mappingFound.bundle.getSymbolicName
       ))
-
-    /*
-     var MANIFESTWRAPPER = new File(METAINFDIRWRAPPER+"/"+"MANIFEST.MF")
-     MANIFESTWRAPPER.write(List("Manifest-Version: 1.0",
-     "Bundle-SymbolicName: "+c.getName+"Wrapper;blueprint.wait-for-dependencies:=true",
-     "Bundle-Version: 1",
-     "DynamicImport-Package: *",
-     "Bundle-ManifestVersion: 2",
-     "Bundle-Blueprint: componentWrapper.xml",
-     "Require-Bundle: "+mappingFound.bundle.getSymbolicName
-     ))
-     */
-
-
-    // var BLUEPRINTBASE = new File(directory+"/"+"component.xml")
-    // BLUEPRINTBASE.write(AddComponentInstanceGenerator.generate(c))
-
-
-    // var BLUEPRINTWRAPPER = new File(directoryWrapper+"/"+"componentWrapper.xml")
-    //  BLUEPRINTWRAPPER.write(AddComponentInstanceWrapperGenerator.generate(c))
-
-    // println(AddComponentInstanceGenerator.generate(c));
-    //println("Instance-DIRECTORY"+directory.getAbsolutePath)
-    //  println("CI-DIRECTORY"+directoryWrapper.getAbsolutePath)
     try{
-      val bundle= ctx.bundleContext.installBundle("assembly:"+directory.getAbsolutePath);
-      // var bundleWrapper= ctx.bundleContext.installBundle("assembly:"+directoryWrapper.getAbsolutePath);
-      //    executedBundles = List(bundle,bundleWrapper)
-
+      val bundle= ctx.bundleContext.installBundle("assembly:file:///"+directory.getAbsolutePath);
       ctx.bundleMapping.add(KevoreeOSGiBundle(c.getName,c.getClass.getName,bundle))
-      // ctx.bundleMapping.append(KevoreeOSGiBundle(c,c.getName,c.getClass,bundleWrapper))
-
       lastExecutionBundle = Some(bundle)
-
-
-
-      bundle.start
-      //   bundleWrapper.start
+      bundle.start()
       mustBeStarted = true
-
       val typebundlestartLevel = ctx.getStartLevelServer.getBundleStartLevel(mappingFound.bundle)
-
       startLevel = Some(typebundlestartLevel+1)
-
       true
     } catch {
       case _ @ e => logger.error("Error while deploy Kevoree Instance",e);false
     }
   }
 
-  def undo() = {
+  def undo(){
     lastExecutionBundle match {
       case None =>
       case Some(b)=>{
           try{
-            b.stop;b.uninstall
+            b.stop();b.uninstall()
           }catch{
             case _ @ e => // e.printStackTrace
           }

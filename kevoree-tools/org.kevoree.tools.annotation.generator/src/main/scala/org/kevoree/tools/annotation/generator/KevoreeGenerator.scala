@@ -20,24 +20,27 @@ package org.kevoree.tools.annotation.generator
 import org.kevoree.ContainerRoot
 import org.kevoree.MessagePortType
 import org.kevoree.ServicePortType
-import com.sun.mirror.apt.AnnotationProcessorEnvironment
 import com.sun.mirror.apt.Filer
 import scala.collection.JavaConversions._
 import org.kevoree.ComponentType
 import org.kevoree.framework.aspects.KevoreeAspects._
+import org.kevoree.framework.KevoreeGeneratorHelper
 
 object KevoreeGenerator {
 
   /* GENERATE WRAPPER FOR DECLARATIF PORT */
-  def generatePortWrapper(root:ContainerRoot,filer:Filer){
+  def generatePortWrapper(root:ContainerRoot,filer:Filer,targetNodeType:String){
     root.getTypeDefinitions.filter(p=> p.isInstanceOf[ComponentType]).foreach{ctt=> var ct = ctt.asInstanceOf[ComponentType]
       ct.getProvided.foreach{ref=>
-        var portPackage = ct.getFactoryBean().substring(0, ct.getFactoryBean().lastIndexOf("."));
-        var portName = ct.getName()+"PORT"+ref.getName();
-        var wrapper = filer.createSourceFile(portPackage+"."+portName);
+
+
+        val portPackage = KevoreeGeneratorHelper.getTypeDefinitionGeneratedPackage(ct,targetNodeType)
+        val portName = ct.getName+"PORT"+ref.getName;
+        val wrapper = filer.createSourceFile(portPackage+"."+portName);
         wrapper.append("package "+portPackage+";\n");
         wrapper.append("import org.kevoree.framework.AbstractPort;\n");
-        wrapper.append("import "+ref.getRef().getName()+";\n");
+        wrapper.append("import "+KevoreeGeneratorHelper.getTypeDefinitionBasePackage(ct)+"._\n")
+        wrapper.append("import "+ref.getRef.getName+";\n");
         wrapper.append("public class "+portName+" extends AbstractPort implements "+ref.getRef().getName()+" {\n");
         //wrapper.append("public "+portName+"(Object c){setComponent(c);}\n") /* AVOID CIRCULAR REFERENCE */
         ref.getRef match {
@@ -87,10 +90,10 @@ object KevoreeGenerator {
     }
   }
 
-  def generatePort(root:ContainerRoot,filer:Filer){
+  def generatePort(root:ContainerRoot,filer:Filer,targetNodeType:String){
     root.getTypeDefinitions.filter(p=> p.isInstanceOf[ComponentType]).foreach{ctt=> var ct = ctt.asInstanceOf[ComponentType]
-      ct.getProvided.foreach{ref=> KevoreeProvidedPortGenerator.generate(root, filer, ct, ref)  }
-      ct.getRequired.foreach{ref=> KevoreeRequiredPortGenerator.generate(root, filer, ct, ref)  }
+      ct.getProvided.foreach{ref=> KevoreeProvidedPortGenerator.generate(root, filer, ct, ref,targetNodeType)  }
+      ct.getRequired.foreach{ref=> KevoreeRequiredPortGenerator.generate(root, filer, ct, ref,targetNodeType)  }
     }
   }
 

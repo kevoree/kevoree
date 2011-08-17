@@ -23,17 +23,21 @@ import org.kevoree.{ComponentType => KevoreeComponentType }
 import org.kevoree.ServicePortType
 import org.kevoree.framework.aspects.KevoreeAspects._
 import scala.collection.JavaConversions._
+import org.kevoree.framework.KevoreeGeneratorHelper
 
 object KevoreeRequiredPortGenerator {
 
-  def generate(root:ContainerRoot,filer:Filer,ct: KevoreeComponentType,ref:PortTypeRef){
-    var portPackage = ct.getFactoryBean().substring(0, ct.getFactoryBean().lastIndexOf("."));
-    var portName = ct.getName()+"PORT"+ref.getName();
-    var wrapper = filer.createTextFile(com.sun.mirror.apt.Filer.Location.SOURCE_TREE, "", new File(portPackage.replace(".", "/")+"/"+portName+".scala"), "UTF-8");
+  def generate(root:ContainerRoot,filer:Filer,ct: KevoreeComponentType,ref:PortTypeRef,targetNodeType:String){
+   // var portPackage = ct.getFactoryBean().substring(0, ct.getFactoryBean().lastIndexOf("."));
+
+    val portPackage = KevoreeGeneratorHelper.getTypeDefinitionGeneratedPackage(ct,targetNodeType)
+    val portName = ct.getName()+"PORT"+ref.getName();
+    val wrapper = filer.createTextFile(com.sun.mirror.apt.Filer.Location.SOURCE_TREE, "", new File(portPackage.replace(".", "/")+"/"+portName+".scala"), "UTF-8");
 
     wrapper.append("package "+portPackage+"\n");
     wrapper.append("import org.kevoree.framework.port._\n");
     wrapper.append("import scala.{Unit=>void}\n")
+    wrapper.append("import "+KevoreeGeneratorHelper.getTypeDefinitionBasePackage(ct)+"._\n")
     wrapper.append("class "+portName+"(component : "+ct.getName+") extends "+ref.getRef().getName()+" with KevoreeRequiredPort {\n");
 
     wrapper.append("def getName : String = \""+ref.getName+"\"\n")

@@ -25,26 +25,26 @@ import org.eclipse.emf.ecore.xmi.XMIResource
 import org.eclipse.emf.ecore.xmi.XMLResource
 import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl
 import org.kevoree.ContainerRoot
-import java.io.InputStream
-import java.io.OutputStream
 import java.util.HashMap
 import org.eclipse.emf.common.util.URI
+import java.io.{BufferedOutputStream, InputStream, OutputStream}
+import java.util.zip.{GZIPInputStream, GZIPOutputStream}
 
 object KevoreeXmiHelper {
-  def save(uri:String,root : ContainerRoot) = {
-    val rs :ResourceSetImpl = new ResourceSetImpl();
+  def save(uri: String, root: ContainerRoot) = {
+    val rs: ResourceSetImpl = new ResourceSetImpl();
 
-    rs.getResourceFactoryRegistry().getExtensionToFactoryMap().put("*",new XMIResourceFactoryImpl());
+    rs.getResourceFactoryRegistry().getExtensionToFactoryMap().put("*", new XMIResourceFactoryImpl());
     rs.getPackageRegistry().put(KevoreePackage.eNS_URI, KevoreePackage.eINSTANCE);
-    val uri1:URI   = URI.createURI(uri)
-    val res : Resource = rs.createResource(uri1)
+    val uri1: URI = URI.createURI(uri)
+    val res: Resource = rs.createResource(uri1)
     res.asInstanceOf[XMIResource].getDefaultLoadOptions().put(XMLResource.OPTION_ENCODING, "UTF-8");
     res.asInstanceOf[XMIResource].getDefaultSaveOptions().put(XMLResource.OPTION_ENCODING, "UTF-8");
     res.getContents.add(root)
     res.save(new HashMap());
   }
 
-  def load(uri:String) : ContainerRoot = {
+  def load(uri: String): ContainerRoot = {
     val rs = new ResourceSetImpl();
     rs.getResourceFactoryRegistry().getExtensionToFactoryMap().put("*", new XMIResourceFactoryImpl());
     rs.getPackageRegistry().put(KevoreePackage.eNS_URI, KevoreePackage.eINSTANCE);
@@ -56,7 +56,7 @@ object KevoreeXmiHelper {
     return result.asInstanceOf[ContainerRoot];
   }
 
-  def loadStream(input : InputStream) : ContainerRoot = {
+  def loadStream(input: InputStream): ContainerRoot = {
     val rs = new ResourceSetImpl();
     rs.getResourceFactoryRegistry().getExtensionToFactoryMap().put("*", new XMIResourceFactoryImpl());
     rs.getPackageRegistry().put(KevoreePackage.eNS_URI, KevoreePackage.eINSTANCE);
@@ -67,16 +67,27 @@ object KevoreeXmiHelper {
     ressource.getContents.get(0).asInstanceOf[ContainerRoot];
   }
 
-  def saveStream(output : OutputStream,root : ContainerRoot) :Unit = {
-    val rs :ResourceSetImpl = new ResourceSetImpl();
-    rs.getResourceFactoryRegistry().getExtensionToFactoryMap().put("*",new XMIResourceFactoryImpl());
+  def saveStream(output: OutputStream, root: ContainerRoot): Unit = {
+    val rs: ResourceSetImpl = new ResourceSetImpl();
+    rs.getResourceFactoryRegistry().getExtensionToFactoryMap().put("*", new XMIResourceFactoryImpl());
     rs.getPackageRegistry().put(KevoreePackage.eNS_URI, KevoreePackage.eINSTANCE);
-    val uri1:URI   = URI.createURI(KevoreePackage.eNS_URI+"MEMORY")
-    val res : Resource = rs.createResource(uri1)
+    val uri1: URI = URI.createURI(KevoreePackage.eNS_URI + "MEMORY")
+    val res: Resource = rs.createResource(uri1)
     res.asInstanceOf[XMIResource].getDefaultLoadOptions().put(XMLResource.OPTION_ENCODING, "UTF-8");
     res.asInstanceOf[XMIResource].getDefaultSaveOptions().put(XMLResource.OPTION_ENCODING, "UTF-8");
     res.getContents.add(root)
     res.save(output, new HashMap())
   }
+
+  def saveCompressedStream(output: OutputStream, root: ContainerRoot): Unit = {
+    val bscout = new BufferedOutputStream(new GZIPOutputStream(output))
+    saveStream(bscout, root)
+  }
+
+  def loadCompressedStream(input: InputStream): ContainerRoot = {
+    val inputS = new GZIPInputStream(input)
+    loadStream(inputS)
+  }
+
 
 }

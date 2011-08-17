@@ -21,8 +21,8 @@
 
 #define EEPROM_MAX_SIZE 1024
 #define MAX_INST_ID 15
-#define kevoreeID1 1
-#define kevoreeID2 7
+#define kevoreeID1 0
+#define kevoreeID2 4
 int eepromIndex;
 //Global Kevoree Type Defintion declaration
 const prog_char pushbutton[] PROGMEM = "PushButton";
