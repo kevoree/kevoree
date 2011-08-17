@@ -1,12 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <kevoree:ContainerRoot xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:kevoree="http://kevoree/1.0">
-  <nodes name="KEVOREEDefaultNodeName" typeDefinition="//@typeDefinitions.0" metaData="x=281,y=240">
+  <nodes name="KEVOREEDefaultNodeName" typeDefinition="//@typeDefinitions.0" metaData="x=130,y=112">
     <dictionary>
       <values attribute="//@typeDefinitions.0/@dictionaryType/@attributes.0" value="uno"/>
-      <values attribute="//@typeDefinitions.0/@dictionaryType/@attributes.2" value="true"/>
+      <values attribute="//@typeDefinitions.0/@dictionaryType/@attributes.2" value="false"/>
       <values attribute="//@typeDefinitions.0/@dictionaryType/@attributes.3" value="eeprom"/>
       <values attribute="//@typeDefinitions.0/@dictionaryType/@attributes.4" value="MAX"/>
     </dictionary>
+    <components name="PushButto231" typeDefinition="//@typeDefinitions.5">
+      <required portTypeRef="//@typeDefinitions.5/@required.0"/>
+      <required portTypeRef="//@typeDefinitions.5/@required.1"/>
+    </components>
   </nodes>
   <typeDefinitions xsi:type="kevoree:NodeType" name="ArduinoNode" deployUnits="//@deployUnits.0" factoryBean="org.kevoree.library.arduinoNodeType.ArduinoNodeFactory" bean="org.kevoree.library.arduinoNodeType.ArduinoNode">
     <dictionaryType>

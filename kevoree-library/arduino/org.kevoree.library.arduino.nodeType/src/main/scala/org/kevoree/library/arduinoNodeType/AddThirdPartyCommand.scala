@@ -5,36 +5,43 @@
 
 package org.kevoree.library.arduinoNodeType
 
-import org.kevoree.ContainerRoot
 import org.kevoree.DeployUnit
-import org.osgi.framework.BundleContext
+import org.kevoree.tools.aether.framework.AetherUtil
+import java.io.FileInputStream
+import org.osgi.framework.{Bundle, BundleContext}
 
-case class AddThirdPartyCommand(ctx:BundleContext,ct: DeployUnit) {
+case class AddThirdPartyCommand(ctx: BundleContext, ct: DeployUnit) {
 
-  
-  
+  var lastBundle : Bundle = null
+
   def execute(): Boolean = {
-    val url: List[String] = CommandHelper.buildAllQuery(ct)
-
-    println("urls="+url.mkString(","))
-
-    url.exists({u =>installBundle(u.toString)})
-  }
- 
-  def installBundle(url: String): Boolean = {
     try {
-      val bundle = ctx.installBundle(url.toString)
-      bundle.update
-      bundle.start
-
-      println("STARTED "+bundle)
-
+      val arteFile = AetherUtil.resolveDeployUnit(ct)
+      lastBundle = ctx.installBundle("file:///"+arteFile.getAbsolutePath, new FileInputStream(arteFile))
+      lastBundle.update()
+      lastBundle.start()
       true
     } catch {
-      case _@e => /*e.printStackTrace;*/false
+      case _@e => e.printStackTrace; false
     }
+
+
   }
-  
-  
-  
+
+  /*
+ def installBundle(url: String): Boolean = {
+   try {
+     val bundle = ctx.installBundle(url.toString)
+     bundle.update
+     bundle.start
+
+     println("STARTED "+bundle)
+
+     true
+   } catch {
+     case _@e => /*e.printStackTrace;*/false
+   }
+ } */
+
+
 }

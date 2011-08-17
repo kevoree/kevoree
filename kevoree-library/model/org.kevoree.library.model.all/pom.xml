@@ -105,7 +105,11 @@
             <artifactId>org.kevoree.library.arduino.components</artifactId>
             <version>${kevoree.version}</version>
         </dependency>
-
+        <dependency>
+            <groupId>org.kevoree.library.arduino</groupId>
+            <artifactId>org.kevoree.library.arduino.groupType</artifactId>
+            <version>${kevoree.version}</version>
+        </dependency>
         <!-- JavaSE -->
         <dependency>
             <groupId>org.kevoree.library.javase</groupId>
@@ -127,6 +131,12 @@
             <artifactId>org.kevoree.library.javase.fakeDomo</artifactId>
             <version>${kevoree.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.kevoree.library.javase</groupId>
+            <artifactId>org.kevoree.library.javase.grapher</artifactId>
+            <version>${kevoree.version}</version>
+        </dependency>
+
         <!--   <dependency>
             <groupId>org.kevoree.library.javase</groupId>
             <artifactId>org.kevoree.library.javase.gossiper</artifactId>
