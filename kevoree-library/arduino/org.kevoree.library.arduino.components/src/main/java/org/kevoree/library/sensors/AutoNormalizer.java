@@ -28,8 +28,7 @@ public class AutoNormalizer extends AbstractComponentType {
 
     @Generate("classheader")
     public void generateHeader(StringBuffer context) {
-        context.append("int ");
-        context.append("minValue" + this.getName());
+        context.append("int minValue"+this.getName());
         context.append("= 1024;\n");
         context.append("int ");
         context.append("maxValue" + this.getName());

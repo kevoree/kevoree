@@ -36,7 +36,7 @@
       <!--  <module>../org.kevoree.library.javase.com.skype</module>  -->
         <module>../org.kevoree.library.javase.serialCT</module>
         <module>../org.kevoree.library.javase.hidrfid</module>
-      <!--  <module>../org.kevoree.library.javase.kinect</module>   -->
+        <module>../org.kevoree.library.javase.kinect</module>
         <module>../org.kevoree.library.javase.autodiscovery</module>
        <!-- <module>../org.kevoree.library.javase.derby</module> -->
         <module>../org.kevoree.library.javase.grapher</module>
