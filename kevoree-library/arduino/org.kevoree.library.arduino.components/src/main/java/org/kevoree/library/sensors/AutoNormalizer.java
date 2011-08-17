@@ -30,11 +30,6 @@ public class AutoNormalizer extends AbstractComponentType {
         context.append("char buf[10];\n");
         context.append("int minValue;\n");
         context.append("int maxValue;\n");
-        context.append("int ");
-        context.append("maxValue" + this.getName());
-        context.append("= 0;\n");
-
-        context.append("char * value");
     }
 
     @Generate("classinit")
@@ -50,14 +45,14 @@ public class AutoNormalizer extends AbstractComponentType {
         context.append("if(value < minValue){ minValue = value; }\n");
         context.append("if(value > maxValue){ maxValue = value; }\n");
         context.append("float result=((value-minValue)/ (maxValue-minValue))*100;\n");
-        context.append("if(atoi(pin) == 0){result = abs(100 - result  );}\n");
-        context.append("kmessage * msg = (kmessage*) malloc(sizeof(kmessage));");
-        context.append("if (msg){memset(msg, 0, sizeof(kmessage));}");
+        context.append("if(atoi(inverted) == 0){result = abs(100 - result  );}\n");
+        context.append("kmessage * smsg = (kmessage*) malloc(sizeof(kmessage));");
+        context.append("if (smsg){memset(msg, 0, sizeof(kmessage));}");
         context.append("sprintf(buf,\"%d\",int(result));\n");
         context.append("smsg->value = buf;\n");
-        context.append("msg->metric = \"percent\";");
-        context.append("norm_rport(msg);");
-        context.append("free(msg);");
+        context.append("smsg->metric = \"percent\";");
+        context.append("norm_rport(smsg);");
+        context.append("free(smsg);");
     }
 
 }

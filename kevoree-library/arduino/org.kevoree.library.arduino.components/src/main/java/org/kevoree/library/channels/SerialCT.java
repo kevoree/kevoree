@@ -27,8 +27,6 @@ public class SerialCT extends AbstractChannelFragment {
     @Override
     public Object dispatch(Message msg) {
 
-        System.out.println("Take the right dispatch method");
-
         StringBuffer context = (StringBuffer) msg.getContent();
         context.append("for(int i=0;i<bindings->nbBindings;i++){");
         context.append("    bindings->bindings[i]->port->push(*msg);");
