@@ -47,11 +47,14 @@ public class JCommandButton extends JButton {
         this.addMouseListener(new MouseAdapter() {
         @Override
             public void mouseClicked(MouseEvent e) {
+                doBeforeExecution();
                 super.mouseClicked(e);
                 command.execute(title);
             }
         });
 
     }
+
+    public void doBeforeExecution(){}
 
 }
