@@ -219,7 +219,7 @@ class DataManagerForGroup (nameInstance: String, selfNodeName: String, modelServ
           selfFound = true;
           if (lastCheckedTimeStamp.before (modelService.getLastModification)) {
             incrementedEntries
-              .add (ClockEntry.newBuilder (clock).setVersion (clock.getVersion + 1).setTimestamp (currentTimeStamp)
+              .add (ClockEntry.newBuilder (clock).setVersion (clock.getVersion + 1)/*.setTimestamp (currentTimeStamp)*/
               .build ());
             lastCheckedTimeStamp = modelService.getLastModification
           } else {
@@ -231,7 +231,7 @@ class DataManagerForGroup (nameInstance: String, selfNodeName: String, modelServ
     }
     if (!selfFound) {
       incrementedEntries
-        .add (ClockEntry.newBuilder ().setNodeID (selfNodeName).setVersion (1).setTimestamp (currentTimeStamp)
+        .add (ClockEntry.newBuilder ().setNodeID (selfNodeName).setVersion (1)/*.setTimestamp (currentTimeStamp)*/
         .build ());
       //lastCheckedTimeStamp = modelService.getLastModification
     }
@@ -258,8 +258,8 @@ class DataManagerForGroup (nameInstance: String, selfNodeName: String, modelServ
     val newClockBuilder = VectorClock.newBuilder ();
     val clock = vectorClock
     val orderedNodeID = new java.util.ArrayList[String] ();
-    val values = new java.util.HashMap[String, Long] ();
-    val timestamps = new java.util.HashMap[String, Long] ();
+    val values = new java.util.HashMap[String, Int] ();
+    //val timestamps = new java.util.HashMap[String, Long] ();
 
     val currentTimeMillis = System.currentTimeMillis ();
 
@@ -269,11 +269,11 @@ class DataManagerForGroup (nameInstance: String, selfNodeName: String, modelServ
 
       clock match {
         case _ if (i >= clock.getEntiesCount) => {
-          addOrUpdate (orderedNodeID, values, timestamps, clock2.getEnties (j), currentTimeMillis)
+          addOrUpdate (orderedNodeID, values/*, timestamps*/, clock2.getEnties (j), currentTimeMillis)
           j = j + 1;
         }
         case _ if (j >= clock2.getEntiesCount) => {
-          addOrUpdate (orderedNodeID, values, timestamps, clock.getEnties (i), currentTimeMillis)
+          addOrUpdate (orderedNodeID, values/*, timestamps*/, clock.getEnties (i), currentTimeMillis)
           i = i + 1;
         }
         case _ => {
@@ -281,7 +281,7 @@ class DataManagerForGroup (nameInstance: String, selfNodeName: String, modelServ
           val v2 = clock2.getEnties (j);
           if (v1.getNodeID.equals (v2.getNodeID)) {
             values.put (v1.getNodeID, Math.max (v1.getVersion, v2.getVersion));
-            timestamps.put (v1.getNodeID, currentTimeMillis);
+            //timestamps.put (v1.getNodeID, currentTimeMillis);
             if (!orderedNodeID.contains (v1.getNodeID)) {
               orderedNodeID.add (v1.getNodeID);
             }
@@ -292,20 +292,20 @@ class DataManagerForGroup (nameInstance: String, selfNodeName: String, modelServ
               if (!orderedNodeID.contains (v2.getNodeID)) {
                 orderedNodeID.add (v2.getNodeID);
                 values.put (v2.getNodeID, v2.getVersion);
-                timestamps.put (v2.getNodeID, v2.getTimestamp);
+                //timestamps.put (v2.getNodeID, v2.getTimestamp);
               } else {
                 values.put (v2.getNodeID, Math.max (v2.getVersion, values.get (v2.getNodeID)));
-                timestamps.put (v2.getNodeID, currentTimeMillis);
+                //timestamps.put (v2.getNodeID, currentTimeMillis);
               }
               j = j + 1;
             } else {
               if (!orderedNodeID.contains (v1.getNodeID)) {
                 orderedNodeID.add (v1.getNodeID);
                 values.put (v1.getNodeID, v1.getVersion);
-                timestamps.put (v1.getNodeID, v1.getTimestamp);
+                //timestamps.put (v1.getNodeID, v1.getTimestamp);
               } else {
                 values.put (v1.getNodeID, Math.max (v1.getVersion, values.get (v1.getNodeID)));
-                timestamps.put (v1.getNodeID, currentTimeMillis);
+                //timestamps.put (v1.getNodeID, currentTimeMillis);
               }
               i = i + 1;
             }
@@ -318,22 +318,22 @@ class DataManagerForGroup (nameInstance: String, selfNodeName: String, modelServ
       nodeId =>
         val entry = ClockEntry.newBuilder ().
           setNodeID (nodeId).
-          setVersion (values.get (nodeId)).
-          setTimestamp (timestamps.get (nodeId)).build ();
+          setVersion (values.get (nodeId))//.
+          //setTimestamp (timestamps.get (nodeId)).build ();
         newClockBuilder.addEnties (entry);
     }
     newClockBuilder.setTimestamp (currentTimeMillis).build ();
   }
 
-  private def addOrUpdate (orderedNodeID: java.util.ArrayList[String], values: java.util.HashMap[String, Long],
-    timestamps: java.util.HashMap[String, Long], clockEntry: ClockEntry, currentTimeMillis: Long) {
+  private def addOrUpdate (orderedNodeID: java.util.ArrayList[String], values: java.util.HashMap[String, Int],
+    /*timestamps: java.util.HashMap[String, Long],*/ clockEntry: ClockEntry, currentTimeMillis: Long) {
     if (!orderedNodeID.contains (clockEntry.getNodeID)) {
       orderedNodeID.add (clockEntry.getNodeID);
       values.put (clockEntry.getNodeID, clockEntry.getVersion);
-      timestamps.put (clockEntry.getNodeID, clockEntry.getTimestamp);
+      //timestamps.put (clockEntry.getNodeID, clockEntry.getTimestamp);
     } else {
       values.put (clockEntry.getNodeID, Math.max (clockEntry.getVersion, values.get (clockEntry.getNodeID)));
-      timestamps.put (clockEntry.getNodeID, currentTimeMillis);
+      //timestamps.put (clockEntry.getNodeID, currentTimeMillis);
     }
   }
 }

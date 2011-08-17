@@ -10,6 +10,6 @@ message VectorClock {
 }
 message ClockEntry {
     required string nodeID = 1;
-    required int64 version = 2;
-    required int64 timestamp = 3;
+    required int32 version = 2;
+    //required int64 timestamp = 3;
 }

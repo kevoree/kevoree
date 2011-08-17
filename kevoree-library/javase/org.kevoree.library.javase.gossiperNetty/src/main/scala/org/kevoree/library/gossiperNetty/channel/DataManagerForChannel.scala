@@ -99,7 +99,7 @@ class DataManagerForChannel extends DataManager with actors.DaemonActor  {
       enties.find(p=> p.getNodeID == clockEntry.getNodeID) match {
         case Some(toUpdate) => {
 			//CHECK MAX VALUE
-			val newClock = ClockEntry.newBuilder(toUpdate).setVersion(java.lang.Math.max(toUpdate.getVersion,clockEntry.getVersion)).setTimestamp(timeStamp).build
+			val newClock = ClockEntry.newBuilder(toUpdate).setVersion(java.lang.Math.max(toUpdate.getVersion,clockEntry.getVersion))/*.setTimestamp(timeStamp)*/.build
 			enties = ((enties -- List(toUpdate)) ++ List(newClock)) 
 		  }
         case None => enties = enties ++ List(clockEntry)

@@ -16,13 +16,13 @@ public class VectorClockComparisonTest {
 	public void vectorClockComparisonAFTER1Test() {
 		Version.VectorClock remote = Version.VectorClock.newBuilder().
 				setTimestamp(System.currentTimeMillis()).
-				addEnties(Version.ClockEntry.newBuilder().setNodeID("duke").setVersion(1).setTimestamp(1l)).
-				addEnties(Version.ClockEntry.newBuilder().setNodeID("duke2").setVersion(1).setTimestamp(1l)).
+				addEnties(Version.ClockEntry.newBuilder().setNodeID("duke").setVersion(1)/*.setTimestamp(1l)*/).
+				addEnties(Version.ClockEntry.newBuilder().setNodeID("duke2").setVersion(1)/*.setTimestamp(1l)*/).
 				build();
 		Version.VectorClock local = Version.VectorClock.newBuilder().
 				setTimestamp(System.currentTimeMillis()).
-				addEnties(Version.ClockEntry.newBuilder().setNodeID("duke").setVersion(1).setTimestamp(1l)).
-				addEnties(Version.ClockEntry.newBuilder().setNodeID("duke2").setVersion(1).setTimestamp(1l)).
+				addEnties(Version.ClockEntry.newBuilder().setNodeID("duke").setVersion(1)/*.setTimestamp(1l)*/).
+				addEnties(Version.ClockEntry.newBuilder().setNodeID("duke2").setVersion(1)/*.setTimestamp(1l)*/).
 				build();
 
 		assertTrue(VersionUtils.compare(local, remote).equals(Occured.AFTER));
@@ -32,13 +32,13 @@ public class VectorClockComparisonTest {
 	public void vectorClockComparisonAFTER2Test() {
 		Version.VectorClock remote = Version.VectorClock.newBuilder().
 				setTimestamp(System.currentTimeMillis()).
-				addEnties(Version.ClockEntry.newBuilder().setNodeID("duke").setVersion(1).setTimestamp(1l)).
-				addEnties(Version.ClockEntry.newBuilder().setNodeID("duke2").setVersion(1).setTimestamp(1l)).
+				addEnties(Version.ClockEntry.newBuilder().setNodeID("duke").setVersion(1)/*.setTimestamp(1l)*/).
+				addEnties(Version.ClockEntry.newBuilder().setNodeID("duke2").setVersion(1)/*.setTimestamp(1l)*/).
 				build();
 		Version.VectorClock local = Version.VectorClock.newBuilder().
 				setTimestamp(System.currentTimeMillis()).
-				addEnties(Version.ClockEntry.newBuilder().setNodeID("duke").setVersion(1).setTimestamp(1l)).
-				addEnties(Version.ClockEntry.newBuilder().setNodeID("duke2").setVersion(2).setTimestamp(1l)).
+				addEnties(Version.ClockEntry.newBuilder().setNodeID("duke").setVersion(1)/*.setTimestamp(1l)*/).
+				addEnties(Version.ClockEntry.newBuilder().setNodeID("duke2").setVersion(2)/*.setTimestamp(1l)*/).
 				build();
 
 		assertTrue(VersionUtils.compare(local, remote).equals(Occured.AFTER));
@@ -48,13 +48,13 @@ public class VectorClockComparisonTest {
 	public void vectorClockComparisonAFTER3Test() {
 		Version.VectorClock remote = Version.VectorClock.newBuilder().
 				setTimestamp(System.currentTimeMillis()).
-				addEnties(Version.ClockEntry.newBuilder().setNodeID("duke").setVersion(2).setTimestamp(2l)).
-				addEnties(Version.ClockEntry.newBuilder().setNodeID("duke2").setVersion(1).setTimestamp(1l)).
+				addEnties(Version.ClockEntry.newBuilder().setNodeID("duke").setVersion(2)/*.setTimestamp(2l)*/).
+				addEnties(Version.ClockEntry.newBuilder().setNodeID("duke2").setVersion(1)/*.setTimestamp(1l)*/).
 				build();
 		Version.VectorClock local = Version.VectorClock.newBuilder().
 				setTimestamp(System.currentTimeMillis()).
-				addEnties(Version.ClockEntry.newBuilder().setNodeID("duke").setVersion(2).setTimestamp(1l)).
-				addEnties(Version.ClockEntry.newBuilder().setNodeID("duke2").setVersion(2).setTimestamp(2l)).
+				addEnties(Version.ClockEntry.newBuilder().setNodeID("duke").setVersion(2)/*.setTimestamp(1l)*/).
+				addEnties(Version.ClockEntry.newBuilder().setNodeID("duke2").setVersion(2)/*.setTimestamp(2l)*/).
 				build();
 
 		assertTrue(VersionUtils.compare(local, remote).equals(Occured.AFTER));
@@ -64,13 +64,13 @@ public class VectorClockComparisonTest {
 	public void vectorClockComparisonAFTER4Test() {
 		Version.VectorClock remote = Version.VectorClock.newBuilder().
 				setTimestamp(System.currentTimeMillis()).
-				addEnties(Version.ClockEntry.newBuilder().setNodeID("duke").setVersion(1).setTimestamp(2l)).
-				addEnties(Version.ClockEntry.newBuilder().setNodeID("duke2").setVersion(1).setTimestamp(1l)).
+				addEnties(Version.ClockEntry.newBuilder().setNodeID("duke").setVersion(1)/*.setTimestamp(2l)*/).
+				addEnties(Version.ClockEntry.newBuilder().setNodeID("duke2").setVersion(1)/*.setTimestamp(1l)*/).
 				build();
 		Version.VectorClock local = Version.VectorClock.newBuilder().
 				setTimestamp(System.currentTimeMillis()).
-				addEnties(Version.ClockEntry.newBuilder().setNodeID("duke").setVersion(1).setTimestamp(1l)).
-				addEnties(Version.ClockEntry.newBuilder().setNodeID("duke2").setVersion(1).setTimestamp(1l)).
+				addEnties(Version.ClockEntry.newBuilder().setNodeID("duke").setVersion(1)/*.setTimestamp(1l)*/).
+				addEnties(Version.ClockEntry.newBuilder().setNodeID("duke2").setVersion(1)/*.setTimestamp(1l)*/).
 				build();
 
 		assertTrue(VersionUtils.compare(local, remote).equals(Occured.AFTER));
@@ -80,13 +80,13 @@ public class VectorClockComparisonTest {
 	public void vectorClockComparisonAFTER5Test() {
 		Version.VectorClock remote = Version.VectorClock.newBuilder().
 				setTimestamp(System.currentTimeMillis()).
-				addEnties(Version.ClockEntry.newBuilder().setNodeID("duke").setVersion(1).setTimestamp(2l)).
+				addEnties(Version.ClockEntry.newBuilder().setNodeID("duke").setVersion(1)/*.setTimestamp(2l)*/).
 				//addEnties(Version.ClockEntry.newBuilder().setNodeID("duke2").setVersion(1).setTimestamp(1l)).
 						build();
 		Version.VectorClock local = Version.VectorClock.newBuilder().
 				setTimestamp(System.currentTimeMillis()).
-				addEnties(Version.ClockEntry.newBuilder().setNodeID("duke").setVersion(1).setTimestamp(1l)).
-				addEnties(Version.ClockEntry.newBuilder().setNodeID("duke2").setVersion(1).setTimestamp(1l)).
+				addEnties(Version.ClockEntry.newBuilder().setNodeID("duke").setVersion(1)/*.setTimestamp(1l)*/).
+				addEnties(Version.ClockEntry.newBuilder().setNodeID("duke2").setVersion(1)/*.setTimestamp(1l)*/).
 				build();
 
 		assertTrue(VersionUtils.compare(local, remote).equals(Occured.AFTER));
@@ -96,13 +96,13 @@ public class VectorClockComparisonTest {
 	public void vectorClockComparisonBEFORE1Test() {
 		Version.VectorClock remote = Version.VectorClock.newBuilder().
 				setTimestamp(System.currentTimeMillis()).
-				addEnties(Version.ClockEntry.newBuilder().setNodeID("duke").setVersion(2).setTimestamp(1l)).
-				addEnties(Version.ClockEntry.newBuilder().setNodeID("duke2").setVersion(1).setTimestamp(1l)).
+				addEnties(Version.ClockEntry.newBuilder().setNodeID("duke").setVersion(2)/*.setTimestamp(1l)*/).
+				addEnties(Version.ClockEntry.newBuilder().setNodeID("duke2").setVersion(1)/*.setTimestamp(1l)*/).
 				build();
 		Version.VectorClock local = Version.VectorClock.newBuilder().
 				setTimestamp(System.currentTimeMillis()).
-				addEnties(Version.ClockEntry.newBuilder().setNodeID("duke").setVersion(1).setTimestamp(1l)).
-				addEnties(Version.ClockEntry.newBuilder().setNodeID("duke2").setVersion(1).setTimestamp(1l)).
+				addEnties(Version.ClockEntry.newBuilder().setNodeID("duke").setVersion(1)/*.setTimestamp(1l)*/).
+				addEnties(Version.ClockEntry.newBuilder().setNodeID("duke2").setVersion(1)/*.setTimestamp(1l)*/).
 				build();
 
 		assertTrue(VersionUtils.compare(local, remote).equals(Occured.BEFORE));
@@ -112,13 +112,13 @@ public class VectorClockComparisonTest {
 	public void vectorClockComparisonBEFORE2Test() {
 		Version.VectorClock remote = Version.VectorClock.newBuilder().
 				setTimestamp(System.currentTimeMillis()).
-				addEnties(Version.ClockEntry.newBuilder().setNodeID("duke").setVersion(2).setTimestamp(1l)).
-				addEnties(Version.ClockEntry.newBuilder().setNodeID("duke2").setVersion(1).setTimestamp(1l)).
+				addEnties(Version.ClockEntry.newBuilder().setNodeID("duke").setVersion(2)/*.setTimestamp(1l)*/).
+				addEnties(Version.ClockEntry.newBuilder().setNodeID("duke2").setVersion(1)/*.setTimestamp(1l)*/).
 				build();
 		Version.VectorClock local = Version.VectorClock.newBuilder().
 				setTimestamp(System.currentTimeMillis()).
 				//addEnties(Version.ClockEntry.newBuilder().setNodeID("duke").setVersion(1).setTimestamp(1l)).
-						addEnties(Version.ClockEntry.newBuilder().setNodeID("duke2").setVersion(1).setTimestamp(2l)).
+						addEnties(Version.ClockEntry.newBuilder().setNodeID("duke2").setVersion(1)/*.setTimestamp(2l)*/).
 				build();
 
 		assertTrue(VersionUtils.compare(local, remote).equals(Occured.BEFORE));
@@ -128,13 +128,13 @@ public class VectorClockComparisonTest {
 	public void vectorClockComparisonCONCURRENTLY1Test() {
 		Version.VectorClock remote = Version.VectorClock.newBuilder().
 				setTimestamp(System.currentTimeMillis()).
-				addEnties(Version.ClockEntry.newBuilder().setNodeID("duke").setVersion(2).setTimestamp(1l)).
-				addEnties(Version.ClockEntry.newBuilder().setNodeID("duke2").setVersion(1).setTimestamp(1l)).
+				addEnties(Version.ClockEntry.newBuilder().setNodeID("duke").setVersion(2)/*.setTimestamp(1l)*/).
+				addEnties(Version.ClockEntry.newBuilder().setNodeID("duke2").setVersion(1)/*.setTimestamp(1l)*/).
 				build();
 		Version.VectorClock local = Version.VectorClock.newBuilder().
 				setTimestamp(System.currentTimeMillis()).
-				addEnties(Version.ClockEntry.newBuilder().setNodeID("duke").setVersion(1).setTimestamp(1l)).
-				addEnties(Version.ClockEntry.newBuilder().setNodeID("duke2").setVersion(2).setTimestamp(1l)).
+				addEnties(Version.ClockEntry.newBuilder().setNodeID("duke").setVersion(1)/*.setTimestamp(1l)*/).
+				addEnties(Version.ClockEntry.newBuilder().setNodeID("duke2").setVersion(2)/*.setTimestamp(1l)*/).
 				build();
 
 		assertTrue(VersionUtils.compare(local, remote).equals(Occured.CONCURRENTLY));
@@ -144,13 +144,13 @@ public class VectorClockComparisonTest {
 	public void vectorClockComparisonCONCURRENTLY2Test() {
 		Version.VectorClock remote = Version.VectorClock.newBuilder().
 				setTimestamp(System.currentTimeMillis()).
-				addEnties(Version.ClockEntry.newBuilder().setNodeID("duke").setVersion(2).setTimestamp(1l)).
-				addEnties(Version.ClockEntry.newBuilder().setNodeID("duke2").setVersion(1).setTimestamp(1l)).
+				addEnties(Version.ClockEntry.newBuilder().setNodeID("duke").setVersion(2)/*.setTimestamp(1l)*/).
+				addEnties(Version.ClockEntry.newBuilder().setNodeID("duke2").setVersion(1)/*.setTimestamp(1l)*/).
 				build();
 		Version.VectorClock local = Version.VectorClock.newBuilder().
 				setTimestamp(System.currentTimeMillis()).
-				addEnties(Version.ClockEntry.newBuilder().setNodeID("duke").setVersion(1).setTimestamp(1l)).
-				addEnties(Version.ClockEntry.newBuilder().setNodeID("duke2").setVersion(2).setTimestamp(2l)).
+				addEnties(Version.ClockEntry.newBuilder().setNodeID("duke").setVersion(1)/*.setTimestamp(1l)*/).
+				addEnties(Version.ClockEntry.newBuilder().setNodeID("duke2").setVersion(2)/*.setTimestamp(2l)*/).
 				build();
 
 		assertTrue(VersionUtils.compare(local, remote).equals(Occured.CONCURRENTLY));
@@ -160,13 +160,13 @@ public class VectorClockComparisonTest {
 	public void vectorClockComparisonCONCURRENTLY3Test() {
 		Version.VectorClock remote = Version.VectorClock.newBuilder().
 				setTimestamp(System.currentTimeMillis()).
-				addEnties(Version.ClockEntry.newBuilder().setNodeID("duke").setVersion(2).setTimestamp(2l)).
-				addEnties(Version.ClockEntry.newBuilder().setNodeID("duke2").setVersion(1).setTimestamp(1l)).
+				addEnties(Version.ClockEntry.newBuilder().setNodeID("duke").setVersion(2)/*.setTimestamp(2l)*/).
+				addEnties(Version.ClockEntry.newBuilder().setNodeID("duke2").setVersion(1)/*.setTimestamp(1l)*/).
 				build();
 		Version.VectorClock local = Version.VectorClock.newBuilder().
 				setTimestamp(System.currentTimeMillis()).
-				addEnties(Version.ClockEntry.newBuilder().setNodeID("duke").setVersion(1).setTimestamp(1l)).
-				addEnties(Version.ClockEntry.newBuilder().setNodeID("duke2").setVersion(2).setTimestamp(2l)).
+				addEnties(Version.ClockEntry.newBuilder().setNodeID("duke").setVersion(1)/*.setTimestamp(1l)*/).
+				addEnties(Version.ClockEntry.newBuilder().setNodeID("duke2").setVersion(2)/*.setTimestamp(2l)*/).
 				build();
 
 		assertTrue(VersionUtils.compare(local, remote).equals(Occured.CONCURRENTLY));
@@ -176,13 +176,13 @@ public class VectorClockComparisonTest {
 	public void vectorClockComparisonCONCURRENTLY4Test() {
 		Version.VectorClock remote = Version.VectorClock.newBuilder().
 				setTimestamp(System.currentTimeMillis()).
-				addEnties(Version.ClockEntry.newBuilder().setNodeID("duke").setVersion(2).setTimestamp(1l)).
-				addEnties(Version.ClockEntry.newBuilder().setNodeID("duke2").setVersion(1).setTimestamp(1l)).
+				addEnties(Version.ClockEntry.newBuilder().setNodeID("duke").setVersion(2)/*.setTimestamp(1l)*/).
+				addEnties(Version.ClockEntry.newBuilder().setNodeID("duke2").setVersion(1)/*.setTimestamp(1l)*/).
 				build();
 		Version.VectorClock local = Version.VectorClock.newBuilder().
 				setTimestamp(System.currentTimeMillis()).
 				//addEnties(Version.ClockEntry.newBuilder().setNodeID("duke").setVersion(1).setTimestamp(1l)).
-						addEnties(Version.ClockEntry.newBuilder().setNodeID("duke2").setVersion(2).setTimestamp(2l)).
+						addEnties(Version.ClockEntry.newBuilder().setNodeID("duke2").setVersion(2)/*.setTimestamp(2l)*/).
 				build();
 
 		assertTrue(VersionUtils.compare(local, remote).equals(Occured.CONCURRENTLY));

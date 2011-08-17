@@ -15,13 +15,13 @@ object VersionUtils {
     println("Hello, world!") 
     val remote = VectorClock.newBuilder().
     setTimestamp(System.currentTimeMillis()).
-    addEnties(ClockEntry.newBuilder().setNodeID("duke").setVersion(3).setTimestamp(System.currentTimeMillis())).
-    addEnties(ClockEntry.newBuilder().setNodeID("duke2").setVersion(2).setTimestamp(System.currentTimeMillis())).
+    addEnties(ClockEntry.newBuilder().setNodeID("duke").setVersion(3)/*.setTimestamp(System.currentTimeMillis())*/).
+    addEnties(ClockEntry.newBuilder().setNodeID("duke2").setVersion(2)/*.setTimestamp(System.currentTimeMillis())*/).
     build()
     val local = VectorClock.newBuilder().
     setTimestamp(System.currentTimeMillis()).
-    addEnties(ClockEntry.newBuilder().setNodeID("duke").setVersion(2).setTimestamp(System.currentTimeMillis())).
-    addEnties(ClockEntry.newBuilder().setNodeID("duke2").setVersion(2).setTimestamp(System.currentTimeMillis())).
+    addEnties(ClockEntry.newBuilder().setNodeID("duke").setVersion(2)/*.setTimestamp(System.currentTimeMillis())*/).
+    addEnties(ClockEntry.newBuilder().setNodeID("duke2").setVersion(2)/*.setTimestamp(System.currentTimeMillis())*/).
     build()
 
 println(compare(local,remote))

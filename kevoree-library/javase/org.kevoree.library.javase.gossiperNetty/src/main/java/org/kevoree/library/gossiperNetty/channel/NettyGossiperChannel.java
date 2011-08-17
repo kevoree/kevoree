@@ -109,7 +109,7 @@ public class NettyGossiperChannel extends AbstractChannelFragment implements Net
 		Tuple2<Version.VectorClock, Object> tuple = new Tuple2<Version.VectorClock, Object>(
 				Version.VectorClock.newBuilder().
 						addEnties(Version.ClockEntry.newBuilder().setNodeID(this.getNodeName())
-								.setTimestamp(timestamp).setVersion(2l).build()).setTimestamp(timestamp).build(),
+								/*.setTimestamp(timestamp)*/.setVersion(2).build()).setTimestamp(timestamp).build(),
 				msg);
 		dataManager.setData(uuid, tuple, "");
 

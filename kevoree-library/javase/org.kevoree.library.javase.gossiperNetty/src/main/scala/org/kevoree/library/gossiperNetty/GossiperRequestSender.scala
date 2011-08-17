@@ -8,12 +8,11 @@ import org.jboss.netty.channel.socket.nio.NioDatagramChannelFactory
 import org.kevoree.library.gossiperNetty.api.msg.KevoreeMessage.Message
 
 import scala.collection.JavaConversions._
-import org.jboss.netty.handler.codec.protobuf.{ProtobufEncoder, ProtobufVarint32LengthFieldPrepender, ProtobufDecoder, ProtobufVarint32FrameDecoder}
 import org.slf4j.LoggerFactory
 import version.Gossip.{VersionedModel, UUIDDataRequest, VectorClockUUIDs, VectorClockUUIDsRequest}
 import version.Version.{ClockEntry, VectorClock}
 import org.jboss.netty.channel._
-import org.jboss.netty.handler.codec.compression.{ZlibDecoder, ZlibEncoder, ZlibWrapper}
+import org.jboss.netty.handler.codec.protobuf._
 
 class GossiperRequestSender (timeout: java.lang.Long, protected val channelFragment: NettyGossipAbstractElement,
   dataManager: DataManager, fullUDP: java.lang.Boolean, garbage: Boolean, serializer: Serializer,
@@ -21,18 +20,18 @@ class GossiperRequestSender (timeout: java.lang.Long, protected val channelFragm
   extends actors.DaemonActor {
 
   // define attributes used to define channel to send gossip request
-  var factory = new NioDatagramChannelFactory(Executors.newCachedThreadPool())
-  var bootstrap = new ConnectionlessBootstrap(factory)
-  var self = this
+  protected var factory = new NioDatagramChannelFactory(Executors.newCachedThreadPool())
+  protected var bootstrap = new ConnectionlessBootstrap(factory)
+  protected var self = this
   bootstrap.setPipelineFactory(new ChannelPipelineFactory() { // TODO refactor with an object for all pipelineFactories
     override def getPipeline: ChannelPipeline = {
       val p: ChannelPipeline = Channels.pipeline()
-      p.addLast("deflater", new ZlibEncoder(ZlibWrapper.ZLIB))
-      p.addLast("inflater", new ZlibDecoder(ZlibWrapper.ZLIB))
+      //p.addLast("inflater", new ZlibDecoder(ZlibWrapper.ZLIB))
       p.addLast("frameDecoder", new ProtobufVarint32FrameDecoder)
       p.addLast("protobufDecoder", new ProtobufDecoder(Message.getDefaultInstance))
-      p.addLast("frameEncoder", new ProtobufVarint32LengthFieldPrepender)
-      p.addLast("protobufEncoder", new ProtobufEncoder)
+      //p.addLast("deflater", new ZlibEncoder(ZlibWrapper.ZLIB))
+      p.addLast("frameEncoder", new ProtobufVarint32LengthFieldPrepender())
+      p.addLast("protobufEncoder", new ProtobufEncoder())
 
       p.addLast("handler", new GossiperRequestSenderHandler(self))
       p
@@ -237,7 +236,7 @@ class GossiperRequestSender (timeout: java.lang.Long, protected val channelFragm
           case Some(p) => //NOOP
           case None => {
             val newenties = ClockEntry.newBuilder.setNodeID(channelFragment.getNodeName)
-              .setTimestamp(System.currentTimeMillis).setVersion(1).build
+              /*.setTimestamp(System.currentTimeMillis)*/.setVersion(1).build
             vectorClock = VectorClock.newBuilder(vectorClock).addEnties(newenties)
               .setTimestamp(System.currentTimeMillis).build
           }

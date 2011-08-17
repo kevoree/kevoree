@@ -21,20 +21,20 @@ class DataManagerForGroupLocalMergeTest extends AssertionsForJUnit {
   @Test def mergeVectorClocksTest () {
     val remote: Version.VectorClock = Version.VectorClock.newBuilder
       .setTimestamp (System.currentTimeMillis)
-      .addEnties (Version.ClockEntry.newBuilder.setNodeID ("duke").setVersion (1).setTimestamp (1l))
-      .addEnties (Version.ClockEntry.newBuilder.setNodeID ("duke2").setVersion (1).setTimestamp (1l))
+      .addEnties (Version.ClockEntry.newBuilder.setNodeID ("duke").setVersion (1)/*.setTimestamp (1l)*/)
+      .addEnties (Version.ClockEntry.newBuilder.setNodeID ("duke2").setVersion (1)/*.setTimestamp (1l)*/)
       .build
     val local: Version.VectorClock = Version.VectorClock.newBuilder
       .setTimestamp (System.currentTimeMillis)
-      .addEnties (Version.ClockEntry.newBuilder.setNodeID ("duke").setVersion (1).setTimestamp (1l))
-      .addEnties (Version.ClockEntry.newBuilder.setNodeID ("duke2").setVersion (1).setTimestamp (1l))
+      .addEnties (Version.ClockEntry.newBuilder.setNodeID ("duke").setVersion (1)/*.setTimestamp (1l)*/)
+      .addEnties (Version.ClockEntry.newBuilder.setNodeID ("duke2").setVersion (1)/*.setTimestamp (1l)*/)
       .build
     val mergedClock: Version.VectorClock = Version.VectorClock.newBuilder ().
       setTimestamp (System.currentTimeMillis ()).
       addEnties (Version.ClockEntry.newBuilder ().setNodeID ("duke").setVersion (1)
-      .setTimestamp (System.currentTimeMillis ())).
+      /*.setTimestamp (System.currentTimeMillis ())*/).
       addEnties (Version.ClockEntry.newBuilder ().setNodeID ("duke2").setVersion (1)
-      .setTimestamp (System.currentTimeMillis ())).
+      /*.setTimestamp (System.currentTimeMillis ())*/).
       build ()
 
     ExtendedDataManagerForGroup.setNewVectorClock (local);
@@ -46,8 +46,8 @@ class DataManagerForGroupLocalMergeTest extends AssertionsForJUnit {
         mergedClock.getEntiesList
           .find (sameclockEntry => clockEntry.getNodeID.equals (sameclockEntry.getNodeID)
           && clockEntry.getVersion.equals (sameclockEntry.getVersion)
-          && (clockEntry.getTimestamp >= sameclockEntry.getTimestamp && clockEntry.getNodeID.equals ("duke")
-          || clockEntry.getTimestamp >= sameclockEntry.getTimestamp && clockEntry.getNodeID.equals ("duke2"))) match {
+          && (/*clockEntry.getTimestamp >= sameclockEntry.getTimestamp && */clockEntry.getNodeID.equals ("duke")
+          || /*clockEntry.getTimestamp >= sameclockEntry.getTimestamp &&*/ clockEntry.getNodeID.equals ("duke2"))) match {
           case Some (ce) => // NO OP
           case None => fail ()
         }
@@ -57,20 +57,20 @@ class DataManagerForGroupLocalMergeTest extends AssertionsForJUnit {
   @Test def mergeVectorClocksTestBis () {
     val remote: Version.VectorClock = Version.VectorClock.newBuilder
       .setTimestamp (System.currentTimeMillis)
-      .addEnties (Version.ClockEntry.newBuilder.setNodeID ("duke").setVersion (2).setTimestamp (2l))
-      .addEnties (Version.ClockEntry.newBuilder.setNodeID ("duke2").setVersion (1).setTimestamp (1l))
+      .addEnties (Version.ClockEntry.newBuilder.setNodeID ("duke").setVersion (2)/*.setTimestamp (2l)*/)
+      .addEnties (Version.ClockEntry.newBuilder.setNodeID ("duke2").setVersion (1)/*.setTimestamp (1l)*/)
       .build
     val local: Version.VectorClock = Version.VectorClock.newBuilder
       .setTimestamp (System.currentTimeMillis)
-      .addEnties (Version.ClockEntry.newBuilder.setNodeID ("duke").setVersion (1).setTimestamp (1l))
-      .addEnties (Version.ClockEntry.newBuilder.setNodeID ("duke2").setVersion (1).setTimestamp (1l))
+      .addEnties (Version.ClockEntry.newBuilder.setNodeID ("duke").setVersion (1)/*.setTimestamp (1l)*/)
+      .addEnties (Version.ClockEntry.newBuilder.setNodeID ("duke2").setVersion (1)/*.setTimestamp (1l)*/)
       .build
     val mergedClock: Version.VectorClock = Version.VectorClock.newBuilder ().
       setTimestamp (System.currentTimeMillis ()).
       addEnties (Version.ClockEntry.newBuilder ().setNodeID ("duke").setVersion (2)
-      .setTimestamp (System.currentTimeMillis ())).
+      /*.setTimestamp (System.currentTimeMillis ())*/).
       addEnties (Version.ClockEntry.newBuilder ().setNodeID ("duke2").setVersion (1)
-      .setTimestamp (System.currentTimeMillis ())).
+      /*.setTimestamp (System.currentTimeMillis ())*/).
       build ()
 
     ExtendedDataManagerForGroup.setNewVectorClock (local);
@@ -82,8 +82,8 @@ class DataManagerForGroupLocalMergeTest extends AssertionsForJUnit {
         mergedClock.getEntiesList
           .find (sameclockEntry => clockEntry.getNodeID.equals (sameclockEntry.getNodeID)
           && clockEntry.getVersion.equals (sameclockEntry.getVersion)
-          && (clockEntry.getTimestamp >= sameclockEntry.getTimestamp && clockEntry.getNodeID.equals ("duke")
-          || clockEntry.getTimestamp >= sameclockEntry.getTimestamp && clockEntry.getNodeID.equals ("duke2"))) match {
+          && (/*clockEntry.getTimestamp >= sameclockEntry.getTimestamp &&*/ clockEntry.getNodeID.equals ("duke")
+          || /*clockEntry.getTimestamp >= sameclockEntry.getTimestamp &&*/ clockEntry.getNodeID.equals ("duke2"))) match {
           case Some (ce) => // NO OP
           case None => fail ()
         }
@@ -94,20 +94,20 @@ class DataManagerForGroupLocalMergeTest extends AssertionsForJUnit {
   @Test def mergeVectorClocksTestSecond () {
     val remote: Version.VectorClock = Version.VectorClock.newBuilder
       .setTimestamp (System.currentTimeMillis)
-      .addEnties (Version.ClockEntry.newBuilder.setNodeID ("duke").setVersion (1).setTimestamp (1l))
-      .addEnties (Version.ClockEntry.newBuilder.setNodeID ("duke2").setVersion (1).setTimestamp (1l))
+      .addEnties (Version.ClockEntry.newBuilder.setNodeID ("duke").setVersion (1)/*.setTimestamp (1l)*/)
+      .addEnties (Version.ClockEntry.newBuilder.setNodeID ("duke2").setVersion (1)/*.setTimestamp (1l)*/)
       .build
     val local: Version.VectorClock = Version.VectorClock.newBuilder
       .setTimestamp (System.currentTimeMillis)
-      .addEnties (Version.ClockEntry.newBuilder.setNodeID ("duke").setVersion (1).setTimestamp (1l))
-      .addEnties (Version.ClockEntry.newBuilder.setNodeID ("duke2").setVersion (2).setTimestamp (2l))
+      .addEnties (Version.ClockEntry.newBuilder.setNodeID ("duke").setVersion (1)/*.setTimestamp (1l)*/)
+      .addEnties (Version.ClockEntry.newBuilder.setNodeID ("duke2").setVersion (2)/*.setTimestamp (2l)*/)
       .build
     val mergedClock: Version.VectorClock = Version.VectorClock.newBuilder ().
       setTimestamp (System.currentTimeMillis ()).
       addEnties (Version.ClockEntry.newBuilder ().setNodeID ("duke").setVersion (1)
-      .setTimestamp (System.currentTimeMillis ())).
+      /*.setTimestamp (System.currentTimeMillis ())*/).
       addEnties (Version.ClockEntry.newBuilder ().setNodeID ("duke2").setVersion (2)
-      .setTimestamp (System.currentTimeMillis ())).
+      /*.setTimestamp (System.currentTimeMillis ())*/).
       build ()
 
     ExtendedDataManagerForGroup.setNewVectorClock (local);
@@ -119,8 +119,8 @@ class DataManagerForGroupLocalMergeTest extends AssertionsForJUnit {
         mergedClock.getEntiesList
           .find (sameclockEntry => clockEntry.getNodeID.equals (sameclockEntry.getNodeID)
           && clockEntry.getVersion.equals (sameclockEntry.getVersion)
-          && (clockEntry.getTimestamp >= sameclockEntry.getTimestamp && clockEntry.getNodeID.equals ("duke")
-          || clockEntry.getTimestamp >= sameclockEntry.getTimestamp && clockEntry.getNodeID.equals ("duke2"))) match {
+          && (/*clockEntry.getTimestamp >= sameclockEntry.getTimestamp &&*/ clockEntry.getNodeID.equals ("duke")
+          || /*clockEntry.getTimestamp >= sameclockEntry.getTimestamp &&*/ clockEntry.getNodeID.equals ("duke2"))) match {
           case Some (ce) => // NO OP
           case None => fail ()
         }
@@ -130,19 +130,19 @@ class DataManagerForGroupLocalMergeTest extends AssertionsForJUnit {
   @Test def mergeVectorClocksTest1 () {
     val remote: Version.VectorClock = Version.VectorClock.newBuilder ().
       setTimestamp (System.currentTimeMillis ()).
-      addEnties (Version.ClockEntry.newBuilder ().setNodeID ("duke").setVersion (2).setTimestamp (1l)).
-      addEnties (Version.ClockEntry.newBuilder ().setNodeID ("duke2").setVersion (1).setTimestamp (1l)).
+      addEnties (Version.ClockEntry.newBuilder ().setNodeID ("duke").setVersion (2)/*.setTimestamp (1l)*/).
+      addEnties (Version.ClockEntry.newBuilder ().setNodeID ("duke2").setVersion (1)/*.setTimestamp (1l)*/).
       build ()
     val local: Version.VectorClock = Version.VectorClock.newBuilder ().
       setTimestamp (System.currentTimeMillis ()).
       //addEnties(Version.ClockEntry.newBuilder().setNodeID("duke").setVersion(1).setTimestamp(1l)).
-      addEnties (Version.ClockEntry.newBuilder ().setNodeID ("duke2").setVersion (2).setTimestamp (2l)).
+      addEnties (Version.ClockEntry.newBuilder ().setNodeID ("duke2").setVersion (2)/*.setTimestamp (2l)*/).
       build ()
     val mergedClock: Version.VectorClock = Version.VectorClock.newBuilder ().
       setTimestamp (System.currentTimeMillis ()).
-      addEnties (Version.ClockEntry.newBuilder ().setNodeID ("duke").setVersion (2).setTimestamp (1l)).
+      addEnties (Version.ClockEntry.newBuilder ().setNodeID ("duke").setVersion (2)/*.setTimestamp (1l)*/).
       addEnties (Version.ClockEntry.newBuilder ().setNodeID ("duke2").setVersion (2)
-      .setTimestamp (System.currentTimeMillis ())).
+      /*.setTimestamp (System.currentTimeMillis ())*/).
       build ()
 
     ExtendedDataManagerForGroup.setNewVectorClock (local);
@@ -154,8 +154,8 @@ class DataManagerForGroupLocalMergeTest extends AssertionsForJUnit {
         mergedClock.getEntiesList
           .find (sameclockEntry => clockEntry.getNodeID.equals (sameclockEntry.getNodeID)
           && clockEntry.getVersion.equals (sameclockEntry.getVersion)
-          && (clockEntry.getTimestamp == sameclockEntry.getTimestamp && clockEntry.getNodeID.equals ("duke")
-          || clockEntry.getTimestamp >= sameclockEntry.getTimestamp && clockEntry.getNodeID.equals ("duke2"))) match {
+          && (/*clockEntry.getTimestamp == sameclockEntry.getTimestamp &&*/ clockEntry.getNodeID.equals ("duke")
+          || /*clockEntry.getTimestamp >= sameclockEntry.getTimestamp &&*/ clockEntry.getNodeID.equals ("duke2"))) match {
           case Some (ce) => // NO OP
           case None => fail ()
         }
@@ -165,19 +165,19 @@ class DataManagerForGroupLocalMergeTest extends AssertionsForJUnit {
   @Test def mergeVectorClocksTest1Bis () {
     val remote: Version.VectorClock = Version.VectorClock.newBuilder ().
       setTimestamp (System.currentTimeMillis ()).
-      addEnties (Version.ClockEntry.newBuilder ().setNodeID ("duke").setVersion (2).setTimestamp (2l)).
+      addEnties (Version.ClockEntry.newBuilder ().setNodeID ("duke").setVersion (2)/*.setTimestamp (2l)*/).
       //addEnties (Version.ClockEntry.newBuilder ().setNodeID ("duke2").setVersion (1).setTimestamp (1l)).
       build ()
     val local: Version.VectorClock = Version.VectorClock.newBuilder ().
       setTimestamp (System.currentTimeMillis ()).
-      addEnties (Version.ClockEntry.newBuilder ().setNodeID ("duke").setVersion (1).setTimestamp (1l)).
-      addEnties (Version.ClockEntry.newBuilder ().setNodeID ("duke2").setVersion (2).setTimestamp (2l)).
+      addEnties (Version.ClockEntry.newBuilder ().setNodeID ("duke").setVersion (1)/*.setTimestamp (1l)*/).
+      addEnties (Version.ClockEntry.newBuilder ().setNodeID ("duke2").setVersion (2)/*.setTimestamp (2l)*/).
       build ()
     val mergedClock: Version.VectorClock = Version.VectorClock.newBuilder ().
       setTimestamp (System.currentTimeMillis ()).
       addEnties (Version.ClockEntry.newBuilder ().setNodeID ("duke").setVersion (2)
-      .setTimestamp (System.currentTimeMillis ())).
-      addEnties (Version.ClockEntry.newBuilder ().setNodeID ("duke2").setVersion (2).setTimestamp (2l)).
+      /*.setTimestamp (System.currentTimeMillis ())*/).
+      addEnties (Version.ClockEntry.newBuilder ().setNodeID ("duke2").setVersion (2)/*.setTimestamp (2l)*/).
       build ()
 
     ExtendedDataManagerForGroup.setNewVectorClock (local);
@@ -189,8 +189,8 @@ class DataManagerForGroupLocalMergeTest extends AssertionsForJUnit {
         mergedClock.getEntiesList
           .find (sameclockEntry => clockEntry.getNodeID.equals (sameclockEntry.getNodeID)
           && clockEntry.getVersion.equals (sameclockEntry.getVersion)
-          && (clockEntry.getTimestamp >= sameclockEntry.getTimestamp && clockEntry.getNodeID.equals ("duke")
-          || clockEntry.getTimestamp == sameclockEntry.getTimestamp && clockEntry.getNodeID.equals ("duke2"))) match {
+          && (/*clockEntry.getTimestamp >= sameclockEntry.getTimestamp &&*/ clockEntry.getNodeID.equals ("duke")
+          || /*clockEntry.getTimestamp == sameclockEntry.getTimestamp &&*/ clockEntry.getNodeID.equals ("duke2"))) match {
           case Some (ce) => // NO OP
           case None => fail ()
         }
@@ -200,20 +200,20 @@ class DataManagerForGroupLocalMergeTest extends AssertionsForJUnit {
   @Test def mergeVectorClocksTest2 () {
     val remote: Version.VectorClock = Version.VectorClock.newBuilder ().
       setTimestamp (System.currentTimeMillis ()).
-      addEnties (Version.ClockEntry.newBuilder ().setNodeID ("duke").setVersion (2).setTimestamp (1l)).
-      addEnties (Version.ClockEntry.newBuilder ().setNodeID ("duke2").setVersion (3).setTimestamp (1l)).
+      addEnties (Version.ClockEntry.newBuilder ().setNodeID ("duke").setVersion (2)/*.setTimestamp (1l)*/).
+      addEnties (Version.ClockEntry.newBuilder ().setNodeID ("duke2").setVersion (3)/*.setTimestamp (1l)*/).
       build ()
     val local: Version.VectorClock = Version.VectorClock.newBuilder ().
       setTimestamp (System.currentTimeMillis ()).
-      addEnties (Version.ClockEntry.newBuilder ().setNodeID ("duke3").setVersion (1).setTimestamp (1l)).
-      addEnties (Version.ClockEntry.newBuilder ().setNodeID ("duke2").setVersion (2).setTimestamp (2l)).
+      addEnties (Version.ClockEntry.newBuilder ().setNodeID ("duke3").setVersion (1)/*.setTimestamp (1l)*/).
+      addEnties (Version.ClockEntry.newBuilder ().setNodeID ("duke2").setVersion (2)/*.setTimestamp (2l)*/).
       build ()
     val mergedClock: Version.VectorClock = Version.VectorClock.newBuilder ().
       setTimestamp (System.currentTimeMillis ()).
-      addEnties (Version.ClockEntry.newBuilder ().setNodeID ("duke").setVersion (2).setTimestamp (1l)).
+      addEnties (Version.ClockEntry.newBuilder ().setNodeID ("duke").setVersion (2)/*.setTimestamp (1l)*/).
       addEnties (Version.ClockEntry.newBuilder ().setNodeID ("duke2").setVersion (3)
-      .setTimestamp (System.currentTimeMillis ())).
-      addEnties (Version.ClockEntry.newBuilder ().setNodeID ("duke3").setVersion (1).setTimestamp (1l)).
+      /*.setTimestamp (System.currentTimeMillis ())*/).
+      addEnties (Version.ClockEntry.newBuilder ().setNodeID ("duke3").setVersion (1)/*.setTimestamp (1l)*/).
       build ()
 
     ExtendedDataManagerForGroup.setNewVectorClock (local);
@@ -225,9 +225,9 @@ class DataManagerForGroupLocalMergeTest extends AssertionsForJUnit {
         mergedClock.getEntiesList
           .find (sameclockEntry => clockEntry.getNodeID.equals (sameclockEntry.getNodeID)
           && clockEntry.getVersion.equals (sameclockEntry.getVersion)
-          && (clockEntry.getTimestamp == sameclockEntry.getTimestamp && clockEntry.getNodeID.equals ("duke")
-          || clockEntry.getTimestamp >= sameclockEntry.getTimestamp && clockEntry.getNodeID.equals ("duke2")
-          || clockEntry.getTimestamp == sameclockEntry.getTimestamp && clockEntry.getNodeID.equals ("duke3"))) match {
+          && (/*clockEntry.getTimestamp == sameclockEntry.getTimestamp &&*/ clockEntry.getNodeID.equals ("duke")
+          || /*clockEntry.getTimestamp >= sameclockEntry.getTimestamp &&*/ clockEntry.getNodeID.equals ("duke2")
+          || /*clockEntry.getTimestamp == sameclockEntry.getTimestamp &&*/ clockEntry.getNodeID.equals ("duke3"))) match {
           case Some (ce) => // NO OP
           case None => fail ()
         }
@@ -237,20 +237,20 @@ class DataManagerForGroupLocalMergeTest extends AssertionsForJUnit {
   @Test def mergeVectorClocksTest2Bis () {
     val remote: Version.VectorClock = Version.VectorClock.newBuilder ().
       setTimestamp (System.currentTimeMillis ()).
-      addEnties (Version.ClockEntry.newBuilder ().setNodeID ("duke").setVersion (2).setTimestamp (1l)).
-      addEnties (Version.ClockEntry.newBuilder ().setNodeID ("duke3").setVersion (3).setTimestamp (1l)).
+      addEnties (Version.ClockEntry.newBuilder ().setNodeID ("duke").setVersion (2)/*.setTimestamp (1l)*/).
+      addEnties (Version.ClockEntry.newBuilder ().setNodeID ("duke3").setVersion (3)/*.setTimestamp (1l)*/).
       build ()
     val local: Version.VectorClock = Version.VectorClock.newBuilder ().
       setTimestamp (System.currentTimeMillis ()).
-      addEnties (Version.ClockEntry.newBuilder ().setNodeID ("duke3").setVersion (1).setTimestamp (1l)).
-      addEnties (Version.ClockEntry.newBuilder ().setNodeID ("duke2").setVersion (2).setTimestamp (2l)).
+      addEnties (Version.ClockEntry.newBuilder ().setNodeID ("duke3").setVersion (1)/*.setTimestamp (1l)*/).
+      addEnties (Version.ClockEntry.newBuilder ().setNodeID ("duke2").setVersion (2)/*.setTimestamp (2l)*/).
       build ()
     val mergedClock: Version.VectorClock = Version.VectorClock.newBuilder ().
       setTimestamp (System.currentTimeMillis ()).
-      addEnties (Version.ClockEntry.newBuilder ().setNodeID ("duke").setVersion (2).setTimestamp (1l)).
-      addEnties (Version.ClockEntry.newBuilder ().setNodeID ("duke2").setVersion (2).setTimestamp (2l)).
+      addEnties (Version.ClockEntry.newBuilder ().setNodeID ("duke").setVersion (2)/*.setTimestamp (1l)*/).
+      addEnties (Version.ClockEntry.newBuilder ().setNodeID ("duke2").setVersion (2)/*.setTimestamp (2l)*/).
       addEnties (Version.ClockEntry.newBuilder ().setNodeID ("duke3").setVersion (3)
-      .setTimestamp (System.currentTimeMillis ())).
+      /*.setTimestamp (System.currentTimeMillis ())*/).
       build ()
 
     ExtendedDataManagerForGroup.setNewVectorClock (local);
@@ -262,9 +262,9 @@ class DataManagerForGroupLocalMergeTest extends AssertionsForJUnit {
         mergedClock.getEntiesList
           .find (sameclockEntry => clockEntry.getNodeID.equals (sameclockEntry.getNodeID)
           && clockEntry.getVersion.equals (sameclockEntry.getVersion)
-          && (clockEntry.getTimestamp == sameclockEntry.getTimestamp && clockEntry.getNodeID.equals ("duke")
-          || clockEntry.getTimestamp == sameclockEntry.getTimestamp && clockEntry.getNodeID.equals ("duke2")
-          || clockEntry.getTimestamp >= sameclockEntry.getTimestamp && clockEntry.getNodeID.equals ("duke3"))) match {
+          && (/*clockEntry.getTimestamp == sameclockEntry.getTimestamp &&*/ clockEntry.getNodeID.equals ("duke")
+          || /*clockEntry.getTimestamp == sameclockEntry.getTimestamp &&*/ clockEntry.getNodeID.equals ("duke2")
+          || /*clockEntry.getTimestamp >= sameclockEntry.getTimestamp &&*/ clockEntry.getNodeID.equals ("duke3"))) match {
           case Some (ce) => // NO OP
           case None => fail ()
         }
@@ -274,16 +274,16 @@ class DataManagerForGroupLocalMergeTest extends AssertionsForJUnit {
   @Test def mergeVectorClocksTest3 () {
     val remote: Version.VectorClock = Version.VectorClock.newBuilder
       .setTimestamp (System.currentTimeMillis)
-      .addEnties (Version.ClockEntry.newBuilder.setNodeID ("duke").setVersion (2).setTimestamp (1l))
-      .addEnties (Version.ClockEntry.newBuilder.setNodeID ("duke2").setVersion (1).setTimestamp (1l)).build
+      .addEnties (Version.ClockEntry.newBuilder.setNodeID ("duke").setVersion (2)/*.setTimestamp (1l)*/)
+      .addEnties (Version.ClockEntry.newBuilder.setNodeID ("duke2").setVersion (1)/*.setTimestamp (1l)*/).build
     val local: Version.VectorClock = Version.VectorClock.newBuilder
       .setTimestamp (System.currentTimeMillis)
-      .addEnties (Version.ClockEntry.newBuilder.setNodeID ("duke").setVersion (1).setTimestamp (1l))
-      .addEnties (Version.ClockEntry.newBuilder.setNodeID ("duke2").setVersion (2).setTimestamp (1l)).build
+      .addEnties (Version.ClockEntry.newBuilder.setNodeID ("duke").setVersion (1)/*.setTimestamp (1l)*/)
+      .addEnties (Version.ClockEntry.newBuilder.setNodeID ("duke2").setVersion (2)/*.setTimestamp (1l)*/).build
     val mergedClock: Version.VectorClock = Version.VectorClock.newBuilder ().
       setTimestamp (System.currentTimeMillis ()).
-      addEnties (Version.ClockEntry.newBuilder ().setNodeID ("duke").setVersion (2).setTimestamp (System.currentTimeMillis ())).
-      addEnties (Version.ClockEntry.newBuilder ().setNodeID ("duke2").setVersion (2).setTimestamp (System.currentTimeMillis ())).
+      addEnties (Version.ClockEntry.newBuilder ().setNodeID ("duke").setVersion (2)/*.setTimestamp (System.currentTimeMillis ())*/).
+      addEnties (Version.ClockEntry.newBuilder ().setNodeID ("duke2").setVersion (2)/*.setTimestamp (System.currentTimeMillis ())*/).
       build ()
 
     //assertTrue(VersionUtils.compare(local, remote).equals(Occured.BEFORE));
@@ -296,8 +296,8 @@ class DataManagerForGroupLocalMergeTest extends AssertionsForJUnit {
         mergedClock.getEntiesList
           .find (sameclockEntry => clockEntry.getNodeID.equals (sameclockEntry.getNodeID)
           && clockEntry.getVersion.equals (sameclockEntry.getVersion)
-           && (clockEntry.getTimestamp >= sameclockEntry.getTimestamp && clockEntry.getNodeID.equals ("duke")
-          || clockEntry.getTimestamp >= sameclockEntry.getTimestamp && clockEntry.getNodeID.equals ("duke2"))) match {
+           && (/*clockEntry.getTimestamp >= sameclockEntry.getTimestamp &&*/ clockEntry.getNodeID.equals ("duke")
+          || /*clockEntry.getTimestamp >= sameclockEntry.getTimestamp &&*/ clockEntry.getNodeID.equals ("duke2"))) match {
           case Some (ce) => // NO OP
           case None => fail ()
         }
