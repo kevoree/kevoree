@@ -10,7 +10,7 @@
     <version>1.2.0-SNAPSHOT</version>
 
     <properties>
-        <emf.version>2.6.0</emf.version>
+        <emf.version>2.7.0</emf.version>
         <scala.version>2.9.0-1</scala.version>
         <bundle.vendor>IRISA/INRIA</bundle.vendor>
     </properties>

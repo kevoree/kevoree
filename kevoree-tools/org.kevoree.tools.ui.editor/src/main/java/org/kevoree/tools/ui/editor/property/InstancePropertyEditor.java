@@ -17,17 +17,20 @@
  */
 package org.kevoree.tools.ui.editor.property;
 
-import java.awt.*;
-import javax.swing.*;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
-import javax.swing.text.BadLocationException;
-
+import com.explodingpixels.macwidgets.HudWidgetFactory;
 import com.explodingpixels.macwidgets.plaf.HudLabelUI;
 import com.explodingpixels.macwidgets.plaf.HudTextFieldUI;
 import org.kevoree.DictionaryValue;
 import org.kevoree.KevoreeFactory;
 import org.kevoree.tools.ui.editor.KevoreeUIKernel;
+
+import javax.swing.*;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
+import javax.swing.text.BadLocationException;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 /**
  * @author ffouquet
@@ -47,43 +50,60 @@ public class InstancePropertyEditor extends NamedElementPropertyEditor {
                 //l.setOpaque(false);
                 //l.setForeground(Color.WHITE);
                 p.add(l);
-                JTextField textField = new JTextField(10);
-                textField.setUI(new HudTextFieldUI());
 
-                textField.getDocument().addDocumentListener(new DocumentListener() {
+                if (att.getDatatype() != null) {
+                    if (att.getDatatype().startsWith("enum=")) {
+                        String values = att.getDatatype().replaceFirst("enum=", "");
+                        final JComboBox comboBox = HudWidgetFactory.createHudComboBox(new DefaultComboBoxModel(values.split(",")));
+                        l.setLabelFor(comboBox);
+                        p.add(comboBox);
+                        comboBox.setSelectedItem(getValue(elem, att));
+                        comboBox.addActionListener(new ActionListener() {
+                            @Override
+                            public void actionPerformed(ActionEvent actionEvent) {
+                                setValue(comboBox.getSelectedItem().toString(), elem, att);
+                            }
+                        });
 
-                    @Override
-                    public void insertUpdate(DocumentEvent documentEvent) {
-                        try {
-                            setValue(documentEvent.getDocument().getText(0, documentEvent.getDocument().getLength()), elem, att);
-                        } catch (BadLocationException e) {
-                            e.printStackTrace();
-                        }
+
                     }
-
-                    @Override
-                    public void removeUpdate(DocumentEvent documentEvent) {
-                        try {
-                            setValue(documentEvent.getDocument().getText(0, documentEvent.getDocument().getLength()), elem, att);
-                        } catch (BadLocationException e) {
-                            e.printStackTrace();
+                } else {
+                    JTextField textField = new JTextField(10);
+                    textField.setUI(new HudTextFieldUI());
+                    textField.getDocument().addDocumentListener(new DocumentListener() {
+                        @Override
+                        public void insertUpdate(DocumentEvent documentEvent) {
+                            try {
+                                setValue(documentEvent.getDocument().getText(0, documentEvent.getDocument().getLength()), elem, att);
+                            } catch (BadLocationException e) {
+                                e.printStackTrace();
+                            }
                         }
-                    }
 
-                    @Override
-                    public void changedUpdate(DocumentEvent documentEvent) {
-                        try {
-                            setValue(documentEvent.getDocument().getText(0, documentEvent.getDocument().getLength()), elem, att);
-                        } catch (BadLocationException e) {
-                            e.printStackTrace();
+                        @Override
+                        public void removeUpdate(DocumentEvent documentEvent) {
+                            try {
+                                setValue(documentEvent.getDocument().getText(0, documentEvent.getDocument().getLength()), elem, att);
+                            } catch (BadLocationException e) {
+                                e.printStackTrace();
+                            }
                         }
-                    }
-                });
 
-                //textField.setOpaque(false);
-                l.setLabelFor(textField);
-                p.add(textField);
-                textField.setText(getValue(elem, att));
+                        @Override
+                        public void changedUpdate(DocumentEvent documentEvent) {
+                            try {
+                                setValue(documentEvent.getDocument().getText(0, documentEvent.getDocument().getLength()), elem, att);
+                            } catch (BadLocationException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    });
+                    //textField.setOpaque(false);
+                    l.setLabelFor(textField);
+                    p.add(textField);
+                    textField.setText(getValue(elem, att));
+                }
+
 
             }
 
