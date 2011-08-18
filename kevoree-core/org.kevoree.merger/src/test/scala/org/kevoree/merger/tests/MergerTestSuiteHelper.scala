@@ -33,7 +33,7 @@ trait MergerTestSuiteHelper extends JUnitSuite {
 
   /* UTILITY METHOD */
   def model(url:String):ContainerRoot={
-    var modelPath = this.getClass.getClassLoader.getResource(url).getPath
+    val modelPath = this.getClass.getClassLoader.getResource(url).getPath
     KevoreeXmiHelper.load(modelPath)
   }
 
