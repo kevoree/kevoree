@@ -23,11 +23,16 @@ import org.sonatype.aether.util.artifact.DefaultArtifact
 import org.apache.maven.repository.internal.MavenRepositorySystemSession
 import org.kevoree.{ContainerRoot, DeployUnit}
 import java.io.File
-import org.sonatype.aether.repository.{RepositoryPolicy, RemoteRepository, LocalRepository}
 import org.sonatype.aether.artifact.Artifact
 import org.kevoree.framework.KevoreePlatformHelper
 import scala.collection.JavaConversions._
-import org.sonatype.aether.connector.wagon.{WagonProvider, WagonRepositoryConnectorFactory}
+import org.sonatype.aether.connector.async.AsyncRepositoryConnectorFactory
+import org.sonatype.aether.spi.log.Logger
+import org.sonatype.aether.repository.{LocalRepositoryManager, RepositoryPolicy, RemoteRepository, LocalRepository}
+import org.sonatype.aether.spi.localrepo.LocalRepositoryManagerFactory
+import org.sonatype.aether.impl.internal.{EnhancedLocalRepositoryManagerFactory, EnhancedLocalRepositoryManager, Slf4jLogger}
+
+//import org.sonatype.aether.connector.wagon.WagonProvider
 
 /**
  * User: ffouquet
@@ -37,12 +42,17 @@ import org.sonatype.aether.connector.wagon.{WagonProvider, WagonRepositoryConnec
 
 object AetherUtil {
 
+
   val newRepositorySystem: RepositorySystem = {
     val locator = new DefaultServiceLocator()
+    locator.addService(classOf[Logger], classOf[AetherLogger])
+
+
+    locator.addService(classOf[LocalRepositoryManagerFactory], classOf[EnhancedLocalRepositoryManagerFactory])
     locator.addService(classOf[RepositoryConnectorFactory], classOf[FileRepositoryConnectorFactory])
-    //locator.addService(classOf[RepositoryConnectorFactory], classOf[AsyncRepositoryConnectorFactory])
-    locator.setServices(classOf[WagonProvider], new ManualWagonProvider())
-    locator.addService(classOf[RepositoryConnectorFactory], classOf[WagonRepositoryConnectorFactoryFork])
+    locator.addService(classOf[RepositoryConnectorFactory], classOf[AsyncRepositoryConnectorFactory])
+    //locator.setServices(classOf[WagonProvider], new ManualWagonProvider())
+    //locator.addService(classOf[RepositoryConnectorFactory], classOf[WagonRepositoryConnectorFactoryFork])
     locator.getService(classOf[RepositorySystem])
   }
 
@@ -53,26 +63,38 @@ object AetherUtil {
     if (du.getUrl != null && du.getUrl.contains("mvn:")) {
       artifact = new DefaultArtifact(du.getUrl.replaceAll("mvn:", "").replace("/", ":"))
     } else {
-      artifact = new DefaultArtifact(List(du.getGroupName, du.getUnitName, du.getVersion).mkString(":"))
+      artifact = new DefaultArtifact(List(du.getGroupName.trim(), du.getUnitName.trim(), du.getVersion.trim()).mkString(":"))
     }
+
+    println("artifact=" + artifact.toString + "-" + artifact.isSnapshot)
 
     val artifactRequest = new ArtifactRequest
     artifactRequest.setArtifact(artifact)
     val urls = buildPotentialMavenURL(du.eContainer().asInstanceOf[ContainerRoot])
 
     val repositories: java.util.List[RemoteRepository] = new java.util.ArrayList();
-    urls.foreach {
-      url =>
+    urls.foreach {url =>
+
         val repo = new RemoteRepository
-        repo.setId(url)
+
+        val purl = url.trim.replace(':','_').replace('/','_').replace('\\','_')
+
+        repo.setId(purl)
         repo.setUrl(url)
         repo.setContentType("default")
         val repositoryPolicy = new RepositoryPolicy()
         repositoryPolicy.setChecksumPolicy(RepositoryPolicy.CHECKSUM_POLICY_WARN)
         repositoryPolicy.setUpdatePolicy(RepositoryPolicy.UPDATE_POLICY_ALWAYS)
         repositoryPolicy.setEnabled(true)
+        val repositoryPolicyRelease = new RepositoryPolicy()
+        repositoryPolicyRelease.setChecksumPolicy(RepositoryPolicy.CHECKSUM_POLICY_WARN)
+        repositoryPolicyRelease.setUpdatePolicy(RepositoryPolicy.UPDATE_POLICY_DAILY)
+        repositoryPolicyRelease.setEnabled(true)
         repo.setPolicy(true, repositoryPolicy)
+        repo.setPolicy(false, repositoryPolicyRelease)
         repositories.add(repo)
+
+        println("use url => " + repo.toString)
     }
 
     artifactRequest.setRepositories(repositories)
@@ -99,12 +121,19 @@ object AetherUtil {
     var result: List[String] = List()
     //BUILD FROM ALL REPO
     root.getRepositories.foreach {
-      repo => result = result ++ List(repo.getUrl)
+      repo =>
+        val nurl = repo.getUrl
+        if (!result.exists(p => p == nurl)) {
+          result = result ++ List(nurl)
+        }
     }
     //BUILD FROM ALL NODE
     root.getNodes.foreach {
       node =>
-        result = result ++ List(buildURL(root, node.getName))
+        val nurl = buildURL(root, node.getName)
+        if (!result.exists(p => p == nurl)) {
+          result = result ++ List(nurl)
+        }
     }
     result
   }

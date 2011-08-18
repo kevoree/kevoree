@@ -122,6 +122,7 @@
                         <option>-keep class scala.util.control.** { *; }</option>
                         <option>-keep class scala.util.parsing.** { *; }</option>
                         <option>-keep class org.kevoree.** { *; }</option>
+                        <option>-keep class org.apache.commons.** { *; }</option>
                         <option>-keep class org.slf4j.** { *; }</option>
 
                         <option>-keepattributes *Annotation*</option>
