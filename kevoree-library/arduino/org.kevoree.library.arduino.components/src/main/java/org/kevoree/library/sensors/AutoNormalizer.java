@@ -13,7 +13,7 @@ import org.kevoree.framework.AbstractComponentType;
         @RequiredPort(name = "norm", type = PortType.MESSAGE)
 })
 @DictionaryType({
-        @DictionaryAttribute(name = "inverted", defaultValue = "0", optional = true)
+        @DictionaryAttribute(name = "inverted", defaultValue = "0", optional = true,vals={"0","1"})
 })
 public class AutoNormalizer extends AbstractComponentType {
 

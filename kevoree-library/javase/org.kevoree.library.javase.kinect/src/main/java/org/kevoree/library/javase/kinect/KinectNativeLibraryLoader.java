@@ -60,7 +60,7 @@ public class KinectNativeLibraryLoader {
 				return new String[]{""};
 			}
 		} else if (isMac()) {
-			return new String[]{"libfreenect.dylib","libfreenect_sync.dylib"};
+			return new String[]{"libfreenect.dylib","libfreenect_sync.dylib","libusb.dylib"};
 		} else if (isWindows()) {
 			if (!is64()) {
 				return new String[]{""};

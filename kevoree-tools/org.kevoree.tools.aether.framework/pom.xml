@@ -119,7 +119,6 @@
                             org.jboss.netty.*,
                             org.codehaus.plexus.interpolation.*,
                             org.codehaus.plexus.util.*,
-                            org.jsoup.*,
                             org.apache.maven.wagon.*
                         </Export-Package>
                     </instructions>

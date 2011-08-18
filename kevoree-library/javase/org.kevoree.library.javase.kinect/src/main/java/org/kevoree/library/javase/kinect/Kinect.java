@@ -24,7 +24,7 @@ import java.nio.ByteBuffer;
 		//@ProvidedPort(name = "led", type = PortType.MESSAGE, filter = {"java.lang.Integer", "java.lang.String"}) TODO
 })
 @DictionaryType({
-		@DictionaryAttribute(name = "depth", defaultValue = "false", optional = true)
+		@DictionaryAttribute(name = "depth", defaultValue = "false", optional = true,vals={"false","true"})
 })
 @Library(name = "JavaSE")
 @ComponentType
