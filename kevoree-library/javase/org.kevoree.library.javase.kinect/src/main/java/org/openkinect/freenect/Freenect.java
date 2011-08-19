@@ -21,22 +21,22 @@ public class Freenect implements Library {
 	}
 
 	// constants from libfreenect.h
-	static final int FREENECT_FRAME_W = 640;
-	static final int FREENECT_FRAME_H = 480;
-	static final int FREENECT_FRAME_PIX = (FREENECT_FRAME_H * FREENECT_FRAME_W);
-	static final int FREENECT_IR_FRAME_W = 640;
-	static final int FREENECT_IR_FRAME_H = 488;
-	static final int FREENECT_IR_FRAME_PIX = (FREENECT_IR_FRAME_H * FREENECT_IR_FRAME_W);
-	static final int FREENECT_VIDEO_RGB_SIZE = (FREENECT_FRAME_PIX * 3);
-	static final int FREENECT_VIDEO_BAYER_SIZE = (FREENECT_FRAME_PIX);
-	static final int FREENECT_VIDEO_YUV_SIZE = (FREENECT_FRAME_PIX * 2);
-	static final int FREENECT_VIDEO_IR_8BIT_SIZE = (FREENECT_IR_FRAME_PIX);
-	static final int FREENECT_VIDEO_IR_10BIT_SIZE = (FREENECT_IR_FRAME_PIX * 2);
-	static final int FREENECT_VIDEO_IR_10BIT_PACKED_SIZE = 390400;
-	static final int FREENECT_DEPTH_11BIT_SIZE = (FREENECT_FRAME_PIX * 2);
-	static final int FREENECT_DEPTH_10BIT_SIZE = FREENECT_DEPTH_11BIT_SIZE;
-	static final int FREENECT_DEPTH_11BIT_PACKED_SIZE = 422400;
-	static final int FREENECT_DEPTH_10BIT_PACKED_SIZE = 384000;
+	public static final int FREENECT_FRAME_W = 640;
+	public static final int FREENECT_FRAME_H = 480;
+	public static final int FREENECT_FRAME_PIX = (FREENECT_FRAME_H * FREENECT_FRAME_W);
+	public static final int FREENECT_IR_FRAME_W = 640;
+	public static final int FREENECT_IR_FRAME_H = 488;
+	public static final int FREENECT_IR_FRAME_PIX = (FREENECT_IR_FRAME_H * FREENECT_IR_FRAME_W);
+	public static final int FREENECT_VIDEO_RGB_SIZE = (FREENECT_FRAME_PIX * 3);
+	public static final int FREENECT_VIDEO_BAYER_SIZE = (FREENECT_FRAME_PIX);
+	public static final int FREENECT_VIDEO_YUV_SIZE = (FREENECT_FRAME_PIX * 2);
+	public static final int FREENECT_VIDEO_IR_8BIT_SIZE = (FREENECT_IR_FRAME_PIX);
+	public static final int FREENECT_VIDEO_IR_10BIT_SIZE = (FREENECT_IR_FRAME_PIX * 2);
+	public static final int FREENECT_VIDEO_IR_10BIT_PACKED_SIZE = 390400;
+	public static final int FREENECT_DEPTH_11BIT_SIZE = (FREENECT_FRAME_PIX * 2);
+	public static final int FREENECT_DEPTH_10BIT_SIZE = FREENECT_DEPTH_11BIT_SIZE;
+	public static final int FREENECT_DEPTH_11BIT_PACKED_SIZE = 422400;
+	public static final int FREENECT_DEPTH_10BIT_PACKED_SIZE = 384000;
 
 	protected Freenect () {
 	}
@@ -323,13 +323,9 @@ public class Freenect implements Library {
 		void callback (Pointer dev, Pointer depth, int timestamp);
 	}
 
-	;
-
 	private interface NativeVideoCallback extends Callback {
 		void callback (Pointer dev, Pointer frame, int timestamp);
 	}
-
-	;
 
 	private static native int freenect_init (PointerByReference ctx, Pointer usb_ctx);
 
