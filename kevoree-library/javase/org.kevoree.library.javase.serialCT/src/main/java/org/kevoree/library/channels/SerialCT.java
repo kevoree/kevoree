@@ -1,28 +1,71 @@
 package org.kevoree.library.channels;
 
+import org.kevoree.ContainerNode;
+import org.kevoree.DictionaryValue;
 import org.kevoree.annotation.*;
+import org.kevoree.api.service.core.handler.KevoreeModelHandlerService;
 import org.kevoree.extra.osgi.rxtx.KevoreeSharedCom;
 import org.kevoree.framework.AbstractChannelFragment;
 import org.kevoree.framework.ChannelFragmentSender;
 import org.kevoree.framework.KevoreeChannelFragment;
 import org.kevoree.framework.message.Message;
+import org.osgi.framework.Bundle;
+import org.osgi.framework.ServiceReference;
+
+import java.util.HashMap;
 
 
 /**
  * @author ffouquet
  */
 @Library(name = "KevoreeArduinoJava")
-@DictionaryType({
-        @DictionaryAttribute(name = "PORT", optional = false, defaultValue = "/dev/tty0")
-})
 @ChannelTypeFragment
 public class SerialCT extends AbstractChannelFragment {
 
     KContentListener cl = new KContentListener(this);
+    protected ServiceReference sr;
+    protected KevoreeModelHandlerService modelHandlerService = null;
+
+    protected HashMap<String, String> nodePortCache = new HashMap<String, String>();
+
+    protected String getPortFromNode(String remoteNodeName) {
+        System.out.println("GetPort=>"+remoteNodeName);
+        if (!nodePortCache.containsKey(remoteNodeName)) {
+            System.out.println("Look for port ");
+            for (ContainerNode node : modelHandlerService.getLastModel().getNodes()) {
+                System.out.println("Hi Node->"+node.getName()+"->"+remoteNodeName);
+                if (node.getName().equals(remoteNodeName)) {
+                    System.out.println("Ok node found");
+                    for (DictionaryValue dv : node.getDictionary().getValues()) {
+                        System.out.println(dv.getAttribute().getName()+"=>boardPortName");
+                        if (dv.getAttribute().getName().equals("boardPortName")) {
+                            System.out.println(dv.getValue());
+                            nodePortCache.put(remoteNodeName, dv.getValue());
+                        }
+                    }
+                }
+            }
+        }
+        return nodePortCache.get(remoteNodeName);
+    }
 
     @Start
     public void startRxTxChannel() {
-        KevoreeSharedCom.addObserver((String) this.getDictionary().get("PORT"), cl);
+        Bundle bundle = (Bundle) this.getDictionary().get("osgi.bundle");
+        sr = bundle.getBundleContext().getServiceReference(KevoreeModelHandlerService.class.getName());
+        modelHandlerService = (KevoreeModelHandlerService) bundle.getBundleContext().getService(sr);
+        new Thread() {
+            @Override
+            public void run() {
+                for (KevoreeChannelFragment cf : getOtherFragments()) {
+                    if (getPortFromNode(cf.getNodeName()) != null) {
+                        KevoreeSharedCom.addObserver(getPortFromNode(cf.getNodeName()), cl);
+                    } else {
+                        System.out.println("Com Port Not Found ");
+                    }
+                }
+            }
+        }.start();
     }
 
     @Update
@@ -33,13 +76,14 @@ public class SerialCT extends AbstractChannelFragment {
 
     @Stop
     public void stopRxTxChannel() {
-        KevoreeSharedCom.removeObserver((String) this.getDictionary().get("PORT"), cl);
+        for (String port : nodePortCache.values()) {
+            KevoreeSharedCom.removeObserver(port, cl);
+        }
+        nodePortCache.clear();
     }
 
     @Override
     public Object dispatch(Message msg) {
-
-        System.out.println("Hu");
 
         for (org.kevoree.framework.KevoreePort p : getBindedPorts()) {
             forward(p, msg);
@@ -58,8 +102,13 @@ public class SerialCT extends AbstractChannelFragment {
 
             @Override
             public Object sendMessageToRemote(Message message) {
-                String messageTosSend = getName() + ":" + getNodeName() + "[" + message.getContent().toString() + "]";
-                KevoreeSharedCom.send((String) getDictionary().get("PORT"),messageTosSend);
+                String messageTosSend = "#"+getName() + /*":" + getNodeName() +*/ "[" + message.getContent().toString() + "]";
+
+                System.out.println("Send Message");
+                System.out.println(getPortFromNode(remoteNodeName));
+                System.out.println(messageTosSend);
+
+                KevoreeSharedCom.send(getPortFromNode(remoteNodeName), messageTosSend);
                 return null;
             }
         };
