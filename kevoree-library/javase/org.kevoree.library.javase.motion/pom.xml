@@ -21,13 +21,38 @@
             <version>2.3.0</version>
             <scope>provided</scope>
         </dependency>
-        <dependency>
+        <!--<dependency>
             <groupId>org.kevoree.library.javase</groupId>
             <artifactId>org.kevoree.library.javase.kinect</artifactId>
             <version>${pom.version}</version>
             <scope>provided</scope>
-        </dependency>
+        </dependency>-->
     </dependencies>
+
+     <build>
+        <plugins>
+           <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <version>1.4.3</version>
+                <extensions>true</extensions>
+                <configuration>
+                    <instructions>
+                        <Bundle-SymbolicName>${pom.artifactId}</Bundle-SymbolicName>
+                        <Bundle-Version>${pom.version}</Bundle-Version>
+                         <!--<Dynamic-Import>
+                            com.googlecode.javacv.cpp.linux-x86,
+                            com.googlecode.javacv.cpp.linux-x86_64,
+                            com.googlecode.javacv.cpp.macosx-x86_64,
+                            com.googlecode.javacv.cpp.windows-x86_64,
+                        </Dynamic-Import>-->
+                        <Export-Package>org.kevoree.library.javase.motion.*</Export-Package>
+                        <Import-Package>!org.kevoree.library.javase.motion.*,*</Import-Package>
+                    </instructions>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 
 
 </project>

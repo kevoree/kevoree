@@ -26,27 +26,17 @@
             <version>3.2.3</version>
             <scope>provided</scope>
         </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.8.2</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.hamcrest</groupId>
+            <artifactId>hamcrest-library</artifactId>
+            <version>1.2</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
-
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>native-maven-plugin</artifactId>
-                <extensions>true</extensions>
-                <configuration>
-                    <sources>
-                        <source>
-                            <!-- relative to your project directory -->
-                            <directory>${project.basedir}/src/main/native</directory>
-                            <fileNames>
-                                <fileName>RawToInt.h</fileName>
-                                <fileName>RawToInt.cpp</fileName>
-                            </fileNames>
-                        </source>
-                    </sources>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
 </project>
