@@ -41,7 +41,7 @@ public class KinectNativeLibraryLoader {
 				return "nativelib/Linux/i686-unknown-linux-gnu";
 			}
 		} else if (isMac()) {
-			return "macos";
+			return "MacOs";
 		} else if (isWindows()) {
 			if (!is64()) {
 				return "windows/x86";
@@ -60,7 +60,7 @@ public class KinectNativeLibraryLoader {
 				return new String[]{""};
 			}
 		} else if (isMac()) {
-			return new String[]{""};
+			return new String[]{"libfreenect.dylib","libfreenect_sync.dylib","libusb.dylib"};
 		} else if (isWindows()) {
 			if (!is64()) {
 				return new String[]{""};

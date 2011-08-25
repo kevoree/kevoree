@@ -13,7 +13,7 @@ import org.kevoree.framework.AbstractComponentType;
         @RequiredPort(name = "norm", type = PortType.MESSAGE)
 })
 @DictionaryType({
-        @DictionaryAttribute(name = "inverted", defaultValue = "0", optional = true)
+        @DictionaryAttribute(name = "inverted", defaultValue = "0", optional = true,vals={"0","1"})
 })
 public class AutoNormalizer extends AbstractComponentType {
 
@@ -23,58 +23,36 @@ public class AutoNormalizer extends AbstractComponentType {
 
     @Stop
     public void stop() {
-
     }
 
     @Generate("classheader")
     public void generateHeader(StringBuffer context) {
-        context.append("int minValue"+this.getName());
-        context.append("= 1024;\n");
-        context.append("int ");
-        context.append("maxValue" + this.getName());
-        context.append("= 0;\n");
-
-        context.append("char * value");
+        context.append("char buf[10];\n");
+        context.append("int minValue;\n");
+        context.append("int maxValue;\n");
     }
 
+    @Generate("classinit")
+    public void generateClassInit(StringBuffer context) {
+        context.append("minValue = 1024;\n");
+        context.append("maxValue = 0;\n");
+    }
 
     @Port(name = "input")
     public void triggerPort(Object o) {
         StringBuffer context = (StringBuffer) o;
-
-        context.append("" +
-                "" +
-                "  char msg[param.length()+10];\n" +
-                "  param.toCharArray(msg, param.length()+1);\n" +
-                "  float value = atof(msg);\n");
-
-        context.append("if(value < " + "minValue" + this.getName() + "){ " + "minValue" + this.getName() + " = value; }\n");
-        context.append("if(value > " + "maxValue" + this.getName() + "){ " + "maxValue" + this.getName() + " = value; }\n");
-            context.append("float result=");
-            context.append(" ((value-" + "minValue" + this.getName() + ")");
-            context.append(" / (" + "maxValue" + this.getName() + "-" + "minValue" + this.getName() + "))*100");
-            context.append(";\n");
-
-        if (this.getDictionary().get("inverted").equals("1")) {
-            context.append(" result = abs(100 - result  );\n");
-        }
-
-
-        context.append("kmessage * msg = (kmessage*) malloc(sizeof(kmessage));");
-        context.append("if (msg){memset(msg, 0, sizeof(kmessage));}");
-        context.append("msg->value = \"release\";");
-        context.append("msg->metric = \"percent\";");
-        context.append("release_rport(msg);");
-        context.append("free(msg);");
-
-
-
-
-        //GENERATE METHOD CALL
-        //context.append(ArduinoMethodHelper.generateMethodNameFromComponentPort(this.getName(), "norm", PortUsage.required()));
-        //GENERATE PARAMETER
-        //context.append("(String(int(result)));\n");
-
+        context.append("float value = atof(msg->value);\n");
+        context.append("if(value < minValue){ minValue = value; }\n");
+        context.append("if(value > maxValue){ maxValue = value; }\n");
+        context.append("float result=((value-minValue)/ (maxValue-minValue))*100;\n");
+        context.append("if(atoi(inverted) == 0){result = abs(100 - result  );}\n");
+        context.append("kmessage * smsg = (kmessage*) malloc(sizeof(kmessage));");
+        context.append("if (smsg){memset(msg, 0, sizeof(kmessage));}");
+        context.append("sprintf(buf,\"%d\",int(result));\n");
+        context.append("smsg->value = buf;\n");
+        context.append("smsg->metric = \"percent\";");
+        context.append("norm_rport(smsg);");
+        context.append("free(smsg);");
     }
 
 }

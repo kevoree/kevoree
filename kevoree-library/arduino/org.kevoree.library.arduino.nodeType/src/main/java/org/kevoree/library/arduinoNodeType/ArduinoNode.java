@@ -36,10 +36,10 @@ import org.kevoreeAdaptation.TypeAdaptation;
 @NodeType
 @Library(name = "KevoreeNodeType")
 @DictionaryType({
-        @DictionaryAttribute(name = "boardTypeName", defaultValue = "uno", optional = true),
+        @DictionaryAttribute(name = "boardTypeName", defaultValue = "uno", optional = true , vals = {"uno","atmega328","mega2560"}),
         @DictionaryAttribute(name = "boardPortName"),
-        @DictionaryAttribute(name = "incremental", defaultValue = "true", optional = true),
-        @DictionaryAttribute(name = "pmem", defaultValue = "eeprom", optional = true),
+        @DictionaryAttribute(name = "incremental", defaultValue = "true", optional = true,vals={"true","false"}),
+        @DictionaryAttribute(name = "pmem", defaultValue = "eeprom", optional = true, vals={"eeprom","sd"}),
         @DictionaryAttribute(name = "psize", defaultValue = "MAX", optional = true)
 })
 public class ArduinoNode extends AbstractNodeType {

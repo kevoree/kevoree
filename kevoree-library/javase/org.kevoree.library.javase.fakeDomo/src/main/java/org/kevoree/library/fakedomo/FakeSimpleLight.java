@@ -34,7 +34,7 @@ import org.kevoree.framework.MessagePort;
 })
 @DictionaryType({
     @DictionaryAttribute(name = "param1"),
-    @DictionaryAttribute(name = "param2", defaultValue = "defVal", optional = true)
+    @DictionaryAttribute(name = "param2", defaultValue = "defVal", optional = true,vals={"defVal","defVal2"})
 })
    /*
 @Requires({

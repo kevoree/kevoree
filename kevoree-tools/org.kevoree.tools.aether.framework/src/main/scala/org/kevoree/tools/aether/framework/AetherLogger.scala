@@ -11,25 +11,36 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.kevoree.tools.aether.framework
 
-package org.kevoree.annotation;
-
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
+import org.sonatype.aether.spi.log.Logger
 
 /**
- *
- * @author ffouquet
+ * User: ffouquet
+ * Date: 18/08/11
+ * Time: 15:15
  */
-@Retention(RetentionPolicy.CLASS)
-public @interface DictionaryAttribute {
 
-    boolean optional() default false;
+class AetherLogger extends Logger {
+  def debug(p1: String) {
+    println(p1)
+  }
 
-    String name();
+  def debug(p1: String, p2: Throwable) {
+    println(p1)
+    p2.printStackTrace()
+  }
 
-    String defaultValue() default "defaultKevoreeNonSetValue";
+  def isDebugEnabled = true
 
-    String[] vals() default {};
+  def isWarnEnabled = true
 
+  def warn(p1: String) {
+    println(p1)
+  }
+
+  def warn(p1: String, p2: Throwable) {
+    println(p1)
+    p2.printStackTrace()
+  }
 }

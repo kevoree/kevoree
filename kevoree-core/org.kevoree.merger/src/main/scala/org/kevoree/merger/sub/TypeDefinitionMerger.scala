@@ -27,7 +27,7 @@ trait TypeDefinitionMerger extends Merger with DictionaryMerger with PortTypeMer
 
   //TYPE DEFINITION MERGER ENTRYPOINT
   def mergeTypeDefinition(actualModel: ContainerRoot, modelToMerge: ContainerRoot): Unit = {
-    val cts: List[TypeDefinition] = List() ++ modelToMerge.getTypeDefinitions.toList
+    val cts: List[TypeDefinition] = List[TypeDefinition]() ++ modelToMerge.getTypeDefinitions.toList
     cts.foreach {
       toMergeTypeDef =>
         actualModel.getTypeDefinitions.find({
@@ -74,13 +74,11 @@ trait TypeDefinitionMerger extends Merger with DictionaryMerger with PortTypeMer
   private def mergeConsistency(root: ContainerRoot, actuelTypeDefinition: TypeDefinition, newTypeDefinition: TypeDefinition) = {
     //UPDATE & MERGE DEPLOYS UNIT
 
-    //println("merge consistency")
-
-    val allDeployUnits = List() ++ newTypeDefinition.getDeployUnits.toList ++ actuelTypeDefinition.getDeployUnits.toList //CLONE LIS
+    val allDeployUnits = List() ++ newTypeDefinition.getDeployUnits.toList ++ actuelTypeDefinition.getDeployUnits.toList //CLONE LIST
     actuelTypeDefinition.getDeployUnits.clear
     allDeployUnits.foreach {
-      ndu =>
-        val merged = mergeDeployUnit(root, ndu)
+      ldu =>
+        val merged = mergeDeployUnit(root, ldu, newTypeDefinition.getDeployUnits.contains(ldu))
         if (!actuelTypeDefinition.getDeployUnits.contains(merged)) {
           actuelTypeDefinition.getDeployUnits.add(merged)
         }
@@ -119,7 +117,7 @@ trait TypeDefinitionMerger extends Merger with DictionaryMerger with PortTypeMer
     newTypeDefinition.getDeployUnits.clear
     allDeployUnits.foreach {
       ndu =>
-        var merged = mergeDeployUnit(root, ndu)
+        val merged = mergeDeployUnit(root, ndu)
         if (!newTypeDefinition.getDeployUnits.contains(merged)) {
           newTypeDefinition.getDeployUnits.add(merged)
         }
@@ -200,7 +198,7 @@ trait TypeDefinitionMerger extends Merger with DictionaryMerger with PortTypeMer
   /* MERGE A SIMPLE NEW TYPE DEFINITION */
   private def mergeNewTypeDefinition(actualModel: ContainerRoot, newTypeDefinition: TypeDefinition) = {
     //MERGE TYPE DEPLOY UNITS
-    var newTypeDefinitionDeployUnits = List() ++ newTypeDefinition.getDeployUnits.toList //CLONE LIST
+    val newTypeDefinitionDeployUnits = List() ++ newTypeDefinition.getDeployUnits.toList //CLONE LIST
     newTypeDefinition.getDeployUnits.clear
     newTypeDefinitionDeployUnits.foreach {
       ndu =>
