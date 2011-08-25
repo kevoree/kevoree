@@ -50,7 +50,7 @@
                                                                                            
                save2MemoryNoInc(eepromPreviousIndex, sepAdminChar); //CLOSE TRANSACTION        
     //COMPRESS EEPROM IF NECESSARY , DON'T GO TO LIMIT
-               if(eepromIndex > (EEPROM_MAX_SIZE-100)){         
+               if(eepromIndex > (EEPROM_MAX_SIZE-100)){       //TODO REMOVE MAGIC NUMBER !!!
                  compressEEPROM();             
                }                               
                        kprint("ms");
@@ -80,12 +80,53 @@
                flushAdminBuffer();                                                          
                Serial.flush();                                                              
              }                                                                              
-           }                                                                                
+           } else {
+               processUserMessage();
+           }
          }                                                                                  
      void flushAdminBuffer(){                                           
        for(int i=0;i<serialIndex;i++){                                  
           inBytes[serialIndex];                                         
        }                                                                
        serialIndex = 0;                                                 
-     }                                                                  
-     //END SECTION ADMIN DETECTION 1 SPLIT                              
+     }
+
+    /* CHECK IF NEW MESSAGE ARRIVE */
+    void initUserMessage(){
+         messageInProgress = false;
+         instanceNameRead = false;
+         currentMsgIndex = (currentMsgIndex + 1)%MSGBUFFERSIZE;
+         currentMsgBufIndex = -1;
+    }
+    void processUserMessage(){
+         if(Serial.available() == 0){return;} /* IGNORE \n and check for new message */
+            if(Serial.peek() == '\n'){
+                Serial.read();
+                return;
+         }
+         if(Serial.peek() == '#'){initUserMessage();messageInProgress = true;Serial.read();} //ALWAYS CHECK FOR NEW MESSAGE - TODO TRONCATED DETECTION
+         else {
+           currentMsgBufIndex = (currentMsgBufIndex + 1)%MSGMAXSIZE;
+           msgBytes[currentMsgIndex][currentMsgBufIndex] = Serial.read();
+           if(messageInProgress && !instanceNameRead){lookForInstanceName();}
+           if(messageInProgress && instanceNameRead){continueUserMessage();}
+         }
+
+    }
+    void lookForInstanceName(){
+       if(msgBytes[currentMsgIndex][currentMsgBufIndex] == '['){
+           msgBytes[currentMsgIndex][currentMsgBufIndex] = '\0';
+           currentInstanceID = getIndexFromName (&msgBytes[currentMsgIndex][0]);
+           currentMsgBufIndex = -1;
+           instanceNameRead = true;
+       }
+    }
+    void continueUserMessage(){
+       if(msgBytes[currentMsgIndex][currentMsgBufIndex] == ']'){
+          msgBytes[currentMsgIndex][currentMsgBufIndex] = '\0';
+          if(currentInstanceID != -1){
+              pushToChannel(currentInstanceID,&msgBytes[currentMsgIndex][0]);
+          }
+          initUserMessage();
+       }
+    }

@@ -74,6 +74,7 @@ class KevoreeCGenerator
     generatePMemoryPrimitives(pmem);
     generateBindMethod(ktypes)
     generateUnBindMethod(ktypes)
+    generatePushToChannelMethod(ktypes)
 
     generatePeriodicExecutionMethod(ktypes)
     generatePortQueuesSizeMethod(ktypes)

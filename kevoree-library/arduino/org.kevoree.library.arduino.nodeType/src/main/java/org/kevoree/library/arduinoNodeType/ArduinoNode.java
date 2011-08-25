@@ -61,10 +61,10 @@ public class ArduinoNode extends AbstractNodeType {
     @Override
     public void push(final String targetNodeName, final ContainerRoot root, final BundleContext bundle) {
 
-        new Thread() {
+        //new Thread() {
 
-            @Override
-            public void run() {
+            //@Override
+            //public void run() {
                 progress = new ArduinoGuiProgressBar();
                 JFrame frame = new JFrame("Arduino model push");
                 frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -164,8 +164,8 @@ public class ArduinoNode extends AbstractNodeType {
                 frame.dispose();
 
 
-            }
-        }.start();
+          //  }
+        //}.start();
 
 
     }

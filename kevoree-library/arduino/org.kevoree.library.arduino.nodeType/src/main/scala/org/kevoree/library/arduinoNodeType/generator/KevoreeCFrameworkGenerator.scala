@@ -21,7 +21,7 @@ import org.kevoree.library.arduinoNodeType.ArduinoBoardType
 
 trait KevoreeCFrameworkGenerator extends KevoreeCAbstractGenerator {
 
-  def generateMaxSize(boardType: ArduinoBoardType) : String = {
+  def generateMaxSize(boardType: ArduinoBoardType): String = {
     boardType match {
       case ArduinoBoardType.atmega328 => {
         "1024"
@@ -656,6 +656,33 @@ trait KevoreeCFrameworkGenerator extends KevoreeCAbstractGenerator {
     }
     context b "}" //end break
     context b "}" //END FONCTION
+  }
+
+
+  def generatePushToChannelMethod(types: List[TypeDefinition]): Unit = {
+    context b "void pushToChannel(int indexChannel,char * payload){"
+    context b "QueueList<kmessage> * providedPort = 0;"
+    context b "int channelTypeCode = instances[indexChannel]->subTypeCode;"
+    //FOR ALL Channel LOOK FOR TYPE
+    context b " switch(channelTypeCode){"
+    types.foreach {
+      ktype =>
+        if (ktype.isInstanceOf[ChannelType]) {
+          var kcomponentType = ktype.asInstanceOf[ChannelType]
+          context b "case " + typeCodeMap.get(ktype.getName).get + ":{"
+          context b ktype.getName + " * instance = (" + ktype.getName + "*) instances[indexChannel];"
+          context b "kmessage * smsg = (kmessage*) malloc(sizeof(kmessage));"
+          context b "if (smsg){memset(smsg, 0, sizeof(kmessage));}"
+          context b "smsg->value = payload;"
+          context b "smsg->metric = \"r\";"
+          context b "instance->input->push(*smsg);"
+          context b "free(smsg);"
+          context b "break;}"
+        }
+    }
+    context b "}" //END SWITCH Channel TYPE
+
+    context b "}"
   }
 
 
