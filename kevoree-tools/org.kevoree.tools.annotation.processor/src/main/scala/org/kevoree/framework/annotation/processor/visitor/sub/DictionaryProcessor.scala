@@ -34,14 +34,14 @@ trait DictionaryProcessor {
 
         //CASE NO DICTIONARY
         if(typeDef.getDictionaryType == null){
-          var newdictionary = KevoreeFactory.eINSTANCE.createDictionaryType
+          val newdictionary = KevoreeFactory.eINSTANCE.createDictionaryType
           typeDef.setDictionaryType(newdictionary)
         }
 
         //CASE NO ATT ALREADY CREATED WITH NAME
-        var processDictionaryAtt = typeDef.getDictionaryType.getAttributes.find(eAtt=> eAtt.getName == dictionaryAtt.name ) match {
+        val processDictionaryAtt = typeDef.getDictionaryType.getAttributes.find(eAtt=> eAtt.getName == dictionaryAtt.name ) match {
           case None => {
-              var newAtt = KevoreeFactory.eINSTANCE.createDictionaryAttribute
+              val newAtt = KevoreeFactory.eINSTANCE.createDictionaryAttribute
               newAtt.setName(dictionaryAtt.name)
               typeDef.getDictionaryType.getAttributes.add(newAtt)
               newAtt
@@ -57,7 +57,7 @@ trait DictionaryProcessor {
         if(dictionaryAtt.defaultValue != "defaultKevoreeNonSetValue"){
           typeDef.getDictionaryType.getDefaultValues.find(defV => defV.getAttribute == processDictionaryAtt) match {
             case None => {
-                var newVal = KevoreeFactory.eINSTANCE.createDictionaryValue
+                val newVal = KevoreeFactory.eINSTANCE.createDictionaryValue
                 newVal.setAttribute(processDictionaryAtt)
                 newVal.setValue(dictionaryAtt.defaultValue)
                 typeDef.getDictionaryType.getDefaultValues.add(newVal)
@@ -65,6 +65,7 @@ trait DictionaryProcessor {
           case Some(edefV)=> edefV.setValue(dictionaryAtt.defaultValue.toString)
           }
         }
+        if(!dictionaryAtt.vals().isEmpty){processDictionaryAtt.setDatatype("enum="+dictionaryAtt.vals().mkString(","))}
         processDictionaryAtt
       }
     }

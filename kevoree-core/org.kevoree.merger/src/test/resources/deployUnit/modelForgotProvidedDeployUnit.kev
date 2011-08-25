@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kevoree:ContainerRoot xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:kevoree="http://kevoree/1.0">
+  <nodes name="duke" typeDefinition="//@typeDefinitions.2" metaData="x=382,y=205">
+    <components name="Kinect401" typeDefinition="//@typeDefinitions.0">
+      <provided portTypeRef="//@typeDefinitions.0/@provided.0"/>
+      <required portTypeRef="//@typeDefinitions.0/@required.0"/>
+    </components>
+  </nodes>
+  <typeDefinitions xsi:type="kevoree:ComponentType" name="Kinect" deployUnits="//@deployUnits.0" factoryBean="org.kevoree.library.javase.kinect.KinectFactory" bean="org.kevoree.library.javase.kinect.Kinect" startMethod="start" stopMethod="stop" updateMethod="update">
+    <dictionaryType>
+      <attributes name="depth" optional="true"/>
+      <defaultValues attribute="//@typeDefinitions.0/@dictionaryType/@attributes.0" value="false"/>
+    </dictionaryType>
+    <required name="image" ref="//@typeDefinitions.1" optional="true" noDependency="true"/>
+    <provided name="motor" ref="//@typeDefinitions.1">
+      <mappings beanMethodName="onReceiveImage" serviceMethodName="process"/>
+    </provided>
+  </typeDefinitions>
+  <typeDefinitions xsi:type="kevoree:MessagePortType" name="org.kevoree.framework.MessagePort" filters="//@dataTypes.0 //@dataTypes.1"/>
+  <typeDefinitions xsi:type="kevoree:NodeType" name="JavaSENode"/>
+  <typeDefinitions xsi:type="kevoree:ComponentType" name="VideoViewer" deployUnits="//@deployUnits.0" factoryBean="org.kevoree.library.javase.kinect.VideoViewerFactory" bean="org.kevoree.library.javase.kinect.VideoViewer" startMethod="start" stopMethod="stop" updateMethod="update">
+    <provided name="image" ref="//@typeDefinitions.1">
+      <mappings beanMethodName="onReceiveImage" serviceMethodName="process"/>
+    </provided>
+  </typeDefinitions>
+  <repositories units="//@deployUnits.0" url="http://maven2.kevoree.org/archiva/repository/snapshots/"/>
+  <repositories url="http://maven.kevoree.org/snapshots"/>
+  <repositories url="http://scala-tools.org/repo-releases"/>
+  <repositories url="http://maven2.kevoree.org/release"/>
+  <repositories url="http://maven2.kevoree.org/snapshots"/>
+  <repositories url="http://repo1.maven.org/maven2"/>
+  <dataTypes name="java.lang.Integer"/>
+  <dataTypes name="java.lang.String"/>
+  <libraries name="JavaSE" subTypes="//@typeDefinitions.0 //@typeDefinitions.3"/>
+  <deployUnits groupName="org.kevoree.library.javase" unitName="org.kevoree.library.javase.kinect" version="1.2.0-SNAPSHOT" hashcode="201108180807731" targetNodeType="//@typeDefinitions.2"/>
+</kevoree:ContainerRoot>
