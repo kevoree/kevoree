@@ -24,7 +24,7 @@ public class KevoreeMenuBar extends JMenuBar {
 
     public KevoreeMenuBar(KevoreeUIKernel kernel) {
 
-        JMenu file, model, kevs = null;
+        JMenu file, model, kevs,tools = null;
 
         file = new JMenu("File");
 
@@ -107,10 +107,17 @@ public class KevoreeMenuBar extends JMenuBar {
         openEditor.addActionListener(new CommandActionListener(cmdOpenKevsGUI));
         kevs.add(openEditor);
 
+        tools = new JMenu("Tools");
+        JMenuItem closeOsgi = new JMenuItem("Clean OSGi Cache");
+        KillOSGICommand closeOsgiCmd = new KillOSGICommand();
+        closeOsgi.addActionListener(new CommandActionListener(closeOsgiCmd));
+        tools.add(closeOsgi);
+
 
         this.add(file);
         this.add(model);
         this.add(kevs);
+        this.add(tools);
 
 
     }

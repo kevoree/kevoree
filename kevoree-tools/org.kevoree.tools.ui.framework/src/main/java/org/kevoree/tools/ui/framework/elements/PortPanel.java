@@ -36,7 +36,7 @@ import javax.swing.JPanel;
  */
 public class PortPanel extends JPanel implements ErrorHighlightableElement {
 
-	 private STATE currentState = STATE.NO_ERROR;
+	private STATE currentState = STATE.NO_ERROR;
 
     @Override
     public void setState(STATE state) {

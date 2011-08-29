@@ -17,9 +17,6 @@
 package org.kevoree.tools.ui.editor;
 
 import org.kevoree.*;
-
-import java.awt.Component;
-
 import org.kevoree.framework.aspects.PortAspect;
 import org.kevoree.tools.ui.editor.command.ContextualMenuCommand;
 import org.kevoree.tools.ui.editor.command.SelectBindingCommand;
@@ -28,6 +25,8 @@ import org.kevoree.tools.ui.editor.command.UnSelectPropertyEditor;
 import org.kevoree.tools.ui.editor.listener.*;
 import org.kevoree.tools.ui.framework.elements.*;
 import org.kevoree.tools.ui.framework.elements.PortPanel.PortType;
+
+import java.awt.*;
 
 /**
  * @author ffouquet
@@ -61,7 +60,19 @@ public class KevoreeUIFactory {
     }
 
     public ComponentTypePanel createComponentTypeUI(ComponentType ct) {
-        ComponentTypePanel ctui = new ComponentTypePanel(ct.getName());
+        ComponentTypePanel ctui = new ComponentTypePanel();
+        ctui.setTypeName(ct.getName());
+        ctui.setName(" ");
+
+        for(PortTypeRef p : ct.getProvided()){
+            PortTypePanel portPanel = kernel.getUifactory().createPortType(p, true);
+            ctui.addLeft(portPanel);
+        }
+        for(PortTypeRef p : ct.getRequired()){
+            PortTypePanel portPanel = kernel.getUifactory().createPortType(p, false);
+            ctui.addRight(portPanel);
+        }
+
         ComponentTypeDragSourceListener listener = new ComponentTypeDragSourceListener(ctui, kernel);
         mapping.bind(ctui, ct);
         return ctui;
@@ -187,6 +198,25 @@ public class KevoreeUIFactory {
         mapping.bind(pui, port);
         return pui;
     }
+
+    public PortTypePanel createPortType(PortTypeRef portTypeRef, Boolean providedPort) {
+        PortTypePanel pui = new PortTypePanel();
+        if (portTypeRef.getRef() instanceof org.kevoree.MessagePortType) {
+            pui.setNature(PortPanel.PortNature.MESSAGE);
+        }
+        if (portTypeRef.getRef() instanceof org.kevoree.ServicePortType) {
+            pui.setNature(PortPanel.PortNature.SERVICE);
+        }
+        if (providedPort) {
+            pui.setType(PortType.PROVIDED);
+        } else {
+            pui.setType(PortType.REQUIRED);
+        }
+        pui.setTitle(portTypeRef.getName());
+        mapping.bind(pui, portTypeRef);
+        return pui;
+    }
+
 
     /*
     public Binding createBinding(org.kevoree.Binding mb) {

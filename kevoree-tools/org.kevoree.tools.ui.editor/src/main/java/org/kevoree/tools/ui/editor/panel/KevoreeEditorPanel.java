@@ -16,27 +16,23 @@
  * Copyright  : IRISA / INRIA / Universite de Rennes 1 */
 package org.kevoree.tools.ui.editor.panel;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.GradientPaint;
-import java.awt.Point;
-import java.util.Arrays;
-import java.util.List;
-import javax.swing.*;
-
 import com.explodingpixels.macwidgets.IAppWidgetFactory;
-import org.jdesktop.swingx.JXMultiSplitPane;
+import com.explodingpixels.macwidgets.SourceListItem;
+import com.explodingpixels.macwidgets.SourceListSelectionListener;
 import org.jdesktop.swingx.JXPanel;
-import org.jdesktop.swingx.MultiSplitLayout;
 import org.jdesktop.swingx.painter.CompoundPainter;
 import org.jdesktop.swingx.painter.MattePainter;
 import org.kevoree.MBinding;
+import org.kevoree.tools.ui.editor.KevoreeTypeEditorPanel;
 import org.kevoree.tools.ui.editor.KevoreeUIKernel;
 import org.kevoree.tools.ui.editor.TypeDefinitionSourceList;
 import org.kevoree.tools.ui.editor.property.BindingPropertyEditor;
 import org.kevoree.tools.ui.editor.property.InstancePropertyEditor;
 import org.kevoree.tools.ui.editor.property.NodePropertyEditor;
 import org.kevoree.tools.ui.framework.elements.*;
+
+import javax.swing.*;
+import java.awt.*;
 
 /**
  * @author ffouquet
@@ -49,12 +45,35 @@ public class KevoreeEditorPanel extends JPanel {
         return kernel;
     }
 
+    private SourceListSelectionListener previousListener = new SourceListSelectionListener() {
+        @Override
+        public void sourceListItemSelected(SourceListItem sourceListItem) {
+            int divider = splitPane.getDividerLocation() ;
+            KevoreeTypeEditorPanel newL = new KevoreeTypeEditorPanel(palette.getSelectedPanel(), kernel);
+            splitPane.setBottomComponent(newL);
+            splitPane.setDividerLocation(divider);
+        }
+    };
+
+    public void setTypeEditor() {
+        editableModelPanel.undisplayProperties();
+        palette.sourceList().addSourceListSelectionListener(previousListener);
+        KevoreeTypeEditorPanel newL = new KevoreeTypeEditorPanel(palette.getSelectedPanel(), kernel);
+        splitPane.setBottomComponent(newL);
+    }
+
+    public void unsetTypeEditor() {
+        palette.sourceList().removeSourceListSelectionListener(previousListener);
+        splitPane.setBottomComponent(editableModelPanel);
+    }
+
     private JXPanel leftpanel = new JXPanel();
     //private JXPanel southpanel = new JXPanel();
     private TypeDefinitionSourceList palette = null;
 
 
     private EditableModelPanel editableModelPanel = null;
+    private JSplitPane splitPane = null;
 
     public TypeDefinitionSourceList getPalette() {
         return palette;
@@ -78,10 +97,10 @@ public class KevoreeEditorPanel extends JPanel {
         JScrollPane scrollpane = new JScrollPane();
         IAppWidgetFactory.makeIAppScrollPane(scrollpane);
         editableModelPanel = new EditableModelPanel(scrollpane);
-        JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,
+        splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,
                 leftpanel, editableModelPanel);
 
-        palette = new TypeDefinitionSourceList(splitPane,kernel);
+        palette = new TypeDefinitionSourceList(splitPane, kernel);
 
 
         //   splitPane.setResizeWeight(1);
@@ -169,7 +188,7 @@ multiSplitPane.add(editableModelPanel, "right");
             //southpanel.add(prop);
             editableModelPanel.displayProperties(prop);
         }
-        if(p instanceof Binding){
+        if (p instanceof Binding) {
             MBinding elem = (MBinding) kernel.getUifactory().getMapping().get(p);
             BindingPropertyEditor prop = new BindingPropertyEditor(elem, kernel);
             //southpanel.add(prop);

@@ -20,6 +20,7 @@ import org.kevoree.ComponentInstance;
 import org.kevoree.ContainerNode;
 import org.kevoree.tools.ui.editor.KevoreeUIKernel;
 import org.kevoree.tools.ui.framework.elements.ComponentPanel;
+import org.kevoree.tools.ui.framework.elements.ComponentTypePanel;
 import org.kevoree.tools.ui.framework.elements.NodePanel;
 
 /**
@@ -41,7 +42,7 @@ public class MoveComponentCommand implements Command {
 
     @Override
     public void execute(Object p) {
-        if (p instanceof ComponentPanel) {
+        if (p instanceof ComponentPanel && !(p instanceof ComponentTypePanel)) {
 
             ComponentPanel panel = (ComponentPanel) p ;
             ContainerNode node = (ContainerNode) kernel.getUifactory().getMapping().get(nodepanel);

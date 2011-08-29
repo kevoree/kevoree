@@ -13,14 +13,13 @@
  */
 package org.kevoree.tools.ui.editor
 
-import command.{ReloadTypePalette, RefreshModelCommand}
+import command.ReloadTypePalette
 import scala.collection.JavaConversions._
 import com.explodingpixels.macwidgets._
 import javax.swing._
 import java.awt.datatransfer.{DataFlavor, Transferable}
-import java.util.HashMap
 import org.kevoree.tools.ui.framework.elements.{GroupTypePanel, NodeTypePanel, ChannelTypePanel, ComponentTypePanel}
-import java.awt.{Cursor, Color, Graphics, Component}
+import java.awt.{Color, Graphics, Component}
 import javax.imageio.ImageIO
 import java.awt.event.{ActionEvent, ActionListener, InputEvent}
 ;
@@ -32,12 +31,17 @@ import java.awt.event.{ActionEvent, ActionListener, InputEvent}
  */
 
 object TypeDefinitionPaletteMode {
-   var currentMode : PaletteMode = LibraryMode
-   def changeMode(mode : PaletteMode) = currentMode = mode
-   def getCurrentMode = currentMode
+  var currentMode: PaletteMode = LibraryMode
+
+  def changeMode(mode: PaletteMode) = currentMode = mode
+
+  def getCurrentMode = currentMode
 }
+
 abstract sealed class PaletteMode
+
 object LibraryMode extends PaletteMode
+
 object DeployUnitMode extends PaletteMode
 
 class TypeIcon(c: Color) extends Icon {
@@ -172,6 +176,16 @@ class TypeDefinitionSourceList(pane: JSplitPane, kernel: KevoreeUIKernel) {
       categ =>
         model.removeCategory(categ)
     }
+  }
+
+  def getSelectedPanel = {
+    if (sourceList.getSelectedItem != null) {
+      map.get(sourceList.getSelectedItem)
+    } else {
+      null
+    }
+
+
   }
 
 
