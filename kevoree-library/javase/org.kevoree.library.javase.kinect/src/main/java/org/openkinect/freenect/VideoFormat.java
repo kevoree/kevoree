@@ -9,7 +9,7 @@ public enum VideoFormat {
     IR_10BIT_PACKED(4, Freenect.FREENECT_IR_FRAME_W, Freenect.FREENECT_IR_FRAME_H, Freenect.FREENECT_VIDEO_IR_10BIT_PACKED_SIZE),
     YUV_RGB(5, Freenect.FREENECT_FRAME_W, Freenect.FREENECT_FRAME_H, Freenect.FREENECT_VIDEO_RGB_SIZE),
     YUV_RAW(6, Freenect.FREENECT_FRAME_W, Freenect.FREENECT_FRAME_H, Freenect.FREENECT_VIDEO_YUV_SIZE);
-    
+
     private final int value;
     private final int frameSize;
     private final int width;
