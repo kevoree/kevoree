@@ -57,8 +57,6 @@ public class VideoViewer extends AbstractComponentType {
 				frame = new JFrame(this.getName());
 				frame.setSize(((BufferedImage) message).getWidth(null), ((BufferedImage) message).getHeight(null));
 				frame.setVisible(true);
-				//final Canvas canvas = new KCanvasDepth();
-				//f.add(canvas, BorderLayout.CENTER);
 				init();
 				isAlreadyInitialized = true;
 			}

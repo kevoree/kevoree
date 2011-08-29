@@ -23,7 +23,7 @@
         <dependency>
             <groupId>org.kevoree.extra</groupId>
             <artifactId>org.kevoree.extra.jna</artifactId>
-            <version>3.2.3</version>
+            <version>3.3.0</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
