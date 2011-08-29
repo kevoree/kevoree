@@ -18,6 +18,7 @@ import org.kevoree.ContainerRoot
 import org.slf4j.LoggerFactory
 import org.kevoree.tools.ui.editor._
 import org.kevoree.tools.aether.framework.NodeTypeBootstrapHelper
+import java.lang.Thread
 
 class SynchNodeTypeCommand extends Command {
 
@@ -36,12 +37,16 @@ class SynchNodeTypeCommand extends Command {
     try {
       PositionedEMFHelper.updateModelUIMetaData(kernel);
       val model: ContainerRoot = kernel.getModelHandler.getActualModel
-      bootstrap.bootstrapNodeType(model, destNodeName, EmbeddedOSGiEnv.getFwk.getBundleContext) match {
-        case Some(nodeTypeInstance) => {
-          nodeTypeInstance.push(destNodeName, model, bootstrap.getNodeTypeBundle.getBundleContext)
+      new Thread() {
+        override def run() {
+          bootstrap.bootstrapNodeType(model, destNodeName, EmbeddedOSGiEnv.getFwk.getBundleContext) match {
+            case Some(nodeTypeInstance) => {
+              nodeTypeInstance.push(destNodeName, model, bootstrap.getNodeTypeBundle.getBundleContext)
+            }
+            case None => logger.error("Error while bootstraping node type")
+          }
         }
-        case None => logger.error("Error while bootstraping node type")
-      }
+      }.start()
     } catch {
       case _@e => logger.error("", e)
     }

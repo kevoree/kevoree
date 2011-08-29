@@ -128,7 +128,11 @@ public class Kinect extends AbstractComponentType {
 			percentage = (Integer) message;
 			move(percentage);
 		} else if (message instanceof String) {
-			percentage = Integer.parseInt((String) message);
+            if(message.toString().startsWith("percent=")){
+               percentage = Integer.parseInt(message.toString().replace("percent=",""));
+            } else {
+             	percentage = Integer.parseInt((String) message);
+            }
 			move(percentage);
 		} else {
 			logger.info("message received has an unknown type !");

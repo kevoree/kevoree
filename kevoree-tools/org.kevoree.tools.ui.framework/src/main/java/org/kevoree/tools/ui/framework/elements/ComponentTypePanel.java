@@ -19,15 +19,16 @@ package org.kevoree.tools.ui.framework.elements;
 
 import java.awt.Color;
 import org.jdesktop.swingx.JXTitledSeparator;
-import org.kevoree.tools.ui.framework.RoundPanel;
-import org.kevoree.tools.ui.framework.UITools;
+import org.kevoree.tools.ui.framework.*;
+
+import javax.swing.*;
 
 /**
  *
  * @author ffouquet
  */
-public class ComponentTypePanel extends RoundPanel {
-
+public class ComponentTypePanel extends ThreePartRoundedPanel implements TitledElement, ErrorHighlightableElement/* RoundPanel */ {
+                /*
     public ComponentTypePanel(String ttitle) {
         String title = UITools.formatTitle(ttitle,18);
         this.setToolTipText("ComponentType " + ttitle);
@@ -35,6 +36,43 @@ public class ComponentTypePanel extends RoundPanel {
         titlebar.setForeground(Color.WHITE);
         titlebar.setTitle(title);
         add(titlebar);
+    }      */
+
+    JXTitledSeparator typebar = new JXTitledSeparator();
+
+    public ComponentTypePanel() {
+        typebar.setForeground(Color.WHITE);
+        typebar.setTitle("");
+        typebar.setHorizontalAlignment(SwingConstants.CENTER);
+        typebar.setVisible(false);
+        addCenter(typebar);
+
     }
 
+    public void setTypeName(String title) {
+        typebar.setTitle(" : "+title);
+        typebar.setVisible(true);
+    }
+
+    private STATE _state = STATE.NO_ERROR;
+
+    @Override
+    public void setState(STATE state) {
+        _state = state;
+        if (_state.equals(STATE.IN_ERROR)) {
+            this.setBackground(new Color(239, 50, 50, 150));
+        } else {
+            this.setBackground(new Color(0, 0, 0, 200));
+        }
+    }
+
+    @Override
+    public STATE getCurrentState() {
+        return _state;
+    }
+
+
+
 }
+
+

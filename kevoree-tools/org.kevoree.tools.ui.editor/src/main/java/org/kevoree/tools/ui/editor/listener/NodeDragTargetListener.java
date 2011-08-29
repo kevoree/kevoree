@@ -17,6 +17,18 @@
  */
 package org.kevoree.tools.ui.editor.listener;
 
+import org.kevoree.ComponentInstance;
+import org.kevoree.ContainerNode;
+import org.kevoree.tools.ui.editor.KevoreeUIKernel;
+import org.kevoree.tools.ui.editor.command.AddComponentCommand;
+import org.kevoree.tools.ui.editor.command.AddGroupBindingCommand;
+import org.kevoree.tools.ui.editor.command.MoveComponentCommand;
+import org.kevoree.tools.ui.framework.elements.ComponentPanel;
+import org.kevoree.tools.ui.framework.elements.ComponentTypePanel;
+import org.kevoree.tools.ui.framework.elements.GroupAnchorPanel;
+import org.kevoree.tools.ui.framework.elements.NodePanel;
+
+import javax.swing.*;
 import java.awt.*;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.dnd.DropTarget;
@@ -25,18 +37,6 @@ import java.awt.dnd.DropTargetDropEvent;
 import java.awt.dnd.DropTargetEvent;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import org.jdesktop.swingx.SwingXUtilities;
-import org.kevoree.ComponentInstance;
-import org.kevoree.ContainerNode;
-import org.kevoree.tools.ui.editor.KevoreeUIKernel;
-import org.kevoree.tools.ui.editor.command.AddComponentCommand;
-import org.kevoree.tools.ui.editor.command.AddGroupBindingCommand;
-import org.kevoree.tools.ui.editor.command.MoveComponentCommand;
-import org.kevoree.tools.ui.framework.elements.*;
-import org.kevoreeAdaptation.AddBinding;
-
-import javax.swing.*;
 
 /**
  * implementation of the target listener
@@ -60,6 +60,9 @@ public class NodeDragTargetListener extends DropTarget {
     }
 
     private Boolean isDropAccept(Object o) {
+        if (o instanceof ComponentTypePanel) {
+            return true;
+        }
         if (o instanceof ComponentPanel) {
             //CHECK IF THIS COMPONENT IS NOT IN NODE
             ComponentInstance component = (ComponentInstance) kernel.getUifactory().getMapping().get(o);
@@ -69,9 +72,6 @@ public class NodeDragTargetListener extends DropTarget {
             } else {
                 return true;
             }
-        }
-        if (o instanceof ComponentTypePanel) {
-            return true;
         }
         if (o instanceof GroupAnchorPanel) {
             return true;
@@ -149,8 +149,8 @@ public class NodeDragTargetListener extends DropTarget {
         if (kernel.getModelPanel().getFlightObject() != null) {
 
             Point p2 = arg0.getLocation();
-            SwingUtilities.convertPointToScreen(p2,target);
-            SwingUtilities.convertPointFromScreen(p2,kernel.getModelPanel().getFlightObject().getParent());
+            SwingUtilities.convertPointToScreen(p2, target);
+            SwingUtilities.convertPointFromScreen(p2, kernel.getModelPanel().getFlightObject().getParent());
 
             kernel.getModelPanel().getFlightObject().setBounds(
                     (int) p2.getX() - (kernel.getModelPanel().getFlightObject().getWidth() / 2),

@@ -49,14 +49,11 @@ public class ArduinoNode extends AbstractNodeType {
 
     @Start
     public void startNode() {
-
     }
 
     @Stop
     public void stopNode() {
-
     }
-
 
     @Override
     public void push(final String targetNodeName, final ContainerRoot root, final BundleContext bundle) {
@@ -297,7 +294,6 @@ public class ArduinoNode extends AbstractNodeType {
             if (boardName == null || boardName.equals("")) {
                 boardName = GuiAskForComPort.askPORT();
             }
-
             try {
                 ComSender.send(resultScript, boardName);
             } catch (Exception e) {

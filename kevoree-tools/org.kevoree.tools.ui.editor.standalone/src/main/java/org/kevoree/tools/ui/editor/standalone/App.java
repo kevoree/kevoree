@@ -13,22 +13,13 @@
  */
 package org.kevoree.tools.ui.editor.standalone;
 
-import java.awt.BorderLayout;
-import java.awt.Dimension;
+import com.explodingpixels.macwidgets.*;
+import org.kevoree.tools.ui.editor.KevoreeEditor;
+
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
-import javax.imageio.ImageIO;
-import javax.swing.*;
-import javax.swing.border.Border;
-
-import com.explodingpixels.macwidgets.*;
-import org.jdesktop.swingx.JXMultiSplitPane;
-import org.jdesktop.swingx.MultiSplitLayout;
-import org.kevoree.tools.ui.editor.KevoreeEditor;
-import sun.awt.SunHints;
 
 /**
  * Hello world!
@@ -42,14 +33,6 @@ public class App {
 
     public static void main(final String[] args) {
 
-
-        //   System.setProperty("avr.bin", "/Applications/Arduino.app/Contents/Resources/Java/hardware/tools/avr/bin");
-        //  System.setProperty("avrdude.config.path", "/Applications/Arduino.app/Contents/Resources/Java/hardware/tools/avr/etc/avrdude.conf");
-        //  System.setProperty("serial.port", "/dev/tty.usbmodem621");
-
-        /* TEMP */
-
-
         SwingUtilities.invokeLater(new Runnable() {
 
             @Override
@@ -60,9 +43,9 @@ public class App {
                 kevsPanel.setKernel(artpanel.getPanel().getKernel());
 
 
-                if(System.getProperty("os.name").toLowerCase().contains("mac")){
-                   // System.out.println("Mac detected");
-                   // MacIntegration.addOSXIntegration(artpanel);
+                if (System.getProperty("os.name").toLowerCase().contains("mac")) {
+                    // System.out.println("Mac detected");
+                    // MacIntegration.addOSXIntegration(artpanel);
                 }
 
 
@@ -82,7 +65,6 @@ public class App {
                 UnifiedToolBar toolBar = new UnifiedToolBar();
                 // JButton button = new JButton("Toogle console");
                 // button.putClientProperty("JButton.buttonType", "textured");
-
 
                 AbstractButton toogleConsole = null;
                 try {
@@ -114,14 +96,12 @@ public class App {
                 try {
                     java.net.URL url = App.class.getClassLoader().getResource("package.png");
                     ImageIcon icon = new ImageIcon(url);
-                    toogleTypeEditionMode =MacButtonFactory.makeUnifiedToolBarButton(new JButton("TypeMode", icon));
+                    toogleTypeEditionMode = MacButtonFactory.makeUnifiedToolBarButton(new JButton("TypeMode", icon));
                     toogleTypeEditionMode.setEnabled(false);
                     toolBar.addComponentToLeft(toogleTypeEditionMode);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-
-
 
 
                 jframe.add(toolBar.getComponent(), BorderLayout.NORTH);
@@ -150,7 +130,7 @@ public class App {
               multiSplitPane.add(new LogPanel(), "bottom");
                 */
 
-                final LogPanel logPanel = new LogPanel() ;
+                final LogPanel logPanel = new LogPanel();
 
                 final JSplitPane splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT,
                         artpanel.getPanel(), logPanel);
@@ -183,7 +163,7 @@ public class App {
                 assert toogleConsole != null;
                 final AbstractButton finalToogleConsole = toogleConsole;
                 assert toogleKevScriptEditor != null;
-                final AbstractButton finalToogleKevScriptEditor = toogleKevScriptEditor ;
+                final AbstractButton finalToogleKevScriptEditor = toogleKevScriptEditor;
                 toogleConsole.addMouseListener(new MouseAdapter() {
                     @Override
                     public void mouseClicked(MouseEvent mouseEvent) {
@@ -242,7 +222,20 @@ public class App {
                     }
                 });
 
-
+                final AbstractButton finalToogleTypeEditionMode = toogleTypeEditionMode;
+                toogleTypeEditionMode.addMouseListener(new MouseAdapter() {
+                    @Override
+                    public void mouseClicked(MouseEvent mouseEvent) {
+                        finalToogleTypeEditionMode.setEnabled(!finalToogleTypeEditionMode.isEnabled());
+                        if (finalToogleTypeEditionMode.isEnabled()) {
+                            artpanel.getPanel().setTypeEditor();
+                        } else {
+                            artpanel.getPanel().unsetTypeEditor();
+                        }
+                        p.repaint();
+                        p.revalidate();
+                    }
+                });
                 dividerPos = splitPane.getDividerLocation();
 
 

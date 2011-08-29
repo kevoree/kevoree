@@ -16,7 +16,7 @@ class KContentListener(cf: ChannelFragment) extends ContentListener {
   val KevSerialMessageRegex = new Regex("(.+):(.+)\\[(.*)\\]")
 
   def recContent(content: String) {
-    if (content.contains("\n")) {
+    //if (content.contains("\n")) {
       content.trim() match {
         case KevSerialMessageRegex(srcChannelName, nodeName, contentBody) => {
           val message = new Message();
@@ -47,6 +47,6 @@ class KContentListener(cf: ChannelFragment) extends ContentListener {
           println("Msg lost")
         }
       }
-    }
+   // }
   }
 }

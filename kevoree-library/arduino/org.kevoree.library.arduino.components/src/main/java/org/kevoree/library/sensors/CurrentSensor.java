@@ -24,7 +24,7 @@ public class CurrentSensor extends AbstractComponentType {
     @Generate("classheader")
     public void generateHeader(StringBuffer context) {
         context.append(
-                "     char buf[10]; \n"
+                "     char buf[7]; \n"
                 + "   double SetV;\n"
                 + "   int samplenumber;\n"
                 + "   double ADCvoltsperdiv;\n"

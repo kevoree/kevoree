@@ -29,17 +29,11 @@ public class SerialCT extends AbstractChannelFragment {
     protected HashMap<String, String> nodePortCache = new HashMap<String, String>();
 
     protected String getPortFromNode(String remoteNodeName) {
-        System.out.println("GetPort=>"+remoteNodeName);
         if (!nodePortCache.containsKey(remoteNodeName)) {
-            System.out.println("Look for port ");
             for (ContainerNode node : modelHandlerService.getLastModel().getNodes()) {
-                System.out.println("Hi Node->"+node.getName()+"->"+remoteNodeName);
                 if (node.getName().equals(remoteNodeName)) {
-                    System.out.println("Ok node found");
                     for (DictionaryValue dv : node.getDictionary().getValues()) {
-                        System.out.println(dv.getAttribute().getName()+"=>boardPortName");
                         if (dv.getAttribute().getName().equals("boardPortName")) {
-                            System.out.println(dv.getValue());
                             nodePortCache.put(remoteNodeName, dv.getValue());
                         }
                     }
