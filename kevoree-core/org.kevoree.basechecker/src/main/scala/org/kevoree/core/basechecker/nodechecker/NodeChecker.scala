@@ -28,14 +28,13 @@ class NodeChecker extends CheckerService {
 
 
   def check(model: ContainerRoot): java.util.List[CheckerViolation] = {
-    System.out.println("NodeChecking")
 		var violations: List[CheckerViolation] = List()
-		model.getNodes.foreach ({ node => //For each Node
-      node.getComponents.foreach({ component => //For each component of each node
-        component.getTypeDefinition.getDeployUnits.find({du=> //Look for a deploy unit for the Type of container node
+		model.getNodes.foreach { node => //For each Node
+      node.getComponents.foreach { component => //For each component of each node
+        component.getTypeDefinition.getDeployUnits.find {du=> //Look for a deploy unit for the Type of container node
           du.getTargetNodeType.equals(node.getTypeDefinition.asInstanceOf[NodeType])
           
-        }) match {
+        } match {
           case None => {
             val violation : CheckerViolation = new CheckerViolation
             violation.setMessage(component.getTypeDefinition.getName + " has no deploy unit for node type " + node.getTypeDefinition.getName)
@@ -44,8 +43,8 @@ class NodeChecker extends CheckerService {
           }
           case Some(du)=>
         }
-      })
-    })
+      }
+    }
     violations
   }
 }
