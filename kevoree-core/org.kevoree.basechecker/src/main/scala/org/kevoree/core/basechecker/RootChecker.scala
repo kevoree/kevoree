@@ -15,6 +15,7 @@ package org.kevoree.core.basechecker
 
 import cyclechecker.{ComponentCycleChecker, NodeCycleChecker}
 import namechecker.NameChecker
+import nodechecker.NodeChecker
 import org.kevoree.ContainerRoot
 import org.kevoree.api.service.core.checker.{CheckerViolation, CheckerService}
 import java.util.ArrayList
@@ -24,7 +25,7 @@ import portchecker.PortChecker
 class RootChecker extends CheckerService {
 
   var subcheckers: List[CheckerService] = List(new ComponentCycleChecker, new NodeCycleChecker, new NameChecker,
-                                                new PortChecker)
+                                                new PortChecker, new NodeChecker)
 
   def check (model: ContainerRoot): java.util.List[CheckerViolation] = {
     val result: java.util.List[CheckerViolation] = new ArrayList()
