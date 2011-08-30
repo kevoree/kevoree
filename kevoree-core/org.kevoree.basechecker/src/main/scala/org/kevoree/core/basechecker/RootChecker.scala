@@ -13,6 +13,7 @@
  */
 package org.kevoree.core.basechecker
 
+import bindingchecker.BindingChecker
 import cyclechecker.{ComponentCycleChecker, NodeCycleChecker}
 import namechecker.NameChecker
 import nodechecker.NodeChecker
@@ -25,7 +26,7 @@ import portchecker.PortChecker
 class RootChecker extends CheckerService {
 
   var subcheckers: List[CheckerService] = List(new ComponentCycleChecker, new NodeCycleChecker, new NameChecker,
-                                                new PortChecker, new NodeChecker)
+                                                new PortChecker, new NodeChecker, new BindingChecker)
 
   def check (model: ContainerRoot): java.util.List[CheckerViolation] = {
     val result: java.util.List[CheckerViolation] = new ArrayList()
