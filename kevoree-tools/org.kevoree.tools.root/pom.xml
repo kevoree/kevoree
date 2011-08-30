@@ -188,6 +188,7 @@
         <module>../org.kevoree.tools.marShellGUI</module>
         <module>../org.kevoree.tools.marShellRemoteGUI</module>
         <module>../org.kevoree.tools.dpa</module>
+        <module>../org.kevoree.tools.model2code</module>
         <module>../org.kevoree.tools.ui.editor.standalone</module>
     </modules>
     

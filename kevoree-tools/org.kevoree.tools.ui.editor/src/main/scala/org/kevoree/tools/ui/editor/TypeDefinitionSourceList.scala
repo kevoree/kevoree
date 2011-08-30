@@ -13,7 +13,7 @@
  */
 package org.kevoree.tools.ui.editor
 
-import command.ReloadTypePalette
+import command.{SynchCodeCommand, ReloadTypePalette}
 import scala.collection.JavaConversions._
 import com.explodingpixels.macwidgets._
 import javax.swing._
@@ -22,6 +22,7 @@ import org.kevoree.tools.ui.framework.elements.{GroupTypePanel, NodeTypePanel, C
 import java.awt.{Color, Graphics, Component}
 import javax.imageio.ImageIO
 import java.awt.event.{ActionEvent, ActionListener, InputEvent}
+import org.kevoree.TypeDefinition
 ;
 
 /**
@@ -141,7 +142,8 @@ class TypeDefinitionSourceList(pane: JSplitPane, kernel: KevoreeUIKernel) {
   var iconProject2 = new ImageIcon(imageProject2)
   var imageProjectAdd = ImageIO.read(this.getClass.getClassLoader.getResourceAsStream("com/explodingpixels/macwidgets/images/plus.png"))
   var iconProjectAdd = new ImageIcon(imageProjectAdd)
-
+  var imageProjectGenerate = ImageIO.read(this.getClass.getClassLoader.getResourceAsStream("com/explodingpixels/macwidgets/icons/Project.png"))
+  var iconProjectGenerate = new ImageIcon(imageProjectGenerate)
 
   controlBar.createAndAddButton(iconProjectAdd, new ActionListener {
     def actionPerformed(p1: ActionEvent) {
@@ -158,6 +160,14 @@ class TypeDefinitionSourceList(pane: JSplitPane, kernel: KevoreeUIKernel) {
     def actionPerformed(p1: ActionEvent) {
       TypeDefinitionPaletteMode.changeMode(DeployUnitMode)
       refreshCmd.execute(null)
+    }
+  })
+  controlBar.createAndAddButton(iconProjectGenerate, new ActionListener {
+    def actionPerformed(p1: ActionEvent) {
+      val generateAction = new SynchCodeCommand
+      generateAction.setKernel(kernel)
+      val typeDef: TypeDefinition = kernel.getUifactory.getMapping.get(getSelectedPanel).asInstanceOf[TypeDefinition]
+      generateAction.execute(typeDef)
     }
   })
 
