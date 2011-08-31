@@ -56,7 +56,7 @@ class KevoreeDeployPhase(ctx : KevoreeDeployManager) {
               case Some(b) => {
               logger.info("Resolving bundle: " + b.getSymbolicName)
               ctx.getServicePackageAdmin.resolveBundles(Array(b));
-              println("bundle resolved")
+              //println("bundle resolved")
                c.startLevel match {
                  case Some(level)=> {
                    ctx.getStartLevelServer.setBundleStartLevel(b,level)
