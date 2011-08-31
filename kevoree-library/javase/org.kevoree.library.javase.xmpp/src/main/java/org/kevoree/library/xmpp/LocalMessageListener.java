@@ -4,8 +4,11 @@ package org.kevoree.library.xmpp;
 import org.jivesoftware.smack.Chat;
 import org.jivesoftware.smack.MessageListener;
 import org.jivesoftware.smack.packet.Message;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class LocalMessageListener implements MessageListener {
+	private static final Logger logger = LoggerFactory.getLogger(LocalMessageListener.class);
 
     private XmppComponent mainComp;
 
@@ -14,7 +17,7 @@ public class LocalMessageListener implements MessageListener {
     }
 
     public void processMessage(Chat arg0, Message arg1) {
-        System.out.println("MsgRec=>"+arg1.getBody());
+        logger.debug("MsgRec=>" + arg1.getBody());
         mainComp.messageReceived(arg1.getBody());
     }
 }

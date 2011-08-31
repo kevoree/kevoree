@@ -11,6 +11,8 @@ import org.kevoree.annotation.*;
 import org.kevoree.framework.AbstractChannelFragment;
 import org.kevoree.framework.ChannelFragmentSender;
 import org.kevoree.framework.message.Message;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Library(name = "Kevoree-Android-JavaSE")
 @ChannelTypeFragment
@@ -22,13 +24,14 @@ import org.kevoree.framework.message.Message;
         @DictionaryAttribute(name = "password")
 })
 public class XmppChannel extends AbstractChannelFragment implements ConnectionListener {
+	private static final Logger logger = LoggerFactory.getLogger(XmppChannel.class);
 
     ConnectionConfiguration config = null;
     XMPPConnection connection = null;
 
 
     @Start
-    public void start() {
+    public void startChannel() {
         try {
             config = new ConnectionConfiguration("talk.google.com", 5222, "Work");
             connection = new XMPPConnection(config);
@@ -43,21 +46,22 @@ public class XmppChannel extends AbstractChannelFragment implements ConnectionLi
                 public void processPacket(Packet packet) {
                     String name = packet.getFrom().substring(0, packet.getFrom().indexOf("/"));
 
-                    System.out.println("rec"+name+"="+packet.getPropertyNames());
+                    logger.debug("rec" + name + "=" + packet.getPropertyNames());
                 }
             };
             connection.addPacketListener(myListener, filter);
 
 
         } catch (Exception e) {
-            e.printStackTrace();
+//            e.printStackTrace();
+			logger.error("", e);
         }
 
 
     }
 
     @Stop
-    public void stop() {
+    public void stopChannel() {
         connection.disconnect();
     }
 

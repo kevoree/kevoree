@@ -17,26 +17,18 @@
  */
 package org.kevoree.library.fakedomo;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Dimension;
+import org.kevoree.annotation.*;
+import org.kevoree.framework.MessagePort;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.swing.*;
+import javax.swing.text.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
-import javax.swing.JTextPane;
-import javax.swing.text.BadLocationException;
-import javax.swing.text.Style;
-import javax.swing.text.StyleConstants;
-import javax.swing.text.StyleContext;
-import javax.swing.text.StyledDocument;
-import org.kevoree.annotation.*;
-import org.kevoree.framework.MessagePort;
 
 
 /**
@@ -51,6 +43,7 @@ import org.kevoree.framework.MessagePort;
 })
 @ComponentType
 public class FakeConsole extends AbstractFakeStuffComponent {
+	private static final Logger logger = LoggerFactory.getLogger(FakeConsole.class);
 
     private static final int FRAME_WIDTH = 300;
     private static final int FRAME_HEIGHT = 600;
@@ -168,7 +161,8 @@ public class FakeConsole extends AbstractFakeStuffComponent {
                 StyledDocument doc = screen.getStyledDocument();
                 doc.insertString(doc.getLength(), formatForPrint(text), doc.getStyle("system"));
             } catch (BadLocationException ex) {
-                ex.printStackTrace();
+//                ex.printStackTrace();
+				logger.error("Error while trying to append system message in the " + this.getName(), ex);
             }
         }
 
@@ -178,7 +172,8 @@ public class FakeConsole extends AbstractFakeStuffComponent {
                 doc.insertString(doc.getLength(), formatForPrint(text), doc.getStyle("incoming"));
                 screen.setCaretPosition(doc.getLength());
             } catch (BadLocationException ex) {
-                ex.printStackTrace();
+//                ex.printStackTrace();
+				logger.error("Error while trying to append incoming message in the " + this.getName(), ex);
                 //getLoggerLocal().error(ex.getClass().getSimpleName() + " occured while trying to append text in the terminal.", ex);
             }
         }
@@ -188,7 +183,8 @@ public class FakeConsole extends AbstractFakeStuffComponent {
                 StyledDocument doc = screen.getStyledDocument();
                 doc.insertString(doc.getLength(), ">" + formatForPrint(text), doc.getStyle("outgoing"));
             } catch (BadLocationException ex) {
-                ex.printStackTrace();
+//                ex.printStackTrace();
+				logger.error("Error while trying to append local message in the " + this.getName(), ex);
                 //getLoggerLocal().error(ex.getClass().getSimpleName() + " occured while trying to append text in the terminal.", ex);
             }
         }
@@ -198,7 +194,7 @@ public class FakeConsole extends AbstractFakeStuffComponent {
         }
     }
 
-    public static void main(String[] args) {
+    /*public static void main(String[] args) {
         FakeConsole console = null;
         try {
             console = new FakeConsole();
@@ -218,5 +214,5 @@ public class FakeConsole extends AbstractFakeStuffComponent {
             }
         }
 
-    }
+    }*/
 }

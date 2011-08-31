@@ -3,6 +3,8 @@ package org.kevoree.library.derby;
 import org.kevoree.annotation.*;
 import org.kevoree.framework.AbstractComponentType;
 import org.osgi.framework.Bundle;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -14,6 +16,7 @@ import java.util.Properties;
 public class DerbySampleComponent extends AbstractComponentType {
 
     public String driver = "org.apache.derby.jdbc.EmbeddedDriver";
+	private Logger logger = LoggerFactory.getLogger(DerbySampleComponent.class);
 
     @Start
     public void start() {
@@ -24,10 +27,11 @@ public class DerbySampleComponent extends AbstractComponentType {
             Connection conn = DriverManager.getConnection("jdbc:derby:" + this.getName()+";create=true", new Properties());
             //TODO SCRIPT CREATION TABLES, IF NOT EXIST
 
-            System.out.println("derby started !");
+            logger.debug("derby started !");
 
         } catch (Exception e) {
-            e.printStackTrace();
+//            e.printStackTrace();
+			logger.error("Fail to start " + this.getName(), e);
         }
 
 
@@ -39,6 +43,7 @@ public class DerbySampleComponent extends AbstractComponentType {
             DriverManager.getConnection("jdbc:derby:"+this.getName()+";shutdown=true");
         } catch (SQLException e) {
            // e.printStackTrace();
+			logger.warn("Error when we try to stop " + this.getName(), e);
         }
     }
 

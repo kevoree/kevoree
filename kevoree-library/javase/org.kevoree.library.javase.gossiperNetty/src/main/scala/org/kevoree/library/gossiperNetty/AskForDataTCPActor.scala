@@ -106,7 +106,7 @@ class AskForDataTCPActor (channelFragment: NettyGossipAbstractElement, requestSe
     client(messageBuilder.build) onSuccess {
       result =>
         if (result.getContentClass.equals(classOf[VersionedModel].getName)) {
-        println("Received result asynchronously: " + result + "\t sent by " + result.getDestNodeName)
+        logger.debug("Received result asynchronously: " + result + "\t sent by " + result.getDestNodeName)
           requestSender.endGossipAction(result)
         }
 

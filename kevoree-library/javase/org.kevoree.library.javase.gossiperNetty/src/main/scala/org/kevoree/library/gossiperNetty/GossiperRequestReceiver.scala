@@ -153,7 +153,7 @@ class GossiperRequestReceiver (protected var channelFragment: NettyGossipAbstrac
 
       }
       case s: String if (s == classOf[UpdatedValueNotification].getName) => {
-        println("notification received from " + address)
+        logger.debug("notification received from " + address)
         gossiperRequestSender.initGossipAction(message.getDestNodeName)
       }
     }

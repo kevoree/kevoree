@@ -44,7 +44,7 @@ public class Kinect extends AbstractComponentType {
 	private Context ctx;
 	private Device dev;
 
-	private Logger logger = LoggerFactory.getLogger(Kinect.class);
+	private static final Logger logger = LoggerFactory.getLogger(Kinect.class);
 
 	@Start
 	public void start () {

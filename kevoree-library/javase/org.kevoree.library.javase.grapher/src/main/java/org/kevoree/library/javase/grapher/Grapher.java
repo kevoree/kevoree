@@ -1,19 +1,17 @@
 package org.kevoree.library.javase.grapher;
 
-import com.sun.xml.internal.ws.util.localization.NullLocalizable;
 import info.monitorenter.gui.chart.Chart2D;
 import info.monitorenter.gui.chart.IAxis;
 import info.monitorenter.gui.chart.ITrace2D;
 import info.monitorenter.gui.chart.traces.Trace2DLtd;
 import org.kevoree.annotation.*;
 import org.kevoree.framework.AbstractComponentType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 import java.util.HashMap;
-import java.util.Properties;
 
 /**
  * User: ffouquet
@@ -30,6 +28,8 @@ public class Grapher extends AbstractComponentType {
     Chart2D chart = null;
     HashMap<String, ITrace2D> traces = new HashMap<String, ITrace2D>();
     JFrame frame = null;
+
+	private static final Logger logger = LoggerFactory.getLogger(Grapher.class);
 
     @Start
     public void startGraph() {
@@ -79,8 +79,8 @@ public class Grapher extends AbstractComponentType {
                 //System.out.println(values[i]);
                 //System.out.println(lvl.length);
                 if (lvl.length >= 2) {
-                    Double value = Double.parseDouble(lvl[1].toString());
-                    Long time = new Long(System.currentTimeMillis());
+                    Double value = Double.parseDouble(lvl[1]);
+                    Long time = System.currentTimeMillis();
 
                     //System.out.println(lvl[0]);
                    // System.out.println(value);
@@ -90,7 +90,7 @@ public class Grapher extends AbstractComponentType {
                 }
             }
         } catch (Exception e) {
-            System.out.println("Grapher bad message => " + e.getMessage());
+            logger.warn("Grapher bad message => " + e.getMessage());
         }
 
     }

@@ -22,6 +22,8 @@ import org.kevoree.framework.AbstractChannelFragment;
 import org.kevoree.framework.ChannelFragmentSender;
 import org.kevoree.framework.NoopChannelFragmentSender;
 import org.kevoree.framework.message.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -31,20 +33,22 @@ import org.kevoree.framework.message.*;
 @ChannelTypeFragment
 public class defSERVICE extends AbstractChannelFragment {
 
+	private Logger logger = LoggerFactory.getLogger(defSERVICE.class);
+
     @Override
     public Object dispatch(Message msg) {
         Object result = null;
         if (this.getBindedPorts().size() == 1) {
-            System.out.println("local dispatch");
+            logger.debug("local dispatch");
             result = forward(getBindedPorts().get(0), msg);
         } else {
             if (this.getOtherFragments().size() == 1) {
                 result = forward(getOtherFragments().get(0), msg);
             } else {
-                System.out.println("No Art2 port or fragment bind on this channel fragment, message lost = "+msg.getContent());
+                logger.debug("No Kevoree port or fragment bind on this channel fragment, message lost = "+msg.getContent());
             }
         }
-        System.out.println("Ok result "+result);
+        logger.debug("Ok result "+result);
         return result;
     }
 
@@ -55,12 +59,12 @@ public class defSERVICE extends AbstractChannelFragment {
 
         @Start
     public void startHello() {
-        System.out.println("Hello Channel");
+        logger.debug("Hello Channel");
     }
 
     @Stop
     public void stopHello() {
-        System.out.println("Bye Channel");
+        logger.debug("Bye Channel");
     }
 
 }

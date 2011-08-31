@@ -48,25 +48,23 @@ public class ProxProRFIDReader extends AbstractComponentType implements SerialPo
 				serialPort.addEventListener(this);
 				serialPort.notifyOnDataAvailable(true);
 			} else {
-				// TODO log
 				logger.error("Only serial ports are handled by this component.");
 				commPort.close();
 			}
 		} catch (NoSuchPortException e) {
-			// TODO log
-			e.printStackTrace();
+//			e.printStackTrace();
+			logger.error("Serial port is not available", e);
 		} catch (PortInUseException e) {
-			// TODO log
-			e.printStackTrace();
+//			e.printStackTrace();
+			logger.error("Port already in use", e);
 		} /*catch (UnsupportedCommOperationException e) {
-			// TODO log
 			e.printStackTrace();
 		} */catch (TooManyListenersException e) {
-			// TODO log
-			e.printStackTrace();
+//			e.printStackTrace();
+			logger.error("", e);
 		} catch (IOException e) {
-			// TODO log
-			e.printStackTrace();
+//			e.printStackTrace();
+			logger.error("", e);
 		}
 	}
 
@@ -75,8 +73,8 @@ public class ProxProRFIDReader extends AbstractComponentType implements SerialPo
 		try {
 			inputStream.close();
 		} catch (IOException e) {
-				// TODO log
-			e.printStackTrace();
+			logger.error("Error while trying to close the stream of the serial port", e);
+//			e.printStackTrace();
 		}
 		serialPort.removeEventListener();
 		serialPort.close();
@@ -100,12 +98,13 @@ public class ProxProRFIDReader extends AbstractComponentType implements SerialPo
 			if (isPortBinded("TAG")) {
 				getPortByName("TAG", MessagePort.class).process(new String(buffer, 0, len));
 			} else {
-				logger.info(new String(buffer, 0, len));
+				logger.debug(new String(buffer, 0, len));
 				//logger.info(" length : " + len);
 			}
 		} catch (IOException e) {
-			e.printStackTrace();
-			System.exit(-1);
+//			e.printStackTrace();
+			logger.error("", e);
+//			System.exit(-1);
 		}
 	}
 }
