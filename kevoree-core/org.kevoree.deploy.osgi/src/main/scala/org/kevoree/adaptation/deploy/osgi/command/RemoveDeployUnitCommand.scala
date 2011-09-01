@@ -47,6 +47,6 @@ case class RemoveDeployUnitCommand(deployUnit : DeployUnit, ctx : KevoreeDeployM
   }
 
   def undo() {
-    AddDeployUnitCommand(deployUnit,ctx).execute()
+    //AddDeployUnitAetherCommand(deployUnit,ctx).execute()
   }
 }

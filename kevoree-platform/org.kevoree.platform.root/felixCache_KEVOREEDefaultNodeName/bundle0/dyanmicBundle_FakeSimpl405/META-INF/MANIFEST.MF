@@ -1,0 +1,10 @@
+Manifest-Version: 1.0
+Bundle-SymbolicName: FakeSimpl405
+Bundle-Version: 1
+DynamicImport-Package: *
+Bundle-ManifestVersion: 2
+Bundle-Activator: org.kevoree.library.fakedomo.kevgen.JavaSENode.FakeSimpleLightActivator
+KEVOREE-Componentname: FakeSimpl405
+KEVOREE-Nodename: KEVOREEDefaultNodeName
+Require-Bundle: org.kevoree.library.javase.org.kevoree.library.javase.fakeDomo
+
