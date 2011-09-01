@@ -18,23 +18,26 @@
 package org.kevoree.platform.osgi.standalone;
 
 import generated.SysPackageConstants;
+import org.apache.felix.framework.Felix;
+import org.apache.felix.framework.util.FelixConstants;
+import org.osgi.framework.Constants;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import org.apache.felix.framework.Felix;
-import org.apache.felix.framework.util.FelixConstants;
-import org.osgi.framework.Constants;
 
 /**
  *
  * @author ffouquet
  */
 public class EmbeddedFelix {
+
+	private static final Logger logger = LoggerFactory.getLogger(EmbeddedFelix.class);
 
     private Felix m_fwk;
 
@@ -47,19 +50,21 @@ public class EmbeddedFelix {
         String felix_base = System.getProperty("osgi.base");
         if (felix_base == null) {
             felix_base = ".";//this.getClass().getClassLoader().getResource(".").getPath();
-            System.out.println("Init Felix Default path => " + felix_base);
+            logger.debug("Init Felix Default path => " + felix_base);
         }
 
         String node_name = System.getProperty("node.name");
-        if (node_name == null) {
+        if (node_name == null || node_name.equals("")) {
             node_name = "KEVOREEDefaultNodeName";
+			System.setProperty("node.name", node_name);
         }
 
         File cacheDir = new File(felix_base + "/" + "felixCache_" + node_name);
         Map<String, Object> configProps = new HashMap<String, Object>();
-        if (cacheDir != null) {
-            configProps.put(Constants.FRAMEWORK_STORAGE, cacheDir.getAbsolutePath());
+        if (cacheDir.exists()) {
+         	cacheDir.mkdirs();
         }
+		configProps.put(Constants.FRAMEWORK_STORAGE, cacheDir.getAbsolutePath());
 
 
         /* Look for a free port for remote shell */
@@ -77,13 +82,13 @@ public class EmbeddedFelix {
 
             public void run() {
                 try {
-                    System.err.println("Stopping OSGi Embedded Framework");
+                    logger.debug("Stopping OSGi Embedded Framework");
                     if (m_fwk != null) {
                         m_fwk.stop();
                         m_fwk.waitForStop(0);
                     }
                 } catch (Exception ex) {
-                    System.err.println("Error stopping framework: " + ex);
+                    logger.warn("Error stopping framework: " + ex);
                 }
             }
         });
@@ -97,13 +102,14 @@ public class EmbeddedFelix {
 
             printWelcome();
 
-            System.out.println("Felix Embedded started");
+            logger.debug("Felix Embedded started");
             // (11) Wait for framework to stop to exit the VM.
             //m_fwk.waitForStop(0);
             //System.exit(0)
         } catch (Exception ex) {
-            System.err.println("Could not create framework: " + ex);
-            ex.printStackTrace();
+//            System.err.println("Could not create framework: " + ex);
+//            ex.printStackTrace();
+			logger.error("Could not create framework: ", ex);
             System.exit(0);
         }
 
@@ -127,7 +133,7 @@ public class EmbeddedFelix {
                 is.close();
 
             } catch (IOException ex) {
-                Logger.getLogger(EmbeddedFelix.class.getName()).log(Level.SEVERE, null, ex);
+                logger.error(null, ex);
             }
 
         }
