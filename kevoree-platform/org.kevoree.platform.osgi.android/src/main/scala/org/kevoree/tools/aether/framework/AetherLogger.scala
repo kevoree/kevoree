@@ -1,3 +1,5 @@
+package org.kevoree.tools.aether.framework
+
 /**
  * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE, Version 3, 29 June 2007;
  * you may not use this file except in compliance with the License.
@@ -11,26 +13,34 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
-package org.kevoree.android.framework.service;
-
-import android.app.Activity;
-import android.view.View;
+import org.sonatype.aether.spi.log.Logger
 
 /**
- *
- * @author ffouquet
+ * User: ffouquet
+ * Date: 18/08/11
+ * Time: 15:15
  */
-public interface KevoreeAndroidService {
 
-    Activity getRootActivity();
+class AetherLogger extends Logger {
+  def debug(p1: String) {
+    println(p1)
+  }
 
-    void addToGroup(String groupKey,View view);
+  def debug(p1: String, p2: Throwable) {
+    println(p1)
+    p2.printStackTrace()
+  }
 
-    void remove(View view);
+  def isDebugEnabled = true
 
+  def isWarnEnabled = true
+
+  def warn(p1: String) {
+    println(p1)
+  }
+
+  def warn(p1: String, p2: Throwable) {
+    println(p1)
+    p2.printStackTrace()
+  }
 }

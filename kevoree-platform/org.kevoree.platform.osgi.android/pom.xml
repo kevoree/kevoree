@@ -17,9 +17,41 @@
         <android.tools.aapt>${android.home}/platform-tools/aapt</android.tools.aapt>
         <android.tools.dx>${android.home}/platform-tools/dx</android.tools.dx>
         <kevoree.version>${project.version}</kevoree.version>
+        <scala.version>2.9.0-1</scala.version>
     </properties>
 
+    <profiles>
+        <profile>
+            <id>org.kevoree.platform.osgi.android.mac</id>
+            <activation>
+                <os>
+                    <family>mac</family>
+                </os>
+            </activation>
+            <properties>
+                <java.lib.location>&lt;java.home&gt;/../Classes/classes.jar</java.lib.location>
+            </properties>
+        </profile>
+        <profile>
+            <id>org.kevoree.platform.osgi.android.other</id>
+            <activation>
+                <os>
+                    <family>!mac</family>
+                </os>
+            </activation>
+            <properties>
+                <java.lib.location>${java.home}/lib/rt.jar</java.lib.location>
+            </properties>
+        </profile>
+    </profiles>
+
+
     <dependencies>
+        <dependency>
+            <groupId>org.scala-lang</groupId>
+            <artifactId>scala-library</artifactId>
+            <version>${scala.version}</version>
+        </dependency>
         <dependency>
             <groupId>com.google.android</groupId>
             <artifactId>android</artifactId>
@@ -62,7 +94,6 @@
             <version>${kevoree.version}</version>
             <scope>provided</scope>
         </dependency>
-
         <dependency>
             <groupId>org.kevoree.tools</groupId>
             <artifactId>org.kevoree.tools.marShell</artifactId>
@@ -70,13 +101,62 @@
             <scope>provided</scope>
         </dependency>
 
-        <dependency>
-            <groupId>org.ops4j.pax.url</groupId>
-            <artifactId>pax-url-mvn</artifactId>
-            <version>1.2.5</version>
-            <scope>provided</scope>
-        </dependency>
 
+        <dependency>
+            <groupId>org.sonatype.aether</groupId>
+            <artifactId>aether-api</artifactId>
+            <version>1.12</version>
+        </dependency>
+        <dependency>
+            <groupId>org.sonatype.aether</groupId>
+            <artifactId>aether-spi</artifactId>
+            <version>1.12</version>
+        </dependency>
+        <dependency>
+            <groupId>org.sonatype.aether</groupId>
+            <artifactId>aether-util</artifactId>
+            <version>1.12</version>
+        </dependency>
+        <dependency>
+            <groupId>org.sonatype.aether</groupId>
+            <artifactId>aether-impl</artifactId>
+            <version>1.12</version>
+        </dependency>
+        <dependency>
+            <groupId>org.sonatype.aether</groupId>
+            <artifactId>aether-connector-wagon</artifactId>
+            <version>1.12</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.maven.wagon</groupId>
+            <artifactId>wagon-http-lightweight</artifactId>
+            <version>1.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.maven.wagon</groupId>
+            <artifactId>wagon-http-shared</artifactId>
+            <version>1.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.maven</groupId>
+            <artifactId>maven-aether-provider</artifactId>
+            <version>3.0.3</version>
+        </dependency>
+        <dependency>
+            <groupId>org.sonatype.aether</groupId>
+            <artifactId>aether-connector-file</artifactId>
+            <version>1.12</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.maven.wagon</groupId>
+            <artifactId>wagon-provider-api</artifactId>
+            <version>1.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.codehaus.plexus</groupId>
+            <artifactId>plexus-utils</artifactId>
+            <version>2.0.7</version>
+        </dependency>
 
         <dependency>
             <groupId>org.ops4j.pax.url</groupId>
@@ -94,7 +174,7 @@
         <dependency>
             <groupId>org.apache.felix</groupId>
             <artifactId>org.apache.felix.main</artifactId>
-            <version>3.0.2</version>
+            <version>3.2.0</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -103,22 +183,6 @@
             <version>1.4.1</version>
             <scope>provided</scope>
             <exclusions>
-                <exclusion>
-                    <artifactId>org.osgi.core</artifactId>
-                    <groupId>org.osgi</groupId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.felix</groupId>
-            <artifactId>org.apache.felix.shell.remote</artifactId>
-            <version>1.1.2</version>
-            <scope>provided</scope>
-            <exclusions>
-                <exclusion>
-                    <artifactId>org.apache.felix.gogo.runtime</artifactId>
-                    <groupId>org.apache.felix</groupId>
-                </exclusion>
                 <exclusion>
                     <artifactId>org.osgi.core</artifactId>
                     <groupId>org.osgi</groupId>
@@ -142,15 +206,13 @@
                     <groupId>org.restlet</groupId>
                 </exclusion>
             </exclusions>
-
         </dependency>
         <dependency>
             <groupId>org.restlet.android</groupId>
             <artifactId>org.restlet</artifactId>
-            <version>2.1-M2</version>
+            <version>2.1-M4</version>
             <scope>provided</scope>
         </dependency>
-
     </dependencies>
     <repositories>
         <repository>
@@ -160,6 +222,36 @@
     </repositories>
     <build>
         <plugins>
+
+            <plugin>
+                <groupId>org.scala-tools</groupId>
+                <artifactId>maven-scala-plugin</artifactId>
+                <version>2.15.2</version>
+                <executions>
+                    <execution>
+                        <id>scala-compile-first</id>
+                        <phase>process-resources</phase>
+                        <goals>
+                            <goal>add-source</goal>
+                            <goal>compile</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>scala-test-compile</id>
+                        <phase>process-test-resources</phase>
+                        <goals>
+                            <goal>testCompile</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <jvmArgs>
+                        <jvmArg>-Xmx1024m</jvmArg>
+                    </jvmArgs>
+                </configuration>
+            </plugin>
+
+
             <plugin>
                 <groupId>org.kevoree.extra</groupId>
                 <artifactId>org.kevoree.extra.osgi.sysgen</artifactId>
@@ -172,7 +264,7 @@
                         </goals>
                         <configuration>
                             <filters>
-                                scala,org.ops4j,org.eclipse.emf,org.slf4j,org.kevoree,org.restlet,android,org.osgi,javax.xml,org.w3c,org.xml
+                                scala,org.ops4j,org.eclipse.emf,org.slf4j,org.kevoree,org.restlet,org.kevoree.tools,org.apache,org.sonatype,org.codehaus,org.apache.http,android,org.osgi,javax.xml,org.w3c,org.xml
                             </filters>
                         </configuration>
                     </execution>
@@ -194,7 +286,7 @@
                     <outjar>${project.build.finalName}-small.jar</outjar>
                     <obfuscate>false</obfuscate>
                     <maxMemory>1024m</maxMemory>
-                    <proguardVersion>4.5</proguardVersion>
+                    <proguardVersion>4.6</proguardVersion>
                     <options>
 
                         <option>-keepattributes **</option>
@@ -238,20 +330,21 @@
                         <option>-dontnote</option>
 
                         <!--  <option>-keepattributes *Annotation*</option>-->
-
-                        <!--
-                        <option>-keep class org.restlet.**</option>
-                        -->
                         <option>-keep class org.osgi.** { *; }</option>
                         <option>-keep class org.restlet.resource.** { *; }</option>
+                        <option>-keep class org.restlet.util.Series.** { *; }</option>
                         <option>-keep class scala.runtime.** { *; }</option>
-
-                        <!--   <option>-keep class choco.cp.** { *; }</option>   -->
                         <option>-keep class org.kevoree.api.** { *; }</option>
                         <option>-keep class org.kevoree.framework.** { *; }</option>
                         <option>-keep class org.kevoree.remote.** { *; }</option>
                         <option>-keep class org.apache.felix.framework.** { *; }</option>
                         <option>-keep class org.kevoree.android.framework.** { *; }</option>
+                        <option>-keep class org.kevoree.tools.aether.framework.** { *; }</option>
+                        <option>-keep class org.apache.maven.wagon.** { *; }</option>
+                        <option>-keep class org.apache.maven.repository.** { *; }</option>
+                        <option>-keep class org.sonatype.** { *; }</option>
+
+
                         <option>-dontskipnonpubliclibraryclasses</option>
                         <option>-dontskipnonpubliclibraryclassmembers</option>
                         <option>-dontoptimize</option>
@@ -260,8 +353,6 @@
                             Exceptions,InnerClasses,Signature,Deprecated,SourceFile,LineNumberTable,*Annotation*,EnclosingMethod
                         </option>
 
-                        <option>-printmapping map.txt</option>
-                        <option>-printseeds seed.txt</option>
                         <option>-ignorewarnings</option>
 
                         <option>
@@ -276,11 +367,9 @@
                         <option>
                             -keepclassmembers class org.kevoree.framework.**
                         </option>
-
                         <option>-keep public class * extends android.app.Activity</option>
                         <option>-keep public class * extends android.app.Application</option>
                         <option>-keep public class * extends android.app.Service</option>
-
                         <option>-keep public class * extends
                             android.content.BroadcastReceiver
                         </option>
@@ -288,11 +377,9 @@
                             android.content.ContentProvider
                         </option>
                         <option>-keepclassmembers class org.kevoree.android.framework.**</option>
-
                         <option>
                             -keepclassmembers class org.kevoree.remote.rest.**
                         </option>
-
                     </options>
                     <assembly>
                         <inclusions>
@@ -341,10 +428,67 @@
                                 <groupId>org.kevoree</groupId>
                                 <artifactId>org.kevoree.remote</artifactId>
                             </inclusion>
-
                             <inclusion>
                                 <groupId>org.kevoree.tools</groupId>
                                 <artifactId>org.kevoree.tools.marShell</artifactId>
+                            </inclusion>
+                            <!--
+                            <inclusion>
+
+                                <groupId>org.kevoree.tools</groupId>
+                                <artifactId>org.kevoree.tools.aether.framework</artifactId>
+                                <filter>
+                                    !org/kevoree/tools/aether/framework/**
+                                </filter>
+                            </inclusion>
+                            -->
+                            <inclusion>
+                                <groupId>org.sonatype.aether</groupId>
+                                <artifactId>aether-api</artifactId>
+                            </inclusion>
+                            <inclusion>
+                                <groupId>org.sonatype.aether</groupId>
+                                <artifactId>aether-connector-wagon</artifactId>
+                            </inclusion>
+                            <inclusion>
+                                <groupId>org.apache.maven.wagon</groupId>
+                                <artifactId>wagon-http-lightweight</artifactId>
+                            </inclusion>
+                            <inclusion>
+                                <groupId>org.apache.maven.wagon</groupId>
+                                <artifactId>wagon-http-shared</artifactId>
+                            </inclusion>
+                            <inclusion>
+                                <groupId>org.apache.maven</groupId>
+                                <artifactId>maven-aether-provider</artifactId>
+                                <filter>
+                                    !META-INF/**
+                                </filter>
+                            </inclusion>
+
+                            <inclusion>
+                                <groupId>org.sonatype.aether</groupId>
+                                <artifactId>aether-spi</artifactId>
+                            </inclusion>
+                            <inclusion>
+                                <groupId>org.sonatype.aether</groupId>
+                                <artifactId>aether-util</artifactId>
+                            </inclusion>
+                            <inclusion>
+                                <groupId>org.sonatype.aether</groupId>
+                                <artifactId>aether-impl</artifactId>
+                            </inclusion>
+                            <inclusion>
+                                <groupId>org.sonatype.aether</groupId>
+                                <artifactId>aether-connector-file</artifactId>
+                            </inclusion>
+                            <inclusion>
+                                <groupId>org.apache.maven.wagon</groupId>
+                                <artifactId>wagon-provider-api</artifactId>
+                            </inclusion>
+                            <inclusion>
+                                <groupId>org.codehaus.plexus</groupId>
+                                <artifactId>plexus-utils</artifactId>
                             </inclusion>
 
                             <inclusion>
@@ -360,10 +504,6 @@
                                 <artifactId>org.apache.felix.shell.tui</artifactId>
                             </inclusion>
                             <inclusion>
-                                <groupId>org.apache.felix</groupId>
-                                <artifactId>org.apache.felix.shell.remote</artifactId>
-                            </inclusion>
-                            <inclusion>
                                 <groupId>org.slf4j</groupId>
                                 <artifactId>slf4j-android</artifactId>
                             </inclusion>
@@ -376,16 +516,10 @@
                                 <artifactId>jgrapht</artifactId>
                                 <filter>!META-INF/**</filter>
                             </inclusion>
-
-
-                            <inclusion>
-                                <groupId>org.ops4j.pax.url</groupId>
-                                <artifactId>pax-url-mvn</artifactId>
-                                <filter>!org/apache/commons/**,!META-INF/**</filter>
-                            </inclusion>
                             <inclusion>
                                 <groupId>org.ops4j.pax.url</groupId>
                                 <artifactId>pax-url-assembly</artifactId>
+                                <!--
                                 <filter>
                                     !org/apache/commons/**,
                                     !META-INF/**,
@@ -396,13 +530,13 @@
                                     !org/ops4j/pax/url/commons/handler/**,
                                     !org/ops4j/util/property/**
                                 </filter>
+                                -->
+
                             </inclusion>
-
-
                         </inclusions>
                     </assembly>
                     <libs>
-                        <lib>${java.home}/lib/rt.jar</lib>
+                        <lib>${java.lib.location}</lib>
                     </libs>
                 </configuration>
             </plugin>
@@ -443,7 +577,6 @@
                             <goal>generate-sources</goal>
                         </goals>
                     </execution>
-
                     <execution>
                         <id>package-apk</id>
                         <phase>package</phase>
@@ -451,7 +584,6 @@
                             <goal>apk</goal>
                         </goals>
                     </execution>
-
                 </executions>
                 <configuration>
                     <sdk>

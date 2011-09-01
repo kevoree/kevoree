@@ -11,26 +11,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
+package org.kevoree.tools.aether.framework
 
-package org.kevoree.android.framework.service;
-
-import android.app.Activity;
-import android.view.View;
+import org.sonatype.aether.connector.wagon.WagonProvider
+import org.apache.maven.wagon.Wagon
+import org.apache.maven.wagon.providers.http.LightweightHttpWagon
 
 /**
- *
- * @author ffouquet
- */
-public interface KevoreeAndroidService {
+* User: ffouquet
+* Date: 04/08/11
+* Time: 21:25
+*/
 
-    Activity getRootActivity();
+class ManualWagonProvider extends WagonProvider {
+  def lookup(roleHint: String) : Wagon = {
+    if ("http".equals(roleHint)) {
+       val httpC = new LightweightHttpWagon();
+      return httpC;
+    }
+    println("Null Wagon Connector")
+    null
+  }
 
-    void addToGroup(String groupKey,View view);
+  def release(p1: Wagon) {}
 
-    void remove(View view);
 
 }

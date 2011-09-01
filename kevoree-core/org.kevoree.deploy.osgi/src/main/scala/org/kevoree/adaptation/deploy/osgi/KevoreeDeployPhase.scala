@@ -54,15 +54,11 @@ class KevoreeDeployPhase(ctx : KevoreeDeployManager) {
             c.getLastExecutionBundle match {
               case None => false
               case Some(b) => {
-              logger.info("Resolving bundle: " + b.getSymbolicName)
+              logger.debug("Resolving bundle: " + b.getSymbolicName)
               ctx.getServicePackageAdmin.resolveBundles(Array(b));
-              println("bundle resolved")
                c.startLevel match {
                  case Some(level)=> {
                    ctx.getStartLevelServer.setBundleStartLevel(b,level)
-                   println(ctx.getStartLevelServer.getBundleStartLevel(b))
-                   println("->"+ctx.getStartLevelServer.getStartLevel)
-
                    if(ctx.getStartLevelServer.getStartLevel < level){
                      ctx.getStartLevelServer.setStartLevel(level)
                      while(ctx.getStartLevelServer.getStartLevel != level){
