@@ -1,5 +1,7 @@
 package org.kevoree.library.javase.kinect;
 
+import com.sun.jna.Native;
+import com.sun.jna.NativeLibrary;
 import org.kevoree.annotation.*;
 import org.kevoree.framework.AbstractComponentType;
 import org.kevoree.framework.MessagePort;
@@ -34,6 +36,8 @@ import java.nio.ByteBuffer;
 				vals = {"DEPTH_11BIT", "DEPTH_10BIT", "DEPTH_11BIT_PACKED", "DEPTH_10BIT_PACKED", "RGB",
 						"IR_8BIT", "IR_10BIT", "IR_10BIT_PACKED", "BAYER", "YUV_RGB", "YUV_RAW"}),
 		@DictionaryAttribute(name = "FPS", defaultValue = "30", optional = true, vals = {"1", "10", "15", "24", "30"}),
+		@DictionaryAttribute(name = "DEVICE_ID", defaultValue = "0", optional = true,
+				vals = {"0", "1", "2", "3", "4", "5"}),
 		@DictionaryAttribute(name = "LOG_LEVEL", defaultValue = "ERROR", optional = true,
 				vals = {"ERROR", "DEBUG", "INFO", "ALL"})
 })
@@ -44,15 +48,28 @@ public class Kinect extends AbstractComponentType {
 	private Context ctx;
 	private Device dev;
 
+	private static NativeLibrary instance;
+	private static int nbComponent;
+
 	private static final Logger logger = LoggerFactory.getLogger(Kinect.class);
 
 	@Start
 	public void start () throws Exception {
+
+		if (instance == null) {
+			NativeLibrary.addSearchPath("freenect", KinectNativeLibraryLoader.configure());
+			instance = NativeLibrary.getInstance("freenect");
+			nbComponent++;
+			Native.register(Freenect.class, instance);
+		}
+
 		ctx = Freenect.createContext();
 		ctx.setLogHandler(new Jdk14LogHandler());
 		ctx.setLogLevel(getLogLevel());
-		if (ctx.numDevices() > 0) { // TODO replace the numDevice (here 0) by a parameter value
-			dev = ctx.openDevice(0);
+		int devideId = this.getDeviceId();
+
+		if (ctx.numDevices() > devideId) {
+			dev = ctx.openDevice(devideId);
 			dev.setLed(LedStatus.GREEN);
 			if (isDepth()) {
 				dev.setDepthFormat(buildDepthFormat());
@@ -149,15 +166,16 @@ public class Kinect extends AbstractComponentType {
 				});
 			}
 		} else {
-			logger.info("Kinect not connected !");
+			logger.debug("Kinect not connected !");
+			stop();
 			throw new Exception("Fail to start " + this.getName());
 		}
 	}
 
 	@Stop
 	public void stop () {
-		dev.setLed(LedStatus.OFF);
 		if (dev != null) {
+			dev.setLed(LedStatus.OFF);
 			if (isDepth()) {
 				dev.stopDepth();
 			} else {
@@ -169,6 +187,11 @@ public class Kinect extends AbstractComponentType {
 				dev.close();
 			}
 			ctx.shutdown();
+		}
+
+		if (instance != null && nbComponent == 0) {
+			Native.unregister(Freenect.class);
+			instance.dispose();
 		}
 	}
 
@@ -192,9 +215,16 @@ public class Kinect extends AbstractComponentType {
 			}
 			move(percentage);
 		} else {
-			logger.info("message received has an unknown type !");
+			logger.warn("message received has an unknown type !");
 			// TODO log
 		}
+	}
+
+	private int getDeviceId () {
+		logger.debug("");
+		return Integer.parseInt((String) this.getDictionary().get("DEVICE_ID"));
+
+
 	}
 
 	private LogLevel getLogLevel () {
@@ -289,7 +319,7 @@ public class Kinect extends AbstractComponentType {
 			try {
 				Thread.sleep(100);
 			} catch (InterruptedException e) {
-				logger.debug("sleep the thread is not allowed here !");
+				logger.warn("sleep the thread is not allowed here !");
 			}
 			dev.refreshTiltState();
 		}

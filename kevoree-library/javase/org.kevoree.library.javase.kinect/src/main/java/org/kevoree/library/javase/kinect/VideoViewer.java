@@ -2,6 +2,8 @@ package org.kevoree.library.javase.kinect;
 
 import org.kevoree.annotation.*;
 import org.kevoree.framework.AbstractComponentType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
 import java.awt.*;
@@ -20,6 +22,7 @@ import java.awt.image.BufferedImage;
 @Library(name = "JavaSE")
 @ComponentType
 public class VideoViewer extends AbstractComponentType {
+	private static final Logger logger = LoggerFactory.getLogger(VideoViewer.class);
 
 	private boolean isAlreadyInitialized;
 	private BufferStrategy bufferStrategy;
@@ -53,6 +56,7 @@ public class VideoViewer extends AbstractComponentType {
 	@Port(name = "image")
 	public void onReceiveImage (Object message) {
 		if (message instanceof BufferedImage) {
+			final BufferedImage image = (BufferedImage) message;
 			if (!isAlreadyInitialized) {
 				frame = new JFrame(this.getName());
 				frame.setSize(((BufferedImage) message).getWidth(null), ((BufferedImage) message).getHeight(null));
@@ -60,11 +64,20 @@ public class VideoViewer extends AbstractComponentType {
 				init();
 				isAlreadyInitialized = true;
 			}
-			Graphics2D g = (Graphics2D) bufferStrategy.getDrawGraphics();
-			g.drawImage((Image) message, 0, 0, ((BufferedImage) message).getWidth(null), ((BufferedImage) message).getHeight(null),
-					null);
-			g.dispose();
-			bufferStrategy.show();
+			SwingUtilities.invokeLater(new Runnable() {
+				@Override
+				public void run () {
+					try {
+						Graphics2D g = (Graphics2D) bufferStrategy.getDrawGraphics();
+						g.drawImage(image, 0, 0, image.getWidth(null), image.getHeight(null), null);
+						g.dispose();
+						bufferStrategy.show();
+					} catch (Exception e) {
+						logger.debug("Something wrong appears, maybe the viewer fails", e);
+					}
+				}
+			});
+
 		}
 	}
 }
