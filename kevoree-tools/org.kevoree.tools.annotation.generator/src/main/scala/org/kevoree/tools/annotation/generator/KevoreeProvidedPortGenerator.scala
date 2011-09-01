@@ -34,7 +34,7 @@ object KevoreeProvidedPortGenerator {
   def generate(root:ContainerRoot,filer:Filer,ct: KevoreeComponentType,ref:PortTypeRef,targetNodeType:String){
     val portPackage = KevoreeGeneratorHelper.getTypeDefinitionGeneratedPackage(ct,targetNodeType)
    // var portPackage = ct.getFactoryBean().substring(0, ct.getFactoryBean().lastIndexOf("."));
-    val portName = ct.getName()+"PORT"+ref.getName();
+    val portName = ct.getName +"PORT"+ref.getName ;
 
     val wrapper = filer.createTextFile(com.sun.mirror.apt.Filer.Location.SOURCE_TREE, "", new File(portPackage.replace(".", "/")+"/"+portName+".scala"), "UTF-8");
 

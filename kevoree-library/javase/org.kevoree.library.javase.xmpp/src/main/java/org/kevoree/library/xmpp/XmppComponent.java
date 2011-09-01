@@ -8,6 +8,8 @@ import org.jivesoftware.smack.packet.Presence;
 import org.kevoree.framework.AbstractComponentType;
 import org.kevoree.annotation.*;
 import org.kevoree.framework.MessagePort;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -23,15 +25,16 @@ import org.kevoree.framework.MessagePort;
 @DictionaryType({@DictionaryAttribute(name = "login"),@DictionaryAttribute(name = "password")})
 @ComponentType
 public class XmppComponent extends AbstractComponentType {
+	private static final Logger logger = LoggerFactory.getLogger(XmppComponent.class);
 
     private ConnectionManager client;
     private LocalMessageListener defaultListener;
 
     @Port(name = "send")
     public void sendMessage(Object message) {
-        System.out.println("XMPP Send msg =>"+message.toString());
+        logger.debug("XMPP Send msg =>" + message.toString());
         for (String dest : client.getAlreadyView()) {
-            System.out.println("To =>" + dest);
+            logger.debug("To =>" + dest);
             client.sendMessage(message.toString(), dest, defaultListener);
         }
     }

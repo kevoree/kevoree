@@ -33,6 +33,8 @@ import org.restlet.data.MediaType;
 import org.restlet.representation.Representation;
 import org.restlet.representation.StringRepresentation;
 import org.restlet.resource.ClientResource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author ffouquet
@@ -44,14 +46,19 @@ import org.restlet.resource.ClientResource;
         @ThirdParty(name = "org.kevoree.extra.marshalling", url = "mvn:org.kevoree.extra/org.kevoree.extra.marshalling")
 }) */
 public class RestChannel extends AbstractChannelFragment {
+	private static final Logger logger = LoggerFactory.getLogger(RestChannel.class);
+
+    private KevoreeModelHandlerService modelHandlerService = null;
+    private Bundle bundle = null;
+    private ServiceReference sr = null;
 
     @Override
     public Object dispatch(Message msg) {
 
-        System.out.println("Local node bsize" + getBindedPorts().size());
+        logger.debug("Local node bsize" + getBindedPorts().size());
 
         if (getBindedPorts().isEmpty() && getOtherFragments().isEmpty()) {
-            System.out.println("No consumer, msg lost=" + msg.getContent());
+            logger.debug("No consumer, msg lost=" + msg.getContent());
         }
         for (org.kevoree.framework.KevoreePort p : getBindedPorts()) {
             forward(p, msg);
@@ -63,10 +70,6 @@ public class RestChannel extends AbstractChannelFragment {
         }
         return null;
     }
-
-    private KevoreeModelHandlerService modelHandlerService = null;
-    private Bundle bundle = null;
-    private ServiceReference sr = null;
 
     @Start
     public void startHello() {
@@ -105,10 +108,10 @@ public class RestChannel extends AbstractChannelFragment {
                 try {
                     message.getPassedNodes().add(modelHandlerService.getNodeName());
                     lastUrl = buildURL();
-                    System.out.println("remote rest url =>" + lastUrl);
+                    logger.debug("remote rest url =>" + lastUrl);
                     ClientResource remoteChannelResource = new ClientResource(lastUrl);
                     if (message.getInOut()) {
-                        System.out.println("Not implemented yet !");
+                        logger.error("Not implemented yet !");
                     } else {
                         RichJSONObject obj = new RichJSONObject(message);
                         Representation representation = new StringRepresentation(obj.toJSON(), MediaType.TEXT_PLAIN);
@@ -116,8 +119,7 @@ public class RestChannel extends AbstractChannelFragment {
                         remoteChannelResource.post(representation);
                     }
                 } catch (Exception e) {
-                    System.err.println("Fail to send to remote channel via =>" + lastUrl);
-                    System.err.println("Reply not implemented => message lost !!!");
+                    logger.error("Fail to send to remote channel via =>" + lastUrl + "\nReply not implemented => message lost !!!", e);
                 }
                 return null;
             }

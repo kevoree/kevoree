@@ -1,22 +1,19 @@
 package org.kevoree.library.xmpp;
 
+import org.jivesoftware.smack.*;
+import org.jivesoftware.smack.filter.PacketTypeFilter;
+import org.jivesoftware.smack.packet.Message;
+import org.jivesoftware.smack.packet.Packet;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.jivesoftware.smack.Chat;
-import org.jivesoftware.smack.ConnectionConfiguration;
-import org.jivesoftware.smack.ConnectionListener;
-import org.jivesoftware.smack.MessageListener;
-import org.jivesoftware.smack.PacketListener;
-import org.jivesoftware.smack.XMPPConnection;
-import org.jivesoftware.smack.XMPPException;
-import org.jivesoftware.smack.filter.PacketTypeFilter;
-import org.jivesoftware.smack.packet.Message;
-import org.jivesoftware.smack.packet.Packet;
-
 public class ConnectionManager implements ConnectionListener {
+	private static final Logger logger = LoggerFactory.getLogger(ConnectionManager.class);
 
     public XMPPConnection connection;
     private List<String> alreadyView = new ArrayList<String>();
@@ -32,7 +29,8 @@ public class ConnectionManager implements ConnectionListener {
             connection.addConnectionListener(this);
 
         } catch (XMPPException e) {
-            e.printStackTrace();
+//            e.printStackTrace();
+			logger.error("Log in failed", e);
         }
     }
 
@@ -45,7 +43,8 @@ public class ConnectionManager implements ConnectionListener {
             activeChats.get(to).sendMessage(message);
 
         } catch (XMPPException e) {
-            e.printStackTrace();
+//            e.printStackTrace();
+			logger.error("Send message failed", e);
         }
     }
 
@@ -68,7 +67,7 @@ public class ConnectionManager implements ConnectionListener {
                     alreadyView.add(name);
                     sendMessage("Entimid IRISA/INRIA Bonjour ;-) !", name, messageList);
                 } else {
-                    System.out.println("Already ok ");
+                    logger.debug("Already ok ");
                 }
             }
         };
@@ -76,26 +75,29 @@ public class ConnectionManager implements ConnectionListener {
     }
 
     public void connectionClosed() {
-        System.out.print("XMPP Connection Closed");
+        logger.debug("XMPP Connection Closed");
     }
 
     @Override
     public void connectionClosedOnError(Exception excptn) {
-        excptn.printStackTrace();
+//        excptn.printStackTrace();
+		logger.error("Connection closed on error", excptn);
     }
 
     @Override
     public void reconnectingIn(int i) {
-        System.out.print("XMPP Reconnecting(" + i + ")...");
+        logger.debug("XMPP Reconnecting(" + i + ")...");
     }
 
     @Override
     public void reconnectionSuccessful() {
-        System.out.print("XMPP Re-Connection Ok");
+        logger.debug("XMPP Re-Connection Ok");
     }
 
     @Override
     public void reconnectionFailed(Exception excptn) {
-        excptn.printStackTrace();
+//        excptn.printStackTrace();
+		logger.error("Reconnection failed", excptn);
+
     }
 }

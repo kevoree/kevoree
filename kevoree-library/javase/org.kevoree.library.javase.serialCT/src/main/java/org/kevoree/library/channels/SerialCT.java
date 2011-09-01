@@ -11,6 +11,8 @@ import org.kevoree.framework.KevoreeChannelFragment;
 import org.kevoree.framework.message.Message;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.ServiceReference;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
 
@@ -21,6 +23,7 @@ import java.util.HashMap;
 @Library(name = "KevoreeArduinoJava")
 @ChannelTypeFragment
 public class SerialCT extends AbstractChannelFragment {
+	private static final Logger logger = LoggerFactory.getLogger(SerialCT.class);
 
     KContentListener cl = new KContentListener(this);
     protected ServiceReference sr;
@@ -55,7 +58,7 @@ public class SerialCT extends AbstractChannelFragment {
                     if (getPortFromNode(cf.getNodeName()) != null) {
                         KevoreeSharedCom.addObserver(getPortFromNode(cf.getNodeName()), cl);
                     } else {
-                        System.out.println("Com Port Not Found ");
+                        logger.error("Com Port Not Found ");
                     }
                 }
             }
@@ -98,9 +101,9 @@ public class SerialCT extends AbstractChannelFragment {
             public Object sendMessageToRemote(Message message) {
                 String messageTosSend = "#"+getName() + /*":" + getNodeName() +*/ "[" + message.getContent().toString() + "]";
 
-                System.out.println("Send Message");
-                System.out.println(getPortFromNode(remoteNodeName));
-                System.out.println(messageTosSend);
+                logger.debug("Send Message");
+                logger.debug(getPortFromNode(remoteNodeName));
+                logger.debug(messageTosSend);
 
                 KevoreeSharedCom.send(getPortFromNode(remoteNodeName), messageTosSend);
                 return null;

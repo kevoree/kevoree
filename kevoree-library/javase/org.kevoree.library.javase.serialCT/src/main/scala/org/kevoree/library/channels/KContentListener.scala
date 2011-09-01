@@ -5,6 +5,7 @@ import util.matching.Regex
 import org.kevoree.framework.message.Message
 import org.kevoree.framework.ChannelFragment
 import scala.collection.JavaConversions._
+import org.slf4j.{LoggerFactory, Logger}
 
 /**
  * User: ffouquet
@@ -13,6 +14,7 @@ import scala.collection.JavaConversions._
  */
 
 class KContentListener(cf: ChannelFragment) extends ContentListener {
+  private final val logger: Logger = LoggerFactory.getLogger(classOf[KContentListener])
   val KevSerialMessageRegex = new Regex("(.+):(.+)\\[(.*)\\]")
 
   def recContent(content: String) {
@@ -42,9 +44,8 @@ class KContentListener(cf: ChannelFragment) extends ContentListener {
             cf.remoteDispatch(message);
           }
         }
-        case _ => {
-          println("Msg format error => " + content.trim())
-          println("Msg lost")
+        case _@e => {
+          logger.debug("Msg format error => " + content.trim() + "\nMsg lost!", e)
         }
       }
    // }

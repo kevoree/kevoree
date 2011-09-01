@@ -6,18 +6,13 @@
  */
 package org.kevoree.library.esper;
 
-import java.util.Random;
-
-import org.kevoree.annotation.ComponentType;
-import org.kevoree.annotation.Library;
-import org.kevoree.annotation.PortType;
-import org.kevoree.annotation.RequiredPort;
-import org.kevoree.annotation.Requires;
-import org.kevoree.annotation.Start;
-import org.kevoree.annotation.Stop;
-import org.kevoree.annotation.Update;
+import org.kevoree.annotation.*;
 import org.kevoree.framework.AbstractComponentType;
 import org.kevoree.framework.MessagePort;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.Random;
 
 /**
  * This Kevoree component encapsulates Esper. 
@@ -33,8 +28,8 @@ import org.kevoree.framework.MessagePort;
 @Library(name = "Kevoree::Esper")
 @ComponentType
 public class EsperTestComponent extends AbstractComponentType {
-    public EsperTestComponent(){
-    }
+
+	private Logger logger = LoggerFactory.getLogger(EsperTestComponent.class);
 
     @Start
     public void start() {
@@ -72,7 +67,7 @@ public class EsperTestComponent extends AbstractComponentType {
         long timeStamp = System.currentTimeMillis();
         String symbol = "AAPL";
         Tick tick = new Tick(symbol, price, timeStamp);
-        System.out.println("Sending tick:" + tick);
+        logger.info("Sending tick:" + tick);
         send(tick);
     }
 

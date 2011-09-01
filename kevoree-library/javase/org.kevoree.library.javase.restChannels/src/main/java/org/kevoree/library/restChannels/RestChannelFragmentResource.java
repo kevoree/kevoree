@@ -26,6 +26,8 @@ import org.restlet.representation.Representation;
 import org.restlet.representation.StringRepresentation;
 import org.restlet.resource.ResourceException;
 import org.restlet.resource.ServerResource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -34,6 +36,7 @@ import java.util.HashMap;
  * @author ffouquet
  */
 public class RestChannelFragmentResource extends ServerResource {
+	private static final Logger logger = LoggerFactory.getLogger(RestChannelFragmentResource.class);
 
     public static HashMap<String, AbstractChannelFragment> channels = new HashMap<String, AbstractChannelFragment>();
 
@@ -83,7 +86,7 @@ public class RestChannelFragmentResource extends ServerResource {
     //@Post()
     public String postInput(String entity) {
         Message msg = buildMsg(entity);
-        System.out.println(entity);
+        logger.debug(entity);
 
         Object o = channelFragment.remoteDispatch(msg);
         return "<ack />";
@@ -103,7 +106,8 @@ public class RestChannelFragmentResource extends ServerResource {
             Message obj = (Message) c.fromJSON(Message.class);
             return obj;
         } catch (Exception e) {
-            e.printStackTrace();
+//            e.printStackTrace();
+			logger.error("Unable to build message from JSON (" + entity + ")", e);
         }
         return null;
     }
@@ -111,7 +115,7 @@ public class RestChannelFragmentResource extends ServerResource {
     private Message buildMessageFromAttribute(String entity) {
         Message msg = new Message();
         for (String key : getRequest().getAttributes().keySet()) {
-            System.out.println("Debug=" + key + "--" + getRequest().getAttributes().get(key));
+            logger.debug(key + "--" + getRequest().getAttributes().get(key));
         }
         return msg;
     }

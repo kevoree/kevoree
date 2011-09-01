@@ -13,15 +13,13 @@
  */
 package org.kevoree.library.fakedomo;
 
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.util.logging.Logger;
-
-import javax.swing.JFrame;
 import org.kevoree.annotation.*;
 import org.kevoree.framework.MessagePort;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.swing.*;
+import java.awt.*;
 
 /**
  *
@@ -48,6 +46,14 @@ import org.kevoree.framework.MessagePort;
 @ComponentType
 public class FakeSimpleLight extends AbstractFakeStuffComponent {
 
+	private static final Logger logger = LoggerFactory.getLogger(FakeSimpleLight.class);
+
+    private static final int FRAME_WIDTH = 300;
+    private static final int FRAME_HEIGHT = 300;
+//    private static Logger logger;
+    private MyFrame frame;
+    private Boolean state = false;
+
     @Port(name = "toggle",method = "toggle")
     public String toogle(){
         if(state){
@@ -60,13 +66,13 @@ public class FakeSimpleLight extends AbstractFakeStuffComponent {
 
     @Override
     public void start() {
-        logger = Logger.getLogger(this.getClass().getName());
+//        logger = Logger.getLogger(this.getClass().getName());
 
         frame = new MyFrame(Color.RED);
         frame.setVisible(true);
         state = false;
 
-        System.out.println("Hello from Light Entimid 2 ;-)");
+        logger.debug("Hello from " + this.getName() + " ;-)");
 
         MessagePort log = getPortByName("log", MessagePort.class);
         if (log != null) {
@@ -83,7 +89,7 @@ public class FakeSimpleLight extends AbstractFakeStuffComponent {
     @Update
     public void update() {
         for (String s : this.getDictionary().keySet()) {
-            System.out.println("Dic => " + s + " - " + this.getDictionary().get(s));
+            logger.debug("Dic => " + s + " - " + this.getDictionary().get(s));
         }
     }
 
@@ -113,11 +119,6 @@ public class FakeSimpleLight extends AbstractFakeStuffComponent {
             log.process("change color");
         }
     }
-    private static final int FRAME_WIDTH = 300;
-    private static final int FRAME_HEIGHT = 300;
-    private static Logger logger;
-    private MyFrame frame;
-    private Boolean state = false;
 
     public Boolean getState() {
         return state;
@@ -145,14 +146,14 @@ public class FakeSimpleLight extends AbstractFakeStuffComponent {
                 g2d.setColor(c);
                 g2d.fillOval(0, 0, FRAME_WIDTH, FRAME_HEIGHT);
             } else {
-                logger.warning("Graphics are not 2D. Instance of:" + g.getClass());
+                logger.debug("Graphics are not 2D. Instance of:" + g.getClass());
             }
         }
 
         public final void setColor(Color c) {
             this.c = c;
             repaint();
-            Logger.getLogger(this.getName()).info("SetColor " + c.toString());
+            logger.debug("SetColor " + c.toString());
         }
     }
 }

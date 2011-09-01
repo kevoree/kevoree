@@ -23,6 +23,8 @@ import org.kevoree.framework.ChannelFragmentSender;
 import org.kevoree.framework.KevoreeChannelFragment;
 import org.kevoree.framework.NoopChannelFragmentSender;
 import org.kevoree.framework.message.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -32,13 +34,17 @@ import org.kevoree.framework.message.*;
 @ChannelTypeFragment
 public class defMSG extends AbstractChannelFragment {
 
+	private Logger logger = LoggerFactory.getLogger(defMSG.class);
+
+
     @Override
     public Object dispatch(Message msg) {
 
         //System.out.println("Local node bsize" + getBindedPorts().size());
 
         if (getBindedPorts().isEmpty() && getOtherFragments().isEmpty()) {
-            System.out.println("No consumer, msg lost=" + msg.getContent());
+
+           logger.warn("No consumer, msg lost=" + msg.getContent());
         }
         for (org.kevoree.framework.KevoreePort p : getBindedPorts()) {
             forward(p, msg);
@@ -53,18 +59,18 @@ public class defMSG extends AbstractChannelFragment {
 
     @Start
     public void startHello() {
-        System.out.println("Hello Channel");
+       logger.debug("Hello Channel");
     }
 
     @Stop
     public void stopHello() {
-        System.out.println("Bye Channel");
+        logger.debug("Bye Channel");
     }
 
     @Update
     public void updateHello() {
         for (String s : this.getDictionary().keySet()) {
-            System.out.println("Dic => " + s + " - " + this.getDictionary().get(s));
+            logger.debug("Dic => " + s + " - " + this.getDictionary().get(s));
         }
     }
 
