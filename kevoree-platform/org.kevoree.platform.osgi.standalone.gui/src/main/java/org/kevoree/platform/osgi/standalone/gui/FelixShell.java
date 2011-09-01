@@ -30,7 +30,7 @@ public class FelixShell extends JPanel {
     public static PrintStream STDwriter = null;
     public static PrintStream ERRwriter = null;
     //public static PrintStream SSTDwriter = null;
-   // public static PrintStream SSTDwriter = null;
+    // public static PrintStream SSTDwriter = null;
 
     private static String eol = System.getProperty("line.separator");
 
@@ -40,18 +40,18 @@ public class FelixShell extends JPanel {
 
         setLayout(new BorderLayout());
         final RichTextArea textArea = new RichTextArea();
-         textArea.setBackground(new Color(57,57,57));
+        textArea.setBackground(new Color(57, 57, 57));
         textArea.setEditable(false);
-        textArea.setPreferredSize(new Dimension(500,250));
-       // textArea.setRows(15);
-       // textArea.setColumns(60);
+        textArea.setPreferredSize(new Dimension(500, 250));
+        // textArea.setRows(15);
+        // textArea.setColumns(60);
 
 
         singleton = null;
-        STDwriter = new PrintStream(new TextOutputStream(textArea,Color.WHITE));
-        ERRwriter = new PrintStream(new TextOutputStream(textArea,Color.ORANGE));
+        STDwriter = new PrintStream(new TextOutputStream(textArea, Color.WHITE));
+        ERRwriter = new PrintStream(new TextOutputStream(textArea, Color.ORANGE));
 
-        scrollShell =  new JScrollPane(textArea);
+        scrollShell = new JScrollPane(textArea);
         add(scrollShell, BorderLayout.CENTER);
 
         final JTextField input = new JTextField();
@@ -59,11 +59,11 @@ public class FelixShell extends JPanel {
         input.addKeyListener(new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent keyEvent) {
-                if(keyEvent.getKeyCode() == KeyEvent.VK_ENTER) {
-               
+                if (keyEvent.getKeyCode() == KeyEvent.VK_ENTER) {
+
                     try {
-                       // textArea.append("==>" + input.getText() + eol);
-                        textArea.append(input.getText() + eol, new Color(87,145,198), Color.white, true);
+                        // textArea.append("==>" + input.getText() + eol);
+                        textArea.append(input.getText() + eol, new Color(87, 145, 198), Color.white, true);
 
                         shell.executeCommand(input.getText().trim(), STDwriter, ERRwriter);
                         input.setText("");
@@ -87,25 +87,31 @@ public class FelixShell extends JPanel {
         private RichTextArea _textArea = null;
         private Color _color = null;
 
-        public TextOutputStream(final RichTextArea textArea,final Color color) {
+        public TextOutputStream(final RichTextArea textArea, final Color color) {
             _textArea = textArea;
             _color = color;
         }
 
+        StringBuilder currentLine = new StringBuilder();
+
         @Override
         public void write(final int i) throws IOException {
+
             SwingUtilities.invokeLater(new Runnable() {
                 public void run() {
                     try {
-                        _textArea.append(((char) i) + "", _color, Color.white, false);
-                       //  _textArea.selectAll();
-                       // _textArea.setSelectionStart(_textArea.getDocument().getEndPosition().getOffset());
-                       // _textArea.append( ((char) i) + "");
+                        currentLine.append((char) i);
+                        if (((char) i) == '\n') {
+                           _textArea.append(currentLine.toString(), _color, Color.white, false);
+                            currentLine = new StringBuilder();
+                        }
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
                 }
             });
+
+
         }
     }
 
