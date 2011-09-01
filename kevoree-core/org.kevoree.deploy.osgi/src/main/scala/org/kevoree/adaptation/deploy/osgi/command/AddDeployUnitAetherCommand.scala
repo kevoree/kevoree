@@ -113,6 +113,10 @@ case class AddDeployUnitAetherCommand(deployUnit: DeployUnit, ctx: KevoreeDeploy
         val srPackageAdmin = ctx.bundleContext.getServiceReference(classOf[PackageAdmin].getName)
         val padmin: PackageAdmin = ctx.bundleContext.getService(srPackageAdmin).asInstanceOf[PackageAdmin]
         padmin.resolveBundles(Array(bundle))
+
+        (ctx.bundleMapping.filter(map => map.bundle == bundle).toList ++ List()).foreach{ map =>
+           ctx.bundleMapping.remove(map)
+        }
       }
       case None => //NOTHING CAN BE DOING HERE
     }
