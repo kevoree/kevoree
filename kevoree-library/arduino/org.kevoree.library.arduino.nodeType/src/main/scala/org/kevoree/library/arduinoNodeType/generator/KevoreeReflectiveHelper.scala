@@ -9,8 +9,10 @@ import org.osgi.framework.BundleContext
 import org.kevoree.framework.KevoreeGeneratorHelper
 import org.kevoree.{ContainerRoot, TypeDefinition}
 import scala.collection.JavaConversions._
+import org.slf4j.{LoggerFactory, Logger}
 
 trait KevoreeReflectiveHelper {
+  private val logger: Logger = LoggerFactory.getLogger(this.getClass)
 
   def createStandaloneInstance(ct: TypeDefinition, bundleContext: BundleContext, nodeName: String): Object = {
     //CREATE NEW INSTANCE
@@ -43,7 +45,7 @@ trait KevoreeReflectiveHelper {
     //REFLEXIVE SET NODENAME
     reflectiveInstance.getClass.getMethods.find(method => method.getName == "setNodeName") match {
       case Some(method) => method.invoke(reflectiveInstance, nodeName)
-      case None => println("NodeName not set !")
+      case None => logger.error("NodeName not set !")
     }
 
 

@@ -10,8 +10,10 @@ import org.kevoree.MessagePortType
 import org.osgi.framework.BundleContext
 import scala.collection.JavaConversions._
 import org.kevoree.annotation.{Generate => KGenerate}
+import org.slf4j.{LoggerFactory, Logger}
 
 trait KevoreeComponentTypeClassGenerator extends KevoreeCAbstractGenerator with KevoreeReflectiveHelper {
+  private val logger: Logger = LoggerFactory.getLogger(this.getClass)
 
   def generateComponentType(ct:ComponentType,bundleContext : BundleContext,nodeName:String) = {
     
@@ -36,7 +38,7 @@ trait KevoreeComponentTypeClassGenerator extends KevoreeCAbstractGenerator with 
         if (annotation.annotationType.toString.contains("org.kevoree.annotation.Generate")) {
           val generateAnnotation = annotation.asInstanceOf[KGenerate]
           if(generateAnnotation.value == "classheader"){
-            var localContext = new StringBuffer
+            val localContext = new StringBuffer
             method.invoke(instance, localContext)
             context b localContext.toString
           }
@@ -92,7 +94,7 @@ trait KevoreeComponentTypeClassGenerator extends KevoreeCAbstractGenerator with 
         if (annotation.annotationType.toString.contains("org.kevoree.annotation.Generate")) {
           val generateAnnotation = annotation.asInstanceOf[KGenerate]
           if(generateAnnotation.value == "classinit"){
-            var localContext = new StringBuffer
+            val localContext = new StringBuffer
             method.invoke(instance, localContext)
             context b localContext.toString
           }
@@ -117,7 +119,7 @@ trait KevoreeComponentTypeClassGenerator extends KevoreeCAbstractGenerator with 
         if (annotation.annotationType.toString.contains("org.kevoree.annotation.Generate")) {
           val generateAnnotation = annotation.asInstanceOf[KGenerate]
           if(generateAnnotation.value == "classdestroy"){
-            var localContext = new StringBuffer
+            val localContext = new StringBuffer
             method.invoke(instance, localContext)
             context b localContext.toString
           }
@@ -144,7 +146,7 @@ trait KevoreeComponentTypeClassGenerator extends KevoreeCAbstractGenerator with 
         if (annotation.annotationType.toString.contains("org.kevoree.annotation.Generate")) {
           val generateAnnotation = annotation.asInstanceOf[KGenerate]
           if(generateAnnotation.value == "periodic"){
-            var localContext = new StringBuffer
+            val localContext = new StringBuffer
             method.invoke(instance, localContext)
             context b localContext.toString
           }
@@ -176,17 +178,17 @@ trait KevoreeComponentTypeClassGenerator extends KevoreeCAbstractGenerator with 
               case Some(mapping) => {
                   clazz.getMethods.find(method => method.getName == mapping.getBeanMethodName) match {
                     case Some(method) => {
-                        var localContext = new StringBuffer
+                        val localContext = new StringBuffer
                         method.invoke(instance, localContext)
                         context b localContext.toString
                       }
-                    case _ => println("method not found")
+                    case _@e => logger.error("method not found", e)
                   }
                 }
-              case None => println("Process not found")
+              case None => logger.error("Process not found")
             }
           }
-        case _@pt => println("Not supported " + pt)
+        case _@pt => logger.error("Not supported " + pt)
       }
       
       context b "}";

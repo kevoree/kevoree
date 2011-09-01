@@ -12,8 +12,10 @@ import org.kevoree.framework.message.Message
 import org.osgi.framework.BundleContext
 import scala.collection.JavaConversions._
 import org.kevoree.annotation.{Generate => KGenerate}
+import org.slf4j.{LoggerFactory, Logger}
 
 trait KevoreeChannelTypeClassGenerator extends KevoreeCAbstractGenerator with KevoreeReflectiveHelper {
+  private val logger: Logger = LoggerFactory.getLogger(this.getClass)
 
   def generateChannelType(ct:ChannelType,bundleContext : BundleContext,nodeName:String) = {
     
@@ -52,7 +54,7 @@ trait KevoreeChannelTypeClassGenerator extends KevoreeCAbstractGenerator with Ke
         if (annotation.annotationType.toString.contains("org.kevoree.annotation.Generate")) {
           val generateAnnotation = annotation.asInstanceOf[KGenerate]
           if(generateAnnotation.value == "classdestroy"){
-            var localContext = new StringBuffer
+            val localContext = new StringBuffer
             method.invoke(instance, localContext)
             context b localContext.toString
           }
@@ -79,7 +81,7 @@ trait KevoreeChannelTypeClassGenerator extends KevoreeCAbstractGenerator with Ke
         if (annotation.annotationType.toString.contains("org.kevoree.annotation.Generate")) {
           val generateAnnotation = annotation.asInstanceOf[KGenerate]
           if(generateAnnotation.value == "periodic"){
-            var localContext = new StringBuffer
+            val localContext = new StringBuffer
             method.invoke(instance, localContext)
             context b localContext.toString
           }
@@ -93,13 +95,13 @@ trait KevoreeChannelTypeClassGenerator extends KevoreeCAbstractGenerator with Ke
     context b "void dispatch(kmessage * msg){"
     clazz.getMethods.find(method => method.getName == "dispatch") match {
       case Some(method) => {
-          var localContext = new StringBuffer
-          var message = new Message
+          val localContext = new StringBuffer
+          val message = new Message
           message.setContent(localContext)
           method.invoke(instance, message)
           context b localContext.toString
         }
-      case None => println("method dispatch not found")
+      case None => logger.error("method dispatch not found")
     }
     context b "}"
     
