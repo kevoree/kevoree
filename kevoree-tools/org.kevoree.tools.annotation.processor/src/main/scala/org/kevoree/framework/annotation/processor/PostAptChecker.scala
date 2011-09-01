@@ -20,42 +20,71 @@ package org.kevoree.framework.annotation.processor
 
 import com.sun.mirror.apt.AnnotationProcessorEnvironment
 import scala.collection.JavaConversions._
-import org.kevoree.{NodeType, ContainerRoot, LifeCycleTypeDefinition}
+import org.kevoree._
 
-class PostAptChecker(root : ContainerRoot, env : AnnotationProcessorEnvironment) {
+class PostAptChecker(root: ContainerRoot, env: AnnotationProcessorEnvironment) {
 
   private var errors = 0
 
   def check = {
-    checkLifeCycleMethods
+    checkComponentTypes()
     errors == 0
+
   }
 
-  def checkLifeCycleMethods = {
+  def checkComponentTypes() {
 
-    root.getTypeDefinitions.foreach{typeDef =>
-      typeDef match {
-
-        case ntype : NodeType => //IGNORE CHECK FOR NODE TYPE
-
-        case lctd : LifeCycleTypeDefinition => {
-            if(lctd.getStartMethod == null) {
-              env.getMessager.printError("@Start method is mandatory in " + typeDef.getBean + "." + "\n")
-              errors += 1
-            }
-            if(lctd.getStopMethod == null) {
-              env.getMessager.printError("@Stop method is mandatory in " + typeDef.getBean + "." + "\n")
-              errors += 1
-            }
-            if(lctd.getUpdateMethod == null) {
-              env.getMessager.printWarning("@Update method is missing in " + typeDef.getBean + "." + "\n")
-            }
-
-          }
-
-        case _=>
-      }
+    root.getTypeDefinitions.foreach {
+      typeDef =>
+        checkLifeCycleMethods(typeDef)
+        checkPackage(typeDef)
     }
+  }
+
+  private def checkLifeCycleMethods(td: TypeDefinition) {
+    td match {
+
+      case ntype: NodeType => //IGNORE CHECK FOR NODE TYPE
+
+      case lctd: LifeCycleTypeDefinition => {
+        if (lctd.getStartMethod == null) {
+          env.getMessager.printError("@Start method is mandatory in " + td.getBean + "." + "\n")
+          errors += 1
+        }
+        if (lctd.getStopMethod == null) {
+          env.getMessager.printError("@Stop method is mandatory in " + td.getBean + "." + "\n")
+          errors += 1
+        }
+        if (lctd.getUpdateMethod == null) {
+          env.getMessager.printWarning("@Update method is missing in " + td.getBean + "." + "\n")
+        }
+
+      }
+
+      case _ =>
+    }
+  }
+
+  private def checkPackage(td: TypeDefinition) {
+    td match {
+      case ct: ComponentType => {
+        if (td.getBean == null) {
+          env.getMessager.printError("TypeDefinition bean is null for " + td.getName)
+          errors += 1
+        } else {
+          if (td.getBean.lastIndexOf(".") == -1) {
+            env.getMessager.printError("The TypeDefinition seems to be out of any package. (lastIndexOf('.') returned -1 for bean : " + td.getBean + "\n")
+            errors += 1
+          }
+        }
+        if (td.getFactoryBean.lastIndexOf(".") == -1) {
+          env.getMessager.printError("The TypeDefinition seems to be out of any package. (lastIndexOf('.') returned -1 for FactoryBean : " + td.getFactoryBean + "\n")
+          errors += 1
+        }
+      }
+      case _ =>
+    }
+
   }
 
 }
