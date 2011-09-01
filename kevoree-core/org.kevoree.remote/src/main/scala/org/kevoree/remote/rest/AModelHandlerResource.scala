@@ -29,10 +29,6 @@ import org.slf4j.LoggerFactory
 
 
 class AModelHandlerResource extends ServerResource {
-  /*
-   override def doInit()={
-   println("INIT")
-   }*/
 
   val logger = LoggerFactory.getLogger(classOf[AModelHandlerResource])
 

@@ -13,7 +13,6 @@
  */
 package org.kevoree.platform.osgi.android;
 
-import com.sun.xml.internal.messaging.saaj.util.ByteOutputStream;
 import org.kevoree.ContainerRoot;
 import org.kevoree.api.service.core.handler.KevoreeModelHandlerService;
 import org.kevoree.api.service.core.script.ScriptInterpreter;
@@ -23,6 +22,9 @@ import org.kevoree.tools.marShell.interpreter.KevsInterpreterContext;
 import org.kevoree.tools.marShell.interpreter.KevsScriptInterpreter;
 import org.kevoree.tools.marShell.parser.KevsParser;
 import scala.Option;
+
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 
 public class KevScriptInterpreterService implements ScriptInterpreter {
 
@@ -40,16 +42,18 @@ public class KevScriptInterpreterService implements ScriptInterpreter {
 
         if (script.isDefined()) {
 
-            ByteOutputStream outputStream = new ByteOutputStream();
-            KevoreeXmiHelper.saveStream(outputStream,handler.getLastModel());
-            ContainerRoot model = KevoreeXmiHelper.loadStream(outputStream.newInputStream());
+            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+            KevoreeXmiHelper.saveStream(outputStream, handler.getLastModel());
+
+            ByteArrayInputStream input = new ByteArrayInputStream(outputStream.toByteArray());
+            ContainerRoot model = KevoreeXmiHelper.loadStream(input);
 
             //ContainerRoot model = EcoreUtil.copy(handler.getLastModel());
 
             KevsInterpreterContext context = new KevsInterpreterContext(model);
             KevsScriptInterpreter interpreter = new KevsScriptInterpreter((Script) script.get());
             boolean result = interpreter.interpret(context);
-            if(result){
+            if (result) {
                 handler.updateModel(model);
                 return true;
             } else {

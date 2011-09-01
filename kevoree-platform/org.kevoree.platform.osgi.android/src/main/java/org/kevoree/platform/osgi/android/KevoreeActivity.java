@@ -171,7 +171,6 @@ public class KevoreeActivity extends Activity implements KevoreeAndroidService {
     @Override
     public void addToGroup(final String groupKey, final View view) {
         this.runOnUiThread(new Runnable() {
-
             @Override
             public void run() {
                 TabSpec tspec3 = tabs.newTabSpec(groupKey);
@@ -181,5 +180,10 @@ public class KevoreeActivity extends Activity implements KevoreeAndroidService {
             }
         });
 
+    }
+
+    @Override
+    public void remove(View view) {
+        //tabs.get
     }
 }

@@ -22,8 +22,8 @@
      #define MSGMAXSIZE 15
      #define MSGBUFFERSIZE 4
      int currentInstanceID = -1;
-     char msgBytes[3][MSGBUFFERSIZE];
-     int currentMsgBufIndex = 0;
+     char msgBytes[MSGBUFFERSIZE][MSGMAXSIZE];
+     int currentMsgBufIndex = -1;
      int currentMsgIndex = -1;
      boolean messageInProgress = false;
      boolean instanceNameRead = false;

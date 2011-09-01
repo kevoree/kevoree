@@ -6,8 +6,8 @@
      boolean firstAdd ;                                                     
      unsigned long timeBeforeScript; 
          void checkForAdminMsg () {                                                       
-           if (Serial.peek() == startAdminChar) {                                         
-             timeBeforeScript = millis(); 
+           if (Serial.peek() == startAdminChar) {
+             timeBeforeScript = millis();
              Serial.read(); //DROP ADMIN START CHAR                                       
              while (!Serial.available() > 0) {                                            
                delay(10);                                                                 
@@ -24,7 +24,7 @@
                while (parsingAdmin) {                                                      
                  if (Serial.available() > 0 && serialIndex < BUFFERSIZE) {                 
                    inBytes[serialIndex] = Serial.read();                                   
-                   if (inBytes[serialIndex] == sepAdminChar) {                             
+                   if (inBytes[serialIndex] == sepAdminChar) {
                      inBytes[serialIndex] = '\0';
                      //saveScriptCommand();                                                
                      if (!firstAdd) {                                                      
@@ -91,27 +91,30 @@
        serialIndex = 0;                                                 
      }
 
-    /* CHECK IF NEW MESSAGE ARRIVE */
+        /* CHECK IF NEW MESSAGE ARRIVE */
     void initUserMessage(){
-         messageInProgress = false;
+         messageInProgress = true;
          instanceNameRead = false;
-         currentMsgIndex = (currentMsgIndex + 1)%MSGBUFFERSIZE;
+         currentMsgIndex = (currentMsgIndex + 1) % MSGBUFFERSIZE;
          currentMsgBufIndex = -1;
     }
     void processUserMessage(){
-         if(Serial.available() == 0){return;} /* IGNORE \n and check for new message */
-            if(Serial.peek() == '\n'){
-                Serial.read();
-                return;
+       if(!(Serial.available() > 0) ){return;} /* IGNORE \n and check for new message */
+       if(Serial.peek() == '#'){initUserMessage();Serial.read();return;}
+         if(messageInProgress == true){
+             // DO USER MESSAGE
+             currentMsgBufIndex = currentMsgBufIndex + 1;
+             msgBytes[currentMsgIndex][currentMsgBufIndex] = Serial.read();
+             if(!instanceNameRead){
+               lookForInstanceName();
+             } else {
+                continueUserMessage();
+             }
+         } else {
+            if(Serial.peek() != '$'){
+               Serial.println(Serial.read(),BYTE);
+            }
          }
-         if(Serial.peek() == '#'){initUserMessage();messageInProgress = true;Serial.read();} //ALWAYS CHECK FOR NEW MESSAGE - TODO TRONCATED DETECTION
-         else {
-           currentMsgBufIndex = (currentMsgBufIndex + 1)%MSGMAXSIZE;
-           msgBytes[currentMsgIndex][currentMsgBufIndex] = Serial.read();
-           if(messageInProgress && !instanceNameRead){lookForInstanceName();}
-           if(messageInProgress && instanceNameRead){continueUserMessage();}
-         }
-
     }
     void lookForInstanceName(){
        if(msgBytes[currentMsgIndex][currentMsgBufIndex] == '['){
@@ -127,6 +130,6 @@
           if(currentInstanceID != -1){
               pushToChannel(currentInstanceID,&msgBytes[currentMsgIndex][0]);
           }
-          initUserMessage();
+          messageInProgress = false;
        }
     }

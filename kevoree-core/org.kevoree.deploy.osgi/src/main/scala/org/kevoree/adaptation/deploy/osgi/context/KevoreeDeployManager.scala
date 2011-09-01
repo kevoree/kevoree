@@ -39,11 +39,9 @@ class KevoreeDeployManager {
         if (bundle != null) {
           if (bundle.getState == Bundle.UNINSTALLED) {
             bundleMapping.remove(mapping)
-            println("Garbage bundle binding")
           }
         } else {
           bundleMapping.remove(mapping)
-          println("Garbage bundle binding")
         }
     }
   }

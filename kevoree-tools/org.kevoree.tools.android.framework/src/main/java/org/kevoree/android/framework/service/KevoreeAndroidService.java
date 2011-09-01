@@ -31,4 +31,6 @@ public interface KevoreeAndroidService {
 
     void addToGroup(String groupKey,View view);
 
+    void remove(View view);
+
 }

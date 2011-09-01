@@ -5,7 +5,6 @@
 package org.kevoree.library.logger.android;
 
 import android.widget.TextView;
-import android.widget.Toast;
 import org.kevoree.android.framework.helper.UIServiceHandler;
 import org.kevoree.android.framework.service.KevoreeAndroidService;
 import org.kevoree.annotation.*;
@@ -13,13 +12,12 @@ import org.kevoree.framework.AbstractComponentType;
 import org.osgi.framework.Bundle;
 
 /**
- *
  * @author ffouquet
  */
 @Provides({
-    @ProvidedPort(name = "log", type = PortType.MESSAGE)
+        @ProvidedPort(name = "log", type = PortType.MESSAGE)
 })
-@Library(name = "Kevoree-Android-JavaSE")
+@Library(name = "Kevoree-Android")
 @ComponentType
 public class AndroidNotification extends AbstractComponentType {
 
@@ -28,36 +26,22 @@ public class AndroidNotification extends AbstractComponentType {
 
     @Start
     public void start() {
-        System.out.println("Hello Kevoree Android v2.0 !!! ");
-
         uiService = UIServiceHandler.getUIService((Bundle) this.getDictionary().get("osgi.bundle"));
-
-
         view = new TextView(uiService.getRootActivity());
-
         uiService.addToGroup("log", view);
-
     }
 
     @Stop
     public void stop() {
-        System.out.println("Bye ART2 Android !!! ");
+        uiService.remove(view);
     }
 
     @Port(name = "log")
     public void triggerLog(final Object logMsg) {
-
-        System.out.println("uiService"+uiService) ;
-        System.out.println("getRootActivity"+uiService.getRootActivity()) ;
-
         uiService.getRootActivity().runOnUiThread(new Runnable() {
-
             @Override
             public void run() {
-
-                view.setText(view.getText()+"\n"+logMsg);
-
-               // Toast.makeText(uiService.getRootActivity(), "log="+logMsg.toString(), 2000);
+                view.setText(view.getText() + "\n" + logMsg);
             }
         });
     }

@@ -176,12 +176,10 @@ trait ChannelTypeFragment extends KevoreeChannelFragment with ChannelFragment {
       reply(true)
     }
     case msg: PortBindMessage => {
-      println("Addkey=" + createPortKey(msg));
       portsBinded.put(createPortKey(msg), msg.getProxy);
       reply(true)
     }
     case msg: PortUnbindMessage => {
-      println("Removekey=" + createPortKey(msg));
       portsBinded.remove(createPortKey(msg));
       reply(true)
     }

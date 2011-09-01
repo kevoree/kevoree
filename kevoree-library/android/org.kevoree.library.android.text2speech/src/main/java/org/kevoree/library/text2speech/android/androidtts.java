@@ -13,7 +13,7 @@ import org.osgi.framework.Bundle;
  *
  * @author cdiehlwa
  */
-@Library(name = "Kevoree::Android::TTS")
+@Library(name = "Kevoree-Android")
 @Provides({
     @ProvidedPort(name = "text", type = PortType.MESSAGE)
 })
@@ -31,12 +31,9 @@ public class androidtts extends AbstractComponentType implements TextToSpeech.On
 
     @Start
     public void start() {
-
         updateFromDictionnary();
-
         bundle = this.getDictionary().get("osgi.bundle");
         uiService = UIServiceHandler.getUIService((Bundle) bundle);
-
         //create the TTS instance
         // The OnInitListener (second argument) is called after initialization completes.
         mTts = new TextToSpeech(uiService.getRootActivity(), this);
@@ -63,7 +60,6 @@ public class androidtts extends AbstractComponentType implements TextToSpeech.On
             mTts.speak(textMsg.toString(),
                     TextToSpeech.QUEUE_FLUSH, // Drop all pending entries in the playback queue.
                     null);
-            System.out.println("Saying " + textMsg.toString());
         }
         // if tts is not ready drop the message
     }
