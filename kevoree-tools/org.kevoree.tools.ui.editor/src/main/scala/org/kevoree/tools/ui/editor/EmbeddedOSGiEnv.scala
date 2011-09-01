@@ -13,28 +13,37 @@
  */
 package org.kevoree.tools.ui.editor
 
-import actors.DaemonActor
 import org.apache.felix.framework.Felix
 import java.util.Arrays
 import org.apache.felix.framework.util.FelixConstants
 import generated.SysPackageConstants
-import org.osgi.framework.{FrameworkUtil, BundleActivator, Constants}
-
+import org.osgi.framework.Constants
+import java.io.File
+import org.slf4j.{LoggerFactory, Logger}
 
 object EmbeddedOSGiEnv {
+  private val logger: Logger = LoggerFactory.getLogger(this.getClass)
 
   def getFwk = fwk
 
   var fwk: Felix = null
   var configProps = new java.util.HashMap[String, Object]()
-  /* if (cacheDir != null) {
-  configProps.put(Constants.FRAMEWORK_STORAGE, cacheDir.getAbsolutePath());
-}  */
 
-  configProps.put(Constants.FRAMEWORK_SYSTEMPACKAGES_EXTRA, SysPackageConstants.getProperty() + ",sun.misc");
+  var felix_base: String = System.getProperty("osgi.base")
+  if (felix_base == null) {
+    felix_base = System.getProperty("java.io.tmpdir")
+  }
+  var cacheDir: File = new File(felix_base + "/" + "editor_cache")
+  if (!cacheDir.exists()) {
+    cacheDir.mkdirs()
+  }
+  configProps.put(Constants.FRAMEWORK_STORAGE, cacheDir.getAbsolutePath)
+
+  configProps.put(Constants.FRAMEWORK_SYSTEMPACKAGES_EXTRA, SysPackageConstants.getProperty + ",sun.misc");
   configProps.put(Constants.FRAMEWORK_STORAGE_CLEAN, Constants.FRAMEWORK_STORAGE_CLEAN_ONFIRSTINIT);
 
-  var activators = Arrays.asList()//(new org.ops4j.pax.url.mvn.internal.Activator).asInstanceOf[BundleActivator])
+
+  var activators = Arrays.asList() //(new org.ops4j.pax.url.mvn.internal.Activator).asInstanceOf[BundleActivator])
 
 
   configProps.put(FelixConstants.SYSTEMBUNDLE_ACTIVATORS_PROP, activators);
@@ -42,15 +51,15 @@ object EmbeddedOSGiEnv {
 
   Runtime.getRuntime.addShutdownHook(new Thread("Felix Shutdown Hook") {
 
-    override def run() {
+    override def run () {
       try {
-        System.err.println("Stopping OSGi Embedded Framework");
+        logger.debug("Stopping OSGi Embedded Framework");
         if (fwk != null) {
           fwk.stop();
           fwk.waitForStop(0);
         }
       } catch {
-        case _@ex => System.err.println("Error stopping framework: " + ex);
+        case _@ex => logger.warn("Error stopping framework: ", ex);
       }
     }
   });
@@ -61,7 +70,7 @@ object EmbeddedOSGiEnv {
     // (10) Start the framework.
     fwk.start();
 
-    System.out.println("Felix Embedded started");
+    logger.debug("Felix Embedded started");
 
 
     // (11) Wait for framework to stop to exit the VM.
@@ -69,8 +78,9 @@ object EmbeddedOSGiEnv {
     //System.exit(0)
   } catch {
     case _@ex => {
-      System.err.println("Could not create framework: " + ex);
-      ex.printStackTrace();
+      //      System.err.println("Could not create framework: " + ex);
+      logger.error("Could not create framework: ", ex)
+      //      ex.printStackTrace();
       System.exit(0);
     }
   }
