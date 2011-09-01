@@ -33,7 +33,7 @@ class KevoreeConfigServiceBean extends ConfigurationService {
   var config : Option[Config] = None
 
   if(System.getProperty(ConfigConstants.KEVOREE_CONFIG.getValue)!= null){
-    var configF = new File(System.getProperty(ConfigConstants.KEVOREE_CONFIG.getValue))
+    val configF = new File(System.getProperty(ConfigConstants.KEVOREE_CONFIG.getValue))
     if(configF.exists){
       logger.info("Configure Kevoree Core with config file =>"+configF)
       Configgy.configure(configF.getAbsolutePath)

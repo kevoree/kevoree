@@ -1,24 +1,23 @@
-
 package org.kevoree.library.text2speech.android;
 
 import android.speech.tts.TextToSpeech;
-import java.util.Locale;
 import org.kevoree.android.framework.helper.UIServiceHandler;
 import org.kevoree.android.framework.service.KevoreeAndroidService;
 import org.kevoree.annotation.*;
 import org.kevoree.framework.AbstractComponentType;
 import org.osgi.framework.Bundle;
 
+import java.util.Locale;
+
 /**
- *
  * @author cdiehlwa
  */
 @Library(name = "Kevoree-Android")
 @Provides({
-    @ProvidedPort(name = "text", type = PortType.MESSAGE)
+        @ProvidedPort(name = "text", type = PortType.MESSAGE)
 })
 @DictionaryType({
-    @DictionaryAttribute(name = "lang", defaultValue = "fr", optional = true)
+        @DictionaryAttribute(name = "lang", defaultValue = "fr", optional = true)
 })
 @ComponentType
 public class androidtts extends AbstractComponentType implements TextToSpeech.OnInitListener {
@@ -70,6 +69,9 @@ public class androidtts extends AbstractComponentType implements TextToSpeech.On
         if (status == TextToSpeech.SUCCESS) {
             ttsReady = true;
             setTtsLanguage(lang);
+            mTts.speak("hello",
+                    TextToSpeech.QUEUE_FLUSH, // Drop all pending entries in the playback queue.
+                    null);
         } else {
             ttsReady = false;
             System.out.println("Could not initialize TextToSpeech.");
@@ -77,11 +79,14 @@ public class androidtts extends AbstractComponentType implements TextToSpeech.On
     }
 
     private void setTtsLanguage(Locale lang) {
-    // no return code : don't care if lang is not an available language
-        int result = mTts.setLanguage(lang);
-        if (result == TextToSpeech.LANG_MISSING_DATA || result == TextToSpeech.LANG_NOT_SUPPORTED) {
-            System.out.println("Language data not available.");
-        } 
+        // no return code : don't care if lang is not an available language
+       // if (mTts.isLanguageAvailable(lang) == TextToSpeech.LANG_AVAILABLE) {
+            //int result = mTts.setLanguage(lang);
+            //if (result == TextToSpeech.LANG_MISSING_DATA || result == TextToSpeech.LANG_NOT_SUPPORTED) {
+            //    System.out.println("Language data not available.");
+            //}
+       // }
+
     }
 
     private void updateFromDictionnary() {

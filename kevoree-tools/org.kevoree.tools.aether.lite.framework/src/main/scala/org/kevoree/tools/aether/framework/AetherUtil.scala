@@ -26,10 +26,9 @@ import java.io.File
 import org.sonatype.aether.artifact.Artifact
 import org.kevoree.framework.KevoreePlatformHelper
 import scala.collection.JavaConversions._
-import org.sonatype.aether.connector.async.AsyncRepositoryConnectorFactory
 import org.sonatype.aether.repository.{RepositoryPolicy, RemoteRepository, LocalRepository}
 import org.sonatype.aether.spi.localrepo.LocalRepositoryManagerFactory
-import org.sonatype.aether.impl.internal.EnhancedLocalRepositoryManagerFactory
+import org.sonatype.aether.impl.internal.{EnhancedLocalRepositoryManagerFactory}
 import org.sonatype.aether.connector.wagon.WagonProvider
 
 //import org.sonatype.aether.connector.wagon.WagonProvider
@@ -46,11 +45,8 @@ object AetherUtil {
   val newRepositorySystem: RepositorySystem = {
     val locator = new DefaultServiceLocator()
     //locator.addService(classOf[Logger], classOf[AetherLogger])
-
-
     locator.addService(classOf[LocalRepositoryManagerFactory], classOf[EnhancedLocalRepositoryManagerFactory])
     locator.addService(classOf[RepositoryConnectorFactory], classOf[FileRepositoryConnectorFactory])
-   // locator.addService(classOf[RepositoryConnectorFactory], classOf[AsyncRepositoryConnectorFactory])
     locator.setServices(classOf[WagonProvider], new ManualWagonProvider())
     locator.addService(classOf[RepositoryConnectorFactory], classOf[WagonRepositoryConnectorFactoryFork])
     locator.getService(classOf[RepositorySystem])

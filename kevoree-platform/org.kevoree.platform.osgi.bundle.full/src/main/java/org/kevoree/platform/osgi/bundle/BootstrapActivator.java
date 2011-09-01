@@ -21,7 +21,6 @@ import org.kevoree.adaptation.deploy.osgi.KevoreeAdaptationDeployServiceOSGi;
 import org.kevoree.adaptation.deploy.osgi.context.KevoreeDeployManager;
 import org.kevoree.api.configuration.ConfigurationService;
 import org.kevoree.api.service.adaptation.deploy.KevoreeAdaptationDeployService;
-import org.kevoree.api.service.core.handler.KevoreeModelHandlerService;
 import org.kevoree.api.service.core.kompare.ModelKompareService;
 import org.kevoree.core.impl.KevoreeConfigServiceBean;
 import org.kevoree.core.impl.KevoreeCoreBean;
@@ -31,9 +30,9 @@ import org.kevoree.remote.rest.KevoreeRemoteBean;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.service.packageadmin.PackageAdmin;
+import org.osgi.service.startlevel.StartLevel;
 
 /**
- *
  * @author ffouquet
  */
 public class BootstrapActivator implements BundleActivator {
@@ -55,6 +54,9 @@ public class BootstrapActivator implements BundleActivator {
 
         PackageAdmin paAdmin = (PackageAdmin) context.getService(context.getServiceReferences(PackageAdmin.class.getName(), null)[0]);
         contextDeploy.setServicePackageAdmin(paAdmin);
+        StartLevel serviceLevel = (StartLevel) context.getService(context.getServiceReferences(StartLevel.class.getName(), null)[0]);
+        contextDeploy.setStartLevelServer(serviceLevel);
+
 
         deployBean.setContext(contextDeploy);
 

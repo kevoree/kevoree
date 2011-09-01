@@ -84,7 +84,7 @@ public class JavaSENode extends AbstractNodeType {
 
 		} catch (Exception e) {
 //			e.printStackTrace();
-			logger.error("Unable to push a model on " + targetNodeName);
+			logger.error("Unable to push a model on " + targetNodeName,e);
 
 		}
 
