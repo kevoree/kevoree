@@ -73,7 +73,6 @@ trait TypeDefinitionMerger extends Merger with DictionaryMerger with PortTypeMer
 
   private def mergeConsistency(root: ContainerRoot, actuelTypeDefinition: TypeDefinition, newTypeDefinition: TypeDefinition) = {
     //UPDATE & MERGE DEPLOYS UNIT
-
     val allDeployUnits = List() ++ newTypeDefinition.getDeployUnits.toList ++ actuelTypeDefinition.getDeployUnits.toList //CLONE LIST
     actuelTypeDefinition.getDeployUnits.clear
     allDeployUnits.foreach {

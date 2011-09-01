@@ -1,0 +1,10 @@
+Manifest-Version: 1.0
+Bundle-SymbolicName: defMSG962
+Bundle-Version: 1
+DynamicImport-Package: *
+Bundle-ManifestVersion: 2
+Bundle-Activator: org.kevoree.library.defaultChannels.kevgen.JavaSENode.defMSGActivator
+KEVOREE-Componentname: defMSG962
+KEVOREE-Nodename: KEVOREEDefaultNodeName
+Require-Bundle: org.kevoree.library.javase.org.kevoree.library.javase.defaultChannels
+

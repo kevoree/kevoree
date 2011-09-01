@@ -34,7 +34,7 @@ import org.kevoree.framework.AbstractComponentType;
 public abstract class AbstractFakeStuffComponent extends AbstractComponentType {
 
     @Start
-    public abstract void start() ;
+    public abstract void start() throws Exception;
 
     @Stop
     public abstract void stop() ;

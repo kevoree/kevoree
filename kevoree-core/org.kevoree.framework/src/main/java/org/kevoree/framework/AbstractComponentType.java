@@ -18,6 +18,8 @@
 package org.kevoree.framework;
 
 import java.util.HashMap;
+
+import org.kevoree.api.service.core.handler.KevoreeModelHandlerService;
 import org.kevoree.framework.port.KevoreeRequiredPort;
 
 /**
@@ -25,6 +27,14 @@ import org.kevoree.framework.port.KevoreeRequiredPort;
  * @author ffouquet
  */
 public class AbstractComponentType implements ComponentType {
+
+    private KevoreeModelHandlerService modelService;
+    public void setModelService(KevoreeModelHandlerService ms){
+        modelService = ms;
+    }
+    public KevoreeModelHandlerService getModelService() {
+        return modelService;
+    }
 
     private HashMap<String, Object> hostedPorts = new HashMap<String, Object>();
     private HashMap<String, Object> neededPorts = new HashMap<String, Object>();

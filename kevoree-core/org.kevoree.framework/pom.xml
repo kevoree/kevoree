@@ -23,18 +23,6 @@
             <artifactId>org.kevoree.api</artifactId>
             <version>${kevoree.version}</version>
         </dependency>
-        <!--
-        <dependency>
-            <groupId>org.codehaus.jackson</groupId>
-            <artifactId>jackson-core-lgpl</artifactId>
-            <version>1.6.1</version>
-        </dependency>
-        <dependency>
-            <groupId>org.codehaus.jackson</groupId>
-            <artifactId>jackson-mapper-lgpl</artifactId>
-            <version>1.6.1</version>
-        </dependency>
-        -->
         <dependency>
             <groupId>org.osgi</groupId>
             <artifactId>org.osgi.core</artifactId>
@@ -45,13 +33,13 @@
             <artifactId>org.osgi.compendium</artifactId>
             <version>4.2.0</version>
         </dependency>
-        <!--
         <dependency>
-            <groupId>joda-time</groupId>
-            <artifactId>joda-time</artifactId>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
             <version>1.6.2</version>
         </dependency>
-        -->
+
+
     </dependencies>
 
     <build>
@@ -66,7 +54,7 @@
                     <instructions>
                         <Private-Package></Private-Package>
                         <Bundle-SymbolicName>org.kevoree.framework</Bundle-SymbolicName>
-                        <Import-Package>!org.w3c.dom.ls,!org.w3c.dom.bootstrap,!com.sun.*,!org.kevoree.annotation.*,!org.joda.*,!org.codehaus.jackson.*,org.slf4j.*;version="${slf4j.version.range}",*</Import-Package>
+                        <Import-Package>!org.w3c.dom.ls,!org.w3c.dom.bootstrap,!com.sun.*,!org.kevoree.annotation.*,!org.joda.*,!org.codehaus.jackson.*,org.slf4j.*,*</Import-Package>
                         <Export-Package>org.kevoree.framework.*,org.codehaus.jackson.*,org.joda.*</Export-Package>
                     </instructions>
                 </configuration>

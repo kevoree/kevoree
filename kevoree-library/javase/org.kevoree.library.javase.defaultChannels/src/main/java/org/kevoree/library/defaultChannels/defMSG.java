@@ -39,11 +39,7 @@ public class defMSG extends AbstractChannelFragment {
 
     @Override
     public Object dispatch(Message msg) {
-
-        //System.out.println("Local node bsize" + getBindedPorts().size());
-
         if (getBindedPorts().isEmpty() && getOtherFragments().isEmpty()) {
-
            logger.warn("No consumer, msg lost=" + msg.getContent());
         }
         for (org.kevoree.framework.KevoreePort p : getBindedPorts()) {

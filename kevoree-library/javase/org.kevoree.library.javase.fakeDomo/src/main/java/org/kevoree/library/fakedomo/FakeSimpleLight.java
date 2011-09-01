@@ -65,7 +65,7 @@ public class FakeSimpleLight extends AbstractFakeStuffComponent {
     }
 
     @Override
-    public void start() {
+    public void start() throws Exception {
 //        logger = Logger.getLogger(this.getClass().getName());
 
         frame = new MyFrame(Color.RED);
@@ -78,6 +78,10 @@ public class FakeSimpleLight extends AbstractFakeStuffComponent {
         if (log != null) {
             log.process("INIT");
         }
+
+
+        //throw new Exception("HEHE");
+
     }
 
     @Override

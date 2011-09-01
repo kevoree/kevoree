@@ -27,7 +27,6 @@ public abstract class AbstractGroupType {
         return null;
     }
 
-
     public HashMap<String, Object> getDictionary() {
         return null;
     } //OVERRIDE BY FACTORY

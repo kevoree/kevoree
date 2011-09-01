@@ -19,14 +19,12 @@
 package org.kevoree.framework.osgi
 
 import java.util.Hashtable
-import org.kevoree.framework.KevoreeComponent
-import org.kevoree.framework.KevoreePort
-import org.kevoree.framework.AbstractComponentType
-import org.kevoree.framework.Constants
 import org.osgi.framework.BundleActivator
 import org.osgi.framework.BundleContext
 import scala.collection.JavaConversions._
 import org.kevoree.framework.message._
+import org.kevoree.api.service.core.handler.KevoreeModelHandlerService
+import org.kevoree.framework._
 
 
 /* ABSTRACT COMPONENT */
@@ -53,6 +51,9 @@ abstract class KevoreeComponentActivator extends BundleActivator {
 
     componentActor.getKevoreeComponentType.asInstanceOf[AbstractComponentType].setName(componentName)
     componentActor.getKevoreeComponentType.asInstanceOf[AbstractComponentType].setNodeName(nodeName)
+    val sr = bc.getServiceReference(classOf[KevoreeModelHandlerService].getName());
+    val modelHandlerService : KevoreeModelHandlerService = bc.getService(sr).asInstanceOf[KevoreeModelHandlerService];
+    componentActor.getKevoreeComponentType.asInstanceOf[AbstractComponentType].setModelService(modelHandlerService)
 
 
     /* Start actor */

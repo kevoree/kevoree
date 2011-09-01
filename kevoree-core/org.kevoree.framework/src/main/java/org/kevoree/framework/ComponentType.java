@@ -17,6 +17,8 @@
  */
 package org.kevoree.framework;
 
+import org.kevoree.api.service.core.handler.KevoreeModelHandlerService;
+
 import java.util.HashMap;
 import java.util.Properties;
 
@@ -25,6 +27,8 @@ import java.util.Properties;
  * @author ffouquet
  */
 public interface ComponentType {
+
+    public KevoreeModelHandlerService getModelService();
 
     public void setHostedPorts(HashMap<String, Object> ports);
 

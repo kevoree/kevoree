@@ -18,19 +18,19 @@ import reflect.BeanProperty
 import java.util.HashMap
 import scala.collection.JavaConversions._
 import org.kevoree.api.service.core.handler.KevoreeModelHandlerService
-import org.kevoree.ContainerRoot
-import actors.Actor
+import org.slf4j.LoggerFactory
 
 
 trait KevoreeGroup extends AbstractGroupType with KevoreeActor {
 
+  val kevoree_internal_logger = LoggerFactory.getLogger(this.getClass)
+
   @BeanProperty
   var mhandler: KevoreeModelHandlerService = null;
 
-  override def getModelService(): KevoreeModelHandlerService = {
+  override def getModelService() : KevoreeModelHandlerService = {
     mhandler
   }
-
 
   var nodeName: String = ""
 
@@ -39,7 +39,7 @@ trait KevoreeGroup extends AbstractGroupType with KevoreeActor {
 
   override def getNodeName = nodeName
 
-  def setNodeName(n: String) = {
+  def setNodeName(n: String) {
     nodeName = n
   }
 
@@ -48,7 +48,7 @@ trait KevoreeGroup extends AbstractGroupType with KevoreeActor {
 
   override def getName = name
 
-  def setName(n: String) = {
+  def setName(n: String) {
     name = n
   }
 
@@ -65,33 +65,49 @@ trait KevoreeGroup extends AbstractGroupType with KevoreeActor {
 
   def updateGroup: Unit = {}
 
-
   override def internal_process(msgg: Any) = msgg match {
     case UpdateDictionaryMessage(d) => {
-      d.keySet.foreach {
-        v =>
-          dictionary.put(v, d.get(v))
+      try {
+        d.keySet.foreach {
+          v => dictionary.put(v, d.get(v))
+        }
+        if (isStarted) {
+          updateGroup
+        }
+        reply(true)
+      } catch {
+        case _@e => {
+          kevoree_internal_logger.error("Kevoree Group Instance Update Error !", e)
+          reply(false)
+        }
       }
-      if (isStarted) {
-        new Actor {
-          def act = updateGroup
-        }.start()
-      }
-
-      reply(true)
     }
     case StartMessage if (!isStarted) => {
-      startGroup
-      isStarted = true
-      reply(true)
+      try {
+        startGroup
+        isStarted = true
+        reply(true)
+      } catch {
+        case _@e => {
+          kevoree_internal_logger.error("Kevoree Group Instance Start Error !", e)
+          reply(false)
+        }
+      }
     }
     case StopMessage if (isStarted) => {
-      stopGroup
-      isStarted = false
-      reply(true)
+      try {
+        stopGroup
+        isStarted = false
+        reply(true)
+      } catch {
+        case _@e => {
+          kevoree_internal_logger.error("Kevoree Group Instance Stop Error !", e)
+          reply(false)
+        }
+      }
     }
-    case StopMessage if (!isStarted) =>
-    case StartMessage if (isStarted) =>
+    case StopMessage if (!isStarted) =>  //IGNORE
+    case StartMessage if (isStarted) =>  //IGNORE
 
     case _@msg => println("Uncatch message group " + name)
   }
