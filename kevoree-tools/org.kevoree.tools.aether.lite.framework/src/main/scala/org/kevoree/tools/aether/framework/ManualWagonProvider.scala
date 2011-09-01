@@ -11,11 +11,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.kevoree.tools.aether.framework
 
 import org.sonatype.aether.connector.wagon.WagonProvider
 import org.apache.maven.wagon.Wagon
 import org.apache.maven.wagon.providers.http.LightweightHttpWagon
+
 
 /**
 * User: ffouquet

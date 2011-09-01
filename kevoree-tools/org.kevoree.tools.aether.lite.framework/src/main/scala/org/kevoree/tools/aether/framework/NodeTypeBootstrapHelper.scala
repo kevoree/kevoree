@@ -1,5 +1,3 @@
-package org.kevoree.tools.aether.framework
-
 /**
  * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE, Version 3, 29 June 2007;
  * you may not use this file except in compliance with the License.
@@ -13,12 +11,15 @@ package org.kevoree.tools.aether.framework
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.kevoree.tools.aether.framework
+
 import org.kevoree.framework.AbstractNodeType
 import java.io.FileInputStream
+import scala.collection.immutable.List._
 import scala.collection.JavaConversions._
 import org.osgi.framework.{Bundle, BundleContext, BundleException}
 import org.slf4j.LoggerFactory
-import org.kevoree.{ContainerRoot, DeployUnit}
+import org.kevoree.{ContainerRoot, DeployUnit, ContainerNode}
 
 /**
  * User: ffouquet
