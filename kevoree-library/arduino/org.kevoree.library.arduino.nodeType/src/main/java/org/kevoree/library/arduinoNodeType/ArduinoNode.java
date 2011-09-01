@@ -1,21 +1,25 @@
 package org.kevoree.library.arduinoNodeType;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import org.kevoree.ContainerRoot;
 import org.kevoree.KevoreeFactory;
 import org.kevoree.annotation.*;
 import org.kevoree.extra.osgi.rxtx.KevoreeSharedCom;
 import org.kevoree.framework.AbstractNodeType;
+import org.kevoree.framework.KevoreeXmiHelper;
 import org.kevoree.kompare.KevoreeKompareBean;
+import org.kevoree.library.arduinoNodeType.generator.KevoreeCGenerator;
 import org.kevoree.library.arduinoNodeType.utils.ArduinoDefaultLibraryManager;
 import org.kevoree.library.arduinoNodeType.utils.ArduinoHomeFinder;
 import org.kevoree.library.arduinoNodeType.utils.ComSender;
+import org.kevoree.tools.marShell.ast.Script;
+import org.kevoree.tools.marShellTransform.AdaptationModelWrapper;
+import org.kevoree.tools.marShellTransform.KevScriptWrapper;
 import org.kevoreeAdaptation.AdaptationModel;
+import org.kevoreeAdaptation.AdaptationPrimitive;
+import org.kevoreeAdaptation.TypeAdaptation;
 import org.osgi.framework.BundleContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.wayoda.ang.libraries.CodeManager;
 import org.wayoda.ang.libraries.Core;
 import org.wayoda.ang.project.ArduinoBuildEnvironment;
@@ -24,14 +28,8 @@ import org.wayoda.ang.project.Target;
 import org.wayoda.ang.project.TargetDirectoryService;
 
 import javax.swing.*;
-
-import org.kevoree.framework.KevoreeXmiHelper;
-import org.kevoree.library.arduinoNodeType.generator.KevoreeCGenerator;
-import org.kevoree.tools.marShell.ast.Script;
-import org.kevoree.tools.marShellTransform.AdaptationModelWrapper;
-import org.kevoree.tools.marShellTransform.KevScriptWrapper;
-import org.kevoreeAdaptation.AdaptationPrimitive;
-import org.kevoreeAdaptation.TypeAdaptation;
+import java.io.File;
+import java.io.FileNotFoundException;
 
 @NodeType
 @Library(name = "KevoreeNodeType")
@@ -43,6 +41,7 @@ import org.kevoreeAdaptation.TypeAdaptation;
         @DictionaryAttribute(name = "psize", defaultValue = "MAX", optional = true)
 })
 public class ArduinoNode extends AbstractNodeType {
+	private static final Logger logger = LoggerFactory.getLogger(ArduinoNode.class);
 
     public ArduinoGuiProgressBar progress = null;
     public File newdir = null;
@@ -89,7 +88,7 @@ public class ArduinoNode extends AbstractNodeType {
                 //Try to find previous version
                 if (getDictionary().get("incremental") != null && getDictionary().get("incremental").equals("true")) {
 
-                    System.out.println("Incremental search");
+                    logger.debug("Incremental search");
 
 
                     File lastModelFile = null;
@@ -137,7 +136,7 @@ public class ArduinoNode extends AbstractNodeType {
                 TargetDirectoryService.rootPath = newdirTarget.getAbsolutePath();
 
                 outputPath = newdir.getAbsolutePath();
-                System.out.println("outDir=" + outputPath);
+                logger.debug("outDir=" + outputPath);
                 progress.endTask();
 
                 progress.beginTask("Compute firmware update", 30);
@@ -149,7 +148,8 @@ public class ArduinoNode extends AbstractNodeType {
                     }
                 } catch (Exception e) {
                     progress.failTask();
-                    e.printStackTrace();
+//                    e.printStackTrace();
+					logger.error("Error appears when we compute the firmware update", e);
                 }
 
 
@@ -188,13 +188,13 @@ public class ArduinoNode extends AbstractNodeType {
             //Must compute a dif from scratch model
 
 
-            System.out.println("Type adaptation detected -> full firmware update needed !");
+            logger.debug("Type adaptation detected -> full firmware update needed !");
             //Step : Type Bundle preparation step
             if (bcontext != null) {
-                System.out.println("Install Type definition");
+                logger.debug("Install Type definition");
                 TypeBundleBootstrap.bootstrapTypeBundle(model, bcontext);
             } else {
-                System.out.println("Warning no OSGi runtime available");
+                logger.warn("No OSGi runtime available");
             }
             //Step : Generate firmware code to output path
             KevoreeCGenerator generator = new KevoreeCGenerator();
@@ -242,7 +242,7 @@ public class ArduinoNode extends AbstractNodeType {
                 progress.beginTask("Library processing", 60);
 
                 for (org.wayoda.ang.libraries.Library library : sketch.getLibraries()) {
-                    System.out.println("----Lib " + library.getName());
+                    logger.debug("----Lib " + library.getName());
                     arduinoCompilation.compileLibrary(sketch, target, library, core);
                 }
                 progress.endTask();
@@ -266,7 +266,7 @@ public class ArduinoNode extends AbstractNodeType {
                     boardName = GuiAskForComPort.askPORT();
                 }
 
-                System.out.println("boardPortName=" + boardName);
+                logger.debug("boardPortName=" + boardName);
 
                 progress.beginTask("Upload to arduino board", 90);
                 KevoreeSharedCom.lockPort(boardName) ;
@@ -278,15 +278,15 @@ public class ArduinoNode extends AbstractNodeType {
                 progress.endTask();
 
             } catch (FileNotFoundException ex) {
-                Logger.getLogger(ArduinoNode.class.getName()).log(Level.SEVERE, null, ex);
+                logger.error("", ex);
                 progress.failTask();
             }
 
         } else {
-            System.out.println("incremental update available -> try to generate KevScript !");
+            logger.debug("incremental update available -> try to generate KevScript !");
             Script baseScript = KevScriptWrapper.miniPlanKevScript(AdaptationModelWrapper.generateScriptFromAdaptModel(modelIn));
             String resultScript = KevScriptWrapper.generateKevScriptCompressed(baseScript);
-            System.out.println(resultScript);
+            logger.debug(resultScript);
             String boardName = "";
             if (getDictionary().get("boardPortName") != null) {
                 boardName = getDictionary().get("boardPortName").toString();
@@ -297,7 +297,8 @@ public class ArduinoNode extends AbstractNodeType {
             try {
                 ComSender.send(resultScript, boardName);
             } catch (Exception e) {
-                e.printStackTrace();
+//                e.printStackTrace();
+				logger.error("", e);
             }
 
 

@@ -47,7 +47,7 @@ public class Kinect extends AbstractComponentType {
 	private static final Logger logger = LoggerFactory.getLogger(Kinect.class);
 
 	@Start
-	public void start () {
+	public void start () throws Exception {
 		ctx = Freenect.createContext();
 		ctx.setLogHandler(new Jdk14LogHandler());
 		ctx.setLogLevel(getLogLevel());
@@ -150,7 +150,7 @@ public class Kinect extends AbstractComponentType {
 			}
 		} else {
 			logger.info("Kinect not connected !");
-			// TODO log
+			throw new Exception("Fail to start " + this.getName());
 		}
 	}
 
@@ -173,7 +173,7 @@ public class Kinect extends AbstractComponentType {
 	}
 
 	@Update
-	public void update () {
+	public void update () throws Exception {
 		stop();
 		start();
 	}

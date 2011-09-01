@@ -4,17 +4,20 @@
  */
 package org.kevoree.library.arduinoNodeType;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.wayoda.ang.project.Sketch;
+import org.wayoda.ang.project.Target;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-
-import org.wayoda.ang.project.Sketch;
-import org.wayoda.ang.project.Target;
 
 /**
  * @author ffouquet
  */
 public class ArduinoDeploy {
+	private static final Logger logger = LoggerFactory.getLogger(ArduinoDeploy.class);
 
     protected ArrayList<String> baseCmd;
     /**
@@ -43,7 +46,7 @@ public class ArduinoDeploy {
 
         File hexFile = sketch.getFlash(target);
         if (hexFile == null) {
-            System.err.println("No upload data found");
+            logger.warn("No upload data found");
             throw new IllegalStateException();
         }
 

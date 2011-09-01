@@ -4,19 +4,22 @@
  */
 package org.kevoree.library.arduinoNodeType;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.wayoda.ang.libraries.Core;
 import org.wayoda.ang.libraries.Library;
 import org.wayoda.ang.project.Sketch;
 import org.wayoda.ang.project.Target;
 
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * @author ffouquet
  */
 public class ArduinoCompilation {
+	private static final Logger logger = LoggerFactory.getLogger(ArduinoCompilation.class);
 
 
     private List<String> cCmd;
@@ -60,7 +63,7 @@ public class ArduinoCompilation {
         //check that the build directory for the core exists
         File outputDir = sketch.getCoreBuildRoot(target);
         if (outputDir == null) {
-            System.err.println("Compiling Core failed. Output directory `" + sketch.getBuildRootPath(target) + File.separator + "core` does not exist or cannot be read or written");
+            logger.error("Compiling Core failed. Output directory `" + sketch.getBuildRootPath(target) + File.separator + "core` does not exist or cannot be read or written");
             throw new IllegalStateException();
         }
 
@@ -84,7 +87,7 @@ public class ArduinoCompilation {
             cmd.add("-o" + outputDir.getPath() + File.separator + f.getName() + ".o");
             execute(cmd);
         }
-        System.out.println("Compiled Core `" + target.getCore() + "` target `" + target.getKey() + " = " + target.getName() + "`");
+        logger.info("Compiled Core `" + target.getCore() + "` target `" + target.getKey() + " = " + target.getName() + "`");
     }
 
     /**
@@ -100,13 +103,13 @@ public class ArduinoCompilation {
 
         File coreSrcDir = core.getDirectory();
         if (!coreSrcDir.exists()) {
-            System.err.println("Compile library `" + library.getName() + "` failed. Target `" + target.getKey() + "` depends on unknown Core `" + target.getCore() + "`");
+            logger.error("Compile library `" + library.getName() + "` failed. Target `" + target.getKey() + "` depends on unknown Core `" + target.getCore() + "`");
             throw new IllegalStateException();
         }
 
         File outputDir = sketch.getLibraryBuildRoot(target, library);
         if (outputDir == null) {
-            System.err.println("Compile library `" + library.getName() + "` failed. Can find build directory for target `" + target.getKey() + "`");
+            logger.error("Compile library `" + library.getName() + "` failed. Can find build directory for target `" + target.getKey() + "`");
             throw new IllegalStateException();
         }
 
@@ -145,7 +148,7 @@ public class ArduinoCompilation {
             execute(cmd);
         }
 
-        System.out.println("Compiled Library `" + library.getName() + "` target `" + target.getKey() + " = " + target.getName() + "`");
+        logger.info("Compiled Library `" + library.getName() + "` target `" + target.getKey() + " = " + target.getName() + "`");
     }
 
 

@@ -1,6 +1,7 @@
 package org.kevoree.library.arduinoNodeType
 
 import java.io.File
+import org.slf4j.{LoggerFactory, Logger}
 
 /**
  * User: ffouquet
@@ -9,6 +10,7 @@ import java.io.File
  */
 
 object FileHelper {
+  private val logger: Logger = LoggerFactory.getLogger(this.getClass)
 
   def cleanFolder(f: java.io.File) {
     if (f.exists()) {
@@ -28,7 +30,7 @@ object FileHelper {
   }
   def createAndCleanDirectory(f : File){
     if(f.exists()){
-      System.out.println("Clean Folder => "+f.getAbsolutePath);
+      logger.debug("Clean Folder => "+f.getAbsolutePath);
       cleanFolder(f)
     }
     f.mkdir()

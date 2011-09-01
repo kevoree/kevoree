@@ -4,20 +4,23 @@
  */
 package org.kevoree.library.arduinoNodeType;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.wayoda.ang.libraries.Core;
 import org.wayoda.ang.project.Sketch;
 import org.wayoda.ang.project.Target;
 import org.wayoda.ang.utils.FileSelector;
 import org.wayoda.ang.utils.FileUtils;
 
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * @author ffouquet
  */
 public class ArduinoArchive {
+	private static final Logger logger = LoggerFactory.getLogger(ArduinoArchive.class);
 
     private List<String> archCmd;
 
@@ -32,7 +35,8 @@ public class ArduinoArchive {
         //check that the build directory for the core exists
         File outputDir = sketch.getCoreBuildRoot(target);
         if (outputDir == null) {
-            System.err.println("Compiling Core failed. Output directory `" + sketch.getBuildRootPath(target) + File.separator + "core` does not exist or cannot be read or written");
+            logger.error("Compiling Core failed. Output directory `" + sketch.getBuildRootPath(target) + File.separator
+					+ "core` does not exist or cannot be read or written");
             throw new IllegalStateException();
         }
 
