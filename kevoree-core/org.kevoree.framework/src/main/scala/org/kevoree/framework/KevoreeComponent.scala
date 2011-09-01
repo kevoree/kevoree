@@ -19,73 +19,85 @@
 package org.kevoree.framework
 
 import org.kevoree.framework.message._
-import scala.actors.Actor
 import scala.collection.JavaConversions._
-import org.kevoree.framework.aspects.KevoreeAspects._
+import org.slf4j.LoggerFactory
 
 abstract class KevoreeComponent(c: AbstractComponentType) extends KevoreeActor {
-  
+
+  val kevoree_internal_logger = LoggerFactory.getLogger(this.getClass)
+
   def getKevoreeComponentType: ComponentType = c
 
   private var ct_started: Boolean = false
-    def isStarted : Boolean = ct_started
+
+  def isStarted: Boolean = ct_started
 
   override def internal_process(msg: Any) = msg match {
 
     case UpdateDictionaryMessage(d) => {
-      d.keySet.foreach{
-        v =>
-          getKevoreeComponentType.getDictionary.put(v, d.get(v))
+      try {
+        d.keySet.foreach {
+          v => getKevoreeComponentType.getDictionary.put(v, d.get(v))
+        }
+        if (ct_started) {
+          updateComponent
+        }
+        reply(true)
+      } catch {
+        case _@e => {
+          kevoree_internal_logger.error("Kevoree Component Instance Update Error !", e)
+          reply(false)
+        }
       }
-      if (ct_started) {
-        new Actor {
-          def act = updateComponent
-        }.start()
-      }
-      reply(true)
     }
 
-    case StartMessage if(!ct_started) => {
-     // new Actor {
-       // def act =
-          startComponent
-     // }.start()
-      //Wake Up Hosted Port
-      getKevoreeComponentType.getHostedPorts.foreach{
-        hp =>
-          var port = hp._2.asInstanceOf[KevoreePort]
-          if (port.isInPause) {
-            port.resume
-          }
+    case StartMessage if (!ct_started) => {
+      try {
+        startComponent
+        getKevoreeComponentType.getHostedPorts.foreach {
+          hp =>
+            val port = hp._2.asInstanceOf[KevoreePort]
+            if (port.isInPause) {
+              port.resume
+            }
+        }
+        ct_started = true
+        reply(true)
+      } catch {
+        case _@e => {
+          kevoree_internal_logger.error("Kevoree Component Instance Start Error !", e)
+          reply(false)
+        }
       }
-      ct_started = true
-      reply(true)
     }
-    case StopMessage if(ct_started) => {
-      //Pause Hosted Port
-      getKevoreeComponentType.getHostedPorts.foreach{
-        hp =>
-          var port = hp._2.asInstanceOf[KevoreePort]
-          if (!port.isInPause) {
-            port.pause
-          }
+    case StopMessage if (ct_started) => {
+      try {
+        getKevoreeComponentType.getHostedPorts.foreach {
+          hp =>
+            val port = hp._2.asInstanceOf[KevoreePort]
+            if (!port.isInPause) {
+              port.pause
+            }
+        }
+        stopComponent
+        ct_started = false
+        reply(true)
+      } catch {
+        case _@e => {
+          kevoree_internal_logger.error("Kevoree Component Instance Stop Error !", e)
+          reply(false)
+        }
       }
-     // new Actor {
-        //def act =
-          stopComponent
-     // }.start()
-      ct_started = false
-      reply(true)
     }
-    case StopMessage if(!ct_started) =>
-    case StartMessage if(ct_started) =>
-    case _@msg => println("unknow message " + msg+"-sender-"+sender.getClass.getName)
+    case StopMessage if (!ct_started) =>
+    case StartMessage if (ct_started) =>
+    case _@umsg => println("unknow message " + umsg + "-sender-" + sender.getClass.getName)
   }
 
   def startComponent
 
   def stopComponent
 
-  def updateComponent = {}
+  def updateComponent {}
 
 }

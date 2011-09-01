@@ -19,13 +19,12 @@
 package org.kevoree.framework.osgi
 
 import java.util.Hashtable
-import org.kevoree.framework.KevoreeChannelFragment
-import org.kevoree.framework.ChannelTypeFragment
-import org.kevoree.framework.Constants
 import org.osgi.framework.BundleActivator
 import org.osgi.framework.BundleContext
 import scala.collection.JavaConversions._
 import org.kevoree.framework.message._
+import org.kevoree.api.service.core.handler.KevoreeModelHandlerService
+import org.kevoree.framework.{AbstractChannelFragment, KevoreeChannelFragment, ChannelTypeFragment, Constants}
 
 abstract class KevoreeChannelFragmentActivator extends BundleActivator {
 
@@ -48,7 +47,7 @@ abstract class KevoreeChannelFragmentActivator extends BundleActivator {
     /* Start actor */
     channelActor.start
     /* Expose component in OSGI */
-    var props = new Hashtable[String, String]()
+    val props = new Hashtable[String, String]()
     props.put(Constants.KEVOREE_NODE_NAME, nodeName)
     props.put(Constants.KEVOREE_INSTANCE_NAME, instanceName)
     bc.registerService(classOf[KevoreeChannelFragment].getName(), channelActor, props);
@@ -57,12 +56,15 @@ abstract class KevoreeChannelFragmentActivator extends BundleActivator {
     channelActor.getDictionary.put(Constants.KEVOREE_PROPERTY_OSGI_BUNDLE, bc.getBundle)
     channelActor.asInstanceOf[ChannelTypeFragment].setName(instanceName)
     channelActor.asInstanceOf[ChannelTypeFragment].setNodeName(nodeName)
+    val sr = bc.getServiceReference(classOf[KevoreeModelHandlerService].getName());
+    val modelHandlerService: KevoreeModelHandlerService = bc.getService(sr).asInstanceOf[KevoreeModelHandlerService];
+    channelActor.asInstanceOf[AbstractChannelFragment].setModelService(modelHandlerService)
 
     //channelActor.startChannelFragment //DEPRECATED DONE BY DEPLOY
   }
 
   def stop(bc: BundleContext) {
-    if(channelActor.asInstanceOf[ChannelTypeFragment].isStarted){
+    if (channelActor.asInstanceOf[ChannelTypeFragment].isStarted) {
       channelActor !? StopMessage
       println("Stopping => " + instanceName)
     }

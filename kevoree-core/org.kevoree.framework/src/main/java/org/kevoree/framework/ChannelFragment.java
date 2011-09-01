@@ -18,6 +18,8 @@
 package org.kevoree.framework;
 
 import java.util.HashMap;
+
+import org.kevoree.api.service.core.handler.KevoreeModelHandlerService;
 import org.kevoree.framework.message.Message;
 
 /**
@@ -25,6 +27,8 @@ import org.kevoree.framework.message.Message;
  * @author ffouquet
  */
 public interface ChannelFragment {
+
+    public KevoreeModelHandlerService getModelService();
 
     public Object dispatch(Message msg);
 

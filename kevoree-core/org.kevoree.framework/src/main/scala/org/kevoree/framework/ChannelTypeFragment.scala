@@ -20,9 +20,12 @@ package org.kevoree.framework
 
 import java.util.HashMap
 import org.kevoree.framework.message._
-import scala.actors.Actor
 import scala.collection.JavaConversions._
+import org.slf4j.LoggerFactory
+
 trait ChannelTypeFragment extends KevoreeChannelFragment with ChannelFragment {
+
+  val kevoree_internal_logger = LoggerFactory.getLogger(this.getClass)
 
   override def remoteDispatch(msg: Message): Object = {
     if (msg.inOut.booleanValue) {
@@ -33,8 +36,8 @@ trait ChannelTypeFragment extends KevoreeChannelFragment with ChannelFragment {
     }
   }
 
-  private var portsBinded: HashMap[String, KevoreePort] = new HashMap[String, KevoreePort]()
-  private var fragementBinded: HashMap[String, KevoreeChannelFragment] = new HashMap[String, KevoreeChannelFragment]()
+  private val portsBinded: HashMap[String, KevoreePort] = new HashMap[String, KevoreePort]()
+  private val fragementBinded: HashMap[String, KevoreeChannelFragment] = new HashMap[String, KevoreeChannelFragment]()
 
   //@BeanProperty
   var nodeName: String = ""
@@ -44,7 +47,7 @@ trait ChannelTypeFragment extends KevoreeChannelFragment with ChannelFragment {
 
   override def getNodeName = nodeName
 
-  def setNodeName(n: String) = {
+  def setNodeName(n: String) {
     nodeName = n
   }
 
@@ -53,14 +56,16 @@ trait ChannelTypeFragment extends KevoreeChannelFragment with ChannelFragment {
 
   override def getName = name
 
-  def setName(n: String) = {
+  def setName(n: String) {
     name = n
   }
 
   //@BeanProperty
   var dictionary: HashMap[String, Object] = new HashMap[String, Object]()
 
-  def setDictionary(d: HashMap[String, Object]) = dictionary = d
+  def setDictionary(d: HashMap[String, Object]) {
+    dictionary = d
+  }
 
   override def getDictionary(): HashMap[String, Object] = dictionary
 
@@ -74,14 +79,13 @@ trait ChannelTypeFragment extends KevoreeChannelFragment with ChannelFragment {
   }
 
   override def forward(delegate: KevoreeActor, msg: Message): Object = {
-
     delegate match {
       case p: KevoreePort => {
         if (msg.inOut.booleanValue) {
-          return (delegate !? msg.getContent).asInstanceOf[Object]
+          (delegate !? msg.getContent).asInstanceOf[Object]
         } else {
           (delegate ! msg.getContent);
-          return null
+          null
         }
       }
       case f: KevoreeChannelFragment =>
@@ -89,10 +93,10 @@ trait ChannelTypeFragment extends KevoreeChannelFragment with ChannelFragment {
         msg.setDestNodeName(f.getNodeName)
 
         if (msg.inOut.booleanValue) {
-          return (delegate !? msg).asInstanceOf[Object]
+          (delegate !? msg).asInstanceOf[Object]
         } else {
           (delegate ! msg);
-          return null
+          null
         }
       case _ => println("Call on forward on bad object type ! => Only Port or Channel accepted"); return null
     }
@@ -114,51 +118,55 @@ trait ChannelTypeFragment extends KevoreeChannelFragment with ChannelFragment {
   override def internal_process(msgg: Any) = msgg match {
 
     case UpdateDictionaryMessage(d) => {
-      d.keySet.foreach {
-        v =>
-          dictionary.put(v, d.get(v))
+      try {
+        d.keySet.foreach {
+          v =>
+            dictionary.put(v, d.get(v))
+        }
+        if (ct_started) {
+          updateChannelFragment
+        }
+        reply(true)
+      } catch {
+        case _@e => {
+          kevoree_internal_logger.error("Kevoree Channel Instance Update Error !", e)
+          reply(false)
+        }
       }
-      //updateChannelFragment
-      if (ct_started) {
-        new Actor {
-          def act = updateChannelFragment
-        }.start()
-      }
-
-      reply(true)
     }
-
     case StartMessage if (!ct_started) => {
-      // new Actor {
-      //  def act = {
-      startChannelFragment;
-      println("Starting Channel Internal queue");
-      local_queue.start; //isStarted=true
-      //}
-      // }.start
-      ct_started = true
-      reply(true)
+      try {
+        startChannelFragment
+        local_queue.start()
+        ct_started = true
+        reply(true)
+      } catch {
+        case _@e => {
+          kevoree_internal_logger.error("Kevoree Channel Instance Start Error !", e)
+          reply(false)
+        }
+      }
     }
     case StopMessage if (ct_started) => {
-      // new Actor {
-      //   def act = {
-      //TODO CHECK QUEUE SIZE AND SAVE STATE
-      local_queue.forceStop
-      stopChannelFragment
-      //isStarted=false
-      //   }
-
-      // }.start
-
-      ct_started = false
-      reply(true)
+      try {
+        //TODO CHECK QUEUE SIZE AND SAVE STATE
+        local_queue.forceStop
+        stopChannelFragment
+        ct_started = false
+        reply(true)
+      } catch {
+        case _@e => {
+          kevoree_internal_logger.error("Kevoree Channel Instance Stop Error !", e)
+          reply(false)
+        }
+      }
     }
-    case StopMessage if (!ct_started) =>
-    case StartMessage if (ct_started) =>
+    case StopMessage if (!ct_started) => //IGNORE
+    case StartMessage if (ct_started) => //IGNORE
 
     case msg: FragmentBindMessage => {
-      var sender = this.createSender(msg.getFragmentNodeName, msg.getChannelName)
-      var proxy = new KevoreeChannelFragmentProxy(msg.getFragmentNodeName, msg.getChannelName)
+      val sender = this.createSender(msg.getFragmentNodeName, msg.getChannelName)
+      val proxy = new KevoreeChannelFragmentProxy(msg.getFragmentNodeName, msg.getChannelName)
       proxy.setChannelSender(sender)
       fragementBinded.put(createPortKey(msg), proxy);
       proxy.start;
@@ -213,7 +221,7 @@ trait ChannelTypeFragment extends KevoreeChannelFragment with ChannelFragment {
       }
       case _@msg => {
         println("Msg does not seem to be an object =>" + msg)
-        var msg2 = new Message
+        val msg2 = new Message
         msg2.setInOut(false)
         msg2.setContent(msg)
         dispatch(msg2)
@@ -224,9 +232,9 @@ trait ChannelTypeFragment extends KevoreeChannelFragment with ChannelFragment {
 
 
   /* LifeCycle Method */
-  def startChannelFragment: Unit = {}
+  def startChannelFragment() : Unit = {}
 
-  def stopChannelFragment: Unit = {}
+  def stopChannelFragment() : Unit = {}
 
   def updateChannelFragment: Unit = {}
 

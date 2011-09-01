@@ -17,16 +17,23 @@
  */
 package org.kevoree.framework;
 
-import java.util.HashMap;
-import org.kevoree.framework.KevoreeChannelFragment;
-import org.kevoree.framework.Port;
+import org.kevoree.api.service.core.handler.KevoreeModelHandlerService;
 import org.kevoree.framework.message.Message;
 
+import java.util.HashMap;
+
 /**
- *
  * @author ffouquet
  */
 public abstract class AbstractChannelFragment implements ChannelFragment {
+
+    private KevoreeModelHandlerService modelService;
+    public void setModelService(KevoreeModelHandlerService ms){
+        modelService = ms;
+    }
+    public KevoreeModelHandlerService getModelService() {
+        return modelService;
+    }
 
     public java.util.List<KevoreePort> getBindedPorts() {
         return null;
@@ -52,7 +59,7 @@ public abstract class AbstractChannelFragment implements ChannelFragment {
         return null;
     }
 
-    public Object remoteDispatch(Message msg){
+    public Object remoteDispatch(Message msg) {
         return null;
     }
 }
