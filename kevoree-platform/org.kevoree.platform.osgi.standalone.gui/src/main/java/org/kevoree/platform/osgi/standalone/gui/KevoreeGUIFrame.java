@@ -35,7 +35,7 @@ public class KevoreeGUIFrame extends JFrame {
         ImageIcon smallIcon = new ImageIcon(urlSmallIcon);
         this.setIconImage(smallIcon.getImage());
         JLabel topImage = new JLabel(topIIcon);
-        topImage.setOpaque(false);
+        topImage.setOpaque(true);
         topImage.setBackground(new Color(63, 128, 187));
         this.add(topImage, BorderLayout.NORTH);
         
