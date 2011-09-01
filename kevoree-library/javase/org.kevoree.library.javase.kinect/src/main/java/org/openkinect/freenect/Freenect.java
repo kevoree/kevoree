@@ -1,8 +1,10 @@
 package org.openkinect.freenect;
 
-import com.sun.jna.*;
+import com.sun.jna.Callback;
+import com.sun.jna.Library;
+import com.sun.jna.Pointer;
+import com.sun.jna.PointerType;
 import com.sun.jna.ptr.PointerByReference;
-import org.kevoree.library.javase.kinect.KinectNativeLibraryLoader;
 
 import java.nio.ByteBuffer;
 import java.nio.DoubleBuffer;
@@ -10,11 +12,7 @@ import java.nio.DoubleBuffer;
 public class Freenect implements Library {
 	static {
 		//try {
-		NativeLibrary.addSearchPath("freenect", KinectNativeLibraryLoader.configure());
-		//NativeLibrary.addSearchPath("freenect", "/usr/local/lib");
-		NativeLibrary instance = NativeLibrary.getInstance("freenect");
-		//System.err.println("Loaded " + instance.getName() + " from " + instance.getFile().getCanonicalPath());
-		Native.register(instance);
+
 		/*} catch (IOException e) {
 			throw new AssertionError(e);
 		}*/

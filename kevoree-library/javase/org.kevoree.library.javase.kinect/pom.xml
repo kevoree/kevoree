@@ -40,7 +40,7 @@
         </dependency>
     </dependencies>
 
-    <build>
+   <!-- <build>
         <plugins>
             <plugin>
                 <groupId>org.apache.felix</groupId>
@@ -49,8 +49,8 @@
                 <extensions>true</extensions>
                 <configuration>
                     <instructions>
-                        <!--<Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
-                        <Bundle-Version>${project.version}</Bundle-Version>-->
+                        &lt;!&ndash;<Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
+                        <Bundle-Version>${project.version}</Bundle-Version>&ndash;&gt;
                         <Bundle-NativeCode>
                             nativelib/Linux/i686-unknown-linux-gnu/libfreenect.so;
                             nativelib/Linux/i686-unknown-linux-gnu/libfreenect_sync.so;
@@ -59,8 +59,8 @@
                             nativelib/MacOs/libfreenect.dylib;
                             nativelib/MacOs/libusb.dylib;
                             osname="Mac OS X"; processor=x86; processor=PowerPC; processor=x86-64
-                            <!--osname=Win64; processor=x86_64; processor=x86-64-->
-                            <!--;
+                            &lt;!&ndash;osname=Win64; processor=x86_64; processor=x86-64&ndash;&gt;
+                            &lt;!&ndash;;
                             osname=Linux; processor=x86,
                             nativelib/Linux/ia64-unknown-linux-gnu/libopencv_core.so.2.3.0;
                             osname=Linux; processor=ia64,
@@ -78,12 +78,12 @@
                             nativelib/Windows/win32/rxtxSerial.dll;
                             osname=Win32; processor=x86,
                             nativelib/Windows/win64/rxtxSerial.dll;
-                            osname=Win64; processor=x86_64 ; processor=x86-64-->
+                            osname=Win64; processor=x86_64 ; processor=x86-64&ndash;&gt;
 
                         </Bundle-NativeCode>
                     </instructions>
                 </configuration>
             </plugin>
         </plugins>
-    </build>
+    </build>-->
 </project>

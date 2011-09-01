@@ -17,19 +17,20 @@ public class KinectNativeLibraryLoader {
 	public static String configure () {
 		try {
 			File folder = new File(System.getProperty("java.io.tmpdir") + File.separator + "libfreenect");
-			if (!folder.exists()) {
-				folder.mkdirs();
+			if (folder.exists()) {
+				deleteOldFile(folder);
 			}
+			folder.mkdirs();
 			String path = foundOSPath();
 			String[] names = foundOSName();
 			for (String name : names) {
 				copyFileFromStream(name, path, folder);
 			}
-			logger.info("libfreenect copied in " + folder.getAbsolutePath());
+			logger.debug("libfreenect copied in " + folder.getAbsolutePath());
 			return folder.getAbsolutePath();
 		} catch (IOException e) {
 			logger.error("cannot copy dynamic libs for freenect", e);
-			return ".";
+			return ".";// TODO throw exception
 		}
 	}
 
@@ -60,7 +61,7 @@ public class KinectNativeLibraryLoader {
 				return new String[]{""};
 			}
 		} else if (isMac()) {
-			return new String[]{"libfreenect.dylib","libfreenect_sync.dylib","libusb.dylib"};
+			return new String[]{"libfreenect.dylib", "libfreenect_sync.dylib", "libusb.dylib"};
 		} else if (isWindows()) {
 			if (!is64()) {
 				return new String[]{""};
@@ -125,4 +126,16 @@ public class KinectNativeLibraryLoader {
 		}
 	  }*/
 
+	private static void deleteOldFile (File folder) {
+		if (folder.isDirectory()) {
+			for (File f : folder.listFiles()) {
+				if (f.isFile()) {
+					f.delete();
+				} else {
+					deleteOldFile(f);
+				}
+			}
+		}
+		folder.delete();
+	}
 }

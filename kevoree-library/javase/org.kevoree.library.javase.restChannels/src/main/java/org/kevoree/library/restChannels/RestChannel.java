@@ -48,7 +48,7 @@ import org.slf4j.LoggerFactory;
 public class RestChannel extends AbstractChannelFragment {
 	private static final Logger logger = LoggerFactory.getLogger(RestChannel.class);
 
-    private KevoreeModelHandlerService modelHandlerService = null;
+    //private KevoreeModelHandlerService modelHandlerService = null;
     private Bundle bundle = null;
     private ServiceReference sr = null;
 
@@ -74,9 +74,7 @@ public class RestChannel extends AbstractChannelFragment {
     @Start
     public void startHello() {
         /* Get last model handler - previously deploy by kevoree core*/
-        bundle = (Bundle) this.getDictionary().get("osgi.bundle");
-        ServiceReference sr = bundle.getBundleContext().getServiceReference(KevoreeModelHandlerService.class.getName());
-        modelHandlerService = (KevoreeModelHandlerService) bundle.getBundleContext().getService(sr);
+
 
         RestChannelFragmentResource.channels.put(this.getName(), this);
         Handler.getDefaultHost().attach("/channels/{channelFragmentName}", RestChannelFragmentResource.class);
@@ -106,7 +104,7 @@ public class RestChannel extends AbstractChannelFragment {
             public Object sendMessageToRemote(Message message) {
                 String lastUrl = null;
                 try {
-                    message.getPassedNodes().add(modelHandlerService.getNodeName());
+                    message.getPassedNodes().add(getModelService().getNodeName());
                     lastUrl = buildURL();
                     logger.debug("remote rest url =>" + lastUrl);
                     ClientResource remoteChannelResource = new ClientResource(lastUrl);
@@ -125,11 +123,11 @@ public class RestChannel extends AbstractChannelFragment {
             }
 
             public String buildURL() {
-                String ip = KevoreePlatformHelper.getProperty(modelHandlerService.getLastModel(), remoteNodeName, org.kevoree.framework.Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP());
+                String ip = KevoreePlatformHelper.getProperty(getModelService().getLastModel(), remoteNodeName, org.kevoree.framework.Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP());
                 if (ip == null || ip.equals("")) {
                     ip = "127.0.0.1";
                 }
-                String port = KevoreePlatformHelper.getProperty(modelHandlerService.getLastModel(), remoteNodeName, org.kevoree.framework.Constants.KEVOREE_PLATFORM_REMOTE_NODE_MODELSYNCH_PORT());
+                String port = KevoreePlatformHelper.getProperty(getModelService().getLastModel(), remoteNodeName, org.kevoree.framework.Constants.KEVOREE_PLATFORM_REMOTE_NODE_MODELSYNCH_PORT());
                 if (port == null || port.equals("")) {
                     port = "8000";
                 }
