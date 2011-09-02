@@ -14,6 +14,7 @@
 package org.kevoree.tools.aether.framework
 
 import org.sonatype.aether.spi.log.Logger
+import org.slf4j.LoggerFactory
 
 /**
  * User: ffouquet
@@ -22,13 +23,15 @@ import org.sonatype.aether.spi.log.Logger
  */
 
 class AetherLogger extends Logger {
+
+  val logger = LoggerFactory.getLogger(this.getClass)
+
   def debug(p1: String) {
-    println(p1)
+    logger.debug(p1)
   }
 
   def debug(p1: String, p2: Throwable) {
-    println(p1)
-    p2.printStackTrace()
+    logger.debug(p1,p2)
   }
 
   def isDebugEnabled = true
@@ -36,11 +39,10 @@ class AetherLogger extends Logger {
   def isWarnEnabled = true
 
   def warn(p1: String) {
-    println(p1)
+    logger.warn(p1)
   }
 
   def warn(p1: String, p2: Throwable) {
-    println(p1)
-    p2.printStackTrace()
+    logger.warn(p1,p2)
   }
 }

@@ -204,12 +204,6 @@
                                 <groupId>org.apache.felix</groupId>
                                 <artifactId>org.apache.felix.framework</artifactId>
                             </inclusion>
-                             <!--
-                            <inclusion>
-                                <groupId>org.ops4j.pax.url</groupId>
-                                <artifactId>pax-url-mvn</artifactId>
-                            </inclusion>
-                            -->
 
                             <inclusion>
                                 <groupId>org.slf4j</groupId>

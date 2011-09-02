@@ -174,7 +174,8 @@
 
     <modules>
         <module>../org.kevoree.tools.aether.framework</module>
-        <module>../org.kevoree.tools.aether.lite.framework</module>
+       <!-- <module>../org.kevoree.tools.aether.lite.framework</module> -->
+       
         <module>../org.kevoree.tools.annotation.api</module>
         <module>../org.kevoree.tools.annotation.generator</module>
         <module>../org.kevoree.tools.annotation.processor</module>

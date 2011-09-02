@@ -285,7 +285,7 @@ trait UpdateNodeKompare extends AbstractKompare with UpdateChannelKompare {
             //NEW HUB INIT BINDING
             newhub.getOtherFragment(updateNode.getName).foreach {
               remoteName =>
-              var addccmd = KevoreeAdaptationFactory.eINSTANCE.createAddFragmentBinding
+              val addccmd = KevoreeAdaptationFactory.eINSTANCE.createAddFragmentBinding
               addccmd.setRef(newhub)
               addccmd.setTargetNodeName(remoteName)
               adaptationModel.getAdaptations.add(addccmd)
@@ -293,17 +293,17 @@ trait UpdateNodeKompare extends AbstractKompare with UpdateChannelKompare {
           }
 
         case Some(previousHub) => {
-            adaptationModel.getAdaptations.addAll(getUpdateChannelAdaptationModel(previousHub, newhub, updateNode.getName).getAdaptations)
+            //adaptationModel.getAdaptations.addAll(getUpdateChannelAdaptationModel(previousHub, newhub, updateNode.getName).getAdaptations)
           }
       }
     }
     actualRoot.getHubs.filter(hub => hub.usedByNode(updateNode.getName)).foreach {
-      newhub =>
-      updateRoot.getHubs.filter(hub => hub.usedByNode(updateNode.getName)).find(hub => newhub.getName == hub.getName) match {
+      actualHub =>
+      updateRoot.getHubs.filter(hub => hub.usedByNode(updateNode.getName)).find(hub => actualHub.getName == hub.getName) match {
         case None => // NOTHING TO DO HUB WILL BE UNINSTALL, NO UNBIND IS NECESSARY
-        case Some(previousHub) => {
+        case Some(updateHub) => {
             //CHECK AND UPDATE MBINDING
-            adaptationModel.getAdaptations.addAll(getUpdateChannelAdaptationModel(previousHub, newhub, updateNode.getName).getAdaptations)
+            adaptationModel.getAdaptations.addAll(getUpdateChannelAdaptationModel(actualHub, updateHub, updateNode.getName).getAdaptations)
           }
       }
     }

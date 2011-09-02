@@ -31,17 +31,17 @@ public class App {
         System.out.println("Hello World!");
 
 
-        ContainerRoot amodel = KevoreeFactory.eINSTANCE.createContainerRoot();
+       // ContainerRoot amodel = KevoreeFactory.eINSTANCE.createContainerRoot();
 
-        ContainerNode aNode = KevoreeFactory.eINSTANCE.createContainerNode();
-        aNode.setName("duke");
-        amodel.getNodes().add(aNode);
+        //ContainerNode aNode = KevoreeFactory.eINSTANCE.createContainerNode();
+        //aNode.setName("duke");
+        //amodel.getNodes().add(aNode);
 
 
 
         //ContainerRoot amodel = Art2Factory.eINSTANCE.createContainerRoot();
-        //ContainerRoot amodel = Art2XmiHelper.load("/Users/ffouquet/Desktop/MODELTEST/dicoTest2");
-        ContainerRoot nmodel = KevoreeXmiHelper.load("/Users/ffouquet/Desktop/u.art2");
+        ContainerRoot amodel = KevoreeXmiHelper.load("/Users/ffouquet/Downloads/model_fragment_binding1.kev");
+        ContainerRoot nmodel = KevoreeXmiHelper.load("/Users/ffouquet/Downloads/model_fragment_binding2.kev");
 
         System.out.println("new model " + nmodel);
 

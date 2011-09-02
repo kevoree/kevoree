@@ -26,13 +26,13 @@ import org.kevoree.framework.aspects.KevoreeAspects._
 trait UpdateChannelKompare {
 
   def getUpdateChannelAdaptationModel(actualChannel : Channel,updateChannel : Channel,nodeName : String) : AdaptationModel = {
-    var adaptationModel = org.kevoreeAdaptation.KevoreeAdaptationFactory.eINSTANCE.createAdaptationModel
+    val adaptationModel = org.kevoreeAdaptation.KevoreeAdaptationFactory.eINSTANCE.createAdaptationModel
 
     updateChannel.getOtherFragment(nodeName).foreach{newhubBindingNodeName=>
       actualChannel.getOtherFragment(nodeName).find(b=> b == newhubBindingNodeName) match {
         case None => {
             //NEW BINDING TODO
-            var addccmd = KevoreeAdaptationFactory.eINSTANCE.createAddFragmentBinding
+            val addccmd = KevoreeAdaptationFactory.eINSTANCE.createAddFragmentBinding
             addccmd.setRef(updateChannel)
             addccmd.setTargetNodeName(newhubBindingNodeName)
             adaptationModel.getAdaptations.add(addccmd)
@@ -44,7 +44,7 @@ trait UpdateChannelKompare {
       updateChannel.getOtherFragment(nodeName).find(b=> b ==previousHubBindingNodeName) match {
         case None => {
             //REMOVE BINDING TODO
-            var addccmd = KevoreeAdaptationFactory.eINSTANCE.createRemoveFragmentBinding
+            val addccmd = KevoreeAdaptationFactory.eINSTANCE.createRemoveFragmentBinding
             addccmd.setRef(updateChannel)
             addccmd.setTargetNodeName(previousHubBindingNodeName)
             adaptationModel.getAdaptations.add(addccmd)
