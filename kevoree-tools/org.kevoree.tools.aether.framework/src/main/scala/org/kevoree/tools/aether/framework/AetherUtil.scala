@@ -28,11 +28,9 @@ import org.kevoree.framework.KevoreePlatformHelper
 import scala.collection.JavaConversions._
 import org.sonatype.aether.connector.async.AsyncRepositoryConnectorFactory
 import org.sonatype.aether.spi.log.Logger
-import org.sonatype.aether.repository.{RepositoryPolicy, RemoteRepository, LocalRepository}
 import org.sonatype.aether.spi.localrepo.LocalRepositoryManagerFactory
-import org.sonatype.aether.impl.internal.{EnhancedLocalRepositoryManagerFactory}
-
-//import org.sonatype.aether.connector.wagon.WagonProvider
+import org.sonatype.aether.impl.internal.{SimpleLocalRepositoryManagerFactory,EnhancedLocalRepositoryManagerFactory}
+import org.sonatype.aether.repository.{RepositoryPolicy, RemoteRepository, LocalRepository}
 
 /**
  * User: ffouquet
@@ -45,14 +43,10 @@ object AetherUtil {
 
   val newRepositorySystem: RepositorySystem = {
     val locator = new DefaultServiceLocator()
-    //locator.addService(classOf[Logger], classOf[AetherLogger])
-
-
+    locator.addService(classOf[Logger], classOf[AetherLogger])
     locator.addService(classOf[LocalRepositoryManagerFactory], classOf[EnhancedLocalRepositoryManagerFactory])
     locator.addService(classOf[RepositoryConnectorFactory], classOf[FileRepositoryConnectorFactory])
     locator.addService(classOf[RepositoryConnectorFactory], classOf[AsyncRepositoryConnectorFactory])
-    //locator.setServices(classOf[WagonProvider], new ManualWagonProvider())
-    //locator.addService(classOf[RepositoryConnectorFactory], classOf[WagonRepositoryConnectorFactoryFork])
     locator.getService(classOf[RepositorySystem])
   }
 
@@ -66,7 +60,7 @@ object AetherUtil {
       artifact = new DefaultArtifact(List(du.getGroupName.trim(), du.getUnitName.trim(), du.getVersion.trim()).mkString(":"))
     }
 
-    println("artifact=" + artifact.toString + "-" + artifact.isSnapshot)
+   // println("artifact=" + artifact.toString + "-" + artifact.isSnapshot)
 
     val artifactRequest = new ArtifactRequest
     artifactRequest.setArtifact(artifact)
@@ -82,6 +76,7 @@ object AetherUtil {
         repo.setId(purl)
         repo.setUrl(url)
         repo.setContentType("default")
+        /*
         val repositoryPolicy = new RepositoryPolicy()
         repositoryPolicy.setChecksumPolicy(RepositoryPolicy.CHECKSUM_POLICY_WARN)
         repositoryPolicy.setUpdatePolicy(RepositoryPolicy.UPDATE_POLICY_ALWAYS)
@@ -89,12 +84,12 @@ object AetherUtil {
         val repositoryPolicyRelease = new RepositoryPolicy()
         repositoryPolicyRelease.setChecksumPolicy(RepositoryPolicy.CHECKSUM_POLICY_WARN)
         repositoryPolicyRelease.setUpdatePolicy(RepositoryPolicy.UPDATE_POLICY_DAILY)
-        repositoryPolicyRelease.setEnabled(true)
-        repo.setPolicy(true, repositoryPolicy)
-        repo.setPolicy(false, repositoryPolicyRelease)
+        repositoryPolicyRelease.setEnabled(true) */
+        //repo.setPolicy(true, repositoryPolicy)
+        //repo.setPolicy(false, repositoryPolicyRelease)
         repositories.add(repo)
 
-        println("use url => " + repo.toString)
+        //println("use url => " + repo.toString)
     }
 
     artifactRequest.setRepositories(repositories)
@@ -104,6 +99,7 @@ object AetherUtil {
 
   val newRepositorySystemSession = {
     val session = new MavenRepositorySystemSession()
+    session.setUpdatePolicy(RepositoryPolicy.UPDATE_POLICY_ALWAYS)
     //session.setConfigProperty("aether.connector.ahc.provider","jdk")
 
     /*
