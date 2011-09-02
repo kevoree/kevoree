@@ -23,13 +23,11 @@
     </properties>
 
     <modules>
-
         <module>../org.kevoree.library.android.logger</module>
         <module>../org.kevoree.library.android.text2speech</module>
         <module>../org.kevoree.library.android.fakeDomo</module>
 
     </modules>
-
 
     <dependencies>
         <dependency>

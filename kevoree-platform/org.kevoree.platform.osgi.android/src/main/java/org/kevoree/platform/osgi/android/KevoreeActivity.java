@@ -184,6 +184,6 @@ public class KevoreeActivity extends Activity implements KevoreeAndroidService {
 
     @Override
     public void remove(View view) {
-        //tabs.get
+
     }
 }
