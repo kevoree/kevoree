@@ -100,63 +100,13 @@
             <version>${kevoree.version}</version>
             <scope>provided</scope>
         </dependency>
+        <dependency>
+            <groupId>org.kevoree.tools</groupId>
+            <artifactId>org.kevoree.tools.aether.lite.framework</artifactId>
+            <version>${kevoree.version}</version>
+            <scope>provided</scope>
+        </dependency>
 
-
-        <dependency>
-            <groupId>org.sonatype.aether</groupId>
-            <artifactId>aether-api</artifactId>
-            <version>1.12</version>
-        </dependency>
-        <dependency>
-            <groupId>org.sonatype.aether</groupId>
-            <artifactId>aether-spi</artifactId>
-            <version>1.12</version>
-        </dependency>
-        <dependency>
-            <groupId>org.sonatype.aether</groupId>
-            <artifactId>aether-util</artifactId>
-            <version>1.12</version>
-        </dependency>
-        <dependency>
-            <groupId>org.sonatype.aether</groupId>
-            <artifactId>aether-impl</artifactId>
-            <version>1.12</version>
-        </dependency>
-        <dependency>
-            <groupId>org.sonatype.aether</groupId>
-            <artifactId>aether-connector-wagon</artifactId>
-            <version>1.12</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.maven.wagon</groupId>
-            <artifactId>wagon-http-lightweight</artifactId>
-            <version>1.0</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.maven.wagon</groupId>
-            <artifactId>wagon-http-shared</artifactId>
-            <version>1.0</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.maven</groupId>
-            <artifactId>maven-aether-provider</artifactId>
-            <version>3.0.3</version>
-        </dependency>
-        <dependency>
-            <groupId>org.sonatype.aether</groupId>
-            <artifactId>aether-connector-file</artifactId>
-            <version>1.12</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.maven.wagon</groupId>
-            <artifactId>wagon-provider-api</artifactId>
-            <version>1.0</version>
-        </dependency>
-        <dependency>
-            <groupId>org.codehaus.plexus</groupId>
-            <artifactId>plexus-utils</artifactId>
-            <version>2.0.7</version>
-        </dependency>
 
         <dependency>
             <groupId>org.ops4j.pax.url</groupId>
@@ -432,63 +382,10 @@
                                 <groupId>org.kevoree.tools</groupId>
                                 <artifactId>org.kevoree.tools.marShell</artifactId>
                             </inclusion>
-                            <!--
-                            <inclusion>
 
+                            <inclusion>
                                 <groupId>org.kevoree.tools</groupId>
-                                <artifactId>org.kevoree.tools.aether.framework</artifactId>
-                                <filter>
-                                    !org/kevoree/tools/aether/framework/**
-                                </filter>
-                            </inclusion>
-                            -->
-                            <inclusion>
-                                <groupId>org.sonatype.aether</groupId>
-                                <artifactId>aether-api</artifactId>
-                            </inclusion>
-                            <inclusion>
-                                <groupId>org.sonatype.aether</groupId>
-                                <artifactId>aether-connector-wagon</artifactId>
-                            </inclusion>
-                            <inclusion>
-                                <groupId>org.apache.maven.wagon</groupId>
-                                <artifactId>wagon-http-lightweight</artifactId>
-                            </inclusion>
-                            <inclusion>
-                                <groupId>org.apache.maven.wagon</groupId>
-                                <artifactId>wagon-http-shared</artifactId>
-                            </inclusion>
-                            <inclusion>
-                                <groupId>org.apache.maven</groupId>
-                                <artifactId>maven-aether-provider</artifactId>
-                                <filter>
-                                    !META-INF/**
-                                </filter>
-                            </inclusion>
-
-                            <inclusion>
-                                <groupId>org.sonatype.aether</groupId>
-                                <artifactId>aether-spi</artifactId>
-                            </inclusion>
-                            <inclusion>
-                                <groupId>org.sonatype.aether</groupId>
-                                <artifactId>aether-util</artifactId>
-                            </inclusion>
-                            <inclusion>
-                                <groupId>org.sonatype.aether</groupId>
-                                <artifactId>aether-impl</artifactId>
-                            </inclusion>
-                            <inclusion>
-                                <groupId>org.sonatype.aether</groupId>
-                                <artifactId>aether-connector-file</artifactId>
-                            </inclusion>
-                            <inclusion>
-                                <groupId>org.apache.maven.wagon</groupId>
-                                <artifactId>wagon-provider-api</artifactId>
-                            </inclusion>
-                            <inclusion>
-                                <groupId>org.codehaus.plexus</groupId>
-                                <artifactId>plexus-utils</artifactId>
+                                <artifactId>org.kevoree.tools.aether.lite.framework</artifactId>
                             </inclusion>
 
                             <inclusion>
@@ -519,19 +416,10 @@
                             <inclusion>
                                 <groupId>org.ops4j.pax.url</groupId>
                                 <artifactId>pax-url-assembly</artifactId>
-                                <!--
                                 <filter>
                                     !org/apache/commons/**,
-                                    !META-INF/**,
-                                    !org/ops4j/io/**,
-                                    !org/ops4j/lang/**,
-                                    !org/ops4j/monitors/**,
-                                    !org/ops4j/pax/swissbox/property/**,
-                                    !org/ops4j/pax/url/commons/handler/**,
-                                    !org/ops4j/util/property/**
+                                    !META-INF/**
                                 </filter>
-                                -->
-
                             </inclusion>
                         </inclusions>
                     </assembly>

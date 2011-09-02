@@ -1,5 +1,3 @@
-package org.kevoree.tools.aether.framework
-
 /**
  * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE, Version 3, 29 June 2007;
  * you may not use this file except in compliance with the License.
@@ -13,6 +11,8 @@ package org.kevoree.tools.aether.framework
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.kevoree.tools.aether.framework
+
 import org.sonatype.aether.spi.log.Logger
 
 /**

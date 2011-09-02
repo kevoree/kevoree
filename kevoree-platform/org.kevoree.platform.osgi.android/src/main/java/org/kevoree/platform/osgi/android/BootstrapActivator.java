@@ -31,7 +31,7 @@ import org.kevoree.remote.rest.KevoreeRemoteBean;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.service.packageadmin.PackageAdmin;
-import org.kevoree.api.configuration.ConfigConstants;
+import org.osgi.service.startlevel.StartLevel;
 
 /**
  * @author ffouquet
@@ -55,6 +55,8 @@ public class BootstrapActivator implements BundleActivator {
 
         PackageAdmin paAdmin = (PackageAdmin) context.getService(context.getServiceReferences(PackageAdmin.class.getName(), null)[0]);
         contextDeploy.setServicePackageAdmin(paAdmin);
+        StartLevel serviceLevel = (StartLevel) context.getService(context.getServiceReferences(StartLevel.class.getName(), null)[0]);
+        contextDeploy.setStartLevelServer(serviceLevel);
 
         deployBean.setContext(contextDeploy);
 
