@@ -21,11 +21,12 @@ import static com.googlecode.javacv.cpp.opencv_imgproc.*;
 @Requires({
 		@RequiredPort(name = "image_diff", type = PortType.MESSAGE, filter = "java.awt.image.BufferedImage",
 				optional = true, needCheckDependency = false),
-		@RequiredPort(name = "movement", type = PortType.MESSAGE, filter = "", optional = true, needCheckDependency = false)
+		@RequiredPort(name = "movement", type = PortType.MESSAGE, filter = "", optional = true,
+				needCheckDependency = false)
 })
 @Library(name = "JavaSE")
 @ComponentType
-public class SimpleMotionDetector extends AbstractComponentType {
+public class MotionDetector extends AbstractComponentType {
 
 	private boolean isAlreadyInitialized;
 	private IplImage frame;
@@ -33,7 +34,6 @@ public class SimpleMotionDetector extends AbstractComponentType {
 	private IplImage image;
 	private IplImage diff;
 	private CvMemStorage storage;
-	//private CanvasFrame canvasFrame;
 
 	@Start
 	public void start () {
@@ -43,13 +43,27 @@ public class SimpleMotionDetector extends AbstractComponentType {
 	@Stop
 	public void stop () {
 		if (isAlreadyInitialized) {
-			//canvasFrame.dispose();
-			diff.release();
-			image.release();
-			prevImage.release();
-			frame.release();
-			cvReleaseMemStorage(storage);
+			if (diff != null) {
+				diff.release();
+			}
+			if (image != null) {
+				image.release();
+			}
+			if (prevImage != null) {
+				prevImage.release();
+			}
+			if (frame != null) {
+				frame.release();
+			}
+			if (storage != null) {
+				cvReleaseMemStorage(storage);
+			}
 		}
+		diff = null;
+		image = null;
+		prevImage = null;
+		frame = null;
+		storage = null;
 		isAlreadyInitialized = false;
 	}
 
@@ -65,7 +79,8 @@ public class SimpleMotionDetector extends AbstractComponentType {
 			if (isPortBinded("movement") || isPortBinded("image_diff")) {
 				if (!isAlreadyInitialized) {
 					isAlreadyInitialized = true;
-
+					frame = IplImage.create(((BufferedImage) message).getWidth(), ((BufferedImage) message).getHeight(),
+							IPL_DEPTH_8U, 3);
 					diff = IplImage.create(((BufferedImage) message).getWidth(), ((BufferedImage) message).getHeight(),
 							IPL_DEPTH_8U, 1);
 					image = IplImage.create(((BufferedImage) message).getWidth(), ((BufferedImage) message).getHeight(),
@@ -76,19 +91,13 @@ public class SimpleMotionDetector extends AbstractComponentType {
 
 					storage = CvMemStorage.create();
 				}
-
-				if (frame == null) {
-					frame = IplImage.createFrom((BufferedImage) message);
-				} else {
-					frame.copyFrom((BufferedImage) message);
-				}
-				process(frame);
-				//cvReleaseImage(frame);
+				frame.copyFrom((BufferedImage) message);
+				process();
 			}
 		}
 	}
 
-	private void process (IplImage frame) {
+	private void process () {
 
 		cvSmooth(frame, frame, CV_GAUSSIAN, 9, 9, 2, 2);
 		cvCvtColor(frame, image, CV_RGB2GRAY);
@@ -97,7 +106,7 @@ public class SimpleMotionDetector extends AbstractComponentType {
 			// perform ABS difference
 			cvAbsDiff(image, prevImage, diff);
 			// do some threshold for wipe away useless details
-			cvThreshold(diff, diff, 64, 255, CV_THRESH_BINARY);
+			cvThreshold(diff, diff, 70, 255, CV_THRESH_BINARY);
 
 			//canvasFrame.showImage(diff);
 			CvSeq contour = new CvSeq(null);
@@ -114,7 +123,7 @@ public class SimpleMotionDetector extends AbstractComponentType {
 							getPortByName("movement", MessagePort.class).process("");
 						}
 						if (isPortBinded("image_diff")) {
-							getPortByName("image_diff", MessagePort.class).process(diff);
+							getPortByName("image_diff", MessagePort.class).process(diff.getBufferedImage());
 						}
 
 						break;
@@ -123,7 +132,10 @@ public class SimpleMotionDetector extends AbstractComponentType {
 				contour = contour.h_next();
 			}
 		}
-		cvReleaseImage(prevImage);
+		if (prevImage != null) {
+			prevImage.release();
+			prevImage = null;
+		}
 		prevImage = image.clone();
 	}
 }

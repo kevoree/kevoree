@@ -74,8 +74,6 @@ public class RestChannel extends AbstractChannelFragment {
     @Start
     public void startHello() {
         /* Get last model handler - previously deploy by kevoree core*/
-
-
         RestChannelFragmentResource.channels.put(this.getName(), this);
         Handler.getDefaultHost().attach("/channels/{channelFragmentName}", RestChannelFragmentResource.class);
         Handler.getDefaultHost().attach("/channels", RestChannelsResource.class);

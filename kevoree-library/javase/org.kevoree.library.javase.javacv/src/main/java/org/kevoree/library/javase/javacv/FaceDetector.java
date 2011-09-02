@@ -1,3 +1,4 @@
+/*
 package org.kevoree.library.javase.javacv;
 
 import org.kevoree.annotation.*;
@@ -14,11 +15,14 @@ import static com.googlecode.javacv.cpp.opencv_imgproc.*;
 import static com.googlecode.javacv.cpp.opencv_objdetect.*;
 
 
+*/
 /**
  * User: Erwan Daubert - erwan.daubert@gmail.com
  * Date: 26/08/11
  * Time: 11:00
- */
+ *//*
+
+
 @Provides({
 		@ProvidedPort(name = "image", type = PortType.MESSAGE, filter = "java.awt.image.BufferedImage")
 })
@@ -62,6 +66,11 @@ public class FaceDetector extends AbstractComponentType {
 			frame.release();
 			cvReleaseMemStorage(storage);
 		}
+		equImg = null;
+		image = null;
+		grayImage = null;
+		frame = null;
+		storage = null;
 		isAlreadyInitialized = false;
 	}
 
@@ -71,7 +80,7 @@ public class FaceDetector extends AbstractComponentType {
 		start();
 	}
 
-	private int nb = 0;
+//	private int nb = 0;
 
 	@Port(name = "image")
 	public void onReceiveImage (Object message) {
@@ -83,9 +92,14 @@ public class FaceDetector extends AbstractComponentType {
 					// We instantiate a classifier cascade to be used for detection, using the cascade definition.
 					cascade = new CvHaarClassifierCascade(cvLoad(cascadeFilePath));
 
-					/*diff = IplImage
+					*/
+/*diff = IplImage
 							.create(((BufferedImage) message).getWidth(), ((BufferedImage) message).getHeight(),
-									IPL_DEPTH_8U, 1);*/
+									IPL_DEPTH_8U, 1);*//*
+
+					frame = IplImage
+							.create(((BufferedImage) message).getWidth(), ((BufferedImage) message).getHeight(),
+									IPL_DEPTH_8U, 1);
 					image = IplImage
 							.create(((BufferedImage) message).getWidth(), ((BufferedImage) message).getHeight(),
 									IPL_DEPTH_8U, 1);
@@ -96,29 +110,23 @@ public class FaceDetector extends AbstractComponentType {
 							.create(((BufferedImage) message).getWidth(), ((BufferedImage) message).getHeight(),
 									IPL_DEPTH_8U, 1);
 
+					storage = CvMemStorage.create();
 				}
-				if (frame == null) {
-					frame = IplImage.createFrom((BufferedImage) message);
-				} else {
-					frame.copyFrom((BufferedImage) message);
-				}
-				if (nb != 1) {
-					process(frame);
-					nb++;
-				}
+				frame.copyFrom((BufferedImage) message);
+//				if (nb != 1) {
+				process(frame);
+//					nb++;
+//				}
 			}
 		}
 	}
 
 	private void process (IplImage frame) {
-
 		// We convert the original image to grayscale.
 		cvCvtColor(frame, grayImage, CV_BGR2GRAY);
 		// equalize the grayscale using OpenCV
 		cvEqualizeHist(grayImage, equImg); // TODO maybe remove
 
-
-		storage = CvMemStorage.create();
 		CvSeq faces;
 		if (doMultiFaceDetection()) {
 			// We detect the faces.
@@ -139,9 +147,6 @@ public class FaceDetector extends AbstractComponentType {
 			cvRectangle(frame, cvPoint(r.x(), r.y()),
 					cvPoint(r.x() + r.width(), r.y() + r.height()), CvScalar.YELLOW, 1, CV_AA, 0);
 		}
-		faces.storage().release();
-		//cvReleaseMemStorage(storage);
-		storage.release();
 		getPortByName("faces", MessagePort.class).process(frame.getBufferedImage());
 	}
 
@@ -180,3 +185,4 @@ public class FaceDetector extends AbstractComponentType {
 		return null;
 	}
 }
+*/

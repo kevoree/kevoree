@@ -64,19 +64,14 @@ public class VideoViewer extends AbstractComponentType {
 				init();
 				isAlreadyInitialized = true;
 			}
-			SwingUtilities.invokeLater(new Runnable() {
-				@Override
-				public void run () {
-					try {
-						Graphics2D g = (Graphics2D) bufferStrategy.getDrawGraphics();
-						g.drawImage(image, 0, 0, image.getWidth(null), image.getHeight(null), null);
-						g.dispose();
-						bufferStrategy.show();
-					} catch (Exception e) {
-						logger.debug("Something wrong appears, maybe the viewer fails", e);
-					}
-				}
-			});
+			try {
+				Graphics2D g = (Graphics2D) bufferStrategy.getDrawGraphics();
+				g.drawImage(image, 0, 0, image.getWidth(null), image.getHeight(null), null);
+				g.dispose();
+				bufferStrategy.show();
+			} catch (Exception e) {
+				logger.debug("Something wrong appears, maybe the viewer fails", e);
+			}
 
 		}
 	}

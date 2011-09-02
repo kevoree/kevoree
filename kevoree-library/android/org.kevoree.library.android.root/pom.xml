@@ -26,6 +26,7 @@
 
         <module>../org.kevoree.library.android.logger</module>
         <module>../org.kevoree.library.android.text2speech</module>
+        <module>../org.kevoree.library.android.fakeDomo</module>
 
     </modules>
 
@@ -93,7 +94,46 @@
                 </configuration>
             </plugin>
 
-
+            <!-- android dex phase -->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>1.1.1</version>
+                <executions>
+                    <execution>
+                        <id>generate-dex</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>exec</goal>
+                        </goals>
+                        <configuration>
+                            <executable>${android.tools.dx}</executable>
+                            <arguments>
+                                <argument>--dex</argument>
+                                <argument>--core-library</argument>
+                                <argument>--output=${project.build.directory}/classes.dex</argument>
+                                <argument>${project.build.directory}/${project.build.finalName}.jar</argument>
+                            </arguments>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>prepare-dexed-jar</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>exec</goal>
+                        </goals>
+                        <configuration>
+                            <executable>${android.tools.aapt}</executable>
+                            <workingDirectory>${project.build.directory}</workingDirectory>
+                            <arguments>
+                                <argument>add</argument>
+                                <argument>${project.build.directory}/${project.build.finalName}.jar</argument>
+                                <argument>classes.dex</argument>
+                            </arguments>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
 
@@ -126,7 +166,7 @@
         <pluginRepository>
             <id>plugin.kevoree-snapshots</id>
             <url>http://maven2.kevoree.org/snapshots</url>
-        </pluginRepository> 
+        </pluginRepository>
     </pluginRepositories>
 
 
