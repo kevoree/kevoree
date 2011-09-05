@@ -72,7 +72,7 @@ public class FakeSimpleLight extends AbstractFakeStuffComponent {
         frame.setVisible(true);
         state = false;
 
-        logger.debug("Hello from " + this.getName() + " ;-)");
+        logger.debug("Hello2 from " + this.getName() + " ;-)");
 
         MessagePort log = getPortByName("log", MessagePort.class);
         if (log != null) {

@@ -47,8 +47,6 @@ import org.slf4j.LoggerFactory;
 }) */
 public class RestChannel extends AbstractChannelFragment {
 	private static final Logger logger = LoggerFactory.getLogger(RestChannel.class);
-
-    //private KevoreeModelHandlerService modelHandlerService = null;
     private Bundle bundle = null;
     private ServiceReference sr = null;
 
@@ -56,6 +54,8 @@ public class RestChannel extends AbstractChannelFragment {
     public Object dispatch(Message msg) {
 
         logger.debug("Local node bsize" + getBindedPorts().size());
+        logger.debug("Remote node bsize" + getOtherFragments().size());
+
 
         if (getBindedPorts().isEmpty() && getOtherFragments().isEmpty()) {
             logger.debug("No consumer, msg lost=" + msg.getContent());

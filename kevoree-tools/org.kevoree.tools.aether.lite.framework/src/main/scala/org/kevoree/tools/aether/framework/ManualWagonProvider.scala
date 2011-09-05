@@ -18,7 +18,6 @@ import org.sonatype.aether.connector.wagon.WagonProvider
 import org.apache.maven.wagon.Wagon
 import org.apache.maven.wagon.providers.http.LightweightHttpWagon
 
-
 /**
 * User: ffouquet
 * Date: 04/08/11

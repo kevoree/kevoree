@@ -21,15 +21,17 @@ import org.sonatype.aether.connector.file.FileRepositoryConnectorFactory
 import org.sonatype.aether.resolution.ArtifactRequest
 import org.sonatype.aether.util.artifact.DefaultArtifact
 import org.apache.maven.repository.internal.MavenRepositorySystemSession
-import org.kevoree.{ContainerRoot, DeployUnit}
 import java.io.File
 import org.sonatype.aether.artifact.Artifact
 import org.kevoree.framework.KevoreePlatformHelper
 import scala.collection.JavaConversions._
 import org.sonatype.aether.repository.{RepositoryPolicy, RemoteRepository, LocalRepository}
 import org.sonatype.aether.spi.localrepo.LocalRepositoryManagerFactory
-import org.sonatype.aether.impl.internal.{EnhancedLocalRepositoryManagerFactory}
 import org.sonatype.aether.connector.wagon.WagonProvider
+import org.kevoree.{KevoreeFactory, ContainerRoot, DeployUnit}
+import org.slf4j.LoggerFactory
+import org.sonatype.aether.impl.UpdateCheckManager
+import org.sonatype.aether.impl.internal.{SimpleLocalRepositoryManagerFactory, DefaultUpdateCheckManager, EnhancedLocalRepositoryManagerFactory}
 
 //import org.sonatype.aether.connector.wagon.WagonProvider
 
@@ -41,6 +43,7 @@ import org.sonatype.aether.connector.wagon.WagonProvider
 
 object AetherUtil {
 
+  val logger = LoggerFactory.getLogger(this.getClass)
 
   val newRepositorySystem: RepositorySystem = {
     val locator = new DefaultServiceLocator()
@@ -48,6 +51,7 @@ object AetherUtil {
     locator.addService(classOf[LocalRepositoryManagerFactory], classOf[EnhancedLocalRepositoryManagerFactory])
     locator.addService(classOf[RepositoryConnectorFactory], classOf[FileRepositoryConnectorFactory])
     locator.setServices(classOf[WagonProvider], new ManualWagonProvider())
+    locator.setServices(classOf[UpdateCheckManager], new DefaultUpdateCheckManager())
     locator.addService(classOf[RepositoryConnectorFactory], classOf[WagonRepositoryConnectorFactoryFork])
     locator.getService(classOf[RepositorySystem])
   }
@@ -62,7 +66,7 @@ object AetherUtil {
       artifact = new DefaultArtifact(List(du.getGroupName.trim(), du.getUnitName.trim(), du.getVersion.trim()).mkString(":"))
     }
 
-    println("artifact=" + artifact.toString + "-" + artifact.isSnapshot)
+   // println("artifact=" + artifact.toString + "-" + artifact.isSnapshot)
 
     val artifactRequest = new ArtifactRequest
     artifactRequest.setArtifact(artifact)
@@ -70,14 +74,12 @@ object AetherUtil {
 
     val repositories: java.util.List[RemoteRepository] = new java.util.ArrayList();
     urls.foreach {url =>
-
         val repo = new RemoteRepository
-
         val purl = url.trim.replace(':','_').replace('/','_').replace('\\','_')
-
         repo.setId(purl)
         repo.setUrl(url)
         repo.setContentType("default")
+        /*
         val repositoryPolicy = new RepositoryPolicy()
         repositoryPolicy.setChecksumPolicy(RepositoryPolicy.CHECKSUM_POLICY_WARN)
         repositoryPolicy.setUpdatePolicy(RepositoryPolicy.UPDATE_POLICY_ALWAYS)
@@ -87,19 +89,19 @@ object AetherUtil {
         repositoryPolicyRelease.setUpdatePolicy(RepositoryPolicy.UPDATE_POLICY_DAILY)
         repositoryPolicyRelease.setEnabled(true)
         repo.setPolicy(true, repositoryPolicy)
-        repo.setPolicy(false, repositoryPolicyRelease)
+        repo.setPolicy(false, repositoryPolicyRelease)   */
         repositories.add(repo)
-
-        println("use url => " + repo.toString)
     }
 
     artifactRequest.setRepositories(repositories)
     val artefactResult = newRepositorySystem.resolveArtifact(newRepositorySystemSession, artifactRequest)
+    logger.info("Found in repo "+artefactResult.getRepository.getId)
     artefactResult.getArtifact.getFile
   }
 
   val newRepositorySystemSession = {
     val session = new MavenRepositorySystemSession()
+    session.setUpdatePolicy(RepositoryPolicy.UPDATE_POLICY_ALWAYS)
     //session.setConfigProperty("aether.connector.ahc.provider","jdk")
 
     /*
@@ -110,7 +112,9 @@ object AetherUtil {
 
    println(settingResult.getEffectiveSettings.getProfiles.size())
     */
-    session.setLocalRepositoryManager(newRepositorySystem.newLocalRepositoryManager(new LocalRepository(System.getProperty("user.home").toString + "/.m2/repository")))
+    val localRepository = new LocalRepository(System.getProperty("user.home").toString + "/.m2/repository")
+    val repoManager = newRepositorySystem.newLocalRepositoryManager(localRepository)
+    session.setLocalRepositoryManager(repoManager)
     session
   }
 
