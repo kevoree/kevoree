@@ -37,7 +37,7 @@ trait ChannelTypeFragment extends KevoreeChannelFragment with ChannelFragment {
   }
 
   private val portsBinded: HashMap[String, KevoreePort] = new HashMap[String, KevoreePort]()
-  private val fragementBinded: HashMap[String, KevoreeChannelFragment] = new HashMap[String, KevoreeChannelFragment]()
+  private var fragementBinded: scala.collection.immutable.HashMap[String, KevoreeChannelFragment] = scala.collection.immutable.HashMap[String, KevoreeChannelFragment]()
 
   //@BeanProperty
   var nodeName: String = ""
@@ -165,23 +165,26 @@ trait ChannelTypeFragment extends KevoreeChannelFragment with ChannelFragment {
     case StartMessage if (ct_started) => //IGNORE
 
     case msg: FragmentBindMessage => {
+
+      kevoree_internal_logger.debug("FragmentBindMessage=>"+createPortKey(msg))
       val sender = this.createSender(msg.getFragmentNodeName, msg.getChannelName)
       val proxy = new KevoreeChannelFragmentProxy(msg.getFragmentNodeName, msg.getChannelName)
       proxy.setChannelSender(sender)
-      fragementBinded.put(createPortKey(msg), proxy);
+      fragementBinded += ((createPortKey(msg),proxy))
       proxy.start;
       reply(true)
     }
     case msg: FragmentUnbindMessage => {
-      println("Try to unbind channel " + name)
-      var actorPort = fragementBinded.get(createPortKey(msg))
-      if (actorPort != null) {
-        actorPort.stop
-        fragementBinded.remove(createPortKey(msg))
+      kevoree_internal_logger.debug("Try to unbind channel " + name)
+      val actorPort : Option[KevoreeChannelFragment] = fragementBinded.get(createPortKey(msg))
+      if (actorPort.isDefined) {
+        actorPort.get.stop
+        fragementBinded = fragementBinded.filter(p => p._1 != (createPortKey(msg)))
+        reply(true)
       } else {
-        println("Can't unbind Fragment " + createPortKey(msg))
+        kevoree_internal_logger.debug("Can't unbind Fragment " + createPortKey(msg))
+        reply(false)
       }
-      reply(true)
     }
     case msg: PortBindMessage => {
       portsBinded.put(createPortKey(msg), msg.getProxy);

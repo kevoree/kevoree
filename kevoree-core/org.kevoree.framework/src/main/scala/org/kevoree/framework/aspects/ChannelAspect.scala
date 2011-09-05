@@ -34,7 +34,10 @@ case class ChannelAspect(cself : Channel) {
   def getOtherFragment(nodeName : String) : List[String] = {
     var result : List[String] = List()
     cself.eContainer.asInstanceOf[ContainerRoot].getMBindings.filter(mb=> mb.getHub == cself && mb.getPort.eContainer.eContainer.asInstanceOf[ContainerNode].getName != nodeName  ).foreach{
-      mb=> result = result ++ List(mb.getPort.eContainer.eContainer.asInstanceOf[ContainerNode].getName)
+      mb=>
+        if(!result.contains(mb.getPort.eContainer.eContainer.asInstanceOf[ContainerNode].getName)){
+          result = result ++ List(mb.getPort.eContainer.eContainer.asInstanceOf[ContainerNode].getName)
+        }
     }
     result
   }
@@ -42,7 +45,10 @@ case class ChannelAspect(cself : Channel) {
   def getConnectedNode(nodeName : String) : List[ContainerNode] = {
     var result : List[ContainerNode] = List()
     cself.eContainer.asInstanceOf[ContainerRoot].getMBindings.filter(mb=> mb.getHub == cself && mb.getPort.eContainer.eContainer.asInstanceOf[ContainerNode].getName != nodeName).foreach{
-      mb=> result = result ++ List(mb.getPort.eContainer.eContainer.asInstanceOf[ContainerNode])
+      mb=>
+        if(!result.contains(mb.getPort.eContainer.eContainer.asInstanceOf[ContainerNode])){
+          result = result ++ List(mb.getPort.eContainer.eContainer.asInstanceOf[ContainerNode])
+        }
     }
     result
   }
