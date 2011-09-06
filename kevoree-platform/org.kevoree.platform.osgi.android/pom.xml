@@ -80,6 +80,14 @@
             <groupId>org.kevoree</groupId>
             <artifactId>org.kevoree.deploy.osgi</artifactId>
             <version>${kevoree.version}</version>
+
+            <exclusions>
+                <exclusion>
+                    <artifactId>org.kevoree.tools.aether.framework</artifactId>
+                    <groupId>org.kevoree.tools</groupId>
+                </exclusion>
+            </exclusions>
+
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -287,12 +295,12 @@
                         <option>-keep class org.kevoree.api.** { *; }</option>
                         <option>-keep class org.kevoree.framework.** { *; }</option>
                         <option>-keep class org.kevoree.remote.** { *; }</option>
-                        <option>-keep class org.apache.felix.framework.** { *; }</option>
+                       <option>-keep class org.apache.felix.framework.** { *; }</option>
                         <option>-keep class org.kevoree.android.framework.** { *; }</option>
                         <option>-keep class org.kevoree.tools.aether.framework.** { *; }</option>
-                        <option>-keep class org.apache.maven.wagon.** { *; }</option>
-                        <option>-keep class org.apache.maven.repository.** { *; }</option>
-                        <option>-keep class org.sonatype.** { *; }</option>
+                       <!-- <option>-keep class org.apache.maven.wagon.** { *; }</option> -->
+                       <!-- <option>-keep class org.apache.maven.repository.** { *; }</option> -->
+                       <!-- <option>-keep class org.sonatype.** { *; }</option> -->
 
 
                         <option>-dontskipnonpubliclibraryclasses</option>
@@ -386,6 +394,12 @@
                             <inclusion>
                                 <groupId>org.kevoree.tools</groupId>
                                 <artifactId>org.kevoree.tools.aether.lite.framework</artifactId>
+                                <filter>
+                                    !org/apache/commons/**,
+                                    !org/apache/codec/**,
+                                    !META-INF/**
+                                </filter>
+
                             </inclusion>
 
                             <inclusion>
@@ -418,6 +432,7 @@
                                 <artifactId>pax-url-assembly</artifactId>
                                 <filter>
                                     !org/apache/commons/**,
+                                    !org/apache/codec/**,
                                     !META-INF/**
                                 </filter>
                             </inclusion>
