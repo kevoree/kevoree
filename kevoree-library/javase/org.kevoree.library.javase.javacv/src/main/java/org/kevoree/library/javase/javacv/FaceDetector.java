@@ -1,4 +1,3 @@
-/*
 package org.kevoree.library.javase.javacv;
 
 import org.kevoree.annotation.*;
@@ -15,12 +14,11 @@ import static com.googlecode.javacv.cpp.opencv_imgproc.*;
 import static com.googlecode.javacv.cpp.opencv_objdetect.*;
 
 
-*/
 /**
  * User: Erwan Daubert - erwan.daubert@gmail.com
  * Date: 26/08/11
  * Time: 11:00
- *//*
+ */
 
 
 @Provides({
@@ -92,10 +90,9 @@ public class FaceDetector extends AbstractComponentType {
 					// We instantiate a classifier cascade to be used for detection, using the cascade definition.
 					cascade = new CvHaarClassifierCascade(cvLoad(cascadeFilePath));
 
-					*/
-/*diff = IplImage
-							.create(((BufferedImage) message).getWidth(), ((BufferedImage) message).getHeight(),
-									IPL_DEPTH_8U, 1);*//*
+					//diff = IplImage
+					//		.create(((BufferedImage) message).getWidth(), ((BufferedImage) message).getHeight(),
+					//				IPL_DEPTH_8U, 1);
 
 					frame = IplImage
 							.create(((BufferedImage) message).getWidth(), ((BufferedImage) message).getHeight(),
@@ -185,4 +182,3 @@ public class FaceDetector extends AbstractComponentType {
 		return null;
 	}
 }
-*/

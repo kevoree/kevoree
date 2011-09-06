@@ -17,9 +17,8 @@
 
     <build>
         <plugins>
-
             <!-- android dex phase -->
-            <!--<plugin>
+            <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>exec-maven-plugin</artifactId>
                 <version>1.1.1</version>
@@ -33,9 +32,9 @@
                         <configuration>
                             <executable>${android.tools.dx}</executable>
                             <arguments>
-                                <argument>- -dex</argument>
-                                <argument>- -core-library</argument>
-                                <argument>- -output=${project.build.directory}/classes.dex</argument>
+                                <argument>--dex</argument>
+                                <argument>--core-library</argument>
+                                <argument>--output=${project.build.directory}/classes.dex</argument>
                                 <argument>${project.build.directory}/${project.build.finalName}.jar</argument>
                             </arguments>
                         </configuration>
@@ -57,13 +56,12 @@
                         </configuration>
                     </execution>
                 </executions>
-            </plugin>-->
+            </plugin>
             <plugin>
                 <groupId>org.apache.felix</groupId>
                 <artifactId>maven-bundle-plugin</artifactId>
                 <version>2.3.5</version>
                 <extensions>true</extensions>
-
                 <configuration>
                     <instructions>
                         <Import-Package>!org.kevoree.library.text2speech.*,org.osgi.*;version="[4.2.0,5)",*
