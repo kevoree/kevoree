@@ -26,33 +26,39 @@ import scala.collection.JavaConversions._
 import org.slf4j.LoggerFactory
 
 /* TYPE DOES NOT INSTALL DEPLOY UNIT !! */
-case class AddTypeCommand(ct : TypeDefinition, ctx : KevoreeDeployManager,nodeName : String)  extends PrimitiveCommand{
+case class AddTypeCommand (ct: TypeDefinition, ctx: KevoreeDeployManager, nodeName: String) extends PrimitiveCommand {
 
   var logger = LoggerFactory.getLogger(this.getClass);
 
   //var lastExecutionBundle : Option[org.osgi.framework.Bundle] = None
-  def execute() : Boolean= {
+  def execute (): Boolean = {
     logger.debug("CMD ADD CT EXECUTION ");
 
-    val node = ct.eContainer.asInstanceOf[ContainerRoot].getNodes.find(n=>n.getName == nodeName).get
+    val node = ct.eContainer.asInstanceOf[ContainerRoot].getNodes.find(n => n.getName == nodeName).get
     val deployUnit = ct.foundRelevantDeployUnit(node)
 
     //FOUND TYPE DEFINITION DEPLOY UNIT BUNDLE
-    val mappingFound =  ctx.bundleMapping.find({bundle =>bundle.name==CommandHelper.buildKEY(deployUnit) && bundle.objClassName==deployUnit.getClass.getName}) match {
-      case Some(bundle)=> bundle
-      case None => logger.error("Deploy Unit Not Found"); return false; null;
+    val mappingFound = ctx.bundleMapping.find({
+      bundle => bundle.name == CommandHelper.buildKEY(deployUnit) && bundle.objClassName == deployUnit.getClass.getName
+    }) match {
+      case Some(bundle) => bundle
+      case None => logger.error("Deploy Unit Not Found"); null;
     }
 
-    //JUST ADD NEW BUNDING
-    ctx.bundleMapping.add(KevoreeOSGiBundle(ct.getName,ct.getClass.getName,mappingFound.bundle))
-    
-    
-    true
+    if (mappingFound != null) {
+      //JUST ADD NEW BUNDING
+      ctx.bundleMapping.add(KevoreeOSGiBundle(ct.getName, ct.getClass.getName, mappingFound.bundle))
+      true
+    } else {
+      false
+    }
+
+
   }
 
-  def undo() = {
-    try{
-        RemoveTypeCommand(ct,ctx,nodeName).execute
+  def undo () {
+    try {
+      RemoveTypeCommand(ct, ctx, nodeName).execute
     } catch {
       case _ =>
     }
