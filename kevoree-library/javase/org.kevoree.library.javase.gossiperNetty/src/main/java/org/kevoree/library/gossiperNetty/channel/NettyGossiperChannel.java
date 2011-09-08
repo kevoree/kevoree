@@ -5,10 +5,7 @@ import org.kevoree.annotation.*;
 import org.kevoree.api.service.core.handler.KevoreeModelHandlerService;
 import org.kevoree.framework.*;
 import org.kevoree.framework.message.Message;
-import org.kevoree.library.gossiperNetty.DataManager;
-import org.kevoree.library.gossiperNetty.GossiperActor;
-import org.kevoree.library.gossiperNetty.NettyGossipAbstractElement;
-import org.kevoree.library.gossiperNetty.Serializer;
+import org.kevoree.library.gossiperNetty.*;
 import org.kevoree.library.gossiperNetty.version.Version;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.ServiceReference;
@@ -35,7 +32,7 @@ public class NettyGossiperChannel extends AbstractChannelFragment implements Net
 
 	private DataManager dataManager = null;//new DataManager();
 	private Serializer serializer = null;
-	private org.kevoree.library.gossiperNetty.PeerSelector selector = null;
+	private PeerSelector selector = null;
 	private GossiperActor actor = null;
 	private ServiceReference sr;
 	private KevoreeModelHandlerService modelHandlerService = null;

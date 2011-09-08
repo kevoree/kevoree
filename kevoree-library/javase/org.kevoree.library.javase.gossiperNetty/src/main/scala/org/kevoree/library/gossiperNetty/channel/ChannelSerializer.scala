@@ -13,7 +13,7 @@ import org.kevoree.extra.marshalling.{RichString, RichJSONObject}
 
 class ChannelSerializer extends Serializer {
 
-	private var logger = LoggerFactory.getLogger(classOf[ChannelSerializer])
+  private val logger = LoggerFactory.getLogger(classOf[ChannelSerializer])
 
 	def serialize(data: Any): Array[Byte] = {
 		try {
