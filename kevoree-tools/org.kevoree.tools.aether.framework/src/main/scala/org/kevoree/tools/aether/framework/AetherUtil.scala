@@ -29,8 +29,9 @@ import scala.collection.JavaConversions._
 import org.sonatype.aether.connector.async.AsyncRepositoryConnectorFactory
 import org.sonatype.aether.spi.log.Logger
 import org.sonatype.aether.spi.localrepo.LocalRepositoryManagerFactory
-import org.sonatype.aether.impl.internal.{SimpleLocalRepositoryManagerFactory,EnhancedLocalRepositoryManagerFactory}
-import org.sonatype.aether.repository.{RepositoryPolicy, RemoteRepository, LocalRepository}
+import org.sonatype.aether.impl.internal.EnhancedLocalRepositoryManagerFactory
+import util.matching.Regex
+import org.sonatype.aether.repository.{Authentication, RepositoryPolicy, RemoteRepository, LocalRepository}
 
 /**
  * User: ffouquet
@@ -60,22 +61,37 @@ object AetherUtil {
       artifact = new DefaultArtifact(List(du.getGroupName.trim(), du.getUnitName.trim(), du.getVersion.trim()).mkString(":"))
     }
 
-   // println("artifact=" + artifact.toString + "-" + artifact.isSnapshot)
+    // println("artifact=" + artifact.toString + "-" + artifact.isSnapshot)
 
     val artifactRequest = new ArtifactRequest
     artifactRequest.setArtifact(artifact)
     val urls = buildPotentialMavenURL(du.eContainer().asInstanceOf[ContainerRoot])
 
     val repositories: java.util.List[RemoteRepository] = new java.util.ArrayList();
-    urls.foreach {url =>
+    urls.foreach {
+      url =>
 
         val repo = new RemoteRepository
 
-        val purl = url.trim.replace(':','_').replace('/','_').replace('\\','_')
+        val purl = url.trim.replace(':', '_').replace('/', '_').replace('\\', '_')
 
         repo.setId(purl)
-        repo.setUrl(url)
+
         repo.setContentType("default")
+
+        val HttpAuthRegex = new Regex("http://(.*):(.*)@(.*)")
+        url match {
+          case HttpAuthRegex(login, password,urlp) => {
+             repo.setAuthentication(new Authentication(login,password))
+            repo.setUrl("http://"+urlp)
+          }
+          case _ => repo.setUrl(url)
+        }
+
+
+        //val authentification = new Authentication
+        //   repo.set
+
         /*
         val repositoryPolicy = new RepositoryPolicy()
         repositoryPolicy.setChecksumPolicy(RepositoryPolicy.CHECKSUM_POLICY_WARN)
@@ -89,7 +105,7 @@ object AetherUtil {
         //repo.setPolicy(false, repositoryPolicyRelease)
         repositories.add(repo)
 
-        //println("use url => " + repo.toString)
+      //println("use url => " + repo.toString)
     }
 
     artifactRequest.setRepositories(repositories)

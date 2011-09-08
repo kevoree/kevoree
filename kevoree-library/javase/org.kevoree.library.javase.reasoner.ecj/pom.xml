@@ -55,7 +55,7 @@
         <dependency>
             <groupId>org.kevoree.extra</groupId>
             <artifactId>org.kevoree.extra.emf.library</artifactId>
-            <version>2.6.0</version>
+            <version>2.7.0</version>
         </dependency>
         
                 

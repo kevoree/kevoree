@@ -79,7 +79,7 @@
                         </goals>
                         <configuration>
                             <file>${project.build.directory}/classes/defaultLibrary.kev</file>
-                            <url>http://maven2.kevoree.org/archiva/repository/snapshots/</url>
+                            <url>http://maven.kevoree.org/archiva/repository/release/</url>
                             <packaging>kev</packaging>
                             <groupId>${project.groupId}</groupId>
                             <artifactId>${project.artifactId}</artifactId>
