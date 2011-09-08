@@ -1,5 +1,7 @@
 package org.kevoree.library.javase.javacv;
 
+import com.googlecode.javacpp.Loader;
+import com.googlecode.javacv.cpp.opencv_objdetect;
 import org.kevoree.annotation.*;
 import org.kevoree.framework.AbstractComponentType;
 import org.kevoree.framework.MessagePort;
@@ -85,6 +87,9 @@ public class FaceDetector extends AbstractComponentType {
 		if (message instanceof BufferedImage) {
 			if (isPortBinded("faces")) {
 				if (!isAlreadyInitialized) {
+
+					// preload the opencv_objdetect module to work around a known bug
+					Loader.load(opencv_objdetect.class);
 					isAlreadyInitialized = true;
 
 					// We instantiate a classifier cascade to be used for detection, using the cascade definition.
@@ -122,7 +127,7 @@ public class FaceDetector extends AbstractComponentType {
 		// We convert the original image to grayscale.
 		cvCvtColor(frame, grayImage, CV_BGR2GRAY);
 		// equalize the grayscale using OpenCV
-		cvEqualizeHist(grayImage, equImg); // TODO maybe remove
+		cvEqualizeHist(grayImage, equImg);
 
 		CvSeq faces;
 		if (doMultiFaceDetection()) {
@@ -144,6 +149,7 @@ public class FaceDetector extends AbstractComponentType {
 			cvRectangle(frame, cvPoint(r.x(), r.y()),
 					cvPoint(r.x() + r.width(), r.y() + r.height()), CvScalar.YELLOW, 1, CV_AA, 0);
 		}
+		cvClearMemStorage(storage);
 		getPortByName("faces", MessagePort.class).process(frame.getBufferedImage());
 	}
 
