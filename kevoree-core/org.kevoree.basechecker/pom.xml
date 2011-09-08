@@ -6,11 +6,11 @@
     <packaging>bundle</packaging>
     <name>Kevoree :: BaseChecker</name>
 
-    <version>1.2.0-SNAPSHOT</version>
+    <version>1.2.0-RC1</version>
     <parent>
         <artifactId>org.kevoree.root</artifactId>
         <groupId>org.kevoree</groupId>
-        <version>1.2.0-SNAPSHOT</version>
+        <version>1.2.0-RC1</version>
         <relativePath>../org.kevoree.root/pom.xml</relativePath>
     </parent>
 
@@ -24,6 +24,7 @@
                 <groupId>org.apache.felix</groupId>
                 <artifactId>maven-bundle-plugin</artifactId>
                 <extensions>true</extensions>
+                <version>2.3.5</version>
                 <configuration>
                     <instructions>
                         <Import-Package>!org.kevoree.core.basechecker.*,*</Import-Package>
@@ -61,12 +62,5 @@
             <version>0.8.2</version>
         </dependency>
     </dependencies>
-
-    <!--<repositories>
-        <repository>
-            <id>choco-repository</id>
-            <url>http://www.emn.fr/z-info/choco-solver/mvn/repository</url>
-        </repository>
-    </repositories>-->
 
 </project>

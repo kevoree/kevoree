@@ -5,11 +5,11 @@
     <packaging>bundle</packaging>
     <name>Kevoree :: Framework</name>
 
-    <version>1.2.0-SNAPSHOT</version>
+    <version>1.2.0-RC1</version>
     <parent>
         <artifactId>org.kevoree.root</artifactId>
         <groupId>org.kevoree</groupId>
-        <version>1.2.0-SNAPSHOT</version>
+        <version>1.2.0-RC1</version>
         <relativePath>../org.kevoree.root/pom.xml</relativePath>
     </parent>
 
@@ -48,11 +48,10 @@
             <plugin>
                 <groupId>org.apache.felix</groupId>
                 <artifactId>maven-bundle-plugin</artifactId>
-                <version>2.0.0</version>
+                <version>2.3.5</version>
                 <extensions>true</extensions>
                 <configuration>
                     <instructions>
-                        <Private-Package></Private-Package>
                         <Bundle-SymbolicName>org.kevoree.framework</Bundle-SymbolicName>
                         <Import-Package>!org.w3c.dom.ls,!org.w3c.dom.bootstrap,!com.sun.*,!org.kevoree.annotation.*,!org.joda.*,!org.codehaus.jackson.*,org.slf4j.*,*</Import-Package>
                         <Export-Package>org.kevoree.framework.*,org.codehaus.jackson.*,org.joda.*</Export-Package>
