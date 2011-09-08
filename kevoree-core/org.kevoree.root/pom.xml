@@ -7,11 +7,11 @@
     <name>Kevoree :: Root</name>
     <url>https://github.com/dukeboard/kevoree</url>
 
-    <version>1.2.0-SNAPSHOT</version>
+    <version>1.2.0-RC1</version>
 
     <properties>
         <emf.version>2.7.0</emf.version>
-        <scala.version>2.9.0-1</scala.version>
+        <scala.version>2.9.1</scala.version>
         <bundle.vendor>IRISA/INRIA</bundle.vendor>
     </properties>
 
@@ -79,7 +79,7 @@
             <plugin>
                 <groupId>org.apache.felix</groupId>
                 <artifactId>maven-bundle-plugin</artifactId>
-                <version>2.1.0</version>
+                <version>2.3.5</version>
                 <extensions>true</extensions>
             </plugin>
 
@@ -122,11 +122,11 @@
         </repository>
         <repository>
             <id>kevoree-libs-release-local</id>
-            <url>http://maven2.kevoree.org/release</url>
+            <url>http://maven.kevoree.org/release</url>
         </repository>
         <repository>
             <id>kevoree-snapshots</id>
-            <url>http://maven2.kevoree.org/snapshots</url>
+            <url>http://maven.kevoree.org/snapshots</url>
         </repository>
     </repositories>
 
@@ -138,11 +138,11 @@
         </pluginRepository>
         <pluginRepository>
             <id>plugin.kevoree-release</id>
-            <url>http://maven2.kevoree.org/release</url>
+            <url>http://maven.kevoree.org/release</url>
         </pluginRepository>
         <pluginRepository>
             <id>plugin.kevoree-snapshots</id>
-            <url>http://maven2.kevoree.org/snapshots</url>
+            <url>http://maven.kevoree.org/snapshots</url>
         </pluginRepository>
     </pluginRepositories>
 
@@ -155,6 +155,7 @@
         <module>../org.kevoree.kompare</module>
         <module>../org.kevoree.merger</module>
         <module>../org.kevoree.pruner</module>
+        <module>../../kevoree-tools/org.kevoree.tools.aether.framework</module>
         <module>../org.kevoree.deploy.osgi</module>
         <module>../org.kevoree.core</module>
         <module>../org.kevoree.remote</module>
@@ -164,11 +165,11 @@
     <distributionManagement>
         <repository>
             <id>maven2.kevoree.release</id>
-            <url>http://maven2.kevoree.org/archiva/repository/release/</url>
+            <url>http://maven.kevoree.org/archiva/repository/release/</url>
         </repository>
         <snapshotRepository>
             <id>maven2.kevoree.snapshots</id>
-            <url>http://maven2.kevoree.org/archiva/repository/snapshots/</url>
+            <url>http://maven.kevoree.org/archiva/repository/snapshots/</url>
         </snapshotRepository>
     </distributionManagement>
 
