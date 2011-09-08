@@ -12,6 +12,7 @@
     <properties>
         <kevoree.version>${project.version}</kevoree.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <scala.version>2.9.1</scala.version>
     </properties>
 
     <modules>
@@ -24,11 +25,11 @@
     <distributionManagement>
         <repository>
             <id>maven2.kevoree.release</id>
-            <url>http://maven2.kevoree.org/archiva/repository/release/</url>
+            <url>http://maven.kevoree.org/archiva/repository/release/</url>
         </repository>
         <snapshotRepository>
             <id>maven2.kevoree.snapshots</id>
-            <url>http://maven2.kevoree.org/archiva/repository/snapshots/</url>
+            <url>http://maven.kevoree.org/archiva/repository/snapshots/</url>
         </snapshotRepository>
     </distributionManagement>
 

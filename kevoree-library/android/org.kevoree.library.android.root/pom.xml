@@ -26,7 +26,6 @@
         <module>../org.kevoree.library.android.logger</module>
         <module>../org.kevoree.library.android.text2speech</module>
         <module>../org.kevoree.library.android.fakeDomo</module>
-
     </modules>
 
     <dependencies>
@@ -102,11 +101,11 @@
         </repository>
         <repository>
             <id>kevoree-libs-release-local</id>
-            <url>http://maven2.kevoree.org/release</url>
+            <url>http://maven.kevoree.org/release</url>
         </repository>
         <repository>
             <id>kevoree-snapshots</id>
-            <url>http://maven2.kevoree.org/snapshots</url>
+            <url>http://maven.kevoree.org/snapshots</url>
         </repository>
     </repositories>
 
@@ -118,11 +117,11 @@
         </pluginRepository>
         <pluginRepository>
             <id>plugin.kevoree-github</id>
-            <url>http://maven2.kevoree.org/release</url>
+            <url>http://maven.kevoree.org/release</url>
         </pluginRepository>
         <pluginRepository>
             <id>plugin.kevoree-snapshots</id>
-            <url>http://maven2.kevoree.org/snapshots</url>
+            <url>http://maven.kevoree.org/snapshots</url>
         </pluginRepository>
     </pluginRepositories>
 

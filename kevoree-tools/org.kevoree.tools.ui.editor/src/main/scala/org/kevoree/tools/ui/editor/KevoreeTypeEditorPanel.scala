@@ -34,6 +34,7 @@ class KevoreeTypeEditorPanel(typeDefinitionPanel: JPanel, uikernel: KevoreeUIKer
     case t: ChannelType => uifactory.createChannelTypeUI(t)
     case t: GroupType => uifactory.createGroupTypeUI(t)
     case t: NodeType => uifactory.createNodeTypeUI(t)
+    case null => {val p = new JPanel; p.setOpaque(false);p  }
   }
   //panel.setPreferredSize(new Dimension(300, 400))
 
