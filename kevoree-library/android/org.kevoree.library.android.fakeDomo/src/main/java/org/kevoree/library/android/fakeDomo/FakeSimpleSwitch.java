@@ -4,10 +4,12 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import org.kevoree.android.framework.helper.UIServiceHandler;
 import org.kevoree.android.framework.service.KevoreeAndroidService;
 import org.kevoree.annotation.*;
 import org.kevoree.framework.AbstractComponentType;
 import org.kevoree.framework.MessagePort;
+import org.osgi.framework.Bundle;
 
 import java.util.HashMap;
 
@@ -32,24 +34,25 @@ public class FakeSimpleSwitch extends AbstractComponentType {
 
 	@Start
 	public void start () {
-		LinearLayout layout = new LinearLayout(uiService.getRootActivity().getApplication().getApplicationContext());
+		uiService = UIServiceHandler.getUIService((Bundle) this.getDictionary().get("osgi.bundle"));
+		LinearLayout layout = new LinearLayout(uiService.getRootActivity());
 		layout.setOrientation(LinearLayout.VERTICAL);
 
-		Button buttonON = new Button(uiService.getRootActivity().getApplication().getApplicationContext());
+		Button buttonON = new Button(uiService.getRootActivity());
 		buttonON.setText("ON");
 		buttonON.setOnClickListener(new View.OnClickListener() {
 			public void onClick (View v) {
 				processOn();
 			}
 		});
-		Button buttonOFF = new Button(uiService.getRootActivity().getApplication().getApplicationContext());
+		Button buttonOFF = new Button(uiService.getRootActivity());
 		buttonOFF.setText("OFF");
 		buttonOFF.setOnClickListener(new View.OnClickListener() {
 			public void onClick (View v) {
 				processOff();
 			}
 		});
-		buttonToggle = new Button(uiService.getRootActivity().getApplication().getApplicationContext());
+		buttonToggle = new Button(uiService.getRootActivity());
 		buttonToggle.setText("toggle");
 		buttonToggle.setOnClickListener(new View.OnClickListener() {
 			public void onClick (View v) {
@@ -66,6 +69,13 @@ public class FakeSimpleSwitch extends AbstractComponentType {
 	@Stop
 	public void stop () {
 
+	}
+
+
+	@Update
+	public void update() {
+		stop();
+		start();
 	}
 
 	public void processOn () {

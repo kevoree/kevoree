@@ -9,6 +9,7 @@
         <relativePath>../org.kevoree.library.android.root/pom.xml</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
+    <packaging>bundle</packaging>
 
     <artifactId>org.kevoree.library.android.fakeDomo</artifactId>
     <name>Kevoree :: Library :: Android :: FakeDomo</name>
@@ -22,10 +23,11 @@
                 <extensions>true</extensions>
                 <configuration>
                     <instructions>
-                        <Import-Package>!org.kevoree.library.fakeDomo.*,org.osgi.*;version="[4.2.0,5)",*
+                        <!--<Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
+                        <Bundle-Version>${project.version}</Bundle-Version>-->
+                        <Import-Package>!org.kevoree.library.android.fakeDomo.*,org.osgi.*;version="[4.2.0,5)",*
                         </Import-Package>
-                        <Export-Package>org.kevoree.library.fakeDomo.*</Export-Package>
-                        <Bundle-ClassPath>.</Bundle-ClassPath>
+                        <Export-Package>org.kevoree.library.android.fakeDomo.*</Export-Package>
                     </instructions>
                 </configuration>
             </plugin>
