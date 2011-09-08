@@ -30,7 +30,7 @@
         <module>../org.kevoree.library.javase.javaseNode</module>
         <module>../org.kevoree.library.javase.gossiperNetty</module>
         <module>../org.kevoree.library.javase.fakeDomo</module>
-        <module>../org.kevoree.library.javase.esper</module>
+        <!--<module>../org.kevoree.library.javase.esper</module>  -->
         <module>../org.kevoree.library.javase.defaultChannels</module>
         <!--<module>../org.kevoree.library.javase.com.skype</module> -->
         <module>../org.kevoree.library.javase.serialCT</module>
@@ -103,12 +103,12 @@
             <url>http://scala-tools.org/repo-releases</url>
         </repository>
         <repository>
-            <id>kevoree-libs-release-local</id>
-            <url>http://maven2.kevoree.org/release</url>
+            <id>kevoree-release</id>
+            <url>http://maven.kevoree.org/release</url>
         </repository>
         <repository>
             <id>kevoree-snapshots</id>
-            <url>http://maven2.kevoree.org/snapshots</url>
+            <url>http://maven.kevoree.org/snapshots</url>
         </repository>
     </repositories>
 
@@ -120,11 +120,11 @@
         </pluginRepository>
         <pluginRepository>
             <id>plugin.kevoree-github</id>
-            <url>http://maven2.kevoree.org/release</url>
+            <url>http://maven.kevoree.org/release</url>
         </pluginRepository>
         <pluginRepository>
             <id>plugin.kevoree-snapshots</id>
-            <url>http://maven2.kevoree.org/snapshots</url>
+            <url>http://maven.kevoree.org/snapshots</url>
         </pluginRepository>
     </pluginRepositories>
 
