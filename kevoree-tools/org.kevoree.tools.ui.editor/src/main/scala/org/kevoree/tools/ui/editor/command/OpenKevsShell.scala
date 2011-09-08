@@ -23,7 +23,6 @@ import java.util.Random
 import org.kevoree.tools.marShell.parser.ParserUtil
 import org.kevoree.tools.marShellGUI.{KevsModelHandlers, KevsFrame}
 import org.kevoree.tools.ui.editor.{PositionedEMFHelper, KevoreeUIKernel}
-import com.sun.xml.internal.messaging.saaj.util.ByteOutputStream
 import java.io._
 import org.slf4j.LoggerFactory
 
@@ -141,9 +140,9 @@ class OpenKevsShell extends Command {
           import org.kevoree.tools.marShell.interpreter.KevsInterpreterAspects._
           PositionedEMFHelper.updateModelUIMetaData(kernel)
 
-          val outputStream: ByteOutputStream = new ByteOutputStream
+          val outputStream: ByteArrayOutputStream = new ByteArrayOutputStream
           KevoreeXmiHelper.saveStream(outputStream, kernel.getModelHandler.getActualModel)
-          val ghostModel = KevoreeXmiHelper.loadStream(outputStream.newInputStream())
+          val ghostModel = KevoreeXmiHelper.loadStream(new ByteArrayInputStream(outputStream.toByteArray))
 
           val result = script.interpret(KevsInterpreterContext(ghostModel))
           logger.info("Interpreter Result : " + result)
