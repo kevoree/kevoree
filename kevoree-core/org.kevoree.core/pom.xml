@@ -5,11 +5,11 @@
     <packaging>bundle</packaging>
     <name>Kevoree :: Core</name>
 
-    <version>1.2.0-SNAPSHOT</version>
+    <version>1.2.0-RC1</version>
     <parent>
         <artifactId>org.kevoree.root</artifactId>
         <groupId>org.kevoree</groupId>
-        <version>1.2.0-SNAPSHOT</version>
+        <version>1.2.0-RC1</version>
         <relativePath>../org.kevoree.root/pom.xml</relativePath>
     </parent>
 
@@ -21,12 +21,6 @@
 
     <dependencies>
         <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
-            <version>${slf4j.version}</version>
-        </dependency>
-
-        <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>org.kevoree.framework</artifactId>
             <version>${kevoree.version}</version>
@@ -35,7 +29,6 @@
             <groupId>org.osgi</groupId>
             <artifactId>org.osgi.core</artifactId>
             <version>4.2.0</version>
-            <type>jar</type>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
@@ -58,7 +51,6 @@
             <groupId>net.lag</groupId>
             <artifactId>configgy</artifactId>
             <version>2.0.0</version>
-
             <exclusions>
                 <exclusion>
                     <artifactId>scala-library</artifactId>
@@ -78,6 +70,7 @@
             <plugin>
                 <groupId>org.apache.felix</groupId>
                 <artifactId>maven-bundle-plugin</artifactId>
+                <version>2.3.5</version>
                 <extensions>true</extensions>
                 <configuration>
                     <instructions>

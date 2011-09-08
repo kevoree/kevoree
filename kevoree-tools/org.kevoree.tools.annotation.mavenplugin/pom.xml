@@ -6,12 +6,12 @@
     <packaging>maven-plugin</packaging>
     <name>Kevoree :: Tools :: Annotation MavenPlugin</name>
     <groupId>org.kevoree.tools</groupId>
-    <version>1.2.0-SNAPSHOT</version>
+    <version>1.2.0-RC1</version>
 
     <parent>
         <artifactId>org.kevoree.tools.root</artifactId>
         <groupId>org.kevoree.tools</groupId>
-        <version>1.2.0-SNAPSHOT</version>
+        <version>1.2.0-RC1</version>
         <relativePath>../org.kevoree.tools.root/pom.xml</relativePath>
     </parent>
 
@@ -91,7 +91,7 @@
         </repository>
         <repository>
             <id>kevoree-libs-release-local</id>
-            <url>http://maven.kevoree.org/libs-release-local</url>
+            <url>http://maven.kevoree.org/release/</url>
         </repository>
     </repositories>
 

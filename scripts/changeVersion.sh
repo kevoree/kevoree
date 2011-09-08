@@ -7,8 +7,8 @@ echo "Release version"
 echo $KEVOREE_RELEASE
 
 #CHANGE EXTRA VERSION
-cd kevoree-extra/org.kevoree.extra.root
-mvn versions:set -DnewVersion=$KEVOREE_RELEASE -DgenerateBackupPoms=false
+#cd kevoree-extra/org.kevoree.extra.root
+#mvn versions:set -DnewVersion=$KEVOREE_RELEASE -DgenerateBackupPoms=false
 
 cd $BASE_RELEASE_DIR
 
