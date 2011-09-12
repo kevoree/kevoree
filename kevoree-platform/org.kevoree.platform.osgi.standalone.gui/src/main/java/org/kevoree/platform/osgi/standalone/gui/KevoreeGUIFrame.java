@@ -13,6 +13,8 @@
  */
 package org.kevoree.platform.osgi.standalone.gui;
 
+import com.explodingpixels.macwidgets.plaf.HudComboBoxUI;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.WindowAdapter;
@@ -37,8 +39,8 @@ public class KevoreeGUIFrame extends JFrame {
         JLabel topImage = new JLabel(topIIcon);
         topImage.setOpaque(true);
         topImage.setBackground(new Color(63, 128, 187));
+
         this.add(topImage, BorderLayout.NORTH);
-        
 
 
         File mavenDir = new File(System.getProperty("user.home") + "/.m2/repository");
