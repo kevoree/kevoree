@@ -49,6 +49,12 @@
             <artifactId>org.kevoree.core</artifactId>
             <version>${kevoree.version}</version>
         </dependency>
+        <dependency>
+            <groupId>com.explodingpixels</groupId>
+            <artifactId>mac_widgets</artifactId>
+            <version>0.9.5</version>
+        </dependency>
+
         <!--
      <dependency>
          <groupId>org.ops4j.pax.url</groupId>
@@ -539,8 +545,6 @@
                     </execution>
                 </executions>
             </plugin>
-
-
         </plugins>
     </build>
 
