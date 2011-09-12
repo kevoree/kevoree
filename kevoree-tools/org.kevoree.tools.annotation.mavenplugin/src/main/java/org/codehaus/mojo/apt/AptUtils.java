@@ -226,7 +226,6 @@ public final class AptUtils
     {
         try
         {
-            System.out.println("Load2");
             //return Class.forName( "com.sun.tools.apt.Main");
             return Class.forName( "com.sun.tools.apt.Main", true, AptClassLoader.INSTANCE );
         }

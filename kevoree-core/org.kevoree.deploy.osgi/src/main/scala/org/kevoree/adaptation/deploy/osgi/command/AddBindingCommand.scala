@@ -35,19 +35,19 @@ case class AddBindingCommand(c : MBinding, ctx : KevoreeDeployManager,nodeName:S
 
   def execute() : Boolean= {
 
-    var KevoreeChannelFound = ctx.bundleMapping.find(map=>map.objClassName == c.getHub.getClass.getName && map.name == c.getHub.getName) match {
+    val KevoreeChannelFound = ctx.bundleMapping.find(map=>map.objClassName == c.getHub.getClass.getName && map.name == c.getHub.getName) match {
       case None => logger.error("Channel Fragment Mapping not found");None
       case Some(mapfound)=> {
-          var channelBundle = mapfound.bundle
+          val channelBundle = mapfound.bundle
           channelBundle.getRegisteredServices.find({sr=> sr.getProperty(Constants.KEVOREE_NODE_NAME)==nodeName && sr.getProperty(Constants.KEVOREE_INSTANCE_NAME)==c.getHub.getName }) match {
             case None => logger.error("Channel Fragment Service not found");None
             case Some(sr)=> Some(channelBundle.getBundleContext.getService(sr).asInstanceOf[KevoreeChannelFragment])}}
     }
     
-    var KevoreeComponentFound = ctx.bundleMapping.find(map=>map.objClassName == c.getPort.eContainer.asInstanceOf[ComponentInstance].getClass.getName && map.name == c.getPort.eContainer.asInstanceOf[ComponentInstance].getName ) match {
+    val KevoreeComponentFound = ctx.bundleMapping.find(map=>map.objClassName == c.getPort.eContainer.asInstanceOf[ComponentInstance].getClass.getName && map.name == c.getPort.eContainer.asInstanceOf[ComponentInstance].getName ) match {
       case None => logger.error("Component Mapping not found");None
       case Some(mapfound)=> {
-          var componentBundle = mapfound.bundle
+          val componentBundle = mapfound.bundle
           componentBundle.getRegisteredServices.find({sr=> sr.getProperty(Constants.KEVOREE_NODE_NAME)==nodeName && sr.getProperty(Constants.KEVOREE_INSTANCE_NAME)==c.getPort.eContainer.asInstanceOf[ComponentInstance].getName }) match {
             case None => logger.error("Component Actor Service not found");None
             case Some(sr)=> Some(componentBundle.getBundleContext.getService(sr).asInstanceOf[KevoreeComponent])}}
@@ -56,8 +56,8 @@ case class AddBindingCommand(c : MBinding, ctx : KevoreeDeployManager,nodeName:S
     KevoreeComponentFound match {
       case None => false
       case Some(cfound) => {
-          var np = cfound.getKevoreeComponentType.getNeededPorts.find(np => np._1 == c.getPort.getPortTypeRef.getName)
-          var hp = cfound.getKevoreeComponentType.getHostedPorts.find(np => np._1 == c.getPort.getPortTypeRef.getName)
+          val np = cfound.getKevoreeComponentType.getNeededPorts.find(np => np._1 == c.getPort.getPortTypeRef.getName)
+          val hp = cfound.getKevoreeComponentType.getHostedPorts.find(np => np._1 == c.getPort.getPortTypeRef.getName)
 
           Unit match {
             case _ if(np.isEmpty && hp.isEmpty)=>logger.info("Port instance not found in component");false
