@@ -14,10 +14,18 @@
 package org.kevoree.platform.osgi.standalone.gui;
 
 
+import ch.qos.logback.classic.Level;
+import ch.qos.logback.classic.Logger;
+import com.explodingpixels.macwidgets.IAppWidgetFactory;
+import com.explodingpixels.macwidgets.plaf.HudComboBoxUI;
+import com.explodingpixels.macwidgets.plaf.HudTextFieldUI;
 import org.apache.felix.shell.ShellService;
+import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.io.IOException;
@@ -37,7 +45,7 @@ public class FelixShell extends JPanel {
     private JScrollPane scrollShell = null;
 
     public FelixShell(final ShellService shell) {
-
+        this.setBackground(new Color(57, 57, 57));
         setLayout(new BorderLayout());
         final RichTextArea textArea = new RichTextArea();
         textArea.setBackground(new Color(57, 57, 57));
@@ -52,9 +60,11 @@ public class FelixShell extends JPanel {
         ERRwriter = new PrintStream(new TextOutputStream(textArea, Color.ORANGE));
 
         scrollShell = new JScrollPane(textArea);
+        IAppWidgetFactory.makeIAppScrollPane(scrollShell);
         add(scrollShell, BorderLayout.CENTER);
 
         final JTextField input = new JTextField();
+        input.setUI(new HudTextFieldUI());
 
         input.addKeyListener(new KeyAdapter() {
             @Override
@@ -73,8 +83,31 @@ public class FelixShell extends JPanel {
                 }
             }
         });
+        //  JScrollPane scrollInput = new JScrollPane(input);
+        // IAppWidgetFactory.makeIAppScrollPane(scrollInput);
+        //scrollInput.setOpaque(false);
+        //scrollInput.setBorder(null);
 
-        add(new JScrollPane(input), BorderLayout.SOUTH);
+        final JComboBox loglevels = new JComboBox(new DefaultComboBoxModel(new String[]{"WARN", "INFO", "DEBUG"}));
+        loglevels.setUI(new HudComboBoxUI());
+        loglevels.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                Logger root = (Logger) LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME);
+                if(loglevels.getSelectedItem().toString().equals("DEBUG")){root.setLevel(Level.DEBUG);}
+                if(loglevels.getSelectedItem().toString().equals("WARN")){root.setLevel(Level.WARN);}
+                if(loglevels.getSelectedItem().toString().equals("INFO")){root.setLevel(Level.INFO);}
+            }
+        });
+
+        JPanel layoutBOTTOM = new JPanel();
+        layoutBOTTOM.setLayout(new BorderLayout());
+        layoutBOTTOM.add(input, BorderLayout.CENTER);
+        layoutBOTTOM.add(loglevels, BorderLayout.WEST);
+        layoutBOTTOM.setOpaque(false);
+        layoutBOTTOM.setBorder(null);
+
+        add(layoutBOTTOM, BorderLayout.SOUTH);
 
         System.setOut(STDwriter);
         System.setErr(ERRwriter);
@@ -102,7 +135,7 @@ public class FelixShell extends JPanel {
                     try {
                         currentLine.append((char) i);
                         if (((char) i) == '\n') {
-                           _textArea.append(currentLine.toString(), _color, Color.white, false);
+                            _textArea.append(currentLine.toString(), _color, Color.white, false);
                             currentLine = new StringBuilder();
                         }
                     } catch (Exception e) {

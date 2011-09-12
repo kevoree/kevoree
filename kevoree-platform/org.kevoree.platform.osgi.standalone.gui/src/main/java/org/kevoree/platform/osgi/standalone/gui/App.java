@@ -13,11 +13,14 @@
  */
 package org.kevoree.platform.osgi.standalone.gui;
 
+import com.explodingpixels.macwidgets.HudWindow;
+import com.explodingpixels.widgets.WindowUtils;
 import org.kevoree.platform.osgi.standalone.EmbeddedActivators;
 import org.kevoree.platform.osgi.standalone.EmbeddedFelix;
 import org.osgi.framework.BundleActivator;
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
@@ -29,7 +32,6 @@ import java.util.Arrays;
  */
 public class App {
     public static void main(String[] args) {
-
         try {
             File cacheFolder = createTempDirectory();
             cacheFolder.deleteOnExit();
@@ -39,9 +41,12 @@ public class App {
         }
 
         final JFrame frame = new KevoreeGUIFrame();
+        //WindowUtils.makeWindowNonOpaque(frame);
+        frame.setBackground(Color.BLACK);
+        //frame.getRootPane().putClientProperty("apple.awt.draggableWindowBackground", Boolean.FALSE);
 
         EmbeddedActivators.setActivators(Arrays.asList(
-          //      (BundleActivator) new org.ops4j.pax.url.mvn.internal.Activator(),
+                //      (BundleActivator) new org.ops4j.pax.url.mvn.internal.Activator(),
                 (BundleActivator) new org.apache.felix.shell.impl.Activator(),
                 (BundleActivator) new ConsoleActivator(),
                 (BundleActivator) new org.ops4j.pax.url.assembly.internal.Activator(),
