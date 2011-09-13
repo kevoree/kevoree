@@ -13,8 +13,11 @@
  */
 package org.kevoree.platform.osgi.standalone.gui
 
-import javax.jmdns.{ServiceInfo, JmDNS}
 import java.util.HashMap
+import javax.jmdns.{ServiceEvent, ServiceListener, ServiceInfo, JmDNS}
+import org.kevoree.framework.message.PlatformModelUpdate
+import actors.Actor
+import org.kevoree.remote.rest.Handler
 
 /**
  * User: ffouquet
@@ -25,15 +28,28 @@ import java.util.HashMap
 class JmDnsComponent(nodeName: String, modelPort: Int) {
   final val REMOTE_TYPE: String = "_kevoree-remote._tcp.local."
   val values = new HashMap[String, String]
- // values.put("modelPort", modelPort)
+  // values.put("modelPort", modelPort)
   val jmdns = JmDNS.create(nodeName)
+  jmdns.addServiceListener(REMOTE_TYPE, new ServiceListener() {
+    def serviceAdded(p1: ServiceEvent) {}
 
+    def serviceResolved(p1: ServiceEvent) {
+      val msg = new PlatformModelUpdate(p1.getName, org.kevoree.framework.Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP, p1.getInfo.getInet4Addresses()(0).getHostAddress, "LAN", 100)
+      Handler.modelhandler.asInstanceOf[Actor] ! msg
+      val msg2 = new PlatformModelUpdate(p1.getName, org.kevoree.framework.Constants.KEVOREE_PLATFORM_REMOTE_NODE_MODELSYNCH_PORT, p1.getInfo.getPort.toString, "LAN", 100)
+      Handler.modelhandler.asInstanceOf[Actor] ! msg2
+
+
+    }
+
+    def serviceRemoved(p1: ServiceEvent) {}
+  })
 
   var pairservice: ServiceInfo = ServiceInfo.create(REMOTE_TYPE, nodeName, modelPort, 0, 0, values)
   jmdns.registerService(pairservice)
 
 
-  def close(){
+  def close() {
     jmdns.close()
   }
 
