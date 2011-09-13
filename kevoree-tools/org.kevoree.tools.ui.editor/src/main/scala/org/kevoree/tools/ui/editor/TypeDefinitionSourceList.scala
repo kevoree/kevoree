@@ -13,7 +13,7 @@
  */
 package org.kevoree.tools.ui.editor
 
-import command.{SynchCodeCommand, ReloadTypePalette}
+import command.{AddElementUICommand, SynchCodeCommand, ReloadTypePalette}
 import scala.collection.JavaConversions._
 import com.explodingpixels.macwidgets._
 import javax.swing._
@@ -147,7 +147,9 @@ class TypeDefinitionSourceList(pane: JSplitPane, kernel: KevoreeUIKernel) {
 
   controlBar.createAndAddButton(iconProjectAdd, new ActionListener {
     def actionPerformed(p1: ActionEvent) {
-
+      val cmd = new AddElementUICommand
+      cmd.setKernel(kernel)
+      cmd.execute(null)
     }
   })
   controlBar.createAndAddButton(iconProject, new ActionListener {
