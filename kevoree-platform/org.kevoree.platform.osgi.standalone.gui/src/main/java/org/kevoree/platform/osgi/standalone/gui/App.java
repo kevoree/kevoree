@@ -40,8 +40,7 @@ public class App {
             io.printStackTrace();
         }
 
-        final JFrame frame = new KevoreeGUIFrame();
-
+        final KevoreeGUIFrame frame = new KevoreeGUIFrame();
 
 
 
