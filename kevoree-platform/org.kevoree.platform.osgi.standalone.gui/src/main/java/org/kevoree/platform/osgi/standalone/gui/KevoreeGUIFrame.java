@@ -20,11 +20,13 @@ import com.explodingpixels.macwidgets.plaf.HudTextFieldUI;
 import org.kevoree.platform.osgi.standalone.EmbeddedActivators;
 import org.kevoree.platform.osgi.standalone.EmbeddedFelix;
 import org.osgi.framework.BundleActivator;
-import scala.Char;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.File;
 import java.net.URL;
 import java.util.Arrays;
@@ -33,6 +35,7 @@ import java.util.regex.PatternSyntaxException;
 public class KevoreeGUIFrame extends JFrame {
 
     public static KevoreeGUIFrame singleton = null;
+
 
     public KevoreeGUIFrame() {
         singleton = this;
@@ -88,56 +91,62 @@ public class KevoreeGUIFrame extends JFrame {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
                 bootstrapPopup.getJDialog().dispose();
-                                String response = instanceName.getText();
-                                if (response == null) {
-                                    System.exit(0);
+                String response = instanceName.getText();
+                if (response == null) {
+                    System.exit(0);
+                }
+                String[] splitted = null;
+                if (response.contains(":")) {
+                    try {
+                        splitted = response.split(":");
+                        Integer.parseInt(splitted[1]); // use to check if the port parameter is valid
+                        System.setProperty("node.port", splitted[1]);
+                        response = splitted[0];
+                    } catch (PatternSyntaxException e) {
+                    } catch (NumberFormatException e) {
+                    }
+                }
+                final String nodeName = response;
+                System.setProperty("node.name", response);
+                setTitle(nodeName + " : KevoreeNode");
+
+                final String[] finalSplitted = splitted;
+                new Thread() {
+                    @Override
+                    public void run() {
+                        EmbeddedActivators.setActivators(Arrays.asList(
+                                //      (BundleActivator) new org.ops4j.pax.url.mvn.internal.Activator(),
+                                (BundleActivator) new org.apache.felix.shell.impl.Activator(),
+                                (BundleActivator) new ConsoleActivator(),
+                                (BundleActivator) new org.ops4j.pax.url.assembly.internal.Activator(),
+                                (BundleActivator) new org.kevoree.platform.osgi.standalone.BootstrapActivator()
+                        ));
+                        final EmbeddedFelix felix = new EmbeddedFelix();
+                        addWindowListener(new WindowAdapter() {
+                            @Override
+                            public void windowClosing(WindowEvent windowEvent) {
+                                try {
+                                    felix.getM_fwk().stop();
+                                    setVisible(false);
+                                    dispose();
+                                } catch (Exception e) {
+                                    e.printStackTrace();
                                 }
+                            }
+                        });
+                        felix.run();
 
-                                if (response.contains(":")) {
-                                    try {
-                                        String[] splitted = response.split(":");
-                                        Integer.parseInt(splitted[1]); // use to check if the port parameter is valid
-                                        System.setProperty("node.port", splitted[1]);
-                                        response = splitted[0];
-                                    } catch (PatternSyntaxException e) {
-                                    } catch (NumberFormatException e) {
-                                    }
-                                }
-                                String nodeName = response;
-                                System.setProperty("node.name", response);
-                                setTitle(nodeName + " : KevoreeNode");
-
-                                new Thread() {
-                                    @Override
-                                    public void run() {
-                                        EmbeddedActivators.setActivators(Arrays.asList(
-                                                //      (BundleActivator) new org.ops4j.pax.url.mvn.internal.Activator(),
-                                                (BundleActivator) new org.apache.felix.shell.impl.Activator(),
-                                                (BundleActivator) new ConsoleActivator(),
-                                                (BundleActivator) new org.ops4j.pax.url.assembly.internal.Activator(),
-                                                (BundleActivator) new org.kevoree.platform.osgi.standalone.BootstrapActivator()
-                                        ));
-                                        final EmbeddedFelix felix = new EmbeddedFelix();
-                                        addWindowListener(new WindowAdapter() {
-                                            @Override
-                                            public void windowClosing(WindowEvent windowEvent) {
-                                                try {
-                                                    felix.getM_fwk().stop();
-                                                    setVisible(false);
-                                                    dispose();
-                                                } catch (Exception e) {
-                                                    e.printStackTrace();
-                                                }
-                                            }
-                                        });
-                                        felix.run();
-                                    }
-                                }.start();
-
-                                setVisible(true);
+                        //TO REMOVE START JMDNS
+                        JmDnsComponent jmdns = new JmDnsComponent(nodeName, 8000);
 
 
-                                setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
+                    }
+                }.start();
+
+                setVisible(true);
+
+
+                setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
 
             }
         });

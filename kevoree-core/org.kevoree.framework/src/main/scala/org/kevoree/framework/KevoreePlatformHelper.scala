@@ -26,13 +26,13 @@ object KevoreePlatformHelper {
   def updateNodeLinkProp(actualModel : ContainerRoot,currentNodeName : String,targetNodeName:String,key:String,value:String,networkType : String,weight:Int) = {
 
     /* SEARCH THE NODE NETWORK */
-    var nodenetwork = actualModel.getNodeNetworks.find({nn =>
+    val nodenetwork = actualModel.getNodeNetworks.find({nn =>
         nn.getInitBy.getName == currentNodeName && nn.getTarget.getName == targetNodeName }) getOrElse {
-      var newNodeNetwork = KevoreeFactory.eINSTANCE.createNodeNetwork
-      var thisNode = actualModel.getNodes.find({loopNode => loopNode.getName == currentNodeName })
-      var targetNode = actualModel.getNodes.find({loopNode => loopNode.getName == targetNodeName })
-      var thisNodeFound = thisNode.getOrElse{
-        var newnode = KevoreeFactory.eINSTANCE.createContainerNode
+      val newNodeNetwork = KevoreeFactory.eINSTANCE.createNodeNetwork
+      val thisNode = actualModel.getNodes.find({loopNode => loopNode.getName == currentNodeName })
+      val targetNode = actualModel.getNodes.find({loopNode => loopNode.getName == targetNodeName })
+      val thisNodeFound = thisNode.getOrElse{
+        val newnode = KevoreeFactory.eINSTANCE.createContainerNode
         newnode.setName(currentNodeName)
         actualModel.getNodes.add(newnode)
         newnode
@@ -40,7 +40,7 @@ object KevoreePlatformHelper {
 
       newNodeNetwork.setTarget(targetNode.getOrElse{
           println("Unknow node "+targetNodeName+" add to model")
-          var newnode =KevoreeFactory.eINSTANCE.createContainerNode
+          val newnode =KevoreeFactory.eINSTANCE.createContainerNode
           newnode.setName(targetNodeName)
           actualModel.getNodes.add(newnode)
           newnode
@@ -51,8 +51,8 @@ object KevoreePlatformHelper {
     }
 
     /* Found node link */
-    var nodelink = nodenetwork.getLink.find(loopLink => loopLink.getNetworkType == networkType).getOrElse{
-      var newlink = KevoreeFactory.eINSTANCE.createNodeLink
+    val nodelink = nodenetwork.getLink.find(loopLink => loopLink.getNetworkType == networkType).getOrElse{
+      val newlink = KevoreeFactory.eINSTANCE.createNodeLink
       newlink.setNetworkType(networkType)
       nodenetwork.getLink.add(newlink)
       newlink
@@ -62,8 +62,8 @@ object KevoreePlatformHelper {
     }
 
     /* Found Property and SET remote IP */
-    var prop = nodelink.getNetworkProperties.find({networkProp => networkProp.getName == key }).getOrElse{
-      var newprop = KevoreeFactory.eINSTANCE.createNetworkProperty
+    val prop = nodelink.getNetworkProperties.find({networkProp => networkProp.getName == key }).getOrElse{
+      val newprop = KevoreeFactory.eINSTANCE.createNetworkProperty
       newprop.setName(key)
       nodelink.getNetworkProperties.add(newprop)
       newprop
@@ -78,7 +78,7 @@ object KevoreePlatformHelper {
 
 
   def getProperty(model:ContainerRoot,targetNodeName : String,key:String) : String = {
-    var filteredNodeNetwork = model.getNodeNetworks.filter(lNN=> lNN.getTarget.getName == targetNodeName)
+    val filteredNodeNetwork = model.getNodeNetworks.filter(lNN=> lNN.getTarget.getName == targetNodeName)
     var bestResultProp = ""
     filteredNodeNetwork.foreach{fnn=>
       fnn.getLink.foreach{fnl=>
