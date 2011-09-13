@@ -34,13 +34,13 @@ case class AddDeployUnitAetherCommand(deployUnit: DeployUnit, ctx: KevoreeDeploy
   var logger = LoggerFactory.getLogger(this.getClass);
 
   def execute(): Boolean = {
-    logger.info("CMD ADD DEPLOY UNIT EXECUTION ");
+    logger.debug("CMD ADD DEPLOY UNIT EXECUTION ");
 
     try {
 
       val arteFile : File = AetherUtil.resolveDeployUnit(deployUnit)
 
-      logger.info("Try to install from URI, " + arteFile.getAbsolutePath)
+      logger.debug("Try to install from URI, " + arteFile.getAbsolutePath)
       lastExecutionBundle = Some(ctx.bundleContext.installBundle("file:///"+arteFile.getAbsolutePath,new FileInputStream(arteFile)));
       val symbolicName: String = lastExecutionBundle.get.getSymbolicName
 
