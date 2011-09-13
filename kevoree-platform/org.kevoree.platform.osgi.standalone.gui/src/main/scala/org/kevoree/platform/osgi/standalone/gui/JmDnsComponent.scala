@@ -31,15 +31,23 @@ class JmDnsComponent(nodeName: String, modelPort: Int) {
   // values.put("modelPort", modelPort)
   val jmdns = JmDNS.create(nodeName)
   jmdns.addServiceListener(REMOTE_TYPE, new ServiceListener() {
-    def serviceAdded(p1: ServiceEvent) {}
+    def serviceAdded(p1: ServiceEvent) {
+
+      val infos = jmdns.list(REMOTE_TYPE)
+      infos.foreach {
+        info =>
+          val msg = new PlatformModelUpdate(info.getName.trim(), org.kevoree.framework.Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP, info.getInet4Addresses()(0).getHostAddress, "LAN", 100)
+          Handler.modelhandler.asInstanceOf[Actor] ! msg
+          val msg2 = new PlatformModelUpdate(info.getName.trim(), org.kevoree.framework.Constants.KEVOREE_PLATFORM_REMOTE_NODE_MODELSYNCH_PORT, info.getPort.toString, "LAN", 100)
+          Handler.modelhandler.asInstanceOf[Actor] ! msg2
+      }
+    }
 
     def serviceResolved(p1: ServiceEvent) {
-      val msg = new PlatformModelUpdate(p1.getName, org.kevoree.framework.Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP, p1.getInfo.getInet4Addresses()(0).getHostAddress, "LAN", 100)
+      val msg = new PlatformModelUpdate(p1.getName.trim(), org.kevoree.framework.Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP, p1.getInfo.getInet4Addresses()(0).getHostAddress, "LAN", 100)
       Handler.modelhandler.asInstanceOf[Actor] ! msg
-      val msg2 = new PlatformModelUpdate(p1.getName, org.kevoree.framework.Constants.KEVOREE_PLATFORM_REMOTE_NODE_MODELSYNCH_PORT, p1.getInfo.getPort.toString, "LAN", 100)
+      val msg2 = new PlatformModelUpdate(p1.getName.trim(), org.kevoree.framework.Constants.KEVOREE_PLATFORM_REMOTE_NODE_MODELSYNCH_PORT, p1.getInfo.getPort.toString, "LAN", 100)
       Handler.modelhandler.asInstanceOf[Actor] ! msg2
-
-
     }
 
     def serviceRemoved(p1: ServiceEvent) {}
