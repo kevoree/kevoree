@@ -46,6 +46,8 @@ public class FelixShell extends JPanel {
 
     public FelixShell(final ShellService shell) {
         this.setBackground(new Color(57, 57, 57));
+        //this.setBackground(Color.BLACK);
+
         setLayout(new BorderLayout());
         final RichTextArea textArea = new RichTextArea();
         textArea.setBackground(new Color(57, 57, 57));
@@ -90,6 +92,7 @@ public class FelixShell extends JPanel {
 
         final JComboBox loglevels = new JComboBox(new DefaultComboBoxModel(new String[]{"WARN", "INFO", "DEBUG"}));
         loglevels.setUI(new HudComboBoxUI());
+        loglevels.setFocusable(false);
         loglevels.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
@@ -99,14 +102,12 @@ public class FelixShell extends JPanel {
                 if(loglevels.getSelectedItem().toString().equals("INFO")){root.setLevel(Level.INFO);}
             }
         });
-
         JPanel layoutBOTTOM = new JPanel();
         layoutBOTTOM.setLayout(new BorderLayout());
         layoutBOTTOM.add(input, BorderLayout.CENTER);
         layoutBOTTOM.add(loglevels, BorderLayout.WEST);
         layoutBOTTOM.setOpaque(false);
         layoutBOTTOM.setBorder(null);
-
         add(layoutBOTTOM, BorderLayout.SOUTH);
 
         System.setOut(STDwriter);

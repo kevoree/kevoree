@@ -479,7 +479,10 @@
                                 <artifactId>org.kevoree.platform.osgi.standalone</artifactId>
                                 <filter>!META-INF/**,!generated/**</filter>
                             </inclusion>
-
+                            <inclusion>
+                                <groupId>com.explodingpixels</groupId>
+                                <artifactId>mac_widgets</artifactId>
+                            </inclusion>
                             <!--
                             <inclusion>
                                 <groupId>jgrapht</groupId>
