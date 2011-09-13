@@ -41,48 +41,8 @@ public class App {
         }
 
         final JFrame frame = new KevoreeGUIFrame();
-        //WindowUtils.makeWindowNonOpaque(frame);
-        frame.setBackground(Color.BLACK);
-        //frame.getRootPane().putClientProperty("apple.awt.draggableWindowBackground", Boolean.FALSE);
-
-        EmbeddedActivators.setActivators(Arrays.asList(
-                //      (BundleActivator) new org.ops4j.pax.url.mvn.internal.Activator(),
-                (BundleActivator) new org.apache.felix.shell.impl.Activator(),
-                (BundleActivator) new ConsoleActivator(),
-                (BundleActivator) new org.ops4j.pax.url.assembly.internal.Activator(),
-                (BundleActivator) new org.kevoree.platform.osgi.standalone.BootstrapActivator()
-        ));
-
-        final EmbeddedFelix felix = new EmbeddedFelix();
-        felix.run();
 
 
-        /*
-        felix.run();
-
-        try {
-            felix.getM_fwk().waitForStop(0);
-
-        } catch (InterruptedException ex) {
-            Logger.getLogger(App.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        System.exit(0);      */
-
-
-        frame.addWindowListener(new WindowAdapter() {
-            @Override
-            public void windowClosing(WindowEvent windowEvent) {
-                try {
-                    felix.getM_fwk().stop();
-
-                    frame.setVisible(false);
-                    frame.dispose();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        });
-        frame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
 
 
     }
