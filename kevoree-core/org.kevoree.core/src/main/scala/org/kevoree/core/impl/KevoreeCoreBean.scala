@@ -80,7 +80,7 @@ class KevoreeCoreBean extends KevoreeModelHandlerService with KevoreeActor {
   override def start: Actor = {
     logger.info("Start event : node name = " + configService.getProperty(ConfigConstants.KEVOREE_NODE_NAME))
     setNodeName(configService.getProperty(ConfigConstants.KEVOREE_NODE_NAME));
-    super.start
+    super.start()
 
     //State recovery phase
     val lastModelssaved = bundleContext.getDataFile("lastModel.xmi");
