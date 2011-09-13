@@ -80,7 +80,8 @@ case class AddInstanceCommand (c: Instance, ctx: KevoreeDeployManager, nodeName:
                            "Require-Bundle: " + mappingFound.bundle.getSymbolicName
                          ))
       try {
-        val bundle = ctx.bundleContext.installBundle("assembly:file://" + directory.getAbsolutePath);
+        logger.debug("Install install instance uri = "+"assembly:file:///" + directory.getAbsolutePath)
+        val bundle = ctx.bundleContext.installBundle("assembly:file:///" + directory.getAbsolutePath);
         ctx.bundleMapping.add(KevoreeOSGiBundle(c.getName, c.getClass.getName, bundle))
         lastExecutionBundle = Some(bundle)
         bundle.start()
