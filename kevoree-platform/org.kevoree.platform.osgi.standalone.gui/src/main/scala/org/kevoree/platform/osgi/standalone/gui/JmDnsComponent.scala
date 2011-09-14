@@ -18,6 +18,7 @@ import javax.jmdns.{ServiceEvent, ServiceListener, ServiceInfo, JmDNS}
 import org.kevoree.framework.message.PlatformModelUpdate
 import actors.Actor
 import org.kevoree.remote.rest.Handler
+import org.slf4j.LoggerFactory
 
 /**
  * User: ffouquet
@@ -26,6 +27,9 @@ import org.kevoree.remote.rest.Handler
  */
 
 class JmDnsComponent(nodeName: String, modelPort: Int) {
+
+  val logger = LoggerFactory.getLogger(this.getClass)
+
   final val REMOTE_TYPE: String = "_kevoree-remote._tcp.local."
   val values = new HashMap[String, String]
   // values.put("modelPort", modelPort)
@@ -44,21 +48,28 @@ class JmDnsComponent(nodeName: String, modelPort: Int) {
     }
 
     def serviceResolved(p1: ServiceEvent) {
-      val msg = new PlatformModelUpdate(p1.getName.trim(), org.kevoree.framework.Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP, p1.getInfo.getInet4Addresses()(0).getHostAddress, "LAN", 100)
-      Handler.modelhandler.asInstanceOf[Actor] ! msg
-      val msg2 = new PlatformModelUpdate(p1.getName.trim(), org.kevoree.framework.Constants.KEVOREE_PLATFORM_REMOTE_NODE_MODELSYNCH_PORT, p1.getInfo.getPort.toString, "LAN", 100)
-      Handler.modelhandler.asInstanceOf[Actor] ! msg2
+      val infos = jmdns.list(REMOTE_TYPE)
+      infos.foreach {
+        info =>
+          val msg = new PlatformModelUpdate(info.getName.trim(), org.kevoree.framework.Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP, info.getInet4Addresses()(0).getHostAddress, "LAN", 100)
+          Handler.modelhandler.asInstanceOf[Actor] ! msg
+          val msg2 = new PlatformModelUpdate(info.getName.trim(), org.kevoree.framework.Constants.KEVOREE_PLATFORM_REMOTE_NODE_MODELSYNCH_PORT, info.getPort.toString, "LAN", 100)
+          Handler.modelhandler.asInstanceOf[Actor] ! msg2
+      }
     }
 
     def serviceRemoved(p1: ServiceEvent) {}
   })
 
   var pairservice: ServiceInfo = ServiceInfo.create(REMOTE_TYPE, nodeName, modelPort, 0, 0, values)
-  jmdns.registerService(pairservice)
-
+  new Thread() {
+    override def run() {
+      jmdns.registerService(pairservice)
+    }
+  }.start()
 
   def close() {
-    jmdns.close()
+    jmdns.abort()
   }
 
 
