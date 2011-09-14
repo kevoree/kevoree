@@ -35,7 +35,7 @@ import java.util.regex.PatternSyntaxException;
 public class KevoreeGUIFrame extends JFrame {
 
     public static KevoreeGUIFrame singleton = null;
-
+    private JmDnsComponent jmdns = null;
 
     public KevoreeGUIFrame() {
         singleton = this;
@@ -88,6 +88,8 @@ public class KevoreeGUIFrame extends JFrame {
         bootstrapPopup.getJDialog().getRootPane().setDefaultButton(btOk);
 
         btOk.addActionListener(new ActionListener() {
+
+
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
                 bootstrapPopup.getJDialog().dispose();
@@ -127,7 +129,9 @@ public class KevoreeGUIFrame extends JFrame {
                             public void windowClosing(WindowEvent windowEvent) {
                                 try {
                                     felix.getM_fwk().stop();
-                                    setVisible(false);
+                                    if(jmdns != null){jmdns.close(); }
+                                    System.out.println("Closing ....");
+                                    //setVisible(false);
                                     dispose();
                                 } catch (Exception e) {
                                     e.printStackTrace();
@@ -137,7 +141,8 @@ public class KevoreeGUIFrame extends JFrame {
                         felix.run();
 
                         //TO REMOVE START JMDNS
-                        JmDnsComponent jmdns = new JmDnsComponent(nodeName, 8000);
+                        Integer port = ( (System.getProperty("node.port") == null) ? 8000 : Integer.parseInt(System.getProperty("node.port")));
+                        jmdns = new JmDnsComponent(nodeName, port);
 
 
                     }

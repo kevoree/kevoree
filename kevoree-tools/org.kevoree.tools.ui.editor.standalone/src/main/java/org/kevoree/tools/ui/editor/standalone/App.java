@@ -103,7 +103,6 @@ public class App {
                     e.printStackTrace();
                 }
 
-
                 jframe.add(toolBar.getComponent(), BorderLayout.NORTH);
                 toolBar.installWindowDraggerOnWindow(jframe);
                 toolBar.disableBackgroundPainter();

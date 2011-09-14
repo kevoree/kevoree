@@ -124,7 +124,7 @@
                         <option>-keep class scala.util.parsing.** { *; }</option>
                         <option>-keep class org.kevoree.** { *; }</option>
                         <option>-keep class org.kevoreeAdaptation.** { *; }</option>
-                      <!--  <option>-keep class org.apache.commons.** { *; }</option>    -->
+                        <!--  <option>-keep class org.apache.commons.** { *; }</option>    -->
                         <option>-keep class org.slf4j.** { *; }</option>
 
                         <option>-keepattributes *Annotation*</option>
@@ -227,7 +227,10 @@
                                 <groupId>org.kevoree.tools</groupId>
                                 <artifactId>org.kevoree.tools.annotation.api</artifactId>
                             </inclusion>
-
+                            <inclusion>
+                                <groupId>org.kevoree.extra</groupId>
+                                <artifactId>org.kevoree.extra.osgi.jmdns</artifactId>
+                            </inclusion>
                             <inclusion>
                                 <groupId>com.explodingpixels</groupId>
                                 <artifactId>mac_widgets</artifactId>
@@ -236,7 +239,7 @@
                                 <groupId>com.jgoodies</groupId>
                                 <artifactId>forms</artifactId>
                             </inclusion>
-                          <!--  <inclusion>
+                            <!--  <inclusion>
                                 <groupId>com.apple</groupId>
                                 <artifactId>AppleJavaExtensions</artifactId>
                             </inclusion>
@@ -300,11 +303,11 @@
             <artifactId>org.kevoree.tools.ui.editor</artifactId>
             <version>${kevoree.version}</version>
         </dependency>
-       <!-- <dependency>
-            <groupId>com.apple</groupId>
-            <artifactId>AppleJavaExtensions</artifactId>
-            <version>1.4</version>
-        </dependency>  -->
+        <!-- <dependency>
+          <groupId>com.apple</groupId>
+          <artifactId>AppleJavaExtensions</artifactId>
+          <version>1.4</version>
+      </dependency>  -->
     </dependencies>
 
     <repositories>
