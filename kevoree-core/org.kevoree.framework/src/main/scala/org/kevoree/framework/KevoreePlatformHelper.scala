@@ -20,8 +20,11 @@ package org.kevoree.framework
 
 import org.kevoree._
 import scala.collection.JavaConversions._
+import org.slf4j.LoggerFactory
 
 object KevoreePlatformHelper {
+
+  val logger = LoggerFactory.getLogger(this.getClass)
 
   def updateNodeLinkProp(actualModel : ContainerRoot,currentNodeName : String,targetNodeName:String,key:String,value:String,networkType : String,weight:Int) = {
 
@@ -30,16 +33,15 @@ object KevoreePlatformHelper {
         nn.getInitBy.getName == currentNodeName && nn.getTarget.getName == targetNodeName }) getOrElse {
       val newNodeNetwork = KevoreeFactory.eINSTANCE.createNodeNetwork
       val thisNode = actualModel.getNodes.find({loopNode => loopNode.getName == currentNodeName })
-      val targetNode = actualModel.getNodes.find({loopNode => loopNode.getName == targetNodeName })
       val thisNodeFound = thisNode.getOrElse{
         val newnode = KevoreeFactory.eINSTANCE.createContainerNode
         newnode.setName(currentNodeName)
         actualModel.getNodes.add(newnode)
         newnode
       }
-
+      val targetNode = actualModel.getNodes.find({loopNode => loopNode.getName == targetNodeName })
       newNodeNetwork.setTarget(targetNode.getOrElse{
-          println("Unknow node "+targetNodeName+" add to model")
+          logger.debug("Unknow node "+targetNodeName+" add to model")
           val newnode =KevoreeFactory.eINSTANCE.createContainerNode
           newnode.setName(targetNodeName)
           actualModel.getNodes.add(newnode)
@@ -58,7 +60,7 @@ object KevoreePlatformHelper {
       newlink
     }
     try { nodelink.setEstimatedRate(weight) } catch {
-      case _ @ e => println("Unexpected estimate rate",e)
+      case _ @ e => logger.debug("Unexpected estimate rate",e)
     }
 
     /* Found Property and SET remote IP */
@@ -71,7 +73,7 @@ object KevoreePlatformHelper {
     prop.setValue(value)
     prop.setLastCheck(new java.util.Date().getTime.toString)
 
-    println("New node link prop registred = "+targetNodeName+","+key+","+value)
+    logger.debug("New node link prop registred = "+targetNodeName+","+key+","+value)
 
   }
 
