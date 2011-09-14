@@ -516,6 +516,10 @@
                                 <groupId>com.explodingpixels</groupId>
                                 <artifactId>mac_widgets</artifactId>
                             </inclusion>
+                            <inclusion>
+                                <groupId>org.kevoree.extra</groupId>
+                                <artifactId>org.kevoree.extra.osgi.jmdns</artifactId>
+                            </inclusion>
                             <!--
                             <inclusion>
                                 <groupId>jgrapht</groupId>
