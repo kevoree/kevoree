@@ -14,9 +14,9 @@
 package org.kevoree.core.basechecker.portchecker
 
 import org.kevoree.framework.aspects.KevoreeAspects._
-import scala.collection.JavaConversions._
 import org.kevoree.api.service.core.checker.{CheckerViolation, CheckerService}
 import org.kevoree.{ComponentInstance, ContainerRoot}
+import collection.JavaConversions._
 
 /**
  * User: Erwan Daubert - erwan.daubert@gmail.com
@@ -24,7 +24,13 @@ import org.kevoree.{ComponentInstance, ContainerRoot}
  * Time: 09:23
  */
 class PortChecker extends CheckerService {
-  def check (model: ContainerRoot): java.util.List[CheckerViolation] = {
+  def check(model: ContainerRoot): java.util.List[CheckerViolation] = {
+    var violations: List[CheckerViolation] = List()
+    violations = violations ++ portCheckOnInstance(model)
+    violations
+  }
+
+  def portCheckOnInstance(model: ContainerRoot): java.util.List[CheckerViolation] = {
     var violations: List[CheckerViolation] = List()
     model.getNodes.foreach {
       node =>
@@ -40,9 +46,12 @@ class PortChecker extends CheckerService {
                   concreteViolation.setTargetObjects(List(port))
                   violations = violations ++ List(concreteViolation)
                 }
+
+
             }
         }
     }
     violations
   }
+
 }
