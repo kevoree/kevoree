@@ -15,6 +15,7 @@ package org.kevoree.framework;
 
 import org.kevoree.ContainerRoot;
 import org.kevoree.api.service.adaptation.deploy.KevoreeAdaptationDeployService;
+import org.kevoree.api.service.core.handler.KevoreeModelHandlerService;
 import org.osgi.framework.BundleContext;
 
 import java.util.HashMap;
@@ -33,6 +34,27 @@ public abstract class AbstractNodeType implements KevoreeAdaptationDeployService
          dictionary = dic;
     }
 
+    public void startNode(){}
+
+    public void stopNode(){}
+
+    public void updateNode(){}
+
+    private KevoreeModelHandlerService modelService;
+    public void setModelService(KevoreeModelHandlerService ms){
+        modelService = ms;
+    }
+    public KevoreeModelHandlerService getModelService() {
+        return modelService;
+    }
+
+    private String nodeName = "";
+    public String getNodeName() {
+        return nodeName;
+    }
+    public void setNodeName(String pnodeName) {
+        nodeName = pnodeName;
+    }
 
 
 }
