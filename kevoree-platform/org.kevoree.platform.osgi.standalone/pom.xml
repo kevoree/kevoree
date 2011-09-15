@@ -96,6 +96,12 @@
             </exclusions>
         </dependency>
 
+        <dependency>
+            <groupId>org.kevoree.library.model</groupId>
+            <artifactId>org.kevoree.library.model.all</artifactId>
+            <version>${kevoree.version}</version>
+        </dependency>
+
 
         <!--
         <dependency>
