@@ -42,10 +42,6 @@ public class App {
         } catch (IOException io) {
             io.printStackTrace();
         }
-
-        //TO REMOVE
-        System.setProperty("node.bootstrap","/Users/ffouquet/Desktop/test.kev");
-
         ContainerRoot model = null;
         Object param = System.getProperty("node.bootstrap");
         if(param != null ){
@@ -54,9 +50,7 @@ public class App {
             model = KevoreeXmiHelper.loadStream(App.class.getClassLoader().getResourceAsStream("defaultLibrary.kev")) ;
 
         }
-
         final KevoreeGUIFrame frame = new KevoreeGUIFrame(model);
-
     }
 
 

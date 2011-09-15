@@ -70,14 +70,13 @@ public class KevoreeGUIFrame extends JFrame {
         iconLabel.setOpaque(false);
 
         JButton btOk = new JButton("Ok");
-        btOk.setOpaque(false);
+       // btOk.setOpaque(false);
         btOk.setUI(new HudButtonUI());
 
         layoutPopup.add(iconLabel,BorderLayout.WEST);
         final NodeTypeBootStrapUI nodeUI = new NodeTypeBootStrapUI(model);
         layoutPopup.add(nodeUI,BorderLayout.CENTER);
         layoutPopup.add(btOk,BorderLayout.SOUTH);
-
 
         bootstrapPopup.setContentPane(layoutPopup);
         bootstrapPopup.getJDialog().setVisible(true);
@@ -109,7 +108,7 @@ public class KevoreeGUIFrame extends JFrame {
                     @Override
                     public void run() {
 
-                        NodeTypeBootStrapModel.checkAndCreate(model,nodeName,nodeUI.getKevTypeName().toString(),new Properties());
+                        NodeTypeBootStrapModel.checkAndCreate(model,nodeName,nodeUI.getKevTypeName().toString(),nodeUI.currentProperties());
                         BootstrapActivator btA = new org.kevoree.platform.osgi.standalone.BootstrapActivator();
                         btA.setBootstrapModel(model);
 
