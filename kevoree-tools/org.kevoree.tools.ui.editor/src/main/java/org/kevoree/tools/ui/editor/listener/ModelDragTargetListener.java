@@ -17,26 +17,20 @@
  */
 package org.kevoree.tools.ui.editor.listener;
 
-import java.awt.datatransfer.DataFlavor;
-import java.awt.datatransfer.UnsupportedFlavorException;
-import java.awt.dnd.DropTarget;
-import java.awt.dnd.DropTargetDragEvent;
-import java.awt.dnd.DropTargetDropEvent;
-import java.awt.dnd.DropTargetEvent;
-import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import org.kevoree.tools.ui.editor.KevoreeUIKernel;
 import org.kevoree.tools.ui.editor.command.AddChannelCommand;
 import org.kevoree.tools.ui.editor.command.AddGroupCommand;
 import org.kevoree.tools.ui.editor.command.AddNodeCommand;
+import org.kevoree.tools.ui.editor.command.LoadNewLibCommand;
 import org.kevoree.tools.ui.framework.elements.ChannelTypePanel;
 import org.kevoree.tools.ui.framework.elements.GroupTypePanel;
 import org.kevoree.tools.ui.framework.elements.ModelPanel;
 import org.kevoree.tools.ui.framework.elements.NodeTypePanel;
 
-import javax.swing.*;
+import java.awt.datatransfer.DataFlavor;
+import java.awt.dnd.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * implementation of the target listener
@@ -48,6 +42,9 @@ public class ModelDragTargetListener extends DropTarget {
     KevoreeUIKernel kernel;
     ModelPanel target;
 
+    DataFlavor mimeDataFlavour;
+    DataFlavor urlDataFlavour;
+
     /**
      * constructor
      *
@@ -57,6 +54,13 @@ public class ModelDragTargetListener extends DropTarget {
     public ModelDragTargetListener(ModelPanel _target, KevoreeUIKernel _kernel) {
         kernel = _kernel;
         target = _target;
+        try {
+            mimeDataFlavour = new DataFlavor(DataFlavor.javaJVMLocalObjectMimeType);
+            urlDataFlavour = new DataFlavor("application/x-java-url;class=java.net.URL");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
     }
 
     private Boolean isDropAccept(Object o) {
@@ -69,6 +73,7 @@ public class ModelDragTargetListener extends DropTarget {
         if (o instanceof NodeTypePanel) {
             return true;
         }
+
         //otherwise return false / no other type accepted
         return false;
     }
@@ -82,29 +87,41 @@ public class ModelDragTargetListener extends DropTarget {
     public void drop(DropTargetDropEvent arg0) {
 
         try {
-            Object o = arg0.getTransferable().getTransferData(new DataFlavor(DataFlavor.javaJVMLocalObjectMimeType));
-            if (isDropAccept(o)) {
-                if (o instanceof ChannelTypePanel) {
-                    AddChannelCommand command = new AddChannelCommand();
-                    command.setPoint(arg0.getLocation());
-                    command.setKernel(kernel);
-                    command.execute(o);
-                }
-                if (o instanceof NodeTypePanel) {
-                    AddNodeCommand command = new AddNodeCommand();
-                    command.setPoint(arg0.getLocation());
-                    command.setKernel(kernel);
-                    command.execute(o);
-                }
-                if (o instanceof GroupTypePanel) {
-                    AddGroupCommand command = new AddGroupCommand();
-                    command.setPoint(arg0.getLocation());
-                    command.setKernel(kernel);
-                    command.execute(o);
-                }
+            
+            if (arg0.getTransferable().isDataFlavorSupported(mimeDataFlavour)) {
+                Object o = arg0.getTransferable().getTransferData(mimeDataFlavour);
+                if (isDropAccept(o)) {
+                    if (o instanceof ChannelTypePanel) {
+                        AddChannelCommand command = new AddChannelCommand();
+                        command.setPoint(arg0.getLocation());
+                        command.setKernel(kernel);
+                        command.execute(o);
+                    }
+                    if (o instanceof NodeTypePanel) {
+                        AddNodeCommand command = new AddNodeCommand();
+                        command.setPoint(arg0.getLocation());
+                        command.setKernel(kernel);
+                        command.execute(o);
+                    }
+                    if (o instanceof GroupTypePanel) {
+                        AddGroupCommand command = new AddGroupCommand();
+                        command.setPoint(arg0.getLocation());
+                        command.setKernel(kernel);
+                        command.execute(o);
+                    }
 
-                kernel.getModelPanel().repaint();
-                kernel.getModelPanel().revalidate();
+                    kernel.getModelPanel().repaint();
+                    kernel.getModelPanel().revalidate();
+                    arg0.dropComplete(true);
+                } else {
+                    arg0.rejectDrop();
+                }
+            } else if(arg0.getTransferable().isDataFlavorSupported(urlDataFlavour)){
+                arg0.acceptDrop(DnDConstants.ACTION_COPY_OR_MOVE);//Necessary because of drop from an external source
+                Object url = arg0.getTransferable().getTransferData(urlDataFlavour);
+                LoadNewLibCommand loadLib = new LoadNewLibCommand();
+                loadLib.setKernel(kernel);
+                loadLib.execute(url);
                 arg0.dropComplete(true);
             } else {
                 arg0.rejectDrop();
@@ -143,12 +160,12 @@ public class ModelDragTargetListener extends DropTarget {
     public void dragOver(DropTargetDragEvent arg0) {
         if (kernel.getModelPanel().getFlightObject() != null) {
             kernel.getModelPanel().getFlightObject().setBounds(
-                    (int) arg0.getLocation().getX() - (kernel.getModelPanel().getFlightObject().getWidth()/2),
-                    (int) arg0.getLocation().getY() - (kernel.getModelPanel().getFlightObject().getHeight()/2),
+                    (int) arg0.getLocation().getX() - (kernel.getModelPanel().getFlightObject().getWidth() / 2),
+                    (int) arg0.getLocation().getY() - (kernel.getModelPanel().getFlightObject().getHeight() / 2),
                     kernel.getModelPanel().getFlightObject().getWidth(),
                     kernel.getModelPanel().getFlightObject().getHeight());
             kernel.getModelPanel().repaint();
-          //  kernel.getModelPanel().revalidate();
+            //  kernel.getModelPanel().revalidate();
         }
     }
 
