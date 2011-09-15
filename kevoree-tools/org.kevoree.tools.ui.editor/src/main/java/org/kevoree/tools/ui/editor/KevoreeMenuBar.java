@@ -73,7 +73,7 @@ public class KevoreeMenuBar extends JMenuBar {
         clearModel.addActionListener(new CommandActionListener(cmdCM));
         model.add(clearModel);
         JMenuItem mergeLib = new JMenuItem("Merge Lib");
-        LoadNewLibCommand cmdLL = new LoadNewLibCommand();
+        LoadNewLibCommandUI cmdLL = new LoadNewLibCommandUI();
         cmdLL.setKernel(kernel);
         mergeLib.addActionListener(new CommandActionListener(cmdLL));
         model.add(mergeLib);
