@@ -1,3 +1,5 @@
+package org.kevoree.library.defaultNodeTypes
+
 /**
  * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE, Version 3, 29 June 2007;
  * you may not use this file except in compliance with the License.
@@ -11,13 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kevoree.platform.osgi.standalone.gui
-
 import java.util.HashMap
 import javax.jmdns.{ServiceEvent, ServiceListener, ServiceInfo, JmDNS}
+import org.kevoree.api.service.core.handler.KevoreeModelHandlerService
 import org.kevoree.framework.message.PlatformModelUpdate
 import actors.Actor
-import org.kevoree.remote.rest.Handler
 import org.slf4j.LoggerFactory
 
 /**
@@ -26,7 +26,7 @@ import org.slf4j.LoggerFactory
  * Time: 17:42
  */
 
-class JmDnsComponent(nodeName: String, modelPort: Int) {
+class JmDnsComponent(nodeName: String, modelPort: Int, modelHandler : KevoreeModelHandlerService) {
 
   val logger = LoggerFactory.getLogger(this.getClass)
 
@@ -41,9 +41,9 @@ class JmDnsComponent(nodeName: String, modelPort: Int) {
       infos.foreach {
         info =>
           val msg = new PlatformModelUpdate(info.getName.trim(), org.kevoree.framework.Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP, info.getInet4Addresses()(0).getHostAddress, "LAN", 100)
-          Handler.modelhandler.asInstanceOf[Actor] ! msg
+          modelHandler.asInstanceOf[Actor] ! msg
           val msg2 = new PlatformModelUpdate(info.getName.trim(), org.kevoree.framework.Constants.KEVOREE_PLATFORM_REMOTE_NODE_MODELSYNCH_PORT, info.getPort.toString, "LAN", 100)
-          Handler.modelhandler.asInstanceOf[Actor] ! msg2
+          modelHandler.asInstanceOf[Actor] ! msg2
       }
     }
 
@@ -52,9 +52,9 @@ class JmDnsComponent(nodeName: String, modelPort: Int) {
       infos.foreach {
         info =>
           val msg = new PlatformModelUpdate(info.getName.trim(), org.kevoree.framework.Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP, info.getInet4Addresses()(0).getHostAddress, "LAN", 100)
-          Handler.modelhandler.asInstanceOf[Actor] ! msg
+          modelHandler.asInstanceOf[Actor] ! msg
           val msg2 = new PlatformModelUpdate(info.getName.trim(), org.kevoree.framework.Constants.KEVOREE_PLATFORM_REMOTE_NODE_MODELSYNCH_PORT, info.getPort.toString, "LAN", 100)
-          Handler.modelhandler.asInstanceOf[Actor] ! msg2
+          modelHandler.asInstanceOf[Actor] ! msg2
       }
     }
 

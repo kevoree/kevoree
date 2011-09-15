@@ -43,6 +43,12 @@ import org.slf4j.LoggerFactory;
  * @author ffouquet
  */
 public class BootstrapActivator implements BundleActivator {
+    /* Bootstrap Model to init default nodeType */
+    private ContainerRoot bootstrapModel = null;
+
+    public void setBootstrapModel(ContainerRoot bmodel) {
+        bootstrapModel = bmodel;
+    }
 
     private KevoreeKompareBean kompareBean = null;
     private KevoreeCoreBean coreBean = null;
@@ -53,9 +59,7 @@ public class BootstrapActivator implements BundleActivator {
 
     @Override
     public void start(BundleContext context) throws Exception {
-        //StandaloneBootstrap.performArt2BootStrap(context);
         try {
-
             kompareBean = new KevoreeKompareBean();
             deployBean = new KevoreeAdaptationDeployServiceOSGi();
             KevoreeDeployManager contextDeploy = new KevoreeDeployManager();
@@ -66,7 +70,6 @@ public class BootstrapActivator implements BundleActivator {
             contextDeploy.setServicePackageAdmin(paAdmin);
             StartLevel serviceLevel = (StartLevel) context.getService(context.getServiceReferences(StartLevel.class.getName(), null)[0]);
             contextDeploy.setStartLevelServer(serviceLevel);
-
 
             deployBean.setContext(contextDeploy);
 
@@ -96,20 +99,27 @@ public class BootstrapActivator implements BundleActivator {
             /* Boot strap */
 
             //Bootstrap model phase
-            if (!configBean.getProperty(ConfigConstants.KEVOREE_NODE_BOOTSTRAP()).equals("")) {
-                try {
-                    logger.info("Try to bootstrap platform") ;
-                    ContainerRoot model = KevoreeXmiHelper.load(configBean.getProperty(ConfigConstants.KEVOREE_NODE_BOOTSTRAP()));
-                    coreBean.updateModel(model);
-
-                } catch (Exception e)
-                {
-                    logger.error("Bootstrap failed",e);
+            if (bootstrapModel == null) {
+                if (!configBean.getProperty(ConfigConstants.KEVOREE_NODE_BOOTSTRAP()).equals("")) {
+                    try {
+                        logger.info("Try to load bootstrap platform from system parameter");
+                        bootstrapModel = KevoreeXmiHelper.load(configBean.getProperty(ConfigConstants.KEVOREE_NODE_BOOTSTRAP()));
+                    } catch (Exception e) {
+                        logger.error("Bootstrap failed", e);
+                    }
                 }
             }
 
-
-
+            if (bootstrapModel != null) {
+                try {
+                    logger.debug("Bootstrap step !");
+                    coreBean.updateModel(bootstrapModel);
+                } catch (Exception e) {
+                    logger.error("Bootstrap failed", e);
+                }
+            } else {
+                logger.error("Can't bootstrap nodeType");
+            }
 
 
         } catch (Exception e) {

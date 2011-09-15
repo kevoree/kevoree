@@ -15,6 +15,8 @@ package org.kevoree.platform.osgi.standalone.gui;
 
 import com.explodingpixels.macwidgets.HudWindow;
 import com.explodingpixels.widgets.WindowUtils;
+import org.kevoree.ContainerRoot;
+import org.kevoree.framework.KevoreeXmiHelper;
 import org.kevoree.platform.osgi.standalone.EmbeddedActivators;
 import org.kevoree.platform.osgi.standalone.EmbeddedFelix;
 import org.osgi.framework.BundleActivator;
@@ -40,9 +42,8 @@ public class App {
             io.printStackTrace();
         }
 
-        final KevoreeGUIFrame frame = new KevoreeGUIFrame();
-
-
+        ContainerRoot model = KevoreeXmiHelper.loadStream(App.class.getClassLoader().getResourceAsStream("defaultLibrary.kev")) ;
+        final KevoreeGUIFrame frame = new KevoreeGUIFrame(model);
 
     }
 
