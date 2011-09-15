@@ -17,9 +17,7 @@ import org.kevoree.tools.ui.framework.elements.PortPanel
 import java.awt.dnd.{DropTargetDropEvent, DropTarget}
 import java.awt.datatransfer.DataFlavor
 import com.explodingpixels.macwidgets.{HudWidgetFactory, HudWindow}
-import javax.swing.DefaultComboBoxModel
 import scala.collection.JavaConversions._
-import java.awt.event.{MouseEvent, MouseAdapter}
 import org.kevoree.framework.aspects.KevoreeAspects._
 import org.kevoree.tools.marShell.parser.KevsParser
 import util.Random
@@ -29,6 +27,11 @@ import org.kevoree.tools.ui.editor.{PositionedEMFHelper, KevoreeUIKernel}
 import org.kevoree.framework.KevoreeXmiHelper
 import java.io.File
 import org.kevoree.tools.ui.editor.command.LoadModelCommand
+import java.awt.event.{ActionEvent, ActionListener, MouseEvent, MouseAdapter}
+import java.awt.{FlowLayout, BorderLayout}
+import org.kevoree.tools.ui.editor.property.SpringUtilities
+import javax.swing._
+import com.explodingpixels.macwidgets.plaf.HudLabelUI
 
 /**
  * User: ffouquet
@@ -37,8 +40,48 @@ import org.kevoree.tools.ui.editor.command.LoadModelCommand
  */
 
 class PortDragTargetListener(target: PortPanel, kernel: KevoreeUIKernel) extends DropTarget {
+
+  def checkChannelAvailability = {
+    kernel.getModelHandler.getActualModel.getTypeDefinitions.filter(td => td.isInstanceOf[ChannelType]).size > 0
+  }
+
   override def drop(p1: DropTargetDropEvent) {
     try {
+
+      if(!checkChannelAvailability){
+         val hud = new HudWindow();
+        hud.getJDialog.setTitle("Error !")
+          hud.getJDialog.setSize(200, 100);
+          hud.getJDialog.setLocationRelativeTo(null);
+
+        val topPanel = new JPanel()
+        topPanel.setLayout(new SpringLayout())
+        val line1 = new JLabel("No ChannelType is available.", SwingConstants.CENTER)
+        val line2 = new JLabel("Please load a ChannelType library.", SwingConstants.CENTER)
+        line1.setUI(new HudLabelUI)
+        line2.setUI(new HudLabelUI)
+        topPanel.add(line1)
+        topPanel.add(line2)
+
+        SpringUtilities.makeCompactGrid(topPanel, 2, 1, 6, 6, 6, 6)
+
+        val button = HudWidgetFactory.createHudButton("Ok")
+        button.addActionListener(new ActionListener {
+          def actionPerformed(p1: ActionEvent) {hud.getJDialog.dispose()}
+        })
+
+        val bottomPanel = new JPanel(new FlowLayout())
+        bottomPanel.add(button)
+
+        hud.getContentPane.setLayout(new BorderLayout())
+        hud.getContentPane.add(topPanel, BorderLayout.NORTH)
+        hud.getContentPane.add(bottomPanel, BorderLayout.SOUTH)
+
+       // hud.getJDialog.pack();
+      hud.getJDialog.setVisible(true);
+
+      } else {
+
       val draggedPanel = p1.getTransferable.getTransferData(new DataFlavor(DataFlavor.javaJVMLocalObjectMimeType));
       val targetPort: Port = kernel.getUifactory.getMapping.get(target).asInstanceOf[Port]
       val dropPort: Port = kernel.getUifactory.getMapping.get(draggedPanel).asInstanceOf[Port]
@@ -91,6 +134,7 @@ class PortDragTargetListener(target: PortPanel, kernel: KevoreeUIKernel) extends
       hud.getContentPane.add(button)
 
       hud.getJDialog.setVisible(true);
+      }
     } catch {
       case _@e => p1.rejectDrop();
     }
