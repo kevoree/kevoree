@@ -20,13 +20,8 @@ package org.kevoree.tools.ui.editor.panel;
 import javax.swing.BoxLayout;
 import javax.swing.JPanel;
 import org.kevoree.tools.ui.editor.KevoreeUIKernel;
-import org.kevoree.tools.ui.editor.command.AddNodeCommand;
-import org.kevoree.tools.ui.editor.command.ClearModelCommand;
-import org.kevoree.tools.ui.editor.command.LoadModelCommand;
-import org.kevoree.tools.ui.editor.command.LoadModelCommandUI;
-import org.kevoree.tools.ui.editor.command.LoadNewLibCommand;
-import org.kevoree.tools.ui.editor.command.RefreshModelCommand;
-import org.kevoree.tools.ui.editor.command.SaveActuelModelCommand;
+import org.kevoree.tools.ui.editor.command.*;
+import org.kevoree.tools.ui.editor.command.LoadNewLibCommandUI;
 import org.kevoree.tools.ui.editor.widget.JCommandButton;
 
 /**
@@ -67,7 +62,7 @@ public class CommandPanel extends JPanel {
          
         
         JCommandButton btLoadLib = new JCommandButton("LoadLib");
-        LoadNewLibCommand btLoadLibCommand = new LoadNewLibCommand();
+        LoadNewLibCommandUI btLoadLibCommand = new LoadNewLibCommandUI();
         btLoadLibCommand.setKernel(kernel);
         btLoadLib.setCommand(btLoadLibCommand);
         

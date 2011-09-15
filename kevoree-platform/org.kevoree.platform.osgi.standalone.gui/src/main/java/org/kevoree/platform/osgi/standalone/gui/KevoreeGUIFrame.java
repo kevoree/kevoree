@@ -15,8 +15,8 @@ package org.kevoree.platform.osgi.standalone.gui;
 
 import com.explodingpixels.macwidgets.HudWindow;
 import com.explodingpixels.macwidgets.plaf.HudButtonUI;
-import com.explodingpixels.macwidgets.plaf.HudLabelUI;
-import com.explodingpixels.macwidgets.plaf.HudTextFieldUI;
+import org.kevoree.ContainerRoot;
+import org.kevoree.platform.osgi.standalone.BootstrapActivator;
 import org.kevoree.platform.osgi.standalone.EmbeddedActivators;
 import org.kevoree.platform.osgi.standalone.EmbeddedFelix;
 import org.osgi.framework.BundleActivator;
@@ -30,14 +30,14 @@ import java.awt.event.WindowEvent;
 import java.io.File;
 import java.net.URL;
 import java.util.Arrays;
+import java.util.Properties;
 import java.util.regex.PatternSyntaxException;
 
 public class KevoreeGUIFrame extends JFrame {
 
     public static KevoreeGUIFrame singleton = null;
-    private JmDnsComponent jmdns = null;
 
-    public KevoreeGUIFrame() {
+    public KevoreeGUIFrame(final ContainerRoot model) {
         singleton = this;
 
         URL urlIcon = getClass().getClassLoader().getResource("kevoree-logo-full.png");
@@ -64,24 +64,20 @@ public class KevoreeGUIFrame extends JFrame {
 
         JPanel layoutPopup = new JPanel();
         layoutPopup.setOpaque(false);
+        layoutPopup.setLayout(new BorderLayout());
 
-        JLabel l = new JLabel("Kevoree node name ? (format : name[:port])", JLabel.TRAILING);
-        l.setUI(new HudLabelUI());
-        l.setOpaque(false);
-        final JTextField instanceName = new JTextField(10);
-        instanceName.setUI(new HudTextFieldUI());
-        instanceName.setOpaque(false);
-        l.setLabelFor(instanceName);
         JLabel iconLabel = new JLabel(smallIcon);
         iconLabel.setOpaque(false);
+
         JButton btOk = new JButton("Ok");
         btOk.setOpaque(false);
         btOk.setUI(new HudButtonUI());
 
-        layoutPopup.add(iconLabel);
-        layoutPopup.add(l);
-        layoutPopup.add(instanceName);
-        layoutPopup.add(btOk);
+        layoutPopup.add(iconLabel,BorderLayout.WEST);
+        final NodeTypeBootStrapUI nodeUI = new NodeTypeBootStrapUI(model);
+        layoutPopup.add(nodeUI,BorderLayout.CENTER);
+        layoutPopup.add(btOk,BorderLayout.SOUTH);
+
 
         bootstrapPopup.setContentPane(layoutPopup);
         bootstrapPopup.getJDialog().setVisible(true);
@@ -89,14 +85,10 @@ public class KevoreeGUIFrame extends JFrame {
 
         btOk.addActionListener(new ActionListener() {
 
-
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
                 bootstrapPopup.getJDialog().dispose();
-                String response = instanceName.getText();
-                if (response == null) {
-                    System.exit(0);
-                }
+                String response = nodeUI.getKevName();//instanceName.getText();
                 String[] splitted = null;
                 if (response.contains(":")) {
                     try {
@@ -110,18 +102,23 @@ public class KevoreeGUIFrame extends JFrame {
                 }
                 final String nodeName = response;
                 System.setProperty("node.name", response);
-                setTitle(nodeName + " : KevoreeNode");
+                setTitle(nodeName + " : "+nodeUI.getKevTypeName());
 
                 final String[] finalSplitted = splitted;
                 new Thread() {
                     @Override
                     public void run() {
+
+                        NodeTypeBootStrapModel.checkAndCreate(model,nodeName,nodeUI.getKevTypeName().toString(),new Properties());
+                        BootstrapActivator btA = new org.kevoree.platform.osgi.standalone.BootstrapActivator();
+                        btA.setBootstrapModel(model);
+
                         EmbeddedActivators.setActivators(Arrays.asList(
                                 //      (BundleActivator) new org.ops4j.pax.url.mvn.internal.Activator(),
                                 (BundleActivator) new org.apache.felix.shell.impl.Activator(),
                                 (BundleActivator) new ConsoleActivator(),
                                 (BundleActivator) new org.ops4j.pax.url.assembly.internal.Activator(),
-                                (BundleActivator) new org.kevoree.platform.osgi.standalone.BootstrapActivator()
+                                btA
                         ));
                         final EmbeddedFelix felix = new EmbeddedFelix();
                         addWindowListener(new WindowAdapter() {
@@ -129,7 +126,6 @@ public class KevoreeGUIFrame extends JFrame {
                             public void windowClosing(WindowEvent windowEvent) {
                                 try {
                                     felix.getM_fwk().stop();
-                                    if(jmdns != null){jmdns.close(); }
                                     System.out.println("Closing ....");
                                     //setVisible(false);
                                     dispose();
@@ -139,12 +135,6 @@ public class KevoreeGUIFrame extends JFrame {
                             }
                         });
                         felix.run();
-
-                        //TO REMOVE START JMDNS
-                        Integer port = ( (System.getProperty("node.port") == null) ? 8000 : Integer.parseInt(System.getProperty("node.port")));
-                        jmdns = new JmDnsComponent(nodeName, port);
-
-
                     }
                 }.start();
 

@@ -128,14 +128,7 @@
             <version>${kevoree.version}</version>
         </dependency>
 
-        <dependency>
-            <groupId>org.kevoree.extra</groupId>
-            <artifactId>org.kevoree.extra.osgi.jmdns</artifactId>
-            <version>3.4.0</version>
-        </dependency>
-
     </dependencies>
-
     <profiles>
         <profile>
             <id>org.kevoree.tools.ui.editor.standalone.mac</id>
@@ -160,7 +153,6 @@
             </properties>
         </profile>
     </profiles>
-
 
     <build>
         <plugins>
@@ -267,39 +259,6 @@
                     <mainClass>org.kevoree.platform.osgi.standalone.gui.App</mainClass>
                 </configuration>
             </plugin>
-            <!--
-                        <plugin>
-                            <groupId>org.apache.maven.plugins</groupId>
-                            <artifactId>maven-jar-plugin</artifactId>
-                            <version>2.3.1</version>
-                            <configuration>
-                                <archive>
-                                    <manifest>
-                                        <mainClass>org.kevoree.platform.osgi.standalone.gui.App</mainClass>
-                                    </manifest>
-                                </archive>
-                            </configuration>
-                            <executions>
-                                <execution>
-                                    <phase>package</phase>
-                                    <goals>
-                                        <goal>sign</goal>
-                                    </goals>
-                                    <configuration>
-                                        <jarPath>${project.build.directory}/${project.build.finalName}.jar</jarPath>
-                                        <keystore>${project.build.directory}/../../../keystore</keystore>
-                                        <alias>kevoree</alias>
-                                        <storepass>kevoree</storepass>
-                                        <signedjar>${project.build.directory}/signed/${project.build.finalName}.jar</signedjar>
-                                        <verify>true</verify>
-                                    </configuration>
-                                </execution>
-                            </executions>
-                        </plugin>
-            -->
-
-
-            <!-- GUI SMALL -->
 
             <plugin>
                 <groupId>com.pyx4me</groupId>
@@ -382,15 +341,9 @@
                         <option>-keep class org.restlet.resource.** { *; }</option>
                         <option>-keep class scala.runtime.** { *; }</option>
                         <option>-keep class scala.Tuple2 { *; }</option>
-
                         <option>-keep class scala.** { *; }</option>
-
-
                         <option>-keep class scala.collection.immutable.List { *; }</option>
-
                         <option>-keep class ch.qos.logback.core.** { * ; }</option>
-
-                        <!--   <option>-keep class choco.cp.** { *; }</option>   -->
                         <option>-keep class org.kevoree.annotation.** { *; }</option>
                         <option>-keep class org.kevoree.api.** { *; }</option>
                         <option>-keep class org.kevoree.framework.** { *; }</option>
@@ -399,8 +352,6 @@
                         <option>-keep class org.kevoree.tools.aether.framework.** { *; }</option>
                         <option>-keepattributes *Annotation*</option>
                         <option>-keepattributes **</option>
-
-
                         <option>-keep class org.apache.felix.framework.** { *; }</option>
                         <option>-keep class org.apache.commons.logging.** { *; }</option>
                         <option>-dontskipnonpubliclibraryclasses</option>
@@ -410,12 +361,7 @@
                         <option>-keepattributes
                             Exceptions,InnerClasses,Signature,Deprecated,SourceFile,LineNumberTable,*Annotation*,EnclosingMethod
                         </option>
-
-                        <!--    <option>-printmapping map.txt</option>
-                   <option>-printseeds seed.txt</option>    -->
                         <option>-ignorewarnings</option>
-
-
                         <option>-keep public class org.kevoree.platform.osgi.standalone.gui.App { *; }</option>
                         <option>-keep class * extends javax.swing.plaf.ComponentUI {
                             public static javax.swing.plaf.ComponentUI createUI(javax.swing.JComponent);
@@ -445,68 +391,6 @@
                     </options>
                     <assembly>
                         <inclusions>
-                            <!--
-                           <inclusion>
-                               <groupId>org.scala-lang</groupId>
-                               <artifactId>scala-library</artifactId>
-                           </inclusion>
-                           <inclusion>
-                               <groupId>org.kevoree</groupId>
-                               <artifactId>org.kevoree.adaptation.model</artifactId>
-                           </inclusion>
-                           <inclusion>
-                               <groupId>org.kevoree</groupId>
-                               <artifactId>org.kevoree.model</artifactId>
-                               <filter>!metamodel/**</filter>
-                           </inclusion>
-                           <inclusion>
-                               <groupId>org.kevoree</groupId>
-                               <artifactId>org.kevoree.framework</artifactId>
-                           </inclusion>
-                           <inclusion>
-                               <groupId>org.kevoree.extra</groupId>
-                               <artifactId>org.kevoree.extra.emf.library</artifactId>
-                           </inclusion>
-                           <inclusion>
-                               <groupId>org.kevoree</groupId>
-                               <artifactId>org.kevoree.api</artifactId>
-                           </inclusion>
-                           <inclusion>
-                               <groupId>org.kevoree</groupId>
-                               <artifactId>org.kevoree.deploy.osgi</artifactId>
-                           </inclusion>
-                           <inclusion>
-                               <groupId>org.kevoree</groupId>
-                               <artifactId>org.kevoree.kompare</artifactId>
-                           </inclusion>
-                           <inclusion>
-                               <groupId>org.kevoree</groupId>
-                               <artifactId>org.kevoree.core</artifactId>
-                           </inclusion>
-                           <inclusion>
-                               <groupId>org.kevoree</groupId>
-                               <artifactId>org.kevoree.remote</artifactId>
-                           </inclusion>
-                           <inclusion>
-                               <groupId>org.apache.felix</groupId>
-                               <artifactId>org.apache.felix.main</artifactId>
-                           </inclusion>
-                           <inclusion>
-                               <groupId>org.apache.felix</groupId>
-                               <artifactId>org.apache.felix.shell</artifactId>
-                           </inclusion>
-                           <inclusion>
-                               <groupId>org.apache.felix</groupId>
-                               <artifactId>org.apache.felix.shell.tui</artifactId>
-                           </inclusion>
-                           <inclusion>
-                               <groupId>org.apache.felix</groupId>
-                               <artifactId>org.apache.felix.shell.remote</artifactId>
-                           </inclusion>
-                           <inclusion>
-                               <groupId>org.restlet.jse</groupId>
-                               <artifactId>org.restlet</artifactId>
-                           </inclusion> -->
                             <inclusion>
                                 <groupId>org.kevoree.platform</groupId>
                                 <artifactId>org.kevoree.platform.osgi.standalone</artifactId>
@@ -516,40 +400,6 @@
                                 <groupId>com.explodingpixels</groupId>
                                 <artifactId>mac_widgets</artifactId>
                             </inclusion>
-                            <inclusion>
-                                <groupId>org.kevoree.extra</groupId>
-                                <artifactId>org.kevoree.extra.osgi.jmdns</artifactId>
-                            </inclusion>
-                            <!--
-                            <inclusion>
-                                <groupId>jgrapht</groupId>
-                                <artifactId>jgrapht</artifactId>
-                                <filter>!META-INF/**</filter>
-                            </inclusion>
-
-
-                            <inclusion>
-                                <groupId>org.ops4j.pax.url</groupId>
-                                <artifactId>pax-url-mvn</artifactId>
-                                <filter>
-                                    !META-INF/**,org/apache/commons/**,org/ops4j/pax/url/mvn/**,org/ops4j/pax/url/commons/**,
-                                    org/ops4j/util/**,org/ops4j/pax/url/maven/**,org/ops4j/lang/**
-                                </filter>
-                            </inclusion>
-                            <inclusion>
-                                <groupId>org.ops4j.pax.url</groupId>
-                                <artifactId>pax-url-assembly</artifactId>
-                                <filter>
-                                    !org/apache/commons/**,
-                                    !META-INF/**,
-                                    !org/ops4j/io/**,
-                                    !org/ops4j/lang/**,
-                                    !org/ops4j/monitors/**,
-                                    !org/ops4j/pax/swissbox/property/**,
-                                    !org/ops4j/pax/url/commons/handler/**,
-                                    !org/ops4j/util/property/**
-                                </filter>
-                            </inclusion> -->
                         </inclusions>
                     </assembly>
                     <libs>
