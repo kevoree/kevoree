@@ -36,36 +36,35 @@ class JmDnsLookup extends Command {
 
   def execute(p: AnyRef) {
 
-    kernel.getModelHandler.getActualModel.getTypeDefinitions.find(td => td.getName == "JavaSENode") match {
-      case Some(javasenodeTD) => {
+    new Thread() {
+      override def run() {
+        JmDNSListener.lookup().foreach {
+          info =>
 
-        new Thread() {
-          override def run() {
-            JmDNSListener.lookup().foreach {
-              info =>
+            kernel.getModelHandler.getActualModel.getTypeDefinitions.find(td => td.getName == info.getNiceTextString) match {
+              case Some(nodeTypeDef) => {
                 if (!kernel.getModelHandler.getActualModel.getNodes.exists(node => node.getName == info.getName.trim())) {
                   val newnode = KevoreeFactory.eINSTANCE.createContainerNode()
                   newnode.setName(info.getName.trim())
-                  newnode.setTypeDefinition(javasenodeTD)
+                  newnode.setTypeDefinition(nodeTypeDef)
                   kernel.getModelHandler.getActualModel.getNodes.add(newnode)
                 }
                 KevoreePlatformHelper.updateNodeLinkProp(kernel.getModelHandler.getActualModel, info.getName.trim(), info.getName.trim(), org.kevoree.framework.Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP, info.getInet4Addresses()(0).getHostAddress, "LAN", 100)
                 KevoreePlatformHelper.updateNodeLinkProp(kernel.getModelHandler.getActualModel, info.getName.trim(), info.getName.trim(), org.kevoree.framework.Constants.KEVOREE_PLATFORM_REMOTE_NODE_MODELSYNCH_PORT, info.getPort.toString, "LAN", 100)
+              }
+              case None => println(info.getNiceTextString+" type definition not found")
             }
-            PositionedEMFHelper.updateModelUIMetaData(kernel)
-            val file = File.createTempFile("kev", new Random().nextInt + "")
-            KevoreeXmiHelper.save("file:///" + file.getAbsolutePath, kernel.getModelHandler.getActualModel);
-            val loadCMD = new LoadModelCommand
-            loadCMD.setKernel(kernel)
-            loadCMD.execute("file:///" + file.getAbsolutePath)
-          }
-        }.start()
 
 
+        }
+        PositionedEMFHelper.updateModelUIMetaData(kernel)
+        val file = File.createTempFile("kev", new Random().nextInt + "")
+        KevoreeXmiHelper.save("file:///" + file.getAbsolutePath, kernel.getModelHandler.getActualModel);
+        val loadCMD = new LoadModelCommand
+        loadCMD.setKernel(kernel)
+        loadCMD.execute("file:///" + file.getAbsolutePath)
       }
-      case None => println("JavaSENode type definition not found")
-    }
-
+    }.start()
 
   }
 
