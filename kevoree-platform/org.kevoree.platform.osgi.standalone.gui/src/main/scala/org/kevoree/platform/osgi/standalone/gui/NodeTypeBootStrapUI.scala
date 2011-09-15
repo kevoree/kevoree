@@ -20,6 +20,7 @@ import com.explodingpixels.macwidgets.plaf.{HudLabelUI, HudTextFieldUI, HudCombo
 import com.explodingpixels.macwidgets.HudWidgetFactory
 import java.awt.{Dimension, BorderLayout}
 import org.kevoree._
+import java.util.Properties
 
 /**
  * User: ffouquet
@@ -31,6 +32,7 @@ class NodeTypeBootStrapUI(pkernel: ContainerRoot) extends JPanel {
 
   var instanceName: JTextField = _
   var nodeTypeComboBox : JComboBox = _
+  var currentProperties = new Properties()
 
   def getKevName = {instanceName.getText}
   def getKevTypeName = {nodeTypeComboBox.getSelectedItem}
@@ -83,6 +85,7 @@ class NodeTypeBootStrapUI(pkernel: ContainerRoot) extends JPanel {
         globalLayout.setOpaque(false)
         globalLayout.setLayout(new BorderLayout())
         globalLayout.add(topLayout, BorderLayout.NORTH)
+        currentProperties.clear() // CLEAR PREVIOUS DICTIONARY
         globalLayout.add(getParamsPanel(kernel.getTypeDefinitions.find(td => td.getName == nodeTypeComboBox.getSelectedItem.toString).get), BorderLayout.CENTER)
         add(globalLayout)
         repaint()
@@ -112,12 +115,11 @@ class NodeTypeBootStrapUI(pkernel: ContainerRoot) extends JPanel {
               val comboBox: JComboBox = HudWidgetFactory.createHudComboBox(valuesModel)
               l.setLabelFor(comboBox)
               p.add(comboBox)
-              /*comboBox.setSelectedItem(getValue(elem, att))
              comboBox.addActionListener(new ActionListener {
                def actionPerformed(actionEvent: ActionEvent): Unit = {
-                 setValue(comboBox.getSelectedItem.toString, elem, att)
+                 currentProperties.put(att.getName,comboBox.getSelectedItem.toString)
                }
-             }) */
+             })
             }
           }
           else {
@@ -125,7 +127,11 @@ class NodeTypeBootStrapUI(pkernel: ContainerRoot) extends JPanel {
             textField.setUI(new HudTextFieldUI)
             l.setLabelFor(textField)
             p.add(textField)
-            //textField.setText(getValue(elem, att))
+            textField.addActionListener(new ActionListener {
+              def actionPerformed(p1: ActionEvent) {
+                 currentProperties.put(att.getName,textField.getText)
+              }
+            })
           }
       }
       SpringUtilities.makeCompactGrid(p, nodeTypeDefinition.getDictionaryType.getAttributes.size, 2, 6, 6, 6, 6)
