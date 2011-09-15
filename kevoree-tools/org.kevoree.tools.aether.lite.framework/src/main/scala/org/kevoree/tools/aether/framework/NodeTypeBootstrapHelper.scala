@@ -15,11 +15,11 @@ package org.kevoree.tools.aether.framework
 
 import org.kevoree.framework.AbstractNodeType
 import java.io.FileInputStream
-import scala.collection.immutable.List._
 import scala.collection.JavaConversions._
 import org.osgi.framework.{Bundle, BundleContext, BundleException}
 import org.slf4j.LoggerFactory
-import org.kevoree.{ContainerRoot, DeployUnit, ContainerNode}
+import org.kevoree.{ContainerRoot, DeployUnit}
+import org.kevoree.api.service.core.handler.KevoreeModelHandlerService
 
 /**
  * User: ffouquet
@@ -34,14 +34,14 @@ class NodeTypeBootstrapHelper {
 
   def getNodeTypeBundle = bundle
 
-  def bootstrapNodeType(model: ContainerRoot, destNodeName: String,bundleContext:BundleContext): Option[AbstractNodeType] = {
+  def bootstrapNodeType(model: ContainerRoot, destNodeName: String, bundleContext: BundleContext): Option[AbstractNodeType] = {
     //LOCATE NODE
     val node = model.getNodes.find(node => node.getName == destNodeName)
     node match {
       case Some(node) => {
         val nodeTypeDeployUnitList = node.getTypeDefinition.getDeployUnits.toList
         if (nodeTypeDeployUnitList.size > 0) {
-          logger.info("nodeType installation => " + installNodeTyp(nodeTypeDeployUnitList.get(0),bundleContext))
+          logger.info("nodeType installation => " + installNodeTyp(nodeTypeDeployUnitList.get(0), bundleContext))
           val clazz: Class[_] = bundle.loadClass(node.getTypeDefinition.getBean)
           val nodeType = clazz.newInstance.asInstanceOf[AbstractNodeType]
           //ADD INSTANCE DICTIONARY
@@ -61,6 +61,17 @@ class NodeTypeBootstrapHelper {
             }
           }
           nodeType.setDictionary(dictionary)
+          nodeType.setNodeName(destNodeName)
+
+
+          //INJECT SERVICE HANDLER
+          val sr = bundleContext.getServiceReference(classOf[KevoreeModelHandlerService].getName)
+          if (sr != null) {
+            val s = bundleContext.getService(sr).asInstanceOf[KevoreeModelHandlerService]
+            nodeType.setModelService(s)
+          }
+
+
           //nodeType.push(destNodeName, model, bundle.getBundleContext)
           Some(nodeType)
         } else {
@@ -72,7 +83,7 @@ class NodeTypeBootstrapHelper {
     }
   }
 
-  private def installDeployUnit(du: DeployUnit,bundleContext:BundleContext): Boolean = {
+  private def installDeployUnit(du: DeployUnit, bundleContext: BundleContext): Boolean = {
     try {
       val arteFile = AetherUtil.resolveDeployUnit(du)
       bundle = bundleContext.installBundle("file:///" + arteFile.getAbsolutePath, new FileInputStream(arteFile))
@@ -90,13 +101,13 @@ class NodeTypeBootstrapHelper {
     }
   }
 
-    /* Bootstrap node type bundle in local osgi environment */
-  private def installNodeTyp(ct: DeployUnit,bundleContext:BundleContext): Boolean = {
+  /* Bootstrap node type bundle in local osgi environment */
+  private def installNodeTyp(ct: DeployUnit, bundleContext: BundleContext): Boolean = {
     val tpResul = ct.getRequiredLibs.forall {
-      tp => installDeployUnit(tp,bundleContext)
+      tp => installDeployUnit(tp, bundleContext)
     }
     if (tpResul) {
-      installDeployUnit(ct,bundleContext)
+      installDeployUnit(ct, bundleContext)
     } else {
       false
     }

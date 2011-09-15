@@ -41,6 +41,7 @@ class NodeTypeBootStrapUI(pkernel: ContainerRoot) extends JPanel {
   //CALL INIT
   def init(kernel: ContainerRoot) {
     val nodeTypeModel = new DefaultComboBoxModel
+
     kernel.getTypeDefinitions.filter(td => td.isInstanceOf[org.kevoree.NodeType] && td.getDeployUnits.exists(du => du.getTargetNodeType != null && du.getTargetNodeType.getName == "JavaSENode")).foreach {
       td =>
         nodeTypeModel.addElement(td.getName)
