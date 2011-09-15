@@ -26,7 +26,7 @@ import org.slf4j.LoggerFactory
  * Time: 17:42
  */
 
-class JmDnsComponent(nodeName: String, modelPort: Int, modelHandler : KevoreeModelHandlerService) {
+class JmDnsComponent(nodeName: String, modelPort: Int, modelHandler : KevoreeModelHandlerService,nodeTypeName :String) {
 
   val logger = LoggerFactory.getLogger(this.getClass)
 
@@ -61,7 +61,7 @@ class JmDnsComponent(nodeName: String, modelPort: Int, modelHandler : KevoreeMod
     def serviceRemoved(p1: ServiceEvent) {}
   })
 
-  var pairservice: ServiceInfo = ServiceInfo.create(REMOTE_TYPE, nodeName, modelPort, 0, 0, values)
+  var pairservice: ServiceInfo = ServiceInfo.create(REMOTE_TYPE, nodeName, modelPort, nodeTypeName)
   new Thread() {
     override def run() {
       jmdns.registerService(pairservice)

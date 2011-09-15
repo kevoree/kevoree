@@ -38,7 +38,7 @@ public class JavaSENode extends AbstractNodeType {
     @Override
     public void startNode() {
         Integer port = ((System.getProperty("node.port") == null) ? 8000 : Integer.parseInt(System.getProperty("node.port")));
-        jmDnsComponent = new JmDnsComponent(this.getNodeName(), port, this.getModelService());
+        jmDnsComponent = new JmDnsComponent(this.getNodeName(), port, this.getModelService(),this.getClass().getSimpleName());
     }
 
     @Stop
