@@ -26,6 +26,7 @@ object KevoreeAspects{
   implicit def mbindingAspect(c : org.kevoree.MBinding) = MBindingAspect(c)
   implicit def instanceAspect(c : org.kevoree.Instance) = InstanceAspect(c)
   implicit def componentInstanceAspect(c : ComponentInstance) = ComponentInstanceAspect(c)
+  implicit def componentTypeAspect(c : ComponentType) = ComponentTypeAspect(c)
   implicit def typeAspect(ct : TypeDefinition) = TypeDefinitionAspect(ct)
   implicit def containerNodeAspect(cn : ContainerNode) = ContainerNodeAspect(cn)
   implicit def portAspect(p : Port ) = PortAspect(p)

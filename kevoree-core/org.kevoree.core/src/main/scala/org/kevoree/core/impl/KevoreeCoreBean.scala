@@ -21,10 +21,6 @@ package org.kevoree.core.impl
 import org.kevoree.KevoreeFactory
 import org.kevoree.ContainerRoot
 import org.kevoree.api.configuration.ConfigurationService
-import org.kevoree.framework.KevoreeActor
-import org.kevoree.framework.KevoreeGroup
-import org.kevoree.framework.KevoreePlatformHelper
-import org.kevoree.framework.KevoreeXmiHelper
 import org.osgi.framework.BundleContext
 import org.slf4j.LoggerFactory
 import scala.reflect.BeanProperty
@@ -34,7 +30,9 @@ import org.kevoree.api.configuration.ConfigConstants
 import java.util.Date
 import org.kevoree.api.service.core.handler.{ModelListener, KevoreeModelHandlerService}
 import org.eclipse.emf.ecore.util.EcoreUtil
-import sun.security.krb5.internal.rcache.ReplayCache
+import scala.collection.JavaConversions._
+import org.kevoree.framework._
+import org.kevoree.tools.aether.framework.NodeTypeBootstrapHelper
 
 class KevoreeCoreBean extends KevoreeModelHandlerService with KevoreeActor {
 
@@ -43,6 +41,7 @@ class KevoreeCoreBean extends KevoreeModelHandlerService with KevoreeActor {
   @BeanProperty var kompareService: org.kevoree.api.service.core.kompare.ModelKompareService = null
   @BeanProperty var deployService: org.kevoree.api.service.adaptation.deploy.KevoreeAdaptationDeployService = null
   @BeanProperty var nodeName: String = ""
+  @BeanProperty var nodeInstance: AbstractNodeType = null
 
   var models: java.util.ArrayList[ContainerRoot] = new java.util.ArrayList()
   var model: ContainerRoot = KevoreeFactory.eINSTANCE.createContainerRoot()
@@ -52,6 +51,24 @@ class KevoreeCoreBean extends KevoreeModelHandlerService with KevoreeActor {
   def getLastModification = lastDate
 
   var logger = LoggerFactory.getLogger(this.getClass);
+
+  private def checkBootstrapNode(currentModel: ContainerRoot) : Unit = {
+    if (nodeInstance == null) {
+      currentModel.getNodes.find(n => n.getName == nodeName) match {
+        case Some(foundNode) => {
+          val bt = new NodeTypeBootstrapHelper
+          bt.bootstrapNodeType(currentModel, nodeName, bundleContext) match {
+            case Some(ist) => {
+              nodeInstance = ist ;
+              nodeInstance.startNode()
+            }
+            case None => logger.error("Node instance name " + nodeName + " not found in bootstrap model !")
+          }
+        }
+        case None => logger.error("Node instance name " + nodeName + " not found in bootstrap model !")
+      }
+    }
+  }
 
   private def switchToNewModel(c: ContainerRoot) = {
     models.add(model)
@@ -83,17 +100,21 @@ class KevoreeCoreBean extends KevoreeModelHandlerService with KevoreeActor {
     super.start()
 
     //State recovery phase
+    /*
     val lastModelssaved = bundleContext.getDataFile("lastModel.xmi");
     if (lastModelssaved.length() != 0) {
       /* Load previous state */
       val model = KevoreeXmiHelper.load(lastModelssaved.getAbsolutePath());
       switchToNewModel(model)
-    }
+    }  */
 
     this
   }
 
-  override def stop(): Unit = {
+  override def stop() {
+    if(nodeInstance != null){
+      nodeInstance.stopNode()
+    }
 
     listenerActor.stop()
 
@@ -121,19 +142,12 @@ class KevoreeCoreBean extends KevoreeModelHandlerService with KevoreeActor {
 
         try {
 
-          logger.debug("Actor size " + this.mailboxSize)
-
-          logger.debug("Copy Model")
           val newmodel = EcoreUtil.copy(pnewmodel)
-
+          checkBootstrapNode(newmodel)
           val milli = System.currentTimeMillis
           logger.debug("Begin update model " + milli)
-          logger.debug("Before kompare")
           val adaptationModel = kompareService.kompare(model, newmodel, nodeName);
-          logger.debug("Before deploy")
           val deployResult = deployService.deploy(adaptationModel, nodeName);
-
-
 
           if (deployResult) {
             //Merge previous model on new model for platform model

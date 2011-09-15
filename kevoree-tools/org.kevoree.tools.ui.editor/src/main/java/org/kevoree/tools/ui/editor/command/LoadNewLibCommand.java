@@ -16,30 +16,25 @@
  * Copyright  : IRISA / INRIA / Universite de Rennes 1 */
 package org.kevoree.tools.ui.editor.command;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.util.Random;
-import java.util.jar.JarEntry;
-import java.util.jar.JarFile;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.swing.*;
-
 import org.eclipse.emf.common.util.URI;
 import org.kevoree.ContainerRoot;
 import org.kevoree.framework.KevoreeXmiHelper;
 import org.kevoree.tools.ui.editor.KevoreeUIKernel;
 import org.kevoree.tools.ui.editor.PositionedEMFHelper;
 
+import javax.swing.*;
+import java.io.*;
+import java.net.URL;
+import java.util.Random;
+import java.util.jar.JarEntry;
+import java.util.jar.JarFile;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 /**
  * @author ffouquet
  */
 public class LoadNewLibCommand implements Command {
-
-    private JFileChooser filechooser = new JFileChooser();
 
     public void setKernel(KevoreeUIKernel kernel) {
         this.kernel = kernel;
@@ -49,48 +44,60 @@ public class LoadNewLibCommand implements Command {
 
     @Override
     public void execute(Object p) {
-        int wayOut = filechooser.showOpenDialog(kernel.getModelPanel());
 
-        if (wayOut == JFileChooser.APPROVE_OPTION && filechooser.getSelectedFile() != null) {
-            try {
-                Boolean jarFile = filechooser.getSelectedFile().getAbsoluteFile().getPath().endsWith("jar");
-                Boolean kevFile = filechooser.getSelectedFile().getAbsoluteFile().getPath().endsWith("kev");
-                String path = null;
-                if (kevFile) {
-                    path = URI.createFileURI(filechooser.getSelectedFile().getAbsolutePath()).toString();
-                } else if (jarFile) {
-                    JarFile jar;
-
-                    jar = new JarFile(filechooser.getSelectedFile().getAbsoluteFile()); //new JarFile(filechooser.getSelectedFile().getAbsoluteFile().toURI().toString());
-                    JarEntry entry = jar.getJarEntry("KEV-INF/lib.kev");
-                    if (entry != null) {
-                        path = convertStreamToFile(jar.getInputStream(entry));
-                    } else {
-                        JOptionPane.showMessageDialog(kernel.getModelPanel(),"No Kev model have been found in the given library.", "Corrupted Lib.", JOptionPane.WARNING_MESSAGE);
-                    }
-                } else {
-                   JOptionPane.showMessageDialog(kernel.getModelPanel(),"The file format can not be handled. Accepted files are *.jar and *.kev", "Unknown file format.", JOptionPane.WARNING_MESSAGE);
-                }
-
-                if (path != null) {
-                    ContainerRoot nroot = KevoreeXmiHelper.load(path);
-                    //Merge
-                    kernel.getModelHandler().merge(nroot);
-                    //CREATE TEMP FILE FROM ACTUAL MODEL
-                    File tempFile = File.createTempFile("kevoreeEditorTemp", ".kev");
-                    //System.out.println("path="+tempFile);
-                    PositionedEMFHelper.updateModelUIMetaData(kernel);
-                    KevoreeXmiHelper.save(URI.createFileURI(tempFile.getAbsolutePath()).toString(), kernel.getModelHandler().getActualModel());
-                    //LOAD MODEL
-                    LoadModelCommand loadCmd = new LoadModelCommand();
-                    loadCmd.setKernel(kernel);
-                    loadCmd.execute(URI.createFileURI(tempFile.getAbsolutePath()).toString());
-                }
-            } catch (IOException ex) {
-                JOptionPane.showMessageDialog(kernel.getModelPanel(),"Unable to load the give library.\nSee log for further information.", "Unable to load lib.", JOptionPane.WARNING_MESSAGE);
-                Logger.getLogger(LoadNewLibCommand.class.getName()).log(Level.SEVERE, null, ex);
+        String path = null;
+        String absolutePath = null;
+        try {
+            if (p instanceof File) {
+                File file = (File) p;
+                absolutePath = file.getAbsolutePath();
+            } else if (p instanceof URL) {
+                absolutePath = ((URL) p).getPath();
+            } else if (p instanceof String) {
+                absolutePath = (String) p;
+            } else {
+                throw new Exception("Unable to load library from object " + p.getClass() + ":" + p.toString());
             }
+
+            Boolean jarFile = absolutePath.endsWith("jar");
+            Boolean kevFile = absolutePath.endsWith("kev");
+
+            if (kevFile) {
+                path = URI.createFileURI(absolutePath).toString();
+            } else if (jarFile) {
+                JarFile jar;
+
+                jar = new JarFile(new File(absolutePath)); //new JarFile(filechooser.getSelectedFile().getAbsoluteFile().toURI().toString());
+                JarEntry entry = jar.getJarEntry("KEV-INF/lib.kev");
+                if (entry != null) {
+                    path = convertStreamToFile(jar.getInputStream(entry));
+                } else {
+                    JOptionPane.showMessageDialog(kernel.getModelPanel(), "No Kev model have been found in the given library.", "Corrupted Lib.", JOptionPane.WARNING_MESSAGE);
+                }
+            } else {
+                JOptionPane.showMessageDialog(kernel.getModelPanel(), "The file format can not be handled. Accepted files are *.jar and *.kev", "Unknown file format.", JOptionPane.WARNING_MESSAGE);
+            }
+
+            if (path != null) {
+                ContainerRoot nroot = KevoreeXmiHelper.load(path);
+                //Merge
+                kernel.getModelHandler().merge(nroot);
+                //CREATE TEMP FILE FROM ACTUAL MODEL
+                File tempFile = File.createTempFile("kevoreeEditorTemp", ".kev");
+                //System.out.println("path="+tempFile);
+                PositionedEMFHelper.updateModelUIMetaData(kernel);
+                KevoreeXmiHelper.save(URI.createFileURI(tempFile.getAbsolutePath()).toString(), kernel.getModelHandler().getActualModel());
+                //LOAD MODEL
+                LoadModelCommand loadCmd = new LoadModelCommand();
+                loadCmd.setKernel(kernel);
+                loadCmd.execute(URI.createFileURI(tempFile.getAbsolutePath()).toString());
+            }
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(kernel.getModelPanel(), "Unable to load the give library.\nSee log for further information.", "Unable to load lib.", JOptionPane.WARNING_MESSAGE);
+            Logger.getLogger(LoadNewLibCommand.class.getName()).log(Level.SEVERE, null, ex);
         }
+
+
     }
 
 
