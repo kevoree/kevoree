@@ -7,13 +7,13 @@
     <artifactId>org.kevoree.library.javase.gossiperNetty</artifactId>
     <packaging>bundle</packaging>
     <name>Kevoree :: Library :: JavaSE :: GossiperNetty</name>
-    <version>1.2.0-RC1</version>
+    <version>1.2.0-SNAPSHOT</version>
 
     <parent>
         <artifactId>org.kevoree.library.javase.root</artifactId>
         <groupId>org.kevoree.library.javase</groupId>
-        <version>1.2.0-RC1</version>
-        <relativePath>../org.kevoree.library.javase.root/pom.xml</relativePath>
+        <version>1.2.0-SNAPSHOT</version>
+        <!--<relativePath>../org.kevoree.library.javase.root/pom.xml</relativePath>-->
     </parent>
 
     <build>
@@ -82,6 +82,19 @@
             <id>dtrott</id>
             <url>http://maven.davidtrott.com/repository</url>
         </pluginRepository>
+        <pluginRepository>
+            <id>plugin.scala-tools.org</id>
+            <name>Plugin Scala-tools Maven2 Repository</name>
+            <url>http://scala-tools.org/repo-releases</url>
+        </pluginRepository>
+        <pluginRepository>
+            <id>plugin.kevoree-github</id>
+            <url>http://maven.kevoree.org/release</url>
+        </pluginRepository>
+        <pluginRepository>
+            <id>plugin.kevoree-snapshots</id>
+            <url>http://maven.kevoree.org/snapshots</url>
+        </pluginRepository>
     </pluginRepositories>
     <repositories>
         <repository>
@@ -95,6 +108,19 @@
             <id>maven.twttr.com</id>
             <url>http://maven.twttr.com/</url>
         </repository>-->
+        <repository>
+            <id>scala-tools.org</id>
+            <name>Scala-tools Maven2 Repository</name>
+            <url>http://scala-tools.org/repo-releases</url>
+        </repository>
+        <repository>
+            <id>kevoree-release</id>
+            <url>http://maven.kevoree.org/release</url>
+        </repository>
+        <repository>
+            <id>kevoree-snapshots</id>
+            <url>http://maven.kevoree.org/snapshots</url>
+        </repository>
     </repositories>
 
 
@@ -145,7 +171,7 @@
             <artifactId>org.kevoree.tools.annotation.api</artifactId>
             <groupId>org.kevoree.tools</groupId>
             <type>jar</type>
-            <version>${kevoree.version}</version>
+            <version>${project.version}</version>
         </dependency><!--
         <dependency>
             <artifactId>org.kevoree.framework</artifactId>

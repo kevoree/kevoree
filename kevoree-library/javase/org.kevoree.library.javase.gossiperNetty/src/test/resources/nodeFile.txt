@@ -1,0 +1,12 @@
+p0:paraisseux.irisa.fr:8000
+p1:paraisseux.irisa.fr:8010
+p2:paraisseux.irisa.fr:8020
+t0:tombombadil.irisa.fr:8000
+t1:tombombadil.irisa.fr:8010
+t2:tombombadil.irisa.fr:8020
+c0:cigogne.irisa.fr:8000
+c1:cigogne.irisa.fr:8010
+c2:cigogne.irisa.fr:8020
+g0:galadriel.irisa.fr:8000
+g1:galadriel.irisa.fr:8010
+g2:galadriel.irisa.fr:8020
