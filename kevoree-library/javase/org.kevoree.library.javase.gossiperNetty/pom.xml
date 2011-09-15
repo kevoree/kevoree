@@ -15,7 +15,7 @@
         <artifactId>org.kevoree.library.javase.root</artifactId>
         <groupId>org.kevoree.library.javase</groupId>
         <version>1.2.0-RC1</version>
-        <!--<relativePath>../org.kevoree.library.javase.root/pom.xml</relativePath>-->
+        <relativePath>../org.kevoree.library.javase.root/pom.xml</relativePath>
     </parent>
 
     <dependencies>
@@ -48,8 +48,14 @@
             <type>jar</type>
             <version>${kevoree.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.kevoree.tools</groupId>
+            <artifactId>org.kevoree.tools.marShell</artifactId>
+            <version>${kevoree.version}</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
-    
+
     <pluginRepositories>
         <pluginRepository>
             <id>dtrott</id>
@@ -103,6 +109,4 @@
             </plugin>
         </plugins>
     </build>
-
-
 </project>
