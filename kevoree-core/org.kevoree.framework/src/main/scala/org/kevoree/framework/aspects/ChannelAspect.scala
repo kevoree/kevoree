@@ -24,16 +24,22 @@ import KevoreeAspects._
 
 case class ChannelAspect(cself : Channel) {
 
+  /**
+   * Returns true if the node in parameter hosts a component bound to this channel.
+   */
   def usedByNode(nodeName:String) : Boolean = {
-    cself.eContainer.asInstanceOf[ContainerRoot].getMBindings.find(mb=> mb.getHub == cself && mb.getPort.eContainer.eContainer.asInstanceOf[ContainerNode].getName == nodeName  ) match {
+    getRelatedBindings.find(mb => mb.getPort.eContainer.eContainer.asInstanceOf[ContainerNode].getName == nodeName  ) match {
       case None => false
       case Some(b)=> true
     }
   }
 
+  /**
+   * Returns a list of node's names the channel is linked with, except the nodeName given in parameter.
+   */
   def getOtherFragment(nodeName : String) : List[String] = {
     var result : List[String] = List()
-    cself.eContainer.asInstanceOf[ContainerRoot].getMBindings.filter(mb=> mb.getHub == cself && mb.getPort.eContainer.eContainer.asInstanceOf[ContainerNode].getName != nodeName  ).foreach{
+    getRelatedBindings.filter(mb=> mb.getPort.eContainer.eContainer.asInstanceOf[ContainerNode].getName != nodeName  ).foreach{
       mb=>
         if(!result.contains(mb.getPort.eContainer.eContainer.asInstanceOf[ContainerNode].getName)){
           result = result ++ List(mb.getPort.eContainer.eContainer.asInstanceOf[ContainerNode].getName)
@@ -42,9 +48,12 @@ case class ChannelAspect(cself : Channel) {
     result
   }
 
+   /**
+   * Returns a list of nodes the channel is linked with, except the node given in parameter.
+   */
   def getConnectedNode(nodeName : String) : List[ContainerNode] = {
     var result : List[ContainerNode] = List()
-    cself.eContainer.asInstanceOf[ContainerRoot].getMBindings.filter(mb=> mb.getHub == cself && mb.getPort.eContainer.eContainer.asInstanceOf[ContainerNode].getName != nodeName).foreach{
+    getRelatedBindings.filter(mb=> mb.getPort.eContainer.eContainer.asInstanceOf[ContainerNode].getName != nodeName).foreach{
       mb=>
         if(!result.contains(mb.getPort.eContainer.eContainer.asInstanceOf[ContainerNode])){
           result = result ++ List(mb.getPort.eContainer.eContainer.asInstanceOf[ContainerNode])
@@ -53,6 +62,9 @@ case class ChannelAspect(cself : Channel) {
     result
   }
 
+  /**
+   * Returns the list of all bindings belonging to this channel
+   */
   def getRelatedBindings : List[MBinding] = {
     val res = new java.util.ArrayList[MBinding]();
     cself.eContainer.asInstanceOf[ContainerRoot].getMBindings.foreach{b=>
@@ -61,6 +73,32 @@ case class ChannelAspect(cself : Channel) {
       }
     }
     res.toList
+  }
+
+  /**
+   * Returns the list of bindings belonging to this channel on the given node
+   */
+  def getRelatedBindings(node : ContainerNode) : List[MBinding] = {
+    val res = new java.util.ArrayList[MBinding]();
+    cself.eContainer.asInstanceOf[ContainerRoot].getMBindings.foreach{b=>
+      if(b.getHub == cself && b.getPort.eContainer.eContainer.asInstanceOf[ContainerNode].getName == node.getName){
+        res.add(b)
+      }
+    }
+    res.toList
+  }
+
+  /**
+   * Returns the list of all ContainerNode this binding is connected to.
+   */
+  def getRelatedNodes : List[ContainerNode] = {
+    var result : List[ContainerNode] = List()
+    getRelatedBindings.foreach{binding =>
+      if(!result.contains(binding.getPort.eContainer.eContainer.asInstanceOf[ContainerNode])){
+          result = result ++ List(binding.getPort.eContainer.eContainer.asInstanceOf[ContainerNode])
+        }
+    }
+    result
   }
 
 }
