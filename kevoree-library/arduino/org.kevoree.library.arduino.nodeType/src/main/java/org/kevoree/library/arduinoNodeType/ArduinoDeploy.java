@@ -44,6 +44,10 @@ public class ArduinoDeploy {
 
     public final void uploadSketch(Sketch sketch, Target target, String portName) {
 
+        try {
+            Thread.sleep(100);
+        } catch (InterruptedException e) {}
+
         File hexFile = sketch.getFlash(target);
         if (hexFile == null) {
             logger.warn("No upload data found");
@@ -74,14 +78,11 @@ public class ArduinoDeploy {
     }
 
     protected final int execute(List<String> cmds) {
-
         String finalCommand = "";
         for (String cmd : cmds) {
             finalCommand = finalCommand + cmd + " ";
         }
-
         ArduinoCommandExec.execute(finalCommand);
-
         return 0;
     }
 }

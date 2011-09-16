@@ -13,7 +13,7 @@ import org.kevoree.framework.AbstractComponentType;
 @ComponentType
 @DictionaryType({
         @DictionaryAttribute(name = "dpin", defaultValue = "0", optional = true, vals = {"0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13"}),
-        @DictionaryAttribute(name = "period", defaultValue = "100", optional = true)
+        @DictionaryAttribute(name = "period", defaultValue = "200", optional = true)
 })
 @Requires({
         @RequiredPort(name = "range", type = PortType.MESSAGE)
@@ -35,16 +35,16 @@ public class UltraSonicRange extends AbstractComponentType {
     public void generateSetup(StringBuffer context) {
         //CLEAN SIGNAL
         context.append("" +
-                " pinMode(dpin, OUTPUT);\n" +
-                " digitalWrite(dpin, LOW);\n" +
+                " pinMode(atoi(dpin), OUTPUT);\n" +
+                " digitalWrite(atoi(dpin), LOW);\n" +
                 " delayMicroseconds(2);\n" +
-                " digitalWrite(dpin, HIGH);\n" +
+                " digitalWrite(atoi(dpin), HIGH);\n" +
                 " delayMicroseconds(5);\n" +
-                " digitalWrite(dpin, LOW);\n");
+                " digitalWrite(atoi(dpin), LOW);\n");
         //MESURE RANGE
         context.append("" +
-                " pinMode(pingPin, INPUT);\n" +
-                " duration = pulseIn(pingPin, HIGH);\n");
+                " pinMode(atoi(dpin), INPUT);\n" +
+                " duration = pulseIn(atoi(dpin), HIGH);\n");
         // The speed of sound is 340 m/s or 29 microseconds per centimeter.
         // The ping travels out and back, so to find the distance of the
         // object we take half of the distance travelled.
