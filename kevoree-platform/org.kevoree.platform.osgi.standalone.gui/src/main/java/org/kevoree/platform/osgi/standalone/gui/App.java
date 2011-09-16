@@ -43,6 +43,9 @@ public class App {
             io.printStackTrace();
         }
         ContainerRoot model = null;
+
+        System.setProperty("node.bootstrap","/Users/ffouquet/Desktop/test.kev");
+
         Object param = System.getProperty("node.bootstrap");
         if(param != null ){
             model = KevoreeXmiHelper.load(param.toString());
