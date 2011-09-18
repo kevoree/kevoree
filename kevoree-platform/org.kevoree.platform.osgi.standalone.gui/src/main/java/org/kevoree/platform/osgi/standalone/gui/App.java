@@ -44,7 +44,7 @@ public class App {
         }
         ContainerRoot model = null;
 
-        System.setProperty("node.bootstrap","/Users/ffouquet/Desktop/test.kev");
+        //System.setProperty("node.bootstrap","/Users/ffouquet/Desktop/test.kev");
 
         Object param = System.getProperty("node.bootstrap");
         if(param != null ){
