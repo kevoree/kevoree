@@ -9,8 +9,10 @@ import org.jboss.netty.handler.codec.protobuf.{ProtobufEncoder, ProtobufVarint32
 import org.jboss.netty.channel._
 import socket.nio.{NioClientSocketChannelFactory, NioServerSocketChannelFactory}
 import org.jboss.netty.bootstrap.{ClientBootstrap, ServerBootstrap}
+import org.jboss.netty.channel.group.DefaultChannelGroup
+
+
 import scala.collection.JavaConversions._
-import org.jboss.netty.channel.group.{ChannelGroupFutureListener, DefaultChannelGroup}
 
 /**
  * User: Erwan Daubert - erwan.daubert@gmail.com
@@ -93,6 +95,7 @@ class TCPActor (port: Int, processValue: ProcessValue, processRequest: ProcessRe
 
   protected def sendMessageToChannelInternal (o: Message, channel: Channel, address: InetSocketAddress) {
     channel.write(o)
+    channel.close()
   }
 
   private class TCPRequestHandler (processRequest: ProcessRequest) extends SimpleChannelUpstreamHandler {
@@ -101,6 +104,13 @@ class TCPActor (port: Int, processValue: ProcessValue, processRequest: ProcessRe
         processRequest.receiveRequest(e.getMessage.asInstanceOf[Message], e.getChannel,
                                        e.getRemoteAddress.asInstanceOf[InetSocketAddress])
       }
+      e.getChannel.getCloseFuture.addListener(ChannelFutureListener.CLOSE)
+    }
+
+    override def exceptionCaught (ctx: ChannelHandlerContext, e: ExceptionEvent) {
+      logger.error("Communication failed between " + ctx.getChannel.getLocalAddress + " and " +
+        ctx.getChannel.getRemoteAddress, e.getCause)
+      e.getChannel.close()
     }
   }
 
@@ -108,8 +118,14 @@ class TCPActor (port: Int, processValue: ProcessValue, processRequest: ProcessRe
     override def messageReceived (ctx: ChannelHandlerContext, e: MessageEvent) {
       if (e.getMessage.isInstanceOf[Message]) {
         processValue.receiveValue(e.getMessage.asInstanceOf[Message])
-        e.getChannel.getCloseFuture.addListener(ChannelFutureListener.CLOSE)
       }
+      e.getChannel.close()
+    }
+
+    override def exceptionCaught (ctx: ChannelHandlerContext, e: ExceptionEvent) {
+      logger.error("Communication failed between " + ctx.getChannel.getLocalAddress + " and " +
+        ctx.getChannel.getRemoteAddress, e.getCause)
+        e.getChannel.close()
     }
   }
 
