@@ -337,6 +337,7 @@
                         <!--
                         <option>-keep class org.restlet.**</option>
                         -->
+                        <option>-keep class org.slf4j.** { *; }</option>
                         <option>-keep class org.osgi.** { *; }</option>
                         <option>-keep class org.restlet.resource.** { *; }</option>
                         <option>-keep class scala.runtime.** { *; }</option>
