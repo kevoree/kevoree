@@ -8,15 +8,7 @@ import org.jboss.netty.handler.codec.protobuf._
 
 object CodecFactory extends Codec[Message, Message] {
 
-  def getUDPCodec : Codec ={
-    new UDPCodec
-  }
-
-  def getTCPCodec : Codec ={
-    new TCPCodec
-  }
-
-
+/*
   class UDPCodec extends Codec[Message, Message] {
 
     //override def serverCodec = new ServerCodec[Message, Message] {
@@ -34,7 +26,7 @@ object CodecFactory extends Codec[Message, Message] {
     }
   }
 
-  class TCPCodec extends Codec[Message, Message] {
+  class TCPCodec extends Codec[Message, Message] {*/
 
     //override def serverCodec = new ServerCodec[Message, Message] {
     def pipelineFactory = new ChannelPipelineFactory {
@@ -49,7 +41,7 @@ object CodecFactory extends Codec[Message, Message] {
         p
       }
     }
-  }
+  //}
 
 
   /*override def clientCodec = new ClientCodec[Message, Message] {
