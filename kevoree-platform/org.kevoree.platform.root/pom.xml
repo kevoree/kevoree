@@ -86,6 +86,7 @@
     </build>
 
     <modules>
+        <module>../../kevoree-tools/org.kevoree.tools.aether.lite.framework</module>
        <module>../org.kevoree.platform.osgi.standalone</module>
        <module>../org.kevoree.platform.osgi.standalone.gui</module>
       <!-- <module>../org.kevoree.platform.osgi.bundle.full</module> -->

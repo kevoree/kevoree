@@ -52,14 +52,14 @@ class KevoreeCoreBean extends KevoreeModelHandlerService with KevoreeActor {
 
   var logger = LoggerFactory.getLogger(this.getClass);
 
-  private def checkBootstrapNode(currentModel: ContainerRoot) : Unit = {
+  private def checkBootstrapNode(currentModel: ContainerRoot): Unit = {
     if (nodeInstance == null) {
       currentModel.getNodes.find(n => n.getName == nodeName) match {
         case Some(foundNode) => {
           val bt = new NodeTypeBootstrapHelper
           bt.bootstrapNodeType(currentModel, nodeName, bundleContext) match {
             case Some(ist) => {
-              nodeInstance = ist ;
+              nodeInstance = ist;
               nodeInstance.startNode()
             }
             case None => logger.error("Node instance name " + nodeName + " not found in bootstrap model !")
@@ -112,16 +112,20 @@ class KevoreeCoreBean extends KevoreeModelHandlerService with KevoreeActor {
   }
 
   override def stop() {
-    if(nodeInstance != null){
+    if (nodeInstance != null) {
       nodeInstance.stopNode()
     }
 
     listenerActor.stop()
 
-
     super[KevoreeActor].forceStop
     //TODO CLEAN AND REACTIVATE
 
+
+    val stopModel = KevoreeFactory.eINSTANCE.createContainerRoot();
+    val adaptationModel = kompareService.kompare(model, stopModel, nodeName);
+    val deployResult = deployService.deploy(adaptationModel, nodeName);
+    logger.debug("Stop result => "+deployResult)
     // KevoreeXmiHelper.save(bundleContext.getDataFile("lastModel.xmi").getAbsolutePath(), models.head);
   }
 

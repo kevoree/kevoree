@@ -30,7 +30,6 @@ import java.awt.event.WindowEvent;
 import java.io.File;
 import java.net.URL;
 import java.util.Arrays;
-import java.util.Properties;
 import java.util.regex.PatternSyntaxException;
 
 public class KevoreeGUIFrame extends JFrame {
@@ -70,13 +69,13 @@ public class KevoreeGUIFrame extends JFrame {
         iconLabel.setOpaque(false);
 
         JButton btOk = new JButton("Ok");
-       // btOk.setOpaque(false);
+        // btOk.setOpaque(false);
         btOk.setUI(new HudButtonUI());
 
-        layoutPopup.add(iconLabel,BorderLayout.WEST);
+        layoutPopup.add(iconLabel, BorderLayout.WEST);
         final NodeTypeBootStrapUI nodeUI = new NodeTypeBootStrapUI(model);
-        layoutPopup.add(nodeUI,BorderLayout.CENTER);
-        layoutPopup.add(btOk,BorderLayout.SOUTH);
+        layoutPopup.add(nodeUI, BorderLayout.CENTER);
+        layoutPopup.add(btOk, BorderLayout.SOUTH);
 
         bootstrapPopup.setContentPane(layoutPopup);
         bootstrapPopup.getJDialog().setVisible(true);
@@ -101,15 +100,15 @@ public class KevoreeGUIFrame extends JFrame {
                 }
                 final String nodeName = response;
                 System.setProperty("node.name", response);
-                setTitle(nodeName + " : "+nodeUI.getKevTypeName());
+                setTitle(nodeName + " : " + nodeUI.getKevTypeName());
 
                 final String[] finalSplitted = splitted;
                 new Thread() {
                     @Override
                     public void run() {
 
-                        NodeTypeBootStrapModel.checkAndCreate(model,nodeName,nodeUI.getKevTypeName().toString(),nodeUI.currentProperties());
-                        BootstrapActivator btA = new org.kevoree.platform.osgi.standalone.BootstrapActivator();
+                        NodeTypeBootStrapModel.checkAndCreate(model, nodeName, nodeUI.getKevTypeName().toString(), nodeUI.currentProperties());
+                        final BootstrapActivator btA = new org.kevoree.platform.osgi.standalone.BootstrapActivator();
                         btA.setBootstrapModel(model);
 
                         EmbeddedActivators.setActivators(Arrays.asList(
@@ -123,14 +122,20 @@ public class KevoreeGUIFrame extends JFrame {
                         addWindowListener(new WindowAdapter() {
                             @Override
                             public void windowClosing(WindowEvent windowEvent) {
-                                try {
-                                    felix.getM_fwk().stop();
-                                    System.out.println("Closing ....");
-                                    //setVisible(false);
-                                    dispose();
-                                } catch (Exception e) {
-                                    e.printStackTrace();
-                                }
+                                new Thread() {
+                                    @Override
+                                    public void run() {
+                                        try {
+                                            //CLOSE KEVOREE BTActivator first ...
+                                            btA.stop(felix.getM_fwk().getBundleContext());
+                                            felix.getM_fwk().stop();
+                                            //setVisible(false);
+                                            dispose();
+                                        } catch (Exception e) {
+                                            e.printStackTrace();
+                                        }
+                                    }
+                                }.start();
                             }
                         });
                         felix.run();
