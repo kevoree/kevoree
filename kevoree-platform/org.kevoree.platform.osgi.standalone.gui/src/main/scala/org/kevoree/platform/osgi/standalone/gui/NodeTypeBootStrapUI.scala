@@ -17,10 +17,12 @@ import javax.swing._
 import java.awt.event.{ActionEvent, ActionListener}
 import java.awt.{Dimension, BorderLayout}
 import org.kevoree._
+import framework.KevoreeXmiHelper
 import java.util.Properties
 import com.explodingpixels.macwidgets.{IAppWidgetFactory, HudWidgetFactory}
 import scala.collection.JavaConversions._
 import com.explodingpixels.macwidgets.plaf.{HudButtonUI, HudLabelUI, HudTextFieldUI, HudComboBoxUI}
+import org.eclipse.emf.common.util.URI
 
 /**
  * User: ffouquet
@@ -47,6 +49,7 @@ class NodeTypeBootStrapUI(pkernel: ContainerRoot) extends JPanel {
 
   //CALL INIT
   def init(kernel: ContainerRoot) {
+    this.removeAll()
     val nodeTypeModel = new DefaultComboBoxModel
 
     kernel.getTypeDefinitions.filter(td => td.isInstanceOf[org.kevoree.NodeType] && td.getDeployUnits.exists(du => du.getTargetNodeType != null && du.getTargetNodeType.getName == "JavaSENode")).foreach {
@@ -71,7 +74,19 @@ class NodeTypeBootStrapUI(pkernel: ContainerRoot) extends JPanel {
     btBrowse.setUI(new HudButtonUI)
     btBrowse.addActionListener(new ActionListener {
       def actionPerformed(p1: ActionEvent) {
-
+        val filechooser: JFileChooser = new JFileChooser
+        val returnVal: Int = filechooser.showOpenDialog(null)
+        if (filechooser.getSelectedFile != null && returnVal == JFileChooser.APPROVE_OPTION) {
+          try {
+            val lastLoadedModel = URI.createFileURI(filechooser.getSelectedFile.getAbsolutePath).toString
+            val newModel = KevoreeXmiHelper.load(lastLoadedModel)
+            init(newModel)
+            repaint()
+            revalidate()
+          } catch {
+            case _@e =>
+          }
+        }
       }
     })
     val bootModelLabel = new JLabel("Bootstrap", SwingConstants.TRAILING);
@@ -177,7 +192,7 @@ class NodeTypeBootStrapUI(pkernel: ContainerRoot) extends JPanel {
     scrollPane.getViewport.setOpaque(false)
     scrollPane.setOpaque(false)
     scrollPane.setBorder(null)
-    scrollPane.setPreferredSize(new Dimension(250, 95))
+    scrollPane.setPreferredSize(new Dimension(250, 80))
     scrollPane
   }
 
