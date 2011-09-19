@@ -32,6 +32,7 @@ import org.kevoree.api.service.core.handler.{ModelListener, KevoreeModelHandlerS
 import org.eclipse.emf.ecore.util.EcoreUtil
 import scala.collection.JavaConversions._
 import org.kevoree.framework._
+import merger.KevoreePlatformMerger
 import org.kevoree.tools.aether.framework.NodeTypeBootstrapHelper
 
 class KevoreeCoreBean extends KevoreeModelHandlerService with KevoreeActor {
@@ -155,7 +156,7 @@ class KevoreeCoreBean extends KevoreeModelHandlerService with KevoreeActor {
 
           if (deployResult) {
             //Merge previous model on new model for platform model
-            //KevoreePlatformMerger.merge(newmodel, model)
+            KevoreePlatformMerger.merge(newmodel, model)
             switchToNewModel(newmodel)
             logger.info("Deploy result " + deployResult)
           } else {
