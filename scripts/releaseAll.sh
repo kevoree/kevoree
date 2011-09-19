@@ -2,6 +2,7 @@
 
 BASE_RELEASE_DIR=`pwd`
 
+
 cd $BASE_RELEASE_DIR
 sh scripts/releaseCore.sh
 
