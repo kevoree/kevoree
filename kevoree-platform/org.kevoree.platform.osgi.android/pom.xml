@@ -4,12 +4,12 @@
     <artifactId>org.kevoree.platform.osgi.android</artifactId>
     <packaging>jar</packaging>
     <name>Kevoree :: Platform :: OSGI Android</name>
-    <version>1.2.0-RC1</version>
+    <version>1.2.0-RC2</version>
 
     <parent>
         <artifactId>org.kevoree.platform.root</artifactId>
         <groupId>org.kevoree.platform</groupId>
-        <version>1.2.0-RC1</version>
+        <version>1.2.0-RC2</version>
         <relativePath>../org.kevoree.platform.root/pom.xml</relativePath>
     </parent>
 
@@ -283,6 +283,7 @@
                         <option>-dontnote</option>
 
                         <!--  <option>-keepattributes *Annotation*</option>-->
+                        <option>-keep class org.slf4j.** { *; }</option>
                         <option>-keep class org.osgi.** { *; }</option>
                         <option>-keep class org.restlet.resource.** { *; }</option>
                         <option>-keep class org.restlet.util.Series.** { *; }</option>

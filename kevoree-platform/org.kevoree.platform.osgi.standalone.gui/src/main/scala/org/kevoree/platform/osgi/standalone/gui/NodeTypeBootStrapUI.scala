@@ -13,13 +13,14 @@
  */
 package org.kevoree.platform.osgi.standalone.gui
 
-import scala.collection.JavaConversions._
 import javax.swing._
 import java.awt.event.{ActionEvent, ActionListener}
 import com.explodingpixels.macwidgets.plaf.{HudLabelUI, HudTextFieldUI, HudComboBoxUI}
-import com.explodingpixels.macwidgets.HudWidgetFactory
 import java.awt.{Dimension, BorderLayout}
 import org.kevoree._
+import java.util.Properties
+import com.explodingpixels.macwidgets.{IAppWidgetFactory, HudWidgetFactory}
+import scala.collection.JavaConversions._
 
 /**
  * User: ffouquet
@@ -30,10 +31,16 @@ import org.kevoree._
 class NodeTypeBootStrapUI(pkernel: ContainerRoot) extends JPanel {
 
   var instanceName: JTextField = _
-  var nodeTypeComboBox : JComboBox = _
+  var nodeTypeComboBox: JComboBox = _
+  var currentProperties = new Properties()
 
-  def getKevName = {instanceName.getText}
-  def getKevTypeName = {nodeTypeComboBox.getSelectedItem}
+  def getKevName = {
+    instanceName.getText
+  }
+
+  def getKevTypeName = {
+    nodeTypeComboBox.getSelectedItem
+  }
 
   init(pkernel)
   this.setOpaque(false)
@@ -41,6 +48,7 @@ class NodeTypeBootStrapUI(pkernel: ContainerRoot) extends JPanel {
   //CALL INIT
   def init(kernel: ContainerRoot) {
     val nodeTypeModel = new DefaultComboBoxModel
+
     kernel.getTypeDefinitions.filter(td => td.isInstanceOf[org.kevoree.NodeType] && td.getDeployUnits.exists(du => du.getTargetNodeType != null && du.getTargetNodeType.getName == "JavaSENode")).foreach {
       td =>
         nodeTypeModel.addElement(td.getName)
@@ -73,7 +81,10 @@ class NodeTypeBootStrapUI(pkernel: ContainerRoot) extends JPanel {
     globalLayout.setOpaque(false)
     globalLayout.setLayout(new BorderLayout())
     globalLayout.add(topLayout, BorderLayout.NORTH)
-    globalLayout.add(getParamsPanel(kernel.getTypeDefinitions.find(td => td.getName == nodeTypeComboBox.getSelectedItem.toString).get), BorderLayout.CENTER)
+    globalLayout.add(
+      getParamsPanel(
+        kernel.getTypeDefinitions.find(td => td.getName == nodeTypeComboBox.getSelectedItem.toString).get
+        ,getDefValue(instanceName.getText, pkernel)), BorderLayout.CENTER)
 
     nodeTypeComboBox.addActionListener(new ActionListener() {
       override def actionPerformed(actionEvent: ActionEvent) {
@@ -82,7 +93,12 @@ class NodeTypeBootStrapUI(pkernel: ContainerRoot) extends JPanel {
         globalLayout.setOpaque(false)
         globalLayout.setLayout(new BorderLayout())
         globalLayout.add(topLayout, BorderLayout.NORTH)
-        globalLayout.add(getParamsPanel(kernel.getTypeDefinitions.find(td => td.getName == nodeTypeComboBox.getSelectedItem.toString).get), BorderLayout.CENTER)
+        currentProperties.clear() // CLEAR PREVIOUS DICTIONARY
+        //globalLayout.add(getParamsPanel(kernel.getTypeDefinitions.find(td => td.getName == nodeTypeComboBox.getSelectedItem.toString).get), BorderLayout.CENTER)
+        globalLayout.add(
+          getParamsPanel(
+            kernel.getTypeDefinitions.find(td => td.getName == nodeTypeComboBox.getSelectedItem.toString).get
+            , getDefValue(instanceName.getText, pkernel)), BorderLayout.CENTER)
         add(globalLayout)
         repaint()
         revalidate()
@@ -92,7 +108,7 @@ class NodeTypeBootStrapUI(pkernel: ContainerRoot) extends JPanel {
     add(globalLayout)
   }
 
-  def getParamsPanel(nodeTypeDefinition: TypeDefinition): JComponent = {
+  def getParamsPanel(nodeTypeDefinition: TypeDefinition, props: Properties): JComponent = {
     val p = new JPanel(new SpringLayout)
     p.setBorder(null)
     if (nodeTypeDefinition.getDictionaryType != null) {
@@ -111,12 +127,15 @@ class NodeTypeBootStrapUI(pkernel: ContainerRoot) extends JPanel {
               val comboBox: JComboBox = HudWidgetFactory.createHudComboBox(valuesModel)
               l.setLabelFor(comboBox)
               p.add(comboBox)
-              /*comboBox.setSelectedItem(getValue(elem, att))
-             comboBox.addActionListener(new ActionListener {
-               def actionPerformed(actionEvent: ActionEvent): Unit = {
-                 setValue(comboBox.getSelectedItem.toString, elem, att)
-               }
-             }) */
+
+              if (props.get(att.getName) != null) {
+                comboBox.setSelectedItem(props.get(att.getName))
+              }
+              comboBox.addActionListener(new ActionListener {
+                def actionPerformed(actionEvent: ActionEvent): Unit = {
+                  currentProperties.put(att.getName, comboBox.getSelectedItem.toString)
+                }
+              })
             }
           }
           else {
@@ -124,7 +143,14 @@ class NodeTypeBootStrapUI(pkernel: ContainerRoot) extends JPanel {
             textField.setUI(new HudTextFieldUI)
             l.setLabelFor(textField)
             p.add(textField)
-            //textField.setText(getValue(elem, att))
+            if (props.get(att.getName) != null) {
+              textField.setText(props.get(att.getName).toString)
+            }
+            textField.addActionListener(new ActionListener {
+              def actionPerformed(p1: ActionEvent) {
+                currentProperties.put(att.getName, textField.getText)
+              }
+            })
           }
       }
       SpringUtilities.makeCompactGrid(p, nodeTypeDefinition.getDictionaryType.getAttributes.size, 2, 6, 6, 6, 6)
@@ -133,22 +159,28 @@ class NodeTypeBootStrapUI(pkernel: ContainerRoot) extends JPanel {
 
     p.setOpaque(false)
     val scrollPane: JScrollPane = new JScrollPane(p)
+    IAppWidgetFactory.makeIAppScrollPane(scrollPane)
     scrollPane.getViewport.setOpaque(false)
     scrollPane.setOpaque(false)
     scrollPane.setBorder(null)
-    scrollPane.setPreferredSize(new Dimension(250, 150))
+    scrollPane.setPreferredSize(new Dimension(250, 95))
     scrollPane
   }
 
-  /*
-  def getValue(att: DictionaryAttribute): String = {
-    for (v <- instance.getTypeDefinition.getDictionaryType.getDefaultValues) {
-      if (v.getAttribute == att) {
-        return v.getValue
-      }
+  def getDefValue(nodeName: String, model: ContainerRoot): Properties = {
+    model.getNodes.foreach{
+      node=> println(node.getName)
     }
-    return ""
-  }  */
-
-
+    val props = new Properties
+    model.getNodes.find(node => node.getName == nodeName).map {
+      nodeFound =>
+        if (nodeFound.getDictionary != null) {
+          nodeFound.getDictionary.getValues.foreach {
+            dicVal =>
+              props.put(dicVal.getAttribute.getName, dicVal.getValue)
+          }
+        }
+    }
+    props
+  }
 }

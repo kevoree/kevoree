@@ -23,12 +23,15 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.os.Environment;
 import android.os.IBinder;
 import android.util.Log;
 import org.apache.felix.framework.Logger;
 import org.apache.felix.framework.util.FelixConstants;
+import org.kevoree.ContainerRoot;
 import org.kevoree.android.framework.service.KevoreeAndroidService;
+import org.kevoree.framework.KevoreeXmiHelper;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleException;
 import org.osgi.framework.launch.Framework;
@@ -41,7 +44,6 @@ import java.util.Hashtable;
 import java.util.Properties;
 
 /**
- *
  * @author ffouquet
  */
 public class AndroidFelixService extends Service {
@@ -208,13 +210,14 @@ public class AndroidFelixService extends Service {
         System.setProperty("java.net.preferIPv6Addresses", "false");
         System.setProperty("java.net.preferIPv4Addresses", "true");
         System.setProperty("java.net.preferIPv4Stack", "true");
-        System.setProperty("node.name", "dukeTab");
+        //System.setProperty("node.name", KevoreeActivity.nodeName);
         new Thread() {
             @Override
             public void run() {
                 /* Redirect Output stream */
                 PrintStream m_out = new PrintStream(new OutputStream() {
                     ByteArrayOutputStream output = new ByteArrayOutputStream();
+
                     @Override
                     public void write(int oneByte) throws IOException {
                         output.write(oneByte);
@@ -260,7 +263,11 @@ public class AndroidFelixService extends Service {
                 configMap.put(org.osgi.framework.Constants.FRAMEWORK_SYSTEMPACKAGES, generated.SysPackageConstants.getProperty());//ANDROID_FRAMEWORK_PACKAGES);
                 configMap.put(org.osgi.framework.Constants.FRAMEWORK_STORAGE, m_cache.getAbsolutePath());
                 configMap.put(org.osgi.framework.Constants.FRAMEWORK_STORAGE_CLEAN, org.osgi.framework.Constants.FRAMEWORK_STORAGE_CLEAN_ONFIRSTINIT);
-                configMap.put(FelixConstants.SYSTEMBUNDLE_ACTIVATORS_PROP, EmbeddedActivators.getActivators());
+
+                InputStream baseModel = getResources().openRawResource(R.raw.basemodel);
+                ContainerRoot baseModelLoaded = KevoreeXmiHelper.loadStream(baseModel);
+                NodeTypeBootStrapModel.checkAndCreate(baseModelLoaded,KevoreeActivity.nodeName,"AndroidNode",new Properties());
+                configMap.put(FelixConstants.SYSTEMBUNDLE_ACTIVATORS_PROP, EmbeddedActivators.getActivators(baseModelLoaded));
 
                 try {
                     //   logger.info("Starting the OSGi framework");
@@ -278,19 +285,19 @@ public class AndroidFelixService extends Service {
 
                     //TODO UI IDSCONNECT GESTURE
 
-                    System.out.println("KevoreeActivity="+KevoreeActivity.last);
+                    System.out.println("KevoreeActivity=" + KevoreeActivity.last);
 
                     felixFramework.getBundleContext().registerService(KevoreeAndroidService.class.getName(), KevoreeActivity.last, new Properties());
-                    
-                     /*
-                    startRawBundle(felixFramework.getBundleContext(), "file://paxurl.jar", R.raw.paxurl, true);
-                    startRawBundle(felixFramework.getBundleContext(), "file://paxassembly.jar", R.raw.paxassembly, true);
-                    startRawBundle(felixFramework.getBundleContext(), "file://shell.jar", R.raw.shell, true);
-                    //startRawBundle(context,"file://shelltui.jar", R.raw.shelltui);
-                    startRawBundle(felixFramework.getBundleContext(), "file://shellremote.jar", R.raw.shellremote, true);
-                    startRawBundle(felixFramework.getBundleContext(), "file://osgi_compendium.jar", R.raw.osgi_compendium, true);
-                    startRawBundle(felixFramework.getBundleContext(), "file://slf4jandroid.jar", R.raw.slf4jandroid, true);
-                            */
+
+                    /*
+            startRawBundle(felixFramework.getBundleContext(), "file://paxurl.jar", R.raw.paxurl, true);
+            startRawBundle(felixFramework.getBundleContext(), "file://paxassembly.jar", R.raw.paxassembly, true);
+            startRawBundle(felixFramework.getBundleContext(), "file://shell.jar", R.raw.shell, true);
+            //startRawBundle(context,"file://shelltui.jar", R.raw.shelltui);
+            startRawBundle(felixFramework.getBundleContext(), "file://shellremote.jar", R.raw.shellremote, true);
+            startRawBundle(felixFramework.getBundleContext(), "file://osgi_compendium.jar", R.raw.osgi_compendium, true);
+            startRawBundle(felixFramework.getBundleContext(), "file://slf4jandroid.jar", R.raw.slf4jandroid, true);
+                    */
                     String defaultBundlePath = sdDir.getAbsolutePath() + "/" + FELIX_BASE + "/bundle/";
 
                     /*
@@ -310,7 +317,7 @@ public class AndroidFelixService extends Service {
                     }   */
 
 
-                    Log.i("art2.osgi.service.logger", "OSGi framework started in: " + (System.currentTimeMillis() - initial_time) / 1000 + " seconds");
+                    Log.i("kevoree.android.osgi.service.logger", "OSGi framework started in: " + (System.currentTimeMillis() - initial_time) / 1000 + " seconds");
 
                     // Save the framework as a system property
                     System.getProperties().put(Constants.getArt2FrameworkProperty(), felixFramework);

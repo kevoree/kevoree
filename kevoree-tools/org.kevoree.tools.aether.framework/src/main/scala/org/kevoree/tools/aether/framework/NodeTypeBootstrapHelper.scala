@@ -66,8 +66,11 @@ class NodeTypeBootstrapHelper {
 
           //INJECT SERVICE HANDLER
           val sr = bundleContext.getServiceReference(classOf[KevoreeModelHandlerService].getName)
-          val s = bundleContext.getService(sr).asInstanceOf[KevoreeModelHandlerService]
-          nodeType.setModelService(s)
+          if (sr != null) {
+            val s = bundleContext.getService(sr).asInstanceOf[KevoreeModelHandlerService]
+            nodeType.setModelService(s)
+          }
+
 
           //nodeType.push(destNodeName, model, bundle.getBundleContext)
           Some(nodeType)
@@ -98,7 +101,7 @@ class NodeTypeBootstrapHelper {
         true
       }
       case _@e => {
-        logger.error("Can't install node type",e)
+        logger.error("Can't install node type", e)
         false
       }
     }
