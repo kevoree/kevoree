@@ -15,12 +15,12 @@ package org.kevoree.platform.osgi.standalone.gui
 
 import javax.swing._
 import java.awt.event.{ActionEvent, ActionListener}
-import com.explodingpixels.macwidgets.plaf.{HudLabelUI, HudTextFieldUI, HudComboBoxUI}
 import java.awt.{Dimension, BorderLayout}
 import org.kevoree._
 import java.util.Properties
 import com.explodingpixels.macwidgets.{IAppWidgetFactory, HudWidgetFactory}
 import scala.collection.JavaConversions._
+import com.explodingpixels.macwidgets.plaf.{HudButtonUI, HudLabelUI, HudTextFieldUI, HudComboBoxUI}
 
 /**
  * User: ffouquet
@@ -67,6 +67,18 @@ class NodeTypeBootStrapUI(pkernel: ContainerRoot) extends JPanel {
     nodeTypeLabel.setOpaque(false);
     nodeTypeLabel.setLabelFor(nodeTypeComboBox);
 
+    val btBrowse: JButton = new JButton("Browse")
+    btBrowse.setUI(new HudButtonUI)
+    btBrowse.addActionListener(new ActionListener {
+      def actionPerformed(p1: ActionEvent) {
+
+      }
+    })
+    val bootModelLabel = new JLabel("Bootstrap", SwingConstants.TRAILING);
+    bootModelLabel.setUI(new HudLabelUI());
+    bootModelLabel.setOpaque(false);
+    bootModelLabel.setLabelFor(btBrowse);
+
     val topLayout = new JPanel()
     topLayout.setOpaque(false)
     topLayout.setLayout(new SpringLayout)
@@ -74,8 +86,10 @@ class NodeTypeBootStrapUI(pkernel: ContainerRoot) extends JPanel {
     topLayout.add(instanceName)
     topLayout.add(nodeTypeLabel)
     topLayout.add(nodeTypeComboBox)
+    topLayout.add(bootModelLabel)
+    topLayout.add(btBrowse)
 
-    SpringUtilities.makeCompactGrid(topLayout, 2, 2, 6, 6, 6, 6)
+    SpringUtilities.makeCompactGrid(topLayout, 3, 2, 6, 6, 6, 6)
 
     val globalLayout = new JPanel()
     globalLayout.setOpaque(false)
@@ -84,7 +98,7 @@ class NodeTypeBootStrapUI(pkernel: ContainerRoot) extends JPanel {
     globalLayout.add(
       getParamsPanel(
         kernel.getTypeDefinitions.find(td => td.getName == nodeTypeComboBox.getSelectedItem.toString).get
-        ,getDefValue(instanceName.getText, pkernel)), BorderLayout.CENTER)
+        , getDefValue(instanceName.getText, pkernel)), BorderLayout.CENTER)
 
     nodeTypeComboBox.addActionListener(new ActionListener() {
       override def actionPerformed(actionEvent: ActionEvent) {
@@ -168,8 +182,8 @@ class NodeTypeBootStrapUI(pkernel: ContainerRoot) extends JPanel {
   }
 
   def getDefValue(nodeName: String, model: ContainerRoot): Properties = {
-    model.getNodes.foreach{
-      node=> println(node.getName)
+    model.getNodes.foreach {
+      node => println(node.getName)
     }
     val props = new Properties
     model.getNodes.find(node => node.getName == nodeName).map {
