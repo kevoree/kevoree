@@ -19,9 +19,9 @@ class UDPActor (port: Int, processValue: ProcessValue, processRequest: ProcessRe
   private val logger = LoggerFactory.getLogger(classOf[UDPActor])
 
 
-  protected var factoryServer = new NioDatagramChannelFactory(Executors.newCachedThreadPool())
-  protected var bootstrapServer = new ConnectionlessBootstrap(factoryServer)
-  protected var self = this
+  var factoryServer = new NioDatagramChannelFactory(Executors.newCachedThreadPool())
+  var bootstrapServer = new ConnectionlessBootstrap(factoryServer)
+  var self = this
   bootstrapServer.setPipelineFactory(new ChannelPipelineFactory {
     def getPipeline = {
       val p = Channels.pipeline()
@@ -34,11 +34,11 @@ class UDPActor (port: Int, processValue: ProcessValue, processRequest: ProcessRe
       p
     }
   })
-  protected var channelServer: Channel = bootstrapServer.bind(new InetSocketAddress(port))
+  var channelServer: Channel = bootstrapServer.bind(new InetSocketAddress(port))
 
 
-  protected var factory = new NioDatagramChannelFactory(Executors.newCachedThreadPool())
-  protected var bootstrap = new ConnectionlessBootstrap(factory)
+  var factory = new NioDatagramChannelFactory(Executors.newCachedThreadPool())
+  var bootstrap = new ConnectionlessBootstrap(factory)
   bootstrap.setPipelineFactory(new ChannelPipelineFactory() {
     override def getPipeline: ChannelPipeline = {
       val p: ChannelPipeline = Channels.pipeline()
@@ -51,7 +51,7 @@ class UDPActor (port: Int, processValue: ProcessValue, processRequest: ProcessRe
       p
     }
   })
-  protected var channel: Channel = bootstrap.bind(new InetSocketAddress(0))
+  var channel: Channel = bootstrap.bind(new InetSocketAddress(0))
 
 
   protected def stopInternal () {
@@ -63,20 +63,20 @@ class UDPActor (port: Int, processValue: ProcessValue, processRequest: ProcessRe
   }
 
   protected def sendMessageInternal (o: Message, address: InetSocketAddress) {
-//    logger.debug("Sending message to " + address)
+    //    logger.debug("Sending message to " + address)
     channel.write(o, address)
   }
 
   protected def sendMessageToChannelInternal (o: Message, channel: Channel, address: InetSocketAddress) {
-//    logger.debug("Sending message to " + address)
+    //    logger.debug("Sending message to " + address)
     channel.write(o, address)
   }
 
   private class UDPRequestHandler (processRequest: ProcessRequest) extends SimpleChannelUpstreamHandler {
     override def messageReceived (ctx: ChannelHandlerContext, e: MessageEvent) {
-//      logger.debug("something received as a request...")
+      //      logger.debug("something received as a request...")
       if (e.getMessage.isInstanceOf[Message]) {
-//        logger.debug("request message received from " + ctx.getChannel.getRemoteAddress)
+        //        logger.debug("request message received from " + ctx.getChannel.getRemoteAddress)
         processRequest.receiveRequest(e.getMessage.asInstanceOf[Message], e.getChannel,
                                        e.getRemoteAddress.asInstanceOf[InetSocketAddress])
       }
@@ -85,14 +85,15 @@ class UDPActor (port: Int, processValue: ProcessValue, processRequest: ProcessRe
     override def exceptionCaught (ctx: ChannelHandlerContext, e: ExceptionEvent) {
       logger.error("Communication failed between " + ctx.getChannel.getLocalAddress + " and " +
         ctx.getChannel.getRemoteAddress, e.getCause)
+      e.getChannel.close()
     }
   }
 
   private class UDPValueHandler (processValue: ProcessValue) extends SimpleChannelUpstreamHandler {
     override def messageReceived (ctx: ChannelHandlerContext, e: MessageEvent) {
-//      logger.debug("something received as a data...")
+      //      logger.debug("something received as a data...")
       if (e.getMessage.isInstanceOf[Message]) {
-//        logger.debug("data message received from " + ctx.getChannel.getRemoteAddress)
+        //        logger.debug("data message received from " + ctx.getChannel.getRemoteAddress)
         processValue.receiveValue(e.getMessage.asInstanceOf[Message])
       }
     }
@@ -100,6 +101,7 @@ class UDPActor (port: Int, processValue: ProcessValue, processRequest: ProcessRe
     override def exceptionCaught (ctx: ChannelHandlerContext, e: ExceptionEvent) {
       logger.error("Communication failed between " + ctx.getChannel.getLocalAddress + " and " +
         ctx.getChannel.getRemoteAddress, e.getCause)
+      e.getChannel.close()
     }
   }
 

@@ -21,7 +21,7 @@ import java.util.*;
 		@DictionaryAttribute(name = "interval", defaultValue = "30000", optional = true),
 		@DictionaryAttribute(name = "port", defaultValue = "9000", optional = true),
 		@DictionaryAttribute(name = "FullUDP", defaultValue = "true", optional = true),
-		@DictionaryAttribute(name = "sendNotification", defaultValue = "false", optional = true),
+		@DictionaryAttribute(name = "org/kevoree/library/javase/gossiperNetty/sendNotification", defaultValue = "false", optional = true),
 		@DictionaryAttribute(name = "alwaysAskModel", defaultValue = "false", optional = true)
 })
 @ChannelTypeFragment
@@ -42,7 +42,7 @@ public class NettyGossiperChannel extends AbstractChannelFragment implements Gos
 	@Start
 	public void startGossiperChannel () {
 
-		sendNotification = parseBooleanProperty("sendNotification");
+		sendNotification = parseBooleanProperty("org/kevoree/library/javase/gossiperNetty/sendNotification");
 
 		Long timeoutLong = Long.parseLong((String) this.getDictionary().get("interval"));
 

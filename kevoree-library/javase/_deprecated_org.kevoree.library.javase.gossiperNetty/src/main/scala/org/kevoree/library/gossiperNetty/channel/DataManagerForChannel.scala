@@ -89,7 +89,7 @@ class DataManagerForChannel extends DataManager with actors.DaemonActor {
     }
   }
 
-  private def getAllUUIDVectorClocks: java.util.Map[UUID, VectorClock] = {
+  private def getAllUUIDVectorClocks(): java.util.Map[UUID, VectorClock] = {
     val uuidVectorClocks: java.util.Map[UUID, VectorClock] = new HashMap[UUID, VectorClock]()
     datas.keySet.foreach {
       uuid: UUID =>
