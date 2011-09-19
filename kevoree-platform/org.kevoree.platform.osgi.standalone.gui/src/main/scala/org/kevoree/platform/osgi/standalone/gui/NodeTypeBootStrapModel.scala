@@ -46,6 +46,7 @@ object NodeTypeBootStrapModel {
   }
 
   private def createNode(model: ContainerRoot, nodeName: String, nodeTypeName: String, props: Properties) {
+
     model.getTypeDefinitions.filter(td => td.isInstanceOf[NodeType]).find(td => td.getName == nodeTypeName) match {
       case Some(nodeTypeDef) => {
         val node = KevoreeFactory.eINSTANCE.createContainerNode()
@@ -62,6 +63,7 @@ object NodeTypeBootStrapModel {
                   val newValue = KevoreeFactory.eINSTANCE.createDictionaryValue()
                   newValue.setAttribute(att)
                   newValue.setValue(props.get(key).toString)
+                  propsmodel.getValues.add(newValue)
                 }
                 case None => logger.warn("Node bootstrap property lost " + key)
               }

@@ -29,14 +29,15 @@ import org.slf4j.LoggerFactory
 class JmDnsComponent(nodeName: String, modelPort: Int, modelHandler : KevoreeModelHandlerService,nodeTypeName :String) {
 
   val logger = LoggerFactory.getLogger(this.getClass)
+  var servicelistener : ServiceListener = null
+
 
   final val REMOTE_TYPE: String = "_kevoree-remote._tcp.local."
   val values = new HashMap[String, String]
   // values.put("modelPort", modelPort)
   val jmdns = JmDNS.create(nodeName)
-  jmdns.addServiceListener(REMOTE_TYPE, new ServiceListener() {
+  servicelistener = new ServiceListener() {
     def serviceAdded(p1: ServiceEvent) {
-
       val infos = jmdns.list(REMOTE_TYPE)
       infos.foreach {
         info =>
@@ -59,7 +60,8 @@ class JmDnsComponent(nodeName: String, modelPort: Int, modelHandler : KevoreeMod
     }
 
     def serviceRemoved(p1: ServiceEvent) {}
-  })
+  };
+  jmdns.addServiceListener(REMOTE_TYPE,servicelistener)
 
   var pairservice: ServiceInfo = ServiceInfo.create(REMOTE_TYPE, nodeName, modelPort, nodeTypeName)
   new Thread() {
@@ -69,7 +71,9 @@ class JmDnsComponent(nodeName: String, modelPort: Int, modelHandler : KevoreeMod
   }.start()
 
   def close() {
-    jmdns.abort()
+    if(servicelistener != null){jmdns.removeServiceListener(REMOTE_TYPE,servicelistener)}
+    jmdns.unregisterAllServices()
+    jmdns.close()
   }
 
 

@@ -232,7 +232,8 @@ public class AndroidFelixService extends Service {
 
                 File sdDir = Environment.getExternalStorageDirectory();
                 File m_cache = new File(sdDir.getAbsolutePath() + "/" + FELIX_CACHE_DIR);
-                Log.i("art2.felix", m_cache.getAbsolutePath());
+                File kevoree_cache = new File(sdDir.getAbsolutePath() + "/KEVOREE");
+                Log.i("kevoree.android", m_cache.getAbsolutePath());
                 if (!m_cache.exists()) {
                     if (!m_cache.mkdirs()) {
                         Log.e("kevoree.felix", "unable to create cache");
@@ -245,6 +246,15 @@ public class AndroidFelixService extends Service {
                     m_cache.mkdir();
                     Log.i("kevoree.felix", "cache already exist");
                 }
+                if (!kevoree_cache.exists()) {
+                    if (!kevoree_cache.mkdirs()) {
+                        Log.e("kevoree.M2", "unable to create cache");
+                        throw new IllegalStateException("Unable to create cache dir");
+                    } else {
+                        Log.i("kevoree.M2", "cache created");
+                    }
+                }
+                System.setProperty("user.home",kevoree_cache.getAbsolutePath());
 
 
                 /*

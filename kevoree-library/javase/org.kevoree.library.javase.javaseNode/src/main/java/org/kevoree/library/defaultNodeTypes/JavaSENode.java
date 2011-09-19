@@ -6,9 +6,7 @@
 package org.kevoree.library.defaultNodeTypes;
 
 import org.kevoree.ContainerRoot;
-import org.kevoree.annotation.NodeType;
-import org.kevoree.annotation.Start;
-import org.kevoree.annotation.Stop;
+import org.kevoree.annotation.*;
 import org.kevoree.framework.AbstractNodeType;
 import org.kevoree.framework.Constants;
 import org.kevoree.framework.KevoreePlatformHelper;
@@ -29,6 +27,9 @@ import java.net.URLConnection;
  * @author ffouquet
  */
 @NodeType
+@DictionaryType({
+    @DictionaryAttribute(name = "autodiscovery", defaultValue = "true", optional = true,vals={"true","false"})
+})
 public class JavaSENode extends AbstractNodeType {
     private static final Logger logger = LoggerFactory.getLogger(JavaSENode.class);
 
@@ -38,13 +39,17 @@ public class JavaSENode extends AbstractNodeType {
     @Override
     public void startNode() {
         Integer port = ((System.getProperty("node.port") == null) ? 8000 : Integer.parseInt(System.getProperty("node.port")));
-        jmDnsComponent = new JmDnsComponent(this.getNodeName(), port, this.getModelService(),this.getClass().getSimpleName());
+        if(this.getDictionary().get("autodiscovery").equals("true")){
+            jmDnsComponent = new JmDnsComponent(this.getNodeName(), port, this.getModelService(),this.getClass().getSimpleName());
+        }
     }
 
     @Stop
     @Override
     public void stopNode() {
-        jmDnsComponent.close();
+        if(jmDnsComponent != null){
+            jmDnsComponent.close();
+        }
     }
 
     @Override
