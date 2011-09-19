@@ -6,8 +6,10 @@
 package org.kevoree.library.javase.virtualCloud;
 
 import org.kevoree.ContainerRoot;
-import org.kevoree.annotation.*;
-import org.kevoree.framework.AbstractNodeType;
+import org.kevoree.annotation.PhysicalNodeType;
+import org.kevoree.annotation.Start;
+import org.kevoree.annotation.Stop;
+import org.kevoree.framework.AbstractPhysicalNodeType;
 import org.kevoree.framework.Constants;
 import org.kevoree.framework.KevoreePlatformHelper;
 import org.kevoree.framework.KevoreeXmiHelper;
@@ -26,7 +28,7 @@ import java.net.URLConnection;
 /**
  * @author ffouquet
  */
-@NodeType
+@PhysicalNodeType
 /*@DictionaryType({
     @DictionaryAttribute(name = "autodiscovery", defaultValue = "true", optional = true,vals={"true","false"})
 })*/
@@ -38,7 +40,8 @@ public class VirtualCloudPhysicalNodeType extends AbstractPhysicalNodeType {
     @Start
     @Override
     public void startNode() {
-        Integer port = ((System.getProperty("node.port") == null) ? 8000 : Integer.parseInt(System.getProperty("node.port")));
+        Integer port = ((System.getProperty("node.port") == null) ? 7000 : Integer.parseInt(System.getProperty("node.port")));
+
         /*if(this.getDictionary().get("autodiscovery").equals("true")){
             //jmDnsComponent = new JmDnsComponent(this.getNodeName(), port, this.getModelService(),this.getClass().getSimpleName());
         }*/
@@ -53,7 +56,7 @@ public class VirtualCloudPhysicalNodeType extends AbstractPhysicalNodeType {
     }
 
     @Override
-    public void push(String targetNodeName, ContainerRoot root, BundleContext context) {
+    public void push(String physicalNodeName, ContainerRoot root, BundleContext context) {
 
         try {
             ByteArrayOutputStream outStream = new ByteArrayOutputStream();
@@ -61,14 +64,14 @@ public class VirtualCloudPhysicalNodeType extends AbstractPhysicalNodeType {
             outStream.flush();
 
             String IP = KevoreePlatformHelper
-                    .getProperty(root, targetNodeName, Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP());
+                    .getProperty(root, physicalNodeName, Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP());
             if (IP.equals("")) {
                 IP = "127.0.0.1";
             }
             String PORT = KevoreePlatformHelper
-                    .getProperty(root, targetNodeName, Constants.KEVOREE_PLATFORM_REMOTE_NODE_MODELSYNCH_PORT());
+                    .getProperty(root, physicalNodeName, Constants.KEVOREE_PLATFORM_REMOTE_NODE_MODELSYNCH_PORT());
             if (PORT.equals("")) {
-                PORT = "8000";
+                PORT = "7000";
             }
             URL url = new URL("http://" + IP + ":" + PORT + "/model/current");
 
@@ -93,7 +96,7 @@ public class VirtualCloudPhysicalNodeType extends AbstractPhysicalNodeType {
 
         } catch (Exception e) {
 //			e.printStackTrace();
-            logger.error("Unable to push a model on " + targetNodeName, e);
+            logger.error("Unable to push a model on " + physicalNodeName, e);
 
         }
 
