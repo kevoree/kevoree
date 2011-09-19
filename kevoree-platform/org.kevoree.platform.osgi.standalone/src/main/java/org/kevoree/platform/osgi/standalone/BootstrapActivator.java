@@ -18,6 +18,7 @@
 package org.kevoree.platform.osgi.standalone;
 
 import org.kevoree.ContainerRoot;
+import org.kevoree.KevoreeFactory;
 import org.kevoree.adaptation.deploy.osgi.KevoreeAdaptationDeployServiceOSGi;
 import org.kevoree.adaptation.deploy.osgi.context.KevoreeDeployManager;
 import org.kevoree.api.configuration.ConfigConstants;
@@ -38,6 +39,8 @@ import org.osgi.service.packageadmin.PackageAdmin;
 import org.osgi.service.startlevel.StartLevel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.awt.*;
 
 /**
  * @author ffouquet
@@ -135,12 +138,9 @@ public class BootstrapActivator implements BundleActivator {
 
     @Override
     public void stop(BundleContext context) throws Exception {
-
-
         kompareBean = null;
         deployBean = null;
-        coreBean.stop();
-
         remoteBean.stop();
+        coreBean.stop();
     }
 }

@@ -13,13 +13,13 @@
  */
 package org.kevoree.tools.aether.framework
 
-import org.kevoree.framework.AbstractNodeType
 import java.io.FileInputStream
 import scala.collection.JavaConversions._
 import org.osgi.framework.{Bundle, BundleContext, BundleException}
 import org.slf4j.LoggerFactory
 import org.kevoree.{ContainerRoot, DeployUnit}
 import org.kevoree.api.service.core.handler.KevoreeModelHandlerService
+import org.kevoree.framework.{Constants, AbstractNodeType}
 
 /**
  * User: ffouquet
@@ -60,6 +60,7 @@ class NodeTypeBootstrapHelper {
                 dictionary.put(v.getAttribute.getName, v.getValue)
             }
           }
+          dictionary.put(Constants.KEVOREE_PROPERTY_OSGI_BUNDLE,bundleContext.getBundle)
           nodeType.setDictionary(dictionary)
           nodeType.setNodeName(destNodeName)
 
