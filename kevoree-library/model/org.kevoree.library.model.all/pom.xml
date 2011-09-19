@@ -6,7 +6,7 @@
     <artifactId>org.kevoree.library.model.all</artifactId>
     <packaging>jar</packaging>
     <name>Kevoree :: Library :: Model :: All</name>
-    <version>1.2.0-RC1</version>
+    <version>1.2.0-RC2</version>
 
     <properties>
         <kevoree.version>${project.version}</kevoree.version>
@@ -16,7 +16,7 @@
     <parent>
         <artifactId>org.kevoree.library.model.root</artifactId>
         <groupId>org.kevoree.library.model</groupId>
-        <version>1.2.0-RC1</version>
+        <version>1.2.0-RC2</version>
         <relativePath>../org.kevoree.library.model.root/pom.xml</relativePath>
     </parent>
 
@@ -141,12 +141,6 @@
             <artifactId>org.kevoree.library.javase.kinect</artifactId>
             <version>${kevoree.version}</version>
         </dependency>
-
-        <!--   <dependency>
-            <groupId>org.kevoree.library.javase</groupId>
-            <artifactId>org.kevoree.library.javase.gossiper</artifactId>
-            <version>${kevoree.version}</version>
-        </dependency>-->
         <dependency>
             <groupId>org.kevoree.library.javase</groupId>
             <artifactId>org.kevoree.library.javase.gossiperNetty</artifactId>
@@ -159,6 +153,27 @@
         </dependency>
 
 
+        <!-- Android -->
+        <!--<dependency>
+            <groupId>org.kevoree.library.android</groupId>
+            <artifactId>org.kevoree.library.android.fakeDomo</artifactId>
+            <version>${kevoree.version}</version>
+        </dependency> -->
+        <dependency>
+            <groupId>org.kevoree.library.android</groupId>
+            <artifactId>org.kevoree.library.android.logger</artifactId>
+            <version>${kevoree.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.kevoree.library.android</groupId>
+            <artifactId>org.kevoree.library.android.nodeType</artifactId>
+            <version>${kevoree.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.kevoree.library.android</groupId>
+            <artifactId>org.kevoree.library.android.text2speech</artifactId>
+            <version>${kevoree.version}</version>
+        </dependency>
     </dependencies>
 
 

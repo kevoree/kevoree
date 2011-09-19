@@ -6,12 +6,12 @@
     <artifactId>org.kevoree.library.android.root</artifactId>
     <packaging>pom</packaging>
     <name>Kevoree :: Library :: Android :: Root</name>
-    <version>1.2.0-RC1</version>
+    <version>1.2.0-RC2</version>
 
     <parent>
         <artifactId>org.kevoree.library</artifactId>
         <groupId>org.kevoree.library</groupId>
-        <version>1.2.0-RC1</version>
+        <version>1.2.0-RC2</version>
         <relativePath>../../pom.xml</relativePath>
     </parent>
 
@@ -23,6 +23,7 @@
     </properties>
 
     <modules>
+        <module>../org.kevoree.library.android.nodeType</module>
         <module>../org.kevoree.library.android.logger</module>
         <module>../org.kevoree.library.android.text2speech</module>
         <module>../org.kevoree.library.android.fakeDomo</module>

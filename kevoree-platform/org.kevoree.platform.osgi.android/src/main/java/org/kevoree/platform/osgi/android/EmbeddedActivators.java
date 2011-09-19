@@ -20,6 +20,8 @@ package org.kevoree.platform.osgi.android;
 
 import java.util.Arrays;
 import java.util.List;
+
+import org.kevoree.ContainerRoot;
 import org.osgi.framework.BundleActivator;
 
 /**
@@ -28,12 +30,14 @@ import org.osgi.framework.BundleActivator;
  */
 public class EmbeddedActivators {
 
-    public static List<BundleActivator> getActivators(){
+    public static List<BundleActivator> getActivators(ContainerRoot model){
+        BootstrapActivator bact = new BootstrapActivator();
+        bact.setBootstrapModel(model);
         return Arrays.asList(
                 (BundleActivator)new org.apache.felix.shell.impl.Activator(),
               //  (BundleActivator)new org.apache.felix.shell.tui.Activator(),
                 (BundleActivator)new org.ops4j.pax.url.assembly.internal.Activator(),
-                (BundleActivator)new org.kevoree.platform.osgi.android.BootstrapActivator()
+                bact
                 );
     }
 

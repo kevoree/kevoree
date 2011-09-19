@@ -27,11 +27,11 @@ import org.kevoree.framework.FileHelper._
 import scala.collection.JavaConversions._
 import org.slf4j.LoggerFactory
 
-case class AddInstanceCommand (c: Instance, ctx: KevoreeDeployManager, nodeName: String) extends PrimitiveCommand {
+case class AddInstanceCommand(c: Instance, ctx: KevoreeDeployManager, nodeName: String) extends PrimitiveCommand {
 
   var logger = LoggerFactory.getLogger(this.getClass);
 
-  def execute (): Boolean = {
+  def execute(): Boolean = {
 
     /* create bundle cache structure */
     val directory = ctx.bundle.getBundleContext.getDataFile("dyanmicBundle_" + c.getName)
@@ -70,18 +70,25 @@ case class AddInstanceCommand (c: Instance, ctx: KevoreeDeployManager, nodeName:
       // val activatorPackage = c.getTypeDefinition.getFactoryBean.substring(0, c.getTypeDefinition.getFactoryBean.lastIndexOf("."))
       val activatorName = c.getTypeDefinition.getName + "Activator"
       MANIFEST.write(List("Manifest-Version: 1.0",
-                           "Bundle-SymbolicName: " + c.getName,
-                           "Bundle-Version: 1",
-                           "DynamicImport-Package: *",
-                           "Bundle-ManifestVersion: 2",
-                           "Bundle-Activator: " + activatorPackage + "." + activatorName,
-                           Constants.KEVOREE_INSTANCE_NAME_HEADER + ": " + c.getName,
-                           Constants.KEVOREE_NODE_NAME_HEADER + ": " + nodeName,
-                           "Require-Bundle: " + mappingFound.bundle.getSymbolicName
-                         ))
+        "Bundle-SymbolicName: " + c.getName,
+        "Bundle-Version: 1",
+        "DynamicImport-Package: *",
+        "Bundle-ManifestVersion: 2",
+        "Bundle-Activator: " + activatorPackage + "." + activatorName,
+        Constants.KEVOREE_INSTANCE_NAME_HEADER + ": " + c.getName,
+        Constants.KEVOREE_NODE_NAME_HEADER + ": " + nodeName,
+        "Require-Bundle: " + mappingFound.bundle.getSymbolicName
+      ))
       try {
-        logger.debug("Install install instance uri = "+"assembly:file:///" + directory.getAbsolutePath)
-        val bundle = ctx.bundleContext.installBundle("assembly:file:///" + directory.getAbsolutePath);
+        var bundle : org.osgi.framework.Bundle = null
+        if (System.getProperty("java.vm.name").equalsIgnoreCase("Dalvik")) { //TODO BETTER SOLUTION ...
+          logger.debug("Install install instance uri = " + "assembly:file://" + directory.getAbsolutePath)
+          bundle = ctx.bundleContext.installBundle("assembly:file://" + directory.getAbsolutePath)
+        } else {
+          logger.debug("Install install instance uri = " + "assembly:file:///" + directory.getAbsolutePath)
+          bundle = ctx.bundleContext.installBundle("assembly:file:///" + directory.getAbsolutePath)
+        }
+
         ctx.bundleMapping.add(KevoreeOSGiBundle(c.getName, c.getClass.getName, bundle))
         lastExecutionBundle = Some(bundle)
         bundle.start()
@@ -97,7 +104,7 @@ case class AddInstanceCommand (c: Instance, ctx: KevoreeDeployManager, nodeName:
     }
   }
 
-  def undo () {
+  def undo() {
     lastExecutionBundle match {
       case None =>
       case Some(b) => {

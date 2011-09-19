@@ -19,6 +19,8 @@ import java.awt.BorderLayout
 import java.awt.event.{ActionEvent, ActionListener}
 import javax.swing._
 import com.explodingpixels.macwidgets.plaf.{HudTextFieldUI, HudLabelUI, HudComboBoxUI}
+import java.util.Properties
+import org.kevoree.tools.ui.editor.property.SpringUtilities
 
 /**
  * User: ffouquet
@@ -83,17 +85,35 @@ class AddElementUICommand extends Command {
   }
 
 
+  val currentProps = new Properties
+
   def createNewLibraryPanel(): JPanel = {
-    val layout = new JPanel()
+    val layout = new JPanel(new SpringLayout)
     layout.setOpaque(false)
     val nameTextField = new JTextField()
     nameTextField.setUI(new HudTextFieldUI())
+    val nodeNameLabel = new JLabel("Library name", SwingConstants.TRAILING);
+    nodeNameLabel.setUI(new HudLabelUI());
+    nodeNameLabel.setOpaque(false);
+    nodeNameLabel.setLabelFor(nameTextField);
+    layout.add(nodeNameLabel)
     layout.add(nameTextField)
+    SpringUtilities.makeCompactGrid(layout, 1, 2, 6, 6, 6, 6)
     layout
   }
 
   def createNewDeployUnitPanel(): JPanel = {
-    val layout = new JPanel()
+    val layout = new JPanel(new SpringLayout)
+    layout.setOpaque(false)
+    val nameTextField = new JTextField()
+    nameTextField.setUI(new HudTextFieldUI())
+    val nodeNameLabel = new JLabel("DeployUnit name", SwingConstants.TRAILING);
+    nodeNameLabel.setUI(new HudLabelUI());
+    nodeNameLabel.setOpaque(false);
+    nodeNameLabel.setLabelFor(nameTextField);
+    layout.add(nodeNameLabel)
+    layout.add(nameTextField)
+    SpringUtilities.makeCompactGrid(layout, 1, 2, 6, 6, 6, 6)
     layout
   }
 
