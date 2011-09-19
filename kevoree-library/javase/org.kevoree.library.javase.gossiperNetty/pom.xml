@@ -43,12 +43,6 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <artifactId>org.kevoree.tools.annotation.api</artifactId>
-            <groupId>org.kevoree.tools</groupId>
-            <type>jar</type>
-            <version>${kevoree.version}</version>
-        </dependency>
-        <dependency>
             <groupId>org.kevoree.tools</groupId>
             <artifactId>org.kevoree.tools.marShell</artifactId>
             <version>${kevoree.version}</version>
