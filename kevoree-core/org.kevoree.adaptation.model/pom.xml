@@ -6,11 +6,11 @@
     <packaging>bundle</packaging>
     <name>Kevoree :: AdaptationModel</name>
 
-    <version>1.2.0-RC2</version>
+    <version>1.2.0-RC3</version>
     <parent>
         <artifactId>org.kevoree.root</artifactId>
         <groupId>org.kevoree</groupId>
-        <version>1.2.0-RC2</version>
+        <version>1.2.0-RC3</version>
         <relativePath>../org.kevoree.root/pom.xml</relativePath>
     </parent>
 
