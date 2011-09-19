@@ -288,26 +288,12 @@
         </plugins>
     </build>
 
-    <!--
-<pluginRepositories>
-   <pluginRepository>
-       <id>lafros.com</id>
-       <url>http://lafros.com/m2arts</url>
-   </pluginRepository>
-</pluginRepositories>
-    -->
-
     <dependencies>
         <dependency>
             <groupId>org.kevoree.tools</groupId>
             <artifactId>org.kevoree.tools.ui.editor</artifactId>
             <version>${kevoree.version}</version>
         </dependency>
-        <!-- <dependency>
-          <groupId>com.apple</groupId>
-          <artifactId>AppleJavaExtensions</artifactId>
-          <version>1.4</version>
-      </dependency>  -->
     </dependencies>
 
     <repositories>
