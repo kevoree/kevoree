@@ -56,7 +56,7 @@ public class KevoreeGUIFrame extends JFrame {
         }
 
         final HudWindow bootstrapPopup = new HudWindow("Kevoree runtime : node properties");
-        bootstrapPopup.getJDialog().setSize(400, 200);
+        bootstrapPopup.getJDialog().setSize(400, 210);
         bootstrapPopup.getJDialog().setLocationRelativeTo(null);
         bootstrapPopup.getJDialog().setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
