@@ -77,7 +77,7 @@ object JmDNSListener {
   Runtime.getRuntime.addShutdownHook(new Thread("KevoreeJmDNSStop") {
     override def run() {
       try {
-        jmdns.abort()
+        jmdns.close()
       } catch {
         case _@ex =>
       }
