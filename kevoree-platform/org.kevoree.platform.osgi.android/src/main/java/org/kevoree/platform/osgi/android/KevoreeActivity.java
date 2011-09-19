@@ -118,6 +118,7 @@ public class KevoreeActivity extends Activity implements KevoreeAndroidService {
                 Log.i("art2.service", "start bind service");
                 if (!alreadyStarted) {
                     nodeName=  nodeNameView.getText().toString();
+
                     startService(intent_start);
                     alreadyStarted = true;
                 }
