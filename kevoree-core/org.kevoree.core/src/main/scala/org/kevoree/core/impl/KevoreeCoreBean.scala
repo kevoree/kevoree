@@ -38,8 +38,6 @@ class KevoreeCoreBean extends KevoreeModelHandlerService with KevoreeActor {
 
   @BeanProperty var configService: ConfigurationService = null
   @BeanProperty var bundleContext: BundleContext = null;
-  @BeanProperty var kompareService: org.kevoree.api.service.core.kompare.ModelKompareService = null
-  @BeanProperty var deployService: org.kevoree.api.service.adaptation.deploy.KevoreeAdaptationDeployService = null
   @BeanProperty var nodeName: String = ""
   @BeanProperty var nodeInstance: AbstractNodeType = null
 
@@ -123,8 +121,12 @@ class KevoreeCoreBean extends KevoreeModelHandlerService with KevoreeActor {
 
 
     val stopModel = KevoreeFactory.eINSTANCE.createContainerRoot();
-    val adaptationModel = kompareService.kompare(model, stopModel, nodeName);
-    val deployResult = deployService.deploy(adaptationModel, nodeName);
+    val adaptationModel = nodeInstance.kompare(model, stopModel);
+
+    //TODO DEPLOY FOLLOWING ORDER
+      //PrimitiveCommand  execution
+
+    val deployResult = false//deployService.deploy(adaptationModel, nodeName);
     logger.debug("Stop result => "+deployResult)
     // KevoreeXmiHelper.save(bundleContext.getDataFile("lastModel.xmi").getAbsolutePath(), models.head);
   }
@@ -150,8 +152,15 @@ class KevoreeCoreBean extends KevoreeModelHandlerService with KevoreeActor {
           checkBootstrapNode(newmodel)
           val milli = System.currentTimeMillis
           logger.debug("Begin update model " + milli)
-          val adaptationModel = kompareService.kompare(model, newmodel, nodeName);
-          val deployResult = deployService.deploy(adaptationModel, nodeName);
+          val adaptationModel = nodeInstance.kompare(model, newmodel);
+
+
+              //TODO DEPLOY FOLLOWING ORDER
+      //PrimitiveCommand  execution
+
+    val deployResult = false//deployService.deploy(adaptationModel, nodeName);
+
+         // val deployResult = deployService.deploy(adaptationModel, nodeName);
 
           if (deployResult) {
             //Merge previous model on new model for platform model

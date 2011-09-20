@@ -15,13 +15,12 @@ package org.kevoree.kompare.tests.group
 
 import org.scalatest.junit.AssertionsForJUnit
 import org.kevoree.kompare.tests.KompareSuite
-import org.kevoree.api.service.core.kompare.ModelKompareService
 import org.junit._
 import org.kevoree.kompare.{JavaSePrimitive, KevoreeKompareBean}
 
 class GroupInitTest extends AssertionsForJUnit with KompareSuite {
 
-  var component : ModelKompareService = null
+  var component : KevoreeKompareBean = null
 
   @Before def initialize() {
     component = new KevoreeKompareBean
