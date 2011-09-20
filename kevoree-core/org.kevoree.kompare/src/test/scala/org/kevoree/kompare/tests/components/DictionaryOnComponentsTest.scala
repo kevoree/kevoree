@@ -19,14 +19,13 @@
 package org.kevoree.kompare.tests.components
 
 import org.junit._
-import org.kevoree.api.service.core.kompare.ModelKompareService
 import org.scalatest.junit.AssertionsForJUnit
 import org.kevoree.kompare.tests._
 import org.kevoree.kompare.{JavaSePrimitive, KevoreeKompareBean}
 
 class DictionaryOnComponentsTest extends AssertionsForJUnit with KompareSuite {
 
-  var component : ModelKompareService = null
+  var component : KevoreeKompareBean = null
 
   @Before def initialize() {
     component = new KevoreeKompareBean
