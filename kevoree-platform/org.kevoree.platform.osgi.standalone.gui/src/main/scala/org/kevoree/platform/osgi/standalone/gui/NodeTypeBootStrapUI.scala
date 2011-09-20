@@ -14,6 +14,7 @@
 package org.kevoree.platform.osgi.standalone.gui
 
 import javax.swing._
+import event.{DocumentEvent, DocumentListener}
 import java.awt.event.{ActionEvent, ActionListener}
 import java.awt.{Dimension, BorderLayout}
 import org.kevoree._
@@ -36,7 +37,12 @@ class NodeTypeBootStrapUI(pkernel: ContainerRoot) extends JPanel {
   var nodeTypeComboBox: JComboBox = _
   var currentProperties = new Properties()
   var currentModel = pkernel
-  def getCurrentModel : ContainerRoot = currentModel
+
+  var previousTopLayout : JComponent = null
+
+  def getCurrentModel: ContainerRoot = currentModel
+
+  private var previousFound = false
 
   def getKevName = {
     instanceName.getText
@@ -63,6 +69,52 @@ class NodeTypeBootStrapUI(pkernel: ContainerRoot) extends JPanel {
     nodeTypeComboBox.setUI(new HudComboBoxUI())
     instanceName = new JTextField(10)
     instanceName.setUI(new HudTextFieldUI)
+
+    instanceName.getDocument.addDocumentListener(new DocumentListener() {
+      def insertUpdate(p1: DocumentEvent) {
+        execute()
+      }
+
+      def removeUpdate(p1: DocumentEvent) {
+        execute()
+      }
+
+      def changedUpdate(p1: DocumentEvent) {
+        execute()
+      }
+
+      def execute() {
+        if (currentModel.getNodes.exists(n => n.getName == instanceName.getText)) {
+          if (!previousFound) {
+            previousFound = true
+            nodeTypeComboBox.setSelectedItem(currentModel.getNodes.find(n => n.getName == instanceName.getText).get.getTypeDefinition.getName)
+            refreshBottom()
+          }
+        } else {
+          if (previousFound) {
+            previousFound = false
+            refreshBottom()
+          }
+        }
+      }
+
+      def refreshBottom() {
+        currentProperties.clear() // CLEAR PREVIOUS DICTIONARY
+        removeAll()
+        val globalLayout = new JPanel()
+        globalLayout.setOpaque(false)
+        globalLayout.setLayout(new BorderLayout())
+        globalLayout.add(previousTopLayout, BorderLayout.NORTH)
+        globalLayout.add(
+          getParamsPanel(
+            kernel.getTypeDefinitions.find(td => td.getName == nodeTypeComboBox.getSelectedItem.toString).get
+            , getDefValue(instanceName.getText, currentModel)), BorderLayout.CENTER)
+        add(globalLayout)
+        repaint()
+        revalidate()
+      }
+
+    })
 
     val nodeNameLabel = new JLabel("Node name", SwingConstants.TRAILING);
     nodeNameLabel.setUI(new HudLabelUI());
@@ -106,8 +158,9 @@ class NodeTypeBootStrapUI(pkernel: ContainerRoot) extends JPanel {
     topLayout.add(nodeTypeComboBox)
     topLayout.add(bootModelLabel)
     topLayout.add(btBrowse)
-
     SpringUtilities.makeCompactGrid(topLayout, 3, 2, 6, 6, 6, 6)
+
+    previousTopLayout = topLayout
 
     val globalLayout = new JPanel()
     globalLayout.setOpaque(false)
@@ -139,6 +192,11 @@ class NodeTypeBootStrapUI(pkernel: ContainerRoot) extends JPanel {
 
     add(globalLayout)
   }
+
+  def refreshBottom(){
+
+  }
+
 
   def getParamsPanel(nodeTypeDefinition: TypeDefinition, props: Properties): JComponent = {
     val p = new JPanel(new SpringLayout)
@@ -200,9 +258,6 @@ class NodeTypeBootStrapUI(pkernel: ContainerRoot) extends JPanel {
   }
 
   def getDefValue(nodeName: String, model: ContainerRoot): Properties = {
-    model.getNodes.foreach {
-      node => println(node.getName)
-    }
     val props = new Properties
     model.getNodes.find(node => node.getName == nodeName).map {
       nodeFound =>
