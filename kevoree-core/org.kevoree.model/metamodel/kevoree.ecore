@@ -219,12 +219,10 @@
   <eClassifiers xsi:type="ecore:EClass" name="PortMetric" eSuperTypes="#//Metric">
     <eStructuralFeatures xsi:type="ecore:EReference" name="ref" lowerBound="1" eType="#//Port"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="PhysicalNode" eSuperTypes="#//Instance">
+  <eClassifiers xsi:type="ecore:EClass" name="PhysicalNode" eSuperTypes="#//ContainerNode">
     <eStructuralFeatures xsi:type="ecore:EReference" name="hosts" upperBound="-1"
         eType="#//ContainerNode"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="type" lowerBound="1" eType="#//PhysicalNodeType"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="PhysicalNodeType" eSuperTypes="#//LifeCycleTypeDefinition"/>
   <eClassifiers xsi:type="ecore:EClass" name="PhysicalNodeMetric" eSuperTypes="#//Metric">
     <eStructuralFeatures xsi:type="ecore:EReference" name="ref" lowerBound="1" eType="#//PhysicalNode"/>
   </eClassifiers>

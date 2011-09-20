@@ -58,6 +58,7 @@
     <genClasses ecoreClass="kevoree.ecore#//DictionaryAttribute">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute kevoree.ecore#//DictionaryAttribute/optional"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute kevoree.ecore#//DictionaryAttribute/state"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute kevoree.ecore#//DictionaryAttribute/datatype"/>
     </genClasses>
     <genClasses ecoreClass="kevoree.ecore#//DictionaryValue">
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference kevoree.ecore#//DictionaryValue/attribute"/>
@@ -158,6 +159,7 @@
     <genClasses ecoreClass="kevoree.ecore#//Instance">
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference kevoree.ecore#//Instance/typeDefinition"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference kevoree.ecore#//Instance/dictionary"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute kevoree.ecore#//Instance/metaData"/>
     </genClasses>
     <genClasses ecoreClass="kevoree.ecore#//Metric">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference kevoree.ecore#//Metric/values"/>
@@ -174,9 +176,7 @@
     </genClasses>
     <genClasses ecoreClass="kevoree.ecore#//PhysicalNode">
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference kevoree.ecore#//PhysicalNode/hosts"/>
-      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference kevoree.ecore#//PhysicalNode/type"/>
     </genClasses>
-    <genClasses ecoreClass="kevoree.ecore#//PhysicalNodeType"/>
     <genClasses ecoreClass="kevoree.ecore#//PhysicalNodeMetric">
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference kevoree.ecore#//PhysicalNodeMetric/ref"/>
     </genClasses>

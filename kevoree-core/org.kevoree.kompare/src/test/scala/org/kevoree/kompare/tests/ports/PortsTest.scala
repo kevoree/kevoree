@@ -21,7 +21,6 @@ package org.kevoree.kompare.tests.ports
 import org.junit._
 import org.kevoree.api.service.core.kompare.ModelKompareService
 import org.kevoree.kompare._
-import org.kevoreeAdaptation._
 import org.scalatest.junit.AssertionsForJUnit
 import org.kevoree.kompare.tests._
 
@@ -35,7 +34,7 @@ class PortsTest extends AssertionsForJUnit with KompareSuite {
 
 
   @Test def verifyProvidedMessagePortRemoved() {
-    var kompareModel = component.kompare(model("test_ports/Base.art2"), model("test_ports/MinusProvidedMessagePort.art2"), "nodeA")
+    val kompareModel = component.kompare(model("test_ports/Base.art2"), model("test_ports/MinusProvidedMessagePort.art2"), "nodeA")
 
     //kompareModel.print
 
@@ -46,22 +45,22 @@ class PortsTest extends AssertionsForJUnit with KompareSuite {
 
     kompareModel verifySize 7
 
-    kompareModel shouldContain(classOf[org.kevoreeAdaptation.UpdateType],"ComponentA")
-    kompareModel shouldContain(classOf[org.kevoreeAdaptation.UpdateInstance],"ComponentA-1541906386")
+    kompareModel shouldContain(JavaSePrimitive.UpdateType,"ComponentA")
+    kompareModel shouldContain(JavaSePrimitive.UpdateInstance,"ComponentA-1541906386")
 
-    kompareModel shouldContain(classOf[org.kevoreeAdaptation.UpdateType],"ComponentB")
-    kompareModel shouldContain(classOf[org.kevoreeAdaptation.UpdateInstance],"ComponentB--1886857871")
+    kompareModel shouldContain(JavaSePrimitive.UpdateType,"ComponentB")
+    kompareModel shouldContain(JavaSePrimitive.UpdateInstance,"ComponentB--1886857871")
 
-    kompareModel shouldContain(classOf[org.kevoreeAdaptation.UpdateType],"ComponentPrimitiveTypeService")
-    kompareModel shouldContain(classOf[org.kevoreeAdaptation.UpdateInstance],"ComponentPrimitiveTypeService--690416444")
+    kompareModel shouldContain(JavaSePrimitive.UpdateType,"ComponentPrimitiveTypeService")
+    kompareModel shouldContain(JavaSePrimitive.UpdateInstance,"ComponentPrimitiveTypeService--690416444")
 
-    kompareModel shouldContainSize(classOf[org.kevoreeAdaptation.UpdateDeployUnit],1)
+    kompareModel shouldContainSize(JavaSePrimitive.UpdateDeployUnit,1)
 
   }
 
 
   @Test def verifyProvidedMessagePortAdded() {
-    var kompareModel = component.kompare(model("test_ports/MinusProvidedMessagePort.art2"), model("test_ports/Base.art2"), "nodeA")
+    val kompareModel = component.kompare(model("test_ports/MinusProvidedMessagePort.art2"), model("test_ports/Base.art2"), "nodeA")
 
    // kompareModel.print
 
@@ -72,16 +71,16 @@ class PortsTest extends AssertionsForJUnit with KompareSuite {
 
     kompareModel verifySize 7
 
-    kompareModel shouldContain(classOf[org.kevoreeAdaptation.UpdateType],"ComponentA")
-    kompareModel shouldContain(classOf[org.kevoreeAdaptation.UpdateInstance],"ComponentA-1541906386")
+    kompareModel shouldContain(JavaSePrimitive.UpdateType,"ComponentA")
+    kompareModel shouldContain(JavaSePrimitive.UpdateInstance,"ComponentA-1541906386")
 
-    kompareModel shouldContain(classOf[org.kevoreeAdaptation.UpdateType],"ComponentB")
-    kompareModel shouldContain(classOf[org.kevoreeAdaptation.UpdateInstance],"ComponentB--1886857871")
+    kompareModel shouldContain(JavaSePrimitive.UpdateType,"ComponentB")
+    kompareModel shouldContain(JavaSePrimitive.UpdateInstance,"ComponentB--1886857871")
 
-    kompareModel shouldContain(classOf[org.kevoreeAdaptation.UpdateType],"ComponentPrimitiveTypeService")
-    kompareModel shouldContain(classOf[org.kevoreeAdaptation.UpdateInstance],"ComponentPrimitiveTypeService--690416444")
+    kompareModel shouldContain(JavaSePrimitive.UpdateType,"ComponentPrimitiveTypeService")
+    kompareModel shouldContain(JavaSePrimitive.UpdateInstance,"ComponentPrimitiveTypeService--690416444")
 
-    kompareModel shouldContainSize(classOf[org.kevoreeAdaptation.UpdateDeployUnit],1)
+    kompareModel shouldContainSize(JavaSePrimitive.UpdateDeployUnit,1)
 
   }
 
@@ -149,7 +148,7 @@ class PortsTest extends AssertionsForJUnit with KompareSuite {
 
 
   @Test def verifyNoPortChange() {
-    var kompareModel = component.kompare(model("test_ports/Base.art2"), model("test_ports/Base.art2"), "nodeA")
+    val kompareModel = component.kompare(model("test_ports/Base.art2"), model("test_ports/Base.art2"), "nodeA")
     kompareModel verifySize 0
   }
 }
