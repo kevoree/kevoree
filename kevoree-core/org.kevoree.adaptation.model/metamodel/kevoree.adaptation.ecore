@@ -13,12 +13,12 @@
   <eClassifiers xsi:type="ecore:EClass" name="AdaptationModel">
     <eStructuralFeatures xsi:type="ecore:EReference" name="adaptations" upperBound="-1"
         eType="#//AdaptationPrimitive" containment="true"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="orderedPrimitiveSet" eType="#//Step"
+    <eStructuralFeatures xsi:type="ecore:EReference" name="orderedPrimitiveSet" eType="#//ParallelStep"
         containment="true"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="Step">
+  <eClassifiers xsi:type="ecore:EClass" name="ParallelStep">
     <eStructuralFeatures xsi:type="ecore:EReference" name="adaptations" upperBound="-1"
         eType="#//AdaptationPrimitive"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="nextStep" eType="#//Step"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="nextStep" eType="#//ParallelStep"/>
   </eClassifiers>
 </ecore:EPackage>
