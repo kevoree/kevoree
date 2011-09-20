@@ -3,45 +3,15 @@
     xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" name="kevoreeAdaptation"
     nsURI="http://kevoree/adaptation/1.0" nsPrefix="kevoree.adaptation">
-  <eClassifiers xsi:type="ecore:EClass" name="AdaptationPrimitive"/>
+  <eClassifiers xsi:type="ecore:EClass" name="AdaptationPrimitive">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="className" lowerBound="1"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="ref" eType="ecore:EClass http://www.eclipse.org/emf/2002/Ecore#//EObject"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="targetNodeName" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+  </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="AdaptationModel">
     <eStructuralFeatures xsi:type="ecore:EReference" name="adaptations" upperBound="-1"
         eType="#//AdaptationPrimitive" containment="true"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="TypeAdaptation" eSuperTypes="#//AdaptationPrimitive">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="ref" lowerBound="1" eType="ecore:EClass ../../org.kevoree.model/metamodel/kevoree.ecore#//TypeDefinition"/>
-  </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="InstanceAdaptation" eSuperTypes="#//AdaptationPrimitive">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="ref" lowerBound="1" eType="ecore:EClass ../../org.kevoree.model/metamodel/kevoree.ecore#//Instance"/>
-  </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="AddType" eSuperTypes="#//TypeAdaptation"/>
-  <eClassifiers xsi:type="ecore:EClass" name="RemoveType" eSuperTypes="#//TypeAdaptation"/>
-  <eClassifiers xsi:type="ecore:EClass" name="AddInstance" eSuperTypes="#//InstanceAdaptation"/>
-  <eClassifiers xsi:type="ecore:EClass" name="RemoveInstance" eSuperTypes="#//InstanceAdaptation"/>
-  <eClassifiers xsi:type="ecore:EClass" name="ThirdPartyAdaptation" eSuperTypes="#//AdaptationPrimitive">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="ref" lowerBound="1" eType="ecore:EClass ../../org.kevoree.model/metamodel/kevoree.ecore#//DeployUnit"/>
-  </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="AddThirdParty" eSuperTypes="#//ThirdPartyAdaptation"/>
-  <eClassifiers xsi:type="ecore:EClass" name="RemoveThirdParty" eSuperTypes="#//ThirdPartyAdaptation"/>
-  <eClassifiers xsi:type="ecore:EClass" name="BindingAdaptation" eSuperTypes="#//AdaptationPrimitive">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="ref" lowerBound="1" eType="ecore:EClass ../../org.kevoree.model/metamodel/kevoree.ecore#//MBinding"/>
-  </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="AddBinding" eSuperTypes="#//BindingAdaptation"/>
-  <eClassifiers xsi:type="ecore:EClass" name="RemoveBinding" eSuperTypes="#//BindingAdaptation"/>
-  <eClassifiers xsi:type="ecore:EClass" name="FragmentBindingAdaptation" eSuperTypes="#//AdaptationPrimitive">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="ref" lowerBound="1" eType="ecore:EClass ../../org.kevoree.model/metamodel/kevoree.ecore#//Channel"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="targetNodeName" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
-  </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="AddFragmentBinding" eSuperTypes="#//FragmentBindingAdaptation"/>
-  <eClassifiers xsi:type="ecore:EClass" name="RemoveFragmentBinding" eSuperTypes="#//FragmentBindingAdaptation"/>
-  <eClassifiers xsi:type="ecore:EClass" name="UpdateInstance" eSuperTypes="#//InstanceAdaptation"/>
-  <eClassifiers xsi:type="ecore:EClass" name="UpdateDictionaryInstance" eSuperTypes="#//InstanceAdaptation"/>
-  <eClassifiers xsi:type="ecore:EClass" name="UpdateType" eSuperTypes="#//TypeAdaptation"/>
-  <eClassifiers xsi:type="ecore:EClass" name="DeployUnitAdaptation" eSuperTypes="#//AdaptationPrimitive">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="ref" lowerBound="1" eType="ecore:EClass ../../org.kevoree.model/metamodel/kevoree.ecore#//DeployUnit"/>
-  </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="AddDeployUnit" eSuperTypes="#//DeployUnitAdaptation"/>
-  <eClassifiers xsi:type="ecore:EClass" name="RemoveDeployUnit" eSuperTypes="#//DeployUnitAdaptation"/>
-  <eClassifiers xsi:type="ecore:EClass" name="UpdateDeployUnit" eSuperTypes="#//DeployUnitAdaptation"/>
-  <eClassifiers xsi:type="ecore:EClass" name="UpdateBinding" eSuperTypes="#//BindingAdaptation"/>
 </ecore:EPackage>

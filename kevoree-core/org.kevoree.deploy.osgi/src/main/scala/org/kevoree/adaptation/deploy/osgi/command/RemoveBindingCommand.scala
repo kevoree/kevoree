@@ -37,19 +37,19 @@ case class RemoveBindingCommand(c : MBinding, ctx : KevoreeDeployManager,nodeNam
 
     logger.info("Try to remove binding , component=>"+ c.getPort.eContainer.asInstanceOf[ComponentInstance].getName +"portname =>"+c.getPort.getPortTypeRef.getName+", channel="+c.getHub.getName)
 
-    var KevoreeChannelFound = ctx.bundleMapping.find(map=>map.objClassName == c.getHub.getClass.getName && map.name == c.getHub.getName) match {
+    val KevoreeChannelFound = ctx.bundleMapping.find(map=>map.objClassName == c.getHub.getClass.getName && map.name == c.getHub.getName) match {
       case None => logger.error("Channel Fragment Mapping not found");None
       case Some(mapfound)=> {
-          var channelBundle = mapfound.bundle
+          val channelBundle = mapfound.bundle
           channelBundle.getRegisteredServices.find({sr=> sr.getProperty(Constants.KEVOREE_NODE_NAME)==nodeName && sr.getProperty(Constants.KEVOREE_INSTANCE_NAME)==c.getHub.getName }) match {
             case None => logger.error("Channel Fragment Service not found");None
             case Some(sr)=> Some(channelBundle.getBundleContext.getService(sr).asInstanceOf[KevoreeChannelFragment])}}
     }
 
-    var KevoreeComponentFound = ctx.bundleMapping.find(map=>map.objClassName == c.getPort.eContainer.asInstanceOf[ComponentInstance].getClass.getName && map.name == c.getPort.eContainer.asInstanceOf[ComponentInstance].getName ) match {
+    val KevoreeComponentFound = ctx.bundleMapping.find(map=>map.objClassName == c.getPort.eContainer.asInstanceOf[ComponentInstance].getClass.getName && map.name == c.getPort.eContainer.asInstanceOf[ComponentInstance].getName ) match {
       case None => logger.error("Component Mapping not found");None
       case Some(mapfound)=> {
-          var componentBundle = mapfound.bundle
+          val componentBundle = mapfound.bundle
           componentBundle.getRegisteredServices.find({sr=> sr.getProperty(Constants.KEVOREE_NODE_NAME)==nodeName && sr.getProperty(Constants.KEVOREE_INSTANCE_NAME)==c.getPort.eContainer.asInstanceOf[ComponentInstance].getName }) match {
             case None => logger.error("Component Actor Service not found");None
             case Some(sr)=> Some(componentBundle.getBundleContext.getService(sr).asInstanceOf[KevoreeComponent])}}
@@ -58,18 +58,18 @@ case class RemoveBindingCommand(c : MBinding, ctx : KevoreeDeployManager,nodeNam
     KevoreeComponentFound match {
       case None => false
       case Some(cfound) => {
-          var np = cfound.getKevoreeComponentType.getNeededPorts.find(np => np._1 == c.getPort.getPortTypeRef.getName)
-          var hp = cfound.getKevoreeComponentType.getHostedPorts.find(np => np._1 == c.getPort.getPortTypeRef.getName)
+          val np = cfound.getKevoreeComponentType.getNeededPorts.find(np => np._1 == c.getPort.getPortTypeRef.getName)
+          val hp = cfound.getKevoreeComponentType.getHostedPorts.find(np => np._1 == c.getPort.getPortTypeRef.getName)
 
           Unit match {
             case _ if(np.isEmpty && hp.isEmpty)=>logger.info("Port instance not found in component");false
             case _ if(!np.isEmpty)=> {
                 /* Bind port to Channel */
-                var portfound = np.get._2.asInstanceOf[KevoreePort]
+                val portfound = np.get._2.asInstanceOf[KevoreePort]
                 KevoreeChannelFound match {
                   case None => logger.info("ChannelFragment not found in component");false
                   case Some(channelProxy) => {
-                      var newbindmsg = new FragmentUnbindMessage
+                      val newbindmsg = new FragmentUnbindMessage
                       newbindmsg.setChannelName(c.getHub.getName)
                       (portfound !? newbindmsg).asInstanceOf[Boolean]
                     }
@@ -78,15 +78,15 @@ case class RemoveBindingCommand(c : MBinding, ctx : KevoreeDeployManager,nodeNam
             case _ if(!hp.isEmpty)=>{
                 /* Bind Channel to port */
                 //TODO REMOTE PORT
-                var portfound = hp.get._2.asInstanceOf[KevoreePort]
+                val portfound = hp.get._2.asInstanceOf[KevoreePort]
                 KevoreeChannelFound match {
                   case None => logger.info("ChannelFragment not found in component");false
                   case Some(channelProxy) => {
-                      var bindmsg = new PortUnbindMessage
+                      val bindmsg = new PortUnbindMessage
                       bindmsg.setNodeName(nodeName)
                       bindmsg.setComponentName(c.getPort.eContainer.asInstanceOf[ComponentInstance].getName)
                       bindmsg.setPortName(portfound.getName)
-                      var res = (channelProxy.asInstanceOf[KevoreeChannelFragment] !? bindmsg).asInstanceOf[Boolean]
+                      val res = (channelProxy.asInstanceOf[KevoreeChannelFragment] !? bindmsg).asInstanceOf[Boolean]
                       res
                     }
                 }
@@ -96,8 +96,8 @@ case class RemoveBindingCommand(c : MBinding, ctx : KevoreeDeployManager,nodeNam
         }}}
 
 
-  def undo() = {
-    AddBindingCommand(c,ctx,nodeName).execute
+  def undo() {
+    AddBindingCommand(c, ctx, nodeName).execute()
   }
 
 }

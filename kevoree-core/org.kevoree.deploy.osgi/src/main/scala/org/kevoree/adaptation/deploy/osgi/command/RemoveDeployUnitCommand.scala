@@ -18,11 +18,10 @@
 
 package org.kevoree.adaptation.deploy.osgi.command
 
-import org.kevoree._
 import org.kevoree.adaptation.deploy.osgi.context.KevoreeDeployManager
-import org.osgi.service.packageadmin.PackageAdmin
 import org.slf4j.LoggerFactory
 import scala.collection.JavaConversions._
+import org.kevoree.DeployUnit
 
 case class RemoveDeployUnitCommand(deployUnit : DeployUnit, ctx : KevoreeDeployManager) extends PrimitiveCommand {
 
