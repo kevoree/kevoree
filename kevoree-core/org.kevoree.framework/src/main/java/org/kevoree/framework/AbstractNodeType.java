@@ -14,15 +14,16 @@
 package org.kevoree.framework;
 
 import org.kevoree.ContainerRoot;
-import org.kevoree.api.service.adaptation.deploy.KevoreeAdaptationDeployService;
 import org.kevoree.api.service.core.handler.KevoreeModelHandlerService;
+import org.kevoreeAdaptation.AdaptationModel;
+import org.kevoreeAdaptation.AdaptationPrimitive;
 import org.osgi.framework.BundleContext;
 
 import java.util.HashMap;
 
-public abstract class AbstractNodeType implements KevoreeAdaptationDeployService {
+public abstract class AbstractNodeType {
 
-    public abstract void push(String targetNodeName, ContainerRoot root, BundleContext context);
+    public abstract void push(String targetNodeName, ContainerRoot root);
 
     private HashMap<String, Object> dictionary = new HashMap<String, Object>();
 
@@ -57,4 +58,13 @@ public abstract class AbstractNodeType implements KevoreeAdaptationDeployService
     }
 
 
+    public abstract AdaptationModel kompare(ContainerRoot actualModel,ContainerRoot targetModel);
+
+    public PrimitiveCommand getPrimitive(AdaptationPrimitive primitve){return null;}
+
+
 }
+
+
+
+

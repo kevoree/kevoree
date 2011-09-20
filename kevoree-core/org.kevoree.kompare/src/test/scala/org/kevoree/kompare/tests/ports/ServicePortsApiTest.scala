@@ -19,14 +19,13 @@
 package org.kevoree.kompare.tests.ports
 
 import org.junit._
-import org.kevoree.api.service.core.kompare.ModelKompareService
 import org.kevoree.kompare._
 import org.scalatest.junit.AssertionsForJUnit
 import org.kevoree.kompare.tests._
 
 class ServicePortsApiTest extends AssertionsForJUnit with KompareSuite {
 
-  var component : ModelKompareService = null
+  var component : KevoreeKompareBean = null
 
   @Before def initialize() {
     component = new KevoreeKompareBean

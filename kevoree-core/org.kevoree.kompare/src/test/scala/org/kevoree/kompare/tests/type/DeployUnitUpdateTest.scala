@@ -18,7 +18,6 @@
 
 package org.kevoree.kompare.tests.`type`
 
-import org.kevoree.api.service.core.kompare.ModelKompareService
 import org.kevoree.kompare.KevoreeKompareBean
 import org.kevoree.kompare.tests.KompareSuite
 import org.junit._
@@ -26,7 +25,7 @@ import org.kevoreeAdaptation._
 
 class DeployUnitUpdateTest extends KompareSuite {
 
-  var component : ModelKompareService = null
+  var component : KevoreeKompareBean = null
 
   @Before def initialize() {
     component = new KevoreeKompareBean
