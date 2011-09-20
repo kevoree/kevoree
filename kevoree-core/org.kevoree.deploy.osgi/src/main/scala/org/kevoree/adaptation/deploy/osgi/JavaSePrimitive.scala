@@ -1,3 +1,5 @@
+package org.kevoree.adaptation.deploy.osgi
+
 /**
  * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE, Version 3, 29 June 2007;
  * you may not use this file except in compliance with the License.
@@ -11,15 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kevoree.kompare
-
 /**
  * User: Erwan Daubert - erwan.daubert@gmail.com
  * Date: 20/09/11
  * Time: 13:54
  */
 
-object JavaSePrimitive {
+object JavaSePrimitive { // TODO duplicate object from kompare
 
   val UpdateType = "UpdateType"
   val UpdateDeployUnit = "UpdateDeployUnit"

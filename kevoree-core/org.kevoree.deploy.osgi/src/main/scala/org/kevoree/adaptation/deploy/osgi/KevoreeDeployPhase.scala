@@ -21,7 +21,6 @@ package org.kevoree.adaptation.deploy.osgi
 import context.KevoreeDeployManager
 import org.kevoree.adaptation.deploy.osgi.command.PrimitiveCommand
 import org.slf4j.LoggerFactory
-import scala.Array._
 import org.osgi.framework.BundleException
 
 class KevoreeDeployPhase(ctx : KevoreeDeployManager) {

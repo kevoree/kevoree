@@ -15,6 +15,11 @@
     </genClasses>
     <genClasses ecoreClass="kevoree.adaptation.ecore#//AdaptationModel">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference kevoree.adaptation.ecore#//AdaptationModel/adaptations"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference kevoree.adaptation.ecore#//AdaptationModel/orderedPrimitiveSet"/>
+    </genClasses>
+    <genClasses ecoreClass="kevoree.adaptation.ecore#//Step">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference kevoree.adaptation.ecore#//Step/adaptations"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference kevoree.adaptation.ecore#//Step/nextStep"/>
     </genClasses>
   </genPackages>
 </genmodel:GenModel>
