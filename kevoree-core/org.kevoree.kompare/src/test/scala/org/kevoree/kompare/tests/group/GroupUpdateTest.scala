@@ -17,9 +17,9 @@ import org.scalatest.junit.AssertionsForJUnit
 import org.kevoree.kompare.tests.KompareSuite
 import org.scalatest.AbstractSuite
 import org.kevoree.api.service.core.kompare.ModelKompareService
-import org.kevoree.kompare.KevoreeKompareBean
 import org.junit._
 import org.kevoreeAdaptation._
+import org.kevoree.kompare.{JavaSePrimitive, KevoreeKompareBean}
 
 class GroupUpdateTest extends AssertionsForJUnit with KompareSuite {
   var component: ModelKompareService = null
@@ -31,26 +31,26 @@ class GroupUpdateTest extends AssertionsForJUnit with KompareSuite {
   @Test def verifyUPDATE_ADDGROUP() {
 
     val kompareModel = component.kompare(model("test_instance/groupNoGroup.kev"), model("test_instance/groupInitAddOneTwoBinding.kev"), "duke")
-    kompareModel.shouldContain(classOf[AddType], "GossipGroup")
-    kompareModel.shouldContain(classOf[AddInstance], "group1426020324")
+    kompareModel.shouldContain(JavaSePrimitive.AddType, "GossipGroup")
+    kompareModel.shouldContain(JavaSePrimitive.AddInstance, "group1426020324")
   }
 
   @Test def verifyUPDATE_RemoveGROUP() {
     val kompareModel = component.kompare(model("test_instance/groupInitAddOneTwoBinding.kev"), model("test_instance/groupNoGroup.kev"), "duke")
-    kompareModel.shouldContain(classOf[RemoveType], "GossipGroup")
-    kompareModel.shouldContain(classOf[RemoveInstance], "group1426020324")
+    kompareModel.shouldContain(JavaSePrimitive.RemoveType, "GossipGroup")
+    kompareModel.shouldContain(JavaSePrimitive.RemoveInstance, "group1426020324")
   }
 
 
   @Test def verifyUPDATE_UpdateGroupAddBinding() {
     val kompareModel = component.kompare(model("test_instance/groupOneBinding.kev"), model("test_instance/groupInitAddOneTwoBinding.kev"), "duke")
     kompareModel.print
-    kompareModel.shouldContain(classOf[UpdateDictionaryInstance], "group1426020324")
+    kompareModel.shouldContain(JavaSePrimitive.UpdateDictionaryInstance, "group1426020324")
   }
 
   @Test def verifyUPDATE_UpdateGroupRemoveBinding() {
     val kompareModel = component.kompare(model("test_instance/groupInitAddOneTwoBinding.kev"), model("test_instance/groupOneBinding.kev"), "duke")
-    kompareModel.shouldContain(classOf[UpdateDictionaryInstance], "group1426020324")
+    kompareModel.shouldContain(JavaSePrimitive.UpdateDictionaryInstance, "group1426020324")
   }
 
 }

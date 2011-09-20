@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<notation:Diagram xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" xmlns:notation="http://www.eclipse.org/gmf/runtime/1.0.2/notation" xmi:id="_MrvQEeNrEeCZA_H4F9cW-g" type="EcoreTools" measurementUnit="Pixel">
+  <children xmi:type="notation:Node" xmi:id="_MtpUkONrEeCZA_H4F9cW-g" type="1001">
+    <children xmi:type="notation:Node" xmi:id="_Mtrw0ONrEeCZA_H4F9cW-g" type="4001"/>
+    <children xmi:type="notation:Node" xmi:id="_MtsX4ONrEeCZA_H4F9cW-g" type="5001">
+      <children xmi:type="notation:Node" xmi:id="_Zt2IkON4EeCZA_H4F9cW-g" type="2001">
+        <element xmi:type="ecore:EAttribute" href="kevoree.adaptation.ecore#//AdaptationPrimitive/name"/>
+        <layoutConstraint xmi:type="notation:Location" xmi:id="_Zt2IkeN4EeCZA_H4F9cW-g"/>
+      </children>
+      <children xmi:type="notation:Node" xmi:id="_u4_PoOODEeCZA_H4F9cW-g" type="2001">
+        <element xmi:type="ecore:EAttribute" href="kevoree.adaptation.ecore#//AdaptationPrimitive/targetNodeName"/>
+        <layoutConstraint xmi:type="notation:Location" xmi:id="_u4_PoeODEeCZA_H4F9cW-g"/>
+      </children>
+      <children xmi:type="notation:Node" xmi:id="_dDnKgON4EeCZA_H4F9cW-g" type="2001">
+        <element xmi:type="ecore:EAttribute" href="kevoree.adaptation.ecore#//AdaptationPrimitive/className"/>
+        <layoutConstraint xmi:type="notation:Location" xmi:id="_dDnKgeN4EeCZA_H4F9cW-g"/>
+      </children>
+      <styles xmi:type="notation:DrawerStyle" xmi:id="_MtsX4eNrEeCZA_H4F9cW-g"/>
+      <styles xmi:type="notation:SortingStyle" xmi:id="_MtsX4uNrEeCZA_H4F9cW-g"/>
+      <styles xmi:type="notation:FilteringStyle" xmi:id="_MtsX4-NrEeCZA_H4F9cW-g"/>
+    </children>
+    <children xmi:type="notation:Node" xmi:id="_MtsX5ONrEeCZA_H4F9cW-g" type="5002">
+      <styles xmi:type="notation:DrawerStyle" xmi:id="_MtsX5eNrEeCZA_H4F9cW-g"/>
+      <styles xmi:type="notation:SortingStyle" xmi:id="_MtsX5uNrEeCZA_H4F9cW-g"/>
+      <styles xmi:type="notation:FilteringStyle" xmi:id="_MtsX5-NrEeCZA_H4F9cW-g"/>
+    </children>
+    <styles xmi:type="notation:ShapeStyle" xmi:id="_MtpUkeNrEeCZA_H4F9cW-g" fontColor="4210752" fontName="Cantarell" fontHeight="10" fillColor="13761016" lineColor="8421504"/>
+    <element xmi:type="ecore:EClass" href="kevoree.adaptation.ecore#//AdaptationPrimitive"/>
+    <layoutConstraint xmi:type="notation:Bounds" xmi:id="_Mtp7oONrEeCZA_H4F9cW-g" x="30" y="30"/>
+  </children>
+  <children xmi:type="notation:Node" xmi:id="_Mts-8ONrEeCZA_H4F9cW-g" type="1001">
+    <children xmi:type="notation:Node" xmi:id="_Mts-8-NrEeCZA_H4F9cW-g" type="4001"/>
+    <children xmi:type="notation:Node" xmi:id="_Mts-9ONrEeCZA_H4F9cW-g" type="5001">
+      <styles xmi:type="notation:DrawerStyle" xmi:id="_Mts-9eNrEeCZA_H4F9cW-g"/>
+      <styles xmi:type="notation:SortingStyle" xmi:id="_Mts-9uNrEeCZA_H4F9cW-g"/>
+      <styles xmi:type="notation:FilteringStyle" xmi:id="_Mts-9-NrEeCZA_H4F9cW-g"/>
+    </children>
+    <children xmi:type="notation:Node" xmi:id="_Mts--ONrEeCZA_H4F9cW-g" type="5002">
+      <styles xmi:type="notation:DrawerStyle" xmi:id="_Mts--eNrEeCZA_H4F9cW-g"/>
+      <styles xmi:type="notation:SortingStyle" xmi:id="_Mts--uNrEeCZA_H4F9cW-g"/>
+      <styles xmi:type="notation:FilteringStyle" xmi:id="_Mts---NrEeCZA_H4F9cW-g"/>
+    </children>
+    <styles xmi:type="notation:ShapeStyle" xmi:id="_Mts-8eNrEeCZA_H4F9cW-g" fontColor="4210752" fontName="Cantarell" fontHeight="10" fillColor="13761016" lineColor="8421504"/>
+    <element xmi:type="ecore:EClass" href="kevoree.adaptation.ecore#//AdaptationModel"/>
+    <layoutConstraint xmi:type="notation:Bounds" xmi:id="_Mts-8uNrEeCZA_H4F9cW-g" x="60" y="180"/>
+  </children>
+  <styles xmi:type="notation:DiagramStyle" xmi:id="_Mrv3IONrEeCZA_H4F9cW-g"/>
+  <element xmi:type="ecore:EPackage" href="kevoree.adaptation.ecore#/"/>
+  <edges xmi:type="notation:Edge" xmi:id="_Mt-EsONrEeCZA_H4F9cW-g" type="3002" source="_Mts-8ONrEeCZA_H4F9cW-g" target="_MtpUkONrEeCZA_H4F9cW-g">
+    <children xmi:type="notation:Node" xmi:id="_Mt-rwONrEeCZA_H4F9cW-g" type="4011">
+      <layoutConstraint xmi:type="notation:Location" xmi:id="_Mt-rweNrEeCZA_H4F9cW-g" x="-10" y="-10"/>
+    </children>
+    <children xmi:type="notation:Node" xmi:id="_Mt_S0ONrEeCZA_H4F9cW-g" type="4012">
+      <layoutConstraint xmi:type="notation:Location" xmi:id="_Mt_S0eNrEeCZA_H4F9cW-g" x="10" y="10"/>
+    </children>
+    <styles xmi:type="notation:ConnectorStyle" xmi:id="_Mt-EseNrEeCZA_H4F9cW-g" lineColor="4210752"/>
+    <styles xmi:type="notation:FontStyle" xmi:id="_Mt-EsuNrEeCZA_H4F9cW-g" fontColor="4210752" fontName="Cantarell" fontHeight="10"/>
+    <element xmi:type="ecore:EReference" href="kevoree.adaptation.ecore#//AdaptationModel/adaptations"/>
+    <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="_Mt-Es-NrEeCZA_H4F9cW-g" points="[0, 0, 0, 60]$[0, -60, 0, 0]"/>
+    <sourceAnchor xmi:type="notation:IdentityAnchor" xmi:id="_MvxbgONrEeCZA_H4F9cW-g" id="(0.5,0.0)"/>
+    <targetAnchor xmi:type="notation:IdentityAnchor" xmi:id="_MvxbgeNrEeCZA_H4F9cW-g" id="(0.5,1.0)"/>
+  </edges>
+</notation:Diagram>

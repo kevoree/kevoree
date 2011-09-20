@@ -19,6 +19,7 @@
 package org.kevoree.kompare.sub
 
 import org.kevoree._
+import kompare.JavaSePrimitive
 import org.kevoreeAdaptation._
 import org.kevoreeAdaptation._
 import scala.collection.JavaConversions._
@@ -26,7 +27,7 @@ import org.kevoree.framework.aspects.KevoreeAspects._
 
 trait UpdateNodeKompare extends AbstractKompare with UpdateChannelKompare {
 
-  def getUpdateNodeAdaptationModel(actualNode: ContainerNode, updateNode: ContainerNode): AdaptationModel = {
+  def getUpdateNodeAdaptationModel (actualNode: ContainerNode, updateNode: ContainerNode): AdaptationModel = {
     val adaptationModel = org.kevoreeAdaptation.KevoreeAdaptationFactory.eINSTANCE.createAdaptationModel
     logger.info("UPDATE NODE " + actualNode.getName)
 
@@ -37,53 +38,61 @@ trait UpdateNodeKompare extends AbstractKompare with UpdateChannelKompare {
     //Update Type Step
     updateNode.getUsedTypeDefinition.foreach {
       uct =>
-      actualNode.getUsedTypeDefinition.find({
+        actualNode.getUsedTypeDefinition.find({
           act => act.isModelEquals(uct)
         }) match {
-        case Some(ct) => {
+          case Some(ct) => {
             //CHECK IF TYPE IS UPDATE
             if (ct.isUpdated(uct)) {
-              val adaptcmd = KevoreeAdaptationFactory.eINSTANCE.createUpdateType
+              val adaptcmd = KevoreeAdaptationFactory.eINSTANCE.createAdaptationPrimitive()
+              adaptcmd.setName(JavaSePrimitive.UpdateType)
               adaptcmd.setRef(uct)
               adaptationModel.getAdaptations.add(adaptcmd)
 
               //ADD UPDATE DEPLOY UNIT IF NECESSARY
-              var uctDeployUnit = uct.foundRelevantDeployUnit(updateNode)
-              
-              adaptationModel.getAdaptations.filter(adaptation => adaptation.isInstanceOf[UpdateDeployUnit]).find(adaptation => adaptation.asInstanceOf[UpdateDeployUnit].getRef.isModelEquals(uctDeployUnit)) match {
+              val uctDeployUnit = uct.foundRelevantDeployUnit(updateNode)
+
+              adaptationModel.getAdaptations
+                .filter(adaptation => adaptation.getName == JavaSePrimitive.UpdateDeployUnit)
+                .find(adaptation => adaptation.getRef.asInstanceOf[DeployUnit].isModelEquals(uctDeployUnit)) match {
                 case None => {
-                    val ctcmd = KevoreeAdaptationFactory.eINSTANCE.createUpdateDeployUnit
-                    ctcmd.setRef(uctDeployUnit)
-                    adaptationModel.getAdaptations.add(ctcmd)
-                  }
+                  val ctcmd = KevoreeAdaptationFactory.eINSTANCE.createAdaptationPrimitive()
+                  ctcmd.setName(JavaSePrimitive.UpdateDeployUnit)
+                  ctcmd.setRef(uctDeployUnit)
+                  adaptationModel.getAdaptations.add(ctcmd)
+                }
                 case Some(e) => //SIMILAR DEPLOY UNIT PRIMITIVE ALREADY REGISTERED
               }
 
             }
           }
-        case None => {
+          case None => {
             //ADD TYPE
-            val ctcmd = KevoreeAdaptationFactory.eINSTANCE.createAddType
+            val ctcmd = KevoreeAdaptationFactory.eINSTANCE.createAdaptationPrimitive()
+            ctcmd.setName(JavaSePrimitive.AddType)
             ctcmd.setRef(uct)
             adaptationModel.getAdaptations.add(ctcmd)
 
             /* add deploy unit if necessary */
             //CHECK IF A PREVIOUS INSTALLED TYPE DEFINITION USE THIS DEPLOY UNIT
-            
+
             var uctDeployUnit = uct.foundRelevantDeployUnit(updateNode)
-            
-            actualNode.getUsedTypeDefinition.find(typeDef => typeDef.foundRelevantDeployUnit(actualNode).isModelEquals(uctDeployUnit)) match {
+
+            actualNode.getUsedTypeDefinition
+              .find(typeDef => typeDef.foundRelevantDeployUnit(actualNode).isModelEquals(uctDeployUnit)) match {
               case None => {
-                  //CHECK IF THIS DEPLOY UNIT IS ALREADY MARK AS TO BE INSTALLED
-                  adaptationModel.getAdaptations.filter(adaptation => adaptation.isInstanceOf[AddDeployUnit]).find(adaptation => adaptation.asInstanceOf[AddDeployUnit].getRef.isModelEquals(uctDeployUnit)) match {
-                    case None => {
-                        var ctcmd = KevoreeAdaptationFactory.eINSTANCE.createAddDeployUnit
-                        ctcmd.setRef(uctDeployUnit)
-                        adaptationModel.getAdaptations.add(ctcmd)
-                      }
-                    case Some(e) => //SIMILAR DEPLOY UNIT PRIMITIVE ALREADY REGISTERED
+                //CHECK IF THIS DEPLOY UNIT IS ALREADY MARK AS TO BE INSTALLED
+                adaptationModel.getAdaptations.filter(adaptation => adaptation.getName == JavaSePrimitive.AddDeployUnit)
+                  .find(adaptation => adaptation.getRef.asInstanceOf[DeployUnit].isModelEquals(uctDeployUnit)) match {
+                  case None => {
+                    val ctcmd = KevoreeAdaptationFactory.eINSTANCE.createAdaptationPrimitive()
+                    ctcmd.setName(JavaSePrimitive.AddDeployUnit)
+                    ctcmd.setRef(uctDeployUnit)
+                    adaptationModel.getAdaptations.add(ctcmd)
                   }
+                  case Some(e) => //SIMILAR DEPLOY UNIT PRIMITIVE ALREADY REGISTERED
                 }
+              }
               case Some(_) => // TYPE DEFINITION ALREADY USE DEPLOY UNIT IN PREVIOUS MODEL
             }
 
@@ -91,96 +100,107 @@ trait UpdateNodeKompare extends AbstractKompare with UpdateChannelKompare {
             //ADD USED THIRDPARTY
             uctDeployUnit.getRequiredLibs.foreach {
               tp =>
-              var adaptcmd = KevoreeAdaptationFactory.eINSTANCE.createAddThirdParty
-              adaptcmd.setRef(tp)
-              adaptationModel.getAdaptations.add(adaptcmd)
+                val adaptcmd = KevoreeAdaptationFactory.eINSTANCE.createAdaptationPrimitive()
+                adaptcmd.setName(JavaSePrimitive.AddThirdParty)
+                adaptcmd.setRef(tp)
+                adaptationModel.getAdaptations.add(adaptcmd)
             }
           }
-      }
+        }
     }
     actualNode.getUsedTypeDefinition.foreach {
       act =>
-      updateNode.getUsedTypeDefinition.find({
+        updateNode.getUsedTypeDefinition.find({
           uct => uct.isModelEquals(act)
         }) match {
-        case Some(ct) => //OK CHECK ALEADY DONE IN PREVIOUS STEP
-        case None => {
+          case Some(ct) => //OK CHECK ALEADY DONE IN PREVIOUS STEP
+          case None => {
 
-            //ADD TYPE
-            var ctcmd = KevoreeAdaptationFactory.eINSTANCE.createRemoveType
+            //Remove TYPE
+            val ctcmd = KevoreeAdaptationFactory.eINSTANCE.createAdaptationPrimitive()
+            ctcmd.setName(JavaSePrimitive.RemoveType)
             ctcmd.setRef(act)
             adaptationModel.getAdaptations.add(ctcmd)
 
             var actualDeployU = act.foundRelevantDeployUnit(actualNode)
-            
+
             /* remove deploy unit if necessary */
-            updateNode.getUsedTypeDefinition.find(typeDef => (typeDef != act) && typeDef.foundRelevantDeployUnit(updateNode).isModelEquals(actualDeployU)) match {
+            updateNode.getUsedTypeDefinition.find(typeDef => (typeDef != act) &&
+              typeDef.foundRelevantDeployUnit(updateNode).isModelEquals(actualDeployU)) match {
               case Some(_) => // DO NOT UNINSTALL DEPLOY UNIT
               case None => {
-                  adaptationModel.getAdaptations.filter(adaptation => adaptation.isInstanceOf[RemoveDeployUnit]).find(adaptation => adaptation.asInstanceOf[RemoveDeployUnit].getRef.isModelEquals(actualDeployU)) match {
-                    case None => {
-                        var ctcmd = KevoreeAdaptationFactory.eINSTANCE.createRemoveDeployUnit
-                        ctcmd.setRef(actualDeployU)
-                        adaptationModel.getAdaptations.add(ctcmd)
-                      }
-                    case Some(e) => //SIMILAR DEPLOY UNIT PRIMITIVE ALREADY REGISTERED
+                adaptationModel.getAdaptations
+                  .filter(adaptation => adaptation.getName == JavaSePrimitive.RemoveDeployUnit)
+                  .find(adaptation => adaptation.getRef.asInstanceOf[DeployUnit].isModelEquals(actualDeployU)) match {
+                  case None => {
+                    val ctcmd = KevoreeAdaptationFactory.eINSTANCE.createAdaptationPrimitive()
+                    ctcmd.setName(JavaSePrimitive.RemoveDeployUnit)
+                    ctcmd.setRef(actualDeployU)
+                    adaptationModel.getAdaptations.add(ctcmd)
                   }
-
+                  case Some(e) => //SIMILAR DEPLOY UNIT PRIMITIVE ALREADY REGISTERED
                 }
+
+              }
             }
 
 
 
-            //TODO REMOVE TIRDPARTY
+            //TODO REMOVE THIRDPARTY
 
           }
-      }
+        }
     }
 
     //INSTANCE STEP
     updateNode.getInstances.foreach {
       uc =>
-      actualNode.getInstances.find({
+        actualNode.getInstances.find({
           ac => ac.isModelEquals(uc)
         }) match {
-        case Some(c) => {
+          case Some(c) => {
 
-         // println("check instance "+c)
+            // println("check instance "+c)
             //CHECK IF INSTANCE TYPE DEFINITION IS NOT UPDATED
             if (c.getTypeDefinition.isUpdated(uc.getTypeDefinition)) {
 
-           //   println("is update")
-              val adaptcmd = KevoreeAdaptationFactory.eINSTANCE.createUpdateInstance
+              //   println("is update")
+              val adaptcmd = KevoreeAdaptationFactory.eINSTANCE.createAdaptationPrimitive()
+              adaptcmd.setName(JavaSePrimitive.UpdateInstance)
               adaptcmd.setRef(uc)
               adaptationModel.getAdaptations.add(adaptcmd)
 
               //UPDATE BINDING IF NECESSARY
               uc match {
                 case i: ComponentInstance => {
-                    i.getRelatedBindings.foreach(b => {
-                        adaptationModel.getAdaptations.filter(p => p.isInstanceOf[UpdateBinding]).find(adaptation => adaptation.asInstanceOf[UpdateBinding].getRef.isModelEquals(b)) match {
-                          case None => {
-                              val adaptcmd = KevoreeAdaptationFactory.eINSTANCE.createUpdateBinding
-                              adaptcmd.setRef(b)
-                              adaptationModel.getAdaptations.add(adaptcmd)
-                            }
-                          case Some(e) => //UPDATE BINDING ALREADY RESGISTERED
-                        }
-                      })
-                  }
+                  i.getRelatedBindings.foreach(b => {
+                    adaptationModel.getAdaptations.filter(p => p.getName == JavaSePrimitive.UpdateBinding)
+                      .find(adaptation => adaptation.getRef.asInstanceOf[MBinding].isModelEquals(b)) match {
+                      case None => {
+                        val adaptcmd = KevoreeAdaptationFactory.eINSTANCE.createAdaptationPrimitive()
+                        adaptcmd.setName(JavaSePrimitive.UpdateBinding)
+                        adaptcmd.setRef(b)
+                        adaptationModel.getAdaptations.add(adaptcmd)
+                      }
+                      case Some(e) => //UPDATE BINDING ALREADY RESGISTERED
+                    }
+                  })
+                }
                 case i: Channel => {
-                    i.getRelatedBindings.foreach {
-                      b =>
-                      adaptationModel.getAdaptations.filter(p => p.isInstanceOf[UpdateBinding]).find(adaptation => adaptation.asInstanceOf[UpdateBinding].getRef.isModelEquals(b)) match {
+                  i.getRelatedBindings.foreach {
+                    b =>
+                      adaptationModel.getAdaptations.filter(p => p.getName == JavaSePrimitive.UpdateBinding)
+                        .find(adaptation => adaptation.getRef.asInstanceOf[MBinding].isModelEquals(b)) match {
                         case None => {
-                            val adaptcmd = KevoreeAdaptationFactory.eINSTANCE.createUpdateBinding
-                            adaptcmd.setRef(b)
-                            adaptationModel.getAdaptations.add(adaptcmd)
-                          }
+                          val adaptcmd = KevoreeAdaptationFactory.eINSTANCE.createAdaptationPrimitive()
+                          adaptcmd.setName(JavaSePrimitive.UpdateBinding)
+                          adaptcmd.setRef(b)
+                          adaptationModel.getAdaptations.add(adaptcmd)
+                        }
                         case Some(e) => //UPDATE BINDING ALREADY RESGISTERED
                       }
-                    }
                   }
+                }
                 case _ =>
               }
 
@@ -188,7 +208,8 @@ trait UpdateNodeKompare extends AbstractKompare with UpdateChannelKompare {
             } else {
               //CHECK IS DICTIONARY IS UPDATED
               if (uc.getDictionary.isUpdated(c.getDictionary)) {
-                val adaptcmd = KevoreeAdaptationFactory.eINSTANCE.createUpdateDictionaryInstance
+                val adaptcmd = KevoreeAdaptationFactory.eINSTANCE.createAdaptationPrimitive()
+                adaptcmd.setName(JavaSePrimitive.UpdateDictionaryInstance)
                 adaptcmd.setRef(uc)
                 adaptationModel.getAdaptations.add(adaptcmd)
               } else {
@@ -203,16 +224,19 @@ trait UpdateNodeKompare extends AbstractKompare with UpdateChannelKompare {
                   }
                   //DEEP CHECK
                   if (!modified) {
-                    if (!previousGroup.getSubNodes.forall(sub => updateGroup.getSubNodes.exists(usub => usub.getName == sub.getName))) {
+                    if (!previousGroup.getSubNodes
+                      .forall(sub => updateGroup.getSubNodes.exists(usub => usub.getName == sub.getName))) {
                       modified = true
                     }
-                    if (!updateGroup.getSubNodes.forall(sub => previousGroup.getSubNodes.exists(usub => usub.getName == sub.getName))) {
+                    if (!updateGroup.getSubNodes
+                      .forall(sub => previousGroup.getSubNodes.exists(usub => usub.getName == sub.getName))) {
                       modified = true
                     }
                   }
 
                   if (modified) {
-                    val adaptcmd = KevoreeAdaptationFactory.eINSTANCE.createUpdateDictionaryInstance
+                    val adaptcmd = KevoreeAdaptationFactory.eINSTANCE.createAdaptationPrimitive()
+                    adaptcmd.setName(JavaSePrimitive.UpdateDictionaryInstance)
                     adaptcmd.setRef(uc)
                     adaptationModel.getAdaptations.add(adaptcmd)
                   }
@@ -224,53 +248,65 @@ trait UpdateNodeKompare extends AbstractKompare with UpdateChannelKompare {
 
             }
           }
-        case None => {
-            val ccmd = KevoreeAdaptationFactory.eINSTANCE.createAddInstance
+          case None => {
+            val ccmd = KevoreeAdaptationFactory.eINSTANCE.createAdaptationPrimitive()
+            ccmd.setName(JavaSePrimitive.AddInstance)
             ccmd.setRef(uc)
             adaptationModel.getAdaptations.add(ccmd)
           }
-      }
+        }
     }
     actualNode.getInstances.foreach {
       ac =>
-      updateNode.getInstances.find({
+        updateNode.getInstances.find({
           uc => uc.isModelEquals(ac)
         }) match {
-        case Some(c) => //OK , CASE ALREADY PROCESS BY PREVIOUS STEP
-        case None => {
-            val ccmd = KevoreeAdaptationFactory.eINSTANCE.createRemoveInstance
+          case Some(c) => //OK , CASE ALREADY PROCESS BY PREVIOUS STEP
+          case None => {
+            val ccmd = KevoreeAdaptationFactory.eINSTANCE.createAdaptationPrimitive()
+            ccmd.setName(JavaSePrimitive.RemoveInstance)
             ccmd.setRef(ac)
             adaptationModel.getAdaptations.add(ccmd)
           }
-      }
+        }
     }
 
     //Binding Step
-    updateRoot.getMBindings.filter(mb => mb.getPort.eContainer.eContainer.asInstanceOf[ContainerNode].getName == actualNode.getName).foreach {
+    updateRoot.getMBindings
+      .filter(mb => mb.getPort.eContainer.eContainer.asInstanceOf[ContainerNode].getName == actualNode.getName)
+      .foreach {
       uct =>
-      actualRoot.getMBindings.filter(mb => mb.getPort.eContainer.eContainer.asInstanceOf[ContainerNode].getName == updateNode.getName).find({
+        actualRoot.getMBindings
+          .filter(mb => mb.getPort.eContainer.eContainer.asInstanceOf[ContainerNode].getName == updateNode.getName)
+          .find({
           act => act.isModelEquals(uct)
         }) match {
-        case Some(ct) => //OK
-        case None => {
-            val ctcmd = KevoreeAdaptationFactory.eINSTANCE.createAddBinding
+          case Some(ct) => //OK
+          case None => {
+            val ctcmd = KevoreeAdaptationFactory.eINSTANCE.createAdaptationPrimitive()
+            ctcmd.setName(JavaSePrimitive.AddBinding)
             ctcmd.setRef(uct)
             adaptationModel.getAdaptations.add(ctcmd)
           }
-      }
+        }
     }
-    actualRoot.getMBindings.filter(mb => mb.getPort.eContainer.eContainer.asInstanceOf[ContainerNode].getName == actualNode.getName).foreach {
+    actualRoot.getMBindings
+      .filter(mb => mb.getPort.eContainer.eContainer.asInstanceOf[ContainerNode].getName == actualNode.getName)
+      .foreach {
       act =>
-      updateRoot.getMBindings.filter(mb => mb.getPort.eContainer.eContainer.asInstanceOf[ContainerNode].getName == updateNode.getName).find({
+        updateRoot.getMBindings
+          .filter(mb => mb.getPort.eContainer.eContainer.asInstanceOf[ContainerNode].getName == updateNode.getName)
+          .find({
           uct => uct.isModelEquals(act)
         }) match {
-        case Some(ct) => //OK
-        case None => {
-            val ctcmd = KevoreeAdaptationFactory.eINSTANCE.createRemoveBinding
+          case Some(ct) => //OK
+          case None => {
+            val ctcmd = KevoreeAdaptationFactory.eINSTANCE.createAdaptationPrimitive()
+            ctcmd.setName(JavaSePrimitive.RemoveBinding)
             ctcmd.setRef(act)
             adaptationModel.getAdaptations.add(ctcmd)
           }
-      }
+        }
     }
 
 
@@ -280,32 +316,36 @@ trait UpdateNodeKompare extends AbstractKompare with UpdateChannelKompare {
     //ONLY CHECK FOR HUB NO UNINSTALL
     updateRoot.getHubs.filter(hub => hub.usedByNode(updateNode.getName)).foreach {
       newhub =>
-      actualRoot.getHubs.filter(hub => hub.usedByNode(updateNode.getName)).find(hub => newhub.getName == hub.getName) match {
-        case None => {
+        actualRoot.getHubs.filter(hub => hub.usedByNode(updateNode.getName))
+          .find(hub => newhub.getName == hub.getName) match {
+          case None => {
             //NEW HUB INIT BINDING
             newhub.getOtherFragment(updateNode.getName).foreach {
               remoteName =>
-              val addccmd = KevoreeAdaptationFactory.eINSTANCE.createAddFragmentBinding
-              addccmd.setRef(newhub)
-              addccmd.setTargetNodeName(remoteName)
-              adaptationModel.getAdaptations.add(addccmd)
+                val addccmd = KevoreeAdaptationFactory.eINSTANCE.createAdaptationPrimitive()
+                addccmd.setName(JavaSePrimitive.AddFragmentBinding)
+                addccmd.setRef(newhub)
+                addccmd.setTargetNodeName(remoteName)
+                adaptationModel.getAdaptations.add(addccmd)
             }
           }
 
-        case Some(previousHub) => {
+          case Some(previousHub) => {
             //adaptationModel.getAdaptations.addAll(getUpdateChannelAdaptationModel(previousHub, newhub, updateNode.getName).getAdaptations)
           }
-      }
+        }
     }
     actualRoot.getHubs.filter(hub => hub.usedByNode(updateNode.getName)).foreach {
       actualHub =>
-      updateRoot.getHubs.filter(hub => hub.usedByNode(updateNode.getName)).find(hub => actualHub.getName == hub.getName) match {
-        case None => // NOTHING TO DO HUB WILL BE UNINSTALL, NO UNBIND IS NECESSARY
-        case Some(updateHub) => {
+        updateRoot.getHubs.filter(hub => hub.usedByNode(updateNode.getName))
+          .find(hub => actualHub.getName == hub.getName) match {
+          case None => // NOTHING TO DO HUB WILL BE UNINSTALL, NO UNBIND IS NECESSARY
+          case Some(updateHub) => {
             //CHECK AND UPDATE MBINDING
-            adaptationModel.getAdaptations.addAll(getUpdateChannelAdaptationModel(actualHub, updateHub, updateNode.getName).getAdaptations)
+            adaptationModel.getAdaptations
+              .addAll(getUpdateChannelAdaptationModel(actualHub, updateHub, updateNode.getName).getAdaptations)
           }
-      }
+        }
     }
 
 

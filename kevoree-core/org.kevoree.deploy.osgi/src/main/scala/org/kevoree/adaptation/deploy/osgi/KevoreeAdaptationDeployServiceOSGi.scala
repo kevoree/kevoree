@@ -92,7 +92,7 @@ class KevoreeAdaptationDeployServiceOSGi extends KevoreeAdaptationDeployService 
 
 				//DEPLOY UNIT CRUD ( TYPE PROVISIONNING )
 				//ThirdParty CRUD
-				case tpa: AddDeployUnit => command_add_deployUnit = command_add_deployUnit ++ List(AddDeployUnitAetherCommand(tpa.getRef, ctx))
+				case p.getName.equals("AddDeployUnit") => command_add_deployUnit = command_add_deployUnit ++ List(AddDeployUnitAetherCommand(tpa.getRef, ctx))
 				case tpa: RemoveDeployUnit => command_remove_deployUnit = command_remove_deployUnit ++ List(RemoveDeployUnitCommand(tpa.getRef, ctx))
 				//UPDATE US MAPPED ON REMOVE INSTALL
 				case tpa: UpdateDeployUnit => {

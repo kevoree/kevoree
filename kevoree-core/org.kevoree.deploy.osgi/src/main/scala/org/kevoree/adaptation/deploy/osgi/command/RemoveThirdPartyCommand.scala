@@ -18,9 +18,9 @@
 
 package org.kevoree.adaptation.deploy.osgi.command
 
-import org.kevoree.DeployUnit
 import org.kevoree.adaptation.deploy.osgi.context.KevoreeDeployManager
 import org.slf4j.LoggerFactory
+import org.kevoree.DeployUnit
 
 case class RemoveThirdPartyCommand(ct : DeployUnit, ctx : KevoreeDeployManager) extends PrimitiveCommand {
 
