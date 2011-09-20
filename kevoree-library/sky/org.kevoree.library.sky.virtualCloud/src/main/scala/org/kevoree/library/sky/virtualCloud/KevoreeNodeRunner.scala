@@ -41,7 +41,7 @@ class KevoreeNodeRunner {
 
   def startNode() {
     try {
-      System.out.println("StartNodeCommand")
+      logger.debug("StartNodeCommand")
       if (platformJARPath == null) {
         findJar()
       }
@@ -83,20 +83,20 @@ class KevoreeNodeRunner {
       }
       outputStreamReader.start()
       errorStreamReader.start()
-      System.out.println(nodePlatformProcess.exitValue)
-    }
-    catch {
+      nodePlatformProcess.exitValue
+    }catch {
       case e: IOException => {
-        e.printStackTrace()
+//        e.printStackTrace()
+        logger.error("Unexpected error", e)
       }
       case e: IllegalThreadStateException => {
-        System.out.println("platform " + nodeName + ":" + basePort + " is running")
+        logger.debug("platform " + nodeName + ":" + basePort + " is running")
       }
     }
   }
 
   def stopKillNode() {
-    System.out.println("KillNodeCommand")
+    logger.debug("KillNodeCommand")
     try {
       nodePlatformProcess.getOutputStream.write("stop 0".getBytes)
       nodePlatformProcess.getOutputStream.flush()
@@ -105,21 +105,21 @@ class KevoreeNodeRunner {
     }
     catch {
       case e: IOException => {
-        logger.error("The node cannot be killed. Try to force kill")
+        logger.debug("The node cannot be killed. Try to force kill")
         nodePlatformProcess.destroy()
       }
       case e: InterruptedException => {
-        logger.error("The node cannot be killed. Try to force kill")
+        logger.debug("The node cannot be killed. Try to force kill")
         nodePlatformProcess.destroy()
       }
       case e: IllegalThreadStateException => {
-        logger.error("The node cannot be killed. Try to force kill")
+        logger.debug("The node cannot be killed. Try to force kill")
         nodePlatformProcess.destroy()
       }
     }
   }
 
-  private def findJar() {
+  private def findJar() { // TODO maybe replace by using Aether
     System.out.println("Init jar platform")
     var jarLocation: String = System.getProperty("kevoree.location")
     if (jarLocation == null) {
