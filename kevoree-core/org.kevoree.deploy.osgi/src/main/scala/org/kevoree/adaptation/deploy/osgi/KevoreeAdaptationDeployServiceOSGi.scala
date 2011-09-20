@@ -14,33 +14,15 @@
 
 package org.kevoree.adaptation.deploy.osgi
 
-import org.kevoree.adaptation.deploy.osgi.command.AddFragmentBindingCommand
 import org.kevoree.adaptation.deploy.osgi.command._
 import org.kevoree.adaptation.deploy.osgi.context.KevoreeDeployManager
+import org.kevoree._
 
 //import org.kevoree.adaptation.deploy.osgi.scheduling.ChocoScheduling
 
 import org.kevoree.adaptation.deploy.osgi.scheduling.SchedulingWithTopologicalOrderAlgo
 import org.kevoree.api.service.adaptation.deploy.KevoreeAdaptationDeployService
 import org.kevoreeAdaptation.AdaptationModel
-import org.kevoreeAdaptation.AddBinding
-import org.kevoreeAdaptation.AddDeployUnit
-import org.kevoreeAdaptation.AddFragmentBinding
-import org.kevoreeAdaptation.AddInstance
-import org.kevoreeAdaptation.AddType
-import org.kevoreeAdaptation.AddThirdParty
-import org.kevoreeAdaptation.RemoveBinding
-import org.kevoreeAdaptation.RemoveDeployUnit
-import org.kevoreeAdaptation.RemoveFragmentBinding
-import org.kevoreeAdaptation.RemoveInstance
-import org.kevoreeAdaptation.RemoveType
-import org.kevoreeAdaptation.RemoveThirdParty
-import org.kevoreeAdaptation.UpdateBinding
-import org.kevoreeAdaptation.UpdateDeployUnit
-import org.kevoreeAdaptation.UpdateDictionaryInstance
-import org.kevoreeAdaptation.UpdateInstance
-import org.kevoreeAdaptation.UpdateType
-import org.osgi.framework.Bundle
 import org.slf4j.LoggerFactory
 import scala.collection.JavaConversions._
 
@@ -87,71 +69,71 @@ class KevoreeAdaptationDeployServiceOSGi extends KevoreeAdaptationDeployService 
 
 		var updateDictionaryCommand: List[PrimitiveCommand] = List()
 
-		model.getAdaptations foreach {
-			p => p match {
+		model.getAdaptations.toList.foreach {
+			p => p.getName match {
 
 				//DEPLOY UNIT CRUD ( TYPE PROVISIONNING )
 				//ThirdParty CRUD
-				case p.getName.equals("AddDeployUnit") => command_add_deployUnit = command_add_deployUnit ++ List(AddDeployUnitAetherCommand(tpa.getRef, ctx))
-				case tpa: RemoveDeployUnit => command_remove_deployUnit = command_remove_deployUnit ++ List(RemoveDeployUnitCommand(tpa.getRef, ctx))
+				case JavaSePrimitive.AddDeployUnit => command_add_deployUnit = command_add_deployUnit ++ List(AddDeployUnitAetherCommand(p.getRef.asInstanceOf[DeployUnit], ctx))
+				case JavaSePrimitive.RemoveDeployUnit => command_remove_deployUnit = command_remove_deployUnit ++ List(RemoveDeployUnitCommand(p.getRef.asInstanceOf[DeployUnit], ctx))
 				//UPDATE US MAPPED ON REMOVE INSTALL
-				case tpa: UpdateDeployUnit => {
-					command_remove_deployUnit = command_remove_deployUnit ++ List(RemoveDeployUnitCommand(tpa.getRef, ctx))
-					command_add_deployUnit = command_add_deployUnit ++ List(AddDeployUnitAetherCommand(tpa.getRef, ctx))
+				case JavaSePrimitive.UpdateDeployUnit => {
+					command_remove_deployUnit = command_remove_deployUnit ++ List(RemoveDeployUnitCommand(p.getRef.asInstanceOf[DeployUnit], ctx))
+					command_add_deployUnit = command_add_deployUnit ++ List(AddDeployUnitAetherCommand(p.getRef.asInstanceOf[DeployUnit], ctx))
 				}
 
 				//ThirdParty CRUD
-				case tpa: AddThirdParty => executedCommandTP = executedCommandTP ++ List(AddThirdPartyAetherCommand(tpa.getRef, ctx))
-				case tpa: RemoveThirdParty => executedCommandTP = executedCommandTP ++ List(RemoveThirdPartyCommand(tpa.getRef, ctx))
+				case JavaSePrimitive.AddThirdParty => executedCommandTP = executedCommandTP ++ List(AddThirdPartyAetherCommand(p.getRef.asInstanceOf[DeployUnit], ctx))
+				case JavaSePrimitive.RemoveThirdParty => executedCommandTP = executedCommandTP ++ List(RemoveThirdPartyCommand(p.getRef.asInstanceOf[DeployUnit], ctx))
 
 				//Type CRUD
-				case cta: AddType => command_add_type = command_add_type ++ List(AddTypeCommand(cta.getRef, ctx, nodeName))
-				case cta: RemoveType => command_remove_type = command_remove_type ++ List(RemoveTypeCommand(cta.getRef, ctx, nodeName))
-				case cta: UpdateType => {
+				case JavaSePrimitive.AddType => command_add_type = command_add_type ++ List(AddTypeCommand(p.getRef.asInstanceOf[TypeDefinition], ctx, nodeName))
+				case JavaSePrimitive.RemoveType => command_remove_type = command_remove_type ++ List(RemoveTypeCommand(p.getRef.asInstanceOf[TypeDefinition], ctx, nodeName))
+				case JavaSePrimitive.UpdateType => {
 					//UPDATE IS MAPPED UN REMOVE & INSTALL
-					command_remove_type = command_remove_type ++ List(RemoveTypeCommand(cta.getRef, ctx, nodeName))
-					command_add_type = command_add_type ++ List(AddTypeCommand(cta.getRef, ctx, nodeName))
+					command_remove_type = command_remove_type ++ List(RemoveTypeCommand(p.getRef.asInstanceOf[TypeDefinition], ctx, nodeName))
+					command_add_type = command_add_type ++ List(AddTypeCommand(p.getRef.asInstanceOf[TypeDefinition], ctx, nodeName))
 				}
 				//Instance CRUD
-				case ca: AddInstance => {
-					command_add_instance = command_add_instance ++ List(AddInstanceCommand(ca.getRef, ctx, nodeName))
-					updateDictionaryCommand = updateDictionaryCommand ++ List(UpdateDictionaryCommand(ca.getRef, ctx, nodeName))
+				case JavaSePrimitive.AddInstance => {
+					command_add_instance = command_add_instance ++ List(AddInstanceCommand(p.getRef.asInstanceOf[Instance], ctx, nodeName))
+					updateDictionaryCommand = updateDictionaryCommand ++ List(UpdateDictionaryCommand(p.getRef.asInstanceOf[Instance], ctx, nodeName))
 					// if(ca.getRef.isInstanceOf[ComponentInstance]){
-					startCommand = startCommand ++ List(StartInstanceCommand(ca.getRef, ctx, nodeName))
+					startCommand = startCommand ++ List(StartInstanceCommand(p.getRef.asInstanceOf[Instance], ctx, nodeName))
 					// }
 				}
-				case ca: RemoveInstance => {
-					command_remove_instance = command_remove_instance ++ List(RemoveInstanceCommand(ca.getRef, ctx, nodeName))
+				case JavaSePrimitive.RemoveInstance => {
+					command_remove_instance = command_remove_instance ++ List(RemoveInstanceCommand(p.getRef.asInstanceOf[Instance], ctx, nodeName))
 					//if(ca.getRef.isInstanceOf[ComponentInstance]){
-					stopCommand = stopCommand ++ List(StopInstanceCommand(ca.getRef, ctx, nodeName))
+					stopCommand = stopCommand ++ List(StopInstanceCommand(p.getRef.asInstanceOf[Instance], ctx, nodeName))
 					//}
 				}
-				case ca: UpdateInstance => {
+				case JavaSePrimitive.UpdateInstance => {
 					//STOP & REMOVE
-					command_remove_instance = command_remove_instance ++ List(RemoveInstanceCommand(ca.getRef, ctx, nodeName))
+					command_remove_instance = command_remove_instance ++ List(RemoveInstanceCommand(p.getRef.asInstanceOf[Instance], ctx, nodeName))
 					//if(ca.getRef.isInstanceOf[ComponentInstance]){
-					stopCommand = stopCommand ++ List(StopInstanceCommand(ca.getRef, ctx, nodeName))
-					startCommand = startCommand ++ List(StartInstanceCommand(ca.getRef, ctx, nodeName))
+					stopCommand = stopCommand ++ List(StopInstanceCommand(p.getRef.asInstanceOf[Instance], ctx, nodeName))
+					startCommand = startCommand ++ List(StartInstanceCommand(p.getRef.asInstanceOf[Instance], ctx, nodeName))
 					//}
-					command_add_instance = command_add_instance ++ List(AddInstanceCommand(ca.getRef, ctx, nodeName))
-					updateDictionaryCommand = updateDictionaryCommand ++ List(UpdateDictionaryCommand(ca.getRef, ctx, nodeName))
+					command_add_instance = command_add_instance ++ List(AddInstanceCommand(p.getRef.asInstanceOf[Instance], ctx, nodeName))
+					updateDictionaryCommand = updateDictionaryCommand ++ List(UpdateDictionaryCommand(p.getRef.asInstanceOf[Instance], ctx, nodeName))
 				}
-				case ca: UpdateDictionaryInstance => {
-					updateDictionaryCommand = updateDictionaryCommand ++ List(UpdateDictionaryCommand(ca.getRef, ctx, nodeName))
+				case JavaSePrimitive.UpdateDictionaryInstance => {
+					updateDictionaryCommand = updateDictionaryCommand ++ List(UpdateDictionaryCommand(p.getRef.asInstanceOf[Instance], ctx, nodeName))
 				}
 
 				//Binding CRUD
-				case ca: AddBinding => command_add_binding = command_add_binding ++ List(AddBindingCommand(ca.getRef, ctx, nodeName))
-				case ca: RemoveBinding => command_remove_binding = command_remove_binding ++ List(RemoveBindingCommand(ca.getRef, ctx, nodeName))
-				case ca: UpdateBinding => {
+				case JavaSePrimitive.AddBinding => command_add_binding = command_add_binding ++ List(AddBindingCommand(p.getRef.asInstanceOf[MBinding], ctx, nodeName))
+				case JavaSePrimitive.RemoveBinding => command_remove_binding = command_remove_binding ++ List(RemoveBindingCommand(p.getRef.asInstanceOf[MBinding], ctx, nodeName))
+				case JavaSePrimitive.UpdateBinding => {
 					//UPDATE MAP ON REMOVE & INSTALL
-					command_add_binding = command_add_binding ++ List(AddBindingCommand(ca.getRef, ctx, nodeName))
-					command_remove_binding = command_remove_binding ++ List(RemoveBindingCommand(ca.getRef, ctx, nodeName))
+					command_add_binding = command_add_binding ++ List(AddBindingCommand(p.getRef.asInstanceOf[MBinding], ctx, nodeName))
+					command_remove_binding = command_remove_binding ++ List(RemoveBindingCommand(p.getRef.asInstanceOf[MBinding], ctx, nodeName))
 				}
 
 				//Channel binding
-				case ca: AddFragmentBinding => command_add_binding = command_add_binding ++ List(AddFragmentBindingCommand(ca.getRef, ca.getTargetNodeName, ctx, nodeName))
-				case ca: RemoveFragmentBinding => command_remove_binding = command_remove_binding ++ List(RemoveFragmentBindingCommand(ca.getRef, ca.getTargetNodeName, ctx, nodeName))
+				case JavaSePrimitive.AddFragmentBinding => command_add_binding = command_add_binding ++ List(AddFragmentBindingCommand(p.getRef.asInstanceOf[Channel], p.getTargetNodeName, ctx, nodeName))
+				case JavaSePrimitive.RemoveFragmentBinding => command_remove_binding = command_remove_binding ++ List(RemoveFragmentBindingCommand(p.getRef.asInstanceOf[Channel], p.getTargetNodeName, ctx, nodeName))
 
 				case _ => logger.error("Unknown Kevoree adaptation primitive"); false
 			}
