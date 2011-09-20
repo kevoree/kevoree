@@ -35,6 +35,8 @@ class NodeTypeBootStrapUI(pkernel: ContainerRoot) extends JPanel {
   var instanceName: JTextField = _
   var nodeTypeComboBox: JComboBox = _
   var currentProperties = new Properties()
+  var currentModel = pkernel
+  def getCurrentModel : ContainerRoot = currentModel
 
   def getKevName = {
     instanceName.getText
@@ -49,6 +51,7 @@ class NodeTypeBootStrapUI(pkernel: ContainerRoot) extends JPanel {
 
   //CALL INIT
   def init(kernel: ContainerRoot) {
+    currentModel = kernel
     this.removeAll()
     val nodeTypeModel = new DefaultComboBoxModel
 
