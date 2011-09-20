@@ -2,7 +2,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <artifactId>org.kevoree.core</artifactId>
-    <packaging>bundle</packaging>
+    <packaging>jar</packaging>
     <name>Kevoree :: Core</name>
 
     <version>1.3.0-SNAPSHOT</version>
@@ -52,48 +52,7 @@
             <artifactId>org.kevoree.tools.aether.framework</artifactId>
             <version>${kevoree.version}</version>
         </dependency>
-
-        <dependency>
-            <groupId>net.lag</groupId>
-            <artifactId>configgy</artifactId>
-            <version>2.0.0</version>
-            <exclusions>
-                <exclusion>
-                    <artifactId>scala-library</artifactId>
-                    <groupId>org.scala-lang</groupId>
-                </exclusion>
-                <exclusion>
-                    <artifactId>vscaladoc</artifactId>
-                    <groupId>org.scala-tools</groupId>
-                </exclusion>
-            </exclusions>
-        </dependency>
     </dependencies>
 
-
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.felix</groupId>
-                <artifactId>maven-bundle-plugin</artifactId>
-                <version>2.3.5</version>
-                <extensions>true</extensions>
-                <configuration>
-                    <instructions>
-                        <Bundle-ClassPath>.</Bundle-ClassPath>
-                        <Import-Package>!javax.management,org.slf4j.*;version="${slf4j.version.range}",*
-                        </Import-Package>
-                        <Private-Package>
-                            org.kevoree.core.impl
-                        </Private-Package>
-                        <Export-Package>net.lag.*</Export-Package>
-                        <Bundle-Activator>org.kevoree.core.impl.KevoreeCoreActivator</Bundle-Activator>
-                    </instructions>
-                </configuration>
-            </plugin>
-
-        </plugins>
-
-    </build>
 
 </project>

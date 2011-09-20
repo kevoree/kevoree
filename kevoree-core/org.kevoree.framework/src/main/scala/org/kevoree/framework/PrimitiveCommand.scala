@@ -1,3 +1,5 @@
+package org.kevoree.framework
+
 /**
  * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE, Version 3, 29 June 2007;
  * you may not use this file except in compliance with the License.
@@ -15,17 +17,19 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package org.kevoree.api.service.core.kompare;
 
-import org.kevoree.ContainerRoot;
-import org.kevoreeAdaptation.AdaptationModel;
+trait PrimitiveCommand {
 
+  def execute() : Boolean
 
-/**
- *
- * @author ffouquet
- */
-public interface ModelKompareService {
+  def undo(): Unit
 
-    public AdaptationModel kompare(ContainerRoot actualModel, ContainerRoot targetModel,String nodeName);
+  var lastExecutionBundle : Option[org.osgi.framework.Bundle] = None
+
+  def getLastExecutionBundle = lastExecutionBundle
+
+  var mustBeStarted = false
+
+  var startLevel : Option[Int] = None
+
 }
