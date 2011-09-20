@@ -6,10 +6,8 @@
 package org.kevoree.library.javase.virtualCloud;
 
 import org.kevoree.ContainerRoot;
-import org.kevoree.annotation.PhysicalNodeType;
-import org.kevoree.annotation.Start;
-import org.kevoree.annotation.Stop;
-import org.kevoree.framework.AbstractPhysicalNodeType;
+import org.kevoree.annotation.*;
+import org.kevoree.framework.AbstractNodeType;
 import org.kevoree.framework.Constants;
 import org.kevoree.framework.KevoreePlatformHelper;
 import org.kevoree.framework.KevoreeXmiHelper;
@@ -26,34 +24,26 @@ import java.net.URL;
 import java.net.URLConnection;
 
 /**
- * @author ffouquet
+ * User: Erwan Daubert - erwan.daubert@gmail.com
+ * Date: 15/09/11
+ * Time: 16:26
  */
-@PhysicalNodeType
-/*@DictionaryType({
-    @DictionaryAttribute(name = "autodiscovery", defaultValue = "true", optional = true,vals={"true","false"})
-})*/
-public class VirtualCloudPhysicalNodeType extends AbstractPhysicalNodeType {
+@NodeType
+@DictionaryType({
+	@DictionaryAttribute(name = "port", defaultValue = "7000", optional = false)
+})
+public class VirtualCloudPhysicalNodeType extends AbstractNodeType {
     private static final Logger logger = LoggerFactory.getLogger(VirtualCloudPhysicalNodeType.class);
 
 	// TODO replace jmdns by something else to do discovery ? => maybe for EC2 but not for this implementation
 
     @Start
     @Override
-    public void startNode() {
-        Integer port = ((System.getProperty("node.port") == null) ? 7000 : Integer.parseInt(System.getProperty("node.port")));
-
-        /*if(this.getDictionary().get("autodiscovery").equals("true")){
-            //jmDnsComponent = new JmDnsComponent(this.getNodeName(), port, this.getModelService(),this.getClass().getSimpleName());
-        }*/
-    }
+    public void startNode() {}
 
     @Stop
     @Override
-    public void stopNode() {
-        /*if(jmDnsComponent != null){
-            jmDnsComponent.close();
-        }*/
-    }
+    public void stopNode() {}
 
     @Override
     public void push(String physicalNodeName, ContainerRoot root, BundleContext context) {
@@ -75,8 +65,6 @@ public class VirtualCloudPhysicalNodeType extends AbstractPhysicalNodeType {
             }
             URL url = new URL("http://" + IP + ":" + PORT + "/model/current");
 
-//			System.out.println(url);
-
             URLConnection conn = url.openConnection();
             conn.setConnectTimeout(2000);
             conn.setDoOutput(true);
@@ -88,14 +76,12 @@ public class VirtualCloudPhysicalNodeType extends AbstractPhysicalNodeType {
             BufferedReader rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
             String line = rd.readLine();
             while (line != null) {
-//				System.out.println(line);
                 line = rd.readLine();
             }
             wr.close();
             rd.close();
 
         } catch (Exception e) {
-//			e.printStackTrace();
             logger.error("Unable to push a model on " + physicalNodeName, e);
 
         }
@@ -103,8 +89,8 @@ public class VirtualCloudPhysicalNodeType extends AbstractPhysicalNodeType {
     }
 
     @Override
-    public boolean deploy(AdaptationModel model, String nodeName) {
-        //throw new UnsupportedOperationException("Not supported yet.");
+    public boolean deploy(AdaptationModel model, String physicalNodeName) {
+		// TODO how to do the deploy
         return true;
     }
 
