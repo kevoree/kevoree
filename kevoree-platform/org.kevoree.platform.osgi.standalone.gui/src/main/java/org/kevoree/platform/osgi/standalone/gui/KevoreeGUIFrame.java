@@ -107,9 +107,10 @@ public class KevoreeGUIFrame extends JFrame {
                     @Override
                     public void run() {
 
-                        NodeTypeBootStrapModel.checkAndCreate(model, nodeName, nodeUI.getKevTypeName().toString(), nodeUI.currentProperties());
+                        ContainerRoot btModel = nodeUI.getCurrentModel() ;
+                        NodeTypeBootStrapModel.checkAndCreate(btModel, nodeName, nodeUI.getKevTypeName().toString(), nodeUI.currentProperties());
                         final BootstrapActivator btA = new org.kevoree.platform.osgi.standalone.BootstrapActivator();
-                        btA.setBootstrapModel(model);
+                        btA.setBootstrapModel(btModel);
 
                         EmbeddedActivators.setActivators(Arrays.asList(
                                 //      (BundleActivator) new org.ops4j.pax.url.mvn.internal.Activator(),
