@@ -37,8 +37,8 @@ class KevoreeDeployActivator extends BundleActivator {
     modelHandlerServiceTracker = new ServiceTracker(bc,classOf[KevoreeModelHandlerService].getName,null)
     packageAdminServiceTracker = new ServiceTracker(bc,classOf[PackageAdmin].getName,null)
 
-    modelHandlerServiceTracker.open
-    packageAdminServiceTracker.open
+    modelHandlerServiceTracker.open()
+    packageAdminServiceTracker.open()
 
     context = new KevoreeDeployManager
     context.setBundle(bc.getBundle)
@@ -49,12 +49,12 @@ class KevoreeDeployActivator extends BundleActivator {
     bean = new KevoreeAdaptationDeployServiceOSGi
     bean.setContext(context)
 
-    bc.registerService(classOf[org.kevoree.api.service.adaptation.deploy.KevoreeAdaptationDeployService].getName(), bean, new Hashtable());
+    bc.registerService(classOf[org.kevoree.api.service.adaptation.deploy.KevoreeAdaptationDeployService].getName, bean, new Hashtable());
   }
 
   def stop(bc : BundleContext){
-    modelHandlerServiceTracker.close
-    packageAdminServiceTracker.close
+    modelHandlerServiceTracker.close()
+    packageAdminServiceTracker.close()
     bean = null
     context = null
   }
