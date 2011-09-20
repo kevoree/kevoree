@@ -19,6 +19,7 @@
 package org.kevoree.kompare.sub
 
 import org.kevoree._
+import kompare.JavaSePrimitive
 import org.kevoreeAdaptation._
 import org.slf4j.LoggerFactory
 import scala.collection.JavaConversions._
@@ -26,62 +27,73 @@ import org.kevoree.framework.aspects.KevoreeAspects._
 
 trait StopNodeKompare extends AbstractKompare {
 
-  def getStopNodeAdaptationModel(node:ContainerNode):AdaptationModel={
+  def getStopNodeAdaptationModel (node: ContainerNode): AdaptationModel = {
     val adaptationModel = org.kevoreeAdaptation.KevoreeAdaptationFactory.eINSTANCE.createAdaptationModel
-    logger.info("STOP NODE "+node.getName)
+    logger.info("STOP NODE " + node.getName)
 
     val root = node.eContainer.asInstanceOf[ContainerRoot]
 
     /* add remove FRAGMENT binding */
-    root.getHubs.filter(hub=> hub.usedByNode(node.getName)).foreach{channel =>
-      channel.getOtherFragment(node.getName).foreach{remoteName =>
-        val addccmd = KevoreeAdaptationFactory.eINSTANCE.createRemoveFragmentBinding
-        addccmd.setRef(channel)
-        addccmd.setTargetNodeName(remoteName)
-        adaptationModel.getAdaptations.add(addccmd)
-      }
+    root.getHubs.filter(hub => hub.usedByNode(node.getName)).foreach {
+      channel =>
+        channel.getOtherFragment(node.getName).foreach {
+          remoteName =>
+            val addccmd = KevoreeAdaptationFactory.eINSTANCE.createAdaptationPrimitive()
+            addccmd.setName(JavaSePrimitive.RemoveFragmentBinding)
+            addccmd.setRef(channel)
+            addccmd.setTargetNodeName(remoteName)
+            adaptationModel.getAdaptations.add(addccmd)
+        }
     }
 
 
     /* remove mbinding */
-    root.getMBindings.foreach{b=>
-      if(b.getPort.eContainer.eContainer == node){
-        val addcmd = KevoreeAdaptationFactory.eINSTANCE.createRemoveBinding
-        addcmd.setRef(b)
-        adaptationModel.getAdaptations.add(addcmd)
-      }
+    root.getMBindings.foreach {
+      b =>
+        if (b.getPort.eContainer.eContainer == node) {
+          val ctcmd = KevoreeAdaptationFactory.eINSTANCE.createAdaptationPrimitive()
+          ctcmd.setName(JavaSePrimitive.RemoveBinding)
+          ctcmd.setRef(b)
+          adaptationModel.getAdaptations.add(ctcmd)
+        }
     }
 
     /* add component */
-    node.getInstances.foreach({c =>
-        val cmd = KevoreeAdaptationFactory.eINSTANCE.createRemoveInstance
+    node.getInstances.foreach({
+      c =>
+        val cmd = KevoreeAdaptationFactory.eINSTANCE.createAdaptationPrimitive()
+        cmd.setName(JavaSePrimitive.RemoveInstance)
         cmd.setRef(c)
         adaptationModel.getAdaptations.add(cmd)
-      })
+    })
 
 
     /* remove type */
-    node.getUsedTypeDefinition.foreach{ct=>
-      val rmctcmd = KevoreeAdaptationFactory.eINSTANCE.createRemoveType
-      rmctcmd.setRef(ct)
-      adaptationModel.getAdaptations.add(rmctcmd)
-      
-      /* add all reLib from found deploy Unit*/
-      val deployUnitfound : DeployUnit = ct.foundRelevantDeployUnit(node)
-      
+    node.getUsedTypeDefinition.foreach {
+      ct =>
+        val rmctcmd = KevoreeAdaptationFactory.eINSTANCE.createAdaptationPrimitive()
+        rmctcmd.setName(JavaSePrimitive.RemoveType)
+        rmctcmd.setRef(ct)
+        adaptationModel.getAdaptations.add(rmctcmd)
 
-      /* remove all reLib */
-      //TODO
+        /* add all reLib from found deploy Unit*/
+        val deployUnitfound: DeployUnit = ct.foundRelevantDeployUnit(node)
 
-      /* add deploy unit if necessary */
-      adaptationModel.getAdaptations.filter(adaptation => adaptation.isInstanceOf[RemoveDeployUnit]).find(adaptation=> adaptation.asInstanceOf[RemoveDeployUnit].getRef.isModelEquals(deployUnitfound) ) match {
-        case None => {
-            val ctcmd = KevoreeAdaptationFactory.eINSTANCE.createRemoveDeployUnit
+
+        /* remove all reLib */
+        //TODO
+
+        /* add deploy unit if necessary */
+        adaptationModel.getAdaptations.filter(adaptation => adaptation.getName == JavaSePrimitive.RemoveDeployUnit)
+          .find(adaptation => adaptation.getRef.asInstanceOf[DeployUnit].isModelEquals(deployUnitfound)) match {
+          case None => {
+            val ctcmd = KevoreeAdaptationFactory.eINSTANCE.createAdaptationPrimitive()
+            ctcmd.setName(JavaSePrimitive.RemoveDeployUnit)
             ctcmd.setRef(deployUnitfound)
             adaptationModel.getAdaptations.add(ctcmd)
           }
-        case Some(e)=> //SIMILAR DEPLOY UNIT PRIMITIVE ALREADY REGISTERED
-      }
+          case Some(e) => //SIMILAR DEPLOY UNIT PRIMITIVE ALREADY REGISTERED
+        }
 
 
     }

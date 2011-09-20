@@ -18,14 +18,12 @@
 
 package org.kevoree.kompare.tests
 
-import org.kevoree.KevoreeFactory
-import org.kevoree.ContainerRoot
-import org.kevoree.NamedElement
 import org.kevoree.framework.KevoreeXmiHelper
 import org.kevoreeAdaptation.AdaptationModel
 import org.kevoreeAdaptation._
 import org.scalatest.junit.JUnitSuite
 import scala.collection.JavaConversions._
+import org.kevoree._
 
 trait KompareSuite extends JUnitSuite {
 
@@ -51,43 +49,43 @@ case class RichAdaptationModel(self: AdaptationModel) {
     assert(self.getAdaptations.size == size)
   }
 
-  def shouldContain[A](c: Class[A], refName: String) = {
+  def shouldContain[A](c: String, refName: String) = {
     assert(
       self.getAdaptations.exists(adaptation => {
-        adaptation match {
-          case e: InstanceAdaptation if (adaptation.getClass.getSimpleName.contains(c.getSimpleName)) => e.getRef.getName == refName
-          case e: TypeAdaptation if (adaptation.getClass.getSimpleName.contains(c.getSimpleName)) => e.getRef.getName == refName
+        adaptation.getRef match {
+          case e: Instance if (adaptation.getName.contains(c)) => e.getName == refName
+          case e: TypeDefinition if (adaptation.getName.contains(c)) => e.getName == refName
           case _ => false
         }
       })
     )
   }
 
-  def shouldContainSize[A](c: Class[A], nb: Int) = {
+  def shouldContainSize[A](c: String, nb: Int) = {
     assert(
-      self.getAdaptations.filter(adaptation => adaptation.getClass.getSimpleName.contains(c.getSimpleName)).size == nb
+      self.getAdaptations.filter(adaptation => adaptation.getName.contains(c)).size == nb
     )
   }
 
 
-  def shouldNotContain(c: Class[_]) = {
+  def shouldNotContain(c: String) = {
     assert(
-      self.getAdaptations.forall(adaptation => !adaptation.getClass.getSimpleName.contains(c.getSimpleName))
+      self.getAdaptations.forall(adaptation => !adaptation.getName.contains(c))
     )
   }
 
   def print = {
 
     println("Adaptations")
-    self.getAdaptations.toArray.foreach {
+    self.getAdaptations.toList.foreach {
       adapt =>
-        println(adapt.getClass.getName)
-        adapt match {
-          case i: UpdateDeployUnit => println("=>" + i.getRef.getUnitName)
-          case i: TypeAdaptation => println("=>" + i.getRef.getName)
-          case i: InstanceAdaptation => println("=>" + i.getRef.getName)
-          case i: BindingAdaptation => {
-            println("=>" + i.getRef.getHub.getName + "->" + i.getRef.getPort.getPortTypeRef.getName + "-" + i.getRef.getPort.eContainer.asInstanceOf[NamedElement].getName)
+        println(adapt.getName)
+        adapt.getRef match {
+          case i: DeployUnit => println("=>" + i.getUnitName)
+          case i: TypeDefinition => println("=>" + i.getName)
+          case i: Instance => println("=>" + i.getName)
+          case i: MBinding => {
+            println("=>" + i.getHub.getName + "->" + i.getPort.getPortTypeRef.getName + "-" + i.getPort.eContainer.asInstanceOf[NamedElement].getName)
           }
           case _ =>
         }

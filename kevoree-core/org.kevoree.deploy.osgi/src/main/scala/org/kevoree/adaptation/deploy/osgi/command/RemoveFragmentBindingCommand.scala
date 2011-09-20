@@ -18,13 +18,13 @@
 
 package org.kevoree.adaptation.deploy.osgi.command
 
-import org.kevoree._
 import org.kevoree.adaptation.deploy.osgi.context.KevoreeDeployManager
 import org.kevoree.framework.KevoreeChannelFragment
 import org.kevoree.framework.Constants
 import org.kevoree.framework.message.FragmentUnbindMessage
 import org.slf4j.LoggerFactory
 import scala.collection.JavaConversions._
+import org.kevoree.Channel
 
 case class RemoveFragmentBindingCommand(c : Channel,remoteNodeName:String, ctx : KevoreeDeployManager,nodeName:String) extends PrimitiveCommand {
 
