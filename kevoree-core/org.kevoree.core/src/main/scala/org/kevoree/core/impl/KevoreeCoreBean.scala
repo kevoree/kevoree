@@ -32,6 +32,7 @@ import org.kevoree.api.service.core.handler.{ModelListener, KevoreeModelHandlerS
 import org.eclipse.emf.ecore.util.EcoreUtil
 import scala.collection.JavaConversions._
 import org.kevoree.framework._
+import deploy.PrimitiveCommandExecutionHelper
 import org.kevoree.tools.aether.framework.NodeTypeBootstrapHelper
 
 class KevoreeCoreBean extends KevoreeModelHandlerService with KevoreeActor {
@@ -123,11 +124,9 @@ class KevoreeCoreBean extends KevoreeModelHandlerService with KevoreeActor {
     val stopModel = KevoreeFactory.eINSTANCE.createContainerRoot();
     val adaptationModel = nodeInstance.kompare(model, stopModel);
 
-    //TODO DEPLOY FOLLOWING ORDER
-      //PrimitiveCommand  execution
+    val deployResult = PrimitiveCommandExecutionHelper.execute(adaptationModel, nodeInstance)
 
-    val deployResult = false//deployService.deploy(adaptationModel, nodeName);
-    logger.debug("Stop result => "+deployResult)
+    logger.debug("Stop result => " + deployResult)
     // KevoreeXmiHelper.save(bundleContext.getDataFile("lastModel.xmi").getAbsolutePath(), models.head);
   }
 
@@ -154,13 +153,7 @@ class KevoreeCoreBean extends KevoreeModelHandlerService with KevoreeActor {
           logger.debug("Begin update model " + milli)
           val adaptationModel = nodeInstance.kompare(model, newmodel);
 
-
-              //TODO DEPLOY FOLLOWING ORDER
-      //PrimitiveCommand  execution
-
-    val deployResult = false//deployService.deploy(adaptationModel, nodeName);
-
-         // val deployResult = deployService.deploy(adaptationModel, nodeName);
+          val deployResult = PrimitiveCommandExecutionHelper.execute(adaptationModel, nodeInstance)
 
           if (deployResult) {
             //Merge previous model on new model for platform model
