@@ -3,18 +3,6 @@
   <children xmi:type="notation:Node" xmi:id="_MtpUkONrEeCZA_H4F9cW-g" type="1001">
     <children xmi:type="notation:Node" xmi:id="_Mtrw0ONrEeCZA_H4F9cW-g" type="4001"/>
     <children xmi:type="notation:Node" xmi:id="_MtsX4ONrEeCZA_H4F9cW-g" type="5001">
-      <children xmi:type="notation:Node" xmi:id="_Zt2IkON4EeCZA_H4F9cW-g" type="2001">
-        <element xmi:type="ecore:EAttribute" href="kevoree.adaptation.ecore#//AdaptationPrimitive/name"/>
-        <layoutConstraint xmi:type="notation:Location" xmi:id="_Zt2IkeN4EeCZA_H4F9cW-g"/>
-      </children>
-      <children xmi:type="notation:Node" xmi:id="_u4_PoOODEeCZA_H4F9cW-g" type="2001">
-        <element xmi:type="ecore:EAttribute" href="kevoree.adaptation.ecore#//AdaptationPrimitive/targetNodeName"/>
-        <layoutConstraint xmi:type="notation:Location" xmi:id="_u4_PoeODEeCZA_H4F9cW-g"/>
-      </children>
-      <children xmi:type="notation:Node" xmi:id="_dDnKgON4EeCZA_H4F9cW-g" type="2001">
-        <element xmi:type="ecore:EAttribute" href="kevoree.adaptation.ecore#//AdaptationPrimitive/className"/>
-        <layoutConstraint xmi:type="notation:Location" xmi:id="_dDnKgeN4EeCZA_H4F9cW-g"/>
-      </children>
       <styles xmi:type="notation:DrawerStyle" xmi:id="_MtsX4eNrEeCZA_H4F9cW-g"/>
       <styles xmi:type="notation:SortingStyle" xmi:id="_MtsX4uNrEeCZA_H4F9cW-g"/>
       <styles xmi:type="notation:FilteringStyle" xmi:id="_MtsX4-NrEeCZA_H4F9cW-g"/>
