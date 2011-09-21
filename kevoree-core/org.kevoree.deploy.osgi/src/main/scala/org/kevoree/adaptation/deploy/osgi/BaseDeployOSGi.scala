@@ -241,9 +241,7 @@ class BaseDeployOSGi(bundle : Bundle) {
 		}
 
 		val deployTime = System.currentTimeMillis
-		//println("Deploy time = " + (deployTime - initTime) + " ms");
     logger.debug("execution time = " + (deployTime - initTime) + " ms");
-
 		executionResult
 	}
 
