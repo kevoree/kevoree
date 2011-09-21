@@ -21,12 +21,11 @@ import org.kevoree._
 //import org.kevoree.adaptation.deploy.osgi.scheduling.ChocoScheduling
 
 import org.kevoree.adaptation.deploy.osgi.scheduling.SchedulingWithTopologicalOrderAlgo
-import org.kevoree.api.service.adaptation.deploy.KevoreeAdaptationDeployService
 import org.kevoreeAdaptation.AdaptationModel
 import org.slf4j.LoggerFactory
 import scala.collection.JavaConversions._
 
-class KevoreeAdaptationDeployServiceOSGi extends KevoreeAdaptationDeployService {
+class KevoreeAdaptationDeployServiceOSGi {
 
 	var ctx: KevoreeDeployManager = null
 	var logger = LoggerFactory.getLogger(this.getClass);
