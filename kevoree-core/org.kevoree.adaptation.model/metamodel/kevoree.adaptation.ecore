@@ -4,9 +4,9 @@
     xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" name="kevoreeAdaptation"
     nsURI="http://kevoree/adaptation/1.0" nsPrefix="kevoree.adaptation">
   <eClassifiers xsi:type="ecore:EClass" name="AdaptationPrimitive">
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="ref" eType="ecore:EClass http://www.eclipse.org/emf/2002/Ecore#//EObject"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="targetNodeName" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="targetNode" eType="ecore:EClass ../../org.kevoree.model/metamodel/kevoree.ecore#//ContainerNode"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="primitiveType" eType="ecore:EClass ../../org.kevoree.model/metamodel/kevoree.ecore#//AdaptationPrimitiveType"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="AdaptationModel">
     <eStructuralFeatures xsi:type="ecore:EReference" name="adaptations" upperBound="-1"
