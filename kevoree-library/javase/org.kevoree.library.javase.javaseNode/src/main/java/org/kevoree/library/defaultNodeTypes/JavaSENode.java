@@ -7,7 +7,6 @@ package org.kevoree.library.defaultNodeTypes;
 
 import org.kevoree.ContainerRoot;
 import org.kevoree.adaptation.deploy.osgi.BaseDeployOSGi;
-import org.kevoree.adaptation.deploy.osgi.JavaSePrimitive;
 import org.kevoree.annotation.*;
 import org.kevoree.framework.*;
 import org.kevoree.framework.Constants;

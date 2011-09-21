@@ -110,6 +110,14 @@ trait TypeDefinitionMerger extends Merger with DictionaryMerger with PortTypeMer
             du.setTargetNodeType(newTypeDefinition.asInstanceOf[NodeType])
           }
       }
+      val nodeType = actuelTypeDefinition.asInstanceOf[NodeType]
+      val pl = (nodeType.getManagedPrimitiveTypes.toList ++ List())
+      nodeType.getManagedPrimitiveTypes.clear()
+      pl.foreach {
+        pll =>
+          nodeType.getManagedPrimitiveTypes.add(mergeAdaptationPrimitive(root, pll))
+      }
+
     }
     //UPDATE DEPLOYS UNIT
     val allDeployUnits = List() ++ newTypeDefinition.getDeployUnits.toList //CLONE LIST -- !!! REMOVE OLD DEPLOY UNIT OBSOLET
@@ -219,6 +227,12 @@ trait TypeDefinitionMerger extends Merger with DictionaryMerger with PortTypeMer
       }
       case nt: NodeType => {
         actualModel.getTypeDefinitions.add(nt)
+        val pl = (nt.getManagedPrimitiveTypes.toList ++ List())
+        nt.getManagedPrimitiveTypes.clear()
+        pl.foreach {
+          pll =>
+            nt.getManagedPrimitiveTypes.add(mergeAdaptationPrimitive(actualModel, pll))
+        }
       }
       case gt: GroupType => {
         actualModel.getTypeDefinitions.add(gt)
@@ -227,6 +241,18 @@ trait TypeDefinitionMerger extends Merger with DictionaryMerger with PortTypeMer
         /*println("PORTTYPE M ?? "+pt.toString)*//* MERGE BY COMPONENT TYPE */
       }
       case _@msg => println("Error uncatch type") // NO RECURSIVE FOR OTHER TYPE
+    }
+  }
+
+  def mergeAdaptationPrimitive(model: ContainerRoot, adaptation: AdaptationPrimitiveType): AdaptationPrimitiveType = {
+    model.getAdaptationPrimitiveTypes.find(p => p.getName == adaptation.getName) match {
+      case Some(p) => p
+      case None => {
+        val newT = KevoreeFactory.eINSTANCE.createAdaptationPrimitiveType()
+        newT.setName(adaptation.getName)
+        model.getAdaptationPrimitiveTypes.add(newT)
+        newT
+      }
     }
   }
 
