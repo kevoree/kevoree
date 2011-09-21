@@ -45,7 +45,9 @@ trait UpdateNodeKompare extends AbstractKompare with UpdateChannelKompare {
             //CHECK IF TYPE IS UPDATE
             if (ct.isUpdated(uct)) {
               val adaptcmd = KevoreeAdaptationFactory.eINSTANCE.createAdaptationPrimitive()
-              adaptcmd.setName(JavaSePrimitive.UpdateType)
+
+              adaptcmd.setPrimitiveType(getAdaptationPrimitive(JavaSePrimitive.UpdateType,actualNode.eContainer().asInstanceOf[ContainerRoot]))
+
               adaptcmd.setRef(uct)
               adaptationModel.getAdaptations.add(adaptcmd)
 
@@ -53,11 +55,13 @@ trait UpdateNodeKompare extends AbstractKompare with UpdateChannelKompare {
               val uctDeployUnit = uct.foundRelevantDeployUnit(updateNode)
 
               adaptationModel.getAdaptations
-                .filter(adaptation => adaptation.getName == JavaSePrimitive.UpdateDeployUnit)
+                .filter(adaptation => adaptation.getPrimitiveType.getName == JavaSePrimitive.UpdateDeployUnit)
                 .find(adaptation => adaptation.getRef.asInstanceOf[DeployUnit].isModelEquals(uctDeployUnit)) match {
                 case None => {
                   val ctcmd = KevoreeAdaptationFactory.eINSTANCE.createAdaptationPrimitive()
-                  ctcmd.setName(JavaSePrimitive.UpdateDeployUnit)
+
+                  ctcmd.setPrimitiveType(getAdaptationPrimitive(JavaSePrimitive.UpdateDeployUnit,actualNode.eContainer().asInstanceOf[ContainerRoot]))
+
                   ctcmd.setRef(uctDeployUnit)
                   adaptationModel.getAdaptations.add(ctcmd)
                 }
@@ -69,7 +73,10 @@ trait UpdateNodeKompare extends AbstractKompare with UpdateChannelKompare {
           case None => {
             //ADD TYPE
             val ctcmd = KevoreeAdaptationFactory.eINSTANCE.createAdaptationPrimitive()
-            ctcmd.setName(JavaSePrimitive.AddType)
+
+            ctcmd.setPrimitiveType(getAdaptationPrimitive(JavaSePrimitive.AddType,actualNode.eContainer().asInstanceOf[ContainerRoot]))
+
+
             ctcmd.setRef(uct)
             adaptationModel.getAdaptations.add(ctcmd)
 
@@ -82,11 +89,11 @@ trait UpdateNodeKompare extends AbstractKompare with UpdateChannelKompare {
               .find(typeDef => typeDef.foundRelevantDeployUnit(actualNode).isModelEquals(uctDeployUnit)) match {
               case None => {
                 //CHECK IF THIS DEPLOY UNIT IS ALREADY MARK AS TO BE INSTALLED
-                adaptationModel.getAdaptations.filter(adaptation => adaptation.getName == JavaSePrimitive.AddDeployUnit)
+                adaptationModel.getAdaptations.filter(adaptation => adaptation.getPrimitiveType.getName == JavaSePrimitive.AddDeployUnit)
                   .find(adaptation => adaptation.getRef.asInstanceOf[DeployUnit].isModelEquals(uctDeployUnit)) match {
                   case None => {
                     val ctcmd = KevoreeAdaptationFactory.eINSTANCE.createAdaptationPrimitive()
-                    ctcmd.setName(JavaSePrimitive.AddDeployUnit)
+                    ctcmd.setPrimitiveType(getAdaptationPrimitive(JavaSePrimitive.AddDeployUnit,actualNode.eContainer().asInstanceOf[ContainerRoot]))
                     ctcmd.setRef(uctDeployUnit)
                     adaptationModel.getAdaptations.add(ctcmd)
                   }

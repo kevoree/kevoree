@@ -19,9 +19,21 @@
 package org.kevoree.kompare.sub
 
 import org.slf4j.LoggerFactory
+import org.kevoree.{ContainerRoot, AdaptationPrimitiveType}
+import scala.collection.JavaConversions._
 
 trait AbstractKompare {
 
   var logger = LoggerFactory.getLogger(this.getClass);
+
+  def getAdaptationPrimitive(typeName: String, model: ContainerRoot): AdaptationPrimitiveType = {
+    model.getAdaptationPrimitiveTypes.find(p => p.getName == typeName) match {
+      case Some(p) => p
+      case None => {
+        logger.error("Error while searching for adaptation primitive type for name = " + typeName)
+        null
+      }
+    }
+  }
 
 }
