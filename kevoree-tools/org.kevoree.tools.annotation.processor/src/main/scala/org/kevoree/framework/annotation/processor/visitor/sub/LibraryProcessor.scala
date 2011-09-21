@@ -28,15 +28,15 @@ trait LibraryProcessor {
   
   def processLibrary(typeDef : TypeDefinition,classdef : TypeDeclaration)={
 
-    var root = typeDef.eContainer.asInstanceOf[ContainerRoot]
+    val root = typeDef.eContainer.asInstanceOf[ContainerRoot]
 
     if(classdef.getAnnotation(classOf[org.kevoree.annotation.Library]) != null){
-      var libannot = classdef.getAnnotation(classOf[org.kevoree.annotation.Library])
+      val libannot = classdef.getAnnotation(classOf[org.kevoree.annotation.Library])
       /* CREATE LIBRARY IF NEEDED */
       root.getLibraries.find({lib=>lib.getName== libannot.name}) match {
         case Some(lib)=> lib.getSubTypes.add(typeDef)
         case None => {
-            var newlib = KevoreeFactory.eINSTANCE.createTypeLibrary
+            val newlib = KevoreeFactory.eINSTANCE.createTypeLibrary
             newlib.setName(libannot.name)
             newlib.getSubTypes.add(typeDef)
             root.getLibraries.add(newlib)

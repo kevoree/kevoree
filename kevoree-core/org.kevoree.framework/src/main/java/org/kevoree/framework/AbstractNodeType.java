@@ -17,7 +17,6 @@ import org.kevoree.ContainerRoot;
 import org.kevoree.api.service.core.handler.KevoreeModelHandlerService;
 import org.kevoreeAdaptation.AdaptationModel;
 import org.kevoreeAdaptation.AdaptationPrimitive;
-import org.osgi.framework.BundleContext;
 
 import java.util.HashMap;
 
@@ -60,7 +59,7 @@ public abstract class AbstractNodeType {
 
     public abstract AdaptationModel kompare(ContainerRoot actualModel,ContainerRoot targetModel);
 
-    public PrimitiveCommand getPrimitive(AdaptationPrimitive primitve){return null;}
+    public PrimitiveCommand getPrimitive(AdaptationPrimitive primitive){return null;}
 
 
 }
