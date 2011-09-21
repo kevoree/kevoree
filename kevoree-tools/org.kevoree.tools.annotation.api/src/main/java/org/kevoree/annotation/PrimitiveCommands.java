@@ -20,4 +20,5 @@ package org.kevoree.annotation;
  */
 public @interface PrimitiveCommands {
 	 PrimitiveCommand[] value();
+     String[] values() default {};
 }

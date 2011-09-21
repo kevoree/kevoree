@@ -28,7 +28,7 @@ trait AdaptationPrimitiveProcessor {
 
   val builder = new StringBuilder
 
-  def processPrimitiveCommand (typeDef: NodeType, classdef: TypeDeclaration, env: AnnotationProcessorEnvironment) {
+  def processPrimitiveCommand(typeDef: NodeType, classdef: TypeDeclaration, env: AnnotationProcessorEnvironment) {
     //Collects all primitive command annotations and creates a list
     var primitiveCommandAnnotations: List[org.kevoree.annotation.PrimitiveCommand] = Nil
 
@@ -41,24 +41,6 @@ trait AdaptationPrimitiveProcessor {
         primitiveCommandAnnotation =>
         // check if the AdaptationPrimitive name is defined once
           if (primitiveCommandAnnotations.find(a => a.name() == primitiveCommandAnnotation.name()).size == 1) {
-            /*
-            primitiveCommandAnnotation.clazz().getInterfaces
-              .filter(i => i.getName == classOf[org.kevoree.framework.PrimitiveCommand].getName) match {
-              case None => {
-                // generate a compilation error
-                env.getMessager.printError("Primitive command " + primitiveCommandAnnotation.clazz().getName + " in " +
-                  typeDef.getName + " doesn't implement required interface " +
-                  classOf[org.kevoree.framework.PrimitiveCommand].getName)
-              }
-              case Some(i) => {
-                // add type on lib
-                val primitiveType: AdaptationPrimitiveType = KevoreeFactory.eINSTANCE.createAdaptationPrimitiveType()
-                addPrimitiveType(typeDef, primitiveType)
-                // register mapping for getPrimivite() fucntion on NodeType
-                AdaptationPrimitiveMapping.addMapping (typeDef, primitiveCommandAnnotation.name(), primitiveCommandAnnotation.clazz().getName)
-
-              }
-            } */
             val primitiveType: AdaptationPrimitiveType = KevoreeFactory.eINSTANCE.createAdaptationPrimitiveType()
             primitiveType.setName(primitiveCommandAnnotation.name())
 
@@ -70,10 +52,20 @@ trait AdaptationPrimitiveProcessor {
               .printError("Primitive command " + primitiveCommandAnnotation.name() + " is defined more than once !")
           }
       }
+
+      //GENERATE FROM LIST OF STRING
+
+      classdef.getAnnotation(classOf[org.kevoree.annotation.PrimitiveCommands]).values.foreach { name =>
+        val primitiveType: AdaptationPrimitiveType = KevoreeFactory.eINSTANCE.createAdaptationPrimitiveType()
+        primitiveType.setName(name)
+        addPrimitiveType(typeDef, primitiveType)
+      }
+
+
     }
   }
 
-  private def addPrimitiveType (typeDef: NodeType, primitiveType: AdaptationPrimitiveType) {
+  private def addPrimitiveType(typeDef: NodeType, primitiveType: AdaptationPrimitiveType) {
     val root = typeDef.eContainer.asInstanceOf[ContainerRoot]
     root.getAdaptationPrimitiveTypes.add(primitiveType)
     typeDef.getManagedPrimitiveTypes.add(primitiveType)
