@@ -9,8 +9,8 @@
       ecorePackage="kevoree.adaptation.ecore#/">
     <genClasses ecoreClass="kevoree.adaptation.ecore#//AdaptationPrimitive">
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference kevoree.adaptation.ecore#//AdaptationPrimitive/ref"/>
-      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference kevoree.adaptation.ecore#//AdaptationPrimitive/targetNode"/>
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference kevoree.adaptation.ecore#//AdaptationPrimitive/primitiveType"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute kevoree.adaptation.ecore#//AdaptationPrimitive/targetNodeName"/>
     </genClasses>
     <genClasses ecoreClass="kevoree.adaptation.ecore#//AdaptationModel">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference kevoree.adaptation.ecore#//AdaptationModel/adaptations"/>
