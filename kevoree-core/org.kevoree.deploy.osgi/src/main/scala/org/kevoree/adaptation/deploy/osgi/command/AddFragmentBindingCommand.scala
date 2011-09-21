@@ -15,9 +15,8 @@
 package org.kevoree.adaptation.deploy.osgi.command
 
 import org.kevoree._
+import framework.{PrimitiveCommand, KevoreeChannelFragment, Constants}
 import org.kevoree.adaptation.deploy.osgi.context.KevoreeDeployManager
-import org.kevoree.framework.KevoreeChannelFragment
-import org.kevoree.framework.Constants
 import org.kevoree.framework.message.FragmentBindMessage
 import org.slf4j.LoggerFactory
 import scala.collection.JavaConversions._

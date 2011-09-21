@@ -1,3 +1,5 @@
+package org.kevoree.kompare.scheduling
+
 /**
  * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE, Version 3, 29 June 2007;
  * you may not use this file except in compliance with the License.
@@ -12,8 +14,6 @@
  * limitations under the License.
  */
 
-package org.kevoree.adaptation.deploy.osgi.scheduling
-
 import org.jgrapht.graph.DefaultDirectedGraph
 import org.jgrapht.traverse.TopologicalOrderIterator
 import org.kevoree.Channel
@@ -23,20 +23,20 @@ import org.kevoree.Group
 import org.kevoree.Instance
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-import org.kevoree.adaptation.deploy.osgi.command.LifeCycleCommand
+import org.kevoreeAdaptation.AdaptationPrimitive
 
 class SchedulingWithTopologicalOrderAlgo {
 
   private val logger: Logger = LoggerFactory.getLogger(classOf[SchedulingWithTopologicalOrderAlgo])
 
-  def schedule (commands: List[LifeCycleCommand], start: Boolean): List[LifeCycleCommand] = {
+  def schedule (commands: List[AdaptationPrimitive], start: Boolean): List[AdaptationPrimitive] = {
     if (commands.size > 1) {
-      val graph: DefaultDirectedGraph[LifeCycleCommand, (LifeCycleCommand, LifeCycleCommand)] = buildGraph(commands,
+      val graph: DefaultDirectedGraph[AdaptationPrimitive, (AdaptationPrimitive, AdaptationPrimitive)] = buildGraph(commands,
                                                                                                             start)
-      val topologicAlgorithm: TopologicalOrderIterator[LifeCycleCommand, (LifeCycleCommand, LifeCycleCommand)] = new
+      val topologicAlgorithm: TopologicalOrderIterator[AdaptationPrimitive, (AdaptationPrimitive, AdaptationPrimitive)] = new
           TopologicalOrderIterator(graph)
 
-      var listCommands = List[LifeCycleCommand]()
+      var listCommands = List[AdaptationPrimitive]()
       while (topologicAlgorithm.hasNext) {
         listCommands = listCommands ++ List(topologicAlgorithm.next)
       }
@@ -50,10 +50,10 @@ class SchedulingWithTopologicalOrderAlgo {
   /**
    * each command is a vertex and edges represent dependency order between commands
    */
-  private def buildGraph (commands: List[LifeCycleCommand],
-    start: Boolean): DefaultDirectedGraph[LifeCycleCommand, (LifeCycleCommand, LifeCycleCommand)] = {
+  private def buildGraph (commands: List[AdaptationPrimitive],
+    start: Boolean): DefaultDirectedGraph[AdaptationPrimitive, (AdaptationPrimitive, AdaptationPrimitive)] = {
     val graph = new
-        DefaultDirectedGraph[LifeCycleCommand, (LifeCycleCommand, LifeCycleCommand)](classOf[(LifeCycleCommand, LifeCycleCommand)])
+        DefaultDirectedGraph[AdaptationPrimitive, (AdaptationPrimitive, AdaptationPrimitive)](classOf[(AdaptationPrimitive, AdaptationPrimitive)])
 
     val map = lookForPotentialConstraints(commands)
 
@@ -61,9 +61,9 @@ class SchedulingWithTopologicalOrderAlgo {
       for (command2 <- commands) {
         graph.addVertex(command2)
         if (!command.equals(command2)) {
-          (map.get(command2.getInstance)) match {
+          (map.get(command2.getRef.asInstanceOf[Instance])) match {
             case Some(cmdDep) => {
-              if (cmdDep.contains(command.getInstance)) {
+              if (cmdDep.contains(command.getRef.asInstanceOf[Instance])) {
                 if (start) {
                   graph.addEdge(command2, command, (command2, command))
                 } else {
@@ -92,12 +92,12 @@ class SchedulingWithTopologicalOrderAlgo {
      *
      * */
   private def lookForPotentialConstraints (
-    commands: List[LifeCycleCommand]): scala.collection.mutable.Map[Instance, java.util.List[Instance]] = {
+    commands: List[AdaptationPrimitive]): scala.collection.mutable.Map[Instance, java.util.List[Instance]] = {
     val instanceDependencies: scala.collection.mutable.Map[Instance, java.util.List[Instance]] = scala.collection
       .mutable.Map[Instance, java.util.List[Instance]]()
 
     var rootContainer: ContainerRoot = null
-    val firstCommand = (commands(0)).getInstance
+    val firstCommand = (commands(0)).getRef.asInstanceOf[Instance]
     firstCommand match {
       case c: Group => rootContainer = c.eContainer.asInstanceOf[ContainerRoot]
       case c: Channel => rootContainer = c.eContainer.asInstanceOf[ContainerRoot]
@@ -110,7 +110,7 @@ class SchedulingWithTopologicalOrderAlgo {
       while (bindingIterator.hasNext) {
         val binding = bindingIterator.next
         for (command <- commands) {
-          command.getInstance match {
+          command.getRef.asInstanceOf[Instance] match {
             case instance: ComponentInstance => {
               // test if instance is the container of the port of the binding
               if (instance.equals(binding.getPort.eContainer())) {

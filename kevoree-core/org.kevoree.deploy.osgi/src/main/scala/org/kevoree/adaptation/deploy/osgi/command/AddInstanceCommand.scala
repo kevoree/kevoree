@@ -20,7 +20,7 @@ package org.kevoree.adaptation.deploy.osgi.command
 
 import java.io.File
 import org.kevoree._
-import framework.{KevoreeGeneratorHelper, Constants}
+import framework.{PrimitiveCommand, KevoreeGeneratorHelper, Constants}
 import org.kevoree.adaptation.deploy.osgi.context.KevoreeDeployManager
 import org.kevoree.adaptation.deploy.osgi.context.KevoreeOSGiBundle
 import org.kevoree.framework.FileHelper._

@@ -22,6 +22,7 @@ import org.kevoree.Instance
 import org.kevoree.adaptation.deploy.osgi.context.KevoreeDeployManager
 import scala.collection.JavaConversions._
 import org.slf4j.LoggerFactory
+import org.kevoree.framework.PrimitiveCommand
 
 case class RemoveInstanceCommand(c: Instance, ctx: KevoreeDeployManager, nodeName: String) extends PrimitiveCommand {
 
