@@ -1,10 +1,22 @@
+/**
+ * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE, Version 3, 29 June 2007;
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * 	http://www.gnu.org/licenses/lgpl-3.0.txt
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.kevoree.framework.annotation.processor.visitor.sub
 
 import com.sun.mirror.declaration.TypeDeclaration
 import com.sun.mirror.apt.AnnotationProcessorEnvironment
 import org.kevoree.annotation.PrimitiveCommand
 import org.kevoree.{KevoreeFactory, AdaptationPrimitiveType, ContainerRoot, NodeType}
-import org.kevoree.tools.annotation.generator.AdaptationPrimitiveMapping
 
 /**
  * User: Erwan Daubert - erwan.daubert@gmail.com
@@ -29,6 +41,7 @@ trait AdaptationPrimitiveProcessor {
         primitiveCommandAnnotation =>
         // check if the AdaptationPrimitive name is defined once
           if (primitiveCommandAnnotations.find(a => a.name() == primitiveCommandAnnotation.name()).size == 1) {
+            /*
             primitiveCommandAnnotation.clazz().getInterfaces
               .filter(i => i.getName == classOf[org.kevoree.framework.PrimitiveCommand].getName) match {
               case None => {
@@ -45,7 +58,12 @@ trait AdaptationPrimitiveProcessor {
                 AdaptationPrimitiveMapping.addMapping (typeDef, primitiveCommandAnnotation.name(), primitiveCommandAnnotation.clazz().getName)
 
               }
-            }
+            } */
+            val primitiveType: AdaptationPrimitiveType = KevoreeFactory.eINSTANCE.createAdaptationPrimitiveType()
+            primitiveType.setName(primitiveCommandAnnotation.name())
+
+            addPrimitiveType(typeDef, primitiveType)
+
           } else {
             // generate a compilation error
             env.getMessager
