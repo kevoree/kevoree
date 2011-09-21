@@ -53,6 +53,8 @@
         eType="#//Group" containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="groupTypes" upperBound="-1"
         eType="#//GroupType" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="adaptationPrimitiveTypes"
+        upperBound="-1" eType="#//AdaptationPrimitiveType" containment="true"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="PortType" abstract="true" eSuperTypes="#//TypeDefinition">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="synchrone" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
@@ -237,5 +239,9 @@
         eType="#//ContainerNode"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="GroupType" eSuperTypes="#//LifeCycleTypeDefinition"/>
-  <eClassifiers xsi:type="ecore:EClass" name="NodeType" eSuperTypes="#//LifeCycleTypeDefinition"/>
+  <eClassifiers xsi:type="ecore:EClass" name="NodeType" eSuperTypes="#//LifeCycleTypeDefinition">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="managedPrimitiveTypes"
+        upperBound="-1" eType="#//AdaptationPrimitiveType"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="AdaptationPrimitiveType" eSuperTypes="#//NamedElement"/>
 </ecore:EPackage>
