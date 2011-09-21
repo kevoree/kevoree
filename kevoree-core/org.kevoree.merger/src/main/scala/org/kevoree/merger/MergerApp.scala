@@ -28,7 +28,7 @@ object MergerApp {
    */
   def main(args: Array[String]): Unit = {
 
-    var merger = new RootMerger
+    val merger = new RootMerger
   //  var model1 = KevoreeFactory.eINSTANCE.createContainerRoot//KevoreeXmiHelper.load("/Users/ffouquet/Documents/DEV/dukeboard_github/kevoree/kevoree-core/org.kevoree.merger/src/test/resources/library/deflib.kev")
    
    // var model2 = KevoreeXmiHelper.load("/Users/ffouquet/Documents/DEV/dukeboard_github/kevoree/kevoree-core/org.kevoree.merger/src/test/resources/assemblies/base-assembly.art2")
@@ -36,12 +36,12 @@ object MergerApp {
 
   
     //var model1 = KevoreeXmiHelper.load("/Users/ffouquet/Documents/DEV/dukeboard_github/kevoree/kevoree-core/org.kevoree.merger/src/test/resources/nodeType/defchannels1.1.0.kev")
-    var model1 = KevoreeXmiHelper.load("/Users/ffouquet/Downloads/initial.kev")
-    var model2 = KevoreeXmiHelper.load("/Users/ffouquet/Downloads/tmp.kev")
+    val model1 = KevoreeFactory.eINSTANCE.createContainerRoot()//KevoreeXmiHelper.load("/Users/ffouquet/Downloads/initial.kev")
+    val model2 = KevoreeXmiHelper.load("/Users/duke/Documents/dev/dukeboard/kevoree/kevoree-core/org.kevoree.merger/src/test/resources/providedAdaptationTypes/javasebase.kev")
     
     merger.merge(model1, model2)
 
-    KevoreeXmiHelper.save("/Users/ffouquet/Downloads/merged.kev", model1)
+    KevoreeXmiHelper.save("/Users/duke/Documents/dev/dukeboard/kevoree/kevoree-core/org.kevoree.merger/src/test/resources/providedAdaptationTypes/javasebase2.kev", model1)
 
   }
   

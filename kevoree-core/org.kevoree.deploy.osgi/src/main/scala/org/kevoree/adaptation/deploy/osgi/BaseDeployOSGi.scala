@@ -27,6 +27,10 @@ class BaseDeployOSGi(bundle : Bundle) {
 
 	private val ctx: KevoreeDeployManager = new KevoreeDeployManager
   ctx.setBundle(bundle)
+
+
+
+
 	private val logger = LoggerFactory.getLogger(this.getClass);
 
 	def buildPrimitiveCommand(p: org.kevoreeAdaptation.AdaptationPrimitive, nodeName: String) : PrimitiveCommand = {
