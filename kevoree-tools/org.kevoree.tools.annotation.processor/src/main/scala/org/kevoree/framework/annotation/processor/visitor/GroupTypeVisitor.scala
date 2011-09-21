@@ -52,7 +52,7 @@ case class GroupTypeVisitor(groupType: GroupType, env: AnnotationProcessorEnviro
     processDeployUnit(groupType, classdef, env)
     processLibrary(groupType, classdef)
     processThirdParty(groupType, classdef, env)
-    classdef.getMethods().foreach {
+    classdef.getMethods.foreach {
       method => method.accept(this)
     }
   }

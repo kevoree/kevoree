@@ -32,16 +32,16 @@ trait PortMappingProcessor {
     /* PROCESS PORTS & PORT ANNOTATION */
     var portAnnotations : List[org.kevoree.annotation.Port] = Nil
 
-    var annotationPort = methoddef.getAnnotation(classOf[org.kevoree.annotation.Port])
+    val annotationPort = methoddef.getAnnotation(classOf[org.kevoree.annotation.Port])
     if(annotationPort != null){ portAnnotations = portAnnotations ++ List(annotationPort) }
 
-    var annotationPorts = methoddef.getAnnotation(classOf[org.kevoree.annotation.Ports])
+    val annotationPorts = methoddef.getAnnotation(classOf[org.kevoree.annotation.Ports])
     if(annotationPorts != null){ portAnnotations = portAnnotations ++ annotationPorts.value.toList }
 
     portAnnotations.foreach{annot=>
       componentType.getProvided.find({provided=> provided.getName.equals(annot.name) }) match {
         case Some(ptref) => {
-            var ptREFmapping = KevoreeFactory.eINSTANCE.createPortTypeMapping
+            val ptREFmapping = KevoreeFactory.eINSTANCE.createPortTypeMapping
             ptREFmapping.setBeanMethodName(methoddef.getSimpleName)
 
             ptref.getRef match {
@@ -56,7 +56,7 @@ trait PortMappingProcessor {
             ptref.getMappings.add(ptREFmapping)
           }
         case None => {
-            var message : String = "[PortMappingProcessor]:" + componentType.getBean + " declares a mapping to a ProvidedPort \"" + annot.name + "\", but this port has not been declared in ComponentType annotations.\nCan not resume. Process Exit.";
+            val message : String = "[PortMappingProcessor]:" + componentType.getBean + " declares a mapping to a ProvidedPort \"" + annot.name + "\", but this port has not been declared in ComponentType annotations.\nCan not resume. Process Exit.";
             env.getMessager.printError(message);
         }
       }
