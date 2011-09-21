@@ -68,15 +68,15 @@ class DataTypeVisitor extends TypeVisitor {
   }
 
   def visitDeclaredType(t:DeclaredType)= {
-    dataType.setName(t.getDeclaration().getQualifiedName());
+    dataType.setName(t.getDeclaration.getQualifiedName);
   }
 
   def visitClassType(t:ClassType)= {
-    dataType.setName(t.getDeclaration().getQualifiedName());
-    t.getActualTypeArguments().foreach{tm=>
-      var dtv = new DataTypeVisitor();
+    dataType.setName(t.getDeclaration.getQualifiedName);
+    t.getActualTypeArguments.foreach{tm=>
+      val dtv = new DataTypeVisitor();
       tm.accept(dtv);
-      dataType.getGenericTypes().add(LocalUtility.getOraddDataType(dtv.getDataType()));
+      dataType.getGenericTypes.add(LocalUtility.getOraddDataType(dtv.getDataType()));
     }
 
   }
