@@ -50,7 +50,6 @@ public class BootstrapActivator implements BundleActivator {
         bootstrapModel = bmodel;
     }
 
-    private KevoreeKompareBean kompareBean = null;
     private KevoreeCoreBean coreBean = null;
     private KevoreeRemoteBean remoteBean = null;
 
@@ -59,22 +58,21 @@ public class BootstrapActivator implements BundleActivator {
     @Override
     public void start(BundleContext context) throws Exception {
         try {
-            kompareBean = new KevoreeKompareBean();
-            KevoreeDeployManager contextDeploy = new KevoreeDeployManager();
-            contextDeploy.setBundle(context.getBundle());
-            contextDeploy.setBundleContext(context);
+        //    KevoreeDeployManager contextDeploy = new KevoreeDeployManager();
+        //    contextDeploy.setBundle(context.getBundle());
+         //   contextDeploy.setBundleContext(context);
 
-            PackageAdmin paAdmin = (PackageAdmin) context.getService(context.getServiceReferences(PackageAdmin.class.getName(), null)[0]);
-            contextDeploy.setServicePackageAdmin(paAdmin);
-            StartLevel serviceLevel = (StartLevel) context.getService(context.getServiceReferences(StartLevel.class.getName(), null)[0]);
-            contextDeploy.setStartLevelServer(serviceLevel);
+         //   PackageAdmin paAdmin = (PackageAdmin) context.getService(context.getServiceReferences(PackageAdmin.class.getName(), null)[0]);
+         //   contextDeploy.setServicePackageAdmin(paAdmin);
+         //   StartLevel serviceLevel = (StartLevel) context.getService(context.getServiceReferences(StartLevel.class.getName(), null)[0]);
+         //   contextDeploy.setStartLevelServer(serviceLevel);
 
             KevoreeConfigServiceBean configBean = new KevoreeConfigServiceBean();
             coreBean = new KevoreeCoreBean();
             coreBean.setBundleContext(context);
             coreBean.setConfigService((ConfigurationService) configBean);
-            coreBean.setKompareService((ModelKompareService) kompareBean);
-            coreBean.setDeployService((KevoreeAdaptationDeployService) deployBean);
+           // coreBean.setKompareService((ModelKompareService) kompareBean);
+          //  coreBean.setDeployService((KevoreeAdaptationDeployService) deployBean);
             coreBean.start();
 
             //Kevoree script
@@ -126,7 +124,6 @@ public class BootstrapActivator implements BundleActivator {
 
     @Override
     public void stop(BundleContext context) throws Exception {
-        kompareBean = null;
         remoteBean.stop();
         coreBean.stop();
     }
