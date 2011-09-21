@@ -32,10 +32,15 @@ object PrimitiveCommandExecutionHelper {
   var logger = LoggerFactory.getLogger(this.getClass)
 
   def execute(adaptionModel: AdaptationModel, nodeInstance: AbstractNodeType): Boolean = {
-    executeStep(adaptionModel.getOrderedPrimitiveSet, nodeInstance)
+    if (adaptionModel.getOrderedPrimitiveSet != null){
+      executeStep(adaptionModel.getOrderedPrimitiveSet, nodeInstance)
+    }  else {
+      true
+    }
   }
 
   private def executeStep(step: ParallelStep, nodeInstance: AbstractNodeType): Boolean = {
+    if(step == null){return true}
     val phase = new KevoreeParDeployPhase
     val populateResult = step.getAdaptations.forall {
       adapt =>
@@ -92,7 +97,8 @@ object PrimitiveCommandExecutionHelper {
     }
 
     def runPhase(): Boolean = {
-      val pool = Executors.newFixedThreadPool(primitives.size)
+      if(primitives.length == 0){return true}
+      val pool = Executors.newFixedThreadPool(primitives.length)
       primitives.foreach {
         p =>
           val runT = new BooleanRunnableTask(p)
