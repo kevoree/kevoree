@@ -20,5 +20,4 @@ package org.kevoree.annotation;
  */
 public @interface PrimitiveCommand {
 	java.lang.String name();
-	Class<?> clazz();
 }
