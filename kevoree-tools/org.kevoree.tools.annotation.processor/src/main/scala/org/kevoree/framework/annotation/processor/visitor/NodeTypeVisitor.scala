@@ -26,7 +26,7 @@ import scala.collection.JavaConversions._
 import org.kevoree.NodeType
 import sub._
 
-case class NodeTypeVisitor (nodeType: NodeType, env: AnnotationProcessorEnvironment)
+case class NodeTypeVisitor(nodeType: NodeType, env: AnnotationProcessorEnvironment)
   extends SimpleDeclarationVisitor
   with AdaptationPrimitiveProcessor
   with DeployUnitProcessor
@@ -35,7 +35,8 @@ case class NodeTypeVisitor (nodeType: NodeType, env: AnnotationProcessorEnvironm
   with ThirdPartyProcessor
   with LifeCycleMethodProcessor {
 
-  override def visitClassDeclaration (classdef: ClassDeclaration) = {
+
+  def commonProcess(classdef: ClassDeclaration) {
     //SUB PROCESSOR
     processDictionary(nodeType, classdef)
     processDeployUnit(nodeType, classdef, env)
@@ -47,7 +48,18 @@ case class NodeTypeVisitor (nodeType: NodeType, env: AnnotationProcessorEnvironm
     }
   }
 
-  override def visitMethodDeclaration (methoddef: MethodDeclaration) = {
+
+  override def visitClassDeclaration(classdef: ClassDeclaration) = {
+    if (classdef.getSuperclass != null) {
+      val annotFragment = classdef.getSuperclass.getDeclaration.getAnnotation(classOf[org.kevoree.annotation.NodeType])
+      if (annotFragment != null) {
+        classdef.getSuperclass.getDeclaration.accept(this)
+      }
+    }
+    commonProcess(classdef)
+  }
+
+  override def visitMethodDeclaration(methoddef: MethodDeclaration) = {
     processLifeCycleMethod(nodeType, methoddef)
   }
 
