@@ -37,6 +37,7 @@
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference kevoree.ecore#//ContainerRoot/physicalNodes"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference kevoree.ecore#//ContainerRoot/groups"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference kevoree.ecore#//ContainerRoot/groupTypes"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference kevoree.ecore#//ContainerRoot/adaptationPrimitiveTypes"/>
     </genClasses>
     <genClasses image="false" ecoreClass="kevoree.ecore#//PortType">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute kevoree.ecore#//PortType/synchrone"/>
@@ -189,6 +190,9 @@
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference kevoree.ecore#//Group/subNodes"/>
     </genClasses>
     <genClasses ecoreClass="kevoree.ecore#//GroupType"/>
-    <genClasses ecoreClass="kevoree.ecore#//NodeType"/>
+    <genClasses ecoreClass="kevoree.ecore#//NodeType">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference kevoree.ecore#//NodeType/managedPrimitiveTypes"/>
+    </genClasses>
+    <genClasses ecoreClass="kevoree.ecore#//AdaptationPrimitiveType"/>
   </genPackages>
 </genmodel:GenModel>
