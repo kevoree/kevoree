@@ -130,7 +130,7 @@ class KevoreeKompareBean extends InitNodeKompare with StopNodeKompare with Updat
             adaptationModel.getAdaptations.add(startcmd)
 
           }
-
+          case _ =>
         }
     }
     plan(currentAdaptModel, nodeName)

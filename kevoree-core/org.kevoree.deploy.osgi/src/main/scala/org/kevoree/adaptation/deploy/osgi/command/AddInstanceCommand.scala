@@ -93,8 +93,8 @@ case class AddInstanceCommand(c: Instance, ctx: KevoreeDeployManager, nodeName: 
         lastExecutionBundle = Some(bundle)
         bundle.start()
         mustBeStarted = true
-        val typebundlestartLevel = ctx.getStartLevelServer.getBundleStartLevel(mappingFound.bundle)
-        startLevel = Some(typebundlestartLevel + 1)
+        //val typebundlestartLevel = ctx.getStartLevelServer.getBundleStartLevel(mappingFound.bundle)
+        //startLevel = Some(typebundlestartLevel + 1)
         true
       } catch {
         case _@e => logger.error("Error while deploy Kevoree Instance", e); false
