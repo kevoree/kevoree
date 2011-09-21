@@ -16,7 +16,7 @@ package org.kevoree.deploy.osgi.tests
 
 import org.scalatest.junit.AssertionsForJUnit
 import org.junit._
-import org.kevoree.adaptation.deploy.osgi.KevoreeAdaptationDeployServiceOSGi
+import org.kevoree.adaptation.deploy.osgi.BaseDeployOSGi
 import org.kevoree.adaptation.deploy.osgi.command.LifeCycleCommand
 import org.kevoree.adaptation.deploy.osgi.scheduling.SchedulingWithTopologicalOrderAlgo
 import org.kevoree.kompare.KevoreeKompareBean
@@ -35,13 +35,13 @@ import java.util.HashMap
 class SchedulingTest extends AssertionsForJUnit with SchedulingSuite {
 
   var component: KevoreeKompareBean = null
-  var adaptationDeploy: KevoreeAdaptationDeployServiceOSGi = null
+  var adaptationDeploy: BaseDeployOSGi = null
 
   def emptyModel = "scheduling_test/emptyModel.kev"
 
   @Before def initialize () {
     component = new KevoreeKompareBean
-    adaptationDeploy = new KevoreeAdaptationDeployServiceOSGi
+    adaptationDeploy = new BaseDeployOSGi
   }
 
   def adaptationModelStart (url1: String, nodeName: String): AdaptationModel = {
