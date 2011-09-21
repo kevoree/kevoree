@@ -31,8 +31,10 @@ case class RemoveDeployUnitCommand(deployUnit : DeployUnit, ctx : KevoreeDeployM
   def execute() : Boolean= {
     ctx.bundleMapping.find({bundleMapping =>bundleMapping.name==CommandHelper.buildKEY(deployUnit) && bundleMapping.objClassName==deployUnit.getClass.getName}) match {
       case Some(bundleMappingFound)=> {
+
           val osgibundleContext = bundleMappingFound.bundle.getBundleContext
           val bundle = osgibundleContext.getBundle
+
           bundle.uninstall()
           logger.info("Deploy Unit Bundle remove , try to refresh package")
 
