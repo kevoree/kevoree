@@ -26,7 +26,7 @@ import org.kevoree.framework.aspects.KevoreeAspects._
 
 trait InitNodeKompare extends AbstractKompare {
 
-  def getInitNodeAdaptationModel (node: ContainerNode): AdaptationModel = {
+  def getInitNodeAdaptationModel(node: ContainerNode): AdaptationModel = {
     val adaptationModel = org.kevoreeAdaptation.KevoreeAdaptationFactory.eINSTANCE.createAdaptationModel
     logger.info("INIT NODE v2 " + node.getName)
     //UPDATE ALL COMPONENT TYPE
@@ -37,7 +37,7 @@ trait InitNodeKompare extends AbstractKompare {
     node.getUsedTypeDefinition.foreach {
       ct =>
         val typecmd = KevoreeAdaptationFactory.eINSTANCE.createAdaptationPrimitive()
-        typecmd.setPrimitiveType(getAdaptationPrimitive(JavaSePrimitive.AddType,root))
+        typecmd.setPrimitiveType(getAdaptationPrimitive(JavaSePrimitive.AddType, root))
         typecmd.setRef(ct)
         adaptationModel.getAdaptations.add(typecmd)
 
@@ -48,7 +48,7 @@ trait InitNodeKompare extends AbstractKompare {
         deployUnitfound.getRequiredLibs.foreach {
           rLib =>
             val addcttp = KevoreeAdaptationFactory.eINSTANCE.createAdaptationPrimitive()
-            addcttp.setPrimitiveType(getAdaptationPrimitive(JavaSePrimitive.AddThirdParty,root))
+            addcttp.setPrimitiveType(getAdaptationPrimitive(JavaSePrimitive.AddThirdParty, root))
             addcttp.setRef(rLib)
             adaptationModel.getAdaptations.add(addcttp)
         }
@@ -58,7 +58,7 @@ trait InitNodeKompare extends AbstractKompare {
           .find(adaptation => adaptation.getRef.asInstanceOf[DeployUnit].isModelEquals(deployUnitfound)) match {
           case None => {
             val ctcmd = KevoreeAdaptationFactory.eINSTANCE.createAdaptationPrimitive()
-            ctcmd.setPrimitiveType(getAdaptationPrimitive(JavaSePrimitive.AddDeployUnit,root))
+            ctcmd.setPrimitiveType(getAdaptationPrimitive(JavaSePrimitive.AddDeployUnit, root))
             ctcmd.setRef(deployUnitfound)
             adaptationModel.getAdaptations.add(ctcmd)
           }
@@ -72,9 +72,20 @@ trait InitNodeKompare extends AbstractKompare {
     node.getInstances.foreach({
       c =>
         val addccmd = KevoreeAdaptationFactory.eINSTANCE.createAdaptationPrimitive()
-        addccmd.setPrimitiveType(getAdaptationPrimitive(JavaSePrimitive.AddInstance,root))
+        addccmd.setPrimitiveType(getAdaptationPrimitive(JavaSePrimitive.AddInstance, root))
         addccmd.setRef(c)
         adaptationModel.getAdaptations.add(addccmd)
+
+        val addccmd2 = KevoreeAdaptationFactory.eINSTANCE.createAdaptationPrimitive()
+        addccmd2.setPrimitiveType(getAdaptationPrimitive(JavaSePrimitive.StartInstance, root))
+        addccmd2.setRef(c)
+        adaptationModel.getAdaptations.add(addccmd2)
+
+        val addccmd3 = KevoreeAdaptationFactory.eINSTANCE.createAdaptationPrimitive()
+        addccmd3.setPrimitiveType(getAdaptationPrimitive(JavaSePrimitive.UpdateDictionaryInstance, root))
+        addccmd3.setRef(c)
+        adaptationModel.getAdaptations.add(addccmd3)
+
     })
 
 
@@ -85,7 +96,7 @@ trait InitNodeKompare extends AbstractKompare {
           remoteName =>
             val addccmd = KevoreeAdaptationFactory.eINSTANCE.createAdaptationPrimitive()
 
-            addccmd.setPrimitiveType(getAdaptationPrimitive(JavaSePrimitive.AddFragmentBinding,root))
+            addccmd.setPrimitiveType(getAdaptationPrimitive(JavaSePrimitive.AddFragmentBinding, root))
             addccmd.setRef(channel)
             addccmd.setTargetNodeName(remoteName)
             adaptationModel.getAdaptations.add(addccmd)
@@ -97,7 +108,7 @@ trait InitNodeKompare extends AbstractKompare {
       b =>
         if (b.getPort.eContainer.eContainer == node) {
           val addcmd = KevoreeAdaptationFactory.eINSTANCE.createAdaptationPrimitive()
-          addcmd.setPrimitiveType(getAdaptationPrimitive(JavaSePrimitive.AddBinding,root))
+          addcmd.setPrimitiveType(getAdaptationPrimitive(JavaSePrimitive.AddBinding, root))
           addcmd.setRef(b)
           adaptationModel.getAdaptations.add(addcmd)
         }

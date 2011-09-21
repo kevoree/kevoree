@@ -21,6 +21,16 @@
             <artifactId>org.kevoree.extra.osgi.jmdns</artifactId>
             <version>3.4.1</version>
         </dependency>
+        <dependency>
+            <groupId>org.kevoree</groupId>
+            <artifactId>org.kevoree.deploy.osgi</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.kevoree</groupId>
+            <artifactId>org.kevoree.kompare</artifactId>
+            <version>${project.version}</version>
+        </dependency>
     </dependencies>
 
     <build>

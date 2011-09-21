@@ -19,6 +19,7 @@ package org.kevoree.adaptation.deploy.osgi.command
  */
 
 import org.kevoree._
+import framework.PrimitiveCommand
 import org.kevoree.DeployUnit
 import org.kevoree.adaptation.deploy.osgi.context.KevoreeDeployManager
 import org.kevoree.adaptation.deploy.osgi.context.KevoreeOSGiBundle

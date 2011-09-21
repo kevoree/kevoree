@@ -19,11 +19,8 @@
 package org.kevoree.adaptation.deploy.osgi.command
 
 import org.kevoree._
+import framework._
 import org.kevoree.adaptation.deploy.osgi.context.KevoreeDeployManager
-import org.kevoree.framework.KevoreeChannelFragment
-import org.kevoree.framework.KevoreeComponent
-import org.kevoree.framework.KevoreePort
-import org.kevoree.framework.Constants
 import org.kevoree.framework.message.FragmentBindMessage
 import org.kevoree.framework.message.PortBindMessage
 import org.slf4j.LoggerFactory

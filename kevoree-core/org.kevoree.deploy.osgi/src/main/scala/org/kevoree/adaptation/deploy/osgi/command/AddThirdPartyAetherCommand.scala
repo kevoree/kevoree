@@ -27,6 +27,7 @@ import scala.collection.JavaConversions._
 import org.kevoree.{ContainerRoot, DeployUnit}
 import org.kevoree.tools.aether.framework.AetherUtil
 import java.io.{FileInputStream, File}
+import org.kevoree.framework.PrimitiveCommand
 
 case class AddThirdPartyAetherCommand(deployUnit: DeployUnit, ctx: KevoreeDeployManager) extends PrimitiveCommand {
 

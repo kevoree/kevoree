@@ -22,6 +22,7 @@ import org.kevoree.adaptation.deploy.osgi.context.KevoreeDeployManager
 import org.slf4j.LoggerFactory
 import scala.collection.JavaConversions._
 import org.kevoree.DeployUnit
+import org.kevoree.framework.PrimitiveCommand
 
 case class RemoveDeployUnitCommand(deployUnit : DeployUnit, ctx : KevoreeDeployManager) extends PrimitiveCommand {
 
