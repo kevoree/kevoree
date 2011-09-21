@@ -81,13 +81,13 @@ trait InitNodeKompare extends AbstractKompare {
     /* add FRAGMENT binding */
     root.getHubs.filter(hub => hub.usedByNode(node.getName)).foreach {
       channel =>
-        channel.getConnectedNode(node.getName).foreach {
+        channel.getOtherFragment(node.getName).foreach {
           remoteName =>
             val addccmd = KevoreeAdaptationFactory.eINSTANCE.createAdaptationPrimitive()
 
             addccmd.setPrimitiveType(getAdaptationPrimitive(JavaSePrimitive.AddFragmentBinding,root))
             addccmd.setRef(channel)
-            addccmd.setTargetNode(remoteName)
+            addccmd.setTargetNodeName(remoteName)
             adaptationModel.getAdaptations.add(addccmd)
         }
     }

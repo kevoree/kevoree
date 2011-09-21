@@ -17,6 +17,7 @@ package org.kevoree.adaptation.deploy.osgi
 import org.kevoree.adaptation.deploy.osgi.command._
 import org.kevoree.adaptation.deploy.osgi.context.KevoreeDeployManager
 import org.kevoree._
+import org.osgi.framework.Bundle
 
 //import org.kevoree.adaptation.deploy.osgi.scheduling.ChocoScheduling
 
@@ -25,14 +26,12 @@ import org.kevoreeAdaptation.AdaptationModel
 import org.slf4j.LoggerFactory
 import scala.collection.JavaConversions._
 
-class BaseDeployOSGi {
+class BaseDeployOSGi(bundle : Bundle) {
 
-	var ctx: KevoreeDeployManager = null
+	var ctx: KevoreeDeployManager = new KevoreeDeployManager
+  ctx.setBundle(bundle)
+
 	var logger = LoggerFactory.getLogger(this.getClass);
-
-	def setContext(context: KevoreeDeployManager) = {
-		ctx = context
-	}
 
 	def deploy(model: AdaptationModel, nodeName: String) = {
 
@@ -69,7 +68,7 @@ class BaseDeployOSGi {
 		var updateDictionaryCommand: List[PrimitiveCommand] = List()
 
 		model.getAdaptations.toList.foreach {
-			p => p.getName match {
+			p => p.getPrimitiveType.getName match {
 
 				//DEPLOY UNIT CRUD ( TYPE PROVISIONNING )
 				//ThirdParty CRUD
@@ -248,14 +247,4 @@ class BaseDeployOSGi {
 		executionResult
 	}
 
-	/* Simple plan algorithme / separe primitive type */
-	/*
-									 def plan(model : AdaptationModel) : List[AdaptationPrimitive] = {
-									 var thirdPartiesAdaptations = model.getAdaptations.filter({a => a.isInstanceOf[ThirdPartyAdaptation] }).toList
-									 var componentTypeAdaptations = model.getAdaptations.filter({a => a.isInstanceOf[TypeAdaptation] }).toList
-									 var componentInstanceAdaptations = model.getAdaptations.filter({a => a.isInstanceOf[InstanceAdaptation] }).toList
-									 var bindingAdaptations = model.getAdaptations.filter({a => a.isInstanceOf[BindingAdaptation] }).toList
-									 var res = thirdPartiesAdaptations ++ componentTypeAdaptations ++ componentInstanceAdaptations ++ bindingAdaptations
-									 res.toList
-									 }*/
 }
