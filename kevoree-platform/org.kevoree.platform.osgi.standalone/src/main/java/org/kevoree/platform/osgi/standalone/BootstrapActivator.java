@@ -19,7 +19,6 @@ package org.kevoree.platform.osgi.standalone;
 
 import org.kevoree.ContainerRoot;
 import org.kevoree.KevoreeFactory;
-import org.kevoree.adaptation.deploy.osgi.KevoreeAdaptationDeployServiceOSGi;
 import org.kevoree.adaptation.deploy.osgi.context.KevoreeDeployManager;
 import org.kevoree.api.configuration.ConfigConstants;
 import org.kevoree.api.configuration.ConfigurationService;
@@ -53,7 +52,6 @@ public class BootstrapActivator implements BundleActivator {
 
     private KevoreeKompareBean kompareBean = null;
     private KevoreeCoreBean coreBean = null;
-    private KevoreeAdaptationDeployServiceOSGi deployBean = null;
     private KevoreeRemoteBean remoteBean = null;
 
     Logger logger = LoggerFactory.getLogger(BootstrapActivator.class);
@@ -62,7 +60,6 @@ public class BootstrapActivator implements BundleActivator {
     public void start(BundleContext context) throws Exception {
         try {
             kompareBean = new KevoreeKompareBean();
-            deployBean = new KevoreeAdaptationDeployServiceOSGi();
             KevoreeDeployManager contextDeploy = new KevoreeDeployManager();
             contextDeploy.setBundle(context.getBundle());
             contextDeploy.setBundleContext(context);
@@ -71,8 +68,6 @@ public class BootstrapActivator implements BundleActivator {
             contextDeploy.setServicePackageAdmin(paAdmin);
             StartLevel serviceLevel = (StartLevel) context.getService(context.getServiceReferences(StartLevel.class.getName(), null)[0]);
             contextDeploy.setStartLevelServer(serviceLevel);
-
-            deployBean.setContext(contextDeploy);
 
             KevoreeConfigServiceBean configBean = new KevoreeConfigServiceBean();
             coreBean = new KevoreeCoreBean();
@@ -127,17 +122,11 @@ public class BootstrapActivator implements BundleActivator {
             e.printStackTrace();
         }
 
-
-        /*
-
-        */
-
     }
 
     @Override
     public void stop(BundleContext context) throws Exception {
         kompareBean = null;
-        deployBean = null;
         remoteBean.stop();
         coreBean.stop();
     }
