@@ -25,7 +25,7 @@ import org.kevoreeAdaptation.AdaptationModel
 import org.slf4j.LoggerFactory
 import scala.collection.JavaConversions._
 
-class KevoreeAdaptationDeployServiceOSGi {
+class BaseDeployOSGi {
 
 	var ctx: KevoreeDeployManager = null
 	var logger = LoggerFactory.getLogger(this.getClass);
