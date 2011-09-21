@@ -41,7 +41,7 @@ class SchedulingTest extends AssertionsForJUnit with SchedulingSuite {
 
   @Before def initialize () {
     component = new KevoreeKompareBean
-    adaptationDeploy = new BaseDeployOSGi
+    adaptationDeploy = new BaseDeployOSGi(null)
   }
 
   def adaptationModelStart (url1: String, nodeName: String): AdaptationModel = {
