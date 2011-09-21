@@ -34,7 +34,6 @@ class BaseDeployOSGi(bundle : Bundle) {
 	var logger = LoggerFactory.getLogger(this.getClass);
 
 	def deploy(model: AdaptationModel, nodeName: String) = {
-
 		if (!model.getAdaptations.isEmpty) {
 			execute(schedule(buildCommandLists(model, nodeName)))
 		} else {
@@ -44,7 +43,6 @@ class BaseDeployOSGi(bundle : Bundle) {
 
 	def buildCommandLists(model: AdaptationModel, nodeName: String): scala.collection.mutable.Map[String, List[PrimitiveCommand]] = {
 		var executedCommandTP: List[PrimitiveCommand] = List()
-
 		//DEPLOY UNIT COMMAND
 		var command_add_deployUnit: List[PrimitiveCommand] = List()
 		var command_remove_deployUnit: List[PrimitiveCommand] = List()
