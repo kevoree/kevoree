@@ -41,7 +41,7 @@ case class AddDeployUnitAetherCommand(deployUnit: DeployUnit, ctx: KevoreeDeploy
 
       val arteFile : File = AetherUtil.resolveDeployUnit(deployUnit)
 
-      logger.debug("Try to install from URI, " + arteFile.getAbsolutePath)
+      logger.debug("Try to install from URL, " + arteFile.getAbsolutePath+" on - "+ctx.bundleContext)
       lastExecutionBundle = Some(ctx.bundleContext.installBundle("file:///"+arteFile.getAbsolutePath,new FileInputStream(arteFile)));
       val symbolicName: String = lastExecutionBundle.get.getSymbolicName
 
@@ -93,7 +93,7 @@ case class AddDeployUnitAetherCommand(deployUnit: DeployUnit, ctx: KevoreeDeploy
       case _@e => {
         try {
           lastExecutionBundle match {
-            case None => logger.error("failed to perform CMD ADD CT EXECUTION")
+            case None => logger.error("failed to perform CMD ADD DEPLOYUNIT2 EXECUTION ",e)
             case Some(bundle) => logger.error("failed to perform CMD ADD CT EXECUTION on " + bundle.getSymbolicName, e);
           }
         } catch {

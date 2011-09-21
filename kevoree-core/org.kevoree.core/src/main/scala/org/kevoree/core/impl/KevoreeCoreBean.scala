@@ -111,9 +111,7 @@ class KevoreeCoreBean extends KevoreeModelHandlerService with KevoreeActor {
   }
 
   override def stop() {
-    if (nodeInstance != null) {
-      nodeInstance.stopNode()
-    }
+
 
     listenerActor.stop()
 
@@ -125,6 +123,10 @@ class KevoreeCoreBean extends KevoreeModelHandlerService with KevoreeActor {
     val adaptationModel = nodeInstance.kompare(model, stopModel);
 
     val deployResult = PrimitiveCommandExecutionHelper.execute(adaptationModel, nodeInstance)
+
+    if (nodeInstance != null) {
+      nodeInstance.stopNode()
+    }
 
     logger.debug("Stop result => " + deployResult)
     // KevoreeXmiHelper.save(bundleContext.getDataFile("lastModel.xmi").getAbsolutePath(), models.head);

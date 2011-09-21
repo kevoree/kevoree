@@ -84,9 +84,9 @@ class KevoreeDeployManager {
   }
 
 
-  def setStartLevelServerTracker(st: ServiceTracker) = startLevelServerTracker = st
-  private var startLevelServerTracker: ServiceTracker = null
-
+  //def setStartLevelServerTracker(st: ServiceTracker) = startLevelServerTracker = st
+  //private var startLevelServerTracker: ServiceTracker = null
+      /*
   var startLevelServer: Option[StartLevel] = null
   def setStartLevelServer(pa: StartLevel) = startLevelServer = Some(pa)
   def getStartLevelServer: StartLevel = {
@@ -98,7 +98,7 @@ class KevoreeDeployManager {
 
 
   //org.osgi.service.startlevel.StartLevel
-
+     */
 
 }
 
