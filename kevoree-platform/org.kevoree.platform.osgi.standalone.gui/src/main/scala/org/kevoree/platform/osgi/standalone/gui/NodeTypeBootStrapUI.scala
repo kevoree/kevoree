@@ -23,6 +23,7 @@ import com.explodingpixels.macwidgets.{IAppWidgetFactory, HudWidgetFactory}
 import scala.collection.JavaConversions._
 import com.explodingpixels.macwidgets.plaf.{HudButtonUI, HudLabelUI, HudTextFieldUI, HudComboBoxUI}
 import org.eclipse.emf.common.util.URI
+import java.lang.Thread
 
 /**
  * User: ffouquet
@@ -52,7 +53,7 @@ class NodeTypeBootStrapUI(pkernel: ContainerRoot) extends JPanel {
     this.removeAll()
     val nodeTypeModel = new DefaultComboBoxModel
 
-    kernel.getTypeDefinitions.filter(td => td.isInstanceOf[org.kevoree.NodeType] && td.getDeployUnits.exists(du => du.getTargetNodeType != null && du.getTargetNodeType.getName == "JavaSENode")).foreach {
+    kernel.getTypeDefinitions.filter(td => td.isInstanceOf[org.kevoree.NodeType] && td.getDeployUnits.exists(du => du.getTargetNodeType != null)).foreach {
       td =>
         nodeTypeModel.addElement(td.getName)
     }
@@ -74,19 +75,26 @@ class NodeTypeBootStrapUI(pkernel: ContainerRoot) extends JPanel {
     btBrowse.setUI(new HudButtonUI)
     btBrowse.addActionListener(new ActionListener {
       def actionPerformed(p1: ActionEvent) {
-        val filechooser: JFileChooser = new JFileChooser
-        val returnVal: Int = filechooser.showOpenDialog(null)
-        if (filechooser.getSelectedFile != null && returnVal == JFileChooser.APPROVE_OPTION) {
-          try {
-            val lastLoadedModel = URI.createFileURI(filechooser.getSelectedFile.getAbsolutePath).toString
-            val newModel = KevoreeXmiHelper.load(lastLoadedModel)
-            init(newModel)
-            repaint()
-            revalidate()
-          } catch {
-            case _@e =>
+
+        new Thread() {
+          override def run() {
+            val filechooser: JFileChooser = new JFileChooser
+            val returnVal: Int = filechooser.showOpenDialog(null)
+            if (filechooser.getSelectedFile != null && returnVal == JFileChooser.APPROVE_OPTION) {
+              try {
+                val lastLoadedModel = URI.createFileURI(filechooser.getSelectedFile.getAbsolutePath).toString
+                val newModel = KevoreeXmiHelper.load(lastLoadedModel)
+                init(newModel)
+                repaint()
+                revalidate()
+              } catch {
+                case _@e => e.printStackTrace()
+              }
+            }
           }
-        }
+        }.start()
+
+
       }
     })
     val bootModelLabel = new JLabel("Bootstrap", SwingConstants.TRAILING);
@@ -110,6 +118,7 @@ class NodeTypeBootStrapUI(pkernel: ContainerRoot) extends JPanel {
     globalLayout.setOpaque(false)
     globalLayout.setLayout(new BorderLayout())
     globalLayout.add(topLayout, BorderLayout.NORTH)
+
     globalLayout.add(
       getParamsPanel(
         kernel.getTypeDefinitions.find(td => td.getName == nodeTypeComboBox.getSelectedItem.toString).get
