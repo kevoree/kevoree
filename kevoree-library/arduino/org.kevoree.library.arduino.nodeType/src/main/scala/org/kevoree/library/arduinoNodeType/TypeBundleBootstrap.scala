@@ -6,24 +6,23 @@
 package org.kevoree.library.arduinoNodeType
 
 import org.kevoreeAdaptation.AdaptationModel
-import org.kevoreeAdaptation.AddDeployUnit
-import org.kevoreeAdaptation.AddThirdParty
 import org.osgi.framework.BundleContext
 import scala.collection.JavaConversions._
 import org.kevoree.framework.aspects.KevoreeAspects._
-import org.kevoree.{DeployUnit, ContainerRoot, TypeDefinition}
+import org.kevoree.{DeployUnit}
+import org.kevoree.kompare.JavaSePrimitive
 
 object TypeBundleBootstrap {
 
   def bootstrapTypeBundle(adaptationModel : AdaptationModel,ctx:BundleContext){
     //Add All ThirdParty
-    adaptationModel.getAdaptations.filter(adaptation => adaptation.isInstanceOf[AddThirdParty]).foreach{adaptation=>
-      val cmd = AddThirdPartyCommand(ctx,adaptation.asInstanceOf[AddThirdParty].getRef)
+    adaptationModel.getAdaptations.filter(adaptation => adaptation.getPrimitiveType.getName == JavaSePrimitive.AddThirdParty).foreach{adaptation=>
+      val cmd = AddThirdPartyCommand(ctx,adaptation.getRef.asInstanceOf[DeployUnit])
       cmd.execute()
     }
     //Add All TypeDefinitionBundle
-    adaptationModel.getAdaptations.filter(adaptation => adaptation.isInstanceOf[AddDeployUnit]).foreach{adaptation=>
-      val cmd = AddThirdPartyCommand(ctx,adaptation.asInstanceOf[AddDeployUnit].getRef)
+    adaptationModel.getAdaptations.filter(adaptation => adaptation.getPrimitiveType.getName == JavaSePrimitive.AddDeployUnit).foreach{adaptation=>
+      val cmd = AddThirdPartyCommand(ctx,adaptation.getRef.asInstanceOf[DeployUnit])
       cmd.execute()
     }
 

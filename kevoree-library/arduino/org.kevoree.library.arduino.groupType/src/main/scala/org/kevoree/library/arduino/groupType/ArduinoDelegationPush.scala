@@ -26,7 +26,7 @@ class ArduinoDelegationPush(handler: KevoreeModelHandlerService, groupName: Stri
               val nodeType = nodeTypeHelper.bootstrapNodeType(model, subNode.getName, bundle.getBundleContext)
               nodeType match {
                 case Some(gNodeType) => {
-                  gNodeType.push(subNode.getName, model, nodeTypeHelper.getNodeTypeBundle.getBundleContext)
+                  gNodeType.push(subNode.getName, model)
                 }
                 case None => logger.warn("Can't bootstrap NodeType")
               }

@@ -7,11 +7,10 @@ package org.kevoree.library.javase.virtualCloud;
 
 import org.kevoree.ContainerRoot;
 import org.kevoree.annotation.*;
-import org.kevoree.framework.AbstractNodeType;
+import org.kevoree.framework.*;
 import org.kevoree.framework.Constants;
-import org.kevoree.framework.KevoreePlatformHelper;
-import org.kevoree.framework.KevoreeXmiHelper;
 import org.kevoreeAdaptation.AdaptationModel;
+import org.kevoreeAdaptation.AdaptationPrimitive;
 import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,7 +45,17 @@ public class VirtualCloudPhysicalNodeType extends AbstractNodeType {
     public void stopNode() {}
 
     @Override
-    public void push(String physicalNodeName, ContainerRoot root, BundleContext context) {
+    public AdaptationModel kompare(ContainerRoot containerRoot, ContainerRoot containerRoot1) {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public org.kevoree.framework.PrimitiveCommand getPrimitive(AdaptationPrimitive adaptationPrimitive) {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public void push(String physicalNodeName, ContainerRoot root) {
 
         try {
             ByteArrayOutputStream outStream = new ByteArrayOutputStream();
@@ -88,10 +97,5 @@ public class VirtualCloudPhysicalNodeType extends AbstractNodeType {
 
     }
 
-    @Override
-    public boolean deploy(AdaptationModel model, String physicalNodeName) {
-		// TODO how to do the deploy
-        return true;
-    }
 
 }
