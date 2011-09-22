@@ -6,13 +6,14 @@
 package org.kevoree.library.defaultNodeTypes;
 
 import org.kevoree.ContainerRoot;
+import org.kevoree.adaptation.deploy.osgi.BaseDeployOSGi;
 import org.kevoree.annotation.*;
-import org.kevoree.framework.AbstractNodeType;
+import org.kevoree.framework.*;
 import org.kevoree.framework.Constants;
-import org.kevoree.framework.KevoreePlatformHelper;
-import org.kevoree.framework.KevoreeXmiHelper;
+import org.kevoree.kompare.KevoreeKompareBean;
 import org.kevoreeAdaptation.AdaptationModel;
-import org.osgi.framework.BundleContext;
+import org.kevoreeAdaptation.AdaptationPrimitive;
+import org.osgi.framework.Bundle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -30,14 +31,20 @@ import java.net.URLConnection;
 @DictionaryType({
     @DictionaryAttribute(name = "autodiscovery", defaultValue = "true", optional = true,vals={"true","false"})
 })
+@PrimitiveCommands(values = {"UpdateType","UpdateDeployUnit","AddType","AddDeployUnit","AddThirdParty","RemoveType","RemoveDeployUnit","UpdateInstance","UpdateBinding","UpdateDictionaryInstance","AddInstance","RemoveInstance","AddBinding","RemoveBinding","AddFragmentBinding","RemoveFragmentBinding","StartInstance","StopInstance"},value={})
 public class JavaSENode extends AbstractNodeType {
     private static final Logger logger = LoggerFactory.getLogger(JavaSENode.class);
 
     private JmDnsComponent jmDnsComponent = null;
+    private KevoreeKompareBean kompareBean = null;
+    private BaseDeployOSGi deployBean = null;
+
 
     @Start
     @Override
     public void startNode() {
+        kompareBean = new KevoreeKompareBean();
+        deployBean = new BaseDeployOSGi((Bundle)this.getDictionary().get("osgi.bundle"));
         Integer port = ((System.getProperty("node.port") == null) ? 8000 : Integer.parseInt(System.getProperty("node.port")));
         if(this.getDictionary().get("autodiscovery").equals("true")){
             jmDnsComponent = new JmDnsComponent(this.getNodeName(), port, this.getModelService(),this.getClass().getSimpleName());
@@ -50,10 +57,22 @@ public class JavaSENode extends AbstractNodeType {
         if(jmDnsComponent != null){
             jmDnsComponent.close();
         }
+        kompareBean = null;
+        deployBean = null;
     }
 
     @Override
-    public void push(String targetNodeName, ContainerRoot root, BundleContext context) {
+    public AdaptationModel kompare(ContainerRoot current, ContainerRoot target) {
+        return kompareBean.kompare(current,target,this.getNodeName());
+    }
+
+    @Override
+    public org.kevoree.framework.PrimitiveCommand getPrimitive(AdaptationPrimitive adaptationPrimitive) {
+        return deployBean.buildPrimitiveCommand(adaptationPrimitive,this.getNodeName());
+    }
+
+    @Override
+    public void push(String targetNodeName, ContainerRoot root) {
 
         try {
             ByteArrayOutputStream outStream = new ByteArrayOutputStream();
@@ -97,12 +116,6 @@ public class JavaSENode extends AbstractNodeType {
 
         }
 
-    }
-
-    @Override
-    public boolean deploy(AdaptationModel model, String nodeName) {
-        //throw new UnsupportedOperationException("Not supported yet.");
-        return true;
     }
 
 }

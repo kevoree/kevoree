@@ -20,7 +20,7 @@ package org.kevoree.adaptation.deploy.osgi.command
 
 import java.io.File
 import org.kevoree._
-import framework.{KevoreeGeneratorHelper, Constants}
+import framework.{PrimitiveCommand, KevoreeGeneratorHelper, Constants}
 import org.kevoree.adaptation.deploy.osgi.context.KevoreeDeployManager
 import org.kevoree.adaptation.deploy.osgi.context.KevoreeOSGiBundle
 import org.kevoree.framework.FileHelper._
@@ -77,7 +77,7 @@ case class AddInstanceCommand(c: Instance, ctx: KevoreeDeployManager, nodeName: 
         "Bundle-Activator: " + activatorPackage + "." + activatorName,
         Constants.KEVOREE_INSTANCE_NAME_HEADER + ": " + c.getName,
         Constants.KEVOREE_NODE_NAME_HEADER + ": " + nodeName,
-        "Require-Bundle: " + mappingFound.bundle.getSymbolicName
+        "Require-Bundle: " + ctx.getBundleContext().getBundle(mappingFound.bundleId).getSymbolicName
       ))
       try {
         var bundle : org.osgi.framework.Bundle = null
@@ -89,12 +89,12 @@ case class AddInstanceCommand(c: Instance, ctx: KevoreeDeployManager, nodeName: 
           bundle = ctx.bundleContext.installBundle("assembly:file:///" + directory.getAbsolutePath)
         }
 
-        ctx.bundleMapping.add(KevoreeOSGiBundle(c.getName, c.getClass.getName, bundle))
+        ctx.bundleMapping.add(KevoreeOSGiBundle(c.getName, c.getClass.getName, bundle.getBundleId))
         lastExecutionBundle = Some(bundle)
         bundle.start()
         mustBeStarted = true
-        val typebundlestartLevel = ctx.getStartLevelServer.getBundleStartLevel(mappingFound.bundle)
-        startLevel = Some(typebundlestartLevel + 1)
+        //val typebundlestartLevel = ctx.getStartLevelServer.getBundleStartLevel(mappingFound.bundle)
+        //startLevel = Some(typebundlestartLevel + 1)
         true
       } catch {
         case _@e => logger.error("Error while deploy Kevoree Instance", e); false
@@ -111,7 +111,7 @@ case class AddInstanceCommand(c: Instance, ctx: KevoreeDeployManager, nodeName: 
         try {
           b.stop();
           b.uninstall()
-          (ctx.bundleMapping.filter(map => map.bundle == b).toList ++ List()).foreach {
+          (ctx.bundleMapping.filter(map => map.bundleId == b.getBundleId).toList ++ List()).foreach {
             map =>
               ctx.bundleMapping.remove(map)
           }
