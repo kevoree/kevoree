@@ -22,13 +22,14 @@ import org.jboss.netty.util.CharsetUtil.UTF_8
 import com.twitter.util.Future
 import org.kevoree.framework.KevoreeXmiHelper
 import org.jboss.netty.buffer.ChannelBufferInputStream
+import org.kevoree.api.service.core.handler.KevoreeModelHandlerService
 
 object HttpServer {
 
   /**
    * The service itself. Simply echos back "hello world"
    */
-  class Respond(agent: KevoreeRuntimeAgent) extends Service[HttpRequest, HttpResponse] {
+  class Respond(handler: KevoreeModelHandlerService) extends Service[HttpRequest, HttpResponse] {
     def apply(request: HttpRequest) = {
 
       try {
@@ -36,7 +37,7 @@ object HttpServer {
         val response = new DefaultHttpResponse(HTTP_1_1, OK)
         response.setContent(copiedBuffer("ok thanks for the model ;-)", UTF_8))
 
-        agent.processModel(model)
+        handler.updateModel(model)
 
         Future.value(response)
       } catch {
