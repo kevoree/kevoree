@@ -66,7 +66,7 @@ class KevS2CompressedKevsTest extends KevSTestSuiteHelper {
     val baseScript = KevScriptWrapper.miniPlanKevScript(AdaptationModelWrapper.generateScriptFromAdaptModel(adaptModel))
     val result = KevScriptWrapper.generateKevScriptCompressed(baseScript)
     println(result)
-    assert(result == "{ain:DigitalLight1925293585:DigitalLight:pin=10/abi:DigitalLight1925293585:hub846068439:toggle}")
+    assert(result == "{ain:DigitalLight1925293585:DigitalLight:pin=10/abi:DigitalLight1925293585:hub846068439:toggle/udi:DigitalLight1925293585:pin=10}")
   }
 
 }
