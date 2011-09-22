@@ -65,7 +65,7 @@ public class NodePropertyEditor extends InstancePropertyEditor {
                     hostedCapable = true;
                 }
             }
-            if (hostedCapable) {
+            if (hostedCapable &&  !(loopNode.getName().equals(node.getName()))) {
                 hostNodeModel.addElement(loopNode.getName());
                 if (loopNode.getHosts().contains(node)) {
                     hostNodeModel.setSelectedItem(loopNode.getName());
