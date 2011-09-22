@@ -13,44 +13,40 @@ package org.kevoree.library.sky.virtualCloud
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.io.File
-import java.io.FileNotFoundException
 import java.io.IOException
 import java.io.InputStream
-import java.util.Properties
 
-class KevoreeNodeRunner {
+/**
+ * User: Erwan Daubert - erwan.daubert@gmail.com
+ * Date: 20/09/11
+ * Time: 11:46
+ *
+ * @author Erwan Daubert
+ * @version 1.0
+ */
+class KevoreeNodeRunner (var nodeName: String, basePort: Int, bootStrapModel: String) {
   private val logger: Logger = LoggerFactory.getLogger(classOf[KevoreeNodeRunner])
   private var nodePlatformProcess: Process = null
   private var outputStreamReader: Thread = null
   private var errorStreamReader: Thread = null
-  private var nodeName: String = null
-  private var basePort: Int = 7000
-  private var bootStrapModel: String = null
-  private var platformJARPath: String = null
+  private val platformClass: String = "org.kevoree.platform.osgi.standalone.App"
 
-
-  def this (nodeName: String, basePort: Int, bootStrapModel: String) {
-    this ()
-    this.nodeName = nodeName
-    this.basePort = basePort
-    this.bootStrapModel = bootStrapModel
-  }
-
-  def startNode() {
+  def startNode (): Boolean = {
     try {
-      logger.debug("StartNodeCommand")
-      if (platformJARPath == null) {
-        findJar()
-      }
+      logger.debug("Start " + nodeName)
       val java: String = getJava
+
+      val classPath = System.getProperty("java.class.path")
+
       nodePlatformProcess = Runtime.getRuntime
         .exec(Array[String](java, "-Dnode.bootstrap=" + bootStrapModel, "-Dnode.name=" + nodeName,
-                             "-Dnode.port=" + basePort, "-jar", platformJARPath))
+                             "-Dnode.port=" + basePort, "-cp", classPath, platformClass))
       outputStreamReader = new Thread {
-        override def run() {
+        override def run () {
           try {
             val bytes: Array[Byte] = new Array[Byte](512)
             while (true) {
@@ -66,7 +62,7 @@ class KevoreeNodeRunner {
         private val stream: InputStream = nodePlatformProcess.getInputStream
       }
       errorStreamReader = new Thread {
-        override def run: Unit = {
+        override def run() {
           try {
             val bytes: Array[Byte] = new Array[Byte](512)
             while (true) {
@@ -84,63 +80,49 @@ class KevoreeNodeRunner {
       outputStreamReader.start()
       errorStreamReader.start()
       nodePlatformProcess.exitValue
-    }catch {
+      true
+    } catch {
       case e: IOException => {
-//        e.printStackTrace()
-        logger.error("Unexpected error", e)
+        //        e.printStackTrace()
+        logger.error("Unexpected error while trying to start " + nodeName, e)
+        false
       }
       case e: IllegalThreadStateException => {
-        logger.debug("platform " + nodeName + ":" + basePort + " is running")
+        logger.debug("platform " + nodeName + ":" + basePort + " is started")
+        false
       }
     }
   }
 
-  def stopKillNode() {
-    logger.debug("KillNodeCommand")
+  def stopKillNode () : Boolean = {
+    logger.debug("Kill " + nodeName)
     try {
       nodePlatformProcess.getOutputStream.write("stop 0".getBytes)
       nodePlatformProcess.getOutputStream.flush()
       Thread.sleep(1000)
       nodePlatformProcess.exitValue
+      true
     }
     catch {
       case e: IOException => {
-        logger.debug("The node cannot be killed. Try to force kill")
+        logger.debug(nodeName + " cannot be killed. Try to force kill...")
         nodePlatformProcess.destroy()
+        logger.debug(nodeName + " has been forcibly killed")
+        true
       }
       case e: InterruptedException => {
-        logger.debug("The node cannot be killed. Try to force kill")
+        logger.debug(nodeName + " cannot be killed. Try to force kill...")
         nodePlatformProcess.destroy()
+        logger.debug(nodeName + " has been forcibly killed")
+        true
       }
       case e: IllegalThreadStateException => {
-        logger.debug("The node cannot be killed. Try to force kill")
+        logger.debug(nodeName + " cannot be killed. Try to force kill...")
         nodePlatformProcess.destroy()
+        logger.debug(nodeName + " has been forcibly killed")
+        true
       }
     }
-  }
-
-  private def findJar() { // TODO maybe replace by using Aether
-    System.out.println("Init jar platform")
-    var jarLocation: String = System.getProperty("kevoree.location")
-    if (jarLocation == null) {
-      jarLocation = System.getProperty("user.dir") + File.separatorChar + "org.kevoree.platform.osgi.standalone" + "-" +
-        getVersion + ".jar"
-    }
-    if (new File(jarLocation).exists) {
-      platformJARPath = jarLocation
-    }
-    else {
-      throw new FileNotFoundException(jarLocation + " doesn't exist")
-    }
-    System.out.println("Init jar platform: " + platformJARPath + " => OK")
-  }
-
-  private def getVersion: String = {
-    val stream: InputStream = this.getClass.getClassLoader
-      .getResourceAsStream("META-INF/maven/org.kevoree.platform/org.kevoree.platform.agent/pom.properties")
-    val prop: Properties = new Properties
-    prop.load(stream)
-    prop.getProperty("version")
   }
 
   private def getJava: String = {
