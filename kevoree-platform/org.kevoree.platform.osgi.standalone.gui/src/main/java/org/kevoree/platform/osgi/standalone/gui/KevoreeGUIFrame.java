@@ -16,6 +16,7 @@ package org.kevoree.platform.osgi.standalone.gui;
 import com.explodingpixels.macwidgets.HudWindow;
 import com.explodingpixels.macwidgets.plaf.HudButtonUI;
 import org.kevoree.ContainerRoot;
+import org.kevoree.TypeDefinition;
 import org.kevoree.platform.osgi.standalone.BootstrapActivator;
 import org.kevoree.platform.osgi.standalone.EmbeddedActivators;
 import org.kevoree.platform.osgi.standalone.EmbeddedFelix;
@@ -107,9 +108,17 @@ public class KevoreeGUIFrame extends JFrame {
                     @Override
                     public void run() {
 
-                        NodeTypeBootStrapModel.checkAndCreate(model, nodeName, nodeUI.getKevTypeName().toString(), nodeUI.currentProperties());
+                        NodeTypeBootStrapModel.checkAndCreate(nodeUI.getCurrentModel(), nodeName, nodeUI.getKevTypeName().toString(), nodeUI.currentProperties());
                         final BootstrapActivator btA = new org.kevoree.platform.osgi.standalone.BootstrapActivator();
-                        btA.setBootstrapModel(model);
+
+
+                       for(TypeDefinition td : nodeUI.getCurrentModel().getTypeDefinitions()){
+                                 System.out.println(td.getName());
+                       }
+
+
+
+                        btA.setBootstrapModel(nodeUI.getCurrentModel());
 
                         EmbeddedActivators.setActivators(Arrays.asList(
                                 //      (BundleActivator) new org.ops4j.pax.url.mvn.internal.Activator(),
