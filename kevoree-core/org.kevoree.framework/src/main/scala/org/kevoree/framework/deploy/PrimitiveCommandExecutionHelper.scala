@@ -32,10 +32,17 @@ object PrimitiveCommandExecutionHelper {
   var logger = LoggerFactory.getLogger(this.getClass)
 
   def execute(adaptionModel: AdaptationModel, nodeInstance: AbstractNodeType): Boolean = {
-    executeStep(adaptionModel.getOrderedPrimitiveSet, nodeInstance)
+    if (adaptionModel.getOrderedPrimitiveSet != null) {
+      executeStep(adaptionModel.getOrderedPrimitiveSet, nodeInstance)
+    } else {
+      true
+    }
   }
 
   private def executeStep(step: ParallelStep, nodeInstance: AbstractNodeType): Boolean = {
+    if (step == null) {
+      return true
+    }
     val phase = new KevoreeParDeployPhase
     val populateResult = step.getAdaptations.forall {
       adapt =>
@@ -50,13 +57,18 @@ object PrimitiveCommandExecutionHelper {
         }
     }
     if (populateResult) {
-      phase.runPhase()
-      val subResult = executeStep(step.getNextStep, nodeInstance)
-      if (!subResult) {
+      val phaseResult = phase.runPhase()
+      if (phaseResult) {
+        val subResult = executeStep(step.getNextStep, nodeInstance)
+        if (!subResult) {
+          phase.rollBack()
+          false
+        } else {
+          true
+        }
+      } else {
         phase.rollBack()
         false
-      } else {
-        true
       }
     } else {
       logger.debug("Primitive mapping error")
@@ -92,7 +104,10 @@ object PrimitiveCommandExecutionHelper {
     }
 
     def runPhase(): Boolean = {
-      val pool = Executors.newFixedThreadPool(primitives.size)
+      if (primitives.length == 0) {
+        return true
+      }
+      val pool = Executors.newFixedThreadPool(primitives.length)
       primitives.foreach {
         p =>
           val runT = new BooleanRunnableTask(p)
@@ -103,12 +118,12 @@ object PrimitiveCommandExecutionHelper {
       try {
         if (!pool.awaitTermination(60, TimeUnit.SECONDS)) {
           pool.shutdownNow()
-          if (!pool.awaitTermination(60, TimeUnit.SECONDS)){
-             logger.error("Primitive command did not terminate")
+          if (!pool.awaitTermination(60, TimeUnit.SECONDS)) {
+            logger.error("Primitive command did not terminate")
           }
         }
       } catch {
-        case _ @ e => pool.shutdownNow()
+        case _@e => pool.shutdownNow()
       }
       primitivesThread.forall(p => p.getResult)
     }
