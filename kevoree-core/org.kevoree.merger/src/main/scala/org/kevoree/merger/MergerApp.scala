@@ -37,7 +37,7 @@ object MergerApp {
   
     //var model1 = KevoreeXmiHelper.load("/Users/ffouquet/Documents/DEV/dukeboard_github/kevoree/kevoree-core/org.kevoree.merger/src/test/resources/nodeType/defchannels1.1.0.kev")
 
-    val baseLed = "komModel/SLed_1ain.kev"
+    val baseLed = "komModel/SLed_up_TimerPeriod.kev"
 
     val model1 = KevoreeXmiHelper.load("/Users/duke/Documents/dev/dukeboard/kevoree/kevoree-tools/org.kevoree.tools.marShellTransform/src/test/resources/"+baseLed)
     val model2 = KevoreeXmiHelper.load("/Users/duke/Documents/dev/dukeboard/kevoree/kevoree-core/org.kevoree.merger/src/test/resources/providedAdaptationTypes/javasebase.kev")
