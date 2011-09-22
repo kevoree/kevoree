@@ -51,6 +51,8 @@ public class NodePropertyEditor extends InstancePropertyEditor {
 
 
         DefaultComboBoxModel hostNodeModel = new DefaultComboBoxModel();
+        hostNodeModel.addElement("nohost");
+        hostNodeModel.setSelectedItem("nohost");
 
         for (ContainerNode loopNode : ((ContainerRoot) elem.eContainer()).getNodes()) {
             NodeType ntype = (org.kevoree.NodeType) loopNode.getTypeDefinition();
@@ -64,9 +66,9 @@ public class NodePropertyEditor extends InstancePropertyEditor {
                 }
             }
             if (hostedCapable) {
-                hostNodeModel.addElement(loopNode.getName() + ":" + ntype.getName());
+                hostNodeModel.addElement(loopNode.getName());
                 if (loopNode.getHosts().contains(node)) {
-                    hostNodeModel.setSelectedItem(loopNode.getName() + ":" + ntype.getName());
+                    hostNodeModel.setSelectedItem(loopNode.getName());
                 }
             }
         }
