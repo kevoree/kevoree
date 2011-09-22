@@ -32,8 +32,13 @@ case class RemoveDeployUnitCommand(deployUnit : DeployUnit, ctx : KevoreeDeployM
     ctx.bundleMapping.find({bundleMapping =>bundleMapping.name==CommandHelper.buildKEY(deployUnit) && bundleMapping.objClassName==deployUnit.getClass.getName}) match {
       case Some(bundleMappingFound)=> {
 
-          val osgibundleContext = bundleMappingFound.bundle.getBundleContext
-          val bundle = osgibundleContext.getBundle
+
+          ctx.bundleMapping.foreach{ map =>
+              println("map => "+map.name+"-"+map.objClassName+"-"+map.bundleId)
+          }
+
+       //   val osgibundleContext = bundleMappingFound.bundle.getBundleContext
+          val bundle = ctx.getBundleContext().getBundle(bundleMappingFound.bundleId)
 
           bundle.uninstall()
           logger.info("Deploy Unit Bundle remove , try to refresh package")
@@ -49,6 +54,6 @@ case class RemoveDeployUnitCommand(deployUnit : DeployUnit, ctx : KevoreeDeployM
   }
 
   def undo() {
-    //AddDeployUnitAetherCommand(deployUnit,ctx).execute()
+    AddDeployUnitAetherCommand(deployUnit,ctx).execute()
   }
 }

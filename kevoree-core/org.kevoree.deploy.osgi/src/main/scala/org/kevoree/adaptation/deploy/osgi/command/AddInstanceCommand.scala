@@ -77,7 +77,7 @@ case class AddInstanceCommand(c: Instance, ctx: KevoreeDeployManager, nodeName: 
         "Bundle-Activator: " + activatorPackage + "." + activatorName,
         Constants.KEVOREE_INSTANCE_NAME_HEADER + ": " + c.getName,
         Constants.KEVOREE_NODE_NAME_HEADER + ": " + nodeName,
-        "Require-Bundle: " + mappingFound.bundle.getSymbolicName
+        "Require-Bundle: " + ctx.getBundleContext().getBundle(mappingFound.bundleId).getSymbolicName
       ))
       try {
         var bundle : org.osgi.framework.Bundle = null
@@ -89,7 +89,7 @@ case class AddInstanceCommand(c: Instance, ctx: KevoreeDeployManager, nodeName: 
           bundle = ctx.bundleContext.installBundle("assembly:file:///" + directory.getAbsolutePath)
         }
 
-        ctx.bundleMapping.add(KevoreeOSGiBundle(c.getName, c.getClass.getName, bundle))
+        ctx.bundleMapping.add(KevoreeOSGiBundle(c.getName, c.getClass.getName, bundle.getBundleId))
         lastExecutionBundle = Some(bundle)
         bundle.start()
         mustBeStarted = true
@@ -111,7 +111,7 @@ case class AddInstanceCommand(c: Instance, ctx: KevoreeDeployManager, nodeName: 
         try {
           b.stop();
           b.uninstall()
-          (ctx.bundleMapping.filter(map => map.bundle == b).toList ++ List()).foreach {
+          (ctx.bundleMapping.filter(map => map.bundleId == b.getBundleId).toList ++ List()).foreach {
             map =>
               ctx.bundleMapping.remove(map)
           }
