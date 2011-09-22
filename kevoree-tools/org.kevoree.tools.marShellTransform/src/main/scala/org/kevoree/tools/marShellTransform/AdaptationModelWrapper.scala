@@ -16,8 +16,9 @@ package org.kevoree.tools.marShellTransform
 import scala.collection.JavaConversions._
 import org.kevoree.tools.marShell.ast._
 import org.kevoreeAdaptation._
-import org.kevoree.{Group, Channel, ComponentInstance, ContainerNode}
 import org.slf4j.LoggerFactory
+import org.kevoree.kompare.JavaSePrimitive
+import org.kevoree._
 
 object AdaptationModelWrapper {
 
@@ -27,21 +28,21 @@ object AdaptationModelWrapper {
     val statments = new java.util.ArrayList[Statment]()
     model.getAdaptations.foreach {
       adapt =>
-      adapt match {
-        case statement : UpdateDictionaryInstance => { 
-            var dictionary = new java.util.Properties
-            if(statement.getRef.getDictionary != null){
-              statement.getRef.getDictionary.getValues.foreach{value =>
+      adapt.getPrimitiveType.getName match {
+        case JavaSePrimitive.UpdateDictionaryInstance => {
+            val dictionary = new java.util.Properties
+            if(adapt.getRef.asInstanceOf[Instance].getDictionary != null){
+              adapt.getRef.asInstanceOf[Instance].getDictionary.getValues.foreach{value =>
                 dictionary.put(value.getAttribute.getName, value.getValue)
               }
             }
-            statement.getRef match {
+            adapt.getRef match {
               case ci : ComponentInstance => statments.add(UpdateDictionaryStatement(ci.getName,Some(ci.eContainer.asInstanceOf[ContainerNode].getName),dictionary))
               case ci : Channel => statments.add(UpdateDictionaryStatement(ci.getName,None,dictionary))  
               case _ => //TODO GROUP
             }
           } //statments.add(UpdateDictionaryStatement(statement.getRef.g))
-        case statement: AddBinding => statments.add(AddBindingStatment(ComponentInstanceID(statement.getRef.getPort.eContainer.asInstanceOf[ComponentInstance].getName, Some(statement.getRef.getPort.eContainer.eContainer.asInstanceOf[ContainerNode].getName)), statement.getRef.getPort.getPortTypeRef.getName, statement.getRef.getHub.getName))
+        case JavaSePrimitive.AddBinding => statments.add(AddBindingStatment(ComponentInstanceID(adapt.getRef.asInstanceOf[org.kevoree.MBinding].getPort.eContainer.asInstanceOf[ComponentInstance].getName, Some(statement.getRef.getPort.eContainer.eContainer.asInstanceOf[ContainerNode].getName)), statement.getRef.getPort.getPortTypeRef.getName, statement.getRef.getHub.getName))
         case statement: AddInstance => {
 
             val props = new java.util.Properties
