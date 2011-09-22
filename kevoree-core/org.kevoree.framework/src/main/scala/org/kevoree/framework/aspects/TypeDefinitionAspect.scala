@@ -112,7 +112,9 @@ case class TypeDefinitionAspect(selfTD: TypeDefinition) {
          val selfCT = selfTD.asInstanceOf[ChannelType]
          false
       }
-
+       case nodeType : NodeType => {
+         true
+       }
       case _@typeDef => println("uncatch portTypeDef "+typeDef); true
     }
   }
