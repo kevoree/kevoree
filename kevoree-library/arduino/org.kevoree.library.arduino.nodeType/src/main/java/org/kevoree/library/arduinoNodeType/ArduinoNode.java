@@ -6,6 +6,7 @@ import org.kevoree.adaptation.deploy.osgi.BaseDeployOSGi;
 import org.kevoree.annotation.*;
 import org.kevoree.extra.osgi.rxtx.KevoreeSharedCom;
 import org.kevoree.framework.*;
+import org.kevoree.framework.Constants;
 import org.kevoree.kompare.JavaSePrimitive;
 import org.kevoree.kompare.KevoreeKompareBean;
 import org.kevoree.library.arduinoNodeType.generator.KevoreeCGenerator;
@@ -210,9 +211,12 @@ public class ArduinoNode extends AbstractNodeType {
 
             logger.debug("Type adaptation detected -> full firmware update needed !");
             //Step : Type Bundle preparation step
-            if (bcontext != null) {
+
+            Bundle bundle = (Bundle) this.getDictionary().get(Constants.KEVOREE_PROPERTY_OSGI_BUNDLE());
+
+            if (bundle != null) {
                 logger.debug("Install Type definition");
-                TypeBundleBootstrap.bootstrapTypeBundle(model, bcontext);
+                TypeBundleBootstrap.bootstrapTypeBundle(model, bundle.getBundleContext());
             } else {
                 logger.warn("No OSGi runtime available");
             }
