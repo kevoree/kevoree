@@ -16,24 +16,17 @@
  * Copyright  : IRISA / INRIA / Universite de Rennes 1 */
 package org.kevoree.tools.ui.editor.property;
 
-import javax.swing.*;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
-import javax.swing.text.BadLocationException;
-
 import com.explodingpixels.macwidgets.plaf.HudComboBoxUI;
 import com.explodingpixels.macwidgets.plaf.HudLabelUI;
-import com.explodingpixels.macwidgets.plaf.HudTextFieldUI;
 import org.kevoree.*;
 import org.kevoree.tools.ui.editor.KevoreeUIKernel;
-import org.kevoree.tools.ui.editor.command.*;
+import org.kevoree.tools.ui.editor.command.SynchNodeTypeCommand;
+import org.kevoree.tools.ui.editor.command.UpdatePhysicalNode;
 import org.kevoree.tools.ui.editor.widget.JCommandButton;
 
-import java.awt.*;
+import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * @author ffouquet
@@ -63,10 +56,10 @@ public class NodePropertyEditor extends InstancePropertyEditor {
             NodeType ntype = (org.kevoree.NodeType) loopNode.getTypeDefinition();
             boolean hostedCapable = false;
             for (AdaptationPrimitiveType ptype : ntype.getManagedPrimitiveTypes()) {
-                if (ptype.getName().toLowerCase().equals("startnode")) {
+                if (ptype.getName().toLowerCase().equals("addnode")) {
                     hostedCapable = true;
                 }
-                if (ptype.getName().toLowerCase().equals("stopnode")) {
+                if (ptype.getName().toLowerCase().equals("removenode")) {
                     hostedCapable = true;
                 }
             }
