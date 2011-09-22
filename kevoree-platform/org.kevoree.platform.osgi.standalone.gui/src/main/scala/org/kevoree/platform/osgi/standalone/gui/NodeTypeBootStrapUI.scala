@@ -14,6 +14,7 @@
 package org.kevoree.platform.osgi.standalone.gui
 
 import javax.swing._
+import event.{DocumentEvent, DocumentListener}
 import java.awt.event.{ActionEvent, ActionListener}
 import java.awt.{Dimension, BorderLayout}
 import org.kevoree._
@@ -23,7 +24,6 @@ import com.explodingpixels.macwidgets.{IAppWidgetFactory, HudWidgetFactory}
 import scala.collection.JavaConversions._
 import com.explodingpixels.macwidgets.plaf.{HudButtonUI, HudLabelUI, HudTextFieldUI, HudComboBoxUI}
 import org.eclipse.emf.common.util.URI
-import java.lang.Thread
 
 /**
  * User: ffouquet
@@ -36,6 +36,13 @@ class NodeTypeBootStrapUI(pkernel: ContainerRoot) extends JPanel {
   var instanceName: JTextField = _
   var nodeTypeComboBox: JComboBox = _
   var currentProperties = new Properties()
+  var currentModel = pkernel
+
+  var previousTopLayout : JComponent = null
+
+  def getCurrentModel: ContainerRoot = currentModel
+
+  private var previousFound = false
 
   def getKevName = {
     instanceName.getText
@@ -50,10 +57,11 @@ class NodeTypeBootStrapUI(pkernel: ContainerRoot) extends JPanel {
 
   //CALL INIT
   def init(kernel: ContainerRoot) {
+    currentModel = kernel
     this.removeAll()
     val nodeTypeModel = new DefaultComboBoxModel
 
-    kernel.getTypeDefinitions.filter(td => td.isInstanceOf[org.kevoree.NodeType] && td.getDeployUnits.exists(du => du.getTargetNodeType != null)).foreach {
+    kernel.getTypeDefinitions.filter(td => td.isInstanceOf[org.kevoree.NodeType] && td.getDeployUnits.exists(du => du.getTargetNodeType != null && du.getTargetNodeType.getName == "JavaSENode")).foreach {
       td =>
         nodeTypeModel.addElement(td.getName)
     }
@@ -61,6 +69,52 @@ class NodeTypeBootStrapUI(pkernel: ContainerRoot) extends JPanel {
     nodeTypeComboBox.setUI(new HudComboBoxUI())
     instanceName = new JTextField(10)
     instanceName.setUI(new HudTextFieldUI)
+
+    instanceName.getDocument.addDocumentListener(new DocumentListener() {
+      def insertUpdate(p1: DocumentEvent) {
+        execute()
+      }
+
+      def removeUpdate(p1: DocumentEvent) {
+        execute()
+      }
+
+      def changedUpdate(p1: DocumentEvent) {
+        execute()
+      }
+
+      def execute() {
+        if (currentModel.getNodes.exists(n => n.getName == instanceName.getText)) {
+          if (!previousFound) {
+            previousFound = true
+            nodeTypeComboBox.setSelectedItem(currentModel.getNodes.find(n => n.getName == instanceName.getText).get.getTypeDefinition.getName)
+            refreshBottom()
+          }
+        } else {
+          if (previousFound) {
+            previousFound = false
+            refreshBottom()
+          }
+        }
+      }
+
+      def refreshBottom() {
+        currentProperties.clear() // CLEAR PREVIOUS DICTIONARY
+        removeAll()
+        val globalLayout = new JPanel()
+        globalLayout.setOpaque(false)
+        globalLayout.setLayout(new BorderLayout())
+        globalLayout.add(previousTopLayout, BorderLayout.NORTH)
+        globalLayout.add(
+          getParamsPanel(
+            kernel.getTypeDefinitions.find(td => td.getName == nodeTypeComboBox.getSelectedItem.toString).get
+            , getDefValue(instanceName.getText, currentModel)), BorderLayout.CENTER)
+        add(globalLayout)
+        repaint()
+        revalidate()
+      }
+
+    })
 
     val nodeNameLabel = new JLabel("Node name", SwingConstants.TRAILING);
     nodeNameLabel.setUI(new HudLabelUI());
@@ -75,26 +129,19 @@ class NodeTypeBootStrapUI(pkernel: ContainerRoot) extends JPanel {
     btBrowse.setUI(new HudButtonUI)
     btBrowse.addActionListener(new ActionListener {
       def actionPerformed(p1: ActionEvent) {
-
-        new Thread() {
-          override def run() {
-            val filechooser: JFileChooser = new JFileChooser
-            val returnVal: Int = filechooser.showOpenDialog(null)
-            if (filechooser.getSelectedFile != null && returnVal == JFileChooser.APPROVE_OPTION) {
-              try {
-                val lastLoadedModel = URI.createFileURI(filechooser.getSelectedFile.getAbsolutePath).toString
-                val newModel = KevoreeXmiHelper.load(lastLoadedModel)
-                init(newModel)
-                repaint()
-                revalidate()
-              } catch {
-                case _@e => e.printStackTrace()
-              }
-            }
+        val filechooser: JFileChooser = new JFileChooser
+        val returnVal: Int = filechooser.showOpenDialog(null)
+        if (filechooser.getSelectedFile != null && returnVal == JFileChooser.APPROVE_OPTION) {
+          try {
+            val lastLoadedModel = URI.createFileURI(filechooser.getSelectedFile.getAbsolutePath).toString
+            val newModel = KevoreeXmiHelper.load(lastLoadedModel)
+            init(newModel)
+            repaint()
+            revalidate()
+          } catch {
+            case _@e =>
           }
-        }.start()
-
-
+        }
       }
     })
     val bootModelLabel = new JLabel("Bootstrap", SwingConstants.TRAILING);
@@ -111,14 +158,14 @@ class NodeTypeBootStrapUI(pkernel: ContainerRoot) extends JPanel {
     topLayout.add(nodeTypeComboBox)
     topLayout.add(bootModelLabel)
     topLayout.add(btBrowse)
-
     SpringUtilities.makeCompactGrid(topLayout, 3, 2, 6, 6, 6, 6)
+
+    previousTopLayout = topLayout
 
     val globalLayout = new JPanel()
     globalLayout.setOpaque(false)
     globalLayout.setLayout(new BorderLayout())
     globalLayout.add(topLayout, BorderLayout.NORTH)
-
     globalLayout.add(
       getParamsPanel(
         kernel.getTypeDefinitions.find(td => td.getName == nodeTypeComboBox.getSelectedItem.toString).get
@@ -145,6 +192,11 @@ class NodeTypeBootStrapUI(pkernel: ContainerRoot) extends JPanel {
 
     add(globalLayout)
   }
+
+  def refreshBottom(){
+
+  }
+
 
   def getParamsPanel(nodeTypeDefinition: TypeDefinition, props: Properties): JComponent = {
     val p = new JPanel(new SpringLayout)
@@ -206,9 +258,6 @@ class NodeTypeBootStrapUI(pkernel: ContainerRoot) extends JPanel {
   }
 
   def getDefValue(nodeName: String, model: ContainerRoot): Properties = {
-    model.getNodes.foreach {
-      node => println(node.getName)
-    }
     val props = new Properties
     model.getNodes.find(node => node.getName == nodeName).map {
       nodeFound =>
