@@ -37,10 +37,12 @@ case class RemoveInstanceCommand(c: Instance, ctx: KevoreeDeployManager, nodeNam
 
     bundles.forall {
       mp =>
-        mp.bundle.stop();
-        mp.bundle.uninstall();
+        val bundle = ctx.getBundleContext().getBundle(mp.bundleId)
+
+        bundle.stop();
+        bundle.uninstall();
         //REFRESH OSGI PACKAGE
-        ctx.getServicePackageAdmin.refreshPackages(Array(mp.bundle))
+        ctx.getServicePackageAdmin.refreshPackages(Array(bundle))
         true
     }
     ctx.bundleMapping.removeAll(bundles)
