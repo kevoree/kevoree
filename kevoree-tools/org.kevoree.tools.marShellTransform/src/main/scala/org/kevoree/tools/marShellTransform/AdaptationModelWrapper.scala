@@ -42,18 +42,18 @@ object AdaptationModelWrapper {
               case _ => //TODO GROUP
             }
           } //statments.add(UpdateDictionaryStatement(statement.getRef.g))
-        case JavaSePrimitive.AddBinding => statments.add(AddBindingStatment(ComponentInstanceID(adapt.getRef.asInstanceOf[org.kevoree.MBinding].getPort.eContainer.asInstanceOf[ComponentInstance].getName, Some(statement.getRef.getPort.eContainer.eContainer.asInstanceOf[ContainerNode].getName)), statement.getRef.getPort.getPortTypeRef.getName, statement.getRef.getHub.getName))
-        case statement: AddInstance => {
+        case JavaSePrimitive.AddBinding => statments.add(AddBindingStatment(ComponentInstanceID(adapt.getRef.asInstanceOf[org.kevoree.MBinding].getPort.eContainer.asInstanceOf[ComponentInstance].getName, Some(adapt.getRef.asInstanceOf[MBinding].getPort.eContainer.eContainer.asInstanceOf[ContainerNode].getName)), adapt.getRef.asInstanceOf[MBinding].getPort.getPortTypeRef.getName, adapt.getRef.asInstanceOf[MBinding].getHub.getName))
+        case JavaSePrimitive.AddInstance => {
 
             val props = new java.util.Properties
-            if (statement.getRef.getDictionary != null) {
-              statement.getRef.getDictionary.getValues.foreach {
+            if (adapt.getRef.asInstanceOf[Instance].getDictionary != null) {
+              adapt.getRef.asInstanceOf[Instance].getDictionary.getValues.foreach {
                 value =>
                 props.put(value.getAttribute.getName, value.getValue)
               }
             }
 
-            statement.getRef match {
+            adapt.getRef match {
               case c: Group => statments.add(AddGroupStatment(c.getName, c.getTypeDefinition.getName, props))
               case c: Channel => statments.add(AddChannelInstanceStatment(c.getName, c.getTypeDefinition.getName, props))
               case c: ComponentInstance => {
@@ -64,9 +64,9 @@ object AdaptationModelWrapper {
               case _@uncatchInstance => logger.warn("uncatched=" + uncatchInstance)
             }
           }
-        case statement: RemoveBinding => statments.add(RemoveBindingStatment(ComponentInstanceID(statement.getRef.getPort.eContainer.asInstanceOf[ComponentInstance].getName, Some(statement.getRef.getPort.eContainer.eContainer.asInstanceOf[ContainerNode].getName)), statement.getRef.getPort.getPortTypeRef.getName, statement.getRef.getHub.getName))
-        case statement: RemoveInstance => {
-            statement.getRef match {
+        case JavaSePrimitive.RemoveBinding => statments.add(RemoveBindingStatment(ComponentInstanceID(adapt.getRef.asInstanceOf[MBinding].getPort.eContainer.asInstanceOf[ComponentInstance].getName, Some(adapt.getRef.asInstanceOf[MBinding].getPort.eContainer.eContainer.asInstanceOf[ContainerNode].getName)), adapt.getRef.asInstanceOf[MBinding].getPort.getPortTypeRef.getName, adapt.getRef.asInstanceOf[MBinding].getHub.getName))
+        case JavaSePrimitive.RemoveInstance => {
+            adapt.getRef match {
               case c: Group => statments.add(RemoveGroupStatment(c.getName))
               case c: Channel => statments.add(RemoveChannelInstanceStatment(c.getName))
               case c: ComponentInstance => {
