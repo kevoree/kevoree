@@ -59,7 +59,7 @@ public abstract class AbstractNodeType {
 
     public abstract AdaptationModel kompare(ContainerRoot actualModel,ContainerRoot targetModel);
 
-    public PrimitiveCommand getPrimitive(AdaptationPrimitive primitive){return null;}
+    public abstract PrimitiveCommand getPrimitive(AdaptationPrimitive primitive);
 
 
 }

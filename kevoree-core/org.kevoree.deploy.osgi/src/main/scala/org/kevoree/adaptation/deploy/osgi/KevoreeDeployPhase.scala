@@ -19,9 +19,9 @@
 package org.kevoree.adaptation.deploy.osgi
 
 import context.KevoreeDeployManager
-import org.kevoree.adaptation.deploy.osgi.command.PrimitiveCommand
 import org.slf4j.LoggerFactory
 import org.osgi.framework.BundleException
+import org.kevoree.framework.PrimitiveCommand
 
 class KevoreeDeployPhase(ctx : KevoreeDeployManager) {
 
@@ -55,6 +55,7 @@ class KevoreeDeployPhase(ctx : KevoreeDeployManager) {
               case Some(b) => {
               logger.debug("Resolving bundle: " + b.getSymbolicName)
               ctx.getServicePackageAdmin.resolveBundles(Array(b));
+                    /*
                c.startLevel match {
                  case Some(level)=> {
                    ctx.getStartLevelServer.setBundleStartLevel(b,level)
@@ -70,7 +71,7 @@ class KevoreeDeployPhase(ctx : KevoreeDeployManager) {
 
                  }
                  case None =>
-               }
+               }   */
               b.start();true
               }
             }

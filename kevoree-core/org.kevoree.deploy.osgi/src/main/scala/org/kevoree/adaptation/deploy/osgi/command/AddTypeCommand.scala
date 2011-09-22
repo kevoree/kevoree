@@ -19,6 +19,7 @@
 package org.kevoree.adaptation.deploy.osgi.command
 
 import org.kevoree._
+import framework.PrimitiveCommand
 import org.kevoree.adaptation.deploy.osgi.context.KevoreeDeployManager
 import org.kevoree.adaptation.deploy.osgi.context.KevoreeOSGiBundle
 import org.kevoree.framework.aspects.KevoreeAspects._
@@ -42,12 +43,17 @@ case class AddTypeCommand (ct: TypeDefinition, ctx: KevoreeDeployManager, nodeNa
       bundle => bundle.name == CommandHelper.buildKEY(deployUnit) && bundle.objClassName == deployUnit.getClass.getName
     }) match {
       case Some(bundle) => bundle
-      case None => logger.error("Deploy Unit Not Found"); null;
+      case None => {
+        ctx.bundleMapping.foreach{ mapping =>
+           logger.error(mapping.bundleId+"-"+mapping.name+"-"+mapping.objClassName)
+        }
+        logger.error("Deploy Unit Not Found for typedefinition "+ct.getName); null
+      }
     }
 
     if (mappingFound != null) {
       //JUST ADD NEW BUNDING
-      ctx.bundleMapping.add(KevoreeOSGiBundle(ct.getName, ct.getClass.getName, mappingFound.bundle))
+      ctx.bundleMapping.add(KevoreeOSGiBundle(ct.getName, ct.getClass.getName, mappingFound.bundleId))
       true
     } else {
       false

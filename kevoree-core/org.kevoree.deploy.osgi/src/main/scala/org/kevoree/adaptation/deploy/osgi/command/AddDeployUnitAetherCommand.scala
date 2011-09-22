@@ -19,6 +19,7 @@ package org.kevoree.adaptation.deploy.osgi.command
  */
 
 import org.kevoree._
+import framework.PrimitiveCommand
 import org.kevoree.DeployUnit
 import org.kevoree.adaptation.deploy.osgi.context.KevoreeDeployManager
 import org.kevoree.adaptation.deploy.osgi.context.KevoreeOSGiBundle
@@ -40,12 +41,12 @@ case class AddDeployUnitAetherCommand(deployUnit: DeployUnit, ctx: KevoreeDeploy
 
       val arteFile : File = AetherUtil.resolveDeployUnit(deployUnit)
 
-      logger.debug("Try to install from URI, " + arteFile.getAbsolutePath)
+      logger.debug("Try to install from URL, " + arteFile.getAbsolutePath+" on - "+ctx.bundleContext)
       lastExecutionBundle = Some(ctx.bundleContext.installBundle("file:///"+arteFile.getAbsolutePath,new FileInputStream(arteFile)));
       val symbolicName: String = lastExecutionBundle.get.getSymbolicName
 
       //FOR DEPLOY UNIT DO NOT USE ONLY NAME
-      ctx.bundleMapping.append(KevoreeOSGiBundle(CommandHelper.buildKEY(deployUnit), deployUnit.getClass.getName, lastExecutionBundle.get))
+      ctx.bundleMapping.append(KevoreeOSGiBundle(CommandHelper.buildKEY(deployUnit), deployUnit.getClass.getName, lastExecutionBundle.get.getBundleId))
       //lastExecutionBundle.get.start
       mustBeStarted = true
 
@@ -72,7 +73,7 @@ case class AddDeployUnitAetherCommand(deployUnit: DeployUnit, ctx: KevoreeDeploy
 
             lastExecutionBundle match {
               case Some(bundle) => {
-                ctx.bundleMapping.append(KevoreeOSGiBundle(CommandHelper.buildKEY(deployUnit), deployUnit.getClass.getName, bundle))
+                ctx.bundleMapping.append(KevoreeOSGiBundle(CommandHelper.buildKEY(deployUnit), deployUnit.getClass.getName, bundle.getBundleId))
                 mustBeStarted = false
                 true
               }
@@ -92,7 +93,7 @@ case class AddDeployUnitAetherCommand(deployUnit: DeployUnit, ctx: KevoreeDeploy
       case _@e => {
         try {
           lastExecutionBundle match {
-            case None => logger.error("failed to perform CMD ADD CT EXECUTION")
+            case None => logger.error("failed to perform CMD ADD DEPLOYUNIT2 EXECUTION ",e)
             case Some(bundle) => logger.error("failed to perform CMD ADD CT EXECUTION on " + bundle.getSymbolicName, e);
           }
         } catch {
@@ -114,7 +115,7 @@ case class AddDeployUnitAetherCommand(deployUnit: DeployUnit, ctx: KevoreeDeploy
         val padmin: PackageAdmin = ctx.bundleContext.getService(srPackageAdmin).asInstanceOf[PackageAdmin]
         padmin.resolveBundles(Array(bundle))
 
-        (ctx.bundleMapping.filter(map => map.bundle == bundle).toList ++ List()).foreach{ map =>
+        (ctx.bundleMapping.filter(map => map.bundleId == bundle.getBundleId).toList ++ List()).foreach{ map =>
            ctx.bundleMapping.remove(map)
         }
       }

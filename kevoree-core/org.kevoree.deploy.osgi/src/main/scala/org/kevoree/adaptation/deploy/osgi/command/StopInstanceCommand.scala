@@ -31,7 +31,7 @@ case class StopInstanceCommand(c : Instance, ctx : KevoreeDeployManager,nodeName
     ctx.bundleMapping.find(map=>map.objClassName == c.getClass.getName && map.name == c.getName) match {
       case None => false
       case Some(mapfound)=> {
-          val componentBundle = mapfound.bundle
+          val componentBundle = ctx.getBundleContext().getBundle(mapfound.bundleId)
           componentBundle.getRegisteredServices.find({sr=> sr.getProperty(Constants.KEVOREE_NODE_NAME)==nodeName && sr.getProperty(Constants.KEVOREE_INSTANCE_NAME)==c.getName }) match {
             case None => false
             case Some(sr)=> (componentBundle.getBundleContext.getService(sr).asInstanceOf[KevoreeActor] !? StopMessage ).asInstanceOf[Boolean]
