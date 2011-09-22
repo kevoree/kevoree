@@ -42,6 +42,12 @@ public class ArduinoHomeFinder {
 
         }
         String previousArduinoHome = System.getProperty("arduino.home");
+        if(previousArduinoHome== null){
+            System.out.println("Please install arduino environnement");
+            return false;
+        }
+
+
         File f = new File(previousArduinoHome);
         if (f.exists()) {
             //CHECK FOR OSX

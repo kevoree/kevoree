@@ -542,7 +542,7 @@
                         </goals>
                         <configuration>
                             <file>${project.build.directory}/${project.build.finalName}.apk</file>
-                            <url>http://maven.kevoree.org/archiva/repository/release/</url>
+                            <url>http://maven.kevoree.org/archiva/repository/snapshots/</url>
                             <packaging>apk</packaging>
                             <groupId>org.kevoree.platform</groupId>
                             <artifactId>org.kevoree.platform.osgi.android</artifactId>
