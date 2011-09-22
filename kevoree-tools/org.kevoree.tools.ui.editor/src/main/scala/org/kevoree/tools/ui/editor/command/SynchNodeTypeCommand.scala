@@ -41,7 +41,7 @@ class SynchNodeTypeCommand extends Command {
         override def run() {
           bootstrap.bootstrapNodeType(model, destNodeName, EmbeddedOSGiEnv.getFwk.getBundleContext) match {
             case Some(nodeTypeInstance) => {
-              nodeTypeInstance.push(destNodeName, model, bootstrap.getNodeTypeBundle.getBundleContext)
+              nodeTypeInstance.push(destNodeName, model)
             }
             case None => logger.error("Error while bootstraping node type")
           }

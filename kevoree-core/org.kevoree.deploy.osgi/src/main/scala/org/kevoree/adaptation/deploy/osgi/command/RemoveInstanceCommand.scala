@@ -22,6 +22,7 @@ import org.kevoree.Instance
 import org.kevoree.adaptation.deploy.osgi.context.KevoreeDeployManager
 import scala.collection.JavaConversions._
 import org.slf4j.LoggerFactory
+import org.kevoree.framework.PrimitiveCommand
 
 case class RemoveInstanceCommand(c: Instance, ctx: KevoreeDeployManager, nodeName: String) extends PrimitiveCommand {
 
@@ -36,10 +37,12 @@ case class RemoveInstanceCommand(c: Instance, ctx: KevoreeDeployManager, nodeNam
 
     bundles.forall {
       mp =>
-        mp.bundle.stop();
-        mp.bundle.uninstall();
+        val bundle = ctx.getBundleContext().getBundle(mp.bundleId)
+
+        bundle.stop();
+        bundle.uninstall();
         //REFRESH OSGI PACKAGE
-        ctx.getServicePackageAdmin.refreshPackages(Array(mp.bundle))
+        ctx.getServicePackageAdmin.refreshPackages(Array(bundle))
         true
     }
     ctx.bundleMapping.removeAll(bundles)
