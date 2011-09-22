@@ -18,4 +18,4 @@
 
 package org.kevoree.adaptation.deploy.osgi.context
 
-case class KevoreeOSGiBundle(name : String,objClassName : String,bundle : org.osgi.framework.Bundle)
+case class KevoreeOSGiBundle(name : String,objClassName : String,bundleId : Long)

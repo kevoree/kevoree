@@ -34,7 +34,7 @@ case class RemoveFragmentBindingCommand(c : Channel,remoteNodeName:String, ctx :
     val KevoreeChannelFound = ctx.bundleMapping.find(map=>map.objClassName == c.getClass.getName && map.name == c.getName) match {
       case None => logger.error("Channel Fragment Mapping not found");None
       case Some(mapfound)=> {
-          val channelBundle = mapfound.bundle
+          val channelBundle = ctx.getBundleContext().getBundle(mapfound.bundleId)
           channelBundle.getRegisteredServices.find({sr=> sr.getProperty(Constants.KEVOREE_NODE_NAME)==nodeName && sr.getProperty(Constants.KEVOREE_INSTANCE_NAME)==c.getName }) match {
             case None => logger.error("Channel Fragment Service not found");None
             case Some(sr)=> Some(channelBundle.getBundleContext.getService(sr).asInstanceOf[KevoreeChannelFragment])}}

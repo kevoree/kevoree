@@ -46,7 +46,7 @@ case class AddDeployUnitAetherCommand(deployUnit: DeployUnit, ctx: KevoreeDeploy
       val symbolicName: String = lastExecutionBundle.get.getSymbolicName
 
       //FOR DEPLOY UNIT DO NOT USE ONLY NAME
-      ctx.bundleMapping.append(KevoreeOSGiBundle(CommandHelper.buildKEY(deployUnit), deployUnit.getClass.getName, lastExecutionBundle.get))
+      ctx.bundleMapping.append(KevoreeOSGiBundle(CommandHelper.buildKEY(deployUnit), deployUnit.getClass.getName, lastExecutionBundle.get.getBundleId))
       //lastExecutionBundle.get.start
       mustBeStarted = true
 
@@ -73,7 +73,7 @@ case class AddDeployUnitAetherCommand(deployUnit: DeployUnit, ctx: KevoreeDeploy
 
             lastExecutionBundle match {
               case Some(bundle) => {
-                ctx.bundleMapping.append(KevoreeOSGiBundle(CommandHelper.buildKEY(deployUnit), deployUnit.getClass.getName, bundle))
+                ctx.bundleMapping.append(KevoreeOSGiBundle(CommandHelper.buildKEY(deployUnit), deployUnit.getClass.getName, bundle.getBundleId))
                 mustBeStarted = false
                 true
               }
@@ -115,7 +115,7 @@ case class AddDeployUnitAetherCommand(deployUnit: DeployUnit, ctx: KevoreeDeploy
         val padmin: PackageAdmin = ctx.bundleContext.getService(srPackageAdmin).asInstanceOf[PackageAdmin]
         padmin.resolveBundles(Array(bundle))
 
-        (ctx.bundleMapping.filter(map => map.bundle == bundle).toList ++ List()).foreach{ map =>
+        (ctx.bundleMapping.filter(map => map.bundleId == bundle.getBundleId).toList ++ List()).foreach{ map =>
            ctx.bundleMapping.remove(map)
         }
       }
