@@ -45,7 +45,7 @@ case class AddTypeCommand (ct: TypeDefinition, ctx: KevoreeDeployManager, nodeNa
       case Some(bundle) => bundle
       case None => {
         ctx.bundleMapping.foreach{ mapping =>
-           logger.error(mapping.bundle.getBundleId+"-"+mapping.name+"-"+mapping.objClassName)
+           logger.error(mapping.bundleId+"-"+mapping.name+"-"+mapping.objClassName)
         }
         logger.error("Deploy Unit Not Found for typedefinition "+ct.getName); null
       }
@@ -53,7 +53,7 @@ case class AddTypeCommand (ct: TypeDefinition, ctx: KevoreeDeployManager, nodeNa
 
     if (mappingFound != null) {
       //JUST ADD NEW BUNDING
-      ctx.bundleMapping.add(KevoreeOSGiBundle(ct.getName, ct.getClass.getName, mappingFound.bundle))
+      ctx.bundleMapping.add(KevoreeOSGiBundle(ct.getName, ct.getClass.getName, mappingFound.bundleId))
       true
     } else {
       false

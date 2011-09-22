@@ -37,7 +37,7 @@ case class RemoveBindingCommand(c : MBinding, ctx : KevoreeDeployManager,nodeNam
     val KevoreeChannelFound = ctx.bundleMapping.find(map=>map.objClassName == c.getHub.getClass.getName && map.name == c.getHub.getName) match {
       case None => logger.error("Channel Fragment Mapping not found");None
       case Some(mapfound)=> {
-          val channelBundle = mapfound.bundle
+          val channelBundle = ctx.getBundleContext().getBundle(mapfound.bundleId)
           channelBundle.getRegisteredServices.find({sr=> sr.getProperty(Constants.KEVOREE_NODE_NAME)==nodeName && sr.getProperty(Constants.KEVOREE_INSTANCE_NAME)==c.getHub.getName }) match {
             case None => logger.error("Channel Fragment Service not found");None
             case Some(sr)=> Some(channelBundle.getBundleContext.getService(sr).asInstanceOf[KevoreeChannelFragment])}}
@@ -46,7 +46,7 @@ case class RemoveBindingCommand(c : MBinding, ctx : KevoreeDeployManager,nodeNam
     val KevoreeComponentFound = ctx.bundleMapping.find(map=>map.objClassName == c.getPort.eContainer.asInstanceOf[ComponentInstance].getClass.getName && map.name == c.getPort.eContainer.asInstanceOf[ComponentInstance].getName ) match {
       case None => logger.error("Component Mapping not found");None
       case Some(mapfound)=> {
-          val componentBundle = mapfound.bundle
+          val componentBundle = ctx.getBundleContext().getBundle(mapfound.bundleId)
           componentBundle.getRegisteredServices.find({sr=> sr.getProperty(Constants.KEVOREE_NODE_NAME)==nodeName && sr.getProperty(Constants.KEVOREE_INSTANCE_NAME)==c.getPort.eContainer.asInstanceOf[ComponentInstance].getName }) match {
             case None => logger.error("Component Actor Service not found");None
             case Some(sr)=> Some(componentBundle.getBundleContext.getService(sr).asInstanceOf[KevoreeComponent])}}
