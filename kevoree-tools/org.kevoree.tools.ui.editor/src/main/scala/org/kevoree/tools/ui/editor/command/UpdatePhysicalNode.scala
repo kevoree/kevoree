@@ -37,14 +37,18 @@ class UpdatePhysicalNode extends Command {
 
   def execute(p: AnyRef) {
     p match {
-      case physNodeName: String if (physNodeName != null && physNodeName.split(':').size == 2) => {
-
-        val hostNode = physNodeName.split(':')(0)
-        val hostType = physNodeName.split(':')(1)
+      case "nohost" => {
+        //CLEAN REMOTE HOST
+        val model = kernel.getModelHandler.getActualModel
+        model.getNodes.filter(node => node.getHosts.contains(targetCNode)).foreach{ r =>
+           r.getHosts.remove(targetCNode)
+        }
+      }
+      case physNodeName: String if (physNodeName != null && physNodeName!="") => {
 
         val model = kernel.getModelHandler.getActualModel
         //CLEAN PREVIOUS RELATIONSHIP
-        model.getNodes.find(n => n.getName == hostNode && n.getTypeDefinition.getName == hostType) match {
+        model.getNodes.find(n => n.getName == physNodeName) match {
           case Some(host)=> {
             if(host.getHosts.contains(targetCNode)){host.getHosts.clear()}
             host.getHosts.add(targetCNode)
