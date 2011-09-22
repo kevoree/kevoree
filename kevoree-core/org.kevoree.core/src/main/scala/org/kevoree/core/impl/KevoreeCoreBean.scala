@@ -52,21 +52,27 @@ class KevoreeCoreBean extends KevoreeModelHandlerService with KevoreeActor {
   var logger = LoggerFactory.getLogger(this.getClass);
 
   private def checkBootstrapNode(currentModel: ContainerRoot): Unit = {
-    if (nodeInstance == null) {
-      currentModel.getNodes.find(n => n.getName == nodeName) match {
-        case Some(foundNode) => {
-          val bt = new NodeTypeBootstrapHelper
-          bt.bootstrapNodeType(currentModel, nodeName, bundleContext) match {
-            case Some(ist) => {
-              nodeInstance = ist;
-              nodeInstance.startNode()
+    try {
+      if (nodeInstance == null) {
+        currentModel.getNodes.find(n => n.getName == nodeName) match {
+          case Some(foundNode) => {
+            val bt = new NodeTypeBootstrapHelper
+            bt.bootstrapNodeType(currentModel, nodeName, bundleContext) match {
+              case Some(ist) => {
+                nodeInstance = ist;
+                nodeInstance.startNode()
+              }
+              case None => logger.error("Node instance name " + nodeName + " not found in bootstrap model !")
             }
-            case None => logger.error("Node instance name " + nodeName + " not found in bootstrap model !")
           }
+          case None => logger.error("Node instance name " + nodeName + " not found in bootstrap model !")
         }
-        case None => logger.error("Node instance name " + nodeName + " not found in bootstrap model !")
       }
+    } catch {
+      case _@e => logger.error("Error while bootstraping node instance ",e)
     }
+
+
   }
 
   private def switchToNewModel(c: ContainerRoot) = {
