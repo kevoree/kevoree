@@ -47,7 +47,6 @@
             <groupId>org.kevoree</groupId>
             <artifactId>org.kevoree.kompare</artifactId>
             <version>${kevoree.version}</version>
-            <scope>test</scope>
         </dependency>
 
 
