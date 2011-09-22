@@ -9,6 +9,7 @@
         <relativePath>../org.kevoree.library.sky.root/pom.xml</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
+    <packaging>bundle</packaging>
 
     <artifactId>org.kevoree.library.sky.virtualCloud</artifactId>
     <name>Kevoree :: Library :: Sky :: Virtual Cloud</name>
@@ -42,6 +43,23 @@
                     </jvmArgs>
                 </configuration>
             </plugin>
+            <plugin>
+                <groupId>org.kevoree.tools</groupId>
+                <artifactId>org.kevoree.tools.annotation.mavenplugin</artifactId>
+                <version>${kevoree.version}</version>
+                <extensions>true</extensions>
+                <configuration>
+                    <nodeTypeNames>VirtualCloudNode</nodeTypeNames>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>generate</goal>
+                            <goal>compile</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
              <plugin>
                 <groupId>org.apache.felix</groupId>
                 <artifactId>maven-bundle-plugin</artifactId>
@@ -49,7 +67,6 @@
                 <extensions>true</extensions>
                 <configuration>
                     <instructions>
-                        <DynamicImport-Package>*</DynamicImport-Package>
                         <Export-Package>org.kevoree.library.sky.virtualCloud.*</Export-Package>
                         <Import-Package>!org.kevoree.library.sky.virtualCloud.*,*</Import-Package>
                     </instructions>
@@ -57,6 +74,4 @@
             </plugin>
         </plugins>
     </build>
-
-
 </project>

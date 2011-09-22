@@ -43,17 +43,21 @@ import java.util.concurrent.TimeUnit;
  * User: Erwan Daubert - erwan.daubert@gmail.com
  * Date: 15/09/11
  * Time: 16:26
+ *
+ * @author Erwan Daubert
+ * @version 1.0
  */
 @NodeType
 @DictionaryType({
 		@DictionaryAttribute(name = "port", defaultValue = "7000", optional = false)
 })
 @PrimitiveCommands(value = {}, values = {"RemoveNode", "addNode"/*, "UpdateNode"*/})
-public class VirtualCloudPhysicalNodeType extends AbstractNodeType {
-	private static final Logger logger = LoggerFactory.getLogger(VirtualCloudPhysicalNodeType.class);
+//@Library(name = "Sky")
+public class VirtualCloudNode extends AbstractNodeType {
+	private static final Logger logger = LoggerFactory.getLogger(VirtualCloudNode.class);
 
 	private Server server;
-	private KevoreeNodeManager kevoreeNodeManager;
+	protected KevoreeNodeManager kevoreeNodeManager;
 
 	@Start
 	@Override
