@@ -90,6 +90,7 @@ public class VirtualCloudNode extends AbstractNodeType {
 
 	@Override
 	public AdaptationModel kompare (ContainerRoot current, ContainerRoot target) {
+		logger.debug("starting kompare...");
 		AdaptationPrimitiveType removeNodeType = null;
 		AdaptationPrimitiveType addNodeType = null;
 		// looking for managed AdaptationPrimitiveType
@@ -126,42 +127,49 @@ public class VirtualCloudNode extends AbstractNodeType {
 
 		// find all containerNode to remove
 		for (ContainerNode node : current.getNodes()) {
-
-			boolean found = false;
-			for (ContainerNode node1 : target.getNodes()) {
-				if (node.getName().equals(node1.getName())) {
-					found = true;
-					break;
+			if (node.getName().equals(this.getNodeName())) {
+				for (ContainerNode subNode : node.getHosts()) {
+					boolean found = false;
+					for (ContainerNode node1 : target.getNodes()) {
+						if (subNode.getName().equals(node1.getName())) {
+							found = true;
+							break;
+						}
+					}
+					if (!found) {
+						// create RemoveNode command
+						logger.debug("add a " + REMOVE_NODE + " adaptation primitive with " + subNode + " as parameter");
+						AdaptationPrimitive command = KevoreeAdaptationFactory.eINSTANCE.createAdaptationPrimitive();
+						command.setPrimitiveType(removeNodeType);
+						command.setRef(subNode);
+						step.getAdaptations().add(command);
+						adaptationModel.getAdaptations().add(command);
+					}
 				}
-			}
-			if (!found) {
-				// create RemoveNode command
-				AdaptationPrimitive command = KevoreeAdaptationFactory.eINSTANCE.createAdaptationPrimitive();
-				command.setPrimitiveType(removeNodeType);
-				command.setRef(node);
-				step.getAdaptations().add(command);
-				adaptationModel.getAdaptations().add(command);
 			}
 		}
 
 
 		// find all containerNode to add
 		for (ContainerNode node : target.getNodes()) {
-			if (!node.getName().equals(this.getNodeName())) {
-				boolean found = false;
-				for (ContainerNode node1 : current.getNodes()) {
-					if (node.getName().equals(node1.getName())) {
-						found = true;
-						break;
+			if (node.getName().equals(this.getNodeName())) {
+				for (ContainerNode subNode : node.getHosts()) {
+					boolean found = false;
+					for (ContainerNode node1 : current.getNodes()) {
+						if (subNode.getName().equals(node1.getName())) {
+							found = true;
+							break;
+						}
 					}
-				}
-				if (!found) {
-					// create AddNode command
-					AdaptationPrimitive command = KevoreeAdaptationFactory.eINSTANCE.createAdaptationPrimitive();
-					command.setPrimitiveType(addNodeType);
-					command.setRef(node);
-					step.getAdaptations().add(command);
-					adaptationModel.getAdaptations().add(command);
+					if (!found) {
+						// create AddNode command
+						logger.debug("add a " + ADD_NODE + " adaptation primitive with " + subNode + " as parameter");
+						AdaptationPrimitive command = KevoreeAdaptationFactory.eINSTANCE.createAdaptationPrimitive();
+						command.setPrimitiveType(addNodeType);
+						command.setRef(subNode);
+						step.getAdaptations().add(command);
+						adaptationModel.getAdaptations().add(command);
+					}
 				}
 			}
 		}
@@ -171,10 +179,8 @@ public class VirtualCloudNode extends AbstractNodeType {
 
 	@Override
 	public PrimitiveCommand getPrimitive (AdaptationPrimitive adaptationPrimitive) {
+		logger.debug("ask for primitiveCommand corresponding to " + adaptationPrimitive.getPrimitiveType().getName());
 		PrimitiveCommand command = null;
-		System.out.println(adaptationPrimitive);
-		System.out.println(adaptationPrimitive.getPrimitiveType());
-		System.out.println(adaptationPrimitive.getPrimitiveType().getName());
 		if (adaptationPrimitive.getPrimitiveType().getName().equals(REMOVE_NODE)) {
 			command = new RemoveNodeCommand((ContainerNode) adaptationPrimitive.getRef(),
 					(ContainerRoot) (adaptationPrimitive.getRef().eContainer()), kevoreeNodeManager);
@@ -189,7 +195,6 @@ public class VirtualCloudNode extends AbstractNodeType {
 
 	@Override
 	public void push (String physicalNodeName, ContainerRoot root) {
-
 		try {
 			ByteArrayOutputStream outStream = new ByteArrayOutputStream();
 			KevoreeXmiHelper.saveStream(outStream, root);
