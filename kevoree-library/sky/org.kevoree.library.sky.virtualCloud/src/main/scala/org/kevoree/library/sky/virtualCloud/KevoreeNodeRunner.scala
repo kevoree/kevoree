@@ -43,6 +43,8 @@ class KevoreeNodeRunner (var nodeName: String, basePort: Int, bootStrapModel: St
 
       val classPath = System.getProperty("java.class.path")
 
+      // TODO basePort must be removed because this information must be defined into the model
+
       nodePlatformProcess = Runtime.getRuntime
         .exec(Array[String](java, "-Dnode.bootstrap=" + bootStrapModel, "-Dnode.name=" + nodeName,
                              "-Dnode.port=" + basePort, "-cp", classPath, platformClass))
@@ -100,8 +102,8 @@ class KevoreeNodeRunner (var nodeName: String, basePort: Int, bootStrapModel: St
         false
       }
       case e: IllegalThreadStateException => {
-        logger.debug("platform " + nodeName + ":" + basePort + " is started")
-        false
+        logger.debug("platform " + nodeName + " is started")
+        true
       }
     }
   }
@@ -109,9 +111,9 @@ class KevoreeNodeRunner (var nodeName: String, basePort: Int, bootStrapModel: St
   def stopKillNode (): Boolean = {
     logger.debug("Kill " + nodeName)
     try {
-      nodePlatformProcess.getOutputStream.write("stop 0".getBytes)
+      nodePlatformProcess.getOutputStream.write("stop 0\n".getBytes)
       nodePlatformProcess.getOutputStream.flush()
-      Thread.sleep(1000)
+      Thread.sleep(10000)
       nodePlatformProcess.exitValue
       true
     }

@@ -15,28 +15,16 @@ import org.kevoree.framework.KevoreeXmiHelper
 
 object ModelManager {
 
-  var modelPath: String = null
-
 
   def saveModelOnFile (bootStrapModel: ContainerRoot): String = {
-    if (modelPath == null) {
       val file = new File(System.getProperty("java.io.tmpdir") + File.separator + "bootstrap.kev")
-      if (file.exists) {
-        file.delete
+      if (!file.exists) {
+        //file.delete
+        file.createNewFile()
       }
 
-      KevoreeXmiHelper.save("bootStrap.kev", bootStrapModel)
-      modelPath = file.getAbsolutePath
-    }
-    modelPath
-  }
-
-  def discardModel () {
-    val file = new File("bootStrap.kev")
-    if (file.exists) {
-      file.delete
-    }
-    modelPath = null
+      KevoreeXmiHelper.save(file.getAbsolutePath, bootStrapModel)
+      file.getAbsolutePath
   }
 
 }

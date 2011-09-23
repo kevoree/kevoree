@@ -25,8 +25,10 @@ import org.kevoree.framework.KevoreeXmiHelper
 import org.jboss.netty.buffer.ChannelBufferInputStream
 import org.kevoree.api.service.core.handler.KevoreeModelHandlerService
 import java.io.ByteArrayOutputStream
-
+import org.slf4j.{LoggerFactory, Logger}
 object HttpServer {
+
+  private val logger: Logger = LoggerFactory.getLogger(HttpServer.getClass)
 
   /**
    * The service itself. Simply echos back "hello world"
@@ -34,14 +36,14 @@ object HttpServer {
   class Respond (handler: KevoreeModelHandlerService) extends Service[HttpRequest, HttpResponse] {
     def apply (request: HttpRequest) : Future[DefaultHttpResponse] = {
       if (request.getMethod == HttpMethod.GET && request.getUri.endsWith("/model/current")) {
-        println("sendModel request")
+        logger.debug("sendModel request")
         sendModel(request)
       } else if (request.getMethod == HttpMethod.POST && request.getUri.endsWith("/model/current")) {
-        println("receiveModel request")
+        logger.debug("receiveModel request")
         receiveModel(request)
       } else {
         val response = new DefaultHttpResponse(HTTP_1_1, BAD_REQUEST)
-        response.setContent(copiedBuffer("Unkown request", UTF_8))
+        response.setContent(copiedBuffer("Unknown request", UTF_8))
         Future.value(response)
       }
     }

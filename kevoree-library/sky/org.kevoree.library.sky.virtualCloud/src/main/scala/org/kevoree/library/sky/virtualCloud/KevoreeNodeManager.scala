@@ -38,7 +38,7 @@ class KevoreeNodeManager(node : VirtualCloudNode) extends DaemonActor {
   }
 
   def removeNode (containerNode: ContainerNode): Boolean = {
-    (this ! REMOVE_NODE(containerNode)).asInstanceOf[Boolean]
+    (this !? REMOVE_NODE(containerNode)).asInstanceOf[Boolean]
   }
 
   def act () {
@@ -66,19 +66,26 @@ class KevoreeNodeManager(node : VirtualCloudNode) extends DaemonActor {
   }
 
   private def removeNodeInternal (containerNode: ContainerNode): Boolean = {
+    logger.debug("try to remove " + containerNode.getName)
     runnners.find(runner => runner.nodeName == containerNode.getName) match {
       case None => // we do nothing because there is no node with this name
-      case Some(runner) => runner.stopKillNode()
+      case Some(runner) => {
+        runner.stopKillNode()
+        runnners = runnners -- List(runner)
+      }
     }
     true
   }
 
   private def removeAllInternal () {
+    logger.debug("try to stop all nodes")
     runnners.foreach {
       runner => runner.stopKillNode()
     }
+    runnners = List()
   }
 
+  // TODO must be remove because all needed data (except Node name) must be defined into the model
   private def foundPort(containerNode : ContainerNode) : Int ={
     containerNode.getDictionary.getValues.find(v => v.getAttribute.getName == "port") match {
       case None => 8000
