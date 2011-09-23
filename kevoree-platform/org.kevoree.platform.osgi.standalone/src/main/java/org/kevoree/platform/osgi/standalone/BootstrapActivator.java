@@ -51,7 +51,7 @@ public class BootstrapActivator implements BundleActivator {
     }
 
     private KevoreeCoreBean coreBean = null;
-    private KevoreeRemoteBean remoteBean = null;
+   // private KevoreeRemoteBean remoteBean = null;
 
     Logger logger = LoggerFactory.getLogger(BootstrapActivator.class);
 
@@ -83,11 +83,11 @@ public class BootstrapActivator implements BundleActivator {
 
             System.out.println("Kevoree Started !");
 
-            Handler.setModelhandler((KevoreeModelHandlerService) coreBean);
+           // Handler.setModelhandler((KevoreeModelHandlerService) coreBean);
 
-            remoteBean = new KevoreeRemoteBean();
-            remoteBean.start();
-            System.out.println("Kevoree Remote Started !");
+           // remoteBean = new KevoreeRemoteBean();
+           // remoteBean.start();
+           // System.out.println("Kevoree Remote Started !");
 
 
             /* Boot strap */
@@ -124,7 +124,7 @@ public class BootstrapActivator implements BundleActivator {
 
     @Override
     public void stop(BundleContext context) throws Exception {
-        remoteBean.stop();
+        //remoteBean.stop();
         coreBean.stop();
     }
 }
