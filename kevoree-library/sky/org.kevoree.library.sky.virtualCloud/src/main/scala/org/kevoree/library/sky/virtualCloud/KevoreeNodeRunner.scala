@@ -26,7 +26,7 @@ import java.io._
  * @author Erwan Daubert
  * @version 1.0
  */
-class KevoreeNodeRunner (var nodeName: String, basePort: Int, bootStrapModel: String) {
+class KevoreeNodeRunner (var nodeName: String, bootStrapModel: String) {
   private val logger: Logger = LoggerFactory.getLogger(classOf[KevoreeNodeRunner])
   private var nodePlatformProcess: Process = null
   private var outputStreamReader: Thread = null
@@ -43,11 +43,8 @@ class KevoreeNodeRunner (var nodeName: String, basePort: Int, bootStrapModel: St
 
       val classPath = System.getProperty("java.class.path")
 
-      // TODO basePort must be removed because this information must be defined into the model
-
       nodePlatformProcess = Runtime.getRuntime
-        .exec(Array[String](java, "-Dnode.bootstrap=" + bootStrapModel, "-Dnode.name=" + nodeName,
-                             "-Dnode.port=" + basePort, "-cp", classPath, platformClass))
+        .exec(Array[String](java, "-Dnode.bootstrap=" + bootStrapModel, "-Dnode.name=" + nodeName, "-cp", classPath, platformClass))
       outputStreamReader = new Thread {
         val file = new File(System.getProperty("java.io.tmpdir") + File.separator + "sysout" + nodeName + ".log")
 

@@ -55,9 +55,8 @@ class KevoreeNodeManager(node : VirtualCloudNode) extends DaemonActor {
   }
 
   private def addNodeInternal (containerNode: ContainerNode, model: ContainerRoot): Boolean = {
-    val port = foundPort(containerNode)
 
-    val newRunner = new KevoreeNodeRunner(containerNode.getName, port, ModelManager.saveModelOnFile(model))
+    val newRunner = new KevoreeNodeRunner(containerNode.getName, ModelManager.saveModelOnFile(model))
     val result = newRunner.startNode()
     if (result) {
       runnners = runnners :+ newRunner
@@ -85,8 +84,8 @@ class KevoreeNodeManager(node : VirtualCloudNode) extends DaemonActor {
     runnners = List()
   }
 
-  // TODO must be remove because all needed data (except Node name) must be defined into the model
-  private def foundPort(containerNode : ContainerNode) : Int ={
+  // must be remove because all needed data (except Node name) must be defined into the model
+  /*private def foundPort(containerNode : ContainerNode) : Int ={
     containerNode.getDictionary.getValues.find(v => v.getAttribute.getName == "port") match {
       case None => 8000
       case Some(v) => {
@@ -97,5 +96,5 @@ class KevoreeNodeManager(node : VirtualCloudNode) extends DaemonActor {
         }
       }
     }
-  }
+  }*/
 }

@@ -16,7 +16,6 @@ package org.kevoree.platform.osgi.standalone.gui;
 import com.explodingpixels.macwidgets.HudWindow;
 import com.explodingpixels.macwidgets.plaf.HudButtonUI;
 import org.kevoree.ContainerRoot;
-import org.kevoree.TypeDefinition;
 import org.kevoree.platform.osgi.standalone.BootstrapActivator;
 import org.kevoree.platform.osgi.standalone.EmbeddedActivators;
 import org.kevoree.platform.osgi.standalone.EmbeddedFelix;
@@ -31,7 +30,6 @@ import java.awt.event.WindowEvent;
 import java.io.File;
 import java.net.URL;
 import java.util.Arrays;
-import java.util.regex.PatternSyntaxException;
 
 public class KevoreeGUIFrame extends JFrame {
 
@@ -88,7 +86,7 @@ public class KevoreeGUIFrame extends JFrame {
             public void actionPerformed(ActionEvent actionEvent) {
                 bootstrapPopup.getJDialog().dispose();
                 String response = nodeUI.getKevName();//instanceName.getText();
-                String[] splitted = null;
+                /*String[] splitted = null;
                 if (response.contains(":")) {
                     try {
                         splitted = response.split(":");
@@ -98,12 +96,12 @@ public class KevoreeGUIFrame extends JFrame {
                     } catch (PatternSyntaxException e) {
                     } catch (NumberFormatException e) {
                     }
-                }
+                }*/
                 final String nodeName = response;
                 System.setProperty("node.name", response);
                 setTitle(nodeName + " : " + nodeUI.getKevTypeName());
 
-                final String[] finalSplitted = splitted;
+//                final String[] finalSplitted = splitted;
                 new Thread() {
                     @Override
                     public void run() {
