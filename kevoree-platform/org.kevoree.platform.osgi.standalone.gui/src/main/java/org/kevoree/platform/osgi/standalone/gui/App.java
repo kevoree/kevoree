@@ -44,13 +44,12 @@ public class App {
         }
         ContainerRoot model = null;
 
-        //System.setProperty("node.bootstrap","/Users/ffouquet/Desktop/test.kev");
 
         Object param = System.getProperty("node.bootstrap");
         if(param != null ){
             model = KevoreeXmiHelper.load(param.toString());
         } else {
-            model = KevoreeXmiHelper.loadStream(App.class.getClassLoader().getResourceAsStream("defaultLibrary.kev")) ;
+            model = KevoreeXmiHelper.loadStream(App.class.getClassLoader().getResourceAsStream("lib.kev")) ;
 
         }
         final KevoreeGUIFrame frame = new KevoreeGUIFrame(model);
