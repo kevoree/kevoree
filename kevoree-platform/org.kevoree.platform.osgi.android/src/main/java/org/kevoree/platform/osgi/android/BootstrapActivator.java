@@ -48,7 +48,7 @@ public class BootstrapActivator implements BundleActivator {
     }
 
     private KevoreeCoreBean coreBean = null;
-    private KevoreeRemoteBean remoteBean = null;
+  //  private KevoreeRemoteBean remoteBean = null;
 
     @Override
     public void start(BundleContext context) throws Exception {
@@ -71,9 +71,9 @@ public class BootstrapActivator implements BundleActivator {
         System.out.println("Kevoree Started !");
 
 
-        Handler.setModelhandler((KevoreeModelHandlerService) coreBean);
-        remoteBean = new KevoreeRemoteBean();
-        remoteBean.start();
+       // Handler.setModelhandler((KevoreeModelHandlerService) coreBean);
+      //  remoteBean = new KevoreeRemoteBean();
+       // remoteBean.start();
 
         System.out.println("Kevoree Remote Started !");
 
@@ -107,6 +107,6 @@ public class BootstrapActivator implements BundleActivator {
     @Override
     public void stop(BundleContext context) throws Exception {
         coreBean.stop();
-        remoteBean.stop();
+      //  remoteBean.stop();
     }
 }
