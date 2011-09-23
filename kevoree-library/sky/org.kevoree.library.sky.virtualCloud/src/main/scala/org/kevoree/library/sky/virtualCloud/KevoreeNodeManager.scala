@@ -3,6 +3,10 @@ package org.kevoree.library.sky.virtualCloud
 import actors.DaemonActor
 import org.kevoree.framework.{Constants, KevoreePlatformHelper}
 import org.kevoree.{ContainerRoot, ContainerNode}
+import org.kevoree.library.javase.virtualCloud.VirtualCloudNode
+
+import scala.collection.JavaConversions._
+import org.slf4j.{LoggerFactory, Logger}
 
 /**
  * User: Erwan Daubert - erwan.daubert@gmail.com
@@ -12,7 +16,8 @@ import org.kevoree.{ContainerRoot, ContainerNode}
  * @author Erwan Daubert
  * @version 1.0
  */
-class KevoreeNodeManager extends DaemonActor {
+class KevoreeNodeManager(node : VirtualCloudNode) extends DaemonActor {
+  private final val logger: Logger = LoggerFactory.getLogger(classOf[VirtualCloudNode])
 
   private var runnners: List[KevoreeNodeRunner] = List()
 
@@ -50,11 +55,9 @@ class KevoreeNodeManager extends DaemonActor {
   }
 
   private def addNodeInternal (containerNode: ContainerNode, model: ContainerRoot): Boolean = {
-    val port = KevoreePlatformHelper
-      .getProperty(model, containerNode.getName, Constants.KEVOREE_PLATFORM_REMOTE_NODE_MODELSYNCH_PORT);
-    val portint = Integer.parseInt(port)
+    val port = foundPort(containerNode)
 
-    val newRunner = new KevoreeNodeRunner(containerNode.getName, portint, ModelManager.saveModelOnFile(model))
+    val newRunner = new KevoreeNodeRunner(containerNode.getName, port, ModelManager.saveModelOnFile(model))
     val result = newRunner.startNode()
     if (result) {
       runnners = runnners :+ newRunner
@@ -73,6 +76,19 @@ class KevoreeNodeManager extends DaemonActor {
   private def removeAllInternal () {
     runnners.foreach {
       runner => runner.stopKillNode()
+    }
+  }
+
+  private def foundPort(containerNode : ContainerNode) : Int ={
+    containerNode.getDictionary.getValues.find(v => v.getAttribute.getName == "port") match {
+      case None => 8000
+      case Some(v) => {
+        try {
+        Integer.parseInt(v.getValue)
+        } catch {
+          case e : NumberFormatException => logger.warn("Invalid attribute type for port!"); 8000
+        }
+      }
     }
   }
 }

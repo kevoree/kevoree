@@ -16,9 +16,7 @@ package org.kevoree.library.sky.virtualCloud
 
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-import java.io.File
-import java.io.IOException
-import java.io.InputStream
+import java.io._
 
 /**
  * User: Erwan Daubert - erwan.daubert@gmail.com
@@ -35,6 +33,9 @@ class KevoreeNodeRunner (var nodeName: String, basePort: Int, bootStrapModel: St
   private var errorStreamReader: Thread = null
   private val platformClass: String = "org.kevoree.platform.osgi.standalone.App"
 
+  private val LogFileErr: File = null
+  private val LogFileout: File = null
+
   def startNode (): Boolean = {
     try {
       logger.debug("Start " + nodeName)
@@ -46,11 +47,17 @@ class KevoreeNodeRunner (var nodeName: String, basePort: Int, bootStrapModel: St
         .exec(Array[String](java, "-Dnode.bootstrap=" + bootStrapModel, "-Dnode.name=" + nodeName,
                              "-Dnode.port=" + basePort, "-cp", classPath, platformClass))
       outputStreamReader = new Thread {
+        val file = new File(System.getProperty("java.io.tmpdir") + File.separator + "sysout" + nodeName + ".log")
+
         override def run () {
           try {
+            val logStream : OutputStream = new FileOutputStream(file)
             val bytes: Array[Byte] = new Array[Byte](512)
+            var length = 0;
             while (true) {
-              stream.read(bytes)
+              length = stream.read(bytes)
+              logStream.write(bytes, 0, length)
+
             }
           }
           catch {
@@ -62,11 +69,16 @@ class KevoreeNodeRunner (var nodeName: String, basePort: Int, bootStrapModel: St
         private val stream: InputStream = nodePlatformProcess.getInputStream
       }
       errorStreamReader = new Thread {
-        override def run() {
+        val file = new File(System.getProperty("java.io.tmpdir") + File.separator + "syserr" + nodeName + ".log")
+        override def run () {
           try {
+            val logStream : OutputStream = new FileOutputStream(file)
             val bytes: Array[Byte] = new Array[Byte](512)
+            var length = 0;
             while (true) {
-              stream.read(bytes)
+              length = stream.read(bytes)
+              logStream.write(bytes, 0, length)
+
             }
           }
           catch {
@@ -94,7 +106,7 @@ class KevoreeNodeRunner (var nodeName: String, basePort: Int, bootStrapModel: St
     }
   }
 
-  def stopKillNode () : Boolean = {
+  def stopKillNode (): Boolean = {
     logger.debug("Kill " + nodeName)
     try {
       nodePlatformProcess.getOutputStream.write("stop 0".getBytes)

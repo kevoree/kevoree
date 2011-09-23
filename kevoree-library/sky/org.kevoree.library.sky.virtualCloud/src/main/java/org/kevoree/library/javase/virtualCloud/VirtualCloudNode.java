@@ -51,10 +51,13 @@ import java.util.concurrent.TimeUnit;
 @DictionaryType({
 		@DictionaryAttribute(name = "port", defaultValue = "7000", optional = false)
 })
-@PrimitiveCommands(value = {}, values = {"RemoveNode", "addNode"/*, "UpdateNode"*/})
+@PrimitiveCommands(value = {}, values = {VirtualCloudNode.REMOVE_NODE, VirtualCloudNode.ADD_NODE/*, "UpdateNode"*/})
 //@Library(name = "Sky")
 public class VirtualCloudNode extends AbstractNodeType {
 	private static final Logger logger = LoggerFactory.getLogger(VirtualCloudNode.class);
+
+	static final String REMOVE_NODE = "RemoveNode";
+	static final String ADD_NODE = "AddNode";
 
 	private Server server;
 	protected KevoreeNodeManager kevoreeNodeManager;
@@ -64,7 +67,7 @@ public class VirtualCloudNode extends AbstractNodeType {
 	public void startNode () {
 
 		// TODO start KevoreeNodeManager
-		kevoreeNodeManager = new KevoreeNodeManager();
+		kevoreeNodeManager = new KevoreeNodeManager(this);
 
 		// start HTTP Server
 		String port = (String) this.getDictionary().get("port");
@@ -91,12 +94,29 @@ public class VirtualCloudNode extends AbstractNodeType {
 		AdaptationPrimitiveType addNodeType = null;
 		// looking for managed AdaptationPrimitiveType
 		for (AdaptationPrimitiveType primitiveType : current.getAdaptationPrimitiveTypes()) {
-			if (primitiveType.getName().equals("RemoveNode")) {
+			if (primitiveType.getName().equals(REMOVE_NODE)) {
 				removeNodeType = primitiveType;
-			} else if (primitiveType.getName().equals("AddNode")) {
+			} else if (primitiveType.getName().equals(ADD_NODE)) {
 				addNodeType = primitiveType;
 			}
 		}
+
+		if (removeNodeType == null || addNodeType == null) {
+			for (AdaptationPrimitiveType primitiveType : target.getAdaptationPrimitiveTypes()) {
+				if (primitiveType.getName().equals(REMOVE_NODE)) {
+					removeNodeType = primitiveType;
+				} else if (primitiveType.getName().equals(ADD_NODE)) {
+					addNodeType = primitiveType;
+				}
+			}
+		}
+		if (removeNodeType == null) {
+			logger.warn("there is no adaptation primitive for " + REMOVE_NODE);
+		}
+		if (addNodeType == null) {
+			logger.warn("there is no adaptation primitive for " + ADD_NODE);
+		}
+
 
 		AdaptationModel adaptationModel = org.kevoreeAdaptation.KevoreeAdaptationFactory.eINSTANCE
 				.createAdaptationModel();
@@ -106,6 +126,7 @@ public class VirtualCloudNode extends AbstractNodeType {
 
 		// find all containerNode to remove
 		for (ContainerNode node : current.getNodes()) {
+
 			boolean found = false;
 			for (ContainerNode node1 : target.getNodes()) {
 				if (node.getName().equals(node1.getName())) {
@@ -119,25 +140,29 @@ public class VirtualCloudNode extends AbstractNodeType {
 				command.setPrimitiveType(removeNodeType);
 				command.setRef(node);
 				step.getAdaptations().add(command);
+				adaptationModel.getAdaptations().add(command);
 			}
 		}
 
 
 		// find all containerNode to add
 		for (ContainerNode node : target.getNodes()) {
-			boolean found = false;
-			for (ContainerNode node1 : current.getNodes()) {
-				if (node.getName().equals(node1.getName())) {
-					found = true;
-					break;
+			if (!node.getName().equals(this.getNodeName())) {
+				boolean found = false;
+				for (ContainerNode node1 : current.getNodes()) {
+					if (node.getName().equals(node1.getName())) {
+						found = true;
+						break;
+					}
 				}
-			}
-			if (!found) {
-				// create AddNode command
-				AdaptationPrimitive command = KevoreeAdaptationFactory.eINSTANCE.createAdaptationPrimitive();
-				command.setPrimitiveType(addNodeType);
-				command.setRef(node);
-				step.getAdaptations().add(command);
+				if (!found) {
+					// create AddNode command
+					AdaptationPrimitive command = KevoreeAdaptationFactory.eINSTANCE.createAdaptationPrimitive();
+					command.setPrimitiveType(addNodeType);
+					command.setRef(node);
+					step.getAdaptations().add(command);
+					adaptationModel.getAdaptations().add(command);
+				}
 			}
 		}
 
@@ -147,10 +172,13 @@ public class VirtualCloudNode extends AbstractNodeType {
 	@Override
 	public PrimitiveCommand getPrimitive (AdaptationPrimitive adaptationPrimitive) {
 		PrimitiveCommand command = null;
-		if (adaptationPrimitive.getPrimitiveType().getName().equals("RemoveNode")) {
+		System.out.println(adaptationPrimitive);
+		System.out.println(adaptationPrimitive.getPrimitiveType());
+		System.out.println(adaptationPrimitive.getPrimitiveType().getName());
+		if (adaptationPrimitive.getPrimitiveType().getName().equals(REMOVE_NODE)) {
 			command = new RemoveNodeCommand((ContainerNode) adaptationPrimitive.getRef(),
 					(ContainerRoot) (adaptationPrimitive.getRef().eContainer()), kevoreeNodeManager);
-		} else if (adaptationPrimitive.getPrimitiveType().getName().equals("addNode")) {
+		} else if (adaptationPrimitive.getPrimitiveType().getName().equals(ADD_NODE)) {
 			command = new AddNodeCommand((ContainerNode) adaptationPrimitive.getRef(),
 					(ContainerRoot) (adaptationPrimitive.getRef().eContainer()), kevoreeNodeManager);
 		} else if (adaptationPrimitive.getPrimitiveType().getName().equals("UpdateNode")) {
