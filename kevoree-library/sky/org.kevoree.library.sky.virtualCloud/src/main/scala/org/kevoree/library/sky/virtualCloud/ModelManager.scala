@@ -20,7 +20,7 @@ object ModelManager {
 
   def saveModelOnFile (bootStrapModel: ContainerRoot): String = {
     if (modelPath == null) {
-      val file = new File(System.getProperty("") + File.separator + "bootstrap.kev")
+      val file = new File(System.getProperty("java.io.tmpdir") + File.separator + "bootstrap.kev")
       if (file.exists) {
         file.delete
       }

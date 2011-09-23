@@ -13,6 +13,7 @@ package org.kevoree.library.sky.virtualCloud
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 import com.twitter.finagle.Service
 import org.jboss.netty.handler.codec.http._
 import org.jboss.netty.handler.codec.http.HttpResponseStatus._
@@ -23,15 +24,38 @@ import com.twitter.util.Future
 import org.kevoree.framework.KevoreeXmiHelper
 import org.jboss.netty.buffer.ChannelBufferInputStream
 import org.kevoree.api.service.core.handler.KevoreeModelHandlerService
+import java.io.ByteArrayOutputStream
 
 object HttpServer {
 
   /**
    * The service itself. Simply echos back "hello world"
    */
-  class Respond(handler: KevoreeModelHandlerService) extends Service[HttpRequest, HttpResponse] {
-    def apply(request: HttpRequest) = {
+  class Respond (handler: KevoreeModelHandlerService) extends Service[HttpRequest, HttpResponse] {
+    def apply (request: HttpRequest) : Future[DefaultHttpResponse] = {
+      if (request.getMethod == HttpMethod.GET && request.getUri.endsWith("/model/current")) {
+        println("sendModel request")
+        sendModel(request)
+      } else if (request.getMethod == HttpMethod.POST && request.getUri.endsWith("/model/current")) {
+        println("receiveModel request")
+        receiveModel(request)
+      } else {
+        val response = new DefaultHttpResponse(HTTP_1_1, BAD_REQUEST)
+        response.setContent(copiedBuffer("Unkown request", UTF_8))
+        Future.value(response)
+      }
+    }
 
+    private def sendModel (request: HttpRequest): Future[DefaultHttpResponse] = {
+      val response = new DefaultHttpResponse(HTTP_1_1, OK)
+      val output = new ByteArrayOutputStream
+      val model = handler.getLastModel
+      KevoreeXmiHelper.saveStream(output, model)
+      response.setContent(copiedBuffer(output.toString("UTF-8"), UTF_8))
+      Future.value(response)
+    }
+
+    private def receiveModel (request: HttpRequest): Future[DefaultHttpResponse] = {
       try {
         val model = KevoreeXmiHelper.loadStream(new ChannelBufferInputStream(request.getContent))
         val response = new DefaultHttpResponse(HTTP_1_1, OK)
@@ -47,8 +71,6 @@ object HttpServer {
           Future.value(response)
         }
       }
-
-
     }
   }
 
