@@ -25,7 +25,7 @@ object MainTester {
 
     System.setProperty("org.kevoree.remote.provisioning","file:///Users/ffouquet/.m2/repository")
 
-    val component = new KevoreeRemoteBean
+    val component = new KevoreeRemoteBean(null)
     component.start()
     Thread.sleep(30*1000)
     component.stop()

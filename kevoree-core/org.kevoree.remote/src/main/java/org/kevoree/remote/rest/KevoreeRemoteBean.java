@@ -17,7 +17,6 @@ import org.kevoree.remote.NetworkUtility;
 import org.kevoree.remote.fileserver.RestFileServerApplication;
 import org.restlet.Application;
 import org.restlet.Component;
-import org.restlet.Restlet;
 import org.restlet.data.Protocol;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,67 +24,68 @@ import org.slf4j.LoggerFactory;
 
 public class KevoreeRemoteBean {
 
-	private Component component;
-	private Application provisioning = null;
+    private Component component;
+    private Application provisioning = null;
 
+    Integer port = 8000;
     private Logger logger = LoggerFactory.getLogger(KevoreeRemoteBean.class);
 
-	public KevoreeRemoteBean() {
-		Integer port = NetworkUtility.findNextAvailblePort(8000, 60000);
+    public Integer getPort(){
+        return port;
+    }
 
-		try {
-			String port_number = System.getProperty("node.port");
-			Integer tmpPort = Integer.parseInt(port_number);
-			port = tmpPort;
-		} catch (NumberFormatException e) {
-		}
+    public KevoreeRemoteBean(String portParam) {
 
-        System.setProperty("node.port",port+"");
+        try {
+            Integer tmpPort = Integer.parseInt(portParam);
+            port = tmpPort;
+        } catch (Exception e) {
+        }
+        port = NetworkUtility.findNextAvailblePort(port, 60000);
 
-		System.out.println("Kevoree Remote Port => " + port);
+        System.out.println("Kevoree Remote Port => " + port);
 
-		component = new Component();
+        component = new Component();
 
-		component.getServers().add(Protocol.HTTP, port);
-		component.getClients().add(Protocol.FILE);
-		component.getContext().getParameters().add("timeToLive", "0");
+        component.getServers().add(Protocol.HTTP, port);
+        component.getClients().add(Protocol.FILE);
+        component.getContext().getParameters().add("timeToLive", "0");
 
-		component.getDefaultHost().attach("/model/current", ModelHandlerResource.class);
-        component.getDefaultHost().attach("/hello", AModelHandlerResource.class);
+        component.getDefaultHost().attach("/model/current", ModelHandlerResource.class);
 
-		if (System.getProperty("org.kevoree.remote.provisioning") != null) {
-			provisioning = new RestFileServerApplication(System.getProperty("org.kevoree.remote.provisioning"));
-			component.getDefaultHost().attach("/provisioning", provisioning);
-			System.out.println("Provisioning server started => /provisioning");
-		} //else {
-		//component.getDefaultHost.attachDefault(classOf[ErrorResource])
-		// }
-
-
-	}
-
-	public void start() {
-		try {
-			component.start();
-			Handler.initHost(component.getDefaultHost());
-		} catch (Exception e) {
-			logger.error("Restlet Start Error",e);
-		}
-	}
-
-	public void stop() {
-		component.getDefaultHost().detach(ModelHandlerResource.class);
-		if (provisioning != null) {
-			component.getDefaultHost().detach(provisioning);
-		}
+        if (System.getProperty("org.kevoree.remote.provisioning") != null) {
+            provisioning = new RestFileServerApplication(System.getProperty("org.kevoree.remote.provisioning"));
+            component.getDefaultHost().attach("/provisioning", provisioning);
+            System.out.println("Provisioning server started => /provisioning");
+        } //else {
+        //component.getDefaultHost.attachDefault(classOf[ErrorResource])
+        // }
 
 
-		try {
-			component.stop();
-		} catch (Exception e) {
-			logger.error("Restlet Stop Error",e);
-		}
-	}
+    }
+
+    public void start() {
+        try {
+            component.start();
+            Handler.initHost(component.getDefaultHost());
+        } catch (Exception e) {
+            logger.error("Restlet Start Error", e);
+        }
+    }
+
+    public void stop() {
+        component.getDefaultHost().detach(ModelHandlerResource.class);
+        if (provisioning != null) {
+            component.getDefaultHost().detach(provisioning);
+        }
+
+
+        try {
+            component.stop();
+        } catch (Exception e) {
+            logger.error("Restlet Stop Error", e);
+        }
+    }
 
 
 }
