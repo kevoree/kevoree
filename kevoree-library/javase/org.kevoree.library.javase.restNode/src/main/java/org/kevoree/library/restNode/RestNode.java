@@ -46,6 +46,11 @@ public class RestNode extends AbstractNodeType {
     public void startNode() {
         kompareBean = new KevoreeKompareBean();
         deployBean = new BaseDeployOSGi((Bundle)this.getDictionary().get("osgi.bundle"));
+
+
+
+
+
         Integer port = ((System.getProperty("node.port") == null) ? 8000 : Integer.parseInt(System.getProperty("node.port")));
         if(this.getDictionary().get("autodiscovery").equals("true")){
             jmDnsComponent = new JmDnsComponent(this.getNodeName(), port, this.getModelService(),this.getClass().getSimpleName());
