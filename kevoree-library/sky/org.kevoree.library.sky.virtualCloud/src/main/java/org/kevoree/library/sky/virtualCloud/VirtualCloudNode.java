@@ -1,9 +1,4 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
-package org.kevoree.library.javase.virtualCloud;
+package org.kevoree.library.sky.virtualCloud;
 
 import com.twitter.finagle.Service;
 import com.twitter.finagle.builder.Server;
@@ -19,8 +14,6 @@ import org.kevoree.annotation.*;
 import org.kevoree.framework.*;
 import org.kevoree.framework.Constants;
 import org.kevoree.framework.PrimitiveCommand;
-import org.kevoree.library.sky.virtualCloud.HttpServer;
-import org.kevoree.library.sky.virtualCloud.KevoreeNodeManager;
 import org.kevoree.library.sky.virtualCloud.command.AddNodeCommand;
 import org.kevoree.library.sky.virtualCloud.command.RemoveNodeCommand;
 import org.kevoreeAdaptation.AdaptationModel;
@@ -77,7 +70,8 @@ public class VirtualCloudNode extends AbstractNodeType {
 				.safeBuild(myService, ServerBuilder.get().codec(Http.get()).bindTo(new InetSocketAddress(portint))
 						.name(this.getNodeName()));
 
-
+		Helper.setModelHandlerServvice(this.getModelService());
+		Helper.setNodeName(this.getNodeName());
 	}
 
 	@Stop

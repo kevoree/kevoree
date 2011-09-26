@@ -1,11 +1,8 @@
 package org.kevoree.library.sky.virtualCloud
 
 import actors.DaemonActor
-import org.kevoree.framework.{Constants, KevoreePlatformHelper}
 import org.kevoree.{ContainerRoot, ContainerNode}
-import org.kevoree.library.javase.virtualCloud.VirtualCloudNode
 
-import scala.collection.JavaConversions._
 import org.slf4j.{LoggerFactory, Logger}
 
 /**
@@ -56,7 +53,7 @@ class KevoreeNodeManager(node : VirtualCloudNode) extends DaemonActor {
 
   private def addNodeInternal (containerNode: ContainerNode, model: ContainerRoot): Boolean = {
 
-    val newRunner = new KevoreeNodeRunner(containerNode.getName, ModelManager.saveModelOnFile(model))
+    val newRunner = new KevoreeNodeRunner(containerNode.getName, Helper.saveModelOnFile(model))
     val result = newRunner.startNode()
     if (result) {
       runnners = runnners :+ newRunner
