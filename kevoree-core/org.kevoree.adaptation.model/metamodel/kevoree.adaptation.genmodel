@@ -7,45 +7,18 @@
   <foreignModel>kevoree.adaptation.ecore</foreignModel>
   <genPackages prefix="KevoreeAdaptation" basePackage="org" disposableProviderFactory="true"
       ecorePackage="kevoree.adaptation.ecore#/">
-    <genClasses ecoreClass="kevoree.adaptation.ecore#//AdaptationPrimitive"/>
+    <genClasses ecoreClass="kevoree.adaptation.ecore#//AdaptationPrimitive">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference kevoree.adaptation.ecore#//AdaptationPrimitive/ref"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference kevoree.adaptation.ecore#//AdaptationPrimitive/primitiveType"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute kevoree.adaptation.ecore#//AdaptationPrimitive/targetNodeName"/>
+    </genClasses>
     <genClasses ecoreClass="kevoree.adaptation.ecore#//AdaptationModel">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference kevoree.adaptation.ecore#//AdaptationModel/adaptations"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference kevoree.adaptation.ecore#//AdaptationModel/orderedPrimitiveSet"/>
     </genClasses>
-    <genClasses ecoreClass="kevoree.adaptation.ecore#//TypeAdaptation">
-      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference kevoree.adaptation.ecore#//TypeAdaptation/ref"/>
+    <genClasses ecoreClass="kevoree.adaptation.ecore#//ParallelStep">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference kevoree.adaptation.ecore#//ParallelStep/adaptations"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference kevoree.adaptation.ecore#//ParallelStep/nextStep"/>
     </genClasses>
-    <genClasses ecoreClass="kevoree.adaptation.ecore#//InstanceAdaptation">
-      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference kevoree.adaptation.ecore#//InstanceAdaptation/ref"/>
-    </genClasses>
-    <genClasses ecoreClass="kevoree.adaptation.ecore#//AddType"/>
-    <genClasses ecoreClass="kevoree.adaptation.ecore#//RemoveType"/>
-    <genClasses ecoreClass="kevoree.adaptation.ecore#//AddInstance"/>
-    <genClasses ecoreClass="kevoree.adaptation.ecore#//RemoveInstance"/>
-    <genClasses ecoreClass="kevoree.adaptation.ecore#//ThirdPartyAdaptation">
-      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference kevoree.adaptation.ecore#//ThirdPartyAdaptation/ref"/>
-    </genClasses>
-    <genClasses ecoreClass="kevoree.adaptation.ecore#//AddThirdParty"/>
-    <genClasses ecoreClass="kevoree.adaptation.ecore#//RemoveThirdParty"/>
-    <genClasses ecoreClass="kevoree.adaptation.ecore#//BindingAdaptation">
-      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference kevoree.adaptation.ecore#//BindingAdaptation/ref"/>
-    </genClasses>
-    <genClasses ecoreClass="kevoree.adaptation.ecore#//AddBinding"/>
-    <genClasses ecoreClass="kevoree.adaptation.ecore#//RemoveBinding"/>
-    <genClasses ecoreClass="kevoree.adaptation.ecore#//FragmentBindingAdaptation">
-      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference kevoree.adaptation.ecore#//FragmentBindingAdaptation/ref"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute kevoree.adaptation.ecore#//FragmentBindingAdaptation/targetNodeName"/>
-    </genClasses>
-    <genClasses ecoreClass="kevoree.adaptation.ecore#//AddFragmentBinding"/>
-    <genClasses ecoreClass="kevoree.adaptation.ecore#//RemoveFragmentBinding"/>
-    <genClasses ecoreClass="kevoree.adaptation.ecore#//UpdateInstance"/>
-    <genClasses ecoreClass="kevoree.adaptation.ecore#//UpdateDictionaryInstance"/>
-    <genClasses ecoreClass="kevoree.adaptation.ecore#//UpdateType"/>
-    <genClasses ecoreClass="kevoree.adaptation.ecore#//DeployUnitAdaptation">
-      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference kevoree.adaptation.ecore#//DeployUnitAdaptation/ref"/>
-    </genClasses>
-    <genClasses ecoreClass="kevoree.adaptation.ecore#//AddDeployUnit"/>
-    <genClasses ecoreClass="kevoree.adaptation.ecore#//RemoveDeployUnit"/>
-    <genClasses ecoreClass="kevoree.adaptation.ecore#//UpdateDeployUnit"/>
-    <genClasses ecoreClass="kevoree.adaptation.ecore#//UpdateBinding"/>
   </genPackages>
 </genmodel:GenModel>

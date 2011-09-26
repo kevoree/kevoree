@@ -18,13 +18,12 @@
 
 package org.kevoree.adaptation.deploy.osgi.command
 
-import org.kevoree._
 import org.kevoree.adaptation.deploy.osgi.context.KevoreeDeployManager
-import org.kevoree.framework.KevoreeChannelFragment
-import org.kevoree.framework.Constants
 import org.kevoree.framework.message.FragmentUnbindMessage
 import org.slf4j.LoggerFactory
 import scala.collection.JavaConversions._
+import org.kevoree.Channel
+import org.kevoree.framework.{PrimitiveCommand, KevoreeChannelFragment, Constants}
 
 case class RemoveFragmentBindingCommand(c : Channel,remoteNodeName:String, ctx : KevoreeDeployManager,nodeName:String) extends PrimitiveCommand {
 
@@ -35,7 +34,7 @@ case class RemoveFragmentBindingCommand(c : Channel,remoteNodeName:String, ctx :
     val KevoreeChannelFound = ctx.bundleMapping.find(map=>map.objClassName == c.getClass.getName && map.name == c.getName) match {
       case None => logger.error("Channel Fragment Mapping not found");None
       case Some(mapfound)=> {
-          val channelBundle = mapfound.bundle
+          val channelBundle = ctx.getBundleContext().getBundle(mapfound.bundleId)
           channelBundle.getRegisteredServices.find({sr=> sr.getProperty(Constants.KEVOREE_NODE_NAME)==nodeName && sr.getProperty(Constants.KEVOREE_INSTANCE_NAME)==c.getName }) match {
             case None => logger.error("Channel Fragment Service not found");None
             case Some(sr)=> Some(channelBundle.getBundleContext.getService(sr).asInstanceOf[KevoreeChannelFragment])}}

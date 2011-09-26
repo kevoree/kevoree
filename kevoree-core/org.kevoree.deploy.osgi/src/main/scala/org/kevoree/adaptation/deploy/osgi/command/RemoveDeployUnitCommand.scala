@@ -18,11 +18,11 @@
 
 package org.kevoree.adaptation.deploy.osgi.command
 
-import org.kevoree._
 import org.kevoree.adaptation.deploy.osgi.context.KevoreeDeployManager
-import org.osgi.service.packageadmin.PackageAdmin
 import org.slf4j.LoggerFactory
 import scala.collection.JavaConversions._
+import org.kevoree.DeployUnit
+import org.kevoree.framework.PrimitiveCommand
 
 case class RemoveDeployUnitCommand(deployUnit : DeployUnit, ctx : KevoreeDeployManager) extends PrimitiveCommand {
 
@@ -31,8 +31,15 @@ case class RemoveDeployUnitCommand(deployUnit : DeployUnit, ctx : KevoreeDeployM
   def execute() : Boolean= {
     ctx.bundleMapping.find({bundleMapping =>bundleMapping.name==CommandHelper.buildKEY(deployUnit) && bundleMapping.objClassName==deployUnit.getClass.getName}) match {
       case Some(bundleMappingFound)=> {
-          val osgibundleContext = bundleMappingFound.bundle.getBundleContext
-          val bundle = osgibundleContext.getBundle
+
+
+          ctx.bundleMapping.foreach{ map =>
+              println("map => "+map.name+"-"+map.objClassName+"-"+map.bundleId)
+          }
+
+       //   val osgibundleContext = bundleMappingFound.bundle.getBundleContext
+          val bundle = ctx.getBundleContext().getBundle(bundleMappingFound.bundleId)
+
           bundle.uninstall()
           logger.info("Deploy Unit Bundle remove , try to refresh package")
 
@@ -47,6 +54,6 @@ case class RemoveDeployUnitCommand(deployUnit : DeployUnit, ctx : KevoreeDeployM
   }
 
   def undo() {
-    //AddDeployUnitAetherCommand(deployUnit,ctx).execute()
+    AddDeployUnitAetherCommand(deployUnit,ctx).execute()
   }
 }

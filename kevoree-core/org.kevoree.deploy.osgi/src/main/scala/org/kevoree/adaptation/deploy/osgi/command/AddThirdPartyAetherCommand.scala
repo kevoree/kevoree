@@ -27,6 +27,7 @@ import scala.collection.JavaConversions._
 import org.kevoree.{ContainerRoot, DeployUnit}
 import org.kevoree.tools.aether.framework.AetherUtil
 import java.io.{FileInputStream, File}
+import org.kevoree.framework.PrimitiveCommand
 
 case class AddThirdPartyAetherCommand(deployUnit: DeployUnit, ctx: KevoreeDeployManager) extends PrimitiveCommand {
 
@@ -42,7 +43,7 @@ case class AddThirdPartyAetherCommand(deployUnit: DeployUnit, ctx: KevoreeDeploy
 
       //lastExecutionBundle = Some(ctx.bundleContext.installBundle(url));
       val symbolicName: String = lastExecutionBundle.get.getSymbolicName
-      ctx.bundleMapping.append(KevoreeOSGiBundle(deployUnit.getName, deployUnit.getClass.getName, lastExecutionBundle.get))
+      ctx.bundleMapping.append(KevoreeOSGiBundle(deployUnit.getName, deployUnit.getClass.getName, lastExecutionBundle.get.getBundleId))
       // lastExecutionBundle.get.start
       mustBeStarted = true
       true

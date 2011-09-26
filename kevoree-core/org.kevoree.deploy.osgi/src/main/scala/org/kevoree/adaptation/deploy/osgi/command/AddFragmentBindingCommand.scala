@@ -15,9 +15,8 @@
 package org.kevoree.adaptation.deploy.osgi.command
 
 import org.kevoree._
+import framework.{PrimitiveCommand, KevoreeChannelFragment, Constants}
 import org.kevoree.adaptation.deploy.osgi.context.KevoreeDeployManager
-import org.kevoree.framework.KevoreeChannelFragment
-import org.kevoree.framework.Constants
 import org.kevoree.framework.message.FragmentBindMessage
 import org.slf4j.LoggerFactory
 import scala.collection.JavaConversions._
@@ -28,10 +27,10 @@ case class AddFragmentBindingCommand(c : Channel,remoteNodeName:String, ctx : Ke
 
   def execute() : Boolean= {
     
-    var KevoreeChannelFound = ctx.bundleMapping.find(map=>map.objClassName == c.getClass.getName && map.name == c.getName) match {
+    val KevoreeChannelFound = ctx.bundleMapping.find(map=>map.objClassName == c.getClass.getName && map.name == c.getName) match {
       case None => logger.error("Channel Fragment Mapping not found");None
       case Some(mapfound)=> {
-          var channelBundle = mapfound.bundle
+          val channelBundle = ctx.getBundleContext().getBundle(mapfound.bundleId)
           channelBundle.getRegisteredServices.find({sr=> sr.getProperty(Constants.KEVOREE_NODE_NAME)==nodeName && sr.getProperty(Constants.KEVOREE_INSTANCE_NAME)==c.getName }) match {
             case None => logger.error("Channel Fragment Service not found");None
             case Some(sr)=> Some(channelBundle.getBundleContext.getService(sr).asInstanceOf[KevoreeChannelFragment])}}
@@ -40,24 +39,15 @@ case class AddFragmentBindingCommand(c : Channel,remoteNodeName:String, ctx : Ke
     KevoreeChannelFound match {
       case None => false
       case Some(channel)=> {
-          //CREATE REMOTE PROXY
-
-          
-
-          //TODO
-          var bindmsg = new FragmentBindMessage
-          //var proxy = channel.createProxy(remoteNodeName,c.getName)//new org.kevoree.framework.bus.netty.remote.KevoreeRemoteChannelClient(remoteNodeName,c.getName,ctx.getServiceHandler,3000)
+          val bindmsg = new FragmentBindMessage
           bindmsg.setChannelName(c.getName)
           bindmsg.setFragmentNodeName(remoteNodeName)
-          //bindmsg.setProxy(proxy)
-          
           (channel !? bindmsg).asInstanceOf[Boolean]
-
         }
     }
   }
 
-  def undo() = {
+  def undo() {
     RemoveFragmentBindingCommand(c,remoteNodeName,ctx,nodeName).execute
   }
 

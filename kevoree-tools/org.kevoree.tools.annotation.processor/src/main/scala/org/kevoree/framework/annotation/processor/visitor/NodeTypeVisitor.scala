@@ -22,33 +22,47 @@ import com.sun.mirror.apt.AnnotationProcessorEnvironment
 import com.sun.mirror.declaration.ClassDeclaration
 import com.sun.mirror.declaration.MethodDeclaration
 import com.sun.mirror.util.SimpleDeclarationVisitor
-import org.kevoree.framework.annotation.processor.visitor.sub.DeployUnitProcessor
-import org.kevoree.framework.annotation.processor.visitor.sub.DictionaryProcessor
-import org.kevoree.framework.annotation.processor.visitor.sub.LibraryProcessor
-import org.kevoree.framework.annotation.processor.visitor.sub.LifeCycleMethodProcessor
-import org.kevoree.framework.annotation.processor.visitor.sub.ThirdPartyProcessor
 import scala.collection.JavaConversions._
 import org.kevoree.NodeType
+import sub._
 
-case class NodeTypeVisitor(nodeType : NodeType,env : AnnotationProcessorEnvironment)
-extends SimpleDeclarationVisitor 
-   with DeployUnitProcessor
-   with DictionaryProcessor
-   with LibraryProcessor
-   with ThirdPartyProcessor
-   with LifeCycleMethodProcessor{
+case class NodeTypeVisitor(nodeType: NodeType, env: AnnotationProcessorEnvironment)
+  extends SimpleDeclarationVisitor
+  with AdaptationPrimitiveProcessor
+  with DeployUnitProcessor
+  with DictionaryProcessor
+  with LibraryProcessor
+  with ThirdPartyProcessor
+  with LifeCycleMethodProcessor
+  with TypeDefinitionProcessor {
 
-  override def visitClassDeclaration(classdef : ClassDeclaration) = {
+
+  def commonProcess(classdef: ClassDeclaration) {
     //SUB PROCESSOR
-    processDictionary(nodeType,classdef)
-    processDeployUnit(nodeType,classdef,env)
-    processLibrary(nodeType,classdef)
-    processThirdParty(nodeType,classdef,env)
-    classdef.getMethods().foreach{method => method.accept(this) }
+    processDictionary(nodeType, classdef)
+    processDeployUnit(nodeType, classdef, env)
+    processLibrary(nodeType, classdef)
+    processThirdParty(nodeType, classdef, env)
+    processPrimitiveCommand(nodeType, classdef, env)
+    classdef.getMethods.foreach {
+      method => method.accept(this)
+    }
   }
 
-  override def visitMethodDeclaration(methoddef : MethodDeclaration) = {
-    processLifeCycleMethod(nodeType,methoddef)
+
+  override def visitClassDeclaration(classdef: ClassDeclaration) = {
+    if (classdef.getSuperclass != null) {
+      val annotFragment = classdef.getSuperclass.getDeclaration.getAnnotation(classOf[org.kevoree.annotation.NodeType])
+      if (annotFragment != null) {
+        classdef.getSuperclass.getDeclaration.accept(this)
+        defineAsSuperType(nodeType, classdef.getSuperclass.getDeclaration.getSimpleName, classOf[NodeType])
+      }
+    }
+    commonProcess(classdef)
+  }
+
+  override def visitMethodDeclaration(methoddef: MethodDeclaration) = {
+    processLifeCycleMethod(nodeType, methoddef)
   }
 
 }

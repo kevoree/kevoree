@@ -6,12 +6,11 @@
 package org.kevoree.library.arduinoNodeType.generator
 
 import org.kevoreeAdaptation.AdaptationModel
-import org.kevoreeAdaptation.AddInstance
-import org.kevoreeAdaptation.AddType
 import org.osgi.framework.BundleContext
 import scala.collection.JavaConversions._
 import org.kevoree.library.arduinoNodeType.{PMemory, ArduinoBoardType}
 import org.kevoree._
+import kompare.JavaSePrimitive
 
 class KevoreeCGenerator
   extends KevoreeComponentTypeClassGenerator
@@ -31,14 +30,14 @@ class KevoreeCGenerator
                 pmax: String
                 ) {
 
-    val componentTypes = adaptModel.getAdaptations.filter(adt => adt.isInstanceOf[AddType] && adt.asInstanceOf[AddType].getRef.isInstanceOf[ComponentType])
-    val channelTypes = adaptModel.getAdaptations.filter(adt => adt.isInstanceOf[AddType] && adt.asInstanceOf[AddType].getRef.isInstanceOf[ChannelType])
+    val componentTypes = adaptModel.getAdaptations.filter(adt => adt.getPrimitiveType.getName == JavaSePrimitive.AddType && adt.getRef.isInstanceOf[ComponentType])
+    val channelTypes = adaptModel.getAdaptations.filter(adt => adt.getPrimitiveType.getName == JavaSePrimitive.AddType && adt.getRef.isInstanceOf[ChannelType])
     var ktypes: List[TypeDefinition] = List()
     componentTypes.foreach {
-      ctype => ktypes = ktypes ++ List(ctype.asInstanceOf[AddType].getRef)
+      ctype => ktypes = ktypes ++ List(ctype.getRef.asInstanceOf[TypeDefinition])
     }
     channelTypes.foreach {
-      ctype => ktypes = ktypes ++ List(ctype.asInstanceOf[AddType].getRef)
+      ctype => ktypes = ktypes ++ List(ctype.getRef.asInstanceOf[TypeDefinition])
     }
 
     generateKcFrameworkHeaders(ktypes, ArduinoBoardType.getFromTypeName(boardName),pmax)
@@ -47,11 +46,11 @@ class KevoreeCGenerator
 
     componentTypes.foreach {
       componentTypeAdaptation =>
-        generateComponentType(componentTypeAdaptation.asInstanceOf[AddType].getRef.asInstanceOf[ComponentType], bundleContext, nodeName)
+        generateComponentType(componentTypeAdaptation.getRef.asInstanceOf[ComponentType], bundleContext, nodeName)
     }
     channelTypes.foreach {
       channelTypeAdaptation =>
-        generateChannelType(channelTypeAdaptation.asInstanceOf[AddType].getRef.asInstanceOf[ChannelType], bundleContext, nodeName)
+        generateChannelType(channelTypeAdaptation.getRef.asInstanceOf[ChannelType], bundleContext, nodeName)
     }
 
 
@@ -64,11 +63,11 @@ class KevoreeCGenerator
     generateGlobalInstanceFactory(ktypes)
     generateRunInstanceMethod(ktypes)
 
-    val instancesAdaption = adaptModel.getAdaptations.filter(adt => adt.isInstanceOf[AddInstance]).filter(adt => !adt.asInstanceOf[AddInstance].getRef.getTypeDefinition.isInstanceOf[GroupType])
+    val instancesAdaption = adaptModel.getAdaptations.filter(adt => adt.getPrimitiveType.getName == JavaSePrimitive.AddInstance).filter(adt => !adt.getRef.asInstanceOf[Instance].getTypeDefinition.isInstanceOf[GroupType])
     var instances: List[Instance] = List()
     instancesAdaption.foreach {
       instanceAdaption =>
-        instances = instances ++ List(instanceAdaption.asInstanceOf[AddInstance].getRef)
+        instances = instances ++ List(instanceAdaption.getRef.asInstanceOf[Instance])
     }
 
     generatePMemoryPrimitives(pmem);

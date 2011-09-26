@@ -20,7 +20,6 @@ package org.kevoree.framework.aspects
 
 import org.kevoree._
 import scala.collection.JavaConversions._
-import KevoreeAspects._
 
 case class ContainerNodeAspect(node: ContainerNode) {
 
@@ -36,7 +35,8 @@ case class ContainerNodeAspect(node: ContainerNode) {
         if (!alreadyDeployComponentType.exists({
           e => e.getName == c.getTypeDefinition.getName
         })) {
-          alreadyDeployComponentType = alreadyDeployComponentType ++ List(c.getTypeDefinition.asInstanceOf[ComponentType])
+          alreadyDeployComponentType = alreadyDeployComponentType ++
+            List(c.getTypeDefinition.asInstanceOf[ComponentType])
         }
     }
     alreadyDeployComponentType
@@ -45,13 +45,21 @@ case class ContainerNodeAspect(node: ContainerNode) {
   def getUsedTypeDefinition: List[TypeDefinition] = {
     var usedType: List[TypeDefinition] = List()
 
+    /* ADD SUPER TYPE USED BY NODE TYPE DEFINITION */
+    if (node.getTypeDefinition.getSuperTypes != null) {
+      usedType = usedType ++ getTypeAndInherited(node.getTypeDefinition)
+    }
+
     /* ADD COMPONENT TYPE USED */
     node.getComponents.foreach {
       c =>
         if (!usedType.exists({
           e => e.getName == c.getTypeDefinition.getName
         })) {
-          usedType = usedType ++ List(c.getTypeDefinition)
+          //usedType = usedType ++ List(c.getTypeDefinition)
+          //if (c.getTypeDefinition.getSuperTypes != null) {
+          usedType = usedType ++ getTypeAndInherited(c.getTypeDefinition)
+          //}
         }
     }
 
@@ -63,7 +71,10 @@ case class ContainerNodeAspect(node: ContainerNode) {
           if (!usedType.exists({
             e => e.getName == mb.getHub.getTypeDefinition.getName
           })) {
-            usedType = usedType ++ List(mb.getHub.getTypeDefinition)
+            // usedType = usedType ++ List(mb.getHub.getTypeDefinition)
+            // if (mb.getHub.getTypeDefinition.getSuperTypes != null) {
+            usedType = usedType ++ getTypeAndInherited(mb.getHub.getTypeDefinition)
+            // }
           }
         }
     }
@@ -71,7 +82,11 @@ case class ContainerNodeAspect(node: ContainerNode) {
     /* add group type on node */
     /* add group */
     node.eContainer.asInstanceOf[ContainerRoot].getGroups.filter(group => group.getSubNodes.contains(node)).foreach({
-      c => usedType = usedType ++ List(c.getTypeDefinition)
+      c =>
+      //usedType = usedType ++ List(c.getTypeDefinition)
+      //if (node.getTypeDefinition.getSuperTypes != null) {
+        usedType = usedType ++ getTypeAndInherited(c.getTypeDefinition)
+      //}
     })
 
     usedType
@@ -95,7 +110,8 @@ case class ContainerNodeAspect(node: ContainerNode) {
 
   def getGroups: List[Group] = {
     var usedGroup: List[Group] = List()
-    node.eContainer.asInstanceOf[ContainerRoot].getGroups.filter(group => group.getSubNodes.contains(node)).foreach(group => {
+    node.eContainer.asInstanceOf[ContainerRoot].getGroups.filter(group => group.getSubNodes.contains(node))
+      .foreach(group => {
       usedGroup = usedGroup ++ List(group)
     })
 
@@ -105,5 +121,13 @@ case class ContainerNodeAspect(node: ContainerNode) {
 
   def getInstances: List[Instance] = getGroups ++ getChannelFragment ++ node.getComponents
 
+  private def getTypeAndInherited(t: TypeDefinition): List[TypeDefinition] = {
+    var types = List[TypeDefinition]()
+    t.getSuperTypes.foreach {
+      superT =>
+        types = types ++ getTypeAndInherited(superT)
+    }
+    types
+  }
 
 }

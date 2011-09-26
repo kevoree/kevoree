@@ -15,15 +15,12 @@ package org.kevoree.kompare.tests.group
 
 import org.scalatest.junit.AssertionsForJUnit
 import org.kevoree.kompare.tests.KompareSuite
-import org.scalatest.AbstractSuite
-import org.kevoree.api.service.core.kompare.ModelKompareService
-import org.kevoree.kompare.KevoreeKompareBean
 import org.junit._
-import org.kevoreeAdaptation.{AddInstance, AddType}
+import org.kevoree.kompare.{JavaSePrimitive, KevoreeKompareBean}
 
 class GroupInitTest extends AssertionsForJUnit with KompareSuite {
 
-  var component : ModelKompareService = null
+  var component : KevoreeKompareBean = null
 
   @Before def initialize() {
     component = new KevoreeKompareBean
@@ -36,8 +33,8 @@ class GroupInitTest extends AssertionsForJUnit with KompareSuite {
     //var kompareModel = component.kompare(model("tests_dictionary/dictionary_1"), model("tests_dictionary/dictionary_2"), "node-0")
     //error("NOT IMPLEMENTED YET")
 
-    kompareModel.shouldContain(classOf[AddType],"GossipGroup")
-    kompareModel.shouldContain(classOf[AddInstance],"group1426020324")
+    kompareModel.shouldContain(JavaSePrimitive.AddType,"GossipGroup")
+    kompareModel.shouldContain(JavaSePrimitive.AddInstance,"group1426020324")
 
 
     //kompareModel.print

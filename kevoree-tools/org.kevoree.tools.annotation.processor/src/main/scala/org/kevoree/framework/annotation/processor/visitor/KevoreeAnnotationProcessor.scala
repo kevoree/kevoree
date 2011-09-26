@@ -38,7 +38,7 @@ class KevoreeAnnotationProcessor(env: AnnotationProcessorEnvironment) extends An
   def process() = {
 
     val root = KevoreeFactory.eINSTANCE.createContainerRoot();
-    LocalUtility.root_=(root)
+    LocalUtility.root=(root)
     env.getTypeDeclarations().foreach {
       typeDecl =>
 
@@ -79,15 +79,13 @@ class KevoreeAnnotationProcessor(env: AnnotationProcessorEnvironment) extends An
         ("key=", "")
       }._1.split('=').toList.get(1)
       val nodeTypeNameList: List[String] = nodeTypeNames.split(";").filter(r => r != null && r != "").toList
-
-      println("l=>"+nodeTypeNameList.mkString(","))
-
       nodeTypeNameList.foreach {
         targetNodeName =>
           KevoreeGenerator.generatePort(root, env.getFiler,targetNodeName);
           KevoreeFactoryGenerator.generateFactory(root, env.getFiler,targetNodeName);
           KevoreeActivatorGenerator.generateActivator(root, env.getFiler,targetNodeName);
       }
+
       KevoreeXmiHelper.save(LocalUtility.generateLibURI(env), root);
     }
   }
@@ -100,10 +98,7 @@ class KevoreeAnnotationProcessor(env: AnnotationProcessorEnvironment) extends An
     if (superTypeChecker.result) {
 
       val nodeType = KevoreeFactory.eINSTANCE.createNodeType
-      var nodeTypeName = nodeTypeAnnotation.name
-      if (nodeTypeName.equals("empty")) {
-        nodeTypeName = typeDecl.getSimpleName
-      }
+      val nodeTypeName = typeDecl.getSimpleName
       nodeType.setName(nodeTypeName)
       nodeType.setBean(typeDecl.getQualifiedName)
       nodeType.setFactoryBean(typeDecl.getQualifiedName + "Factory")
@@ -124,10 +119,7 @@ class KevoreeAnnotationProcessor(env: AnnotationProcessorEnvironment) extends An
     if (superTypeChecker.result) {
 
       val groupType = KevoreeFactory.eINSTANCE.createGroupType
-      var groupName = groupTypeAnnotation.name
-      if (groupName.equals("empty")) {
-        groupName = typeDecl.getSimpleName
-      }
+      val groupName = typeDecl.getSimpleName
       groupType.setName(groupName)
       groupType.setBean(typeDecl.getQualifiedName)
       groupType.setFactoryBean(typeDecl.getQualifiedName + "Factory")
@@ -149,10 +141,7 @@ class KevoreeAnnotationProcessor(env: AnnotationProcessorEnvironment) extends An
     if (superTypeChecker.result) {
 
       val channelType = KevoreeFactory.eINSTANCE.createChannelType();
-      var ctname = channelTypeAnnotation.name
-      if (ctname.equals("empty")) {
-        ctname = typeDecl.getSimpleName
-      }
+      val ctname = typeDecl.getSimpleName
       channelType.setName(ctname)
       channelType.setBean(typeDecl.getQualifiedName)
       channelType.setFactoryBean(typeDecl.getQualifiedName + "Factory")
@@ -187,10 +176,7 @@ class KevoreeAnnotationProcessor(env: AnnotationProcessorEnvironment) extends An
 
     if (superTypeChecker.result && !isAbstract) {
       val componentType = KevoreeFactory.eINSTANCE.createComponentType();
-      var ctname = componentTypeAnnotation.name
-      if (ctname.equals("empty")) {
-        ctname = typeDecl.getSimpleName
-      }
+      val ctname = typeDecl.getSimpleName
       componentType.setName(ctname)
       componentType.setBean(typeDecl.getQualifiedName)
       componentType.setFactoryBean(typeDecl.getQualifiedName + "Factory")
