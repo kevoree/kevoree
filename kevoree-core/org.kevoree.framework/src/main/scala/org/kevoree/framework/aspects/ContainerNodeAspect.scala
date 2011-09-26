@@ -127,6 +127,7 @@ case class ContainerNodeAspect(node: ContainerNode) {
       superT =>
         types = types ++ getTypeAndInherited(superT)
     }
+    types = types ++ List(t)
     types
   }
 
