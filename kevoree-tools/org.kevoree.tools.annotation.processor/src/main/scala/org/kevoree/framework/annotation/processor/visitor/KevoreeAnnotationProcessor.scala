@@ -79,9 +79,6 @@ class KevoreeAnnotationProcessor(env: AnnotationProcessorEnvironment) extends An
         ("key=", "")
       }._1.split('=').toList.get(1)
       val nodeTypeNameList: List[String] = nodeTypeNames.split(";").filter(r => r != null && r != "").toList
-
-      println("l=>"+nodeTypeNameList.mkString(","))
-
       nodeTypeNameList.foreach {
         targetNodeName =>
           KevoreeGenerator.generatePort(root, env.getFiler,targetNodeName);

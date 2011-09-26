@@ -16,11 +16,7 @@
     </parent>
 
     <dependencies>
-        <dependency>
-            <groupId>org.kevoree.extra</groupId>
-            <artifactId>org.kevoree.extra.osgi.jmdns</artifactId>
-            <version>3.4.1</version>
-        </dependency>
+
         <dependency>
             <groupId>org.kevoree</groupId>
             <artifactId>org.kevoree.deploy.osgi</artifactId>
@@ -35,33 +31,6 @@
 
     <build>
         <plugins>
-            <plugin>
-                <groupId>org.scala-tools</groupId>
-                <artifactId>maven-scala-plugin</artifactId>
-                <version>2.15.2</version>
-                <executions>
-                    <execution>
-                        <id>scala-compile-first</id>
-                        <phase>process-resources</phase>
-                        <goals>
-                            <goal>add-source</goal>
-                            <goal>compile</goal>
-                        </goals>
-                    </execution>
-                    <execution>
-                        <id>scala-test-compile</id>
-                        <phase>process-test-resources</phase>
-                        <goals>
-                            <goal>testCompile</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <configuration>
-                    <jvmArgs>
-                        <jvmArg>-Xmx1024m</jvmArg>
-                    </jvmArgs>
-                </configuration>
-            </plugin>
 
             <plugin>
                 <groupId>org.apache.felix</groupId>
@@ -73,7 +42,7 @@
                         <Private-Package>javax.jmdns.*</Private-Package>
                         <DynamicImport-Package>*</DynamicImport-Package>
                         <Export-Package>org.kevoree.library.defaultNodeTypes.*</Export-Package>
-                        <Import-Package>!javax.jmdns.*,!org.kevoree.library.defaultNodeTypes.*,*</Import-Package>
+                        <Import-Package>!org.kevoree.library.defaultNodeTypes.*,*</Import-Package>
                     </instructions>
                 </configuration>
             </plugin>

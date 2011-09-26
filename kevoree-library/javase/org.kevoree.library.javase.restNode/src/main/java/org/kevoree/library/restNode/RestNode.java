@@ -12,6 +12,7 @@ import org.kevoree.api.service.core.handler.KevoreeModelHandlerService;
 import org.kevoree.framework.*;
 import org.kevoree.framework.Constants;
 import org.kevoree.kompare.KevoreeKompareBean;
+import org.kevoree.library.defaultNodeTypes.JavaSENode;
 import org.kevoree.library.restNode.JmDnsComponent;
 import org.kevoree.remote.rest.Handler;
 import org.kevoree.remote.rest.KevoreeRemoteBean;
@@ -34,22 +35,18 @@ import java.net.URLConnection;
 @NodeType
 @DictionaryType({
         @DictionaryAttribute(name = "port", defaultValue = "8000", optional = true),
-        @DictionaryAttribute(name = "autodiscovery", defaultValue = "true", optional = true, vals = {"true", "false"})
+        @DictionaryAttribute(name = "autodiscovery", defaultValue = "false", optional = true,vals={"false","true"})
 })
-@PrimitiveCommands(values = {"UpdateType", "UpdateDeployUnit", "AddType", "AddDeployUnit", "AddThirdParty", "RemoveType", "RemoveDeployUnit", "UpdateInstance", "UpdateBinding", "UpdateDictionaryInstance", "AddInstance", "RemoveInstance", "AddBinding", "RemoveBinding", "AddFragmentBinding", "RemoveFragmentBinding", "StartInstance", "StopInstance"}, value = {})
-public class RestNode extends AbstractNodeType {
+public class RestNode extends JavaSENode {
     private static final Logger logger = LoggerFactory.getLogger(RestNode.class);
 
     private JmDnsComponent jmDnsComponent = null;
-    private KevoreeKompareBean kompareBean = null;
-    private BaseDeployOSGi deployBean = null;
     private KevoreeRemoteBean remoteBean = null;
 
     @Start
     @Override
     public void startNode() {
-        kompareBean = new KevoreeKompareBean();
-        deployBean = new BaseDeployOSGi((Bundle) this.getDictionary().get("osgi.bundle"));
+        super.startNode();
 
         Handler.setModelhandler(this.getModelService());
         remoteBean = new KevoreeRemoteBean(this.getDictionary().get("port").toString());
@@ -68,18 +65,8 @@ public class RestNode extends AbstractNodeType {
         }
         remoteBean.stop();
         remoteBean = null;
-        kompareBean = null;
-        deployBean = null;
-    }
 
-    @Override
-    public AdaptationModel kompare(ContainerRoot current, ContainerRoot target) {
-        return kompareBean.kompare(current, target, this.getNodeName());
-    }
-
-    @Override
-    public org.kevoree.framework.PrimitiveCommand getPrimitive(AdaptationPrimitive adaptationPrimitive) {
-        return deployBean.buildPrimitiveCommand(adaptationPrimitive, this.getNodeName());
+        super.startNode();
     }
 
     @Override
