@@ -52,12 +52,11 @@ import java.util.concurrent.TimeUnit;
 		@DictionaryAttribute(name = "port", defaultValue = "7000", optional = false)
 })
 @PrimitiveCommands(value = {}, values = {VirtualCloudNode.REMOVE_NODE, VirtualCloudNode.ADD_NODE/*, "UpdateNode"*/})
-//@Library(name = "Sky")
 public class VirtualCloudNode extends AbstractNodeType {
 	private static final Logger logger = LoggerFactory.getLogger(VirtualCloudNode.class);
 
-	static final String REMOVE_NODE = "RemoveNode";
-	static final String ADD_NODE = "AddNode";
+	protected static final String REMOVE_NODE = "RemoveNode";
+	protected static final String ADD_NODE = "AddNode";
 
 	private Server server;
 	protected KevoreeNodeManager kevoreeNodeManager;
@@ -138,7 +137,7 @@ public class VirtualCloudNode extends AbstractNodeType {
 					}
 					if (!found) {
 						// create RemoveNode command
-						logger.debug("add a " + REMOVE_NODE + " adaptation primitive with " + subNode + " as parameter");
+						logger.debug("add a " + REMOVE_NODE + " adaptation primitive with " + subNode.getName() + " as parameter");
 						AdaptationPrimitive command = KevoreeAdaptationFactory.eINSTANCE.createAdaptationPrimitive();
 						command.setPrimitiveType(removeNodeType);
 						command.setRef(subNode);
@@ -163,7 +162,7 @@ public class VirtualCloudNode extends AbstractNodeType {
 					}
 					if (!found) {
 						// create AddNode command
-						logger.debug("add a " + ADD_NODE + " adaptation primitive with " + subNode + " as parameter");
+						logger.debug("add a " + ADD_NODE + " adaptation primitive with " + subNode.getName() + " as parameter");
 						AdaptationPrimitive command = KevoreeAdaptationFactory.eINSTANCE.createAdaptationPrimitive();
 						command.setPrimitiveType(addNodeType);
 						command.setRef(subNode);
