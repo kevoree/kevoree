@@ -32,6 +32,17 @@ case class TypeDefinitionAspect (selfTD: TypeDefinition) {
   /* Check if the new type definition define new deploy unit than self */
   def contractChanged (pTD: TypeDefinition): Boolean = {
 
+    if (selfTD.getSuperTypes.size() != pTD.getSuperTypes.size()) {
+      return true
+    }
+    selfTD.getSuperTypes.foreach {
+      selfSuperTD =>
+        if (!pTD.getSuperTypes.exists(td => td.getName == selfSuperTD.getName)) {
+          return false
+        }
+    }
+
+
     //println("check Conract changed " + pTD + "-" + selfTD)
 
     if (pTD.getName != selfTD.getName) {
@@ -120,16 +131,6 @@ case class TypeDefinitionAspect (selfTD: TypeDefinition) {
   }
 
   def isUpdated (pTD: TypeDefinition): Boolean = {
-
-    if (selfTD.getSuperTypes.size() != pTD.getSuperTypes.size()) {
-      return true
-    }
-    selfTD.getSuperTypes.foreach {
-      selfSuperTD =>
-        if(!pTD.getSuperTypes.exists(td => td.getName == selfSuperTD.getName)){
-          return false
-        }
-    }
 
     if (selfTD.getDeployUnits != null) {
       if (pTD.getDeployUnits != null) {
