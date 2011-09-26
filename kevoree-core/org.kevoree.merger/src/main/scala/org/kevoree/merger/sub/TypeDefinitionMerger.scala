@@ -68,6 +68,15 @@ trait TypeDefinitionMerger extends Merger with DictionaryMerger with PortTypeMer
             du.setTargetNodeType(actuelTypeDefinition.asInstanceOf[NodeType])
           }
       }
+
+      val allTypeDef: List[TypeDefinition] = List[TypeDefinition]() ++ root.getTypeDefinitions ++ root2.getTypeDefinitions
+      allTypeDef.foreach {
+        du =>
+          if (du.getSuperTypes != null && du.getSuperTypes.contains(newTypeDefinition)) {
+            du.getSuperTypes.remove(newTypeDefinition)
+            du.getSuperTypes.add(actuelTypeDefinition)
+          }
+      }
     }
   }
 
@@ -90,6 +99,12 @@ trait TypeDefinitionMerger extends Merger with DictionaryMerger with PortTypeMer
           }
       }
     }
+
+    if (actuelTypeDefinition.getSuperTypes != null && actuelTypeDefinition.getSuperTypes.contains(newTypeDefinition)) {
+      actuelTypeDefinition.getSuperTypes.remove(newTypeDefinition)
+      actuelTypeDefinition.getSuperTypes.add(actuelTypeDefinition)
+    }
+
   }
 
   private def consistencyImpacted(root: ContainerRoot, actuelTypeDefinition: TypeDefinition, newTypeDefinition: TypeDefinition) = {
@@ -102,6 +117,13 @@ trait TypeDefinitionMerger extends Merger with DictionaryMerger with PortTypeMer
       lib =>
         lib.getSubTypes.remove(actuelTypeDefinition); lib.getSubTypes.add(newTypeDefinition)
     }
+
+
+    if (actuelTypeDefinition.getSuperTypes != null && actuelTypeDefinition.getSuperTypes.contains(newTypeDefinition)) {
+      actuelTypeDefinition.getSuperTypes.remove(newTypeDefinition)
+      actuelTypeDefinition.getSuperTypes.add(actuelTypeDefinition)
+    }
+
     //PARTICULAR CASE - CHECK
     if (actuelTypeDefinition.isInstanceOf[NodeType]) {
       root.getDeployUnits.foreach {
