@@ -14,8 +14,9 @@
 package org.kevoree.core.basechecker.nodechecker
 
 import scala.collection.JavaConversions._
-import org.kevoree.{NodeType, ContainerRoot}
+import org.kevoree.ContainerRoot
 import org.kevoree.api.service.core.checker.{CheckerViolation, CheckerService}
+import org.kevoree.framework.aspects.KevoreeAspects._
 
 /**
  * Created by IntelliJ IDEA.
@@ -27,23 +28,24 @@ import org.kevoree.api.service.core.checker.{CheckerViolation, CheckerService}
 class NodeChecker extends CheckerService {
 
 
-  def check(model: ContainerRoot): java.util.List[CheckerViolation] = {
-		var violations: List[CheckerViolation] = List()
-		model.getNodes.foreach { node => //For each Node
-      node.getComponents.foreach { component => //For each component of each node
-        component.getTypeDefinition.getDeployUnits.find {du=> //Look for a deploy unit for the Type of container node
-          du.getTargetNodeType.equals(node.getTypeDefinition.asInstanceOf[NodeType])
-          
-        } match {
-          case None => {
-            val violation : CheckerViolation = new CheckerViolation
-            violation.setMessage(component.getTypeDefinition.getName + " has no deploy unit for node type " + node.getTypeDefinition.getName)
-            violation.setTargetObjects(List(node)++List(component))
-            violations = violations ++ List(violation)
-          }
-          case Some(du)=>
+  def check (model: ContainerRoot): java.util.List[CheckerViolation] = {
+    var violations: List[CheckerViolation] = List()
+    model.getNodes.foreach {
+      node => //For each Node
+        node.getComponents.foreach {
+          component => //For each component of each node
+            component.getTypeDefinition.foundRelevantDeployUnit(node)
+            match {
+              case null => {
+                val violation: CheckerViolation = new CheckerViolation
+                violation.setMessage(component.getTypeDefinition.getName + " has no deploy unit for node type " +
+                  node.getTypeDefinition.getName)
+                violation.setTargetObjects(List(node) ++ List(component))
+                violations = violations ++ List(violation)
+              }
+              case _ =>
+            }
         }
-      }
     }
     violations
   }

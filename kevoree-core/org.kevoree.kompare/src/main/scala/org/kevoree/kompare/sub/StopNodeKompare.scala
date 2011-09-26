@@ -21,13 +21,12 @@ package org.kevoree.kompare.sub
 import org.kevoree._
 import kompare.JavaSePrimitive
 import org.kevoreeAdaptation._
-import org.slf4j.LoggerFactory
 import scala.collection.JavaConversions._
 import org.kevoree.framework.aspects.KevoreeAspects._
 
 trait StopNodeKompare extends AbstractKompare {
 
-  def getStopNodeAdaptationModel(node: ContainerNode): AdaptationModel = {
+  def getStopNodeAdaptationModel (node: ContainerNode): AdaptationModel = {
     val adaptationModel = org.kevoreeAdaptation.KevoreeAdaptationFactory.eINSTANCE.createAdaptationModel
     logger.info("STOP NODE " + node.getName)
 
@@ -92,13 +91,26 @@ trait StopNodeKompare extends AbstractKompare {
         //TODO
 
         /* add deploy unit if necessary */
-        adaptationModel.getAdaptations.filter(adaptation => adaptation.getPrimitiveType.getName == JavaSePrimitive.RemoveDeployUnit)
+        adaptationModel.getAdaptations
+          .filter(adaptation => adaptation.getPrimitiveType.getName == JavaSePrimitive.RemoveDeployUnit)
           .find(adaptation => adaptation.getRef.asInstanceOf[DeployUnit].isModelEquals(deployUnitfound)) match {
           case None => {
             val ctcmd = KevoreeAdaptationFactory.eINSTANCE.createAdaptationPrimitive()
             ctcmd.setPrimitiveType(getAdaptationPrimitive(JavaSePrimitive.RemoveDeployUnit, root))
             ctcmd.setRef(deployUnitfound)
             adaptationModel.getAdaptations.add(ctcmd)
+
+           /* deployUnitfound.getRequiredLibs.foreach {
+              dp =>
+                dp.usedBy(node) match {
+                  case List[DeployUnit] =>
+                    val ctcmd = KevoreeAdaptationFactory.eINSTANCE.createAdaptationPrimitive()
+                    ctcmd.setPrimitiveType(getAdaptationPrimitive(JavaSePrimitive.RemoveDeployUnit, root))
+                    ctcmd.setRef(dp)
+                    adaptationModel.getAdaptations.add(ctcmd)
+                  case _ =>
+                }
+            }*/
           }
           case Some(e) => //SIMILAR DEPLOY UNIT PRIMITIVE ALREADY REGISTERED
         }
