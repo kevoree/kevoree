@@ -61,7 +61,7 @@ class NodeTypeBootStrapUI(pkernel: ContainerRoot) extends JPanel {
     this.removeAll()
     val nodeTypeModel = new DefaultComboBoxModel
 
-    kernel.getTypeDefinitions.filter(td => td.isInstanceOf[org.kevoree.NodeType] && td.getDeployUnits.exists(du => du.getTargetNodeType != null && du.getTargetNodeType.getName == "JavaSENode")).foreach {
+    kernel.getTypeDefinitions.filter(td => td.isInstanceOf[org.kevoree.NodeType] && td.getDeployUnits.exists(du => du.getTargetNodeType != null )).foreach {
       td =>
         nodeTypeModel.addElement(td.getName)
     }
@@ -108,7 +108,7 @@ class NodeTypeBootStrapUI(pkernel: ContainerRoot) extends JPanel {
         globalLayout.add(
           getParamsPanel(
             kernel.getTypeDefinitions.find(td => td.getName == nodeTypeComboBox.getSelectedItem.toString).get
-            , getDefValue(instanceName.getText, currentModel)), BorderLayout.CENTER)
+            , getDefValue(instanceName.getText, currentModel,nodeTypeComboBox.getSelectedItem.toString)), BorderLayout.CENTER)
         add(globalLayout)
         repaint()
         revalidate()
@@ -169,7 +169,7 @@ class NodeTypeBootStrapUI(pkernel: ContainerRoot) extends JPanel {
     globalLayout.add(
       getParamsPanel(
         kernel.getTypeDefinitions.find(td => td.getName == nodeTypeComboBox.getSelectedItem.toString).get
-        , getDefValue(instanceName.getText, pkernel)), BorderLayout.CENTER)
+        , getDefValue(instanceName.getText, currentModel,nodeTypeComboBox.getSelectedItem.toString)), BorderLayout.CENTER)
 
     nodeTypeComboBox.addActionListener(new ActionListener() {
       override def actionPerformed(actionEvent: ActionEvent) {
@@ -183,7 +183,7 @@ class NodeTypeBootStrapUI(pkernel: ContainerRoot) extends JPanel {
         globalLayout.add(
           getParamsPanel(
             kernel.getTypeDefinitions.find(td => td.getName == nodeTypeComboBox.getSelectedItem.toString).get
-            , getDefValue(instanceName.getText, pkernel)), BorderLayout.CENTER)
+            , getDefValue(instanceName.getText, currentModel,nodeTypeComboBox.getSelectedItem.toString)), BorderLayout.CENTER)
         add(globalLayout)
         repaint()
         revalidate()
@@ -257,8 +257,15 @@ class NodeTypeBootStrapUI(pkernel: ContainerRoot) extends JPanel {
     scrollPane
   }
 
-  def getDefValue(nodeName: String, model: ContainerRoot): Properties = {
+  def getDefValue(nodeName: String, model: ContainerRoot, typeName : String): Properties = {
     val props = new Properties
+    model.getTypeDefinitions.find(td => td.getName == typeName).map( td => {
+      if(td.getDictionaryType != null && td.getDictionaryType.getDefaultValues != null){
+        td.getDictionaryType.getDefaultValues.foreach{ defVal =>
+              props.put(defVal.getAttribute.getName, defVal.getValue)
+        }
+      }
+    })
     model.getNodes.find(node => node.getName == nodeName).map {
       nodeFound =>
         if (nodeFound.getDictionary != null) {

@@ -11,21 +11,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-package org.kevoree.api.service.core.kompare;
-
-import org.kevoree.ContainerRoot;
-import org.kevoreeAdaptation.AdaptationModel;
-
+package org.kevoree.annotation;
 
 /**
- *
- * @author ffouquet
+ * User: Erwan Daubert - erwan.daubert@gmail.com
+ * Date: 21/09/11
+ * Time: 09:23
  */
-public interface ModelKompareService {
-
-    public AdaptationModel kompare(ContainerRoot actualModel, ContainerRoot targetModel,String nodeName);
+public @interface PrimitiveCommands {
+	 PrimitiveCommand[] value();
+     String[] values() default {};
 }

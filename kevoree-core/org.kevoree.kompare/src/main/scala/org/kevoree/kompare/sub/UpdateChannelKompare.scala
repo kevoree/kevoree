@@ -19,38 +19,45 @@
 package org.kevoree.kompare.sub
 
 import org.kevoree._
-import org.kevoreeAdaptation._
+import kompare.JavaSePrimitive
 import scala.collection.JavaConversions._
 import org.kevoree.framework.aspects.KevoreeAspects._
+import org.kevoreeAdaptation._
 
-trait UpdateChannelKompare {
+trait UpdateChannelKompare extends AbstractKompare {
 
-  def getUpdateChannelAdaptationModel(actualChannel : Channel,updateChannel : Channel,nodeName : String) : AdaptationModel = {
+  def getUpdateChannelAdaptationModel (actualChannel: Channel, updateChannel: Channel,nodeName: String): AdaptationModel = {
     val adaptationModel = org.kevoreeAdaptation.KevoreeAdaptationFactory.eINSTANCE.createAdaptationModel
 
-    updateChannel.getOtherFragment(nodeName).foreach{newhubBindingNodeName=>
-      actualChannel.getOtherFragment(nodeName).find(b=> b == newhubBindingNodeName) match {
-        case None => {
-            //NEW BINDING TODO
-            val addccmd = KevoreeAdaptationFactory.eINSTANCE.createAddFragmentBinding
+    updateChannel.getOtherFragment(nodeName).foreach {
+      newhubBindingNodeName =>
+        actualChannel.getOtherFragment(nodeName).find(b => b == newhubBindingNodeName) match {
+          case None => {
+            //NEW BINDING
+            val addccmd = KevoreeAdaptationFactory.eINSTANCE.createAdaptationPrimitive()
+            addccmd.setPrimitiveType(getAdaptationPrimitive(JavaSePrimitive.AddFragmentBinding,actualChannel.eContainer().asInstanceOf[ContainerRoot]))
+
+
             addccmd.setRef(updateChannel)
             addccmd.setTargetNodeName(newhubBindingNodeName)
             adaptationModel.getAdaptations.add(addccmd)
           }
-        case Some(bname)=> //OK ALREADY BINDED
-      }
+          case Some(bname) => //OK ALREADY BINDED
+        }
     }
-    actualChannel.getOtherFragment(nodeName).foreach{previousHubBindingNodeName=>
-      updateChannel.getOtherFragment(nodeName).find(b=> b ==previousHubBindingNodeName) match {
-        case None => {
-            //REMOVE BINDING TODO
-            val addccmd = KevoreeAdaptationFactory.eINSTANCE.createRemoveFragmentBinding
+    actualChannel.getOtherFragment(nodeName).foreach {
+      previousHubBindingNodeName =>
+        updateChannel.getOtherFragment(nodeName).find(b => b == previousHubBindingNodeName) match {
+          case None => {
+            //REMOVE BINDING
+            val addccmd = KevoreeAdaptationFactory.eINSTANCE.createAdaptationPrimitive()
+            addccmd.setPrimitiveType(getAdaptationPrimitive(JavaSePrimitive.RemoveFragmentBinding,actualChannel.eContainer().asInstanceOf[ContainerRoot]))
             addccmd.setRef(updateChannel)
             addccmd.setTargetNodeName(previousHubBindingNodeName)
             adaptationModel.getAdaptations.add(addccmd)
           }
-        case Some(bname)=> //OK ALREADY BINDED
-      }
+          case Some(bname) => //OK ALREADY BINDED
+        }
     }
     adaptationModel
   }

@@ -30,7 +30,6 @@ import java.awt.event.WindowEvent;
 import java.io.File;
 import java.net.URL;
 import java.util.Arrays;
-import java.util.regex.PatternSyntaxException;
 
 public class KevoreeGUIFrame extends JFrame {
 
@@ -87,7 +86,7 @@ public class KevoreeGUIFrame extends JFrame {
             public void actionPerformed(ActionEvent actionEvent) {
                 bootstrapPopup.getJDialog().dispose();
                 String response = nodeUI.getKevName();//instanceName.getText();
-                String[] splitted = null;
+                /*String[] splitted = null;
                 if (response.contains(":")) {
                     try {
                         splitted = response.split(":");
@@ -97,20 +96,20 @@ public class KevoreeGUIFrame extends JFrame {
                     } catch (PatternSyntaxException e) {
                     } catch (NumberFormatException e) {
                     }
-                }
+                }*/
                 final String nodeName = response;
                 System.setProperty("node.name", response);
                 setTitle(nodeName + " : " + nodeUI.getKevTypeName());
 
-                final String[] finalSplitted = splitted;
+//                final String[] finalSplitted = splitted;
                 new Thread() {
                     @Override
                     public void run() {
 
-                        ContainerRoot btModel = nodeUI.getCurrentModel() ;
-                        NodeTypeBootStrapModel.checkAndCreate(btModel, nodeName, nodeUI.getKevTypeName().toString(), nodeUI.currentProperties());
+                        NodeTypeBootStrapModel.checkAndCreate(nodeUI.getCurrentModel(), nodeName, nodeUI.getKevTypeName().toString(), nodeUI.currentProperties());
                         final BootstrapActivator btA = new org.kevoree.platform.osgi.standalone.BootstrapActivator();
-                        btA.setBootstrapModel(btModel);
+
+                        btA.setBootstrapModel(nodeUI.getCurrentModel());
 
                         EmbeddedActivators.setActivators(Arrays.asList(
                                 //      (BundleActivator) new org.ops4j.pax.url.mvn.internal.Activator(),

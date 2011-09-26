@@ -18,15 +18,14 @@
 
 package org.kevoree.kompare.tests.`type`
 
-import org.kevoree.api.service.core.kompare.ModelKompareService
-import org.kevoree.kompare.KevoreeKompareBean
 import org.kevoree.kompare.tests.KompareSuite
 import org.junit._
 import org.kevoreeAdaptation._
+import org.kevoree.kompare.{JavaSePrimitive, KevoreeKompareBean}
 
 class TypeAndInstanceUpdateTest extends KompareSuite {
 
-  var component: ModelKompareService = null
+  var component: KevoreeKompareBean = null
 
   @Before def initialize() {
     component = new KevoreeKompareBean
@@ -35,18 +34,18 @@ class TypeAndInstanceUpdateTest extends KompareSuite {
   @Test def testNoTypeInstall() = {
     val kompareModel = component.kompare(model("test_type/updateBaseModel.art2").setLowerHashCode, model("test_type/update2ComponentOneBindingRemove.art2"), "duke")
 
-    kompareModel print
+    kompareModel.print
 
     println(kompareModel.getAdaptations.size)
 
-    kompareModel shouldContainSize (classOf[UpdateDeployUnit], 1)
-    kompareModel shouldContain (classOf[UpdateType], "ComponentPrimitiveTypeService")
-    kompareModel shouldContain (classOf[UpdateType], "ComponentA")
+    kompareModel shouldContainSize (JavaSePrimitive.UpdateDeployUnit, 1)
+    kompareModel shouldContain (JavaSePrimitive.UpdateType, "ComponentPrimitiveTypeService")
+    kompareModel shouldContain (JavaSePrimitive.UpdateType, "ComponentA")
 
-    kompareModel shouldContain (classOf[UpdateInstance], "ComponentPrimitiveTypeService-193784848")
-    kompareModel shouldContain (classOf[UpdateInstance], "ComponentA-1649555745")
-    kompareModel shouldContainSize (classOf[UpdateBinding], 2)
-    kompareModel shouldContainSize (classOf[RemoveBinding], 1)
+    kompareModel shouldContain (JavaSePrimitive.UpdateInstance, "ComponentPrimitiveTypeService-193784848")
+    kompareModel shouldContain (JavaSePrimitive.UpdateInstance, "ComponentA-1649555745")
+    kompareModel shouldContainSize (JavaSePrimitive.UpdateBinding, 2)
+    kompareModel shouldContainSize (JavaSePrimitive.RemoveBinding, 1)
 
     //kompareModel.verifySize(8)
 

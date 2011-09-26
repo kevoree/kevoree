@@ -5,12 +5,12 @@
     <packaging>jar</packaging>
     <name>Kevoree :: Tools :: UI Editor Standalone</name>
     <url>https://github.com/dukeboard/kevoree/</url>
-    <version>1.2.0-RC3</version>
+    <version>1.3.0-SNAPSHOT</version>
 
     <parent>
         <artifactId>org.kevoree.tools.root</artifactId>
         <groupId>org.kevoree.tools</groupId>
-        <version>1.2.0-RC3</version>
+        <version>1.3.0-SNAPSHOT</version>
         <relativePath>../org.kevoree.tools.root/pom.xml</relativePath>
     </parent>
 
@@ -92,18 +92,25 @@
                         </goals>
                     </execution>
                 </executions>
+                <dependencies>
+                    <dependency>
+                        <groupId>net.sf.proguard</groupId>
+                        <artifactId>proguard</artifactId>
+                        <version>4.7-BETA</version>
+                        <scope>runtime</scope>
+                    </dependency>
+                </dependencies>
+
                 <configuration>
                     <injar>${project.build.finalName}.jar</injar>
                     <outjar>${project.build.finalName}-small.jar</outjar>
                     <obfuscate>false</obfuscate>
                     <maxMemory>1024m</maxMemory>
-                    <proguardVersion>4.6</proguardVersion>
+                    <proguardVersion>4.7</proguardVersion>
                     <options>
                         <option>-dontskipnonpubliclibraryclasses</option>
                         <option>-dontskipnonpubliclibraryclassmembers</option>
                         <option>-dontoptimize</option>
-                        <option>-printmapping map.txt</option>
-                        <option>-printseeds seed.txt</option>
                         <option>-ignorewarnings</option>
                         <option>-keep public class org.kevoree.tools.ui.editor.standalone.App { *; }</option>
                         <option>-keep class * extends javax.swing.plaf.ComponentUI {

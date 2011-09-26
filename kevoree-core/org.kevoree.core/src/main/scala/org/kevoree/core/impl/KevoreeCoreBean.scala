@@ -32,15 +32,13 @@ import org.kevoree.api.service.core.handler.{ModelListener, KevoreeModelHandlerS
 import org.eclipse.emf.ecore.util.EcoreUtil
 import scala.collection.JavaConversions._
 import org.kevoree.framework._
-import merger.KevoreePlatformMerger
+import deploy.PrimitiveCommandExecutionHelper
 import org.kevoree.tools.aether.framework.NodeTypeBootstrapHelper
 
 class KevoreeCoreBean extends KevoreeModelHandlerService with KevoreeActor {
 
   @BeanProperty var configService: ConfigurationService = null
   @BeanProperty var bundleContext: BundleContext = null;
-  @BeanProperty var kompareService: org.kevoree.api.service.core.kompare.ModelKompareService = null
-  @BeanProperty var deployService: org.kevoree.api.service.adaptation.deploy.KevoreeAdaptationDeployService = null
   @BeanProperty var nodeName: String = ""
   @BeanProperty var nodeInstance: AbstractNodeType = null
 
@@ -54,21 +52,27 @@ class KevoreeCoreBean extends KevoreeModelHandlerService with KevoreeActor {
   var logger = LoggerFactory.getLogger(this.getClass);
 
   private def checkBootstrapNode(currentModel: ContainerRoot): Unit = {
-    if (nodeInstance == null) {
-      currentModel.getNodes.find(n => n.getName == nodeName) match {
-        case Some(foundNode) => {
-          val bt = new NodeTypeBootstrapHelper
-          bt.bootstrapNodeType(currentModel, nodeName, bundleContext) match {
-            case Some(ist) => {
-              nodeInstance = ist;
-              nodeInstance.startNode()
+    try {
+      if (nodeInstance == null) {
+        currentModel.getNodes.find(n => n.getName == nodeName) match {
+          case Some(foundNode) => {
+            val bt = new NodeTypeBootstrapHelper
+            bt.bootstrapNodeType(currentModel, nodeName, bundleContext) match {
+              case Some(ist) => {
+                nodeInstance = ist;
+                nodeInstance.startNode()
+              }
+              case None => logger.error("Node instance name " + nodeName + " not found in bootstrap model !")
             }
-            case None => logger.error("Node instance name " + nodeName + " not found in bootstrap model !")
           }
+          case None => logger.error("Node instance name " + nodeName + " not found in bootstrap model !")
         }
-        case None => logger.error("Node instance name " + nodeName + " not found in bootstrap model !")
       }
+    } catch {
+      case _@e => logger.error("Error while bootstraping node instance ",e)
     }
+
+
   }
 
   private def switchToNewModel(c: ContainerRoot) = {
@@ -86,13 +90,11 @@ class KevoreeCoreBean extends KevoreeModelHandlerService with KevoreeActor {
         if (srs != null) {
           srs.foreach {
             sr =>
-              bundleContext.getService(sr).asInstanceOf[KevoreeGroup].triggerModelUpdate
+              bundleContext.getService(sr).asInstanceOf[KevoreeGroup].triggerModelUpdate()
           }
         }
       }
     }.start()
-
-
   }
 
   override def start: Actor = {
@@ -113,9 +115,7 @@ class KevoreeCoreBean extends KevoreeModelHandlerService with KevoreeActor {
   }
 
   override def stop() {
-    if (nodeInstance != null) {
-      nodeInstance.stopNode()
-    }
+
 
     listenerActor.stop()
 
@@ -124,9 +124,15 @@ class KevoreeCoreBean extends KevoreeModelHandlerService with KevoreeActor {
 
 
     val stopModel = KevoreeFactory.eINSTANCE.createContainerRoot();
-    val adaptationModel = kompareService.kompare(model, stopModel, nodeName);
-    val deployResult = deployService.deploy(adaptationModel, nodeName);
-    logger.debug("Stop result => "+deployResult)
+    val adaptationModel = nodeInstance.kompare(model, stopModel);
+
+    val deployResult = PrimitiveCommandExecutionHelper.execute(adaptationModel, nodeInstance)
+
+    if (nodeInstance != null) {
+      nodeInstance.stopNode()
+    }
+
+    logger.debug("Stop result => " + deployResult)
     // KevoreeXmiHelper.save(bundleContext.getDataFile("lastModel.xmi").getAbsolutePath(), models.head);
   }
 
@@ -151,12 +157,13 @@ class KevoreeCoreBean extends KevoreeModelHandlerService with KevoreeActor {
           checkBootstrapNode(newmodel)
           val milli = System.currentTimeMillis
           logger.debug("Begin update model " + milli)
-          val adaptationModel = kompareService.kompare(model, newmodel, nodeName);
-          val deployResult = deployService.deploy(adaptationModel, nodeName);
+          val adaptationModel = nodeInstance.kompare(model, newmodel);
+
+          val deployResult = PrimitiveCommandExecutionHelper.execute(adaptationModel, nodeInstance)
 
           if (deployResult) {
             //Merge previous model on new model for platform model
-            KevoreePlatformMerger.merge(newmodel, model)
+            //KevoreePlatformMerger.merge(newmodel, model)
             switchToNewModel(newmodel)
             logger.info("Deploy result " + deployResult)
           } else {

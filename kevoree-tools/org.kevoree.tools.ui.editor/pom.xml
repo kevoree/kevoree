@@ -7,12 +7,12 @@
     <artifactId>org.kevoree.tools.ui.editor</artifactId>
     <packaging>jar</packaging>
     <name>Kevoree :: Tools :: UI Editor</name>
-    <version>1.2.0-RC3</version>
+    <version>1.3.0-SNAPSHOT</version>
 
     <parent>
         <artifactId>org.kevoree.tools.root</artifactId>
         <groupId>org.kevoree.tools</groupId>
-        <version>1.2.0-RC3</version>
+        <version>1.3.0-SNAPSHOT</version>
         <relativePath>../org.kevoree.tools.root/pom.xml</relativePath>
     </parent>
 
@@ -51,7 +51,11 @@
             <artifactId>org.kevoree.kompare</artifactId>
             <version>${kevoree.version}</version>
         </dependency>
-
+        <dependency>
+            <groupId>org.kevoree</groupId>
+            <artifactId>org.kevoree.deploy.osgi</artifactId>
+            <version>${kevoree.version}</version>
+        </dependency>
 
         <dependency>
             <groupId>org.apache.felix</groupId>
@@ -142,7 +146,7 @@
                         </goals>
                         <configuration>
                             <filters>
-                                scala,org.ops4j,org.eclipse.emf,org.slf4j,org.kevoree,org.kevoree.tools,org.apache,org.sonatype,org.codehaus,org.apache.http
+                                scala,org.ops4j,org.eclipse.emf,org.slf4j,org.kevoree,org.kevoree.tools,org.apache,org.sonatype,org.codehaus,org.apache.http,org.kevoree.remote
                             </filters>
                         </configuration>
                     </execution>

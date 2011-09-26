@@ -1,3 +1,5 @@
+package org.kevoree.framework
+
 /**
  * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE, Version 3, 29 June 2007;
  * you may not use this file except in compliance with the License.
@@ -16,22 +18,18 @@
  * and open the template in the editor.
  */
 
-package org.kevoree.kompare
+trait PrimitiveCommand {
 
-import java.util.Hashtable
-import org.osgi.framework.BundleActivator
-import org.osgi.framework.BundleContext
+  def execute() : Boolean
 
-class KevoreeKompareActivator extends BundleActivator {
+  def undo(): Unit
 
-  var bean : KevoreeKompareBean = null
+  var lastExecutionBundle : Option[org.osgi.framework.Bundle] = None
 
-  def start(bc : BundleContext){
-    bean = new KevoreeKompareBean
-    bc.registerService(classOf[org.kevoree.api.service.core.kompare.ModelKompareService].getName(), bean, new Hashtable());
-  }
+  def getLastExecutionBundle = lastExecutionBundle
 
-  def stop(bc : BundleContext){
-    bean = null
-  }
+  var mustBeStarted = false
+
+  var startLevel : Option[Int] = None
+
 }
