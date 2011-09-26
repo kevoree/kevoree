@@ -22,15 +22,15 @@ import org.kevoree._
 import scala.collection.JavaConversions._
 import KevoreeAspects._
 
-case class TypeDefinitionAspect(selfTD: TypeDefinition) {
+case class TypeDefinitionAspect (selfTD: TypeDefinition) {
 
-  def isModelEquals(pct: TypeDefinition): Boolean = {
+  def isModelEquals (pct: TypeDefinition): Boolean = {
     pct.getName == selfTD.getName
     /* deep compare */
   }
 
   /* Check if the new type definition define new deploy unit than self */
-  def contractChanged(pTD: TypeDefinition): Boolean = {
+  def contractChanged (pTD: TypeDefinition): Boolean = {
 
     //println("check Conract changed " + pTD + "-" + selfTD)
 
@@ -46,9 +46,9 @@ case class TypeDefinitionAspect(selfTD: TypeDefinition) {
         return true
       }
     } else {
-       if(selfTD.getDictionaryType != null){
-         return true
-       }
+      if (selfTD.getDictionaryType != null) {
+        return true
+      }
     }
 
     //println(pTD.getDictionaryType)
@@ -69,14 +69,14 @@ case class TypeDefinitionAspect(selfTD: TypeDefinition) {
               case _ => {
                 val interfaceChanged = selfSPT.getInterface != otherSPT.getInterface
                 val operationsChanged = selfSPT.getOperations.forall(selfOperation =>
-                    otherSPT.getOperations.find(otherOperation => otherOperation.getName == selfOperation.getName  ) match {
-                      case Some(otherOperation) => {
-                         selfOperation.contractChanged(otherOperation)
-                      }
-                      case None => true
+                  otherSPT.getOperations.find(otherOperation => otherOperation.getName == selfOperation.getName) match {
+                    case Some(otherOperation) => {
+                      selfOperation.contractChanged(otherOperation)
                     }
-                )
-                 interfaceChanged || operationsChanged
+                    case None => true
+                  }
+                                                                    )
+                interfaceChanged || operationsChanged
               }
             }
           }
@@ -108,18 +108,18 @@ case class TypeDefinitionAspect(selfTD: TypeDefinition) {
           }
         }
       }
-      case otherTD : ChannelType => {
-         val selfCT = selfTD.asInstanceOf[ChannelType]
-         false
+      case otherTD: ChannelType => {
+        val selfCT = selfTD.asInstanceOf[ChannelType]
+        false
       }
-       case nodeType : NodeType => {
-         true
-       }
-      case _@typeDef => println("uncatch portTypeDef "+typeDef); true
+      case nodeType: NodeType => {
+        true
+      }
+      case _@typeDef => println("uncatch portTypeDef " + typeDef); true
     }
   }
 
-  def isUpdated(pTD: TypeDefinition): Boolean = {
+  def isUpdated (pTD: TypeDefinition): Boolean = {
 
     //println("is UPdted ?")
 
@@ -155,7 +155,7 @@ case class TypeDefinitionAspect(selfTD: TypeDefinition) {
           }
         })
 
-       // println(selfTD.getName+" result "+(oneUpdated))
+        // println(selfTD.getName+" result "+(oneUpdated))
         oneUpdated
       } else {
         true
@@ -166,14 +166,18 @@ case class TypeDefinitionAspect(selfTD: TypeDefinition) {
   }
 
 
-  def foundRelevantDeployUnit(node: ContainerNode) = {
+  def foundRelevantDeployUnit (node: ContainerNode) = {
 
     /* add all reLib from found deploy Unit*/
     var deployUnitfound: DeployUnit = null
     if (node.getTypeDefinition != null) {
-      selfTD.getDeployUnits.find(du => du.getTargetNodeType != null && du.getTargetNodeType.getName == node.getTypeDefinition.getName) match {
+      selfTD.getDeployUnits.find(du => du.getTargetNodeType != null &&
+        du.getTargetNodeType.getName == node.getTypeDefinition.getName) match {
         case Some(e) => deployUnitfound = e
         case _ =>
+      }
+      if (deployUnitfound == null) {
+        deployUnitfound = foundRelevantDeployUnitOnSuperTypes(node, selfTD)
       }
     }
     /*
@@ -188,5 +192,22 @@ case class TypeDefinitionAspect(selfTD: TypeDefinition) {
 
   }
 
-
+  private def foundRelevantDeployUnitOnSuperTypes (node: ContainerNode, t: TypeDefinition): DeployUnit = {
+    var deployUnitfound: DeployUnit = null
+    // looking for relevant deployunits on super types
+    t.getSuperTypes.foreach {
+      st =>
+        st.getDeployUnits.find(du => du.getTargetNodeType != null &&
+          du.getTargetNodeType.getName == node.getTypeDefinition.getName) match {
+          case Some(e) => deployUnitfound = e
+          case _ =>
+        }
+    }
+    if (deployUnitfound == null) {
+      t.getSuperTypes.forall (st =>
+        // call recursively for super types and test if something has been found
+        {deployUnitfound = foundRelevantDeployUnitOnSuperTypes(node, st);deployUnitfound == null})
+    }
+    deployUnitfound
+  }
 }
