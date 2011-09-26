@@ -18,6 +18,8 @@ class KevoreeNodeManager(node : VirtualCloudNode) extends DaemonActor {
 
   private var runnners: List[KevoreeNodeRunner] = List()
 
+  def getRunners = runnners
+
   start()
 
   case class STOP ()
