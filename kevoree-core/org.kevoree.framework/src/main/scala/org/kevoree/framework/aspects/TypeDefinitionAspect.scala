@@ -186,36 +186,23 @@ case class TypeDefinitionAspect (selfTD: TypeDefinition) {
         case _ =>
       }
       if (deployUnitfound == null) {
-        deployUnitfound = foundRelevantDeployUnitOnSuperTypes(node, selfTD)
+        deployUnitfound = foundRelevantDeployUnitOnNodeSuperTypes(node.getTypeDefinition.asInstanceOf[NodeType], selfTD)
       }
     }
-    /*
-     if(deployUnitfound == null){
-     deployUnitfound = selfTD.getDeployUnits.find(du => du.getTargetNodeType.getName == null).get
-     }*/
-    /*if (deployUnitfound == null) {
-      deployUnitfound = selfTD.getDeployUnits.get(0)
-    }*/
-
     deployUnitfound
-
   }
 
-  private def foundRelevantDeployUnitOnSuperTypes (node: ContainerNode, t: TypeDefinition): DeployUnit = {
+  private def foundRelevantDeployUnitOnNodeSuperTypes (nodeType: NodeType, t: TypeDefinition): DeployUnit = {
     var deployUnitfound: DeployUnit = null
     // looking for relevant deployunits on super types
-    t.getSuperTypes.foreach {
-      st =>
-        st.getDeployUnits.find(du => du.getTargetNodeType != null &&
-          du.getTargetNodeType.getName == node.getTypeDefinition.getName) match {
-          case Some(e) => deployUnitfound = e
-          case _ =>
-        }
+    deployUnitfound = t.getDeployUnits.find(du => du.getTargetNodeType != null && du.getTargetNodeType.getName == nodeType.getName) match {
+          case Some(e) => e
+          case None => null
     }
     if (deployUnitfound == null) {
-      t.getSuperTypes.forall (st =>
+      nodeType.getSuperTypes.exists (superNode =>
         // call recursively for super types and test if something has been found
-        {deployUnitfound = foundRelevantDeployUnitOnSuperTypes(node, st);deployUnitfound == null})
+        {deployUnitfound = foundRelevantDeployUnitOnNodeSuperTypes(superNode.asInstanceOf[NodeType], t);deployUnitfound == null})
     }
     deployUnitfound
   }
