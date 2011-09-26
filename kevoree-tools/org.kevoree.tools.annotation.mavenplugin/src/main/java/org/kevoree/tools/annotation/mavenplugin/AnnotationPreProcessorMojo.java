@@ -281,6 +281,12 @@ public class AnnotationPreProcessorMojo extends AbstractMojo {
 
         executeImpl();
 
+        //AFTER ALL GENERATED
+        System.out.println("Hello Debug");
+        for(Object dep :  this.mavenProject.getCompileArtifacts()){
+            System.out.println(dep);
+        }
+
     }
 
     // protected methods ------------------------------------------------------
