@@ -20,8 +20,6 @@ package org.kevoree.framework.aspects
 
 import org.kevoree._
 import scala.collection.JavaConversions._
-import KevoreeAspects._
-
 case class ContainerNodeAspect (node: ContainerNode) {
 
   def isModelEquals (ct: ContainerNode): Boolean = {
