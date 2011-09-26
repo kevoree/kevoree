@@ -193,9 +193,9 @@ case class TypeDefinitionAspect (selfTD: TypeDefinition) {
      if(deployUnitfound == null){
      deployUnitfound = selfTD.getDeployUnits.find(du => du.getTargetNodeType.getName == null).get
      }*/
-    if (deployUnitfound == null) {
+    /*if (deployUnitfound == null) {
       deployUnitfound = selfTD.getDeployUnits.get(0)
-    }
+    }*/
 
     deployUnitfound
 

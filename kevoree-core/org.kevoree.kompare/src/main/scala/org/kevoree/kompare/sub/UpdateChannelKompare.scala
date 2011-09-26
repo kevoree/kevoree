@@ -33,7 +33,7 @@ trait UpdateChannelKompare extends AbstractKompare {
       newhubBindingNodeName =>
         actualChannel.getOtherFragment(nodeName).find(b => b == newhubBindingNodeName) match {
           case None => {
-            //NEW BINDING TODO
+            //NEW BINDING
             val addccmd = KevoreeAdaptationFactory.eINSTANCE.createAdaptationPrimitive()
             addccmd.setPrimitiveType(getAdaptationPrimitive(JavaSePrimitive.AddFragmentBinding,actualChannel.eContainer().asInstanceOf[ContainerRoot]))
 
@@ -49,7 +49,7 @@ trait UpdateChannelKompare extends AbstractKompare {
       previousHubBindingNodeName =>
         updateChannel.getOtherFragment(nodeName).find(b => b == previousHubBindingNodeName) match {
           case None => {
-            //REMOVE BINDING TODO
+            //REMOVE BINDING
             val addccmd = KevoreeAdaptationFactory.eINSTANCE.createAdaptationPrimitive()
             addccmd.setPrimitiveType(getAdaptationPrimitive(JavaSePrimitive.RemoveFragmentBinding,actualChannel.eContainer().asInstanceOf[ContainerRoot]))
             addccmd.setRef(updateChannel)
