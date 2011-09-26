@@ -46,9 +46,9 @@ case class TypeDefinitionAspect(selfTD: TypeDefinition) {
         return true
       }
     } else {
-       if(selfTD.getDictionaryType != null){
-         return true
-       }
+      if (selfTD.getDictionaryType != null) {
+        return true
+      }
     }
 
     //println(pTD.getDictionaryType)
@@ -69,14 +69,14 @@ case class TypeDefinitionAspect(selfTD: TypeDefinition) {
               case _ => {
                 val interfaceChanged = selfSPT.getInterface != otherSPT.getInterface
                 val operationsChanged = selfSPT.getOperations.forall(selfOperation =>
-                    otherSPT.getOperations.find(otherOperation => otherOperation.getName == selfOperation.getName  ) match {
-                      case Some(otherOperation) => {
-                         selfOperation.contractChanged(otherOperation)
-                      }
-                      case None => true
+                  otherSPT.getOperations.find(otherOperation => otherOperation.getName == selfOperation.getName) match {
+                    case Some(otherOperation) => {
+                      selfOperation.contractChanged(otherOperation)
                     }
+                    case None => true
+                  }
                 )
-                 interfaceChanged || operationsChanged
+                interfaceChanged || operationsChanged
               }
             }
           }
@@ -108,20 +108,28 @@ case class TypeDefinitionAspect(selfTD: TypeDefinition) {
           }
         }
       }
-      case otherTD : ChannelType => {
-         val selfCT = selfTD.asInstanceOf[ChannelType]
-         false
+      case otherTD: ChannelType => {
+        val selfCT = selfTD.asInstanceOf[ChannelType]
+        false
       }
-       case nodeType : NodeType => {
-         true
-       }
-      case _@typeDef => println("uncatch portTypeDef "+typeDef); true
+      case nodeType: NodeType => {
+        true
+      }
+      case _@typeDef => println("uncatch portTypeDef " + typeDef); true
     }
   }
 
   def isUpdated(pTD: TypeDefinition): Boolean = {
 
-    //println("is UPdted ?")
+    if (selfTD.getSuperTypes.size() != pTD.getSuperTypes.size()) {
+      return true
+    }
+    selfTD.getSuperTypes.foreach {
+      selfSuperTD =>
+        if(!pTD.getSuperTypes.exists(td => td.getName == selfSuperTD.getName)){
+          return false
+        }
+    }
 
     if (selfTD.getDeployUnits != null) {
       if (pTD.getDeployUnits != null) {
@@ -155,7 +163,7 @@ case class TypeDefinitionAspect(selfTD: TypeDefinition) {
           }
         })
 
-       // println(selfTD.getName+" result "+(oneUpdated))
+        // println(selfTD.getName+" result "+(oneUpdated))
         oneUpdated
       } else {
         true
