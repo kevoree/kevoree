@@ -154,6 +154,7 @@
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute kevoree.ecore#//TypeDefinition/factoryBean"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute kevoree.ecore#//TypeDefinition/bean"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference kevoree.ecore#//TypeDefinition/dictionaryType"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference kevoree.ecore#//TypeDefinition/superTypes"/>
     </genClasses>
     <genClasses ecoreClass="kevoree.ecore#//Instance">
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference kevoree.ecore#//Instance/typeDefinition"/>

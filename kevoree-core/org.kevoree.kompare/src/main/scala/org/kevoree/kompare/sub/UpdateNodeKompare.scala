@@ -75,15 +75,13 @@ trait UpdateNodeKompare extends AbstractKompare with UpdateChannelKompare {
             val ctcmd = KevoreeAdaptationFactory.eINSTANCE.createAdaptationPrimitive()
 
             ctcmd.setPrimitiveType(getAdaptationPrimitive(JavaSePrimitive.AddType, actualNode.eContainer().asInstanceOf[ContainerRoot]))
-
-
             ctcmd.setRef(uct)
             adaptationModel.getAdaptations.add(ctcmd)
 
             /* add deploy unit if necessary */
             //CHECK IF A PREVIOUS INSTALLED TYPE DEFINITION USE THIS DEPLOY UNIT
 
-            var uctDeployUnit = uct.foundRelevantDeployUnit(updateNode)
+            val uctDeployUnit = uct.foundRelevantDeployUnit(updateNode)
 
             actualNode.getUsedTypeDefinition
               .find(typeDef => typeDef.foundRelevantDeployUnit(actualNode).isModelEquals(uctDeployUnit)) match {
