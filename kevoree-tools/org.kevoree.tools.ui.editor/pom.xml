@@ -146,7 +146,7 @@
                         </goals>
                         <configuration>
                             <filters>
-                                scala,org.ops4j,org.eclipse.emf,org.slf4j,org.kevoree,org.kevoree.tools,org.apache,org.sonatype,org.codehaus,org.apache.http
+                                scala,org.ops4j,org.eclipse.emf,org.slf4j,org.kevoree,org.kevoree.tools,org.apache,org.sonatype,org.codehaus,org.apache.http,org.kevoree.remote
                             </filters>
                         </configuration>
                     </execution>
