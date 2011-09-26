@@ -360,7 +360,7 @@
                         <option>-dontoptimize</option>
                         <option>-dontobfuscate</option>
                         <option>-keepattributes
-                            Exceptions,InnerClasses,Signature,Deprecated,SourceFile,LineNumberTable,*Annotation*,EnclosingMethod
+                            Exceptions,InnerClasses,Signature,Deprecated,SourceFile,LineNumberTable,*Annotation*,EnclosingMethod,LocalVariableTable
                         </option>
                         <option>-ignorewarnings</option>
                         <option>-keep public class org.kevoree.platform.osgi.standalone.gui.App { *; }</option>
