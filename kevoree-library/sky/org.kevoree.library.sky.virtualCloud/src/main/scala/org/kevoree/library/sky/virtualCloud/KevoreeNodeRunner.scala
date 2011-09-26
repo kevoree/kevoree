@@ -44,7 +44,7 @@ class KevoreeNodeRunner (var nodeName: String, bootStrapModel: String) {
       if (Helper.getJarPath != null) {
 
         nodePlatformProcess = Runtime.getRuntime
-          .exec(Array[String](java, "-Dnode.bootstrap=" + bootStrapModel, "-Dnode.name=" + nodeName, "-jar",
+          .exec(Array[String](java, "-Dnode.bootstrap=\"" + bootStrapModel + "\"", "-Dnode.name=" + nodeName, "-jar",
                                Helper.getJarPath))
 
         outputStreamReader = new Thread {
