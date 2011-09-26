@@ -31,67 +31,79 @@ class KevoreeNodeRunner (var nodeName: String, bootStrapModel: String) {
   private var nodePlatformProcess: Process = null
   private var outputStreamReader: Thread = null
   private var errorStreamReader: Thread = null
-  private val platformClass: String = "org.kevoree.platform.osgi.standalone.App"
+  //  private val platformClass: String = "org.kevoree.platform.osgi.standalone.App"
 
-  private val LogFileErr: File = null
-  private val LogFileout: File = null
+  //  private val LogFileErr: File = null
+  //  private val LogFileout: File = null
 
   def startNode (): Boolean = {
     try {
       logger.debug("Start " + nodeName)
       val java: String = getJava
 
-      val classPath = System.getProperty("java.class.path")
+      if (Helper.getJarPath != null) {
 
-      nodePlatformProcess = Runtime.getRuntime
-        .exec(Array[String](java, "-Dnode.bootstrap=" + bootStrapModel, "-Dnode.name=" + nodeName, "-cp", classPath, platformClass))
-      outputStreamReader = new Thread {
-        val file = new File(System.getProperty("java.io.tmpdir") + File.separator + "sysout" + nodeName + ".log")
+        nodePlatformProcess = Runtime.getRuntime
+          .exec(Array[String](java, "-Dnode.bootstrap=" + bootStrapModel, "-Dnode.name=" + nodeName, "-jar",
+                               Helper.getJarPath))
 
-        override def run () {
-          try {
-            val logStream : OutputStream = new FileOutputStream(file)
-            val bytes: Array[Byte] = new Array[Byte](512)
-            var length = 0;
-            while (true) {
-              length = stream.read(bytes)
-              logStream.write(bytes, 0, length)
+        outputStreamReader = new Thread {
+          val file = new File(System.getProperty("java.io.tmpdir") + File.separator + "sysout" + nodeName + ".log")
+          val logStream: OutputStream = new FileOutputStream(file)
 
+          override def run () {
+            try {
+              val bytes: Array[Byte] = new Array[Byte](512)
+              var length = 0;
+              while (true) {
+                length = stream.read(bytes)
+                logStream.write(bytes, 0, length)
+              }
+            }
+            catch {
+              case e: IOException => {
+                logger.debug("Stream has been closed, we close " + file.getAbsolutePath + "too")
+                logStream.flush()
+                logStream.close()
+              }
             }
           }
-          catch {
-            case e: IOException => {
-            }
-          }
+
+          private val stream: InputStream = nodePlatformProcess.getInputStream
         }
+        errorStreamReader = new Thread {
+          val file = new File(System.getProperty("java.io.tmpdir") + File.separator + "syserr" + nodeName + ".log")
+          val logStream: OutputStream = new FileOutputStream(file)
 
-        private val stream: InputStream = nodePlatformProcess.getInputStream
-      }
-      errorStreamReader = new Thread {
-        val file = new File(System.getProperty("java.io.tmpdir") + File.separator + "syserr" + nodeName + ".log")
-        override def run () {
-          try {
-            val logStream : OutputStream = new FileOutputStream(file)
-            val bytes: Array[Byte] = new Array[Byte](512)
-            var length = 0;
-            while (true) {
-              length = stream.read(bytes)
-              logStream.write(bytes, 0, length)
+          override def run () {
+            try {
+              val bytes: Array[Byte] = new Array[Byte](512)
+              var length = 0;
+              while (true) {
+                length = stream.read(bytes)
+                logStream.write(bytes, 0, length)
 
+              }
+            }
+            catch {
+              case e: IOException => {
+                logger.debug("Stream has been closed, we close " + file.getAbsolutePath + "too")
+                logStream.flush()
+                logStream.close()
+              }
             }
           }
-          catch {
-            case e: IOException => {
-            }
-          }
+
+          private val stream: InputStream = nodePlatformProcess.getErrorStream
         }
-
-        private val stream: InputStream = nodePlatformProcess.getErrorStream
+        outputStreamReader.start()
+        errorStreamReader.start()
+        nodePlatformProcess.exitValue
+        true
+      } else {
+        logger.error("Unable to start node because the platform jar file is not available")
+        false
       }
-      outputStreamReader.start()
-      errorStreamReader.start()
-      nodePlatformProcess.exitValue
-      true
     } catch {
       case e: IOException => {
         //        e.printStackTrace()
