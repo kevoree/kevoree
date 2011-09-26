@@ -88,6 +88,7 @@ class KevoreeAnnotationProcessor(env: AnnotationProcessorEnvironment) extends An
           KevoreeFactoryGenerator.generateFactory(root, env.getFiler,targetNodeName);
           KevoreeActivatorGenerator.generateActivator(root, env.getFiler,targetNodeName);
       }
+
       KevoreeXmiHelper.save(LocalUtility.generateLibURI(env), root);
     }
   }
