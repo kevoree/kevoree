@@ -1,4 +1,21 @@
+/**
+ * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE, Version 3, 29 June 2007;
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * 	http://www.gnu.org/licenses/lgpl-3.0.txt
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.kevoree.framework.annotation.processor.visitor.sub
+
+import org.kevoree.framework.annotation.processor.LocalUtility
+import scala.collection.JavaConversions._
+import org.kevoree._
 
 /**
  * Created by IntelliJ IDEA.
@@ -10,6 +27,22 @@ package org.kevoree.framework.annotation.processor.visitor.sub
 
 trait TypeDefinitionProcessor {
 
-  def defineAsSuperType
+  def defineAsSuperType[A<:TypeDefinition](child: TypeDefinition, parentName: String, parentType : Class[A]) {
+    val model = LocalUtility.root
+    val parent = model.getTypeDefinitions.filter(td => td.isInstanceOf[A]).find(n => n.getName == parentName) match {
+      case Some(foundTD) => foundTD
+      case None => {
+        val newTypeDef = parentType match {
+          case c:NodeType => KevoreeFactory.eINSTANCE.createNodeType()
+          case c:ComponentType => KevoreeFactory.eINSTANCE.createNodeType()
+          case c:ChannelType => KevoreeFactory.eINSTANCE.createChannelType()
+        }
+        newTypeDef.setName(parentName)
+        model.getTypeDefinitions.add(newTypeDef)
+        newTypeDef
+      }
+    }
+    child.getSuperTypes.add(parent)
+  }
 
 }
