@@ -1794,4 +1794,17 @@
     <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="_KNTRI-RPEeCmx9C0Rs8hEA" points="[41, 0, -754, -9]$[796, 24, 1, 15]"/>
     <targetAnchor xmi:type="notation:IdentityAnchor" xmi:id="_KNUfQORPEeCmx9C0Rs8hEA" id="(0.24260355029585798,0.5333333333333333)"/>
   </edges>
+  <edges xmi:type="notation:Edge" xmi:id="_kFHAsehBEeCzHfPPO1L4EQ" type="3002" source="_3HhToNiIEeCEZrILMa00RQ" target="_3HhToNiIEeCEZrILMa00RQ">
+    <children xmi:type="notation:Node" xmi:id="_kFI14OhBEeCzHfPPO1L4EQ" type="4011">
+      <layoutConstraint xmi:type="notation:Location" xmi:id="_kFI14ehBEeCzHfPPO1L4EQ" x="-35" y="-21"/>
+    </children>
+    <children xmi:type="notation:Node" xmi:id="_kFJc8OhBEeCzHfPPO1L4EQ" type="4012">
+      <layoutConstraint xmi:type="notation:Location" xmi:id="_kFJc8ehBEeCzHfPPO1L4EQ" x="-18" y="-5"/>
+    </children>
+    <styles xmi:type="notation:ConnectorStyle" xmi:id="_kFHAsuhBEeCzHfPPO1L4EQ" lineColor="4210752"/>
+    <styles xmi:type="notation:FontStyle" xmi:id="_kFHAs-hBEeCzHfPPO1L4EQ" fontColor="4210752" fontName="Lucida Grande" fontHeight="10"/>
+    <element xmi:type="ecore:EReference" href="kevoree.ecore#//TypeDefinition/superTypes"/>
+    <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="_kFHAtOhBEeCzHfPPO1L4EQ" points="[0, -37, -42, -31]$[0, -65, -42, -59]$[-51, -65, -93, -59]$[-51, -6, -93, 0]$[-23, -6, -65, 0]"/>
+    <sourceAnchor xmi:type="notation:IdentityAnchor" xmi:id="_kFNHUOhBEeCzHfPPO1L4EQ" id="(0.18181818181818182,0.6)"/>
+  </edges>
 </notation:Diagram>
