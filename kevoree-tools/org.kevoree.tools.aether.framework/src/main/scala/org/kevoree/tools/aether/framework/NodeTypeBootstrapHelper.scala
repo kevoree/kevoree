@@ -17,9 +17,9 @@ import java.io.FileInputStream
 import scala.collection.JavaConversions._
 import org.osgi.framework.{Bundle, BundleContext, BundleException}
 import org.slf4j.LoggerFactory
-import org.kevoree.{ContainerRoot, DeployUnit}
 import org.kevoree.api.service.core.handler.KevoreeModelHandlerService
 import org.kevoree.framework.{Constants, AbstractNodeType}
+import org.kevoree.{NodeType, ContainerRoot, DeployUnit}
 
 /**
  * User: ffouquet
@@ -41,7 +41,7 @@ class NodeTypeBootstrapHelper {
       case Some(node) => {
         val nodeTypeDeployUnitList = node.getTypeDefinition.getDeployUnits.toList
         if (nodeTypeDeployUnitList.size > 0) {
-          logger.debug("nodeType installation => " + installNodeTyp(nodeTypeDeployUnitList.get(0), bundleContext))
+          logger.debug("nodeType installation => " + installNodeTyp(node.getTypeDefinition.asInstanceOf[NodeType], bundleContext))
           val clazz: Class[_] = bundle.loadClass(node.getTypeDefinition.getBean)
           val nodeType = clazz.newInstance.asInstanceOf[AbstractNodeType]
           //ADD INSTANCE DICTIONARY
@@ -60,7 +60,7 @@ class NodeTypeBootstrapHelper {
                 dictionary.put(v.getAttribute.getName, v.getValue)
             }
           }
-          dictionary.put(Constants.KEVOREE_PROPERTY_OSGI_BUNDLE,bundleContext.getBundle)
+          dictionary.put(Constants.KEVOREE_PROPERTY_OSGI_BUNDLE, bundleContext.getBundle)
           nodeType.setDictionary(dictionary)
           nodeType.setNodeName(destNodeName)
 
@@ -109,12 +109,16 @@ class NodeTypeBootstrapHelper {
   }
 
   /* Bootstrap node type bundle in local osgi environment */
-  private def installNodeTyp(ct: DeployUnit, bundleContext: BundleContext): Boolean = {
-    val tpResul = ct.getRequiredLibs.forall {
-      tp => installDeployUnit(tp, bundleContext)
-    }
-    if (tpResul) {
-      installDeployUnit(ct, bundleContext)
+  private def installNodeTyp(nodeType: NodeType, bundleContext: BundleContext): Boolean = {
+
+    val superTypeBootStrap = nodeType.getSuperTypes.forall(superType => installNodeTyp(superType.asInstanceOf[NodeType], bundleContext))
+
+    if (superTypeBootStrap) {
+      nodeType.getDeployUnits.forall(ct => {
+        ct.getRequiredLibs.forall {
+          tp => installDeployUnit(tp, bundleContext)
+        } && installDeployUnit(ct, bundleContext)
+      })
     } else {
       false
     }
