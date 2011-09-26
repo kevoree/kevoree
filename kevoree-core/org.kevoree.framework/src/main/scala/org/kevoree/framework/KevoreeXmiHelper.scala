@@ -27,8 +27,9 @@ import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl
 import org.kevoree.ContainerRoot
 import java.util.HashMap
 import org.eclipse.emf.common.util.URI
-import java.io.{BufferedOutputStream, InputStream, OutputStream}
-import java.util.zip.{GZIPInputStream, GZIPOutputStream}
+import java.util.zip.{Deflater, Inflater, GZIPInputStream, GZIPOutputStream}
+import io.Source
+import java.io.{ByteArrayInputStream, ByteArrayOutputStream, InputStream, OutputStream}
 
 object KevoreeXmiHelper {
   def save(uri: String, root: ContainerRoot) = {
@@ -80,12 +81,31 @@ object KevoreeXmiHelper {
   }
 
   def saveCompressedStream(output: OutputStream, root: ContainerRoot): Unit = {
-    val bscout = new BufferedOutputStream(new GZIPOutputStream(output))
-    saveStream(bscout, root)
+    val modelStream = new ByteArrayOutputStream()
+    saveStream(modelStream, root)
+    val compressor = new Deflater()
+    compressor.setLevel(Deflater.BEST_COMPRESSION)
+    compressor.setInput(modelStream.toByteArray)
+    compressor.finish()
+    val buf = new Array[Byte](1024)
+    while (!compressor.finished()) {
+      val count = compressor.deflate(buf)
+      output.write(buf, 0, count)
+    }
+    output.flush()
   }
 
   def loadCompressedStream(input: InputStream): ContainerRoot = {
-    val inputS = new GZIPInputStream(input)
+    val decompressor = new Inflater()
+    val inputData: Array[Byte] = Stream.continually(input.read).takeWhile(-1 !=).map(_.toByte).toArray
+    decompressor.setInput(inputData)
+    val bos = new ByteArrayOutputStream(inputData.length)
+    val buf = new Array[Byte](1024)
+    while (!decompressor.finished()) {
+      val count = decompressor.inflate(buf)
+      bos.write(buf, 0, count)
+    }
+    val inputS = new ByteArrayInputStream(bos.toByteArray)
     loadStream(inputS)
   }
 

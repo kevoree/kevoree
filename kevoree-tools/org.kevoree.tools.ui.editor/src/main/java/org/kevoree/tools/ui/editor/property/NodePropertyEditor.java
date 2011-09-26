@@ -16,22 +16,17 @@
  * Copyright  : IRISA / INRIA / Universite de Rennes 1 */
 package org.kevoree.tools.ui.editor.property;
 
-import javax.swing.*;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
-import javax.swing.text.BadLocationException;
-
+import com.explodingpixels.macwidgets.plaf.HudComboBoxUI;
 import com.explodingpixels.macwidgets.plaf.HudLabelUI;
-import com.explodingpixels.macwidgets.plaf.HudTextFieldUI;
-import org.kevoree.ContainerNode;
-import org.kevoree.Instance;
+import org.kevoree.*;
 import org.kevoree.tools.ui.editor.KevoreeUIKernel;
-import org.kevoree.tools.ui.editor.command.*;
+import org.kevoree.tools.ui.editor.command.SynchNodeTypeCommand;
+import org.kevoree.tools.ui.editor.command.UpdatePhysicalNode;
 import org.kevoree.tools.ui.editor.widget.JCommandButton;
 
-import java.awt.*;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import javax.swing.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 /**
  * @author ffouquet
@@ -48,13 +43,39 @@ public class NodePropertyEditor extends InstancePropertyEditor {
         JPanel pnameLayout = new JPanel(new SpringLayout());
         pnameLayout.setBorder(null);
         pnameLayout.setOpaque(false);
-        JLabel physicalNodeNameLabel = new JLabel("PhysicalNode", JLabel.TRAILING);
+
+
+        JLabel physicalNodeNameLabel = new JLabel("Host node", JLabel.TRAILING);
         physicalNodeNameLabel.setUI(new HudLabelUI());
         pnameLayout.add(physicalNodeNameLabel);
-        JTextField physicalNodeNameField = new JTextField(15);
-        physicalNodeNameField.setUI(new HudTextFieldUI());
-        physicalNodeNameLabel.setLabelFor(physicalNodeNameField);
-        pnameLayout.add(physicalNodeNameField);
+
+
+        DefaultComboBoxModel hostNodeModel = new DefaultComboBoxModel();
+        hostNodeModel.addElement("nohost");
+        hostNodeModel.setSelectedItem("nohost");
+
+        for (ContainerNode loopNode : ((ContainerRoot) elem.eContainer()).getNodes()) {
+            NodeType ntype = (org.kevoree.NodeType) loopNode.getTypeDefinition();
+            boolean hostedCapable = false;
+            for (AdaptationPrimitiveType ptype : ntype.getManagedPrimitiveTypes()) {
+                if (ptype.getName().toLowerCase().equals("addnode")) {
+                    hostedCapable = true;
+                }
+                if (ptype.getName().toLowerCase().equals("removenode")) {
+                    hostedCapable = true;
+                }
+            }
+            if (hostedCapable &&  !(loopNode.getName().equals(node.getName()))) {
+                hostNodeModel.addElement(loopNode.getName());
+                if (loopNode.getHosts().contains(node)) {
+                    hostNodeModel.setSelectedItem(loopNode.getName());
+                }
+            }
+        }
+        final JComboBox hostNodeComboBox = new JComboBox(hostNodeModel);
+        hostNodeComboBox.setUI(new HudComboBoxUI());
+        physicalNodeNameLabel.setLabelFor(hostNodeComboBox);
+        pnameLayout.add(hostNodeComboBox);
 
         SpringUtilities.makeCompactGrid(pnameLayout,
                 1, 2, //rows, cols
@@ -67,41 +88,12 @@ public class NodePropertyEditor extends InstancePropertyEditor {
         commandUpdate.setKernel(kernel);
         commandUpdate.setTargetCNode(node);
 
-        physicalNodeNameField.setText(commandUpdate.getCurrentPhysName());
-
-        physicalNodeNameField.getDocument().addDocumentListener(new DocumentListener() {
-
+        hostNodeComboBox.addActionListener(new ActionListener() {
             @Override
-            public void insertUpdate(DocumentEvent e) {
-                try {
-                    commandUpdate.execute(e.getDocument().getText(0, e.getDocument().getLength()));
-                } catch (BadLocationException ex) {
-                    Logger.getLogger(NamedElementPropertyEditor.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
-
-            @Override
-            public void removeUpdate(DocumentEvent e) {
-                try {
-                    commandUpdate.execute(e.getDocument().getText(0, e.getDocument().getLength()));
-                } catch (BadLocationException ex) {
-                    Logger.getLogger(NamedElementPropertyEditor.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
-
-            @Override
-            public void changedUpdate(DocumentEvent e) {
-                try {
-                    commandUpdate.execute(e.getDocument().getText(0, e.getDocument().getLength()));
-                } catch (BadLocationException ex) {
-                    Logger.getLogger(NamedElementPropertyEditor.class.getName()).log(Level.SEVERE, null, ex);
-                }
+            public void actionPerformed(ActionEvent actionEvent) {
+                commandUpdate.execute(hostNodeComboBox.getSelectedItem());
             }
         });
-
-
-        //textField.setText(namedElem.getName());
-
 
         /*
      JTable table = new JTable(new InstanceTableModel(node));
@@ -115,24 +107,8 @@ public class NodePropertyEditor extends InstancePropertyEditor {
 
         this.addCenter(new NetworkPropertyEditor(node));
 
-/*
-        JCommandButton btPush = new JCommandButton("PushModelJgroup");
-        SynchPlatformCommand send = new SynchPlatformCommand();
-        send.setKernel(_kernel);
-        send.setDestNodeName(node.getName());
-        btPush.setCommand(send);
-        this.addCenter(btPush);*/
-
-/*
-        JCommandButton btPushNode = new JCommandButton("PushModelJMDNS");
-        SynchNodeCommand sendNode = new SynchNodeCommand();
-        sendNode.setKernel(_kernel);
-        sendNode.setDestNodeName(node.getName());
-        btPushNode.setCommand(sendNode);
-        this.addCenter(btPushNode);
-*/
         final SynchNodeTypeCommand sendNodeType = new SynchNodeTypeCommand();
-        JCommandButton btPushNodeType = new JCommandButton("Push"){
+        JCommandButton btPushNodeType = new JCommandButton("Push") {
             @Override
             public void doBeforeExecution() {
                 sendNodeType.setDestNodeName(elem.getName());

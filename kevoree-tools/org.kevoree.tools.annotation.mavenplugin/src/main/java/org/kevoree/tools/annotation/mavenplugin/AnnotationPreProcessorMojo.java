@@ -14,6 +14,7 @@
 package org.kevoree.tools.annotation.mavenplugin;
 
 import org.apache.maven.artifact.Artifact;
+import org.apache.maven.artifact.DefaultArtifact;
 import org.apache.maven.artifact.DependencyResolutionRequiredException;
 import org.apache.maven.model.Resource;
 import org.apache.maven.plugin.AbstractMojo;
@@ -31,12 +32,19 @@ import org.codehaus.plexus.compiler.util.scan.mapping.SingleTargetSourceMapping;
 import org.codehaus.plexus.compiler.util.scan.mapping.SuffixMapping;
 import org.codehaus.plexus.util.StringUtils;
 
-import java.io.File;
+import java.io.*;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.jar.JarEntry;
+import java.util.jar.JarFile;
+
 import org.apache.maven.model.Dependency;
 import org.apache.maven.model.Repository;
+import org.eclipse.emf.common.util.URI;
+import org.kevoree.ContainerRoot;
+import org.kevoree.framework.KevoreeXmiHelper;
+import org.kevoree.merger.KevoreeMergerComponent;
 
 /**
  * @author ffouquet
@@ -213,26 +221,24 @@ public class AnnotationPreProcessorMojo extends AbstractMojo {
      */
     private File sourceOutputDirectory;
     /**
-     *
      * @parameter default-value="${project.build.directory}/classes"
      */
     private File outputClasses;
     /**
-     *
      * @parameter expression="${project}"
      * @required
      * @readonly
      */
     private MavenProject mavenProject;
-    
-     /**
+
+    /**
      * TargetNodeTypeNames
      *
      * @parameter
      * @required
      */
     private String nodeTypeNames;
-    
+
     private static DateFormat dateFormat = new SimpleDateFormat("yyyyMMddHHmmSSS");
 
     @Override
@@ -248,17 +254,17 @@ public class AnnotationPreProcessorMojo extends AbstractMojo {
         }
         String otherRepositories = ";";
         Iterator repoIterator = project.getRepositories().iterator();
-        while(repoIterator.hasNext()){
+        while (repoIterator.hasNext()) {
             Repository repo = (Repository) repoIterator.next();
             otherRepositories += ";" + repo.getUrl();
         }
-        
+
         Iterator dependenciesIterator = project.getDependencies().iterator();
         String thirdParties = ";";
-        while(dependenciesIterator.hasNext()){
-            Dependency dep =(Dependency) dependenciesIterator.next();
-            if(dep.getScope().equals("provided")){
-                thirdParties += ";" + dep.getGroupId()+ "." + dep.getArtifactId() + "!" + "mvn:"+dep.getGroupId()+"/"+dep.getArtifactId()+"/"+dep.getVersion() ;
+        while (dependenciesIterator.hasNext()) {
+            Dependency dep = (Dependency) dependenciesIterator.next();
+            if (dep.getScope().equals("provided")) {
+                thirdParties += ";" + dep.getGroupId() + "." + dep.getArtifactId() + "!" + "mvn:" + dep.getGroupId() + "/" + dep.getArtifactId() + "/" + dep.getVersion();
             }
         }
 
@@ -270,9 +276,9 @@ public class AnnotationPreProcessorMojo extends AbstractMojo {
                 "kevoree.lib.tag=" + dateFormat.format(new Date()),
                 "repositories=" + repositories,
                 "otherRepositories=" + otherRepositories,
-                "thirdParties="+thirdParties,
-                "nodeTypeNames="+nodeTypeNames
-                ).toArray();
+                "thirdParties=" + thirdParties,
+                "nodeTypeNames=" + nodeTypeNames
+        ).toArray();
 
         Resource resource = new Resource();
         resource.setDirectory(sourceOutputDirectory.getPath() + "/KEV-INF");
@@ -280,6 +286,30 @@ public class AnnotationPreProcessorMojo extends AbstractMojo {
         project.getResources().add(resource);
 
         executeImpl();
+
+        //AFTER ALL GENERATED
+        try {
+            ContainerRoot model = KevoreeXmiHelper.load(sourceOutputDirectory.getPath() + "/KEV-INF/lib.kev");
+            KevoreeMergerComponent merger = new KevoreeMergerComponent();
+
+            for (Object dep : this.mavenProject.getCompileArtifacts()) {
+                try {
+                    DefaultArtifact defaultArtifact = (DefaultArtifact) dep;
+                    JarFile jar = new JarFile(defaultArtifact.getFile());
+                    JarEntry entry = jar.getJarEntry("KEV-INF/lib.kev");
+                    if (entry != null) {
+                       String path = convertStreamToFile(jar.getInputStream(entry));
+                       getLog().info("Auto merging dependency => "+path+" from "+defaultArtifact);
+                       merger.merge(model,KevoreeXmiHelper.load(path));
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+            KevoreeXmiHelper.save(sourceOutputDirectory.getPath() + "/KEV-INF/lib.kev",model);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
     }
 
@@ -414,7 +444,7 @@ public class AnnotationPreProcessorMojo extends AbstractMojo {
     private static String toPath(Collection<String> paths) {
         StringBuffer buffer = new StringBuffer();
 
-        for (Iterator<String> iterator = paths.iterator(); iterator.hasNext();) {
+        for (Iterator<String> iterator = paths.iterator(); iterator.hasNext(); ) {
             buffer.append(iterator.next());
 
             if (iterator.hasNext()) {
@@ -553,4 +583,23 @@ public class AnnotationPreProcessorMojo extends AbstractMojo {
     protected List<String> getClasspathElements() {
         return classpathElements;
     }
+
+    private String convertStreamToFile(InputStream inputStream) throws IOException {
+        Random rand = new Random();
+        File temp = File.createTempFile("kevoreeloaderLib" + rand.nextInt(), ".xmi");
+        // Delete temp file when program exits.
+        temp.deleteOnExit();
+        OutputStream out = new FileOutputStream(temp);
+        int read = 0;
+        byte[] bytes = new byte[1024];
+        while ((read = inputStream.read(bytes)) != -1) {
+            out.write(bytes, 0, read);
+        }
+        inputStream.close();
+        out.flush();
+        out.close();
+
+        return URI.createFileURI(temp.getAbsolutePath()).toString();
+    }
+
 }

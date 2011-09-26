@@ -19,29 +19,27 @@
 package org.kevoree.kompare.tests.components
 
 import org.junit._
-import org.kevoree.api.service.core.kompare.ModelKompareService
-import org.kevoree.kompare.KevoreeKompareBean
-import org.kevoreeAdaptation._
 import org.scalatest.junit.AssertionsForJUnit
 import org.kevoree.kompare.tests._
+import org.kevoree.kompare.{JavaSePrimitive, KevoreeKompareBean}
 
 class DictionaryOnComponentsTest extends AssertionsForJUnit with KompareSuite {
 
-  var component : ModelKompareService = null
+  var component : KevoreeKompareBean = null
 
   @Before def initialize() {
     component = new KevoreeKompareBean
   }
 
   @Test def verifyUpdateValue() {
-    var kompareModel = component.kompare(model("tests_dictionary/dictionary_1"), model("tests_dictionary/dictionary_2"), "node-0")
+    val kompareModel = component.kompare(model("tests_dictionary/dictionary_1"), model("tests_dictionary/dictionary_2"), "node-0")
     kompareModel verifySize 1
-    kompareModel shouldContain(classOf[UpdateDictionaryInstance],"FakeSimpleLight--398723264")
+    kompareModel shouldContain(JavaSePrimitive.UpdateDictionaryInstance,"FakeSimpleLight--398723264")
   }
 
   @Test def verifyNotUpdateValue() {
-    var kompareModel = component.kompare(model("tests_dictionary/dictionary_1"), model("tests_dictionary/dictionary_1"), "node-0")
-    kompareModel.shouldNotContain(classOf[UpdateDictionaryInstance])
+    val kompareModel = component.kompare(model("tests_dictionary/dictionary_1"), model("tests_dictionary/dictionary_1"), "node-0")
+    kompareModel.shouldNotContain(JavaSePrimitive.UpdateDictionaryInstance)
     kompareModel verifySize 0
   }
 

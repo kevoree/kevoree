@@ -32,22 +32,22 @@ import scala.collection.JavaConversions._
 trait ThirdPartyProcessor {
 
   def processThirdParty(componentType : TypeDefinition,classdef : TypeDeclaration,env : AnnotationProcessorEnvironment)={
-    var root : ContainerRoot = componentType.eContainer.asInstanceOf[ContainerRoot]
+    val root : ContainerRoot = componentType.eContainer.asInstanceOf[ContainerRoot]
 
     var thirdPartyAnnotations : List[org.kevoree.annotation.ThirdParty] = Nil
 
-    var annotationThirdParty = classdef.getAnnotation(classOf[org.kevoree.annotation.ThirdParty])
+    val annotationThirdParty = classdef.getAnnotation(classOf[org.kevoree.annotation.ThirdParty])
     if(annotationThirdParty != null){ thirdPartyAnnotations = thirdPartyAnnotations ++ List(annotationThirdParty) }
 
-    var annotationThirdParties = classdef.getAnnotation(classOf[org.kevoree.annotation.ThirdParties])
+    val annotationThirdParties = classdef.getAnnotation(classOf[org.kevoree.annotation.ThirdParties])
     if(annotationThirdParties != null){ thirdPartyAnnotations = thirdPartyAnnotations ++ annotationThirdParties.value.toList }
 
     
-    var thirdParties = env.getOptions.find({op => op._1.contains("thirdParties")}).getOrElse{("key=","")}._1.split('=').toList.get(1)
-    var thirdPartiesList : List[String] = thirdParties.split(";").filter(r=> r != null && r != "").toList
+    val thirdParties = env.getOptions.find({op => op._1.contains("thirdParties")}).getOrElse{("key=","")}._1.split('=').toList.get(1)
+    val thirdPartiesList : List[String] = thirdParties.split(";").filter(r=> r != null && r != "").toList
 
-    var nodeTypeNames = env.getOptions.find({op => op._1.contains("nodeTypeNames")}).getOrElse{("key=","")}._1.split('=').toList.get(1)
-    var nodeTypeNameList : List[String] = nodeTypeNames.split(";").filter(r=> r != null && r != "").toList
+    val nodeTypeNames = env.getOptions.find({op => op._1.contains("nodeTypeNames")}).getOrElse{("key=","")}._1.split('=').toList.get(1)
+    val nodeTypeNameList : List[String] = nodeTypeNames.split(";").filter(r=> r != null && r != "").toList
     
     
     /* CHECK THIRDPARTIES */
@@ -57,7 +57,7 @@ trait ThirdPartyProcessor {
             componentType.getDeployUnits.get(0).getRequiredLibs.add(e)
           }
         case None => {
-            var newThirdParty = KevoreeFactory.eINSTANCE.createDeployUnit
+            val newThirdParty = KevoreeFactory.eINSTANCE.createDeployUnit
             newThirdParty.setName(tp.name)
             newThirdParty.setUrl(tp.url)
             root.getDeployUnits.add(newThirdParty)
@@ -68,15 +68,15 @@ trait ThirdPartyProcessor {
     
     /* CHECK TP from POM */
     thirdPartiesList.foreach{tp=>
-      var name = tp.split("!").toList.get(0)
-      var url = tp.split("!").toList.get(1)
+      val name = tp.split("!").toList.get(0)
+      val url = tp.split("!").toList.get(1)
       
       root.getDeployUnits.find({etp => etp.getName == name}) match {
         case Some(e) => {
             componentType.getDeployUnits.get(0).getRequiredLibs.add(e)
           }
         case None => {
-            var newThirdParty = KevoreeFactory.eINSTANCE.createDeployUnit
+            val newThirdParty = KevoreeFactory.eINSTANCE.createDeployUnit
             newThirdParty.setName(name)
             newThirdParty.setUrl(url)
             root.getDeployUnits.add(newThirdParty)
@@ -93,7 +93,7 @@ trait ThirdPartyProcessor {
           componentType.eContainer.asInstanceOf[ContainerRoot].getTypeDefinitions.filter(p=> p.isInstanceOf[NodeType]).find(nt => nt.getName == nodeTypeName) match {
             case Some(existingNodeType)=>tp.setTargetNodeType(existingNodeType.asInstanceOf[NodeType])
             case None => {
-                var nodeType = KevoreeFactory.eINSTANCE.createNodeType
+                val nodeType = KevoreeFactory.eINSTANCE.createNodeType
                 nodeType.setName(nodeTypeName)
                 root.getTypeDefinitions.add(nodeType)
                 tp.setTargetNodeType(nodeType)
@@ -102,9 +102,6 @@ trait ThirdPartyProcessor {
         }
         
       }
-      
     }
-    
-    
   }
 }
