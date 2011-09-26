@@ -53,6 +53,10 @@ case class NodeTypeVisitor(nodeType: NodeType, env: AnnotationProcessorEnvironme
     if (classdef.getSuperclass != null) {
       val annotFragment = classdef.getSuperclass.getDeclaration.getAnnotation(classOf[org.kevoree.annotation.NodeType])
       if (annotFragment != null) {
+        //PUT SUPER TYPE
+
+
+
         classdef.getSuperclass.getDeclaration.accept(this)
       }
     }
