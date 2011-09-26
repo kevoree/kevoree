@@ -24,6 +24,7 @@ import framework.{PrimitiveCommand, KevoreeGeneratorHelper, Constants}
 import org.kevoree.adaptation.deploy.osgi.context.KevoreeDeployManager
 import org.kevoree.adaptation.deploy.osgi.context.KevoreeOSGiBundle
 import org.kevoree.framework.FileHelper._
+import org.kevoree.framework.aspects.KevoreeAspects._
 import scala.collection.JavaConversions._
 import org.slf4j.LoggerFactory
 
@@ -58,8 +59,13 @@ case class AddInstanceCommand(c: Instance, ctx: KevoreeDeployManager, nodeName: 
 
     if (mappingFound != null) {
       //FOUND CURRENT NODE TYPE
-      val nodeTypeName = c.getTypeDefinition.eContainer().asInstanceOf[ContainerRoot].getNodes
-        .find(tn => tn.getName == nodeName).get.getTypeDefinition.getName
+      val nodeType = c.getTypeDefinition.eContainer().asInstanceOf[ContainerRoot].getNodes.find(tn => tn.getName == nodeName).get.getTypeDefinition
+      //FIRST COMPLIANCE VALID TARGET NODE TYPE IN INHERITANCE
+      val nodeTypeName = c.getTypeDefinition.foundRelevantHostNodeType(nodeType.asInstanceOf[NodeType],c.getTypeDefinition) match {
+        case Some(nt)=> nt.getName
+        case None => ""
+      }
+
 
       /* STEP GENERATE COMPONENT INSTANCE BUNDLE */
       /* Generate File */
