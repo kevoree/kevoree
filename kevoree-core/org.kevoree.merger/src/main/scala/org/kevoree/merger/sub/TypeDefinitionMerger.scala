@@ -108,7 +108,7 @@ trait TypeDefinitionMerger extends Merger with DictionaryMerger with PortTypeMer
   }
 
   private def consistencyImpacted(root: ContainerRoot, actuelTypeDefinition: TypeDefinition, newTypeDefinition: TypeDefinition) = {
-    //println("mergeConsistencyImpacted - "+actuelTypeDefinition+ " - "+newTypeDefinition)
+    println("mergeConsistencyImpacted - " + actuelTypeDefinition + " - " + newTypeDefinition)
     //REMOVE OLD AND ADD NEW TYPE
     root.getTypeDefinitions.remove(actuelTypeDefinition)
     mergeNewTypeDefinition(root, newTypeDefinition)
@@ -119,10 +119,15 @@ trait TypeDefinitionMerger extends Merger with DictionaryMerger with PortTypeMer
     }
 
 
-    if (actuelTypeDefinition.getSuperTypes != null && actuelTypeDefinition.getSuperTypes.contains(newTypeDefinition)) {
-      actuelTypeDefinition.getSuperTypes.remove(newTypeDefinition)
-      actuelTypeDefinition.getSuperTypes.add(actuelTypeDefinition)
+    val allTypeDef: List[TypeDefinition] = List[TypeDefinition]() ++ root.getTypeDefinitions
+    allTypeDef.foreach {
+      du =>
+        if (du.getSuperTypes != null && du.getSuperTypes.contains(actuelTypeDefinition)) {
+          du.getSuperTypes.remove(actuelTypeDefinition)
+          du.getSuperTypes.add(newTypeDefinition)
+        }
     }
+
 
     //PARTICULAR CASE - CHECK
     if (actuelTypeDefinition.isInstanceOf[NodeType]) {
