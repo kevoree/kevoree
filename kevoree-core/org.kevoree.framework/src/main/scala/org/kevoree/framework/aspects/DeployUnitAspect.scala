@@ -32,5 +32,4 @@ case class DeployUnitAspect(self : DeployUnit) {
     })
     idequals
   }
-
 }
