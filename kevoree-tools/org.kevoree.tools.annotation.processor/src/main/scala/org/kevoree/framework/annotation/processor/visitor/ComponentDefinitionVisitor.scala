@@ -18,7 +18,6 @@
 
 package org.kevoree.framework.annotation.processor.visitor
 
-import org.kevoree.ComponentType
 import com.sun.mirror.apt.AnnotationProcessorEnvironment
 import com.sun.mirror.declaration.ClassDeclaration
 import com.sun.mirror.declaration.FieldDeclaration
@@ -26,16 +25,9 @@ import com.sun.mirror.declaration.InterfaceDeclaration
 import com.sun.mirror.declaration.MethodDeclaration
 import com.sun.mirror.declaration.TypeDeclaration
 import com.sun.mirror.util.SimpleDeclarationVisitor
-import org.kevoree.framework.annotation.processor.visitor.sub.DeployUnitProcessor
-import org.kevoree.framework.annotation.processor.visitor.sub.DictionaryProcessor
-import org.kevoree.framework.annotation.processor.visitor.sub.LibraryProcessor
-import org.kevoree.framework.annotation.processor.visitor.sub.LifeCycleMethodProcessor
-import org.kevoree.framework.annotation.processor.visitor.sub.PortMappingProcessor
-import org.kevoree.framework.annotation.processor.visitor.sub.ProvidedPortProcessor
-import org.kevoree.framework.annotation.processor.visitor.sub.RequiredPortProcessor
-import org.kevoree.framework.annotation.processor.visitor.sub.SlotProcessor
-import org.kevoree.framework.annotation.processor.visitor.sub.ThirdPartyProcessor
 import scala.collection.JavaConversions._
+import sub._
+import org.kevoree.{NodeType, ComponentType}
 
 case class ComponentDefinitionVisitor(componentType : ComponentType,env : AnnotationProcessorEnvironment)
 extends SimpleDeclarationVisitor
@@ -48,6 +40,7 @@ extends SimpleDeclarationVisitor
    with LibraryProcessor
    with LifeCycleMethodProcessor
    with SlotProcessor
+with TypeDefinitionProcessor
 {
 
   override def visitClassDeclaration(classdef : ClassDeclaration) = {
@@ -55,6 +48,7 @@ extends SimpleDeclarationVisitor
       val annotFragment = classdef.getSuperclass.getDeclaration.getAnnotation(classOf[org.kevoree.annotation.ComponentFragment])
       if(annotFragment != null){
         classdef.getSuperclass.getDeclaration.accept(this)
+        defineAsSuperType(componentType,classdef.getSuperclass.getDeclaration.getSimpleName,classOf[ComponentType])
       }
     }
     commonProcess(classdef)
