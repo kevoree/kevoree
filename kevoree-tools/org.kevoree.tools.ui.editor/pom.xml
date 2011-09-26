@@ -56,7 +56,11 @@
             <artifactId>org.kevoree.deploy.osgi</artifactId>
             <version>${kevoree.version}</version>
         </dependency>
-
+        <dependency>
+            <groupId>org.kevoree</groupId>
+            <artifactId>org.kevoree.remote</artifactId>
+            <version>${kevoree.version}</version>
+        </dependency>
         <dependency>
             <groupId>org.apache.felix</groupId>
             <artifactId>org.apache.felix.framework</artifactId>

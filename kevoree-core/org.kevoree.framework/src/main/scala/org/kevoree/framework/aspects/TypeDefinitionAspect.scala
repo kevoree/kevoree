@@ -175,6 +175,20 @@ case class TypeDefinitionAspect (selfTD: TypeDefinition) {
   }
 
 
+  def foundRelevantHostNodeType(nodeType : NodeType,targetTypeDef : TypeDefinition) : Option[NodeType] = {
+      if(targetTypeDef.getDeployUnits.exists(du => du.getTargetNodeType == nodeType)){
+        Some(nodeType)
+      } else {
+        nodeType.getSuperTypes.foreach{ superType =>
+           foundRelevantHostNodeType(superType.asInstanceOf[NodeType],targetTypeDef) match {
+             case Some(nt)=> return Some(nt)
+             case None =>
+           }
+        }
+        return None
+      }
+  }
+
   def foundRelevantDeployUnit (node: ContainerNode) = {
 
     /* add all reLib from found deploy Unit*/
