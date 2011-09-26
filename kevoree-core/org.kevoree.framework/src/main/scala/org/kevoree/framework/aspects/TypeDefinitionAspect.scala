@@ -75,7 +75,7 @@ case class TypeDefinitionAspect (selfTD: TypeDefinition) {
                     }
                     case None => true
                   }
-                                                                    )
+                )
                 interfaceChanged || operationsChanged
               }
             }
@@ -121,7 +121,15 @@ case class TypeDefinitionAspect (selfTD: TypeDefinition) {
 
   def isUpdated (pTD: TypeDefinition): Boolean = {
 
-    //println("is UPdted ?")
+    if (selfTD.getSuperTypes.size() != pTD.getSuperTypes.size()) {
+      return true
+    }
+    selfTD.getSuperTypes.foreach {
+      selfSuperTD =>
+        if(!pTD.getSuperTypes.exists(td => td.getName == selfSuperTD.getName)){
+          return false
+        }
+    }
 
     if (selfTD.getDeployUnits != null) {
       if (pTD.getDeployUnits != null) {

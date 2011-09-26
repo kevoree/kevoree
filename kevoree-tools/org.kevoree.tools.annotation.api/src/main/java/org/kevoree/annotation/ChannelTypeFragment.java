@@ -26,5 +26,5 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.CLASS)
 @Target({ElementType.TYPE})
 public @interface ChannelTypeFragment {
-    java.lang.String name() default "empty";
+    java.lang.String description() default "empty";
 }
