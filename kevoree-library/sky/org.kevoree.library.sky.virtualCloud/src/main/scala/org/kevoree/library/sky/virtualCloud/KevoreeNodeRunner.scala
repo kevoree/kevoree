@@ -50,6 +50,7 @@ class KevoreeNodeRunner (var nodeName: String, bootStrapModel: String) {
         outputStreamReader = new Thread {
           val file = new File(System.getProperty("java.io.tmpdir") + File.separator + "sysout" + nodeName + ".log")
           val logStream: OutputStream = new FileOutputStream(file)
+          logger.debug(file.getAbsolutePath + " is used as a log file")
 
           override def run () {
             try {
@@ -59,13 +60,13 @@ class KevoreeNodeRunner (var nodeName: String, bootStrapModel: String) {
                 length = stream.read(bytes)
                 logStream.write(bytes, 0, length)
               }
-            }
-            catch {
-              case e: IOException => {
+            } catch {
+              case _@e => {
                 logger.debug("Stream has been closed, we close " + file.getAbsolutePath + "too")
-                logStream.flush()
-                logStream.close()
               }
+            } finally {
+              logStream.flush()
+              logStream.close()
             }
           }
 
@@ -74,6 +75,7 @@ class KevoreeNodeRunner (var nodeName: String, bootStrapModel: String) {
         errorStreamReader = new Thread {
           val file = new File(System.getProperty("java.io.tmpdir") + File.separator + "syserr" + nodeName + ".log")
           val logStream: OutputStream = new FileOutputStream(file)
+          logger.debug(file.getAbsolutePath + " is used as a log file")
 
           override def run () {
             try {
@@ -84,13 +86,13 @@ class KevoreeNodeRunner (var nodeName: String, bootStrapModel: String) {
                 logStream.write(bytes, 0, length)
 
               }
-            }
-            catch {
-              case e: IOException => {
+            } catch {
+              case _@e => {
                 logger.debug("Stream has been closed, we close " + file.getAbsolutePath + "too")
-                logStream.flush()
-                logStream.close()
               }
+            } finally {
+              logStream.flush()
+              logStream.close()
             }
           }
 
