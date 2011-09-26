@@ -29,57 +29,66 @@ import scala.collection.JavaConversions._
 import sub._
 import org.kevoree.{NodeType, ComponentType}
 
-case class ComponentDefinitionVisitor(componentType : ComponentType,env : AnnotationProcessorEnvironment)
-extends SimpleDeclarationVisitor
-   with ProvidedPortProcessor
-   with RequiredPortProcessor
-   with ThirdPartyProcessor
-   with DeployUnitProcessor
-   with DictionaryProcessor
-   with PortMappingProcessor
-   with LibraryProcessor
-   with LifeCycleMethodProcessor
-   with SlotProcessor
-with TypeDefinitionProcessor
-{
+case class ComponentDefinitionVisitor(componentType: ComponentType, env: AnnotationProcessorEnvironment)
+  extends SimpleDeclarationVisitor
+  with ProvidedPortProcessor
+  with RequiredPortProcessor
+  with ThirdPartyProcessor
+  with DeployUnitProcessor
+  with DictionaryProcessor
+  with PortMappingProcessor
+  with LibraryProcessor
+  with LifeCycleMethodProcessor
+  with SlotProcessor
+  with TypeDefinitionProcessor {
 
-  override def visitClassDeclaration(classdef : ClassDeclaration) = {
-    if(classdef.getSuperclass != null){
+  override def visitClassDeclaration(classdef: ClassDeclaration) = {
+    if (classdef.getSuperclass != null) {
       val annotFragment = classdef.getSuperclass.getDeclaration.getAnnotation(classOf[org.kevoree.annotation.ComponentFragment])
-      if(annotFragment != null){
+      if (annotFragment != null) {
         classdef.getSuperclass.getDeclaration.accept(this)
-        defineAsSuperType(componentType,classdef.getSuperclass.getDeclaration.getSimpleName,classOf[ComponentType])
+        //TODO ADD AS THIRD PARTY //
       }
     }
+
+    val annotComponentType = classdef.getSuperclass.getDeclaration.getAnnotation(classOf[org.kevoree.annotation.ComponentType])
+    if (annotComponentType != null) {
+      classdef.getSuperclass.getDeclaration.accept(this)
+      defineAsSuperType(componentType, classdef.getSuperclass.getDeclaration.getSimpleName, classOf[ComponentType])
+    }
+
     commonProcess(classdef)
   }
 
-  override def visitInterfaceDeclaration(interfaceDecl : InterfaceDeclaration) = {
+  override def visitInterfaceDeclaration(interfaceDecl: InterfaceDeclaration) = {
     commonProcess(interfaceDecl)
   }
 
 
-  def commonProcess(typeDecl : TypeDeclaration) = {
-    typeDecl.getSuperinterfaces.foreach{it=>
-      val annotFragment = it.getDeclaration.getAnnotation(classOf[org.kevoree.annotation.ComponentFragment])
-      it.getDeclaration.accept(this)
+  def commonProcess(typeDecl: TypeDeclaration) = {
+    typeDecl.getSuperinterfaces.foreach {
+      it =>
+        val annotFragment = it.getDeclaration.getAnnotation(classOf[org.kevoree.annotation.ComponentFragment])
+        it.getDeclaration.accept(this)
     }
-    processLibrary(componentType,typeDecl)
-    processDictionary(componentType,typeDecl)
-    processDeployUnit(componentType,typeDecl,env)
-    processThirdParty(componentType,typeDecl,env)
-    processProvidedPort(componentType,typeDecl,env)
-    processRequiredPort(componentType,typeDecl,env)
+    processLibrary(componentType, typeDecl)
+    processDictionary(componentType, typeDecl)
+    processDeployUnit(componentType, typeDecl, env)
+    processThirdParty(componentType, typeDecl, env)
+    processProvidedPort(componentType, typeDecl, env)
+    processRequiredPort(componentType, typeDecl, env)
     processSlot(componentType, typeDecl, env)
 
-    typeDecl.getMethods().foreach{method => method.accept(this) }
+    typeDecl.getMethods().foreach {
+      method => method.accept(this)
+    }
 
   }
 
-  override def visitMethodDeclaration(methoddef : MethodDeclaration) = {
-    processPortMapping(componentType,methoddef,env)
-    processLifeCycleMethod(componentType,methoddef)
+  override def visitMethodDeclaration(methoddef: MethodDeclaration) = {
+    processPortMapping(componentType, methoddef, env)
+    processLifeCycleMethod(componentType, methoddef)
 
   }
-  
+
 }
