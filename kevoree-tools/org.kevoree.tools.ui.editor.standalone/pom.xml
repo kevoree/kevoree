@@ -92,18 +92,25 @@
                         </goals>
                     </execution>
                 </executions>
+                <dependencies>
+                    <dependency>
+                        <groupId>net.sf.proguard</groupId>
+                        <artifactId>proguard</artifactId>
+                        <version>4.7-BETA</version>
+                        <scope>runtime</scope>
+                    </dependency>
+                </dependencies>
+
                 <configuration>
                     <injar>${project.build.finalName}.jar</injar>
                     <outjar>${project.build.finalName}-small.jar</outjar>
                     <obfuscate>false</obfuscate>
                     <maxMemory>1024m</maxMemory>
-                    <proguardVersion>4.6</proguardVersion>
+                    <proguardVersion>4.7</proguardVersion>
                     <options>
                         <option>-dontskipnonpubliclibraryclasses</option>
                         <option>-dontskipnonpubliclibraryclassmembers</option>
                         <option>-dontoptimize</option>
-                        <option>-printmapping map.txt</option>
-                        <option>-printseeds seed.txt</option>
                         <option>-ignorewarnings</option>
                         <option>-keep public class org.kevoree.tools.ui.editor.standalone.App { *; }</option>
                         <option>-keep class * extends javax.swing.plaf.ComponentUI {
