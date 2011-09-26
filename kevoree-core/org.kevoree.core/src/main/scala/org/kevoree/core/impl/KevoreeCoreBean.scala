@@ -90,13 +90,11 @@ class KevoreeCoreBean extends KevoreeModelHandlerService with KevoreeActor {
         if (srs != null) {
           srs.foreach {
             sr =>
-              bundleContext.getService(sr).asInstanceOf[KevoreeGroup].triggerModelUpdate
+              bundleContext.getService(sr).asInstanceOf[KevoreeGroup].triggerModelUpdate()
           }
         }
       }
     }.start()
-
-
   }
 
   override def start: Actor = {
