@@ -276,7 +276,7 @@
                     <dependency>
                         <groupId>net.sf.proguard</groupId>
                         <artifactId>proguard</artifactId>
-                        <version>4.4</version>
+                        <version>4.7-BETA</version>
                         <scope>runtime</scope>
                     </dependency>
                 </dependencies>
@@ -360,8 +360,8 @@
                         <option>-dontoptimize</option>
                         <option>-dontobfuscate</option>
                         <option>-keepattributes
-                            Exceptions,InnerClasses,Signature,Deprecated,SourceFile,LineNumberTable,*Annotation*,EnclosingMethod,LocalVariableTable
-                        </option>
+                        Exceptions,InnerClasses,Signature,Deprecated,SourceFile,LineNumberTable,*Annotation*,EnclosingMethod
+                    </option>
                         <option>-ignorewarnings</option>
                         <option>-keep public class org.kevoree.platform.osgi.standalone.gui.App { *; }</option>
                         <option>-keep class * extends javax.swing.plaf.ComponentUI {
