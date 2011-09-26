@@ -20,8 +20,6 @@ package org.kevoree.core.impl
 
 import org.kevoree.api.configuration.ConfigurationService
 import java.io.File
-import net.lag.configgy.Config
-import net.lag.configgy.Configgy
 import org.kevoree.api.configuration.ConfigConstants.ConfigConstant
 import org.kevoree.api.configuration.ConfigConstants
 import org.slf4j.LoggerFactory
@@ -30,14 +28,12 @@ class KevoreeConfigServiceBean extends ConfigurationService {
 
   var logger = LoggerFactory.getLogger(this.getClass);
 
-  var config : Option[Config] = None
-
   if(System.getProperty(ConfigConstants.KEVOREE_CONFIG.getValue)!= null){
     val configF = new File(System.getProperty(ConfigConstants.KEVOREE_CONFIG.getValue))
     if(configF.exists){
       logger.info("Configure Kevoree Core with config file =>"+configF)
-      Configgy.configure(configF.getAbsolutePath)
-      config = Some(Configgy.config)
+     // Configgy.configure(configF.getAbsolutePath)
+     // config = Some(Configgy.config)
     }
   }
 
@@ -45,7 +41,7 @@ class KevoreeConfigServiceBean extends ConfigurationService {
     if(System.getProperty(constant.getValue) != null){
       System.getProperty(constant.getValue)
     } else {
-
+      /*
       config match {
         case None => constant.getDefaultValue
         case Some(config) => {
@@ -54,7 +50,8 @@ class KevoreeConfigServiceBean extends ConfigurationService {
               case None => constant.getDefaultValue
             }
           }
-      }
+      } */
+      constant.getDefaultValue
 
     }
   }

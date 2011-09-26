@@ -18,38 +18,51 @@
 
 package org.kevoree.framework.annotation.processor.visitor
 
-import org.kevoree.ChannelType
 import com.sun.mirror.apt.AnnotationProcessorEnvironment
-import com.sun.mirror.declaration.ClassDeclaration
-import com.sun.mirror.declaration.MethodDeclaration
 import com.sun.mirror.util.SimpleDeclarationVisitor
-import org.kevoree.framework.annotation.processor.visitor.sub.DeployUnitProcessor
-import org.kevoree.framework.annotation.processor.visitor.sub.DictionaryProcessor
-import org.kevoree.framework.annotation.processor.visitor.sub.LibraryProcessor
-import org.kevoree.framework.annotation.processor.visitor.sub.LifeCycleMethodProcessor
-import org.kevoree.framework.annotation.processor.visitor.sub.ThirdPartyProcessor
 import scala.collection.JavaConversions._
+import sub._
+import com.sun.mirror.declaration.{TypeDeclaration, InterfaceDeclaration, ClassDeclaration, MethodDeclaration}
+import org.kevoree.{ComponentType, ChannelType}
 
-case class ChannelTypeFragmentVisitor(channelType : ChannelType,env : AnnotationProcessorEnvironment)
-extends SimpleDeclarationVisitor 
-   with DeployUnitProcessor
-   with DictionaryProcessor
-   with LibraryProcessor
-   with ThirdPartyProcessor
-   with LifeCycleMethodProcessor{
+case class ChannelTypeFragmentVisitor(channelType: ChannelType, env: AnnotationProcessorEnvironment)
+  extends SimpleDeclarationVisitor
+  with DeployUnitProcessor
+  with DictionaryProcessor
+  with LibraryProcessor
+  with ThirdPartyProcessor
+  with LifeCycleMethodProcessor
+  with TypeDefinitionProcessor {
 
-  override def visitClassDeclaration(classdef : ClassDeclaration) = {
-    //SUB PROCESSOR
-    processDictionary(channelType,classdef)
-    processDeployUnit(channelType,classdef,env)
-    processLibrary(channelType,classdef)
-    processThirdParty(channelType,classdef,env)
+  override def visitClassDeclaration(classdef: ClassDeclaration) {
+    if (classdef.getSuperclass != null) {
+      val annotFragment = classdef.getSuperclass.getDeclaration.getAnnotation(classOf[org.kevoree.annotation.ComponentFragment])
+      if (annotFragment != null) {
+        classdef.getSuperclass.getDeclaration.accept(this)
+        defineAsSuperType(channelType, classdef.getSuperclass.getDeclaration.getSimpleName, classOf[ChannelType])
+      }
+    }
 
-    classdef.getMethods().foreach{method => method.accept(this) }
+    commonProcess(classdef)
   }
 
-  override def visitMethodDeclaration(methoddef : MethodDeclaration) = {
-    processLifeCycleMethod(channelType,methoddef)
+  override def visitInterfaceDeclaration(interfaceDecl: InterfaceDeclaration) {
+    commonProcess(interfaceDecl)
+  }
+
+
+  override def visitMethodDeclaration(methoddef: MethodDeclaration) {
+    processLifeCycleMethod(channelType, methoddef)
+  }
+
+  def commonProcess(typeDecl: TypeDeclaration) = {
+    processDictionary(channelType, typeDecl)
+    processDeployUnit(channelType, typeDecl, env)
+    processLibrary(channelType, typeDecl)
+    processThirdParty(channelType, typeDecl, env)
+    typeDecl.getMethods.foreach {
+      method => method.accept(this)
+    }
   }
 
 }

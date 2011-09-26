@@ -29,7 +29,7 @@ case class NodeAspect(self: ContainerNode) {
 
   def removeModelAndUI(kernel: KevoreeUIKernel) = {
 
-    var root: ContainerRoot = self.eContainer.asInstanceOf[ContainerRoot]
+    val root: ContainerRoot = self.eContainer.asInstanceOf[ContainerRoot]
     val nodePanel = kernel.getUifactory().getMapping().get(self).asInstanceOf[NodePanel]
 
     //REMOVE POTENTIAL GROUP LINK
@@ -64,6 +64,13 @@ case class NodeAspect(self: ContainerNode) {
 
     //REMOVE INSTANCE
     root.getNodes.remove(self)
+
+    //CLEANUP HOST NODE
+    kernel.getModelHandler.getActualModel.getNodes.foreach{ node =>
+       if(node.getHosts.contains(self)){
+         node.getHosts.remove(self)
+       }
+    }
 
     //UNBIND
     kernel.getUifactory().getMapping().unbind(nodePanel, self);

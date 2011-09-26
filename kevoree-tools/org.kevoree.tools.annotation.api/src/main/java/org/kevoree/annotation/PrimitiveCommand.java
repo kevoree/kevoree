@@ -11,25 +11,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+package org.kevoree.annotation;
+
+/**
+ * User: Erwan Daubert - erwan.daubert@gmail.com
+ * Date: 21/09/11
+ * Time: 09:23
  */
-
-package org.kevoree.adaptation.deploy.osgi.command
-
-trait PrimitiveCommand {
-
-  def execute() : Boolean
-
-  def undo(): Unit
-
-  var lastExecutionBundle : Option[org.osgi.framework.Bundle] = None
-
-  def getLastExecutionBundle = lastExecutionBundle
-
-  var mustBeStarted = false
-
-  var startLevel : Option[Int] = None
-
+public @interface PrimitiveCommand {
+	java.lang.String name();
 }

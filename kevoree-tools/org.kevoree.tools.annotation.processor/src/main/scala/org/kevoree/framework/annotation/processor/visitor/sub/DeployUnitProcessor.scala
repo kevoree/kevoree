@@ -32,9 +32,9 @@ trait DeployUnitProcessor {
     val root : ContainerRoot = typeDef.eContainer.asInstanceOf[ContainerRoot]
 
     /* CREATE COMPONENT TYPE DEPLOY UNIT IF NEEDED */
-    var unitName = env.getOptions.find({op => op._1.contains("kevoree.lib.id")}).getOrElse{("key=","")}._1.split('=').toList.get(1)
-    var groupName = env.getOptions.find({op => op._1.contains("kevoree.lib.group")}).getOrElse{("key=","")}._1.split('=').toList.get(1)
-    var version = env.getOptions.find({op => op._1.contains("kevoree.lib.version")}).getOrElse{("key=","")}._1.split('=').toList.get(1)
+    val unitName = env.getOptions.find({op => op._1.contains("kevoree.lib.id")}).getOrElse{("key=","")}._1.split('=').toList.get(1)
+    val groupName = env.getOptions.find({op => op._1.contains("kevoree.lib.group")}).getOrElse{("key=","")}._1.split('=').toList.get(1)
+    val version = env.getOptions.find({op => op._1.contains("kevoree.lib.version")}).getOrElse{("key=","")}._1.split('=').toList.get(1)
     val tag = env.getOptions.find({op => op._1.contains("kevoree.lib.tag")}).getOrElse{("key=","")}._1.split('=').toList.get(1)
 
     val repositories = env.getOptions.find({op => op._1.contains("repositories")}).getOrElse{("key=","")}._1.split('=').toList.get(1)
@@ -79,7 +79,7 @@ trait DeployUnitProcessor {
       if(repoUrl != ""){
         val repo = root.getRepositories.find(r => r.getUrl == repoUrl) match {
           case None => {
-              var newrepo = KevoreeFactory.eINSTANCE.createRepository
+              val newrepo = KevoreeFactory.eINSTANCE.createRepository
               newrepo.setUrl(repoUrl)
               root.getRepositories.add(newrepo)
               newrepo
@@ -94,7 +94,7 @@ trait DeployUnitProcessor {
       if(rRepoUrl != ""){
         root.getRepositories.find(r => r.getUrl == rRepoUrl) match {
           case None => {
-              var newrepo = KevoreeFactory.eINSTANCE.createRepository
+              val newrepo = KevoreeFactory.eINSTANCE.createRepository
               newrepo.setUrl(rRepoUrl)
               root.getRepositories.add(newrepo)
               newrepo

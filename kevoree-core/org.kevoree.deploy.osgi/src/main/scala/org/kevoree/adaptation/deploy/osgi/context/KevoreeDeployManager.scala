@@ -25,6 +25,7 @@ import org.osgi.service.packageadmin.PackageAdmin
 import org.osgi.util.tracker.ServiceTracker
 import scala.collection.JavaConversions._
 import org.osgi.service.startlevel.StartLevel
+import reflect.BeanProperty
 
 
 class KevoreeDeployManager {
@@ -52,14 +53,8 @@ class KevoreeDeployManager {
     bundle = b
   }
 
+  @BeanProperty
   var bundleContext: BundleContext = null;
-
-  def setBundleContext(bc: BundleContext) = bundleContext = bc
-
-  //var bundleContainer : BlueprintContainer = null;
-  // def setBundleContainer(bc : BlueprintContainer) = bundleContainer = bc
-  // var modelHandler : KevoreeModelHandlerService = null;
-  //  def setModelHandler(mh : KevoreeModelHandlerService) = modelHandler = mh
 
   var bundleMapping: java.util.List[KevoreeOSGiBundle] = new java.util.ArrayList[KevoreeOSGiBundle]();
 
@@ -82,23 +77,6 @@ class KevoreeDeployManager {
       packageAdminServiceTracker.getService.asInstanceOf[PackageAdmin]
     }
   }
-
-
-  def setStartLevelServerTracker(st: ServiceTracker) = startLevelServerTracker = st
-  private var startLevelServerTracker: ServiceTracker = null
-
-  var startLevelServer: Option[StartLevel] = null
-  def setStartLevelServer(pa: StartLevel) = startLevelServer = Some(pa)
-  def getStartLevelServer: StartLevel = {
-    startLevelServer.getOrElse {
-      startLevelServer = Some(startLevelServerTracker.getService.asInstanceOf[StartLevel])
-      startLevelServer.get
-    }
-  }
-
-
-  //org.osgi.service.startlevel.StartLevel
-
 
 }
 
