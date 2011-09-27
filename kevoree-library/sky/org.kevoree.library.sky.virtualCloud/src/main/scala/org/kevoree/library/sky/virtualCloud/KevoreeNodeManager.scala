@@ -28,6 +28,8 @@ class KevoreeNodeManager(node : VirtualCloudNode) extends DaemonActor {
 
   case class REMOVE_NODE (containerNode: ContainerNode)
 
+  case class UPDATE_NODE(containerNode : ContainerNode, model: ContainerRoot, modelBackup : String)
+
   def stop () {
     this ! STOP()
   }
@@ -40,6 +42,10 @@ class KevoreeNodeManager(node : VirtualCloudNode) extends DaemonActor {
     (this !? REMOVE_NODE(containerNode)).asInstanceOf[Boolean]
   }
 
+  def updateNode(containerNode : ContainerNode, model : ContainerRoot, modelBackup : String): Boolean = {
+    (this !? UPDATE_NODE(containerNode, model, modelBackup)).asInstanceOf[Boolean]
+  }
+
   def act () {
     loop {
       react {
@@ -49,6 +55,7 @@ class KevoreeNodeManager(node : VirtualCloudNode) extends DaemonActor {
         }
         case ADD_NODE(containerNode, model) => reply(addNodeInternal(containerNode, model))
         case REMOVE_NODE(containerNode) => reply(removeNodeInternal(containerNode))
+        case UPDATE_NODE(containerNode, model, modelBackup) => reply(updateNodeInternal(containerNode, model, modelBackup))
       }
     }
   }
@@ -85,17 +92,13 @@ class KevoreeNodeManager(node : VirtualCloudNode) extends DaemonActor {
     runnners = List()
   }
 
-  // must be remove because all needed data (except Node name) must be defined into the model
-  /*private def foundPort(containerNode : ContainerNode) : Int ={
-    containerNode.getDictionary.getValues.find(v => v.getAttribute.getName == "port") match {
-      case None => 8000
-      case Some(v) => {
-        try {
-        Integer.parseInt(v.getValue)
-        } catch {
-          case e : NumberFormatException => logger.warn("Invalid attribute type for port!"); 8000
-        }
+  private def updateNodeInternal(containerNode : ContainerNode, model : ContainerRoot, modelBackup : String): Boolean = {
+    logger.debug("try to update " + containerNode.getName)
+    runnners.find(runner => runner.nodeName == containerNode.getName) match {
+      case None => logger.debug(containerNode.getName + " is not available");false
+      case Some(runner) => {
+        runner.updateNode(Helper.saveModelOnFile(model), modelBackup)
       }
     }
-  }*/
+  }
 }

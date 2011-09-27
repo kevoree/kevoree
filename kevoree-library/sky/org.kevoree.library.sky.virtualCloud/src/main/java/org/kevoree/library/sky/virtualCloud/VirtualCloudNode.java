@@ -44,12 +44,14 @@ import java.util.concurrent.TimeUnit;
 @DictionaryType({
 		@DictionaryAttribute(name = "port", defaultValue = "7000", optional = false)
 })
-@PrimitiveCommands(value = {}, values = {VirtualCloudNode.REMOVE_NODE, VirtualCloudNode.ADD_NODE/*, "UpdateNode"*/})
+@PrimitiveCommands(value = {},
+		values = {VirtualCloudNode.REMOVE_NODE, VirtualCloudNode.ADD_NODE, VirtualCloudNode.UPDATE_NODE})
 public class VirtualCloudNode extends AbstractNodeType {
 	private static final Logger logger = LoggerFactory.getLogger(VirtualCloudNode.class);
 
 	protected static final String REMOVE_NODE = "RemoveNode";
 	protected static final String ADD_NODE = "AddNode";
+	protected static final String UPDATE_NODE = "UpdateNode";
 
 	private Server server;
 	protected KevoreeNodeManager kevoreeNodeManager;
@@ -65,10 +67,11 @@ public class VirtualCloudNode extends AbstractNodeType {
 		String port = (String) this.getDictionary().get("port");
 		int portint = Integer.parseInt(port);
 
-		Service<HttpRequest, HttpResponse> myService = new HttpServer.Respond(this.getModelService(),kevoreeNodeManager);
-		server = ServerBuilder
-				.safeBuild(myService, ServerBuilder.get().codec(Http.get()).bindTo(new InetSocketAddress(portint))
-						.name(this.getNodeName()));
+		Service<HttpRequest, HttpResponse> myService = new HttpServer.Respond(this.getModelService(),
+				kevoreeNodeManager);
+		server = ServerBuilder.safeBuild(myService, ServerBuilder.get().codec(Http.get())
+				.bindTo(new InetSocketAddress(portint))
+				.name(this.getNodeName()));
 
 		Helper.setModelHandlerServvice(this.getModelService());
 		Helper.setNodeName(this.getNodeName());
@@ -86,16 +89,19 @@ public class VirtualCloudNode extends AbstractNodeType {
 		logger.debug("starting kompare...");
 		AdaptationPrimitiveType removeNodeType = null;
 		AdaptationPrimitiveType addNodeType = null;
+		AdaptationPrimitiveType updateNodeType = null;
 		// looking for managed AdaptationPrimitiveType
 		for (AdaptationPrimitiveType primitiveType : current.getAdaptationPrimitiveTypes()) {
 			if (primitiveType.getName().equals(REMOVE_NODE)) {
 				removeNodeType = primitiveType;
 			} else if (primitiveType.getName().equals(ADD_NODE)) {
 				addNodeType = primitiveType;
+			} else if (primitiveType.getName().equals(UPDATE_NODE)) {
+				updateNodeType = primitiveType;
 			}
 		}
 
-		if (removeNodeType == null || addNodeType == null) {
+		if (removeNodeType == null || addNodeType == null || updateNodeType == null) {
 			for (AdaptationPrimitiveType primitiveType : target.getAdaptationPrimitiveTypes()) {
 				if (primitiveType.getName().equals(REMOVE_NODE)) {
 					removeNodeType = primitiveType;
@@ -109,6 +115,9 @@ public class VirtualCloudNode extends AbstractNodeType {
 		}
 		if (addNodeType == null) {
 			logger.warn("there is no adaptation primitive for " + ADD_NODE);
+		}
+		if (updateNodeType == null) {
+			logger.warn("there is no adaptation primitive for " + UPDATE_NODE);
 		}
 
 
@@ -126,12 +135,22 @@ public class VirtualCloudNode extends AbstractNodeType {
 					for (ContainerNode node1 : target.getNodes()) {
 						if (subNode.getName().equals(node1.getName())) {
 							found = true;
+							// create UpdateNode command
+							logger.debug("add a " + UPDATE_NODE + " adaptation primitive with " + subNode.getName()
+									+ " as parameter");
+							AdaptationPrimitive command = KevoreeAdaptationFactory.eINSTANCE
+									.createAdaptationPrimitive();
+							command.setPrimitiveType(updateNodeType);
+							command.setRef(subNode);
+							step.getAdaptations().add(command);
+							adaptationModel.getAdaptations().add(command);
 							break;
 						}
 					}
 					if (!found) {
 						// create RemoveNode command
-						logger.debug("add a " + REMOVE_NODE + " adaptation primitive with " + subNode.getName() + " as parameter");
+						logger.debug("add a " + REMOVE_NODE + " adaptation primitive with " + subNode.getName()
+								+ " as parameter");
 						AdaptationPrimitive command = KevoreeAdaptationFactory.eINSTANCE.createAdaptationPrimitive();
 						command.setPrimitiveType(removeNodeType);
 						command.setRef(subNode);
@@ -156,7 +175,8 @@ public class VirtualCloudNode extends AbstractNodeType {
 					}
 					if (!found) {
 						// create AddNode command
-						logger.debug("add a " + ADD_NODE + " adaptation primitive with " + subNode.getName() + " as parameter");
+						logger.debug("add a " + ADD_NODE + " adaptation primitive with " + subNode.getName()
+								+ " as parameter");
 						AdaptationPrimitive command = KevoreeAdaptationFactory.eINSTANCE.createAdaptationPrimitive();
 						command.setPrimitiveType(addNodeType);
 						command.setRef(subNode);
