@@ -65,7 +65,7 @@ public class VirtualCloudNode extends AbstractNodeType {
 		String port = (String) this.getDictionary().get("port");
 		int portint = Integer.parseInt(port);
 
-		Service<HttpRequest, HttpResponse> myService = new HttpServer.Respond(this.getModelService());
+		Service<HttpRequest, HttpResponse> myService = new HttpServer.Respond(this.getModelService(),kevoreeNodeManager);
 		server = ServerBuilder
 				.safeBuild(myService, ServerBuilder.get().codec(Http.get()).bindTo(new InetSocketAddress(portint))
 						.name(this.getNodeName()));

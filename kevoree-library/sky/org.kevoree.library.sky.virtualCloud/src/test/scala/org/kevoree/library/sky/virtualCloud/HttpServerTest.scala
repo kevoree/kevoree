@@ -30,7 +30,7 @@ class HttpServerTest {
   def before() {
     // start HTTP Server
     val port: Int = 7000
-    val myService: Service[HttpRequest, HttpResponse] = new HttpServer.Respond(new KevoreeModelHandlerServicePojo)
+    val myService: Service[HttpRequest, HttpResponse] = new HttpServer.Respond(new KevoreeModelHandlerServicePojo,null)
 
 
     server = ServerBuilder.safeBuild(myService, ServerBuilder.get().codec(Http.get())
