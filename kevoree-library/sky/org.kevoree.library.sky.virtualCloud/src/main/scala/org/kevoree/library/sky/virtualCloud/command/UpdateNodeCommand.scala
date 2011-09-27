@@ -3,6 +3,7 @@ package org.kevoree.library.sky.virtualCloud.command
 import org.kevoree.{ContainerRoot, ContainerNode}
 import org.kevoree.library.sky.virtualCloud.KevoreeNodeManager
 import org.kevoree.framework.{KevoreeXmiHelper, PrimitiveCommand}
+import java.io.File
 
 /**
  * User: Erwan Daubert - erwan.daubert@gmail.com
@@ -15,7 +16,7 @@ import org.kevoree.framework.{KevoreeXmiHelper, PrimitiveCommand}
 
 class UpdateNodeCommand (containerNode: ContainerNode, model: ContainerRoot, kevoreeNodeManager: KevoreeNodeManager)
   extends PrimitiveCommand{
-  val modelBackup = System.getProperty("java.io.tmpdir") + "bootstrap_backup" + containerNode.getName + ".kev"
+  val modelBackup = System.getProperty("java.io.tmpdir") + File.separator + "bootstrap_backup" + containerNode.getName + ".kev"
   def execute (): Boolean  = {
     kevoreeNodeManager.updateNode(containerNode, model, modelBackup)
   }

@@ -16,6 +16,7 @@ import org.kevoree.framework.Constants;
 import org.kevoree.framework.PrimitiveCommand;
 import org.kevoree.library.sky.virtualCloud.command.AddNodeCommand;
 import org.kevoree.library.sky.virtualCloud.command.RemoveNodeCommand;
+import org.kevoree.library.sky.virtualCloud.command.UpdateNodeCommand;
 import org.kevoreeAdaptation.AdaptationModel;
 import org.kevoreeAdaptation.AdaptationPrimitive;
 import org.kevoreeAdaptation.KevoreeAdaptationFactory;
@@ -107,6 +108,8 @@ public class VirtualCloudNode extends AbstractNodeType {
 					removeNodeType = primitiveType;
 				} else if (primitiveType.getName().equals(ADD_NODE)) {
 					addNodeType = primitiveType;
+				} else if (primitiveType.getName().equals(UPDATE_NODE)) {
+					updateNodeType = primitiveType;
 				}
 			}
 		}
@@ -196,12 +199,13 @@ public class VirtualCloudNode extends AbstractNodeType {
 		PrimitiveCommand command = null;
 		if (adaptationPrimitive.getPrimitiveType().getName().equals(REMOVE_NODE)) {
 			command = new RemoveNodeCommand((ContainerNode) adaptationPrimitive.getRef(),
-					(ContainerRoot) (adaptationPrimitive.getRef().eContainer()), kevoreeNodeManager);
+					(ContainerRoot) (((ContainerNode) adaptationPrimitive.getRef()).eContainer()), kevoreeNodeManager);
 		} else if (adaptationPrimitive.getPrimitiveType().getName().equals(ADD_NODE)) {
 			command = new AddNodeCommand((ContainerNode) adaptationPrimitive.getRef(),
-					(ContainerRoot) (adaptationPrimitive.getRef().eContainer()), kevoreeNodeManager);
-		} else if (adaptationPrimitive.getPrimitiveType().getName().equals("UpdateNode")) {
-			// TODO ?
+					(ContainerRoot) (((ContainerNode) adaptationPrimitive.getRef()).eContainer()), kevoreeNodeManager);
+		} else if (adaptationPrimitive.getPrimitiveType().getName().equals(UPDATE_NODE)) {
+			command = new UpdateNodeCommand((ContainerNode) adaptationPrimitive.getRef(),
+					(ContainerRoot) (((ContainerNode) adaptationPrimitive.getRef()).eContainer()), kevoreeNodeManager);
 		}
 		return command;
 	}
