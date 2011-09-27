@@ -41,13 +41,11 @@ object HttpServer {
 
       request.getMethod match {
         case HttpMethod.GET => {
-          println("uri=>" + request.getUri)
           request.getUri match {
             case "/" => sendAdminNodeList(request,this)
             case "/model/current" => sendModel(request)
             case _ => sendError(request)
           }
-
         }
         case HttpMethod.POST => {
           request.getUri match {
@@ -79,9 +77,7 @@ object HttpServer {
         val model = KevoreeXmiHelper.loadStream(new ChannelBufferInputStream(request.getContent))
         val response = new DefaultHttpResponse(HTTP_1_1, OK)
         response.setContent(copiedBuffer("ok thanks for the model ;-)", UTF_8))
-
         handler.updateModel(model)
-
         Future.value(response)
       } catch {
         case _@e => {

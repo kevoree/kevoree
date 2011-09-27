@@ -23,17 +23,18 @@ object VirtualNodeHTMLHelper {
         </ul>
 
         <table class="zebra-striped">
-          <tr>
-            <td>#</td> <td>node</td>
-          </tr>
-
+          <thead><tr>
+            <td>#</td> <td>virtual node</td>
+          </tr></thead>
+          <tbody>
           {manager.getRunners.foreach {elem =>
+            <a href={"nodes/"+elem.nodeName}>
             <tr>
               <td>{manager.getRunners.indexOf(elem)}</td><td>{elem.nodeName}</td>
             </tr>
-          }
-         }
-
+            </a>
+          }}
+          </tbody>
         </table>
 
       </body>
