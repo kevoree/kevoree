@@ -84,11 +84,12 @@ public class EmbeddedFelix {
                 try {
                     logger.debug("Stopping OSGi Embedded Framework");
                     if (m_fwk != null) {
+                        EmbeddedActivators.getBootstrapActivator().stop(m_fwk.getBundleContext());
                         m_fwk.stop();
                         m_fwk.waitForStop(0);
                     }
                 } catch (Exception ex) {
-                    logger.warn("Error stopping framework: " + ex);
+                    logger.warn("Error stopping framework: ", ex);
                 }
             }
         });
