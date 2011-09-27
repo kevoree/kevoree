@@ -34,9 +34,6 @@ public class JavaSENode extends AbstractNodeType {
 	private KevoreeKompareBean kompareBean = null;
 	private BaseDeployOSGi deployBean = null;
 
-	private ServiceRegistration sendModel;
-	private ServiceRegistration backupModel;
-
 
 	@Start
 	@Override
@@ -45,20 +42,12 @@ public class JavaSENode extends AbstractNodeType {
 		Bundle bundle = (Bundle) this.getDictionary().get("osgi.bundle");
 		deployBean = new BaseDeployOSGi(bundle);
 
-		// Register the command service for felix shell
-		sendModel = bundle.getBundleContext().registerService(
-				org.apache.felix.shell.Command.class.getName(),
-				new SendModelFelixCommand(this.getModelService()), null);
-		backupModel = bundle.getBundleContext().registerService(
-				org.apache.felix.shell.Command.class.getName(),
-				new BackupModelFelixCommand(this.getModelService()), null);
+
 	}
 
 	@Stop
 	@Override
 	public void stopNode () {
-		sendModel.unregister();
-		backupModel.unregister();
 
 		kompareBean = null;
 		deployBean = null;
