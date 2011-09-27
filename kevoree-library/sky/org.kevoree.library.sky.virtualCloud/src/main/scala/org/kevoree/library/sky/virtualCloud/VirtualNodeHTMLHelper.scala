@@ -31,11 +31,9 @@ object VirtualNodeHTMLHelper {
             var result : List[scala.xml.Elem] = List()
             manager.getRunners.foreach {elem =>
              result = result ++ List(
-            <a href={"nodes/"+elem.nodeName}>
             <tr>
-              <td>{manager.getRunners.indexOf(elem)}</td><td>{elem.nodeName}</td>
+              <td>{manager.getRunners.indexOf(elem)}</td><td><a href={"nodes/"+elem.nodeName}>{elem.nodeName}</a></td>
             </tr>
-            </a>
              )
           }
             result
