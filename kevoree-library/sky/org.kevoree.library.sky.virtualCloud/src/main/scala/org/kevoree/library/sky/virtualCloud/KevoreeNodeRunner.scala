@@ -35,7 +35,10 @@ class KevoreeNodeRunner (var nodeName: String, bootStrapModel: String) {
   private var errorStreamReader: Thread = null
 
   private var outFile: File = null
+  def getOutFile = outFile
+
   private var errFile: File = null
+  def getErrFile = errFile
 
   def startNode (): Boolean = {
     try {
