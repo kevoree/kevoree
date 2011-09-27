@@ -15,6 +15,7 @@ package org.kevoree.library.sky.virtualCloud
  */
 
 import com.twitter.finagle.Service
+import http.AdminRespond
 import org.jboss.netty.handler.codec.http._
 import org.jboss.netty.handler.codec.http.HttpResponseStatus._
 import org.jboss.netty.handler.codec.http.HttpVersion.HTTP_1_1
@@ -26,29 +27,45 @@ import org.jboss.netty.buffer.ChannelBufferInputStream
 import org.kevoree.api.service.core.handler.KevoreeModelHandlerService
 import java.io.ByteArrayOutputStream
 import org.slf4j.{LoggerFactory, Logger}
+
 object HttpServer {
 
   private val logger: Logger = LoggerFactory.getLogger(HttpServer.getClass)
 
-  /**
-   * The service itself. Simply echos back "hello world"
-   */
-  class Respond (handler: KevoreeModelHandlerService) extends Service[HttpRequest, HttpResponse] {
-    def apply (request: HttpRequest) : Future[DefaultHttpResponse] = {
-      if (request.getMethod == HttpMethod.GET && request.getUri.endsWith("/model/current")) {
-        logger.debug("sendModel request")
-        sendModel(request)
-      } else if (request.getMethod == HttpMethod.POST && request.getUri.endsWith("/model/current")) {
-        logger.debug("receiveModel request")
-        receiveModel(request)
-      } else {
-        val response = new DefaultHttpResponse(HTTP_1_1, BAD_REQUEST)
-        response.setContent(copiedBuffer("Unknown request", UTF_8))
-        Future.value(response)
+  class Respond(handler: KevoreeModelHandlerService,nodeManager : KevoreeNodeManager) extends Service[HttpRequest, HttpResponse] with AdminRespond {
+
+    def getNodeManager = nodeManager
+      def createBufferFromString(content : String)= copiedBuffer(content.getBytes("UTF-8"))
+
+    def apply(request: HttpRequest): Future[DefaultHttpResponse] = {
+
+      request.getMethod match {
+        case HttpMethod.GET => {
+          println("uri=>" + request.getUri)
+          request.getUri match {
+            case "/" => sendAdminNodeList(request,this)
+            case "/model/current" => sendModel(request)
+            case _ => sendError(request)
+          }
+
+        }
+        case HttpMethod.POST => {
+          request.getUri match {
+            case "/model/current" => receiveModel(request)
+            case _ => sendError(request)
+          }
+        }
       }
     }
 
-    private def sendModel (request: HttpRequest): Future[DefaultHttpResponse] = {
+
+    private def sendError(request: HttpRequest): Future[DefaultHttpResponse] = {
+      val response = new DefaultHttpResponse(HTTP_1_1, BAD_REQUEST)
+      response.setContent(copiedBuffer("Unknown request", UTF_8))
+      Future.value(response)
+    }
+
+    private def sendModel(request: HttpRequest): Future[DefaultHttpResponse] = {
       val response = new DefaultHttpResponse(HTTP_1_1, OK)
       val output = new ByteArrayOutputStream
       val model = handler.getLastModel
@@ -57,7 +74,7 @@ object HttpServer {
       Future.value(response)
     }
 
-    private def receiveModel (request: HttpRequest): Future[DefaultHttpResponse] = {
+    private def receiveModel(request: HttpRequest): Future[DefaultHttpResponse] = {
       try {
         val model = KevoreeXmiHelper.loadStream(new ChannelBufferInputStream(request.getContent))
         val response = new DefaultHttpResponse(HTTP_1_1, OK)
