@@ -6,12 +6,12 @@
     <artifactId>org.kevoree.tools.annotation.generator</artifactId>
     <packaging>jar</packaging>
     <name>Kevoree :: Tools :: Annotation Generator</name>
-    <version>1.3.0-SNAPSHOT</version>
+    <version>1.4.0-SNAPSHOT</version>
 
     <parent>
         <artifactId>org.kevoree.tools.root</artifactId>
         <groupId>org.kevoree.tools</groupId>
-        <version>1.3.0-SNAPSHOT</version>
+        <version>1.4.0-SNAPSHOT</version>
         <relativePath>../org.kevoree.tools.root/pom.xml</relativePath>
     </parent>
 
