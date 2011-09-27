@@ -33,8 +33,8 @@ class KevoreeNodeRunner (var nodeName: String, bootStrapModel: String) {
   private var errorStreamReader: Thread = null
   //  private val platformClass: String = "org.kevoree.platform.osgi.standalone.App"
 
-  //  private val LogFileErr: File = null
-  //  private val LogFileout: File = null
+    private var outFile: File = null
+    private var errFile: File = null
 
   def startNode (): Boolean = {
     try {
@@ -43,14 +43,16 @@ class KevoreeNodeRunner (var nodeName: String, bootStrapModel: String) {
 
       if (Helper.getJarPath != null) {
 
+        logger.debug("use bootstrap model path => "+bootStrapModel)
+
         nodePlatformProcess = Runtime.getRuntime
           .exec(Array[String](java, "-Dnode.bootstrap=\"" + bootStrapModel + "\"", "-Dnode.name=" + nodeName, "-jar",
                                Helper.getJarPath))
 
         outputStreamReader = new Thread {
-          val file = new File(System.getProperty("java.io.tmpdir") + File.separator + "sysout" + nodeName + ".log")
-          val logStream: OutputStream = new FileOutputStream(file)
-          logger.debug(file.getAbsolutePath + " is used as a log file")
+          outFile = new File(System.getProperty("java.io.tmpdir") + File.separator + "sysout" + nodeName + ".log")
+          val logStream: OutputStream = new FileOutputStream(outFile)
+          logger.debug(outFile.getAbsolutePath + " is used as a log file")
 
           override def run () {
             try {
@@ -62,7 +64,7 @@ class KevoreeNodeRunner (var nodeName: String, bootStrapModel: String) {
               }
             } catch {
               case _@e => {
-                logger.debug("Stream has been closed, we close " + file.getAbsolutePath + "too")
+                logger.debug("Stream has been closed, we close " + outFile.getAbsolutePath + "too")
               }
             } finally {
               logStream.flush()
@@ -73,9 +75,9 @@ class KevoreeNodeRunner (var nodeName: String, bootStrapModel: String) {
           private val stream: InputStream = nodePlatformProcess.getInputStream
         }
         errorStreamReader = new Thread {
-          val file = new File(System.getProperty("java.io.tmpdir") + File.separator + "syserr" + nodeName + ".log")
-          val logStream: OutputStream = new FileOutputStream(file)
-          logger.debug(file.getAbsolutePath + " is used as a log file")
+          errFile = new File(System.getProperty("java.io.tmpdir") + File.separator + "syserr" + nodeName + ".log")
+          val logStream: OutputStream = new FileOutputStream(errFile)
+          logger.debug(errFile.getAbsolutePath + " is used as a log file")
 
           override def run () {
             try {
@@ -88,7 +90,7 @@ class KevoreeNodeRunner (var nodeName: String, bootStrapModel: String) {
               }
             } catch {
               case _@e => {
-                logger.debug("Stream has been closed, we close " + file.getAbsolutePath + "too")
+                logger.debug("Stream has been closed, we close " + errFile.getAbsolutePath + "too")
               }
             } finally {
               logStream.flush()

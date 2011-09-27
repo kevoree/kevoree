@@ -58,7 +58,9 @@ class KevoreeNodeManager(node : VirtualCloudNode) extends DaemonActor {
     val newRunner = new KevoreeNodeRunner(containerNode.getName, Helper.saveModelOnFile(model))
     val result = newRunner.startNode()
     if (result) {
-      runnners = runnners :+ newRunner
+      runnners = runnners ++ List(newRunner)
+    } else {
+      logger.error("Can't start node")
     }
     result
   }
@@ -69,7 +71,7 @@ class KevoreeNodeManager(node : VirtualCloudNode) extends DaemonActor {
       case None => // we do nothing because there is no node with this name
       case Some(runner) => {
         runner.stopKillNode()
-        runnners = runnners -- List(runner)
+        runnners = runnners.filterNot(r => r == runner)
       }
     }
     true

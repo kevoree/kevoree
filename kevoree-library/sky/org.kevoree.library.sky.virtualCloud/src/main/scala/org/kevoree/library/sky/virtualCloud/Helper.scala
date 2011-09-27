@@ -41,11 +41,7 @@ object Helper {
   }
 
   def saveModelOnFile (bootStrapModel: ContainerRoot): String = {
-    val file = new File(System.getProperty("java.io.tmpdir") + File.separator + "bootstrap.kev")
-    if (!file.exists) {
-      //file.delete
-      file.createNewFile()
-    }
+    val file = File.createTempFile("kevoreeTemp","bootstrap.kev")
 
     KevoreeXmiHelper.save(file.getAbsolutePath, bootStrapModel)
     file.getAbsolutePath
@@ -70,10 +66,7 @@ object Helper {
       deployUnit.setUnitName("org.kevoree.platform.osgi.standalone")
       logger.debug("before trying to get the version platform jar...")
       deployUnit.setVersion(getVersion())
-      logger.debug("WTF1")
       model.getDeployUnits.add(deployUnit)
-      logger.debug("WTF2")
-
       logger.debug("before trying to get the platform jar on maven...")
       val jarFile: File = AetherUtil.resolveDeployUnit(deployUnit)
       logger.debug("after trying to get the platform jar on maven...")
