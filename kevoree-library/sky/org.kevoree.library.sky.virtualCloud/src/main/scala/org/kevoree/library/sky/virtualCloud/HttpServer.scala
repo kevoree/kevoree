@@ -27,6 +27,7 @@ import org.jboss.netty.buffer.ChannelBufferInputStream
 import org.kevoree.api.service.core.handler.KevoreeModelHandlerService
 import java.io.ByteArrayOutputStream
 import org.slf4j.{LoggerFactory, Logger}
+import util.matching.Regex
 
 object HttpServer {
 
@@ -37,6 +38,9 @@ object HttpServer {
     def getNodeManager = nodeManager
       def createBufferFromString(content : String)= copiedBuffer(content.getBytes("UTF-8"))
 
+    val NodeSubRequest = new Regex("/nodes/(.+)/(.+)")
+    val NodeHomeRequest = new Regex("/nodes/(.+)")
+
     def apply(request: HttpRequest): Future[DefaultHttpResponse] = {
 
       request.getMethod match {
@@ -44,6 +48,8 @@ object HttpServer {
           request.getUri match {
             case "/" => sendAdminNodeList(request,this)
             case "/model/current" => sendModel(request)
+            case NodeSubRequest(nodeName,fluxName)=> sendNodeFlux(fluxName,nodeName,request,this)
+            case NodeHomeRequest(nodeName)=> sendNodeHome(nodeName,request,this)
             case _ => sendError(request)
           }
         }
