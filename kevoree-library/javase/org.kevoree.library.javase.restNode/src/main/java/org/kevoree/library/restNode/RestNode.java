@@ -66,7 +66,7 @@ public class RestNode extends JavaSENode {
         remoteBean.stop();
         remoteBean = null;
 
-        super.startNode();
+        super.stopNode();
     }
 
     @Override
