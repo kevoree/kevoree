@@ -28,6 +28,12 @@ import java.util.List;
  */
 public class EmbeddedActivators {
 
+    public static BundleActivator getBootstrapActivator() {
+        return bta;
+    }
+
+    static BundleActivator bta =  new org.kevoree.platform.osgi.standalone.BootstrapActivator();
+
     private static List<BundleActivator> activators = Arrays.asList(
 
             (BundleActivator)new org.apache.felix.shell.impl.Activator(),
@@ -35,7 +41,7 @@ public class EmbeddedActivators {
             //(BundleActivator)new org.apache.felix.shell.remote.Activator(),
             //(BundleActivator) new org.ops4j.pax.url.mvn.internal.Activator(),
             (BundleActivator) new org.ops4j.pax.url.assembly.internal.Activator(),
-            (BundleActivator) new org.kevoree.platform.osgi.standalone.BootstrapActivator()
+            bta
             );
 
 
@@ -43,8 +49,12 @@ public class EmbeddedActivators {
         return activators;
     }
 
+
     public static void setActivators(List<BundleActivator> newActs) {
         activators = newActs;
+    }
+    public static void setBootstrapActivator(BundleActivator _bta){
+       bta = _bta;
     }
 
 
