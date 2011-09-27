@@ -150,6 +150,7 @@ public class KevoreeGUIFrame extends JFrame {
                                 }.start();
                             }
                         });
+
                         felix.run();
                     }
                 }.start();
