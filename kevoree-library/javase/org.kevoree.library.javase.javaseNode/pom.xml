@@ -27,6 +27,11 @@
             <artifactId>org.kevoree.kompare</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.apache.felix</groupId>
+            <artifactId>org.apache.felix.shell</artifactId>
+            <version>1.4.1</version>
+        </dependency>
     </dependencies>
 
     <build>
@@ -41,8 +46,8 @@
                     <instructions>
                         <Private-Package>javax.jmdns.*</Private-Package>
                         <DynamicImport-Package>*</DynamicImport-Package>
-                        <Export-Package>org.kevoree.library.defaultNodeTypes.*</Export-Package>
-                        <Import-Package>!org.kevoree.library.defaultNodeTypes.*,*</Import-Package>
+                        <Export-Package>org.kevoree.library.defaultNodeTypes.*, !org.apache.felix.shell.*</Export-Package>
+                        <Import-Package>!org.kevoree.library.defaultNodeTypes.*,org.apache.felix.shell.*,*</Import-Package>
                     </instructions>
                 </configuration>
             </plugin>
