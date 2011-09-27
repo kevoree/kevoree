@@ -32,6 +32,7 @@ import org.kevoree.remote.rest.Handler;
 import org.kevoree.remote.rest.KevoreeRemoteBean;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.ServiceRegistration;
 import org.osgi.service.packageadmin.PackageAdmin;
 import org.osgi.service.startlevel.StartLevel;
 import org.slf4j.Logger;
@@ -46,33 +47,36 @@ public class BootstrapActivator implements BundleActivator {
     /* Bootstrap Model to init default nodeType */
     private ContainerRoot bootstrapModel = null;
 
+    private ServiceRegistration sendModel;
+    private ServiceRegistration backupModel;
+
     public void setBootstrapModel(ContainerRoot bmodel) {
         bootstrapModel = bmodel;
     }
 
     private KevoreeCoreBean coreBean = null;
-   // private KevoreeRemoteBean remoteBean = null;
+    // private KevoreeRemoteBean remoteBean = null;
 
     Logger logger = LoggerFactory.getLogger(BootstrapActivator.class);
 
     @Override
     public void start(BundleContext context) throws Exception {
         try {
-        //    KevoreeDeployManager contextDeploy = new KevoreeDeployManager();
-        //    contextDeploy.setBundle(context.getBundle());
-         //   contextDeploy.setBundleContext(context);
+            //    KevoreeDeployManager contextDeploy = new KevoreeDeployManager();
+            //    contextDeploy.setBundle(context.getBundle());
+            //   contextDeploy.setBundleContext(context);
 
-         //   PackageAdmin paAdmin = (PackageAdmin) context.getService(context.getServiceReferences(PackageAdmin.class.getName(), null)[0]);
-         //   contextDeploy.setServicePackageAdmin(paAdmin);
-         //   StartLevel serviceLevel = (StartLevel) context.getService(context.getServiceReferences(StartLevel.class.getName(), null)[0]);
-         //   contextDeploy.setStartLevelServer(serviceLevel);
+            //   PackageAdmin paAdmin = (PackageAdmin) context.getService(context.getServiceReferences(PackageAdmin.class.getName(), null)[0]);
+            //   contextDeploy.setServicePackageAdmin(paAdmin);
+            //   StartLevel serviceLevel = (StartLevel) context.getService(context.getServiceReferences(StartLevel.class.getName(), null)[0]);
+            //   contextDeploy.setStartLevelServer(serviceLevel);
 
             KevoreeConfigServiceBean configBean = new KevoreeConfigServiceBean();
             coreBean = new KevoreeCoreBean();
             coreBean.setBundleContext(context);
             coreBean.setConfigService((ConfigurationService) configBean);
-           // coreBean.setKompareService((ModelKompareService) kompareBean);
-          //  coreBean.setDeployService((KevoreeAdaptationDeployService) deployBean);
+            // coreBean.setKompareService((ModelKompareService) kompareBean);
+            //  coreBean.setDeployService((KevoreeAdaptationDeployService) deployBean);
             coreBean.start();
 
             //Kevoree script
@@ -83,11 +87,11 @@ public class BootstrapActivator implements BundleActivator {
 
             System.out.println("Kevoree Started !");
 
-           // Handler.setModelhandler((KevoreeModelHandlerService) coreBean);
+            // Handler.setModelhandler((KevoreeModelHandlerService) coreBean);
 
-           // remoteBean = new KevoreeRemoteBean();
-           // remoteBean.start();
-           // System.out.println("Kevoree Remote Started !");
+            // remoteBean = new KevoreeRemoteBean();
+            // remoteBean.start();
+            // System.out.println("Kevoree Remote Started !");
 
 
             /* Boot strap */
@@ -116,6 +120,15 @@ public class BootstrapActivator implements BundleActivator {
             }
 
 
+            // Register the command service for felix shell
+            sendModel = context.getBundle().getBundleContext().registerService(
+                    org.apache.felix.shell.Command.class.getName(),
+                    new SendModelFelixCommand(coreBean), null);
+            backupModel = context.getBundle().getBundleContext().registerService(
+                    org.apache.felix.shell.Command.class.getName(),
+                    new BackupModelFelixCommand(coreBean), null);
+
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -124,6 +137,10 @@ public class BootstrapActivator implements BundleActivator {
 
     @Override
     public void stop(BundleContext context) throws Exception {
+
+        sendModel.unregister();
+        backupModel.unregister();
+
         //remoteBean.stop();
         coreBean.stop();
     }
