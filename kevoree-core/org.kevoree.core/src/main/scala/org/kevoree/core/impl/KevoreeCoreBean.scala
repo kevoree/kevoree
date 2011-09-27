@@ -62,7 +62,7 @@ class KevoreeCoreBean extends KevoreeModelHandlerService with KevoreeActor {
                 nodeInstance = ist;
                 nodeInstance.startNode()
               }
-              case None => logger.error("Node instance name " + nodeName + " not found in bootstrap model !")
+              case None => logger.error("TypeDef installation fail !")
             }
           }
           case None => logger.error("Node instance name " + nodeName + " not found in bootstrap model !")
@@ -135,6 +135,7 @@ class KevoreeCoreBean extends KevoreeModelHandlerService with KevoreeActor {
       }
       try {
         nodeInstance.stopNode()
+        nodeInstance == null
       } catch {
         case _@e => {
           logger.error("Error while stopping node instance ", e)

@@ -75,7 +75,7 @@ public class BootstrapActivator implements BundleActivator {
       //  remoteBean = new KevoreeRemoteBean();
        // remoteBean.start();
 
-        System.out.println("Kevoree Remote Started !");
+      //  System.out.println("Kevoree Remote Started !");
 
 
         //Bootstrap model phase
