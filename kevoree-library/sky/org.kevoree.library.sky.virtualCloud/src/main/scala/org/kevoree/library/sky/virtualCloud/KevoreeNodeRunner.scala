@@ -34,7 +34,10 @@ class KevoreeNodeRunner (var nodeName: String, bootStrapModel: String) {
   //  private val platformClass: String = "org.kevoree.platform.osgi.standalone.App"
 
   private var outFile: File = null
+  def getOutFile = outFile
+
   private var errFile: File = null
+  def getErrFile = errFile
 
   def startNode (): Boolean = {
     try {
