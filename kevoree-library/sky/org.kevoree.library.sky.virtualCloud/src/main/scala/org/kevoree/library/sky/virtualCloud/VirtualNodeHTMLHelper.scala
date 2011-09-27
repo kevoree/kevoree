@@ -31,8 +31,20 @@ object VirtualNodeHTMLHelper {
                  <div class="alert-message block-message info">
                    {
                      streamName match {
-                       case "out" => Source.fromFile(runner.getOutFile).getLines().mkString("<br />")
-                       case "err" => Source.fromFile(runner.getErrFile).getLines().mkString("<br />")
+                       case "out" => {
+                         var subresult : List[scala.xml.Elem] = List()
+                         Source.fromFile(runner.getOutFile).getLines().toList.reverse.foreach{ line =>
+                            subresult = subresult ++ List(<p>{line}</p>)
+                         }
+                         subresult
+                       }
+                       case "err" => {
+                         var subresult : List[scala.xml.Elem] = List()
+                         Source.fromFile(runner.getErrFile).getLines().toList.reverse.foreach{ line =>
+                            subresult = subresult ++ List(<p>{line}</p>)
+                         }
+                         subresult
+                       }
                        case _ => "unknow stream"
                      }
                    }
@@ -97,6 +109,7 @@ object VirtualNodeHTMLHelper {
           <link rel="stylesheet" href="http://twitter.github.com/bootstrap/1.3.0/bootstrap.min.css"/>
       </head>
       <body>
+        <img height="200px" src="http://s3.amazonaws.com/files.posterous.com/headers/3005281/scaled500.png" />
         <ul class="breadcrumb">
           <li class="active">
             <a href="/">Home</a> <span class="divider">/</span>
@@ -113,7 +126,7 @@ object VirtualNodeHTMLHelper {
             manager.getRunners.foreach {elem =>
              result = result ++ List(
             <tr>
-              <td>{manager.getRunners.indexOf(elem)}</td><td><a href={"nodes/"+elem.nodeName}>{elem.nodeName}</a></td>
+              <td>{manager.getRunners.indexOf(elem)}</td><td><a href={"nodes/"+elem.nodeName}><span class="label notice">{elem.nodeName}</span></a></td>
             </tr>
              )
           }
