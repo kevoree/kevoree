@@ -19,6 +19,7 @@ import org.slf4j.LoggerFactory
 import java.io._
 import java.lang.Thread
 import actors.{OutputChannel, TIMEOUT, Actor}
+import util.matching.Regex
 
 /**
  * User: Erwan Daubert - erwan.daubert@gmail.com
@@ -35,9 +36,11 @@ class KevoreeNodeRunner (var nodeName: String, bootStrapModel: String) {
   private var errorStreamReader: Thread = null
 
   private var outFile: File = null
+
   def getOutFile = outFile
 
   private var errFile: File = null
+
   def getErrFile = errFile
 
   def startNode (): Boolean = {
@@ -151,6 +154,8 @@ class KevoreeNodeRunner (var nodeName: String, bootStrapModel: String) {
 
   def updateNode (model: String, modelBackup: String): Boolean = {
     nodePlatformProcess.getOutputStream.write(("backupModel " + modelBackup + "\n").getBytes)
+    nodePlatformProcess.getOutputStream.flush()
+    Thread.sleep(200)
     nodePlatformProcess.getOutputStream.write(("sendModel " + model + "\n").getBytes)
     nodePlatformProcess.getOutputStream.flush()
     val updateNode = new UpdateNode
@@ -163,7 +168,6 @@ class KevoreeNodeRunner (var nodeName: String, bootStrapModel: String) {
 
     actor.manage()
   }
-
 
   private def getJava: String = {
     val java_home: String = System.getProperty("java.home")
@@ -183,9 +187,11 @@ class KevoreeNodeRunner (var nodeName: String, bootStrapModel: String) {
       val reader = new BufferedReader(new FileReader(outFile))
       var line = reader.readLine()
       while (running && line != null) {
+
+        val regex = new Regex("""End deploy result=true-[0-9]*""")
         line match {
           //End deploy result=true-1692
-          case "End deploy result=true-[0-9]*" => actor.done(true); running = false
+          case regex() => actor.done(true); running = false
           case "Error while update" => actor.done(false); running = false
           case _ => line = reader.readLine()
         }
@@ -217,13 +223,15 @@ class KevoreeNodeRunner (var nodeName: String, bootStrapModel: String) {
 
     def act () {
       react {
+        case STOP() => this.exit()
         case MANAGE() => {
           val firstSender = this.sender
           reactWithin(timeout) {
             case STOP() => this.exit()
             case DONE(exitValue) => firstSender ! Some(exitValue)
             case TIMEOUT => {
-              updateNode.running = false; firstSender ! Some(false)
+              updateNode.running = false
+              firstSender ! Some(false)
             }
           }
         }

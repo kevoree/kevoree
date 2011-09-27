@@ -138,15 +138,6 @@ public class VirtualCloudNode extends AbstractNodeType {
 					for (ContainerNode node1 : target.getNodes()) {
 						if (subNode.getName().equals(node1.getName())) {
 							found = true;
-							// create UpdateNode command
-							logger.debug("add a " + UPDATE_NODE + " adaptation primitive with " + subNode.getName()
-									+ " as parameter");
-							AdaptationPrimitive command = KevoreeAdaptationFactory.eINSTANCE
-									.createAdaptationPrimitive();
-							command.setPrimitiveType(updateNodeType);
-							command.setRef(subNode);
-							step.getAdaptations().add(command);
-							adaptationModel.getAdaptations().add(command);
 							break;
 						}
 					}
@@ -157,8 +148,11 @@ public class VirtualCloudNode extends AbstractNodeType {
 						AdaptationPrimitive command = KevoreeAdaptationFactory.eINSTANCE.createAdaptationPrimitive();
 						command.setPrimitiveType(removeNodeType);
 						command.setRef(subNode);
-						step.getAdaptations().add(command);
+						ParallelStep subStep = KevoreeAdaptationFactory.eINSTANCE.createParallelStep();
+						subStep.getAdaptations().add(command);
 						adaptationModel.getAdaptations().add(command);
+						step.setNextStep(subStep);
+						step = subStep;
 					}
 				}
 			}
@@ -173,6 +167,18 @@ public class VirtualCloudNode extends AbstractNodeType {
 					for (ContainerNode node1 : current.getNodes()) {
 						if (subNode.getName().equals(node1.getName())) {
 							found = true;
+							// create UpdateNode command
+							logger.debug("add a " + UPDATE_NODE + " adaptation primitive with " + subNode.getName()
+									+ " as parameter");
+							AdaptationPrimitive command = KevoreeAdaptationFactory.eINSTANCE
+									.createAdaptationPrimitive();
+							command.setPrimitiveType(updateNodeType);
+							command.setRef(subNode);
+							ParallelStep subStep = KevoreeAdaptationFactory.eINSTANCE.createParallelStep();
+							subStep.getAdaptations().add(command);
+							adaptationModel.getAdaptations().add(command);
+							step.setNextStep(subStep);
+							step = subStep;
 							break;
 						}
 					}
@@ -183,8 +189,11 @@ public class VirtualCloudNode extends AbstractNodeType {
 						AdaptationPrimitive command = KevoreeAdaptationFactory.eINSTANCE.createAdaptationPrimitive();
 						command.setPrimitiveType(addNodeType);
 						command.setRef(subNode);
-						step.getAdaptations().add(command);
+						ParallelStep subStep = KevoreeAdaptationFactory.eINSTANCE.createParallelStep();
+						subStep.getAdaptations().add(command);
 						adaptationModel.getAdaptations().add(command);
+						step.setNextStep(subStep);
+						step = subStep;
 					}
 				}
 			}

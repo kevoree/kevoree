@@ -41,7 +41,7 @@ object Helper {
   }
 
   def saveModelOnFile (bootStrapModel: ContainerRoot): String = {
-    val file = File.createTempFile("kevoreeTemp","bootstrap.kev")
+    val file = File.createTempFile("kevoreeTemp", "bootstrap.kev")
 
     KevoreeXmiHelper.save(file.getAbsolutePath, bootStrapModel)
     file.getAbsolutePath
@@ -88,7 +88,7 @@ object Helper {
     prop.load(stream)
     prop.getProperty("version")*/
 
-   /* logger.debug("WTF0")
+    /* logger.debug("WTF0")
     modelHandlerService.getLastModel.getNodes.find(n => n.getName == nodeName) match {
       case None => "1.0.0"
       case Some(n) => n.getTypeDefinition.getDeployUnits.get(0).getVersion
