@@ -33,8 +33,8 @@ class KevoreeNodeRunner (var nodeName: String, bootStrapModel: String) {
   private var errorStreamReader: Thread = null
   //  private val platformClass: String = "org.kevoree.platform.osgi.standalone.App"
 
-    private var outFile: File = null
-    private var errFile: File = null
+  private var outFile: File = null
+  private var errFile: File = null
 
   def startNode (): Boolean = {
     try {
@@ -43,10 +43,10 @@ class KevoreeNodeRunner (var nodeName: String, bootStrapModel: String) {
 
       if (Helper.getJarPath != null) {
 
-        logger.debug("use bootstrap model path => "+bootStrapModel)
+        logger.debug("use bootstrap model path => " + bootStrapModel)
 
         nodePlatformProcess = Runtime.getRuntime
-          .exec(Array[String](java, "-Dnode.bootstrap=" + bootStrapModel, "-Dnode.name=" + nodeName, "-jar",
+          .exec(Array[String](java, "-Dnode.bootstrap=\"" + bootStrapModel + "\"", "-Dnode.name=" + nodeName, "-jar",
                                Helper.getJarPath))
 
         outputStreamReader = new Thread {
@@ -124,26 +124,19 @@ class KevoreeNodeRunner (var nodeName: String, bootStrapModel: String) {
   def stopKillNode (): Boolean = {
     logger.debug("Kill " + nodeName)
     try {
-      nodePlatformProcess.getOutputStream.write("stop 0\n".getBytes)
+
+      val watchdog = new KillWatchDog(nodePlatformProcess, 20000)
+      nodePlatformProcess.getOutputStream.write("shutdown\n".getBytes)
       nodePlatformProcess.getOutputStream.flush()
-      Thread.sleep(10000)
-      nodePlatformProcess.exitValue
+
+      watchdog.start()
+
+      nodePlatformProcess.waitFor()
+      watchdog.stop()
       true
     }
     catch {
-      case e: IOException => {
-        logger.debug(nodeName + " cannot be killed. Try to force kill...")
-        nodePlatformProcess.destroy()
-        logger.debug(nodeName + " has been forcibly killed")
-        true
-      }
-      case e: InterruptedException => {
-        logger.debug(nodeName + " cannot be killed. Try to force kill...")
-        nodePlatformProcess.destroy()
-        logger.debug(nodeName + " has been forcibly killed")
-        true
-      }
-      case e: IllegalThreadStateException => {
+      case _@e => {
         logger.debug(nodeName + " cannot be killed. Try to force kill...")
         nodePlatformProcess.destroy()
         logger.debug(nodeName + " has been forcibly killed")
@@ -151,6 +144,7 @@ class KevoreeNodeRunner (var nodeName: String, bootStrapModel: String) {
       }
     }
   }
+
 
   private def getJava: String = {
     val java_home: String = System.getProperty("java.home")
