@@ -12,6 +12,7 @@ import java.io.{InputStreamReader, BufferedReader, OutputStreamWriter, ByteArray
 import com.twitter.util.Duration
 import java.util.concurrent.TimeUnit
 import org.junit.{After, Before, Test}
+import util.matching.Regex
 
 /**
  * User: Erwan Daubert - erwan.daubert@gmail.com
@@ -24,13 +25,13 @@ import org.junit.{After, Before, Test}
 
 class HttpServerTest {
 
-  var server : Server = null
+  var server: Server = null
 
   @Before
-  def before() {
+  def before () {
     // start HTTP Server
     val port: Int = 7000
-    val myService: Service[HttpRequest, HttpResponse] = new HttpServer.Respond(new KevoreeModelHandlerServicePojo,null)
+    val myService: Service[HttpRequest, HttpResponse] = new HttpServer.Respond(new KevoreeModelHandlerServicePojo, null)
 
 
     server = ServerBuilder.safeBuild(myService, ServerBuilder.get().codec(Http.get())
@@ -38,12 +39,12 @@ class HttpServerTest {
   }
 
   @After
-  def after() {
+  def after () {
     server.close(Duration.apply(300, TimeUnit.MILLISECONDS))
   }
 
   @Test
-  def sendModelTest() {
+  def sendModelTest () {
     try {
       val outStream: ByteArrayOutputStream = new ByteArrayOutputStream
       val root = KevoreeXmiHelper.loadStream(this.getClass.getClassLoader.getResourceAsStream("sky.kev"))
@@ -66,7 +67,7 @@ class HttpServerTest {
       wr.flush()
       val rd: BufferedReader = new BufferedReader(new InputStreamReader(conn.getInputStream))
       var line: String = rd.readLine
-        println("line = " + line)
+      println("line = " + line)
       while (line != null) {
         line = rd.readLine
         println("line = " + line)
@@ -83,7 +84,7 @@ class HttpServerTest {
   }
 
   @Test
-  def askModelTest() {
+  def askModelTest () {
     try {
       var IP: String = ""
       if (IP == "") {
@@ -98,7 +99,7 @@ class HttpServerTest {
       conn.setConnectTimeout(2000)
       val rd: BufferedReader = new BufferedReader(new InputStreamReader(conn.getInputStream))
       var line: String = rd.readLine
-        println("line = " + line)
+      println("line = " + line)
       while (line != null) {
         line = rd.readLine
         println("line = " + line)
@@ -119,7 +120,9 @@ class HttpServerTest {
 
     def getLastModification = null
 
-    def updateModel (p1: ContainerRoot) {println("update received")}
+    def updateModel (p1: ContainerRoot) {
+      println("update received")
+    }
 
     def atomicUpdateModel (p1: ContainerRoot) = null
 

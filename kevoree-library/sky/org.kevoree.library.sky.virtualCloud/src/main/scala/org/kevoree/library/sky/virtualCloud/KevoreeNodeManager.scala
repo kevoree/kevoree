@@ -97,6 +97,7 @@ class KevoreeNodeManager(node : VirtualCloudNode) extends DaemonActor {
     runnners.find(runner => runner.nodeName == containerNode.getName) match {
       case None => logger.debug(containerNode.getName + " is not available");false
       case Some(runner) => {
+        logger.debug(containerNode.getName + " is available, ask for update")
         runner.updateNode(Helper.saveModelOnFile(model), modelBackup)
       }
     }
