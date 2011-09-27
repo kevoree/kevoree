@@ -22,6 +22,7 @@
 
     <modules>
         <module>../org.kevoree.library.sky.virtualCloud</module>
+        <module>../org.kevoree.library.sky.jclouds</module>
     </modules>
 
 
