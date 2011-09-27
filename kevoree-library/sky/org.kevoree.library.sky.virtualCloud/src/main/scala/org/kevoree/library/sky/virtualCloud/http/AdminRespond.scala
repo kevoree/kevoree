@@ -25,5 +25,18 @@ trait AdminRespond {
     Future.value(response)
   }
 
+  def sendNodeHome(nodeName: String, request: HttpRequest, server: HttpServer.Respond): Future[DefaultHttpResponse] = {
+    val response = new DefaultHttpResponse(HTTP_1_1, OK)
+    val htmlContent = VirtualNodeHTMLHelper.getNodeHomeAsHTML(server.getNodeManager, nodeName)
+    response.setContent(server.createBufferFromString(htmlContent))
+    Future.value(response)
+  }
+
+  def sendNodeFlux(fluxName : String,nodeName: String, request: HttpRequest, server: HttpServer.Respond): Future[DefaultHttpResponse] = {
+    val response = new DefaultHttpResponse(HTTP_1_1, OK)
+    val htmlContent = VirtualNodeHTMLHelper.getNodeStreamAsHTML(server.getNodeManager, nodeName,fluxName)
+    response.setContent(server.createBufferFromString(htmlContent))
+    Future.value(response)
+  }
 
 }
