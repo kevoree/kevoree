@@ -17,6 +17,8 @@ package org.kevoree.library.sky.virtualCloud
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.io._
+import java.lang.Thread
+import actors.{OutputChannel, TIMEOUT, Actor}
 
 /**
  * User: Erwan Daubert - erwan.daubert@gmail.com
@@ -31,7 +33,6 @@ class KevoreeNodeRunner (var nodeName: String, bootStrapModel: String) {
   private var nodePlatformProcess: Process = null
   private var outputStreamReader: Thread = null
   private var errorStreamReader: Thread = null
-  //  private val platformClass: String = "org.kevoree.platform.osgi.standalone.App"
 
   private var outFile: File = null
   private var errFile: File = null
@@ -145,10 +146,88 @@ class KevoreeNodeRunner (var nodeName: String, bootStrapModel: String) {
     }
   }
 
+  def updateNode (model: String, modelBackup: String): Boolean = {
+    nodePlatformProcess.getOutputStream.write(("backupModel " + modelBackup + "\n").getBytes)
+    nodePlatformProcess.getOutputStream.write(("sendModel " + model + "\n").getBytes)
+    nodePlatformProcess.getOutputStream.flush()
+    val updateNode = new UpdateNode
+    val t = new Thread(updateNode)
+    t.start();
+
+    val actor = new UpdateManagementActor(5000, updateNode)
+    updateNode.setUpdateManagementActor(actor)
+    actor.start()
+
+    actor.manage()
+  }
+
 
   private def getJava: String = {
     val java_home: String = System.getProperty("java.home")
     java_home + File.separator + "bin" + File.separator + "java"
   }
+
+  private class UpdateNode extends Runnable {
+
+    var running = true
+    private var actor: UpdateManagementActor = null
+
+    def setUpdateManagementActor (actor: UpdateManagementActor) {
+      this.actor = actor
+    }
+
+    def run () {
+      val reader = new BufferedReader(new FileReader(outFile))
+      var line = reader.readLine()
+      while (running && line != null) {
+        line match {
+          //End deploy result=true-1692
+          case "End deploy result=true-[0-9]*" => actor.done(true); running = false
+          case "Error while update" => actor.done(false); running = false
+          case _ => line = reader.readLine()
+        }
+      }
+    }
+  }
+
+  private class UpdateManagementActor (timeout: Int, updateNode: UpdateNode) extends Actor {
+
+    case class STOP ()
+
+    case class MANAGE ()
+
+    case class DONE (exitValue: Boolean)
+
+    def stop () {
+      this ! STOP()
+    }
+
+    def done (exitValue: Boolean) {
+      this ! DONE(exitValue)
+    }
+
+    def manage (): Boolean = {
+      (this !? MANAGE()).asInstanceOf[Option[Boolean]].get
+    }
+
+    var firstSender = null
+
+    def act () {
+      react {
+        case MANAGE() => {
+          val firstSender = this.sender
+          reactWithin(timeout) {
+            case STOP() => this.exit()
+            case DONE(exitValue) => firstSender ! Some(exitValue)
+            case TIMEOUT => {
+              updateNode.running = false; firstSender ! Some(false)
+            }
+          }
+        }
+
+      }
+    }
+  }
+
 }
 
