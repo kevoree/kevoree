@@ -5,11 +5,11 @@
     <packaging>bundle</packaging>
     <name>Kevoree :: Model</name>
 
-    <version>1.3.0-SNAPSHOT</version>
+    <version>1.4.0-SNAPSHOT</version>
     <parent>
         <artifactId>org.kevoree.root</artifactId>
         <groupId>org.kevoree</groupId>
-        <version>1.3.0-SNAPSHOT</version>
+        <version>1.4.0-SNAPSHOT</version>
         <relativePath>../org.kevoree.root/pom.xml</relativePath>
     </parent>
 
@@ -26,7 +26,7 @@
         <plugins>
             <plugin>
                 <groupId>org.kevoree.extra</groupId>
-                <artifactId>org.kevoree.extra.emf.genmodel.mavenplugin</artifactId>
+                <artifactId>org.kevoree.extra.ecore.gencode.mavenplugin</artifactId>
                 <version>2.7.0</version>
                 <extensions>true</extensions>
                 <executions>
@@ -36,7 +36,7 @@
                         </goals>
                         <configuration>
                             <ecore>metamodel/kevoree.ecore</ecore>
-                            <genmodel>metamodel/kevoree.genmodel</genmodel>
+                            <rootPackage>org</rootPackage>
                             <output>${project.build.directory}/generated-sources/emf</output>
                             <clearOutput>true</clearOutput>
                         </configuration>

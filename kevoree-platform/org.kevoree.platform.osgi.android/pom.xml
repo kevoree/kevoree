@@ -4,12 +4,12 @@
     <artifactId>org.kevoree.platform.osgi.android</artifactId>
     <packaging>jar</packaging>
     <name>Kevoree :: Platform :: OSGI Android</name>
-    <version>1.3.0-SNAPSHOT</version>
+    <version>1.4.0-SNAPSHOT</version>
 
     <parent>
         <artifactId>org.kevoree.platform.root</artifactId>
         <groupId>org.kevoree.platform</groupId>
-        <version>1.3.0-SNAPSHOT</version>
+        <version>1.4.0-SNAPSHOT</version>
         <relativePath>../org.kevoree.platform.root/pom.xml</relativePath>
     </parent>
 
