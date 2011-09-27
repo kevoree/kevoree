@@ -2,6 +2,8 @@ package org.kevoree.channels;
 
 import org.kevoree.annotation.ChannelTypeFragment;
 import org.kevoree.annotation.Library;
+import org.kevoree.annotation.Start;
+import org.kevoree.annotation.Stop;
 import org.kevoree.framework.AbstractChannelFragment;
 import org.kevoree.framework.ChannelFragmentSender;
 import org.kevoree.framework.message.Message;
@@ -17,6 +19,10 @@ import org.kevoree.framework.message.Message;
 @Library(name = "Kevoree-Android-JavaSE")
 @ChannelTypeFragment
 public class BluetoothChannel extends AbstractChannelFragment {
+
+	@Start
+	@Stop
+	public void dummy() {}
 
     @Override
     public Object dispatch(Message message) {
