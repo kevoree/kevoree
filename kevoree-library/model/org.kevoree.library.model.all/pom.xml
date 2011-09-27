@@ -94,6 +94,14 @@
     </build>
 
     <dependencies>
+
+        <!-- Sky computing -->
+        <dependency>
+            <groupId>org.kevoree.library.sky</groupId>
+            <artifactId>org.kevoree.library.sky.virtualCloud</artifactId>
+            <version>${kevoree.version}</version>
+        </dependency>
+
         <!-- Arduino -->
         <dependency>
             <groupId>org.kevoree.library.arduino</groupId>
