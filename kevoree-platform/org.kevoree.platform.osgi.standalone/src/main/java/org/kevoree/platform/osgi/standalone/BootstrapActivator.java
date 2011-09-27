@@ -17,6 +17,7 @@
  */
 package org.kevoree.platform.osgi.standalone;
 
+import org.kevoree.ContainerNode;
 import org.kevoree.ContainerRoot;
 import org.kevoree.KevoreeFactory;
 import org.kevoree.adaptation.deploy.osgi.context.KevoreeDeployManager;
@@ -55,47 +56,23 @@ public class BootstrapActivator implements BundleActivator {
     }
 
     private KevoreeCoreBean coreBean = null;
-    // private KevoreeRemoteBean remoteBean = null;
-
     Logger logger = LoggerFactory.getLogger(BootstrapActivator.class);
+    private Boolean started = false;
 
     @Override
     public void start(BundleContext context) throws Exception {
+        if(started){return;}
         try {
-            //    KevoreeDeployManager contextDeploy = new KevoreeDeployManager();
-            //    contextDeploy.setBundle(context.getBundle());
-            //   contextDeploy.setBundleContext(context);
-
-            //   PackageAdmin paAdmin = (PackageAdmin) context.getService(context.getServiceReferences(PackageAdmin.class.getName(), null)[0]);
-            //   contextDeploy.setServicePackageAdmin(paAdmin);
-            //   StartLevel serviceLevel = (StartLevel) context.getService(context.getServiceReferences(StartLevel.class.getName(), null)[0]);
-            //   contextDeploy.setStartLevelServer(serviceLevel);
-
             KevoreeConfigServiceBean configBean = new KevoreeConfigServiceBean();
             coreBean = new KevoreeCoreBean();
             coreBean.setBundleContext(context);
             coreBean.setConfigService((ConfigurationService) configBean);
-            // coreBean.setKompareService((ModelKompareService) kompareBean);
-            //  coreBean.setDeployService((KevoreeAdaptationDeployService) deployBean);
             coreBean.start();
-
             //Kevoree script
             KevScriptInterpreterService kevScriptBean = new KevScriptInterpreterService(coreBean);
-
             context.registerService(KevoreeModelHandlerService.class.getName(), coreBean, null);
             context.registerService(ScriptInterpreter.class.getName(), kevScriptBean, null);
-
-            System.out.println("Kevoree Started !");
-
-            // Handler.setModelhandler((KevoreeModelHandlerService) coreBean);
-
-            // remoteBean = new KevoreeRemoteBean();
-            // remoteBean.start();
-            // System.out.println("Kevoree Remote Started !");
-
-
             /* Boot strap */
-
             //Bootstrap model phase
             if (bootstrapModel == null) {
                 if (!configBean.getProperty(ConfigConstants.KEVOREE_NODE_BOOTSTRAP()).equals("")) {
@@ -105,6 +82,8 @@ public class BootstrapActivator implements BundleActivator {
                     } catch (Exception e) {
                         logger.error("Bootstrap failed", e);
                     }
+                } else {
+                    bootstrapModel = KevoreeXmiHelper.loadStream(App.class.getClassLoader().getResourceAsStream("defaultLibrary.kev")) ;
                 }
             }
 
@@ -128,6 +107,7 @@ public class BootstrapActivator implements BundleActivator {
                     org.apache.felix.shell.Command.class.getName(),
                     new BackupModelFelixCommand(coreBean), null);
 
+            started = true;
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -137,11 +117,20 @@ public class BootstrapActivator implements BundleActivator {
 
     @Override
     public void stop(BundleContext context) throws Exception {
+        if(!started){return;}
 
-        sendModel.unregister();
-        backupModel.unregister();
+        try {
+            sendModel.unregister();
+            backupModel.unregister();
+        } catch (Exception e) {
+            logger.error("Error while stopping Core ",e);
+        }
+        try {
+            coreBean.stop();
+            started = false;
+        } catch (Exception e) {
+             logger.error("Error while stopping Kevoree Core ",e);
+        }
 
-        //remoteBean.stop();
-        coreBean.stop();
     }
 }
