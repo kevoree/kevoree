@@ -37,8 +37,8 @@ class KevoreeNodeRunner (var nodeName: String, bootStrapModel: String) {
   private var errorStreamReader: Thread = null
 
 
-  val backupRegex = new Regex("<saveRes(.*)/>")
-  val deployRegex = new Regex("<deployRes(.*)/>")
+  val backupRegex = new Regex(".*<saveRes(.*)/>.*")
+  val deployRegex = new Regex(".*<deployRes(.*)/>.*")
   val errorRegex = new Regex(".*Error while update.*")
 
   sealed abstract case class Result ()
