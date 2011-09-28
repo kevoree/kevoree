@@ -30,7 +30,7 @@ object CacheHelper {
 
 
   def cleanFolder(repName: String) {
-    println("clean=" + repName)
+//    println("clean=" + repName)
     val f: java.io.File = new java.io.File(repName)
     cleanFolder(f)
   }
