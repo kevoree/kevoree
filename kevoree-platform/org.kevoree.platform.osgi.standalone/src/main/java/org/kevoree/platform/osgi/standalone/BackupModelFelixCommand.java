@@ -35,15 +35,17 @@ public class BackupModelFelixCommand implements Command {
 
 	private KevoreeModelHandlerService handler;
 
-	public BackupModelFelixCommand(KevoreeModelHandlerService handler) {
+	public BackupModelFelixCommand (KevoreeModelHandlerService handler) {
 		this.handler = handler;
 	}
 
-	public void backupModel (String model) {
+	public boolean backupModel (String model) {
 		try {
 			KevoreeXmiHelper.save(model, handler.getLastModel());
+			return true;
 		} catch (Exception e) {
 			logger.error("Unable to backup model", e);
+			return false;
 		}
 
 	}
@@ -55,7 +57,7 @@ public class BackupModelFelixCommand implements Command {
 
 	@Override
 	public String getUsage () {
-		return "backupModel <model file path>";
+		return "backupModel <model file path> [<token id>]";
 	}
 
 	@Override
@@ -66,10 +68,15 @@ public class BackupModelFelixCommand implements Command {
 	@Override
 	public void execute (String line, PrintStream out, PrintStream err) {
 		StringTokenizer st = new StringTokenizer(line, " ");
-		if (st.countTokens() == 2) {
+		if (st.countTokens() >= 2 && st.countTokens() <= 3) {
 			// Ignore the command name.
 			st.nextToken();
-			backupModel(st.nextToken());
+
+			if (backupModel(st.nextToken())) {
+				if (st.countTokens() == 1) {
+					System.out.println("<saveRes" + st.nextToken() + "/>");
+				}
+			}
 		} else {
 			out.println("Unable to execute command (Invalid number of parameters\n" + "Usage: " + getUsage());
 		}
