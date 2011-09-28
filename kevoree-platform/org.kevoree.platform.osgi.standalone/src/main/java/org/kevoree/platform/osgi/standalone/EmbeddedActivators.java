@@ -18,6 +18,7 @@
 
 package org.kevoree.platform.osgi.standalone;
 
+import org.kevoree.platform.osgi.standalone.shell.ShellActivator;
 import org.osgi.framework.BundleActivator;
 
 import java.util.Arrays;
@@ -34,9 +35,11 @@ public class EmbeddedActivators {
 
     static BundleActivator bta =  new org.kevoree.platform.osgi.standalone.BootstrapActivator();
 
+    static BundleActivator shellA = new ShellActivator();
+
     private static List<BundleActivator> activators = Arrays.asList(
 
-            (BundleActivator)new org.apache.felix.shell.impl.Activator(),
+            shellA,
             (BundleActivator)new org.apache.felix.shell.tui.Activator(),
             //(BundleActivator)new org.apache.felix.shell.remote.Activator(),
             //(BundleActivator) new org.ops4j.pax.url.mvn.internal.Activator(),

@@ -33,10 +33,8 @@ public class App {
 
         EmbeddedFelix felix = new EmbeddedFelix();
         felix.run();
-
         try {
             felix.getM_fwk().waitForStop(0);
-
         } catch (InterruptedException ex) {
             Logger.getLogger(App.class.getName()).log(Level.SEVERE, null, ex);
         }
