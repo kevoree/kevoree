@@ -9,7 +9,7 @@
       <defaultValues attribute="//@typeDefinitions.1/@dictionaryType/@attributes.1" value="false"/>
     </dictionaryType>
   </typeDefinitions>
-  <typeDefinitions xsi:type="kevoree:NodeType" name="VirtualCloudNode" deployUnits="//@deployUnits.2" factoryBean="org.kevoree.library.sky.virtualCloud.VirtualCloudNodeFactory" bean="org.kevoree.library.sky.virtualCloud.VirtualCloudNode" startMethod="startNode" stopMethod="stopNode" managedPrimitiveTypes="//@adaptationPrimitiveTypes.18 //@adaptationPrimitiveTypes.19">
+  <typeDefinitions xsi:type="kevoree:NodeType" name="VirtualCloudNode" deployUnits="//@deployUnits.2" factoryBean="org.kevoree.library.sky.virtualCloud.VirtualCloudNodeFactory" bean="org.kevoree.library.sky.virtualCloud.VirtualCloudNode" startMethod="startNode" stopMethod="stopNode" managedPrimitiveTypes="//@adaptationPrimitiveTypes.18 //@adaptationPrimitiveTypes.19 //@adaptationPrimitiveTypes.20">
     <dictionaryType>
       <attributes name="port"/>
       <defaultValues attribute="//@typeDefinitions.2/@dictionaryType/@attributes.0" value="7000"/>
@@ -20,9 +20,9 @@
   <repositories url="http://maven.kevoree.org/release"/>
   <repositories url="http://maven.kevoree.org/snapshots"/>
   <repositories url="http://repo1.maven.org/maven2"/>
-  <deployUnits groupName="org.kevoree.library.javase" unitName="org.kevoree.library.javase.javaseNode" version="1.3.0-SNAPSHOT" hashcode="201109261845423" targetNodeType="//@typeDefinitions.0"/>
-  <deployUnits groupName="org.kevoree.library.javase" unitName="org.kevoree.library.javase.restNode" version="1.3.0-SNAPSHOT" hashcode="201109261845946" targetNodeType="//@typeDefinitions.0"/>
-  <deployUnits groupName="org.kevoree.library.sky" unitName="org.kevoree.library.sky.virtualCloud" version="1.3.0-SNAPSHOT" hashcode="201109271441337" requiredLibs="//@deployUnits.3" targetNodeType="//@typeDefinitions.2"/>
+  <deployUnits groupName="org.kevoree.library.javase" unitName="org.kevoree.library.javase.javaseNode" version="1.3.0-SNAPSHOT" hashcode="201109281121002" targetNodeType="//@typeDefinitions.0"/>
+  <deployUnits groupName="org.kevoree.library.javase" unitName="org.kevoree.library.javase.restNode" version="1.3.0-SNAPSHOT" hashcode="201109281121102" targetNodeType="//@typeDefinitions.0"/>
+  <deployUnits groupName="org.kevoree.library.sky" unitName="org.kevoree.library.sky.virtualCloud" version="1.3.0-SNAPSHOT" hashcode="201109281124758" requiredLibs="//@deployUnits.3" targetNodeType="//@typeDefinitions.2"/>
   <deployUnits name="org.kevoree.extra.org.kevoree.extra.netty" url="mvn:org.kevoree.extra/org.kevoree.extra.netty/3.2.5" targetNodeType="//@typeDefinitions.2"/>
   <adaptationPrimitiveTypes name="UpdateType"/>
   <adaptationPrimitiveTypes name="UpdateDeployUnit"/>
@@ -44,4 +44,5 @@
   <adaptationPrimitiveTypes name="StopInstance"/>
   <adaptationPrimitiveTypes name="RemoveNode"/>
   <adaptationPrimitiveTypes name="AddNode"/>
+  <adaptationPrimitiveTypes name="UpdateNode"/>
 </kevoree:ContainerRoot>
