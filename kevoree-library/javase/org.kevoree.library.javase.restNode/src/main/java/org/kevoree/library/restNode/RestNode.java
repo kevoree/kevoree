@@ -28,6 +28,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.List;
 
 /**
  * @author ffouquet
@@ -47,7 +48,6 @@ public class RestNode extends JavaSENode {
     @Override
     public void startNode() {
         super.startNode();
-
         Handler.setModelhandler(this.getModelService());
         remoteBean = new KevoreeRemoteBean(this.getDictionary().get("port").toString());
         remoteBean.start();
@@ -65,7 +65,6 @@ public class RestNode extends JavaSENode {
         }
         remoteBean.stop();
         remoteBean = null;
-
         super.stopNode();
     }
 
