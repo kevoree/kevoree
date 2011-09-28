@@ -29,16 +29,17 @@ import java.awt.Point;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 import javax.swing.JPanel;
+
 import org.jdesktop.swingx.graphics.GraphicsUtilities;
 import org.jdesktop.swingx.graphics.ShadowRenderer;
+import org.kevoree.tools.ui.framework.ErrorHighlightableElement;
 import org.kevoree.tools.ui.framework.SelectElement;
 import org.kevoree.tools.ui.framework.TitledElement;
 
 /**
- *
  * @author ffouquet
  */
-public class ChannelPanel extends JPanel implements TitledElement,SelectElement {
+public class ChannelPanel extends JPanel implements TitledElement, SelectElement, ErrorHighlightableElement {
 
     private String title = "";
 
@@ -46,11 +47,11 @@ public class ChannelPanel extends JPanel implements TitledElement,SelectElement 
     public void setTitle(String _title) {
         if (_title != null) {
             title = _title;
-            this.setToolTipText("Channel "+title);
+            this.setToolTipText("Channel " + title);
         }
     }
 
-    public String getTitle(){
+    public String getTitle() {
         return title;
     }
 
@@ -95,8 +96,6 @@ public class ChannelPanel extends JPanel implements TitledElement,SelectElement 
         }
 
 
-
-
         //g2.setColor(new Color(0, 0, 0, 150));
 
         //g2.setColor(borderColor);
@@ -131,9 +130,11 @@ public class ChannelPanel extends JPanel implements TitledElement,SelectElement 
 
 
         String[] titles = title.split(":");
-        for(int i = 0 ; i < titles.length ; i ++){
-           g2.drawString(titles[i].trim(),(int)( (getWidth()/2)-(title.trim().length()/2)*2.6),40+i*25);
-           if(i != 0){g2.drawString(":",(int)( (getWidth()/2)-1),30+(i*25));}
+        for (int i = 0; i < titles.length; i++) {
+            g2.drawString(titles[i].trim(), (int) ((getWidth() / 2) - (title.trim().length() / 2) * 2.6), 40 + i * 25);
+            if (i != 0) {
+                g2.drawString(":", (int) ((getWidth() / 2) - 1), 30 + (i * 25));
+            }
         }
 
         //g2.drawString(title, (int)(getWidth()/2-title.length()*3),(getHeight()/2)+5);
@@ -170,6 +171,7 @@ public class ChannelPanel extends JPanel implements TitledElement,SelectElement 
         g2.fillOval(shadowSize, shadowSize, w, h);
         g2.dispose();
     }
+
     private static final int SHADOW_SIZE = 20;
     private BufferedImage shadow;
     protected boolean active = false;
@@ -181,6 +183,24 @@ public class ChannelPanel extends JPanel implements TitledElement,SelectElement 
         selected = _selected;
         active = _selected;
     }
+
+    private ErrorHighlightableElement.STATE _state = ErrorHighlightableElement.STATE.NO_ERROR;
+
+    @Override
+    public void setState(ErrorHighlightableElement.STATE state) {
+        _state = state;
+        if (_state.equals(ErrorHighlightableElement.STATE.IN_ERROR)) {
+            actualFillColor = new Color(239, 50, 50, 150);
+        } else {
+            actualFillColor = new Color(255, 127, 36, 180);
+        }
+    }
+
+    @Override
+    public STATE getCurrentState() {
+        return _state;
+    }
+
 
     @Override
     public Boolean getSelected() {
