@@ -20,11 +20,12 @@ import org.kevoree.framework.KevoreePlatformHelper
 
 object CommandHelper {
 
-
+   /*
   def buildKEY(du: DeployUnit): String = {
     du.getName + "/" + buildQuery(du, None)
   }
-
+     */
+  /*
   def buildAllQuery(du: DeployUnit): List[String] = {
     var res: List[String] = List()
     val root = du.eContainer.asInstanceOf[ContainerRoot]
@@ -62,8 +63,8 @@ object CommandHelper {
     }
     query.toString
   }
-
-
+          */
+       /*
   def buildPotentialMavenURL(root: ContainerRoot): List[String] = {
     var result: List[String] = List()
     //BUILD FROM ALL REPO
@@ -77,8 +78,9 @@ object CommandHelper {
         result = result ++ List(buildURL(root, node.getName))
     }
     result
-  }
+  }     */
 
+  /*
   def buildURL(root: ContainerRoot, nodeName: String): String = {
     var ip = KevoreePlatformHelper.getProperty(root, nodeName, org.kevoree.framework.Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP);
     if (ip == null || ip == "") {
@@ -89,6 +91,6 @@ object CommandHelper {
       port = "8000";
     }
     return "http://" + ip + ":" + port + "/provisioning/";
-  }
+  }   */
 
 }
