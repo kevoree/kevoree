@@ -69,7 +69,7 @@
                 <version>${kevoree.version}</version>
                 <extensions>true</extensions>
                 <configuration>
-                    <nodeTypeNames>VirtualCloudNode</nodeTypeNames>
+                    <nodeTypeNames>MiniCloudNode</nodeTypeNames>
                 </configuration>
                 <executions>
                     <execution>
