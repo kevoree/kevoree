@@ -3,6 +3,7 @@ package org.kevoree.library.arduinoNodeType;
 import org.kevoree.ContainerNode;
 import org.kevoree.ContainerRoot;
 import org.kevoree.KevoreeFactory;
+import org.kevoree.TypeDefinition;
 import org.kevoree.adaptation.deploy.osgi.BaseDeployOSGi;
 import org.kevoree.annotation.*;
 import org.kevoree.extra.osgi.rxtx.KevoreeSharedCom;
@@ -200,7 +201,7 @@ public class ArduinoNode extends AbstractNodeType {
 
             if (addType || removeType || updateType) {
                 typeAdaptationFound = true;
-                rootModel = (ContainerRoot) ((ContainerNode)p.getRef()).eContainer();
+                rootModel = (ContainerRoot) ((TypeDefinition)p.getRef()).eContainer();
             }
         }
         if (typeAdaptationFound) {
