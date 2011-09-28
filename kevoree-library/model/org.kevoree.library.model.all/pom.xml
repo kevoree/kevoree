@@ -98,7 +98,7 @@
         <!-- Sky computing -->
         <dependency>
             <groupId>org.kevoree.library.sky</groupId>
-            <artifactId>org.kevoree.library.sky.virtualCloud</artifactId>
+            <artifactId>org.kevoree.library.sky.minicloud</artifactId>
             <version>${kevoree.version}</version>
         </dependency>
 
