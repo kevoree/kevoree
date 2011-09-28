@@ -163,12 +163,17 @@ object AetherUtil {
 
     root.getNodes.find(n => n.getName == nodeName) match {
       case Some(node) => {
-        node.getDictionary.getValues.find(v => v.getAttribute.getName == "port") match {
-          case Some(att) => {
-            Some("http://" + ip + ":" + att.getValue + "/provisioning/")
+        if (node.getDictionary != null) {
+          node.getDictionary.getValues.find(v => v.getAttribute.getName == "port") match {
+            case Some(att) => {
+              Some("http://" + ip + ":" + att.getValue + "/provisioning/")
+            }
+            case None => None
           }
-          case None => None
+        } else {
+          None
         }
+
       }
       case None => None
     }
