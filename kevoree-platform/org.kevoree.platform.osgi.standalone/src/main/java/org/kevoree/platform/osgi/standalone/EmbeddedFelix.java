@@ -20,6 +20,7 @@ package org.kevoree.platform.osgi.standalone;
 import generated.SysPackageConstants;
 import org.apache.felix.framework.Felix;
 import org.apache.felix.framework.util.FelixConstants;
+import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleException;
 import org.osgi.framework.Constants;
 import org.slf4j.Logger;
@@ -109,22 +110,10 @@ public class EmbeddedFelix {
 
 
 		try {
-			m_fwk = new Felix(configProps) {
-				@Override
-				public void stop () throws BundleException {
-					try {
-						EmbeddedActivators.getBootstrapActivator().stop(m_fwk.getBundleContext());
-					} catch (Exception e) {
-
-					}
-					super.stop();
-				}
-			};
+			m_fwk = new Felix(configProps);
 			m_fwk.init();
 			// (10) Start the framework.
 			m_fwk.start();
-
-
 			printWelcome();
 
 			logger.debug("Felix Embedded started");
