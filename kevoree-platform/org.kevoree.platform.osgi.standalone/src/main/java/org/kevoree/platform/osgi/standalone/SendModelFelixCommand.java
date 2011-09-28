@@ -21,6 +21,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.PrintStream;
+import java.util.Date;
 import java.util.StringTokenizer;
 
 /**
@@ -36,18 +37,19 @@ public class SendModelFelixCommand implements Command {
 
 	private KevoreeModelHandlerService handler;
 
-	public SendModelFelixCommand(KevoreeModelHandlerService handler) {
+	public SendModelFelixCommand (KevoreeModelHandlerService handler) {
 		this.handler = handler;
 	}
 
-	public void sendModel (String model) {
+	public boolean sendModel (String model) {
 		try {
 			ContainerRoot root = KevoreeXmiHelper.load(model);
-			handler.updateModel(root);
+			Date date = handler.getLastModification();
+			return !handler.atomicUpdateModel(root).equals(date);
 		} catch (Exception e) {
 			logger.error("Unable to update model", e);
 		}
-
+		return false;
 	}
 
 	@Override
@@ -57,7 +59,7 @@ public class SendModelFelixCommand implements Command {
 
 	@Override
 	public String getUsage () {
-		return "sendModel <model file path>";
+		return "sendModel <model file path> [<token id>]";
 	}
 
 	@Override
@@ -68,10 +70,16 @@ public class SendModelFelixCommand implements Command {
 	@Override
 	public void execute (String line, PrintStream out, PrintStream err) {
 		StringTokenizer st = new StringTokenizer(line, " ");
-		if (st.countTokens() == 2) {
+		if (st.countTokens() >= 2 && st.countTokens() <= 3) {
 			// Ignore the command name.
 			st.nextToken();
-			sendModel(st.nextToken());
+			if (sendModel(st.nextToken())) {
+				if (st.countTokens() == 1) {
+					System.out.println("<deployRes" + st.nextToken() + "/>");
+				}
+			} else {
+				System.out.println("Error while update");
+			}
 		} else {
 			out.println("Unable to execute command (Invalid number of parameters\n" + "Usage: " + getUsage());
 		}

@@ -20,6 +20,7 @@ import java.io._
 import java.lang.Thread
 import actors.{OutputChannel, TIMEOUT, Actor}
 import util.matching.Regex
+import java.util.UUID
 
 /**
  * User: Erwan Daubert - erwan.daubert@gmail.com
@@ -34,6 +35,22 @@ class KevoreeNodeRunner (var nodeName: String, bootStrapModel: String) {
   private var nodePlatformProcess: Process = null
   private var outputStreamReader: Thread = null
   private var errorStreamReader: Thread = null
+
+
+  val backupRegex = new Regex("<saveRes(.*)/>")
+  val deployRegex = new Regex("<deployRes(.*)/>")
+  val errorRegex = new Regex(".*Error while update.*")
+
+  sealed abstract case class Result ()
+
+  case class DeployResult (uuid: String) extends Result
+
+  case class BackupResult (uuid: String) extends Result
+
+  case class ErrorResult () extends Result
+
+  val actor = new UpdateManagementActor(10000)
+  actor.start()
 
   private var outFile: File = null
 
@@ -63,11 +80,23 @@ class KevoreeNodeRunner (var nodeName: String, bootStrapModel: String) {
 
           override def run () {
             try {
-              val bytes: Array[Byte] = new Array[Byte](512)
-              var length = 0;
-              while (true) {
-                length = stream.read(bytes)
-                logStream.write(bytes, 0, length)
+              val reader = new BufferedReader(new InputStreamReader(stream))
+              var line = reader.readLine()
+              while (line != null) {
+                line match {
+                  case deployRegex(uuid) => {
+                    actor ! DeployResult(uuid)
+                  }
+                  case backupRegex(uuid) => {
+                    actor ! BackupResult(uuid)
+                  }
+                  case errorRegex(uuid) => actor ! ErrorResult()
+                  case _ =>
+                }
+                line = line + "\n"
+                logStream.write(line.getBytes)
+                logStream.flush()
+                line = reader.readLine()
               }
             } catch {
               case _@e => {
@@ -81,6 +110,7 @@ class KevoreeNodeRunner (var nodeName: String, bootStrapModel: String) {
 
           private val stream: InputStream = nodePlatformProcess.getInputStream
         }
+
         errorStreamReader = new Thread {
           errFile = new File(System.getProperty("java.io.tmpdir") + File.separator + "syserr" + nodeName + ".log")
           val logStream: OutputStream = new FileOutputStream(errFile)
@@ -131,13 +161,11 @@ class KevoreeNodeRunner (var nodeName: String, bootStrapModel: String) {
   def stopKillNode (): Boolean = {
     logger.debug("Kill " + nodeName)
     try {
-
+      actor.stop()
       val watchdog = new KillWatchDog(nodePlatformProcess, 20000)
       nodePlatformProcess.getOutputStream.write("shutdown\n".getBytes)
       nodePlatformProcess.getOutputStream.flush()
-
       watchdog.start()
-
       nodePlatformProcess.waitFor()
       watchdog.stop()
       true
@@ -153,20 +181,17 @@ class KevoreeNodeRunner (var nodeName: String, bootStrapModel: String) {
   }
 
   def updateNode (model: String, modelBackup: String): Boolean = {
-    nodePlatformProcess.getOutputStream.write(("backupModel " + modelBackup + "\n").getBytes)
+    var uuid = UUID.randomUUID()
+    nodePlatformProcess.getOutputStream.write(("backupModel " + modelBackup + " " + uuid.toString + "\n").getBytes)
     nodePlatformProcess.getOutputStream.flush()
-    Thread.sleep(200)
-    nodePlatformProcess.getOutputStream.write(("sendModel " + model + "\n").getBytes)
+    actor.manage(BackupResult(uuid.toString))
+
+    uuid = UUID.randomUUID()
+    nodePlatformProcess.getOutputStream.write(("sendModel " + model + " " + uuid.toString + "\n").getBytes)
     nodePlatformProcess.getOutputStream.flush()
-    val updateNode = new UpdateNode
-    val t = new Thread(updateNode)
-    t.start();
 
-    val actor = new UpdateManagementActor(5000, updateNode)
-    updateNode.setUpdateManagementActor(actor)
-    actor.start()
+    actor.manage(DeployResult(uuid.toString))
 
-    actor.manage()
   }
 
   private def getJava: String = {
@@ -174,49 +199,16 @@ class KevoreeNodeRunner (var nodeName: String, bootStrapModel: String) {
     java_home + File.separator + "bin" + File.separator + "java"
   }
 
-  private class UpdateNode extends Runnable {
-
-    var running = true
-    private var actor: UpdateManagementActor = null
-
-    def setUpdateManagementActor (actor: UpdateManagementActor) {
-      this.actor = actor
-    }
-
-    def run () {
-      val reader = new BufferedReader(new FileReader(outFile))
-      var line = reader.readLine()
-      while (running && line != null) {
-
-        val regex = new Regex("""End deploy result=true-[0-9]*""")
-        line match {
-          //End deploy result=true-1692
-          case regex() => actor.done(true); running = false
-          case "Error while update" => actor.done(false); running = false
-          case _ => line = reader.readLine()
-        }
-      }
-    }
-  }
-
-  private class UpdateManagementActor (timeout: Int, updateNode: UpdateNode) extends Actor {
+  class UpdateManagementActor (timeout: Int) extends Actor {
 
     case class STOP ()
-
-    case class MANAGE ()
-
-    case class DONE (exitValue: Boolean)
 
     def stop () {
       this ! STOP()
     }
 
-    def done (exitValue: Boolean) {
-      this ! DONE(exitValue)
-    }
-
-    def manage (): Boolean = {
-      (this !? MANAGE()).asInstanceOf[Option[Boolean]].get
+    def manage (res: Result): Boolean = {
+      (this !? res).asInstanceOf[Option[Boolean]].get
     }
 
     var firstSender = null
@@ -224,18 +216,31 @@ class KevoreeNodeRunner (var nodeName: String, bootStrapModel: String) {
     def act () {
       react {
         case STOP() => this.exit()
-        case MANAGE() => {
+        case ErrorResult() =>
+        case DeployResult(uuid) => {
           val firstSender = this.sender
           reactWithin(timeout) {
-            case STOP() => this.exit()
-            case DONE(exitValue) => firstSender ! Some(exitValue)
-            case TIMEOUT => {
-              updateNode.running = false
+            case DeployResult(uuid2) if (uuid == uuid2) => {
+              firstSender ! Some(true)
+            }
+            case TIMEOUT => firstSender ! Some(false)
+            case ErrorResult() => {
               firstSender ! Some(false)
             }
           }
         }
-
+        case BackupResult(uuid) => {
+          val firstSender = this.sender
+          reactWithin(timeout) {
+            case BackupResult(uuid2) if (uuid == uuid2) => {
+              firstSender ! Some(true)
+            }
+            case TIMEOUT => firstSender ! Some(false)
+            case ErrorResult() => {
+              firstSender ! Some(false)
+            }
+          }
+        }
       }
     }
   }

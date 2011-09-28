@@ -13,7 +13,7 @@ import org.slf4j.{LoggerFactory, Logger}
  * @author Erwan Daubert
  * @version 1.0
  */
-class KevoreeNodeManager(node : VirtualCloudNode) extends DaemonActor {
+class KevoreeNodeManager (node: VirtualCloudNode) extends DaemonActor {
   private final val logger: Logger = LoggerFactory.getLogger(classOf[VirtualCloudNode])
 
   private var runnners: List[KevoreeNodeRunner] = List()
@@ -28,7 +28,7 @@ class KevoreeNodeManager(node : VirtualCloudNode) extends DaemonActor {
 
   case class REMOVE_NODE (containerNode: ContainerNode)
 
-  case class UPDATE_NODE(containerNode : ContainerNode, model: ContainerRoot, modelBackup : String)
+  case class UPDATE_NODE (containerNode: ContainerNode, model: ContainerRoot, modelBackup: String)
 
   def stop () {
     this ! STOP()
@@ -42,7 +42,7 @@ class KevoreeNodeManager(node : VirtualCloudNode) extends DaemonActor {
     (this !? REMOVE_NODE(containerNode)).asInstanceOf[Boolean]
   }
 
-  def updateNode(containerNode : ContainerNode, model : ContainerRoot, modelBackup : String): Boolean = {
+  def updateNode (containerNode: ContainerNode, model: ContainerRoot, modelBackup: String): Boolean = {
     (this !? UPDATE_NODE(containerNode, model, modelBackup)).asInstanceOf[Boolean]
   }
 
@@ -55,7 +55,8 @@ class KevoreeNodeManager(node : VirtualCloudNode) extends DaemonActor {
         }
         case ADD_NODE(containerNode, model) => reply(addNodeInternal(containerNode, model))
         case REMOVE_NODE(containerNode) => reply(removeNodeInternal(containerNode))
-        case UPDATE_NODE(containerNode, model, modelBackup) => reply(updateNodeInternal(containerNode, model, modelBackup))
+        case UPDATE_NODE(containerNode, model, modelBackup) => reply(updateNodeInternal(containerNode, model,
+                                                                                         modelBackup))
       }
     }
   }
@@ -92,12 +93,13 @@ class KevoreeNodeManager(node : VirtualCloudNode) extends DaemonActor {
     runnners = List()
   }
 
-  private def updateNodeInternal(containerNode : ContainerNode, model : ContainerRoot, modelBackup : String): Boolean = {
+  private def updateNodeInternal (containerNode: ContainerNode, model: ContainerRoot, modelBackup: String): Boolean = {
     logger.debug("try to update " + containerNode.getName)
     runnners.find(runner => runner.nodeName == containerNode.getName) match {
-      case None => logger.debug(containerNode.getName + " is not available");false
+      case None => logger.debug(containerNode.getName + " is not available"); false
       case Some(runner) => {
         logger.debug(containerNode.getName + " is available, ask for update")
+
         runner.updateNode(Helper.saveModelOnFile(model), modelBackup)
       }
     }
