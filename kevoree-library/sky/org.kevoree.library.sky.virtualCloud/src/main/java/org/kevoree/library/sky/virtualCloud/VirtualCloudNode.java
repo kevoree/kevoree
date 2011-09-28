@@ -61,7 +61,7 @@ public class VirtualCloudNode extends AbstractNodeType {
 	@Override
 	public void startNode () {
 
-		// TODO start KevoreeNodeManager
+		// start KevoreeNodeManager
 		kevoreeNodeManager = new KevoreeNodeManager(this);
 
 		// start HTTP Server
