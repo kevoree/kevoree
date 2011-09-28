@@ -30,9 +30,7 @@ import java.awt.event.MouseListener;
  */
 
 @Requires({
-		@RequiredPort(name = "send", type = PortType.MESSAGE, needCheckDependency = true)/*,
-        @RequiredPort(name = "off", type = PortType.MESSAGE),
-        @RequiredPort(name = "toggle", type = PortType.SERVICE, className = ToggleLightService.class, optional = true)*/
+		@RequiredPort(name = "send", type = PortType.MESSAGE, needCheckDependency = true)
 })
 @ComponentType
 public class FakeSimpleSlider extends AbstractFakeStuffComponent {
