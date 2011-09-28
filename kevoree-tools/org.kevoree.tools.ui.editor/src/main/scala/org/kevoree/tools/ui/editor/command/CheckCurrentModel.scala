@@ -13,12 +13,12 @@
  */
 package org.kevoree.tools.ui.editor.command
 
-import org.kevoree.tools.ui.editor.KevoreeUIKernel
 import org.kevoree.core.basechecker.RootChecker
 import scala.collection.JavaConversions._
 import org.kevoree.tools.ui.framework.ErrorHighlightableElement
 import actors.DaemonActor
 import org.slf4j.LoggerFactory
+import org.kevoree.tools.ui.editor.{ErrorPanel, KevoreeUIKernel}
 
 
 class CheckCurrentModel extends Command {
@@ -52,9 +52,11 @@ class CheckCurrentModel extends Command {
   def effectiveCheck() {
     objectInError.foreach(o => o.setState(ErrorHighlightableElement.STATE.NO_ERROR))
     objectInError = List()
+    ErrorPanel.clear()
     val result = checker.check(kernel.getModelHandler.getActualModel)
     result.foreach({
       res =>
+        ErrorPanel.displayError(res)
         logger.warn("Violation msg=" + res.getMessage)
         //AGFFICHE OBJET ERROR
         res.getTargetObjects.foreach {
