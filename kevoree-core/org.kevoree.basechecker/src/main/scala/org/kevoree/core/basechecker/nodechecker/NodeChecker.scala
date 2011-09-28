@@ -14,9 +14,9 @@
 package org.kevoree.core.basechecker.nodechecker
 
 import scala.collection.JavaConversions._
-import org.kevoree.ContainerRoot
 import org.kevoree.api.service.core.checker.{CheckerViolation, CheckerService}
 import org.kevoree.framework.aspects.KevoreeAspects._
+import org.kevoree.{ContainerNode, ContainerRoot}
 
 /**
  * Created by IntelliJ IDEA.
@@ -28,10 +28,11 @@ import org.kevoree.framework.aspects.KevoreeAspects._
 class NodeChecker extends CheckerService {
 
 
-  def check (model: ContainerRoot): java.util.List[CheckerViolation] = {
+  def check(model: ContainerRoot): java.util.List[CheckerViolation] = {
     var violations: List[CheckerViolation] = List()
     model.getNodes.foreach {
       node => //For each Node
+        violations= violations ++ checkRelatedChannel(model,node)
         node.getComponents.foreach {
           component => //For each component of each node
             component.getTypeDefinition.foundRelevantDeployUnit(node)
@@ -49,4 +50,26 @@ class NodeChecker extends CheckerService {
     }
     violations
   }
+
+
+  def checkRelatedChannel(model: ContainerRoot, node: ContainerNode): java.util.List[CheckerViolation] = {
+    var violations: List[CheckerViolation] = List()
+    model.getMBindings.filter(mb => mb.getPort.eContainer().eContainer() == node).foreach {
+      mbinding =>
+        mbinding.getHub.getTypeDefinition.foundRelevantDeployUnit(node)
+        match {
+          case null => {
+            val violation: CheckerViolation = new CheckerViolation
+            violation.setMessage(mbinding.getHub.getTypeDefinition.getName + " has no deploy unit for node type " +
+              node.getTypeDefinition.getName)
+            violation.setTargetObjects(List(mbinding) ++ List(mbinding.getHub))
+            violations = violations ++ List(violation)
+          }
+          case _ =>
+        }
+    }
+    violations
+  }
+
+
 }
