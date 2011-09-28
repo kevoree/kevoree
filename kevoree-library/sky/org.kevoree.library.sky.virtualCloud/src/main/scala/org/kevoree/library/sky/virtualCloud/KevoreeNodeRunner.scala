@@ -36,7 +36,6 @@ class KevoreeNodeRunner (var nodeName: String, bootStrapModel: String) {
   private var outputStreamReader: Thread = null
   private var errorStreamReader: Thread = null
 
-
   val backupRegex = new Regex(".*<saveRes(.*)/>.*")
   val deployRegex = new Regex(".*<deployRes(.*)/>.*")
   val errorRegex = new Regex(".*Error while update.*")
@@ -182,15 +181,19 @@ class KevoreeNodeRunner (var nodeName: String, bootStrapModel: String) {
 
   def updateNode (model: String, modelBackup: String): Boolean = {
     var uuid = UUID.randomUUID()
+    actor.manage(BackupResult(uuid.toString))
     nodePlatformProcess.getOutputStream.write(("backupModel " + modelBackup + " " + uuid.toString + "\n").getBytes)
     nodePlatformProcess.getOutputStream.flush()
-    actor.manage(BackupResult(uuid.toString))
+    
+    actor.waitFor()
 
     uuid = UUID.randomUUID()
+    actor.manage(DeployResult(uuid.toString))
     nodePlatformProcess.getOutputStream.write(("sendModel " + model + " " + uuid.toString + "\n").getBytes)
     nodePlatformProcess.getOutputStream.flush()
 
-    actor.manage(DeployResult(uuid.toString))
+    actor.waitFor()
+
 
   }
 
@@ -203,41 +206,89 @@ class KevoreeNodeRunner (var nodeName: String, bootStrapModel: String) {
 
     case class STOP ()
 
+    case class WAITINFOR ()
+
     def stop () {
       this ! STOP()
     }
 
-    def manage (res: Result): Boolean = {
-      (this !? res).asInstanceOf[Option[Boolean]].get
+    def manage (res: Result) {
+      this ! res
+    }
+
+    def waitFor () : Boolean = {
+      (this !? WAITINFOR()).asInstanceOf[Option[Boolean]].get
     }
 
     var firstSender = null
 
     def act () {
-      react {
-        case STOP() => this.exit()
-        case ErrorResult() =>
-        case DeployResult(uuid) => {
-          val firstSender = this.sender
-          reactWithin(timeout) {
-            case DeployResult(uuid2) if (uuid == uuid2) => {
-              firstSender ! Some(true)
-            }
-            case TIMEOUT => firstSender ! Some(false)
-            case ErrorResult() => {
-              firstSender ! Some(false)
+      loop {
+        react {
+          case STOP() => this.exit()
+          case ErrorResult() =>
+          case DeployResult(uuid) => {
+            var firstSender = this.sender
+            react {
+              case WAITINFOR() => {
+                firstSender = this.sender
+                reactWithin(timeout) {
+                  case DeployResult(uuid2) if (uuid == uuid2) => {
+                    firstSender ! Some(true)
+                  }
+                  case TIMEOUT => firstSender ! Some(false)
+                  case ErrorResult() => {
+                    firstSender ! Some(false)
+                  }
+                }
+              }
+              case DeployResult(uuid2) if (uuid == uuid2) => {
+                reactWithin(timeout) {
+                  case WAITINFOR() => sender ! Some(true)
+                }
+              }
+              case TIMEOUT => {
+                reactWithin(timeout) {
+                  case WAITINFOR() => sender ! Some(false)
+                }
+              }
+              case ErrorResult() => {
+                reactWithin(timeout) {
+                  case WAITINFOR() => sender ! Some(false)
+                }
+              }
             }
           }
-        }
-        case BackupResult(uuid) => {
-          val firstSender = this.sender
-          reactWithin(timeout) {
-            case BackupResult(uuid2) if (uuid == uuid2) => {
-              firstSender ! Some(true)
-            }
-            case TIMEOUT => firstSender ! Some(false)
-            case ErrorResult() => {
-              firstSender ! Some(false)
+          case BackupResult(uuid) => {
+            var firstSender = this.sender
+            react {
+              case WAITINFOR() => {
+                firstSender = this.sender
+                reactWithin(timeout) {
+                  case BackupResult(uuid2) if (uuid == uuid2) => {
+                    firstSender ! Some(true)
+                  }
+                  case TIMEOUT => firstSender ! Some(false)
+                  case ErrorResult() => {
+                    firstSender ! Some(false)
+                  }
+                }
+              }
+              case BackupResult(uuid2) if (uuid == uuid2) => {
+                reactWithin(timeout) {
+                  case WAITINFOR() => sender ! Some(true)
+                }
+              }
+              case TIMEOUT => {
+                reactWithin(timeout) {
+                  case WAITINFOR() => sender ! Some(false)
+                }
+              }
+              case ErrorResult() => {
+                reactWithin(timeout) {
+                  case WAITINFOR() => sender ! Some(false)
+                }
+              }
             }
           }
         }
