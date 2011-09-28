@@ -45,7 +45,7 @@
                 <version>${kevoree.version}</version>
                 <extensions>true</extensions>
                 <configuration>
-                    <nodeTypeNames>JavaSENode</nodeTypeNames>
+                    <nodeTypeNames>RestNode</nodeTypeNames>
                 </configuration>
                 <executions>
                     <execution>

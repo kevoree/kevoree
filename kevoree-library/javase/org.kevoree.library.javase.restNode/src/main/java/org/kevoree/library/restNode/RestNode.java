@@ -35,7 +35,7 @@ import java.net.URLConnection;
 @NodeType
 @DictionaryType({
         @DictionaryAttribute(name = "port", defaultValue = "8000", optional = true),
-        @DictionaryAttribute(name = "autodiscovery", defaultValue = "false", optional = true,vals={"false","true"})
+        @DictionaryAttribute(name = "autodiscovery", defaultValue = "false", optional = true, vals = {"false", "true"})
 })
 public class RestNode extends JavaSENode {
     private static final Logger logger = LoggerFactory.getLogger(RestNode.class);
@@ -82,14 +82,11 @@ public class RestNode extends JavaSENode {
             if (IP.equals("")) {
                 IP = "127.0.0.1";
             }
-            String PORT = KevoreePlatformHelper
-                    .getProperty(root, targetNodeName, Constants.KEVOREE_PLATFORM_REMOTE_NODE_MODELSYNCH_PORT());
+            String PORT = this.getDictionary().get("port").toString();
             if (PORT.equals("")) {
                 PORT = "8000";
             }
             URL url = new URL("http://" + IP + ":" + PORT + "/model/current");
-
-//			System.out.println(url);
 
             URLConnection conn = url.openConnection();
             conn.setConnectTimeout(2000);
