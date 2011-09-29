@@ -10,6 +10,7 @@ import org.jboss.netty.handler.codec.http.HttpResponse;
 import org.kevoree.AdaptationPrimitiveType;
 import org.kevoree.ContainerNode;
 import org.kevoree.ContainerRoot;
+import org.kevoree.DictionaryValue;
 import org.kevoree.annotation.*;
 import org.kevoree.framework.*;
 import org.kevoree.framework.Constants;
@@ -123,12 +124,10 @@ public class MiniCloudNode extends AbstractNodeType {
 			logger.warn("there is no adaptation primitive for " + UPDATE_NODE);
 		}
 
-
 		AdaptationModel adaptationModel = org.kevoreeAdaptation.KevoreeAdaptationFactory.eINSTANCE
 				.createAdaptationModel();
 		ParallelStep step = KevoreeAdaptationFactory.eINSTANCE.createParallelStep();
 		adaptationModel.setOrderedPrimitiveSet(step);
-
 
 		// find all containerNode to remove
 		for (ContainerNode node : current.getNodes()) {
@@ -157,7 +156,6 @@ public class MiniCloudNode extends AbstractNodeType {
 				}
 			}
 		}
-
 
 		// find all containerNode to add
 		for (ContainerNode node : target.getNodes()) {
@@ -198,7 +196,6 @@ public class MiniCloudNode extends AbstractNodeType {
 				}
 			}
 		}
-
 		return adaptationModel;
 	}
 
@@ -231,8 +228,7 @@ public class MiniCloudNode extends AbstractNodeType {
 			if (IP.equals("")) {
 				IP = "127.0.0.1";
 			}
-			String PORT = KevoreePlatformHelper
-					.getProperty(root, physicalNodeName, Constants.KEVOREE_PLATFORM_REMOTE_NODE_MODELSYNCH_PORT());
+			String PORT = foundPort(physicalNodeName, root);
 			if (PORT.equals("")) {
 				PORT = "7000";
 			}
@@ -256,10 +252,19 @@ public class MiniCloudNode extends AbstractNodeType {
 
 		} catch (Exception e) {
 			logger.error("Unable to push a model on " + physicalNodeName, e);
-
 		}
-
 	}
 
-
+	private String foundPort(String physicalNodeName, ContainerRoot root) {
+		for (ContainerNode node : root.getNodes()) {
+			if (node.getName().equals(physicalNodeName)) {
+				for (DictionaryValue value : node.getDictionary().getValues()) {
+					if (value.getAttribute().getName().equals("port")) {
+						return value.getValue();
+					}
+				}
+			}
+		}
+		return "7000";
+	}
 }
