@@ -15,7 +15,6 @@ package org.kevoree.tools.ui.editor.standalone;
 
 import com.explodingpixels.macwidgets.*;
 import org.kevoree.tools.ui.editor.KevoreeEditor;
-import sun.plugin.util.ErrorPanel;
 
 import javax.swing.*;
 import java.awt.*;

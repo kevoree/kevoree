@@ -133,14 +133,14 @@ object AetherUtil {
     root.getNodes.foreach {
       node =>
         val nurl = buildURL(root, node.getName)
-        if (!result.exists(p => p == nurl)) {
-          result = result ++ List(nurl)
+        if (nurl != None && !result.exists(p => p == nurl.get)) {
+          result = result ++ List(nurl.get)
         }
     }
     result
   }
 
-  def buildURL(root: ContainerRoot, nodeName: String): String = {
+  /*def buildURL(root: ContainerRoot, nodeName: String): String = {
     var ip = KevoreePlatformHelper.getProperty(root, nodeName, org.kevoree.framework.Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP);
     if (ip == null || ip == "") {
       ip = "127.0.0.1";
@@ -150,6 +150,31 @@ object AetherUtil {
       port = "8000";
     }
     "http://" + ip + ":" + port + "/provisioning/";
+  }*/
+
+  def buildURL(root: ContainerRoot, nodeName: String): Option[String] = {
+    var ip = KevoreePlatformHelper.getProperty(root, nodeName, org.kevoree.framework.Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP);
+    if (ip == null || ip == "") {
+      ip = "127.0.0.1";
+    }
+
+    root.getNodes.find(n => n.getName == nodeName) match {
+      case Some(node) => {
+        if (node.getDictionary != null) {
+          node.getDictionary.getValues.find(v => v.getAttribute.getName == "port") match {
+            case Some(att) => {
+              Some("http://" + ip + ":" + att.getValue + "/provisioning/")
+            }
+            case None => None
+          }
+        } else {
+          None
+        }
+
+      }
+      case None => None
+    }
+
   }
 
 
