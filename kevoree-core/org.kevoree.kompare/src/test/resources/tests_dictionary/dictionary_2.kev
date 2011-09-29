@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <kevoree:ContainerRoot xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:kevoree="http://kevoree/1.0">
-  <nodes name="node-0">
+  <nodes name="node-0" typeDefinition="//@typeDefinitions.8">
     <components name="FakeSimpleLight--398723264" typeDefinition="//@typeDefinitions.4">
       <dictionary>
         <values attribute="//@typeDefinitions.4/@dictionaryType/@attributes.0" value="4"/>

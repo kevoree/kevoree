@@ -194,15 +194,15 @@
   <libraries name="Kevoree-Components" subTypes="//@typeDefinitions.0 //@typeDefinitions.3 //@typeDefinitions.4"/>
   <libraries name="Kevoree-Android-JavaSE" subTypes="//@typeDefinitions.5 //@typeDefinitions.6 //@typeDefinitions.18 //@typeDefinitions.19 //@typeDefinitions.20 //@typeDefinitions.21"/>
   <libraries name="Kevoree-Samples" subTypes="//@typeDefinitions.8 //@typeDefinitions.10 //@typeDefinitions.12 //@typeDefinitions.13 //@typeDefinitions.16 //@typeDefinitions.17"/>
-  <deployUnits groupName="org.kevoree.library" unitName="org.kevoree.library.fakeDomo" version="1.0.0-RC5" hashcode="201103041612760"/>
-  <deployUnits groupName="org.kevoree.library" unitName="org.kevoree.library.defaultChannels" version="1.0.0-RC5" hashcode="201103041612058"/>
-  <deployUnits groupName="org.kevoree.library" unitName="org.kevoree.library.defaultNodeTypes" version="1.0.0-RC5" hashcode="201103041611759"/>
-  <deployUnits groupName="org.kevoree.library" unitName="org.kevoree.library.gossiper" version="1.0.0-RC5" hashcode="201103041612103"/>
-  <deployUnits groupName="org.kevoree.library" unitName="org.kevoree.library.sample" version="1.0.0-RC5" hashcode="201103041612635"/>
-  <deployUnits name="org.kevoree.extra.marshalling" url="mvn:org.kevoree.extra/org.kevoree.extra.marshalling"/>
-  <deployUnits groupName="org.kevoree.library" unitName="org.kevoree.library.restChannels" version="1.0.0-RC5" hashcode="201103041612597" requiredLibs="//@deployUnits.5"/>
-  <deployUnits groupName="org.kevoree.library" unitName="org.kevoree.library.xmpp" version="1.0.0-RC5" hashcode="201103041612643"/>
-  <deployUnits groupName="org.kevoree.library" unitName="org.kevoree.library.logger.android" version="1.0.0-RC5" hashcode="201103041612159"/>
+  <deployUnits groupName="org.kevoree.library" unitName="org.kevoree.library.fakeDomo" version="1.0.0-RC5" hashcode="201103041612760" targetNodeType="//@typeDefinitions.22"/>
+  <deployUnits groupName="org.kevoree.library" unitName="org.kevoree.library.defaultChannels" version="1.0.0-RC5" hashcode="201103041612058" targetNodeType="//@typeDefinitions.22"/>
+  <deployUnits groupName="org.kevoree.library" unitName="org.kevoree.library.defaultNodeTypes" version="1.0.0-RC5" hashcode="201103041611759" targetNodeType="//@typeDefinitions.22"/>
+  <deployUnits groupName="org.kevoree.library" unitName="org.kevoree.library.gossiper" version="1.0.0-RC5" hashcode="201103041612103" targetNodeType="//@typeDefinitions.22"/>
+  <deployUnits groupName="org.kevoree.library" unitName="org.kevoree.library.sample" version="1.0.0-RC5" hashcode="201103041612635" targetNodeType="//@typeDefinitions.22"/>
+  <deployUnits name="org.kevoree.extra.marshalling" url="mvn:org.kevoree.extra/org.kevoree.extra.marshalling" targetNodeType="//@typeDefinitions.22"/>
+  <deployUnits groupName="org.kevoree.library" unitName="org.kevoree.library.restChannels" version="1.0.0-RC5" hashcode="201103041612597" requiredLibs="//@deployUnits.5" targetNodeType="//@typeDefinitions.22"/>
+  <deployUnits groupName="org.kevoree.library" unitName="org.kevoree.library.xmpp" version="1.0.0-RC5" hashcode="201103041612643" targetNodeType="//@typeDefinitions.22"/>
+  <deployUnits groupName="org.kevoree.library" unitName="org.kevoree.library.logger.android" version="1.0.0-RC5" hashcode="201103041612159" targetNodeType="//@typeDefinitions.22"/>
   <deployUnits groupName="org.kevoree.library.javase" unitName="org.kevoree.library.javase.javaseNode" version="1.3.0-SNAPSHOT" hashcode="201109211932325" targetNodeType="//@typeDefinitions.22"/>
   <groups name="group1426020324" typeDefinition="//@typeDefinitions.7" subNodes="//@nodes.0 //@nodes.1"/>
   <adaptationPrimitiveTypes name="UpdateType"/>

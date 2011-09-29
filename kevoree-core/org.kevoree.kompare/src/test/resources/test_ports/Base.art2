@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <kevoree:ContainerRoot xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:kevoree="http://kevoree/1.0">
-  <nodes name="nodeA">
+  <nodes name="nodeA" typeDefinition="//@typeDefinitions.7">
     <components name="ComponentB--1886857871" typeDefinition="//@typeDefinitions.0">
       <provided portTypeRef="//@typeDefinitions.0/@provided.0"/>
       <required portTypeRef="//@typeDefinitions.0/@required.0"/>
@@ -113,7 +113,7 @@
   <dataTypes name="scala.Byte"/>
   <libraries name="ART_TEST" subTypes="//@typeDefinitions.0 //@typeDefinitions.3"/>
   <libraries name="ART2_TESTS" subTypes="//@typeDefinitions.5"/>
-  <deployUnits groupName="org.kevoree" unitName="libs4tests" version="1.0-SNAPSHOT" hashcode="201010261906814"/>
+  <deployUnits groupName="org.kevoree" unitName="libs4tests" version="1.0-SNAPSHOT" hashcode="201010261906814"  targetNodeType="//@typeDefinitions.7"/>
   <deployUnits groupName="org.kevoree.library.javase" unitName="org.kevoree.library.javase.javaseNode" version="1.3.0-SNAPSHOT" hashcode="201109211932325" targetNodeType="//@typeDefinitions.7"/>
   <adaptationPrimitiveTypes name="UpdateType"/>
   <adaptationPrimitiveTypes name="UpdateDeployUnit"/>
