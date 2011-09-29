@@ -46,9 +46,9 @@ case class ContainerNodeAspect(node: ContainerNode) {
     var usedType: List[TypeDefinition] = List()
 
     /* ADD SUPER TYPE USED BY NODE TYPE DEFINITION */
-    if (node.getTypeDefinition.getSuperTypes != null) {
-      usedType = usedType ++ getTypeAndInherited(node.getTypeDefinition)
-    }
+  //  if (node.getTypeDefinition.getSuperTypes != null) {
+   //   usedType = usedType ++ getTypeAndInherited(node.getTypeDefinition)
+  //  }
 
     /* ADD COMPONENT TYPE USED */
     node.getComponents.foreach {
