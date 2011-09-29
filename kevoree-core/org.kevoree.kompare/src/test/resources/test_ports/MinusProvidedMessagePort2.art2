@@ -1,46 +1,56 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <kevoree:ContainerRoot xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:kevoree="http://kevoree/1.0">
-  <nodes name="duke" typeDefinition="//@typeDefinitions.10"/>
-  <typeDefinitions xsi:type="kevoree:ChannelType" name="DefaultMessageChannelType" deployUnits="//@deployUnits.0" factoryBean="org.kevoree.framework.baselib.channeltype.DefaultMessageChannelTypeFactory" bean="org.kevoree.framework.baselib.channeltype.DefaultMessageChannelType"/>
-  <typeDefinitions xsi:type="kevoree:ChannelType" name="DefaultServiceChannelType" deployUnits="//@deployUnits.0" factoryBean="org.kevoree.framework.baselib.channeltype.DefaultServiceChannelTypeFactory" bean="org.kevoree.framework.baselib.channeltype.DefaultServiceChannelType"/>
-  <typeDefinitions xsi:type="kevoree:ChannelType" name="LocalBroadcastMessageChannelType" deployUnits="//@deployUnits.0" factoryBean="org.kevoree.framework.baselib.channeltype.LocalBroadcastMessageChannelTypeFactory" bean="org.kevoree.framework.baselib.channeltype.LocalBroadcastMessageChannelType"/>
-  <typeDefinitions xsi:type="kevoree:ComponentType" name="ComponentB" deployUnits="//@deployUnits.1" factoryBean="org.kevoree.lib4tests.ComponentBFactory" bean="org.kevoree.lib4tests.ComponentB" startMethod="start" stopMethod="stop">
-    <required name="req2" ref="//@typeDefinitions.5"/>
-    <provided name="prov1" ref="//@typeDefinitions.4">
+  <nodes name="nodeA" typeDefinition="//@typeDefinitions.7">
+    <components name="ComponentB--1886857871" typeDefinition="//@typeDefinitions.0">
+      <provided portTypeRef="//@typeDefinitions.0/@provided.0"/>
+      <required portTypeRef="//@typeDefinitions.0/@required.0"/>
+    </components>
+    <components name="ComponentA-1541906386" typeDefinition="//@typeDefinitions.3">
+      <provided portTypeRef="//@typeDefinitions.3/@provided.0"/>
+      <required portTypeRef="//@typeDefinitions.3/@required.0"/>
+      <required portTypeRef="//@typeDefinitions.3/@required.1"/>
+    </components>
+    <components name="ComponentPrimitiveTypeService--690416444" typeDefinition="//@typeDefinitions.5">
+      <provided portTypeRef="//@typeDefinitions.5/@provided.0"/>
+    </components>
+  </nodes>
+  <typeDefinitions xsi:type="kevoree:ComponentType" name="ComponentB" deployUnits="//@deployUnits.0" factoryBean="org.kevoree.libs4tests.ComponentBFactory" bean="org.kevoree.libs4tests.ComponentB" startMethod="start" stopMethod="stop">
+    <required name="req2" ref="//@typeDefinitions.2"/>
+    <provided name="prov1" ref="//@typeDefinitions.1">
       <mappings beanMethodName="methodBA" serviceMethodName="methodBA"/>
       <mappings beanMethodName="methodBB" serviceMethodName="methodBB"/>
     </provided>
   </typeDefinitions>
-  <typeDefinitions xsi:type="kevoree:ServicePortType" name="org.kevoree.lib4tests.service.ServiceB">
+  <typeDefinitions xsi:type="kevoree:ServicePortType" name="org.kevoree.libs4tests.service.ServiceB">
     <operations name="methodBA" returnType="//@dataTypes.0"/>
     <operations name="methodBB" returnType="//@dataTypes.1"/>
   </typeDefinitions>
   <typeDefinitions xsi:type="kevoree:MessagePortType" name="org.kevoree.framework.MessagePort"/>
-  <typeDefinitions xsi:type="kevoree:ComponentType" name="ComponentA" deployUnits="//@deployUnits.1" factoryBean="org.kevoree.lib4tests.ComponentAFactory" bean="org.kevoree.lib4tests.ComponentA" startMethod="start" stopMethod="stop">
+  <typeDefinitions xsi:type="kevoree:ComponentType" name="ComponentA" deployUnits="//@deployUnits.0" factoryBean="org.kevoree.libs4tests.ComponentAFactory" bean="org.kevoree.libs4tests.ComponentA" startMethod="start" stopMethod="stop">
     <dictionaryType>
       <attributes name="mandatory1"/>
       <attributes name="mandatory2"/>
       <attributes name="optional1" optional="true"/>
       <attributes name="optional2" optional="true"/>
-      <defaultValues attribute="//@typeDefinitions.6/@dictionaryType/@attributes.1" value="DF"/>
-      <defaultValues attribute="//@typeDefinitions.6/@dictionaryType/@attributes.3" value="DF"/>
+      <defaultValues attribute="//@typeDefinitions.3/@dictionaryType/@attributes.1" value="DF"/>
+      <defaultValues attribute="//@typeDefinitions.3/@dictionaryType/@attributes.3" value="DF"/>
     </dictionaryType>
-    <required name="req1" ref="//@typeDefinitions.5"/>
-    <required name="req2" ref="//@typeDefinitions.4"/>
-    <provided name="prov1" ref="//@typeDefinitions.5">
+    <required name="req1" ref="//@typeDefinitions.2"/>
+    <required name="req2" ref="//@typeDefinitions.1"/>
+    <provided name="prov1" ref="//@typeDefinitions.2">
       <mappings beanMethodName="prov1Processor" serviceMethodName="process"/>
     </provided>
-    <provided name="prov2" ref="//@typeDefinitions.7">
+    <!--<provided name="prov2" ref="//@typeDefinitions.4">
       <mappings beanMethodName="methodAA" serviceMethodName="methodAA"/>
       <mappings beanMethodName="methodAB" serviceMethodName="methodAB"/>
-    </provided>
+    </provided>-->
   </typeDefinitions>
-  <typeDefinitions xsi:type="kevoree:ServicePortType" name="org.kevoree.lib4tests.service.ServiceA">
+  <typeDefinitions xsi:type="kevoree:ServicePortType" name="org.kevoree.libs4tests.service.ServiceA">
     <operations name="methodAA" returnType="//@dataTypes.2"/>
     <operations name="methodAB" returnType="//@dataTypes.3"/>
   </typeDefinitions>
-  <typeDefinitions xsi:type="kevoree:ComponentType" name="ComponentPrimitiveTypeService" deployUnits="//@deployUnits.1" factoryBean="org.kevoree.lib4tests.ComponentPrimitiveTypeServiceFactory" bean="org.kevoree.lib4tests.ComponentPrimitiveTypeService" startMethod="start" stopMethod="stop">
-    <provided name="portPrimitiveTypes" ref="//@typeDefinitions.9">
+  <typeDefinitions xsi:type="kevoree:ComponentType" name="ComponentPrimitiveTypeService" deployUnits="//@deployUnits.0" factoryBean="org.kevoree.libs4tests.ComponentPrimitiveTypeServiceFactory" bean="org.kevoree.libs4tests.ComponentPrimitiveTypeService" startMethod="start" stopMethod="stop">
+    <provided name="portPrimitiveTypes" ref="//@typeDefinitions.6">
       <mappings beanMethodName="methodShort" serviceMethodName="methodShort"/>
       <mappings beanMethodName="methodInt" serviceMethodName="methodInt"/>
       <mappings beanMethodName="methodLong" serviceMethodName="methodLong"/>
@@ -52,7 +62,7 @@
       <mappings beanMethodName="methodBoolean" serviceMethodName="methodBoolean"/>
     </provided>
   </typeDefinitions>
-  <typeDefinitions xsi:type="kevoree:ServicePortType" name="org.kevoree.lib4tests.service.ServicePrimitifReturnTypes">
+  <typeDefinitions xsi:type="kevoree:ServicePortType" name="org.kevoree.libs4tests.service.ServicePrimitifReturnTypes">
     <operations name="methodShort" returnType="//@dataTypes.4">
       <parameters name="s" type="//@dataTypes.4"/>
     </operations>
@@ -79,13 +89,13 @@
       <parameters name="b" type="//@dataTypes.1"/>
     </operations>
   </typeDefinitions>
-  <typeDefinitions xsi:type="kevoree:NodeType" name="JavaSENode" deployUnits="//@deployUnits.2" factoryBean="org.kevoree.library.defaultNodeTypes.JavaSENodeFactory" bean="org.kevoree.library.defaultNodeTypes.JavaSENode" startMethod="startNode" stopMethod="stopNode" managedPrimitiveTypes="//@adaptationPrimitiveTypes.0 //@adaptationPrimitiveTypes.1 //@adaptationPrimitiveTypes.2 //@adaptationPrimitiveTypes.3 //@adaptationPrimitiveTypes.4 //@adaptationPrimitiveTypes.5 //@adaptationPrimitiveTypes.6 //@adaptationPrimitiveTypes.7 //@adaptationPrimitiveTypes.8 //@adaptationPrimitiveTypes.9 //@adaptationPrimitiveTypes.10 //@adaptationPrimitiveTypes.11 //@adaptationPrimitiveTypes.12 //@adaptationPrimitiveTypes.13 //@adaptationPrimitiveTypes.14 //@adaptationPrimitiveTypes.15 //@adaptationPrimitiveTypes.16 //@adaptationPrimitiveTypes.17">
+  <typeDefinitions xsi:type="kevoree:NodeType" name="JavaSENode" deployUnits="//@deployUnits.1" factoryBean="org.kevoree.library.defaultNodeTypes.JavaSENodeFactory" bean="org.kevoree.library.defaultNodeTypes.JavaSENode" startMethod="startNode" stopMethod="stopNode" managedPrimitiveTypes="//@adaptationPrimitiveTypes.0 //@adaptationPrimitiveTypes.1 //@adaptationPrimitiveTypes.2 //@adaptationPrimitiveTypes.3 //@adaptationPrimitiveTypes.4 //@adaptationPrimitiveTypes.5 //@adaptationPrimitiveTypes.6 //@adaptationPrimitiveTypes.7 //@adaptationPrimitiveTypes.8 //@adaptationPrimitiveTypes.9 //@adaptationPrimitiveTypes.10 //@adaptationPrimitiveTypes.11 //@adaptationPrimitiveTypes.12 //@adaptationPrimitiveTypes.13 //@adaptationPrimitiveTypes.14 //@adaptationPrimitiveTypes.15 //@adaptationPrimitiveTypes.16 //@adaptationPrimitiveTypes.17">
     <dictionaryType>
       <attributes name="autodiscovery" optional="true" datatype="enum=true,false"/>
-      <defaultValues attribute="//@typeDefinitions.10/@dictionaryType/@attributes.0" value="true"/>
+      <defaultValues attribute="//@typeDefinitions.7/@dictionaryType/@attributes.0" value="true"/>
     </dictionaryType>
   </typeDefinitions>
-  <repositories units="//@deployUnits.2" url="http://maven.kevoree.org/archiva/repository/snapshots/"/>
+  <repositories units="//@deployUnits.1" url="http://maven.kevoree.org/archiva/repository/snapshots/"/>
   <repositories url="http://scala-tools.org/repo-releases"/>
   <repositories url="http://maven.kevoree.org/release"/>
   <repositories url="http://maven.kevoree.org/snapshots"/>
@@ -100,12 +110,10 @@
   <dataTypes name="scala.Float"/>
   <dataTypes name="scala.Char"/>
   <dataTypes name="scala.Byte"/>
-  <libraries name="art2baselib" subTypes="//@typeDefinitions.0 //@typeDefinitions.1 //@typeDefinitions.2"/>
-  <libraries name="ART_TEST" subTypes="//@typeDefinitions.3 //@typeDefinitions.6"/>
-  <libraries name="ART2_TESTS" subTypes="//@typeDefinitions.8"/>
-  <deployUnits groupName="org.kevoree" unitName="art2.framework.baseLib" version="2.2.1-SNAPSHOT" hashcode="201010271747362" targetNodeType="//@typeDefinitions.10"/>
-  <deployUnits groupName="org.kevoree" unitName="lib4tests" version="1.0-SNAPSHOT" hashcode="201010270852409" targetNodeType="//@typeDefinitions.10"/>
-  <deployUnits groupName="org.kevoree.library.javase" unitName="org.kevoree.library.javase.javaseNode" version="1.3.0-SNAPSHOT" hashcode="201109211932325" targetNodeType="//@typeDefinitions.10"/>
+  <libraries name="ART_TEST" subTypes="//@typeDefinitions.0 //@typeDefinitions.3"/>
+  <libraries name="ART2_TESTS" subTypes="//@typeDefinitions.5"/>
+  <deployUnits groupName="org.kevoree" unitName="libs4tests" version="1.0-SNAPSHOT" hashcode="201010261906813" targetNodeType="//@typeDefinitions.7"/>
+  <deployUnits groupName="org.kevoree.library.javase" unitName="org.kevoree.library.javase.javaseNode" version="1.3.0-SNAPSHOT" hashcode="201109211932325" targetNodeType="//@typeDefinitions.7"/>
   <adaptationPrimitiveTypes name="UpdateType"/>
   <adaptationPrimitiveTypes name="UpdateDeployUnit"/>
   <adaptationPrimitiveTypes name="AddType"/>

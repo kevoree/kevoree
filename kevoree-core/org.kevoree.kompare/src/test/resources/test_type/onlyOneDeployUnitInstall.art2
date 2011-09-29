@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <kevoree:ContainerRoot xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:kevoree="http://kevoree/1.0">
-  <nodes name="duke">
+  <nodes name="duke" typeDefinition="//@typeDefinitions.10">
     <components name="ComponentB--10313997" typeDefinition="//@typeDefinitions.3">
       <provided portTypeRef="//@typeDefinitions.3/@provided.0"/>
       <required portTypeRef="//@typeDefinitions.3/@required.0"/>
@@ -111,8 +111,8 @@
   <libraries name="art2baselib" subTypes="//@typeDefinitions.0 //@typeDefinitions.1 //@typeDefinitions.2"/>
   <libraries name="ART_TEST" subTypes="//@typeDefinitions.3 //@typeDefinitions.6"/>
   <libraries name="ART2_TESTS" subTypes="//@typeDefinitions.8"/>
-  <deployUnits groupName="org.kevoree" unitName="art2.framework.baseLib" version="2.2.1-SNAPSHOT" hashcode="201010271747362"/>
-  <deployUnits groupName="org.kevoree" unitName="lib4tests" version="1.0-SNAPSHOT" hashcode="201010270852409"/>
+  <deployUnits groupName="org.kevoree" unitName="art2.framework.baseLib" version="2.2.1-SNAPSHOT" hashcode="201010271747362" targetNodeType="//@typeDefinitions.10"/>
+  <deployUnits groupName="org.kevoree" unitName="lib4tests" version="1.0-SNAPSHOT" hashcode="201010270852409" targetNodeType="//@typeDefinitions.10"/>
   <deployUnits groupName="org.kevoree.library.javase" unitName="org.kevoree.library.javase.javaseNode" version="1.3.0-SNAPSHOT" hashcode="201109211932325" targetNodeType="//@typeDefinitions.10"/>
   <adaptationPrimitiveTypes name="UpdateType"/>
   <adaptationPrimitiveTypes name="UpdateDeployUnit"/>
