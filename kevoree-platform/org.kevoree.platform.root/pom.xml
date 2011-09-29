@@ -5,7 +5,7 @@
     <groupId>org.kevoree.platform</groupId>
     <artifactId>org.kevoree.platform.root</artifactId>
     <packaging>pom</packaging>
-    <version>1.2.0-RC3</version>
+    <version>1.2.0</version>
     <name>Kevoree :: Platform :: Root</name>
     <url>https://github.com/dukeboard/kevoree</url>
 
@@ -86,7 +86,7 @@
     </build>
 
     <modules>
-        <module>../../kevoree-tools/org.kevoree.tools.aether.lite.framework</module>
+        
        <module>../org.kevoree.platform.osgi.standalone</module>
        <module>../org.kevoree.platform.osgi.standalone.gui</module>
       <!-- <module>../org.kevoree.platform.osgi.bundle.full</module> -->
