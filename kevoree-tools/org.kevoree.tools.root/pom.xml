@@ -6,7 +6,7 @@
     <packaging>pom</packaging>
     <name>Kevoree :: Tools :: Root</name>
     <url>https://github.com/dukeboard/kevoree</url>
-    <version>1.2.0-RC3</version>
+    <version>1.2.0</version>
 
 
     <dependencies>
@@ -197,6 +197,7 @@
 
     <modules>
         <module>../org.kevoree.tools.aether.framework</module>
+        <module>../org.kevoree.tools.aether.lite.framework</module>
         <!-- <module>../org.kevoree.tools.aether.lite.framework</module> -->
 
         <module>../org.kevoree.tools.annotation.api</module>
