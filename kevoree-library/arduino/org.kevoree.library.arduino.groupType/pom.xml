@@ -48,7 +48,7 @@
                 <version>${kevoree.version}</version>
                 <extensions>true</extensions>
                 <configuration>
-                    <nodeTypeNames>JavaSENode</nodeTypeNames>
+                    <nodeTypeNames>JavaSENode;ArduinoNode</nodeTypeNames>
                 </configuration>
                 <executions>
                     <execution>

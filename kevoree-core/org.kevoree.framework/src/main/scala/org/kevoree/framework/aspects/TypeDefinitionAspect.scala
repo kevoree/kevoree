@@ -21,8 +21,11 @@ package org.kevoree.framework.aspects
 import org.kevoree._
 import scala.collection.JavaConversions._
 import KevoreeAspects._
+import org.slf4j.LoggerFactory
 
 case class TypeDefinitionAspect (selfTD: TypeDefinition) {
+
+  val logger = LoggerFactory.getLogger(this.getClass)
 
   def isModelEquals (pct: TypeDefinition): Boolean = {
     pct.getName == selfTD.getName
@@ -196,12 +199,18 @@ case class TypeDefinitionAspect (selfTD: TypeDefinition) {
     if (node.getTypeDefinition != null) {
       selfTD.getDeployUnits.find(du => du.getTargetNodeType != null &&
         du.getTargetNodeType.getName == node.getTypeDefinition.getName) match {
-        case Some(e) => deployUnitfound = e
-        case _ =>
+        case Some(e) => {
+          logger.info("found deploy unit => "+e.getUnitName)
+          deployUnitfound = e
+        }
+        case _ => logger.info("Deploy Unit not found on first level "+selfTD.getName)
       }
       if (deployUnitfound == null) {
+        logger.info("Deploy Unit not found for node "+node.getName+" : "+node.getTypeDefinition.getName+"=> "+selfTD.getName )
         deployUnitfound = foundRelevantDeployUnitOnNodeSuperTypes(node.getTypeDefinition.asInstanceOf[NodeType], selfTD)
       }
+    } else {
+      logger.error("Node type definition empty  ! search node name = "+node.getName)
     }
     deployUnitfound
   }
