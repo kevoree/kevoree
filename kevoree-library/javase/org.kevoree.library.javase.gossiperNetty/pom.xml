@@ -14,7 +14,7 @@
     <parent>
         <artifactId>org.kevoree.library.javase.root</artifactId>
         <groupId>org.kevoree.library.javase</groupId>
-        <version>1.2.0-RC3</version>
+        <version>1.2.0</version>
         <relativePath>../org.kevoree.library.javase.root/pom.xml</relativePath>
     </parent>
 
@@ -27,7 +27,7 @@
         <dependency>
             <groupId>org.kevoree.extra</groupId>
             <artifactId>org.kevoree.extra.protobuf</artifactId>
-            <version>2.3.0</version>
+            <version>2.4.1</version>
             <scope>provided</scope>
         </dependency>
         <dependency>

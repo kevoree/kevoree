@@ -6,7 +6,7 @@
     <artifactId>org.kevoree.library.model.all</artifactId>
     <packaging>jar</packaging>
     <name>Kevoree :: Library :: Model :: All</name>
-    <version>1.2.0-RC3</version>
+    <version>1.2.0</version>
 
     <properties>
         <kevoree.version>${project.version}</kevoree.version>
@@ -16,7 +16,7 @@
     <parent>
         <artifactId>org.kevoree.library.model.root</artifactId>
         <groupId>org.kevoree.library.model</groupId>
-        <version>1.2.0-RC3</version>
+        <version>1.2.0</version>
         <relativePath>../org.kevoree.library.model.root/pom.xml</relativePath>
     </parent>
 
