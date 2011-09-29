@@ -129,7 +129,7 @@ case class TypeDefinitionAspect (selfTD: TypeDefinition) {
       case nodeType: NodeType => {
         true
       }
-      case _@typeDef => println("uncatch portTypeDef " + typeDef); true
+      case _@typeDef => logger.error("uncatch portTypeDef " + typeDef); true
     }
   }
 
@@ -151,13 +151,13 @@ case class TypeDefinitionAspect (selfTD: TypeDefinition) {
                 val pDUInteger = java.lang.Long.parseLong(pDU.getHashcode)
                 val selfDUInteger = java.lang.Long.parseLong(selfDU.getHashcode)
 
-                //println("kompareHashCode - "+selfDUInteger+"<"+pDUInteger+"-"+(selfDUInteger < pDUInteger))
+//                println("kompareHashCode - "+selfDUInteger+"<"+pDUInteger+"-"+(selfDUInteger < pDUInteger))
 
                 selfDUInteger < pDUInteger
               } catch {
                 case _@e => {
-                  e.printStackTrace
-                  println("Bad HashCode - equiality verification - " + pDU.getHashcode + " - " + selfDU.getHashcode)
+//                  e.printStackTrace
+                  logger.error("Bad HashCode - equiality verification - " + pDU.getHashcode + " - " + selfDU.getHashcode, e)
                   pDU.getHashcode != selfDU.getHashcode
 
                 }
@@ -222,7 +222,7 @@ case class TypeDefinitionAspect (selfTD: TypeDefinition) {
           case Some(e) => e
           case None => null
     }
-    if (deployUnitfound == null) {
+    if (deployUnitfound == null && nodeType.getSuperTypes != null) {
       nodeType.getSuperTypes.exists (superNode =>
         // call recursively for super types and test if something has been found
         {deployUnitfound = foundRelevantDeployUnitOnNodeSuperTypes(superNode.asInstanceOf[NodeType], t);deployUnitfound == null})
