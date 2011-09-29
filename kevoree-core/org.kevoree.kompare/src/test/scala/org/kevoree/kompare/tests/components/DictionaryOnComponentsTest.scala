@@ -32,13 +32,13 @@ class DictionaryOnComponentsTest extends AssertionsForJUnit with KompareSuite {
   }
 
   @Test def verifyUpdateValue() {
-    val kompareModel = component.kompare(model("tests_dictionary/dictionary_1"), model("tests_dictionary/dictionary_2"), "node-0")
+    val kompareModel = component.kompare(model("tests_dictionary/dictionary_1.kev"), model("tests_dictionary/dictionary_2.kev"), "node-0")
     kompareModel verifySize 1
     kompareModel shouldContain(JavaSePrimitive.UpdateDictionaryInstance,"FakeSimpleLight--398723264")
   }
 
   @Test def verifyNotUpdateValue() {
-    val kompareModel = component.kompare(model("tests_dictionary/dictionary_1"), model("tests_dictionary/dictionary_1"), "node-0")
+    val kompareModel = component.kompare(model("tests_dictionary/dictionary_1.kev"), model("tests_dictionary/dictionary_1.kev"), "node-0")
     kompareModel.shouldNotContain(JavaSePrimitive.UpdateDictionaryInstance)
     kompareModel verifySize 0
   }

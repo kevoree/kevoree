@@ -32,7 +32,7 @@ class TypeAndInstanceUpdateTest extends KompareSuite {
   }
 
   @Test def testNoTypeInstall() = {
-    val kompareModel = component.kompare(model("test_type/updateBaseModel.art2").setLowerHashCode, model("test_type/update2ComponentOneBindingRemove.art2"), "duke")
+    val kompareModel = component.kompare(model("test_type/updateBaseModel.art2")/*.setLowerHashCode*/, model("test_type/update2ComponentOneBindingRemove.art2"), "duke")
 
     kompareModel.print
 
