@@ -42,8 +42,9 @@ trait InitNodeKompare extends AbstractKompare {
         adaptationModel.getAdaptations.add(typecmd)
 
         /* add all reLib from found deploy Unit*/
+        logger.info("Look for deploy unit for type definition " + ct.getName + " on " + node.getName)
         val deployUnitfound: DeployUnit = ct.foundRelevantDeployUnit(node)
-
+        logger.info("DeployUnit found " + deployUnitfound.getUnitName)
 
         deployUnitfound.getRequiredLibs.foreach {
           rLib =>
