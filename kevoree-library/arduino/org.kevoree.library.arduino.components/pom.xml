@@ -6,12 +6,12 @@
     <artifactId>org.kevoree.library.arduino.components</artifactId>
     <packaging>bundle</packaging>
     <name>Kevoree :: Library :: Arduino :: Components</name>
-    <version>1.2.0-RC3</version>
+    <version>1.2.0</version>
 
     <parent>
         <artifactId>org.kevoree.library.arduino.root</artifactId>
         <groupId>org.kevoree.library.arduino</groupId>
-        <version>1.2.0-RC3</version>
+        <version>1.2.0</version>
         <relativePath>../org.kevoree.library.arduino.root/pom.xml</relativePath>
     </parent>
 

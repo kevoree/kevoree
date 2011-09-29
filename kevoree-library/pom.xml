@@ -7,7 +7,7 @@
     <artifactId>org.kevoree.library</artifactId>
     <packaging>pom</packaging>
     <name>Kevoree :: Library</name>
-    <version>1.2.0-RC3</version>
+    <version>1.2.0</version>
 
     <properties>
         <kevoree.version>${project.version}</kevoree.version>
