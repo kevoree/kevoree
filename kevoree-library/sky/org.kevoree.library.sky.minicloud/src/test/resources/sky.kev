@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kevoree:ContainerRoot xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:kevoree="http://kevoree/1.0">
+  <typeDefinitions xsi:type="kevoree:NodeType" name="VirtualCloudNode" deployUnits="//@deployUnits.0" factoryBean="org.kevoree.library.javase.virtualCloud.VirtualCloudNodeFactory" bean="org.kevoree.library.javase.virtualCloud.VirtualCloudNode" startMethod="startNode" stopMethod="stopNode" managedPrimitiveTypes="//@adaptationPrimitiveTypes.0 //@adaptationPrimitiveTypes.1">
+    <dictionaryType>
+      <attributes name="port"/>
+      <defaultValues attribute="//@typeDefinitions.0/@dictionaryType/@attributes.0" value="7000"/>
+    </dictionaryType>
+  </typeDefinitions>
+  <repositories units="//@deployUnits.0" url="http://maven.kevoree.org/archiva/repository/snapshots/"/>
+  <repositories url="http://scala-tools.org/repo-releases"/>
+  <repositories url="http://maven.kevoree.org/release"/>
+  <repositories url="http://maven.kevoree.org/snapshots"/>
+  <repositories url="http://repo1.maven.org/maven2"/>
+  <deployUnits groupName="org.kevoree.library.sky" unitName="org.kevoree.library.sky.minicloud" version="1.3.0-SNAPSHOT" hashcode="201109221756836" requiredLibs="//@deployUnits.1" targetNodeType="//@typeDefinitions.0"/>
+  <deployUnits name="org.kevoree.extra.org.kevoree.extra.netty" url="mvn:org.kevoree.extra/org.kevoree.extra.netty/3.2.4" targetNodeType="//@typeDefinitions.0"/>
+  <adaptationPrimitiveTypes name="RemoveNode"/>
+  <adaptationPrimitiveTypes name="AddNode"/>
+</kevoree:ContainerRoot>

@@ -21,8 +21,11 @@ package org.kevoree.framework.aspects
 import org.kevoree._
 import scala.collection.JavaConversions._
 import KevoreeAspects._
+import org.slf4j.LoggerFactory
 
 case class TypeDefinitionAspect (selfTD: TypeDefinition) {
+
+  val logger = LoggerFactory.getLogger(this.getClass)
 
   def isModelEquals (pct: TypeDefinition): Boolean = {
     pct.getName == selfTD.getName
@@ -126,7 +129,7 @@ case class TypeDefinitionAspect (selfTD: TypeDefinition) {
       case nodeType: NodeType => {
         true
       }
-      case _@typeDef => println("uncatch portTypeDef " + typeDef); true
+      case _@typeDef => logger.error("uncatch portTypeDef " + typeDef); true
     }
   }
 
@@ -148,13 +151,13 @@ case class TypeDefinitionAspect (selfTD: TypeDefinition) {
                 val pDUInteger = java.lang.Long.parseLong(pDU.getHashcode)
                 val selfDUInteger = java.lang.Long.parseLong(selfDU.getHashcode)
 
-                //println("kompareHashCode - "+selfDUInteger+"<"+pDUInteger+"-"+(selfDUInteger < pDUInteger))
+//                println("kompareHashCode - "+selfDUInteger+"<"+pDUInteger+"-"+(selfDUInteger < pDUInteger))
 
                 selfDUInteger < pDUInteger
               } catch {
                 case _@e => {
-                  e.printStackTrace
-                  println("Bad HashCode - equiality verification - " + pDU.getHashcode + " - " + selfDU.getHashcode)
+//                  e.printStackTrace
+                  logger.error("Bad HashCode - equiality verification - " + pDU.getHashcode + " - " + selfDU.getHashcode, e)
                   pDU.getHashcode != selfDU.getHashcode
 
                 }
@@ -175,6 +178,20 @@ case class TypeDefinitionAspect (selfTD: TypeDefinition) {
   }
 
 
+  def foundRelevantHostNodeType(nodeType : NodeType,targetTypeDef : TypeDefinition) : Option[NodeType] = {
+      if(targetTypeDef.getDeployUnits.exists(du => du.getTargetNodeType == nodeType)){
+        Some(nodeType)
+      } else {
+        nodeType.getSuperTypes.foreach{ superType =>
+           foundRelevantHostNodeType(superType.asInstanceOf[NodeType],targetTypeDef) match {
+             case Some(nt)=> return Some(nt)
+             case None =>
+           }
+        }
+        return None
+      }
+  }
+
   def foundRelevantDeployUnit (node: ContainerNode) = {
 
     /* add all reLib from found deploy Unit*/
@@ -182,12 +199,18 @@ case class TypeDefinitionAspect (selfTD: TypeDefinition) {
     if (node.getTypeDefinition != null) {
       selfTD.getDeployUnits.find(du => du.getTargetNodeType != null &&
         du.getTargetNodeType.getName == node.getTypeDefinition.getName) match {
-        case Some(e) => deployUnitfound = e
-        case _ =>
+        case Some(e) => {
+          logger.info("found deploy unit => "+e.getUnitName)
+          deployUnitfound = e
+        }
+        case _ => logger.info("Deploy Unit not found on first level "+selfTD.getName)
       }
       if (deployUnitfound == null) {
+        logger.info("Deploy Unit not found for node "+node.getName+" : "+node.getTypeDefinition.getName+"=> "+selfTD.getName )
         deployUnitfound = foundRelevantDeployUnitOnNodeSuperTypes(node.getTypeDefinition.asInstanceOf[NodeType], selfTD)
       }
+    } else {
+      logger.error("Node type definition empty  ! search node name = "+node.getName)
     }
     deployUnitfound
   }
@@ -199,7 +222,7 @@ case class TypeDefinitionAspect (selfTD: TypeDefinition) {
           case Some(e) => e
           case None => null
     }
-    if (deployUnitfound == null) {
+    if (deployUnitfound == null && nodeType.getSuperTypes != null) {
       nodeType.getSuperTypes.exists (superNode =>
         // call recursively for super types and test if something has been found
         {deployUnitfound = foundRelevantDeployUnitOnNodeSuperTypes(superNode.asInstanceOf[NodeType], t);deployUnitfound == null})

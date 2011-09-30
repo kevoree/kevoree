@@ -30,8 +30,12 @@ import org.eclipse.emf.common.util.URI
 import java.util.zip.{Deflater, Inflater, GZIPInputStream, GZIPOutputStream}
 import io.Source
 import java.io.{ByteArrayInputStream, ByteArrayOutputStream, InputStream, OutputStream}
+import org.slf4j.LoggerFactory
 
 object KevoreeXmiHelper {
+
+  val logger = LoggerFactory.getLogger(this.getClass)
+
   def save(uri: String, root: ContainerRoot) = {
     val rs: ResourceSetImpl = new ResourceSetImpl();
 
@@ -46,6 +50,7 @@ object KevoreeXmiHelper {
   }
 
   def load(uri: String): ContainerRoot = {
+    logger.debug("load model from => "+uri)
     val rs = new ResourceSetImpl();
     rs.getResourceFactoryRegistry().getExtensionToFactoryMap().put("*", new XMIResourceFactoryImpl());
     rs.getPackageRegistry().put(KevoreePackage.eNS_URI, KevoreePackage.eINSTANCE);

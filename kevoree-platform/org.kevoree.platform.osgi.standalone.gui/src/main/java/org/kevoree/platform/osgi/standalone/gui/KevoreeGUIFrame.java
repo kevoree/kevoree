@@ -19,6 +19,7 @@ import org.kevoree.ContainerRoot;
 import org.kevoree.platform.osgi.standalone.BootstrapActivator;
 import org.kevoree.platform.osgi.standalone.EmbeddedActivators;
 import org.kevoree.platform.osgi.standalone.EmbeddedFelix;
+import org.kevoree.platform.osgi.standalone.shell.ShellActivator;
 import org.osgi.framework.BundleActivator;
 
 import javax.swing.*;
@@ -113,11 +114,13 @@ public class KevoreeGUIFrame extends JFrame {
 
                         EmbeddedActivators.setActivators(Arrays.asList(
                                 //      (BundleActivator) new org.ops4j.pax.url.mvn.internal.Activator(),
-                                (BundleActivator) new org.apache.felix.shell.impl.Activator(),
+                                (BundleActivator) new ShellActivator(),
                                 (BundleActivator) new ConsoleActivator(),
                                 (BundleActivator) new org.ops4j.pax.url.assembly.internal.Activator(),
                                 btA
                         ));
+                        EmbeddedActivators.setBootstrapActivator(btA);
+
                         final EmbeddedFelix felix = new EmbeddedFelix();
                         addWindowListener(new WindowAdapter() {
                             @Override
@@ -126,11 +129,20 @@ public class KevoreeGUIFrame extends JFrame {
                                     @Override
                                     public void run() {
                                         try {
+                                            DefaultSystem.resetSystemFlux();
+                                            dispose();
+
+                                            //System.setOut(System.);
+
+                                            Runtime.getRuntime().exit(0);
+
+
                                             //CLOSE KEVOREE BTActivator first ...
+                                            /*
                                             btA.stop(felix.getM_fwk().getBundleContext());
                                             felix.getM_fwk().stop();
                                             //setVisible(false);
-                                            dispose();
+                                            dispose();     */
                                         } catch (Exception e) {
                                             e.printStackTrace();
                                         }
@@ -138,13 +150,12 @@ public class KevoreeGUIFrame extends JFrame {
                                 }.start();
                             }
                         });
+
                         felix.run();
                     }
                 }.start();
 
                 setVisible(true);
-
-
                 setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
 
             }

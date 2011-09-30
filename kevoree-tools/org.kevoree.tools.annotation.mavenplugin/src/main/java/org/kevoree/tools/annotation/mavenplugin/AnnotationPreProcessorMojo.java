@@ -289,24 +289,29 @@ public class AnnotationPreProcessorMojo extends AbstractMojo {
 
         //AFTER ALL GENERATED
         try {
-            ContainerRoot model = KevoreeXmiHelper.load(sourceOutputDirectory.getPath() + "/KEV-INF/lib.kev");
-            KevoreeMergerComponent merger = new KevoreeMergerComponent();
+            File file = new File(sourceOutputDirectory.getPath() + "/KEV-INF/lib.kev");
+            if (file.exists()) {
+                ContainerRoot model = KevoreeXmiHelper.load(sourceOutputDirectory.getPath() + "/KEV-INF/lib.kev");
+                KevoreeMergerComponent merger = new KevoreeMergerComponent();
 
-            for (Object dep : this.mavenProject.getCompileArtifacts()) {
-                try {
-                    DefaultArtifact defaultArtifact = (DefaultArtifact) dep;
-                    JarFile jar = new JarFile(defaultArtifact.getFile());
-                    JarEntry entry = jar.getJarEntry("KEV-INF/lib.kev");
-                    if (entry != null) {
-                       String path = convertStreamToFile(jar.getInputStream(entry));
-                       getLog().info("Auto merging dependency => "+path+" from "+defaultArtifact);
-                       merger.merge(model,KevoreeXmiHelper.load(path));
+                for (Object dep : this.mavenProject.getCompileArtifacts()) {
+                    try {
+                        DefaultArtifact defaultArtifact = (DefaultArtifact) dep;
+                        JarFile jar = new JarFile(defaultArtifact.getFile());
+                        JarEntry entry = jar.getJarEntry("KEV-INF/lib.kev");
+                        if (entry != null) {
+                            String path = convertStreamToFile(jar.getInputStream(entry));
+                            getLog().info("Auto merging dependency => " + path + " from " + defaultArtifact);
+                            merger.merge(model, KevoreeXmiHelper.load(path));
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
-                } catch (Exception e) {
-                    e.printStackTrace();
                 }
+                KevoreeXmiHelper.save(sourceOutputDirectory.getPath() + "/KEV-INF/lib.kev", model);
             }
-            KevoreeXmiHelper.save(sourceOutputDirectory.getPath() + "/KEV-INF/lib.kev",model);
+
+
         } catch (Exception e) {
             e.printStackTrace();
         }

@@ -175,6 +175,10 @@
                             </inclusion>
                             <inclusion>
                                 <groupId>org.kevoree</groupId>
+                                <artifactId>org.kevoree.remote</artifactId>
+                            </inclusion>
+                            <inclusion>
+                                <groupId>org.kevoree</groupId>
                                 <artifactId>org.kevoree.basechecker</artifactId>
                             </inclusion>
                             <inclusion>

@@ -43,8 +43,8 @@ class JmDnsComponent(nodeName: String, modelPort: Int, modelHandler : KevoreeMod
         info =>
           val msg = new PlatformModelUpdate(info.getName.trim(), org.kevoree.framework.Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP, info.getInet4Addresses()(0).getHostAddress, "LAN", 100)
           modelHandler.asInstanceOf[Actor] ! msg
-          val msg2 = new PlatformModelUpdate(info.getName.trim(), org.kevoree.framework.Constants.KEVOREE_PLATFORM_REMOTE_NODE_MODELSYNCH_PORT, info.getPort.toString, "LAN", 100)
-          modelHandler.asInstanceOf[Actor] ! msg2
+         // val msg2 = new PlatformModelUpdate(info.getName.trim(), org.kevoree.framework.Constants.KEVOREE_PLATFORM_REMOTE_NODE_MODELSYNCH_PORT, info.getPort.toString, "LAN", 100)
+         // modelHandler.asInstanceOf[Actor] ! msg2
       }
     }
 
@@ -54,8 +54,8 @@ class JmDnsComponent(nodeName: String, modelPort: Int, modelHandler : KevoreeMod
         info =>
           val msg = new PlatformModelUpdate(info.getName.trim(), org.kevoree.framework.Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP, info.getInet4Addresses()(0).getHostAddress, "LAN", 100)
           modelHandler.asInstanceOf[Actor] ! msg
-          val msg2 = new PlatformModelUpdate(info.getName.trim(), org.kevoree.framework.Constants.KEVOREE_PLATFORM_REMOTE_NODE_MODELSYNCH_PORT, info.getPort.toString, "LAN", 100)
-          modelHandler.asInstanceOf[Actor] ! msg2
+         // val msg2 = new PlatformModelUpdate(info.getName.trim(), org.kevoree.framework.Constants.KEVOREE_PLATFORM_REMOTE_NODE_MODELSYNCH_PORT, info.getPort.toString, "LAN", 100)
+         // modelHandler.asInstanceOf[Actor] ! msg2
       }
     }
 

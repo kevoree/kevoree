@@ -21,9 +21,9 @@ package org.kevoree.framework.aspects
 import org.kevoree._
 import scala.collection.JavaConversions._
 
-case class ContainerNodeAspect(node: ContainerNode) {
+case class ContainerNodeAspect (node: ContainerNode) {
 
-  def isModelEquals(ct: ContainerNode): Boolean = {
+  def isModelEquals (ct: ContainerNode): Boolean = {
     ct.getName == node.getName
     /* TODO deep compare */
   }
@@ -46,9 +46,9 @@ case class ContainerNodeAspect(node: ContainerNode) {
     var usedType: List[TypeDefinition] = List()
 
     /* ADD SUPER TYPE USED BY NODE TYPE DEFINITION */
-    if (node.getTypeDefinition.getSuperTypes != null) {
-      usedType = usedType ++ getTypeAndInherited(node.getTypeDefinition)
-    }
+    //  if (node.getTypeDefinition.getSuperTypes != null) {
+    //   usedType = usedType ++ getTypeAndInherited(node.getTypeDefinition)
+    //  }
 
     /* ADD COMPONENT TYPE USED */
     node.getComponents.foreach {
@@ -121,13 +121,15 @@ case class ContainerNodeAspect(node: ContainerNode) {
 
   def getInstances: List[Instance] = getGroups ++ getChannelFragment ++ node.getComponents
 
-  private def getTypeAndInherited(t: TypeDefinition): List[TypeDefinition] = {
+  private def getTypeAndInherited (t: TypeDefinition): List[TypeDefinition] = {
     var types = List[TypeDefinition]()
-    t.getSuperTypes.foreach {
-      superT =>
-        types = types ++ getTypeAndInherited(superT)
+    if (t.getSuperTypes != null) {
+      t.getSuperTypes.foreach {
+        superT =>
+          types = types ++ getTypeAndInherited(superT)
+      }
+      types = types ++ List(t)
     }
-    types = types ++ List(t)
     types
   }
 
