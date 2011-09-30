@@ -1,5 +1,3 @@
-package org.kevoree.platform.agent
-
 /**
  * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE, Version 3, 29 June 2007;
  * you may not use this file except in compliance with the License.
@@ -13,22 +11,31 @@ package org.kevoree.platform.agent
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-object KevoreeNodeRunnerHandler {
+package org.kevoree.platform.osgi.standalone.gui
 
-  private var runnners: List[KevoreeNodeRunner] = List()
+import java.io.PrintStream
 
-  def closeAllRunners() {
-    runnners.foreach {
-      runner =>
-        runner.stopKillNode()
-    }
-    runnners = List()
+/**
+ * Created by IntelliJ IDEA.
+ * User: duke
+ * Date: 27/09/11
+ * Time: 10:42
+ * To change this template use File | Settings | File Templates.
+ */
+
+object DefaultSystem {
+
+  var defout: PrintStream = null
+  var deferr: PrintStream = null
+
+  def saveSystemFlux() {
+    defout = System.out
+    deferr = System.err
   }
 
-  def addRunner(nodeName: String, port: Int, model: String) {
-    val newRunner = new KevoreeNodeRunner(nodeName, port, model)
-    newRunner.startNode()
-    runnners = runnners :+ newRunner
+  def resetSystemFlux(){
+    System.setErr(deferr)
+    System.setOut(defout)
   }
 
 

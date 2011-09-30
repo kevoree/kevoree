@@ -75,38 +75,6 @@
                 </exclusion>
             </exclusions>
         </dependency>
-
-        <dependency>
-            <groupId>org.apache.felix</groupId>
-            <artifactId>org.apache.felix.framework</artifactId>
-            <version>3.2.0</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.felix</groupId>
-            <artifactId>org.apache.felix.shell.tui</artifactId>
-            <version>1.4.1</version>
-            <exclusions>
-                <exclusion>
-                    <artifactId>org.osgi.core</artifactId>
-                    <groupId>org.osgi</groupId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.felix</groupId>
-            <artifactId>org.apache.felix.shell.remote</artifactId>
-            <version>1.1.2</version>
-            <exclusions>
-                <exclusion>
-                    <artifactId>org.apache.felix.gogo.runtime</artifactId>
-                    <groupId>org.apache.felix</groupId>
-                </exclusion>
-                <exclusion>
-                    <artifactId>org.osgi.core</artifactId>
-                    <groupId>org.osgi</groupId>
-                </exclusion>
-            </exclusions>
-        </dependency>
         <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-core</artifactId>

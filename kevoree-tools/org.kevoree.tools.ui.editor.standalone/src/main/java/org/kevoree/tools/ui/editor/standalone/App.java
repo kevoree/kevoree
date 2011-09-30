@@ -28,6 +28,9 @@ public class App {
 
     static Boolean consoleShow = false;
     static Boolean kevsShow = false;
+    static Boolean errorShow = false;
+
+
     static int dividerPos = 0;
     static LocalKevsShell kevsPanel = new LocalKevsShell();
 
@@ -80,6 +83,22 @@ public class App {
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
+
+
+                AbstractButton toogleErrorPanel = null;
+                try {
+                    java.net.URL url = App.class.getClassLoader().getResource("status_unknown.png");
+                    ImageIcon icon = new ImageIcon(url);
+                    toogleErrorPanel =
+                            MacButtonFactory.makeUnifiedToolBarButton(
+                                    new JButton("Error", icon));
+                    toogleErrorPanel.setEnabled(false);
+                    toolBar.addComponentToLeft(toogleErrorPanel);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+
                 AbstractButton toogleKevScriptEditor = null;
                 try {
                     java.net.URL url = App.class.getClassLoader().getResource("runprog.png");
@@ -163,13 +182,17 @@ public class App {
                 final AbstractButton finalToogleConsole = toogleConsole;
                 assert toogleKevScriptEditor != null;
                 final AbstractButton finalToogleKevScriptEditor = toogleKevScriptEditor;
+                final AbstractButton finalToogleErrorPanel = toogleErrorPanel;
+
                 toogleConsole.addMouseListener(new MouseAdapter() {
                     @Override
                     public void mouseClicked(MouseEvent mouseEvent) {
 
                         finalToogleConsole.setEnabled(!finalToogleConsole.isEnabled());
                         finalToogleKevScriptEditor.setEnabled(false);
+                        finalToogleErrorPanel.setEnabled(false);
                         kevsShow = false;
+                        errorShow = false;
                         if (consoleShow) {
                             dividerPos = splitPane.getDividerLocation();
                             p.removeAll();
@@ -196,7 +219,9 @@ public class App {
                     public void mouseClicked(MouseEvent mouseEvent) {
                         finalToogleKevScriptEditor.setEnabled(!finalToogleKevScriptEditor.isEnabled());
                         finalToogleConsole.setEnabled(false);
+                        finalToogleErrorPanel.setEnabled(false);
                         consoleShow = false;
+                        errorShow = false;
                         if (kevsShow) {
                             dividerPos = splitPane.getDividerLocation();
                             p.removeAll();
@@ -220,6 +245,36 @@ public class App {
                         kevsShow = !kevsShow;
                     }
                 });
+                toogleErrorPanel.addMouseListener(new MouseAdapter() {
+                    @Override
+                    public void mouseClicked(MouseEvent mouseEvent) {
+                        finalToogleErrorPanel.setEnabled(!finalToogleErrorPanel.isEnabled());
+                        finalToogleConsole.setEnabled(false);
+                        finalToogleKevScriptEditor.setEnabled(false);
+                        consoleShow = false;
+                        kevsShow = false;
+                        if (errorShow) {
+                            dividerPos = splitPane.getDividerLocation();
+                            p.removeAll();
+                            p.add(artpanel.getPanel(), BorderLayout.CENTER);
+                            p.repaint();
+                            p.revalidate();
+                        } else {
+                            dividerPos = splitPane.getDividerLocation();
+                            p.removeAll();
+                            p.add(splitPane, BorderLayout.CENTER);
+                            splitPane.setTopComponent(artpanel.getPanel());
+                            splitPane.setBottomComponent(org.kevoree.tools.ui.editor.ErrorPanel.getPanel());
+                            splitPane.setDividerLocation(dividerPos);
+                            p.repaint();
+                            p.revalidate();
+
+                        }
+                        errorShow = !errorShow;
+                    }
+                });
+
+
 
                 final AbstractButton finalToogleTypeEditionMode = toogleTypeEditionMode;
                 toogleTypeEditionMode.addMouseListener(new MouseAdapter() {

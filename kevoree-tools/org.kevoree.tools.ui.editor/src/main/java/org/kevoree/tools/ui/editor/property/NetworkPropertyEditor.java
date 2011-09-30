@@ -92,9 +92,9 @@ public class NetworkPropertyEditor extends JPanel {
 
         private ContainerNode _node = null;
         String[] attlistString = {
-            org.kevoree.framework.Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP(),
-            org.kevoree.framework.Constants.KEVOREE_PLATFORM_REMOTE_NODE_MODELSYNCH_PORT(),
-            org.kevoree.framework.Constants.KEVOREE_PLATFORM_REMOTE_NODE_DISPATCHER_PORT()
+            org.kevoree.framework.Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP()//,
+           // org.kevoree.framework.Constants.KEVOREE_PLATFORM_REMOTE_NODE_MODELSYNCH_PORT(),
+           // org.kevoree.framework.Constants.KEVOREE_PLATFORM_REMOTE_NODE_DISPATCHER_PORT()
         };
         JComboBox attlist = new JComboBox(attlistString);
         JTextField value = new JTextField();
