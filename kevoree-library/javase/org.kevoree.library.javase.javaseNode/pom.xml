@@ -27,6 +27,7 @@
             <artifactId>org.kevoree.kompare</artifactId>
             <version>${project.version}</version>
         </dependency>
+
     </dependencies>
 
     <build>

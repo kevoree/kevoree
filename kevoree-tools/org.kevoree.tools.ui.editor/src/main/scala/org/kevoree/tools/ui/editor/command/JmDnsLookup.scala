@@ -50,7 +50,9 @@ class JmDnsLookup extends Command {
                   kernel.getModelHandler.getActualModel.getNodes.add(newnode)
                 }
                 KevoreePlatformHelper.updateNodeLinkProp(kernel.getModelHandler.getActualModel, info.getName.trim(), info.getName.trim(), org.kevoree.framework.Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP, info.getInet4Addresses()(0).getHostAddress, "LAN", 100)
-                KevoreePlatformHelper.updateNodeLinkProp(kernel.getModelHandler.getActualModel, info.getName.trim(), info.getName.trim(), org.kevoree.framework.Constants.KEVOREE_PLATFORM_REMOTE_NODE_MODELSYNCH_PORT, info.getPort.toString, "LAN", 100)
+              //  KevoreePlatformHelper.updateNodeLinkProp(kernel.getModelHandler.getActualModel, info.getName.trim(), info.getName.trim(), org.kevoree.framework.Constants.KEVOREE_PLATFORM_REMOTE_NODE_MODELSYNCH_PORT, info.getPort.toString, "LAN", 100)
+
+                //TODO CALL & MERGE MODEL IF IP COMMUNICATION AVAILABLE
               }
               case None => println(info.getNiceTextString+" type definition not found")
             }

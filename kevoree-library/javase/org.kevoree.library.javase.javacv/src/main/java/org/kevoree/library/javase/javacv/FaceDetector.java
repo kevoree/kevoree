@@ -1,7 +1,7 @@
 package org.kevoree.library.javase.javacv;
 
 import com.googlecode.javacpp.Loader;
-import com.googlecode.javacv.cpp.opencv_objdetect;
+import com.googlecode.javacv.cpp.*;
 import org.kevoree.annotation.*;
 import org.kevoree.framework.AbstractComponentType;
 import org.kevoree.framework.MessagePort;
@@ -64,7 +64,7 @@ public class FaceDetector extends AbstractComponentType {
 			image.release();
 			grayImage.release();
 			frame.release();
-			cvReleaseMemStorage(storage);
+			storage.release();
 		}
 		equImg = null;
 		image = null;
@@ -89,7 +89,11 @@ public class FaceDetector extends AbstractComponentType {
 				if (!isAlreadyInitialized) {
 
 					// preload the opencv_objdetect module to work around a known bug
+					Loader.load(opencv_core.class);
 					Loader.load(opencv_objdetect.class);
+					Loader.load(opencv_features2d.class);
+					Loader.load(opencv_imgproc.class);
+					Loader.load(opencv_flann.class);
 					isAlreadyInitialized = true;
 
 					// We instantiate a classifier cascade to be used for detection, using the cascade definition.

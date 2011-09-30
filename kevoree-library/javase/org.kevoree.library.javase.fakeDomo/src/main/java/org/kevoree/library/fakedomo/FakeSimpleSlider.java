@@ -21,8 +21,6 @@ import org.kevoree.annotation.*;
 import org.kevoree.framework.MessagePort;
 
 import javax.swing.*;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
@@ -32,9 +30,7 @@ import java.awt.event.MouseListener;
  */
 
 @Requires({
-		@RequiredPort(name = "send", type = PortType.MESSAGE, needCheckDependency = true)/*,
-        @RequiredPort(name = "off", type = PortType.MESSAGE),
-        @RequiredPort(name = "toggle", type = PortType.SERVICE, className = ToggleLightService.class, optional = true)*/
+		@RequiredPort(name = "send", type = PortType.MESSAGE, needCheckDependency = true)
 })
 @ComponentType
 public class FakeSimpleSlider extends AbstractFakeStuffComponent {
@@ -58,7 +54,7 @@ public class FakeSimpleSlider extends AbstractFakeStuffComponent {
 		start();
 	}
 
-	private class MyFrame extends JFrame implements ChangeListener, MouseListener {
+	private class MyFrame extends JFrame implements MouseListener {
 
 		private JSlider slider;
 
@@ -66,7 +62,6 @@ public class FakeSimpleSlider extends AbstractFakeStuffComponent {
 			slider = new JSlider();
 
 			this.add(slider);
-			//slider.addChangeListener(this);
 			slider.addMouseListener(this);
 
 			if (isPortBinded("send")) {
@@ -74,15 +69,6 @@ public class FakeSimpleSlider extends AbstractFakeStuffComponent {
 			}
 
 			pack();
-		}
-
-		@Override
-		public void stateChanged (ChangeEvent e) {
-			if ((e.getSource()).equals(slider)) {
-				if (isPortBinded("send")) {
-					getPortByName("send", MessagePort.class).process(slider.getValue());
-				}
-			}
 		}
 
 		@Override
@@ -96,7 +82,6 @@ public class FakeSimpleSlider extends AbstractFakeStuffComponent {
 		@Override
 		public void mouseReleased (MouseEvent e) {
 			if ((e.getSource()).equals(slider)) {
-				slider.addMouseListener(this);
 				if (isPortBinded("send")) {
 					getPortByName("send", MessagePort.class).process(slider.getValue());
 				}

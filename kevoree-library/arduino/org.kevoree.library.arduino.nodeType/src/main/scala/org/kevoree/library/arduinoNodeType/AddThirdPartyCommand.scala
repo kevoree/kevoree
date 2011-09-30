@@ -26,7 +26,7 @@ case class AddThirdPartyCommand(ctx: BundleContext, ct: DeployUnit) {
     } catch {
       case _@e => {
 //        e.printStackTrace()
-        logger.error("Unable to execute AddThirdPartyCommand with " + ct.getName, e)
+        logger.error("Unable to execute AddThirdPartyCommand with " + ct.getUnitName+"-"+ct.getUrl, e)
         false
       }
     }

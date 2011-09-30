@@ -17,6 +17,8 @@
  */
 package org.kevoree.library.restChannels;
 
+import org.kevoree.ContainerNode;
+import org.kevoree.DictionaryValue;
 import org.kevoree.annotation.*;
 import org.kevoree.api.service.core.handler.KevoreeModelHandlerService;
 import org.kevoree.extra.marshalling.RichJSONObject;
@@ -125,7 +127,16 @@ public class RestChannel extends AbstractChannelFragment {
                 if (ip == null || ip.equals("")) {
                     ip = "127.0.0.1";
                 }
-                String port = KevoreePlatformHelper.getProperty(getModelService().getLastModel(), remoteNodeName, org.kevoree.framework.Constants.KEVOREE_PLATFORM_REMOTE_NODE_MODELSYNCH_PORT());
+                String port = "";
+                for(ContainerNode node : getModelService().getLastModel().getNodes()){
+                    if(node.getName().equals(remoteNodeName)){
+                        for(DictionaryValue value : node.getDictionary().getValues()){
+                           if(value.getAttribute().getName().equals("port")){
+                             port = value.getValue();
+                           }
+                        }
+                    }
+                }
                 if (port == null || port.equals("")) {
                     port = "8000";
                 }

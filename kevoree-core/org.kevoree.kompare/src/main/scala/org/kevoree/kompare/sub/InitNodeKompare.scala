@@ -26,7 +26,7 @@ import org.kevoree.framework.aspects.KevoreeAspects._
 
 trait InitNodeKompare extends AbstractKompare {
 
-  def getInitNodeAdaptationModel(node: ContainerNode): AdaptationModel = {
+  def getInitNodeAdaptationModel (node: ContainerNode): AdaptationModel = {
     val adaptationModel = org.kevoreeAdaptation.KevoreeAdaptationFactory.eINSTANCE.createAdaptationModel
     logger.info("INIT NODE v2 " + node.getName)
     //UPDATE ALL COMPONENT TYPE
@@ -42,29 +42,34 @@ trait InitNodeKompare extends AbstractKompare {
         adaptationModel.getAdaptations.add(typecmd)
 
         /* add all reLib from found deploy Unit*/
+        logger.info("Look for deploy unit for type definition " + ct.getName + " on " + node.getName)
         val deployUnitfound: DeployUnit = ct.foundRelevantDeployUnit(node)
+        if (deployUnitfound != null) {
+          logger.info("DeployUnit found " + deployUnitfound.getUnitName)
 
-
-        deployUnitfound.getRequiredLibs.foreach {
-          rLib =>
-            val addcttp = KevoreeAdaptationFactory.eINSTANCE.createAdaptationPrimitive()
-            addcttp.setPrimitiveType(getAdaptationPrimitive(JavaSePrimitive.AddThirdParty, root))
-            addcttp.setRef(rLib)
-            adaptationModel.getAdaptations.add(addcttp)
-        }
-
-        /* add deploy unit if necessary */
-        adaptationModel.getAdaptations.filter(adaptation => adaptation.getPrimitiveType.getName == JavaSePrimitive.AddDeployUnit)
-          .find(adaptation => adaptation.getRef.asInstanceOf[DeployUnit].isModelEquals(deployUnitfound)) match {
-          case None => {
-            val ctcmd = KevoreeAdaptationFactory.eINSTANCE.createAdaptationPrimitive()
-            ctcmd.setPrimitiveType(getAdaptationPrimitive(JavaSePrimitive.AddDeployUnit, root))
-            ctcmd.setRef(deployUnitfound)
-            adaptationModel.getAdaptations.add(ctcmd)
+          deployUnitfound.getRequiredLibs.foreach {
+            rLib =>
+              val addcttp = KevoreeAdaptationFactory.eINSTANCE.createAdaptationPrimitive()
+              addcttp.setPrimitiveType(getAdaptationPrimitive(JavaSePrimitive.AddThirdParty, root))
+              addcttp.setRef(rLib)
+              adaptationModel.getAdaptations.add(addcttp)
           }
-          case Some(e) => //SIMILAR DEPLOY UNIT PRIMITIVE ALREADY REGISTERED
-        }
 
+          /* add deploy unit if necessary */
+          adaptationModel.getAdaptations
+            .filter(adaptation => adaptation.getPrimitiveType.getName == JavaSePrimitive.AddDeployUnit)
+            .find(adaptation => adaptation.getRef.asInstanceOf[DeployUnit].isModelEquals(deployUnitfound)) match {
+            case None => {
+              val ctcmd = KevoreeAdaptationFactory.eINSTANCE.createAdaptationPrimitive()
+              ctcmd.setPrimitiveType(getAdaptationPrimitive(JavaSePrimitive.AddDeployUnit, root))
+              ctcmd.setRef(deployUnitfound)
+              adaptationModel.getAdaptations.add(ctcmd)
+            }
+            case Some(e) => //SIMILAR DEPLOY UNIT PRIMITIVE ALREADY REGISTERED
+          }
+        } else {
+          throw new Exception("Deploy Unit not found for " + node.getName)
+        }
 
     }
 

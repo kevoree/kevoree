@@ -17,8 +17,6 @@ class ModificationGenerator(ips : List[String]) {
   var ip: String = null
   var port: Int = 0
 
-
-
   def doAction(nodeName:String) {
     try {
       loadCurrentModel()
@@ -59,10 +57,29 @@ class ModificationGenerator(ips : List[String]) {
     if (ip == null || (ip == "")) {
       ip = "127.0.0.1"
     }
-    var port: String = KevoreePlatformHelper.getProperty(model, nodeName, org.kevoree.framework.Constants.KEVOREE_PLATFORM_REMOTE_NODE_MODELSYNCH_PORT)
-    if (port == null || (port == "")) {
-      port = "8000"
+    //var port: String = KevoreePlatformHelper.getProperty(model, nodeName, org.kevoree.framework.Constants.KEVOREE_PLATFORM_REMOTE_NODE_MODELSYNCH_PORT)
+    //if (port == null || (port == "")) {
+    //  port = "8000"
+    //}
+    val defPort = 8000
+    val port = model.getNodes.find(n => n.getName == nodeName) match {
+      case Some(node) => {
+        if (node.getDictionary != null) {
+          node.getDictionary.getValues.find(v => v.getAttribute.getName == "port") match {
+            case Some(att) => {
+              att.getValue
+            }
+            case None => defPort
+          }
+        } else {
+          defPort
+        }
+      }
+      case None => defPort
     }
+
+
+
     val urlString = "http://" + ip + ":" + port + "/model/current"
 
     val parser = new KevsParser();

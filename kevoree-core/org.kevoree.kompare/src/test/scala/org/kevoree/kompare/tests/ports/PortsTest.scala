@@ -59,7 +59,7 @@ class PortsTest extends AssertionsForJUnit with KompareSuite {
 
 
   @Test def verifyProvidedMessagePortAdded() {
-    val kompareModel = component.kompare(model("test_ports/MinusProvidedMessagePort.art2"), model("test_ports/Base.art2"), "nodeA")
+    val kompareModel = component.kompare(model("test_ports/MinusProvidedMessagePort2.art2"), model("test_ports/Base.art2"), "nodeA")
 
    // kompareModel.print
 

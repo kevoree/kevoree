@@ -1,12 +1,15 @@
 package org.kevoree.library.arduinoNodeType;
 
+import org.kevoree.ContainerNode;
 import org.kevoree.ContainerRoot;
 import org.kevoree.KevoreeFactory;
+import org.kevoree.TypeDefinition;
 import org.kevoree.adaptation.deploy.osgi.BaseDeployOSGi;
 import org.kevoree.annotation.*;
 import org.kevoree.extra.osgi.rxtx.KevoreeSharedCom;
-import org.kevoree.framework.*;
+import org.kevoree.framework.AbstractNodeType;
 import org.kevoree.framework.Constants;
+import org.kevoree.framework.KevoreeXmiHelper;
 import org.kevoree.kompare.JavaSePrimitive;
 import org.kevoree.kompare.KevoreeKompareBean;
 import org.kevoree.library.arduinoNodeType.generator.KevoreeCGenerator;
@@ -198,7 +201,7 @@ public class ArduinoNode extends AbstractNodeType {
 
             if (addType || removeType || updateType) {
                 typeAdaptationFound = true;
-                rootModel = (ContainerRoot) (p).getRef().eContainer();
+                rootModel = (ContainerRoot) ((TypeDefinition)p.getRef()).eContainer();
             }
         }
         if (typeAdaptationFound) {

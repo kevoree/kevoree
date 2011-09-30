@@ -62,14 +62,14 @@ class KevoreeCoreBean extends KevoreeModelHandlerService with KevoreeActor {
                 nodeInstance = ist;
                 nodeInstance.startNode()
               }
-              case None => logger.error("Node instance name " + nodeName + " not found in bootstrap model !")
+              case None => logger.error("TypeDef installation fail !")
             }
           }
           case None => logger.error("Node instance name " + nodeName + " not found in bootstrap model !")
         }
       }
     } catch {
-      case _@e => logger.error("Error while bootstraping node instance ",e)
+      case _@e => logger.error("Error while bootstraping node instance ", e)
     }
 
 
@@ -122,17 +122,28 @@ class KevoreeCoreBean extends KevoreeModelHandlerService with KevoreeActor {
     super[KevoreeActor].forceStop
     //TODO CLEAN AND REACTIVATE
 
-
-    val stopModel = KevoreeFactory.eINSTANCE.createContainerRoot();
-    val adaptationModel = nodeInstance.kompare(model, stopModel);
-
-    val deployResult = PrimitiveCommandExecutionHelper.execute(adaptationModel, nodeInstance)
-
     if (nodeInstance != null) {
-      nodeInstance.stopNode()
+
+      try {
+        val stopModel = KevoreeFactory.eINSTANCE.createContainerRoot();
+        val adaptationModel = nodeInstance.kompare(model, stopModel);
+        val deployResult = PrimitiveCommandExecutionHelper.execute(adaptationModel, nodeInstance)
+      } catch {
+        case _@e => {
+          logger.error("Error while unbootstrap ", e)
+        }
+      }
+      try {
+        nodeInstance.stopNode()
+        nodeInstance == null
+      } catch {
+        case _@e => {
+          logger.error("Error while stopping node instance ", e)
+        }
+      }
     }
 
-    logger.debug("Stop result => " + deployResult)
+    logger.debug("Kevoree core stopped ")
     // KevoreeXmiHelper.save(bundleContext.getDataFile("lastModel.xmi").getAbsolutePath(), models.head);
   }
 
