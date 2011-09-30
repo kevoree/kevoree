@@ -27,7 +27,7 @@ import org.slf4j.LoggerFactory
 class KevoreeConfigServiceBean extends ConfigurationService {
 
   var logger = LoggerFactory.getLogger(this.getClass);
-
+      /*
   if(System.getProperty(ConfigConstants.KEVOREE_CONFIG.getValue)!= null){
     val configF = new File(System.getProperty(ConfigConstants.KEVOREE_CONFIG.getValue))
     if(configF.exists){
@@ -35,7 +35,7 @@ class KevoreeConfigServiceBean extends ConfigurationService {
      // Configgy.configure(configF.getAbsolutePath)
      // config = Some(Configgy.config)
     }
-  }
+  }  */
 
   def getProperty(constant : ConfigConstant)={
     if(System.getProperty(constant.getValue) != null){

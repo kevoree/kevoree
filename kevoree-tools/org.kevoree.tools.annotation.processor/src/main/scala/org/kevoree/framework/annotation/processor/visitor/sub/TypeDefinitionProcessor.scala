@@ -32,11 +32,11 @@ trait TypeDefinitionProcessor {
     val parent = model.getTypeDefinitions.filter(td => td.isInstanceOf[A]).find(n => n.getName == parentName) match {
       case Some(foundTD) => foundTD
       case None => {
-        val newTypeDef = parentType match {
-          case _:NodeType => KevoreeFactory.eINSTANCE.createNodeType()
-          case _:ComponentType => KevoreeFactory.eINSTANCE.createComponentType()
-          case _:ChannelType => KevoreeFactory.eINSTANCE.createChannelType()
-          case _:GroupType => KevoreeFactory.eINSTANCE.createGroupType()
+        val newTypeDef = parentType.getSimpleName match {
+          case "NodeType" => KevoreeFactory.eINSTANCE.createNodeType()
+          case "ComponentType" => KevoreeFactory.eINSTANCE.createComponentType()
+          case "ChannelType" => KevoreeFactory.eINSTANCE.createChannelType()
+          case "GroupType" => KevoreeFactory.eINSTANCE.createGroupType()
           case _ @ notFound => println("erro => "+parentName+"-"+notFound) ;null
         }
         newTypeDef.setName(parentName)

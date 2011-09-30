@@ -35,6 +35,8 @@ import java.util.Arrays;
  */
 public class App {
     public static void main(String[] args) {
+        DefaultSystem.saveSystemFlux();
+
         try {
             File cacheFolder = createTempDirectory();
             cacheFolder.deleteOnExit();
@@ -49,7 +51,7 @@ public class App {
         if(param != null ){
             model = KevoreeXmiHelper.load(param.toString());
         } else {
-            model = KevoreeXmiHelper.loadStream(App.class.getClassLoader().getResourceAsStream("lib.kev")) ;
+            model = KevoreeXmiHelper.loadStream(App.class.getClassLoader().getResourceAsStream("defaultLibrary.kev")) ;
 
         }
         final KevoreeGUIFrame frame = new KevoreeGUIFrame(model);
