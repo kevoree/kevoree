@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <kevoree:ContainerRoot xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:kevoree="http://kevoree/1.0">
+  <nodes name="KEVOREEDefaultNodeName" typeDefinition="//@typeDefinitions.2" metaData="x=216,y=144">
+    <dictionary>
+      <values attribute="//@typeDefinitions.2/@dictionaryType/@attributes.0" value="8000"/>
+    </dictionary>
+  </nodes>
   <typeDefinitions xsi:type="kevoree:NodeType" name="MiniCloudNode" deployUnits="//@deployUnits.0" factoryBean="org.kevoree.library.sky.minicloud.MiniCloudNodeFactory" bean="org.kevoree.library.sky.minicloud.MiniCloudNode" startMethod="startNode" stopMethod="stopNode" managedPrimitiveTypes="//@adaptationPrimitiveTypes.0 //@adaptationPrimitiveTypes.1 //@adaptationPrimitiveTypes.2">
     <dictionaryType>
       <attributes name="port"/>
