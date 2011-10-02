@@ -17,7 +17,9 @@
  */
 package org.kevoree.tools.ui.framework.elements;
 
-import java.awt.Color;
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.awt.image.VolatileImage;
 
 import org.kevoree.tools.ui.framework.ErrorHighlightableElement;
 import org.kevoree.tools.ui.framework.RoundedTitledPanel;
@@ -33,13 +35,14 @@ public class NodePanel extends RoundedTitledPanel implements SelectElement, Erro
     public void setTitle(String nodeName,String _nodeTypeName){
         this.nodeTypeName = _nodeTypeName;
         this.setTitle(nodeName);
+        notifyUIChanged();
     }
-
 
     @Override
     public void setTitle(String _title) {
         super.setTitle(_title+" : "+nodeTypeName);
         this.setToolTipText("Node "+_title+" : "+nodeTypeName);
+        notifyUIChanged();
     }
 
     public NodePanel() {
@@ -93,4 +96,23 @@ public Dimension getPreferredSize() {
         return _state;
     }
 
+
+    private BufferedImage bufferGhost;
+
+    @Override
+    public void paintComponent(Graphics graphics) {
+        if (bufferGhost == null) {
+            bufferGhost = getGraphicsConfiguration().createCompatibleImage(getWidth(), getHeight(), Transparency.TRANSLUCENT);
+            Graphics2D g2 =bufferGhost.createGraphics();
+            g2.setComposite(AlphaComposite.Src);
+            super.paintComponent(g2);
+        }
+        graphics.drawImage(bufferGhost, 0, 0, null);
+    }
+
+    @Override
+    public void notifyUIChanged() {
+        bufferGhost = null;
+        super.notifyUIChanged();
+    }
 }
