@@ -89,9 +89,10 @@ public class RoundPanel extends JPanel implements ChangeAwareComponent {
     protected void paintComponent(Graphics g) {
        // super.paintComponent(g);
 
-        if (bufferGhost == null || bufferGhost.contentsLost()) {
+        if (bufferGhost == null) {
             //bufferGhost = createVolatileImage(getWidth(), getHeight(),Transparency.TRANSLUCENT);
-            bufferGhost = getGraphicsConfiguration().createCompatibleVolatileImage(getWidth(), getHeight(), Transparency.TRANSLUCENT);
+           // bufferGhost = getGraphicsConfiguration().createCompatibleVolatileImage(getWidth(), getHeight(), Transparency.TRANSLUCENT);
+            bufferGhost = getGraphicsConfiguration().createCompatibleImage(getWidth(), getHeight(), Transparency.TRANSLUCENT);
 
             int x = (SHADOW_SIZE - 6);
             int y = (SHADOW_SIZE - 6);
@@ -162,7 +163,7 @@ public class RoundPanel extends JPanel implements ChangeAwareComponent {
         return content.add(comp);
     }
 
-    private VolatileImage bufferGhost;
+    private BufferedImage bufferGhost;
 
     @Override
     public void notifyUIChanged() {
