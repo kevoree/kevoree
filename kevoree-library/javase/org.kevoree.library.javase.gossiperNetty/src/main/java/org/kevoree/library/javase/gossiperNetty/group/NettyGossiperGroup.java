@@ -22,7 +22,7 @@ import java.util.List;
 		@DictionaryAttribute(name = "interval", defaultValue = "30000", optional = true),
 		@DictionaryAttribute(name = "port", defaultValue = "9010", optional = true),
 		@DictionaryAttribute(name = "FullUDP", defaultValue = "false", optional = true),
-		@DictionaryAttribute(name = "org/kevoree/library/javase/gossiperNetty/sendNotification", defaultValue = "true", optional = true),
+		@DictionaryAttribute(name = "sendNotification", defaultValue = "true", optional = true),
 		@DictionaryAttribute(name = "alwaysAskModel", defaultValue = "false", optional = true)
 })
 public class NettyGossiperGroup extends AbstractGroupType implements GossiperComponent {
@@ -43,7 +43,7 @@ public class NettyGossiperGroup extends AbstractGroupType implements GossiperCom
 	@Start
 	public void startGossiperGroup () {
 
-		sendNotification = parseBooleanProperty("org/kevoree/library/javase/gossiperNetty/sendNotification");
+		sendNotification = parseBooleanProperty("sendNotification");
 
 		Long timeoutLong = Long.parseLong((String) this.getDictionary().get("interval"));
 
