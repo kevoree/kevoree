@@ -13,6 +13,9 @@
  */
 package org.kevoree.platform.osgi.standalone;
 
+import org.kevoree.ContainerRoot;
+import org.kevoree.framework.KevoreeXmiHelper;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.Random;
