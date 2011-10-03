@@ -42,12 +42,12 @@ public class KinectNativeLibraryLoader {
 				return "nativelib/Linux/i686-unknown-linux-gnu";
 			}
 		} else if (isMac()) {
-			return "MacOs";
+			return "nativelib/MacOs";
 		} else if (isWindows()) {
 			if (!is64()) {
-				return "windows/x86";
+				return "nativelib/windows/x86";
 			} else if (is64()) {
-				return "windows/x86_64";
+				return "nativelib/windows/x86_64";
 			}
 		}
 		return ".";
@@ -95,7 +95,7 @@ public class KinectNativeLibraryLoader {
 	private static String copyFileFromStream (String fileName, String filePath, File folder) throws IOException {
 		InputStream inputStream = KinectNativeLibraryLoader.class.getClassLoader()
 				.getResourceAsStream(filePath + "/" + fileName);
-//		if (inputStream != null) {
+		//if (inputStream != null) {
 			File copy = new File(folder + File.separator + fileName);
 			copy.deleteOnExit();
 			OutputStream outputStream = new FileOutputStream(copy);
@@ -106,8 +106,8 @@ public class KinectNativeLibraryLoader {
 				length = inputStream.read(bytes);
 			}
 			return folder.getAbsolutePath() + File.separator + fileName;
-//		}
-//		return null;
+		//}
+		//return null;
 	}
 
 	/*private void copyResult (String filePath, File folder) {
