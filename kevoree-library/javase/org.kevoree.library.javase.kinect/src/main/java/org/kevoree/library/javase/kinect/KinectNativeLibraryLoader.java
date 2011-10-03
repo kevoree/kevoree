@@ -95,7 +95,7 @@ public class KinectNativeLibraryLoader {
 	private static String copyFileFromStream (String fileName, String filePath, File folder) throws IOException {
 		InputStream inputStream = KinectNativeLibraryLoader.class.getClassLoader()
 				.getResourceAsStream(filePath + "/" + fileName);
-		if (inputStream != null) {
+//		if (inputStream != null) {
 			File copy = new File(folder + File.separator + fileName);
 			copy.deleteOnExit();
 			OutputStream outputStream = new FileOutputStream(copy);
@@ -106,8 +106,8 @@ public class KinectNativeLibraryLoader {
 				length = inputStream.read(bytes);
 			}
 			return folder.getAbsolutePath() + File.separator + fileName;
-		}
-		return null;
+//		}
+//		return null;
 	}
 
 	/*private void copyResult (String filePath, File folder) {
