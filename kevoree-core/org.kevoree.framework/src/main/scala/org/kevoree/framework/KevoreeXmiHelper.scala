@@ -19,11 +19,11 @@
 package org.kevoree.framework
 
 import org.kevoree.ContainerRoot
-import java.util.HashMap
 import java.util.zip.{Deflater, Inflater}
 import org.slf4j.LoggerFactory
 import java.io._
 import org.kevoree.loader.ContainerRootLoader
+import org.kevoree.serializer.ModelSerializer
 
 object KevoreeXmiHelper {
 
@@ -31,7 +31,14 @@ object KevoreeXmiHelper {
 
   def save(uri: String, root: ContainerRoot) = {
 
+    val serializer = new ModelSerializer
+    val result = serializer.serialize(root)
+    val pr = new PrintWriter(new FileOutputStream(uri))
+    pr.print(result)
+    pr.flush()
+    pr.close()
 
+    /*
     val rs: ResourceSetImpl = new ResourceSetImpl();
 
     rs.getResourceFactoryRegistry().getExtensionToFactoryMap().put("*", new XMIResourceFactoryImpl());
@@ -42,7 +49,7 @@ object KevoreeXmiHelper {
     res.asInstanceOf[XMIResource].getDefaultSaveOptions().put(XMLResource.OPTION_ENCODING, "UTF-8");
     res.getContents.add(root)
     res.save(new HashMap());
-
+    */
   }
 
 
@@ -85,7 +92,15 @@ object KevoreeXmiHelper {
     */
   }
 
-  def saveStream(output: OutputStream, root: ContainerRoot): Unit = {
+  def saveStream(output: OutputStream, root: ContainerRoot) : Unit = {
+
+    val serializer = new ModelSerializer
+    val result = serializer.serialize(root)
+    val pr = new PrintWriter(output)
+    pr.print(result)
+    pr.flush()
+
+    /*
     val rs: ResourceSetImpl = new ResourceSetImpl();
     rs.getResourceFactoryRegistry().getExtensionToFactoryMap().put("*", new XMIResourceFactoryImpl());
     rs.getPackageRegistry().put(KevoreePackage.eNS_URI, KevoreePackage.eINSTANCE);
@@ -95,9 +110,10 @@ object KevoreeXmiHelper {
     res.asInstanceOf[XMIResource].getDefaultSaveOptions().put(XMLResource.OPTION_ENCODING, "UTF-8");
     res.getContents.add(root)
     res.save(output, new HashMap())
+    */
   }
 
-  def saveCompressedStream(output: OutputStream, root: ContainerRoot): Unit = {
+  def saveCompressedStream(output: OutputStream, root: ContainerRoot) : Unit = {
     val modelStream = new ByteArrayOutputStream()
     saveStream(modelStream, root)
     val compressor = new Deflater()
