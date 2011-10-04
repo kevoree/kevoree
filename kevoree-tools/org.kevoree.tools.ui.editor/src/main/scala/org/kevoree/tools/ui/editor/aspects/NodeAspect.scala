@@ -22,7 +22,7 @@ import org.kevoree._
 import org.kevoree.tools.ui.editor.KevoreeUIKernel
 import org.kevoree.tools.ui.framework.elements.ModelPanel
 import org.kevoree.tools.ui.framework.elements.NodePanel
-import scala.collection.JavaConversions._
+
 import Art2UIAspects._
 
 case class NodeAspect(self: ContainerNode) {

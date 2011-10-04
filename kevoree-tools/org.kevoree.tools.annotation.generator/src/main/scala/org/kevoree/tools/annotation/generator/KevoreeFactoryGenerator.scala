@@ -20,7 +20,7 @@ package org.kevoree.tools.annotation.generator
 
 import com.sun.mirror.apt.Filer
 import java.io.File
-import scala.collection.JavaConversions._
+
 import org.kevoree.framework.aspects.KevoreeAspects._
 import org.kevoree.framework.KevoreeGeneratorHelper
 import org.kevoree._

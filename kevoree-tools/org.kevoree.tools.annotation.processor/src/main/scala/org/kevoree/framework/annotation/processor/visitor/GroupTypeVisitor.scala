@@ -22,7 +22,7 @@ import com.sun.mirror.apt.AnnotationProcessorEnvironment
 import com.sun.mirror.declaration.ClassDeclaration
 import com.sun.mirror.declaration.MethodDeclaration
 import com.sun.mirror.util.SimpleDeclarationVisitor
-import scala.collection.JavaConversions._
+
 import org.kevoree.framework.annotation.processor.visitor.sub.DeployUnitProcessor
 import org.kevoree.framework.annotation.processor.visitor.sub.DictionaryProcessor
 import org.kevoree.framework.annotation.processor.visitor.sub.LibraryProcessor

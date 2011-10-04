@@ -19,7 +19,7 @@
 package org.kevoree.tools.ui.editor.aspects
 
 import org.kevoree._
-import scala.collection.JavaConversions._
+
 import Art2UIAspects._
 
 object Art2UIAspects{

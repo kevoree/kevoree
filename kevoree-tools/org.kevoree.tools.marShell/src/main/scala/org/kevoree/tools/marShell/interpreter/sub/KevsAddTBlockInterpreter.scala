@@ -22,7 +22,7 @@ import org.kevoree.tools.marShell.ast.TransactionalBloc
 import org.kevoree.tools.marShell.interpreter.KevsAbstractInterpreter
 import org.kevoree.tools.marShell.interpreter.KevsInterpreterContext
 import org.kevoree.tools.marShell.interpreter.KevsInterpreterAspects._
-import scala.collection.JavaConversions._
+
 
 case class KevsAddTBlockInterpreter(block : TransactionalBloc) extends KevsAbstractInterpreter {
 

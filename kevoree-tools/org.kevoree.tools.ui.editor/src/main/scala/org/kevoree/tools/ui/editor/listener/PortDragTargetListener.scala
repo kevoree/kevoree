@@ -17,7 +17,7 @@ import org.kevoree.tools.ui.framework.elements.PortPanel
 import java.awt.dnd.{DropTargetDropEvent, DropTarget}
 import java.awt.datatransfer.DataFlavor
 import com.explodingpixels.macwidgets.{HudWidgetFactory, HudWindow}
-import scala.collection.JavaConversions._
+
 import org.kevoree.framework.aspects.KevoreeAspects._
 import org.kevoree.tools.marShell.parser.KevsParser
 import util.Random

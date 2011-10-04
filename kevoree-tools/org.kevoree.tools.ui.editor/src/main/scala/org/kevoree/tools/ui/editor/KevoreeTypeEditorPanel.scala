@@ -17,7 +17,7 @@ import org.kevoree._
 import javax.swing.{BoxLayout, JPanel, JSplitPane}
 import java.awt.{Dimension, BorderLayout}
 import tools.ui.framework.elements.PortPanel
-import scala.collection.JavaConversions._
+
 
 /**
  * User: ffouquet

@@ -21,7 +21,7 @@ package org.kevoree.tools.marShell.interpreter.sub
 import org.kevoree.tools.marShell.ast.AddChannelInstanceStatment
 import org.kevoree.tools.marShell.interpreter.KevsAbstractInterpreter
 import org.kevoree.tools.marShell.interpreter.KevsInterpreterContext
-import scala.collection.JavaConversions._
+
 import org.kevoree.{ChannelType, KevoreeFactory}
 import org.kevoree.tools.marShell.interpreter.utils.Merger
 import org.slf4j.LoggerFactory

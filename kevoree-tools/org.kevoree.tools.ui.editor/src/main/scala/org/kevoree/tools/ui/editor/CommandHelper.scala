@@ -15,7 +15,7 @@ package org.kevoree.tools.ui.editor
 
 import org.kevoree.ContainerRoot
 import org.kevoree.DeployUnit
-import scala.collection.JavaConversions._
+
 import org.kevoree.framework.KevoreePlatformHelper
 
 object CommandHelper {

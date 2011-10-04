@@ -25,7 +25,7 @@ import com.sun.mirror.declaration.InterfaceDeclaration
 import com.sun.mirror.declaration.MethodDeclaration
 import com.sun.mirror.declaration.TypeDeclaration
 import com.sun.mirror.util.SimpleDeclarationVisitor
-import scala.collection.JavaConversions._
+
 import sub._
 import org.kevoree.{NodeType, ComponentType}
 

@@ -19,7 +19,7 @@
 package org.kevoree.tools.marShellTransform
 
 import org.junit._
-import scala.collection.JavaConversions._
+
 import org.kevoree.tools.marShell.interpreter.KevsInterpreterAspects._
 import org.kevoree.kompare.KevoreeKompareBean
 

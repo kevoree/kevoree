@@ -13,7 +13,7 @@
  */
 package org.kevoree.tools.model2code.componentTypeSub
 
-import scala.collection.JavaConversions._
+
 import japa.parser.ast.body.TypeDeclaration
 import java.util.ArrayList
 import japa.parser.ast.expr._

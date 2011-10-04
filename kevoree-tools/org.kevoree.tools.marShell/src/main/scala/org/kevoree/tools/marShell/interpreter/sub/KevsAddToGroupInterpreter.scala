@@ -20,7 +20,7 @@ package org.kevoree.tools.marShell.interpreter.sub
 
 import org.kevoree.tools.marShell.interpreter.KevsAbstractInterpreter
 import org.kevoree.tools.marShell.interpreter.KevsInterpreterContext
-import scala.collection.JavaConversions._
+
 import org.kevoree.tools.marShell.ast.{AddToGroupStatement, AddBindingStatment}
 import org.kevoree.{ContainerNode, Group, KevoreeFactory}
 

@@ -22,7 +22,7 @@ import org.kevoree.tools.marShell.interpreter.KevsAbstractInterpreter
 import org.kevoree.tools.marShell.interpreter.KevsInterpreterContext
 import org.kevoree.tools.marShell.ast.{RemoveFromGroupStatement, AddToGroupStatement}
 import org.kevoree.{ContainerNode, Group}
-import scala.collection.JavaConversions._
+
 
 case class KevsRemoveFromGroupInterpreter(removeFromGroup : RemoveFromGroupStatement) extends KevsAbstractInterpreter {
 

@@ -15,7 +15,7 @@ package org.kevoree.tools.model2code.genericSub
  */
 import japa.parser.ast.body.{MethodDeclaration, TypeDeclaration}
 import org.kevoree.annotation.{Update, Stop, Start}
-import scala.collection.JavaConversions._
+
 import japa.parser.ast.CompilationUnit
 
 /**
