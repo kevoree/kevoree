@@ -37,6 +37,7 @@ abstract class KevoreeChannelFragmentActivator extends BundleActivator {
   def start(bc: BundleContext) {
     bundleContext = bc
     /* SEARCH HEADERS VALUE */
+    import scala.collection.JavaConversions._
     nodeName = bc.getBundle.getHeaders.find(dic => dic._1 == Constants.KEVOREE_NODE_NAME_HEADER).get._2.toString
     instanceName = bc.getBundle.getHeaders.find(dic => dic._1 == Constants.KEVOREE_INSTANCE_NAME_HEADER).get._2.toString
     /* Create component actor */

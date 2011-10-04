@@ -20,7 +20,7 @@ package org.kevoree.framework
 
 class KevoreeDictionary {
 
-  private var map =  new java.util.HashMap[String,AnyRef]
+  private val map =  new java.util.HashMap[String,AnyRef]
 
   def get(key:String) = map.get(key)
 
