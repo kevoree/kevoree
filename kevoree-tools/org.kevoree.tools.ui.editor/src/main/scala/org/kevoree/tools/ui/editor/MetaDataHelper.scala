@@ -36,6 +36,7 @@ object MetaDataHelper {
   }
 
   def containKeys(keys: java.util.List[String], map: java.util.HashMap[String, String]): Boolean = {
+    import scala.collection.JavaConversions._
     keys.forall(key => map.contains(key))
   }
 

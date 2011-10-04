@@ -54,6 +54,7 @@ class CheckCurrentModel extends Command {
     objectInError = List()
     ErrorPanel.clear()
     val result = checker.check(kernel.getModelHandler.getActualModel)
+    import scala.collection.JavaConversions._
     result.foreach({
       res =>
         ErrorPanel.displayError(res)

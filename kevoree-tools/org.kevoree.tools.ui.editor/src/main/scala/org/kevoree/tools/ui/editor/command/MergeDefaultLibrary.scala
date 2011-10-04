@@ -16,7 +16,6 @@ package org.kevoree.tools.ui.editor.command
 import java.net.URL
 import org.kevoree.framework.KevoreeXmiHelper
 import java.io.{File, BufferedReader, InputStreamReader, OutputStreamWriter}
-import org.eclipse.emf.common.util.URI
 import org.kevoree.tools.ui.editor.{PositionedEMFHelper, KevoreeUIKernel}
 import org.slf4j.LoggerFactory
 
@@ -75,12 +74,12 @@ class MergeDefaultLibrary extends Command {
         //CREATE TEMP FILE FROM ACTUAL MODEL
         val tempFile = File.createTempFile("kevoreeEditorTemp", ".kev");
         PositionedEMFHelper.updateModelUIMetaData(kernel);
-        KevoreeXmiHelper.save(URI.createFileURI(tempFile.getAbsolutePath()).toString(), kernel.getModelHandler().getActualModel);
+        KevoreeXmiHelper.save("file://"+tempFile.getAbsolutePath, kernel.getModelHandler.getActualModel);
 
         //LOAD MODEL
         val loadCmd = new LoadModelCommand();
         loadCmd.setKernel(kernel);
-        loadCmd.execute(URI.createFileURI(tempFile.getAbsolutePath()).toString());
+        loadCmd.execute("file://"+tempFile.getAbsolutePath);
 
 
       } else {

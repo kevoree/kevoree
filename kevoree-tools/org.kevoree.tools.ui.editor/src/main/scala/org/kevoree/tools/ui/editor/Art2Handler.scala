@@ -22,21 +22,18 @@ import command.Command
 import org.kevoree.ContainerRoot
 import org.kevoree.KevoreeFactory
 import org.kevoree.merger.KevoreeMergerComponent
-import org.eclipse.emf.common.notify.impl.AdapterImpl
-import org.eclipse.emf.common.notify.Notification
-
 
 class Art2Handler(kernel: KevoreeUIKernel) {
 
-  private val listenerCommand: java.util.List[Command] = new java.util.ArrayList[Command]()
-  private var merger = new KevoreeMergerComponent
+  private var listenerCommand: List[Command] = List[Command]()
+  private val merger = new KevoreeMergerComponent
   private var actualModel: ContainerRoot = KevoreeFactory.eINSTANCE.createContainerRoot
-  actualModel.eAdapters.add(EMFListener)
+
+  //actualModel.eAdapters.add(EMFListener)
 
   def addListenerCommand(c: Command) = {
-    listenerCommand.add(c)
+    listenerCommand = listenerCommand ++ List(c)
   }
-
 
   def merge(modelToMerge: ContainerRoot): Unit = {
     actualModel = merger.merge(actualModel, modelToMerge)
@@ -49,28 +46,13 @@ class Art2Handler(kernel: KevoreeUIKernel) {
 
   def setActualModel(c: ContainerRoot) = {
     actualModel = c
-
-    actualModel.eAllContents.foreach {
-      elem =>
-        if (!elem.eAdapters.contains(EMFListener)) {
-          elem.eAdapters.add(EMFListener)
-        }
-    }
-    actualModel.eAdapters.add(EMFListener)
     //TODO FIRE CHANGE
-    EMFListener.notifyChanged(null)
+    EMFListener.notifyChanged()
   }
 
-  object EMFListener extends AdapterImpl {
-    override def notifyChanged(notification: Notification) = {
-      listenerCommand.foreach(adapt => adapt.execute(notification))
-      actualModel.eAllContents.foreach {
-        elem =>
-          if (!elem.eAdapters.contains(EMFListener)) {
-            elem.eAdapters.add(EMFListener)
-          }
-      }
-
+  object EMFListener  {
+     def notifyChanged() = {
+      listenerCommand.foreach(adapt => adapt.execute(null))
       kernel.getModelPanel.repaint();
       kernel.getModelPanel.revalidate();
     }

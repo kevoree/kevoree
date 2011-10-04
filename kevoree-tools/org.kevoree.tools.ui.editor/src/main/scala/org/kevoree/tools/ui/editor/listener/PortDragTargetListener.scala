@@ -85,7 +85,7 @@ class PortDragTargetListener(target: PortPanel, kernel: KevoreeUIKernel) extends
       val draggedPanel = p1.getTransferable.getTransferData(new DataFlavor(DataFlavor.javaJVMLocalObjectMimeType));
       val targetPort: Port = kernel.getUifactory.getMapping.get(target).asInstanceOf[Port]
       val dropPort: Port = kernel.getUifactory.getMapping.get(draggedPanel).asInstanceOf[Port]
-      if (targetPort.isProvidedPort() && dropPort.isProvidedPort() || targetPort.isRequiredPort() && dropPort.isRequiredPort()) {
+      if (targetPort.isProvidedPort && dropPort.isProvidedPort || targetPort.isRequiredPort && dropPort.isRequiredPort) {
         throw new Exception("Can't bind Port with same nature (Provided/Required)")
       }
 
@@ -113,8 +113,8 @@ class PortDragTargetListener(target: PortPanel, kernel: KevoreeUIKernel) extends
           val script = new StringBuilder
           script.append("tblock{")
           script.append("addChannel " + newChannelName + " : " + selectedTypeDef.get.getName + "\n")
-          script.append("bind " + targetPort.eContainer().asInstanceOf[ComponentInstance].getName + "." + targetPort.getPortTypeRef.getName + "@" + targetPort.eContainer().eContainer().asInstanceOf[ContainerNode].getName + " => " + newChannelName + "\n")
-          script.append("bind " + dropPort.eContainer().asInstanceOf[ComponentInstance].getName + "." + dropPort.getPortTypeRef.getName + "@" + dropPort.eContainer().eContainer().asInstanceOf[ContainerNode].getName + " => " + newChannelName + "\n")
+          script.append("bind " + targetPort.eContainer.asInstanceOf[ComponentInstance].getName + "." + targetPort.getPortTypeRef.getName + "@" + targetPort.eContainer.eContainer.asInstanceOf[ContainerNode].getName + " => " + newChannelName + "\n")
+          script.append("bind " + dropPort.eContainer.asInstanceOf[ComponentInstance].getName + "." + dropPort.getPortTypeRef.getName + "@" + dropPort.eContainer.eContainer.asInstanceOf[ContainerNode].getName + " => " + newChannelName + "\n")
           script.append("}")
           val parsedScript = parser.parseScript(script.toString())
           parsedScript.map {
