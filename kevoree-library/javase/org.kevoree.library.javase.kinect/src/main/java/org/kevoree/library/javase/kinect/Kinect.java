@@ -14,6 +14,7 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.awt.image.WritableRaster;
 import java.nio.ByteBuffer;
+import java.util.Properties;
 
 /**
  * User: Erwan Daubert - erwan.daubert@gmail.com
@@ -57,7 +58,19 @@ public class Kinect extends AbstractComponentType {
 	public void start () throws Exception {
 
 		if (instance == null) {
-			NativeLibrary.addSearchPath("freenect", KinectNativeLibraryLoader.configure());
+            String path = KinectNativeLibraryLoader.configure();
+			NativeLibrary.addSearchPath("freenect", path);
+            if(KinectNativeLibraryLoader.isMac()){
+                
+                for(Object key : System.getProperties().keySet()){
+                   System.out.println(key+"=>"+System.getProperty(key.toString()));
+                }
+                
+
+                System.setProperty("DYLD_LIBRARY_PATH",path);
+                NativeLibrary.addSearchPath("usb", path);
+            }
+
 			instance = NativeLibrary.getInstance("freenect");
 			nbComponent++;
 			Native.register(Freenect.class, instance);
