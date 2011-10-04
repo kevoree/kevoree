@@ -26,7 +26,6 @@ import org.kevoree.ChannelType
 import org.kevoree.ComponentType
 import org.kevoree.TypeDefinition
 import org.kevoree.api.service.core.merger.MergerService
-import scala.collection.JavaConversions._
 
 class AssembliesTest extends MergerTestSuiteHelper  {
 

@@ -21,7 +21,6 @@ package org.kevoree.remote
 import java.io.IOException
 import java.net.DatagramSocket
 import java.net.ServerSocket
-import scala.collection.JavaConversions._
 
 object NetworkUtility {
 

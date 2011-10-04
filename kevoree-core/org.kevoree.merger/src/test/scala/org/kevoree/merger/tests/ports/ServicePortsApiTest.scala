@@ -33,7 +33,6 @@ import org.kevoree.ServicePortType
 import org.kevoree.TypeDefinition
 import org.kevoree.TypedElement
 import org.kevoree.api.service.core.merger.MergerService
-import scala.collection.JavaConversions._
 
 class ServicePortsApiTest extends MergerTestSuiteHelper  {
 

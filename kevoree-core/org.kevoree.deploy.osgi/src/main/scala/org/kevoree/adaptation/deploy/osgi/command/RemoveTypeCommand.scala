@@ -20,8 +20,7 @@ package org.kevoree.adaptation.deploy.osgi.command
 
 import org.kevoree.adaptation.deploy.osgi.context.KevoreeDeployManager
 import org.slf4j.LoggerFactory
-import scala.collection.JavaConversions._
-import org.kevoree.TypeDefinition
+ import org.kevoree.TypeDefinition
 import org.kevoree.framework.PrimitiveCommand
 
 

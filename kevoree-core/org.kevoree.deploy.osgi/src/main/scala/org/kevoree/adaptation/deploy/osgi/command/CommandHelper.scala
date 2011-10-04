@@ -20,8 +20,7 @@ package org.kevoree.adaptation.deploy.osgi.command
 
 import org.kevoree.ContainerRoot
 import org.kevoree.DeployUnit
-import scala.collection.JavaConversions._
-import org.kevoree.framework.KevoreePlatformHelper
+ import org.kevoree.framework.KevoreePlatformHelper
 
 object CommandHelper {
 

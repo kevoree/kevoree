@@ -33,7 +33,6 @@ import org.kevoree.ServicePortType
 import org.kevoree.TypeDefinition
 import org.kevoree.TypeLibrary
 import org.kevoree.TypedElement
-import scala.collection.JavaConversions._
 
 class Pruner {
 

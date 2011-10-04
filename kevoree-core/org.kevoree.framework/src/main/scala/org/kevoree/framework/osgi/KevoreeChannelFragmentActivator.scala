@@ -21,8 +21,7 @@ package org.kevoree.framework.osgi
 import java.util.Hashtable
 import org.osgi.framework.BundleActivator
 import org.osgi.framework.BundleContext
-import scala.collection.JavaConversions._
-import org.kevoree.framework.message._
+ import org.kevoree.framework.message._
 import org.kevoree.api.service.core.handler.KevoreeModelHandlerService
 import org.kevoree.framework.{AbstractChannelFragment, KevoreeChannelFragment, ChannelTypeFragment, Constants}
 

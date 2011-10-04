@@ -23,7 +23,6 @@ import org.kevoree.adaptation.deploy.osgi.context.KevoreeDeployManager
 import org.kevoree.framework.KevoreeActor
 import org.kevoree.framework.Constants
 import org.kevoree.framework.message.StopMessage
-import scala.collection.JavaConversions._
 
 case class StopInstanceCommand(c : Instance, ctx : KevoreeDeployManager,nodeName:String) extends LifeCycleCommand(c, ctx,nodeName) {
 

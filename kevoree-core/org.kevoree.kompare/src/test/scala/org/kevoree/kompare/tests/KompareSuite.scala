@@ -22,8 +22,7 @@ import org.kevoree.framework.KevoreeXmiHelper
 import org.kevoreeAdaptation.AdaptationModel
 import org.kevoreeAdaptation._
 import org.scalatest.junit.JUnitSuite
-import scala.collection.JavaConversions._
-import org.kevoree._
+ import org.kevoree._
 
 trait KompareSuite extends JUnitSuite {
 

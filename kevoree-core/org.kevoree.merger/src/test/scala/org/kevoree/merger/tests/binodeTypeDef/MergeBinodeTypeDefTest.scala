@@ -24,7 +24,6 @@ import org.kevoree.merger.tests.MergerTestSuiteHelper
 import org.kevoree.ChannelType
 import org.kevoree.ComponentType
 import org.kevoree.api.service.core.merger.MergerService
-import scala.collection.JavaConversions._
 
 class MergeBinodeTypeDefTest extends MergerTestSuiteHelper  {
 

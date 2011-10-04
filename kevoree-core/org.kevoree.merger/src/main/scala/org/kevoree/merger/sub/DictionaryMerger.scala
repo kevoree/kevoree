@@ -20,8 +20,7 @@ package org.kevoree.merger.sub
 
 import org.kevoree.Dictionary
 import org.kevoree.DictionaryType
-import scala.collection.JavaConversions._
-import org.kevoree.framework.aspects.KevoreeAspects._
+ import org.kevoree.framework.aspects.KevoreeAspects._
 
 trait DictionaryMerger {
 

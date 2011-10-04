@@ -15,8 +15,7 @@ package org.kevoree.framework.osgi
 
 import org.kevoree.framework.KevoreeGroup
 import org.osgi.framework.{BundleContext, BundleActivator}
-import scala.collection.JavaConversions._
-import org.kevoree.framework.message._
+ import org.kevoree.framework.message._
 import org.kevoree.framework.Constants
 import java.util.Hashtable
 import org.kevoree.api.service.core.handler.KevoreeModelHandlerService
