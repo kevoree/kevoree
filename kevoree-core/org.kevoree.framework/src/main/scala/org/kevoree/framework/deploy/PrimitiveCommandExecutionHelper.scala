@@ -32,7 +32,13 @@ object PrimitiveCommandExecutionHelper {
 
   def execute(adaptionModel: AdaptationModel, nodeInstance: AbstractNodeType): Boolean = {
     if (adaptionModel.getOrderedPrimitiveSet != null) {
-      executeStep(adaptionModel.getOrderedPrimitiveSet, nodeInstance)
+      adaptionModel.getOrderedPrimitiveSet match {
+        case Some(orderedPrimitiveSet)=> {
+          executeStep(orderedPrimitiveSet, nodeInstance)
+        }
+        case None => true
+      }
+
     } else {
       true
     }
@@ -58,7 +64,12 @@ object PrimitiveCommandExecutionHelper {
     if (populateResult) {
       val phaseResult = phase.runPhase()
       if (phaseResult) {
-        val subResult = executeStep(step.getNextStep, nodeInstance)
+         val subResult =step.getNextStep match {
+           case Some(nextStep)=> {
+               executeStep(nextStep, nodeInstance)
+           }
+           case None => true
+         }
         if (!subResult) {
           phase.rollBack()
           false
