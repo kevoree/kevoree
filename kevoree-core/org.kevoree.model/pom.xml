@@ -31,14 +31,39 @@
                 <extensions>true</extensions>
                 <executions>
                     <execution>
+                        <id>ModelGen</id>
                         <goals>
-                            <goal>generate</goal>
+                            <goal>model</goal>
                         </goals>
                         <configuration>
                             <ecore>metamodel/kevoree.ecore</ecore>
                             <rootPackage>org</rootPackage>
                             <output>${project.build.directory}/generated-sources/emf</output>
                             <clearOutput>true</clearOutput>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>LoaderGen</id>
+                        <goals>
+                            <goal>loader</goal>
+                        </goals>
+                        <configuration>
+                            <ecore>metamodel/kevoree.ecore</ecore>
+                            <rootPackage>org</rootPackage>
+                            <output>${project.build.directory}/generated-sources/emf</output>
+                            <clearOutput>false</clearOutput>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>SerializerGen</id>
+                        <goals>
+                            <goal>serializer</goal>
+                        </goals>
+                        <configuration>
+                            <ecore>metamodel/kevoree.ecore</ecore>
+                            <rootPackage>org</rootPackage>
+                            <output>${project.build.directory}/generated-sources/emf</output>
+                            <clearOutput>false</clearOutput>
                         </configuration>
                     </execution>
                 </executions>
