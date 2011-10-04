@@ -93,7 +93,7 @@ object KevoreeFactoryGenerator {
         /* CREATE NEW PROVIDED PORT & PROXY */
         ct.getProvided.foreach {
           ref =>
-            val portName = ct.getName() + "PORT" + ref.getName();
+            val portName = ct.getName + "PORT" + ref.getName
             // var portNameProxy = ct.getName()+"PORTPROXY"+ref.getName();
             wrapper.append("def create" + portName + "(component : " + ct.getName + ") : " + portName + " ={ new " +
               portName + "(component)}\n")
@@ -103,7 +103,7 @@ object KevoreeFactoryGenerator {
         /* CREATE NEW REQUIRED PROXY */
         ct.getRequired.foreach {
           ref =>
-            val portName = ct.getName() + "PORT" + ref.getName();
+            val portName = ct.getName + "PORT" + ref.getName
             //        var portNameProxy = ct.getName()+"PORTPROXY"+ref.getName();
 
             wrapper
