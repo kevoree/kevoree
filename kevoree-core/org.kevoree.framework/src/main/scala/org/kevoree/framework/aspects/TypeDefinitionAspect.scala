@@ -39,7 +39,7 @@ case class TypeDefinitionAspect(selfTD: TypeDefinition) {
     }
     selfTD.getSuperTypes.foreach {
       selfSuperTD =>
-        if (!pTD.getSuperTypes.get.exists(td => td.getName == selfSuperTD.getName)) {
+        if (!pTD.getSuperTypes.exists(td => td.getName == selfSuperTD.getName)) {
           return false
         }
     }
@@ -57,7 +57,7 @@ case class TypeDefinitionAspect(selfTD: TypeDefinition) {
 
     pTD.getDictionaryType match {
       case Some(dico) => {
-        if (!dico.isModelEquals(selfTD.getDictionaryType)) {
+        if (!dico.isModelEquals(selfTD.getDictionaryType.get)) {
           return true
         }
       }
@@ -227,9 +227,10 @@ case class TypeDefinitionAspect(selfTD: TypeDefinition) {
       case None => null
     }
     if (deployUnitfound == null && nodeType.getSuperTypes != null) {
-      nodeType.getSuperTypes.exists(superNode =>
+      nodeType.getSuperTypes.exists(superNode => {
       // call recursively for super types and test if something has been found {
-        deployUnitfound = foundRelevantDeployUnitOnNodeSuperTypes(superNode.asInstanceOf[NodeType], t); deployUnitfound == null
+        deployUnitfound = foundRelevantDeployUnitOnNodeSuperTypes(superNode.asInstanceOf[NodeType], t)
+        deployUnitfound == null
       })
     }
     deployUnitfound

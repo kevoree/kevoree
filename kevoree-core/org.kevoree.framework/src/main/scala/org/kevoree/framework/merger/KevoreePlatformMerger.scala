@@ -30,20 +30,20 @@ object KevoreePlatformMerger {
     listNN.foreach{nn=>
       //MERGE NODE NETWORK
 
-      actualModel.getNodeNetworks.find(ann=> ann.getInitBy.get.getName == nn.getInitBy.getName && ann.getTarget.getName == nn.getTarget.get.getName  ) match {
+      actualModel.getNodeNetworks.find(ann=> ann.getInitBy.get.getName == nn.getInitBy.get.getName && ann.getTarget.getName == nn.getTarget.getName  ) match {
         case None => actualModel.addNodeNetworks(nn)
-        case Some(nnfound) => {
+        case Some(nnfound:NodeNetwork) => {
 
             val listNL = nn.getLink ++ List()
             listNL.foreach{nl=>
               nnfound.getLink.find(anl=> anl.getNetworkType == nl.getNetworkType && anl.getEstimatedRate == nl.getEstimatedRate  ) match {
-                case None => nnfound.getLink.add(nl)
-                case Some(nlfound)=> {
+                case None => nnfound.addLink(nl)
+                case Some(nlfound:NodeLink)=> {
                     val NLP = nl.getNetworkProperties ++ List()
                     NLP.foreach{np=>
                       nlfound.getNetworkProperties.find(lnp=> lnp.getName == np.getName) match {
-                        case None => nl.getNetworkProperties.add(np)
-                        case Some(fnp) => {
+                        case None => nl.addNetworkProperties(np)
+                        case Some(fnp:NetworkProperty) => {
                             //OVERRIDE
                             try{
                               val foundLastCheck = java.lang.Long.parseLong(fnp.getLastCheck)
