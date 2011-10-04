@@ -24,36 +24,21 @@ import java.io.BufferedReader
 import org.scalatest.junit.JUnitSuite
 
 import org.junit.Assert._
-import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl
-import org.kevoree.{KevoreePackage, KevoreeFactory, ContainerRoot}
-import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl
-import org.eclipse.emf.ecore.xmi.{XMLResource, XMIResource}
-import org.eclipse.emf.common.util.URI
-import org.eclipse.emf.ecore.resource.Resource
 import java.util.HashMap
 import org.kevoree.tools.marShell.parser.{ParserUtil, KevsParser}
 import org.kevoree.tools.marShell.ast.Script
+import org.kevoree.{ContainerRoot, KevoreeFactory}
+import org.kevoree.framework.KevoreeXmiHelper
 
 trait KevSTestSuiteHelper extends JUnitSuite {
 
   /* UTILITY METHOD */
   def model(url: String): ContainerRoot = {
     val modelPath = this.getClass.getClassLoader.getResource(url).getPath
-    load(modelPath)
+    KevoreeXmiHelper.load(modelPath)
   }
 
   def emptyModel = KevoreeFactory.eINSTANCE.createContainerRoot
-
-  def load(uri: String): ContainerRoot = {
-    val rs = new ResourceSetImpl();
-    rs.getResourceFactoryRegistry().getExtensionToFactoryMap().put("kev", new XMIResourceFactoryImpl());
-    rs.getPackageRegistry().put(KevoreePackage.eNS_URI, KevoreePackage.eINSTANCE);
-    val res = rs.getResource(URI.createURI(uri), true)
-    res.asInstanceOf[XMIResource].getDefaultLoadOptions().put(XMLResource.OPTION_ENCODING, "UTF-8");
-    res.asInstanceOf[XMIResource].getDefaultSaveOptions().put(XMLResource.OPTION_ENCODING, "UTF-8");
-    val result = res.getContents().get(0);
-    return result.asInstanceOf[ContainerRoot];
-  }
 
   def getScript(url:String) : Script = {
     val parser =new KevsParser();
@@ -86,25 +71,12 @@ case class RichContainerRoot(self: ContainerRoot) extends KevSTestSuiteHelper {
 
   def testSave(path: String, file: String) {
     try {
-      save(this.getClass.getClassLoader.getResource(path).getPath + "/" + file, self)
+      KevoreeXmiHelper.save(this.getClass.getClassLoader.getResource(path).getPath + "/" + file, self)
       assertTrue("At least one relative reference have been detected in model " + path + "/" + file, hasNoRelativeReference(path, file))
     } catch {
       case _@e => e.printStackTrace(); fail()
     }
   }
-
-  def save(uri: String, root: ContainerRoot) = {
-    val rs: ResourceSetImpl = new ResourceSetImpl();
-    rs.getResourceFactoryRegistry().getExtensionToFactoryMap().put("*", new XMIResourceFactoryImpl());
-    rs.getPackageRegistry().put(KevoreePackage.eNS_URI, KevoreePackage.eINSTANCE);
-    val uri1: URI = URI.createURI(uri)
-    val res: Resource = rs.createResource(uri1)
-    res.asInstanceOf[XMIResource].getDefaultLoadOptions().put(XMLResource.OPTION_ENCODING, "UTF-8");
-    res.asInstanceOf[XMIResource].getDefaultSaveOptions().put(XMLResource.OPTION_ENCODING, "UTF-8");
-    res.getContents.add(root)
-    res.save(new HashMap());
-  }
-
 
   def setLowerHashCode(): ContainerRoot = {
     self.getDeployUnits.foreach(du => du.setHashcode(0 + ""))
