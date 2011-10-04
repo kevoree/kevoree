@@ -71,7 +71,7 @@ case class KevsAddNodeInterpreter(addN: AddNodeStatment) extends KevsAbstractInt
 
             Merger.mergeDictionary(newnode, addN.props)
 
-            context.model.getNodes.add(newnode)
+            context.model.addNodes(newnode)
             true
           }
         }
