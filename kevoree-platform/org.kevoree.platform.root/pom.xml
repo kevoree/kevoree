@@ -10,7 +10,6 @@
     <url>https://github.com/dukeboard/kevoree</url>
 
     <properties>
-        <emf.version>2.7.0</emf.version>
         <scala.version>2.9.1</scala.version>
         <slf4j.version>1.6.1</slf4j.version>
         <slf4j.version.range>[1.5,2)</slf4j.version.range>

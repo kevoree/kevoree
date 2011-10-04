@@ -13,9 +13,7 @@
  */
 package org.kevoree.platform.osgi.standalone;
 
-import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.kevoree.ContainerRoot;
-import org.kevoree.KevoreeFactory;
 import org.kevoree.api.service.core.handler.KevoreeModelHandlerService;
 import org.kevoree.api.service.core.script.ScriptInterpreter;
 import org.kevoree.framework.KevoreeXmiHelper;
@@ -23,13 +21,9 @@ import org.kevoree.tools.marShell.ast.Script;
 import org.kevoree.tools.marShell.interpreter.KevsInterpreterContext;
 import org.kevoree.tools.marShell.interpreter.KevsScriptInterpreter;
 import org.kevoree.tools.marShell.parser.KevsParser;
-import org.kevoreeAdaptation.KevoreeAdaptationFactory;
 import scala.Option;
-
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.InputStream;
-import java.io.OutputStream;
 
 public class KevScriptInterpreterService implements ScriptInterpreter {
 
