@@ -21,9 +21,7 @@ import org.kevoree._
 import framework.KevoreeXmiHelper
 import java.util.Properties
 import com.explodingpixels.macwidgets.{IAppWidgetFactory, HudWidgetFactory}
-import scala.collection.JavaConversions._
 import com.explodingpixels.macwidgets.plaf.{HudButtonUI, HudLabelUI, HudTextFieldUI, HudComboBoxUI}
-import org.eclipse.emf.common.util.URI
 
 /**
  * User: ffouquet
@@ -133,7 +131,7 @@ class NodeTypeBootStrapUI(pkernel: ContainerRoot) extends JPanel {
         val returnVal: Int = filechooser.showOpenDialog(null)
         if (filechooser.getSelectedFile != null && returnVal == JFileChooser.APPROVE_OPTION) {
           try {
-            val lastLoadedModel = URI.createFileURI(filechooser.getSelectedFile.getAbsolutePath).toString
+            val lastLoadedModel = "file:///"+filechooser.getSelectedFile.getAbsolutePath.toString
             val newModel = KevoreeXmiHelper.load(lastLoadedModel)
             init(newModel)
             repaint()
@@ -201,9 +199,11 @@ class NodeTypeBootStrapUI(pkernel: ContainerRoot) extends JPanel {
   def getParamsPanel(nodeTypeDefinition: TypeDefinition, props: Properties): JComponent = {
     val p = new JPanel(new SpringLayout)
     p.setBorder(null)
-    if (nodeTypeDefinition.getDictionaryType != null) {
-      nodeTypeDefinition.getDictionaryType.getAttributes.foreach {
+    if (nodeTypeDefinition.getDictionaryType.isDefined) {
+      nodeTypeDefinition.getDictionaryType.get.getAttributes.foreach {
         att =>
+          println(att.getName)
+
           val l = new JLabel(att.getName, SwingConstants.TRAILING)
           l.setUI(new HudLabelUI)
           p.add(l)
@@ -243,7 +243,7 @@ class NodeTypeBootStrapUI(pkernel: ContainerRoot) extends JPanel {
             })
           }
       }
-      SpringUtilities.makeCompactGrid(p, nodeTypeDefinition.getDictionaryType.getAttributes.size, 2, 6, 6, 6, 6)
+      SpringUtilities.makeCompactGrid(p, nodeTypeDefinition.getDictionaryType.get.getAttributes.size, 2, 6, 6, 6, 6)
     }
 
 
@@ -260,16 +260,16 @@ class NodeTypeBootStrapUI(pkernel: ContainerRoot) extends JPanel {
   def getDefValue(nodeName: String, model: ContainerRoot, typeName : String): Properties = {
     val props = new Properties
     model.getTypeDefinitions.find(td => td.getName == typeName).map( td => {
-      if(td.getDictionaryType != null && td.getDictionaryType.getDefaultValues != null){
-        td.getDictionaryType.getDefaultValues.foreach{ defVal =>
+      if(td.getDictionaryType.isDefined && td.getDictionaryType.get.getDefaultValues != null){
+        td.getDictionaryType.get.getDefaultValues.foreach{ defVal =>
               props.put(defVal.getAttribute.getName, defVal.getValue)
         }
       }
     })
     model.getNodes.find(node => node.getName == nodeName).map {
       nodeFound =>
-        if (nodeFound.getDictionary != null) {
-          nodeFound.getDictionary.getValues.foreach {
+        if (nodeFound.getDictionary.isDefined) {
+          nodeFound.getDictionary.get.getValues.foreach {
             dicVal =>
               props.put(dicVal.getAttribute.getName, dicVal.getValue)
           }
