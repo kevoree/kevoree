@@ -20,8 +20,7 @@ package org.kevoree.kompare.sub
 
 import org.kevoree._
 import kompare.JavaSePrimitive
-import scala.collection.JavaConversions._
-import org.kevoree.framework.aspects.KevoreeAspects._
+ import org.kevoree.framework.aspects.KevoreeAspects._
 import org.kevoreeAdaptation._
 
 trait UpdateChannelKompare extends AbstractKompare {

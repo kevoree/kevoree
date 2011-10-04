@@ -25,8 +25,7 @@ import org.kevoree.adaptation.deploy.osgi.context.KevoreeDeployManager
 import org.kevoree.adaptation.deploy.osgi.context.KevoreeOSGiBundle
 import org.kevoree.framework.FileHelper._
 import org.kevoree.framework.aspects.KevoreeAspects._
-import scala.collection.JavaConversions._
-import org.slf4j.LoggerFactory
+ import org.slf4j.LoggerFactory
 
 case class AddInstanceCommand(c: Instance, ctx: KevoreeDeployManager, nodeName: String) extends PrimitiveCommand {
 

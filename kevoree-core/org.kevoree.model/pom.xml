@@ -107,7 +107,7 @@
                             <instructions>
                                 <Export-Package>org.kevoree.*</Export-Package>
                                 <Bundle-SymbolicName>org.kevoree.model</Bundle-SymbolicName>
-                                <Import-Package>!org.kevoree.*,org.eclipse.emf.*,org.osgi.framework</Import-Package>
+                                <Import-Package>!org.kevoree.*,org.osgi.framework</Import-Package>
                                 <Bundle-ClassPath>.</Bundle-ClassPath>
                             </instructions>
                         </configuration>

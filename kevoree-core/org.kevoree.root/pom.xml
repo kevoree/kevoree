@@ -162,7 +162,6 @@
 
     <modules>
         <module>../org.kevoree.model</module>
-        <!--
         <module>../org.kevoree.adaptation.model</module>
         <module>../org.kevoree.api</module>
         <module>../org.kevoree.framework</module>
@@ -173,7 +172,7 @@
         <module>../org.kevoree.deploy.osgi</module>
         <module>../org.kevoree.core</module>
         <module>../org.kevoree.remote</module>
-        <module>../org.kevoree.basechecker</module> -->
+        <module>../org.kevoree.basechecker</module>
     </modules>
 
     <distributionManagement>

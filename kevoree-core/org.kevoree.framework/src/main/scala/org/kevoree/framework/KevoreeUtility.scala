@@ -25,7 +25,6 @@ import org.kevoree.Instance
 import org.kevoree.MBinding
 import org.kevoree.PortType
 import org.kevoree.TypedElement
-import scala.collection.JavaConversions._
 
 object KevoreeUtility {
 

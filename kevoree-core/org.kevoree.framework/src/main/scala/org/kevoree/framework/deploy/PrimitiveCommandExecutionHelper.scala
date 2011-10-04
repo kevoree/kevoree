@@ -15,8 +15,7 @@ package org.kevoree.framework.deploy
 
 import org.kevoreeAdaptation.{ParallelStep, AdaptationModel}
 import org.kevoree.framework.{PrimitiveCommand, AbstractNodeType}
-import scala.collection.JavaConversions._
-import org.slf4j.LoggerFactory
+ import org.slf4j.LoggerFactory
 import actors.DaemonActor
 import actors.threadpool.{TimeUnit, Executors}
 

@@ -26,8 +26,7 @@ import org.kevoree.ContainerRoot
 import org.kevoree.framework.KevoreeXmiHelper
 import org.kevoreeAdaptation._
 import org.scalatest.junit.JUnitSuite
-import scala.collection.JavaConversions._
-import org.junit.Assert._
+ import org.junit.Assert._
 
 trait MergerTestSuiteHelper extends JUnitSuite {
 

@@ -23,7 +23,6 @@ import framework.{PrimitiveCommand, Constants, KevoreeActor}
 import org.kevoree.adaptation.deploy.osgi.context.KevoreeDeployManager
 import org.kevoree.framework.message.UpdateDictionaryMessage
 import org.slf4j.LoggerFactory
-import scala.collection.JavaConversions._
 
 case class UpdateDictionaryCommand(c: Instance, ctx: KevoreeDeployManager, nodeName: String) extends PrimitiveCommand {
 

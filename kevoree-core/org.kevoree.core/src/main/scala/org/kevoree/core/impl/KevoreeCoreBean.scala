@@ -30,8 +30,7 @@ import org.kevoree.api.configuration.ConfigConstants
 import java.util.Date
 import org.kevoree.api.service.core.handler.{ModelListener, KevoreeModelHandlerService}
 import org.eclipse.emf.ecore.util.EcoreUtil
-import scala.collection.JavaConversions._
-import org.kevoree.framework._
+ import org.kevoree.framework._
 import deploy.PrimitiveCommandExecutionHelper
 import org.kevoree.tools.aether.framework.NodeTypeBootstrapHelper
 

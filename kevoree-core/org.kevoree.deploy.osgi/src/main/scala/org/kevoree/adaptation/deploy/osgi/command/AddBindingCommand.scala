@@ -24,7 +24,6 @@ import org.kevoree.adaptation.deploy.osgi.context.KevoreeDeployManager
 import org.kevoree.framework.message.FragmentBindMessage
 import org.kevoree.framework.message.PortBindMessage
 import org.slf4j.LoggerFactory
-import scala.collection.JavaConversions._
 
 case class AddBindingCommand(c : MBinding, ctx : KevoreeDeployManager,nodeName:String) extends PrimitiveCommand {
 

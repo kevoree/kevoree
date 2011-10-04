@@ -22,8 +22,7 @@ import org.kevoree.KevoreeFactory
 import org.kevoree.ContainerRoot
 import org.kevoree.DeployUnit
 import org.kevoree.Repository
-import scala.collection.JavaConversions._
-import org.kevoree.framework.aspects.KevoreeAspects._
+ import org.kevoree.framework.aspects.KevoreeAspects._
 
 trait RepositoryMerger {
 

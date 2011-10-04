@@ -13,8 +13,7 @@
  */
 package org.kevoree.kompare
 
-import scala.collection.JavaConversions._
-import scheduling.SchedulingWithTopologicalOrderAlgo
+ import scheduling.SchedulingWithTopologicalOrderAlgo
 import org.kevoreeAdaptation.{KevoreeAdaptationFactory, AdaptationModel}
 
 /**

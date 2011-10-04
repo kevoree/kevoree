@@ -23,8 +23,7 @@ import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.service.packageadmin.PackageAdmin
 import org.osgi.util.tracker.ServiceTracker
-import scala.collection.JavaConversions._
-import org.osgi.service.startlevel.StartLevel
+ import org.osgi.service.startlevel.StartLevel
 import reflect.BeanProperty
 
 

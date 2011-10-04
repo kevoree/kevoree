@@ -19,8 +19,7 @@
 package org.kevoree.framework
 
 import org.kevoree._
-import scala.collection.JavaConversions._
-import org.slf4j.LoggerFactory
+ import org.slf4j.LoggerFactory
 
 object KevoreePlatformHelper {
 
