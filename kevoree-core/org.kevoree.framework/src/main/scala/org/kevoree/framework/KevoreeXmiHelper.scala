@@ -24,93 +24,50 @@ import org.slf4j.LoggerFactory
 import java.io._
 import org.kevoree.loader.ContainerRootLoader
 import org.kevoree.serializer.ModelSerializer
+<<<<<<< HEAD
+=======
+import xml.PrettyPrinter
+>>>>>>> commit
 
 object KevoreeXmiHelper {
 
   val logger = LoggerFactory.getLogger(this.getClass)
 
   def save(uri: String, root: ContainerRoot) = {
-
     val serializer = new ModelSerializer
     val result = serializer.serialize(root)
-    val pr = new PrintWriter(new FileOutputStream(uri))
-    pr.print(result)
-    pr.flush()
-    pr.close()
+    val pp = new PrettyPrinter(3000,1)
+    val fileWrite = new FileWriter(uri)
+    fileWrite.append(pp.format(serializer.serialize(root)))
 
-    /*
-    val rs: ResourceSetImpl = new ResourceSetImpl();
-
-    rs.getResourceFactoryRegistry().getExtensionToFactoryMap().put("*", new XMIResourceFactoryImpl());
-    rs.getPackageRegistry().put(KevoreePackage.eNS_URI, KevoreePackage.eINSTANCE);
-    val uri1: URI = URI.createURI(uri)
-    val res: Resource = rs.createResource(uri1)
-    res.asInstanceOf[XMIResource].getDefaultLoadOptions().put(XMLResource.OPTION_ENCODING, "UTF-8");
-    res.asInstanceOf[XMIResource].getDefaultSaveOptions().put(XMLResource.OPTION_ENCODING, "UTF-8");
-    res.getContents.add(root)
-    res.save(new HashMap());
-    */
   }
 
 
   def load(uri: String): ContainerRoot = {
-    logger.debug("load model from => "+uri)
+    logger.debug("load model from => " + uri)
     val localModel = ContainerRootLoader.loadModel(new File(uri));
     localModel match {
       case Some(m) => m
-      case None => println("Model not loaded!");null
+      case None => println("Model not loaded!"); null
     }
 
-    /*
-    val rs = new ResourceSetImpl();
-    rs.getResourceFactoryRegistry().getExtensionToFactoryMap().put("*", new XMIResourceFactoryImpl());
-    rs.getPackageRegistry().put(KevoreePackage.eNS_URI, KevoreePackage.eINSTANCE);
-    val res = rs.getResource(URI.createURI(uri), true)
-    res.asInstanceOf[XMIResource].getDefaultLoadOptions().put(XMLResource.OPTION_ENCODING, "UTF-8");
-    res.asInstanceOf[XMIResource].getDefaultSaveOptions().put(XMLResource.OPTION_ENCODING, "UTF-8");
-    var result = res.getContents().get(0);
-    //println(res)
-    return result.asInstanceOf[ContainerRoot];
-    */
   }
 
   def loadStream(input: InputStream): ContainerRoot = {
     val localModel = ContainerRootLoader.loadModel(input);
     localModel match {
       case Some(m) => m
-      case None => println("Model not loaded!");null
+      case None => println("Model not loaded!"); null
     }
-    /*
-    val rs = new ResourceSetImpl();
-    rs.getResourceFactoryRegistry().getExtensionToFactoryMap().put("*", new XMIResourceFactoryImpl());
-    rs.getPackageRegistry().put(KevoreePackage.eNS_URI, KevoreePackage.eINSTANCE);
-    var ressource = rs.createResource(URI.createURI(KevoreePackage.eNS_URI));
-    ressource.asInstanceOf[XMIResource].getDefaultLoadOptions().put(XMLResource.OPTION_ENCODING, "UTF-8");
-    ressource.asInstanceOf[XMIResource].getDefaultSaveOptions().put(XMLResource.OPTION_ENCODING, "UTF-8");
-    ressource.load(input, new HashMap());
-    ressource.getContents.get(0).asInstanceOf[ContainerRoot];
-    */
+
   }
 
   def saveStream(output: OutputStream, root: ContainerRoot) : Unit = {
-
     val serializer = new ModelSerializer
     val result = serializer.serialize(root)
     val pr = new PrintWriter(output)
     pr.print(result)
     pr.flush()
-
-    /*
-    val rs: ResourceSetImpl = new ResourceSetImpl();
-    rs.getResourceFactoryRegistry().getExtensionToFactoryMap().put("*", new XMIResourceFactoryImpl());
-    rs.getPackageRegistry().put(KevoreePackage.eNS_URI, KevoreePackage.eINSTANCE);
-    val uri1: URI = URI.createURI(KevoreePackage.eNS_URI + "MEMORY")
-    val res: Resource = rs.createResource(uri1)
-    res.asInstanceOf[XMIResource].getDefaultLoadOptions().put(XMLResource.OPTION_ENCODING, "UTF-8");
-    res.asInstanceOf[XMIResource].getDefaultSaveOptions().put(XMLResource.OPTION_ENCODING, "UTF-8");
-    res.getContents.add(root)
-    res.save(output, new HashMap())
-    */
   }
 
   def saveCompressedStream(output: OutputStream, root: ContainerRoot) : Unit = {
