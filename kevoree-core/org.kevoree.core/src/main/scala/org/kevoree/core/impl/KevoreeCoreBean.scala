@@ -32,6 +32,7 @@ import org.kevoree.api.service.core.handler.{ModelListener, KevoreeModelHandlerS
 import org.kevoree.framework._
 import deploy.PrimitiveCommandExecutionHelper
 import org.kevoree.tools.aether.framework.NodeTypeBootstrapHelper
+import java.io.{BufferedOutputStream, BufferedInputStream, InputStream, OutputStream}
 
 class KevoreeCoreBean extends KevoreeModelHandlerService with KevoreeActor {
 
@@ -56,7 +57,7 @@ class KevoreeCoreBean extends KevoreeModelHandlerService with KevoreeActor {
           case Some(foundNode) => {
             val bt = new NodeTypeBootstrapHelper
             bt.bootstrapNodeType(currentModel, nodeName, bundleContext) match {
-              case Some(ist) => {
+              case Some(ist:AbstractNodeType) => {
                 nodeInstance = ist;
                 nodeInstance.startNode()
               }
@@ -150,7 +151,7 @@ class KevoreeCoreBean extends KevoreeModelHandlerService with KevoreeActor {
     case PreviousModel() => reply(models)
     case LastModel() => {
       logger.debug("Before get copy model")
-      reply(EcoreUtil.copy(model))
+      reply(KevoreeXmiHelper.loadString(KevoreeXmiHelper.saveToString(model,false)))
       logger.debug("After get Copy model")
     }
 
@@ -162,7 +163,7 @@ class KevoreeCoreBean extends KevoreeModelHandlerService with KevoreeActor {
 
         try {
 
-          val newmodel = EcoreUtil.copy(pnewmodel)
+          val newmodel = KevoreeXmiHelper.loadString(KevoreeXmiHelper.saveToString(pnewmodel,false))
           checkBootstrapNode(newmodel)
           val milli = System.currentTimeMillis
           logger.debug("Begin update model " + milli)
