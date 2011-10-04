@@ -19,27 +19,27 @@
 package org.kevoree.framework.aspects
 
 import org.kevoree._
- import KevoreeAspects._
+import KevoreeAspects._
 import org.slf4j.LoggerFactory
 
-case class TypeDefinitionAspect (selfTD: TypeDefinition) {
+case class TypeDefinitionAspect(selfTD: TypeDefinition) {
 
   val logger = LoggerFactory.getLogger(this.getClass)
 
-  def isModelEquals (pct: TypeDefinition): Boolean = {
+  def isModelEquals(pct: TypeDefinition): Boolean = {
     pct.getName == selfTD.getName
     /* deep compare */
   }
 
   /* Check if the new type definition define new deploy unit than self */
-  def contractChanged (pTD: TypeDefinition): Boolean = {
+  def contractChanged(pTD: TypeDefinition): Boolean = {
 
     if (selfTD.getSuperTypes.size != pTD.getSuperTypes.size) {
       return true
     }
     selfTD.getSuperTypes.foreach {
       selfSuperTD =>
-        if (!pTD.getSuperTypes.exists(td => td.getName == selfSuperTD.getName)) {
+        if (!pTD.getSuperTypes.get.exists(td => td.getName == selfSuperTD.getName)) {
           return false
         }
     }
@@ -53,14 +53,18 @@ case class TypeDefinitionAspect (selfTD: TypeDefinition) {
     if (pTD.getFactoryBean != selfTD.getFactoryBean) {
       return true
     }
-    //DICTIONARY TYPE CHECK  
-    if (pTD.getDictionaryType != null) {
-      if (!pTD.getDictionaryType.isModelEquals(selfTD.getDictionaryType)) {
-        return true
+    //DICTIONARY TYPE CHECK
+
+    pTD.getDictionaryType match {
+      case Some(dico) => {
+        if (!dico.isModelEquals(selfTD.getDictionaryType)) {
+          return true
+        }
       }
-    } else {
-      if (selfTD.getDictionaryType != null) {
-        return true
+      case None => {
+        if (selfTD.getDictionaryType.isDefined) {
+          return true
+        }
       }
     }
 
@@ -132,7 +136,7 @@ case class TypeDefinitionAspect (selfTD: TypeDefinition) {
     }
   }
 
-  def isUpdated (pTD: TypeDefinition): Boolean = {
+  def isUpdated(pTD: TypeDefinition): Boolean = {
 
     if (selfTD.getDeployUnits != null) {
       if (pTD.getDeployUnits != null) {
@@ -150,12 +154,12 @@ case class TypeDefinitionAspect (selfTD: TypeDefinition) {
                 val pDUInteger = java.lang.Long.parseLong(pDU.getHashcode)
                 val selfDUInteger = java.lang.Long.parseLong(selfDU.getHashcode)
 
-//                println("kompareHashCode - "+selfDUInteger+"<"+pDUInteger+"-"+(selfDUInteger < pDUInteger))
+                //                println("kompareHashCode - "+selfDUInteger+"<"+pDUInteger+"-"+(selfDUInteger < pDUInteger))
 
                 selfDUInteger < pDUInteger
               } catch {
                 case _@e => {
-//                  e.printStackTrace
+                  //                  e.printStackTrace
                   logger.error("Bad HashCode - equiality verification - " + pDU.getHashcode + " - " + selfDU.getHashcode, e)
                   pDU.getHashcode != selfDU.getHashcode
 
@@ -177,21 +181,22 @@ case class TypeDefinitionAspect (selfTD: TypeDefinition) {
   }
 
 
-  def foundRelevantHostNodeType(nodeType : NodeType,targetTypeDef : TypeDefinition) : Option[NodeType] = {
-      if(targetTypeDef.getDeployUnits.exists(du => du.getTargetNodeType == nodeType)){
-        Some(nodeType)
-      } else {
-        nodeType.getSuperTypes.foreach{ superType =>
-           foundRelevantHostNodeType(superType.asInstanceOf[NodeType],targetTypeDef) match {
-             case Some(nt)=> return Some(nt)
-             case None =>
-           }
-        }
-        return None
+  def foundRelevantHostNodeType(nodeType: NodeType, targetTypeDef: TypeDefinition): Option[NodeType] = {
+    if (targetTypeDef.getDeployUnits.exists(du => du.getTargetNodeType == nodeType)) {
+      Some(nodeType)
+    } else {
+      nodeType.getSuperTypes.foreach {
+        superType =>
+          foundRelevantHostNodeType(superType.asInstanceOf[NodeType], targetTypeDef) match {
+            case Some(nt) => return Some(nt)
+            case None =>
+          }
       }
+      return None
+    }
   }
 
-  def foundRelevantDeployUnit (node: ContainerNode) = {
+  def foundRelevantDeployUnit(node: ContainerNode) = {
 
     /* add all reLib from found deploy Unit*/
     var deployUnitfound: DeployUnit = null
@@ -199,32 +204,33 @@ case class TypeDefinitionAspect (selfTD: TypeDefinition) {
       selfTD.getDeployUnits.find(du => du.getTargetNodeType != null &&
         du.getTargetNodeType.get.getName == node.getTypeDefinition.getName) match {
         case Some(e) => {
-          logger.info("found deploy unit => "+e.getUnitName)
+          logger.info("found deploy unit => " + e.getUnitName)
           deployUnitfound = e
         }
-        case _ => logger.info("Deploy Unit not found on first level "+selfTD.getName)
+        case _ => logger.info("Deploy Unit not found on first level " + selfTD.getName)
       }
       if (deployUnitfound == null) {
-        logger.info("Deploy Unit not found for node "+node.getName+" : "+node.getTypeDefinition.getName+"=> "+selfTD.getName )
+        logger.info("Deploy Unit not found for node " + node.getName + " : " + node.getTypeDefinition.getName + "=> " + selfTD.getName)
         deployUnitfound = foundRelevantDeployUnitOnNodeSuperTypes(node.getTypeDefinition.asInstanceOf[NodeType], selfTD)
       }
     } else {
-      logger.error("Node type definition empty  ! search node name = "+node.getName)
+      logger.error("Node type definition empty  ! search node name = " + node.getName)
     }
     deployUnitfound
   }
 
-  private def foundRelevantDeployUnitOnNodeSuperTypes (nodeType: NodeType, t: TypeDefinition): DeployUnit = {
+  private def foundRelevantDeployUnitOnNodeSuperTypes(nodeType: NodeType, t: TypeDefinition): DeployUnit = {
     var deployUnitfound: DeployUnit = null
     // looking for relevant deployunits on super types
     deployUnitfound = t.getDeployUnits.find(du => du.getTargetNodeType != null && du.getTargetNodeType.get.getName == nodeType.getName) match {
-          case Some(e) => e
-          case None => null
+      case Some(e) => e
+      case None => null
     }
     if (deployUnitfound == null && nodeType.getSuperTypes != null) {
-      nodeType.getSuperTypes.exists (superNode =>
-        // call recursively for super types and test if something has been found
-        {deployUnitfound = foundRelevantDeployUnitOnNodeSuperTypes(superNode.asInstanceOf[NodeType], t);deployUnitfound == null})
+      nodeType.getSuperTypes.exists(superNode =>
+      // call recursively for super types and test if something has been found {
+        deployUnitfound = foundRelevantDeployUnitOnNodeSuperTypes(superNode.asInstanceOf[NodeType], t); deployUnitfound == null
+      })
     }
     deployUnitfound
   }
