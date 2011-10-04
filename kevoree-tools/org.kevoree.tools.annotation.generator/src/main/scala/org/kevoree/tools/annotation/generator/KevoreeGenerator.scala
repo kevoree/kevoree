@@ -41,19 +41,19 @@ object KevoreeGenerator {
         wrapper.append("import org.kevoree.framework.AbstractPort;\n");
         wrapper.append("import "+KevoreeGeneratorHelper.getTypeDefinitionBasePackage(ct)+"._\n")
         wrapper.append("import "+ref.getRef.getName+";\n");
-        wrapper.append("public class "+portName+" extends AbstractPort implements "+ref.getRef().getName()+" {\n");
+        wrapper.append("public class "+portName+" extends AbstractPort implements "+ref.getRef.getName+" {\n");
         //wrapper.append("public "+portName+"(Object c){setComponent(c);}\n") /* AVOID CIRCULAR REFERENCE */
         ref.getRef match {
           case sPT : ServicePortType=> sPT.getOperations.foreach{op=>
-              wrapper.append("public "+op.getReturnType.getName+" "+op.getName+"(")
+              wrapper.append("public "+op.getReturnType.get.getName+" "+op.getName+"(")
               op.getParameters.foreach{param=>
-                wrapper.append(param.getType.print('<','>')+" "+param.getName)
+                wrapper.append(param.getType.get.print('<','>')+" "+param.getName)
                 if(op.getParameters.indexOf(param) != (op.getParameters.size-1)){
                   wrapper.append(",")
                 }
               }
               wrapper.append("){\n");
-              if(!op.getReturnType.getName.equals("void")) { wrapper.append("return ") }
+              if(!op.getReturnType.get.getName.equals("void")) { wrapper.append("return ") }
               wrapper.append("(("+ct.getFactoryBean.substring(0, ct.getFactoryBean.indexOf("Factory"))+")getComponent()).")
 
               ref.getMappings.find(map=>{map.getServiceMethodName.equals(op.getName)}) match {

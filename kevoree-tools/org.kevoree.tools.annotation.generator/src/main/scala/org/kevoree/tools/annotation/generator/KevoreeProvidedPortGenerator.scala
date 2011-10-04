@@ -42,7 +42,7 @@ object KevoreeProvidedPortGenerator {
     wrapper.append("import org.kevoree.framework.port._\n");
     wrapper.append("import "+KevoreeGeneratorHelper.getTypeDefinitionBasePackage(ct)+"._\n")
     wrapper.append("import scala.{Unit=>void}\n")
-    wrapper.append("class "+portName+"(component : "+ct.getName+") extends "+ref.getRef().getName()+" with KevoreeProvidedPort {\n");
+    wrapper.append("class "+portName+"(component : "+ct.getName+") extends "+ref.getRef.getName+" with KevoreeProvidedPort {\n");
 
     wrapper.append("def getName : String = \""+ref.getName+"\"\n")
     wrapper.append("def getComponentName : String = component.getName \n")
@@ -75,10 +75,10 @@ object KevoreeProvidedPortGenerator {
             /* GENERATE METHOD SIGNATURE */
             wrapper.append("def "+op.getName+"(")
             op.getParameters.foreach{param=>
-              wrapper.append(param.getName+":"+param.getType.print('[',']'))
+              wrapper.append(param.getName+":"+param.getType.get.print('[',']'))
               if(op.getParameters.indexOf(param) != (op.getParameters.size-1)){wrapper.append(",")}
             }
-            wrapper.append(") : "+op.getReturnType.print('[',']')+" ={\n");
+            wrapper.append(") : "+op.getReturnType.get.print('[',']')+" ={\n");
 
 
             /* Generate method corpus */
@@ -88,7 +88,7 @@ object KevoreeProvidedPortGenerator {
             op.getParameters.foreach{param=>
               wrapper.append("msgcall.getParams.put(\""+param.getName+"\","+param.getName+".asInstanceOf[AnyRef]);\n")
             }
-            wrapper.append("(this !? msgcall).asInstanceOf["+op.getReturnType.print('[',']')+"]")
+            wrapper.append("(this !? msgcall).asInstanceOf["+op.getReturnType.get.print('[',']')+"]")
             wrapper.append("}\n")
           }
           /* CREATE ACTOR LOOP */
@@ -100,7 +100,7 @@ object KevoreeProvidedPortGenerator {
               case Some(mapping)=> {
                   wrapper.append("case \""+op.getName+"\"=> component."+mapping.getBeanMethodName+"(")
                   op.getParameters.foreach{param=>
-                    wrapper.append("opcall.getParams.get(\""+param.getName+"\").asInstanceOf["+param.getType.print('[',']')+"]")
+                    wrapper.append("opcall.getParams.get(\""+param.getName+"\").asInstanceOf["+param.getType.get.print('[',']')+"]")
                     if(op.getParameters.indexOf(param) != (op.getParameters.size-1)){wrapper.append(",")}
                   }
                   wrapper.append(")\n")
