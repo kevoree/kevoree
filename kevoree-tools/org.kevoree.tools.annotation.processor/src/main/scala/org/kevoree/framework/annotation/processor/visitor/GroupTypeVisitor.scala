@@ -52,6 +52,7 @@ case class GroupTypeVisitor(groupType: GroupType, env: AnnotationProcessorEnviro
     processDeployUnit(groupType, classdef, env)
     processLibrary(groupType, classdef)
     processThirdParty(groupType, classdef, env)
+    import scala.collection.JavaConversions._
     classdef.getMethods.foreach {
       method => method.accept(this)
     }

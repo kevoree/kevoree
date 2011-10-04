@@ -60,6 +60,7 @@ case class ChannelTypeFragmentVisitor(channelType: ChannelType, env: AnnotationP
     processDeployUnit(channelType, typeDecl, env)
     processLibrary(channelType, typeDecl)
     processThirdParty(channelType, typeDecl, env)
+    import scala.collection.JavaConversions._
     typeDecl.getMethods.foreach {
       method => method.accept(this)
     }

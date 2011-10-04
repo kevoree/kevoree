@@ -90,14 +90,14 @@ trait ProvidedPortProcessor {
                   ndts =>
                     val newTypedElement = KevoreeFactory.eINSTANCE.createTypedElement
                     newTypedElement.setName(ndts)
-                    messagePortType.getFilters.add(LocalUtility.getOraddDataType(newTypedElement))
+                    messagePortType.addFilters(LocalUtility.getOraddDataType(newTypedElement))
                 }
                 messagePortType
               }
               case _ => null
             }))
 
-            componentType.getProvided.add(portTypeRef)
+            componentType.addProvided(portTypeRef)
           }
 
           //Two ports have the same name in the component scope

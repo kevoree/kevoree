@@ -43,7 +43,7 @@ trait DictionaryProcessor {
           case None => {
               val newAtt = KevoreeFactory.eINSTANCE.createDictionaryAttribute
               newAtt.setName(dictionaryAtt.name)
-              typeDef.getDictionaryType.get.getAttributes.add(newAtt)
+              typeDef.getDictionaryType.get.addAttributes(newAtt)
               newAtt
           }
           case Some(att)=> att
@@ -60,7 +60,7 @@ trait DictionaryProcessor {
                 val newVal = KevoreeFactory.eINSTANCE.createDictionaryValue
                 newVal.setAttribute(processDictionaryAtt)
                 newVal.setValue(dictionaryAtt.defaultValue)
-                typeDef.getDictionaryType.get.getDefaultValues.add(newVal)
+                typeDef.getDictionaryType.get.addDefaultValues(newVal)
             }
           case Some(edefV)=> edefV.setValue(dictionaryAtt.defaultValue.toString)
           }

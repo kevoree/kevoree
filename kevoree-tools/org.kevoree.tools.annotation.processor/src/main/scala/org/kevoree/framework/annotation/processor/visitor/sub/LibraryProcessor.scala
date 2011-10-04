@@ -34,12 +34,12 @@ trait LibraryProcessor {
       val libannot = classdef.getAnnotation(classOf[org.kevoree.annotation.Library])
       /* CREATE LIBRARY IF NEEDED */
       root.getLibraries.find({lib=>lib.getName== libannot.name}) match {
-        case Some(lib)=> lib.getSubTypes.add(typeDef)
+        case Some(lib)=> lib.addSubTypes(typeDef)
         case None => {
             val newlib = KevoreeFactory.eINSTANCE.createTypeLibrary
             newlib.setName(libannot.name)
-            newlib.getSubTypes.add(typeDef)
-            root.getLibraries.add(newlib)
+            newlib.addSubTypes(typeDef)
+            root.addLibraries(newlib)
           }
       }
     }
