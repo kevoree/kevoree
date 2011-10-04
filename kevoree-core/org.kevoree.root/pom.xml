@@ -167,7 +167,7 @@
         <module>../org.kevoree.framework</module>
         <module>../org.kevoree.kompare</module>
         <module>../org.kevoree.merger</module>
-      <!--  <module>../org.kevoree.pruner</module>   -->
+        <module>../org.kevoree.pruner</module>
         <module>../../kevoree-tools/org.kevoree.tools.aether.framework</module>
         <module>../org.kevoree.deploy.osgi</module>
         <module>../org.kevoree.core</module>
