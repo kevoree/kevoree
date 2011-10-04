@@ -20,6 +20,7 @@ package org.kevoree.framework.annotation.processor.visitor.sub
 
 import com.sun.mirror.apt.AnnotationProcessorEnvironment
 import com.sun.mirror.declaration.TypeDeclaration
+import scala.collection.JavaConversions._
 
 import org.kevoree._
 
@@ -76,7 +77,7 @@ trait DeployUnitProcessor {
       nodeTypeName =>
 
         val ctdeployunit = root.getDeployUnits.find({
-          du => du.getUnitName == unitName && du.getGroupName == groupName && du.getVersion == version && du.getTargetNodeType.getName == nodeTypeName
+          du => du.getUnitName == unitName && du.getGroupName == groupName && du.getVersion == version && du.getTargetNodeType.get.getName == nodeTypeName
         }) match {
           case None => {
             val newdeploy = KevoreeFactory.eINSTANCE.createDeployUnit
@@ -93,19 +94,19 @@ trait DeployUnitProcessor {
               case None => {
                 val nodeType = KevoreeFactory.eINSTANCE.createNodeType
                 nodeType.setName(nodeTypeName)
-                root.getTypeDefinitions.add(nodeType)
+                root.addTypeDefinitions(nodeType)
                 newdeploy.setTargetNodeType(nodeType)
               }
             }
             // }
 
-            root.getDeployUnits.add(newdeploy)
+            root.addDeployUnits(newdeploy)
             deployUnits = deployUnits ++ List(newdeploy)
             newdeploy
           }
           case Some(fdu) => fdu.setHashcode(tag); fdu
         }
-        typeDef.getDeployUnits.add(ctdeployunit)
+        typeDef.addDeployUnits(ctdeployunit)
 
 
     }

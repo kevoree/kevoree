@@ -93,13 +93,13 @@ trait RequiredPortProcessor {
                   ndts =>
                     val ndt = KevoreeFactory.eINSTANCE.createTypedElement
                     ndt.setName(ndts)
-                    mpt.getFilters.add(LocalUtility.getOraddDataType(ndt))
+                    mpt.addFilters(LocalUtility.getOraddDataType(ndt))
                 }
                 mpt
               }
               case _ => null
             }))
-            componentType.getRequired.add(portTypeRef)
+            componentType.addRequired(portTypeRef)
           }
           case Some(e) => {
             env.getMessager.printError("Port name duplicated in " + componentType.getName + " Scope => " + requiredPort.name)

@@ -41,7 +41,7 @@ trait AdaptationPrimitiveProcessor {
         primitiveCommandAnnotation =>
         // check if the AdaptationPrimitive name is defined once
           if (primitiveCommandAnnotations.find(a => a.name() == primitiveCommandAnnotation.name()).size == 1) {
-            val primitiveType: AdaptationPrimitiveType = KevoreeFactory.eINSTANCE.createAdaptationPrimitiveType()
+            val primitiveType: AdaptationPrimitiveType = KevoreeFactory.eINSTANCE.createAdaptationPrimitiveType
             primitiveType.setName(primitiveCommandAnnotation.name())
 
             addPrimitiveType(typeDef, primitiveType)
@@ -56,7 +56,7 @@ trait AdaptationPrimitiveProcessor {
       //GENERATE FROM LIST OF STRING
 
       classdef.getAnnotation(classOf[org.kevoree.annotation.PrimitiveCommands]).values.foreach { name =>
-        val primitiveType: AdaptationPrimitiveType = KevoreeFactory.eINSTANCE.createAdaptationPrimitiveType()
+        val primitiveType: AdaptationPrimitiveType = KevoreeFactory.eINSTANCE.createAdaptationPrimitiveType
         primitiveType.setName(name)
         addPrimitiveType(typeDef, primitiveType)
       }
@@ -67,7 +67,7 @@ trait AdaptationPrimitiveProcessor {
 
   private def addPrimitiveType(typeDef: NodeType, primitiveType: AdaptationPrimitiveType) {
     val root = typeDef.eContainer.asInstanceOf[ContainerRoot]
-    root.getAdaptationPrimitiveTypes.add(primitiveType)
-    typeDef.getManagedPrimitiveTypes.add(primitiveType)
+    root.addAdaptationPrimitiveTypes(primitiveType)
+    typeDef.addManagedPrimitiveTypes(primitiveType)
   }
 }

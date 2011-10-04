@@ -44,6 +44,7 @@ case class NodeTypeVisitor(nodeType: NodeType, env: AnnotationProcessorEnvironme
     processLibrary(nodeType, classdef)
     processThirdParty(nodeType, classdef, env)
     processPrimitiveCommand(nodeType, classdef, env)
+    import scala.collection.JavaConversions._
     classdef.getMethods.foreach {
       method => method.accept(this)
     }
