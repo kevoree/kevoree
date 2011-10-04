@@ -67,6 +67,7 @@ trait KevoreeGroup extends AbstractGroupType with KevoreeActor {
   override def internal_process(msgg: Any) = msgg match {
     case UpdateDictionaryMessage(d) => {
       try {
+        import scala.collection.JavaConversions._
         d.keySet.foreach {
           v => dictionary.put(v, d.get(v))
         }
