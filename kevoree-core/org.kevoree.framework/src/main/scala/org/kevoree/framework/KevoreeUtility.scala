@@ -18,13 +18,7 @@
 
 package org.kevoree.framework
 
-import org.kevoree.Channel
-import org.kevoree.ComponentInstance
-import org.kevoree.ContainerRoot
-import org.kevoree.Instance
-import org.kevoree.MBinding
-import org.kevoree.PortType
-import org.kevoree.TypedElement
+import org.kevoree._
 
 object KevoreeUtility {
 
@@ -45,7 +39,7 @@ object KevoreeUtility {
   }
 
   def getRelatedBinding(component : ComponentInstance,root: ContainerRoot) : java.util.List[MBinding] = {
-    var res = new java.util.ArrayList[MBinding]();
+    val res = new java.util.ArrayList[MBinding]();
     root.getMBindings.foreach{b=>
       component.getProvided.find({p=> b.getPort == p}) match {
         case Some(e)=> res.add(b)
@@ -61,9 +55,9 @@ object KevoreeUtility {
 
 
   def getRelatedBinding(inst : Instance) : java.util.List[MBinding] = {
-    var res = new java.util.ArrayList[MBinding]()
+    val res = new java.util.ArrayList[MBinding]()
     inst match {
-      case component : ComponentInstance => res.addAll(getRelatedBinding(component,component.eContainer.eContainer.asInstanceOf[ContainerRoot]))
+      case component : ComponentInstance => res.addAll(getRelatedBinding(component,component.eContainer.asInstanceOf[KevoreeContainer].eContainer.asInstanceOf[ContainerRoot]))
       case channel : Channel => {
           channel.eContainer.asInstanceOf[ContainerRoot].getMBindings.foreach{b=>
             if(b.getHub == channel){

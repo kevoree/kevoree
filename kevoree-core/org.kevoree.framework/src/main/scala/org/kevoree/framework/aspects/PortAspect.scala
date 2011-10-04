@@ -26,7 +26,7 @@ case class PortAspect(p : Port) {
 
   def removeAndUnbind()={
     //REMOVE ALL BINDING BINDED TO
-    val root = p.eContainer.eContainer.eContainer.asInstanceOf[ContainerRoot]
+    val root = p.eContainer.asInstanceOf[KevoreeContainer].eContainer.asInstanceOf[KevoreeContainer].eContainer.asInstanceOf[ContainerRoot]
     val mbindings = root.getMBindings.filter(b=>b.getPort == p) ++ List()
     mbindings.foreach{mb=> root.removeMBindings(mb)}
 
@@ -42,11 +42,11 @@ case class PortAspect(p : Port) {
 
   }
 
-  def isProvidedPort() : Boolean = {
+  def isProvidedPort : Boolean = {
     p.eContainer.asInstanceOf[ComponentInstance].getProvided.contains(p)
   }
 
-  def isRequiredPort() : Boolean = {
+  def isRequiredPort : Boolean = {
     p.eContainer.asInstanceOf[ComponentInstance].getRequired.contains(p)
   }
 
@@ -56,8 +56,8 @@ case class PortAspect(p : Port) {
     (p.eContainer.asInstanceOf[ComponentInstance].isModelEquals(pp.eContainer.asInstanceOf[ComponentInstance]))
   }
 
-  def isBind() : Boolean ={
-    var container = p.eContainer.eContainer.eContainer.asInstanceOf[ContainerRoot]
+  def isBind : Boolean ={
+    val container = p.eContainer.asInstanceOf[KevoreeContainer].eContainer.asInstanceOf[KevoreeContainer].eContainer.asInstanceOf[ContainerRoot]
     var mb = p.getPortTypeRef.getRef
     container.getMBindings.exists({mb => mb.getPort == p})
     /*
@@ -67,8 +67,8 @@ case class PortAspect(p : Port) {
      }*/
   }
 
-  def getProxyURI() : String = {
-    var container : ContainerRoot = p.eContainer.eContainer.eContainer.asInstanceOf[ContainerRoot]
+  def getProxyURI : String = {
+    val container : ContainerRoot = p.eContainer.asInstanceOf[KevoreeContainer].eContainer.asInstanceOf[KevoreeContainer].eContainer.asInstanceOf[ContainerRoot]
     if(p.isBind){
       p.getPortTypeRef.getRef match {
         case spt : ServicePortType => p.eContainer.asInstanceOf[ComponentInstance].getName.toString+"."+p.getPortTypeRef.getName

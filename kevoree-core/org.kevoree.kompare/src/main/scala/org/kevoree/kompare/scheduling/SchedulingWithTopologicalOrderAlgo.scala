@@ -16,14 +16,10 @@ package org.kevoree.kompare.scheduling
 
 import org.jgrapht.graph.DefaultDirectedGraph
 import org.jgrapht.traverse.TopologicalOrderIterator
-import org.kevoree.Channel
-import org.kevoree.ComponentInstance
-import org.kevoree.ContainerRoot
-import org.kevoree.Group
-import org.kevoree.Instance
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.kevoreeAdaptation.AdaptationPrimitive
+import org.kevoree._
 
 class SchedulingWithTopologicalOrderAlgo {
 
@@ -101,7 +97,7 @@ class SchedulingWithTopologicalOrderAlgo {
     firstCommand match {
       case c: Group => rootContainer = c.eContainer.asInstanceOf[ContainerRoot]
       case c: Channel => rootContainer = c.eContainer.asInstanceOf[ContainerRoot]
-      case c: ComponentInstance => rootContainer = c.eContainer.eContainer.asInstanceOf[ContainerRoot]
+      case c: ComponentInstance => rootContainer = c.eContainer.asInstanceOf[KevoreeContainer].eContainer.asInstanceOf[ContainerRoot]
     }
 
 
