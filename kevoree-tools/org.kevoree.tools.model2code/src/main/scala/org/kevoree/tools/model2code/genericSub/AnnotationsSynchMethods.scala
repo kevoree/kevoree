@@ -18,7 +18,7 @@ import japa.parser.ast.body.BodyDeclaration
 import japa.parser.ast.expr._
 import java.util.ArrayList
 import japa.parser.ast.CompilationUnit
-
+import scala.collection.JavaConversions._
 /**
  * Created by IntelliJ IDEA.
  * User: Gregory NAIN

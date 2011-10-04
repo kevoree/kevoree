@@ -15,8 +15,7 @@ package org.kevoree.tools.model2code.genericSub
  */
 import japa.parser.ast.expr.NameExpr
 import japa.parser.ast.{CompilationUnit, ImportDeclaration}
-
-import org.kevoree.ComponentType
+import scala.collection.JavaConversions._
 
 /**
  * Created by IntelliJ IDEA.
