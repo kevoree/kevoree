@@ -41,8 +41,8 @@ trait DeployUnitMerger extends Merger {
         } else {
 
           if (newForce) {
-            ftp.getRequiredLibs.clear()
-            ftp.getRequiredLibs.addAll(tp.getRequiredLibs)
+            ftp.removeAllRequiredLibs()
+            ftp.addAllRequiredLibs(tp.getRequiredLibs)
           }
 
           val ftpTimeStamp = if (ftp.getHashcode != null) {
@@ -77,7 +77,7 @@ trait DeployUnitMerger extends Merger {
 
   def mergeRequiredLibs(actualModel: ContainerRoot, tp: DeployUnit) {
     val requireds: List[DeployUnit] = List[DeployUnit]() ++ tp.getRequiredLibs.toList
-    tp.getRequiredLibs.clear()
+    tp.removeAllRequiredLibs()
     requireds.foreach {
       rLib =>
         tp.addRequiredLibs(mergeDeployUnit(actualModel, rLib))

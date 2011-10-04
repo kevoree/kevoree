@@ -34,7 +34,7 @@ trait InstanceMerger {
     val ctOpt = actualModel.getTypeDefinitions.find(p=> p.isModelEquals(c.getTypeDefinition)  )
     ctOpt match {
       case Some(cti) => {
-          var ct = cti.asInstanceOf[ComponentType]
+          val ct = cti.asInstanceOf[ComponentType]
           c.setTypeDefinition(ct)
           //MERGE PORT
           val providedPort = c.getProvided.toList ++ List()

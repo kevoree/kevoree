@@ -82,12 +82,12 @@ trait TypeDefinitionMerger extends Merger with DictionaryMerger with PortTypeMer
   private def mergeConsistency(root: ContainerRoot, actuelTypeDefinition: TypeDefinition, newTypeDefinition: TypeDefinition) = {
     //UPDATE & MERGE DEPLOYS UNIT
     val allDeployUnits = List() ++ newTypeDefinition.getDeployUnits.toList ++ actuelTypeDefinition.getDeployUnits.toList //CLONE LIST
-    actuelTypeDefinition.getDeployUnits.clear
+    actuelTypeDefinition.removeAllDeployUnits()
     allDeployUnits.foreach {
       ldu =>
         val merged = mergeDeployUnit(root, ldu, newTypeDefinition.getDeployUnits.contains(ldu))
         if (!actuelTypeDefinition.getDeployUnits.contains(merged)) {
-          actuelTypeDefinition.getDeployUnits.add(merged)
+          actuelTypeDefinition.addDeployUnits(merged)
         }
     }
     if (actuelTypeDefinition.isInstanceOf[NodeType]) {
@@ -138,7 +138,7 @@ trait TypeDefinitionMerger extends Merger with DictionaryMerger with PortTypeMer
       }
       val nodeType = actuelTypeDefinition.asInstanceOf[NodeType]
       val pl = (nodeType.getManagedPrimitiveTypes.toList ++ List())
-      nodeType.addManagedPrimitiveTypes()
+      nodeType.removeAllManagedPrimitiveTypes()
       pl.foreach {
         pll =>
           nodeType.addManagedPrimitiveTypes(mergeAdaptationPrimitive(root, pll))
@@ -147,7 +147,7 @@ trait TypeDefinitionMerger extends Merger with DictionaryMerger with PortTypeMer
     }
     //UPDATE DEPLOYS UNIT
     val allDeployUnits = List() ++ newTypeDefinition.getDeployUnits.toList //CLONE LIST -- !!! REMOVE OLD DEPLOY UNIT OBSOLET
-    newTypeDefinition.getDeployUnits.clear
+    newTypeDefinition.removeAllDeployUnits()
     allDeployUnits.foreach {
       ndu =>
         val merged = mergeDeployUnit(root, ndu.asInstanceOf[DeployUnit])
@@ -157,12 +157,10 @@ trait TypeDefinitionMerger extends Merger with DictionaryMerger with PortTypeMer
     }
 
     //PROCESS INSTANCE
-    val listInstance = root.eAllContents.filter(p => {
-      p match {
-        case i: Instance => i.getTypeDefinition == actuelTypeDefinition
-        case _ => false
-      }
-    }).toList ++ List()
+
+
+
+    val listInstance = root.getAllInstances
     listInstance.foreach {
       instance =>
 
@@ -170,7 +168,7 @@ trait TypeDefinitionMerger extends Merger with DictionaryMerger with PortTypeMer
         art2instance.setTypeDefinition(newTypeDefinition)
 
         //MERGE DICTIONARY
-        mergeDictionary(art2instance.getDictionary, newTypeDefinition.getDictionaryType)
+        mergeDictionary(art2instance.getDictionary.get, newTypeDefinition.getDictionaryType.get)
 
         //SPECIFIC PROCESS
         art2instance match {
@@ -232,7 +230,7 @@ trait TypeDefinitionMerger extends Merger with DictionaryMerger with PortTypeMer
   private def mergeNewTypeDefinition(actualModel: ContainerRoot, newTypeDefinition: TypeDefinition) = {
     //MERGE TYPE DEPLOY UNITS
     val newTypeDefinitionDeployUnits = List() ++ newTypeDefinition.getDeployUnits.toList //CLONE LIST
-    newTypeDefinition.getDeployUnits.clear
+    newTypeDefinition.removeAllDeployUnits()
     newTypeDefinitionDeployUnits.foreach {
       ndu =>
         newTypeDefinition.addDeployUnits(mergeDeployUnit(actualModel, ndu.asInstanceOf[DeployUnit]))
@@ -254,7 +252,7 @@ trait TypeDefinitionMerger extends Merger with DictionaryMerger with PortTypeMer
       case nt: NodeType => {
         actualModel.addTypeDefinitions(nt)
         val pl = (nt.getManagedPrimitiveTypes.toList ++ List())
-        nt.getManagedPrimitiveTypes.clear()
+        nt.removeAllManagedPrimitiveTypes()
         pl.foreach {
           pll =>
             nt.addManagedPrimitiveTypes(mergeAdaptationPrimitive(actualModel, pll))
