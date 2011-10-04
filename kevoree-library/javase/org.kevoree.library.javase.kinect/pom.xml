@@ -54,7 +54,7 @@
                 </configuration>
             </plugin>
 
-            <!--
+
             <plugin>
                 <groupId>org.apache.felix</groupId>
                 <artifactId>maven-bundle-plugin</artifactId>
@@ -62,41 +62,14 @@
                 <extensions>true</extensions>
                 <configuration>
                     <instructions>
-                        &lt;!&ndash;<Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
-                        <Bundle-Version>${project.version}</Bundle-Version>&ndash;&gt;
+                       <Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
+                        <Bundle-Version>${project.version}</Bundle-Version>
                         <Bundle-NativeCode>
-                            nativelib/Linux/i686-unknown-linux-gnu/libfreenect.so;
-                            nativelib/Linux/i686-unknown-linux-gnu/libfreenect_sync.so;
-                            osname=Linux; processor=x86,
-                            nativelib/MacOs/libfreenect_sync.dylib;
-                            nativelib/MacOs/libfreenect.dylib;
-                            nativelib/MacOs/libusb.dylib;
-                            osname="Mac OS X"; processor=x86; processor=PowerPC; processor=x86-64
-                            &lt;!&ndash;osname=Win64; processor=x86_64; processor=x86-64&ndash;&gt;
-                            &lt;!&ndash;;
-                            osname=Linux; processor=x86,
-                            nativelib/Linux/ia64-unknown-linux-gnu/libopencv_core.so.2.3.0;
-                            osname=Linux; processor=ia64,
-                            nativelib/Linux/x86_64-unknown-linux-gnu/libopencv_core.so.2.3.0;
-                            osname=Linux; processor=x86-64,
-                            nativelib/Mac_OS_X/librxtxSerial.jnilib;
-                            osname=Mac OS X; processor=x86; processor=PowerPC; processor=x86-64,
-                            nativelib/Solaris/sparc-solaris/sparc32-sun-solaris2.8/librxtxSerial-2.1-7.so;
-                            nativelib/Solaris/sparc-solaris/sparc32-sun-solaris2.8/librxtxSerial.so;
-                            osname=Solaris; processor=Sparc,
-                            nativelib/Solaris/sparc-solaris/sparc64-sun-solaris2.8/librxtxSerial-2.1-7.so;
-                            nativelib/Solaris/sparc-solaris/sparc64-sun-solaris2.8/librxtxSerial.so;
-                            osname=Solaris; processor=Sparc64,
-
-                            nativelib/Windows/win32/rxtxSerial.dll;
-                            osname=Win32; processor=x86,
-                            nativelib/Windows/win64/rxtxSerial.dll;
-                            osname=Win64; processor=x86_64 ; processor=x86-64&ndash;&gt;
-
+                            nativelib/MacOs/libusb.dylib;osname="Mac OS X"; processor=x86; processor=PowerPC; processor=x86-64
                         </Bundle-NativeCode>
                     </instructions>
                 </configuration>
-            </plugin> -->
+            </plugin>
         </plugins>
     </build>
 </project>
