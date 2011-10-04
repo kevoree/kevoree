@@ -21,7 +21,7 @@ import japa.parser.ast.CompilationUnit
 import org.kevoree.annotation.{PortType, RequiredPort, Requires}
 import org.kevoree.{ServicePortType, MessagePortType, PortTypeRef}
 import org.kevoree.tools.model2code.genericSub.ImportSynchMethods
-
+import scala.collection.JavaConversions._
 /**
  * Created by IntelliJ IDEA.
  * User: Gregory NAIN

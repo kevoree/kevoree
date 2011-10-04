@@ -34,7 +34,8 @@ import japa.parser.ast.`type`.ClassOrInterfaceType
 import japa.parser.ast.body._
 import japa.parser.ast.stmt.BlockStmt
 import org.kevoree.framework.AbstractNodeType
-import org.kevoreeAdaptation.AdaptationModel
+
+import scala.collection.JavaConversions._
 
 /**
  * @author Gregory NAIN

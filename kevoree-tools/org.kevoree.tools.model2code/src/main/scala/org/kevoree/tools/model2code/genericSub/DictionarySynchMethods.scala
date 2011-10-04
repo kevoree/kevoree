@@ -20,6 +20,8 @@ import japa.parser.ast.expr._
 import org.kevoree.annotation.{DictionaryAttribute, DictionaryType}
 import org.kevoree.TypeDefinition
 
+import scala.collection.JavaConversions._
+
 /**
  * Created by IntelliJ IDEA.
  * User: Gregory NAIN
@@ -48,7 +50,7 @@ trait DictionarySynchMethods extends ImportSynchMethods {
 
   def checkOrUpdateDictionary(td : TypeDeclaration, typeDef : TypeDefinition, dicAnnot : SingleMemberAnnotationExpr) {
     //for each attribute in the model
-    typeDef.getDictionaryType.getAttributes.foreach{dicAtt =>
+    typeDef.getDictionaryType.get.getAttributes.foreach{dicAtt =>
       //retreive or create the attribute annotation
       dicAnnot.getMemberValue.asInstanceOf[ArrayInitializerExpr].getValues.find({member =>
           member.asInstanceOf[NormalAnnotationExpr].getPairs.find({pair =>
@@ -59,7 +61,7 @@ trait DictionarySynchMethods extends ImportSynchMethods {
 
         case Some(ann)=>updateDictionaryAtribute(ann.asInstanceOf[NormalAnnotationExpr], dicAtt)
         case None => dicAnnot.getMemberValue.asInstanceOf[ArrayInitializerExpr].getValues.add(
-            createDictionaryAttributeAnnotation(typeDef.getDictionaryType, dicAtt))
+            createDictionaryAttributeAnnotation(typeDef.getDictionaryType.get, dicAtt))
       }
     }
   }
@@ -86,8 +88,8 @@ trait DictionarySynchMethods extends ImportSynchMethods {
     val portName = new MemberValuePair("name", new StringLiteralExpr(dictAttr.getName))
     pairs.add(portName)
 
-    if(dictAttr.isOptional) {
-      val opt = new MemberValuePair("optional", new BooleanLiteralExpr(dictAttr.isOptional.booleanValue))
+    if(dictAttr.getOptional) {
+      val opt = new MemberValuePair("optional", new BooleanLiteralExpr(dictAttr.getOptional.booleanValue))
       pairs.add(opt)
     }
 
