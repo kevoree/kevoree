@@ -254,7 +254,7 @@ class ServicePortsApiTest extends MergerTestSuiteHelper  {
             case Some(methodInt) => {
                 methodInt.asInstanceOf[Operation].getParameters.find(param => param.getName.equals("i")) match {
                   case Some(p : Parameter) => {
-                      p.getType.getName match {
+                      p.getType.get.getName match {
                         case "scala.Int" => fail("Parameter 'i' should be of type 'scala.boolean' found 'scala.Int'.")
                         case _ =>
                       }
@@ -284,7 +284,7 @@ class ServicePortsApiTest extends MergerTestSuiteHelper  {
           typeDef.asInstanceOf[ServicePortType].getOperations.find(op => op.asInstanceOf[Operation].getName.equals("methodInt")) match {
             case None => error("No methodInt in " + serviceClass)
             case Some(methodInt : Operation) => {
-                methodInt.getReturnType.getName match {
+                methodInt.getReturnType.get.getName match {
                   case "scala.Int" => fail("Method return type have not been updated. Expected 'scala.boolean', found 'scala.int'")
                   case _ =>
                 }
