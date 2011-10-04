@@ -24,11 +24,10 @@ import org.apache.maven.repository.internal.MavenRepositorySystemSession
 import java.io.File
 import org.sonatype.aether.artifact.Artifact
 import org.kevoree.framework.KevoreePlatformHelper
-import scala.collection.JavaConversions._
 import org.sonatype.aether.repository.{RepositoryPolicy, RemoteRepository, LocalRepository}
 import org.sonatype.aether.spi.localrepo.LocalRepositoryManagerFactory
 import org.sonatype.aether.connector.wagon.WagonProvider
-import org.kevoree.{KevoreeFactory, ContainerRoot, DeployUnit}
+import org.kevoree.{ContainerRoot, DeployUnit}
 import org.slf4j.LoggerFactory
 import org.sonatype.aether.impl.UpdateCheckManager
 import org.sonatype.aether.impl.internal.{SimpleLocalRepositoryManagerFactory, DefaultUpdateCheckManager, EnhancedLocalRepositoryManagerFactory}
@@ -70,7 +69,7 @@ object AetherUtil {
 
     val artifactRequest = new ArtifactRequest
     artifactRequest.setArtifact(artifact)
-    val urls = buildPotentialMavenURL(du.eContainer().asInstanceOf[ContainerRoot])
+    val urls = buildPotentialMavenURL(du.eContainer.asInstanceOf[ContainerRoot])
 
     val repositories: java.util.List[RemoteRepository] = new java.util.ArrayList();
     urls.foreach {url =>
@@ -160,8 +159,8 @@ object AetherUtil {
 
     root.getNodes.find(n => n.getName == nodeName) match {
       case Some(node) => {
-        if (node.getDictionary != null) {
-          node.getDictionary.getValues.find(v => v.getAttribute.getName == "port") match {
+        if (node.getDictionary.isDefined) {
+          node.getDictionary.get.getValues.find(v => v.getAttribute.getName == "port") match {
             case Some(att) => {
               Some("http://" + ip + ":" + att.getValue + "/provisioning/")
             }
