@@ -14,7 +14,7 @@
 package org.kevoree.tools.ui.editor.command
 
 import javax.jmdns.{ServiceInfo, JmDNS}
-import scala.collection.JavaConversions._
+
 import org.kevoree.KevoreeFactory
 import org.kevoree.tools.ui.editor.{PositionedEMFHelper, KevoreeUIKernel}
 import java.io.File

@@ -15,7 +15,7 @@ package org.kevoree.tools.marShell.interpreter.sub
 
 import org.kevoree.tools.marShell.interpreter.{KevsInterpreterContext, KevsAbstractInterpreter}
 import org.kevoree.tools.marShell.ast.MoveComponentInstanceStatment
-import scala.collection.JavaConversions._
+
 import org.slf4j.LoggerFactory
 
 case class KevsMoveComponentInstanceInterpreter(moveComponent: MoveComponentInstanceStatment) extends KevsAbstractInterpreter {

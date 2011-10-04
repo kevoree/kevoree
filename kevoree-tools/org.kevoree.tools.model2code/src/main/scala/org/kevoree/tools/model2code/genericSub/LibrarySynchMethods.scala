@@ -13,7 +13,7 @@ package org.kevoree.tools.model2code.genericSub
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import scala.collection.JavaConversions._
+
 import japa.parser.ast.body.TypeDeclaration
 import java.util.ArrayList
 import japa.parser.ast.expr.{StringLiteralExpr, MemberValuePair, NameExpr, NormalAnnotationExpr}

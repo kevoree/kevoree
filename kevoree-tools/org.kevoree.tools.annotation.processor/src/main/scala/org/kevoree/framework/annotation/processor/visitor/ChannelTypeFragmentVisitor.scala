@@ -20,7 +20,7 @@ package org.kevoree.framework.annotation.processor.visitor
 
 import com.sun.mirror.apt.AnnotationProcessorEnvironment
 import com.sun.mirror.util.SimpleDeclarationVisitor
-import scala.collection.JavaConversions._
+
 import sub._
 import com.sun.mirror.declaration.{TypeDeclaration, InterfaceDeclaration, ClassDeclaration, MethodDeclaration}
 import org.kevoree.{ComponentType, ChannelType}

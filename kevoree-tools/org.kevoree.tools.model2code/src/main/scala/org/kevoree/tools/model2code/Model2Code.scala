@@ -22,7 +22,7 @@ import java.io.File
 import java.io.FileOutputStream
 import java.io.PrintWriter
 import java.net.URI
-import scala.collection.JavaConversions._
+
 import org.kevoree._
 
 /**

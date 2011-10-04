@@ -25,7 +25,7 @@ import org.kevoree.editor.component.creator.Kernel
 import org.kevoree.editor.component.creator.model.ComponentModelElement
 import org.kevoree.editor.component.creator.model.LibraryModelElement
 import org.kevoree.framework.KevoreeXmiHelper
-import scala.collection.JavaConversions._
+
 
 class ModelHandler(kernel:Kernel)
 extends AddLibraryHandler

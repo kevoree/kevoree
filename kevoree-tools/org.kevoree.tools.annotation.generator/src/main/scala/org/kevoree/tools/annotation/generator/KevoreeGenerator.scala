@@ -21,7 +21,7 @@ import org.kevoree.ContainerRoot
 import org.kevoree.MessagePortType
 import org.kevoree.ServicePortType
 import com.sun.mirror.apt.Filer
-import scala.collection.JavaConversions._
+
 import org.kevoree.ComponentType
 import org.kevoree.framework.aspects.KevoreeAspects._
 import org.kevoree.framework.KevoreeGeneratorHelper

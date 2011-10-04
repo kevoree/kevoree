@@ -14,7 +14,7 @@
 package org.kevoree.tools.ui.editor.command
 
 import org.kevoree.tools.ui.editor.KevoreeUIKernel
-import scala.collection.JavaConversions._
+
 import org.kevoree.{KevoreeFactory, ContainerNode}
 
 /**

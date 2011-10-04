@@ -20,7 +20,7 @@ package org.kevoree.framework.annotation.processor.visitor.sub
 
 import com.sun.mirror.apt.AnnotationProcessorEnvironment
 import com.sun.mirror.declaration.TypeDeclaration
-import scala.collection.JavaConversions._
+
 import org.kevoree._
 
 trait DeployUnitProcessor {

@@ -22,7 +22,7 @@ import org.kevoree._
 import org.kevoree.tools.ui.editor.KevoreeUIKernel
 import org.kevoree.tools.ui.framework.elements.Binding
 import org.kevoree.tools.ui.framework.elements.ModelPanel
-import scala.collection.JavaConversions._
+
 import Art2UIAspects._
 
 case class MBindingAspect(self : MBinding) {

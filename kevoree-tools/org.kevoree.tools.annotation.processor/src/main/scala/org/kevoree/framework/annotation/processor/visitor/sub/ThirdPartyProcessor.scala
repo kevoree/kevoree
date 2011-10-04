@@ -24,7 +24,7 @@ import org.kevoree.KevoreeFactory
 import org.kevoree.ContainerRoot
 import org.kevoree.NodeType
 import org.kevoree.TypeDefinition
-import scala.collection.JavaConversions._
+
 
 
 /* Common Sub process to deal with ThirdParty definition */

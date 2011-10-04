@@ -24,7 +24,7 @@ import org.kevoree.KevoreeFactory
 import org.kevoree.ComponentType
 import org.kevoree.MessagePortType
 import org.kevoree.ServicePortType
-import scala.collection.JavaConversions._
+
 
 trait PortMappingProcessor {
 

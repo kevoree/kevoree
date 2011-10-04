@@ -13,7 +13,7 @@
  */
 package org.kevoree.tools.ui.editor
 
-import scala.collection.JavaConversions._
+
 import org.kevoree._
 
 /**

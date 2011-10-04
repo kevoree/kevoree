@@ -15,7 +15,7 @@ package org.kevoree.tools.model2code.genericSub
  */
 import japa.parser.ast.expr.NameExpr
 import japa.parser.ast.{CompilationUnit, ImportDeclaration}
-import scala.collection.JavaConversions._
+
 import org.kevoree.ComponentType
 
 /**
