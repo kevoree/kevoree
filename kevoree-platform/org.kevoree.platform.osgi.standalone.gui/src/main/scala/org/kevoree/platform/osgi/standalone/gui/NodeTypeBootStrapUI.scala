@@ -202,12 +202,10 @@ class NodeTypeBootStrapUI(pkernel: ContainerRoot) extends JPanel {
     if (nodeTypeDefinition.getDictionaryType.isDefined) {
       nodeTypeDefinition.getDictionaryType.get.getAttributes.foreach {
         att =>
-          println(att.getName)
-
           val l = new JLabel(att.getName, SwingConstants.TRAILING)
           l.setUI(new HudLabelUI)
           p.add(l)
-          if (att.getDatatype != null) {
+          if (att.getDatatype != "") {
             if (att.getDatatype.startsWith("enum=")) {
               val values: String = att.getDatatype.replaceFirst("enum=", "")
               val valuesModel = new DefaultComboBoxModel
@@ -227,8 +225,7 @@ class NodeTypeBootStrapUI(pkernel: ContainerRoot) extends JPanel {
                 }
               })
             }
-          }
-          else {
+          } else {
             val textField: JTextField = new JTextField(10)
             textField.setUI(new HudTextFieldUI)
             l.setLabelFor(textField)
