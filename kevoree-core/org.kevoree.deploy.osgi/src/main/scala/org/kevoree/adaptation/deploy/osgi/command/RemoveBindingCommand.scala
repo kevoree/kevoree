@@ -54,6 +54,7 @@ case class RemoveBindingCommand(c : MBinding, ctx : KevoreeDeployManager,nodeNam
     KevoreeComponentFound match {
       case None => false
       case Some(cfound) => {
+        import scala.collection.JavaConversions._
           val np = cfound.getKevoreeComponentType.getNeededPorts.find(np => np._1 == c.getPort.getPortTypeRef.getName)
           val hp = cfound.getKevoreeComponentType.getHostedPorts.find(np => np._1 == c.getPort.getPortTypeRef.getName)
 

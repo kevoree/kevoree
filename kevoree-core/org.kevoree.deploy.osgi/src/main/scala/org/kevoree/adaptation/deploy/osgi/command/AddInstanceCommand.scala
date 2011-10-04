@@ -58,7 +58,7 @@ case class AddInstanceCommand(c: Instance, ctx: KevoreeDeployManager, nodeName: 
 
     if (mappingFound != null) {
       //FOUND CURRENT NODE TYPE
-      val nodeType = c.getTypeDefinition.eContainer().asInstanceOf[ContainerRoot].getNodes.find(tn => tn.getName == nodeName).get.getTypeDefinition
+      val nodeType = c.getTypeDefinition.eContainer.asInstanceOf[ContainerRoot].getNodes.find(tn => tn.getName == nodeName).get.getTypeDefinition
       //FIRST COMPLIANCE VALID TARGET NODE TYPE IN INHERITANCE
       val nodeTypeName = c.getTypeDefinition.foundRelevantHostNodeType(nodeType.asInstanceOf[NodeType],c.getTypeDefinition) match {
         case Some(nt)=> nt.getName
@@ -94,7 +94,7 @@ case class AddInstanceCommand(c: Instance, ctx: KevoreeDeployManager, nodeName: 
           bundle = ctx.bundleContext.installBundle("assembly:file:///" + directory.getAbsolutePath)
         }
 
-        ctx.bundleMapping.add(KevoreeOSGiBundle(c.getName, c.getClass.getName, bundle.getBundleId))
+        ctx.bundleMapping = ctx.bundleMapping ++ List(KevoreeOSGiBundle(c.getName, c.getClass.getName, bundle.getBundleId))
         lastExecutionBundle = Some(bundle)
         bundle.start()
         mustBeStarted = true
@@ -118,7 +118,7 @@ case class AddInstanceCommand(c: Instance, ctx: KevoreeDeployManager, nodeName: 
           b.uninstall()
           (ctx.bundleMapping.filter(map => map.bundleId == b.getBundleId).toList ++ List()).foreach {
             map =>
-              ctx.bundleMapping.remove(map)
+              ctx.bundleMapping = ctx.bundleMapping.filter(mb => mb != map)
           }
 
         } catch {

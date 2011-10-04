@@ -39,11 +39,11 @@ trait PortTypeMerger {
                   //CLEAR OLD METHOD , NEW DEFINITION WILL REPLACE OTHER
 
                   spt.getOperations.clear
-                  var remoteOps = portType.asInstanceOf[ServicePortType].getOperations.toList ++ List()
+                  val remoteOps = portType.asInstanceOf[ServicePortType].getOperations.toList ++ List()
                   remoteOps.foreach{op=>
                     op.setReturnType(mergeDataType(actualModel,op.getReturnType))
                     op.getParameters.foreach{para=>para.setType(mergeDataType(actualModel,para.getType))}
-                    spt.getOperations.add(op)
+                    spt.addOperations(op)
                   }
 
                 } else {
@@ -57,7 +57,7 @@ trait PortTypeMerger {
           existPT.asInstanceOf[PortType]
         }
       case None => {
-          actualModel.getTypeDefinitions.add(portType)
+          actualModel.addTypeDefinitions(portType)
           portType match {
             case spt : ServicePortType => {
                 spt.getOperations.foreach{op=>
@@ -80,12 +80,12 @@ trait PortTypeMerger {
     actualModel.getDataTypes.find({dt=>dt.isModelEquals(datatype)}) match {
       case Some(existDT) => existDT
       case None => {
-          var dts =  actualModel.getDataTypes.add(datatype)
+          var dts =  actualModel.addDataTypes(datatype)
 
           var generics = datatype.getGenericTypes.toList ++ List()
           datatype.getGenericTypes.clear
           generics.foreach{dt=>
-            datatype.getGenericTypes.add(mergeDataType(actualModel,dt))
+            datatype.addGenericTypes(mergeDataType(actualModel,dt))
           }
 
           datatype

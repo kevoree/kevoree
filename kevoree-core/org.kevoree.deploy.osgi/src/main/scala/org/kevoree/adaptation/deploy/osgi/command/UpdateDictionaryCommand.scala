@@ -31,9 +31,9 @@ case class UpdateDictionaryCommand(c: Instance, ctx: KevoreeDeployManager, nodeN
   def execute(): Boolean = {
     //BUILD MAP
     val dictionary: java.util.HashMap[String, String] = new java.util.HashMap[String, String]
-    if (c.getTypeDefinition.getDictionaryType != null) {
-      if (c.getTypeDefinition.getDictionaryType.getDefaultValues != null) {
-        c.getTypeDefinition.getDictionaryType.getDefaultValues.foreach {
+    if (c.getTypeDefinition.getDictionaryType.isDefined) {
+      if (c.getTypeDefinition.getDictionaryType.get.getDefaultValues != null) {
+        c.getTypeDefinition.getDictionaryType.get.getDefaultValues.foreach {
           dv =>
             dictionary.put(dv.getAttribute.getName, dv.getValue)
         }
@@ -42,8 +42,8 @@ case class UpdateDictionaryCommand(c: Instance, ctx: KevoreeDeployManager, nodeN
 
 
 
-    if (c.getDictionary != null) {
-      c.getDictionary.getValues.foreach {
+    if (c.getDictionary.isDefined) {
+      c.getDictionary.get.getValues.foreach {
         v =>
           dictionary.put(v.getAttribute.getName, v.getValue)
       }

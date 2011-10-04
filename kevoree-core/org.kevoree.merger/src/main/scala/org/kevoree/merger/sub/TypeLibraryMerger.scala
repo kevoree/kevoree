@@ -24,18 +24,18 @@ import org.kevoree.merger.Merger
 trait TypeLibraryMerger extends Merger {
 
   def mergeLibrary(actualModel : ContainerRoot,modelToMerge : ContainerRoot) : Unit = {
-    val ctLib : List[TypeLibrary] = List()++modelToMerge.getLibraries.toList
+    val ctLib : List[TypeLibrary] = List()++modelToMerge.getLibraries
     ctLib.foreach{libtomerge=>
       actualModel.getLibraries.find({elib=> elib.getName.equals(libtomerge.getName) }) match {
         case Some(elib) => {
             libtomerge.getSubTypes.filter{st=> st.isInstanceOf[TypeDefinition]}.foreach{libCTtomerge=>
               elib.getSubTypes.filter{st=> st.isInstanceOf[TypeDefinition]}.find({esublib=>esublib.getName.equals(libCTtomerge.getName)}) match {
                 case Some(subct)=> //CHECK CONSISTENCY DONE BY PREVIOUS STEP
-                case None => elib.getSubTypes.add(libCTtomerge)
+                case None => elib.addSubTypes(libCTtomerge)
               }
             }
           }
-        case None => actualModel.getLibraries.add(libtomerge)
+        case None => actualModel.addLibraries(libtomerge)
       }
     }
   }

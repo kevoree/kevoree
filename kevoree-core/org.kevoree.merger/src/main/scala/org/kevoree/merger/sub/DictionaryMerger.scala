@@ -26,14 +26,14 @@ trait DictionaryMerger {
 
   def mergeDictionary(dictionary : Dictionary,newtype : DictionaryType) : Unit = {
     if(dictionary != null){
-      var values = dictionary.getValues.toList ++ List()
+      val values = dictionary.getValues.toList ++ List()
       values.foreach{v=>
 
         val newAttribute = newtype.getAttributes.find(att=> att.getName == v.getAttribute.getName)
         newAttribute match {
           case None => {
               println("ART2 Merger remove unavailable Dictionary Value => "+v.getValue +" for old key => "+v.getAttribute.getName)
-              dictionary.getValues.remove(v)
+              dictionary.removeValues(v)
             } //REMOVE DICTIONARY INSTANCE , NO AVAILABLE IN NEW TYPE
           case Some(found)=> v.setAttribute(found) //TODO CHECK TYPE // ACTUALLY ONLY STRING
         }
