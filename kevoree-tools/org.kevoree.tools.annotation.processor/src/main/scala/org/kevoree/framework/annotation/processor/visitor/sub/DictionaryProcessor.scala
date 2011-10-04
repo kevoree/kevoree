@@ -39,11 +39,11 @@ trait DictionaryProcessor {
         }
 
         //CASE NO ATT ALREADY CREATED WITH NAME
-        val processDictionaryAtt = typeDef.getDictionaryType.getAttributes.find(eAtt=> eAtt.getName == dictionaryAtt.name ) match {
+        val processDictionaryAtt = typeDef.getDictionaryType.get.getAttributes.find(eAtt=> eAtt.getName == dictionaryAtt.name ) match {
           case None => {
               val newAtt = KevoreeFactory.eINSTANCE.createDictionaryAttribute
               newAtt.setName(dictionaryAtt.name)
-              typeDef.getDictionaryType.getAttributes.add(newAtt)
+              typeDef.getDictionaryType.get.getAttributes.add(newAtt)
               newAtt
           }
           case Some(att)=> att
@@ -55,12 +55,12 @@ trait DictionaryProcessor {
         //INIT DEF VALUE
         //TODO ALLOW MORE TYPE THAN STRING
         if(dictionaryAtt.defaultValue != "defaultKevoreeNonSetValue"){
-          typeDef.getDictionaryType.getDefaultValues.find(defV => defV.getAttribute == processDictionaryAtt) match {
+          typeDef.getDictionaryType.get.getDefaultValues.find(defV => defV.getAttribute == processDictionaryAtt) match {
             case None => {
                 val newVal = KevoreeFactory.eINSTANCE.createDictionaryValue
                 newVal.setAttribute(processDictionaryAtt)
                 newVal.setValue(dictionaryAtt.defaultValue)
-                typeDef.getDictionaryType.getDefaultValues.add(newVal)
+                typeDef.getDictionaryType.get.getDefaultValues.add(newVal)
             }
           case Some(edefV)=> edefV.setValue(dictionaryAtt.defaultValue.toString)
           }
