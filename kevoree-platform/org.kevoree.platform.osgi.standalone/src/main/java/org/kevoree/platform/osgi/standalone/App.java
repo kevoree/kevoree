@@ -15,12 +15,8 @@ package org.kevoree.platform.osgi.standalone;
 
 import org.kevoree.ContainerRoot;
 import org.kevoree.framework.KevoreeXmiHelper;
-import org.kevoreeAdaptation.util.KevoreeAdaptationAdapterFactory;
-
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.IOException;
-import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
