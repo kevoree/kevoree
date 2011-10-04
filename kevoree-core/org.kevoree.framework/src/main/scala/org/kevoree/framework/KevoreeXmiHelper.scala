@@ -29,8 +29,9 @@ import java.util.HashMap
 import org.eclipse.emf.common.util.URI
 import java.util.zip.{Deflater, Inflater, GZIPInputStream, GZIPOutputStream}
 import io.Source
-import java.io.{ByteArrayInputStream, ByteArrayOutputStream, InputStream, OutputStream}
 import org.slf4j.LoggerFactory
+import java.io._
+import org.kevoree.loader.ContainerRootLoader
 
 object KevoreeXmiHelper {
 
@@ -47,10 +48,19 @@ object KevoreeXmiHelper {
     res.asInstanceOf[XMIResource].getDefaultSaveOptions().put(XMLResource.OPTION_ENCODING, "UTF-8");
     res.getContents.add(root)
     res.save(new HashMap());
+
   }
+
 
   def load(uri: String): ContainerRoot = {
     logger.debug("load model from => "+uri)
+    val localModel = ContainerRootLoader.loadModel(new File(uri));
+    localModel match {
+      case Some(m) => m
+      case None => println("Model not loaded!");null
+    }
+
+    /*
     val rs = new ResourceSetImpl();
     rs.getResourceFactoryRegistry().getExtensionToFactoryMap().put("*", new XMIResourceFactoryImpl());
     rs.getPackageRegistry().put(KevoreePackage.eNS_URI, KevoreePackage.eINSTANCE);
@@ -60,9 +70,16 @@ object KevoreeXmiHelper {
     var result = res.getContents().get(0);
     //println(res)
     return result.asInstanceOf[ContainerRoot];
+    */
   }
 
   def loadStream(input: InputStream): ContainerRoot = {
+    val localModel = ContainerRootLoader.loadModel(input);
+    localModel match {
+      case Some(m) => m
+      case None => println("Model not loaded!");null
+    }
+    /*
     val rs = new ResourceSetImpl();
     rs.getResourceFactoryRegistry().getExtensionToFactoryMap().put("*", new XMIResourceFactoryImpl());
     rs.getPackageRegistry().put(KevoreePackage.eNS_URI, KevoreePackage.eINSTANCE);
@@ -71,6 +88,7 @@ object KevoreeXmiHelper {
     ressource.asInstanceOf[XMIResource].getDefaultSaveOptions().put(XMLResource.OPTION_ENCODING, "UTF-8");
     ressource.load(input, new HashMap());
     ressource.getContents.get(0).asInstanceOf[ContainerRoot];
+    */
   }
 
   def saveStream(output: OutputStream, root: ContainerRoot): Unit = {
