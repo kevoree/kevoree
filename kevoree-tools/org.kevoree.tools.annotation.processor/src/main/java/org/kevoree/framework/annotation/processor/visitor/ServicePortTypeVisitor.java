@@ -45,7 +45,7 @@ import org.kevoree.framework.annotation.processor.LocalUtility;
  */
 public class ServicePortTypeVisitor implements TypeVisitor {
 
-    ServicePortType dataType = KevoreeFactory.eINSTANCE.createServicePortType();
+    ServicePortType dataType = KevoreeFactory.eINSTANCE().createServicePortType();
 
     public ServicePortType getDataType() {
         return dataType;
@@ -125,8 +125,8 @@ public class ServicePortTypeVisitor implements TypeVisitor {
         for (MethodDeclaration m : t.getMethods()) {
 
             //BUILD NEW OPERATION
-            Operation newo = KevoreeFactory.eINSTANCE.createOperation();
-            dataType.getOperations().add(newo);
+            Operation newo = KevoreeFactory.eINSTANCE().createOperation();
+            dataType.addOperations(newo);
             newo.setName(m.getSimpleName());
 
             //BUILD RETURN TYPE
@@ -137,8 +137,8 @@ public class ServicePortTypeVisitor implements TypeVisitor {
             //BUILD PARAMETER
             for (ParameterDeclaration p : m.getParameters()) {
 
-                Parameter newp = KevoreeFactory.eINSTANCE.createParameter();
-                newo.getParameters().add(newp);
+                Parameter newp = KevoreeFactory.eINSTANCE().createParameter();
+                newo.addParameters(newp);
                 newp.setName(p.getSimpleName());
 
                 DataTypeVisitor ptv = new DataTypeVisitor();

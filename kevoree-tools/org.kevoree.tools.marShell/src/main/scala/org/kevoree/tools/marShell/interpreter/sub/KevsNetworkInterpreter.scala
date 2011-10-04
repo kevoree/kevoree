@@ -24,7 +24,7 @@ case class KevsNetworkInterpreter(networkStatement: NetworkPropertyStatement) ex
   var logger = LoggerFactory.getLogger(this.getClass)
 
   def interpret(context: KevsInterpreterContext): Boolean = {
-
+     import scala.collection.JavaConversions._
     networkStatement.props.foreach {
       prop =>
         networkStatement.srcNodeName match {
@@ -40,7 +40,7 @@ case class KevsNetworkInterpreter(networkStatement: NetworkPropertyStatement) ex
     /* SEARCH THE NODE NETWORK */
     val nodenetwork = actualModel.getNodeNetworks.find({
       nn =>
-        nn.getInitBy.getName == currentNodeName && nn.getTarget.getName == targetNodeName
+        nn.getInitBy.get.getName == currentNodeName && nn.getTarget.getName == targetNodeName
     }) getOrElse {
       val newNodeNetwork = KevoreeFactory.eINSTANCE.createNodeNetwork
       val thisNode = actualModel.getNodes.find({
@@ -52,17 +52,17 @@ case class KevsNetworkInterpreter(networkStatement: NetworkPropertyStatement) ex
       val thisNodeFound = thisNode.getOrElse {
         val newnode = KevoreeFactory.eINSTANCE.createContainerNode
         newnode.setName(currentNodeName)
-        actualModel.getNodes.add(newnode)
+        actualModel.addNodes(newnode)
         newnode
       }
       newNodeNetwork.setTarget(targetNode.getOrElse {
         val newnode = KevoreeFactory.eINSTANCE.createContainerNode
         newnode.setName(targetNodeName)
-        actualModel.getNodes.add(newnode)
+        actualModel.addNodes(newnode)
         newnode
       })
       newNodeNetwork.setInitBy(thisNodeFound)
-      actualModel.getNodeNetworks.add(newNodeNetwork)
+      actualModel.addNodeNetworks(newNodeNetwork)
       newNodeNetwork
     }
 
@@ -70,7 +70,7 @@ case class KevsNetworkInterpreter(networkStatement: NetworkPropertyStatement) ex
     val nodelink = nodenetwork.getLink.find(loopLink => loopLink.getNetworkType == networkType).getOrElse {
       val newlink = KevoreeFactory.eINSTANCE.createNodeLink
       newlink.setNetworkType(networkType)
-      nodenetwork.getLink.add(newlink)
+      nodenetwork.addLink(newlink)
       newlink
     }
     try {
@@ -84,7 +84,7 @@ case class KevsNetworkInterpreter(networkStatement: NetworkPropertyStatement) ex
     }).getOrElse {
       val newprop = KevoreeFactory.eINSTANCE.createNetworkProperty
       newprop.setName(key)
-      nodelink.getNetworkProperties.add(newprop)
+      nodelink.addNetworkProperties(newprop)
       newprop
     }
     prop.setValue(value)

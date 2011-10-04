@@ -53,7 +53,7 @@ case class KevsAddChannelInterpreter(addChannel: AddChannelInstanceStatment) ext
 
             Merger.mergeDictionary(newchannel, addChannel.props)
 
-            context.model.getHubs.add(newchannel)
+            context.model.addHubs(newchannel)
 
           }
           case Some(targetChannelType) if (!targetChannelType.isInstanceOf[ChannelType]) => {
