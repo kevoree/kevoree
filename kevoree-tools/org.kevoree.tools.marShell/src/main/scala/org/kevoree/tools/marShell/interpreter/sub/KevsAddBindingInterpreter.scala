@@ -22,7 +22,7 @@ import org.kevoree.KevoreeFactory
 import org.kevoree.tools.marShell.ast.AddBindingStatment
 import org.kevoree.tools.marShell.interpreter.KevsAbstractInterpreter
 import org.kevoree.tools.marShell.interpreter.KevsInterpreterContext
-import scala.collection.JavaConversions._
+
 import org.slf4j.LoggerFactory
 
 case class KevsAddBindingInterpreter(addBinding : AddBindingStatment) extends KevsAbstractInterpreter {

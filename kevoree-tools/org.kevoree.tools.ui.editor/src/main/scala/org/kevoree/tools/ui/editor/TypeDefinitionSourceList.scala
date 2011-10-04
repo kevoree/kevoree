@@ -14,7 +14,7 @@
 package org.kevoree.tools.ui.editor
 
 import command.{AddElementUICommand, SynchCodeCommand, ReloadTypePalette}
-import scala.collection.JavaConversions._
+
 import com.explodingpixels.macwidgets._
 import javax.swing._
 import java.awt.datatransfer.{DataFlavor, Transferable}

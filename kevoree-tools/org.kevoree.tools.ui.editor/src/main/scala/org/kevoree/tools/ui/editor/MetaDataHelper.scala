@@ -14,7 +14,7 @@
 package org.kevoree.tools.ui.editor
 
 import org.kevoree.Instance
-import scala.collection.JavaConversions._
+
 
 object MetaDataHelper {
 

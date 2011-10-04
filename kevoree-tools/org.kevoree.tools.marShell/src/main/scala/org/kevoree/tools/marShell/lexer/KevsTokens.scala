@@ -17,7 +17,7 @@ import scala.util.parsing.combinator.Parsers
 import scala.util.parsing.combinator.token.Tokens
 import scala.util.parsing.input.OffsetPosition
 import scala.util.parsing.input.Positional
-import scala.collection.JavaConversions._
+
 
 trait KevsTokens extends Tokens with Parsers {
 

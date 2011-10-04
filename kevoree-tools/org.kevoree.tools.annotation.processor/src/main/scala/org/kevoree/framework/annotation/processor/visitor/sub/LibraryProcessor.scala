@@ -22,7 +22,7 @@ import com.sun.mirror.declaration.TypeDeclaration
 import org.kevoree.KevoreeFactory
 import org.kevoree.ContainerRoot
 import org.kevoree.TypeDefinition
-import scala.collection.JavaConversions._
+
 
 trait LibraryProcessor {
   

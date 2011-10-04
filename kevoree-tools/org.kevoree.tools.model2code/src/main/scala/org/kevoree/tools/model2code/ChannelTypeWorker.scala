@@ -29,7 +29,7 @@ import japa.parser.ast.expr.NameExpr
 import java.util.ArrayList
 import org.kevoree.ChannelType
 import org.kevoree.ContainerRoot
-import scala.collection.JavaConversions._
+
 import japa.parser.ast.`type`.ClassOrInterfaceType
 import japa.parser.ast.body._
 import org.kevoree.framework.message.Message

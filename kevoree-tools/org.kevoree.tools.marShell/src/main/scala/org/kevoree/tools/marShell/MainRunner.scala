@@ -21,7 +21,7 @@ package org.kevoree.tools.marShell
 import interpreter.KevsInterpreterContext
 import org.kevoree.tools.marShell.parser.KevsParser
 import org.kevoree.tools.marShell.parser.ParserUtil
-import scala.collection.JavaConversions._
+
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl
 import org.eclipse.emf.ecore.xmi.{XMLResource, XMIResource}
 import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl

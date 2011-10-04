@@ -35,7 +35,7 @@ import com.sun.mirror.`type`.PrimitiveType
 import com.sun.mirror.util.TypeVisitor
 import org.kevoree.KevoreeFactory
 import org.kevoree.framework.annotation.processor.LocalUtility
-import scala.collection.JavaConversions._
+
 
 class DataTypeVisitor extends TypeVisitor {
 

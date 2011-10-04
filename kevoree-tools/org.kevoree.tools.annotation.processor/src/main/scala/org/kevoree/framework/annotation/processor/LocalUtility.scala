@@ -22,7 +22,7 @@ import com.sun.mirror.apt.AnnotationProcessorEnvironment
 import org.kevoree.ContainerRoot
 import org.kevoree.PortType
 import org.kevoree.TypedElement
-import scala.collection.JavaConversions._
+
 
 object LocalUtility {
   var root : ContainerRoot = _

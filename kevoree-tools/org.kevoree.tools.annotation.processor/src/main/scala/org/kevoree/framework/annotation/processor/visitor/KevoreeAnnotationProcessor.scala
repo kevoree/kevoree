@@ -29,7 +29,7 @@ import org.kevoree.framework.annotation.processor.PostAptChecker
 import org.kevoree.tools.annotation.generator.KevoreeActivatorGenerator
 import org.kevoree.tools.annotation.generator.KevoreeFactoryGenerator
 import org.kevoree.tools.annotation.generator.KevoreeGenerator
-import scala.collection.JavaConversions._
+
 import org.kevoree.annotation.{GroupType, ChannelTypeFragment, ComponentType, NodeType}
 import org.kevoree.framework.{AbstractNodeType, AbstractGroupType, AbstractChannelFragment, AbstractComponentType}
 

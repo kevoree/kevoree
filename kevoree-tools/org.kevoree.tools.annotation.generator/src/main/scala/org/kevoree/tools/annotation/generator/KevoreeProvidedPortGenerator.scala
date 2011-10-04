@@ -26,7 +26,7 @@ import org.kevoree.PortTypeRef
 import org.kevoree.{ComponentType => KevoreeComponentType }
 import org.kevoree.ServicePortType
 import org.kevoree.framework.aspects.KevoreeAspects._
-import scala.collection.JavaConversions._
+
 import org.kevoree.framework.{KevoreeGeneratorHelper, Constants}
 
 object KevoreeProvidedPortGenerator {

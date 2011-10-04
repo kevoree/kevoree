@@ -13,7 +13,7 @@
  */
 package org.kevoree.tools.marShellTransform
 
-import scala.collection.JavaConversions._
+
 import org.kevoree.tools.marShell.ast._
 import org.kevoreeAdaptation._
 import org.slf4j.LoggerFactory

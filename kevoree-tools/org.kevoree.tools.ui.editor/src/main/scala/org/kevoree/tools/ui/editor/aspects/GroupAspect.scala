@@ -16,7 +16,7 @@ package org.kevoree.tools.ui.editor.aspects
 import org.kevoree.tools.ui.editor.KevoreeUIKernel
 import org.kevoree.{ContainerRoot, Group}
 import org.kevoree.tools.ui.framework.elements.{Binding, ModelPanel, GroupPanel}
-import scala.collection.JavaConversions._
+
 
 case class GroupAspect(self: Group) {
 

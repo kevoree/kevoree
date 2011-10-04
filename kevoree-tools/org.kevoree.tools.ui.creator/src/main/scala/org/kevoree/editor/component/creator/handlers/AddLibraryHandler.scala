@@ -22,7 +22,7 @@ import org.kevoree.ContainerRoot
 import org.kevoree.KevoreeFactory
 import org.kevoree.editor.component.creator.Kernel
 import org.kevoree.editor.component.creator.model.LibraryModelElement
-import scala.collection.JavaConversions._
+
 
 trait AddLibraryHandler {
 

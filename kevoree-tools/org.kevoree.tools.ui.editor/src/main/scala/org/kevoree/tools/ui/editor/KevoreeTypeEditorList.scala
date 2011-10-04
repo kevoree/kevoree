@@ -16,7 +16,7 @@ package org.kevoree.tools.ui.editor
 import javax.swing.table.DefaultTableModel
 import com.explodingpixels.macwidgets.IAppWidgetFactory
 import java.awt.BorderLayout
-import scala.collection.JavaConversions._
+
 import org.kevoree.{ComponentType, TypeDefinition}
 import com.explodingpixels.macwidgets.plaf.ITunesTableUI
 import javax.swing.{JTable, BorderFactory, JScrollPane, JPanel}

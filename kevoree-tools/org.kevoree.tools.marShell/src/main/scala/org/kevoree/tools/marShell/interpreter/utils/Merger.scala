@@ -20,7 +20,7 @@ package org.kevoree.tools.marShell.interpreter.utils
 
 import org.kevoree.Instance
 import org.kevoree.KevoreeFactory
-import scala.collection.JavaConversions._
+
 
 object Merger {
 
