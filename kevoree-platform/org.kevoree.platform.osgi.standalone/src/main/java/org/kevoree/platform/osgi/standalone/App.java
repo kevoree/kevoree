@@ -15,7 +15,9 @@ package org.kevoree.platform.osgi.standalone;
 
 import org.kevoree.ContainerRoot;
 import org.kevoree.framework.KevoreeXmiHelper;
+import org.kevoreeAdaptation.util.KevoreeAdaptationAdapterFactory;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.util.Random;
@@ -27,6 +29,11 @@ import java.util.logging.Logger;
  */
 public class App {
     public static void main(String[] args) {
+
+        long time = System.currentTimeMillis();
+        ContainerRoot model = KevoreeXmiHelper.load("/Users/duke/Documents/dev/dukeboard/kevoree-experiment/org.kevoree.experiment.smartForest/duke.irisa.fr-generated/models/Models580");
+        KevoreeXmiHelper.saveStream(new ByteArrayOutputStream(),model);
+        System.out.println(System.currentTimeMillis() - time);
 
         File mavenDir = new File(System.getProperty("user.home") + "/.m2/repository");
         if (mavenDir.exists() && mavenDir.isDirectory()) {
