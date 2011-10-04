@@ -38,7 +38,7 @@ class SynchCodeCommand extends Command {
       val result: Int = pomDirectoryHelper.showOpenDialog(null)
       if (result == JFileChooser.APPROVE_OPTION) {
         val model2code = new Model2Code
-        model2code.modelToCode(typeDef.eContainer().asInstanceOf[ContainerRoot], typeDef, pomDirectoryHelper.getSelectedFile.toURI)
+        model2code.modelToCode(typeDef.eContainer.asInstanceOf[ContainerRoot], typeDef, pomDirectoryHelper.getSelectedFile.toURI)
 
       }
     }

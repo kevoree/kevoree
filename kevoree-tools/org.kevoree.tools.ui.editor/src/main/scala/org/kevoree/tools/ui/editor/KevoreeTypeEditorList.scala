@@ -63,10 +63,10 @@ class KevoreeTypeEditorList(typeDefinition: TypeDefinition, uikernel: KevoreeUIK
   /* RELOAD ALL TYPE INFORMATIONS */
   def reload() {
     if (typeDefinition != null) {
-      if (typeDefinition.getDictionaryType != null) {
-        typeDefinition.getDictionaryType.getAttributes.foreach {
+      if (typeDefinition.getDictionaryType.isDefined) {
+        typeDefinition.getDictionaryType.get.getAttributes.foreach {
           at =>
-            val defValue: String = typeDefinition.getDictionaryType.getDefaultValues.find(dv => dv.getAttribute == at).map(dv => dv.getValue).getOrElse("")
+            val defValue: String = typeDefinition.getDictionaryType.get.getDefaultValues.find(dv => dv.getAttribute == at).map(dv => dv.getValue).getOrElse("")
             model.addRow(Array[AnyRef](at.getName, "Property", at.getDatatype, defValue))
         }
       }
