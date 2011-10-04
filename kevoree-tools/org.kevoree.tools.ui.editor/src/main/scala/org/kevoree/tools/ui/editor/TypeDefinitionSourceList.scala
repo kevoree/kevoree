@@ -184,6 +184,7 @@ class TypeDefinitionSourceList(pane: JSplitPane, kernel: KevoreeUIKernel) {
 
   def clear {
     map.clear()
+    import scala.collection.JavaConversions._
     model.getCategories.toList.foreach {
       categ =>
         model.removeCategory(categ)
@@ -202,6 +203,7 @@ class TypeDefinitionSourceList(pane: JSplitPane, kernel: KevoreeUIKernel) {
 
 
   def getCategoryOrAdd(libName: String): SourceListCategory = {
+    import scala.collection.JavaConversions._
     model.getCategories.find(categ => categ.getText == libName) match {
       case Some(e) => e
       case None => {
@@ -215,6 +217,7 @@ class TypeDefinitionSourceList(pane: JSplitPane, kernel: KevoreeUIKernel) {
 
 
   def updateTypeValue(value: Int, typeName: String) {
+    import scala.collection.JavaConversions._
     model.getCategories.foreach {
       categ =>
         categ.getItems.foreach {
@@ -229,6 +232,7 @@ class TypeDefinitionSourceList(pane: JSplitPane, kernel: KevoreeUIKernel) {
 
   def addTypeDefinitionPanel(ctp: JPanel, libName: String, typeName: String) {
     val categ = getCategoryOrAdd(libName)
+    import scala.collection.JavaConversions._
     categ.getItems.find(item => item.getText == typeName) match {
       case Some(item) =>
       case None => {

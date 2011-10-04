@@ -28,7 +28,7 @@ class LoadRemoteModelUICommand extends Command {
 
   def setKernel(k: KevoreeUIKernel) = kernel = k
   
-  private var lcommand = new LoadModelCommand();
+  private val lcommand = new LoadModelCommand();
   
   def execute(p: Object) = {
     
