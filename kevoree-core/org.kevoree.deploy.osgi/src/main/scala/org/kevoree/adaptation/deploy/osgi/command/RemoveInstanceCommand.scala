@@ -44,7 +44,8 @@ case class RemoveInstanceCommand(c: Instance, ctx: KevoreeDeployManager, nodeNam
         ctx.getServicePackageAdmin.refreshPackages(Array(bundle))
         true
     }
-    ctx.bundleMapping = ctx.bundleMapping.filter{mb => { ! bundles.contains(mb) }}
+    ctx.bundleMapping = ctx.bundleMapping.filter(mb => !bundles.contains(mb) )
+    true
   }
 
   def undo() {
