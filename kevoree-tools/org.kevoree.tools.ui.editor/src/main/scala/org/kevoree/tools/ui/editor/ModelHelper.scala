@@ -15,6 +15,7 @@ package org.kevoree.tools.ui.editor
 
 
 import org.kevoree._
+import org.kevoree.framework.aspects.KevoreeAspects._
 
 /**
  * User: ffouquet
@@ -25,12 +26,8 @@ import org.kevoree._
 object ModelHelper {
 
   def getTypeNbInstance(model: ContainerRoot, td: TypeDefinition) = {
-    model.eAllContents()
-      .filter(t => t.isInstanceOf[Instance])
-      .filter(t => {
-      t.asInstanceOf[Instance].getTypeDefinition == td
-    })
-      .size
+
+    model.getAllInstances.filter(i => i.getTypeDefinition == td).size
 
   }
 

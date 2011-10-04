@@ -101,7 +101,7 @@ class SchedulingWithTopologicalOrderAlgo {
     }
 
 
-    if (rootContainer.getMBindings != null) {
+    if (!rootContainer.getMBindings.isEmpty) {
       val bindingIterator = rootContainer.getMBindings.iterator
       while (bindingIterator.hasNext) {
         val binding = bindingIterator.next
