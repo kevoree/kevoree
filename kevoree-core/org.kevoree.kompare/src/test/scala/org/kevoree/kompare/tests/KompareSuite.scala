@@ -52,8 +52,8 @@ case class RichAdaptationModel(self: AdaptationModel) {
     assert(
       self.getAdaptations.exists(adaptation => {
         adaptation.getRef match {
-          case e: Instance if (adaptation.getPrimitiveType.getName.contains(c)) => e.getName == refName
-          case e: TypeDefinition if (adaptation.getPrimitiveType.getName.contains(c)) => e.getName == refName
+          case e: Instance if (adaptation.getPrimitiveType.get.getName.contains(c)) => e.getName == refName
+          case e: TypeDefinition if (adaptation.getPrimitiveType.get.getName.contains(c)) => e.getName == refName
           case _ => false
         }
       })
@@ -62,14 +62,14 @@ case class RichAdaptationModel(self: AdaptationModel) {
 
   def shouldContainSize[A](c: String, nb: Int) = {
     assert(
-      self.getAdaptations.filter(adaptation => adaptation.getPrimitiveType.getName.contains(c)).size == nb
+      self.getAdaptations.filter(adaptation => adaptation.getPrimitiveType.get.getName.contains(c)).size == nb
     )
   }
 
 
   def shouldNotContain(c: String) = {
     assert(
-      self.getAdaptations.forall(adaptation => !adaptation.getPrimitiveType.getName.contains(c))
+      self.getAdaptations.forall(adaptation => !adaptation.getPrimitiveType.get.getName.contains(c))
     )
   }
 
@@ -78,7 +78,7 @@ case class RichAdaptationModel(self: AdaptationModel) {
     println("Adaptations")
     self.getAdaptations.toList.foreach {
       adapt =>
-        println(adapt.getPrimitiveType.getName)
+        println(adapt.getPrimitiveType.get.getName)
         adapt.getRef match {
           case i: DeployUnit => println("=>" + i.getUnitName)
           case i: TypeDefinition => println("=>" + i.getName)

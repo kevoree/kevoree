@@ -33,13 +33,13 @@ trait UpdateChannelKompare extends AbstractKompare {
         actualChannel.getOtherFragment(nodeName).find(b => b == newhubBindingNodeName) match {
           case None => {
             //NEW BINDING
-            val addccmd = KevoreeAdaptationFactory.eINSTANCE.createAdaptationPrimitive()
-            addccmd.setPrimitiveType(getAdaptationPrimitive(JavaSePrimitive.AddFragmentBinding,actualChannel.eContainer().asInstanceOf[ContainerRoot]))
+            val addccmd = KevoreeAdaptationFactory.eINSTANCE.createAdaptationPrimitive
+            addccmd.setPrimitiveType(getAdaptationPrimitive(JavaSePrimitive.AddFragmentBinding,actualChannel.eContainer.asInstanceOf[ContainerRoot]))
 
 
             addccmd.setRef(updateChannel)
             addccmd.setTargetNodeName(newhubBindingNodeName)
-            adaptationModel.getAdaptations.add(addccmd)
+            adaptationModel.addAdaptations(addccmd)
           }
           case Some(bname) => //OK ALREADY BINDED
         }
@@ -49,11 +49,11 @@ trait UpdateChannelKompare extends AbstractKompare {
         updateChannel.getOtherFragment(nodeName).find(b => b == previousHubBindingNodeName) match {
           case None => {
             //REMOVE BINDING
-            val addccmd = KevoreeAdaptationFactory.eINSTANCE.createAdaptationPrimitive()
-            addccmd.setPrimitiveType(getAdaptationPrimitive(JavaSePrimitive.RemoveFragmentBinding,actualChannel.eContainer().asInstanceOf[ContainerRoot]))
+            val addccmd = KevoreeAdaptationFactory.eINSTANCE.createAdaptationPrimitive
+            addccmd.setPrimitiveType(getAdaptationPrimitive(JavaSePrimitive.RemoveFragmentBinding,actualChannel.eContainer.asInstanceOf[ContainerRoot]))
             addccmd.setRef(updateChannel)
             addccmd.setTargetNodeName(previousHubBindingNodeName)
-            adaptationModel.getAdaptations.add(addccmd)
+            adaptationModel.addAdaptations(addccmd)
           }
           case Some(bname) => //OK ALREADY BINDED
         }
