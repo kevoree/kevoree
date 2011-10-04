@@ -36,6 +36,11 @@ public class App {
 
     public static void main(final String[] args) {
 
+     //   System.setProperty("apple.awt.graphics.UseQuartz","true");
+        //System.setProperty("sun.java2d.opengl","true");
+
+       // System.setProperty("apple.awt.graphics.UseOpenGL","true");
+
         SwingUtilities.invokeLater(new Runnable() {
 
             @Override
