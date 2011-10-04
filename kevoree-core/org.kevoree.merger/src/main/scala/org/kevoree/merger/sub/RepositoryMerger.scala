@@ -28,7 +28,7 @@ trait RepositoryMerger {
 
   //EXPECT TYPE DEFINITION TO BE MERGE BEFORE THIS STEP
   def mergeRepositories(actualModel : ContainerRoot,modelToMerge : ContainerRoot) : Unit = {
-    var ctRepo : List[Repository] = List()++modelToMerge.getRepositories.toList
+    val ctRepo : List[Repository] = List()++modelToMerge.getRepositories
     ctRepo.foreach{toMergeRepo=>
       actualModel.getRepositories.find(lr=> lr.getUrl == toMergeRepo.getUrl) match {
         case Some(found_repo)=> mergeRepository(actualModel,found_repo,toMergeRepo)
@@ -44,11 +44,11 @@ trait RepositoryMerger {
 
 
   def mergeRepository(actualRoot : ContainerRoot,actualRepository : Repository,toMergeRepository : Repository) : Unit = {
-    var toMergeUnits : List[DeployUnit] = List()++toMergeRepository.getUnits.toList
+    val toMergeUnits : List[DeployUnit] = List()++toMergeRepository.getUnits
     toMergeUnits.foreach{unit=>
 
       //ACTUAL UNIT
-      var found_unit = actualRoot.getDeployUnits.find(du=>du.isModelEquals(unit) /*&& du.getHashcode == unit.getHashcode*/)
+      val found_unit = actualRoot.getDeployUnits.find(du=>du.isModelEquals(unit) /*&& du.getHashcode == unit.getHashcode*/)
       found_unit match {
         case None => {
             println("Merger Error !!!!! Repository Incomplete")
