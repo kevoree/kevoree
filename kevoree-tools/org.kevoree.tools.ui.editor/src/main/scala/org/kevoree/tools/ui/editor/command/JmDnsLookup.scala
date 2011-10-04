@@ -44,10 +44,10 @@ class JmDnsLookup extends Command {
             kernel.getModelHandler.getActualModel.getTypeDefinitions.find(td => td.getName == info.getNiceTextString) match {
               case Some(nodeTypeDef) => {
                 if (!kernel.getModelHandler.getActualModel.getNodes.exists(node => node.getName == info.getName.trim())) {
-                  val newnode = KevoreeFactory.eINSTANCE.createContainerNode()
+                  val newnode = KevoreeFactory.eINSTANCE.createContainerNode
                   newnode.setName(info.getName.trim())
                   newnode.setTypeDefinition(nodeTypeDef)
-                  kernel.getModelHandler.getActualModel.getNodes.add(newnode)
+                  kernel.getModelHandler.getActualModel.addNodes(newnode)
                 }
                 KevoreePlatformHelper.updateNodeLinkProp(kernel.getModelHandler.getActualModel, info.getName.trim(), info.getName.trim(), org.kevoree.framework.Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP, info.getInet4Addresses()(0).getHostAddress, "LAN", 100)
               //  KevoreePlatformHelper.updateNodeLinkProp(kernel.getModelHandler.getActualModel, info.getName.trim(), info.getName.trim(), org.kevoree.framework.Constants.KEVOREE_PLATFORM_REMOTE_NODE_MODELSYNCH_PORT, info.getPort.toString, "LAN", 100)

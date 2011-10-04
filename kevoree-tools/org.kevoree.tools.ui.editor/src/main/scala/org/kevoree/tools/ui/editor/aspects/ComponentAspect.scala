@@ -32,6 +32,7 @@ case class ComponentAspect(self : ComponentInstance) {
     var root : ContainerRoot = self.eContainer.eContainer.asInstanceOf[ContainerRoot]
 
     //BINDING
+    import scala.collection.JavaConversions._
     KevoreeUtility.getRelatedBinding(self).foreach{b=>
       b.removeModelAndUI(kernel)
     }
@@ -42,7 +43,7 @@ case class ComponentAspect(self : ComponentInstance) {
     nodepanel.remove(componentPanel)
 
     //REMOVE INSTANCE
-    node.getComponents.remove(self)
+    node.removeComponents(self)
 
 
     //UNBIND

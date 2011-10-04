@@ -26,18 +26,20 @@ import org.kevoree.tools.ui.framework.elements.ModelPanel
 
 import Art2UIAspects._
 
-case class ChannelAspect(self : Channel) {
+case class ChannelAspect(self: Channel) {
 
-  def removeModelAndUI(kernel : KevoreeUIKernel)={
-          var root : ContainerRoot = self.eContainer.asInstanceOf[ContainerRoot]
-          KevoreeUtility.getRelatedBinding(self).foreach{b=>
-            b.removeModelAndUI(kernel)
-          }
-          var panel = kernel.getUifactory().getMapping().get(self).asInstanceOf[ChannelPanel]
-          var modelPanel = kernel.getUifactory().getMapping().get(root).asInstanceOf[ModelPanel]
-          modelPanel.removeInstance(panel)
-          root.getHubs.remove(self)
-          kernel.getUifactory().getMapping().unbind(panel, self);
+  def removeModelAndUI(kernel: KevoreeUIKernel) = {
+    import scala.collection.JavaConversions._
+    val root: ContainerRoot = self.eContainer.asInstanceOf[ContainerRoot]
+    KevoreeUtility.getRelatedBinding(self).foreach {
+      b =>
+        b.removeModelAndUI(kernel)
+    }
+    var panel = kernel.getUifactory().getMapping().get(self).asInstanceOf[ChannelPanel]
+    var modelPanel = kernel.getUifactory().getMapping().get(root).asInstanceOf[ModelPanel]
+    modelPanel.removeInstance(panel)
+    root.removeHubs(self)
+    kernel.getUifactory().getMapping().unbind(panel, self);
   }
 
 }
