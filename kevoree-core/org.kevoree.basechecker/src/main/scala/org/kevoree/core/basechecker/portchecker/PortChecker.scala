@@ -41,7 +41,7 @@ class PortChecker extends CheckerService {
                 if (!port.getPortTypeRef.getOptional && !port.isBind) {
                   val concreteViolation: CheckerViolation = new CheckerViolation()
                   concreteViolation
-                    .setMessage("Required port (" + port.eContainer().asInstanceOf[ComponentInstance].getName + "." +
+                    .setMessage("Required port (" + port.eContainer.asInstanceOf[ComponentInstance].getName + "." +
                     port.getPortTypeRef.getName + ") is not bind")
                   concreteViolation.setTargetObjects(List(port))
                   violations = violations ++ List(concreteViolation)

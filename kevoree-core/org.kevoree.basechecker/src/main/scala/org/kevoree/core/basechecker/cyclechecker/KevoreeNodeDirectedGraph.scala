@@ -29,7 +29,7 @@ case class KevoreeNodeDirectedGraph(model: ContainerRoot) extends DefaultDirecte
 		node =>
 			node.getInstances.filter(p => p.isInstanceOf[Channel]).foreach {
 				instance =>
-					var channel = instance.asInstanceOf[Channel]
+					val channel = instance.asInstanceOf[Channel]
 					val connectedNodes: List[ContainerNode] = channel.getConnectedNode(node.getName)
 					if (connectedNodes.size > 0) {
 						node.getInstances.filter(p => p.isInstanceOf[ComponentInstance]).foreach {

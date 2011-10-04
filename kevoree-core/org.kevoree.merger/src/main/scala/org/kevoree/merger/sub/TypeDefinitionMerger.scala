@@ -72,8 +72,8 @@ trait TypeDefinitionMerger extends Merger with DictionaryMerger with PortTypeMer
       allTypeDef.foreach {
         du =>
           if (du.getSuperTypes != null && du.getSuperTypes.contains(newTypeDefinition)) {
-            du.getSuperTypes.remove(newTypeDefinition)
-            du.getSuperTypes.add(actuelTypeDefinition)
+            du.removeSuperTypes(newTypeDefinition)
+            du.addSuperTypes(actuelTypeDefinition)
           }
       }
     }
@@ -100,8 +100,8 @@ trait TypeDefinitionMerger extends Merger with DictionaryMerger with PortTypeMer
     }
 
     if (actuelTypeDefinition.getSuperTypes != null && actuelTypeDefinition.getSuperTypes.contains(newTypeDefinition)) {
-      actuelTypeDefinition.getSuperTypes.remove(newTypeDefinition)
-      actuelTypeDefinition.getSuperTypes.add(actuelTypeDefinition)
+      actuelTypeDefinition.removeSuperTypes(newTypeDefinition)
+      actuelTypeDefinition.addSuperTypes(actuelTypeDefinition)
     }
 
   }
@@ -109,12 +109,12 @@ trait TypeDefinitionMerger extends Merger with DictionaryMerger with PortTypeMer
   private def consistencyImpacted(root: ContainerRoot, actuelTypeDefinition: TypeDefinition, newTypeDefinition: TypeDefinition) = {
     println("mergeConsistencyImpacted - " + actuelTypeDefinition + " - " + newTypeDefinition)
     //REMOVE OLD AND ADD NEW TYPE
-    root.getTypeDefinitions.remove(actuelTypeDefinition)
+    root.removeTypeDefinitions(actuelTypeDefinition)
     mergeNewTypeDefinition(root, newTypeDefinition)
     //UPDATE LIBRARIES
     root.getLibraries.filter(p => p.getSubTypes.contains(actuelTypeDefinition)).foreach {
       lib =>
-        lib.getSubTypes.remove(actuelTypeDefinition); lib.getSubTypes.add(newTypeDefinition)
+        lib.removeSubTypes(actuelTypeDefinition); lib.addSubTypes(newTypeDefinition)
     }
 
 
@@ -122,8 +122,8 @@ trait TypeDefinitionMerger extends Merger with DictionaryMerger with PortTypeMer
     allTypeDef.foreach {
       du =>
         if (du.getSuperTypes != null && du.getSuperTypes.contains(actuelTypeDefinition)) {
-          du.getSuperTypes.remove(actuelTypeDefinition)
-          du.getSuperTypes.add(newTypeDefinition)
+          du.removeSuperTypes(actuelTypeDefinition)
+          du.addSuperTypes(newTypeDefinition)
         }
     }
 
@@ -141,7 +141,7 @@ trait TypeDefinitionMerger extends Merger with DictionaryMerger with PortTypeMer
       nodeType.getManagedPrimitiveTypes.clear()
       pl.foreach {
         pll =>
-          nodeType.getManagedPrimitiveTypes.add(mergeAdaptationPrimitive(root, pll))
+          nodeType.addManagedPrimitiveTypes(mergeAdaptationPrimitive(root, pll))
       }
 
     }
@@ -200,7 +200,7 @@ trait TypeDefinitionMerger extends Merger with DictionaryMerger with PortTypeMer
               newpt =>
                 c.getProvided.find(p => p.getPortTypeRef == newpt) match {
                   case None => {
-                    val newport = KevoreeFactory.eINSTANCE.createPort();
+                    val newport = KevoreeFactory.eINSTANCE.createPort
                     newport.setPortTypeRef(newpt)
                     c.getProvided.add(newport)
                   }
@@ -213,7 +213,7 @@ trait TypeDefinitionMerger extends Merger with DictionaryMerger with PortTypeMer
                   p.getPortTypeRef == newpt
                 }) match {
                   case None => {
-                    val newport = KevoreeFactory.eINSTANCE.createPort();
+                    val newport = KevoreeFactory.eINSTANCE.createPort
                     newport.setPortTypeRef(newpt)
                     c.getRequired.add(newport)
                   }
@@ -235,15 +235,15 @@ trait TypeDefinitionMerger extends Merger with DictionaryMerger with PortTypeMer
     newTypeDefinition.getDeployUnits.clear
     newTypeDefinitionDeployUnits.foreach {
       ndu =>
-        newTypeDefinition.getDeployUnits.add(mergeDeployUnit(actualModel, ndu))
+        newTypeDefinition.addDeployUnits(mergeDeployUnit(actualModel, ndu))
     }
     //ADD RECUSIVE DEFINITON TO ROOT
     newTypeDefinition match {
       case ct: ChannelType => {
-        actualModel.getTypeDefinitions.add(ct)
+        actualModel.addTypeDefinitions(ct)
       }
       case ct: ComponentType => {
-        actualModel.getTypeDefinitions.add(ct)
+        actualModel.addTypeDefinitions(ct)
         ct.getProvided.foreach {
           ptref => ptref.setRef(mergePortType(actualModel, ptref.getRef))
         }
@@ -252,16 +252,16 @@ trait TypeDefinitionMerger extends Merger with DictionaryMerger with PortTypeMer
         }
       }
       case nt: NodeType => {
-        actualModel.getTypeDefinitions.add(nt)
+        actualModel.addTypeDefinitions(nt)
         val pl = (nt.getManagedPrimitiveTypes.toList ++ List())
         nt.getManagedPrimitiveTypes.clear()
         pl.foreach {
           pll =>
-            nt.getManagedPrimitiveTypes.add(mergeAdaptationPrimitive(actualModel, pll))
+            nt.addManagedPrimitiveTypes(mergeAdaptationPrimitive(actualModel, pll))
         }
       }
       case gt: GroupType => {
-        actualModel.getTypeDefinitions.add(gt)
+        actualModel.addTypeDefinitions(gt)
       }
       case pt: PortType => {
         /*println("PORTTYPE M ?? "+pt.toString)*//* MERGE BY COMPONENT TYPE */
@@ -274,9 +274,9 @@ trait TypeDefinitionMerger extends Merger with DictionaryMerger with PortTypeMer
     model.getAdaptationPrimitiveTypes.find(p => p.getName == adaptation.getName) match {
       case Some(p) => p
       case None => {
-        val newT = KevoreeFactory.eINSTANCE.createAdaptationPrimitiveType()
+        val newT = KevoreeFactory.eINSTANCE.createAdaptationPrimitiveType
         newT.setName(adaptation.getName)
-        model.getAdaptationPrimitiveTypes.add(newT)
+        model.addAdaptationPrimitiveTypes(newT)
         newT
       }
     }

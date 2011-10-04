@@ -28,7 +28,7 @@ trait NodeMerger extends InstanceMerger {
 
   def mergeAllNode(actualModel : ContainerRoot,modelToMerge : ContainerRoot)={
 
-    var toMergeNodes = modelToMerge.getNodes.toList ++ List()
+    val toMergeNodes = modelToMerge.getNodes.toList ++ List()
     toMergeNodes.foreach{toMergeNode=> mergeNode(actualModel,toMergeNode)  }
 
   }
@@ -36,7 +36,7 @@ trait NodeMerger extends InstanceMerger {
   private def mergeNode(actualModel : ContainerRoot,nodeToMerge : ContainerNode)= {
     actualModel.getNodes.find(loopNode=> loopNode.getName == nodeToMerge.getName ) match {
       case None => {
-          actualModel.getNodes.add(nodeToMerge);
+          actualModel.addNodes(nodeToMerge);
           mergeAllInstances(actualModel,nodeToMerge,nodeToMerge)
       }
       case Some(eNode) => mergeAllInstances(actualModel,eNode,nodeToMerge)
@@ -44,12 +44,12 @@ trait NodeMerger extends InstanceMerger {
   }
   
   private def mergeAllInstances(actualModel : ContainerRoot,targetInstance:ContainerNode,instanceToMerge : ContainerNode)={
-    var componentsList = List() ++ instanceToMerge.getComponents
+    val componentsList = List() ++ instanceToMerge.getComponents
     componentsList.foreach{c=>
       targetInstance.getComponents.find(eC=> eC.isModelEquals(c) ) match {
 
         case None => {
-            targetInstance.getComponents.add(c)
+            targetInstance.addComponents(c)
             mergeComponentInstance(actualModel,c)
         }
 

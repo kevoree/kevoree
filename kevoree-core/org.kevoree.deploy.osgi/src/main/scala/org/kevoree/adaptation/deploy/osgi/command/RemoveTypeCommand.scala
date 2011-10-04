@@ -30,7 +30,9 @@ case class RemoveTypeCommand(ct : TypeDefinition, ctx : KevoreeDeployManager,nod
 
   def execute() : Boolean= {
     ctx.bundleMapping.find({bundle =>bundle.name==ct.getName && bundle.objClassName==ct.getClass.getName}) match {
-      case Some(bundle)=> ctx.bundleMapping.remove(bundle);true
+      case Some(bundle)=> {
+        ctx.bundleMapping = ctx.bundleMapping.filter(mb => mb != bundle)
+      };true
       case None => false
     }
   }

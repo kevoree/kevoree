@@ -52,7 +52,7 @@ case class AddTypeCommand (ct: TypeDefinition, ctx: KevoreeDeployManager, nodeNa
 
     if (mappingFound != null) {
       //JUST ADD NEW BUNDING
-      ctx.bundleMapping.add(KevoreeOSGiBundle(ct.getName, ct.getClass.getName, mappingFound.bundleId))
+      ctx.bundleMapping = ctx.bundleMapping ++ List(KevoreeOSGiBundle(ct.getName, ct.getClass.getName, mappingFound.bundleId))
       true
     } else {
       false

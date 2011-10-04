@@ -14,7 +14,7 @@
 package org.kevoree.tools.aether.framework
 
 import java.io.FileInputStream
- import org.osgi.framework.{Bundle, BundleContext, BundleException}
+import org.osgi.framework.{Bundle, BundleContext, BundleException}
 import org.slf4j.LoggerFactory
 import org.kevoree.api.service.core.handler.KevoreeModelHandlerService
 import org.kevoree.framework.{Constants, AbstractNodeType}
@@ -45,20 +45,22 @@ class NodeTypeBootstrapHelper {
           val nodeType = clazz.newInstance.asInstanceOf[AbstractNodeType]
           //ADD INSTANCE DICTIONARY
           val dictionary: java.util.HashMap[String, AnyRef] = new java.util.HashMap[String, AnyRef]
-          if (node.getTypeDefinition.getDictionaryType != null) {
-            if (node.getTypeDefinition.getDictionaryType.getDefaultValues != null) {
-              node.getTypeDefinition.getDictionaryType.getDefaultValues.foreach {
+
+         node.getTypeDefinition.getDictionaryType.map{ dictionaryType =>
+            dictionaryType.getDefaultValues.foreach {
                 dv =>
                   dictionary.put(dv.getAttribute.getName, dv.getValue)
               }
-            }
+         }
+
+          node.getDictionary.map {
+            dictionaryModel =>
+              dictionaryModel.getValues.foreach {
+                v =>
+                  dictionary.put(v.getAttribute.getName, v.getValue)
+              }
           }
-          if (node.getDictionary != null) {
-            node.getDictionary.getValues.foreach {
-              v =>
-                dictionary.put(v.getAttribute.getName, v.getValue)
-            }
-          }
+
           dictionary.put(Constants.KEVOREE_PROPERTY_OSGI_BUNDLE, bundleContext.getBundle)
           nodeType.setDictionary(dictionary)
           nodeType.setNodeName(destNodeName)
@@ -109,9 +111,7 @@ class NodeTypeBootstrapHelper {
 
   /* Bootstrap node type bundle in local osgi environment */
   private def installNodeTyp(nodeType: NodeType, bundleContext: BundleContext): Boolean = {
-
     val superTypeBootStrap = nodeType.getSuperTypes.forall(superType => installNodeTyp(superType.asInstanceOf[NodeType], bundleContext))
-
     if (superTypeBootStrap) {
       nodeType.getDeployUnits.forall(ct => {
         ct.getRequiredLibs.forall {
