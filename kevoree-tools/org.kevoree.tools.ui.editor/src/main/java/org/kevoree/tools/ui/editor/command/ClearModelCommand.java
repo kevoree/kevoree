@@ -36,7 +36,7 @@ public class ClearModelCommand implements Command {
     @Override
     public void execute(Object p) {
 
-        ContainerRoot previousModel = KevoreeFactory.eINSTANCE.createContainerRoot();
+        ContainerRoot previousModel = KevoreeFactory.createContainerRoot();
         kernel.getModelHandler().setActualModel(previousModel);
         kernel.getModelPanel().clear();
         kernel.getEditorPanel().getPalette().clear();

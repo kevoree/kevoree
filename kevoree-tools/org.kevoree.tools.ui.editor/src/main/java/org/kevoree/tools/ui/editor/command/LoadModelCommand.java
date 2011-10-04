@@ -24,10 +24,8 @@ import org.kevoree.tools.ui.framework.elements.*;
 import org.kevoree.tools.ui.framework.elements.PortPanel.PortType;
 
 import java.awt.*;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 
 
 /**
@@ -64,7 +62,7 @@ public class LoadModelCommand implements Command {
 
         //LOAD NODE
 
-        for (ContainerNode newnode : kernel.getModelHandler().getActualModel().getNodes()) {
+        for (ContainerNode newnode : kernel.getModelHandler().getActualModel().getNodesForJ()) {
             NodePanel newnodepanel = kernel.getUifactory().createComponentNode(newnode);
             kernel.getModelPanel().addNode(newnodepanel);
             //UI
@@ -73,15 +71,15 @@ public class LoadModelCommand implements Command {
                 newnodepanel.setLocation(new Point(Integer.parseInt(metaData.get("x").toString()), Integer.parseInt(metaData.get("y").toString())));
             }
 
-            for (ComponentInstance ci : newnode.getComponents()) {
+            for (ComponentInstance ci : newnode.getComponentsForJ()) {
                 ComponentPanel insPanel = kernel.getUifactory().createComponentInstance(ci);
-                for (Port portP : ci.getProvided()) {
+                for (Port portP : ci.getProvidedForJ()) {
                     //ADDING NEW PORT TO UI
                     PortPanel portPanel = kernel.getUifactory().createPort(portP);
                     portPanel.setType(PortType.PROVIDED);
                     insPanel.addLeft(portPanel);
                 }
-                for (Port portR : ci.getRequired()) {
+                for (Port portR : ci.getRequiredForJ()) {
                     //ADDING NEW PORT TO UI
                     PortPanel portPanel = kernel.getUifactory().createPort(portR);
                     portPanel.setType(PortType.REQUIRED);
@@ -92,7 +90,7 @@ public class LoadModelCommand implements Command {
             }
         }
         //LOAD HUB
-        for (Channel hub : kernel.getModelHandler().getActualModel().getHubs()) {
+        for (Channel hub : kernel.getModelHandler().getActualModel().getHubsForJ()) {
             ChannelPanel newhubpanel = kernel.getUifactory().createHub(hub);
             kernel.getModelPanel().addHub(newhubpanel);
 
@@ -104,11 +102,11 @@ public class LoadModelCommand implements Command {
         }
 
         //LOAD GROUP
-        for (Group group : kernel.getModelHandler().getActualModel().getGroups()) {
+        for (Group group : kernel.getModelHandler().getActualModel().getGroupsForJ()) {
             GroupPanel newgrouppanel = kernel.getUifactory().createGroup(group);
             kernel.getModelPanel().addGroup(newgrouppanel);
             //LOAD GROUP BINDINGS
-            for (ContainerNode subNode : group.getSubNodes()) {
+            for (ContainerNode subNode : group.getSubNodesForJ()) {
                 NodePanel nodePanel = (NodePanel) kernel.getUifactory().getMapping().get(subNode);
                 org.kevoree.tools.ui.framework.elements.Binding uib = new Binding(Binding.Type.groupLink);
                 uib.setFrom(newgrouppanel.getAnchor());
@@ -131,7 +129,7 @@ public class LoadModelCommand implements Command {
         }*/
 
         //LOAD MBINDING
-        for (MBinding binding : kernel.getModelHandler().getActualModel().getMBindings()) {
+        for (MBinding binding : kernel.getModelHandler().getActualModel().getMBindingsForJ()) {
             Binding uib = kernel.getUifactory().createMBinding(binding);
             kernel.getModelPanel().addBinding(uib);
         }

@@ -17,11 +17,12 @@
  */
 package org.kevoree.tools.ui.editor.property;
 
-import javax.swing.event.TableModelListener;
-import javax.swing.table.TableModel;
 import org.kevoree.DictionaryValue;
 import org.kevoree.Instance;
 import org.kevoree.KevoreeFactory;
+
+import javax.swing.event.TableModelListener;
+import javax.swing.table.TableModel;
 
 /**
  *
@@ -38,7 +39,7 @@ public class InstanceTableModel implements TableModel {
     @Override
     public int getRowCount() {
         try {
-            return instance.getTypeDefinition().getDictionaryType().getAttributes().size();
+            return instance.getTypeDefinition().getDictionaryType().get().getAttributesForJ().size();
         } catch (Exception e) {
             return 0;
         }
@@ -72,21 +73,21 @@ public class InstanceTableModel implements TableModel {
 
     @Override
     public Object getValueAt(int rowIndex, int columnIndex) {
-        org.kevoree.DictionaryAttribute att = instance.getTypeDefinition().getDictionaryType().getAttributes().get(rowIndex);
+        org.kevoree.DictionaryAttribute att = instance.getTypeDefinition().getDictionaryType().get().getAttributesForJ().get(rowIndex);
         switch (columnIndex) {
             case 0:
                 return att.getName();
             case 1:
                 DictionaryValue value = null;
                 if (instance.getDictionary() == null) {
-                    instance.setDictionary(KevoreeFactory.eINSTANCE.createDictionary());
+                    instance.setDictionary(KevoreeFactory.createDictionary());
                 }
-                for (DictionaryValue v : instance.getDictionary().getValues()) {
+                for (DictionaryValue v : instance.getDictionary().get().getValuesForJ()) {
                     if (v.getAttribute().equals(att)) {
                         return v.getValue();
                     }
                 }
-                for (DictionaryValue v : instance.getTypeDefinition().getDictionaryType().getDefaultValues()) {
+                for (DictionaryValue v : instance.getTypeDefinition().getDictionaryType().get().getDefaultValuesForJ()) {
                     if (v.getAttribute().equals(att)) {
                         return v.getValue();
                     }
@@ -99,17 +100,17 @@ public class InstanceTableModel implements TableModel {
     @Override
     public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
         if (columnIndex == 1) {
-            org.kevoree.DictionaryAttribute att = instance.getTypeDefinition().getDictionaryType().getAttributes().get(rowIndex);
+            org.kevoree.DictionaryAttribute att = instance.getTypeDefinition().getDictionaryType().get().getAttributesForJ().get(rowIndex);
             DictionaryValue value = null;
-            for (DictionaryValue v : instance.getDictionary().getValues()) {
+            for (DictionaryValue v : instance.getDictionary().get().getValuesForJ()) {
                 if (v.getAttribute().equals(att)) {
                     value = v;
                 }
             }
             if (value == null) {
-                value = KevoreeFactory.eINSTANCE.createDictionaryValue();
+                value = KevoreeFactory.createDictionaryValue();
                 value.setAttribute(att);
-                instance.getDictionary().getValues().add(value);
+                instance.getDictionary().get().addValues(value);
             }
             value.setValue(aValue.toString());
         }
