@@ -24,6 +24,8 @@ import org.kevoree.ComponentInstance
 import org.kevoree.api.service.core.checker.CheckerService
 import org.kevoree.api.service.core.checker.CheckerViolation
 import org.kevoree.framework.aspects.KevoreeAspects._
+import scala.collection.JavaConversions._
+
 
 class ComponentCycleChecker extends CheckerService {
 

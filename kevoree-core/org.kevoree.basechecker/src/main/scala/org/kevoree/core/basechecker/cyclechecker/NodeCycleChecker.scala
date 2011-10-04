@@ -22,6 +22,7 @@ import org.kevoree.ContainerRoot
 import org.kevoree.MBinding
 import org.kevoree.api.service.core.checker.CheckerService
 import org.kevoree.api.service.core.checker.CheckerViolation
+import scala.collection.JavaConversions._
 
 class NodeCycleChecker extends CheckerService {
 
