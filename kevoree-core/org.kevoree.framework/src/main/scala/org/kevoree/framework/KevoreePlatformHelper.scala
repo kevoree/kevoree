@@ -35,7 +35,7 @@ object KevoreePlatformHelper {
       val thisNodeFound = thisNode.getOrElse{
         val newnode = KevoreeFactory.eINSTANCE.createContainerNode
         newnode.setName(currentNodeName)
-        actualModel.getNodes.add(newnode)
+        actualModel.addNodes(newnode)
         newnode
       }
       val targetNode = actualModel.getNodes.find({loopNode => loopNode.getName == targetNodeName })
@@ -43,11 +43,11 @@ object KevoreePlatformHelper {
           logger.debug("Unknow node "+targetNodeName+" add to model")
           val newnode =KevoreeFactory.eINSTANCE.createContainerNode
           newnode.setName(targetNodeName)
-          actualModel.getNodes.add(newnode)
+          actualModel.addNodes(newnode)
           newnode
         })
       newNodeNetwork.setInitBy(thisNodeFound)
-      actualModel.getNodeNetworks.add(newNodeNetwork)
+      actualModel.addNodeNetworks(newNodeNetwork)
       newNodeNetwork
     }
 
@@ -55,7 +55,7 @@ object KevoreePlatformHelper {
     val nodelink = nodenetwork.getLink.find(loopLink => loopLink.getNetworkType == networkType).getOrElse{
       val newlink = KevoreeFactory.eINSTANCE.createNodeLink
       newlink.setNetworkType(networkType)
-      nodenetwork.getLink.add(newlink)
+      nodenetwork.addLink(newlink)
       newlink
     }
     try { nodelink.setEstimatedRate(weight) } catch {
@@ -66,7 +66,7 @@ object KevoreePlatformHelper {
     val prop = nodelink.getNetworkProperties.find({networkProp => networkProp.getName == key }).getOrElse{
       val newprop = KevoreeFactory.eINSTANCE.createNetworkProperty
       newprop.setName(key)
-      nodelink.getNetworkProperties.add(newprop)
+      nodelink.addNetworkProperties(newprop)
       newprop
     }
     prop.setValue(value)
