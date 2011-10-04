@@ -42,7 +42,7 @@ public class AddGroupBindingCommand implements Command {
             ContainerNode targetNode = (ContainerNode) kernel.getUifactory().getMapping().get(target);
 
             //ADD ContainerNode to Group
-            fromPort.getSubNodes().add(targetNode);
+            fromPort.addSubNodes(targetNode);
 
             org.kevoree.tools.ui.framework.elements.Binding uib = new Binding(Binding.Type.groupLink);
             uib.setFrom(fromPanel);

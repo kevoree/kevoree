@@ -16,7 +16,6 @@ package org.kevoree.tools.ui.editor.command;
 import org.kevoree.*;
 import org.kevoree.tools.ui.editor.KevoreeUIKernel;
 import org.kevoree.tools.ui.editor.ModelHelper;
-import org.kevoree.tools.ui.framework.elements.ChannelPanel;
 import org.kevoree.tools.ui.framework.elements.GroupPanel;
 import scala.util.Random;
 
@@ -39,14 +38,14 @@ public class AddGroupCommand implements Command {
 
     @Override
     public void execute(Object p) {
-        Group newgroup = KevoreeFactory.eINSTANCE.createGroup();
+        Group newgroup = KevoreeFactory.createGroup();
         GroupType type = (GroupType) kernel.getUifactory().getMapping().get(p);
         newgroup.setTypeDefinition(type);
 
         //CREATE NEW NAME
         newgroup.setName("group" + Math.abs(random.nextInt()));
         GroupPanel newgrouppanel = kernel.getUifactory().createGroup(newgroup);
-        kernel.getModelHandler().getActualModel().getGroups().add(newgroup);
+        kernel.getModelHandler().getActualModel().addGroups(newgroup);
         kernel.getModelPanel().addGroup(newgrouppanel);
 
         if ((point.x - newgrouppanel.getPreferredSize().getHeight() / 2 > 0) && (point.y - newgrouppanel.getPreferredSize().getHeight() / 2 > 0)) {

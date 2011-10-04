@@ -16,15 +16,14 @@
  * Copyright  : IRISA / INRIA / Universite de Rennes 1 */
 package org.kevoree.tools.ui.editor.command;
 
-import java.awt.Point;
-
 import org.kevoree.Channel;
 import org.kevoree.ChannelType;
 import org.kevoree.KevoreeFactory;
 import org.kevoree.tools.ui.editor.KevoreeUIKernel;
 import org.kevoree.tools.ui.editor.ModelHelper;
 import org.kevoree.tools.ui.framework.elements.ChannelPanel;
-import scala.util.Random;
+
+import java.awt.*;
 
 /**
  * @author ffouquet
@@ -46,7 +45,7 @@ public class AddChannelCommand implements Command {
 
     @Override
     public void execute(Object p) {
-        Channel newhub = KevoreeFactory.eINSTANCE.createChannel();
+        Channel newhub = KevoreeFactory.createChannel();
         ChannelType type = (ChannelType) kernel.getUifactory().getMapping().get(p);
         newhub.setTypeDefinition(type);
 
@@ -56,7 +55,7 @@ public class AddChannelCommand implements Command {
 
 
         ChannelPanel newhubpanel = kernel.getUifactory().createHub(newhub);
-        kernel.getModelHandler().getActualModel().getHubs().add(newhub);
+        kernel.getModelHandler().getActualModel().addHubs(newhub);
         kernel.getModelPanel().addHub(newhubpanel);
 
         if ((point.x - newhubpanel.getPreferredSize().getHeight() / 2 > 0) && (point.y - newhubpanel.getPreferredSize().getHeight() / 2 > 0)) {

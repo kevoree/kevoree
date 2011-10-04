@@ -17,9 +17,9 @@
  */
 package org.kevoree.tools.ui.editor.command;
 
-import javax.swing.JFileChooser;
-import org.eclipse.emf.common.util.URI;
 import org.kevoree.tools.ui.editor.KevoreeUIKernel;
+
+import javax.swing.*;
 
 /**
  *
@@ -47,8 +47,8 @@ public class LoadModelCommandUI implements Command {
     public void execute(Object p) {
         int returnVal = filechooser.showOpenDialog(kernel.getModelPanel());
         if (filechooser.getSelectedFile() != null  && returnVal == JFileChooser.APPROVE_OPTION) {
-            lastLoadedModel = URI.createFileURI(filechooser.getSelectedFile().getAbsolutePath()).toString();
-            lcommand.execute(URI.createFileURI(filechooser.getSelectedFile().getAbsolutePath()));
+            lastLoadedModel = filechooser.getSelectedFile().getAbsolutePath();
+            lcommand.execute(lastLoadedModel);
         }
     }
 }

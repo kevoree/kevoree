@@ -64,11 +64,11 @@ public class KevoreeUIFactory {
         ctui.setTypeName(ct.getName());
         ctui.setName(" ");
 
-        for(PortTypeRef p : ct.getProvided()){
+        for(PortTypeRef p : ct.getProvidedForJ()){
             PortTypePanel portPanel = kernel.getUifactory().createPortType(p, true);
             ctui.addLeft(portPanel);
         }
-        for(PortTypeRef p : ct.getRequired()){
+        for(PortTypeRef p : ct.getRequiredForJ()){
             PortTypePanel portPanel = kernel.getUifactory().createPortType(p, false);
             ctui.addRight(portPanel);
         }
