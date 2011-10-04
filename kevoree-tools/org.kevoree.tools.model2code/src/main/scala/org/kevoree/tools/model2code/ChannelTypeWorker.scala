@@ -27,13 +27,13 @@ import japa.parser.ast.PackageDeclaration
 import japa.parser.ast.expr.AnnotationExpr
 import japa.parser.ast.expr.NameExpr
 import java.util.ArrayList
-import org.kevoree.ChannelType
-import org.kevoree.ContainerRoot
-
 import japa.parser.ast.`type`.ClassOrInterfaceType
 import japa.parser.ast.body._
-import org.kevoree.framework.message.Message
 import japa.parser.ast.stmt.BlockStmt
+import org.kevoree.{ContainerRoot, ChannelType}
+import org.kevoree.framework.message.Message
+
+import scala.collection.JavaConversions._
 import org.kevoree.framework.{ChannelFragmentSender, AbstractChannelFragment}
 
 /**
