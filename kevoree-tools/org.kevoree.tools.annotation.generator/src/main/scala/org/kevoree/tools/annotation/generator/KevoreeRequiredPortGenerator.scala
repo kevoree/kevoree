@@ -31,14 +31,14 @@ object KevoreeRequiredPortGenerator {
    // var portPackage = ct.getFactoryBean().substring(0, ct.getFactoryBean().lastIndexOf("."));
 
     val portPackage = KevoreeGeneratorHelper.getTypeDefinitionGeneratedPackage(ct,targetNodeType)
-    val portName = ct.getName()+"PORT"+ref.getName();
+    val portName = ct.getName+"PORT"+ref.getName
     val wrapper = filer.createTextFile(com.sun.mirror.apt.Filer.Location.SOURCE_TREE, "", new File(portPackage.replace(".", "/")+"/"+portName+".scala"), "UTF-8");
 
     wrapper.append("package "+portPackage+"\n");
     wrapper.append("import org.kevoree.framework.port._\n");
     wrapper.append("import scala.{Unit=>void}\n")
     wrapper.append("import "+KevoreeGeneratorHelper.getTypeDefinitionBasePackage(ct)+"._\n")
-    wrapper.append("class "+portName+"(component : "+ct.getName+") extends "+ref.getRef().getName()+" with KevoreeRequiredPort {\n");
+    wrapper.append("class "+portName+"(component : "+ct.getName+") extends "+ref.getRef.getName+" with KevoreeRequiredPort {\n");
 
     wrapper.append("def getName : String = \""+ref.getName+"\"\n")
     wrapper.append("def getComponentName : String = component.getName \n")
@@ -57,10 +57,10 @@ object KevoreeRequiredPortGenerator {
             /* GENERATE METHOD SIGNATURE */
             wrapper.append("def "+op.getName+"(")
             op.getParameters.foreach{param=>
-              wrapper.append(param.getName+":"+param.getType.print('[',']'))
+              wrapper.append(param.getName+":"+param.getType.get.print('[',']'))
               if(op.getParameters.indexOf(param) != (op.getParameters.size-1)){wrapper.append(",")}
             }
-            wrapper.append(") : "+op.getReturnType.print('[',']')+" ={\n");
+            wrapper.append(") : "+op.getReturnType.get.print('[',']')+" ={\n");
 
             /* Generate method corpus */
             /* CREATE MSG OP CALL */
@@ -70,7 +70,7 @@ object KevoreeRequiredPortGenerator {
               wrapper.append("msgcall.getParams.put(\""+param.getName+"\","+param.getName+");\n")
             }
 
-            wrapper.append("(this !? msgcall).asInstanceOf["+op.getReturnType.print('[',']')+"]")
+            wrapper.append("(this !? msgcall).asInstanceOf["+op.getReturnType.get.print('[',']')+"]")
             wrapper.append("}\n")
           }
         }
