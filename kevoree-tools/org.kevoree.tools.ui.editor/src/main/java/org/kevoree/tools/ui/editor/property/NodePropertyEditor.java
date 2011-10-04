@@ -54,10 +54,10 @@ public class NodePropertyEditor extends InstancePropertyEditor {
         hostNodeModel.addElement("nohost");
         hostNodeModel.setSelectedItem("nohost");
 
-        for (ContainerNode loopNode : ((ContainerRoot) elem.eContainer()).getNodes()) {
+        for (ContainerNode loopNode : ((ContainerRoot) elem.eContainer()).getNodesForJ()) {
             NodeType ntype = (org.kevoree.NodeType) loopNode.getTypeDefinition();
             boolean hostedCapable = false;
-            for (AdaptationPrimitiveType ptype : ntype.getManagedPrimitiveTypes()) {
+            for (AdaptationPrimitiveType ptype : ntype.getManagedPrimitiveTypesForJ()) {
                 if (ptype.getName().toLowerCase().equals("addnode")) {
                     hostedCapable = true;
                 }
@@ -67,7 +67,7 @@ public class NodePropertyEditor extends InstancePropertyEditor {
             }
             if (hostedCapable &&  !(loopNode.getName().equals(node.getName()))) {
                 hostNodeModel.addElement(loopNode.getName());
-                if (loopNode.getHosts().contains(node)) {
+                if (loopNode.getHostsForJ().contains(node)) {
                     hostNodeModel.setSelectedItem(loopNode.getName());
                 }
             }

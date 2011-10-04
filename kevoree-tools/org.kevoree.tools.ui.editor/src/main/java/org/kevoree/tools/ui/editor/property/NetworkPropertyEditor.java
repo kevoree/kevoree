@@ -17,29 +17,17 @@
  */
 package org.kevoree.tools.ui.editor.property;
 
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import javax.swing.BoxLayout;
-import javax.swing.DefaultListModel;
-import javax.swing.JButton;
-import javax.swing.JComboBox;
-import javax.swing.JList;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTextField;
-import javax.swing.border.LineBorder;
-
 import com.explodingpixels.macwidgets.plaf.HudButtonUI;
 import com.explodingpixels.macwidgets.plaf.HudComboBoxUI;
 import com.explodingpixels.macwidgets.plaf.HudTextFieldUI;
-import org.kevoree.ContainerNode;
-import org.kevoree.ContainerRoot;
-import org.kevoree.NetworkProperty;
-import org.kevoree.NodeLink;
-import org.kevoree.NodeNetwork;
+import org.kevoree.*;
 import org.kevoree.framework.KevoreePlatformHelper;
+
+import javax.swing.*;
+import javax.swing.border.LineBorder;
+import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 /**
  *
@@ -69,10 +57,10 @@ public class NetworkPropertyEditor extends JPanel {
     public void refresh() {
         DefaultListModel listModel = new DefaultListModel();
         ContainerRoot root = (ContainerRoot) _node.eContainer();
-        for (NodeNetwork nn : root.getNodeNetworks()) {
+        for (NodeNetwork nn : root.getNodeNetworksForJ()) {
             if (nn.getTarget().equals(_node)) {
-                for (NodeLink nl : nn.getLink()) {
-                    for(NetworkProperty np : nl.getNetworkProperties()){
+                for (NodeLink nl : nn.getLinkForJ()) {
+                    for(NetworkProperty np : nl.getNetworkPropertiesForJ()){
                         listModel.addElement(np.getName()+"="+np.getValue());
                     }
                 }

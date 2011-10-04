@@ -16,7 +16,6 @@
  * Copyright  : IRISA / INRIA / Universite de Rennes 1 */
 package org.kevoree.tools.ui.editor.command;
 
-import org.eclipse.emf.common.util.URI;
 import org.kevoree.ContainerRoot;
 import org.kevoree.framework.KevoreeXmiHelper;
 import org.kevoree.tools.ui.editor.KevoreeUIKernel;
@@ -63,7 +62,7 @@ public class LoadNewLibCommand implements Command {
             Boolean kevFile = absolutePath.endsWith("kev");
 
             if (kevFile) {
-                path = URI.createFileURI(absolutePath).toString();
+                path = absolutePath;
             } else if (jarFile) {
                 JarFile jar;
 
@@ -86,11 +85,11 @@ public class LoadNewLibCommand implements Command {
                 File tempFile = File.createTempFile("kevoreeEditorTemp", ".kev");
                 //System.out.println("path="+tempFile);
                 PositionedEMFHelper.updateModelUIMetaData(kernel);
-                KevoreeXmiHelper.save(URI.createFileURI(tempFile.getAbsolutePath()).toString(), kernel.getModelHandler().getActualModel());
+                KevoreeXmiHelper.save(tempFile.getAbsolutePath(), kernel.getModelHandler().getActualModel());
                 //LOAD MODEL
                 LoadModelCommand loadCmd = new LoadModelCommand();
                 loadCmd.setKernel(kernel);
-                loadCmd.execute(URI.createFileURI(tempFile.getAbsolutePath()).toString());
+                loadCmd.execute(tempFile.getAbsolutePath());
             }
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(kernel.getModelPanel(), "Unable to load the give library.\nSee log for further information.", "Unable to load lib.", JOptionPane.WARNING_MESSAGE);
@@ -116,6 +115,6 @@ public class LoadNewLibCommand implements Command {
         out.flush();
         out.close();
 
-        return URI.createFileURI(temp.getAbsolutePath()).toString();
+        return temp.getAbsolutePath();
     }
 }
