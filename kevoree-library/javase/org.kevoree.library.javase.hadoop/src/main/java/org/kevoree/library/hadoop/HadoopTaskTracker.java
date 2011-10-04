@@ -1,6 +1,7 @@
 package org.kevoree.library.hadoop;
 
 import java.io.IOException;
+import java.net.InetAddress;
 import java.util.logging.Logger;
 
 import org.apache.hadoop.conf.Configuration;
@@ -24,30 +25,28 @@ import org.kevoree.framework.AbstractComponentType;
  */
 @Library(name = "Hadoop")
 @ComponentType
-@Requires({
-    @RequiredPort(name = "records", type = PortType.MESSAGE),
-    @RequiredPort(name = "calibrations", type = PortType.MESSAGE)
-})
-@Provides({
-    @ProvidedPort(name = "log", type = PortType.MESSAGE)
-})
-public class HadoopTaskTracker extends AbstractComponentType {
+public class HadoopTaskTracker extends HadoopComponent {
 
     private static final Logger LOG = Logger.getLogger(HadoopTaskTracker.class.getName());
     private TaskTracker taskTracker;
-    private final Configuration configuration;
+    
 
-    public HadoopTaskTracker(Configuration configuration) {
-
-
-        this.configuration = configuration;
-
+    public HadoopTaskTracker() {
+        super();
     }
 
     @Start
+    /**
+     * 
+     * @TODO: Retrieve and set job tracker address
+     * 
+     */
     protected void start() throws IOException, InterruptedException {
-        // TaskTrackers
         LOG.info("Starting TaskTracker!");
+        
+        Configuration configuration = this.getConfiguration();
+        configuration.set("hadoop.jobtracker", null);
+
 
         JobConf job = new JobConf(configuration);
         taskTracker = new TaskTracker(job);
