@@ -26,6 +26,7 @@ case class CheckCycle[A,B](graph: DirectedGraph[A, B]) {
 		if (cycleDetector.detectCycles) {
 			val violation = new CheckerViolation
 			violation.setMessage("Cycle(s) detected")
+      import scala.collection.JavaConversions._
 			violation.setTargetObjects(cycleDetector.findCycles.asInstanceOf[java.util.Set[Object]].toList)
 			violations = violations ++ List(violation)
 			//cycleDetector.findCycles

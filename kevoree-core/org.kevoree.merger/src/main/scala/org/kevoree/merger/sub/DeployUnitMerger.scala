@@ -35,7 +35,7 @@ trait DeployUnitMerger extends Merger {
         //CHECK CONSISTENCY, IF NOT JUST ADD
         if (tp.getUrl != ftp.getUrl || tp.getUnitName != ftp.getUnitName || tp.getGroupName != ftp.getGroupName || tp.getVersion != ftp.getVersion) {
 
-          actualModel.getDeployUnits.add(tp)
+          actualModel.addDeployUnits(tp)
           mergeRequiredLibs(actualModel, tp)
           tp
         } else {
@@ -68,7 +68,7 @@ trait DeployUnitMerger extends Merger {
         }
       }
       case None => {
-        actualModel.getDeployUnits.add(tp)
+        actualModel.addDeployUnits(tp)
         mergeRequiredLibs(actualModel, tp)
         tp
       }
@@ -80,7 +80,7 @@ trait DeployUnitMerger extends Merger {
     tp.getRequiredLibs.clear()
     requireds.foreach {
       rLib =>
-        tp.getRequiredLibs.add(mergeDeployUnit(actualModel, rLib))
+        tp.addRequiredLibs(mergeDeployUnit(actualModel, rLib))
     }
   }
 

@@ -16,6 +16,7 @@ package org.kevoree.core.basechecker.nodechecker
  import org.kevoree.api.service.core.checker.{CheckerViolation, CheckerService}
 import org.kevoree.framework.aspects.KevoreeAspects._
 import org.kevoree.{ContainerNode, ContainerRoot}
+import scala.collection.JavaConversions._
 
 /**
  * Created by IntelliJ IDEA.
@@ -53,7 +54,7 @@ class NodeChecker extends CheckerService {
 
   def checkRelatedChannel(model: ContainerRoot, node: ContainerNode): java.util.List[CheckerViolation] = {
     var violations: List[CheckerViolation] = List()
-    model.getMBindings.filter(mb => mb.getPort.eContainer().eContainer() == node).foreach {
+    model.getMBindings.filter(mb => mb.getPort.eContainer.eContainer == node).foreach {
       mbinding =>
         mbinding.getHub.getTypeDefinition.foundRelevantDeployUnit(node)
         match {

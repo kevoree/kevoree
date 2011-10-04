@@ -38,10 +38,10 @@ class KevoreeDeployManager {
       mapping =>
         if (bundle != null) {
           if (bundle.getState == Bundle.UNINSTALLED) {
-            bundleMapping.remove(mapping)
+            bundleMapping = bundleMapping.filter(mp => mp != mapping)
           }
         } else {
-          bundleMapping.remove(mapping)
+          bundleMapping = bundleMapping.filter(mp => mp != mapping)
         }
     }
   }
@@ -55,7 +55,7 @@ class KevoreeDeployManager {
   @BeanProperty
   var bundleContext: BundleContext = null;
 
-  var bundleMapping: java.util.List[KevoreeOSGiBundle] = new java.util.ArrayList[KevoreeOSGiBundle]();
+  var bundleMapping: List[KevoreeOSGiBundle] = List[KevoreeOSGiBundle]();
 
   def setModelHandlerServiceTracker(st: ServiceTracker) = modelHandlerServiceTracker = st
 
