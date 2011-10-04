@@ -47,8 +47,8 @@ class NameChecker extends CheckerService {
 							violation.setTargetObjects(List(component))
 							violations = violations ++ List(violation)
 						}
-						if (component.getDictionary != null) {
-							component.getDictionary.getValues.foreach {
+						if (component.getDictionary.isDefined) {
+							component.getDictionary.get.getValues.foreach {
 								property: DictionaryValue =>
 									violation = check(property.getAttribute)
 									if (violation != null) {
@@ -82,8 +82,8 @@ class NameChecker extends CheckerService {
 					violation.setTargetObjects(List(channel))
 					violations = violations ++ List(violation)
 				}
-				if (channel.getDictionary != null) {
-					channel.getDictionary.getValues.foreach {
+				if (channel.getDictionary.isDefined) {
+					channel.getDictionary.get.getValues.foreach {
 						property: DictionaryValue =>
 							violation = check(property.getAttribute)
 							if (violation != null) {

@@ -31,20 +31,20 @@ trait InstanceMerger {
   def mergeComponentInstance(actualModel : ContainerRoot,c : ComponentInstance)={
 
     //FIND CT
-    var ctOpt = actualModel.getTypeDefinitions.find(p=> p.isModelEquals(c.getTypeDefinition)  )
+    val ctOpt = actualModel.getTypeDefinitions.find(p=> p.isModelEquals(c.getTypeDefinition)  )
     ctOpt match {
       case Some(cti) => {
           var ct = cti.asInstanceOf[ComponentType]
           c.setTypeDefinition(ct)
           //MERGE PORT
-          var providedPort = c.getProvided.toList ++ List()
+          val providedPort = c.getProvided.toList ++ List()
           providedPort.foreach{pport=>
             ct.getProvided.find(p=> p.getName == pport.getPortTypeRef.getName) match {
               case None => pport.removeAndUnbind; println("Warning => Port deleted")
               case Some(ptref)=> pport.setPortTypeRef(ptref)
             }
           }
-          var requiredPort = c.getRequired.toList ++ List()
+          val requiredPort = c.getRequired.toList ++ List()
           requiredPort.foreach{rport=>
             ct.getRequired.find(p=> p.getName == rport.getPortTypeRef.getName) match {
               case None => rport.removeAndUnbind; println("Warning => Port deleted")

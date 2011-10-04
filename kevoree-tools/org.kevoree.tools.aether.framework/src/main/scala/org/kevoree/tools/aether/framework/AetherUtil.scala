@@ -64,7 +64,7 @@ object AetherUtil {
 
     val artifactRequest = new ArtifactRequest
     artifactRequest.setArtifact(artifact)
-    val urls = buildPotentialMavenURL(du.eContainer().asInstanceOf[ContainerRoot])
+    val urls = buildPotentialMavenURL(du.eContainer.asInstanceOf[ContainerRoot])
 
     val repositories: java.util.List[RemoteRepository] = new java.util.ArrayList();
     urls.foreach {
@@ -162,17 +162,17 @@ object AetherUtil {
 
     root.getNodes.find(n => n.getName == nodeName) match {
       case Some(node) => {
-        if (node.getDictionary != null) {
-          node.getDictionary.getValues.find(v => v.getAttribute.getName == "port") match {
+        node.getDictionary match {
+          case Some(dic)=> {
+             dic.getValues.find(v => v.getAttribute.getName == "port") match {
             case Some(att) => {
               Some("http://" + ip + ":" + att.getValue + "/provisioning/")
             }
             case None => None
           }
-        } else {
-          None
+          }
+          case None => None
         }
-
       }
       case None => None
     }

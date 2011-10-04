@@ -33,9 +33,9 @@ trait RepositoryMerger {
       actualModel.getRepositories.find(lr=> lr.getUrl == toMergeRepo.getUrl) match {
         case Some(found_repo)=> mergeRepository(actualModel,found_repo,toMergeRepo)
         case None => {
-            var newrepo = KevoreeFactory.eINSTANCE.createRepository
+            val newrepo = KevoreeFactory.eINSTANCE.createRepository
             newrepo.setUrl(toMergeRepo.getUrl)
-            actualModel.getRepositories.add(newrepo)
+            actualModel.addRepositories(newrepo)
             mergeRepository(actualModel,newrepo,toMergeRepo)
           }
       }
@@ -56,11 +56,11 @@ trait RepositoryMerger {
         case Some(funit)=> {
             //CLEAN REPO FROM OLD DEPLOY UNIT
             actualRepository.getUnits.filter(u=> u.isModelEquals(funit) /*&& u.getHashcode != funit.getHashcode*/  ).foreach{oldunit=>
-              actualRepository.getUnits.remove(oldunit)
+              actualRepository.removeUnits(oldunit)
             }
             //ADD NEW UNIT TO REPO
             actualRepository.getUnits.find(u=> u == funit) match {
-              case None => actualRepository.getUnits.add(funit)
+              case None => actualRepository.addUnits(funit)
               case Some(u)=> //NOTHING TO DO
             }
           }
