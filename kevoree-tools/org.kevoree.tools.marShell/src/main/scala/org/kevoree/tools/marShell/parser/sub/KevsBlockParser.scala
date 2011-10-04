@@ -21,7 +21,7 @@ package org.kevoree.tools.marShell.parser.sub
 import org.kevoree.tools.marShell.ast.Block
 import org.kevoree.tools.marShell.ast.Statment
 import org.kevoree.tools.marShell.ast.TransactionalBloc
-import scala.collection.JavaConversions._
+
 import org.slf4j.LoggerFactory
 
 trait KevsBlockParser extends KevsAbstractParser {

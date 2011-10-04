@@ -176,7 +176,6 @@
     <modules>
         <module>../org.kevoree.tools.aether.framework</module>
        <!-- <module>../org.kevoree.tools.aether.lite.framework</module> -->
-       
         <module>../org.kevoree.tools.annotation.api</module>
         <module>../org.kevoree.tools.annotation.generator</module>
         <module>../org.kevoree.tools.annotation.processor</module>
@@ -196,7 +195,6 @@
     </modules>
     
     <properties>
-        <emf.version>2.7.0</emf.version>
         <scala.version>2.9.1</scala.version>
         <bundle.vendor>IRISA/INRIA</bundle.vendor>
         <releaseUrl>http://maven.kevoree.org/libs-release-local</releaseUrl>

@@ -14,7 +14,7 @@
 package org.kevoree.framework.annotation.processor.visitor.sub
 
 import org.kevoree.framework.annotation.processor.LocalUtility
-import scala.collection.JavaConversions._
+
 import org.kevoree._
 
 /**

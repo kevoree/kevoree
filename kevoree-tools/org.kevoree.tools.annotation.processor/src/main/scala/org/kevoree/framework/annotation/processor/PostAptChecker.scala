@@ -19,7 +19,7 @@
 package org.kevoree.framework.annotation.processor
 
 import com.sun.mirror.apt.AnnotationProcessorEnvironment
-import scala.collection.JavaConversions._
+
 import org.kevoree._
 import core.basechecker.RootChecker
 

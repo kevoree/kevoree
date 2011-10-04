@@ -18,7 +18,7 @@
 
 package org.kevoree.tools.annotation.mavenplugin
 
-import scala.collection.JavaConversions._
+
 
 class ScalaCompiler {
 

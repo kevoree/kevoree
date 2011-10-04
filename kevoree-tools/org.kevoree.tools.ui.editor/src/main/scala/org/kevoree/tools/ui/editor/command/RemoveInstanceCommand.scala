@@ -19,7 +19,7 @@
 package org.kevoree.tools.ui.editor.command
 
 import scala.reflect.BeanProperty
-import scala.collection.JavaConversions._
+
 import org.kevoree.tools.ui.editor.aspects.Art2UIAspects._
 import org.kevoree.tools.ui.editor.{ModelHelper, KevoreeUIKernel}
 import org.kevoree._

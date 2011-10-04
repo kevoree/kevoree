@@ -13,7 +13,7 @@
  */
 package org.kevoree.tools.ui.editor.command
 
-import scala.collection.JavaConversions._
+
 import org.kevoree.tools.ui.framework.elements.{GroupTypePanel, NodeTypePanel, ChannelTypePanel, ComponentTypePanel}
 import org.kevoree._
 import javax.swing.JPanel

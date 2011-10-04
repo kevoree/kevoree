@@ -22,7 +22,7 @@ import com.sun.mirror.declaration.TypeDeclaration
 import org.kevoree.KevoreeFactory
 import org.kevoree.TypeDefinition
 import org.kevoree.annotation.Constants
-import scala.collection.JavaConversions._
+
 
 trait DictionaryProcessor {
 

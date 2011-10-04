@@ -22,7 +22,7 @@ import java.io.File
 import java.io.FileReader
 import java.io.BufferedReader
 import org.scalatest.junit.JUnitSuite
-import scala.collection.JavaConversions._
+
 import org.junit.Assert._
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl
 import org.kevoree.{KevoreePackage, KevoreeFactory, ContainerRoot}

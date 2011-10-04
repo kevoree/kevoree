@@ -24,7 +24,7 @@ import org.kevoree.KevoreeFactory
 import org.kevoree.ComponentType
 import org.kevoree.framework.annotation.processor.LocalUtility
 import org.kevoree.framework.annotation.processor.visitor.ServicePortTypeVisitor
-import scala.collection.JavaConversions._
+
 
 trait SlotProcessor {
 

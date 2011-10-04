@@ -22,7 +22,7 @@ import org.kevoree._
 import org.kevoree.framework.KevoreeUtility
 import org.kevoree.tools.ui.editor.KevoreeUIKernel
 import org.kevoree.tools.ui.framework.elements._
-import scala.collection.JavaConversions._
+
 import Art2UIAspects._
 
 case class ComponentAspect(self : ComponentInstance) {

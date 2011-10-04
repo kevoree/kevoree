@@ -24,7 +24,7 @@ import org.kevoree.KevoreeFactory
 import org.kevoree.merger.KevoreeMergerComponent
 import org.eclipse.emf.common.notify.impl.AdapterImpl
 import org.eclipse.emf.common.notify.Notification
-import scala.collection.JavaConversions._
+
 
 class Art2Handler(kernel: KevoreeUIKernel) {
 

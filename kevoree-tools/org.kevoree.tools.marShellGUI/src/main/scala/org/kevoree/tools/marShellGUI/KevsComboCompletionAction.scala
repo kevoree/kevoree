@@ -21,7 +21,7 @@ package org.kevoree.tools.marShellGUI
 import java.awt.event.ActionEvent
 import javax.swing.text.JTextComponent
 import jsyntaxpane.actions.ComboCompletionAction
-import scala.collection.JavaConversions._
+
 import org.kevoree.tools.marShell.lexer.KevsLexical
 import jsyntaxpane.actions.gui.ComboCompletionDialog
 import org.kevoree._

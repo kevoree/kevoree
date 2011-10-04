@@ -19,7 +19,7 @@
 package org.kevoree.tools.marShellTransform
 
 import org.kevoree.tools.marShell.ast._
-import scala.collection.JavaConversions._
+
 import org.slf4j.LoggerFactory
 
 object KevScriptWrapper {

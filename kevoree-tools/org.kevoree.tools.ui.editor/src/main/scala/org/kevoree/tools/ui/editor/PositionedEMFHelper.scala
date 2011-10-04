@@ -14,7 +14,7 @@
 package org.kevoree.tools.ui.editor
 
 import org.kevoree.ContainerRoot
-import scala.collection.JavaConversions._
+
 import org.kevoree.tools.ui.framework.elements.{GroupPanel, ChannelPanel, NodePanel}
 
 object PositionedEMFHelper {
