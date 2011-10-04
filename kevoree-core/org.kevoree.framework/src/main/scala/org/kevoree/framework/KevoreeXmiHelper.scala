@@ -24,10 +24,7 @@ import org.slf4j.LoggerFactory
 import java.io._
 import org.kevoree.loader.ContainerRootLoader
 import org.kevoree.serializer.ModelSerializer
-<<<<<<< HEAD
-=======
 import xml.PrettyPrinter
->>>>>>> commit
 
 object KevoreeXmiHelper {
 
@@ -39,7 +36,6 @@ object KevoreeXmiHelper {
     val pp = new PrettyPrinter(3000,1)
     val fileWrite = new FileWriter(uri)
     fileWrite.append(pp.format(serializer.serialize(root)))
-
   }
 
 
