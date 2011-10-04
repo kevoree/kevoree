@@ -33,7 +33,7 @@
                 <executions>
                     <execution>
                         <goals>
-                            <goal>generate</goal>
+                            <goal>model</goal>
                         </goals>
                         <configuration>
                             <ecore>metamodel/kevoree.adaptation.ecore</ecore>
