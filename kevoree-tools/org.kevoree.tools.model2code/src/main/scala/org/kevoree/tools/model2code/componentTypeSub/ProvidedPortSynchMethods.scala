@@ -24,7 +24,7 @@ import japa.parser.ast.`type`.ClassOrInterfaceType
 import japa.parser.ast.stmt.BlockStmt
 import japa.parser.ast.body._
 import org.kevoree.tools.model2code.genericSub.ImportSynchMethods
-
+import scala.collection.JavaConversions._
 /**
  * Created by IntelliJ IDEA.
  * User: Gregory NAIN
@@ -120,7 +120,7 @@ trait ProvidedPortSynchMethods
                   val newMapping = org.kevoree.KevoreeFactory.eINSTANCE.createPortTypeMapping
                   newMapping.setServiceMethodName(operation.getName)
                   newMapping.setBeanMethodName(methodName)
-                  providedPort.getMappings.add(newMapping)
+                  providedPort.addMappings(newMapping)
 
                   //Create the method
                   createProvidedServicePortMethod(operation, methodName, td)
@@ -158,7 +158,7 @@ trait ProvidedPortSynchMethods
                 val newMapping = org.kevoree.KevoreeFactory.eINSTANCE.createPortTypeMapping
                 newMapping.setServiceMethodName("process")
                 newMapping.setBeanMethodName(methodName)
-                providedPort.getMappings.add(newMapping)
+                providedPort.addMappings(newMapping)
 
                 //Create Method
                 createProvidedMessagePortMethod(methodName, td)
@@ -327,7 +327,7 @@ trait ProvidedPortSynchMethods
 
   def createProvidedServicePortMethod(operation : Operation, methodName : String, td : TypeDeclaration) : MethodDeclaration = {
     val newMethod = new MethodDeclaration(ModifierSet.PUBLIC, ASTHelper.VOID_TYPE, methodName);
-    newMethod.setType(new ClassOrInterfaceType(operation.getReturnType.getName))
+    newMethod.setType(new ClassOrInterfaceType(operation.getReturnType.get.getName))
 
     //Method body block
     val block = new BlockStmt();

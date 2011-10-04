@@ -31,10 +31,9 @@ import java.util.ArrayList
 import japa.parser.ast.`type`.ClassOrInterfaceType
 import japa.parser.ast.body._
 import japa.parser.ast.stmt.BlockStmt
-import org.kevoreeAdaptation.AdaptationModel
 import org.kevoree.{GroupType, ContainerRoot, NodeType}
-import org.kevoree.framework.{AbstractGroupType, AbstractNodeType}
-
+import org.kevoree.framework.{AbstractGroupType}
+import scala.collection.JavaConversions._
 /**
  * @author Gregory NAIN
  */

@@ -17,7 +17,7 @@ import japa.parser.ast.body.{MethodDeclaration, TypeDeclaration}
 import org.kevoree.annotation.{Update, Stop, Start}
 
 import japa.parser.ast.CompilationUnit
-
+import scala.collection.JavaConversions._
 /**
  * Created by IntelliJ IDEA.
  * User: Gregory NAIN

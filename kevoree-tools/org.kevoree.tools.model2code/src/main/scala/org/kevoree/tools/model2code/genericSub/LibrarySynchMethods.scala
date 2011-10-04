@@ -20,6 +20,7 @@ import japa.parser.ast.expr.{StringLiteralExpr, MemberValuePair, NameExpr, Norma
 import japa.parser.ast.CompilationUnit
 import org.kevoree.annotation.Library
 import org.kevoree.{ContainerRoot, TypeLibrary}
+import scala.collection.JavaConversions._
 
 /**
  * Created by IntelliJ IDEA.

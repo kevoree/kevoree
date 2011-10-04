@@ -37,7 +37,7 @@ import org.kevoree.ContainerRoot
 import org.kevoree.PortTypeRef
 import org.kevoree.annotation._
 import org.kevoree.framework.AbstractComponentType
-
+import scala.collection.JavaConversions._
 import componentTypeSub._
 
 /**
