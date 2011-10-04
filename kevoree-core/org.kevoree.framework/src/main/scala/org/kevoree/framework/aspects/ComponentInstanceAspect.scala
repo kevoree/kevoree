@@ -129,12 +129,9 @@ case class ComponentInstanceAspect(cself : ComponentInstance) {
 
 
   def getRelatedBindings : List[MBinding] = {
-    val res = new java.util.ArrayList[MBinding]();
-    cself.eContainer.eContainer.asInstanceOf[ContainerRoot].getMBindings.foreach{b=>
-      cself.getProvided.find({p=> b.getPort == p}).map(e=>res.add(b) )
-      cself.getRequired.find({p=> b.getPort == p}).map(e=>res.add(b) )
-    }
-    res.toList
+    cself.eContainer.eContainer.asInstanceOf[ContainerRoot].getMBindings.filter({b =>
+        cself.getProvided.exists({p=> b.getPort == p}) || cself.getRequired.exists({p=> b.getPort == p})
+    })
   }
 
 

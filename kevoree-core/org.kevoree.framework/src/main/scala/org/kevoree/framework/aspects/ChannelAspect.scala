@@ -65,13 +65,7 @@ case class ChannelAspect(cself : Channel) {
    * Returns the list of all bindings belonging to this channel
    */
   def getRelatedBindings : List[MBinding] = {
-    val res = new java.util.ArrayList[MBinding]();
-    cself.eContainer.asInstanceOf[ContainerRoot].getMBindings.foreach{b=>
-      if(b.getHub == cself){
-        res.add(b)
-      }
-    }
-    res.toList
+    cself.eContainer.asInstanceOf[ContainerRoot].getMBindings.filter(b => b.getHub == cself)
   }
 
   /**
@@ -79,12 +73,9 @@ case class ChannelAspect(cself : Channel) {
    */
   def getRelatedBindings(node : ContainerNode) : List[MBinding] = {
     val res = new java.util.ArrayList[MBinding]();
-    cself.eContainer.asInstanceOf[ContainerRoot].getMBindings.foreach{b=>
-      if(b.getHub == cself && b.getPort.eContainer.eContainer.asInstanceOf[ContainerNode].getName == node.getName){
-        res.add(b)
-      }
+    cself.eContainer.asInstanceOf[ContainerRoot].getMBindings.filter{b=>
+      b.getHub == cself && b.getPort.eContainer.eContainer.asInstanceOf[ContainerNode].getName == node.getName
     }
-    res.toList
   }
 
   /**
