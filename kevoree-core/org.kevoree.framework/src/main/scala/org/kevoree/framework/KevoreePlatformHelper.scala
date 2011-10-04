@@ -29,7 +29,7 @@ object KevoreePlatformHelper {
 
     /* SEARCH THE NODE NETWORK */
     val nodenetwork = actualModel.getNodeNetworks.find({nn =>
-        nn.getInitBy.getName == currentNodeName && nn.getTarget.getName == targetNodeName }) getOrElse {
+        nn.getInitBy.get.getName == currentNodeName && nn.getTarget.getName == targetNodeName }) getOrElse {
       val newNodeNetwork = KevoreeFactory.eINSTANCE.createNodeNetwork
       val thisNode = actualModel.getNodes.find({loopNode => loopNode.getName == currentNodeName })
       val thisNodeFound = thisNode.getOrElse{
