@@ -66,7 +66,7 @@ case class ContainerNodeAspect (node: ContainerNode) {
     /* add channel fragment on node */
     node.eContainer.asInstanceOf[ContainerRoot].getMBindings.foreach {
       mb =>
-        if (mb.getPort.eContainer.eContainer == node) {
+        if (mb.getPort.eContainer.asInstanceOf[KevoreeContainer].eContainer == node) {
           if (!usedType.exists({
             e => e.getName == mb.getHub.getTypeDefinition.getName
           })) {
@@ -96,7 +96,7 @@ case class ContainerNodeAspect (node: ContainerNode) {
     /* add channel fragment on node */
     node.eContainer.asInstanceOf[ContainerRoot].getMBindings.foreach {
       mb =>
-        if (mb.getPort.eContainer.eContainer == node) {
+        if (mb.getPort.eContainer.asInstanceOf[KevoreeContainer].eContainer == node) {
           if (!usedChannel.exists({
             e => e.getName == mb.getHub.getName
           })) {
