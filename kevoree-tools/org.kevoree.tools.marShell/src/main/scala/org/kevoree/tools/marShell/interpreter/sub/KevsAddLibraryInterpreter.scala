@@ -36,7 +36,8 @@ case class KevsAddLibraryInterpreter(statment : AddLibraryStatment) extends Kevs
       case None => {
         val newLibrary = KevoreeFactory.eINSTANCE.createTypeLibrary
         newLibrary.setName(statment.libraryName)
-        context.model.getLibraries.add(newLibrary)
+        context.model.addLibraries(newLibrary)
+        true
       }
     }
 

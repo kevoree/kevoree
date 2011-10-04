@@ -35,9 +35,9 @@ case class KevsRemoveChannelInterpreter(removeChannel: RemoveChannelInstanceStat
 
         val root = target.eContainer.asInstanceOf[ContainerRoot]
         getRelatedBindings(target).foreach(rb => {
-          root.getMBindings.remove(rb)
+          root.removeMBindings(rb)
         })
-        context.model.getHubs.remove(target)
+        context.model.removeHubs(target)
 
         true
       }
@@ -49,11 +49,11 @@ case class KevsRemoveChannelInterpreter(removeChannel: RemoveChannelInstanceStat
   }
 
   def getRelatedBindings(cself: Channel): List[MBinding] = {
-    var res = new java.util.ArrayList[MBinding]();
+    var res = List[MBinding]();
     cself.eContainer.asInstanceOf[ContainerRoot].getMBindings.foreach {
       b =>
         if (b.getHub == cself) {
-          res.add(b)
+           res = res ++ List(b)
         }
     }
     res.toList

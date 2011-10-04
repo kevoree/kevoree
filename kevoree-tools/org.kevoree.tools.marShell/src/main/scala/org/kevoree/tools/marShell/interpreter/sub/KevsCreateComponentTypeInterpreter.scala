@@ -38,7 +38,7 @@ case class KevsCreateComponentTypeInterpreter(self : CreateComponentTypeStatment
       case None => {
           var newComponentTypeDef = KevoreeFactory.eINSTANCE.createComponentType
           newComponentTypeDef.setName(self.newTypeName)
-          context.model.getTypeDefinitions.add(newComponentTypeDef)
+          context.model.addTypeDefinitions(newComponentTypeDef)
           true
       }
     }

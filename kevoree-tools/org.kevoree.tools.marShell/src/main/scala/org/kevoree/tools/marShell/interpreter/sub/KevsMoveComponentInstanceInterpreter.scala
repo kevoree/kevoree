@@ -31,8 +31,8 @@ case class KevsMoveComponentInstanceInterpreter(moveComponent: MoveComponentInst
               case Some(targetComponent) => {
                 context.model.getNodes.find(node => node.getName == moveComponent.targetNodeName) match {
                   case Some(targetNode) => {
-                    sourceNode.getComponents.remove(targetComponent)
-                    targetNode.getComponents.add(targetComponent)
+                    sourceNode.removeComponents(targetComponent)
+                    targetNode.addComponents(targetComponent)
                     true
                   }
                   case None => {

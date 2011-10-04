@@ -26,17 +26,18 @@ object Merger {
 
   /* Goal of this method is to merge dictionary definition with already exist instance defintion */
   def mergeDictionary(inst: Instance, props: java.util.Properties) = {
+    import scala.collection.JavaConversions._
     props.keySet.foreach {
       key =>
         val newValue = props.get(key)
 
         var dictionary = inst.getDictionary
-        if (dictionary == null) {
-          dictionary = KevoreeFactory.eINSTANCE.createDictionary
-          inst.setDictionary(dictionary)
+        if (dictionary.isEmpty) {
+          dictionary = Some(KevoreeFactory.eINSTANCE.createDictionary)
+          inst.setDictionary(dictionary.get)
         }
 
-        inst.getDictionary.getValues.find(value => value.getAttribute.getName == key) match {
+        inst.getDictionary.get.getValues.find(value => value.getAttribute.getName == key) match {
           //UPDATE VALUE CASE
           case Some(previousValue) => {
             previousValue.setValue(newValue.toString)
@@ -44,11 +45,11 @@ object Merger {
           //MERGE NEW Dictionary Attribute
           case None => {
             //CHECK IF ATTRIBUTE ALREADY EXISTE WITHOUT VALUE
-            val att = inst.getTypeDefinition.getDictionaryType.getAttributes.find(att => att.getName == key) match {
+            val att = inst.getTypeDefinition.getDictionaryType.get.getAttributes.find(att => att.getName == key) match {
               case None => {
                 val newDictionaryValue = KevoreeFactory.eINSTANCE.createDictionaryAttribute
                 newDictionaryValue.setName(key.toString)
-                inst.getTypeDefinition.getDictionaryType.getAttributes.add(newDictionaryValue)
+                inst.getTypeDefinition.getDictionaryType.get.addAttributes(newDictionaryValue)
                 newDictionaryValue
               }
               case Some(previousAtt) => previousAtt
@@ -56,7 +57,7 @@ object Merger {
             val newDictionaryValue = KevoreeFactory.eINSTANCE.createDictionaryValue
             newDictionaryValue.setValue(newValue.toString)
             newDictionaryValue.setAttribute(att)
-            inst.getDictionary.getValues.add(newDictionaryValue)
+            inst.getDictionary.get.addValues(newDictionaryValue)
           }
         }
 

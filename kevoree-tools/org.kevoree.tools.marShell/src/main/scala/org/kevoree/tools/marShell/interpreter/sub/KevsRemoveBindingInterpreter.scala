@@ -43,7 +43,7 @@ case class KevsRemoveBindingInterpreter(removeBinding: RemoveBindingStatment) ex
                       case Some(port) => {
                         //LOOK for previous binding
                         context.model.getMBindings.find(mb => mb.getHub == targetHub && mb.getPort == port) match {
-                          case Some(previousMB) => context.model.getMBindings.remove(previousMB); true
+                          case Some(previousMB) => context.model.removeMBindings(previousMB); true
                           case None => logger.error("Previous binding not found => " + removeBinding.bindingInstanceName); false
                         }
                       }
