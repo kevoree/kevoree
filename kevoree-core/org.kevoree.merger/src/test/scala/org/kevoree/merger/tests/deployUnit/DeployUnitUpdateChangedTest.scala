@@ -38,7 +38,7 @@ class DeployUnitUpdateChangedTest extends MergerTestSuiteHelper {
     println("Hello")
 
      mergedModel.getDeployUnits.foreach{ du =>
-       println(du.getUnitName+"=>"+du.getRequiredLibs.size())
+       println(du.getUnitName+"=>"+du.getRequiredLibs.size)
      }
 
         /*
