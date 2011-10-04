@@ -26,7 +26,9 @@ case class GroupAspect(self: Group) {
     val modelPanel = kernel.getUifactory().getMapping().get(root).asInstanceOf[ModelPanel]
 
     //REMOVE UI BINDING
-    val bindings = kernel.getModelPanel.getBindings().toList  ++ List()
+    import scala.collection.JavaConversions._
+
+    val bindings = kernel.getModelPanel.getBindings.toList  ++ List()
     bindings.foreach{b=>
       if(b.getFrom.equals(panel.getAnchor) || b.getTo.equals(panel.getAnchor)){
           kernel.getModelPanel.removeBinding(b)
@@ -34,7 +36,7 @@ case class GroupAspect(self: Group) {
     }
 
     modelPanel.removeInstance(panel)
-    root.getGroups.remove(self)
+    root.removeGroups(self)
     kernel.getUifactory().getMapping().unbind(panel, self);
   }
 
