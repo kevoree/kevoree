@@ -18,15 +18,12 @@
 
 package org.kevoree.pruner
 
-import java.util.ArrayList
-import java.util.HashMap
 import org.kevoree.ComponentType
 import org.kevoree.ContainerRoot
 import org.kevoree.DeployUnit
 import org.kevoree.KevoreeFactory
 import org.kevoree.MessagePortType
 import org.kevoree.NodeType
-import org.kevoree.Port
 import org.kevoree.PortType
 import org.kevoree.PortTypeRef
 import org.kevoree.ServicePortType
@@ -43,16 +40,16 @@ class Pruner {
 
   def pruneLibrary(sourceModel : ContainerRoot, libName : String) : ContainerRoot  = {
 
-    var resultModel = KevoreeFactory.eINSTANCE.createContainerRoot
+    val resultModel = KevoreeFactory.eINSTANCE.createContainerRoot
 
     sourceModel.getLibraries.find({lib => lib.getName.equals(libName)}) match {
       case Some(lib) => {
           
           //lists subTypes
-          var subTypes = List() ++ lib.getSubTypes.toList
+          val subTypes = List() ++ lib.getSubTypes.toList
           
-          resultModel.getLibraries.add(lib)
-          lib.getSubTypes.clear
+          resultModel.addLibraries(lib)
+          lib.removeAllSubTypes()
 
           subTypes.foreach{sTyp =>
             checkOrMoveTypeDef(resultModel, lib, sTyp)
@@ -75,45 +72,48 @@ class Pruner {
   }
 
   private def defaultCheckOrMoveType (targetModel : ContainerRoot, newLib : TypeLibrary,  typDef : TypeDefinition) {
-    var du = List() ++ typDef.getDeployUnits.toList
+    val du = List() ++ typDef.getDeployUnits.toList
     // move to new model
-    targetModel.getTypeDefinitions.add(typDef)
-    newLib.getSubTypes.add(typDef);
+    targetModel.addTypeDefinitions(typDef)
+    newLib.addSubTypes(typDef);
 
     //Clear collections
     //dictionaryType
-    typDef.getDeployUnits.clear
+    typDef.removeAllDeployUnits()
 
     du.foreach{depUnit =>
       checkOrMoveDu(targetModel, depUnit)
-      typDef.getDeployUnits.add(depUnit)
+      typDef.addDeployUnits(depUnit)
     }
   }
 
   private def checkOrMoveComponentType(targetModel : ContainerRoot, newLib : TypeLibrary,  typDef : ComponentType) {
     //Store references
-    var du = List() ++ typDef.getDeployUnits.toList
+    val du = List() ++ typDef.getDeployUnits.toList
 
-    var portTypeRefMap = new HashMap[PortType, ArrayList[PortTypeRef]]()
+    var portTypeRefMap = Map[PortType, List[PortTypeRef]]()
 
     typDef match {
       case componentType : ComponentType => {
           componentType.getProvided.foreach{p =>
-            if(portTypeRefMap.contains(p.getRef)) {
-              portTypeRefMap.get(p.getRef).add(p)
-            } else {
-              var nList = new ArrayList[PortTypeRef]()
-              nList.add(p)
-              portTypeRefMap.put(p.getRef, nList)
+            portTypeRefMap.get(p.getRef) match {
+              case Some(l) => {
+                portTypeRefMap += p.getRef -> (l ++ List(p))
+              }
+              case None => {
+              portTypeRefMap += p.getRef -> List[PortTypeRef](p)
+              }
             }
+
           }
           componentType.getRequired.foreach{p =>
-            if(portTypeRefMap.contains(p.getRef)) {
-              portTypeRefMap.get(p.getRef).add(p)
-            } else {
-              var nList = new ArrayList[PortTypeRef]()
-              nList.add(p)
-              portTypeRefMap.put(p.getRef, nList)
+            portTypeRefMap.get(p.getRef) match {
+              case Some(l) => {
+                portTypeRefMap += p.getRef -> (l ++ List(p))
+              }
+              case None => {
+              portTypeRefMap += p.getRef -> List[PortTypeRef](p)
+              }
             }
           }
         }
@@ -121,56 +121,56 @@ class Pruner {
 
 
     // move to new model
-    targetModel.getTypeDefinitions.add(typDef)
-    newLib.getSubTypes.add(typDef);
+    targetModel.addTypeDefinitions(typDef)
+    newLib.addSubTypes(typDef);
 
     //Clear collections
     //dictionaryType
-    typDef.getDeployUnits.clear
+    typDef.removeAllDeployUnits()
 
 
     //treat references
-    portTypeRefMap.keySet.foreach{ typDef =>
+    portTypeRefMap.keys.foreach{ typDef =>
       checkOrMoveTypeDef(targetModel, newLib, typDef)
-      portTypeRefMap.get(typDef).foreach{ptr => ptr.setRef(typDef)}
+      portTypeRefMap.get(typDef).foreach{ptr => ptr.asInstanceOf[PortTypeRef].setRef(typDef)}
     }
 
     du.foreach{depUnit =>
       checkOrMoveDu(targetModel, depUnit)
-      typDef.getDeployUnits.add(depUnit)
+      typDef.addDeployUnits(depUnit)
     }
   }
 
 
   private def checkOrMoveDu(targetModel : ContainerRoot, du : DeployUnit) {
     if( ! targetModel.getDeployUnits.contains(du)) {
-      checkOrMoveNodeType(targetModel, du.getTargetNodeType)
-      targetModel.getDeployUnits.add(du)
+      checkOrMoveNodeType(targetModel, du.getTargetNodeType.get)
+      targetModel.addDeployUnits(du)
     }
   }
 
   private def checkOrMoveNodeType(targetModel : ContainerRoot, nt : NodeType) {
     if(! targetModel.getTypeDefinitions.contains(nt)) {
-      targetModel.getTypeDefinitions.add(nt)
+      targetModel.addTypeDefinitions(nt)
     }
   }
 
   private def checkOrMoveMessagePortType(targetModel : ContainerRoot, typDef : MessagePortType) {
     if( ! targetModel.getTypeDefinitions.contains(typDef)) {
-      targetModel.getTypeDefinitions.add(typDef)
+      targetModel.addTypeDefinitions(typDef)
     }
   }
 
   private def checkOrMoveServicePortType(targetModel : ContainerRoot, typDef : ServicePortType) {
     if( ! targetModel.getTypeDefinitions.contains(typDef)) {
-      var dataTypes = new ArrayList[TypedElement]()
+      var dataTypes = List[TypedElement]()
       typDef.getOperations.foreach{op =>
         if( ! dataTypes.contains(op.getReturnType)){
-          dataTypes.add(op.getReturnType)
+          dataTypes = dataTypes ++ List(op.getReturnType.asInstanceOf[TypedElement])
         }
         op.getParameters.foreach{param =>
           if( ! dataTypes.contains(param.getType)){
-            dataTypes.add(param.getType)
+           dataTypes = dataTypes ++ List(op.getReturnType.asInstanceOf[TypedElement])
           }
         }
       }
@@ -178,13 +178,13 @@ class Pruner {
         checkOrMoveDataType(targetModel, dataType)
       }
 
-      targetModel.getTypeDefinitions.add(typDef)
+      targetModel.addTypeDefinitions(typDef)
     }
   }
 
   private def checkOrMoveDataType(targetModel : ContainerRoot, dataType : TypedElement) {
     if( ! targetModel.getDataTypes.contains(dataType)) {
-      targetModel.getDataTypes.add(dataType)
+      targetModel.addDataTypes(dataType)
     }
   }
 
