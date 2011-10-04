@@ -22,7 +22,6 @@ import org.junit._
 import org.kevoree.merger.KevoreeMergerComponent
 import org.kevoree.merger.tests.MergerTestSuiteHelper
 import org.kevoree.api.service.core.merger.MergerService
-import scala.collection.JavaConversions._
 
 class DeployUnitUpdateChangedTest extends MergerTestSuiteHelper {
 

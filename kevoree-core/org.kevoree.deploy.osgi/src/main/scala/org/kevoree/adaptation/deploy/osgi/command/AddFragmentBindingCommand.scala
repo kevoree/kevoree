@@ -19,7 +19,6 @@ import framework.{PrimitiveCommand, KevoreeChannelFragment, Constants}
 import org.kevoree.adaptation.deploy.osgi.context.KevoreeDeployManager
 import org.kevoree.framework.message.FragmentBindMessage
 import org.slf4j.LoggerFactory
-import scala.collection.JavaConversions._
 
 case class AddFragmentBindingCommand(c : Channel,remoteNodeName:String, ctx : KevoreeDeployManager,nodeName:String) extends PrimitiveCommand {
 

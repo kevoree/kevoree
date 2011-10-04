@@ -19,8 +19,7 @@
 package org.kevoree.merger.sub
 
 import org.kevoree.merger.Merger
-import scala.collection.JavaConversions._
-import org.kevoree.framework.aspects.KevoreeAspects._
+ import org.kevoree.framework.aspects.KevoreeAspects._
 import org.kevoree._
 
 trait TypeDefinitionMerger extends Merger with DictionaryMerger with PortTypeMerger with DeployUnitMerger {

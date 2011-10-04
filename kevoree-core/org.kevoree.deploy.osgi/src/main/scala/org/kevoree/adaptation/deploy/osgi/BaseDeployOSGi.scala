@@ -21,8 +21,7 @@ import framework.PrimitiveCommand
 import kompare.JavaSePrimitive
 import org.osgi.framework.Bundle
 import org.slf4j.LoggerFactory
-import scala.collection.JavaConversions._
-import org.osgi.service.packageadmin.PackageAdmin
+ import org.osgi.service.packageadmin.PackageAdmin
 
 class BaseDeployOSGi(bundle : Bundle) {
 

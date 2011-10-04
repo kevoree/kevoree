@@ -13,8 +13,7 @@
  */
 package org.kevoree.core.basechecker.nodechecker
 
-import scala.collection.JavaConversions._
-import org.kevoree.api.service.core.checker.{CheckerViolation, CheckerService}
+ import org.kevoree.api.service.core.checker.{CheckerViolation, CheckerService}
 import org.kevoree.framework.aspects.KevoreeAspects._
 import org.kevoree.{ContainerNode, ContainerRoot}
 

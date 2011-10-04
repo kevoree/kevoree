@@ -23,8 +23,7 @@ import org.kevoree.adaptation.deploy.osgi.context.KevoreeOSGiBundle
 import org.osgi.framework.BundleException
 import org.osgi.service.packageadmin.PackageAdmin
 import org.slf4j.LoggerFactory
-import scala.collection.JavaConversions._
-import org.kevoree.{ContainerRoot, DeployUnit}
+ import org.kevoree.{ContainerRoot, DeployUnit}
 import org.kevoree.tools.aether.framework.AetherUtil
 import java.io.{FileInputStream, File}
 import org.kevoree.framework.PrimitiveCommand

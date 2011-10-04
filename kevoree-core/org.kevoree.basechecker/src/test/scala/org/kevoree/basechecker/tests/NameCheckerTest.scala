@@ -19,8 +19,7 @@
 package org.kevoree.basechecker.tests
 
 import org.scalatest.junit.AssertionsForJUnit
-import scala.collection.JavaConversions._
-import org.junit._
+ import org.junit._
 import org.kevoree.core.basechecker.namechecker.NameChecker
 
 class NameCheckerTest extends AssertionsForJUnit with BaseCheckerSuite {

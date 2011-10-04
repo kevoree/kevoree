@@ -23,8 +23,7 @@ import org.kevoree.ComponentInstance
 import org.kevoree.ComponentType
 import org.kevoree.ContainerNode
 import org.kevoree.ContainerRoot
-import scala.collection.JavaConversions._
-import org.kevoree.framework.aspects.KevoreeAspects._
+ import org.kevoree.framework.aspects.KevoreeAspects._
 
 trait InstanceMerger {
 

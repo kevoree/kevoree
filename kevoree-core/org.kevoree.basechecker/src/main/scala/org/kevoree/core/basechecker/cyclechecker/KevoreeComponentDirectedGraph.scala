@@ -19,7 +19,6 @@
 package org.kevoree.core.basechecker.cyclechecker
 
 import org.kevoree.framework.aspects.KevoreeAspects._
-import scala.collection.JavaConversions._
 
 import org.jgrapht.graph.DefaultDirectedGraph
 import org.kevoree.ComponentInstance

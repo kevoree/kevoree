@@ -23,8 +23,7 @@ import framework.PrimitiveCommand
 import org.kevoree.DeployUnit
 import org.kevoree.adaptation.deploy.osgi.context.KevoreeDeployManager
 import org.kevoree.adaptation.deploy.osgi.context.KevoreeOSGiBundle
-import scala.collection.JavaConversions._
-import org.osgi.service.packageadmin.PackageAdmin
+ import org.osgi.service.packageadmin.PackageAdmin
 import org.slf4j.LoggerFactory
 import org.osgi.framework.BundleException
 import org.kevoree.tools.aether.framework.AetherUtil
