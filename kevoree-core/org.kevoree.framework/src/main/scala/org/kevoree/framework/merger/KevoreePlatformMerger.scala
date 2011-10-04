@@ -26,11 +26,12 @@ object KevoreePlatformMerger {
 
   def merge(actualModel : ContainerRoot,modelToMerge : ContainerRoot) : Unit = {
 
-    val listNN = List() ++ modelToMerge.getNodeNetworks.toList
+    val listNN = List() ++ modelToMerge.getNodeNetworks
     listNN.foreach{nn=>
       //MERGE NODE NETWORK
-      actualModel.getNodeNetworks.find(ann=> ann.getInitBy.getName == nn.getInitBy.getName && ann.getTarget.getName == nn.getTarget.getName  ) match {
-        case None => actualModel.getNodeNetworks.add(nn)
+
+      actualModel.getNodeNetworks.find(ann=> ann.getInitBy.get.getName == nn.getInitBy.getName && ann.getTarget.getName == nn.getTarget.get.getName  ) match {
+        case None => actualModel.addNodeNetworks(nn)
         case Some(nnfound) => {
 
             val listNL = nn.getLink ++ List()
