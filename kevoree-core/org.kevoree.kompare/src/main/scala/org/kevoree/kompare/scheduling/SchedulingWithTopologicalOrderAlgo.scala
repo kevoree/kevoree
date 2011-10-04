@@ -113,7 +113,7 @@ class SchedulingWithTopologicalOrderAlgo {
           command.getRef.asInstanceOf[Instance] match {
             case instance: ComponentInstance => {
               // test if instance is the container of the port of the binding
-              if (instance.equals(binding.getPort.eContainer())) {
+              if (instance.equals(binding.getPort.eContainer)) {
                 // test all provided port
                 // the instance of the provided port must be stopped before those which are connected to him
                 val pit = instance.getProvided.iterator
