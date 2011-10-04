@@ -39,7 +39,7 @@ import org.kevoree.framework.annotation.processor.LocalUtility
 
 class DataTypeVisitor extends TypeVisitor {
 
-  var dataType = KevoreeFactory.eINSTANCE.createTypedElement();
+  var dataType = KevoreeFactory.eINSTANCE.createTypedElement
   def getDataType():TypedElement={return dataType}
 
   def visitTypeMirror(t:TypeMirror)= {
@@ -72,7 +72,8 @@ class DataTypeVisitor extends TypeVisitor {
   }
 
   def visitClassType(t:ClassType)= {
-    dataType.setName(t.getDeclaration.getQualifiedName);
+    dataType.setName(t.getDeclaration.getQualifiedName)
+    import scala.collection.JavaConversions._
     t.getActualTypeArguments.foreach{tm=>
       val dtv = new DataTypeVisitor();
       tm.accept(dtv);
@@ -82,15 +83,16 @@ class DataTypeVisitor extends TypeVisitor {
   }
 
   def visitEnumType(t:EnumType)= {
-    dataType.setName(t.getDeclaration().getQualifiedName())
+    dataType.setName(t.getDeclaration.getQualifiedName)
   }
 
   def visitInterfaceType(t:InterfaceType)= {
-    dataType.setName(t.getDeclaration().getQualifiedName());
-    t.getActualTypeArguments().foreach{tm=>
-      var dtv = new DataTypeVisitor();
+    import scala.collection.JavaConversions._
+    dataType.setName(t.getDeclaration.getQualifiedName);
+    t.getActualTypeArguments.foreach{tm=>
+      val dtv = new DataTypeVisitor();
       tm.accept(dtv);
-      dataType.getGenericTypes().add(LocalUtility.getOraddDataType(dtv.getDataType()));
+      dataType.getGenericTypes.add(LocalUtility.getOraddDataType(dtv.getDataType()));
     }
   }
 
