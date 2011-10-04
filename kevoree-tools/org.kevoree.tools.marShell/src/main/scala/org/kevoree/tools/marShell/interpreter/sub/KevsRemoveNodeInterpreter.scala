@@ -36,7 +36,7 @@ case class KevsRemoveNodeInterpreter(addN: RemoveNodeStatment) extends KevsAbstr
         //DELETE ALL GROUP DEPENDENCY
          context.model.getGroups.foreach{g=>
              if(g.getSubNodes.contains(targetNode)){
-               g.getSubNodes.remove(targetNode)
+               g.removeSubNodes(targetNode)
              }
          }
         //DELETE ALL COMPONENT
@@ -44,7 +44,7 @@ case class KevsRemoveNodeInterpreter(addN: RemoveNodeStatment) extends KevsAbstr
           KevsRemoveComponentInstanceInterpreter(null).deleteComponent(targetNode, c)
         })
         //DELETE NODE
-        context.model.getNodes.remove(targetNode)
+        context.model.removeNodes(targetNode)
         true
       }
       case None => {

@@ -28,19 +28,20 @@ object LocalUtility {
   var root : ContainerRoot = _
 
   def generateLibURI(env:AnnotationProcessorEnvironment) = {
+    import scala.collection.JavaConversions._
     "file://" + env.getOptions.find({op => op._1.contains("kevoree.lib.target")}).getOrElse{("key=","")}._1.split('=').toList.get(1)
   }
 
   def getOraddDataType(datatype : TypedElement) : TypedElement = {
     root.getDataTypes.find({t=>t.getName.equals(datatype.getName)}).getOrElse{
-      root.getDataTypes.add(datatype)
+      root.addDataTypes(datatype)
       datatype
     }
   }
 
   def getOraddPortType(portType : PortType) : PortType = {
     root.getTypeDefinitions.filter{st=> st.isInstanceOf[PortType]}.find({pt=>pt.getName == portType.getName}).getOrElse{
-      root.getTypeDefinitions.add(portType)
+      root.addTypeDefinitions(portType)
       portType
     }.asInstanceOf[PortType]
   }

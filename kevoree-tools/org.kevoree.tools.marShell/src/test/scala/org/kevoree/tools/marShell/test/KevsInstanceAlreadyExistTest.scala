@@ -32,26 +32,26 @@ class KevsInstanceAlreadyExistTest extends KevSTestSuiteHelper {
     //CHECK NODE DICTIONARY MERGE
     val node = baseModel.getNodes.find(node => node.getName == "myJavaNode").get
     assume(node.getDictionary != null, "Dictionary not created")
-    val boardTypeName = node.getDictionary.getValues.exists(value => value.getAttribute.getName == "boardTypeName" && value.getValue == "uno")
+    val boardTypeName = node.getDictionary.get.getValues.exists(value => value.getAttribute.getName == "boardTypeName" && value.getValue == "uno")
     assume(boardTypeName, "boardTypeName dictionary value not added")
 
     //CHECK COMPONENT DICTIONARY MERGE
     val component = node.getComponents.find(compo => compo.getName == "myFakeLight1").get
     assume(component.getDictionary != null, "Dictionary not created")
-    val param1 = component.getDictionary.getValues.exists(value => value.getAttribute.getName == "param1" && value.getValue == "hello")
+    val param1 = component.getDictionary.get.getValues.exists(value => value.getAttribute.getName == "param1" && value.getValue == "hello")
     assume(param1, "param1 dictionary value not added")
 
     //CHECK CHANNEL DICTIONARY MERGE
     val channel = baseModel.getHubs.find(hub => hub.getName == "gossiperChannel1").get
     assume(channel.getDictionary != null, "Dictionary not created")
-    val interval = channel.getDictionary.getValues.exists(value => value.getAttribute.getName == "interval" && value.getValue == "3000")
+    val interval = channel.getDictionary.get.getValues.exists(value => value.getAttribute.getName == "interval" && value.getValue == "3000")
     assume(interval, "interval dictionary value not added")
 
 
     //CHECK GROUP DICTIONARY MERGE
     val group = baseModel.getGroups.find(group => group.getName == "gossipGroup").get
     assume(group.getDictionary != null, "Dictionary not created")
-    val intervalGroup = group.getDictionary.getValues.exists(value => value.getAttribute.getName == "interval" && value.getValue == "2000")
+    val intervalGroup = group.getDictionary.get.getValues.exists(value => value.getAttribute.getName == "interval" && value.getValue == "2000")
     assume(intervalGroup, "interval dictionary value not added")
 
 

@@ -51,7 +51,7 @@ case class KevsAddGroupInterpreter(addGroup: AddGroupStatment) extends KevsAbstr
             newGroup.setTypeDefinition(targetGroupType)
             newGroup.setName(addGroup.groupName)
             Merger.mergeDictionary(newGroup, addGroup.props)
-            context.model.getGroups.add(newGroup)
+            context.model.addGroups(newGroup)
 
           }
           case Some(targetGroupType) if (!targetGroupType.isInstanceOf[GroupType]) => {

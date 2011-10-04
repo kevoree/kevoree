@@ -61,20 +61,20 @@ case class KevsAddComponentInstanceInterpreter(addCompo: AddComponentInstanceSta
                     //ADD PORTS
                     for (ref <- componentDefinition.getProvided) {
                       val port: Port = KevoreeFactory.eINSTANCE.createPort
-                      newcomponent.getProvided.add(port)
+                      newcomponent.addProvided(port)
                       port.setPortTypeRef(ref)
                     }
                     for (ref <- componentDefinition.getRequired) {
                       val port: Port = KevoreeFactory.eINSTANCE.createPort
-                      newcomponent.getRequired.add(port)
+                      newcomponent.addRequired(port)
                       port.setPortTypeRef(ref)
                     }
 
                     //MERGE DICTIONARY
                     Merger.mergeDictionary(newcomponent, addCompo.props)
 
-                    targetNode.getComponents.add(newcomponent)
-
+                    targetNode.addComponents(newcomponent)
+                    true
                   }
                   case Some(typeDef) if (!typeDef.isInstanceOf[ComponentType]) => {
                     logger.error("Type definition is not a componentType " + addCompo.typeDefinitionName);
