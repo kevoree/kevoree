@@ -69,11 +69,13 @@ trait ChannelTypeFragment extends KevoreeChannelFragment with ChannelFragment {
   override def getDictionary(): HashMap[String, Object] = dictionary
 
   override def getBindedPorts(): java.util.List[KevoreePort] = {
+    import scala.collection.JavaConversions._
     portsBinded.values.toList
   }
 
   //OVERRIDE BY FACTORY
   override def getOtherFragments(): java.util.List[KevoreeChannelFragment] = {
+    import scala.collection.JavaConversions._
     fragementBinded.values.toList
   }
 
@@ -118,6 +120,7 @@ trait ChannelTypeFragment extends KevoreeChannelFragment with ChannelFragment {
 
     case UpdateDictionaryMessage(d) => {
       try {
+        import scala.collection.JavaConversions._
         d.keySet.foreach {
           v =>
             dictionary.put(v, d.get(v))
