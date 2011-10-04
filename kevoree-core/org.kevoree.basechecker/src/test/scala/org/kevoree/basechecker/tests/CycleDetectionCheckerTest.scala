@@ -21,6 +21,8 @@ package org.kevoree.basechecker.tests
 import org.scalatest.junit.AssertionsForJUnit
  import org.junit._
 import org.kevoree.core.basechecker.cyclechecker.{ComponentCycleChecker, NodeCycleChecker}
+import scala.collection.JavaConversions._
+
 
 class CycleDetectionCheckerTest extends AssertionsForJUnit with BaseCheckerSuite {
 

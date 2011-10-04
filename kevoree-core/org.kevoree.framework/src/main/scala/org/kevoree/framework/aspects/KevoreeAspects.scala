@@ -38,7 +38,7 @@ object KevoreeAspects{
   implicit def deployUnitAspect(d:DeployUnit) = DeployUnitAspect(d)
 
   implicit def operationAspect(d:Operation) = OperationAspect(d)
-
+  implicit def containerRootAspect(d:ContainerRoot) = ContainerRootAspect(d)
 
 }
 
