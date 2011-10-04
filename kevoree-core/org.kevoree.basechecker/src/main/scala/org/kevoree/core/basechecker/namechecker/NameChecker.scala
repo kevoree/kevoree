@@ -26,6 +26,8 @@ import org.kevoree.DictionaryValue
 import org.kevoree.NamedElement
 import org.kevoree.api.service.core.checker.CheckerService
 import org.kevoree.api.service.core.checker.CheckerViolation
+import scala.collection.JavaConversions._
+
 
 class NameChecker extends CheckerService {
 
