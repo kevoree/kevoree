@@ -53,7 +53,7 @@ trait PortMappingProcessor {
                 }
 
             }
-            ptref.getMappings.add(ptREFmapping)
+            ptref.addMappings(ptREFmapping)
           }
         case None => {
             val message : String = "[PortMappingProcessor]:" + componentType.getBean + " declares a mapping to a ProvidedPort \"" + annot.name + "\", but this port has not been declared in ComponentType annotations.\nCan not resume. Process Exit.";

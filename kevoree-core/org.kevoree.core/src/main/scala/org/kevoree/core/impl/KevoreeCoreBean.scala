@@ -29,8 +29,7 @@ import scala.actors.Actor
 import org.kevoree.api.configuration.ConfigConstants
 import java.util.Date
 import org.kevoree.api.service.core.handler.{ModelListener, KevoreeModelHandlerService}
-import org.eclipse.emf.ecore.util.EcoreUtil
- import org.kevoree.framework._
+import org.kevoree.framework._
 import deploy.PrimitiveCommandExecutionHelper
 import org.kevoree.tools.aether.framework.NodeTypeBootstrapHelper
 
@@ -42,7 +41,7 @@ class KevoreeCoreBean extends KevoreeModelHandlerService with KevoreeActor {
   @BeanProperty var nodeInstance: AbstractNodeType = null
 
   var models: java.util.ArrayList[ContainerRoot] = new java.util.ArrayList()
-  var model: ContainerRoot = KevoreeFactory.eINSTANCE.createContainerRoot()
+  var model: ContainerRoot = KevoreeFactory.eINSTANCE.createContainerRoot
 
   var lastDate: Date = new Date(System.currentTimeMillis)
 
@@ -124,7 +123,7 @@ class KevoreeCoreBean extends KevoreeModelHandlerService with KevoreeActor {
     if (nodeInstance != null) {
 
       try {
-        val stopModel = KevoreeFactory.eINSTANCE.createContainerRoot();
+        val stopModel = KevoreeFactory.eINSTANCE.createContainerRoot
         val adaptationModel = nodeInstance.kompare(model, stopModel);
         val deployResult = PrimitiveCommandExecutionHelper.execute(adaptationModel, nodeInstance)
       } catch {
