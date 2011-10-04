@@ -18,17 +18,9 @@
 
 package org.kevoree.framework
 
-import org.kevoree.KevoreePackage
-import org.eclipse.emf.ecore.resource.Resource
-import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl
-import org.eclipse.emf.ecore.xmi.XMIResource
-import org.eclipse.emf.ecore.xmi.XMLResource
-import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl
 import org.kevoree.ContainerRoot
 import java.util.HashMap
-import org.eclipse.emf.common.util.URI
-import java.util.zip.{Deflater, Inflater, GZIPInputStream, GZIPOutputStream}
-import io.Source
+import java.util.zip.{Deflater, Inflater}
 import org.slf4j.LoggerFactory
 import java.io._
 import org.kevoree.loader.ContainerRootLoader
@@ -38,6 +30,8 @@ object KevoreeXmiHelper {
   val logger = LoggerFactory.getLogger(this.getClass)
 
   def save(uri: String, root: ContainerRoot) = {
+
+
     val rs: ResourceSetImpl = new ResourceSetImpl();
 
     rs.getResourceFactoryRegistry().getExtensionToFactoryMap().put("*", new XMIResourceFactoryImpl());
