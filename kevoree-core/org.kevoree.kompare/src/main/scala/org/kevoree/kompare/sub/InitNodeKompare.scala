@@ -35,10 +35,10 @@ trait InitNodeKompare extends AbstractKompare {
     /* add type */
     node.getUsedTypeDefinition.foreach {
       ct =>
-        val typecmd = KevoreeAdaptationFactory.eINSTANCE.createAdaptationPrimitive()
+        val typecmd = KevoreeAdaptationFactory.eINSTANCE.createAdaptationPrimitive
         typecmd.setPrimitiveType(getAdaptationPrimitive(JavaSePrimitive.AddType, root))
         typecmd.setRef(ct)
-        adaptationModel.getAdaptations.add(typecmd)
+        adaptationModel.addAdaptations(typecmd)
 
         /* add all reLib from found deploy Unit*/
         logger.info("Look for deploy unit for type definition " + ct.getName + " on " + node.getName)
@@ -48,21 +48,21 @@ trait InitNodeKompare extends AbstractKompare {
 
           deployUnitfound.getRequiredLibs.foreach {
             rLib =>
-              val addcttp = KevoreeAdaptationFactory.eINSTANCE.createAdaptationPrimitive()
+              val addcttp = KevoreeAdaptationFactory.eINSTANCE.createAdaptationPrimitive
               addcttp.setPrimitiveType(getAdaptationPrimitive(JavaSePrimitive.AddThirdParty, root))
               addcttp.setRef(rLib)
-              adaptationModel.getAdaptations.add(addcttp)
+              adaptationModel.addAdaptations(addcttp)
           }
 
           /* add deploy unit if necessary */
           adaptationModel.getAdaptations
-            .filter(adaptation => adaptation.getPrimitiveType.getName == JavaSePrimitive.AddDeployUnit)
+            .filter(adaptation => adaptation.getPrimitiveType.get.getName == JavaSePrimitive.AddDeployUnit)
             .find(adaptation => adaptation.getRef.asInstanceOf[DeployUnit].isModelEquals(deployUnitfound)) match {
             case None => {
-              val ctcmd = KevoreeAdaptationFactory.eINSTANCE.createAdaptationPrimitive()
+              val ctcmd = KevoreeAdaptationFactory.eINSTANCE.createAdaptationPrimitive
               ctcmd.setPrimitiveType(getAdaptationPrimitive(JavaSePrimitive.AddDeployUnit, root))
               ctcmd.setRef(deployUnitfound)
-              adaptationModel.getAdaptations.add(ctcmd)
+              adaptationModel.addAdaptations(ctcmd)
             }
             case Some(e) => //SIMILAR DEPLOY UNIT PRIMITIVE ALREADY REGISTERED
           }
@@ -75,20 +75,20 @@ trait InitNodeKompare extends AbstractKompare {
     /* add component */
     node.getInstances.foreach({
       c =>
-        val addccmd = KevoreeAdaptationFactory.eINSTANCE.createAdaptationPrimitive()
+        val addccmd = KevoreeAdaptationFactory.eINSTANCE.createAdaptationPrimitive
         addccmd.setPrimitiveType(getAdaptationPrimitive(JavaSePrimitive.AddInstance, root))
         addccmd.setRef(c)
-        adaptationModel.getAdaptations.add(addccmd)
+        adaptationModel.addAdaptations(addccmd)
 
-        val addccmd2 = KevoreeAdaptationFactory.eINSTANCE.createAdaptationPrimitive()
+        val addccmd2 = KevoreeAdaptationFactory.eINSTANCE.createAdaptationPrimitive
         addccmd2.setPrimitiveType(getAdaptationPrimitive(JavaSePrimitive.StartInstance, root))
         addccmd2.setRef(c)
-        adaptationModel.getAdaptations.add(addccmd2)
+        adaptationModel.addAdaptations(addccmd2)
 
-        val addccmd3 = KevoreeAdaptationFactory.eINSTANCE.createAdaptationPrimitive()
+        val addccmd3 = KevoreeAdaptationFactory.eINSTANCE.createAdaptationPrimitive
         addccmd3.setPrimitiveType(getAdaptationPrimitive(JavaSePrimitive.UpdateDictionaryInstance, root))
         addccmd3.setRef(c)
-        adaptationModel.getAdaptations.add(addccmd3)
+        adaptationModel.addAdaptations(addccmd3)
 
     })
 
@@ -98,12 +98,12 @@ trait InitNodeKompare extends AbstractKompare {
       channel =>
         channel.getOtherFragment(node.getName).foreach {
           remoteName =>
-            val addccmd = KevoreeAdaptationFactory.eINSTANCE.createAdaptationPrimitive()
+            val addccmd = KevoreeAdaptationFactory.eINSTANCE.createAdaptationPrimitive
 
             addccmd.setPrimitiveType(getAdaptationPrimitive(JavaSePrimitive.AddFragmentBinding, root))
             addccmd.setRef(channel)
             addccmd.setTargetNodeName(remoteName)
-            adaptationModel.getAdaptations.add(addccmd)
+            adaptationModel.addAdaptations(addccmd)
         }
     }
 
@@ -111,10 +111,10 @@ trait InitNodeKompare extends AbstractKompare {
     root.getMBindings.foreach {
       b =>
         if (b.getPort.eContainer.eContainer == node) {
-          val addcmd = KevoreeAdaptationFactory.eINSTANCE.createAdaptationPrimitive()
+          val addcmd = KevoreeAdaptationFactory.eINSTANCE.createAdaptationPrimitive
           addcmd.setPrimitiveType(getAdaptationPrimitive(JavaSePrimitive.AddBinding, root))
           addcmd.setRef(b)
-          adaptationModel.getAdaptations.add(addcmd)
+          adaptationModel.addAdaptations(addcmd)
         }
     }
 
@@ -124,7 +124,7 @@ trait InitNodeKompare extends AbstractKompare {
       c =>
         val addgroup = KevoreeAdaptationFactory.eINSTANCE.createAddInstance
         addgroup.setRef(c)
-        adaptationModel.getAdaptations.add(addgroup)
+        adaptationModel.addAdaptations(addgroup)
     })  */
 
     adaptationModel
