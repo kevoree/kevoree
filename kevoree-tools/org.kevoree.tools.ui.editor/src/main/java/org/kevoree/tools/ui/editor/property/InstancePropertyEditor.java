@@ -44,7 +44,7 @@ public class InstancePropertyEditor extends NamedElementPropertyEditor {
         JPanel p = new JPanel(new SpringLayout());
         p.setBorder(null);
         if (elem.getTypeDefinition().getDictionaryType() != null) {
-            for (final org.kevoree.DictionaryAttribute att : elem.getTypeDefinition().getDictionaryType().getAttributes()) {
+            for (final org.kevoree.DictionaryAttribute att : elem.getTypeDefinition().getDictionaryType().get().getAttributesForJ()) {
                 JLabel l = new JLabel(att.getName(), JLabel.TRAILING);
                 l.setUI(new HudLabelUI());
                 //l.setOpaque(false);
@@ -108,7 +108,7 @@ public class InstancePropertyEditor extends NamedElementPropertyEditor {
             }
 
             SpringUtilities.makeCompactGrid(p,
-                    elem.getTypeDefinition().getDictionaryType().getAttributes().size(), 2, //rows, cols
+                    elem.getTypeDefinition().getDictionaryType().get().getAttributesForJ().size(), 2, //rows, cols
                     6, 6,        //initX, initY
                     6, 6);       //xPad, yPad
         }
@@ -138,14 +138,14 @@ public class InstancePropertyEditor extends NamedElementPropertyEditor {
     public String getValue(org.kevoree.Instance instance, org.kevoree.DictionaryAttribute att) {
         DictionaryValue value = null;
         if (instance.getDictionary() == null) {
-            instance.setDictionary(KevoreeFactory.eINSTANCE.createDictionary());
+            instance.setDictionary(KevoreeFactory.createDictionary());
         }
-        for (DictionaryValue v : instance.getDictionary().getValues()) {
+        for (DictionaryValue v : instance.getDictionary().get().getValuesForJ()) {
             if (v.getAttribute().equals(att)) {
                 return v.getValue();
             }
         }
-        for (DictionaryValue v : instance.getTypeDefinition().getDictionaryType().getDefaultValues()) {
+        for (DictionaryValue v : instance.getTypeDefinition().getDictionaryType().get().getDefaultValuesForJ()) {
             if (v.getAttribute().equals(att)) {
                 return v.getValue();
             }
@@ -155,15 +155,15 @@ public class InstancePropertyEditor extends NamedElementPropertyEditor {
 
     public void setValue(Object aValue, org.kevoree.Instance instance, org.kevoree.DictionaryAttribute att) {
         DictionaryValue value = null;
-        for (DictionaryValue v : instance.getDictionary().getValues()) {
+        for (DictionaryValue v : instance.getDictionary().get().getValuesForJ()) {
             if (v.getAttribute().equals(att)) {
                 value = v;
             }
         }
         if (value == null) {
-            value = KevoreeFactory.eINSTANCE.createDictionaryValue();
+            value = KevoreeFactory.createDictionaryValue();
             value.setAttribute(att);
-            instance.getDictionary().getValues().add(value);
+            instance.getDictionary().get().addValues(value);
         }
         value.setValue(aValue.toString());
     }

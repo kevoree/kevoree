@@ -45,11 +45,11 @@ public class AddNodeCommand implements Command {
     @Override
     public void execute(Object p) {
 
-        ContainerNode newnode = KevoreeFactory.eINSTANCE.createContainerNode();
+        ContainerNode newnode = KevoreeFactory.createContainerNode();
         //CREATE NEW NAME
         //TODO CHECK EXISTING NAME
-        if (kernel.getModelHandler().getActualModel().getNodes().size() > 0) {
-            newnode.setName("node" + kernel.getModelHandler().getActualModel().getNodes().size());
+        if (kernel.getModelHandler().getActualModel().getNodesForJ().size() > 0) {
+            newnode.setName("node" + kernel.getModelHandler().getActualModel().getNodesForJ().size());
         } else {
             newnode.setName("KEVOREEDefaultNodeName");
         }
@@ -60,7 +60,7 @@ public class AddNodeCommand implements Command {
         }
 
         NodePanel newnodepanel = kernel.getUifactory().createComponentNode(newnode);
-        kernel.getModelHandler().getActualModel().getNodes().add(newnode);
+        kernel.getModelHandler().getActualModel().addNodes(newnode);
         kernel.getModelPanel().addNode(newnodepanel);
 
         if ((point.x - newnodepanel.getPreferredSize().getHeight() / 2 > 0) && (point.y - newnodepanel.getPreferredSize().getHeight() / 2 > 0)) {

@@ -17,13 +17,14 @@
 package org.kevoree.tools.ui.editor.command;
 
 import org.kevoree.ComponentInstance;
-import org.kevoree.Port;
-import java.util.ArrayList;
-import java.util.List;
 import org.kevoree.MBinding;
+import org.kevoree.Port;
 import org.kevoree.tools.ui.editor.KevoreeUIKernel;
 import org.kevoree.tools.ui.framework.elements.Binding;
 import org.kevoree.tools.ui.framework.elements.PortPanel;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
@@ -47,9 +48,9 @@ public class CleanRequirePortBinding implements Command {
     public void execute(Object p) {
         Port port = (Port) kernel.getUifactory().getMapping().get(portpanel);
         ComponentInstance component = (ComponentInstance) port.eContainer();
-        if(component.getRequired().contains(port)){
+        if(component.getRequiredForJ().contains(port)){
             List<MBinding> portBindings = new ArrayList();
-            for(MBinding b : kernel.getModelHandler().getActualModel().getMBindings()){
+            for(MBinding b : kernel.getModelHandler().getActualModel().getMBindingsForJ()){
                 if(b.getPort().equals(port)){
                     portBindings.add(b);
                 }
@@ -57,7 +58,7 @@ public class CleanRequirePortBinding implements Command {
             for(MBinding b : portBindings){
                 Binding bp = (Binding) kernel.getUifactory().getMapping().get(b);
                 kernel.getModelPanel().removeBinding(bp);
-                kernel.getModelHandler().getActualModel().getMBindings().remove(b);
+                kernel.getModelHandler().getActualModel().removeMBindings(b);
             }
         }
     }
