@@ -24,20 +24,41 @@ import org.slf4j.LoggerFactory
 import java.io._
 import org.kevoree.loader.ContainerRootLoader
 import org.kevoree.serializer.ModelSerializer
-import xml.PrettyPrinter
+import xml.{XML, PrettyPrinter}
 
 object KevoreeXmiHelper {
 
   val logger = LoggerFactory.getLogger(this.getClass)
 
-  def save(uri: String, root: ContainerRoot) = {
+  def save(uri: String, root: ContainerRoot) {
     val serializer = new ModelSerializer
-    val result = serializer.serialize(root)
+    //val result = serializer.serialize(root)
     val pp = new PrettyPrinter(3000,1)
     val fileWrite = new FileWriter(uri)
     fileWrite.append(pp.format(serializer.serialize(root)))
+    fileWrite.flush()
+    fileWrite.close()
   }
 
+  def saveToString(root:ContainerRoot, prettyPrint : Boolean) : String = {
+    val serializer = new ModelSerializer
+    val res = serializer.serialize(root)
+    if(prettyPrint) {
+    val pp = new PrettyPrinter(3000,1)
+      pp.format(res)
+    } else {
+      res.toString()
+    }
+  }
+
+  def loadString(model : String) : ContainerRoot = {
+    logger.debug("load model from String")
+    val localModel = ContainerRootLoader.loadModel(model);
+    localModel match {
+      case Some(m) => m
+      case None => println("Model not loaded!"); null
+    }
+  }
 
   def load(uri: String): ContainerRoot = {
     logger.debug("load model from => " + uri)
