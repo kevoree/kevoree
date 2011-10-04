@@ -48,7 +48,7 @@ trait StopNodeKompare extends AbstractKompare {
     /* remove mbinding */
     root.getMBindings.foreach {
       b =>
-        if (b.getPort.eContainer.eContainer == node) {
+        if (b.getPort.eContainer.asInstanceOf[KevoreeContainer].eContainer == node) {
           val ctcmd = KevoreeAdaptationFactory.eINSTANCE.createAdaptationPrimitive
           ctcmd.setPrimitiveType(getAdaptationPrimitive(JavaSePrimitive.RemoveBinding, root))
           ctcmd.setRef(b)

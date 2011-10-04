@@ -325,11 +325,11 @@ trait UpdateNodeKompare extends AbstractKompare with UpdateChannelKompare {
 
     //Binding Step
     updateRoot.getMBindings
-      .filter(mb => mb.getPort.eContainer.eContainer.asInstanceOf[ContainerNode].getName == actualNode.getName)
+      .filter(mb => mb.getPort.eContainer.asInstanceOf[KevoreeContainer].eContainer.asInstanceOf[ContainerNode].getName == actualNode.getName)
       .foreach {
       uct =>
         actualRoot.getMBindings
-          .filter(mb => mb.getPort.eContainer.eContainer.asInstanceOf[ContainerNode].getName == updateNode.getName)
+          .filter(mb => mb.getPort.eContainer.asInstanceOf[KevoreeContainer].eContainer.asInstanceOf[ContainerNode].getName == updateNode.getName)
           .find({
           act => act.isModelEquals(uct)
         }) match {
@@ -344,11 +344,11 @@ trait UpdateNodeKompare extends AbstractKompare with UpdateChannelKompare {
         }
     }
     actualRoot.getMBindings
-      .filter(mb => mb.getPort.eContainer.eContainer.asInstanceOf[ContainerNode].getName == actualNode.getName)
+      .filter(mb => mb.getPort.eContainer.asInstanceOf[KevoreeContainer].eContainer.asInstanceOf[ContainerNode].getName == actualNode.getName)
       .foreach {
       act =>
         updateRoot.getMBindings
-          .filter(mb => mb.getPort.eContainer.eContainer.asInstanceOf[ContainerNode].getName == updateNode.getName)
+          .filter(mb => mb.getPort.eContainer.asInstanceOf[KevoreeContainer].eContainer.asInstanceOf[ContainerNode].getName == updateNode.getName)
           .find({
           uct => uct.isModelEquals(act)
         }) match {

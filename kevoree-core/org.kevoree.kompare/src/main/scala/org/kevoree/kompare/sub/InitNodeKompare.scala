@@ -110,7 +110,7 @@ trait InitNodeKompare extends AbstractKompare {
     /* add mbinding */
     root.getMBindings.foreach {
       b =>
-        if (b.getPort.eContainer.eContainer == node) {
+        if (b.getPort.eContainer.asInstanceOf[KevoreeContainer].eContainer == node) {
           val addcmd = KevoreeAdaptationFactory.eINSTANCE.createAdaptationPrimitive
           addcmd.setPrimitiveType(getAdaptationPrimitive(JavaSePrimitive.AddBinding, root))
           addcmd.setRef(b)
