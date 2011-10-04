@@ -25,12 +25,12 @@ case class OperationAspect(selfOperation: Operation) {
         val parameterChanged = otherOperation.getParameters.forall(otherParam => {
           selfOperation.getParameters.find(selfParam => selfParam.getName == otherParam.getName) match {
             case Some(selfParam) =>  {
-              !selfParam.getType.isModelEquals(otherParam.getType)
+              !selfParam.getType.get.isModelEquals(otherParam.getType.get)
             }
             case None => true
           }
         })
-        val returnType = !selfOperation.getReturnType.isModelEquals(otherOperation.getReturnType)
+        val returnType = !selfOperation.getReturnType.get.isModelEquals(otherOperation.getReturnType.get)
         parameterChanged || returnType
       }
     }
