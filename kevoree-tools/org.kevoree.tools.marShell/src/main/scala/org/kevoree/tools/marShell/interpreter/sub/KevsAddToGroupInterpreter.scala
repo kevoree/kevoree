@@ -51,7 +51,7 @@ case class KevsAddToGroupInterpreter(addToGroup : AddToGroupStatement) extends K
     groups.foreach{group=>
       nodes.foreach{ node =>
           if(!group.getSubNodes.contains(node)){
-              group.getSubNodes.add(node)
+              group.addSubNodes(node)
           }
       }
 

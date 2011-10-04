@@ -25,53 +25,53 @@ object AdaptationModelWrapper {
 	var logger = LoggerFactory.getLogger(this.getClass);
 
   def generateScriptFromAdaptModel(model: AdaptationModel): Script = {
-    val statments = new java.util.ArrayList[Statment]()
+    var statments = List[Statment]()
     model.getAdaptations.foreach {
       adapt =>
-      adapt.getPrimitiveType.getName match {
+      adapt.getPrimitiveType.get.getName match {
         case JavaSePrimitive.UpdateDictionaryInstance => {
             val dictionary = new java.util.Properties
             if(adapt.getRef.asInstanceOf[Instance].getDictionary != null){
-              adapt.getRef.asInstanceOf[Instance].getDictionary.getValues.foreach{value =>
+              adapt.getRef.asInstanceOf[Instance].getDictionary.get.getValues.foreach{value =>
                 dictionary.put(value.getAttribute.getName, value.getValue)
               }
             }
             adapt.getRef match {
-              case ci : ComponentInstance => statments.add(UpdateDictionaryStatement(ci.getName,Some(ci.eContainer.asInstanceOf[ContainerNode].getName),dictionary))
-              case ci : Channel => statments.add(UpdateDictionaryStatement(ci.getName,None,dictionary))  
+              case ci : ComponentInstance => statments = statments ++ List(UpdateDictionaryStatement(ci.getName,Some(ci.eContainer.asInstanceOf[ContainerNode].getName),dictionary))
+              case ci : Channel => statments = statments ++ List(UpdateDictionaryStatement(ci.getName,None,dictionary))
               case _ => //TODO GROUP
             }
           } //statments.add(UpdateDictionaryStatement(statement.getRef.g))
-        case JavaSePrimitive.AddBinding => statments.add(AddBindingStatment(ComponentInstanceID(adapt.getRef.asInstanceOf[org.kevoree.MBinding].getPort.eContainer.asInstanceOf[ComponentInstance].getName, Some(adapt.getRef.asInstanceOf[MBinding].getPort.eContainer.eContainer.asInstanceOf[ContainerNode].getName)), adapt.getRef.asInstanceOf[MBinding].getPort.getPortTypeRef.getName, adapt.getRef.asInstanceOf[MBinding].getHub.getName))
+        case JavaSePrimitive.AddBinding => statments = statments ++ List(AddBindingStatment(ComponentInstanceID(adapt.getRef.asInstanceOf[org.kevoree.MBinding].getPort.eContainer.asInstanceOf[ComponentInstance].getName, Some(adapt.getRef.asInstanceOf[MBinding].getPort.eContainer.eContainer.asInstanceOf[ContainerNode].getName)), adapt.getRef.asInstanceOf[MBinding].getPort.getPortTypeRef.getName, adapt.getRef.asInstanceOf[MBinding].getHub.getName))
         case JavaSePrimitive.AddInstance => {
 
             val props = new java.util.Properties
             if (adapt.getRef.asInstanceOf[Instance].getDictionary != null) {
-              adapt.getRef.asInstanceOf[Instance].getDictionary.getValues.foreach {
+              adapt.getRef.asInstanceOf[Instance].getDictionary.get.getValues.foreach {
                 value =>
                 props.put(value.getAttribute.getName, value.getValue)
               }
             }
 
             adapt.getRef match {
-              case c: Group => statments.add(AddGroupStatment(c.getName, c.getTypeDefinition.getName, props))
-              case c: Channel => statments.add(AddChannelInstanceStatment(c.getName, c.getTypeDefinition.getName, props))
+              case c: Group => statments = statments ++ List(AddGroupStatment(c.getName, c.getTypeDefinition.getName, props))
+              case c: Channel => statments = statments ++ List(AddChannelInstanceStatment(c.getName, c.getTypeDefinition.getName, props))
               case c: ComponentInstance => {
                   val cid = ComponentInstanceID(c.getName, Some(c.eContainer.asInstanceOf[ContainerNode].getName))
-                  statments.add(AddComponentInstanceStatment(cid, c.getTypeDefinition.getName, props))
+                  statments = statments ++ List(AddComponentInstanceStatment(cid, c.getTypeDefinition.getName, props))
                 }
                 //TODO
               case _@uncatchInstance => logger.warn("uncatched=" + uncatchInstance)
             }
           }
-        case JavaSePrimitive.RemoveBinding => statments.add(RemoveBindingStatment(ComponentInstanceID(adapt.getRef.asInstanceOf[MBinding].getPort.eContainer.asInstanceOf[ComponentInstance].getName, Some(adapt.getRef.asInstanceOf[MBinding].getPort.eContainer.eContainer.asInstanceOf[ContainerNode].getName)), adapt.getRef.asInstanceOf[MBinding].getPort.getPortTypeRef.getName, adapt.getRef.asInstanceOf[MBinding].getHub.getName))
+        case JavaSePrimitive.RemoveBinding => statments = statments ++ List(RemoveBindingStatment(ComponentInstanceID(adapt.getRef.asInstanceOf[MBinding].getPort.eContainer.asInstanceOf[ComponentInstance].getName, Some(adapt.getRef.asInstanceOf[MBinding].getPort.eContainer.eContainer.asInstanceOf[ContainerNode].getName)), adapt.getRef.asInstanceOf[MBinding].getPort.getPortTypeRef.getName, adapt.getRef.asInstanceOf[MBinding].getHub.getName))
         case JavaSePrimitive.RemoveInstance => {
             adapt.getRef match {
-              case c: Group => statments.add(RemoveGroupStatment(c.getName))
-              case c: Channel => statments.add(RemoveChannelInstanceStatment(c.getName))
+              case c: Group => statments = statments ++ List(RemoveGroupStatment(c.getName))
+              case c: Channel => statments = statments ++ List(RemoveChannelInstanceStatment(c.getName))
               case c: ComponentInstance => {
                   val cid = ComponentInstanceID(c.getName, Some(c.eContainer.asInstanceOf[ContainerNode].getName))
-                  statments.add(RemoveComponentInstanceStatment(cid))
+                  statments = statments ++ List(RemoveComponentInstanceStatment(cid))
                 }
 
               case _@uncatchInstance => logger.warn("uncatched=" + uncatchInstance)
@@ -81,7 +81,7 @@ object AdaptationModelWrapper {
       }
 
     }
-    Script(List(TransactionalBloc(statments.toList)))
+    Script(List(TransactionalBloc(statments)))
   }
 
 }

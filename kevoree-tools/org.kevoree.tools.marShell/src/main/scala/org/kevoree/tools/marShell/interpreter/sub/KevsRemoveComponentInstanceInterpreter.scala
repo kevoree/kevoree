@@ -32,9 +32,9 @@ case class KevsRemoveComponentInstanceInterpreter(removeComponent: RemoveCompone
   def deleteComponent(targetNode: ContainerNode, targetComponent: ComponentInstance): Boolean = {
     val root = targetComponent.eContainer.eContainer.asInstanceOf[ContainerRoot]
     getRelatedBindings(targetComponent).foreach(rb => {
-      root.getMBindings.remove(rb)
+      root.removeMBindings(rb)
     })
-    targetNode.getComponents.remove(targetComponent)
+    targetNode.removeComponents(targetComponent)
     true
   }
 
@@ -66,15 +66,15 @@ case class KevsRemoveComponentInstanceInterpreter(removeComponent: RemoveCompone
 
 
   def getRelatedBindings(cself: ComponentInstance): List[MBinding] = {
-    var res = new java.util.ArrayList[MBinding]();
+    var res = List[MBinding]()
     cself.eContainer.eContainer.asInstanceOf[ContainerRoot].getMBindings.foreach {
       b =>
         cself.getProvided.find({
           p => b.getPort == p
-        }).map(e => res.add(b))
+        }).map(e => {res = res ++ List(b)})
         cself.getRequired.find({
           p => b.getPort == p
-        }).map(e => res.add(b))
+        }).map(e => {res = res ++ List(b)})
     }
     res.toList
   }

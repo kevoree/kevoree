@@ -28,6 +28,7 @@ import javax.swing.event.DocumentEvent
 import javax.swing.event.DocumentListener
 import jsyntaxpane.components.Markers
 import org.kevoree.tools.marShell.parser.{ParserUtil, KevsParser}
+import org.kevoree.framework.KevoreeXmiHelper
 
 object MainRunner {
 
@@ -37,7 +38,7 @@ object MainRunner {
   def main(args: Array[String]): Unit = {
     println("Hello, world!")
 
-    val model = ParserUtil.load("/Users/ffouquet/Documents/DEV/dukeboard_github/kevoree/kevoree-tools/org.kevoree.tools.marShellGUI/src/main/resources/baseModel.kev")
+    val model = KevoreeXmiHelper.load("/Users/ffouquet/Documents/DEV/dukeboard_github/kevoree/kevoree-tools/org.kevoree.tools.marShellGUI/src/main/resources/baseModel.kev")
     KevsModelHandlers.put(1,model)
 
 

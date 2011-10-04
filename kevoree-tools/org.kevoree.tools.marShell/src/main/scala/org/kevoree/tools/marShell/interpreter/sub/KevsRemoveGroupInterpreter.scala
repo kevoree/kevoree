@@ -32,7 +32,7 @@ case class KevsRemoveGroupInterpreter(removeGroup: RemoveGroupStatment) extends 
   def interpret(context: KevsInterpreterContext): Boolean = {
     context.model.getGroups.find(n => n.getName == removeGroup.groupName) match {
       case Some(target) => {
-        context.model.getGroups.remove(target)
+        context.model.removeGroups(target)
         true
       }
       case None => {
