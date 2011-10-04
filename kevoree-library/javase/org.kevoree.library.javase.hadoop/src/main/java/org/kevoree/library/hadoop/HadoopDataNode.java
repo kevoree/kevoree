@@ -1,12 +1,18 @@
 package org.kevoree.library.hadoop;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hdfs.server.datanode.DataNode;
 
+import org.eclipse.emf.common.util.EList;
+import org.kevoree.ComponentInstance;
+import org.kevoree.ContainerNode;
+import org.kevoree.DictionaryValue;
 import org.kevoree.annotation.*;
 import org.kevoree.framework.AbstractComponentType;
 import org.kevoree.framework.MessagePort;
@@ -17,41 +23,44 @@ import org.kevoree.framework.MessagePort;
  */
 @Library(name = "Hadoop")
 @ComponentType
-@Requires({
-    @RequiredPort(name = "records", type = PortType.MESSAGE),
-    @RequiredPort(name = "calibrations", type = PortType.MESSAGE)
-})
-@Provides({
-    @ProvidedPort(name = "log", type = PortType.MESSAGE)
-})
-public class HadoopDataNode extends AbstractComponentType {
+public class HadoopDataNode extends HadoopComponent {
 
     private static final Logger LOG = Logger.getLogger(HadoopDataNode.class.getName());
     private DataNode dataNode;
-    private final Configuration cfg;
-    private final String dirName;
-    private final String dirData;
-
-    public HadoopDataNode(Configuration hdfsConf,
-            String dirName, String dirData) {
-
-        this.cfg = hdfsConf;
-        this.dirName = dirName;
-        this.dirData = dirData;
-    }
-
+    
+    private final static String[] DATANODE_ARGS = {"-rollback"};
+    
+    /**
+     * @TODO: Retrieve and set Name Node address;
+     * 
+     * 
+     * @throws IOException
+     * @throws InterruptedException 
+     */
+    @Start
     protected void start() throws IOException, InterruptedException {
-        cfg.set("dfs.name.dir", dirName);
-        cfg.set("dfs.data.dir", dirData);
-        LOG.info("Starting DataNode!");
 
-        String[] args = {"-rollback"};
+        EList<DictionaryValue> dictionary = null;
+        Map<String, String> values = new HashMap<String, String>();
 
-        dataNode = DataNode.createDataNode(args, cfg);
+        for (ContainerNode each : this.getModelService().getLastModel().getNodes()) {
+            for (ComponentInstance ci : each.getComponents()) {
+                dictionary = ci.getDictionary().getValues(); 
+                // find name of attribute then get its value. 
+            }
+        }
 
-        String serveraddr = dataNode.getNamenode();
+        for (DictionaryValue each : dictionary) {
+            values.put(each.getAttribute().getName(), each.getValue());
+        }
+
+        
+        Configuration configuration = this.getConfiguration();
+        configuration.set("hadoop.namenode", null);
+        
+        dataNode = DataNode.createDataNode(DATANODE_ARGS, configuration);
         LOG.log(Level.INFO, "DataNode connected with NameNode: {0}",
-                serveraddr);
+                dataNode.getNamenode());
 
     }
 
