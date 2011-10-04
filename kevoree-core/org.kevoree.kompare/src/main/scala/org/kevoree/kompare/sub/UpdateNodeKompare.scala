@@ -138,7 +138,7 @@ trait UpdateNodeKompare extends AbstractKompare with UpdateChannelKompare {
             ctcmd.setRef(act)
             adaptationModel.addAdaptations(ctcmd)
 
-            var actualDeployU = act.foundRelevantDeployUnit(actualNode)
+            val actualDeployU = act.foundRelevantDeployUnit(actualNode)
 
             /* remove deploy unit if necessary */
             updateNode.getUsedTypeDefinition.find(typeDef => (typeDef != act) &&
@@ -234,7 +234,7 @@ trait UpdateNodeKompare extends AbstractKompare with UpdateChannelKompare {
 
             } else {
               //CHECK IS DICTIONARY IS UPDATED
-              if (uc.getDictionary.get.isUpdated(c.getDictionary.get)) {
+              if (uc.getDictionary.getOrElse{null}.isUpdated(c.getDictionary.getOrElse{null})) {
                 val adaptcmd = KevoreeAdaptationFactory.eINSTANCE.createAdaptationPrimitive
                 adaptcmd.setPrimitiveType(getAdaptationPrimitive(JavaSePrimitive.UpdateDictionaryInstance,
                                                                   actualNode.eContainer.asInstanceOf[ContainerRoot]))
