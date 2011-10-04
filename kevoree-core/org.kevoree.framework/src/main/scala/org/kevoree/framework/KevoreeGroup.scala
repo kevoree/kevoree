@@ -16,8 +16,7 @@ package org.kevoree.framework
 import message.{StopMessage, StartMessage, UpdateDictionaryMessage}
 import reflect.BeanProperty
 import java.util.HashMap
-import scala.collection.JavaConversions._
-import org.kevoree.api.service.core.handler.KevoreeModelHandlerService
+ import org.kevoree.api.service.core.handler.KevoreeModelHandlerService
 import org.slf4j.LoggerFactory
 
 

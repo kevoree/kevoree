@@ -20,7 +20,6 @@ package org.kevoree.kompare.sub
 
 import org.slf4j.LoggerFactory
 import org.kevoree.{ContainerRoot, AdaptationPrimitiveType}
-import scala.collection.JavaConversions._
 
 trait AbstractKompare {
 

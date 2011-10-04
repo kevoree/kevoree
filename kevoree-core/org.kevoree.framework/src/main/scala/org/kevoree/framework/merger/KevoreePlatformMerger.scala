@@ -19,7 +19,6 @@
 package org.kevoree.framework.merger
 
 import org.kevoree._
-import scala.collection.JavaConversions._
 
 object KevoreePlatformMerger {
 

@@ -43,8 +43,7 @@
 //import org.eclipse.emf.ecore.xmi.{XMLResource, XMIResource}
 //import java.util.HashMap
 //
-////import scala.collection.JavaConversions._
-//
+//// //
 //class SchedulingTest extends AssertionsForJUnit with SchedulingSuite {
 //
 //  var component: KevoreeKompareBean = null

@@ -24,7 +24,6 @@ import org.kevoree.adaptation.deploy.osgi.context.KevoreeDeployManager
 import org.kevoree.framework.message.FragmentUnbindMessage
 import org.kevoree.framework.message.PortUnbindMessage
 import org.slf4j.LoggerFactory
-import scala.collection.JavaConversions._
 
 case class RemoveBindingCommand(c : MBinding, ctx : KevoreeDeployManager,nodeName:String) extends PrimitiveCommand {
 

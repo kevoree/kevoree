@@ -19,7 +19,6 @@
 package org.kevoree.merger
 
 import org.kevoree.ContainerRoot
-import scala.collection.JavaConversions._
 
 trait Merger {
 

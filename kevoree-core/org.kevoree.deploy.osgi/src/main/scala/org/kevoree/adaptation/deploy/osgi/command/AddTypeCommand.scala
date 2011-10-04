@@ -23,8 +23,7 @@ import framework.PrimitiveCommand
 import org.kevoree.adaptation.deploy.osgi.context.KevoreeDeployManager
 import org.kevoree.adaptation.deploy.osgi.context.KevoreeOSGiBundle
 import org.kevoree.framework.aspects.KevoreeAspects._
-import scala.collection.JavaConversions._
-import org.slf4j.LoggerFactory
+ import org.slf4j.LoggerFactory
 
 /* TYPE DOES NOT INSTALL DEPLOY UNIT !! */
 case class AddTypeCommand (ct: TypeDefinition, ctx: KevoreeDeployManager, nodeName: String) extends PrimitiveCommand {

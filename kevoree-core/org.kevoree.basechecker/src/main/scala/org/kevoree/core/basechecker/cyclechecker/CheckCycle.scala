@@ -16,7 +16,6 @@ package org.kevoree.core.basechecker.cyclechecker
 import org.jgrapht.DirectedGraph
 import org.jgrapht.alg.CycleDetector
 import org.kevoree.api.service.core.checker.CheckerViolation
-import scala.collection.JavaConversions._
 
 case class CheckCycle[A,B](graph: DirectedGraph[A, B]) {
 	

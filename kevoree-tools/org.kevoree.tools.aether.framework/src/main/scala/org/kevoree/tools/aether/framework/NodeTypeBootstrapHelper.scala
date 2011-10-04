@@ -14,8 +14,7 @@
 package org.kevoree.tools.aether.framework
 
 import java.io.FileInputStream
-import scala.collection.JavaConversions._
-import org.osgi.framework.{Bundle, BundleContext, BundleException}
+ import org.osgi.framework.{Bundle, BundleContext, BundleException}
 import org.slf4j.LoggerFactory
 import org.kevoree.api.service.core.handler.KevoreeModelHandlerService
 import org.kevoree.framework.{Constants, AbstractNodeType}

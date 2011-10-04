@@ -24,8 +24,7 @@ import org.kevoree.kompare.sub.InitNodeKompare
 import org.kevoree.kompare.sub.StopNodeKompare
 import org.kevoree.kompare.sub.UpdateNodeKompare
 import org.kevoreeAdaptation._
-import scala.collection.JavaConversions._
-import org.kevoree.framework.aspects.KevoreeAspects._
+ import org.kevoree.framework.aspects.KevoreeAspects._
 
 class KevoreeKompareBean extends InitNodeKompare with StopNodeKompare with UpdateNodeKompare with AbstractKompare with KevoreeScheduler {
 

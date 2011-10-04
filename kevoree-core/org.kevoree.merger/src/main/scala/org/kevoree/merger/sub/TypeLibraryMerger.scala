@@ -20,7 +20,6 @@ package org.kevoree.merger.sub
 
 import org.kevoree._
 import org.kevoree.merger.Merger
-import scala.collection.JavaConversions._
 
 trait TypeLibraryMerger extends Merger {
 

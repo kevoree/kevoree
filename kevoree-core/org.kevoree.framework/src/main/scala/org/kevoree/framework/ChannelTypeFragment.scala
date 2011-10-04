@@ -20,8 +20,7 @@ package org.kevoree.framework
 
 import java.util.HashMap
 import org.kevoree.framework.message._
-import scala.collection.JavaConversions._
-import org.slf4j.LoggerFactory
+ import org.slf4j.LoggerFactory
 
 trait ChannelTypeFragment extends KevoreeChannelFragment with ChannelFragment {
 
