@@ -23,7 +23,6 @@ import com.sun.mirror.apt.AnnotationProcessorEnvironment
 import com.sun.mirror.declaration.TypeDeclaration
 import org.kevoree.KevoreeFactory
 import org.kevoree.ContainerRoot
-import org.kevoree.framework.annotation.processor.KevoreeXmiHelper
 import org.kevoree.framework.annotation.processor.LocalUtility
 import org.kevoree.framework.annotation.processor.PostAptChecker
 import org.kevoree.tools.annotation.generator.KevoreeActivatorGenerator
@@ -31,15 +30,16 @@ import org.kevoree.tools.annotation.generator.KevoreeFactoryGenerator
 import org.kevoree.tools.annotation.generator.KevoreeGenerator
 
 import org.kevoree.annotation.{GroupType, ChannelTypeFragment, ComponentType, NodeType}
-import org.kevoree.framework.{AbstractNodeType, AbstractGroupType, AbstractChannelFragment, AbstractComponentType}
+import org.kevoree.framework._
+import scala.collection.JavaConversions._
 
 class KevoreeAnnotationProcessor(env: AnnotationProcessorEnvironment) extends AnnotationProcessor {
 
   def process() = {
 
-    val root = KevoreeFactory.eINSTANCE.createContainerRoot();
+    val root = KevoreeFactory.eINSTANCE.createContainerRoot
     LocalUtility.root=(root)
-    env.getTypeDeclarations().foreach {
+    env.getTypeDeclarations.foreach {
       typeDecl =>
 
       //PROCESS COMPONENT TYPE
@@ -123,7 +123,7 @@ class KevoreeAnnotationProcessor(env: AnnotationProcessorEnvironment) extends An
       groupType.setName(groupName)
       groupType.setBean(typeDecl.getQualifiedName)
       groupType.setFactoryBean(typeDecl.getQualifiedName + "Factory")
-      root.getTypeDefinitions.add(groupType)
+      root.addTypeDefinitions(groupType)
 
       //RUN VISITOR
       typeDecl.accept(GroupTypeVisitor(groupType, env))
@@ -140,12 +140,12 @@ class KevoreeAnnotationProcessor(env: AnnotationProcessorEnvironment) extends An
     typeDecl.accept(superTypeChecker)
     if (superTypeChecker.result) {
 
-      val channelType = KevoreeFactory.eINSTANCE.createChannelType();
+      val channelType = KevoreeFactory.eINSTANCE.createChannelType
       val ctname = typeDecl.getSimpleName
       channelType.setName(ctname)
       channelType.setBean(typeDecl.getQualifiedName)
       channelType.setFactoryBean(typeDecl.getQualifiedName + "Factory")
-      root.getTypeDefinitions.add(channelType)
+      root.addTypeDefinitions(channelType)
 
       //RUN VISITOR
       typeDecl.accept(ChannelTypeFragmentVisitor(channelType, env))
@@ -175,13 +175,13 @@ class KevoreeAnnotationProcessor(env: AnnotationProcessorEnvironment) extends An
     }
 
     if (superTypeChecker.result && !isAbstract) {
-      val componentType = KevoreeFactory.eINSTANCE.createComponentType();
+      val componentType = KevoreeFactory.eINSTANCE.createComponentType
       val ctname = typeDecl.getSimpleName
       componentType.setName(ctname)
       componentType.setBean(typeDecl.getQualifiedName)
       componentType.setFactoryBean(typeDecl.getQualifiedName + "Factory")
 
-      root.getTypeDefinitions.add(componentType)
+      root.addTypeDefinitions(componentType)
       //RUN VISITOR
       typeDecl.accept(ComponentDefinitionVisitor(componentType, env))
     }
