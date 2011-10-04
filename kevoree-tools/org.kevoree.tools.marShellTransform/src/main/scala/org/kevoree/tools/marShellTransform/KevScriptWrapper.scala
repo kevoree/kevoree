@@ -34,6 +34,7 @@ object KevScriptWrapper {
     }
     val content = new StringBuilder
     var first = true
+    import scala.collection.JavaConversions._
     dictionary.foreach {
       dic =>
         if (first) {

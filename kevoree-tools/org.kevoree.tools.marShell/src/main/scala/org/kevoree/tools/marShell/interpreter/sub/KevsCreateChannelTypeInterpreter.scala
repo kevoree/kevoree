@@ -36,7 +36,7 @@ case class KevsCreateChannelTypeInterpreter(self : CreateChannelTypeStatment) ex
       case None => {
           var newComponentTypeDef = KevoreeFactory.eINSTANCE.createChannelType
           newComponentTypeDef.setName(self.newTypeName)
-          context.model.getTypeDefinitions.add(newComponentTypeDef)
+          context.model.addTypeDefinitions(newComponentTypeDef)
           true
       }
     }
