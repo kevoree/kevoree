@@ -17,7 +17,6 @@
 package org.kevoree.tools.ui.editor;
 
 import java.util.HashMap;
-import org.eclipse.emf.ecore.EObject;
 
 /**
  *
@@ -25,15 +24,15 @@ import org.eclipse.emf.ecore.EObject;
  */
 public class MappingRepository {
 
-    private HashMap<Object, EObject> uiTOemf = new HashMap<Object, EObject>();
-    private HashMap<EObject, Object> emfTOui = new HashMap<EObject, Object>();
+    private HashMap<Object, Object> uiTOemf = new HashMap<Object, Object>();
+    private HashMap<Object, Object> emfTOui = new HashMap<Object, Object>();
 
-    public void unbind(Object uio, EObject emfo){
+    public void unbind(Object uio, Object emfo){
         uiTOemf.remove(uio);
         emfTOui.remove(emfo);
     }
 
-    public void bind(Object uio, EObject emfo) {
+    public void bind(Object uio, Object emfo) {
         uiTOemf.put(uio, emfo);
         emfTOui.put(emfo, uio);
     }

@@ -36,6 +36,7 @@ case class NodeAspect(self: ContainerNode) {
     root.getGroups.foreach(g => {
       if (g.getSubNodes.contains(self)) {
         //REMOVE UI
+        import scala.collection.JavaConversions._
         val bindings = kernel.getModelPanel.getBindings().toList ++ List()
         bindings.foreach {
           b =>
@@ -45,7 +46,7 @@ case class NodeAspect(self: ContainerNode) {
         }
 
         //REMOVE GROUP LINK
-        g.getSubNodes.remove(self)
+        g.removeSubNodes(self)
       }
     })
 
@@ -63,12 +64,12 @@ case class NodeAspect(self: ContainerNode) {
     modelPanel.removeInstance(nodePanel)
 
     //REMOVE INSTANCE
-    root.getNodes.remove(self)
+    root.removeNodes(self)
 
     //CLEANUP HOST NODE
     kernel.getModelHandler.getActualModel.getNodes.foreach{ node =>
        if(node.getHosts.contains(self)){
-         node.getHosts.remove(self)
+         node.removeHosts(self)
        }
     }
 

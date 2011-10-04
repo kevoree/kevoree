@@ -36,7 +36,7 @@ case class MBindingAspect(self : MBinding) {
     modelPanel.removeBinding(panel)
 
     //REMOVE INSTANCE
-    root.getMBindings.remove(self)
+    root.removeMBindings(self)
 
     //UNBIND UI
     kernel.getUifactory().getMapping().unbind(panel, self);

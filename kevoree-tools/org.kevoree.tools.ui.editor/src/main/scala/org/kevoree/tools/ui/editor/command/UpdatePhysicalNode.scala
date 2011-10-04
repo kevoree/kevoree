@@ -41,7 +41,7 @@ class UpdatePhysicalNode extends Command {
         //CLEAN REMOTE HOST
         val model = kernel.getModelHandler.getActualModel
         model.getNodes.filter(node => node.getHosts.contains(targetCNode)).foreach{ r =>
-           r.getHosts.remove(targetCNode)
+           r.removeHosts(targetCNode)
         }
       }
       case physNodeName: String if (physNodeName != null && physNodeName!="") => {
@@ -50,8 +50,8 @@ class UpdatePhysicalNode extends Command {
         //CLEAN PREVIOUS RELATIONSHIP
         model.getNodes.find(n => n.getName == physNodeName) match {
           case Some(host)=> {
-            if(host.getHosts.contains(targetCNode)){host.getHosts.clear()}
-            host.getHosts.add(targetCNode)
+            if(host.getHosts.contains(targetCNode)){host.removeAllHosts}
+            host.addHosts(targetCNode)
           }
           case None => println("Error : Node host not linked => "+physNodeName)
         }
