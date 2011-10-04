@@ -35,6 +35,7 @@ abstract class KevoreeComponent(c: AbstractComponentType) extends KevoreeActor {
 
     case UpdateDictionaryMessage(d) => {
       try {
+        import scala.collection.JavaConversions._
         d.keySet.foreach {
           v => getKevoreeComponentType.getDictionary.put(v, d.get(v))
         }
@@ -53,6 +54,7 @@ abstract class KevoreeComponent(c: AbstractComponentType) extends KevoreeActor {
     case StartMessage if (!ct_started) => {
       try {
         startComponent
+        import scala.collection.JavaConversions._
         getKevoreeComponentType.getHostedPorts.foreach {
           hp =>
             val port = hp._2.asInstanceOf[KevoreePort]
@@ -71,6 +73,7 @@ abstract class KevoreeComponent(c: AbstractComponentType) extends KevoreeActor {
     }
     case StopMessage if (ct_started) => {
       try {
+        import scala.collection.JavaConversions._
         getKevoreeComponentType.getHostedPorts.foreach {
           hp =>
             val port = hp._2.asInstanceOf[KevoreePort]
