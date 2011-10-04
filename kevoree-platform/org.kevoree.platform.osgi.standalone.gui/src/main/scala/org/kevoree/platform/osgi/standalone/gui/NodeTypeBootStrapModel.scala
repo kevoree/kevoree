@@ -13,7 +13,6 @@
  */
 package org.kevoree.platform.osgi.standalone.gui
 
-import scala.collection.JavaConversions._
 import org.slf4j.LoggerFactory
 import java.util.Properties
 import org.kevoree.{NodeType, KevoreeFactory, ContainerRoot}
@@ -35,7 +34,7 @@ object NodeTypeBootStrapModel {
       case Some(node) => {
         if (node.getTypeDefinition.getName != nodeTypeName) {
           logger.error("NodeType consistency error !")
-          model.getNodes.remove(node)
+          model.addNodes(node)
           createNode(model, nodeName, nodeTypeName, props)
         }
       }
@@ -52,9 +51,10 @@ object NodeTypeBootStrapModel {
         val node = KevoreeFactory.eINSTANCE.createContainerNode
         node.setName(nodeName)
         node.setTypeDefinition(nodeTypeDef)
-        model.getNodes.add(node)
+        model.addNodes(node)
 
         val propsmodel = KevoreeFactory.eINSTANCE.createDictionary
+        import scala.collection.JavaConversions._
         props.keySet().foreach {
           key =>
             if (nodeTypeDef.getDictionaryType.isDefined) {
@@ -63,7 +63,7 @@ object NodeTypeBootStrapModel {
                   val newValue = KevoreeFactory.eINSTANCE.createDictionaryValue
                   newValue.setAttribute(att)
                   newValue.setValue(props.get(key).toString)
-                  propsmodel.getValues.add(newValue)
+                  propsmodel.addValues(newValue)
                 }
                 case None => logger.warn("Node bootstrap property lost " + key)
               }
