@@ -34,7 +34,7 @@ case class TypeDefinitionAspect (selfTD: TypeDefinition) {
   /* Check if the new type definition define new deploy unit than self */
   def contractChanged (pTD: TypeDefinition): Boolean = {
 
-    if (selfTD.getSuperTypes.size() != pTD.getSuperTypes.size()) {
+    if (selfTD.getSuperTypes.size != pTD.getSuperTypes.size) {
       return true
     }
     selfTD.getSuperTypes.foreach {
@@ -197,7 +197,7 @@ case class TypeDefinitionAspect (selfTD: TypeDefinition) {
     var deployUnitfound: DeployUnit = null
     if (node.getTypeDefinition != null) {
       selfTD.getDeployUnits.find(du => du.getTargetNodeType != null &&
-        du.getTargetNodeType.getName == node.getTypeDefinition.getName) match {
+        du.getTargetNodeType.get.getName == node.getTypeDefinition.getName) match {
         case Some(e) => {
           logger.info("found deploy unit => "+e.getUnitName)
           deployUnitfound = e
@@ -217,7 +217,7 @@ case class TypeDefinitionAspect (selfTD: TypeDefinition) {
   private def foundRelevantDeployUnitOnNodeSuperTypes (nodeType: NodeType, t: TypeDefinition): DeployUnit = {
     var deployUnitfound: DeployUnit = null
     // looking for relevant deployunits on super types
-    deployUnitfound = t.getDeployUnits.find(du => du.getTargetNodeType != null && du.getTargetNodeType.getName == nodeType.getName) match {
+    deployUnitfound = t.getDeployUnits.find(du => du.getTargetNodeType != null && du.getTargetNodeType.get.getName == nodeType.getName) match {
           case Some(e) => e
           case None => null
     }
