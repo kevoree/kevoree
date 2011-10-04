@@ -46,16 +46,16 @@ class NodeTypeBootstrapHelper {
           val nodeType = clazz.newInstance.asInstanceOf[AbstractNodeType]
           //ADD INSTANCE DICTIONARY
           val dictionary: java.util.HashMap[String, AnyRef] = new java.util.HashMap[String, AnyRef]
-          if (node.getTypeDefinition.getDictionaryType != null) {
-            if (node.getTypeDefinition.getDictionaryType.getDefaultValues != null) {
-              node.getTypeDefinition.getDictionaryType.getDefaultValues.foreach {
+          if (node.getTypeDefinition.getDictionaryType.isDefined) {
+            if (node.getTypeDefinition.getDictionaryType.get.getDefaultValues != null) {
+              node.getTypeDefinition.getDictionaryType.get.getDefaultValues.foreach {
                 dv =>
                   dictionary.put(dv.getAttribute.getName, dv.getValue)
               }
             }
           }
-          if (node.getDictionary != null) {
-            node.getDictionary.getValues.foreach {
+          if (node.getDictionary.isDefined) {
+            node.getDictionary.get.getValues.foreach {
               v =>
                 dictionary.put(v.getAttribute.getName, v.getValue)
             }
