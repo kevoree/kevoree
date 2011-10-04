@@ -78,14 +78,14 @@ object KevoreeFactoryGenerator {
         /* INJECT HOSTED PORT */
         ct.getProvided.foreach {
           ref =>
-            val portName = ct.getName() + "PORT" + ref.getName();
-            wrapper.append("newcomponent.getHostedPorts().put(\"" + ref.getName() + "\",create" + portName +
+            val portName = ct.getName + "PORT" + ref.getName
+            wrapper.append("newcomponent.getHostedPorts().put(\"" + ref.getName + "\",create" + portName +
               "(newcomponent))\n")
         }
         ct.getRequired.foreach {
           ref =>
-            val portName = ct.getName() + "PORT" + ref.getName();
-            wrapper.append("newcomponent.getNeededPorts().put(\"" + ref.getName() + "\",create" + portName +
+            val portName = ct.getName + "PORT" + ref.getName
+            wrapper.append("newcomponent.getNeededPorts().put(\"" + ref.getName + "\",create" + portName +
               "(newcomponent))\n")
         }
         wrapper.append("newcomponent}\n")
