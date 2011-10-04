@@ -37,6 +37,7 @@ class PostAptChecker(root: ContainerRoot, env: AnnotationProcessorEnvironment) {
     val baseChecker = new RootChecker
     val errors = baseChecker.check(root)
     if(errors.size() != 0) {
+      import scala.collection.JavaConversions._
       errors.foreach{error =>
         env.getMessager.printError(error.getMessage)
         nbErrors += 1

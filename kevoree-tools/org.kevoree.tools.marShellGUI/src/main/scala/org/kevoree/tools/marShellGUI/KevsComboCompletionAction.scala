@@ -40,7 +40,7 @@ class KevsComboCompletionAction extends ComboCompletionAction {
     refreshList(target, sdoc, dot)
     // super.actionPerformed(target, sdoc, dot, e)
     if (sdoc == null) {
-      return Unit;
+      return ;
     }
     val token = sdoc.getTokenAt(dot);
     var abbrev = "";
@@ -123,6 +123,7 @@ class KevsComboCompletionAction extends ComboCompletionAction {
 
 
   def isFirstDelimiter(sdoc: SyntaxDocument, dot: Int, delimiterValue: String): Boolean = {
+    import scala.collection.JavaConversions._
     val firstTok = sdoc.getTokens(0, dot).toList.reverse.get(0)
     if (firstTok == null) {
       return false
@@ -132,14 +133,17 @@ class KevsComboCompletionAction extends ComboCompletionAction {
   }
 
   def getFirstIdentifier(sdoc: SyntaxDocument, dot: Int): Option[Token] = {
+    import scala.collection.JavaConversions._
     sdoc.getTokens(0, dot).toList.reverse.find(tok => tok.`type` == TokenTypes.IDENTIFIER)
   }
 
   def getFirstDelimiter(sdoc: SyntaxDocument, dot: Int): Option[Token] = {
+    import scala.collection.JavaConversions._
     sdoc.getTokens(0, dot).toList.reverse.find(tok => tok.`type` == TokenTypes.DELIMITER)
   }
 
   def getFirstKeyword(sdoc: SyntaxDocument, dot: Int): Option[Token] = {
+    import scala.collection.JavaConversions._
     sdoc.getTokens(0, dot).toList.reverse.find(tok => tok.`type` == TokenTypes.KEYWORD || tok.`type` == TokenTypes.KEYWORD2)
   }
 
@@ -248,6 +252,7 @@ class KevsComboCompletionAction extends ComboCompletionAction {
 
   def pushKeyword() {
     val lex = new KevsLexical
+    import scala.collection.JavaConversions._
     this.setItems(lex.reserved.toList)
   }
 

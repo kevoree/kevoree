@@ -21,12 +21,8 @@ package org.kevoree.tools.marShell
 import interpreter.KevsInterpreterContext
 import org.kevoree.tools.marShell.parser.KevsParser
 import org.kevoree.tools.marShell.parser.ParserUtil
-
-import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl
-import org.eclipse.emf.ecore.xmi.{XMLResource, XMIResource}
-import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl
-import org.kevoree.{KevoreePackage, ContainerRoot, KevoreeFactory}
-import org.eclipse.emf.common.util.URI
+import org.kevoree.{ContainerRoot, KevoreeFactory}
+import org.kevoree.framework.KevoreeXmiHelper
 
 object MainRunner {
 
@@ -35,9 +31,7 @@ object MainRunner {
    */
   def main(args: Array[String]): Unit = {
 
-   // var newModel = KevoreeFactory.eINSTANCE.createContainerRoot
-
-    val newModel = load("/Users/ffouquet/Documents/DEV/dukeboard_github/kevoree/kevoree-tools/org.kevoree.tools.marShell/src/test/resources/baseModel/defaultLibrary.kev")
+    val newModel = KevoreeXmiHelper.load("/Users/ffouquet/Documents/DEV/dukeboard_github/kevoree/kevoree-tools/org.kevoree.tools.marShell/src/test/resources/baseModel/defaultLibrary.kev")
 
 
 
@@ -51,20 +45,10 @@ object MainRunner {
           println("Interpreter Result : "+script.interpret(KevsInterpreterContext(newModel)))
       }
     }
-    ParserUtil.save("/Users/ffouquet/Documents/DEV/dukeboard_github/kevoree/kevoree-tools/org.kevoree.tools.marShell/src/test/resources/results/modified.kev", newModel)
+    KevoreeXmiHelper.save("/Users/ffouquet/Documents/DEV/dukeboard_github/kevoree/kevoree-tools/org.kevoree.tools.marShell/src/test/resources/results/modified.kev", newModel)
   }
 
-  def load(uri:String) : ContainerRoot = {
-    val rs = new ResourceSetImpl();
-    rs.getResourceFactoryRegistry().getExtensionToFactoryMap().put("kev", new XMIResourceFactoryImpl());
-    rs.getPackageRegistry().put(KevoreePackage.eNS_URI, KevoreePackage.eINSTANCE);
-    val res = rs.getResource(URI.createURI(uri), true)
-    res.asInstanceOf[XMIResource].getDefaultLoadOptions().put(XMLResource.OPTION_ENCODING, "UTF-8");
-    res.asInstanceOf[XMIResource].getDefaultSaveOptions().put(XMLResource.OPTION_ENCODING, "UTF-8");
-    val result = res.getContents().get(0);
-    //println(res)
-    return result.asInstanceOf[ContainerRoot];
-  }
+
 
 
 
