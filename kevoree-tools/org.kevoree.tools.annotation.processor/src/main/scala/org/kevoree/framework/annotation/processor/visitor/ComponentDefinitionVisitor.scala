@@ -66,6 +66,7 @@ case class ComponentDefinitionVisitor(componentType: ComponentType, env: Annotat
 
 
   def commonProcess(typeDecl: TypeDeclaration) = {
+    import scala.collection.JavaConversions._
     typeDecl.getSuperinterfaces.foreach {
       it =>
         val annotFragment = it.getDeclaration.getAnnotation(classOf[org.kevoree.annotation.ComponentFragment])
