@@ -59,10 +59,10 @@ trait KevoreePersistenceGenerator extends KevoreeCAbstractGenerator {
     context b " switch(instances[instanceIndex]->subTypeCode){"
     types.foreach {
       ktype =>
-        if (ktype.getDictionaryType != null) {
+        if (ktype.getDictionaryType.isDefined) {
           context b "case " + typeCodeMap.get(ktype.getName).get + ":{"
           var isFirst = true
-          ktype.getDictionaryType.getAttributes.foreach {
+          ktype.getDictionaryType.get.getAttributes.foreach {
             att =>
               if (!isFirst) {
                 context b "save2Memory(',');"

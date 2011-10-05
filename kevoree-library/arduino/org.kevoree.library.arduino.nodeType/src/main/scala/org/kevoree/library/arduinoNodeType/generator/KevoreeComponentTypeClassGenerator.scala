@@ -25,8 +25,8 @@ trait KevoreeComponentTypeClassGenerator extends KevoreeCAbstractGenerator with 
     context b " public : "
     
     var nextExecutionMustBeInit = false
-    if(ct.getDictionaryType!=null){
-      if(ct.getDictionaryType.getAttributes.exists(att => att.getName == "period")){
+    if(ct.getDictionaryType.isDefined){
+      if(ct.getDictionaryType.get.getAttributes.exists(att => att.getName == "period")){
         context b "unsigned long nextExecution;"
         nextExecutionMustBeInit = true;
       }
@@ -68,8 +68,8 @@ trait KevoreeComponentTypeClassGenerator extends KevoreeCAbstractGenerator with 
     }
      
     //GENERATE DICTIONARY VALUES POINTERS
-    if(ct.getDictionaryType != null){
-      ct.getDictionaryType.getAttributes.foreach{ attribute =>
+    if(ct.getDictionaryType.isDefined){
+      ct.getDictionaryType.get.getAttributes.foreach{ attribute =>
         context b "char "+attribute.getName+"[20];"
       }
     }
