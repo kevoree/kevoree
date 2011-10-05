@@ -42,7 +42,7 @@ case class ContainerNodeAspect (node: ContainerNode) {
   }
 
   def getUsedTypeDefinition: List[TypeDefinition] = {
-    var usedType: List[TypeDefinition] = List()
+    var usedType: Set[TypeDefinition] = Set()
 
     /* ADD SUPER TYPE USED BY NODE TYPE DEFINITION */
     //  if (node.getTypeDefinition.getSuperTypes != null) {
@@ -50,8 +50,10 @@ case class ContainerNodeAspect (node: ContainerNode) {
     //  }
 
     /* ADD COMPONENT TYPE USED */
-    node.getComponents.foreach {
-      c =>
+
+    node.getComponents.foreach(c => usedType = usedType ++ getTypeAndInherited(c.getTypeDefinition) )
+      /*
+    node.getComponents.foreach { c =>
         if (!usedType.exists({
           e => e.getName == c.getTypeDefinition.getName
         })) {
@@ -60,7 +62,7 @@ case class ContainerNodeAspect (node: ContainerNode) {
           usedType = usedType ++ getTypeAndInherited(c.getTypeDefinition)
           //}
         }
-    }
+    }   */
 
     /* ADD CHANNEL TYPE USED */
     /* add channel fragment on node */
@@ -88,7 +90,7 @@ case class ContainerNodeAspect (node: ContainerNode) {
       //}
     })
 
-    usedType
+    usedType.toList
   }
 
   def getChannelFragment: List[Channel] = {

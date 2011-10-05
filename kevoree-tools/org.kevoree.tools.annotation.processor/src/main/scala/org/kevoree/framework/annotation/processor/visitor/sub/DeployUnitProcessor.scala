@@ -100,7 +100,8 @@ trait DeployUnitProcessor {
                 newdeploy.setTargetNodeType(nodeType)
               }
             }
-            // }
+
+            //println("new dpeloy unit target node type "+newdeploy.getTargetNodeType)
 
             root.addDeployUnits(newdeploy)
             deployUnits = deployUnits ++ List(newdeploy)
@@ -108,7 +109,9 @@ trait DeployUnitProcessor {
           }
           case Some(fdu) => fdu.setHashcode(tag); fdu
         }
-        typeDef.addDeployUnits(ctdeployunit)
+        if(!typeDef.getDeployUnits.contains(ctdeployunit)){
+          typeDef.addDeployUnits(ctdeployunit)
+        }
 
 
     }

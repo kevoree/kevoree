@@ -29,22 +29,12 @@ object MergerApp {
   def main(args: Array[String]): Unit = {
 
     val merger = new RootMerger
-  //  var model1 = KevoreeFactory.eINSTANCE.createContainerRoot//KevoreeXmiHelper.load("/Users/ffouquet/Documents/DEV/dukeboard_github/kevoree/kevoree-core/org.kevoree.merger/src/test/resources/library/deflib.kev")
-   
-   // var model2 = KevoreeXmiHelper.load("/Users/ffouquet/Documents/DEV/dukeboard_github/kevoree/kevoree-core/org.kevoree.merger/src/test/resources/assemblies/base-assembly.art2")
-   // var model1 = KevoreeXmiHelper.load("/Users/ffouquet/Documents/DEV/dukeboard_github/kevoree/kevoree-core/org.kevoree.merger/src/test/resources/assemblies/PlusInstance.art2")
-
-  
-    //var model1 = KevoreeXmiHelper.load("/Users/ffouquet/Documents/DEV/dukeboard_github/kevoree/kevoree-core/org.kevoree.merger/src/test/resources/nodeType/defchannels1.1.0.kev")
-
-    val baseLed = "tests_dictionary/dictionary_2"
-
-    val model1 = KevoreeXmiHelper.load("/Users/duke/Documents/dev/dukeboard/kevoree/kevoree-core/org.kevoree.kompare/src/test/resources/"+baseLed)
-    val model2 = KevoreeXmiHelper.load("/Users/duke/Documents/dev/dukeboard/kevoree/kevoree-core/org.kevoree.merger/src/test/resources/providedAdaptationTypes/javasebase.kev")
+    val model1 = KevoreeXmiHelper.load("/Users/duke/Documents/dev/dukeboard/kevoree/kevoree-library/javase/org.kevoree.library.javase.javaseNode/target/generated-sources/kevoree/KEV-INF/lib.kev")
+    val model2 = KevoreeXmiHelper.load("/Users/duke/Documents/dev/dukeboard/kevoree/kevoree-library/javase/org.kevoree.library.javase.fakeDomo/target/generated-sources/kevoree/KEV-INF/lib.kev")
     
     merger.merge(model1, model2)
 
-    KevoreeXmiHelper.save("/Users/duke/Documents/dev/dukeboard/kevoree/kevoree-core/org.kevoree.kompare/src/test/resources/"+baseLed, model1)
+    KevoreeXmiHelper.save("/Users/duke/Desktop/out.kev", model1)
 
   }
   
