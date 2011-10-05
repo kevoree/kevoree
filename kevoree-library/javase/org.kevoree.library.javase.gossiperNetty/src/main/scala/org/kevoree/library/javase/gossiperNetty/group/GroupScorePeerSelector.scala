@@ -74,7 +74,7 @@ class GroupScorePeerSelector (timeout: Long, modelHandlerService: KevoreeModelHa
         group.getSubNodes
           .filter(node => !node.getName.equals(nodeName))
           .filter(node => model.getNodeNetworks
-          .exists(nn => nn.getInitBy.getName == nodeName && nn.getTarget.getName == node.getName))
+          .exists(nn => nn.getInitBy.get.getName == nodeName && nn.getTarget.getName == node.getName))
           .foreach {
           subNode => {
             if (getScore(subNode.getName) <= minScore) {
