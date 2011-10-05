@@ -131,7 +131,6 @@
                         <option>-keep class scala.util.parsing.** { *; }</option>
                         <option>-keep class org.kevoree.** { *; }</option>
                         <option>-keep class org.kevoreeAdaptation.** { *; }</option>
-                        <!--  <option>-keep class org.apache.commons.** { *; }</option>    -->
                         <option>-keep class org.slf4j.** { *; }</option>
 
                         <option>-keepattributes *Annotation*</option>
@@ -184,10 +183,6 @@
                             <inclusion>
                                 <groupId>org.swinglabs</groupId>
                                 <artifactId>swingx-core</artifactId>
-                            </inclusion>
-                            <inclusion>
-                                <groupId>org.kevoree.extra</groupId>
-                                <artifactId>org.kevoree.extra.emf.library</artifactId>
                             </inclusion>
                             <inclusion>
                                 <groupId>jgrapht</groupId>
