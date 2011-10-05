@@ -102,7 +102,7 @@ class KevoreeAnnotationProcessor(env: AnnotationProcessorEnvironment) extends An
       nodeType.setName(nodeTypeName)
       nodeType.setBean(typeDecl.getQualifiedName)
       nodeType.setFactoryBean(typeDecl.getQualifiedName + "Factory")
-      root.getTypeDefinitions.add(nodeType)
+      root.addTypeDefinitions(nodeType)
 
       //RUN VISITOR
       typeDecl.accept(NodeTypeVisitor(nodeType, env))

@@ -31,8 +31,10 @@ object KevoreeXmiHelper {
   val logger = LoggerFactory.getLogger(this.getClass)
 
   def save(uri: String, root: ContainerRoot) {
+    //CHECK DIRECTORY CREATION
+    val file = new File(uri.substring(0,uri.lastIndexOf('/')))
+    if (!file.exists) file.mkdirs
     val serializer = new ModelSerializer
-    //val result = serializer.serialize(root)
     val pp = new PrettyPrinter(3000,1)
     val fileWrite = new FileWriter(uri)
     fileWrite.append(pp.format(serializer.serialize(root)))

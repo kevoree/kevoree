@@ -33,7 +33,7 @@ trait DictionaryProcessor {
       classdef.getAnnotation(classOf[org.kevoree.annotation.DictionaryType]).value.foreach{dictionaryAtt=>
 
         //CASE NO DICTIONARY
-        if(typeDef.getDictionaryType == null){
+        if(typeDef.getDictionaryType.isEmpty){
           val newdictionary = KevoreeFactory.eINSTANCE.createDictionaryType
           typeDef.setDictionaryType(newdictionary)
         }

@@ -15,7 +15,6 @@ package org.kevoree.tools.annotation.mavenplugin;
 
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.DefaultArtifact;
-import org.apache.maven.artifact.DependencyResolutionRequiredException;
 import org.apache.maven.model.Resource;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
@@ -41,7 +40,6 @@ import java.util.jar.JarFile;
 
 import org.apache.maven.model.Dependency;
 import org.apache.maven.model.Repository;
-import org.eclipse.emf.common.util.URI;
 import org.kevoree.ContainerRoot;
 import org.kevoree.framework.KevoreeXmiHelper;
 import org.kevoree.merger.KevoreeMergerComponent;
@@ -463,7 +461,7 @@ public class AnnotationPreProcessorMojo extends AbstractMojo {
     private List<String> getPluginClasspathElements() throws MojoExecutionException {
         try {
             return MavenProjectUtils.getClasspathElements(project, pluginArtifacts);
-        } catch (DependencyResolutionRequiredException exception) {
+        } catch (Exception exception) {
             throw new MojoExecutionException("Cannot get plugin classpath elements", exception);
         }
     }
@@ -604,7 +602,7 @@ public class AnnotationPreProcessorMojo extends AbstractMojo {
         out.flush();
         out.close();
 
-        return URI.createFileURI(temp.getAbsolutePath()).toString();
+        return "file://"+temp.getAbsolutePath().toString();
     }
 
 }

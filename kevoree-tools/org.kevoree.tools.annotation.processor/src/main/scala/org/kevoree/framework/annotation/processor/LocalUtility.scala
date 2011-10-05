@@ -29,7 +29,7 @@ object LocalUtility {
 
   def generateLibURI(env:AnnotationProcessorEnvironment) = {
     import scala.collection.JavaConversions._
-    "file://" + env.getOptions.find({op => op._1.contains("kevoree.lib.target")}).getOrElse{("key=","")}._1.split('=').toList.get(1)
+     env.getOptions.find({op => op._1.contains("kevoree.lib.target")}).getOrElse{("key=","")}._1.split('=').toList.get(1)
   }
 
   def getOraddDataType(datatype : TypedElement) : TypedElement = {
