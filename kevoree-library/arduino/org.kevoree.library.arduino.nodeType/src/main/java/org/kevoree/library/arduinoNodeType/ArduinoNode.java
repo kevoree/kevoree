@@ -1,6 +1,5 @@
 package org.kevoree.library.arduinoNodeType;
 
-import org.kevoree.ContainerNode;
 import org.kevoree.ContainerRoot;
 import org.kevoree.KevoreeFactory;
 import org.kevoree.TypeDefinition;
@@ -102,7 +101,7 @@ public class ArduinoNode extends AbstractNodeType {
             newdir.mkdir();
         }
 
-        ContainerRoot lastVersionModel = KevoreeFactory.eINSTANCE.createContainerRoot();
+        ContainerRoot lastVersionModel = KevoreeFactory.eINSTANCE().createContainerRoot();
 
         int lastVersion = 0;
         //Try to find previous version
@@ -193,11 +192,11 @@ public class ArduinoNode extends AbstractNodeType {
     public boolean deploy(AdaptationModel modelIn, String nodeName) {
         boolean typeAdaptationFound = false;
         ContainerRoot rootModel = null;
-        for (AdaptationPrimitive p : modelIn.getAdaptations()) {
+        for (AdaptationPrimitive p : modelIn.getAdaptationsForJ()) {
 
-            Boolean addType = p.getPrimitiveType().getName().equals(JavaSePrimitive.AddType());
-            Boolean removeType = p.getPrimitiveType().getName().equals(JavaSePrimitive.RemoveType());
-            Boolean updateType = p.getPrimitiveType().getName().equals(JavaSePrimitive.UpdateType());
+            Boolean addType = p.getPrimitiveType().get().getName().equals(JavaSePrimitive.AddType());
+            Boolean removeType = p.getPrimitiveType().get().getName().equals(JavaSePrimitive.RemoveType());
+            Boolean updateType = p.getPrimitiveType().get().getName().equals(JavaSePrimitive.UpdateType());
 
             if (addType || removeType || updateType) {
                 typeAdaptationFound = true;
@@ -206,7 +205,7 @@ public class ArduinoNode extends AbstractNodeType {
         }
         if (typeAdaptationFound) {
             KevoreeKompareBean kompare = new KevoreeKompareBean();
-            ContainerRoot lastVersionModel = KevoreeFactory.eINSTANCE.createContainerRoot();
+            ContainerRoot lastVersionModel = KevoreeFactory.eINSTANCE().createContainerRoot();
             AdaptationModel model = kompare.kompare(lastVersionModel, rootModel, nodeName);
 
             //Must compute a dif from scratch model

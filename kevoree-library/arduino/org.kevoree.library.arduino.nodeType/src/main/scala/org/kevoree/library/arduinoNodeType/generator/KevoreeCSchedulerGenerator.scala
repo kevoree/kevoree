@@ -68,8 +68,8 @@ trait KevoreeCSchedulerGenerator extends KevoreeCAbstractGenerator {
     context b "long nextExecutionGap(int index){"
     context b " switch(instances[index]->subTypeCode){"
     types.foreach{ktype =>
-      if(ktype.getDictionaryType != null){
-        if(ktype.getDictionaryType.getAttributes.exists(att => att.getName == "period")){
+      if(ktype.getDictionaryType.isDefined){
+        if(ktype.getDictionaryType.get.getAttributes.exists(att => att.getName == "period")){
           context b "case "+typeCodeMap.get(ktype.getName).get+":{"
           context b "return (((("+ktype.getName+" *) instances[index] )->nextExecution)- currentMillis());"
           context b "}"

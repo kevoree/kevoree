@@ -29,8 +29,8 @@ trait KevoreeChannelTypeClassGenerator extends KevoreeCAbstractGenerator with Ke
     context b "kbindings * bindings;"
      
     //GENERATE DICTIONARY VALUES POINTERS
-    if(ct.getDictionaryType != null){
-      ct.getDictionaryType.getAttributes.foreach{ attribute =>
+    if(ct.getDictionaryType.isDefined){
+      ct.getDictionaryType.get.getAttributes.foreach{ attribute =>
         context b "char "+attribute.getName+"[20];"
       }
     }

@@ -114,8 +114,8 @@ trait KevoreeCFrameworkGenerator extends KevoreeCAbstractGenerator {
     var propertiesGenerated: List[String] = List()
     types.foreach {
       ktype =>
-        if (ktype.getDictionaryType != null) {
-          ktype.getDictionaryType.getAttributes.foreach {
+        if (ktype.getDictionaryType.isDefined) {
+          ktype.getDictionaryType.get.getAttributes.foreach {
             att =>
               val propName = att.getName
               val propNamePrefix = ("prop_" + propName).toLowerCase
@@ -145,8 +145,8 @@ trait KevoreeCFrameworkGenerator extends KevoreeCAbstractGenerator {
     var propertiesGenerated: List[String] = List()
     types.foreach {
       ktype =>
-        if (ktype.getDictionaryType != null) {
-          ktype.getDictionaryType.getAttributes.foreach {
+        if (ktype.getDictionaryType.isDefined) {
+          ktype.getDictionaryType.get.getAttributes.foreach {
             att =>
               propertiesGenerated = propertiesGenerated ++ List(att.getName)
           }
@@ -207,9 +207,9 @@ trait KevoreeCFrameworkGenerator extends KevoreeCAbstractGenerator {
       ktype =>
         context b "case " + typeCodeMap.get(ktype.getName).get + ":{"
         context b ktype.getName + " * instance = (" + ktype.getName + "*) instances[index];"
-        if (ktype.getDictionaryType != null) {
+        if (ktype.getDictionaryType.isDefined) {
           context b " switch(keyCode){"
-          ktype.getDictionaryType.getAttributes.foreach {
+          ktype.getDictionaryType.get.getAttributes.foreach {
             attribute =>
               context b "case " + propsCodeMap.get(attribute.getName).get + ":{"
               context b "strcpy (instance->" + attribute.getName + ",val);"
@@ -322,7 +322,7 @@ trait KevoreeCFrameworkGenerator extends KevoreeCAbstractGenerator {
     types.foreach {
       ktype =>
         if (ktype.isInstanceOf[ComponentType]) {
-          var kcomponentType = ktype.asInstanceOf[ComponentType]
+          val kcomponentType = ktype.asInstanceOf[ComponentType]
           context b "case " + typeCodeMap.get(ktype.getName).get + ":{"
           context b ktype.getName + " * instance = (" + ktype.getName + "*) instances[indexComponent];"
           context b "switch(portCode){"
@@ -411,15 +411,15 @@ trait KevoreeCFrameworkGenerator extends KevoreeCAbstractGenerator {
       instance =>
       //GENERATE INIT DICTIONARY
         val dictionary: java.util.HashMap[String, String] = new java.util.HashMap[String, String]
-        if (instance.getTypeDefinition.getDictionaryType != null) {
-          if (instance.getTypeDefinition.getDictionaryType.getDefaultValues != null) {
-            instance.getTypeDefinition.getDictionaryType.getDefaultValues.foreach {
+        if (instance.getTypeDefinition.getDictionaryType.isDefined) {
+          if (instance.getTypeDefinition.getDictionaryType.get.getDefaultValues != null) {
+            instance.getTypeDefinition.getDictionaryType.get.getDefaultValues.foreach {
               dv =>
                 dictionary.put(dv.getAttribute.getName, dv.getValue)
             }
           }
-          if (instance.getDictionary != null) {
-            instance.getDictionary.getValues.foreach {
+          if (instance.getDictionary.isDefined) {
+            instance.getDictionary.get.getValues.foreach {
               value =>
                 dictionary.put(value.getAttribute.getName, value.getValue)
             }
@@ -500,8 +500,8 @@ trait KevoreeCFrameworkGenerator extends KevoreeCAbstractGenerator {
     context b " switch(instances[index]->subTypeCode){"
     types.foreach {
       ktype =>
-        if (ktype.getDictionaryType != null) {
-          if (ktype.getDictionaryType.getAttributes.exists(att => att.getName == "period")) {
+        if (ktype.getDictionaryType.isDefined) {
+          if (ktype.getDictionaryType.get.getAttributes.exists(att => att.getName == "period")) {
             context b "case " + typeCodeMap.get(ktype.getName).get + ":{"
             context b "return millis() > (((" + ktype.getName + " *) instances[index] )->nextExecution);"
             context b "}"

@@ -18,7 +18,7 @@ trait KevoreeReflectiveHelper {
     //CREATE NEW INSTANCE
     var clazzFactory: Class[_] = null
 
-    val nodeTypeName = ct.eContainer().asInstanceOf[ContainerRoot].getNodes.find(n => n.getName == nodeName).get.getTypeDefinition
+    val nodeTypeName = ct.eContainer.asInstanceOf[ContainerRoot].getNodes.find(n => n.getName == nodeName).get.getTypeDefinition
     val genPackage = KevoreeGeneratorHelper.getTypeDefinitionGeneratedPackage(ct, nodeTypeName.getName)
     val activatorName = ct.getName + "Activator"
 
