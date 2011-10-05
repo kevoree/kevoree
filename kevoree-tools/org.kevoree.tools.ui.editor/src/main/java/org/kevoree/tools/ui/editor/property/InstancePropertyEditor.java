@@ -43,7 +43,7 @@ public class InstancePropertyEditor extends NamedElementPropertyEditor {
 
         JPanel p = new JPanel(new SpringLayout());
         p.setBorder(null);
-        if (elem.getTypeDefinition().getDictionaryType() != null) {
+        if (elem.getTypeDefinition().getDictionaryType().isDefined()) {
             for (final org.kevoree.DictionaryAttribute att : elem.getTypeDefinition().getDictionaryType().get().getAttributesForJ()) {
                 JLabel l = new JLabel(att.getName(), JLabel.TRAILING);
                 l.setUI(new HudLabelUI());
@@ -51,7 +51,7 @@ public class InstancePropertyEditor extends NamedElementPropertyEditor {
                 //l.setForeground(Color.WHITE);
                 p.add(l);
 
-                if (att.getDatatype() != null) {
+                if (att.getDatatype() != "") {
                     if (att.getDatatype().startsWith("enum=")) {
                         String values = att.getDatatype().replaceFirst("enum=", "");
                         final JComboBox comboBox = HudWidgetFactory.createHudComboBox(new DefaultComboBoxModel(values.split(",")));
@@ -137,7 +137,7 @@ public class InstancePropertyEditor extends NamedElementPropertyEditor {
 
     public String getValue(org.kevoree.Instance instance, org.kevoree.DictionaryAttribute att) {
         DictionaryValue value = null;
-        if (instance.getDictionary() == null) {
+        if (instance.getDictionary().isEmpty()) {
             instance.setDictionary(KevoreeFactory.createDictionary());
         }
         for (DictionaryValue v : instance.getDictionary().get().getValuesForJ()) {
