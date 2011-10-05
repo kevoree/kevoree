@@ -34,22 +34,21 @@ class LoadRemoteModelUICommand extends Command {
     
     //ASK USER FOR ADRESS & PORT
     try{
-      var result = JOptionPane.showInputDialog("Remote target node : ip@port", "localhost:8000")
+      val result = JOptionPane.showInputDialog("Remote target node : ip@port", "localhost:8000")
       if (result != null && result != "") {
-        var results = result.split(":").toList
+        val results = result.split(":").toList
         if(results.size >= 2){
-          var ip = results(0)
-          var port = results(1)
+          val ip = results(0)
+          val port = results(1)
           //CALL POST REMOTE URL
-          var url = new URL("http://"+ip+":"+port+"/model/current");
+          val url = new URL("http://"+ip+":"+port+"/model/current");
+
+          val conn = url.openConnection();
+          conn.setConnectTimeout(2000);
+          val inputStream = conn.getInputStream
 
           lcommand.setKernel(kernel)
-          lcommand.execute(url)
-          
-          /*var conn = url.openConnection();
-          conn.setConnectTimeout(2000);
-          var inputStream = conn.getInputStream
-        */
+          lcommand.execute(inputStream)
         }
       }
     } catch {
