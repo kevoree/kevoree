@@ -5,8 +5,6 @@ import java.io.File
 import org.kevoree.tools.aether.framework.AetherUtil
 import org.kevoree.{KevoreeFactory, ContainerRoot}
 import org.kevoree.api.service.core.handler.KevoreeModelHandlerService
-
-import scala.collection.JavaConversions._
 import org.slf4j.{LoggerFactory, Logger}
 
 /**
@@ -50,23 +48,23 @@ object Helper {
   def getJarPath: String = {
     logger.debug("trying to get the platform jar...")
     if (platformJARPath == null) {
-      val model = KevoreeFactory.eINSTANCE.createContainerRoot()
+      val model = KevoreeFactory.eINSTANCE.createContainerRoot
 
       // define repositories
-      var repository = KevoreeFactory.eINSTANCE.createRepository()
+      var repository = KevoreeFactory.eINSTANCE.createRepository
       repository.setUrl("http://maven.kevoree.org/release")
-      model.getRepositories.add(repository)
-      repository = KevoreeFactory.eINSTANCE.createRepository()
+      model.addRepositories(repository)
+      repository = KevoreeFactory.eINSTANCE.createRepository
       repository.setUrl("http://maven.kevoree.org/snapshots")
-      model.getRepositories.add(repository)
+      model.addRepositories(repository)
 
 
-      val deployUnit = KevoreeFactory.eINSTANCE.createDeployUnit()
+      val deployUnit = KevoreeFactory.eINSTANCE.createDeployUnit
       deployUnit.setGroupName("org.kevoree.platform")
       deployUnit.setUnitName("org.kevoree.platform.osgi.standalone")
       logger.debug("before trying to get the version platform jar...")
       deployUnit.setVersion(getVersion())
-      model.getDeployUnits.add(deployUnit)
+      model.addDeployUnits(deployUnit)
       logger.debug("before trying to get the platform jar on maven...")
       val jarFile: File = AetherUtil.resolveDeployUnit(deployUnit)
       logger.debug("after trying to get the platform jar on maven...")
