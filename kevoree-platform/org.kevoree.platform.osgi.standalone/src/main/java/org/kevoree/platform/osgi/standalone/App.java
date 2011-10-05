@@ -26,11 +26,6 @@ import java.util.logging.Logger;
 public class App {
     public static void main(String[] args) {
 
-        long time = System.currentTimeMillis();
-        ContainerRoot model = KevoreeXmiHelper.load("/Users/duke/Documents/dev/dukeboard/kevoree-experiment/org.kevoree.experiment.smartForest/duke.irisa.fr-generated/models/Models580");
-        KevoreeXmiHelper.saveStream(new ByteArrayOutputStream(),model);
-        System.out.println(System.currentTimeMillis() - time);
-
         File mavenDir = new File(System.getProperty("user.home") + "/.m2/repository");
         if (mavenDir.exists() && mavenDir.isDirectory()) {
             System.out.println("use mavenDir=file:///" + mavenDir.getAbsoluteFile().getAbsolutePath());

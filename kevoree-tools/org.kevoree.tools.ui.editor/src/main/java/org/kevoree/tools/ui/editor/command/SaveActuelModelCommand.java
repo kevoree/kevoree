@@ -59,7 +59,7 @@ public class SaveActuelModelCommand implements Command {
         if (defaultLocation == null) {
             filechooser.showSaveDialog(kernel.getModelPanel());
             if (filechooser.getSelectedFile() != null) {
-                location = "file://" + filechooser.getSelectedFile().getPath();
+                location = filechooser.getSelectedFile().getPath();
             }
         } else {
             location = defaultLocation;

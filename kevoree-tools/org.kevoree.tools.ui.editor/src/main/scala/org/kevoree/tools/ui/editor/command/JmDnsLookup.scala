@@ -61,10 +61,10 @@ class JmDnsLookup extends Command {
         }
         PositionedEMFHelper.updateModelUIMetaData(kernel)
         val file = File.createTempFile("kev", new Random().nextInt + "")
-        KevoreeXmiHelper.save("file:///" + file.getAbsolutePath, kernel.getModelHandler.getActualModel);
+        KevoreeXmiHelper.save(file.getAbsolutePath, kernel.getModelHandler.getActualModel);
         val loadCMD = new LoadModelCommand
         loadCMD.setKernel(kernel)
-        loadCMD.execute("file:///" + file.getAbsolutePath)
+        loadCMD.execute(file.getAbsolutePath)
       }
     }.start()
 
