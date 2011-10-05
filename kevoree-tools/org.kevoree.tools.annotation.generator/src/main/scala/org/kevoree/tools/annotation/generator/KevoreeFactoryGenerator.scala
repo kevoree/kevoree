@@ -53,10 +53,10 @@ object KevoreeFactoryGenerator {
         wrapper.append("def createComponentActor() : KevoreeComponent = {\n")
         wrapper.append("new KevoreeComponent(create" + ct.getName + "()){")
 
-        if (ct.getStartMethod == null) {
+        if (ct.getStartMethod == "") {
           error("Start method is mandatory for component name => " + ct.getName);
         }
-        if (ct.getStopMethod == null) {
+        if (ct.getStopMethod == "") {
           error("Stop method is mandatory for component name => " + ct.getName);
         }
         wrapper.append("def startComponent(){getKevoreeComponentType.asInstanceOf[" + componentBean + "]." +
@@ -64,7 +64,7 @@ object KevoreeFactoryGenerator {
         wrapper.append("def stopComponent(){getKevoreeComponentType.asInstanceOf[" + componentBean + "]." +
           ct.getStopMethod + "()}\n")
 
-        if (ct.getUpdateMethod != null) {
+        if (ct.getUpdateMethod != "") {
           wrapper.append("override def updateComponent(){getKevoreeComponentType.asInstanceOf[" + componentBean + "]." +
             ct.getUpdateMethod + "()}\n")
         }
@@ -136,16 +136,16 @@ object KevoreeFactoryGenerator {
         wrapper.append("def createChannel()={new " + ct.getBean + " with ChannelTypeFragment {\n")
 
 
-        if (ct.getStartMethod != null) {
+        if (ct.getStartMethod != "") {
           wrapper.append("override def startChannelFragment(){this.asInstanceOf[" + componentBean + "]." +
             ct.getStartMethod + "()}\n")
         }
-        if (ct.getStopMethod != null) {
+        if (ct.getStopMethod != "") {
           wrapper
             .append("override def stopChannelFragment(){this.asInstanceOf[" + componentBean + "]." + ct.getStopMethod +
             "()}\n")
         }
-        if (ct.getUpdateMethod != null) {
+        if (ct.getUpdateMethod != "") {
           wrapper.append("override def updateChannelFragment(){this.asInstanceOf[" + componentBean + "]." +
             ct.getUpdateMethod + "()}\n")
         }
@@ -193,15 +193,15 @@ object KevoreeFactoryGenerator {
         wrapper.append("def createGroup()={new " + ct.getBean + " with KevoreeGroup {\n")
 
 
-        if (ct.getStartMethod != null) {
+        if (ct.getStartMethod != "") {
           wrapper
             .append("override def startGroup(){this.asInstanceOf[" + componentBean + "]." + ct.getStartMethod + "()}\n")
         }
-        if (ct.getStopMethod != null) {
+        if (ct.getStopMethod != "") {
           wrapper
             .append("override def stopGroup(){this.asInstanceOf[" + componentBean + "]." + ct.getStopMethod + "()}\n")
         }
-        if (ct.getUpdateMethod != null) {
+        if (ct.getUpdateMethod != "") {
           wrapper.append("override def updateGroup(){this.asInstanceOf[" + componentBean + "]." + ct.getUpdateMethod +
             "()}\n")
         }
