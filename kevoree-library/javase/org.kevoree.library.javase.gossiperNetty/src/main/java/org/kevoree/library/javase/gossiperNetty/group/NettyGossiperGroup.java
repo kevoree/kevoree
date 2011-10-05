@@ -122,11 +122,11 @@ public class NettyGossiperGroup extends AbstractGroupType implements GossiperCom
 	public List<String> getAllPeers () {
 		ContainerRoot model = this.getModelService().getLastModel();
 		//Group selfGroup = null;
-		for (Object o : model.getGroups()) {
+		for (Object o : model.getGroupsForJ()) {
 			Group g = (Group) o;
 			if (g.getName().equals(this.getName())) {
 				List<String> peers = new ArrayList<String>(g.getSubNodes().size());
-				for (ContainerNode node : g.getSubNodes()) {
+				for (ContainerNode node : g.getSubNodesForJ()) {
 					peers.add(node.getName());
 				}
 				return peers;
