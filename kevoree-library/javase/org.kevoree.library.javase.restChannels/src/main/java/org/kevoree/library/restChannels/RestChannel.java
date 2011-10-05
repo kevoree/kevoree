@@ -104,7 +104,7 @@ public class RestChannel extends AbstractChannelFragment {
                 String lastUrl = null;
                 try {
                     message.getPassedNodes().add(getModelService().getNodeName());
-                    lastUrl = buildURL();
+                    lastUrl = ModelHelper.buildURL(getModelService(),remoteNodeName,remoteChannelName);
                     logger.debug("remote rest url =>" + lastUrl);
                     ClientResource remoteChannelResource = new ClientResource(lastUrl);
                     if (message.getInOut()) {
