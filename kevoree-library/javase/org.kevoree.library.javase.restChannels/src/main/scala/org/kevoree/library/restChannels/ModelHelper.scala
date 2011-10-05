@@ -12,20 +12,23 @@ import org.kevoree.ContainerRoot
  */
 
 object ModelHelper {
-  def buildURL(modelService : ModelHandlerService): String = {
-    var ip: String = KevoreePlatformHelper.getProperty(getModelService.getLastModel, remoteNodeName, org.kevoree.framework.Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP)
+  def buildURL(modelService: org.kevoree.api.service.core.handler.KevoreeModelHandlerService, remoteNodeName: String, remoteChannelName : String): String = {
+    var ip: String = KevoreePlatformHelper.getProperty(modelService.getLastModel, remoteNodeName, org.kevoree.framework.Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP)
     if (ip == null || (ip == "")) {
       ip = "127.0.0.1"
     }
     var port: String = ""
     import scala.collection.JavaConversions._
-    for (node <- getModelService.getLastModel.getNodes) {
+    for (node <- modelService.getLastModel.getNodes) {
       if (node.getName == remoteNodeName) {
         import scala.collection.JavaConversions._
-        for (value <- node.getDictionary.getValues) {
-          if (value.getAttribute.getName == "port") {
-            port = value.getValue
-          }
+        node.getDictionary.map {
+          dic =>
+            dic.getValues.foreach { value =>
+              if (value.getAttribute.getName == "port") {
+                port = value.getValue
+              }
+            }
         }
       }
     }
