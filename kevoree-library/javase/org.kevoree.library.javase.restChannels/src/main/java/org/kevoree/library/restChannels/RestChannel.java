@@ -20,7 +20,6 @@ package org.kevoree.library.restChannels;
 import org.kevoree.ContainerNode;
 import org.kevoree.DictionaryValue;
 import org.kevoree.annotation.*;
-import org.kevoree.api.service.core.handler.KevoreeModelHandlerService;
 import org.kevoree.extra.marshalling.RichJSONObject;
 import org.kevoree.framework.AbstractChannelFragment;
 import org.kevoree.framework.ChannelFragmentSender;
@@ -122,26 +121,7 @@ public class RestChannel extends AbstractChannelFragment {
                 return null;
             }
 
-            public String buildURL() {
-                String ip = KevoreePlatformHelper.getProperty(getModelService().getLastModel(), remoteNodeName, org.kevoree.framework.Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP());
-                if (ip == null || ip.equals("")) {
-                    ip = "127.0.0.1";
-                }
-                String port = "";
-                for(ContainerNode node : getModelService().getLastModel().getNodes()){
-                    if(node.getName().equals(remoteNodeName)){
-                        for(DictionaryValue value : node.getDictionary().getValues()){
-                           if(value.getAttribute().getName().equals("port")){
-                             port = value.getValue();
-                           }
-                        }
-                    }
-                }
-                if (port == null || port.equals("")) {
-                    port = "8000";
-                }
-                return "http://" + ip + ":" + port + "/channels/" + remoteChannelName;
-            }
+
         };
     }
 }
