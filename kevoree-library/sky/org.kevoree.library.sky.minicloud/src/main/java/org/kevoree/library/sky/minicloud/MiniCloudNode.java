@@ -200,7 +200,7 @@ public class MiniCloudNode extends AbstractNodeType {
 
 	@Override
 	public PrimitiveCommand getPrimitive (AdaptationPrimitive adaptationPrimitive) {
-		logger.debug("ask for primitiveCommand corresponding to " + adaptationPrimitive.getPrimitiveType().getName());
+		logger.debug("ask for primitiveCommand corresponding to " + adaptationPrimitive.getPrimitiveType().get().getName());
 		PrimitiveCommand command = null;
 		if (adaptationPrimitive.getPrimitiveType().get().getName().equals(REMOVE_NODE)) {
 			command = new RemoveNodeCommand((ContainerNode) adaptationPrimitive.getRef(),
@@ -255,9 +255,9 @@ public class MiniCloudNode extends AbstractNodeType {
 	}
 
 	private String foundPort(String physicalNodeName, ContainerRoot root) {
-		for (ContainerNode node : root.getNodes()) {
+		for (ContainerNode node : root.getNodesForJ()) {
 			if (node.getName().equals(physicalNodeName)) {
-				for (DictionaryValue value : node.getDictionary().getValues()) {
+				for (DictionaryValue value : node.getDictionary().get().getValuesForJ()) {
 					if (value.getAttribute().getName().equals("port")) {
 						return value.getValue();
 					}
