@@ -64,8 +64,8 @@ class ModificationGenerator(ips : List[String]) {
     val defPort = 8000
     val port = model.getNodes.find(n => n.getName == nodeName) match {
       case Some(node) => {
-        if (node.getDictionary != null) {
-          node.getDictionary.getValues.find(v => v.getAttribute.getName == "port") match {
+        if (node.getDictionary.isDefined) {
+          node.getDictionary.get.getValues.find(v => v.getAttribute.getName == "port") match {
             case Some(att) => {
               att.getValue
             }
@@ -87,7 +87,7 @@ class ModificationGenerator(ips : List[String]) {
     script match {
       case Some(validScript) => {
         if (validScript.interpret(KevsInterpreterContext(model))) {
-          ParserUtil.save("modelEvolution.kev", model)
+          KevoreeXmiHelper.save("modelEvolution.kev", model)
           val outStream = new ByteArrayOutputStream
 
           KevoreeXmiHelper.saveStream(outStream, model)
@@ -146,16 +146,16 @@ class ModificationGenerator(ips : List[String]) {
       kevScript append "moveComponent "
       kevScript append instance.getName
       kevScript append "@"
-      kevScript append instance.eContainer().asInstanceOf[ContainerNode].getName
+      kevScript append instance.eContainer.asInstanceOf[ContainerNode].getName
       kevScript append " => "
       val nodeName = selectRandomlyIntoList(model.getNodes.toList).asInstanceOf[ContainerNode].getName
       kevScript append nodeName
-      println("moveComponent " + instance.getName + "@" + instance.eContainer().asInstanceOf[ContainerNode].getName + " => " + nodeName)
+      println("moveComponent " + instance.getName + "@" + instance.eContainer.asInstanceOf[ContainerNode].getName + " => " + nodeName)
     }
   }
 
   def selectComponentRandomly(model: ContainerRoot): ComponentInstance = {
-    val nodes = model.getNodes.filter((node => node.getComponents.size() > 0))
+    val nodes = model.getNodes.filter((node => node.getComponents.size > 0))
     if (nodes.size > 0) {
       val node: ContainerNode = selectRandomlyIntoList(nodes.toList).asInstanceOf[ContainerNode]
       selectRandomlyIntoList(node.getComponents.toList).asInstanceOf[ComponentInstance]
