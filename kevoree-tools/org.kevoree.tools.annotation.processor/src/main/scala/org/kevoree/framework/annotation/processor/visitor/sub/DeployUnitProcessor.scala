@@ -20,7 +20,8 @@ package org.kevoree.framework.annotation.processor.visitor.sub
 
 import com.sun.mirror.apt.AnnotationProcessorEnvironment
 import com.sun.mirror.declaration.TypeDeclaration
-import scala.collection.JavaConversions._
+
+//import scala.collection.JavaConversions._
 
 import org.kevoree._
 
@@ -28,6 +29,7 @@ trait DeployUnitProcessor {
 
   def processDeployUnit(typeDef: TypeDefinition, classdef: TypeDeclaration, env: AnnotationProcessorEnvironment) = {
     val root: ContainerRoot = typeDef.eContainer.asInstanceOf[ContainerRoot]
+    import scala.collection.JavaConversions._
 
     /* CREATE COMPONENT TYPE DEPLOY UNIT IF NEEDED */
     val unitName = env.getOptions.find({
@@ -72,7 +74,7 @@ trait DeployUnitProcessor {
     }._1.split('=').toList.get(1)
     val nodeTypeNamesS: List[String] = nodeTypeNames.split(",").filter(r => r != null && r != "").toList
 
-    var deployUnits : List[DeployUnit] = List()
+    var deployUnits: List[DeployUnit] = List()
     nodeTypeNamesS.foreach {
       nodeTypeName =>
 
@@ -122,12 +124,12 @@ trait DeployUnitProcessor {
             case None => {
               val newrepo = KevoreeFactory.eINSTANCE.createRepository
               newrepo.setUrl(repoUrl)
-              root.getRepositories.add(newrepo)
+              root.addRepositories(newrepo)
               newrepo
             }
             case Some(e) => e
           }
-          repo.getUnits.addAll(deployUnits)
+          repo.addAllUnits(deployUnits)
         }
     }
 
@@ -138,7 +140,7 @@ trait DeployUnitProcessor {
             case None => {
               val newrepo = KevoreeFactory.eINSTANCE.createRepository
               newrepo.setUrl(rRepoUrl)
-              root.getRepositories.add(newrepo)
+              root.addRepositories(newrepo)
               newrepo
             }
             case Some(e) =>
