@@ -19,11 +19,10 @@
 package org.kevoree.tools.annotation.mavenplugin
 
 
-
 class ScalaCompiler {
 
-  def compile(src: String, target: String, classpath: java.util.List[String]) : Int = {
-
+  def compile(src: String, target: String, classpath: java.util.List[String]): Int = {
+    import scala.collection.JavaConversions._
     EmbettedScalaCompiler.compile(src, target, classpath.toList);
 
   }

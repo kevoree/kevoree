@@ -42,7 +42,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.maven.artifact.Artifact;
-import org.apache.maven.artifact.DependencyResolutionRequiredException;
 import org.apache.maven.model.Resource;
 import org.apache.maven.project.MavenProject;
 
@@ -71,12 +70,9 @@ public final class MavenProjectUtils
      * @param artifacts
      *            the artifacts to obtain paths for
      * @return a list of <code>String</code> paths to the specified artifacts
-     * @throws DependencyResolutionRequiredException
      *             if an artifact cannot be found
      */
-    public static List<String> getClasspathElements( MavenProject project, List<Artifact> artifacts )
-        throws DependencyResolutionRequiredException
-    {
+    public static List<String> getClasspathElements( MavenProject project, List<Artifact> artifacts ) throws Exception {
         // based on MavenProject.getCompileClasspathElements
 
         List<String> list = new ArrayList<String>( artifacts.size() );
@@ -120,9 +116,7 @@ public final class MavenProjectUtils
     // private methods --------------------------------------------------------
 
     // copied from MavenProject.addArtifactPath
-    private static void addArtifactPath( MavenProject project, Artifact artifact, List<String> list )
-        throws DependencyResolutionRequiredException
-    {
+    private static void addArtifactPath( MavenProject project, Artifact artifact, List<String> list ) throws Exception {
         String refId = getProjectReferenceId( artifact.getGroupId(), artifact.getArtifactId(), artifact.getVersion() );
         MavenProject refProject = (MavenProject) project.getProjectReferences().get( refId );
 
@@ -149,7 +143,7 @@ public final class MavenProjectUtils
             File file = artifact.getFile();
             if ( file == null )
             {
-                throw new DependencyResolutionRequiredException( artifact );
+                throw new Exception( artifact.toString() );
             }
             list.add( file.getPath() );
         }

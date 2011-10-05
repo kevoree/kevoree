@@ -14,7 +14,6 @@
 package org.kevoree.tools.annotation.mavenplugin;
 
 
-import org.apache.maven.artifact.DependencyResolutionRequiredException;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
@@ -65,7 +64,7 @@ public class AnnotationScalaCompilationMojo extends AbstractMojo {
             if(result != 0){
                 getLog().error("Embedded Scala compilation error !");
             }
-        } catch (DependencyResolutionRequiredException e) {
+        } catch (Exception e) {
             getLog().error(e);
         }
     }
