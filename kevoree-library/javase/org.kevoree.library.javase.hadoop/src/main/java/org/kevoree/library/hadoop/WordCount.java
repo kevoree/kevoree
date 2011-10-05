@@ -31,25 +31,40 @@ import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 import org.apache.hadoop.util.GenericOptionsParser;
 
+import org.kevoree.ComponentInstance;
+import org.kevoree.ContainerNode;
 import org.kevoree.annotation.ComponentType;
+import org.kevoree.annotation.DictionaryAttribute;
+import org.kevoree.annotation.DictionaryType;
 import org.kevoree.annotation.Library;
+import org.kevoree.annotation.Port;
 import org.kevoree.annotation.ProvidedPort;
 import org.kevoree.annotation.Provides;
 import org.kevoree.annotation.PortType;
 import org.kevoree.annotation.Start;
+import org.kevoree.annotation.Stop;
+import org.kevoree.framework.Constants;
+import org.kevoree.framework.KevoreePlatformHelper;
 
 @Library(name = "Hadoop")
 @ComponentType
 @Provides({
     @ProvidedPort(name = "submit", type = PortType.MESSAGE)
 })
+@DictionaryType({
+    @DictionaryAttribute(name = "inputDir", optional = false),
+    @DictionaryAttribute(name = "outputDir", optional = false),
+    @DictionaryAttribute(name = "jobTrackerName", optional = false)
+})
 public class WordCount extends HadoopComponent {
     
     /**
      * @TODO: Initialize these attributes 
      */
-    private String input = "";
-    private String output = "";
+    private static final String JOB_TRACKER_NAME = "";
+    private String input;
+    private String output;
+    private String jobTrackerNodeName;
 
     public static class TokenizerMapper
             extends Mapper<Object, Text, Text, IntWritable> {
@@ -88,13 +103,47 @@ public class WordCount extends HadoopComponent {
      * @TODO: initialize configuration, especially TaskTracker
      */
     @Start
-    public void start() {
+    public void start() throws IOException, InterruptedException, ClassNotFoundException {
+        input = (String) this.getDictionary().get("inputDir");
+        output = (String) this.getDictionary().get("outputDir");
+        jobTrackerNodeName = (String) this.getDictionary().get("jobTrackerName");
+
         
+        /*
+         * @FIXME : use while instead of foreach
+         */
+        for (ContainerNode each : this.getModelService().getLastModel().getNodes()) {
+            for (ComponentInstance ci : each.getComponents()) {
+                if (JOB_TRACKER_NAME.equals(ci.getName())) {
+                    jobTrackerNodeName = each.getName();
+                    break;
+                }
+            }
+        }
+
+        // retrieve NameNode IP address
+        String ip = KevoreePlatformHelper.getProperty(this.getModelService().getLastModel(),
+                jobTrackerNodeName, Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP());
+        
+        
+        Configuration configuration = this.getConfiguration();
+        configuration.set("hadoop.jobtracker", ip);
+
+        this.submit(null);
+    }
+    
+    
+    @Stop
+    public void stop() {
         
     }
     
-    public void submit() throws IOException, InterruptedException, 
+    
+    @Port(name = "submit")
+    public void submit(Object arg) throws IOException, InterruptedException, 
             ClassNotFoundException {
+        
+        
         
         Job job = new Job(this.getConfiguration(), "word count");
         job.setJarByClass(WordCount.class);
@@ -105,8 +154,12 @@ public class WordCount extends HadoopComponent {
         job.setOutputValueClass(IntWritable.class);
         FileInputFormat.addInputPath(job, new Path(input));
         FileOutputFormat.setOutputPath(job, new Path(output));
-        System.exit(job.waitForCompletion(true) ? 0 : 1);
+        
+        boolean result = job.waitForCompletion(true); 
+        System.exit(result ? 0 : 1);
     }
+    
+    
     
     public static void main(String[] args) throws Exception {
         Configuration conf = new Configuration();

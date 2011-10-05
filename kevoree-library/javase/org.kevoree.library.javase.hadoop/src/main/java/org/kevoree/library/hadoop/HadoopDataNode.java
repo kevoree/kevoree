@@ -1,21 +1,18 @@
 package org.kevoree.library.hadoop;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hdfs.server.datanode.DataNode;
 
-import org.eclipse.emf.common.util.EList;
 import org.kevoree.ComponentInstance;
 import org.kevoree.ContainerNode;
-import org.kevoree.DictionaryValue;
 import org.kevoree.annotation.*;
-import org.kevoree.framework.AbstractComponentType;
-import org.kevoree.framework.MessagePort;
+import org.kevoree.framework.KevoreePlatformHelper;
+import org.kevoree.framework.Constants;
+import org.slf4j.LoggerFactory;
 
 /**
  * 
@@ -23,13 +20,16 @@ import org.kevoree.framework.MessagePort;
  */
 @Library(name = "Hadoop")
 @ComponentType
+@DictionaryType({
+    @DictionaryAttribute(name = "nameNodeName", optional = false)
+})
 public class HadoopDataNode extends HadoopComponent {
 
-    private static final Logger LOG = Logger.getLogger(HadoopDataNode.class.getName());
+    private static final Logger LOG = LoggerFactory.getLogger(HadoopDataNode.class.getName());
+    private String nameNodeName = "";
     private DataNode dataNode;
-    
     private final static String[] DATANODE_ARGS = {"-rollback"};
-    
+
     /**
      * @TODO: Retrieve and set Name Node address;
      * 
@@ -38,33 +38,57 @@ public class HadoopDataNode extends HadoopComponent {
      * @throws InterruptedException 
      */
     @Start
-    protected void start() throws IOException, InterruptedException {
+    public void start() throws IOException, InterruptedException {
 
-        EList<DictionaryValue> dictionary = null;
-        Map<String, String> values = new HashMap<String, String>();
+        nameNodeName = (String) this.getDictionary().get("nameNodeName");
+        String nameNodeNodeName = "";
 
+
+        /*
+         * @FIXME : use while instead of foreach
+         */
         for (ContainerNode each : this.getModelService().getLastModel().getNodes()) {
             for (ComponentInstance ci : each.getComponents()) {
-                dictionary = ci.getDictionary().getValues(); 
-                // find name of attribute then get its value. 
+                if (nameNodeName.equals(ci.getName())) {
+                    nameNodeNodeName = each.getName();
+                    break;
+                }
             }
         }
 
-        for (DictionaryValue each : dictionary) {
-            values.put(each.getAttribute().getName(), each.getValue());
-        }
+        // retrieve NameNode IP address
+        String ip = KevoreePlatformHelper.getProperty(this.getModelService().getLastModel(),
+                nameNodeNodeName, Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP());
+
+
+        Configuration configuration = this.getConfiguration();
+        configuration.set("hadoop.namenode", ip);
+
+
+        new Thread() {
+
+            @Override
+            public void run() {
+                try {
+                    dataNode = DataNode.createDataNode(DATANODE_ARGS, getConfiguration());
+                    LOG.info("DataNode connected with NameNode: {0}",
+                    dataNode.getNamenode());
+                }
+                catch (IOException ex) {
+                    LOG.error(ex.getMessage(), ex);
+                }
+               
+            }
+        }.start();
+        
+
 
         
-        Configuration configuration = this.getConfiguration();
-        configuration.set("hadoop.namenode", null);
-        
-        dataNode = DataNode.createDataNode(DATANODE_ARGS, configuration);
-        LOG.log(Level.INFO, "DataNode connected with NameNode: {0}",
-                dataNode.getNamenode());
 
     }
 
-    protected void stop() throws IOException {
+    @Stop
+    public void stop() throws IOException {
 
         dataNode.shutdown();
 
