@@ -93,7 +93,7 @@ public class MiniCloudNode extends AbstractNodeType {
 		AdaptationPrimitiveType addNodeType = null;
 		AdaptationPrimitiveType updateNodeType = null;
 		// looking for managed AdaptationPrimitiveType
-		for (AdaptationPrimitiveType primitiveType : current.getAdaptationPrimitiveTypes()) {
+		for (AdaptationPrimitiveType primitiveType : current.getAdaptationPrimitiveTypesForJ()) {
 			if (primitiveType.getName().equals(REMOVE_NODE)) {
 				removeNodeType = primitiveType;
 			} else if (primitiveType.getName().equals(ADD_NODE)) {
@@ -104,7 +104,7 @@ public class MiniCloudNode extends AbstractNodeType {
 		}
 
 		if (removeNodeType == null || addNodeType == null || updateNodeType == null) {
-			for (AdaptationPrimitiveType primitiveType : target.getAdaptationPrimitiveTypes()) {
+			for (AdaptationPrimitiveType primitiveType : target.getAdaptationPrimitiveTypesForJ()) {
 				if (primitiveType.getName().equals(REMOVE_NODE)) {
 					removeNodeType = primitiveType;
 				} else if (primitiveType.getName().equals(ADD_NODE)) {
@@ -124,17 +124,16 @@ public class MiniCloudNode extends AbstractNodeType {
 			logger.warn("there is no adaptation primitive for " + UPDATE_NODE);
 		}
 
-		AdaptationModel adaptationModel = org.kevoreeAdaptation.KevoreeAdaptationFactory.eINSTANCE
-				.createAdaptationModel();
-		ParallelStep step = KevoreeAdaptationFactory.eINSTANCE.createParallelStep();
+		AdaptationModel adaptationModel = org.kevoreeAdaptation.KevoreeAdaptationFactory.eINSTANCE().createAdaptationModel();
+		ParallelStep step = KevoreeAdaptationFactory.eINSTANCE().createParallelStep();
 		adaptationModel.setOrderedPrimitiveSet(step);
 
 		// find all containerNode to remove
-		for (ContainerNode node : current.getNodes()) {
+		for (ContainerNode node : current.getNodesForJ()) {
 			if (node.getName().equals(this.getNodeName())) {
-				for (ContainerNode subNode : node.getHosts()) {
+				for (ContainerNode subNode : node.getHostsForJ()) {
 					boolean found = false;
-					for (ContainerNode node1 : target.getNodes()) {
+					for (ContainerNode node1 : target.getNodesForJ()) {
 						if (subNode.getName().equals(node1.getName())) {
 							found = true;
 							break;
@@ -144,12 +143,12 @@ public class MiniCloudNode extends AbstractNodeType {
 						// create RemoveNode command
 						logger.debug("add a " + REMOVE_NODE + " adaptation primitive with " + subNode.getName()
 								+ " as parameter");
-						AdaptationPrimitive command = KevoreeAdaptationFactory.eINSTANCE.createAdaptationPrimitive();
+						AdaptationPrimitive command = KevoreeAdaptationFactory.eINSTANCE().createAdaptationPrimitive();
 						command.setPrimitiveType(removeNodeType);
 						command.setRef(subNode);
-						ParallelStep subStep = KevoreeAdaptationFactory.eINSTANCE.createParallelStep();
-						subStep.getAdaptations().add(command);
-						adaptationModel.getAdaptations().add(command);
+						ParallelStep subStep = KevoreeAdaptationFactory.eINSTANCE().createParallelStep();
+						subStep.addAdaptations(command);
+						adaptationModel.addAdaptations(command);
 						step.setNextStep(subStep);
 						step = subStep;
 					}
@@ -158,23 +157,23 @@ public class MiniCloudNode extends AbstractNodeType {
 		}
 
 		// find all containerNode to add
-		for (ContainerNode node : target.getNodes()) {
+		for (ContainerNode node : target.getNodesForJ()) {
 			if (node.getName().equals(this.getNodeName())) {
-				for (ContainerNode subNode : node.getHosts()) {
+				for (ContainerNode subNode : node.getHostsForJ()) {
 					boolean found = false;
-					for (ContainerNode node1 : current.getNodes()) {
+					for (ContainerNode node1 : current.getNodesForJ()) {
 						if (subNode.getName().equals(node1.getName())) {
 							found = true;
 							// create UpdateNode command
 							logger.debug("add a " + UPDATE_NODE + " adaptation primitive with " + subNode.getName()
 									+ " as parameter");
-							AdaptationPrimitive command = KevoreeAdaptationFactory.eINSTANCE
+							AdaptationPrimitive command = KevoreeAdaptationFactory.eINSTANCE()
 									.createAdaptationPrimitive();
 							command.setPrimitiveType(updateNodeType);
 							command.setRef(subNode);
-							ParallelStep subStep = KevoreeAdaptationFactory.eINSTANCE.createParallelStep();
-							subStep.getAdaptations().add(command);
-							adaptationModel.getAdaptations().add(command);
+							ParallelStep subStep = KevoreeAdaptationFactory.eINSTANCE().createParallelStep();
+							subStep.addAdaptations(command);
+							adaptationModel.addAdaptations(command);
 							step.setNextStep(subStep);
 							step = subStep;
 							break;
@@ -184,12 +183,12 @@ public class MiniCloudNode extends AbstractNodeType {
 						// create AddNode command
 						logger.debug("add a " + ADD_NODE + " adaptation primitive with " + subNode.getName()
 								+ " as parameter");
-						AdaptationPrimitive command = KevoreeAdaptationFactory.eINSTANCE.createAdaptationPrimitive();
+						AdaptationPrimitive command = KevoreeAdaptationFactory.eINSTANCE().createAdaptationPrimitive();
 						command.setPrimitiveType(addNodeType);
 						command.setRef(subNode);
-						ParallelStep subStep = KevoreeAdaptationFactory.eINSTANCE.createParallelStep();
-						subStep.getAdaptations().add(command);
-						adaptationModel.getAdaptations().add(command);
+						ParallelStep subStep = KevoreeAdaptationFactory.eINSTANCE().createParallelStep();
+						subStep.addAdaptations(command);
+						adaptationModel.addAdaptations(command);
 						step.setNextStep(subStep);
 						step = subStep;
 					}
@@ -203,13 +202,13 @@ public class MiniCloudNode extends AbstractNodeType {
 	public PrimitiveCommand getPrimitive (AdaptationPrimitive adaptationPrimitive) {
 		logger.debug("ask for primitiveCommand corresponding to " + adaptationPrimitive.getPrimitiveType().getName());
 		PrimitiveCommand command = null;
-		if (adaptationPrimitive.getPrimitiveType().getName().equals(REMOVE_NODE)) {
+		if (adaptationPrimitive.getPrimitiveType().get().getName().equals(REMOVE_NODE)) {
 			command = new RemoveNodeCommand((ContainerNode) adaptationPrimitive.getRef(),
 					(ContainerRoot) (((ContainerNode) adaptationPrimitive.getRef()).eContainer()), kevoreeNodeManager);
-		} else if (adaptationPrimitive.getPrimitiveType().getName().equals(ADD_NODE)) {
+		} else if (adaptationPrimitive.getPrimitiveType().get().getName().equals(ADD_NODE)) {
 			command = new AddNodeCommand((ContainerNode) adaptationPrimitive.getRef(),
 					(ContainerRoot) (((ContainerNode) adaptationPrimitive.getRef()).eContainer()), kevoreeNodeManager);
-		} else if (adaptationPrimitive.getPrimitiveType().getName().equals(UPDATE_NODE)) {
+		} else if (adaptationPrimitive.getPrimitiveType().get().getName().equals(UPDATE_NODE)) {
 			command = new UpdateNodeCommand((ContainerNode) adaptationPrimitive.getRef(),
 					(ContainerRoot) (((ContainerNode) adaptationPrimitive.getRef()).eContainer()), kevoreeNodeManager);
 		}
