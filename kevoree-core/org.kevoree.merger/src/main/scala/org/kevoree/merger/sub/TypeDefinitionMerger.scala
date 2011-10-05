@@ -63,7 +63,7 @@ trait TypeDefinitionMerger extends Merger with DictionaryMerger with PortTypeMer
       val deployUnits: List[DeployUnit] = List[DeployUnit]() ++ root.getDeployUnits ++ root2.getDeployUnits
       deployUnits.foreach {
         du =>
-          if (du.getTargetNodeType != null && du.getTargetNodeType == newTypeDefinition) {
+          if (du.getTargetNodeType.isDefined && du.getTargetNodeType.get == newTypeDefinition) {
             du.setTargetNodeType(actuelTypeDefinition.asInstanceOf[NodeType])
           }
       }
@@ -71,7 +71,7 @@ trait TypeDefinitionMerger extends Merger with DictionaryMerger with PortTypeMer
       val allTypeDef: List[TypeDefinition] = List[TypeDefinition]() ++ root.getTypeDefinitions ++ root2.getTypeDefinitions
       allTypeDef.foreach {
         du =>
-          if (du.getSuperTypes != null && du.getSuperTypes.contains(newTypeDefinition)) {
+          if (du.getSuperTypes.contains(newTypeDefinition)) {
             du.removeSuperTypes(newTypeDefinition)
             du.addSuperTypes(actuelTypeDefinition)
           }
@@ -81,6 +81,9 @@ trait TypeDefinitionMerger extends Merger with DictionaryMerger with PortTypeMer
 
   private def mergeConsistency(root: ContainerRoot, actuelTypeDefinition: TypeDefinition, newTypeDefinition: TypeDefinition) = {
     //UPDATE & MERGE DEPLOYS UNIT
+
+   // println("merge consistency")
+
     val allDeployUnits = List() ++ newTypeDefinition.getDeployUnits.toList ++ actuelTypeDefinition.getDeployUnits.toList //CLONE LIST
     actuelTypeDefinition.removeAllDeployUnits()
     allDeployUnits.foreach {
@@ -93,13 +96,13 @@ trait TypeDefinitionMerger extends Merger with DictionaryMerger with PortTypeMer
     if (actuelTypeDefinition.isInstanceOf[NodeType]) {
       root.getDeployUnits.foreach {
         du =>
-          if (du.getTargetNodeType != null && du.getTargetNodeType == newTypeDefinition.getName) {
+          if (du.getTargetNodeType.isDefined && du.getTargetNodeType.get == newTypeDefinition.getName) {
             du.setTargetNodeType(actuelTypeDefinition.asInstanceOf[NodeType])
           }
       }
     }
 
-    if (actuelTypeDefinition.getSuperTypes != null && actuelTypeDefinition.getSuperTypes.contains(newTypeDefinition)) {
+    if (actuelTypeDefinition.getSuperTypes.contains(newTypeDefinition)) {
       actuelTypeDefinition.removeSuperTypes(newTypeDefinition)
       actuelTypeDefinition.addSuperTypes(actuelTypeDefinition)
     }
@@ -107,7 +110,7 @@ trait TypeDefinitionMerger extends Merger with DictionaryMerger with PortTypeMer
   }
 
   private def consistencyImpacted(root: ContainerRoot, actuelTypeDefinition: TypeDefinition, newTypeDefinition: TypeDefinition) = {
-    println("mergeConsistencyImpacted - " + actuelTypeDefinition + " - " + newTypeDefinition)
+    //println("mergeConsistencyImpacted - " + actuelTypeDefinition + " - " + newTypeDefinition)
     //REMOVE OLD AND ADD NEW TYPE
     root.removeTypeDefinitions(actuelTypeDefinition)
     mergeNewTypeDefinition(root, newTypeDefinition)
@@ -121,7 +124,7 @@ trait TypeDefinitionMerger extends Merger with DictionaryMerger with PortTypeMer
     val allTypeDef: List[TypeDefinition] = List[TypeDefinition]() ++ root.getTypeDefinitions
     allTypeDef.foreach {
       du =>
-        if (du.getSuperTypes != null && du.getSuperTypes.contains(actuelTypeDefinition)) {
+        if (du.getSuperTypes.contains(actuelTypeDefinition)) {
           du.removeSuperTypes(actuelTypeDefinition)
           du.addSuperTypes(newTypeDefinition)
         }
@@ -132,7 +135,7 @@ trait TypeDefinitionMerger extends Merger with DictionaryMerger with PortTypeMer
     if (actuelTypeDefinition.isInstanceOf[NodeType]) {
       root.getDeployUnits.foreach {
         du =>
-          if (du.getTargetNodeType == actuelTypeDefinition) {
+          if (du.getTargetNodeType.isDefined && du.getTargetNodeType.get == actuelTypeDefinition) {
             du.setTargetNodeType(newTypeDefinition.asInstanceOf[NodeType])
           }
       }

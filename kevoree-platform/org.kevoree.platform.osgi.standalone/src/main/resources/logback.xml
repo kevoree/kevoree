@@ -21,7 +21,7 @@
         </encoder>
     </appender>
 
-    <root level="${root-level:-WARN}">
+    <root level="${root-level:-DEBUG}">
         <appender-ref ref="CONSOLE"/>
     </root>
 </configuration>

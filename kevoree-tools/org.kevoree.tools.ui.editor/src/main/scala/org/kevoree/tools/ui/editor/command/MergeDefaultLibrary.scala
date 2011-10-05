@@ -74,12 +74,12 @@ class MergeDefaultLibrary extends Command {
         //CREATE TEMP FILE FROM ACTUAL MODEL
         val tempFile = File.createTempFile("kevoreeEditorTemp", ".kev");
         PositionedEMFHelper.updateModelUIMetaData(kernel);
-        KevoreeXmiHelper.save("file://"+tempFile.getAbsolutePath, kernel.getModelHandler.getActualModel);
+        KevoreeXmiHelper.save(tempFile.getAbsolutePath, kernel.getModelHandler.getActualModel);
 
         //LOAD MODEL
         val loadCmd = new LoadModelCommand();
         loadCmd.setKernel(kernel);
-        loadCmd.execute("file://"+tempFile.getAbsolutePath);
+        loadCmd.execute(tempFile.getAbsolutePath);
 
 
       } else {

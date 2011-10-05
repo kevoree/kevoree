@@ -60,15 +60,15 @@ class PostAptChecker(root: ContainerRoot, env: AnnotationProcessorEnvironment) {
       case ntype: NodeType => //IGNORE CHECK FOR NODE TYPE
 
       case lctd: LifeCycleTypeDefinition => {
-        if (lctd.getStartMethod == null) {
+        if (lctd.getStartMethod == "") {
           env.getMessager.printError("@Start method is mandatory in " + td.getBean + "." + "\n")
           nbErrors += 1
         }
-        if (lctd.getStopMethod == null) {
+        if (lctd.getStopMethod == "") {
           env.getMessager.printError("@Stop method is mandatory in " + td.getBean + "." + "\n")
           nbErrors += 1
         }
-        if (lctd.getUpdateMethod == null) {
+        if (lctd.getUpdateMethod == "") {
           env.getMessager.printWarning("@Update method is missing in " + td.getBean + "." + "\n")
         }
 
@@ -81,7 +81,7 @@ class PostAptChecker(root: ContainerRoot, env: AnnotationProcessorEnvironment) {
   private def checkPackage(td: TypeDefinition) {
     td match {
       case ct: ComponentType => {
-        if (td.getBean == null) {
+        if (td.getBean == "") {
           env.getMessager.printError("TypeDefinition bean is null for " + td.getName)
           nbErrors += 1
         } else {

@@ -150,11 +150,11 @@ class OpenKevsShell extends Command {
             //reload
             val file = File.createTempFile("kev", new Random().nextInt + "")
 
-            KevoreeXmiHelper.save("file:///" + file.getAbsolutePath, ghostModel);
+            KevoreeXmiHelper.save(file.getAbsolutePath, ghostModel);
 
             val loadCMD = new LoadModelCommand
             loadCMD.setKernel(kernel)
-            loadCMD.execute("file:///" + file.getAbsolutePath)
+            loadCMD.execute(file.getAbsolutePath)
 
 
           }

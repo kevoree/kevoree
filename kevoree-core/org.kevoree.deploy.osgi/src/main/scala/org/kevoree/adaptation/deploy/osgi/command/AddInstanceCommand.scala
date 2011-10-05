@@ -53,7 +53,10 @@ case class AddInstanceCommand(c: Instance, ctx: KevoreeDeployManager, nodeName: 
         bundle.objClassName == c.getTypeDefinition.getClass.getName
     }) match {
       case Some(bundle) => bundle
-      case None => logger.error("Type Not Found: " + c.getTypeDefinition.getName); return false; null;
+      case None => {
+        logger.error("Type Not Found: " + c.getTypeDefinition.getName)
+        logger.error("mapping state=> "+ctx.bundleMapping.toString() )
+      }; return false; null;
     }
 
     if (mappingFound != null) {
