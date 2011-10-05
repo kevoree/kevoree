@@ -37,7 +37,7 @@ object BootStrapAppComplex {
         case Some(validScript) => {
           import org.kevoree.tools.marShell.interpreter.KevsInterpreterAspects._
           if (validScript.interpret(KevsInterpreterContext(model))) {
-            ParserUtil.save("bootStrapComplex.kev", model)
+            KevoreeXmiHelper.save("bootStrapComplex.kev", model)
             val outStream = new ByteArrayOutputStream
 
             KevoreeXmiHelper.saveStream(outStream, model)

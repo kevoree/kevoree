@@ -72,20 +72,20 @@ class ChannelScorePeerSelector (timeout: Long, modelHandlerService: KevoreeModel
         var minScore = Long.MaxValue
 
         model.getMBindings.filter(b => b.getHub.getName.equals(channel.getName))
-          .filter(b => !b.getPort.eContainer().eContainer().asInstanceOf[ContainerNode].getName.equals(nodeName))
+          .filter(b => !b.getPort.eContainer.eContainer.asInstanceOf[ContainerNode].getName.equals(nodeName))
           .foreach{
           binding => {
-            val subNode = binding.getPort.eContainer().eContainer().asInstanceOf[ContainerNode]
+            val subNode = binding.getPort.eContainer.eContainer.asInstanceOf[ContainerNode]
             if (getScore(subNode.getName) <= minScore) {
               minScore = getScore(subNode.getName)
             }
           }
         }
         model.getMBindings.filter(b => b.getHub.getName.equals(channel.getName))
-          .filter(b => !b.getPort.eContainer().eContainer().asInstanceOf[ContainerNode].getName.equals(nodeName))
+          .filter(b => !b.getPort.eContainer.eContainer.asInstanceOf[ContainerNode].getName.equals(nodeName))
           .foreach{
           binding => {
-            val subNode = binding.getPort.eContainer().eContainer().asInstanceOf[ContainerNode]
+            val subNode = binding.getPort.eContainer.eContainer.asInstanceOf[ContainerNode]
             if (getScore(subNode.getName) == minScore) {
               foundNodeName = foundNodeName ++ List(subNode.getName)
             }
