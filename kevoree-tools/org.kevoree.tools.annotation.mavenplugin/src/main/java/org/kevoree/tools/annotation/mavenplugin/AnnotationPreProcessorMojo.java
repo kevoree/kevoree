@@ -15,6 +15,8 @@ package org.kevoree.tools.annotation.mavenplugin;
 
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.DefaultArtifact;
+import org.apache.maven.model.Dependency;
+import org.apache.maven.model.Repository;
 import org.apache.maven.model.Resource;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
@@ -30,6 +32,9 @@ import org.codehaus.plexus.compiler.util.scan.StaleSourceScanner;
 import org.codehaus.plexus.compiler.util.scan.mapping.SingleTargetSourceMapping;
 import org.codehaus.plexus.compiler.util.scan.mapping.SuffixMapping;
 import org.codehaus.plexus.util.StringUtils;
+import org.kevoree.ContainerRoot;
+import org.kevoree.framework.KevoreeXmiHelper;
+import org.kevoree.merger.KevoreeMergerComponent;
 
 import java.io.*;
 import java.text.DateFormat;
@@ -37,12 +42,6 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
-
-import org.apache.maven.model.Dependency;
-import org.apache.maven.model.Repository;
-import org.kevoree.ContainerRoot;
-import org.kevoree.framework.KevoreeXmiHelper;
-import org.kevoree.merger.KevoreeMergerComponent;
 
 /**
  * @author ffouquet
@@ -602,7 +601,7 @@ public class AnnotationPreProcessorMojo extends AbstractMojo {
         out.flush();
         out.close();
 
-        return "file://"+temp.getAbsolutePath().toString();
+        return temp.getAbsolutePath().toString();
     }
 
 }
