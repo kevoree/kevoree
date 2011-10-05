@@ -201,7 +201,7 @@ case class TypeDefinitionAspect(selfTD: TypeDefinition) {
     /* add all reLib from found deploy Unit*/
     var deployUnitfound: DeployUnit = null
     if (node.getTypeDefinition != null) {
-      selfTD.getDeployUnits.find(du => du.getTargetNodeType != null &&
+      selfTD.getDeployUnits.find(du => du.getTargetNodeType.isDefined &&
         du.getTargetNodeType.get.getName == node.getTypeDefinition.getName) match {
         case Some(e) => {
           logger.info("found deploy unit => " + e.getUnitName)
@@ -222,13 +222,15 @@ case class TypeDefinitionAspect(selfTD: TypeDefinition) {
   private def foundRelevantDeployUnitOnNodeSuperTypes(nodeType: NodeType, t: TypeDefinition): DeployUnit = {
     var deployUnitfound: DeployUnit = null
     // looking for relevant deployunits on super types
-    deployUnitfound = t.getDeployUnits.find(du => du.getTargetNodeType != null && du.getTargetNodeType.get.getName == nodeType.getName) match {
+
+    deployUnitfound = t.getDeployUnits.find(du => du.getTargetNodeType.isDefined && du.getTargetNodeType.get.getName == nodeType.getName) match {
       case Some(e) => e
       case None => null
     }
-    if (deployUnitfound == null && nodeType.getSuperTypes != null) {
+    if (deployUnitfound == null) {
       nodeType.getSuperTypes.exists(superNode => {
       // call recursively for super types and test if something has been found {
+        logger.info("Search on super type => "+superNode.getName)
         deployUnitfound = foundRelevantDeployUnitOnNodeSuperTypes(superNode.asInstanceOf[NodeType], t)
         deployUnitfound == null
       })

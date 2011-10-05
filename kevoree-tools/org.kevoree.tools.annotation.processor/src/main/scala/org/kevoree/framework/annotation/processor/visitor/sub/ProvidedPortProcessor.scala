@@ -96,7 +96,6 @@ trait ProvidedPortProcessor {
               }
               case _ => null
             }))
-
             componentType.addProvided(portTypeRef)
           }
 

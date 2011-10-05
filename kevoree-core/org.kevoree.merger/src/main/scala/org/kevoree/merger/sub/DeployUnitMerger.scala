@@ -30,7 +30,7 @@ trait DeployUnitMerger extends Merger {
       atp =>
         atp.isModelEquals(tp)
     }) match {
-      case Some(ftp:DeployUnit) => {
+      case Some(ftp) => {
 
         //CHECK CONSISTENCY, IF NOT JUST ADD
         if (tp.getUrl != ftp.getUrl || tp.getUnitName != ftp.getUnitName || tp.getGroupName != ftp.getGroupName || tp.getVersion != ftp.getVersion) {
