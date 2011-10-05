@@ -89,7 +89,7 @@ class MergeDefaultLibrary extends Command {
 
     } catch {
 
-      case _@e => logger.error("Could not load default lib !")
+      case _@e => logger.error("Could not load default lib ! => "+e.getMessage ); e.printStackTrace()
     }
 
 
