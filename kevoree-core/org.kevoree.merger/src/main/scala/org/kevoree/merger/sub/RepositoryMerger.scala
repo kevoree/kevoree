@@ -23,8 +23,10 @@ import org.kevoree.ContainerRoot
 import org.kevoree.DeployUnit
 import org.kevoree.Repository
  import org.kevoree.framework.aspects.KevoreeAspects._
+import org.slf4j.LoggerFactory
 
 trait RepositoryMerger {
+  var logger = LoggerFactory.getLogger(this.getClass);
 
   //EXPECT TYPE DEFINITION TO BE MERGE BEFORE THIS STEP
   def mergeRepositories(actualModel : ContainerRoot,modelToMerge : ContainerRoot) : Unit = {
@@ -51,7 +53,7 @@ trait RepositoryMerger {
       val found_unit = actualRoot.getDeployUnits.find(du=>du.isModelEquals(unit) /*&& du.getHashcode == unit.getHashcode*/)
       found_unit match {
         case None => {
-            println("Merger Error !!!!! Repository Incomplete")
+            logger.debug("Merger Error !!!!! Repository Incomplete")
         }
         case Some(funit)=> {
             //CLEAN REPO FROM OLD DEPLOY UNIT
