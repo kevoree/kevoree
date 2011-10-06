@@ -19,16 +19,18 @@
 package org.kevoree.merger.sub
 
 import org.kevoree.merger.Merger
- import org.kevoree.framework.aspects.KevoreeAspects._
+import org.kevoree.framework.aspects.KevoreeAspects._
 import org.kevoree._
 
 trait TypeDefinitionMerger extends Merger with DictionaryMerger with PortTypeMerger with DeployUnitMerger {
 
   //TYPE DEFINITION MERGER ENTRYPOINT
   def mergeTypeDefinition(actualModel: ContainerRoot, modelToMerge: ContainerRoot): Unit = {
-    val cts: List[TypeDefinition] = List[TypeDefinition]() ++ modelToMerge.getTypeDefinitions.toList
+    val cts = modelToMerge.getTypeDefinitions
     cts.foreach {
       toMergeTypeDef =>
+
+        println("process => " + toMergeTypeDef.getName)
         actualModel.getTypeDefinitions.find({
           actualTypeDef => actualTypeDef.isModelEquals(toMergeTypeDef)
         }) match {
@@ -56,7 +58,7 @@ trait TypeDefinitionMerger extends Merger with DictionaryMerger with PortTypeMer
 
 
   private def cleanCrossReference(actuelTypeDefinition: TypeDefinition, newTypeDefinition: TypeDefinition) = {
-    //println("Just clean cross reference")
+    println("Just clean cross reference => " + actuelTypeDefinition.getName + "->" + newTypeDefinition.getName)
     if (actuelTypeDefinition.isInstanceOf[NodeType]) {
       val root = actuelTypeDefinition.eContainer.asInstanceOf[ContainerRoot]
       val root2 = newTypeDefinition.eContainer.asInstanceOf[ContainerRoot]
@@ -76,13 +78,28 @@ trait TypeDefinitionMerger extends Merger with DictionaryMerger with PortTypeMer
             du.addSuperTypes(actuelTypeDefinition)
           }
       }
+
+      val allDeployUnits = actuelTypeDefinition.getDeployUnits
+      actuelTypeDefinition.removeAllDeployUnits()
+      allDeployUnits.foreach {
+        ndu =>
+          val merged = mergeDeployUnit(root, ndu.asInstanceOf[DeployUnit])
+          if (!actuelTypeDefinition.getDeployUnits.contains(merged)) {
+            actuelTypeDefinition.addDeployUnits(merged)
+          }
+      }
+
+
     }
   }
 
   private def mergeConsistency(root: ContainerRoot, actuelTypeDefinition: TypeDefinition, newTypeDefinition: TypeDefinition) = {
     //UPDATE & MERGE DEPLOYS UNIT
+    val actualRoot = actuelTypeDefinition.eContainer.asInstanceOf[ContainerRoot]
+    val newRoot = newTypeDefinition.eContainer.asInstanceOf[ContainerRoot]
 
-   // println("merge consistency")
+
+    println("merge consistency")
 
     val allDeployUnits = List() ++ newTypeDefinition.getDeployUnits.toList ++ actuelTypeDefinition.getDeployUnits.toList //CLONE LIST
     actuelTypeDefinition.removeAllDeployUnits()
@@ -94,7 +111,7 @@ trait TypeDefinitionMerger extends Merger with DictionaryMerger with PortTypeMer
         }
     }
     if (actuelTypeDefinition.isInstanceOf[NodeType]) {
-      root.getDeployUnits.foreach {
+      (actualRoot.getDeployUnits ++ actualRoot.getDeployUnits).foreach {
         du =>
           if (du.getTargetNodeType.isDefined && du.getTargetNodeType.get == newTypeDefinition.getName) {
             du.setTargetNodeType(actuelTypeDefinition.asInstanceOf[NodeType])
@@ -110,18 +127,21 @@ trait TypeDefinitionMerger extends Merger with DictionaryMerger with PortTypeMer
   }
 
   private def consistencyImpacted(root: ContainerRoot, actuelTypeDefinition: TypeDefinition, newTypeDefinition: TypeDefinition) = {
-    //println("mergeConsistencyImpacted - " + actuelTypeDefinition + " - " + newTypeDefinition)
+
+    val actualRoot = actuelTypeDefinition.eContainer.asInstanceOf[ContainerRoot]
+    val newRoot = newTypeDefinition.eContainer.asInstanceOf[ContainerRoot]
+
+    println("mergeConsistencyImpacted - " + actuelTypeDefinition.getName + " - " + newTypeDefinition.getName)
     //REMOVE OLD AND ADD NEW TYPE
     root.removeTypeDefinitions(actuelTypeDefinition)
     mergeNewTypeDefinition(root, newTypeDefinition)
     //UPDATE LIBRARIES
     root.getLibraries.filter(p => p.getSubTypes.contains(actuelTypeDefinition)).foreach {
       lib =>
-        lib.removeSubTypes(actuelTypeDefinition); lib.addSubTypes(newTypeDefinition)
+        lib.removeSubTypes(actuelTypeDefinition);
+        lib.addSubTypes(newTypeDefinition)
     }
-
-
-    val allTypeDef: List[TypeDefinition] = List[TypeDefinition]() ++ root.getTypeDefinitions
+    val allTypeDef: List[TypeDefinition] = newRoot.getTypeDefinitions ++ actualRoot.getTypeDefinitions
     allTypeDef.foreach {
       du =>
         if (du.getSuperTypes.contains(actuelTypeDefinition)) {
@@ -133,7 +153,7 @@ trait TypeDefinitionMerger extends Merger with DictionaryMerger with PortTypeMer
 
     //PARTICULAR CASE - CHECK
     if (actuelTypeDefinition.isInstanceOf[NodeType]) {
-      root.getDeployUnits.foreach {
+      (actualRoot.getDeployUnits ++ newRoot.getDeployUnits).foreach {
         du =>
           if (du.getTargetNodeType.isDefined && du.getTargetNodeType.get == actuelTypeDefinition) {
             du.setTargetNodeType(newTypeDefinition.asInstanceOf[NodeType])
@@ -149,7 +169,8 @@ trait TypeDefinitionMerger extends Merger with DictionaryMerger with PortTypeMer
 
     }
     //UPDATE DEPLOYS UNIT
-    val allDeployUnits = List() ++ newTypeDefinition.getDeployUnits.toList //CLONE LIST -- !!! REMOVE OLD DEPLOY UNIT OBSOLET
+    val allDeployUnits = newTypeDefinition.getDeployUnits //CLONE LIST -- !!! REMOVE OLD DEPLOY UNIT OBSOLET
+    println("previousSizr" + newTypeDefinition.getDeployUnits.size + "-" + actuelTypeDefinition.getDeployUnits.size)
     newTypeDefinition.removeAllDeployUnits()
     allDeployUnits.foreach {
       ndu =>
@@ -160,7 +181,6 @@ trait TypeDefinitionMerger extends Merger with DictionaryMerger with PortTypeMer
     }
 
     //PROCESS INSTANCE
-
 
 
     val listInstance = root.getAllInstances
@@ -231,6 +251,8 @@ trait TypeDefinitionMerger extends Merger with DictionaryMerger with PortTypeMer
 
   /* MERGE A SIMPLE NEW TYPE DEFINITION */
   private def mergeNewTypeDefinition(actualModel: ContainerRoot, newTypeDefinition: TypeDefinition) = {
+    println("addNewTypeDef " + newTypeDefinition.getName)
+
     //MERGE TYPE DEPLOY UNITS
     val newTypeDefinitionDeployUnits = List() ++ newTypeDefinition.getDeployUnits.toList //CLONE LIST
     newTypeDefinition.removeAllDeployUnits()
