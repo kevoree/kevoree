@@ -18,17 +18,17 @@
 
 package org.kevoree.merger.sub
 
-import org.kevoree.Channel
 import org.kevoree.ComponentInstance
 import org.kevoree.ComponentType
-import org.kevoree.ContainerNode
 import org.kevoree.ContainerRoot
  import org.kevoree.framework.aspects.KevoreeAspects._
+import org.slf4j.LoggerFactory
 
 trait InstanceMerger {
 
+  private val logger = LoggerFactory.getLogger(this.getClass);
   /* Expect TYPE DEFINITION MERGE BEFORE */
-  def mergeComponentInstance(actualModel : ContainerRoot,c : ComponentInstance)={
+  def mergeComponentInstance(actualModel : ContainerRoot,c : ComponentInstance) {
 
     //FIND CT
     val ctOpt = actualModel.getTypeDefinitions.find(p=> p.isModelEquals(c.getTypeDefinition)  )
@@ -40,20 +40,20 @@ trait InstanceMerger {
           val providedPort = c.getProvided.toList ++ List()
           providedPort.foreach{pport=>
             ct.getProvided.find(p=> p.getName == pport.getPortTypeRef.getName) match {
-              case None => pport.removeAndUnbind; println("Warning => Port deleted")
+              case None => pport.removeAndUnbind(); logger.debug("Warning => Port deleted")
               case Some(ptref)=> pport.setPortTypeRef(ptref)
             }
           }
           val requiredPort = c.getRequired.toList ++ List()
           requiredPort.foreach{rport=>
             ct.getRequired.find(p=> p.getName == rport.getPortTypeRef.getName) match {
-              case None => rport.removeAndUnbind; println("Warning => Port deleted")
+              case None => rport.removeAndUnbind(); logger.debug("Warning => Port deleted")
               case Some(ptref)=> rport.setPortTypeRef(ptref)
             }
           }
         }
       case None => {
-          println("Warning => TypeDefinition not found");
+          logger.debug("Warning => TypeDefinition not found");
         }
     }
   }
