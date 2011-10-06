@@ -57,6 +57,10 @@ public class AddMBindingCommand implements Command {
 
                 kernel.getModelHandler().getActualModel().addMBindings(newb);
                 kernel.getModelPanel().addBinding(uib);
+
+            kernel.getModelHandler().notifyChanged();
+
+
           //  }
 
         }
