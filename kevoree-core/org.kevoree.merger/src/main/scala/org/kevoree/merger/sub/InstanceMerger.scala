@@ -26,7 +26,7 @@ import org.slf4j.LoggerFactory
 
 trait InstanceMerger {
 
-  var logger = LoggerFactory.getLogger(this.getClass);
+  private val logger = LoggerFactory.getLogger(this.getClass);
   /* Expect TYPE DEFINITION MERGE BEFORE */
   def mergeComponentInstance(actualModel : ContainerRoot,c : ComponentInstance) {
 
