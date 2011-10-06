@@ -150,5 +150,7 @@ public class LoadModelCommand implements Command {
 		kernel.getEditorPanel().repaint();
 		kernel.getEditorPanel().revalidate();
 
+        kernel.getModelHandler().notifyChanged();
+
 	}
 }

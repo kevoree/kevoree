@@ -83,7 +83,9 @@ public class AddComponentCommand implements Command {
             nodepanel.add(insPanel);
             node.addComponents(instance);
                     kernel.getEditorPanel().getPalette().updateTypeValue(ModelHelper.getTypeNbInstance(kernel.getModelHandler().getActualModel(), type),type.getName());
-        } 
+            kernel.getModelHandler().notifyChanged();
+
+        }
     }
 
 }
