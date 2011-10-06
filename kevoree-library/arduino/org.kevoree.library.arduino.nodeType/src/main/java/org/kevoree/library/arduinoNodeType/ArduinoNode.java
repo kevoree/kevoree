@@ -126,7 +126,7 @@ public class ArduinoNode extends AbstractNodeType {
                 }
             }
             try {
-                lastVersionModel = KevoreeXmiHelper.load("file:///" + lastModelFile.getAbsolutePath());
+                lastVersionModel = KevoreeXmiHelper.load(lastModelFile.getAbsolutePath());
             } catch (Exception e) {
             }
         } else {
@@ -173,7 +173,7 @@ public class ArduinoNode extends AbstractNodeType {
 
 
         progress.beginTask("Save model for incremental deployment", 100);
-        KevoreeXmiHelper.save("file:///" + newdir.getAbsolutePath() + "/" + targetNodeName + "_" + (lastVersion + 1) + ".kev", root);
+        KevoreeXmiHelper.save( newdir.getAbsolutePath() + "/" + targetNodeName + "_" + (lastVersion + 1) + ".kev", root);
         progress.endTask();
 
         frame.setVisible(false);
