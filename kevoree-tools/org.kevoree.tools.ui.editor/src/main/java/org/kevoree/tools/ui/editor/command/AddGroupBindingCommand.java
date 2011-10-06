@@ -49,6 +49,7 @@ public class AddGroupBindingCommand implements Command {
             uib.setTo(target);
 
             kernel.getModelPanel().addBinding(uib);
+            kernel.getModelHandler().notifyChanged();
 
         }
 
