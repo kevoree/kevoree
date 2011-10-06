@@ -131,13 +131,13 @@ class NodeTypeBootStrapUI(pkernel: ContainerRoot) extends JPanel {
         val returnVal: Int = filechooser.showOpenDialog(null)
         if (filechooser.getSelectedFile != null && returnVal == JFileChooser.APPROVE_OPTION) {
           try {
-            val lastLoadedModel = "file:///"+filechooser.getSelectedFile.getAbsolutePath.toString
+            val lastLoadedModel = filechooser.getSelectedFile.getAbsolutePath.toString
             val newModel = KevoreeXmiHelper.load(lastLoadedModel)
             init(newModel)
             repaint()
             revalidate()
           } catch {
-            case _@e =>
+            case _@e => e.printStackTrace()
           }
         }
       }
