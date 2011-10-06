@@ -29,7 +29,6 @@ trait TypeDefinitionMerger extends Merger with DictionaryMerger with PortTypeMer
     val cts = modelToMerge.getTypeDefinitions
     cts.foreach {
       toMergeTypeDef =>
-
         println("process => " + toMergeTypeDef.getName)
         actualModel.getTypeDefinitions.find({
           actualTypeDef => actualTypeDef.isModelEquals(toMergeTypeDef)
@@ -47,7 +46,6 @@ trait TypeDefinitionMerger extends Merger with DictionaryMerger with PortTypeMer
               }
             } else {
               cleanCrossReference(found_type_definition, toMergeTypeDef)
-              //println("toto")
             }
           }
           //SIMPLE CASE ? JUST MERGE THE NEW TYPE DEFINITION
@@ -83,11 +81,15 @@ trait TypeDefinitionMerger extends Merger with DictionaryMerger with PortTypeMer
       actuelTypeDefinition.removeAllDeployUnits()
       allDeployUnits.foreach {
         ndu =>
+          println("=> merge clean ref")
+
           val merged = mergeDeployUnit(root, ndu.asInstanceOf[DeployUnit])
           if (!actuelTypeDefinition.getDeployUnits.contains(merged)) {
             actuelTypeDefinition.addDeployUnits(merged)
           }
       }
+
+
 
 
     }

@@ -146,8 +146,9 @@ case class TypeDefinitionAspect(selfTD: TypeDefinition) {
               try {
                 val pDUInteger = java.lang.Long.parseLong(pDU.getHashcode)
                 val selfDUInteger = java.lang.Long.parseLong(selfDU.getHashcode)
-
-                //                println("kompareHashCode - "+selfDUInteger+"<"+pDUInteger+"-"+(selfDUInteger < pDUInteger))
+                println(pDU.getUnitName)
+                 println(selfDU.getUnitName)
+                               println("kompareHashCode - "+selfDUInteger+"<"+pDUInteger+"-"+(selfDUInteger < pDUInteger))
 
                 selfDUInteger < pDUInteger
               } catch {
