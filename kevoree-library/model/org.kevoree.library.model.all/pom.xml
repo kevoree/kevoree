@@ -109,15 +109,12 @@
             <artifactId>org.kevoree.library.arduino.nodeType</artifactId>
             <version>${kevoree.version}</version>
         </dependency>
-
-
-        <!--
         <dependency>
             <groupId>org.kevoree.library.arduino</groupId>
             <artifactId>org.kevoree.library.arduino.components</artifactId>
             <version>${kevoree.version}</version>
         </dependency>
-         -->
+
          <!--
         <dependency>
             <groupId>org.kevoree.library.arduino</groupId>
