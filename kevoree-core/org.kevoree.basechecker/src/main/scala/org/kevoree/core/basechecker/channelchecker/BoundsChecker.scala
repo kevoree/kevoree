@@ -38,7 +38,7 @@ class BoundsChecker extends CheckerService {
 
         val maxNodes = channel.getTypeDefinition.asInstanceOf[ChannelType].getUpperFragments
 
-        if (maxNodes != null) {
+        if (maxNodes != 0) {
 
           if (relatedNodes.size > maxNodes) {
             val violation = new CheckerViolation
