@@ -29,7 +29,7 @@ object MergerApp {
   def main(args: Array[String]): Unit = {
 
     val merger = new RootMerger
-    val model1 = KevoreeXmiHelper.load("/Users/duke/Documents/dev/dukeboard/kevoree/kevoree-library/model/org.kevoree.library.model.all/target/classes/defaultLibrary.kev")
+    val model1 = KevoreeXmiHelper.load("/Users/duke/Documents/dev/dukeboard/kevoree/kevoree-library/sky/org.kevoree.library.sky.minicloud/target/classes/KEV-INF/lib.kev")
    // val model2 = KevoreeXmiHelper.load("/Users/duke/Documents/dev/dukeboard/kevoree/kevoree-library/javase/org.kevoree.library.javase.javaseNode/target/classes/KEV-INF/lib.kev")
     val model2 = KevoreeXmiHelper.load("/Users/duke/Documents/dev/dukeboard/kevoree/kevoree-library/arduino/org.kevoree.library.arduino.nodeType/target/classes/KEV-INF/lib.kev")
 
