@@ -1,11 +1,12 @@
 package org.kevoree.library.sky.minicloud
 
 import org.kevoree.framework.KevoreeXmiHelper
-import java.io.File
 import org.kevoree.tools.aether.framework.AetherUtil
 import org.kevoree.{KevoreeFactory, ContainerRoot}
 import org.kevoree.api.service.core.handler.KevoreeModelHandlerService
 import org.slf4j.{LoggerFactory, Logger}
+import java.io.{InputStream, File}
+import java.util.Properties
 
 /**
  * User: Erwan Daubert - erwan.daubert@gmail.com
@@ -63,7 +64,7 @@ object Helper {
       deployUnit.setGroupName("org.kevoree.platform")
       deployUnit.setUnitName("org.kevoree.platform.osgi.standalone")
       logger.debug("before trying to get the version platform jar...")
-      deployUnit.setVersion(getVersion())
+      deployUnit.setVersion(getVersion)
       model.addDeployUnits(deployUnit)
       logger.debug("before trying to get the platform jar on maven...")
       val jarFile: File = AetherUtil.resolveDeployUnit(deployUnit)
@@ -79,19 +80,32 @@ object Helper {
     platformJARPath
   }
 
-  private def getVersion (): String = {
-    /*val stream: InputStream = this.getClass.getClassLoader
-      .getResourceAsStream("META-INF/maven/org.kevoree.platform/org.kevoree.platform.agent/pom.properties")
+  private def getVersion: String = {
+    val stream: InputStream = this.getClass.getClassLoader
+      .getResourceAsStream("META-INF/maven/org.kevoree.library.sky/org.kevoree.library.sky.minicloud/pom.properties")
     val prop: Properties = new Properties
     prop.load(stream)
-    prop.getProperty("version")*/
+    prop.getProperty("version")
 
-    /* logger.debug("WTF0")
-    modelHandlerService.getLastModel.getNodes.find(n => n.getName == nodeName) match {
-      case None => "1.0.0"
-      case Some(n) => n.getTypeDefinition.getDeployUnits.get(0).getVersion
+    /*modelHandlerService.getLastModel.getNodes.find(n => n.getName == nodeName) match {
+      case None => {
+        logger.error("There is no node on the model but this platform is still running ?!")
+        "1.4.0"
+      }
+      case Some(n) => {
+        println(n)
+        println(n.getTypeDefinition)
+        println(n.getTypeDefinition.getDeployUnits)
+        println(n.getTypeDefinition.getDeployUnits.head)
+        println(n.getTypeDefinition.getDeployUnits.head.getVersion)
+        n.getTypeDefinition.getDeployUnits.head.getVersion
+      }
+      case _ => {
+        logger.error("This log must not appear !!!!")
+        "1.4.0"
+      }
     }*/
-    "1.3.0-SNAPSHOT"
+    //    "1.3.0-SNAPSHOT"
   }
 
 }
