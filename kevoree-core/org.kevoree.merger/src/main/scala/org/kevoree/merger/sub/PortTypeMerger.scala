@@ -28,7 +28,7 @@ import org.slf4j.LoggerFactory
 
 trait PortTypeMerger {
 
-  var logger = LoggerFactory.getLogger(this.getClass);
+  private val logger = LoggerFactory.getLogger(this.getClass);
   //PORT TYPE DEFINITION MERGER
   def mergePortType(actualModel : ContainerRoot,portType : PortType) : PortType = {
     actualModel.getTypeDefinitions.filter({td => td.isInstanceOf[PortType]}).find({pt=>pt.getName == portType.getName}) match {

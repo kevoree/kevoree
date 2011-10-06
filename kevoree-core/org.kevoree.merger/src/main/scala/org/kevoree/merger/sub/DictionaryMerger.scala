@@ -24,7 +24,7 @@ import org.kevoree.DictionaryType
 import org.slf4j.LoggerFactory
 
 trait DictionaryMerger {
-  var logger = LoggerFactory.getLogger(this.getClass);
+  private var logger = LoggerFactory.getLogger(this.getClass);
 
   def mergeDictionary(dictionary : Dictionary,newtype : DictionaryType) : Unit = {
     if(dictionary != null){
