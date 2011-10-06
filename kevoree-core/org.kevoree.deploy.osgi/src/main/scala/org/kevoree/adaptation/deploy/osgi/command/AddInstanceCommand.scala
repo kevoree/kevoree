@@ -65,7 +65,7 @@ case class AddInstanceCommand(c: Instance, ctx: KevoreeDeployManager, nodeName: 
       //FIRST COMPLIANCE VALID TARGET NODE TYPE IN INHERITANCE
       val nodeTypeName = c.getTypeDefinition.foundRelevantHostNodeType(nodeType.asInstanceOf[NodeType],c.getTypeDefinition) match {
         case Some(nt)=> nt.getName
-        case None => ""
+        case None => throw new Exception("Can foudn compatible nodeType for this instance on this node type ")
       }
 
 
