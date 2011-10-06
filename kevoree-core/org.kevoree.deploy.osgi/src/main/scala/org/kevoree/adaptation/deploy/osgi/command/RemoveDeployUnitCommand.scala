@@ -33,14 +33,14 @@ case class RemoveDeployUnitCommand(deployUnit : DeployUnit, ctx : KevoreeDeployM
 
 
           ctx.bundleMapping.foreach{ map =>
-              println("map => "+map.name+"-"+map.objClassName+"-"+map.bundleId)
+              logger.debug("map => "+map.name+"-"+map.objClassName+"-"+map.bundleId)
           }
 
        //   val osgibundleContext = bundleMappingFound.bundle.getBundleContext
           val bundle = ctx.getBundleContext().getBundle(bundleMappingFound.bundleId)
 
           bundle.uninstall()
-          logger.info("Deploy Unit Bundle remove , try to refresh package")
+          logger.debug("Deploy Unit Bundle remove , try to refresh package")
 
           ctx.getServicePackageAdmin.refreshPackages(Array(bundle))
 
