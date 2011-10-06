@@ -29,12 +29,15 @@ object MergerApp {
   def main(args: Array[String]): Unit = {
 
     val merger = new RootMerger
-    val model1 = KevoreeXmiHelper.load("/Users/duke/Documents/dev/dukeboard/kevoree/kevoree-library/javase/org.kevoree.library.javase.javaseNode/target/generated-sources/kevoree/KEV-INF/lib.kev")
-    val model2 = KevoreeXmiHelper.load("/Users/duke/Documents/dev/dukeboard/kevoree/kevoree-library/javase/org.kevoree.library.javase.fakeDomo/target/generated-sources/kevoree/KEV-INF/lib.kev")
-    
+    val model1 = KevoreeXmiHelper.load("/Users/duke/Documents/dev/dukeboard/kevoree/kevoree-library/sky/org.kevoree.library.sky.minicloud/target/classes/KEV-INF/lib.kev")
+   // val model2 = KevoreeXmiHelper.load("/Users/duke/Documents/dev/dukeboard/kevoree/kevoree-library/javase/org.kevoree.library.javase.javaseNode/target/classes/KEV-INF/lib.kev")
+    val model2 = KevoreeXmiHelper.load("/Users/duke/Documents/dev/dukeboard/kevoree/kevoree-library/arduino/org.kevoree.library.arduino.nodeType/target/classes/KEV-INF/lib.kev")
+
     merger.merge(model1, model2)
 
-    KevoreeXmiHelper.save("/Users/duke/Desktop/out.kev", model1)
+    println(KevoreeXmiHelper.saveToString(model1,true))
+
+
 
   }
   
