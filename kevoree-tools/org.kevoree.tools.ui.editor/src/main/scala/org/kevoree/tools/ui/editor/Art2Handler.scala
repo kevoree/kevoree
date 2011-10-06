@@ -58,4 +58,8 @@ class Art2Handler(kernel: KevoreeUIKernel) {
     }
   }
 
+  def notifyChanged(){
+      EMFListener.notifyChanged()
+  }
+
 }
