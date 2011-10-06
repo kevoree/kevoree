@@ -25,7 +25,7 @@ import org.slf4j.LoggerFactory
 
 trait TypeDefinitionMerger extends Merger with DictionaryMerger with PortTypeMerger with DeployUnitMerger {
 
-  var logger = LoggerFactory.getLogger(this.getClass);
+  private val logger = LoggerFactory.getLogger(this.getClass);
 
   //TYPE DEFINITION MERGER ENTRYPOINT
   def mergeTypeDefinition (actualModel: ContainerRoot, modelToMerge: ContainerRoot): Unit = {
@@ -188,8 +188,6 @@ trait TypeDefinitionMerger extends Merger with DictionaryMerger with PortTypeMer
     }
 
     //PROCESS INSTANCE
-
-
     val listInstance = root.getAllInstances
     listInstance.foreach {
       instance =>
