@@ -117,24 +117,22 @@
             <version>${kevoree.version}</version>
         </dependency>
 
-         <!--
         <dependency>
             <groupId>org.kevoree.library.arduino</groupId>
             <artifactId>org.kevoree.library.arduino.groupType</artifactId>
             <version>${kevoree.version}</version>
         </dependency>
-        -->
 
 
         <!-- JavaSE -->
-        <!--
+
         <dependency>
             <groupId>org.kevoree.library.javase</groupId>
             <artifactId>org.kevoree.library.javase.javaseNode</artifactId>
             <version>${kevoree.version}</version>
         </dependency>
-              -->
-        <!--
+
+
         <dependency>
             <groupId>org.kevoree.library.javase</groupId>
             <artifactId>org.kevoree.library.javase.restNode</artifactId>
@@ -176,11 +174,11 @@
             <artifactId>org.kevoree.library.javase.serialCT</artifactId>
             <version>${kevoree.version}</version>
         </dependency>
-           -->
+
 
         <!-- Android -->
 
-        <!--
+
         <dependency>
             <groupId>org.kevoree.library.android</groupId>
             <artifactId>org.kevoree.library.android.logger</artifactId>
@@ -197,7 +195,7 @@
             <version>${kevoree.version}</version>
         </dependency>
 
-        -->
+
     </dependencies>
 
 
