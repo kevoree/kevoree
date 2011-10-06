@@ -98,7 +98,6 @@ public class RestChannel extends AbstractChannelFragment {
     public ChannelFragmentSender createSender(final String remoteNodeName, final String remoteChannelName) {
         return new ChannelFragmentSender() {
 
-
             @Override
             public Object sendMessageToRemote(Message message) {
                 String lastUrl = null;
@@ -120,8 +119,6 @@ public class RestChannel extends AbstractChannelFragment {
                 }
                 return null;
             }
-
-
         };
     }
 }
