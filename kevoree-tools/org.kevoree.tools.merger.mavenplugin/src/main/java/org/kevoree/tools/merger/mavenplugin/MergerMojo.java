@@ -108,12 +108,12 @@ public class MergerMojo extends AbstractMojo {
 
         //LOAD PREVIOUS MODEL OR CREATE ONE
         ContainerRoot root = null;
-        if (modelInput.isFile()) {
-            root = KevoreeXmiHelper.load(modelInput.getAbsolutePath());
-        } else {
-            this.getLog().warn("Model File Empty, creating one !");
+       // if (modelInput.isFile()) {
+          //  root = KevoreeXmiHelper.load(modelInput.getAbsolutePath());
+       // } else {
+       //     this.getLog().warn("Model File Empty, creating one !");
             root = KevoreeFactory.eINSTANCE().createContainerRoot();
-        }
+        //}
 
         //MERGE TWO BY TWO
         Iterator it2 = project.getDependencyArtifacts().iterator();
@@ -130,7 +130,7 @@ public class MergerMojo extends AbstractMojo {
                     //Load
                     ContainerRoot nroot = KevoreeXmiHelper.load(path);
                     //Merge
-                    this.getLog().info("Art2 Merge => " + artefactPath);
+                    this.getLog().info("Kevoree Merge from => " + artefactPath);
                     merger.merge(root, nroot);
 
                     //CREATE TEMP FILE FROM ACTUAL MODEL
