@@ -24,9 +24,11 @@ import org.kevoree.PortType
 import org.kevoree.ServicePortType
  import org.kevoree.TypedElement
 import org.kevoree.framework.aspects.KevoreeAspects._
+import org.slf4j.LoggerFactory
 
 trait PortTypeMerger {
 
+  var logger = LoggerFactory.getLogger(this.getClass);
   //PORT TYPE DEFINITION MERGER
   def mergePortType(actualModel : ContainerRoot,portType : PortType) : PortType = {
     actualModel.getTypeDefinitions.filter({td => td.isInstanceOf[PortType]}).find({pt=>pt.getName == portType.getName}) match {
@@ -47,7 +49,7 @@ trait PortTypeMerger {
                   }
 
                 } else {
-                  println("New service Port Type can't replace and message port type !!!")
+                  logger.debug("New service Port Type can't replace and message port type !!!")
                 }
               }
             case _ => // TODO MESSAGE PORT
@@ -68,7 +70,7 @@ trait PortTypeMerger {
             case mpt : MessagePortType => {
                 mpt.getFilters.foreach{dt=>mergeDataType(actualModel,dt)}
               }
-            case _ @ msg => println("Error uncatch type")
+            case _ @ msg => logger.debug("Error uncatch type")
           }
           portType
         }

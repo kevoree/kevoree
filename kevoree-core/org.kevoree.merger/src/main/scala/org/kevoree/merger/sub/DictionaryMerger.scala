@@ -21,8 +21,10 @@ package org.kevoree.merger.sub
 import org.kevoree.Dictionary
 import org.kevoree.DictionaryType
  import org.kevoree.framework.aspects.KevoreeAspects._
+import org.slf4j.LoggerFactory
 
 trait DictionaryMerger {
+  var logger = LoggerFactory.getLogger(this.getClass);
 
   def mergeDictionary(dictionary : Dictionary,newtype : DictionaryType) : Unit = {
     if(dictionary != null){
@@ -32,7 +34,7 @@ trait DictionaryMerger {
         val newAttribute = newtype.getAttributes.find(att=> att.getName == v.getAttribute.getName)
         newAttribute match {
           case None => {
-              println("ART2 Merger remove unavailable Dictionary Value => "+v.getValue +" for old key => "+v.getAttribute.getName)
+              logger.debug("ART2 Merger remove unavailable Dictionary Value => "+v.getValue +" for old key => "+v.getAttribute.getName)
               dictionary.removeValues(v)
             } //REMOVE DICTIONARY INSTANCE , NO AVAILABLE IN NEW TYPE
           case Some(found)=> v.setAttribute(found) //TODO CHECK TYPE // ACTUALLY ONLY STRING
