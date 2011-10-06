@@ -137,16 +137,9 @@ case class TypeDefinitionAspect(selfTD: TypeDefinition) {
   }
 
   def isUpdated(pTD: TypeDefinition): Boolean = {
+    if(pTD.getDeployUnits.size == 0 && selfTD.getDeployUnits.size > 0){return false}  //SPECIAL CASE DONT MERGE TYPE DEFINITION WITHOUT DEPLOY UNIT
+    if(selfTD.getDeployUnits.size != pTD.getDeployUnits.size){return true}
 
-    if (selfTD.getDeployUnits != null) {
-      if (pTD.getDeployUnits != null) {
-        if (pTD.getDeployUnits.size == 0) {
-          return false
-        }
-
-        if (selfTD.getDeployUnits.size != pTD.getDeployUnits.size) {
-          return true
-        }
         val oneUpdated = selfTD.getDeployUnits.exists(selfDU => {
           pTD.getDeployUnits.find(p => p.isModelEquals(selfDU)) match {
             case Some(pDU) => {
@@ -169,20 +162,13 @@ case class TypeDefinitionAspect(selfTD: TypeDefinition) {
             case _ => true
           }
         })
-
         // println(selfTD.getName+" result "+(oneUpdated))
         oneUpdated
-      } else {
-        true
-      }
-    } else {
-      pTD.getDeployUnits != null
-    }
   }
 
-
+  //CHECKED
   def foundRelevantHostNodeType(nodeType: NodeType, targetTypeDef: TypeDefinition): Option[NodeType] = {
-    if (targetTypeDef.getDeployUnits.exists(du => du.getTargetNodeType == nodeType)) {
+    if (targetTypeDef.getDeployUnits.exists(du => du.getTargetNodeType.isDefined && du.getTargetNodeType.get == nodeType)) {
       Some(nodeType)
     } else {
       nodeType.getSuperTypes.foreach {
@@ -216,6 +202,7 @@ case class TypeDefinitionAspect(selfTD: TypeDefinition) {
     } else {
       logger.error("Node type definition empty  ! search node name = " + node.getName)
     }
+    logger.debug("will exit with => "+deployUnitfound)
     deployUnitfound
   }
 
@@ -223,16 +210,29 @@ case class TypeDefinitionAspect(selfTD: TypeDefinition) {
     var deployUnitfound: DeployUnit = null
     // looking for relevant deployunits on super types
 
-    deployUnitfound = t.getDeployUnits.find(du => du.getTargetNodeType.isDefined && du.getTargetNodeType.get.getName == nodeType.getName) match {
-      case Some(e) => e
-      case None => null
+    println("t=>"+t.getName+"="+t.getDeployUnits.size)
+    t.getDeployUnits.foreach{ td =>
+        td.getTargetNodeType.map{ tNode =>
+          if(tNode.getName == nodeType.getName){
+            tNode.getDeployUnits.foreach{ chooseDP =>
+               logger.debug("candidate deploy unit => "+chooseDP.getUnitName)
+            }
+            deployUnitfound = td//tNode.getDeployUnits(0)
+
+            logger.debug("found & exit="+deployUnitfound.getUnitName)
+            return deployUnitfound
+          }
+        }
     }
+
     if (deployUnitfound == null) {
-      nodeType.getSuperTypes.exists(superNode => {
+      nodeType.getSuperTypes.foreach(superNode => {
       // call recursively for super types and test if something has been found {
         logger.info("Search on super type => "+superNode.getName)
         deployUnitfound = foundRelevantDeployUnitOnNodeSuperTypes(superNode.asInstanceOf[NodeType], t)
-        deployUnitfound == null
+        if(deployUnitfound != null){
+           return deployUnitfound
+        }
       })
     }
     deployUnitfound

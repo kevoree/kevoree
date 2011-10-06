@@ -26,15 +26,14 @@ trait DeployUnitMerger extends Merger {
 
 
   def mergeDeployUnit(actualModel: ContainerRoot, tp: DeployUnit, newForce: Boolean = false): DeployUnit = {
+
     actualModel.getDeployUnits.find({
       atp =>
         atp.isModelEquals(tp)
     }) match {
       case Some(ftp) => {
-
         //CHECK CONSISTENCY, IF NOT JUST ADD
         if (tp.getUrl != ftp.getUrl || tp.getUnitName != ftp.getUnitName || tp.getGroupName != ftp.getGroupName || tp.getVersion != ftp.getVersion) {
-
           actualModel.addDeployUnits(tp)
           mergeRequiredLibs(actualModel, tp)
           tp
