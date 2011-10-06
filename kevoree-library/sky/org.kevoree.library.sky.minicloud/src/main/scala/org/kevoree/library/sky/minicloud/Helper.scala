@@ -86,26 +86,6 @@ object Helper {
     val prop: Properties = new Properties
     prop.load(stream)
     prop.getProperty("version")
-
-    /*modelHandlerService.getLastModel.getNodes.find(n => n.getName == nodeName) match {
-      case None => {
-        logger.error("There is no node on the model but this platform is still running ?!")
-        "1.4.0"
-      }
-      case Some(n) => {
-        println(n)
-        println(n.getTypeDefinition)
-        println(n.getTypeDefinition.getDeployUnits)
-        println(n.getTypeDefinition.getDeployUnits.head)
-        println(n.getTypeDefinition.getDeployUnits.head.getVersion)
-        n.getTypeDefinition.getDeployUnits.head.getVersion
-      }
-      case _ => {
-        logger.error("This log must not appear !!!!")
-        "1.4.0"
-      }
-    }*/
-    //    "1.3.0-SNAPSHOT"
   }
 
 }
