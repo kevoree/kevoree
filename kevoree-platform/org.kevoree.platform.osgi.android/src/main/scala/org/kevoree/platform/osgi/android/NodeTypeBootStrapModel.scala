@@ -48,18 +48,18 @@ object NodeTypeBootStrapModel {
   private def createNode(model: ContainerRoot, nodeName: String, nodeTypeName: String, props: Properties) {
     model.getTypeDefinitions.filter(td => td.isInstanceOf[NodeType]).find(td => td.getName == nodeTypeName) match {
       case Some(nodeTypeDef) => {
-        val node = KevoreeFactory.eINSTANCE.createContainerNode()
+        val node = KevoreeFactory.eINSTANCE.createContainerNode
         node.setName(nodeName)
         node.setTypeDefinition(nodeTypeDef)
         model.getNodes.add(node)
 
-        val propsmodel = KevoreeFactory.eINSTANCE.createDictionary()
+        val propsmodel = KevoreeFactory.eINSTANCE.createDictionary
         props.keySet().foreach {
           key =>
-            if (nodeTypeDef.getDictionaryType != null) {
-              nodeTypeDef.getDictionaryType.getAttributes.find(att => att.getName == key) match {
+            if (nodeTypeDef.getDictionaryType.isDefined) {
+              nodeTypeDef.getDictionaryType.get.getAttributes.find(att => att.getName == key) match {
                 case Some(att) => {
-                  val newValue = KevoreeFactory.eINSTANCE.createDictionaryValue()
+                  val newValue = KevoreeFactory.eINSTANCE.createDictionaryValue
                   newValue.setAttribute(att)
                   newValue.setValue(props.get(key).toString)
                 }
