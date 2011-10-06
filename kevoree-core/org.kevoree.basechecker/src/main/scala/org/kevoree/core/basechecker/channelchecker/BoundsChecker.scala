@@ -49,7 +49,7 @@ class BoundsChecker extends CheckerService {
 
         val maxLocalBindings = channel.getTypeDefinition.asInstanceOf[ChannelType].getUpperBindings
 
-        if (maxLocalBindings != null) {
+        if (maxLocalBindings != 0) {
           relatedNodes.foreach {
             node =>
               if (channel.getRelatedBindings(node).size > maxLocalBindings) {
