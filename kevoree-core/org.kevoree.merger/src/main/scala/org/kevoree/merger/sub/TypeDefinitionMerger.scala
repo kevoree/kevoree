@@ -21,6 +21,7 @@ package org.kevoree.merger.sub
 import org.kevoree.merger.Merger
 import org.kevoree.framework.aspects.KevoreeAspects._
 import org.kevoree._
+import merger.resolver.{UnresolvedTypeDefinition}
 import org.slf4j.LoggerFactory
 
 trait TypeDefinitionMerger extends Merger with DictionaryMerger with PortTypeMerger with DeployUnitMerger {
@@ -28,27 +29,36 @@ trait TypeDefinitionMerger extends Merger with DictionaryMerger with PortTypeMer
   private val logger = LoggerFactory.getLogger(this.getClass);
 
   //TYPE DEFINITION MERGER ENTRYPOINT
-  def mergeTypeDefinition (actualModel: ContainerRoot, modelToMerge: ContainerRoot): Unit = {
-    val cts = modelToMerge.getTypeDefinitions
-    cts.foreach {
+  def mergeTypeDefinition(actualModel: ContainerRoot, modelToMerge: ContainerRoot): Unit = {
+
+    modelToMerge.getTypeDefinitions.foreach {
       toMergeTypeDef =>
-        logger.debug("process => " + toMergeTypeDef.getName)
-        actualModel.getTypeDefinitions.find({
-          actualTypeDef => actualTypeDef.isModelEquals(toMergeTypeDef)
-        }) match {
+        println("process => " + toMergeTypeDef.getName)
+        actualModel.getTypeDefinitions.find(actualTypeDef => actualTypeDef.getName == toMergeTypeDef.getName) match {
           case Some(found_type_definition) => {
-            //println(found_type_definition);
+            println("look => " + found_type_definition.getName)
+
+
+            //BREAK CROSS REFERENCE
+            (toMergeTypeDef.getSuperTypes ++ found_type_definition.getSuperTypes).foreach {
+              superType =>
+                found_type_definition.removeSuperTypes(superType)
+                found_type_definition.addSuperTypes(UnresolvedTypeDefinition(superType.getName))
+            }
+
+            //END BREAK CROSS REFERENCE
+            //    println(found_type_definition.getName)
             val root = found_type_definition.eContainer.asInstanceOf[ContainerRoot]
 
             if (found_type_definition.isUpdated(toMergeTypeDef)) {
-              //updateTypeDefinition(found_type_definition,toMergeTypeDef)
               if (found_type_definition.contractChanged(toMergeTypeDef)) {
                 consistencyImpacted(root, found_type_definition, toMergeTypeDef)
               } else {
                 mergeConsistency(root, found_type_definition, toMergeTypeDef)
               }
             } else {
-              cleanCrossReference(found_type_definition, toMergeTypeDef)
+              //cleanCrossReference(found_type_definition, toMergeTypeDef)
+              logger.info("No update found for type "+toMergeTypeDef.getName)
             }
           }
           //SIMPLE CASE ? JUST MERGE THE NEW TYPE DEFINITION
@@ -57,57 +67,22 @@ trait TypeDefinitionMerger extends Merger with DictionaryMerger with PortTypeMer
     }
   }
 
-
-  private def cleanCrossReference (actuelTypeDefinition: TypeDefinition, newTypeDefinition: TypeDefinition) = {
-    logger.debug("Just clean cross reference => " + actuelTypeDefinition.getName + "->" + newTypeDefinition.getName)
-    if (actuelTypeDefinition.isInstanceOf[NodeType]) {
-      val root = actuelTypeDefinition.eContainer.asInstanceOf[ContainerRoot]
-      val root2 = newTypeDefinition.eContainer.asInstanceOf[ContainerRoot]
-      val deployUnits: List[DeployUnit] = List[DeployUnit]() ++ root.getDeployUnits ++ root2.getDeployUnits
-      deployUnits.foreach {
-        du =>
-          if (du.getTargetNodeType.isDefined && du.getTargetNodeType.get == newTypeDefinition) {
-            du.setTargetNodeType(Some(actuelTypeDefinition.asInstanceOf[NodeType]))
-          }
-      }
-
-      val allTypeDef: List[TypeDefinition] = List[TypeDefinition]() ++ root.getTypeDefinitions ++
-        root2.getTypeDefinitions
-      allTypeDef.foreach {
-        du =>
-          if (du.getSuperTypes.contains(newTypeDefinition)) {
-            du.removeSuperTypes(newTypeDefinition)
-            du.addSuperTypes(actuelTypeDefinition)
-          }
-      }
-
-      val allDeployUnits = actuelTypeDefinition.getDeployUnits
-      actuelTypeDefinition.removeAllDeployUnits()
-      allDeployUnits.foreach {
-        ndu =>
-          logger.debug("=> merge clean ref")
-
-          val merged = mergeDeployUnit(root, ndu.asInstanceOf[DeployUnit])
-          if (!actuelTypeDefinition.getDeployUnits.contains(merged)) {
-            actuelTypeDefinition.addDeployUnits(merged)
-          }
-      }
+  /*
+  def cleanCrossReference(actuelTypeDefinition: TypeDefinition, toMergeTypeDef: TypeDefinition) {
+     (toMergeTypeDef.getDeployUnits ++ actuelTypeDefinition.getDeployUnits).foreach{ dp =>
+       dp.getTargetNodeType.map { targetNodeType =>
+         dp.setTargetNodeType(Some(UnresolvedNodeType(targetNodeType.getName)))
+       }
+     }
+  } */
 
 
-    }
-  }
-
-  private def mergeConsistency (root: ContainerRoot, actuelTypeDefinition: TypeDefinition,
-    newTypeDefinition: TypeDefinition) = {
+  private def mergeConsistency(root: ContainerRoot, actuelTypeDefinition: TypeDefinition,
+                               newTypeDefinition: TypeDefinition) = {
     //UPDATE & MERGE DEPLOYS UNIT
-    val actualRoot = actuelTypeDefinition.eContainer.asInstanceOf[ContainerRoot]
-    val newRoot = newTypeDefinition.eContainer.asInstanceOf[ContainerRoot]
-
-
-    logger.debug("merge consistency")
-
-    val allDeployUnits = List() ++ newTypeDefinition.getDeployUnits.toList ++
-      actuelTypeDefinition.getDeployUnits.toList //CLONE LIST
+    println("merge consistency")
+    //CONCAT & MERGE BOTH TYPE DEF DEPLOY UNIT
+    val allDeployUnits = newTypeDefinition.getDeployUnits ++ actuelTypeDefinition.getDeployUnits
     actuelTypeDefinition.removeAllDeployUnits()
     allDeployUnits.foreach {
       ldu =>
@@ -116,68 +91,28 @@ trait TypeDefinitionMerger extends Merger with DictionaryMerger with PortTypeMer
           actuelTypeDefinition.addDeployUnits(merged)
         }
     }
-    if (actuelTypeDefinition.isInstanceOf[NodeType]) {
-      (actualRoot.getDeployUnits ++ actualRoot.getDeployUnits).foreach {
-        du =>
-          if (du.getTargetNodeType.isDefined && du.getTargetNodeType.get == newTypeDefinition.getName) {
-            du.setTargetNodeType(Some(actuelTypeDefinition.asInstanceOf[NodeType]))
-          }
-      }
-    }
-
-    if (actuelTypeDefinition.getSuperTypes.contains(newTypeDefinition)) {
-      actuelTypeDefinition.removeSuperTypes(newTypeDefinition)
-      actuelTypeDefinition.addSuperTypes(actuelTypeDefinition)
-    }
-
   }
 
-  private def consistencyImpacted (root: ContainerRoot, actuelTypeDefinition: TypeDefinition,
-    newTypeDefinition: TypeDefinition) = {
+  private def consistencyImpacted(root: ContainerRoot, actuelTypeDefinition: TypeDefinition,
+                                  newTypeDefinition: TypeDefinition) = {
 
-    val actualRoot = actuelTypeDefinition.eContainer.asInstanceOf[ContainerRoot]
-    val newRoot = newTypeDefinition.eContainer.asInstanceOf[ContainerRoot]
-
-    logger.debug("mergeConsistencyImpacted - " + actuelTypeDefinition.getName + " - " + newTypeDefinition.getName)
+    println("mergeConsistencyImpacted - " + actuelTypeDefinition.getName + " - " + newTypeDefinition.getName)
     //REMOVE OLD AND ADD NEW TYPE
     root.removeTypeDefinitions(actuelTypeDefinition)
     mergeNewTypeDefinition(root, newTypeDefinition)
-    //UPDATE LIBRARIES
-    root.getLibraries.filter(p => p.getSubTypes.contains(actuelTypeDefinition)).foreach {
-      lib =>
-        lib.removeSubTypes(actuelTypeDefinition);
-        lib.addSubTypes(newTypeDefinition)
-    }
-    val allTypeDef: List[TypeDefinition] = newRoot.getTypeDefinitions ++ actualRoot.getTypeDefinitions
-    allTypeDef.foreach {
-      du =>
-        if (du.getSuperTypes.contains(actuelTypeDefinition)) {
-          du.removeSuperTypes(actuelTypeDefinition)
-          du.addSuperTypes(newTypeDefinition)
-        }
-    }
-
 
     //PARTICULAR CASE - CHECK
     if (actuelTypeDefinition.isInstanceOf[NodeType]) {
-      (actualRoot.getDeployUnits ++ newRoot.getDeployUnits).foreach {
-        du =>
-          if (du.getTargetNodeType.isDefined && du.getTargetNodeType.get == actuelTypeDefinition) {
-            du.setTargetNodeType(Some(newTypeDefinition.asInstanceOf[NodeType]))
-          }
-      }
       val nodeType = actuelTypeDefinition.asInstanceOf[NodeType]
-      val pl = (nodeType.getManagedPrimitiveTypes.toList ++ List())
+      val pl = nodeType.getManagedPrimitiveTypes
       nodeType.removeAllManagedPrimitiveTypes()
       pl.foreach {
         pll =>
           nodeType.addManagedPrimitiveTypes(mergeAdaptationPrimitive(root, pll))
       }
-
     }
     //UPDATE DEPLOYS UNIT
-    val allDeployUnits = newTypeDefinition.getDeployUnits //CLONE LIST -- !!! REMOVE OLD DEPLOY UNIT OBSOLET
-    logger.debug("previousSizr" + newTypeDefinition.getDeployUnits.size + "-" + actuelTypeDefinition.getDeployUnits.size)
+    val allDeployUnits = newTypeDefinition.getDeployUnits
     newTypeDefinition.removeAllDeployUnits()
     allDeployUnits.foreach {
       ndu =>
@@ -188,28 +123,26 @@ trait TypeDefinitionMerger extends Merger with DictionaryMerger with PortTypeMer
     }
 
     //PROCESS INSTANCE
-    val listInstance = root.getAllInstances
+    val listInstance = root.getAllInstances.filter(instance => instance.getTypeDefinition.isInstanceOf[UnresolvedTypeDefinition] && instance.getTypeDefinition.asInstanceOf[UnresolvedTypeDefinition].getName == newTypeDefinition.getName)
     listInstance.foreach {
       instance =>
-
-        val art2instance = instance.asInstanceOf[Instance]
-        art2instance.setTypeDefinition(newTypeDefinition)
+        val kevoreeInstance = instance.asInstanceOf[Instance]
 
         //MERGE DICTIONARY
-        if (art2instance.getDictionary.isDefined) {
+        if (kevoreeInstance.getDictionary.isDefined) {
           if (newTypeDefinition.getDictionaryType.isDefined) {
-            mergeDictionary(art2instance.getDictionary.get, newTypeDefinition.getDictionaryType.get)
+            mergeDictionary(kevoreeInstance.getDictionary.get, newTypeDefinition.getDictionaryType.get)
           } else {
             // TODO set to None the dictionary of the art2instance
-            art2instance.setDictionary(None)
-            logger.debug("There is no dictionary type on the new type definition " + newTypeDefinition.getName)
+            kevoreeInstance.setDictionary(None)
+            logger.info("There is no dictionary type on the new type definition " + newTypeDefinition.getName)
           }
         } else {
-          logger.debug("There is no dictionary type on the current type definition " + art2instance.getName)
+          logger.info("There is no dictionary type on the current type definition " + kevoreeInstance.getName)
         }
 
         //SPECIFIC PROCESS
-        art2instance match {
+        kevoreeInstance match {
           case c: ComponentInstance => {
             val ct = newTypeDefinition.asInstanceOf[ComponentType]
 
@@ -265,11 +198,17 @@ trait TypeDefinitionMerger extends Merger with DictionaryMerger with PortTypeMer
   }
 
   /* MERGE A SIMPLE NEW TYPE DEFINITION */
-  private def mergeNewTypeDefinition (actualModel: ContainerRoot, newTypeDefinition: TypeDefinition) = {
-    logger.debug("addNewTypeDef " + newTypeDefinition.getName)
+  private def mergeNewTypeDefinition(actualModel: ContainerRoot, newTypeDefinition: TypeDefinition) = {
+    //BREAK CROSS REFERENCE
+    newTypeDefinition.getSuperTypes.foreach {
+      superType =>
+        newTypeDefinition.removeSuperTypes(superType)
+        newTypeDefinition.addSuperTypes(UnresolvedTypeDefinition(superType.getName))
+    }
 
+    logger.info("addNewTypeDef " + newTypeDefinition.getName)
     //MERGE TYPE DEPLOY UNITS
-    val newTypeDefinitionDeployUnits = List() ++ newTypeDefinition.getDeployUnits.toList //CLONE LIST
+    val newTypeDefinitionDeployUnits = newTypeDefinition.getDeployUnits
     newTypeDefinition.removeAllDeployUnits()
     newTypeDefinitionDeployUnits.foreach {
       ndu =>
@@ -304,11 +243,11 @@ trait TypeDefinitionMerger extends Merger with DictionaryMerger with PortTypeMer
       case pt: PortType => {
         /*println("PORTTYPE M ?? "+pt.toString)*//* MERGE BY COMPONENT TYPE */
       }
-      case _@msg => logger.debug("Error uncatch type") // NO RECURSIVE FOR OTHER TYPE
+      case _@msg => logger.info("Error uncatch type") // NO RECURSIVE FOR OTHER TYPE
     }
   }
 
-  def mergeAdaptationPrimitive (model: ContainerRoot, adaptation: AdaptationPrimitiveType): AdaptationPrimitiveType = {
+  def mergeAdaptationPrimitive(model: ContainerRoot, adaptation: AdaptationPrimitiveType): AdaptationPrimitiveType = {
     model.getAdaptationPrimitiveTypes.find(p => p.getName == adaptation.getName) match {
       case Some(p) => p
       case None => {

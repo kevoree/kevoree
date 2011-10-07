@@ -24,12 +24,13 @@ import org.kevoree.ContainerRoot
  import org.kevoree.framework.aspects.KevoreeAspects._
 import org.slf4j.LoggerFactory
 
-trait InstanceMerger {
+trait ComponentInstanceMerger {
 
   private val logger = LoggerFactory.getLogger(this.getClass);
   /* Expect TYPE DEFINITION MERGE BEFORE */
-  def mergeComponentInstance(actualModel : ContainerRoot,c : ComponentInstance) {
 
+  def mergeComponentInstance(actualModel : ContainerRoot,c : ComponentInstance) {
+      /*
     //FIND CT
     val ctOpt = actualModel.getTypeDefinitions.find(p=> p.isModelEquals(c.getTypeDefinition)  )
     ctOpt match {
@@ -55,21 +56,8 @@ trait InstanceMerger {
       case None => {
           logger.debug("Warning => TypeDefinition not found");
         }
-    }
+    }  */
   }
-
-     /*
-  def mergeAllChannelInstance(actualModel : ContainerRoot,c : Channel)={
-
-    actualModel.getHubs.find(ec=> ec.isModelEquals(c)) match {
-      case None => {
-
-      }
-      case Some(ec)=>
-    }
-
-  }   */
-  
 
 
 }

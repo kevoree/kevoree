@@ -27,7 +27,7 @@ trait DeployUnitMerger extends Merger {
 
   def mergeDeployUnit(actualModel: ContainerRoot, tp: DeployUnit, newForce: Boolean = false): DeployUnit = {
 
-    actualModel.getDeployUnits.find({
+    val resultDeployUnit = actualModel.getDeployUnits.find({
       atp =>
         atp.isModelEquals(tp)
     }) match {
@@ -72,10 +72,13 @@ trait DeployUnitMerger extends Merger {
         tp
       }
     }
+
+    resultDeployUnit
+
   }
 
   def mergeRequiredLibs(actualModel: ContainerRoot, tp: DeployUnit) {
-    val requireds: List[DeployUnit] = List[DeployUnit]() ++ tp.getRequiredLibs.toList
+    val requireds: List[DeployUnit] = tp.getRequiredLibs
     tp.removeAllRequiredLibs()
     requireds.foreach {
       rLib =>

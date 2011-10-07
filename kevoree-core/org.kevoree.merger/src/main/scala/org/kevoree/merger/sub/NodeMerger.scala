@@ -22,20 +22,26 @@ import org.kevoree.ComponentInstance
 import org.kevoree.ContainerNode
 import org.kevoree.ContainerRoot
  import org.kevoree.framework.aspects.KevoreeAspects._
+import org.kevoree.merger.resolver.UnresolvedTypeDefinition
 
 
-trait NodeMerger extends InstanceMerger {
+trait NodeMerger extends ComponentInstanceMerger {
 
   def mergeAllNode(actualModel : ContainerRoot,modelToMerge : ContainerRoot)={
-
-    val toMergeNodes = modelToMerge.getNodes.toList ++ List()
-    toMergeNodes.foreach{toMergeNode=> mergeNode(actualModel,toMergeNode)  }
-
+    //BREAK CROSS REFERENCE NODE TYPE
+    actualModel.getNodes.foreach{ node =>
+       node.setTypeDefinition(UnresolvedTypeDefinition(node.getTypeDefinition.getName))
+       node.getComponents.foreach { component =>
+           component.setTypeDefinition(UnresolvedTypeDefinition(component.getTypeDefinition.getName))
+       }
+    }
+    modelToMerge.getNodes.foreach{toMergeNode=> mergeNode(actualModel,toMergeNode)  }
   }
 
   private def mergeNode(actualModel : ContainerRoot,nodeToMerge : ContainerNode)= {
     actualModel.getNodes.find(loopNode=> loopNode.getName == nodeToMerge.getName ) match {
       case None => {
+          nodeToMerge.setTypeDefinition(UnresolvedTypeDefinition(nodeToMerge.getTypeDefinition.getName))
           actualModel.addNodes(nodeToMerge);
           mergeAllInstances(actualModel,nodeToMerge,nodeToMerge)
       }
@@ -44,19 +50,14 @@ trait NodeMerger extends InstanceMerger {
   }
   
   private def mergeAllInstances(actualModel : ContainerRoot,targetInstance:ContainerNode,instanceToMerge : ContainerNode)={
-    val componentsList = List() ++ instanceToMerge.getComponents
-    componentsList.foreach{c=>
+    instanceToMerge.getComponents.foreach{c=>
       targetInstance.getComponents.find(eC=> eC.isModelEquals(c) ) match {
-
         case None => {
+            targetInstance.setTypeDefinition(UnresolvedTypeDefinition(targetInstance.getTypeDefinition.getName))
             targetInstance.addComponents(c)
             mergeComponentInstance(actualModel,c)
         }
-
-        case Some(e)=> 
-          mergeComponentInstance(actualModel,c)
-          //TODO CHECK BINDING
-
+        case Some(e)=> mergeComponentInstance(actualModel,c)
       }
     }
   }
