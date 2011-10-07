@@ -43,8 +43,8 @@ trait PortTypeMerger {
                   spt.removeAllOperations()
                   val remoteOps = portType.asInstanceOf[ServicePortType].getOperations.toList ++ List()
                   remoteOps.foreach{op=>
-                    op.setReturnType(mergeDataType(actualModel,op.getReturnType.get))
-                    op.getParameters.foreach{para=>para.setType(mergeDataType(actualModel,para.getType.get))}
+                    op.setReturnType(Some(mergeDataType(actualModel,op.getReturnType.get)))
+                    op.getParameters.foreach{para=>para.setType(Some(mergeDataType(actualModel,para.getType.get)))}
                     spt.addOperations(op)
                   }
 
@@ -63,8 +63,8 @@ trait PortTypeMerger {
           portType match {
             case spt : ServicePortType => {
                 spt.getOperations.foreach{op=>
-                  op.setReturnType(mergeDataType(actualModel,op.getReturnType.get))
-                  op.getParameters.foreach{para=>para.setType(mergeDataType(actualModel,para.getType.get))}
+                  op.setReturnType(Some(mergeDataType(actualModel,op.getReturnType.get)))
+                  op.getParameters.foreach{para=>para.setType(Some(mergeDataType(actualModel,para.getType.get)))}
                 }
               }
             case mpt : MessagePortType => {
