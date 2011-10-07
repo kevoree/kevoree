@@ -61,7 +61,7 @@ case class KevsNetworkInterpreter(networkStatement: NetworkPropertyStatement) ex
         actualModel.addNodes(newnode)
         newnode
       })
-      newNodeNetwork.setInitBy(thisNodeFound)
+      newNodeNetwork.setInitBy(Some(thisNodeFound))
       actualModel.addNodeNetworks(newNodeNetwork)
       newNodeNetwork
     }

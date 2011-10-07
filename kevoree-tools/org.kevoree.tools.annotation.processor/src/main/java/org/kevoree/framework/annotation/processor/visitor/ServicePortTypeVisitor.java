@@ -20,24 +20,14 @@ package org.kevoree.framework.annotation.processor.visitor;
 import com.sun.mirror.declaration.MethodDeclaration;
 import com.sun.mirror.declaration.ParameterDeclaration;
 import com.sun.mirror.declaration.TypeDeclaration;
-import com.sun.mirror.type.AnnotationType;
-import com.sun.mirror.type.ArrayType;
-import com.sun.mirror.type.ClassType;
-import com.sun.mirror.type.DeclaredType;
-import com.sun.mirror.type.EnumType;
-import com.sun.mirror.type.InterfaceType;
-import com.sun.mirror.type.PrimitiveType;
-import com.sun.mirror.type.ReferenceType;
-import com.sun.mirror.type.TypeMirror;
-import com.sun.mirror.type.TypeVariable;
-import com.sun.mirror.type.VoidType;
-import com.sun.mirror.type.WildcardType;
+import com.sun.mirror.type.*;
 import com.sun.mirror.util.TypeVisitor;
 import org.kevoree.KevoreeFactory;
 import org.kevoree.Operation;
 import org.kevoree.Parameter;
 import org.kevoree.ServicePortType;
 import org.kevoree.framework.annotation.processor.LocalUtility;
+import scala.Some;
 
 /**
  *
@@ -132,7 +122,7 @@ public class ServicePortTypeVisitor implements TypeVisitor {
             //BUILD RETURN TYPE
             DataTypeVisitor rtv = new DataTypeVisitor();
             m.getReturnType().accept(rtv);
-            newo.setReturnType(LocalUtility.getOraddDataType(rtv.getDataType()));
+            newo.setReturnType(new Some(LocalUtility.getOraddDataType(rtv.getDataType())));
 
             //BUILD PARAMETER
             for (ParameterDeclaration p : m.getParameters()) {
@@ -143,7 +133,7 @@ public class ServicePortTypeVisitor implements TypeVisitor {
 
                 DataTypeVisitor ptv = new DataTypeVisitor();
                 p.getType().accept(ptv);
-                newp.setType(LocalUtility.getOraddDataType(ptv.getDataType()));
+                newp.setType(new Some(LocalUtility.getOraddDataType(ptv.getDataType())));
             }
         }
 
