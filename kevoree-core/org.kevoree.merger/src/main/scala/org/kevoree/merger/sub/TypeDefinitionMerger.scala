@@ -197,9 +197,11 @@ trait TypeDefinitionMerger extends Merger with DictionaryMerger with PortTypeMer
 
         //MERGE DICTIONARY
         if (art2instance.getDictionary.isDefined) {
-          if (art2instance.getDictionary.isDefined) {
+          if (newTypeDefinition.getDictionaryType.isDefined) {
             mergeDictionary(art2instance.getDictionary.get, newTypeDefinition.getDictionaryType.get)
           } else {
+            // TODO set to None the dictionary of the art2instance
+            art2instance.setDictionary(None)
             logger.debug("There is no dictionary type on the new type definition " + newTypeDefinition.getName)
           }
         } else {
