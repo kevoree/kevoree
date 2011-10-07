@@ -1,6 +1,5 @@
-
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <artifactId>org.kevoree.merger</artifactId>
     <packaging>jar</packaging>
@@ -33,15 +32,21 @@
             <version>${kevoree.version}</version>
         </dependency>
         <dependency>
-            <groupId>org.scalatest</groupId>
-            <artifactId>scalatest</artifactId>
-            <version>1.2</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
             <version>${slf4j.version}</version>
+        </dependency>
+                <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-simple</artifactId>
+            <version>${slf4j.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.scalatest</groupId>
+            <artifactId>scalatest_2.9.1</artifactId>
+            <version>1.6.1</version>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 
@@ -54,7 +59,8 @@
                 <version>2.3.5</version>
                 <configuration>
                     <instructions>
-                        <Import-Package>!org.kevoree.merger.*,org.slf4j.*;version="${slf4j.version.range}",*</Import-Package>
+                        <Import-Package>!org.kevoree.merger.*,org.slf4j.*;version="${slf4j.version.range}",*
+                        </Import-Package>
                         <Export-Package>org.kevoree.merger.*</Export-Package>
                     </instructions>
                 </configuration>

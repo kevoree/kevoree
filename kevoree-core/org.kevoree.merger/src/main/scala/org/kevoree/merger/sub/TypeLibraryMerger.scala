@@ -19,25 +19,40 @@
 package org.kevoree.merger.sub
 
 import org.kevoree._
+import merger.resolver.UnresolvedTypeDefinition
 import org.kevoree.merger.Merger
 
 trait TypeLibraryMerger extends Merger {
 
-  def mergeLibrary(actualModel : ContainerRoot,modelToMerge : ContainerRoot) : Unit = {
-    val ctLib : List[TypeLibrary] = List()++modelToMerge.getLibraries
-    ctLib.foreach{libtomerge=>
-      actualModel.getLibraries.find({elib=> elib.getName.equals(libtomerge.getName) }) match {
-        case Some(elib) => {
-            libtomerge.getSubTypes.filter{st=> st.isInstanceOf[TypeDefinition]}.foreach{libCTtomerge=>
-              elib.getSubTypes.filter{st=> st.isInstanceOf[TypeDefinition]}.find({esublib=>esublib.getName.equals(libCTtomerge.getName)}) match {
-                case Some(subct)=> //CHECK CONSISTENCY DONE BY PREVIOUS STEP
-                case None => elib.addSubTypes(libCTtomerge)
-              }
-            }
-          }
-        case None => actualModel.addLibraries(libtomerge)
-      }
+  def mergeLibrary(actualModel: ContainerRoot, modelToMerge: ContainerRoot): Unit = {
+
+    //BREAK EVERY CROSS REFERENCE
+    actualModel.getLibraries.foreach { library =>
+        val subTypes = library.getSubTypes
+        library.removeAllSubTypes()
+        subTypes.foreach { libSubType =>
+            library.addSubTypes(UnresolvedTypeDefinition(libSubType.getName))
+        }
     }
+    //MERGE OR CREATE LIBRARY
+    //MERGE OR ADD UNRESOLVE TYPE DEF
+    modelToMerge.getLibraries.foreach {
+      library =>
+        val currentLibrary = actualModel.getLibraries.find(plib => plib.getName == library.getName)  match {
+          case Some(plib)=> plib
+          case None => {
+            val newLib = KevoreeFactory.eINSTANCE.createTypeLibrary
+            newLib.setName(library.getName)
+            actualModel.addLibraries(newLib)
+            newLib
+          }
+        }
+        library.getSubTypes.foreach {
+          libSubType =>
+            currentLibrary.addSubTypes(UnresolvedTypeDefinition(libSubType.getName))
+        }
+    }
+
   }
 
 }

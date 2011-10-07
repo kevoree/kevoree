@@ -19,27 +19,45 @@
 package org.kevoree.merger
 
 import org.kevoree.ContainerRoot
-import org.kevoree.merger.sub.NodeMerger
-import org.kevoree.merger.sub.RepositoryMerger
-import org.kevoree.merger.sub.TypeDefinitionMerger
-import org.kevoree.merger.sub.TypeLibraryMerger
+import resolver.UnresolvedNodeType._
+import resolver.{UnresolvedNodeType, TypeDefinitionResolver}
+import sub._
 
-class RootMerger extends TypeDefinitionMerger with TypeLibraryMerger with NodeMerger with RepositoryMerger {
+class RootMerger extends TypeDefinitionMerger with TypeLibraryMerger with NodeMerger with RepositoryMerger with TypeDefinitionResolver with ChannelMerger with GroupMerger {
 
-  override def merge(actualModel : ContainerRoot,modelToMerge : ContainerRoot) : Unit = {
-    if(modelToMerge!= null){
-      // Art2DeployUnitMerger.merge(actualModel, modelToMerge)
+  override def merge(actualModel: ContainerRoot, modelToMerge: ContainerRoot): Unit = {
+    if (modelToMerge != null) {
+
+      (actualModel.getDeployUnits ++ modelToMerge.getDeployUnits).foreach {
+        dp =>
+          dp.getTargetNodeType.map {
+            targetNodeType =>
+              dp.setTargetNodeType(Some(UnresolvedNodeType(targetNodeType.getName)))
+          }
+      }
+
+
+
+      mergeAllNode(actualModel, modelToMerge) //MERGE & BREAK CROSS REFERENCE
+      mergeAllGroups(actualModel, modelToMerge) //MERGE & BREAK CROSS REFERENCE
+      mergeAllChannels(actualModel, modelToMerge) //MERGE & BREAK CROSS REFERENCE
+
+      mergeLibrary(actualModel, modelToMerge) //MERGE & BREAK CROSS REFERENCE
       mergeTypeDefinition(actualModel, modelToMerge)
-      mergeLibrary(actualModel, modelToMerge)
-      mergeAllNode(actualModel, modelToMerge)
       mergeRepositories(actualModel, modelToMerge)
 
       executePostProcesses
 
+      //EVERYTHING IS MERGED, NOW RESOLVE ELEMENTS
+
+      resolveNodeTypeDefinition(actualModel)
+      resolveSuperTypeDefinition(actualModel)
+
+      resolveLibraryType(actualModel)
+      resolveInstanceTypeDefinition(actualModel)
+
     }
   }
-
-  
 
 
 }
