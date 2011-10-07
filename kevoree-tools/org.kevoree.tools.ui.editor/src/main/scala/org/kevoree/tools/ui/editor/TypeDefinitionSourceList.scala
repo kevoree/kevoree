@@ -227,8 +227,26 @@ class TypeDefinitionSourceList(pane: JSplitPane, kernel: KevoreeUIKernel) {
             }
         }
     }
-
   }
+
+  def updateAllValue() {
+    import scala.collection.JavaConversions._
+    model.getCategories.foreach {
+      categ =>
+        categ.getItems.foreach {
+          item => {
+            kernel.getModelHandler.getActualModel.getTypeDefinitions.foreach {
+              typeDef =>
+                if (typeDef.getName == item.getText) {
+                  val nbinstance = ModelHelper.getTypeNbInstance(kernel.getModelHandler.getActualModel, typeDef)
+                  item.setCounterValue(nbinstance)
+                }
+            }
+          }
+        }
+    }
+  }
+
 
   def addTypeDefinitionPanel(ctp: JPanel, libName: String, typeName: String) {
     val categ = getCategoryOrAdd(libName)

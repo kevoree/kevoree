@@ -71,6 +71,7 @@ public class AddNodeCommand implements Command {
 
         kernel.getEditorPanel().getPalette().updateTypeValue(ModelHelper.getTypeNbInstance(kernel.getModelHandler().getActualModel(), type),type.getName());
 
+        kernel.getModelHandler().notifyChanged();
 
 
     }

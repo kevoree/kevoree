@@ -35,9 +35,9 @@ class BaseDeployOSGi(bundle: Bundle) {
   private val logger = LoggerFactory.getLogger(this.getClass);
 
   def buildPrimitiveCommand(p: org.kevoreeAdaptation.AdaptationPrimitive, nodeName: String): PrimitiveCommand = {
-    p.getPrimitiveType match {
-      case Some(primitiveType) => {
-        primitiveType.getName match {
+    p.getPrimitiveType.getName match {
+     // case Some(primitiveType) => {
+     //   primitiveType.getName match {
           case JavaSePrimitive.AddDeployUnit => AddDeployUnitAetherCommand(p.getRef.asInstanceOf[DeployUnit], ctx)
           case JavaSePrimitive.RemoveDeployUnit => RemoveDeployUnitCommand(p.getRef.asInstanceOf[DeployUnit], ctx)
           case JavaSePrimitive.AddThirdParty => AddThirdPartyAetherCommand(p.getRef.asInstanceOf[DeployUnit], ctx)
@@ -59,9 +59,9 @@ class BaseDeployOSGi(bundle: Bundle) {
             logger.error("Unknown Kevoree adaptation primitive " + name); null
           }
         }
-      }
-      case None => logger.error("Unknown Kevoree adaptation primitive type "); null
-    }
+    //  }
+     // case None => logger.error("Unknown Kevoree adaptation primitive type "); null
+   // }
 
 
   }

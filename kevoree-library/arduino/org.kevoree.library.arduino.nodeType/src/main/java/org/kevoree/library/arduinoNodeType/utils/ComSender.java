@@ -34,7 +34,7 @@ public class ComSender {
         String msgToSend = "$"+token+msg;
 
 
-        boolean result = KevoreeSharedCom.sendSynch(portName,msgToSend, "ack" + token, 1000);
+        boolean result = KevoreeSharedCom.sendSynch(portName,msgToSend, "ack" + token, 3000);
 
         //boolean result = com.sendAndWait(msgToSend, "ack" + token, 3000);
 
