@@ -34,7 +34,7 @@ object Merger {
         var dictionary = inst.getDictionary
         if (dictionary.isEmpty) {
           dictionary = Some(KevoreeFactory.eINSTANCE.createDictionary)
-          inst.setDictionary(dictionary.get)
+          inst.setDictionary(dictionary)
         }
 
         inst.getDictionary.get.getValues.find(value => value.getAttribute.getName == key) match {
