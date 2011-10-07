@@ -62,7 +62,7 @@ class KevoreeKompareBean extends InitNodeKompare with StopNodeKompare with Updat
     //TRANSFORME UPDATE
     (currentAdaptModel.getAdaptations.toList ++ List()).foreach {
       adaptation =>
-        adaptation.getPrimitiveType.get.getName match {
+        adaptation.getPrimitiveType.getName match {
           case JavaSePrimitive.UpdateType => {
             val rcmd = KevoreeAdaptationFactory.eINSTANCE.createAdaptationPrimitive
             rcmd.setPrimitiveType(getAdaptationPrimitive(JavaSePrimitive.RemoveType, actualModel.asInstanceOf[ContainerRoot]))
