@@ -20,9 +20,11 @@ package org.kevoree.tools.ui.editor.property;
 import com.explodingpixels.macwidgets.HudWidgetFactory;
 import com.explodingpixels.macwidgets.plaf.HudLabelUI;
 import com.explodingpixels.macwidgets.plaf.HudTextFieldUI;
+import org.kevoree.Dictionary;
 import org.kevoree.DictionaryValue;
 import org.kevoree.KevoreeFactory;
 import org.kevoree.tools.ui.editor.KevoreeUIKernel;
+import scala.Some;
 
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
@@ -138,7 +140,7 @@ public class InstancePropertyEditor extends NamedElementPropertyEditor {
     public String getValue(org.kevoree.Instance instance, org.kevoree.DictionaryAttribute att) {
         DictionaryValue value = null;
         if (instance.getDictionary().isEmpty()) {
-            instance.setDictionary(KevoreeFactory.createDictionary());
+            instance.setDictionary(new Some<Dictionary>(KevoreeFactory.createDictionary()));
         }
         for (DictionaryValue v : instance.getDictionary().get().getValuesForJ()) {
             if (v.getAttribute().equals(att)) {
