@@ -1,18 +1,22 @@
 <kevoree:ContainerRoot xmlns:xml="http://www.omg.org/XMI" xmlns:xsi="http://wwww.w3.org/2001/XMLSchema-instance" xmlns:kevoree="http://kevoree/1.0" xmi:version="2.0" xsi:type="kevoree:ContainerRoot">
- <nodes metaData="x=668,y=459" xsi:type="kevoree:ContainerNode" name="KEVOREEDefaultNodeName" typeDefinition="//@typeDefinitions.1">
+ <nodes metaData="x=99,y=238" xsi:type="kevoree:ContainerNode" name="KEVOREEDefaultNodeName" typeDefinition="//@typeDefinitions.1">
   <dictionary>
    <values value="MAX" xsi:type="kevoree:DictionaryValue" attribute="//@typeDefinitions.1/@dictionaryType/@attributes.4"></values>
+   <values value="atmega328" xsi:type="kevoree:DictionaryValue" attribute="//@typeDefinitions.1/@dictionaryType/@attributes.0"></values>
    <values value="false" xsi:type="kevoree:DictionaryValue" attribute="//@typeDefinitions.1/@dictionaryType/@attributes.2"></values>
   </dictionary>
-  <components name="DigitalLi15" xsi:type="kevoree:ComponentInstance" typeDefinition="//@typeDefinitions.5">
+  <components name="DigitalLi868" xsi:type="kevoree:ComponentInstance" typeDefinition="//@typeDefinitions.5">
    <dictionary>
-    <values value="11" xsi:type="kevoree:DictionaryValue" attribute="//@typeDefinitions.5/@dictionaryType/@attributes.0"></values>
+    <values value="13" xsi:type="kevoree:DictionaryValue" attribute="//@typeDefinitions.5/@dictionaryType/@attributes.0"></values>
    </dictionary>
    <provided xsi:type="kevoree:Port" portTypeRef="//@typeDefinitions.5/@provided.0"></provided>
    <provided xsi:type="kevoree:Port" portTypeRef="//@typeDefinitions.5/@provided.1"></provided>
    <provided xsi:type="kevoree:Port" portTypeRef="//@typeDefinitions.5/@provided.2"></provided>
   </components>
-  <components name="Timer335" xsi:type="kevoree:ComponentInstance" typeDefinition="//@typeDefinitions.15">
+  <components name="Timer554" xsi:type="kevoree:ComponentInstance" typeDefinition="//@typeDefinitions.15">
+   <dictionary>
+    <values value="1000" xsi:type="kevoree:DictionaryValue" attribute="//@typeDefinitions.15/@dictionaryType/@attributes.0"></values>
+   </dictionary>
    <required xsi:type="kevoree:Port" portTypeRef="//@typeDefinitions.15/@required.0"></required>
   </components>
  </nodes>
@@ -316,9 +320,9 @@
  <libraries name="JavaSE" xsi:type="kevoree:TypeLibrary" subTypes="//@typeDefinitions.29 //@typeDefinitions.30"></libraries>
  <libraries name="Kevoree-Netty" xsi:type="kevoree:TypeLibrary" subTypes="//@typeDefinitions.32"></libraries>
  <libraries name="Kevoree-Android" xsi:type="kevoree:TypeLibrary" subTypes="//@typeDefinitions.34 //@typeDefinitions.36"></libraries>
- <hubs metaData="x=50,y=50" xsi:type="kevoree:Channel" name="LocalChan845" typeDefinition="//@typeDefinitions.8"></hubs>
- <mBindings port="//@nodes.0/@components.0/@provided.2" xsi:type="kevoree:MBinding" hub="//@hubs.0"></mBindings>
+ <hubs metaData="x=50,y=50" xsi:type="kevoree:Channel" name="LocalChan674" typeDefinition="//@typeDefinitions.8"></hubs>
  <mBindings port="//@nodes.0/@components.1/@required.0" xsi:type="kevoree:MBinding" hub="//@hubs.0"></mBindings>
+ <mBindings port="//@nodes.0/@components.0/@provided.2" xsi:type="kevoree:MBinding" hub="//@hubs.0"></mBindings>
  <deployUnits requiredLibs="//@deployUnits.1" version="1.4.0-SNAPSHOT" groupName="org.kevoree.library.sky" xsi:type="kevoree:DeployUnit" unitName="org.kevoree.library.sky.minicloud" hashcode="201110061733349" targetNodeType="//@typeDefinitions.0"></deployUnits>
  <deployUnits url="mvn:org.kevoree.extra/org.kevoree.extra.netty/3.2.5" xsi:type="kevoree:DeployUnit" name="org.kevoree.extra.org.kevoree.extra.netty" targetNodeType="//@typeDefinitions.0"></deployUnits>
  <deployUnits requiredLibs="//@deployUnits.3" version="1.4.0-SNAPSHOT" groupName="org.kevoree.library.arduino" xsi:type="kevoree:DeployUnit" unitName="org.kevoree.library.arduino.nodeType" hashcode="201110061734059" targetNodeType="//@typeDefinitions.1"></deployUnits>

@@ -46,7 +46,7 @@ object AdaptationModelWrapper {
         case JavaSePrimitive.AddInstance => {
 
             val props = new java.util.Properties
-            if (adapt.getRef.asInstanceOf[Instance].getDictionary != null) {
+            if (adapt.getRef.asInstanceOf[Instance].getDictionary.isDefined) {
               adapt.getRef.asInstanceOf[Instance].getDictionary.get.getValues.foreach {
                 value =>
                 props.put(value.getAttribute.getName, value.getValue)

@@ -31,8 +31,8 @@
 
 #define EEPROM_MAX_SIZE 1024
 #define MAX_INST_ID 15
-#define kevoreeID1 0
-#define kevoreeID2 9
+#define kevoreeID1 3
+#define kevoreeID2 1
 int eepromIndex;
 //Global Kevoree Type Defintion declaration
 const prog_char digitallight[] PROGMEM = "DigitalLight";
@@ -951,10 +951,10 @@ break;
             }                                                                            
                                                           
                                                           
-const prog_char init_localchan845[] PROGMEM = "LocalChan845";
-const prog_char init_digitalli15[] PROGMEM = "DigitalLi15";
-const prog_char init_timer335[] PROGMEM = "Timer335";
-PROGMEM const char * init_tables[] = {init_localchan845,init_digitalli15,init_timer335};
+const prog_char init_localchan674[] PROGMEM = "LocalChan674";
+const prog_char init_digitalli868[] PROGMEM = "DigitalLi868";
+const prog_char init_timer554[] PROGMEM = "Timer554";
+PROGMEM const char * init_tables[] = {init_localchan674,init_digitalli868,init_timer554};
 char instNameBuf[MAX_INST_ID];
 char instNameBuf2[MAX_INST_ID];
    unsigned long previousBootTime;
@@ -971,18 +971,18 @@ save2Memory(startBAdminChar);
         saveAIN_CMD(instNameBuf, 2, "");                                             
 save2Memory(sepAdminChar);
         strcpy_P(instNameBuf, (char *) pgm_read_word (&(init_tables[1])));        
-        saveAIN_CMD(instNameBuf, 0, "pin=11");                                             
+        saveAIN_CMD(instNameBuf, 0, "pin=13");                                             
 save2Memory(sepAdminChar);
         strcpy_P(instNameBuf, (char *) pgm_read_word (&(init_tables[2])));        
-        saveAIN_CMD(instNameBuf, 1, "period=200");                                             
-save2Memory(sepAdminChar);
-strcpy_P(instNameBuf, (char *) pgm_read_word (&(init_tables[1])));        
-strcpy_P(instNameBuf2, (char *) pgm_read_word (&(init_tables[0])));        
-saveBI_CMD(true,instNameBuf, instNameBuf2, 2);
+        saveAIN_CMD(instNameBuf, 1, "period=1000");                                             
 save2Memory(sepAdminChar);
 strcpy_P(instNameBuf, (char *) pgm_read_word (&(init_tables[2])));        
 strcpy_P(instNameBuf2, (char *) pgm_read_word (&(init_tables[0])));        
 saveBI_CMD(true,instNameBuf, instNameBuf2, 3);
+save2Memory(sepAdminChar);
+strcpy_P(instNameBuf, (char *) pgm_read_word (&(init_tables[1])));        
+strcpy_P(instNameBuf2, (char *) pgm_read_word (&(init_tables[0])));        
+saveBI_CMD(true,instNameBuf, instNameBuf2, 2);
 save2Memory(endAdminChar);
 }                                                                            
 eepromIndex = 2;                                                             
