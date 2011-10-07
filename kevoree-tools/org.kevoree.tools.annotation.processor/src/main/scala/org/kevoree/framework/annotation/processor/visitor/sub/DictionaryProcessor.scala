@@ -35,7 +35,7 @@ trait DictionaryProcessor {
         //CASE NO DICTIONARY
         if(typeDef.getDictionaryType.isEmpty){
           val newdictionary = KevoreeFactory.eINSTANCE.createDictionaryType
-          typeDef.setDictionaryType(newdictionary)
+          typeDef.setDictionaryType(Some(newdictionary))
         }
 
         //CASE NO ATT ALREADY CREATED WITH NAME
