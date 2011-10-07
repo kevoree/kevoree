@@ -28,7 +28,7 @@ object AdaptationModelWrapper {
     var statments = List[Statment]()
     model.getAdaptations.foreach {
       adapt =>
-      adapt.getPrimitiveType.get.getName match {
+      adapt.getPrimitiveType.getName match {
         case JavaSePrimitive.UpdateDictionaryInstance => {
             val dictionary = new java.util.Properties
             if(adapt.getRef.asInstanceOf[Instance].getDictionary != null){

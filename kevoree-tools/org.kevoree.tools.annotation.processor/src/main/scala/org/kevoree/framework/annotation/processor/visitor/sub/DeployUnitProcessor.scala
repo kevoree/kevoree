@@ -92,12 +92,12 @@ trait DeployUnitProcessor {
             //nodeTypeNameList.foreach {
             //nodeTypeName =>
             root.getTypeDefinitions.filter(p => p.isInstanceOf[NodeType]).find(nt => nt.getName == nodeTypeName) match {
-              case Some(existingNodeType) => newdeploy.setTargetNodeType(existingNodeType.asInstanceOf[NodeType])
+              case Some(existingNodeType) => newdeploy.setTargetNodeType(Some(existingNodeType.asInstanceOf[NodeType]))
               case None => {
                 val nodeType = KevoreeFactory.eINSTANCE.createNodeType
                 nodeType.setName(nodeTypeName)
                 root.addTypeDefinitions(nodeType)
-                newdeploy.setTargetNodeType(nodeType)
+                newdeploy.setTargetNodeType(Some(nodeType))
               }
             }
 
