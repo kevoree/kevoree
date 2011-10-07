@@ -17,9 +17,11 @@
  */
 package org.kevoree.tools.ui.editor.property;
 
+import org.kevoree.Dictionary;
 import org.kevoree.DictionaryValue;
 import org.kevoree.Instance;
 import org.kevoree.KevoreeFactory;
+import scala.Some;
 
 import javax.swing.event.TableModelListener;
 import javax.swing.table.TableModel;
@@ -80,7 +82,7 @@ public class InstanceTableModel implements TableModel {
             case 1:
                 DictionaryValue value = null;
                 if (instance.getDictionary() == null) {
-                    instance.setDictionary(KevoreeFactory.createDictionary());
+                    instance.setDictionary(new Some<Dictionary>(KevoreeFactory.createDictionary()));
                 }
                 for (DictionaryValue v : instance.getDictionary().get().getValuesForJ()) {
                     if (v.getAttribute().equals(att)) {
