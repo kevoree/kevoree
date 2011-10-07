@@ -34,6 +34,10 @@ class RemoveBindingCommand(mb:MBinding) extends Command {
 
     mb.removeModelAndUI(kernel)
     kernel.getEditorPanel.unshowPropertyEditor()
+
+    kernel.getModelHandler.EMFListener.notifyChanged()
+
+
   }
 
 }
