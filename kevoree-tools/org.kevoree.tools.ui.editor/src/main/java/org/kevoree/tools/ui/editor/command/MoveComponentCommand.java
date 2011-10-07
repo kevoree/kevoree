@@ -53,6 +53,10 @@ public class MoveComponentCommand implements Command {
                 nodepanel.add(panel);
                 node.addComponents(type);
             }
+
+            kernel.getModelHandler().notifyChanged();
+
+
         }
     }
 }

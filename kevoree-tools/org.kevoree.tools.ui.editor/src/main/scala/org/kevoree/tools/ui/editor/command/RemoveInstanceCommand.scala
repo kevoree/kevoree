@@ -44,7 +44,9 @@ class RemoveInstanceCommand(elem: org.kevoree.NamedElement) extends Command {
   }
 
   def updateType(i: Instance) {
-    kernel.getEditorPanel.getPalette.updateTypeValue(ModelHelper.getTypeNbInstance(kernel.getModelHandler.getActualModel, i.getTypeDefinition), i.getTypeDefinition.getName)
+     kernel.getEditorPanel.getPalette.updateAllValue()
+    kernel.getModelHandler.EMFListener.notifyChanged()
+    //kernel.getEditorPanel.getPalette.updateTypeValue(ModelHelper.getTypeNbInstance(kernel.getModelHandler.getActualModel, i.getTypeDefinition), i.getTypeDefinition.getName)
   }
 
 

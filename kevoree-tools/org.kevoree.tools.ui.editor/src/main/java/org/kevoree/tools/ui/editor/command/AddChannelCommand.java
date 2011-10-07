@@ -64,6 +64,7 @@ public class AddChannelCommand implements Command {
             newhubpanel.setLocation(point.x, point.y);
         }
         kernel.getEditorPanel().getPalette().updateTypeValue(ModelHelper.getTypeNbInstance(kernel.getModelHandler().getActualModel(), type), type.getName());
+        kernel.getModelHandler().notifyChanged();
 
     }
 }

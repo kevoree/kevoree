@@ -44,6 +44,7 @@ public class ClearModelCommand implements Command {
         kernel.getEditorPanel().revalidate();
         kernel.getEditorPanel().repaint();
 
+        kernel.getModelHandler().notifyChanged();
 
     }
 }

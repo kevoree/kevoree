@@ -67,7 +67,7 @@ trait TypeDefinitionMerger extends Merger with DictionaryMerger with PortTypeMer
       deployUnits.foreach {
         du =>
           if (du.getTargetNodeType.isDefined && du.getTargetNodeType.get == newTypeDefinition) {
-            du.setTargetNodeType(actuelTypeDefinition.asInstanceOf[NodeType])
+            du.setTargetNodeType(Some(actuelTypeDefinition.asInstanceOf[NodeType]))
           }
       }
 
@@ -120,7 +120,7 @@ trait TypeDefinitionMerger extends Merger with DictionaryMerger with PortTypeMer
       (actualRoot.getDeployUnits ++ actualRoot.getDeployUnits).foreach {
         du =>
           if (du.getTargetNodeType.isDefined && du.getTargetNodeType.get == newTypeDefinition.getName) {
-            du.setTargetNodeType(actuelTypeDefinition.asInstanceOf[NodeType])
+            du.setTargetNodeType(Some(actuelTypeDefinition.asInstanceOf[NodeType]))
           }
       }
     }
@@ -163,7 +163,7 @@ trait TypeDefinitionMerger extends Merger with DictionaryMerger with PortTypeMer
       (actualRoot.getDeployUnits ++ newRoot.getDeployUnits).foreach {
         du =>
           if (du.getTargetNodeType.isDefined && du.getTargetNodeType.get == actuelTypeDefinition) {
-            du.setTargetNodeType(newTypeDefinition.asInstanceOf[NodeType])
+            du.setTargetNodeType(Some(newTypeDefinition.asInstanceOf[NodeType]))
           }
       }
       val nodeType = actuelTypeDefinition.asInstanceOf[NodeType]
