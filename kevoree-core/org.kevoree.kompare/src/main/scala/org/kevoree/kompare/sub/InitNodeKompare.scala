@@ -56,7 +56,7 @@ trait InitNodeKompare extends AbstractKompare {
 
           /* add deploy unit if necessary */
           adaptationModel.getAdaptations
-            .filter(adaptation => adaptation.getPrimitiveType.get.getName == JavaSePrimitive.AddDeployUnit)
+            .filter(adaptation => adaptation.getPrimitiveType.getName == JavaSePrimitive.AddDeployUnit)
             .find(adaptation => adaptation.getRef.asInstanceOf[DeployUnit].isModelEquals(deployUnitfound)) match {
             case None => {
               val ctcmd = KevoreeAdaptationFactory.eINSTANCE.createAdaptationPrimitive
