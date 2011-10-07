@@ -26,11 +26,11 @@ import org.kevoree.Repository
 import org.slf4j.LoggerFactory
 
 trait RepositoryMerger {
-  var logger = LoggerFactory.getLogger(this.getClass);
+  private var logger = LoggerFactory.getLogger(this.getClass);
 
   //EXPECT TYPE DEFINITION TO BE MERGE BEFORE THIS STEP
   def mergeRepositories(actualModel : ContainerRoot,modelToMerge : ContainerRoot) : Unit = {
-    val ctRepo : List[Repository] = List()++modelToMerge.getRepositories
+    val ctRepo : List[Repository] = modelToMerge.getRepositories
     ctRepo.foreach{toMergeRepo=>
       actualModel.getRepositories.find(lr=> lr.getUrl == toMergeRepo.getUrl) match {
         case Some(found_repo)=> mergeRepository(actualModel,found_repo,toMergeRepo)
@@ -46,7 +46,7 @@ trait RepositoryMerger {
 
 
   def mergeRepository(actualRoot : ContainerRoot,actualRepository : Repository,toMergeRepository : Repository) : Unit = {
-    val toMergeUnits : List[DeployUnit] = List()++toMergeRepository.getUnits
+    val toMergeUnits : List[DeployUnit] = toMergeRepository.getUnits
     toMergeUnits.foreach{unit=>
 
       //ACTUAL UNIT

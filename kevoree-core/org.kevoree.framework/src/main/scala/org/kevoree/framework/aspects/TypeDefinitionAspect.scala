@@ -45,7 +45,7 @@ case class TypeDefinitionAspect(selfTD: TypeDefinition) {
     }
 
 
-    //println("check Conract changed " + pTD + "-" + selfTD)
+   // println("check Conract changed " + pTD + "-" + selfTD)
 
     if (pTD.getName != selfTD.getName) {
       return true
@@ -130,41 +130,38 @@ case class TypeDefinitionAspect(selfTD: TypeDefinition) {
         false
       }
       case nodeType: NodeType => {
-        true
+        false
       }
       case _@typeDef => logger.error("uncatch portTypeDef " + typeDef); true
     }
   }
 
   def isUpdated(pTD: TypeDefinition): Boolean = {
-    if(pTD.getDeployUnits.size == 0 && selfTD.getDeployUnits.size > 0){return false}  //SPECIAL CASE DONT MERGE TYPE DEFINITION WITHOUT DEPLOY UNIT
-    if(selfTD.getDeployUnits.size != pTD.getDeployUnits.size){return true}
-
-        val oneUpdated = selfTD.getDeployUnits.exists(selfDU => {
-          pTD.getDeployUnits.find(p => p.isModelEquals(selfDU)) match {
-            case Some(pDU) => {
-              try {
-                val pDUInteger = java.lang.Long.parseLong(pDU.getHashcode)
-                val selfDUInteger = java.lang.Long.parseLong(selfDU.getHashcode)
-                println(pDU.getUnitName)
-                 println(selfDU.getUnitName)
-                               println("kompareHashCode - "+selfDUInteger+"<"+pDUInteger+"-"+(selfDUInteger < pDUInteger))
-
-                selfDUInteger < pDUInteger
-              } catch {
-                case _@e => {
-                  //                  e.printStackTrace
-                  logger.error("Bad HashCode - equiality verification - " + pDU.getHashcode + " - " + selfDU.getHashcode, e)
-                  pDU.getHashcode != selfDU.getHashcode
-
-                }
-              }
+    if (pTD.getDeployUnits.size == 0 && selfTD.getDeployUnits.size > 0) {
+      return false
+    } //SPECIAL CASE DONT MERGE TYPE DEFINITION WITHOUT DEPLOY UNIT
+    if (selfTD.getDeployUnits.size != pTD.getDeployUnits.size) {
+      return true
+    }
+    //EQUALS DEPLOY UNIT SIZE CHECK FOR ONE IS UPDATED
+    val oneUpdated = selfTD.getDeployUnits.exists(selfDU => {
+      pTD.getDeployUnits.find(p => p.isModelEquals(selfDU)) match {
+        case Some(pDU) => {
+          try {
+            val pDUInteger = java.lang.Long.parseLong(pDU.getHashcode)
+            val selfDUInteger = java.lang.Long.parseLong(selfDU.getHashcode)
+            selfDUInteger < pDUInteger
+          } catch {
+            case _@e => {
+              logger.error("Bad HashCode - equiality verification - " + pDU.getHashcode + " - " + selfDU.getHashcode, e)
+              pDU.getHashcode != selfDU.getHashcode
             }
-            case _ => true
           }
-        })
-        // println(selfTD.getName+" result "+(oneUpdated))
-        oneUpdated
+        }
+        case _ => true
+      }
+    })
+    oneUpdated
   }
 
   //CHECKED
@@ -203,7 +200,7 @@ case class TypeDefinitionAspect(selfTD: TypeDefinition) {
     } else {
       logger.error("Node type definition empty  ! search node name = " + node.getName)
     }
-    logger.debug("will exit with => "+deployUnitfound)
+    logger.debug("will exit with => " + deployUnitfound)
     deployUnitfound
   }
 
@@ -211,28 +208,31 @@ case class TypeDefinitionAspect(selfTD: TypeDefinition) {
     var deployUnitfound: DeployUnit = null
     // looking for relevant deployunits on super types
 
-    println("t=>"+t.getName+"="+t.getDeployUnits.size)
-    t.getDeployUnits.foreach{ td =>
-        td.getTargetNodeType.map{ tNode =>
-          if(tNode.getName == nodeType.getName){
-            tNode.getDeployUnits.foreach{ chooseDP =>
-               logger.debug("candidate deploy unit => "+chooseDP.getUnitName)
-            }
-            deployUnitfound = td//tNode.getDeployUnits(0)
+    println("t=>" + t.getName + "=" + t.getDeployUnits.size)
+    t.getDeployUnits.foreach {
+      td =>
+        td.getTargetNodeType.map {
+          tNode =>
+            if (tNode.getName == nodeType.getName) {
+              tNode.getDeployUnits.foreach {
+                chooseDP =>
+                  logger.debug("candidate deploy unit => " + chooseDP.getUnitName)
+              }
+              deployUnitfound = td //tNode.getDeployUnits(0)
 
-            logger.debug("found & exit="+deployUnitfound.getUnitName)
-            return deployUnitfound
-          }
+              logger.debug("found & exit=" + deployUnitfound.getUnitName)
+              return deployUnitfound
+            }
         }
     }
 
     if (deployUnitfound == null) {
       nodeType.getSuperTypes.foreach(superNode => {
-      // call recursively for super types and test if something has been found {
-        logger.info("Search on super type => "+superNode.getName)
+        // call recursively for super types and test if something has been found {
+        logger.info("Search on super type => " + superNode.getName)
         deployUnitfound = foundRelevantDeployUnitOnNodeSuperTypes(superNode.asInstanceOf[NodeType], t)
-        if(deployUnitfound != null){
-           return deployUnitfound
+        if (deployUnitfound != null) {
+          return deployUnitfound
         }
       })
     }
