@@ -46,7 +46,7 @@ object KevoreePlatformHelper {
           actualModel.addNodes(newnode)
           newnode
         })
-      newNodeNetwork.setInitBy(thisNodeFound)
+      newNodeNetwork.setInitBy(Some(thisNodeFound))
       actualModel.addNodeNetworks(newNodeNetwork)
       newNodeNetwork
     }
