@@ -91,12 +91,12 @@ trait ThirdPartyProcessor {
         /* ROOT ADD NODE TYPE IF NECESSARY */
         nodeTypeNameList.foreach{nodeTypeName =>
           componentType.eContainer.asInstanceOf[ContainerRoot].getTypeDefinitions.filter(p=> p.isInstanceOf[NodeType]).find(nt => nt.getName == nodeTypeName) match {
-            case Some(existingNodeType)=>tp.setTargetNodeType(existingNodeType.asInstanceOf[NodeType])
+            case Some(existingNodeType)=>tp.setTargetNodeType(Some(existingNodeType.asInstanceOf[NodeType]))
             case None => {
                 val nodeType = KevoreeFactory.eINSTANCE.createNodeType
                 nodeType.setName(nodeTypeName)
                 root.addTypeDefinitions(nodeType)
-                tp.setTargetNodeType(nodeType)
+                tp.setTargetNodeType(Some(nodeType))
               }
           }
         }
