@@ -34,8 +34,6 @@ case class TypeDefinitionAspect(selfTD: TypeDefinition) {
   /* Check if the new type definition define new deploy unit than self */
   def contractChanged(pTD: TypeDefinition): Boolean = {
 
-    println("check for "+pTD.getName)
-
     if (selfTD.getSuperTypes.size != pTD.getSuperTypes.size) {
       return true
     }
@@ -45,9 +43,6 @@ case class TypeDefinitionAspect(selfTD: TypeDefinition) {
           return false
         }
     }
-
-
-    println("check Conract changed " + pTD.getName + "-" + selfTD.getName)
 
     if (pTD.getName != selfTD.getName) {
       return true
@@ -110,6 +105,7 @@ case class TypeDefinitionAspect(selfTD: TypeDefinition) {
             val providedEquality = selfCT.getProvided.exists(selfPTypeRef => {
               otherTD.getProvided.find(otherTypeRef => otherTypeRef.getName == selfPTypeRef.getName) match {
                 case Some(otherEquivalentTypeRef) => {
+                  println(selfTD.getName+"-foundedddd")
                   selfPTypeRef.getRef.contractChanged(otherEquivalentTypeRef.getRef)
                 }
                 case None => false
@@ -123,6 +119,8 @@ case class TypeDefinitionAspect(selfTD: TypeDefinition) {
                 case None => false
               }
             })
+            println(selfTD.getName + "-"+providedEquality+"-"+requiredEquality)
+
             providedEquality || requiredEquality
           }
         }
