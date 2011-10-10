@@ -20,30 +20,23 @@ package org.kevoree.merger
 
 import org.kevoree.ContainerRoot
 import resolver.UnresolvedNodeType._
-import resolver.{UnresolvedNodeType, TypeDefinitionResolver}
+import resolver.UnresolvedTypeDefinition._
+import resolver.{UnresolvedTypeDefinition, UnresolvedNodeType, TypeDefinitionResolver}
 import sub._
 
-class RootMerger extends TypeDefinitionMerger with TypeLibraryMerger with NodeMerger with RepositoryMerger with TypeDefinitionResolver with ChannelMerger with GroupMerger {
+class RootMerger extends TypeDefinitionMerger with TypeLibraryMerger with NodeMerger with RepositoryMerger with TypeDefinitionResolver with ChannelMerger with GroupMerger with CrossReferenceMerger {
 
   override def merge(actualModel: ContainerRoot, modelToMerge: ContainerRoot): Unit = {
     if (modelToMerge != null) {
 
-      (actualModel.getDeployUnits ++ modelToMerge.getDeployUnits).foreach {
-        dp =>
-          dp.getTargetNodeType.map {
-            targetNodeType =>
-              dp.setTargetNodeType(Some(UnresolvedNodeType(targetNodeType.getName)))
-          }
-      }
 
-
+      breakCrossRef(actualModel, modelToMerge) ///BREAK LIBRARY & DEPLOY UNIT CROSS REF
 
       mergeAllNode(actualModel, modelToMerge) //MERGE & BREAK CROSS REFERENCE
       mergeAllGroups(actualModel, modelToMerge) //MERGE & BREAK CROSS REFERENCE
       mergeAllChannels(actualModel, modelToMerge) //MERGE & BREAK CROSS REFERENCE
-
-      mergeLibrary(actualModel, modelToMerge) //MERGE & BREAK CROSS REFERENCE
       mergeTypeDefinition(actualModel, modelToMerge)
+      mergeLibrary(actualModel, modelToMerge) //MERGE & BREAK CROSS REFERENCE
       mergeRepositories(actualModel, modelToMerge)
 
       executePostProcesses
