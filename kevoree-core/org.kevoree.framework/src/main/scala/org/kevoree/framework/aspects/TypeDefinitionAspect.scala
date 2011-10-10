@@ -77,9 +77,10 @@ case class TypeDefinitionAspect(selfTD: TypeDefinition) {
             false
           }
           case otherSPT: ServicePortType => {
+            println("chekc for SPT")
             val selfSPT = selfTD.asInstanceOf[ServicePortType]
             "" match {
-              case _ if (selfSPT.getOperations.size != otherSPT.getOperations.size) => true
+              case _ if (selfSPT.getOperations.size != otherSPT.getOperations.size) => {  println(selfSPT.getName+"operation "+selfSPT.getOperations.size+"_"+otherSPT.getOperations.size); true }
               case _ => {
                 val interfaceChanged = selfSPT.getInterface != otherSPT.getInterface
                 val operationsChanged = selfSPT.getOperations.forall(selfOperation =>
@@ -90,6 +91,7 @@ case class TypeDefinitionAspect(selfTD: TypeDefinition) {
                     case None => true
                   }
                 )
+                println(selfTD+"_"+interfaceChanged+"_"+operationsChanged)
                 interfaceChanged || operationsChanged
               }
             }
@@ -105,7 +107,6 @@ case class TypeDefinitionAspect(selfTD: TypeDefinition) {
             val providedEquality = selfCT.getProvided.exists(selfPTypeRef => {
               otherTD.getProvided.find(otherTypeRef => otherTypeRef.getName == selfPTypeRef.getName) match {
                 case Some(otherEquivalentTypeRef) => {
-                  println(selfTD.getName+"-foundedddd "+selfPTypeRef.getName+"-"+selfPTypeRef.getRef.contractChanged(otherEquivalentTypeRef.getRef))
                   selfPTypeRef.getRef.contractChanged(otherEquivalentTypeRef.getRef)
                 }
                 case None => false
