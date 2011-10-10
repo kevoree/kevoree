@@ -36,9 +36,6 @@ object MergerApp {
     val model4 = KevoreeXmiHelper.load("/Users/duke/Documents/dev/dukeboard/kevoree/kevoree-library/javase/org.kevoree.library.javase.fakeDomo/target/generated-sources/kevoree/KEV-INF/lib2.kev")
 
 
-  //  val model3 = KevoreeXmiHelper.load("/Users/duke/Documents/dev/dukeboard/kevoree/kevoree-library/arduino/org.kevoree.library.arduino.components/target/classes/KEV-INF/lib.kev")
-
-
     println("%%%%%%%%%%%%%%%%%%%%%%%%%% 1")
     merger.merge(emtpyModel, model1)
     println("%%%%%%%%%%%%%%%%%%%%%%%%%% 2")
@@ -46,7 +43,6 @@ object MergerApp {
     println("%%%%%%%%%%%%%%%%%%%%%%%%%% 3")
     merger.merge(emtpyModel, model3)
     println("%%%%%%%%%%%%%%%%%%%%%%%%%% 4")
-    println("-")
     merger.merge(emtpyModel, model4)
     println("!!!!!!!!!!!!!!!!!!!!!!!!!! end")
     println(KevoreeXmiHelper.saveToString(emtpyModel,true))

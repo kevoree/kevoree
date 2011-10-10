@@ -23,4 +23,6 @@ import org.kevoree.NodeType
  * To change this template use File | Settings | File Templates.
  */
 
-case class UnresolvedNodeType(unresolvedNodeTypeName : String) extends NodeType
+case class UnresolvedNodeType(unresolvedNodeTypeName : String) extends NodeType {
+  override def getName = unresolvedNodeTypeName
+}

@@ -33,23 +33,9 @@ trait TypeDefinitionMerger extends Merger with DictionaryMerger with PortTypeMer
 
     modelToMerge.getTypeDefinitions.foreach {
       toMergeTypeDef =>
-        println("process => " + toMergeTypeDef.getName)
         actualModel.getTypeDefinitions.find(actualTypeDef => actualTypeDef.getName == toMergeTypeDef.getName) match {
           case Some(found_type_definition) => {
-            println("look => " + found_type_definition.getName)
-
-
-            //BREAK CROSS REFERENCE
-            (toMergeTypeDef.getSuperTypes ++ found_type_definition.getSuperTypes).foreach {
-              superType =>
-                found_type_definition.removeSuperTypes(superType)
-                found_type_definition.addSuperTypes(UnresolvedTypeDefinition(superType.getName))
-            }
-
-            //END BREAK CROSS REFERENCE
-            //    println(found_type_definition.getName)
             val root = found_type_definition.eContainer.asInstanceOf[ContainerRoot]
-
             if (found_type_definition.isUpdated(toMergeTypeDef)) {
               if (found_type_definition.contractChanged(toMergeTypeDef)) {
                 consistencyImpacted(root, found_type_definition, toMergeTypeDef)
@@ -199,13 +185,6 @@ trait TypeDefinitionMerger extends Merger with DictionaryMerger with PortTypeMer
 
   /* MERGE A SIMPLE NEW TYPE DEFINITION */
   private def mergeNewTypeDefinition(actualModel: ContainerRoot, newTypeDefinition: TypeDefinition) = {
-    //BREAK CROSS REFERENCE
-    newTypeDefinition.getSuperTypes.foreach {
-      superType =>
-        newTypeDefinition.removeSuperTypes(superType)
-        newTypeDefinition.addSuperTypes(UnresolvedTypeDefinition(superType.getName))
-    }
-
     logger.info("addNewTypeDef " + newTypeDefinition.getName)
     //MERGE TYPE DEPLOY UNITS
     val newTypeDefinitionDeployUnits = newTypeDefinition.getDeployUnits
