@@ -31,32 +31,32 @@
         <dependency>
             <groupId>org.sonatype.aether</groupId>
             <artifactId>aether-api</artifactId>
-            <version>1.12</version>
+            <version>1.13</version>
         </dependency>
         <dependency>
             <groupId>org.sonatype.aether</groupId>
             <artifactId>aether-spi</artifactId>
-            <version>1.12</version>
+            <version>1.13</version>
         </dependency>
         <dependency>
             <groupId>org.sonatype.aether</groupId>
             <artifactId>aether-util</artifactId>
-            <version>1.12</version>
+            <version>1.13</version>
         </dependency>
         <dependency>
             <groupId>org.sonatype.aether</groupId>
             <artifactId>aether-impl</artifactId>
-            <version>1.12</version>
+            <version>1.13</version>
         </dependency>
         <dependency>
             <groupId>org.sonatype.aether</groupId>
             <artifactId>aether-connector-file</artifactId>
-            <version>1.12</version>
+            <version>1.13</version>
         </dependency>
         <dependency>
             <groupId>org.sonatype.aether</groupId>
             <artifactId>aether-connector-asynchttpclient</artifactId>
-            <version>1.12</version>
+            <version>1.13</version>
         </dependency>
 
         <!--
@@ -116,7 +116,7 @@
                             org.apache.maven.http.*,
                             org.apache.maven.artifact.*,
                             com.ning.*,
-                            org.jboss.netty.*,
+                          <!--  org.jboss.netty.*,  -->
                             org.codehaus.plexus.interpolation.*,
                             org.codehaus.plexus.util.*,
                             org.apache.maven.wagon.*
