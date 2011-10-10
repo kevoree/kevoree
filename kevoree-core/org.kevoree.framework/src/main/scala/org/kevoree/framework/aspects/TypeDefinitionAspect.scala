@@ -34,6 +34,8 @@ case class TypeDefinitionAspect(selfTD: TypeDefinition) {
   /* Check if the new type definition define new deploy unit than self */
   def contractChanged(pTD: TypeDefinition): Boolean = {
 
+    println("check for "+pTD.getName)
+
     if (selfTD.getSuperTypes.size != pTD.getSuperTypes.size) {
       return true
     }
@@ -45,7 +47,7 @@ case class TypeDefinitionAspect(selfTD: TypeDefinition) {
     }
 
 
-   // println("check Conract changed " + pTD + "-" + selfTD)
+    println("check Conract changed " + pTD.getName + "-" + selfTD.getName)
 
     if (pTD.getName != selfTD.getName) {
       return true

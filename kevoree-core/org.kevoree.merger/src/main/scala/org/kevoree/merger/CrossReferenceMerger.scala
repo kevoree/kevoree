@@ -45,5 +45,13 @@ trait CrossReferenceMerger {
             library.addSubTypes(UnresolvedTypeDefinition(libSubType.getName))
         }
     }
+    (actualModel.getTypeDefinitions ++ modelToMerge.getTypeDefinitions).foreach {
+      typeDef =>
+        typeDef.getSuperTypes.foreach {
+          superType =>
+            typeDef.removeSuperTypes(superType)
+            typeDef.addSuperTypes(UnresolvedTypeDefinition(superType.getName))
+        }
+    }
   }
 }
