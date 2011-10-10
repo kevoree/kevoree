@@ -31,12 +31,13 @@ with KevsNodeParser
 with KevsBindingParser
 with KevsTypeParser
 with KevsLibraryParser
-with KevsNetworkPropertyParser {
+with KevsNetworkPropertyParser
+with KevsDeployUnitParser {
 
   /**
    * extend the fExpression parser with sub parser
    */
-  override def kevStatement: Parser[List[Statment]] = (parseInst | parseNode | parseBindingsStatments | parseType | parseLibrary | parseNetworkProperty )
+  override def kevStatement: Parser[List[Statment]] = (parseInst | parseNode | parseBindingsStatments | parseType | parseLibrary | parseNetworkProperty | parseDeployUnit )
 
   override def componentID: Parser[ComponentInstanceID] = parseCID
 

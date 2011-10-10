@@ -63,6 +63,8 @@ object KevsInterpreterAspects {
         //Library aspect
         case addLibrary: AddLibraryStatment => KevsAddLibraryInterpreter(addLibrary)
         case removeLibrary: RemoveLibraryStatment => KevsRemoveLibraryInterpreter(removeLibrary)
+        case addDeployUnit : AddDeployUnitStatment => KevsAddDeployUnitInterpreter(addDeployUnit)
+
 
         //TYPE ASPECT
         case createComponentType: CreateComponentTypeStatment => KevsCreateComponentTypeInterpreter(createComponentType)
