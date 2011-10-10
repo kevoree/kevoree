@@ -43,6 +43,7 @@ class ReloadTypePalette extends Command {
         var loadedLib = List[TypeDefinition]()
         model.getLibraries.foreach {
           library =>
+            palette.getCategoryOrAdd(library.getName)
             library.getSubTypes.foreach {
               subTypeDef =>
                 loadedLib = loadedLib ++ List(subTypeDef)

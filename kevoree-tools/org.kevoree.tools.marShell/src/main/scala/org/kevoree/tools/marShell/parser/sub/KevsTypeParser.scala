@@ -18,10 +18,7 @@
 
 package org.kevoree.tools.marShell.parser.sub
 
-import org.kevoree.tools.marShell.ast.AddPortTypeStatment
-import org.kevoree.tools.marShell.ast.CreateComponentTypeStatment
-import org.kevoree.tools.marShell.ast.Statment
-
+import org.kevoree.tools.marShell.ast.{CreateChannelTypeStatment, AddPortTypeStatment, CreateComponentTypeStatment, Statment}
 
 trait KevsTypeParser extends KevsAbstractParser {
 
@@ -33,7 +30,7 @@ trait KevsTypeParser extends KevsAbstractParser {
   def parseCreateComponentType : Parser[List[Statment]] = "createComponentType" ~ orFailure(repsep(ident,","),createComponentTypeCommandFormat) ^^{ case _ ~ nodeIDs =>
       var res : List[Statment] = List()
       nodeIDs.foreach{typeName=>
-        res = res ++ List(CreateComponentTypeStatment(typeName))
+        res = res ++ List(CreateChannelTypeStatment(typeName))
       }
       res
   }
