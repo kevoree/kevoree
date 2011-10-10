@@ -73,7 +73,11 @@ class AddElementUICommand extends Command {
             layoutPopup.add(uiElems._1, BorderLayout.CENTER)
             layoutPopup.add(uiElems._2, BorderLayout.SOUTH)
           }
-          case DeployUnit => layoutPopup.add(createNewDeployUnitPanel(), BorderLayout.CENTER)
+          case DeployUnit => {
+            val uiElems = createNewDeployUnitPanel(newPopup)
+            layoutPopup.add(uiElems._1, BorderLayout.CENTER)
+            layoutPopup.add(uiElems._2, BorderLayout.SOUTH)
+          }
           case _ =>
         }
         layoutPopup.add(layoutPopupTop, BorderLayout.NORTH)
@@ -123,19 +127,33 @@ class AddElementUICommand extends Command {
     Tuple2(layout, btAdd)
   }
 
-  def createNewDeployUnitPanel(): JPanel = {
+  def createNewDeployUnitPanel(window: HudWindow): Tuple2[JPanel, JButton] = {
     val layout = new JPanel(new SpringLayout)
     layout.setOpaque(false)
     val nameTextField = new JTextField()
     nameTextField.setUI(new HudTextFieldUI())
-    val nodeNameLabel = new JLabel("DeployUnit name", SwingConstants.TRAILING);
+    val nodeNameLabel = new JLabel("Library name", SwingConstants.TRAILING);
     nodeNameLabel.setUI(new HudLabelUI());
     nodeNameLabel.setOpaque(false);
     nodeNameLabel.setLabelFor(nameTextField);
     layout.add(nodeNameLabel)
     layout.add(nameTextField)
+    //EXECUTE KEVSCRIPT COMMAND
+    val btAdd = new JButton("Add")
+    btAdd.setUI(new HudButtonUI)
+    btAdd.addActionListener(new ActionListener {
+      def actionPerformed(p1: ActionEvent) {
+        if (nameTextField.getText != "") {
+          val cmd = new KevScriptCommand
+          cmd.setKernel(kernel)
+          cmd.execute("tblock { addLibrary " + nameTextField.getText + " } ")
+          window.getJDialog.dispose()
+        }
+      }
+    })
+    window.getJDialog.getRootPane.setDefaultButton(btAdd)
     SpringUtilities.makeCompactGrid(layout, 1, 2, 6, 6, 6, 6)
-    layout
+    Tuple2(layout, btAdd)
   }
 
   def createNewComponentTypePanel(window: HudWindow): Tuple2[JPanel, JButton] = {
