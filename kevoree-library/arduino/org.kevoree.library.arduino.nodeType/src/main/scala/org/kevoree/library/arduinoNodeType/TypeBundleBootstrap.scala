@@ -14,12 +14,12 @@ object TypeBundleBootstrap {
 
   def bootstrapTypeBundle(adaptationModel : AdaptationModel,ctx:BundleContext){
     //Add All ThirdParty
-    adaptationModel.getAdaptations.filter(adaptation => adaptation.getPrimitiveType.isDefined && adaptation.getPrimitiveType.get.getName == JavaSePrimitive.AddThirdParty).foreach{adaptation=>
+    adaptationModel.getAdaptations.filter(adaptation => adaptation.getPrimitiveType.getName == JavaSePrimitive.AddThirdParty).foreach{adaptation=>
       val cmd = AddThirdPartyCommand(ctx,adaptation.getRef.asInstanceOf[DeployUnit])
       cmd.execute()
     }
     //Add All TypeDefinitionBundle
-    adaptationModel.getAdaptations.filter(adaptation => adaptation.getPrimitiveType.isDefined && adaptation.getPrimitiveType.get.getName == JavaSePrimitive.AddDeployUnit).foreach{adaptation=>
+    adaptationModel.getAdaptations.filter(adaptation => adaptation.getPrimitiveType.getName == JavaSePrimitive.AddDeployUnit).foreach{adaptation=>
       val cmd = AddThirdPartyCommand(ctx,adaptation.getRef.asInstanceOf[DeployUnit])
       cmd.execute()
     }
