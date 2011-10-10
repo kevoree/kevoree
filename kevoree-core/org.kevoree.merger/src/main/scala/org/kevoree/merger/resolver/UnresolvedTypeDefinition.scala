@@ -23,4 +23,6 @@ import org.kevoree.TypeDefinition
  * To change this template use File | Settings | File Templates.
  */
 
-case class UnresolvedTypeDefinition(typeDefinitionName : String) extends TypeDefinition
+case class UnresolvedTypeDefinition(typeDefinitionName : String) extends TypeDefinition {
+  override def getName = typeDefinitionName
+}
