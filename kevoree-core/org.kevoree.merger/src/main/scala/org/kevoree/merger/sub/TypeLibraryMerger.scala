@@ -21,25 +21,19 @@ package org.kevoree.merger.sub
 import org.kevoree._
 import merger.resolver.UnresolvedTypeDefinition
 import org.kevoree.merger.Merger
+import org.slf4j.LoggerFactory
 
 trait TypeLibraryMerger extends Merger {
 
-  def mergeLibrary(actualModel: ContainerRoot, modelToMerge: ContainerRoot): Unit = {
+  private val logger = LoggerFactory.getLogger(this.getClass)
 
-    //BREAK EVERY CROSS REFERENCE
-    actualModel.getLibraries.foreach { library =>
-        val subTypes = library.getSubTypes
-        library.removeAllSubTypes()
-        subTypes.foreach { libSubType =>
-            library.addSubTypes(UnresolvedTypeDefinition(libSubType.getName))
-        }
-    }
+  def mergeLibrary(actualModel: ContainerRoot, modelToMerge: ContainerRoot): Unit = {
     //MERGE OR CREATE LIBRARY
     //MERGE OR ADD UNRESOLVE TYPE DEF
     modelToMerge.getLibraries.foreach {
       library =>
-        val currentLibrary = actualModel.getLibraries.find(plib => plib.getName == library.getName)  match {
-          case Some(plib)=> plib
+        val currentLibrary = actualModel.getLibraries.find(plib => plib.getName == library.getName) match {
+          case Some(plib) => plib
           case None => {
             val newLib = KevoreeFactory.eINSTANCE.createTypeLibrary
             newLib.setName(library.getName)
@@ -49,7 +43,14 @@ trait TypeLibraryMerger extends Merger {
         }
         library.getSubTypes.foreach {
           libSubType =>
-            currentLibrary.addSubTypes(UnresolvedTypeDefinition(libSubType.getName))
+            libSubType match {
+              case UnresolvedTypeDefinition(unresolveTypeName) => {
+                if (!currentLibrary.getSubTypes.exists(sub => sub.isInstanceOf[UnresolvedTypeDefinition] && sub.asInstanceOf[UnresolvedTypeDefinition].typeDefinitionName == unresolveTypeName)) {
+                  currentLibrary.addSubTypes(UnresolvedTypeDefinition(unresolveTypeName))
+                }
+              }
+              case _ @ e => logger.error("resolved type definition present with name "+e)
+            }
         }
     }
 
