@@ -38,8 +38,6 @@ trait PortTypeMerger {
         existPT match {
           case spt: ServicePortType => {
 
-            println("ok found "+spt.getOperations.size)
-
             if (portType.isInstanceOf[ServicePortType]) {
               //CLEAR OLD METHOD , NEW DEFINITION WILL REPLACE OTHER
               val remoteOps = portType.asInstanceOf[ServicePortType].getOperations
@@ -74,27 +72,15 @@ trait PortTypeMerger {
         portType match {
           case spt: ServicePortType => {
 
-            println("before "+spt.getOperations.size)
-
             val operations = spt.getOperations
-          //  spt.removeAllOperations()
             spt.getOperations.foreach {
               op =>
-               // val newOperation = KevoreeFactory.createOperation
-               // newOperation.setName(op.getName)
                 op.setReturnType(Some(mergeDataType(actualModel, op.getReturnType.get)))
                 op.getParameters.foreach {
                   para =>
-                   // val newparam = KevoreeFactory.createParameter
-                   // newparam.setName(para.getName)
                     para.setType(Some(mergeDataType(actualModel, para.getType.get)))
-                   // newOperation.addParameters(newparam)
                 }
-               // spt.addOperations(newOperation)
             }
-
-            println("initial merge "+spt.getOperations.size)
-
           }
           case mpt: MessagePortType => {
             mpt.getFilters.foreach {
