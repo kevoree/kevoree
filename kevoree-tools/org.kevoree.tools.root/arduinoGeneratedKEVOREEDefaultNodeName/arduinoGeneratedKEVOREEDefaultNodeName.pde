@@ -31,8 +31,8 @@
 
 #define EEPROM_MAX_SIZE 1024
 #define MAX_INST_ID 15
-#define kevoreeID1 3
-#define kevoreeID2 1
+#define kevoreeID1 6
+#define kevoreeID2 2
 int eepromIndex;
 //Global Kevoree Type Defintion declaration
 const prog_char digitallight[] PROGMEM = "DigitalLight";
@@ -951,10 +951,10 @@ break;
             }                                                                            
                                                           
                                                           
-const prog_char init_localchan674[] PROGMEM = "LocalChan674";
-const prog_char init_digitalli868[] PROGMEM = "DigitalLi868";
-const prog_char init_timer554[] PROGMEM = "Timer554";
-PROGMEM const char * init_tables[] = {init_localchan674,init_digitalli868,init_timer554};
+const prog_char init_localchan875[] PROGMEM = "LocalChan875";
+const prog_char init_digitalli251[] PROGMEM = "DigitalLi251";
+const prog_char init_timer459[] PROGMEM = "Timer459";
+PROGMEM const char * init_tables[] = {init_localchan875,init_digitalli251,init_timer459};
 char instNameBuf[MAX_INST_ID];
 char instNameBuf2[MAX_INST_ID];
    unsigned long previousBootTime;
@@ -971,7 +971,7 @@ save2Memory(startBAdminChar);
         saveAIN_CMD(instNameBuf, 2, "");                                             
 save2Memory(sepAdminChar);
         strcpy_P(instNameBuf, (char *) pgm_read_word (&(init_tables[1])));        
-        saveAIN_CMD(instNameBuf, 0, "pin=13");                                             
+        saveAIN_CMD(instNameBuf, 0, "pin=11");                                             
 save2Memory(sepAdminChar);
         strcpy_P(instNameBuf, (char *) pgm_read_word (&(init_tables[2])));        
         saveAIN_CMD(instNameBuf, 1, "period=1000");                                             
