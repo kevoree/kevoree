@@ -17,10 +17,10 @@ import org.kevoree.tools.ui.editor.KevoreeUIKernel
 import com.explodingpixels.macwidgets.HudWindow
 import java.awt.BorderLayout
 import java.awt.event.{ActionEvent, ActionListener}
-import javax.swing._
-import com.explodingpixels.macwidgets.plaf.{HudTextFieldUI, HudLabelUI, HudComboBoxUI}
 import java.util.Properties
 import org.kevoree.tools.ui.editor.property.SpringUtilities
+import com.explodingpixels.macwidgets.plaf.{HudButtonUI, HudTextFieldUI, HudLabelUI, HudComboBoxUI}
+import javax.swing._
 
 /**
  * User: ffouquet
@@ -68,7 +68,11 @@ class AddElementUICommand extends Command {
       override def actionPerformed(actionEvent: ActionEvent) {
         layoutPopup.removeAll()
         newElements.getSelectedItem match {
-          case LibraryLabel => layoutPopup.add(createNewLibraryPanel(), BorderLayout.CENTER)
+          case LibraryLabel => {
+            val uiElems = createNewLibraryPanel(newPopup)
+            layoutPopup.add(uiElems._1, BorderLayout.CENTER)
+            layoutPopup.add(uiElems._2, BorderLayout.SOUTH)
+          }
           case DeployUnit => layoutPopup.add(createNewDeployUnitPanel(), BorderLayout.CENTER)
           case _ =>
         }
@@ -80,14 +84,17 @@ class AddElementUICommand extends Command {
 
     layoutPopup.add(layoutPopupTop, BorderLayout.NORTH)
     newPopup.getContentPane.add(layoutPopup)
-    layoutPopup.add(createNewLibraryPanel(), BorderLayout.CENTER)
+    val uiElems = createNewLibraryPanel(newPopup)
+    layoutPopup.add(uiElems._1, BorderLayout.CENTER)
+    layoutPopup.add(uiElems._2, BorderLayout.SOUTH)
+
     newPopup.getJDialog.setVisible(true)
   }
 
 
   val currentProps = new Properties
 
-  def createNewLibraryPanel(): JPanel = {
+  def createNewLibraryPanel(window: HudWindow): Tuple2[JPanel, JButton] = {
     val layout = new JPanel(new SpringLayout)
     layout.setOpaque(false)
     val nameTextField = new JTextField()
@@ -98,8 +105,22 @@ class AddElementUICommand extends Command {
     nodeNameLabel.setLabelFor(nameTextField);
     layout.add(nodeNameLabel)
     layout.add(nameTextField)
+    //EXECUTE KEVSCRIPT COMMAND
+    val btAdd = new JButton("Add")
+    btAdd.setUI(new HudButtonUI)
+    btAdd.addActionListener(new ActionListener {
+      def actionPerformed(p1: ActionEvent) {
+        if (nameTextField.getText != "") {
+          val cmd = new KevScriptCommand
+          cmd.setKernel(kernel)
+          cmd.execute("tblock { addLibrary " + nameTextField.getText + " } ")
+          window.getJDialog.dispose()
+        }
+      }
+    })
+    window.getJDialog.getRootPane.setDefaultButton(btAdd)
     SpringUtilities.makeCompactGrid(layout, 1, 2, 6, 6, 6, 6)
-    layout
+    Tuple2(layout, btAdd)
   }
 
   def createNewDeployUnitPanel(): JPanel = {
@@ -117,9 +138,33 @@ class AddElementUICommand extends Command {
     layout
   }
 
-  def createNewComponentTypePanel(): JPanel = {
-    val layout = new JPanel()
-    layout
+  def createNewComponentTypePanel(window: HudWindow): Tuple2[JPanel, JButton] = {
+    val layout = new JPanel(new SpringLayout)
+    layout.setOpaque(false)
+    val nameTextField = new JTextField()
+    nameTextField.setUI(new HudTextFieldUI())
+    val componentTypeNameLabel = new JLabel("ComponentType name", SwingConstants.TRAILING);
+    componentTypeNameLabel.setUI(new HudLabelUI());
+    componentTypeNameLabel.setOpaque(false);
+    componentTypeNameLabel.setLabelFor(nameTextField);
+    layout.add(componentTypeNameLabel)
+    layout.add(nameTextField)
+    //EXECUTE KEVSCRIPT COMMAND
+    val btAdd = new JButton("Add")
+    btAdd.setUI(new HudButtonUI)
+    btAdd.addActionListener(new ActionListener {
+      def actionPerformed(p1: ActionEvent) {
+        if (nameTextField.getText != "") {
+          val cmd = new KevScriptCommand
+          cmd.setKernel(kernel)
+          cmd.execute("tblock { createComponentType " + nameTextField.getText + " } ")
+          window.getJDialog.dispose()
+        }
+      }
+    })
+    window.getJDialog.getRootPane.setDefaultButton(btAdd)
+    SpringUtilities.makeCompactGrid(layout, 1, 2, 6, 6, 6, 6)
+    Tuple2(layout, btAdd)
   }
 
   def createNewChannelTypePanel(): JPanel = {
