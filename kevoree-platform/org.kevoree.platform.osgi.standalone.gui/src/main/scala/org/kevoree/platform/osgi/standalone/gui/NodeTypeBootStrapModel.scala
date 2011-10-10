@@ -71,7 +71,7 @@ object NodeTypeBootStrapModel {
               logger.warn("Node bootstrap property lost " + key)
             }
         }
-        node.setDictionary(propsmodel)
+        node.setDictionary(Some(propsmodel))
       }
       case None => logger.error("NodeType definition not found")
     }

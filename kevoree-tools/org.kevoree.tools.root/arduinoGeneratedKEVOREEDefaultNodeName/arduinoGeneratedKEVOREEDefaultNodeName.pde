@@ -31,8 +31,8 @@
 
 #define EEPROM_MAX_SIZE 1024
 #define MAX_INST_ID 15
-#define kevoreeID1 6
-#define kevoreeID2 2
+#define kevoreeID1 9
+#define kevoreeID2 7
 int eepromIndex;
 //Global Kevoree Type Defintion declaration
 const prog_char digitallight[] PROGMEM = "DigitalLight";
@@ -974,7 +974,7 @@ save2Memory(sepAdminChar);
         saveAIN_CMD(instNameBuf, 0, "pin=11");                                             
 save2Memory(sepAdminChar);
         strcpy_P(instNameBuf, (char *) pgm_read_word (&(init_tables[2])));        
-        saveAIN_CMD(instNameBuf, 1, "period=1000");                                             
+        saveAIN_CMD(instNameBuf, 1, "period=50");                                             
 save2Memory(sepAdminChar);
 strcpy_P(instNameBuf, (char *) pgm_read_word (&(init_tables[2])));        
 strcpy_P(instNameBuf2, (char *) pgm_read_word (&(init_tables[0])));        
