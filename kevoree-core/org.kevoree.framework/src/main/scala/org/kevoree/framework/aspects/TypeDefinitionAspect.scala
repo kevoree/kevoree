@@ -105,7 +105,7 @@ case class TypeDefinitionAspect(selfTD: TypeDefinition) {
             val providedEquality = selfCT.getProvided.exists(selfPTypeRef => {
               otherTD.getProvided.find(otherTypeRef => otherTypeRef.getName == selfPTypeRef.getName) match {
                 case Some(otherEquivalentTypeRef) => {
-                  println(selfTD.getName+"-foundedddd")
+                  println(selfTD.getName+"-foundedddd "+selfPTypeRef.getName+"-"+selfPTypeRef.getRef.contractChanged(otherEquivalentTypeRef.getRef))
                   selfPTypeRef.getRef.contractChanged(otherEquivalentTypeRef.getRef)
                 }
                 case None => false
