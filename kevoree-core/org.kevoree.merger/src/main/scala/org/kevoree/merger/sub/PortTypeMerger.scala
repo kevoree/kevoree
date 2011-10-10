@@ -33,7 +33,6 @@ trait PortTypeMerger {
   def mergePortType(actualModel : ContainerRoot,portType : PortType) : PortType = {
     actualModel.getTypeDefinitions.filter({td => td.isInstanceOf[PortType]}).find({pt=>pt.getName == portType.getName}) match {
       case Some(existPT) => {
-
           //CONSISTENCY CHECK
           existPT match {
             case spt : ServicePortType => {
@@ -41,10 +40,12 @@ trait PortTypeMerger {
                   //CLEAR OLD METHOD , NEW DEFINITION WILL REPLACE OTHER
 
                   spt.removeAllOperations()
-                  val remoteOps = portType.asInstanceOf[ServicePortType].getOperations.toList ++ List()
+                  val remoteOps = portType.asInstanceOf[ServicePortType].getOperations
                   remoteOps.foreach{op=>
                     op.setReturnType(Some(mergeDataType(actualModel,op.getReturnType.get)))
                     op.getParameters.foreach{para=>para.setType(Some(mergeDataType(actualModel,para.getType.get)))}
+                    println("remove operation")
+
                     spt.addOperations(op)
                   }
 
