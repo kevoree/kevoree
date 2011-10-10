@@ -32,6 +32,9 @@ class AddElementUICommand extends Command {
 
   val LibraryLabel = "Library"
   val DeployUnit = "DeployUnit"
+  val ComponentType = "ComponentType"
+  val ChannelType = "ChannelType"
+
 
   var kernel: KevoreeUIKernel = null
 
@@ -50,8 +53,8 @@ class AddElementUICommand extends Command {
     val newElementsModel = new DefaultComboBoxModel
     newElementsModel.addElement(LibraryLabel)
     newElementsModel.addElement(DeployUnit)
-    newElementsModel.addElement("ComponentType")
-    newElementsModel.addElement("ChannelType")
+    newElementsModel.addElement(ComponentType)
+    newElementsModel.addElement(ChannelType)
     newElementsModel.addElement("GroupType")
     val newElements = new JComboBox(newElementsModel)
     newElements.setUI(new HudComboBoxUI())
@@ -78,6 +81,12 @@ class AddElementUICommand extends Command {
             layoutPopup.add(uiElems._1, BorderLayout.CENTER)
             layoutPopup.add(uiElems._2, BorderLayout.SOUTH)
           }
+          case ComponentType => {
+            val uiElems = createNewComponentTypePanel(newPopup)
+            layoutPopup.add(uiElems._1, BorderLayout.CENTER)
+            layoutPopup.add(uiElems._2, BorderLayout.SOUTH)
+          }
+
           case _ =>
         }
         layoutPopup.add(layoutPopupTop, BorderLayout.NORTH)
@@ -110,7 +119,7 @@ class AddElementUICommand extends Command {
     layout.add(nodeNameLabel)
     layout.add(nameTextField)
     //EXECUTE KEVSCRIPT COMMAND
-    val btAdd = new JButton("Add")
+    val btAdd = new JButton("Add Library")
     btAdd.setUI(new HudButtonUI)
     btAdd.addActionListener(new ActionListener {
       def actionPerformed(p1: ActionEvent) {
@@ -130,29 +139,50 @@ class AddElementUICommand extends Command {
   def createNewDeployUnitPanel(window: HudWindow): Tuple2[JPanel, JButton] = {
     val layout = new JPanel(new SpringLayout)
     layout.setOpaque(false)
+
+    //UnitName
     val nameTextField = new JTextField()
     nameTextField.setUI(new HudTextFieldUI())
-    val nodeNameLabel = new JLabel("Library name", SwingConstants.TRAILING);
+    val nodeNameLabel = new JLabel("UnitName", SwingConstants.TRAILING);
     nodeNameLabel.setUI(new HudLabelUI());
     nodeNameLabel.setOpaque(false);
     nodeNameLabel.setLabelFor(nameTextField);
     layout.add(nodeNameLabel)
     layout.add(nameTextField)
+    //GroupName
+    val groupnameTextField = new JTextField()
+    groupnameTextField.setUI(new HudTextFieldUI())
+    val groupNameLabel = new JLabel("GroupName", SwingConstants.TRAILING);
+    groupNameLabel.setUI(new HudLabelUI());
+    groupNameLabel.setOpaque(false);
+    groupNameLabel.setLabelFor(groupnameTextField);
+    layout.add(groupNameLabel)
+    layout.add(groupnameTextField)
+    //version
+    val versionTextField = new JTextField()
+    versionTextField.setUI(new HudTextFieldUI())
+    val versionTextLabel = new JLabel("Version", SwingConstants.TRAILING);
+    versionTextLabel.setUI(new HudLabelUI());
+    versionTextLabel.setOpaque(false);
+    versionTextLabel.setLabelFor(versionTextField);
+    layout.add(versionTextLabel)
+    layout.add(versionTextField)
+
     //EXECUTE KEVSCRIPT COMMAND
-    val btAdd = new JButton("Add")
+    val btAdd = new JButton("Add DeployUnit")
     btAdd.setUI(new HudButtonUI)
     btAdd.addActionListener(new ActionListener {
       def actionPerformed(p1: ActionEvent) {
         if (nameTextField.getText != "") {
           val cmd = new KevScriptCommand
           cmd.setKernel(kernel)
-          cmd.execute("tblock { addLibrary " + nameTextField.getText + " } ")
+          cmd.execute("tblock { addDeployUnit \"" + nameTextField.getText + "\" \"" + groupnameTextField.getText + "\" \"" + versionTextField.getText + "\" } ")
           window.getJDialog.dispose()
         }
       }
     })
     window.getJDialog.getRootPane.setDefaultButton(btAdd)
-    SpringUtilities.makeCompactGrid(layout, 1, 2, 6, 6, 6, 6)
+    SpringUtilities.makeCompactGrid(layout, 3, 2, 6, 6, 6, 6)
     Tuple2(layout, btAdd)
   }
 
@@ -168,7 +198,7 @@ class AddElementUICommand extends Command {
     layout.add(componentTypeNameLabel)
     layout.add(nameTextField)
     //EXECUTE KEVSCRIPT COMMAND
-    val btAdd = new JButton("Add")
+    val btAdd = new JButton("Add ComponentType")
     btAdd.setUI(new HudButtonUI)
     btAdd.addActionListener(new ActionListener {
       def actionPerformed(p1: ActionEvent) {
