@@ -44,12 +44,12 @@ trait DeployUnitMerger extends Merger {
             ftp.addAllRequiredLibs(tp.getRequiredLibs)
           }
 
-          val ftpTimeStamp = if (ftp.getHashcode == "") {
+          val ftpTimeStamp = if (ftp.getHashcode != "") {
             java.lang.Long.parseLong(ftp.getHashcode)
           } else {
             0l
           }
-          val tpTimeStamp = if (tp.getHashcode == "") {
+          val tpTimeStamp = if (tp.getHashcode != "") {
             java.lang.Long.parseLong(tp.getHashcode)
           } else {
             0l
