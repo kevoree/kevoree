@@ -13,7 +13,6 @@ import org.kevoree.kompare.KevoreeKompareBean;
 import org.kevoreeAdaptation.AdaptationModel;
 import org.kevoreeAdaptation.AdaptationPrimitive;
 import org.osgi.framework.Bundle;
-import org.osgi.framework.ServiceRegistration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -31,8 +30,6 @@ public class JavaSENode extends AbstractNodeType {
 
 	private KevoreeKompareBean kompareBean = null;
 	private BaseDeployOSGi deployBean = null;
-	private ServiceRegistration sendModel;
-	private ServiceRegistration backupModel;
 
 
 	@Start
@@ -41,23 +38,11 @@ public class JavaSENode extends AbstractNodeType {
 		kompareBean = new KevoreeKompareBean();
 		Bundle bundle = (Bundle) this.getDictionary().get("osgi.bundle");
 		deployBean = new BaseDeployOSGi(bundle);
-
-
-		// Register the command service for felix shell
-		sendModel = bundle.getBundleContext()
-				.registerService(org.apache.felix.shell.Command.class.getName(),
-						new SendModelFelixCommand(this.getModelService()), null);
-		backupModel = bundle.getBundleContext()
-				.registerService(org.apache.felix.shell.Command.class.getName(),
-						new BackupModelFelixCommand(this.getModelService()), null);
-
-
 	}
 
 	@Stop
 	@Override
 	public void stopNode () {
-
 		kompareBean = null;
 		deployBean = null;
 	}
