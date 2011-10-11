@@ -23,28 +23,12 @@ import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.service.packageadmin.PackageAdmin
 import org.osgi.util.tracker.ServiceTracker
- import org.osgi.service.startlevel.StartLevel
+import org.osgi.service.startlevel.StartLevel
 import reflect.BeanProperty
+import actors.DaemonActor
 
 
-class KevoreeDeployManager {
-
-  /*
-    Garbage unsed mapping
-  */
-  def garbage(): Unit = {
-    val l = List() ++ bundleMapping.toList
-    l.foreach {
-      mapping =>
-        if (bundle != null) {
-          if (bundle.getState == Bundle.UNINSTALLED) {
-            bundleMapping = bundleMapping.filter(mp => mp != mapping)
-          }
-        } else {
-          bundleMapping = bundleMapping.filter(mp => mp != mapping)
-        }
-    }
-  }
+class KevoreeDeployManager extends DaemonActor {
 
   var bundle: Bundle = null
 
@@ -55,7 +39,7 @@ class KevoreeDeployManager {
   @BeanProperty
   var bundleContext: BundleContext = null;
 
-  var bundleMapping: List[KevoreeOSGiBundle] = List[KevoreeOSGiBundle]();
+  private var private_bundleMapping: List[KevoreeOSGiBundle] = List[KevoreeOSGiBundle]();
 
   def setModelHandlerServiceTracker(st: ServiceTracker) = modelHandlerServiceTracker = st
 
@@ -76,6 +60,67 @@ class KevoreeDeployManager {
       packageAdminServiceTracker.getService.asInstanceOf[PackageAdmin]
     }
   }
+
+
+  /*
+    Garbage unsed mapping
+  */
+  def garbage(): Unit = {
+     this !? GARBAGE()
+  }
+
+  case class GARBAGE()
+
+
+  def bundleMapping: List[KevoreeOSGiBundle] = {
+    (this !? GET_MAPPINGS()).asInstanceOf[List[KevoreeOSGiBundle]]
+  }
+
+  case class GET_MAPPINGS()
+
+  def addMapping(newMap: KevoreeOSGiBundle) {
+    this !? ADD_MAPPING(newMap)
+  }
+
+  case class ADD_MAPPING(newMap: KevoreeOSGiBundle)
+
+  def removeMapping(newMap: KevoreeOSGiBundle) {
+    this !? REMOVE_MAPPING(newMap)
+  }
+
+  case class REMOVE_MAPPING(oldMap: KevoreeOSGiBundle)
+
+  def act() {
+    loop {
+      react {
+        case GARBAGE() => {
+          private_bundleMapping.foreach {
+            mapping =>
+              if (bundle != null) {
+                if (bundle.getState == Bundle.UNINSTALLED) {
+                  private_bundleMapping = private_bundleMapping.filter(mp => mp != mapping)
+                }
+              } else {
+                private_bundleMapping = private_bundleMapping.filter(mp => mp != mapping)
+              }
+          }
+        }
+        case GET_MAPPINGS() => {
+          reply(private_bundleMapping)
+        }
+        case ADD_MAPPING(newMap) => {
+          private_bundleMapping = private_bundleMapping ++ List(newMap)
+          reply(true)
+        }
+        case REMOVE_MAPPING(oldMap) => {
+          private_bundleMapping = private_bundleMapping.filter(p => p != oldMap)
+          reply(true)
+        }
+      }
+    }
+  }
+
+  start()
 
 }
 
