@@ -28,6 +28,7 @@ import java.lang.StringBuffer
 class LogPanel extends JPanel {
   var STDwriter: PrintStream = null
   var ERRwriter: PrintStream = null
+  
   //public static PrintStream SSTDwriter = null;
   // public static PrintStream SSTDwriter = null;
   private var eol: String = System.getProperty("line.separator")
