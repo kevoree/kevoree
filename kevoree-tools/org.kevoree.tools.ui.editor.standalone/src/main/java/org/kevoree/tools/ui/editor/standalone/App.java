@@ -161,7 +161,7 @@ public class App {
                 splitPane.setOneTouchExpandable(true);
                 splitPane.setContinuousLayout(true);
                 splitPane.setDividerSize(6);
-                splitPane.setDividerLocation(-100);
+                splitPane.setDividerLocation(200);
                 splitPane.setResizeWeight(1.0);
                 splitPane.setBorder(null);
 

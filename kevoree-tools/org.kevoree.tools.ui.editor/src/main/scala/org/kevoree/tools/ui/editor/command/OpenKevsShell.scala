@@ -118,9 +118,9 @@ class OpenKevsShell extends Command {
             return false;
           }
         })
-        var result = fileChooser.showOpenDialog(kevsPanel);
+        val result = fileChooser.showOpenDialog(kevsPanel);
         if (result == JFileChooser.APPROVE_OPTION) {
-          val loadFilePath = fileChooser.getSelectedFile.getAbsolutePath()
+          val loadFilePath = fileChooser.getSelectedFile.getAbsolutePath
           val kevsContent = ParserUtil.loadFile(loadFilePath)
           kevsPanel.codeEditor.setText(null)
           kevsPanel.codeEditor.setText(kevsContent.toString.trim)

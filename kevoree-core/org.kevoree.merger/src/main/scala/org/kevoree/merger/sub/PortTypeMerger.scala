@@ -18,80 +18,99 @@
 
 package org.kevoree.merger.sub
 
-import org.kevoree.ContainerRoot
-import org.kevoree.MessagePortType
-import org.kevoree.PortType
-import org.kevoree.ServicePortType
- import org.kevoree.TypedElement
 import org.kevoree.framework.aspects.KevoreeAspects._
 import org.slf4j.LoggerFactory
+import org.kevoree._
 
 trait PortTypeMerger {
 
   private val logger = LoggerFactory.getLogger(this.getClass);
+
   //PORT TYPE DEFINITION MERGER
-  def mergePortType(actualModel : ContainerRoot,portType : PortType) : PortType = {
-    actualModel.getTypeDefinitions.filter({td => td.isInstanceOf[PortType]}).find({pt=>pt.getName == portType.getName}) match {
+  def mergePortType(actualModel: ContainerRoot, portType: PortType): PortType = {
+    actualModel.getTypeDefinitions.filter({
+      td => td.isInstanceOf[PortType]
+    }).find({
+      pt => pt.getName == portType.getName
+    }) match {
       case Some(existPT) => {
-          //CONSISTENCY CHECK
-          existPT match {
-            case spt : ServicePortType => {
-                if(portType.isInstanceOf[ServicePortType]){
-                  //CLEAR OLD METHOD , NEW DEFINITION WILL REPLACE OTHER
+        //CONSISTENCY CHECK
+        existPT match {
+          case spt: ServicePortType => {
 
-                  spt.removeAllOperations()
-                  val remoteOps = portType.asInstanceOf[ServicePortType].getOperations
-                  remoteOps.foreach{op=>
-                    op.setReturnType(Some(mergeDataType(actualModel,op.getReturnType.get)))
-                    op.getParameters.foreach{para=>para.setType(Some(mergeDataType(actualModel,para.getType.get)))}
-                    println("remove operation")
-
-                    spt.addOperations(op)
+            if (portType.isInstanceOf[ServicePortType]) {
+              //CLEAR OLD METHOD , NEW DEFINITION WILL REPLACE OTHER
+              val remoteOps = portType.asInstanceOf[ServicePortType].getOperations
+             // spt.removeAllOperations()
+              remoteOps.foreach {
+                op =>
+                 // val newOperation = KevoreeFactory.createOperation
+                  //newOperation.setName(op.getName)
+                  op.setReturnType(Some(mergeDataType(actualModel, op.getReturnType.get)))
+                  op.getParameters.foreach {
+                    para =>
+                     // val newparam = KevoreeFactory.createParameter
+                    //  newparam.setName(para.getName)
+                      para.setType(Some(mergeDataType(actualModel, para.getType.get)))
+                    //  newOperation.addParameters(newparam)
                   }
-
-                } else {
-                  logger.debug("New service Port Type can't replace and message port type !!!")
-                }
+                //  spt.addOperations(newOperation)
               }
-            case _ => // TODO MESSAGE PORT
+
+            } else {
+              logger.debug("New service Port Type can't replace and message port type !!!")
+            }
           }
-
-
-          existPT.asInstanceOf[PortType]
+          case _ => // TODO MESSAGE PORT
         }
+
+
+        existPT.asInstanceOf[PortType]
+      }
       case None => {
-          actualModel.addTypeDefinitions(portType)
-          portType match {
-            case spt : ServicePortType => {
-                spt.getOperations.foreach{op=>
-                  op.setReturnType(Some(mergeDataType(actualModel,op.getReturnType.get)))
-                  op.getParameters.foreach{para=>para.setType(Some(mergeDataType(actualModel,para.getType.get)))}
+        actualModel.addTypeDefinitions(portType)
+        portType match {
+          case spt: ServicePortType => {
+
+            val operations = spt.getOperations
+            spt.getOperations.foreach {
+              op =>
+                op.setReturnType(Some(mergeDataType(actualModel, op.getReturnType.get)))
+                op.getParameters.foreach {
+                  para =>
+                    para.setType(Some(mergeDataType(actualModel, para.getType.get)))
                 }
-              }
-            case mpt : MessagePortType => {
-                mpt.getFilters.foreach{dt=>mergeDataType(actualModel,dt)}
-              }
-            case _ @ msg => logger.debug("Error uncatch type")
+            }
           }
-          portType
+          case mpt: MessagePortType => {
+            mpt.getFilters.foreach {
+              dt => mergeDataType(actualModel, dt)
+            }
+          }
+          case _@msg => logger.debug("Error uncatch type")
         }
+        portType
+      }
     }
   }
 
   //MERGE SIMPLE DATA TYPE
-  private def mergeDataType(actualModel : ContainerRoot,datatype : TypedElement) : TypedElement = {
-    actualModel.getDataTypes.find({dt=>dt.isModelEquals(datatype)}) match {
+  private def mergeDataType(actualModel: ContainerRoot, datatype: TypedElement): TypedElement = {
+    actualModel.getDataTypes.find({
+      dt => dt.isModelEquals(datatype)
+    }) match {
       case Some(existDT) => existDT
       case None => {
-          var dts =  actualModel.addDataTypes(datatype)
-          val generics = datatype.getGenericTypes.toList ++ List()
-          datatype.removeAllGenericTypes()
-          generics.foreach{dt=>
-            datatype.addGenericTypes(mergeDataType(actualModel,dt))
-          }
-
-          datatype
+        var dts = actualModel.addDataTypes(datatype)
+        val generics = datatype.getGenericTypes.toList ++ List()
+        datatype.removeAllGenericTypes()
+        generics.foreach {
+          dt =>
+            datatype.addGenericTypes(mergeDataType(actualModel, dt))
         }
+
+        datatype
+      }
     }
   }
 

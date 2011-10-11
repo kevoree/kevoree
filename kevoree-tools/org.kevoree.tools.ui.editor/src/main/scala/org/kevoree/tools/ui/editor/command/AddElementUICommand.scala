@@ -17,10 +17,10 @@ import org.kevoree.tools.ui.editor.KevoreeUIKernel
 import com.explodingpixels.macwidgets.HudWindow
 import java.awt.BorderLayout
 import java.awt.event.{ActionEvent, ActionListener}
-import javax.swing._
-import com.explodingpixels.macwidgets.plaf.{HudTextFieldUI, HudLabelUI, HudComboBoxUI}
 import java.util.Properties
 import org.kevoree.tools.ui.editor.property.SpringUtilities
+import com.explodingpixels.macwidgets.plaf.{HudButtonUI, HudTextFieldUI, HudLabelUI, HudComboBoxUI}
+import javax.swing._
 
 /**
  * User: ffouquet
@@ -32,6 +32,9 @@ class AddElementUICommand extends Command {
 
   val LibraryLabel = "Library"
   val DeployUnit = "DeployUnit"
+  val ComponentType = "ComponentType"
+  val ChannelType = "ChannelType"
+
 
   var kernel: KevoreeUIKernel = null
 
@@ -50,8 +53,8 @@ class AddElementUICommand extends Command {
     val newElementsModel = new DefaultComboBoxModel
     newElementsModel.addElement(LibraryLabel)
     newElementsModel.addElement(DeployUnit)
-    newElementsModel.addElement("ComponentType")
-    newElementsModel.addElement("ChannelType")
+    newElementsModel.addElement(ComponentType)
+    newElementsModel.addElement(ChannelType)
     newElementsModel.addElement("GroupType")
     val newElements = new JComboBox(newElementsModel)
     newElements.setUI(new HudComboBoxUI())
@@ -68,8 +71,22 @@ class AddElementUICommand extends Command {
       override def actionPerformed(actionEvent: ActionEvent) {
         layoutPopup.removeAll()
         newElements.getSelectedItem match {
-          case LibraryLabel => layoutPopup.add(createNewLibraryPanel(), BorderLayout.CENTER)
-          case DeployUnit => layoutPopup.add(createNewDeployUnitPanel(), BorderLayout.CENTER)
+          case LibraryLabel => {
+            val uiElems = createNewLibraryPanel(newPopup)
+            layoutPopup.add(uiElems._1, BorderLayout.CENTER)
+            layoutPopup.add(uiElems._2, BorderLayout.SOUTH)
+          }
+          case DeployUnit => {
+            val uiElems = createNewDeployUnitPanel(newPopup)
+            layoutPopup.add(uiElems._1, BorderLayout.CENTER)
+            layoutPopup.add(uiElems._2, BorderLayout.SOUTH)
+          }
+          case ComponentType => {
+            val uiElems = createNewComponentTypePanel(newPopup)
+            layoutPopup.add(uiElems._1, BorderLayout.CENTER)
+            layoutPopup.add(uiElems._2, BorderLayout.SOUTH)
+          }
+
           case _ =>
         }
         layoutPopup.add(layoutPopupTop, BorderLayout.NORTH)
@@ -80,14 +97,17 @@ class AddElementUICommand extends Command {
 
     layoutPopup.add(layoutPopupTop, BorderLayout.NORTH)
     newPopup.getContentPane.add(layoutPopup)
-    layoutPopup.add(createNewLibraryPanel(), BorderLayout.CENTER)
+    val uiElems = createNewLibraryPanel(newPopup)
+    layoutPopup.add(uiElems._1, BorderLayout.CENTER)
+    layoutPopup.add(uiElems._2, BorderLayout.SOUTH)
+
     newPopup.getJDialog.setVisible(true)
   }
 
 
   val currentProps = new Properties
 
-  def createNewLibraryPanel(): JPanel = {
+  def createNewLibraryPanel(window: HudWindow): Tuple2[JPanel, JButton] = {
     val layout = new JPanel(new SpringLayout)
     layout.setOpaque(false)
     val nameTextField = new JTextField()
@@ -98,28 +118,121 @@ class AddElementUICommand extends Command {
     nodeNameLabel.setLabelFor(nameTextField);
     layout.add(nodeNameLabel)
     layout.add(nameTextField)
+    //EXECUTE KEVSCRIPT COMMAND
+    val btAdd = new JButton("Add Library")
+    btAdd.setUI(new HudButtonUI)
+    btAdd.addActionListener(new ActionListener {
+      def actionPerformed(p1: ActionEvent) {
+        if (nameTextField.getText != "") {
+          val cmd = new KevScriptCommand
+          cmd.setKernel(kernel)
+          cmd.execute("tblock { addLibrary " + nameTextField.getText + " } ")
+          window.getJDialog.dispose()
+        }
+      }
+    })
+    window.getJDialog.getRootPane.setDefaultButton(btAdd)
     SpringUtilities.makeCompactGrid(layout, 1, 2, 6, 6, 6, 6)
-    layout
+    Tuple2(layout, btAdd)
   }
 
-  def createNewDeployUnitPanel(): JPanel = {
+  def createNewDeployUnitPanel(window: HudWindow): Tuple2[JPanel, JButton] = {
     val layout = new JPanel(new SpringLayout)
     layout.setOpaque(false)
+
+    //UnitName
     val nameTextField = new JTextField()
     nameTextField.setUI(new HudTextFieldUI())
-    val nodeNameLabel = new JLabel("DeployUnit name", SwingConstants.TRAILING);
+    val nodeNameLabel = new JLabel("UnitName", SwingConstants.TRAILING);
     nodeNameLabel.setUI(new HudLabelUI());
     nodeNameLabel.setOpaque(false);
     nodeNameLabel.setLabelFor(nameTextField);
     layout.add(nodeNameLabel)
     layout.add(nameTextField)
-    SpringUtilities.makeCompactGrid(layout, 1, 2, 6, 6, 6, 6)
-    layout
+    //GroupName
+    val groupnameTextField = new JTextField()
+    groupnameTextField.setUI(new HudTextFieldUI())
+    val groupNameLabel = new JLabel("GroupName", SwingConstants.TRAILING);
+    groupNameLabel.setUI(new HudLabelUI());
+    groupNameLabel.setOpaque(false);
+    groupNameLabel.setLabelFor(groupnameTextField);
+    layout.add(groupNameLabel)
+    layout.add(groupnameTextField)
+    //version
+    val versionTextField = new JTextField()
+    versionTextField.setUI(new HudTextFieldUI())
+    val versionTextLabel = new JLabel("Version", SwingConstants.TRAILING);
+    versionTextLabel.setUI(new HudLabelUI());
+    versionTextLabel.setOpaque(false);
+    versionTextLabel.setLabelFor(versionTextField);
+    layout.add(versionTextLabel)
+    layout.add(versionTextField)
+
+    //EXECUTE KEVSCRIPT COMMAND
+    val btAdd = new JButton("Add DeployUnit")
+    btAdd.setUI(new HudButtonUI)
+    btAdd.addActionListener(new ActionListener {
+      def actionPerformed(p1: ActionEvent) {
+        if (nameTextField.getText != "") {
+          val cmd = new KevScriptCommand
+          cmd.setKernel(kernel)
+          cmd.execute("tblock { addDeployUnit \"" + nameTextField.getText + "\" \"" + groupnameTextField.getText + "\" \"" + versionTextField.getText + "\" } ")
+          window.getJDialog.dispose()
+        }
+      }
+    })
+    window.getJDialog.getRootPane.setDefaultButton(btAdd)
+    SpringUtilities.makeCompactGrid(layout, 3, 2, 6, 6, 6, 6)
+    Tuple2(layout, btAdd)
   }
 
-  def createNewComponentTypePanel(): JPanel = {
-    val layout = new JPanel()
-    layout
+  def createNewComponentTypePanel(window: HudWindow): Tuple2[JPanel, JButton] = {
+    val layout = new JPanel(new SpringLayout)
+    layout.setOpaque(false)
+    val nameTextField = new JTextField()
+    nameTextField.setUI(new HudTextFieldUI())
+    val componentTypeNameLabel = new JLabel("ComponentType name", SwingConstants.TRAILING);
+    componentTypeNameLabel.setUI(new HudLabelUI());
+    componentTypeNameLabel.setOpaque(false);
+    componentTypeNameLabel.setLabelFor(nameTextField);
+    layout.add(componentTypeNameLabel)
+    layout.add(nameTextField)
+
+    //MENU LIBRARY
+    val libraryModel = new DefaultComboBoxModel
+    libraryModel.addElement("no library")
+    kernel.getModelHandler.getActualModel.getLibraries.foreach {
+      lib =>
+        libraryModel.addElement(lib.getName)
+    }
+    val comboLibrary = new JComboBox(libraryModel)
+    comboLibrary.setUI(new HudComboBoxUI())
+    val libraryCompoLabel = new JLabel("library : ", SwingConstants.TRAILING)
+    libraryCompoLabel.setUI(new HudLabelUI)
+    libraryCompoLabel.setLabelFor(comboLibrary)
+    layout.add(libraryCompoLabel)
+    layout.add(comboLibrary)
+
+    //EXECUTE KEVSCRIPT COMMAND
+    val btAdd = new JButton("Add ComponentType")
+    btAdd.setUI(new HudButtonUI)
+    btAdd.addActionListener(new ActionListener {
+      def actionPerformed(p1: ActionEvent) {
+        if (nameTextField.getText != "") {
+          val cmd = new KevScriptCommand
+          cmd.setKernel(kernel)
+          if("no library" != comboLibrary.getSelectedItem){
+            cmd.execute("tblock { createComponentType " + nameTextField.getText + " @ "+comboLibrary.getSelectedItem+"  } ")
+          } else {
+            cmd.execute("tblock { createComponentType " + nameTextField.getText + " } ")
+          }
+          window.getJDialog.dispose()
+        }
+      }
+    })
+    window.getJDialog.getRootPane.setDefaultButton(btAdd)
+    SpringUtilities.makeCompactGrid(layout, 2, 2, 6, 6, 6, 6)
+    Tuple2(layout, btAdd)
   }
 
   def createNewChannelTypePanel(): JPanel = {
