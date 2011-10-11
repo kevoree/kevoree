@@ -1,6 +1,7 @@
 
 tblock {
 
-
+    createComponentType myNewComponent @ myLib
+    createChannelType myNewChannel @ myLib
 
  }

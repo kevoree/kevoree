@@ -1,24 +1,8 @@
 <kevoree:ContainerRoot xmlns:xml="http://www.omg.org/XMI" xmlns:xsi="http://wwww.w3.org/2001/XMLSchema-instance" xmlns:kevoree="http://kevoree/1.0" xmi:version="2.0" xsi:type="kevoree:ContainerRoot">
- <nodes metaData="x=99,y=238" xsi:type="kevoree:ContainerNode" name="KEVOREEDefaultNodeName" typeDefinition="//@typeDefinitions.1">
+ <nodes metaData="x=217,y=151" xsi:type="kevoree:ContainerNode" name="KEVOREEDefaultNodeName" typeDefinition="//@typeDefinitions.1">
   <dictionary>
    <values value="MAX" xsi:type="kevoree:DictionaryValue" attribute="//@typeDefinitions.1/@dictionaryType/@attributes.4"></values>
-   <values value="atmega328" xsi:type="kevoree:DictionaryValue" attribute="//@typeDefinitions.1/@dictionaryType/@attributes.0"></values>
-   <values value="true" xsi:type="kevoree:DictionaryValue" attribute="//@typeDefinitions.1/@dictionaryType/@attributes.2"></values>
   </dictionary>
-  <components name="DigitalLi868" xsi:type="kevoree:ComponentInstance" typeDefinition="//@typeDefinitions.5">
-   <dictionary>
-    <values value="13" xsi:type="kevoree:DictionaryValue" attribute="//@typeDefinitions.5/@dictionaryType/@attributes.0"></values>
-   </dictionary>
-   <provided xsi:type="kevoree:Port" portTypeRef="//@typeDefinitions.5/@provided.0"></provided>
-   <provided xsi:type="kevoree:Port" portTypeRef="//@typeDefinitions.5/@provided.1"></provided>
-   <provided xsi:type="kevoree:Port" portTypeRef="//@typeDefinitions.5/@provided.2"></provided>
-  </components>
-  <components name="Timer554" xsi:type="kevoree:ComponentInstance" typeDefinition="//@typeDefinitions.15">
-   <dictionary>
-    <values value="50" xsi:type="kevoree:DictionaryValue" attribute="//@typeDefinitions.15/@dictionaryType/@attributes.0"></values>
-   </dictionary>
-   <required xsi:type="kevoree:Port" portTypeRef="//@typeDefinitions.15/@required.0"></required>
-  </components>
  </nodes>
  <typeDefinitions deployUnits="//@deployUnits.0" startMethod="startNode" factoryBean="org.kevoree.library.sky.minicloud.MiniCloudNodeFactory" xsi:type="kevoree:NodeType" name="MiniCloudNode" bean="org.kevoree.library.sky.minicloud.MiniCloudNode" stopMethod="stopNode" managedPrimitiveTypes="//@adaptationPrimitiveTypes.0 //@adaptationPrimitiveTypes.1 //@adaptationPrimitiveTypes.2">
   <dictionaryType>
@@ -224,7 +208,9 @@
    <mappings beanMethodName="toogle" xsi:type="kevoree:PortTypeMapping" serviceMethodName="toggle"></mappings>
   </provided>
  </typeDefinitions>
- <typeDefinitions name="org.kevoree.library.fakedomo.ToggleLightService" xsi:type="kevoree:ServicePortType" synchrone="false"></typeDefinitions>
+ <typeDefinitions name="org.kevoree.library.fakedomo.ToggleLightService" xsi:type="kevoree:ServicePortType" synchrone="false">
+  <operations name="toggle" xsi:type="kevoree:Operation" returnType="//@dataTypes.0"></operations>
+ </typeDefinitions>
  <typeDefinitions updateMethod="update" startMethod="start" factoryBean="org.kevoree.library.fakedomo.FakeSimpleSwitchFactory" xsi:type="kevoree:ComponentType" name="FakeSimpleSwitch" bean="org.kevoree.library.fakedomo.FakeSimpleSwitch" stopMethod="stop" deployUnits="//@deployUnits.11">
   <required noDependency="true" name="on" xsi:type="kevoree:PortTypeRef" optional="false" ref="//@typeDefinitions.3"></required>
   <required noDependency="true" name="off" xsi:type="kevoree:PortTypeRef" optional="false" ref="//@typeDefinitions.3"></required>
@@ -311,6 +297,7 @@
  <repositories xsi:type="kevoree:Repository" url="http://maven.kevoree.org/snapshots"></repositories>
  <repositories xsi:type="kevoree:Repository" url="http://repo1.maven.org/maven2"></repositories>
  <repositories xsi:type="kevoree:Repository" url="http://maven.restlet.org/"></repositories>
+ <dataTypes xsi:type="kevoree:TypedElement" name="java.lang.String"></dataTypes>
  <libraries name="KevoreeNodeType" xsi:type="kevoree:TypeLibrary" subTypes="//@typeDefinitions.1"></libraries>
  <libraries name="KevoreeArduino" xsi:type="kevoree:TypeLibrary" subTypes="//@typeDefinitions.2 //@typeDefinitions.4 //@typeDefinitions.5 //@typeDefinitions.6 //@typeDefinitions.7 //@typeDefinitions.8 //@typeDefinitions.9 //@typeDefinitions.10 //@typeDefinitions.11 //@typeDefinitions.12 //@typeDefinitions.13 //@typeDefinitions.14 //@typeDefinitions.15 //@typeDefinitions.16"></libraries>
  <libraries name="KevoreeArduinoJava" xsi:type="kevoree:TypeLibrary" subTypes="//@typeDefinitions.33"></libraries>
@@ -320,34 +307,31 @@
  <libraries name="JavaSE" xsi:type="kevoree:TypeLibrary" subTypes="//@typeDefinitions.29 //@typeDefinitions.30"></libraries>
  <libraries name="Kevoree-Netty" xsi:type="kevoree:TypeLibrary" subTypes="//@typeDefinitions.32"></libraries>
  <libraries name="Kevoree-Android" xsi:type="kevoree:TypeLibrary" subTypes="//@typeDefinitions.34 //@typeDefinitions.36"></libraries>
- <hubs metaData="x=50,y=50" xsi:type="kevoree:Channel" name="LocalChan674" typeDefinition="//@typeDefinitions.8"></hubs>
- <mBindings port="//@nodes.0/@components.1/@required.0" xsi:type="kevoree:MBinding" hub="//@hubs.0"></mBindings>
- <mBindings port="//@nodes.0/@components.0/@provided.2" xsi:type="kevoree:MBinding" hub="//@hubs.0"></mBindings>
- <deployUnits requiredLibs="//@deployUnits.1" version="1.4.0-SNAPSHOT" groupName="org.kevoree.library.sky" xsi:type="kevoree:DeployUnit" unitName="org.kevoree.library.sky.minicloud" hashcode="201110061733349" targetNodeType="//@typeDefinitions.0"></deployUnits>
+ <deployUnits requiredLibs="//@deployUnits.1" version="1.4.0-SNAPSHOT" groupName="org.kevoree.library.sky" xsi:type="kevoree:DeployUnit" unitName="org.kevoree.library.sky.minicloud" hashcode="201110101308727" targetNodeType="//@typeDefinitions.0"></deployUnits>
  <deployUnits url="mvn:org.kevoree.extra/org.kevoree.extra.netty/3.2.5" xsi:type="kevoree:DeployUnit" name="org.kevoree.extra.org.kevoree.extra.netty" targetNodeType="//@typeDefinitions.0"></deployUnits>
- <deployUnits requiredLibs="//@deployUnits.3" version="1.4.0-SNAPSHOT" groupName="org.kevoree.library.arduino" xsi:type="kevoree:DeployUnit" unitName="org.kevoree.library.arduino.nodeType" hashcode="201110061734059" targetNodeType="//@typeDefinitions.1"></deployUnits>
+ <deployUnits requiredLibs="//@deployUnits.3" version="1.4.0-SNAPSHOT" groupName="org.kevoree.library.arduino" xsi:type="kevoree:DeployUnit" unitName="org.kevoree.library.arduino.nodeType" hashcode="201110101344569" targetNodeType="//@typeDefinitions.1"></deployUnits>
  <deployUnits url="mvn:org.kevoree.extra/org.kevoree.extra.osgi.rxtx/2.2.0" xsi:type="kevoree:DeployUnit" name="org.kevoree.extra.org.kevoree.extra.osgi.rxtx" targetNodeType="//@typeDefinitions.1"></deployUnits>
- <deployUnits hashcode="201110061734931" unitName="org.kevoree.library.arduino.components" xsi:type="kevoree:DeployUnit" groupName="org.kevoree.library.arduino" version="1.4.0-SNAPSHOT" targetNodeType="//@typeDefinitions.1"></deployUnits>
- <deployUnits hashcode="201110061735321" unitName="org.kevoree.library.arduino.groupType" xsi:type="kevoree:DeployUnit" groupName="org.kevoree.library.arduino" version="1.4.0-SNAPSHOT" targetNodeType="//@typeDefinitions.18"></deployUnits>
- <deployUnits hashcode="201110061730349" unitName="org.kevoree.library.javase.javaseNode" xsi:type="kevoree:DeployUnit" groupName="org.kevoree.library.javase" version="1.4.0-SNAPSHOT" targetNodeType="//@typeDefinitions.18"></deployUnits>
- <deployUnits hashcode="201110061730677" unitName="org.kevoree.library.javase.restNode" xsi:type="kevoree:DeployUnit" groupName="org.kevoree.library.javase" version="1.4.0-SNAPSHOT" targetNodeType="//@typeDefinitions.18"></deployUnits>
- <deployUnits hashcode="201110061732994" unitName="org.kevoree.library.javase.defaultChannels" xsi:type="kevoree:DeployUnit" groupName="org.kevoree.library.javase" version="1.4.0-SNAPSHOT" targetNodeType="//@typeDefinitions.18"></deployUnits>
- <deployUnits requiredLibs="//@deployUnits.10" version="1.4.0-SNAPSHOT" groupName="org.kevoree.library.javase" xsi:type="kevoree:DeployUnit" unitName="org.kevoree.library.javase.restChannels" hashcode="201110061731018" targetNodeType="//@typeDefinitions.19"></deployUnits>
+ <deployUnits hashcode="201110101344233" unitName="org.kevoree.library.arduino.components" xsi:type="kevoree:DeployUnit" groupName="org.kevoree.library.arduino" version="1.4.0-SNAPSHOT" targetNodeType="//@typeDefinitions.1"></deployUnits>
+ <deployUnits hashcode="201110101345729" unitName="org.kevoree.library.arduino.groupType" xsi:type="kevoree:DeployUnit" groupName="org.kevoree.library.arduino" version="1.4.0-SNAPSHOT" targetNodeType="//@typeDefinitions.18"></deployUnits>
+ <deployUnits hashcode="201110101306776" unitName="org.kevoree.library.javase.javaseNode" xsi:type="kevoree:DeployUnit" groupName="org.kevoree.library.javase" version="1.4.0-SNAPSHOT" targetNodeType="//@typeDefinitions.18"></deployUnits>
+ <deployUnits hashcode="201110101306241" unitName="org.kevoree.library.javase.restNode" xsi:type="kevoree:DeployUnit" groupName="org.kevoree.library.javase" version="1.4.0-SNAPSHOT" targetNodeType="//@typeDefinitions.18"></deployUnits>
+ <deployUnits hashcode="201110101307668" unitName="org.kevoree.library.javase.defaultChannels" xsi:type="kevoree:DeployUnit" groupName="org.kevoree.library.javase" version="1.4.0-SNAPSHOT" targetNodeType="//@typeDefinitions.18"></deployUnits>
+ <deployUnits requiredLibs="//@deployUnits.10" version="1.4.0-SNAPSHOT" groupName="org.kevoree.library.javase" xsi:type="kevoree:DeployUnit" unitName="org.kevoree.library.javase.restChannels" hashcode="201110101306841" targetNodeType="//@typeDefinitions.19"></deployUnits>
  <deployUnits url="mvn:org.kevoree.extra/org.kevoree.extra.marshalling/1.0" xsi:type="kevoree:DeployUnit" name="org.kevoree.extra.org.kevoree.extra.marshalling" targetNodeType="//@typeDefinitions.19"></deployUnits>
- <deployUnits hashcode="201110061732089" unitName="org.kevoree.library.javase.fakeDomo" xsi:type="kevoree:DeployUnit" groupName="org.kevoree.library.javase" version="1.4.0-SNAPSHOT" targetNodeType="//@typeDefinitions.18"></deployUnits>
- <deployUnits requiredLibs="//@deployUnits.13" version="1.4.0-SNAPSHOT" groupName="org.kevoree.library.javase" xsi:type="kevoree:DeployUnit" unitName="org.kevoree.library.javase.grapher" hashcode="201110061733737" targetNodeType="//@typeDefinitions.18"></deployUnits>
+ <deployUnits hashcode="201110101307965" unitName="org.kevoree.library.javase.fakeDomo" xsi:type="kevoree:DeployUnit" groupName="org.kevoree.library.javase" version="1.4.0-SNAPSHOT" targetNodeType="//@typeDefinitions.18"></deployUnits>
+ <deployUnits requiredLibs="//@deployUnits.13" version="1.4.0-SNAPSHOT" groupName="org.kevoree.library.javase" xsi:type="kevoree:DeployUnit" unitName="org.kevoree.library.javase.grapher" hashcode="201110101308784" targetNodeType="//@typeDefinitions.18"></deployUnits>
  <deployUnits url="mvn:org.kevoree.extra/org.kevoree.extra.chart2d/3.2.1" xsi:type="kevoree:DeployUnit" name="org.kevoree.extra.org.kevoree.extra.chart2d" targetNodeType="//@typeDefinitions.18"></deployUnits>
- <deployUnits requiredLibs="//@deployUnits.15 //@deployUnits.15" version="1.4.0-SNAPSHOT" groupName="org.kevoree.library.javase" xsi:type="kevoree:DeployUnit" unitName="org.kevoree.library.javase.kinect" hashcode="201110061733108" targetNodeType="//@typeDefinitions.18"></deployUnits>
+ <deployUnits requiredLibs="//@deployUnits.15 //@deployUnits.15" version="1.4.0-SNAPSHOT" groupName="org.kevoree.library.javase" xsi:type="kevoree:DeployUnit" unitName="org.kevoree.library.javase.kinect" hashcode="201110101308677" targetNodeType="//@typeDefinitions.18"></deployUnits>
  <deployUnits url="mvn:org.kevoree.extra/org.kevoree.extra.jna/3.3.0" xsi:type="kevoree:DeployUnit" name="org.kevoree.extra.org.kevoree.extra.jna" targetNodeType="//@typeDefinitions.18"></deployUnits>
- <deployUnits requiredLibs="//@deployUnits.17 //@deployUnits.18 //@deployUnits.19 //@deployUnits.17 //@deployUnits.18 //@deployUnits.19" version="1.4.0-SNAPSHOT" groupName="org.kevoree.library.javase" xsi:type="kevoree:DeployUnit" unitName="org.kevoree.library.javase.gossiperNetty" hashcode="201110061731923" targetNodeType="//@typeDefinitions.18"></deployUnits>
+ <deployUnits requiredLibs="//@deployUnits.17 //@deployUnits.18 //@deployUnits.19 //@deployUnits.17 //@deployUnits.18 //@deployUnits.19" version="1.4.0-SNAPSHOT" groupName="org.kevoree.library.javase" xsi:type="kevoree:DeployUnit" unitName="org.kevoree.library.javase.gossiperNetty" hashcode="201110101306750" targetNodeType="//@typeDefinitions.18"></deployUnits>
  <deployUnits url="mvn:org.kevoree.extra/org.kevoree.extra.protobuf/2.4.1" xsi:type="kevoree:DeployUnit" name="org.kevoree.extra.org.kevoree.extra.protobuf" targetNodeType="//@typeDefinitions.18"></deployUnits>
  <deployUnits url="mvn:org.kevoree.extra/org.kevoree.extra.netty/3.2.4" xsi:type="kevoree:DeployUnit" name="org.kevoree.extra.org.kevoree.extra.netty" targetNodeType="//@typeDefinitions.18"></deployUnits>
  <deployUnits url="mvn:org.kevoree.extra/org.kevoree.extra.marshalling/1.0" xsi:type="kevoree:DeployUnit" name="org.kevoree.extra.org.kevoree.extra.marshalling" targetNodeType="//@typeDefinitions.18"></deployUnits>
- <deployUnits requiredLibs="//@deployUnits.21" version="1.4.0-SNAPSHOT" groupName="org.kevoree.library.javase" xsi:type="kevoree:DeployUnit" unitName="org.kevoree.library.javase.serialCT" hashcode="201110061732357" targetNodeType="//@typeDefinitions.18"></deployUnits>
+ <deployUnits requiredLibs="//@deployUnits.21" version="1.4.0-SNAPSHOT" groupName="org.kevoree.library.javase" xsi:type="kevoree:DeployUnit" unitName="org.kevoree.library.javase.serialCT" hashcode="201110101307023" targetNodeType="//@typeDefinitions.18"></deployUnits>
  <deployUnits url="mvn:org.kevoree.extra/org.kevoree.extra.osgi.rxtx/2.2.0" xsi:type="kevoree:DeployUnit" name="org.kevoree.extra.org.kevoree.extra.osgi.rxtx" targetNodeType="//@typeDefinitions.18"></deployUnits>
- <deployUnits hashcode="201110061735721" unitName="org.kevoree.library.android.logger" xsi:type="kevoree:DeployUnit" groupName="org.kevoree.library.android" version="1.4.0-SNAPSHOT" targetNodeType="//@typeDefinitions.35"></deployUnits>
- <deployUnits hashcode="201110061735852" unitName="org.kevoree.library.android.nodeType" xsi:type="kevoree:DeployUnit" groupName="org.kevoree.library.android" version="1.4.0-SNAPSHOT" targetNodeType="//@typeDefinitions.35"></deployUnits>
- <deployUnits hashcode="201110061735542" unitName="org.kevoree.library.android.text2speech" xsi:type="kevoree:DeployUnit" groupName="org.kevoree.library.android" version="1.4.0-SNAPSHOT" targetNodeType="//@typeDefinitions.35"></deployUnits>
+ <deployUnits hashcode="201110101310420" unitName="org.kevoree.library.android.logger" xsi:type="kevoree:DeployUnit" groupName="org.kevoree.library.android" version="1.4.0-SNAPSHOT" targetNodeType="//@typeDefinitions.35"></deployUnits>
+ <deployUnits hashcode="201110101310652" unitName="org.kevoree.library.android.nodeType" xsi:type="kevoree:DeployUnit" groupName="org.kevoree.library.android" version="1.4.0-SNAPSHOT" targetNodeType="//@typeDefinitions.35"></deployUnits>
+ <deployUnits hashcode="201110101310043" unitName="org.kevoree.library.android.text2speech" xsi:type="kevoree:DeployUnit" groupName="org.kevoree.library.android" version="1.4.0-SNAPSHOT" targetNodeType="//@typeDefinitions.35"></deployUnits>
  <adaptationPrimitiveTypes xsi:type="kevoree:AdaptationPrimitiveType" name="RemoveNode"></adaptationPrimitiveTypes>
  <adaptationPrimitiveTypes xsi:type="kevoree:AdaptationPrimitiveType" name="AddNode"></adaptationPrimitiveTypes>
  <adaptationPrimitiveTypes xsi:type="kevoree:AdaptationPrimitiveType" name="UpdateNode"></adaptationPrimitiveTypes>
