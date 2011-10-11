@@ -30,7 +30,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author ffouquet
  */
-@Library(name = "Kevoree-Android-JavaSE")
+@Library(name = "JavaSE")
 @ChannelTypeFragment
 public class defMSG extends AbstractChannelFragment {
 

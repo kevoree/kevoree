@@ -27,7 +27,7 @@ import javax.script.ScriptException;
 		@RequiredPort(name = "booleanoutport", type = PortType.MESSAGE, needCheckDependency = false)
 })
 @DictionaryType({@DictionaryAttribute(name = "code")})
-@Library(name = "Kevoree::JScript")
+@Library(name = "JavaSE")
 @ComponentType
 public class JavaScriptComponent extends AbstractComponentType {
 	private static final Logger logger = LoggerFactory.getLogger(JavaScriptComponent.class);
