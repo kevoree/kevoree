@@ -1,4 +1,4 @@
-package org.kevoree.library.defaultNodeTypes;
+package org.kevoree.libary.sky.minicloud.group;
 
 import org.kevoree.ContainerRoot;
 import org.kevoree.annotation.GroupType;
@@ -17,7 +17,7 @@ import org.osgi.framework.ServiceRegistration;
  * @author Erwan Daubert
  * @version 1.0
  */
-@Library(name = "SKY")
+@Library(name = "JavaSE")
 @GroupType
 public class MiniCloudGroup extends AbstractGroupType {
 	private ServiceRegistration sendModel;

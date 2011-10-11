@@ -19,24 +19,30 @@
 package org.kevoree.framework.annotation.processor.visitor.sub
 
 import com.sun.mirror.apt.AnnotationProcessorEnvironment
-import com.sun.mirror.declaration.MethodDeclaration
 import org.kevoree.KevoreeFactory
 import org.kevoree.ComponentType
 import org.kevoree.MessagePortType
 import org.kevoree.ServicePortType
+import java.lang.reflect.Modifier
+import com.sun.mirror.declaration.MethodDeclaration
+import scala.collection.JavaConversions._
 
 
 trait PortMappingProcessor {
 
-  def processPortMapping(componentType : ComponentType,methoddef : MethodDeclaration, env : AnnotationProcessorEnvironment)={
+  def processPortMapping(componentType : ComponentType,methoddef : MethodDeclaration, env : AnnotationProcessorEnvironment) = {
     /* PROCESS PORTS & PORT ANNOTATION */
-    var portAnnotations : List[org.kevoree.annotation.Port] = Nil
+    var portAnnotations : List[org.kevoree.annotation.Port] = List()
 
     val annotationPort = methoddef.getAnnotation(classOf[org.kevoree.annotation.Port])
     if(annotationPort != null){ portAnnotations = portAnnotations ++ List(annotationPort) }
 
     val annotationPorts = methoddef.getAnnotation(classOf[org.kevoree.annotation.Ports])
     if(annotationPorts != null){ portAnnotations = portAnnotations ++ annotationPorts.value.toList }
+
+    if(portAnnotations.size > 0 && methoddef.getModifiers.find{mod => mod.name.equals("PUBLIC")}.isEmpty) {
+        env.getMessager.printError("Method " + methoddef.getSimpleName + " in "+componentType.getName+" must have a public visibility since it is mapped to a port.")
+    }
 
     portAnnotations.foreach{annot=>
       componentType.getProvided.find({provided=> provided.getName.equals(annot.name) }) match {
