@@ -22,8 +22,6 @@ import java.util.HashMap;
 
 public abstract class AbstractNodeType {
 
-    public abstract void push(String targetNodeName, ContainerRoot root);
-
     private HashMap<String, Object> dictionary = new HashMap<String, Object>();
 
     public HashMap<String, Object> getDictionary() {

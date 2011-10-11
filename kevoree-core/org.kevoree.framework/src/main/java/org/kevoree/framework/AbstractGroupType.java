@@ -23,6 +23,10 @@ public abstract class AbstractGroupType {
 
     public abstract void triggerModelUpdate();
 
+    public abstract void push(ContainerRoot model, String targetNodeName);
+
+    public abstract ContainerRoot pull(String targetNodeName);
+
     public KevoreeModelHandlerService getModelService() {
         return null;
     }
