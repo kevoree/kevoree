@@ -56,7 +56,7 @@ trait KevoreeGroup extends AbstractGroupType with KevoreeActor {
 
   var dictionary: HashMap[String, Object] = new HashMap[String, Object]()
 
-  override def setDictionary(d: HashMap[String, Object]) {dictionary = d }
+  override def setDictionary(d: HashMap[String, Object]) {dictionary = d ; println("setDic="+dictionary) }
 
   override def getDictionary(): HashMap[String, Object] = dictionary
 

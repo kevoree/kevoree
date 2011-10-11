@@ -63,6 +63,7 @@ public class RestGroup extends AbstractGroupType {
             if (IP.equals("")) {
                 IP = "127.0.0.1";
             }
+            System.out.println("dic=>"+this.getDictionary());
             String PORT = this.getDictionary().get("port").toString();
             if (PORT.equals("")) {
                 PORT = "8000";
