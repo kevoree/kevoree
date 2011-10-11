@@ -238,7 +238,7 @@
                             javax.servlet,
                             org.apache.hadoop,
                             org.apache.hadoop.*,
-                            org.morbay.jetty.*,
+                            org.morbay.*,
                             org.apache.jasper.*,
                             <!--org.apache.log4j,
                             org.apache.log4j.*,-->
