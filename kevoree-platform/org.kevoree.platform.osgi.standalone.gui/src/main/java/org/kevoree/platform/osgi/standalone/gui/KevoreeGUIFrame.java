@@ -31,6 +31,7 @@ import java.awt.event.WindowEvent;
 import java.io.File;
 import java.net.URL;
 import java.util.Arrays;
+import java.util.Properties;
 
 public class KevoreeGUIFrame extends JFrame {
 
@@ -39,8 +40,8 @@ public class KevoreeGUIFrame extends JFrame {
     public KevoreeGUIFrame(final ContainerRoot model) {
         singleton = this;
 
-        URL urlIcon = getClass().getClassLoader().getResource("kevoree-logo-full.png");
-        URL urlSmallIcon = getClass().getClassLoader().getResource("kev-logo-full.png");
+        URL urlIcon = getClass().getClassLoader().getResource(GuiConstantsHandler.getGuiConstantValuesProvider().getIconUrl());//"kevoree-logo-full.png");
+        URL urlSmallIcon = getClass().getClassLoader().getResource(GuiConstantsHandler.getGuiConstantValuesProvider().getSmallIconUrl());//"kev-logo-full.png");
         ImageIcon topIIcon = new ImageIcon(urlIcon);
         final ImageIcon smallIcon = new ImageIcon(urlSmallIcon);
         this.setIconImage(smallIcon.getImage());
@@ -55,7 +56,7 @@ public class KevoreeGUIFrame extends JFrame {
             System.setProperty("org.kevoree.remote.provisioning", "file:///" + mavenDir.getAbsolutePath());
         }
 
-        final HudWindow bootstrapPopup = new HudWindow("Kevoree runtime : node properties");
+        final HudWindow bootstrapPopup = new HudWindow(GuiConstantsHandler.getGuiConstantValuesProvider().getBootstrapWindowTitle());//"Kevoree runtime : node properties");
         bootstrapPopup.getJDialog().setSize(400, 210);
         bootstrapPopup.getJDialog().setLocationRelativeTo(null);
         bootstrapPopup.getJDialog().setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);

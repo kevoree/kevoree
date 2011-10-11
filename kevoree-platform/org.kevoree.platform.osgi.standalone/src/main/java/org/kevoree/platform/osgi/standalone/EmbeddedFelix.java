@@ -130,7 +130,7 @@ public class EmbeddedFelix {
 	}
 
 	private void printWelcome () {
-		String welcomeMessage = "Kevoree OSGi Standalone";
+		String welcomeMessage = ConstantsHandler.getConstantValuesProvider().getWelcomeMessage();
 
 		InputStream is = getClass().getResourceAsStream(
 				"/META-INF/maven/org.kevoree.platform/org.kevoree.platform.osgi.standalone/pom.properties");
