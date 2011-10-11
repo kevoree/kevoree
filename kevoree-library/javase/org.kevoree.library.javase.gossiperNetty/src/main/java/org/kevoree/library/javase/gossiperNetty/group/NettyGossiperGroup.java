@@ -16,7 +16,7 @@ import java.util.List;
 /**
  * @author Erwan Daubert
  */
-@Library(name = "Kevoree-Android-JavaSE")
+@Library(name = "JavaSE")
 @GroupType
 @DictionaryType({
 		@DictionaryAttribute(name = "interval", defaultValue = "30000", optional = true),

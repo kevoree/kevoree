@@ -13,31 +13,21 @@
  */
 package org.kevoree.platform.osgi.standalone.gui;
 
-import com.explodingpixels.macwidgets.HudWindow;
-import com.explodingpixels.widgets.WindowUtils;
 import org.kevoree.ContainerRoot;
-import org.kevoree.api.configuration.ConfigConstants;
 import org.kevoree.framework.KevoreeXmiHelper;
-import org.kevoree.platform.osgi.standalone.EmbeddedActivators;
-import org.kevoree.platform.osgi.standalone.EmbeddedFelix;
-import org.osgi.framework.BundleActivator;
+import org.kevoree.platform.osgi.standalone.ConstantValues;
 
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.IOException;
-import java.util.Arrays;
+import java.util.Properties;
 
 /**
  * Hello world!
  */
 public class App {
-    public static void main(String[] args) {
-        
-       // System.setProperty("apple.awt.graphics.UseQuartz","true");
-        
+
+    protected void start() {
+
         DefaultSystem.saveSystemFlux();
 
         try {
@@ -51,13 +41,23 @@ public class App {
 
 
         Object param = System.getProperty("node.bootstrap");
-        if(param != null ){
+        if (param != null) {
             model = KevoreeXmiHelper.load(param.toString());
         } else {
-            model = KevoreeXmiHelper.loadStream(App.class.getClassLoader().getResourceAsStream("defaultLibrary.kev")) ;
-
+            model = KevoreeXmiHelper.loadStream(App.class.getClassLoader().getResourceAsStream("defaultLibrary.kev"));
         }
+
         final KevoreeGUIFrame frame = new KevoreeGUIFrame(model);
+    }
+
+    public static void main(String[] args) {
+
+        // System.setProperty("apple.awt.graphics.UseQuartz","true");
+
+        GuiConstantsHandler.setGuiConstantValuesProvider(new GuiConstantValuesImpl());
+
+        App app = new App();
+        app.start();
     }
 
 

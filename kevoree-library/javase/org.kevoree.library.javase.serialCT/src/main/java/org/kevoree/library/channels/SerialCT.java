@@ -20,7 +20,7 @@ import java.util.HashMap;
 /**
  * @author ffouquet
  */
-@Library(name = "KevoreeArduinoJava")
+@Library(name = "JavaSE")
 @ChannelTypeFragment
 public class SerialCT extends AbstractChannelFragment {
 	private static final Logger logger = LoggerFactory.getLogger(SerialCT.class);

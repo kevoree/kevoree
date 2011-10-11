@@ -23,7 +23,7 @@ import java.util.TooManyListenersException;
 		@RequiredPort(name = "TAG", optional = true, type = PortType.MESSAGE, needCheckDependency = false)
 })
 @ComponentType
-@Library(name = "HID_RFID")
+@Library(name = "JavaSE")
 public class ProxProRFIDReader extends AbstractComponentType implements SerialPortEventListener {
 
 	private InputStream inputStream;
