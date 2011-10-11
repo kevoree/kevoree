@@ -17,8 +17,8 @@ import reflect.BeanProperty
 import org.kevoree.ContainerRoot
 import org.slf4j.LoggerFactory
 import org.kevoree.tools.ui.editor._
-import org.kevoree.tools.aether.framework.NodeTypeBootstrapHelper
 import java.lang.Thread
+import org.kevoree.tools.aether.framework.{GroupTypeBootstrapHelper, NodeTypeBootstrapHelper}
 
 class SynchNodeTypeCommand extends Command {
 
@@ -30,7 +30,10 @@ class SynchNodeTypeCommand extends Command {
   @BeanProperty
   var destNodeName: String = null
 
-  val bootstrap = new NodeTypeBootstrapHelper
+  @BeanProperty
+  var viaGroupName: String = null
+
+  val bootstrap = new GroupTypeBootstrapHelper
 
   def execute(p: AnyRef) {
 
@@ -39,11 +42,11 @@ class SynchNodeTypeCommand extends Command {
       val model: ContainerRoot = kernel.getModelHandler.getActualModel
       new Thread() {
         override def run() {
-          bootstrap.bootstrapNodeType(model, destNodeName, EmbeddedOSGiEnv.getFwk.getBundleContext) match {
-            case Some(nodeTypeInstance) => {
-              nodeTypeInstance.push(destNodeName, model)
+          bootstrap.bootstrapGroupType(model, viaGroupName, EmbeddedOSGiEnv.getFwk.getBundleContext) match {
+            case Some(groupTypeInstance) => {
+              groupTypeInstance.push(model,destNodeName)
             }
-            case None => logger.error("Error while bootstraping node type")
+            case None => logger.error("Error while bootstraping group type")
           }
         }
       }.start()
