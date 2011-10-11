@@ -13,12 +13,12 @@ import org.kevoree.library.sky.minicloud.KevoreeNodeManager
  * @version 1.0
  */
 
-class AddNodeCommand(containerNode : ContainerNode, model: ContainerRoot, kevoreeNodeManager: KevoreeNodeManager) extends PrimitiveCommand {
+class AddNodeCommand(containerNode : ContainerNode, model: ContainerRoot) extends PrimitiveCommand {
   def execute () : Boolean = {
-    kevoreeNodeManager.addNode(containerNode, model)
+    KevoreeNodeManager.addNode(containerNode, model)
   }
 
   def undo () {
-    kevoreeNodeManager.removeNode(containerNode)
+    KevoreeNodeManager.removeNode(containerNode)
   }
 }

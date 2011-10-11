@@ -179,13 +179,13 @@ class KevoreeNodeRunner (var nodeName: String, bootStrapModel: String) {
     }
   }
 
-  def updateNode (model: String, modelBackup: String): Boolean = {
+  def updateNode (model: String): Boolean = {
     var uuid = UUID.randomUUID()
-    actor.manage(BackupResult(uuid.toString))
+    /*actor.manage(BackupResult(uuid.toString))
     nodePlatformProcess.getOutputStream.write(("backupModel " + modelBackup + " " + uuid.toString + "\n").getBytes)
     nodePlatformProcess.getOutputStream.flush()
 
-    actor.waitFor()
+    actor.waitFor()*/
 
     uuid = UUID.randomUUID()
     actor.manage(DeployResult(uuid.toString))
@@ -193,8 +193,6 @@ class KevoreeNodeRunner (var nodeName: String, bootStrapModel: String) {
     nodePlatformProcess.getOutputStream.flush()
 
     actor.waitFor()
-
-
   }
 
   private def getJava: String = {

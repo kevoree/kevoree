@@ -10,14 +10,11 @@ import org.jboss.netty.handler.codec.http.HttpResponse;
 import org.kevoree.AdaptationPrimitiveType;
 import org.kevoree.ContainerNode;
 import org.kevoree.ContainerRoot;
-import org.kevoree.DictionaryValue;
 import org.kevoree.annotation.*;
-import org.kevoree.framework.*;
-import org.kevoree.framework.Constants;
+import org.kevoree.framework.AbstractNodeType;
 import org.kevoree.framework.PrimitiveCommand;
 import org.kevoree.library.sky.minicloud.command.AddNodeCommand;
 import org.kevoree.library.sky.minicloud.command.RemoveNodeCommand;
-import org.kevoree.library.sky.minicloud.command.UpdateNodeCommand;
 import org.kevoreeAdaptation.AdaptationModel;
 import org.kevoreeAdaptation.AdaptationPrimitive;
 import org.kevoreeAdaptation.KevoreeAdaptationFactory;
@@ -26,13 +23,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import scala.Some;
 
-import java.io.BufferedReader;
-import java.io.ByteArrayOutputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
 import java.net.InetSocketAddress;
-import java.net.URL;
-import java.net.URLConnection;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -48,7 +39,7 @@ import java.util.concurrent.TimeUnit;
 		@DictionaryAttribute(name = "port", defaultValue = "7000", optional = false)
 })
 @PrimitiveCommands(value = {},
-		values = {MiniCloudNode.REMOVE_NODE, MiniCloudNode.ADD_NODE, MiniCloudNode.UPDATE_NODE})
+		values = {MiniCloudNode.REMOVE_NODE, MiniCloudNode.ADD_NODE/*, MiniCloudNode.UPDATE_NODE*/})
 public class MiniCloudNode extends AbstractNodeType {
 	private static final Logger logger = LoggerFactory.getLogger(MiniCloudNode.class);
 
@@ -57,21 +48,21 @@ public class MiniCloudNode extends AbstractNodeType {
 	protected static final String UPDATE_NODE = "UpdateNode";
 
 	private Server server;
-	protected KevoreeNodeManager kevoreeNodeManager;
+//	protected KevoreeNodeManager kevoreeNodeManager;
 
 	@Start
 	@Override
 	public void startNode () {
 
 		// start KevoreeNodeManager
-		kevoreeNodeManager = new KevoreeNodeManager(this);
+//		kevoreeNodeManager = new KevoreeNodeManager(this);
+		KevoreeNodeManager.setNode(this);
 
 		// start HTTP Server
 		String port = (String) this.getDictionary().get("port");
 		int portint = Integer.parseInt(port);
 
-		Service<HttpRequest, HttpResponse> myService = new HttpServer.Respond(this.getModelService(),
-				kevoreeNodeManager);
+		Service<HttpRequest, HttpResponse> myService = new HttpServer.Respond(this.getModelService());
 		server = ServerBuilder.safeBuild(myService, ServerBuilder.get().codec(Http.get())
 				.bindTo(new InetSocketAddress(portint))
 				.name(this.getNodeName()));
@@ -84,7 +75,7 @@ public class MiniCloudNode extends AbstractNodeType {
 	@Override
 	public void stopNode () {
 		server.close(Duration.apply(300, TimeUnit.MILLISECONDS));
-		kevoreeNodeManager.stop();
+		KevoreeNodeManager.stop();
 	}
 
 	@Override
@@ -92,27 +83,27 @@ public class MiniCloudNode extends AbstractNodeType {
 		logger.debug("starting kompare...");
 		AdaptationPrimitiveType removeNodeType = null;
 		AdaptationPrimitiveType addNodeType = null;
-		AdaptationPrimitiveType updateNodeType = null;
+//		AdaptationPrimitiveType updateNodeType = null;
 		// looking for managed AdaptationPrimitiveType
 		for (AdaptationPrimitiveType primitiveType : current.getAdaptationPrimitiveTypesForJ()) {
 			if (primitiveType.getName().equals(REMOVE_NODE)) {
 				removeNodeType = primitiveType;
 			} else if (primitiveType.getName().equals(ADD_NODE)) {
 				addNodeType = primitiveType;
-			} else if (primitiveType.getName().equals(UPDATE_NODE)) {
+			} /*else if (primitiveType.getName().equals(UPDATE_NODE)) {
 				updateNodeType = primitiveType;
-			}
+			}*/
 		}
 
-		if (removeNodeType == null || addNodeType == null || updateNodeType == null) {
+		if (removeNodeType == null || addNodeType == null /*|| updateNodeType == null*/) {
 			for (AdaptationPrimitiveType primitiveType : target.getAdaptationPrimitiveTypesForJ()) {
 				if (primitiveType.getName().equals(REMOVE_NODE)) {
 					removeNodeType = primitiveType;
 				} else if (primitiveType.getName().equals(ADD_NODE)) {
 					addNodeType = primitiveType;
-				} else if (primitiveType.getName().equals(UPDATE_NODE)) {
+				} /*else if (primitiveType.getName().equals(UPDATE_NODE)) {
 					updateNodeType = primitiveType;
-				}
+				}*/
 			}
 		}
 		if (removeNodeType == null) {
@@ -121,9 +112,9 @@ public class MiniCloudNode extends AbstractNodeType {
 		if (addNodeType == null) {
 			logger.warn("there is no adaptation primitive for " + ADD_NODE);
 		}
-		if (updateNodeType == null) {
+		/*if (updateNodeType == null) {
 			logger.warn("there is no adaptation primitive for " + UPDATE_NODE);
-		}
+		}*/
 
 		AdaptationModel adaptationModel = org.kevoreeAdaptation.KevoreeAdaptationFactory.eINSTANCE().createAdaptationModel();
 		ParallelStep step = KevoreeAdaptationFactory.eINSTANCE().createParallelStep();
@@ -166,7 +157,7 @@ public class MiniCloudNode extends AbstractNodeType {
 						if (subNode.getName().equals(node1.getName())) {
 							found = true;
 							// create UpdateNode command
-							logger.debug("add a " + UPDATE_NODE + " adaptation primitive with " + subNode.getName()
+							/*logger.debug("add a " + UPDATE_NODE + " adaptation primitive with " + subNode.getName()
 									+ " as parameter");
 							AdaptationPrimitive command = KevoreeAdaptationFactory.eINSTANCE()
 									.createAdaptationPrimitive();
@@ -176,7 +167,7 @@ public class MiniCloudNode extends AbstractNodeType {
 							subStep.addAdaptations(command);
 							adaptationModel.addAdaptations(command);
 							step.setNextStep(new Some<ParallelStep>(subStep));
-							step = subStep;
+							step = subStep;*/
 							break;
 						}
 					}
@@ -205,18 +196,18 @@ public class MiniCloudNode extends AbstractNodeType {
 		PrimitiveCommand command = null;
 		if (adaptationPrimitive.getPrimitiveType().getName().equals(REMOVE_NODE)) {
 			command = new RemoveNodeCommand((ContainerNode) adaptationPrimitive.getRef(),
-					(ContainerRoot) (((ContainerNode) adaptationPrimitive.getRef()).eContainer()), kevoreeNodeManager);
+					(ContainerRoot) (((ContainerNode) adaptationPrimitive.getRef()).eContainer()));
 		} else if (adaptationPrimitive.getPrimitiveType().getName().equals(ADD_NODE)) {
 			command = new AddNodeCommand((ContainerNode) adaptationPrimitive.getRef(),
-					(ContainerRoot) (((ContainerNode) adaptationPrimitive.getRef()).eContainer()), kevoreeNodeManager);
-		} else if (adaptationPrimitive.getPrimitiveType().getName().equals(UPDATE_NODE)) {
+					(ContainerRoot) (((ContainerNode) adaptationPrimitive.getRef()).eContainer()));
+		} /*else if (adaptationPrimitive.getPrimitiveType().getName().equals(UPDATE_NODE)) {
 			command = new UpdateNodeCommand((ContainerNode) adaptationPrimitive.getRef(),
 					(ContainerRoot) (((ContainerNode) adaptationPrimitive.getRef()).eContainer()), kevoreeNodeManager);
-		}
+		}*/
 		return command;
 	}
 
-	@Override
+	/*@Override
 	public void push (String physicalNodeName, ContainerRoot root) {
 		try {
 			ByteArrayOutputStream outStream = new ByteArrayOutputStream();
@@ -266,5 +257,5 @@ public class MiniCloudNode extends AbstractNodeType {
 			}
 		}
 		return "7000";
-	}
+	}*/
 }
