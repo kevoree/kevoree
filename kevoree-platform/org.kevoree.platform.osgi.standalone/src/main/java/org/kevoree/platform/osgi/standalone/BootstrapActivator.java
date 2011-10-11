@@ -96,13 +96,6 @@ public class BootstrapActivator implements BundleActivator {
     @Override
     public void stop(BundleContext context) throws Exception {
         if(!started){return;}
-
-        try {
-            sendModel.unregister();
-            backupModel.unregister();
-        } catch (Exception e) {
-            logger.error("Error while stopping Core ",e);
-        }
         try {
             coreBean.stop();
             started = false;
