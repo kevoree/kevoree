@@ -40,12 +40,13 @@ public abstract class AbstractGroupType {
         return null;
     } //OVERRIDE BY FACTORY
 
-    public void setDictionary(HashMap<String, Object> dic){
-    }
+    public void setDictionary(HashMap<String, Object> dic){}
 
     public String getNodeName() {
         return null;
     }
+
+    public void setNodeName(String nodeName){}
 
     public String getName() {
         return null;
