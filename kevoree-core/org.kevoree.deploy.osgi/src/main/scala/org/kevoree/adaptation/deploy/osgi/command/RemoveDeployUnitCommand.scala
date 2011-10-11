@@ -45,7 +45,7 @@ case class RemoveDeployUnitCommand(deployUnit : DeployUnit, ctx : KevoreeDeployM
           ctx.getServicePackageAdmin.refreshPackages(Array(bundle))
 
           //REMOVE BUNDLE MAPPING
-          ctx.bundleMapping = ctx.bundleMapping.filter(p => p != bundleMappingFound)
+          ctx.removeMapping(bundleMappingFound)
           true
         }
       case None => logger.error("Type Bundle not found & Or Error while uninstall !!! ");false
