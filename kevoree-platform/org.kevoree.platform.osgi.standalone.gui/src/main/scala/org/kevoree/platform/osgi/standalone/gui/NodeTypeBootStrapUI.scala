@@ -33,6 +33,8 @@ class NodeTypeBootStrapUI(pkernel: ContainerRoot) extends JPanel {
 
   var instanceName: JTextField = _
   var nodeTypeComboBox: JComboBox = _
+  var groupTypeComboBox: JComboBox = _
+
   var currentProperties = new Properties()
   var currentModel = pkernel
 
@@ -50,6 +52,11 @@ class NodeTypeBootStrapUI(pkernel: ContainerRoot) extends JPanel {
     nodeTypeComboBox.getSelectedItem
   }
 
+  def getKevGroupTypeName = {
+    groupTypeComboBox.getSelectedItem
+  }
+
+
   init(pkernel)
   this.setOpaque(false)
 
@@ -58,13 +65,21 @@ class NodeTypeBootStrapUI(pkernel: ContainerRoot) extends JPanel {
     currentModel = kernel
     this.removeAll()
     val nodeTypeModel = new DefaultComboBoxModel
-
     kernel.getTypeDefinitions.filter(td => td.isInstanceOf[org.kevoree.NodeType] && td.getDeployUnits.exists(du => du.getTargetNodeType != null )).foreach {
       td =>
         nodeTypeModel.addElement(td.getName)
     }
     nodeTypeComboBox = new JComboBox(nodeTypeModel)
     nodeTypeComboBox.setUI(new HudComboBoxUI())
+
+    val groupTypeModel = new DefaultComboBoxModel
+    kernel.getTypeDefinitions.filter(td => td.isInstanceOf[org.kevoree.GroupType] && td.getDeployUnits.exists(du => du.getTargetNodeType != null )).foreach {
+          td =>
+            groupTypeModel.addElement(td.getName)
+        }
+    groupTypeComboBox = new JComboBox(groupTypeModel)
+    groupTypeComboBox.setUI(new HudComboBoxUI())
+
     instanceName = new JTextField(10)
     instanceName.setUI(new HudTextFieldUI)
 
@@ -118,10 +133,16 @@ class NodeTypeBootStrapUI(pkernel: ContainerRoot) extends JPanel {
     nodeNameLabel.setUI(new HudLabelUI());
     nodeNameLabel.setOpaque(false);
     nodeNameLabel.setLabelFor(instanceName);
+
     val nodeTypeLabel = new JLabel("Node type", SwingConstants.TRAILING);
     nodeTypeLabel.setUI(new HudLabelUI());
     nodeTypeLabel.setOpaque(false);
     nodeTypeLabel.setLabelFor(nodeTypeComboBox);
+
+    val groupTypeLabel = new JLabel("Group type", SwingConstants.TRAILING);
+    groupTypeLabel.setUI(new HudLabelUI());
+    groupTypeLabel.setOpaque(false);
+    groupTypeLabel.setLabelFor(groupTypeComboBox);
 
     val btBrowse: JButton = new JButton("Browse")
     btBrowse.setUI(new HudButtonUI)
@@ -156,7 +177,7 @@ class NodeTypeBootStrapUI(pkernel: ContainerRoot) extends JPanel {
     topLayout.add(nodeTypeComboBox)
     topLayout.add(bootModelLabel)
     topLayout.add(btBrowse)
-    SpringUtilities.makeCompactGrid(topLayout, 3, 2, 6, 6, 6, 6)
+    SpringUtilities.makeCompactGrid(topLayout, 4, 2, 6, 6, 6, 6)
 
     previousTopLayout = topLayout
 
