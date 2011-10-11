@@ -35,13 +35,13 @@ import org.kevoree.framework.KevoreeXmiHelper;
 import org.kevoree.kompare.KevoreeKompareBean;
 import org.kevoreeAdaptation.*;
 
-*/
+
 /**
  * Hello world!
  *
  *//*
 
-public class App {
+public class Tester {
 
     public static void main(String[] args) {
         System.out.println("Hello World!");
