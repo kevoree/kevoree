@@ -25,22 +25,33 @@ import org.kevoree.tools.marShell.interpreter.KevsInterpreterContext
 
 import org.slf4j.LoggerFactory
 
-case class KevsCreateChannelTypeInterpreter(self : CreateChannelTypeStatment) extends KevsAbstractInterpreter {
+case class KevsCreateChannelTypeInterpreter(self: CreateChannelTypeStatment) extends KevsAbstractInterpreter {
 
   var logger = LoggerFactory.getLogger(this.getClass)
 
   def interpret(context: KevsInterpreterContext): Boolean = {
     //LOOK FOR PREVIOUSLY EXSITING COMPONENT TYPE
     context.model.getTypeDefinitions.find(tdef => tdef.getName == self.newTypeName) match {
-      case Some(e)=> logger.error("TypeDefinition already exist with name => "+self.newTypeName);false
+      case Some(e) => logger.error("TypeDefinition already exist with name => " + self.newTypeName); false
       case None => {
-          var newComponentTypeDef = KevoreeFactory.eINSTANCE.createChannelType
-          newComponentTypeDef.setName(self.newTypeName)
-          context.model.addTypeDefinitions(newComponentTypeDef)
-          true
+        var newComponentTypeDef = KevoreeFactory.eINSTANCE.createChannelType
+        newComponentTypeDef.setName(self.newTypeName)
+        context.model.addTypeDefinitions(newComponentTypeDef)
+
+        self.libName.map {
+          libName =>
+            context.model.getLibraries.find(lib => lib.getName == libName).getOrElse({
+              val newLib = KevoreeFactory.createTypeLibrary
+              newLib.setName(libName)
+              newLib
+            }).addSubTypes(newComponentTypeDef)
+        }
+
+
+        true
       }
     }
   }
-  
-  
+
+
 }

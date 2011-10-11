@@ -18,6 +18,6 @@
 
 package org.kevoree.tools.marShell.ast
 
-case class CreateChannelTypeStatment(newTypeName : String) extends TypeStatment {
+case class CreateChannelTypeStatment(newTypeName : String, libName : Option[String]) extends TypeStatment {
 
 }
