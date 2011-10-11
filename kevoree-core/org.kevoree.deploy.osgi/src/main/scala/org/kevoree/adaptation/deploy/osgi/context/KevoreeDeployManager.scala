@@ -104,6 +104,7 @@ class KevoreeDeployManager extends DaemonActor {
                 private_bundleMapping = private_bundleMapping.filter(mp => mp != mapping)
               }
           }
+          reply(true)
         }
         case GET_MAPPINGS() => {
           reply(private_bundleMapping)
