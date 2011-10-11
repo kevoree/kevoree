@@ -17,8 +17,8 @@ import java.io.FileInputStream
 import org.osgi.framework.{Bundle, BundleContext, BundleException}
 import org.slf4j.LoggerFactory
 import org.kevoree.api.service.core.handler.KevoreeModelHandlerService
-import org.kevoree.framework.{AbstractGroupType, Constants}
 import org.kevoree.{GroupType, ContainerRoot, DeployUnit}
+import org.kevoree.framework.{KevoreeGeneratorHelper, KevoreeGroup, AbstractGroupType, Constants}
 
 /**
  * User: ffouquet
@@ -41,8 +41,14 @@ class GroupTypeBootstrapHelper {
         val groupTypeDeployUnitList = group.getTypeDefinition.getDeployUnits.toList
         if (groupTypeDeployUnitList.size > 0) {
           logger.debug("groupType installation => " + installNodeTyp(group.getTypeDefinition.asInstanceOf[GroupType], bundleContext))
-          val clazz: Class[_] = bundle.loadClass(group.getTypeDefinition.getBean)
-          val groupType = clazz.newInstance.asInstanceOf[AbstractGroupType]
+
+          val activatorPackage = KevoreeGeneratorHelper.getTypeDefinitionGeneratedPackage(group.getTypeDefinition, "JavaSENode")
+          val activatorName = group.getTypeDefinition.getName + "Activator"
+          val clazz: Class[_] = bundle.loadClass(activatorPackage+"."+activatorName)
+
+          val groupActivator = clazz.newInstance.asInstanceOf[org.kevoree.framework.osgi.KevoreeGroupActivator]
+          val groupType =  groupActivator.callFactory()
+
           //ADD INSTANCE DICTIONARY
           val dictionary: java.util.HashMap[String, AnyRef] = new java.util.HashMap[String, AnyRef]
 
@@ -63,9 +69,9 @@ class GroupTypeBootstrapHelper {
 
           dictionary.put(Constants.KEVOREE_PROPERTY_OSGI_BUNDLE, bundleContext.getBundle)
 
-          groupType.setDictionary(dictionary)
+          groupType.getDictionary().putAll(dictionary)
+          println("afterSet"+groupType.getDictionary)
           groupType.setName(destGroupName)
-
 
           //INJECT SERVICE HANDLER
           val sr = bundleContext.getServiceReference(classOf[KevoreeModelHandlerService].getName)
