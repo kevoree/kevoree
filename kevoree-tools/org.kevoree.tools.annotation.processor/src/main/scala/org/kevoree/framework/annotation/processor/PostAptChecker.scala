@@ -28,8 +28,8 @@ class PostAptChecker(root: ContainerRoot, env: AnnotationProcessorEnvironment) {
   private var nbErrors = 0
 
   def check = {
-    baseCheck()
     checkComponentTypes()
+    baseCheck()
     nbErrors == 0
   }
 
@@ -46,7 +46,6 @@ class PostAptChecker(root: ContainerRoot, env: AnnotationProcessorEnvironment) {
   }
 
   def checkComponentTypes() {
-
     root.getTypeDefinitions.foreach {
       typeDef =>
         checkLifeCycleMethods(typeDef)
