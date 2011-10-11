@@ -16,7 +16,7 @@ import java.util.*;
  * @author Erwan Daubert
  *         TODO add a DictionaryAttribute to define the number of uuids sent by response when a VectorClockUUIDsRequest is sent
  */
-@Library(name = "Kevoree-Netty")
+@Library(name = "JavaSE")
 @DictionaryType({
 		@DictionaryAttribute(name = "interval", defaultValue = "30000", optional = true),
 		@DictionaryAttribute(name = "port", defaultValue = "9000", optional = true),

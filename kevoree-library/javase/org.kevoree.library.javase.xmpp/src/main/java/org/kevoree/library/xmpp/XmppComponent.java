@@ -21,7 +21,7 @@ import org.slf4j.LoggerFactory;
 @Requires({
     @RequiredPort(name = "messageReceived", type = PortType.MESSAGE, needCheckDependency = true, optional = false)
 })
-@Library(name = "Kevoree-Android-JavaSE")
+@Library(name = "JavaSE")
 @DictionaryType({@DictionaryAttribute(name = "login"),@DictionaryAttribute(name = "password")})
 @ComponentType
 public class XmppComponent extends AbstractComponentType {

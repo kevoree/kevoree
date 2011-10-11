@@ -14,7 +14,7 @@ import org.kevoree.framework.message.Message;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@Library(name = "Kevoree-Android-JavaSE")
+@Library(name = "JavaSE")
 @ChannelTypeFragment
 @ThirdParties({
         @ThirdParty(name = "org.kevoree.extra.marshalling", url = "mvn:org.kevoree.extra/org.kevoree.extra.marshalling")

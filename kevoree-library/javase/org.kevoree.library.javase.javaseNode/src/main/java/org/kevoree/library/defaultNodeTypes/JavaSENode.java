@@ -7,10 +7,7 @@ package org.kevoree.library.defaultNodeTypes;
 
 import org.kevoree.ContainerRoot;
 import org.kevoree.adaptation.deploy.osgi.BaseDeployOSGi;
-import org.kevoree.annotation.NodeType;
-import org.kevoree.annotation.PrimitiveCommands;
-import org.kevoree.annotation.Start;
-import org.kevoree.annotation.Stop;
+import org.kevoree.annotation.*;
 import org.kevoree.framework.AbstractNodeType;
 import org.kevoree.kompare.KevoreeKompareBean;
 import org.kevoreeAdaptation.AdaptationModel;
@@ -24,6 +21,7 @@ import org.slf4j.LoggerFactory;
 /**
  * @author ffouquet
  */
+@Library(name="JavaSE")
 @NodeType
 @PrimitiveCommands(
 		values = {"UpdateType", "UpdateDeployUnit", "AddType", "AddDeployUnit", "AddThirdParty", "RemoveType", "RemoveDeployUnit", "UpdateInstance", "UpdateBinding", "UpdateDictionaryInstance", "AddInstance", "RemoveInstance", "AddBinding", "RemoveBinding", "AddFragmentBinding", "RemoveFragmentBinding", "StartInstance", "StopInstance"},
@@ -74,10 +72,4 @@ public class JavaSENode extends AbstractNodeType {
 		return deployBean.buildPrimitiveCommand(adaptationPrimitive, this.getNodeName());
 	}
 
-	@Override
-	public void push (String targetNodeName, ContainerRoot root) {
-
-		logger.error("JavaSE have no strategy to deploy model !!! ");
-
-	}
 }

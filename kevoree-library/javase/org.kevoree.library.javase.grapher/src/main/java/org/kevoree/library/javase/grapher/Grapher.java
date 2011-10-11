@@ -19,6 +19,7 @@ import java.util.HashMap;
  * Time: 18:00
  */
 
+@Library(name="JavaSE")
 @Provides({
         @ProvidedPort(name = "input", type = PortType.MESSAGE)
 })
