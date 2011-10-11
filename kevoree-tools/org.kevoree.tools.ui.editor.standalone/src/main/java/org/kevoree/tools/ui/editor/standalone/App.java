@@ -92,6 +92,8 @@ public class App {
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
+
+                /*
                 AbstractButton toogleTypeEditionMode = null;
                 try {
                     java.net.URL url = App.class.getClassLoader().getResource("package.png");
@@ -102,6 +104,7 @@ public class App {
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
+                */
 
                 jframe.add(toolBar.getComponent(), BorderLayout.NORTH);
                 toolBar.installWindowDraggerOnWindow(jframe);
@@ -221,6 +224,7 @@ public class App {
                     }
                 });
 
+                /*
                 final AbstractButton finalToogleTypeEditionMode = toogleTypeEditionMode;
                 toogleTypeEditionMode.addMouseListener(new MouseAdapter() {
                     @Override
@@ -235,6 +239,7 @@ public class App {
                         p.revalidate();
                     }
                 });
+                */
                 dividerPos = splitPane.getDividerLocation();
 
 
