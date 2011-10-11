@@ -15,7 +15,7 @@ package org.kevoree.platform.osgi.standalone.gui
 
 import org.slf4j.LoggerFactory
 import java.util.Properties
-import org.kevoree.{NodeType, KevoreeFactory, ContainerRoot}
+import org.kevoree._
 
 /**
  * User: ffouquet
@@ -27,8 +27,8 @@ object NodeTypeBootStrapModel {
 
   val logger = LoggerFactory.getLogger(this.getClass)
 
-  def checkAndCreate(model: ContainerRoot, nodeName: String, nodeTypeName: String, props: Properties) {
-    model.getNodes.find {
+  def checkAndCreate(model: ContainerRoot, nodeName: String, nodeTypeName: String, groupTypeName: String, props: Properties) {
+    val node : ContainerNode = model.getNodes.find {
       node => node.getName == nodeName
     } match {
       case Some(node) => {
@@ -36,15 +36,34 @@ object NodeTypeBootStrapModel {
           logger.error("NodeType consistency error !")
           model.addNodes(node)
           createNode(model, nodeName, nodeTypeName, props)
+        } else {
+          null
         }
       }
       case None => {
         createNode(model, nodeName, nodeTypeName, props)
       }
     }
+    model.getGroups.find(g => g.getName == "sync") match {
+      case Some(g) => println("Already present group ")
+      case None => {
+        model.getTypeDefinitions.filter(td => td.isInstanceOf[GroupType]).find(td => td.getName == groupTypeName) match {
+          case Some(groupTypeDef) => {
+            val group = KevoreeFactory.eINSTANCE.createGroup
+            group.setName("sync")
+            group.setTypeDefinition(groupTypeDef)
+            model.addGroups(group)
+            group.addSubNodes(node)
+          }
+          case None => logger.error("Type node found => "+groupTypeName)
+        }
+      }
+    }
+
+
   }
 
-  private def createNode(model: ContainerRoot, nodeName: String, nodeTypeName: String, props: Properties) {
+  private def createNode(model: ContainerRoot, nodeName: String, nodeTypeName: String, props: Properties): ContainerNode = {
 
     model.getTypeDefinitions.filter(td => td.isInstanceOf[NodeType]).find(td => td.getName == nodeTypeName) match {
       case Some(nodeTypeDef) => {
@@ -72,8 +91,9 @@ object NodeTypeBootStrapModel {
             }
         }
         node.setDictionary(Some(propsmodel))
+        node
       }
-      case None => logger.error("NodeType definition not found")
+      case None => logger.error("NodeType definition not found") ; null
     }
   }
 
