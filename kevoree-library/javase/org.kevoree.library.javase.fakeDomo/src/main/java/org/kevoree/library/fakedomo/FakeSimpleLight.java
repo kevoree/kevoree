@@ -101,6 +101,7 @@ public class FakeSimpleLight extends AbstractFakeStuffComponent {
         @Port(name = "on")
     })
     public void lightOn(Object o) {
+
         frame.setColor(Color.green);
         state = true;
 
