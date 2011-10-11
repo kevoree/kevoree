@@ -59,6 +59,8 @@ case class AddInstanceCommand(c: Instance, ctx: KevoreeDeployManager, nodeName: 
       }; return false; null;
     }
 
+    logger.debug("bundleID for "+c.getTypeDefinition.getName+" =>"+mappingFound.bundleId+"");
+
     if (mappingFound != null) {
       //FOUND CURRENT NODE TYPE
       val nodeType = c.getTypeDefinition.eContainer.asInstanceOf[ContainerRoot].getNodes.find(tn => tn.getName == nodeName).get.getTypeDefinition

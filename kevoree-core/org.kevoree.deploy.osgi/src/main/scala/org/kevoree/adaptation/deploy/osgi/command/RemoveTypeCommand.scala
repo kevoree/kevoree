@@ -31,7 +31,10 @@ case class RemoveTypeCommand(ct : TypeDefinition, ctx : KevoreeDeployManager,nod
   def execute() : Boolean= {
     ctx.bundleMapping.find({bundle =>bundle.name==ct.getName && bundle.objClassName==ct.getClass.getName}) match {
       case Some(bundle)=> {
+        logger.debug("Remove type, previous size mapping "+ctx.bundleMapping.size)
         ctx.bundleMapping = ctx.bundleMapping.filter(mb => mb != bundle)
+        logger.debug("Remove type, after size mapping "+ctx.bundleMapping.size)
+        ctx.garbage()
       };true
       case None => false
     }
