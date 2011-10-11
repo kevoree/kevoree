@@ -1,3 +1,4 @@
+/*
 package org.kevoree.library.sky.minicloud.command
 
 import org.kevoree.{ContainerRoot, ContainerNode}
@@ -25,4 +26,4 @@ class UpdateNodeCommand (containerNode: ContainerNode, model: ContainerRoot, kev
     val root = KevoreeXmiHelper.load(modelBackup)
     kevoreeNodeManager.updateNode(containerNode, root, modelBackup)
   }
-}
+}*/
