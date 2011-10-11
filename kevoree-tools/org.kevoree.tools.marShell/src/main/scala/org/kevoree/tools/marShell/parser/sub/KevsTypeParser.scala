@@ -18,10 +18,7 @@
 
 package org.kevoree.tools.marShell.parser.sub
 
-import org.kevoree.tools.marShell.ast.AddPortTypeStatment
-import org.kevoree.tools.marShell.ast.CreateComponentTypeStatment
-import org.kevoree.tools.marShell.ast.Statment
-
+import org.kevoree.tools.marShell.ast.{CreateChannelTypeStatment, AddPortTypeStatment, CreateComponentTypeStatment, Statment}
 
 trait KevsTypeParser extends KevsAbstractParser {
 
@@ -29,22 +26,18 @@ trait KevsTypeParser extends KevsAbstractParser {
   
   
   //example : removeNode node1,node2
-  val createComponentTypeCommandFormat = "createComponentType <ComponentTypeName> "
-  def parseCreateComponentType : Parser[List[Statment]] = "createComponentType" ~ orFailure(repsep(ident,","),createComponentTypeCommandFormat) ^^{ case _ ~ nodeIDs =>
-      var res : List[Statment] = List()
-      nodeIDs.foreach{typeName=>
-        res = res ++ List(CreateComponentTypeStatment(typeName))
-      }
-      res
+  val createComponentTypeCommandFormat = "createComponentType <ComponentTypeName> @ <libraryName> "
+  def parseCreateComponentType : Parser[List[Statment]] = "createComponentType" ~ orFailure( (ident~opt("@"~>ident)),createComponentTypeCommandFormat) ^^{ case _ ~ nodeIDs =>
+    nodeIDs match {
+      case id ~ lib =>     List(CreateComponentTypeStatment(id,lib))
+    }
   }
 
-  val createChannelTypeCommandFormat = "createChannelType <ChannelTypeName> "
-  def parseCreateChannelType : Parser[List[Statment]] = "createChannelType" ~ orFailure(repsep(ident,","),createChannelTypeCommandFormat) ^^{ case _ ~ nodeIDs =>
-      var res : List[Statment] = List()
-      nodeIDs.foreach{typeName=>
-        res = res ++ List(CreateComponentTypeStatment(typeName))
-      }
-      res
+  val createChannelTypeCommandFormat = "createChannelType <ChannelTypeName> @ <libraryName>"
+  def parseCreateChannelType : Parser[List[Statment]] = "createChannelType" ~ orFailure((ident~opt("@"~>ident)),createChannelTypeCommandFormat) ^^{ case _ ~ nodeIDs =>
+    nodeIDs match {
+      case id ~ lib =>     List(CreateChannelTypeStatment(id,lib))
+    }
   }
 
   val addPortTypeCommandFormat = "addPortType <PortName> : <PortType> => <ComponentTypeName> "

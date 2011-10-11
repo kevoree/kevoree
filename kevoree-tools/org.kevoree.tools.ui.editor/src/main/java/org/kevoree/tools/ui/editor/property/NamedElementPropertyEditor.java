@@ -121,6 +121,10 @@ public class NamedElementPropertyEditor extends /*ThreePartRoundedPanel*/ JPanel
     public void updateName(String newname) {
         namedElem.setName(newname);
         gui.setTitle(newname);
+
+        kernel.getModelHandler().notifyChanged();
+
+
         //kernel.getModelPanel().revalidate();
 
     }

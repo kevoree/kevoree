@@ -42,7 +42,7 @@ trait TypeDefinitionResolver {
               case None => logger.error("Error while resolving NodeType for name " + nodeTypeName)
             }
           }
-          case _ @ e => logger.error("Strange already resolved target node type "+e)
+          case _ @ e => logger.warn("Strange already resolved target node type for name "+e+" - "+du.getUnitName)
         }
     }
   }

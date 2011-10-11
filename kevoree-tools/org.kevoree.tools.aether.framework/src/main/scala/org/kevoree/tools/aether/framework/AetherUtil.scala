@@ -78,6 +78,7 @@ object AetherUtil {
 
         repo.setContentType("default")
 
+
         val HttpAuthRegex = new Regex("http://(.*):(.*)@(.*)")
         url match {
           case HttpAuthRegex(login, password, urlp) => {
@@ -115,7 +116,7 @@ object AetherUtil {
   val newRepositorySystemSession = {
     val session = new MavenRepositorySystemSession()
     session.setUpdatePolicy(RepositoryPolicy.UPDATE_POLICY_ALWAYS)
-    //session.setConfigProperty("aether.connector.ahc.provider","jdk")
+    session.setConfigProperty("aether.connector.ahc.provider","jdk")
 
     /*
    val factory = new DefaultSettingsBuilderFactory
