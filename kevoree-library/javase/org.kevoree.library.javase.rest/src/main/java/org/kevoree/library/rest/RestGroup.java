@@ -38,6 +38,7 @@ public class RestGroup extends AbstractGroupType {
     public void startRestGroup() {
         Handler.setModelhandler(this.getModelService());
         remoteBean = new KevoreeRemoteBean(this.getDictionary().get("port").toString());
+        remoteBean.start();
     }
 
     @Stop

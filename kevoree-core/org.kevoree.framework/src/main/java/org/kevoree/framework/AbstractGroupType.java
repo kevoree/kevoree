@@ -31,9 +31,17 @@ public abstract class AbstractGroupType {
         return null;
     }
 
+    public void setModelService(KevoreeModelHandlerService ms){
+
+    }
+
+
     public HashMap<String, Object> getDictionary() {
         return null;
     } //OVERRIDE BY FACTORY
+
+    public void setDictionary(HashMap<String, Object> dic){
+    }
 
     public String getNodeName() {
         return null;
@@ -42,5 +50,7 @@ public abstract class AbstractGroupType {
     public String getName() {
         return null;
     }
+    
+    public void setName(String name){}
 
 }
