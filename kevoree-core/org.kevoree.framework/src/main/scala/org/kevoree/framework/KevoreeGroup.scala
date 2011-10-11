@@ -41,10 +41,6 @@ trait KevoreeGroup extends AbstractGroupType with KevoreeActor {
 
   override def getNodeName = nodeName
 
-  def setNodeName(n: String) {
-    nodeName = n
-  }
-
   //@BeanProperty
   var name: String = ""
 
@@ -54,9 +50,11 @@ trait KevoreeGroup extends AbstractGroupType with KevoreeActor {
     name = n
   }
 
-  var dictionary: HashMap[String, Object] = new HashMap[String, Object]()
+  def setNodeName(nn : String){
+    nodeName = nn
+  }
 
-  override def setDictionary(d: HashMap[String, Object]) {dictionary = d ; println("setDic="+dictionary) }
+  var dictionary: HashMap[String, Object] = new HashMap[String, Object]()
 
   override def getDictionary(): HashMap[String, Object] = dictionary
 
