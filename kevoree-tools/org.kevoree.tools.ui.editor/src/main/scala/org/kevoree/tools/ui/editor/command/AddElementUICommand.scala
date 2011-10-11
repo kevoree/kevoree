@@ -197,6 +197,22 @@ class AddElementUICommand extends Command {
     componentTypeNameLabel.setLabelFor(nameTextField);
     layout.add(componentTypeNameLabel)
     layout.add(nameTextField)
+
+    //MENU LIBRARY
+    val libraryModel = new DefaultComboBoxModel
+    libraryModel.addElement("no library")
+    kernel.getModelHandler.getActualModel.getLibraries.foreach {
+      lib =>
+        libraryModel.addElement(lib.getName)
+    }
+    val comboLibrary = new JComboBox(libraryModel)
+    comboLibrary.setUI(new HudComboBoxUI())
+    val libraryCompoLabel = new JLabel("library : ", SwingConstants.TRAILING)
+    libraryCompoLabel.setUI(new HudLabelUI)
+    libraryCompoLabel.setLabelFor(comboLibrary)
+    layout.add(libraryCompoLabel)
+    layout.add(comboLibrary)
+
     //EXECUTE KEVSCRIPT COMMAND
     val btAdd = new JButton("Add ComponentType")
     btAdd.setUI(new HudButtonUI)
@@ -205,13 +221,17 @@ class AddElementUICommand extends Command {
         if (nameTextField.getText != "") {
           val cmd = new KevScriptCommand
           cmd.setKernel(kernel)
-          cmd.execute("tblock { createComponentType " + nameTextField.getText + " } ")
+          if("no library" != comboLibrary.getSelectedItem){
+            cmd.execute("tblock { createComponentType " + nameTextField.getText + " @ "+comboLibrary.getSelectedItem+"  } ")
+          } else {
+            cmd.execute("tblock { createComponentType " + nameTextField.getText + " } ")
+          }
           window.getJDialog.dispose()
         }
       }
     })
     window.getJDialog.getRootPane.setDefaultButton(btAdd)
-    SpringUtilities.makeCompactGrid(layout, 1, 2, 6, 6, 6, 6)
+    SpringUtilities.makeCompactGrid(layout, 2, 2, 6, 6, 6, 6)
     Tuple2(layout, btAdd)
   }
 
