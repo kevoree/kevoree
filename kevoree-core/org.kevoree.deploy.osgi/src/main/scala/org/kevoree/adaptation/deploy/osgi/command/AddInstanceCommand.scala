@@ -99,7 +99,7 @@ case class AddInstanceCommand(c: Instance, ctx: KevoreeDeployManager, nodeName: 
           bundle = ctx.bundleContext.installBundle("assembly:file:///" + directory.getAbsolutePath)
         }
 
-        ctx.bundleMapping = ctx.bundleMapping ++ List(KevoreeOSGiBundle(c.getName, c.getClass.getName, bundle.getBundleId))
+        ctx.addMapping(KevoreeOSGiBundle(c.getName, c.getClass.getName, bundle.getBundleId))
         lastExecutionBundle = Some(bundle)
         bundle.start()
         mustBeStarted = true
@@ -123,7 +123,7 @@ case class AddInstanceCommand(c: Instance, ctx: KevoreeDeployManager, nodeName: 
           b.uninstall()
           (ctx.bundleMapping.filter(map => map.bundleId == b.getBundleId).toList ++ List()).foreach {
             map =>
-              ctx.bundleMapping = ctx.bundleMapping.filter(mb => mb != map)
+              ctx.removeMapping(map)
           }
 
         } catch {

@@ -44,7 +44,9 @@ case class RemoveInstanceCommand(c: Instance, ctx: KevoreeDeployManager, nodeNam
         ctx.getServicePackageAdmin.refreshPackages(Array(bundle))
         true
     }
-    ctx.bundleMapping = ctx.bundleMapping.filter(mb => !bundles.contains(mb) )
+    ctx.bundleMapping.filter(mb => bundles.contains(mb) ).foreach{ map =>
+        ctx.removeMapping(map)
+    }
     true
   }
 
