@@ -129,7 +129,7 @@ public class BootstrapActivator implements BundleActivator {
             coreBean.stop();
             started = false;
         } catch (Exception e) {
-             logger.error("Error while stopping Kevoree Core ",e);
+             logger.error("Error while stopping Core ",e);
         }
 
     }
