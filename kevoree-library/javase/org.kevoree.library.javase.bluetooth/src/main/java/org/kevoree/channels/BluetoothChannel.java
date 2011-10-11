@@ -16,7 +16,7 @@ import org.kevoree.framework.message.Message;
  * To change this template use File | Settings | File Templates.
  */
 
-@Library(name = "Kevoree-Android-JavaSE")
+@Library(name = "JavaSE")
 @ChannelTypeFragment
 public class BluetoothChannel extends AbstractChannelFragment {
 
