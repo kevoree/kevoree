@@ -16,89 +16,183 @@
     </properties>
 
     <dependencies>
-        
+
         <dependency>
             <groupId>org.kevoree</groupId>
             <artifactId>org.kevoree.framework</artifactId>
             <version>${kevoree.version}</version>
         </dependency>
-        
+
         <dependency>
             <groupId>org.kevoree.tools</groupId>
             <artifactId>org.kevoree.tools.annotation.api</artifactId>
             <version>${kevoree.version}</version>
         </dependency>
-        
-        <!--
-        <dependency>
+
+
+        <!--<dependency>
             <groupId>org.apache.servicemix.bundles</groupId>
             <artifactId>org.apache.servicemix.bundles.hadoop-core</artifactId>
             <version>0.20.203.0_1</version>
             <scope>provided</scope>
-        </dependency>
-        -->
-        
+        </dependency>-->
+
+
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
-            <version>1.6.1</version>
+            <version>1.6.2</version>
         </dependency>
-        
-        <!--
+
         <dependency>
             <groupId>javax.servlet</groupId>
-            <artifactId>javax.servlet-api</artifactId>
-            <version>3.0.1</version>
+            <artifactId>servlet-api</artifactId>
+            <version>2.5</version>
         </dependency>
-        -->
-        
-        <!--
         <dependency>
-            <groupId>org.apache.felix</groupId>
-            <artifactId>javax.servlet</artifactId>
-            <version>1.0.0</version>
-            <scope>provided</scope>
+            <groupId>javax.servlet</groupId>
+            <artifactId>jsp-api</artifactId>
+            <version>2.0</version>
         </dependency>
-        -->
-        
-        
+        <dependency>
+            <groupId>commons-codec</groupId>
+            <artifactId>commons-codec</artifactId>
+            <version>1.2</version>
+        </dependency>
+        <!--<dependency>
+            <groupId>commons-collections</groupId>
+            <artifactId>commons-collections</artifactId>
+            <version>3.0</version>
+        </dependency>-->
+        <dependency>
+            <groupId>commons-logging</groupId>
+            <artifactId>commons-logging</artifactId>
+            <version>1.1.1</version>
+        </dependency>
+        <!--<dependency>
+            <groupId>javax.mail</groupId>
+            <artifactId>mail</artifactId>
+            <version>1.4</version>
+        </dependency>-->
+        <!--<dependency>
+            <groupId>commons-configuration</groupId>
+            <artifactId>commons-configuration</artifactId>
+            <version>1.6</version>
+        </dependency>-->
+        <!--<dependency>
+            <groupId>commons-beanutils</groupId>
+            <artifactId>commons-beanutils</artifactId>
+            <version>1.8.3</version>
+        </dependency>-->
+        <dependency>
+            <groupId>commons-cli</groupId>
+            <artifactId>commons-cli</artifactId>
+            <version>1.2</version>
+        </dependency>
+        <!--<dependency>
+            <groupId>org.apache.avalon.framework</groupId>
+            <artifactId>avalon-framework-api</artifactId>
+            <version>4.3.1</version>
+        </dependency>-->
+
         <dependency>
             <groupId>org.apache.hadoop</groupId>
             <artifactId>hadoop-core</artifactId>
             <version>0.20.2</version>
-            <scope>provided</scope>
         </dependency>
-        
 
-    <dependency>
-    	<groupId>org.apache.hadoop</groupId>
-    	<artifactId>hadoop-tools</artifactId>
-    	<version>0.20.2</version>
-        <scope>provided</scope>
-    </dependency>
-    
-    <dependency>
-    	<groupId>org.apache.hadoop</groupId>
-    	<artifactId>hadoop-test</artifactId>
-    	<version>0.20.2</version>
-        <scope>provided</scope>
-    </dependency>
-    
-    <dependency>
-    	<groupId>org.apache.hadoop</groupId>
-    	<artifactId>hadoop-streaming</artifactId>
-    	<version>0.20.2</version>
-        <scope>provided</scope>
-    </dependency>
-    
-    <dependency>
-    	<groupId>org.apache.hadoop</groupId>
-    	<artifactId>hadoop-examples</artifactId>
-    	<version>0.20.2</version>
-        <scope>provided</scope>
-    </dependency>
 
-    
+        <!--<dependency>
+            <groupId>org.apache.hadoop</groupId>
+            <artifactId>hadoop-tools</artifactId>
+            <version>0.20.2</version>
+        </dependency>-->
+
+        <!--<dependency>
+            <groupId>org.apache.hadoop</groupId>
+            <artifactId>hadoop-test</artifactId>
+            <version>0.20.2</version>
+        </dependency>-->
+
+        <dependency>
+            <groupId>org.apache.hadoop</groupId>
+            <artifactId>hadoop-streaming</artifactId>
+            <version>0.20.2</version>
+        </dependency>
+
+        <!--<dependency>
+            <groupId>org.apache.hadoop</groupId>
+            <artifactId>hadoop-examples</artifactId>
+            <version>0.20.2</version>
+        </dependency>-->
+
+        <!--<dependency>
+            <groupId>javax.el</groupId>
+            <artifactId>el-api</artifactId>
+            <version>2.2</version>
+        </dependency>-->
+
+        <dependency>
+            <groupId>commons-httpclient</groupId>
+            <artifactId>commons-httpclient</artifactId>
+            <version>3.1</version>
+        </dependency>
+        <dependency>
+            <groupId>commons-el</groupId>
+            <artifactId>commons-el</artifactId>
+            <version>1.0</version>
+        </dependency>
+        <dependency>
+            <groupId>commons-net</groupId>
+            <artifactId>commons-net</artifactId>
+            <version>1.4.1</version>
+        </dependency>
+        <dependency>
+            <groupId>xmlenc</groupId>
+            <artifactId>xmlenc</artifactId>
+            <version>0.52</version>
+        </dependency>
+        <dependency>
+            <groupId>org.mortbay.jetty</groupId>
+            <artifactId>jetty</artifactId>
+            <version>6.1.14</version>
+            <exclusions>
+                <exclusion>
+                    <artifactId>servlet-api-2.5</artifactId>
+                    <groupId>org.mortbay.jetty</groupId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.mortbay.jetty</groupId>
+            <artifactId>jetty-util</artifactId>
+            <version>6.1.14</version>
+        </dependency>
+
+        <!--<dependency>
+            <groupId>log4j</groupId>
+            <artifactId>log4j</artifactId>
+            <version>1.2.15</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>javax.mail</groupId>
+                    <artifactId>mail</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>javax.jms</groupId>
+                    <artifactId>jms</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>com.sun.jdmk</groupId>
+                    <artifactId>jmxtools</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>com.sun.jmx</groupId>
+                    <artifactId>jmxri</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>-->
+
     </dependencies>
     <build>
         <plugins>
@@ -127,8 +221,67 @@
                 <extensions>true</extensions>
                 <configuration>
                     <instructions>
-                        <Import-Package>org.kevoree.*,org.osgi.framework.*,*</Import-Package>
-                        <Export-Package>org.kevoree.library.*,!org.kevoree.*, !org.osgi.framework.*,*</Export-Package>
+                        <Export-Package>
+                            org.kevoree.library.hadoop.*,
+                            org.apache.commons.logging.*,
+                            org.apache.commons.cli.*,
+                            org.apache.commons.net.*,
+                            org.apache.commons.el.*,
+                            <!--org.apache.commons.collections.*,-->
+                            org.apache.commons.codec.*,
+                            org.apache.commons.httpclient.*,
+                            <!--org.apache.avalon.framework.*,-->
+                            <!--com.sun.mail.*,
+                            javax.mail.*,
+                            javax.mail,-->
+                            javax.servlet.*,
+                            javax.servlet,
+                            org.apache.hadoop,
+                            org.apache.hadoop.*,
+                            org.morbay.jetty.*,
+                            org.apache.jasper.*,
+                            <!--org.apache.log4j,
+                            org.apache.log4j.*,-->
+                            org.znerd.xmlenc,
+                            javax.el.*
+                        </Export-Package>
+                        <Import-Package>
+                            !org.kevoree.library.hadoop.*,
+                            !org.apache.commons.logging.*,
+                            !org.apache.commons.cli.*,
+                            !org.apache.commons.net.*,
+                            !org.apache.commons.el.*,
+                            !org.apache.commons.collections.*,
+                            !org.apache.commons.codec.*,
+                            !org.apache.commons.httpclient.*,
+                            !org.apache.avalon.framework.*,
+                            !com.sun.mail.*,
+                            !javax.mail.*,
+                            javax.activation;resolution:="optional",
+                            javax.net;resolution:="optional",
+                            javax.net.ssl;resolution:="optional",
+                            javax.security.auth.callback;resolution:="optional",
+                            javax.security.sasl;resolution:="optional",
+                            !javax.servlet.*,
+                            !javax.servlet,
+                            !org.apache.log4j,
+                            !org.apache.log4j.*,
+                            !org.apache.hadoop,
+                            !org.apache.hadoop.*,
+                            !org.morbay.jetty.*,
+                            !org.apache.jasper.*,
+                            !javax.el,
+                            !junit.*,
+                            !org.znerd.xmlenc,
+                            com.sun.jdmk.comm;resolution:="optional",
+
+
+                            !com.sun.java.browser.net,
+                            !testshell,
+
+
+                            *;resolution:="optional"
+                        </Import-Package>
                     </instructions>
                 </configuration>
             </plugin>
@@ -196,6 +349,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-checkstyle-plugin</artifactId>
+                <version>2.7</version>
                 <configuration>
                     <configLocation>config/sun_checks.xml</configLocation>
                 </configuration>
