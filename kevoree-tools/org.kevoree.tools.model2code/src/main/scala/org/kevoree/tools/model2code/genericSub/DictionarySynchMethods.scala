@@ -31,7 +31,7 @@ import scala.collection.JavaConversions._
 
 trait DictionarySynchMethods extends ImportSynchMethods {
 
-  def synchronizeDictionary(td: TypeDeclaration, typeDef : TypeDefinition) {
+  def synchronizeDictionary(td: TypeDeclaration, typeDef: TypeDefinition) {
 
     if (typeDef.getDictionaryType != null) {
       val dic: SingleMemberAnnotationExpr = td.getAnnotations.find({
@@ -48,29 +48,36 @@ trait DictionarySynchMethods extends ImportSynchMethods {
     }
   }
 
-  def checkOrUpdateDictionary(td : TypeDeclaration, typeDef : TypeDefinition, dicAnnot : SingleMemberAnnotationExpr) {
+  def checkOrUpdateDictionary(td: TypeDeclaration, typeDef: TypeDefinition, dicAnnot: SingleMemberAnnotationExpr) {
     //for each attribute in the model
-    typeDef.getDictionaryType.get.getAttributes.foreach{dicAtt =>
-      //retreive or create the attribute annotation
-      dicAnnot.getMemberValue.asInstanceOf[ArrayInitializerExpr].getValues.find({member =>
-          member.asInstanceOf[NormalAnnotationExpr].getPairs.find({pair =>
-              pair.getName.equals("name") && pair.getValue.asInstanceOf[StringLiteralExpr].getValue.equals(dicAtt.getName)}) match {
-            case Some(s)=>true
-            case None=>false
-          }}) match {
+    typeDef.getDictionaryType.map {
+      dico => dico.getAttributes.foreach {
+        dicAtt =>
+        //retreive or create the attribute annotation
+          dicAnnot.getMemberValue.asInstanceOf[ArrayInitializerExpr].getValues.find({
+            member =>
+              member.asInstanceOf[NormalAnnotationExpr].getPairs.find({
+                pair =>
+                  pair.getName.equals("name") && pair.getValue.asInstanceOf[StringLiteralExpr].getValue.equals(dicAtt.getName)
+              }) match {
+                case Some(s) => true
+                case None => false
+              }
+          }) match {
 
-        case Some(ann)=>updateDictionaryAtribute(ann.asInstanceOf[NormalAnnotationExpr], dicAtt)
-        case None => dicAnnot.getMemberValue.asInstanceOf[ArrayInitializerExpr].getValues.add(
-            createDictionaryAttributeAnnotation(typeDef.getDictionaryType.get, dicAtt))
+            case Some(ann) => updateDictionaryAtribute(ann.asInstanceOf[NormalAnnotationExpr], dicAtt)
+            case None => dicAnnot.getMemberValue.asInstanceOf[ArrayInitializerExpr].getValues.add(
+              createDictionaryAttributeAnnotation(typeDef.getDictionaryType.get, dicAtt))
+          }
       }
     }
   }
 
-  def updateDictionaryAtribute(attributeAnn : NormalAnnotationExpr, dictAttr : org.kevoree.DictionaryAttribute) {
+  def updateDictionaryAtribute(attributeAnn: NormalAnnotationExpr, dictAttr: org.kevoree.DictionaryAttribute) {
     //TODO
   }
 
-  def createDictionaryAnnotation() : SingleMemberAnnotationExpr = {
+  def createDictionaryAnnotation(): SingleMemberAnnotationExpr = {
     val newAnnot = new SingleMemberAnnotationExpr(new NameExpr(classOf[DictionaryType].getSimpleName), null)
     val memberValue = new ArrayInitializerExpr
     memberValue.setValues(new ArrayList[Expression])
@@ -80,7 +87,7 @@ trait DictionarySynchMethods extends ImportSynchMethods {
     newAnnot
   }
 
-  def createDictionaryAttributeAnnotation(dict : org.kevoree.DictionaryType, dictAttr : org.kevoree.DictionaryAttribute) : NormalAnnotationExpr = {
+  def createDictionaryAttributeAnnotation(dict: org.kevoree.DictionaryType, dictAttr: org.kevoree.DictionaryAttribute): NormalAnnotationExpr = {
     val newAnnot = new NormalAnnotationExpr(new NameExpr(classOf[DictionaryAttribute].getSimpleName), null)
 
     val pairs = new ArrayList[MemberValuePair]
@@ -88,16 +95,18 @@ trait DictionarySynchMethods extends ImportSynchMethods {
     val portName = new MemberValuePair("name", new StringLiteralExpr(dictAttr.getName))
     pairs.add(portName)
 
-    if(dictAttr.getOptional) {
+    if (dictAttr.getOptional) {
       val opt = new MemberValuePair("optional", new BooleanLiteralExpr(dictAttr.getOptional.booleanValue))
       pairs.add(opt)
     }
 
-    dict.getDefaultValues.find({defVal => defVal.getAttribute.getName.equals(dictAttr.getName)}) match {
+    dict.getDefaultValues.find({
+      defVal => defVal.getAttribute.getName.equals(dictAttr.getName)
+    }) match {
       case Some(defVal) => {
-          val defValue = new MemberValuePair("defaultValue", new StringLiteralExpr(defVal.getValue))
-          pairs.add(defValue)
-        }
+        val defValue = new MemberValuePair("defaultValue", new StringLiteralExpr(defVal.getValue))
+        pairs.add(defValue)
+      }
       case None =>
     }
 
