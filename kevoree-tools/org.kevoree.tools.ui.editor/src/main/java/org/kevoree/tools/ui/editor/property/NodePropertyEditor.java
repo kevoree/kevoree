@@ -108,31 +108,35 @@ public class NodePropertyEditor extends InstancePropertyEditor {
         this.addCenter(new NetworkPropertyEditor(node));
 
         final SynchNodeTypeCommand sendNodeType = new SynchNodeTypeCommand();
-        JCommandButton btPushNodeType = new JCommandButton("Push") {
-            @Override
-            public void doBeforeExecution() {
-                sendNodeType.setDestNodeName(elem.getName());
-            }
-        };
+
 
         sendNodeType.setKernel(_kernel);
         sendNodeType.setDestNodeName(node.getName());
+
+        DefaultComboBoxModel groupModel = new DefaultComboBoxModel();
+        for(Group g :  _kernel.getModelHandler().getActualModel().getGroupsForJ()){
+           if(g.getSubNodesForJ().contains(node)){
+               groupModel.addElement(g.getName());
+           }
+        }
+        final JComboBox groupTypeComboBox = new JComboBox(groupModel);
+        JCommandButton btPushNodeType = new JCommandButton("Push via") {
+            @Override
+            public void doBeforeExecution() {
+                sendNodeType.setDestNodeName(elem.getName());
+                sendNodeType.setViaGroupName(groupTypeComboBox.getSelectedItem().toString());
+            }
+        };
         btPushNodeType.setCommand(sendNodeType);
-        this.addCenter(btPushNodeType);
-
-
-        //   JTextField ip = new JTextField("ip:port");
-        /*
-        JCommandButton btPushNodeIP = new JCommandButton("Push");
-        SynchNodeIPCommand sendNodeIP = new SynchNodeIPCommand();
-
-
-        sendNodeIP.setKernel(_kernel);
-        sendNodeIP.setDestNodeName(node.getName());
-        btPushNodeIP.setCommand(sendNodeIP);
-        //this.addCenter(ip);
-        this.addCenter(btPushNodeIP);
-              */
-
+        groupTypeComboBox.setUI(new HudComboBoxUI());
+        JPanel layout = new JPanel();
+        layout.setOpaque(false);
+        layout.setLayout(new SpringLayout());
+        layout.add(btPushNodeType);
+        layout.add(groupTypeComboBox);
+        SpringUtilities.makeCompactGrid(layout, 1, 2, 6, 6, 6, 6);
+        this.addCenter(layout);
+        
+        
     }
 }
