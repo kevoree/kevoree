@@ -17,7 +17,7 @@ import java.io.FileInputStream
 import org.osgi.framework.{Bundle, BundleContext, BundleException}
 import org.slf4j.LoggerFactory
 import org.kevoree.api.service.core.handler.KevoreeModelHandlerService
-import org.kevoree.framework.{AbstractGroupType, Constants, AbstractNodeType}
+import org.kevoree.framework.{AbstractGroupType, Constants}
 import org.kevoree.{GroupType, ContainerRoot, DeployUnit}
 
 /**
@@ -62,7 +62,6 @@ class GroupTypeBootstrapHelper {
           }
 
           dictionary.put(Constants.KEVOREE_PROPERTY_OSGI_BUNDLE, bundleContext.getBundle)
-
 
           groupType.setDictionary(dictionary)
           groupType.setName(destGroupName)
