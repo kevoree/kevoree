@@ -24,7 +24,11 @@ import java.util.logging.Logger;
  * Hello world!
  */
 public class App {
+
+
     public static void main(String[] args) {
+
+        ConstantsHandler.setConstantValuesProvider(new ConstantValuesImpl());
 
         File mavenDir = new File(System.getProperty("user.home") + "/.m2/repository");
         if (mavenDir.exists() && mavenDir.isDirectory()) {
