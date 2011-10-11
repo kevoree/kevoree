@@ -17,10 +17,7 @@
  */
 package org.kevoree.platform.osgi.standalone;
 
-import org.kevoree.ContainerNode;
 import org.kevoree.ContainerRoot;
-import org.kevoree.KevoreeFactory;
-import org.kevoree.adaptation.deploy.osgi.context.KevoreeDeployManager;
 import org.kevoree.api.configuration.ConfigConstants;
 import org.kevoree.api.configuration.ConfigurationService;
 import org.kevoree.api.service.core.handler.KevoreeModelHandlerService;
@@ -28,18 +25,11 @@ import org.kevoree.api.service.core.script.ScriptInterpreter;
 import org.kevoree.core.impl.KevoreeConfigServiceBean;
 import org.kevoree.core.impl.KevoreeCoreBean;
 import org.kevoree.framework.KevoreeXmiHelper;
-import org.kevoree.kompare.KevoreeKompareBean;
-import org.kevoree.remote.rest.Handler;
-import org.kevoree.remote.rest.KevoreeRemoteBean;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
-import org.osgi.service.packageadmin.PackageAdmin;
-import org.osgi.service.startlevel.StartLevel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.awt.*;
 
 /**
  * @author ffouquet
@@ -47,9 +37,6 @@ import java.awt.*;
 public class BootstrapActivator implements BundleActivator {
     /* Bootstrap Model to init default nodeType */
     private ContainerRoot bootstrapModel = null;
-
-    private ServiceRegistration sendModel;
-    private ServiceRegistration backupModel;
 
     public void setBootstrapModel(ContainerRoot bmodel) {
         bootstrapModel = bmodel;
@@ -97,15 +84,6 @@ public class BootstrapActivator implements BundleActivator {
             } else {
                 logger.error("Can't bootstrap nodeType");
             }
-
-
-            // Register the command service for felix shell
-            sendModel = context.getBundle().getBundleContext().registerService(
-                    org.apache.felix.shell.Command.class.getName(),
-                    new SendModelFelixCommand(coreBean), null);
-            backupModel = context.getBundle().getBundleContext().registerService(
-                    org.apache.felix.shell.Command.class.getName(),
-                    new BackupModelFelixCommand(coreBean), null);
 
             started = true;
 

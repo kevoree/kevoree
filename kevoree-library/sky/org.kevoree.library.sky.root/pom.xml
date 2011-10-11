@@ -22,7 +22,7 @@
 
     <modules>
         <module>../org.kevoree.library.sky.minicloud</module>
-      <!--  <module>../org.kevoree.library.sky.jclouds</module>  -->
+        <!--  <module>../org.kevoree.library.sky.jclouds</module>  -->
     </modules>
 
 

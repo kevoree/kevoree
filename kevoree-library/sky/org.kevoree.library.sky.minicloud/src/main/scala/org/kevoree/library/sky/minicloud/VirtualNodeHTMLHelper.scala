@@ -12,7 +12,7 @@ import io.Source
 
 object VirtualNodeHTMLHelper {
 
-  def getNodeStreamAsHTML(manager:KevoreeNodeManager,nodeName : String,streamName : String):String={
+  def getNodeStreamAsHTML(nodeName : String,streamName : String):String={
       (  <html>
       <head>
           <link rel="stylesheet" href="http://twitter.github.com/bootstrap/1.3.0/bootstrap.min.css"/>
@@ -25,7 +25,7 @@ object VirtualNodeHTMLHelper {
         </ul>
         {
           var result : List[scala.xml.Elem] = List()
-          manager.getRunners.find(r => r.nodeName == nodeName)match {
+          KevoreeNodeManager.runners.find(r => r.nodeName == nodeName)match {
             case Some(runner)=> {
                result = result ++ List(
                  <div class="alert-message block-message info">
@@ -67,7 +67,7 @@ object VirtualNodeHTMLHelper {
 
 
 
-  def getNodeHomeAsHTML(manager:KevoreeNodeManager,nodeName : String):String={
+  def getNodeHomeAsHTML(nodeName : String):String={
       (  <html>
       <head>
           <link rel="stylesheet" href="http://twitter.github.com/bootstrap/1.3.0/bootstrap.min.css"/>
@@ -79,7 +79,7 @@ object VirtualNodeHTMLHelper {
         </ul>
         {
           var result : List[scala.xml.Elem] = List()
-          manager.getRunners.find(r => r.nodeName == nodeName)match {
+          KevoreeNodeManager.runners.find(r => r.nodeName == nodeName)match {
             case Some(runner)=> {
                result = result ++ List(
                  <div class="alert-message block-message info">
@@ -103,7 +103,7 @@ object VirtualNodeHTMLHelper {
   }
 
 
-  def exportNodeListAsHTML(manager:KevoreeNodeManager): String = {
+  def exportNodeListAsHTML(): String = {
     (<html>
       <head>
           <link rel="stylesheet" href="http://twitter.github.com/bootstrap/1.3.0/bootstrap.min.css"/>
@@ -123,10 +123,10 @@ object VirtualNodeHTMLHelper {
           <tbody>
           {
             var result : List[scala.xml.Elem] = List()
-            manager.getRunners.foreach {elem =>
+            KevoreeNodeManager.runners.foreach {elem =>
              result = result ++ List(
             <tr>
-              <td>{manager.getRunners.indexOf(elem)}</td><td><a href={"nodes/"+elem.nodeName}><span class="label notice">{elem.nodeName}</span></a></td>
+              <td>{KevoreeNodeManager.runners.indexOf(elem)}</td><td><a href={"nodes/"+elem.nodeName}><span class="label notice">{elem.nodeName}</span></a></td>
             </tr>
              )
           }

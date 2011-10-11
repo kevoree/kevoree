@@ -33,23 +33,23 @@ object HttpServer {
 
   private val logger: Logger = LoggerFactory.getLogger(HttpServer.getClass)
 
-  class Respond(handler: KevoreeModelHandlerService,nodeManager : KevoreeNodeManager) extends Service[HttpRequest, HttpResponse] with AdminRespond {
+  class Respond (handler: KevoreeModelHandlerService) extends Service[HttpRequest, HttpResponse] with AdminRespond {
 
-    def getNodeManager = nodeManager
-      def createBufferFromString(content : String)= copiedBuffer(content.getBytes("UTF-8"))
+
+    def createBufferFromString (content: String) = copiedBuffer(content.getBytes("UTF-8"))
 
     val NodeSubRequest = new Regex("/nodes/(.+)/(.+)")
     val NodeHomeRequest = new Regex("/nodes/(.+)")
 
-    def apply(request: HttpRequest): Future[DefaultHttpResponse] = {
+    def apply (request: HttpRequest): Future[DefaultHttpResponse] = {
 
       request.getMethod match {
         case HttpMethod.GET => {
           request.getUri match {
-            case "/" => sendAdminNodeList(request,this)
+            case "/" => sendAdminNodeList(request, this)
             case "/model/current" => sendModel(request)
-            case NodeSubRequest(nodeName,fluxName)=> sendNodeFlux(fluxName,nodeName,request,this)
-            case NodeHomeRequest(nodeName)=> sendNodeHome(nodeName,request,this)
+            case NodeSubRequest(nodeName, fluxName) => sendNodeFlux(fluxName, nodeName, request, this)
+            case NodeHomeRequest(nodeName) => sendNodeHome(nodeName, request, this)
             case _ => sendError(request)
           }
         }
@@ -63,13 +63,13 @@ object HttpServer {
     }
 
 
-    private def sendError(request: HttpRequest): Future[DefaultHttpResponse] = {
+    private def sendError (request: HttpRequest): Future[DefaultHttpResponse] = {
       val response = new DefaultHttpResponse(HTTP_1_1, BAD_REQUEST)
       response.setContent(copiedBuffer("Unknown request", UTF_8))
       Future.value(response)
     }
 
-    private def sendModel(request: HttpRequest): Future[DefaultHttpResponse] = {
+    private def sendModel (request: HttpRequest): Future[DefaultHttpResponse] = {
       val response = new DefaultHttpResponse(HTTP_1_1, OK)
       val output = new ByteArrayOutputStream
       val model = handler.getLastModel
@@ -78,7 +78,7 @@ object HttpServer {
       Future.value(response)
     }
 
-    private def receiveModel(request: HttpRequest): Future[DefaultHttpResponse] = {
+    private def receiveModel (request: HttpRequest): Future[DefaultHttpResponse] = {
       try {
         val model = KevoreeXmiHelper.loadStream(new ChannelBufferInputStream(request.getContent))
         val response = new DefaultHttpResponse(HTTP_1_1, OK)

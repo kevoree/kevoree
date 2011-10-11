@@ -185,4 +185,13 @@ public class NettyGossiperGroup extends AbstractGroupType implements GossiperCom
 			actor.notifyPeers();
 		}
 	}
+
+	@Override
+	public void push (ContainerRoot containerRoot, String s) {
+	}
+
+	@Override
+	public ContainerRoot pull (String s) {
+		return null;
+	}
 }

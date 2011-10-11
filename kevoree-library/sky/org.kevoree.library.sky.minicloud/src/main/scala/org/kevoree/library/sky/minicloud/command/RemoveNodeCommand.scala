@@ -1,7 +1,7 @@
 package org.kevoree.library.sky.minicloud.command
 
 import org.kevoree.framework.PrimitiveCommand
-import org.kevoree.{ContainerRoot, ContainerNode, NodeType}
+import org.kevoree.{ContainerRoot, ContainerNode}
 import org.kevoree.library.sky.minicloud.KevoreeNodeManager
 
 /**
@@ -13,14 +13,14 @@ import org.kevoree.library.sky.minicloud.KevoreeNodeManager
  * @version 1.0
  */
 
-class RemoveNodeCommand (containerNode: ContainerNode, model: ContainerRoot, kevoreeNodeManager: KevoreeNodeManager)
+class RemoveNodeCommand (containerNode: ContainerNode, model: ContainerRoot)
   extends PrimitiveCommand {
 
   override def execute (): Boolean = {
-    kevoreeNodeManager.removeNode(containerNode)
+    KevoreeNodeManager.removeNode(containerNode)
   }
 
   override def undo () {
-    kevoreeNodeManager.addNode(containerNode, model)
+    KevoreeNodeManager.addNode(containerNode, model)
   }
 }
