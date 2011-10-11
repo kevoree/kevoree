@@ -18,7 +18,7 @@
 
 package org.kevoree.tools.marShell.ast
 
-case class CreateComponentTypeStatment(newTypeName : String) extends TypeStatment {
+case class CreateComponentTypeStatment(newTypeName : String, libName : Option[String]) extends TypeStatment {
 
 
 
