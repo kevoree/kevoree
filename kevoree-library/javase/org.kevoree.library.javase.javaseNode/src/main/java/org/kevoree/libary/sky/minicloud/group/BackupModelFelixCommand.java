@@ -11,17 +11,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kevoree.library.defaultNodeTypes;
+package org.kevoree.libary.sky.minicloud.group;
 
 import org.apache.felix.shell.Command;
-import org.kevoree.ContainerRoot;
 import org.kevoree.api.service.core.handler.KevoreeModelHandlerService;
 import org.kevoree.framework.KevoreeXmiHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.PrintStream;
-import java.lang.Exception;import java.lang.Override;import java.lang.String;import java.lang.System;import java.util.Date;
 import java.util.StringTokenizer;
 
 /**
@@ -32,39 +30,39 @@ import java.util.StringTokenizer;
  * @author Erwan Daubert
  * @version 1.0
  */
-public class SendModelFelixCommand implements Command {
+public class BackupModelFelixCommand implements Command {
 	private static final Logger logger = LoggerFactory.getLogger(SendModelFelixCommand.class);
 
 	private KevoreeModelHandlerService handler;
 
-	public SendModelFelixCommand (KevoreeModelHandlerService handler) {
+	public BackupModelFelixCommand (KevoreeModelHandlerService handler) {
 		this.handler = handler;
 	}
 
-	public boolean sendModel (String model) {
+	public boolean backupModel (String model) {
 		try {
-			ContainerRoot root = KevoreeXmiHelper.load(model);
-			Date date = handler.getLastModification();
-			return !handler.atomicUpdateModel(root).equals(date);
+			KevoreeXmiHelper.save(model, handler.getLastModel());
+			return true;
 		} catch (Exception e) {
-			logger.error("Unable to update model", e);
+			logger.error("Unable to backup model", e);
+			return false;
 		}
-		return false;
+
 	}
 
 	@Override
 	public String getName () {
-		return "sendModel";
+		return "backupModel";
 	}
 
 	@Override
 	public String getUsage () {
-		return "sendModel <model file path> [<token id>]";
+		return "backupModel <model file path> [<token id>]";
 	}
 
 	@Override
 	public String getShortDescription () {
-		return "sendModel to the platform and update the configuration";
+		return "backupModel to the platform";
 	}
 
 	@Override
@@ -73,12 +71,11 @@ public class SendModelFelixCommand implements Command {
 		if (st.countTokens() >= 2 && st.countTokens() <= 3) {
 			// Ignore the command name.
 			st.nextToken();
-			if (sendModel(st.nextToken())) {
+
+			if (backupModel(st.nextToken())) {
 				if (st.countTokens() == 1) {
-					System.out.println("<deployRes" + st.nextToken() + "/>");
+					System.out.println("<saveRes" + st.nextToken() + "/>");
 				}
-			} else {
-				System.out.println("Error while update");
 			}
 		} else {
 			out.println("Unable to execute command (Invalid number of parameters\n" + "Usage: " + getUsage());
