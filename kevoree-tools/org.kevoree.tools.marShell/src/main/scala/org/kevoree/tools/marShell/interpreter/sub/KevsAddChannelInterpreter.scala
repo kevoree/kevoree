@@ -36,6 +36,7 @@ case class KevsAddChannelInterpreter(addChannel: AddChannelInstanceStatment) ext
         logger.warn("Channel already exist with name " + addChannel.channelName);
         if (target.getTypeDefinition.getName == addChannel.channelType) {
           Merger.mergeDictionary(target, addChannel.props)
+
           true
         } else {
           logger.error("Type != from previous created channel")

@@ -36,9 +36,18 @@ case class KevsCreateComponentTypeInterpreter(self : CreateComponentTypeStatment
     context.model.getTypeDefinitions.find(tdef => tdef.getName == self.newTypeName) match {
       case Some(e)=> logger.error("TypeDefinition already exist with name => "+self.newTypeName);false
       case None => {
-          var newComponentTypeDef = KevoreeFactory.eINSTANCE.createComponentType
+          val newComponentTypeDef = KevoreeFactory.eINSTANCE.createComponentType
           newComponentTypeDef.setName(self.newTypeName)
           context.model.addTypeDefinitions(newComponentTypeDef)
+
+          self.libName.map{ libName =>
+              context.model.getLibraries.find(lib => lib.getName == libName).getOrElse({
+                val newLib = KevoreeFactory.createTypeLibrary
+                newLib.setName(libName)
+                newLib
+              }).addSubTypes(newComponentTypeDef)
+          }
+
           true
       }
     }

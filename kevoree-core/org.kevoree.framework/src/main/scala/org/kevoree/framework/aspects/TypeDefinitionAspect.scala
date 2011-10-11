@@ -77,10 +77,9 @@ case class TypeDefinitionAspect(selfTD: TypeDefinition) {
             false
           }
           case otherSPT: ServicePortType => {
-            println("chekc for SPT")
             val selfSPT = selfTD.asInstanceOf[ServicePortType]
             "" match {
-              case _ if (selfSPT.getOperations.size != otherSPT.getOperations.size) => {  println(selfSPT.getName+"operation "+selfSPT.getOperations.size+"_"+otherSPT.getOperations.size); true }
+              case _ if (selfSPT.getOperations.size != otherSPT.getOperations.size) => { true }
               case _ => {
                 val interfaceChanged = selfSPT.getInterface != otherSPT.getInterface
                 val operationsChanged = selfSPT.getOperations.forall(selfOperation =>
@@ -91,7 +90,7 @@ case class TypeDefinitionAspect(selfTD: TypeDefinition) {
                     case None => true
                   }
                 )
-                println(selfTD+"_"+interfaceChanged+"_"+operationsChanged)
+                //println(selfTD+"_"+interfaceChanged+"_"+operationsChanged)
                 interfaceChanged || operationsChanged
               }
             }
@@ -120,7 +119,7 @@ case class TypeDefinitionAspect(selfTD: TypeDefinition) {
                 case None => false
               }
             })
-            println(selfTD.getName + "-"+providedEquality+"-"+requiredEquality)
+            //println(selfTD.getName + "-"+providedEquality+"-"+requiredEquality)
 
             providedEquality || requiredEquality
           }
@@ -209,7 +208,7 @@ case class TypeDefinitionAspect(selfTD: TypeDefinition) {
     var deployUnitfound: DeployUnit = null
     // looking for relevant deployunits on super types
 
-    println("t=>" + t.getName + "=" + t.getDeployUnits.size)
+    //println("t=>" + t.getName + "=" + t.getDeployUnits.size)
     t.getDeployUnits.foreach {
       td =>
         td.getTargetNodeType.map {

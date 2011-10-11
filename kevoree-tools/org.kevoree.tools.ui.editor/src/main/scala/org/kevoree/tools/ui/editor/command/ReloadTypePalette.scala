@@ -43,6 +43,7 @@ class ReloadTypePalette extends Command {
         var loadedLib = List[TypeDefinition]()
         model.getLibraries.foreach {
           library =>
+            palette.getCategoryOrAdd(library.getName)
             library.getSubTypes.foreach {
               subTypeDef =>
                 loadedLib = loadedLib ++ List(subTypeDef)
@@ -68,6 +69,7 @@ class ReloadTypePalette extends Command {
       case DeployUnitMode => {
         model.getDeployUnits.foreach {
           deployUnit =>
+            palette.getCategoryOrAdd(deployUnit.getUnitName)
             model.getTypeDefinitions.filter(t => t.getDeployUnits.exists(du => du == deployUnit)).foreach {
               typeDef =>
                 typeDefPanelFactory(typeDef).map {
