@@ -27,6 +27,7 @@ import java.net.URLConnection;
 @DictionaryType({
         @DictionaryAttribute(name = "port", defaultValue = "8000", optional = true)
 })
+@GroupType
 @Library(name="JavaSE")
 public class RestGroup extends AbstractGroupType {
 
