@@ -175,6 +175,8 @@ class NodeTypeBootStrapUI(pkernel: ContainerRoot) extends JPanel {
     topLayout.add(instanceName)
     topLayout.add(nodeTypeLabel)
     topLayout.add(nodeTypeComboBox)
+    topLayout.add(groupTypeLabel)
+    topLayout.add(groupTypeComboBox)
     topLayout.add(bootModelLabel)
     topLayout.add(btBrowse)
     SpringUtilities.makeCompactGrid(topLayout, 4, 2, 6, 6, 6, 6)

@@ -30,6 +30,9 @@ trait KevoreeGroup extends AbstractGroupType with KevoreeActor {
   override def getModelService() : KevoreeModelHandlerService = {
     mhandler
   }
+  override def setModelService(s : KevoreeModelHandlerService) {
+    mhandler = s
+  }
 
   var nodeName: String = ""
 
@@ -47,13 +50,13 @@ trait KevoreeGroup extends AbstractGroupType with KevoreeActor {
 
   override def getName = name
 
-  def setName(n: String) {
+  override def setName(n: String) {
     name = n
   }
 
   var dictionary: HashMap[String, Object] = new HashMap[String, Object]()
 
-  def setDictionary(d: HashMap[String, Object]) = dictionary = d
+  override def setDictionary(d: HashMap[String, Object]) {dictionary = d }
 
   override def getDictionary(): HashMap[String, Object] = dictionary
 
