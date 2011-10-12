@@ -108,7 +108,7 @@ public class KevoreeGUIFrame extends JFrame {
                     @Override
                     public void run() {
 
-                        NodeTypeBootStrapModel.checkAndCreate(nodeUI.getCurrentModel(), nodeName, nodeUI.getKevTypeName().toString(),nodeUI.getKevGroupTypeName().toString(), nodeUI.currentProperties());
+                        NodeTypeBootStrapModel.checkAndCreate(nodeUI.getCurrentModel(), nodeName, nodeUI.getKevTypeName().toString(),nodeUI.getKevGroupTypeName().toString(),nodeUI.getKevGroupName().toString(), nodeUI.currentProperties());
                         final BootstrapActivator btA = new org.kevoree.platform.osgi.standalone.BootstrapActivator();
 
                         btA.setBootstrapModel(nodeUI.getCurrentModel());
