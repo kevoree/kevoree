@@ -17,9 +17,7 @@ import org.kevoree.tools.ui.editor.KevoreeUIKernel
 import com.explodingpixels.macwidgets.HudWindow
 import java.awt.BorderLayout
 import java.awt.event.{ActionEvent, ActionListener}
-import java.util.Properties
-import org.kevoree.tools.ui.editor.property.SpringUtilities
-import com.explodingpixels.macwidgets.plaf.{HudButtonUI, HudTextFieldUI, HudLabelUI, HudComboBoxUI}
+import com.explodingpixels.macwidgets.plaf.{HudLabelUI, HudComboBoxUI}
 import javax.swing._
 import org.kevoree.tools.ui.editor.form._
 
