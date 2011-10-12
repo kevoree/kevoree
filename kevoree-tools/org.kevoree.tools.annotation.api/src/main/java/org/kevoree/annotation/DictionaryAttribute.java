@@ -32,4 +32,6 @@ public @interface DictionaryAttribute {
 
     String[] vals() default {};
 
+    boolean fragmentDependant() default false;
+
 }
