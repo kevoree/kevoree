@@ -4,6 +4,7 @@
  */
 package org.kevoree.library.hadoop;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.rmi.RemoteException;
@@ -34,32 +35,67 @@ public class HadoopNameNode extends HadoopComponent {
             InterruptedException {
 
         Configuration configuration = this.getConfiguration();
+        // Local dirs
+
+        String dfsDir = configuration.get("hadoop.tmp.dir");
+        LOG.debug("DFS dir: " + dfsDir);
+        new File("/private/tmp/hadoop/dfs/name").mkdirs();
+
+        if (!new File("/tmp/hadoop/dfs/name/image/fsimage").exists()) {
+            NameNode.format(configuration);
+        }
 
         // Set NameNode address
         InetAddress i = InetAddress.getLocalHost();
-        configuration.set("hadoop.namenode", i.getHostName());
+        String hostName = i.getHostName();
+
+
+        configuration.set("hadoop.namenode", hostName);
+        configuration.set("dfs.namenode.http-address", hostName);
+
+        //configuration.set("dfs.info.bindAddress", i.getHostName());
+        //configuration.set("dfs.info.port", null);
+
+
+        String nnhost = "hdfs://" + hostName + ":" + configuration.get("hadoop.namenode.port");
+        //configuration.set("fs.default.name", nnhost);
+        configuration.set("dfs.http.address", "http://" + hostName + ":" + configuration.get("hadoop.namenode.port"));
 
         LOG.info("Starting NameNode!");
-        
-        
-       new Thread(new Runnable() {
 
+
+        new Thread() {
+            @Override
             public void run() {
-                try {
-                    nameNode = new NameNode(getConfiguration());
-                    
-                }
-                catch (IOException ex) {
-                    LOG.error(ex.getMessage(), ex);
-                }
+                runNameNode();
             }
-        }).start();
-        
+        }.start();
     }
 
-    
+    public void runNameNode() {
+        try {
+            nameNode = new NameNode(getConfiguration());
+        }
+        catch (IOException ex) {
+            LOG.error(ex.getMessage(), ex);
+        }
+    }
+
     @Stop
     public void stop() throws IOException {
-        nameNode.stop();
+        if (nameNode != null) {
+            nameNode.stop();
+        }
+    }
+
+    public static void main(String[] args) {
+
+        try {
+            HadoopNameNode node = new HadoopNameNode();
+            node.start();
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

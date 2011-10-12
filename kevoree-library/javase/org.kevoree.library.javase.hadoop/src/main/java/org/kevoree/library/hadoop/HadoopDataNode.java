@@ -1,7 +1,6 @@
 package org.kevoree.library.hadoop;
 
 import java.io.IOException;
-import java.util.logging.Level;
 import org.slf4j.Logger;
 
 import org.apache.hadoop.conf.Configuration;

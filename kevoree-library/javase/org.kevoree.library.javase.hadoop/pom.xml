@@ -43,7 +43,6 @@
             <artifactId>slf4j-api</artifactId>
             <version>1.6.2</version>
         </dependency>
-
         <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>servlet-api</artifactId>
@@ -238,10 +237,11 @@
                             javax.servlet,
                             org.apache.hadoop,
                             org.apache.hadoop.*,
-                            org.morbay.*,
+                            org.mortbay.*,
                             org.apache.jasper.*,
                             <!--org.apache.log4j,
                             org.apache.log4j.*,-->
+                            org.slf4j.*,
                             org.znerd.xmlenc,
                             javax.el.*
                         </Export-Package>
@@ -268,7 +268,7 @@
                             !org.apache.log4j.*,
                             !org.apache.hadoop,
                             !org.apache.hadoop.*,
-                            !org.morbay.jetty.*,
+                            !org.mortbay.*,
                             !org.apache.jasper.*,
                             !javax.el,
                             !junit.*,
