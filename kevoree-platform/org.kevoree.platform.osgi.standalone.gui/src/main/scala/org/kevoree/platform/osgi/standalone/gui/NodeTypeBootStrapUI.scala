@@ -32,6 +32,7 @@ import com.explodingpixels.macwidgets.plaf.{HudButtonUI, HudLabelUI, HudTextFiel
 class NodeTypeBootStrapUI(pkernel: ContainerRoot) extends JPanel {
 
   var instanceName: JTextField = _
+  var groupName: JTextField = _
   var nodeTypeComboBox: JComboBox = _
   var groupTypeComboBox: JComboBox = _
 
@@ -47,7 +48,9 @@ class NodeTypeBootStrapUI(pkernel: ContainerRoot) extends JPanel {
   def getKevName = {
     instanceName.getText
   }
-
+  def getKevGroupName = {
+    groupName.getText
+  }
   def getKevTypeName = {
     nodeTypeComboBox.getSelectedItem
   }
@@ -82,6 +85,10 @@ class NodeTypeBootStrapUI(pkernel: ContainerRoot) extends JPanel {
 
     instanceName = new JTextField(10)
     instanceName.setUI(new HudTextFieldUI)
+
+    groupName = new JTextField(10)
+    groupName.setUI(new HudTextFieldUI)
+    groupName.setText("sync")
 
     instanceName.getDocument.addDocumentListener(new DocumentListener() {
       def insertUpdate(p1: DocumentEvent) {
@@ -138,6 +145,11 @@ class NodeTypeBootStrapUI(pkernel: ContainerRoot) extends JPanel {
     nodeTypeLabel.setUI(new HudLabelUI());
     nodeTypeLabel.setOpaque(false);
     nodeTypeLabel.setLabelFor(nodeTypeComboBox);
+    
+    val groupNameLabel = new JLabel("Group name", SwingConstants.TRAILING);
+    groupNameLabel.setUI(new HudLabelUI());
+    groupNameLabel.setOpaque(false);
+    groupNameLabel.setLabelFor(groupName);
 
     val groupTypeLabel = new JLabel("Group type", SwingConstants.TRAILING);
     groupTypeLabel.setUI(new HudLabelUI());
@@ -175,11 +187,15 @@ class NodeTypeBootStrapUI(pkernel: ContainerRoot) extends JPanel {
     topLayout.add(instanceName)
     topLayout.add(nodeTypeLabel)
     topLayout.add(nodeTypeComboBox)
+    
+    topLayout.add(groupNameLabel)
+    topLayout.add(groupName)
+    
     topLayout.add(groupTypeLabel)
     topLayout.add(groupTypeComboBox)
     topLayout.add(bootModelLabel)
     topLayout.add(btBrowse)
-    SpringUtilities.makeCompactGrid(topLayout, 4, 2, 6, 6, 6, 6)
+    SpringUtilities.makeCompactGrid(topLayout, 5, 2, 6, 6, 6, 6)
 
     previousTopLayout = topLayout
 
