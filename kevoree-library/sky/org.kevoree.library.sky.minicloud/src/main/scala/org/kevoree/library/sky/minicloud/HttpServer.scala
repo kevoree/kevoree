@@ -47,7 +47,7 @@ object HttpServer {
         case HttpMethod.GET => {
           request.getUri match {
             case "/" => sendAdminNodeList(request, this)
-            case "/model/current" => sendModel(request)
+//            case "/model/current" => sendModel(request)
             case NodeSubRequest(nodeName, fluxName) => sendNodeFlux(fluxName, nodeName, request, this)
             case NodeHomeRequest(nodeName) => sendNodeHome(nodeName, request, this)
             case _ => sendError(request)
@@ -55,7 +55,7 @@ object HttpServer {
         }
         case HttpMethod.POST => {
           request.getUri match {
-            case "/model/current" => receiveModel(request)
+//            case "/model/current" => receiveModel(request)
             case _ => sendError(request)
           }
         }

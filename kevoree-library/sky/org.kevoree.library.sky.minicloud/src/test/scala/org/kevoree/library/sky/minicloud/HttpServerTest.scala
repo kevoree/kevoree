@@ -43,7 +43,7 @@ class HttpServerTest {
     server.close(Duration.apply(300, TimeUnit.MILLISECONDS))
   }
 
-  @Test
+//  @Test
   def sendModelTest () {
     try {
       val outStream: ByteArrayOutputStream = new ByteArrayOutputStream
@@ -83,7 +83,7 @@ class HttpServerTest {
     }
   }
 
-  @Test
+//  @Test
   def askModelTest () {
     try {
       var IP: String = ""
