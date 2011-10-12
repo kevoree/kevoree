@@ -11,8 +11,8 @@ import org.kevoree.AdaptationPrimitiveType;
 import org.kevoree.ContainerNode;
 import org.kevoree.ContainerRoot;
 import org.kevoree.annotation.*;
-import org.kevoree.framework.AbstractNodeType;
 import org.kevoree.framework.PrimitiveCommand;
+import org.kevoree.library.defaultNodeTypes.JavaSENode;
 import org.kevoree.library.sky.minicloud.command.AddNodeCommand;
 import org.kevoree.library.sky.minicloud.command.RemoveNodeCommand;
 import org.kevoreeAdaptation.AdaptationModel;
@@ -35,12 +35,13 @@ import java.util.concurrent.TimeUnit;
  * @version 1.0
  */
 @NodeType
+@Library(name = "SKY")
 @DictionaryType({
 		@DictionaryAttribute(name = "port", defaultValue = "7000", optional = false)
 })
 @PrimitiveCommands(value = {},
-		values = {MiniCloudNode.REMOVE_NODE, MiniCloudNode.ADD_NODE/*, MiniCloudNode.UPDATE_NODE*/})
-public class MiniCloudNode extends AbstractNodeType {
+		values = {MiniCloudNode.REMOVE_NODE, MiniCloudNode.ADD_NODE, "UpdateType", "UpdateDeployUnit", "AddType", "AddDeployUnit", "AddThirdParty", "RemoveType", "RemoveDeployUnit", "UpdateInstance", "UpdateBinding", "UpdateDictionaryInstance", "AddInstance", "RemoveInstance", "AddBinding", "RemoveBinding", "AddFragmentBinding", "RemoveFragmentBinding", "StartInstance", "StopInstance"})
+public class MiniCloudNode extends JavaSENode {
 	private static final Logger logger = LoggerFactory.getLogger(MiniCloudNode.class);
 
 	protected static final String REMOVE_NODE = "RemoveNode";
@@ -53,6 +54,8 @@ public class MiniCloudNode extends AbstractNodeType {
 	@Start
 	@Override
 	public void startNode () {
+
+		super.startNode();
 
 		// start KevoreeNodeManager
 //		kevoreeNodeManager = new KevoreeNodeManager(this);
@@ -74,6 +77,7 @@ public class MiniCloudNode extends AbstractNodeType {
 	@Stop
 	@Override
 	public void stopNode () {
+		super.stopNode();
 		server.close(Duration.apply(300, TimeUnit.MILLISECONDS));
 		KevoreeNodeManager.stop();
 	}
@@ -116,7 +120,8 @@ public class MiniCloudNode extends AbstractNodeType {
 			logger.warn("there is no adaptation primitive for " + UPDATE_NODE);
 		}*/
 
-		AdaptationModel adaptationModel = org.kevoreeAdaptation.KevoreeAdaptationFactory.eINSTANCE().createAdaptationModel();
+		AdaptationModel adaptationModel = org.kevoreeAdaptation.KevoreeAdaptationFactory.eINSTANCE()
+				.createAdaptationModel();
 		ParallelStep step = KevoreeAdaptationFactory.eINSTANCE().createParallelStep();
 		adaptationModel.setOrderedPrimitiveSet(new Some<ParallelStep>(step));
 
@@ -187,6 +192,7 @@ public class MiniCloudNode extends AbstractNodeType {
 				}
 			}
 		}
+		super.kompare(current, target);
 		return adaptationModel;
 	}
 
@@ -204,6 +210,9 @@ public class MiniCloudNode extends AbstractNodeType {
 			command = new UpdateNodeCommand((ContainerNode) adaptationPrimitive.getRef(),
 					(ContainerRoot) (((ContainerNode) adaptationPrimitive.getRef()).eContainer()), kevoreeNodeManager);
 		}*/
+		if (command == null) {
+			command = super.getPrimitive(adaptationPrimitive);
+		}
 		return command;
 	}
 
