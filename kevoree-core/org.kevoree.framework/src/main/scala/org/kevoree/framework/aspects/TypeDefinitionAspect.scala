@@ -79,7 +79,9 @@ case class TypeDefinitionAspect(selfTD: TypeDefinition) {
           case otherSPT: ServicePortType => {
             val selfSPT = selfTD.asInstanceOf[ServicePortType]
             "" match {
-              case _ if (selfSPT.getOperations.size != otherSPT.getOperations.size) => { true }
+              case _ if (selfSPT.getOperations.size != otherSPT.getOperations.size) => {
+                true
+              }
               case _ => {
                 val interfaceChanged = selfSPT.getInterface != otherSPT.getInterface
                 val operationsChanged = selfSPT.getOperations.forall(selfOperation =>
@@ -184,21 +186,17 @@ case class TypeDefinitionAspect(selfTD: TypeDefinition) {
 
     /* add all reLib from found deploy Unit*/
     var deployUnitfound: DeployUnit = null
-    if (node.getTypeDefinition != null) {
-      selfTD.getDeployUnits.find(du => du.getTargetNodeType.isDefined &&
-        du.getTargetNodeType.get.getName == node.getTypeDefinition.getName) match {
-        case Some(e) => {
-          logger.info("found deploy unit => " + e.getUnitName)
-          deployUnitfound = e
-        }
-        case _ => logger.info("Deploy Unit not found on first level " + selfTD.getName)
+    selfTD.getDeployUnits.find(du => du.getTargetNodeType.isDefined &&
+      du.getTargetNodeType.get.getName == node.getTypeDefinition.getName) match {
+      case Some(e) => {
+        logger.info("found deploy unit => " + e.getUnitName)
+        deployUnitfound = e
       }
-      if (deployUnitfound == null) {
-        logger.info("Deploy Unit not found for node " + node.getName + " : " + node.getTypeDefinition.getName + "=> " + selfTD.getName)
-        deployUnitfound = foundRelevantDeployUnitOnNodeSuperTypes(node.getTypeDefinition.asInstanceOf[NodeType], selfTD)
-      }
-    } else {
-      logger.error("Node type definition empty  ! search node name = " + node.getName)
+      case _ => logger.info("Deploy Unit not found on first level " + selfTD.getName)
+    }
+    if (deployUnitfound == null) {
+      logger.info("Deploy Unit not found for node " + node.getName + " : " + node.getTypeDefinition.getName + "=> " + selfTD.getName)
+      deployUnitfound = foundRelevantDeployUnitOnNodeSuperTypes(node.getTypeDefinition.asInstanceOf[NodeType], selfTD)
     }
     logger.debug("will exit with => " + deployUnitfound)
     deployUnitfound

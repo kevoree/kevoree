@@ -33,7 +33,7 @@ trait DeployUnitMerger extends Merger {
     }) match {
       case Some(ftp) => {
         //CHECK CONSISTENCY, IF NOT JUST ADD
-        if (tp.getUrl != ftp.getUrl || tp.getUnitName != ftp.getUnitName || tp.getGroupName != ftp.getGroupName || tp.getVersion != ftp.getVersion) {
+        if (tp.getUrl != ftp.getUrl || tp.getUnitName != ftp.getUnitName || tp.getGroupName != ftp.getGroupName || tp.getVersion != ftp.getVersion || tp.getTargetNodeType != ftp.getTargetNodeType) {
           actualModel.addDeployUnits(tp)
           mergeRequiredLibs(actualModel, tp)
           tp
