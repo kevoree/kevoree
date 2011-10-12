@@ -31,7 +31,16 @@ trait KevoreeChannelTypeClassGenerator extends KevoreeCAbstractGenerator with Ke
     //GENERATE DICTIONARY VALUES POINTERS
     if(ct.getDictionaryType.isDefined){
       ct.getDictionaryType.get.getAttributes.foreach{ attribute =>
-        context b "char "+attribute.getName+"[20];"
+        if(attribute.getDatatype.startsWith("enum=")){
+          val enumValues: String = attribute.getDatatype.replaceFirst("enum=", "")
+          var maxLenght : Int = 0
+          enumValues.split(",").foreach {
+            value => maxLenght = scala.math.max(maxLenght,value.size)
+          }
+          context b "char "+attribute.getName+"["+maxLenght+"];"
+        } else {
+          context b "char "+attribute.getName+"[20];"
+        }
       }
     }
 

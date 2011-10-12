@@ -25,12 +25,12 @@
         <module>../org.kevoree.library.javase.rest</module>
 
 
-        <module>../org.kevoree.library.javase.xmpp</module>
+     <!--   <module>../org.kevoree.library.javase.xmpp</module>     -->
         <!--<module>../org.kevoree.library.javase.sample</module>-->
-        <module>../org.kevoree.library.javase.restChannels</module>
+     <!--   <module>../org.kevoree.library.javase.restChannels</module> -->
         <!--<module>../org.kevoree.library.javase.reasoner.ecj</module> -->
         <!--  <module>../org.kevoree.library.javase.logger.greg</module> -->
-        <module>../org.kevoree.library.javase.jscriptengine</module>
+       <!-- <module>../org.kevoree.library.javase.jscriptengine</module>  -->
         <module>../org.kevoree.library.javase.javaseNode</module>
         <module>../org.kevoree.library.javase.gossiperNetty</module>
         <module>../org.kevoree.library.javase.fakeDomo</module>
@@ -40,12 +40,12 @@
         <module>../org.kevoree.library.javase.serialCT</module>
         <module>../org.kevoree.library.javase.hidrfid</module>
         <module>../org.kevoree.library.javase.kinect</module>
-        <module>../org.kevoree.library.javase.bluetooth</module>
+       <!-- <module>../org.kevoree.library.javase.bluetooth</module>  -->
        <!-- <module>../org.kevoree.library.javase.derby</module> -->
         <module>../org.kevoree.library.javase.grapher</module>
-        <module>../org.kevoree.library.javase.javacv</module>
-        <module>../org.kevoree.library.javase.hadoop</module>
-        <module>../org.kevoree.library.javase.webserver</module>
+      <!--  <module>../org.kevoree.library.javase.javacv</module>   -->
+       <!-- <module>../org.kevoree.library.javase.hadoop</module>
+        <module>../org.kevoree.library.javase.webserver</module>   -->
     </modules>
 
 
