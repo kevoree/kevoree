@@ -178,7 +178,7 @@
 
         <!-- Android -->
 
-
+<!--
         <dependency>
             <groupId>org.kevoree.library.android</groupId>
             <artifactId>org.kevoree.library.android.logger</artifactId>
@@ -194,7 +194,7 @@
             <artifactId>org.kevoree.library.android.text2speech</artifactId>
             <version>${kevoree.version}</version>
         </dependency>
-
+-->
 
     </dependencies>
 
