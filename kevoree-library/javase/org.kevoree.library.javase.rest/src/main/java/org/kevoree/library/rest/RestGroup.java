@@ -25,7 +25,7 @@ import java.net.URLConnection;
 
 
 @DictionaryType({
-        @DictionaryAttribute(name = "port", defaultValue = "8000", optional = true)
+        @DictionaryAttribute(name = "port", defaultValue = "8000", optional = true , fragmentDependant = true)
 })
 @GroupType
 @Library(name="JavaSE")

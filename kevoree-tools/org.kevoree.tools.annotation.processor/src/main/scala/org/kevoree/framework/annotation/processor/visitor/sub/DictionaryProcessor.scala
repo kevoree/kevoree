@@ -44,6 +44,7 @@ trait DictionaryProcessor {
               val newAtt = KevoreeFactory.eINSTANCE.createDictionaryAttribute
               newAtt.setName(dictionaryAtt.name)
               typeDef.getDictionaryType.get.addAttributes(newAtt)
+              newAtt.setFragmentDependant(dictionaryAtt.fragmentDependant());
               newAtt
           }
           case Some(att)=> att
