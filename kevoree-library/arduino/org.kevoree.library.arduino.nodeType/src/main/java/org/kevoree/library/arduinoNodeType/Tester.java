@@ -39,7 +39,7 @@ public class Tester {
 
 
         node.getDictionary().put("incremental","false");
-        node.push("ksensor1",model);
+        //node.push("ksensor1",model);
 
     }
 
