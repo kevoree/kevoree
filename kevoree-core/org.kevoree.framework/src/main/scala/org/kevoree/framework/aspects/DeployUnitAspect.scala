@@ -25,7 +25,7 @@ case class DeployUnitAspect(self : DeployUnit) {
 
   def isModelEquals(other : DeployUnit) : Boolean = {
     //val idequals = (if(other.getName == null || self.getName == null){
-      other.getUnitName == self.getUnitName && other.getGroupName == self.getGroupName && other.getVersion == self.getVersion
+      other.getUnitName == self.getUnitName && other.getGroupName == self.getGroupName && other.getVersion == self.getVersion && other.getTargetNodeType == self.getTargetNodeType
     //} else {
     //  self.getName == other.getName
     //})

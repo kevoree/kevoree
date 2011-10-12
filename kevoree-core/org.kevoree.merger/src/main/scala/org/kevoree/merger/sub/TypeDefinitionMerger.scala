@@ -31,8 +31,7 @@ trait TypeDefinitionMerger extends Merger with DictionaryMerger with PortTypeMer
   //TYPE DEFINITION MERGER ENTRYPOINT
   def mergeTypeDefinition(actualModel: ContainerRoot, modelToMerge: ContainerRoot): Unit = {
 
-    modelToMerge.getTypeDefinitions.foreach {
-      toMergeTypeDef =>
+    modelToMerge.getTypeDefinitions.foreach { toMergeTypeDef =>
         actualModel.getTypeDefinitions.find(actualTypeDef => actualTypeDef.getName == toMergeTypeDef.getName) match {
           case Some(found_type_definition) => {
             val root = found_type_definition.eContainer.asInstanceOf[ContainerRoot]
@@ -65,6 +64,7 @@ trait TypeDefinitionMerger extends Merger with DictionaryMerger with PortTypeMer
 
   private def mergeConsistency(root: ContainerRoot, actuelTypeDefinition: TypeDefinition,
                                newTypeDefinition: TypeDefinition) = {
+    
     //UPDATE & MERGE DEPLOYS UNIT
     //CONCAT & MERGE BOTH TYPE DEF DEPLOY UNIT
     val allDeployUnits = newTypeDefinition.getDeployUnits ++ actuelTypeDefinition.getDeployUnits
@@ -76,23 +76,25 @@ trait TypeDefinitionMerger extends Merger with DictionaryMerger with PortTypeMer
           actuelTypeDefinition.addDeployUnits(merged)
         }
     }
+
   }
 
   private def consistencyImpacted(root: ContainerRoot, actuelTypeDefinition: TypeDefinition,
                                   newTypeDefinition: TypeDefinition) = {
-
     //REMOVE OLD AND ADD NEW TYPE
     root.removeTypeDefinitions(actuelTypeDefinition)
     mergeNewTypeDefinition(root, newTypeDefinition)
 
     //PARTICULAR CASE - CHECK
-    if (actuelTypeDefinition.isInstanceOf[NodeType]) {
-      val nodeType = actuelTypeDefinition.asInstanceOf[NodeType]
+    if (newTypeDefinition.isInstanceOf[NodeType]) {
+      val nodeType = newTypeDefinition.asInstanceOf[NodeType]
       val pl = nodeType.getManagedPrimitiveTypes
       nodeType.removeAllManagedPrimitiveTypes()
       pl.foreach {
         pll =>
-          nodeType.addManagedPrimitiveTypes(mergeAdaptationPrimitive(root, pll))
+          if (!nodeType.getManagedPrimitiveTypes.exists(ap => ap.getName == pll.getName)){
+            nodeType.addManagedPrimitiveTypes(mergeAdaptationPrimitive(root, pll))
+          }
       }
     }
     //UPDATE DEPLOYS UNIT
@@ -211,7 +213,9 @@ trait TypeDefinitionMerger extends Merger with DictionaryMerger with PortTypeMer
         nt.removeAllManagedPrimitiveTypes()
         pl.foreach {
           pll =>
-            nt.addManagedPrimitiveTypes(mergeAdaptationPrimitive(actualModel, pll))
+            if (!nt.getManagedPrimitiveTypes.exists(ap => ap.getName == pll.getName)){
+              nt.addManagedPrimitiveTypes(mergeAdaptationPrimitive(actualModel, pll))
+            }
         }
       }
       case gt: GroupType => {

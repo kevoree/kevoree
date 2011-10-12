@@ -31,8 +31,8 @@ object MergerApp {
     val merger = new RootMerger
     val emtpyModel = KevoreeFactory.eINSTANCE.createContainerRoot
 
-    val model1 = KevoreeXmiHelper.load("/Users/duke/Documents/dev/dukeboard/kevoree/kevoree-library/arduino/org.kevoree.library.arduino.groupType/target/generated-sources/kevoree/KEV-INF/lib.kev")
-    //val model2 = KevoreeXmiHelper.load("/Users/duke/Desktop/newlib.kev")
+    val model1 = KevoreeXmiHelper.load("/Users/duke/Documents/dev/dukeboard/kevoree/kevoree-library/sky/org.kevoree.library.sky.minicloud/target/generated-sources/kevoree/KEV-INF/lib.kev")
+    val model2 = KevoreeXmiHelper.load("/Users/duke/Documents/dev/dukeboard/kevoree/kevoree-library/javase/org.kevoree.library.javase.javaseNode/target/generated-sources/kevoree/KEV-INF/lib.kev")
 
 
     /*
@@ -45,7 +45,7 @@ object MergerApp {
     println("%%%%%%%%%%%%%%%%%%%%%%%%%% 1")
     merger.merge(emtpyModel, model1)
     println("%%%%%%%%%%%%%%%%%%%%%%%%%% 2")
-  //  merger.merge(emtpyModel, model2)
+    merger.merge(emtpyModel, model2)
     println("%%%%%%%%%%%%%%%%%%%%%%%%%% 3")
     //merger.merge(emtpyModel, model3)
     println("%%%%%%%%%%%%%%%%%%%%%%%%%% 4")
