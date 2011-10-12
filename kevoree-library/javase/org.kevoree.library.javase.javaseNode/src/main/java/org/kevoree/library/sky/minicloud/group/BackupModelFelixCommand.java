@@ -11,7 +11,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kevoree.libary.sky.minicloud.group;
+package org.kevoree.library.sky.minicloud.group;
 
 import org.apache.felix.shell.Command;
 import org.kevoree.api.service.core.handler.KevoreeModelHandlerService;

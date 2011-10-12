@@ -1,4 +1,4 @@
-package org.kevoree.libary.sky.minicloud.group;
+package org.kevoree.library.sky.minicloud.group;
 
 import org.kevoree.ContainerRoot;
 import org.kevoree.annotation.GroupType;
@@ -6,6 +6,7 @@ import org.kevoree.annotation.Library;
 import org.kevoree.annotation.Start;
 import org.kevoree.annotation.Stop;
 import org.kevoree.framework.AbstractGroupType;
+import org.kevoree.library.sky.minicloud.group.SendModelFelixCommand;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.ServiceRegistration;
 
