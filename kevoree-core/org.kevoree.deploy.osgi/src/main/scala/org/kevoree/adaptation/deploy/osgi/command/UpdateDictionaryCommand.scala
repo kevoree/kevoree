@@ -40,12 +40,16 @@ case class UpdateDictionaryCommand(c: Instance, ctx: KevoreeDeployManager, nodeN
       }
     }
 
-
-
     if (c.getDictionary.isDefined) {
       c.getDictionary.get.getValues.foreach {
         v =>
-          dictionary.put(v.getAttribute.getName, v.getValue)
+          if (v.getAttribute.getFragmentDependant) {
+            if (v.getTargetNode == nodeName) {
+              dictionary.put(v.getAttribute.getName, v.getValue)
+            }
+          } else {
+            dictionary.put(v.getAttribute.getName, v.getValue)
+          }
       }
     }
 

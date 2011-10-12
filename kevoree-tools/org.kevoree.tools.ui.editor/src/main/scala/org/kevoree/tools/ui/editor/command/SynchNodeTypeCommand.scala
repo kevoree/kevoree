@@ -44,6 +44,7 @@ class SynchNodeTypeCommand extends Command {
         override def run() {
           bootstrap.bootstrapGroupType(model, viaGroupName, EmbeddedOSGiEnv.getFwk.getBundleContext) match {
             case Some(groupTypeInstance) => {
+
               groupTypeInstance.push(model,destNodeName)
             }
             case None => logger.error("Error while bootstraping group type")
