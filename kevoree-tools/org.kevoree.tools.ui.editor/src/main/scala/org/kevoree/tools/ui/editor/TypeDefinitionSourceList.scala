@@ -136,32 +136,36 @@ class TypeDefinitionSourceList(pane: JSplitPane, kernel: KevoreeUIKernel) {
   sourceList.installSourceListControlBar(controlBar)
   controlBar.installDraggableWidgetOnSplitPane(pane)
 
-  var imageProject = ImageIO.read(this.getClass.getClassLoader.getResourceAsStream("com/explodingpixels/macwidgets/images/itunes_star_unselected.png"))
-  var iconProject = new ImageIcon(imageProject)
-  var imageProject2 = ImageIO.read(this.getClass.getClassLoader.getResourceAsStream("com/explodingpixels/macwidgets/images/source_list_down_arrow.png"))
-  var iconProject2 = new ImageIcon(imageProject2)
+  var imageSortByLibrary = ImageIO.read(this.getClass.getClassLoader.getResourceAsStream("com/explodingpixels/macwidgets/images/itunes_star_unselected.png"))
+  var iconSortByLibrary = new ImageIcon(imageSortByLibrary)
+  var imageSortByDeployUnit = ImageIO.read(this.getClass.getClassLoader.getResourceAsStream("com/explodingpixels/macwidgets/images/source_list_down_arrow.png"))
+  var iconSortByDeployUnit = new ImageIcon(imageSortByDeployUnit)
+
   var imageProjectAdd = ImageIO.read(this.getClass.getClassLoader.getResourceAsStream("com/explodingpixels/macwidgets/images/plus.png"))
   var iconProjectAdd = new ImageIcon(imageProjectAdd)
   var imageProjectGenerate = ImageIO.read(this.getClass.getClassLoader.getResourceAsStream("com/explodingpixels/macwidgets/icons/Project.png"))
   var iconProjectGenerate = new ImageIcon(imageProjectGenerate)
+
+
+  controlBar.createAndAddButton(iconSortByLibrary, new ActionListener {
+    def actionPerformed(p1: ActionEvent) {
+      TypeDefinitionPaletteMode.changeMode(LibraryMode)
+      refreshCmd.execute(null)
+    }
+  })
+  controlBar.createAndAddButton(iconSortByDeployUnit, new ActionListener {
+    def actionPerformed(p1: ActionEvent) {
+      TypeDefinitionPaletteMode.changeMode(DeployUnitMode)
+      refreshCmd.execute(null)
+    }
+  })
+
 
   controlBar.createAndAddButton(iconProjectAdd, new ActionListener {
     def actionPerformed(p1: ActionEvent) {
       val cmd = new AddElementUICommand
       cmd.setKernel(kernel)
       cmd.execute(null)
-    }
-  })
-  controlBar.createAndAddButton(iconProject, new ActionListener {
-    def actionPerformed(p1: ActionEvent) {
-      TypeDefinitionPaletteMode.changeMode(LibraryMode)
-      refreshCmd.execute(null)
-    }
-  })
-  controlBar.createAndAddButton(iconProject2, new ActionListener {
-    def actionPerformed(p1: ActionEvent) {
-      TypeDefinitionPaletteMode.changeMode(DeployUnitMode)
-      refreshCmd.execute(null)
     }
   })
   controlBar.createAndAddButton(iconProjectGenerate, new ActionListener {
@@ -172,6 +176,7 @@ class TypeDefinitionSourceList(pane: JSplitPane, kernel: KevoreeUIKernel) {
       generateAction.execute(typeDef)
     }
   })
+
 
   sourceList.setColorScheme(new SourceListDarkColorScheme());
   sourceList.useIAppStyleScrollBars()
