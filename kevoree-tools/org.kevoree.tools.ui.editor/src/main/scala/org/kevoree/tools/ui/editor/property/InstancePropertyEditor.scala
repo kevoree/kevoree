@@ -31,132 +31,193 @@ import text.BadLocationException
  * To change this template use File | Settings | File Templates.
  */
 
-class InstancePropertyEditor(elem:org.kevoree.Instance, kernel: KevoreeUIKernel) extends NamedElementPropertyEditor(elem,kernel) {
+class InstancePropertyEditor(elem: org.kevoree.Instance, kernel: KevoreeUIKernel) extends NamedElementPropertyEditor(elem, kernel) {
 
-  def getValue(instance: Instance, att: DictionaryAttribute): String = {
-      var value: DictionaryValue = null
-      if (instance.getDictionary.isEmpty) {
-        instance.setDictionary(new Some[Dictionary](KevoreeFactory.createDictionary))
-      }
-      import scala.collection.JavaConversions._
-      for (v <- instance.getDictionary.get.getValuesForJ) {
-        if (v.getAttribute == att) {
-          return v.getValue
-        }
-      }
-      import scala.collection.JavaConversions._
-      for (v <- instance.getTypeDefinition.getDictionaryType.get.getDefaultValuesForJ) {
-        if (v.getAttribute == att) {
-          return v.getValue
-        }
-      }
-      return ""
-    }
-
-    def setValue(aValue: AnyRef, instance: Instance, att: DictionaryAttribute): Unit = {
-      var value: DictionaryValue = null
-      import scala.collection.JavaConversions._
-      for (v <- instance.getDictionary.get.getValuesForJ) {
-        if (v.getAttribute == att) {
-          value = v
-        }
-      }
-      if (value == null) {
-        value = KevoreeFactory.createDictionaryValue
-        value.setAttribute(att)
-        instance.getDictionary.get.addValues(value)
-      }
-      value.setValue(aValue.toString)
-    }
-
-    //CONSTRUCTOR CODE
-  var p: JPanel = new JPanel(new SpringLayout)
-    p.setBorder(null)
-
-
-    if (elem.getTypeDefinition.getDictionaryType.isDefined) {
-      import scala.collection.JavaConversions._
-      for (att <- elem.getTypeDefinition.getDictionaryType.get.getAttributesForJ) {
-        val l: JLabel = new JLabel(att.getName, SwingConstants.TRAILING)
-        l.setUI(new HudLabelUI)
-        p.add(l)
-        if (att.getDatatype ne "") {
-          if (att.getDatatype.startsWith("enum=")) {
-            val values: String = att.getDatatype.replaceFirst("enum=", "")
-            val model = new DefaultComboBoxModel
-            values.split(",").foreach{value => model.addElement(value)}
-            val comboBox: JComboBox = HudWidgetFactory.createHudComboBox(model)
-            l.setLabelFor(comboBox)
-            p.add(comboBox)
-            comboBox.setSelectedItem(getValue(elem, att))
-            comboBox.addActionListener(new ActionListener {
-              def actionPerformed(actionEvent: ActionEvent): Unit = {
-                setValue(comboBox.getSelectedItem.toString, elem, att)
-              }
-            })
+  def getValue(instance: Instance, att: DictionaryAttribute, targetNode: Option[String]): String = {
+    var value: DictionaryValue = null
+    for (v <- instance.getDictionary.get.getValues) {
+      targetNode match {
+        case Some(targetNodeSearch) => {
+          if (v.getAttribute == att && v.getTargetNode == targetNodeSearch) {
+            return v.getValue
           }
         }
-        else {
-          var textField: JTextField = new JTextField(10)
-          textField.setUI(new HudTextFieldUI)
-          textField.getDocument.addDocumentListener(new DocumentListener {
-            def insertUpdate(documentEvent: DocumentEvent): Unit = {
-              try {
-                setValue(documentEvent.getDocument.getText(0, documentEvent.getDocument.getLength), elem, att)
-              }
-              catch {
-                case e: BadLocationException => {
-                  e.printStackTrace
-                }
-              }
-            }
-
-            def removeUpdate(documentEvent: DocumentEvent): Unit = {
-              try {
-                setValue(documentEvent.getDocument.getText(0, documentEvent.getDocument.getLength), elem, att)
-              }
-              catch {
-                case e: BadLocationException => {
-                  e.printStackTrace
-                }
-              }
-            }
-
-            def changedUpdate(documentEvent: DocumentEvent): Unit = {
-              try {
-                setValue(documentEvent.getDocument.getText(0, documentEvent.getDocument.getLength), elem, att)
-              }
-              catch {
-                case e: BadLocationException => {
-                  e.printStackTrace
-                }
-              }
-            }
-          })
-          l.setLabelFor(textField)
-          p.add(textField)
-          textField.setText(getValue(elem, att))
+        case None => {
+          if (v.getAttribute == att) {
+            return v.getValue
+          }
         }
       }
-      SpringUtilities.makeCompactGrid(p, elem.getTypeDefinition.getDictionaryType.get.getAttributesForJ.size, 2, 6, 6, 6, 6)
     }
+    for (v <- instance.getTypeDefinition.getDictionaryType.get.getDefaultValues) {
+      if (v.getAttribute == att) {
+        return v.getValue
+      }
+    }
+    return "" //DEFAULT CASE RETURN EMPTY VALUE
+  }
+
+  def setValue(aValue: AnyRef, instance: Instance, att: DictionaryAttribute, targetNode: Option[String]): Unit = {
+    var value: DictionaryValue = null
+    for (v <- instance.getDictionary.get.getValues) {
+      targetNode match {
+        case Some(targetNodeSearch) => {
+          if (v.getAttribute.getName == att.getName && v.getTargetNode == targetNodeSearch) {
+            value = v
+          }
+        }
+        case None => {
+          if (v.getAttribute.getName == att.getName) {
+            value = v
+          }
+        }
+      }
+    }
+    if (value == null) {
+      value = KevoreeFactory.createDictionaryValue
+      value.setAttribute(att)
+      targetNode.map(t => value.setTargetNode(t))
+      instance.getDictionary.get.addValues(value)
+    }
+    value.setValue(aValue.toString)
+  }
+
+  //CONSTRUCTOR CODE
+  if (elem.getDictionary.isEmpty) {
+    elem.setDictionary(new Some[Dictionary](KevoreeFactory.createDictionary))
+  }
+  var p: JPanel = new JPanel(new SpringLayout)
+  p.setBorder(null)
+
+  var nbLigne = 0
+  if (elem.getTypeDefinition.getDictionaryType.isDefined) {
+    for (att <- elem.getTypeDefinition.getDictionaryType.get.getAttributes) {
+      
+      att.getDatatype match {
+        case _ if(att.getDatatype != "" && att.getDatatype.startsWith("enum=") && !att.getFragmentDependant) => {
+          val l: JLabel = new JLabel(att.getName, SwingConstants.TRAILING)
+          l.setUI(new HudLabelUI)
+          p.add(l)
+          p.add(getEnumBox(att, l, None))
+          nbLigne = nbLigne + 1
+        }
+        case _ if(att.getDatatype != "" && att.getDatatype.startsWith("enum=") && att.getFragmentDependant) => {
+          getNodesLinked(elem).foreach{ nodeName =>
+            val l: JLabel = new JLabel(att.getName+"->"+nodeName, SwingConstants.TRAILING)
+            l.setUI(new HudLabelUI)
+            p.add(l)
+            p.add(getEnumBox(att, l, Some(nodeName)))
+            nbLigne = nbLigne + 1
+          }
+        }
+        case _ if(att.getFragmentDependant) => {
+          getNodesLinked(elem).foreach{ nodeName =>
+            val l: JLabel = new JLabel(att.getName+"->"+nodeName, SwingConstants.TRAILING)
+            l.setUI(new HudLabelUI)
+            p.add(l)
+            p.add(getTextField(att, l, Some(nodeName)))
+            nbLigne = nbLigne + 1
+          }
+        }
+        case _ => {
+          val l: JLabel = new JLabel(att.getName, SwingConstants.TRAILING)
+          l.setUI(new HudLabelUI)
+          p.add(l)
+          p.add(getTextField(att, l, None))
+          nbLigne = nbLigne + 1
+        }
+      }
+    }
+    SpringUtilities.makeCompactGrid(p, nbLigne, 2, 6, 6, 6, 6)
+  }
 
 
-    p.setOpaque(false)
-    var scrollPane: JScrollPane = new JScrollPane(p)
-    scrollPane.getViewport.setOpaque(false)
+  p.setOpaque(false)
+  var scrollPane: JScrollPane = new JScrollPane(p)
+  scrollPane.getViewport.setOpaque(false)
+  scrollPane.setOpaque(false)
+  scrollPane.setBorder(null)
+  scrollPane.setPreferredSize(new Dimension(250, 150))
+  this.addCenter(scrollPane)
+
+  //END CONSTRUCTOR CODE
+
+  
+  def getNodesLinked(i : Instance) : List[String] = {
+    i match {
+      case g : Group => {
+        g.getSubNodes.map(s => s.getName)
+      }
+      case c : Channel => {
+        import org.kevoree.framework.aspects.KevoreeAspects._
+        c.getRelatedNodes.map(s => s.getName)
+      }
+      case _ => List()
+    }
+  }
+  
+
+  def getEnumBox(att: DictionaryAttribute, label: JLabel, targetNode: Option[String]): JComponent = {
+    val values: String = att.getDatatype.replaceFirst("enum=", "")
+    val model = new DefaultComboBoxModel
+    values.split(",").foreach {
+      value => model.addElement(value)
+    }
+    val comboBox: JComboBox = HudWidgetFactory.createHudComboBox(model)
+    label.setLabelFor(comboBox)
+    p.add(comboBox)
+    comboBox.setSelectedItem(getValue(elem, att, targetNode))
+    comboBox.addActionListener(new ActionListener {
+      def actionPerformed(actionEvent: ActionEvent): Unit = {
+        setValue(comboBox.getSelectedItem.toString, elem, att, targetNode)
+      }
+    })
+    comboBox
+  }
 
 
-    scrollPane.setOpaque(false)
+  //get Default TextField
+  def getTextField(att: DictionaryAttribute, label: JLabel, targetNode: Option[String]): JComponent = {
+    val textField: JTextField = new JTextField(10)
+    textField.setUI(new HudTextFieldUI)
+    textField.getDocument.addDocumentListener(new DocumentListener {
+      def insertUpdate(documentEvent: DocumentEvent): Unit = {
+        try {
+          setValue(documentEvent.getDocument.getText(0, documentEvent.getDocument.getLength), elem, att, targetNode)
+        }
+        catch {
+          case e: BadLocationException => {
+            e.printStackTrace
+          }
+        }
+      }
 
+      def removeUpdate(documentEvent: DocumentEvent): Unit = {
+        try {
+          setValue(documentEvent.getDocument.getText(0, documentEvent.getDocument.getLength), elem, att, targetNode)
+        }
+        catch {
+          case e: BadLocationException => {
+            e.printStackTrace
+          }
+        }
+      }
 
-    scrollPane.setBorder(null)
-
-
-    scrollPane.setPreferredSize(new Dimension(250, 150))
-
-
-    this.addCenter(scrollPane)
+      def changedUpdate(documentEvent: DocumentEvent): Unit = {
+        try {
+          setValue(documentEvent.getDocument.getText(0, documentEvent.getDocument.getLength), elem, att, targetNode)
+        }
+        catch {
+          case e: BadLocationException => {
+            e.printStackTrace
+          }
+        }
+      }
+    })
+    label.setLabelFor(textField)
+    textField.setText(getValue(elem, att, targetNode))
+    textField
+  }
 
 
 }
