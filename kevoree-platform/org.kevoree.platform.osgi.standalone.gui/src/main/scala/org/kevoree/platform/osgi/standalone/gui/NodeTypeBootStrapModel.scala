@@ -27,7 +27,7 @@ object NodeTypeBootStrapModel {
 
   val logger = LoggerFactory.getLogger(this.getClass)
 
-  def checkAndCreate(model: ContainerRoot, nodeName: String, nodeTypeName: String, groupTypeName: String, props: Properties) {
+  def checkAndCreate(model: ContainerRoot, nodeName: String, nodeTypeName: String, groupTypeName: String, groupName: String, props: Properties) {
     val node : ContainerNode = model.getNodes.find {
       node => node.getName == nodeName
     } match {
@@ -44,13 +44,13 @@ object NodeTypeBootStrapModel {
         createNode(model, nodeName, nodeTypeName, props)
       }
     }
-    model.getGroups.find(g => g.getName == "sync") match {
+    model.getGroups.find(g => g.getName == groupName) match {
       case Some(g) => println("Already present group ")
       case None => {
         model.getTypeDefinitions.filter(td => td.isInstanceOf[GroupType]).find(td => td.getName == groupTypeName) match {
           case Some(groupTypeDef) => {
             val group = KevoreeFactory.eINSTANCE.createGroup
-            group.setName("sync")
+            group.setName(groupName)
             group.setTypeDefinition(groupTypeDef)
             model.addGroups(group)
             group.addSubNodes(node)
