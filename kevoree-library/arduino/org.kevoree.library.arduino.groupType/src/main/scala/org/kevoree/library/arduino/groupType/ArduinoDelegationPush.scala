@@ -4,8 +4,8 @@ import org.kevoree.api.service.core.handler.KevoreeModelHandlerService
 import org.slf4j.{Logger, LoggerFactory}
 import org.kevoree.tools.aether.framework.NodeTypeBootstrapHelper
 import org.osgi.framework.Bundle
-import org.kevoree.ContainerRoot
 import reflect.BeanProperty
+import org.kevoree.{KevoreeFactory, ContainerRoot}
 
 /**
  * User: ffouquet
@@ -45,20 +45,22 @@ class ArduinoDelegationPush(handler: KevoreeModelHandlerService, groupName: Stri
         case Some(gNodeType) => {
           model.getGroups.find(g => g.getName == groupName) match {
             case Some(group) => {
-              group.getDictionary match {
-                case Some(dictionary) => {
-                  val att = dictionary.getValues.find(value => value.getAttribute.getName == "serialport" && value.getTargetNode == targetNodeName).getOrElse(null)
-                  gNodeType.getClass.getMethods.find(method => method.getName == "push") match {
-                    case Some(method) => {
-                      val port = if(att != null){att.getValue}else {""}
-                      method.invoke(gNodeType, targetNodeName, model, port)
-                    }
-                    case None => logger.error("No push method in group for name " + groupName)
+              val dictionary = group.getDictionary.getOrElse({
+                val newdic = KevoreeFactory.createDictionary; group.setDictionary(Some(newdic)); newdic
+              })
+              val att = dictionary.getValues.find(value => value.getAttribute.getName == "serialport" && value.getTargetNode == targetNodeName).getOrElse(null)
+              gNodeType.getClass.getMethods.find(method => method.getName == "push") match {
+                case Some(method) => {
+                  val port = if (att != null) {
+                    att.getValue
+                  } else {
+                    ""
                   }
-
+                  method.invoke(gNodeType, targetNodeName, model, port)
                 }
-                case None => logger.error("Dictionary not found for name " + groupName)
+                case None => logger.error("No push method in group for name " + groupName)
               }
+
 
             }
             case None => logger.error("Group not found for name " + groupName)
