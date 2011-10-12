@@ -39,7 +39,7 @@ import java.io.FileNotFoundException;
 @Library(name = "KevoreeNodeType")
 @DictionaryType({
         @DictionaryAttribute(name = "boardTypeName", defaultValue = "uno", optional = true, vals = {"uno", "atmega328", "mega2560"}),
-        @DictionaryAttribute(name = "boardPortName"),
+       // @DictionaryAttribute(name = "boardPortName"),
         @DictionaryAttribute(name = "incremental", defaultValue = "true", optional = true, vals = {"true", "false"}),
         @DictionaryAttribute(name = "pmem", defaultValue = "eeprom", optional = true, vals = {"eeprom", "sd"}),
         @DictionaryAttribute(name = "psize", defaultValue = "MAX", optional = true)
@@ -75,8 +75,8 @@ public class ArduinoNode extends AbstractNodeType {
         return null;//NOT TO BE USED WITH KEVOREE CORE
     }
 
-    @Override
-    public void push(final String targetNodeName, final ContainerRoot root) {
+    //@Override
+    public void push(final String targetNodeName, final ContainerRoot root,String boardPortName) {
 
         //new Thread() {
 
@@ -160,7 +160,7 @@ public class ArduinoNode extends AbstractNodeType {
 
         progress.beginTask("Compute firmware update", 30);
         try {
-            if (deploy(kompareModel, targetNodeName)) {
+            if (deploy(kompareModel, targetNodeName,boardPortName)) {
                 progress.endTask();
             } else {
                 progress.failTask();
@@ -189,7 +189,7 @@ public class ArduinoNode extends AbstractNodeType {
     public String outputPath = "";
     private BundleContext bcontext = null;
 
-    public boolean deploy(AdaptationModel modelIn, String nodeName) {
+    public boolean deploy(AdaptationModel modelIn, String nodeName,String boardPortName) {
         boolean typeAdaptationFound = false;
         ContainerRoot rootModel = null;
         for (AdaptationPrimitive p : modelIn.getAdaptationsForJ()) {
@@ -284,8 +284,8 @@ public class ArduinoNode extends AbstractNodeType {
                 progress.endTask();
 
                 String boardName = "";
-                if (getDictionary().get("boardPortName") != null) {
-                    boardName = getDictionary().get("boardPortName").toString();
+                if (boardPortName != null && boardPortName != "") {
+                    boardName = boardPortName.toString();
                 }
 
                 if (boardName == null || boardName.equals("")) {
@@ -314,8 +314,8 @@ public class ArduinoNode extends AbstractNodeType {
             String resultScript = KevScriptWrapper.generateKevScriptCompressed(baseScript);
             logger.debug(resultScript);
             String boardName = "";
-            if (getDictionary().get("boardPortName") != null) {
-                boardName = getDictionary().get("boardPortName").toString();
+            if (boardPortName != null && boardPortName != "") {
+                boardName = boardPortName.toString();
             }
             if (boardName == null || boardName.equals("")) {
                 boardName = GuiAskForComPort.askPORT();

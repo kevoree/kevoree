@@ -1,6 +1,8 @@
 package org.kevoree.library.rest;
 
 import org.kevoree.ContainerRoot;
+import org.kevoree.DictionaryValue;
+import org.kevoree.Group;
 import org.kevoree.annotation.*;
 import org.kevoree.framework.AbstractGroupType;
 import org.kevoree.framework.Constants;
@@ -63,8 +65,22 @@ public class RestGroup extends AbstractGroupType {
             if (IP.equals("")) {
                 IP = "127.0.0.1";
             }
-            System.out.println("dic=>"+this.getDictionary());
-            String PORT = this.getDictionary().get("port").toString();
+            
+            String PORT = "";
+            for(Group g : model.getGroupsForJ()){
+                if(g.getName().equals(this.getName())){
+                     if(g.getDictionary().isDefined()){
+                          for(DictionaryValue val : g.getDictionary().get().getValuesForJ()){
+                                if(val.getAttribute().getName().equals("port")){
+                                    if(val.getTargetNode().equals(targetNodeName)){
+                                        PORT = val.getValue();
+                                    }
+                                }
+                          }
+                     }
+                }
+            }
+
             if (PORT.equals("")) {
                 PORT = "8000";
             }
