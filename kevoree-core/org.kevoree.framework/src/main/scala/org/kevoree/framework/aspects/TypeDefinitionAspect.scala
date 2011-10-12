@@ -33,7 +33,6 @@ case class TypeDefinitionAspect(selfTD: TypeDefinition) {
 
   /* Check if the new type definition define new deploy unit than self */
   def contractChanged(pTD: TypeDefinition): Boolean = {
-
     if (selfTD.getSuperTypes.size != pTD.getSuperTypes.size) {
       return true
     }
@@ -43,15 +42,18 @@ case class TypeDefinitionAspect(selfTD: TypeDefinition) {
           return false
         }
     }
-
     if (pTD.getName != selfTD.getName) {
       return true
     }
     if (pTD.getFactoryBean != selfTD.getFactoryBean) {
+      println(pTD.getFactoryBean+"=>"+selfTD.getFactoryBean)
       return true
     }
     //DICTIONARY TYPE CHECK
 
+
+    
+    
     pTD.getDictionaryType match {
       case Some(dico) => {
         if (!dico.isModelEquals(selfTD.getDictionaryType.get)) {
@@ -64,9 +66,6 @@ case class TypeDefinitionAspect(selfTD: TypeDefinition) {
         }
       }
     }
-
-    //println(pTD.getDictionaryType)
-
 
     //SPECIAL CONSISTENCY CHECK
     pTD match {
@@ -132,6 +131,9 @@ case class TypeDefinitionAspect(selfTD: TypeDefinition) {
         false
       }
       case nodeType: NodeType => {
+        false
+      }
+      case g : GroupType => {
         false
       }
       case _@typeDef => logger.error("uncatch portTypeDef " + typeDef); true

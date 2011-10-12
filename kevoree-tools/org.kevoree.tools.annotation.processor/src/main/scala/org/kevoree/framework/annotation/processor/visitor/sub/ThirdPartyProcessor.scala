@@ -24,7 +24,7 @@ import org.kevoree.KevoreeFactory
 import org.kevoree.ContainerRoot
 import org.kevoree.NodeType
 import org.kevoree.TypeDefinition
-
+ import org.kevoree.framework.aspects.KevoreeAspects._
 
 
 /* Common Sub process to deal with ThirdParty definition */
@@ -51,8 +51,9 @@ trait ThirdPartyProcessor {
     
     
     /* CHECK THIRDPARTIES */
+    /*
     thirdPartyAnnotations.foreach{tp=>
-      root.getDeployUnits.find({etp => etp.getName == tp.name}) match {
+      root.getDeployUnits.find({etp => etp. == tp.name}) match {
         case Some(e) => {
             componentType.getDeployUnits(0).addRequiredLibs(e)
           }
@@ -64,7 +65,7 @@ trait ThirdPartyProcessor {
             componentType.getDeployUnits(0).addRequiredLibs(newThirdParty)
           }
       }
-    }
+    }    */
     
     /* CHECK TP from POM */
     thirdPartiesList.foreach{tp=>
@@ -73,7 +74,9 @@ trait ThirdPartyProcessor {
       
       root.getDeployUnits.find({etp => etp.getName == name}) match {
         case Some(e) => {
-            componentType.getDeployUnits(0).addRequiredLibs(e)
+            if(!componentType.getDeployUnits(0).getRequiredLibs.exists(rl => rl.getUrl == url)) {
+              componentType.getDeployUnits(0).addRequiredLibs(e)
+            }
           }
         case None => {
             val newThirdParty = KevoreeFactory.eINSTANCE.createDeployUnit
