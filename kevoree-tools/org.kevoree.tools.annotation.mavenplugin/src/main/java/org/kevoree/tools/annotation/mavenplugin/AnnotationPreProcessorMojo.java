@@ -299,7 +299,7 @@ public class AnnotationPreProcessorMojo extends AbstractMojo {
                         if (entry != null) {
                             String path = convertStreamToFile(jar.getInputStream(entry));
                             getLog().info("Auto merging dependency => " + path + " from " + defaultArtifact);
-                            merger.merge(model, KevoreeXmiHelper.load(path));
+                            //merger.merge(model, KevoreeXmiHelper.load(path));
                         }
                     } catch (Exception e) {
                         e.printStackTrace();

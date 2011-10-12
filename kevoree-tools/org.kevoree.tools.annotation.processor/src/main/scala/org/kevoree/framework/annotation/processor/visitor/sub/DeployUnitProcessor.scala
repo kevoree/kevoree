@@ -78,8 +78,7 @@ trait DeployUnitProcessor {
     nodeTypeNamesS.foreach {
       nodeTypeName =>
 
-        val ctdeployunit = root.getDeployUnits.find({
-          du => du.getUnitName == unitName && du.getGroupName == groupName && du.getVersion == version && du.getTargetNodeType.get.getName == nodeTypeName
+        val ctdeployunit = root.getDeployUnits.find({ du => du.getUnitName == unitName && du.getGroupName == groupName && du.getVersion == version && du.getTargetNodeType.get.getName == nodeTypeName
         }) match {
           case None => {
             val newdeploy = KevoreeFactory.eINSTANCE.createDeployUnit
