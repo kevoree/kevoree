@@ -25,12 +25,8 @@ import java.util.logging.Logger;
  */
 public class App {
 
-
-    public static void main(String[] args) {
-
-        ConstantsHandler.setConstantValuesProvider(new ConstantValuesImpl());
-
-        File mavenDir = new File(System.getProperty("user.home") + "/.m2/repository");
+    public void start() {
+                    File mavenDir = new File(System.getProperty("user.home") + "/.m2/repository");
         if (mavenDir.exists() && mavenDir.isDirectory()) {
             System.out.println("use mavenDir=file:///" + mavenDir.getAbsoluteFile().getAbsolutePath());
             System.setProperty("org.kevoree.remote.provisioning", "file:///"+mavenDir.getAbsolutePath());
@@ -44,6 +40,14 @@ public class App {
             Logger.getLogger(App.class.getName()).log(Level.SEVERE, null, ex);
         }
         System.exit(0);
+    }
+
+    public static void main(String[] args) {
+
+        ConstantsHandler.setConstantValuesProvider(new ConstantValuesImpl());
+
+        App app = new App();
+        app.start();
 
     }
 }
