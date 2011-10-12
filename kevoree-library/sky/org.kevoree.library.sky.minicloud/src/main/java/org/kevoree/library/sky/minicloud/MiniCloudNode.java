@@ -192,7 +192,11 @@ public class MiniCloudNode extends JavaSENode {
 				}
 			}
 		}
-		super.kompare(current, target);
+
+		AdaptationModel superModel = super.kompare(current, target);
+		adaptationModel.addAllAdaptations(superModel.getAdaptations());
+		step.setNextStep(superModel.getOrderedPrimitiveSet());
+
 		return adaptationModel;
 	}
 
