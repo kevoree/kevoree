@@ -135,7 +135,7 @@
 
         <dependency>
             <groupId>org.kevoree.library.javase</groupId>
-            <artifactId>org.kevoree.library.javase.restNode</artifactId>
+            <artifactId>org.kevoree.library.javase.rest</artifactId>
             <version>${kevoree.version}</version>
         </dependency>
 
@@ -144,11 +144,13 @@
             <artifactId>org.kevoree.library.javase.defaultChannels</artifactId>
             <version>${kevoree.version}</version>
         </dependency>
+        <!--
         <dependency>
             <groupId>org.kevoree.library.javase</groupId>
             <artifactId>org.kevoree.library.javase.restChannels</artifactId>
             <version>${kevoree.version}</version>
         </dependency>
+        -->
         <dependency>
             <groupId>org.kevoree.library.javase</groupId>
             <artifactId>org.kevoree.library.javase.fakeDomo</artifactId>
