@@ -241,7 +241,6 @@
                             org.apache.jasper.*,
                             <!--org.apache.log4j,
                             org.apache.log4j.*,-->
-                            org.slf4j.*,
                             org.znerd.xmlenc,
                             javax.el.*
                         </Export-Package>
