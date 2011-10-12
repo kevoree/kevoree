@@ -92,4 +92,7 @@ public class HadoopTaskTracker extends HadoopComponent {
         LOG.info("Stopping TaskTracker...");
         taskTracker.shutdown();
     }
+    
+    
+    
 }

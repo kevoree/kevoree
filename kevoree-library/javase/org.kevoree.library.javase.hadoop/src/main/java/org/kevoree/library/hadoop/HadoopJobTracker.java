@@ -35,27 +35,24 @@ public class HadoopJobTracker extends HadoopComponent {
     public void start() throws RemoteException, IOException,
             InterruptedException {
 
+
+
         Configuration configuration = this.getConfiguration();
         InetAddress i = InetAddress.getLocalHost();
-        configuration.set("hadoop.jobtracker", i.getHostName());
+        String hostName = i.getHostName();
+        configuration.set("hadoop.jobtracker", hostName);
+        String jthost = hostName + ":" + configuration.get("hadoop.jobtracker.port");
+        configuration.set("mapred.job.tracker", jthost);
 
-        tracker = JobTracker.startTracker(new JobConf(configuration));
+        //configuration.set("mapred.job.tracker.info.bindAddress",null);
+        //configuration.set("mapred.job.tracker.info.port",null);
+        configuration.set("mapred.job.tracker.http.address", "http://" + hostName + ":54314");
 
-        new Thread(new Runnable() {
-
+        new Thread() {
             public void run() {
-                try {
-                    
-                    tracker.offerService();
-                }
-                catch (InterruptedException ex) {
-                    LOG.error(ex.getMessage(), ex);
-                }
-                catch (IOException ex) {
-                    LOG.error(ex.getMessage(), ex);
-                }
+                runTracker();
             }
-        }).start();
+        }.start();
 
     }
 
@@ -64,5 +61,27 @@ public class HadoopJobTracker extends HadoopComponent {
 
         tracker.stopTracker();
 
+    }
+
+    public static void main(String[] args) {
+        try {
+            InetAddress i = InetAddress.getLocalHost();
+            System.out.println(i.getHostName());
+        }
+        catch (Exception e) {
+        }
+    }
+
+    public void runTracker() {
+        try {
+            tracker = JobTracker.startTracker(new JobConf(getConfiguration()));
+            //tracker.offerService();
+        }
+        catch (InterruptedException ex) {
+            LOG.error(ex.getMessage(), ex);
+        }
+        catch (IOException ex) {
+            LOG.error(ex.getMessage(), ex);
+        }
     }
 }
