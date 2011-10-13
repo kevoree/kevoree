@@ -52,8 +52,8 @@
                     <instructions>
                         <Private-Package>javax.jmdns.*</Private-Package>
                         <DynamicImport-Package>*</DynamicImport-Package>
-                        <Export-Package>org.kevoree.library.defaultNodeTypes.*</Export-Package>
-                        <Import-Package>!org.kevoree.library.defaultNodeTypes.*,*</Import-Package>
+                        <Export-Package>org.kevoree.library.defaultNodeTypes.*,org.kevoree.library.sky.minicloud.group.*</Export-Package>
+                        <Import-Package>!org.kevoree.library.defaultNodeTypes.*,!org.kevoree.library.sky.minicloud.group.*,*</Import-Package>
                     </instructions>
                 </configuration>
             </plugin>
