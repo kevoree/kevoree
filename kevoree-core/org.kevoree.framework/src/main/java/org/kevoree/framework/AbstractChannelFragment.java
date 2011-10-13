@@ -27,39 +27,41 @@ import java.util.HashMap;
  */
 public abstract class AbstractChannelFragment implements ChannelFragment {
 
-    private KevoreeModelHandlerService modelService;
-    public void setModelService(KevoreeModelHandlerService ms){
-        modelService = ms;
-    }
-    public KevoreeModelHandlerService getModelService() {
-        return modelService;
-    }
+	private KevoreeModelHandlerService modelService;
 
-    public java.util.List<KevoreePort> getBindedPorts() {
-        return null;
-    } //OVERRIDE BY FACTORY
+	public void setModelService (KevoreeModelHandlerService ms) {
+		modelService = ms;
+	}
 
-    public java.util.List<KevoreeChannelFragment> getOtherFragments() {
-        return null;
-    } //OVERRIDE BY FACTORY
+	public KevoreeModelHandlerService getModelService () {
+		return modelService;
+	}
 
-    public Object forward(KevoreeActor delegate, Message msg) {
-        return null;
-    } //OVERRIDE BY FACTORY
+	public java.util.List<KevoreePort> getBindedPorts () {
+		return null;
+	} //OVERRIDE BY FACTORY
 
-    public HashMap<String, Object> getDictionary() {
-        return null;
-    } //OVERRIDE BY FACTORY
+	public java.util.List<KevoreeChannelFragment> getOtherFragments () {
+		return null;
+	} //OVERRIDE BY FACTORY
 
-    public String getNodeName() {
-        return null;
-    }
+	public Object forward (KevoreeActor delegate, Message msg) {
+		return null;
+	} //OVERRIDE BY FACTORY
 
-    public String getName() {
-        return null;
-    }
+	public HashMap<String, Object> getDictionary () {
+		return null;
+	} //OVERRIDE BY FACTORY
 
-    public Object remoteDispatch(Message msg) {
-        return null;
-    }
+	public String getNodeName () {
+		return null;
+	}
+
+	public String getName () {
+		return null;
+	}
+
+	public Object remoteDispatch (Message msg) {
+		return null;
+	}
 }

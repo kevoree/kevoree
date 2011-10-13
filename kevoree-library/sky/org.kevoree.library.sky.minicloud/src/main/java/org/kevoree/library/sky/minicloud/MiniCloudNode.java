@@ -70,7 +70,7 @@ public class MiniCloudNode extends JavaSENode {
 				.bindTo(new InetSocketAddress(portint))
 				.name(this.getNodeName()));
 
-		Helper.setModelHandlerServvice(this.getModelService());
+		Helper.setModelHandlerService(this.getModelService());
 		Helper.setNodeName(this.getNodeName());
 	}
 
@@ -195,12 +195,6 @@ public class MiniCloudNode extends JavaSENode {
 		AdaptationModel superModel = super.kompare(current, target);
 		adaptationModel.addAllAdaptations(superModel.getAdaptations());
 		step.setNextStep(superModel.getOrderedPrimitiveSet());
-
-
-		for (AdaptationPrimitive primitive : adaptationModel.getAdaptationsForJ()) {
-			System.out.println(primitive.getPrimitiveType().getName());
-		}
-
 
 		return adaptationModel;
 	}
