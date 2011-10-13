@@ -41,7 +41,7 @@ class ModelHandlerResource extends ServerResource {
   val logger = LoggerFactory.getLogger(classOf[ModelHandlerResource])
 
   override def doHandle():Representation={
-    var method = getMethod();
+    val method = getMethod();
     method match {
       case Method.POST => post(getRequestEntity())
       case Method.GET => get
@@ -51,25 +51,19 @@ class ModelHandlerResource extends ServerResource {
 
   override def get():Representation = {
     val ouput = new ByteArrayOutputStream
-    logger.debug("Before obtain model")
     val model = Handler.getModelhandler.getLastModel
-    logger.debug("Before EMF Serialisation")
     KevoreeXmiHelper.saveStream(ouput, model)
-    logger.debug("after EMF Serialisation")
     new StringRepresentation(ouput.toString)
   }
 
   override def post(entity:Representation):Representation = {
-    var newmodel = entity.getText
+    val newmodel = entity.getText
 
     try{
-      var stream = new ByteArrayInputStream(newmodel.getBytes())
-      var root = KevoreeXmiHelper.loadStream(stream);
-      
+      val stream = new ByteArrayInputStream(newmodel.getBytes())
+      val root = KevoreeXmiHelper.loadStream(stream);
       Handler.getModelhandler.updateModel(root)
-
       new StringRepresentation("model uploaded")
-
     } catch {
       case _ @ e => new StringRepresentation("error=>"+e.getMessage)
     }
