@@ -303,6 +303,7 @@
                         <option>-keep class scala.** { *; }</option>
                         <option>-keep class scala.collection.immutable.List { *; }</option>
                         <option>-keep class ch.qos.logback.core.** { * ; }</option>
+                        <option>-keep class org.kevoreeAdaptation.** { *; }</option>
                         <option>-keep class org.kevoree.annotation.** { *; }</option>
                         <option>-keep class org.kevoree.api.** { *; }</option>
                         <option>-keep class org.kevoree.framework.** { *; }</option>
