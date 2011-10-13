@@ -76,7 +76,7 @@ trait KevoreeComponentTypeClassGenerator extends KevoreeCAbstractGenerator with 
           enumValues.split(",").foreach {
             value => maxLenght = scala.math.max(maxLenght,value.size)
           }
-          context b "char "+attribute.getName+"["+maxLenght+"];"
+          context b "char "+attribute.getName+"["+(maxLenght+1)+"];"
         } else {
           context b "char "+attribute.getName+"[20];"
         }
