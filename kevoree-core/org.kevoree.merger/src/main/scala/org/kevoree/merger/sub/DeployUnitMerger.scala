@@ -25,7 +25,7 @@ import org.kevoree.merger.Merger
 trait DeployUnitMerger extends Merger {
 
 
-  def mergeDeployUnit(actualModel: ContainerRoot, tp: DeployUnit, newForce: Boolean = false): DeployUnit = {
+  def mergeDeployUnit(actualModel: ContainerRoot, tp: DeployUnit/*, newForce: Boolean = false*/): DeployUnit = {
 
     val resultDeployUnit = actualModel.getDeployUnits.find({
       atp =>
@@ -38,11 +38,12 @@ trait DeployUnitMerger extends Merger {
           mergeRequiredLibs(actualModel, tp)
           tp
         } else {
-
+           /*
           if (newForce) {
+            println("force")
             ftp.removeAllRequiredLibs()
             ftp.addAllRequiredLibs(tp.getRequiredLibs)
-          }
+          } */
 
           val ftpTimeStamp = if (ftp.getHashcode != "") {
             java.lang.Long.parseLong(ftp.getHashcode)
@@ -72,18 +73,21 @@ trait DeployUnitMerger extends Merger {
         tp
       }
     }
-
     resultDeployUnit
-
   }
 
   def mergeRequiredLibs(actualModel: ContainerRoot, tp: DeployUnit) {
+    
+    println("--->"+tp.getUnitName+"-"+tp.getRequiredLibs.size)
+    
     val requireds: List[DeployUnit] = tp.getRequiredLibs
     tp.removeAllRequiredLibs()
     requireds.foreach {
       rLib =>
         tp.addRequiredLibs(mergeDeployUnit(actualModel, rLib))
     }
+    println(tp.getUnitName+"-"+tp.getRequiredLibs.size)
+
   }
 
 
