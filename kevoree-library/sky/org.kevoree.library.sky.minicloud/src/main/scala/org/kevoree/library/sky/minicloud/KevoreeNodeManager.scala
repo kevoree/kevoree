@@ -97,7 +97,7 @@ object KevoreeNodeManager extends DaemonActor {
 
   private def updateNodeInternal (containerNode: ContainerNode, model: ContainerRoot): Boolean = {
     logger.debug("try to update " + containerNode.getName)
-    runners.find(runner => {println(runner.nodeName);runner.nodeName == containerNode.getName}) match {
+    runners.find(runner => runner.nodeName == containerNode.getName) match {
       case None => logger.debug(containerNode.getName + " is not available"); false
       case Some(runner) => {
         logger.debug(containerNode.getName + " is available, ask for update")
