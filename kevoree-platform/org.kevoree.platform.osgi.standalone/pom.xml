@@ -1,3 +1,4 @@
+
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
@@ -52,12 +53,25 @@
                     <artifactId>jackson-core-asl</artifactId>
                     <groupId>org.codehaus.jackson</groupId>
                 </exclusion>
+                <exclusion>
+                    <artifactId>org.osgi.core</artifactId>
+                    <groupId>org.osgi</groupId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>org.osgi.framework</artifactId>
+                    <groupId>org.osgi</groupId>
+                </exclusion>
             </exclusions>
         </dependency>
         <dependency>
             <groupId>org.apache.felix</groupId>
             <artifactId>org.apache.felix.framework</artifactId>
-            <version>3.2.2</version>
+            <version>4.0.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.osgi</groupId>
+            <artifactId>org.osgi.core</artifactId>
+            <version>4.3.0</version>
         </dependency>
         <dependency>
             <groupId>org.apache.felix</groupId>
@@ -68,8 +82,28 @@
                     <artifactId>org.osgi.core</artifactId>
                     <groupId>org.osgi</groupId>
                 </exclusion>
+                <exclusion>
+                    <artifactId>org.osgi.framework</artifactId>
+                    <groupId>org.osgi</groupId>
+                </exclusion>
             </exclusions>
         </dependency>
+        <dependency>
+            <groupId>org.apache.felix</groupId>
+            <artifactId>org.apache.felix.shell</artifactId>
+            <version>1.4.2</version>
+            <exclusions>
+                <exclusion>
+                    <artifactId>org.osgi.core</artifactId>
+                    <groupId>org.osgi</groupId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>org.osgi.framework</artifactId>
+                    <groupId>org.osgi</groupId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>log4j-over-slf4j</artifactId>
