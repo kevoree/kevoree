@@ -6,7 +6,6 @@ import org.kevoree.annotation.Library;
 import org.kevoree.annotation.Start;
 import org.kevoree.annotation.Stop;
 import org.kevoree.framework.AbstractGroupType;
-import org.kevoree.library.sky.minicloud.group.SendModelFelixCommand;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.ServiceRegistration;
 
@@ -25,7 +24,7 @@ public class MiniCloudGroup extends AbstractGroupType {
 	private ServiceRegistration backupModel;
 
 	@Start
-	public void startGroup () {
+	public void startMiniCloudGroup () {
 		Bundle bundle = (Bundle) this.getDictionary().get("osgi.bundle");
 		// Register the command service for felix shell
 		sendModel = bundle.getBundleContext()
@@ -37,7 +36,7 @@ public class MiniCloudGroup extends AbstractGroupType {
 	}
 
 	@Stop
-	public void stopGroup () {
+	public void stopMiniCloudGroup () {
 		sendModel.unregister();
 		backupModel.unregister();
 	}

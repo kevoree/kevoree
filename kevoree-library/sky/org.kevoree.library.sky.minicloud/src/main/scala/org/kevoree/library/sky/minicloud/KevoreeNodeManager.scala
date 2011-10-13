@@ -14,18 +14,14 @@ import org.slf4j.{LoggerFactory, Logger}
  * @version 1.0
  */
 object KevoreeNodeManager extends DaemonActor {
-
+  private val logger: Logger = LoggerFactory.getLogger(KevoreeNodeManager.getClass)
   private var node : MiniCloudNode = null
 
   def setNode(n : MiniCloudNode) {
     node = n
   }
 
-  private val logger: Logger = LoggerFactory.getLogger(KevoreeNodeManager.getClass)
-
   var runners: List[KevoreeNodeRunner] = List()
-
-//  def getRunners = runners
 
   start()
 
@@ -68,7 +64,7 @@ object KevoreeNodeManager extends DaemonActor {
   }
 
   private def addNodeInternal (containerNode: ContainerNode, model: ContainerRoot): Boolean = {
-
+    logger.debug("try to add a node: " + containerNode.getName)
     val newRunner = new KevoreeNodeRunner(containerNode.getName, Helper.saveModelOnFile(model))
     val result = newRunner.startNode()
     if (result) {
@@ -101,7 +97,7 @@ object KevoreeNodeManager extends DaemonActor {
 
   private def updateNodeInternal (containerNode: ContainerNode, model: ContainerRoot): Boolean = {
     logger.debug("try to update " + containerNode.getName)
-    runners.find(runner => runner.nodeName == containerNode.getName) match {
+    runners.find(runner => {println(runner.nodeName);runner.nodeName == containerNode.getName}) match {
       case None => logger.debug(containerNode.getName + " is not available"); false
       case Some(runner) => {
         logger.debug(containerNode.getName + " is available, ask for update")
