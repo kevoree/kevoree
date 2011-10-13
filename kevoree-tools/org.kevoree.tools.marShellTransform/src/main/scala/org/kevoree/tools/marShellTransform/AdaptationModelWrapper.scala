@@ -31,7 +31,7 @@ object AdaptationModelWrapper {
       adapt.getPrimitiveType.getName match {
         case JavaSePrimitive.UpdateDictionaryInstance => {
             val dictionary = new java.util.Properties
-            if(adapt.getRef.asInstanceOf[Instance].getDictionary != null){
+            if(adapt.getRef.asInstanceOf[Instance].getDictionary.isDefined){
               adapt.getRef.asInstanceOf[Instance].getDictionary.get.getValues.foreach{value =>
                 dictionary.put(value.getAttribute.getName, value.getValue)
               }

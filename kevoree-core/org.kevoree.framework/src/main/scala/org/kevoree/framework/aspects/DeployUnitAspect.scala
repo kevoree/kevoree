@@ -24,11 +24,17 @@ import org.kevoree._
 case class DeployUnitAspect(self : DeployUnit) {
 
   def isModelEquals(other : DeployUnit) : Boolean = {
-    //val idequals = (if(other.getName == null || self.getName == null){
-      other.getUnitName == self.getUnitName && other.getGroupName == self.getGroupName && other.getVersion == self.getVersion && other.getTargetNodeType == self.getTargetNodeType
-    //} else {
-    //  self.getName == other.getName
-    //})
-    //idequals
+
+    if(other.getUnitName != self.getUnitName || other.getGroupName != self.getGroupName || other.getVersion != self.getVersion){
+        return false
+    }
+    if(other.getTargetNodeType.isDefined && self.getTargetNodeType.isEmpty){return false}
+    if(other.getTargetNodeType.isEmpty && self.getTargetNodeType.isDefined){return false}
+    if(other.getTargetNodeType.isDefined && self.getTargetNodeType.isDefined){
+      other.getTargetNodeType.get.getName == self.getTargetNodeType.get.getName
+    } else {
+      true
+    }
+
   }
 }
