@@ -162,7 +162,7 @@ case class TypeDefinitionAspect(selfTD: TypeDefinition) {
             }
           }
         }
-        case _ => true
+        case _ => {  true }
       }
     })
     oneUpdated
