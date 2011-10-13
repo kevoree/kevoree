@@ -9,6 +9,8 @@ import org.kevoree.annotation.Start;
 import org.kevoree.annotation.Stop;
 import org.kevoree.framework.AbstractGroupType;
 import org.kevoree.library.sky.minicloud.KevoreeNodeManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * User: Erwan Daubert - erwan.daubert@gmail.com
@@ -21,6 +23,7 @@ import org.kevoree.library.sky.minicloud.KevoreeNodeManager;
 @Library(name = "SKY")
 @GroupType
 public class MiniCloudGroup  extends AbstractGroupType {
+	private static final Logger logger = LoggerFactory.getLogger(MiniCloudGroup.class);
 
 	@Start
 	@Stop
@@ -33,7 +36,9 @@ public class MiniCloudGroup  extends AbstractGroupType {
 		for (Group g : this.getModelService().getLastModel().getGroupsForJ()) {
 			if (g.getName().equals(this.getName())) {
 				for (ContainerNode n : g.getSubNodesForJ()) {
-					KevoreeNodeManager.updateNode(n, this.getModelService().getLastModel());
+					if (!this.getNodeName().equals(n.getName())) {
+						KevoreeNodeManager.updateNode(n, this.getModelService().getLastModel());
+					}
 				}
 			}
 		}
