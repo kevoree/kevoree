@@ -33,6 +33,7 @@ import org.kevoree.framework._
 import deploy.PrimitiveCommandExecutionHelper
 import org.kevoree.tools.aether.framework.NodeTypeBootstrapHelper
 import java.io.{BufferedOutputStream, BufferedInputStream, InputStream, OutputStream}
+import org.kevoree.cloner.ModelCloner
 
 class KevoreeCoreBean extends KevoreeModelHandlerService with KevoreeActor {
 
@@ -146,12 +147,13 @@ class KevoreeCoreBean extends KevoreeModelHandlerService with KevoreeActor {
     // KevoreeXmiHelper.save(bundleContext.getDataFile("lastModel.xmi").getAbsolutePath(), models.head);
   }
 
+  val cloner = new ModelCloner
   def internal_process(msg: Any) = msg match {
     case updateMsg: PlatformModelUpdate => KevoreePlatformHelper.updateNodeLinkProp(model, nodeName, updateMsg.targetNodeName, updateMsg.key, updateMsg.value, updateMsg.networkType, updateMsg.weight)
     case PreviousModel() => reply(models)
     case LastModel() => {
       logger.debug("Before get copy model")
-      reply(KevoreeXmiHelper.loadString(KevoreeXmiHelper.saveToString(model,false)))
+      reply(cloner.clone(model))
       logger.debug("After get Copy model")
     }
 
@@ -163,7 +165,7 @@ class KevoreeCoreBean extends KevoreeModelHandlerService with KevoreeActor {
 
         try {
 
-          val newmodel = KevoreeXmiHelper.loadString(KevoreeXmiHelper.saveToString(pnewmodel,false))
+          val newmodel = cloner.clone(pnewmodel)
           checkBootstrapNode(newmodel)
           val milli = System.currentTimeMillis
           logger.debug("Begin update model " + milli)
