@@ -71,7 +71,7 @@ trait TypeDefinitionMerger extends Merger with DictionaryMerger with PortTypeMer
     actuelTypeDefinition.removeAllDeployUnits()
     allDeployUnits.foreach {
       ldu =>
-        val merged = mergeDeployUnit(root, ldu, newTypeDefinition.getDeployUnits.contains(ldu))
+        val merged = mergeDeployUnit(root, ldu/*, newTypeDefinition.getDeployUnits.contains(ldu) */  )
         if (!actuelTypeDefinition.getDeployUnits.contains(merged)) {
           actuelTypeDefinition.addDeployUnits(merged)
         }
@@ -185,7 +185,7 @@ trait TypeDefinitionMerger extends Merger with DictionaryMerger with PortTypeMer
 
   /* MERGE A SIMPLE NEW TYPE DEFINITION */
   private def mergeNewTypeDefinition(actualModel: ContainerRoot, newTypeDefinition: TypeDefinition) = {
-    logger.info("addNewTypeDef " + newTypeDefinition.getName)
+    println("addNewTypeDef " + newTypeDefinition.getName)
     //MERGE TYPE DEPLOY UNITS
     val newTypeDefinitionDeployUnits = newTypeDefinition.getDeployUnits
     newTypeDefinition.removeAllDeployUnits()
