@@ -29,11 +29,11 @@ object Tester extends App {
 
   val bean = new KevoreeKompareBean
 
-  val model1 = KevoreeXmiHelper.load("/Users/duke/Desktop/lastMdel.kev")
-  val model2 = KevoreeXmiHelper.load("/Users/duke/Desktop/lastMdel2.kev")
+  val model1 = KevoreeXmiHelper.load("/Users/duke/Documents/dev/dukeboard/kevoree/kevoree-tools/org.kevoree.tools.marShellTransform/src/test/resources/komModel/baseSLed.kev")
+  val model2 = KevoreeXmiHelper.load("/Users/duke/Documents/dev/dukeboard/kevoree/kevoree-tools/org.kevoree.tools.marShellTransform/src/test/resources/komModel/SLed_up_TimerPeriod.kev")
 
 
-  val adapModel = bean.kompare(model1,model2,"duke")
+  val adapModel = bean.kompare(model1,model2,"KEVOREEDefaultNodeName")
 
   adapModel.getAdaptations.foreach{ adaptation =>
     println(adaptation.getPrimitiveType.getName)
