@@ -35,7 +35,7 @@ object Helper {
     modelHandlerService
   }
 
-  def setModelHandlerServvice (handler: KevoreeModelHandlerService) {
+  def setModelHandlerService (handler: KevoreeModelHandlerService) {
     modelHandlerService = handler
   }
 

@@ -4,10 +4,8 @@ import org.kevoree.ContainerRoot;
 import org.kevoree.DictionaryValue;
 import org.kevoree.Group;
 import org.kevoree.annotation.*;
-import org.kevoree.framework.AbstractGroupType;
+import org.kevoree.framework.*;
 import org.kevoree.framework.Constants;
-import org.kevoree.framework.KevoreePlatformHelper;
-import org.kevoree.framework.KevoreeXmiHelper;
 import org.kevoree.remote.rest.Handler;
 import org.kevoree.remote.rest.KevoreeRemoteBean;
 import org.slf4j.Logger;
@@ -22,7 +20,6 @@ import java.net.URLConnection;
  * User: duke
  * Date: 11/10/11
  * Time: 18:27
- * To change this template use File | Settings | File Templates.
  */
 
 
@@ -66,8 +63,8 @@ public class RestGroup extends AbstractGroupType {
                 IP = "127.0.0.1";
             }
             
-            String PORT = "";
-            for(Group g : model.getGroupsForJ()){
+            int PORT = KevoreeFragmentPropertyHelper.getIntPropertyFromFragmentGroup(model, this.getName(), "port", targetNodeName);
+            /*for(Group g : model.getGroupsForJ()){
                 if(g.getName().equals(this.getName())){
                      if(g.getDictionary().isDefined()){
                           for(DictionaryValue val : g.getDictionary().get().getValuesForJ()){
@@ -83,7 +80,7 @@ public class RestGroup extends AbstractGroupType {
 
             if (PORT.equals("")) {
                 PORT = "8000";
-            }
+            }*/
             URL url = new URL("http://" + IP + ":" + PORT + "/model/current");
             URLConnection conn = url.openConnection();
             conn.setConnectTimeout(2000);

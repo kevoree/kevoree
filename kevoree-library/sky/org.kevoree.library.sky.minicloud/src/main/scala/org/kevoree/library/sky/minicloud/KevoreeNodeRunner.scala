@@ -211,7 +211,7 @@ class KevoreeNodeRunner (var nodeName: String, bootStrapModel: String) {
     }
 
     def manage (res: Result) {
-      this ! res
+      this !? res
     }
 
     def waitFor (): Boolean = {
@@ -227,6 +227,7 @@ class KevoreeNodeRunner (var nodeName: String, bootStrapModel: String) {
           case ErrorResult() =>
           case DeployResult(uuid) => {
             var firstSender = this.sender
+            reply()
             react {
               case STOP() => this.exit()
               case WAITINFOR() => {
@@ -243,26 +244,26 @@ class KevoreeNodeRunner (var nodeName: String, bootStrapModel: String) {
                 }
               }
               case DeployResult(uuid2) if (uuid == uuid2) => {
-                reactWithin(timeout) {
+                react {
                   case STOP() => this.exit()
                   case WAITINFOR() => sender ! Some(true)
                 }
               }
-              case TIMEOUT => {
+              /*case TIMEOUT => {
                 reactWithin(timeout) {
                   case STOP() => this.exit()
                   case WAITINFOR() => sender ! Some(false)
                 }
-              }
+              }*/
               case ErrorResult() => {
-                reactWithin(timeout) {
+                react {
                   case STOP() => this.exit()
                   case WAITINFOR() => sender ! Some(false)
                 }
               }
             }
           }
-          case BackupResult(uuid) => {
+          /*case BackupResult(uuid) => {
             var firstSender = this.sender
             react {
               case WAITINFOR() => {
@@ -297,7 +298,7 @@ class KevoreeNodeRunner (var nodeName: String, bootStrapModel: String) {
                 }
               }
             }
-          }
+          }*/
         }
       }
     }
