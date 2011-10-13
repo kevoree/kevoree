@@ -64,23 +64,6 @@ public class RestGroup extends AbstractGroupType {
             }
             
             int PORT = KevoreeFragmentPropertyHelper.getIntPropertyFromFragmentGroup(model, this.getName(), "port", targetNodeName);
-            /*for(Group g : model.getGroupsForJ()){
-                if(g.getName().equals(this.getName())){
-                     if(g.getDictionary().isDefined()){
-                          for(DictionaryValue val : g.getDictionary().get().getValuesForJ()){
-                                if(val.getAttribute().getName().equals("port")){
-                                    if(val.getTargetNode().equals(targetNodeName)){
-                                        PORT = val.getValue();
-                                    }
-                                }
-                          }
-                     }
-                }
-            }
-
-            if (PORT.equals("")) {
-                PORT = "8000";
-            }*/
             URL url = new URL("http://" + IP + ":" + PORT + "/model/current");
             URLConnection conn = url.openConnection();
             conn.setConnectTimeout(2000);
@@ -92,7 +75,6 @@ public class RestGroup extends AbstractGroupType {
             BufferedReader rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
             String line = rd.readLine();
             while (line != null) {
-                //				System.out.println(line);
                 line = rd.readLine();
             }
             wr.close();
