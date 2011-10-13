@@ -77,7 +77,7 @@ class DataTypeVisitor extends TypeVisitor {
     t.getActualTypeArguments.foreach{tm=>
       val dtv = new DataTypeVisitor();
       tm.accept(dtv);
-      dataType.getGenericTypes.add(LocalUtility.getOraddDataType(dtv.getDataType()));
+      dataType.addGenericTypes(LocalUtility.getOraddDataType(dtv.getDataType()));
     }
 
   }
