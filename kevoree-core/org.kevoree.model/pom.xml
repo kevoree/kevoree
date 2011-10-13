@@ -1,5 +1,5 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <artifactId>org.kevoree.model</artifactId>
     <packaging>jar</packaging>
@@ -19,7 +19,9 @@
             <resource>
                 <directory>metamodel</directory>
                 <targetPath>metamodel</targetPath>
-                <excludes><exclude>**/*.pdf</exclude></excludes>
+                <excludes>
+                    <exclude>**/*.pdf</exclude>
+                </excludes>
             </resource>
         </resources>
 
@@ -58,6 +60,18 @@
                         <id>SerializerGen</id>
                         <goals>
                             <goal>serializer</goal>
+                        </goals>
+                        <configuration>
+                            <ecore>metamodel/kevoree.ecore</ecore>
+                            <rootPackage>org</rootPackage>
+                            <output>${project.build.directory}/generated-sources/emf</output>
+                            <clearOutput>false</clearOutput>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>ClonerGen</id>
+                        <goals>
+                            <goal>cloner</goal>
                         </goals>
                         <configuration>
                             <ecore>metamodel/kevoree.ecore</ecore>
