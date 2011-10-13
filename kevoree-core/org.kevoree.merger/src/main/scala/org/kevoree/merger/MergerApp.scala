@@ -43,9 +43,9 @@ object MergerApp {
      */
 
     println("%%%%%%%%%%%%%%%%%%%%%%%%%% 1")
-    merger.merge(emtpyModel, model2)
-    println("%%%%%%%%%%%%%%%%%%%%%%%%%% 2")
     merger.merge(emtpyModel, model1)
+    println("%%%%%%%%%%%%%%%%%%%%%%%%%% 2")
+    merger.merge(emtpyModel, model2)
     println("%%%%%%%%%%%%%%%%%%%%%%%%%% 3")
     //merger.merge(emtpyModel, model3)
     println("%%%%%%%%%%%%%%%%%%%%%%%%%% 4")
