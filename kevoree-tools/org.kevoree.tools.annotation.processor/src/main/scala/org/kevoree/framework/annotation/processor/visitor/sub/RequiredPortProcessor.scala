@@ -31,7 +31,7 @@ trait RequiredPortProcessor {
   def processRequiredPort(componentType: ComponentType, classdef: TypeDeclaration, env: AnnotationProcessorEnvironment) = {
 
     //Collects all RequidedPort annotations and creates a list
-    var requiredPortAnnotations: List[org.kevoree.annotation.RequiredPort] = Nil
+    var requiredPortAnnotations: List[org.kevoree.annotation.RequiredPort] = List()
 
     val annotationRequired = classdef.getAnnotation(classOf[org.kevoree.annotation.RequiredPort])
     if (annotationRequired != null) {

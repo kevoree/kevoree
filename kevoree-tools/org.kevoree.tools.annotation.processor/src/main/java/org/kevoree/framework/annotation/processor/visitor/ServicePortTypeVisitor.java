@@ -22,10 +22,7 @@ import com.sun.mirror.declaration.ParameterDeclaration;
 import com.sun.mirror.declaration.TypeDeclaration;
 import com.sun.mirror.type.*;
 import com.sun.mirror.util.TypeVisitor;
-import org.kevoree.KevoreeFactory;
-import org.kevoree.Operation;
-import org.kevoree.Parameter;
-import org.kevoree.ServicePortType;
+import org.kevoree.*;
 import org.kevoree.framework.annotation.processor.LocalUtility;
 import scala.Some;
 
@@ -115,25 +112,25 @@ public class ServicePortTypeVisitor implements TypeVisitor {
         for (MethodDeclaration m : t.getMethods()) {
 
             //BUILD NEW OPERATION
-            Operation newo = KevoreeFactory.eINSTANCE().createOperation();
+            Operation newo = KevoreeFactory.createOperation();
             dataType.addOperations(newo);
             newo.setName(m.getSimpleName());
 
             //BUILD RETURN TYPE
             DataTypeVisitor rtv = new DataTypeVisitor();
             m.getReturnType().accept(rtv);
-            newo.setReturnType(new Some(LocalUtility.getOraddDataType(rtv.getDataType())));
+            newo.setReturnType(new Some<TypedElement>(LocalUtility.getOraddDataType(rtv.getDataType())));
 
             //BUILD PARAMETER
             for (ParameterDeclaration p : m.getParameters()) {
 
-                Parameter newp = KevoreeFactory.eINSTANCE().createParameter();
+                Parameter newp = KevoreeFactory.createParameter();
                 newo.addParameters(newp);
                 newp.setName(p.getSimpleName());
 
                 DataTypeVisitor ptv = new DataTypeVisitor();
                 p.getType().accept(ptv);
-                newp.setType(new Some(LocalUtility.getOraddDataType(ptv.getDataType())));
+                newp.setType(new Some<TypedElement>(LocalUtility.getOraddDataType(ptv.getDataType())));
             }
         }
 
