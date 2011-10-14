@@ -25,15 +25,16 @@ import org.kevoree.kompare.tests._
 
 class PortsTest extends AssertionsForJUnit with KompareSuite {
 
-  var component : KevoreeKompareBean = null
+  var component: KevoreeKompareBean = null
 
-  @Before def initialize() {
+  @Before def initialize () {
     component = new KevoreeKompareBean
   }
 
 
-  @Test def verifyProvidedMessagePortRemoved() {
-    val kompareModel = component.kompare(model("test_ports/Base.art2"), model("test_ports/MinusProvidedMessagePort.art2"), "nodeA")
+  @Test def verifyProvidedMessagePortRemoved () {
+    val kompareModel = component
+      .kompare(model("test_ports/Base.art2"), model("test_ports/MinusProvidedMessagePort.art2"), "nodeA")
 
     //kompareModel.print
 
@@ -42,111 +43,158 @@ class PortsTest extends AssertionsForJUnit with KompareSuite {
      * Should all the library component's types and instances be updated ?
      */
 
-    kompareModel verifySize 7
+    kompareModel verifySize 23
 
-    kompareModel shouldContain(JavaSePrimitive.UpdateType,"ComponentA")
-    kompareModel shouldContain(JavaSePrimitive.UpdateInstance,"ComponentA-1541906386")
+    //    kompareModel shouldContain(JavaSePrimitive.UpdateType,"ComponentA")
+    kompareModel shouldContain(JavaSePrimitive.RemoveType, "ComponentA")
+    kompareModel shouldContain(JavaSePrimitive.AddType, "ComponentA")
 
-    kompareModel shouldContain(JavaSePrimitive.UpdateType,"ComponentB")
-    kompareModel shouldContain(JavaSePrimitive.UpdateInstance,"ComponentB--1886857871")
+    //    kompareModel shouldContain(JavaSePrimitive.UpdateInstance,"ComponentA-1541906386")
+    kompareModel shouldContain(JavaSePrimitive.StopInstance, "ComponentA-1541906386")
+    kompareModel shouldContain(JavaSePrimitive.RemoveInstance, "ComponentA-1541906386")
+    kompareModel shouldContain(JavaSePrimitive.AddInstance, "ComponentA-1541906386")
+    kompareModel shouldContain(JavaSePrimitive.UpdateDictionaryInstance, "ComponentA-1541906386")
+    kompareModel shouldContain(JavaSePrimitive.StartInstance, "ComponentA-1541906386")
 
-    kompareModel shouldContain(JavaSePrimitive.UpdateType,"ComponentPrimitiveTypeService")
-    kompareModel shouldContain(JavaSePrimitive.UpdateInstance,"ComponentPrimitiveTypeService--690416444")
+    //    kompareModel shouldContain(JavaSePrimitive.UpdateType,"ComponentB")
+    kompareModel shouldContain(JavaSePrimitive.RemoveType, "ComponentB")
+    kompareModel shouldContain(JavaSePrimitive.AddType, "ComponentB")
+    //    kompareModel shouldContain(JavaSePrimitive.UpdateInstance,"ComponentB--1886857871")
+    kompareModel shouldContain(JavaSePrimitive.StopInstance, "ComponentB--1886857871")
+    kompareModel shouldContain(JavaSePrimitive.RemoveInstance, "ComponentB--1886857871")
+    kompareModel shouldContain(JavaSePrimitive.AddInstance, "ComponentB--1886857871")
+    kompareModel shouldContain(JavaSePrimitive.UpdateDictionaryInstance, "ComponentB--1886857871")
+    kompareModel shouldContain(JavaSePrimitive.StartInstance, "ComponentB--1886857871")
 
-    kompareModel shouldContainSize(JavaSePrimitive.UpdateDeployUnit,1)
+    //    kompareModel shouldContain(JavaSePrimitive.UpdateType,"ComponentPrimitiveTypeService")
+    kompareModel shouldContain(JavaSePrimitive.RemoveType, "ComponentPrimitiveTypeService")
+    kompareModel shouldContain(JavaSePrimitive.AddType, "ComponentPrimitiveTypeService")
+    //    kompareModel shouldContain(JavaSePrimitive.UpdateInstance,"ComponentPrimitiveTypeService--690416444")
+    kompareModel shouldContain(JavaSePrimitive.StopInstance, "ComponentPrimitiveTypeService--690416444")
+    kompareModel shouldContain(JavaSePrimitive.RemoveInstance, "ComponentPrimitiveTypeService--690416444")
+    kompareModel shouldContain(JavaSePrimitive.AddInstance, "ComponentPrimitiveTypeService--690416444")
+    kompareModel shouldContain(JavaSePrimitive.UpdateDictionaryInstance, "ComponentPrimitiveTypeService--690416444")
+    kompareModel shouldContain(JavaSePrimitive.StartInstance, "ComponentPrimitiveTypeService--690416444")
+
+    //    kompareModel shouldContainSize(JavaSePrimitive.UpdateDeployUnit, 1)
+    kompareModel shouldContainSize(JavaSePrimitive.RemoveDeployUnit, 1)
+    kompareModel shouldContainSize(JavaSePrimitive.AddDeployUnit, 1)
 
   }
 
 
-  @Test def verifyProvidedMessagePortAdded() {
-    val kompareModel = component.kompare(model("test_ports/MinusProvidedMessagePort2.art2"), model("test_ports/Base.art2"), "nodeA")
+  @Test def verifyProvidedMessagePortAdded () {
+    val kompareModel = component
+      .kompare(model("test_ports/MinusProvidedMessagePort2.art2"), model("test_ports/Base.art2"), "nodeA")
 
-   // kompareModel.print
+    // kompareModel.print
 
     /*
      * Behavior to be checked. Only one port have been added on one component type.
      * Should all the library component's types and instances be updated ?
      */
 
-    kompareModel verifySize 7
+    kompareModel verifySize 23
 
-    kompareModel shouldContain(JavaSePrimitive.UpdateType,"ComponentA")
-    kompareModel shouldContain(JavaSePrimitive.UpdateInstance,"ComponentA-1541906386")
+    //    kompareModel shouldContain(JavaSePrimitive.UpdateType, "ComponentA")
+    kompareModel shouldContain(JavaSePrimitive.RemoveType, "ComponentA")
+    kompareModel shouldContain(JavaSePrimitive.AddType, "ComponentA")
+    //    kompareModel shouldContain(JavaSePrimitive.UpdateInstance, "ComponentA-1541906386")
+    kompareModel shouldContain(JavaSePrimitive.StopInstance, "ComponentA-1541906386")
+    kompareModel shouldContain(JavaSePrimitive.RemoveInstance, "ComponentA-1541906386")
+    kompareModel shouldContain(JavaSePrimitive.AddInstance, "ComponentA-1541906386")
+    kompareModel shouldContain(JavaSePrimitive.UpdateDictionaryInstance, "ComponentA-1541906386")
+    kompareModel shouldContain(JavaSePrimitive.StartInstance, "ComponentA-1541906386")
 
-    kompareModel shouldContain(JavaSePrimitive.UpdateType,"ComponentB")
-    kompareModel shouldContain(JavaSePrimitive.UpdateInstance,"ComponentB--1886857871")
+    //    kompareModel shouldContain(JavaSePrimitive.UpdateType, "ComponentB")
+    kompareModel shouldContain(JavaSePrimitive.RemoveType, "ComponentB")
+    kompareModel shouldContain(JavaSePrimitive.AddType, "ComponentB")
+    //    kompareModel shouldContain(JavaSePrimitive.UpdateInstance, "ComponentB--1886857871")
+    kompareModel shouldContain(JavaSePrimitive.StopInstance, "ComponentB--1886857871")
+    kompareModel shouldContain(JavaSePrimitive.RemoveInstance, "ComponentB--1886857871")
+    kompareModel shouldContain(JavaSePrimitive.AddInstance, "ComponentB--1886857871")
+    kompareModel shouldContain(JavaSePrimitive.UpdateDictionaryInstance, "ComponentB--1886857871")
+    kompareModel shouldContain(JavaSePrimitive.StartInstance, "ComponentB--1886857871")
 
-    kompareModel shouldContain(JavaSePrimitive.UpdateType,"ComponentPrimitiveTypeService")
-    kompareModel shouldContain(JavaSePrimitive.UpdateInstance,"ComponentPrimitiveTypeService--690416444")
+    //    kompareModel shouldContain(JavaSePrimitive.UpdateType, "ComponentPrimitiveTypeService")
+    kompareModel shouldContain(JavaSePrimitive.RemoveType, "ComponentPrimitiveTypeService")
+    kompareModel shouldContain(JavaSePrimitive.AddType, "ComponentPrimitiveTypeService")
+    //    kompareModel shouldContain(JavaSePrimitive.UpdateInstance, "ComponentPrimitiveTypeService--690416444")
+    kompareModel shouldContain(JavaSePrimitive.StopInstance, "ComponentPrimitiveTypeService--690416444")
+    kompareModel shouldContain(JavaSePrimitive.RemoveInstance, "ComponentPrimitiveTypeService--690416444")
+    kompareModel shouldContain(JavaSePrimitive.AddInstance, "ComponentPrimitiveTypeService--690416444")
+    kompareModel shouldContain(JavaSePrimitive.UpdateDictionaryInstance, "ComponentPrimitiveTypeService--690416444")
+    kompareModel shouldContain(JavaSePrimitive.StartInstance, "ComponentPrimitiveTypeService--690416444")
 
-    kompareModel shouldContainSize(JavaSePrimitive.UpdateDeployUnit,1)
+    //    kompareModel shouldContainSize(JavaSePrimitive.UpdateDeployUnit, 1)
+    kompareModel shouldContainSize(JavaSePrimitive.RemoveDeployUnit, 1)
+    kompareModel shouldContainSize(JavaSePrimitive.AddDeployUnit, 1)
 
   }
 
 
-  @Test def verifyProvidedServicePortRemoved() {
+  @Test def verifyProvidedServicePortRemoved () {
     //var kompareModel = component.kompare(model("test_ports/MinusProvidedMessagePort.art2"), model("test_ports/base.art2"), "nodeA")
     //error("NOT IMPLEMENTED YET");
   }
 
-  @Test def verifyProvidedServicePortAdded() {
+  @Test def verifyProvidedServicePortAdded () {
     //var kompareModel = component.kompare(model("test_ports/MinusProvidedMessagePort.art2"), model("test_ports/base.art2"), "nodeA")
     //error("NOT IMPLEMENTED YET");
   }
 
-  @Test def verifyRequiredMessagePortRemoved() {
+  @Test def verifyRequiredMessagePortRemoved () {
     //var kompareModel = component.kompare(model("test_ports/MinusProvidedMessagePort.art2"), model("test_ports/base.art2"), "nodeA")
-   // error("NOT IMPLEMENTED YET");
+    // error("NOT IMPLEMENTED YET");
   }
 
-  @Test def verifyRequiredMessagePortAdded() {
-    //var kompareModel = component.kompare(model("test_ports/MinusProvidedMessagePort.art2"), model("test_ports/base.art2"), "nodeA")
-    //error("NOT IMPLEMENTED YET");
-  }
-
-  @Test def verifyRequiredServicePortRemoved() {
+  @Test def verifyRequiredMessagePortAdded () {
     //var kompareModel = component.kompare(model("test_ports/MinusProvidedMessagePort.art2"), model("test_ports/base.art2"), "nodeA")
     //error("NOT IMPLEMENTED YET");
   }
 
-  @Test def verifyRequiredServicePortAdded() {
+  @Test def verifyRequiredServicePortRemoved () {
     //var kompareModel = component.kompare(model("test_ports/MinusProvidedMessagePort.art2"), model("test_ports/base.art2"), "nodeA")
     //error("NOT IMPLEMENTED YET");
   }
 
-    @Test def verifyProvidedMessagePortRenamed() {
+  @Test def verifyRequiredServicePortAdded () {
     //var kompareModel = component.kompare(model("test_ports/MinusProvidedMessagePort.art2"), model("test_ports/base.art2"), "nodeA")
-   // error("NOT IMPLEMENTED YET");
+    //error("NOT IMPLEMENTED YET");
   }
 
-    @Test def verifyProvidedServicePortRenamed() {
+  @Test def verifyProvidedMessagePortRenamed () {
     //var kompareModel = component.kompare(model("test_ports/MinusProvidedMessagePort.art2"), model("test_ports/base.art2"), "nodeA")
-   // error("NOT IMPLEMENTED YET");
+    // error("NOT IMPLEMENTED YET");
   }
 
-      @Test def verifyRequiredMessagePortRenamed() {
+  @Test def verifyProvidedServicePortRenamed () {
     //var kompareModel = component.kompare(model("test_ports/MinusProvidedMessagePort.art2"), model("test_ports/base.art2"), "nodeA")
-   // error("NOT IMPLEMENTED YET");
+    // error("NOT IMPLEMENTED YET");
   }
 
-      @Test def verifyRequiredServicePortRenamed() {
+  @Test def verifyRequiredMessagePortRenamed () {
     //var kompareModel = component.kompare(model("test_ports/MinusProvidedMessagePort.art2"), model("test_ports/base.art2"), "nodeA")
-   // error("NOT IMPLEMENTED YET");
+    // error("NOT IMPLEMENTED YET");
   }
 
-      @Test def verifyProvidedServicePortClassChanged() {
+  @Test def verifyRequiredServicePortRenamed () {
     //var kompareModel = component.kompare(model("test_ports/MinusProvidedMessagePort.art2"), model("test_ports/base.art2"), "nodeA")
-   // error("NOT IMPLEMENTED YET");
+    // error("NOT IMPLEMENTED YET");
   }
 
-      @Test def verifyRequiredServicePortClassChanged() {
+  @Test def verifyProvidedServicePortClassChanged () {
+    //var kompareModel = component.kompare(model("test_ports/MinusProvidedMessagePort.art2"), model("test_ports/base.art2"), "nodeA")
+    // error("NOT IMPLEMENTED YET");
+  }
+
+  @Test def verifyRequiredServicePortClassChanged () {
     //var kompareModel = component.kompare(model("test_ports/MinusProvidedMessagePort.art2"), model("test_ports/base.art2"), "nodeA")
     //error("NOT IMPLEMENTED YET");
   }
 
 
-
-  @Test def verifyNoPortChange() {
+  @Test def verifyNoPortChange () {
     val kompareModel = component.kompare(model("test_ports/Base.art2"), model("test_ports/Base.art2"), "nodeA")
     kompareModel verifySize 0
   }
