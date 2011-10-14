@@ -3,6 +3,7 @@ package org.kevoree.library.javase.webserver;
 import org.kevoree.annotation.ComponentType;
 import org.kevoree.annotation.*;
 import org.kevoree.framework.AbstractComponentType;
+import org.kevoree.framework.MessagePort;
 
 import java.net.InetSocketAddress;
 
@@ -18,19 +19,25 @@ import java.net.InetSocketAddress;
 @DictionaryType({
         @DictionaryAttribute(name = "port")
 })
+@Requires({
+        @RequiredPort(name = "handler", type = PortType.MESSAGE)
+})
+@Provides({
+        @ProvidedPort(name = "response", type = PortType.MESSAGE)
+})
 public class WebServer extends AbstractComponentType {
 
     ServerBootstrap bootstrap = null;
 
     @Start
     public void start() {
-        bootstrap = new ServerBootstrap();
+        bootstrap = new ServerBootstrap(this.getPortByName("handler", MessagePort.class));
         bootstrap.startServer(Integer.parseInt(this.getDictionary().get("port").toString()));
     }
 
     @Stop
     public void stop() {
-        if(bootstrap != null){
+        if (bootstrap != null) {
             bootstrap.stop();
         }
     }
@@ -39,6 +46,13 @@ public class WebServer extends AbstractComponentType {
     public void update() {
         stop();
         start();
+    }
+
+    @Port(name = "response")
+    public void responseHandler(Object param) {
+        if (bootstrap != null) {
+            bootstrap.responseHandler(param);
+        }
     }
 
 
