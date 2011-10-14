@@ -1,10 +1,16 @@
 <kevoree:ContainerRoot xmlns:xml="http://www.omg.org/XMI" xmlns:xsi="http://wwww.w3.org/2001/XMLSchema-instance" xmlns:kevoree="http://kevoree/1.0" xmi:version="2.0" xsi:type="kevoree:ContainerRoot">
- <nodes metaData="x=368,y=123" xsi:type="kevoree:ContainerNode" name="KEVOREEDefaultNodeName" typeDefinition="//@typeDefinitions.0"></nodes>
  <typeDefinitions deployUnits="//@deployUnits.0" startMethod="startNode" factoryBean="org.kevoree.library.defaultNodeTypes.JavaSENodeFactory" xsi:type="kevoree:NodeType" name="JavaSENode" bean="org.kevoree.library.defaultNodeTypes.JavaSENode" stopMethod="stopNode" managedPrimitiveTypes="//@adaptationPrimitiveTypes.0 //@adaptationPrimitiveTypes.1 //@adaptationPrimitiveTypes.2 //@adaptationPrimitiveTypes.3 //@adaptationPrimitiveTypes.4 //@adaptationPrimitiveTypes.5 //@adaptationPrimitiveTypes.6 //@adaptationPrimitiveTypes.7 //@adaptationPrimitiveTypes.8 //@adaptationPrimitiveTypes.9 //@adaptationPrimitiveTypes.10 //@adaptationPrimitiveTypes.11 //@adaptationPrimitiveTypes.12 //@adaptationPrimitiveTypes.13 //@adaptationPrimitiveTypes.14 //@adaptationPrimitiveTypes.15 //@adaptationPrimitiveTypes.16 //@adaptationPrimitiveTypes.17"></typeDefinitions>
+ <typeDefinitions stopMethod="stopMiniCloudGroup" bean="org.kevoree.library.sky.minicloud.group.MiniCloudGroup" name="MiniCloudGroup" xsi:type="kevoree:GroupType" factoryBean="org.kevoree.library.sky.minicloud.group.MiniCloudGroupFactory" startMethod="startMiniCloudGroup" deployUnits="//@deployUnits.0 //@deployUnits.2"></typeDefinitions>
  <typeDefinitions stopMethod="stopRestGroup" bean="org.kevoree.library.rest.RestGroup" name="RestGroup" xsi:type="kevoree:GroupType" factoryBean="org.kevoree.library.rest.RestGroupFactory" startMethod="startRestGroup" deployUnits="//@deployUnits.1">
   <dictionaryType>
-   <attributes optional="true" xsi:type="kevoree:DictionaryAttribute" name="port" state="false"></attributes>
-   <defaultValues value="8000" xsi:type="kevoree:DictionaryValue" attribute="//@typeDefinitions.1/@dictionaryType/@attributes.0"></defaultValues>
+   <attributes state="false" name="port" xsi:type="kevoree:DictionaryAttribute" optional="true" fragmentDependant="true"></attributes>
+   <defaultValues value="8000" xsi:type="kevoree:DictionaryValue" attribute="//@typeDefinitions.2/@dictionaryType/@attributes.0"></defaultValues>
+  </dictionaryType>
+ </typeDefinitions>
+ <typeDefinitions superTypes="//@typeDefinitions.0" stopMethod="stopNode" bean="org.kevoree.library.sky.minicloud.MiniCloudNode" name="MiniCloudNode" xsi:type="kevoree:NodeType" factoryBean="org.kevoree.library.sky.minicloud.MiniCloudNodeFactory" startMethod="startNode" deployUnits="//@deployUnits.2" managedPrimitiveTypes="//@adaptationPrimitiveTypes.0 //@adaptationPrimitiveTypes.1 //@adaptationPrimitiveTypes.2 //@adaptationPrimitiveTypes.3 //@adaptationPrimitiveTypes.4 //@adaptationPrimitiveTypes.5 //@adaptationPrimitiveTypes.6 //@adaptationPrimitiveTypes.7 //@adaptationPrimitiveTypes.8 //@adaptationPrimitiveTypes.9 //@adaptationPrimitiveTypes.10 //@adaptationPrimitiveTypes.11 //@adaptationPrimitiveTypes.12 //@adaptationPrimitiveTypes.13 //@adaptationPrimitiveTypes.14 //@adaptationPrimitiveTypes.15 //@adaptationPrimitiveTypes.16 //@adaptationPrimitiveTypes.17 //@adaptationPrimitiveTypes.18 //@adaptationPrimitiveTypes.19">
+  <dictionaryType>
+   <attributes state="false" name="port" xsi:type="kevoree:DictionaryAttribute" optional="false" fragmentDependant="false"></attributes>
+   <defaultValues value="7000" xsi:type="kevoree:DictionaryValue" attribute="//@typeDefinitions.3/@dictionaryType/@attributes.0"></defaultValues>
   </dictionaryType>
  </typeDefinitions>
  <repositories xsi:type="kevoree:Repository" url="http://maven.kevoree.org/archiva/repository/snapshots/"></repositories>
@@ -12,9 +18,12 @@
  <repositories xsi:type="kevoree:Repository" url="http://maven.kevoree.org/release"></repositories>
  <repositories xsi:type="kevoree:Repository" url="http://maven.kevoree.org/snapshots"></repositories>
  <repositories xsi:type="kevoree:Repository" url="http://repo1.maven.org/maven2"></repositories>
- <libraries name="JavaSE" xsi:type="kevoree:TypeLibrary" subTypes="//@typeDefinitions.0 //@typeDefinitions.1"></libraries>
- <deployUnits hashcode="201110111918356" unitName="org.kevoree.library.javase.javaseNode" xsi:type="kevoree:DeployUnit" groupName="org.kevoree.library.javase" version="1.4.0-SNAPSHOT" targetNodeType="//@typeDefinitions.0"></deployUnits>
- <deployUnits hashcode="201110111929055" unitName="org.kevoree.library.javase.rest" xsi:type="kevoree:DeployUnit" groupName="org.kevoree.library.javase" version="1.4.0-SNAPSHOT" targetNodeType="//@typeDefinitions.0"></deployUnits>
+ <libraries name="JavaSE" xsi:type="kevoree:TypeLibrary" subTypes="//@typeDefinitions.0 //@typeDefinitions.1 //@typeDefinitions.2 //@typeDefinitions.3"></libraries>
+ <libraries name="SKY" xsi:type="kevoree:TypeLibrary" subTypes="//@typeDefinitions.3 //@typeDefinitions.1"></libraries>
+ <deployUnits hashcode="201110131930403" unitName="org.kevoree.library.javase.javaseNode" xsi:type="kevoree:DeployUnit" groupName="org.kevoree.library.javase" version="1.4.0-SNAPSHOT" targetNodeType="//@typeDefinitions.0"></deployUnits>
+ <deployUnits hashcode="201110132333097" unitName="org.kevoree.library.javase.rest" xsi:type="kevoree:DeployUnit" groupName="org.kevoree.library.javase" version="1.4.0-SNAPSHOT" targetNodeType="//@typeDefinitions.0"></deployUnits>
+ <deployUnits requiredLibs="//@deployUnits.3" version="1.4.0-SNAPSHOT" groupName="org.kevoree.library.sky" xsi:type="kevoree:DeployUnit" unitName="org.kevoree.library.sky.minicloud" hashcode="201110131932475" targetNodeType="//@typeDefinitions.3"></deployUnits>
+ <deployUnits url="mvn:org.kevoree.extra/org.kevoree.extra.netty/3.2.5" xsi:type="kevoree:DeployUnit" name="org.kevoree.extra.org.kevoree.extra.netty" targetNodeType="//@typeDefinitions.3"></deployUnits>
  <adaptationPrimitiveTypes xsi:type="kevoree:AdaptationPrimitiveType" name="UpdateType"></adaptationPrimitiveTypes>
  <adaptationPrimitiveTypes xsi:type="kevoree:AdaptationPrimitiveType" name="UpdateDeployUnit"></adaptationPrimitiveTypes>
  <adaptationPrimitiveTypes xsi:type="kevoree:AdaptationPrimitiveType" name="AddType"></adaptationPrimitiveTypes>
@@ -33,4 +42,6 @@
  <adaptationPrimitiveTypes xsi:type="kevoree:AdaptationPrimitiveType" name="RemoveFragmentBinding"></adaptationPrimitiveTypes>
  <adaptationPrimitiveTypes xsi:type="kevoree:AdaptationPrimitiveType" name="StartInstance"></adaptationPrimitiveTypes>
  <adaptationPrimitiveTypes xsi:type="kevoree:AdaptationPrimitiveType" name="StopInstance"></adaptationPrimitiveTypes>
+ <adaptationPrimitiveTypes xsi:type="kevoree:AdaptationPrimitiveType" name="RemoveNode"></adaptationPrimitiveTypes>
+ <adaptationPrimitiveTypes xsi:type="kevoree:AdaptationPrimitiveType" name="AddNode"></adaptationPrimitiveTypes>
 </kevoree:ContainerRoot>
