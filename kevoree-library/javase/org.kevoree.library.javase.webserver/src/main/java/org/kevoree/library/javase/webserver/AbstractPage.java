@@ -28,24 +28,43 @@ import java.util.HashMap;
         @RequiredPort(name = "content", type = PortType.MESSAGE)
 })
 @DictionaryType({
-        @DictionaryAttribute(name = "urlpattern")
+        @DictionaryAttribute(name = "urlpattern",optional = true, defaultValue = "/")
 })
 public class AbstractPage extends AbstractComponentType {
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
     private URLHandlerScala handler = new URLHandlerScala();
-    
-        public KevoreeHttpResponse requestResolve(Object param) {
-           logger.debug("KevoreeHttpRequest handler triggered");
-           Option<KevoreeHttpRequest> parseResult = handler.check(param);
-           if(parseResult.isDefined()){
-               KevoreeHttpRequest requestKevoree = parseResult.get();
-               KevoreeHttpResponse responseKevoree = new KevoreeHttpResponse();
-               responseKevoree.setTokenID(requestKevoree.getTokenID());
-               return responseKevoree;
-           } else {
-               return null;
-           }
+
+    @Start
+    public void startPage() {
+        handler.initRegex(this.getDictionary().get("urlpattern").toString());
+    }
+
+    @Stop
+    public void stopPage() {
+       //NOOP
+    }
+
+    @Update
+    public void updatePage() {
+        handler.initRegex(this.getDictionary().get("urlpattern").toString());
+    }
+
+    public KevoreeHttpRequest resolveRequest(Object param) {
+        logger.debug("KevoreeHttpRequest handler triggered");
+        Option<KevoreeHttpRequest> parseResult = handler.check(param);
+        if (parseResult.isDefined()) {
+            KevoreeHttpRequest requestKevoree = parseResult.get();
+            return requestKevoree;
+        } else {
+            return null;
         }
-    
+    }
+
+    public KevoreeHttpResponse buildResponse(KevoreeHttpRequest request){
+          KevoreeHttpResponse responseKevoree = new KevoreeHttpResponse();
+          responseKevoree.setTokenID(request.getTokenID());
+          return responseKevoree;
+    }
+
 }

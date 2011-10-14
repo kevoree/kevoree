@@ -29,7 +29,8 @@ class URLHandlerScala {
       m.appendReplacement(sb, "(\\\\w+)")
     }
     m.appendTail(sb)
-    LocalURLPattern = new Regex(sb.toString)
+    val regexText = sb.toString.replaceAll("\\*",".*")
+    LocalURLPattern = new Regex(regexText)
   }
 
   def check(url: Any): Option[KevoreeHttpRequest] = {
@@ -39,6 +40,7 @@ class URLHandlerScala {
         LocalURLPattern.unapplySeq(request.getUrl) match {
           case Some(paramsList) => {
             val params = new HashMap[String, String]
+            params.putAll(request.getResolvedParams)
             var i = 0
             paramsList.foreach{ param =>
               params.put(paramNames(i),param)

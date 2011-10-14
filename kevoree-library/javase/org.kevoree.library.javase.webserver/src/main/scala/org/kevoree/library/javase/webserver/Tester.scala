@@ -23,10 +23,10 @@ server.start()      */
 
 
 val urlHandler = new URLHandlerScala
-urlHandler.initRegex("/{titi}")
+urlHandler.initRegex("*/{titi}")
 
   val ask = new KevoreeHttpRequest
-  ask.setUrl("/bou")
+  ask.setUrl("previousPAth/bou")
 
 println(urlHandler.check(ask).get.asInstanceOf[KevoreeHttpRequest].getResolvedParams )
 
