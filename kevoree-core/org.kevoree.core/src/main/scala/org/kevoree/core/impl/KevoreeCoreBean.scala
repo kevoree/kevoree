@@ -34,6 +34,7 @@ import deploy.PrimitiveCommandExecutionHelper
 import org.kevoree.tools.aether.framework.NodeTypeBootstrapHelper
 import java.io.{BufferedOutputStream, BufferedInputStream, InputStream, OutputStream}
 import org.kevoree.cloner.ModelCloner
+import org.kevoree.core.basechecker.RootChecker
 
 class KevoreeCoreBean extends KevoreeModelHandlerService with KevoreeActor {
 
@@ -58,7 +59,7 @@ class KevoreeCoreBean extends KevoreeModelHandlerService with KevoreeActor {
           case Some(foundNode) => {
             val bt = new NodeTypeBootstrapHelper
             bt.bootstrapNodeType(currentModel, nodeName, bundleContext) match {
-              case Some(ist:AbstractNodeType) => {
+              case Some(ist: AbstractNodeType) => {
                 nodeInstance = ist;
                 nodeInstance.startNode()
               }
@@ -148,6 +149,8 @@ class KevoreeCoreBean extends KevoreeModelHandlerService with KevoreeActor {
   }
 
   val cloner = new ModelCloner
+  val modelChecker = new RootChecker
+
   def internal_process(msg: Any) = msg match {
     case updateMsg: PlatformModelUpdate => KevoreePlatformHelper.updateNodeLinkProp(model, nodeName, updateMsg.targetNodeName, updateMsg.key, updateMsg.value, updateMsg.networkType, updateMsg.weight)
     case PreviousModel() => reply(models)
@@ -164,31 +167,42 @@ class KevoreeCoreBean extends KevoreeModelHandlerService with KevoreeActor {
       } else {
 
         try {
-
-          val newmodel = cloner.clone(pnewmodel)
-          checkBootstrapNode(newmodel)
-          val milli = System.currentTimeMillis
-          logger.debug("Begin update model " + milli)
-          val adaptationModel = nodeInstance.kompare(model, newmodel);
-
-          val deployResult = PrimitiveCommandExecutionHelper.execute(adaptationModel, nodeInstance)
-
-          if (deployResult) {
-            //Merge previous model on new model for platform model
-            //KevoreePlatformMerger.merge(newmodel, model)
-            switchToNewModel(newmodel)
-            logger.info("Deploy result " + deployResult)
+          val checkResult = modelChecker.check(pnewmodel)
+          if (!checkResult.isEmpty) {
+            logger.error("There is check failure on update model, update refused !")
+            import scala.collection.JavaConversions._
+            checkResult.foreach {
+              cr =>
+                logger.error("error=>" + cr.getMessage + ",objects" + cr.getTargetObjects.mkString(","))
+            }
+            reply(false)
           } else {
-            //KEEP FAIL MODEL
 
-            logger.warn("Failed model")
+            val newmodel = cloner.clone(pnewmodel)
+            checkBootstrapNode(newmodel)
+            val milli = System.currentTimeMillis
+            logger.debug("Begin update model " + milli)
+            val adaptationModel = nodeInstance.kompare(model, newmodel);
 
+            val deployResult = PrimitiveCommandExecutionHelper.execute(adaptationModel, nodeInstance)
+
+            if (deployResult) {
+              //Merge previous model on new model for platform model
+              //KevoreePlatformMerger.merge(newmodel, model)
+              switchToNewModel(newmodel)
+              logger.info("Deploy result " + deployResult)
+            } else {
+              //KEEP FAIL MODEL
+
+              logger.warn("Failed model")
+
+            }
+
+            val milliEnd = System.currentTimeMillis - milli
+            logger.debug("End deploy result=" + deployResult + "-" + milliEnd)
+
+            reply(deployResult)
           }
-
-          val milliEnd = System.currentTimeMillis - milli
-          logger.debug("End deploy result=" + deployResult + "-" + milliEnd)
-
-          reply(deployResult)
         } catch {
           case _@e =>
             logger.error("Error while update", e)
