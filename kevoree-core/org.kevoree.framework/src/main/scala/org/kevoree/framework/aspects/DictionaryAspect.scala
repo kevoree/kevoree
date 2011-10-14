@@ -27,7 +27,7 @@ case class DictionaryAspect(self : Dictionary) {
     if(self != null){
       if(other != null){
         self.getValues.exists(v=> {
-            other.getValues.find(ov=> ov.getAttribute.getName == v.getAttribute.getName  ) match {
+            other.getValues.find(ov=> ov.getAttribute.getName == v.getAttribute.getName && ov.getTargetNode == v.getTargetNode) match {
               case None => true
               case Some(fv)=> (fv.getValue != v.getValue)
             }
