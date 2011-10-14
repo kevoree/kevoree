@@ -1,0 +1,41 @@
+<kevoree:ContainerRoot xmlns:xml="http://www.omg.org/XMI" xmlns:xsi="http://wwww.w3.org/2001/XMLSchema-instance" xmlns:kevoree="http://kevoree/1.0" xmi:version="2.0" xsi:type="kevoree:ContainerRoot">
+ <typeDefinitions updateMethod="updateGossiperGroup" startMethod="startGossiperGroup" factoryBean="org.kevoree.library.javase.gossiperNetty.group.NettyGossiperGroupFactory" xsi:type="kevoree:GroupType" name="NettyGossiperGroup" bean="org.kevoree.library.javase.gossiperNetty.group.NettyGossiperGroup" stopMethod="stopGossiperGroup" deployUnits="//@deployUnits.0">
+  <dictionaryType>
+   <attributes state="false" name="interval" xsi:type="kevoree:DictionaryAttribute" optional="true" fragmentDependant="false"></attributes>
+   <attributes state="false" name="port" xsi:type="kevoree:DictionaryAttribute" optional="true" fragmentDependant="true"></attributes>
+   <attributes datatype="enum=true,false" optional="true" xsi:type="kevoree:DictionaryAttribute" name="FullUDP" state="false" fragmentDependant="false"></attributes>
+   <attributes datatype="enum=true,false" optional="true" xsi:type="kevoree:DictionaryAttribute" name="sendNotification" state="false" fragmentDependant="false"></attributes>
+   <attributes datatype="enum=true,false" optional="true" xsi:type="kevoree:DictionaryAttribute" name="alwaysAskModel" state="false" fragmentDependant="false"></attributes>
+   <defaultValues value="30000" xsi:type="kevoree:DictionaryValue" attribute="//@typeDefinitions.0/@dictionaryType/@attributes.0"></defaultValues>
+   <defaultValues value="9010" xsi:type="kevoree:DictionaryValue" attribute="//@typeDefinitions.0/@dictionaryType/@attributes.1"></defaultValues>
+   <defaultValues value="false" xsi:type="kevoree:DictionaryValue" attribute="//@typeDefinitions.0/@dictionaryType/@attributes.2"></defaultValues>
+   <defaultValues value="true" xsi:type="kevoree:DictionaryValue" attribute="//@typeDefinitions.0/@dictionaryType/@attributes.3"></defaultValues>
+   <defaultValues value="false" xsi:type="kevoree:DictionaryValue" attribute="//@typeDefinitions.0/@dictionaryType/@attributes.4"></defaultValues>
+  </dictionaryType>
+ </typeDefinitions>
+ <typeDefinitions xsi:type="kevoree:NodeType" name="JavaSENode"></typeDefinitions>
+ <typeDefinitions upperFragments="0" upperBindings="0" updateMethod="updateGossiperChannel" startMethod="startGossiperChannel" factoryBean="org.kevoree.library.javase.gossiperNetty.channel.NettyGossiperChannelFactory" xsi:type="kevoree:ChannelType" name="NettyGossiperChannel" bean="org.kevoree.library.javase.gossiperNetty.channel.NettyGossiperChannel" stopMethod="stopGossiperChannel" lowerBindings="0" lowerFragments="0" deployUnits="//@deployUnits.0">
+  <dictionaryType>
+   <attributes state="false" name="interval" xsi:type="kevoree:DictionaryAttribute" optional="true" fragmentDependant="false"></attributes>
+   <attributes state="false" name="port" xsi:type="kevoree:DictionaryAttribute" optional="true" fragmentDependant="true"></attributes>
+   <attributes datatype="enum=true,false" optional="true" xsi:type="kevoree:DictionaryAttribute" name="FullUDP" state="false" fragmentDependant="false"></attributes>
+   <attributes datatype="enum=true,false" optional="true" xsi:type="kevoree:DictionaryAttribute" name="sendNotification" state="false" fragmentDependant="false"></attributes>
+   <attributes datatype="enum=true,false" optional="true" xsi:type="kevoree:DictionaryAttribute" name="alwaysAskModel" state="false" fragmentDependant="false"></attributes>
+   <defaultValues value="30000" xsi:type="kevoree:DictionaryValue" attribute="//@typeDefinitions.2/@dictionaryType/@attributes.0"></defaultValues>
+   <defaultValues value="9000" xsi:type="kevoree:DictionaryValue" attribute="//@typeDefinitions.2/@dictionaryType/@attributes.1"></defaultValues>
+   <defaultValues value="true" xsi:type="kevoree:DictionaryValue" attribute="//@typeDefinitions.2/@dictionaryType/@attributes.2"></defaultValues>
+   <defaultValues value="false" xsi:type="kevoree:DictionaryValue" attribute="//@typeDefinitions.2/@dictionaryType/@attributes.3"></defaultValues>
+   <defaultValues value="false" xsi:type="kevoree:DictionaryValue" attribute="//@typeDefinitions.2/@dictionaryType/@attributes.4"></defaultValues>
+  </dictionaryType>
+ </typeDefinitions>
+ <repositories xsi:type="kevoree:Repository" url="http://maven.kevoree.org/archiva/repository/snapshots/"></repositories>
+ <repositories xsi:type="kevoree:Repository" url="http://scala-tools.org/repo-releases"></repositories>
+ <repositories xsi:type="kevoree:Repository" url="http://maven.kevoree.org/release"></repositories>
+ <repositories xsi:type="kevoree:Repository" url="http://maven.kevoree.org/snapshots"></repositories>
+ <repositories xsi:type="kevoree:Repository" url="http://repo1.maven.org/maven2"></repositories>
+ <libraries name="JavaSE" xsi:type="kevoree:TypeLibrary" subTypes="//@typeDefinitions.0 //@typeDefinitions.2"></libraries>
+ <deployUnits requiredLibs="//@deployUnits.1 //@deployUnits.2 //@deployUnits.3" version="1.4.0-SNAPSHOT" groupName="org.kevoree.library.javase" xsi:type="kevoree:DeployUnit" unitName="org.kevoree.library.javase.gossiperNetty" hashcode="201110141806791" targetNodeType="//@typeDefinitions.1"></deployUnits>
+ <deployUnits url="mvn:org.kevoree.extra/org.kevoree.extra.protobuf/2.4.1" xsi:type="kevoree:DeployUnit" name="org.kevoree.extra.org.kevoree.extra.protobuf" targetNodeType="//@typeDefinitions.1"></deployUnits>
+ <deployUnits url="mvn:org.kevoree.extra/org.kevoree.extra.netty/3.2.4" xsi:type="kevoree:DeployUnit" name="org.kevoree.extra.org.kevoree.extra.netty" targetNodeType="//@typeDefinitions.1"></deployUnits>
+ <deployUnits url="mvn:org.kevoree.extra/org.kevoree.extra.marshalling/1.0" xsi:type="kevoree:DeployUnit" name="org.kevoree.extra.org.kevoree.extra.marshalling" targetNodeType="//@typeDefinitions.1"></deployUnits>
+</kevoree:ContainerRoot>
