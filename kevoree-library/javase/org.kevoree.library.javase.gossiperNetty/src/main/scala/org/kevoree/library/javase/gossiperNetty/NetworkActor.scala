@@ -18,7 +18,7 @@ abstract class NetworkActor extends DaemonActor {
   case class SEND_MESSAGE_TO_CHANNEL(o : Message, channel : Channel, address : InetSocketAddress)
   
   def stop() {
-    this ! STOP()
+    this !? STOP()
   }
 
   def sendMessage(o: Message, address: InetSocketAddress) {
@@ -32,7 +32,7 @@ abstract class NetworkActor extends DaemonActor {
   def act () {
     loop {
       react {
-        case STOP() => stopInternal()
+        case STOP() => stopInternal();reply();this.exit()
         case SEND_MESSAGE(o, address) => sendMessageInternal(o, address)
         case SEND_MESSAGE_TO_CHANNEL(o, channel, address) => sendMessageToChannelInternal(o, channel, address)
 

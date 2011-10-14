@@ -19,10 +19,10 @@ import java.util.*;
 @Library(name = "JavaSE")
 @DictionaryType({
 		@DictionaryAttribute(name = "interval", defaultValue = "30000", optional = true),
-		@DictionaryAttribute(name = "port", defaultValue = "9000", optional = true),
-		@DictionaryAttribute(name = "FullUDP", defaultValue = "true", optional = true),
-		@DictionaryAttribute(name = "sendNotification", defaultValue = "false", optional = true),
-		@DictionaryAttribute(name = "alwaysAskModel", defaultValue = "false", optional = true)
+		@DictionaryAttribute(name = "port", defaultValue = "9000", optional = true, fragmentDependant = true),
+		@DictionaryAttribute(name = "FullUDP", defaultValue = "true", optional = true, vals= {"true", "false"}),
+		@DictionaryAttribute(name = "sendNotification", defaultValue = "false", optional = true, vals= {"true", "false"}),
+		@DictionaryAttribute(name = "alwaysAskModel", defaultValue = "false", optional = true, vals= {"true", "false"})
 })
 @ChannelTypeFragment
 public class NettyGossiperChannel extends AbstractChannelFragment implements GossiperComponent {
@@ -56,8 +56,8 @@ public class NettyGossiperChannel extends AbstractChannelFragment implements Gos
 
 		selector = new ChannelScorePeerSelector(timeoutLong, this.getModelService(), this.getNodeName());
 
-		udpActor = new UDPActor(parsePortNumber(this.getNodeName()), processValue, processRequest);
-		tcpActor = new TCPActor(parsePortNumber(this.getNodeName()), processValue, processRequest);
+		udpActor = new UDPActor(parsePortNumber(), processValue, processRequest);
+		tcpActor = new TCPActor(parsePortNumber(), processValue, processRequest);
 
 		protocolSelector.setProtocolForMetadata(udpActor);
 		if (parseBooleanProperty("FullUDP")) {
@@ -180,29 +180,19 @@ public class NettyGossiperChannel extends AbstractChannelFragment implements Gos
 		}
 		return ip;
 	}
-
-	private String name = "[A-Za-z0-9_]*";
-	private String portNumber = "(65535|5[0-9]{4}|4[0-9]{4}|3[0-9]{4}|2[0-9]{4}|1[0-9]{4}|[0-9]{0,4})";
-	private String separator = ",";
-	private String affectation = "=";
-	private String portPropertyRegex =
-			"((" + name + affectation + portNumber + ")" + separator + ")*(" + name + affectation + portNumber + ")";
-
 	@Override
 	public int parsePortNumber (String nodeName) {
+		return KevoreeFragmentPropertyHelper.getIntPropertyFromFragmentChannel(this.getModelService().getLastModel(), this.getName(), "port", nodeName);
+	}
+
+	public int parsePortNumber () {
 		String portProperty = this.getDictionary().get("port").toString();
-		if (portProperty.matches(portPropertyRegex)) {
-			String[] definitionParts = portProperty.split(separator);
-			for (String part : definitionParts) {
-				if (part.contains(nodeName + affectation)) {
-					//System.out.println(Integer.parseInt(part.substring((nodeName + affectation).length(), part.length())));
-					return Integer.parseInt(part.substring((nodeName + affectation).length(), part.length()));
-				}
-			}
-		} else {
+		try {
 			return Integer.parseInt(portProperty);
+		} catch (NumberFormatException e) {
+			logger.warn("Invalid value for port parameter for " + this.getName() + " on " + this.getNodeName());
+			return 0;
 		}
-		return 0;
 	}
 
 	@Override
