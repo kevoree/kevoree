@@ -87,6 +87,7 @@ abstract class KevoreeComponent(c: AbstractComponentType) extends KevoreeActor {
       } catch {
         case _@e => {
           kevoree_internal_logger.error("Kevoree Component Instance Stop Error !", e)
+          //e.printStackTrace()
           reply(false)
         }
       }

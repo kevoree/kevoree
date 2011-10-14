@@ -1,13 +1,8 @@
 package org.kevoree.library.javase.webserver;
 
-import com.sun.net.httpserver.HttpServer;
-import com.twitter.finagle.Service;
-import com.twitter.finagle.builder.ServerBuilder;
-import com.twitter.finagle.http.Http;
-import org.jboss.netty.handler.codec.http.HttpRequest;
-import org.jboss.netty.handler.codec.http.HttpResponse;
 import org.kevoree.annotation.ComponentType;
 import org.kevoree.annotation.*;
+import org.kevoree.framework.AbstractComponentType;
 
 import java.net.InetSocketAddress;
 
@@ -18,35 +13,33 @@ import java.net.InetSocketAddress;
  * Time: 17:58
  * To change this template use File | Settings | File Templates.
  */
-@Library(name="JavaSE")
+@Library(name = "JavaSE")
 @ComponentType
 @DictionaryType({
-    @DictionaryAttribute(name = "port")
+        @DictionaryAttribute(name = "port")
 })
-public class WebServer {
+public class WebServer extends AbstractComponentType {
 
-    @Stop
-   	public void start () {
-        /*
-        Service<HttpRequest, HttpResponse> myService = new HttpServer.Respond(this.getModelService());
-      		server = ServerBuilder.safeBuild(myService, ServerBuilder.get().codec(Http.get())
-      				.bindTo(new InetSocketAddress(portint))
-      				.name(this.getNodeName()));   */
-
-   	}
+    ServerBootstrap bootstrap = null;
 
     @Start
-   	public void stop () {
+    public void start() {
+        bootstrap = new ServerBootstrap();
+        bootstrap.startServer(Integer.parseInt(this.getDictionary().get("port").toString()));
+    }
 
-   	}
+    @Stop
+    public void stop() {
+        if(bootstrap != null){
+            bootstrap.stop();
+        }
+    }
 
-   	@Update
-   	public void update () {
-   		stop();
-   		start();
-   	}
-
-
+    @Update
+    public void update() {
+        stop();
+        start();
+    }
 
 
 }

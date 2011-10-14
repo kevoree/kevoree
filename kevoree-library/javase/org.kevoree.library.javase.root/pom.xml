@@ -45,7 +45,9 @@
         <module>../org.kevoree.library.javase.grapher</module>
       <!--  <module>../org.kevoree.library.javase.javacv</module>   -->
        <!-- <module>../org.kevoree.library.javase.hadoop</module>
-        <module>../org.kevoree.library.javase.webserver</module>   -->
+           -->
+        <module>../org.kevoree.library.javase.webserver</module>
+
     </modules>
 
 
