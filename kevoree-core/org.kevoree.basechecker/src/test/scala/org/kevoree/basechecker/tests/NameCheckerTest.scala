@@ -19,167 +19,167 @@
 package org.kevoree.basechecker.tests
 
 import org.scalatest.junit.AssertionsForJUnit
- import org.junit._
+import org.junit._
 import org.kevoree.core.basechecker.namechecker.NameChecker
 import scala.collection.JavaConversions._
 
 
 class NameCheckerTest extends AssertionsForJUnit with BaseCheckerSuite {
 
-	@Test def verifyNodeNameOK() {
-		val nodeModel = model("test_checker/name/model_single_nodeOK.kev")
-		val nodeNameChecker = new NameChecker
-		val firstTime = System.currentTimeMillis
-		val res = nodeNameChecker.check(nodeModel)
-		println(System.currentTimeMillis - firstTime + "ms for name checking")
+  @Test def verifyNodeNameOK () {
+    val nodeModel = model("test_checker/name/model_single_nodeOK.kev")
+    val nodeNameChecker = new NameChecker
+    val firstTime = System.currentTimeMillis
+    val res = nodeNameChecker.check(nodeModel)
+    println(System.currentTimeMillis - firstTime + "ms for name checking")
 
-		if (res.size == 0) {
-			return
-		} else {
-			res.foreach {
-				violation =>
-					println(violation.getMessage)
-					violation.getTargetObjects.foreach {
-						obj =>
-							println(obj)
-					}
-			}
-			assert(false)
-		}
-	}
+    if (res.size == 0) {
+      return
+    } else {
+      res.foreach {
+        violation =>
+          println(violation.getMessage)
+          violation.getTargetObjects.foreach {
+            obj =>
+              println(obj)
+          }
+      }
+      assert(false)
+    }
+  }
 
-	@Test def verifyNodeNameKO() {
-		val nodeModel = model("test_checker/name/model_single_nodeKO.kev")
-		val nodeNameChecker = new NameChecker
-		val firstTime = System.currentTimeMillis
-		val res = nodeNameChecker.check(nodeModel)
-		println(System.currentTimeMillis - firstTime + "ms for name checking")
+  @Test def verifyNodeNameKO () {
+    val nodeModel = model("test_checker/name/model_single_nodeKO.kev")
+    val nodeNameChecker = new NameChecker
+    val firstTime = System.currentTimeMillis
+    val res = nodeNameChecker.check(nodeModel)
+    println(System.currentTimeMillis - firstTime + "ms for name checking")
 
-		if (res.size == 1) {
-			return
-		} else {
-			res.foreach {
-				violation =>
-					println(violation.getMessage)
-					violation.getTargetObjects.foreach {
-						obj =>
-							println(obj)
-					}
-			}
-			assert(false)
-		}
-	}
+    if (res.size == 1) {
+      return
+    } else {
+      res.foreach {
+        violation =>
+          println(violation.getMessage)
+          violation.getTargetObjects.foreach {
+            obj =>
+              println(obj)
+          }
+      }
+      assert(false)
+    }
+  }
 
-	@Test def verifyNodesNameOK() {
-		val nodeModel = model("test_checker/name/model_two_nodeOK.kev")
-		val nodeNameChecker = new NameChecker
-		val firstTime = System.currentTimeMillis
-		val res = nodeNameChecker.check(nodeModel)
-		println(System.currentTimeMillis - firstTime + "ms for name checking")
+  @Test def verifyNodesNameOK () {
+    val nodeModel = model("test_checker/name/model_two_nodeOK.kev")
+    val nodeNameChecker = new NameChecker
+    val firstTime = System.currentTimeMillis
+    val res = nodeNameChecker.check(nodeModel)
+    println(System.currentTimeMillis - firstTime + "ms for name checking")
 
-		if (res.size == 0) {
-			return
-		} else {
-			res.foreach {
-				violation =>
-					println(violation.getMessage)
-					violation.getTargetObjects.foreach {
-						obj =>
-							println(obj)
-					}
-			}
-			assert(false)
-		}
-	}
+    if (res.size == 0) {
+      return
+    } else {
+      res.foreach {
+        violation =>
+          println(violation.getMessage)
+          violation.getTargetObjects.foreach {
+            obj =>
+              println(obj)
+          }
+      }
+      assert(false)
+    }
+  }
 
-	@Test def verifyNodesNameKO() {
-		val nodeModel = model("test_checker/name/model_two_nodeKO.kev")
-		val nodeNameChecker = new NameChecker
-		val firstTime = System.currentTimeMillis
-		val res = nodeNameChecker.check(nodeModel)
-		println(System.currentTimeMillis - firstTime + "ms for name checking")
+  @Test def verifyNodesNameKO () {
+    val nodeModel = model("test_checker/name/model_two_nodeKO.kev")
+    val nodeNameChecker = new NameChecker
+    val firstTime = System.currentTimeMillis
+    val res = nodeNameChecker.check(nodeModel)
+    println(System.currentTimeMillis - firstTime + "ms for name checking")
 
-		if (res.size == 1) {
-			return
-		} else {
-			res.foreach {
-				violation =>
-					println(violation.getMessage)
-					violation.getTargetObjects.foreach {
-						obj =>
-							println(obj)
-					}
-			}
-			assert(false)
-		}
-	}
+    if (res.size == 1) {
+      return
+    } else {
+      res.foreach {
+        violation =>
+          println(violation.getMessage)
+          violation.getTargetObjects.foreach {
+            obj =>
+              println(obj)
+          }
+      }
+      assert(false)
+    }
+  }
 
-	@Test def verifyNodeAndComponentNameOK() {
-		val nodeModel = model("test_checker/name/model_1node_1componentOK.kev")
-		val nodeNameChecker = new NameChecker
-		val firstTime = System.currentTimeMillis
-		val res = nodeNameChecker.check(nodeModel)
-		println(System.currentTimeMillis - firstTime + "ms for name checking")
+  @Test def verifyNodeAndComponentNameOK () {
+    val nodeModel = model("test_checker/name/model_1node_1componentOK.kev")
+    val nodeNameChecker = new NameChecker
+    val firstTime = System.currentTimeMillis
+    val res = nodeNameChecker.check(nodeModel)
+    println(System.currentTimeMillis - firstTime + "ms for name checking")
 
-		if (res.size == 0) {
-			return
-		} else {
-			res.foreach {
-				violation =>
-					println(violation.getMessage)
-					violation.getTargetObjects.foreach {
-						obj =>
-							println(obj)
-					}
-			}
-			assert(false)
-		}
-	}
+    if (res.size == 0) {
+      return
+    } else {
+      res.foreach {
+        violation =>
+          println(violation.getMessage)
+          violation.getTargetObjects.foreach {
+            obj =>
+              println(obj)
+          }
+      }
+      assert(false)
+    }
+  }
 
-	@Test def verifyNodeAndComponentNameKO() {
-		val nodeModel = model("test_checker/name/model_1node_1componentKO.kev")
-		val nodeNameChecker = new NameChecker
-		val firstTime = System.currentTimeMillis
-		val res = nodeNameChecker.check(nodeModel)
-		println(System.currentTimeMillis - firstTime + "ms for name checking")
+  @Test def verifyNodeAndComponentNameKO () {
+    val nodeModel = model("test_checker/name/model_1node_1componentKO.kev")
+    val nodeNameChecker = new NameChecker
+    val firstTime = System.currentTimeMillis
+    val res = nodeNameChecker.check(nodeModel)
+    println(System.currentTimeMillis - firstTime + "ms for name checking")
 
-		if (res.size == 1) {
-			return
-		} else {
-			res.foreach {
-				violation =>
-					println(violation.getMessage)
-					violation.getTargetObjects.foreach {
-						obj =>
-							println(obj)
-					}
-			}
-			assert(false)
-		}
-	}
+    if (res.size == 1) {
+      return
+    } else {
+      res.foreach {
+        violation =>
+          println(violation.getMessage)
+          violation.getTargetObjects.foreach {
+            obj =>
+              println(obj)
+          }
+      }
+      assert(false)
+    }
+  }
 
-	@Test def verifyChannelNameKO() {
-		val nodeModel = model("test_checker/name/model_1node_1channelKO.kev")
-		val nodeNameChecker = new NameChecker
-		val firstTime = System.currentTimeMillis
-		val res = nodeNameChecker.check(nodeModel)
-		println(System.currentTimeMillis - firstTime + "ms for name checking")
+  @Test def verifyChannelNameKO () {
+    val nodeModel = model("test_checker/name/model_1node_1channelKO.kev")
+    val nodeNameChecker = new NameChecker
+    val firstTime = System.currentTimeMillis
+    val res = nodeNameChecker.check(nodeModel)
+    println(System.currentTimeMillis - firstTime + "ms for name checking")
 
-		if (res.size == 1) {
-			return
-		} else {
-			res.foreach {
-				violation =>
-					println(violation.getMessage)
-					violation.getTargetObjects.foreach {
-						obj =>
-							println(obj)
-					}
-			}
-			assert(false)
-		}
-	}
+    if (res.size == 1) {
+      return
+    } else {
+      res.foreach {
+        violation =>
+          println(violation.getMessage)
+          violation.getTargetObjects.foreach {
+            obj =>
+              println(obj)
+          }
+      }
+      assert(false)
+    }
+  }
 
-	// TODO test port name checking
-	// TODO test attribute name checking with wrong attribute name
+  // TODO test port name checking
+  // TODO test attribute name checking with wrong attribute name
 }

@@ -58,7 +58,7 @@ case class PortAspect(p : Port) {
 
   def isBind : Boolean ={
     val container = p.eContainer.asInstanceOf[KevoreeContainer].eContainer.asInstanceOf[KevoreeContainer].eContainer.asInstanceOf[ContainerRoot]
-    var mb = p.getPortTypeRef.getRef
+    //var mb = p.getPortTypeRef.getRef
     container.getMBindings.exists({mb => mb.getPort == p})
     /*
      p.getPortTypeRef.getRef match {
