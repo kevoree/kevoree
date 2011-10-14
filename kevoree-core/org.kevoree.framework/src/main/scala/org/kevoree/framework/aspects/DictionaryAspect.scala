@@ -29,7 +29,7 @@ case class DictionaryAspect(self : Dictionary) {
         self.getValues.exists(v=> {
             other.getValues.find(ov=> ov.getAttribute.getName == v.getAttribute.getName && ov.getTargetNode == v.getTargetNode) match {
               case None => true
-              case Some(fv)=> (fv.getValue != v.getValue && fv.getAttribute.getDatatype != v.getAttribute.getDatatype)
+              case Some(fv)=> (fv.getValue != v.getValue || fv.getAttribute.getDatatype != v.getAttribute.getDatatype)
             }
           })
       } else {
