@@ -69,7 +69,7 @@ trait UpdateNodeKompare extends AbstractKompare with UpdateChannelKompare {
                   case Some(e) => //SIMILAR DEPLOY UNIT PRIMITIVE ALREADY REGISTERED
                 }
               } else {
-                throw new Exception("Deploy Unit not found for " + updateNode.getName + " from " + uct.getName)
+                throw new Exception("Deploy Unit not found for " + uct.getName + " from " + updateNode.getName)
               }
 
             }
@@ -240,7 +240,7 @@ trait UpdateNodeKompare extends AbstractKompare with UpdateChannelKompare {
               if (c.getDictionary.isEmpty) {
                 c.setDictionary(Some(KevoreeFactory.createDictionary))
               } */
-              if (uc.getDictionary.get.isUpdated(c.getDictionary.get)) {
+              if (uc.getDictionary.getOrElse(KevoreeFactory.createDictionary).isUpdated(c.getDictionary.getOrElse(KevoreeFactory.createDictionary))) {
                 val adaptcmd = KevoreeAdaptationFactory.eINSTANCE.createAdaptationPrimitive
                 adaptcmd.setPrimitiveType(getAdaptationPrimitive(JavaSePrimitive.UpdateDictionaryInstance,
                   actualNode.eContainer.asInstanceOf[ContainerRoot]))
