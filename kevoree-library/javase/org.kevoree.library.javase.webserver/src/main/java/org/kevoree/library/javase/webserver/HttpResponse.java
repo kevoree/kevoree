@@ -13,7 +13,21 @@ public class HttpResponse {
 
     private UUID tokenID = UUID.randomUUID();
 
+    private String content = "";
 
+    public UUID getTokenID() {
+        return tokenID;
+    }
 
+    public void setTokenID(UUID tokenID) {
+        this.tokenID = tokenID;
+    }
 
+    public String getContent() {
+        return content;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
+    }
 }
