@@ -13,6 +13,7 @@
  */
 package org.kevoree
 
+import cloner.ModelCloner
 import java.io.File
 import loader.ContainerRootLoader
 import org.kevoree.serializer.ModelSerializer
@@ -29,18 +30,22 @@ import xml.PrettyPrinter
 object Tester extends App {
 
   val current = System.currentTimeMillis()
-  val localModel = ContainerRootLoader.loadModel(new File(("/Users/duke/Documents/dev/dukeboard/kevoree-experiment/org.kevoree.experiment.smartForest/duke.irisa.fr-generated/models/Models580")));
+  val localModel = ContainerRootLoader.loadModel(new File(("/Users/duke/Desktop/modelcloud.kev")));
 
   localModel match {
     case Some(m) => {
 
+      val cloner = new ModelCloner
+      cloner.clone(m)
 
-      val serializer = new ModelSerializer
 
-      val result = serializer.serialize(m)
-       println(System.currentTimeMillis() - current)
-      val pp = new PrettyPrinter(3000,1)
-      println(pp.format(result))
+      /*
+     val serializer = new ModelSerializer
+
+     val result = serializer.serialize(m)
+      println(System.currentTimeMillis() - current)
+     val pp = new PrettyPrinter(3000,1)
+     println(pp.format(result)) */
     }
     case None =>
   }

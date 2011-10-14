@@ -21,12 +21,21 @@ object Tester extends App {
   server.start()      */
 
 
-  val Regex = new Regex("\\/(\\w+)/(\\w+)")
-  
-  "/ti112" match {
-    case Regex(e)=> println(e)
+
+
+  val Regex = new Regex("\\/(\\w+)\\/(\\w+)")
+
+  "/ti112/tututu" match {
+    case Regex(a,b)=> {
+      println("yo")
+    }
     case _ =>
   }
+  
+  for(m <- Regex.findAllIn("/ti112/tututu/jhlkjlkjlkj").matchData; e <- m.subgroups){
+    println("=>"+e)
+  }
+
 
 
 
