@@ -35,13 +35,12 @@ import java.util.HashMap;
 
 @Requires({
         @RequiredPort(name = "on", type = PortType.MESSAGE),
-        //@RequiredPort(name = "on2", type=PortType.MESSAGE),
         @RequiredPort(name = "off", type = PortType.MESSAGE),
         @RequiredPort(name = "toggle", type = PortType.SERVICE, className = ToggleLightService.class, optional = true)
 })
 @ComponentType
 public class FakeSimpleSwitch extends AbstractFakeStuffComponent {
-	private static final Logger logger = LoggerFactory.getLogger(FakeSimpleSwitch.class);
+    private static final Logger logger = LoggerFactory.getLogger(FakeSimpleSwitch.class);
 
     private static final int SWITCH_WIDTH = 50;
     private static final int SWITCH_HEIGHT = 100;
@@ -83,7 +82,9 @@ public class FakeSimpleSwitch extends AbstractFakeStuffComponent {
 
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    getPortByName("on", MessagePort.class).process(new HashMap<String, String>());
+                    if (isPortBinded("on")) {
+                        getPortByName("on", MessagePort.class).process(new HashMap<String, String>());
+                    }
                 }
             });
 
@@ -92,7 +93,9 @@ public class FakeSimpleSwitch extends AbstractFakeStuffComponent {
 
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    getPortByName("off", MessagePort.class).process(new HashMap<String, String>());
+                    if (isPortBinded("off")) {
+                        getPortByName("off", MessagePort.class).process(new HashMap<String, String>());
+                    }
                 }
             });
             toogle = new JButton("-?-");
@@ -117,7 +120,7 @@ public class FakeSimpleSwitch extends AbstractFakeStuffComponent {
             add(off);
             add(toogle);
 
-			this.setDefaultCloseOperation (JFrame.DO_NOTHING_ON_CLOSE);
+            this.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 
             pack();
             setVisible(true);

@@ -24,7 +24,7 @@ import scala.Option;
 @Requires({
         @RequiredPort(name = "filtered", type = PortType.MESSAGE)
 })
-public class URLHandler extends AbstractComponentType {
+public class URLFilter extends AbstractComponentType {
 
     URLHandlerScala handler = null;
     
