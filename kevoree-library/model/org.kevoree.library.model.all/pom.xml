@@ -176,7 +176,11 @@
             <artifactId>org.kevoree.library.javase.serialCT</artifactId>
             <version>${kevoree.version}</version>
         </dependency>
-
+        <dependency>
+            <groupId>org.kevoree.library.javase</groupId>
+            <artifactId>org.kevoree.library.javase.webserver</artifactId>
+            <version>${kevoree.version}</version>
+        </dependency>
 
         <!-- Android -->
 
