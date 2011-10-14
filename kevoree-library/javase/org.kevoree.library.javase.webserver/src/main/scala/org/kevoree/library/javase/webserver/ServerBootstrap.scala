@@ -5,10 +5,12 @@ import akka.config.Supervision.{SupervisorConfig, Permanent}
 import akka.actor._
 import cc.spray.can.{ServerConfig, HttpServer}
 import org.kevoree.framework.MessagePort
+import org.slf4j.LoggerFactory
 
 class ServerBootstrap(request : MessagePort) {
 
   var rootService : RootService = _
+  val logger = LoggerFactory.getLogger(this.getClass)
 
   def startServer(port : Int){
     val config = ServerConfig("0.0.0.0",port)
@@ -24,8 +26,16 @@ class ServerBootstrap(request : MessagePort) {
   }
 
   def stop(){
-    responseActor ! PoisonPill
-    Actor.registry.actors.foreach(_ ! PoisonPill)
+    if(responseActor!= null){
+      if(responseActor.isRunning){
+        responseActor.stop()
+      }
+    }
+    try {
+      Actor.registry.actors.foreach(_ ! PoisonPill)
+    } catch {
+      case _ @ e => logger.warn("Error while stopping Spray Server")
+    }
   }
 
   private var responseActor : akka.actor.ActorRef = _
