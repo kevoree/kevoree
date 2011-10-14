@@ -37,7 +37,7 @@ object NodeTypeBootStrapModel {
           model.addNodes(node)
           createNode(model, nodeName, nodeTypeName, props)
         } else {
-          null
+          node
         }
       }
       case None => {
