@@ -64,9 +64,12 @@ public class RestGroup extends AbstractGroupType {
             }
             
             int PORT = KevoreeFragmentPropertyHelper.getIntPropertyFromFragmentGroup(model, this.getName(), "port", targetNodeName);
+            
+            System.out.println("port=>"+PORT);
+            
             URL url = new URL("http://" + IP + ":" + PORT + "/model/current");
             URLConnection conn = url.openConnection();
-            conn.setConnectTimeout(2000);
+            conn.setConnectTimeout(3000);
             conn.setDoOutput(true);
             OutputStreamWriter wr = new OutputStreamWriter(conn.getOutputStream());
             wr.write(outStream.toString());
