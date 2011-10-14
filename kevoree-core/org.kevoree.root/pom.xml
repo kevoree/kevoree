@@ -170,9 +170,10 @@
         <module>../org.kevoree.pruner</module>
         <module>../../kevoree-tools/org.kevoree.tools.aether.framework</module>
         <module>../org.kevoree.deploy.osgi</module>
+        <module>../org.kevoree.basechecker</module>
         <module>../org.kevoree.core</module>
         <module>../org.kevoree.remote</module>
-        <module>../org.kevoree.basechecker</module>
+
     </modules>
 
     <distributionManagement>
