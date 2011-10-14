@@ -99,7 +99,7 @@ class KevoreeNodeRunner (var nodeName: String, bootStrapModel: String) {
               }
             } catch {
               case _@e => {
-                logger.debug("Stream has been closed, we close " + outFile.getAbsolutePath + "too")
+                logger.debug("Stream has been closed, we close " + outFile.getAbsolutePath + " too")
               }
             } finally {
               logStream.flush()
@@ -126,7 +126,7 @@ class KevoreeNodeRunner (var nodeName: String, bootStrapModel: String) {
               }
             } catch {
               case _@e => {
-                logger.debug("Stream has been closed, we close " + errFile.getAbsolutePath + "too")
+                logger.debug("Stream has been closed, we close " + errFile.getAbsolutePath + " too")
               }
             } finally {
               logStream.flush()

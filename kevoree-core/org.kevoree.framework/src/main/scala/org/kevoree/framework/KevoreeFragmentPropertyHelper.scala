@@ -13,8 +13,8 @@
  */
 package org.kevoree.framework
 
-import org.kevoree.ContainerRoot
 import org.slf4j.LoggerFactory
+import org.kevoree.{TypeDefinition, ContainerRoot}
 
 /**
  * User: Erwan Daubert - erwan.daubert@gmail.com
@@ -30,65 +30,39 @@ object KevoreeFragmentPropertyHelper {
   val logger = LoggerFactory.getLogger(this.getClass)
 
 
-  def getIntPropertyFromFragmentChannel (model: ContainerRoot, channelName: String, key: String, nodeNameForFragment : String): Int = {
-    model.getHubs.find(c => c.getName == channelName) match {
-      case None => 0
-      case Some(channel) => {
-        channel.getDictionary match {
-          case None => 0
-          case Some(dictionary) => {
-            dictionary.getValues.find(dictionaryAttribute => dictionaryAttribute.getAttribute.getName == key &&
-              dictionaryAttribute.getTargetNode == nodeNameForFragment) match {
-              case None => 0
-              case Some(dictionaryAttribute) => {
-                try {
-                  Integer.parseInt(dictionaryAttribute.getValue)
-                } catch {
-                  case _@e =>
-                    logger.warn("Unknown error while trying to get an integer property", e)
-                    0
-                }
-              }
-            }
-          }
-        }
-      }
+  def getIntPropertyFromFragmentChannel (model: ContainerRoot, channelName: String, key: String,
+    nodeNameForFragment: String): Int = {
+    val stringProperty = getPropertyFromFragmentChannel(model, channelName, key, nodeNameForFragment)
+    try {
+      Integer.parseInt(stringProperty)
+    } catch {
+      case _@e =>
+        logger.warn("Unknown error while trying to get an integer property", e)
+        0
     }
   }
 
-  def getBooleanPropertyFromFragmentChannel (model: ContainerRoot, channelName: String, key: String, nodeNameForFragment : String): Boolean = {
-    model.getHubs.find(c => c.getName == channelName) match {
-      case None => false
-      case Some(channel) => {
-        channel.getDictionary match {
-          case None => false
-          case Some(dictionary) => {
-            dictionary.getValues.find(dictionaryAttribute => dictionaryAttribute.getAttribute.getName == key &&
-              dictionaryAttribute.getTargetNode == nodeNameForFragment) match {
-              case None => false
-              case Some(dictionaryAttribute) => {
-                dictionaryAttribute.getValue.equalsIgnoreCase("true")
-              }
-            }
-          }
-        }
-      }
-    }
+  def getBooleanPropertyFromFragmentChannel (model: ContainerRoot, channelName: String, key: String,
+    nodeNameForFragment: String): Boolean = {
+    getPropertyFromFragmentChannel(model, channelName, key, nodeNameForFragment).equalsIgnoreCase("true")
   }
 
   def getPropertyFromFragmentChannel (model: ContainerRoot, channelName: String, key: String,
-    nodeNameForFragment : String): String = {
-    model.getHubs.find(c => c.getName == channelName) match {
+    nodeNameForFragment: String): String = {
+    model.getHubs.find(g => g.getName == channelName) match {
       case None => ""
       case Some(channel) => {
         channel.getDictionary match {
-          case None => ""
+          case None => getDefaultValue(channel.getTypeDefinition, key)
           case Some(dictionary) => {
-            dictionary.getValues.find(dictionaryAttribute => dictionaryAttribute.getAttribute.getName == key &&
-              dictionaryAttribute.getTargetNode == nodeNameForFragment) match {
-              case None => ""
+            dictionary.getValues.find(dictionaryAttribute => dictionaryAttribute.getAttribute.getName == key) match {
+              case None => getDefaultValue(channel.getTypeDefinition, key)
               case Some(dictionaryAttribute) => {
-                dictionaryAttribute.getValue
+                if (dictionaryAttribute.getTargetNode == nodeNameForFragment) {
+                  dictionaryAttribute.getValue
+                } else {
+                  getDefaultValue(channel.getTypeDefinition, key)
+                }
               }
             }
           }
@@ -98,23 +72,37 @@ object KevoreeFragmentPropertyHelper {
   }
 
   def getIntPropertyFromFragmentGroup (model: ContainerRoot, groupName: String, key: String,
-    nodeNameForFragment : String): Int = {
+    nodeNameForFragment: String): Int = {
+    val stringProperty = getPropertyFromFragmentGroup(model, groupName, key, nodeNameForFragment)
+    try {
+      Integer.parseInt(stringProperty)
+    } catch {
+      case _@e =>
+        logger.warn("Unknown error while trying to get an integer property", e)
+        0
+    }
+  }
+
+  def getBooleanPropertyFromFragmentGroup (model: ContainerRoot, groupName: String, key: String,
+    nodeNameForFragment: String): Boolean = {
+    getPropertyFromFragmentGroup(model, groupName, key, nodeNameForFragment).equalsIgnoreCase("true")
+  }
+
+  def getPropertyFromFragmentGroup (model: ContainerRoot, groupName: String, key: String,
+    nodeNameForFragment: String): String = {
     model.getGroups.find(g => g.getName == groupName) match {
-      case None => 0
+      case None => ""
       case Some(group) => {
         group.getDictionary match {
-          case None => 0
+          case None => getDefaultValue(group.getTypeDefinition, key)
           case Some(dictionary) => {
-            dictionary.getValues.find(dictionaryAttribute => dictionaryAttribute.getAttribute.getName == key &&
-              dictionaryAttribute.getTargetNode == nodeNameForFragment) match {
-              case None => 0
+            dictionary.getValues.find(dictionaryAttribute => dictionaryAttribute.getAttribute.getName == key) match {
+              case None => getDefaultValue(group.getTypeDefinition, key)
               case Some(dictionaryAttribute) => {
-                try {
-                  Integer.parseInt(dictionaryAttribute.getValue)
-                } catch {
-                  case _@e =>
-                    logger.warn("Unknown error while trying to get an integer property", e)
-                    0
+                if (dictionaryAttribute.getTargetNode == nodeNameForFragment) {
+                  dictionaryAttribute.getValue
+                } else {
+                  getDefaultValue(group.getTypeDefinition, key)
                 }
               }
             }
@@ -124,45 +112,12 @@ object KevoreeFragmentPropertyHelper {
     }
   }
 
-  def getBooleanPropertyFromFragmentGroup (model: ContainerRoot, groupName: String, key: String,
-    nodeNameForFragment : String): Boolean = {
-    model.getGroups.find(g => g.getName == groupName) match {
-      case None => false
-      case Some(group) => {
-        group.getDictionary match {
-          case None => false
-          case Some(dictionary) => {
-            dictionary.getValues.find(dictionaryAttribute => dictionaryAttribute.getAttribute.getName == key &&
-              dictionaryAttribute.getTargetNode == nodeNameForFragment) match {
-              case None => false
-              case Some(dictionaryAttribute) => {
-                dictionaryAttribute.getValue.equalsIgnoreCase("true")
-              }
-            }
-          }
-        }
-      }
+  private def getDefaultValue (typeDefinition: TypeDefinition, key: String): String = {
+    typeDefinition.getDictionaryType.get.getDefaultValues
+      .find(defaultValue => defaultValue.getAttribute.getName == key) match {
+      case None => ""
+      case Some(defaultValue) => defaultValue.getValue
     }
   }
 
-  def getPropertyFromFragmentGroup (model: ContainerRoot, groupName: String, key: String,
-    nodeNameForFragment : String): String = {
-    model.getGroups.find(g => g.getName == groupName) match {
-      case None => ""
-      case Some(group) => {
-        group.getDictionary match {
-          case None => ""
-          case Some(dictionary) => {
-            dictionary.getValues.find(dictionaryAttribute => dictionaryAttribute.getAttribute.getName == key &&
-              dictionaryAttribute.getTargetNode == nodeNameForFragment) match {
-              case None => ""
-              case Some(dictionaryAttribute) => {
-                dictionaryAttribute.getValue
-              }
-            }
-          }
-        }
-      }
-    }
-  }
 }
