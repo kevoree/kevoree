@@ -16,7 +16,7 @@ import scala.Option;
 @Library(name = "JavaSE")
 @ComponentType
 @DictionaryType({
-        @DictionaryAttribute(name = "urlpattern")
+        @DictionaryAttribute(name = "urlpattern",optional = true, defaultValue = "/")
 })
 @Provides({
     @ProvidedPort(name = "request", type = PortType.MESSAGE)
