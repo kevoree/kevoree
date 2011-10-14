@@ -19,11 +19,11 @@
 package org.kevoree.framework.aspects
 
 import org.kevoree._
- import KevoreeAspects._
+import KevoreeAspects._
 
-case class DictionaryTypeAspect(selfDT: DictionaryType) {
+case class DictionaryTypeAspect (selfDT: DictionaryType) {
 
-  def isModelEquals(otherDT: DictionaryType): Boolean = {
+  def isModelEquals (otherDT: DictionaryType): Boolean = {
 
     //println(selfDT)
     //println(otherDT)
@@ -35,25 +35,26 @@ case class DictionaryTypeAspect(selfDT: DictionaryType) {
           return selfDT.getAttributes == null
         }
 
-        val selfRes = selfDT.getAttributes.forall(selfAtt => otherDT.getAttributes.exists(otherDTAtt => {
-          //println(otherDTAtt.getName+"=="+selfAtt.getName)
-          otherDTAtt.getName == selfAtt.getName
-        }))
-        val otherRes = otherDT.getAttributes.forall(otherDTAtt => selfDT.getAttributes.exists(selfAtt => {
-          //TODO ATT TYPE
-          otherDTAtt.getName == selfAtt.getName
-        }))
-        selfRes && otherRes
+        if (selfDT.getAttributes.size == otherDT.getAttributes.size && selfDT.getDefaultValues.size == otherDT.getDefaultValues.size) {
+          val selfRes = selfDT.getAttributes.forall(selfAtt => otherDT.getAttributes.exists(otherDTAtt => {
+            //println(otherDTAtt.getName+"=="+selfAtt.getName)
+            otherDTAtt.getName == selfAtt.getName && otherDTAtt.getDatatype == selfAtt.getDatatype
+          }))
+          val selfRes1 = selfDT.getDefaultValues.forall(selfAtt => otherDT.getDefaultValues.exists(otherDTAtt => {
+            //println(otherDTAtt.getName+"=="+selfAtt.getName)
+            otherDTAtt.getAttribute.getName == selfAtt.getAttribute.getName && otherDTAtt.getValue == selfAtt.getValue
+          }))
+
+          selfRes && selfRes1
+        } else {
+          false
+        }
       } else {
         true
       }
     } else {
-
-
       otherDT != null
     }
-
-
   }
 
 }

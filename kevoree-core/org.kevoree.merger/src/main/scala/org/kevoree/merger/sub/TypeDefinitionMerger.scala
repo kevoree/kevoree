@@ -81,6 +81,7 @@ trait TypeDefinitionMerger extends Merger with DictionaryMerger with PortTypeMer
 
   private def consistencyImpacted(root: ContainerRoot, actuelTypeDefinition: TypeDefinition,
                                   newTypeDefinition: TypeDefinition) = {
+    println(actuelTypeDefinition.getName)
     //REMOVE OLD AND ADD NEW TYPE
     root.removeTypeDefinitions(actuelTypeDefinition)
     mergeNewTypeDefinition(root, newTypeDefinition)
@@ -119,7 +120,7 @@ trait TypeDefinitionMerger extends Merger with DictionaryMerger with PortTypeMer
           if (newTypeDefinition.getDictionaryType.isDefined) {
             mergeDictionary(kevoreeInstance.getDictionary.get, newTypeDefinition.getDictionaryType.get)
           } else {
-            // TODO set to None the dictionary of the art2instance
+            // set to None the dictionary of the art2instance
             kevoreeInstance.setDictionary(None)
             logger.info("There is no dictionary type on the new type definition " + newTypeDefinition.getName)
           }
