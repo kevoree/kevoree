@@ -9,7 +9,7 @@ import java.util.UUID;
  * Time: 08:41
  * To change this template use File | Settings | File Templates.
  */
-public class HttpResponse {
+public class KevoreeHttpResponse {
 
     private UUID tokenID = UUID.randomUUID();
 
