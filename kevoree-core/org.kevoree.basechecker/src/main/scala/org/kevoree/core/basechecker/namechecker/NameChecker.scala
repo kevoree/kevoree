@@ -100,6 +100,7 @@ class NameChecker extends CheckerService {
 	}
 
 	private def check(name: String): Boolean = {
+    if(name == ""){return false}
 		val p: Pattern = Pattern.compile(acceptedRegex)
 		val m: Matcher = p.matcher(name)
 		m.matches
