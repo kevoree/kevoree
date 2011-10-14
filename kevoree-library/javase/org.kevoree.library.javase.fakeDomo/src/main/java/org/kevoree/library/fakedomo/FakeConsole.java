@@ -39,7 +39,7 @@ import java.awt.event.KeyEvent;
     @ProvidedPort(name = "showText", type = PortType.MESSAGE)
 })
 @Requires({
-    @RequiredPort(name = "textEntered", type = PortType.MESSAGE)
+    @RequiredPort(name = "textEntered", type = PortType.MESSAGE , optional = true)
 })
 @ComponentType
 public class FakeConsole extends AbstractFakeStuffComponent {

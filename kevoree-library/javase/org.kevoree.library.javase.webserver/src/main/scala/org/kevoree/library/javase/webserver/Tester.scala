@@ -21,43 +21,13 @@ server.setDictionary(prop)
 
 server.start()      */
 
-  
-val m = Pattern.compile("\\{(\\w+)\\}").matcher("/{p1}/{p2}v")
- val sb = new StringBuffer(32) ; val rsb = new StringBuffer(8)
- 
- while (m.find) { 
-   println(m.group(1))
-   rsb.replace(0, rsb.length, m.group(1)) ; 
-   m.appendReplacement(sb, "(\\\\w+)")
- }
- m.appendTail(sb)
-  
-  println(sb)
-
-
-  val Regex = new Regex(sb.toString)
-
-  println(Regex.unapplySeq("/ti112/tututuv"))
-
-  /*
-"/ti112/tututu" match {
- case Regex(a,b)=> {
-   println("yo")
- }
- case _ =>
-}
-
-for(m <- Regex.findAllIn("/ti112/tututu/jhlkjlkjlkj").matchData; e <- m.subgroups){
- println("=>"+e)
-}
-  */
-
-
-  /*
 
 val urlHandler = new URLHandlerScala
 urlHandler.initRegex("/{titi}")
 
-println(urlHandler.check("/myURll") )
-  */
+  val ask = new KevoreeHttpRequest
+  ask.setUrl("/bou")
+
+println(urlHandler.check(ask).get.asInstanceOf[KevoreeHttpRequest].getResolvedParams )
+
 }
