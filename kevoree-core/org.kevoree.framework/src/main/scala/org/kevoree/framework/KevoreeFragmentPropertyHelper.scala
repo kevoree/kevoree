@@ -14,7 +14,7 @@
 package org.kevoree.framework
 
 import org.slf4j.LoggerFactory
-import org.kevoree.{TypeDefinition, ContainerRoot}
+import org.kevoree.{Instance, TypeDefinition, ContainerRoot}
 
 /**
  * User: Erwan Daubert - erwan.daubert@gmail.com
@@ -38,7 +38,20 @@ object KevoreeFragmentPropertyHelper {
     } catch {
       case _@e =>
         logger.warn("Unknown error while trying to get an integer property", e)
-        0
+        model.getHubs.find(channel => channel.getName == channelName) match {
+          case None => 0
+          case Some(channel) => {
+            val stringProperty = getDefaultValue(channel.getTypeDefinition, key)
+            try {
+              Integer.parseInt(stringProperty)
+            } catch {
+              case _@e1 =>
+                logger.warn("Unknown error while trying to get the default value of an integer property", e)
+                0
+            }
+          }
+        }
+
     }
   }
 
@@ -52,21 +65,7 @@ object KevoreeFragmentPropertyHelper {
     model.getHubs.find(g => g.getName == channelName) match {
       case None => ""
       case Some(channel) => {
-        channel.getDictionary match {
-          case None => getDefaultValue(channel.getTypeDefinition, key)
-          case Some(dictionary) => {
-            dictionary.getValues.find(dictionaryAttribute => dictionaryAttribute.getAttribute.getName == key) match {
-              case None => getDefaultValue(channel.getTypeDefinition, key)
-              case Some(dictionaryAttribute) => {
-                if (dictionaryAttribute.getTargetNode == nodeNameForFragment) {
-                  dictionaryAttribute.getValue
-                } else {
-                  getDefaultValue(channel.getTypeDefinition, key)
-                }
-              }
-            }
-          }
-        }
+        getProperty(model, channel, channelName, key, nodeNameForFragment)
       }
     }
   }
@@ -79,7 +78,20 @@ object KevoreeFragmentPropertyHelper {
     } catch {
       case _@e =>
         logger.warn("Unknown error while trying to get an integer property", e)
-        0
+        model.getGroups.find(g => g.getName == groupName) match {
+          case None => 0
+          case Some(group) => {
+            val stringProperty = getDefaultValue(group.getTypeDefinition, key)
+            try {
+              Integer.parseInt(stringProperty)
+            } catch {
+              case _@e1 =>
+                logger.warn("Unknown error while trying to get the default value of an integer property", e)
+                0
+            }
+          }
+        }
+
     }
   }
 
@@ -93,20 +105,20 @@ object KevoreeFragmentPropertyHelper {
     model.getGroups.find(g => g.getName == groupName) match {
       case None => ""
       case Some(group) => {
-        group.getDictionary match {
-          case None => getDefaultValue(group.getTypeDefinition, key)
-          case Some(dictionary) => {
-            dictionary.getValues.find(dictionaryAttribute => dictionaryAttribute.getAttribute.getName == key) match {
-              case None => getDefaultValue(group.getTypeDefinition, key)
-              case Some(dictionaryAttribute) => {
-                if (dictionaryAttribute.getTargetNode == nodeNameForFragment) {
-                  dictionaryAttribute.getValue
-                } else {
-                  getDefaultValue(group.getTypeDefinition, key)
-                }
-              }
-            }
-          }
+        getProperty(model, group, groupName, key, nodeNameForFragment)
+      }
+    }
+  }
+
+  private def getProperty (model: ContainerRoot, instance: Instance, name: String, key: String,
+    nodeNameForFragment: String): String = {
+    instance.getDictionary match {
+      case None => getDefaultValue(instance.getTypeDefinition, key)
+      case Some(dictionary) => {
+        dictionary.getValues.find(dictionaryAttribute => dictionaryAttribute.getAttribute.getName == key &&
+          dictionaryAttribute.getTargetNode == nodeNameForFragment) match {
+          case None => getDefaultValue(instance.getTypeDefinition, key)
+          case Some(dictionaryAttribute) => dictionaryAttribute.getValue
         }
       }
     }
@@ -119,5 +131,4 @@ object KevoreeFragmentPropertyHelper {
       case Some(defaultValue) => defaultValue.getValue
     }
   }
-
 }
