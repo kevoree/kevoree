@@ -34,7 +34,7 @@ class ComponentsTest extends MergerTestSuiteHelper  {
   }
 
   @Test def verifyComponentTypeAdded() {
-     var mergedModel = component.merge(model("artFragments/lib4test-ComponentRemoved.art2"), model("artFragments/lib4test-base.art2"))
+     val mergedModel = component.merge(model("artFragments/lib4test-ComponentRemoved.art2"), model("artFragments/lib4test-base.art2"))
     mergedModel testSave ("artFragments","lib4test-ComponentAddedMerged.art2")
 
     mergedModel.getTypeDefinitions.toArray.find(typeDef =>
@@ -46,7 +46,7 @@ class ComponentsTest extends MergerTestSuiteHelper  {
   }
 
   @Test def verifyComponentTypeRemoved() {
-      var mergedModel = component.merge(model("artFragments/lib4test-base.art2"), model("artFragments/lib4test-ComponentRemoved.art2"))
+      val mergedModel = component.merge(model("artFragments/lib4test-base.art2"), model("artFragments/lib4test-ComponentRemoved.art2"))
     mergedModel testSave ("artFragments","lib4test-ComponentRemovedMerged.art2")
 
     mergedModel.getTypeDefinitions.toArray.find(typeDef =>
@@ -58,7 +58,7 @@ class ComponentsTest extends MergerTestSuiteHelper  {
   }
 
   @Test def verifyComponentTypeRenamed() {
-      var mergedModel = component.merge(model("artFragments/lib4test-base.art2"), model("artFragments/lib4test-ComponentRenamed.art2"))
+      val mergedModel = component.merge(model("artFragments/lib4test-base.art2"), model("artFragments/lib4test-ComponentRenamed.art2"))
     mergedModel testSave ("artFragments","lib4test-ComponentRenamedMerged.art2")
 
     mergedModel.getTypeDefinitions.toArray.find(typeDef =>
