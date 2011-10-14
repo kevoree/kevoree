@@ -12,10 +12,12 @@ public class HelloWorldPage extends AbstractPage {
         if (request != null) {
             KevoreeHttpResponse response = buildResponse(request);
             StringBuilder builder = new StringBuilder();
-            builder.append("Hello from Kevoree from url " + request.getUrl() + " \n<br />");
+            builder.append("<html><body>");
+            builder.append("Hello Kevoree from url " + request.getUrl() + " <br />");
             for (String key : request.getResolvedParams().keySet()) {
-                builder.append(key + "->" + request.getResolvedParams().get(key) + "\n<br>");
+                builder.append(key + "->" + request.getResolvedParams().get(key) + "<br>");
             }
+            builder.append("</body></html>");
             response.setContent(builder.toString());
             this.getPortByName("content", MessagePort.class).process(response);//SEND MESSAGE
         }
