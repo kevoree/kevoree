@@ -49,9 +49,7 @@ class GroupScorePeerSelector (timeout: Long, modelHandlerService: KevoreeModelHa
   def act () {
     loop {
       react {
-        case STOP() => {
-          this.exit()
-        }
+        case STOP() => this.exit()
         case MODIFY_NODE_SCORE(nodeName1, failure) => this.modifyNodeScore(nodeName1, failure)
         case SELECT_PEER(groupName) => reply(this.selectPeerInternal(groupName))
         case RESET_ALL() => reset(); reply("")

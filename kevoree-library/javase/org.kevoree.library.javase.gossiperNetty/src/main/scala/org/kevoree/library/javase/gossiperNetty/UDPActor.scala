@@ -55,8 +55,11 @@ class UDPActor (port: Int, processValue: ProcessValue, processRequest: ProcessRe
 
 
   protected def stopInternal () {
-    channelServer.close().addListener(ChannelFutureListener.CLOSE)
-    channel.close().addListener(ChannelFutureListener.CLOSE)
+    channelServer.unbind()
+    if (!channelServer.getCloseFuture.awaitUninterruptibly(5000)) {
+      channelServer.close().awaitUninterruptibly();
+    }
+    channel.close().awaitUninterruptibly()
     // Shut down all thread pools to exit.
     bootstrap.releaseExternalResources();
     bootstrapServer.releaseExternalResources();

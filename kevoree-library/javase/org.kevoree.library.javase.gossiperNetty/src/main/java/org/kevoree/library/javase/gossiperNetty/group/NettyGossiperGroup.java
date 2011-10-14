@@ -5,6 +5,7 @@ import org.kevoree.ContainerRoot;
 import org.kevoree.Group;
 import org.kevoree.annotation.*;
 import org.kevoree.framework.AbstractGroupType;
+import org.kevoree.framework.KevoreeFragmentPropertyHelper;
 import org.kevoree.framework.KevoreePlatformHelper;
 import org.kevoree.library.javase.gossiperNetty.*;
 import org.slf4j.Logger;
@@ -20,20 +21,18 @@ import java.util.List;
 @GroupType
 @DictionaryType({
 		@DictionaryAttribute(name = "interval", defaultValue = "30000", optional = true),
-		@DictionaryAttribute(name = "port", defaultValue = "9010", optional = true),
-		@DictionaryAttribute(name = "FullUDP", defaultValue = "false", optional = true),
-		@DictionaryAttribute(name = "sendNotification", defaultValue = "true", optional = true),
-		@DictionaryAttribute(name = "alwaysAskModel", defaultValue = "false", optional = true)
+		@DictionaryAttribute(name = "port", defaultValue = "9010", optional = true, fragmentDependant = true),
+		@DictionaryAttribute(name = "FullUDP", defaultValue = "false", optional = true, vals= {"true", "false"}),
+		@DictionaryAttribute(name = "sendNotification", defaultValue = "true", optional = true, vals= {"true", "false"}),
+		@DictionaryAttribute(name = "alwaysAskModel", defaultValue = "false", optional = true, vals= {"true", "false"})
 })
 public class NettyGossiperGroup extends AbstractGroupType implements GossiperComponent {
 
 	protected DataManagerForGroup dataManager;
-	private Serializer serializer;
 	protected GossiperActor actor;
 	protected GroupScorePeerSelector selector;
 	private ProcessValue processValue;
 	private ProcessRequest processRequest;
-	private NetworkProtocolSelector protocolSelector;
 	private UDPActor udpActor;
 	private TCPActor tcpActor;
 	protected Logger logger = LoggerFactory.getLogger(NettyGossiperGroup.class);
@@ -47,9 +46,9 @@ public class NettyGossiperGroup extends AbstractGroupType implements GossiperCom
 
 		Long timeoutLong = Long.parseLong((String) this.getDictionary().get("interval"));
 
-		protocolSelector = new NetworkProtocolSelector();
+		NetworkProtocolSelector protocolSelector = new NetworkProtocolSelector();
 
-		serializer = new GroupSerializer(this.getModelService());
+		Serializer serializer = new GroupSerializer(this.getModelService());
 		dataManager = new DataManagerForGroup(this.getName(), this.getNodeName(), this.getModelService());
 		processValue = new ProcessValue(this, parseBooleanProperty("alwaysAskModel"), protocolSelector, dataManager,
 				serializer, false);
@@ -57,8 +56,8 @@ public class NettyGossiperGroup extends AbstractGroupType implements GossiperCom
 
 		selector = new GroupScorePeerSelector(timeoutLong, this.getModelService(), this.getName());
 
-		udpActor = new UDPActor(parsePortNumber(this.getNodeName()), processValue, processRequest);
-		tcpActor = new TCPActor(parsePortNumber(this.getNodeName()), processValue, processRequest);
+		udpActor = new UDPActor(parsePortNumber(), processValue, processRequest);
+		tcpActor = new TCPActor(parsePortNumber(), processValue, processRequest);
 
 		protocolSelector.setProtocolForMetadata(udpActor);
 		if (parseBooleanProperty("FullUDP")) {
@@ -98,13 +97,13 @@ public class NettyGossiperGroup extends AbstractGroupType implements GossiperCom
 			tcpActor.stop();
 			tcpActor = null;
 		}
-		if (processValue != null) {
-			processValue.stop();
-			processValue = null;
-		}
 		if (processRequest != null) {
 			processRequest.stop();
 			processRequest = null;
+		}
+		if (processValue != null) {
+			processValue.stop();
+			processValue = null;
 		}
 		if (dataManager != null) {
 			dataManager.stop();
@@ -121,7 +120,6 @@ public class NettyGossiperGroup extends AbstractGroupType implements GossiperCom
 	@Override
 	public List<String> getAllPeers () {
 		ContainerRoot model = this.getModelService().getLastModel();
-		//Group selfGroup = null;
 		for (Object o : model.getGroupsForJ()) {
 			Group g = (Group) o;
 			if (g.getName().equals(this.getName())) {
@@ -145,28 +143,22 @@ public class NettyGossiperGroup extends AbstractGroupType implements GossiperCom
 		return ip;
 	}
 
-	private String name = "[A-Za-z0-9_]*";
-	private String portNumber = "(65535|5[0-9]{4}|4[0-9]{4}|3[0-9]{4}|2[0-9]{4}|1[0-9]{4}|[0-9]{0,4})";
-	private String separator = ",";
-	private String affectation = "=";
-	private String portPropertyRegex =
-			"((" + name + affectation + portNumber + ")" + separator + ")*(" + name + affectation + portNumber + ")";
-
 	@Override
 	public int parsePortNumber (String nodeName) {
+		logger.debug("look for port on " + nodeName);
+		return KevoreeFragmentPropertyHelper
+				.getIntPropertyFromFragmentGroup(this.getModelService().getLastModel(), this.getName(), "port",
+						nodeName);
+	}
+
+	private int parsePortNumber () {
 		String portProperty = this.getDictionary().get("port").toString();
-		if (portProperty.matches(portPropertyRegex)) {
-			String[] definitionParts = portProperty.split(separator);
-			for (String part : definitionParts) {
-				if (part.contains(nodeName + affectation)) {
-					//System.out.println(Integer.parseInt(part.substring((nodeName + affectation).length(), part.length())));
-					return Integer.parseInt(part.substring((nodeName + affectation).length(), part.length()));
-				}
-			}
-		} else {
+		try {
 			return Integer.parseInt(portProperty);
+		} catch (NumberFormatException e) {
+			logger.warn("Invalid value for port parameter for " + this.getName() + " on " + this.getNodeName());
+			return 0;
 		}
-		return 0;
 	}
 
 	@Override

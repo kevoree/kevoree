@@ -9,10 +9,8 @@ import org.jboss.netty.handler.codec.protobuf.{ProtobufEncoder, ProtobufVarint32
 import org.jboss.netty.channel._
 import socket.nio.{NioClientSocketChannelFactory, NioServerSocketChannelFactory}
 import org.jboss.netty.bootstrap.{ClientBootstrap, ServerBootstrap}
-import org.jboss.netty.channel.group.DefaultChannelGroup
-
-
 import scala.collection.JavaConversions._
+import org.jboss.netty.channel.group.{ChannelGroupFutureListener, DefaultChannelGroup}
 
 /**
  * User: Erwan Daubert - erwan.daubert@gmail.com
@@ -66,7 +64,11 @@ class TCPActor (port: Int, processValue: ProcessValue, processRequest: ProcessRe
 
 
   protected def stopInternal () {
-    channelServer.close().addListener(ChannelFutureListener.CLOSE)
+    channelServer.unbind()
+    if (!channelServer.getCloseFuture.awaitUninterruptibly(5000)) {
+      channelServer.close().awaitUninterruptibly()
+    }
+    channelGroup.close().awaitUninterruptibly()
     // Shut down all thread pools to exit.
     bootstrap.releaseExternalResources();
     bootstrapServer.releaseExternalResources();
@@ -94,8 +96,11 @@ class TCPActor (port: Int, processValue: ProcessValue, processRequest: ProcessRe
   }
 
   protected def sendMessageToChannelInternal (o: Message, channel: Channel, address: InetSocketAddress) {
-    channel.write(o)
-    channel.close()
+    channel.write(o)/*.addListener(new ChannelFutureListener() {
+      def operationComplete (future: ChannelFuture) {
+        channel.close()
+      }
+    });*/
   }
 
   private class TCPRequestHandler (processRequest: ProcessRequest) extends SimpleChannelUpstreamHandler {
@@ -104,7 +109,7 @@ class TCPActor (port: Int, processValue: ProcessValue, processRequest: ProcessRe
         processRequest.receiveRequest(e.getMessage.asInstanceOf[Message], e.getChannel,
                                        e.getRemoteAddress.asInstanceOf[InetSocketAddress])
       }
-      e.getChannel.getCloseFuture.addListener(ChannelFutureListener.CLOSE)
+      //e.getChannel.getCloseFuture.addListener(ChannelFutureListener.CLOSE)
     }
 
     override def exceptionCaught (ctx: ChannelHandlerContext, e: ExceptionEvent) {
@@ -119,13 +124,13 @@ class TCPActor (port: Int, processValue: ProcessValue, processRequest: ProcessRe
       if (e.getMessage.isInstanceOf[Message]) {
         processValue.receiveValue(e.getMessage.asInstanceOf[Message])
       }
-      e.getChannel.close()
+      //e.getChannel.close()
     }
 
     override def exceptionCaught (ctx: ChannelHandlerContext, e: ExceptionEvent) {
       logger.error("Communication failed between " + ctx.getChannel.getLocalAddress + " and " +
         ctx.getChannel.getRemoteAddress, e.getCause)
-        e.getChannel.close()
+      e.getChannel.close()
     }
   }
 
