@@ -13,7 +13,7 @@ public class HelloWorldPage extends AbstractPage {
             KevoreeHttpResponse response = buildResponse(request);
             StringBuilder builder = new StringBuilder();
             builder.append("<html><body>");
-            builder.append("Hello Kevoree from url " + request.getUrl() + " <br />");
+            builder.append("Hello from Kevoree from url " + request.getUrl() + " <br />");
             for (String key : request.getResolvedParams().keySet()) {
                 builder.append(key + "->" + request.getResolvedParams().get(key) + "<br>");
             }

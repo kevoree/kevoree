@@ -85,7 +85,7 @@ public class NodePropertyEditor extends InstancePropertyEditor {
         this.addCenter(pnameLayout);
 
         final UpdatePhysicalNode commandUpdate = new UpdatePhysicalNode();
-        commandUpdate.setKernel(kernel);
+        commandUpdate.setKernel(_kernel);
         commandUpdate.setTargetCNode(node);
 
         hostNodeComboBox.addActionListener(new ActionListener() {
