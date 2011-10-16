@@ -16,25 +16,31 @@ package org.kevoree.core.basechecker
 import bindingchecker.BindingChecker
 import channelchecker.BoundsChecker
 import cyclechecker.{ComponentCycleChecker, NodeCycleChecker}
+import dictionaryChecker.DictionaryOptionalChecker
 import namechecker.{IdChecker, NameChecker}
 import nodechecker.NodeChecker
 import org.kevoree.ContainerRoot
 import org.kevoree.api.service.core.checker.{CheckerViolation, CheckerService}
 import java.util.ArrayList
 import portchecker.PortChecker
+import org.slf4j.LoggerFactory
 
 
 class RootChecker extends CheckerService {
 
+  private var logger = LoggerFactory.getLogger(this.getClass)
+  
   var subcheckers: List[CheckerService] = List(new ComponentCycleChecker, new NodeCycleChecker, new NameChecker,
-                                                new PortChecker, new NodeChecker, new BindingChecker, new BoundsChecker, new IdChecker)
+                                                new PortChecker, new NodeChecker, new BindingChecker, new BoundsChecker, new IdChecker, new DictionaryOptionalChecker)
 
   def check (model: ContainerRoot): java.util.List[CheckerViolation] = {
     val result: java.util.List[CheckerViolation] = new ArrayList()
+    val beginTime = System.currentTimeMillis()
     subcheckers.foreach({
       sub =>
         result.addAll(sub.check(model))
     })
+    logger.debug("Model checked in "+(System.currentTimeMillis()-beginTime))
     result
   }
 
