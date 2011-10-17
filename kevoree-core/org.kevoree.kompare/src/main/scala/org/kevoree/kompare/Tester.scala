@@ -29,11 +29,11 @@ object Tester extends App {
 
   val bean = new KevoreeKompareBean
 
-  val model1 = KevoreeXmiHelper.load("/Users/duke/Desktop/updateDictionary_sky.kev")
-  val model2 = KevoreeXmiHelper.load("/Users/duke/Desktop/updateDictionary_sky.kev")
+  val model1 = KevoreeXmiHelper.load("/Users/duke/Desktop/step1.kev")
+  val model2 = KevoreeXmiHelper.load("/Users/duke/Desktop/step2.kev")
 
 
-  val adapModel = bean.kompare(model1,model2,"paraisseux")
+  val adapModel = bean.kompare(model1,model2,"duke")
 
   adapModel.getAdaptations.foreach{ adaptation =>
     println(adaptation.getPrimitiveType.getName)

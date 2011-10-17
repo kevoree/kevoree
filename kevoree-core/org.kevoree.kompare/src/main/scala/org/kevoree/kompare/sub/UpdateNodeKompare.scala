@@ -211,21 +211,41 @@ trait UpdateNodeKompare extends AbstractKompare with UpdateChannelKompare {
                 case i: Channel => {
                   i.getRelatedBindings.foreach {
                     b =>
-                      adaptationModel.getAdaptations
-                        .filter(p => p.getPrimitiveType.getName == JavaSePrimitive.UpdateBinding)
-                        .find(adaptation => adaptation.getRef.asInstanceOf[MBinding].isModelEquals(b)) match {
-                        case None => {
-                          val adaptcmd = KevoreeAdaptationFactory.eINSTANCE.createAdaptationPrimitive
 
-                          adaptcmd.setPrimitiveType(getAdaptationPrimitive(JavaSePrimitive.UpdateBinding,
-                            actualNode.eContainer
-                              .asInstanceOf[ContainerRoot]))
+                      if (b.getPort.eContainer.eContainer.asInstanceOf[ContainerNode].getName == updateNode.getName) {
+                        adaptationModel.getAdaptations
+                          .filter(p => p.getPrimitiveType.getName == JavaSePrimitive.UpdateBinding)
+                          .find(adaptation => adaptation.getRef.asInstanceOf[MBinding].isModelEquals(b)) match {
+                          case None => {
+                            val adaptcmd = KevoreeAdaptationFactory.eINSTANCE.createAdaptationPrimitive
 
-                          adaptcmd.setRef(b)
-                          adaptationModel.addAdaptations(adaptcmd)
+                            adaptcmd.setPrimitiveType(getAdaptationPrimitive(JavaSePrimitive.UpdateBinding,
+                              actualNode.eContainer
+                                .asInstanceOf[ContainerRoot]))
+
+                            adaptcmd.setRef(b)
+                            adaptationModel.addAdaptations(adaptcmd)
+                          }
+                          case Some(e) => //UPDATE BINDING ALREADY RESGISTERED
                         }
-                        case Some(e) => //UPDATE BINDING ALREADY RESGISTERED
+                      } else {
+                        adaptationModel.getAdaptations.filter(p => p.getPrimitiveType.getName == JavaSePrimitive.UpdateFragmentBinding)
+                          .find(adaptation => adaptation.getRef.asInstanceOf[MBinding].isModelEquals(b)) match {
+                          case None => {
+                            val adaptcmd = KevoreeAdaptationFactory.eINSTANCE.createAdaptationPrimitive
+
+                            adaptcmd.setPrimitiveType(getAdaptationPrimitive(JavaSePrimitive.UpdateFragmentBinding,
+                              actualNode.eContainer
+                                .asInstanceOf[ContainerRoot]))
+
+                            adaptcmd.setRef(b)
+                            adaptationModel.addAdaptations(adaptcmd)
+                          }
+                          case Some(e) => //UPDATE BINDING ALREADY RESGISTERED
+                        }
                       }
+
+
                   }
                 }
                 case _ =>
@@ -234,12 +254,12 @@ trait UpdateNodeKompare extends AbstractKompare with UpdateChannelKompare {
 
             } else {
               //CHECK IS DICTIONARY IS UPDATED
-             /* if (uc.getDictionary.isEmpty) {
-                uc.setDictionary(Some(KevoreeFactory.createDictionary))
-              }
-              if (c.getDictionary.isEmpty) {
-                c.setDictionary(Some(KevoreeFactory.createDictionary))
-              } */
+              /* if (uc.getDictionary.isEmpty) {
+               uc.setDictionary(Some(KevoreeFactory.createDictionary))
+             }
+             if (c.getDictionary.isEmpty) {
+               c.setDictionary(Some(KevoreeFactory.createDictionary))
+             } */
               if (uc.getDictionary.getOrElse(KevoreeFactory.createDictionary).isUpdated(c.getDictionary.getOrElse(KevoreeFactory.createDictionary))) {
                 val adaptcmd = KevoreeAdaptationFactory.eINSTANCE.createAdaptationPrimitive
                 adaptcmd.setPrimitiveType(getAdaptationPrimitive(JavaSePrimitive.UpdateDictionaryInstance,
