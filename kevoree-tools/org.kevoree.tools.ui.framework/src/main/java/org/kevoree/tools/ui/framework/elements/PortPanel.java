@@ -112,10 +112,9 @@ public class PortPanel extends JPanel implements ErrorHighlightableElement {
         this.setSize(new Dimension(30, 30));
     }
     private Color actualFillColor = new Color(0, 0, 0, 150);
-	private Color errorFillColor = new Color(150, 150, 0, 150);
+	private Color errorFillColor = new Color(150, 0, 0, 200);
 
     protected void paintComponent(Graphics g) {
-
 
         int x = 5;
         int y = 5;

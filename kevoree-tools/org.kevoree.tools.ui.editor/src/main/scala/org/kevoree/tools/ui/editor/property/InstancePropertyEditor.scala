@@ -80,6 +80,7 @@ class InstancePropertyEditor(elem: org.kevoree.Instance, kernel: KevoreeUIKernel
       instance.getDictionary.get.addValues(value)
     }
     value.setValue(aValue.toString)
+    kernel.getModelHandler.notifyChanged()
   }
 
   //CONSTRUCTOR CODE
@@ -92,31 +93,33 @@ class InstancePropertyEditor(elem: org.kevoree.Instance, kernel: KevoreeUIKernel
   var nbLigne = 0
   if (elem.getTypeDefinition.getDictionaryType.isDefined) {
     for (att <- elem.getTypeDefinition.getDictionaryType.get.getAttributes) {
-      
+
       att.getDatatype match {
-        case _ if(att.getDatatype != "" && att.getDatatype.startsWith("enum=") && !att.getFragmentDependant) => {
+        case _ if (att.getDatatype != "" && att.getDatatype.startsWith("enum=") && !att.getFragmentDependant) => {
           val l: JLabel = new JLabel(att.getName, SwingConstants.TRAILING)
           l.setUI(new HudLabelUI)
           p.add(l)
           p.add(getEnumBox(att, l, None))
           nbLigne = nbLigne + 1
         }
-        case _ if(att.getDatatype != "" && att.getDatatype.startsWith("enum=") && att.getFragmentDependant) => {
-          getNodesLinked(elem).foreach{ nodeName =>
-            val l: JLabel = new JLabel(att.getName+"->"+nodeName, SwingConstants.TRAILING)
-            l.setUI(new HudLabelUI)
-            p.add(l)
-            p.add(getEnumBox(att, l, Some(nodeName)))
-            nbLigne = nbLigne + 1
+        case _ if (att.getDatatype != "" && att.getDatatype.startsWith("enum=") && att.getFragmentDependant) => {
+          getNodesLinked(elem).foreach {
+            nodeName =>
+              val l: JLabel = new JLabel(att.getName + "->" + nodeName, SwingConstants.TRAILING)
+              l.setUI(new HudLabelUI)
+              p.add(l)
+              p.add(getEnumBox(att, l, Some(nodeName)))
+              nbLigne = nbLigne + 1
           }
         }
-        case _ if(att.getFragmentDependant) => {
-          getNodesLinked(elem).foreach{ nodeName =>
-            val l: JLabel = new JLabel(att.getName+"->"+nodeName, SwingConstants.TRAILING)
-            l.setUI(new HudLabelUI)
-            p.add(l)
-            p.add(getTextField(att, l, Some(nodeName)))
-            nbLigne = nbLigne + 1
+        case _ if (att.getFragmentDependant) => {
+          getNodesLinked(elem).foreach {
+            nodeName =>
+              val l: JLabel = new JLabel(att.getName + "->" + nodeName, SwingConstants.TRAILING)
+              l.setUI(new HudLabelUI)
+              p.add(l)
+              p.add(getTextField(att, l, Some(nodeName)))
+              nbLigne = nbLigne + 1
           }
         }
         case _ => {
@@ -142,20 +145,20 @@ class InstancePropertyEditor(elem: org.kevoree.Instance, kernel: KevoreeUIKernel
 
   //END CONSTRUCTOR CODE
 
-  
-  def getNodesLinked(i : Instance) : List[String] = {
+
+  def getNodesLinked(i: Instance): List[String] = {
     i match {
-      case g : Group => {
+      case g: Group => {
         g.getSubNodes.map(s => s.getName)
       }
-      case c : Channel => {
+      case c: Channel => {
         import org.kevoree.framework.aspects.KevoreeAspects._
         c.getRelatedNodes.map(s => s.getName)
       }
       case _ => List()
     }
   }
-  
+
 
   def getEnumBox(att: DictionaryAttribute, label: JLabel, targetNode: Option[String]): JComponent = {
     val values: String = att.getDatatype.replaceFirst("enum=", "")

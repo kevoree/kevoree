@@ -17,7 +17,7 @@ import java.net.InetSocketAddress;
 @Library(name = "JavaSE")
 @ComponentType
 @DictionaryType({
-        @DictionaryAttribute(name = "port")
+        @DictionaryAttribute(name = "port" , defaultValue = "8080")
 })
 @Requires({
         @RequiredPort(name = "handler", type = PortType.MESSAGE)

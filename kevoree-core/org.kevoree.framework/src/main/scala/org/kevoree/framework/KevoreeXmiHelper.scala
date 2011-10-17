@@ -32,10 +32,14 @@ object KevoreeXmiHelper {
 
   def save(uri: String, root: ContainerRoot) {
     //CHECK DIRECTORY CREATION
-    val file = new File(uri.substring(0,uri.lastIndexOf('/')))
-    if (!file.exists) file.mkdirs
+    logger.debug("XmiHelper::Save::Save asked in " + uri + ". Checking folder with separator:" + File.separator)
+    val folderUri = uri.substring(0,uri.lastIndexOf(File.separator))
+    logger.debug("XmiHelper::Save::Checking and/or creating foler:" + folderUri)
+    val folder = new File(folderUri)
+    if (!folder.exists) folder.mkdirs
     val serializer = new ModelSerializer
     val pp = new PrettyPrinter(3000,1)
+    logger.debug("XmiHelper::Save::Serializing in :" + uri)
     val fileWrite = new FileWriter(uri)
     fileWrite.append(pp.format(serializer.serialize(root)))
     fileWrite.flush()
