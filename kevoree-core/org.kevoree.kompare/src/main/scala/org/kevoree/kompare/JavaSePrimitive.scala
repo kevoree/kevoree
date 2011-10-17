@@ -38,6 +38,7 @@ object JavaSePrimitive { // TODO duplicate object from kompare
   val RemoveBinding = "RemoveBinding"
   val AddFragmentBinding = "AddFragmentBinding"
   val RemoveFragmentBinding = "RemoveFragmentBinding"
+  val UpdateFragmentBinding = "UpdateFragmentBinding"
 
   val StartInstance = "StartInstance"
   val StopInstance = "StopInstance"
@@ -58,7 +59,8 @@ object JavaSePrimitive { // TODO duplicate object from kompare
        AddBinding,
        RemoveBinding,
        AddFragmentBinding,
-       RemoveFragmentBinding
+       RemoveFragmentBinding,
+       UpdateFragmentBinding
        )
   }
 
