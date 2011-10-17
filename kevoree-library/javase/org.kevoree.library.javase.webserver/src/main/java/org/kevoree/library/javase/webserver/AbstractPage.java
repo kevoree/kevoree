@@ -67,4 +67,20 @@ public class AbstractPage extends AbstractComponentType {
           return responseKevoree;
     }
 
+    @Port(name = "request")
+    public void requestHandler(Object param) {
+        KevoreeHttpRequest request = resolveRequest(param);
+        if (request != null) {
+            KevoreeHttpResponse response = buildResponse(request);
+            response = process(request,response);
+            this.getPortByName("content", MessagePort.class).process(response);//SEND MESSAGE
+        }
+    }
+
+
+    public KevoreeHttpResponse process(KevoreeHttpRequest request,KevoreeHttpResponse response){
+        //TO OVERRIDE
+        return response;
+    }
+
 }
