@@ -79,7 +79,7 @@
                         </goals>
                         <configuration>
                             <file>${project.build.directory}/classes/defaultLibrary.kev</file>
-                            <url>http://maven.kevoree.org/archiva/repository/snapshots/</url>
+                            <url>http://maven.kevoree.org/archiva/repository/release/</url>
                             <packaging>kev</packaging>
                             <groupId>${project.groupId}</groupId>
                             <artifactId>${project.artifactId}</artifactId>
@@ -144,6 +144,13 @@
             <artifactId>org.kevoree.library.javase.defaultChannels</artifactId>
             <version>${kevoree.version}</version>
         </dependency>
+        
+         <dependency>
+            <groupId>org.kevoree.library.javase</groupId>
+            <artifactId>org.kevoree.library.javase.SocketChannels</artifactId>
+            <version>${kevoree.version}</version>
+        </dependency>
+        
         <!--
         <dependency>
             <groupId>org.kevoree.library.javase</groupId>
@@ -181,7 +188,11 @@
             <artifactId>org.kevoree.library.javase.webserver</artifactId>
             <version>${kevoree.version}</version>
         </dependency>
-
+        <dependency>
+            <groupId>org.kevoree.library.javase</groupId>
+            <artifactId>org.kevoree.library.javase.webserver.components</artifactId>
+            <version>${kevoree.version}</version>
+        </dependency>
         <!-- Android -->
 
 <!--
