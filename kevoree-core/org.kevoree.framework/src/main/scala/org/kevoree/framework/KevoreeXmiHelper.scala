@@ -32,7 +32,7 @@ object KevoreeXmiHelper {
 
   def save(uri: String, root: ContainerRoot) {
     //CHECK DIRECTORY CREATION
-    val file = new File(uri.substring(0,uri.lastIndexOf('/')))
+    val file = new File(uri.substring(0,uri.lastIndexOf(File.separator)))
     if (!file.exists) file.mkdirs
     val serializer = new ModelSerializer
     val pp = new PrettyPrinter(3000,1)
