@@ -238,7 +238,7 @@ trait UpdateNodeKompare extends AbstractKompare with UpdateChannelKompare {
                               actualNode.eContainer
                                 .asInstanceOf[ContainerRoot]))
 
-                            adaptcmd.setRef(b)
+                            adaptcmd.setRef(b.getHub)
                             adaptationModel.addAdaptations(adaptcmd)
                           }
                           case Some(e) => //UPDATE BINDING ALREADY RESGISTERED

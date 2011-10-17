@@ -30,10 +30,6 @@ import java.awt.*;
     @ProvidedPort(name = "off", type = PortType.MESSAGE),
     @ProvidedPort(name = "toggle", type = PortType.SERVICE, className = ToggleLightService.class)
 })
-@DictionaryType({
-    @DictionaryAttribute(name = "param1"),
-    @DictionaryAttribute(name = "param2", defaultValue = "defVal", optional = true,vals={"defVal","defVal2"})
-})
 @ComponentType
 public class FakeSimpleLight extends AbstractFakeStuffComponent {
 
