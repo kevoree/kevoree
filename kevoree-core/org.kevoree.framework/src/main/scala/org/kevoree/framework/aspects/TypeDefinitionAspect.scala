@@ -152,6 +152,15 @@ case class TypeDefinitionAspect (selfTD: TypeDefinition) {
     if (selfTD.getDeployUnits.size != pTD.getDeployUnits.size) {
       return true
     }
+
+    val updated = selfTD.getSuperTypes.exists(std => {
+      pTD.getSuperTypes.find(ostd => std.getName == ostd.getName) match {
+        case None => true
+        case Some(ostd) => std.isUpdated(ostd)
+      }
+
+    })
+    
     //EQUALS DEPLOY UNIT SIZE CHECK FOR ONE IS UPDATED
     val oneUpdated = selfTD.getDeployUnits.exists(selfDU => {
       pTD.getDeployUnits.find(p => p.isModelEquals(selfDU)) match {
@@ -172,7 +181,7 @@ case class TypeDefinitionAspect (selfTD: TypeDefinition) {
         }
       }
     })
-    oneUpdated
+    oneUpdated || updated
   }
 
   //CHECKED
