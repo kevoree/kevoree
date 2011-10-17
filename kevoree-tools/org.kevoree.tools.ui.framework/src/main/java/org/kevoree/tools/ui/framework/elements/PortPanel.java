@@ -116,7 +116,6 @@ public class PortPanel extends JPanel implements ErrorHighlightableElement {
 
     protected void paintComponent(Graphics g) {
 
-
         int x = 5;
         int y = 5;
         int w = getWidth() - 10;
