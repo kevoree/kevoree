@@ -230,7 +230,7 @@ trait UpdateNodeKompare extends AbstractKompare with UpdateChannelKompare {
                         }
                       } else {
                         adaptationModel.getAdaptations.filter(p => p.getPrimitiveType.getName == JavaSePrimitive.UpdateFragmentBinding)
-                          .find(adaptation => adaptation.getRef.asInstanceOf[MBinding].isModelEquals(b)) match {
+                          .find(adaptation => adaptation.getRef.asInstanceOf[Channel].isModelEquals(b.getHub)) match {
                           case None => {
                             val adaptcmd = KevoreeAdaptationFactory.eINSTANCE.createAdaptationPrimitive
 
@@ -239,6 +239,7 @@ trait UpdateNodeKompare extends AbstractKompare with UpdateChannelKompare {
                                 .asInstanceOf[ContainerRoot]))
 
                             adaptcmd.setRef(b.getHub)
+                            adaptcmd.setTargetNodeName(b.getPort.eContainer.eContainer.asInstanceOf[ContainerNode].getName)
                             adaptationModel.addAdaptations(adaptcmd)
                           }
                           case Some(e) => //UPDATE BINDING ALREADY RESGISTERED
