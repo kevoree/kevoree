@@ -15,10 +15,9 @@
 -->
 <configuration>
 
-
     <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
-            <pattern>%msg%n</pattern>
+            <pattern>%-5level [%file:%line] - %msg%n</pattern>
         </encoder>
     </appender>
 
