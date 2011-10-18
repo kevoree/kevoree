@@ -14,6 +14,7 @@
 package org.kevoree.platform.osgi.standalone.gui;
 
 import com.explodingpixels.macwidgets.HudWindow;
+import com.explodingpixels.macwidgets.IAppWidgetFactory;
 import com.explodingpixels.macwidgets.plaf.HudButtonUI;
 import org.kevoree.ContainerRoot;
 import org.kevoree.platform.osgi.standalone.BootstrapActivator;
@@ -70,12 +71,19 @@ public class KevoreeGUIFrame extends JFrame {
         iconLabel.setOpaque(false);
 
         JButton btOk = new JButton("Ok");
-        // btOk.setOpaque(false);
         btOk.setUI(new HudButtonUI());
 
         layoutPopup.add(iconLabel, BorderLayout.WEST);
         final NodeTypeBootStrapUI nodeUI = new NodeTypeBootStrapUI(model);
-        layoutPopup.add(nodeUI, BorderLayout.CENTER);
+
+        nodeUI.setOpaque(false);
+        JScrollPane scrollPane = new JScrollPane(nodeUI) ;
+        IAppWidgetFactory.makeIAppScrollPane(scrollPane);
+        scrollPane.getViewport().setOpaque(false) ;
+        scrollPane.setOpaque(false);
+        scrollPane.setBorder(null) ;
+
+        layoutPopup.add(scrollPane, BorderLayout.CENTER);
         layoutPopup.add(btOk, BorderLayout.SOUTH);
 
         bootstrapPopup.setContentPane(layoutPopup);
@@ -87,28 +95,15 @@ public class KevoreeGUIFrame extends JFrame {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
                 bootstrapPopup.getJDialog().dispose();
-                String response = nodeUI.getKevName();//instanceName.getText();
-                /*String[] splitted = null;
-                if (response.contains(":")) {
-                    try {
-                        splitted = response.split(":");
-                        Integer.parseInt(splitted[1]); // use to check if the port parameter is valid
-                        System.setProperty("node.port", splitted[1]);
-                        response = splitted[0];
-                    } catch (PatternSyntaxException e) {
-                    } catch (NumberFormatException e) {
-                    }
-                }*/
+                String response = nodeUI.getKevName();
                 final String nodeName = response;
                 System.setProperty("node.name", response);
                 setTitle(nodeName + " : " + nodeUI.getKevTypeName());
-
-//                final String[] finalSplitted = splitted;
                 new Thread() {
                     @Override
                     public void run() {
 
-                        NodeTypeBootStrapModel.checkAndCreate(nodeUI.getCurrentModel(), nodeName, nodeUI.getKevTypeName().toString(),nodeUI.getKevGroupTypeName().toString(),nodeUI.getKevGroupName().toString(), nodeUI.currentProperties());
+                        NodeTypeBootStrapModel.checkAndCreate(nodeUI.getCurrentModel(), nodeName, nodeUI.getKevTypeName().toString(), nodeUI.getKevGroupTypeName().toString(), nodeUI.getKevGroupName().toString(), nodeUI.nodeInstancePanel().currentProperties(), nodeUI.groupInstancePanel().currentProperties());
                         final BootstrapActivator btA = new org.kevoree.platform.osgi.standalone.BootstrapActivator();
 
                         btA.setBootstrapModel(nodeUI.getCurrentModel());
