@@ -27,40 +27,64 @@ object NodeTypeBootStrapModel {
 
   val logger = LoggerFactory.getLogger(this.getClass)
 
-  def checkAndCreate(model: ContainerRoot, nodeName: String, nodeTypeName: String, groupTypeName: String, groupName: String, props: Properties) {
-    val node : ContainerNode = model.getNodes.find {
+  def checkAndCreate(model: ContainerRoot, nodeName: String, nodeTypeName: String, groupTypeName: String, groupName: String, propsNode: Properties, propsGroup: Properties) {
+    val node: ContainerNode = model.getNodes.find {
       node => node.getName == nodeName
     } match {
       case Some(node) => {
         if (node.getTypeDefinition.getName != nodeTypeName) {
           logger.error("NodeType consistency error !")
           model.addNodes(node)
-          createNode(model, nodeName, nodeTypeName, props)
+          createNode(model, nodeName, nodeTypeName, propsNode)
         } else {
           node
         }
       }
       case None => {
-        createNode(model, nodeName, nodeTypeName, props)
+        createNode(model, nodeName, nodeTypeName, propsNode)
       }
     }
     model.getGroups.find(g => g.getName == groupName) match {
       case Some(g) => println("Already present group ")
       case None => {
-        model.getTypeDefinitions.filter(td => td.isInstanceOf[GroupType]).find(td => td.getName == groupTypeName) match {
-          case Some(groupTypeDef) => {
-            val group = KevoreeFactory.eINSTANCE.createGroup
-            group.setName(groupName)
-            group.setTypeDefinition(groupTypeDef)
-            model.addGroups(group)
-            group.addSubNodes(node)
-          }
-          case None => logger.error("Type node found => "+groupTypeName)
-        }
+        createGroup(node,model,groupName,groupTypeName,propsGroup)
       }
     }
 
 
+  }
+
+  private def createGroup(node : ContainerNode,model: ContainerRoot, groupName: String, groupTypeName: String, props: Properties): Group = {
+    model.getTypeDefinitions.filter(td => td.isInstanceOf[GroupType]).find(td => td.getName == groupTypeName) match {
+      case Some(groupTypeDef) => {
+        val group = KevoreeFactory.eINSTANCE.createGroup
+        group.setName(groupName)
+        group.setTypeDefinition(groupTypeDef)
+        val propsmodel = KevoreeFactory.eINSTANCE.createDictionary
+        import scala.collection.JavaConversions._
+        props.keySet().foreach {
+          key =>
+            if (groupTypeDef.getDictionaryType.isDefined) {
+              groupTypeDef.getDictionaryType.get.getAttributes.find(att => att.getName == key) match {
+                case Some(att) => {
+                  val newValue = KevoreeFactory.eINSTANCE.createDictionaryValue
+                  newValue.setAttribute(att)
+                  newValue.setValue(props.get(key).toString)
+                  propsmodel.addValues(newValue)
+                }
+                case None => logger.warn("Node bootstrap property lost " + key)
+              }
+            } else {
+              logger.warn("Node bootstrap property lost " + key)
+            }
+        }
+        group.setDictionary(Some(propsmodel))
+        model.addGroups(group)
+        group.addSubNodes(node)
+        group
+      }
+      case None => logger.error("Type node found => " + groupTypeName); null
+    }
   }
 
   private def createNode(model: ContainerRoot, nodeName: String, nodeTypeName: String, props: Properties): ContainerNode = {
@@ -93,7 +117,7 @@ object NodeTypeBootStrapModel {
         node.setDictionary(Some(propsmodel))
         node
       }
-      case None => logger.error("NodeType definition not found") ; null
+      case None => logger.error("NodeType definition not found"); null
     }
   }
 
