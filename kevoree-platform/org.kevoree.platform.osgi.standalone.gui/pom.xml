@@ -75,11 +75,13 @@
             <artifactId>logback-classic</artifactId>
             <version>0.9.24</version>
         </dependency>
+        <!--
         <dependency>
             <groupId>org.kevoree</groupId>
             <artifactId>org.kevoree.remote</artifactId>
             <version>${kevoree.version}</version>
         </dependency>
+        -->
         <dependency>
             <groupId>org.kevoree.platform</groupId>
             <artifactId>org.kevoree.platform.osgi.standalone</artifactId>
@@ -153,7 +155,7 @@
                         </goals>
                         <configuration>
                             <filters>
-                                org.apache.felix,org.osgi,scala,org.ops4j,org.eclipse.emf,org.slf4j,org.kevoree,org.restlet,org.kevoree.tools
+                                org.apache.felix,org.osgi,scala,org.ops4j,org.slf4j,org.kevoree,org.kevoree.tools
                             </filters>
                         </configuration>
                     </execution>
@@ -297,7 +299,6 @@
                         -->
                         <option>-keep class org.slf4j.** { *; }</option>
                         <option>-keep class org.osgi.** { *; }</option>
-                        <option>-keep class org.restlet.resource.** { *; }</option>
                         <option>-keep class scala.runtime.** { *; }</option>
                         <option>-keep class scala.Tuple2 { *; }</option>
                         <option>-keep class scala.** { *; }</option>
@@ -307,7 +308,6 @@
                         <option>-keep class org.kevoree.annotation.** { *; }</option>
                         <option>-keep class org.kevoree.api.** { *; }</option>
                         <option>-keep class org.kevoree.framework.** { *; }</option>
-                        <option>-keep class org.kevoree.remote.** { *; }</option>
                         <option>-keep class org.kevoree.** { *; }</option>
                         <option>-keep class org.kevoree.tools.aether.framework.** { *; }</option>
                         <option>-keepattributes *Annotation*</option>
