@@ -22,6 +22,7 @@
 
     <modules>
         <module>../org.kevoree.library.model.all</module>
+        <module>../org.kevoree.library.model.bootstrap</module>
     </modules>
 
     <repositories>
