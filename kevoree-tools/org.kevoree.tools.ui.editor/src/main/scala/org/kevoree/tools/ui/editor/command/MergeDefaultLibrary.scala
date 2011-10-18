@@ -15,10 +15,13 @@ package org.kevoree.tools.ui.editor.command
 
 import java.net.URL
 import org.kevoree.framework.KevoreeXmiHelper
-import java.io.{File, BufferedReader, InputStreamReader, OutputStreamWriter}
 import org.kevoree.tools.ui.editor.{PositionedEMFHelper, KevoreeUIKernel}
 import org.slf4j.LoggerFactory
 import org.kevoree.tools.aether.framework.AetherUtil
+import org.kevoree.KevoreeFactory
+import java.util.Random
+import java.io._
+import java.util.jar.{JarEntry, JarFile}
 
 class MergeDefaultLibrary extends Command {
 
@@ -28,28 +31,14 @@ class MergeDefaultLibrary extends Command {
 
   def setKernel(k: KevoreeUIKernel) = kernel = k
 
-  var snapshot : Boolean = false
-
-  def setSnapshot(p : Boolean) = { snapshot = p }
-
   def execute(p: Object) {
 
     try {
 
-      var file : File = null
-      if(snapshot){
-          AetherUtil.resolveMavenArtifact("org.kevoree.library.model.all","org.kevoree.library.model","1.4.0-SNAPSHOT",)
-      } else {
-         url = new URL("http://dist.kevoree.org/KevoreeLibraryStable.php");
-      }
-
-      // Get the response
-
-
-
-
-      val newmodel = KevoreeXmiHelper.loadStream()
-
+       val file = AetherUtil.resolveMavenArtifact("org.kevoree.library.model.all","org.kevoree.library.model",KevoreeFactory.getVersion,List("http://maven.kevoree.org/release","http://maven.kevoree.org/snapshots"))
+       val jar = new JarFile(file)
+       val entry: JarEntry = jar.getJarEntry("KEV-INF/lib.kev")
+       val newmodel = KevoreeXmiHelper.loadStream(jar.getInputStream(entry))
       if (newmodel != null) {
         kernel.getModelHandler().merge(newmodel);
 
@@ -76,6 +65,8 @@ class MergeDefaultLibrary extends Command {
 
 
   }
+
+
 
 
 }

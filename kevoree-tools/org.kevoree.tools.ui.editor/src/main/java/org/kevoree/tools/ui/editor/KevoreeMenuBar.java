@@ -79,18 +79,12 @@ public class KevoreeMenuBar extends JMenuBar {
         model.add(mergeLib);
 
 
-        JMenuItem mergeDefLib = new JMenuItem("Merge Base Stable Lib");
+        JMenuItem mergeDefLib = new JMenuItem("Merge BaseLib");
         MergeDefaultLibrary cmdLDEFL = new MergeDefaultLibrary();
         cmdLDEFL.setKernel(kernel);
-        cmdLDEFL.setSnapshot(false);
         mergeDefLib.addActionListener(new CommandActionListener(cmdLDEFL));
         model.add(mergeDefLib);
-        JMenuItem mergeDefLibSnap = new JMenuItem("Merge Base Snapshot Lib");
-        MergeDefaultLibrary cmdLDEFL2 = new MergeDefaultLibrary();
-        cmdLDEFL2.setKernel(kernel);
-        cmdLDEFL2.setSnapshot(true);
-        mergeDefLibSnap.addActionListener(new CommandActionListener(cmdLDEFL2));
-        model.add(mergeDefLibSnap);
+
 
 
         JMenuItem checkModel = new JMenuItem("Check");
