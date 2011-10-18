@@ -50,9 +50,9 @@
             <version>${kevoree.version}</version>
         </dependency>
         <dependency>
-            <groupId>com.explodingpixels</groupId>
-            <artifactId>mac_widgets</artifactId>
-            <version>0.9.5</version>
+            <groupId>org.kevoree.extra</groupId>
+            <artifactId>org.kevoree.extra.macwidgets</artifactId>
+            <version>0.9.6</version>
         </dependency>
         <dependency>
             <groupId>org.ops4j.pax.url</groupId>
@@ -75,13 +75,6 @@
             <artifactId>logback-classic</artifactId>
             <version>0.9.24</version>
         </dependency>
-        <!--
-        <dependency>
-            <groupId>org.kevoree</groupId>
-            <artifactId>org.kevoree.remote</artifactId>
-            <version>${kevoree.version}</version>
-        </dependency>
-        -->
         <dependency>
             <groupId>org.kevoree.platform</groupId>
             <artifactId>org.kevoree.platform.osgi.standalone</artifactId>
@@ -340,14 +333,6 @@
                         <option>
                             -keepclassmembers class org.kevoree.framework.**
                         </option>
-                        <!--
-                        <option>
-                            -keepclassmembers class org.restlet.**
-                        </option>
-                        <option>
-                            -keepclassmembers class org.kevoree.remote.rest.**
-                        </option>
-                         -->
                     </options>
                     <assembly>
                         <inclusions>

@@ -13,15 +13,13 @@
  */
 package org.kevoree.platform.osgi.standalone.gui
 
-import javax.swing._
-import event.{DocumentEvent, DocumentListener}
 import java.awt.event.{ActionEvent, ActionListener}
-import java.awt.{Dimension, BorderLayout}
 import org.kevoree._
 import framework.KevoreeXmiHelper
-import java.util.Properties
 import com.explodingpixels.macwidgets.{IAppWidgetFactory, HudWidgetFactory}
 import com.explodingpixels.macwidgets.plaf.{HudButtonUI, HudLabelUI, HudTextFieldUI, HudComboBoxUI}
+import java.awt.{FlowLayout, Dimension, BorderLayout}
+import javax.swing._
 
 /**
  * User: ffouquet
@@ -31,25 +29,16 @@ import com.explodingpixels.macwidgets.plaf.{HudButtonUI, HudLabelUI, HudTextFiel
 
 class NodeTypeBootStrapUI(pkernel: ContainerRoot) extends JPanel {
 
-  var instanceName: JTextField = _
-  var groupName: JTextField = _
   var nodeTypeComboBox: JComboBox = _
   var groupTypeComboBox: JComboBox = _
-
-  var currentProperties = new Properties()
-  var currentModel = pkernel
-
-  var previousTopLayout : JComponent = null
-
-  def getCurrentModel: ContainerRoot = currentModel
-
-  private var previousFound = false
+  var nodeInstancePanel : InstanceParamPanel = _
+  var groupInstancePanel : InstanceParamPanel = _
 
   def getKevName = {
-    instanceName.getText
+    nodeInstancePanel.getInstanceName
   }
   def getKevGroupName = {
-    groupName.getText
+    groupInstancePanel.getInstanceName
   }
   def getKevTypeName = {
     nodeTypeComboBox.getSelectedItem
@@ -59,14 +48,17 @@ class NodeTypeBootStrapUI(pkernel: ContainerRoot) extends JPanel {
     groupTypeComboBox.getSelectedItem
   }
 
+  private var model = pkernel
+  def getCurrentModel = model
 
-  init(pkernel)
   this.setOpaque(false)
+  init(pkernel)
 
   //CALL INIT
   def init(kernel: ContainerRoot) {
-    currentModel = kernel
+    this.setLayout(new BoxLayout(this,BoxLayout.PAGE_AXIS))
     this.removeAll()
+    model = kernel
     val nodeTypeModel = new DefaultComboBoxModel
     kernel.getTypeDefinitions.filter(td => td.isInstanceOf[org.kevoree.NodeType] && td.getDeployUnits.exists(du => du.getTargetNodeType != null )).foreach {
       td =>
@@ -83,73 +75,13 @@ class NodeTypeBootStrapUI(pkernel: ContainerRoot) extends JPanel {
     groupTypeComboBox = new JComboBox(groupTypeModel)
     groupTypeComboBox.setUI(new HudComboBoxUI())
 
-    instanceName = new JTextField(10)
-    instanceName.setUI(new HudTextFieldUI)
-
-    groupName = new JTextField(10)
-    groupName.setUI(new HudTextFieldUI)
-    groupName.setText("sync")
-
-    instanceName.getDocument.addDocumentListener(new DocumentListener() {
-      def insertUpdate(p1: DocumentEvent) {
-        execute()
-      }
-
-      def removeUpdate(p1: DocumentEvent) {
-        execute()
-      }
-
-      def changedUpdate(p1: DocumentEvent) {
-        execute()
-      }
-
-      def execute() {
-        if (currentModel.getNodes.exists(n => n.getName == instanceName.getText)) {
-          if (!previousFound) {
-            previousFound = true
-            nodeTypeComboBox.setSelectedItem(currentModel.getNodes.find(n => n.getName == instanceName.getText).get.getTypeDefinition.getName)
-            refreshBottom()
-          }
-        } else {
-          if (previousFound) {
-            previousFound = false
-            refreshBottom()
-          }
-        }
-      }
-
-      def refreshBottom() {
-        currentProperties.clear() // CLEAR PREVIOUS DICTIONARY
-        removeAll()
-        val globalLayout = new JPanel()
-        globalLayout.setOpaque(false)
-        globalLayout.setLayout(new BorderLayout())
-        globalLayout.add(previousTopLayout, BorderLayout.NORTH)
-        globalLayout.add(
-          getParamsPanel(
-            kernel.getTypeDefinitions.find(td => td.getName == nodeTypeComboBox.getSelectedItem.toString).get
-            , getDefValue(instanceName.getText, currentModel,nodeTypeComboBox.getSelectedItem.toString)), BorderLayout.CENTER)
-        add(globalLayout)
-        repaint()
-        revalidate()
-      }
-
-    })
-
-    val nodeNameLabel = new JLabel("Node name", SwingConstants.TRAILING);
-    nodeNameLabel.setUI(new HudLabelUI());
-    nodeNameLabel.setOpaque(false);
-    nodeNameLabel.setLabelFor(instanceName);
+    nodeInstancePanel = new InstanceParamPanel(getTypeDefinition(nodeTypeComboBox),"node1")
+    groupInstancePanel = new InstanceParamPanel(getTypeDefinition(groupTypeComboBox),"sync")
 
     val nodeTypeLabel = new JLabel("Node type", SwingConstants.TRAILING);
     nodeTypeLabel.setUI(new HudLabelUI());
     nodeTypeLabel.setOpaque(false);
     nodeTypeLabel.setLabelFor(nodeTypeComboBox);
-    
-    val groupNameLabel = new JLabel("Group name", SwingConstants.TRAILING);
-    groupNameLabel.setUI(new HudLabelUI());
-    groupNameLabel.setOpaque(false);
-    groupNameLabel.setLabelFor(groupName);
 
     val groupTypeLabel = new JLabel("Group type", SwingConstants.TRAILING);
     groupTypeLabel.setUI(new HudLabelUI());
@@ -175,142 +107,62 @@ class NodeTypeBootStrapUI(pkernel: ContainerRoot) extends JPanel {
         }
       }
     })
+
     val bootModelLabel = new JLabel("Bootstrap", SwingConstants.TRAILING);
     bootModelLabel.setUI(new HudLabelUI());
     bootModelLabel.setOpaque(false);
     bootModelLabel.setLabelFor(btBrowse);
 
-    val topLayout = new JPanel()
-    topLayout.setOpaque(false)
-    topLayout.setLayout(new SpringLayout)
-    topLayout.add(nodeNameLabel)
-    topLayout.add(instanceName)
-    topLayout.add(nodeTypeLabel)
-    topLayout.add(nodeTypeComboBox)
+    val browseLayout = new JPanel()
+    browseLayout.setOpaque(false)
+    browseLayout.setLayout(new SpringLayout)
+    browseLayout.add(bootModelLabel)
+    browseLayout.add(btBrowse)
+    SpringUtilities.makeCompactGrid(browseLayout, 1, 2, 3, 3, 3, 3)
+    add(browseLayout)
+
+    val nodeLayout = new JPanel()
+    nodeLayout.setOpaque(false)
+    nodeLayout.setLayout(new SpringLayout)
+    nodeLayout.add(nodeTypeLabel)
+    nodeLayout.add(nodeTypeComboBox)
+    SpringUtilities.makeCompactGrid(nodeLayout, 1, 2, 3, 3, 3, 3)
+    add(nodeLayout)
+    add(nodeInstancePanel)
+
+    val groupLayout = new JPanel()
+    groupLayout.setOpaque(false)
+    groupLayout.setLayout(new SpringLayout)
+    groupLayout.add(groupTypeLabel)
+    groupLayout.add(groupTypeComboBox)
+    SpringUtilities.makeCompactGrid(groupLayout, 1, 2, 3, 3, 3, 3)
+    add(groupLayout)
+    add(groupInstancePanel)
+
+    val pointer = this
     
-    topLayout.add(groupNameLabel)
-    topLayout.add(groupName)
-    
-    topLayout.add(groupTypeLabel)
-    topLayout.add(groupTypeComboBox)
-    topLayout.add(bootModelLabel)
-    topLayout.add(btBrowse)
-    SpringUtilities.makeCompactGrid(topLayout, 5, 2, 6, 6, 6, 6)
-
-    previousTopLayout = topLayout
-
-    val globalLayout = new JPanel()
-    globalLayout.setOpaque(false)
-    globalLayout.setLayout(new BorderLayout())
-    globalLayout.add(topLayout, BorderLayout.NORTH)
-    globalLayout.add(
-      getParamsPanel(
-        kernel.getTypeDefinitions.find(td => td.getName == nodeTypeComboBox.getSelectedItem.toString).get
-        , getDefValue(instanceName.getText, currentModel,nodeTypeComboBox.getSelectedItem.toString)), BorderLayout.CENTER)
-
     nodeTypeComboBox.addActionListener(new ActionListener() {
       override def actionPerformed(actionEvent: ActionEvent) {
-        removeAll()
-        val globalLayout = new JPanel()
-        globalLayout.setOpaque(false)
-        globalLayout.setLayout(new BorderLayout())
-        globalLayout.add(topLayout, BorderLayout.NORTH)
-        currentProperties.clear() // CLEAR PREVIOUS DICTIONARY
-        //globalLayout.add(getParamsPanel(kernel.getTypeDefinitions.find(td => td.getName == nodeTypeComboBox.getSelectedItem.toString).get), BorderLayout.CENTER)
-        globalLayout.add(
-          getParamsPanel(
-            kernel.getTypeDefinitions.find(td => td.getName == nodeTypeComboBox.getSelectedItem.toString).get
-            , getDefValue(instanceName.getText, currentModel,nodeTypeComboBox.getSelectedItem.toString)), BorderLayout.CENTER)
-        add(globalLayout)
-        repaint()
+        nodeInstancePanel.setNodeTypeDefinition(getTypeDefinition(nodeTypeComboBox))
+        nodeInstancePanel.reload()
         revalidate()
+        repaint()
       }
     })
 
-    add(globalLayout)
-  }
-
-  def refreshBottom(){
-
-  }
-
-
-  def getParamsPanel(nodeTypeDefinition: TypeDefinition, props: Properties): JComponent = {
-    val p = new JPanel(new SpringLayout)
-    p.setBorder(null)
-    if (nodeTypeDefinition.getDictionaryType.isDefined) {
-      nodeTypeDefinition.getDictionaryType.get.getAttributes.foreach {
-        att =>
-          val l = new JLabel(att.getName, SwingConstants.TRAILING)
-          l.setUI(new HudLabelUI)
-          p.add(l)
-          if (att.getDatatype != "") {
-            if (att.getDatatype.startsWith("enum=")) {
-              val values: String = att.getDatatype.replaceFirst("enum=", "")
-              val valuesModel = new DefaultComboBoxModel
-              values.split(",").foreach {
-                v => valuesModel.addElement(v)
-              }
-              val comboBox: JComboBox = HudWidgetFactory.createHudComboBox(valuesModel)
-              l.setLabelFor(comboBox)
-              p.add(comboBox)
-
-              if (props.get(att.getName) != null) {
-                comboBox.setSelectedItem(props.get(att.getName))
-              }
-              comboBox.addActionListener(new ActionListener {
-                def actionPerformed(actionEvent: ActionEvent): Unit = {
-                  currentProperties.put(att.getName, comboBox.getSelectedItem.toString)
-                }
-              })
-            }
-          } else {
-            val textField: JTextField = new JTextField(10)
-            textField.setUI(new HudTextFieldUI)
-            l.setLabelFor(textField)
-            p.add(textField)
-            if (props.get(att.getName) != null) {
-              textField.setText(props.get(att.getName).toString)
-            }
-            textField.addActionListener(new ActionListener {
-              def actionPerformed(p1: ActionEvent) {
-                currentProperties.put(att.getName, textField.getText)
-              }
-            })
-          }
-      }
-      SpringUtilities.makeCompactGrid(p, nodeTypeDefinition.getDictionaryType.get.getAttributes.size, 2, 6, 6, 6, 6)
-    }
-
-
-    p.setOpaque(false)
-    val scrollPane: JScrollPane = new JScrollPane(p)
-    IAppWidgetFactory.makeIAppScrollPane(scrollPane)
-    scrollPane.getViewport.setOpaque(false)
-    scrollPane.setOpaque(false)
-    scrollPane.setBorder(null)
-    scrollPane.setPreferredSize(new Dimension(250, 80))
-    scrollPane
-  }
-
-  def getDefValue(nodeName: String, model: ContainerRoot, typeName : String): Properties = {
-    val props = new Properties
-    model.getTypeDefinitions.find(td => td.getName == typeName).map( td => {
-      if(td.getDictionaryType.isDefined && td.getDictionaryType.get.getDefaultValues != null){
-        td.getDictionaryType.get.getDefaultValues.foreach{ defVal =>
-              props.put(defVal.getAttribute.getName, defVal.getValue)
-        }
+    groupTypeComboBox.addActionListener(new ActionListener() {
+      override def actionPerformed(actionEvent: ActionEvent) {
+        groupInstancePanel.setNodeTypeDefinition(getTypeDefinition(groupTypeComboBox))
+        groupInstancePanel.reload()
+        revalidate()
+        repaint()
       }
     })
-    model.getNodes.find(node => node.getName == nodeName).map {
-      nodeFound =>
-        if (nodeFound.getDictionary.isDefined) {
-          nodeFound.getDictionary.get.getValues.foreach {
-            dicVal =>
-              props.put(dicVal.getAttribute.getName, dicVal.getValue)
-          }
-        }
-    }
-    props
+    //SpringUtilities.makeCompactGrid(this, 5, 1, 1, 1, 1, 1)
   }
+
+  def getTypeDefinition(box : JComboBox) : TypeDefinition = {
+    pkernel.getTypeDefinitions.find(td => td.getName == box.getSelectedItem).get
+  }
+
 }
