@@ -172,7 +172,8 @@
         <module>../org.kevoree.deploy.osgi</module>
         <module>../org.kevoree.basechecker</module>
         <module>../org.kevoree.core</module>
-        <module>../org.kevoree.remote</module>
+      <!--  <module>../org.kevoree.remote</module>-->
+
 
     </modules>
 
