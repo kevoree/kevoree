@@ -21,7 +21,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.*;
 
-@Library(name = "socketChannel")
+@Library(name = "JavaSE")
 @ChannelTypeFragment
 @DictionaryType({
         @DictionaryAttribute(name="port",defaultValue="9000",optional=true, fragmentDependant = true),

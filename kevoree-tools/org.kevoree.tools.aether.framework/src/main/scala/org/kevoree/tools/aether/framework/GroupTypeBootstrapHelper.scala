@@ -40,7 +40,7 @@ class GroupTypeBootstrapHelper {
       case Some(group) => {
         val groupTypeDeployUnitList = group.getTypeDefinition.getDeployUnits.toList
         if (groupTypeDeployUnitList.size > 0) {
-          logger.debug("groupType installation => " + installNodeTyp(group.getTypeDefinition.asInstanceOf[GroupType], bundleContext))
+          logger.debug("groupType installation => " + installGroupTyp(group.getTypeDefinition.asInstanceOf[GroupType], bundleContext))
 
           val activatorPackage = KevoreeGeneratorHelper.getTypeDefinitionGeneratedPackage(group.getTypeDefinition, "JavaSENode")
           val activatorName = group.getTypeDefinition.getName + "Activator"
@@ -94,6 +94,8 @@ class GroupTypeBootstrapHelper {
     try {
       val arteFile = AetherUtil.resolveDeployUnit(du)
       if (arteFile != null) {
+        logger.debug("install => "+arteFile.getAbsolutePath)
+
         bundle = bundleContext.installBundle("file:///" + arteFile.getAbsolutePath, new FileInputStream(arteFile))
         bundle.start()
         true
@@ -115,10 +117,11 @@ class GroupTypeBootstrapHelper {
   }
 
   /* Bootstrap node type bundle in local osgi environment */
-  private def installNodeTyp(groupType: GroupType, bundleContext: BundleContext): Boolean = {
-    val superTypeBootStrap = groupType.getSuperTypes.forall(superType => installNodeTyp(superType.asInstanceOf[GroupType], bundleContext))
+  private def installGroupTyp(groupType: GroupType, bundleContext: BundleContext): Boolean = {
+    val superTypeBootStrap = groupType.getSuperTypes.forall(superType => installGroupTyp(superType.asInstanceOf[GroupType], bundleContext))
     if (superTypeBootStrap) {
       groupType.getDeployUnits.forall(ct => {
+        logger.debug("require lib for "+ct.getUnitName+"->"+ct.getRequiredLibs.size)
         ct.getRequiredLibs.forall {
           tp => installDeployUnit(tp, bundleContext)
         } && installDeployUnit(ct, bundleContext)

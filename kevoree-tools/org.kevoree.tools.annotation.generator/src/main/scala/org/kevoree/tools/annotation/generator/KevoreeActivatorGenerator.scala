@@ -27,7 +27,7 @@ import org.kevoree.framework.KevoreeGeneratorHelper
 
 object KevoreeActivatorGenerator {
   def generateActivator(root: ContainerRoot, filer: Filer, targetNodeType : String) {
-    root.getTypeDefinitions.filter(p => p.isInstanceOf[ComponentType]).foreach {
+    root.getTypeDefinitions.filter(td => td.getBean != "").filter(td => td.getBean != "").filter(p => p.isInstanceOf[ComponentType]).foreach {
       ctt =>
         val ct = ctt.asInstanceOf[ComponentType]
         val activatorPackage = KevoreeGeneratorHelper.getTypeDefinitionGeneratedPackage(ct,targetNodeType)
@@ -56,7 +56,7 @@ object KevoreeActivatorGenerator {
     }
 
     /* STEP CHANNEL TYPE DEFINITION */
-    root.getTypeDefinitions.filter(p => p.isInstanceOf[ChannelType]).foreach {
+    root.getTypeDefinitions.filter(td => td.getBean != "").filter(td => td.getBean != "").filter(p => p.isInstanceOf[ChannelType]).foreach {
       ctt =>
         val ct = ctt.asInstanceOf[ChannelType]
         val activatorPackage = KevoreeGeneratorHelper.getTypeDefinitionGeneratedPackage(ct,targetNodeType)
@@ -82,7 +82,7 @@ object KevoreeActivatorGenerator {
 
     }
 
-    root.getTypeDefinitions.filter(p => p.isInstanceOf[GroupType]).foreach {
+    root.getTypeDefinitions.filter(td => td.getBean != "").filter(td => td.getBean != "").filter(p => p.isInstanceOf[GroupType]).foreach {
       gt =>
         val groupType = gt.asInstanceOf[GroupType]
         val activatorPackage = KevoreeGeneratorHelper.getTypeDefinitionGeneratedPackage(gt,targetNodeType)

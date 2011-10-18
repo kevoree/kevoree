@@ -91,7 +91,7 @@ object KevoreeGenerator {
   }
 
   def generatePort(root:ContainerRoot,filer:Filer,targetNodeType:String){
-    root.getTypeDefinitions.filter(p=> p.isInstanceOf[ComponentType]).foreach{ctt=> var ct = ctt.asInstanceOf[ComponentType]
+    root.getTypeDefinitions.filter(td => td.getBean != "").filter(p=> p.isInstanceOf[ComponentType]).foreach{ctt=> var ct = ctt.asInstanceOf[ComponentType]
       ct.getProvided.foreach{ref=> KevoreeProvidedPortGenerator.generate(root, filer, ct, ref,targetNodeType)  }
       ct.getRequired.foreach{ref=> KevoreeRequiredPortGenerator.generate(root, filer, ct, ref,targetNodeType)  }
     }

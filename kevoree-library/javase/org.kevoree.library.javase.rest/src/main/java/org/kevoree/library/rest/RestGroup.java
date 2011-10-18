@@ -6,8 +6,6 @@ import org.kevoree.Group;
 import org.kevoree.annotation.*;
 import org.kevoree.framework.*;
 import org.kevoree.framework.Constants;
-import org.kevoree.remote.rest.Handler;
-import org.kevoree.remote.rest.KevoreeRemoteBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -31,24 +29,22 @@ import java.net.URLConnection;
 public class RestGroup extends AbstractGroupType {
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
-    private KevoreeRemoteBean remoteBean = null;
+    private ServerBootstrap server = new ServerBootstrap(this);
 
     @Start
     public void startRestGroup() {
-        Handler.setModelhandler(this.getModelService());
-        remoteBean = new KevoreeRemoteBean(this.getDictionary().get("port").toString());
-        remoteBean.start();
+        server.startServer(Integer.parseInt(this.getDictionary().get("port").toString()));
     }
 
     @Stop
     public void stopRestGroup() {
-        remoteBean.stop();
-        remoteBean = null;
+        server.stop();
     }
 
     @Override
     public void triggerModelUpdate() {
         //NOOP
+        //FORWARD TO ALL CONNECTED NODE
         //TODO
     }
 
