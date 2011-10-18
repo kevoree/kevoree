@@ -119,11 +119,13 @@
             <artifactId>logback-classic</artifactId>
             <version>0.9.28</version>
         </dependency>
+        <!--
         <dependency>
             <groupId>org.kevoree</groupId>
             <artifactId>org.kevoree.remote</artifactId>
             <version>${kevoree.version}</version>
         </dependency>
+        -->
         <dependency>
             <groupId>org.kevoree.tools</groupId>
             <artifactId>org.kevoree.tools.marShell</artifactId>
@@ -151,7 +153,7 @@
                         </goals>
                         <configuration>
                             <filters>
-                                scala,org.ops4j,org.slf4j,org.kevoree,org.restlet,org.kevoree.tools,org.apache,org.sonatype,org.codehaus,org.apache.http
+                                scala,org.ops4j,org.slf4j,org.kevoree,org.kevoree.tools,org.apache,org.sonatype,org.codehaus,org.apache.http
                             </filters>
                         </configuration>
                     </execution>
