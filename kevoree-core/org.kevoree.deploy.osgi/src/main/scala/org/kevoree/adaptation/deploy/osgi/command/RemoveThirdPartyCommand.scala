@@ -28,12 +28,12 @@ case class RemoveThirdPartyCommand(ct : DeployUnit, ctx : KevoreeDeployManager) 
   var logger = LoggerFactory.getLogger(this.getClass);
 
   def execute() : Boolean= {
-    logger.warn("Not implemented")
+    logger.warn("RemoveThirdPartyCommand::execute:: Not implemented")
     true
   }
 
   def undo() {
-    logger.warn("Not implemented")
+    logger.warn("RemoveThirdPartyCommand::undo:: Not implemented")
   }
 
 
