@@ -53,7 +53,7 @@ case class AddThirdPartyAetherCommand(deployUnit: DeployUnit, ctx: KevoreeDeploy
 		  true
 		}
       case _@e => {
-        logger.error("Install error => ",e)
+        logger.error("Deploy unit ("+deployUnit.getGroupName + ":" + deployUnit.getUnitName + ":" + deployUnit.getVersion + " at " + deployUnit.getUrl+") Installation error => ",e)
 		  false
 		}
     }
