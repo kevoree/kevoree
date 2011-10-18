@@ -26,7 +26,8 @@ import java.util.logging.Logger;
 public class App {
 
     public void start() {
-                    File mavenDir = new File(System.getProperty("user.home") + "/.m2/repository");
+
+        File mavenDir = new File(System.getProperty("user.home") + "/.m2/repository");
         if (mavenDir.exists() && mavenDir.isDirectory()) {
             System.out.println("use mavenDir=file:///" + mavenDir.getAbsoluteFile().getAbsolutePath());
             System.setProperty("org.kevoree.remote.provisioning", "file:///"+mavenDir.getAbsolutePath());
