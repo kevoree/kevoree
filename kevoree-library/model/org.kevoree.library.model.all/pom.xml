@@ -22,6 +22,7 @@
 
     <build>
         <plugins>
+
             <plugin>
                 <groupId>org.kevoree.tools</groupId>
                 <artifactId>org.kevoree.tools.merger.mavenplugin</artifactId>
@@ -33,11 +34,12 @@
                             <goal>generate</goal>
                         </goals>
                         <configuration>
-                            <model>${project.build.directory}/classes/defaultLibrary.kev</model>
+                            <model>${project.build.directory}/classes/KEV-INF/lib.kev</model>
                         </configuration>
                     </execution>
                 </executions>
             </plugin>
+            <!--
             <plugin>
                 <artifactId>maven-install-plugin</artifactId>
                 <executions>
@@ -79,7 +81,7 @@
                         </goals>
                         <configuration>
                             <file>${project.build.directory}/classes/defaultLibrary.kev</file>
-                            <url>http://maven.kevoree.org/archiva/repository/release/</url>
+                            <url>http://maven.kevoree.org/archiva/repository/snapshots/</url>
                             <packaging>kev</packaging>
                             <groupId>${project.groupId}</groupId>
                             <artifactId>${project.artifactId}</artifactId>
@@ -88,7 +90,7 @@
                     </execution>
                 </executions>
             </plugin>
-
+            -->
 
         </plugins>
     </build>
