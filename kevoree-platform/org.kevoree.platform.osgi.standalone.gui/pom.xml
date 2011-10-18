@@ -342,8 +342,8 @@
                                 <filter>!META-INF/**,!generated/**</filter>
                             </inclusion>
                             <inclusion>
-                                <groupId>com.explodingpixels</groupId>
-                                <artifactId>mac_widgets</artifactId>
+                                <groupId>org.kevoree.extra</groupId>
+                                <artifactId>org.kevoree.extra.macwidgets</artifactId>
                             </inclusion>
                         </inclusions>
                     </assembly>
