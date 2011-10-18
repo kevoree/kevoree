@@ -40,7 +40,12 @@ object KevoreeXmiHelper {
     val serializer = new ModelSerializer
     val pp = new PrettyPrinter(3000,1)
     logger.debug("XmiHelper::Save::Serializing in :" + uri)
-    val fileWrite = new FileWriter(uri)
+    val outputFile = new File(uri);
+    if(!outputFile.exists) {
+      outputFile.createNewFile
+      logger.debug("XmiHelper::Save::Creating new file.")
+    }
+    val fileWrite = new FileWriter(outputFile)
     fileWrite.append(pp.format(serializer.serialize(root)))
     fileWrite.flush()
     fileWrite.close()

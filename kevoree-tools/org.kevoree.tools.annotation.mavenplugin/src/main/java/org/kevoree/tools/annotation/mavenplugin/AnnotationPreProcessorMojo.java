@@ -269,7 +269,7 @@ public class AnnotationPreProcessorMojo extends AbstractMojo {
                 "kevoree.lib.id=" + this.project.getArtifactId(),
                 "kevoree.lib.group=" + this.project.getGroupId(),
                 "kevoree.lib.version=" + this.project.getVersion(),
-                "kevoree.lib.target=" + sourceOutputDirectory.getPath() + "/KEV-INF/lib.kev",
+                "kevoree.lib.target=" + sourceOutputDirectory.getPath() + File.separator +"KEV-INF"+File.separator+"lib.kev",
                 "kevoree.lib.tag=" + dateFormat.format(new Date()),
                 "repositories=" + repositories,
                 "otherRepositories=" + otherRepositories,
@@ -278,7 +278,7 @@ public class AnnotationPreProcessorMojo extends AbstractMojo {
         ).toArray();
 
         Resource resource = new Resource();
-        resource.setDirectory(sourceOutputDirectory.getPath() + "/KEV-INF");
+        resource.setDirectory(sourceOutputDirectory.getPath() + File.separator + "KEV-INF");
         resource.setTargetPath("KEV-INF");
         project.getResources().add(resource);
 
@@ -286,9 +286,9 @@ public class AnnotationPreProcessorMojo extends AbstractMojo {
 
         //AFTER ALL GENERATED
         try {
-            File file = new File(sourceOutputDirectory.getPath() + "/KEV-INF/lib.kev");
+            File file = new File(sourceOutputDirectory.getPath() + File.separator + "KEV-INF"+File.separator+"lib.kev");
             if (file.exists()) {
-                ContainerRoot model = KevoreeXmiHelper.load(sourceOutputDirectory.getPath() + "/KEV-INF/lib.kev");
+                ContainerRoot model = KevoreeXmiHelper.load(sourceOutputDirectory.getPath() + File.separator +"KEV-INF"+File.separator+"lib.kev");
                 KevoreeMergerComponent merger = new KevoreeMergerComponent();
 
                 for (Object dep : this.mavenProject.getCompileArtifacts()) {
@@ -305,7 +305,7 @@ public class AnnotationPreProcessorMojo extends AbstractMojo {
                         e.printStackTrace();
                     }
                 }
-                KevoreeXmiHelper.save(sourceOutputDirectory.getPath() + "/KEV-INF/lib.kev", model);
+                KevoreeXmiHelper.save(sourceOutputDirectory.getPath() + File.separator + "KEV-INF"+File.separator+"lib.kev", model);
             }
 
 
