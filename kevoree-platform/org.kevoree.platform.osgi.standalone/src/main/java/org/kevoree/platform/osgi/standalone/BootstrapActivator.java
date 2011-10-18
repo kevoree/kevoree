@@ -18,6 +18,7 @@
 package org.kevoree.platform.osgi.standalone;
 
 import org.kevoree.ContainerRoot;
+import org.kevoree.KevoreeFactory;
 import org.kevoree.api.configuration.ConfigConstants;
 import org.kevoree.api.configuration.ConfigurationService;
 import org.kevoree.api.service.core.handler.KevoreeModelHandlerService;
@@ -25,11 +26,14 @@ import org.kevoree.api.service.core.script.ScriptInterpreter;
 import org.kevoree.core.impl.KevoreeConfigServiceBean;
 import org.kevoree.core.impl.KevoreeCoreBean;
 import org.kevoree.framework.KevoreeXmiHelper;
+import org.kevoree.tools.aether.framework.AetherUtil;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.File;
 
 /**
  * @author ffouquet
@@ -48,7 +52,9 @@ public class BootstrapActivator implements BundleActivator {
 
     @Override
     public void start(BundleContext context) throws Exception {
-        if(started){return;}
+        if (started) {
+            return;
+        }
         try {
             KevoreeConfigServiceBean configBean = new KevoreeConfigServiceBean();
             coreBean = new KevoreeCoreBean();
@@ -70,7 +76,21 @@ public class BootstrapActivator implements BundleActivator {
                         logger.error("Bootstrap failed", e);
                     }
                 } else {
-                    bootstrapModel = KevoreeXmiHelper.loadStream(App.class.getClassLoader().getResourceAsStream("defaultLibrary.kev")) ;
+
+                    try {
+
+                        File file = AetherUtil.resolveMavenArtifact("org.kevoree.library.model.all", "org.kevoree.library.model", KevoreeFactory.getVersion(), List("http://maven.kevoree.org/release", "http://maven.kevoree.org/snapshots"))
+                        val jar = new JarFile(file)
+                        val entry: JarEntry = jar.getJarEntry("KEV-INF/lib.kev")
+                        val newmodel = KevoreeXmiHelper.loadStream(jar.getInputStream(entry))
+
+                        bootstrapModel = KevoreeXmiHelper.loadStream(App.class.getClassLoader().getResourceAsStream("defaultLibrary.kev"));
+
+                    } catch (Exception e) {
+                        logger.error("Bootstrap failed", e);
+                    }
+
+
                 }
             }
 
@@ -95,12 +115,14 @@ public class BootstrapActivator implements BundleActivator {
 
     @Override
     public void stop(BundleContext context) throws Exception {
-        if(!started){return;}
+        if (!started) {
+            return;
+        }
         try {
             coreBean.stop();
             started = false;
         } catch (Exception e) {
-             logger.error("Error while stopping Core ",e);
+            logger.error("Error while stopping Core ", e);
         }
 
     }
