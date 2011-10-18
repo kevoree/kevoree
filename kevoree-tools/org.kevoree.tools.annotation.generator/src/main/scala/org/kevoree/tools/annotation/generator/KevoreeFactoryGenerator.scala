@@ -31,7 +31,7 @@ object KevoreeFactoryGenerator {
   def generateFactory (root: ContainerRoot, filer: Filer, targetNodeType: String) {
 
     /* STEP COMPONENT TYPE DEFINITION */
-    root.getTypeDefinitions.filter(p => p.isInstanceOf[ComponentType]).foreach {
+    root.getTypeDefinitions.filter(td => td.getBean != "").filter(p => p.isInstanceOf[ComponentType]).foreach {
       ctt =>
         val ct = ctt.asInstanceOf[ComponentType]
         //val componentPackage = ct.getFactoryBean().substring(0, ct.getFactoryBean().lastIndexOf("."));
@@ -119,7 +119,7 @@ object KevoreeFactoryGenerator {
     }
 
     /* STEP CHANNEL TYPE DEFINITION */
-    root.getTypeDefinitions.filter(p => p.isInstanceOf[ChannelType]).foreach {
+    root.getTypeDefinitions.filter(td => td.getBean != "").filter(p => p.isInstanceOf[ChannelType]).foreach {
       ctt =>
         val ct = ctt.asInstanceOf[ChannelType]
         val channelTypePackage = KevoreeGeneratorHelper.getTypeDefinitionGeneratedPackage(ct, targetNodeType)
@@ -174,7 +174,7 @@ object KevoreeFactoryGenerator {
     }*/
 
     /* Group Type Step */
-    root.getTypeDefinitions.filter(p => p.isInstanceOf[GroupType]).foreach {
+    root.getTypeDefinitions.filter(td => td.getBean != "").filter(p => p.isInstanceOf[GroupType]).foreach {
       gt =>
         val ct = gt.asInstanceOf[GroupType]
         //val groupTypePackage = ct.getFactoryBean().substring(0, ct.getFactoryBean().lastIndexOf("."));

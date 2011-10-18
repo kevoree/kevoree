@@ -23,7 +23,7 @@ import java.lang.annotation.Target;
  *
  * @author ffouquet
  */
-@Retention(RetentionPolicy.CLASS)
+@Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.TYPE})
 public @interface ComponentType {
     java.lang.String description() default "empty";
