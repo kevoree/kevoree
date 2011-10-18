@@ -18,6 +18,7 @@ import org.kevoree.framework.KevoreeXmiHelper
 import java.io.{File, BufferedReader, InputStreamReader, OutputStreamWriter}
 import org.kevoree.tools.ui.editor.{PositionedEMFHelper, KevoreeUIKernel}
 import org.slf4j.LoggerFactory
+import org.kevoree.tools.aether.framework.AetherUtil
 
 class MergeDefaultLibrary extends Command {
 
@@ -35,38 +36,19 @@ class MergeDefaultLibrary extends Command {
 
     try {
 
-      var url : URL = null
+      var file : File = null
       if(snapshot){
-         url = new URL("http://dist.kevoree.org/KevoreeLibrarySnapshot.php");
+          AetherUtil.resolveMavenArtifact("org.kevoree.library.model.all","org.kevoree.library.model","1.4.0-SNAPSHOT",)
       } else {
          url = new URL("http://dist.kevoree.org/KevoreeLibraryStable.php");
       }
-      val conn = url.openConnection();
-      conn.setConnectTimeout(2000);
-      conn.setDoOutput(true);
-
-      //var wr = new OutputStreamWriter(conn.getOutputStream())
-      // wr.flush();
 
       // Get the response
-      val rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-      val responseURL = new StringBuilder
-      var line: String = rd.readLine;
-      while (line != null) {
-        responseURL.append(line)
-        line = rd.readLine
-      }
-      rd.close();
 
-      val libURL = responseURL.toString.trim
 
-      val urlLib = new URL(libURL);
-      val connLib = urlLib.openConnection();
-      connLib.setConnectTimeout(2000);
-      connLib.setDoOutput(true);
 
-      // Get the response
-      val newmodel = KevoreeXmiHelper.loadStream(connLib.getInputStream())
+
+      val newmodel = KevoreeXmiHelper.loadStream()
 
       if (newmodel != null) {
         kernel.getModelHandler().merge(newmodel);

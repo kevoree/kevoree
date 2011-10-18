@@ -50,6 +50,23 @@ object AetherUtil {
     locator.getService(classOf[RepositorySystem])
   }
 
+  def resolveMavenArtifact(unitName:String, groupName:String,version : String, repositoriesUrl : List[String] = List()) : File = {
+    val artifact: Artifact = new DefaultArtifact(List(groupName, unitName, version).mkString(":"))
+    val artifactRequest = new ArtifactRequest
+    artifactRequest.setArtifact(artifact)
+    val repositories: java.util.List[RemoteRepository] = new java.util.ArrayList();
+    repositoriesUrl.foreach{ repository =>
+      val repo = new RemoteRepository
+      val purl = repository.trim.replace(':', '_').replace('/', '_').replace('\\', '_')
+      repo.setId(purl)
+      repo.setUrl(repository)
+    }
+    artifactRequest.setRepositories(repositories)
+    val artefactResult = newRepositorySystem.resolveArtifact(newRepositorySystemSession, artifactRequest)
+    artefactResult.getArtifact.getFile
+  }
+  
+  
   def resolveDeployUnit(du: DeployUnit): File = {
 
 
