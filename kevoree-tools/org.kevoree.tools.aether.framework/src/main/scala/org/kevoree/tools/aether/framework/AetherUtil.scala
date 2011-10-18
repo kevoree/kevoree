@@ -50,7 +50,7 @@ object AetherUtil {
     locator.getService(classOf[RepositorySystem])
   }
 
-  def resolveKevoreeArtifact(unitName:String, groupName:String,version : String) {
+  def resolveKevoreeArtifact(unitName:String, groupName:String,version : String) : File = {
     resolveMavenArtifact(unitName,groupName,version,List("http://maven.kevoree.org/release","http://maven.kevoree.org/snapshots"))
   }
 
