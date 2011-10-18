@@ -39,8 +39,10 @@ object PositionedEMFHelper {
     })
     model.getGroups.foreach(group => {
       val groupPanel = kernel.getUifactory.getMapping.get(group).asInstanceOf[GroupPanel];
-      val metadata = "x=" + groupPanel.getX + "," + "y=" + groupPanel.getY
-      group.setMetaData(metadata)
+      if (groupPanel != null) {
+        val metadata = "x=" + groupPanel.getX + "," + "y=" + groupPanel.getY
+        group.setMetaData(metadata)
+      }
     })
   }
 

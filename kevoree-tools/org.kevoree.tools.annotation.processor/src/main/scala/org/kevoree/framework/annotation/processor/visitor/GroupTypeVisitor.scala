@@ -22,13 +22,8 @@ import com.sun.mirror.apt.AnnotationProcessorEnvironment
 import com.sun.mirror.declaration.ClassDeclaration
 import com.sun.mirror.declaration.MethodDeclaration
 import com.sun.mirror.util.SimpleDeclarationVisitor
-
-import org.kevoree.framework.annotation.processor.visitor.sub.DeployUnitProcessor
-import org.kevoree.framework.annotation.processor.visitor.sub.DictionaryProcessor
-import org.kevoree.framework.annotation.processor.visitor.sub.LibraryProcessor
-import org.kevoree.framework.annotation.processor.visitor.sub.LifeCycleMethodProcessor
-import org.kevoree.framework.annotation.processor.visitor.sub.ThirdPartyProcessor
-import org.kevoree.{GroupType}
+import sub._
+import org.kevoree.{ComponentType, GroupType}
 
 case class GroupTypeVisitor(groupType: GroupType, env: AnnotationProcessorEnvironment)
   extends SimpleDeclarationVisitor
@@ -36,14 +31,16 @@ case class GroupTypeVisitor(groupType: GroupType, env: AnnotationProcessorEnviro
   with DictionaryProcessor
   with LibraryProcessor
   with ThirdPartyProcessor
-  with LifeCycleMethodProcessor {
+  with LifeCycleMethodProcessor
+  with TypeDefinitionProcessor{
 
   override def visitClassDeclaration(classdef: ClassDeclaration) = {
-
+    
     if (classdef.getSuperclass != null) {
       val annotFragment = classdef.getSuperclass.getDeclaration.getAnnotation(classOf[org.kevoree.annotation.GroupType])
       if (annotFragment != null) {
         classdef.getSuperclass.getDeclaration.accept(this)
+        defineAsSuperType(groupType, classdef.getSuperclass.getDeclaration.getSimpleName, classOf[GroupType])
       }
     }
 

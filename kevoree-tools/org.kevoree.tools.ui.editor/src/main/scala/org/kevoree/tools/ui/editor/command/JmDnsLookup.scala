@@ -16,10 +16,12 @@ package org.kevoree.tools.ui.editor.command
 import javax.jmdns.{ServiceInfo, JmDNS}
 
 import org.kevoree.KevoreeFactory
-import org.kevoree.tools.ui.editor.{PositionedEMFHelper, KevoreeUIKernel}
 import java.io.File
 import util.Random
 import org.kevoree.framework.{KevoreeXmiHelper, KevoreePlatformHelper}
+import org.kevoree.tools.aether.framework.GroupTypeBootstrapHelper
+import org.kevoree.tools.ui.editor.{EmbeddedOSGiEnv, PositionedEMFHelper, KevoreeUIKernel}
+import org.slf4j.LoggerFactory
 
 /**
  * User: ffouquet
@@ -29,6 +31,7 @@ import org.kevoree.framework.{KevoreeXmiHelper, KevoreePlatformHelper}
 
 class JmDnsLookup extends Command {
   var kernel: KevoreeUIKernel = null
+  private val logger = LoggerFactory.getLogger(this.getClass)
 
   def setKernel(k: KevoreeUIKernel) {
     kernel = k
@@ -41,30 +44,42 @@ class JmDnsLookup extends Command {
         JmDNSListener.lookup().foreach {
           info =>
 
-            kernel.getModelHandler.getActualModel.getTypeDefinitions.find(td => td.getName == info.getNiceTextString) match {
-              case Some(nodeTypeDef) => {
-                if (!kernel.getModelHandler.getActualModel.getNodes.exists(node => node.getName == info.getName.trim())) {
-                  val newnode = KevoreeFactory.eINSTANCE.createContainerNode
-                  newnode.setName(info.getName.trim())
-                  newnode.setTypeDefinition(nodeTypeDef)
-                  kernel.getModelHandler.getActualModel.addNodes(newnode)
-                }
-                KevoreePlatformHelper.updateNodeLinkProp(kernel.getModelHandler.getActualModel, info.getName.trim(), info.getName.trim(), org.kevoree.framework.Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP, info.getInet4Addresses()(0).getHostAddress, "LAN", 100)
-              //  KevoreePlatformHelper.updateNodeLinkProp(kernel.getModelHandler.getActualModel, info.getName.trim(), info.getName.trim(), org.kevoree.framework.Constants.KEVOREE_PLATFORM_REMOTE_NODE_MODELSYNCH_PORT, info.getPort.toString, "LAN", 100)
+            val nodeName = info.getName.trim()
+            val groupName = info.getSubtype.trim()
 
-                //TODO CALL & MERGE MODEL IF IP COMMUNICATION AVAILABLE
+            kernel.getModelHandler.getActualModel.getTypeDefinitions.find(td => td.getName == info.getNiceTextString) match {
+              case Some(groupTypeDef) => {
+                if (!kernel.getModelHandler.getActualModel.getGroups.exists(group => group.getName == groupName)) {
+                  val newgroup = KevoreeFactory.eINSTANCE.createGroup
+                  newgroup.setName(groupName)
+                  newgroup.setTypeDefinition(groupTypeDef)
+                  kernel.getModelHandler.getActualModel.addGroups(newgroup)
+                }
+
+                val bootHelper = new GroupTypeBootstrapHelper
+                bootHelper.bootstrapGroupType(kernel.getModelHandler.getActualModel, groupName, EmbeddedOSGiEnv.getFwk.getBundleContext) match {
+                  case Some(groupTypeInstance) => {
+                    val model = groupTypeInstance.pull(nodeName)
+                    kernel.getModelHandler.merge(model)
+                    PositionedEMFHelper.updateModelUIMetaData(kernel)
+                    val file = File.createTempFile("kev", new Random().nextInt + "")
+                    KevoreeXmiHelper.save(file.getAbsolutePath, kernel.getModelHandler.getActualModel);
+                    val loadCMD = new LoadModelCommand
+                    loadCMD.setKernel(kernel)
+                    loadCMD.execute(file.getAbsolutePath)
+
+                    KevoreePlatformHelper.updateNodeLinkProp(kernel.getModelHandler.getActualModel, nodeName, nodeName, org.kevoree.framework.Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP, info.getInet4Addresses()(0).getHostAddress, "LAN", 100)
+
+
+                  }
+                  case None => logger.error("Error while bootstraping group type")
+                }
               }
               case None => println(info.getNiceTextString+" type definition not found")
             }
 
 
         }
-        PositionedEMFHelper.updateModelUIMetaData(kernel)
-        val file = File.createTempFile("kev", new Random().nextInt + "")
-        KevoreeXmiHelper.save(file.getAbsolutePath, kernel.getModelHandler.getActualModel);
-        val loadCMD = new LoadModelCommand
-        loadCMD.setKernel(kernel)
-        loadCMD.execute(file.getAbsolutePath)
       }
     }.start()
 

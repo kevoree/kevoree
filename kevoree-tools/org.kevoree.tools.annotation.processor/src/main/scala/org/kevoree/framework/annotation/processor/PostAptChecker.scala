@@ -54,6 +54,11 @@ class PostAptChecker(root: ContainerRoot, env: AnnotationProcessorEnvironment) {
   }
 
   private def checkLifeCycleMethods(td: TypeDefinition) {
+    
+    if(td.getBean == ""){
+         return
+    }
+    
     td match {
 
       case ntype: NodeType => //IGNORE CHECK FOR NODE TYPE
