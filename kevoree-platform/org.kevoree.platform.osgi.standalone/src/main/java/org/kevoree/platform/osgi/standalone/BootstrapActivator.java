@@ -34,6 +34,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
+import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
 /**
@@ -80,12 +81,10 @@ public class BootstrapActivator implements BundleActivator {
 
                     try {
 
-                        File file = AetherUtil.resolveKevoreeArtifact("org.kevoree.library.model.all", "org.kevoree.library.model",KevoreeFactory.getVersion());
+                        File file = AetherUtil.resolveKevoreeArtifact("org.kevoree.library.model.bootstrap", "org.kevoree.library.model",KevoreeFactory.getVersion());
                         JarFile jar = new JarFile(file);
-                        JarEntry entry = jar.getJarEntry("KEV-INF/lib.kev")
-                        val newmodel = KevoreeXmiHelper.loadStream(jar.getInputStream(entry))
-
-                        bootstrapModel = KevoreeXmiHelper.loadStream(App.class.getClassLoader().getResourceAsStream("defaultLibrary.kev"));
+                        JarEntry entry = jar.getJarEntry("KEV-INF/lib.kev");
+                        bootstrapModel = KevoreeXmiHelper.loadStream(jar.getInputStream(entry));
 
                     } catch (Exception e) {
                         logger.error("Bootstrap failed", e);
