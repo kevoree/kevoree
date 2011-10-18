@@ -54,7 +54,7 @@ object AetherUtil {
     resolveMavenArtifact(unitName,groupName,version,List("http://maven.kevoree.org/release","http://maven.kevoree.org/snapshots"))
   }
 
-  def resolveMavenArtifact(unitName:String, groupName:String,version : String, repositoriesUrl : List[String] = List()) : File = {
+  def resolveMavenArtifact(unitName:String, groupName:String,version : String, repositoriesUrl : List[String]) : File = {
     val artifact: Artifact = new DefaultArtifact(List(groupName, unitName, version).mkString(":"))
     val artifactRequest = new ArtifactRequest
     artifactRequest.setArtifact(artifact)
@@ -64,6 +64,7 @@ object AetherUtil {
       val purl = repository.trim.replace(':', '_').replace('/', '_').replace('\\', '_')
       repo.setId(purl)
       repo.setUrl(repository)
+      repositories.add(repo)
     }
     artifactRequest.setRepositories(repositories)
     val artefactResult = newRepositorySystem.resolveArtifact(newRepositorySystemSession, artifactRequest)
