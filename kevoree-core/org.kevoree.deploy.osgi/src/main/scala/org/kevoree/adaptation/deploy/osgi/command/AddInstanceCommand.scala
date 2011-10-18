@@ -92,10 +92,10 @@ case class AddInstanceCommand(c: Instance, ctx: KevoreeDeployManager, nodeName: 
       try {
         var bundle : org.osgi.framework.Bundle = null
         if (System.getProperty("java.vm.name").equalsIgnoreCase("Dalvik")) { //TODO BETTER SOLUTION ...
-          logger.debug("Install install instance uri = " + "assembly:file://" + directory.getAbsolutePath)
+          logger.debug("Install instance uri = " + "assembly:file://" + directory.getAbsolutePath)
           bundle = ctx.bundleContext.installBundle("assembly:file://" + directory.getAbsolutePath)
         } else {
-          logger.debug("Install install instance uri = " + "assembly:file:///" + directory.getAbsolutePath)
+          logger.debug("Install instance uri = " + "assembly:file:///" + directory.getAbsolutePath)
           bundle = ctx.bundleContext.installBundle("assembly:file:///" + directory.getAbsolutePath)
         }
 
@@ -107,7 +107,12 @@ case class AddInstanceCommand(c: Instance, ctx: KevoreeDeployManager, nodeName: 
         //startLevel = Some(typebundlestartLevel + 1)
         true
       } catch {
-        case _@e => logger.error("Error while deploy Kevoree Instance", e); false
+        case _@e => {
+          var message = "Could not start the instance "+c.getName+":"+c.getClass.getName+" maybe because one of its dependencies is missing.\n"
+          message += "Please check that all dependencies of your components are marked with a 'provided' scope in the pom of the component's project.\n"
+          logger.error(message, e)
+          false
+        }
       }
     } else {
       false
