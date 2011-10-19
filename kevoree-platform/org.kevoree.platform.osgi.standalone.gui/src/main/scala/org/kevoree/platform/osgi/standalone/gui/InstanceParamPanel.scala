@@ -121,7 +121,7 @@ class InstanceParamPanel(pnodeTypeDefinition: TypeDefinition, defaultName: Strin
               p.add(comboBox)
 
               if (props.get(att.getName) != null) {
-                comboBox.setSelectedItem(props.get(att.getName))
+                comboBox.setSelectedItem(currentProperties.get(att.getName))
               }
               comboBox.addActionListener(new ActionListener {
                 def actionPerformed(actionEvent: ActionEvent): Unit = {
@@ -135,13 +135,20 @@ class InstanceParamPanel(pnodeTypeDefinition: TypeDefinition, defaultName: Strin
             l.setLabelFor(textField)
             p.add(textField)
             if (props.get(att.getName) != null) {
-              textField.setText(props.get(att.getName).toString)
+              textField.setText(currentProperties.get(att.getName).toString)
             }
-            textField.addActionListener(new ActionListener {
-              def actionPerformed(p1: ActionEvent) {
+            textField.getDocument().addDocumentListener(new DocumentListener(){
+              def insertUpdate(p1: DocumentEvent) {execute()}
+
+              def removeUpdate(p1: DocumentEvent) {execute()}
+
+              def changedUpdate(p1: DocumentEvent) {execute()}
+              
+              def execute(){
                 currentProperties.put(att.getName, textField.getText)
               }
-            })
+            });
+
           }
       }
       SpringUtilities.makeCompactGrid(p, nodeTypeDefinition.getDictionaryType.get.getAttributes.size+1, 2, 6, 6, 6, 6)
