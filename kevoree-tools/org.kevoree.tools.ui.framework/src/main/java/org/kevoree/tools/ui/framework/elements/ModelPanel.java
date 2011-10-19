@@ -87,6 +87,8 @@ public class ModelPanel extends JLayeredPane {
         CompoundPainter p = new CompoundPainter(matte);
 
         ImagePainter background = new ImagePainter();
+        background.setHorizontalRepeat(true);
+        background.setVerticalRepeat(true);
         try {
             background.setImage(ImageIO.read(this.getClass().getClassLoader().getResource("TT16s.jpg")));
             nodePanel.setBackgroundPainter(background);
