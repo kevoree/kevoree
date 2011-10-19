@@ -69,8 +69,10 @@ object NodeTypeBootStrapModel {
                 case Some(att) => {
                   val newValue = KevoreeFactory.eINSTANCE.createDictionaryValue
                   newValue.setAttribute(att)
+                  newValue.setTargetNode(node.getName)
                   newValue.setValue(props.get(key).toString)
                   propsmodel.addValues(newValue)
+
                 }
                 case None => logger.warn("Node bootstrap property lost " + key)
               }

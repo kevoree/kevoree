@@ -33,6 +33,7 @@ public class RestGroup extends AbstractGroupType {
 
     @Start
     public void startRestGroup() {
+        logger.warn("Rest service start on port "+this.getDictionary().get("port").toString());
         server.startServer(Integer.parseInt(this.getDictionary().get("port").toString()));
     }
 

@@ -32,9 +32,6 @@ trait GroupMerger extends Merger {
   private val logger = LoggerFactory.getLogger(this.getClass)
 
   def mergeAllGroups(actualModel: ContainerRoot, modelToMerge: ContainerRoot) = {
-    actualModel.getGroups.foreach {
-      group => group.setTypeDefinition(UnresolvedTypeDefinition(group.getTypeDefinition.getName))
-    }
     modelToMerge.getGroups.foreach {
       group =>
       val currentGroup = actualModel.getGroups.find(pgroup => pgroup.getName == group.getName) match {
@@ -44,12 +41,13 @@ trait GroupMerger extends Merger {
           group
         }
       }
-      val previousSubNode = currentGroup.getSubNodes
+
+      val subNodeName =  (currentGroup.getSubNodes.map{sub => sub.getName} ++ group.getSubNodes.map{sub => sub.getName}).toSet
       currentGroup.removeAllSubNodes()
-      previousSubNode.foreach{ subNode =>
-         actualModel.getNodes.find(pnode => pnode.getName == subNode.getName) match {
+      subNodeName.foreach{ subNode =>
+         actualModel.getNodes.find(pnode => pnode.getName == subNode) match {
            case Some(currentNode)=> currentGroup.addSubNodes(currentNode)
-           case None => logger.error("Unresolved node "+subNode.getName+" in links for group => "+currentGroup.getName)
+           case None => logger.error("Unresolved node "+subNode+" in links for group => "+currentGroup.getName)
          }
       }
     }
