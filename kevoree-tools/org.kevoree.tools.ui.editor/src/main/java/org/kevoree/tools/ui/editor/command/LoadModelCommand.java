@@ -21,6 +21,7 @@ import org.kevoree.*;
 import org.kevoree.framework.KevoreeXmiHelper;
 import org.kevoree.tools.ui.editor.KevoreeUIKernel;
 import org.kevoree.tools.ui.editor.MetaDataHelper;
+import org.kevoree.tools.ui.editor.widget.TempGroupBinding;
 import org.kevoree.tools.ui.framework.elements.*;
 import org.kevoree.tools.ui.framework.elements.PortPanel.PortType;
 
@@ -117,9 +118,12 @@ public class LoadModelCommand implements Command {
 			//LOAD GROUP BINDINGS
 			for (ContainerNode subNode : group.getSubNodesForJ()) {
 				NodePanel nodePanel = (NodePanel) kernel.getUifactory().getMapping().get(subNode);
-				org.kevoree.tools.ui.framework.elements.Binding uib = new Binding(Binding.Type.groupLink);
-				uib.setFrom(newgrouppanel.getAnchor());
-				uib.setTo(nodePanel);
+                TempGroupBinding groupB = new TempGroupBinding();
+                groupB.setOriginGroup(group);
+                groupB.setTargetNode(subNode);
+                groupB.setGroupPanel(newgrouppanel.getAnchor());
+                groupB.setNodePanel(nodePanel);
+                Binding uib = kernel.getUifactory().createGroupBinding(groupB);
 				kernel.getModelPanel().addBinding(uib);
 			}
 			HashMap<String, String> metaData = MetaDataHelper.getMetaDataFromInstance(group);
