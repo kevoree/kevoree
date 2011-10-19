@@ -1,3 +1,16 @@
+/**
+ * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE, Version 3, 29 June 2007;
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * 	http://www.gnu.org/licenses/lgpl-3.0.txt
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.kevoree.platform.osgi.standalone.gui
 
 import java.util.Properties
@@ -33,7 +46,7 @@ class InstanceParamPanel(pnodeTypeDefinition: TypeDefinition, defaultName: Strin
   val instanceTextField = HudWidgetFactory.createHudTextField("");
   instanceTextField.setText(defaultName)
   instanceTextField.setUI(new HudTextFieldUI)
-  instanceTextField.setText("sync")
+  instanceTextField.setText(defaultName)
   val instanceNameLabel = new JLabel(stringLabel, SwingConstants.TRAILING);
   instanceNameLabel.setUI(new HudLabelUI());
   instanceNameLabel.setOpaque(false);
@@ -108,7 +121,7 @@ class InstanceParamPanel(pnodeTypeDefinition: TypeDefinition, defaultName: Strin
               p.add(comboBox)
 
               if (props.get(att.getName) != null) {
-                comboBox.setSelectedItem(props.get(att.getName))
+                comboBox.setSelectedItem(currentProperties.get(att.getName))
               }
               comboBox.addActionListener(new ActionListener {
                 def actionPerformed(actionEvent: ActionEvent): Unit = {
@@ -122,13 +135,20 @@ class InstanceParamPanel(pnodeTypeDefinition: TypeDefinition, defaultName: Strin
             l.setLabelFor(textField)
             p.add(textField)
             if (props.get(att.getName) != null) {
-              textField.setText(props.get(att.getName).toString)
+              textField.setText(currentProperties.get(att.getName).toString)
             }
-            textField.addActionListener(new ActionListener {
-              def actionPerformed(p1: ActionEvent) {
+            textField.getDocument().addDocumentListener(new DocumentListener(){
+              def insertUpdate(p1: DocumentEvent) {execute()}
+
+              def removeUpdate(p1: DocumentEvent) {execute()}
+
+              def changedUpdate(p1: DocumentEvent) {execute()}
+              
+              def execute(){
                 currentProperties.put(att.getName, textField.getText)
               }
-            })
+            });
+
           }
       }
       SpringUtilities.makeCompactGrid(p, nodeTypeDefinition.getDictionaryType.get.getAttributes.size+1, 2, 6, 6, 6, 6)

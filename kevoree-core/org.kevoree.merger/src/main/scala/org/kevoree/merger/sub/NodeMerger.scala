@@ -29,12 +29,6 @@ trait NodeMerger extends ComponentInstanceMerger {
 
   def mergeAllNode(actualModel : ContainerRoot,modelToMerge : ContainerRoot)={
     //BREAK CROSS REFERENCE NODE TYPE
-    actualModel.getNodes.foreach{ node =>
-       node.setTypeDefinition(UnresolvedTypeDefinition(node.getTypeDefinition.getName))
-       node.getComponents.foreach { component =>
-           component.setTypeDefinition(UnresolvedTypeDefinition(component.getTypeDefinition.getName))
-       }
-    }
     modelToMerge.getNodes.foreach{toMergeNode=> mergeNode(actualModel,toMergeNode)  }
   }
 

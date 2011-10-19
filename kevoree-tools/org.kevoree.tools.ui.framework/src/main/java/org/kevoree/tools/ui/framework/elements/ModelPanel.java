@@ -30,7 +30,10 @@ import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
 import java.util.Collection;
+import javax.imageio.ImageIO;
 import javax.swing.JButton;
 import javax.swing.JLayeredPane;
 import javax.swing.JPanel;
@@ -39,6 +42,7 @@ import javax.swing.Scrollable;
 
 import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.painter.CompoundPainter;
+import org.jdesktop.swingx.painter.ImagePainter;
 import org.jdesktop.swingx.painter.MattePainter;
 import org.kevoree.tools.ui.framework.listener.DragDropLayout;
 import org.kevoree.tools.ui.framework.listener.InstanceDragSourceListener;
@@ -81,7 +85,16 @@ public class ModelPanel extends JLayeredPane {
         GradientPaint grad = new GradientPaint(new Point(0, 0), new Color(63, 128, 187), new Point(0, getHeight()), new Color(51, 51, 51));
         MattePainter matte = new MattePainter(grad);
         CompoundPainter p = new CompoundPainter(matte);
-        nodePanel.setBackgroundPainter(p);
+
+        ImagePainter background = new ImagePainter();
+        try {
+            background.setImage(ImageIO.read(this.getClass().getClassLoader().getResource("TT16s.jpg")));
+            nodePanel.setBackgroundPainter(background);
+        } catch (IOException e) {
+            nodePanel.setBackgroundPainter(p);
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
+
 
 
         addComponentListener(new ComponentAdapter() {
