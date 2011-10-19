@@ -27,7 +27,7 @@ public class ArduinoArchive {
     public void prepareCommands() {
         archCmd = new ArrayList<String>();
         archCmd.add(ArduinoToolChainExecutables.getAVR_AR());
-        archCmd.add("rcs");
+        archCmd.add("rcsv");
     }
 
     public void archiveSketch(Sketch sketch, Target target) {
