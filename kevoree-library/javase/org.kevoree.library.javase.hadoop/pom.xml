@@ -6,13 +6,14 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.kevoree.library.javase</groupId>
     <artifactId>org.kevoree.library.javase.hadoop</artifactId>
-    <packaging>bundle</packaging>
+    <packaging>jar</packaging>
     <name>Kevoree :: Library :: JavaSE :: Hadoop</name>
     <version>1.2.0</version>
 
     <properties>
         <kevoree.version>${project.version}</kevoree.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <hadoop.version>0.20.204.0</hadoop.version>
     </properties>
 
     <dependencies>
@@ -97,7 +98,7 @@
         <dependency>
             <groupId>org.apache.hadoop</groupId>
             <artifactId>hadoop-core</artifactId>
-            <version>0.20.2</version>
+            <version>${hadoop.version}</version>
         </dependency>
 
 
@@ -194,7 +195,32 @@
 
     </dependencies>
     <build>
+        <pluginManagement>
+	      <plugins>
+	        <plugin>
+	          <groupId>org.apache.maven.plugins</groupId>
+	          <artifactId>maven-shade-plugin</artifactId>
+	          <version>1.4</version>
+	        </plugin>
+	      </plugins>
+	    </pluginManagement>
         <plugins>
+<!--            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>1.4</version>
+				<executions>
+				          <execution>
+				            <phase>package</phase>
+				            <goals>
+				              <goal>shade</goal>
+				            </goals>
+				          </execution>
+				        </executions>
+                <configuration>
+                </configuration>
+            </plugin>-->
+            
             <plugin>
                 <groupId>org.kevoree.tools</groupId>
                 <artifactId>org.kevoree.tools.annotation.mavenplugin</artifactId>
@@ -212,6 +238,7 @@
                     </execution>
                 </executions>
             </plugin>
+            
             <!-- Felix BnD plugin : allow Bundle packaging : generate OSGi JAR  -->
             <plugin>
                 <groupId>org.apache.felix</groupId>
@@ -226,21 +253,21 @@
                             org.apache.commons.cli.*,
                             org.apache.commons.net.*,
                             org.apache.commons.el.*,
-                            <!--org.apache.commons.collections.*,-->
+                            org.apache.commons.collections.*,
                             org.apache.commons.codec.*,
                             org.apache.commons.httpclient.*,
-                            <!--org.apache.avalon.framework.*,-->
-                            <!--com.sun.mail.*,
+                            org.apache.avalon.framework.*,
+                            com.sun.mail.*,
                             javax.mail.*,
-                            javax.mail,-->
+                            javax.mail,
                             javax.servlet.*,
                             javax.servlet,
                             org.apache.hadoop,
                             org.apache.hadoop.*,
                             org.mortbay.*,
                             org.apache.jasper.*,
-                            <!--org.apache.log4j,
-                            org.apache.log4j.*,-->
+                            org.apache.log4j,
+                            org.apache.log4j.*,
                             org.znerd.xmlenc,
                             javax.el.*
                         </Export-Package>
