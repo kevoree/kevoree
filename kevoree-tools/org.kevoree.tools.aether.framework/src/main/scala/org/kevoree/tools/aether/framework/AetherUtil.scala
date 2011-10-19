@@ -31,6 +31,7 @@ import org.sonatype.aether.spi.localrepo.LocalRepositoryManagerFactory
 import org.sonatype.aether.impl.internal.EnhancedLocalRepositoryManagerFactory
 import util.matching.Regex
 import org.sonatype.aether.repository.{Authentication, RepositoryPolicy, RemoteRepository, LocalRepository}
+import scala.collection.JavaConversions._
 
 /**
  * User: ffouquet
@@ -39,7 +40,6 @@ import org.sonatype.aether.repository.{Authentication, RepositoryPolicy, RemoteR
  */
 
 object AetherUtil {
-
 
   val newRepositorySystem: RepositorySystem = {
     val locator = new DefaultServiceLocator()
@@ -57,6 +57,9 @@ object AetherUtil {
       resolveMavenArtifact(unitName,groupName,version,List("http://maven.kevoree.org/release/"))
     }
   }
+
+  def resolveMavenArtifact4J(unitName:String, groupName:String,version : String, repositoriesUrl : java.util.List[String]) : File =
+  resolveMavenArtifact(unitName, groupName,version, repositoriesUrl.toList)
 
   def resolveMavenArtifact(unitName:String, groupName:String,version : String, repositoriesUrl : List[String]) : File = {
     val artifact: Artifact = new DefaultArtifact(List(groupName, unitName, version).mkString(":"))
