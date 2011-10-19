@@ -4,14 +4,14 @@
  */
 package org.kevoree.library.arduinoNodeType;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
-
 import org.wayoda.ang.libraries.Core;
 import org.wayoda.ang.libraries.Library;
 import org.wayoda.ang.project.Sketch;
 import org.wayoda.ang.project.Target;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author ffouquet
@@ -60,6 +60,10 @@ public class ArduinoLink {
         /* link with the core-archive */
         linkCmd.add(sketch.getCoreBuildRoot(target).getPath() + File.separator + Core.CORE_ARCHIVE_NAME);
         linkCmd.add("-L" + sketch.getBuildRootPath(target));
+		/*for (String path : ArduinoResourceHelper.getLibraryLocation()) {
+			linkCmd.add("-B" + path);
+		}*/
+
         linkCmd.add("-lm");
         execute(linkCmd);
     }
