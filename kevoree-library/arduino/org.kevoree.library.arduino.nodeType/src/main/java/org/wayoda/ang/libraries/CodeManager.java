@@ -25,15 +25,15 @@
 
 package org.wayoda.ang.libraries;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.util.ArrayList;
-import java.util.Hashtable;
-
 import org.wayoda.ang.project.ArduinoBuildEnvironment;
 import org.wayoda.ang.project.Target;
 import org.wayoda.ang.utils.AngPreferences;
 import org.wayoda.ang.utils.FileSelector;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.ArrayList;
+import java.util.Hashtable;
 
 /**
  * Manges all the core-/standard-/user-libraries found in the environment. 
@@ -135,21 +135,21 @@ public class CodeManager {
      */
     private void reloadCores( File coreRoot ) {
 
+
         FileSelector.DirectoryFilter df = new FileSelector.DirectoryFilter();
         if ( df.accept( coreRoot ) ) {
             File[] coredirs = coreRoot.listFiles( df );
-            for (int i = 0; i < coredirs.length; i++) {
-                String key = coredirs[i].getName();
-                if ( !cores.containsKey( key ) ) {
-                    try {
-                        Core c = new Core( coredirs[i] );
-                        cores.put( key, c );
-                    }
-                    catch (Exception e) {
-                        //If there are dirs which are not cores drop silently 
-                    }
-                }
-            }
+			for (File coredir : coredirs) {
+				String key = coredir.getName();
+				if (!cores.containsKey(key)) {
+					try {
+						Core c = new Core(coredir);
+						cores.put(key, c);
+					} catch (Exception e) {
+						//If there are dirs which are not cores drop silently
+					}
+				}
+			}
         }
     }
 

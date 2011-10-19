@@ -25,12 +25,12 @@
 
 package org.wayoda.ang.libraries;
 
+import org.wayoda.ang.utils.FileSelector;
+import org.wayoda.ang.utils.FileUtils;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
-
-import org.wayoda.ang.utils.FileSelector;
-import org.wayoda.ang.utils.FileUtils;
 
 /**
  * Manages the core files for the arduino project. 
@@ -76,9 +76,9 @@ public class Core {
         else if ( !coreDir.canRead() ) {
             throw new SecurityException( "Not permitted to read contents of core source directory `" + coreDir.getName() + "`!" );
         }
-        else if ( !coreDir.canWrite() ) {
+        /*else if ( !coreDir.canWrite() ) {
             throw new SecurityException( "Not permitted to write or create files in core source directory `" + coreDir.getPath() + "`!" );
-        }
+        }*/
         this.coreDir = coreDir;
     }
 

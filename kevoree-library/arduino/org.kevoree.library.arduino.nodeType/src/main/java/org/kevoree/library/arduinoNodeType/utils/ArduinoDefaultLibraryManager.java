@@ -11,12 +11,12 @@ import java.util.logging.Logger;
  */
 public class ArduinoDefaultLibraryManager {
 
-    public static void copyDefaultLibrary() {
+    public static String copyDefaultLibrary() {
         if (ArduinoDefaultLibraryManager.class.getClassLoader().getResource("arduino/library/QueueList/QueueList.h") != null) {
             String arduinoHome = System.getProperty("arduino.home");
-            File file = new File(arduinoHome + "/libraries/QueueList");
+            File file = new File(arduinoHome + File.separator + "libraries" + File.separator + "QueueList");
             if (!file.exists()) {
-                file.mkdir();
+                file.mkdirs();
             }
 
             // System.out.println(file.getAbsolutePath() + "/QueueList.h");
@@ -24,11 +24,12 @@ public class ArduinoDefaultLibraryManager {
             //COPY FILE
             if (!new File(file.getAbsolutePath() + "/QueueList.h").exists()) {
                 copyFile(ArduinoDefaultLibraryManager.class.getClassLoader().getResourceAsStream("arduino/library/QueueList/QueueList.h")
-                        , file.getAbsolutePath() + "/QueueList.h");
+                        , file.getAbsolutePath() + File.separator + "QueueList.h");
             }
-
-
-        }
+			return arduinoHome + File.separator + "libraries" + File.separator;
+        } else {
+			return null;
+		}
     }
 
 
