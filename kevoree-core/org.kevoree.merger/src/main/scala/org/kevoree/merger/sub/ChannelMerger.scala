@@ -32,9 +32,6 @@ trait ChannelMerger extends Merger {
   private val logger = LoggerFactory.getLogger(this.getClass)
 
   def mergeAllChannels(actualModel: ContainerRoot, modelToMerge: ContainerRoot) = {
-    actualModel.getHubs.foreach {
-      hub => hub.setTypeDefinition(UnresolvedTypeDefinition(hub.getTypeDefinition.getName))
-    }
     //MERGE CHANNEL
     modelToMerge.getHubs.foreach {
       hub =>
