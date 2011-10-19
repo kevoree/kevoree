@@ -143,7 +143,7 @@ class TypeDefinitionSourceList(pane: JSplitPane, kernel: KevoreeUIKernel) {
 
   var imageProjectAdd = ImageIO.read(this.getClass.getClassLoader.getResourceAsStream("com/explodingpixels/macwidgets/images/plus.png"))
   var iconProjectAdd = new ImageIcon(imageProjectAdd)
-  var imageProjectGenerate = ImageIO.read(this.getClass.getClassLoader.getResourceAsStream("com/explodingpixels/macwidgets/icons/Project.png"))
+  var imageProjectGenerate = ImageIO.read(this.getClass.getClassLoader.getResourceAsStream("com/explodingpixels/macwidgets/images/plus.png"))
   var iconProjectGenerate = new ImageIcon(imageProjectGenerate)
 
 

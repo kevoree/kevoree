@@ -50,6 +50,23 @@ case class NodeAspect(self: ContainerNode) {
       }
     })
 
+    //REMOVE FROM NETWORK LINK
+    root.getNodeNetworks.foreach {
+      nn =>
+        if (nn.getTarget == self) {
+          root.removeNodeNetworks(nn)
+        } else {
+          nn.getInitBy.map {
+            initNode =>
+              if (initNode == self) {
+                root.removeNodeNetworks(nn)
+              }
+          }
+        }
+
+    }
+
+
 
 
     //REMOVE SUB Component
@@ -67,10 +84,11 @@ case class NodeAspect(self: ContainerNode) {
     root.removeNodes(self)
 
     //CLEANUP HOST NODE
-    kernel.getModelHandler.getActualModel.getNodes.foreach{ node =>
-       if(node.getHosts.contains(self)){
-         node.removeHosts(self)
-       }
+    kernel.getModelHandler.getActualModel.getNodes.foreach {
+      node =>
+        if (node.getHosts.contains(self)) {
+          node.removeHosts(self)
+        }
     }
 
     //UNBIND
