@@ -21,10 +21,10 @@ package org.kevoree.merger
 import org.kevoree.ContainerRoot
 import resolver.UnresolvedNodeType._
 import resolver.UnresolvedTypeDefinition._
-import resolver.{UnresolvedTypeDefinition, UnresolvedNodeType, TypeDefinitionResolver}
+import resolver.{DictionaryAttributeResolver, UnresolvedTypeDefinition, UnresolvedNodeType, TypeDefinitionResolver}
 import sub._
 
-class RootMerger extends TypeDefinitionMerger with TypeLibraryMerger with NodeMerger with RepositoryMerger with TypeDefinitionResolver with ChannelMerger with GroupMerger with CrossReferenceMerger {
+class RootMerger extends TypeDefinitionMerger with TypeLibraryMerger with NodeMerger with RepositoryMerger with TypeDefinitionResolver with DictionaryAttributeResolver with ChannelMerger with GroupMerger with CrossReferenceMerger {
 
   override def merge(actualModel: ContainerRoot, modelToMerge: ContainerRoot): Unit = {
     if (modelToMerge != null) {
@@ -45,9 +45,9 @@ class RootMerger extends TypeDefinitionMerger with TypeLibraryMerger with NodeMe
 
       resolveNodeTypeDefinition(actualModel)
       resolveSuperTypeDefinition(actualModel)
-
       resolveLibraryType(actualModel)
       resolveInstanceTypeDefinition(actualModel)
+      resolveDictionaryAttribute(actualModel)
 
     }
   }

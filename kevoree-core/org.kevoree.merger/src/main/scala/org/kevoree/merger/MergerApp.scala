@@ -31,8 +31,8 @@ object MergerApp {
     val merger = new RootMerger
     val emtpyModel = KevoreeFactory.eINSTANCE.createContainerRoot
 
-    val model1 = KevoreeXmiHelper.load("/Users/duke/Documents/dev/dukeboard/kevoree/kevoree-library/sky/org.kevoree.library.sky.minicloud/target/generated-sources/kevoree/KEV-INF/lib.kev")
-    val model2 = KevoreeXmiHelper.load("/Users/duke/Documents/dev/dukeboard/kevoree/kevoree-library/javase/org.kevoree.library.javase.javaseNode/target/generated-sources/kevoree/KEV-INF/lib.kev")
+    val model1 = KevoreeXmiHelper.load("/Users/duke/Desktop/drop2.kev.xml")
+    val model2 = KevoreeXmiHelper.load("/Users/duke/Desktop/drop.kev.xml")
 
 
     /*
