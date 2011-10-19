@@ -18,11 +18,9 @@ package org.kevoree.tools.ui.editor;
 
 import org.kevoree.*;
 import org.kevoree.framework.aspects.PortAspect;
-import org.kevoree.tools.ui.editor.command.ContextualMenuCommand;
-import org.kevoree.tools.ui.editor.command.SelectBindingCommand;
-import org.kevoree.tools.ui.editor.command.SelectInstanceCommand;
-import org.kevoree.tools.ui.editor.command.UnSelectPropertyEditor;
+import org.kevoree.tools.ui.editor.command.*;
 import org.kevoree.tools.ui.editor.listener.*;
+import org.kevoree.tools.ui.editor.widget.TempGroupBinding;
 import org.kevoree.tools.ui.framework.elements.*;
 import org.kevoree.tools.ui.framework.elements.PortPanel.PortType;
 
@@ -64,11 +62,11 @@ public class KevoreeUIFactory {
         ctui.setTypeName(ct.getName());
         ctui.setName(" ");
 
-        for(PortTypeRef p : ct.getProvidedForJ()){
+        for (PortTypeRef p : ct.getProvidedForJ()) {
             PortTypePanel portPanel = kernel.getUifactory().createPortType(p, true);
             ctui.addLeft(portPanel);
         }
-        for(PortTypeRef p : ct.getRequiredForJ()){
+        for (PortTypeRef p : ct.getRequiredForJ()) {
             PortTypePanel portPanel = kernel.getUifactory().createPortType(p, false);
             ctui.addRight(portPanel);
         }
@@ -228,6 +226,25 @@ public class KevoreeUIFactory {
     mapping.bind(bui, mb);
     return bui;
     }*/
+
+    public Binding createGroupBinding(TempGroupBinding binding) {
+        final org.kevoree.tools.ui.framework.elements.Binding uib = new Binding(Binding.Type.groupLink);
+        uib.setFrom(binding.getGroupPanel());
+        uib.setTo(binding.getNodePanel());
+        mapping.bind(uib, binding);
+        final SelectGroupBindingCommand command = new SelectGroupBindingCommand();
+        command.setKernel(kernel);
+        uib.addListener(new BindingListener() {
+            @Override
+            public void clicked() {
+                command.execute(uib);
+            }
+        });
+        
+        return uib;
+    }
+
+
     public Binding createMBinding(org.kevoree.MBinding mb) {
         Binding bui = null;
         PortAspect pa = new PortAspect(mb.getPort());
@@ -253,7 +270,6 @@ public class KevoreeUIFactory {
         bui.addListener(new BindingListener() {
             @Override
             public void clicked() {
-                System.out.println("Clicked!!");
                 command.execute(buiFinal);
             }
         });
