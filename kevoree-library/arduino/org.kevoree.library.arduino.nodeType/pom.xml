@@ -59,14 +59,18 @@
             <scope>provided</scope>
         </dependency>
 
+        <!--<dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-jdk14</artifactId>
+            <version>1.6.2</version>
+        </dependency>-->
+
         <!-- Temp dependency -->
-        <!--
-                <dependency>
-                    <groupId>org.kevoree.library.arduino</groupId>
-                    <artifactId>org.kevoree.library.arduino.components</artifactId>
-                    <version>${kevoree.version}</version>
-                </dependency>
-        -->
+        <!--<dependency>
+            <groupId>org.kevoree.library.arduino</groupId>
+            <artifactId>org.kevoree.library.arduino.components</artifactId>
+            <version>${kevoree.version}</version>
+        </dependency>-->
 
         <!--
     <dependency>
@@ -79,7 +83,6 @@
 
     <build>
         <plugins>
-
             <plugin>
                 <groupId>org.apache.felix</groupId>
                 <artifactId>maven-bundle-plugin</artifactId>
