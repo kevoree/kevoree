@@ -16,7 +16,7 @@ package org.kevoree.merger
 import org.kevoree.ContainerRoot
 import resolver.UnresolvedNodeType._
 import resolver.UnresolvedTypeDefinition._
-import resolver.{UnresolvedDictionaryAttribute, UnresolvedNodeType, UnresolvedTypeDefinition}
+import resolver.{UnresolvedNode, UnresolvedDictionaryAttribute, UnresolvedNodeType, UnresolvedTypeDefinition}
 
 /**
  * Created by IntelliJ IDEA.
@@ -59,6 +59,9 @@ trait CrossReferenceMerger {
        instance.getDictionary.map{ instanceDictionary =>
          instanceDictionary.getValues.foreach{ dictionaryValue =>
            dictionaryValue.setAttribute(UnresolvedDictionaryAttribute(dictionaryValue.getAttribute.getName))
+           dictionaryValue.getTargetNode.map{targetNode =>
+             dictionaryValue.setTargetNode(Some(UnresolvedNode(targetNode.getName)))
+           }
          }
        }
     }

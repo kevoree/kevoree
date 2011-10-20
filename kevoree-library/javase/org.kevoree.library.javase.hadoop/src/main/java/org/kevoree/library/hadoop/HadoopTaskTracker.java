@@ -1,6 +1,7 @@
 package org.kevoree.library.hadoop;
 
 import java.io.IOException;
+import java.net.InetAddress;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -57,6 +58,8 @@ public class HadoopTaskTracker extends HadoopComponent {
         /*
          * @FIXME : use while instead of foreach
          */
+        
+        /*
         for (ContainerNode each : this.getModelService().getLastModel().getNodes()) {
             for (ComponentInstance ci : each.getComponents()) {
                 if (jobTrackerName.equals(ci.getName())) {
@@ -73,7 +76,13 @@ public class HadoopTaskTracker extends HadoopComponent {
 
         Configuration configuration = this.getConfiguration();
         configuration.set("hadoop.jobtracker", ip);
-
+        */
+        
+        InetAddress i = InetAddress.getLocalHost();
+        String hostName = i.getHostName();
+        
+        Configuration configuration = this.getConfiguration();
+        configuration.set("mapred.job.tracker", hostName + ":9001");
 
         JobConf job = new JobConf(configuration);
         taskTracker = new TaskTracker(job);
@@ -94,5 +103,9 @@ public class HadoopTaskTracker extends HadoopComponent {
     }
     
     
+    public static void main(String[] args) throws IOException, InterruptedException {
+        HadoopTaskTracker node = new HadoopTaskTracker();
+        node.start();
+    }
     
 }

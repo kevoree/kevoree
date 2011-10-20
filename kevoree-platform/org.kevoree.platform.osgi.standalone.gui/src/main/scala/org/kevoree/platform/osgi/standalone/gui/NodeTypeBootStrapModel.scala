@@ -69,7 +69,7 @@ object NodeTypeBootStrapModel {
                 case Some(att) => {
                   val newValue = KevoreeFactory.eINSTANCE.createDictionaryValue
                   newValue.setAttribute(att)
-                  newValue.setTargetNode(node.getName)
+                  newValue.setTargetNode(Some(node))
                   newValue.setValue(props.get(key).toString)
                   propsmodel.addValues(newValue)
 

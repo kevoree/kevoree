@@ -4,6 +4,7 @@
  */
 package org.kevoree.library.hadoop;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.rmi.RemoteException;
@@ -35,6 +36,9 @@ public class HadoopJobTracker extends HadoopComponent {
     public void start() throws RemoteException, IOException,
             InterruptedException {
 
+        
+        // JobHistory log file
+        //new File("/private/var/log/hadoop/history").mkdirs();
 
 
         Configuration configuration = this.getConfiguration();
@@ -44,10 +48,37 @@ public class HadoopJobTracker extends HadoopComponent {
         String jthost = hostName + ":" + configuration.get("hadoop.jobtracker.port");
         configuration.set("mapred.job.tracker", jthost);
 
+        
+        String nnhost = "hdfs://" + hostName + ":" + configuration.get("hadoop.namenode.port");
+        configuration.set("fs.default.name", nnhost);
+        
         //configuration.set("mapred.job.tracker.info.bindAddress",null);
         //configuration.set("mapred.job.tracker.info.port",null);
+        
+
+        
         configuration.set("mapred.job.tracker.http.address", "http://" + hostName + ":54314");
 
+
+        
+        
+
+
+        configuration.set("hadoop.namenode", hostName);
+        configuration.set("dfs.namenode.http-address", hostName);
+
+        configuration.set("dfs.info.bindAddress", i.getHostName());
+        //configuration.set("dfs.info.port", configuration.get("hadoop.namenode.port"));
+
+        
+        configuration.set("dfs.http.address", "http://" + hostName + ":" + configuration.get("dfs.info.port"));
+        
+        
+        
+        
+        HadoopConfiguration cfg = new HadoopConfiguration(configuration);
+        cfg.writeMapredSite();
+        
         new Thread() {
             public void run() {
                 runTracker();
@@ -58,30 +89,46 @@ public class HadoopJobTracker extends HadoopComponent {
 
     @Stop
     public void stop() throws IOException {
-
-        tracker.stopTracker();
+        if (tracker != null) {
+            tracker.stopTracker();
+        }
 
     }
 
-    public static void main(String[] args) {
-        try {
-            InetAddress i = InetAddress.getLocalHost();
-            System.out.println(i.getHostName());
-        }
-        catch (Exception e) {
-        }
+
+    @Update
+    public void update() {
+        
     }
 
     public void runTracker() {
         try {
+            System.out.println("======> Starting JobTracker");
+            
             tracker = JobTracker.startTracker(new JobConf(getConfiguration()));
-            //tracker.offerService();
+            tracker.offerService();
+            
         }
         catch (InterruptedException ex) {
-            LOG.error(ex.getMessage(), ex);
+            ex.printStackTrace();
         }
         catch (IOException ex) {
-            LOG.error(ex.getMessage(), ex);
+            ex.printStackTrace();
         }
     }
+    
+    
+    
+    public static void main(String[] args) {
+        try {
+            HadoopJobTracker tracker = new HadoopJobTracker();
+            tracker.start();
+            //Thread.sleep(10000);
+            //tracker.stop();
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    
 }

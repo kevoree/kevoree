@@ -3,18 +3,12 @@ package org.kevoree.library.arduinoNodeType;
 import org.kevoree.ContainerRoot;
 import org.kevoree.framework.KevoreeXmiHelper;
 import org.kevoree.library.arduinoNodeType.utils.ArduinoHomeFinder;
-import org.kevoree.library.arduinoNodeType.utils.ExecutableFinder;
 
-import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Scanner;
 
 public class Tester {
 
-    public static void main(String[] args){
+    public static void main(String[] args) throws IOException {
 
         ArduinoHomeFinder.checkArduinoHome();
 
@@ -26,20 +20,20 @@ public class Tester {
        // System.setProperty("serial.port", "/dev/tty.usbmodem621");
 
 
-        String modelString = "/Users/ffouquet/Desktop/ksensor1_1.kev";
+        String modelString = "/home/edaubert/arduinoTest1.kev";
 
         ContainerRoot model = KevoreeXmiHelper.load(modelString);
 
         ArduinoNode node = new ArduinoNode();
         node.getDictionary().put("boardTypeName","atmega328");
-        node.getDictionary().put("boardPortName","/dev/tty.usbserial-A400g2se");
-        node.getDictionary().put("pmem","sd");
-        node.getDictionary().put("psize","16384");
+        //node.getDictionary().put("boardPortName","/dev/tty.usbserial-A400g2se");
+//        node.getDictionary().put("pmem","EEPROM");
+//        node.getDictionary().put("psize","16384");
        // node.getDictionary().put("boardPortName","/dev/tty.usbserial-A400g2se");
 
 
         node.getDictionary().put("incremental","false");
-        //node.push("ksensor1",model);
+        node.push("node",model, "/dev/ttyUSB0");
 
     }
 

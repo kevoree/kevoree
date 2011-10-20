@@ -96,16 +96,20 @@ public class KinectNativeLibraryLoader {
 		InputStream inputStream = KinectNativeLibraryLoader.class.getClassLoader()
 				.getResourceAsStream(filePath + "/" + fileName);
 		//if (inputStream != null) {
-			File copy = new File(folder + File.separator + fileName);
-			copy.deleteOnExit();
-			OutputStream outputStream = new FileOutputStream(copy);
-			byte[] bytes = new byte[1024];
-			int length = inputStream.read(bytes);
-			while (length > -1) {
-				outputStream.write(bytes, 0, length);
-				length = inputStream.read(bytes);
-			}
-			return folder.getAbsolutePath() + File.separator + fileName;
+		File copy = new File(folder + File.separator + fileName);
+		copy.deleteOnExit();
+		OutputStream outputStream = new FileOutputStream(copy);
+		byte[] bytes = new byte[1024];
+		int length = inputStream.read(bytes);
+		while (length > -1) {
+			outputStream.write(bytes, 0, length);
+			length = inputStream.read(bytes);
+		}
+
+		inputStream.close();
+		outputStream.flush();
+		outputStream.close();
+		return folder.getAbsolutePath() + File.separator + fileName;
 		//}
 		//return null;
 	}

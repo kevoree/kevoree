@@ -6,12 +6,12 @@ import org.slf4j.Logger;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hdfs.server.datanode.DataNode;
 
-import org.kevoree.ComponentInstance;
-import org.kevoree.ContainerNode;
 import org.kevoree.annotation.*;
-import org.kevoree.framework.KevoreePlatformHelper;
-import org.kevoree.framework.Constants;
 import org.slf4j.LoggerFactory;
+
+import java.io.File;
+import java.lang.management.ManagementFactory;
+import java.net.InetAddress;
 
 /**
  * 
@@ -28,7 +28,16 @@ public class HadoopDataNode extends HadoopComponent {
     private String nameNodeName = "";
     private DataNode dataNode;
     private final static String[] DATANODE_ARGS = {"-rollback"};
+    private String name;
+    
+    
+    public HadoopDataNode() {
+        this.name = ManagementFactory.getRuntimeMXBean().getName().split("@")[0];
 
+    }
+    
+    
+    
     /**
      * @TODO: Retrieve and set Name Node address;
      * 
@@ -46,6 +55,7 @@ public class HadoopDataNode extends HadoopComponent {
         /*
          * @FIXME : use while instead of foreach
          */
+        /*
         for (ContainerNode each : this.getModelService().getLastModel().getNodes()) {
             for (ComponentInstance ci : each.getComponents()) {
                 if (nameNodeName.equals(ci.getName())) {
@@ -62,19 +72,57 @@ public class HadoopDataNode extends HadoopComponent {
 
         Configuration configuration = this.getConfiguration();
         configuration.set("hadoop.namenode", ip);
+         * */
+        
+        /* Proeprties to set
+        -Dhadoop.tmp.dir=$DN_DIR_PREFIX$DN\
+        -Ddfs.datanode.address=0.0.0.0:5001$DN \
+        -Ddfs.datanode.http.address=0.0.0.0:5008$DN \
+        -Ddfs.datanode.ipc.address=0.0.0.0:5002$DN"
+        */
+        
+        Configuration configuration = this.getConfiguration();
+        
+        String fileSystem = String.format("hdfs://%s:%s", this.hostName(),
+                configuration.get("hadoop.namenode.port"));
+        
+        String baseDir = String.format("/Users/sunye/Work/hadoop/%s-dfs/", name);
+              
+        
+        String nameDir = baseDir + "name/";
+        String dataDir = baseDir + "data/";
 
+        
 
+        
+        if (name.length() > 2) {
+            name = name.substring(3);
+        }
+        
+        configuration.set("hadoop.tmp.dir",baseDir);
+        configuration.set("dfs.name.dir", nameDir);
+        configuration.set("dfs.data.dir", dataDir);
+        configuration.set("dfs.datanode.address",hostName()+":50"+name);
+        configuration.set("dfs.datanode.http.address",hostName()+":51"+name);
+        configuration.set("dfs.datanode.ipc.address",hostName()+":52"+name);
+        configuration.set("fs.default.name", fileSystem);
+        
+
+        HadoopConfiguration.removeDir(new File(baseDir)); 
+        new File(nameDir).mkdirs();
+        new File(dataDir).mkdirs();
+        
         new Thread() {
 
             @Override
             public void run() {
                 try {
                     dataNode = DataNode.createDataNode(DATANODE_ARGS, getConfiguration());
-                    LOG.info("DataNode connected with NameNode: {0}",
+                    System.out.println("DataNode connected with NameNode: "+
                     dataNode.getNamenode());
                 }
                 catch (IOException ex) {
-                    LOG.error(ex.getMessage(), ex);
+                    ex.printStackTrace();
                 }
                
             }
@@ -91,5 +139,12 @@ public class HadoopDataNode extends HadoopComponent {
 
         dataNode.shutdown();
 
+    }
+    
+    public static void main(String[] args) throws Exception {
+
+        HadoopDataNode node = new HadoopDataNode();
+        node.start();
+  
     }
 }
