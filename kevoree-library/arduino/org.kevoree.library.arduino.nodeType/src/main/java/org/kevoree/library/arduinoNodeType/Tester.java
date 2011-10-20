@@ -2,7 +2,6 @@ package org.kevoree.library.arduinoNodeType;
 
 import org.kevoree.ContainerRoot;
 import org.kevoree.framework.KevoreeXmiHelper;
-import org.kevoree.library.arduinoNodeType.utils.ArduinoHomeFinder;
 
 import java.io.IOException;
 
@@ -10,7 +9,7 @@ public class Tester {
 
     public static void main(String[] args) throws IOException {
 
-        ArduinoHomeFinder.checkArduinoHome();
+//        ArduinoHomeFinder.checkArduinoHome();
 
         //System.out.println(ArduinoToolChainExecutables.getAVR_GCC());
 

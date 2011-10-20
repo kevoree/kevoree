@@ -1,14 +1,17 @@
+/*
 package org.kevoree.library.arduinoNodeType.utils;
 
 import java.io.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+*/
 /**
  * User: ffouquet
  * Date: 08/06/11
  * Time: 20:04
- */
+ *//*
+
 public class ArduinoDefaultLibraryManager {
 
     public static String copyDefaultLibrary() {
@@ -67,3 +70,4 @@ public class ArduinoDefaultLibraryManager {
     }
 
 }
+*/

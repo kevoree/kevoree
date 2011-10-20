@@ -4,6 +4,7 @@
  */
 package org.kevoree.library.arduinoNodeType;
 
+import org.kevoree.library.arduinoNodeType.util.ArduinoResourceHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.wayoda.ang.project.Sketch;
@@ -35,7 +36,7 @@ public class ArduinoDeploy {
 
         baseCmd = new ArrayList<String>();
         baseCmd.add(ArduinoToolChainExecutables.getAVRDUDE());
-        String confPath = System.getProperty("arduino.home") + "/hardware/tools/avr/etc/avrdude.conf";
+        String confPath = /*System.getProperty("arduino.home")*/ ArduinoResourceHelper.getArduinoHome()+ "/hardware/tools/avr/etc/avrdude.conf";
         if (confPath != null) {
             baseCmd.add("-C");
             baseCmd.add(confPath);
