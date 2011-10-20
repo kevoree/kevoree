@@ -111,7 +111,7 @@ public class WordCount extends HadoopComponent {
         
         /*
          * @FIXME : use while instead of foreach
-         */
+         *
         for (ContainerNode each : this.getModelService().getLastModel().getNodes()) {
             for (ComponentInstance ci : each.getComponents()) {
                 if (JOB_TRACKER_NAME.equals(ci.getName())) {
@@ -120,6 +120,8 @@ public class WordCount extends HadoopComponent {
                 }
             }
         }
+         * 
+         */
 
         // retrieve NameNode IP address
         String ip = KevoreePlatformHelper.getProperty(this.getModelService().getLastModel(),
