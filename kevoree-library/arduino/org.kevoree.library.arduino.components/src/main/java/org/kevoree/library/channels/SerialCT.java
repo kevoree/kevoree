@@ -15,7 +15,7 @@ import org.kevoree.framework.message.Message;
 @Library(name = "KevoreeArduinoJava")
 @ChannelTypeFragment
 @DictionaryType({
-        @DictionaryAttribute(name = "PORT", optional = false, defaultValue = "/dev/ttyS0")
+        @DictionaryAttribute(name = "serialport", fragmentDependant = true)
 })
 public class SerialCT extends AbstractChannelFragment {
 
