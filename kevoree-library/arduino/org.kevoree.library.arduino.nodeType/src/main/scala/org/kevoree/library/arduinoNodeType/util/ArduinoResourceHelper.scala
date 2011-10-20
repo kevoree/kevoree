@@ -8,6 +8,26 @@ import collection.JavaConversions._
 object ArduinoResourceHelper {
   private var basePath: String = null;
 
+  def isWindows: Boolean = {
+    val os: String = System.getProperty("os.name").toLowerCase
+    (os.contains("win"))
+  }
+
+  def isMac: Boolean = {
+    val os: String = System.getProperty("os.name").toLowerCase
+    (os.contains("mac"))
+  }
+
+  def isUnix: Boolean = {
+    val os: String = System.getProperty("os.name").toLowerCase
+    (os.contains("nix") || os.contains("nux"))
+  }
+
+  def is64: Boolean = {
+    val os: String = System.getProperty("os.arch").toLowerCase
+    (os.contains("64"))
+  }
+
   private def copyInputStream (in: InputStream, out: OutputStream) {
     val buffer: Array[Byte] = new Array[Byte](1024)
     var len: Int = 0
@@ -51,7 +71,7 @@ object ArduinoResourceHelper {
       File.separator + "avrdude.conf")
     if (f.exists()) {
       new File(basePath + File.separator + "arduino" + File.separator + "hardware" + File.separator +
-                  "tools" + File.separator + "avr" + File.separator + "etc").mkdirs()
+        "tools" + File.separator + "avr" + File.separator + "etc").mkdirs()
       copyInputStream(new FileInputStream(f), new
           FileOutputStream(basePath + File.separator + "arduino" + File.separator + "hardware" + File.separator +
             "tools" + File.separator + "avr" + File.separator + "etc" + File.separator + "avrdude.conf"))
@@ -99,8 +119,24 @@ object ArduinoResourceHelper {
     repositories = repositories ++ List[String]("http://maven.kevoree.org/release");
     repositories = repositories ++ List[String]("http://maven.kevoree.org/snapshots");
     //		scala.collection.immutable.List<String> list = scala.collection.immutable.List.apply(repositories);
+    var version = "0022";
+    if (isMac) {
+      version = version + ".osx"
+    } else if (isWindows) {
+      if (is64) {
+        version = version + ".win64"
+      } else {
+        version = version + ".win"
+      }
+    } else if (isUnix) {
+      if (is64) {
+        version = version + ".nix64"
+      } else {
+        version = version + ".nix"
+      }
+    }
     val arteFile = AetherUtil
-      .resolveMavenArtifact("org.kevoree.extra.avr-arduino", "org.kevoree.extra", "0022", repositories);
+      .resolveMavenArtifact("org.kevoree.extra.avr-arduino", "org.kevoree.extra", version, repositories);
     // unzip it on /tmp
     val f = File.createTempFile("arduino_resources", "")
     f.delete()
