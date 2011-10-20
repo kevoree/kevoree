@@ -27,8 +27,10 @@ import org.kevoree.tools.ui.editor.KevoreeTypeEditorPanel;
 import org.kevoree.tools.ui.editor.KevoreeUIKernel;
 import org.kevoree.tools.ui.editor.TypeDefinitionSourceList;
 import org.kevoree.tools.ui.editor.property.BindingPropertyEditor;
+import org.kevoree.tools.ui.editor.property.GroupBindingPropertyEditor;
 import org.kevoree.tools.ui.editor.property.InstancePropertyEditor;
 import org.kevoree.tools.ui.editor.property.NodePropertyEditor;
+import org.kevoree.tools.ui.editor.widget.TempGroupBinding;
 import org.kevoree.tools.ui.framework.elements.*;
 
 import javax.swing.*;
@@ -174,32 +176,29 @@ multiSplitPane.add(editableModelPanel, "right");
     //Art2XmiHelper.save("/Users/ffouquet/NetBeansProjects/Entimid/org.entimid.fakeStuff/art2Merged.xmi", kernel.getModelHandler().getActualModel());
     }*/
     public void showPropertyFor(Object p) {
-        // southpanel.setVisible(true);
-        // southpanel.removeAll();
         if (p instanceof NodePanel) {
             org.kevoree.ContainerNode elem = (org.kevoree.ContainerNode) kernel.getUifactory().getMapping().get(p);
             NodePropertyEditor prop = new NodePropertyEditor(elem, kernel);
-            //southpanel.add(prop);
             editableModelPanel.displayProperties(prop);
         }
         if (p instanceof ComponentPanel || p instanceof ChannelPanel || p instanceof GroupPanel) {
             org.kevoree.Instance elem = (org.kevoree.Instance) kernel.getUifactory().getMapping().get(p);
             InstancePropertyEditor prop = new InstancePropertyEditor(elem, kernel);
-            //southpanel.add(prop);
             editableModelPanel.displayProperties(prop);
         }
         if (p instanceof Binding) {
-            MBinding elem = (MBinding) kernel.getUifactory().getMapping().get(p);
-            BindingPropertyEditor prop = new BindingPropertyEditor(elem, kernel);
-            //southpanel.add(prop);
-            editableModelPanel.displayProperties(prop);
+            Object obj = kernel.getUifactory().getMapping().get(p);
+            if(obj instanceof MBinding){
+                MBinding elem = (MBinding) obj;
+                BindingPropertyEditor prop = new BindingPropertyEditor(elem, kernel);
+                editableModelPanel.displayProperties(prop);
+            }
+            if(obj instanceof TempGroupBinding){
+                TempGroupBinding elem = (TempGroupBinding) obj;
+                GroupBindingPropertyEditor prop = new GroupBindingPropertyEditor(elem, kernel);
+                editableModelPanel.displayProperties(prop);
+            }
         }
-
-
-        // southpanel.repaint();
-        // southpanel.revalidate();
-
-
         this.invalidate();
 
     }

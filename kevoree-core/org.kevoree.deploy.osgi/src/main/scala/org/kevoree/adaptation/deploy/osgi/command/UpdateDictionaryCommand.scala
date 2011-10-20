@@ -44,8 +44,11 @@ case class UpdateDictionaryCommand(c: Instance, ctx: KevoreeDeployManager, nodeN
       c.getDictionary.get.getValues.foreach {
         v =>
           if (v.getAttribute.getFragmentDependant) {
-            if (v.getTargetNode == nodeName) {
-              dictionary.put(v.getAttribute.getName, v.getValue)
+            v.getTargetNode.map {
+              tn =>
+                if (tn.getName == nodeName) {
+                  dictionary.put(v.getAttribute.getName, v.getValue)
+                }
             }
           } else {
             dictionary.put(v.getAttribute.getName, v.getValue)
@@ -62,13 +65,13 @@ case class UpdateDictionaryCommand(c: Instance, ctx: KevoreeDeployManager, nodeN
             sr => sr.getProperty(Constants.KEVOREE_NODE_NAME) == nodeName && sr.getProperty(Constants.KEVOREE_INSTANCE_NAME) == c.getName
           }) match {
             case None => {
-              logger.error("Registered Service not found in bundleID="+componentBundle.getBundleId)
+              logger.error("Registered Service not found in bundleID=" + componentBundle.getBundleId)
               false
             }
             case Some(sr) => (componentBundle.getBundleContext.getService(sr).asInstanceOf[KevoreeActor] !? UpdateDictionaryMessage(dictionary)).asInstanceOf[Boolean]
           }
         } else {
-          logger.error("Registered Service for bundle ID="+componentBundle.getBundleId+" are null, not started instance")
+          logger.error("Registered Service for bundle ID=" + componentBundle.getBundleId + " are null, not started instance")
           false
         }
 

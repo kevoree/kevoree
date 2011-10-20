@@ -16,36 +16,30 @@ package org.kevoree.tools.ui.editor.property;
 import com.explodingpixels.macwidgets.plaf.HudLabelUI;
 import com.explodingpixels.macwidgets.plaf.HudTextFieldUI;
 import org.kevoree.MBinding;
-import org.kevoree.NamedElement;
 import org.kevoree.tools.ui.editor.KevoreeUIKernel;
 import org.kevoree.tools.ui.editor.command.RemoveBindingCommand;
-import org.kevoree.tools.ui.editor.command.RemoveInstanceCommand;
+import org.kevoree.tools.ui.editor.command.RemoveGroupBindingCommand;
 import org.kevoree.tools.ui.editor.widget.JCommandButton;
-import org.kevoree.tools.ui.framework.TitledElement;
+import org.kevoree.tools.ui.editor.widget.TempGroupBinding;
 import org.kevoree.tools.ui.framework.elements.Binding;
 
 import javax.swing.*;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
-import javax.swing.text.BadLocationException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * User: ffouquet
  * Date: 02/07/11
  * Time: 14:31
  */
-public class BindingPropertyEditor extends JPanel {
+public class GroupBindingPropertyEditor extends JPanel {
 
     private Binding gui = null;
     protected KevoreeUIKernel kernel;
-    private MBinding mbinding;
+    private TempGroupBinding mbinding;
     public void addCenter(JComponent p) {
         this.add(p);
     }
 
-    public BindingPropertyEditor(MBinding mb,KevoreeUIKernel _kernel) {
+    public GroupBindingPropertyEditor(TempGroupBinding mb, KevoreeUIKernel _kernel) {
         this.setOpaque(false);
         this.setBorder(null);
         mbinding = mb;
@@ -56,12 +50,8 @@ public class BindingPropertyEditor extends JPanel {
         p.setOpaque(false);
         JLabel l = new JLabel("Name", JLabel.TRAILING);
         l.setUI(new HudLabelUI());
-
-       // l.setOpaque(false);
-       // l.setForeground(Color.WHITE);
         p.add(l);
-
-        l.setText(mbinding.getPort().getPortTypeRef().getName()+" => "+mbinding.getHub().getName());
+        l.setText(mbinding.getOriginGroup().getName() + " => " + mbinding.getTargetNode().getName());
 
         this.addCenter(p);
         SpringUtilities.makeCompactGrid(p,
@@ -72,7 +62,7 @@ public class BindingPropertyEditor extends JPanel {
 
 
         JCommandButton btDelete = new JCommandButton("Delete");
-        RemoveBindingCommand removecmd = new RemoveBindingCommand(mbinding);
+        RemoveGroupBindingCommand removecmd = new RemoveGroupBindingCommand(mbinding);
         removecmd.setKernel(kernel);
         btDelete.setCommand(removecmd);
         this.addCenter(btDelete);
