@@ -56,21 +56,15 @@
             <groupId>org.kevoree.extra</groupId>
             <artifactId>org.kevoree.extra.osgi.rxtx</artifactId>
             <version>2.2.0</version>
-            <!--<scope>provided</scope>-->
-        </dependency>
-
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-jdk14</artifactId>
-            <version>1.6.2</version>
+            <scope>provided</scope>
         </dependency>
 
         <!-- Temp dependency -->
-        <dependency>
+      <!--  <dependency>
             <groupId>org.kevoree.library.arduino</groupId>
             <artifactId>org.kevoree.library.arduino.components</artifactId>
             <version>${kevoree.version}</version>
-        </dependency>
+        </dependency>  -->
 
         <!--
     <dependency>

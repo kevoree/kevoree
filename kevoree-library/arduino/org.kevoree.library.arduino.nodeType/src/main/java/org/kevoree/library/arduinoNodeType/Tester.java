@@ -19,12 +19,12 @@ public class Tester {
        // System.setProperty("serial.port", "/dev/tty.usbmodem621");
 
 
-        String modelString = "/home/edaubert/arduinoTest1.kev";
+        String modelString = "/Users/duke/Desktop/drop.kev";
 
         ContainerRoot model = KevoreeXmiHelper.load(modelString);
 
         ArduinoNode node = new ArduinoNode();
-        node.getDictionary().put("boardTypeName","atmega328");
+        node.getDictionary().put("boardTypeName","uno");
         //node.getDictionary().put("boardPortName","/dev/tty.usbserial-A400g2se");
 //        node.getDictionary().put("pmem","EEPROM");
 //        node.getDictionary().put("psize","16384");
@@ -32,7 +32,7 @@ public class Tester {
 
 
         node.getDictionary().put("incremental","false");
-        node.push("node",model, "/dev/ttyUSB0");
+        node.push("node",model, "/dev/tty.usbmodem411");
 
     }
 

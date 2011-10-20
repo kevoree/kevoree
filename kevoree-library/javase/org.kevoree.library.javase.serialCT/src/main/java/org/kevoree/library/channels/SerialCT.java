@@ -8,6 +8,7 @@ import org.kevoree.extra.osgi.rxtx.KevoreeSharedCom;
 import org.kevoree.framework.AbstractChannelFragment;
 import org.kevoree.framework.ChannelFragmentSender;
 import org.kevoree.framework.KevoreeChannelFragment;
+import org.kevoree.framework.KevoreeFragmentPropertyHelper;
 import org.kevoree.framework.message.Message;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.ServiceReference;
@@ -22,7 +23,7 @@ import java.util.HashMap;
  */
 @Library(name = "JavaSE")
 @DictionaryType({
-        @DictionaryAttribute(name = "port", defaultValue = "8000", optional = true , fragmentDependant = true)
+        @DictionaryAttribute(name = "serialport", fragmentDependant = true)
 })
 @ChannelTypeFragment
 public class SerialCT extends AbstractChannelFragment {
@@ -36,15 +37,8 @@ public class SerialCT extends AbstractChannelFragment {
 
     protected String getPortFromNode(String remoteNodeName) {
         if (!nodePortCache.containsKey(remoteNodeName)) {
-            for (ContainerNode node : modelHandlerService.getLastModel().getNodesForJ()) {
-                if (node.getName().equals(remoteNodeName)) {
-                    for (DictionaryValue dv : node.getDictionary().get().getValuesForJ()) {
-                        if (dv.getAttribute().getName().equals("boardPortName")) {
-                            nodePortCache.put(remoteNodeName, dv.getValue());
-                        }
-                    }
-                }
-            }
+            String remotePort = KevoreeFragmentPropertyHelper.getPropertyFromFragmentGroup(modelHandlerService.getLastModel(), this.getName(), "serialport", remoteNodeName);
+            nodePortCache.put(remoteNodeName, remotePort);
         }
         return nodePortCache.get(remoteNodeName);
     }
