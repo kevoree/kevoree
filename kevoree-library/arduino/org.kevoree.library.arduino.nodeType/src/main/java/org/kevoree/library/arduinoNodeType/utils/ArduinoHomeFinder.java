@@ -1,3 +1,4 @@
+/*
 package org.kevoree.library.arduinoNodeType.utils;
 
 import org.kevoree.library.arduinoNodeType.util.ArduinoResourceHelper;
@@ -9,14 +10,22 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Properties;
 
+*/
 /**
  * User: ffouquet
  * Date: 08/06/11
  * Time: 18:07
- */
+ *//*
+
 public class ArduinoHomeFinder {
 
 	public static boolean checkArduinoHome () {
+
+		String arduinoHome = ArduinoResourceHelper.getArduinoHome();
+		if (arduinoHome != null && !arduinoHome.equals("")) {
+			System.setProperty("arduino.home", arduinoHome);
+		}
+
 
 		if (System.getProperty("arduino.home") == null) {
 
@@ -100,3 +109,4 @@ public class ArduinoHomeFinder {
 
 
 }
+*/

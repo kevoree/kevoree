@@ -14,28 +14,28 @@ object ArduinoToolChainExecutables {
   val osxCROSSPATH = "/usr/local/CrossPack-AVR/bin"
   val arduinoRelativePath = "/hardware/tools/avr/bin"
 
-  def getArduinoBin: String = {
+ /* def getArduinoBin: String = {
     System.getProperty("arduino.home") + arduinoRelativePath
-  }
+  }*/
 
   def getAVRDUDE(): String = {
-    ExecutableFinder.getAbsolutePath("avrdude", List(getArduinoBin, osxCROSSPATH)) + getSuffixe
+    ExecutableFinder.getAbsolutePath("avrdude"/*, List(getArduinoBin, osxCROSSPATH)*/) + getSuffixe
   }
 
   def getAVR_AR(): String = {
-    ExecutableFinder.getAbsolutePath("avr-ar", List(getArduinoBin, osxCROSSPATH)) + getSuffixe
+    ExecutableFinder.getAbsolutePath("avr-ar"/*, List(getArduinoBin, osxCROSSPATH)*/) + getSuffixe
   }
 
   def getAVR_GCC(): String = {
-    ExecutableFinder.getAbsolutePath("avr-gcc", List(getArduinoBin, osxCROSSPATH)) + getSuffixe
+    ExecutableFinder.getAbsolutePath("avr-gcc"/*, List(getArduinoBin, osxCROSSPATH)*/) + getSuffixe
   }
 
   def getAVR_GPP(): String = {
-    ExecutableFinder.getAbsolutePath("avr-g++", List(getArduinoBin, osxCROSSPATH)) + getSuffixe
+    ExecutableFinder.getAbsolutePath("avr-g++"/*, List(getArduinoBin, osxCROSSPATH)*/) + getSuffixe
   }
 
   def getAVR_OBJCOPY(): String = {
-    ExecutableFinder.getAbsolutePath("avr-objcopy", List(getArduinoBin, osxCROSSPATH)) + getSuffixe
+    ExecutableFinder.getAbsolutePath("avr-objcopy"/*, List(getArduinoBin, osxCROSSPATH)*/) + getSuffixe
   }
 
 
