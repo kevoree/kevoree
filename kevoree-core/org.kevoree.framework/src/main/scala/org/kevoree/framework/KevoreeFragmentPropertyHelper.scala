@@ -116,7 +116,7 @@ object KevoreeFragmentPropertyHelper {
       case None => getDefaultValue(instance.getTypeDefinition, key)
       case Some(dictionary) => {
         dictionary.getValues.find(dictionaryAttribute => dictionaryAttribute.getAttribute.getName == key &&
-          dictionaryAttribute.getTargetNode == nodeNameForFragment) match {
+          (if(dictionaryAttribute.getTargetNode.isDefined){dictionaryAttribute.getTargetNode.get.getName == nodeNameForFragment } else {false})) match {
           case None => getDefaultValue(instance.getTypeDefinition, key)
           case Some(dictionaryAttribute) => dictionaryAttribute.getValue
         }

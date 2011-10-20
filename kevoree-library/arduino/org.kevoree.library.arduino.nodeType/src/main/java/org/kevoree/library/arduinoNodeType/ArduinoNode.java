@@ -34,6 +34,7 @@ import org.wayoda.ang.project.TargetDirectoryService;
 import javax.swing.*;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 
 @NodeType
 @Library(name = "KevoreeNodeType")
@@ -76,7 +77,7 @@ public class ArduinoNode extends AbstractNodeType {
     }
 
     //@Override
-    public void push(final String targetNodeName, final ContainerRoot root,String boardPortName) {
+    public void push(final String targetNodeName, final ContainerRoot root,String boardPortName) throws IOException {
 
         //new Thread() {
 
@@ -96,10 +97,12 @@ public class ArduinoNode extends AbstractNodeType {
         progress.beginTask("Build diff model", 10);
         KevoreeKompareBean kompare = new KevoreeKompareBean();
 
-        newdir = new File("arduinoGenerated" + targetNodeName);
-        if (!newdir.exists()) {
+        newdir = new File(System.getProperty("java.io.tmpdir") + File.separator + "arduinoGenerated" + targetNodeName);
+		newdir.delete();
+		newdir.mkdirs();
+        /*if (!newdir.exists()) {
             newdir.mkdir();
-        }
+        }*/
 
         ContainerRoot lastVersionModel = KevoreeFactory.eINSTANCE().createContainerRoot();
 
@@ -145,7 +148,7 @@ public class ArduinoNode extends AbstractNodeType {
 
 
         progress.beginTask("Prepare model generation", 20);
-        File newdirTarget = new File("arduinoGenerated" + targetNodeName + "/target");
+        File newdirTarget = new File(newdir.getAbsolutePath() + File.separator + "target");
 
         org.kevoree.library.arduinoNodeType.FileHelper.createAndCleanDirectory(newdirTarget);
 
@@ -173,7 +176,7 @@ public class ArduinoNode extends AbstractNodeType {
 
 
         progress.beginTask("Save model for incremental deployment", 100);
-        KevoreeXmiHelper.save( newdir.getAbsolutePath() + "/" + targetNodeName + "_" + (lastVersion + 1) + ".kev", root);
+        KevoreeXmiHelper.save( newdir.getAbsolutePath() + File.separator + targetNodeName + "_" + (lastVersion + 1) + ".kev", root);
         progress.endTask();
 
         frame.setVisible(false);
@@ -264,6 +267,7 @@ public class ArduinoNode extends AbstractNodeType {
                 sketch.preprocess(target);
                 progress.endTask();
                 Core core = CodeManager.getInstance().getCore(target);
+				//System.err.println("core :=> " + core + " -> " + target.getCore());
                 arduinoCompilation.compileCore(sketch, target, core);
                 progress.beginTask("Library processing", 60);
 
@@ -284,8 +288,8 @@ public class ArduinoNode extends AbstractNodeType {
                 progress.endTask();
 
                 String boardName = "";
-                if (boardPortName != null && boardPortName != "") {
-                    boardName = boardPortName.toString();
+                if (boardPortName != null && !boardPortName.equals("")) {
+                    boardName = boardPortName;
                 }
 
                 if (boardName == null || boardName.equals("")) {
@@ -314,8 +318,8 @@ public class ArduinoNode extends AbstractNodeType {
             String resultScript = KevScriptWrapper.generateKevScriptCompressed(baseScript);
             logger.debug(resultScript);
             String boardName = "";
-            if (boardPortName != null && boardPortName != "") {
-                boardName = boardPortName.toString();
+            if (boardPortName != null && !boardPortName.equals("")) {
+                boardName = boardPortName;
             }
             if (boardName == null || boardName.equals("")) {
                 boardName = GuiAskForComPort.askPORT();
