@@ -37,9 +37,10 @@ public class SerialCT extends AbstractChannelFragment {
 
     protected String getPortFromNode(String remoteNodeName) {
         if (!nodePortCache.containsKey(remoteNodeName)) {
-            String remotePort = KevoreeFragmentPropertyHelper.getPropertyFromFragmentGroup(modelHandlerService.getLastModel(), this.getName(), "serialport", remoteNodeName);
+            String remotePort = KevoreeFragmentPropertyHelper.getPropertyFromFragmentChannel(modelHandlerService.getLastModel(), this.getName(), "serialport", remoteNodeName);
             nodePortCache.put(remoteNodeName, remotePort);
         }
+        logger.warn(this.getName()+":SerailCT on node "+this.getNodeName()+" using port "+nodePortCache.get(remoteNodeName));
         return nodePortCache.get(remoteNodeName);
     }
 
@@ -51,9 +52,15 @@ public class SerialCT extends AbstractChannelFragment {
         new Thread() {
             @Override
             public void run() {
+                try {
+                    Thread.sleep(3000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                }
                 for (KevoreeChannelFragment cf : getOtherFragments()) {
-                    if (getPortFromNode(cf.getNodeName()) != null) {
-                        KevoreeSharedCom.addObserver(getPortFromNode(cf.getNodeName()), cl);
+                    String port = getPortFromNode(cf.getNodeName());
+                    if (port != null && port != "") {
+                        KevoreeSharedCom.addObserver(port, cl);
                     } else {
                         logger.error("Com Port Not Found ");
                     }
