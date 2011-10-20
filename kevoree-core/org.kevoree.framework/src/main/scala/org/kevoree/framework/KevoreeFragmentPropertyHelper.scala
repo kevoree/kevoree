@@ -113,7 +113,9 @@ object KevoreeFragmentPropertyHelper {
   private def getProperty (model: ContainerRoot, instance: Instance, name: String, key: String,
     nodeNameForFragment: String): String = {
     instance.getDictionary match {
-      case None => getDefaultValue(instance.getTypeDefinition, key)
+      case None => {
+        getDefaultValue(instance.getTypeDefinition, key)
+      }
       case Some(dictionary) => {
         dictionary.getValues.find(dictionaryAttribute => dictionaryAttribute.getAttribute.getName == key &&
           (if(dictionaryAttribute.getTargetNode.isDefined){dictionaryAttribute.getTargetNode.get.getName == nodeNameForFragment } else {false})) match {
