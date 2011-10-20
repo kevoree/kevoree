@@ -187,10 +187,6 @@
         <element xmi:type="ecore:EAttribute" href="kevoree.ecore#//DictionaryValue/value"/>
         <layoutConstraint xmi:type="notation:Location" xmi:id="_3G8r4diIEeCEZrILMa00RQ"/>
       </children>
-      <children xmi:type="notation:Node" xmi:id="_kNZWAPSiEeC-EuqN3uc6Uw" type="2001">
-        <element xmi:type="ecore:EAttribute" href="kevoree.ecore#//DictionaryValue/targetNode"/>
-        <layoutConstraint xmi:type="notation:Location" xmi:id="_kNZWAfSiEeC-EuqN3uc6Uw"/>
-      </children>
       <styles xmi:type="notation:DrawerStyle" xmi:id="_3G8E0tiIEeCEZrILMa00RQ"/>
       <styles xmi:type="notation:SortingStyle" xmi:id="_3G8E09iIEeCEZrILMa00RQ"/>
       <styles xmi:type="notation:FilteringStyle" xmi:id="_3G8E1NiIEeCEZrILMa00RQ"/>
@@ -1818,5 +1814,18 @@
     <element xmi:type="ecore:EReference" href="kevoree.ecore#//TypeDefinition/superTypes"/>
     <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="_kFHAtOhBEeCzHfPPO1L4EQ" points="[0, -37, -42, -31]$[0, -65, -42, -59]$[-51, -65, -93, -59]$[-51, -6, -93, 0]$[-23, -6, -65, 0]"/>
     <sourceAnchor xmi:type="notation:IdentityAnchor" xmi:id="_kFNHUOhBEeCzHfPPO1L4EQ" id="(0.18181818181818182,0.6)"/>
+  </edges>
+  <edges xmi:type="notation:Edge" xmi:id="_MXOHkfrjEeCIX9FAWNZXNg" type="3002" source="_3G7dxNiIEeCEZrILMa00RQ" target="_3GxFuNiIEeCEZrILMa00RQ">
+    <children xmi:type="notation:Node" xmi:id="_MXP8wPrjEeCIX9FAWNZXNg" type="4011">
+      <layoutConstraint xmi:type="notation:Location" xmi:id="_MXP8wfrjEeCIX9FAWNZXNg" x="-10" y="-10"/>
+    </children>
+    <children xmi:type="notation:Node" xmi:id="_MXQj0PrjEeCIX9FAWNZXNg" type="4012">
+      <layoutConstraint xmi:type="notation:Location" xmi:id="_MXQj0frjEeCIX9FAWNZXNg" x="10" y="10"/>
+    </children>
+    <styles xmi:type="notation:ConnectorStyle" xmi:id="_MXOHkvrjEeCIX9FAWNZXNg" lineColor="4210752"/>
+    <styles xmi:type="notation:FontStyle" xmi:id="_MXOHk_rjEeCIX9FAWNZXNg" fontColor="4210752" fontName="Lucida Grande" fontHeight="10"/>
+    <element xmi:type="ecore:EReference" href="kevoree.ecore#//DictionaryValue/targetNode"/>
+    <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="_MXOHlPrjEeCIX9FAWNZXNg" points="[21, 34, -529, -868]$[500, 901, -50, -1]"/>
+    <sourceAnchor xmi:type="notation:IdentityAnchor" xmi:id="_MXTAEPrjEeCIX9FAWNZXNg" id="(0.8372093023255814,0.38461538461538464)"/>
   </edges>
 </notation:Diagram>

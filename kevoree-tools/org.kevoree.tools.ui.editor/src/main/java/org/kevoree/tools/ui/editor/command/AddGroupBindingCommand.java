@@ -16,6 +16,7 @@ package org.kevoree.tools.ui.editor.command;
 
 import org.kevoree.*;
 import org.kevoree.tools.ui.editor.KevoreeUIKernel;
+import org.kevoree.tools.ui.editor.widget.TempGroupBinding;
 import org.kevoree.tools.ui.framework.elements.*;
 
 public class AddGroupBindingCommand implements Command {
@@ -44,11 +45,16 @@ public class AddGroupBindingCommand implements Command {
             //ADD ContainerNode to Group
             fromPort.addSubNodes(targetNode);
 
-            org.kevoree.tools.ui.framework.elements.Binding uib = new Binding(Binding.Type.groupLink);
-            uib.setFrom(fromPanel);
-            uib.setTo(target);
 
+            TempGroupBinding groupB = new TempGroupBinding();
+            groupB.setOriginGroup(fromPort);
+            groupB.setTargetNode(targetNode);
+            groupB.setGroupPanel(fromPanel);
+            groupB.setNodePanel(target);
+            Binding uib = kernel.getUifactory().createGroupBinding(groupB);
             kernel.getModelPanel().addBinding(uib);
+
+
             kernel.getModelHandler().notifyChanged();
 
         }
