@@ -42,7 +42,7 @@ public class SocketChannel extends  AbstractChannelFragment implements  Runnable
     private Socket client_server=null;
 
     private Integer number_max_queue=50;
-    private HashMap<String, List<String>> fragments=null;
+    private HashMap<String,Integer> fragments=null;
 
     private  Logger logger = LoggerFactory.getLogger(SocketChannel.class);
 
@@ -102,7 +102,7 @@ public class SocketChannel extends  AbstractChannelFragment implements  Runnable
         reception_messages.start();
         sending_messages.start();
         sending_messages_node_dead.start();
-        fragments = new HashMap<String, List <String>>();
+        fragments = new HashMap<String, Integer>();
     }
 
     @Stop
@@ -161,14 +161,14 @@ public class SocketChannel extends  AbstractChannelFragment implements  Runnable
                     if(message instanceof SocketMessage)
                     {
                         msgTOqueue =(SocketMessage)message;
-                        logger.debug("Use an existing UUID"+msgTOqueue.getUuid()+ " "+remoteNodeName+ " "+msgTOqueue.getDestNodeName());
+                        logger.debug("Use an existing UUID"+msgTOqueue.getUuid());
 
                     }else
                     {
                         msgTOqueue = new SocketMessage();
                         msgTOqueue.setUuid(currentUUIdMessage);
 
-                        logger.debug("Create a UUID :"+msgTOqueue.getUuid()+ " "+remoteNodeName+ " "+msgTOqueue.getDestNodeName());
+                        logger.debug("Create a UUID :"+msgTOqueue.getUuid());
                     }
 
                     /* adding the current node */
@@ -185,10 +185,8 @@ public class SocketChannel extends  AbstractChannelFragment implements  Runnable
 
                     try
                     {
-                        if(!message.getPassedNodes().contains(message.getDestNodeName()))
-                        {
-                            queue.put(msgTOqueue);
-                        }
+                        logger.debug("Enqueue message to "+msgTOqueue.getDestNodeName()+" "+msgTOqueue.getPassedNodes());
+                        queue.put(msgTOqueue);
 
                     } catch (InterruptedException e) {
                         e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
@@ -250,42 +248,29 @@ public class SocketChannel extends  AbstractChannelFragment implements  Runnable
                     logger.error("Failed to read object "+e);
                 }
 
-
-                   // msg.getPassedNodes().add(getNodeName());
-
                 if(getOtherFragments().size() > 1){
 
                     if (fragments.containsKey(msg.getUuid()))
                     {
 
-                        logger.debug("fragment exist "+msg.getUuid()+" "+   fragments.get(msg.getUuid())+" "+msg.getPassedNodes());
-
-                        for(String node :  msg.getPassedNodes())
-                        {
-                              if(!fragments.get(msg.getUuid()).contains(node)){
-                                     fragments.get(msg.getUuid()).add(node);
-                              }
-
-                        }
-
-                        msg.setPassedNodes(fragments.get(msg.getUuid()));
-
-
+                        logger.debug("fragment exist "+msg.getUuid()+" "+   fragments.get(msg.getUuid())+" "+msg.getPassedNodes()+" port "+client_server.getPort());
+                        fragments.put(msg.getUuid(),((fragments.get(msg.getUuid()))+new Integer(1)));
                     }
                     else
                     {
 
-                        fragments.put(msg.getUuid(), msg.getPassedNodes());
-                                         msg.setPassedNodes(fragments.get(msg.getUuid()));
-                        logger.debug("new fragment "+ msg.getUuid()+" "+   fragments.get(msg.getUuid())+" "+msg.getPassedNodes());
+                        fragments.put(msg.getUuid(), new Integer(1));
+                        logger.debug("new fragment "+ msg.getUuid()+" "+msg.getPassedNodes()+" port "+client_server.getPort());
                         remoteDispatch(msg);
-
                     }
 
-                    if((fragments.get(msg.getUuid()).size() == (getOtherFragments().size())) )
+                    if((fragments.get(msg.getUuid()) == (getOtherFragments().size())) )
                     {
                         logger.debug("remove fragment "+msg.getUuid());
                         fragments.remove(msg.getUuid());
+                    }else
+                    {
+                        logger.debug(fragments.get(msg.getUuid())+"/"+getOtherFragments().size());
                     }
 
                 }else
@@ -325,22 +310,15 @@ public class SocketChannel extends  AbstractChannelFragment implements  Runnable
             while (alive)
             {
 
-                try {
-                    current =null;
-                    current =     queue.take();
-                } catch (InterruptedException e) {
-                    logger.error("" + e);
-                }
 
                 try
                 {
 
-
-                    logger.debug("Sending message "+ current.getUuid()+" port <" + parsePortNumber(current.getDestNodeName()) + "> ");
-                    /* try to send  message  if the message is not send is backup in the queue queue_tmp */
-
+                    current =     queue.take();
+                    logger.debug("Dequeue message to "+current.getDestNodeName()+" "+current.getPassedNodes());
 
                     client_consumer = new Socket(getAddress(current.getDestNodeName()),parsePortNumber(current.getDestNodeName()));
+
 
                     OutputStream os=client_consumer.getOutputStream();
                     ObjectOutputStream oos=new ObjectOutputStream(os);
@@ -360,16 +338,19 @@ public class SocketChannel extends  AbstractChannelFragment implements  Runnable
                 } catch (Exception e)
                 {
 
+                    logger.debug("Enqueue to queue_node_dead "+current.getDestNodeName());
                     try {
-                        logger.debug("Fail to reach "+current.getDestNodeName());
                         queue_node_dead.put(current);
-                        if(client_consumer !=null)
-                            client_consumer.close();
-                    } catch (Exception e1) {
-
+                    } catch (InterruptedException e1) {
+                        e1.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
                     }
-                }
 
+                }
+                finally {
+                    queue.remove(current);
+
+
+                }
 
 
             }// while
@@ -397,7 +378,7 @@ public class SocketChannel extends  AbstractChannelFragment implements  Runnable
 
                 try
                 {
-                    logger.debug("Sending message to node dead "+ current.getUuid()+" port <" + parsePortNumber(current.getDestNodeName()) + "> ");
+                    logger.debug("Sending message to node  "+ current.getDestNodeName()+" port <" + parsePortNumber(current.getDestNodeName()) + "> ");
                     /* try to send  message  if the message is not send is backup in the queue queue_tmp */
                     client_consumer = new Socket(getAddress(current.getDestNodeName()),parsePortNumber(current.getDestNodeName()));
 
