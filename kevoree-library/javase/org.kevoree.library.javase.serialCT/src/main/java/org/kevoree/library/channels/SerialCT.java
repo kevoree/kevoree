@@ -21,6 +21,9 @@ import java.util.HashMap;
  * @author ffouquet
  */
 @Library(name = "JavaSE")
+@DictionaryType({
+        @DictionaryAttribute(name = "port", defaultValue = "8000", optional = true , fragmentDependant = true)
+})
 @ChannelTypeFragment
 public class SerialCT extends AbstractChannelFragment {
 	private static final Logger logger = LoggerFactory.getLogger(SerialCT.class);
