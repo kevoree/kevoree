@@ -77,26 +77,6 @@ public class ExecutableFinder {
 		return path;
 	}
 
-	public static boolean isWindows () {
-		String os = System.getProperty("os.name").toLowerCase();
-		return (os.contains("win"));
-	}
-
-	public static boolean isMac () {
-		String os = System.getProperty("os.name").toLowerCase();
-		return (os.contains("mac"));
-	}
-
-	public static boolean isUnix () {
-		String os = System.getProperty("os.name").toLowerCase();
-		return (os.contains("nix") || os.contains("nux"));
-	}
-
-	public static boolean is64 () {
-		String os = System.getProperty("os.arch").toLowerCase();
-		return (os.contains("64"));
-	}
-
 	private static String copyFileFromStream (String fileName, String filePath, File folder) throws IOException {
 		InputStream inputStream = ExecutableFinder.class.getClassLoader()
 				.getResourceAsStream(filePath + File.separator + fileName);
