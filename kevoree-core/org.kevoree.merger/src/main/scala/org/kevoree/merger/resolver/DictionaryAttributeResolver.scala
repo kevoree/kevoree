@@ -34,6 +34,19 @@ trait DictionaryAttributeResolver {
     model.getAllInstances.foreach{ instance =>
         instance.getDictionary.map{ dictionaryInstance =>
           dictionaryInstance.getValues.foreach{ value =>
+            value.getTargetNode.map { targetNode =>
+              targetNode match {
+                case UnresolvedNode(targetNodeName)=> {
+                  model.getNodes.find(n => n.getName == targetNodeName) match {
+                    case Some(node)=> value.setTargetNode(Some(node))
+                    case None => logger.error("Unconsitent model , node not found for name "+targetNodeName)
+                  }
+                }
+                case _ => logger.error("Already Dictionary Value targetNodeName for value "+value)
+              } 
+            }
+            
+            
             value.getAttribute match {
               case UnresolvedDictionaryAttribute(attName)=> {
                 instance.getTypeDefinition.getDictionaryType match {

@@ -19,24 +19,40 @@
 package org.kevoree.framework.aspects
 
 import org.kevoree._
- import KevoreeAspects._
+import KevoreeAspects._
 
-case class DictionaryAspect(self : Dictionary) {
+case class DictionaryAspect(self: Dictionary) {
 
-  def isUpdated(other : Dictionary) : Boolean = {
-    if(self != null){
-      if(other != null){
-        self.getValues.exists(v=> {
-            other.getValues.find(ov=> ov.getAttribute.getName == v.getAttribute.getName && ov.getTargetNode == v.getTargetNode) match {
-              case None => true
-              case Some(fv)=> (fv.getValue != v.getValue || fv.getAttribute.getDatatype != v.getAttribute.getDatatype)
-            }
-          })
+  def isUpdated(other: Dictionary): Boolean = {
+    if (self != null) {
+      if (other != null) {
+        self.getValues.exists(v => {
+          other.getValues.find(ov => ov.getAttribute.getName == v.getAttribute.getName && compareTargetNode(ov.getTargetNode,v.getTargetNode)) match {
+            case None => true
+            case Some(fv) => (fv.getValue != v.getValue || fv.getAttribute.getDatatype != v.getAttribute.getDatatype)
+          }
+        })
       } else {
         true
       }
     } else {
       other != null
+    }
+  }
+
+  def compareTargetNode(selfTN: Option[ContainerNode], otherTN: Option[ContainerNode]): Boolean = {
+    if (selfTN.isEmpty) {
+      if (otherTN.isEmpty) {
+        true
+      } else {
+        false
+      }
+    } else {
+      if (otherTN.isEmpty) {
+        false
+      } else {
+        otherTN.get.getName == selfTN.get.getName
+      }
     }
   }
 

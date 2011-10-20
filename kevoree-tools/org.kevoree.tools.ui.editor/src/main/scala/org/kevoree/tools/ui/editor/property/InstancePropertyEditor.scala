@@ -22,6 +22,7 @@ import event.{DocumentEvent, DocumentListener}
 import java.awt.Dimension
 import java.awt.event.{ActionListener, ActionEvent}
 import text.BadLocationException
+import org.slf4j.LoggerFactory
 
 /**
  * Created by IntelliJ IDEA.
@@ -33,13 +34,18 @@ import text.BadLocationException
 
 class InstancePropertyEditor(elem: org.kevoree.Instance, kernel: KevoreeUIKernel) extends NamedElementPropertyEditor(elem, kernel) {
 
+  val logger = LoggerFactory.getLogger(this.getClass)
+
   def getValue(instance: Instance, att: DictionaryAttribute, targetNode: Option[String]): String = {
     var value: DictionaryValue = null
     for (v <- instance.getDictionary.get.getValues) {
       targetNode match {
         case Some(targetNodeSearch) => {
-          if (v.getAttribute == att && v.getTargetNode == targetNodeSearch) {
-            return v.getValue
+          v.getTargetNode.map {
+            tn =>
+              if (v.getAttribute == att && tn.getName == targetNodeSearch) {
+                return v.getValue
+              }
           }
         }
         case None => {
@@ -62,8 +68,11 @@ class InstancePropertyEditor(elem: org.kevoree.Instance, kernel: KevoreeUIKernel
     for (v <- instance.getDictionary.get.getValues) {
       targetNode match {
         case Some(targetNodeSearch) => {
-          if (v.getAttribute.getName == att.getName && v.getTargetNode == targetNodeSearch) {
-            value = v
+          v.getTargetNode.map {
+            tn =>
+              if (v.getAttribute.getName == att.getName && tn.getName == targetNodeSearch) {
+                value = v
+              }
           }
         }
         case None => {
@@ -76,7 +85,14 @@ class InstancePropertyEditor(elem: org.kevoree.Instance, kernel: KevoreeUIKernel
     if (value == null) {
       value = KevoreeFactory.createDictionaryValue
       value.setAttribute(att)
-      targetNode.map(t => value.setTargetNode(t))
+      targetNode.map{t =>
+        val root = att.eContainer.eContainer.eContainer.asInstanceOf[ContainerRoot]
+        root.getNodes.find(n => n.getName == t) match {
+          case Some(n)=> value.setTargetNode(Some(n))
+          case None => logger.error("Node instance not found for name "+t)
+        }
+
+      }
       instance.getDictionary.get.addValues(value)
     }
     value.setValue(aValue.toString)
