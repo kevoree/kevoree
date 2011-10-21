@@ -31,7 +31,7 @@ public class WebServer extends AbstractComponentType {
 
     @Start
     public void start() {
-        bootstrap = new ServerBootstrap(this.getPortByName("handler", MessagePort.class));
+        bootstrap = new ServerBootstrap(this.getPortByName("handler", MessagePort.class),this);
         bootstrap.startServer(Integer.parseInt(this.getDictionary().get("port").toString()));
     }
 
