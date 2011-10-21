@@ -12,8 +12,8 @@ import org.kevoree.framework.AbstractComponentType;
     @ProvidedPort(name = "input", type = PortType.MESSAGE)
 })
 @Requires({
-    @RequiredPort(name = "over", type = PortType.MESSAGE),
-    @RequiredPort(name = "std", type = PortType.MESSAGE)
+    @RequiredPort(name = "over", type = PortType.MESSAGE, needCheckDependency = false),
+    @RequiredPort(name = "std", type = PortType.MESSAGE, needCheckDependency = false)
 })
 public class LevelDetection extends AbstractComponentType {
 
