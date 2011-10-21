@@ -12,7 +12,7 @@ import org.kevoree.framework.AbstractComponentType;
         @ProvidedPort(name = "trigger", type = PortType.MESSAGE)
 })
 @Requires({
-        @RequiredPort(name = "light", type = PortType.MESSAGE)
+        @RequiredPort(name = "light", type = PortType.MESSAGE, needCheckDependency = false)
 })
 public class LightSensor extends AbstractComponentType {
 

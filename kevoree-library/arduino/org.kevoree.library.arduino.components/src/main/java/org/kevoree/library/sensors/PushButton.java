@@ -10,8 +10,8 @@ import org.kevoree.framework.AbstractComponentType;
     @DictionaryAttribute(name = "period", defaultValue = "100", optional = true)
 })
 @Requires({
-    @RequiredPort(name = "click", type = PortType.MESSAGE),
-    @RequiredPort(name = "release", type = PortType.MESSAGE)
+    @RequiredPort(name = "click", type = PortType.MESSAGE, needCheckDependency = false),
+    @RequiredPort(name = "release", type = PortType.MESSAGE, needCheckDependency = false)
 })
 public class PushButton extends AbstractComponentType {
 
