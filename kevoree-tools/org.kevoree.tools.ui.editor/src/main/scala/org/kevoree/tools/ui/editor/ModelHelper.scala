@@ -30,5 +30,11 @@ object ModelHelper {
     model.getAllInstances.filter(i => i.getTypeDefinition == td).size
 
   }
+  
+  def getNextAvailableNodeName(model : ContainerRoot) : String = {
+    var i =0
+    while(model.getNodes.exists(n => n.getName == ("node"+i))){i = i +1}
+    "node"+i
+  }
 
 }

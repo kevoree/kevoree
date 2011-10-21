@@ -38,6 +38,7 @@ public class AbstractPage extends AbstractComponentType {
     @Start
     public void startPage() {
         handler.initRegex(this.getDictionary().get("urlpattern").toString());
+        logger.debug("Abstract page start");
     }
 
     @Stop
