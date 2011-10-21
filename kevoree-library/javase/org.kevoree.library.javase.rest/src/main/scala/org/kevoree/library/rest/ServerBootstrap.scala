@@ -11,12 +11,14 @@ class ServerBootstrap(group : RestGroup) {
 
   var rootService : RootService = _
   val logger = LoggerFactory.getLogger(this.getClass)
+  var id = ""
+  var supervisorRef : Supervisor = _
 
   def startServer(port : Int){
-    val id = "kevoree.rest.group.spray-service"
+    id = "kevoree.rest.group.spray-service."+group.getName
     val config = ServerConfig("0.0.0.0",port,id+"-server",id,id)
 
-    Supervisor(
+    supervisorRef =  Supervisor(
         SupervisorConfig(
           OneForOneStrategy(List(classOf[Exception]), 3, 100),
           List(
@@ -29,7 +31,11 @@ class ServerBootstrap(group : RestGroup) {
 
   def stop(){
     try {
-      Actor.registry.actors.foreach(_ ! PoisonPill)
+      Actor.registry.actors.foreach(actor=> {
+        if(actor.getId().contains(id))
+        actor ! PoisonPill
+      })
+      supervisorRef.shutdown()
     } catch {
       case _ @ e => logger.warn("Error while stopping Spray Server")
     }
