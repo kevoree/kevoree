@@ -67,7 +67,7 @@ public class EmbeddedFelix {
 
 		String node_name = System.getProperty("node.name");
 		if (node_name == null || node_name.equals("")) {
-			node_name = "KEVOREEDefaultNodeName";
+			node_name = "node0";
 			System.setProperty("node.name", node_name);
 		}
 
@@ -85,8 +85,16 @@ public class EmbeddedFelix {
 		//System.setProperty("osgi.shell.telnet.port", remoteShellPort + "");
 		//System.out.println("Remote Shell Port => " + remoteShellPort);
 
+        String extraProps = System.getProperty("org.osgi.framework.system.packages.extra");
+        
+        
+        if(extraProps != null && extraProps != ""){
+            configProps.put(Constants.FRAMEWORK_SYSTEMPACKAGES_EXTRA, SysPackageConstants.getProperty() + ",sun.misc,"+extraProps);
+        } else {
+            configProps.put(Constants.FRAMEWORK_SYSTEMPACKAGES_EXTRA, SysPackageConstants.getProperty() + ",sun.misc");
+        }
 
-		configProps.put(Constants.FRAMEWORK_SYSTEMPACKAGES_EXTRA, SysPackageConstants.getProperty() + ",sun.misc");
+
 		configProps.put(Constants.FRAMEWORK_STORAGE_CLEAN, Constants.FRAMEWORK_STORAGE_CLEAN_ONFIRSTINIT);
 		configProps.put(FelixConstants.SYSTEMBUNDLE_ACTIVATORS_PROP, EmbeddedActivators.getActivators());
 
