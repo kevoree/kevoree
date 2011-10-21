@@ -120,11 +120,11 @@ object ArduinoResourceHelper {
     if (isMac) {
       artifactId = artifactId + ".osx"
     } else if (isWindows) {
-      if (is64) {
+     // if (is64) {
         artifactId = artifactId + ".win64"
-      } else {
-        artifactId = artifactId + ".win"
-      }
+     // } else {
+     //   artifactId = artifactId + ".win"
+     // }
     } else if (isUnix) {
       if (is64) {
         artifactId = artifactId + ".nix64"
