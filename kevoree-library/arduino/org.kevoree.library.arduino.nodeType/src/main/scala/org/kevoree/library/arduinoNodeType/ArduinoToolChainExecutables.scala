@@ -18,30 +18,30 @@ object ArduinoToolChainExecutables {
     System.getProperty("arduino.home") + arduinoRelativePath
   }*/
 
-  def getAVRDUDE(): String = {
-    ExecutableFinder.getAbsolutePath("avrdude"/*, List(getArduinoBin, osxCROSSPATH)*/) + getSuffixe
+  def getAVRDUDE: String = {
+    ExecutableFinder.getAbsolutePath("avrdude" + getSuffixe/*, List(getArduinoBin, osxCROSSPATH)*/)
   }
 
-  def getAVR_AR(): String = {
-    ExecutableFinder.getAbsolutePath("avr-ar"/*, List(getArduinoBin, osxCROSSPATH)*/) + getSuffixe
+  def getAVR_AR: String = {
+    ExecutableFinder.getAbsolutePath("avr-ar" + getSuffixe/*, List(getArduinoBin, osxCROSSPATH)*/)
   }
 
-  def getAVR_GCC(): String = {
-    ExecutableFinder.getAbsolutePath("avr-gcc"/*, List(getArduinoBin, osxCROSSPATH)*/) + getSuffixe
+  def getAVR_GCC: String = {
+    ExecutableFinder.getAbsolutePath("avr-gcc" + getSuffixe/*, List(getArduinoBin, osxCROSSPATH)*/)
   }
 
-  def getAVR_GPP(): String = {
-    ExecutableFinder.getAbsolutePath("avr-g++"/*, List(getArduinoBin, osxCROSSPATH)*/) + getSuffixe
+  def getAVR_GPP: String = {
+    ExecutableFinder.getAbsolutePath("avr-g++" + getSuffixe/*, List(getArduinoBin, osxCROSSPATH)*/)
   }
 
-  def getAVR_OBJCOPY(): String = {
-    ExecutableFinder.getAbsolutePath("avr-objcopy"/*, List(getArduinoBin, osxCROSSPATH)*/) + getSuffixe
+  def getAVR_OBJCOPY: String = {
+    ExecutableFinder.getAbsolutePath("avr-objcopy" + getSuffixe/*, List(getArduinoBin, osxCROSSPATH)*/)
   }
 
 
 
   def getSuffixe = {
-    if (System.getProperty("os.name").toLowerCase().contains("win")) {
+    if (System.getProperty("os.name").toLowerCase.contains("win")) {
       ".exe"
     } else {
       ""
