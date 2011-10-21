@@ -27,7 +27,7 @@
             <artifactId>org.kevoree.kompare</artifactId>
             <version>${project.version}</version>
         </dependency>
-        <dependency>
+        <!--<dependency>
             <groupId>org.apache.felix</groupId>
             <artifactId>org.apache.felix.shell.tui</artifactId>
             <version>1.4.1</version>
@@ -37,7 +37,7 @@
                     <groupId>org.osgi</groupId>
                 </exclusion>
             </exclusions>
-        </dependency>
+        </dependency>-->
     </dependencies>
 
     <build>
