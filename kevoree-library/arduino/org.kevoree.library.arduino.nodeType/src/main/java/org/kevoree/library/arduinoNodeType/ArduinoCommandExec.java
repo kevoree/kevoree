@@ -25,6 +25,7 @@ public class ArduinoCommandExec {
 	public static void execute (String cmd) {
 		try {
 //			System.out.println(cmd);
+			logger.debug(cmd);
 
 			// run the Unix "ps -ef" command
 			// using the Runtime exec method:
