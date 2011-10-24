@@ -14,6 +14,7 @@
 package org.kevoree.kompare
 
 import org.kevoree.framework.KevoreeXmiHelper
+import org.kevoree.{DeployUnit, NamedElement}
 
 /**
  * Created by IntelliJ IDEA.
@@ -29,15 +30,27 @@ object Tester extends App {
 
   val bean = new KevoreeKompareBean
 
-  val model1 = KevoreeXmiHelper.load("/Users/duke/Desktop/step1.kev")
-  val model2 = KevoreeXmiHelper.load("/Users/duke/Desktop/step2.kev")
+  val model1 = KevoreeXmiHelper.load("/Users/duke/Desktop/drop.kev")
+  val model2 = KevoreeXmiHelper.load("/Users/duke/Desktop/dropu.kev")
 
 
-  val adapModel = bean.kompare(model1,model2,"duke")
+  val adapModel = bean.kompare(model1, model2, "node1")
 
-  adapModel.getAdaptations.foreach{ adaptation =>
-    println(adaptation.getPrimitiveType.getName)
+  adapModel.getAdaptations.foreach {
+    adaptation =>
+      println(adaptation.getPrimitiveType.getName)
+      if (adaptation.getRef.isInstanceOf[NamedElement]) {
+        if (adaptation.getRef.isInstanceOf[DeployUnit]) {
+          println("ref=" + adaptation.getRef.asInstanceOf[DeployUnit].getUnitName + "->" + adaptation.getTargetNodeName)
+        } else {
+          println("ref=" + adaptation.getRef.asInstanceOf[NamedElement].getName + "->" + adaptation.getTargetNodeName)
 
+        }
+
+      } else {
+        println("ref=" + adaptation.getRef + "->" + adaptation.getTargetNodeName)
+
+      }
   }
 
 

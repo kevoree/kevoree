@@ -17,7 +17,7 @@ import org.kevoree.framework.AbstractComponentType;
     @DictionaryAttribute(name = "period", defaultValue = "1000", optional = true)
 })
 @Requires({
-    @RequiredPort(name = "tick", type = PortType.MESSAGE)
+    @RequiredPort(name = "tick", type = PortType.MESSAGE, needCheckDependency = false)
 })
 public class Timer extends AbstractComponentType {
 

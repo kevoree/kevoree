@@ -83,8 +83,11 @@ object ArduinoResourceHelper {
       extractArduinoResources()
     }
     var paths = List[String]()
-    paths = paths ++ List[String](basePath + File.separator + "include")
-    paths = paths ++ List[String](basePath + File.separator + "arduino" + File.separator + "libraries")
+    paths = paths ++
+      List[String](basePath + File.separator + "arduino" + File.separator + "hardware" + File.separator + "tools" +
+        File.separator + "avr" + File.separator + "include")
+    paths = paths ++
+      List[String](basePath + File.separator + "arduino" + File.separator + "libraries")
     paths
   }
 
@@ -93,15 +96,9 @@ object ArduinoResourceHelper {
       extractArduinoResources()
     }
     var paths = List[String]()
-    paths = paths ++ List[String](basePath + File.separator + "avr" + File.separator + "lib")
-    new File(basePath + File.separator + "avr" + File.separator + "lib").listFiles().foreach {
-      file =>
-      /*file match {
-        case file.isDirectory => paths = paths ++ getLibraryLocation(file.getAbsolutePath)
-        case _ => paths = paths ++ file.getAbsolutePath
-      }*/
-
-    }
+    paths = paths ++
+      List[String](basePath + File.separator + "arduino" + File.separator + "hardware" + File.separator + "tools" +
+        File.separator + "avr" + File.separator + "lib")
     paths
   }
 
@@ -119,24 +116,24 @@ object ArduinoResourceHelper {
     repositories = repositories ++ List[String]("http://maven.kevoree.org/release");
     repositories = repositories ++ List[String]("http://maven.kevoree.org/snapshots");
     //		scala.collection.immutable.List<String> list = scala.collection.immutable.List.apply(repositories);
-    var version = "0022";
+    var artifactId = "org.kevoree.extra.avr-arduino"
     if (isMac) {
-      version = version + ".osx"
+      artifactId = artifactId + ".osx"
     } else if (isWindows) {
-      if (is64) {
-        version = version + ".win64"
-      } else {
-        version = version + ".win"
-      }
+     // if (is64) {
+        artifactId = artifactId + ".win64"
+     // } else {
+     //   artifactId = artifactId + ".win"
+     // }
     } else if (isUnix) {
       if (is64) {
-        version = version + ".nix64"
+        artifactId = artifactId + ".nix64"
       } else {
-        version = version + ".nix"
+        artifactId = artifactId + ".nix"
       }
     }
     val arteFile = AetherUtil
-      .resolveMavenArtifact("org.kevoree.extra.avr-arduino", "org.kevoree.extra", version, repositories);
+      .resolveMavenArtifact(artifactId, "org.kevoree.extra", "0022", repositories);
     // unzip it on /tmp
     val f = File.createTempFile("arduino_resources", "")
     f.delete()
@@ -146,7 +143,6 @@ object ArduinoResourceHelper {
     basePath = f.getAbsolutePath
 
     copyAvrDude()
-
   }
 
   def getBinaryLocation: java.util.List[String] = {
@@ -156,10 +152,15 @@ object ArduinoResourceHelper {
     // TODO test if basePath is defined
 
     var paths = List[String]()
-    paths = paths ++ List[String](basePath + File.separator + "bin")
-    paths = paths ++ List[String](basePath + File.separator + "avr" + File.separator + "bin")
     paths = paths ++
-      List[String](basePath + File.separator + "libexec" + File.separator + "gcc" + File.separator + "avr" +
+      List[String](basePath + File.separator + "arduino" + File.separator + "hardware" + File.separator + "tools" +
+        File.separator + "bin")
+    paths = paths ++
+      List[String](basePath + File.separator + "arduino" + File.separator + "hardware" + File.separator + "tools" +
+        File.separator + "avr" + File.separator + "bin")
+    paths = paths ++
+      List[String](basePath + File.separator + "arduino" + File.separator + "hardware" + File.separator + "tools" +
+        File.separator + "libexec" + File.separator + "gcc" + File.separator + "avr" +
         File.separator + "4.3.2")
     paths
   }

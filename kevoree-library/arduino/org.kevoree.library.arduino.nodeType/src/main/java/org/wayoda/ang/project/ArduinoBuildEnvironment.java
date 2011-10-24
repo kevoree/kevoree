@@ -25,6 +25,8 @@
 
 package org.wayoda.ang.project;
 
+import org.kevoree.library.arduinoNodeType.util.ArduinoResourceHelper;
+
 import java.io.File;
 import java.util.Enumeration;
 import java.util.Hashtable;
@@ -95,7 +97,7 @@ public class ArduinoBuildEnvironment {
     public static ArduinoBuildEnvironment getInstance() {
 
         synchronized (mutex) {
-            File root = new File( System.getProperty( "arduino.home" ) );
+            File root = new File( ArduinoResourceHelper.getArduinoHome() );
             return new ArduinoBuildEnvironment( root );
         }
     }

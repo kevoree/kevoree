@@ -8,6 +8,7 @@ import org.kevoree.extra.osgi.rxtx.KevoreeSharedCom;
 import org.kevoree.framework.AbstractChannelFragment;
 import org.kevoree.framework.ChannelFragmentSender;
 import org.kevoree.framework.KevoreeChannelFragment;
+import org.kevoree.framework.KevoreeFragmentPropertyHelper;
 import org.kevoree.framework.message.Message;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.ServiceReference;
@@ -21,6 +22,9 @@ import java.util.HashMap;
  * @author ffouquet
  */
 @Library(name = "JavaSE")
+@DictionaryType({
+        @DictionaryAttribute(name = "serialport", fragmentDependant = true)
+})
 @ChannelTypeFragment
 public class SerialCT extends AbstractChannelFragment {
 	private static final Logger logger = LoggerFactory.getLogger(SerialCT.class);
@@ -33,16 +37,10 @@ public class SerialCT extends AbstractChannelFragment {
 
     protected String getPortFromNode(String remoteNodeName) {
         if (!nodePortCache.containsKey(remoteNodeName)) {
-            for (ContainerNode node : modelHandlerService.getLastModel().getNodesForJ()) {
-                if (node.getName().equals(remoteNodeName)) {
-                    for (DictionaryValue dv : node.getDictionary().get().getValuesForJ()) {
-                        if (dv.getAttribute().getName().equals("boardPortName")) {
-                            nodePortCache.put(remoteNodeName, dv.getValue());
-                        }
-                    }
-                }
-            }
+            String remotePort = KevoreeFragmentPropertyHelper.getPropertyFromFragmentChannel(modelHandlerService.getLastModel(), this.getName(), "serialport", remoteNodeName);
+            nodePortCache.put(remoteNodeName, remotePort);
         }
+        logger.warn(this.getName()+":SerailCT on node "+this.getNodeName()+" using port "+nodePortCache.get(remoteNodeName));
         return nodePortCache.get(remoteNodeName);
     }
 
@@ -54,9 +52,15 @@ public class SerialCT extends AbstractChannelFragment {
         new Thread() {
             @Override
             public void run() {
+                try {
+                    Thread.sleep(3000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                }
                 for (KevoreeChannelFragment cf : getOtherFragments()) {
-                    if (getPortFromNode(cf.getNodeName()) != null) {
-                        KevoreeSharedCom.addObserver(getPortFromNode(cf.getNodeName()), cl);
+                    String port = getPortFromNode(cf.getNodeName());
+                    if (port != null && port != "") {
+                        KevoreeSharedCom.addObserver(port, cl);
                     } else {
                         logger.error("Com Port Not Found ");
                     }

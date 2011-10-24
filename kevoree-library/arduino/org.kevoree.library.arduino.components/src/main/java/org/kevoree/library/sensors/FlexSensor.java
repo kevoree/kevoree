@@ -10,7 +10,7 @@ import org.kevoree.framework.AbstractComponentType;
         @DictionaryAttribute(name = "period", defaultValue = "100", optional = true)
 })
 @Requires({
-        @RequiredPort(name = "out", type = PortType.MESSAGE)
+        @RequiredPort(name = "out", type = PortType.MESSAGE, needCheckDependency = false)
 })
 public class FlexSensor extends AbstractComponentType {
 

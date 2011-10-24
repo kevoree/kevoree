@@ -27,7 +27,7 @@ import org.kevoree.adaptation.deploy.osgi.context.KevoreeOSGiBundle
 import org.slf4j.LoggerFactory
 import org.osgi.framework.BundleException
 import org.kevoree.tools.aether.framework.AetherUtil
-import java.io.{File, FileInputStream}
+import java.io.{InputStream, File, FileInputStream}
 
 case class AddDeployUnitAetherCommand(deployUnit: DeployUnit, ctx: KevoreeDeployManager) extends PrimitiveCommand {
 
@@ -41,7 +41,16 @@ case class AddDeployUnitAetherCommand(deployUnit: DeployUnit, ctx: KevoreeDeploy
       val arteFile : File = AetherUtil.resolveDeployUnit(deployUnit)
 
       logger.debug("Try to install from URL, " + arteFile.getAbsolutePath+" on - "+ctx.bundleContext)
+
+      val previousBundleID = ctx.bundleContext.getBundles.map(b => b.getBundleId)
       lastExecutionBundle = Some(ctx.bundleContext.installBundle("file:///"+arteFile.getAbsolutePath,new FileInputStream(arteFile)));
+      
+      if(previousBundleID.contains(lastExecutionBundle.get.getBundleId)){
+        logger.debug("Update Deploy Unit detected , force update for bundleID "+lastExecutionBundle.get.getBundleId)
+        lastExecutionBundle.get.update(new FileInputStream(arteFile))
+      }
+
+      
       val symbolicName: String = lastExecutionBundle.get.getSymbolicName
 
       //FOR DEPLOY UNIT DO NOT USE ONLY NAME

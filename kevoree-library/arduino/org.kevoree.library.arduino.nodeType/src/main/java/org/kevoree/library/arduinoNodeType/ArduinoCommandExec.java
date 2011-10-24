@@ -25,6 +25,7 @@ public class ArduinoCommandExec {
 	public static void execute (String cmd) {
 		try {
 //			System.out.println(cmd);
+			logger.debug(cmd);
 
 			// run the Unix "ps -ef" command
 			// using the Runtime exec method:
@@ -44,29 +45,49 @@ public class ArduinoCommandExec {
 				p = Runtime.getRuntime().exec(cmd);
 			}
 
-			BufferedReader stdInput = new BufferedReader(new
+			final BufferedReader stdInput = new BufferedReader(new
 					InputStreamReader(p.getInputStream()));
 
-			BufferedReader stdError = new BufferedReader(new
+			final BufferedReader stdError = new BufferedReader(new
 					InputStreamReader(p.getErrorStream()));
 			// try {
 			// read the output from the command
 			//System.out.println("Here is the standard output of the command:\n");
-			while ((s = stdInput.readLine()) != null) {
-				logger.debug(s);
-			}
+			new Thread() {
+				public void run () {
+					try {
+						while ((s = stdInput.readLine()) != null) {
+							logger.info(s);
+						}
+					} catch (IOException e) {
+//						e.printStackTrace();
+					}
+				}
+			}.start();
 
 			// read any errors from the attempted command
 			//System.out.println("Here is the standard error of the command (if any):\n");
-			while ((s = stdError.readLine()) != null) {
-				logger.debug(s);
-			}
+			new Thread() {
+				public void run () {
+					try {
+						while ((s = stdError.readLine()) != null) {
+							logger.info(s);
+						}
+					} catch (IOException e) {
+//						e.printStackTrace();
+					}
+				}
+			}.start();
 
-			/*p.waitFor();
-							//System.exit(0);
-						} catch (InterruptedException ex) {
-							Logger.getLogger(ArduinoCommandExec.class.getName()).log(Level.SEVERE, null, ex);
-						}*/
+			try {
+				p.waitFor();
+				if (p.exitValue() != 0) {
+					logger.error("The command fails: " + cmd);
+				}
+				//System.exit(0);
+			} catch (InterruptedException ex) {
+				logger.error("Error while waiting the end of " + cmd, ex);
+			}
 
 			//System.out.println("Cmd out !");
 
