@@ -81,10 +81,11 @@ trait TypeDefinitionMerger extends Merger with DictionaryMerger with PortTypeMer
 
   private def consistencyImpacted(root: ContainerRoot, actuelTypeDefinition: TypeDefinition,
                                   newTypeDefinition: TypeDefinition) = {
-    println(actuelTypeDefinition.getName)
+    println("consistency Impacted="+actuelTypeDefinition.getName)
     //REMOVE OLD AND ADD NEW TYPE
+    
     root.removeTypeDefinitions(actuelTypeDefinition)
-    mergeNewTypeDefinition(root, newTypeDefinition)
+    mergeNewTypeDefinition(root, newTypeDefinition,true)
 
     //PARTICULAR CASE - CHECK
     if (newTypeDefinition.isInstanceOf[NodeType]) {
@@ -103,7 +104,7 @@ trait TypeDefinitionMerger extends Merger with DictionaryMerger with PortTypeMer
     newTypeDefinition.removeAllDeployUnits()
     allDeployUnits.foreach {
       ndu =>
-        val merged = mergeDeployUnit(root, ndu.asInstanceOf[DeployUnit])
+        val merged = mergeDeployUnit(root, ndu.asInstanceOf[DeployUnit],true)
         if (!newTypeDefinition.getDeployUnits.contains(merged)) {
           newTypeDefinition.addDeployUnits(merged)
         }
@@ -185,14 +186,14 @@ trait TypeDefinitionMerger extends Merger with DictionaryMerger with PortTypeMer
   }
 
   /* MERGE A SIMPLE NEW TYPE DEFINITION */
-  private def mergeNewTypeDefinition(actualModel: ContainerRoot, newTypeDefinition: TypeDefinition) = {
+  private def mergeNewTypeDefinition(actualModel: ContainerRoot, newTypeDefinition: TypeDefinition, force : Boolean = false) = {
     println("addNewTypeDef " + newTypeDefinition.getName)
     //MERGE TYPE DEPLOY UNITS
     val newTypeDefinitionDeployUnits = newTypeDefinition.getDeployUnits
     newTypeDefinition.removeAllDeployUnits()
     newTypeDefinitionDeployUnits.foreach {
       ndu =>
-        newTypeDefinition.addDeployUnits(mergeDeployUnit(actualModel, ndu.asInstanceOf[DeployUnit]))
+        newTypeDefinition.addDeployUnits(mergeDeployUnit(actualModel, ndu.asInstanceOf[DeployUnit],true))
     }
     //ADD RECUSIVE DEFINITON TO ROOT
     newTypeDefinition match {

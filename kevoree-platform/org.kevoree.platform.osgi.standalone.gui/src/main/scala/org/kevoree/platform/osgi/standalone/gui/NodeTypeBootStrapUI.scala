@@ -60,7 +60,11 @@ class NodeTypeBootStrapUI(pkernel: ContainerRoot) extends JPanel {
     this.removeAll()
     model = kernel
     val nodeTypeModel = new DefaultComboBoxModel
-    kernel.getTypeDefinitions.filter(td => td.isInstanceOf[org.kevoree.NodeType] && td.getDeployUnits.exists(du => du.getTargetNodeType != null )).foreach {
+    kernel.getTypeDefinitions.
+      filter(td => td.isInstanceOf[org.kevoree.NodeType] && td.getDeployUnits.exists(du => du.getTargetNodeType != null ))
+      .sortWith( (td,td2) => if(td2.getName=="JavaSENode"){true}else{td.getName < td2.getName } )
+      .reverse
+      .foreach {
       td =>
         nodeTypeModel.addElement(td.getName)
     }
@@ -68,7 +72,11 @@ class NodeTypeBootStrapUI(pkernel: ContainerRoot) extends JPanel {
     nodeTypeComboBox.setUI(new HudComboBoxUI())
 
     val groupTypeModel = new DefaultComboBoxModel
-    kernel.getTypeDefinitions.filter(td => td.isInstanceOf[org.kevoree.GroupType] && td.getDeployUnits.exists(du => du.getTargetNodeType != null )).foreach {
+    kernel.getTypeDefinitions.
+      filter(td => td.isInstanceOf[org.kevoree.GroupType] && td.getDeployUnits.exists(du => du.getTargetNodeType != null ))
+      .sortWith( (td,td2) => if(td2.getName=="RestGroup"){true}else{td.getName < td2.getName } )
+      .reverse
+      .foreach {
           td =>
             groupTypeModel.addElement(td.getName)
         }
