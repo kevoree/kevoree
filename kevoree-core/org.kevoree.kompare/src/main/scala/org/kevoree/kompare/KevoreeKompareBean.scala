@@ -76,12 +76,12 @@ class KevoreeKompareBean extends InitNodeKompare with StopNodeKompare with Updat
           }
 
           case JavaSePrimitive.UpdateDeployUnit => {
-            val rcmd = KevoreeAdaptationFactory.eINSTANCE.createAdaptationPrimitive
+            /*val rcmd = KevoreeAdaptationFactory.eINSTANCE.createAdaptationPrimitive
             rcmd.setPrimitiveType(getAdaptationPrimitive(JavaSePrimitive.RemoveDeployUnit, actualModel.asInstanceOf[ContainerRoot]))
             rcmd.setRef(adaptation.getRef)
             currentAdaptModel.removeAdaptations(adaptation)
             currentAdaptModel.addAdaptations(rcmd)
-
+            */
             val acmd = KevoreeAdaptationFactory.eINSTANCE.createAdaptationPrimitive
             acmd.setPrimitiveType(getAdaptationPrimitive(JavaSePrimitive.AddDeployUnit, actualModel.asInstanceOf[ContainerRoot]))
             acmd.setRef(adaptation.getRef)

@@ -31,8 +31,8 @@ object MergerApp {
     val merger = new RootMerger
     val emtpyModel = KevoreeFactory.eINSTANCE.createContainerRoot
 
-    val model1 = KevoreeXmiHelper.load("/Users/duke/Desktop/drop2.kev.xml")
-    val model2 = KevoreeXmiHelper.load("/Users/duke/Desktop/drop.kev.xml")
+    val model1 = KevoreeXmiHelper.load("/Users/duke/Desktop/toto.kev")
+    val model2 = KevoreeXmiHelper.load("/Users/duke/Desktop/lib.kev")
 
 
     /*
@@ -43,9 +43,9 @@ object MergerApp {
      */
 
     println("%%%%%%%%%%%%%%%%%%%%%%%%%% 1")
-    merger.merge(emtpyModel, model1)
+//    merger.merge(emtpyModel, model1)
     println("%%%%%%%%%%%%%%%%%%%%%%%%%% 2")
-    merger.merge(emtpyModel, model2)
+    merger.merge(model1, model2)
     println("%%%%%%%%%%%%%%%%%%%%%%%%%% 3")
     //merger.merge(emtpyModel, model3)
     println("%%%%%%%%%%%%%%%%%%%%%%%%%% 4")
@@ -54,7 +54,7 @@ object MergerApp {
 
 
 
-    println(KevoreeXmiHelper.saveToString(emtpyModel,true))
+    println(KevoreeXmiHelper.saveToString(model1,true))
 
 
 
