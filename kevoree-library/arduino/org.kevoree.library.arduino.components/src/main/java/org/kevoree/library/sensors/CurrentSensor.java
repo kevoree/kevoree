@@ -12,7 +12,7 @@ import org.kevoree.framework.AbstractComponentType;
     @ProvidedPort(name = "trigger", type = PortType.MESSAGE)
 })
 @Requires({
-    @RequiredPort(name = "currentW", type = PortType.MESSAGE)
+    @RequiredPort(name = "currentW", type = PortType.MESSAGE, needCheckDependency = false)
 })
 public class CurrentSensor extends AbstractComponentType {
 

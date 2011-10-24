@@ -4,8 +4,7 @@ import org.kevoree.library.arduinoNodeType.util.ArduinoResourceHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.*;
-import java.util.ArrayList;
+import java.io.File;
 import java.util.List;
 
 /**
@@ -16,32 +15,30 @@ import java.util.List;
 public class ExecutableFinder {
 	private static final Logger logger = LoggerFactory.getLogger(ExecutableFinder.class);
 
-	private static List<String> pathDirectories = new ArrayList<String>();
+//	private static List<String> pathDirectories = new ArrayList<String>();
 
-	private static String path = "";
+//	private static String path = "";
 
 	//ONLY FOR UNIX / windows must use cmd.exe
 	/* Try to build system path */
-	private static List<String> getSysPaths () {
+	/*private static List<String> getSysPaths () {
 		if (pathDirectories.isEmpty()) {
 			if (System.getenv() != null) {
 				if (System.getenv().get("PATH") != null) {
-					String line = System.getenv().get("PATH").toString();
+					String line = System.getenv().get("PATH");
 					String[] paths = line.split(File.pathSeparator);
-					for (int i = 0; i < paths.length; i++) {
-						pathDirectories.add(paths[i]);
-					}
+					Collections.addAll(pathDirectories, paths);
 				}
 			}
 		}
 		return pathDirectories;
-	}
+	}*/
 
-	public static String getBinaryDirectory () {
+	/*public static String getBinaryDirectory () {
 		return path;
-	}
+	}*/
 
-	public static String getAbsolutePath (String execName, List<String> otherPaths) {
+	public static String getAbsolutePath (String execName/*, List<String> otherPaths*/) {
 
 //		String path = "";
 
@@ -56,7 +53,7 @@ public class ExecutableFinder {
 			//e.printStackTrace();
 			//logger.error("Unexcpected error while extracting binary files", e);
 		}*/
-		for (String s : getSysPaths()) {
+		/*for (String s : getSysPaths()) {
 			try {
 				Process p = Runtime.getRuntime().exec(s + File.separator + execName);
 				path = s + File.separator + execName;
@@ -73,11 +70,11 @@ public class ExecutableFinder {
 					//NOTHING
 				}
 			}
-		}
-		return path;
+		}*/
+		return "";
 	}
 
-	private static String copyFileFromStream (String fileName, String filePath, File folder) throws IOException {
+	/*private static String copyFileFromStream (String fileName, String filePath, File folder) throws IOException {
 		InputStream inputStream = ExecutableFinder.class.getClassLoader()
 				.getResourceAsStream(filePath + File.separator + fileName);
 		//if (inputStream != null) {
@@ -99,5 +96,5 @@ public class ExecutableFinder {
 		return folder.getAbsolutePath() + File.separator + fileName;
 		//}
 		//return null;
-	}
+	}*/
 }

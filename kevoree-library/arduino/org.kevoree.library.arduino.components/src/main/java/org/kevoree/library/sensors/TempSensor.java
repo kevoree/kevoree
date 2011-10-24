@@ -13,7 +13,7 @@ import org.kevoree.framework.AbstractComponentType;
     @ProvidedPort(name = "trigger", type = PortType.MESSAGE)
 })
 @Requires({
-    @RequiredPort(name = "temp", type = PortType.MESSAGE)
+    @RequiredPort(name = "temp", type = PortType.MESSAGE, needCheckDependency = false)
 })
 public class TempSensor extends AbstractComponentType {
 

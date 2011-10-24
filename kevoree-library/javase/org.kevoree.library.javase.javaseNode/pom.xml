@@ -27,22 +27,10 @@
             <artifactId>org.kevoree.kompare</artifactId>
             <version>${project.version}</version>
         </dependency>
-        <dependency>
-            <groupId>org.apache.felix</groupId>
-            <artifactId>org.apache.felix.shell.tui</artifactId>
-            <version>1.4.1</version>
-            <exclusions>
-                <exclusion>
-                    <artifactId>org.osgi.core</artifactId>
-                    <groupId>org.osgi</groupId>
-                </exclusion>
-            </exclusions>
-        </dependency>
     </dependencies>
 
     <build>
         <plugins>
-
             <plugin>
                 <groupId>org.apache.felix</groupId>
                 <artifactId>maven-bundle-plugin</artifactId>
@@ -52,8 +40,8 @@
                     <instructions>
                         <Private-Package>javax.jmdns.*</Private-Package>
                         <DynamicImport-Package>*</DynamicImport-Package>
-                        <Export-Package>org.kevoree.library.defaultNodeTypes.*,org.kevoree.library.sky.minicloud.group.*</Export-Package>
-                        <Import-Package>!org.kevoree.library.defaultNodeTypes.*,!org.kevoree.library.sky.minicloud.group.*,*</Import-Package>
+                        <Export-Package>org.kevoree.library.defaultNodeTypes.*</Export-Package>
+                        <Import-Package>!org.kevoree.library.defaultNodeTypes.*,*</Import-Package>
                     </instructions>
                 </configuration>
             </plugin>

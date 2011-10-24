@@ -16,7 +16,7 @@ import org.kevoree.framework.AbstractComponentType;
         @DictionaryAttribute(name = "period", defaultValue = "200", optional = true)
 })
 @Requires({
-        @RequiredPort(name = "range", type = PortType.MESSAGE)
+        @RequiredPort(name = "range", type = PortType.MESSAGE, needCheckDependency = false)
 })
 public class UltraSonicRange extends AbstractComponentType {
 
