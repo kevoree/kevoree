@@ -20,12 +20,12 @@ package org.kevoree.merger.sub
 
 import org.kevoree._
 import org.kevoree.merger.Merger
- import org.kevoree.framework.aspects.KevoreeAspects._
+import org.kevoree.framework.aspects.KevoreeAspects._
 
 trait DeployUnitMerger extends Merger {
 
 
-  def mergeDeployUnit(actualModel: ContainerRoot, tp: DeployUnit/*, newForce: Boolean = false*/): DeployUnit = {
+  def mergeDeployUnit(actualModel: ContainerRoot, tp: DeployUnit, newForce: Boolean = false): DeployUnit = {
 
     val resultDeployUnit = actualModel.getDeployUnits.find({
       atp =>
@@ -38,12 +38,14 @@ trait DeployUnitMerger extends Merger {
           mergeRequiredLibs(actualModel, tp)
           tp
         } else {
-           /*
+          //USED BY PARENT MERGER TO FORCE UPDATE
           if (newForce) {
-            println("force")
+            //FUCKK TOTO
+            val reLibs = tp.getRequiredLibs
             ftp.removeAllRequiredLibs()
-            ftp.addAllRequiredLibs(tp.getRequiredLibs)
-          } */
+            ftp.addAllRequiredLibs(reLibs)
+
+          }
 
           val ftpTimeStamp = if (ftp.getHashcode != "") {
             java.lang.Long.parseLong(ftp.getHashcode)
@@ -77,16 +79,16 @@ trait DeployUnitMerger extends Merger {
   }
 
   def mergeRequiredLibs(actualModel: ContainerRoot, tp: DeployUnit) {
-    
-    println("--->"+tp.getUnitName+"-"+tp.getRequiredLibs.size)
-    
+
+    println("--->" + tp.getUnitName + "-" + tp.getRequiredLibs.size)
+
     val requireds: List[DeployUnit] = tp.getRequiredLibs
     tp.removeAllRequiredLibs()
     requireds.foreach {
       rLib =>
         tp.addRequiredLibs(mergeDeployUnit(actualModel, rLib))
     }
-    println(tp.getUnitName+"-"+tp.getRequiredLibs.size)
+    println(tp.getUnitName + "-" + tp.getRequiredLibs.size)
 
   }
 
