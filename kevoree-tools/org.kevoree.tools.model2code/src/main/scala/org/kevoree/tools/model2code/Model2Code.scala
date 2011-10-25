@@ -63,8 +63,10 @@ class Model2Code extends CompilationUnitHelpers {
    */
   def modelToCode(model: ContainerRoot, typeDef: TypeDefinition, srcRoot: URI, targetRoot: URI) {
 
-    if (typeDef.getBean == null) {
+    if (typeDef.getBean == null || typeDef.getBean.equals("")) {
       System.err.println("Can not generate code of TypeDefinition with no bean attribute. " + typeDef.getName + " ignored.")
+    } else if(!typeDef.getBean.contains(".")) {
+      System.err.println("Can not generate code of TypeDefinition if the bean is out of any package (bean:"+typeDef.getBean+"). " + typeDef.getName + " ignored.")
     } else {
 
       val fileSrcLocation = srcRoot.toString + typeDef.getBean.replace(".", "/").concat(".java")
