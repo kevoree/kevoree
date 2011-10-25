@@ -58,7 +58,7 @@ public class KevoreeActivity extends Activity implements KevoreeAndroidService {
         LinearLayout main = new LinearLayout(this);
         main.setOrientation(LinearLayout.VERTICAL);
         setContentView(main);
-        tabs = new TabHost(this);
+        tabs = new TabHost(this,null);
         tabs.setId(android.R.id.tabhost);
         main.addView(tabs);
         TabWidget tabWidget = new TabWidget(this);
@@ -71,7 +71,7 @@ public class KevoreeActivity extends Activity implements KevoreeAndroidService {
         tabs.setup();
 
         TabSpec tspec1 = tabs.newTabSpec("Admin");
-        tspec1.setIndicator("Admin", this.getResources().getDrawable(android.R.drawable.ic_menu_preferences));
+        tspec1.setIndicator("Admin");
 
         LinearLayout adminLayout = new LinearLayout(this);
 
@@ -118,7 +118,7 @@ public class KevoreeActivity extends Activity implements KevoreeAndroidService {
                 Log.i("art2.service", "start bind service");
                 if (!alreadyStarted) {
                     nodeName=  nodeNameView.getText().toString();
-
+                    System.setProperty("node.name",nodeName);
                     startService(intent_start);
                     alreadyStarted = true;
                 }
@@ -173,7 +173,7 @@ public class KevoreeActivity extends Activity implements KevoreeAndroidService {
             @Override
             public void run() {
                 TabSpec tspec3 = tabs.newTabSpec(groupKey);
-                tspec3.setIndicator(groupKey, getResources().getDrawable(android.R.drawable.star_on));
+                tspec3.setIndicator(groupKey);//, getResources().getDrawable(android.R.drawable.star_on));
                 tspec3.setContent(new PreExistingViewFactory(view));
                 tabs.addTab(tspec3);
             }

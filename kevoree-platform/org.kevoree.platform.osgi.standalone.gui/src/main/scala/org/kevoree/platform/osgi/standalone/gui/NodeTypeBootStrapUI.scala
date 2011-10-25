@@ -83,7 +83,7 @@ class NodeTypeBootStrapUI(pkernel: ContainerRoot) extends JPanel {
     groupTypeComboBox = new JComboBox(groupTypeModel)
     groupTypeComboBox.setUI(new HudComboBoxUI())
 
-    nodeInstancePanel = new InstanceParamPanel(getTypeDefinition(nodeTypeComboBox),"node1")
+    nodeInstancePanel = new InstanceParamPanel(getTypeDefinition(nodeTypeComboBox),"node0")
     groupInstancePanel = new InstanceParamPanel(getTypeDefinition(groupTypeComboBox),"sync")
 
     val nodeTypeLabel = new JLabel("Node type", SwingConstants.TRAILING);

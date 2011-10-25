@@ -28,20 +28,33 @@ object BootstrapHelper {
 
   val logger = LoggerFactory.getLogger(this.getClass)
 
-  def initModelInstance(model: ContainerRoot, defType: String) {
+  def initModelInstance(model: ContainerRoot, defType: String, defGroupType: String) {
 
     val nodeName = KevoreeActivity.nodeName
     if (!model.getNodes.exists(n => n.getName == nodeName)) {
       //CREATE DEFAULT
       model.getTypeDefinitions.find(td => td.getName == defType) match {
         case Some(typeDefFound) => {
-          logger.warn("Init default node instance for name "+nodeName)
+          logger.warn("Init default node instance for name " + nodeName)
           val node = KevoreeFactory.createContainerNode
           node.setName(nodeName)
           node.setTypeDefinition(typeDefFound)
           model.addNodes(node)
+
+          model.getTypeDefinitions.find(td => td.getName == defGroupType) match {
+            case Some(groupDef)=> {
+              val group = KevoreeFactory.createGroup
+              group.setTypeDefinition(groupDef)
+              group.setName("sync")
+              group.setSubNodes(List(node))
+              model.addGroups(group)
+            }
+            case None => logger.error("Default group type not found for name " + defGroupType)
+          }
+
+
         }
-        case None => logger.error("Default type not found for name " + defType)
+        case None => logger.error("Default node type not found for name " + defType)
       }
 
 
