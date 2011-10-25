@@ -30,7 +30,7 @@ import java.io.InputStream;
 		@DictionaryAttribute(name = "COLOR_OFF", defaultValue = "RED", optional = true,
 				vals = {"GREEN", "RED", "BLUE", "YELLOW"})
 })*/
-@Library(name = "Kevoree-Android")
+@Library(name = "Android")
 @ComponentType
 public class FakeSimpleLight extends AbstractComponentType implements ToggleLightService {
 	private static final Logger logger = LoggerFactory.getLogger(FakeSimpleLight.class);

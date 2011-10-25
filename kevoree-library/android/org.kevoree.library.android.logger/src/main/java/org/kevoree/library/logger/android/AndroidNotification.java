@@ -17,7 +17,7 @@ import org.osgi.framework.Bundle;
 @Provides({
         @ProvidedPort(name = "log", type = PortType.MESSAGE)
 })
-@Library(name = "Kevoree-Android")
+@Library(name = "Android")
 @ComponentType
 public class AndroidNotification extends AbstractComponentType {
 
@@ -28,7 +28,7 @@ public class AndroidNotification extends AbstractComponentType {
     public void start() {
         uiService = UIServiceHandler.getUIService((Bundle) this.getDictionary().get("osgi.bundle"));
         view = new TextView(uiService.getRootActivity());
-        uiService.addToGroup("kevlog2", view);
+        uiService.addToGroup("kevlog", view);
     }
 
     @Stop

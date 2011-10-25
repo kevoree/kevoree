@@ -23,7 +23,7 @@ import java.util.HashMap;
 		@RequiredPort(name = "off", type = PortType.MESSAGE),
 		@RequiredPort(name = "toggle", type = PortType.SERVICE, className = ToggleLightService.class, optional = true)
 })
-@Library(name = "Kevoree-Android")
+@Library(name = "Android")
 @ComponentType
 public class FakeSimpleSwitch extends AbstractComponentType {
 
