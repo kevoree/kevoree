@@ -74,13 +74,18 @@
     <option name="changedFiles">
       <list>
         <option value="$PROJECT_DIR$/pom.xml" />
-        <option value="$PROJECT_DIR$/../org.kevoree.library.android.nodeType/src/main/java/org/kevoree/library/android/nodeType/AndroidNode.java" />
         <option value="$PROJECT_DIR$/../org.kevoree.library.android.fakeDomo/pom.xml" />
         <option value="$PROJECT_DIR$/../org.kevoree.library.android.fakeDomo/src/main/java/org/kevoree/library/android/fakeDomo/FakeSimpleLight.java" />
         <option value="$PROJECT_DIR$/../org.kevoree.library.android.fakeDomo/src/main/java/org/kevoree/library/android/fakeDomo/FakeSimpleSwitch.java" />
         <option value="$PROJECT_DIR$/../org.kevoree.library.android.logger/src/main/java/org/kevoree/library/logger/android/AndroidNotification.java" />
-        <option value="$PROJECT_DIR$/../org.kevoree.library.android.rest/src/main/java/org/kevoree/library/rest/RestGroup.java" />
+        <option value="$PROJECT_DIR$/../org.kevoree.library.android.rest/src/main/scala/org/kevoree/library/rest/RootService.scala" />
+        <option value="$PROJECT_DIR$/../org.kevoree.library.android.rest/src/main/scala/org/kevoree/library/rest/ServerBootstrap.scala" />
+        <option value="$PROJECT_DIR$/../org.kevoree.library.android.rest/src/main/java/org/omg/CORBA/portable/IDLEntity.java" />
+        <option value="$PROJECT_DIR$/../org.kevoree.library.android.nodeType/src/main/java/org/kevoree/library/android/nodeType/AndroidNode.java" />
+        <option value="$PROJECT_DIR$/../org.kevoree.library.android.nodeType/pom.xml" />
+        <option value="$PROJECT_DIR$/../org.kevoree.library.android.rest/src/main/java/nanohttpd/NanoHTTPD.java" />
         <option value="$PROJECT_DIR$/../org.kevoree.library.android.rest/pom.xml" />
+        <option value="$PROJECT_DIR$/../org.kevoree.library.android.rest/src/main/java/org/kevoree/library/rest/RestGroup.java" />
       </list>
     </option>
   </component>
@@ -98,6 +103,30 @@
         <PATH_ELEMENT>
           <option name="myItemId" value="" />
           <option name="myItemType" value="org.jetbrains.idea.maven.navigator.MavenProjectsStructure$RootNode" />
+        </PATH_ELEMENT>
+      </PATH>
+      <PATH>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="" />
+          <option name="myItemType" value="org.jetbrains.idea.maven.navigator.MavenProjectsStructure$RootNode" />
+        </PATH_ELEMENT>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="Kevoree :: Library :: Android :: Rest" />
+          <option name="myItemType" value="org.jetbrains.idea.maven.navigator.MavenProjectsStructure$ProjectNode" />
+        </PATH_ELEMENT>
+      </PATH>
+      <PATH>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="" />
+          <option name="myItemType" value="org.jetbrains.idea.maven.navigator.MavenProjectsStructure$RootNode" />
+        </PATH_ELEMENT>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="Kevoree :: Library :: Android :: Rest" />
+          <option name="myItemType" value="org.jetbrains.idea.maven.navigator.MavenProjectsStructure$ProjectNode" />
+        </PATH_ELEMENT>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="Lifecycle" />
+          <option name="myItemType" value="org.jetbrains.idea.maven.navigator.MavenProjectsStructure$LifecycleNode" />
         </PATH_ELEMENT>
       </PATH>
     </treeState>
@@ -149,16 +178,19 @@
   </component>
   <component name="PropertiesComponent">
     <property name="GoToFile.includeJavaFiles" value="false" />
-    <property name="GoToClass.toSaveIncludeLibraries" value="false" />
+    <property name="project.structure.last.edited" value="Modules" />
+    <property name="project.structure.proportion" value="0.0" />
     <property name="options.splitter.main.proportions" value="0.3" />
     <property name="options.lastSelected" value="preferences.pluginManager" />
     <property name="MemberChooser.sorted" value="false" />
+    <property name="project.structure.side.proportion" value="0.0" />
+    <property name="MemberChooser.copyJavadoc" value="false" />
+    <property name="GoToClass.toSaveIncludeLibraries" value="false" />
     <property name="MemberChooser.showClasses" value="true" />
     <property name="GoToClass.includeLibraries" value="false" />
     <property name="dynamic.classpath" value="false" />
     <property name="options.searchVisible" value="true" />
     <property name="options.splitter.details.proportions" value="0.2" />
-    <property name="MemberChooser.copyJavadoc" value="false" />
   </component>
   <component name="RunManager">
     <configuration default="true" type="MavenRunConfiguration" factoryName="Maven">
@@ -207,6 +239,19 @@
         <option name="Maven.BeforeRunTask" enabled="false" />
       </method>
     </configuration>
+    <configuration default="true" type="Specs2RunConfiguration" factoryName="Specs2">
+      <module name="" />
+      <setting name="path" value="" />
+      <setting name="vmparams" value="" />
+      <setting name="params" value="" />
+      <setting name="packagepath" value="" />
+      <setting name="workingDirectory" value="$PROJECT_DIR$" />
+      <method>
+        <option name="BuildArtifacts" enabled="false" />
+        <option name="Make" enabled="true" />
+        <option name="Maven.BeforeRunTask" enabled="false" />
+      </method>
+    </configuration>
     <configuration default="true" type="Remote" factoryName="Remote">
       <option name="USE_SOCKET_TRANSPORT" value="true" />
       <option name="SERVER_MODE" value="false" />
@@ -215,6 +260,21 @@
       <option name="PORT" value="5005" />
       <method>
         <option name="BuildArtifacts" enabled="false" />
+        <option name="Maven.BeforeRunTask" enabled="false" />
+      </method>
+    </configuration>
+    <configuration default="true" type="SpecsRunConfiguration" factoryName="Specs">
+      <module name="" />
+      <setting name="path" value="" />
+      <setting name="vmparams" value="" />
+      <setting name="params" value="" />
+      <setting name="packagepath" value="" />
+      <setting name="workingDirectory" value="$PROJECT_DIR$" />
+      <setting name="sysFilter" value=".*" />
+      <setting name="exampleFilter" value=".*" />
+      <method>
+        <option name="BuildArtifacts" enabled="false" />
+        <option name="Make" enabled="true" />
         <option name="Maven.BeforeRunTask" enabled="false" />
       </method>
     </configuration>
@@ -247,6 +307,19 @@
       <option name="PASS_PARENT_ENVS" value="true" />
       <module name="" />
       <envs />
+      <method>
+        <option name="BuildArtifacts" enabled="false" />
+        <option name="Make" enabled="true" />
+        <option name="Maven.BeforeRunTask" enabled="false" />
+      </method>
+    </configuration>
+    <configuration default="true" type="ScalaTestRunConfiguration" factoryName="ScalaTest">
+      <module name="" />
+      <setting name="path" value="" />
+      <setting name="package" value="" />
+      <setting name="vmparams" value="" />
+      <setting name="params" value="" />
+      <setting name="workingDirectory" value="$PROJECT_DIR$" />
       <method>
         <option name="BuildArtifacts" enabled="false" />
         <option name="Make" enabled="true" />
@@ -291,12 +364,12 @@
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="true" content_ui="tabs" />
-      <window_info id="Maven Projects" active="true" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.20201294" sideWeight="0.6716233" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.23580158" sideWeight="0.6716233" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.20488857" sideWeight="0.7001239" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.22573689" sideWeight="0.7001239" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3283767" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.2998761" sideWeight="0.9992816" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
@@ -358,90 +431,183 @@
     <breakpoint-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/pom.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="46" column="26" selection-start="1975" selection-end="1975" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/../org.kevoree.library.android.nodeType/pom.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/../org.kevoree.library.android.fakeDomo/pom.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="24" column="34" selection-start="1050" selection-end="1050" vertical-scroll-proportion="0.57648546">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/../org.kevoree.library.android.logger/pom.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/../org.kevoree.library.android.fakeDomo/src/main/java/org/kevoree/library/android/fakeDomo/FakeSimpleLight.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="32" column="24" selection-start="1130" selection-end="1137" vertical-scroll-proportion="-1.8103666">
-          <folding />
-        </state>
+        <state line="32" column="24" selection-start="1130" selection-end="1137" vertical-scroll-proportion="-1.8103666" />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/../org.kevoree.library.android.fakeDomo/src/main/java/org/kevoree/library/android/fakeDomo/ToggleLightService.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="8" column="17" selection-start="152" selection-end="152" vertical-scroll-proportion="0.18905473">
-          <folding />
-        </state>
+        <state line="8" column="17" selection-start="152" selection-end="152" vertical-scroll-proportion="0.18905473" />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/../org.kevoree.library.android.fakeDomo/src/main/java/org/kevoree/library/android/fakeDomo/FakeSimpleSwitch.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="25" column="24" selection-start="844" selection-end="844" vertical-scroll-proportion="0.33628318">
-          <folding />
-        </state>
+        <state line="25" column="24" selection-start="844" selection-end="844" vertical-scroll-proportion="0.33628318" />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/../org.kevoree.library.android.logger/src/main/java/org/kevoree/library/logger/android/AndroidNotification.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="30" column="36" selection-start="942" selection-end="942" vertical-scroll-proportion="0.42351454">
+        <state line="30" column="36" selection-start="942" selection-end="942" vertical-scroll-proportion="0.42351454" />
+      </provider>
+    </entry>
+    <entry file="jar://$MAVEN_REPOSITORY$/se/scalablesolutions/akka/akka-actor/1.2/akka-actor-1.2.jar!/com/eaio/uuid/UUID.class">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="5" column="13" selection-start="151" selection-end="151" vertical-scroll-proportion="16.6">
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/../org.kevoree.library.android.rest/src/main/java/org/kevoree/library/rest/RestGroup.java">
+    <entry file="jar://$MAVEN_REPOSITORY$/se/scalablesolutions/akka/akka-actor/1.2/akka-actor-1.2.jar!/com/eaio/uuid/UUIDGen.class">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="58" column="26" selection-start="1663" selection-end="1663" vertical-scroll-proportion="-0.2970923">
+        <state line="5" column="19" selection-start="157" selection-end="157" vertical-scroll-proportion="-3.04">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://$MAVEN_REPOSITORY$/se/scalablesolutions/akka/akka-actor/1.2/akka-actor-1.2.jar!/com/eaio/uuid/UUIDHolder.class">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="5" column="19" selection-start="157" selection-end="157" vertical-scroll-proportion="0.18858561">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://$MAVEN_REPOSITORY$/se/scalablesolutions/akka/akka-actor/1.2/akka-actor-1.2.jar!/com/eaio/uuid/UUIDHelper.class">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="12" column="30" selection-start="394" selection-end="407" vertical-scroll-proportion="0.5186104">
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/../org.kevoree.library.android.nodeType/src/main/java/org/kevoree/library/android/nodeType/AndroidNode.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="22" column="24" selection-start="670" selection-end="670" vertical-scroll-proportion="0.024020227">
+        <state line="35" column="24" selection-start="1377" selection-end="1377" vertical-scroll-proportion="0.5409836">
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../org.kevoree.library.android.nodeType/pom.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="25" column="47" selection-start="1095" selection-end="1095" vertical-scroll-proportion="0.7629063">
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/../org.kevoree.library.android.rest/pom.xml">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="65" column="30" selection-start="2546" selection-end="2546" vertical-scroll-proportion="0.38">
+        <state line="82" column="44" selection-start="3415" selection-end="3415" vertical-scroll-proportion="0.0">
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/../org.kevoree.library.android.rest/src/main/scala/org/kevoree/library/rest/RootService.scala">
+    <entry file="file://$PROJECT_DIR$/../org.kevoree.library.android.rest/src/main/java/org/kevoree/library/rest/RestGroup.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="12" column="56" selection-start="435" selection-end="435" vertical-scroll-proportion="0.456">
-          <folding />
+        <state line="43" column="42" selection-start="1328" selection-end="1328" vertical-scroll-proportion="0.2543021">
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/../org.kevoree.library.android.rest/src/main/java/nanohttpd/NanoHTTPD.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="254" column="30" selection-start="7254" selection-end="7254" vertical-scroll-proportion="0.79923517">
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+  </component>
+  <component name="masterDetails">
+    <states>
+      <state key="ArtifactsStructureConfigurable.UI">
+        <settings>
+          <artifact-editor />
+          <splitter-proportions>
+            <option name="proportions">
+              <list>
+                <option value="0.2" />
+              </list>
+            </option>
+          </splitter-proportions>
+        </settings>
+      </state>
+      <state key="FacetStructureConfigurable.UI">
+        <settings>
+          <last-edited>Scala</last-edited>
+          <splitter-proportions>
+            <option name="proportions">
+              <list>
+                <option value="0.2" />
+              </list>
+            </option>
+          </splitter-proportions>
+        </settings>
+      </state>
+      <state key="GlobalLibrariesConfigurable.UI">
+        <settings>
+          <splitter-proportions>
+            <option name="proportions">
+              <list>
+                <option value="0.2" />
+              </list>
+            </option>
+          </splitter-proportions>
+        </settings>
+      </state>
+      <state key="JdkListConfigurable.UI">
+        <settings>
+          <last-edited>1.6</last-edited>
+          <splitter-proportions>
+            <option name="proportions">
+              <list>
+                <option value="0.2" />
+              </list>
+            </option>
+          </splitter-proportions>
+        </settings>
+      </state>
+      <state key="ModuleStructureConfigurable.UI">
+        <settings>
+          <last-edited>org.kevoree.library.android.rest</last-edited>
+          <splitter-proportions>
+            <option name="proportions">
+              <list>
+                <option value="0.2" />
+                <option value="0.5" />
+              </list>
+            </option>
+          </splitter-proportions>
+        </settings>
+      </state>
+      <state key="ProjectJDKs.UI">
+        <settings>
+          <last-edited>1.6</last-edited>
+          <splitter-proportions>
+            <option name="proportions">
+              <list>
+                <option value="0.2" />
+              </list>
+            </option>
+          </splitter-proportions>
+        </settings>
+      </state>
+      <state key="ProjectLibrariesConfigurable.UI">
+        <settings>
+          <last-edited>Maven: com.google.android:android:2.2.1</last-edited>
+          <splitter-proportions>
+            <option name="proportions">
+              <list>
+                <option value="0.2" />
+              </list>
+            </option>
+          </splitter-proportions>
+        </settings>
+      </state>
+    </states>
   </component>
 </project>
 

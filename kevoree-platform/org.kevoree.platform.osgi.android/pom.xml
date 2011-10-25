@@ -71,6 +71,13 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
+            <groupId>org.kevoree.tools</groupId>
+            <artifactId>org.kevoree.tools.annotation.api</artifactId>
+            <version>${kevoree.version}</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
             <groupId>org.kevoree</groupId>
             <artifactId>org.kevoree.deploy.osgi</artifactId>
             <version>${kevoree.version}</version>
@@ -94,6 +101,13 @@
             <version>${kevoree.version}</version>
             <scope>provided</scope>
         </dependency>
+        <dependency>
+            <groupId>org.kevoree</groupId>
+            <artifactId>org.kevoree.basechecker</artifactId>
+            <version>${kevoree.version}</version>
+            <scope>provided</scope>
+        </dependency>
+
         <dependency>
             <groupId>org.kevoree.tools</groupId>
             <artifactId>org.kevoree.tools.marShell</artifactId>
@@ -124,7 +138,7 @@
         <dependency>
             <groupId>org.apache.felix</groupId>
             <artifactId>org.apache.felix.main</artifactId>
-            <version>3.2.0</version>
+            <version>3.2.2</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -191,7 +205,7 @@
                         </goals>
                         <configuration>
                             <filters>
-                                scala,org.ops4j,org.slf4j,org.kevoree,org.kevoree.tools,org.apache,org.sonatype,org.codehaus,org.apache.http,android,org.osgi,javax.xml,org.w3c,org.xml
+                                scala,org.ops4j,org.slf4j,org.kevoree,org.apache,org.sonatype,org.codehaus,android,org.osgi,javax,org.w3c,org.xml
                             </filters>
                         </configuration>
                     </execution>
@@ -209,12 +223,22 @@
                         </goals>
                     </execution>
                 </executions>
+
+                <dependencies>
+                    <dependency>
+                        <groupId>net.sf.proguard</groupId>
+                        <artifactId>proguard</artifactId>
+                        <version>4.7-BETA</version>
+                        <scope>runtime</scope>
+                    </dependency>
+                </dependencies>
+
+
                 <configuration>
                     <injar>${project.build.finalName}.jar</injar>
                     <outjar>${project.build.finalName}-small.jar</outjar>
                     <obfuscate>false</obfuscate>
                     <maxMemory>1024m</maxMemory>
-                    <proguardVersion>4.6</proguardVersion>
                     <options>
 
                         <option>-keepattributes **</option>
@@ -258,10 +282,11 @@
                         <option>-dontnote</option>
 
                         <!--  <option>-keepattributes *Annotation*</option>-->
-                        <option>-keep class org.slf4j.** { *; }</option>
+                      <!--  <option>-keep class org.slf4j.** { *; }</option>  -->
                         <option>-keep class org.osgi.** { *; }</option>
-                        <option>-keep class scala.runtime.** { *; }</option>
+                      <!--  <option>-keep class scala.runtime.** { *; }</option>   -->
                         <option>-keep class org.kevoree.api.** { *; }</option>
+                        <option>-keep class org.kevoree.adaptation.** { *; }</option>
                         <option>-keep class org.kevoree.framework.** { *; }</option>
                         <option>-keep class org.apache.felix.framework.** { *; }</option>
                         <option>-keep class org.kevoree.android.framework.** { *; }</option>
@@ -270,10 +295,11 @@
                         <option>-dontskipnonpubliclibraryclassmembers</option>
                         <option>-dontoptimize</option>
                         <option>-dontobfuscate</option>
+                       <!--
                         <option>-keepattributes
                             Exceptions,InnerClasses,Signature,Deprecated,SourceFile,LineNumberTable,*Annotation*,EnclosingMethod
                         </option>
-
+                       -->
                         <option>-ignorewarnings</option>
 
                         <option>
@@ -339,10 +365,15 @@
                                 <artifactId>org.kevoree.core</artifactId>
                             </inclusion>
                             <inclusion>
+                                <groupId>org.kevoree</groupId>
+                                <artifactId>org.kevoree.basechecker</artifactId>
+                            </inclusion>
+
+                            <inclusion>
                                 <groupId>org.kevoree.tools</groupId>
                                 <artifactId>org.kevoree.tools.marShell</artifactId>
                             </inclusion>
-
+                                   <!--
                             <inclusion>
                                 <groupId>org.kevoree.tools</groupId>
                                 <artifactId>org.kevoree.tools.aether.lite.framework</artifactId>
@@ -353,7 +384,7 @@
                                 </filter>
 
                             </inclusion>
-
+                                   -->
                             <inclusion>
                                 <groupId>org.apache.felix</groupId>
                                 <artifactId>org.apache.felix.main</artifactId>
