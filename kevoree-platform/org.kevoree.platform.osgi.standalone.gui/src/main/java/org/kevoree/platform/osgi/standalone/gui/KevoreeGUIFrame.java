@@ -17,6 +17,7 @@ import com.explodingpixels.macwidgets.HudWindow;
 import com.explodingpixels.macwidgets.IAppWidgetFactory;
 import com.explodingpixels.macwidgets.plaf.HudButtonUI;
 import org.kevoree.ContainerRoot;
+import org.kevoree.KevoreeFactory;
 import org.kevoree.platform.osgi.standalone.BootstrapActivator;
 import org.kevoree.platform.osgi.standalone.EmbeddedActivators;
 import org.kevoree.platform.osgi.standalone.EmbeddedFelix;
@@ -98,7 +99,7 @@ public class KevoreeGUIFrame extends JFrame {
                 String response = nodeUI.getKevName();
                 final String nodeName = response;
                 System.setProperty("node.name", response);
-                setTitle(nodeName + " : " + nodeUI.getKevTypeName());
+                setTitle(nodeName + " : " + nodeUI.getKevTypeName()+" / Kevoree-"+ KevoreeFactory.getVersion());
                 new Thread() {
                     @Override
                     public void run() {

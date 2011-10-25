@@ -274,10 +274,17 @@ public class AndroidFelixService extends Service {
                 configMap.put(org.osgi.framework.Constants.FRAMEWORK_STORAGE, m_cache.getAbsolutePath());
                 configMap.put(org.osgi.framework.Constants.FRAMEWORK_STORAGE_CLEAN, org.osgi.framework.Constants.FRAMEWORK_STORAGE_CLEAN_ONFIRSTINIT);
 
-                InputStream baseModel = getResources().openRawResource(R.raw.basemodel);
-                ContainerRoot baseModelLoaded = KevoreeXmiHelper.loadStream(baseModel);
-                NodeTypeBootStrapModel.checkAndCreate(baseModelLoaded,KevoreeActivity.nodeName,"AndroidNode",new Properties());
-                configMap.put(FelixConstants.SYSTEMBUNDLE_ACTIVATORS_PROP, EmbeddedActivators.getActivators(baseModelLoaded));
+                //InputStream baseModel = getResources().openRawResource(R.raw.basemodel);
+                //ContainerRoot baseModelLoaded = KevoreeXmiHelper.loadStream(baseModel);
+
+
+
+             //   NodeTypeBootStrapModel.checkAndCreate(baseModelLoaded,KevoreeActivity.nodeName,"AndroidNode",new Properties());
+
+
+
+
+                configMap.put(FelixConstants.SYSTEMBUNDLE_ACTIVATORS_PROP, EmbeddedActivators.getActivators());
 
                 try {
                     //   logger.info("Starting the OSGi framework");
