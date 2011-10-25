@@ -1,0 +1,62 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>org.kevoree.library.model</groupId>
+    <artifactId>org.kevoree.library.model.bootstrap.android</artifactId>
+    <packaging>jar</packaging>
+    <name>Kevoree :: Library :: Model :: Bootstrap Android</name>
+    <version>1.4.0-SNAPSHOT</version>
+
+    <properties>
+        <kevoree.version>${project.version}</kevoree.version>
+    </properties>
+
+
+    <parent>
+        <artifactId>org.kevoree.library.model.root</artifactId>
+        <groupId>org.kevoree.library.model</groupId>
+        <version>1.4.0-SNAPSHOT</version>
+        <relativePath>../org.kevoree.library.model.root/pom.xml</relativePath>
+    </parent>
+
+    <build>
+        <plugins>
+
+            <plugin>
+                <groupId>org.kevoree.tools</groupId>
+                <artifactId>org.kevoree.tools.merger.mavenplugin</artifactId>
+                <version>${kevoree.version}</version>
+                <extensions>true</extensions>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <configuration>
+                            <model>${project.build.directory}/classes/KEV-INF/lib.kev</model>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+        </plugins>
+    </build>
+
+    <dependencies>
+
+        <!-- Android -->
+        <dependency>
+            <groupId>org.kevoree.library.android</groupId>
+            <artifactId>org.kevoree.library.android.nodeType</artifactId>
+            <version>${kevoree.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.kevoree.library.android</groupId>
+            <artifactId>org.kevoree.library.android.rest</artifactId>
+            <version>${kevoree.version}</version>
+        </dependency>
+    </dependencies>
+
+
+</project>

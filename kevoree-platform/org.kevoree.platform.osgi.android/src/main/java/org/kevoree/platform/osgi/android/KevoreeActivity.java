@@ -150,7 +150,7 @@ public class KevoreeActivity extends Activity implements KevoreeAndroidService {
         btstop.setOnClickListener(new Button.OnClickListener() {
 
             public void onClick(View v) {
-                Log.i("art2.platform", "try to stop the platform");
+                Log.i("kevoree.platform", "try to stop the platform");
                 if (alreadyStarted) {
                     Intent intent_stop = new Intent(ctx, AndroidFelixService.class);
                     stopService(intent_stop);

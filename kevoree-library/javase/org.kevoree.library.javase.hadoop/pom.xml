@@ -100,38 +100,11 @@
             <artifactId>hadoop-core</artifactId>
             <version>${hadoop.version}</version>
         </dependency>
-
-
-        <!--<dependency>
-            <groupId>org.apache.hadoop</groupId>
-            <artifactId>hadoop-tools</artifactId>
-            <version>0.20.2</version>
-        </dependency>-->
-
-        <!--<dependency>
-            <groupId>org.apache.hadoop</groupId>
-            <artifactId>hadoop-test</artifactId>
-            <version>0.20.2</version>
-        </dependency>-->
-
         <dependency>
             <groupId>org.apache.hadoop</groupId>
             <artifactId>hadoop-streaming</artifactId>
             <version>0.20.2</version>
         </dependency>
-
-        <!--<dependency>
-            <groupId>org.apache.hadoop</groupId>
-            <artifactId>hadoop-examples</artifactId>
-            <version>0.20.2</version>
-        </dependency>-->
-
-        <!--<dependency>
-            <groupId>javax.el</groupId>
-            <artifactId>el-api</artifactId>
-            <version>2.2</version>
-        </dependency>-->
-
         <dependency>
             <groupId>commons-httpclient</groupId>
             <artifactId>commons-httpclient</artifactId>
