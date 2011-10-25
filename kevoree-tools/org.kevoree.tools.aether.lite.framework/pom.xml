@@ -134,7 +134,7 @@
 
                 <configuration>
                     <injar>${project.build.finalName}.jar</injar>
-                    <outjar>${project.build.finalName}-small.jar</outjar>
+                    <outjar>${project.build.finalName}.jar</outjar>
                     <obfuscate>false</obfuscate>
                     <maxMemory>1024m</maxMemory>
                     <options>
@@ -224,10 +224,7 @@
                                 </instructions>
                             </configuration>
                         </plugin>
-
                         -->
-
-
         </plugins>
     </build>
 </project>
