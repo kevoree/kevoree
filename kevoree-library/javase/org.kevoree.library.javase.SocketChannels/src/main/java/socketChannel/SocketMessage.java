@@ -34,6 +34,8 @@ public class SocketMessage extends org.kevoree.framework.message.Message{
     }
 
 
+
+
 }
 
 
