@@ -50,8 +50,7 @@ public class AndroidFelixService extends Service {
 
     //protected MulticastLock multicastLock;
     protected static Framework felixFramework;
-    public static final String FELIX_BASE = "OSGI";
-    public static final String FELIX_CACHE_DIR = "OSGI/cache";
+    public static final String FELIX_CACHE_DIR = "KEVOREE/felixcache";
     private static final int ART2SERVICE_NOTIFICATION_ID = 1;
     private static final String ANDROID_FRAMEWORK_PACKAGES = ("org.osgi.framework; version=1.5.0,"
             + "org.osgi.service.packageadmin; version=1.2.0,"
@@ -234,22 +233,23 @@ public class AndroidFelixService extends Service {
                 File m_cache = new File(sdDir.getAbsolutePath() + "/" + FELIX_CACHE_DIR);
                 File kevoree_cache = new File(sdDir.getAbsolutePath() + "/KEVOREE");
                 Log.i("kevoree.android", m_cache.getAbsolutePath());
+
                 if (!m_cache.exists()) {
                     if (!m_cache.mkdirs()) {
                         Log.e("kevoree.felix", "unable to create cache");
-                        throw new IllegalStateException("Unable to create cache dir");
+                        throw new IllegalStateException("Unable to create kevoree osgi cache dir");
                     } else {
                         Log.i("kevoree.felix", "cache created");
                     }
                 } else {
-                    m_cache.delete();
-                    m_cache.mkdir();
+                    //m_cache.delete();
+                    //m_cache.mkdirs();
                     Log.i("kevoree.felix", "cache already exist");
                 }
                 if (!kevoree_cache.exists()) {
                     if (!kevoree_cache.mkdirs()) {
                         Log.e("kevoree.M2", "unable to create cache");
-                        throw new IllegalStateException("Unable to create cache dir");
+                        throw new IllegalStateException("Unable to create kevoree maven repo cache dir");
                     } else {
                         Log.i("kevoree.M2", "cache created");
                     }
@@ -273,6 +273,7 @@ public class AndroidFelixService extends Service {
                 configMap.put(org.osgi.framework.Constants.FRAMEWORK_SYSTEMPACKAGES, generated.SysPackageConstants.getProperty());//ANDROID_FRAMEWORK_PACKAGES);
                 configMap.put(org.osgi.framework.Constants.FRAMEWORK_STORAGE, m_cache.getAbsolutePath());
                 configMap.put(org.osgi.framework.Constants.FRAMEWORK_STORAGE_CLEAN, org.osgi.framework.Constants.FRAMEWORK_STORAGE_CLEAN_ONFIRSTINIT);
+                configMap.put("felix.cache.locking","false");
 
                 //InputStream baseModel = getResources().openRawResource(R.raw.basemodel);
                 //ContainerRoot baseModelLoaded = KevoreeXmiHelper.loadStream(baseModel);
@@ -305,34 +306,6 @@ public class AndroidFelixService extends Service {
                     System.out.println("KevoreeActivity=" + KevoreeActivity.last);
 
                     felixFramework.getBundleContext().registerService(KevoreeAndroidService.class.getName(), KevoreeActivity.last, new Properties());
-
-                    /*
-            startRawBundle(felixFramework.getBundleContext(), "file://paxurl.jar", R.raw.paxurl, true);
-            startRawBundle(felixFramework.getBundleContext(), "file://paxassembly.jar", R.raw.paxassembly, true);
-            startRawBundle(felixFramework.getBundleContext(), "file://shell.jar", R.raw.shell, true);
-            //startRawBundle(context,"file://shelltui.jar", R.raw.shelltui);
-            startRawBundle(felixFramework.getBundleContext(), "file://shellremote.jar", R.raw.shellremote, true);
-            startRawBundle(felixFramework.getBundleContext(), "file://osgi_compendium.jar", R.raw.osgi_compendium, true);
-            startRawBundle(felixFramework.getBundleContext(), "file://slf4jandroid.jar", R.raw.slf4jandroid, true);
-                    */
-                    String defaultBundlePath = sdDir.getAbsolutePath() + "/" + FELIX_BASE + "/bundle/";
-
-                    /*
-                    try {
-                        startDefaultBundle(felixFramework.getBundleContext(), defaultBundlePath + "emf.lib-2.6.0.jar", true);
-                        startDefaultBundle(felixFramework.getBundleContext(), defaultBundlePath + "art2.model-2.2.1-SNAPSHOT.jar", true);
-                        startDefaultBundle(felixFramework.getBundleContext(), defaultBundlePath + "art2.adaptation.model-2.2.1-SNAPSHOT.jar", true);
-                        startDefaultBundle(felixFramework.getBundleContext(), defaultBundlePath + "art2.api-2.2.1-SNAPSHOT.jar", true);
-                        startDefaultBundle(felixFramework.getBundleContext(), defaultBundlePath + "art2.framework-2.2.1-SNAPSHOT.jar", true);
-                        startDefaultBundle(felixFramework.getBundleContext(), defaultBundlePath + "art2.kompare-2.2.1-SNAPSHOT.jar", true);
-                        startDefaultBundle(felixFramework.getBundleContext(), defaultBundlePath + "art2.framework.bus.netty-2.2.1-SNAPSHOT.jar", true);
-                        startDefaultBundle(felixFramework.getBundleContext(), defaultBundlePath + "art2.deploy.osgi-2.2.1-SNAPSHOT.jar", true);
-                        startDefaultBundle(felixFramework.getBundleContext(), defaultBundlePath + "art2.core-2.2.1-SNAPSHOT.jar", true);
-                        startDefaultBundle(felixFramework.getBundleContext(), defaultBundlePath + "art2.framework.bus.jmdns-2.2.1-SNAPSHOT.jar", true);
-                    } catch (Exception e) {
-                        Log.e("art2.osgi.service.logger", "Error deploying base ART2 bundles", e);
-                    }   */
-
 
                     Log.i("kevoree.android.osgi.service.logger", "OSGi framework started in: " + (System.currentTimeMillis() - initial_time) / 1000 + " seconds");
 
