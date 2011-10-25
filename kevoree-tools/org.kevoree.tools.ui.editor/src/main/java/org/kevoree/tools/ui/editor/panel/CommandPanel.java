@@ -28,6 +28,7 @@ import org.kevoree.tools.ui.editor.widget.JCommandButton;
  *
  * @author ffouquet
  */
+@Deprecated
 public class CommandPanel extends JPanel {
 
     public CommandPanel(KevoreeUIKernel kernel) {
