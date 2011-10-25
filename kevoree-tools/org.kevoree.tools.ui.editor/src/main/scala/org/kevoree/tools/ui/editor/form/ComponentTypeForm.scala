@@ -17,9 +17,9 @@ import com.explodingpixels.macwidgets.HudWindow
 import javax.swing._
 import com.explodingpixels.macwidgets.plaf.{HudButtonUI, HudComboBoxUI, HudLabelUI, HudTextFieldUI}
 import java.awt.event.{ActionEvent, ActionListener}
-import org.kevoree.tools.ui.editor.command.KevScriptCommand
 import org.kevoree.tools.ui.editor.property.SpringUtilities
 import org.kevoree.tools.ui.editor.KevoreeUIKernel
+import org.kevoree.tools.ui.editor.command.{ReloadTypePalette, KevScriptCommand}
 
 /**
  * Created by IntelliJ IDEA.
@@ -52,11 +52,28 @@ trait ComponentTypeForm {
     }
     val comboLibrary = new JComboBox(libraryModel)
     comboLibrary.setUI(new HudComboBoxUI())
-    val libraryCompoLabel = new JLabel("library : ", SwingConstants.TRAILING)
+    val libraryCompoLabel = new JLabel("Library : ", SwingConstants.TRAILING)
     libraryCompoLabel.setUI(new HudLabelUI)
     libraryCompoLabel.setLabelFor(comboLibrary)
     layout.add(libraryCompoLabel)
     layout.add(comboLibrary)
+
+
+    //MENU DeployUnit
+    val deployUnitModel = new DefaultComboBoxModel
+    deployUnitModel.addElement("no deploy unit")
+    kernel.getModelHandler.getActualModel.getDeployUnits.foreach {
+      du =>
+        deployUnitModel.addElement(du.getGroupName + ":" + du.getUnitName + ":" + du.getVersion)
+    }
+    val comboDeployUnit = new JComboBox(deployUnitModel)
+    comboDeployUnit.setUI(new HudComboBoxUI())
+    val deployUnitComboLabel = new JLabel("Deploy Unit : ", SwingConstants.TRAILING)
+    deployUnitComboLabel.setUI(new HudLabelUI)
+    deployUnitComboLabel.setLabelFor(comboDeployUnit)
+    layout.add(deployUnitComboLabel)
+    layout.add(comboDeployUnit)
+
 
     //EXECUTE KEVSCRIPT COMMAND
     val btAdd = new JButton("Add ComponentType")
@@ -66,17 +83,22 @@ trait ComponentTypeForm {
         if (nameTextField.getText != "") {
           val cmd = new KevScriptCommand
           cmd.setKernel(kernel)
+          //TODO: link the componentType with the deployUnit.
           if("no library" != comboLibrary.getSelectedItem){
             cmd.execute("tblock { createComponentType " + nameTextField.getText + " @ "+comboLibrary.getSelectedItem+"  } ")
           } else {
             cmd.execute("tblock { createComponentType " + nameTextField.getText + " } ")
           }
-          window.getJDialog.dispose()
+          //window.getJDialog.dispose()
+
+            val updateCmd = new ReloadTypePalette
+            updateCmd.setKernel(kernel)
+            updateCmd.execute(None)
         }
       }
     })
     window.getJDialog.getRootPane.setDefaultButton(btAdd)
-    SpringUtilities.makeCompactGrid(layout, 2, 2, 6, 6, 6, 6)
+    SpringUtilities.makeCompactGrid(layout, 3, 2, 6, 6, 6, 6)
     Tuple2(layout, btAdd)
   }
 
