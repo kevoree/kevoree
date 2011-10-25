@@ -17,11 +17,6 @@
 
     <dependencies>
         <dependency>
-            <groupId>org.kevoree</groupId>
-            <artifactId>org.kevoree.remote</artifactId>
-            <version>${kevoree.version}</version>
-        </dependency>
-        <dependency>
             <groupId>org.kevoree.extra</groupId>
             <artifactId>org.kevoree.extra.marshalling</artifactId>
             <version>1.0</version>
@@ -46,6 +41,20 @@
                             <goal>generate</goal>
                             <goal>compile</goal>
                         </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <version>2.3.5</version>
+                <extensions>true</extensions>
+                <executions>
+                    <execution>
+                        <configuration>
+                            <Export-Package>socketChannel</Export-Package>
+                            <Import-Package>!socketChannel;*</Import-Package>
+                        </configuration>
                     </execution>
                 </executions>
             </plugin>

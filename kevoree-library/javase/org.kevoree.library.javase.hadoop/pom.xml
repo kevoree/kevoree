@@ -74,11 +74,11 @@
             <artifactId>mail</artifactId>
             <version>1.4</version>
         </dependency>-->
-        <!--<dependency>
+        <dependency>
             <groupId>commons-configuration</groupId>
             <artifactId>commons-configuration</artifactId>
             <version>1.6</version>
-        </dependency>-->
+        </dependency>
         <!--<dependency>
             <groupId>commons-beanutils</groupId>
             <artifactId>commons-beanutils</artifactId>
@@ -141,6 +141,7 @@
             <artifactId>jetty-util</artifactId>
             <version>6.1.14</version>
         </dependency>
+        
 
         <!--<dependency>
             <groupId>log4j</groupId>
@@ -169,14 +170,14 @@
     </dependencies>
     <build>
         <pluginManagement>
-	      <plugins>
-	        <plugin>
-	          <groupId>org.apache.maven.plugins</groupId>
-	          <artifactId>maven-shade-plugin</artifactId>
-	          <version>1.4</version>
-	        </plugin>
-	      </plugins>
-	    </pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-shade-plugin</artifactId>
+                    <version>1.4</version>
+                </plugin>
+            </plugins>
+        </pluginManagement>
         <plugins>
 <!--            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -221,31 +222,11 @@
                 <configuration>
                     <instructions>
                         <Export-Package>
-                            org.kevoree.library.hadoop.*,
-                            org.apache.commons.logging.*,
-                            org.apache.commons.cli.*,
-                            org.apache.commons.net.*,
-                            org.apache.commons.el.*,
-                            org.apache.commons.collections.*,
-                            org.apache.commons.codec.*,
-                            org.apache.commons.httpclient.*,
-                            org.apache.avalon.framework.*,
-                            com.sun.mail.*,
-                            javax.mail.*,
-                            javax.mail,
-                            javax.servlet.*,
-                            javax.servlet,
-                            org.apache.hadoop,
-                            org.apache.hadoop.*,
-                            org.mortbay.*,
-                            org.apache.jasper.*,
-                            org.apache.log4j,
-                            org.apache.log4j.*,
-                            org.znerd.xmlenc,
-                            javax.el.*
+
                         </Export-Package>
                         <Import-Package>
                             !org.kevoree.library.hadoop.*,
+                            !org.apache.commons.*,
                             !org.apache.commons.logging.*,
                             !org.apache.commons.cli.*,
                             !org.apache.commons.net.*,
@@ -259,8 +240,7 @@
                             javax.activation;resolution:="optional",
                             javax.net;resolution:="optional",
                             javax.net.ssl;resolution:="optional",
-                            javax.security.auth.callback;resolution:="optional",
-                            javax.security.sasl;resolution:="optional",
+                            javax.security.*,
                             !javax.servlet.*,
                             !javax.servlet,
                             !org.apache.log4j,
