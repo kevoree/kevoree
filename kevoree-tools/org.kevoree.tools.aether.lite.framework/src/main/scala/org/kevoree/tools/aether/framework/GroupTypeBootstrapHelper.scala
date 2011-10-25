@@ -1,3 +1,5 @@
+package org.kevoree.tools.aether.framework
+
 /**
  * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE, Version 3, 29 June 2007;
  * you may not use this file except in compliance with the License.
@@ -11,14 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kevoree.tools.aether.framework
-
 import java.io.FileInputStream
 import org.osgi.framework.{Bundle, BundleContext, BundleException}
 import org.slf4j.LoggerFactory
 import org.kevoree.api.service.core.handler.KevoreeModelHandlerService
-import org.kevoree.framework.{Constants, AbstractNodeType}
-import org.kevoree.{NodeType, ContainerRoot, DeployUnit}
+import org.kevoree.{GroupType, ContainerRoot, DeployUnit}
+import org.kevoree.framework.{KevoreeGeneratorHelper, AbstractGroupType, Constants}
 
 /**
  * User: ffouquet
@@ -26,34 +26,40 @@ import org.kevoree.{NodeType, ContainerRoot, DeployUnit}
  * Time: 12:01
  */
 
-class NodeTypeBootstrapHelper {
+class GroupTypeBootstrapHelper {
 
   private var bundle: Bundle = null
   private val logger = LoggerFactory.getLogger(this.getClass)
 
-  def getNodeTypeBundle = bundle
+  def getGroupTypeBundle = bundle
 
-  def bootstrapNodeType(model: ContainerRoot, destNodeName: String, bundleContext: BundleContext): Option[AbstractNodeType] = {
+  def bootstrapGroupType(model: ContainerRoot, destGroupName: String, bundleContext: BundleContext): Option[AbstractGroupType] = {
     //LOCATE NODE
-    val node = model.getNodes.find(node => node.getName == destNodeName)
-    node match {
-      case Some(node) => {
-        val nodeTypeDeployUnitList = node.getTypeDefinition.getDeployUnits.toList
-        if (nodeTypeDeployUnitList.size > 0) {
-          logger.debug("nodeType installation => " + installNodeTyp(node.getTypeDefinition.asInstanceOf[NodeType], bundleContext))
-          val clazz: Class[_] = bundle.loadClass(node.getTypeDefinition.getBean)
-          val nodeType = clazz.newInstance.asInstanceOf[AbstractNodeType]
+    val optgroup = model.getGroups.find(group => group.getName == destGroupName)
+    optgroup match {
+      case Some(group) => {
+        val groupTypeDeployUnitList = group.getTypeDefinition.getDeployUnits.toList
+        if (groupTypeDeployUnitList.size > 0) {
+          logger.debug("groupType installation => " + installGroupTyp(group.getTypeDefinition.asInstanceOf[GroupType], bundleContext))
+
+          val activatorPackage = KevoreeGeneratorHelper.getTypeDefinitionGeneratedPackage(group.getTypeDefinition, "JavaSENode")
+          val activatorName = group.getTypeDefinition.getName + "Activator"
+          val clazz: Class[_] = bundle.loadClass(activatorPackage+"."+activatorName)
+
+          val groupActivator = clazz.newInstance.asInstanceOf[org.kevoree.framework.osgi.KevoreeGroupActivator]
+          val groupType =  groupActivator.callFactory()
+
           //ADD INSTANCE DICTIONARY
           val dictionary: java.util.HashMap[String, AnyRef] = new java.util.HashMap[String, AnyRef]
 
-         node.getTypeDefinition.getDictionaryType.map{ dictionaryType =>
+          group.getTypeDefinition.getDictionaryType.map{ dictionaryType =>
             dictionaryType.getDefaultValues.foreach {
                 dv =>
                   dictionary.put(dv.getAttribute.getName, dv.getValue)
               }
          }
 
-          node.getDictionary.map {
+          group.getDictionary.map {
             dictionaryModel =>
               dictionaryModel.getValues.foreach {
                 v =>
@@ -62,26 +68,25 @@ class NodeTypeBootstrapHelper {
           }
 
           dictionary.put(Constants.KEVOREE_PROPERTY_OSGI_BUNDLE, bundleContext.getBundle)
-          nodeType.setDictionary(dictionary)
-          nodeType.setNodeName(destNodeName)
 
+          groupType.getDictionary().putAll(dictionary)
+          println("afterSet"+groupType.getDictionary)
+          groupType.setName(destGroupName)
 
           //INJECT SERVICE HANDLER
           val sr = bundleContext.getServiceReference(classOf[KevoreeModelHandlerService].getName)
           if (sr != null) {
             val s = bundleContext.getService(sr).asInstanceOf[KevoreeModelHandlerService]
-            nodeType.setModelService(s)
+            groupType.setModelService(s)
           }
 
-
-          //nodeType.push(destNodeName, model, bundle.getBundleContext)
-          Some(nodeType)
+          Some(groupType)
         } else {
           logger.error("NodeType deploy unit not found , have you forgotten to merge nodetype library ?");
           None
         }
       }
-      case None => logger.error("Node not found using name " + destNodeName); None
+      case None => logger.error("Node not found using name " + destGroupName); None
     }
   }
 
@@ -89,6 +94,8 @@ class NodeTypeBootstrapHelper {
     try {
       val arteFile = AetherUtil.resolveDeployUnit(du)
       if (arteFile != null) {
+        logger.debug("install => "+arteFile.getAbsolutePath)
+
         bundle = bundleContext.installBundle("file:///" + arteFile.getAbsolutePath, new FileInputStream(arteFile))
         bundle.start()
         true
@@ -110,10 +117,11 @@ class NodeTypeBootstrapHelper {
   }
 
   /* Bootstrap node type bundle in local osgi environment */
-  private def installNodeTyp(nodeType: NodeType, bundleContext: BundleContext): Boolean = {
-    val superTypeBootStrap = nodeType.getSuperTypes.forall(superType => installNodeTyp(superType.asInstanceOf[NodeType], bundleContext))
+  private def installGroupTyp(groupType: GroupType, bundleContext: BundleContext): Boolean = {
+    val superTypeBootStrap = groupType.getSuperTypes.forall(superType => installGroupTyp(superType.asInstanceOf[GroupType], bundleContext))
     if (superTypeBootStrap) {
-      nodeType.getDeployUnits.forall(ct => {
+      groupType.getDeployUnits.forall(ct => {
+        logger.debug("require lib for "+ct.getUnitName+"->"+ct.getRequiredLibs.size)
         ct.getRequiredLibs.forall {
           tp => installDeployUnit(tp, bundleContext)
         } && installDeployUnit(ct, bundleContext)

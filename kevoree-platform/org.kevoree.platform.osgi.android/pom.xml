@@ -4,12 +4,12 @@
     <artifactId>org.kevoree.platform.osgi.android</artifactId>
     <packaging>jar</packaging>
     <name>Kevoree :: Platform :: OSGI Android</name>
-    <version>1.4.0-BETA1</version>
+    <version>1.4.0-SNAPSHOT</version>
 
     <parent>
         <artifactId>org.kevoree.platform.root</artifactId>
         <groupId>org.kevoree.platform</groupId>
-        <version>1.4.0-BETA1</version>
+        <version>1.4.0-SNAPSHOT</version>
         <relativePath>../org.kevoree.platform.root/pom.xml</relativePath>
     </parent>
 
@@ -74,14 +74,12 @@
             <groupId>org.kevoree</groupId>
             <artifactId>org.kevoree.deploy.osgi</artifactId>
             <version>${kevoree.version}</version>
-
             <exclusions>
                 <exclusion>
                     <artifactId>org.kevoree.tools.aether.framework</artifactId>
                     <groupId>org.kevoree.tools</groupId>
                 </exclusion>
             </exclusions>
-
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -147,31 +145,8 @@
             <version>1.6.1-RC1</version>
             <scope>provided</scope>
         </dependency>
-        <dependency>
-            <groupId>org.kevoree</groupId>
-            <artifactId>org.kevoree.remote</artifactId>
-            <version>${kevoree.version}</version>
-            <scope>provided</scope>
-            <exclusions>
-                <exclusion>
-                    <artifactId>org.restlet.jse</artifactId>
-                    <groupId>org.restlet</groupId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <dependency>
-            <groupId>org.restlet.android</groupId>
-            <artifactId>org.restlet</artifactId>
-            <version>2.1-M4</version>
-            <scope>provided</scope>
-        </dependency>
     </dependencies>
-    <repositories>
-        <repository>
-            <id>reslet</id>
-            <url>http://maven.restlet.org/</url>
-        </repository>
-    </repositories>
+
     <build>
         <plugins>
 
@@ -216,7 +191,7 @@
                         </goals>
                         <configuration>
                             <filters>
-                                scala,org.ops4j,org.slf4j,org.kevoree,org.restlet,org.kevoree.tools,org.apache,org.sonatype,org.codehaus,org.apache.http,android,org.osgi,javax.xml,org.w3c,org.xml
+                                scala,org.ops4j,org.slf4j,org.kevoree,org.kevoree.tools,org.apache,org.sonatype,org.codehaus,org.apache.http,android,org.osgi,javax.xml,org.w3c,org.xml
                             </filters>
                         </configuration>
                     </execution>
@@ -285,12 +260,9 @@
                         <!--  <option>-keepattributes *Annotation*</option>-->
                         <option>-keep class org.slf4j.** { *; }</option>
                         <option>-keep class org.osgi.** { *; }</option>
-                        <option>-keep class org.restlet.resource.** { *; }</option>
-                        <option>-keep class org.restlet.util.Series.** { *; }</option>
                         <option>-keep class scala.runtime.** { *; }</option>
                         <option>-keep class org.kevoree.api.** { *; }</option>
                         <option>-keep class org.kevoree.framework.** { *; }</option>
-                        <option>-keep class org.kevoree.remote.** { *; }</option>
                         <option>-keep class org.apache.felix.framework.** { *; }</option>
                         <option>-keep class org.kevoree.android.framework.** { *; }</option>
                         <option>-keep class org.kevoree.tools.aether.framework.** { *; }</option>
@@ -326,9 +298,6 @@
                             android.content.ContentProvider
                         </option>
                         <option>-keepclassmembers class org.kevoree.android.framework.**</option>
-                        <option>
-                            -keepclassmembers class org.kevoree.remote.rest.**
-                        </option>
                     </options>
                     <assembly>
                         <inclusions>
@@ -370,10 +339,6 @@
                                 <artifactId>org.kevoree.core</artifactId>
                             </inclusion>
                             <inclusion>
-                                <groupId>org.kevoree</groupId>
-                                <artifactId>org.kevoree.remote</artifactId>
-                            </inclusion>
-                            <inclusion>
                                 <groupId>org.kevoree.tools</groupId>
                                 <artifactId>org.kevoree.tools.marShell</artifactId>
                             </inclusion>
@@ -404,10 +369,6 @@
                             <inclusion>
                                 <groupId>org.slf4j</groupId>
                                 <artifactId>slf4j-android</artifactId>
-                            </inclusion>
-                            <inclusion>
-                                <groupId>org.restlet.android</groupId>
-                                <artifactId>org.restlet</artifactId>
                             </inclusion>
                             <inclusion>
                                 <groupId>jgrapht</groupId>
