@@ -37,11 +37,11 @@
             <artifactId>org.kevoree.tools.annotation.api</artifactId>
             <version>${kevoree.version}</version>
         </dependency>
-        <dependency>
+        <!--<dependency>
             <groupId>org.kevoree.extra</groupId>
             <artifactId>org.kevoree.extra.finagle</artifactId>
             <version>1.7.3</version>
-        </dependency>
+        </dependency>-->
     </dependencies>
 
     <build>
