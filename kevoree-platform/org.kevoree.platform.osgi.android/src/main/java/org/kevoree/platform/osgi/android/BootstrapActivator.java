@@ -26,14 +26,9 @@ import org.kevoree.api.service.core.script.ScriptInterpreter;
 import org.kevoree.core.impl.KevoreeConfigServiceBean;
 import org.kevoree.core.impl.KevoreeCoreBean;
 import org.kevoree.framework.KevoreeXmiHelper;
-import org.kevoree.kompare.KevoreeKompareBean;
-import org.kevoree.remote.rest.Handler;
-import org.kevoree.remote.rest.KevoreeRemoteBean;
 import org.kevoree.tools.aether.framework.AetherUtil;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
-import org.osgi.service.packageadmin.PackageAdmin;
-import org.osgi.service.startlevel.StartLevel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -116,7 +111,7 @@ public class BootstrapActivator implements BundleActivator {
             if (bootstrapModel != null) {
                 try {
                     logger.debug("Bootstrap step !");
-                    BootstrapHelper.initModelInstance(bootstrapModel,"AndroidNode");
+                    BootstrapHelper.initModelInstance(bootstrapModel,"AndroidNode","RestGroup");
 
                     coreBean.updateModel(bootstrapModel);
                 } catch (Exception e) {

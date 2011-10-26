@@ -89,7 +89,7 @@ class NodeTypeBootstrapHelper {
     try {
       val arteFile = AetherUtil.resolveDeployUnit(du)
       if (arteFile != null) {
-        bundle = bundleContext.installBundle("file:///" + arteFile.getAbsolutePath, new FileInputStream(arteFile))
+        bundle = bundleContext.installBundle("file:/" + arteFile.getAbsolutePath, new FileInputStream(arteFile))
         bundle.start()
         true
       } else {
