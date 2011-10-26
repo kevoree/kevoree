@@ -25,7 +25,7 @@
 
                 <configuration>
                     <instructions>
-                        <Import-Package>!org.kevoree.library.logger.android.*,org.osgi.*;version="[4.2.0,5)",*
+                        <Import-Package>!org.kevoree.library.logger.android.*,org.osgi.*;version="[1,5)",*
                         </Import-Package>
                         <Export-Package>org.kevoree.library.logger.android.*</Export-Package>
                         <Bundle-ClassPath>.</Bundle-ClassPath>

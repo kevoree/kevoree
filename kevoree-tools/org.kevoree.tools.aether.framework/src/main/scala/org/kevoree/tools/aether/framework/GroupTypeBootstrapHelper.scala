@@ -17,8 +17,8 @@ import java.io.FileInputStream
 import org.osgi.framework.{Bundle, BundleContext, BundleException}
 import org.slf4j.LoggerFactory
 import org.kevoree.api.service.core.handler.KevoreeModelHandlerService
-import org.kevoree.{GroupType, ContainerRoot, DeployUnit}
 import org.kevoree.framework.{KevoreeGeneratorHelper, KevoreeGroup, AbstractGroupType, Constants}
+import org.kevoree.{KevoreeFactory, GroupType, ContainerRoot, DeployUnit}
 
 /**
  * User: ffouquet
@@ -120,12 +120,27 @@ class GroupTypeBootstrapHelper {
   private def installGroupTyp(groupType: GroupType, bundleContext: BundleContext): Boolean = {
     val superTypeBootStrap = groupType.getSuperTypes.forall(superType => installGroupTyp(superType.asInstanceOf[GroupType], bundleContext))
     if (superTypeBootStrap) {
-      groupType.getDeployUnits.forall(ct => {
-        logger.debug("require lib for "+ct.getUnitName+"->"+ct.getRequiredLibs.size)
-        ct.getRequiredLibs.forall {
-          tp => installDeployUnit(tp, bundleContext)
-        } && installDeployUnit(ct, bundleContext)
-      })
+      
+      import org.kevoree.framework.aspects.KevoreeAspects._
+      //FAKE NODE TODO 
+      val fakeNode = KevoreeFactory.createContainerNode
+      groupType.eContainer.asInstanceOf[ContainerRoot].getTypeDefinitions.find(td=> td.getName == "JavaSENode").map{ javaseTD =>
+        fakeNode.setTypeDefinition(javaseTD)
+      }
+      val ct = groupType.foundRelevantDeployUnit(fakeNode)
+      if(ct != null){
+        //groupType.getDeployUnits.forall(ct => {
+          logger.debug("require lib for "+ct.getUnitName+"->"+ct.getRequiredLibs.size)
+          ct.getRequiredLibs.forall {
+            tp => installDeployUnit(tp, bundleContext)
+          } && installDeployUnit(ct, bundleContext)
+        //})
+      } else {
+        false
+      }
+      
+      
+
     } else {
       false
     }
