@@ -48,7 +48,7 @@ class RootService(id: String, group: RestGroup) extends Actor {
         }
       }
     }
-      
+
     case Timeout(method, uri, _, _, _, complete) => complete {
       HttpResponse(status = 401).withBody("The " + method + " request to '" + uri + "' has timed out...")
     }
