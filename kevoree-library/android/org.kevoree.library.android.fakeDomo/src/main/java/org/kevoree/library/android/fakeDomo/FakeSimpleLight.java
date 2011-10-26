@@ -129,36 +129,4 @@ public class FakeSimpleLight extends AbstractComponentType implements ToggleLigh
 			return "off";
 		}
 	}
-
-	/*private class LightDrawable extends Drawable {
-
-		private String color;
-
-		private LightDrawable (String color) {
-			this.color = color;
-		}
-
-		@Override
-		public void draw (Canvas canvas) {
-			Paint p = new Paint();
-			//logger.debug("draw circle:" + canvas.getHeight() / 2 + "x" + canvas.getWidth() / 2);
-			p.setColor(colors.get(color));
-			//canvas.drawCircle(canvas.getHeight() / 2, canvas.getWidth() / 2, 100, p);
-			canvas.drawCircle(200, 200, 90, p);
-		}
-
-		@Override
-		public void setAlpha (int alpha) {
-		}
-
-		@Override
-		public void setColorFilter (ColorFilter cf) {
-		}
-
-		@Override
-		public int getOpacity () {
-			return 0;
-		}
-	}*/
-
 }

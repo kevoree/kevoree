@@ -143,16 +143,22 @@
 
         <dependency>
             <groupId>org.kevoree.library.javase</groupId>
+            <artifactId>org.kevoree.library.javase.miniCloudGroup</artifactId>
+            <version>${kevoree.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.kevoree.library.javase</groupId>
             <artifactId>org.kevoree.library.javase.defaultChannels</artifactId>
             <version>${kevoree.version}</version>
         </dependency>
-        
-         <dependency>
+
+        <dependency>
             <groupId>org.kevoree.library.javase</groupId>
-            <artifactId>org.kevoree.library.javase.SocketChannels</artifactId>
+            <artifactId>org.kevoree.library.javase.socketChannels</artifactId>
             <version>${kevoree.version}</version>
         </dependency>
-        
+
         <!--
         <dependency>
             <groupId>org.kevoree.library.javase</groupId>
@@ -197,7 +203,7 @@
         </dependency>
         <!-- Android -->
 
-<!--
+        <!--
         <dependency>
             <groupId>org.kevoree.library.android</groupId>
             <artifactId>org.kevoree.library.android.logger</artifactId>

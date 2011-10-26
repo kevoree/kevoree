@@ -12,7 +12,7 @@
 
     <artifactId>org.kevoree.library.javase.miniCloudGroup</artifactId>
     <packaging>bundle</packaging>
-    <name>Kevoree :: Library :: Sky :: MiniCloudGroup</name>
+    <name>Kevoree :: Library :: JavaSE :: MiniCloudGroup</name>
 
     <dependencies>
         <dependency>
@@ -46,7 +46,6 @@
                     </instructions>
                 </configuration>
             </plugin>
-
         </plugins>
     </build>
 </project>

@@ -33,10 +33,12 @@ public class MiniCloudGroup  extends AbstractGroupType {
 
 	@Override
 	public void triggerModelUpdate () {
+		logger.debug("triggering update model");
 		for (Group g : this.getModelService().getLastModel().getGroupsForJ()) {
 			if (g.getName().equals(this.getName())) {
 				for (ContainerNode n : g.getSubNodesForJ()) {
 					if (!this.getNodeName().equals(n.getName())) {
+						logger.debug("notify " + n.getName());
 						KevoreeNodeManager.updateNode(n, this.getModelService().getLastModel());
 					}
 				}

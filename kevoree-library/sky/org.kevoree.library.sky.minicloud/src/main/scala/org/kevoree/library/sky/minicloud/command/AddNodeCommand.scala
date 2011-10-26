@@ -1,7 +1,7 @@
 package org.kevoree.library.sky.minicloud.command
 
 import org.kevoree.framework.PrimitiveCommand
-import org.kevoree.{ContainerRoot, ContainerNode, NodeType}
+import org.kevoree.{ContainerRoot, ContainerNode}
 import org.kevoree.library.sky.minicloud.KevoreeNodeManager
 
 /**
