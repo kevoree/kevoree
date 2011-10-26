@@ -66,11 +66,5 @@
             <version>${slf4j.version}</version>
             <scope>test</scope>
         </dependency>
-
-        <dependency>
-            <groupId>jgrapht</groupId>
-            <artifactId>jgrapht</artifactId>
-            <version>0.8.2</version>
-        </dependency>
     </dependencies>
 </project>
