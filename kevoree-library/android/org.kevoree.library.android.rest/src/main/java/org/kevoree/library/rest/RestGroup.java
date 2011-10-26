@@ -1,17 +1,18 @@
 package org.kevoree.library.rest;
 
+import nanohttpd.NanoHTTPD;
 import org.kevoree.ContainerRoot;
-import org.kevoree.DictionaryValue;
-import org.kevoree.Group;
 import org.kevoree.annotation.*;
 import org.kevoree.framework.*;
 import org.kevoree.framework.Constants;
+import org.kevoree.serializer.ModelSerializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.*;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.Properties;
 
 /**
  * Created by IntelliJ IDEA.
@@ -22,19 +23,42 @@ import java.net.URLConnection;
 
 
 @DictionaryType({
-        @DictionaryAttribute(name = "port", defaultValue = "8000", optional = true , fragmentDependant = true)
+        @DictionaryAttribute(name = "port", defaultValue = "8000", optional = true, fragmentDependant = true)
 })
 @GroupType
-@Library(name="Android")
+@Library(name = "Android")
 public class RestGroup extends AbstractGroupType {
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
-    private ServerBootstrap server = new ServerBootstrap(this);
+    private NanoHTTPD server = null;
+    private ModelSerializer modelSaver = new ModelSerializer();
 
     @Start
-    public void startRestGroup() {
-        logger.warn("Rest service start on port "+this.getDictionary().get("port").toString());
-        server.startServer(Integer.parseInt(this.getDictionary().get("port").toString()));
+    public void startRestGroup() throws IOException {
+        int port = Integer.parseInt(this.getDictionary().get("port").toString());
+        server = new NanoHTTPD(port) {
+            public Response serve(String uri, String method, Properties header, Properties parms, Properties files) {
+                if (method.equals("POST")) {
+                    return null;
+                }
+                if (method.equals("GET")) {
+                    String msg = "<html><body><h1>Hello server</h1>\n";
+                    if (parms.getProperty("username") == null)
+                        msg +=
+                                "<form action='?' method='get'>\n" +
+                                        "  <p>Your name: <input type='text' name='username'></p>\n" +
+                                        "</form>\n";
+                    else
+                        msg += "<p>Hello, " + parms.getProperty("username") + "!</p>";
+
+                    msg += "</body></html>\n";
+                    return new NanoHTTPD.Response(HTTP_OK, MIME_HTML, msg);
+                }
+                return new NanoHTTPD.Response(HTTP_BADREQUEST, MIME_XML, "ONLY GET OR POST METHOD SUPPORTED");
+            }
+        };
+
+        logger.warn("Rest service start on port ->" + port);
     }
 
     @Stop
@@ -59,11 +83,11 @@ public class RestGroup extends AbstractGroupType {
             if (IP.equals("")) {
                 IP = "127.0.0.1";
             }
-            
+
             int PORT = KevoreeFragmentPropertyHelper.getIntPropertyFromFragmentGroup(model, this.getName(), "port", targetNodeName);
-            
-            System.out.println("port=>"+PORT);
-            
+
+            System.out.println("port=>" + PORT);
+
             URL url = new URL("http://" + IP + ":" + PORT + "/model/current");
             URLConnection conn = url.openConnection();
             conn.setConnectTimeout(3000);
@@ -99,7 +123,7 @@ public class RestGroup extends AbstractGroupType {
             InputStream inputStream = conn.getInputStream();
             return KevoreeXmiHelper.loadStream(inputStream);
         } catch (IOException e) {
-            logger.error("error while pulling model for name "+targetNodeName,e);
+            logger.error("error while pulling model for name " + targetNodeName, e);
         }
         return null;
     }

@@ -96,7 +96,7 @@ class GroupTypeBootstrapHelper {
       if (arteFile != null) {
         logger.debug("install => "+arteFile.getAbsolutePath)
 
-        bundle = bundleContext.installBundle("file:///" + arteFile.getAbsolutePath, new FileInputStream(arteFile))
+        bundle = bundleContext.installBundle("file:/" + arteFile.getAbsolutePath, new FileInputStream(arteFile))
         bundle.start()
         true
       } else {

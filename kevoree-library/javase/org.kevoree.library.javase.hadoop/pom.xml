@@ -30,14 +30,13 @@
             <version>${kevoree.version}</version>
         </dependency>
 
-
-        <!--<dependency>
+       <!--
+        <dependency>
             <groupId>org.apache.servicemix.bundles</groupId>
             <artifactId>org.apache.servicemix.bundles.hadoop-core</artifactId>
             <version>0.20.203.0_1</version>
-            <scope>provided</scope>
-        </dependency>-->
-
+        </dependency>
+          -->
 
         <dependency>
             <groupId>org.slf4j</groupId>
@@ -89,22 +88,39 @@
             <artifactId>commons-cli</artifactId>
             <version>1.2</version>
         </dependency>
+
+        <dependency>
+            <groupId>activesoap</groupId>
+            <artifactId>jaxb-xalan</artifactId>
+            <version>1.5</version>
+        </dependency>
+        <dependency>
+            <groupId>com.sun.org.apache</groupId>
+            <artifactId>jaxp-ri</artifactId>
+            <version>1.4</version>
+        </dependency>
+
+
         <!--<dependency>
             <groupId>org.apache.avalon.framework</groupId>
             <artifactId>avalon-framework-api</artifactId>
             <version>4.3.1</version>
         </dependency>-->
 
+
         <dependency>
             <groupId>org.apache.hadoop</groupId>
             <artifactId>hadoop-core</artifactId>
             <version>${hadoop.version}</version>
         </dependency>
+
+           <!--
         <dependency>
             <groupId>org.apache.hadoop</groupId>
             <artifactId>hadoop-streaming</artifactId>
             <version>0.20.2</version>
         </dependency>
+             -->
         <dependency>
             <groupId>commons-httpclient</groupId>
             <artifactId>commons-httpclient</artifactId>
@@ -141,31 +157,24 @@
             <artifactId>jetty-util</artifactId>
             <version>6.1.14</version>
         </dependency>
-        
 
-        <!--<dependency>
-            <groupId>log4j</groupId>
-            <artifactId>log4j</artifactId>
-            <version>1.2.15</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>javax.mail</groupId>
-                    <artifactId>mail</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>javax.jms</groupId>
-                    <artifactId>jms</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>com.sun.jdmk</groupId>
-                    <artifactId>jmxtools</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>com.sun.jmx</groupId>
-                    <artifactId>jmxri</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>-->
+        <dependency>
+            <groupId>org.apache.avalon.framework</groupId>
+            <artifactId>avalon-framework-impl</artifactId>
+            <version>4.3.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.bcel</groupId>
+            <artifactId>bcel</artifactId>
+            <version>5.2</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.bsf</groupId>
+            <artifactId>bsf-all</artifactId>
+            <version>3.0-beta3</version>
+        </dependency>
+
+
 
     </dependencies>
     <build>
@@ -222,41 +231,26 @@
                 <configuration>
                     <instructions>
                         <Export-Package>
-
-                        </Export-Package>
+                            org.kevoree.library.hadoop.kevgen,
+                            org.kevoree.library.hadoop.*</Export-Package>
                         <Import-Package>
-                            !org.kevoree.library.hadoop.*,
-                            !org.apache.commons.*,
-                            !org.apache.commons.logging.*,
-                            !org.apache.commons.cli.*,
-                            !org.apache.commons.net.*,
-                            !org.apache.commons.el.*,
-                            !org.apache.commons.collections.*,
-                            !org.apache.commons.codec.*,
-                            !org.apache.commons.httpclient.*,
-                            !org.apache.avalon.framework.*,
-                            !com.sun.mail.*,
-                            !javax.mail.*,
-                            javax.activation;resolution:="optional",
-                            javax.net;resolution:="optional",
-                            javax.net.ssl;resolution:="optional",
-                            javax.security.*,
-                            !javax.servlet.*,
-                            !javax.servlet,
-                            !org.apache.log4j,
-                            !org.apache.log4j.*,
-                            !org.apache.hadoop,
-                            !org.apache.hadoop.*,
-                            !org.mortbay.*,
-                            !org.apache.jasper.*,
-                            !javax.el,
-                            !junit.*,
-                            !org.znerd.xmlenc,
-                            com.sun.jdmk.comm;resolution:="optional",
+                            !org.kevoree.library.*,
+                            org.osgi.*,
+                            org.kevoree.*,
                             !com.sun.java.browser.net,
-                            !testshell,
-                            *;resolution:="optional"
+                            com.sun.java_cup.*;resolution:=optional,
+                            com.sun.tools.*;resolution:=optional,
+                            javax.mail.*;resolution:=optional,
+                            kaffe.*;resolution:=optional,
+                            *
                         </Import-Package>
+                        <Private-Package>
+                            org.apache.*,
+                            com.sun.*,
+                            javax.el.*,
+                            javax.servlet.*
+
+                        </Private-Package>
                     </instructions>
                 </configuration>
             </plugin>
@@ -346,17 +340,4 @@
         </pluginRepository>
     </pluginRepositories>
 
-
-    <reporting>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-checkstyle-plugin</artifactId>
-                <version>2.7</version>
-                <configuration>
-                    <configLocation>config/sun_checks.xml</configLocation>
-                </configuration>
-            </plugin>
-        </plugins>
-    </reporting>
 </project>

@@ -78,14 +78,19 @@ public class EmbeddedFelix {
 
         String extraProps = System.getProperty("org.osgi.framework.system.packages.extra");
 
+
+        String defaultExtra = ",sun.misc,com.sun.security.auth,com.sun.security.auth.module,sun.security.krb5,javax.security.auth.login";
+
         if (extraProps != null && extraProps != "") {
-            configProps.put(Constants.FRAMEWORK_SYSTEMPACKAGES_EXTRA, SysPackageConstants.getProperty() + ",sun.misc," + extraProps);
+            configProps.put(Constants.FRAMEWORK_SYSTEMPACKAGES_EXTRA, SysPackageConstants.getProperty() + defaultExtra + extraProps);
         } else {
-            configProps.put(Constants.FRAMEWORK_SYSTEMPACKAGES_EXTRA, SysPackageConstants.getProperty() + ",sun.misc");
+            configProps.put(Constants.FRAMEWORK_SYSTEMPACKAGES_EXTRA, SysPackageConstants.getProperty() + defaultExtra);
         }
 
         configProps.put(Constants.FRAMEWORK_STORAGE_CLEAN, Constants.FRAMEWORK_STORAGE_CLEAN_ONFIRSTINIT);
         configProps.put(FelixConstants.SYSTEMBUNDLE_ACTIVATORS_PROP, EmbeddedActivators.getActivators());
+        configProps.put("felix.cache.locking","false");
+
 
         Runtime.getRuntime().addShutdownHook(new Thread("Felix Shutdown Hook") {
 

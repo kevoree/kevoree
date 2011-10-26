@@ -17,8 +17,13 @@
 
     <dependencies>
         <dependency>
-            <groupId>org.kevoree.library.javase</groupId>
-            <artifactId>org.kevoree.library.javase.javaseNode</artifactId>
+            <groupId>org.kevoree</groupId>
+            <artifactId>org.kevoree.kompare</artifactId>
+            <version>${kevoree.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.kevoree</groupId>
+            <artifactId>org.kevoree.deploy.osgi</artifactId>
             <version>${kevoree.version}</version>
         </dependency>
     </dependencies>
@@ -33,12 +38,11 @@
                 <configuration>
                     <instructions>
                         <Import-Package>
-                            !javax.jmdns.*,
                             !org.kevoree.library.*,
                             org.osgi.*;version="[1,5)",
                             *
                         </Import-Package>
-                        <Export-Package>org.kevoree.library.*,javax.jmdns.*</Export-Package>
+                        <Export-Package>org.kevoree.library.*</Export-Package>
                     </instructions>
                 </configuration>
             </plugin>
