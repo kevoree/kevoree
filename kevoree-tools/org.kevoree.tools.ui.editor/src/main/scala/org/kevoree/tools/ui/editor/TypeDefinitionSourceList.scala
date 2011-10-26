@@ -13,9 +13,8 @@
  */
 package org.kevoree.tools.ui.editor
 
-import command.{AddElementUICommand, SynchCodeCommand, ReloadTypePalette}
-
 import com.explodingpixels.macwidgets._
+import command.{AddElementUICommand, SynchCodeCommand, ReloadTypePalette}
 import javax.swing._
 import java.awt.datatransfer.{DataFlavor, Transferable}
 import org.kevoree.tools.ui.framework.elements.{GroupTypePanel, NodeTypePanel, ChannelTypePanel, ComponentTypePanel}
@@ -23,6 +22,7 @@ import java.awt.{Color, Graphics, Component}
 import javax.imageio.ImageIO
 import java.awt.event.{ActionEvent, ActionListener, InputEvent}
 import org.kevoree.TypeDefinition
+import com.explodingpixels.widgets.PopupMenuCustomizer
 ;
 
 /**
@@ -160,7 +160,7 @@ class TypeDefinitionSourceList(pane: JSplitPane, kernel: KevoreeUIKernel) {
     }
   })
 
-
+/*
   controlBar.createAndAddButton(iconProjectAdd, new ActionListener {
     def actionPerformed(p1: ActionEvent) {
       val cmd = new AddElementUICommand
@@ -168,15 +168,74 @@ class TypeDefinitionSourceList(pane: JSplitPane, kernel: KevoreeUIKernel) {
       cmd.execute(null)
     }
   })
-  controlBar.createAndAddButton(iconProjectGenerate, new ActionListener {
-    def actionPerformed(p1: ActionEvent) {
-      val generateAction = new SynchCodeCommand
-      generateAction.setKernel(kernel)
-      val typeDef: TypeDefinition = kernel.getUifactory.getMapping.get(getSelectedPanel).asInstanceOf[TypeDefinition]
-      generateAction.execute(typeDef)
-    }
-  })
+  */
+  controlBar.createAndAddPopdownButton(MacIcons.PLUS,
+    new PopupMenuCustomizer() {
+      def customizePopup(popup: JPopupMenu) {
+        popup.removeAll();
+        val cmd = new AddElementUICommand
+        cmd.setKernel(kernel)
 
+        val libMenuItem = new JMenuItem(cmd.LibraryLabel);
+        libMenuItem.addActionListener(new ActionListener {
+          def actionPerformed(p1: ActionEvent) {
+            cmd.execute(cmd.LibraryLabel)
+          }
+        });
+        popup.add(libMenuItem);
+
+        val deployUnitMenuItem = new JMenuItem(cmd.DeployUnit);
+        deployUnitMenuItem.addActionListener(new ActionListener {
+          def actionPerformed(p1: ActionEvent) {
+            cmd.execute(cmd.DeployUnit)
+          }
+        });
+        popup.add(deployUnitMenuItem);
+
+        val componentTypeMenuItem = new JMenuItem(cmd.ComponentType);
+        componentTypeMenuItem.addActionListener(new ActionListener {
+          def actionPerformed(p1: ActionEvent) {
+            cmd.execute(cmd.ComponentType)
+          }
+        });
+        popup.add(componentTypeMenuItem);
+
+      }
+    }
+  )
+
+
+
+  controlBar.createAndAddPopdownButton(MacIcons.GEAR,
+    new PopupMenuCustomizer() {
+      def customizePopup(popup: JPopupMenu) {
+        popup.removeAll();
+
+        val menuItem = new JMenuItem("Generate ComponentType");
+        menuItem.addActionListener(new ActionListener {
+          def actionPerformed(p1: ActionEvent) {
+            val generateAction = new SynchCodeCommand
+            generateAction.setKernel(kernel)
+            val typeDef: TypeDefinition = kernel.getUifactory.getMapping.get(getSelectedPanel).asInstanceOf[TypeDefinition]
+            generateAction.execute(typeDef)
+          }
+        });
+        popup.add(menuItem);
+
+        val menuItem2 = new JMenuItem("Generate DeployUnit");
+        menuItem2.addActionListener(new ActionListener {
+          def actionPerformed(p1: ActionEvent) {
+            val generateAction = new SynchCodeCommand
+            generateAction.setKernel(kernel)
+            val typeDef: TypeDefinition = kernel.getUifactory.getMapping.get(getSelectedPanel).asInstanceOf[TypeDefinition]
+            if (typeDef != null) {
+              typeDef.getDeployUnits.foreach(du => generateAction.execute(du))
+            }
+          }
+        });
+        popup.add(menuItem2);
+      }
+    });
 
   sourceList.setColorScheme(new SourceListDarkColorScheme());
   sourceList.useIAppStyleScrollBars()
