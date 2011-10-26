@@ -33,6 +33,7 @@ class AddElementUICommand extends Command with ComponentTypeForm with DeployUnit
   val DeployUnit = "DeployUnit"
   val ComponentType = "ComponentType"
   val ChannelType = "ChannelType"
+  val GroupType = "GroupType"
 
 
   var kernel: KevoreeUIKernel = null
@@ -53,8 +54,11 @@ class AddElementUICommand extends Command with ComponentTypeForm with DeployUnit
     newElementsModel.addElement(LibraryLabel)
     newElementsModel.addElement(DeployUnit)
     newElementsModel.addElement(ComponentType)
-    newElementsModel.addElement(ChannelType)
-    newElementsModel.addElement("GroupType")
+    //newElementsModel.addElement(ChannelType)
+    //newElementsModel.addElement(GroupType)
+    if (p != null) {
+      newElementsModel.setSelectedItem(p)
+    }
     val newElements = new JComboBox(newElementsModel)
     newElements.setUI(new HudComboBoxUI())
     val newElementsLabel = new JLabel("Add new : ", SwingConstants.TRAILING)
@@ -71,21 +75,21 @@ class AddElementUICommand extends Command with ComponentTypeForm with DeployUnit
         layoutPopup.removeAll()
         newElements.getSelectedItem match {
           case LibraryLabel => {
-            val uiElems = createNewLibraryPanel(newPopup,kernel)
+            val uiElems = createNewLibraryPanel(newPopup, kernel)
             layoutPopup.add(uiElems._1, BorderLayout.CENTER)
             layoutPopup.add(uiElems._2, BorderLayout.SOUTH)
           }
           case DeployUnit => {
-            val uiElems = createNewDeployUnitPanel(newPopup,kernel)
+            val uiElems = createNewDeployUnitPanel(newPopup, kernel)
             layoutPopup.add(uiElems._1, BorderLayout.CENTER)
             layoutPopup.add(uiElems._2, BorderLayout.SOUTH)
           }
           case ComponentType => {
-            val uiElems = createNewComponentTypePanel(newPopup,kernel)
+            val uiElems = createNewComponentTypePanel(newPopup, kernel)
             layoutPopup.add(uiElems._1, BorderLayout.CENTER)
             layoutPopup.add(uiElems._2, BorderLayout.SOUTH)
           }
-          case _ =>
+          case _@e => throw new UnsupportedOperationException("No popup implemeted for item:" + e)
         }
         layoutPopup.add(layoutPopupTop, BorderLayout.NORTH)
         layoutPopup.repaint()
@@ -95,7 +99,16 @@ class AddElementUICommand extends Command with ComponentTypeForm with DeployUnit
 
     layoutPopup.add(layoutPopupTop, BorderLayout.NORTH)
     newPopup.getContentPane.add(layoutPopup)
-    val uiElems = createNewLibraryPanel(newPopup,kernel)
+    val uiElems = if (p != null) {
+      p match {
+        case LibraryLabel => createNewLibraryPanel(newPopup, kernel)
+        case DeployUnit => createNewDeployUnitPanel(newPopup, kernel)
+        case ComponentType => createNewComponentTypePanel(newPopup, kernel)
+        case _ => createNewLibraryPanel(newPopup, kernel)
+      }
+    } else {
+      createNewLibraryPanel(newPopup, kernel)
+    }
     layoutPopup.add(uiElems._1, BorderLayout.CENTER)
     layoutPopup.add(uiElems._2, BorderLayout.SOUTH)
 
@@ -103,7 +116,6 @@ class AddElementUICommand extends Command with ComponentTypeForm with DeployUnit
   }
 
   //val currentProps = new Properties
-
 
 
 }

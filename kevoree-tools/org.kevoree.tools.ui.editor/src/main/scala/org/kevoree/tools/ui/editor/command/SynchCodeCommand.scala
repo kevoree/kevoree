@@ -16,7 +16,7 @@ package org.kevoree.tools.ui.editor.command
 import org.kevoree.tools.ui.editor.KevoreeUIKernel
 import org.kevoree.tools.model2code.Model2Code
 import javax.swing.JFileChooser
-import org.kevoree.{ContainerRoot, TypeDefinition}
+import org.kevoree.{DeployUnit, ContainerRoot, TypeDefinition}
 
 /**
  * User: ffouquet
@@ -31,14 +31,21 @@ class SynchCodeCommand extends Command {
 
   def execute(p: Object) {
     if (p != null) {
-      val typeDef: TypeDefinition = p.asInstanceOf[TypeDefinition]
       val pomDirectoryHelper: JFileChooser = new JFileChooser
       pomDirectoryHelper.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY)
       pomDirectoryHelper.setDialogTitle("Please select Home directory for deploy unit code (POM directory)")
       val result: Int = pomDirectoryHelper.showSaveDialog(null)
       if (result == JFileChooser.APPROVE_OPTION) {
         val model2code = new Model2Code
-        model2code.modelToCode(typeDef.eContainer.asInstanceOf[ContainerRoot], typeDef, pomDirectoryHelper.getSelectedFile.toURI)
+        p match {
+          case typeDef: TypeDefinition => {
+            model2code.modelToCode(kernel.getModelHandler.getActualModel, typeDef, pomDirectoryHelper.getSelectedFile.toURI)
+          }
+          case du: DeployUnit => {
+            System.out.println("Generation in " + pomDirectoryHelper.getSelectedFile.toURI)
+            model2code.modelToDeployUnit(kernel.getModelHandler.getActualModel,pomDirectoryHelper.getSelectedFile.toURI,du)
+          }
+        }
 
       }
     }
