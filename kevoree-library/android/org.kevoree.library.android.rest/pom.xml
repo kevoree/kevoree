@@ -3,9 +3,9 @@
 
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.kevoree.library.android</groupId>
-    <artifactId>org.kevoree.library.android.restChannels</artifactId>
+    <artifactId>org.kevoree.library.android.rest</artifactId>
     <packaging>bundle</packaging>
-    <name>Kevoree :: Library :: Android :: RestChannels</name>
+    <name>Kevoree :: Library :: Android :: Rest</name>
     <version>1.4.0-SNAPSHOT</version>
 
     <parent>
@@ -20,49 +20,50 @@
         <android.tools.dx>${android.home}/platform-tools/dx</android.tools.dx>
     </properties>
 
-    <dependencies>
-        <dependency>
-            <groupId>org.kevoree</groupId>
-            <artifactId>org.kevoree.remote</artifactId>
-            <version>${kevoree.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.kevoree.extra</groupId>
-            <artifactId>org.kevoree.extra.marshalling</artifactId>
-            <version>1.0</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.kevoree.library.javase</groupId>
-            <artifactId>org.kevoree.library.javase.restChannels</artifactId>
-            <version>${kevoree.version}</version>
-        </dependency>
-    </dependencies>
-
-
-    <repositories>
-        <repository>
-            <id>reslet</id>
-            <url>http://maven.restlet.org/</url>
-        </repository>
-    </repositories>
-
     <build>
         <plugins>
+            <plugin>
+                <groupId>org.scala-tools</groupId>
+                <artifactId>maven-scala-plugin</artifactId>
+                <version>2.15.2</version>
+                <executions>
+                    <execution>
+                        <id>scala-compile-first</id>
+                        <phase>process-resources</phase>
+                        <goals>
+                            <goal>add-source</goal>
+                            <goal>compile</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>scala-test-compile</id>
+                        <phase>process-test-resources</phase>
+                        <goals>
+                            <goal>testCompile</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <jvmArgs>
+                        <jvmArg>-Xmx1024m</jvmArg>
+                    </jvmArgs>
+                </configuration>
+            </plugin>
+
             <plugin>
                 <groupId>org.apache.felix</groupId>
                 <artifactId>maven-bundle-plugin</artifactId>
                 <version>2.3.5</version>
                 <extensions>true</extensions>
+                <!--
                 <configuration>
                     <instructions>
                         <Import-Package>
-                            !org.kevoree.library.restChannels.*,org.osgi.*;version="[4.2.0,5)",*
+                           !nanohttpd,!org.kevoree.library.rest.*,org.osgi.*;version="[4.2.0,5)",*
                         </Import-Package>
-                        <Export-Package>org.kevoree.library.restChannels.*</Export-Package>
-
+                        <Export-Package>org.kevoree.library.rest.*,nanohttpd.*</Export-Package>
                     </instructions>
-                </configuration>
+                </configuration>   -->
             </plugin>
             <plugin>
                 <groupId>org.kevoree.tools</groupId>

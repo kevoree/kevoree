@@ -35,7 +35,7 @@ class SynchCodeCommand extends Command {
       val pomDirectoryHelper: JFileChooser = new JFileChooser
       pomDirectoryHelper.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY)
       pomDirectoryHelper.setDialogTitle("Please select Home directory for deploy unit code (POM directory)")
-      val result: Int = pomDirectoryHelper.showOpenDialog(null)
+      val result: Int = pomDirectoryHelper.showSaveDialog(null)
       if (result == JFileChooser.APPROVE_OPTION) {
         val model2code = new Model2Code
         model2code.modelToCode(typeDef.eContainer.asInstanceOf[ContainerRoot], typeDef, pomDirectoryHelper.getSelectedFile.toURI)
