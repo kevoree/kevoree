@@ -17,9 +17,9 @@ import com.explodingpixels.macwidgets.HudWindow
 import javax.swing._
 import com.explodingpixels.macwidgets.plaf.{HudButtonUI, HudLabelUI, HudTextFieldUI}
 import java.awt.event.{ActionEvent, ActionListener}
-import org.kevoree.tools.ui.editor.command.KevScriptCommand
 import org.kevoree.tools.ui.editor.property.SpringUtilities
 import org.kevoree.tools.ui.editor.KevoreeUIKernel
+import org.kevoree.tools.ui.editor.command.{ReloadTypePalette, KevScriptCommand}
 
 /**
  * Created by IntelliJ IDEA.
@@ -50,7 +50,10 @@ trait LibraryForm {
             val cmd = new KevScriptCommand
             cmd.setKernel(kernel)
             cmd.execute("tblock { addLibrary " + nameTextField.getText + " } ")
-            window.getJDialog.dispose()
+            val updateCmd = new ReloadTypePalette
+            updateCmd.setKernel(kernel)
+            updateCmd.execute(None)
+            //window.getJDialog.dispose()
           }
         }
       })

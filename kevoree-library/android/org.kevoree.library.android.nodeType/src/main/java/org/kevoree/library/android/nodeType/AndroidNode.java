@@ -1,13 +1,10 @@
 package org.kevoree.library.android.nodeType;
 
-import android.app.Activity;
 import org.kevoree.ContainerRoot;
 import org.kevoree.adaptation.deploy.osgi.BaseDeployOSGi;
-import org.kevoree.android.framework.helper.UIServiceHandler;
 import org.kevoree.annotation.*;
 import org.kevoree.framework.*;
 import org.kevoree.kompare.KevoreeKompareBean;
-import org.kevoree.library.defaultNodeTypes.JavaSENode;
 import org.kevoreeAdaptation.AdaptationModel;
 import org.kevoreeAdaptation.AdaptationPrimitive;
 import org.osgi.framework.Bundle;
@@ -27,7 +24,7 @@ import org.slf4j.LoggerFactory;
         value = {})
 public class AndroidNode extends AbstractNodeType {
 
-    private static final Logger logger = LoggerFactory.getLogger(JavaSENode.class);
+    private static final Logger logger = LoggerFactory.getLogger(AndroidNode.class);
     private KevoreeKompareBean kompareBean = null;
     private BaseDeployOSGi deployBean = null;
 
