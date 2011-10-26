@@ -22,6 +22,7 @@ import org.junit._
 import org.kevoree.kompare._
 import org.scalatest.junit.AssertionsForJUnit
 import org.kevoree.kompare.tests._
+import org.kevoree.{DeployUnit, NamedElement}
 
 class PortsTest extends AssertionsForJUnit with KompareSuite {
 
@@ -43,7 +44,7 @@ class PortsTest extends AssertionsForJUnit with KompareSuite {
      * Should all the library component's types and instances be updated ?
      */
 
-    kompareModel verifySize 23
+    kompareModel verifySize 22
 
     //    kompareModel shouldContain(JavaSePrimitive.UpdateType,"ComponentA")
     kompareModel shouldContain(JavaSePrimitive.RemoveType, "ComponentA")
@@ -77,7 +78,7 @@ class PortsTest extends AssertionsForJUnit with KompareSuite {
     kompareModel shouldContain(JavaSePrimitive.StartInstance, "ComponentPrimitiveTypeService--690416444")
 
     //    kompareModel shouldContainSize(JavaSePrimitive.UpdateDeployUnit, 1)
-    kompareModel shouldContainSize(JavaSePrimitive.RemoveDeployUnit, 1)
+//    kompareModel shouldContainSize(JavaSePrimitive.RemoveDeployUnit, 1)
     kompareModel shouldContainSize(JavaSePrimitive.AddDeployUnit, 1)
 
   }
@@ -94,7 +95,7 @@ class PortsTest extends AssertionsForJUnit with KompareSuite {
      * Should all the library component's types and instances be updated ?
      */
 
-    kompareModel verifySize 23
+    kompareModel verifySize 22
 
     //    kompareModel shouldContain(JavaSePrimitive.UpdateType, "ComponentA")
     kompareModel shouldContain(JavaSePrimitive.RemoveType, "ComponentA")
@@ -127,7 +128,7 @@ class PortsTest extends AssertionsForJUnit with KompareSuite {
     kompareModel shouldContain(JavaSePrimitive.StartInstance, "ComponentPrimitiveTypeService--690416444")
 
     //    kompareModel shouldContainSize(JavaSePrimitive.UpdateDeployUnit, 1)
-    kompareModel shouldContainSize(JavaSePrimitive.RemoveDeployUnit, 1)
+//    kompareModel shouldContainSize(JavaSePrimitive.RemoveDeployUnit, 1)
     kompareModel shouldContainSize(JavaSePrimitive.AddDeployUnit, 1)
 
   }

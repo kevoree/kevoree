@@ -39,7 +39,7 @@ class TypeAndInstanceUpdateTest extends KompareSuite {
 //    println(kompareModel.getAdaptations.size)
 
 //    kompareModel shouldContainSize (JavaSePrimitive.UpdateDeployUnit, 1)
-    kompareModel shouldContainSize (JavaSePrimitive.RemoveDeployUnit, 1)
+//    kompareModel shouldContainSize (JavaSePrimitive.RemoveDeployUnit, 1)
     kompareModel shouldContainSize (JavaSePrimitive.AddDeployUnit, 1)
 //    kompareModel shouldContain (JavaSePrimitive.UpdateType, "ComponentPrimitiveTypeService")
     kompareModel shouldContain (JavaSePrimitive.RemoveType, "ComponentPrimitiveTypeService")
