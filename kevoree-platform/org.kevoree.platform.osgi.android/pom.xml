@@ -116,7 +116,7 @@
         </dependency>
         <dependency>
             <groupId>org.kevoree.tools</groupId>
-            <artifactId>org.kevoree.tools.aether.framework</artifactId>
+            <artifactId>org.kevoree.tools.aether.lite.framework</artifactId>
             <version>${kevoree.version}</version>
             <scope>provided</scope>
         </dependency>
@@ -290,7 +290,7 @@
                         <option>-keep class org.kevoree.framework.** { *; }</option>
                         <option>-keep class org.apache.felix.framework.** { *; }</option>
                         <option>-keep class org.kevoree.android.framework.** { *; }</option>
-                        <option>-keep class org.kevoree.tools.aether.framework.** { *; }</option>
+                        <option>-keep class org.kevoree.tools.aether.lite.framework.** { *; }</option>
                         <option>-dontskipnonpubliclibraryclasses</option>
                         <option>-dontskipnonpubliclibraryclassmembers</option>
                         <option>-dontoptimize</option>
@@ -376,7 +376,7 @@
 
                             <inclusion>
                                 <groupId>org.kevoree.tools</groupId>
-                                <artifactId>org.kevoree.tools.aether.framework</artifactId>
+                                <artifactId>org.kevoree.tools.aether.lite.framework</artifactId>
                                 <filter>
                                     !org/apache/commons/**,
                                     !org/apache/codec/**,

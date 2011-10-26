@@ -25,7 +25,7 @@ import org.kevoree.{ContainerRoot, DeployUnit}
 import java.io.File
 import org.sonatype.aether.artifact.Artifact
 import org.kevoree.framework.KevoreePlatformHelper
- import org.sonatype.aether.connector.async.AsyncRepositoryConnectorFactory
+import org.sonatype.aether.connector.async.AsyncRepositoryConnectorFactory
 import org.sonatype.aether.spi.log.Logger
 import org.sonatype.aether.spi.localrepo.LocalRepositoryManagerFactory
 import org.sonatype.aether.impl.internal.EnhancedLocalRepositoryManagerFactory
