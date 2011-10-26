@@ -16,6 +16,7 @@ package org.kevoree.platform.osgi.standalone;
 import org.kevoree.ContainerRoot;
 import org.kevoree.api.service.core.handler.KevoreeModelHandlerService;
 import org.kevoree.api.service.core.script.ScriptInterpreter;
+import org.kevoree.cloner.ModelCloner;
 import org.kevoree.framework.KevoreeXmiHelper;
 import org.kevoree.tools.marShell.ast.Script;
 import org.kevoree.tools.marShell.interpreter.KevsInterpreterContext;
@@ -41,13 +42,8 @@ public class KevScriptInterpreterService implements ScriptInterpreter {
 
         if (script.isDefined()) {
 
-            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-            KevoreeXmiHelper.saveStream(outputStream,handler.getLastModel());
-
-            ByteArrayInputStream input = new ByteArrayInputStream(outputStream.toByteArray());
-            ContainerRoot model = KevoreeXmiHelper.loadStream(input);
-
-            //ContainerRoot model = EcoreUtil.copy(handler.getLastModel());
+            ModelCloner modelCloner = new ModelCloner();
+            ContainerRoot model = modelCloner.clone( handler.getLastModel());
 
             KevsInterpreterContext context = new KevsInterpreterContext(model);
             KevsScriptInterpreter interpreter = new KevsScriptInterpreter((Script) script.get());

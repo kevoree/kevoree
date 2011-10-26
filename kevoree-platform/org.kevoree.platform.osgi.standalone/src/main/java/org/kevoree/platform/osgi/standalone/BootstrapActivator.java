@@ -78,14 +78,11 @@ public class BootstrapActivator implements BundleActivator {
                         logger.error("Bootstrap failed", e);
                     }
                 } else {
-
                     try {
-
                         File file = AetherUtil.resolveKevoreeArtifact("org.kevoree.library.model.bootstrap", "org.kevoree.library.model",KevoreeFactory.getVersion());
                         JarFile jar = new JarFile(file);
                         JarEntry entry = jar.getJarEntry("KEV-INF/lib.kev");
                         bootstrapModel = KevoreeXmiHelper.loadStream(jar.getInputStream(entry));
-
                     } catch (Exception e) {
                         logger.error("Bootstrap failed", e);
                     }
@@ -97,6 +94,7 @@ public class BootstrapActivator implements BundleActivator {
             if (bootstrapModel != null) {
                 try {
                     logger.debug("Bootstrap step !");
+                    BootstrapHelper.initModelInstance(bootstrapModel,"JavaSENode");
                     coreBean.updateModel(bootstrapModel);
                 } catch (Exception e) {
                     logger.error("Bootstrap failed", e);
