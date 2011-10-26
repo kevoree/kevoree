@@ -22,7 +22,7 @@
 
     <modules>
         <module>../org.kevoree.library.sky.minicloud</module>
-        <!--  <module>../org.kevoree.library.sky.jclouds</module>  -->
+        <!--<module>../org.kevoree.library.sky.jclouds</module>-->
     </modules>
 
 
@@ -46,13 +46,40 @@
 
     <build>
         <plugins>
-            <!--<plugin>
+            <plugin>
+                <groupId>org.scala-tools</groupId>
+                <artifactId>maven-scala-plugin</artifactId>
+                <version>2.15.2</version>
+                <executions>
+                    <execution>
+                        <id>scala-compile-first</id>
+                        <phase>process-resources</phase>
+                        <goals>
+                            <goal>add-source</goal>
+                            <goal>compile</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>scala-test-compile</id>
+                        <phase>process-test-resources</phase>
+                        <goals>
+                            <goal>testCompile</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <jvmArgs>
+                        <jvmArg>-Xmx1024m</jvmArg>
+                    </jvmArgs>
+                </configuration>
+            </plugin>
+            <plugin>
                 <groupId>org.kevoree.tools</groupId>
                 <artifactId>org.kevoree.tools.annotation.mavenplugin</artifactId>
                 <version>${kevoree.version}</version>
                 <extensions>true</extensions>
                 <configuration>
-                    <nodeTypeNames>JavaSENode</nodeTypeNames>
+                    <nodeTypeNames>MiniCloudNode</nodeTypeNames>
                 </configuration>
                 <executions>
                     <execution>
@@ -62,7 +89,7 @@
                         </goals>
                     </execution>
                 </executions>
-            </plugin>-->
+            </plugin>
             <!-- Felix BnD plugin : allow Bundle packaging : generate OSGi JAR  -->
             <plugin>
                 <groupId>org.apache.felix</groupId>
