@@ -107,6 +107,12 @@
             <version>${kevoree.version}</version>
             <scope>provided</scope>
         </dependency>
+        <dependency>
+            <groupId>org.jgrapht</groupId>
+            <artifactId>jgrapht-jdk1.5</artifactId>
+            <version>0.7.3</version>
+            <scope>provided</scope>
+        </dependency>
 
         <dependency>
             <groupId>org.kevoree.tools</groupId>
@@ -402,8 +408,8 @@
                                 <artifactId>slf4j-android</artifactId>
                             </inclusion>
                             <inclusion>
-                                <groupId>jgrapht</groupId>
-                                <artifactId>jgrapht</artifactId>
+                                <groupId>org.jgrapht</groupId>
+                                <artifactId>jgrapht-jdk1.5</artifactId>
                                 <filter>!META-INF/**</filter>
                             </inclusion>
                             <inclusion>
