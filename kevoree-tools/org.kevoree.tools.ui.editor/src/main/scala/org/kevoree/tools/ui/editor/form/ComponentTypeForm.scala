@@ -14,12 +14,14 @@
 package org.kevoree.tools.ui.editor.form
 
 import com.explodingpixels.macwidgets.HudWindow
-import javax.swing._
 import com.explodingpixels.macwidgets.plaf.{HudButtonUI, HudComboBoxUI, HudLabelUI, HudTextFieldUI}
 import java.awt.event.{ActionEvent, ActionListener}
 import org.kevoree.tools.ui.editor.property.SpringUtilities
 import org.kevoree.tools.ui.editor.KevoreeUIKernel
 import org.kevoree.tools.ui.editor.command.{ReloadTypePalette, KevScriptCommand}
+import org.kevoree.{DeployUnit, TypeLibrary, KevoreeFactory}
+import org.kevoree.tools.ui.framework.data.{KevoreeHudComboBoxUI, NamedElementListRenderer, KevoreeComboBox}
+import javax.swing._
 
 /**
  * Created by IntelliJ IDEA.
@@ -34,6 +36,18 @@ trait ComponentTypeForm {
   def createNewComponentTypePanel(window: HudWindow,kernel : KevoreeUIKernel): Tuple2[JPanel, JButton] = {
     val layout = new JPanel(new SpringLayout)
     layout.setOpaque(false)
+
+
+    val packageTextField = new JTextField()
+    packageTextField.setUI(new HudTextFieldUI())
+    val packageTextFieldLabel = new JLabel("ComponentType package", SwingConstants.TRAILING);
+    packageTextFieldLabel.setUI(new HudLabelUI());
+    packageTextFieldLabel.setOpaque(false);
+    packageTextFieldLabel.setLabelFor(packageTextField);
+    layout.add(packageTextFieldLabel)
+    layout.add(packageTextField)
+
+
     val nameTextField = new JTextField()
     nameTextField.setUI(new HudTextFieldUI())
     val componentTypeNameLabel = new JLabel("ComponentType name", SwingConstants.TRAILING);
@@ -47,11 +61,10 @@ trait ComponentTypeForm {
     val libraryModel = new DefaultComboBoxModel
     libraryModel.addElement("no library")
     kernel.getModelHandler.getActualModel.getLibraries.foreach {
-      lib =>
-        libraryModel.addElement(lib.getName)
+      lib => libraryModel.addElement(lib)
     }
     val comboLibrary = new JComboBox(libraryModel)
-    comboLibrary.setUI(new HudComboBoxUI())
+    comboLibrary.setUI(new KevoreeHudComboBoxUI())
     val libraryCompoLabel = new JLabel("Library : ", SwingConstants.TRAILING)
     libraryCompoLabel.setUI(new HudLabelUI)
     libraryCompoLabel.setLabelFor(comboLibrary)
@@ -63,11 +76,10 @@ trait ComponentTypeForm {
     val deployUnitModel = new DefaultComboBoxModel
     deployUnitModel.addElement("no deploy unit")
     kernel.getModelHandler.getActualModel.getDeployUnits.foreach {
-      du =>
-        deployUnitModel.addElement(du.getGroupName + ":" + du.getUnitName + ":" + du.getVersion)
+      du => deployUnitModel.addElement(du)
     }
     val comboDeployUnit = new JComboBox(deployUnitModel)
-    comboDeployUnit.setUI(new HudComboBoxUI())
+    comboDeployUnit.setUI(new KevoreeHudComboBoxUI())
     val deployUnitComboLabel = new JLabel("Deploy Unit : ", SwingConstants.TRAILING)
     deployUnitComboLabel.setUI(new HudLabelUI)
     deployUnitComboLabel.setLabelFor(comboDeployUnit)
@@ -81,6 +93,36 @@ trait ComponentTypeForm {
     btAdd.addActionListener(new ActionListener {
       def actionPerformed(p1: ActionEvent) {
         if (nameTextField.getText != "") {
+
+          val newCt = KevoreeFactory.createComponentType
+          newCt.setName(nameTextField.getText)
+          if(!packageTextField.getText.equals("")) {
+            var packName = packageTextField.getText
+            if(!packageTextField.getText.endsWith(".")) {
+              packName += "."
+            }
+            newCt.setBean(packName + newCt.getName)
+          } else {
+            //TODO retreive a package name from the selected deploy unit artifact ID
+          }
+
+          comboLibrary.getSelectedItem match {
+            case lib:TypeLibrary => {
+              lib.addSubTypes(newCt)
+            }
+            case _ @ e => System.out.println("Not a library. " + e.getClass)
+          }
+
+          comboDeployUnit.getSelectedItem match {
+            case du : DeployUnit => {
+              newCt.addDeployUnits(du)
+            }
+              case _ @ e => System.out.println("Not a DeployUnit. " + e.getClass)
+          }
+
+          kernel.getModelHandler.getActualModel.addTypeDefinitions(newCt)
+
+          /*
           val cmd = new KevScriptCommand
           cmd.setKernel(kernel)
           //TODO: link the componentType with the deployUnit.
@@ -89,6 +131,7 @@ trait ComponentTypeForm {
           } else {
             cmd.execute("tblock { createComponentType " + nameTextField.getText + " } ")
           }
+          */
           //window.getJDialog.dispose()
 
             val updateCmd = new ReloadTypePalette
@@ -98,7 +141,7 @@ trait ComponentTypeForm {
       }
     })
     window.getJDialog.getRootPane.setDefaultButton(btAdd)
-    SpringUtilities.makeCompactGrid(layout, 3, 2, 6, 6, 6, 6)
+    SpringUtilities.makeCompactGrid(layout, 4, 2, 6, 6, 6, 6)
     Tuple2(layout, btAdd)
   }
 
