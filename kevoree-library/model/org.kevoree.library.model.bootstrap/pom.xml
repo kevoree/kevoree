@@ -53,6 +53,11 @@
         </dependency>
         <dependency>
             <groupId>org.kevoree.library.javase</groupId>
+            <artifactId>org.kevoree.library.javase.miniCloudGroup</artifactId>
+            <version>${kevoree.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.kevoree.library.javase</groupId>
             <artifactId>org.kevoree.library.javase.javaseNode</artifactId>
             <version>${kevoree.version}</version>
         </dependency>

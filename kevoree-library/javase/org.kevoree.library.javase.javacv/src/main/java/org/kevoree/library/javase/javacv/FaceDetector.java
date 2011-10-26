@@ -64,7 +64,8 @@ public class FaceDetector extends AbstractComponentType {
 			image.release();
 			grayImage.release();
 			frame.release();
-			storage.release();
+//			storage.release();
+			cvClearMemStorage(storage);
 		}
 		equImg = null;
 		image = null;
@@ -99,10 +100,6 @@ public class FaceDetector extends AbstractComponentType {
 					// We instantiate a classifier cascade to be used for detection, using the cascade definition.
 					cascade = new CvHaarClassifierCascade(cvLoad(cascadeFilePath));
 
-					//diff = IplImage
-					//		.create(((BufferedImage) message).getWidth(), ((BufferedImage) message).getHeight(),
-					//				IPL_DEPTH_8U, 1);
-
 					frame = IplImage
 							.create(((BufferedImage) message).getWidth(), ((BufferedImage) message).getHeight(),
 									IPL_DEPTH_8U, 1);
@@ -118,11 +115,13 @@ public class FaceDetector extends AbstractComponentType {
 
 					storage = CvMemStorage.create();
 				}
-				frame.copyFrom((BufferedImage) message);
+				frame = IplImage.createFrom((BufferedImage) message);
+//				frame.copyFrom((BufferedImage) message);
 //				if (nb != 1) {
 				process(frame);
 //					nb++;
 //				}
+//				frame.release();
 			}
 		}
 	}
@@ -150,10 +149,11 @@ public class FaceDetector extends AbstractComponentType {
 					CV_HAAR_DO_ROUGH_SEARCH | CV_HAAR_FIND_BIGGEST_OBJECT);
 
 			CvRect r = new CvRect(cvGetSeqElem(faces, 0));
-			cvRectangle(frame, cvPoint(r.x(), r.y()),
-					cvPoint(r.x() + r.width(), r.y() + r.height()), CvScalar.YELLOW, 1, CV_AA, 0);
+			if (!r.isNull()) {
+				cvRectangle(frame, cvPoint(r.x(), r.y()),
+						cvPoint(r.x() + r.width(), r.y() + r.height()), CvScalar.YELLOW, 1, CV_AA, 0);
+			}
 		}
-		cvClearMemStorage(storage);
 		getPortByName("faces", MessagePort.class).process(frame.getBufferedImage());
 	}
 

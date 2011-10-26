@@ -106,7 +106,6 @@ class KevoreeNodeRunner (var nodeName: String, bootStrapModel: String) {
               logStream.close()
             }
           }
-
           private val stream: InputStream = nodePlatformProcess.getInputStream
         }
 
@@ -133,13 +132,12 @@ class KevoreeNodeRunner (var nodeName: String, bootStrapModel: String) {
               logStream.close()
             }
           }
-
           private val stream: InputStream = nodePlatformProcess.getErrorStream
         }
         outputStreamReader.start()
         errorStreamReader.start()
         nodePlatformProcess.exitValue
-        true
+        false
       } else {
         logger.error("Unable to start node because the platform jar file is not available")
         false

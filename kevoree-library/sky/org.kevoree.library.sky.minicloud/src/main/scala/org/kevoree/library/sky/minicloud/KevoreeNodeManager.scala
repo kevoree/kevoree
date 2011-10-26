@@ -1,6 +1,7 @@
 package org.kevoree.library.sky.minicloud
 
 import actors.DaemonActor
+import nodeType.MiniCloudNode
 import org.kevoree.{ContainerRoot, ContainerNode}
 
 import org.slf4j.{LoggerFactory, Logger}
@@ -15,6 +16,8 @@ import org.slf4j.{LoggerFactory, Logger}
  */
 object KevoreeNodeManager extends DaemonActor {
   private val logger: Logger = LoggerFactory.getLogger(KevoreeNodeManager.getClass)
+  
+  logger.debug("KevoreeNodeManager initialization...")
   private var node : MiniCloudNode = null
 
   def setNode(n : MiniCloudNode) {
