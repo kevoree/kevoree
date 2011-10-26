@@ -25,8 +25,7 @@ import org.kevoree.ComponentInstance
 import org.kevoree.ContainerRoot
 import org.kevoree.Instance
 import org.kevoree.MBinding
-
-case class KevoreeComponentDirectedGraph(model: ContainerRoot, nodeName: String) extends DefaultDirectedGraph[Instance, MBinding](classOf[MBinding]) {
+case class KevoreeComponentDirectedGraph(model: ContainerRoot, nodeName: String) extends DefaultDirectedGraph[Instance, MBinding](new KevoreeMBindingEdgeFactory(model)) {
 
 	model.getNodes.find(node => node.getName == nodeName) match {
 		case Some(node) =>
