@@ -14,6 +14,7 @@
 package org.kevoree.tools.ui.editor.standalone;
 
 import com.explodingpixels.macwidgets.*;
+import org.kevoree.KevoreeFactory;
 import org.kevoree.tools.ui.editor.KevoreeEditor;
 
 import javax.swing.*;
@@ -57,7 +58,7 @@ public class App {
                 }
 
 
-                String frameName = "Kevoree Editor";
+                String frameName = "Kevoree Editor - "+ KevoreeFactory.getVersion();
 
                 if (!artpanel.getEditorVersion().equals("")) {
                     frameName += " - " + artpanel.getEditorVersion();

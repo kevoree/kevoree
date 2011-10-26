@@ -3,6 +3,7 @@ package org.kevoree.library.rest;
 import nanohttpd.NanoHTTPD;
 import org.kevoree.ContainerRoot;
 import org.kevoree.annotation.*;
+import org.kevoree.api.service.core.handler.KevoreeModelHandlerService;
 import org.kevoree.framework.*;
 import org.kevoree.framework.Constants;
 import org.kevoree.serializer.ModelSerializer;
@@ -32,26 +33,28 @@ public class RestGroup extends AbstractGroupType {
     private Logger logger = LoggerFactory.getLogger(this.getClass());
     private NanoHTTPD server = null;
     private ModelSerializer modelSaver = new ModelSerializer();
+    private KevoreeModelHandlerService handler = null;
 
     @Start
     public void startRestGroup() throws IOException {
+        handler = this.getModelService();
         int port = Integer.parseInt(this.getDictionary().get("port").toString());
         server = new NanoHTTPD(port) {
-            public Response serve(String uri, String method, Properties header, Properties parms, Properties files) {
+            public Response serve(String uri, String method, Properties header, Properties parms, Properties files, String body) {
                 if (method.equals("POST")) {
-                    return null;
+                    try {
+                        ContainerRoot model = KevoreeXmiHelper.loadString(body.trim());
+                        handler.updateModel(model);
+                        return new NanoHTTPD.Response(HTTP_OK, MIME_HTML, "<ack nodeName=\"" + getNodeName() + "\" />");
+                    } catch (Exception e) {
+                        logger.error("Error while loading model");
+                        return new NanoHTTPD.Response(HTTP_BADREQUEST, MIME_HTML, "Error while uploading model");
+                    }
+
+
                 }
                 if (method.equals("GET")) {
-                    String msg = "<html><body><h1>Hello server</h1>\n";
-                    if (parms.getProperty("username") == null)
-                        msg +=
-                                "<form action='?' method='get'>\n" +
-                                        "  <p>Your name: <input type='text' name='username'></p>\n" +
-                                        "</form>\n";
-                    else
-                        msg += "<p>Hello, " + parms.getProperty("username") + "!</p>";
-
-                    msg += "</body></html>\n";
+                    String msg = KevoreeXmiHelper.saveToString(handler.getLastModel(), false);
                     return new NanoHTTPD.Response(HTTP_OK, MIME_HTML, msg);
                 }
                 return new NanoHTTPD.Response(HTTP_BADREQUEST, MIME_XML, "ONLY GET OR POST METHOD SUPPORTED");

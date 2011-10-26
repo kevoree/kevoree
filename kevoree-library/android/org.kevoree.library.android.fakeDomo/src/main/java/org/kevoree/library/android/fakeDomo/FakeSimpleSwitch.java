@@ -19,8 +19,8 @@ import java.util.HashMap;
  * Time: 16:24
  */
 @Requires({
-		@RequiredPort(name = "on", type = PortType.MESSAGE),
-		@RequiredPort(name = "off", type = PortType.MESSAGE),
+		@RequiredPort(name = "on", type = PortType.MESSAGE, needCheckDependency = false),
+		@RequiredPort(name = "off", type = PortType.MESSAGE, needCheckDependency = false),
 		@RequiredPort(name = "toggle", type = PortType.SERVICE, className = ToggleLightService.class, optional = true)
 })
 @Library(name = "Android")

@@ -86,7 +86,7 @@ public class NanoHTTPD
 	 * @param header	Header entries, percent decoded
 	 * @return HTTP response, see class Response for details
 	 */
-	public Response serve( String uri, String method, Properties header, Properties parms, Properties files )
+	public Response serve( String uri, String method, Properties header, Properties parms, Properties files , String body )
 	{
 		System.out.println( method + " '" + uri + "' " );
 
@@ -340,6 +340,7 @@ public class NanoHTTPD
 				Properties parms = new Properties();
 				Properties header = new Properties();
 				Properties files = new Properties();
+                String body = "";
 
 				// Decode the header into parms and header java properties
 				decodeHeader(hin, pre, parms, header);
@@ -384,10 +385,10 @@ public class NanoHTTPD
 					size = 0;
 
 				// Now read all the body and write it to f
-				buf = new byte[512];
+				buf = new byte[1024];
 				while ( rlen >= 0 && size > 0 )
 				{
-					rlen = is.read(buf, 0, 512);
+					rlen = is.read(buf, 0, 1024);
 					size -= rlen;
 					if (rlen > 0)
 						f.write(buf, 0, rlen);
@@ -429,7 +430,7 @@ public class NanoHTTPD
 					{
 						// Handle application/x-www-form-urlencoded
 						String postLine = "";
-						char pbuf[] = new char[512];
+						char pbuf[] = new char[1024];
 						int read = in.read(pbuf);
 						while ( read >= 0 && !postLine.endsWith("\r\n") )
 						{
@@ -437,12 +438,15 @@ public class NanoHTTPD
 							read = in.read(pbuf);
 						}
 						postLine = postLine.trim();
+                        
+                        System.out.println("body"+postLine);
+                        body =postLine;
 						decodeParms( postLine, parms );
 					}
 				}
 
 				// Ok, now do the serve()
-				Response r = serve( uri, method, header, parms, files );
+				Response r = serve( uri, method, header, parms, files ,body);
 				if ( r == null )
 					sendError( HTTP_INTERNALERROR, "SERVER INTERNAL ERROR: Serve() returned a null response." );
 				else
