@@ -25,7 +25,7 @@ import org.kevoree.{ContainerRoot, DeployUnit}
 import java.io.File
 import org.sonatype.aether.artifact.Artifact
 import org.kevoree.framework.KevoreePlatformHelper
- import org.sonatype.aether.connector.async.AsyncRepositoryConnectorFactory
+import org.sonatype.aether.connector.async.AsyncRepositoryConnectorFactory
 import org.sonatype.aether.spi.log.Logger
 import org.sonatype.aether.spi.localrepo.LocalRepositoryManagerFactory
 import org.sonatype.aether.impl.internal.EnhancedLocalRepositoryManagerFactory
@@ -99,16 +99,10 @@ object AetherUtil {
     val repositories: java.util.List[RemoteRepository] = new java.util.ArrayList();
     urls.foreach {
       url =>
-
         val repo = new RemoteRepository
-
         val purl = url.trim.replace(':', '_').replace('/', '_').replace('\\', '_')
-
         repo.setId(purl)
-
         repo.setContentType("default")
-
-
         val HttpAuthRegex = new Regex("http://(.*):(.*)@(.*)")
         url match {
           case HttpAuthRegex(login, password, urlp) => {
@@ -117,25 +111,7 @@ object AetherUtil {
           }
           case _ => repo.setUrl(url)
         }
-
-
-        //val authentification = new Authentication
-        //   repo.set
-
-        /*
-        val repositoryPolicy = new RepositoryPolicy()
-        repositoryPolicy.setChecksumPolicy(RepositoryPolicy.CHECKSUM_POLICY_WARN)
-        repositoryPolicy.setUpdatePolicy(RepositoryPolicy.UPDATE_POLICY_ALWAYS)
-        repositoryPolicy.setEnabled(true)
-        val repositoryPolicyRelease = new RepositoryPolicy()
-        repositoryPolicyRelease.setChecksumPolicy(RepositoryPolicy.CHECKSUM_POLICY_WARN)
-        repositoryPolicyRelease.setUpdatePolicy(RepositoryPolicy.UPDATE_POLICY_DAILY)
-        repositoryPolicyRelease.setEnabled(true) */
-        //repo.setPolicy(true, repositoryPolicy)
-        //repo.setPolicy(false, repositoryPolicyRelease)
         repositories.add(repo)
-
-      //println("use url => " + repo.toString)
     }
 
     artifactRequest.setRepositories(repositories)
@@ -147,15 +123,6 @@ object AetherUtil {
     val session = new MavenRepositorySystemSession()
     session.setUpdatePolicy(RepositoryPolicy.UPDATE_POLICY_ALWAYS)
     session.setConfigProperty("aether.connector.ahc.provider","jdk")
-
-    /*
-   val factory = new DefaultSettingsBuilderFactory
-   val settingBuilder = factory.newInstance()
-   val settingBuilderRequest = new DefaultSettingsBuildingRequest
-   val settingResult = settingBuilder.build(settingBuilderRequest)
-
-   println(settingResult.getEffectiveSettings.getProfiles.size())
-    */
     session.setLocalRepositoryManager(newRepositorySystem.newLocalRepositoryManager(new LocalRepository(System.getProperty("user.home").toString + "/.m2/repository")))
     session
   }
@@ -172,6 +139,7 @@ object AetherUtil {
         }
     }
     //BUILD FROM ALL NODE
+    /*
     root.getNodes.foreach {
       node =>
         buildURL(root, node.getName).map {
@@ -181,7 +149,7 @@ object AetherUtil {
             }
         }
 
-    }
+    }   */
     result
   }
 

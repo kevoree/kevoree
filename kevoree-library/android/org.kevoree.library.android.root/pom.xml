@@ -27,7 +27,7 @@
         <module>../org.kevoree.library.android.logger</module>
         <module>../org.kevoree.library.android.text2speech</module>
         <module>../org.kevoree.library.android.fakeDomo</module>
-        <module>../org.kevoree.library.android.restChannels</module>
+        <module>../org.kevoree.library.android.rest</module>
     </modules>
 
     <dependencies>

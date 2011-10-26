@@ -30,9 +30,8 @@ import org.osgi.framework.BundleActivator;
  */
 public class EmbeddedActivators {
 
-    public static List<BundleActivator> getActivators(ContainerRoot model){
+    public static List<BundleActivator> getActivators(){
         BootstrapActivator bact = new BootstrapActivator();
-        bact.setBootstrapModel(model);
         return Arrays.asList(
                 (BundleActivator)new org.apache.felix.shell.impl.Activator(),
               //  (BundleActivator)new org.apache.felix.shell.tui.Activator(),

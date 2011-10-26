@@ -64,10 +64,9 @@
                 <extensions>true</extensions>
                 <configuration>
                     <instructions>
-                        <Import-Package>!org.kevoree.library.text2speech.*,org.osgi.*;version="[4.2.0,5)",*
+                        <Import-Package>!org.kevoree.library.text2speech.*,org.osgi.*;version="[1,5)",*
                         </Import-Package>
                         <Export-Package>org.kevoree.library.text2speech.*</Export-Package>
-                        <Bundle-ClassPath>.</Bundle-ClassPath>
                     </instructions>
                 </configuration>
             </plugin>

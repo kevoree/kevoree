@@ -23,9 +23,7 @@
                 <extensions>true</extensions>
                 <configuration>
                     <instructions>
-                        <!--<Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
-                        <Bundle-Version>${project.version}</Bundle-Version>-->
-                        <Import-Package>!org.kevoree.library.android.fakeDomo.*,org.osgi.*;version="[4.2.0,5)",*
+                        <Import-Package>!org.kevoree.library.android.fakeDomo.*,org.osgi.*;version="[1,5)",*
                         </Import-Package>
                         <Export-Package>org.kevoree.library.android.fakeDomo.*</Export-Package>
                     </instructions>
