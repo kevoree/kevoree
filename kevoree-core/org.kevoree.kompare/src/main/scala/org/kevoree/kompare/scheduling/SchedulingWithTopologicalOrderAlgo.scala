@@ -27,10 +27,8 @@ class SchedulingWithTopologicalOrderAlgo {
 
   def schedule (commands: List[AdaptationPrimitive], start: Boolean): List[AdaptationPrimitive] = {
     if (commands.size > 1) {
-      val graph: DefaultDirectedGraph[AdaptationPrimitive, (AdaptationPrimitive, AdaptationPrimitive)] = buildGraph(commands,
-                                                                                                            start)
-      val topologicAlgorithm: TopologicalOrderIterator[AdaptationPrimitive, (AdaptationPrimitive, AdaptationPrimitive)] = new
-          TopologicalOrderIterator(graph)
+      val graph = buildGraph(commands, start)
+      val topologicAlgorithm = new TopologicalOrderIterator(graph)
 
       var listCommands = List[AdaptationPrimitive]()
       while (topologicAlgorithm.hasNext) {
