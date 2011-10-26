@@ -12,12 +12,12 @@ import java.util.Locale;
 /**
  * @author cdiehlwa
  */
-@Library(name = "Kevoree-Android")
+@Library(name = "Android")
 @Provides({
         @ProvidedPort(name = "text", type = PortType.MESSAGE)
 })
 @DictionaryType({
-        @DictionaryAttribute(name = "lang", defaultValue = "fr", optional = true)
+        @DictionaryAttribute(name = "lang", defaultValue = "en", optional = true)
 })
 @ComponentType
 public class androidtts extends AbstractComponentType implements TextToSpeech.OnInitListener {
@@ -26,7 +26,7 @@ public class androidtts extends AbstractComponentType implements TextToSpeech.On
     Object bundle;
     private TextToSpeech mTts;
     private Boolean ttsReady = false;
-    private Locale lang = getLocaleFromString("fr");
+    private Locale lang = getLocaleFromString("en");
 
     @Start
     public void start() {
@@ -80,12 +80,12 @@ public class androidtts extends AbstractComponentType implements TextToSpeech.On
 
     private void setTtsLanguage(Locale lang) {
         // no return code : don't care if lang is not an available language
-       // if (mTts.isLanguageAvailable(lang) == TextToSpeech.LANG_AVAILABLE) {
-            //int result = mTts.setLanguage(lang);
-            //if (result == TextToSpeech.LANG_MISSING_DATA || result == TextToSpeech.LANG_NOT_SUPPORTED) {
-            //    System.out.println("Language data not available.");
-            //}
-       // }
+        if (mTts.isLanguageAvailable(lang) == TextToSpeech.LANG_AVAILABLE) {
+            int result = mTts.setLanguage(lang);
+            if (result == TextToSpeech.LANG_MISSING_DATA || result == TextToSpeech.LANG_NOT_SUPPORTED) {
+               System.out.println("Language data not available.");
+            }
+        }
 
     }
 

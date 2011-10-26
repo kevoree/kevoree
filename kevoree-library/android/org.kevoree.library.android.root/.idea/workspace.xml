@@ -74,18 +74,21 @@
     <option name="changedFiles">
       <list>
         <option value="$PROJECT_DIR$/pom.xml" />
-        <option value="$PROJECT_DIR$/../org.kevoree.library.android.fakeDomo/pom.xml" />
-        <option value="$PROJECT_DIR$/../org.kevoree.library.android.fakeDomo/src/main/java/org/kevoree/library/android/fakeDomo/FakeSimpleLight.java" />
-        <option value="$PROJECT_DIR$/../org.kevoree.library.android.fakeDomo/src/main/java/org/kevoree/library/android/fakeDomo/FakeSimpleSwitch.java" />
         <option value="$PROJECT_DIR$/../org.kevoree.library.android.logger/src/main/java/org/kevoree/library/logger/android/AndroidNotification.java" />
         <option value="$PROJECT_DIR$/../org.kevoree.library.android.rest/src/main/scala/org/kevoree/library/rest/RootService.scala" />
         <option value="$PROJECT_DIR$/../org.kevoree.library.android.rest/src/main/scala/org/kevoree/library/rest/ServerBootstrap.scala" />
         <option value="$PROJECT_DIR$/../org.kevoree.library.android.rest/src/main/java/org/omg/CORBA/portable/IDLEntity.java" />
         <option value="$PROJECT_DIR$/../org.kevoree.library.android.nodeType/src/main/java/org/kevoree/library/android/nodeType/AndroidNode.java" />
         <option value="$PROJECT_DIR$/../org.kevoree.library.android.nodeType/pom.xml" />
+        <option value="$PROJECT_DIR$/../org.kevoree.library.android.rest/src/main/java/org/kevoree/library/rest/RestGroup.java" />
         <option value="$PROJECT_DIR$/../org.kevoree.library.android.rest/src/main/java/nanohttpd/NanoHTTPD.java" />
         <option value="$PROJECT_DIR$/../org.kevoree.library.android.rest/pom.xml" />
-        <option value="$PROJECT_DIR$/../org.kevoree.library.android.rest/src/main/java/org/kevoree/library/rest/RestGroup.java" />
+        <option value="$PROJECT_DIR$/../org.kevoree.library.android.logger/pom.xml" />
+        <option value="$PROJECT_DIR$/../org.kevoree.library.android.fakeDomo/pom.xml" />
+        <option value="$PROJECT_DIR$/../org.kevoree.library.android.fakeDomo/src/main/java/org/kevoree/library/android/fakeDomo/FakeSimpleLight.java" />
+        <option value="$PROJECT_DIR$/../org.kevoree.library.android.fakeDomo/src/main/java/org/kevoree/library/android/fakeDomo/FakeSimpleSwitch.java" />
+        <option value="$PROJECT_DIR$/../org.kevoree.library.android.text2speech/pom.xml" />
+        <option value="$PROJECT_DIR$/../org.kevoree.library.android.text2speech/src/main/java/org/kevoree/library/text2speech/android/androidtts.java" />
       </list>
     </option>
   </component>
@@ -104,14 +107,8 @@
           <option name="myItemId" value="" />
           <option name="myItemType" value="org.jetbrains.idea.maven.navigator.MavenProjectsStructure$RootNode" />
         </PATH_ELEMENT>
-      </PATH>
-      <PATH>
         <PATH_ELEMENT>
-          <option name="myItemId" value="" />
-          <option name="myItemType" value="org.jetbrains.idea.maven.navigator.MavenProjectsStructure$RootNode" />
-        </PATH_ELEMENT>
-        <PATH_ELEMENT>
-          <option name="myItemId" value="Kevoree :: Library :: Android :: Rest" />
+          <option name="myItemId" value="Kevoree :: Library :: Android :: Text2Speech" />
           <option name="myItemType" value="org.jetbrains.idea.maven.navigator.MavenProjectsStructure$ProjectNode" />
         </PATH_ELEMENT>
       </PATH>
@@ -121,7 +118,7 @@
           <option name="myItemType" value="org.jetbrains.idea.maven.navigator.MavenProjectsStructure$RootNode" />
         </PATH_ELEMENT>
         <PATH_ELEMENT>
-          <option name="myItemId" value="Kevoree :: Library :: Android :: Rest" />
+          <option name="myItemId" value="Kevoree :: Library :: Android :: Text2Speech" />
           <option name="myItemType" value="org.jetbrains.idea.maven.navigator.MavenProjectsStructure$ProjectNode" />
         </PATH_ELEMENT>
         <PATH_ELEMENT>
@@ -129,12 +126,19 @@
           <option name="myItemType" value="org.jetbrains.idea.maven.navigator.MavenProjectsStructure$LifecycleNode" />
         </PATH_ELEMENT>
       </PATH>
+      <PATH>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="" />
+          <option name="myItemType" value="org.jetbrains.idea.maven.navigator.MavenProjectsStructure$RootNode" />
+        </PATH_ELEMENT>
+      </PATH>
     </treeState>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="y" value="22" />
-    <option name="width" value="1440" />
-    <option name="height" value="874" />
+    <option name="x" value="492" />
+    <option name="y" value="579" />
+    <option name="width" value="1920" />
+    <option name="height" value="1174" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="false">
     <OptionsSetting value="true" id="Add" />
@@ -162,7 +166,6 @@
       <sortByType />
     </navigator>
     <panes>
-      <pane id="Scope" />
       <pane id="PackagesPane" />
       <pane id="ProjectPane">
         <subPane>
@@ -174,6 +177,7 @@
           </PATH>
         </subPane>
       </pane>
+      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -188,9 +192,9 @@
     <property name="GoToClass.toSaveIncludeLibraries" value="false" />
     <property name="MemberChooser.showClasses" value="true" />
     <property name="GoToClass.includeLibraries" value="false" />
+    <property name="options.splitter.details.proportions" value="0.2" />
     <property name="dynamic.classpath" value="false" />
     <property name="options.searchVisible" value="true" />
-    <property name="options.splitter.details.proportions" value="0.2" />
   </component>
   <component name="RunManager">
     <configuration default="true" type="MavenRunConfiguration" factoryName="Maven">
@@ -239,6 +243,17 @@
         <option name="Maven.BeforeRunTask" enabled="false" />
       </method>
     </configuration>
+    <configuration default="true" type="Remote" factoryName="Remote">
+      <option name="USE_SOCKET_TRANSPORT" value="true" />
+      <option name="SERVER_MODE" value="false" />
+      <option name="SHMEM_ADDRESS" value="javadebug" />
+      <option name="HOST" value="localhost" />
+      <option name="PORT" value="5005" />
+      <method>
+        <option name="BuildArtifacts" enabled="false" />
+        <option name="Maven.BeforeRunTask" enabled="false" />
+      </method>
+    </configuration>
     <configuration default="true" type="Specs2RunConfiguration" factoryName="Specs2">
       <module name="" />
       <setting name="path" value="" />
@@ -249,17 +264,6 @@
       <method>
         <option name="BuildArtifacts" enabled="false" />
         <option name="Make" enabled="true" />
-        <option name="Maven.BeforeRunTask" enabled="false" />
-      </method>
-    </configuration>
-    <configuration default="true" type="Remote" factoryName="Remote">
-      <option name="USE_SOCKET_TRANSPORT" value="true" />
-      <option name="SERVER_MODE" value="false" />
-      <option name="SHMEM_ADDRESS" value="javadebug" />
-      <option name="HOST" value="localhost" />
-      <option name="PORT" value="5005" />
-      <method>
-        <option name="BuildArtifacts" enabled="false" />
         <option name="Maven.BeforeRunTask" enabled="false" />
       </method>
     </configuration>
@@ -357,19 +361,19 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="0" y="22" width="1440" height="874" extended-state="0" />
+    <frame x="492" y="579" width="1920" height="1174" extended-state="0" />
     <editor active="false" />
     <layout>
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="true" content_ui="tabs" />
-      <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.20488857" sideWeight="0.7001239" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.22573689" sideWeight="0.7001239" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.16622128" sideWeight="0.78139114" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.1635489" sideWeight="0.78139114" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.2998761" sideWeight="0.9992816" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.21860886" sideWeight="0.9412079" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
@@ -431,61 +435,14 @@
     <breakpoint-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/../org.kevoree.library.android.fakeDomo/src/main/java/org/kevoree/library/android/fakeDomo/FakeSimpleLight.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="32" column="24" selection-start="1130" selection-end="1137" vertical-scroll-proportion="-1.8103666" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/../org.kevoree.library.android.fakeDomo/src/main/java/org/kevoree/library/android/fakeDomo/ToggleLightService.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="8" column="17" selection-start="152" selection-end="152" vertical-scroll-proportion="0.18905473" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/../org.kevoree.library.android.fakeDomo/src/main/java/org/kevoree/library/android/fakeDomo/FakeSimpleSwitch.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="25" column="24" selection-start="844" selection-end="844" vertical-scroll-proportion="0.33628318" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/../org.kevoree.library.android.logger/src/main/java/org/kevoree/library/logger/android/AndroidNotification.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="30" column="36" selection-start="942" selection-end="942" vertical-scroll-proportion="0.42351454" />
-      </provider>
-    </entry>
-    <entry file="jar://$MAVEN_REPOSITORY$/se/scalablesolutions/akka/akka-actor/1.2/akka-actor-1.2.jar!/com/eaio/uuid/UUID.class">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="5" column="13" selection-start="151" selection-end="151" vertical-scroll-proportion="16.6">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar://$MAVEN_REPOSITORY$/se/scalablesolutions/akka/akka-actor/1.2/akka-actor-1.2.jar!/com/eaio/uuid/UUIDGen.class">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="5" column="19" selection-start="157" selection-end="157" vertical-scroll-proportion="-3.04">
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="jar://$MAVEN_REPOSITORY$/se/scalablesolutions/akka/akka-actor/1.2/akka-actor-1.2.jar!/com/eaio/uuid/UUIDHolder.class">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="5" column="19" selection-start="157" selection-end="157" vertical-scroll-proportion="0.18858561">
-          <folding />
-        </state>
+        <state line="5" column="19" selection-start="157" selection-end="157" vertical-scroll-proportion="0.18858561" />
       </provider>
     </entry>
     <entry file="jar://$MAVEN_REPOSITORY$/se/scalablesolutions/akka/akka-actor/1.2/akka-actor-1.2.jar!/com/eaio/uuid/UUIDHelper.class">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="12" column="30" selection-start="394" selection-end="407" vertical-scroll-proportion="0.5186104">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/../org.kevoree.library.android.nodeType/src/main/java/org/kevoree/library/android/nodeType/AndroidNode.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="35" column="24" selection-start="1377" selection-end="1377" vertical-scroll-proportion="0.5409836">
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
+        <state line="12" column="30" selection-start="394" selection-end="407" vertical-scroll-proportion="0.5186104" />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/../org.kevoree.library.android.nodeType/pom.xml">
@@ -495,28 +452,100 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/../org.kevoree.library.android.rest/src/main/java/nanohttpd/NanoHTTPD.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="1094" column="31" selection-start="31673" selection-end="31673" vertical-scroll-proportion="0.0">
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/../org.kevoree.library.android.rest/pom.xml">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="82" column="44" selection-start="3415" selection-end="3415" vertical-scroll-proportion="0.0">
+        <state line="76" column="23" selection-start="3185" selection-end="3185" vertical-scroll-proportion="0.0">
           <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/pom.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="-0.84090906">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../org.kevoree.library.android.fakeDomo/pom.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="11" column="25" selection-start="597" selection-end="597" vertical-scroll-proportion="0.25612745">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../org.kevoree.library.android.text2speech/pom.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="68" column="90" selection-start="3305" selection-end="3305" vertical-scroll-proportion="0.8636364">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../org.kevoree.library.android.logger/pom.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="27" column="100" selection-start="1187" selection-end="1187" vertical-scroll-proportion="0.25612745">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../org.kevoree.library.android.fakeDomo/src/main/java/org/kevoree/library/android/fakeDomo/FakeSimpleLight.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="22" column="58" selection-start="670" selection-end="670" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../org.kevoree.library.android.fakeDomo/src/main/java/org/kevoree/library/android/fakeDomo/ToggleLightService.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="8" column="17" selection-start="152" selection-end="152" vertical-scroll-proportion="0.18181819">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../org.kevoree.library.android.logger/src/main/java/org/kevoree/library/logger/android/AndroidNotification.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="11" column="26" selection-start="418" selection-end="418" vertical-scroll-proportion="0.022727273">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../org.kevoree.library.android.nodeType/src/main/java/org/kevoree/library/android/nodeType/AndroidNode.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="35" column="24" selection-start="1377" selection-end="1377" vertical-scroll-proportion="0.5419198">
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/../org.kevoree.library.android.rest/src/main/java/org/kevoree/library/rest/RestGroup.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="43" column="42" selection-start="1328" selection-end="1328" vertical-scroll-proportion="0.2543021">
+        <state line="46" column="51" selection-start="1582" selection-end="1582" vertical-scroll-proportion="1.0454545">
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/../org.kevoree.library.android.rest/src/main/java/nanohttpd/NanoHTTPD.java">
+    <entry file="file://$PROJECT_DIR$/../org.kevoree.library.android.fakeDomo/src/main/java/org/kevoree/library/android/fakeDomo/FakeSimpleSwitch.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="254" column="30" selection-start="7254" selection-end="7254" vertical-scroll-proportion="0.79923517">
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
+        <state line="42" column="117" selection-start="1508" selection-end="1508" vertical-scroll-proportion="0.70454544">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../org.kevoree.library.android.text2speech/src/main/java/org/kevoree/library/text2speech/android/androidtts.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="27" column="34" selection-start="840" selection-end="840" vertical-scroll-proportion="0.45454547">
+          <folding />
         </state>
       </provider>
     </entry>

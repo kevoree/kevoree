@@ -2,7 +2,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <artifactId>org.kevoree.tools.aether.framework</artifactId>
-    <packaging>jar</packaging>
+    <packaging>bundle</packaging>
     <name>Kevoree :: Tools :: Aether Framework</name>
     <version>1.4.0-SNAPSHOT</version>
 
@@ -98,7 +98,7 @@
 
     <build>
         <plugins>
-
+             <!--
             <plugin>
                 <groupId>com.pyx4me</groupId>
                 <artifactId>proguard-maven-plugin</artifactId>
@@ -132,6 +132,22 @@
                         <option>-keep class org.kevoree.tools.aether.framework.GroupTypeBootstrapHelper { *; }</option>
                         <option>-keep class org.kevoree.tools.aether.framework.NodeTypeBootstrapHelper { *; }</option>
                         <option>-keep class org.kevoree.tools.aether.framework.AetherUtil { *; }</option>
+                        <option>-keep class org.apache.maven.model.building.ModelBuilder { *; }</option>
+
+                        <option>-keep class org.sonatype.aether.impl.DependencyCollector { *; }</option>
+                        <option>-keep class org.sonatype.aether.impl.Deployer { *; }</option>
+                        <option>-keep class org.sonatype.aether.impl.Installer { *; }</option>
+                        <option>-keep class org.sonatype.aether.impl.LocalRepositoryProvider { *; }</option>
+                        <option>-keep class org.sonatype.aether.impl.MetadataResolver { *; }</option>
+                        <option>-keep class org.sonatype.aether.impl.RemoteRepositoryManager { *; }</option>
+                        <option>-keep class org.sonatype.aether.impl.RepositoryEventDispatcher { *; }</option>
+                        <option>-keep class org.sonatype.aether.impl.SyncContextFactory { *; }</option>
+                        <option>-keep class org.sonatype.aether.impl.UpdateCheckManager { *; }</option>
+                        <option>-keep class org.sonatype.aether.impl.ArtifactResolver { *; }</option>
+                        <option>-keep class org.sonatype.aether.connector.async.AsyncRepositoryConnectorFactory { *; }</option>
+                        <option>-keep class org.sonatype.aether.spi.localrepo.LocalRepositoryManagerFactory { *; }</option>
+                        <option>-keep class org.sonatype.aether.impl.internal.EnhancedLocalRepositoryManagerFactory { *; }</option>
+
                         <option>-dontskipnonpubliclibraryclasses</option>
                         <option>-dontskipnonpubliclibraryclassmembers</option>
                         <option>-dontoptimize</option>
@@ -179,9 +195,8 @@
                     </libs>
                 </configuration>
             </plugin>
+            -->
 
-
-            <!--
 
                 <plugin>
                     <groupId>org.apache.felix</groupId>
@@ -206,7 +221,7 @@
                         </instructions>
                     </configuration>
                 </plugin>
-            -->
+
 
 
         </plugins>
