@@ -73,8 +73,6 @@
   <component name="IdeDocumentHistory">
     <option name="changedFiles">
       <list>
-        <option value="$PROJECT_DIR$/pom.xml" />
-        <option value="$PROJECT_DIR$/../org.kevoree.library.android.logger/src/main/java/org/kevoree/library/logger/android/AndroidNotification.java" />
         <option value="$PROJECT_DIR$/../org.kevoree.library.android.rest/src/main/scala/org/kevoree/library/rest/RootService.scala" />
         <option value="$PROJECT_DIR$/../org.kevoree.library.android.rest/src/main/scala/org/kevoree/library/rest/ServerBootstrap.scala" />
         <option value="$PROJECT_DIR$/../org.kevoree.library.android.rest/src/main/java/org/omg/CORBA/portable/IDLEntity.java" />
@@ -89,6 +87,8 @@
         <option value="$PROJECT_DIR$/../org.kevoree.library.android.fakeDomo/src/main/java/org/kevoree/library/android/fakeDomo/FakeSimpleSwitch.java" />
         <option value="$PROJECT_DIR$/../org.kevoree.library.android.text2speech/pom.xml" />
         <option value="$PROJECT_DIR$/../org.kevoree.library.android.text2speech/src/main/java/org/kevoree/library/text2speech/android/androidtts.java" />
+        <option value="$PROJECT_DIR$/pom.xml" />
+        <option value="$PROJECT_DIR$/../org.kevoree.library.android.defaultChannels/pom.xml" />
       </list>
     </option>
   </component>
@@ -135,8 +135,7 @@
     </treeState>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="492" />
-    <option name="y" value="579" />
+    <option name="y" value="22" />
     <option name="width" value="1920" />
     <option name="height" value="1174" />
   </component>
@@ -361,19 +360,19 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="492" y="579" width="1920" height="1174" extended-state="0" />
+    <frame x="0" y="22" width="1920" height="1174" extended-state="0" />
     <editor active="false" />
     <layout>
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="true" content_ui="tabs" />
-      <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.16622128" sideWeight="0.78139114" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.1635489" sideWeight="0.78139114" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Maven Projects" active="true" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.16622128" sideWeight="0.6585366" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.1635489" sideWeight="0.6585366" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.21860886" sideWeight="0.9412079" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.34146342" sideWeight="0.9994658" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
@@ -435,16 +434,6 @@
     <breakpoint-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="jar://$MAVEN_REPOSITORY$/se/scalablesolutions/akka/akka-actor/1.2/akka-actor-1.2.jar!/com/eaio/uuid/UUIDHolder.class">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="5" column="19" selection-start="157" selection-end="157" vertical-scroll-proportion="0.18858561" />
-      </provider>
-    </entry>
-    <entry file="jar://$MAVEN_REPOSITORY$/se/scalablesolutions/akka/akka-actor/1.2/akka-actor-1.2.jar!/com/eaio/uuid/UUIDHelper.class">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="12" column="30" selection-start="394" selection-end="407" vertical-scroll-proportion="0.5186104" />
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/../org.kevoree.library.android.nodeType/pom.xml">
       <provider selected="true" editor-type-id="text-editor">
         <state line="25" column="47" selection-start="1095" selection-end="1095" vertical-scroll-proportion="0.7629063">
@@ -464,13 +453,6 @@
     <entry file="file://$PROJECT_DIR$/../org.kevoree.library.android.rest/pom.xml">
       <provider selected="true" editor-type-id="text-editor">
         <state line="76" column="23" selection-start="3185" selection-end="3185" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/pom.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="-0.84090906">
           <folding />
         </state>
       </provider>
@@ -549,6 +531,27 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/../org.kevoree.library.android.defaultChannels/target/generated-sources/kevoree/KEV-INF/lib.kev">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../org.kevoree.library.android.defaultChannels/pom.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="23" column="84" selection-start="1082" selection-end="1082" vertical-scroll-proportion="0.40714285">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/pom.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="30" column="62" selection-start="1445" selection-end="1445" vertical-scroll-proportion="0.8142857">
+          <folding />
+        </state>
+      </provider>
+    </entry>
   </component>
   <component name="masterDetails">
     <states>
@@ -601,7 +604,7 @@
       </state>
       <state key="ModuleStructureConfigurable.UI">
         <settings>
-          <last-edited>org.kevoree.library.android.rest</last-edited>
+          <last-edited>org.kevoree.library.android.defaultChannels</last-edited>
           <splitter-proportions>
             <option name="proportions">
               <list>

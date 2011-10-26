@@ -57,11 +57,6 @@
         </dependency>
 
         <dependency>
-            <groupId>jgrapht</groupId>
-            <artifactId>jgrapht</artifactId>
-            <version>0.8.2</version>
-        </dependency>
-        <dependency>
             <groupId>org.kevoree.tools</groupId>
             <artifactId>org.kevoree.tools.aether.framework</artifactId>
             <version>${kevoree.version}</version>
