@@ -44,13 +44,15 @@ case class ContainerNodeAspect (node: ContainerNode) {
   def getUsedTypeDefinition: List[TypeDefinition] = {
     var usedType: Set[TypeDefinition] = Set()
 
+    /* ADD NODE TYPE DEFINITION */
+    usedType = usedType ++ getTypeAndInherited(node.getTypeDefinition)
+
     /* ADD SUPER TYPE USED BY NODE TYPE DEFINITION */
     //  if (node.getTypeDefinition.getSuperTypes != null) {
     //   usedType = usedType ++ getTypeAndInherited(node.getTypeDefinition)
     //  }
 
     /* ADD COMPONENT TYPE USED */
-
     node.getComponents.foreach(c => usedType = usedType ++ getTypeAndInherited(c.getTypeDefinition) )
       /*
     node.getComponents.foreach { c =>
