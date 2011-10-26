@@ -22,12 +22,11 @@
             <artifactId>scala-library</artifactId>
             <version>${scala.version}</version>
         </dependency>
-        <!--
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
             <version>${slf4j.version}</version>
-        </dependency>     -->
+        </dependency>
     </dependencies>
 
 
@@ -175,7 +174,7 @@
 
     <modules>
         <module>../org.kevoree.tools.aether.framework</module>
-      <!--  <module>../org.kevoree.tools.aether.lite.framework</module>-->
+        <module>../org.kevoree.tools.aether.lite.framework</module>
         <module>../org.kevoree.tools.annotation.api</module>
         <module>../org.kevoree.tools.annotation.generator</module>
         <module>../org.kevoree.tools.annotation.processor</module>

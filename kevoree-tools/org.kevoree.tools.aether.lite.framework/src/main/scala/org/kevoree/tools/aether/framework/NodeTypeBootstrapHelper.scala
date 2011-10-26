@@ -13,13 +13,12 @@
  */
 package org.kevoree.tools.aether.framework
 
-import org.kevoree.framework.AbstractNodeType
 import java.io.FileInputStream
-import scala.collection.JavaConversions._
 import org.osgi.framework.{Bundle, BundleContext, BundleException}
 import org.slf4j.LoggerFactory
-import org.kevoree.{ContainerRoot, DeployUnit}
 import org.kevoree.api.service.core.handler.KevoreeModelHandlerService
+import org.kevoree.framework.{Constants, AbstractNodeType}
+import org.kevoree.{NodeType, ContainerRoot, DeployUnit}
 
 /**
  * User: ffouquet
@@ -41,25 +40,28 @@ class NodeTypeBootstrapHelper {
       case Some(node) => {
         val nodeTypeDeployUnitList = node.getTypeDefinition.getDeployUnits.toList
         if (nodeTypeDeployUnitList.size > 0) {
-          logger.info("nodeType installation => " + installNodeTyp(nodeTypeDeployUnitList.get(0), bundleContext))
+          logger.debug("nodeType installation => " + installNodeTyp(node.getTypeDefinition.asInstanceOf[NodeType], bundleContext))
           val clazz: Class[_] = bundle.loadClass(node.getTypeDefinition.getBean)
           val nodeType = clazz.newInstance.asInstanceOf[AbstractNodeType]
           //ADD INSTANCE DICTIONARY
           val dictionary: java.util.HashMap[String, AnyRef] = new java.util.HashMap[String, AnyRef]
-          if (node.getTypeDefinition.getDictionaryType.isDefined) {
-            if (node.getTypeDefinition.getDictionaryType.get.getDefaultValues != null) {
-              node.getTypeDefinition.getDictionaryType.get.getDefaultValues.foreach {
+
+         node.getTypeDefinition.getDictionaryType.map{ dictionaryType =>
+            dictionaryType.getDefaultValues.foreach {
                 dv =>
                   dictionary.put(dv.getAttribute.getName, dv.getValue)
               }
-            }
+         }
+
+          node.getDictionary.map {
+            dictionaryModel =>
+              dictionaryModel.getValues.foreach {
+                v =>
+                  dictionary.put(v.getAttribute.getName, v.getValue)
+              }
           }
-          if (node.getDictionary.isDefined) {
-            node.getDictionary.get.getValues.foreach {
-              v =>
-                dictionary.put(v.getAttribute.getName, v.getValue)
-            }
-          }
+
+          dictionary.put(Constants.KEVOREE_PROPERTY_OSGI_BUNDLE, bundleContext.getBundle)
           nodeType.setDictionary(dictionary)
           nodeType.setNodeName(destNodeName)
 
@@ -86,28 +88,36 @@ class NodeTypeBootstrapHelper {
   private def installDeployUnit(du: DeployUnit, bundleContext: BundleContext): Boolean = {
     try {
       val arteFile = AetherUtil.resolveDeployUnit(du)
-      bundle = bundleContext.installBundle("file:///" + arteFile.getAbsolutePath, new FileInputStream(arteFile))
-      bundle.start()
-      true
+      if (arteFile != null) {
+        bundle = bundleContext.installBundle("file:/" + arteFile.getAbsolutePath, new FileInputStream(arteFile))
+        bundle.start()
+        true
+      } else {
+        logger.error("Can't resolve node type")
+        false
+      }
+
     } catch {
       case e: BundleException if (e.getType == BundleException.DUPLICATE_BUNDLE_ERROR) => {
         bundle.update()
         true
       }
       case _@e => {
-        e.printStackTrace()
+        logger.error("Can't install node type", e)
         false
       }
     }
   }
 
   /* Bootstrap node type bundle in local osgi environment */
-  private def installNodeTyp(ct: DeployUnit, bundleContext: BundleContext): Boolean = {
-    val tpResul = ct.getRequiredLibs.forall {
-      tp => installDeployUnit(tp, bundleContext)
-    }
-    if (tpResul) {
-      installDeployUnit(ct, bundleContext)
+  private def installNodeTyp(nodeType: NodeType, bundleContext: BundleContext): Boolean = {
+    val superTypeBootStrap = nodeType.getSuperTypes.forall(superType => installNodeTyp(superType.asInstanceOf[NodeType], bundleContext))
+    if (superTypeBootStrap) {
+      nodeType.getDeployUnits.forall(ct => {
+        ct.getRequiredLibs.forall {
+          tp => installDeployUnit(tp, bundleContext)
+        } && installDeployUnit(ct, bundleContext)
+      })
     } else {
       false
     }
