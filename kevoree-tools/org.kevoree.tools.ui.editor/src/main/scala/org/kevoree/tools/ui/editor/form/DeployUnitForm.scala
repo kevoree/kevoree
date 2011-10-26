@@ -34,6 +34,17 @@ trait DeployUnitForm {
       val layout = new JPanel(new SpringLayout)
       layout.setOpaque(false)
 
+    //GroupName
+      val groupnameTextField = new JTextField()
+      groupnameTextField.setUI(new HudTextFieldUI())
+      val groupNameLabel = new JLabel("GroupName", SwingConstants.TRAILING);
+      groupNameLabel.setUI(new HudLabelUI());
+      groupNameLabel.setOpaque(false);
+      groupNameLabel.setLabelFor(groupnameTextField);
+      layout.add(groupNameLabel)
+      layout.add(groupnameTextField)
+
+
       //UnitName
       val nameTextField = new JTextField()
       nameTextField.setUI(new HudTextFieldUI())
@@ -43,15 +54,7 @@ trait DeployUnitForm {
       nodeNameLabel.setLabelFor(nameTextField);
       layout.add(nodeNameLabel)
       layout.add(nameTextField)
-      //GroupName
-      val groupnameTextField = new JTextField()
-      groupnameTextField.setUI(new HudTextFieldUI())
-      val groupNameLabel = new JLabel("GroupName", SwingConstants.TRAILING);
-      groupNameLabel.setUI(new HudLabelUI());
-      groupNameLabel.setOpaque(false);
-      groupNameLabel.setLabelFor(groupnameTextField);
-      layout.add(groupNameLabel)
-      layout.add(groupnameTextField)
+
       //version
       val versionTextField = new JTextField()
       versionTextField.setUI(new HudTextFieldUI())
