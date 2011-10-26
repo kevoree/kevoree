@@ -23,7 +23,7 @@ import org.kevoree.framework.aspects.KevoreeAspects._
 import org.jgrapht.graph.DefaultDirectedGraph
 import org.kevoree._
 
-case class KevoreeNodeDirectedGraph(model: ContainerRoot) extends DefaultDirectedGraph[Object, BindingFragment](classOf[BindingFragment]) {
+case class KevoreeNodeDirectedGraph(model: ContainerRoot) extends DefaultDirectedGraph[Object, BindingFragment](new KevoreeFragmentBindingEdgeFactory) {
 
 	model.getNodes.foreach {
 		node =>
@@ -79,44 +79,4 @@ case class KevoreeNodeDirectedGraph(model: ContainerRoot) extends DefaultDirecte
 					}
 			}
 	}
-
-
-
-
-
-
-
-
-	/*channel.getConnectedNode(node.getName).foreach {
-			 node1 =>
-			 node1.getInstances.filter(p => p.isInstanceOf[ComponentInstance]).foreach {
-			 instance =>
-			 val componentInstance = instance.asInstanceOf[ComponentInstance]
-			 componentInstance.getRelatedBindings.foreach {
-			 binding =>
-			 if (binding.getHub() == channel) {
-
-
-			 //addVertex(node)
-			 //addVertex(node1)
-			 val fragment = new ChannelFragment(binding.getHub, node.getName)
-			 val fragment1 = new ChannelFragment(binding.getHub, node1.getName)
-			 addVertex(fragment)
-			 addVertex(fragment1)
-			 if (componentInstance.getProvided.contains(binding.getPort)) {
-			 //addEdge(node, fragment, new BindingFragment(binding, node.getName))
-			 addEdge(fragment, fragment1, new BindingFragment(binding, node.getName + "->" + node1.getName))
-			 //addEdge(fragment1, node1, new BindingFragment(binding, node1.getName))
-			 } else {
-			 //addEdge(node1, fragment1, new BindingFragment(binding, node1.getName))
-			 addEdge(fragment1, fragment, new BindingFragment(binding, node1.getName + "->" + node.getName))
-			 //addEdge(fragment, node, new BindingFragment(binding, node.getName))
-			 }
-			 }
-			 }
-			 }
-			 }
-			 }
-
-			 }*/
 }
