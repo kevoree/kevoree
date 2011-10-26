@@ -1,4 +1,4 @@
-package socketChannel;
+package org.kevoree.library.socketChannel;
 
 /**
  * Created by IntelliJ IDEA.
@@ -19,11 +19,10 @@ import org.kevoree.framework.message.Message;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.kevoree.extra.marshalling.*;
-import org.codehaus.jackson.*;
+
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.nio.ByteBuffer;
 import java.util.*;
 import java.util.concurrent.*;
 import java.util.concurrent.Semaphore;
@@ -32,7 +31,7 @@ import java.util.concurrent.Executors;
 
 
 
-@Library(name = "socketChannel")
+@Library(name = "org.kevoree.library.socketChannel")
 @ChannelTypeFragment
 @DictionaryType({
         @DictionaryAttribute(name="port",defaultValue="9000",optional=true, fragmentDependant = true),

@@ -52,8 +52,8 @@
                 <executions>
                     <execution>
                         <configuration>
-                            <Export-Package>socketChannel</Export-Package>
-                            <Import-Package>!socketChannel;*</Import-Package>
+                            <Export-Package>org.kevoree.library.socketChannel</Export-Package>
+                            <Import-Package>!org.kevoree.library.socketChannel;*</Import-Package>
                         </configuration>
                     </execution>
                 </executions>

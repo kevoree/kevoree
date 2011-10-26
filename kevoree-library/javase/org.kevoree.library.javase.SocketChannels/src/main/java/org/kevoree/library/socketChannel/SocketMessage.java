@@ -1,15 +1,4 @@
-package socketChannel;
-
-
-
-import java.io.IOException;
-import java.io.ObjectOutputStream;
-import java.io.OutputStream;
-import java.io.Serializable;
-import java.net.Socket;
-import java.util.*;
-
-import   org.kevoree.framework.message.*;
+package org.kevoree.library.socketChannel;
 
 
 /**
