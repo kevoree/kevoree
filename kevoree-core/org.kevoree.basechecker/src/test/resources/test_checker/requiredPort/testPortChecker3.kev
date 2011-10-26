@@ -314,9 +314,9 @@
  <libraries name="Kevoree-Arduino-JavaSE" xsi:type="kevoree:TypeLibrary" subTypes="//@typeDefinitions.20"></libraries>
  <hubs metaData="x=298,y=371" xsi:type="kevoree:Channel" name="SocketCha820" typeDefinition="//@typeDefinitions.0">
   <dictionary>
-   <values targetNode="node1" xsi:type="kevoree:DictionaryValue" value="9000" attribute="//@typeDefinitions.0/@dictionaryType/@attributes.0"></values>
-   <values targetNode="node3" xsi:type="kevoree:DictionaryValue" value="9001" attribute="//@typeDefinitions.0/@dictionaryType/@attributes.0"></values>
-   <values targetNode="node2" xsi:type="kevoree:DictionaryValue" value="9002" attribute="//@typeDefinitions.0/@dictionaryType/@attributes.0"></values>
+   <values targetNode="//@nodes.0" xsi:type="kevoree:DictionaryValue" value="9000" attribute="//@typeDefinitions.0/@dictionaryType/@attributes.0"></values>
+   <values targetNode="//@nodes.2" xsi:type="kevoree:DictionaryValue" value="9001" attribute="//@typeDefinitions.0/@dictionaryType/@attributes.0"></values>
+   <values targetNode="//@nodes.1" xsi:type="kevoree:DictionaryValue" value="9002" attribute="//@typeDefinitions.0/@dictionaryType/@attributes.0"></values>
    <values value="1000" xsi:type="kevoree:DictionaryValue" attribute="//@typeDefinitions.0/@dictionaryType/@attributes.1"></values>
    <values value="1000" xsi:type="kevoree:DictionaryValue" attribute="//@typeDefinitions.0/@dictionaryType/@attributes.2"></values>
   </dictionary>
@@ -348,9 +348,9 @@
  <deployUnits url="mvn:org.kevoree.extra/org.kevoree.extra.osgi.rxtx/2.2.0" xsi:type="kevoree:DeployUnit" name="org.kevoree.extra.org.kevoree.extra.osgi.rxtx" targetNodeType="//@typeDefinitions.3"></deployUnits>
  <groups typeDefinition="//@typeDefinitions.21" name="group956111600" xsi:type="kevoree:Group" metaData="x=513,y=171" subNodes="//@nodes.0 //@nodes.1 //@nodes.2">
   <dictionary>
-   <values targetNode="node1" xsi:type="kevoree:DictionaryValue" value="8000" attribute="//@typeDefinitions.21/@dictionaryType/@attributes.0"></values>
-   <values targetNode="node2" xsi:type="kevoree:DictionaryValue" value="8001" attribute="//@typeDefinitions.21/@dictionaryType/@attributes.0"></values>
-   <values targetNode="node3" xsi:type="kevoree:DictionaryValue" value="8002" attribute="//@typeDefinitions.21/@dictionaryType/@attributes.0"></values>
+   <values targetNode="//@nodes.0" xsi:type="kevoree:DictionaryValue" value="8000" attribute="//@typeDefinitions.21/@dictionaryType/@attributes.0"></values>
+   <values targetNode="//@nodes.1" xsi:type="kevoree:DictionaryValue" value="8001" attribute="//@typeDefinitions.21/@dictionaryType/@attributes.0"></values>
+   <values targetNode="//@nodes.2" xsi:type="kevoree:DictionaryValue" value="8002" attribute="//@typeDefinitions.21/@dictionaryType/@attributes.0"></values>
   </dictionary>
  </groups>
  <adaptationPrimitiveTypes xsi:type="kevoree:AdaptationPrimitiveType" name="UpdateType"></adaptationPrimitiveTypes>
