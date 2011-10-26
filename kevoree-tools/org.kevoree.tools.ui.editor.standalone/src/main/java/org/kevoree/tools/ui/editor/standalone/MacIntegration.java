@@ -24,7 +24,7 @@
 // * See the License for the specific language governing permissions and
 // * limitations under the License.
 // */
-//package org.kevoree.tools.ui.editor.standalone;
+package org.kevoree.tools.ui.editor.standalone;
 //
 //import com.apple.eawt.*;
 //import org.kevoree.tools.ui.editor.KevoreeEditor;
@@ -34,7 +34,8 @@
 // * Date: 04/07/11
 // * Time: 17:56
 // */
-//public class MacIntegration {
+@Deprecated
+public class MacIntegration {
 //
 //    public static void addOSXIntegration(final KevoreeEditor editor){
 //        Application app = Application.getApplication();
@@ -97,4 +98,4 @@
 //    }
 //
 //
-//}
+}
