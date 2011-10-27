@@ -42,6 +42,8 @@ class NodeTypeBootstrapHelper {
         if (nodeTypeDeployUnitList.size > 0) {
           logger.debug("nodeType installation => " + installNodeTyp(node.getTypeDefinition.asInstanceOf[NodeType], bundleContext))
           val clazz: Class[_] = bundle.loadClass(node.getTypeDefinition.getBean)
+
+          
           val nodeType = clazz.newInstance.asInstanceOf[AbstractNodeType]
           //ADD INSTANCE DICTIONARY
           val dictionary: java.util.HashMap[String, AnyRef] = new java.util.HashMap[String, AnyRef]
