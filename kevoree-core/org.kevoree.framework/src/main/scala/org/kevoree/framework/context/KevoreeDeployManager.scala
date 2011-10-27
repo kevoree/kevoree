@@ -1,3 +1,5 @@
+package org.kevoree.framework.context
+
 /**
  * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE, Version 3, 29 June 2007;
  * you may not use this file except in compliance with the License.
@@ -16,49 +18,27 @@
  * and open the template in the editor.
  */
 
-package org.kevoree.adaptation.deploy.osgi.context
 
-import org.kevoree.api.service.core.handler.KevoreeModelHandlerService
 import org.osgi.framework.Bundle;
-import org.osgi.framework.BundleContext;
 import org.osgi.service.packageadmin.PackageAdmin
-import org.osgi.util.tracker.ServiceTracker
-import org.osgi.service.startlevel.StartLevel
-import reflect.BeanProperty
 import actors.DaemonActor
 
 
-class KevoreeDeployManager extends DaemonActor {
+object KevoreeDeployManager extends DaemonActor {
 
   var bundle: Bundle = null
-
-  def setBundle(b: Bundle) = {
+  def setBundle(b: Bundle) {
     bundle = b
+    val sr = bundle.getBundleContext.getServiceReference(classOf[PackageAdmin].getName)
+    servicePackageAdmin = Some(bundle.getBundleContext.getService(sr).asInstanceOf[PackageAdmin])
   }
 
-  @BeanProperty
-  var bundleContext: BundleContext = null;
+  def getBundleContext = bundle.getBundleContext;
 
   private var private_bundleMapping: List[KevoreeOSGiBundle] = List[KevoreeOSGiBundle]();
-
-  def setModelHandlerServiceTracker(st: ServiceTracker) = modelHandlerServiceTracker = st
-
-  private var modelHandlerServiceTracker: ServiceTracker = null
-
-  def getServiceHandler: KevoreeModelHandlerService = modelHandlerServiceTracker.getService.asInstanceOf[KevoreeModelHandlerService]
-
-  def setPackageAdminServiceTracker(st: ServiceTracker) = packageAdminServiceTracker = st
-
-  private var packageAdminServiceTracker: ServiceTracker = null
   var servicePackageAdmin: Option[PackageAdmin] = null
-
-  def setServicePackageAdmin(pa: PackageAdmin) = servicePackageAdmin = Some(pa)
-
   def getServicePackageAdmin: PackageAdmin = {
-    servicePackageAdmin.getOrElse {
-      servicePackageAdmin = Some(packageAdminServiceTracker.getService.asInstanceOf[PackageAdmin])
-      packageAdminServiceTracker.getService.asInstanceOf[PackageAdmin]
-    }
+    servicePackageAdmin.get
   }
 
 

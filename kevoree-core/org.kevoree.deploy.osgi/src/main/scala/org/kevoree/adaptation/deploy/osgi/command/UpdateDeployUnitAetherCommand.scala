@@ -1,3 +1,5 @@
+package org.kevoree.adaptation.deploy.osgi.command
+
 /**
  * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE, Version 3, 29 June 2007;
  * you may not use this file except in compliance with the License.
@@ -16,12 +18,10 @@
  * and open the template in the editor.
  */
 
-package org.kevoree.adaptation.deploy.osgi.command
+import org.kevoree._
 
-import org.kevoree.Instance
-import org.kevoree.framework.PrimitiveCommand
+case class UpdateDeployUnitAetherCommand(ddeployUnit: DeployUnit) extends AddDeployUnitAetherCommand(ddeployUnit,true) {
 
-abstract class LifeCycleCommand(c : Instance,nodeName:String) extends PrimitiveCommand {
 
-  def getInstance = c
+
 }
