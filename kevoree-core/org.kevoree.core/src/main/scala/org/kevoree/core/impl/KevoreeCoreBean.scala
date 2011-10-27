@@ -51,6 +51,7 @@ class KevoreeCoreBean extends KevoreeModelHandlerService with KevoreeActor {
   def getLastModification = lastDate
 
   var logger = LoggerFactory.getLogger(this.getClass);
+  val modelClone = new ModelCloner
 
   private def checkBootstrapNode(currentModel: ContainerRoot): Unit = {
     try {
@@ -62,6 +63,19 @@ class KevoreeCoreBean extends KevoreeModelHandlerService with KevoreeActor {
               case Some(ist: AbstractNodeType) => {
                 nodeInstance = ist;
                 nodeInstance.startNode()
+                
+                //SET CURRENT MODEL 
+                
+                model =modelClone.clone(currentModel)
+                model.removeAllGroups()
+                model.removeAllHubs()
+                model.removeAllMBindings()
+                model.getNodes.filter(n => n.getName != nodeName).foreach{ node =>
+                   model.removeNodes(node)
+                }
+                model.getNodes(0).removeAllComponents()
+                model.getNodes(0).removeAllHosts()
+
               }
               case None => logger.error("TypeDef installation fail !")
             }
