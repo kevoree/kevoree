@@ -30,6 +30,7 @@ import org.kevoree.api.configuration.ConfigConstants
 import java.util.Date
 import org.kevoree.api.service.core.handler.{ModelListener, KevoreeModelHandlerService}
 import org.kevoree.framework._
+import org.kevoree.framework.context.KevoreeDeployManager
 import deploy.PrimitiveCommandExecutionHelper
 import org.kevoree.tools.aether.framework.NodeTypeBootstrapHelper
 import java.io.{BufferedOutputStream, BufferedInputStream, InputStream, OutputStream}
@@ -39,7 +40,14 @@ import org.kevoree.core.basechecker.RootChecker
 class KevoreeCoreBean extends KevoreeModelHandlerService with KevoreeActor {
 
   @BeanProperty var configService: ConfigurationService = null
-  @BeanProperty var bundleContext: BundleContext = null;
+  var bundleContext: BundleContext = null;
+  def getBundleContext = bundleContext
+  def setBundleContext(bc: BundleContext){
+    bundleContext = bc
+    KevoreeDeployManager.setBundle(bc.getBundle)
+  }
+
+
   @BeanProperty var nodeName: String = ""
   @BeanProperty var nodeInstance: AbstractNodeType = null
 
