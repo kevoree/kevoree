@@ -151,8 +151,8 @@
                                 <artifactId>swingx-core</artifactId>
                             </inclusion>
                             <inclusion>
-                                <groupId>jgrapht</groupId>
-                                <artifactId>jgrapht</artifactId>
+                                <groupId>org.jgrapht</groupId>
+                                <artifactId>jgrapht-jdk1.5</artifactId>
                             </inclusion>
                             <inclusion>
                                 <groupId>org.kevoree.tools</groupId>
