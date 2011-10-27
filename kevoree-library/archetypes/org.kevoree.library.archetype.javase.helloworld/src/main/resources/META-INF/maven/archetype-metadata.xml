@@ -1,0 +1,18 @@
+<archetype-descriptor xmlns="http://maven.apache.org/plugins/maven-archetype-plugin/archetype-descriptor/1.0.0"
+                      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                      xsi:schemaLocation="http://maven.apache.org/plugins/maven-archetype-plugin/archetype-descriptor/1.0.0 http://maven.apache.org/xsd/archetype-descriptor-1.0.0.xsd"
+                      name="org.kevoree.library.archetype.javase.helloworld" partial="false">
+
+    <!--
+    <requiredProperties>
+        <requiredProperty key="binomeName">
+        </requiredProperty>
+    </requiredProperties>
+    -->
+    <fileSets>
+        <fileSet filtered="true" packaged="true" encoding="utf-8">
+            <directory>src/main/java/org/kevoree/library/javase/helloworld</directory>
+        </fileSet>
+    </fileSets>
+
+</archetype-descriptor>

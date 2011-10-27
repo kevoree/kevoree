@@ -1,0 +1,51 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>org.kevoree.library.archetype.javase</groupId>
+    <artifactId>org.kevoree.library.archetype.javase.helloworld</artifactId>
+    <name>Kevoree :: Archetype :: JavaSE :: HelloWorld</name>
+    <packaging>maven-archetype</packaging>
+
+    <parent>
+        <groupId>org.kevoree.library.archetype.javase</groupId>
+        <artifactId>org.kevoree.library.archetype.javase.root</artifactId>
+        <version>1.4.0-SNAPSHOT</version>
+        <relativePath>../org.kevoree.library.archetype.javase.root</relativePath>
+    </parent>
+
+        <dependencies>
+        <dependency>
+            <groupId>org.kevoree</groupId>
+            <artifactId>org.kevoree.framework</artifactId>
+            <version>1.4.0-SNAPSHOT</version>
+        </dependency>
+            <dependency>
+            <groupId>org.kevoree.tools</groupId>
+            <artifactId>org.kevoree.tools.annotation.api</artifactId>
+            <version>1.4.0-SNAPSHOT</version>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <extensions>
+            <extension>
+                <groupId>org.apache.maven.archetype</groupId>
+                <artifactId>archetype-packaging</artifactId>
+                <version>2.1</version>
+            </extension>
+        </extensions>
+
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-archetype-plugin</artifactId>
+                    <version>2.1</version>
+                    <extensions>true</extensions>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+    </build>
+
+</project>
