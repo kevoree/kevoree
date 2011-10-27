@@ -39,7 +39,11 @@ class RootService(id: String, group: RestGroup) extends Actor {
     case RequestContext(HttpRequest(HttpMethods.POST, url, _, body, _), _, responder) => {
       try {
          val model = KevoreeXmiHelper.loadString(new String(body))
-         group.getModelService.updateModel(model)
+         new scala.actors.Actor {
+           def act() {
+             group.getModelService.updateModel(model)
+           }
+         }.start()
          responder.complete(response("<ack nodeName=\"" + group.getNodeName + "\" />"))
       } catch {
         case _ @ e => {
