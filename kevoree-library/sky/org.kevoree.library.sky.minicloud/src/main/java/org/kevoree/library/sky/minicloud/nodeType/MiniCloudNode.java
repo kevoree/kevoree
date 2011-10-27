@@ -42,15 +42,13 @@ import java.util.concurrent.TimeUnit;
 @DictionaryType({
 		@DictionaryAttribute(name = "port", defaultValue = "7000", optional = false)
 })
-@PrimitiveCommands(value = {},values = {MiniCloudNode.REMOVE_NODE, MiniCloudNode.ADD_NODE})
+@PrimitiveCommands(value = {}, values = {MiniCloudNode.REMOVE_NODE, MiniCloudNode.ADD_NODE})
 @NodeType
 public class MiniCloudNode extends JavaSENode {
 	private static final Logger logger = LoggerFactory.getLogger(MiniCloudNode.class);
 
 	protected static final String REMOVE_NODE = "RemoveNode";
 	protected static final String ADD_NODE = "AddNode";
-
-
 
 
 //	protected static final String UPDATE_NODE = "UpdateNode";
@@ -136,23 +134,28 @@ public class MiniCloudNode extends JavaSENode {
 				for (ContainerNode subNode : node.getHostsForJ()) {
 					boolean found = false;
 					for (ContainerNode node1 : target.getNodesForJ()) {
-						if (subNode.getName().equals(node1.getName())) {
-							found = true;
-							break;
+						if (node1.getName().equals(this.getNodeName())) {
+							for (ContainerNode subNode1 : node1.getHostsForJ()) {
+								if (subNode.getName().equals(subNode1.getName())) {
+									found = true;
+									break;
+								}
+							}
+							if (!found) {
+								// create RemoveNode command
+								logger.debug("add a " + REMOVE_NODE + " adaptation primitive with " + subNode.getName()
+										+ " as parameter");
+								AdaptationPrimitive command = KevoreeAdaptationFactory.eINSTANCE()
+										.createAdaptationPrimitive();
+								command.setPrimitiveType(removeNodeType);
+								command.setRef(subNode);
+								ParallelStep subStep = KevoreeAdaptationFactory.eINSTANCE().createParallelStep();
+								subStep.addAdaptations(command);
+								adaptationModel.addAdaptations(command);
+								step.setNextStep(new Some<ParallelStep>(subStep));
+								step = subStep;
+							}
 						}
-					}
-					if (!found) {
-						// create RemoveNode command
-						logger.debug("add a " + REMOVE_NODE + " adaptation primitive with " + subNode.getName()
-								+ " as parameter");
-						AdaptationPrimitive command = KevoreeAdaptationFactory.eINSTANCE().createAdaptationPrimitive();
-						command.setPrimitiveType(removeNodeType);
-						command.setRef(subNode);
-						ParallelStep subStep = KevoreeAdaptationFactory.eINSTANCE().createParallelStep();
-						subStep.addAdaptations(command);
-						adaptationModel.addAdaptations(command);
-						step.setNextStep(new Some<ParallelStep>(subStep));
-						step = subStep;
 					}
 				}
 			}
@@ -164,35 +167,40 @@ public class MiniCloudNode extends JavaSENode {
 				for (ContainerNode subNode : node.getHostsForJ()) {
 					boolean found = false;
 					for (ContainerNode node1 : current.getNodesForJ()) {
-						if (subNode.getName().equals(node1.getName())) {
-							found = true;
-							// create UpdateNode command
-							/*logger.debug("add a " + UPDATE_NODE + " adaptation primitive with " + subNode.getName()
-									+ " as parameter");
-							AdaptationPrimitive command = KevoreeAdaptationFactory.eINSTANCE()
-									.createAdaptationPrimitive();
-							command.setPrimitiveType(updateNodeType);
-							command.setRef(subNode);
-							ParallelStep subStep = KevoreeAdaptationFactory.eINSTANCE().createParallelStep();
-							subStep.addAdaptations(command);
-							adaptationModel.addAdaptations(command);
-							step.setNextStep(new Some<ParallelStep>(subStep));
-							step = subStep;*/
-							break;
+						if (node1.getName().equals(this.getNodeName())) {
+							for (ContainerNode subNode1 : node1.getHostsForJ()) {
+								if (subNode.getName().equals(subNode1.getName())) {
+									found = true;
+									// create UpdateNode command
+									/*logger.debug("add a " + UPDATE_NODE + " adaptation primitive with " + subNode.getName()
+																		+ " as parameter");
+																AdaptationPrimitive command = KevoreeAdaptationFactory.eINSTANCE()
+																		.createAdaptationPrimitive();
+																command.setPrimitiveType(updateNodeType);
+																command.setRef(subNode);
+																ParallelStep subStep = KevoreeAdaptationFactory.eINSTANCE().createParallelStep();
+																subStep.addAdaptations(command);
+																adaptationModel.addAdaptations(command);
+																step.setNextStep(new Some<ParallelStep>(subStep));
+																step = subStep;*/
+									break;
+								}
+							}
+							if (!found) {
+								// create AddNode command
+								logger.debug("add a " + ADD_NODE + " adaptation primitive with " + subNode.getName()
+										+ " as parameter");
+								AdaptationPrimitive command = KevoreeAdaptationFactory.eINSTANCE()
+										.createAdaptationPrimitive();
+								command.setPrimitiveType(addNodeType);
+								command.setRef(subNode);
+								ParallelStep subStep = KevoreeAdaptationFactory.eINSTANCE().createParallelStep();
+								subStep.addAdaptations(command);
+								adaptationModel.addAdaptations(command);
+								step.setNextStep(new Some<ParallelStep>(subStep));
+								step = subStep;
+							}
 						}
-					}
-					if (!found) {
-						// create AddNode command
-						logger.debug("add a " + ADD_NODE + " adaptation primitive with " + subNode.getName()
-								+ " as parameter");
-						AdaptationPrimitive command = KevoreeAdaptationFactory.eINSTANCE().createAdaptationPrimitive();
-						command.setPrimitiveType(addNodeType);
-						command.setRef(subNode);
-						ParallelStep subStep = KevoreeAdaptationFactory.eINSTANCE().createParallelStep();
-						subStep.addAdaptations(command);
-						adaptationModel.addAdaptations(command);
-						step.setNextStep(new Some<ParallelStep>(subStep));
-						step = subStep;
 					}
 				}
 			}
@@ -201,13 +209,11 @@ public class MiniCloudNode extends JavaSENode {
 		AdaptationModel superModel = super.kompare(current, target);
 		adaptationModel.addAllAdaptations(superModel.getAdaptations());
 		step.setNextStep(superModel.getOrderedPrimitiveSet());
-         logger.debug("Kompare model contain "+adaptationModel.getAdaptations().size()+" primitives");
+		logger.debug("Kompare model contain " + adaptationModel.getAdaptations().size() + " primitives");
 
-        for(AdaptationPrimitive p : adaptationModel.getAdaptationsForJ()){
-            logger.debug("primitive "+p.getPrimitiveType().getName());
-        }
-
-
+		for (AdaptationPrimitive p : adaptationModel.getAdaptationsForJ()) {
+			logger.debug("primitive " + p.getPrimitiveType().getName());
+		}
 
 
 		return adaptationModel;
@@ -222,7 +228,7 @@ public class MiniCloudNode extends JavaSENode {
 			command = new RemoveNodeCommand((ContainerNode) adaptationPrimitive.getRef(),
 					(ContainerRoot) (((ContainerNode) adaptationPrimitive.getRef()).eContainer()));
 		} else if (adaptationPrimitive.getPrimitiveType().getName().equals(ADD_NODE)) {
-					logger.debug("add ADD_NODE command on " + ((ContainerNode) adaptationPrimitive.getRef()).getName());
+			logger.debug("add ADD_NODE command on " + ((ContainerNode) adaptationPrimitive.getRef()).getName());
 			command = new AddNodeCommand((ContainerNode) adaptationPrimitive.getRef(),
 					(ContainerRoot) (((ContainerNode) adaptationPrimitive.getRef()).eContainer()));
 		} /*else if (adaptationPrimitive.getPrimitiveType().getName().equals(UPDATE_NODE)) {
