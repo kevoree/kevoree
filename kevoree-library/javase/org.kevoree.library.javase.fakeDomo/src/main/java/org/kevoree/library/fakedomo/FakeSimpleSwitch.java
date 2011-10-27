@@ -34,8 +34,8 @@ import java.util.HashMap;
  */
 
 @Requires({
-        @RequiredPort(name = "on", type = PortType.MESSAGE),
-        @RequiredPort(name = "off", type = PortType.MESSAGE),
+        @RequiredPort(name = "on", type = PortType.MESSAGE, optional = true),
+        @RequiredPort(name = "off", type = PortType.MESSAGE, optional = true),
         @RequiredPort(name = "toggle", type = PortType.SERVICE, className = ToggleLightService.class, optional = true)
 })
 @ComponentType

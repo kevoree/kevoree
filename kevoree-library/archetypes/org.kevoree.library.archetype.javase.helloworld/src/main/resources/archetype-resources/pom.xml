@@ -9,7 +9,7 @@
     <name>KevoreeArchetype default name</name>
 
     <properties>
-        <kevoree.version>1.4.0-SNAPSHOT</kevoree.version>
+        <kevoree.version>${version}</kevoree.version>
     </properties>
 
     <dependencies>
