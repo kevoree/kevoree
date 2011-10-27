@@ -1,10 +1,12 @@
 package org.kevoree.library.arduinoNodeType;
 
+import org.kevoree.ContainerNode;
 import org.kevoree.ContainerRoot;
 import org.kevoree.KevoreeFactory;
 import org.kevoree.TypeDefinition;
 import org.kevoree.adaptation.deploy.osgi.BaseDeployOSGi;
 import org.kevoree.annotation.*;
+import org.kevoree.cloner.ModelCloner;
 import org.kevoree.extra.osgi.rxtx.KevoreeSharedCom;
 import org.kevoree.framework.AbstractNodeType;
 import org.kevoree.framework.Constants;
@@ -206,7 +208,16 @@ public class ArduinoNode extends AbstractNodeType {
         }
         if (typeAdaptationFound) {
             KevoreeKompareBean kompare = new KevoreeKompareBean();
-            ContainerRoot lastVersionModel = KevoreeFactory.eINSTANCE().createContainerRoot();
+            
+            ModelCloner cloner = new ModelCloner();
+            ContainerRoot lastVersionModel = cloner.clone(rootModel);
+            for(ContainerNode node : lastVersionModel.getNodesForJ()){
+               node.removeAllComponents();
+               node.removeAllHosts();
+            }
+            lastVersionModel.removeAllMBindings();
+            lastVersionModel.removeAllGroups();
+            
             AdaptationModel model = kompare.kompare(lastVersionModel, rootModel, nodeName);
 
             //Must compute a dif from scratch model

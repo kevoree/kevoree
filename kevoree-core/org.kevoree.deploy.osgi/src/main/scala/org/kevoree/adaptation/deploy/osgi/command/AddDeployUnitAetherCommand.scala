@@ -28,7 +28,7 @@ import org.osgi.framework.BundleException
 import org.kevoree.tools.aether.framework.AetherUtil
 import java.io.{InputStream, File, FileInputStream}
 
-case class AddDeployUnitAetherCommand(deployUnit: DeployUnit) extends PrimitiveCommand {
+case class AddDeployUnitAetherCommand(deployUnit: DeployUnit,update : Boolean = false) extends PrimitiveCommand {
 
   var logger = LoggerFactory.getLogger(this.getClass);
 
@@ -44,7 +44,7 @@ case class AddDeployUnitAetherCommand(deployUnit: DeployUnit) extends PrimitiveC
       val previousBundleID = KevoreeDeployManager.getBundleContext.getBundles.map(b => b.getBundleId)
       lastExecutionBundle = Some(KevoreeDeployManager.getBundleContext.installBundle("file:///"+arteFile.getAbsolutePath,new FileInputStream(arteFile)));
       
-      if(previousBundleID.contains(lastExecutionBundle.get.getBundleId)){
+      if(update && previousBundleID.contains(lastExecutionBundle.get.getBundleId)){
         logger.debug("Update Deploy Unit detected , force update for bundleID "+lastExecutionBundle.get.getBundleId)
         lastExecutionBundle.get.update(new FileInputStream(arteFile))
       }
