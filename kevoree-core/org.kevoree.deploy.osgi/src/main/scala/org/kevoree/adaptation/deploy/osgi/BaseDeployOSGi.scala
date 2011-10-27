@@ -39,6 +39,7 @@ class BaseDeployOSGi(bundle: Bundle) {
      // case Some(primitiveType) => {
      //   primitiveType.getName match {
           case JavaSePrimitive.AddDeployUnit => AddDeployUnitAetherCommand(p.getRef.asInstanceOf[DeployUnit])
+          case JavaSePrimitive.UpdateDeployUnit => UpdateDeployUnitAetherCommand(p.getRef.asInstanceOf[DeployUnit])
           case JavaSePrimitive.RemoveDeployUnit => RemoveDeployUnitCommand(p.getRef.asInstanceOf[DeployUnit])
           case JavaSePrimitive.AddThirdParty => AddThirdPartyAetherCommand(p.getRef.asInstanceOf[DeployUnit])
           case JavaSePrimitive.RemoveThirdParty => RemoveThirdPartyCommand(p.getRef.asInstanceOf[DeployUnit])
