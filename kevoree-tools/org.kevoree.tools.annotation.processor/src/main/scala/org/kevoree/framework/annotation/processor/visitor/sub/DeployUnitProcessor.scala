@@ -78,7 +78,8 @@ trait DeployUnitProcessor {
     nodeTypeNamesS.foreach {
       nodeTypeName =>
 
-        val ctdeployunit = root.getDeployUnits.find({ du => du.getUnitName == unitName && du.getGroupName == groupName && du.getVersion == version && du.getTargetNodeType.get.getName == nodeTypeName
+        val ctdeployunit = root.getDeployUnits.find({
+          du => du.getUnitName == unitName && du.getGroupName == groupName && du.getVersion == version && du.getTargetNodeType.get.getName == nodeTypeName
         }) match {
           case None => {
             val newdeploy = KevoreeFactory.eINSTANCE.createDeployUnit
@@ -93,10 +94,14 @@ trait DeployUnitProcessor {
             root.getTypeDefinitions.filter(p => p.isInstanceOf[NodeType]).find(nt => nt.getName == nodeTypeName) match {
               case Some(existingNodeType) => newdeploy.setTargetNodeType(Some(existingNodeType.asInstanceOf[NodeType]))
               case None => {
-                val nodeType = KevoreeFactory.eINSTANCE.createNodeType
-                nodeType.setName(nodeTypeName)
-                root.addTypeDefinitions(nodeType)
-                newdeploy.setTargetNodeType(Some(nodeType))
+                if (typeDef.getName == nodeTypeName) {
+                  newdeploy.setTargetNodeType(Some(typeDef.asInstanceOf[NodeType]))
+                } else {
+                  val nodeType = KevoreeFactory.eINSTANCE.createNodeType
+                  nodeType.setName(nodeTypeName)
+                  root.addTypeDefinitions(nodeType)
+                  newdeploy.setTargetNodeType(Some(nodeType))
+                }
               }
             }
 
@@ -108,7 +113,7 @@ trait DeployUnitProcessor {
           }
           case Some(fdu) => fdu.setHashcode(tag); fdu
         }
-        if(!typeDef.getDeployUnits.contains(ctdeployunit)){
+        if (!typeDef.getDeployUnits.contains(ctdeployunit)) {
           typeDef.addDeployUnits(ctdeployunit)
         }
 

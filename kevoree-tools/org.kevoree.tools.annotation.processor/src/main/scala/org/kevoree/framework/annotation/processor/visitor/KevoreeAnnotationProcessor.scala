@@ -97,7 +97,11 @@ class KevoreeAnnotationProcessor(env: AnnotationProcessorEnvironment) extends An
     typeDecl.accept(superTypeChecker)
     if (superTypeChecker.result) {
 
-      val nodeType = KevoreeFactory.eINSTANCE.createNodeType
+      val nodeType : org.kevoree.NodeType = root.getTypeDefinitions.find(td => td.getName == typeDecl.getSimpleName) match {
+        case Some(found)=> found.asInstanceOf[org.kevoree.NodeType]
+        case None => KevoreeFactory.eINSTANCE.createNodeType
+      }
+
       val nodeTypeName = typeDecl.getSimpleName
       nodeType.setName(nodeTypeName)
       nodeType.setBean(typeDecl.getQualifiedName)
