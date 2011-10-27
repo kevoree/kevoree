@@ -19,14 +19,13 @@
 package org.kevoree.adaptation.deploy.osgi.command
 
 import org.kevoree._
+import framework.context.{KevoreeOSGiBundle, KevoreeDeployManager}
 import framework.PrimitiveCommand
-import org.kevoree.adaptation.deploy.osgi.context.KevoreeDeployManager
-import org.kevoree.adaptation.deploy.osgi.context.KevoreeOSGiBundle
 import org.kevoree.framework.aspects.KevoreeAspects._
  import org.slf4j.LoggerFactory
 
 /* TYPE DOES NOT INSTALL DEPLOY UNIT !! */
-case class AddTypeCommand (ct: TypeDefinition, ctx: KevoreeDeployManager, nodeName: String) extends PrimitiveCommand {
+case class AddTypeCommand (ct: TypeDefinition, nodeName: String) extends PrimitiveCommand {
 
   var logger = LoggerFactory.getLogger(this.getClass);
 
@@ -38,12 +37,12 @@ case class AddTypeCommand (ct: TypeDefinition, ctx: KevoreeDeployManager, nodeNa
     val deployUnit = ct.foundRelevantDeployUnit(node)
 
     //FOUND TYPE DEFINITION DEPLOY UNIT BUNDLE
-    val mappingFound = ctx.bundleMapping.find({
+    val mappingFound = KevoreeDeployManager.bundleMapping.find({
       bundle => bundle.name == CommandHelper.buildKEY(deployUnit) && bundle.objClassName == deployUnit.getClass.getName
     }) match {
       case Some(bundle) => bundle
       case None => {
-        ctx.bundleMapping.foreach{ mapping =>
+        KevoreeDeployManager.bundleMapping.foreach{ mapping =>
            logger.error(mapping.bundleId+"-"+mapping.name+"-"+mapping.objClassName)
         }
         logger.error("Deploy Unit Not Found for typedefinition "+ct.getName); null
@@ -52,7 +51,7 @@ case class AddTypeCommand (ct: TypeDefinition, ctx: KevoreeDeployManager, nodeNa
 
     if (mappingFound != null) {
       //JUST ADD NEW BUNDING
-      ctx.addMapping(KevoreeOSGiBundle(ct.getName, ct.getClass.getName, mappingFound.bundleId))
+      KevoreeDeployManager.addMapping(KevoreeOSGiBundle(ct.getName, ct.getClass.getName, mappingFound.bundleId))
       true
     } else {
       false
@@ -61,7 +60,7 @@ case class AddTypeCommand (ct: TypeDefinition, ctx: KevoreeDeployManager, nodeNa
 
   def undo () {
     try {
-      RemoveTypeCommand(ct, ctx, nodeName).execute
+      RemoveTypeCommand(ct, nodeName).execute()
     } catch {
       case _ =>
     }

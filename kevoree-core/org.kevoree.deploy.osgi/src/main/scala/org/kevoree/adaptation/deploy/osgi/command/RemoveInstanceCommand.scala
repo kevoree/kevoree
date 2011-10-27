@@ -19,40 +19,40 @@
 package org.kevoree.adaptation.deploy.osgi.command
 
 import org.kevoree.Instance
-import org.kevoree.adaptation.deploy.osgi.context.KevoreeDeployManager
  import org.slf4j.LoggerFactory
 import org.kevoree.framework.PrimitiveCommand
+import org.kevoree.framework.context.KevoreeDeployManager
 
-case class RemoveInstanceCommand(c: Instance, ctx: KevoreeDeployManager, nodeName: String) extends PrimitiveCommand {
+case class RemoveInstanceCommand(c: Instance, nodeName: String) extends PrimitiveCommand {
 
   var logger = LoggerFactory.getLogger(this.getClass)
 
   def execute(): Boolean = {
     logger.debug("CMD REMOVE INSTANCE EXECUTION - " + c.getName + " - type - " + c.getTypeDefinition.getName);
 
-    val bundles = ctx.bundleMapping.filter({
+    val bundles = KevoreeDeployManager.bundleMapping.filter({
       bm => bm.objClassName == c.getClass.getName && bm.name == c.getName
     }) ++ List()
 
     bundles.forall {
       mp =>
-        val bundle = ctx.getBundleContext().getBundle(mp.bundleId)
+        val bundle = KevoreeDeployManager.getBundleContext.getBundle(mp.bundleId)
 
         bundle.stop();
         bundle.uninstall();
         //REFRESH OSGI PACKAGE
-        ctx.getServicePackageAdmin.refreshPackages(Array(bundle))
+        KevoreeDeployManager.getServicePackageAdmin.refreshPackages(Array(bundle))
         true
     }
-    ctx.bundleMapping.filter(mb => bundles.contains(mb) ).foreach{ map =>
-        ctx.removeMapping(map)
+    KevoreeDeployManager.bundleMapping.filter(mb => bundles.contains(mb) ).foreach{ map =>
+      KevoreeDeployManager.removeMapping(map)
     }
     true
   }
 
   def undo() {
     try {
-      AddInstanceCommand(c, ctx, nodeName).execute()
+      AddInstanceCommand(c, nodeName).execute()
     } catch {
       case _ =>
     }
