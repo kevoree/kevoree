@@ -139,6 +139,9 @@ object PrimitiveCommandExecutionHelper {
     }
 
     def rollBack() {
+
+      logger.debug("Rollback phase")
+
       // SEQUENCIAL ROOLBACK
       primitives.reverse.foreach(c => {
         try {

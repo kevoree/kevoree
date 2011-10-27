@@ -42,19 +42,21 @@ class NodeTypeBootstrapHelper {
         val nodeTypeDeployUnitList = node.getTypeDefinition.getDeployUnits.toList
         if (nodeTypeDeployUnitList.size > 0) {
           logger.debug("nodeType installation => " + installNodeTyp(node.getTypeDefinition.asInstanceOf[NodeType], bundleContext))
+          //KevoreeDeployManager.addMapping(KevoreeOSGiBundle(node.getTypeDefinition.getName, node.getTypeDefinition.getClass.getName, lastBundleID))
           val clazz: Class[_] = bundle.loadClass(node.getTypeDefinition.getBean)
 
-          
+
           val nodeType = clazz.newInstance.asInstanceOf[AbstractNodeType]
           //ADD INSTANCE DICTIONARY
           val dictionary: java.util.HashMap[String, AnyRef] = new java.util.HashMap[String, AnyRef]
 
-         node.getTypeDefinition.getDictionaryType.map{ dictionaryType =>
-            dictionaryType.getDefaultValues.foreach {
+          node.getTypeDefinition.getDictionaryType.map {
+            dictionaryType =>
+              dictionaryType.getDefaultValues.foreach {
                 dv =>
                   dictionary.put(dv.getAttribute.getName, dv.getValue)
               }
-         }
+          }
 
           node.getDictionary.map {
             dictionaryModel =>
@@ -95,7 +97,6 @@ class NodeTypeBootstrapHelper {
         bundle = bundleContext.installBundle("file:///" + arteFile.getAbsolutePath, new FileInputStream(arteFile))
         bundle.start()
         KevoreeDeployManager.addMapping(KevoreeOSGiBundle(buildKEY(du), du.getClass.getName, bundle.getBundleId))
-
         true
       } else {
         logger.error("Can't resolve node type")
@@ -114,10 +115,12 @@ class NodeTypeBootstrapHelper {
     }
   }
 
+
   /* Bootstrap node type bundle in local osgi environment */
   private def installNodeTyp(nodeType: NodeType, bundleContext: BundleContext): Boolean = {
     val superTypeBootStrap = nodeType.getSuperTypes.forall(superType => installNodeTyp(superType.asInstanceOf[NodeType], bundleContext))
     if (superTypeBootStrap) {
+
       nodeType.getDeployUnits.forall(ct => {
         ct.getRequiredLibs.forall {
           tp => installDeployUnit(tp, bundleContext)

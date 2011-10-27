@@ -35,8 +35,12 @@ case class RemoveTypeCommand(ct : TypeDefinition,nodeName:String) extends Primit
         KevoreeDeployManager.removeMapping(bundle)
         logger.debug("Remove type, after size mapping "+KevoreeDeployManager.bundleMapping.size)
         KevoreeDeployManager.garbage()
-      };true
-      case None => false
+        true// NOT ROLLBACL FOR CACHE MANAGEMENT
+      }
+      case None => {
+        logger.debug("mapping not found for "+ct.getName)
+        true
+      }
     }
   }
 
