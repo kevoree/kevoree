@@ -20,21 +20,20 @@ package org.kevoree.adaptation.deploy.osgi.command
 
 import java.io.File
 import org.kevoree._
+import framework.context.{KevoreeOSGiBundle, KevoreeDeployManager}
 import framework.{PrimitiveCommand, KevoreeGeneratorHelper, Constants}
-import org.kevoree.adaptation.deploy.osgi.context.KevoreeDeployManager
-import org.kevoree.adaptation.deploy.osgi.context.KevoreeOSGiBundle
 import org.kevoree.framework.FileHelper._
 import org.kevoree.framework.aspects.KevoreeAspects._
  import org.slf4j.LoggerFactory
 
-case class AddInstanceCommand(c: Instance, ctx: KevoreeDeployManager, nodeName: String) extends PrimitiveCommand {
+case class AddInstanceCommand(c: Instance, nodeName: String) extends PrimitiveCommand {
 
   var logger = LoggerFactory.getLogger(this.getClass);
 
   def execute(): Boolean = {
 
     /* create bundle cache structure */
-    val directory = ctx.bundle.getBundleContext.getDataFile("dyanmicBundle_" + c.getName)
+    val directory = KevoreeDeployManager.bundle.getBundleContext.getDataFile("dyanmicBundle_" + c.getName)
     directory.mkdir
 
     val METAINFDIR = new File(directory.getAbsolutePath + "/" + "META-INF")
@@ -48,14 +47,14 @@ case class AddInstanceCommand(c: Instance, ctx: KevoreeDeployManager, nodeName: 
 
 
     //FOUND CT SYMBOLIC NAME
-    val mappingFound = ctx.bundleMapping.find({
+    val mappingFound = KevoreeDeployManager.bundleMapping.find({
       bundle => bundle.name == c.getTypeDefinition.getName &&
         bundle.objClassName == c.getTypeDefinition.getClass.getName
     }) match {
       case Some(bundle) => bundle
       case None => {
         logger.error("Type Not Found: " + c.getTypeDefinition.getName)
-        logger.error("mapping state=> "+ctx.bundleMapping.toString() )
+        logger.error("mapping state=> "+KevoreeDeployManager.bundleMapping.toString() )
       }; return false; null;
     }
 
@@ -87,19 +86,19 @@ case class AddInstanceCommand(c: Instance, ctx: KevoreeDeployManager, nodeName: 
         "Bundle-Activator: " + activatorPackage + "." + activatorName,
         Constants.KEVOREE_INSTANCE_NAME_HEADER + ": " + c.getName,
         Constants.KEVOREE_NODE_NAME_HEADER + ": " + nodeName,
-        "Require-Bundle: " + ctx.getBundleContext().getBundle(mappingFound.bundleId).getSymbolicName
+        "Require-Bundle: " + KevoreeDeployManager.getBundleContext.getBundle(mappingFound.bundleId).getSymbolicName
       ))
       try {
         var bundle : org.osgi.framework.Bundle = null
         if (System.getProperty("java.vm.name").equalsIgnoreCase("Dalvik")) { //TODO BETTER SOLUTION ...
           logger.debug("Install instance uri = " + "assembly:file://" + directory.getAbsolutePath)
-          bundle = ctx.bundleContext.installBundle("assembly:file://" + directory.getAbsolutePath)
+          bundle = KevoreeDeployManager.getBundleContext.installBundle("assembly:file://" + directory.getAbsolutePath)
         } else {
           logger.debug("Install instance uri = " + "assembly:file:///" + directory.getAbsolutePath)
-          bundle = ctx.bundleContext.installBundle("assembly:file:///" + directory.getAbsolutePath)
+          bundle = KevoreeDeployManager.getBundleContext.installBundle("assembly:file:///" + directory.getAbsolutePath)
         }
 
-        ctx.addMapping(KevoreeOSGiBundle(c.getName, c.getClass.getName, bundle.getBundleId))
+        KevoreeDeployManager.addMapping(KevoreeOSGiBundle(c.getName, c.getClass.getName, bundle.getBundleId))
         lastExecutionBundle = Some(bundle)
         bundle.start()
         mustBeStarted = true
@@ -126,9 +125,9 @@ case class AddInstanceCommand(c: Instance, ctx: KevoreeDeployManager, nodeName: 
         try {
           b.stop();
           b.uninstall()
-          (ctx.bundleMapping.filter(map => map.bundleId == b.getBundleId).toList ++ List()).foreach {
+          (KevoreeDeployManager.bundleMapping.filter(map => map.bundleId == b.getBundleId).toList ++ List()).foreach {
             map =>
-              ctx.removeMapping(map)
+              KevoreeDeployManager.removeMapping(map)
           }
 
         } catch {

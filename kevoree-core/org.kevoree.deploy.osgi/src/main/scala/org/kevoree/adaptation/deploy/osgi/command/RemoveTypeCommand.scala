@@ -18,29 +18,29 @@
 
 package org.kevoree.adaptation.deploy.osgi.command
 
-import org.kevoree.adaptation.deploy.osgi.context.KevoreeDeployManager
 import org.slf4j.LoggerFactory
  import org.kevoree.TypeDefinition
 import org.kevoree.framework.PrimitiveCommand
+import org.kevoree.framework.context.KevoreeDeployManager
 
 
-case class RemoveTypeCommand(ct : TypeDefinition, ctx : KevoreeDeployManager,nodeName:String) extends PrimitiveCommand {
+case class RemoveTypeCommand(ct : TypeDefinition,nodeName:String) extends PrimitiveCommand {
 
   var logger = LoggerFactory.getLogger(this.getClass)
 
   def execute() : Boolean= {
-    ctx.bundleMapping.find({bundle =>bundle.name==ct.getName && bundle.objClassName==ct.getClass.getName}) match {
+    KevoreeDeployManager.bundleMapping.find({bundle =>bundle.name==ct.getName && bundle.objClassName==ct.getClass.getName}) match {
       case Some(bundle)=> {
-        logger.debug("Remove type, previous size mapping "+ctx.bundleMapping.size)
-        ctx.removeMapping(bundle)
-        logger.debug("Remove type, after size mapping "+ctx.bundleMapping.size)
-        ctx.garbage()
+        logger.debug("Remove type, previous size mapping "+KevoreeDeployManager.bundleMapping.size)
+        KevoreeDeployManager.removeMapping(bundle)
+        logger.debug("Remove type, after size mapping "+KevoreeDeployManager.bundleMapping.size)
+        KevoreeDeployManager.garbage()
       };true
       case None => false
     }
   }
 
   def undo() {
-    AddTypeCommand(ct,ctx,nodeName).execute()
+    AddTypeCommand(ct,nodeName).execute()
   }
 }

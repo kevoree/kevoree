@@ -18,22 +18,22 @@
 
 package org.kevoree.adaptation.deploy.osgi.command
 
-import org.kevoree.adaptation.deploy.osgi.context.KevoreeDeployManager
 import org.kevoree.framework.message.FragmentUnbindMessage
 import org.slf4j.LoggerFactory
  import org.kevoree.Channel
 import org.kevoree.framework.{PrimitiveCommand, KevoreeChannelFragment, Constants}
+import org.kevoree.framework.context.KevoreeDeployManager
 
-case class RemoveFragmentBindingCommand(c : Channel,remoteNodeName:String, ctx : KevoreeDeployManager,nodeName:String) extends PrimitiveCommand {
+case class RemoveFragmentBindingCommand(c : Channel,remoteNodeName:String,nodeName:String) extends PrimitiveCommand {
 
   var logger = LoggerFactory.getLogger(this.getClass)
 
   def execute() : Boolean= {
 
-    val KevoreeChannelFound = ctx.bundleMapping.find(map=>map.objClassName == c.getClass.getName && map.name == c.getName) match {
+    val KevoreeChannelFound = KevoreeDeployManager.bundleMapping.find(map=>map.objClassName == c.getClass.getName && map.name == c.getName) match {
       case None => logger.error("Channel Fragment Mapping not found");None
       case Some(mapfound)=> {
-          val channelBundle = ctx.getBundleContext().getBundle(mapfound.bundleId)
+          val channelBundle = KevoreeDeployManager.getBundleContext.getBundle(mapfound.bundleId)
           channelBundle.getRegisteredServices.find({sr=> sr.getProperty(Constants.KEVOREE_NODE_NAME)==nodeName && sr.getProperty(Constants.KEVOREE_INSTANCE_NAME)==c.getName }) match {
             case None => logger.error("Channel Fragment Service not found");None
             case Some(sr)=> Some(channelBundle.getBundleContext.getService(sr).asInstanceOf[KevoreeChannelFragment])}}
@@ -52,7 +52,7 @@ case class RemoveFragmentBindingCommand(c : Channel,remoteNodeName:String, ctx :
   }
 
   def undo() {
-    AddFragmentBindingCommand(c,remoteNodeName,ctx,nodeName).execute()
+    AddFragmentBindingCommand(c,remoteNodeName,nodeName).execute()
   }
 
 

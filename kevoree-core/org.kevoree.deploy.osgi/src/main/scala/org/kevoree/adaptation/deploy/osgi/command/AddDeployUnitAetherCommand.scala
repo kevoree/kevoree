@@ -19,17 +19,16 @@ package org.kevoree.adaptation.deploy.osgi.command
  */
 
 import org.kevoree._
+import framework.context.{KevoreeOSGiBundle, KevoreeDeployManager}
 import framework.PrimitiveCommand
 import org.kevoree.DeployUnit
-import org.kevoree.adaptation.deploy.osgi.context.KevoreeDeployManager
-import org.kevoree.adaptation.deploy.osgi.context.KevoreeOSGiBundle
  import org.osgi.service.packageadmin.PackageAdmin
 import org.slf4j.LoggerFactory
 import org.osgi.framework.BundleException
 import org.kevoree.tools.aether.framework.AetherUtil
 import java.io.{InputStream, File, FileInputStream}
 
-case class AddDeployUnitAetherCommand(deployUnit: DeployUnit, ctx: KevoreeDeployManager) extends PrimitiveCommand {
+case class AddDeployUnitAetherCommand(deployUnit: DeployUnit) extends PrimitiveCommand {
 
   var logger = LoggerFactory.getLogger(this.getClass);
 
@@ -40,10 +39,10 @@ case class AddDeployUnitAetherCommand(deployUnit: DeployUnit, ctx: KevoreeDeploy
 
       val arteFile : File = AetherUtil.resolveDeployUnit(deployUnit)
 
-      logger.debug("Try to install from URL, " + arteFile.getAbsolutePath+" on - "+ctx.bundleContext)
+      logger.debug("Try to install from URL, " + arteFile.getAbsolutePath+" on - "+KevoreeDeployManager.getBundleContext)
 
-      val previousBundleID = ctx.bundleContext.getBundles.map(b => b.getBundleId)
-      lastExecutionBundle = Some(ctx.bundleContext.installBundle("file:///"+arteFile.getAbsolutePath,new FileInputStream(arteFile)));
+      val previousBundleID = KevoreeDeployManager.getBundleContext.getBundles.map(b => b.getBundleId)
+      lastExecutionBundle = Some(KevoreeDeployManager.getBundleContext.installBundle("file:///"+arteFile.getAbsolutePath,new FileInputStream(arteFile)));
       
       if(previousBundleID.contains(lastExecutionBundle.get.getBundleId)){
         logger.debug("Update Deploy Unit detected , force update for bundleID "+lastExecutionBundle.get.getBundleId)
@@ -53,8 +52,11 @@ case class AddDeployUnitAetherCommand(deployUnit: DeployUnit, ctx: KevoreeDeploy
       
       val symbolicName: String = lastExecutionBundle.get.getSymbolicName
 
+
+
+
       //FOR DEPLOY UNIT DO NOT USE ONLY NAME
-      ctx.addMapping(KevoreeOSGiBundle(CommandHelper.buildKEY(deployUnit), deployUnit.getClass.getName, lastExecutionBundle.get.getBundleId))
+      KevoreeDeployManager.addMapping(KevoreeOSGiBundle(CommandHelper.buildKEY(deployUnit), deployUnit.getClass.getName, lastExecutionBundle.get.getBundleId))
       //lastExecutionBundle.get.start
       mustBeStarted = true
 
@@ -69,7 +71,7 @@ case class AddDeployUnitAetherCommand(deployUnit: DeployUnit, ctx: KevoreeDeploy
         val optTypeDef = deployUnit.eContainer.asInstanceOf[ContainerRoot].getTypeDefinitions.find(typeDef => typeDef.getDeployUnits.contains(deployUnit))
         optTypeDef match {
           case Some(typDef) => {
-            lastExecutionBundle = ctx.bundleContext.getBundles.find {
+            lastExecutionBundle = KevoreeDeployManager.getBundleContext.getBundles.find {
               bundle =>
                 try {
                   bundle.loadClass(typDef.getBean)
@@ -81,7 +83,7 @@ case class AddDeployUnitAetherCommand(deployUnit: DeployUnit, ctx: KevoreeDeploy
 
             lastExecutionBundle match {
               case Some(bundle) => {
-                ctx.addMapping(KevoreeOSGiBundle(CommandHelper.buildKEY(deployUnit), deployUnit.getClass.getName, bundle.getBundleId))
+                KevoreeDeployManager.addMapping(KevoreeOSGiBundle(CommandHelper.buildKEY(deployUnit), deployUnit.getClass.getName, bundle.getBundleId))
                 mustBeStarted = false
                 true
               }
@@ -119,12 +121,12 @@ case class AddDeployUnitAetherCommand(deployUnit: DeployUnit, ctx: KevoreeDeploy
       case Some(bundle) => {
         bundle.stop()
         bundle.uninstall()
-        val srPackageAdmin = ctx.bundleContext.getServiceReference(classOf[PackageAdmin].getName)
-        val padmin: PackageAdmin = ctx.bundleContext.getService(srPackageAdmin).asInstanceOf[PackageAdmin]
+        val srPackageAdmin = KevoreeDeployManager.getBundleContext.getServiceReference(classOf[PackageAdmin].getName)
+        val padmin: PackageAdmin = KevoreeDeployManager.getBundleContext.getService(srPackageAdmin).asInstanceOf[PackageAdmin]
         padmin.resolveBundles(Array(bundle))
 
-        (ctx.bundleMapping.filter(map => map.bundleId == bundle.getBundleId).toList ++ List()).foreach{ map =>
-           ctx.removeMapping(map)// = ctx.bundleMapping.filter(mb => mb != map)
+        (KevoreeDeployManager.bundleMapping.filter(map => map.bundleId == bundle.getBundleId).toList ++ List()).foreach{ map =>
+          KevoreeDeployManager.removeMapping(map)// = ctx.bundleMapping.filter(mb => mb != map)
         }
       }
       case None => //NOTHING CAN BE DOING HERE
