@@ -26,6 +26,14 @@ import tools.ui.framework.elements.PortPanel
  */
 
 class KevoreeTypeEditorPanel(typeDefinitionPanel: JPanel, uikernel: KevoreeUIKernel) extends JPanel {
+
+  val verticalSplit: JSplitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT)
+
+
+
+
+
+
   val typeDef: TypeDefinition = uikernel.getUifactory.getMapping.get(typeDefinitionPanel).asInstanceOf[TypeDefinition]
   val uifactory = new KevoreeUIFactory(uikernel)
 
