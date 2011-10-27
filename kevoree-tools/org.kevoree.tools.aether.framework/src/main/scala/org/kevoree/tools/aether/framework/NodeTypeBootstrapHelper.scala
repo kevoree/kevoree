@@ -19,6 +19,7 @@ import org.slf4j.LoggerFactory
 import org.kevoree.api.service.core.handler.KevoreeModelHandlerService
 import org.kevoree.framework.{Constants, AbstractNodeType}
 import org.kevoree.{NodeType, ContainerRoot, DeployUnit}
+import org.kevoree.framework.context.{KevoreeOSGiBundle, KevoreeDeployManager}
 
 /**
  * User: ffouquet
@@ -93,6 +94,8 @@ class NodeTypeBootstrapHelper {
       if (arteFile != null) {
         bundle = bundleContext.installBundle("file:///" + arteFile.getAbsolutePath, new FileInputStream(arteFile))
         bundle.start()
+        KevoreeDeployManager.addMapping(KevoreeOSGiBundle(buildKEY(du), du.getClass.getName, bundle.getBundleId))
+
         true
       } else {
         logger.error("Can't resolve node type")
@@ -123,6 +126,29 @@ class NodeTypeBootstrapHelper {
     } else {
       false
     }
+  }
+
+
+  def buildKEY(du: DeployUnit): String = {
+    du.getName + "/" + buildQuery(du, None)
+  }
+
+  def buildQuery(du: DeployUnit, repoUrl: Option[String]): String = {
+    val query = new StringBuilder
+    query.append("mvn:")
+    repoUrl match {
+      case Some(r) => query.append(r); query.append("!")
+      case None =>
+    }
+    query.append(du.getGroupName)
+    query.append("/")
+    query.append(du.getUnitName)
+    du.getVersion match {
+      case "default" =>
+      case "" =>
+      case _ => query.append("/"); query.append(du.getVersion)
+    }
+    query.toString
   }
 
 }

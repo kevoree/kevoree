@@ -18,8 +18,6 @@ package org.kevoree.adaptation.deploy.osgi.command
  * and open the template in the editor.
  */
 
-import org.kevoree.adaptation.deploy.osgi.context.KevoreeDeployManager
-import org.kevoree.adaptation.deploy.osgi.context.KevoreeOSGiBundle
 import org.osgi.framework.BundleException
 import org.osgi.service.packageadmin.PackageAdmin
 import org.slf4j.LoggerFactory
@@ -27,8 +25,9 @@ import org.slf4j.LoggerFactory
 import org.kevoree.tools.aether.framework.AetherUtil
 import java.io.{FileInputStream, File}
 import org.kevoree.framework.PrimitiveCommand
+import org.kevoree.framework.context.{KevoreeOSGiBundle, KevoreeDeployManager}
 
-case class AddThirdPartyAetherCommand(deployUnit: DeployUnit, ctx: KevoreeDeployManager) extends PrimitiveCommand {
+case class AddThirdPartyAetherCommand(deployUnit: DeployUnit) extends PrimitiveCommand {
 
   var logger = LoggerFactory.getLogger(this.getClass)
 
@@ -37,12 +36,12 @@ case class AddThirdPartyAetherCommand(deployUnit: DeployUnit, ctx: KevoreeDeploy
     try {
 
       val arteFile : File = AetherUtil.resolveDeployUnit(deployUnit)
-      lastExecutionBundle = Some(ctx.bundleContext.installBundle("file:///"+arteFile.getAbsolutePath,new FileInputStream(arteFile)));
+      lastExecutionBundle = Some(KevoreeDeployManager.getBundleContext.installBundle("file:///"+arteFile.getAbsolutePath,new FileInputStream(arteFile)));
 
 
       //lastExecutionBundle = Some(ctx.bundleContext.installBundle(url));
       val symbolicName: String = lastExecutionBundle.get.getSymbolicName
-      ctx.addMapping(KevoreeOSGiBundle(deployUnit.getName, deployUnit.getClass.getName, lastExecutionBundle.get.getBundleId))
+      KevoreeDeployManager.addMapping(KevoreeOSGiBundle(deployUnit.getName, deployUnit.getClass.getName, lastExecutionBundle.get.getBundleId))
       // lastExecutionBundle.get.start
       mustBeStarted = true
       true
@@ -64,10 +63,10 @@ case class AddThirdPartyAetherCommand(deployUnit: DeployUnit, ctx: KevoreeDeploy
     try {
       lastExecutionBundle match {
         case Some(bundle) => {
-			bundle.stop;
-			bundle.uninstall
-			val srPackageAdmin = ctx.bundleContext.getServiceReference(classOf[PackageAdmin].getName)
-			val padmin: PackageAdmin = ctx.bundleContext.getService(srPackageAdmin).asInstanceOf[PackageAdmin]
+			bundle.stop()
+			bundle.uninstall()
+			val srPackageAdmin = KevoreeDeployManager.getBundleContext.getServiceReference(classOf[PackageAdmin].getName)
+			val padmin: PackageAdmin = KevoreeDeployManager.getBundleContext.getService(srPackageAdmin).asInstanceOf[PackageAdmin]
 			padmin.resolveBundles(Array(bundle))
 		  }
         case None => //NOTHING CAN BE DOING HERE

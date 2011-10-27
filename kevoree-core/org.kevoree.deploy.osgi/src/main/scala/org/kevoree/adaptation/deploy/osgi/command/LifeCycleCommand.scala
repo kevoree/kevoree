@@ -19,10 +19,9 @@
 package org.kevoree.adaptation.deploy.osgi.command
 
 import org.kevoree.Instance
-import org.kevoree.adaptation.deploy.osgi.context.KevoreeDeployManager
 import org.kevoree.framework.PrimitiveCommand
 
-abstract class LifeCycleCommand(c : Instance, ctx : KevoreeDeployManager,nodeName:String) extends PrimitiveCommand {
+abstract class LifeCycleCommand(c : Instance,nodeName:String) extends PrimitiveCommand {
 
   def getInstance = c
 }

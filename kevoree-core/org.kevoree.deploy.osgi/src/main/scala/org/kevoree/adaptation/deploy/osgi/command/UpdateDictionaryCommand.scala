@@ -19,12 +19,12 @@
 package org.kevoree.adaptation.deploy.osgi.command
 
 import org.kevoree._
+import framework.context.KevoreeDeployManager
 import framework.{PrimitiveCommand, Constants, KevoreeActor}
-import org.kevoree.adaptation.deploy.osgi.context.KevoreeDeployManager
 import org.kevoree.framework.message.UpdateDictionaryMessage
 import org.slf4j.LoggerFactory
 
-case class UpdateDictionaryCommand(c: Instance, ctx: KevoreeDeployManager, nodeName: String) extends PrimitiveCommand {
+case class UpdateDictionaryCommand(c: Instance, nodeName: String) extends PrimitiveCommand {
 
   var logger = LoggerFactory.getLogger(this.getClass)
 
@@ -56,10 +56,10 @@ case class UpdateDictionaryCommand(c: Instance, ctx: KevoreeDeployManager, nodeN
       }
     }
 
-    ctx.bundleMapping.find(map => map.objClassName == c.getClass.getName && map.name == c.getName) match {
+    KevoreeDeployManager.bundleMapping.find(map => map.objClassName == c.getClass.getName && map.name == c.getName) match {
       case None => false
       case Some(mapfound) => {
-        val componentBundle = ctx.getBundleContext().getBundle(mapfound.bundleId)
+        val componentBundle = KevoreeDeployManager.getBundleContext.getBundle(mapfound.bundleId)
         if (componentBundle.getRegisteredServices != null) {
           componentBundle.getRegisteredServices.find({
             sr => sr.getProperty(Constants.KEVOREE_NODE_NAME) == nodeName && sr.getProperty(Constants.KEVOREE_INSTANCE_NAME) == c.getName
