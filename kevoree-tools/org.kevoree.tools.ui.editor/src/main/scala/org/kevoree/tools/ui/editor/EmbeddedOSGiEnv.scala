@@ -20,6 +20,7 @@ import generated.SysPackageConstants
 import org.osgi.framework.Constants
 import java.io.File
 import org.slf4j.{LoggerFactory, Logger}
+import org.kevoree.framework.context.KevoreeDeployManager
 
 object EmbeddedOSGiEnv {
   private val logger: Logger = LoggerFactory.getLogger(this.getClass)
@@ -71,7 +72,7 @@ object EmbeddedOSGiEnv {
     fwk.start();
 
     logger.debug("Felix Embedded started");
-
+     KevoreeDeployManager.setBundle(fwk.getBundleContext.getBundle)
 
     // (11) Wait for framework to stop to exit the VM.
     //m_fwk.waitForStop(0);

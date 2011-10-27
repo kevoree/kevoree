@@ -19,18 +19,18 @@
 package org.kevoree.adaptation.deploy.osgi.command
 
 import org.kevoree._
-import org.kevoree.adaptation.deploy.osgi.context.KevoreeDeployManager
+import framework.context.KevoreeDeployManager
 import org.kevoree.framework.KevoreeActor
 import org.kevoree.framework.Constants
 import org.kevoree.framework.message.StopMessage
 
-case class StopInstanceCommand(c : Instance, ctx : KevoreeDeployManager,nodeName:String) extends LifeCycleCommand(c, ctx,nodeName) {
+case class StopInstanceCommand(c : Instance,nodeName:String) extends LifeCycleCommand(c,nodeName) {
 
   def execute() : Boolean= {
-    ctx.bundleMapping.find(map=>map.objClassName == c.getClass.getName && map.name == c.getName) match {
+    KevoreeDeployManager.bundleMapping.find(map=>map.objClassName == c.getClass.getName && map.name == c.getName) match {
       case None => false
       case Some(mapfound)=> {
-          val componentBundle = ctx.getBundleContext().getBundle(mapfound.bundleId)
+          val componentBundle = KevoreeDeployManager.getBundleContext.getBundle(mapfound.bundleId)
           componentBundle.getRegisteredServices.find({sr=> sr.getProperty(Constants.KEVOREE_NODE_NAME)==nodeName && sr.getProperty(Constants.KEVOREE_INSTANCE_NAME)==c.getName }) match {
             case None => false
             case Some(sr)=> (componentBundle.getBundleContext.getService(sr).asInstanceOf[KevoreeActor] !? StopMessage ).asInstanceOf[Boolean]
@@ -40,7 +40,7 @@ case class StopInstanceCommand(c : Instance, ctx : KevoreeDeployManager,nodeName
   }
 
   def undo() {
-    StartInstanceCommand(c,ctx,nodeName)
+    StartInstanceCommand(c,nodeName)
   }
 
 }
