@@ -37,18 +37,22 @@ import java.util.concurrent.TimeUnit;
  * @author Erwan Daubert
  * @version 1.0
  */
-@NodeType
+
 @Library(name = "SKY")
 @DictionaryType({
 		@DictionaryAttribute(name = "port", defaultValue = "7000", optional = false)
 })
-@PrimitiveCommands(value = {},
-		values = {MiniCloudNode.REMOVE_NODE, MiniCloudNode.ADD_NODE})
+@PrimitiveCommands(value = {},values = {MiniCloudNode.REMOVE_NODE, MiniCloudNode.ADD_NODE})
+@NodeType
 public class MiniCloudNode extends JavaSENode {
 	private static final Logger logger = LoggerFactory.getLogger(MiniCloudNode.class);
 
 	protected static final String REMOVE_NODE = "RemoveNode";
 	protected static final String ADD_NODE = "AddNode";
+
+
+
+
 //	protected static final String UPDATE_NODE = "UpdateNode";
 
 	private Server server;
@@ -197,6 +201,14 @@ public class MiniCloudNode extends JavaSENode {
 		AdaptationModel superModel = super.kompare(current, target);
 		adaptationModel.addAllAdaptations(superModel.getAdaptations());
 		step.setNextStep(superModel.getOrderedPrimitiveSet());
+         logger.debug("Kompare model contain "+adaptationModel.getAdaptations().size()+" primitives");
+
+        for(AdaptationPrimitive p : adaptationModel.getAdaptationsForJ()){
+            logger.debug("primitive "+p.getPrimitiveType().getName());
+        }
+
+
+
 
 		return adaptationModel;
 	}
