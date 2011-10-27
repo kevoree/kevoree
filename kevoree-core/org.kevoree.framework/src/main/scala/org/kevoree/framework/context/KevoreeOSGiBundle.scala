@@ -1,3 +1,5 @@
+package org.kevoree.framework.context
+
 /**
  * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE, Version 3, 29 June 2007;
  * you may not use this file except in compliance with the License.
@@ -15,7 +17,5 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-
-package org.kevoree.adaptation.deploy.osgi.context
 
 case class KevoreeOSGiBundle(name : String,objClassName : String,bundleId : Long)
