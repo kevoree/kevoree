@@ -165,6 +165,7 @@ class KevoreeKompareBean
     }
 
     //CHECK HARAH KIRI PROBLEM
+    /*
     currentAdaptModel.getAdaptations.filter(ad => ad.getPrimitiveType.getName == JavaSePrimitive.AddDeployUnit || ad.getPrimitiveType.getName == JavaSePrimitive.RemoveDeployUnit || ad.getPrimitiveType.getName == JavaSePrimitive.AddType || ad.getPrimitiveType.getName == JavaSePrimitive.RemoveType).foreach {
       ad =>
         ad.getRef match {
@@ -194,16 +195,16 @@ class KevoreeKompareBean
 
         }
     }
+        */
 
 
-
-    logger.debug("after Hara Kiri detect")
+    //logger.debug("after Hara Kiri detect")
 
     plan(currentAdaptModel, nodeName)
   }
 
 
-  
+    /*
   def detectHaraKiriTypeDefinition(nodeType: TypeDefinition, fnodeType: TypeDefinition): Boolean = {
     if (
       (nodeType.getName == fnodeType.getName) || nodeType.getSuperTypes.exists(superT => detectHaraKiriTypeDefinition(superT, fnodeType))
@@ -223,6 +224,6 @@ class KevoreeKompareBean
     } else {
       false
     }
-  }
+  }  */
 
 }
