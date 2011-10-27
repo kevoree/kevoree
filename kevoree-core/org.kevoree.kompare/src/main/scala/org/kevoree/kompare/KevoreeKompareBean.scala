@@ -77,7 +77,7 @@ class KevoreeKompareBean
             acmd.setRef(adaptation.getRef)
             currentAdaptModel.addAdaptations(acmd)
           }
-
+            /*
           case JavaSePrimitive.UpdateDeployUnit => {
             /*val rcmd = KevoreeAdaptationFactory.eINSTANCE.createAdaptationPrimitive
             rcmd.setPrimitiveType(getAdaptationPrimitive(JavaSePrimitive.RemoveDeployUnit, actualModel.asInstanceOf[ContainerRoot]))
@@ -91,7 +91,7 @@ class KevoreeKompareBean
             acmd.setRef(adaptation.getRef)
             currentAdaptModel.removeAdaptations(adaptation)
             currentAdaptModel.addAdaptations(acmd)
-          }
+          }  */
           case JavaSePrimitive.UpdateBinding => {
             val rcmd = KevoreeAdaptationFactory.eINSTANCE.createAdaptationPrimitive
             rcmd.setPrimitiveType(getAdaptationPrimitive(JavaSePrimitive.RemoveBinding,
