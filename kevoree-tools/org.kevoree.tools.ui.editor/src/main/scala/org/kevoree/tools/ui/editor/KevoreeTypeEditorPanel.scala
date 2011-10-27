@@ -27,14 +27,18 @@ import tools.ui.framework.elements.PortPanel
 
 class KevoreeTypeEditorPanel(typeDefinitionPanel: JPanel, uikernel: KevoreeUIKernel) extends JPanel {
 
-  val verticalSplit: JSplitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT)
-
-
-
-
-
-
   val typeDef: TypeDefinition = uikernel.getUifactory.getMapping.get(typeDefinitionPanel).asInstanceOf[TypeDefinition]
+
+  val hSplit: JSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT)
+  hSplit.setBorder(null)
+  val leftPanel = new KevoreeTypeEditorSourceList(hSplit,uikernel,typeDef)
+  hSplit.setTopComponent(leftPanel.getComponent)
+  if(typeDef!= null){
+    leftPanel.refresh()
+  }
+  hSplit.doLayout()
+
+
   val uifactory = new KevoreeUIFactory(uikernel)
 
   val panel: JPanel = typeDef match {
@@ -44,13 +48,14 @@ class KevoreeTypeEditorPanel(typeDefinitionPanel: JPanel, uikernel: KevoreeUIKer
     case t: NodeType => uifactory.createNodeTypeUI(t)
     case null => {val p = new JPanel; p.setOpaque(false);p  }
   }
-  //panel.setPreferredSize(new Dimension(300, 400))
+  hSplit.setBottomComponent(panel)
 
-  val layoutTop = new JPanel
-  layoutTop.setLayout(new BoxLayout(layoutTop, BoxLayout.LINE_AXIS))
-  layoutTop.add(panel)
+  //val layoutTop = new JPanel
+  //layoutTop.setLayout(new BoxLayout(layoutTop, BoxLayout.LINE_AXIS))
+  //layoutTop.add(panel)
   val typeList = new KevoreeTypeEditorList(typeDef, uikernel)
-  val splitPane: JSplitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, layoutTop, typeList)
+  val splitPane: JSplitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, hSplit, typeList)
+  splitPane.setBorder(null)
   this.setLayout(new BorderLayout())
   this.add(splitPane, BorderLayout.CENTER)
 
