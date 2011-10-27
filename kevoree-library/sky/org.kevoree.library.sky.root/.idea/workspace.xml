@@ -58,37 +58,7 @@
     <favorites_list name="org.kevoree.library.sky.root" />
   </component>
   <component name="FileEditorManager">
-    <leaf>
-      <file leaf-file-name="MiniCloudNode.java" pinned="false" current="true" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/../org.kevoree.library.sky.minicloud/src/main/java/org/kevoree/library/sky/minicloud/nodeType/MiniCloudNode.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="220" column="37" selection-start="8035" selection-end="8035" vertical-scroll-proportion="1.7235495">
-              <folding>
-                <element signature="imports" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="AddNodeCommand.scala" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/../org.kevoree.library.sky.minicloud/src/main/scala/org/kevoree/library/sky/minicloud/command/AddNodeCommand.scala">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="23" column="70" selection-start="603" selection-end="603" vertical-scroll-proportion="0.0">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="pom.xml" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/../org.kevoree.library.sky.minicloud/pom.xml">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="23" column="111" selection-start="981" selection-end="981" vertical-scroll-proportion="0.0">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-    </leaf>
+    <leaf />
   </component>
   <component name="FindManager">
     <FindUsagesManager>
@@ -125,6 +95,24 @@
           <option name="myItemId" value="" />
           <option name="myItemType" value="org.jetbrains.idea.maven.navigator.MavenProjectsStructure$RootNode" />
         </PATH_ELEMENT>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="Kevoree :: Library :: Sky :: Root" />
+          <option name="myItemType" value="org.jetbrains.idea.maven.navigator.MavenProjectsStructure$ProjectNode" />
+        </PATH_ELEMENT>
+      </PATH>
+      <PATH>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="" />
+          <option name="myItemType" value="org.jetbrains.idea.maven.navigator.MavenProjectsStructure$RootNode" />
+        </PATH_ELEMENT>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="Kevoree :: Library :: Sky :: Root" />
+          <option name="myItemType" value="org.jetbrains.idea.maven.navigator.MavenProjectsStructure$ProjectNode" />
+        </PATH_ELEMENT>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="Lifecycle" />
+          <option name="myItemType" value="org.jetbrains.idea.maven.navigator.MavenProjectsStructure$LifecycleNode" />
+        </PATH_ELEMENT>
       </PATH>
       <PATH>
         <PATH_ELEMENT>
@@ -150,10 +138,15 @@
           <option name="myItemType" value="org.jetbrains.idea.maven.navigator.MavenProjectsStructure$LifecycleNode" />
         </PATH_ELEMENT>
       </PATH>
+      <PATH>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="" />
+          <option name="myItemType" value="org.jetbrains.idea.maven.navigator.MavenProjectsStructure$RootNode" />
+        </PATH_ELEMENT>
+      </PATH>
     </treeState>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="335" />
     <option name="y" value="233" />
     <option name="width" value="1920" />
     <option name="height" value="663" />
@@ -184,7 +177,6 @@
       <sortByType />
     </navigator>
     <panes>
-      <pane id="PackagesPane" />
       <pane id="ProjectPane">
         <subPane>
           <PATH>
@@ -341,6 +333,7 @@
           </PATH>
         </subPane>
       </pane>
+      <pane id="PackagesPane" />
       <pane id="Scope" />
     </panes>
   </component>
@@ -356,9 +349,9 @@
     <property name="GoToClass.toSaveIncludeLibraries" value="false" />
     <property name="MemberChooser.showClasses" value="true" />
     <property name="GoToClass.includeLibraries" value="false" />
+    <property name="options.splitter.details.proportions" value="0.2" />
     <property name="options.searchVisible" value="true" />
     <property name="dynamic.classpath" value="false" />
-    <property name="options.splitter.details.proportions" value="0.2" />
   </component>
   <component name="RunManager">
     <configuration default="true" type="MavenRunConfiguration" factoryName="Maven">
@@ -484,19 +477,19 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="335" y="233" width="1920" height="663" extended-state="0" />
-    <editor active="true" />
+    <frame x="0" y="233" width="1920" height="663" extended-state="0" />
+    <editor active="false" />
     <layout>
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="true" content_ui="tabs" />
-      <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.20577231" sideWeight="0.5402685" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.24959914" sideWeight="0.5402685" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Maven Projects" active="true" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.20791021" sideWeight="0.35234898" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.24959914" sideWeight="0.35234898" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.45973155" sideWeight="0.9994658" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.647651" sideWeight="0.9994658" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
@@ -596,38 +589,34 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/../org.kevoree.library.sky.minicloud/src/main/scala/org/kevoree/library/sky/minicloud/command/RemoveNodeCommand.scala">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="15" column="6" selection-start="349" selection-end="349" vertical-scroll-proportion="0.39915967">
-          <folding />
+        <state line="15" column="6" selection-start="349" selection-end="349" vertical-scroll-proportion="0.39915967" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../org.kevoree.library.sky.minicloud/src/main/scala/org/kevoree/library/sky/minicloud/KevoreeNodeManager.scala">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="16" column="7" selection-start="333" selection-end="333" vertical-scroll-proportion="-1.582633" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../org.kevoree.library.sky.minicloud/src/main/java/org/kevoree/library/sky/minicloud/nodeType/MiniCloudNode.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="220" column="37" selection-start="8035" selection-end="8035" vertical-scroll-proportion="3.5414364">
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/../org.kevoree.library.sky.minicloud/src/main/scala/org/kevoree/library/sky/minicloud/command/AddNodeCommand.scala">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="23" column="70" selection-start="603" selection-end="603" vertical-scroll-proportion="0.0">
+        <state line="23" column="17" selection-start="603" selection-end="603" vertical-scroll-proportion="0.37016574">
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/../org.kevoree.library.sky.minicloud/pom.xml">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="23" column="111" selection-start="981" selection-end="981" vertical-scroll-proportion="0.0">
+        <state line="23" column="111" selection-start="981" selection-end="981" vertical-scroll-proportion="0.10497238">
           <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/../org.kevoree.library.sky.minicloud/src/main/scala/org/kevoree/library/sky/minicloud/KevoreeNodeManager.scala">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="16" column="7" selection-start="333" selection-end="333" vertical-scroll-proportion="-1.582633">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/../org.kevoree.library.sky.minicloud/src/main/java/org/kevoree/library/sky/minicloud/nodeType/MiniCloudNode.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="220" column="37" selection-start="8035" selection-end="8035" vertical-scroll-proportion="1.7235495">
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>

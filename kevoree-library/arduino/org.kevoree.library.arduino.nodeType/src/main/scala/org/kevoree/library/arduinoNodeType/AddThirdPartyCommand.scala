@@ -19,7 +19,7 @@ case class AddThirdPartyCommand(ctx: BundleContext, ct: DeployUnit) {
   def execute(): Boolean = {
     try {
       val arteFile = AetherUtil.resolveDeployUnit(ct)
-      lastBundle = ctx.installBundle("file:///"+arteFile.getAbsolutePath, new FileInputStream(arteFile))
+      lastBundle = ctx.installBundle("file:"+arteFile.getAbsolutePath, new FileInputStream(arteFile))
       lastBundle.update()
       lastBundle.start()
       true
