@@ -41,8 +41,10 @@ class KevoreeCoreBean extends KevoreeModelHandlerService with KevoreeActor {
 
   @BeanProperty var configService: ConfigurationService = null
   var bundleContext: BundleContext = null;
+
   def getBundleContext = bundleContext
-  def setBundleContext(bc: BundleContext){
+
+  def setBundleContext(bc: BundleContext) {
     bundleContext = bc
     KevoreeDeployManager.setBundle(bc.getBundle)
   }
@@ -71,15 +73,16 @@ class KevoreeCoreBean extends KevoreeModelHandlerService with KevoreeActor {
               case Some(ist: AbstractNodeType) => {
                 nodeInstance = ist;
                 nodeInstance.startNode()
-                
+
                 //SET CURRENT MODEL 
-                
-                model =modelClone.clone(currentModel)
+
+                model = modelClone.clone(currentModel)
                 model.removeAllGroups()
                 model.removeAllHubs()
                 model.removeAllMBindings()
-                model.getNodes.filter(n => n.getName != nodeName).foreach{ node =>
-                   model.removeNodes(node)
+                model.getNodes.filter(n => n.getName != nodeName).foreach {
+                  node =>
+                    model.removeNodes(node)
                 }
                 model.getNodes(0).removeAllComponents()
                 model.getNodes(0).removeAllHosts()
@@ -177,9 +180,7 @@ class KevoreeCoreBean extends KevoreeModelHandlerService with KevoreeActor {
     case updateMsg: PlatformModelUpdate => KevoreePlatformHelper.updateNodeLinkProp(model, nodeName, updateMsg.targetNodeName, updateMsg.key, updateMsg.value, updateMsg.networkType, updateMsg.weight)
     case PreviousModel() => reply(models)
     case LastModel() => {
-      logger.debug("Before get copy model")
       reply(cloner.clone(model))
-      logger.debug("After get Copy model")
     }
 
     case UpdateModel(pnewmodel) => {
@@ -200,13 +201,57 @@ class KevoreeCoreBean extends KevoreeModelHandlerService with KevoreeActor {
             reply(false)
           } else {
 
-            val newmodel = cloner.clone(pnewmodel)
+            var newmodel = cloner.clone(pnewmodel)
+            //CHECK FOR HARA KIRI
+            if (HaraKiriHelper.detectNodeHaraKiri(model, newmodel, getNodeName())) {
+              logger.warn("HaraKiri detected , flush platform")
+              newmodel = KevoreeFactory.createContainerRoot
+              try {
+                val adaptationModel = nodeInstance.kompare(model, newmodel);
+
+                logger.debug("Adaptation model size "+adaptationModel.getAdaptations.size)
+                adaptationModel.getAdaptations.foreach{ adaptation =>
+                    logger.debug("primitive "+adaptation.getPrimitiveType.getName)
+                }
+
+
+                PrimitiveCommandExecutionHelper.execute(adaptationModel, nodeInstance)
+                KevoreeDeployManager.bundleMapping.foreach{ bm =>
+                  try {
+                    logger.debug("Try to cleanup "+bm.bundleId+","+bm.objClassName+","+bm.name)
+                    KevoreeDeployManager.removeMapping(bm)
+                    getBundleContext.getBundle(bm.bundleId).uninstall()
+                  } catch {
+                    case _ @ e => logger.debug("Error while cleanup platform ",e)
+                  }
+                }
+                logger.debug("Deploy manager cache size after HaraKiri"+KevoreeDeployManager.bundleMapping.size)
+
+                nodeInstance = null
+                switchToNewModel(newmodel)
+                newmodel = cloner.clone(pnewmodel)
+              } catch {
+                case _@e => {
+                  logger.error("Error while update ", e)
+                }
+              }
+              logger.debug("End HaraKiri")
+            }
+
             checkBootstrapNode(newmodel)
             val milli = System.currentTimeMillis
             logger.debug("Begin update model " + milli)
-            val adaptationModel = nodeInstance.kompare(model, newmodel);
+            var deployResult = true
+            try {
+              val adaptationModel = nodeInstance.kompare(model, newmodel);
+              deployResult = PrimitiveCommandExecutionHelper.execute(adaptationModel, nodeInstance)
+            } catch {
+              case _@e => {
+                logger.error("Error while update ", e)
+                deployResult = false
+              }
+            }
 
-            val deployResult = PrimitiveCommandExecutionHelper.execute(adaptationModel, nodeInstance)
 
             if (deployResult) {
               //Merge previous model on new model for platform model
