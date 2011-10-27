@@ -15,22 +15,22 @@
 package org.kevoree.adaptation.deploy.osgi
 
 import org.kevoree.adaptation.deploy.osgi.command._
-import org.kevoree.adaptation.deploy.osgi.context.KevoreeDeployManager
 import org.kevoree._
+import framework.context.KevoreeDeployManager
 import framework.PrimitiveCommand
 import kompare.JavaSePrimitive
 import org.osgi.framework.Bundle
 import org.slf4j.LoggerFactory
-import org.osgi.service.packageadmin.PackageAdmin
 
 class BaseDeployOSGi(bundle: Bundle) {
 
-  private val ctx: KevoreeDeployManager = new KevoreeDeployManager
+  private val ctx = KevoreeDeployManager
+  /*
   ctx.setBundle(bundle)
   ctx.setBundleContext(bundle.getBundleContext)
   val sr = bundle.getBundleContext.getServiceReference(classOf[PackageAdmin].getName)
   ctx.setServicePackageAdmin(bundle.getBundleContext.getService(sr).asInstanceOf[PackageAdmin])
-
+              */
 
   private val logger = LoggerFactory.getLogger(this.getClass);
 
@@ -38,23 +38,23 @@ class BaseDeployOSGi(bundle: Bundle) {
     p.getPrimitiveType.getName match {
      // case Some(primitiveType) => {
      //   primitiveType.getName match {
-          case JavaSePrimitive.AddDeployUnit => AddDeployUnitAetherCommand(p.getRef.asInstanceOf[DeployUnit], ctx)
-          case JavaSePrimitive.RemoveDeployUnit => RemoveDeployUnitCommand(p.getRef.asInstanceOf[DeployUnit], ctx)
-          case JavaSePrimitive.AddThirdParty => AddThirdPartyAetherCommand(p.getRef.asInstanceOf[DeployUnit], ctx)
-          case JavaSePrimitive.RemoveThirdParty => RemoveThirdPartyCommand(p.getRef.asInstanceOf[DeployUnit], ctx)
-          case JavaSePrimitive.AddType => AddTypeCommand(p.getRef.asInstanceOf[TypeDefinition], ctx, nodeName)
-          case JavaSePrimitive.RemoveType => RemoveTypeCommand(p.getRef.asInstanceOf[TypeDefinition], ctx, nodeName)
-          case JavaSePrimitive.AddInstance => AddInstanceCommand(p.getRef.asInstanceOf[Instance], ctx, nodeName)
-          case JavaSePrimitive.UpdateDictionaryInstance => UpdateDictionaryCommand(p.getRef.asInstanceOf[Instance], ctx, nodeName)
-          case JavaSePrimitive.AddInstance => StartInstanceCommand(p.getRef.asInstanceOf[Instance], ctx, nodeName)
-          case JavaSePrimitive.RemoveInstance => RemoveInstanceCommand(p.getRef.asInstanceOf[Instance], ctx, nodeName)
-          case JavaSePrimitive.StopInstance => StopInstanceCommand(p.getRef.asInstanceOf[Instance], ctx, nodeName)
-          case JavaSePrimitive.StartInstance => StartInstanceCommand(p.getRef.asInstanceOf[Instance], ctx, nodeName)
+          case JavaSePrimitive.AddDeployUnit => AddDeployUnitAetherCommand(p.getRef.asInstanceOf[DeployUnit])
+          case JavaSePrimitive.RemoveDeployUnit => RemoveDeployUnitCommand(p.getRef.asInstanceOf[DeployUnit])
+          case JavaSePrimitive.AddThirdParty => AddThirdPartyAetherCommand(p.getRef.asInstanceOf[DeployUnit])
+          case JavaSePrimitive.RemoveThirdParty => RemoveThirdPartyCommand(p.getRef.asInstanceOf[DeployUnit])
+          case JavaSePrimitive.AddType => AddTypeCommand(p.getRef.asInstanceOf[TypeDefinition], nodeName)
+          case JavaSePrimitive.RemoveType => RemoveTypeCommand(p.getRef.asInstanceOf[TypeDefinition], nodeName)
+          case JavaSePrimitive.AddInstance => AddInstanceCommand(p.getRef.asInstanceOf[Instance], nodeName)
+          case JavaSePrimitive.UpdateDictionaryInstance => UpdateDictionaryCommand(p.getRef.asInstanceOf[Instance], nodeName)
+          case JavaSePrimitive.AddInstance => StartInstanceCommand(p.getRef.asInstanceOf[Instance], nodeName)
+          case JavaSePrimitive.RemoveInstance => RemoveInstanceCommand(p.getRef.asInstanceOf[Instance], nodeName)
+          case JavaSePrimitive.StopInstance => StopInstanceCommand(p.getRef.asInstanceOf[Instance], nodeName)
+          case JavaSePrimitive.StartInstance => StartInstanceCommand(p.getRef.asInstanceOf[Instance], nodeName)
         //  case JavaSePrimitive.UpdateDictionaryInstance => UpdateDictionaryCommand(p.getRef.asInstanceOf[Instance], ctx, nodeName)
-          case JavaSePrimitive.AddBinding => AddBindingCommand(p.getRef.asInstanceOf[MBinding], ctx, nodeName)
-          case JavaSePrimitive.RemoveBinding => RemoveBindingCommand(p.getRef.asInstanceOf[MBinding], ctx, nodeName)
-          case JavaSePrimitive.AddFragmentBinding => AddFragmentBindingCommand(p.getRef.asInstanceOf[Channel], p.getTargetNodeName, ctx, nodeName)
-          case JavaSePrimitive.RemoveFragmentBinding => RemoveFragmentBindingCommand(p.getRef.asInstanceOf[Channel], p.getTargetNodeName, ctx, nodeName)
+          case JavaSePrimitive.AddBinding => AddBindingCommand(p.getRef.asInstanceOf[MBinding], nodeName)
+          case JavaSePrimitive.RemoveBinding => RemoveBindingCommand(p.getRef.asInstanceOf[MBinding], nodeName)
+          case JavaSePrimitive.AddFragmentBinding => AddFragmentBindingCommand(p.getRef.asInstanceOf[Channel], p.getTargetNodeName, nodeName)
+          case JavaSePrimitive.RemoveFragmentBinding => RemoveFragmentBindingCommand(p.getRef.asInstanceOf[Channel], p.getTargetNodeName, nodeName)
           case _@name => {
             logger.error("Unknown Kevoree adaptation primitive " + name); null
           }

@@ -18,34 +18,34 @@
 
 package org.kevoree.adaptation.deploy.osgi.command
 
-import org.kevoree.adaptation.deploy.osgi.context.KevoreeDeployManager
 import org.slf4j.LoggerFactory
  import org.kevoree.DeployUnit
 import org.kevoree.framework.PrimitiveCommand
+import org.kevoree.framework.context.KevoreeDeployManager
 
-case class RemoveDeployUnitCommand(deployUnit : DeployUnit, ctx : KevoreeDeployManager) extends PrimitiveCommand {
+case class RemoveDeployUnitCommand(deployUnit : DeployUnit) extends PrimitiveCommand {
 
   var logger = LoggerFactory.getLogger(this.getClass)
 
   def execute() : Boolean= {
-    ctx.bundleMapping.find({bundleMapping =>bundleMapping.name==CommandHelper.buildKEY(deployUnit) && bundleMapping.objClassName==deployUnit.getClass.getName}) match {
+    KevoreeDeployManager.bundleMapping.find({bundleMapping =>bundleMapping.name==CommandHelper.buildKEY(deployUnit) && bundleMapping.objClassName==deployUnit.getClass.getName}) match {
       case Some(bundleMappingFound)=> {
 
 
-          ctx.bundleMapping.foreach{ map =>
+        KevoreeDeployManager.bundleMapping.foreach{ map =>
               logger.debug("map => "+map.name+"-"+map.objClassName+"-"+map.bundleId)
           }
 
        //   val osgibundleContext = bundleMappingFound.bundle.getBundleContext
-          val bundle = ctx.getBundleContext().getBundle(bundleMappingFound.bundleId)
+          val bundle = KevoreeDeployManager.getBundleContext.getBundle(bundleMappingFound.bundleId)
 
           bundle.uninstall()
           logger.debug("Deploy Unit Bundle remove , try to refresh package")
 
-          ctx.getServicePackageAdmin.refreshPackages(Array(bundle))
+        KevoreeDeployManager.getServicePackageAdmin.refreshPackages(Array(bundle))
 
           //REMOVE BUNDLE MAPPING
-          ctx.removeMapping(bundleMappingFound)
+        KevoreeDeployManager.removeMapping(bundleMappingFound)
           true
         }
       case None => logger.error("Type Bundle not found & Or Error while uninstall !!! ");false
@@ -53,6 +53,6 @@ case class RemoveDeployUnitCommand(deployUnit : DeployUnit, ctx : KevoreeDeployM
   }
 
   def undo() {
-    AddDeployUnitAetherCommand(deployUnit,ctx).execute()
+    AddDeployUnitAetherCommand(deployUnit).execute()
   }
 }

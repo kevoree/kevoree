@@ -18,12 +18,12 @@
 
 package org.kevoree.adaptation.deploy.osgi
 
-import context.KevoreeDeployManager
 import org.slf4j.LoggerFactory
 import org.osgi.framework.BundleException
 import org.kevoree.framework.PrimitiveCommand
+import org.kevoree.framework.context.KevoreeDeployManager
 
-class KevoreeDeployPhase(ctx : KevoreeDeployManager) {
+class KevoreeDeployPhase {
 
   var logger = LoggerFactory.getLogger(this.getClass);
 
@@ -54,7 +54,7 @@ class KevoreeDeployPhase(ctx : KevoreeDeployManager) {
               case None => false
               case Some(b) => {
               logger.debug("Resolving bundle: " + b.getSymbolicName)
-              ctx.getServicePackageAdmin.resolveBundles(Array(b));
+                KevoreeDeployManager.getServicePackageAdmin.resolveBundles(Array(b));
                     /*
                c.startLevel match {
                  case Some(level)=> {
