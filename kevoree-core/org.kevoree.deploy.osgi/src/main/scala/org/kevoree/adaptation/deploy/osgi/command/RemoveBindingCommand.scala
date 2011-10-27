@@ -20,12 +20,12 @@ package org.kevoree.adaptation.deploy.osgi.command
 
 import org.kevoree._
 import framework._
-import org.kevoree.adaptation.deploy.osgi.context.KevoreeDeployManager
+import context.KevoreeDeployManager
 import org.kevoree.framework.message.FragmentUnbindMessage
 import org.kevoree.framework.message.PortUnbindMessage
 import org.slf4j.LoggerFactory
 
-case class RemoveBindingCommand(c : MBinding, ctx : KevoreeDeployManager,nodeName:String) extends PrimitiveCommand {
+case class RemoveBindingCommand(c : MBinding,nodeName:String) extends PrimitiveCommand {
 
   var logger = LoggerFactory.getLogger(this.getClass)
 
@@ -33,19 +33,19 @@ case class RemoveBindingCommand(c : MBinding, ctx : KevoreeDeployManager,nodeNam
 
     logger.info("Try to remove binding , component=>"+ c.getPort.eContainer.asInstanceOf[ComponentInstance].getName +"portname =>"+c.getPort.getPortTypeRef.getName+", channel="+c.getHub.getName)
 
-    val KevoreeChannelFound = ctx.bundleMapping.find(map=>map.objClassName == c.getHub.getClass.getName && map.name == c.getHub.getName) match {
+    val KevoreeChannelFound = KevoreeDeployManager.bundleMapping.find(map=>map.objClassName == c.getHub.getClass.getName && map.name == c.getHub.getName) match {
       case None => logger.error("Channel Fragment Mapping not found");None
       case Some(mapfound)=> {
-          val channelBundle = ctx.getBundleContext().getBundle(mapfound.bundleId)
+          val channelBundle = KevoreeDeployManager.getBundleContext.getBundle(mapfound.bundleId)
           channelBundle.getRegisteredServices.find({sr=> sr.getProperty(Constants.KEVOREE_NODE_NAME)==nodeName && sr.getProperty(Constants.KEVOREE_INSTANCE_NAME)==c.getHub.getName }) match {
             case None => logger.error("Channel Fragment Service not found");None
             case Some(sr)=> Some(channelBundle.getBundleContext.getService(sr).asInstanceOf[KevoreeChannelFragment])}}
     }
 
-    val KevoreeComponentFound = ctx.bundleMapping.find(map=>map.objClassName == c.getPort.eContainer.asInstanceOf[ComponentInstance].getClass.getName && map.name == c.getPort.eContainer.asInstanceOf[ComponentInstance].getName ) match {
+    val KevoreeComponentFound = KevoreeDeployManager.bundleMapping.find(map=>map.objClassName == c.getPort.eContainer.asInstanceOf[ComponentInstance].getClass.getName && map.name == c.getPort.eContainer.asInstanceOf[ComponentInstance].getName ) match {
       case None => logger.error("Component Mapping not found");None
       case Some(mapfound)=> {
-          val componentBundle = ctx.getBundleContext().getBundle(mapfound.bundleId)
+          val componentBundle = KevoreeDeployManager.getBundleContext.getBundle(mapfound.bundleId)
           componentBundle.getRegisteredServices.find({sr=> sr.getProperty(Constants.KEVOREE_NODE_NAME)==nodeName && sr.getProperty(Constants.KEVOREE_INSTANCE_NAME)==c.getPort.eContainer.asInstanceOf[ComponentInstance].getName }) match {
             case None => logger.error("Component Actor Service not found");None
             case Some(sr)=> Some(componentBundle.getBundleContext.getService(sr).asInstanceOf[KevoreeComponent])}}
@@ -94,7 +94,7 @@ case class RemoveBindingCommand(c : MBinding, ctx : KevoreeDeployManager,nodeNam
 
 
   def undo() {
-    AddBindingCommand(c, ctx, nodeName).execute()
+    AddBindingCommand(c, nodeName).execute()
   }
 
 }
