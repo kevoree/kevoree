@@ -39,6 +39,7 @@ object Tester extends App {
       System.out.println("Device Inquiry completed!");
       synchronized {
         notifyAll();
+
       }
     }
     def serviceSearchCompleted(transID:Int, respCode:Int) {}

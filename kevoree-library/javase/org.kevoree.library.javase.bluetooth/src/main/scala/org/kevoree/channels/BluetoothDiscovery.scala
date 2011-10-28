@@ -19,6 +19,11 @@ class BluetoothDiscovery extends DaemonActor {
     result.asInstanceOf[Option[RemoteDevice]]
   }
 
+  def getLocalAddress() : String = {
+    val localDevice = LocalDevice.getLocalDevice();
+    localDevice.getBluetoothAddress();
+  }
+
   private case class DISCOVERY(targetName: String)
 
   private case class ENDDISCOVERY()
@@ -42,7 +47,7 @@ class BluetoothDiscovery extends DaemonActor {
                   loop =true
                 } else {
                   loop = false
-                   firstSender ! Some(btDevice)
+                  firstSender ! Some(btDevice)
                   println(btDevice.getFriendlyName(false))
                 }
               }
