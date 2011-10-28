@@ -31,9 +31,10 @@ class KevoreeTypeEditorPanel(typeDefinitionPanel: JPanel, uikernel: KevoreeUIKer
 
   val hSplit: JSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT)
   hSplit.setBorder(null)
-  val leftPanel = new KevoreeTypeEditorSourceList(hSplit,uikernel,typeDef)
+  hSplit.setDividerLocation(200)
+  val leftPanel = new KevoreeTypeEditorSourceList(hSplit, uikernel, typeDef)
   hSplit.setTopComponent(leftPanel.getComponent)
-  if(typeDef!= null){
+  if (typeDef != null) {
     leftPanel.refresh()
   }
   hSplit.doLayout()
@@ -46,7 +47,9 @@ class KevoreeTypeEditorPanel(typeDefinitionPanel: JPanel, uikernel: KevoreeUIKer
     case t: ChannelType => uifactory.createChannelTypeUI(t)
     case t: GroupType => uifactory.createGroupTypeUI(t)
     case t: NodeType => uifactory.createNodeTypeUI(t)
-    case null => {val p = new JPanel; p.setOpaque(false);p  }
+    case null => {
+      val p = new JPanel; p.setOpaque(false); p
+    }
   }
   hSplit.setBottomComponent(panel)
 
@@ -56,7 +59,29 @@ class KevoreeTypeEditorPanel(typeDefinitionPanel: JPanel, uikernel: KevoreeUIKer
   val typeList = new KevoreeTypeEditorList(typeDef, uikernel)
   val splitPane: JSplitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, hSplit, typeList)
   splitPane.setBorder(null)
+  splitPane.setDividerLocation(200)
   this.setLayout(new BorderLayout())
   this.add(splitPane, BorderLayout.CENTER)
+
+
+  def refresh() {
+    //refresh elements tree
+    leftPanel.refresh()
+
+    //refresh graphical component view
+    val panel: JPanel = typeDef match {
+      case t: ComponentType => uifactory.createComponentTypeUI(t)
+      case t: ChannelType => uifactory.createChannelTypeUI(t)
+      case t: GroupType => uifactory.createGroupTypeUI(t)
+      case t: NodeType => uifactory.createNodeTypeUI(t)
+      case null => {
+        val p = new JPanel; p.setOpaque(false); p
+      }
+    }
+    hSplit.setBottomComponent(panel)
+
+    //refresh componet element table
+    typeList.reload()
+  }
 
 }

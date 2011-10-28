@@ -62,6 +62,9 @@ class KevoreeTypeEditorList(typeDefinition: TypeDefinition, uikernel: KevoreeUIK
 
   /* RELOAD ALL TYPE INFORMATIONS */
   def reload() {
+    while(model.getRowCount>0){
+      model.removeRow(model.getRowCount-1)
+    }
     if (typeDefinition != null) {
       if (typeDefinition.getDictionaryType.isDefined) {
         typeDefinition.getDictionaryType.get.getAttributes.foreach {
