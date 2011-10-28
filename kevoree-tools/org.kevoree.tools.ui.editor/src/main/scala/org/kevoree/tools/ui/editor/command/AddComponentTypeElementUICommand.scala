@@ -1,3 +1,5 @@
+package org.kevoree.tools.ui.editor.command
+
 /**
  * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE, Version 3, 29 June 2007;
  * you may not use this file except in compliance with the License.
@@ -11,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kevoree.tools.ui.editor.command
 
 import org.kevoree.tools.ui.editor.KevoreeUIKernel
 import com.explodingpixels.macwidgets.HudWindow
@@ -20,6 +21,7 @@ import java.awt.event.{ActionEvent, ActionListener}
 import com.explodingpixels.macwidgets.plaf.{HudLabelUI, HudComboBoxUI}
 import javax.swing._
 import org.kevoree.tools.ui.editor.form._
+import org.kevoree.{TypeDefinition, ComponentType}
 
 /**
  * User: ffouquet
@@ -27,23 +29,24 @@ import org.kevoree.tools.ui.editor.form._
  * Time: 13:12
  */
 
-class   AddElementUICommand extends Command with ComponentTypeForm with DeployUnitForm with LibraryForm with ChannelTypeForm with PortTypeForm with DictionaryForm {
+class AddComponentTypeElementUICommand extends Command with PortForm{
 
-  val LibraryLabel = "Library"
-  val DeployUnit = "DeployUnit"
-  val ComponentType = "ComponentType"
-  val ChannelType = "ChannelType"
-  val GroupType = "GroupType"
-
+  def portLabel = "Port"
 
   var kernel: KevoreeUIKernel = null
+  var componentType : ComponentType = null
 
   def setKernel(k: KevoreeUIKernel) {
     kernel = k
   }
 
+  def setComponentType(ct : ComponentType) {
+    //logger.debug("ComponentType " + ct)
+    this.componentType = ct
+  }
+
   def execute(p: AnyRef) {
-    val newPopup = new HudWindow("Add new (Library/DeployUnit/TypeDefinition/Port/Property)")
+    val newPopup = new HudWindow("Add new element to ComponenType")
     newPopup.getJDialog.setSize(400, 200)
     newPopup.getJDialog.setLocationRelativeTo(null)
     val layoutPopup = new JPanel()
@@ -51,11 +54,9 @@ class   AddElementUICommand extends Command with ComponentTypeForm with DeployUn
     layoutPopup.setLayout(new BorderLayout())
 
     val newElementsModel = new DefaultComboBoxModel
-    newElementsModel.addElement(LibraryLabel)
-    newElementsModel.addElement(DeployUnit)
-    newElementsModel.addElement(ComponentType)
-    //newElementsModel.addElement(ChannelType)
-    //newElementsModel.addElement(GroupType)
+    newElementsModel.addElement(portLabel)
+
+
     if (p != null) {
       newElementsModel.setSelectedItem(p)
     }
@@ -72,28 +73,21 @@ class   AddElementUICommand extends Command with ComponentTypeForm with DeployUn
     //LISTENER
     newElements.addActionListener(new ActionListener() {
       override def actionPerformed(actionEvent: ActionEvent) {
-        layoutPopup.removeAll()
-        newElements.getSelectedItem match {
-          case LibraryLabel => {
-            val uiElems = createNewLibraryPanel(newPopup, kernel)
-            layoutPopup.add(uiElems._1, BorderLayout.CENTER)
-            layoutPopup.add(uiElems._2, BorderLayout.SOUTH)
+        val uiElems = newElements.getSelectedItem match {
+          case portLabel => {
+            createPortPanel(newPopup, kernel, componentType)
           }
-          case DeployUnit => {
-            val uiElems = createNewDeployUnitPanel(newPopup, kernel)
-            layoutPopup.add(uiElems._1, BorderLayout.CENTER)
-            layoutPopup.add(uiElems._2, BorderLayout.SOUTH)
-          }
-          case ComponentType => {
-            val uiElems = createNewComponentTypePanel(newPopup, kernel)
-            layoutPopup.add(uiElems._1, BorderLayout.CENTER)
-            layoutPopup.add(uiElems._2, BorderLayout.SOUTH)
-          }
-          case _@e => throw new UnsupportedOperationException("No popup implemeted for item:" + e)
+          //case _@e => throw new UnsupportedOperationException("No popup implemeted for item:" + e); null
         }
-        layoutPopup.add(layoutPopupTop, BorderLayout.NORTH)
-        layoutPopup.repaint()
-        layoutPopup.revalidate()
+        if (uiElems != null) {
+          layoutPopup.removeAll()
+          layoutPopup.add(uiElems._1, BorderLayout.CENTER)
+          layoutPopup.add(uiElems._2, BorderLayout.SOUTH)
+          layoutPopup.add(layoutPopupTop, BorderLayout.NORTH)
+          layoutPopup.repaint()
+          layoutPopup.revalidate()
+        }
+
       }
     })
 
@@ -101,13 +95,11 @@ class   AddElementUICommand extends Command with ComponentTypeForm with DeployUn
     newPopup.getContentPane.add(layoutPopup)
     val uiElems = if (p != null) {
       p match {
-        case LibraryLabel => createNewLibraryPanel(newPopup, kernel)
-        case DeployUnit => createNewDeployUnitPanel(newPopup, kernel)
-        case ComponentType => createNewComponentTypePanel(newPopup, kernel)
-        case _ => createNewLibraryPanel(newPopup, kernel)
+        case portLabel => createPortPanel(newPopup, kernel, componentType)
+       // case _ => createPortPanel(newPopup, kernel)
       }
     } else {
-      createNewLibraryPanel(newPopup, kernel)
+      createPortPanel(newPopup, kernel, componentType)
     }
     layoutPopup.add(uiElems._1, BorderLayout.CENTER)
     layoutPopup.add(uiElems._2, BorderLayout.SOUTH)

@@ -47,11 +47,13 @@ public class KevoreeEditorPanel extends JPanel {
         return kernel;
     }
 
+    private KevoreeTypeEditorPanel newL;
+
     private SourceListSelectionListener previousListener = new SourceListSelectionListener() {
         @Override
         public void sourceListItemSelected(SourceListItem sourceListItem) {
             int divider = splitPane.getDividerLocation() ;
-            KevoreeTypeEditorPanel newL = new KevoreeTypeEditorPanel(palette.getSelectedPanel(), kernel);
+            newL = new KevoreeTypeEditorPanel(palette.getSelectedPanel(), kernel);
             splitPane.setBottomComponent(newL);
             splitPane.setDividerLocation(divider);
         }
@@ -60,13 +62,17 @@ public class KevoreeEditorPanel extends JPanel {
     public void setTypeEditor() {
         editableModelPanel.undisplayProperties();
         palette.sourceList().addSourceListSelectionListener(previousListener);
-        KevoreeTypeEditorPanel newL = new KevoreeTypeEditorPanel(palette.getSelectedPanel(), kernel);
+        newL = new KevoreeTypeEditorPanel(palette.getSelectedPanel(), kernel);
         splitPane.setBottomComponent(newL);
     }
 
     public void unsetTypeEditor() {
         palette.sourceList().removeSourceListSelectionListener(previousListener);
         splitPane.setBottomComponent(editableModelPanel);
+    }
+
+    public KevoreeTypeEditorPanel getTypeEditorPanel() {
+        return newL;
     }
 
     private JXPanel leftpanel = new JXPanel();
