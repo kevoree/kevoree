@@ -15,7 +15,6 @@ package org.kevoree.tools.ui.framework.data;
 
 import com.explodingpixels.macwidgets.plaf.*;
 import java.awt.*;
-import javax.swing.*;
 import javax.swing.plaf.basic.*;
 import org.kevoree.*;
 
