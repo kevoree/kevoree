@@ -18,15 +18,15 @@
 
 package org.kevoree.framework.annotation.processor.visitor.sub
 
-import com.sun.mirror.declaration.TypeDeclaration
 import org.kevoree.KevoreeFactory
 import org.kevoree.TypeDefinition
 import org.kevoree.annotation.Constants
+import javax.lang.model.element.TypeElement
 
 
 trait DictionaryProcessor {
 
-  def processDictionary(typeDef : TypeDefinition,classdef : TypeDeclaration)={
+  def processDictionary(typeDef : TypeDefinition,classdef : TypeElement)={
 
     /* CHECK DICTIONARY */
     if(classdef.getAnnotation(classOf[org.kevoree.annotation.DictionaryType]) != null){

@@ -18,17 +18,18 @@
 
 package org.kevoree.tools.annotation.generator
 
-import com.sun.mirror.apt.Filer
 import java.io.File
 
 import org.kevoree.framework.aspects.KevoreeAspects._
 import org.kevoree.framework.KevoreeGeneratorHelper
 import org.kevoree._
+import javax.annotation.processing.Filer
+import javax.tools.StandardLocation
 
 object KevoreeFactoryGenerator {
 
   /* GENERATE FACTORY FOR COMPONENT & PORT  */
-  def generateFactory (root: ContainerRoot, filer: Filer, targetNodeType: String) {
+  def generateFactory(root: ContainerRoot, filer: Filer, targetNodeType: String) {
 
     /* STEP COMPONENT TYPE DEFINITION */
     root.getTypeDefinitions.filter(td => td.getBean != "").filter(p => p.isInstanceOf[ComponentType]).foreach {
@@ -39,19 +40,16 @@ object KevoreeFactoryGenerator {
         val componentPackage = KevoreeGeneratorHelper.getTypeDefinitionGeneratedPackage(ct, targetNodeType)
         val factoryName = ct.getFactoryBean.substring(ct.getFactoryBean.lastIndexOf(".") + 1)
         val componentBean = ct.getFactoryBean.substring(0, ct.getFactoryBean.indexOf("Factory"))
-        val wrapper = filer.createTextFile(com.sun.mirror.apt.Filer.Location.SOURCE_TREE, "",
-                                            new File(componentPackage.replace(".", "/") + "/" + factoryName + ".scala"),
-                                            "UTF-8");
-
-        //var wrapper = filer.createSourceFile(ct.getFactoryBean);
-        wrapper.append("package " + componentPackage + "\n");
-        wrapper.append("import org.kevoree.framework._\n")
-        wrapper.append("import " + KevoreeGeneratorHelper.getTypeDefinitionBasePackage(ct) + "._\n")
-        wrapper.append("object " + factoryName + "{\n")
+        val wrapper = filer.createResource(StandardLocation.SOURCE_OUTPUT, "", new String(componentPackage.replace(".", "/") + "/" + factoryName + ".scala"))
+        val writer = wrapper.openWriter()
+        writer.append("package " + componentPackage + "\n");
+        writer.append("import org.kevoree.framework._\n")
+        writer.append("import " + KevoreeGeneratorHelper.getTypeDefinitionBasePackage(ct) + "._\n")
+        writer.append("object " + factoryName + "{\n")
 
         /* create Component Actor */
-        wrapper.append("def createComponentActor() : KevoreeComponent = {\n")
-        wrapper.append("new KevoreeComponent(create" + ct.getName + "()){")
+        writer.append("def createComponentActor() : KevoreeComponent = {\n")
+        writer.append("new KevoreeComponent(create" + ct.getName + "()){")
 
         if (ct.getStartMethod == "") {
           error("Start method is mandatory for component name => " + ct.getName);
@@ -59,43 +57,43 @@ object KevoreeFactoryGenerator {
         if (ct.getStopMethod == "") {
           error("Stop method is mandatory for component name => " + ct.getName);
         }
-        wrapper.append("def startComponent(){getKevoreeComponentType.asInstanceOf[" + componentBean + "]." +
+        writer.append("def startComponent(){getKevoreeComponentType.asInstanceOf[" + componentBean + "]." +
           ct.getStartMethod + "()}\n")
-        wrapper.append("def stopComponent(){getKevoreeComponentType.asInstanceOf[" + componentBean + "]." +
+        writer.append("def stopComponent(){getKevoreeComponentType.asInstanceOf[" + componentBean + "]." +
           ct.getStopMethod + "()}\n")
 
         if (ct.getUpdateMethod != "") {
-          wrapper.append("override def updateComponent(){getKevoreeComponentType.asInstanceOf[" + componentBean + "]." +
+          writer.append("override def updateComponent(){getKevoreeComponentType.asInstanceOf[" + componentBean + "]." +
             ct.getUpdateMethod + "()}\n")
         }
 
 
-        wrapper.append("}}\n")
+        writer.append("}}\n")
 
         /* create Component */
-        wrapper.append("def " + "create" + ct.getName + "() : " + componentBean + " ={\n")
-        wrapper.append("var newcomponent = new " + componentBean + "();\n")
+        writer.append("def " + "create" + ct.getName + "() : " + componentBean + " ={\n")
+        writer.append("var newcomponent = new " + componentBean + "();\n")
         /* INJECT HOSTED PORT */
         ct.getProvided.foreach {
           ref =>
             val portName = ct.getName + "PORT" + ref.getName
-            wrapper.append("newcomponent.getHostedPorts().put(\"" + ref.getName + "\",create" + portName +
+            writer.append("newcomponent.getHostedPorts().put(\"" + ref.getName + "\",create" + portName +
               "(newcomponent))\n")
         }
         ct.getRequired.foreach {
           ref =>
             val portName = ct.getName + "PORT" + ref.getName
-            wrapper.append("newcomponent.getNeededPorts().put(\"" + ref.getName + "\",create" + portName +
+            writer.append("newcomponent.getNeededPorts().put(\"" + ref.getName + "\",create" + portName +
               "(newcomponent))\n")
         }
-        wrapper.append("newcomponent}\n")
+        writer.append("newcomponent}\n")
 
         /* CREATE NEW PROVIDED PORT & PROXY */
         ct.getProvided.foreach {
           ref =>
             val portName = ct.getName + "PORT" + ref.getName
             // var portNameProxy = ct.getName()+"PORTPROXY"+ref.getName();
-            wrapper.append("def create" + portName + "(component : " + ct.getName + ") : " + portName + " ={ new " +
+            writer.append("def create" + portName + "(component : " + ct.getName + ") : " + portName + " ={ new " +
               portName + "(component)}\n")
           //  wrapper.append("def create"+portNameProxy+"() : "+portNameProxy+" = { new "+portNameProxy+"()}\n")
         }
@@ -106,7 +104,7 @@ object KevoreeFactoryGenerator {
             val portName = ct.getName + "PORT" + ref.getName
             //        var portNameProxy = ct.getName()+"PORTPROXY"+ref.getName();
 
-            wrapper
+            writer
               .append("def create" + portName + "(component : " + ct.getName + ") : " + portName + " ={ return new " +
               portName + "(component);}\n")
 
@@ -114,8 +112,8 @@ object KevoreeFactoryGenerator {
           //wrapper.append("def create"+portNameProxy+"() : "+portNameProxy+" ={ return new "+portNameProxy+"();}\n")
         }
 
-        wrapper.append("}\n")
-        wrapper.close
+        writer.append("}\n")
+        writer.close()
     }
 
     /* STEP CHANNEL TYPE DEFINITION */
@@ -125,31 +123,31 @@ object KevoreeFactoryGenerator {
         val channelTypePackage = KevoreeGeneratorHelper.getTypeDefinitionGeneratedPackage(ct, targetNodeType)
         val factoryName = ct.getFactoryBean.substring(ct.getFactoryBean.lastIndexOf(".") + 1)
         val componentBean = ct.getFactoryBean.substring(0, ct.getFactoryBean.indexOf("Factory"))
-        val wrapper = filer.createTextFile(com.sun.mirror.apt.Filer.Location.SOURCE_TREE, "", new
-            File(channelTypePackage.replace(".", "/") + "/" + factoryName + ".scala"), "UTF-8");
+        val wrapper = filer.createResource(StandardLocation.SOURCE_OUTPUT, "", new String(channelTypePackage.replace(".", "/") + "/" + factoryName + ".scala"));
 
-        //var wrapper = filer.createSourceFile(ct.getFactoryBean);
-        wrapper.append("package " + channelTypePackage + "\n");
-        wrapper.append("import org.kevoree.framework._\n")
-        wrapper.append("object " + factoryName + "{\n")
+        val writer = wrapper.openWriter()
+        writer.append("package " + channelTypePackage + "\n");
+        writer.append("import org.kevoree.framework._\n")
+        writer.append("object " + factoryName + "{\n")
 
-        wrapper.append("def createChannel()={new " + ct.getBean + " with ChannelTypeFragment {\n")
+        writer.append("def createChannel()={new " + ct.getBean + " with ChannelTypeFragment {\n")
 
 
         if (ct.getStartMethod != "") {
-          wrapper.append("override def startChannelFragment(){this.asInstanceOf[" + componentBean + "]." +
+          writer.append("override def startChannelFragment(){this.asInstanceOf[" + componentBean + "]." +
             ct.getStartMethod + "()}\n")
         }
         if (ct.getStopMethod != "") {
-          wrapper
+          writer
             .append("override def stopChannelFragment(){this.asInstanceOf[" + componentBean + "]." + ct.getStopMethod +
             "()}\n")
         }
         if (ct.getUpdateMethod != "") {
-          wrapper.append("override def updateChannelFragment(){this.asInstanceOf[" + componentBean + "]." +
+          writer.append("override def updateChannelFragment(){this.asInstanceOf[" + componentBean + "]." +
             ct.getUpdateMethod + "()}\n")
         }
-        wrapper.append("}}}\n")
+        writer.append("}}}\n")
+        writer.close()
     }
 
     /* STEP NODE TYPE DEFINITION */
@@ -181,31 +179,30 @@ object KevoreeFactoryGenerator {
         val groupTypePackage = KevoreeGeneratorHelper.getTypeDefinitionGeneratedPackage(ct, targetNodeType)
         val factoryName = ct.getFactoryBean.substring(ct.getFactoryBean.lastIndexOf(".") + 1)
         val componentBean = ct.getFactoryBean.substring(0, ct.getFactoryBean.indexOf("Factory"))
-        val wrapper = filer.createTextFile(com.sun.mirror.apt.Filer.Location.SOURCE_TREE, "",
-                                            new File(groupTypePackage.replace(".", "/") + "/" + factoryName + ".scala"),
-                                            "UTF-8");
 
-        //var wrapper = filer.createSourceFile(ct.getFactoryBean);
-        wrapper.append("package " + groupTypePackage + "\n");
-        wrapper.append("import org.kevoree.framework._\n")
-        wrapper.append("object " + factoryName + "{\n")
+        val wrapper = filer.createResource(StandardLocation.SOURCE_OUTPUT, "", new String(groupTypePackage.replace(".", "/") + "/" + factoryName + ".scala"))
+        val writer = wrapper.openWriter()
+        writer.append("package " + groupTypePackage + "\n");
+        writer.append("import org.kevoree.framework._\n")
+        writer.append("object " + factoryName + "{\n")
 
-        wrapper.append("def createGroup()={new " + ct.getBean + " with KevoreeGroup {\n")
+        writer.append("def createGroup()={new " + ct.getBean + " with KevoreeGroup {\n")
 
 
         if (ct.getStartMethod != "") {
-          wrapper
+          writer
             .append("override def startGroup(){this.asInstanceOf[" + componentBean + "]." + ct.getStartMethod + "()}\n")
         }
         if (ct.getStopMethod != "") {
-          wrapper
+          writer
             .append("override def stopGroup(){this.asInstanceOf[" + componentBean + "]." + ct.getStopMethod + "()}\n")
         }
         if (ct.getUpdateMethod != "") {
-          wrapper.append("override def updateGroup(){this.asInstanceOf[" + componentBean + "]." + ct.getUpdateMethod +
+          writer.append("override def updateGroup(){this.asInstanceOf[" + componentBean + "]." + ct.getUpdateMethod +
             "()}\n")
         }
-        wrapper.append("}}}\n")
+        writer.append("}}}\n")
+        writer.close()
     }
 
 
