@@ -18,12 +18,12 @@
 
 package org.kevoree.framework.annotation.processor
 
-import com.sun.mirror.apt.AnnotationProcessorEnvironment
-
 import org.kevoree._
 import core.basechecker.RootChecker
+import javax.annotation.processing.ProcessingEnvironment
+import javax.tools.Diagnostic.Kind
 
-class PostAptChecker(root: ContainerRoot, env: AnnotationProcessorEnvironment) {
+class PostAptChecker(root: ContainerRoot, env: ProcessingEnvironment) {
 
   private var nbErrors = 0
 
@@ -39,7 +39,7 @@ class PostAptChecker(root: ContainerRoot, env: AnnotationProcessorEnvironment) {
     if(errors.size() != 0) {
       import scala.collection.JavaConversions._
       errors.foreach{error =>
-        env.getMessager.printError(error.getMessage)
+        env.getMessager.printMessage(Kind.ERROR,error.getMessage)
         nbErrors += 1
       }
     }
@@ -65,15 +65,15 @@ class PostAptChecker(root: ContainerRoot, env: AnnotationProcessorEnvironment) {
 
       case lctd: LifeCycleTypeDefinition => {
         if (lctd.getStartMethod == "") {
-          env.getMessager.printError("@Start method is mandatory in " + td.getBean + "." + "\n")
+          env.getMessager.printMessage(Kind.ERROR,"@Start method is mandatory in " + td.getBean + "." + "\n")
           nbErrors += 1
         }
         if (lctd.getStopMethod == "") {
-          env.getMessager.printError("@Stop method is mandatory in " + td.getBean + "." + "\n")
+          env.getMessager.printMessage(Kind.ERROR,"@Stop method is mandatory in " + td.getBean + "." + "\n")
           nbErrors += 1
         }
         if (lctd.getUpdateMethod == "") {
-          env.getMessager.printWarning("@Update method is missing in " + td.getBean + "." + "\n")
+          env.getMessager.printMessage(Kind.WARNING,"@Update method is missing in " + td.getBean + "." + "\n")
         }
 
       }
@@ -86,16 +86,16 @@ class PostAptChecker(root: ContainerRoot, env: AnnotationProcessorEnvironment) {
     td match {
       case ct: ComponentType => {
         if (td.getBean == "") {
-          env.getMessager.printError("TypeDefinition bean is null for " + td.getName)
+          env.getMessager.printMessage(Kind.ERROR,"TypeDefinition bean is null for " + td.getName)
           nbErrors += 1
         } else {
           if (td.getBean.lastIndexOf(".") == -1) {
-            env.getMessager.printError("The TypeDefinition seems to be out of any package. (lastIndexOf('.') returned -1 for bean : " + td.getBean + "\n")
+            env.getMessager.printMessage(Kind.ERROR,"The TypeDefinition seems to be out of any package. (lastIndexOf('.') returned -1 for bean : " + td.getBean + "\n")
             nbErrors += 1
           }
         }
         if (td.getFactoryBean.lastIndexOf(".") == -1) {
-          env.getMessager.printError("The TypeDefinition seems to be out of any package. (lastIndexOf('.') returned -1 for FactoryBean : " + td.getFactoryBean + "\n")
+          env.getMessager.printMessage(Kind.ERROR,"The TypeDefinition seems to be out of any package. (lastIndexOf('.') returned -1 for FactoryBean : " + td.getFactoryBean + "\n")
           nbErrors += 1
         }
       }

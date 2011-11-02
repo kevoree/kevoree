@@ -18,17 +18,18 @@
 
 package org.kevoree.framework.annotation.processor.visitor.sub
 
-import com.sun.mirror.apt.AnnotationProcessorEnvironment
-import com.sun.mirror.declaration.TypeDeclaration
 import org.kevoree.ComponentType
 import org.kevoree.KevoreeFactory
 import org.kevoree.framework.annotation.processor.LocalUtility
 import org.kevoree.framework.annotation.processor.visitor.ServicePortTypeVisitor
 
 import com.sun.mirror.`type`.{InterfaceType, ClassType}
+import javax.lang.model.element.TypeElement
+import javax.annotation.processing.ProcessingEnvironment
+import javax.tools.Diagnostic.Kind
 
 trait RequiredPortProcessor {
-  def processRequiredPort(componentType: ComponentType, classdef: TypeDeclaration, env: AnnotationProcessorEnvironment) = {
+  def processRequiredPort(componentType: ComponentType, classdef: TypeElement, env: ProcessingEnvironment) = {
 
     //Collects all RequidedPort annotations and creates a list
     var requiredPortAnnotations: List[org.kevoree.annotation.RequiredPort] = List()
@@ -52,18 +53,18 @@ trait RequiredPortProcessor {
         val portAll: List[org.kevoree.PortTypeRef] = componentType.getRequired.toList ++ componentType.getProvided.toList
         portAll.find(existingPort => existingPort.getName == requiredPort.name) match {
 
-        case None => {
+          case None => {
             val portTypeRef = KevoreeFactory.eINSTANCE.createPortTypeRef
             portTypeRef.setName(requiredPort.name)
             portTypeRef.setOptional(requiredPort.optional)
-          /*
-          we replace the annotation parameter "noDependency" by "needCheckDependency but we do not replace noDependency on the model
-          noDependency = true (equivalent to needCheckDependency = false) means the required port is not use during critical start and stop operations of the container component
-          and so we do not need to take it into account when we try to schedule starts and stops to avoid some deadlocks.
-          noDependency = false (equivalent to needCheckDependency = true) means that the required port is used on start or stop operations of the container component
-          and so we need to check dependency to avoid some deadlocks
-           */
-          portTypeRef.setNoDependency(!requiredPort.needCheckDependency())
+            /*
+           we replace the annotation parameter "noDependency" by "needCheckDependency but we do not replace noDependency on the model
+           noDependency = true (equivalent to needCheckDependency = false) means the required port is not use during critical start and stop operations of the container component
+           and so we do not need to take it into account when we try to schedule starts and stops to avoid some deadlocks.
+           noDependency = false (equivalent to needCheckDependency = true) means that the required port is used on start or stop operations of the container component
+           and so we need to check dependency to avoid some deadlocks
+            */
+            portTypeRef.setNoDependency(!requiredPort.needCheckDependency())
 
             //sets the reference to the type of the port
             portTypeRef.setRef(LocalUtility.getOraddPortType(requiredPort.`type` match {
@@ -72,15 +73,15 @@ trait RequiredPortProcessor {
                 try {
                   requiredPort.className
                 } catch {
-                  case e: com.sun.mirror.`type`.MirroredTypeException =>
+                  case e: javax.lang.model.`type`.MirroredTypeException =>
 
                     //Checks the kind of the className attribute of the annotation
                     if (!e.getTypeMirror.toString.equals("java.lang.Void")) {
-                      e.getTypeMirror.accept(visitor)
+                      e.getTypeMirror.accept(visitor, e.getTypeMirror)
                     } else {
-                      env.getMessager.printError("The className attribute of a Required ServicePort declaration is mandatory, and must be a Class or an Interface.\n"
+                      env.getMessager.printMessage(Kind.ERROR, "The className attribute of a Required ServicePort declaration is mandatory, and must be a Class or an Interface.\n"
                         + "Have a check on RequiredPort[name=" + requiredPort.name + "] of " + componentType.getBean + "\n"
-                        + "TypeMirror of " + requiredPort.name + ", typeMirror : " + e.getTypeMirror + ",  qualifiedName : " + e.getQualifiedName + ", typeMirrorClass : " + e.getTypeMirror.getClass + "\n")
+                        + "TypeMirror of " + requiredPort.name + ", typeMirror : " + e.getTypeMirror + ",  qualifiedName : " + e.getTypeMirror + ", typeMirrorClass : " + e.getTypeMirror.getClass + "\n")
                     }
 
                 }
@@ -102,7 +103,7 @@ trait RequiredPortProcessor {
             componentType.addRequired(portTypeRef)
           }
           case Some(e) => {
-            env.getMessager.printError("Port name duplicated in " + componentType.getName + " Scope => " + requiredPort.name)
+            env.getMessager.printMessage(Kind.ERROR, "Port name duplicated in " + componentType.getName + " Scope => " + requiredPort.name)
           }
         }
     }
