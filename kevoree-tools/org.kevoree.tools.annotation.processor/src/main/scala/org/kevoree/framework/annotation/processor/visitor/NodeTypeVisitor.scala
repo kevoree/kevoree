@@ -18,16 +18,14 @@ package org.kevoree.framework.annotation.processor.visitor
  * and open the template in the editor.
  */
 
-import com.sun.mirror.apt.AnnotationProcessorEnvironment
-import com.sun.mirror.declaration.ClassDeclaration
-import com.sun.mirror.declaration.MethodDeclaration
-import com.sun.mirror.util.SimpleDeclarationVisitor
-
-import org.kevoree.NodeType
 import sub._
+import javax.annotation.processing.ProcessingEnvironment
+import javax.lang.model.util.{SimpleElementVisitor6}
+import org.kevoree.{ChannelType, NodeType}
+import javax.lang.model.element.{ExecutableElement, ElementKind, TypeElement, Element}
 
-case class NodeTypeVisitor(nodeType: NodeType, env: AnnotationProcessorEnvironment)
-  extends SimpleDeclarationVisitor
+case class NodeTypeVisitor(nodeType: NodeType, env: ProcessingEnvironment,rootVisitor : KevoreeAnnotationProcessor)
+  extends SimpleElementVisitor6[Any, Element]
   with AdaptationPrimitiveProcessor
   with DeployUnitProcessor
   with DictionaryProcessor
@@ -37,33 +35,43 @@ case class NodeTypeVisitor(nodeType: NodeType, env: AnnotationProcessorEnvironme
   with TypeDefinitionProcessor {
 
 
-  def commonProcess(classdef: ClassDeclaration) {
+  def commonProcess(classdef: TypeElement) {
     //SUB PROCESSOR
     processDictionary(nodeType, classdef)
-    processDeployUnit(nodeType, classdef, env)
+    processDeployUnit(nodeType, classdef, env,rootVisitor.getOptions)
     processLibrary(nodeType, classdef)
-    processThirdParty(nodeType, classdef, env)
+    processThirdParty(nodeType, classdef, env,rootVisitor)
     processPrimitiveCommand(nodeType, classdef, env)
     import scala.collection.JavaConversions._
-    classdef.getMethods.foreach {
-      method => method.accept(this)
-    }
+    classdef.getEnclosedElements.foreach {
+          method => {
+            method.getKind match {
+              case ElementKind.METHOD => {
+                processLifeCycleMethod(nodeType, method.asInstanceOf[ExecutableElement])
+              }
+              case _ =>
+            }
+          }
+        }
+
   }
 
 
-  override def visitClassDeclaration(classdef: ClassDeclaration) = {
-    if (classdef.getSuperclass != null) {
-      val annotFragment = classdef.getSuperclass.getDeclaration.getAnnotation(classOf[org.kevoree.annotation.NodeType])
-      if (annotFragment != null) {
-        classdef.getSuperclass.getDeclaration.accept(this)
-        defineAsSuperType(nodeType, classdef.getSuperclass.getDeclaration.getSimpleName, classOf[NodeType])
+
+
+
+  override def visitType(p1: TypeElement, p2: Element): Any = {
+    p1.getSuperclass match {
+      case dt: javax.lang.model.`type`.DeclaredType => {
+        val an = dt.asElement().getAnnotation(classOf[org.kevoree.annotation.NodeType])
+        if (an != null) {
+          dt.asElement().accept(this, dt.asElement())
+          defineAsSuperType(nodeType, dt.asElement().getSimpleName.toString, classOf[NodeType])
+        }
       }
+      case _ =>
     }
-    commonProcess(classdef)
-  }
-
-  override def visitMethodDeclaration(methoddef: MethodDeclaration) = {
-    processLifeCycleMethod(nodeType, methoddef)
+    commonProcess(p1)
   }
 
 }

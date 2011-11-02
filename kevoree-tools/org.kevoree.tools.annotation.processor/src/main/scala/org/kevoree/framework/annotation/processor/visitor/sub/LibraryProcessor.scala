@@ -18,15 +18,15 @@
 
 package org.kevoree.framework.annotation.processor.visitor.sub
 
-import com.sun.mirror.declaration.TypeDeclaration
 import org.kevoree.KevoreeFactory
 import org.kevoree.ContainerRoot
 import org.kevoree.TypeDefinition
+import javax.lang.model.element.TypeElement
 
 
 trait LibraryProcessor {
   
-  def processLibrary(typeDef : TypeDefinition,classdef : TypeDeclaration)={
+  def processLibrary(typeDef : TypeDefinition,classdef : TypeElement)={
 
     val root = typeDef.eContainer.asInstanceOf[ContainerRoot]
 

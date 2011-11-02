@@ -18,15 +18,13 @@
 
 package org.kevoree.framework.annotation.processor.visitor
 
-import com.sun.mirror.apt.AnnotationProcessorEnvironment
-import com.sun.mirror.util.SimpleDeclarationVisitor
-
 import sub._
-import com.sun.mirror.declaration.{TypeDeclaration, InterfaceDeclaration, ClassDeclaration, MethodDeclaration}
+import javax.annotation.processing.ProcessingEnvironment
+import javax.lang.model.util.{SimpleTypeVisitor6, SimpleElementVisitor6}
+import javax.lang.model.element.{ElementKind, Element, ExecutableElement, TypeElement}
 import org.kevoree.{ComponentType, ChannelType}
 
-case class ChannelTypeFragmentVisitor(channelType: ChannelType, env: AnnotationProcessorEnvironment)
-  extends SimpleDeclarationVisitor
+case class ChannelTypeFragmentVisitor(channelType: ChannelType, env: ProcessingEnvironment,rootVisitor : KevoreeAnnotationProcessor) extends SimpleElementVisitor6[Any, Element]
   with DeployUnitProcessor
   with DictionaryProcessor
   with LibraryProcessor
@@ -34,36 +32,38 @@ case class ChannelTypeFragmentVisitor(channelType: ChannelType, env: AnnotationP
   with LifeCycleMethodProcessor
   with TypeDefinitionProcessor {
 
-  override def visitClassDeclaration(classdef: ClassDeclaration) {
-    if (classdef.getSuperclass != null) {
-      val annotFragment = classdef.getSuperclass.getDeclaration.getAnnotation(classOf[org.kevoree.annotation.ComponentFragment])
-      if (annotFragment != null) {
-        classdef.getSuperclass.getDeclaration.accept(this)
-        defineAsSuperType(channelType, classdef.getSuperclass.getDeclaration.getSimpleName, classOf[ChannelType])
+
+  override def visitType(p1: TypeElement, p2: Element): Any = {
+    p1.getSuperclass match {
+      case dt: javax.lang.model.`type`.DeclaredType => {
+        val an = dt.asElement().getAnnotation(classOf[org.kevoree.annotation.ChannelTypeFragment])
+        if (an != null) {
+          dt.asElement().accept(this, dt.asElement())
+          defineAsSuperType(channelType, dt.asElement().getSimpleName.toString, classOf[ChannelType])
+        }
       }
+      case _ =>
     }
-
-    commonProcess(classdef)
+    commonProcess(p1,p2)
   }
 
-  override def visitInterfaceDeclaration(interfaceDecl: InterfaceDeclaration) {
-    commonProcess(interfaceDecl)
-  }
-
-
-  override def visitMethodDeclaration(methoddef: MethodDeclaration) {
-    processLifeCycleMethod(channelType, methoddef)
-  }
-
-  def commonProcess(typeDecl: TypeDeclaration) = {
+  def commonProcess(typeDecl: TypeElement, p2: Element) {
     processDictionary(channelType, typeDecl)
-    processDeployUnit(channelType, typeDecl, env)
+    processDeployUnit(channelType, typeDecl, env,rootVisitor.getOptions)
     processLibrary(channelType, typeDecl)
-    processThirdParty(channelType, typeDecl, env)
+    processThirdParty(channelType, typeDecl, env,rootVisitor)
     import scala.collection.JavaConversions._
-    typeDecl.getMethods.foreach {
-      method => method.accept(this)
-    }
+    typeDecl.getEnclosedElements.foreach {
+          method => {
+
+            method.getKind match {
+              case ElementKind.METHOD => {
+                processLifeCycleMethod(channelType, method.asInstanceOf[ExecutableElement])
+              }
+              case _ =>
+            }
+          }
+        }
   }
 
 }

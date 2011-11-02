@@ -18,60 +18,31 @@
 
 package org.kevoree.framework.annotation.processor.visitor.sub
 
-import com.sun.mirror.apt.AnnotationProcessorEnvironment
-import com.sun.mirror.declaration.TypeDeclaration
 
 //import scala.collection.JavaConversions._
 
 import org.kevoree._
+import javax.lang.model.element.TypeElement
+import javax.annotation.processing.ProcessingEnvironment
 
 trait DeployUnitProcessor {
 
-  def processDeployUnit(typeDef: TypeDefinition, classdef: TypeDeclaration, env: AnnotationProcessorEnvironment) = {
+  def processDeployUnit(typeDef: TypeDefinition, classdef: TypeElement, env: ProcessingEnvironment,options : java.util.HashMap[String,String]) = {
     val root: ContainerRoot = typeDef.eContainer.asInstanceOf[ContainerRoot]
     import scala.collection.JavaConversions._
 
     /* CREATE COMPONENT TYPE DEPLOY UNIT IF NEEDED */
-    val unitName = env.getOptions.find({
-      op => op._1.contains("kevoree.lib.id")
-    }).getOrElse {
-      ("key=", "")
-    }._1.split('=').toList.get(1)
-    val groupName = env.getOptions.find({
-      op => op._1.contains("kevoree.lib.group")
-    }).getOrElse {
-      ("key=", "")
-    }._1.split('=').toList.get(1)
-    val version = env.getOptions.find({
-      op => op._1.contains("kevoree.lib.version")
-    }).getOrElse {
-      ("key=", "")
-    }._1.split('=').toList.get(1)
-    val tag = env.getOptions.find({
-      op => op._1.contains("kevoree.lib.tag")
-    }).getOrElse {
-      ("key=", "")
-    }._1.split('=').toList.get(1)
-
-    val repositories = env.getOptions.find({
-      op => op._1.contains("repositories")
-    }).getOrElse {
-      ("key=", "")
-    }._1.split('=').toList.get(1)
+    val unitName = options.get("kevoree.lib.id")
+    val groupName = options.get("kevoree.lib.group")
+    val version = options.get("kevoree.lib.version")
+    val tag = options.get("kevoree.lib.tag")
+    val repositories = options.get("repositories")
     val repositoriesList: List[String] = repositories.split(";").filter(r => r != null && r != "").toList
 
-    val tRepositories = env.getOptions.find({
-      op => op._1.contains("otherRepositories")
-    }).getOrElse {
-      ("key=", "")
-    }._1.split('=').toList.get(1)
+    val tRepositories = options.get("otherRepositories")
     val tRepositoriesList: List[String] = tRepositories.split(";").filter(r => r != null && r != "").toList
 
-    val nodeTypeNames = env.getOptions.find({
-      op => op._1.contains("nodeTypeNames")
-    }).getOrElse {
-      ("key=", "")
-    }._1.split('=').toList.get(1)
+    val nodeTypeNames = options.get("nodeTypeNames")
     val nodeTypeNamesS: List[String] = nodeTypeNames.split(",").filter(r => r != null && r != "").toList
 
     var deployUnits: List[DeployUnit] = List()
@@ -104,8 +75,6 @@ trait DeployUnitProcessor {
                 }
               }
             }
-
-            //println("new dpeloy unit target node type "+newdeploy.getTargetNodeType)
 
             root.addDeployUnits(newdeploy)
             deployUnits = deployUnits ++ List(newdeploy)
