@@ -69,7 +69,7 @@ object KevoreeRequiredPortGenerator {
             writer.append("var msgcall = new org.kevoree.framework.MethodCallMessage\n")
             writer.append("msgcall.setMethodName(\""+op.getName+"\");\n")
             op.getParameters.foreach{param=>
-              writer.append("msgcall.getParams.put(\""+param.getName+"\","+param.getName+");\n")
+              writer.append("msgcall.getParams.put(\""+param.getName+"\","+param.getName+".asInstanceOf[AnyRef]);\n")
             }
 
             writer.append("(this !? msgcall).asInstanceOf["+op.getReturnType.get.print('[',']')+"]")
