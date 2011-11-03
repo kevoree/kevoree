@@ -22,8 +22,6 @@ import org.kevoree.ComponentType
 import org.kevoree.KevoreeFactory
 import org.kevoree.framework.annotation.processor.LocalUtility
 import org.kevoree.framework.annotation.processor.visitor.ServicePortTypeVisitor
-
-import com.sun.mirror.`type`.{InterfaceType, ClassType}
 import javax.lang.model.element.TypeElement
 import javax.annotation.processing.ProcessingEnvironment
 import javax.tools.Diagnostic.Kind
