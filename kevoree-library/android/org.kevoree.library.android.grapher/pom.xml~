@@ -1,0 +1,77 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>org.kevoree.library.android</groupId>
+    <artifactId>org.kevoree.library.android.grapher</artifactId>
+    <packaging>bundle</packaging>
+    <name>Kevoree :: Library :: Android :: Text2Speech</name>
+    <version>1.4.1-SNAPSHOT</version>
+
+    <parent>
+        <artifactId>org.kevoree.library.android.root</artifactId>
+        <groupId>org.kevoree.library.android</groupId>
+        <version>1.4.1-SNAPSHOT</version>
+        <relativePath>../org.kevoree.library.android.root/pom.xml</relativePath>
+    </parent>
+
+    <build>
+        <plugins>
+            <!-- android dex phase -->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>1.1.1</version>
+                <executions>
+                    <execution>
+                        <id>generate-dex</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>exec</goal>
+                        </goals>
+                        <configuration>
+                            <executable>${android.tools.dx}</executable>
+                            <arguments>
+                                <argument>--dex</argument>
+                                <argument>--core-library</argument>
+                                <argument>--output=${project.build.directory}/classes.dex</argument>
+                                <argument>${project.build.directory}/${project.build.finalName}.jar</argument>
+                            </arguments>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>prepare-dexed-jar</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>exec</goal>
+                        </goals>
+                        <configuration>
+                            <executable>${android.tools.aapt}</executable>
+                            <workingDirectory>${project.build.directory}</workingDirectory>
+                            <arguments>
+                                <argument>add</argument>
+                                <argument>${project.build.directory}/${project.build.finalName}.jar</argument>
+                                <argument>classes.dex</argument>
+                            </arguments>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <version>2.3.5</version>
+                <extensions>true</extensions>
+                <configuration>
+                    <instructions>
+                        <Import-Package>!org.kevoree.library.text2speech.*,org.osgi.*;version="[1,5)",*
+                        </Import-Package>
+                        <Export-Package>org.kevoree.library.text2speech.*</Export-Package>
+                    </instructions>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>
+

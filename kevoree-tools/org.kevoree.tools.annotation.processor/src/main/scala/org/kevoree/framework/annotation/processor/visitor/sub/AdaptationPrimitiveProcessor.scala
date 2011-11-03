@@ -13,10 +13,11 @@
  */
 package org.kevoree.framework.annotation.processor.visitor.sub
 
-import com.sun.mirror.declaration.TypeDeclaration
-import com.sun.mirror.apt.AnnotationProcessorEnvironment
 import org.kevoree.annotation.PrimitiveCommand
 import org.kevoree.{KevoreeFactory, AdaptationPrimitiveType, ContainerRoot, NodeType}
+import javax.lang.model.element.TypeElement
+import javax.annotation.processing.ProcessingEnvironment
+import javax.tools.Diagnostic.Kind
 
 /**
  * User: Erwan Daubert - erwan.daubert@gmail.com
@@ -28,7 +29,7 @@ trait AdaptationPrimitiveProcessor {
 
   val builder = new StringBuilder
 
-  def processPrimitiveCommand(typeDef: NodeType, classdef: TypeDeclaration, env: AnnotationProcessorEnvironment) {
+  def processPrimitiveCommand(typeDef: NodeType, classdef: TypeElement, env: ProcessingEnvironment) {
     //Collects all primitive command annotations and creates a list
     var primitiveCommandAnnotations: List[org.kevoree.annotation.PrimitiveCommand] = Nil
 
@@ -48,8 +49,7 @@ trait AdaptationPrimitiveProcessor {
 
           } else {
             // generate a compilation error
-            env.getMessager
-              .printError("Primitive command " + primitiveCommandAnnotation.name() + " is defined more than once !")
+            env.getMessager.printMessage(Kind.ERROR,"Primitive command " + primitiveCommandAnnotation.name() + " is defined more than once !")
           }
       }
 

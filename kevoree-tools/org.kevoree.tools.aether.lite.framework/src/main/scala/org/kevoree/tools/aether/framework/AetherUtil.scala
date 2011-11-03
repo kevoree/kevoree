@@ -96,8 +96,6 @@ object AetherUtil {
         artifact = new DefaultArtifact(List(du.getGroupName.trim(), du.getUnitName.trim(), du.getVersion.trim()).mkString(":"))
       }
 
-      // println("artifact=" + artifact.toString + "-" + artifact.isSnapshot)
-
       val artifactRequest = new ArtifactRequest
       artifactRequest.setArtifact(artifact)
       val urls = buildPotentialMavenURL(du.eContainer.asInstanceOf[ContainerRoot])

@@ -1,5 +1,7 @@
 package org.kevoree.library.fakedomo;
 
+import java.util.List;
+
 /**
  * Created by IntelliJ IDEA.
  * User: ffouquet
