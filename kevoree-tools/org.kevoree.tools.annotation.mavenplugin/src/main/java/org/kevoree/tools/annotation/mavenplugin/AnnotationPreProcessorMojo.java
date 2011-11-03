@@ -585,7 +585,7 @@ public class AnnotationPreProcessorMojo extends AbstractAnnotationProcessorMojo 
      * @parameter
      * @required
      */
-    private String nodeTypeNames ;
+    private String nodeTypeNames;
 
     private static DateFormat dateFormat = new SimpleDateFormat("yyyyMMddHHmmSSS");
 
@@ -685,15 +685,8 @@ public class AnnotationPreProcessorMojo extends AbstractAnnotationProcessorMojo 
     }
 
     // protected methods ------------------------------------------------------
-
-
-
-
-
-
     private static String toPath(Collection<String> paths) {
         StringBuffer buffer = new StringBuffer();
-
         for (Iterator<String> iterator = paths.iterator(); iterator.hasNext(); ) {
             buffer.append(iterator.next());
 
@@ -701,7 +694,6 @@ public class AnnotationPreProcessorMojo extends AbstractAnnotationProcessorMojo 
                 buffer.append(File.pathSeparator);
             }
         }
-
         return buffer.toString();
     }
 
