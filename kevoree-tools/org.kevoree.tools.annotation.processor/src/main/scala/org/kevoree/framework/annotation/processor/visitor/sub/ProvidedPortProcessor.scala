@@ -18,17 +18,18 @@
 
 package org.kevoree.framework.annotation.processor.visitor.sub
 
-import com.sun.mirror.apt.AnnotationProcessorEnvironment
-import com.sun.mirror.declaration.TypeDeclaration
 import org.kevoree.KevoreeFactory
 import org.kevoree.ComponentType
 import org.kevoree.framework.annotation.processor.LocalUtility
 import org.kevoree.framework.annotation.processor.visitor.ServicePortTypeVisitor
+import javax.lang.model.element.TypeElement
+import javax.annotation.processing.ProcessingEnvironment
+import javax.tools.Diagnostic.Kind
 
 
 trait ProvidedPortProcessor {
 
-  def processProvidedPort(componentType: ComponentType, classdef: TypeDeclaration, env: AnnotationProcessorEnvironment) = {
+  def processProvidedPort(componentType: ComponentType, classdef: TypeElement, env: ProcessingEnvironment) = {
 
     //Collects all ProvidedPort annotations and creates a list
     var providedPortAnnotations: List[org.kevoree.annotation.ProvidedPort] = Nil
@@ -66,15 +67,15 @@ trait ProvidedPortProcessor {
                 try {
                   providedPort.className
                 } catch {
-                  case e: com.sun.mirror.`type`.MirroredTypeException =>
+                  case e: javax.lang.model.`type`.MirroredTypeException =>
 
                      //Checks the kind of the className attribute of the annotation
                     if (!e.getTypeMirror.toString.equals("java.lang.Void")) {
-                      e.getTypeMirror.accept(visitor)
+                      e.getTypeMirror.accept(visitor,e.getTypeMirror)
                     } else {
-                      env.getMessager.printError("The className attribute of a Provided ServicePort declaration is mandatory, and must be a Class or an Interface.\n"
+                      env.getMessager.printMessage(Kind.ERROR,"The className attribute of a Provided ServicePort declaration is mandatory, and must be a Class or an Interface.\n"
                         + "Have a check on ProvidedPort[name=" + providedPort.name + "] of " + componentType.getBean + "\n"
-                        + "TypeMirror of " + providedPort.name + ", typeMirror : " + e.getTypeMirror + ",  qualifiedName : " + e.getQualifiedName + ", typeMirrorClass : " + e.getTypeMirror.getClass + "\n")
+                        + "TypeMirror of " + providedPort.name + ", typeMirror : " + e.getTypeMirror + ",  qualifiedName : " + e.getTypeMirror + ", typeMirrorClass : " + e.getTypeMirror.getClass + "\n")
                     }
 
                 }
@@ -101,7 +102,7 @@ trait ProvidedPortProcessor {
 
           //Two ports have the same name in the component scope
           case Some(e) => {
-            env.getMessager.printError("Port name duplicated in " + componentType.getName + " Scope => " + providedPort.name)
+            env.getMessager.printMessage(Kind.ERROR,"Port name duplicated in " + componentType.getName + " Scope => " + providedPort.name)
           }
         }
 

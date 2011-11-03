@@ -30,7 +30,6 @@ class ManualWagonProvider extends WagonProvider {
        val httpC = new LightweightHttpWagon();
       return httpC;
     }
-    println("Null Wagon Connector")
     null
   }
 

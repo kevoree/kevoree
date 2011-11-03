@@ -13,10 +13,11 @@
  */
 package org.kevoree.tools.annotation.generator
 
-import com.sun.mirror.apt.Filer
 import org.kevoree.framework.KevoreeGeneratorHelper
 import org.kevoree.{NodeType, ContainerRoot}
-import java.io.{PrintWriter, File}
+import javax.annotation.processing.Filer
+import javax.tools.StandardLocation
+import java.io.{Writer}
 
 /**
  * User: Erwan Daubert - erwan.daubert@gmail.com
@@ -29,31 +30,30 @@ object KevoreeAdaptationPrimitiveTypeGenerator {
   def generate (root: ContainerRoot, filer: Filer, nt: NodeType, targetNodeType: String) {
     val nodeTypePackage = KevoreeGeneratorHelper.getTypeDefinitionGeneratedPackage(nt, targetNodeType)
 
-    val wrapper = filer.createTextFile(com.sun.mirror.apt.Filer.Location.SOURCE_TREE, "", new
-        File(nodeTypePackage.replace(".", "/") + "/" + nt.getName + "_aspect.scala"), "UTF-8");
+    val wrapper = filer.createResource(StandardLocation.SOURCE_OUTPUT, "", new String(nodeTypePackage.replace(".", "/") + "/" + nt.getName + "_aspect.scala"));
+    val writer = wrapper.openWriter()
+    writer.append("package " + nodeTypePackage + "\n");
 
-    wrapper.append("package " + nodeTypePackage + "\n");
+    writer append ("trait " + nt.getName + "_aspect {\n")
 
-    wrapper append ("trait " + nt.getName + "_aspect {\n")
-
-    wrapper append ("public def getPrimitive(primitive : AdaptationPrimitive) : PrimitiveCommand = {\n")
-    wrapper append ("primitive.getPrimitiveType().getName match {\n")
+    writer append ("public def getPrimitive(primitive : AdaptationPrimitive) : PrimitiveCommand = {\n")
+    writer append ("primitive.getPrimitiveType().getName match {\n")
 
     if (AdaptationPrimitiveMapping.getMappings(nt).size > 0) {
       val mappings = AdaptationPrimitiveMapping.getMappings(nt)
       mappings.keySet.foreach {
-        name => addCase(name, mappings(name), wrapper)
+        name => addCase(name, mappings(name), writer)
       }
     }
 
-    wrapper append ("case _ => null\n")
-    wrapper append ("}")
+    writer append ("case _ => null\n")
+    writer append ("}")
 
     AdaptationPrimitiveMapping.clear()
 
   }
 
-  private def addCase (name: String, className: String, wrapper: PrintWriter) {
+  private def addCase (name: String, className: String, wrapper: Writer) {
     wrapper append ("case " + name + " => {\n")
     wrapper append ("val command = new " + className + "()\n")
     wrapper append ("command.setRef(primitive.getRef())\n")

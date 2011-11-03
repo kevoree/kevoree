@@ -18,18 +18,18 @@
 
 package org.kevoree.framework.annotation.processor
 
-import com.sun.mirror.apt.AnnotationProcessorEnvironment
 import org.kevoree.ContainerRoot
 import org.kevoree.PortType
 import org.kevoree.TypedElement
+import javax.annotation.processing.ProcessingEnvironment
 
 
 object LocalUtility {
   var root : ContainerRoot = _
 
-  def generateLibURI(env:AnnotationProcessorEnvironment) = {
+  def generateLibURI(options: java.util.Map[String,String]) = {
     import scala.collection.JavaConversions._
-     env.getOptions.find({op => op._1.contains("kevoree.lib.target")}).getOrElse{("key=","")}._1.split('=').toList.get(1)
+    options.get("kevoree.lib.target")
   }
 
   def getOraddDataType(datatype : TypedElement) : TypedElement = {
