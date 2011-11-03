@@ -16,45 +16,37 @@ package org.kevoree.tools.annotation.mavenplugin
 import java.io.File
 
 object EmbettedScalaCompiler {
-	
-  def compile(srcPATH : String, outputPATH : String, jars : List[String]) : Int = {
 
-    var startTime = System.currentTimeMillis
+  def compile(srcPATH: String, outputPATH: String, jars: List[String]): Int = {
+
+    val startTime = System.currentTimeMillis
     var compilationResult = 0
 
     /* Src files collect step */
-    var listSrcFiles = InternalCompilerHelper.listFile(new File(srcPATH))
+    val listSrcFiles = InternalCompilerHelper.listFile(new File(srcPATH))
 
-    if(listSrcFiles.size > 0){
+    if (listSrcFiles.size > 0) {
 
-    /* Build class path */
-		
-    println("Scala compilation step begin on "+listSrcFiles.size+" files")
-		
-    var classpath : StringBuilder = new StringBuilder("."+File.pathSeparator)
-    for(path <- jars) {
-      classpath.append(path+File.pathSeparator)
-    }
-		
-    val compilParams = List("-nowarn","-encoding","UTF8","-g:none","-optimise","-d",outputPATH,"-classpath",classpath.toString) ++ listSrcFiles
+      /* Build class path */
 
-    //println("hi"+compilParams)
-    /* Compilation step */
-   // if(fsc){
-   //   try scala.tools.nsc.CompileClient.main0(compilParams.toArray) catch { case e : Exception => compilationResult = 1 }
-   // } else {
+      println("Scala compilation step begin on " + listSrcFiles.size + " files")
 
 
+      val classpath: StringBuilder = new StringBuilder("." + File.pathSeparator)
+      for (path <- jars) {
+        classpath.append(path + File.pathSeparator)
+      }
+
+      val compilParams = List("-nowarn", "-encoding", "UTF8", "-g:none", "-optimise", "-d", outputPATH, "-classpath", classpath.toString) ++ listSrcFiles
 
       _root_.scala.tools.nsc.Main.process(compilParams.toArray)
       compilationResult = if (scala.tools.nsc.Main.reporter.hasErrors) 1 else 0
-   // }
-		
-    var endTime= System.currentTimeMillis() - startTime
-    println("Scala compilation step complete in "+(endTime)+" millisecondes ")
+
+      val endTime = System.currentTimeMillis() - startTime
+      println("Scala compilation step complete in " + (endTime) + " millisecondes ")
     }
-    return compilationResult
+    compilationResult
   }
-	
+
 
 }

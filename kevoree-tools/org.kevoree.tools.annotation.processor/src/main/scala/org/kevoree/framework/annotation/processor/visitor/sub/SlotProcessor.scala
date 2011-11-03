@@ -18,17 +18,14 @@
 
 package org.kevoree.framework.annotation.processor.visitor.sub
 
-import com.sun.mirror.apt.AnnotationProcessorEnvironment
-import com.sun.mirror.declaration.TypeDeclaration
-import org.kevoree.KevoreeFactory
 import org.kevoree.ComponentType
-import org.kevoree.framework.annotation.processor.LocalUtility
-import org.kevoree.framework.annotation.processor.visitor.ServicePortTypeVisitor
+import javax.annotation.processing.ProcessingEnvironment
+import javax.lang.model.element.TypeElement
 
 
 trait SlotProcessor {
 
-  def processSlot(componentType : ComponentType, typeDecl: TypeDeclaration, env: AnnotationProcessorEnvironment)  {
+  def processSlot(componentType : ComponentType, typeDecl: TypeElement, env: ProcessingEnvironment)  {
 
   }
  

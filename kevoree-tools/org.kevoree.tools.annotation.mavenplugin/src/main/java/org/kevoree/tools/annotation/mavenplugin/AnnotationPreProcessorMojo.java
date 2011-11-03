@@ -18,9 +18,9 @@ import org.apache.maven.artifact.DefaultArtifact;
 import org.apache.maven.model.Dependency;
 import org.apache.maven.model.Repository;
 import org.apache.maven.model.Resource;
-import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.project.MavenProject;
+import org.bsc.maven.plugin.processor.AbstractAnnotationProcessorMojo;
 import org.codehaus.mojo.apt.AptUtils;
 import org.codehaus.mojo.apt.CollectionUtils;
 import org.codehaus.mojo.apt.LogUtils;
@@ -31,15 +31,19 @@ import org.codehaus.plexus.compiler.util.scan.SourceInclusionScanner;
 import org.codehaus.plexus.compiler.util.scan.StaleSourceScanner;
 import org.codehaus.plexus.compiler.util.scan.mapping.SingleTargetSourceMapping;
 import org.codehaus.plexus.compiler.util.scan.mapping.SuffixMapping;
+import org.codehaus.plexus.util.FileUtils;
 import org.codehaus.plexus.util.StringUtils;
 import org.kevoree.ContainerRoot;
 import org.kevoree.framework.KevoreeXmiHelper;
+import org.kevoree.framework.annotation.processor.visitor.KevoreeAnnotationProcessor;
 import org.kevoree.merger.KevoreeMergerComponent;
 
+import javax.tools.*;
 import java.io.*;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.concurrent.locks.ReentrantLock;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
@@ -51,7 +55,354 @@ import java.util.jar.JarFile;
  * @phase generate-sources
  * @requiresDependencyResolution compile
  */
-public class AnnotationPreProcessorMojo extends AbstractMojo {
+public class AnnotationPreProcessorMojo extends AbstractAnnotationProcessorMojo {
+
+
+    /**
+     * Annotation Processor FQN (Full Qualified Name) - when processors are not specified, the default discovery mechanism will be used
+     *
+     * @parameter
+     */
+    //@MojoParameter(required = false, description = "Annotation Processor FQN (Full Qualified Name) - when processors are not specified, the default discovery mechanism will be used")
+    private String[] processors;
+
+    /**
+     * Additional compiler arguments
+     *
+     * @parameter
+     */
+    //@MojoParameter(required = false, description = "Additional compiler arguments")
+    private String compilerArguments;
+
+    /**
+     * Additional processor options (see javax.annotation.processing.ProcessingEnvironment#getOptions()
+     *
+     * @parameter alias="options"
+     */
+    private java.util.Map<String, Object> optionMap;
+
+    /**
+     * Controls whether or not the output directory is added to compilation
+     */
+    //@MojoParameter(required = false, description = "Controls whether or not the output directory is added to compilation")
+    private Boolean addOutputDirectoryToCompilationSources;
+
+    /**
+     * Indicates whether the build will continue even if there are compilation errors; defaults to true.
+     *
+     * @parameter default-value="true"  expression = "${annotation.failOnError}"
+     * @required
+     */
+    //@MojoParameter(required = true, defaultValue = "true", expression = "${annotation.failOnError}", description = "Indicates whether the build will continue even if there are compilation errors; defaults to true.")
+    private Boolean failOnError = true;
+
+    /**
+     * Indicates whether the compiler output should be visible, defaults to true.
+     *
+     * @parameter expression = "${annotation.outputDiagnostics}" default-value="true"
+     * @required
+     */
+    //@MojoParameter(required = true, defaultValue = "true", expression = "${annotation.outputDiagnostics}", description = "Indicates whether the compiler output should be visible, defaults to true.")
+    private boolean outputDiagnostics = true;
+
+    /**
+     * System properties set before processor invocation.
+     *
+     * @parameter
+     */
+    //@MojoParameter(required = false, description = "System properties set before processor invocation.")
+    private java.util.Map<String, String> systemProperties;
+
+
+    private ReentrantLock compileLock = new ReentrantLock();
+
+
+    private String buildProcessor() {
+        if (processors == null || processors.length == 0) {
+            return null;
+        }
+
+        StringBuilder result = new StringBuilder();
+
+        int i = 0;
+
+        for (i = 0; i < processors.length - 1; ++i) {
+            result.append(processors[i]).append(',');
+        }
+
+        result.append(processors[i]);
+
+        return result.toString();
+    }
+
+    private String buildCompileClasspath() {
+
+        java.util.Set<String> pathElements = new java.util.LinkedHashSet<String>();
+
+        if (pluginArtifacts != null) {
+
+            for (Artifact a : pluginArtifacts) {
+
+                if ("compile".equalsIgnoreCase(a.getScope()) || "runtime".equalsIgnoreCase(a.getScope())) {
+
+                    java.io.File f = a.getFile();
+
+                    if (f != null) pathElements.add(a.getFile().getAbsolutePath());
+                }
+
+            }
+        }
+
+        getClasspathElements(pathElements);
+
+        StringBuilder result = new StringBuilder();
+
+        for (String elem : pathElements) {
+            result.append(elem).append(File.pathSeparator);
+        }
+        return result.toString();
+    }
+
+
+    @SuppressWarnings("unchecked")
+    private void executeWithExceptionsHandled() throws Exception {
+        if (outputDirectory == null) {
+            outputDirectory = getDefaultOutputDirectory();
+        }
+
+        ensureOutputDirectoryExists();
+        addOutputToSourcesIfNeeded();
+
+        // new Debug(project).printDebugInfo();
+
+        java.io.File sourceDir = getSourceDirectory();
+        if (sourceDir == null) {
+            getLog().warn("source directory cannot be read (null returned)! Processor task will be skipped");
+            return;
+        }
+        if (!sourceDir.exists()) {
+            getLog().warn("source directory doesn't exist! Processor task will be skipped");
+            return;
+        }
+        if (!sourceDir.isDirectory()) {
+            getLog().warn("source directory is invalid! Processor task will be skipped");
+            return;
+        }
+
+        final String includesString = (includes == null || includes.length == 0) ? "**/*.java" : StringUtils.join(includes, ",");
+        final String excludesString = (excludes == null || excludes.length == 0) ? null : StringUtils.join(excludes, ",");
+
+        List<File> files = FileUtils.getFiles(getSourceDirectory(), includesString, excludesString);
+
+        Iterable<? extends JavaFileObject> compilationUnits1 = null;
+
+
+        String compileClassPath = buildCompileClasspath();
+
+        String processor = buildProcessor();
+
+        List<String> options = new ArrayList<String>(10);
+
+        options.add("-cp");
+        options.add(compileClassPath);
+        options.add("-proc:only");
+
+        addCompilerArguments(options);
+
+
+       //     options.add("-processor");
+       //     options.add("org.kevoree.framework.annotation.processor.visitor.KevoreeAnnotationProcessor");
+
+        options.add("-d");
+        options.add(getOutputClassDirectory().getPath());
+
+        options.add("-s");
+        options.add(outputDirectory.getPath());
+
+
+        for (String option : options) {
+            getLog().info("javac option: " + option);
+        }
+
+        DiagnosticListener<JavaFileObject> dl = null;
+        if (outputDiagnostics) {
+            dl = new DiagnosticListener<JavaFileObject>() {
+
+                public void report(Diagnostic<? extends JavaFileObject> diagnostic) {
+                    getLog().info("diagnostic " + diagnostic);
+
+                }
+
+            };
+        } else {
+            dl = new DiagnosticListener<JavaFileObject>() {
+
+                public void report(Diagnostic<? extends JavaFileObject> diagnostic) {
+                }
+
+            };
+        }
+
+        if (systemProperties != null) {
+            java.util.Set<Map.Entry<String, String>> pSet = systemProperties.entrySet();
+
+            for (Map.Entry<String, String> e : pSet) {
+                getLog().info(String.format("set system property : [%s] = [%s]", e.getKey(), e.getValue()));
+                System.setProperty(e.getKey(), e.getValue());
+            }
+
+        }
+
+        compileLock.lock();
+        try {
+            JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
+            StandardJavaFileManager fileManager = compiler.getStandardFileManager(null, null, null);
+
+            if (files != null && !files.isEmpty()) {
+                compilationUnits1 = fileManager.getJavaFileObjectsFromFiles(files);
+
+            } else {
+                getLog().warn("no source file(s) detected! Processor task will be skipped");
+                return;
+            }
+
+
+            JavaCompiler.CompilationTask task = compiler.getTask(
+                    new PrintWriter(System.out),
+                    fileManager,
+                    dl,
+                    options,
+                    null,
+                    compilationUnits1);
+
+            KevoreeAnnotationProcessor p = new KevoreeAnnotationProcessor();
+            p.setOptions(this.options);
+            
+            task.setProcessors(Arrays.asList(p));
+
+
+            /*
+            * //Create a list to hold annotation processors LinkedList<Processor> processors = new
+            * LinkedList<Processor>();
+            *
+            * //Add an annotation processor to the list processors.add(p);
+            *
+            * //Set the annotation processor to the compiler task task.setProcessors(processors);
+            */
+
+            // Perform the compilation task.
+            if (!task.call()) {
+
+              //  throw new Exception("error during compilation");
+
+                this.getLog().error("Error while processing Kevoree annotation");
+            }
+        } finally {
+            compileLock.unlock();
+        }
+
+    }
+
+    private void addCompilerArguments(List<String> options) {
+        if (!StringUtils.isEmpty(compilerArguments)) {
+            for (String arg : compilerArguments.split(" ")) {
+                if (!StringUtils.isEmpty(arg)) {
+                    arg = arg.trim();
+                    getLog().info("Adding compiler arg: " + arg);
+                    options.add(arg);
+                }
+            }
+        }
+        if (optionMap != null && !optionMap.isEmpty()) {
+            for (java.util.Map.Entry<String, Object> e : optionMap.entrySet()) {
+
+                if (!StringUtils.isEmpty(e.getKey()) && e.getValue() != null) {
+                    String opt = String.format("-A%s=%s", e.getKey().trim(), e.getValue().toString().trim());
+                    options.add(opt);
+                    getLog().info("Adding compiler arg: " + opt);
+                }
+            }
+
+        }
+    }
+
+    private void addOutputToSourcesIfNeeded() {
+        final Boolean add = addOutputDirectoryToCompilationSources;
+        if (add == null || add.booleanValue()) {
+            getLog().info("Source directory: " + outputDirectory + " added");
+            addCompileSourceRoot(project, outputDirectory.getAbsolutePath());
+        }
+    }
+
+    private void ensureOutputDirectoryExists() {
+        final File f = outputDirectory;
+        if (!f.exists()) {
+            f.mkdirs();
+        }
+        if (!getOutputClassDirectory().exists()) {
+            getOutputClassDirectory().mkdirs();
+        }
+    }
+
+
+    /**
+     * project sourceDirectory
+     *
+     * @parameter expression = "${project.build.sourceDirectory}"
+     * @required
+     */
+    //@MojoParameter(expression = "${project.build.sourceDirectory}", required = true)
+    private File sourceDirectory;
+
+    /**
+     * @parameter expression = "${project.build.directory}/generated-sources/apt"
+     * @required
+     */
+    //@MojoParameter(expression = "${project.build.directory}/generated-sources/apt", required = true)
+    private File defaultOutputDirectory;
+
+    /**
+     * Set the destination directory for class files (same behaviour of -d option)
+     *
+     * @parameter expression="${project.build.outputDirectory}"
+     */
+    //@MojoParameter(required = false, expression="${project.build.outputDirectory}", description = "Set the destination directory for class files (same behaviour of -d option)")
+    private File outputClassDirectory;
+
+    @Override
+    public File getSourceDirectory() {
+        return sourceDirectory;
+    }
+
+    @Override
+    protected File getOutputClassDirectory() {
+        return outputClassDirectory;
+    }
+
+    protected void addCompileSourceRoot(MavenProject project, String dir) {
+        project.addCompileSourceRoot(dir);
+    }
+
+    @Override
+    public File getDefaultOutputDirectory() {
+        return defaultOutputDirectory;
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    protected java.util.Set<String> getClasspathElements(java.util.Set<String> result) {
+        List<Resource> resources = project.getResources();
+
+        if (resources != null) {
+            for (Resource r : resources) {
+                result.add(r.getDirectory());
+            }
+        }
+
+        result.addAll(classpathElements);
+
+        return result;
+    }
 
     /**
      * The project's classpath.
@@ -136,7 +487,7 @@ public class AnnotationPreProcessorMojo extends AbstractMojo {
      *
      * @parameter
      */
-    private String[] options;
+    private HashMap<String,String> options = new java.util.HashMap<String,String>();
     /**
      * Name of <code>AnnotationProcessorFactory</code> to use; bypasses default discovery process. This is equivalent
      * to the <code>-factory</code> argument for apt.
@@ -201,13 +552,13 @@ public class AnnotationPreProcessorMojo extends AbstractMojo {
      */
     private boolean skip;
     // fields -----------------------------------------------------------------
-    private Set<String> includes;
-    private Set<String> excludes;
+    private String[] includes;
+    private String[] excludes;
     /**
      * The directory to place processor and generated class files. This is equivalent to the <code>-d</code> argument
      * for apt.
      *
-     * @parameter default-value="${project.build.directory}/generated-resources/kevoree"
+     * @parameter default-value="${project.build.directory}/generated-sources/kevoree"
      */
     private File outputDirectory;
     /**
@@ -234,7 +585,7 @@ public class AnnotationPreProcessorMojo extends AbstractMojo {
      * @parameter
      * @required
      */
-    private String nodeTypeNames;
+    private String nodeTypeNames ;
 
     private static DateFormat dateFormat = new SimpleDateFormat("yyyyMMddHHmmSSS");
 
@@ -265,30 +616,47 @@ public class AnnotationPreProcessorMojo extends AbstractMojo {
             }
         }
 
+        this.options.put("kevoree.lib.id",this.project.getArtifactId());
+        this.options.put("kevoree.lib.group",this.project.getGroupId());
+        this.options.put("kevoree.lib.version",this.project.getVersion());
+        this.options.put("kevoree.lib.target",sourceOutputDirectory.getPath() + File.separator + "KEV-INF" + File.separator + "lib.kev");
+        this.options.put("kevoree.lib.tag",dateFormat.format(new Date()));
+        this.options.put("repositories",repositories);
+        this.options.put("otherRepositories",otherRepositories);
+        this.options.put("thirdParties",thirdParties);
+        this.options.put("nodeTypeNames",nodeTypeNames);
+                /*
         this.options = (String[]) Arrays.asList(
                 "kevoree.lib.id=" + this.project.getArtifactId(),
                 "kevoree.lib.group=" + this.project.getGroupId(),
                 "kevoree.lib.version=" + this.project.getVersion(),
-                "kevoree.lib.target=" + sourceOutputDirectory.getPath() + File.separator +"KEV-INF"+File.separator+"lib.kev",
+                "kevoree.lib.target=" + sourceOutputDirectory.getPath() + File.separator + "KEV-INF" + File.separator + "lib.kev",
                 "kevoree.lib.tag=" + dateFormat.format(new Date()),
                 "repositories=" + repositories,
                 "otherRepositories=" + otherRepositories,
                 "thirdParties=" + thirdParties,
                 "nodeTypeNames=" + nodeTypeNames
-        ).toArray();
+        ).toArray();   */
 
         Resource resource = new Resource();
         resource.setDirectory(sourceOutputDirectory.getPath() + File.separator + "KEV-INF");
         resource.setTargetPath("KEV-INF");
         project.getResources().add(resource);
 
-        executeImpl();
+        // executeImpl();
+
+        try {
+            executeWithExceptionsHandled();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
 
         //AFTER ALL GENERATED
         try {
-            File file = new File(sourceOutputDirectory.getPath() + File.separator + "KEV-INF"+File.separator+"lib.kev");
+            File file = new File(sourceOutputDirectory.getPath() + File.separator + "KEV-INF" + File.separator + "lib.kev");
             if (file.exists()) {
-                ContainerRoot model = KevoreeXmiHelper.load(sourceOutputDirectory.getPath() + File.separator +"KEV-INF"+File.separator+"lib.kev");
+                ContainerRoot model = KevoreeXmiHelper.load(sourceOutputDirectory.getPath() + File.separator + "KEV-INF" + File.separator + "lib.kev");
                 KevoreeMergerComponent merger = new KevoreeMergerComponent();
 
                 for (Object dep : this.mavenProject.getCompileArtifacts()) {
@@ -305,7 +673,7 @@ public class AnnotationPreProcessorMojo extends AbstractMojo {
                         e.printStackTrace();
                     }
                 }
-                KevoreeXmiHelper.save(sourceOutputDirectory.getPath() + File.separator + "KEV-INF"+File.separator+"lib.kev", model);
+                KevoreeXmiHelper.save(sourceOutputDirectory.getPath() + File.separator + "KEV-INF" + File.separator + "lib.kev", model);
             }
 
 
@@ -314,137 +682,14 @@ public class AnnotationPreProcessorMojo extends AbstractMojo {
         }
 
 
-
-
     }
 
     // protected methods ------------------------------------------------------
-    protected void executeImpl() throws MojoExecutionException {
-        // apply defaults
 
-        includes = Collections.singleton("**/*.java");
-        excludes = new HashSet<String>();
 
-        // invoke apt
 
-        List<File> staleSourceFiles = getSourceFiles(getStaleScanner(), "stale sources");
 
-        if (staleSourceFiles.isEmpty()) {
-            getLog().info("Nothing to process - all processor-generated files are up to date");
-        } else {
-            executeApt();
-        }
 
-        // add source root
-
-        String sourcePath = sourceOutputDirectory.getPath();
-
-        if (!project.getCompileSourceRoots().contains(sourcePath)) {
-            project.getCompileSourceRoots().add(sourcePath);
-        }
-
-    }
-
-    private void executeApt() throws MojoExecutionException {
-        List<File> sourceFiles = getSourceFiles(getSourceScanner(), "sources");
-
-        if (getLog().isInfoEnabled()) {
-            int count = sourceFiles.size();
-
-            getLog().info("Processing " + count + " source file" + (count == 1 ? "" : "s"));
-        }
-
-        List<String> args = createArgs(sourceFiles);
-        /*
-        System.out.println("cmd=");
-        for (String s : args) {
-        System.out.print(s + " ");
-        }
-        System.out.println();
-         */
-
-        boolean success;
-
-        // if (fork) {
-        //    success = AptUtils.invokeForked(getLog(), workingDirectory, executable, meminitial, maxmem, args);
-        //} else {
-        success = AptUtils.invoke(getLog(), args);
-        // }
-
-        if (!success) {
-            throw new MojoExecutionException("Apt failed");
-        }
-    }
-
-    private List<String> createArgs(List<File> sourceFiles) throws MojoExecutionException {
-        List<String> args = new ArrayList<String>();
-
-        // javac arguments
-
-        //Set<String> classpathElements = new LinkedHashSet<String>();
-
-        Set<String> classpathElements = new LinkedHashSet<String>();
-
-        classpathElements.addAll(getClasspathElements());
-        classpathElements.addAll(getPluginClasspathElements());
-
-        if (!classpathElements.isEmpty()) {
-            args.add("-classpath");
-            args.add(toPath(classpathElements));
-        }
-
-        List<String> sourcePaths = getSourcePaths();
-
-        if (!sourcePaths.isEmpty()) {
-            args.add("-sourcepath");
-            args.add(toPath(sourcePaths));
-        }
-
-        if (!showWarnings) {
-            args.add("-nowarn");
-        }
-
-        //args.add("-Adebug=true");
-
-        args.add("-factory");
-        args.add("org.kevoree.framework.annotation.processor.KevoreeAnnotationProcessorFactory");
-
-        if (encoding != null) {
-            args.add("-encoding");
-            args.add(encoding);
-        }
-
-        // if (verbose) {
-        // args.add("-verbose");
-        //  }
-
-        // apt arguments
-
-        args.add("-s");
-        args.add(sourceOutputDirectory.getAbsolutePath());
-
-        // never compile
-        args.add("-nocompile");
-
-        if (options != null) {
-            for (String option : options) {
-                args.add("-A" + option.trim());
-            }
-        }
-
-        if (StringUtils.isNotEmpty(factory)) {
-            args.add("-factory");
-            args.add(factory);
-        }
-
-        // source files
-
-        for (File file : sourceFiles) {
-            args.add(file.getAbsolutePath());
-        }
-
-        return args;
-    }
 
     private static String toPath(Collection<String> paths) {
         StringBuffer buffer = new StringBuffer();
@@ -521,64 +766,8 @@ public class AnnotationPreProcessorMojo extends AbstractMojo {
         return sources;
     }
 
-    private SourceInclusionScanner getStaleScanner() {
-        // create scanner
 
-        SourceInclusionScanner scanner;
 
-        if (force) {
-            if (!CollectionUtils.isEmpty(outputFiles) || !CollectionUtils.isEmpty(outputFileEndings)) {
-                getLog().warn("Not using staleness checking - ignoring outputFiles and outputFileEndings");
-            }
-
-            getLog().debug("Processing all source files");
-
-            scanner = createSimpleScanner();
-        } else {
-            scanner = new StaleSourceScanner(staleMillis, includes, excludes);
-
-            if (!CollectionUtils.isEmpty(outputFiles)) {
-                if (!CollectionUtils.isEmpty(outputFileEndings)) {
-                    getLog().warn("Both outputFiles and outputFileEndings specified - using outputFiles");
-                }
-
-                getLog().debug("Computing stale sources against target files " + outputFiles);
-
-                for (String file : outputFiles) {
-                    scanner.addSourceMapping(new SingleTargetSourceMapping(".java", file));
-                }
-            } else {
-                Set<String> suffixes = CollectionUtils.defaultSet(outputFileEndings, Collections.singleton(".java"));
-
-                getLog().debug("Computing stale sources against target file endings " + suffixes);
-
-                scanner.addSourceMapping(new SuffixMapping(".java", suffixes));
-            }
-        }
-
-        return scanner;
-    }
-
-    private SourceInclusionScanner getSourceScanner() {
-        SourceInclusionScanner scanner;
-
-        if (force || CollectionUtils.isEmpty(outputFiles)) {
-            scanner = getStaleScanner();
-        } else {
-            scanner = createSimpleScanner();
-        }
-
-        return scanner;
-    }
-
-    private SourceInclusionScanner createSimpleScanner() {
-        SourceInclusionScanner scanner = new SimpleSourceInclusionScanner(includes, excludes);
-
-        // dummy mapping required to function
-        scanner.addSourceMapping(new SuffixMapping("", ""));
-
-        return scanner;
-    }
 
     /**
      * Gets the project's classpath.

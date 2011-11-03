@@ -129,14 +129,11 @@ case class AddInstanceCommand(c: Instance, nodeName: String) extends PrimitiveCo
             map =>
               KevoreeDeployManager.removeMapping(map)
           }
-
         } catch {
-          case _@e => // e.printStackTrace
+          case _@e =>
         }
       }
     }
-
-
     /* TODO CALL refreshPackage */
   }
 

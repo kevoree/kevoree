@@ -18,15 +18,14 @@ package org.kevoree.framework.annotation.processor.visitor
  * and open the template in the editor.
  */
 
-import com.sun.mirror.apt.AnnotationProcessorEnvironment
-import com.sun.mirror.declaration.ClassDeclaration
-import com.sun.mirror.declaration.MethodDeclaration
-import com.sun.mirror.util.SimpleDeclarationVisitor
 import sub._
-import org.kevoree.{ComponentType, GroupType}
+import javax.annotation.processing.ProcessingEnvironment
+import javax.lang.model.util.{SimpleElementVisitor6, SimpleTypeVisitor6}
+import org.kevoree.{ChannelType, ComponentType, GroupType}
+import javax.lang.model.element.{ExecutableElement, ElementKind, TypeElement, Element}
 
-case class GroupTypeVisitor(groupType: GroupType, env: AnnotationProcessorEnvironment)
-  extends SimpleDeclarationVisitor
+case class GroupTypeVisitor(groupType: GroupType, env: ProcessingEnvironment,rootVisitor : KevoreeAnnotationProcessor)
+  extends SimpleElementVisitor6[Any, Element]
   with DeployUnitProcessor
   with DictionaryProcessor
   with LibraryProcessor
@@ -34,29 +33,40 @@ case class GroupTypeVisitor(groupType: GroupType, env: AnnotationProcessorEnviro
   with LifeCycleMethodProcessor
   with TypeDefinitionProcessor{
 
-  override def visitClassDeclaration(classdef: ClassDeclaration) = {
-    
-    if (classdef.getSuperclass != null) {
-      val annotFragment = classdef.getSuperclass.getDeclaration.getAnnotation(classOf[org.kevoree.annotation.GroupType])
-      if (annotFragment != null) {
-        classdef.getSuperclass.getDeclaration.accept(this)
-        defineAsSuperType(groupType, classdef.getSuperclass.getDeclaration.getSimpleName, classOf[GroupType])
+  override def visitType(p1: TypeElement, p2: Element): Any = {
+    p1.getSuperclass match {
+      case dt: javax.lang.model.`type`.DeclaredType => {
+        val an = dt.asElement().getAnnotation(classOf[org.kevoree.annotation.GroupType])
+        if (an != null) {
+          dt.asElement().accept(this, dt.asElement())
+          defineAsSuperType(groupType, dt.asElement().getSimpleName.toString, classOf[GroupType])
+        }
       }
+      case _ =>
     }
 
     //SUB PROCESSOR
-    processDictionary(groupType, classdef)
-    processDeployUnit(groupType, classdef, env)
-    processLibrary(groupType, classdef)
-    processThirdParty(groupType, classdef, env)
+    processDictionary(groupType, p2.asInstanceOf[TypeElement])
+    processDeployUnit(groupType, p2.asInstanceOf[TypeElement], env,rootVisitor.getOptions)
+    processLibrary(groupType, p2.asInstanceOf[TypeElement])
+    processThirdParty(groupType, p2.asInstanceOf[TypeElement], env,rootVisitor)
     import scala.collection.JavaConversions._
-    classdef.getMethods.foreach {
-      method => method.accept(this)
-    }
+    p2.getEnclosedElements.foreach {
+          method => {
+            method.getKind match {
+              case ElementKind.METHOD => {
+                processLifeCycleMethod(groupType, method.asInstanceOf[ExecutableElement])
+              }
+              case _ =>
+            }
+          }
+        }
+
+
+
+
   }
 
-  override def visitMethodDeclaration(methoddef: MethodDeclaration) = {
-    processLifeCycleMethod(groupType, methoddef)
-  }
+
 
 }
