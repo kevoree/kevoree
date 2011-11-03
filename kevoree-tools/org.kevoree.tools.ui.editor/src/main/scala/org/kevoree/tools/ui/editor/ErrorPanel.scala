@@ -13,10 +13,10 @@
  */
 package org.kevoree.tools.ui.editor
 
-import javax.swing.JPanel
 import org.kevoree.api.service.core.checker.CheckerViolation
 import com.explodingpixels.macwidgets._
 import java.awt.{BorderLayout, Dimension}
+import javax.swing.{JLabel, ImageIcon, JPanel}
 
 /**
  * Created by IntelliJ IDEA.
@@ -35,9 +35,19 @@ object ErrorPanel {
   var sourceList: SourceList = null
   var errorCateg: SourceListCategory = null
   //var warnCateg: SourceListCategory = null
+
+  var topPanel: Option[UnifiedToolBar] = None
+  val errPanel = new JPanel()
+  errPanel.setOpaque(false)
+
+  def setTopPanel(t: UnifiedToolBar) {
+    topPanel = Some(t)
+    t.addComponentToRight(errPanel)
+  }
+
   init()
 
-  def getPanel: JPanel= {
+  def getPanel: JPanel = {
     layout
   }
 
@@ -48,23 +58,40 @@ object ErrorPanel {
     sourceList.useIAppStyleScrollBars()
     errorCateg = new SourceListCategory("Error")
     model.addCategory(errorCateg)
-    layout.add(sourceList.getComponent,BorderLayout.CENTER)
+    layout.add(sourceList.getComponent, BorderLayout.CENTER)
   }
 
   def clear() {
     model.removeCategory(errorCateg)
     errorCateg = new SourceListCategory("Error")
     model.addCategory(errorCateg)
+    errPanel.removeAll()
+    errPanel.repaint()
+    errPanel.revalidate()
   }
 
   def displayError(cv: CheckerViolation) {
     val item = new SourceListItem(cv.getMessage)
     model.addItemToCategory(item, errorCateg)
-
+    checkNotification()
     layout.repaint()
     layout.revalidate()
+  }
 
 
+  def checkNotification() {
+    topPanel match {
+      case Some(t) => {
+        if (errPanel.getComponentCount == 0) {
+          val url = this.getClass.getClassLoader.getResource("flag.png")
+          val icon = new ImageIcon(url)
+          errPanel.add(new JLabel(icon))
+          errPanel.repaint()
+          errPanel.revalidate()
+        }
+      }
+      case _ =>
+    }
   }
 
 
