@@ -14,7 +14,6 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.awt.image.WritableRaster;
 import java.nio.ByteBuffer;
-import java.util.Properties;
 
 /**
  * User: Erwan Daubert - erwan.daubert@gmail.com
@@ -60,7 +59,7 @@ public class Kinect extends AbstractComponentType {
 		if (instance == null) {
             String path = KinectNativeLibraryLoader.configure();
 			NativeLibrary.addSearchPath("freenect", path);
-            if(KinectNativeLibraryLoader.isMac()){
+            /*if(KinectNativeLibraryLoader.isMac()){
                 
                 for(Object key : System.getProperties().keySet()){
                    System.out.println(key+"=>"+System.getProperty(key.toString()));
@@ -69,7 +68,7 @@ public class Kinect extends AbstractComponentType {
 
                 System.setProperty("DYLD_LIBRARY_PATH",path);
                 NativeLibrary.addSearchPath("usb", path);
-            }
+            }*/
 
 			instance = NativeLibrary.getInstance("freenect");
 			nbComponent++;
