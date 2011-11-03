@@ -64,9 +64,9 @@
                     <instructions>
                        <Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
                         <Bundle-Version>${project.version}</Bundle-Version>
-                        <Bundle-NativeCode>
+                        <!--<Bundle-NativeCode>
                             nativelib/MacOs/libusb.dylib;osname="Mac OS X"; processor=x86; processor=PowerPC; processor=x86-64
-                        </Bundle-NativeCode>
+                        </Bundle-NativeCode>-->
                     </instructions>
                 </configuration>
             </plugin>
