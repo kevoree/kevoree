@@ -30,8 +30,6 @@ class KevoreeDictionary {
     if(map.containsKey(previousKey) && !map.containsKey(newKey)  ){
       map.put(newKey, map.get(previousKey))
       map.remove(previousKey)
-    } else {
-      println("WTF 8! :-)")
     }
   }
 
