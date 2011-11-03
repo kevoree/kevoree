@@ -4,7 +4,7 @@ package org.kevoree.library.sensors;
 import org.kevoree.annotation.*;
 import org.kevoree.framework.AbstractComponentType;
 
-@Library(name = "KevoreeArduino")
+@Library(name = "Arduino")
 @ComponentType
 @Provides({
         @ProvidedPort(name = "input", type = PortType.MESSAGE)

@@ -11,7 +11,7 @@ import org.kevoree.framework.AbstractComponentType;
  *
  * @author ffouquet
  */
-@Library(name = "KevoreeArduino")
+@Library(name = "Arduino")
 @ComponentType
 @DictionaryType({
     @DictionaryAttribute(name = "period", defaultValue = "1000", optional = true)

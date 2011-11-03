@@ -3,7 +3,7 @@ package org.kevoree.library.sensors;
 import org.kevoree.annotation.*;
 import org.kevoree.framework.AbstractComponentType;
 
-@Library(name = "KevoreeArduino")
+@Library(name = "Arduino")
 @ComponentType
 @DictionaryType({
         @DictionaryAttribute(name = "pin", defaultValue = "0", optional = true,vals={"0","1","2","3","4","5"}),
