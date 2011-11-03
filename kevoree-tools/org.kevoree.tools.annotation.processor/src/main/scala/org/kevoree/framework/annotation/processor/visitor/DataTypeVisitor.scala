@@ -19,96 +19,64 @@
 package org.kevoree.framework.annotation.processor.visitor
 
 import org.kevoree.TypedElement
-import com.sun.mirror.`type`.AnnotationType
-import com.sun.mirror.`type`.ArrayType
-import com.sun.mirror.`type`.ClassType
-import com.sun.mirror.`type`.DeclaredType
-import com.sun.mirror.`type`.EnumType
-import com.sun.mirror.`type`.InterfaceType
-import com.sun.mirror.`type`.PrimitiveType
-import com.sun.mirror.`type`.ReferenceType
-import com.sun.mirror.`type`.TypeMirror
-import com.sun.mirror.`type`.TypeVariable
-import com.sun.mirror.`type`.VoidType
-import com.sun.mirror.`type`.WildcardType
-import com.sun.mirror.`type`.PrimitiveType
-import com.sun.mirror.util.TypeVisitor
 import org.kevoree.KevoreeFactory
 import org.kevoree.framework.annotation.processor.LocalUtility
+import javax.lang.model.util.SimpleTypeVisitor6
+import javax.lang.model.`type`._
+import javax.lang.model.element.Element
 
 
-class DataTypeVisitor extends TypeVisitor {
+class DataTypeVisitor extends SimpleTypeVisitor6[Any, Any] {
 
   var dataType = KevoreeFactory.eINSTANCE.createTypedElement
-  def getDataType():TypedElement={return dataType}
 
-  def visitTypeMirror(t:TypeMirror)= {
-    throw new UnsupportedOperationException("Not supported yet.");
+  def getDataType(): TypedElement = {
+    return dataType
   }
 
-  def visitPrimitiveType(t:PrimitiveType)= {
-    t.getKind match {
-      case PrimitiveType.Kind.BOOLEAN => dataType.setName("scala.Boolean")
-      case PrimitiveType.Kind.BYTE => dataType.setName("scala.Byte")
-      case PrimitiveType.Kind.CHAR => dataType.setName("scala.Char")
-      case PrimitiveType.Kind.DOUBLE => dataType.setName("scala.Double")
-      case PrimitiveType.Kind.FLOAT => dataType.setName("scala.Float")
-      case PrimitiveType.Kind.INT => dataType.setName("scala.Int")
-      case PrimitiveType.Kind.LONG => dataType.setName("scala.Long")
-      case PrimitiveType.Kind.SHORT => dataType.setName("scala.Short")
+
+  override def visitDeclared(p1: _root_.javax.lang.model.`type`.DeclaredType, p: Any) {
+    dataType.setName(p1.asElement().toString);
+    import scala.collection.JavaConversions._
+    p1.getTypeArguments.foreach {
+      tm =>
+        val dtv = new DataTypeVisitor();
+        tm.accept(dtv,tm);
+        dataType.addGenericTypes(LocalUtility.getOraddDataType(dtv.getDataType()));
     }
   }
 
-  def visitVoidType(t:VoidType)= {
+
+  override def visitPrimitive(p1: _root_.javax.lang.model.`type`.PrimitiveType, p: Any) {
+    p1.getKind match {
+      case TypeKind.BOOLEAN => dataType.setName("scala.Boolean")
+      case TypeKind.BYTE => dataType.setName("scala.Byte")
+      case TypeKind.CHAR => dataType.setName("scala.Char")
+      case TypeKind.DOUBLE => dataType.setName("scala.Double")
+      case TypeKind.FLOAT => dataType.setName("scala.Float")
+      case TypeKind.INT => dataType.setName("scala.Int")
+      case TypeKind.LONG => dataType.setName("scala.Long")
+      case TypeKind.SHORT => dataType.setName("scala.Short")
+    }
+  }
+
+  override def visitNoType(p1: _root_.javax.lang.model.`type`.NoType, p: Any) {
     dataType.setName("void");
   }
 
-  def visitReferenceType(t:ReferenceType)= {
-    throw new UnsupportedOperationException("Not supported yet.");
+  def visitEnumType(t: DeclaredType) = {
+    dataType.setName(t.asElement().toString);
   }
 
-  def visitDeclaredType(t:DeclaredType)= {
-    dataType.setName(t.getDeclaration.getQualifiedName);
-  }
+  /*
+def visitInterfaceType(t:InterfaceType)= {
+import scala.collection.JavaConversions._
+dataType.setName(t.getDeclaration.getQualifiedName);
+t.getActualTypeArguments.foreach{tm=>
+val dtv = new DataTypeVisitor();
+tm.accept(dtv);
+dataType.getGenericTypes.add(LocalUtility.getOraddDataType(dtv.getDataType()));
+}
+}      */
 
-  def visitClassType(t:ClassType)= {
-    dataType.setName(t.getDeclaration.getQualifiedName)
-    import scala.collection.JavaConversions._
-    t.getActualTypeArguments.foreach{tm=>
-      val dtv = new DataTypeVisitor();
-      tm.accept(dtv);
-      dataType.addGenericTypes(LocalUtility.getOraddDataType(dtv.getDataType()));
-    }
-
-  }
-
-  def visitEnumType(t:EnumType)= {
-    dataType.setName(t.getDeclaration.getQualifiedName)
-  }
-
-  def visitInterfaceType(t:InterfaceType)= {
-    import scala.collection.JavaConversions._
-    dataType.setName(t.getDeclaration.getQualifiedName);
-    t.getActualTypeArguments.foreach{tm=>
-      val dtv = new DataTypeVisitor();
-      tm.accept(dtv);
-      dataType.getGenericTypes.add(LocalUtility.getOraddDataType(dtv.getDataType()));
-    }
-  }
-
-  def visitAnnotationType(t:AnnotationType) ={
-    dataType.setName(t.getDeclaration().getQualifiedName());
-  }
-
-  def visitArrayType(t:ArrayType) ={
-    throw new UnsupportedOperationException("Not supported yet.");
-  }
-
-  def visitTypeVariable(t:TypeVariable)= {
-    dataType.setName(t.getDeclaration().getSimpleName());
-  }
-
-  def visitWildcardType(t:WildcardType)= {
-    throw new UnsupportedOperationException("Not supported yet.");
-  }
 }
