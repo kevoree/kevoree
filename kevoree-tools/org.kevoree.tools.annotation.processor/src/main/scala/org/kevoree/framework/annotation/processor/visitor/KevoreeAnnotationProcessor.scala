@@ -42,12 +42,6 @@ class KevoreeAnnotationProcessor() extends javax.annotation.processing.AbstractP
 
   def setOptions(s: java.util.HashMap[String, String]) = {
     options = s
-
-    options.foreach {
-      option =>
-        println(option._1 + "-" + option._2)
-    }
-
   }
 
   lazy val env = processingEnv
