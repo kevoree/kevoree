@@ -14,13 +14,13 @@
 
 package org.kevoree.framework.annotation.processor.visitor.sub
 
-import com.sun.mirror.declaration.MethodDeclaration
 import org.kevoree.LifeCycleTypeDefinition
 import org.kevoree.TypeDefinition
+import javax.lang.model.element.ExecutableElement
 
 trait LifeCycleMethodProcessor {
 
-  def processLifeCycleMethod(typeDefinition : TypeDefinition,methoddef : MethodDeclaration)={
+  def processLifeCycleMethod(typeDefinition : TypeDefinition,methoddef : ExecutableElement)={
 
     typeDefinition match {
 
@@ -29,9 +29,9 @@ trait LifeCycleMethodProcessor {
           val startAnnot = methoddef.getAnnotation(classOf[org.kevoree.annotation.Start])
           val stopAnnot = methoddef.getAnnotation(classOf[org.kevoree.annotation.Stop])
           val updateAnnot = methoddef.getAnnotation(classOf[org.kevoree.annotation.Update])
-          if(startAnnot != null){ lctd.setStartMethod(methoddef.getSimpleName)}
-          if(stopAnnot != null){ lctd.setStopMethod(methoddef.getSimpleName)}
-          if(updateAnnot != null){ lctd.setUpdateMethod(methoddef.getSimpleName)}
+          if(startAnnot != null){ lctd.setStartMethod(methoddef.getSimpleName.toString)}
+          if(stopAnnot != null){ lctd.setStopMethod(methoddef.getSimpleName.toString)}
+          if(updateAnnot != null){ lctd.setUpdateMethod(methoddef.getSimpleName.toString)}
         }
 /*
       case c: ChannelType => {

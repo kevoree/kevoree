@@ -18,20 +18,21 @@
 
 package org.kevoree.framework.annotation.processor.visitor.sub
 
-import com.sun.mirror.apt.AnnotationProcessorEnvironment
-import com.sun.mirror.declaration.TypeDeclaration
 import org.kevoree.KevoreeFactory
 import org.kevoree.ContainerRoot
 import org.kevoree.NodeType
 import org.kevoree.TypeDefinition
- import org.kevoree.framework.aspects.KevoreeAspects._
+import org.kevoree.framework.aspects.KevoreeAspects._
+import javax.annotation.processing.ProcessingEnvironment
+import javax.lang.model.element.TypeElement
+import org.kevoree.framework.annotation.processor.visitor.KevoreeAnnotationProcessor
 
 
 /* Common Sub process to deal with ThirdParty definition */
 
 trait ThirdPartyProcessor {
 
-  def processThirdParty(componentType : TypeDefinition,classdef : TypeDeclaration,env : AnnotationProcessorEnvironment)={
+  def processThirdParty(componentType : TypeDefinition,classdef : TypeElement,env : ProcessingEnvironment,rootVisitor : KevoreeAnnotationProcessor)={
     val root : ContainerRoot = componentType.eContainer.asInstanceOf[ContainerRoot]
 
     var thirdPartyAnnotations : List[org.kevoree.annotation.ThirdParty] = Nil
@@ -43,10 +44,10 @@ trait ThirdPartyProcessor {
     if(annotationThirdParties != null){ thirdPartyAnnotations = thirdPartyAnnotations ++ annotationThirdParties.value.toList }
 
    import scala.collection.JavaConversions._
-    val thirdParties = env.getOptions.find({op => op._1.contains("thirdParties")}).getOrElse{("key=","")}._1.split('=').toList.get(1)
+    val thirdParties = rootVisitor.getOptions.get("thirdParties")
     val thirdPartiesList : List[String] = thirdParties.split(";").filter(r=> r != null && r != "").toList
 
-    val nodeTypeNames = env.getOptions.find({op => op._1.contains("nodeTypeNames")}).getOrElse{("key=","")}._1.split('=').toList.get(1)
+    val nodeTypeNames = rootVisitor.getOptions.get("nodeTypeNames")
     val nodeTypeNameList : List[String] = nodeTypeNames.split(";").filter(r=> r != null && r != "").toList
     
     

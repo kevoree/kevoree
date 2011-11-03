@@ -18,19 +18,14 @@
 
 package org.kevoree.framework.annotation.processor.visitor
 
-import com.sun.mirror.apt.AnnotationProcessorEnvironment
-import com.sun.mirror.declaration.ClassDeclaration
-import com.sun.mirror.declaration.FieldDeclaration
-import com.sun.mirror.declaration.InterfaceDeclaration
-import com.sun.mirror.declaration.MethodDeclaration
-import com.sun.mirror.declaration.TypeDeclaration
-import com.sun.mirror.util.SimpleDeclarationVisitor
-
 import sub._
 import org.kevoree.{NodeType, ComponentType}
+import javax.annotation.processing.ProcessingEnvironment
+import javax.lang.model.util.{SimpleElementVisitor6, SimpleTypeVisitor6}
+import javax.lang.model.element.{ElementKind, ExecutableElement, TypeElement, Element}
 
-case class ComponentDefinitionVisitor(componentType: ComponentType, env: AnnotationProcessorEnvironment)
-  extends SimpleDeclarationVisitor
+case class ComponentDefinitionVisitor(componentType: ComponentType, env: ProcessingEnvironment, rootVisitor: KevoreeAnnotationProcessor)
+  extends SimpleElementVisitor6[Any, Element]
   with ProvidedPortProcessor
   with RequiredPortProcessor
   with ThirdPartyProcessor
@@ -42,54 +37,57 @@ case class ComponentDefinitionVisitor(componentType: ComponentType, env: Annotat
   with SlotProcessor
   with TypeDefinitionProcessor {
 
-  override def visitClassDeclaration(classdef: ClassDeclaration) = {
-    if (classdef.getSuperclass != null) {
-      val annotFragment = classdef.getSuperclass.getDeclaration.getAnnotation(classOf[org.kevoree.annotation.ComponentFragment])
-      if (annotFragment != null) {
-        classdef.getSuperclass.getDeclaration.accept(this)
-        //TODO ADD AS THIRD PARTY //
+  override def visitType(p1: TypeElement, p2: Element): Any = {
+    p1.getSuperclass match {
+      case dt: javax.lang.model.`type`.DeclaredType => {
+        var an: Any = dt.asElement().getAnnotation(classOf[org.kevoree.annotation.ComponentFragment])
+        if (an != null) {
+          dt.asElement().accept(this, dt.asElement())
+        }
+        an = dt.asElement().getAnnotation(classOf[org.kevoree.annotation.ComponentType])
+        if (an != null) {
+          dt.asElement().accept(this, dt.asElement())
+          defineAsSuperType(componentType, dt.asElement().getSimpleName.toString, classOf[ComponentType])
+        }
       }
+      case _ =>
     }
-
-    val annotComponentType = classdef.getSuperclass.getDeclaration.getAnnotation(classOf[org.kevoree.annotation.ComponentType])
-    if (annotComponentType != null) {
-      classdef.getSuperclass.getDeclaration.accept(this)
-      defineAsSuperType(componentType, classdef.getSuperclass.getDeclaration.getSimpleName, classOf[ComponentType])
-    }
-
-    commonProcess(classdef)
-  }
-
-  override def visitInterfaceDeclaration(interfaceDecl: InterfaceDeclaration) = {
-    commonProcess(interfaceDecl)
+    commonProcess(p1)
   }
 
 
-  def commonProcess(typeDecl: TypeDeclaration) = {
+  def commonProcess(typeDecl: TypeElement) = {
     import scala.collection.JavaConversions._
-    typeDecl.getSuperinterfaces.foreach {
+    typeDecl.getInterfaces.foreach {
       it =>
-        val annotFragment = it.getDeclaration.getAnnotation(classOf[org.kevoree.annotation.ComponentFragment])
-        it.getDeclaration.accept(this)
+        it match {
+          case dt: javax.lang.model.`type`.DeclaredType => {
+            val annotFragment = dt.asElement().getAnnotation(classOf[org.kevoree.annotation.ComponentFragment])
+            if (annotFragment != null) {
+              dt.asElement().accept(this, dt.asElement())
+            }
+          }
+          case _ =>
+        }
     }
     processLibrary(componentType, typeDecl)
     processDictionary(componentType, typeDecl)
-    processDeployUnit(componentType, typeDecl, env)
-    processThirdParty(componentType, typeDecl, env)
+    processDeployUnit(componentType, typeDecl, env, rootVisitor.getOptions)
+    processThirdParty(componentType, typeDecl, env, rootVisitor)
     processProvidedPort(componentType, typeDecl, env)
     processRequiredPort(componentType, typeDecl, env)
     processSlot(componentType, typeDecl, env)
+    typeDecl.getEnclosedElements.foreach {
+      method => {
 
-    typeDecl.getMethods().foreach {
-      method => method.accept(this)
+        method.getKind match {
+          case ElementKind.METHOD => {
+            processPortMapping(componentType, method.asInstanceOf[ExecutableElement], env)
+            processLifeCycleMethod(componentType, method.asInstanceOf[ExecutableElement])
+          }
+          case _ =>
+        }
+      }
     }
-
   }
-
-  override def visitMethodDeclaration(methoddef: MethodDeclaration) = {
-    processPortMapping(componentType, methoddef, env)
-    processLifeCycleMethod(componentType, methoddef)
-
-  }
-
 }
