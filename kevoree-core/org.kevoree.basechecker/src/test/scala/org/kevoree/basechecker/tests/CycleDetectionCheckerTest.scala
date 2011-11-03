@@ -11,10 +11,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 
 package org.kevoree.basechecker.tests
 
@@ -22,6 +18,7 @@ import org.scalatest.junit.AssertionsForJUnit
  import org.junit._
 import org.kevoree.core.basechecker.cyclechecker.{ComponentCycleChecker, NodeCycleChecker}
 import scala.collection.JavaConversions._
+import org.kevoree.{ComponentInstance, MBinding}
 
 
 class CycleDetectionCheckerTest extends AssertionsForJUnit with BaseCheckerSuite {
@@ -248,28 +245,12 @@ class CycleDetectionCheckerTest extends AssertionsForJUnit with BaseCheckerSuite
 		var res = componentCycleChecker.check(modelCycle)
 		println(System.currentTimeMillis - firstTime + "ms for component cycle detection")
 
-		/*res.foreach {
-			violation =>
-				println(violation.getMessage)
-				violation.getTargetObjects.foreach {
-					obj =>
-						println(obj)
-				}
-		}*/
 		if (res.size == 2) {
 			val nodeCycleChecker = new NodeCycleChecker
 			val firstTime = System.currentTimeMillis
 			res = nodeCycleChecker.check(modelCycle)
 			println(System.currentTimeMillis - firstTime + "ms for node cycle detection")
 			if (res.size == 1) {
-				/*res.foreach {
-			violation =>
-				println(violation.getMessage)
-				violation.getTargetObjects.foreach {
-					obj =>
-						println(obj)
-				}
-			}*/
 				return
 			}
 		}
@@ -284,5 +265,35 @@ class CycleDetectionCheckerTest extends AssertionsForJUnit with BaseCheckerSuite
 		}
 		assert(false)
 	}
+
+
+    @Test def verifyModerates () {
+        val modelCycle = model("test_checker/cycle/distributed_test/demoMODERATES2.kev")
+        val componentCycleChecker = new ComponentCycleChecker
+        val firstTime = System.currentTimeMillis
+        var res = componentCycleChecker.check(modelCycle)
+        println(System.currentTimeMillis - firstTime + "ms for component cycle detection")
+
+        if (res.size == 0) {
+          val nodeCycleChecker = new NodeCycleChecker
+          val firstTime = System.currentTimeMillis
+          res = nodeCycleChecker.check(modelCycle)
+          println(System.currentTimeMillis - firstTime + "ms for node cycle detection")
+          if (res.size == 0) {
+            return
+          }
+        }
+
+        res.foreach {
+          violation =>
+            println(violation.getMessage)
+            violation.getTargetObjects.foreach {
+              obj =>
+                println(obj.asInstanceOf[MBinding].getPort.eContainer.asInstanceOf[ComponentInstance].getName + " <-> " + obj.asInstanceOf[MBinding].getHub.getName)
+            }
+        }
+        assert(false)
+      }
+
 
 }
