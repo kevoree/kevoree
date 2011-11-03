@@ -13,7 +13,7 @@ import org.kevoree.framework.message.Message;
  *
  * @author ffouquet
  */
-@Library(name="KevoreeArduino")
+@Library(name="Arduino")
 @ChannelTypeFragment
 public class LocalChannel extends AbstractChannelFragment {
 

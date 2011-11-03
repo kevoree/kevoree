@@ -12,7 +12,7 @@ import org.kevoree.framework.message.Message;
  * Date: 08/06/11
  * Time: 08:57
  */
-@Library(name = "KevoreeArduinoJava")
+@Library(name = "Arduino")
 @ChannelTypeFragment
 @DictionaryType({
         @DictionaryAttribute(name = "serialport", fragmentDependant = true)

@@ -79,9 +79,6 @@ trait DeployUnitMerger extends Merger {
   }
 
   def mergeRequiredLibs(actualModel: ContainerRoot, tp: DeployUnit) {
-
-    println("--->" + tp.getUnitName + "-" + tp.getRequiredLibs.size)
-
     val requireds: List[DeployUnit] = tp.getRequiredLibs
     tp.removeAllRequiredLibs()
     requireds.foreach {
