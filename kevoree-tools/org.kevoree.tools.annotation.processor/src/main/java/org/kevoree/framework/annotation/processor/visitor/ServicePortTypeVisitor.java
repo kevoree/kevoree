@@ -26,11 +26,12 @@ import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.*;
+import javax.lang.model.util.SimpleTypeVisitor6;
 
 /**
  * @author ffouquet
  */
-public class ServicePortTypeVisitor implements TypeVisitor<Object, Object> {
+public class ServicePortTypeVisitor extends SimpleTypeVisitor6<Object, Object> {
 
     ServicePortType dataType = KevoreeFactory.createServicePortType();
 
@@ -41,6 +42,9 @@ public class ServicePortTypeVisitor implements TypeVisitor<Object, Object> {
     public void setDataType(ServicePortType dataType) {
         this.dataType = dataType;
     }
+
+
+
 
     public void visitTypeDeclaration(TypeMirror t) {
 
@@ -56,12 +60,7 @@ public class ServicePortTypeVisitor implements TypeVisitor<Object, Object> {
                     //BUILD RETURN TYPE
                     DataTypeVisitor rtv = new DataTypeVisitor();
                     ee.getReturnType().accept(rtv, ee.getReturnType());
-                    
-
-
                     newo.setReturnType(new Some<TypedElement>(LocalUtility.getOraddDataType(rtv.getDataType())));
-
-
                     //BUILD PARAMETER
                     for (VariableElement ve : ee.getParameters()) {
                         Parameter newp = KevoreeFactory.createParameter();
@@ -69,8 +68,8 @@ public class ServicePortTypeVisitor implements TypeVisitor<Object, Object> {
                         newp.setName(ve.getSimpleName().toString());
                         DataTypeVisitor ptv = new DataTypeVisitor();
 
-                        //ve.getType().accept(ptv);
-                        //newp.setType(new Some<TypedElement>(LocalUtility.getOraddDataType(ptv.getDataType())));
+                        ve.asType().accept(ptv,ve);
+                        newp.setType(new Some<TypedElement>(LocalUtility.getOraddDataType(ptv.getDataType())));
                     }
                 }
             }
@@ -79,66 +78,10 @@ public class ServicePortTypeVisitor implements TypeVisitor<Object, Object> {
     }
 
     @Override
-    public Object visit(TypeMirror typeMirror, Object o) {
-        visitTypeDeclaration(typeMirror);
-        return null;
-    }
-
-    @Override
-    public Object visit(TypeMirror typeMirror) {
-        visitTypeDeclaration(typeMirror);
-        return null;
-    }
-
-    @Override
-    public Object visitPrimitive(PrimitiveType primitiveType, Object o) {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
-    }
-
-    @Override
-    public Object visitNull(NullType nullType, Object o) {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
-    }
-
-    @Override
-    public Object visitArray(ArrayType arrayType, Object o) {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
-    }
-
-    @Override
     public Object visitDeclared(DeclaredType declaredType, Object o) {
         visitTypeDeclaration(declaredType);
         return null;
     }
 
-    @Override
-    public Object visitError(ErrorType errorType, Object o) {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
-    }
 
-    @Override
-    public Object visitTypeVariable(TypeVariable typeVariable, Object o) {
-        dataType.setName(typeVariable.getKind().getDeclaringClass().getCanonicalName());
-        return dataType;
-    }
-
-    @Override
-    public Object visitWildcard(WildcardType wildcardType, Object o) {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
-    }
-
-    @Override
-    public Object visitExecutable(ExecutableType executableType, Object o) {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
-    }
-
-    @Override
-    public Object visitNoType(NoType noType, Object o) {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
-    }
-
-    @Override
-    public Object visitUnknown(TypeMirror typeMirror, Object o) {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
-    }
 }

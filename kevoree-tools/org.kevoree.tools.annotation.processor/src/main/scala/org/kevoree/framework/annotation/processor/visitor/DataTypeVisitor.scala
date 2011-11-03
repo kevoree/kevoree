@@ -29,15 +29,26 @@ import javax.lang.model.element.Element
 class DataTypeVisitor extends SimpleTypeVisitor6[Any, Any] {
 
   var dataType = KevoreeFactory.eINSTANCE.createTypedElement
-  def getDataType():TypedElement={return dataType}
 
-
-  override def visitDeclared(p1: _root_.javax.lang.model.`type`.DeclaredType, p : Any){
-    dataType.setName(p1.asElement().getSimpleName.toString);
+  def getDataType(): TypedElement = {
+    return dataType
   }
 
-  def visitPrimitiveType(t:PrimitiveType)= {
-    t.getKind match {
+
+  override def visitDeclared(p1: _root_.javax.lang.model.`type`.DeclaredType, p: Any) {
+    dataType.setName(p1.asElement().toString);
+    import scala.collection.JavaConversions._
+    p1.getTypeArguments.foreach {
+      tm =>
+        val dtv = new DataTypeVisitor();
+        tm.accept(dtv,tm);
+        dataType.addGenericTypes(LocalUtility.getOraddDataType(dtv.getDataType()));
+    }
+  }
+
+
+  override def visitPrimitive(p1: _root_.javax.lang.model.`type`.PrimitiveType, p: Any) {
+    p1.getKind match {
       case TypeKind.BOOLEAN => dataType.setName("scala.Boolean")
       case TypeKind.BYTE => dataType.setName("scala.Byte")
       case TypeKind.CHAR => dataType.setName("scala.Char")
@@ -49,49 +60,23 @@ class DataTypeVisitor extends SimpleTypeVisitor6[Any, Any] {
     }
   }
 
-  def visitNoType(t:NoType)= {
+  override def visitNoType(p1: _root_.javax.lang.model.`type`.NoType, p: Any) {
     dataType.setName("void");
   }
 
-       /*
-  def visitClassType(t:DeclaredType)= {
-    dataType.setName(t.getKind.getDeclaringClass.getCanonicalName)
-    import scala.collection.JavaConversions._
-    t.getActualTypeArguments.foreach{tm=>
-      val dtv = new DataTypeVisitor();
-      tm.accept(dtv);
-      dataType.addGenericTypes(LocalUtility.getOraddDataType(dtv.getDataType()));
-    }
-
-  }  */
-
-  def visitEnumType(t:DeclaredType)= {
-    dataType.setName(t.asElement().getSimpleName.toString);
-  }
-     /*
-  def visitInterfaceType(t:InterfaceType)= {
-    import scala.collection.JavaConversions._
-    dataType.setName(t.getDeclaration.getQualifiedName);
-    t.getActualTypeArguments.foreach{tm=>
-      val dtv = new DataTypeVisitor();
-      tm.accept(dtv);
-      dataType.getGenericTypes.add(LocalUtility.getOraddDataType(dtv.getDataType()));
-    }
-  }      */
-
-  def visitAnnotationType(t:DeclaredType) ={
-    dataType.setName(t.asElement().getSimpleName.toString);
+  def visitEnumType(t: DeclaredType) = {
+    dataType.setName(t.asElement().toString);
   }
 
-  def visitArrayType(t:ArrayType) ={
-    throw new UnsupportedOperationException("Not supported yet.");
-  }
+  /*
+def visitInterfaceType(t:InterfaceType)= {
+import scala.collection.JavaConversions._
+dataType.setName(t.getDeclaration.getQualifiedName);
+t.getActualTypeArguments.foreach{tm=>
+val dtv = new DataTypeVisitor();
+tm.accept(dtv);
+dataType.getGenericTypes.add(LocalUtility.getOraddDataType(dtv.getDataType()));
+}
+}      */
 
-  def visitTypeVariable(t:TypeVariable)= {
-    dataType.setName(t.asElement().getSimpleName.toString);
-  }
-
-  def visitWildcardType(t:WildcardType)= {
-    throw new UnsupportedOperationException("Not supported yet.");
-  }
 }
