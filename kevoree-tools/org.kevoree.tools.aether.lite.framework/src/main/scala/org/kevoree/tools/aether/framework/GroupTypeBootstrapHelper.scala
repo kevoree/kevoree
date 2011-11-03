@@ -68,9 +68,7 @@ class GroupTypeBootstrapHelper {
           }
 
           dictionary.put(Constants.KEVOREE_PROPERTY_OSGI_BUNDLE, bundleContext.getBundle)
-
           groupType.getDictionary().putAll(dictionary)
-          println("afterSet"+groupType.getDictionary)
           groupType.setName(destGroupName)
 
           //INJECT SERVICE HANDLER

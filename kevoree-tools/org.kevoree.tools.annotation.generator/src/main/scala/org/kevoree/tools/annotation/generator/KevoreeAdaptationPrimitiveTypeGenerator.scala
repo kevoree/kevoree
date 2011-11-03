@@ -17,7 +17,7 @@ import org.kevoree.framework.KevoreeGeneratorHelper
 import org.kevoree.{NodeType, ContainerRoot}
 import javax.annotation.processing.Filer
 import javax.tools.StandardLocation
-import java.io.{Writer, PrintWriter, File}
+import java.io.{Writer}
 
 /**
  * User: Erwan Daubert - erwan.daubert@gmail.com
