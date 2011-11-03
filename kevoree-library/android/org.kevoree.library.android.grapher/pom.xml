@@ -15,7 +15,7 @@
         <relativePath>../org.kevoree.library.android.root/pom.xml</relativePath>
     </parent>
 
-        <dependencies>
+    <dependencies>
         <dependency>
             <groupId>org.kevoree.extra</groupId>
             <artifactId>org.kevoree.extra.androidplot</artifactId>
@@ -23,6 +23,7 @@
             <scope>provided</scope>
         </dependency>
     </dependencies>
+
     <build>
         <plugins>
             <!-- android dex phase -->
@@ -72,9 +73,9 @@
                 <extensions>true</extensions>
                 <configuration>
                     <instructions>
-                        <Import-Package>!org.kevoree.library.text2speech.*,org.osgi.*;version="[1,5)",*
+                        <Import-Package>!org.kevoree.library.grapher.android.*,org.osgi.*;version="[1,5)",*
                         </Import-Package>
-                        <Export-Package>org.kevoree.library.text2speech.*</Export-Package>
+                        <Export-Package>oorg.kevoree.library.grapher.android.*</Export-Package>
                     </instructions>
                 </configuration>
             </plugin>
