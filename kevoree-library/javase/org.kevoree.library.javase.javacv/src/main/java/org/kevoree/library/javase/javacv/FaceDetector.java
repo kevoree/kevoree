@@ -1,7 +1,5 @@
 package org.kevoree.library.javase.javacv;
 
-import com.googlecode.javacpp.Loader;
-import com.googlecode.javacv.cpp.*;
 import org.kevoree.annotation.*;
 import org.kevoree.framework.AbstractComponentType;
 import org.kevoree.framework.MessagePort;
@@ -41,7 +39,6 @@ public class FaceDetector extends AbstractComponentType {
 	private boolean isAlreadyInitialized;
 	private IplImage frame;
 	private IplImage grayImage;
-	private IplImage image;
 	private IplImage equImg;
 	private CvMemStorage storage;
 	private CvHaarClassifierCascade cascade;
@@ -61,14 +58,11 @@ public class FaceDetector extends AbstractComponentType {
 	public void stop () {
 		if (isAlreadyInitialized) {
 			equImg.release();
-			image.release();
 			grayImage.release();
 			frame.release();
-//			storage.release();
 			cvClearMemStorage(storage);
 		}
 		equImg = null;
-		image = null;
 		grayImage = null;
 		frame = null;
 		storage = null;
@@ -81,55 +75,38 @@ public class FaceDetector extends AbstractComponentType {
 		start();
 	}
 
-//	private int nb = 0;
-
 	@Port(name = "image")
 	public void onReceiveImage (Object message) {
 		if (message instanceof BufferedImage) {
 			if (isPortBinded("faces")) {
-				if (!isAlreadyInitialized) {
-
-					// preload the opencv_objdetect module to work around a known bug
-					Loader.load(opencv_core.class);
-					Loader.load(opencv_objdetect.class);
-					Loader.load(opencv_features2d.class);
-					Loader.load(opencv_imgproc.class);
-					Loader.load(opencv_flann.class);
-					isAlreadyInitialized = true;
-
-					// We instantiate a classifier cascade to be used for detection, using the cascade definition.
-					cascade = new CvHaarClassifierCascade(cvLoad(cascadeFilePath));
-
-					frame = IplImage
-							.create(((BufferedImage) message).getWidth(), ((BufferedImage) message).getHeight(),
-									IPL_DEPTH_8U, 1);
-					image = IplImage
-							.create(((BufferedImage) message).getWidth(), ((BufferedImage) message).getHeight(),
-									IPL_DEPTH_8U, 1);
-					grayImage = IplImage
-							.create(((BufferedImage) message).getWidth(), ((BufferedImage) message).getHeight(),
-									IPL_DEPTH_8U, 1);
-					equImg = IplImage
-							.create(((BufferedImage) message).getWidth(), ((BufferedImage) message).getHeight(),
-									IPL_DEPTH_8U, 1);
-
-					storage = CvMemStorage.create();
-				}
-				frame = IplImage.createFrom((BufferedImage) message);
-//				frame.copyFrom((BufferedImage) message);
-//				if (nb != 1) {
-				process(frame);
-//					nb++;
-//				}
-//				frame.release();
+				getPortByName("faces", MessagePort.class).process(process((BufferedImage) message));
 			}
 		}
 	}
 
-	private void process (IplImage frame) {
+	private BufferedImage process (BufferedImage bufferedImage) {
+		if (!isAlreadyInitialized) {
+			isAlreadyInitialized = true;
+
+			// We instantiate a classifier cascade to be used for detection, using the cascade definition.
+			cascade = new CvHaarClassifierCascade(cvLoad(cascadeFilePath));
+
+			frame = IplImage
+					.create(bufferedImage.getWidth(), bufferedImage.getHeight(),
+							IPL_DEPTH_8U, 3);
+			grayImage = IplImage
+					.create(bufferedImage.getWidth(), bufferedImage.getHeight(),
+							IPL_DEPTH_8U, 1);
+			equImg = IplImage
+					.create(bufferedImage.getWidth(), bufferedImage.getHeight(),
+							IPL_DEPTH_8U, 1);
+
+			storage = CvMemStorage.create();
+		}
+		frame.copyFrom(bufferedImage);
 		// We convert the original image to grayscale.
 		cvCvtColor(frame, grayImage, CV_BGR2GRAY);
-		// equalize the grayscale using OpenCV
+		// equalize the grayscale
 		cvEqualizeHist(grayImage, equImg);
 
 		CvSeq faces;
@@ -140,8 +117,7 @@ public class FaceDetector extends AbstractComponentType {
 			//We iterate over the discovered faces and draw yellow rectangles around them.
 			for (int i = 0; i < faces.total(); i++) {
 				CvRect r = new CvRect(cvGetSeqElem(faces, i));
-				cvRectangle(frame, cvPoint(r.x(), r.y()),
-						cvPoint(r.x() + r.width(), r.y() + r.height()), CvScalar.YELLOW, 1, CV_AA, 0);
+				bufferedImage.getGraphics().drawRect(r.x(), r.y(), r.width(), r.height());
 			}
 		} else {
 			// speed things up by searching for only a single, largest face subimage
@@ -150,11 +126,10 @@ public class FaceDetector extends AbstractComponentType {
 
 			CvRect r = new CvRect(cvGetSeqElem(faces, 0));
 			if (!r.isNull()) {
-				cvRectangle(frame, cvPoint(r.x(), r.y()),
-						cvPoint(r.x() + r.width(), r.y() + r.height()), CvScalar.YELLOW, 1, CV_AA, 0);
+				bufferedImage.getGraphics().drawRect(r.x(), r.y(), r.width(), r.height());
 			}
 		}
-		getPortByName("faces", MessagePort.class).process(frame.getBufferedImage());
+		return bufferedImage;
 	}
 
 	private boolean doMultiFaceDetection () {

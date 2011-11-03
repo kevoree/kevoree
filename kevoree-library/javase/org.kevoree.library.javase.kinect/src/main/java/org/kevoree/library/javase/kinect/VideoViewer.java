@@ -55,6 +55,7 @@ public class VideoViewer extends AbstractComponentType {
 
 	@Port(name = "image")
 	public void onReceiveImage (Object message) {
+//		logger.debug("image received by " + this.getName());
 		if (message instanceof BufferedImage) {
 			final BufferedImage image = (BufferedImage) message;
 			if (!isAlreadyInitialized) {
