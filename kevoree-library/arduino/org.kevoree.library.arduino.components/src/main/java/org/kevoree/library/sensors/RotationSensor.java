@@ -10,7 +10,7 @@ import org.kevoree.framework.AbstractComponentType;
  */
 
 
-@Library(name = "KevoreeArduino")
+@Library(name = "Arduino")
 @ComponentType
 @DictionaryType({
         @DictionaryAttribute(name = "pin", defaultValue = "0", optional = true, vals = {"0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13"}),

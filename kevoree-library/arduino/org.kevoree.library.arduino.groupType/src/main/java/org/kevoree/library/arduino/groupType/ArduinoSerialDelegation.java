@@ -14,7 +14,7 @@ import org.slf4j.LoggerFactory;
  * Date: 10/08/11
  * Time: 11:07
  */
-@Library(name = "Kevoree-Arduino-JavaSE")
+@Library(name = "Arduino")
 @GroupType
 @DictionaryType({
         @DictionaryAttribute(name = "serialport", fragmentDependant = true)

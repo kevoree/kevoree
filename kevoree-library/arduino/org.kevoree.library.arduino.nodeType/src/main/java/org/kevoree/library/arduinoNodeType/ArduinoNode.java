@@ -37,7 +37,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 
 @NodeType
-@Library(name = "KevoreeNodeType")
+@Library(name = "Arduino")
 @DictionaryType({
         @DictionaryAttribute(name = "boardTypeName", defaultValue = "uno", optional = true, vals = {"uno", "atmega328", "mega2560"}),
        // @DictionaryAttribute(name = "boardPortName"),
