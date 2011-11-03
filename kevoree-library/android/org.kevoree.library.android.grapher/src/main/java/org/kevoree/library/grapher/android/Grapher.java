@@ -39,7 +39,7 @@ import java.text.DecimalFormat;
 @DictionaryType({
         @DictionaryAttribute(name = "title", defaultValue = "Grapher", optional = true),
         @DictionaryAttribute(name = "HISTORY_SIZE", defaultValue = "30", optional = true),
-        @DictionaryAttribute(name = "SIZE", defaultValue = "30", optional = true),
+        @DictionaryAttribute(name = "SIZE", defaultValue = "30", optional = true)
 })
 @ComponentType
 public class Grapher extends AbstractComponentType   {
