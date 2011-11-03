@@ -13,9 +13,10 @@
  */
 package org.kevoree.framework.annotation.processor.visitor
 
-import com.sun.mirror.util.SimpleDeclarationVisitor
-import com.sun.mirror.declaration.ClassDeclaration
 import reflect.BeanProperty
+import javax.lang.model.`type`.TypeVisitor
+import javax.lang.model.util.{AbstractElementVisitor6, AbstractTypeVisitor6, SimpleTypeVisitor6, SimpleElementVisitor6}
+import javax.lang.model.element._
 
 /**
  * Created by IntelliJ IDEA.
@@ -25,19 +26,27 @@ import reflect.BeanProperty
  * To change this template use File | Settings | File Templates.
  */
 
-class SuperTypeValidationVisitor(superClassName : String) extends SimpleDeclarationVisitor {
+class SuperTypeValidationVisitor(superClassName: String) extends AbstractElementVisitor6[Any, Element] {
 
   @BeanProperty
-  var result : Boolean = false
+  var result: Boolean = false
 
-  override def visitClassDeclaration(classdef : ClassDeclaration) = {
-      if(classdef.getSuperclass.getDeclaration.getQualifiedName == superClassName){
-        result = true
-      }  else {
-        if(classdef.getSuperclass.getDeclaration.getSuperclass != null){
-            classdef.getSuperclass.getDeclaration.accept(this)
-        }
+  def visitPackage(p1: PackageElement, p2: Element): Any = null
+
+  def visitType(p1: TypeElement, p2: Element): Any = {
+    if (p1.getQualifiedName.toString == superClassName) {
+      result = true
+    } else {
+      p1.getSuperclass match {
+        case dt: javax.lang.model.`type`.DeclaredType => dt.asElement().accept(this, dt.asElement())
+        case _ =>
       }
+    }
   }
 
+  def visitVariable(p1: VariableElement, p2: Element): Any = null
+
+  def visitExecutable(p1: ExecutableElement, p2: Element): Any = null
+
+  def visitTypeParameter(p1: TypeParameterElement, p2: Element): Any = null
 }
