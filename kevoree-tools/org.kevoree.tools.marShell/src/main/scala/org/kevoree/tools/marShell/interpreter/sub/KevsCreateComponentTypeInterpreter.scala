@@ -30,8 +30,6 @@ case class KevsCreateComponentTypeInterpreter(self : CreateComponentTypeStatment
   var logger = LoggerFactory.getLogger(this.getClass)
 
   def interpret(context: KevsInterpreterContext): Boolean = {
-    
-    //println("yo")
     //LOOK FOR PREVIOUSLY EXSITING COMPONENT TYPE
     context.model.getTypeDefinitions.find(tdef => tdef.getName == self.newTypeName) match {
       case Some(e)=> logger.error("TypeDefinition already exist with name => "+self.newTypeName);false

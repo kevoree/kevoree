@@ -13,6 +13,7 @@ package org.kevoree.tools.aether.framework
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 import java.io.FileInputStream
 import org.osgi.framework.{Bundle, BundleContext, BundleException}
 import org.slf4j.LoggerFactory
@@ -44,21 +45,21 @@ class GroupTypeBootstrapHelper {
 
           val activatorPackage = KevoreeGeneratorHelper.getTypeDefinitionGeneratedPackage(group.getTypeDefinition, "JavaSENode")
           val activatorName = group.getTypeDefinition.getName + "Activator"
-          val clazz: Class[_] = bundle.loadClass(activatorPackage+"."+activatorName)
+          val clazz: Class[_] = bundle.loadClass(activatorPackage + "." + activatorName)
 
           val groupActivator = clazz.newInstance.asInstanceOf[org.kevoree.framework.osgi.KevoreeGroupActivator]
-          val groupType =  groupActivator.callFactory()
+          val groupType = groupActivator.callFactory()
 
           //ADD INSTANCE DICTIONARY
           val dictionary: java.util.HashMap[String, AnyRef] = new java.util.HashMap[String, AnyRef]
 
-          group.getTypeDefinition.getDictionaryType.map{ dictionaryType =>
-            dictionaryType.getDefaultValues.foreach {
+          group.getTypeDefinition.getDictionaryType.map {
+            dictionaryType =>
+              dictionaryType.getDefaultValues.foreach {
                 dv =>
                   dictionary.put(dv.getAttribute.getName, dv.getValue)
               }
-         }
-
+          }
           group.getDictionary.map {
             dictionaryModel =>
               dictionaryModel.getValues.foreach {
@@ -66,13 +67,9 @@ class GroupTypeBootstrapHelper {
                   dictionary.put(v.getAttribute.getName, v.getValue)
               }
           }
-
           dictionary.put(Constants.KEVOREE_PROPERTY_OSGI_BUNDLE, bundleContext.getBundle)
-
           groupType.getDictionary().putAll(dictionary)
-          println("afterSet"+groupType.getDictionary)
           groupType.setName(destGroupName)
-
           //INJECT SERVICE HANDLER
           val sr = bundleContext.getServiceReference(classOf[KevoreeModelHandlerService].getName)
           if (sr != null) {
@@ -94,7 +91,7 @@ class GroupTypeBootstrapHelper {
     try {
       val arteFile = AetherUtil.resolveDeployUnit(du)
       if (arteFile != null) {
-        logger.debug("install => "+arteFile.getAbsolutePath)
+        logger.debug("install => " + arteFile.getAbsolutePath)
 
         bundle = bundleContext.installBundle("file:///" + arteFile.getAbsolutePath, new FileInputStream(arteFile))
         bundle.start()
@@ -120,26 +117,26 @@ class GroupTypeBootstrapHelper {
   private def installGroupTyp(groupType: GroupType, bundleContext: BundleContext): Boolean = {
     val superTypeBootStrap = groupType.getSuperTypes.forall(superType => installGroupTyp(superType.asInstanceOf[GroupType], bundleContext))
     if (superTypeBootStrap) {
-      
+
       import org.kevoree.framework.aspects.KevoreeAspects._
       //FAKE NODE TODO 
       val fakeNode = KevoreeFactory.createContainerNode
-      groupType.eContainer.asInstanceOf[ContainerRoot].getTypeDefinitions.find(td=> td.getName == "JavaSENode").map{ javaseTD =>
-        fakeNode.setTypeDefinition(javaseTD)
+      groupType.eContainer.asInstanceOf[ContainerRoot].getTypeDefinitions.find(td => td.getName == "JavaSENode").map {
+        javaseTD =>
+          fakeNode.setTypeDefinition(javaseTD)
       }
       val ct = groupType.foundRelevantDeployUnit(fakeNode)
-      if(ct != null){
+      if (ct != null) {
         //groupType.getDeployUnits.forall(ct => {
-          logger.debug("require lib for "+ct.getUnitName+"->"+ct.getRequiredLibs.size)
-          ct.getRequiredLibs.forall {
-            tp => installDeployUnit(tp, bundleContext)
-          } && installDeployUnit(ct, bundleContext)
+        logger.debug("require lib for " + ct.getUnitName + "->" + ct.getRequiredLibs.size)
+        ct.getRequiredLibs.forall {
+          tp => installDeployUnit(tp, bundleContext)
+        } && installDeployUnit(ct, bundleContext)
         //})
       } else {
         false
       }
-      
-      
+
 
     } else {
       false
