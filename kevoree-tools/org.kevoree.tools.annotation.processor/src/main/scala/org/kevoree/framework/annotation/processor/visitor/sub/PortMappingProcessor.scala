@@ -18,54 +18,63 @@
 
 package org.kevoree.framework.annotation.processor.visitor.sub
 
-import com.sun.mirror.apt.AnnotationProcessorEnvironment
 import org.kevoree.KevoreeFactory
 import org.kevoree.ComponentType
 import org.kevoree.MessagePortType
 import org.kevoree.ServicePortType
-import java.lang.reflect.Modifier
-import com.sun.mirror.declaration.MethodDeclaration
 import scala.collection.JavaConversions._
+import javax.annotation.processing.ProcessingEnvironment
+import javax.lang.model.element.ExecutableElement
+import javax.tools.Diagnostic.Kind
 
 
 trait PortMappingProcessor {
 
-  def processPortMapping(componentType : ComponentType,methoddef : MethodDeclaration, env : AnnotationProcessorEnvironment) = {
+  def processPortMapping(componentType: ComponentType, methoddef: ExecutableElement, env: ProcessingEnvironment) = {
     /* PROCESS PORTS & PORT ANNOTATION */
-    var portAnnotations : List[org.kevoree.annotation.Port] = List()
+    var portAnnotations: List[org.kevoree.annotation.Port] = List()
 
     val annotationPort = methoddef.getAnnotation(classOf[org.kevoree.annotation.Port])
-    if(annotationPort != null){ portAnnotations = portAnnotations ++ List(annotationPort) }
-
-    val annotationPorts = methoddef.getAnnotation(classOf[org.kevoree.annotation.Ports])
-    if(annotationPorts != null){ portAnnotations = portAnnotations ++ annotationPorts.value.toList }
-
-    if(portAnnotations.size > 0 && methoddef.getModifiers.find{mod => mod.name.equals("PUBLIC")}.isEmpty) {
-        env.getMessager.printError("Method " + methoddef.getSimpleName + " in "+componentType.getName+" must have a public visibility since it is mapped to a port.")
+    if (annotationPort != null) {
+      portAnnotations = portAnnotations ++ List(annotationPort)
     }
 
-    portAnnotations.foreach{annot=>
-      componentType.getProvided.find({provided=> provided.getName.equals(annot.name) }) match {
-        case Some(ptref) => {
+    val annotationPorts = methoddef.getAnnotation(classOf[org.kevoree.annotation.Ports])
+    if (annotationPorts != null) {
+      portAnnotations = portAnnotations ++ annotationPorts.value.toList
+    }
+
+    if (portAnnotations.size > 0 && methoddef.getModifiers.find {
+      mod => mod.name.equals("PUBLIC")
+    }.isEmpty) {
+      env.getMessager.printMessage(Kind.ERROR, "Method " + methoddef.getSimpleName + " in " + componentType.getName + " must have a public visibility since it is mapped to a port.")
+    }
+
+    portAnnotations.foreach {
+      annot =>
+        componentType.getProvided.find({
+          provided => provided.getName.equals(annot.name)
+        }) match {
+          case Some(ptref) => {
             val ptREFmapping = KevoreeFactory.eINSTANCE.createPortTypeMapping
-            ptREFmapping.setBeanMethodName(methoddef.getSimpleName)
+            ptREFmapping.setBeanMethodName(methoddef.getSimpleName.toString)
 
             ptref.getRef match {
-              case mpt : MessagePortType => {
-                  ptREFmapping.setServiceMethodName("process")
-                }
-              case spt : ServicePortType => {
-                  ptREFmapping.setServiceMethodName(annot.method)
-                }
+              case mpt: MessagePortType => {
+                ptREFmapping.setServiceMethodName("process")
+              }
+              case spt: ServicePortType => {
+                ptREFmapping.setServiceMethodName(annot.method)
+              }
 
             }
             ptref.addMappings(ptREFmapping)
           }
-        case None => {
-            val message : String = "[PortMappingProcessor]:" + componentType.getBean + " declares a mapping to a ProvidedPort \"" + annot.name + "\", but this port has not been declared in ComponentType annotations.\nCan not resume. Process Exit.";
-            env.getMessager.printError(message);
+          case None => {
+            val message: String = "[PortMappingProcessor]:" + componentType.getBean + " declares a mapping to a ProvidedPort \"" + annot.name + "\", but this port has not been declared in ComponentType annotations.\nCan not resume. Process Exit.";
+            env.getMessager.printMessage(Kind.ERROR, message);
+          }
         }
-      }
     }
 
     /* STEP 1 : PROCESS START & STOP METHOD */

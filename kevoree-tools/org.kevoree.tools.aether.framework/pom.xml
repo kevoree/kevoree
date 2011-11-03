@@ -214,6 +214,7 @@
                                 org.apache.maven.http.*,
                                 org.apache.maven.artifact.*,
                                 com.ning.*,
+                                org.jboss.netty.*,
                                 org.codehaus.plexus.interpolation.*,
                                 org.codehaus.plexus.util.*,
                                 org.apache.maven.wagon.*
