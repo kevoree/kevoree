@@ -27,4 +27,5 @@ import java.lang.annotation.Target;
 @Target({ElementType.TYPE})
 public @interface Library {
     java.lang.String name();
+    String[] names() default {};
 }
