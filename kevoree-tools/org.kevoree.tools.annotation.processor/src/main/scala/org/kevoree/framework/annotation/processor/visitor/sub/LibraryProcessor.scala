@@ -25,26 +25,30 @@ import javax.lang.model.element.TypeElement
 
 
 trait LibraryProcessor {
-  
-  def processLibrary(typeDef : TypeDefinition,classdef : TypeElement)={
+
+  def processLibrary(typeDef: TypeDefinition, classdef: TypeElement) = {
 
     val root = typeDef.eContainer.asInstanceOf[ContainerRoot]
 
-    if(classdef.getAnnotation(classOf[org.kevoree.annotation.Library]) != null){
+    if (classdef.getAnnotation(classOf[org.kevoree.annotation.Library]) != null) {
       val libannot = classdef.getAnnotation(classOf[org.kevoree.annotation.Library])
-      /* CREATE LIBRARY IF NEEDED */
-      root.getLibraries.find({lib=>lib.getName== libannot.name}) match {
-        case Some(lib)=> lib.addSubTypes(typeDef)
-        case None => {
-            val newlib = KevoreeFactory.eINSTANCE.createTypeLibrary
-            newlib.setName(libannot.name)
-            newlib.addSubTypes(typeDef)
-            root.addLibraries(newlib)
+
+      (List(libannot.name()) ++ libannot.names()).foreach {
+        libName =>
+        /* CREATE LIBRARY IF NEEDED */
+          root.getLibraries.find({
+            lib => lib.getName == libName
+          }) match {
+            case Some(lib) => lib.addSubTypes(typeDef)
+            case None => {
+              val newlib = KevoreeFactory.eINSTANCE.createTypeLibrary
+              newlib.setName(libName)
+              newlib.addSubTypes(typeDef)
+              root.addLibraries(newlib)
+            }
           }
       }
     }
-
-
   }
 
 }
