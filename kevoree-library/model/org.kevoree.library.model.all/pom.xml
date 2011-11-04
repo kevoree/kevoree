@@ -22,7 +22,6 @@
 
     <build>
         <plugins>
-
             <plugin>
                 <groupId>org.kevoree.tools</groupId>
                 <artifactId>org.kevoree.tools.merger.mavenplugin</artifactId>
@@ -39,59 +38,6 @@
                     </execution>
                 </executions>
             </plugin>
-            <!--
-            <plugin>
-                <artifactId>maven-install-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>install-apk</id>
-                        <phase>install</phase>
-                        <goals>
-                            <goal>install-file</goal>
-                        </goals>
-                        <configuration>
-                            <packaging>kev</packaging>
-                            <groupId>${project.groupId}</groupId>
-                            <artifactId>${project.artifactId}</artifactId>
-                            <file>${project.build.directory}/classes/defaultLibrary.kev</file>
-                            <version>${kevoree.version}</version>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-
-            <plugin>
-                <artifactId>maven-deploy-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>deploy-kev</id>
-                        <phase>deploy</phase>
-                        <goals>
-                            <goal>deploy</goal>
-                        </goals>
-                        <configuration>
-                            <skip>true</skip>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>deploy-apk</id>
-                        <phase>deploy</phase>
-                        <goals>
-                            <goal>deploy-file</goal>
-                        </goals>
-                        <configuration>
-                            <file>${project.build.directory}/classes/defaultLibrary.kev</file>
-                            <url>http://maven.kevoree.org/archiva/repository/snapshots/</url>
-                            <packaging>kev</packaging>
-                            <groupId>${project.groupId}</groupId>
-                            <artifactId>${project.artifactId}</artifactId>
-                            <version>${kevoree.version}</version>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-            -->
-
         </plugins>
     </build>
 
@@ -127,45 +73,31 @@
             <artifactId>org.kevoree.library.javase.javaseNode</artifactId>
             <version>${kevoree.version}</version>
         </dependency>
-
-        <dependency>
-            <groupId>org.kevoree.library.javase</groupId>
-            <artifactId>org.kevoree.library.javase.restAutoDiscovery</artifactId>
-            <version>${kevoree.version}</version>
-        </dependency>
-
-
-        <dependency>
-            <groupId>org.kevoree.library.javase</groupId>
-            <artifactId>org.kevoree.library.javase.rest</artifactId>
-            <version>${kevoree.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.kevoree.library.javase</groupId>
-            <artifactId>org.kevoree.library.javase.miniCloudGroup</artifactId>
-            <version>${kevoree.version}</version>
-        </dependency>
-
         <dependency>
             <groupId>org.kevoree.library.javase</groupId>
             <artifactId>org.kevoree.library.javase.defaultChannels</artifactId>
             <version>${kevoree.version}</version>
         </dependency>
-
+        <dependency>
+            <groupId>org.kevoree.library.javase</groupId>
+            <artifactId>org.kevoree.library.javase.rest</artifactId>
+            <version>${kevoree.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.kevoree.library.javase</groupId>
+            <artifactId>org.kevoree.library.javase.restAutoDiscovery</artifactId>
+            <version>${kevoree.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.kevoree.library.javase</groupId>
+            <artifactId>org.kevoree.library.javase.miniCloudGroup</artifactId>
+            <version>${kevoree.version}</version>
+        </dependency>
         <dependency>
             <groupId>org.kevoree.library.javase</groupId>
             <artifactId>org.kevoree.library.javase.socketChannels</artifactId>
             <version>${kevoree.version}</version>
         </dependency>
-
-        <!--
-        <dependency>
-            <groupId>org.kevoree.library.javase</groupId>
-            <artifactId>org.kevoree.library.javase.restChannels</artifactId>
-            <version>${kevoree.version}</version>
-        </dependency>
-        -->
         <dependency>
             <groupId>org.kevoree.library.javase</groupId>
             <artifactId>org.kevoree.library.javase.fakeDomo</artifactId>
@@ -201,8 +133,8 @@
             <artifactId>org.kevoree.library.javase.webserver.components</artifactId>
             <version>${kevoree.version}</version>
         </dependency>
-        <!-- Android -->
 
+        <!-- Android -->
         <dependency>
             <groupId>org.kevoree.library.android</groupId>
             <artifactId>org.kevoree.library.android.nodeType</artifactId>
@@ -228,11 +160,11 @@
             <artifactId>org.kevoree.library.android.rest</artifactId>
             <version>${kevoree.version}</version>
         </dependency>
-<!--        <dependency>
+        <dependency>
             <groupId>org.kevoree.library.android</groupId>
             <artifactId>org.kevoree.library.android.text2speech</artifactId>
             <version>${kevoree.version}</version>
-        </dependency>-->
+        </dependency>
 
     </dependencies>
 

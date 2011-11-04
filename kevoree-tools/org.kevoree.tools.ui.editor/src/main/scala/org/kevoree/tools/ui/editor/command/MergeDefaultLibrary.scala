@@ -32,9 +32,7 @@ class MergeDefaultLibrary extends Command {
   def setKernel(k: KevoreeUIKernel) = kernel = k
 
   def execute(p: Object) {
-
     try {
-
        val file = AetherUtil.resolveMavenArtifact("org.kevoree.library.model.all","org.kevoree.library.model",KevoreeFactory.getVersion,List("http://maven.kevoree.org/release","http://maven.kevoree.org/snapshots"))
        val jar = new JarFile(file)
        val entry: JarEntry = jar.getJarEntry("KEV-INF/lib.kev")

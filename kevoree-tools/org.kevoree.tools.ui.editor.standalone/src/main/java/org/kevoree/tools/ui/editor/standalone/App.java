@@ -50,14 +50,6 @@ public class App {
 
                 final KevoreeEditor artpanel = new KevoreeEditor();
                 kevsPanel.setKernel(artpanel.getPanel().getKernel());
-
-
-                if (System.getProperty("os.name").toLowerCase().contains("mac")) {
-                    // System.out.println("Mac detected");
-                    // MacIntegration.addOSXIntegration(artpanel);
-                }
-
-
                 String frameName = "Kevoree Editor - "+ KevoreeFactory.getVersion();
 
                 if (!artpanel.getEditorVersion().equals("")) {
@@ -69,9 +61,9 @@ public class App {
 
                 JFrame jframe = new JFrame(frameName);
                 MacUtils.makeWindowLeopardStyle(jframe.getRootPane());
-
-
                 UnifiedToolBar toolBar = new UnifiedToolBar();
+                org.kevoree.tools.ui.editor.ErrorPanel.setTopPanel(toolBar);
+
                 // JButton button = new JButton("Toogle console");
                 // button.putClientProperty("JButton.buttonType", "textured");
 
@@ -279,9 +271,6 @@ public class App {
                         errorShow = !errorShow;
                     }
                 });
-
-
-
                 final AbstractButton finalToogleTypeEditionMode = toogleTypeEditionMode;
                 toogleTypeEditionMode.addMouseListener(new MouseAdapter() {
                     @Override
@@ -297,8 +286,6 @@ public class App {
                     }
                 });
                 dividerPos = splitPane.getDividerLocation();
-
-
             }
         });
 

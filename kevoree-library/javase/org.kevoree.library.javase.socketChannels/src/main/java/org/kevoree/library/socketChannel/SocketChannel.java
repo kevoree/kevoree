@@ -31,7 +31,7 @@ import java.util.concurrent.Executors;
 
 
 
-@Library(name = "org.kevoree.library.socketChannel")
+@Library(name = "JavaSE", names = {"Android"})
 @ChannelTypeFragment
 @DictionaryType({
         @DictionaryAttribute(name="port",defaultValue="9000",optional=true, fragmentDependant = true),
