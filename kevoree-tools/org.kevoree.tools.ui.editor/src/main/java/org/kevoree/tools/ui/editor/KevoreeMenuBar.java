@@ -14,11 +14,14 @@
 package org.kevoree.tools.ui.editor;
 
 
+import ch.qos.logback.classic.*;
+import ch.qos.logback.classic.Logger;
 import org.kevoree.tools.ui.editor.command.*;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import org.slf4j.*;
 
 public class KevoreeMenuBar extends JMenuBar {
 
@@ -113,6 +116,43 @@ public class KevoreeMenuBar extends JMenuBar {
         KillOSGICommand closeOsgiCmd = new KillOSGICommand();
         closeOsgi.addActionListener(new CommandActionListener(closeOsgiCmd));
         tools.add(closeOsgi);
+
+        JMenu loggerMenu = new JMenu("Logger");
+
+        ButtonGroup logGroup = new ButtonGroup();
+
+        JCheckBoxMenuItem warnLevelItem = new JCheckBoxMenuItem("Warn");
+        warnLevelItem.setSelected(true);
+        warnLevelItem.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent actionEvent) {
+                Logger root = (Logger) LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME);
+                root.setLevel(Level.WARN);
+            }
+        });
+        loggerMenu.add(warnLevelItem);
+        logGroup.add(warnLevelItem);
+
+        JCheckBoxMenuItem debugLevelItem = new JCheckBoxMenuItem("Debug");
+        debugLevelItem.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent actionEvent) {
+                Logger root = (Logger) LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME);
+                root.setLevel(Level.DEBUG);
+            }
+        });
+        loggerMenu.add(debugLevelItem);
+        logGroup.add(debugLevelItem);
+
+        JCheckBoxMenuItem infoLevelItem = new JCheckBoxMenuItem("Info");
+        infoLevelItem.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent actionEvent) {
+                Logger root = (Logger) LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME);
+                root.setLevel(Level.INFO);
+            }
+        });
+        loggerMenu.add(infoLevelItem);
+        logGroup.add(infoLevelItem);
+
+        tools.add(loggerMenu);
 
 
         this.add(file);
