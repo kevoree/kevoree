@@ -145,6 +145,7 @@ object PrimitiveCommandExecutionHelper {
       // SEQUENCIAL ROOLBACK
       primitives.reverse.foreach(c => {
         try {
+          logger.debug("Undo adaptation command "+c.getClass)
           c.undo()
         } catch {
           case _@e => logger.warn("Exception during rollback", e);
