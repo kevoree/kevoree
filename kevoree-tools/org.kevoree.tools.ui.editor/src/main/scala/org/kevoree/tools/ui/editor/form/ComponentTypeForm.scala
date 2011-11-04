@@ -14,14 +14,16 @@
 package org.kevoree.tools.ui.editor.form
 
 import com.explodingpixels.macwidgets.HudWindow
-import com.explodingpixels.macwidgets.plaf.{HudButtonUI, HudComboBoxUI, HudLabelUI, HudTextFieldUI}
-import java.awt.event.{ActionEvent, ActionListener}
+import com.explodingpixels.macwidgets.plaf.{HudButtonUI, HudLabelUI, HudTextFieldUI}
 import org.kevoree.tools.ui.editor.property.SpringUtilities
 import org.kevoree.tools.ui.editor.KevoreeUIKernel
-import org.kevoree.tools.ui.editor.command.{ReloadTypePalette, KevScriptCommand}
+import org.kevoree.tools.ui.editor.command.{ReloadTypePalette}
 import org.kevoree.{DeployUnit, TypeLibrary, KevoreeFactory}
-import org.kevoree.tools.ui.framework.data.{KevoreeHudComboBoxUI, NamedElementListRenderer, KevoreeComboBox}
+import org.kevoree.tools.ui.framework.data.{KevoreeHudComboBoxUI}
 import javax.swing._
+import event.{PopupMenuEvent, PopupMenuListener}
+import java.awt.{Color, FlowLayout}
+import java.awt.event.{FocusEvent, FocusListener, ActionEvent, ActionListener}
 
 /**
  * Created by IntelliJ IDEA.
@@ -33,16 +35,36 @@ import javax.swing._
 
 trait ComponentTypeForm {
 
-  def createNewComponentTypePanel(window: HudWindow,kernel : KevoreeUIKernel): Tuple2[JPanel, JButton] = {
+  def createNewComponentTypePanel(window: HudWindow, kernel: KevoreeUIKernel): Tuple2[JPanel, JPanel] = {
     val layout = new JPanel(new SpringLayout)
     layout.setOpaque(false)
 
 
+    val packageTextFieldLabel = new JLabel("Package: ", SwingConstants.TRAILING);
+    packageTextFieldLabel.setUI(new HudLabelUI());
+
+    val componentTypeNameLabel = new JLabel("Name: ", SwingConstants.TRAILING);
+    componentTypeNameLabel.setUI(new HudLabelUI());
+
+    val libraryCompoLabel = new JLabel("Library: ", SwingConstants.TRAILING)
+    libraryCompoLabel.setUI(new HudLabelUI)
+
+    val deployUnitComboLabel = new JLabel("Deploy Unit: ", SwingConstants.TRAILING)
+    deployUnitComboLabel.setUI(new HudLabelUI)
+
+    val ok_lbl = new JLabel("  ")
+    ok_lbl.setUI(new HudLabelUI)
+
+
     val packageTextField = new JTextField()
     packageTextField.setUI(new HudTextFieldUI())
-    val packageTextFieldLabel = new JLabel("ComponentType package", SwingConstants.TRAILING);
-    packageTextFieldLabel.setUI(new HudLabelUI());
-    packageTextFieldLabel.setOpaque(false);
+    packageTextField.addFocusListener(new FocusListener() {
+      def focusGained(p1: FocusEvent) {
+        packageTextFieldLabel.setForeground(Color.WHITE)
+      }
+      def focusLost(p1: FocusEvent) {}
+    })
+
     packageTextFieldLabel.setLabelFor(packageTextField);
     layout.add(packageTextFieldLabel)
     layout.add(packageTextField)
@@ -50,9 +72,13 @@ trait ComponentTypeForm {
 
     val nameTextField = new JTextField()
     nameTextField.setUI(new HudTextFieldUI())
-    val componentTypeNameLabel = new JLabel("ComponentType name", SwingConstants.TRAILING);
-    componentTypeNameLabel.setUI(new HudLabelUI());
-    componentTypeNameLabel.setOpaque(false);
+    nameTextField.addFocusListener(new FocusListener() {
+      def focusGained(p1: FocusEvent) {
+        componentTypeNameLabel.setForeground(Color.WHITE)
+      }
+      def focusLost(p1: FocusEvent) {}
+    })
+
     componentTypeNameLabel.setLabelFor(nameTextField);
     layout.add(componentTypeNameLabel)
     layout.add(nameTextField)
@@ -65,8 +91,14 @@ trait ComponentTypeForm {
     }
     val comboLibrary = new JComboBox(libraryModel)
     comboLibrary.setUI(new KevoreeHudComboBoxUI())
-    val libraryCompoLabel = new JLabel("Library : ", SwingConstants.TRAILING)
-    libraryCompoLabel.setUI(new HudLabelUI)
+    comboLibrary.addPopupMenuListener(new PopupMenuListener {
+      def popupMenuWillBecomeVisible(p1: PopupMenuEvent) {
+        libraryCompoLabel.setForeground(Color.WHITE)
+      }
+      def popupMenuWillBecomeInvisible(p1: PopupMenuEvent) {}
+      def popupMenuCanceled(p1: PopupMenuEvent) {}
+    })
+
     libraryCompoLabel.setLabelFor(comboLibrary)
     layout.add(libraryCompoLabel)
     layout.add(comboLibrary)
@@ -80,8 +112,14 @@ trait ComponentTypeForm {
     }
     val comboDeployUnit = new JComboBox(deployUnitModel)
     comboDeployUnit.setUI(new KevoreeHudComboBoxUI())
-    val deployUnitComboLabel = new JLabel("Deploy Unit : ", SwingConstants.TRAILING)
-    deployUnitComboLabel.setUI(new HudLabelUI)
+    comboDeployUnit.addPopupMenuListener(new PopupMenuListener() {
+      def popupMenuWillBecomeVisible(p1: PopupMenuEvent) {
+        deployUnitComboLabel.setForeground(Color.WHITE)
+      }
+      def popupMenuWillBecomeInvisible(p1: PopupMenuEvent) {}
+      def popupMenuCanceled(p1: PopupMenuEvent) {}
+    })
+
     deployUnitComboLabel.setLabelFor(comboDeployUnit)
     layout.add(deployUnitComboLabel)
     layout.add(comboDeployUnit)
@@ -92,58 +130,74 @@ trait ComponentTypeForm {
     btAdd.setUI(new HudButtonUI)
     btAdd.addActionListener(new ActionListener {
       def actionPerformed(p1: ActionEvent) {
-        if (nameTextField.getText != "") {
+
+        var proceed = true
+
+        if (packageTextField.getText.equals("")) {
+          proceed = false
+          packageTextFieldLabel.setForeground(Color.RED)
+        }
+
+        if (nameTextField.getText.equals("")) {
+          proceed = false
+          componentTypeNameLabel.setForeground(Color.RED)
+        }
+
+        if (!comboLibrary.getSelectedItem.isInstanceOf[TypeLibrary]) {
+          proceed = false
+          libraryCompoLabel.setForeground(Color.RED)
+        }
+
+        if (!comboDeployUnit.getSelectedItem.isInstanceOf[DeployUnit]) {
+          proceed = false
+          deployUnitComboLabel.setForeground(Color.RED)
+        }
+
+        if (proceed) {
 
           val newCt = KevoreeFactory.createComponentType
           newCt.setName(nameTextField.getText)
-          if(!packageTextField.getText.equals("")) {
-            var packName = packageTextField.getText
-            if(!packageTextField.getText.endsWith(".")) {
-              packName += "."
-            }
-            newCt.setBean(packName + newCt.getName)
-          } else {
-            //TODO retreive a package name from the selected deploy unit artifact ID
+
+          var packName = packageTextField.getText
+          if (!packageTextField.getText.endsWith(".")) {
+            packName += "."
           }
+          newCt.setBean(packName + newCt.getName)
 
           comboLibrary.getSelectedItem match {
-            case lib:TypeLibrary => {
+            case lib: TypeLibrary => {
               lib.addSubTypes(newCt)
             }
-            case _ @ e => System.out.println("Not a library. " + e.getClass)
+            case _@e => System.out.println("Not a library. " + e.getClass)
           }
 
           comboDeployUnit.getSelectedItem match {
-            case du : DeployUnit => {
+            case du: DeployUnit => {
               newCt.addDeployUnits(du)
             }
-              case _ @ e => System.out.println("Not a DeployUnit. " + e.getClass)
+            case _@e => System.out.println("Not a DeployUnit. " + e.getClass)
           }
 
           kernel.getModelHandler.getActualModel.addTypeDefinitions(newCt)
 
-          /*
-          val cmd = new KevScriptCommand
-          cmd.setKernel(kernel)
-          //TODO: link the componentType with the deployUnit.
-          if("no library" != comboLibrary.getSelectedItem){
-            cmd.execute("tblock { createComponentType " + nameTextField.getText + " @ "+comboLibrary.getSelectedItem+"  } ")
-          } else {
-            cmd.execute("tblock { createComponentType " + nameTextField.getText + " } ")
-          }
-          */
-          //window.getJDialog.dispose()
+          val updateCmd = new ReloadTypePalette
+          updateCmd.setKernel(kernel)
+          updateCmd.execute(None)
 
-            val updateCmd = new ReloadTypePalette
-            updateCmd.setKernel(kernel)
-            updateCmd.execute(None)
+          ok_lbl.setText("OK")
+          ok_lbl.setForeground(Color.GREEN)
+          window.getContentPane.repaint()
         }
       }
     })
-    window.getJDialog.getRootPane.setDefaultButton(btAdd)
-    SpringUtilities.makeCompactGrid(layout, 4, 2, 6, 6, 6, 6)
-    Tuple2(layout, btAdd)
-  }
 
+    val bottomLine = new JPanel(new FlowLayout(FlowLayout.CENTER))
+    bottomLine.add(btAdd)
+    bottomLine.add(ok_lbl)
+
+    //window.getJDialog.getRootPane.setDefaultButton(btAdd)
+    SpringUtilities.makeCompactGrid(layout, 4, 2, 6, 6, 6, 6)
+    Tuple2(layout, bottomLine)
+  }
 
 }
