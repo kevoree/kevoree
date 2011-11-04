@@ -1,8 +1,11 @@
 package org.kevoree.library.javase.webcam;
 
+import com.sun.jna.Native;
+import com.sun.jna.NativeLibrary;
 import org.kevoree.annotation.*;
 import org.kevoree.framework.AbstractComponentType;
 import org.kevoree.framework.MessagePort;
+import uk.co.caprica.vlcj.binding.LibVlc;
 import uk.co.caprica.vlcj.player.MediaPlayerFactory;
 import uk.co.caprica.vlcj.player.direct.DirectMediaPlayer;
 import uk.co.caprica.vlcj.player.direct.RenderCallbackAdapter;
@@ -33,13 +36,23 @@ public class Webcam extends AbstractComponentType {
 
 	private MediaPlayerFactory factory;
 	private DirectMediaPlayer mediaPlayer;
+	private static NativeLibrary instance;
+	private static int nbComponent;
 
 	@Start
 	public void start () throws Exception {
 
 		if (isPortBinded("image")) {
+			if (instance == null) {
+				String path = VLCNativeLibraryLoader.configure();
+				NativeLibrary.addSearchPath("libvlc", path);
+				instance = NativeLibrary.getInstance("libvlc");
+				nbComponent++;
+				Native.register(LibVlc.class, instance);
+			}
+
 			System.setProperty("vlcj.check", "no");
-			System.setProperty("vlcj.log", (String)this.getDictionary().get("LOG"));
+			System.setProperty("vlcj.log", (String) this.getDictionary().get("LOG"));
 			String device = (String) this.getDictionary().get("DEVICE");
 			factory = new MediaPlayerFactory("--no-video-title-show");
 			mediaPlayer = factory
@@ -54,6 +67,10 @@ public class Webcam extends AbstractComponentType {
 		if (isPortBinded("image")) {
 			mediaPlayer.stop();
 			factory.release();
+			if (instance != null && nbComponent == 0) {
+				Native.unregister(LibVlc.class);
+				instance.dispose();
+			}
 		}
 	}
 
