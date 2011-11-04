@@ -25,7 +25,7 @@ import java.awt.image.BufferedImage;
 		@DictionaryAttribute(name = "DEVICE", defaultValue = "v4l2:///dev/video0", optional = false),
 		@DictionaryAttribute(name = "LOG", defaultValue = "NONE", vals = {"NONE", "DEBUG"}, optional = false),
 		@DictionaryAttribute(name = "FORMAT", defaultValue = "800x600", optional = false,
-				vals = {"800x600", "400x300", "200x150"})
+				vals = {"640x480","800x600", "400x300", "200x150"})
 })
 @Requires({
 		@RequiredPort(name = "image", type = PortType.MESSAGE, optional = true, filter = "java.awt.image.BufferedImage")
