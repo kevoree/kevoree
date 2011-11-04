@@ -57,18 +57,12 @@ public class Kinect extends AbstractComponentType {
 
 		if (instance == null) {
             String path = KinectNativeLibraryLoader.configure();
-			NativeLibrary.addSearchPath("freenect", path);
-            /*if(KinectNativeLibraryLoader.isMac()){
-                
-                for(Object key : System.getProperties().keySet()){
-                   System.out.println(key+"=>"+System.getProperty(key.toString()));
-                }
-                
-
-                System.setProperty("DYLD_LIBRARY_PATH",path);
+            if(KinectNativeLibraryLoader.isMac()){
+                logger.debug("OSX load usb lib");
                 NativeLibrary.addSearchPath("usb", path);
-            }*/
-
+                NativeLibrary.getInstance("usb");
+            }
+            NativeLibrary.addSearchPath("freenect", path);
 			instance = NativeLibrary.getInstance("freenect");
 			nbComponent++;
 			Native.register(Freenect.class, instance);
