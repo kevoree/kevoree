@@ -30,18 +30,18 @@ object Tester extends App {
 
   val bean = new KevoreeKompareBean
 
-  val model1 = KevoreeXmiHelper.load("/Users/duke/Desktop/drop.kev")
-  val model2 = KevoreeXmiHelper.load("/Users/duke/Desktop/dropu.kev")
+  val model1 = KevoreeXmiHelper.load("/Users/duke/Desktop/webcamBoot.kev")
+  val model2 = KevoreeXmiHelper.load("/Users/duke/Desktop/webcamBase.kev")
 
 
-  val adapModel = bean.kompare(model1, model2, "node1")
+  val adapModel = bean.kompare(model1, model2, "node0")
 
   adapModel.getAdaptations.foreach {
     adaptation =>
       println(adaptation.getPrimitiveType.getName)
       if (adaptation.getRef.isInstanceOf[NamedElement]) {
         if (adaptation.getRef.isInstanceOf[DeployUnit]) {
-          println("ref=" + adaptation.getRef.asInstanceOf[DeployUnit].getUnitName + "->" + adaptation.getTargetNodeName)
+          println("ref=" + adaptation.getRef.asInstanceOf[DeployUnit].getUrl+ " -> " + adaptation.getRef.asInstanceOf[DeployUnit].getUnitName + "->" + adaptation.getTargetNodeName)
         } else {
           println("ref=" + adaptation.getRef.asInstanceOf[NamedElement].getName + "->" + adaptation.getTargetNodeName)
 
