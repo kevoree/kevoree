@@ -27,6 +27,8 @@ public class VideoViewer extends AbstractComponentType {
 	private boolean isAlreadyInitialized;
 	private BufferStrategy bufferStrategy;
 	private JFrame frame;
+	private int width;
+	private int height;
 
 	@Start
 	public void start () {
@@ -60,12 +62,17 @@ public class VideoViewer extends AbstractComponentType {
 			final BufferedImage image = (BufferedImage) message;
 			if (!isAlreadyInitialized) {
 				frame = new JFrame(this.getName());
-				frame.setSize(((BufferedImage) message).getWidth(null), ((BufferedImage) message).getHeight(null));
 				frame.setVisible(true);
 				init();
 				isAlreadyInitialized = true;
 			}
+			if (width != ((BufferedImage) message).getWidth(null) || height != ((BufferedImage) message).getHeight(null)) {
+				width = ((BufferedImage) message).getWidth(null);
+				height = ((BufferedImage) message).getHeight(null);
+				frame.setSize(width, height);
+			}
 			try {
+
 				Graphics2D g = (Graphics2D) bufferStrategy.getDrawGraphics();
 				g.drawImage(image, 0, 0, image.getWidth(null), image.getHeight(null), null);
 				g.dispose();

@@ -21,13 +21,12 @@ import java.nio.ByteBuffer;
  * Time: 17:42
  */
 @Requires({
-		@RequiredPort(name = "image", type = PortType.MESSAGE, optional = true,
-				filter = "java.awt.image.BufferedImage")//,
+		@RequiredPort(name = "image", type = PortType.MESSAGE, optional = true,	filter = "java.awt.image.BufferedImage")
 		//@RequiredPort(name = "raw", type = PortType.MESSAGE, optional = true, filter = "java.nio.ByteBuffer")//,
 		//@RequiredPort(name = "imageDepth", type = PortType.MESSAGE, optional = true)
 })
 @Provides({
-		@ProvidedPort(name = "motor", type = PortType.MESSAGE, filter = {"java.lang.Integer", "java.lang.String"})//
+		@ProvidedPort(name = "motor", type = PortType.MESSAGE, filter = {"java.lang.Integer", "java.lang.String"})
 		//@ProvidedPort(name = "led", type = PortType.MESSAGE, filter = {"java.lang.Integer", "java.lang.String"}) TODO
 		//@ProvidedPort(name = "log", type = PortType.MESSAGE, filter = {"java.lang.Integer", "java.lang.String"}) TODO
 })
@@ -103,8 +102,10 @@ public class Kinect extends AbstractComponentType {
 								// FIXME the cost is too high
 								//int[] pixels = new int[format.getWidth() * format.getHeight()];
 								if (image == null) {
-									image = DirectBufferedImage
-											.getDirectImageRGB(format.getWidth(), format.getHeight());
+									/*image = DirectBufferedImage
+											.getDirectImageRGB(format.getWidth(), format.getHeight());*/
+									image = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDefaultConfiguration()
+														.createCompatibleImage(format.getWidth(), format.getHeight());
 								}
 								//Graphics2D graphics = (Graphics2D)image.getGraphics();
 								for (int y = 0; y < format.getHeight(); y++) {
