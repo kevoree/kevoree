@@ -40,7 +40,7 @@ case class StopInstanceCommand(c : Instance,nodeName:String) extends LifeCycleCo
   }
 
   def undo() {
-    StartInstanceCommand(c,nodeName)
+    StartInstanceCommand(c,nodeName).execute()
   }
 
 }
