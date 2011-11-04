@@ -11,7 +11,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>org.kevoree.library.javase.webcam</artifactId>
-    <name>Kevoree :: Library :: JavaSe :: Webcam</name>
+    <name>Kevoree :: Library :: JavaSE :: Webcam</name>
     <packaging>bundle</packaging>
 
     <dependencies>
