@@ -14,12 +14,13 @@
 package org.kevoree.tools.ui.editor.form
 
 import com.explodingpixels.macwidgets.HudWindow
-import javax.swing._
 import com.explodingpixels.macwidgets.plaf.{HudButtonUI, HudLabelUI, HudTextFieldUI}
-import java.awt.event.{ActionEvent, ActionListener}
 import org.kevoree.tools.ui.editor.property.SpringUtilities
 import org.kevoree.tools.ui.editor.KevoreeUIKernel
 import org.kevoree.tools.ui.editor.command.{ReloadTypePalette, KevScriptCommand}
+import javax.swing._
+import java.awt.{Color, FlowLayout}
+import java.awt.event.{FocusEvent, FocusListener, ActionEvent, ActionListener}
 
 /**
  * Created by IntelliJ IDEA.
@@ -30,60 +31,111 @@ import org.kevoree.tools.ui.editor.command.{ReloadTypePalette, KevScriptCommand}
  */
 
 trait DeployUnitForm {
-  def createNewDeployUnitPanel(window: HudWindow,kernel : KevoreeUIKernel): Tuple2[JPanel, JButton] = {
-      val layout = new JPanel(new SpringLayout)
-      layout.setOpaque(false)
+  def createNewDeployUnitPanel(window: HudWindow, kernel: KevoreeUIKernel): Tuple2[JPanel, JPanel] = {
+    val layout = new JPanel(new SpringLayout)
+    layout.setOpaque(false)
+
+    val groupName_lbl = new JLabel("GroupName", SwingConstants.TRAILING);
+    groupName_lbl.setUI(new HudLabelUI());
+    //groupName_lbl.setOpaque(false);
+
+    val artifactName_lbl = new JLabel("UnitName", SwingConstants.TRAILING);
+    artifactName_lbl.setUI(new HudLabelUI());
+    //artifactName_lbl.setOpaque(false);
+
+    val version_lbl = new JLabel("Version", SwingConstants.TRAILING);
+    version_lbl.setUI(new HudLabelUI());
+    //version_lbl.setOpaque(false);
+
+    val ok_lbl = new JLabel("  ")
+    ok_lbl.setUI(new HudLabelUI())
 
     //GroupName
-      val groupnameTextField = new JTextField()
-      groupnameTextField.setUI(new HudTextFieldUI())
-      val groupNameLabel = new JLabel("GroupName", SwingConstants.TRAILING);
-      groupNameLabel.setUI(new HudLabelUI());
-      groupNameLabel.setOpaque(false);
-      groupNameLabel.setLabelFor(groupnameTextField);
-      layout.add(groupNameLabel)
-      layout.add(groupnameTextField)
+    val groupName_txt = new JTextField()
+    groupName_txt.setUI(new HudTextFieldUI())
+    groupName_txt.addFocusListener(new FocusListener() {
+      def focusGained(p1: FocusEvent) {
+        groupName_lbl.setForeground(Color.WHITE)
+      }
+      def focusLost(p1: FocusEvent) {}
+    })
+
+    groupName_lbl.setLabelFor(groupName_txt);
+    layout.add(groupName_lbl)
+    layout.add(groupName_txt)
 
 
-      //UnitName
-      val nameTextField = new JTextField()
-      nameTextField.setUI(new HudTextFieldUI())
-      val nodeNameLabel = new JLabel("UnitName", SwingConstants.TRAILING);
-      nodeNameLabel.setUI(new HudLabelUI());
-      nodeNameLabel.setOpaque(false);
-      nodeNameLabel.setLabelFor(nameTextField);
-      layout.add(nodeNameLabel)
-      layout.add(nameTextField)
+    //UnitName
+    val artifactName_txt = new JTextField()
+    artifactName_txt.setUI(new HudTextFieldUI())
+    artifactName_txt.addFocusListener(new FocusListener() {
+      def focusGained(p1: FocusEvent) {
+        artifactName_lbl.setForeground(Color.WHITE)
+      }
+      def focusLost(p1: FocusEvent) {}
+    })
 
-      //version
-      val versionTextField = new JTextField()
-      versionTextField.setUI(new HudTextFieldUI())
-      val versionTextLabel = new JLabel("Version", SwingConstants.TRAILING);
-      versionTextLabel.setUI(new HudLabelUI());
-      versionTextLabel.setOpaque(false);
-      versionTextLabel.setLabelFor(versionTextField);
-      layout.add(versionTextLabel)
-      layout.add(versionTextField)
+    artifactName_lbl.setLabelFor(artifactName_txt);
+    layout.add(artifactName_lbl)
+    layout.add(artifactName_txt)
 
-      //EXECUTE KEVSCRIPT COMMAND
-      val btAdd = new JButton("Add DeployUnit")
-      btAdd.setUI(new HudButtonUI)
-      btAdd.addActionListener(new ActionListener {
-        def actionPerformed(p1: ActionEvent) {
-          if (nameTextField.getText != "") {
-            val cmd = new KevScriptCommand
-            cmd.setKernel(kernel)
-            cmd.execute("tblock { addDeployUnit \"" + nameTextField.getText + "\" \"" + groupnameTextField.getText + "\" \"" + versionTextField.getText + "\" } ")
-            //window.getJDialog.dispose()
+    //version
+    val version_txt = new JTextField()
+    version_txt.setUI(new HudTextFieldUI())
+    version_txt.addFocusListener(new FocusListener() {
+      def focusGained(p1: FocusEvent) {
+        version_lbl.setForeground(Color.WHITE)
+      }
+      def focusLost(p1: FocusEvent) {}
+    })
 
-            val updateCmd = new ReloadTypePalette
-            updateCmd.setKernel(kernel)
-            updateCmd.execute(None)
-          }
+    version_lbl.setLabelFor(version_txt);
+    layout.add(version_lbl)
+    layout.add(version_txt)
+
+    //EXECUTE KEVSCRIPT COMMAND
+    val btAdd = new JButton("Add DeployUnit")
+    btAdd.setUI(new HudButtonUI)
+    btAdd.addActionListener(new ActionListener {
+      def actionPerformed(p1: ActionEvent) {
+        var proceed = true
+        if(artifactName_txt.getText.equals("")) {
+          proceed = false
+          artifactName_lbl.setForeground(Color.RED)
         }
-      })
-      window.getJDialog.getRootPane.setDefaultButton(btAdd)
-      SpringUtilities.makeCompactGrid(layout, 3, 2, 6, 6, 6, 6)
-      Tuple2(layout, btAdd)
-    }
+        if(groupName_txt.getText.equals("")) {
+          proceed = false
+          groupName_lbl.setForeground(Color.RED)
+        }
+
+        if(version_txt.getText.equals("")) {
+          proceed = false
+          version_lbl.setForeground(Color.RED)
+        }
+        if (proceed) {
+          val cmd = new KevScriptCommand
+          cmd.setKernel(kernel)
+          cmd.execute("tblock { addDeployUnit \"" + artifactName_txt.getText + "\" \"" + groupName_txt.getText + "\" \"" + version_txt.getText + "\" } ")
+          //window.getJDialog.dispose()
+
+          val updateCmd = new ReloadTypePalette
+          updateCmd.setKernel(kernel)
+          updateCmd.execute(None)
+
+          ok_lbl.setText("OK")
+          ok_lbl.setForeground(Color.GREEN)
+          window.getContentPane.repaint()
+
+        }
+      }
+    })
+
+    val bottomLine = new JPanel(new FlowLayout(FlowLayout.CENTER))
+    bottomLine.add(btAdd)
+    bottomLine.add(ok_lbl)
+
+    //window.getJDialog.getRootPane.setDefaultButton(btAdd)
+    SpringUtilities.makeCompactGrid(layout, 3, 2, 6, 6, 6, 6)
+    Tuple2(layout, bottomLine)
+  }
 }
