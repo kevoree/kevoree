@@ -53,6 +53,7 @@ case class RemoveInstanceCommand(c: Instance, nodeName: String) extends Primitiv
   def undo() {
     try {
       AddInstanceCommand(c, nodeName).execute()
+      UpdateDictionaryCommand(c, nodeName).execute()
     } catch {
       case _ =>
     }
