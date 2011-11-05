@@ -26,11 +26,13 @@ public @interface ProvidedPort {
 
     PortType type() default PortType.SERVICE;
 
-    String[] filter() default {};
+    //String[] filter() default {};
 
     String name();
 
     Class className() default Void.class;
+
+    String messageType() default "untyped";
 
     boolean async() default false;
 }
