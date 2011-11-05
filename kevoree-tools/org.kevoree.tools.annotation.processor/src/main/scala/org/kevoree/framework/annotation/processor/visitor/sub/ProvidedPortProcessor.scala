@@ -25,6 +25,7 @@ import org.kevoree.framework.annotation.processor.visitor.ServicePortTypeVisitor
 import javax.lang.model.element.TypeElement
 import javax.annotation.processing.ProcessingEnvironment
 import javax.tools.Diagnostic.Kind
+import org.kevoree.annotation.MessageTypes
 
 
 trait ProvidedPortProcessor {
@@ -69,11 +70,11 @@ trait ProvidedPortProcessor {
                 } catch {
                   case e: javax.lang.model.`type`.MirroredTypeException =>
 
-                     //Checks the kind of the className attribute of the annotation
+                    //Checks the kind of the className attribute of the annotation
                     if (!e.getTypeMirror.toString.equals("java.lang.Void")) {
-                      e.getTypeMirror.accept(visitor,e.getTypeMirror)
+                      e.getTypeMirror.accept(visitor, e.getTypeMirror)
                     } else {
-                      env.getMessager.printMessage(Kind.ERROR,"The className attribute of a Provided ServicePort declaration is mandatory, and must be a Class or an Interface.\n"
+                      env.getMessager.printMessage(Kind.ERROR, "The className attribute of a Provided ServicePort declaration is mandatory, and must be a Class or an Interface.\n"
                         + "Have a check on ProvidedPort[name=" + providedPort.name + "] of " + componentType.getBean + "\n"
                         + "TypeMirror of " + providedPort.name + ", typeMirror : " + e.getTypeMirror + ",  qualifiedName : " + e.getTypeMirror + ", typeMirrorClass : " + e.getTypeMirror.getClass + "\n")
                     }
@@ -87,12 +88,40 @@ trait ProvidedPortProcessor {
                 //Message port
                 val messagePortType = KevoreeFactory.eINSTANCE.createMessagePortType
                 messagePortType.setName("org.kevoree.framework.MessagePort")
-                providedPort.filter.foreach {
-                  ndts =>
-                    val newTypedElement = KevoreeFactory.eINSTANCE.createTypedElement
-                    newTypedElement.setName(ndts)
-                    messagePortType.addFilters(LocalUtility.getOraddDataType(newTypedElement))
+
+                if (providedPort.messageType() != "untyped") {
+                  if (classdef.getAnnotation(classOf[MessageTypes]) != null) {
+                    classdef.getAnnotation(classOf[MessageTypes]).value().find(msgType => msgType.name() == providedPort.messageType()) match {
+                      case Some(foundMessageType) => {
+                        val dicoType = KevoreeFactory.eINSTANCE.createDictionaryType
+                        foundMessageType.elems().foreach {
+                          elem =>
+                            val dicAtt = KevoreeFactory.eINSTANCE.createDictionaryAttribute
+                            dicAtt.setName(elem.name())
+                            try {
+                              elem.className()
+                            } catch {
+                              case e: javax.lang.model.`type`.MirroredTypeException =>
+                                dicAtt.setDatatype(e.getTypeMirror.toString)
+                            }
+                            dicoType.addAttributes(dicAtt)
+                        }
+                        messagePortType.setDictionaryType(Some(dicoType))
+                      }
+                      case None => env.getMessager.printMessage(Kind.ERROR, "Can't find message type for name " + providedPort.messageType() + " for port " + providedPort.name())
+                    }
+                  } else {
+                    env.getMessager.printMessage(Kind.ERROR, "Can't find message type for name " + providedPort.messageType() + " for port " + providedPort.name())
+                  }
                 }
+
+                /*
+               providedPort.filter.foreach {
+                 ndts =>
+                   val newTypedElement = KevoreeFactory.eINSTANCE.createTypedElement
+                   newTypedElement.setName(ndts)
+                   messagePortType.addFilters(LocalUtility.getOraddDataType(newTypedElement))
+               } */
                 messagePortType
               }
               case _ => null
@@ -102,7 +131,7 @@ trait ProvidedPortProcessor {
 
           //Two ports have the same name in the component scope
           case Some(e) => {
-            env.getMessager.printMessage(Kind.ERROR,"Port name duplicated in " + componentType.getName + " Scope => " + providedPort.name)
+            env.getMessager.printMessage(Kind.ERROR, "Port name duplicated in " + componentType.getName + " Scope => " + providedPort.name)
           }
         }
 
