@@ -48,7 +48,18 @@ object KevoreeRequiredPortGenerator {
     ref.getRef match {
       case mPT : MessagePortType => {
           /* GENERATE METHOD MAPPING */
-        writer.append("def process(o : Object) = {this ! o}\n")
+        writer.append("def process(o : Object) = {\n")
+        writer.append("{this ! o}\n")
+        /*
+         writer.append("o match {\n")
+           writer.append("case msg : org.kevoree.framework.KevoreeMessage => {this ! o}\n")
+           writer.append("case _ => {\n")
+           writer.append("val m = new org.kevoree.framework.message.StdKevoreeMessage\n")
+           writer.append("m.setValue(\"*\",o)\n")
+           writer.append("this ! o")
+           writer.append("}\n")
+         writer.append("}\n") */
+        writer.append("}\n")
         writer.append("def getInOut = false\n")
         }
 

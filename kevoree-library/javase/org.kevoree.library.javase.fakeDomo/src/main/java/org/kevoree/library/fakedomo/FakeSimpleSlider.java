@@ -19,6 +19,7 @@ package org.kevoree.library.fakedomo;
 
 import org.kevoree.annotation.*;
 import org.kevoree.framework.MessagePort;
+import org.kevoree.framework.message.StdKevoreeMessage;
 
 import javax.swing.*;
 import java.awt.event.MouseEvent;
@@ -29,71 +30,82 @@ import java.awt.event.MouseListener;
  * @author ffouquet
  */
 
+@MessageTypes({
+        @MessageType(name = "percentType", elems = {@MsgElem(name = "percent", className = Integer.class)})
+})
 @Requires({
-		@RequiredPort(name = "send", type = PortType.MESSAGE, needCheckDependency = true,optional = true)
+        @RequiredPort(name = "send", type = PortType.MESSAGE, needCheckDependency = true, optional = true, messageType = "percentType")
 })
 @ComponentType
 public class FakeSimpleSlider extends AbstractFakeStuffComponent {
-	private MyFrame frame;
+    private MyFrame frame;
 
-	@Override
-	public void start () {
-		frame = new MyFrame();
-		frame.setVisible(true);
-	}
+    @Override
+    public void start() {
+        frame = new MyFrame();
+        frame.setVisible(true);
+    }
 
-	@Override
-	public void stop () {
-		frame.dispose();
-		frame = null;
-	}
+    @Override
+    public void stop() {
+        frame.dispose();
+        frame = null;
+    }
 
-	@Update
-	public void update () {
-		stop();
-		start();
-	}
+    @Update
+    public void update() {
+        stop();
+        start();
+    }
 
-	private class MyFrame extends JFrame implements MouseListener {
+    private class MyFrame extends JFrame implements MouseListener {
 
-		private JSlider slider;
+        private JSlider slider;
 
-		public MyFrame () {
-			slider = new JSlider();
+        public MyFrame() {
+            slider = new JSlider();
 
-			this.add(slider);
-			slider.addMouseListener(this);
+            this.add(slider);
+            slider.addMouseListener(this);
 
-			if (isPortBinded("send")) {
-				getPortByName("send", MessagePort.class).process(50);
-			}
+            if (isPortBinded("send")) {
+                
+                StdKevoreeMessage msg = new StdKevoreeMessage();
+                msg.putValue("percent",new Integer(50));
+                
+                getPortByName("send", MessagePort.class).process(msg);
+            }
 
-			pack();
-		}
+            pack();
+        }
 
-		@Override
-		public void mouseClicked (MouseEvent e) {
-		}
+        @Override
+        public void mouseClicked(MouseEvent e) {
+        }
 
-		@Override
-		public void mousePressed (MouseEvent e) {
-		}
+        @Override
+        public void mousePressed(MouseEvent e) {
+        }
 
-		@Override
-		public void mouseReleased (MouseEvent e) {
-			if ((e.getSource()).equals(slider)) {
-				if (isPortBinded("send")) {
-					getPortByName("send", MessagePort.class).process(slider.getValue());
-				}
-			}
-		}
+        @Override
+        public void mouseReleased(MouseEvent e) {
+            if ((e.getSource()).equals(slider)) {
+                if (isPortBinded("send")) {
+                    
+                    StdKevoreeMessage msg = new StdKevoreeMessage();
+                    msg.putValue("percent",new Integer(slider.getValue()));
+                    
+                    getPortByName("send", MessagePort.class).process(msg);
+                }
+            }
+        }
 
-		@Override
-		public void mouseEntered (MouseEvent e) {
-		}
+        @Override
+        public void mouseEntered(MouseEvent e) {
+        }
 
-		@Override
-		public void mouseExited (MouseEvent e) {
-		}
-	}
+        @Override
+        public void mouseExited(MouseEvent e) {
+        }
+    }
 }

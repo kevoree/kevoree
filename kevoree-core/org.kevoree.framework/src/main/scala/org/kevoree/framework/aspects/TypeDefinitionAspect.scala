@@ -22,17 +22,28 @@ import org.kevoree._
 import KevoreeAspects._
 import org.slf4j.LoggerFactory
 
-case class TypeDefinitionAspect (selfTD: TypeDefinition) {
+case class TypeDefinitionAspect(selfTD: TypeDefinition) {
 
   val logger = LoggerFactory.getLogger(this.getClass)
 
-  def isModelEquals (pct: TypeDefinition): Boolean = {
-    pct.getName == selfTD.getName
+  def isModelEquals(pct: TypeDefinition): Boolean = {
+
+    selfTD match {
+      case pt: PortType => {
+        pct match {
+          case ppt: PortType => {
+            pt.isModelEquals(ppt)
+          }
+          case _ => false
+        }
+      }
+      case _ => pct.getName == selfTD.getName
+    }
     /* deep compare */
   }
 
   /* Check if the new type definition define new deploy unit than self */
-  def contractChanged (pTD: TypeDefinition): Boolean = {
+  def contractChanged(pTD: TypeDefinition): Boolean = {
     if (selfTD.getSuperTypes.size != pTD.getSuperTypes.size) {
       return true
     }
@@ -56,8 +67,14 @@ case class TypeDefinitionAspect (selfTD: TypeDefinition) {
 
     pTD.getDictionaryType match {
       case Some(dico) => {
-        if (!dico.isModelEquals(selfTD.getDictionaryType.get)) {
-          return true
+
+        selfTD.getDictionaryType match {
+          case Some(seflDico) => {
+            if (!dico.isModelEquals(selfTD.getDictionaryType.get)) {
+              return true
+            }
+          }
+          case None => return true
         }
       }
       case None => {
@@ -92,7 +109,7 @@ case class TypeDefinitionAspect (selfTD: TypeDefinition) {
                       }
                       case None => true
                     }
-                                                                      )
+                  )
                   //println(selfTD+"_"+interfaceChanged+"_"+operationsChanged)
                   interfaceChanged || operationsChanged
                 }
@@ -125,7 +142,7 @@ case class TypeDefinitionAspect (selfTD: TypeDefinition) {
                 case None => false
               }
             })
-            println(selfTD.getName + "-"+providedEquality+"-"+requiredEquality)
+            println(selfTD.getName + "-" + providedEquality + "-" + requiredEquality)
 
             !providedEquality || !requiredEquality
           }
@@ -145,7 +162,7 @@ case class TypeDefinitionAspect (selfTD: TypeDefinition) {
     }
   }
 
-  def isUpdated (pTD: TypeDefinition): Boolean = {
+  def isUpdated(pTD: TypeDefinition): Boolean = {
     if (pTD.getDeployUnits.size == 0 && selfTD.getDeployUnits.size > 0) {
       return false
     } //SPECIAL CASE DONT MERGE TYPE DEFINITION WITHOUT DEPLOY UNIT
@@ -160,7 +177,7 @@ case class TypeDefinitionAspect (selfTD: TypeDefinition) {
       }
 
     })
-    
+
     //EQUALS DEPLOY UNIT SIZE CHECK FOR ONE IS UPDATED
     val oneUpdated = selfTD.getDeployUnits.exists(selfDU => {
       pTD.getDeployUnits.find(p => p.isModelEquals(selfDU)) match {
@@ -185,7 +202,7 @@ case class TypeDefinitionAspect (selfTD: TypeDefinition) {
   }
 
   //CHECKED
-  def foundRelevantHostNodeType (nodeType: NodeType, targetTypeDef: TypeDefinition): Option[NodeType] = {
+  def foundRelevantHostNodeType(nodeType: NodeType, targetTypeDef: TypeDefinition): Option[NodeType] = {
     if (targetTypeDef.getDeployUnits
       .exists(du => du.getTargetNodeType.isDefined && du.getTargetNodeType.get == nodeType)) {
       Some(nodeType)
@@ -201,7 +218,7 @@ case class TypeDefinitionAspect (selfTD: TypeDefinition) {
     }
   }
 
-  def foundRelevantDeployUnit (node: ContainerNode) = {
+  def foundRelevantDeployUnit(node: ContainerNode) = {
 
     /* add all reLib from found deploy Unit*/
     var deployUnitfound: DeployUnit = null
@@ -222,7 +239,7 @@ case class TypeDefinitionAspect (selfTD: TypeDefinition) {
     deployUnitfound
   }
 
-  private def foundRelevantDeployUnitOnNodeSuperTypes (nodeType: NodeType, t: TypeDefinition): DeployUnit = {
+  private def foundRelevantDeployUnitOnNodeSuperTypes(nodeType: NodeType, t: TypeDefinition): DeployUnit = {
     var deployUnitfound: DeployUnit = null
     // looking for relevant deployunits on super types
 

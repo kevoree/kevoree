@@ -26,7 +26,7 @@ import java.nio.ByteBuffer;
 		//@RequiredPort(name = "imageDepth", type = PortType.MESSAGE, optional = true)
 })
 @Provides({
-		@ProvidedPort(name = "motor", type = PortType.MESSAGE, filter = {"java.lang.Integer", "java.lang.String"})
+		@ProvidedPort(name = "motor", type = PortType.MESSAGE)
 		//@ProvidedPort(name = "led", type = PortType.MESSAGE, filter = {"java.lang.Integer", "java.lang.String"}) TODO
 		//@ProvidedPort(name = "log", type = PortType.MESSAGE, filter = {"java.lang.Integer", "java.lang.String"}) TODO
 })
