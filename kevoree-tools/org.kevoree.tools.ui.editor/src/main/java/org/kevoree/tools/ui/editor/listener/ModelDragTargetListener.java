@@ -17,6 +17,10 @@
  */
 package org.kevoree.tools.ui.editor.listener;
 
+import java.awt.datatransfer.*;
+import java.io.*;
+import java.net.*;
+import java.util.*;
 import org.kevoree.tools.ui.editor.KevoreeUIKernel;
 import org.kevoree.tools.ui.editor.command.AddChannelCommand;
 import org.kevoree.tools.ui.editor.command.AddGroupCommand;
@@ -27,10 +31,8 @@ import org.kevoree.tools.ui.framework.elements.GroupTypePanel;
 import org.kevoree.tools.ui.framework.elements.ModelPanel;
 import org.kevoree.tools.ui.framework.elements.NodeTypePanel;
 
-import java.awt.datatransfer.DataFlavor;
 import java.awt.dnd.*;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.*;
 
 /**
  * implementation of the target listener
@@ -44,6 +46,9 @@ public class ModelDragTargetListener extends DropTarget {
 
     DataFlavor mimeDataFlavour;
     DataFlavor urlDataFlavour;
+    DataFlavor uriStringDataFlavour;
+
+    Logger logger = LoggerFactory.getLogger(ModelDragTargetListener.class.getName());
 
     /**
      * constructor
@@ -57,6 +62,7 @@ public class ModelDragTargetListener extends DropTarget {
         try {
             mimeDataFlavour = new DataFlavor(DataFlavor.javaJVMLocalObjectMimeType);
             urlDataFlavour = new DataFlavor("application/x-java-url;class=java.net.URL");
+            uriStringDataFlavour = new DataFlavor("text/uri-list;class=java.lang.String");
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -116,18 +122,30 @@ public class ModelDragTargetListener extends DropTarget {
                 } else {
                     arg0.rejectDrop();
                 }
-            } else if(arg0.getTransferable().isDataFlavorSupported(urlDataFlavour)){
+            } else if(arg0.getTransferable().isDataFlavorSupported(uriStringDataFlavour)){
+                logger.debug("Drop accepted with URL flavour.");
                 arg0.acceptDrop(DnDConstants.ACTION_COPY_OR_MOVE);//Necessary because of drop from an external source
-                Object url = arg0.getTransferable().getTransferData(urlDataFlavour);
+                Object url = arg0.getTransferable().getTransferData(uriStringDataFlavour);
+                logger.debug("Url: " + url.toString().trim());
+                URI uri = new URI(url.toString().trim());
+                logger.debug("UriPath: " + uri.getPath());
                 LoadNewLibCommand loadLib = new LoadNewLibCommand();
                 loadLib.setKernel(kernel);
-                loadLib.execute(url);
+                loadLib.execute(uri.getPath());
                 arg0.dropComplete(true);
             } else {
+                logger.debug("No matching flavour for this drop.");
+                logger.debug("Available Flavours:" + Arrays.toString(arg0.getTransferable().getTransferDataFlavors()));
                 arg0.rejectDrop();
             }
-        } catch (Exception ex) {
-            Logger.getLogger(ModelDragTargetListener.class.getName()).log(Level.SEVERE, null, ex);
+       } catch (UnsupportedFlavorException ex) {
+            logger.error("Flavour not supported.", ex);
+            arg0.rejectDrop();
+        } catch (IOException e) {
+            logger.error("IOException.", e);
+            arg0.rejectDrop();
+        } catch (URISyntaxException e) {
+             logger.error("URI Exception.", e);
             arg0.rejectDrop();
         }
 

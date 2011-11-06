@@ -14,17 +14,15 @@ package org.kevoree.tools.ui.editor.standalone
  * limitations under the License.
  */
 
-import javax.swing.filechooser.FileFilter
 import java.awt.event.{MouseEvent, MouseAdapter}
 import org.kevoree.tools.marShell.interpreter.KevsInterpreterContext
 import org.kevoree.framework.KevoreeXmiHelper
 import java.util.Random
-import org.kevoree.tools.marShell.parser.ParserUtil
 import org.kevoree.tools.ui.editor.{PositionedEMFHelper, KevoreeUIKernel}
 import com.sun.xml.internal.messaging.saaj.util.ByteOutputStream
 import java.io._
 import org.slf4j.LoggerFactory
-import org.kevoree.tools.marShellGUI.{KevsPanel, KevsModelHandlers, KevsFrame}
+import org.kevoree.tools.marShellGUI.{KevsPanel, KevsModelHandlers}
 import java.awt.BorderLayout
 import org.kevoree.tools.ui.editor.command.{Command, LoadModelCommand}
 import javax.swing._

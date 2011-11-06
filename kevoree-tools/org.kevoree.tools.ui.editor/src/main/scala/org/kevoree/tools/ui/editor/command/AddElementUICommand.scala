@@ -43,76 +43,76 @@ class   AddElementUICommand extends Command with ComponentTypeForm with DeployUn
   }
 
   def execute(p: AnyRef) {
-    val newPopup = new HudWindow("Add new (Library/DeployUnit/TypeDefinition/Port/Property)")
-    newPopup.getJDialog.setSize(400, 200)
-    newPopup.getJDialog.setLocationRelativeTo(null)
-    val layoutPopup = new JPanel()
-    layoutPopup.setOpaque(false)
-    layoutPopup.setLayout(new BorderLayout())
+    val popupWindow = new HudWindow("Add new (Library/DeployUnit/TypeDefinition/Port/Property)")
+    popupWindow.getJDialog.setSize(400, 200)
+    popupWindow.getJDialog.setLocationRelativeTo(null)
+    val popupLayout = new JPanel()
+    popupLayout.setOpaque(false)
+    popupLayout.setLayout(new BorderLayout())
 
-    val newElementsModel = new DefaultComboBoxModel
-    newElementsModel.addElement(LibraryLabel)
-    newElementsModel.addElement(DeployUnit)
-    newElementsModel.addElement(ComponentType)
+    val elemComboBoxModel = new DefaultComboBoxModel
+    elemComboBoxModel.addElement(LibraryLabel)
+    elemComboBoxModel.addElement(DeployUnit)
+    elemComboBoxModel.addElement(ComponentType)
     //newElementsModel.addElement(ChannelType)
     //newElementsModel.addElement(GroupType)
     if (p != null) {
-      newElementsModel.setSelectedItem(p)
+      elemComboBoxModel.setSelectedItem(p)
     }
-    val newElements = new JComboBox(newElementsModel)
-    newElements.setUI(new HudComboBoxUI())
-    val newElementsLabel = new JLabel("Add new : ", SwingConstants.TRAILING)
-    newElementsLabel.setUI(new HudLabelUI)
-    newElementsLabel.setLabelFor(newElements)
-    val layoutPopupTop = new JPanel()
-    layoutPopupTop.setOpaque(false)
-    layoutPopupTop.add(newElementsLabel)
-    layoutPopupTop.add(newElements)
+    val elemComboBox = new JComboBox(elemComboBoxModel)
+    elemComboBox.setUI(new HudComboBoxUI())
+    val elemLabel = new JLabel("Add new : ", SwingConstants.TRAILING)
+    elemLabel.setUI(new HudLabelUI)
+    elemLabel.setLabelFor(elemComboBox)
+    val popupTopLayout = new JPanel()
+    popupTopLayout.setOpaque(false)
+    popupTopLayout.add(elemLabel)
+    popupTopLayout.add(elemComboBox)
 
     //LISTENER
-    newElements.addActionListener(new ActionListener() {
+    elemComboBox.addActionListener(new ActionListener() {
       override def actionPerformed(actionEvent: ActionEvent) {
-        layoutPopup.removeAll()
-        newElements.getSelectedItem match {
+        popupLayout.removeAll()
+        elemComboBox.getSelectedItem match {
           case LibraryLabel => {
-            val uiElems = createNewLibraryPanel(newPopup, kernel)
-            layoutPopup.add(uiElems._1, BorderLayout.CENTER)
-            layoutPopup.add(uiElems._2, BorderLayout.SOUTH)
+            val uiElems = createNewLibraryPanel(popupWindow, kernel)
+            popupLayout.add(uiElems._1, BorderLayout.CENTER)
+            popupLayout.add(uiElems._2, BorderLayout.SOUTH)
           }
           case DeployUnit => {
-            val uiElems = createNewDeployUnitPanel(newPopup, kernel)
-            layoutPopup.add(uiElems._1, BorderLayout.CENTER)
-            layoutPopup.add(uiElems._2, BorderLayout.SOUTH)
+            val uiElems = createNewDeployUnitPanel(popupWindow, kernel)
+            popupLayout.add(uiElems._1, BorderLayout.CENTER)
+            popupLayout.add(uiElems._2, BorderLayout.SOUTH)
           }
           case ComponentType => {
-            val uiElems = createNewComponentTypePanel(newPopup, kernel)
-            layoutPopup.add(uiElems._1, BorderLayout.CENTER)
-            layoutPopup.add(uiElems._2, BorderLayout.SOUTH)
+            val uiElems = createNewComponentTypePanel(popupWindow, kernel)
+            popupLayout.add(uiElems._1, BorderLayout.CENTER)
+            popupLayout.add(uiElems._2, BorderLayout.SOUTH)
           }
           case _@e => throw new UnsupportedOperationException("No popup implemeted for item:" + e)
         }
-        layoutPopup.add(layoutPopupTop, BorderLayout.NORTH)
-        layoutPopup.repaint()
-        layoutPopup.revalidate()
+        popupLayout.add(popupTopLayout, BorderLayout.NORTH)
+        popupLayout.repaint()
+        popupLayout.revalidate()
       }
     })
 
-    layoutPopup.add(layoutPopupTop, BorderLayout.NORTH)
-    newPopup.getContentPane.add(layoutPopup)
+    popupLayout.add(popupTopLayout, BorderLayout.NORTH)
+    popupWindow.getContentPane.add(popupLayout)
     val uiElems = if (p != null) {
       p match {
-        case LibraryLabel => createNewLibraryPanel(newPopup, kernel)
-        case DeployUnit => createNewDeployUnitPanel(newPopup, kernel)
-        case ComponentType => createNewComponentTypePanel(newPopup, kernel)
-        case _ => createNewLibraryPanel(newPopup, kernel)
+        case LibraryLabel => createNewLibraryPanel(popupWindow, kernel)
+        case DeployUnit => createNewDeployUnitPanel(popupWindow, kernel)
+        case ComponentType => createNewComponentTypePanel(popupWindow, kernel)
+        case _ => createNewLibraryPanel(popupWindow, kernel)
       }
     } else {
-      createNewLibraryPanel(newPopup, kernel)
+      createNewLibraryPanel(popupWindow, kernel)
     }
-    layoutPopup.add(uiElems._1, BorderLayout.CENTER)
-    layoutPopup.add(uiElems._2, BorderLayout.SOUTH)
+    popupLayout.add(uiElems._1, BorderLayout.CENTER)
+    popupLayout.add(uiElems._2, BorderLayout.SOUTH)
 
-    newPopup.getJDialog.setVisible(true)
+    popupWindow.getJDialog.setVisible(true)
   }
 
   //val currentProps = new Properties

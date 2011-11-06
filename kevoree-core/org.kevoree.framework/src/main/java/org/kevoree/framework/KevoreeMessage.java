@@ -11,35 +11,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.kevoree.framework;
 
-package org.kevoree.annotation;
+import scala.Option;
 
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
+import java.util.List;
 
 /**
- *
- * @author ffouquet
+ * Created by IntelliJ IDEA.
+ * User: duke
+ * Date: 04/11/11
+ * Time: 19:31
+ * To change this template use File | Settings | File Templates.
  */
-@Retention(RetentionPolicy.CLASS)
-public @interface RequiredPort {
-
-    PortType type() default PortType.SERVICE;
-
-    String[] filter() default {};
-
-    String name();
-
-    Class className() default Void.class;
+public interface KevoreeMessage extends java.io.Serializable {
     
-    String messageType() default "untyped";
+    public KevoreeMessage putValue(String key, Object value);
+    
+    public Option<Object> getValue(String key);
 
-    boolean optional() default false;
+    public List<String> getKeys();
 
-    boolean needCheckDependency() default false; // replace noDependency
-            /*
-    boolean async() default false;  */
-    
-    
-    
+    public void switchKey(String srcKey, String targetKey);
+
+    //public boolean check();
+
 }

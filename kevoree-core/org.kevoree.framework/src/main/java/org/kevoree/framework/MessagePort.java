@@ -22,6 +22,8 @@ public interface MessagePort extends Port {
 
     public void process(Object obj);
 
+    //public void process(KevoreeMessage obj);
+
 }
 
 
