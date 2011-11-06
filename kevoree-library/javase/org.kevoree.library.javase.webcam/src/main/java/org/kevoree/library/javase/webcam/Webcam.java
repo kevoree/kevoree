@@ -1,8 +1,23 @@
 package org.kevoree.library.javase.webcam;
 
+/*import com.sun.jna.Native;
+import com.sun.jna.NativeLibrary;
+import org.kevoree.annotation.*;
+import org.kevoree.extra.vlcj.VLCNativeLibraryLoader;
+import org.kevoree.framework.AbstractComponentType;
+import org.kevoree.framework.MessagePort;
+import uk.co.caprica.vlcj.binding.LibVlc;
+import uk.co.caprica.vlcj.player.MediaPlayerFactory;
+import uk.co.caprica.vlcj.player.direct.DirectMediaPlayer;
+import uk.co.caprica.vlcj.player.direct.RenderCallbackAdapter;
+
+import java.awt.*;
+import java.awt.image.BufferedImage;*/
+
 import com.sun.jna.Native;
 import com.sun.jna.NativeLibrary;
 import org.kevoree.annotation.*;
+import org.kevoree.extra.vlcj.VLCNativeLibraryLoader;
 import org.kevoree.framework.AbstractComponentType;
 import org.kevoree.framework.MessagePort;
 import uk.co.caprica.vlcj.binding.LibVlc;
@@ -21,14 +36,17 @@ import java.awt.image.BufferedImage;
  * @author Erwan Daubert
  * @version 1.0
  */
+@MessageTypes({
+        @MessageType(name = "BufferedImage", elems = {@MsgElem(name = "image", className = BufferedImage.class)})
+})
+@Requires({
+		@RequiredPort(name = "image", type = PortType.MESSAGE, optional = true, messageType = "BufferedImage")
+})
 @DictionaryType({
 		@DictionaryAttribute(name = "DEVICE", defaultValue = "v4l2:///dev/video0", optional = false),
 		@DictionaryAttribute(name = "LOG", defaultValue = "NONE", vals = {"NONE", "DEBUG"}, optional = false),
 		@DictionaryAttribute(name = "FORMAT", defaultValue = "800x600", optional = false,
-				vals = {"640x480","800x600", "400x300", "200x150"})
-})
-@Requires({
-		@RequiredPort(name = "image", type = PortType.MESSAGE, optional = true, filter = "java.awt.image.BufferedImage")
+				vals = {"800x600", "640x480", "400x300", "200x150"})
 })
 @Library(name = "JavaSE")
 @ComponentType
@@ -41,12 +59,13 @@ public class Webcam extends AbstractComponentType {
 
 	@Start
 	public void start () throws Exception {
-
 		if (isPortBinded("image")) {
 			if (instance == null) {
 				String path = VLCNativeLibraryLoader.configure();
-				NativeLibrary.addSearchPath("libvlc", path);
-				instance = NativeLibrary.getInstance("libvlc");
+				NativeLibrary.addSearchPath("vlccore", path);
+				NativeLibrary.getInstance("vlccore");
+				NativeLibrary.addSearchPath("vlc", path);
+				instance = NativeLibrary.getInstance("vlc");
 				nbComponent++;
 				Native.register(LibVlc.class, instance);
 			}
