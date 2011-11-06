@@ -1368,20 +1368,6 @@
     <sourceAnchor xmi:type="notation:IdentityAnchor" xmi:id="_3bYDwNiIEeCEZrILMa00RQ" id="(0.5,0.0)"/>
     <targetAnchor xmi:type="notation:IdentityAnchor" xmi:id="_3bYDwdiIEeCEZrILMa00RQ" id="(0.16666666666666666,1.0)"/>
   </edges>
-  <edges xmi:type="notation:Edge" xmi:id="_3IN3NtiIEeCEZrILMa00RQ" type="3002" source="_3HF12diIEeCEZrILMa00RQ" target="_3HFOxNiIEeCEZrILMa00RQ">
-    <children xmi:type="notation:Node" xmi:id="_3IOeQNiIEeCEZrILMa00RQ" type="4011">
-      <layoutConstraint xmi:type="notation:Location" xmi:id="_3IOeQdiIEeCEZrILMa00RQ" x="-10" y="-10"/>
-    </children>
-    <children xmi:type="notation:Node" xmi:id="_3IOeQtiIEeCEZrILMa00RQ" type="4012">
-      <layoutConstraint xmi:type="notation:Location" xmi:id="_3IOeQ9iIEeCEZrILMa00RQ" x="10" y="10"/>
-    </children>
-    <styles xmi:type="notation:ConnectorStyle" xmi:id="_3IN3N9iIEeCEZrILMa00RQ" lineColor="4210752"/>
-    <styles xmi:type="notation:FontStyle" xmi:id="_3IN3ONiIEeCEZrILMa00RQ" fontColor="4210752" fontName="Lucida Grande" fontHeight="10"/>
-    <element xmi:type="ecore:EReference" href="kevoree.ecore#//MessagePortType/filters"/>
-    <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="_3IN3OdiIEeCEZrILMa00RQ" points="[0, 0, -126, 772]$[0, -689, -126, 83]$[126, -772, 0, 0]"/>
-    <sourceAnchor xmi:type="notation:IdentityAnchor" xmi:id="_3b_u0NiIEeCEZrILMa00RQ" id="(0.18181818181818182,0.0)"/>
-    <targetAnchor xmi:type="notation:IdentityAnchor" xmi:id="_3b_u0diIEeCEZrILMa00RQ" id="(0.34545454545454546,1.0)"/>
-  </edges>
   <edges xmi:type="notation:Edge" xmi:id="_3IOeRNiIEeCEZrILMa00RQ" type="3003" source="_3HF12diIEeCEZrILMa00RQ" target="_3Gzh8NiIEeCEZrILMa00RQ">
     <styles xmi:type="notation:ConnectorStyle" xmi:id="_3IOeRdiIEeCEZrILMa00RQ" routing="Rectilinear" lineColor="4210752"/>
     <styles xmi:type="notation:FontStyle" xmi:id="_3IOeRtiIEeCEZrILMa00RQ" fontName="Lucida Grande"/>

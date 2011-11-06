@@ -17,7 +17,7 @@ import java.awt.image.BufferedImage;
  */
 
 @Provides({
-		@ProvidedPort(name = "image", type = PortType.MESSAGE, filter = "java.awt.image.BufferedImage")
+		@ProvidedPort(name = "image", type = PortType.MESSAGE/*, filter = "java.awt.image.BufferedImage"*/)
 })
 @Library(name = "JavaSE")
 @ComponentType

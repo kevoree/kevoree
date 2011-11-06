@@ -25,6 +25,7 @@ import org.kevoree.framework.annotation.processor.visitor.ServicePortTypeVisitor
 import javax.lang.model.element.TypeElement
 import javax.annotation.processing.ProcessingEnvironment
 import javax.tools.Diagnostic.Kind
+import org.kevoree.annotation.MessageTypes
 
 trait RequiredPortProcessor {
   def processRequiredPort(componentType: ComponentType, classdef: TypeElement, env: ProcessingEnvironment) = {
@@ -88,11 +89,30 @@ trait RequiredPortProcessor {
               case org.kevoree.annotation.PortType.MESSAGE => {
                 val mpt = KevoreeFactory.eINSTANCE.createMessagePortType
                 mpt.setName("org.kevoree.framework.MessagePort")
-                requiredPort.filter.foreach {
-                  ndts =>
-                    val ndt = KevoreeFactory.eINSTANCE.createTypedElement
-                    ndt.setName(ndts)
-                    mpt.addFilters(LocalUtility.getOraddDataType(ndt))
+                if (requiredPort.messageType() != "untyped") {
+                  if (classdef.getAnnotation(classOf[MessageTypes]) != null) {
+                    classdef.getAnnotation(classOf[MessageTypes]).value().find(msgType => msgType.name() == requiredPort.messageType()) match {
+                      case Some(foundMessageType) => {
+                        val dicoType = KevoreeFactory.eINSTANCE.createDictionaryType
+                        foundMessageType.elems().foreach {
+                          elem =>
+                            val dicAtt = KevoreeFactory.eINSTANCE.createDictionaryAttribute
+                            dicAtt.setName(elem.name())
+                            try {
+                              elem.className()
+                            } catch {
+                              case e: javax.lang.model.`type`.MirroredTypeException =>
+                                dicAtt.setDatatype(e.getTypeMirror.toString)
+                            }
+                            dicoType.addAttributes(dicAtt)
+                        }
+                        mpt.setDictionaryType(Some(dicoType))
+                      }
+                      case None => env.getMessager.printMessage(Kind.ERROR, "Can't find message type for name " + requiredPort.messageType() + " for port " + requiredPort.name())
+                    }
+                  } else {
+                    env.getMessager.printMessage(Kind.ERROR, "Can't find message type for name " + requiredPort.messageType() + " for port " + requiredPort.name())
+                  }
                 }
                 mpt
               }

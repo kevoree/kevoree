@@ -46,7 +46,7 @@
         <!-- <module>../org.kevoree.library.javase.bluetooth</module>  -->
         <!-- <module>../org.kevoree.library.javase.derby</module> -->
         <module>../org.kevoree.library.javase.grapher</module>
-        <!--<module>../org.kevoree.library.javase.javacv</module>-->
+        <module>../org.kevoree.library.javase.javacv</module>
         <!-- <module>../org.kevoree.library.javase.hadoop</module> -->
         <module>../org.kevoree.library.javase.webcam</module>
         <module>../org.kevoree.library.javase.webserver</module>

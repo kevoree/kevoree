@@ -29,6 +29,7 @@ object KevoreeAspects{
   implicit def typeAspect(ct : TypeDefinition) = TypeDefinitionAspect(ct)
   implicit def containerNodeAspect(cn : ContainerNode) = ContainerNodeAspect(cn)
   implicit def portAspect(p : Port ) = PortAspect(p)
+  implicit def portTypeAspect(p : PortType ) = PortTypeAspect(p)
  // implicit def bindingAspect(b : Binding ) = BindingAspect(b)
   implicit def typedElementAspect(b : TypedElement ) = TypedElementAspect(b)
   implicit def channelAspect(c:Channel) = ChannelAspect(c)
