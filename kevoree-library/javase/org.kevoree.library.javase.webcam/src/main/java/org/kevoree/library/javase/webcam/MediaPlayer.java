@@ -1,7 +1,11 @@
 package org.kevoree.library.javase.webcam;
 
+import com.sun.jna.Native;
+import com.sun.jna.NativeLibrary;
 import org.kevoree.annotation.*;
+import org.kevoree.extra.vlcj.VLCNativeLibraryLoader;
 import org.kevoree.framework.AbstractComponentType;
+import uk.co.caprica.vlcj.binding.LibVlc;
 import uk.co.caprica.vlcj.component.EmbeddedMediaPlayerComponent;
 
 import javax.swing.*;
@@ -25,6 +29,21 @@ public class MediaPlayer extends AbstractComponentType {
 
     @Start
     public void start() throws Exception {
+        /*
+        if (instance == null) {
+            String path = VLCNativeLibraryLoader.configure();
+            //NativeLibrary.addSearchPath("vlccore", path);
+            //NativeLibrary.getInstance("vlccore");
+            NativeLibrary.addSearchPath("vlc", path);
+            instance = NativeLibrary.getInstance("vlc");
+            nbComponent++;
+            Native.register(LibVlc.class, instance);
+        } */
+
+        System.setProperty("vlcj.check", "no");
+        System.setProperty("vlcj.log", (String) this.getDictionary().get("LOG"));
+
+
         mediaPlayerComponent = new EmbeddedMediaPlayerComponent();
         frame = new JFrame();
         frame.setContentPane(mediaPlayerComponent);
