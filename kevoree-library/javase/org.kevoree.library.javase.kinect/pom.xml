@@ -23,7 +23,7 @@
         <dependency>
             <groupId>org.kevoree.extra</groupId>
             <artifactId>org.kevoree.extra.jna</artifactId>
-            <version>3.3.0</version>
+            <version>3.2.7</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -41,10 +41,7 @@
     </dependencies>
 
     <build>
-
-
         <plugins>
-
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
@@ -53,8 +50,6 @@
                     <testFailureIgnore>true</testFailureIgnore>
                 </configuration>
             </plugin>
-
-
             <plugin>
                 <groupId>org.apache.felix</groupId>
                 <artifactId>maven-bundle-plugin</artifactId>
@@ -64,9 +59,6 @@
                     <instructions>
                        <Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
                         <Bundle-Version>${project.version}</Bundle-Version>
-                        <!--<Bundle-NativeCode>
-                            nativelib/MacOs/libusb.dylib;osname="Mac OS X"; processor=x86; processor=PowerPC; processor=x86-64
-                        </Bundle-NativeCode>-->
                     </instructions>
                 </configuration>
             </plugin>

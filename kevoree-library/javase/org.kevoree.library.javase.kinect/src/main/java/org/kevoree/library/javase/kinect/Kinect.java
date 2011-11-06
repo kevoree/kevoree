@@ -20,15 +20,17 @@ import java.nio.ByteBuffer;
  * Date: 16/08/11
  * Time: 17:42
  */
+@MessageTypes({
+        @MessageType(name = "BufferedImage", elems = {@MsgElem(name = "image", className = BufferedImage.class)})
+})
 @Requires({
-		@RequiredPort(name = "image", type = PortType.MESSAGE, optional = true,	filter = "java.awt.image.BufferedImage")
+		@RequiredPort(name = "image", type = PortType.MESSAGE, optional = true,	messageType ="BufferedImage")
 		//@RequiredPort(name = "raw", type = PortType.MESSAGE, optional = true, filter = "java.nio.ByteBuffer")//,
 		//@RequiredPort(name = "imageDepth", type = PortType.MESSAGE, optional = true)
 })
 @Provides({
 		@ProvidedPort(name = "motor", type = PortType.MESSAGE)
 		//@ProvidedPort(name = "led", type = PortType.MESSAGE, filter = {"java.lang.Integer", "java.lang.String"}) TODO
-		//@ProvidedPort(name = "log", type = PortType.MESSAGE, filter = {"java.lang.Integer", "java.lang.String"}) TODO
 })
 @DictionaryType({
 		@DictionaryAttribute(name = "FORMAT", defaultValue = "RGB", optional = true,
