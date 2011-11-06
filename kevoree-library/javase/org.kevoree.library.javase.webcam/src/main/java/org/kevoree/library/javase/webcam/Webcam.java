@@ -37,10 +37,12 @@ import java.awt.image.BufferedImage;
  * @version 1.0
  */
 @MessageTypes({
-        @MessageType(name = "BufferedImage", elems = {@MsgElem(name = "image", className = BufferedImage.class)})
+        @MessageType(name = "BufferedImage", elems = {@MsgElem(name = "image", className = BufferedImage.class)}),
+		@MessageType(name = "bytes", elems = {@MsgElem(name = "image", className = int[].class)})
 })
 @Requires({
-		@RequiredPort(name = "image", type = PortType.MESSAGE, optional = true, messageType = "BufferedImage")
+		@RequiredPort(name = "image", type = PortType.MESSAGE, optional = true, messageType = "BufferedImage"),
+		@RequiredPort(name = "image_bytes", type = PortType.MESSAGE, optional = true, messageType = "bytes")
 })
 @DictionaryType({
 		@DictionaryAttribute(name = "DEVICE", defaultValue = "v4l2:///dev/video0", optional = false),
@@ -138,6 +140,7 @@ public class Webcam extends AbstractComponentType {
 			// The image data could be manipulated here...
 			image.setRGB(0, 0, width, height, data, 0, width);
 			getPortByName("image", MessagePort.class).process(image);
+			getPortByName("image_bytes", MessagePort.class).process(data);
 		}
 	}
 }
