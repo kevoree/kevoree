@@ -19,17 +19,16 @@
 package org.kevoree.framework;
 
 /**
- *
  * @author ffouquet
  */
 public interface Port {
 
     public String getName();
-    public String getComponentName();
-    
-    /*
+
     public String getComponentName();
 
-    public String getNodeName();
-*/
+    /*
+        public String getComponentName();
+        public String getNodeName();
+    */
 }
