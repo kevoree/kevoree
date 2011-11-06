@@ -43,10 +43,9 @@ import java.awt.image.BufferedImage;
 		@RequiredPort(name = "image", type = PortType.MESSAGE, optional = true, messageType = "BufferedImage")
 })
 @DictionaryType({
-		@DictionaryAttribute(name = "DEVICE", defaultValue = "v4l2:///dev/video0", optional = false),
+		@DictionaryAttribute(name = "DEVICE", defaultValue = "v4l2:///dev/video0", vals = {"v4l2:///dev/video0","qtcapture://"}),
 		@DictionaryAttribute(name = "LOG", defaultValue = "NONE", vals = {"NONE", "DEBUG"}, optional = false),
-		@DictionaryAttribute(name = "FORMAT", defaultValue = "800x600", optional = false,
-				vals = {"800x600", "640x480", "400x300", "200x150"})
+		@DictionaryAttribute(name = "FORMAT", defaultValue = "800x600",vals = {"1280x1024","1024x768","800x600", "640x480", "400x300", "200x150"})
 })
 @Library(name = "JavaSE")
 @ComponentType
@@ -62,8 +61,8 @@ public class Webcam extends AbstractComponentType {
 		if (isPortBinded("image")) {
 			if (instance == null) {
 				String path = VLCNativeLibraryLoader.configure();
-				NativeLibrary.addSearchPath("vlccore", path);
-				NativeLibrary.getInstance("vlccore");
+				//NativeLibrary.addSearchPath("vlccore", path);
+				//NativeLibrary.getInstance("vlccore");
 				NativeLibrary.addSearchPath("vlc", path);
 				instance = NativeLibrary.getInstance("vlc");
 				nbComponent++;
@@ -76,7 +75,8 @@ public class Webcam extends AbstractComponentType {
 			factory = new MediaPlayerFactory("--no-video-title-show");
 			mediaPlayer = factory
 					.newDirectMediaPlayer(getWidth(), getHeight(), new OwnRenderCallback(getWidth(), getHeight()));
-			mediaPlayer.playMedia(device, null);
+
+            mediaPlayer.playMedia(device, null);
 		}
 
 	}
