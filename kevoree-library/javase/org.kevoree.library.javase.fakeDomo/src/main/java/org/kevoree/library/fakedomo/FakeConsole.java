@@ -18,6 +18,7 @@
 package org.kevoree.library.fakedomo;
 
 import org.kevoree.annotation.*;
+import org.kevoree.framework.KevoreeMessage;
 import org.kevoree.framework.MessagePort;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,18 +33,17 @@ import java.awt.event.KeyEvent;
 
 
 /**
- *
  * @author ffouquet
  */
 @Provides({
-    @ProvidedPort(name = "showText", type = PortType.MESSAGE)
+        @ProvidedPort(name = "showText", type = PortType.MESSAGE)
 })
 @Requires({
-    @RequiredPort(name = "textEntered", type = PortType.MESSAGE , optional = true)
+        @RequiredPort(name = "textEntered", type = PortType.MESSAGE, optional = true)
 })
 @ComponentType
 public class FakeConsole extends AbstractFakeStuffComponent {
-	private static final Logger logger = LoggerFactory.getLogger(FakeConsole.class);
+    private static final Logger logger = LoggerFactory.getLogger(FakeConsole.class);
 
     private static final int FRAME_WIDTH = 300;
     private static final int FRAME_HEIGHT = 600;
@@ -70,14 +70,22 @@ public class FakeConsole extends AbstractFakeStuffComponent {
         frame.appendOutgoing(text);
         if (isPortBinded("textEntered")) {
             getPortByName("textEntered", MessagePort.class).process(text);
-        } 
+        }
     }
 
     @Port(name = "showText")
     public void appendIncoming(Object text) {
         if (text != null) {
-            frame.appendIncomming(text.toString());
-        } 
+            if (text instanceof KevoreeMessage) {
+                KevoreeMessage kmsg = (KevoreeMessage) text;
+                frame.appendIncomming("->");
+                for(String key : kmsg.getKeys()){
+                    frame.appendIncomming(key+"="+kmsg.getValue(key).get());
+                }
+            } else {
+                frame.appendIncomming("->"+text.toString());
+            }
+        }
     }
 
     private class MyFrame extends JFrame {
@@ -151,7 +159,7 @@ public class FakeConsole extends AbstractFakeStuffComponent {
 
             add(new JScrollPane(screen), BorderLayout.CENTER);
             add(bottomPanel, BorderLayout.SOUTH);
-            this.setDefaultCloseOperation (JFrame.DO_NOTHING_ON_CLOSE);
+            this.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
             pack();
             setVisible(true);
         }
@@ -162,7 +170,7 @@ public class FakeConsole extends AbstractFakeStuffComponent {
                 doc.insertString(doc.getLength(), formatForPrint(text), doc.getStyle("system"));
             } catch (BadLocationException ex) {
 //                ex.printStackTrace();
-				logger.error("Error while trying to append system message in the " + this.getName(), ex);
+                logger.error("Error while trying to append system message in the " + this.getName(), ex);
             }
         }
 
@@ -173,7 +181,7 @@ public class FakeConsole extends AbstractFakeStuffComponent {
                 screen.setCaretPosition(doc.getLength());
             } catch (BadLocationException ex) {
 //                ex.printStackTrace();
-				logger.error("Error while trying to append incoming message in the " + this.getName(), ex);
+                logger.error("Error while trying to append incoming message in the " + this.getName(), ex);
                 //getLoggerLocal().error(ex.getClass().getSimpleName() + " occured while trying to append text in the terminal.", ex);
             }
         }
@@ -184,7 +192,7 @@ public class FakeConsole extends AbstractFakeStuffComponent {
                 doc.insertString(doc.getLength(), ">" + formatForPrint(text), doc.getStyle("outgoing"));
             } catch (BadLocationException ex) {
 //                ex.printStackTrace();
-				logger.error("Error while trying to append local message in the " + this.getName(), ex);
+                logger.error("Error while trying to append local message in the " + this.getName(), ex);
                 //getLoggerLocal().error(ex.getClass().getSimpleName() + " occured while trying to append text in the terminal.", ex);
             }
         }

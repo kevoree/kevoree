@@ -14,12 +14,13 @@
 package org.kevoree.tools.ui.editor.form
 
 import com.explodingpixels.macwidgets.HudWindow
-import javax.swing._
 import com.explodingpixels.macwidgets.plaf.{HudButtonUI, HudLabelUI, HudTextFieldUI}
-import java.awt.event.{ActionEvent, ActionListener}
 import org.kevoree.tools.ui.editor.property.SpringUtilities
 import org.kevoree.tools.ui.editor.KevoreeUIKernel
 import org.kevoree.tools.ui.editor.command.{ReloadTypePalette, KevScriptCommand}
+import javax.swing._
+import java.awt.event.{FocusEvent, FocusListener, ActionEvent, ActionListener}
+import java.awt.{Dimension, Color, FlowLayout}
 
 /**
  * Created by IntelliJ IDEA.
@@ -30,35 +31,66 @@ import org.kevoree.tools.ui.editor.command.{ReloadTypePalette, KevScriptCommand}
  */
 
 trait LibraryForm {
-  def createNewLibraryPanel(window: HudWindow,kernel : KevoreeUIKernel): Tuple2[JPanel, JButton] = {
-      val layout = new JPanel(new SpringLayout)
-      layout.setOpaque(false)
-      val nameTextField = new JTextField()
-      nameTextField.setUI(new HudTextFieldUI())
-      val nodeNameLabel = new JLabel("Library name", SwingConstants.TRAILING);
-      nodeNameLabel.setUI(new HudLabelUI());
-      nodeNameLabel.setOpaque(false);
-      nodeNameLabel.setLabelFor(nameTextField);
-      layout.add(nodeNameLabel)
-      layout.add(nameTextField)
-      //EXECUTE KEVSCRIPT COMMAND
-      val btAdd = new JButton("Add Library")
-      btAdd.setUI(new HudButtonUI)
-      btAdd.addActionListener(new ActionListener {
-        def actionPerformed(p1: ActionEvent) {
-          if (nameTextField.getText != "") {
-            val cmd = new KevScriptCommand
-            cmd.setKernel(kernel)
-            cmd.execute("tblock { addLibrary " + nameTextField.getText + " } ")
-            val updateCmd = new ReloadTypePalette
-            updateCmd.setKernel(kernel)
-            updateCmd.execute(None)
-            //window.getJDialog.dispose()
-          }
+
+  def createNewLibraryPanel(window: HudWindow, kernel: KevoreeUIKernel): Tuple2[JPanel, JPanel] = {
+
+    val layout = new JPanel(new SpringLayout)
+    layout.setOpaque(false)
+
+    val bottomLine = new JPanel()
+    bottomLine.setLayout(new FlowLayout(FlowLayout.CENTER))
+
+
+    val okLabel = new JLabel("  ")
+    okLabel.setUI(new HudLabelUI)
+
+
+    val libName_lbl = new JLabel("Library name", SwingConstants.TRAILING);
+    libName_lbl.setUI(new HudLabelUI());
+    libName_lbl.setOpaque(false);
+
+    val libName_txt = new JTextField()
+    libName_txt.setUI(new HudTextFieldUI())
+    libName_txt.addFocusListener(new FocusListener() {
+      def focusLost(p1: FocusEvent) {}
+      def focusGained(p1: FocusEvent) {
+        okLabel.setText("  ")
+        libName_lbl.setForeground(Color.WHITE)
+        window.getJDialog.repaint()
+      }
+    })
+ 
+    libName_lbl.setLabelFor(libName_txt);
+    layout.add(libName_lbl)
+    layout.add(libName_txt)
+    //EXECUTE KEVSCRIPT COMMAND
+
+
+    val btAdd = new JButton("Add Library")
+    btAdd.setUI(new HudButtonUI)
+    btAdd.addActionListener(new ActionListener {
+      def actionPerformed(p1: ActionEvent) {
+        if (libName_txt.getText != "") {
+          val cmd = new KevScriptCommand
+          cmd.setKernel(kernel)
+          cmd.execute("tblock { addLibrary " + libName_txt.getText + " } ")
+          val updateCmd = new ReloadTypePalette
+          updateCmd.setKernel(kernel)
+          updateCmd.execute(None)
+          okLabel.setText("OK")
+          okLabel.setForeground(Color.GREEN)
+          window.getContentPane.repaint()
+          //window.getJDialog.dispose()
+        } else {
+          libName_lbl.setForeground(Color.RED)
         }
-      })
-      window.getJDialog.getRootPane.setDefaultButton(btAdd)
-      SpringUtilities.makeCompactGrid(layout, 1, 2, 6, 6, 6, 6)
-      Tuple2(layout, btAdd)
-    }
+      }
+    })
+
+    bottomLine.add(btAdd)
+    bottomLine.add(okLabel)
+    //window.getJDialog.getRootPane.setDefaultButton(btAdd)
+    SpringUtilities.makeCompactGrid(layout, 1, 2, 6, 6, 6, 6)
+    Tuple2(layout, bottomLine)
+  }
 }

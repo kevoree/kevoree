@@ -11,35 +11,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.kevoree.annotation;
 
+import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
- *
- * @author ffouquet
+ * Created by IntelliJ IDEA.
+ * User: duke
+ * Date: 04/11/11
+ * Time: 21:06
+ * To change this template use File | Settings | File Templates.
  */
 @Retention(RetentionPolicy.CLASS)
-public @interface RequiredPort {
-
-    PortType type() default PortType.SERVICE;
-
-    String[] filter() default {};
-
-    String name();
-
-    Class className() default Void.class;
-    
-    String messageType() default "untyped";
-
-    boolean optional() default false;
-
-    boolean needCheckDependency() default false; // replace noDependency
-            /*
-    boolean async() default false;  */
-    
-    
-    
+@Target({ElementType.TYPE})
+public @interface MessageTypes {
+    MessageType[] value() default {};
 }
