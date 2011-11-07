@@ -15,7 +15,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package org.kevoree.library.ui;
+package org.kevoree.library;
 
 import org.kevoree.annotation.*;
 import org.kevoree.framework.KevoreeMessage;

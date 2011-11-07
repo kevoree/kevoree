@@ -1,17 +1,16 @@
 package org.kevoree.library.ui.fileExplorer;
 
 import com.explodingpixels.macwidgets.IAppWidgetFactory;
+import com.explodingpixels.macwidgets.MacWidgetFactory;
+import com.explodingpixels.macwidgets.SourceListControlBar;
 import org.kevoree.annotation.*;
 import org.kevoree.framework.AbstractComponentType;
+import org.kevoree.framework.MessagePort;
 
 import javax.swing.*;
-import javax.swing.event.TreeSelectionEvent;
-import javax.swing.event.TreeSelectionListener;
-import javax.swing.tree.DefaultTreeModel;
-import javax.swing.tree.TreePath;
+import javax.swing.plaf.basic.BasicSplitPaneUI;
 import java.awt.*;
 import java.io.File;
-import java.io.FileFilter;
 import java.io.IOException;
 
 /**
@@ -35,22 +34,48 @@ import java.io.IOException;
 public class DirectoryExplorer extends AbstractComponentType {
 
     private JFrame frame = null;
-    private DirectoryExplorerPanel fileExplorer = null;
+    private DirectoryExplorerPanel dirExplorer = null;
+    private FileExplorerPanel fileExplorer = null;
 
     @Start
     public void start() throws IOException {
         frame = new JFrame("Kevoree File Explorer - " + this.getName());
-        fileExplorer = new DirectoryExplorerPanel(this);
+        dirExplorer = new DirectoryExplorerPanel(this);
+        fileExplorer = new FileExplorerPanel();
         if (this.getDictionary().get("basedir") != null) {
-            fileExplorer.refresh(this.getDictionary().get("basedir").toString());
+            dirExplorer.refresh(this.getDictionary().get("basedir").toString());
         } else {
-            fileExplorer.refresh("notfoundFileRoot");
+            dirExplorer.refresh("notfoundFileRoot");
         }
-        JScrollPane scrollPane = new JScrollPane(fileExplorer);
+        JScrollPane scrollPane = new JScrollPane(dirExplorer);
+        scrollPane = MacWidgetFactory.makeSourceListScrollPane(scrollPane);
         IAppWidgetFactory.makeIAppScrollPane(scrollPane);
-        frame.add(scrollPane, BorderLayout.CENTER);
+
+        JSplitPane splitPane = new JSplitPane(
+                JSplitPane.HORIZONTAL_SPLIT, scrollPane, fileExplorer);
+        splitPane.setContinuousLayout(true);
+        splitPane.setDividerSize(1);
+        ((BasicSplitPaneUI) splitPane.getUI()).getDivider().setBorder(
+                BorderFactory.createMatteBorder(0, 1, 0, 0, new Color(0xa5a5a5)));
+        splitPane.setBorder(BorderFactory.createEmptyBorder());
+
+        splitPane.setDividerLocation(200);
+        SourceListControlBar controlBar = new SourceListControlBar();
+        dirExplorer.sourceList.installSourceListControlBar(controlBar);
+        controlBar.installDraggableWidgetOnSplitPane(splitPane);
+
+
+        //frame.add(scrollPane, BorderLayout.WEST);
+        frame.add(splitPane, BorderLayout.CENTER);
         frame.setVisible(true);
         frame.pack();
+    }
+
+    public void directorySelected(File selected) {
+        fileExplorer.refresh(selected);
+        if (getPortByName("fileurl") != null) {
+            getPortByName("fileurl", MessagePort.class).process(selected);
+        }
     }
 
     @Stop

@@ -1,4 +1,4 @@
-package org.kevoree.library.ui;
+package org.kevoree.library;
 
 /**
  * Created by IntelliJ IDEA.
