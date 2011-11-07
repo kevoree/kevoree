@@ -213,7 +213,7 @@ public class AndroidFelixService extends Service {
         new Thread() {
             @Override
             public void run() {
-                /* Redirect Output stream */
+                /* Redirect Output stream
                 PrintStream m_out = new PrintStream(new OutputStream() {
                     ByteArrayOutputStream output = new ByteArrayOutputStream();
 
@@ -227,7 +227,7 @@ public class AndroidFelixService extends Service {
                     }
                 });
                 System.setErr(m_out);
-                System.setOut(m_out);
+                System.setOut(m_out); */
 
                 File sdDir = Environment.getExternalStorageDirectory();
                 File m_cache = new File(sdDir.getAbsolutePath() + "/" + FELIX_CACHE_DIR);
