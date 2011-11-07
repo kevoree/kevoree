@@ -19,6 +19,7 @@ public class DirectoryExplorerPanel extends Panel {
 
     DirectoryExplorer dirExplorer = null;
     HashMap<SourceListItem, File> files = new HashMap<SourceListItem, File>();
+    public SourceList sourceList = null;
 
     public DirectoryExplorerPanel(DirectoryExplorer explorer) {
         dirExplorer = explorer;
@@ -46,18 +47,19 @@ public class DirectoryExplorerPanel extends Panel {
         files.put(firstChild, dir);
         model.addItemToCategory(firstChild, category);
         populateDir(model, firstChild, dir, true);
-        SourceList sourceList = new SourceList(model);
+        sourceList = new SourceList(model);
         sourceList.setColorScheme(new SourceListDarkColorScheme());
-        sourceList.setExpanded(category, false);
+        sourceList.setExpanded(category, true);
         sourceList.addSourceListSelectionListener(new SourceListSelectionListener() {
             @Override
             public void sourceListItemSelected(SourceListItem sourceListItem) {
-                if (dirExplorer.getPortByName("fileurl") != null) {
-                    dirExplorer.getPortByName("fileurl", MessagePort.class).process(files.get(sourceListItem));
-                }
+                dirExplorer.directorySelected(files.get(sourceListItem));
             }
         });
         this.removeAll();
+
+
+        sourceList.useIAppStyleScrollBars();
         this.add(sourceList.getComponent(), BorderLayout.CENTER);
 
     }
