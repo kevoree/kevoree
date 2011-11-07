@@ -1,8 +1,6 @@
-package org.kevoree.library.javase.webserver.components;
+package org.kevoree.library.javase.webserver.gallery;
 
 import org.kevoree.annotation.ComponentType;
-import org.kevoree.annotation.Port;
-import org.kevoree.framework.MessagePort;
 import org.kevoree.library.javase.webserver.AbstractPage;
 import org.kevoree.library.javase.webserver.KevoreeHttpRequest;
 import org.kevoree.library.javase.webserver.KevoreeHttpResponse;
@@ -15,11 +13,11 @@ import org.kevoree.library.javase.webserver.KevoreeHttpResponse;
  * To change this template use File | Settings | File Templates.
  */
 @ComponentType
-public class SampleFormPage extends AbstractPage {
+public class Gallery extends AbstractPage {
 
     @Override
     public KevoreeHttpResponse process(KevoreeHttpRequest request,KevoreeHttpResponse response){
-        response.setContent(SampleFormHelper.generateFormHtml(request.getUrl()));
+        //response.setContent(org.kevoree.library.javase.webserver.gallery.SampleFormHelper.generateFormHtml(request.getUrl()));
         return response;
     }
 
