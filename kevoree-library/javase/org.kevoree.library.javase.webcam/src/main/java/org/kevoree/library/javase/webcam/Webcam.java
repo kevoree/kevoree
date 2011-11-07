@@ -57,27 +57,24 @@ public class Webcam extends AbstractComponentType {
 
 	@Start
 	public void start () throws Exception {
-		if (isPortBinded("image")) {
-			VLCNativeLibraryLoader.initialize();
-			System.setProperty("vlcj.check", "no");
-			System.setProperty("vlcj.log", (String) this.getDictionary().get("LOG"));
-			String device = (String) this.getDictionary().get("DEVICE");
-			factory = new MediaPlayerFactory("--no-video-title-show");
-			mediaPlayer = factory
-					.newDirectMediaPlayer(getWidth(), getHeight(), new OwnRenderCallback(getWidth(), getHeight()));
 
-			mediaPlayer.playMedia(device, null);
-		}
+		VLCNativeLibraryLoader.initialize();
+		System.setProperty("vlcj.check", "no");
+		System.setProperty("vlcj.log", (String) this.getDictionary().get("LOG"));
+		String device = (String) this.getDictionary().get("DEVICE");
+		factory = new MediaPlayerFactory("--no-video-title-show");
+		mediaPlayer = factory
+				.newDirectMediaPlayer(getWidth(), getHeight(), new OwnRenderCallback(getWidth(), getHeight()));
+
+		mediaPlayer.playMedia(device, null);
 
 	}
 
 	@Stop
 	public void stop () {
-		if (isPortBinded("image")) {
-			mediaPlayer.stop();
-			factory.release();
-			VLCNativeLibraryLoader.release();
-		}
+		mediaPlayer.stop();
+		factory.release();
+		VLCNativeLibraryLoader.release();
 	}
 
 	@Update
@@ -123,9 +120,18 @@ public class Webcam extends AbstractComponentType {
 		@Override
 		public void onDisplay (int[] data) {
 			// The image data could be manipulated here...
-			image.setRGB(0, 0, width, height, data, 0, width);
-			getPortByName("image", MessagePort.class).process(image);
-			getPortByName("image_bytes", MessagePort.class).process(data);
+			if (isPortBinded("image")) {
+				image.setRGB(0, 0, width, height, data, 0, width);
+				getPortByName("image", MessagePort.class).process(image);
+			}
+
+			if (isPortBinded("image_bytes")) {
+				int[] newData = new int[data.length + 2];
+				newData[0] = width;
+				newData[1] = height;
+				System.arraycopy(data, 0, newData, 2, data.length);
+				getPortByName("image_bytes", MessagePort.class).process(newData);
+			}
 		}
 	}
 }
