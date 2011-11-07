@@ -5,10 +5,14 @@ import org.kevoree.extra.vlcj.VLCNativeLibraryLoader;
 import org.kevoree.framework.AbstractComponentType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import uk.co.caprica.vlcj.binding.LibVlc;
 import uk.co.caprica.vlcj.player.MediaPlayerFactory;
 import uk.co.caprica.vlcj.player.embedded.DefaultFullScreenStrategy;
 import uk.co.caprica.vlcj.player.embedded.EmbeddedMediaPlayer;
 import uk.co.caprica.vlcj.player.embedded.FullScreenStrategy;
+import uk.co.caprica.vlcj.player.embedded.videosurface.CanvasVideoSurface;
+import uk.co.caprica.vlcj.player.embedded.videosurface.VideoSurfaceAdapter;
+import uk.co.caprica.vlcj.player.embedded.videosurface.mac.MacVideoSurfaceAdapter;
 import uk.co.caprica.vlcj.player.headless.HeadlessMediaPlayer;
 
 import javax.swing.*;
@@ -31,37 +35,31 @@ public class MediaPlayer extends AbstractComponentType {
 
     private JFrame frame;
     private EmbeddedMediaPlayer mediaPlayer;
-    private MediaPlayerFactory mediaFactory;
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Start
     public void start() throws Exception {
-        VLCNativeLibraryLoader.initialize();
-        System.setProperty("vlcj.check", "no");
-        String[] options = {"--no-video-title-show", "--vout=macosx"};
-        mediaFactory = new MediaPlayerFactory(options);
-        frame = new JFrame("Kevoree Media Player");
-        //Canvas vs = new Canvas();
-        //frame.add(vs, BorderLayout.CENTER);
-        frame.setVisible(true);
-
-        FullScreenStrategy fullScreenStrategy = new DefaultFullScreenStrategy(frame);
-        mediaPlayer = mediaFactory.newMediaPlayer(fullScreenStrategy);
-
-        
-        //mediaPlayer.setVideoSurface(vs);
+        frame = new JFrame("Kevoree Frame");
+        DefaultFullScreenStrategy full = new DefaultFullScreenStrategy(frame);
+        mediaPlayer = MediaPlayerHelper.getInstance().getFactory(this.getName()).newEmbeddedMediaPlayer(new DefaultFullScreenStrategy(frame));
+        Canvas c = new Canvas();
+        c.setBackground(Color.black);
+        JPanel p = new JPanel();
+        p.setLayout(new BorderLayout());
+        p.add(c, BorderLayout.CENTER);
+        frame.setContentPane(p);
         frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+        frame.setSize(800, 600);
         frame.setVisible(true);
+        mediaPlayer.setVideoSurface(MediaPlayerHelper.getInstance().getFactory(this.getName()).newVideoSurface(c));
+        //mediaPlayer.setFullScreen(true);
     }
 
     @Stop
     public void stop() throws Exception {
         mediaPlayer.stop();
-        frame.setVisible(false);
         frame.dispose();
-        mediaPlayer.release();
-        mediaFactory.release();
-        VLCNativeLibraryLoader.release();
+        MediaPlayerHelper.getInstance().releaseKey(this.getName());
     }
 
     @Update
