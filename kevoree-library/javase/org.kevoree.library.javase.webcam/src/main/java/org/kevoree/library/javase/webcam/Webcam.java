@@ -1,10 +1,22 @@
 package org.kevoree.library.javase.webcam;
 
+/*import com.sun.jna.Native;
+import com.sun.jna.NativeLibrary;
 import org.kevoree.annotation.*;
 import org.kevoree.extra.vlcj.VLCNativeLibraryLoader;
 import org.kevoree.framework.AbstractComponentType;
 import org.kevoree.framework.MessagePort;
+import uk.co.caprica.vlcj.binding.LibVlc;
 import uk.co.caprica.vlcj.player.MediaPlayerFactory;
+import uk.co.caprica.vlcj.player.direct.DirectMediaPlayer;
+import uk.co.caprica.vlcj.player.direct.RenderCallbackAdapter;
+
+import java.awt.*;
+import java.awt.image.BufferedImage;*/
+
+import org.kevoree.annotation.*;
+import org.kevoree.framework.AbstractComponentType;
+import org.kevoree.framework.MessagePort;
 import uk.co.caprica.vlcj.player.direct.DirectMediaPlayer;
 import uk.co.caprica.vlcj.player.direct.RenderCallbackAdapter;
 
@@ -20,47 +32,38 @@ import java.awt.image.BufferedImage;
  * @version 1.0
  */
 @MessageTypes({
-        @MessageType(name = "BufferedImage", elems = {@MsgElem(name = "image", className = BufferedImage.class)}),
-        @MessageType(name = "bytes", elems = {@MsgElem(name = "image", className = int[].class)})
+		@MessageType(name = "BufferedImage", elems = {@MsgElem(name = "image", className = BufferedImage.class)}),
+		@MessageType(name = "bytes", elems = {@MsgElem(name = "image", className = int[].class)})
 })
 @Requires({
-        @RequiredPort(name = "image", type = PortType.MESSAGE, optional = true, messageType = "BufferedImage"),
-        @RequiredPort(name = "image_bytes", type = PortType.MESSAGE, optional = true, messageType = "bytes")
+		@RequiredPort(name = "image", type = PortType.MESSAGE, optional = true, messageType = "BufferedImage"),
+		@RequiredPort(name = "image_bytes", type = PortType.MESSAGE, optional = true, messageType = "bytes")
 })
 @DictionaryType({
-        @DictionaryAttribute(name = "DEVICE", defaultValue = "v4l2:///dev/video0",
-                vals = {"v4l2:///dev/video0", "qtcapture://", "dshow://"}),
-        @DictionaryAttribute(name = "LOG", defaultValue = "NONE", vals = {"NONE", "DEBUG"}, optional = false),
-        @DictionaryAttribute(name = "FORMAT", defaultValue = "800x600",
-                vals = {"1280x1024", "1024x768", "800x600", "640x480", "400x300", "200x150"})
+		@DictionaryAttribute(name = "DEVICE", defaultValue = "v4l2:///dev/video0",
+				vals = {"v4l2:///dev/video0", "qtcapture://", "dshow://"}),
+		@DictionaryAttribute(name = "LOG", defaultValue = "NONE", vals = {"NONE", "DEBUG"}, optional = false),
+		@DictionaryAttribute(name = "FORMAT", defaultValue = "800x600",
+				vals = {"1280x1024", "1024x768", "800x600", "640x480", "400x300", "200x150"})
 })
 @Library(name = "JavaSE")
 @ComponentType
 public class Webcam extends AbstractComponentType {
-
-	private MediaPlayerFactory factory;
 	private DirectMediaPlayer mediaPlayer;
 
 	@Start
 	public void start () throws Exception {
-
-		VLCNativeLibraryLoader.initialize();
-		System.setProperty("vlcj.check", "no");
 		System.setProperty("vlcj.log", (String) this.getDictionary().get("LOG"));
 		String device = (String) this.getDictionary().get("DEVICE");
-		factory = new MediaPlayerFactory("--no-video-title-show");
-		mediaPlayer = factory
+		mediaPlayer = MediaPlayerHelper.getInstance().getFactory(this.getName())
 				.newDirectMediaPlayer(getWidth(), getHeight(), new OwnRenderCallback(getWidth(), getHeight()));
-
-		mediaPlayer.playMedia(device, null);
-
+		mediaPlayer.playMedia(device, ":qtcapcture-caching=1:v4l2-caching=1");
 	}
 
 	@Stop
 	public void stop () {
 		mediaPlayer.stop();
-		factory.release();
-		VLCNativeLibraryLoader.release();
+		MediaPlayerHelper.getInstance().releaseKey(this.getName());
 	}
 
 	@Update
