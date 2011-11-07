@@ -19,13 +19,14 @@ import static com.googlecode.javacv.cpp.opencv_objdetect.*;
  * Date: 26/08/11
  * Time: 11:00
  */
-
-
+@MessageTypes({
+        @MessageType(name = "BufferedImage", elems = {@MsgElem(name = "image", className = BufferedImage.class)})
+})
 @Provides({
-		@ProvidedPort(name = "image", type = PortType.MESSAGE, filter = "java.awt.image.BufferedImage")
+		@ProvidedPort(name = "image", type = PortType.MESSAGE, messageType = "BufferedImage")
 })
 @Requires({
-		@RequiredPort(name = "faces", type = PortType.MESSAGE, filter = "java.awt.image.BufferedImage",
+		@RequiredPort(name = "faces", type = PortType.MESSAGE, messageType = "BufferedImage",
 				optional = true, needCheckDependency = false)
 })
 @DictionaryType({
@@ -87,6 +88,13 @@ public class FaceDetector extends AbstractComponentType {
 	private BufferedImage process (BufferedImage bufferedImage) {
 		if (!isAlreadyInitialized) {
 			isAlreadyInitialized = true;
+
+			// preload the opencv_objdetect module to work around a known bug
+			/*Loader.load(opencv_core.class);
+			Loader.load(opencv_objdetect.class);
+			Loader.load(opencv_features2d.class);
+			Loader.load(opencv_imgproc.class);
+			Loader.load(opencv_flann.class);*/
 
 			// We instantiate a classifier cascade to be used for detection, using the cascade definition.
 			cascade = new CvHaarClassifierCascade(cvLoad(cascadeFilePath));

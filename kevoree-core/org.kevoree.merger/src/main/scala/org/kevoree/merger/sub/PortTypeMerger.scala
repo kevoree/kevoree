@@ -31,7 +31,7 @@ trait PortTypeMerger {
     actualModel.getTypeDefinitions.filter({
       td => td.isInstanceOf[PortType]
     }).find({
-      pt => pt.getName == portType.getName
+      pt => pt.isModelEquals(portType)
     }) match {
       case Some(existPT) => {
         //CONSISTENCY CHECK

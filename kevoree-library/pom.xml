@@ -1,4 +1,3 @@
-
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
@@ -16,13 +15,13 @@
     </properties>
 
     <modules>
-    <module>./javase/org.kevoree.library.javase.root</module>
-    <module>./sky/org.kevoree.library.sky.root</module>
-    <module>./arduino/org.kevoree.library.arduino.root</module>
-    <module>./android/org.kevoree.library.android.root</module>
-    <module>./model/org.kevoree.library.model.root</module>
-    <module>./archetypes/org.kevoree.library.archetype.root</module>
-  </modules>
+        <module>./javase/org.kevoree.library.javase.root</module>
+        <module>./sky/org.kevoree.library.sky.root</module>
+        <module>./arduino/org.kevoree.library.arduino.root</module>
+        <module>./android/org.kevoree.library.android.root</module>
+        <module>./model/org.kevoree.library.model.root</module>
+        <module>./archetypes/org.kevoree.library.archetype.root</module>
+    </modules>
 
     <distributionManagement>
         <repository>
@@ -35,7 +34,7 @@
         </snapshotRepository>
     </distributionManagement>
 
-<profiles>
+    <profiles>
         <profile>
             <id>graph</id>
             <pluginRepositories>
