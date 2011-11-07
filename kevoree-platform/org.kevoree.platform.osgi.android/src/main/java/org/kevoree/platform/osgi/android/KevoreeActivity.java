@@ -16,22 +16,31 @@ package org.kevoree.platform.osgi.android;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Display;
 import android.view.View;
 import android.widget.*;
+import android.widget.Button;
 import android.widget.TabHost.TabSpec;
+import org.apache.felix.framework.util.StringMap;
 import org.kevoree.android.framework.service.KevoreeAndroidService;
 import org.kevoree.platform.osgi.android.ui.PreExistingViewFactory;
+
+
+import java.io.*;
 
 /**
  * Hello world!
  */
 public class KevoreeActivity extends Activity implements KevoreeAndroidService {
 
+    public static KevoreeActivity singleton = null;
     public static KevoreeAndroidService last = null;
-
     public static String nodeName = "";
+    public static PrintStream STDwriter = null;
+    public static PrintStream ERRwriter = null;
 
     @Override
     protected void onStart() {
@@ -50,116 +59,147 @@ public class KevoreeActivity extends Activity implements KevoreeAndroidService {
     private Boolean alreadyStarted = false;
     private TabHost tabs = null;
 
+
     @Override
     protected synchronized void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
 
-        last = this;
-        LinearLayout main = new LinearLayout(this);
-        main.setOrientation(LinearLayout.VERTICAL);
-        setContentView(main);
-        tabs = new TabHost(this,null);
-        tabs.setId(android.R.id.tabhost);
-        main.addView(tabs);
-        TabWidget tabWidget = new TabWidget(this);
-        tabWidget.setId(android.R.id.tabs);
-        tabs.addView(tabWidget);
-        FrameLayout tabContent = new FrameLayout(this);
-        tabContent.setId(android.R.id.tabcontent);
-        tabContent.setPadding(0, 65, 0, 0);
-        tabs.addView(tabContent);
-        tabs.setup();
+        if(singleton ==null){
+            super.onCreate(savedInstanceState);
+            Display display = getWindowManager().getDefaultDisplay();
+            int width = display.getWidth();
+            int height = display.getHeight();
 
-        TabSpec tspec1 = tabs.newTabSpec("Admin");
-        tspec1.setIndicator("Admin");
+            final TextView logs;
+            final Scroller scroller = new Scroller(this);
 
-        LinearLayout adminLayout = new LinearLayout(this);
+            logs = new TextView(this);
+            logs.setWidth(width);
+            logs.setHeight(height/2);
+            logs.setBackgroundColor(Color.WHITE);
+            logs.setScroller(scroller);
 
+            /* Catch  stdout and stderr */
+            STDwriter = new PrintStream(new TextOutputStream(logs, Color.BLACK));
+            ERRwriter = new PrintStream(new TextOutputStream(logs,Color.RED));
+            System.setOut(STDwriter);
+            System.setErr(ERRwriter);
 
-        final EditText nodeNameView = new EditText(this);
-        nodeNameView.setText("dukeTab");
-        nodeNameView.setWidth(200);
+            last = this;
+            LinearLayout main = new LinearLayout(this);
+            main.setOrientation(LinearLayout.VERTICAL);
+            setContentView(main);
+            tabs = new TabHost(this,null);
+            tabs.setId(android.R.id.tabhost);
+            main.addView(tabs);
+            TabWidget tabWidget = new TabWidget(this);
+            tabWidget.setId(android.R.id.tabs);
+            tabs.addView(tabWidget);
+            FrameLayout tabContent = new FrameLayout(this);
+            tabContent.setId(android.R.id.tabcontent);
+            tabContent.setPadding(0, 65, 0, 0);
+            tabs.addView(tabContent);
+            tabs.setup();
 
-        Button btstart = new Button(this);
-        btstart.setText("Start");
-        Button btstop = new Button(this);
-        btstop.setText("Stop");
+            TabSpec tspec1 = tabs.newTabSpec("Admin");
+            tspec1.setIndicator("Admin");
 
-        adminLayout.addView(nodeNameView);
-        adminLayout.addView(btstart);
-        adminLayout.addView(btstop);
+            LinearLayout adminLayout = new LinearLayout(this);
 
-        tspec1.setContent(new PreExistingViewFactory(adminLayout));
-        tabs.addTab(tspec1);
-        /*
-        TabSpec tspec2 = tabs.newTabSpec("Tab2");
-        tspec2.setIndicator("Two", this.getResources().getDrawable(android.R.drawable.star_on));
-        tspec2.setContent(new PreExistingViewFactory(content2));
-
-        tabs.addTab(tspec2);
-        TabSpec tspec3 = tabs.newTabSpec("Tab3");
-        tspec3.setIndicator("Three", this.getResources().getDrawable(android.R.drawable.star_on));
-        tspec3.setContent(new PreExistingViewFactory(content3));
-        tabs.addTab(tspec3);
+            final EditText nodeNameView = new EditText(this);
 
 
-        this.setContentView(R.layout.main);
-         */
+            nodeNameView.setText("node0");
+            nodeNameView.setWidth(width/4);
 
-        final Context app_ctx = this.getApplicationContext();
 
-        final Context ctx = this;
+            Button btstart = new Button(this);
+            btstart.setText("Start");
+            Button btstop = new Button(this);
+            btstop.setText("Stop");
 
-        //   Button btstart = (Button) findViewById(R.id.StartFelix);
-        btstart.setOnClickListener(new Button.OnClickListener() {
+            adminLayout.addView(nodeNameView);
 
-            public void onClick(View v) {
-                Intent intent_start = new Intent(ctx, AndroidFelixService.class);
-                Log.i("art2.service", "start bind service");
-                if (!alreadyStarted) {
-                    nodeName=  nodeNameView.getText().toString();
-                    System.setProperty("node.name",nodeName);
-                    startService(intent_start);
-                    alreadyStarted = true;
+            adminLayout.addView(btstart);
+            adminLayout.addView(btstop);
+            main.addView(logs);
+
+
+            tspec1.setContent(new PreExistingViewFactory(adminLayout));
+            tabs.addTab(tspec1);
+            /*
+           TabSpec tspec2 = tabs.newTabSpec("Tab2");
+           tspec2.setIndicator("Two", this.getResources().getDrawable(android.R.drawable.star_on));
+           tspec2.setContent(new PreExistingViewFactory(content2));
+
+           tabs.addTab(tspec2);
+           TabSpec tspec3 = tabs.newTabSpec("Tab3");
+           tspec3.setIndicator("Three", this.getResources().getDrawable(android.R.drawable.star_on));
+           tspec3.setContent(new PreExistingViewFactory(content3));
+           tabs.addTab(tspec3);
+
+
+           this.setContentView(R.layout.main);
+            */
+
+            final Context app_ctx = this.getApplicationContext();
+
+            final Context ctx = this;
+
+            //   Button btstart = (Button) findViewById(R.id.StartFelix);
+            btstart.setOnClickListener(new Button.OnClickListener() {
+
+                public void onClick(View v) {
+                    Intent intent_start = new Intent(ctx, AndroidFelixService.class);
+                    logs.append("Starting");
+                    Log.i("art2.service", "start bind service");
+                    if (!alreadyStarted) {
+                        nodeName=  nodeNameView.getText().toString();
+                        System.setProperty("node.name",nodeName);
+                        startService(intent_start);
+                        alreadyStarted = true;
+                    }
+
+                    // Toast.makeText(ctx, "Art2 Platform Started !", 3000).show();
+
+
+                    /*
+                   bindService(intent_start, new ServiceConnection() {
+                   @Override
+                   public void onServiceConnected(ComponentName name, IBinder service) {
+                   AndroidFelixServiceBinder felixservicebinder = (AndroidFelixServiceBinder) service;
+                   BundleContext ctx = felixservicebinder.getService().getFrameworkBundleContext();
+                   //Toast.makeText(app_ctx, "size=" + ctx.getBundles().length, 3000).show();
+                   }
+
+                   @Override
+                   public void onServiceDisconnected(ComponentName name) {
+                   //throw new UnsupportedOperationException("Not supported yet.");
+                   }
+                   }, BIND_AUTO_CREATE);
+                    */
+                    //startService(intent_start);
+
                 }
+            });
 
-                // Toast.makeText(ctx, "Art2 Platform Started !", 3000).show();
+            //  Button btstop = (Button) findViewById(R.id.StopFelix);
+            btstop.setOnClickListener(new Button.OnClickListener() {
 
-
-                /*
-                bindService(intent_start, new ServiceConnection() {
-                @Override
-                public void onServiceConnected(ComponentName name, IBinder service) {
-                AndroidFelixServiceBinder felixservicebinder = (AndroidFelixServiceBinder) service;
-                BundleContext ctx = felixservicebinder.getService().getFrameworkBundleContext();
-                //Toast.makeText(app_ctx, "size=" + ctx.getBundles().length, 3000).show();
+                public void onClick(View v) {
+                    Log.i("kevoree.platform", "try to stop the platform");
+                    if (alreadyStarted) {
+                        Intent intent_stop = new Intent(ctx, AndroidFelixService.class);
+                        stopService(intent_stop);
+                        alreadyStarted = false;
+                    }
                 }
-
-                @Override
-                public void onServiceDisconnected(ComponentName name) {
-                //throw new UnsupportedOperationException("Not supported yet.");
-                }
-                }, BIND_AUTO_CREATE);
-                 */
-                //startService(intent_start);
-
-            }
-        });
-
-        //  Button btstop = (Button) findViewById(R.id.StopFelix);
-        btstop.setOnClickListener(new Button.OnClickListener() {
-
-            public void onClick(View v) {
-                Log.i("kevoree.platform", "try to stop the platform");
-                if (alreadyStarted) {
-                    Intent intent_stop = new Intent(ctx, AndroidFelixService.class);
-                    stopService(intent_stop);
-                    alreadyStarted = false;
-                }
-            }
-        });
+            });
 
 
+
+        }
+        if(singleton !=null)
+            singleton = this;
     }
 
     @Override
@@ -185,4 +225,30 @@ public class KevoreeActivity extends Activity implements KevoreeAndroidService {
     public void remove(View view) {
 
     }
+
+
+    private class TextOutputStream extends OutputStream {
+        private TextView _textArea = null;
+        private int _color = 0;
+        StringBuilder currentLine = new StringBuilder();
+
+
+        public TextOutputStream(TextView textArea, int color) {
+            _textArea = textArea;
+            _color = color;
+        }
+
+        @Override
+        public void write(int b) {
+            if (b == (int)'\n') {
+                _textArea.append(currentLine.toString());
+                _textArea.setTextColor(_color);
+                currentLine = new StringBuilder();
+            } else {
+                currentLine.append((char)b);
+            }
+        }
+
+    }
 }
+
