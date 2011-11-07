@@ -16,7 +16,7 @@
  * and open the template in the editor.
  */
 
-package org.kevoree.library.fakedomo;
+package org.kevoree.library.ui;
 
 import org.kevoree.annotation.ComponentFragment;
 import org.kevoree.annotation.Library;

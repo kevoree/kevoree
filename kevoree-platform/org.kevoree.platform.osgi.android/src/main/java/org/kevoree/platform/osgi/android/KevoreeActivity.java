@@ -96,6 +96,7 @@ public class KevoreeActivity extends Activity implements KevoreeAndroidService {
                               // change log level todo
 
 
+
                 }
             };
 
