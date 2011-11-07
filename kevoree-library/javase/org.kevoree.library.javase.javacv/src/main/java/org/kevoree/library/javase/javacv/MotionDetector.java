@@ -15,8 +15,11 @@ import static com.googlecode.javacv.cpp.opencv_imgproc.*;
  * Date: 17/08/11
  * Time: 14:55
  */
+@MessageTypes({
+        @MessageType(name = "BufferedImage", elems = {@MsgElem(name = "image", className = BufferedImage.class)})
+})
 @Provides({
-		@ProvidedPort(name = "image", type = PortType.MESSAGE, filter = "java.awt.image.BufferedImage")
+		@ProvidedPort(name = "image", type = PortType.MESSAGE, messageType = "BufferedImage")
 })
 @Requires({
 		@RequiredPort(name = "image_diff", type = PortType.MESSAGE, filter = "java.awt.image.BufferedImage",

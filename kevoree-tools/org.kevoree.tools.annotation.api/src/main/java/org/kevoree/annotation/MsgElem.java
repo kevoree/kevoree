@@ -11,26 +11,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+package org.kevoree.annotation;
+
+/**
+ * Created by IntelliJ IDEA.
+ * User: duke
+ * Date: 04/11/11
+ * Time: 19:49
+ * To change this template use File | Settings | File Templates.
  */
-
-package org.kevoree.framework
-
-class KevoreeDictionary {
-
-  private val map =  new java.util.HashMap[String,AnyRef]
-
-  def get(key:String) = map.get(key)
-
-  def set(key:String,o:AnyRef) = map.put(key, o)
-
-  def switchKey(previousKey:String,newKey:String) = {
-    if(map.containsKey(previousKey) && !map.containsKey(newKey)  ){
-      map.put(newKey, map.get(previousKey))
-      map.remove(previousKey)
-    }
-  }
-
+public @interface MsgElem {
+    java.lang.String name();
+    Class className() default Object.class;
 }

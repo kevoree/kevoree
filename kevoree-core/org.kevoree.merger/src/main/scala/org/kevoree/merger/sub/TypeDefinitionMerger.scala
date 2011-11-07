@@ -32,8 +32,11 @@ trait TypeDefinitionMerger extends Merger with DictionaryMerger with PortTypeMer
   def mergeTypeDefinition(actualModel: ContainerRoot, modelToMerge: ContainerRoot): Unit = {
 
     modelToMerge.getTypeDefinitions.foreach { toMergeTypeDef =>
-        actualModel.getTypeDefinitions.find(actualTypeDef => actualTypeDef.getName == toMergeTypeDef.getName) match {
+        actualModel.getTypeDefinitions.find(actualTypeDef => actualTypeDef.isModelEquals(toMergeTypeDef)) match {
           case Some(found_type_definition) => {
+            
+            println(found_type_definition.getName+"-"+found_type_definition.getDictionaryType)
+            
             val root = found_type_definition.eContainer.asInstanceOf[ContainerRoot]
             if (found_type_definition.isUpdated(toMergeTypeDef)) {
               if (found_type_definition.contractChanged(toMergeTypeDef)) {

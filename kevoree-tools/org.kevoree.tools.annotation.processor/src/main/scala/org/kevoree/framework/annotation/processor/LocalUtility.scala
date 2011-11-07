@@ -18,29 +18,33 @@
 
 package org.kevoree.framework.annotation.processor
 
-import org.kevoree.ContainerRoot
-import org.kevoree.PortType
-import org.kevoree.TypedElement
 import javax.annotation.processing.ProcessingEnvironment
-
+import org.kevoree.{MessagePortType, ContainerRoot, PortType, TypedElement}
+ import org.kevoree.framework.aspects.KevoreeAspects._
 
 object LocalUtility {
-  var root : ContainerRoot = _
+  var root: ContainerRoot = _
 
-  def generateLibURI(options: java.util.Map[String,String]) = {
+  def generateLibURI(options: java.util.Map[String, String]) = {
     import scala.collection.JavaConversions._
     options.get("kevoree.lib.target")
   }
 
-  def getOraddDataType(datatype : TypedElement) : TypedElement = {
-    root.getDataTypes.find({t=>t.getName.equals(datatype.getName)}).getOrElse{
+  def getOraddDataType(datatype: TypedElement): TypedElement = {
+    root.getDataTypes.find({
+      t => t.getName.equals(datatype.getName)
+    }).getOrElse {
       root.addDataTypes(datatype)
       datatype
     }
   }
 
-  def getOraddPortType(portType : PortType) : PortType = {
-    root.getTypeDefinitions.filter{st=> st.isInstanceOf[PortType]}.find({pt=>pt.getName == portType.getName}).getOrElse{
+  def getOraddPortType(portType: PortType): PortType = {
+    root.getTypeDefinitions.filter {
+      st => st.isInstanceOf[PortType]
+    }.find({
+      pt => pt.asInstanceOf[PortType].isModelEquals(portType.asInstanceOf[PortType])
+    }).getOrElse {
       root.addTypeDefinitions(portType)
       portType
     }.asInstanceOf[PortType]
