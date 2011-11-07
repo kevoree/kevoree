@@ -1,10 +1,23 @@
 package org.kevoree.library.javase.webcam;
 
 import org.kevoree.annotation.*;
+import org.kevoree.extra.vlcj.VLCNativeLibraryLoader;
 import org.kevoree.framework.AbstractComponentType;
-import uk.co.caprica.vlcj.component.EmbeddedMediaPlayerComponent;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import uk.co.caprica.vlcj.binding.LibVlc;
+import uk.co.caprica.vlcj.player.MediaPlayerFactory;
+import uk.co.caprica.vlcj.player.embedded.DefaultFullScreenStrategy;
+import uk.co.caprica.vlcj.player.embedded.EmbeddedMediaPlayer;
+import uk.co.caprica.vlcj.player.embedded.FullScreenStrategy;
+import uk.co.caprica.vlcj.player.embedded.videosurface.CanvasVideoSurface;
+import uk.co.caprica.vlcj.player.embedded.videosurface.VideoSurfaceAdapter;
+import uk.co.caprica.vlcj.player.embedded.videosurface.mac.MacVideoSurfaceAdapter;
+import uk.co.caprica.vlcj.player.headless.HeadlessMediaPlayer;
 
 import javax.swing.*;
+import java.awt.*;
+import java.util.Arrays;
 
 /**
  * Created by IntelliJ IDEA.
@@ -20,26 +33,33 @@ import javax.swing.*;
 @ComponentType
 public class MediaPlayer extends AbstractComponentType {
 
-    EmbeddedMediaPlayerComponent mediaPlayerComponent = null;
-    JFrame frame = new JFrame();
+    private JFrame frame;
+    private EmbeddedMediaPlayer mediaPlayer;
+    private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Start
     public void start() throws Exception {
-        mediaPlayerComponent = new EmbeddedMediaPlayerComponent();
-        frame = new JFrame();
-        frame.setContentPane(mediaPlayerComponent);
-        frame.setLocation(100, 100);
-        frame.setSize(1050, 600);
+        frame = new JFrame("Kevoree Frame");
+        DefaultFullScreenStrategy full = new DefaultFullScreenStrategy(frame);
+        mediaPlayer = MediaPlayerHelper.getInstance().getFactory(this.getName()).newEmbeddedMediaPlayer(new DefaultFullScreenStrategy(frame));
+        Canvas c = new Canvas();
+        c.setBackground(Color.black);
+        JPanel p = new JPanel();
+        p.setLayout(new BorderLayout());
+        p.add(c, BorderLayout.CENTER);
+        frame.setContentPane(p);
         frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+        frame.setSize(800, 600);
         frame.setVisible(true);
+        mediaPlayer.setVideoSurface(MediaPlayerHelper.getInstance().getFactory(this.getName()).newVideoSurface(c));
+        //mediaPlayer.setFullScreen(true);
     }
 
     @Stop
     public void stop() throws Exception {
-        mediaPlayerComponent.getMediaPlayer().stop();
-        frame.setVisible(false);
+        mediaPlayer.stop();
         frame.dispose();
-        frame = null;
+        MediaPlayerHelper.getInstance().releaseKey(this.getName());
     }
 
     @Update
@@ -48,9 +68,15 @@ public class MediaPlayer extends AbstractComponentType {
     }
 
     @Port(name = "media")
-    public void triggerMedia(Object o) {
+    public void triggerMedia(final Object o) {
         if (o != null) {
-            mediaPlayerComponent.getMediaPlayer().playMedia(o.toString());
+            SwingUtilities.invokeLater(new Runnable() {
+                @Override
+                public void run() {
+                    logger.debug("Run media mrl=" + o.toString());
+                    mediaPlayer.playMedia(o.toString());
+                }
+            });
         }
     }
 
