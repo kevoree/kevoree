@@ -26,13 +26,13 @@ public class MediaPlayerHelper {
     }
 
     private static String[] DEFAULT_FACTORY_ARGUMENTS = {
-            "--vout=macosx",
+//            "--vout=macosx",
             "--no-video-title-show",
             "--no-plugins-cache",
             "--quiet",
             "--quiet-synchro",
-            "--intf",
-            "dummy"
+//            "--intf",
+//            "dummy"
     };
 
     private List<String> keys = new ArrayList<String>();

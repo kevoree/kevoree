@@ -66,7 +66,6 @@ public class VideoViewer extends AbstractComponentType {
 
 	@Port(name = "image")
 	public void onReceiveImage (Object message) {
-		System.out.println(message);
 		if (!isAlreadyInitialized) {
 			init();
 		}
@@ -103,7 +102,6 @@ public class VideoViewer extends AbstractComponentType {
 			init();
 		}
 		if (message instanceof int[]) {
-			System.out.println(((int[]) message).length);
 			int imageWidth = ((int[]) message)[0];
 			int imageHeight = ((int[]) message)[1];
 			if (width != imageWidth || height != imageHeight) {
