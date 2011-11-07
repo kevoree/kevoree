@@ -18,7 +18,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
+import org.apache.felix.framework.Logger;
+import org.osgi.framework.BundleContext;
+
+
 import android.view.Display;
 import android.view.View;
 import android.widget.*;
@@ -30,6 +35,7 @@ import org.kevoree.platform.osgi.android.ui.PreExistingViewFactory;
 
 
 import java.io.*;
+
 
 /**
  * Hello world!
@@ -45,6 +51,7 @@ public class KevoreeActivity extends Activity implements KevoreeAndroidService {
     @Override
     protected void onStart() {
         super.onStart();
+
         Log.i("kevoree", "Kevoree UIActivity Start /" + this.toString());
     }
 
@@ -62,21 +69,47 @@ public class KevoreeActivity extends Activity implements KevoreeAndroidService {
 
     @Override
     protected synchronized void onCreate(Bundle savedInstanceState) {
-
         if(singleton ==null){
             super.onCreate(savedInstanceState);
+
             Display display = getWindowManager().getDefaultDisplay();
             int width = display.getWidth();
             int height = display.getHeight();
 
-            final TextView logs;
-            final Scroller scroller = new Scroller(this);
+            final  TextView logs;
+            final  CheckBox checkbox_info;
+            final  CheckBox checkbox_debug;
+            final  CheckBox checkbox_warn;
+            final  View.OnClickListener checkbox_list;
+
+            checkbox_info = new CheckBox(this);
+            checkbox_info.setText("INFO");
+            checkbox_debug = new CheckBox(this);
+            checkbox_debug.setText("DEBUG");
+            checkbox_warn = new CheckBox(this);
+            checkbox_warn.setText("WARN");
+
+
+            checkbox_list  = new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                              // change log level todo
+
+
+                }
+            };
+
+            checkbox_warn.setOnClickListener(checkbox_list);
+            checkbox_debug.setOnClickListener(checkbox_list);
+            checkbox_info.setOnClickListener(checkbox_list);
 
             logs = new TextView(this);
+            logs.setMovementMethod(new ScrollingMovementMethod());
             logs.setWidth(width);
-            logs.setHeight(height/2);
+            logs.setHeight(500);
+            logs.setText("");
             logs.setBackgroundColor(Color.WHITE);
-            logs.setScroller(scroller);
+              logs.setScrollBarStyle(TextView.SCROLLBARS_OUTSIDE_OVERLAY);
 
             /* Catch  stdout and stderr */
             STDwriter = new PrintStream(new TextOutputStream(logs, Color.BLACK));
@@ -121,6 +154,9 @@ public class KevoreeActivity extends Activity implements KevoreeAndroidService {
 
             adminLayout.addView(btstart);
             adminLayout.addView(btstop);
+            adminLayout.addView(checkbox_info);
+            adminLayout.addView(checkbox_debug);
+            adminLayout.addView(checkbox_warn);
             main.addView(logs);
 
 
@@ -141,8 +177,9 @@ public class KevoreeActivity extends Activity implements KevoreeAndroidService {
            this.setContentView(R.layout.main);
             */
 
-            final Context app_ctx = this.getApplicationContext();
 
+
+            final Context app_ctx = this.getApplicationContext();
             final Context ctx = this;
 
             //   Button btstart = (Button) findViewById(R.id.StartFelix);
@@ -150,7 +187,6 @@ public class KevoreeActivity extends Activity implements KevoreeAndroidService {
 
                 public void onClick(View v) {
                     Intent intent_start = new Intent(ctx, AndroidFelixService.class);
-                    logs.append("Starting");
                     Log.i("art2.service", "start bind service");
                     if (!alreadyStarted) {
                         nodeName=  nodeNameView.getText().toString();
@@ -197,8 +233,11 @@ public class KevoreeActivity extends Activity implements KevoreeAndroidService {
 
 
 
+
+
+
         }
-        if(singleton !=null)
+        if(singleton ==null)
             singleton = this;
     }
 
@@ -232,21 +271,44 @@ public class KevoreeActivity extends Activity implements KevoreeAndroidService {
         private int _color = 0;
         StringBuilder currentLine = new StringBuilder();
 
-
         public TextOutputStream(TextView textArea, int color) {
             _textArea = textArea;
             _color = color;
         }
 
+
         @Override
-        public void write(int b) {
-            if (b == (int)'\n') {
-                _textArea.append(currentLine.toString());
-                _textArea.setTextColor(_color);
-                currentLine = new StringBuilder();
-            } else {
-                currentLine.append((char)b);
-            }
+        public void write(final int b) {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        if (b == (int) '\n') {
+                            _textArea.append("\n" + currentLine.toString());
+
+                            final int scrollAmount = _textArea.getLayout().getLineTop(_textArea.getLineCount())-_textArea.getHeight();
+
+                            if(scrollAmount>0)
+                                   _textArea.scrollTo(0, scrollAmount);
+                               else
+                                   _textArea.scrollTo(0,0);
+
+                            _textArea.setTextColor(_color);
+                            Log.i("kevoree.osgi.service.logger", currentLine.toString());
+
+                            currentLine = new StringBuilder();
+                        } else {
+                            currentLine.append((char) b);
+                        }
+
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+
+
+                }
+            });
+
         }
 
     }
