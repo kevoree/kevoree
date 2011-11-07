@@ -22,33 +22,18 @@ import uk.co.caprica.vlcj.player.headless.HeadlessMediaPlayer;
 @ComponentType
 public class AudioPlayer extends AbstractComponentType {
 
-    MediaPlayerFactory mediaPlayerFactory  = null;
     HeadlessMediaPlayer mediaPlayer = null;
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Start
     public void start() throws Exception {
-        VLCNativeLibraryLoader.initialize();
-        System.setProperty("vlcj.check", "no");
-        String[] DEFAULT_FACTORY_ARGUMENTS = {
-            "--no-plugins-cache",
-            "--quiet",
-            "--quiet-synchro",
-            "--intf",
-            "dummy"
-          };
-
-
-        mediaPlayerFactory = new MediaPlayerFactory(DEFAULT_FACTORY_ARGUMENTS);
-        mediaPlayer = mediaPlayerFactory.newMediaPlayer();
-
+        mediaPlayer = MediaPlayerHelper.getInstance().getFactory(this.getName()).newHeadlessMediaPlayer();
     }
 
     @Stop
     public void stop() throws Exception {
         mediaPlayer.stop();
-        mediaPlayerFactory.release();
-        VLCNativeLibraryLoader.release();
+        MediaPlayerHelper.getInstance().releaseKey(this.getName());
     }
 
     @Port(name = "media")
