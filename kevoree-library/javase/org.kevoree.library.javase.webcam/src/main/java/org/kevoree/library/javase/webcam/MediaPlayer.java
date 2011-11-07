@@ -1,14 +1,19 @@
 package org.kevoree.library.javase.webcam;
 
-import com.sun.jna.Native;
-import com.sun.jna.NativeLibrary;
 import org.kevoree.annotation.*;
 import org.kevoree.extra.vlcj.VLCNativeLibraryLoader;
 import org.kevoree.framework.AbstractComponentType;
-import uk.co.caprica.vlcj.binding.LibVlc;
-import uk.co.caprica.vlcj.component.EmbeddedMediaPlayerComponent;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import uk.co.caprica.vlcj.player.MediaPlayerFactory;
+import uk.co.caprica.vlcj.player.embedded.DefaultFullScreenStrategy;
+import uk.co.caprica.vlcj.player.embedded.EmbeddedMediaPlayer;
+import uk.co.caprica.vlcj.player.embedded.FullScreenStrategy;
+import uk.co.caprica.vlcj.player.headless.HeadlessMediaPlayer;
 
 import javax.swing.*;
+import java.awt.*;
+import java.util.Arrays;
 
 /**
  * Created by IntelliJ IDEA.
@@ -24,41 +29,39 @@ import javax.swing.*;
 @ComponentType
 public class MediaPlayer extends AbstractComponentType {
 
-    EmbeddedMediaPlayerComponent mediaPlayerComponent = null;
-    JFrame frame = new JFrame();
+    private JFrame frame;
+    private EmbeddedMediaPlayer mediaPlayer;
+    private MediaPlayerFactory mediaFactory;
+    private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Start
     public void start() throws Exception {
-        /*
-        if (instance == null) {
-            String path = VLCNativeLibraryLoader.configure();
-            //NativeLibrary.addSearchPath("vlccore", path);
-            //NativeLibrary.getInstance("vlccore");
-            NativeLibrary.addSearchPath("vlc", path);
-            instance = NativeLibrary.getInstance("vlc");
-            nbComponent++;
-            Native.register(LibVlc.class, instance);
-        } */
-
+        VLCNativeLibraryLoader.initialize();
         System.setProperty("vlcj.check", "no");
-        System.setProperty("vlcj.log", (String) this.getDictionary().get("LOG"));
+        String[] options = {"--no-video-title-show", "--vout=macosx"};
+        mediaFactory = new MediaPlayerFactory(options);
+        frame = new JFrame("Kevoree Media Player");
+        //Canvas vs = new Canvas();
+        //frame.add(vs, BorderLayout.CENTER);
+        frame.setVisible(true);
 
+        FullScreenStrategy fullScreenStrategy = new DefaultFullScreenStrategy(frame);
+        mediaPlayer = mediaFactory.newMediaPlayer(fullScreenStrategy);
 
-        mediaPlayerComponent = new EmbeddedMediaPlayerComponent();
-        frame = new JFrame();
-        frame.setContentPane(mediaPlayerComponent);
-        frame.setLocation(100, 100);
-        frame.setSize(1050, 600);
+        
+        //mediaPlayer.setVideoSurface(vs);
         frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         frame.setVisible(true);
     }
 
     @Stop
     public void stop() throws Exception {
-        mediaPlayerComponent.getMediaPlayer().stop();
+        mediaPlayer.stop();
         frame.setVisible(false);
         frame.dispose();
-        frame = null;
+        mediaPlayer.release();
+        mediaFactory.release();
+        VLCNativeLibraryLoader.release();
     }
 
     @Update
@@ -67,9 +70,15 @@ public class MediaPlayer extends AbstractComponentType {
     }
 
     @Port(name = "media")
-    public void triggerMedia(Object o) {
+    public void triggerMedia(final Object o) {
         if (o != null) {
-            mediaPlayerComponent.getMediaPlayer().playMedia(o.toString());
+            SwingUtilities.invokeLater(new Runnable() {
+                @Override
+                public void run() {
+                    logger.debug("Run media mrl=" + o.toString());
+                    mediaPlayer.playMedia(o.toString());
+                }
+            });
         }
     }
 
