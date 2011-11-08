@@ -53,6 +53,7 @@
         <module>../org.kevoree.library.javase.webserver.components</module>
         <module>../org.kevoree.library.javase.webserver.gallery</module>
         <module>../org.kevoree.library.javase.miniCloudGroup</module>
+        <module>../org.kevoree.library.javase.pipeChannel</module>
 
     </modules>
 
