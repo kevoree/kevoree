@@ -11,7 +11,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kevoree.library.fakedomo;
+package org.kevoree.library;
 
 import org.kevoree.annotation.*;
 import org.kevoree.framework.MessagePort;
@@ -20,7 +20,6 @@ import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.*;
 
 /**
  *

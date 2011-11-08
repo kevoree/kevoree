@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <kevoree:ContainerRoot xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:kevoree="http://kevoree/1.0">
-  <typeDefinitions xsi:type="kevoree:ComponentType" name="FakeSimpleSwitch" deployUnits="//@deployUnits.0" factoryBean="org.kevoree.library.fakedomo.FakeSimpleSwitchFactory" bean="org.kevoree.library.fakedomo.FakeSimpleSwitch" startMethod="start" stopMethod="stop" updateMethod="update">
+  <typeDefinitions xsi:type="kevoree:ComponentType" name="FakeSimpleSwitch" deployUnits="//@deployUnits.0" factoryBean="org.kevoree.library.ui.FakeSimpleSwitchFactory" bean="org.kevoree.library.ui.FakeSimpleSwitch" startMethod="start" stopMethod="stop" updateMethod="update">
     <required name="on" ref="//@typeDefinitions.1" optional="false" noDependency="true"/>
     <required name="off" ref="//@typeDefinitions.1" optional="false" noDependency="true"/>
     <required name="toggle" ref="//@typeDefinitions.2" optional="true" noDependency="true"/>
   </typeDefinitions>
   <typeDefinitions xsi:type="kevoree:MessagePortType" name="org.kevoree.framework.MessagePort"/>
-  <typeDefinitions xsi:type="kevoree:ServicePortType" name="org.kevoree.library.fakedomo.ToggleLightService"/>
-  <typeDefinitions xsi:type="kevoree:ComponentType" name="FakeSimpleLight" deployUnits="//@deployUnits.0" factoryBean="org.kevoree.library.fakedomo.FakeSimpleLightFactory" bean="org.kevoree.library.fakedomo.FakeSimpleLight" startMethod="start" stopMethod="stop" updateMethod="update">
+  <typeDefinitions xsi:type="kevoree:ServicePortType" name="org.kevoree.library.ui.ToggleLightService"/>
+  <typeDefinitions xsi:type="kevoree:ComponentType" name="FakeSimpleLight" deployUnits="//@deployUnits.0" factoryBean="org.kevoree.library.ui.FakeSimpleLightFactory" bean="org.kevoree.library.ui.FakeSimpleLight" startMethod="start" stopMethod="stop" updateMethod="update">
     <dictionaryType>
       <attributes name="param1"/>
       <attributes name="param2" optional="true" datatype="enum=defVal,defVal2"/>
@@ -23,13 +23,13 @@
       <mappings beanMethodName="toogle" serviceMethodName="toggle"/>
     </provided>
   </typeDefinitions>
-  <typeDefinitions xsi:type="kevoree:ComponentType" name="FakeConsole" deployUnits="//@deployUnits.0" factoryBean="org.kevoree.library.fakedomo.FakeConsoleFactory" bean="org.kevoree.library.fakedomo.FakeConsole" startMethod="start" stopMethod="stop">
+  <typeDefinitions xsi:type="kevoree:ComponentType" name="FakeConsole" deployUnits="//@deployUnits.0" factoryBean="org.kevoree.library.ui.FakeConsoleFactory" bean="org.kevoree.library.ui.FakeConsole" startMethod="start" stopMethod="stop">
     <required name="textEntered" ref="//@typeDefinitions.1" optional="false" noDependency="true"/>
     <provided name="showText" ref="//@typeDefinitions.1">
       <mappings beanMethodName="appendIncoming" serviceMethodName="process"/>
     </provided>
   </typeDefinitions>
-  <typeDefinitions xsi:type="kevoree:ComponentType" name="FakeSimpleSlider" deployUnits="//@deployUnits.0" factoryBean="org.kevoree.library.fakedomo.FakeSimpleSliderFactory" bean="org.kevoree.library.fakedomo.FakeSimpleSlider" startMethod="start" stopMethod="stop" updateMethod="update">
+  <typeDefinitions xsi:type="kevoree:ComponentType" name="FakeSimpleSlider" deployUnits="//@deployUnits.0" factoryBean="org.kevoree.library.ui.FakeSimpleSliderFactory" bean="org.kevoree.library.ui.FakeSimpleSlider" startMethod="start" stopMethod="stop" updateMethod="update">
     <required name="send" ref="//@typeDefinitions.1" optional="false" noDependency="false"/>
   </typeDefinitions>
   <typeDefinitions xsi:type="kevoree:GroupType" name="NettyGossiperGroup" deployUnits="//@deployUnits.1" factoryBean="org.kevoree.library.javase.gossiperNetty.group.NettyGossiperGroupFactory" bean="org.kevoree.library.javase.gossiperNetty.group.NettyGossiperGroup" startMethod="startGossiperGroup" stopMethod="stopGossiperGroup" updateMethod="updateGossiperGroup">
