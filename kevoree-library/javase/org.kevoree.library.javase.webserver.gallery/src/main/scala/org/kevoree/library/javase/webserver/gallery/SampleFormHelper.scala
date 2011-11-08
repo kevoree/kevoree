@@ -1,4 +1,4 @@
-package org.kevoree.library.javase.webserver.components
+package org.kevoree.library.javase.webserver.gallery
 
 /**
  * Created by IntelliJ IDEA.
