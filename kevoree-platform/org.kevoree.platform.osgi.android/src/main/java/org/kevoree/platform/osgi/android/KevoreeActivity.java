@@ -76,11 +76,13 @@ public class KevoreeActivity extends Activity implements KevoreeAndroidService {
             int width = display.getWidth();
             int height = display.getHeight();
 
+            final Scroller scroller;
             final  TextView logs;
             final  CheckBox checkbox_info;
             final  CheckBox checkbox_debug;
             final  CheckBox checkbox_warn;
             final  View.OnClickListener checkbox_list;
+
 
             checkbox_info = new CheckBox(this);
             checkbox_info.setText("INFO");
@@ -93,7 +95,7 @@ public class KevoreeActivity extends Activity implements KevoreeAndroidService {
             checkbox_list  = new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                              // change log level todo
+                    // change log level todo
 
 
                 }
@@ -103,13 +105,18 @@ public class KevoreeActivity extends Activity implements KevoreeAndroidService {
             checkbox_debug.setOnClickListener(checkbox_list);
             checkbox_info.setOnClickListener(checkbox_list);
 
+            scroller = new Scroller(this);
+
             logs = new TextView(this);
+
+            logs.setSingleLine(false);
+            logs.setScroller(scroller);
             logs.setMovementMethod(new ScrollingMovementMethod());
             logs.setWidth(width);
-            logs.setHeight(500);
+            logs.setHeight(height/2);
             logs.setText("");
             logs.setBackgroundColor(Color.WHITE);
-              logs.setScrollBarStyle(TextView.SCROLLBARS_OUTSIDE_OVERLAY);
+
 
             /* Catch  stdout and stderr */
             STDwriter = new PrintStream(new TextOutputStream(logs, Color.BLACK));
@@ -289,9 +296,9 @@ public class KevoreeActivity extends Activity implements KevoreeAndroidService {
                             final int scrollAmount = _textArea.getLayout().getLineTop(_textArea.getLineCount())-_textArea.getHeight();
 
                             if(scrollAmount>0)
-                                   _textArea.scrollTo(0, scrollAmount);
-                               else
-                                   _textArea.scrollTo(0,0);
+                                _textArea.scrollTo(0, scrollAmount);
+                            else
+                                _textArea.scrollTo(0,0);
 
                             _textArea.setTextColor(_color);
                             Log.i("kevoree.osgi.service.logger", currentLine.toString());
