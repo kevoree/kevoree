@@ -1,4 +1,4 @@
-package org.kevoree.library.javase.kinect;
+package org.kevoree.library.ui.player;
 
 import org.kevoree.annotation.*;
 import org.kevoree.framework.AbstractComponentType;
