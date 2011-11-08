@@ -12,7 +12,7 @@ import java.io.IOException;
 public class Main {
 
     public static void main(String[] p) throws IOException {
-     DirectoryExplorer explorer = new DirectoryExplorer();
+     FileExplorer explorer = new FileExplorer();
         explorer.start();
 
         //return 0;
