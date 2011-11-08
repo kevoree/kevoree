@@ -1,7 +1,6 @@
 package org.kevoree.library.ui.fileExplorer;
 
 import com.explodingpixels.macwidgets.*;
-import org.kevoree.framework.MessagePort;
 
 import javax.swing.*;
 import java.awt.*;
@@ -17,11 +16,11 @@ import java.util.HashMap;
  */
 public class DirectoryExplorerPanel extends Panel {
 
-    DirectoryExplorer dirExplorer = null;
+    FileExplorer dirExplorer = null;
     HashMap<SourceListItem, File> files = new HashMap<SourceListItem, File>();
     public SourceList sourceList = null;
 
-    public DirectoryExplorerPanel(DirectoryExplorer explorer) {
+    public DirectoryExplorerPanel(FileExplorer explorer) {
         dirExplorer = explorer;
         this.setLayout(new BorderLayout());
     }
@@ -65,7 +64,7 @@ public class DirectoryExplorerPanel extends Panel {
     }
 
     public void populateDir(SourceListModel model, SourceListItem parent, File dir, boolean first) {
-        if (dir.exists() && dir.isDirectory() && dir.canRead() && dir.getName() != "." && dir.getName() != "..") {
+        if (dir.exists() && dir.isDirectory() && dir.canRead() && !dir.getName().startsWith(".") ) {
             if (!first) {
                 SourceListItem item = new SourceListItem(dir.getName());
                 model.addItemToItem(item, parent);
