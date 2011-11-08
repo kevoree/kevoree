@@ -59,7 +59,7 @@ public class FileExplorer extends AbstractComponentType {
                 BorderFactory.createMatteBorder(0, 1, 0, 0, new Color(0xa5a5a5)));
         splitPane.setBorder(BorderFactory.createEmptyBorder());
 
-        splitPane.setDividerLocation(200);
+
         SourceListControlBar controlBar = new SourceListControlBar();
         dirExplorer.sourceList.installSourceListControlBar(controlBar);
         controlBar.installDraggableWidgetOnSplitPane(splitPane);
@@ -69,6 +69,7 @@ public class FileExplorer extends AbstractComponentType {
         frame.add(splitPane, BorderLayout.CENTER);
         frame.setVisible(true);
         frame.pack();
+        splitPane.setDividerLocation(0.3);
     }
 
     public void directorySelected(File selected) {
