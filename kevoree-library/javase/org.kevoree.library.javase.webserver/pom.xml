@@ -18,7 +18,7 @@
         <dependency>
             <groupId>org.kevoree.extra</groupId>
             <artifactId>org.kevoree.extra.spray</artifactId>
-            <version>0.9.0</version>
+            <version>0.9.1</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
