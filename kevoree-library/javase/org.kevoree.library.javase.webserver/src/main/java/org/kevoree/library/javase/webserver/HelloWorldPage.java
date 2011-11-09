@@ -17,7 +17,7 @@ public class HelloWorldPage extends AbstractPage {
             for (String key : request.getResolvedParams().keySet()) {
                 builder.append(key + "->" + request.getResolvedParams().get(key) + "<br>");
             }
-            builder.append("Served from "+this.getNodeName()+"<br />");
+            builder.append("Served by node "+this.getNodeName()+"<br />");
             builder.append("</body></html>");
             response.setContent(builder.toString());
             this.getPortByName("content", MessagePort.class).process(response);//SEND MESSAGE
