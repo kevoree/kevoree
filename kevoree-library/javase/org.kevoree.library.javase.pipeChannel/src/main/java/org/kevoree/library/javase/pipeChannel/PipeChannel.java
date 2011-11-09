@@ -27,7 +27,6 @@ import java.util.Map;
  */
 @Library(name = "JavaSE")
 @ChannelTypeFragment
-// TODO bounds
 public class PipeChannel extends AbstractChannelFragment {
 	private Logger logger = LoggerFactory.getLogger(PipeChannel.class);
 
@@ -46,8 +45,8 @@ public class PipeChannel extends AbstractChannelFragment {
 	}
 
 	@Stop
-	public void stopPipeChannel() {
-		for (ObjectOutputStream stream :outputStreams.values()) {
+	public void stopPipeChannel () {
+		for (ObjectOutputStream stream : outputStreams.values()) {
 			try {
 				stream.close();
 			} catch (IOException e) {
@@ -78,15 +77,15 @@ public class PipeChannel extends AbstractChannelFragment {
 		return null;
 	}
 
+	@Override
+	public ChannelFragmentSender createSender (String remoteNodeName, String remoteChannelName) {
+		return null;
+	}
+
 	void forward (Message msg) {
 		for (org.kevoree.framework.KevoreePort p : getBindedPorts()) {
 			forward(p, msg);
 		}
-	}
-
-	@Override
-	public ChannelFragmentSender createSender (String remoteNodeName, String remoteChannelName) {
-		return null;
 	}
 
 	private void initializeOnWindows () {
