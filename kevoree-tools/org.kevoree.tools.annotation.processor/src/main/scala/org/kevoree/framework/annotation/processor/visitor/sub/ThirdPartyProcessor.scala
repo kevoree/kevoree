@@ -32,25 +32,29 @@ import org.kevoree.framework.annotation.processor.visitor.KevoreeAnnotationProce
 
 trait ThirdPartyProcessor {
 
-  def processThirdParty(componentType : TypeDefinition,classdef : TypeElement,env : ProcessingEnvironment,rootVisitor : KevoreeAnnotationProcessor)={
-    val root : ContainerRoot = componentType.eContainer.asInstanceOf[ContainerRoot]
+  def processThirdParty(componentType: TypeDefinition, classdef: TypeElement, env: ProcessingEnvironment, rootVisitor: KevoreeAnnotationProcessor) = {
+    val root: ContainerRoot = componentType.eContainer.asInstanceOf[ContainerRoot]
 
-    var thirdPartyAnnotations : List[org.kevoree.annotation.ThirdParty] = Nil
+    var thirdPartyAnnotations: List[org.kevoree.annotation.ThirdParty] = Nil
 
     val annotationThirdParty = classdef.getAnnotation(classOf[org.kevoree.annotation.ThirdParty])
-    if(annotationThirdParty != null){ thirdPartyAnnotations = thirdPartyAnnotations ++ List(annotationThirdParty) }
+    if (annotationThirdParty != null) {
+      thirdPartyAnnotations = thirdPartyAnnotations ++ List(annotationThirdParty)
+    }
 
     val annotationThirdParties = classdef.getAnnotation(classOf[org.kevoree.annotation.ThirdParties])
-    if(annotationThirdParties != null){ thirdPartyAnnotations = thirdPartyAnnotations ++ annotationThirdParties.value.toList }
+    if (annotationThirdParties != null) {
+      thirdPartyAnnotations = thirdPartyAnnotations ++ annotationThirdParties.value.toList
+    }
 
-   import scala.collection.JavaConversions._
+    import scala.collection.JavaConversions._
     val thirdParties = rootVisitor.getOptions.get("thirdParties")
-    val thirdPartiesList : List[String] = thirdParties.split(";").filter(r=> r != null && r != "").toList
+    val thirdPartiesList: List[String] = thirdParties.split(";").filter(r => r != null && r != "").toList
 
     val nodeTypeNames = rootVisitor.getOptions.get("nodeTypeNames")
-    val nodeTypeNameList : List[String] = nodeTypeNames.split(";").filter(r=> r != null && r != "").toList
-    
-    
+    val nodeTypeNameList: List[String] = nodeTypeNames.split(";").filter(r => r != null && r != "").toList
+
+
     /* CHECK THIRDPARTIES */
     /*
     thirdPartyAnnotations.foreach{tp=>
@@ -67,45 +71,53 @@ trait ThirdPartyProcessor {
           }
       }
     }    */
-    
+
     /* CHECK TP from POM */
-    thirdPartiesList.foreach{tp=>
-      val name = tp.split("!").toList(0)
-      val url = tp.split("!").toList(1)
-      
-      root.getDeployUnits.find({etp => etp.getName == name}) match {
-        case Some(e) => {
-            if(!componentType.getDeployUnits(0).getRequiredLibs.exists(rl => rl.getUrl == url)) {
+    thirdPartiesList.foreach {
+      tp =>
+        val unitName = tp.split("/").toList(1)
+        val groupName = tp.split("/").toList(0)
+        val version = tp.split("/").toList(2)
+
+        root.getDeployUnits.find({
+          etp => etp.getUnitName == unitName && etp.getGroupName == groupName && etp.getVersion == version
+        }) match {
+          case Some(e) => {
+            if (!componentType.getDeployUnits(0).getRequiredLibs.exists(etp =>  etp.getUnitName == unitName && etp.getGroupName == groupName && etp.getVersion == version)) {
               componentType.getDeployUnits(0).addRequiredLibs(e)
             }
           }
-        case None => {
+          case None => {
             val newThirdParty = KevoreeFactory.eINSTANCE.createDeployUnit
-            newThirdParty.setName(name)
-            newThirdParty.setUrl(url)
+            newThirdParty.setUnitName(unitName)
+            newThirdParty.setGroupName(groupName)
+            newThirdParty.setVersion(version)
             root.addDeployUnits(newThirdParty)
             componentType.getDeployUnits(0).addRequiredLibs(newThirdParty)
           }
-      }
-    }
-    
-    /* POST PROCESS ADD NODE TYPE TO ALL THIRDPARTY */
-    componentType.getDeployUnits(0).getRequiredLibs.foreach{tp =>
-      nodeTypeNameList.foreach{nodeTypeName=>
-        /* ROOT ADD NODE TYPE IF NECESSARY */
-        nodeTypeNameList.foreach{nodeTypeName =>
-          componentType.eContainer.asInstanceOf[ContainerRoot].getTypeDefinitions.filter(p=> p.isInstanceOf[NodeType]).find(nt => nt.getName == nodeTypeName) match {
-            case Some(existingNodeType)=>tp.setTargetNodeType(Some(existingNodeType.asInstanceOf[NodeType]))
-            case None => {
-                val nodeType = KevoreeFactory.eINSTANCE.createNodeType
-                nodeType.setName(nodeTypeName)
-                root.addTypeDefinitions(nodeType)
-                tp.setTargetNodeType(Some(nodeType))
-              }
-          }
         }
-        
-      }
+    }
+
+    /* POST PROCESS ADD NODE TYPE TO ALL THIRDPARTY */
+    componentType.getDeployUnits(0).getRequiredLibs.foreach {
+      tp =>
+        nodeTypeNameList.foreach {
+          nodeTypeName =>
+          /* ROOT ADD NODE TYPE IF NECESSARY */
+            nodeTypeNameList.foreach {
+              nodeTypeName =>
+                componentType.eContainer.asInstanceOf[ContainerRoot].getTypeDefinitions.filter(p => p.isInstanceOf[NodeType]).find(nt => nt.getName == nodeTypeName) match {
+                  case Some(existingNodeType) => tp.setTargetNodeType(Some(existingNodeType.asInstanceOf[NodeType]))
+                  case None => {
+                    val nodeType = KevoreeFactory.eINSTANCE.createNodeType
+                    nodeType.setName(nodeTypeName)
+                    root.addTypeDefinitions(nodeType)
+                    tp.setTargetNodeType(Some(nodeType))
+                  }
+                }
+            }
+
+        }
     }
   }
 }
