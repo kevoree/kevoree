@@ -22,7 +22,7 @@ import java.net.Socket;
 import java.util.*;
 import java.util.concurrent.*;
 
-//import org.kevoree.extra.marshalling.*;
+import org.kevoree.extra.marshalling.*;
 
 
 @Library(name = "JavaSE", names = {"Android"})
@@ -206,9 +206,9 @@ public class SocketChannel extends AbstractChannelFragment implements Runnable {
 					OutputStream os = client_consumer.getOutputStream();
 					ObjectOutputStream oos = new ObjectOutputStream(os);
 					/* JSON */
-					/* RichJSONObject obj = new RichJSONObject(msgTOqueue);
-										oos.writeObject(obj.toJSON());*/
-					oos.writeObject(msgTOqueue);
+					RichJSONObject obj = new RichJSONObject(msgTOqueue);
+					oos.writeObject(obj.toJSON());
+//					oos.writeObject(msgTOqueue);
 //					client_consumer.close();
 				} catch (Exception e) {
 					try {
@@ -291,10 +291,10 @@ public class SocketChannel extends AbstractChannelFragment implements Runnable {
 						try {
 							try { // TODO
 								ObjectInputStream ois = new ObjectInputStream(stream);
-//                            String jsonPacket =  (String)ois.readObject();
-								/*RichString c = new RichString(jsonPacket);
-								msg = (SocketMessage) c.fromJSON(SocketMessage.class);*/
-								msg = (SocketMessage) ois.readObject();
+                            String jsonPacket =  (String)ois.readObject();
+								RichString c = new RichString(jsonPacket);
+								msg = (SocketMessage) c.fromJSON(SocketMessage.class);
+//								msg = (SocketMessage) ois.readObject();
 							} catch (Exception e) {
 								if (alive) {
 									logger.warn("Failed to accept client or get its input stream", e);
@@ -303,7 +303,9 @@ public class SocketChannel extends AbstractChannelFragment implements Runnable {
 							if (!msg.getPassedNodes().contains(getNodeName())) {
 								msg.getPassedNodes().add(getNodeName());
 							}
-							logger.debug("Reading message from  " + msg.getPassedNodes() + "\t" + msg.getContent() + "\t" + msg.getDestNodeName());
+							logger.debug(
+									"Reading message from  " + msg.getPassedNodes() + "\t" + msg.getContent() + "\t"
+											+ msg.getDestNodeName());
 							if (getOtherFragments().size() > 1) {
 								if (fragments.containsKey(msg.getUuid())) {
 									// logger.debug("fragment exist "+msg.getUuid()+" "+   fragments.get(msg.getUuid())+" "+msg.getPassedNodes()+" port "+client_server.getPort());
@@ -383,9 +385,9 @@ public class SocketChannel extends AbstractChannelFragment implements Runnable {
 							}
 							OutputStream os = client_consumer.getOutputStream();
 							ObjectOutputStream oos = new ObjectOutputStream(os);
-							/*RichJSONObject obj = new RichJSONObject(current);
-														oos.writeObject(obj.toJSON());*/
-							oos.writeObject(current);
+							RichJSONObject obj = new RichJSONObject(current);
+														oos.writeObject(obj.toJSON());
+//							oos.writeObject(current);
 							oos.flush();
 //							client_consumer.close();
 							queue_node_dead.remove(current);
