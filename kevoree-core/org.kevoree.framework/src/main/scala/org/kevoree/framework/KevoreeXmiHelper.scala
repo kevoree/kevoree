@@ -24,7 +24,7 @@ import org.slf4j.LoggerFactory
 import java.io._
 import org.kevoree.loader.ContainerRootLoader
 import org.kevoree.serializer.ModelSerializer
-import xml.{XML, PrettyPrinter}
+import xml.PrettyPrinter
 
 object KevoreeXmiHelper {
 
@@ -32,18 +32,23 @@ object KevoreeXmiHelper {
 
   def save(uri: String, root: ContainerRoot) {
     //CHECK DIRECTORY CREATION
-    logger.debug("XmiHelper::Save::Save asked in " + uri + ". Checking folder with separator:" + File.separator)
-    val folderUri = uri.substring(0,uri.lastIndexOf(File.separator))
-    logger.debug("XmiHelper::Save::Checking and/or creating foler:" + folderUri)
+    if(logger.isDebugEnabled) logger.debug("XmiHelper::Save::Save asked in " + uri + ". Checking folder with separator:" + File.separator)
+    val folderUri = if(uri.contains(File.separator)){
+      uri.substring(0,uri.lastIndexOf(File.separator))
+    } else {
+      uri
+    }
+  //  val folderUri = uri.substring(0,uri.lastIndexOf(File.separator))
+    if(logger.isDebugEnabled) logger.debug("XmiHelper::Save::Checking and/or creating foler:" + folderUri)
     val folder = new File(folderUri)
     if (!folder.exists) folder.mkdirs
     val serializer = new ModelSerializer
     val pp = new PrettyPrinter(3000,1)
-    logger.debug("XmiHelper::Save::Serializing in :" + uri)
+    if(logger.isDebugEnabled) logger.debug("XmiHelper::Save::Serializing in :" + uri)
     val outputFile = new File(uri);
     if(!outputFile.exists) {
       outputFile.createNewFile
-      logger.debug("XmiHelper::Save::Creating new file.")
+      if(logger.isDebugEnabled) logger.debug("XmiHelper::Save::Creating new file.")
     }
     val fileWrite = new FileWriter(outputFile)
     fileWrite.append(pp.format(serializer.serialize(root)))
@@ -63,7 +68,7 @@ object KevoreeXmiHelper {
   }
 
   def loadString(model : String) : ContainerRoot = {
-    logger.debug("load model from String")
+    if(logger.isDebugEnabled) logger.debug("load model from String")
     val localModel = ContainerRootLoader.loadModel(model);
     localModel match {
       case Some(m) => m
@@ -72,7 +77,7 @@ object KevoreeXmiHelper {
   }
 
   def load(uri: String): ContainerRoot = {
-    logger.debug("load model from => " + uri)
+    if(logger.isDebugEnabled) logger.debug("load model from => " + uri)
     val localModel = ContainerRootLoader.loadModel(new File(uri));
     localModel match {
       case Some(m) => m
