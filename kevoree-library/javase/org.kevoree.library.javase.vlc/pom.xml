@@ -10,9 +10,24 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>org.kevoree.library.javase.pipeChannel</artifactId>
+    <artifactId>org.kevoree.library.javase.vlc</artifactId>
+    <name>Kevoree :: Library :: JavaSE :: VLC</name>
     <packaging>bundle</packaging>
-    <name>Kevoree :: Library :: JavaSE :: pipeChannels</name>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.kevoree.extra</groupId>
+            <artifactId>org.kevoree.extra.vlcj</artifactId>
+            <version>1.2.1-b3</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.kevoree.extra</groupId>
+            <artifactId>org.kevoree.extra.jna</artifactId>
+            <version>3.3.0</version>
+            <scope>provided</scope>
+        </dependency>
+    </dependencies>
 
     <build>
         <plugins>

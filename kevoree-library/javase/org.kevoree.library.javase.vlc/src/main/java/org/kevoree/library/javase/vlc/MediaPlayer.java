@@ -1,4 +1,4 @@
-package org.kevoree.library.javase.webcam;
+package org.kevoree.library.javase.vlc;
 
 import org.kevoree.annotation.*;
 import org.slf4j.Logger;
