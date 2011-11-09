@@ -5,6 +5,7 @@ import com.sun.jna.NativeLibrary;
 import org.kevoree.annotation.*;
 import org.kevoree.framework.AbstractComponentType;
 import org.kevoree.framework.MessagePort;
+import org.kevoree.framework.message.StdKevoreeMessage;
 import org.openkinect.freenect.*;
 import org.openkinect.freenect.util.Jdk14LogHandler;
 import org.slf4j.Logger;
@@ -222,6 +223,9 @@ public class Kinect extends AbstractComponentType {
 			} else {
 				percentage = Integer.parseInt((String) message);
 			}
+			move(percentage);
+		} else if (message instanceof StdKevoreeMessage) {
+			percentage = (Integer)((StdKevoreeMessage)message).getValue("percent").get();
 			move(percentage);
 		} else {
 			logger.warn("message received has an unknown type !");
