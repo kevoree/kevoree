@@ -8,8 +8,8 @@ package org.kevoree.library.arduinoNodeType
 import org.kevoree.DeployUnit
 import org.kevoree.tools.aether.framework.AetherUtil
 import java.io.FileInputStream
-import org.osgi.framework.{Bundle, BundleContext}
 import org.slf4j.{LoggerFactory, Logger}
+import org.osgi.framework.{BundleException, Bundle, BundleContext}
 
 case class AddThirdPartyCommand(ctx: BundleContext, ct: DeployUnit) {
   private val logger: Logger = LoggerFactory.getLogger(classOf[AddThirdPartyCommand])
@@ -24,6 +24,11 @@ case class AddThirdPartyCommand(ctx: BundleContext, ct: DeployUnit) {
       lastBundle.start()
       true
     } catch {
+
+      case e: BundleException if (e.getType == BundleException.DUPLICATE_BUNDLE_ERROR) => {
+      		  logger.warn("ThirdParty conflict ! ")
+      		  true
+      }
       case _@e => {
 //        e.printStackTrace()
         logger.error("Unable to execute AddThirdPartyCommand with " + ct.getUnitName+"-"+ct.getUrl, e)
