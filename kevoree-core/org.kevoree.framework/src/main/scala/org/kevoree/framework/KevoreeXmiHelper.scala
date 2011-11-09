@@ -24,7 +24,7 @@ import org.slf4j.LoggerFactory
 import java.io._
 import org.kevoree.loader.ContainerRootLoader
 import org.kevoree.serializer.ModelSerializer
-import xml.{XML, PrettyPrinter}
+import xml.PrettyPrinter
 
 object KevoreeXmiHelper {
 
@@ -33,7 +33,12 @@ object KevoreeXmiHelper {
   def save(uri: String, root: ContainerRoot) {
     //CHECK DIRECTORY CREATION
     logger.debug("XmiHelper::Save::Save asked in " + uri + ". Checking folder with separator:" + File.separator)
-    val folderUri = uri.substring(0,uri.lastIndexOf(File.separator))
+    val folderUri = if(uri.contains(File.separator)){
+      uri.substring(0,uri.lastIndexOf(File.separator))
+    } else {
+      uri
+    }
+  //  val folderUri = uri.substring(0,uri.lastIndexOf(File.separator))
     logger.debug("XmiHelper::Save::Checking and/or creating foler:" + folderUri)
     val folder = new File(folderUri)
     if (!folder.exists) folder.mkdirs
