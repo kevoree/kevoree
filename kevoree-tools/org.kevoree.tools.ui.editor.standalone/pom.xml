@@ -202,12 +202,14 @@
                             <inclusion>
                                 <groupId>org.kevoree.extra</groupId>
                                 <artifactId>org.kevoree.extra.macwidgets</artifactId>
+                                <filter>!META-INF/**</filter>
                             </inclusion>
-
+<!--
                             <inclusion>
                                 <groupId>com.jgoodies</groupId>
                                 <artifactId>forms</artifactId>
-                            </inclusion>
+                                <filter>!META-INF/**</filter>
+                            </inclusion>-->
                             <!--  <inclusion>
                                 <groupId>com.apple</groupId>
                                 <artifactId>AppleJavaExtensions</artifactId>

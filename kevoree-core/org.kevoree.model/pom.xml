@@ -68,18 +68,7 @@
                             <clearOutput>false</clearOutput>
                         </configuration>
                     </execution>
-                    <execution>
-                        <id>ClonerGen</id>
-                        <goals>
-                            <goal>cloner</goal>
-                        </goals>
-                        <configuration>
-                            <ecore>metamodel/kevoree.ecore</ecore>
-                            <rootPackage>org</rootPackage>
-                            <output>${project.build.directory}/generated-sources/emf</output>
-                            <clearOutput>false</clearOutput>
-                        </configuration>
-                    </execution>
+
                 </executions>
             </plugin>
             <plugin>

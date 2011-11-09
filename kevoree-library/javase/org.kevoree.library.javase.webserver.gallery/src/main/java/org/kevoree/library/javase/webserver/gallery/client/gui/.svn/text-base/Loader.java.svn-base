@@ -1,0 +1,42 @@
+package galleria.client.gui;
+
+import galleria.client.GWTGalleria;
+import galleria.client.Model;
+
+import com.google.gwt.user.client.Window;
+
+public class Loader extends GWTGalleria {
+	
+	public Loader() {
+		this.setLanguage();
+		this.setAlbum();
+
+		if(currentAlbum == null) {
+			new GUI("No Data");
+		} else {
+			new Model();
+			new GUI();
+		}
+	}
+	
+	void setLanguage() {
+		String getLocale = Window.Location.getParameter("locale");
+		
+		if(getLocale.equals("de") || getLocale.equals("en")) {
+			GWTGalleria.language = getLocale;
+		} else {
+			GWTGalleria.language = "de";
+		}
+	}
+	
+	void setAlbum() {
+		String getAlbum = Window.Location.getParameter("album");
+	
+		if(getAlbum == null) {
+			GWTGalleria.currentAlbum = null;
+		} else {
+			GWTGalleria.currentAlbum = getAlbum;
+		}
+	}
+	
+}
