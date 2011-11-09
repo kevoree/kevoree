@@ -1,0 +1,238 @@
+package galleria.client.gui;
+
+import galleria.client.GWTGalleria;
+import galleria.client.datatypes.Media;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.LoadEvent;
+import com.google.gwt.event.dom.client.LoadHandler;
+import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.AbsolutePanel;
+import com.google.gwt.user.client.ui.DeckPanel;
+import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.FocusPanel;
+import com.google.gwt.user.client.ui.HasAlignment;
+import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.Image;
+import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.RootPanel;
+import com.google.gwt.user.client.ui.SimplePanel;
+import com.google.gwt.user.client.ui.VerticalPanel;
+
+public class GUI extends GWTGalleria {
+	
+	public static VerticalPanel PLUGIN = new VerticalPanel();
+	
+	public static FocusPanel NAVIGATIONWRAP = new FocusPanel();
+	public static HorizontalPanel NAVIGATION = new HorizontalPanel();
+		public static Label Switch = new Label("Thumbs");
+		public static Label Prev = new Label("Prev");
+		public static Label Next = new Label("Next");
+		
+	public static DeckPanel CONTENT = new DeckPanel();
+		public static VerticalPanel DATA = new VerticalPanel();
+		
+			public static FocusPanel HANDLERPANEL = new FocusPanel();
+				public static VerticalPanel ORIGINAL = new VerticalPanel();
+					public static AbsolutePanel IMAGE = new AbsolutePanel();
+						public static HorizontalPanel TOOLBAR = new HorizontalPanel();
+						public static SimplePanel SLIDESHOW = new SimplePanel();
+						public static Image FULLSIZE = new Image();
+					
+		public static HorizontalPanel THUMBNAILVIEW = new HorizontalPanel();
+			public static FlowPanel THUMBNAILS = new FlowPanel();
+		
+		public static VerticalPanel LOADER = new VerticalPanel();
+		public static VerticalPanel NODATA = new VerticalPanel();
+	
+	public static Image loadingGif = new Image("ajax-loader.gif");
+	public static String CurrentPictureId;
+	
+	GUI() {
+		build();
+		resize();
+		Action.showLoadingAnimation();
+	}
+	
+	public GUI(String Message) {
+		build();
+		resize();
+		Action.showNoData();
+	}
+	
+	public GUI(ArrayList<Media> dataItem) {
+		populate(dataItem);
+	}
+	
+	/**
+	 * build() which is responsible for creating all public widget for the markup. 
+	 */
+	void build() {
+		
+		PLUGIN.add(NAVIGATIONWRAP);
+		PLUGIN.add(CONTENT);
+		
+		PLUGIN.setStyleName("plugin");
+		
+		/* navigation */
+		Switch.setStyleName("thumbs");
+		Switch.setTitle(constants.next());
+		Switch.addClickHandler(new ClickHandler() {
+			public void onClick(ClickEvent event) {
+				if(CONTENT.getVisibleWidget() == 0) {
+					Action.showThumbnails();
+				} else if(CONTENT.getVisibleWidget() == 1) {
+					Action.showOriginal();
+				}
+			}
+		});
+		
+		Prev.setStyleName("prev");
+		Prev.setTitle(constants.previous());
+		Prev.addClickHandler(new ClickHandler() {
+			public void onClick(ClickEvent event) {
+				Action.changeThumbnail("prev");
+			}
+		});
+		
+		Next.setStyleName("next");
+		Next.setTitle(constants.next());
+		Next.addClickHandler(new ClickHandler() {
+			public void onClick(ClickEvent event) {
+				Action.changeThumbnail("next");
+			}
+		});
+		
+		NAVIGATIONWRAP.add(NAVIGATION);
+		NAVIGATIONWRAP.addStyleName("navigationwrap");
+		NAVIGATIONWRAP.addKeyUpHandler(EventHandler.Keyboard);
+		NAVIGATIONWRAP.setHeight("70px");
+		
+		PLUGIN.setCellHeight(NAVIGATIONWRAP, "70px");
+		
+		NAVIGATION.add(Prev);
+		NAVIGATION.add(Switch);
+		NAVIGATION.add(Next);
+		
+		NAVIGATION.setStyleName("navigation");
+		
+		CONTENT.addStyleName("content");
+		CONTENT.add(DATA); 							// 0
+		CONTENT.add(THUMBNAILVIEW); 				// 1
+		CONTENT.add(LOADER);						// 2
+		CONTENT.add(NODATA);						// 3
+		
+		NODATA.setWidth("auto");
+		
+		LOADER.addStyleName("loader");
+		LOADER.setHorizontalAlignment(HasAlignment.ALIGN_CENTER);
+		LOADER.add(loadingGif);
+		
+		DATA.add(HANDLERPANEL);	
+		DATA.setStyleName("data");
+		
+		HANDLERPANEL.add(ORIGINAL);
+		HANDLERPANEL.addKeyUpHandler(EventHandler.Keyboard);
+		HANDLERPANEL.setWidth("100%");
+
+		THUMBNAILVIEW.add(THUMBNAILS);
+		
+		THUMBNAILS.addStyleName("thumbnails");
+		
+		ORIGINAL.add(IMAGE);				
+		ORIGINAL.setStyleName("original");
+		
+		IMAGE.setStyleName("image");
+		IMAGE.add(TOOLBAR);		
+		IMAGE.add(FULLSIZE);
+		//IMAGE.add(SLIDESHOW);
+		
+		SLIDESHOW.setStyleName("slideshow");
+		
+		FULLSIZE.addStyleName("fullsize");
+		FULLSIZE.addClickHandler(EventHandler.OriginalListener);
+		
+		TOOLBAR.setHeight("30px");
+		TOOLBAR.setWidth("100%");
+		TOOLBAR.setStyleName("toolbar");
+		
+		RootPanel.get("gwtgall").add(PLUGIN);
+		
+		// TODO solve setFocus problem. only works in opera.
+		HANDLERPANEL.setFocus(true);
+		
+		Window.addResizeHandler(EventHandler.BrowserResized);
+	}
+	
+	/**
+	 * this function adjusts height and width of the fullsize image to avoid scrollbars after user resized his window.
+	 */
+	static void resize() {
+		
+		int ClientWidth = Window.getClientWidth();
+		int ClientHeight = Window.getClientHeight();
+		
+		PLUGIN.setWidth(ClientWidth+"px");
+		PLUGIN.setHeight(ClientHeight +"px");
+				
+		int LowerGallery = PLUGIN.getElement().getClientHeight() - 70;
+		int newHeight = LowerGallery - 100;
+		
+		FULLSIZE.setHeight(newHeight + "px");
+	}
+	
+	/**
+	 * @param dataItem
+	 * populate() loads all the data generated by Model into the GUI.
+	 */
+	static void populate(ArrayList<Media> dataItem) {
+		
+		int counter = 1;
+		
+		for(Iterator<Media> ImageData = dataItem.iterator(); ImageData.hasNext();){
+			
+			final Media i = ImageData.next();
+			
+			FULLSIZE.getElement().setId("fullsize-"+i.getID());
+			
+			final Image Thumbnail = new Image(i.MediaThumbnailPath, 0, 0, 73, 73);
+			
+			Thumbnail.addClickHandler(EventHandler.ThumbnailListener);
+			Thumbnail.addMouseOverHandler(EventHandler.ThumbnailMouseOver);
+			Thumbnail.addMouseOutHandler(EventHandler.ThumbnailMouseOut);
+			Thumbnail.addStyleName("thumbnail");
+			Thumbnail.getElement().setId(i.getID());
+			
+			if(counter == 1) {
+				FULLSIZE.setUrl(i.MediaFullsizePath);
+				
+				// TODO Preloader
+				// hideLoadingAnimation as soon as first image is loaded completely
+				FULLSIZE.addLoadHandler(new LoadHandler() {
+					public void onLoad(LoadEvent event) {
+						Action.hideLoadingAnimation();
+					}
+				});
+				
+				Thumbnail.setStyleName("active");
+				THUMBNAILS.add(Thumbnail);
+				
+				/* define class variables */
+				CurrentPictureId = i.MediaID; 
+				
+				/* show description */
+				Action.showDescription(i);
+				
+			} else { 
+				THUMBNAILS.add(Thumbnail);
+			}
+			
+ 			counter++;
+ 		}
+	}
+	
+}

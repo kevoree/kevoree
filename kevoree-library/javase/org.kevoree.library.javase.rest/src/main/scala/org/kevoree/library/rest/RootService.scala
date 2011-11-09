@@ -22,7 +22,7 @@ import cc.spray.can._
 import java.util.UUID
 import org.kevoree.framework.{KevoreeXmiHelper, MessagePort}
 
-class RootService(id: String, group: RestGroup) extends Actor {
+class RootService(id: String, group: RestGroup) extends Actor with FileServer {
   val log = LoggerFactory.getLogger(getClass)
   self.id = id
 
@@ -34,6 +34,10 @@ class RootService(id: String, group: RestGroup) extends Actor {
     case RequestContext(HttpRequest(HttpMethods.GET, "/model/current", _, _, _), _, responder) => {
       val modelSerialized = KevoreeXmiHelper.saveToString(group.getModelService.getLastModel, false)
       responder.complete(response(modelSerialized))
+    }
+
+    case RequestContext(HttpRequest(HttpMethods.GET, url, _, _, _), _, responder) if(url.startsWith("/provisioning")) => {
+      responder.complete(getResponse(url))
     }
 
     case RequestContext(HttpRequest(HttpMethods.POST, url, _, body, _), _, responder) => {

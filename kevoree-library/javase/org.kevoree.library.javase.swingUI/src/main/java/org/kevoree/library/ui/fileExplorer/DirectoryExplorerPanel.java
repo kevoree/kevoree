@@ -47,7 +47,10 @@ public class DirectoryExplorerPanel extends Panel {
         model.addItemToCategory(firstChild, category);
         populateDir(model, firstChild, dir, true);
         sourceList = new SourceList(model);
-        sourceList.setColorScheme(new SourceListDarkColorScheme());
+
+    //    sourceList.setColorScheme(new SourceListSeaGlassColorScheme());
+
+       // sourceList.setColorScheme(new SourceListDarkColorScheme());
         sourceList.setExpanded(category, true);
         sourceList.addSourceListSelectionListener(new SourceListSelectionListener() {
             @Override

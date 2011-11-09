@@ -1,0 +1,52 @@
+package galleria.client.datatypes;
+import galleria.client.GWTGalleria;
+
+public class Media extends GWTGalleria {
+		
+		public String MediaThumbnailPath;
+		public String MediaFullsizePath;
+	
+		public String MediaID;
+		
+		public String MediaDescriptionDe;
+		public String MediaDescriptionEn;
+		
+		public Media() {}
+		
+		public Media( 
+					String id,
+					String thumbnailPath, 
+					String fullsizePath, 
+					String descDe,
+					String descEn
+					) {
+			
+			this.MediaID = id;
+			this.MediaFullsizePath = fullsizePath;
+			this.MediaThumbnailPath = thumbnailPath;
+			this.MediaDescriptionDe = descDe;
+			this.MediaDescriptionEn = descEn;
+			
+		}
+		
+		public String getFullsizePath() {
+			return this.MediaFullsizePath;
+		}
+		
+		public String getThumbnailPath() {
+			return this.MediaThumbnailPath;
+		}
+		
+		public String getID() {
+			return this.MediaID;
+		}
+		
+		public String getDescriptionDe() {
+			return this.MediaDescriptionDe;
+		}
+		
+		public String getDescriptionEn() {
+			return this.MediaDescriptionEn;
+		}
+		
+}
