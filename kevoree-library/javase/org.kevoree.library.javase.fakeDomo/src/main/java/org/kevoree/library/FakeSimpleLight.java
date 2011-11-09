@@ -53,6 +53,7 @@ public class FakeSimpleLight extends AbstractFakeStuffComponent {
 
     @Override
     public void start() throws Exception {
+
 //        logger = Logger.getLogger(this.getClass().getName());
 
         frame = new MyFrame(Color.RED);

@@ -90,6 +90,16 @@ case class NodeAspect(self: ContainerNode) {
           node.removeHosts(self)
         }
     }
+    
+    //CLEANUP DICTIONARY
+    import org.kevoree.framework.aspects.KevoreeAspects._
+    kernel.getModelHandler.getActualModel.getAllInstances.foreach{ inst =>
+      inst.getDictionary.map{ dico =>
+        dico.getValues.filter(v => v.getTargetNode.isDefined && v.getTargetNode.get.getName == self.getName).foreach{ value =>
+          dico.removeValues(value)
+        }
+      }
+    }
 
     //UNBIND
     kernel.getUifactory().getMapping().unbind(nodePanel, self);
