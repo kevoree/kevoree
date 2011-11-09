@@ -611,8 +611,8 @@ public class AnnotationPreProcessorMojo extends AbstractAnnotationProcessorMojo 
         String thirdParties = ";";
         while (dependenciesIterator.hasNext()) {
             Dependency dep = (Dependency) dependenciesIterator.next();
-            if (dep.getScope().equals("provided")) {
-                thirdParties += ";" + dep.getGroupId() + "." + dep.getArtifactId() + "!" + "mvn:" + dep.getGroupId() + "/" + dep.getArtifactId() + "/" + dep.getVersion();
+            if (dep.getScope().equals("provided") /*|| dep.getScope().equals("runtime")*/) {
+                thirdParties += ";" + dep.getGroupId() + "/" + dep.getArtifactId() + "/" + dep.getVersion();
             }
         }
 

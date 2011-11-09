@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<module rename-to='gwtgalleria'>
+  <!-- Inherit the core Web Toolkit stuff.                        -->
+  <inherits name='com.google.gwt.user.User'/>
+
+  <!--<inherits name='com.google.gwt.user.theme.standard.Standard'/>   -->
+  <!-- <inherits name='com.google.gwt.user.theme.chrome.Chrome'/> -->
+   <inherits name='com.google.gwt.user.theme.dark.Dark'/>
+
+  <!-- Other module inherits                                      -->
+  <inherits name="com.google.gwt.i18n.I18N"/>
+  <extend-property name="locale" values="en"/>
+
+  <inherits name="com.google.gwt.json.JSON" />
+  <inherits name="org.adamtacy.GWTEffects" /> 
+
+  <inherits name="com.google.gwt.http.HTTP"/>
+  <entry-point class="org.kevoree.library.javase.webserver.gallery.client.KevoreeGWTGallery" />
+  <source path="client" />
+
+</module>
