@@ -1,0 +1,9 @@
+$PP_OFF
+title = GWT Galerie
+next = Nächstes
+previous = Letzteres
+back = Zurück
+thumbnails = Übersicht
+noalbum = Kein Album ausgewählt.
+notice1 = Versichern Sie sich, dass das Album existiert.
+servererror = Es wurden keine Daten empfangen.
