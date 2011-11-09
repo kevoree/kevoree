@@ -145,6 +145,11 @@ public class KevoreeActivity extends Activity implements KevoreeAndroidService {
             tspec1.setIndicator("Admin");
 
             LinearLayout adminLayout = new LinearLayout(this);
+            LinearLayout layout = new LinearLayout(this);
+
+            layout.setLayoutParams(new AbsListView.LayoutParams(AbsListView.LayoutParams.FILL_PARENT,AbsListView.LayoutParams.FILL_PARENT));
+            layout.setOrientation(LinearLayout.VERTICAL);
+            layout.addView(adminLayout);
 
             final EditText nodeNameView = new EditText(this);
 
@@ -165,10 +170,11 @@ public class KevoreeActivity extends Activity implements KevoreeAndroidService {
             adminLayout.addView(checkbox_info);
             adminLayout.addView(checkbox_debug);
             adminLayout.addView(checkbox_warn);
-            main.addView(logs);
+            layout.addView(logs);
 
 
-            tspec1.setContent(new PreExistingViewFactory(adminLayout));
+
+            tspec1.setContent(new PreExistingViewFactory(layout));
             tabs.addTab(tspec1);
             /*
            TabSpec tspec2 = tabs.newTabSpec("Tab2");
