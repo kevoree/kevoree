@@ -1,0 +1,176 @@
+<kevoree:ContainerRoot xmlns:xml="http://www.omg.org/XMI" xmlns:xsi="http://wwww.w3.org/2001/XMLSchema-instance" xmlns:kevoree="http://kevoree/1.0" xmi:version="2.0" xsi:type="kevoree:ContainerRoot">
+ <nodes metaData="x=131,y=163" xsi:type="kevoree:ContainerNode" name="node0" typeDefinition="//@typeDefinitions.3">
+  <components name="Webcam281" xsi:type="kevoree:ComponentInstance" typeDefinition="//@typeDefinitions.18">
+   <required xsi:type="kevoree:Port" portTypeRef="//@typeDefinitions.18/@required.0"></required>
+   <required xsi:type="kevoree:Port" portTypeRef="//@typeDefinitions.18/@required.1"></required>
+  </components>
+  <components name="VideoView271" xsi:type="kevoree:ComponentInstance" typeDefinition="//@typeDefinitions.0">
+   <provided xsi:type="kevoree:Port" portTypeRef="//@typeDefinitions.0/@provided.0"></provided>
+   <provided xsi:type="kevoree:Port" portTypeRef="//@typeDefinitions.0/@provided.1"></provided>
+  </components>
+ </nodes>
+ <typeDefinitions updateMethod="update" startMethod="start" factoryBean="org.kevoree.library.ui.player.VideoViewerFactory" xsi:type="kevoree:ComponentType" name="VideoViewer" bean="org.kevoree.library.ui.player.VideoViewer" stopMethod="stop" deployUnits="//@deployUnits.0">
+  <provided noDependency="false" name="image" xsi:type="kevoree:PortTypeRef" optional="false" ref="//@typeDefinitions.1">
+   <mappings beanMethodName="onReceiveImage" xsi:type="kevoree:PortTypeMapping" serviceMethodName="process"></mappings>
+  </provided>
+  <provided noDependency="false" name="image_bytes" xsi:type="kevoree:PortTypeRef" optional="false" ref="//@typeDefinitions.2">
+   <mappings beanMethodName="onReceiveImageBytes" xsi:type="kevoree:PortTypeMapping" serviceMethodName="process"></mappings>
+  </provided>
+ </typeDefinitions>
+ <typeDefinitions name="org.kevoree.framework.MessagePort" xsi:type="kevoree:MessagePortType" synchrone="false">
+  <dictionaryType>
+   <attributes datatype="java.awt.image.BufferedImage" optional="false" xsi:type="kevoree:DictionaryAttribute" name="image" state="false" fragmentDependant="false"></attributes>
+  </dictionaryType>
+ </typeDefinitions>
+ <typeDefinitions name="org.kevoree.framework.MessagePort" xsi:type="kevoree:MessagePortType" synchrone="false">
+  <dictionaryType>
+   <attributes datatype="byte[]" optional="false" xsi:type="kevoree:DictionaryAttribute" name="bytes" state="false" fragmentDependant="false"></attributes>
+   <attributes datatype="java.lang.Integer" optional="false" xsi:type="kevoree:DictionaryAttribute" name="width" state="false" fragmentDependant="false"></attributes>
+   <attributes datatype="java.lang.Integer" optional="false" xsi:type="kevoree:DictionaryAttribute" name="height" state="false" fragmentDependant="false"></attributes>
+   <attributes datatype="java.lang.String" optional="false" xsi:type="kevoree:DictionaryAttribute" name="chroma" state="false" fragmentDependant="false"></attributes>
+   <attributes datatype="java.lang.Integer" optional="false" xsi:type="kevoree:DictionaryAttribute" name="fps" state="false" fragmentDependant="false"></attributes>
+  </dictionaryType>
+ </typeDefinitions>
+ <typeDefinitions xsi:type="kevoree:NodeType" name="JavaSENode"></typeDefinitions>
+ <typeDefinitions updateMethod="update" startMethod="start" factoryBean="org.kevoree.library.ui.fileExplorer.FileExplorerFactory" xsi:type="kevoree:ComponentType" name="FileExplorer" bean="org.kevoree.library.ui.fileExplorer.FileExplorer" stopMethod="stop" deployUnits="//@deployUnits.0">
+  <dictionaryType>
+   <attributes state="false" name="basedir" xsi:type="kevoree:DictionaryAttribute" optional="true" fragmentDependant="false"></attributes>
+  </dictionaryType>
+  <required noDependency="true" name="fileurl" xsi:type="kevoree:PortTypeRef" optional="true" ref="//@typeDefinitions.5"></required>
+ </typeDefinitions>
+ <typeDefinitions name="org.kevoree.framework.MessagePort" xsi:type="kevoree:MessagePortType" synchrone="false">
+  <dictionaryType>
+   <attributes datatype="java.lang.String" optional="false" xsi:type="kevoree:DictionaryAttribute" name="url" state="false" fragmentDependant="false"></attributes>
+  </dictionaryType>
+ </typeDefinitions>
+ <typeDefinitions upperFragments="0" upperBindings="0" updateMethod="updateHello" startMethod="startHello" factoryBean="org.kevoree.library.defaultChannels.defMSGFactory" xsi:type="kevoree:ChannelType" name="defMSG" bean="org.kevoree.library.defaultChannels.defMSG" stopMethod="stopHello" lowerBindings="0" lowerFragments="0" deployUnits="//@deployUnits.2"></typeDefinitions>
+ <typeDefinitions upperFragments="0" upperBindings="0" stopMethod="stopHello" bean="org.kevoree.library.defaultChannels.defSERVICE" name="defSERVICE" xsi:type="kevoree:ChannelType" factoryBean="org.kevoree.library.defaultChannels.defSERVICEFactory" startMethod="startHello" lowerBindings="0" lowerFragments="0" deployUnits="//@deployUnits.2"></typeDefinitions>
+ <typeDefinitions stopMethod="stop" bean="org.kevoree.library.FakeConsole" name="FakeConsole" xsi:type="kevoree:ComponentType" factoryBean="org.kevoree.library.FakeConsoleFactory" startMethod="start" deployUnits="//@deployUnits.3">
+  <required noDependency="true" name="textEntered" xsi:type="kevoree:PortTypeRef" optional="true" ref="//@typeDefinitions.9"></required>
+  <provided noDependency="false" name="showText" xsi:type="kevoree:PortTypeRef" optional="false" ref="//@typeDefinitions.9">
+   <mappings beanMethodName="appendIncoming" xsi:type="kevoree:PortTypeMapping" serviceMethodName="process"></mappings>
+  </provided>
+ </typeDefinitions>
+ <typeDefinitions name="org.kevoree.framework.MessagePort" xsi:type="kevoree:MessagePortType" synchrone="false"></typeDefinitions>
+ <typeDefinitions updateMethod="update" startMethod="start" factoryBean="org.kevoree.library.FakeSimpleLightFactory" xsi:type="kevoree:ComponentType" name="FakeSimpleLight" bean="org.kevoree.library.FakeSimpleLight" stopMethod="stop" deployUnits="//@deployUnits.3">
+  <provided noDependency="false" name="on" xsi:type="kevoree:PortTypeRef" optional="false" ref="//@typeDefinitions.9">
+   <mappings beanMethodName="lightOn" xsi:type="kevoree:PortTypeMapping" serviceMethodName="process"></mappings>
+  </provided>
+  <provided noDependency="false" name="off" xsi:type="kevoree:PortTypeRef" optional="false" ref="//@typeDefinitions.9">
+   <mappings beanMethodName="lightOff" xsi:type="kevoree:PortTypeMapping" serviceMethodName="process"></mappings>
+  </provided>
+  <provided noDependency="false" name="toggle" xsi:type="kevoree:PortTypeRef" optional="false" ref="//@typeDefinitions.11">
+   <mappings beanMethodName="toogle" xsi:type="kevoree:PortTypeMapping" serviceMethodName="toggle"></mappings>
+  </provided>
+ </typeDefinitions>
+ <typeDefinitions name="ToggleLightService" xsi:type="kevoree:ServicePortType" synchrone="false">
+  <operations name="toggle" xsi:type="kevoree:Operation" returnType="//@dataTypes.0"></operations>
+ </typeDefinitions>
+ <typeDefinitions updateMethod="update" startMethod="start" factoryBean="org.kevoree.library.FakeSimpleSwitchFactory" xsi:type="kevoree:ComponentType" name="FakeSimpleSwitch" bean="org.kevoree.library.FakeSimpleSwitch" stopMethod="stop" deployUnits="//@deployUnits.3">
+  <required noDependency="true" name="on" xsi:type="kevoree:PortTypeRef" optional="true" ref="//@typeDefinitions.9"></required>
+  <required noDependency="true" name="off" xsi:type="kevoree:PortTypeRef" optional="true" ref="//@typeDefinitions.9"></required>
+  <required noDependency="true" name="toggle" xsi:type="kevoree:PortTypeRef" optional="true" ref="//@typeDefinitions.11"></required>
+ </typeDefinitions>
+ <typeDefinitions updateMethod="update" startMethod="start" factoryBean="org.kevoree.library.FakeSimpleSliderFactory" xsi:type="kevoree:ComponentType" name="FakeSimpleSlider" bean="org.kevoree.library.FakeSimpleSlider" stopMethod="stop" deployUnits="//@deployUnits.3">
+  <required noDependency="false" name="send" xsi:type="kevoree:PortTypeRef" optional="true" ref="//@typeDefinitions.14"></required>
+ </typeDefinitions>
+ <typeDefinitions name="org.kevoree.framework.MessagePort" xsi:type="kevoree:MessagePortType" synchrone="false">
+  <dictionaryType>
+   <attributes datatype="java.lang.Integer" optional="false" xsi:type="kevoree:DictionaryAttribute" name="percent" state="false" fragmentDependant="false"></attributes>
+  </dictionaryType>
+ </typeDefinitions>
+ <typeDefinitions stopMethod="stopRestGroup" bean="org.kevoree.library.rest.RestGroup" name="RestGroup" xsi:type="kevoree:GroupType" factoryBean="org.kevoree.library.rest.RestGroupFactory" startMethod="startRestGroup" deployUnits="//@deployUnits.4">
+  <dictionaryType>
+   <attributes state="false" name="port" xsi:type="kevoree:DictionaryAttribute" optional="true" fragmentDependant="true"></attributes>
+   <defaultValues value="8000" xsi:type="kevoree:DictionaryValue" attribute="//@typeDefinitions.15/@dictionaryType/@attributes.0"></defaultValues>
+  </dictionaryType>
+ </typeDefinitions>
+ <typeDefinitions stopMethod="stop" bean="org.kevoree.library.javase.vlc.AudioPlayer" name="AudioPlayer" xsi:type="kevoree:ComponentType" factoryBean="org.kevoree.library.javase.vlc.AudioPlayerFactory" startMethod="start" deployUnits="//@deployUnits.6">
+  <provided noDependency="false" name="media" xsi:type="kevoree:PortTypeRef" optional="false" ref="//@typeDefinitions.9">
+   <mappings beanMethodName="triggerMedia" xsi:type="kevoree:PortTypeMapping" serviceMethodName="process"></mappings>
+  </provided>
+  <provided noDependency="false" name="play" xsi:type="kevoree:PortTypeRef" optional="false" ref="//@typeDefinitions.9">
+   <mappings beanMethodName="triggerPlay" xsi:type="kevoree:PortTypeMapping" serviceMethodName="process"></mappings>
+  </provided>
+  <provided noDependency="false" name="stop" xsi:type="kevoree:PortTypeRef" optional="false" ref="//@typeDefinitions.9">
+   <mappings beanMethodName="triggerStop" xsi:type="kevoree:PortTypeMapping" serviceMethodName="process"></mappings>
+  </provided>
+  <provided noDependency="false" name="pause" xsi:type="kevoree:PortTypeRef" optional="false" ref="//@typeDefinitions.9">
+   <mappings beanMethodName="triggerPause" xsi:type="kevoree:PortTypeMapping" serviceMethodName="process"></mappings>
+  </provided>
+  <provided noDependency="false" name="volume" xsi:type="kevoree:PortTypeRef" optional="false" ref="//@typeDefinitions.14">
+   <mappings beanMethodName="triggerVolume" xsi:type="kevoree:PortTypeMapping" serviceMethodName="process"></mappings>
+  </provided>
+ </typeDefinitions>
+ <typeDefinitions updateMethod="update" startMethod="start" factoryBean="org.kevoree.library.javase.vlc.ScreenCaptureFactory" xsi:type="kevoree:ComponentType" name="ScreenCapture" bean="org.kevoree.library.javase.vlc.ScreenCapture" stopMethod="stop" deployUnits="//@deployUnits.6">
+  <dictionaryType>
+   <attributes datatype="enum=NONE,DEBUG" optional="false" xsi:type="kevoree:DictionaryAttribute" name="LOG" state="false" fragmentDependant="false"></attributes>
+   <attributes datatype="enum=1280x1024,1024x768,800x600,640x480,400x300,200x150" optional="false" xsi:type="kevoree:DictionaryAttribute" name="FORMAT" state="false" fragmentDependant="false"></attributes>
+   <defaultValues value="NONE" xsi:type="kevoree:DictionaryValue" attribute="//@typeDefinitions.17/@dictionaryType/@attributes.0"></defaultValues>
+   <defaultValues value="800x600" xsi:type="kevoree:DictionaryValue" attribute="//@typeDefinitions.17/@dictionaryType/@attributes.1"></defaultValues>
+  </dictionaryType>
+  <required noDependency="true" name="image" xsi:type="kevoree:PortTypeRef" optional="true" ref="//@typeDefinitions.1"></required>
+  <required noDependency="true" name="image_bytes" xsi:type="kevoree:PortTypeRef" optional="true" ref="//@typeDefinitions.2"></required>
+ </typeDefinitions>
+ <typeDefinitions updateMethod="update" startMethod="start" factoryBean="org.kevoree.library.javase.vlc.WebcamFactory" xsi:type="kevoree:ComponentType" name="Webcam" bean="org.kevoree.library.javase.vlc.Webcam" stopMethod="stop" deployUnits="//@deployUnits.6">
+  <dictionaryType>
+   <attributes datatype="enum=v4l2:///dev/video0,qtcapture://,dshow://" optional="false" xsi:type="kevoree:DictionaryAttribute" name="DEVICE" state="false" fragmentDependant="false"></attributes>
+   <attributes datatype="enum=NONE,DEBUG" optional="false" xsi:type="kevoree:DictionaryAttribute" name="LOG" state="false" fragmentDependant="false"></attributes>
+   <attributes datatype="enum=1280x1024,1024x768,800x600,640x480,400x300,200x150" optional="false" xsi:type="kevoree:DictionaryAttribute" name="FORMAT" state="false" fragmentDependant="false"></attributes>
+   <defaultValues value="v4l2:///dev/video0" xsi:type="kevoree:DictionaryValue" attribute="//@typeDefinitions.18/@dictionaryType/@attributes.0"></defaultValues>
+   <defaultValues value="NONE" xsi:type="kevoree:DictionaryValue" attribute="//@typeDefinitions.18/@dictionaryType/@attributes.1"></defaultValues>
+   <defaultValues value="800x600" xsi:type="kevoree:DictionaryValue" attribute="//@typeDefinitions.18/@dictionaryType/@attributes.2"></defaultValues>
+  </dictionaryType>
+  <required noDependency="true" name="image" xsi:type="kevoree:PortTypeRef" optional="true" ref="//@typeDefinitions.1"></required>
+  <required noDependency="true" name="image_bytes" xsi:type="kevoree:PortTypeRef" optional="true" ref="//@typeDefinitions.2"></required>
+ </typeDefinitions>
+ <typeDefinitions updateMethod="update" startMethod="start" factoryBean="org.kevoree.library.javase.vlc.MediaPlayerFactory" xsi:type="kevoree:ComponentType" name="MediaPlayer" bean="org.kevoree.library.javase.vlc.MediaPlayer" stopMethod="stop" deployUnits="//@deployUnits.6">
+  <provided noDependency="false" name="media" xsi:type="kevoree:PortTypeRef" optional="false" ref="//@typeDefinitions.9">
+   <mappings beanMethodName="triggerMedia" xsi:type="kevoree:PortTypeMapping" serviceMethodName="process"></mappings>
+  </provided>
+  <provided noDependency="false" name="play" xsi:type="kevoree:PortTypeRef" optional="false" ref="//@typeDefinitions.9">
+   <mappings beanMethodName="triggerPlay" xsi:type="kevoree:PortTypeMapping" serviceMethodName="process"></mappings>
+  </provided>
+  <provided noDependency="false" name="stop" xsi:type="kevoree:PortTypeRef" optional="false" ref="//@typeDefinitions.9">
+   <mappings beanMethodName="triggerStop" xsi:type="kevoree:PortTypeMapping" serviceMethodName="process"></mappings>
+  </provided>
+  <provided noDependency="false" name="pause" xsi:type="kevoree:PortTypeRef" optional="false" ref="//@typeDefinitions.9">
+   <mappings beanMethodName="triggerPause" xsi:type="kevoree:PortTypeMapping" serviceMethodName="process"></mappings>
+  </provided>
+  <provided noDependency="false" name="volume" xsi:type="kevoree:PortTypeRef" optional="false" ref="//@typeDefinitions.14">
+   <mappings beanMethodName="triggerVolume" xsi:type="kevoree:PortTypeMapping" serviceMethodName="process"></mappings>
+  </provided>
+ </typeDefinitions>
+ <typeDefinitions upperFragments="0" upperBindings="0" stopMethod="stopVLCChannel" bean="org.kevoree.library.javase.vlc.channel.VLCChannel" name="VLCChannel" xsi:type="kevoree:ChannelType" factoryBean="org.kevoree.library.javase.vlc.channel.VLCChannelFactory" startMethod="startVLCChannel" lowerBindings="0" lowerFragments="0" deployUnits="//@deployUnits.6">
+  <dictionaryType>
+   <attributes datatype="enum=RTP,RTSP,HTTP" optional="false" xsi:type="kevoree:DictionaryAttribute" name="PROTOCOL" state="false" fragmentDependant="false"></attributes>
+   <attributes state="false" name="PORT" xsi:type="kevoree:DictionaryAttribute" optional="false" fragmentDependant="true"></attributes>
+   <defaultValues value="RTP" xsi:type="kevoree:DictionaryValue" attribute="//@typeDefinitions.20/@dictionaryType/@attributes.0"></defaultValues>
+   <defaultValues value="8080" xsi:type="kevoree:DictionaryValue" attribute="//@typeDefinitions.20/@dictionaryType/@attributes.1"></defaultValues>
+  </dictionaryType>
+ </typeDefinitions>
+ <repositories xsi:type="kevoree:Repository" url="http://maven.kevoree.org/archiva/repository/snapshots/"></repositories>
+ <repositories xsi:type="kevoree:Repository" url="http://scala-tools.org/repo-releases"></repositories>
+ <repositories xsi:type="kevoree:Repository" url="http://maven.kevoree.org/release"></repositories>
+ <repositories xsi:type="kevoree:Repository" url="http://maven.kevoree.org/snapshots"></repositories>
+ <repositories xsi:type="kevoree:Repository" url="http://repo1.maven.org/maven2"></repositories>
+ <dataTypes xsi:type="kevoree:TypedElement" name="java.lang.String"></dataTypes>
+ <libraries name="JavaSE" xsi:type="kevoree:TypeLibrary" subTypes="//@typeDefinitions.0 //@typeDefinitions.4 //@typeDefinitions.6 //@typeDefinitions.7 //@typeDefinitions.8 //@typeDefinitions.10 //@typeDefinitions.12 //@typeDefinitions.13 //@typeDefinitions.15 //@typeDefinitions.16 //@typeDefinitions.17 //@typeDefinitions.18 //@typeDefinitions.19 //@typeDefinitions.20"></libraries>
+ <hubs metaData="x=50,y=50" xsi:type="kevoree:Channel" name="defMSG859" typeDefinition="//@typeDefinitions.6"></hubs>
+ <mBindings port="//@nodes.0/@components.1/@provided.1" xsi:type="kevoree:MBinding" hub="//@hubs.0"></mBindings>
+ <mBindings port="//@nodes.0/@components.0/@required.1" xsi:type="kevoree:MBinding" hub="//@hubs.0"></mBindings>
+ <deployUnits requiredLibs="//@deployUnits.1" version="1.4.1-SNAPSHOT" groupName="org.kevoree.library.javase" xsi:type="kevoree:DeployUnit" unitName="org.kevoree.library.javase.swingUI" hashcode="201111091438366" targetNodeType="//@typeDefinitions.3"></deployUnits>
+ <deployUnits version="0.9.6" groupName="org.kevoree.extra" xsi:type="kevoree:DeployUnit" unitName="org.kevoree.extra.macwidgets" targetNodeType="//@typeDefinitions.3"></deployUnits>
+ <deployUnits hashcode="201111091343543" unitName="org.kevoree.library.javase.defaultChannels" xsi:type="kevoree:DeployUnit" groupName="org.kevoree.library.javase" version="1.4.1-SNAPSHOT" targetNodeType="//@typeDefinitions.3"></deployUnits>
+ <deployUnits hashcode="201111091202086" unitName="org.kevoree.library.javase.fakeDomo" xsi:type="kevoree:DeployUnit" groupName="org.kevoree.library.javase" version="1.4.1-SNAPSHOT" targetNodeType="//@typeDefinitions.3"></deployUnits>
+ <deployUnits requiredLibs="//@deployUnits.5" version="1.4.1-SNAPSHOT" groupName="org.kevoree.library.javase" xsi:type="kevoree:DeployUnit" unitName="org.kevoree.library.javase.rest" hashcode="201111091200792" targetNodeType="//@typeDefinitions.3"></deployUnits>
+ <deployUnits version="0.9.1" groupName="org.kevoree.extra" xsi:type="kevoree:DeployUnit" unitName="org.kevoree.extra.spray" targetNodeType="//@typeDefinitions.3"></deployUnits>
+ <deployUnits requiredLibs="//@deployUnits.7 //@deployUnits.8" version="1.4.1-SNAPSHOT" groupName="org.kevoree.library.javase" xsi:type="kevoree:DeployUnit" unitName="org.kevoree.library.javase.vlc" hashcode="201111091348273" targetNodeType="//@typeDefinitions.3"></deployUnits>
+ <deployUnits version="1.2.1-b3" groupName="org.kevoree.extra" xsi:type="kevoree:DeployUnit" unitName="org.kevoree.extra.vlcj" targetNodeType="//@typeDefinitions.3"></deployUnits>
+ <deployUnits version="3.3.0" groupName="org.kevoree.extra" xsi:type="kevoree:DeployUnit" unitName="org.kevoree.extra.jna" targetNodeType="//@typeDefinitions.3"></deployUnits>
+ <groups typeDefinition="//@typeDefinitions.15" name="sync" xsi:type="kevoree:Group" metaData="x=324,y=59" subNodes="//@nodes.0">
+  <dictionary>
+   <values attribute="//@typeDefinitions.15/@dictionaryType/@attributes.0" xsi:type="kevoree:DictionaryValue" value="8000" targetNode="//@nodes.0"></values>
+  </dictionary>
+ </groups>
+</kevoree:ContainerRoot>
