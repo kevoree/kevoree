@@ -54,10 +54,10 @@ object KevoreeProvidedPortGenerator {
           ref.getMappings.find(map=>{map.getServiceMethodName.equals(Constants.KEVOREE_MESSAGEPORT_DEFAULTMETHOD)}) match {
             case Some(mapping)=>{
                 /* GENERATE LOOP */
-              writer.append("override def internal_process(msg : Any)=msg match {\n")
+              writer.append("override def internal_process(msg : Any)= msg match {\n")
                 /* CALL MAPPED METHOD */
-              writer.append("case _ @ msg => component.")
-              writer.append(mapping.getBeanMethodName+"(msg)\n")
+              writer.append("case _ @ msg =>try{component.")
+              writer.append(mapping.getBeanMethodName+"(msg)}catch{case _ @ e => {e.printStackTrace();println(\"Uncatched exception while processing Kevoree message\")}}\n")
               writer.append("}\n")
               }
             case None => {
