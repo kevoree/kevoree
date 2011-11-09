@@ -13,7 +13,7 @@
  */
 package org.kevoree.core.basechecker.nodechecker
 
- import org.kevoree.api.service.core.checker.{CheckerViolation, CheckerService}
+import org.kevoree.api.service.core.checker.{CheckerViolation, CheckerService}
 import org.kevoree.framework.aspects.KevoreeAspects._
 import org.kevoree.{ContainerNode, ContainerRoot}
 import scala.collection.JavaConversions._
@@ -32,7 +32,7 @@ class NodeChecker extends CheckerService {
     var violations: List[CheckerViolation] = List()
     model.getNodes.foreach {
       node => //For each Node
-        violations= violations ++ checkRelatedChannel(model,node)
+        violations = violations ++ checkRelatedChannel(model, node)
         node.getComponents.foreach {
           component => //For each component of each node
             component.getTypeDefinition.foundRelevantDeployUnit(node)
@@ -46,6 +46,16 @@ class NodeChecker extends CheckerService {
               }
               case _ =>
             }
+        }
+        node.getTypeDefinition.foundRelevantDeployUnit(node) match {
+          case null => {
+            val violation: CheckerViolation = new CheckerViolation
+            violation.setMessage(node.getTypeDefinition.getName + " has no deploy unit for node type " +
+              node.getTypeDefinition.getName)
+            violation.setTargetObjects(List(node))
+            violations = violations ++ List(violation)
+          }
+          case _ =>
         }
     }
     violations

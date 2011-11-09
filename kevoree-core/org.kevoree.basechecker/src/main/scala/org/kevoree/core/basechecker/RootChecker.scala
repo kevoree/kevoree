@@ -28,7 +28,7 @@ import org.slf4j.LoggerFactory
 
 class RootChecker extends CheckerService {
 
-  private var logger = LoggerFactory.getLogger(this.getClass)
+  private val logger = LoggerFactory.getLogger(this.getClass)
   
   var subcheckers: List[CheckerService] = List(new ComponentCycleChecker, new NodeCycleChecker, new NameChecker,
                                                 new PortChecker, new NodeChecker, new BindingChecker, new BoundsChecker, new IdChecker, new DictionaryOptionalChecker)
