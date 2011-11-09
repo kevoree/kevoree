@@ -22,10 +22,17 @@ import java.nio.ByteBuffer;
  * Time: 17:42
  */
 @MessageTypes({
-        @MessageType(name = "BufferedImage", elems = {@MsgElem(name = "image", className = BufferedImage.class)})
+		@MessageType(name = "BufferedImage", elems = {@MsgElem(name = "image", className = BufferedImage.class)}),
+		@MessageType(name = "bytes", elems =
+				{@MsgElem(name = "bytes", className = byte[].class),
+						@MsgElem(name = "width", className = Integer.class),
+						@MsgElem(name = "height", className = Integer.class),
+						@MsgElem(name = "chroma", className = String.class),
+						@MsgElem(name = "fps", className = Integer.class)}
+		)
 })
 @Requires({
-		@RequiredPort(name = "image", type = PortType.MESSAGE, optional = true,	messageType ="BufferedImage")
+		@RequiredPort(name = "image", type = PortType.MESSAGE, optional = true, messageType = "BufferedImage")
 		//@RequiredPort(name = "raw", type = PortType.MESSAGE, optional = true, filter = "java.nio.ByteBuffer")//,
 		//@RequiredPort(name = "imageDepth", type = PortType.MESSAGE, optional = true)
 })
@@ -59,13 +66,13 @@ public class Kinect extends AbstractComponentType {
 	public void start () throws Exception {
 
 		if (instance == null) {
-            String path = KinectNativeLibraryLoader.configure();
-            if(KinectNativeLibraryLoader.isMac()){
-                logger.debug("OSX load usb lib");
-                NativeLibrary.addSearchPath("usb", path);
-                NativeLibrary.getInstance("usb");
-            }
-            NativeLibrary.addSearchPath("freenect", path);
+			String path = KinectNativeLibraryLoader.configure();
+			if (KinectNativeLibraryLoader.isMac()) {
+				logger.debug("OSX load usb lib");
+				NativeLibrary.addSearchPath("usb", path);
+				NativeLibrary.getInstance("usb");
+			}
+			NativeLibrary.addSearchPath("freenect", path);
 			instance = NativeLibrary.getInstance("freenect");
 			nbComponent++;
 			Native.register(Freenect.class, instance);
@@ -101,8 +108,9 @@ public class Kinect extends AbstractComponentType {
 								if (image == null) {
 									/*image = DirectBufferedImage
 											.getDirectImageRGB(format.getWidth(), format.getHeight());*/
-									image = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDefaultConfiguration()
-														.createCompatibleImage(format.getWidth(), format.getHeight());
+									image = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice()
+											.getDefaultConfiguration()
+											.createCompatibleImage(format.getWidth(), format.getHeight());
 								}
 								//Graphics2D graphics = (Graphics2D)image.getGraphics();
 								for (int y = 0; y < format.getHeight(); y++) {
@@ -225,7 +233,7 @@ public class Kinect extends AbstractComponentType {
 			}
 			move(percentage);
 		} else if (message instanceof StdKevoreeMessage) {
-			percentage = (Integer)((StdKevoreeMessage)message).getValue("percent").get();
+			percentage = (Integer) ((StdKevoreeMessage) message).getValue("percent").get();
 			move(percentage);
 		} else {
 			logger.warn("message received has an unknown type !");

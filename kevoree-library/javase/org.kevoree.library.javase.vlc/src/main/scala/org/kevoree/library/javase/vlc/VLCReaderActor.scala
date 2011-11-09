@@ -45,6 +45,8 @@ class VLCReaderActor (channel: VLCChannel) extends DaemonActor {
     }
   }.start()
 
+  start()
+
   def stop () {
     this ! STOP()
   }
@@ -82,6 +84,15 @@ class VLCReaderActor (channel: VLCChannel) extends DaemonActor {
                                                       stdKevMessage.getValue("fps").get
                                                         .asInstanceOf[Int]))
 
+      val options: Array[String] = Array[String](":demux=rawvideo",
+                                                  ":rawvid-fps=" + stdKevMessage.getValue("fps").get.asInstanceOf[Int],
+                                                  "rawvid-chroma=" +
+                                                    stdKevMessage.getValue("chroma").get.asInstanceOf[String],
+                                                  "rawvid-width=" +
+                                                    stdKevMessage.getValue("width").get.asInstanceOf[Int],
+                                                  "rawvid-height=" +
+                                                    stdKevMessage.getValue("fps").get.asInstanceOf[Int])
+
       var media: String = ""
       if (channel.getDictionary.get("PROTOCOL") == "HTTP") {
         media = "http://" + channel.getAddress(nodeName) + ":" + channel.parsePortNumber(nodeName)
@@ -91,7 +102,11 @@ class VLCReaderActor (channel: VLCChannel) extends DaemonActor {
         media = "rtsp://@" + channel.getAddress(nodeName) + ":" + channel.parsePortNumber(nodeName) + "/" +
           channel.getName + "_" + nodeName
       }
-      mediaPlayer.playMedia(media)
+      mediaPlayer
+        .playMedia(media, ":demux=rawvideo", ":rawvid-fps=" + stdKevMessage.getValue("fps").get.asInstanceOf[Int],
+                    "rawvid-chroma=" + stdKevMessage.getValue("chroma").get.asInstanceOf[String],
+                    "rawvid-width=" + stdKevMessage.getValue("width").get.asInstanceOf[Int],
+                    "rawvid-height=" + stdKevMessage.getValue("fps").get.asInstanceOf[Int])
 
       mediaPlayer
     } else {
