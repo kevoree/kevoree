@@ -1,0 +1,41 @@
+package galleria.client;
+
+import galleria.client.datatypes.Media;
+import galleria.client.gui.Loader;
+
+import java.util.ArrayList;
+
+import com.google.gwt.core.client.EntryPoint;
+import com.google.gwt.core.client.GWT;
+
+/**
+ * This is a gallery script, allowing you to display images from Picasa.
+ * @author Benjamin Gršhbiel
+ */
+public class GWTGalleria implements EntryPoint {
+
+	/* preferences */
+	public static String language;
+	public static String currentAlbum;
+
+	public static GWTGalleriaTranslations constants = GWT.create(GWTGalleriaTranslations.class);
+	
+	/**
+	 * DataItem stores all Media Objects (see below) in a ArrayList
+	 */
+	public static ArrayList<Media> DataItem = new ArrayList<Media>();
+	
+	/**
+	 * Media Object contains all informations about an image.
+	 * id | thumbnailPath | fullsizePath | descDe | descEn
+	 */
+	public static Media Media;
+	
+	public void onModuleLoad() {
+		
+		/* start loading data for gallery */
+		new Loader();
+		
+	}
+	
+}
