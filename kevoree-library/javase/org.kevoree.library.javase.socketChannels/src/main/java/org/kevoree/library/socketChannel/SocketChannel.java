@@ -22,7 +22,7 @@ import java.net.Socket;
 import java.util.*;
 import java.util.concurrent.*;
 
-//import org.kevoree.extra.marshalling.*;
+import org.kevoree.extra.marshalling.*;
 
 
 @Library(name = "JavaSE", names = {"Android"})
@@ -200,22 +200,23 @@ public class SocketChannel extends AbstractChannelFragment implements Runnable {
                                     + +port + "> " + parsePortNumber(msgTOqueue.getDestNodeName()) + "\t" + msgTOqueue
                                     .getContent());
 //					client_consumer = new Socket(host, port);
-                    if (clientSockets.get(host) != null) {
-                        client_consumer = clientSockets.get(host);
-                    } else {
-                        client_consumer = new Socket(host, port);
-                        clientSockets.put(host, client_consumer);
-                    }
-                    /* adding the current node */
-                    if (!msgTOqueue.getPassedNodes().contains(getNodeName())) {
-                        msgTOqueue.getPassedNodes().add(getNodeName());
-                    }
-                    OutputStream os = client_consumer.getOutputStream();
-                    ObjectOutputStream oos = new ObjectOutputStream(os);
-                    /* JSON */
-                    /* RichJSONObject obj = new RichJSONObject(msgTOqueue);
-                                             oos.writeObject(obj.toJSON());*/
-                    oos.writeObject(msgTOqueue);
+
+					if (clientSockets.get(host) != null) {
+						client_consumer = clientSockets.get(host);
+					} else {
+						client_consumer = new Socket(host, port);
+						clientSockets.put(host, client_consumer);
+					}
+					/* adding the current node */
+					if (!msgTOqueue.getPassedNodes().contains(getNodeName())) {
+						msgTOqueue.getPassedNodes().add(getNodeName());
+					}
+					OutputStream os = client_consumer.getOutputStream();
+					ObjectOutputStream oos = new ObjectOutputStream(os);
+					/* JSON */
+					RichJSONObject obj = new RichJSONObject(msgTOqueue);
+					oos.writeObject(obj.toJSON());
+//					oos.writeObject(msgTOqueue);
 //					client_consumer.close();
                 } catch (Exception e) {
                     try {
@@ -294,135 +295,137 @@ public class SocketChannel extends AbstractChannelFragment implements Runnable {
                             Thread.sleep(34);
                         } catch (InterruptedException e) {
 //							logger.error("", e);
-                        }
-                        try {
-                            try { // TODO
-                                ObjectInputStream ois = new ObjectInputStream(stream);
-//                            String jsonPacket =  (String)ois.readObject();
-                                /*RichString c = new RichString(jsonPacket);
-                                        msg = (SocketMessage) c.fromJSON(SocketMessage.class);*/
-                                msg = (SocketMessage) ois.readObject();
-                            } catch (Exception e) {
-                                if (alive) {
-                                    logger.warn("Failed to accept client or get its input stream", e);
-                                }
-                            }
-                            if (!msg.getPassedNodes().contains(getNodeName())) {
-                                msg.getPassedNodes().add(getNodeName());
-                            }
-                            logger.debug("Reading message from  " + msg.getPassedNodes() + "\t" + msg.getContent() + "\t" + msg.getDestNodeName());
-                            if (getOtherFragments().size() > 1) {
-                                if (fragments.containsKey(msg.getUuid())) {
-                                    // logger.debug("fragment exist "+msg.getUuid()+" "+   fragments.get(msg.getUuid())+" "+msg.getPassedNodes()+" port "+client_server.getPort());
-                                    fragments.put(msg.getUuid(), ((fragments.get(msg.getUuid())) + 1));
-                                } else {
-                                    fragments.put(msg.getUuid(), 1);
-                                    //  logger.debug("new fragment "+ msg.getUuid()+" "+msg.getPassedNodes()+" port "+client_server.getPort());
-                                    remoteDispatch(msg);
-                                }
-                                if ((fragments.get(msg.getUuid()) == (getOtherFragments().size()))) {
-                                    try {
-                                        Thread.sleep(500);
-                                    } catch (Exception e2) {
-                                    }
-                                    logger.debug("Remove fragment " + msg.getUuid() + " " + fragments.size());
-                                    fragments.remove(msg.getUuid());
-                                }
-                            } else {
-                                /* only two nodes */
-                                remoteDispatch(msg);
-                            }
-                            msg = null;
-                        } finally {
-                            sem.release();
-                        }
-                    }
-                    try {
-                        client.close();
-                    } catch (Exception e) {
-                        // Ignore
-                    }
-                }
-            });
-        }   // while
-        logger.debug("The ServerSocket pool is closing");
-        try {
-            if (server != null) {
-                server.close();
-            }
-            logger.debug("ServerSocket is closed");
-        } catch (IOException e) {
-        }
-    }
+						}
+						try {
+							try { // TODO
+								ObjectInputStream ois = new ObjectInputStream(stream);
+                            String jsonPacket =  (String)ois.readObject();
+								RichString c = new RichString(jsonPacket);
+								msg = (SocketMessage) c.fromJSON(SocketMessage.class);
+//								msg = (SocketMessage) ois.readObject();
+							} catch (Exception e) {
+								if (alive) {
+									logger.warn("Failed to accept client or get its input stream", e);
+								}
+							}
+							if (!msg.getPassedNodes().contains(getNodeName())) {
+								msg.getPassedNodes().add(getNodeName());
+							}
+							logger.debug(
+									"Reading message from  " + msg.getPassedNodes() + "\t" + msg.getContent() + "\t"
+											+ msg.getDestNodeName());
+							if (getOtherFragments().size() > 1) {
+								if (fragments.containsKey(msg.getUuid())) {
+									// logger.debug("fragment exist "+msg.getUuid()+" "+   fragments.get(msg.getUuid())+" "+msg.getPassedNodes()+" port "+client_server.getPort());
+									fragments.put(msg.getUuid(), ((fragments.get(msg.getUuid())) + 1));
+								} else {
+									fragments.put(msg.getUuid(), 1);
+									//  logger.debug("new fragment "+ msg.getUuid()+" "+msg.getPassedNodes()+" port "+client_server.getPort());
+									remoteDispatch(msg);
+								}
+								if ((fragments.get(msg.getUuid()) == (getOtherFragments().size()))) {
+									try {
+										Thread.sleep(500);
+									} catch (Exception e2) {
+									}
+									logger.debug("Remove fragment " + msg.getUuid() + " " + fragments.size());
+									fragments.remove(msg.getUuid());
+								}
+							} else {
+								/* only two nodes */
+								remoteDispatch(msg);
+							}
+							msg = null;
+						} finally {
+							sem.release();
+						}
+					}
+					try {
+						client.close();
+					} catch (Exception e) {
+						// Ignore
+					}
+				}
+			});
+		}   // while
+		logger.debug("The ServerSocket pool is closing");
+		try {
+			if (server != null) {
+				server.close();
+			}
+			logger.debug("ServerSocket is closed");
+		} catch (IOException e) {
+		}
+	}
 
 
-    private class ThreadNodeDead extends Thread {
-        public void run () {
-            SocketMessage current;
-            Socket client_consumer;
-            int size, i;
-            Queue<SocketMessage> queue_tmp;
-            while (alive) {
-                size = queue_node_dead.size();
-                if (size > 0) {
-                    queue_tmp = new LinkedList<SocketMessage>();
-                    for (i = 0; i < size; i++) {
-                        current = queue_node_dead.peek();
-                        queue_node_dead.remove(current);
-                        try {
-                            logger.debug("Sending backup message to " + current.getDestNodeName() + " port <"
-                                    + parsePortNumber(current.getDestNodeName()) + "> ");
-                            /* try to send  message  if the message is not send is backup in the queue queue_tmp */
+	private class ThreadNodeDead extends Thread {
+		public void run () {
+			SocketMessage current;
+			Socket client_consumer;
+			int size, i;
+			Queue<SocketMessage> queue_tmp;
+			while (alive) {
+				size = queue_node_dead.size();
+				if (size > 0) {
+					queue_tmp = new LinkedList<SocketMessage>();
+					for (i = 0; i < size; i++) {
+						current = queue_node_dead.peek();
+						queue_node_dead.remove(current);
+						try {
+							logger.debug("Sending backup message to " + current.getDestNodeName() + " port <"
+									+ parsePortNumber(current.getDestNodeName()) + "> ");
+							/* try to send  message  if the message is not send is backup in the queue queue_tmp */
 
 //							client_consumer = new Socket(getAddress(current.getDestNodeName()),
 //									parsePortNumber(current.getDestNodeName()));
-                            String host = getAddress(current.getDestNodeName());
-                            int port = parsePortNumber(current.getDestNodeName());
-                            if (clientSockets.get(host) != null) {
-                                client_consumer = clientSockets.get(host);
-                            } else {
-                                client_consumer = new Socket(host, port);
-                                clientSockets.put(host, client_consumer);
-                            }
-                            /* adding the current node */
-                            if (!current.getPassedNodes().contains(getNodeName())) {
-                                current.getPassedNodes().add(getNodeName());
-                            }
-                            OutputStream os = client_consumer.getOutputStream();
-                            ObjectOutputStream oos = new ObjectOutputStream(os);
-                            /*RichJSONObject obj = new RichJSONObject(current);
-                                                               oos.writeObject(obj.toJSON());*/
-                            oos.writeObject(current);
-                            oos.flush();
+							String host = getAddress(current.getDestNodeName());
+							int port = parsePortNumber(current.getDestNodeName());
+							if (clientSockets.get(host) != null) {
+								client_consumer = clientSockets.get(host);
+							} else {
+								client_consumer = new Socket(host, port);
+								clientSockets.put(host, client_consumer);
+							}
+							/* adding the current node */
+							if (!current.getPassedNodes().contains(getNodeName())) {
+								current.getPassedNodes().add(getNodeName());
+							}
+							OutputStream os = client_consumer.getOutputStream();
+							ObjectOutputStream oos = new ObjectOutputStream(os);
+							RichJSONObject obj = new RichJSONObject(current);
+														oos.writeObject(obj.toJSON());
+//							oos.writeObject(current);
+							oos.flush();
 //							client_consumer.close();
-                            queue_node_dead.remove(current);
-                        } catch (Exception e) {
-                            if (alive) {
-                                logger.warn("Unable to send message to  " + current.getDestNodeName(), e);
-                            }
-                            queue_tmp.add(current);
-                            try {
-                                Thread.sleep(timer);
-                            } catch (Exception e2) {
-                            }
-                        }
-                    }  // for
-                    if (queue_tmp.size() > 0) {
-                        logger.debug("Undo queue " + queue_tmp.size());
-                        /* backup message connection refused */
-                        queue_node_dead.addAll(queue_tmp);
-                        queue_tmp.clear();
-                    }
-                } else {
-                    try {
-                        logger.debug("acquire");
-                        sem2.acquire();
-                    } catch (InterruptedException e) {
-                        // ignore
-                    }
-                }
-            }// while
-            logger.debug("The Queue pool is closed ");
-        }
-    }
+							queue_node_dead.remove(current);
+						} catch (Exception e) {
+							if (alive) {
+								logger.warn("Unable to send message to  " + current.getDestNodeName(), e);
+							}
+							queue_tmp.add(current);
+							try {
+								Thread.sleep(timer);
+							} catch (Exception e2) {
+							}
+						}
+					}  // for
+					if (queue_tmp.size() > 0) {
+						logger.debug("Undo queue " + queue_tmp.size());
+						/* backup message connection refused */
+						queue_node_dead.addAll(queue_tmp);
+						queue_tmp.clear();
+					}
+				} else {
+					try {
+						logger.debug("acquire");
+						sem2.acquire();
+					} catch (InterruptedException e) {
+						// ignore
+					}
+				}
+			}// while
+			logger.debug("The Queue pool is closed ");
+		}
+	}
 }

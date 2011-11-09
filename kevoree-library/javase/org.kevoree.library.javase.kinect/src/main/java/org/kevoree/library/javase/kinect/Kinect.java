@@ -5,6 +5,7 @@ import com.sun.jna.NativeLibrary;
 import org.kevoree.annotation.*;
 import org.kevoree.framework.AbstractComponentType;
 import org.kevoree.framework.MessagePort;
+import org.kevoree.framework.message.StdKevoreeMessage;
 import org.openkinect.freenect.*;
 import org.openkinect.freenect.util.Jdk14LogHandler;
 import org.slf4j.Logger;
@@ -21,12 +22,18 @@ import java.nio.ByteBuffer;
  * Time: 17:42
  */
 @MessageTypes({
-        @MessageType(name = "BufferedImage", elems = {@MsgElem(name = "image", className = BufferedImage.class)})
+		@MessageType(name = "BufferedImage", elems = {@MsgElem(name = "image", className = BufferedImage.class)}),
+		@MessageType(name = "bytes", elems =
+				{@MsgElem(name = "bytes", className = byte[].class),
+						@MsgElem(name = "width", className = Integer.class),
+						@MsgElem(name = "height", className = Integer.class),
+						@MsgElem(name = "chroma", className = String.class),
+						@MsgElem(name = "fps", className = Integer.class)}
+		)
 })
 @Requires({
-		@RequiredPort(name = "image", type = PortType.MESSAGE, optional = true,	messageType ="BufferedImage")
-		//@RequiredPort(name = "raw", type = PortType.MESSAGE, optional = true, filter = "java.nio.ByteBuffer")//,
-		//@RequiredPort(name = "imageDepth", type = PortType.MESSAGE, optional = true)
+		@RequiredPort(name = "image", type = PortType.MESSAGE, optional = true, messageType = "BufferedImage"),
+		@RequiredPort(name = "image_bytes", type = PortType.MESSAGE, optional = true, messageType = "bytes") // TODO
 })
 @Provides({
 		@ProvidedPort(name = "motor", type = PortType.MESSAGE)
@@ -56,15 +63,14 @@ public class Kinect extends AbstractComponentType {
 
 	@Start
 	public void start () throws Exception {
-
 		if (instance == null) {
-            String path = KinectNativeLibraryLoader.configure();
-            if(KinectNativeLibraryLoader.isMac()){
-                logger.debug("OSX load usb lib");
-                NativeLibrary.addSearchPath("usb", path);
-                NativeLibrary.getInstance("usb");
-            }
-            NativeLibrary.addSearchPath("freenect", path);
+			String path = KinectNativeLibraryLoader.configure();
+			if (KinectNativeLibraryLoader.isMac()) {
+				logger.debug("OSX load usb lib");
+				NativeLibrary.addSearchPath("usb", path);
+				NativeLibrary.getInstance("usb");
+			}
+			NativeLibrary.addSearchPath("freenect", path);
 			instance = NativeLibrary.getInstance("freenect");
 			nbComponent++;
 			Native.register(Freenect.class, instance);
@@ -100,8 +106,9 @@ public class Kinect extends AbstractComponentType {
 								if (image == null) {
 									/*image = DirectBufferedImage
 											.getDirectImageRGB(format.getWidth(), format.getHeight());*/
-									image = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDefaultConfiguration()
-														.createCompatibleImage(format.getWidth(), format.getHeight());
+									image = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice()
+											.getDefaultConfiguration()
+											.createCompatibleImage(format.getWidth(), format.getHeight());
 								}
 								//Graphics2D graphics = (Graphics2D)image.getGraphics();
 								for (int y = 0; y < format.getHeight(); y++) {
@@ -212,20 +219,28 @@ public class Kinect extends AbstractComponentType {
 
 	@Port(name = "motor")
 	public void onReceiveMessage (Object message) {
-		int percentage = 50;
-		if (message instanceof Integer) {
-			percentage = (Integer) message;
-			move(percentage);
-		} else if (message instanceof String) {
-			if (message.toString().startsWith("percent=")) {
-				percentage = Integer.parseInt(message.toString().replace("percent=", ""));
-			} else {
-				percentage = Integer.parseInt((String) message);
+
+		try {
+
+			int percentage = 50;
+			if (message instanceof StdKevoreeMessage) {
+				percentage = (Integer) ((StdKevoreeMessage) message).getValue("percent").get();
+				move(percentage);
 			}
-			move(percentage);
-		} else {
-			logger.warn("message received has an unknown type !");
-			// TODO log
+			if (message instanceof Integer) {
+				percentage = (Integer) message;
+				move(percentage);
+			}
+			if (message instanceof String) {
+				if (message.toString().startsWith("percent=")) {
+					percentage = Integer.parseInt(message.toString().replace("percent=", ""));
+				} else {
+					percentage = Integer.parseInt((String) message);
+				}
+				move(percentage);
+			}
+		} catch (Exception e) {
+			logger.debug("Bad message rec ", e);
 		}
 	}
 
