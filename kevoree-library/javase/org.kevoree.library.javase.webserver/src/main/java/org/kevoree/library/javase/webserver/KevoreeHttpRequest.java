@@ -1,5 +1,6 @@
 package org.kevoree.library.javase.webserver;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.UUID;
 
@@ -10,7 +11,7 @@ import java.util.UUID;
  * Time: 08:41
  * To change this template use File | Settings | File Templates.
  */
-public class KevoreeHttpRequest {
+public class KevoreeHttpRequest implements Serializable {
     
     private String url = "";
     

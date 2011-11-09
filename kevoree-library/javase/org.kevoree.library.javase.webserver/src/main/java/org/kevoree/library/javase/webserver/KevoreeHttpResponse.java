@@ -1,5 +1,6 @@
 package org.kevoree.library.javase.webserver;
 
+import java.io.Serializable;
 import java.util.UUID;
 
 /**
@@ -9,7 +10,7 @@ import java.util.UUID;
  * Time: 08:41
  * To change this template use File | Settings | File Templates.
  */
-public class KevoreeHttpResponse {
+public class KevoreeHttpResponse implements Serializable {
 
     private UUID tokenID = UUID.randomUUID();
 
