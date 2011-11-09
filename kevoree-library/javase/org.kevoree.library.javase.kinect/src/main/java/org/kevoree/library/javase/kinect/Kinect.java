@@ -32,9 +32,8 @@ import java.nio.ByteBuffer;
 		)
 })
 @Requires({
-		@RequiredPort(name = "image", type = PortType.MESSAGE, optional = true, messageType = "BufferedImage")
-		//@RequiredPort(name = "raw", type = PortType.MESSAGE, optional = true, filter = "java.nio.ByteBuffer")//,
-		//@RequiredPort(name = "imageDepth", type = PortType.MESSAGE, optional = true)
+		@RequiredPort(name = "image", type = PortType.MESSAGE, optional = true, messageType = "BufferedImage"),
+		@RequiredPort(name = "image_bytes", type = PortType.MESSAGE, optional = true, messageType = "bytes") // TODO
 })
 @Provides({
 		@ProvidedPort(name = "motor", type = PortType.MESSAGE)
@@ -64,7 +63,6 @@ public class Kinect extends AbstractComponentType {
 
 	@Start
 	public void start () throws Exception {
-
 		if (instance == null) {
 			String path = KinectNativeLibraryLoader.configure();
 			if (KinectNativeLibraryLoader.isMac()) {
@@ -221,23 +219,28 @@ public class Kinect extends AbstractComponentType {
 
 	@Port(name = "motor")
 	public void onReceiveMessage (Object message) {
-		int percentage = 50;
-		if (message instanceof Integer) {
-			percentage = (Integer) message;
-			move(percentage);
-		} else if (message instanceof String) {
-			if (message.toString().startsWith("percent=")) {
-				percentage = Integer.parseInt(message.toString().replace("percent=", ""));
-			} else {
-				percentage = Integer.parseInt((String) message);
+
+		try {
+
+			int percentage = 50;
+			if (message instanceof StdKevoreeMessage) {
+				percentage = (Integer) ((StdKevoreeMessage) message).getValue("percent").get();
+				move(percentage);
 			}
-			move(percentage);
-		} else if (message instanceof StdKevoreeMessage) {
-			percentage = (Integer) ((StdKevoreeMessage) message).getValue("percent").get();
-			move(percentage);
-		} else {
-			logger.warn("message received has an unknown type !");
-			// TODO log
+			if (message instanceof Integer) {
+				percentage = (Integer) message;
+				move(percentage);
+			}
+			if (message instanceof String) {
+				if (message.toString().startsWith("percent=")) {
+					percentage = Integer.parseInt(message.toString().replace("percent=", ""));
+				} else {
+					percentage = Integer.parseInt((String) message);
+				}
+				move(percentage);
+			}
+		} catch (Exception e) {
+			logger.debug("Bad message rec ", e);
 		}
 	}
 
