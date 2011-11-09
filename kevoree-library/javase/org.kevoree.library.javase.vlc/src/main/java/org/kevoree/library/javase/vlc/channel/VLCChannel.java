@@ -1,24 +1,17 @@
 package org.kevoree.library.javase.vlc.channel;
 
 import org.kevoree.annotation.*;
-import org.kevoree.framework.AbstractChannelFragment;
-import org.kevoree.framework.ChannelFragmentSender;
-import org.kevoree.framework.KevoreeFragmentPropertyHelper;
-import org.kevoree.framework.KevoreePlatformHelper;
+import org.kevoree.framework.*;
 import org.kevoree.framework.message.Message;
 import org.kevoree.framework.message.StdKevoreeMessage;
 import org.kevoree.library.javase.vlc.MediaPlayerHelper;
 import org.kevoree.library.javase.vlc.VLCReaderActor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import uk.co.caprica.vlcj.player.direct.DirectMediaPlayer;
 import uk.co.caprica.vlcj.player.embedded.EmbeddedMediaPlayer;
-import uk.co.caprica.vlcj.player.headless.HeadlessMediaPlayer;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
+import java.io.*;
+import java.net.Socket;
 
 /**
  * User: Erwan Daubert - erwan.daubert@gmail.com
@@ -45,7 +38,7 @@ import java.io.OutputStream;
 		@DictionaryAttribute(name = "PROTOCOL", defaultValue = "RTP", vals = {"RTP", "RTSP", "HTTP"}),
 		@DictionaryAttribute(name = "PORT", defaultValue = "8080", fragmentDependant = true)
 })
-@ChannelTypeFragment
+@org.kevoree.annotation.ChannelTypeFragment
 // TODO bounds for sender
 public class VLCChannel extends AbstractChannelFragment {
 	private Logger logger = LoggerFactory.getLogger(VLCChannel.class);
@@ -92,7 +85,6 @@ public class VLCChannel extends AbstractChannelFragment {
 			options = formatRtspStream("localhost", parsePortNumber(nodeName),
 					this.getName() + "_" + this.getNodeName());
 		}
-		// TODO define specific options --demux rawvideo --rawvid-fps 30 --rawvid-chroma=R--rawvid-width 640 --rawvid-height
 		mediaPlayer.playMedia(media, options);
 
 
@@ -102,24 +94,37 @@ public class VLCChannel extends AbstractChannelFragment {
 	@Override
 	public Object dispatch (Message msg) {
 		if (msg.getContent() instanceof StdKevoreeMessage) {
-			for (org.kevoree.framework.KevoreePort p : getBindedPorts()) {
-				forward(p, msg);
-			}
 			StdKevoreeMessage message = (StdKevoreeMessage) msg.getContent();
 			if (!message.getValue("bytes").isEmpty() && !message.getValue("width").isEmpty()
 					&& !message.getValue("height").isEmpty() && !message.getValue("chroma").isEmpty()
 					&& !message.getValue("fps").isEmpty()) {
-				for (org.kevoree.framework.KevoreePort p : getBindedPorts()) {
-					forward(p, msg);
-				}
-				if (isWindows()) {
-// TODO
-				} else {
-					try {
-						dispatchOnUnix(message);
-					} catch (IOException e) {
-						e.printStackTrace();
+				try {
+					for (KevoreePort p : getBindedPorts()) {
+						forward(p, msg);
 					}
+					for (KevoreeChannelFragment fragment : this.getOtherFragments()) {
+						Socket s = new Socket(getAddress(fragment.getNodeName()),
+								parsePortNumber(fragment.getNodeName()));
+						if (s.isConnected()) {
+							ObjectOutputStream stream = new ObjectOutputStream(s.getOutputStream());
+							stream.writeObject(message);
+							stream.flush();
+							stream.close();
+							s.close();
+						}
+						if (isWindows()) {
+							// TODO
+						} else {
+							try {
+								dispatchOnUnix(message);
+							} catch (IOException e) {
+								e.printStackTrace();
+							}
+						}
+					}
+
+				} catch (IOException e) {
+					logger.warn("Invalid parameter value. Please check!");
 				}
 			} else {
 				logger.warn(
