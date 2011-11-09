@@ -142,6 +142,7 @@ class KevoreeCoreBean extends KevoreeModelHandlerService with KevoreeActor {
 
   override def stop() {
 
+    logger.warn("Kevoree Core will be stopped !")
 
     listenerActor.stop()
 

@@ -137,7 +137,7 @@ object AetherUtil {
         }
     }
     //BUILD FROM ALL NODE
-    /*
+
     root.getNodes.foreach {
       node =>
         buildURL(root, node.getName).map {
@@ -147,7 +147,7 @@ object AetherUtil {
             }
         }
 
-    }   */
+    }
     result
   }
 
