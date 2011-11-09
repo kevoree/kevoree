@@ -209,7 +209,8 @@ public class VLCChannel extends AbstractChannelFragment {
 		sb.append('/');
 		sb.append(id);
 		sb.append("}");
-		return new String[]{sb.toString(), ":no-sout-rtp-sap", ":no-sout-standard-sap", ":sout-all", ":sout-keep"};
+		return new String[]{sb
+				.toString(), ":no-sout-rtp-sap", ":no-sout-standard-sap", ":sout-all", ":sout-keep"};
 	}
 
 	public String getAddress (String remoteNodeName) {
