@@ -30,8 +30,8 @@ object Tester extends App {
 
   val bean = new KevoreeKompareBean
 
-  val model1 = KevoreeXmiHelper.load("/Users/duke/Desktop/webcamBoot.kev")
-  val model2 = KevoreeXmiHelper.load("/Users/duke/Desktop/webcamBase.kev")
+  val model1 = KevoreeXmiHelper.load("/Users/duke/Desktop/drop.kev")
+  val model2 = KevoreeXmiHelper.load("/Users/duke/Desktop/drop2.kev")
 
 
   val adapModel = bean.kompare(model1, model2, "node0")

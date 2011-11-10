@@ -222,10 +222,9 @@ case class TypeDefinitionAspect(selfTD: TypeDefinition) {
 
     /* add all reLib from found deploy Unit*/
     var deployUnitfound: DeployUnit = null
-    selfTD.getDeployUnits.find(du => du.getTargetNodeType.isDefined &&
-      du.getTargetNodeType.get.getName == node.getTypeDefinition.getName) match {
+    selfTD.getDeployUnits.find(du => du.getTargetNodeType.isDefined && du.getTargetNodeType.get.getName == node.getTypeDefinition.getName) match {
       case Some(e) => {
-        logger.info("found deploy unit => " + e.getUnitName)
+        logger.info("found deploy unit => " + e.getUnitName+" for type "+selfTD.getName)
         deployUnitfound = e
       }
       case _ => logger.info("Deploy Unit not found on first level " + selfTD.getName)
