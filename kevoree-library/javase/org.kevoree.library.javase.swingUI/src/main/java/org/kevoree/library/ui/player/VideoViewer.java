@@ -116,7 +116,7 @@ public class VideoViewer extends AbstractComponentType {
 				StdKevoreeMessage msg = (StdKevoreeMessage) message;
 				height = (Integer) msg.getValue("height").get();
 				width = (Integer) msg.getValue("width").get();
-//				bytes = ((byte[]) msg.getValue("bytes").get());
+				bytes = ((byte[]) msg.getValue("bytes").get());
 
 
 				if (image == null || width != image.getWidth(null) || height != image.getHeight(null)) {
@@ -129,10 +129,10 @@ public class VideoViewer extends AbstractComponentType {
 					sampleModel = new ComponentSampleModel(DataBuffer.TYPE_BYTE, width, height, 4, width * 4,
 							new int[]{2, 1, 0});
 					buffer = new DataBufferByte(bytes, bytes.length);
-					raster = Raster.createRaster(sampleModel, buffer, null);
-					bytes = new byte[((byte[]) msg.getValue("bytes").get()).length];
+//					bytes = new byte[((byte[]) msg.getValue("bytes").get()).length];
 				}
-				System.arraycopy(((byte[]) msg.getValue("bytes").get()), 0, bytes, 0, bytes.length);
+//				System.arraycopy(((byte[]) msg.getValue("bytes").get()), 0, bytes, 0, bytes.length);
+				raster = Raster.createRaster(sampleModel, buffer, null);
 				image.setData(raster);
 
 				Graphics2D g = (Graphics2D) bufferStrategy.getDrawGraphics();
