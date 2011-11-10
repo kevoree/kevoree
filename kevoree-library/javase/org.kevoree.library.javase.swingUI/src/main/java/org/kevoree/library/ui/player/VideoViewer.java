@@ -6,13 +6,9 @@ import org.kevoree.framework.message.StdKevoreeMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
-import java.awt.image.BufferStrategy;
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
+import java.awt.image.*;
 
 /**
  * User: Erwan Daubert - erwan.daubert@gmail.com
@@ -66,7 +62,6 @@ public class VideoViewer extends AbstractComponentType {
 	}
 
 	private void init () {
-
 		frame = new JFrame(this.getName());
 		frame.setVisible(true);
 		frame.createBufferStrategy(2);
@@ -79,22 +74,23 @@ public class VideoViewer extends AbstractComponentType {
 		if (!isAlreadyInitialized) {
 			init();
 		}
-		if (message instanceof BufferedImage) {
-			image = (BufferedImage) message;
+		if (message instanceof StdKevoreeMessage && !((StdKevoreeMessage) message).getValue("image").isEmpty()
+				&& ((StdKevoreeMessage) message).getValue("image").get() instanceof BufferedImage) {
+			image = (BufferedImage) ((StdKevoreeMessage) message).getValue("image").get();
+			/*if (message instanceof BufferedImage) {
+						image = (BufferedImage) message;*/
 			if (!isAlreadyInitialized) {
 				frame = new JFrame(this.getName());
 				frame.setVisible(true);
 				init();
 				isAlreadyInitialized = true;
 			}
-			if (width != ((BufferedImage) message).getWidth(null) || height != ((BufferedImage) message)
-					.getHeight(null)) {
-				width = ((BufferedImage) message).getWidth(null);
-				height = ((BufferedImage) message).getHeight(null);
+			if (width != image.getWidth(null) || height != image.getHeight(null)) {
+				width = image.getWidth(null);
+				height = image.getHeight(null);
 				frame.setSize(width, height);
 			}
 			try {
-
 				Graphics2D g = (Graphics2D) bufferStrategy.getDrawGraphics();
 				g.drawImage(image, 0, 0, image.getWidth(null), image.getHeight(null), null);
 				g.dispose();
@@ -102,60 +98,50 @@ public class VideoViewer extends AbstractComponentType {
 			} catch (Exception e) {
 				logger.debug("Something wrong appears, maybe the viewer fails", e);
 			}
-
 		}
 	}
 
 	byte[] bytes;
+	DataBufferByte buffer;
+	SampleModel sampleModel;
+	Raster raster ;
 
 	@Port(name = "image_bytes")
 	public void onReceiveImageBytes (Object message) {
-		if (!isAlreadyInitialized) {
-			init();
-		}
-		if (message instanceof int[]) {
-			int imageWidth = ((int[]) message)[0];
-			int imageHeight = ((int[]) message)[1];
-			if (width != imageWidth || height != imageHeight) {
-				width = imageWidth;
-				height = imageHeight;
-				frame.setSize(width, height);
-				image = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice()
-						.getDefaultConfiguration()
-						.createCompatibleImage(width, height);
+		try {
+			if (!isAlreadyInitialized) {
+				init();
 			}
-			try {
-				image.setRGB(0, 0, width, height, ((int[]) message), 2, width);
+			if (message instanceof StdKevoreeMessage) {
+				StdKevoreeMessage msg = (StdKevoreeMessage) message;
+				height = (Integer) msg.getValue("height").get();
+				width = (Integer) msg.getValue("width").get();
+				bytes = ((byte[]) msg.getValue("bytes").get());
+
+
+				if (image == null || width != image.getWidth(null) || height != image.getHeight(null)) {
+					frame.setSize(width, height);
+					image = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice()
+							.getDefaultConfiguration()
+							.createCompatibleImage(width, height);
+
+
+					sampleModel = new ComponentSampleModel(DataBuffer.TYPE_BYTE, width, height, 4, width * 4,
+							new int[]{2, 1, 0});
+					buffer = new DataBufferByte(bytes, bytes.length);
+//					bytes = new byte[((byte[]) msg.getValue("bytes").get()).length];
+				}
+//				System.arraycopy(((byte[]) msg.getValue("bytes").get()), 0, bytes, 0, bytes.length);
+				raster = Raster.createRaster(sampleModel, buffer, null);
+				image.setData(raster);
+
 				Graphics2D g = (Graphics2D) bufferStrategy.getDrawGraphics();
 				g.drawImage(image, 0, 0, image.getWidth(), image.getHeight(), null);
 				g.dispose();
 				bufferStrategy.show();
-			} catch (Exception e) {
-				logger.debug("Something wrong appears, maybe the viewer fails", e);
 			}
-		}
-
-		if (message instanceof StdKevoreeMessage) {
-			StdKevoreeMessage msg = new StdKevoreeMessage();
-			if (bytes == null) {
-				bytes = new byte[((byte[]) msg.getValue("bytes").get()).length];
-			}
-			System.arraycopy((byte[]) msg.getValue("bytes").get(), 0, bytes, 0, bytes.length);
-			height = (Integer) msg.getValue("height").get();
-			width = (Integer) msg.getValue("width").get();
-			/*chroma = msg.getValue("chroma").get();
-			fps = msg.getValue("fps").get();*/
-
-			ByteArrayInputStream in = new ByteArrayInputStream(bytes);
-			try {
-				image = ImageIO.read(in);
-				Graphics2D g = (Graphics2D) bufferStrategy.getDrawGraphics();
-				g.drawImage(image, 0, 0, image.getWidth(), image.getHeight(), null);
-				g.dispose();
-				bufferStrategy.show();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 	}
 }
