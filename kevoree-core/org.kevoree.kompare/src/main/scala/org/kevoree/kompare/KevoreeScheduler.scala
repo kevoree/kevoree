@@ -68,6 +68,12 @@ trait KevoreeScheduler {
     step.addAllAdaptations(adaptionModel.getAdaptations.filter(adapt => adapt.getPrimitiveType.getName == JavaSePrimitive.AddThirdParty))
     currentStep.setNextStep(Some(step))
     currentStep = step
+    
+    // ADD ThirdParty
+    step = KevoreeAdaptationFactory.eINSTANCE.createParallelStep
+    step.addAllAdaptations(adaptionModel.getAdaptations.filter(adapt => adapt.getPrimitiveType.getName == JavaSePrimitive.UpdateDeployUnit))
+    currentStep.setNextStep(Some(step))
+    currentStep = step
 
     // ADD DeployUnit
     step = KevoreeAdaptationFactory.eINSTANCE.createParallelStep

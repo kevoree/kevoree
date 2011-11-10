@@ -54,6 +54,8 @@ class NodeChecker extends CheckerService {
               node.getTypeDefinition.getName)
             violation.setTargetObjects(List(node))
             violations = violations ++ List(violation)
+            //println("fuck "+node.getTypeDefinition.getName)
+            
           }
           case _ =>
         }
