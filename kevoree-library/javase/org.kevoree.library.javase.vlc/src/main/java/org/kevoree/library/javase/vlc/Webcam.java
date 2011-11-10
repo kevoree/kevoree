@@ -19,6 +19,8 @@ import org.kevoree.annotation.*;
 import org.kevoree.framework.AbstractComponentType;
 import org.kevoree.framework.MessagePort;
 import org.kevoree.framework.message.StdKevoreeMessage;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import uk.co.caprica.vlcj.player.direct.DirectMediaPlayer;
 import uk.co.caprica.vlcj.player.direct.RenderCallback;
 
@@ -57,6 +59,7 @@ import java.awt.image.BufferedImage;
 @Library(name = "JavaSE")
 @ComponentType
 public class Webcam extends AbstractComponentType {
+	private static final Logger logger = LoggerFactory.getLogger(Webcam.class);
 	private DirectMediaPlayer mediaPlayer;
 
 	@Start
@@ -65,7 +68,7 @@ public class Webcam extends AbstractComponentType {
 		String device = (String) this.getDictionary().get("DEVICE");
 		mediaPlayer = MediaPlayerHelper.getInstance().getFactory(this.getName())
 				.newDirectMediaPlayer(getWidth(), getHeight(), new OwnRenderCallback(getWidth(), getHeight()));
-		mediaPlayer.playMedia(device, ":qtcapcture-caching=1:v4l2-caching=1");
+		mediaPlayer.playMedia(device);
 	}
 
 	@Stop
@@ -86,6 +89,7 @@ public class Webcam extends AbstractComponentType {
 			String[] values = format.split("x");
 			return Integer.parseInt(values[1]);
 		} catch (Exception e) {
+			logger.warn("invalid format value");
 			return 600;
 		}
 	}
@@ -96,6 +100,7 @@ public class Webcam extends AbstractComponentType {
 			String[] values = format.split("x");
 			return Integer.parseInt(values[0]);
 		} catch (Exception e) {
+			logger.warn("invalid format value");
 			return 800;
 		}
 	}
@@ -118,12 +123,13 @@ public class Webcam extends AbstractComponentType {
 			ints = new int[width * height];
 		}
 
-		/*@Override
-		public void onDisplay (int[] data) {
+//		@Override
+		/*public void onDisplay (int[] data) {
 			// The image data could be manipulated here...
 			if (isPortBinded("image")) {
 				image.setRGB(0, 0, width, height, data, 0, width);
 				getPortByName("image", MessagePort.class).process(image);
+				System.out.println("send");
 			}
 
 			if (isPortBinded("image_bytes")) {
@@ -133,10 +139,10 @@ public class Webcam extends AbstractComponentType {
 				msg.putValue("width", data);
 				msg.putValue("chroma", data);
 				msg.putValue("fps", data);
-				*//*int[] newData = new int[data.length + 2];
+				int[] newData = new int[data.length + 2];
 				newData[0] = width;
 				newData[1] = height;
-				System.arraycopy(data, 0, newData, 2, data.length);*//*
+				System.arraycopy(data, 0, newData, 2, data.length);
 				getPortByName("image_bytes", MessagePort.class).process(msg);
 			}
 		}*/
@@ -144,19 +150,22 @@ public class Webcam extends AbstractComponentType {
 		@Override
 		public void display (Memory memory) {
 			if (isPortBinded("image_bytes")) {
-				memory.read(0, bytes, 0, width * height * 4);
 				StdKevoreeMessage msg = new StdKevoreeMessage();
-				msg.putValue("bytes", ints);
+				memory.read(0, bytes, 0, width * height * 4);
+				msg.putValue("bytes", bytes);
 				msg.putValue("height", height);
 				msg.putValue("width", width);
 				msg.putValue("chroma", "RV32");
 				msg.putValue("fps", "30");
+
 				getPortByName("image_bytes", MessagePort.class).process(msg);
 			}
 			if (isPortBinded("image")) {
-				memory.read(0, ints, 0, width * height * 4);
+				StdKevoreeMessage msg = new StdKevoreeMessage();
+				memory.read(0, ints, 0, width * height);
 				image.setRGB(0, 0, width, height, ints, 0, width);
-				getPortByName("image", MessagePort.class).process(image);
+				msg.putValue("image", image);
+				getPortByName("image", MessagePort.class).process(msg);
 			}
 		}
 	}
