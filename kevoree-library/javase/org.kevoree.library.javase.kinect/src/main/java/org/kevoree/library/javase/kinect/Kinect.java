@@ -130,7 +130,10 @@ public class Kinect extends AbstractComponentType {
 								}
 								image.getGraphics().dispose();
 								//image.setRGB(0, 0, format.getWidth(), format.getHeight(), pixels, 0, format.getWidth());
-								getPortByName("image", MessagePort.class).process(image);
+								StdKevoreeMessage msg = new StdKevoreeMessage();
+								msg.putValue("image", image);
+								getPortByName("image", MessagePort.class).process(msg);
+//								getPortByName("image", MessagePort.class).process(image);
 							}
 							lastTimeStamp = System.currentTimeMillis();
 						}
@@ -174,7 +177,10 @@ public class Kinect extends AbstractComponentType {
 								}
 								image.getGraphics().dispose();
 
-								getPortByName("image", MessagePort.class).process(image);
+								StdKevoreeMessage msg = new StdKevoreeMessage();
+								msg.putValue("image", image);
+								getPortByName("image", MessagePort.class).process(msg);
+								//								getPortByName("image", MessagePort.class).process(image);
 							}
 							lastTimeStamp = System.currentTimeMillis();
 						}
