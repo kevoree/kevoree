@@ -1,3 +1,4 @@
+/*
 package org.kevoree.library.javase.vlc.channel;
 
 import org.kevoree.ComponentInstance;
@@ -17,6 +18,7 @@ import uk.co.caprica.vlcj.player.embedded.EmbeddedMediaPlayer;
 import java.io.*;
 import java.net.Socket;
 
+*/
 /**
  * User: Erwan Daubert - erwan.daubert@gmail.com
  * Date: 08/11/11
@@ -24,7 +26,8 @@ import java.net.Socket;
  *
  * @author Erwan Daubert
  * @version 1.0
- */
+ *//*
+
 
 @Library(name = "JavaSE")
 @MessageTypes({
@@ -314,3 +317,4 @@ public class VLCChannel extends AbstractChannelFragment {
 		}
 	}
 }
+*/
