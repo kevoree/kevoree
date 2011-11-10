@@ -18,6 +18,7 @@ import org.junit.Test
 import org.kevoree.core.basechecker.cyclechecker.ComponentCycleChecker
 import org.kevoree.core.basechecker.nodechecker.NodeChecker
 import org.scalatest.Assertions._
+import org.kevoree.framework.KevoreeXmiHelper
 
 /**
  * Created by IntelliJ IDEA.
@@ -30,16 +31,29 @@ import org.scalatest.Assertions._
 class DeployUnitCheckerTest extends AssertionsForJUnit with BaseCheckerSuite {
 
   @Test def verifyCycleDetectionOK() {
+
+
  		val m = model("test_checker/nodeployunit/nodeployNode.kev")
     val nodeChecker = new NodeChecker
     val violations = nodeChecker.check(m)
-
     assert(violations.size().equals(1))
 
 
     val m2 = model("test_checker/nodeployunit/nodeployNodeOk.kev")
     val violations2 = nodeChecker.check(m2)
     assert(violations2.size().equals(0))
+    
+    /*
+    val m3 = KevoreeXmiHelper.load("/Users/duke/Desktop/drop.kev")
+    val violations3 = nodeChecker.check(m3)
+    
+    import scala.collection.JavaConversions._
+    violations3.foreach{
+      v => println(v.getMessage)
+    }
+
+    println(violations3.size())
+    */
   }
   
 }

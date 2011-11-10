@@ -14,12 +14,10 @@
     <artifactId>org.kevoree.library.javase.webserver.gallery</artifactId>
     <name>Kevoree :: Library :: JavaSE :: WebServer :: Gallery</name>
 
-
     <properties>
         <!-- Convenience property to set the GWT version -->
         <gwtVersion>2.4.0</gwtVersion>
         <!-- GWT needs at least java 1.5 -->
-        <webappDirectory>${project.build.directory}/${project.build.finalName}</webappDirectory>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
@@ -28,13 +26,13 @@
             <groupId>com.google.gwt</groupId>
             <artifactId>gwt-servlet</artifactId>
             <version>${gwtVersion}</version>
-            <scope>runtime</scope>
+         <!--   <scope>runtime</scope>-->
         </dependency>
         <dependency>
             <groupId>com.google.gwt</groupId>
             <artifactId>gwt-user</artifactId>
             <version>${gwtVersion}</version>
-            <scope>provided</scope>
+         <!--   <scope>provided</scope>-->
         </dependency>
         <dependency>
             <groupId>javax.validation</groupId>
@@ -68,10 +66,20 @@
             <scope>system</scope>
             <systemPath>${basedir}/lib/gwt-fx-v0.5.0.jar</systemPath>
         </dependency>
-
     </dependencies>
 
     <build>
+        <resources>
+            <resource>
+                <directory>${basedir}/src/main/resources</directory>
+            </resource>
+            <resource>
+                <directory>
+                    ${project.build.directory}/${project.build.finalName}/org.kevoree.library.javase.webserver.gallery.KevoreeGWTGallery
+                </directory>
+            </resource>
+        </resources>
+
         <plugins>
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
@@ -79,6 +87,7 @@
                 <version>2.4.0</version>
                 <executions>
                     <execution>
+                        <phase>generate-resources</phase>
                         <configuration>
                             <module>org.kevoree.library.javase.webserver.gallery.KevoreeGWTGallery</module>
                         </configuration>
@@ -105,6 +114,20 @@
                     </execution>
                 </executions>
             </plugin>
+
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <version>2.3.5</version>
+                <extensions>true</extensions>
+                <configuration>
+                    <instructions>
+                        <Export-Package>org.kevoree.library.javase.webserver.gallery.*</Export-Package>
+                        <Import-Package>!org.adamtacy.*,!org.kevoree.library.javase.webserver.gallery.*,!com.google.*,org.kevoree.*,scala.*,java.*,javax.*,org.slf4j.*</Import-Package>
+                    </instructions>
+                </configuration>
+            </plugin>
+
         </plugins>
     </build>
 </project>

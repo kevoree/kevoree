@@ -23,9 +23,9 @@
                 <extensions>true</extensions>
                 <configuration>
                     <instructions>
-                        <Import-Package>!org.kevoree.library.android.fakeDomo.*,org.osgi.*;version="[1,5)",*
+                        <Import-Package>!org.kevoree.library.*,org.osgi.*;version="[1,5)",*
                         </Import-Package>
-                        <Export-Package>org.kevoree.library.android.fakeDomo.*</Export-Package>
+                        <Export-Package>org.kevoree.library.*</Export-Package>
                     </instructions>
                 </configuration>
             </plugin>

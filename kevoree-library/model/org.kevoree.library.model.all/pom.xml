@@ -146,6 +146,7 @@
             <artifactId>org.kevoree.library.android.nodeType</artifactId>
             <version>${kevoree.version}</version>
         </dependency>
+
         <dependency>
             <groupId>org.kevoree.library.android</groupId>
             <artifactId>org.kevoree.library.android.fakeDomo</artifactId>
