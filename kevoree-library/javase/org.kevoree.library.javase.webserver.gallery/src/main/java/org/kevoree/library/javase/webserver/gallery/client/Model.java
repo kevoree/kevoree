@@ -26,7 +26,7 @@ public class Model extends KevoreeGWTGallery {
 
     void getAlbums() {
         final GUI  gui = new GUI();
-        String url = base + "script/albums.php";
+        String url = base + "service/albums";
         RequestBuilder builder = new RequestBuilder(RequestBuilder.GET, URL.encode(url));
         try {
             builder.sendRequest(null, new RequestCallback() {
@@ -62,7 +62,7 @@ public class Model extends KevoreeGWTGallery {
      */
     ArrayList<Media> getAlbum(final GUI gui,final String albumid, final boolean callGUI) {
 
-        String url = base + "script/album.php?filename=" + albumid;
+        String url = base + "service/albums?filename=" + albumid;
         RequestBuilder builder = new RequestBuilder(RequestBuilder.GET, URL.encode(url));
         try {
             builder.sendRequest(null, new RequestCallback() {

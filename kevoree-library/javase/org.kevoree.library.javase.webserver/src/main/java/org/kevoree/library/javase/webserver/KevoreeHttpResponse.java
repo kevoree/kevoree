@@ -41,4 +41,14 @@ public class KevoreeHttpResponse implements Serializable {
     public void setContent(String content) {
         this.content = content;
     }
+
+    private byte[] rawContent = null;
+
+    public byte[] getRawContent() {
+        return rawContent;
+    }
+
+    public void setRawContent(byte[] rawContent) {
+        this.rawContent = rawContent;
+    }
 }
