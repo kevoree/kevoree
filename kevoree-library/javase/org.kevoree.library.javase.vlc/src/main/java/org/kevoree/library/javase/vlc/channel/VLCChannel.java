@@ -1,5 +1,10 @@
+/*
 package org.kevoree.library.javase.vlc.channel;
 
+import org.kevoree.ComponentInstance;
+import org.kevoree.ContainerRoot;
+import org.kevoree.DictionaryValue;
+import org.kevoree.MBinding;
 import org.kevoree.annotation.*;
 import org.kevoree.framework.*;
 import org.kevoree.framework.message.Message;
@@ -13,6 +18,7 @@ import uk.co.caprica.vlcj.player.embedded.EmbeddedMediaPlayer;
 import java.io.*;
 import java.net.Socket;
 
+*/
 /**
  * User: Erwan Daubert - erwan.daubert@gmail.com
  * Date: 08/11/11
@@ -20,7 +26,8 @@ import java.net.Socket;
  *
  * @author Erwan Daubert
  * @version 1.0
- */
+ *//*
+
 
 @Library(name = "JavaSE")
 @MessageTypes({
@@ -179,7 +186,7 @@ public class VLCChannel extends AbstractChannelFragment {
 		return (os.contains("win"));
 	}
 
-	private static String[] formatHttpStream (String serverAddress, int serverPort) {
+	private String[] formatHttpStream (String serverAddress, int serverPort) {
 		StringBuilder sb = new StringBuilder(60);
 		sb.append(":sout=#duplicate{dst=std{access=http,mux=ts,");
 		sb.append("dst=");
@@ -190,7 +197,7 @@ public class VLCChannel extends AbstractChannelFragment {
 		return new String[]{sb.toString()};
 	}
 
-	private static String[] formatRtpStream (String serverAddress, int serverPort) {
+	private String[] formatRtpStream (String serverAddress, int serverPort) {
 		StringBuilder sb = new StringBuilder(60);
 		sb.append(":sout=#rtp{dst=");
 		sb.append(serverAddress);
@@ -200,7 +207,7 @@ public class VLCChannel extends AbstractChannelFragment {
 		return new String[]{sb.toString(), ":no-sout-rtp-sap", ":no-sout-standard-sap", ":sout-all", ":sout-keep"};
 	}
 
-	private static String[] formatRtspStream (String serverAddress, int serverPort, String id) {
+	private String[] formatRtspStream (String serverAddress, int serverPort, String id) {
 		StringBuilder sb = new StringBuilder(60);
 		sb.append(":sout=#rtp{sdp=rtsp://@");
 		sb.append(serverAddress);
@@ -210,7 +217,83 @@ public class VLCChannel extends AbstractChannelFragment {
 		sb.append(id);
 		sb.append("}");
 		return new String[]{sb
-				.toString(), ":no-sout-rtp-sap", ":no-sout-standard-sap", ":sout-all", ":sout-keep"};
+				.toString(), ":no-sout-rtp-sap", ":no-sout-standard-sap", ":sout-all", ":sout-keep",
+				":demux=rawvideo", ":rawvid-fps=" + getFps(),
+				"rawvid-chroma=" + getChroma(),
+				"rawvid-width=" + getWidth(),
+				"rawvid-height=" + getHeight()};
+	}
+
+
+	private String fps;
+	private String chroma;
+	private String width;
+	private String height;
+
+	private void lookForAttribute () {
+		ContainerRoot root = this.getModelService().getLastModel();
+		for (MBinding binding : root.getMBindingsForJ()) {
+			if (binding.getHub().getName().equals(this.getName()) && ((ComponentInstance) binding.getPort()
+					.eContainer()).getName().equals(this.getNodeName())) {
+				ComponentInstance component = ((ComponentInstance) binding.getPort().eContainer());
+				for (DictionaryValue value : component.getDictionary().get().getValuesForJ()) {
+					if (value.getAttribute().getName().equalsIgnoreCase("fps")) {
+						fps = value.getValue();
+					} else if (value.getAttribute().getName().equalsIgnoreCase("chroma")) {
+						chroma = value.getValue();
+					} else if (value.getAttribute().getName().equalsIgnoreCase("width")) {
+						width = value.getValue();
+					} else if (value.getAttribute().getName().equalsIgnoreCase("height")) {
+						height = value.getValue();
+					} else if (value.getAttribute().getName().equalsIgnoreCase("format")) {
+						String format = value.getValue();
+						String[] values = format.split("x");
+						width = values[0];
+						height = values[1];
+					}
+				}
+			}
+		}
+	}
+
+	private String getFps () {
+		if (fps == null) {
+			lookForAttribute();
+		}
+		if (fps != null) {
+			return fps;
+		}
+		return "30";
+	}
+
+	private String getChroma () {
+		if (chroma == null) {
+			lookForAttribute();
+		}
+		if (chroma != null) {
+			return chroma;
+		}
+		return "RV32"; // TODO
+	}
+
+	private String getWidth () {
+		if (width == null) {
+			lookForAttribute();
+		}
+		if (width != null) {
+			return width;
+		}
+		return "640";
+	}
+
+	private String getHeight () {
+		if (height == null) {
+			lookForAttribute();
+		}
+		if (height != null) {
+			return height;
+		}
+		return "480";
 	}
 
 	public String getAddress (String remoteNodeName) {
@@ -234,3 +317,4 @@ public class VLCChannel extends AbstractChannelFragment {
 		}
 	}
 }
+*/
