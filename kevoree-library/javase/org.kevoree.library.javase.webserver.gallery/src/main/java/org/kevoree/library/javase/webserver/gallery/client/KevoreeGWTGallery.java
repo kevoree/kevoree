@@ -20,8 +20,7 @@ public class KevoreeGWTGallery implements EntryPoint {
     /* preferences */
     public static String language;
     public static String currentAlbum;
-
-    public static String base = GWT.getModuleBaseURL()+"../";
+    public static String base = GWT.getHostPageBaseURL();
     //public static String base = "http://127.0.0.1:9888/takoon/";
 
     public static GWTGalleriaTranslations constants = GWT.create(GWTGalleriaTranslations.class);
@@ -42,7 +41,7 @@ public class KevoreeGWTGallery implements EntryPoint {
 
         final RootPanel loginPanel = RootPanel.get("gwtlogin");
         VerticalPanel loginLayout = new VerticalPanel();
-        Image img = new Image("tkfamily.jpg");
+        Image img = new Image("kevoree-logo-full.png");
         loginLayout.add(img);
         final TextBox login = new TextBox();
         final PasswordTextBox pass = new PasswordTextBox();
@@ -63,7 +62,7 @@ public class KevoreeGWTGallery implements EntryPoint {
         loginBT.addClickHandler(new ClickHandler() {
             public void onClick(ClickEvent event) {
 
-                String url = base + "script/login.php?user="+login.getText()+"&pass="+pass.getText();
+                String url = base + "service/login?user="+login.getText()+"&pass="+pass.getText();
                 RequestBuilder builder = new RequestBuilder(RequestBuilder.GET, URL.encode(url));
                 try {
                     builder.sendRequest(null, new RequestCallback() {

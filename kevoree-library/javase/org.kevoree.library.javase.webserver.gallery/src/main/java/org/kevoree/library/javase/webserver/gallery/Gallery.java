@@ -1,6 +1,9 @@
 package org.kevoree.library.javase.webserver.gallery;
 
 import org.kevoree.annotation.ComponentType;
+import org.kevoree.annotation.DictionaryAttribute;
+import org.kevoree.annotation.DictionaryType;
+import org.kevoree.annotation.Update;
 import org.kevoree.library.javase.webserver.AbstractPage;
 import org.kevoree.library.javase.webserver.KevoreeHttpRequest;
 import org.kevoree.library.javase.webserver.KevoreeHttpResponse;
@@ -8,10 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import scala.io.Source;
 
-import java.io.BufferedReader;
-import java.io.ByteArrayOutputStream;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.*;
 
 /**
  * Created by IntelliJ IDEA.
@@ -21,11 +21,14 @@ import java.io.InputStreamReader;
  * To change this template use File | Settings | File Templates.
  */
 @ComponentType
+@DictionaryType({
+        @DictionaryAttribute(name = "basedir", defaultValue = "/Users/duke/Pictures")
+})
 public class Gallery extends AbstractPage {
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    public static byte[] convertStreamToString(InputStream in) throws Exception {
+    public static byte[] convertStream(InputStream in) throws Exception {
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         byte[] buffer = new byte[1024];
         int l;
@@ -37,8 +40,44 @@ public class Gallery extends AbstractPage {
         return out.toByteArray();
     }
 
+    LoginService loginService = new LoginService();
+    AlbumsService albumsService = new AlbumsService();
+    ThumbService thumbService = new ThumbService();
+
+    @Override
+    public void startPage() {
+        update();
+        super.startPage();
+    }
+
+    @Update
+    public void update() {
+        albumsService.setBaseDir(new File(this.getDictionary().get("basedir").toString()));
+        thumbService.setBaseDir(new File(this.getDictionary().get("basedir").toString()));
+    }
+
+
+    public boolean processService(KevoreeHttpRequest request, KevoreeHttpResponse response) {
+        if (request.getUrl().endsWith("/service/login")) {
+            loginService.processService(request, response);
+            return true;
+        }
+        if (request.getUrl().endsWith("/service/albums")) {
+            albumsService.processService(request, response);
+            return true;
+        }
+        if (request.getUrl().endsWith("/service/thumb")) {
+            thumbService.processService(request, response);
+            return true;
+        }
+        return false;
+    }
+
     @Override
     public KevoreeHttpResponse process(KevoreeHttpRequest request, KevoreeHttpResponse response) {
+        if (processService(request, response)) {
+            return response;
+        }
         String file = request.getUrl().substring(request.getUrl().lastIndexOf("/"));
         if (file == null || file.equals("") || file.equals("/")) {
             file = "index.html";
@@ -47,16 +86,33 @@ public class Gallery extends AbstractPage {
         InputStream in = this.getClass().getClassLoader().getResourceAsStream(file);
         if (in != null) {
             try {
-                response.setContent(new String(convertStreamToString(in),"UTF-8"));
+                if (isRaw(request.getUrl())) {
+                    response.setRawContent(convertStream(in));
+                } else {
+                    response.setContent(new String(convertStream(in), "UTF-8"));
+                }
                 response.setContentType(getHttpHeaderFromURL(request.getUrl()));
             } catch (Exception e) {
-                logger.error("",e);
+                logger.error("", e);
             }
 
         } else {
             response.setContent("File not found " + file);
         }
         return response;
+    }
+
+    private boolean isRaw(String url) {
+        if (url.endsWith(".js")) {
+            return false;
+        }
+        if (url.endsWith(".html")) {
+            return false;
+        }
+        if (url.endsWith(".css")) {
+            return false;
+        }
+        return true;
     }
 
     private String getHttpHeaderFromURL(String url) {
