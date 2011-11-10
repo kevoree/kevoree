@@ -48,7 +48,11 @@ class RootService(id: String, request: MessagePort, bootstrap: ServerBootstrap, 
       case msg: org.kevoree.library.javase.webserver.KevoreeHttpResponse => {
         map.get(msg.getTokenID) match {
           case Some(responder) => {
-            responder._1.complete(response(msg.getContent))
+            if(msg.getRawContent !=null){
+              responder._1.complete(rawResponse(msg.getRawContent,200,List(HttpHeader("Content-Type",msg.getContentType))))
+            } else {
+              responder._1.complete(response(msg.getContent,200,List(HttpHeader("Content-Type",msg.getContentType))))
+            }
             map.remove(msg.getTokenID)
           }
           case None => log.error("responder not found for tokenID=" + msg.getTokenID)
@@ -70,7 +74,7 @@ class RootService(id: String, request: MessagePort, bootstrap: ServerBootstrap, 
   protected def receive = {
 
     case RequestContext(HttpRequest(HttpMethods.GET, "/favicon.ico", _, _, _), _, responder) =>
-      responder.complete(response("Unknown resource!", 404))
+      responder.complete(response("Unknown resource!", 404,defaultHeaders))
 
     case RequestContext(HttpRequest(HttpMethods.GET, url, _, _, _), _, responder) =>
       val kevMsg = new KevoreeHttpRequest
@@ -97,7 +101,8 @@ class RootService(id: String, request: MessagePort, bootstrap: ServerBootstrap, 
 
   val defaultHeaders = List(HttpHeader("Content-Type", "text/html"))
 
-  def response(msg: String, status: Int = 200) = HttpResponse(status, defaultHeaders, msg.getBytes("UTF-8"))
+  def rawResponse(msg: Array[Byte], status: Int = 200,headers  :List[HttpHeader]) = HttpResponse(status, headers, msg)
+  def response(msg: String, status: Int = 200,headers  :List[HttpHeader]) = HttpResponse(status, headers, msg.getBytes("UTF-8"))
 
   ////////////// helpers //////////////
   /*

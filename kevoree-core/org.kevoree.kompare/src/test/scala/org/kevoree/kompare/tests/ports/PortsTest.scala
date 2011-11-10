@@ -77,9 +77,9 @@ class PortsTest extends AssertionsForJUnit with KompareSuite {
     kompareModel shouldContain(JavaSePrimitive.UpdateDictionaryInstance, "ComponentPrimitiveTypeService--690416444")
     kompareModel shouldContain(JavaSePrimitive.StartInstance, "ComponentPrimitiveTypeService--690416444")
 
-    //    kompareModel shouldContainSize(JavaSePrimitive.UpdateDeployUnit, 1)
+        kompareModel shouldContainSize(JavaSePrimitive.UpdateDeployUnit, 1)
 //    kompareModel shouldContainSize(JavaSePrimitive.RemoveDeployUnit, 1)
-    kompareModel shouldContainSize(JavaSePrimitive.AddDeployUnit, 1)
+  //  kompareModel shouldContainSize(JavaSePrimitive.AddDeployUnit, 1)
 
   }
 
@@ -127,9 +127,9 @@ class PortsTest extends AssertionsForJUnit with KompareSuite {
     kompareModel shouldContain(JavaSePrimitive.UpdateDictionaryInstance, "ComponentPrimitiveTypeService--690416444")
     kompareModel shouldContain(JavaSePrimitive.StartInstance, "ComponentPrimitiveTypeService--690416444")
 
-    //    kompareModel shouldContainSize(JavaSePrimitive.UpdateDeployUnit, 1)
+        kompareModel shouldContainSize(JavaSePrimitive.UpdateDeployUnit, 1)
 //    kompareModel shouldContainSize(JavaSePrimitive.RemoveDeployUnit, 1)
-    kompareModel shouldContainSize(JavaSePrimitive.AddDeployUnit, 1)
+//    kompareModel shouldContainSize(JavaSePrimitive.AddDeployUnit, 1)
 
   }
 

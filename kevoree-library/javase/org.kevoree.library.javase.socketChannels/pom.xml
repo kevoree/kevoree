@@ -44,6 +44,7 @@
                     </execution>
                 </executions>
             </plugin>
+            <!--
             <plugin>
                 <groupId>org.apache.felix</groupId>
                 <artifactId>maven-bundle-plugin</artifactId>
@@ -53,11 +54,11 @@
                     <execution>
                         <configuration>
                             <Export-Package>org.kevoree.library.socketChannel</Export-Package>
-                            <Import-Package>!org.kevoree.library.socketChannel;*</Import-Package>
+                            <Import-Package>!org.kevoree.library.socketChannel.*</Import-Package>
                         </configuration>
                     </execution>
                 </executions>
-            </plugin>
+            </plugin>-->
         </plugins>
     </build>
 

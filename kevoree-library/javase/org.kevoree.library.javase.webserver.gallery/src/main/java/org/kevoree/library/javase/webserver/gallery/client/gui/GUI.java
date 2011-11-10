@@ -188,7 +188,7 @@ public class GUI extends KevoreeGWTGallery {
     static void populateMenu(List<String> menu) {
 
         Image tklogo = new Image();
-        tklogo.setUrl("TK_LOGO.jpg");
+        tklogo.setUrl("Kev.png");
 
         HMENU_LEFT.add(tklogo);
         for (final String label : menu) {

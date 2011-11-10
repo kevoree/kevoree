@@ -1,4 +1,4 @@
-package org.kevoree.library.android.fakeDomo;
+package org.kevoree.library;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -22,7 +22,7 @@ import java.io.InputStream;
 @Provides({
 		@ProvidedPort(name = "on", type = PortType.MESSAGE),
 		@ProvidedPort(name = "off", type = PortType.MESSAGE),
-		@ProvidedPort(name = "toggle", type = PortType.SERVICE, className = ToggleLightService.class)
+		@ProvidedPort(name = "toggle", type = PortType.SERVICE, className = AToggleLightService.class)
 })
 /*@DictionaryType({
 		@DictionaryAttribute(name = "COLOR_ON", defaultValue = "GREEN", optional = true,
@@ -32,8 +32,8 @@ import java.io.InputStream;
 })*/
 @Library(name = "Android")
 @ComponentType
-public class FakeSimpleLight extends AbstractComponentType implements ToggleLightService {
-	private static final Logger logger = LoggerFactory.getLogger(FakeSimpleLight.class);
+public class AFakeSimpleLight extends AbstractComponentType implements AToggleLightService {
+	private static final Logger logger = LoggerFactory.getLogger(AFakeSimpleLight.class);
 
 	private KevoreeAndroidService uiService = null;
 	private ImageView view = null;
