@@ -54,6 +54,7 @@ public class Gallery extends AbstractPage {
     public void update() {
         albumsService.setBaseDir(new File(this.getDictionary().get("basedir").toString()));
         thumbService.setBaseDir(new File(this.getDictionary().get("basedir").toString()));
+        super.updatePage();
     }
 
 

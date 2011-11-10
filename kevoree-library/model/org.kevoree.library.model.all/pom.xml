@@ -139,8 +139,16 @@
             <artifactId>org.kevoree.library.javase.webserver.components</artifactId>
             <version>${kevoree.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.kevoree.library.javase</groupId>
+            <artifactId>org.kevoree.library.javase.webserver.gallery</artifactId>
+            <version>${kevoree.version}</version>
+        </dependency>
+
 
         <!-- Android -->
+
+        <!--
         <dependency>
             <groupId>org.kevoree.library.android</groupId>
             <artifactId>org.kevoree.library.android.nodeType</artifactId>
@@ -172,7 +180,7 @@
             <artifactId>org.kevoree.library.android.text2speech</artifactId>
             <version>${kevoree.version}</version>
         </dependency>
-
+-->
     </dependencies>
 
 
