@@ -16,6 +16,16 @@ public class KevoreeHttpResponse implements Serializable {
 
     private String content = "";
 
+    public String getContentType() {
+        return contentType;
+    }
+
+    public void setContentType(String contentType) {
+        this.contentType = contentType;
+    }
+
+    private String contentType = "text/html";
+
     public UUID getTokenID() {
         return tokenID;
     }

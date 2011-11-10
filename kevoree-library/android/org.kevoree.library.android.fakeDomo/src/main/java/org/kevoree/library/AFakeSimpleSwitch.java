@@ -1,4 +1,4 @@
-package org.kevoree.library.android.fakeDomo;
+package org.kevoree.library;
 
 import android.view.View;
 import android.widget.Button;
@@ -19,13 +19,13 @@ import java.util.HashMap;
  * Time: 16:24
  */
 @Requires({
-		@RequiredPort(name = "on", type = PortType.MESSAGE, needCheckDependency = false),
-		@RequiredPort(name = "off", type = PortType.MESSAGE, needCheckDependency = false),
-		@RequiredPort(name = "toggle", type = PortType.SERVICE, className = ToggleLightService.class, optional = true)
+		@RequiredPort(name = "on", type = PortType.MESSAGE, needCheckDependency = false , optional = true),
+		@RequiredPort(name = "off", type = PortType.MESSAGE, needCheckDependency = false ,  optional = true),
+		@RequiredPort(name = "toggle", type = PortType.SERVICE, className = AToggleLightService.class, optional = true)
 })
 @Library(name = "Android")
 @ComponentType
-public class FakeSimpleSwitch extends AbstractComponentType {
+public class AFakeSimpleSwitch extends AbstractComponentType {
 
 	private KevoreeAndroidService uiService = null;
 	private ImageView view = null;
@@ -92,7 +92,7 @@ public class FakeSimpleSwitch extends AbstractComponentType {
 
 	public void toggle () {
 		if (isPortBinded("toggle")) {
-			String state = getPortByName("toggle", ToggleLightService.class).toggle();
+			String state = getPortByName("toggle", AToggleLightService.class).toggle();
 			buttonToggle.setText(state);
 		}
 	}
