@@ -3,9 +3,7 @@ package org.kevoree.library.socketChannel;
 
 import org.kevoree.framework.message.Message;
 
-import java.io.IOException;
 import java.io.Serializable;
-import java.util.List;
 
 /**
  * Created by IntelliJ IDEA.
@@ -29,7 +27,7 @@ public class SocketMessage extends Message implements Serializable {
 	}
 
 
-	private void writeObject (java.io.ObjectOutputStream out) throws IOException {
+	/*private void writeObject (java.io.ObjectOutputStream out) throws IOException {
 		out.writeObject(getContent());
 		out.writeObject(getPassedNodes());
 		out.writeBoolean(getInOut());
@@ -44,7 +42,7 @@ public class SocketMessage extends Message implements Serializable {
 		setInOut(in.readBoolean());
 		setTimeout(in.readLong());
 		setDestNodeName(in.readUTF());
-	}
+	}*/
 
 
 }
