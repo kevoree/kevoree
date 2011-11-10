@@ -34,13 +34,13 @@ class TypeAndInstanceUpdateTest extends KompareSuite {
   @Test def testNoTypeInstall() = {
     val kompareModel = component.kompare(model("test_type/updateBaseModel.art2")/*.setLowerHashCode*/, model("test_type/update2ComponentOneBindingRemove.art2"), "duke")
 
-//    kompareModel.print
+    kompareModel.print
 
 //    println(kompareModel.getAdaptations.size)
 
-//    kompareModel shouldContainSize (JavaSePrimitive.UpdateDeployUnit, 1)
+   kompareModel shouldContainSize (JavaSePrimitive.UpdateDeployUnit, 1)
 //    kompareModel shouldContainSize (JavaSePrimitive.RemoveDeployUnit, 1)
-    kompareModel shouldContainSize (JavaSePrimitive.AddDeployUnit, 1)
+    //kompareModel shouldContainSize (JavaSePrimitive.AddDeployUnit, 1)
 //    kompareModel shouldContain (JavaSePrimitive.UpdateType, "ComponentPrimitiveTypeService")
     kompareModel shouldContain (JavaSePrimitive.RemoveType, "ComponentPrimitiveTypeService")
     kompareModel shouldContain (JavaSePrimitive.AddType, "ComponentPrimitiveTypeService")
