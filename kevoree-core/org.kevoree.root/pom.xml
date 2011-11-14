@@ -7,7 +7,7 @@
     <name>Kevoree :: Root</name>
     <url>https://github.com/dukeboard/kevoree</url>
 
-    <version>1.4.1</version>
+    <version>1.5.O-SNAPSHOT</version>
 
     <properties>
         <scala.version>2.9.1</scala.version>
