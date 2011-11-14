@@ -5,13 +5,13 @@
     <groupId>org.kevoree.library.javase</groupId>
     <artifactId>org.kevoree.library.javase.fakeDomo</artifactId>
     <packaging>bundle</packaging>
-    <version>1.4.1</version>
+    <version>1.5.O-SNAPSHOT</version>
     <name>Kevoree :: Library :: JavaSE :: Fake Domo</name>
 
     <parent>
         <artifactId>org.kevoree.library.javase.root</artifactId>
         <groupId>org.kevoree.library.javase</groupId>
-        <version>1.4.1</version>
+        <version>1.5.O-SNAPSHOT</version>
         <relativePath>../org.kevoree.library.javase.root/pom.xml</relativePath>
     </parent>
 
