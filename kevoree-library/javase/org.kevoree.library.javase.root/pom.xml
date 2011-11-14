@@ -6,12 +6,12 @@
     <artifactId>org.kevoree.library.javase.root</artifactId>
     <packaging>pom</packaging>
     <name>Kevoree :: Library :: JavaSE :: Root</name>
-    <version>1.4.1-SNAPSHOT</version>
+    <version>1.4.1</version>
 
     <parent>
         <artifactId>org.kevoree.library</artifactId>
         <groupId>org.kevoree.library</groupId>
-        <version>1.4.1-SNAPSHOT</version>
+        <version>1.4.1</version>
         <relativePath>../../pom.xml</relativePath>
     </parent>
 
@@ -23,7 +23,7 @@
     <modules>
 
         <module>../org.kevoree.library.javase.rest</module>
-        <module>../org.kevoree.library.javase.restChannels</module>
+       <!-- <module>../org.kevoree.library.javase.restChannels</module>-->
         <module>../org.kevoree.library.javase.restAutoDiscovery</module>
 
 
