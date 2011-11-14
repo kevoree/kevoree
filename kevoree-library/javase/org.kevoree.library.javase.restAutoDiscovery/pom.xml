@@ -6,12 +6,12 @@
     <artifactId>org.kevoree.library.javase.restAutoDiscovery</artifactId>
     <packaging>bundle</packaging>
     <name>Kevoree :: Library :: JavaSE :: RestAutoDiscovery</name>
-    <version>1.4.1-SNAPSHOT</version>
+    <version>1.4.1</version>
 
     <parent>
         <artifactId>org.kevoree.library.javase.root</artifactId>
         <groupId>org.kevoree.library.javase</groupId>
-        <version>1.4.1-SNAPSHOT</version>
+        <version>1.4.1</version>
         <relativePath>../org.kevoree.library.javase.root/pom.xml</relativePath>
     </parent>
 

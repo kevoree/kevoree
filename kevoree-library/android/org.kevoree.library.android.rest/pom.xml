@@ -6,12 +6,12 @@
     <artifactId>org.kevoree.library.android.rest</artifactId>
     <packaging>bundle</packaging>
     <name>Kevoree :: Library :: Android :: Rest</name>
-    <version>1.4.1-SNAPSHOT</version>
+    <version>1.4.1</version>
 
     <parent>
         <artifactId>org.kevoree.library.android.root</artifactId>
         <groupId>org.kevoree.library.android</groupId>
-        <version>1.4.1-SNAPSHOT</version>
+        <version>1.4.1</version>
         <relativePath>../org.kevoree.library.android.root/pom.xml</relativePath>
     </parent>
 
