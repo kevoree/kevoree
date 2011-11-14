@@ -7,11 +7,11 @@
     <packaging>jar</packaging>
     <name>Kevoree :: Api</name>
 
-    <version>1.4.1</version>
+    <version>1.5.O-SNAPSHOT</version>
     <parent>
         <artifactId>org.kevoree.root</artifactId>
         <groupId>org.kevoree</groupId>
-        <version>1.4.1</version>
+        <version>1.5.O-SNAPSHOT</version>
         <relativePath>../org.kevoree.root/pom.xml</relativePath>
     </parent>
 
