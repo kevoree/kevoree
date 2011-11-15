@@ -35,7 +35,7 @@ case class KevsAddGroupInterpreter(addGroup: AddGroupStatment) extends KevsAbstr
       case Some(target) => {
         logger.warn("Group already exist with name " + addGroup.groupName);
         if (target.getTypeDefinition.getName == addGroup.groupTypeName) {
-          Merger.mergeDictionary(target, addGroup.props)
+          Merger.mergeDictionary(target, addGroup.props,None)
           true
         } else {
           logger.error("Type != from previous created group")
@@ -50,7 +50,7 @@ case class KevsAddGroupInterpreter(addGroup: AddGroupStatment) extends KevsAbstr
             val newGroup = KevoreeFactory.eINSTANCE.createGroup
             newGroup.setTypeDefinition(targetGroupType)
             newGroup.setName(addGroup.groupName)
-            Merger.mergeDictionary(newGroup, addGroup.props)
+            Merger.mergeDictionary(newGroup, addGroup.props,None)
             context.model.addGroups(newGroup)
 
           }

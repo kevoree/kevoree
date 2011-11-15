@@ -18,14 +18,37 @@
 
 package org.kevoree.tools.marShell.interpreter.utils
 
-import org.kevoree.Instance
-import org.kevoree.KevoreeFactory
+import org.kevoree.{ContainerRoot, ContainerNode, Instance, KevoreeFactory}
 
 
 object Merger {
 
+  
+  def mergeFragmentDictionary(inst: Instance, fragmentProps: java.util.Hashtable[String,java.util.Properties]) = {
+    import scala.collection.JavaConversions._
+    
+    fragmentProps.keys().foreach { propKey =>
+      println("Merge key "+propKey)
+      
+      propKey match {
+        case "*"=> mergeDictionary(inst,fragmentProps.get(propKey),None)
+        case _ @ searchNodeName => {
+          inst.getTypeDefinition.eContainer.asInstanceOf[ContainerRoot].getNodes.find(n => n.getName == searchNodeName) match {
+            case Some(nodeFound)=> {
+              mergeDictionary(inst,fragmentProps.get(propKey),Some(nodeFound))
+            }
+            case None => {
+              throw new Exception("Unknown nodeName for name "+searchNodeName)
+            }
+          }
+        }
+      }
+    }
+  }
+  
+  
   /* Goal of this method is to merge dictionary definition with already exist instance defintion */
-  def mergeDictionary(inst: Instance, props: java.util.Properties) = {
+  def mergeDictionary(inst: Instance, props: java.util.Properties, targetNode : Option[ContainerNode]) = {
     import scala.collection.JavaConversions._
     props.keySet.foreach {
       key =>
@@ -37,7 +60,7 @@ object Merger {
           inst.setDictionary(dictionary)
         }
 
-        inst.getDictionary.get.getValues.find(value => value.getAttribute.getName == key) match {
+        inst.getDictionary.get.getValues.find(value => { (value.getAttribute.getName == key) && (if(targetNode.isDefined){ value.getTargetNode.isDefined && value.getTargetNode.get.getName == targetNode.get.getName } else { value.getTargetNode.isEmpty })}) match {
           //UPDATE VALUE CASE
           case Some(previousValue) => {
             previousValue.setValue(newValue.toString)
@@ -57,6 +80,7 @@ object Merger {
             val newDictionaryValue = KevoreeFactory.eINSTANCE.createDictionaryValue
             newDictionaryValue.setValue(newValue.toString)
             newDictionaryValue.setAttribute(att)
+            newDictionaryValue.setTargetNode(targetNode)
             inst.getDictionary.get.addValues(newDictionaryValue)
           }
         }
