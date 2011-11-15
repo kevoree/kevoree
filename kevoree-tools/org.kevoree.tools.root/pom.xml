@@ -29,7 +29,7 @@
         </dependency>
     </dependencies>
 
-
+<!--
     <profiles>
         <profile>
             <id>org.kevoree.tools.root.profile</id>
@@ -50,6 +50,7 @@
             </dependencies>
         </profile>
     </profiles>
+-->
 
 
     <build>
