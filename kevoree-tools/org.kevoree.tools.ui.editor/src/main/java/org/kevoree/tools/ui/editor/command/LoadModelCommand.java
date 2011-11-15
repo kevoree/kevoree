@@ -37,124 +37,130 @@ import java.util.HashMap;
 public class LoadModelCommand implements Command {
 
 
-	ReloadTypePalette subCommand = new ReloadTypePalette();
+    ReloadTypePalette subCommand = new ReloadTypePalette();
 
-	public void setKernel (KevoreeUIKernel kernel) {
-		this.kernel = kernel;
-		subCommand.setKernel(this.kernel);
-	}
+    public void setKernel(KevoreeUIKernel kernel) {
+        this.kernel = kernel;
+        subCommand.setKernel(this.kernel);
+    }
 
-	private KevoreeUIKernel kernel;
+    private KevoreeUIKernel kernel;
 
-	/* Input expected : Model URI */
-	@Override
-	public void execute (Object p) {
+    /* Input expected : Model URI */
+    @Override
+    public void execute(Object p) {
 
-		ContainerRoot previousModel;
-		if (p instanceof InputStream) {
-			previousModel = KevoreeXmiHelper.loadStream((InputStream) p);
-		} else {
-			previousModel = KevoreeXmiHelper.load(p.toString());
-		}
-		kernel.getModelHandler().setActualModel(previousModel);
-		kernel.getModelPanel().clear();
+        ContainerRoot previousModel;
 
-		//HACK :-) TODO REMOVE
-		kernel.getUifactory().getMapping().bind(kernel.getModelPanel(), previousModel);
+        if (p instanceof ContainerRoot) {
+            previousModel = (ContainerRoot) p;
+        } else {
+            if (p instanceof InputStream) {
+                previousModel = KevoreeXmiHelper.loadStream((InputStream) p);
+            } else {
+                previousModel = KevoreeXmiHelper.load(p.toString());
+            }
+        }
+
+        kernel.getModelHandler().setActualModel(previousModel);
+        kernel.getModelPanel().clear();
+
+        //HACK :-) TODO REMOVE
+        kernel.getUifactory().getMapping().bind(kernel.getModelPanel(), previousModel);
 
 
-		/* Synch every UI Component */
-		//LOAD COMPONENT TYPE
-		subCommand.execute(null);
+        /* Synch every UI Component */
+        //LOAD COMPONENT TYPE
+        subCommand.execute(null);
 
 
-		//LOAD NODE
+        //LOAD NODE
 
-		for (ContainerNode newnode : kernel.getModelHandler().getActualModel().getNodesForJ()) {
-			NodePanel newnodepanel = kernel.getUifactory().createComponentNode(newnode);
-			kernel.getModelPanel().addNode(newnodepanel);
-			//UI
-			HashMap<String, String> metaData = MetaDataHelper.getMetaDataFromInstance(newnode);
-			if (MetaDataHelper.containKeys(Arrays.asList("x", "y"), metaData)) {
-				newnodepanel.setLocation(new Point(Integer.parseInt(metaData.get("x").toString()),
-						Integer.parseInt(metaData.get("y").toString())));
-			}
+        for (ContainerNode newnode : kernel.getModelHandler().getActualModel().getNodesForJ()) {
+            NodePanel newnodepanel = kernel.getUifactory().createComponentNode(newnode);
+            kernel.getModelPanel().addNode(newnodepanel);
+            //UI
+            HashMap<String, String> metaData = MetaDataHelper.getMetaDataFromInstance(newnode);
+            if (MetaDataHelper.containKeys(Arrays.asList("x", "y"), metaData)) {
+                newnodepanel.setLocation(new Point(Integer.parseInt(metaData.get("x").toString()),
+                        Integer.parseInt(metaData.get("y").toString())));
+            }
 
-			for (ComponentInstance ci : newnode.getComponentsForJ()) {
-				ComponentPanel insPanel = kernel.getUifactory().createComponentInstance(ci);
-				for (Port portP : ci.getProvidedForJ()) {
-					//ADDING NEW PORT TO UI
-					PortPanel portPanel = kernel.getUifactory().createPort(portP);
-					portPanel.setType(PortType.PROVIDED);
-					insPanel.addLeft(portPanel);
-				}
-				for (Port portR : ci.getRequiredForJ()) {
-					//ADDING NEW PORT TO UI
-					PortPanel portPanel = kernel.getUifactory().createPort(portR);
-					portPanel.setType(PortType.REQUIRED);
-					insPanel.addRight(portPanel);
-				}
-				newnodepanel.add(insPanel);
-				//kernel.getModelPanel().add(insPanel);
-			}
-		}
-		//LOAD HUB
-		for (Channel hub : kernel.getModelHandler().getActualModel().getHubsForJ()) {
-			ChannelPanel newhubpanel = kernel.getUifactory().createHub(hub);
-			kernel.getModelPanel().addHub(newhubpanel);
+            for (ComponentInstance ci : newnode.getComponentsForJ()) {
+                ComponentPanel insPanel = kernel.getUifactory().createComponentInstance(ci);
+                for (Port portP : ci.getProvidedForJ()) {
+                    //ADDING NEW PORT TO UI
+                    PortPanel portPanel = kernel.getUifactory().createPort(portP);
+                    portPanel.setType(PortType.PROVIDED);
+                    insPanel.addLeft(portPanel);
+                }
+                for (Port portR : ci.getRequiredForJ()) {
+                    //ADDING NEW PORT TO UI
+                    PortPanel portPanel = kernel.getUifactory().createPort(portR);
+                    portPanel.setType(PortType.REQUIRED);
+                    insPanel.addRight(portPanel);
+                }
+                newnodepanel.add(insPanel);
+                //kernel.getModelPanel().add(insPanel);
+            }
+        }
+        //LOAD HUB
+        for (Channel hub : kernel.getModelHandler().getActualModel().getHubsForJ()) {
+            ChannelPanel newhubpanel = kernel.getUifactory().createHub(hub);
+            kernel.getModelPanel().addHub(newhubpanel);
 
-			HashMap<String, String> metaData = MetaDataHelper.getMetaDataFromInstance(hub);
-			if (MetaDataHelper.containKeys(Arrays.asList("x", "y"), metaData)) {
-				newhubpanel.setLocation(new Point(Integer.parseInt(metaData.get("x").toString()),
-						Integer.parseInt(metaData.get("y").toString())));
-			}
+            HashMap<String, String> metaData = MetaDataHelper.getMetaDataFromInstance(hub);
+            if (MetaDataHelper.containKeys(Arrays.asList("x", "y"), metaData)) {
+                newhubpanel.setLocation(new Point(Integer.parseInt(metaData.get("x").toString()),
+                        Integer.parseInt(metaData.get("y").toString())));
+            }
 
-		}
+        }
 
-		//LOAD GROUP
-		for (Group group : kernel.getModelHandler().getActualModel().getGroupsForJ()) {
-			GroupPanel newgrouppanel = kernel.getUifactory().createGroup(group);
-			kernel.getModelPanel().addGroup(newgrouppanel);
-			//LOAD GROUP BINDINGS
-			for (ContainerNode subNode : group.getSubNodesForJ()) {
-				NodePanel nodePanel = (NodePanel) kernel.getUifactory().getMapping().get(subNode);
+        //LOAD GROUP
+        for (Group group : kernel.getModelHandler().getActualModel().getGroupsForJ()) {
+            GroupPanel newgrouppanel = kernel.getUifactory().createGroup(group);
+            kernel.getModelPanel().addGroup(newgrouppanel);
+            //LOAD GROUP BINDINGS
+            for (ContainerNode subNode : group.getSubNodesForJ()) {
+                NodePanel nodePanel = (NodePanel) kernel.getUifactory().getMapping().get(subNode);
                 TempGroupBinding groupB = new TempGroupBinding();
                 groupB.setOriginGroup(group);
                 groupB.setTargetNode(subNode);
                 groupB.setGroupPanel(newgrouppanel.getAnchor());
                 groupB.setNodePanel(nodePanel);
                 Binding uib = kernel.getUifactory().createGroupBinding(groupB);
-				kernel.getModelPanel().addBinding(uib);
-			}
-			HashMap<String, String> metaData = MetaDataHelper.getMetaDataFromInstance(group);
-			if (MetaDataHelper.containKeys(Arrays.asList("x", "y"), metaData)) {
-				newgrouppanel.setLocation(new Point(Integer.parseInt(metaData.get("x").toString()),
-						Integer.parseInt(metaData.get("y").toString())));
-			}
+                kernel.getModelPanel().addBinding(uib);
+            }
+            HashMap<String, String> metaData = MetaDataHelper.getMetaDataFromInstance(group);
+            if (MetaDataHelper.containKeys(Arrays.asList("x", "y"), metaData)) {
+                newgrouppanel.setLocation(new Point(Integer.parseInt(metaData.get("x").toString()),
+                        Integer.parseInt(metaData.get("y").toString())));
+            }
 
-		}
-
-
-		//LOAD BINDING
-		/*
-				for (Binding binding : kernel.getModelHandler().getActualModel().getBindings()) {
-				org.kevoree.ui.framework.elements.Binding uib = kernel.getUifactory().createBinding(binding);
-				kernel.getModelPanel().removeBinding(uib);
-				}*/
-
-		//LOAD MBINDING
-		for (MBinding binding : kernel.getModelHandler().getActualModel().getMBindingsForJ()) {
-			Binding uib = kernel.getUifactory().createMBinding(binding);
-			kernel.getModelPanel().addBinding(uib);
-		}
+        }
 
 
-		//REFRESH UI
-		kernel.getEditorPanel().doLayout();
-		kernel.getEditorPanel().repaint();
-		kernel.getEditorPanel().revalidate();
+        //LOAD BINDING
+        /*
+                  for (Binding binding : kernel.getModelHandler().getActualModel().getBindings()) {
+                  org.kevoree.ui.framework.elements.Binding uib = kernel.getUifactory().createBinding(binding);
+                  kernel.getModelPanel().removeBinding(uib);
+                  }*/
+
+        //LOAD MBINDING
+        for (MBinding binding : kernel.getModelHandler().getActualModel().getMBindingsForJ()) {
+            Binding uib = kernel.getUifactory().createMBinding(binding);
+            kernel.getModelPanel().addBinding(uib);
+        }
+
+
+        //REFRESH UI
+        kernel.getEditorPanel().doLayout();
+        kernel.getEditorPanel().repaint();
+        kernel.getEditorPanel().revalidate();
 
         kernel.getModelHandler().notifyChanged();
 
-	}
+    }
 }

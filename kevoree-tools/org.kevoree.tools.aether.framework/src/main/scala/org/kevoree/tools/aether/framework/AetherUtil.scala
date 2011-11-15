@@ -32,6 +32,7 @@ import org.sonatype.aether.impl.internal.EnhancedLocalRepositoryManagerFactory
 import util.matching.Regex
 import org.sonatype.aether.repository.{Authentication, RepositoryPolicy, RemoteRepository, LocalRepository}
 import scala.collection.JavaConversions._
+import org.slf4j.LoggerFactory
 
 /**
  * User: ffouquet
@@ -40,6 +41,8 @@ import scala.collection.JavaConversions._
  */
 
 object AetherUtil {
+
+  private val logger = LoggerFactory.getLogger(this.getClass)
 
   val newRepositorySystem: RepositorySystem = {
     val locator = new DefaultServiceLocator()
@@ -121,7 +124,19 @@ object AetherUtil {
     val session = new MavenRepositorySystemSession()
     session.setUpdatePolicy(RepositoryPolicy.UPDATE_POLICY_ALWAYS)
     session.setConfigProperty("aether.connector.ahc.provider","jdk")
+    //DEFAULT VALUE
     session.setLocalRepositoryManager(newRepositorySystem.newLocalRepositoryManager(new LocalRepository(System.getProperty("user.home").toString + "/.m2/repository")))
+    //TRY TO FOUND MAVEN CONFIGURATION
+    val configFile =new File(System.getProperty("user.home").toString+File.separator+".m2"+File.separator+"settings.xml")
+    if(configFile.exists()){
+      val configRoot = scala.xml.XML.loadFile(configFile)
+      configRoot.child.find(c => c.label == "localRepository").map{ localRepo =>
+        logger.warn("Found localRepository value from settings.xml in user path => "+localRepo.text)
+        session.setLocalRepositoryManager(newRepositorySystem.newLocalRepositoryManager(new LocalRepository(localRepo.text)))
+      }
+    } else {
+      logger.debug("settings.xml not found")
+    }
     session
   }
 
