@@ -19,7 +19,6 @@ import org.kevoree.tools.marShell.interpreter.KevsInterpreterContext
 import org.kevoree.framework.KevoreeXmiHelper
 import java.util.Random
 import org.kevoree.tools.ui.editor.{PositionedEMFHelper, KevoreeUIKernel}
-import com.sun.xml.internal.messaging.saaj.util.ByteOutputStream
 import java.io._
 import org.slf4j.LoggerFactory
 import org.kevoree.tools.marShellGUI.{KevsPanel, KevsModelHandlers}
@@ -28,6 +27,7 @@ import org.kevoree.tools.ui.editor.command.{Command, LoadModelCommand}
 import javax.swing._
 import com.explodingpixels.macwidgets.MacButtonFactory
 import java.net.URL
+import org.kevoree.cloner.ModelCloner
 
 
 class LocalKevsShell extends JPanel {
@@ -63,10 +63,13 @@ class LocalKevsShell extends JPanel {
         import org.kevoree.tools.marShell.interpreter.KevsInterpreterAspects._
         PositionedEMFHelper.updateModelUIMetaData(kernel)
 
+        val modelCloner = new ModelCloner
+        val ghostModel = modelCloner.clone(kernel.getModelHandler.getActualModel)
+       /*
         val outputStream: ByteOutputStream = new ByteOutputStream
         KevoreeXmiHelper.saveStream(outputStream, kernel.getModelHandler.getActualModel)
         val ghostModel = KevoreeXmiHelper.loadStream(outputStream.newInputStream())
-
+*/
         val result = script.interpret(KevsInterpreterContext(ghostModel))
         logger.info("Interpreter Result : " + result)
         if (result) {
