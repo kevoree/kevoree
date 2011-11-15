@@ -42,7 +42,7 @@ case class KevsAddComponentInstanceInterpreter(addCompo: AddComponentInstanceSta
               case Some(previousComponent) => {
                 logger.warn("Component already exist with name " + previousComponent.getName);
                 if (previousComponent.getTypeDefinition.getName == addCompo.typeDefinitionName) {
-                  Merger.mergeDictionary(previousComponent, addCompo.props)
+                  Merger.mergeDictionary(previousComponent, addCompo.props,None)
                   true
                 } else {
                   logger.error("Type != from previous created component")
@@ -71,7 +71,7 @@ case class KevsAddComponentInstanceInterpreter(addCompo: AddComponentInstanceSta
                     }
 
                     //MERGE DICTIONARY
-                    Merger.mergeDictionary(newcomponent, addCompo.props)
+                    Merger.mergeDictionary(newcomponent, addCompo.props,None)
 
                     targetNode.addComponents(newcomponent)
                     true

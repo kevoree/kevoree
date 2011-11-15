@@ -43,7 +43,7 @@ case class KevsAddNodeInterpreter(addN: AddNodeStatment) extends KevsAbstractInt
               context.model.getTypeDefinitions.find(td => td.getName == addN.nodeTypeName) match {
                 case Some(td) => {
                   e.setTypeDefinition(td)
-                  Merger.mergeDictionary(e, addN.props)
+                  Merger.mergeDictionary(e, addN.props,None)
                   true
                 }
                 case None => {
@@ -54,7 +54,7 @@ case class KevsAddNodeInterpreter(addN: AddNodeStatment) extends KevsAbstractInt
 
             } else {
               if (e.getTypeDefinition.getName == addN.nodeTypeName) {
-                Merger.mergeDictionary(e, addN.props)
+                Merger.mergeDictionary(e, addN.props,None)
                 true
               } else {
                 logger.error("Type != from previous created node")
@@ -69,7 +69,7 @@ case class KevsAddNodeInterpreter(addN: AddNodeStatment) extends KevsAbstractInt
             newnode.setName(addN.nodeName)
             newnode.setTypeDefinition(nodeType)
 
-            Merger.mergeDictionary(newnode, addN.props)
+            Merger.mergeDictionary(newnode, addN.props,None)
 
             context.model.addNodes(newnode)
             true
