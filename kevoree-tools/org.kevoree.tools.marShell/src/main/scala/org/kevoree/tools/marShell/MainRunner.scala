@@ -31,12 +31,12 @@ object MainRunner {
    */
   def main(args: Array[String]): Unit = {
 
-    val newModel = KevoreeXmiHelper.load("/Users/ffouquet/Documents/DEV/dukeboard_github/kevoree/kevoree-tools/org.kevoree.tools.marShell/src/test/resources/baseModel/defaultLibrary.kev")
+    val newModel = KevoreeXmiHelper.load("/Users/duke/Documents/dev/dukeboard/kevoree/kevoree-tools/org.kevoree.tools.marShell/src/test/resources/baseModel/defaultLibrary.kev")
 
 
 
     val parser =new KevsParser();
-    val oscript = parser.parseScript(ParserUtil.loadFile("/Users/ffouquet/Documents/DEV/dukeboard_github/kevoree/kevoree-tools/org.kevoree.tools.marShell/src/test/resources/scripts/t1.kevs"));
+    val oscript = parser.parseScript(ParserUtil.loadFile("/Users/duke/Documents/dev/dukeboard/kevoree/kevoree-tools/org.kevoree.tools.marShell/src/test/resources/scripts/t1.kevs"));
 
     oscript match {
       case None => println("Error"+parser.lastNoSuccess)
@@ -45,7 +45,7 @@ object MainRunner {
           println("Interpreter Result : "+script.interpret(KevsInterpreterContext(newModel)))
       }
     }
-    KevoreeXmiHelper.save("/Users/ffouquet/Documents/DEV/dukeboard_github/kevoree/kevoree-tools/org.kevoree.tools.marShell/src/test/resources/results/modified.kev", newModel)
+    KevoreeXmiHelper.save("/Users/duke/Documents/dev/dukeboard/kevoree/kevoree-tools/org.kevoree.tools.marShell/src/test/resources/results/modified.kev", newModel)
   }
 
 

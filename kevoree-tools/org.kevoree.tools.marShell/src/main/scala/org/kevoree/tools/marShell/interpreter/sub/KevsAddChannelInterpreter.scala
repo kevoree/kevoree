@@ -35,7 +35,7 @@ case class KevsAddChannelInterpreter(addChannel: AddChannelInstanceStatment) ext
       case Some(target) => {
         logger.warn("Channel already exist with name " + addChannel.channelName);
         if (target.getTypeDefinition.getName == addChannel.channelType) {
-          Merger.mergeDictionary(target, addChannel.props)
+          Merger.mergeDictionary(target, addChannel.props,None)
 
           true
         } else {
@@ -52,7 +52,7 @@ case class KevsAddChannelInterpreter(addChannel: AddChannelInstanceStatment) ext
             newchannel.setTypeDefinition(targetChannelType)
             newchannel.setName(addChannel.channelName)
 
-            Merger.mergeDictionary(newchannel, addChannel.props)
+            Merger.mergeDictionary(newchannel, addChannel.props,None)
 
             context.model.addHubs(newchannel)
 

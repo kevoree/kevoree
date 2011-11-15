@@ -56,8 +56,13 @@ case class KevsUpdateDictionaryInterpreter(statement: UpdateDictionaryStatement)
         }
     }    
     targetInstance.foreach{instance =>
-      Merger.mergeDictionary(instance, statement.dictionary)
+      Merger.mergeFragmentDictionary(instance, statement.fraProperties)
     }
+    
+    if(targetInstance.isEmpty ){
+      println("Warning : No dictionary merged")
+    }
+    
     true// ALWAYS RETURN TRUE 
     //TODO BETTER ERROR OR AMBIGUITY MANAGEMENT
 
