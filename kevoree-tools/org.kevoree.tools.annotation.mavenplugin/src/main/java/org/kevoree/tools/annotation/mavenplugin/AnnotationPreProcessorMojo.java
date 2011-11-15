@@ -256,6 +256,11 @@ public class AnnotationPreProcessorMojo extends AbstractAnnotationProcessorMojo 
         compileLock.lock();
         try {
             JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
+            if(compiler == null){
+                getLog().error("Javac preprocessor not found, Kevoree PreProcessor can't run on JRE !");
+            }
+            
+            
             StandardJavaFileManager fileManager = compiler.getStandardFileManager(null, null, null);
 
             if (files != null && !files.isEmpty()) {

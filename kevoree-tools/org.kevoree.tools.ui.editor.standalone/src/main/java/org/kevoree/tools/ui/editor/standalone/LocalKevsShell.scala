@@ -74,13 +74,9 @@ class LocalKevsShell extends JPanel {
         logger.info("Interpreter Result : " + result)
         if (result) {
           //reload
-          val file = File.createTempFile("kev", new Random().nextInt + "")
-
-          KevoreeXmiHelper.save("file:///" + file.getAbsolutePath, ghostModel);
-
           val loadCMD = new LoadModelCommand
           loadCMD.setKernel(kernel)
-          loadCMD.execute("file:///" + file.getAbsolutePath)
+          loadCMD.execute(ghostModel)
 
 
         }
