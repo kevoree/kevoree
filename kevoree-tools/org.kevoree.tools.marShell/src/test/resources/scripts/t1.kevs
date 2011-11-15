@@ -1,5 +1,13 @@
 tblock {
 
-    addComponent toto@myJavaNode : FakeSimpleLight
+ addNode node1 : JavaSENode
+ addNode node2 : JavaSENode 
+ addComponent fake1@node1 : FakeConsole { } 
+ addComponent fake2@node2 : FakeConsole { } 
+ addChannel  mysockChannel : SocketChannel {  }
+ bind fake1.textEntered@node1 => mysockChannel
+ bind fake2.showText@node2 => mysockChannel
+ updateDictionary mysockChannel { port="10000"}@node1,{ port="10001"}@node2
+
 
 }

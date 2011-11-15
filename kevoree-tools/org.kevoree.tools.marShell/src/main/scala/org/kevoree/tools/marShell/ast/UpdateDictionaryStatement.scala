@@ -18,6 +18,6 @@
 
 package org.kevoree.tools.marShell.ast
 
-case class UpdateDictionaryStatement(instanceName : String,nodeName:Option[String],dictionary : java.util.Properties) extends Statment {
+case class UpdateDictionaryStatement(instanceName : String,nodeName:Option[String],fraProperties : java.util.Hashtable[String,java.util.Properties]) extends Statment {
 
 }
