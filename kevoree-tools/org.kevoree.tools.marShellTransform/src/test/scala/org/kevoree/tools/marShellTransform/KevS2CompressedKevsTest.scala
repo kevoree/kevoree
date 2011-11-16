@@ -31,7 +31,7 @@ class KevS2CompressedKevsTest extends KevSTestSuiteHelper {
     val kompareBean = new KevoreeKompareBean
     val adaptModel = kompareBean.kompare(baseModel, updatedModel, "KEVOREEDefaultNodeName");
     val baseScript = KevScriptWrapper.miniPlanKevScript(AdaptationModelWrapper.generateScriptFromAdaptModel(adaptModel))
-    val result = KevScriptWrapper.generateKevScriptCompressed(baseScript)
+    val result = KevScriptWrapper.generateKevScriptCompressed(baseScript,"KEVOREEDefaultNodeName")
     println(result)
     assert(result == "{udi:t1:period=100}")
   }
@@ -42,7 +42,7 @@ class KevS2CompressedKevsTest extends KevSTestSuiteHelper {
     val kompareBean = new KevoreeKompareBean
     val adaptModel = kompareBean.kompare(baseModel, updatedModel, "KEVOREEDefaultNodeName");
     val baseScript = KevScriptWrapper.miniPlanKevScript(AdaptationModelWrapper.generateScriptFromAdaptModel(adaptModel))
-    val result = KevScriptWrapper.generateKevScriptCompressed(baseScript)
+    val result = KevScriptWrapper.generateKevScriptCompressed(baseScript,"KEVOREEDefaultNodeName")
     println(result)
     assert(result == "{udi:DigitalLight138771701:pin=10}")
   }
@@ -53,7 +53,7 @@ class KevS2CompressedKevsTest extends KevSTestSuiteHelper {
     val kompareBean = new KevoreeKompareBean
     val adaptModel = kompareBean.kompare(baseModel, updatedModel, "KEVOREEDefaultNodeName");
     val baseScript = KevScriptWrapper.miniPlanKevScript(AdaptationModelWrapper.generateScriptFromAdaptModel(adaptModel))
-    val result = KevScriptWrapper.generateKevScriptCompressed(baseScript)
+    val result = KevScriptWrapper.generateKevScriptCompressed(baseScript,"KEVOREEDefaultNodeName")
     println(result)
     assert(result == "{udi:DigitalLight138771701:pin=10/udi:t1:period=100}")
   }
@@ -64,7 +64,7 @@ class KevS2CompressedKevsTest extends KevSTestSuiteHelper {
     val kompareBean = new KevoreeKompareBean
     val adaptModel = kompareBean.kompare(baseModel, updatedModel, "KEVOREEDefaultNodeName");
     val baseScript = KevScriptWrapper.miniPlanKevScript(AdaptationModelWrapper.generateScriptFromAdaptModel(adaptModel))
-    val result = KevScriptWrapper.generateKevScriptCompressed(baseScript)
+    val result = KevScriptWrapper.generateKevScriptCompressed(baseScript,"KEVOREEDefaultNodeName")
     println(result)
     assert(result == "{ain:DigitalLight1925293585:DigitalLight:pin=10/abi:DigitalLight1925293585:hub846068439:toggle/udi:DigitalLight1925293585:pin=10}")
   }
