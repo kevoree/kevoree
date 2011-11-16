@@ -103,6 +103,12 @@ public class NioChannel extends AbstractChannelFragment {
 
     @Override
     public Object dispatch(Message message) {
+
+
+        if (!message.getPassedNodes().contains(getNodeName())) {
+            message.getPassedNodes().add(getNodeName());
+        }
+
         for (org.kevoree.framework.KevoreePort p : getBindedPorts()) {
             forward(p, message);
         }
