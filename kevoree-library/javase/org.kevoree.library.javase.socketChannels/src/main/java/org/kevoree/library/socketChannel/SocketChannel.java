@@ -149,7 +149,7 @@ public class SocketChannel extends AbstractChannelFragment implements Runnable {
             @Override
             public Object sendMessageToRemote(Message message) {
                 int port;
-                String host;
+                String host="";
                 try {
                     sem.acquire();
                 } catch (InterruptedException e) {
@@ -165,6 +165,7 @@ public class SocketChannel extends AbstractChannelFragment implements Runnable {
                     logger.debug("Sending message to " + message.getDestNodeName() + " host <" + host + ">" + " port <"
                             + +port + "> " + parsePortNumber(message.getDestNodeName()) + "\t" + message
                             .getContent());
+
                     // create the link if not exist
                     Socket client_consumer = getOrCreateSocket(host,port);
                     OutputStream os = client_consumer.getOutputStream();
@@ -174,8 +175,8 @@ public class SocketChannel extends AbstractChannelFragment implements Runnable {
                 } catch (Exception e) {
                     try {
                         logger.warn("Unable to send message to " + message.getDestNodeName() + " " + parsePortNumber(
-                                message.getDestNodeName()), e);
-
+                                message.getDestNodeName()), e.getMessage());
+                        clientSockets.remove(host);
                         sending_messages_node_dead.addToDeadQueue(message);
                     } catch (IOException e1) {
                         logger.warn("", e1);
@@ -225,22 +226,24 @@ public class SocketChannel extends AbstractChannelFragment implements Runnable {
                 @Override
                 public void run() {
                     while (_alive) {
-                        if (!client.isConnected()) {
-                            _alive = false;
-                            break;
-                        }
+
                         try {
                             if (stream != null) {
                                 try {
                                     ObjectInputStream ois = new ObjectInputStream(stream);
                                     msg = (Message) ois.readObject();
                                 } catch (Exception e) {
-                                    if (alive) {
-                                        //  logger.warn("Failed to accept client or get its input stream");
-                                        _alive = false;
-                                        msg = null;
-                                        localServerSockets.remove(client);
+                                    localServerSockets.remove(client);
+                                    try {
+                                        Thread.sleep(500);
+                                    } catch (InterruptedException e1) {
+                                        e1.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
                                     }
+
+                                    logger.warn("Node is down ");
+                                    _alive = false;
+                                    msg = null;
+
                                 }
                             } else {
                                 // the remote node close the channel (update, down )
@@ -278,6 +281,8 @@ public class SocketChannel extends AbstractChannelFragment implements Runnable {
                                 }*/
 
                                 remoteDispatch(msg);
+                            }else {
+                                logger.debug("msg is null");
                             }
                             msg = null;
                         } finally {
@@ -307,15 +312,11 @@ public class SocketChannel extends AbstractChannelFragment implements Runnable {
         Socket client_consumer = null;
         if (clientSockets.containsKey(host)) {
             // the link exist
+            logger.debug("the link exist");
             client_consumer = clientSockets.get(host);
-            if (client_consumer.isClosed()) {
-                // the link exist but is broken
-                clientSockets.remove(host);
-                client_consumer = new Socket(host, port);
-                clientSockets.put(host, client_consumer);
-            }
         } else {
             /// no link in cache
+            logger.debug(" create link");
             client_consumer = new Socket(host, port);
             client_consumer.setSoTimeout(0);
             clientSockets.put(host, client_consumer);
