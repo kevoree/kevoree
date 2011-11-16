@@ -29,7 +29,7 @@
 
         <!--   <module>../org.kevoree.library.javase.xmpp</module>     -->
         <!--<module>../org.kevoree.library.javase.sample</module>-->
-        <!--   <module>../org.kevoree.library.javase.restChannels</module> -->
+        <!-- <module>../org.kevoree.library.javase.restChannels</module> -->
         <!--<module>../org.kevoree.library.javase.reasoner.ecj</module> -->
         <!--  <module>../org.kevoree.library.javase.logger.greg</module> -->
         <!-- <module>../org.kevoree.library.javase.jscriptengine</module>  -->

@@ -25,34 +25,15 @@ public class RoundRobinSocketChannel extends SocketChannel {
     @Override
     public Object dispatch(Message message) {
 
-
-        SocketMessage msgTOqueue=null;
-        /*       Generate the UUID of the message           */
-        String   currentUUIdMessage = UUID.randomUUID().toString();
-
-        if (message instanceof SocketMessage) {
-            msgTOqueue = (SocketMessage) message;
-            //  logger.debug("Use an existing UUID"+msgTOqueue.getUuid());
-        } else {
-            msgTOqueue = new SocketMessage();
-            msgTOqueue.setUuid(currentUUIdMessage);
-            // logger.debug("Create a UUID :"+msgTOqueue.getUuid());
-        }
-        msgTOqueue.setContent(message.getContent());
-        msgTOqueue.setPassedNodes(message.getPassedNodes());
-        msgTOqueue.setDestChannelName(message.getDestChannelName());
-        msgTOqueue.setInOut(message.getInOut());
-        msgTOqueue.setTimeout(message.getTimeout());
-
         /*       Generate the UUID of the message           */
         /*   Local Node  */
         int bindedSize = getBindedPorts().size() + getOtherFragments().size();
         int rang = random.nextInt(bindedSize);
         if(rang < getBindedPorts().size()){
-            forward(getBindedPorts().get(rang),msgTOqueue);
+            forward(getBindedPorts().get(rang),message);
         } else {
             rang = rang - getBindedPorts().size();
-            forward(getOtherFragments().get(rang),msgTOqueue);
+            forward(getOtherFragments().get(rang),message);
         }
 
         return null;

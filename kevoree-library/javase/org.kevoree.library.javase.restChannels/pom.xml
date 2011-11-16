@@ -22,15 +22,13 @@
             <version>1.0</version>
             <scope>provided</scope>
         </dependency>
+        <dependency>
+            <groupId>org.kevoree.extra</groupId>
+            <artifactId>org.kevoree.extra.spray</artifactId>
+            <version>0.9.1</version>
+            <scope>provided</scope>
+        </dependency>
     </dependencies>
-
-
-    <repositories>
-        <repository>
-            <id>reslet</id>
-            <url>http://maven.restlet.org/</url>
-        </repository>
-    </repositories>
 
     <build>
         <plugins>
@@ -79,7 +77,6 @@
                     </jvmArgs>
                 </configuration>
             </plugin>
-
         </plugins>
     </build>
 

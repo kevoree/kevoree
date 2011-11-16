@@ -82,14 +82,15 @@ public class LoadNewLibCommand implements Command {
                 //Merge
                 kernel.getModelHandler().merge(nroot);
                 //CREATE TEMP FILE FROM ACTUAL MODEL
-                File tempFile = File.createTempFile("kevoreeEditorTemp", ".kev");
+
+                //File tempFile = File.createTempFile("kevoreeEditorTemp", ".kev");
                 //System.out.println("path="+tempFile);
                 PositionedEMFHelper.updateModelUIMetaData(kernel);
-                KevoreeXmiHelper.save(tempFile.getAbsolutePath(), kernel.getModelHandler().getActualModel());
+                //KevoreeXmiHelper.save(tempFile.getAbsolutePath(), kernel.getModelHandler().getActualModel());
                 //LOAD MODEL
                 LoadModelCommand loadCmd = new LoadModelCommand();
                 loadCmd.setKernel(kernel);
-                loadCmd.execute(tempFile.getAbsolutePath());
+                loadCmd.execute(kernel.getModelHandler().getActualModel());
             }
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(kernel.getModelPanel(), "Unable to load the give library.\nSee log for further information.", "Unable to load lib.", JOptionPane.WARNING_MESSAGE);

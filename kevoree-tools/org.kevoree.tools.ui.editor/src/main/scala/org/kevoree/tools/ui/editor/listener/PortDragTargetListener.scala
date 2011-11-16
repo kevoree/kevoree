@@ -55,9 +55,12 @@ class PortDragTargetListener(target: PortPanel, kernel: KevoreeUIKernel) extends
           hud.getJDialog.setLocationRelativeTo(null);
 
         val topPanel = new JPanel()
+        topPanel.setOpaque(false)
         topPanel.setLayout(new SpringLayout())
         val line1 = new JLabel("No ChannelType is available.", SwingConstants.CENTER)
+        line1.setOpaque(false)
         val line2 = new JLabel("Please load a ChannelType library.", SwingConstants.CENTER)
+        line2.setOpaque(false)
         line1.setUI(new HudLabelUI)
         line2.setUI(new HudLabelUI)
         topPanel.add(line1)

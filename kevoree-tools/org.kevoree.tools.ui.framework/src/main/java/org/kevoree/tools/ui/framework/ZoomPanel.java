@@ -13,8 +13,6 @@
  */
 package org.kevoree.tools.ui.framework;
 
-import sun.tools.tree.ThisExpression;
-
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
