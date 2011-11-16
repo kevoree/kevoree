@@ -20,7 +20,7 @@ package org.kevoree.framework
 
 import java.util.HashMap
 import org.kevoree.framework.message._
- import org.slf4j.LoggerFactory
+import org.slf4j.LoggerFactory
 
 trait ChannelTypeFragment extends KevoreeChannelFragment with ChannelFragment {
 
@@ -79,7 +79,8 @@ trait ChannelTypeFragment extends KevoreeChannelFragment with ChannelFragment {
     fragementBinded.values.toList
   }
 
-  override def forward(delegate: KevoreeActor, msg: Message): Object = {
+  override def forward(delegate: KevoreeActor, inmsg: Message): Object = {
+    val msg = inmsg.getClone
     delegate match {
       case p: KevoreePort => {
         if (msg.inOut.booleanValue) {
@@ -168,17 +169,17 @@ trait ChannelTypeFragment extends KevoreeChannelFragment with ChannelFragment {
 
     case msg: FragmentBindMessage => {
 
-      kevoree_internal_logger.debug("FragmentBindMessage=>"+createPortKey(msg))
+      kevoree_internal_logger.debug("FragmentBindMessage=>" + createPortKey(msg))
       val sender = this.createSender(msg.getFragmentNodeName, msg.getChannelName)
       val proxy = new KevoreeChannelFragmentProxy(msg.getFragmentNodeName, msg.getChannelName)
       proxy.setChannelSender(sender)
-      fragementBinded += ((createPortKey(msg),proxy))
+      fragementBinded += ((createPortKey(msg), proxy))
       proxy.start;
       reply(true)
     }
     case msg: FragmentUnbindMessage => {
       kevoree_internal_logger.debug("Try to unbind channel " + name)
-      val actorPort : Option[KevoreeChannelFragment] = fragementBinded.get(createPortKey(msg))
+      val actorPort: Option[KevoreeChannelFragment] = fragementBinded.get(createPortKey(msg))
       if (actorPort.isDefined) {
         actorPort.get.stop
         fragementBinded = fragementBinded.filter(p => p._1 != (createPortKey(msg)))
@@ -237,9 +238,9 @@ trait ChannelTypeFragment extends KevoreeChannelFragment with ChannelFragment {
 
 
   /* LifeCycle Method */
-  def startChannelFragment() : Unit = {}
+  def startChannelFragment(): Unit = {}
 
-  def stopChannelFragment() : Unit = {}
+  def stopChannelFragment(): Unit = {}
 
   def updateChannelFragment: Unit = {}
 
