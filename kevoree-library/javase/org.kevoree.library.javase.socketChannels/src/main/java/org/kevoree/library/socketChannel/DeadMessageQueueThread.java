@@ -68,6 +68,7 @@ public class DeadMessageQueueThread extends Thread {
         Message current = null;
         int size, i;
         Queue<Message> stepFailMsgQueue;
+        String host="";
         while (alive) {
             size = queue_node_dead.size();
             if (size > 0) {
@@ -79,9 +80,11 @@ public class DeadMessageQueueThread extends Thread {
                         logger.debug("Sending backup message to " + current.getDestNodeName() + " port <"
                                 + parentChannel.parsePortNumber(current.getDestNodeName()) + "> ");
 
-                        String host = parentChannel.getAddress(current.getDestNodeName());
+                        host = parentChannel.getAddress(current.getDestNodeName());
                         int port = parentChannel.parsePortNumber(current.getDestNodeName());
+
                         Socket client_consumer = parentChannel.getOrCreateSocket(host, port);
+
                         /* adding the current node */
                         if (!current.getPassedNodes().contains(parentChannel.getNodeName())) {
                             current.getPassedNodes().add(parentChannel.getNodeName());
@@ -92,10 +95,14 @@ public class DeadMessageQueueThread extends Thread {
                         oos.flush();
                         queue_node_dead.remove(current);
                     } catch (Exception e) {
-                        stepFailMsgQueue.add(current);
-                        if (alive) {
-                            logger.warn("Unable to send message to  " + current.getDestNodeName() + e);
+                        if(current != null)
+                        {
+                            logger.warn("Unable to send message to  " + current.getDestNodeName());
+                            stepFailMsgQueue.add(current);
+                            if(parentChannel.getClientSockets().containsKey(host))
+                                parentChannel.getClientSockets().remove(host);
                         }
+
                         try {
                             Thread.sleep(timer);
                         } catch (Exception e2) {
