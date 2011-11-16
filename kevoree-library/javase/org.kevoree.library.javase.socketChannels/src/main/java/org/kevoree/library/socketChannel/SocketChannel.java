@@ -35,7 +35,7 @@ import org.kevoree.extra.marshalling.*;
 public class SocketChannel extends AbstractChannelFragment implements Runnable {
 
     private ServerSocket server = null;
-    private BlockingQueue<Message> queue_node_dead = null;
+
     /* thread in charge for receiving messages   PRODUCTEUR  */
     private Thread reception_messages = null;
     private ThreadNodeDead sending_messages_node_dead;
@@ -53,7 +53,6 @@ public class SocketChannel extends AbstractChannelFragment implements Runnable {
 
     @Override
     public Object dispatch(Message message) {
-
         for (org.kevoree.framework.KevoreePort p : getBindedPorts()) {
             forward(p, message);
         }
