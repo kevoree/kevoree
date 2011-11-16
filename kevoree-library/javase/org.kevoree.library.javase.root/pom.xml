@@ -6,12 +6,12 @@
     <artifactId>org.kevoree.library.javase.root</artifactId>
     <packaging>pom</packaging>
     <name>Kevoree :: Library :: JavaSE :: Root</name>
-    <version>1.5.O-SNAPSHOT</version>
+    <version>1.5.0-SNAPSHOT</version>
 
     <parent>
         <artifactId>org.kevoree.library</artifactId>
         <groupId>org.kevoree.library</groupId>
-        <version>1.5.O-SNAPSHOT</version>
+        <version>1.5.0-SNAPSHOT</version>
         <relativePath>../../pom.xml</relativePath>
     </parent>
 
@@ -35,6 +35,7 @@
         <!-- <module>../org.kevoree.library.javase.jscriptengine</module>  -->
         <module>../org.kevoree.library.javase.javaseNode</module>
         <module>../org.kevoree.library.javase.socketChannels</module>
+        <module>../org.kevoree.library.javase.nioChannels</module>
 
         <module>../org.kevoree.library.javase.gossiperNetty</module>
         <module>../org.kevoree.library.javase.fakeDomo</module>
