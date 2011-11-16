@@ -27,7 +27,11 @@ public class NioServerHandler extends SimpleChannelUpstreamHandler {
 
     @Override
     public void messageReceived(ChannelHandlerContext ctx, MessageEvent e) {
-        parentChannel.remoteDispatch((Message) e.getMessage());
+        Message msg = (Message) e.getMessage();
+        if (!msg.getPassedNodes().contains(parentChannel.getNodeName())) {
+            msg.getPassedNodes().add(parentChannel.getNodeName());
+        }
+        parentChannel.remoteDispatch(msg);
     }
 
     @Override
