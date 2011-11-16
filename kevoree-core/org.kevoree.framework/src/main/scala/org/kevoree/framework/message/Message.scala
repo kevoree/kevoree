@@ -19,8 +19,9 @@
 package org.kevoree.framework.message
 
 import scala.reflect.BeanProperty
+import java.util.UUID
 
-class Message{
+class Message extends Serializable{
 
   @BeanProperty 
   var destNodeName = "default"
@@ -45,6 +46,9 @@ class Message{
 
   @BeanProperty
   var passedNodes : java.util.List[String] = new java.util.ArrayList[String]()
+
+  @BeanProperty
+  var uuid : UUID = UUID.randomUUID()
 
 }
 
