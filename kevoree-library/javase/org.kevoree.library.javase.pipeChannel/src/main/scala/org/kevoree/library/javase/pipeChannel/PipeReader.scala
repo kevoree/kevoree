@@ -2,8 +2,8 @@ package org.kevoree.library.javase.pipeChannel
 
 import actors.DaemonActor
 import org.kevoree.framework.message.Message
-import java.io.{ObjectInputStream, File, FileInputStream}
 import java.lang.Thread
+import java.io._
 
 /**
  * User: Erwan Daubert - erwan.daubert@gmail.com
@@ -22,19 +22,25 @@ class PipeReader (pipeChannel: PipeChannel) extends DaemonActor {
 
   var alive = true
 
-  val inputStream: ObjectInputStream = new
-      ObjectInputStream(new
-          FileInputStream(new File(System.getProperty("java.io.tmpdir") + File.separator + pipeChannel.getName) + "_" +
-            pipeChannel.getNodeName))
-  
   new Thread() {
-    override def run() {
+    override def run () {
+      val f = new RandomAccessFile(System.getProperty("java.io.tmpdir") + File.separator + pipeChannel.getName + "_" +
+        pipeChannel.getNodeName, "r")
+      var bytes = Array[Byte](0)
       while (alive) {
-        receiveMessage(inputStream.readObject.asInstanceOf[Message])
+        val length = f.readInt()
+        if (bytes.size < length) {
+          bytes = new Array[Byte](length)
+        }
+        Thread.sleep(100)
+        f.readFully(bytes, 0, length)
+        val inputStream = new ByteArrayInputStream(bytes)
+        receiveMessage(new ObjectInputStream(inputStream).readObject.asInstanceOf[Message])
+        inputStream.close()
       }
-      inputStream.close()
+      f.close()
     }
-  }
+  }.start();
 
   start()
 

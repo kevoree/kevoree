@@ -7,14 +7,13 @@ import org.kevoree.annotation.Stop;
 import org.kevoree.framework.AbstractChannelFragment;
 import org.kevoree.framework.ChannelFragmentSender;
 import org.kevoree.framework.KevoreeChannelFragment;
+import org.kevoree.framework.KevoreePort;
 import org.kevoree.framework.message.Message;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectOutputStream;
+import java.io.*;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -30,23 +29,23 @@ import java.util.Map;
 public class PipeChannel extends AbstractChannelFragment {
 	private Logger logger = LoggerFactory.getLogger(PipeChannel.class);
 
-	private Map<String, ObjectOutputStream> outputStreams;
+	private Map<String, RandomAccessFile> outputStreams;
 	private PipeReader reader;
 
 	@Start
-	public void startPipeChannel () throws IOException {
+	public void startPipeChannel () throws IOException, InterruptedException {
+		outputStreams = new HashMap<String, RandomAccessFile>(this.getOtherFragments().size());
 		if (isWindows()) {
 			initializeOnWindows();
 		} else {
 			initializeOnLinux();
 		}
 		reader = new PipeReader(this);
-
 	}
 
 	@Stop
 	public void stopPipeChannel () {
-		for (ObjectOutputStream stream : outputStreams.values()) {
+		for (RandomAccessFile stream : outputStreams.values()) {
 			try {
 				stream.close();
 			} catch (IOException e) {
@@ -59,57 +58,91 @@ public class PipeChannel extends AbstractChannelFragment {
 	@Override
 	public Object dispatch (Message msg) {
 
-		for (org.kevoree.framework.KevoreePort p : getBindedPorts()) {
+		for (KevoreePort p : getBindedPorts()) {
 			forward(p, msg);
 		}
 		for (KevoreeChannelFragment cf : getOtherFragments()) {
-			if (isWindows()) {
-				dispatchOnWindows(msg);
-			} else {
-				try {
-					dispatchOnUnix(msg, cf.getNodeName());
-				} catch (IOException e) {
-					logger.warn("Unable to use the pipe for " + cf.getNodeName() + " from " + this.getNodeName(), e);
-				}
-			}
+			forward(cf, msg);
 		}
 
 		return null;
 	}
 
 	@Override
-	public ChannelFragmentSender createSender (String remoteNodeName, String remoteChannelName) {
-		return null;
+	public ChannelFragmentSender createSender (final String remoteNodeName, final String remoteChannelName) {
+		return new ChannelFragmentSender() {
+			@Override
+			public Object sendMessageToRemote (Message message) {
+				if (isWindows()) {
+					dispatchOnWindows(message);
+				} else {
+					try {
+						dispatchOnUnix(message, remoteNodeName);
+					} catch (IOException e) {
+						logger.warn(
+								"Unable to use the pipe for " + remoteChannelName + " from " + getNodeName() + " to "
+										+ remoteNodeName, e);
+					}
+				}
+				return null;
+			}
+		};
 	}
 
 	void forward (Message msg) {
-		for (org.kevoree.framework.KevoreePort p : getBindedPorts()) {
+		for (KevoreePort p : getBindedPorts()) {
 			forward(p, msg);
 		}
 	}
 
 	private void initializeOnWindows () {
-
+		// TODO
 	}
 
-	private void initializeOnLinux () throws IOException {
-		Runtime.getRuntime()
+	private void initializeOnLinux () throws IOException, InterruptedException {
+		final Process p = Runtime.getRuntime()
 				.exec("mkfifo -m 777 " + System.getProperty("java.io.tmpdir") + File.separator + this
 						.getName() + "_" + this.getNodeName());
+
+		new Thread() {
+			public void run () {
+				InputStream inStream = p.getInputStream();
+				InputStream errStream = p.getErrorStream();
+
+				byte[] bytes = new byte[1024];
+				try {
+					int length = inStream.read(bytes);
+					errStream.read(bytes);
+					while (length != -1) {
+						length = inStream.read(bytes);
+//						System.out.write(bytes, 0, length);
+						errStream.read(bytes);
+					}
+				} catch (IOException e) {
+//					e.printStackTrace();
+				}
+
+
+			}
+		}.start();
+		p.waitFor();
 	}
 
 	private void dispatchOnWindows (Message msg) {
-
+		// TODO
 	}
 
 	private void dispatchOnUnix (Message msg, String nodeName) throws IOException {
 		if (outputStreams.get(nodeName) == null) {
 			outputStreams.put(nodeName,
-					new ObjectOutputStream(
-							new FileOutputStream(new File(System.getProperty("java.io.tmpdir") + File.separator + this
-									.getName() + "_" + nodeName))));
+					new RandomAccessFile(new File(System.getProperty("java.io.tmpdir") + File.separator + this
+							.getName() + "_" + nodeName), "rw"));
 		}
-		outputStreams.get(nodeName).writeObject(msg);
+		ByteArrayOutputStream stream = new ByteArrayOutputStream();
+		ObjectOutputStream objectStream = new ObjectOutputStream(stream);
+		objectStream.writeObject(msg);
+		outputStreams.get(nodeName).writeInt(stream.size());
+		outputStreams.get(nodeName).write(stream.toByteArray());
 	}
 
 	public static boolean isWindows () {
