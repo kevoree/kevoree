@@ -324,7 +324,7 @@ public class ArduinoNode extends AbstractNodeType {
         } else {
             logger.debug("incremental update available -> try to generate KevScript !");
             Script baseScript = KevScriptWrapper.miniPlanKevScript(AdaptationModelWrapper.generateScriptFromAdaptModel(modelIn));
-            String resultScript = KevScriptWrapper.generateKevScriptCompressed(baseScript);
+            String resultScript = KevScriptWrapper.generateKevScriptCompressed(baseScript,this.getNodeName());
             logger.debug(resultScript);
             String boardName = "";
             if (boardPortName != null && !boardPortName.equals("")) {

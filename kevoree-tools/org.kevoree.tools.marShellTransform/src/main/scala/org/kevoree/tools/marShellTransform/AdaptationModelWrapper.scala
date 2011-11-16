@@ -19,6 +19,7 @@ import org.kevoreeAdaptation._
 import org.slf4j.LoggerFactory
 import org.kevoree.kompare.JavaSePrimitive
 import org.kevoree._
+import java.util.HashMap
 
 object AdaptationModelWrapper {
 
@@ -30,15 +31,26 @@ object AdaptationModelWrapper {
       adapt =>
       adapt.getPrimitiveType.getName match {
         case JavaSePrimitive.UpdateDictionaryInstance => {
-            val dictionary = new java.util.Properties
+          val dicMap = new java.util.HashMap[String,java.util.Properties]()
             if(adapt.getRef.asInstanceOf[Instance].getDictionary.isDefined){
               adapt.getRef.asInstanceOf[Instance].getDictionary.get.getValues.foreach{value =>
-                dictionary.put(value.getAttribute.getName, value.getValue)
+                if(value.getTargetNode.isDefined){
+                  var previousDic = dicMap.get(value.getTargetNode.get.getName)
+                  if(previousDic == null){previousDic =  new java.util.Properties }
+                  previousDic.put(value.getAttribute.getName, value.getValue)
+                  dicMap.put(value.getTargetNode.get.getName,previousDic)
+                } else {
+                  var previousDic = dicMap.get("*")
+                  if(previousDic == null){previousDic =  new java.util.Properties }
+                  previousDic.put(value.getAttribute.getName, value.getValue)
+                  dicMap.put("*",previousDic)
+                }
               }
             }
+
             adapt.getRef match {
-              case ci : ComponentInstance => statments = statments ++ List(UpdateDictionaryStatement(ci.getName,Some(ci.eContainer.asInstanceOf[ContainerNode].getName),dictionary))
-              case ci : Channel => statments = statments ++ List(UpdateDictionaryStatement(ci.getName,None,dictionary))
+              case ci : ComponentInstance => statments = statments ++ List(UpdateDictionaryStatement(ci.getName,Some(ci.eContainer.asInstanceOf[ContainerNode].getName),dicMap))
+              case ci : Channel => statments = statments ++ List(UpdateDictionaryStatement(ci.getName,None,dicMap))
               case _ => //TODO GROUP
             }
           } //statments.add(UpdateDictionaryStatement(statement.getRef.g))

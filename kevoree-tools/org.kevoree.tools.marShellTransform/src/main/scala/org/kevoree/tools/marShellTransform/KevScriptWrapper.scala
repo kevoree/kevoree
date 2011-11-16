@@ -21,9 +21,10 @@ package org.kevoree.tools.marShellTransform
 import org.kevoree.tools.marShell.ast._
 
 import org.slf4j.LoggerFactory
+import java.util.{Properties, Dictionary}
 
 object KevScriptWrapper {
-	var logger = LoggerFactory.getLogger(this.getClass);
+  var logger = LoggerFactory.getLogger(this.getClass);
 
   val paramSep = ":"
   val instrSep = "/"
@@ -47,7 +48,7 @@ object KevScriptWrapper {
     content.toString()
   }
 
-  def generateKevScriptCompressed(script: Script): String = {
+  def generateKevScriptCompressed(script: Script, targetNodeName: String): String = {
     if (script.blocks.isEmpty) return ""
 
     val content = new StringBuilder
@@ -59,12 +60,23 @@ object KevScriptWrapper {
           statement =>
             statement match {
               case s: UpdateDictionaryStatement => {
-                if (!firstStatment) {content append instrSep }
+                if (!firstStatment) {
+                  content append instrSep
+                }
                 firstStatment = false
-                content append "udi" + paramSep + s.instanceName + paramSep + generateDictionaryString(s.dictionary)
+                val dic = new java.util.Properties()
+                if (s.fraProperties.containsKey("*")) {
+                  dic.putAll(s.fraProperties.get("*"))
+                }
+                if (s.fraProperties.containsKey(targetNodeName)) {
+                  dic.putAll(s.fraProperties.get(targetNodeName))
+                }
+                content append "udi" + paramSep + s.instanceName + paramSep + generateDictionaryString(dic)
               }
               case s: AddComponentInstanceStatment => {
-                if (!firstStatment) {content append instrSep }
+                if (!firstStatment) {
+                  content append instrSep
+                }
                 firstStatment = false
                 content append "ain" + paramSep + s.cid.componentInstanceName + paramSep + s.typeDefinitionName
                 if (s.dictionary != null) {
@@ -72,30 +84,40 @@ object KevScriptWrapper {
                 }
               }
               case s: AddChannelInstanceStatment => {
-                if (!firstStatment) {content append instrSep }
+                if (!firstStatment) {
+                  content append instrSep
+                }
                 firstStatment = false
                 content append "ain" + paramSep + s.channelName + paramSep + s.channelType
                 if (s.dictionary != null) {
                   content append paramSep + generateDictionaryString(s.dictionary)
                 }
               }
-              case s : RemoveComponentInstanceStatment => {
-                if (!firstStatment) {content append instrSep }
+              case s: RemoveComponentInstanceStatment => {
+                if (!firstStatment) {
+                  content append instrSep
+                }
                 firstStatment = false
                 content append "rin" + paramSep + s.cid.componentInstanceName
               }
-              case s : RemoveChannelInstanceStatment => {
-                if (!firstStatment) {content append instrSep }
+              case s: RemoveChannelInstanceStatment => {
+                if (!firstStatment) {
+                  content append instrSep
+                }
                 firstStatment = false
                 content append "rin" + paramSep + s.channelName
               }
               case s: AddBindingStatment => {
-                if (!firstStatment) {content append instrSep }
+                if (!firstStatment) {
+                  content append instrSep
+                }
                 firstStatment = false
                 content append "abi" + paramSep + s.cid.componentInstanceName + paramSep + s.bindingInstanceName + paramSep + s.portName
               }
               case s: RemoveBindingStatment => {
-                if (!firstStatment) {content append instrSep }
+                if (!firstStatment) {
+                  content append instrSep
+                }
                 firstStatment = false
                 content append "rbi" + paramSep + s.cid.componentInstanceName + paramSep + s.bindingInstanceName + paramSep + s.portName
               }
