@@ -28,15 +28,15 @@ trait KevsInstParser extends KevsAbstractParser with KevsPropertiesParser {
   val updateDictionaryCommandFormat = "updateDictionary <InstanceName>[@<NodeName>] [({ key = \"value\" (, key = \"value\") }[@<NodeName>][,])*]"
   def parseUpdateDictionary : Parser[List[Statment]] = "updateDictionary" ~ orFailure(ident,updateDictionaryCommandFormat) ~ opt("@"~>ident) ~ opt(parseFragmentProperties) ^^{ case _ ~ instanceName ~ optNodeName ~ optProps  =>
       optProps match {
-        case None => List(UpdateDictionaryStatement(instanceName,optNodeName,new java.util.Hashtable[String,java.util.Properties]))
+        case None => List(UpdateDictionaryStatement(instanceName,optNodeName,new java.util.HashMap[String,java.util.Properties]))
         case Some(props)=>List(UpdateDictionaryStatement(instanceName,optNodeName,props))
       }
   }
 
-  def parseFragmentProperties : Parser[java.util.Hashtable[String,java.util.Properties]] = repsep( parseNodeProp , "," ) ^^{ case props =>
-    val result = new java.util.Hashtable[String,java.util.Properties]
+  def parseFragmentProperties : Parser[java.util.HashMap[String,java.util.Properties]] = repsep( parseNodeProp , "," ) ^^{ case props =>
+    val result = new java.util.HashMap[String,java.util.Properties]
     props.foreach { prop =>
-      if(result.contains(prop._1)){
+      if(result.containsKey(prop._1)){
         val tprop = result.get(prop._1)
         tprop.putAll(prop._2)
         result.put(prop._1,tprop)

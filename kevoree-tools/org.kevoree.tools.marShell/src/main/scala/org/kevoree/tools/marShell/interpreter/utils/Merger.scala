@@ -24,10 +24,10 @@ import org.kevoree.{ContainerRoot, ContainerNode, Instance, KevoreeFactory}
 object Merger {
 
   
-  def mergeFragmentDictionary(inst: Instance, fragmentProps: java.util.Hashtable[String,java.util.Properties]) = {
+  def mergeFragmentDictionary(inst: Instance, fragmentProps: java.util.HashMap[String,java.util.Properties]) = {
     import scala.collection.JavaConversions._
     
-    fragmentProps.keys().foreach { propKey =>
+    fragmentProps.keySet().foreach { propKey =>
       println("Merge key "+propKey)
       
       propKey match {
