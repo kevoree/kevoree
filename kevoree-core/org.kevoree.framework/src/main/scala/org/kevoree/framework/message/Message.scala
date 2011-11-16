@@ -50,5 +50,21 @@ class Message extends Serializable{
   @BeanProperty
   var uuid : UUID = UUID.randomUUID()
 
+  
+  def getClone : Message = {
+    val clone = new Message
+    clone.setDestNodeName(this.getDestNodeName())
+    clone.setDestChannelName(this.getDestChannelName())
+    clone.setContent(this.getContent())
+    clone.setContentClass(this.getContentClass())
+    clone.setInOut(this.getInOut())
+    clone.setResponseTag(this.getResponseTag())
+    clone.setTimeout(this.getTimeout())
+    clone.setPassedNodes(this.getPassedNodes())
+    clone.setUuid(this.getUuid())
+    clone
+  }
+
+
 }
 
