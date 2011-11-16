@@ -20,7 +20,8 @@ package org.kevoree.tools.ui.editor.command
 
 import java.net.URL
 import javax.swing.JOptionPane
-import org.kevoree.tools.ui.editor.KevoreeUIKernel
+import org.kevoree.framework.KevoreeXmiHelper
+import org.kevoree.tools.ui.editor.{PositionedEMFHelper, KevoreeUIKernel}
 
 class LoadRemoteModelUICommand extends Command {
   
@@ -47,8 +48,11 @@ class LoadRemoteModelUICommand extends Command {
           conn.setConnectTimeout(2000);
           val inputStream = conn.getInputStream
 
+
+          kernel.getModelHandler.merge(KevoreeXmiHelper.loadStream(inputStream))
+          PositionedEMFHelper.updateModelUIMetaData(kernel)
           lcommand.setKernel(kernel)
-          lcommand.execute(inputStream)
+          lcommand.execute(kernel.getModelHandler.getActualModel)
         }
       }
     } catch {
