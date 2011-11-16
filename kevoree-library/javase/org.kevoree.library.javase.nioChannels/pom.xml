@@ -3,9 +3,9 @@
 
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.kevoree.library.javase</groupId>
-    <artifactId>org.kevoree.library.javase.rest</artifactId>
+    <artifactId>org.kevoree.library.javase.nioChannels</artifactId>
     <packaging>bundle</packaging>
-    <name>Kevoree :: Library :: JavaSE :: Rest</name>
+    <name>Kevoree :: Library :: JavaSE :: NioChannels</name>
     <version>1.5.0-SNAPSHOT</version>
 
     <parent>
@@ -18,57 +18,48 @@
     <dependencies>
         <dependency>
             <groupId>org.kevoree.extra</groupId>
-            <artifactId>org.kevoree.extra.spray</artifactId>
-            <version>0.9.1</version>
+            <artifactId>org.kevoree.extra.netty</artifactId>
+            <version>3.2.4</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>
 
+
     <build>
         <plugins>
             <plugin>
-                <groupId>org.scala-tools</groupId>
-                <artifactId>maven-scala-plugin</artifactId>
-                <version>2.15.2</version>
+                <groupId>org.kevoree.tools</groupId>
+                <artifactId>org.kevoree.tools.annotation.mavenplugin</artifactId>
+                <version>${kevoree.version}</version>
+                <extensions>true</extensions>
+                <configuration>
+                    <nodeTypeNames>JavaSENode</nodeTypeNames>
+                </configuration>
                 <executions>
                     <execution>
-                        <id>scala-compile-first</id>
-                        <phase>process-resources</phase>
                         <goals>
-                            <goal>add-source</goal>
+                            <goal>generate</goal>
                             <goal>compile</goal>
                         </goals>
                     </execution>
-                    <execution>
-                        <id>scala-test-compile</id>
-                        <phase>process-test-resources</phase>
-                        <goals>
-                            <goal>testCompile</goal>
-                        </goals>
-                    </execution>
                 </executions>
-                <configuration>
-                    <jvmArgs>
-                        <jvmArg>-Xmx1024m</jvmArg>
-                    </jvmArgs>
-                </configuration>
             </plugin>
-
+            <!--
             <plugin>
                 <groupId>org.apache.felix</groupId>
                 <artifactId>maven-bundle-plugin</artifactId>
                 <version>2.3.5</version>
                 <extensions>true</extensions>
-                <configuration>
-                    <instructions>
-                        <Export-Package>org.kevoree.library.rest.*</Export-Package>
-                        <Import-Package>!org.kevoree.library.rest.*,*</Import-Package>
-                    </instructions>
-                </configuration>
-            </plugin>
-
+                <executions>
+                    <execution>
+                        <configuration>
+                            <Export-Package>org.kevoree.library.socketChannel</Export-Package>
+                            <Import-Package>!org.kevoree.library.socketChannel.*</Import-Package>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>-->
         </plugins>
     </build>
-
 
 </project>
