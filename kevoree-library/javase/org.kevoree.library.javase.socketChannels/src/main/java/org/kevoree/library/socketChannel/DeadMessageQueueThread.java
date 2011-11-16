@@ -41,6 +41,8 @@ public class DeadMessageQueueThread extends Thread {
 
     public void addToDeadQueue(Message m) {
 
+        logger.debug("addToDeadQueue to "+m.getDestNodeName());
+
         if (queue_node_dead.size() < maximum_deadqueue_size) {
             if ("true".equals(parentChannel.getDictionary().get("replay"))) {
                 queue_node_dead.add(m);
@@ -50,9 +52,6 @@ public class DeadMessageQueueThread extends Thread {
         } else {
             logger.error("The maximum number of message buffer is reached");
         }
-
-
-        queue_node_dead.add(m);
     }
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -65,37 +64,47 @@ public class DeadMessageQueueThread extends Thread {
 
 
     public void run() {
-        Message current = null;
-        int size, i;
-        Queue<Message> stepFailMsgQueue;
-        while (alive) {
-            size = queue_node_dead.size();
-            if (size > 0) {
-                stepFailMsgQueue = new LinkedList<Message>();
-                for (i = 0; i < size; i++) {
-                    current = queue_node_dead.peek();
-                    queue_node_dead.remove(current);
-                    try {
-                        logger.debug("Sending backup message to " + current.getDestNodeName() + " port <"
-                                + parentChannel.parsePortNumber(current.getDestNodeName()) + "> ");
 
+        int size, i;
+        Queue<Message> stepFailMsgQueue   = new LinkedList<Message>();
+
+        while (alive)
+        {
+            size = queue_node_dead.size();
+
+            logger.debug("size queue " + size);
+            if (size > 0)
+            {
+                Message current=null;
+                for (i = 0; i < size; i++) {
+
+                    try
+                    {
+                        current = queue_node_dead.peek();
+                        queue_node_dead.remove(current);
                         String host = parentChannel.getAddress(current.getDestNodeName());
                         int port = parentChannel.parsePortNumber(current.getDestNodeName());
-                        Socket client_consumer = parentChannel.getOrCreateSocket(host, port);
+
+                        logger.debug(i+"Sending backup message to " + host + " port <"   + port);
+
                         /* adding the current node */
                         if (!current.getPassedNodes().contains(parentChannel.getNodeName())) {
                             current.getPassedNodes().add(parentChannel.getNodeName());
                         }
+                        Socket client_consumer = parentChannel.getOrCreateSocket(host,port);
+
                         OutputStream os = client_consumer.getOutputStream();
                         ObjectOutputStream oos = new ObjectOutputStream(os);
                         oos.writeObject(current);
                         oos.flush();
-                        queue_node_dead.remove(current);
+
+                        logger.debug("Sending success "+client_consumer.getPort());
                     } catch (Exception e) {
+
+                        logger.warn("Unable to send message to  " + current.getDestNodeName());
+                        parentChannel.getClientSockets().remove(parentChannel.getAddress(current.getDestNodeName()));
                         stepFailMsgQueue.add(current);
-                        if (alive) {
-                            logger.warn("Unable to send message to  " + current.getDestNodeName() + e);
-                        }
+
                         try {
                             Thread.sleep(timer);
                         } catch (Exception e2) {
@@ -108,6 +117,7 @@ public class DeadMessageQueueThread extends Thread {
                     queue_node_dead.addAll(stepFailMsgQueue);
                     stepFailMsgQueue.clear();
                 }
+
             } else {
                 try {
                     logger.debug("acquire");
