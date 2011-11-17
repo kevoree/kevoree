@@ -1,4 +1,4 @@
-package org.kevoree.library.javase.pipeChannel
+package org.kevoree.library.javase.pipe
 
 import actors.DaemonActor
 import org.kevoree.framework.message.Message
@@ -14,7 +14,7 @@ import java.io._
  * @version 1.0
  */
 
-class PipeReader (pipeChannel: PipeChannel) extends DaemonActor {
+class PipeReader (pipeChannel: PipeInstance) extends DaemonActor {
 
   case class STOP ()
 
@@ -67,6 +67,6 @@ class PipeReader (pipeChannel: PipeChannel) extends DaemonActor {
   }
 
   private def receiveInternals (msg: Message) {
-    pipeChannel.forward(msg)
+    pipeChannel.localForward(msg)
   }
 }
