@@ -1,9 +1,6 @@
 package org.kevoree.library.nioChannel;
 
-import org.jboss.netty.channel.ChannelHandlerContext;
-import org.jboss.netty.channel.ChannelStateEvent;
-import org.jboss.netty.channel.ExceptionEvent;
-import org.jboss.netty.channel.SimpleChannelUpstreamHandler;
+import org.jboss.netty.channel.*;
 import org.kevoree.framework.message.Message;
 import org.slf4j.LoggerFactory;
 
@@ -30,17 +27,25 @@ public class NioClientHandler extends SimpleChannelUpstreamHandler {
     @Override
     public void channelConnected(ChannelHandlerContext ctx, ChannelStateEvent e) {
         InetSocketAddress remoteAdr = (InetSocketAddress) e.getChannel().getRemoteAddress();
-        Message msg = parentChannel.getMsgQueue().popMsg(remoteAdr.getAddress().getHostAddress(), remoteAdr.getPort() + "");
-        if(msg != null){
-            e.getChannel().write(msg);
-        }
-        e.getChannel().close();
+        logger.debug("Channel connected "+remoteAdr);
+
+       // Message msg = parentChannel.getMsgQueue().popMsg(remoteAdr.getAddress().getHostAddress(), remoteAdr.getPort() + "");
+        parentChannel.getMsgQueue().putChannel(remoteAdr.getAddress().getHostAddress(),remoteAdr.getPort(),e.getChannel());
+        /*
+        if (msg != null) {
+            e.getChannel().write(msg).addListener(ChannelFutureListener.CLOSE);
+        } else {
+            e.getChannel().close();
+        }*/
+
     }
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, ExceptionEvent e) {
         logger.debug("Error while processing message ", e.getCause());
+        InetSocketAddress remoteAdr = (InetSocketAddress) e.getChannel().getRemoteAddress();
         ctx.getChannel().close();
+        parentChannel.getMsgQueue().invalidChannel(remoteAdr.getAddress().getHostAddress(),remoteAdr.getPort());
     }
 
 
