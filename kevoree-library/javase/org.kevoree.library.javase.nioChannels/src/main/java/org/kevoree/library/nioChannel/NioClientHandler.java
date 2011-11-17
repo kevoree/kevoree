@@ -4,7 +4,10 @@ import org.jboss.netty.channel.ChannelHandlerContext;
 import org.jboss.netty.channel.ChannelStateEvent;
 import org.jboss.netty.channel.ExceptionEvent;
 import org.jboss.netty.channel.SimpleChannelUpstreamHandler;
+import org.kevoree.framework.message.Message;
 import org.slf4j.LoggerFactory;
+
+import java.net.InetSocketAddress;
 
 
 /**
@@ -26,12 +29,18 @@ public class NioClientHandler extends SimpleChannelUpstreamHandler {
 
     @Override
     public void channelConnected(ChannelHandlerContext ctx, ChannelStateEvent e) {
-        e.getChannel().write(null);
+        InetSocketAddress remoteAdr = (InetSocketAddress) e.getChannel().getRemoteAddress();
+        Message msg = parentChannel.getMsgQueue().popMsg(remoteAdr.getAddress().getHostAddress(), remoteAdr.getPort() + "");
+        if(msg != null){
+            e.getChannel().write(msg);
+        }
+        e.getChannel().close();
     }
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, ExceptionEvent e) {
         logger.debug("Error while processing message ", e.getCause());
+        ctx.getChannel().close();
     }
 
 
