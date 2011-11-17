@@ -27,7 +27,7 @@ import org.slf4j.LoggerFactory
  * To change this template use File | Settings | File Templates.
  */
 
-trait GroupMerger extends Merger {
+trait GroupMerger extends Merger with DictionaryMerger{
 
   private val logger = LoggerFactory.getLogger(this.getClass)
 
@@ -35,7 +35,10 @@ trait GroupMerger extends Merger {
     modelToMerge.getGroups.foreach {
       group =>
       val currentGroup = actualModel.getGroups.find(pgroup => pgroup.getName == group.getName) match {
-        case Some(e) => e
+        case Some(e) => {
+          mergeDictionaryInstance(e,group)
+          e
+        }
         case None => {
           actualModel.addGroups(group)
           group
@@ -50,6 +53,9 @@ trait GroupMerger extends Merger {
            case None => logger.error("Unresolved node "+subNode+" in links for group => "+currentGroup.getName)
          }
       }
+
+
+
     }
   }
 }

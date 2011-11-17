@@ -25,7 +25,7 @@ import org.kevoree.ContainerRoot
 import org.kevoree.merger.resolver.UnresolvedTypeDefinition
 
 
-trait NodeMerger extends ComponentInstanceMerger {
+trait NodeMerger extends ComponentInstanceMerger with DictionaryMerger {
 
   def mergeAllNode(actualModel : ContainerRoot,modelToMerge : ContainerRoot)={
     //BREAK CROSS REFERENCE NODE TYPE
@@ -39,7 +39,10 @@ trait NodeMerger extends ComponentInstanceMerger {
           actualModel.addNodes(nodeToMerge);
           mergeAllInstances(actualModel,nodeToMerge,nodeToMerge)
       }
-      case Some(eNode) => mergeAllInstances(actualModel,eNode,nodeToMerge)
+      case Some(eNode) => {
+        mergeDictionaryInstance(eNode,nodeToMerge)
+        mergeAllInstances(actualModel,eNode,nodeToMerge)
+      }
     }
   }
   

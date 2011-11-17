@@ -85,7 +85,7 @@ trait DeployUnitMerger extends Merger {
       rLib =>
         tp.addRequiredLibs(mergeDeployUnit(actualModel, rLib))
     }
-    println(tp.getUnitName + "-" + tp.getRequiredLibs.size)
+    //println(tp.getUnitName + "-" + tp.getRequiredLibs.size)
 
   }
 
