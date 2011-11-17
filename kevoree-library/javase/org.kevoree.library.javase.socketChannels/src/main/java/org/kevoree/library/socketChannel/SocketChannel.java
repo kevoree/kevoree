@@ -111,9 +111,7 @@ public class SocketChannel extends AbstractChannelFragment implements Runnable {
         try {
             reception_messages.interrupt();
             sending_messages_node_dead.interrupt();
-            if (!server.isClosed()) {
-                server.close();
-            }
+
         } catch (Exception e) {
             //logger.error(""+e);
         }
@@ -148,25 +146,22 @@ public class SocketChannel extends AbstractChannelFragment implements Runnable {
     public ChannelFragmentSender createSender(final String remoteNodeName, String remoteChannelName) {
         return new ChannelFragmentSender() {
             @Override
-            public Object sendMessageToRemote(Message _message) {
-                int port;
+            public Object sendMessageToRemote(Message msg) {
+                int port=0;
                 String host="";
 
                 try {
-                    logger.debug("Acquire createsender");
                     sem.acquire();
                 } catch (InterruptedException e) {
                     // ignore
                 }
-                final Message msg = _message;
-                try {
-                    msg.setDestNodeName(remoteNodeName);
 
+                try {
+
+                    logger.debug("Sending message to " + remoteNodeName);
+                    msg.setDestNodeName(remoteNodeName);
                     host = getAddress(msg.getDestNodeName());
                     port = parsePortNumber(msg.getDestNodeName());
-
-                    logger.debug("Sending message to " + msg.getDestNodeName() + " host <" + host + ">" + " port <"
-                            + +port + "> " );
 
                     // adding the current node  to passedNodes
                     if (!msg.getPassedNodes().contains(getNodeName())) {
@@ -180,19 +175,39 @@ public class SocketChannel extends AbstractChannelFragment implements Runnable {
                     oos.writeObject(msg);
                     oos.flush();
 
+                    client_consumer = null;
+                    os = null;
+                    oos = null;
                 } catch (Exception e) {
 
                     logger.warn("Unable to send message to " + msg.getDestNodeName()+e);
 
-                    sending_messages_node_dead.addToDeadQueue(msg);
-                    clientSockets.remove(host);
+                    delete_link(host,port);
+                    if(getDictionary().get("replay").toString().equals("true"))
+                        sending_messages_node_dead.addToDeadQueue(msg);
 
                 }
-                logger.debug("release createsender");
-                sem.release();
+                finally
+                {
+                    msg = null;
+                    sem.release();
+                }
+
                 return null;
             }
         };
+    }
+
+
+    public void nodeDown(Socket client){
+        logger.warn("Node is down ");
+        localServerSockets.remove(client);
+        try
+        {
+            client.close();
+        } catch (IOException e) {
+
+        }
     }
 
 
@@ -206,9 +221,10 @@ public class SocketChannel extends AbstractChannelFragment implements Runnable {
         } catch (IOException e) {
             logger.error("Unable to create ServerSocket", e);
         }
-        int maxConcurrentClients = 100;
+
+        int maxConcurrentClients = 50;
         final Semaphore sem = new Semaphore(maxConcurrentClients);
-        Executor pool = Executors.newFixedThreadPool(100);
+        Executor pool = Executors.newFixedThreadPool(50);
         while (alive) {
             try {
                 sem.acquire();
@@ -233,69 +249,59 @@ public class SocketChannel extends AbstractChannelFragment implements Runnable {
                 @Override
                 public void run() {
                     while (_alive) {
-
                         try {
                             if (stream != null) {
+                                ObjectInputStream ois =null;
                                 try {
-                                    ObjectInputStream ois = new ObjectInputStream(stream);
+                                    ois = new ObjectInputStream(stream);
                                     msg = (Message) ois.readObject();
                                 } catch (Exception e) {
-                                    localServerSockets.remove(client);
-                                    logger.warn("Node is down "+e);
-                                    _alive = false;
+                                    ois = null;
+                                    nodeDown(client);
+                                    _alive =false;
                                     msg = null;
-
                                 }
                             } else {
                                 // the remote node close the channel (update, down )
-                                _alive = false;
+                                nodeDown(client);
+                                _alive =false;
                                 msg = null;
-                                localServerSockets.remove(client);
                             }
-                            if (msg != null) {
 
-                                logger.debug("Reading message from  " + msg.getPassedNodes() + "\t" + msg.getContent() + "\t"
-                                        + msg.getDestNodeName());
+                            if (msg != null) {
+                                logger.debug("Reading message from " + msg.getDestNodeName());
 
                                 if (!msg.getPassedNodes().contains(getNodeName())) {
                                     msg.getPassedNodes().add(getNodeName());
                                 }
-
-                                logger.debug("getOtherFragments : "+getOtherFragments().size());
+                                // remove duplicate message
                                 if (getOtherFragments().size() > 1) {
-
-                                    if (fragments.containsKey(msg.getUuid().toString())) {
-                                        // already receive
-                                        int val =      fragments.get(msg.getUuid().toString());
-                                        fragments.put(msg.getUuid().toString(), (val+1));
-                                        logger.debug("fragment already receive "+msg.getUuid().toString()+" "+(fragments.get(msg.getUuid().toString())));
-                                    } else {
-                                        //first
-                                        logger.debug("first "+msg.getUuid().toString());
-                                        fragments.put(msg.getUuid().toString(), 1);
+                                    int val=1;
+                                    if (fragments.containsKey(msg.getUuid().toString()))
+                                    {
+                                        val = fragments.get(msg.getUuid().toString());
+                                        val = val +1;
+                                    }else {
+                                        val =1;
                                         remoteDispatch(msg);
                                     }
-                                    logger.debug("VAL : "+fragments.get(msg.getUuid().toString())+" "+getOtherFragments().size());
+                                    // save
+                                    fragments.put(msg.getUuid().toString(), val);
 
-                                    if ((fragments.get(msg.getUuid().toString()) == (getOtherFragments().size()))) {
-                                        logger.debug("Remove fragment " + msg.getUuid().toString() + " " + fragments.size());
+                                    if (val == getOtherFragments().size())
+                                    {
                                         fragments.remove(msg.getUuid());
-
                                     }
 
                                 } else {
-
                                     // two nodes
                                     remoteDispatch(msg);
                                 }
 
-
-
                             }else
                             {
-                                logger.warn("MSG is null");
-                                localServerSockets.remove(client);
-                                _alive = false;
+                                nodeDown(client);
+                                _alive =false;
                                 msg = null;
                             }
                             msg = null;
@@ -321,18 +327,23 @@ public class SocketChannel extends AbstractChannelFragment implements Runnable {
         }
     }
 
+    public void delete_link(String host,Integer port){
+        /// link is down
+        clientSockets.remove(host+port);
+    }
 
     public Socket getOrCreateSocket(String host,Integer port) throws IOException {
         Socket client_consumer = null;
-        logger.debug("getOrCreateSocket "+host+ " port "+port);
+
         if (clientSockets.containsKey(host+port)) {
-            logger.debug("the link exist");
+            //  logger.debug("the link exist");
             client_consumer = clientSockets.get(host+port);
         } else {
 
-            logger.debug("no link in cache");
+            //   logger.debug("no link in cache");
             client_consumer = new Socket(host, port);
-            //client_consumer.setSoTimeout(0);
+            client_consumer.setKeepAlive(true);
+            client_consumer.setSoTimeout(20000);
             clientSockets.put(host+port, client_consumer);
         }
         return client_consumer;

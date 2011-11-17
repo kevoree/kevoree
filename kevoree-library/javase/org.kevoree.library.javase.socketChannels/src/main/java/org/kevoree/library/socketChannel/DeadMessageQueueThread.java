@@ -85,7 +85,7 @@ public class DeadMessageQueueThread extends Thread {
                         String host = parentChannel.getAddress(current.getDestNodeName());
                         int port = parentChannel.parsePortNumber(current.getDestNodeName());
 
-                        logger.debug(i+"Sending backup message to " + host + " port <"   + port);
+                        logger.debug("Sending backup message to " + host + " port <"   + port);
 
                         /* adding the current node */
                         if (!current.getPassedNodes().contains(parentChannel.getNodeName())) {
@@ -98,20 +98,25 @@ public class DeadMessageQueueThread extends Thread {
                         oos.writeObject(current);
                         oos.flush();
 
-                        logger.debug("Sending success "+client_consumer.getPort());
+                        client_consumer = null;
+                        os = null;
+                        oos = null;
+
+
                     } catch (Exception e) {
 
                         try {
                             Thread.sleep(timer);
                             logger.warn("Unable to send message to  " + current.getDestNodeName());
-                            // remove link  (id = host+port)
+
                             String host = parentChannel.getAddress(current.getDestNodeName());
                             int port = parentChannel.parsePortNumber(current.getDestNodeName());
 
-                            parentChannel.getClientSockets().remove(host+port);
+                            parentChannel.delete_link(host,port);
                             stepFailMsgQueue.add(current);
 
                         } catch (Exception e2) {
+                            e2.printStackTrace();
                         }
                     }
                 }  // for
