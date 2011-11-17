@@ -1,4 +1,4 @@
-package org.kevoree.library.javase.pipeChannel;
+package org.kevoree.library.javase.pipe;
 
 import org.kevoree.annotation.ChannelTypeFragment;
 import org.kevoree.annotation.Library;
@@ -26,7 +26,7 @@ import java.util.Map;
  */
 @Library(name = "JavaSE")
 @ChannelTypeFragment
-public class PipeChannel extends AbstractChannelFragment {
+public class PipeChannel extends AbstractChannelFragment implements PipeInstance {
 	private Logger logger = LoggerFactory.getLogger(PipeChannel.class);
 
 	private Map<String, RandomAccessFile> outputStreams;
@@ -89,9 +89,11 @@ public class PipeChannel extends AbstractChannelFragment {
 		};
 	}
 
-	void forward (Message msg) {
-		for (KevoreePort p : getBindedPorts()) {
-			forward(p, msg);
+	public void localForward (Object msg) {
+		if (msg instanceof Message) {
+			for (KevoreePort p : getBindedPorts()) {
+				forward(p, (Message)msg);
+			}
 		}
 	}
 
