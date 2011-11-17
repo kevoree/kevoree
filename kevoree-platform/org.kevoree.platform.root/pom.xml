@@ -5,7 +5,7 @@
     <groupId>org.kevoree.platform</groupId>
     <artifactId>org.kevoree.platform.root</artifactId>
     <packaging>pom</packaging>
-    <version>1.5.0-SNAPSHOT</version>
+    <version>1.4.2</version>
     <name>Kevoree :: Platform :: Root</name>
     <url>https://github.com/dukeboard/kevoree</url>
 
