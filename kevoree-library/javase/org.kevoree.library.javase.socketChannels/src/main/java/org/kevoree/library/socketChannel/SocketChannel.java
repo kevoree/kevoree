@@ -280,6 +280,7 @@ public class SocketChannel extends AbstractChannelFragment implements Runnable {
                                     if ((fragments.get(msg.getUuid().toString()) == (getOtherFragments().size()))) {
                                         logger.debug("Remove fragment " + msg.getUuid().toString() + " " + fragments.size());
                                         fragments.remove(msg.getUuid());
+
                                     }
 
                                 } else {
