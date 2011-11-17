@@ -20,6 +20,9 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.concurrent.Executors;
 
 /**
@@ -48,15 +51,16 @@ public class NioChannel extends AbstractChannelFragment {
 
     private MessageQueue msgQueue = null;
     private org.slf4j.Logger logger = LoggerFactory.getLogger(this.getClass());
-
+    public Set<Channel> serverConnectedChannel ;
 
     @Start
     public void startNio() {
-        
+
+        serverConnectedChannel =  Collections.synchronizedSet(new HashSet<Channel>());
+
         final Bundle bundle = (Bundle) this.getDictionary().get("osgi.bundle");
-        
-        msgQueue = new MessageQueue();
-        msgQueue.start();
+
+
         final NioChannel selfPointer = this;
 
         bootstrap = new ServerBootstrap(
@@ -67,31 +71,45 @@ public class NioChannel extends AbstractChannelFragment {
         // Set up the pipeline factory.
         bootstrap.setPipelineFactory(new ChannelPipelineFactory() {
             public ChannelPipeline getPipeline() throws Exception {
-                return Channels.pipeline(new ObjectEncoder(), new OSGIObjectDecoder(bundle), new NioServerHandler(selfPointer));
+                return Channels.pipeline(new ObjectEncoder(), new OSGIObjectDecoder(bundle, 2548576), new NioServerHandler(selfPointer));
             }
         });
-
-        // Bind and start to accept incoming connections.
-        serverChannel = bootstrap.bind(new InetSocketAddress(Integer.parseInt(getDictionary().get("port").toString())));
 
         clientBootStrap = new ClientBootstrap(new NioClientSocketChannelFactory(Executors.newCachedThreadPool(), Executors.newCachedThreadPool()));
         clientBootStrap.setPipelineFactory(new ChannelPipelineFactory() {
             public ChannelPipeline getPipeline() throws Exception {
                 return Channels.pipeline(
                         new ObjectEncoder(),
-                        new OSGIObjectDecoder(bundle),
+                        new OSGIObjectDecoder(bundle, 2548576),
                         new NioClientHandler(selfPointer));
             }
         });
+
+        msgQueue = new MessageQueue(clientBootStrap);
+        msgQueue.start();
+
+        // Bind and start to accept incoming connections.
+        serverChannel = bootstrap.bind(new InetSocketAddress(Integer.parseInt(getDictionary().get("port").toString())));
 
     }
 
     @Stop
     public void stopNio() {
-        serverChannel.close().awaitUninterruptibly(200);
-        bootstrap.releaseExternalResources();
+        msgQueue.flushChannel();
         clientBootStrap.releaseExternalResources();
+        logger.debug("Client channels flushed");
         msgQueue.stop();
+
+        //CLOSE ALREADY CONNECTED CLIENT
+        for(Channel c :  serverConnectedChannel){
+           c.close().awaitUninterruptibly(200);
+        }
+        serverConnectedChannel.clear();
+
+        serverChannel.close().awaitUninterruptibly(200);
+        logger.debug("Server channel closed");
+        //bootstrap.
+
     }
 
     @Update
@@ -127,10 +145,10 @@ public class NioChannel extends AbstractChannelFragment {
             @Override
             public Object sendMessageToRemote(Message message) {
                 try {
-                    msgQueue.putMsg(getAddress(remoteNodeName), parsePortNumber(remoteNodeName) + "", message);
-                    clientBootStrap.connect(new InetSocketAddress(getAddress(remoteNodeName),parsePortNumber(remoteNodeName)));
+                    msgQueue.putMsg(getAddress(remoteNodeName), parsePortNumber(remoteNodeName), message);
+                    //    clientBootStrap.connect(new InetSocketAddress(getAddress(remoteNodeName),parsePortNumber(remoteNodeName)));
                 } catch (IOException e) {
-                    logger.error("Error while sending message to "+remoteNodeName+"-"+remoteChannelName);
+                    logger.error("Error while sending message to " + remoteNodeName + "-" + remoteChannelName);
                 }
                 return null;
             }
