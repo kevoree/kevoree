@@ -89,11 +89,14 @@ public class PipeChannel extends AbstractChannelFragment implements PipeInstance
 		};
 	}
 
-	public void localForward (Object msg) {
-		if (msg instanceof Message) {
+	public void localForward (byte[] msg, int length) {
+		try {
+			Message message = (Message) new ObjectInputStream(new ByteArrayInputStream(msg, 0, length)).readObject();
 			for (KevoreePort p : getBindedPorts()) {
-				forward(p, (Message)msg);
+				forward(p, message);
 			}
+		} catch (Exception e) {
+			logger.warn("Unable to convert data received as a message", e);
 		}
 	}
 
