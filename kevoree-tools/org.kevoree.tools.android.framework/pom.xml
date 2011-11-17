@@ -5,12 +5,12 @@
     <artifactId>org.kevoree.tools.android.framework</artifactId>
     <packaging>bundle</packaging>
     <name>Kevoree :: Tools :: Android Framework</name>
-    <version>1.5.0-SNAPSHOT</version>
+    <version>1.4.2</version>
 
     <parent>
         <artifactId>org.kevoree.tools.root</artifactId>
         <groupId>org.kevoree.tools</groupId>
-        <version>1.5.0-SNAPSHOT</version>
+        <version>1.4.2</version>
         <relativePath>../org.kevoree.tools.root/pom.xml</relativePath>
     </parent>
 

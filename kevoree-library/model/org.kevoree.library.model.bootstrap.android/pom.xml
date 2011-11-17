@@ -6,7 +6,7 @@
     <artifactId>org.kevoree.library.model.bootstrap.android</artifactId>
     <packaging>jar</packaging>
     <name>Kevoree :: Library :: Model :: Bootstrap Android</name>
-    <version>1.5.0-SNAPSHOT</version>
+    <version>1.4.2</version>
 
     <properties>
         <kevoree.version>${project.version}</kevoree.version>
@@ -16,7 +16,7 @@
     <parent>
         <artifactId>org.kevoree.library.model.root</artifactId>
         <groupId>org.kevoree.library.model</groupId>
-        <version>1.5.0-SNAPSHOT</version>
+        <version>1.4.2</version>
         <relativePath>../org.kevoree.library.model.root/pom.xml</relativePath>
     </parent>
 
