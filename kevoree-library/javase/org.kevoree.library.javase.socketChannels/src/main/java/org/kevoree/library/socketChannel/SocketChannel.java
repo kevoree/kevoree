@@ -261,20 +261,28 @@ public class SocketChannel extends AbstractChannelFragment implements Runnable {
                                     msg.getPassedNodes().add(getNodeName());
                                 }
 
-
+                                logger.debug("getOtherFragments : "+getOtherFragments().size());
                                 if (getOtherFragments().size() > 1) {
+
                                     if (fragments.containsKey(msg.getUuid().toString())) {
                                         // already receive
-                                        fragments.put(msg.getUuid().toString(), ((fragments.get(msg.getUuid().toString())) + 1));
+                                        int val =      fragments.get(msg.getUuid().toString());
+                                        fragments.put(msg.getUuid().toString(), (val+1));
+                                        logger.debug("fragment already receive "+msg.getUuid().toString()+" "+(fragments.get(msg.getUuid().toString())));
                                     } else {
                                         //first
+                                        logger.debug("first "+msg.getUuid().toString());
                                         fragments.put(msg.getUuid().toString(), 1);
                                         remoteDispatch(msg);
                                     }
+                                    logger.debug("VAL : "+fragments.get(msg.getUuid().toString())+" "+getOtherFragments().size());
+
                                     if ((fragments.get(msg.getUuid().toString()) == (getOtherFragments().size()))) {
                                         logger.debug("Remove fragment " + msg.getUuid().toString() + " " + fragments.size());
-                                        fragments.remove(msg.getUuid().toString());
+                                        fragments.remove(msg.getUuid());
+
                                     }
+
                                 } else {
 
                                     // two nodes
@@ -286,6 +294,9 @@ public class SocketChannel extends AbstractChannelFragment implements Runnable {
                             }else
                             {
                                 logger.warn("MSG is null");
+                                localServerSockets.remove(client);
+                                _alive = false;
+                                msg = null;
                             }
                             msg = null;
                         } finally {
@@ -314,8 +325,7 @@ public class SocketChannel extends AbstractChannelFragment implements Runnable {
     public Socket getOrCreateSocket(String host,Integer port) throws IOException {
         Socket client_consumer = null;
         logger.debug("getOrCreateSocket "+host+ " port "+port);
-        if (clientSockets.containsKey(host)) {
-
+        if (clientSockets.containsKey(host+port)) {
             logger.debug("the link exist");
             client_consumer = clientSockets.get(host+port);
         } else {

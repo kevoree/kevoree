@@ -101,12 +101,16 @@ public class DeadMessageQueueThread extends Thread {
                         logger.debug("Sending success "+client_consumer.getPort());
                     } catch (Exception e) {
 
-                        logger.warn("Unable to send message to  " + current.getDestNodeName());
-                        parentChannel.getClientSockets().remove(parentChannel.getAddress(current.getDestNodeName()));
-                        stepFailMsgQueue.add(current);
-
                         try {
                             Thread.sleep(timer);
+                            logger.warn("Unable to send message to  " + current.getDestNodeName());
+                            // remove link  (id = host+port)
+                            String host = parentChannel.getAddress(current.getDestNodeName());
+                            int port = parentChannel.parsePortNumber(current.getDestNodeName());
+
+                            parentChannel.getClientSockets().remove(host+port);
+                            stepFailMsgQueue.add(current);
+
                         } catch (Exception e2) {
                         }
                     }
