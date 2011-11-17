@@ -118,7 +118,6 @@ public class VideoViewer extends AbstractComponentType {
 				width = (Integer) msg.getValue("width").get();
 				bytes = ((byte[]) msg.getValue("bytes").get());
 
-
 				if (image == null || width != image.getWidth(null) || height != image.getHeight(null)) {
 					frame.setSize(width, height);
 					image = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice()
@@ -128,9 +127,10 @@ public class VideoViewer extends AbstractComponentType {
 
 					sampleModel = new ComponentSampleModel(DataBuffer.TYPE_BYTE, width, height, 4, width * 4,
 							new int[]{2, 1, 0});
-					buffer = new DataBufferByte(bytes, bytes.length);
+//					buffer = new DataBufferByte(bytes, bytes.length);
 //					bytes = new byte[((byte[]) msg.getValue("bytes").get()).length];
 				}
+				buffer = new DataBufferByte(bytes, bytes.length);
 //				System.arraycopy(((byte[]) msg.getValue("bytes").get()), 0, bytes, 0, bytes.length);
 				raster = Raster.createRaster(sampleModel, buffer, null);
 				image.setData(raster);
@@ -141,7 +141,7 @@ public class VideoViewer extends AbstractComponentType {
 				bufferStrategy.show();
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.debug("Something wrong appears, maybe the viewer fails", e);
 		}
 	}
 }
