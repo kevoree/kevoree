@@ -1,4 +1,4 @@
-package org.kevoree.library.javase.pipeChannel
+package org.kevoree.library.javase.pipe
 
 import actors.DaemonActor
 import org.kevoree.framework.message.Message
@@ -14,11 +14,11 @@ import java.io._
  * @version 1.0
  */
 
-class PipeReader (pipeChannel: PipeChannel) extends DaemonActor {
+class PipeReader (pipeChannel: PipeInstance) extends DaemonActor {
 
   case class STOP ()
 
-  case class RECEIVE_MESSAGE (msg: Message)
+  case class RECEIVE_MESSAGE (msg: Array[Byte], length : Int)
 
   var alive = true
 
@@ -34,9 +34,9 @@ class PipeReader (pipeChannel: PipeChannel) extends DaemonActor {
         }
         Thread.sleep(100)
         f.readFully(bytes, 0, length)
-        val inputStream = new ByteArrayInputStream(bytes)
-        receiveMessage(new ObjectInputStream(inputStream).readObject.asInstanceOf[Message])
-        inputStream.close()
+//        val inputStream = new ByteArrayInputStream(bytes)
+        receiveMessage(bytes, length)
+//        inputStream.close()
       }
       f.close()
     }
@@ -48,15 +48,15 @@ class PipeReader (pipeChannel: PipeChannel) extends DaemonActor {
     this ! STOP()
   }
 
-  def receiveMessage (msg: Message) {
-    this ! RECEIVE_MESSAGE(msg)
+  def receiveMessage (msg: Array[Byte], length : Int) {
+    this ! RECEIVE_MESSAGE(msg, length)
   }
 
   def act () {
     loop {
       react {
         case STOP() => stopInternals()
-        case RECEIVE_MESSAGE(msg) => receiveInternals(msg)
+        case RECEIVE_MESSAGE(msg, length) => receiveInternals(msg, length)
       }
     }
   }
@@ -66,7 +66,7 @@ class PipeReader (pipeChannel: PipeChannel) extends DaemonActor {
     this.exit()
   }
 
-  private def receiveInternals (msg: Message) {
-    pipeChannel.forward(msg)
+  private def receiveInternals (msg: Array[Byte], length: Int) {
+    pipeChannel.localForward(msg, length)
   }
 }

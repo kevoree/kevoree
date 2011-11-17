@@ -10,9 +10,9 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>org.kevoree.library.javase.pipeChannel</artifactId>
+    <artifactId>org.kevoree.library.javase.pipe</artifactId>
     <packaging>bundle</packaging>
-    <name>Kevoree :: Library :: JavaSE :: pipeChannels</name>
+    <name>Kevoree :: Library :: JavaSE :: Pipe</name>
 
     <build>
         <plugins>
@@ -41,6 +41,16 @@
                     <jvmArgs>
                         <jvmArg>-Xmx1024m</jvmArg>
                     </jvmArgs>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <extensions>true</extensions>
+                <configuration>
+                    <instructions>
+                        <DynamicImport-Package>*</DynamicImport-Package>
+                    </instructions>
                 </configuration>
             </plugin>
         </plugins>
