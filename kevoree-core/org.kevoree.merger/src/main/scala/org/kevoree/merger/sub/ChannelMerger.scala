@@ -33,9 +33,8 @@ trait ChannelMerger extends Merger with DictionaryMerger {
 
   def mergeAllChannels(actualModel: ContainerRoot, modelToMerge: ContainerRoot) = {
     //MERGE CHANNEL
-    modelToMerge.getHubs.foreach {
-      hub =>
-      val currentHub = actualModel.getGroups.find(phub => phub.getName == hub.getName) match {
+    modelToMerge.getHubs.foreach { hub =>
+      val currentHub = actualModel.getHubs.find(phub => phub.getName == hub.getName) match {
         case Some(e) => {
           mergeDictionaryInstance(e,hub)
           e
