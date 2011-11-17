@@ -27,7 +27,7 @@ import org.kevoree.{KevoreeFactory, ComponentInstance, ContainerNode, ContainerR
  * To change this template use File | Settings | File Templates.
  */
 
-trait ChannelMerger extends Merger {
+trait ChannelMerger extends Merger with DictionaryMerger {
 
   private val logger = LoggerFactory.getLogger(this.getClass)
 
@@ -36,7 +36,10 @@ trait ChannelMerger extends Merger {
     modelToMerge.getHubs.foreach {
       hub =>
       val currentHub = actualModel.getGroups.find(phub => phub.getName == hub.getName) match {
-        case Some(e) => e
+        case Some(e) => {
+          mergeDictionaryInstance(e,hub)
+          e
+        }
         case None => {
           actualModel.addHubs(hub)
           hub
