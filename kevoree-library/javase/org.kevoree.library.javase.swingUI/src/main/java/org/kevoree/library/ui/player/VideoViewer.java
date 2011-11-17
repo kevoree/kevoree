@@ -104,7 +104,7 @@ public class VideoViewer extends AbstractComponentType {
 	byte[] bytes;
 	DataBufferByte buffer;
 	SampleModel sampleModel;
-	Raster raster ;
+	Raster raster;
 
 	@Port(name = "image_bytes")
 	public void onReceiveImageBytes (Object message) {
