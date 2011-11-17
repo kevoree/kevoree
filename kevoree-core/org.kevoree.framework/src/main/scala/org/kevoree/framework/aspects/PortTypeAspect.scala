@@ -44,7 +44,7 @@ case class PortTypeAspect(pt : PortType) {
           }
         }
         case spt : ServicePortType => {
-          pt.getName == spt.getName
+          targetPT.getName == spt.getName
         }
       }
     } else {
