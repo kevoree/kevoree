@@ -4,7 +4,7 @@
     <artifactId>org.kevoree.tools.aether.framework</artifactId>
     <packaging>bundle</packaging>
     <name>Kevoree :: Tools :: Aether Framework</name>
-    <version>1.5.0-SNAPSHOT</version>
+    <version>1.4.2</version>
 
     <properties>
         <kevoree.version>${project.version}</kevoree.version>
@@ -13,7 +13,7 @@
     <parent>
         <artifactId>org.kevoree.tools.root</artifactId>
         <groupId>org.kevoree.tools</groupId>
-        <version>1.5.0-SNAPSHOT</version>
+        <version>1.4.2</version>
         <relativePath>../org.kevoree.tools.root/pom.xml</relativePath>
     </parent>
 
