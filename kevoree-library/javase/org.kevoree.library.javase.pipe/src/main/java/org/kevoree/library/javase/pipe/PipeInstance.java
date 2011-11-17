@@ -14,5 +14,5 @@ public interface PipeInstance {
 
 	public String getNodeName ();
 
-	public void localForward (Object data);
+	public void localForward (byte[] data, int length);
 }

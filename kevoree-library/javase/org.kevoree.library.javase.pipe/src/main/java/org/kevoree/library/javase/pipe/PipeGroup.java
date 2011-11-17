@@ -8,6 +8,7 @@ import org.kevoree.annotation.Library;
 import org.kevoree.annotation.Start;
 import org.kevoree.annotation.Stop;
 import org.kevoree.framework.AbstractGroupType;
+import org.kevoree.framework.KevoreeXmiHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -32,13 +33,8 @@ public class PipeGroup extends AbstractGroupType implements PipeInstance {
 	private PipeReader reader;
 
 	@Start
-	public void startPipeChannel () throws IOException, InterruptedException {
-		for (Group g : this.getModelService().getLastModel().getGroupsForJ()) {
-			if (g.getName().equals(this.getName())) {
-				outputStreams = new HashMap<String, RandomAccessFile>(g.getSubNodesForJ().size());
-				break;
-			}
-		}
+	public void startPipeGroup () throws IOException, InterruptedException {
+		outputStreams = new HashMap<String, RandomAccessFile>();
 		if (isWindows()) {
 			initializeOnWindows();
 		} else {
@@ -48,7 +44,7 @@ public class PipeGroup extends AbstractGroupType implements PipeInstance {
 	}
 
 	@Stop
-	public void stopPipeChannel () {
+	public void stopPipeGroup () {
 		for (RandomAccessFile stream : outputStreams.values()) {
 			try {
 				stream.close();
@@ -119,7 +115,7 @@ public class PipeGroup extends AbstractGroupType implements PipeInstance {
 					errStream.read(bytes);
 					while (length != -1) {
 						length = inStream.read(bytes);
-												System.out.write(bytes, 0, length);
+//						System.out.write(bytes, 0, length);
 						errStream.read(bytes);
 					}
 				} catch (IOException e) {
@@ -129,7 +125,7 @@ public class PipeGroup extends AbstractGroupType implements PipeInstance {
 
 			}
 		}.start();
-		System.out.println(p.waitFor());
+		p.waitFor();
 	}
 
 	private void dispatchOnWindows (ContainerRoot msg) {
@@ -142,11 +138,13 @@ public class PipeGroup extends AbstractGroupType implements PipeInstance {
 					new RandomAccessFile(new File(System.getProperty("java.io.tmpdir") + File.separator + this
 							.getName() + "_" + nodeName), "rw"));
 		}
-		ByteArrayOutputStream stream = new ByteArrayOutputStream();
-		ObjectOutputStream objectStream = new ObjectOutputStream(stream);
-		objectStream.writeObject(msg);
-		outputStreams.get(nodeName).writeInt(stream.size());
-		outputStreams.get(nodeName).write(stream.toByteArray());
+
+
+		ByteArrayOutputStream out = new ByteArrayOutputStream();
+		KevoreeXmiHelper.saveStream(out, msg);
+		outputStreams.get(nodeName).writeInt(out.size());
+		outputStreams.get(nodeName).write(out.toByteArray());
+		out.close();
 	}
 
 	public static boolean isWindows () {
@@ -159,16 +157,18 @@ public class PipeGroup extends AbstractGroupType implements PipeInstance {
 		for (Group g : this.getModelService().getLastModel().getGroupsForJ()) {
 			if (g.getName().equals(this.getName())) {
 				for (ContainerNode node : g.getSubNodesForJ()) {
-					if (isWindows()) {
-						dispatchOnWindows(this.getModelService().getLastModel());
-					} else {
-						try {
-							dispatchOnUnix(this.getModelService().getLastModel(), node.getName());
-						} catch (IOException e) {
-							logger.warn(
-									"Unable to use the pipe for " + this.getName() + " from " + getNodeName()
-											+ " to "
-											+ node.getName(), e);
+					if (!node.getName().equals(this.getNodeName())) {
+						if (isWindows()) {
+							dispatchOnWindows(this.getModelService().getLastModel());
+						} else {
+							try {
+								dispatchOnUnix(this.getModelService().getLastModel(), node.getName());
+							} catch (IOException e) {
+								logger.warn(
+										"Unable to use the pipe for " + this.getName() + " from " + getNodeName()
+												+ " to "
+												+ node.getName(), e);
+							}
 						}
 					}
 				}
@@ -186,9 +186,13 @@ public class PipeGroup extends AbstractGroupType implements PipeInstance {
 	}
 
 	@Override
-	public void localForward (Object data) {
-		if (data instanceof ContainerRoot) {
-			this.getModelService().updateModel((ContainerRoot)data);
+	public void localForward (byte[] data, int length) {
+		try {
+			ByteArrayInputStream stream = new ByteArrayInputStream(data, 0, length);
+			ContainerRoot model = KevoreeXmiHelper.loadStream(stream);
+			this.getModelService().updateModel(model);
+		} catch (Exception e) {
+			logger.warn("Unable to convert data received as a model", e);
 		}
 	}
 }
