@@ -32,14 +32,8 @@ public class KevoreeAceGWT implements EntryPoint {
 		// create first AceEditor widget
 		editor1 = new AceEditor();
 		editor1.setWidth("800px");
-		editor1.setHeight("300px");
-
-		
-		// build the UI
+		editor1.setHeight("400px");
 		buildUI();
-		
-		// start the first editor and set its theme and mode
-		editor1.startEditor(); // must be called before calling setTheme/setMode/etc.
 		editor1.setTheme(AceEditorTheme.TWILIGHT);
 		editor1.setMode(AceEditorMode.JAVA);
 		
