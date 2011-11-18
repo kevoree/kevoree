@@ -50,7 +50,7 @@ public class RestGroup extends AbstractGroupType {
             if (group.getName().equals(this.getName())) {
                 for (ContainerNode subNode : group.getSubNodesForJ()) {
                     if (!subNode.getName().equals(this.getNodeName())) {
-                        push(model, subNode.getName());
+                        //push(model, subNode.getName());
                     }
                 }
                 return;
