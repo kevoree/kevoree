@@ -1,5 +1,6 @@
 package org.kevoree.library.rest;
 
+import org.kevoree.ContainerNode;
 import org.kevoree.ContainerRoot;
 import org.kevoree.DictionaryValue;
 import org.kevoree.Group;
@@ -22,10 +23,10 @@ import java.net.URLConnection;
 
 
 @DictionaryType({
-        @DictionaryAttribute(name = "port", defaultValue = "8000", optional = true , fragmentDependant = true)
+        @DictionaryAttribute(name = "port", defaultValue = "8000", optional = true, fragmentDependant = true)
 })
 @GroupType
-@Library(name="JavaSE")
+@Library(name = "JavaSE")
 public class RestGroup extends AbstractGroupType {
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -33,7 +34,7 @@ public class RestGroup extends AbstractGroupType {
 
     @Start
     public void startRestGroup() {
-        logger.warn("Rest service start on port "+this.getDictionary().get("port").toString());
+        logger.warn("Rest service start on port " + this.getDictionary().get("port").toString());
         server.startServer(Integer.parseInt(this.getDictionary().get("port").toString()));
     }
 
@@ -44,9 +45,18 @@ public class RestGroup extends AbstractGroupType {
 
     @Override
     public void triggerModelUpdate() {
-        //NOOP
-        //FORWARD TO ALL CONNECTED NODE
-        //TODO
+        ContainerRoot model = this.getModelService().getLastModel();
+        for (Group group : model.getGroupsForJ()) {
+            if (group.getName().equals(this.getName())) {
+                for (ContainerNode subNode : group.getSubNodesForJ()) {
+                    if (!subNode.getName().equals(this.getNodeName())) {
+                        //push(model, subNode.getName());
+                    }
+                }
+                return;
+            }
+        }
+
     }
 
     @Override
@@ -59,11 +69,11 @@ public class RestGroup extends AbstractGroupType {
             if (IP.equals("")) {
                 IP = "127.0.0.1";
             }
-            
+
             int PORT = KevoreeFragmentPropertyHelper.getIntPropertyFromFragmentGroup(model, this.getName(), "port", targetNodeName);
-            
-            System.out.println("port=>"+PORT);
-            
+
+            System.out.println("port=>" + PORT);
+
             URL url = new URL("http://" + IP + ":" + PORT + "/model/current");
             URLConnection conn = url.openConnection();
             conn.setConnectTimeout(3000);
@@ -99,7 +109,7 @@ public class RestGroup extends AbstractGroupType {
             InputStream inputStream = conn.getInputStream();
             return KevoreeXmiHelper.loadStream(inputStream);
         } catch (IOException e) {
-            logger.error("error while pulling model for name "+targetNodeName,e);
+            logger.error("error while pulling model for name " + targetNodeName, e);
         }
         return null;
     }

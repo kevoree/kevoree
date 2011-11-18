@@ -8,6 +8,8 @@ import org.jboss.netty.channel.ChannelPipelineFactory;
 import org.jboss.netty.channel.Channels;
 import org.jboss.netty.channel.socket.nio.NioClientSocketChannelFactory;
 import org.jboss.netty.channel.socket.nio.NioServerSocketChannelFactory;
+import org.jboss.netty.channel.socket.oio.OioClientSocketChannelFactory;
+import org.jboss.netty.channel.socket.oio.OioServerSocketChannelFactory;
 import org.jboss.netty.handler.codec.serialization.OSGIObjectDecoder;
 import org.jboss.netty.handler.codec.serialization.ObjectDecoder;
 import org.jboss.netty.handler.codec.serialization.ObjectEncoder;
@@ -36,9 +38,9 @@ import java.util.concurrent.Executors;
 @Library(name = "JavaSE", names = {"Android"})
 @ChannelTypeFragment
 @DictionaryType({
-        @DictionaryAttribute(name = "port", defaultValue = "9000", optional = true, fragmentDependant = true)
-}
-)
+        @DictionaryAttribute(name = "port", defaultValue = "9000", optional = true, fragmentDependant = true),
+        @DictionaryAttribute(name = "type", defaultValue = "nio", optional = true, vals = {"nio","oio"})
+})
 public class NioChannel extends AbstractChannelFragment {
 
     private ServerBootstrap bootstrap;
@@ -63,10 +65,18 @@ public class NioChannel extends AbstractChannelFragment {
 
         final NioChannel selfPointer = this;
 
-        bootstrap = new ServerBootstrap(
-                new NioServerSocketChannelFactory(
-                        Executors.newCachedThreadPool(),
-                        Executors.newCachedThreadPool()));
+        if(this.getDictionary().get("type").equals("nio")){
+            bootstrap = new ServerBootstrap(
+                    new NioServerSocketChannelFactory(
+                            Executors.newCachedThreadPool(),
+                            Executors.newCachedThreadPool()));
+        } else {
+            bootstrap = new ServerBootstrap(
+                    new OioServerSocketChannelFactory(
+                            Executors.newCachedThreadPool(),
+                            Executors.newCachedThreadPool()));
+        }
+
 
         // Set up the pipeline factory.
         bootstrap.setPipelineFactory(new ChannelPipelineFactory() {
@@ -75,7 +85,12 @@ public class NioChannel extends AbstractChannelFragment {
             }
         });
 
-        clientBootStrap = new ClientBootstrap(new NioClientSocketChannelFactory(Executors.newCachedThreadPool(), Executors.newCachedThreadPool()));
+        if(this.getDictionary().get("type").equals("nio")){
+            clientBootStrap = new ClientBootstrap(new NioClientSocketChannelFactory(Executors.newCachedThreadPool(), Executors.newCachedThreadPool()));
+        } else {
+            clientBootStrap = new ClientBootstrap(new OioClientSocketChannelFactory(Executors.newCachedThreadPool()));
+        }
+
         clientBootStrap.setPipelineFactory(new ChannelPipelineFactory() {
             public ChannelPipeline getPipeline() throws Exception {
                 return Channels.pipeline(
@@ -108,7 +123,7 @@ public class NioChannel extends AbstractChannelFragment {
 
         serverChannel.close().awaitUninterruptibly(200);
         logger.debug("Server channel closed");
-        //bootstrap.
+     //   bootstrap.releaseExternalResources();
 
     }
 
