@@ -104,7 +104,7 @@ class KevoreeAnnotationProcessor() extends javax.annotation.processing.AbstractP
     //POST APT PROCESS CHECKER
     val checker: PostAptChecker = new PostAptChecker(root, env)
     val errorsInChecker = !checker.check
-
+    KevoreeXmiHelper.save(LocalUtility.generateLibURI(options)+".debug", root);
 
     if (!errorsInChecker) {
       //TODO SEPARATE MAVEN PLUGIN
@@ -114,7 +114,7 @@ class KevoreeAnnotationProcessor() extends javax.annotation.processing.AbstractP
         targetNodeName =>
           KevoreeGenerator.generatePort(root, env.getFiler, targetNodeName);
           KevoreeFactoryGenerator.generateFactory(root, env.getFiler, targetNodeName);
-         KevoreeActivatorGenerator.generateActivator(root, env.getFiler, targetNodeName);
+          KevoreeActivatorGenerator.generateActivator(root, env.getFiler, targetNodeName);
       }
       env.getMessager.printMessage(Kind.OTHER,"Save Kevoree library")
       KevoreeXmiHelper.save(LocalUtility.generateLibURI(options), root);
