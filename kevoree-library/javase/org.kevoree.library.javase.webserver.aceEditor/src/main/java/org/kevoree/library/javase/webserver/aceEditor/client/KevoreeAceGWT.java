@@ -46,7 +46,6 @@ public class KevoreeAceGWT implements EntryPoint {
 			}
 		});
 		updateEditor1CursorPosition(); // initial update
-
 	}
 
 	/**
