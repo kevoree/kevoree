@@ -43,15 +43,12 @@ public class ServicePortTypeVisitor extends SimpleTypeVisitor6<Object, Object> {
         this.dataType = dataType;
     }
 
-
-
-
     public void visitTypeDeclaration(TypeMirror t) {
 
         if (t instanceof javax.lang.model.type.DeclaredType) {
             javax.lang.model.type.DeclaredType dt = (javax.lang.model.type.DeclaredType) t;
 
-            dataType.setName(dt.asElement().getSimpleName().toString());
+            dataType.setName(dt.asElement().toString());
             for (Element e : dt.asElement().getEnclosedElements()) {
                 ExecutableElement ee = (ExecutableElement) e;
                 if (e.getKind().compareTo(ElementKind.METHOD) == 0) {
