@@ -80,7 +80,6 @@ trait ProvidedPortProcessor {
                     }
 
                 }
-
                 visitor.getDataType
               }
 
