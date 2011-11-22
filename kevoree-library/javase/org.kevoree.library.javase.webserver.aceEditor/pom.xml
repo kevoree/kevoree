@@ -59,11 +59,11 @@
     <build>
         <resources>
             <resource>
-                <directory>${basedir}/src/main/resources</directory>
+                <directory>${basedir}/war</directory>
             </resource>
             <resource>
                 <directory>
-                    ${project.build.directory}/${project.build.finalName}/org.kevoree.library.javase.webserver.aceEditor.KevoreeAceGWT
+                    ${project.build.directory}/${project.build.finalName}
                 </directory>
             </resource>
         </resources>
@@ -77,7 +77,7 @@
                     <execution>
                         <phase>generate-resources</phase>
                         <configuration>
-                            <module>org.kevoree.library.javase.webserver.aceEditor.KevoreeAceGWT</module>
+                            <module>org.kevoree.library.javase.webserver.latexEditor.latexEditor</module>
                         </configuration>
                         <goals>
                             <goal>compile</goal>
@@ -111,12 +111,12 @@
                 <configuration>
                     <instructions>
                         <Export-Package>
-                            org.kevoree.library.javase.webserver.aceEditor.*,
+                            org.kevoree.library.javase.webserver.latexEditor.*,
                             edu.ycp.*
                         </Export-Package>
                         <Import-Package>
                             !edu.ycp.*,
-                            !org.kevoree.library.javase.webserver.aceEditor.*,
+                            !org.kevoree.library.javase.webserver.latexEditor.*,
                             !com.google.*,
                             org.kevoree.*,scala.*,java.*,javax.*,org.slf4j.*
                         </Import-Package>
