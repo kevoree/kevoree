@@ -35,6 +35,8 @@ public class latexEditor implements EntryPoint {
         editor1.setShowPrintMargin(false);
         editor1.setUseSoftTabs(true);
 
+        editor1.setHScrollBarAlwaysVisible(false);
+
 
         //editor1.setStylePrimaryName("editor");
 
