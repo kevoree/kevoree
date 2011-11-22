@@ -21,6 +21,7 @@ package org.kevoree.framework
 import java.util.HashMap
 import org.kevoree.framework.message._
 import org.slf4j.LoggerFactory
+import actors.Actor
 
 trait ChannelTypeFragment extends KevoreeChannelFragment with ChannelFragment {
 
@@ -174,7 +175,7 @@ trait ChannelTypeFragment extends KevoreeChannelFragment with ChannelFragment {
       val proxy = new KevoreeChannelFragmentProxy(msg.getFragmentNodeName, msg.getChannelName)
       proxy.setChannelSender(sender)
       fragementBinded += ((createPortKey(msg), proxy))
-      proxy.start;
+      proxy.start();
       reply(true)
     }
     case msg: FragmentUnbindMessage => {
@@ -214,13 +215,13 @@ trait ChannelTypeFragment extends KevoreeChannelFragment with ChannelFragment {
         }
       }
       case msg: MethodCallMessage => {
-        var msg2 = new Message
+        val msg2 = new Message
         msg2.setInOut(true)
         msg2.setContent(msg)
         reply(dispatch(msg2))
       }
       case msg: Object => {
-        var msg2 = new Message
+        val msg2 = new Message
         msg2.setInOut(false)
         msg2.setContent(msg)
         dispatch(msg2)

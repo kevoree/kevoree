@@ -1,6 +1,7 @@
 package org.kevoree.library.javase.webserver.latexEditor;
 
 import org.kevoree.annotation.*;
+import org.kevoree.library.javase.fileSystem.FilesService;
 import org.kevoree.library.javase.webserver.AbstractPage;
 import org.kevoree.library.javase.webserver.FileServiceHelper;
 import org.kevoree.library.javase.webserver.KevoreeHttpRequest;
@@ -16,6 +17,10 @@ import org.slf4j.LoggerFactory;
  * To change this template use File | Settings | File Templates.
  */
 @ComponentType
+@Requires({
+        @RequiredPort(name = "saveFile", type = PortType.MESSAGE, optional = true),
+        @RequiredPort(name = "files", type = PortType.SERVICE, className = FilesService.class)
+})
 public class LatexEditor extends AbstractPage {
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -27,7 +32,6 @@ public class LatexEditor extends AbstractPage {
         if (LatexService.checkService(this, request, response)) {
             return response;
         }
-        ;
         if (FileServiceHelper.checkStaticFile("latexEditor.html", this, request, response)) {
             return response;
         }

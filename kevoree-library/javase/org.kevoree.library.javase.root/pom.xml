@@ -25,6 +25,7 @@
         <module>../org.kevoree.library.javase.rest</module>
        <!-- <module>../org.kevoree.library.javase.restChannels</module>-->
         <module>../org.kevoree.library.javase.restAutoDiscovery</module>
+        <module>../org.kevoree.library.javase.fileSystem</module>
 
 
         <!--   <module>../org.kevoree.library.javase.xmpp</module>     -->

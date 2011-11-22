@@ -64,7 +64,7 @@ case class AddBindingCommand(c : MBinding,nodeName:String) extends PrimitiveComm
                 KevoreeChannelFound match {
                   case None => logger.info("ChannelFragment not found in component");false
                   case Some(channelProxy) => {
-                      var newbindmsg = new FragmentBindMessage
+                      val newbindmsg = new FragmentBindMessage
                       newbindmsg.setChannelName(c.getHub.getName)
                       newbindmsg.setProxy(channelProxy)
                       (portfound !? newbindmsg).asInstanceOf[Boolean]
@@ -74,15 +74,14 @@ case class AddBindingCommand(c : MBinding,nodeName:String) extends PrimitiveComm
             case _ if(!hp.isEmpty)=>{
                 /* Bind Channel to port */
                 //TODO REMOTE PORT
-                var portfound = hp.get._2.asInstanceOf[KevoreePort]
+                val portfound = hp.get._2.asInstanceOf[KevoreePort]
                 KevoreeChannelFound match {
                   case None => logger.info("ChannelFragment not found in component");false
                   case Some(channelProxy) => {
-                      var bindmsg = new PortBindMessage
+                      val bindmsg = new PortBindMessage
                       bindmsg.setNodeName(nodeName)
                       bindmsg.setComponentName(c.getPort.eContainer.asInstanceOf[ComponentInstance].getName)
                       bindmsg.setPortName(portfound.getName)
-
                       bindmsg.setProxy(portfound)
                       (channelProxy.asInstanceOf[KevoreeChannelFragment] !? bindmsg).asInstanceOf[Boolean]
                     }

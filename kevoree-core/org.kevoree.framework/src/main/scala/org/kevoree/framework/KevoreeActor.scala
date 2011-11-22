@@ -52,7 +52,7 @@ trait KevoreeActor extends Actor {
 
   def internal_process(msg : Any)
 
-  def act() = {
+  def act() {
     loop {
       react {
         case PAUSE_ACTOR() => {

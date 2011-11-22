@@ -62,14 +62,6 @@ public class FakeSimpleLight extends AbstractFakeStuffComponent {
 
         logger.debug("Hello from " + this.getName() + " ;-)");
 
-        MessagePort log = getPortByName("log", MessagePort.class);
-        if (log != null) {
-            log.process("INIT");
-        }
-
-
-        //throw new Exception("HEHE");
-
     }
 
     @Override
@@ -89,15 +81,8 @@ public class FakeSimpleLight extends AbstractFakeStuffComponent {
         @Port(name = "on")
     })
     public void lightOn(Object o) {
-
         frame.setColor(Color.green);
         state = true;
-
-        MessagePort log = getPortByName("log", MessagePort.class);
-        if (log != null) {
-            log.process("change color");
-        }
-
     }
 
     @Ports({
@@ -106,11 +91,6 @@ public class FakeSimpleLight extends AbstractFakeStuffComponent {
     public void lightOff(Object o) {
         frame.setColor(Color.red);
         state = false;
-
-        MessagePort log = getPortByName("log", MessagePort.class);
-        if (log != null) {
-            log.process("change color");
-        }
     }
 
     public Boolean getState() {
