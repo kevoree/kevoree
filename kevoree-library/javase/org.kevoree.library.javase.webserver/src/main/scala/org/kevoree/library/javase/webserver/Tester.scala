@@ -23,11 +23,11 @@ server.start()      */
 
 
 val urlHandler = new URLHandlerScala
-urlHandler.initRegex("*/{titi}")
+urlHandler.initRegex("/css/**")
 
   val ask = new KevoreeHttpRequest
-  ask.setUrl("previousPAth/bou")
-
+  ask.setUrl("/css/bootstrap.css/css")
+println(urlHandler.getLastParam(ask.getUrl,"/css/**"))
 println(urlHandler.check(ask).get.asInstanceOf[KevoreeHttpRequest].getResolvedParams )
 
 }
