@@ -30,7 +30,7 @@
         <module>../org.kevoree.library.android.rest</module>
         <module>../org.kevoree.library.android.defaultChannels</module>
         <module>../org.kevoree.library.android.socketChannels</module>
-      <!--  <module>../org.kevoree.library.android.grapher</module>-->
+        <module>../org.kevoree.library.android.agrapher</module>
     </modules>
 
     <dependencies>
