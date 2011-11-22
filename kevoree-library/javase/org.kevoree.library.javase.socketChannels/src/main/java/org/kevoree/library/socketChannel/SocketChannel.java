@@ -218,6 +218,8 @@ public class SocketChannel extends AbstractChannelFragment implements Runnable {
             port = parsePortNumber(getNodeName());
             logger.debug("Running Socket server <" + getNodeName() + "> port <" + port + ">");
             server = new ServerSocket(port);
+            server.setSoTimeout(2000);
+            server.setReuseAddress(true);
         } catch (IOException e) {
             logger.error("Unable to create ServerSocket", e);
         }
@@ -342,8 +344,12 @@ public class SocketChannel extends AbstractChannelFragment implements Runnable {
 
             //   logger.debug("no link in cache");
             client_consumer = new Socket(host, port);
+            client_consumer.setTcpNoDelay(true);
+            //When a TCP connection is closed the connection may remain in a timeout state for a period of time after the connection is closed (typically known as the TIME_WAIT state or 2MSL wait state). For applications using a well known socket address or port it may not be possible to bind a socket to the required SocketAddress if there is a connection in the timeout state involving the socket address or port.
+            client_consumer.setReuseAddress(true);
+            client_consumer.setSoTimeout(2000);
             client_consumer.setKeepAlive(true);
-            client_consumer.setSoTimeout(20000);
+
             clientSockets.put(host+port, client_consumer);
         }
         return client_consumer;
