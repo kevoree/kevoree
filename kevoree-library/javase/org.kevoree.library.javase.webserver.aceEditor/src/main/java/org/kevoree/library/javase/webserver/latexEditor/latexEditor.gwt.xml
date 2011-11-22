@@ -1,0 +1,20 @@
+<!DOCTYPE module PUBLIC "-//Google Inc.//DTD Google Web Toolkit 2.0//EN"
+        "http://google-web-toolkit.googlecode.com/svn/releases/2.0/distro-source/core/src/gwt-module.dtd">
+<module rename-to="latexEditor">
+
+    <inherits name="edu.ycp.cs.dh.acegwt.AceGWT" />
+
+    <!-- Inherit the core Web Toolkit stuff.                  -->
+    <inherits name='com.google.gwt.user.User'/>
+
+ <!--   <inherits name="com.google.gwt.user.theme.dark.Dark"/> -->
+
+    <!-- Specify the app entry point class.                   -->
+    <entry-point class='org.kevoree.library.javase.webserver.latexEditor.client.latexEditor'/>
+
+
+    <!-- Specify the app servlets.                   -->
+    <servlet path='/latexEditorService'
+             class='org.kevoree.library.javase.webserver.latexEditor.server.latexEditorServiceImpl'/>
+
+</module>
