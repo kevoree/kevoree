@@ -59,6 +59,7 @@
         <module>../org.kevoree.library.javase.webserver.aceEditor</module>
         <module>../org.kevoree.library.javase.miniCloudGroup</module>
         <module>../org.kevoree.library.javase.pipe</module>
+        <module>../org.kevoree.library.javase.latex</module>
 
     </modules>
 

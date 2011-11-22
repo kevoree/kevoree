@@ -1,4 +1,4 @@
-package org.kevoree.library.android.grapher;
+package org.kevoree.library.android.agrapher;
 
 import android.view.View;
 import android.view.ViewGroup.LayoutParams;
@@ -11,7 +11,6 @@ import org.kevoree.framework.AbstractComponentType;
 import org.osgi.framework.Bundle;
 
 import java.util.ArrayList;
-import java.util.Random;
 
 /**
  * Created by IntelliJ IDEA.
@@ -29,7 +28,7 @@ import java.util.Random;
         @ProvidedPort(name = "input", type = PortType.MESSAGE)
 })
 @DictionaryType({
-        @DictionaryAttribute(name = "title", defaultValue = "Grapher", optional = true),
+        @DictionaryAttribute(name = "title", defaultValue = "AGrapher", optional = true),
         @DictionaryAttribute(name = "HISTORY_SIZE", defaultValue = "30", optional = true),
         @DictionaryAttribute(name = "SIZE", defaultValue = "30", optional = true)
 })
@@ -51,7 +50,7 @@ public class Grapher extends AbstractComponentType  {
         cpu  = new GraphLine();
         sv = new ScrollView(uiService.getRootActivity());
 
-        uiService.addToGroup("grapher", sv);
+        uiService.addToGroup("agrapher", sv);
 
         uiService.getRootActivity().runOnUiThread(new Runnable() {
             @Override
