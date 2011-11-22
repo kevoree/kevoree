@@ -43,6 +43,9 @@ public class LatexService {
         }
         if (request.getUrl().endsWith("flatfile")) {
             if (request.getResolvedParams().containsKey("file")) {
+
+                System.out.println(request.getResolvedParams().get("file"));
+
                 byte[] content = portService.getFileContent(request.getResolvedParams().get("file"));
                 if (content.length > 0) {
                     response.setRawContent(content);

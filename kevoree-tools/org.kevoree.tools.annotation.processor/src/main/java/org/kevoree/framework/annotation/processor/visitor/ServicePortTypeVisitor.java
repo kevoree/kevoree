@@ -63,7 +63,12 @@ public class ServicePortTypeVisitor extends SimpleTypeVisitor6<Object, Object> {
                     for (VariableElement ve : ee.getParameters()) {
                         Parameter newp = KevoreeFactory.createParameter();
                         newo.addParameters(newp);
-                        newp.setName(ve.getSimpleName().toString());
+                        /*
+                        System.out.println(ve);
+                        System.out.println(ve.getSimpleName());
+                        System.out.println(ve.getConstantValue());
+                        */
+                        newp.setName(ve.toString());
                         DataTypeVisitor ptv = new DataTypeVisitor();
 
                         ve.asType().accept(ptv,ve);
