@@ -108,12 +108,19 @@ object KevoreeProvidedPortGenerator {
             }) match {
               case Some(mapping) => {
                 writer.append("case \"" + op.getName + "\"=> component." + mapping.getBeanMethodName + "(")
+                var i = 0
                 op.getParameters.foreach {
                   param =>
+                    writer.append("if(opcall.getParams.containsKey(\"" + param.getName + "\")){")
                     writer.append("opcall.getParams.get(\"" + param.getName + "\").asInstanceOf[" + param.getType.get.print('[', ']') + "]")
+                    writer.append("}else{")
+                    writer.append("opcall.getParams.get(\"arg" + i + "\").asInstanceOf[" + param.getType.get.print('[', ']') + "]")
+                    writer.append("}")
+
                     if (op.getParameters.indexOf(param) != (op.getParameters.size - 1)) {
                       writer.append(",")
                     }
+                    i = i + 1
                 }
                 writer.append(")\n")
 
@@ -127,7 +134,7 @@ object KevoreeProvidedPortGenerator {
         }
         writer.append("case _ @ o => println(\"uncatch message , method not found in service declaration : \"+o);null \n")
         writer.append("})")
-        
+
         //writer.append("case _ @ msg => println(\"WTF!\");reply(null)")
         writer.append("}\n")
       }
