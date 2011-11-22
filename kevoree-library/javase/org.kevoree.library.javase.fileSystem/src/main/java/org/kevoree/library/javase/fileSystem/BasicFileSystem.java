@@ -75,13 +75,16 @@ public class BasicFileSystem extends AbstractComponentType implements FilesServi
     }
 
 
-    @Port(name= "files", method = "getFilesPath")
+    @Port(name = "files", method = "getFilesPath")
     public Set<String> getFilesPath() {
         return getFlatFiles(new File(baseURL), "", true);  //To change body of implemented methods use File | Settings | File Templates.
     }
 
-    @Port(name= "files", method = "getFileContent")
+    @Port(name = "files", method = "getFileContent")
     public byte[] getFileContent(String relativePath) {
+
+        System.out.println("intpu=" + relativePath);
+
         File f = new File(baseURL + relativePath);
         if (f.exists()) {
             try {
@@ -114,7 +117,7 @@ public class BasicFileSystem extends AbstractComponentType implements FilesServi
     }
 
     @Port(name = "save")
-    public void saveMessage(Object o){
+    public void saveMessage(Object o) {
 
     }
 
