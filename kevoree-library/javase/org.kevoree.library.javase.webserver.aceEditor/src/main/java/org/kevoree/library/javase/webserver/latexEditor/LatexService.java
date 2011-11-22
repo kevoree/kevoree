@@ -1,5 +1,6 @@
 package org.kevoree.library.javase.webserver.latexEditor;
 
+import org.kevoree.library.javase.fileSystem.FilesService;
 import org.kevoree.library.javase.webserver.FileServiceHelper;
 import org.kevoree.library.javase.webserver.KevoreeHttpRequest;
 import org.kevoree.library.javase.webserver.KevoreeHttpResponse;
@@ -22,28 +23,14 @@ public class LatexService {
 
     private static Logger logger = LoggerFactory.getLogger(LatexService.class);
 
-    //TO CHANGE
-    private static String baseURL = "/Users/duke/Documents/PapersDev/JSS 2011/articles/2011/JSS 2011";
-
-    private static Set<String> getFlatFiles(File base, String relativePath) {
-        Set<String> files = new HashSet<String>();
-        if (base.exists()) {
-            if (base.isDirectory()) {
-                File[] childs = base.listFiles();
-                for (int i = 0; i < childs.length; i++) {
-                    files.addAll(getFlatFiles(childs[i], relativePath + "/" + base.getName()));
-                }
-            } else {
-                files.add(relativePath + "/" + base.getName());
-            }
-        }
-        return files;
-    }
 
     public static boolean checkService(LatexEditor editor, KevoreeHttpRequest request, KevoreeHttpResponse response) {
+
+        FilesService portService = editor.getPortByName("files", FilesService.class);
+
         boolean result = false;
         if (request.getUrl().endsWith("flatfiles")) {
-            Set<String> flatFiles = getFlatFiles(new File(baseURL), "/");
+            Set<String> flatFiles = portService.getFilesPath();
             StringBuilder csvResult = new StringBuilder();
             for (String ff : flatFiles) {
                 if (csvResult.length() != 0) {
@@ -56,14 +43,15 @@ public class LatexService {
         }
         if (request.getUrl().endsWith("flatfile")) {
             if (request.getResolvedParams().containsKey("file")) {
-                File f = new File(baseURL + request.getResolvedParams().get("file"));
-                if (f.exists()) {
-                    try {
-                        response.setContent(new String(FileServiceHelper.convertStream(new FileInputStream(f))));
-                    } catch (Exception e) {
-                        logger.error("Error while getting file ",e);
-                    }
+                byte[] content = portService.getFileContent(request.getResolvedParams().get("file"));
+                if (content.length > 0) {
+                    response.setRawContent(content);
+                    return true;
+                } else {
+                    logger.debug("No file exist = {}", request.getResolvedParams().get("file"));
                 }
+            } else {
+                logger.debug("No file parameter detected");
             }
             return false;
         }

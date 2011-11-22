@@ -57,7 +57,7 @@ abstract class KevoreeComponentActivator extends BundleActivator {
 
 
     /* Start actor */
-    componentActor.start
+    componentActor.start()
     /* Expose component in OSGI */
     var props = new Hashtable[String, String]()
     props.put(Constants.KEVOREE_NODE_NAME, nodeName)
@@ -76,13 +76,13 @@ abstract class KevoreeComponentActivator extends BundleActivator {
 
     /* START NEEDPORT ACTOR */
     componentActor.getKevoreeComponentType.getNeededPorts.foreach {
-      np => np._2.asInstanceOf[KevoreePort].start
+      np => np._2.asInstanceOf[KevoreePort].start()
     }
 
     /* START HOSTED ACTOR */
     componentActor.getKevoreeComponentType.getHostedPorts.foreach {
       hp =>
-        hp._2.asInstanceOf[KevoreePort].start
+        hp._2.asInstanceOf[KevoreePort].start()
       //hp._2.asInstanceOf[KevoreePort].pause
     }
 

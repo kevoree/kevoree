@@ -30,8 +30,12 @@ public class latexEditor implements EntryPoint {
 
         // start the first editor and set its theme and mode
         editor1.startEditor(); // must be called before calling setTheme/setMode/etc.
-        editor1.setTheme(AceEditorTheme.TWILIGHT);
+        editor1.setTheme(AceEditorTheme.IDLE_FINGERS);
         editor1.setMode(AceEditorMode.LATEX);
+        editor1.setShowPrintMargin(false);
+        editor1.setUseSoftTabs(true);
+
+
         //editor1.setStylePrimaryName("editor");
 
         // use cursor position change events to keep a label updated

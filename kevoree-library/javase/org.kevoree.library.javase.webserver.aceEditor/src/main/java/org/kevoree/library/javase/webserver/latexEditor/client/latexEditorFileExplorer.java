@@ -45,12 +45,15 @@ public class latexEditorFileExplorer extends SimplePanel {
         tree.addSelectionHandler(new SelectionHandler<TreeItem>() {
             @Override
             public void onSelection(SelectionEvent<TreeItem> treeItemSelectionEvent) {
-                Window.alert(getQualifiedName(treeItemSelectionEvent.getSelectedItem()));
+                displayFile(getQualifiedName(treeItemSelectionEvent.getSelectedItem()));
             }
         });
     }
 
     public void reloadFromServer() {
+
+        tree.clear();
+        map.clear();
 
         final List<String> flatFiles = new ArrayList<String>();
         String url = GWT.getModuleBaseURL() + "flatfiles";
@@ -63,9 +66,28 @@ public class latexEditorFileExplorer extends SimplePanel {
 
                 public void onResponseReceived(Request request, Response response) {
                     String[] files = response.getText().split(";");
-                    for(int i=0;i<files.length;i++){
+                    for (int i = 0; i < files.length; i++) {
                         flatFiles.add(files[i]);
                     }
+
+                    for (String flatFile : flatFiles) {
+
+                        if (flatFile.contains("/")) {
+                            String path = flatFile.substring(0, flatFile.lastIndexOf("/"));
+                            TreeItem treeItem = null;
+                            if (map.containsKey(path)) {
+                                treeItem = map.get(path);
+                            } else {
+                                treeItem = new TreeItem(path);
+                                map.put(path, treeItem);
+                                tree.addItem(treeItem);
+                            }
+                            treeItem.addItem(flatFile.substring(flatFile.lastIndexOf("/") + 1));
+                        } else {
+                            tree.addItem(flatFile);
+                        }
+                    }
+
                 }
             });
 
@@ -73,40 +95,12 @@ public class latexEditorFileExplorer extends SimplePanel {
             Window.alert("Error while connecting to server");
         }
 
-
-        
-
-        //CALL SERVER
-/*
-        flatFiles.add("/part1/dede.tex");
-        flatFiles.add("/part1/intro.tex");
-        flatFiles.add("/part1/ccl.tex");
-        flatFiles.add("/part2/dede.tex");
-        flatFiles.add("/part2/intro.tex");
-        flatFiles.add("/part2/ccl.tex");
-*/
-        for (String flatFile : flatFiles) {
-            if (flatFile.contains("/")) {
-                String path = flatFile.substring(0, flatFile.lastIndexOf("/"));
-                TreeItem treeItem = null;
-                if (map.containsKey(path)) {
-                    treeItem = map.get(path);
-                } else {
-                    treeItem = new TreeItem(path);
-                    map.put(path, treeItem);
-                    tree.addItem(treeItem);
-                }
-                treeItem.addItem(flatFile.substring(flatFile.lastIndexOf("/") + 1));
-            } else {
-                tree.addItem(flatFile);
-            }
-        }
     }
 
 
     public void displayFile(String path) {
 
-        String url = GWT.getModuleBaseURL() + "flatfile?file="+path;
+        String url = GWT.getModuleBaseURL() + "flatfile?file=" + path;
         RequestBuilder builder = new RequestBuilder(RequestBuilder.GET, URL.encode(url));
         try {
             builder.sendRequest(null, new RequestCallback() {

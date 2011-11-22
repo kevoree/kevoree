@@ -36,7 +36,7 @@ import java.util.HashMap;
 @Requires({
         @RequiredPort(name = "on", type = PortType.MESSAGE, optional = true),
         @RequiredPort(name = "off", type = PortType.MESSAGE, optional = true),
-        @RequiredPort(name = "toggle", type = PortType.SERVICE, className = ToggleLightService.class, optional = true)
+        @RequiredPort(name = "toggle", type = PortType.SERVICE, className = ToggleLightService.class, optional = true, needCheckDependency = true)
 })
 @ComponentType
 public class FakeSimpleSwitch extends AbstractFakeStuffComponent {
@@ -50,6 +50,9 @@ public class FakeSimpleSwitch extends AbstractFakeStuffComponent {
     public void start() {
         frame = new MyFrame("on", "off");
         frame.setVisible(true);
+      /*  if (this.isPortBinded("toggle")) {
+            this.getPortByName("toggle", ToggleLightService.class).toggle();
+        }*/
     }
 
     @Override
