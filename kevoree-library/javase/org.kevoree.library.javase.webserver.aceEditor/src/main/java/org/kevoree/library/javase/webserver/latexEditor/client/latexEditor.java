@@ -2,6 +2,7 @@ package org.kevoree.library.javase.webserver.latexEditor.client;
 
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.JavaScriptObject;
+import com.google.gwt.dom.client.StyleInjector;
 import com.google.gwt.user.client.ui.*;
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditor;
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditorCallback;
@@ -71,9 +72,14 @@ public class latexEditor implements EntryPoint {
         
         
         SplitLayoutPanel p = new SplitLayoutPanel();
+        StyleInjector.inject(".gray.gwt-SplitLayoutPanel .gwt-SplitLayoutPanel-HDragger { background: silver; }");
+        p.addStyleName("gray");
 
+
+
+      //  p.getElement().getStyle().setBackgroundColor("black");
         //p.setLeftWidget(scrollLeft);
-        p.addWest(leftBar,200);
+        p.addWest(leftBar, 200);
         p.add(editor1);
 
        // p.setSplitPosition("100px");
