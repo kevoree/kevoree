@@ -5,6 +5,7 @@ import org.kevoree.annotation.*;
 import org.kevoree.framework.AbstractComponentType;
 import org.kevoree.framework.MessagePort;
 
+
 import java.io.IOException;
 
 /**
@@ -18,8 +19,9 @@ import java.io.IOException;
 
 @DictionaryType(
         {
-                @DictionaryAttribute(name="frequence",defaultValue="2000",optional=true),
-                @DictionaryAttribute(name="range",defaultValue="100",optional=true)
+                @DictionaryAttribute(name="refresh_speed",defaultValue="2000",optional=true),
+                @DictionaryAttribute(name="range_min",defaultValue="0",optional=true),
+                @DictionaryAttribute(name="range_max",defaultValue="50",optional=true)
         }
 )
 @ComponentType
@@ -32,10 +34,14 @@ public class ARandom extends AbstractComponentType implements  Runnable{
 
     Boolean alive=false;
     Thread t=null;
-
+    int range_min;
+    int range_max;
+    int refresh_speed;
+   // private Logger logger = LoggerFactory.getLogger(ARandom.class);
     @Start
     public void start() throws IOException {
-        Log.i("ARandom ","starting");
+       // logger.debug("ARandom ","starting");
+        updateDico();
         alive=true;
         t =new Thread(this);
         t.start();
@@ -43,23 +49,36 @@ public class ARandom extends AbstractComponentType implements  Runnable{
 
     @Stop
     public void stop() {
-        Log.i("ARandom ","closing");
+        //logger.debug("ARandom ","closing");
         alive = false;
     }
 
+    @Update
+    public void update(){
+        updateDico();
+    }
 
     @Override
     public void run() {
+        java.util.Random rand = new java.util.Random();
         while(alive)
         {
-            java.util.Random rand = new java.util.Random();
+            int rand_valeur = range_min + rand.nextInt(range_max - range_min);
             MessagePort port =   (MessagePort)     this.getPortByName("out");
-            port.process(rand.nextInt(Integer.parseInt(getDictionary().get("range").toString())));
-            try {
-                Thread.sleep(Integer.parseInt(getDictionary().get("range").toString()));
-            } catch (InterruptedException e) {
-                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            port.process(rand_valeur);
+            try
+            {
+                Thread.sleep(refresh_speed);
+            } catch (InterruptedException e)
+            {
+             e.printStackTrace();
             }
         }
+    }
+
+    public void updateDico(){
+        range_max= Integer.parseInt(getDictionary().get("range_max").toString());
+        range_min= Integer.parseInt(getDictionary().get("range_min").toString());
+        refresh_speed = Integer.parseInt(getDictionary().get("refresh_speed").toString());
     }
 }
