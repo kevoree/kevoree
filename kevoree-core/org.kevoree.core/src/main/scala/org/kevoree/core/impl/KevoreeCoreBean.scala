@@ -37,7 +37,7 @@ import java.io.{BufferedOutputStream, BufferedInputStream, InputStream, OutputSt
 import org.kevoree.cloner.ModelCloner
 import org.kevoree.core.basechecker.RootChecker
 
-class KevoreeCoreBean extends KevoreeModelHandlerService with KevoreeActor {
+class KevoreeCoreBean extends KevoreeModelHandlerService with KevoreeThreadActor {
 
   @BeanProperty var configService: ConfigurationService = null
   var bundleContext: BundleContext = null;
@@ -124,7 +124,7 @@ class KevoreeCoreBean extends KevoreeModelHandlerService with KevoreeActor {
   }
 
   override def start: Actor = {
-    logger.info("Start event : node name = " + configService.getProperty(ConfigConstants.KEVOREE_NODE_NAME))
+    logger.info("Kevoree Start event : node name = " + configService.getProperty(ConfigConstants.KEVOREE_NODE_NAME))
     setNodeName(configService.getProperty(ConfigConstants.KEVOREE_NODE_NAME));
     super.start()
 
@@ -146,7 +146,7 @@ class KevoreeCoreBean extends KevoreeModelHandlerService with KevoreeActor {
 
     listenerActor.stop()
 
-    super[KevoreeActor].forceStop
+    super[KevoreeThreadActor].forceStop
     //TODO CLEAN AND REACTIVATE
 
     if (nodeInstance != null) {
