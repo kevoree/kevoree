@@ -15,9 +15,10 @@ package org.kevoree.framework.deploy
 
 import org.kevoreeAdaptation.{ParallelStep, AdaptationModel}
 import org.kevoree.framework.{PrimitiveCommand, AbstractNodeType}
- import org.slf4j.LoggerFactory
-import actors.DaemonActor
+import org.slf4j.LoggerFactory
 import actors.threadpool.{TimeUnit, Executors}
+import actors.{TIMEOUT, Actor, DaemonActor}
+import java.lang.Thread
 
 /**
  * Created by IntelliJ IDEA.
@@ -33,7 +34,7 @@ object PrimitiveCommandExecutionHelper {
   def execute(adaptionModel: AdaptationModel, nodeInstance: AbstractNodeType): Boolean = {
     if (adaptionModel.getOrderedPrimitiveSet != null) {
       adaptionModel.getOrderedPrimitiveSet match {
-        case Some(orderedPrimitiveSet)=> {
+        case Some(orderedPrimitiveSet) => {
           executeStep(orderedPrimitiveSet, nodeInstance)
         }
         case None => true
@@ -64,12 +65,12 @@ object PrimitiveCommandExecutionHelper {
     if (populateResult) {
       val phaseResult = phase.runPhase()
       if (phaseResult) {
-         val subResult =step.getNextStep match {
-           case Some(nextStep)=> {
-               executeStep(nextStep, nodeInstance)
-           }
-           case None => true
-         }
+        val subResult = step.getNextStep match {
+          case Some(nextStep) => {
+            executeStep(nextStep, nodeInstance)
+          }
+          case None => true
+        }
         if (!subResult) {
           phase.rollBack()
           false
@@ -90,7 +91,7 @@ object PrimitiveCommandExecutionHelper {
     var primitives: List[PrimitiveCommand] = List()
     var primitivesThread: List[BooleanRunnableTask] = List()
 
-    class BooleanRunnableTask(primitive: PrimitiveCommand) extends Runnable {
+    class BooleanRunnableTask(primitive: PrimitiveCommand, watchDog: Actor) extends Runnable {
       private var result = false
 
       def getResult = result
@@ -98,6 +99,7 @@ object PrimitiveCommandExecutionHelper {
       def run() {
         try {
           result = primitive.execute()
+          watchDog ! true
         } catch {
           case _@e => {
             result = false
@@ -108,6 +110,57 @@ object PrimitiveCommandExecutionHelper {
       }
     }
 
+    class WatchDogActor(timeout: Long) extends Actor {
+      var rec = 0
+      val pointerSelf = this
+      def act() {
+        react {
+          case primitives: List[PrimitiveCommand] => {
+            var waitingThread: List[Thread] = List()
+            primitives.foreach {
+              primitive =>
+                val pt = new Thread(new BooleanRunnableTask(primitive, pointerSelf))
+                pt.start()
+                waitingThread = waitingThread ++ List(pt)
+            }
+            logger.debug("Waiting for {} threads",waitingThread.size)
+            val responseActor = sender
+            if (primitives.isEmpty) {
+              logger.debug("Empty list result true")
+              responseActor ! true
+              exit()
+            }
+            loop {
+              reactWithin(timeout) {
+                case true => {
+                  rec = rec + 1
+                  logger.debug("getResult {}",rec)
+                  if (rec == primitives.size) {
+                    responseActor ! true
+                    exit()
+                  } else {
+                    //NOOP
+                  }
+                }
+                case TIMEOUT => {
+                  logger.debug("TimeOut detected")
+                  waitingThread.foreach {
+                    wt =>
+                      try {
+                        wt.interrupt()
+                      } catch {
+                        case _ =>
+                      }
+                  }
+                  responseActor ! false
+                  exit()
+                }
+              }
+            }
+          }
+        }
+      }
+    }
 
     def populate(cmd: PrimitiveCommand) {
       primitives = primitives ++ List(cmd)
@@ -117,42 +170,28 @@ object PrimitiveCommandExecutionHelper {
       if (primitives.length == 0) {
         return true
       }
-      val pool = Executors.newFixedThreadPool(primitives.length)
-      primitives.foreach {
-        p =>
-          val runT = new BooleanRunnableTask(p)
-          primitivesThread = primitivesThread ++ List(runT)
-          pool.execute(runT)
+      val wt = new WatchDogActor(30000)
+      wt.start()
+      val noTimeout = (wt !? primitives).asInstanceOf[Boolean]
+      if(noTimeout){
+        primitivesThread.forall(p => p.getResult)
+      } else {
+        false
       }
-      pool.shutdown()
-      try {
-        if (!pool.awaitTermination(60, TimeUnit.SECONDS)) {
-          pool.shutdownNow()
-          if (!pool.awaitTermination(60, TimeUnit.SECONDS)) {
-            logger.error("Primitive command did not terminate")
-          }
-        }
-      } catch {
-        case _@e => pool.shutdownNow()
-      }
-      primitivesThread.forall(p => p.getResult)
     }
 
     def rollBack() {
-
       logger.debug("Rollback phase")
-
       // SEQUENCIAL ROOLBACK
       primitives.reverse.foreach(c => {
         try {
-          logger.debug("Undo adaptation command "+c.getClass)
+          logger.debug("Undo adaptation command " + c.getClass)
           c.undo()
         } catch {
           case _@e => logger.warn("Exception during rollback", e);
         }
       })
     }
-
   }
 
 
