@@ -2,8 +2,10 @@ package org.kevoree.library.android.agrapher;
 
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 
 import org.achartengine.ChartFactory;
+import org.achartengine.GraphicalView;
 import org.achartengine.model.XYMultipleSeriesDataset;
 import org.achartengine.model.XYSeries;
 import org.achartengine.renderer.XYMultipleSeriesRenderer;
@@ -23,91 +25,75 @@ import android.view.View;
 
 public class GraphLine {
 
-    final static String[] titles = new String[] { "User", "System","CPU Usage" };
-    static XYSeries systemSeries = new XYSeries(titles[1]);
-    static XYSeries userSeries = new XYSeries(titles[0]);
-    static final int MAX_POINTS = 60; // 5 mins
-    static XYMultipleSeriesDataset dataset = new XYMultipleSeriesDataset();
-    static XYMultipleSeriesRenderer renderer = new XYMultipleSeriesRenderer();
-    static XYSeriesRenderer renderer1 = new XYSeriesRenderer();
-    static XYSeriesRenderer renderer2 = new XYSeriesRenderer();
-    static boolean initialized = false;
 
-    /**
-     * Returns the chart name.
-     *
-     * @return the chart name
-     */
-    public String getName() {
-        return titles[2];
-    }
+	private XYMultipleSeriesDataset StatsDataset = new XYMultipleSeriesDataset();
+	private XYMultipleSeriesRenderer StatsRenderer = new XYMultipleSeriesRenderer();
 
-    /**
-     * Returns the chart description.
-     *
-     * @return the chart description
-     */
-    public String getDesc() {
-        return titles[2];
-    }
+	private GraphicalView StatsChartView;
 
-    public void setLineDataToSeries(ArrayList<Double> data,   XYSeries series) {
-        series.clear();
-        int index = 0;
-        for (int i = (data.size() - 1); i >= 0 && index < MAX_POINTS; i--) {
-            series.add(index++, data.get(i).doubleValue());
-        }
-    }
+    private LinkedList<Double> data = new LinkedList<Double>();
 
-    /**
-     * Create a chart view
-     *
-     * @param context
-     *            the context
-     * @return the built intent
-     */
-    public View createView(Context context,ArrayList<Double> data) {
-        while (dataset.getSeriesCount() > 0)
-            dataset.removeSeries(0);
+	private XYSeries series;
+	private  int max_points =60;
+	private int color_axes = Color.GRAY;
+	private int color_courbe = Color.RED;
+/**
+ *
+ * @param title titre de la courbe
+ * @param _max_points nombre maximum de point
+ * @param _color_axes couleur de l'axe
+ * @param _color_courbe couleur de la courbe
+ */
+	public GraphLine(String title,int _max_points,int _color_axes,int _color_courbe){
 
-        setLineDataToSeries(data, userSeries);
-        dataset.addSeries(userSeries);
+		this.max_points = _max_points;
+		series= new XYSeries(title);
 
-        if (!initialized)
-            initialize();
 
-        StringBuffer s = new StringBuffer();
-        for (int h = 0; h < userSeries.getItemCount(); h++)
-            s.append(userSeries.getY(h)).append(",");
-        //Log.i("user data points", s.toString());
-        return ChartFactory
-                .getLineChartView(context, dataset, renderer);
-    }
+		this.color_axes =_color_axes;
+		this.color_courbe =_color_courbe;
+	}
 
-    private void initialize() {
-        renderer1.setColor(Color.RED);
-        renderer.addSeriesRenderer(renderer1);
 
-        renderer2.setColor(Color.CYAN);
-        renderer.addSeriesRenderer(renderer2);
-        // no point styles
-        renderer.setChartTitle(titles[2]);
-        renderer.setXTitle("Time (s) \u00BB");
-        renderer.setYTitle("CPU (%) \u00BB");
-        renderer.setXAxisMin(0);// 3x100= 300/ 5 mins
-        renderer.setXAxisMax(MAX_POINTS);
-        renderer.setYAxisMin(0);
-        renderer.setYAxisMax(100);
-        renderer.setAxesColor(Color.GRAY);
-        renderer.setLabelsColor(Color.WHITE);
+	public GraphicalView CreateView(Context context){
 
-        renderer.setXLabels(6);
-        renderer.setYLabels(10); // every 10%
-        renderer.setShowGrid(true);
-        // renderer.setAntialiasing(true);
-        // renderer.setDisplayChartValues(true);
-        initialized = true;
+		StatsRenderer.setAxesColor(color_axes);
+		StatsRenderer.setXAxisMax(max_points);
 
-    }
+		StatsDataset.addSeries(series);
+		XYSeriesRenderer renderer = new XYSeriesRenderer();
+		renderer.setColor(color_courbe);
+		renderer.setLineWidth(3);
+
+		StatsRenderer.addSeriesRenderer(renderer);
+
+		StatsChartView =ChartFactory.getLineChartView(context, StatsDataset,StatsRenderer);
+
+		return StatsChartView;
+	}
+
+	public void refreshLine() {
+		series.clear();
+		int index = 0;
+
+		StringBuffer s = new StringBuffer();
+		for (int h = 0; h < series.getItemCount(); h++)
+			s.append(series.getY(h)).append(",");
+
+		for (int i = (data.size() - 1); i >= 0 && index < max_points; i--) {
+
+			series.add(index++, data.get(i));
+		}
+		StatsChartView.repaint();
+	}
+
+	public void add(double value)
+	{
+		 if (data.size() > max_points) {
+			 data.removeFirst();
+         }
+		 data.addLast(value);
+		 refreshLine();
+	}
 
 }
