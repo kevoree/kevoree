@@ -38,6 +38,11 @@ public class App {
 
         DefaultSystem.saveSystemFlux();
 
+       // System.setProperty("actors.corePoolSize", "10");
+      //  System.setProperty("actors.maxPoolSize", "256");
+     //   System.setProperty("actors.enableForkJoin", "false");
+
+
         try {
             File cacheFolder = createTempDirectory();
             cacheFolder.deleteOnExit();

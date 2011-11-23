@@ -50,9 +50,9 @@ public class FakeSimpleSwitch extends AbstractFakeStuffComponent {
     public void start() {
         frame = new MyFrame("on", "off");
         frame.setVisible(true);
-      /*  if (this.isPortBinded("toggle")) {
+       if (this.isPortBinded("toggle")) {
             this.getPortByName("toggle", ToggleLightService.class).toggle();
-        }*/
+        }
     }
 
     @Override
