@@ -195,8 +195,6 @@ public class AceEditor extends Composite {
         var editor = this.@edu.ycp.cs.dh.acegwt.client.ace.AceEditor::editor;
         editor.getSession().setUseSoftTabs(useSoftTabs);
         editor.getSession().setUseWrapMode(true);
-        editor.getSession().setWrapLimitRange(null, null);
-        editor.renderer.setPrintMarginColumn(80);
     }-*/;
 
     /**

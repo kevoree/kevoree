@@ -79,6 +79,7 @@ public class latexEditorFileExplorer extends SimplePanel {
                                 treeItem = map.get(path);
                             } else {
                                 treeItem = new TreeItem(path);
+
                                 map.put(path, treeItem);
                                 tree.addItem(treeItem);
                             }

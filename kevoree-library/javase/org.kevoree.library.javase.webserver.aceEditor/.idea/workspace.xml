@@ -58,96 +58,7 @@
     <favorites_list name="org.kevoree.library.javase.webserver.aceEditor" />
   </component>
   <component name="FileEditorManager">
-    <leaf>
-      <file leaf-file-name="LatexService.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/org/kevoree/library/javase/webserver/latexEditor/LatexService.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="25" column="0" selection-start="729" selection-end="729" vertical-scroll-proportion="0.0">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="LatexEditor.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/org/kevoree/library/javase/webserver/latexEditor/LatexEditor.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="30" column="0" selection-start="1051" selection-end="1051" vertical-scroll-proportion="0.0">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="latexEditor.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/org/kevoree/library/javase/webserver/latexEditor/client/latexEditor.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="38" column="0" selection-start="1323" selection-end="1323" vertical-scroll-proportion="0.0">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="latexEditor.gwt.xml" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/org/kevoree/library/javase/webserver/latexEditor/latexEditor.gwt.xml">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="7" column="3" selection-start="336" selection-end="336" vertical-scroll-proportion="0.0">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="latexEditor.html" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/war/latexEditor.html">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="10" column="73" selection-start="364" selection-end="364" vertical-scroll-proportion="-3.8">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="AceEditor.java" pinned="false" current="true" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/src/main/java/edu/ycp/cs/dh/acegwt/client/ace/AceEditor.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="187" column="0" selection-start="6746" selection-end="6746" vertical-scroll-proportion="-2.431718">
-              <folding>
-                <element signature="e#0#9456#0" expanded="true" />
-                <element signature="imports" expanded="true" />
-                <marker date="1322003514000" expanded="true" signature="2129:2670" placeholder="{...}" />
-                <marker date="1322003514000" expanded="true" signature="2326:2615" placeholder="//..." />
-                <marker date="1322003514000" expanded="true" signature="3100:3236" placeholder="{...}" />
-                <marker date="1322003514000" expanded="true" signature="3659:3899" placeholder="{...}" />
-                <marker date="1322003514000" expanded="true" signature="4118:4413" placeholder="{...}" />
-                <marker date="1322003514000" expanded="true" signature="4252:4405" placeholder="{...}" />
-                <marker date="1322003514000" expanded="true" signature="4678:4989" placeholder="{...}" />
-                <marker date="1322003514000" expanded="true" signature="4828:4981" placeholder="{...}" />
-                <marker date="1322003514000" expanded="true" signature="5088:5268" placeholder="{...}" />
-                <marker date="1322003514000" expanded="true" signature="5429:5561" placeholder="{...}" />
-                <marker date="1322003514000" expanded="true" signature="5744:5873" placeholder="{...}" />
-                <marker date="1322003514000" expanded="true" signature="6044:6158" placeholder="{...}" />
-                <marker date="1322003514000" expanded="true" signature="6335:6578" placeholder="{...}" />
-                <marker date="1322003514000" expanded="true" signature="6960:7261" placeholder="{...}" />
-                <marker date="1322003514000" expanded="true" signature="7420:7554" placeholder="{...}" />
-                <marker date="1322003514000" expanded="true" signature="7690:7806" placeholder="{...}" />
-                <marker date="1322003514000" expanded="true" signature="8157:8319" placeholder="{...}" />
-                <marker date="1322003514000" expanded="true" signature="8544:8680" placeholder="{...}" />
-                <marker date="1322003514000" expanded="true" signature="8937:9060" placeholder="{...}" />
-                <marker date="1322003514000" expanded="true" signature="9303:9449" placeholder="{...}" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="latexEditorFileExplorer.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/org/kevoree/library/javase/webserver/latexEditor/client/latexEditorFileExplorer.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="73" column="0" selection-start="2521" selection-end="2521" vertical-scroll-proportion="0.0">
-              <folding>
-                <element signature="e#1777#1785#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-    </leaf>
+    <leaf />
   </component>
   <component name="FindManager">
     <FindUsagesManager>
@@ -167,11 +78,11 @@
         <option value="$PROJECT_DIR$/pom.xml" />
         <option value="$PROJECT_DIR$/war/css/bootstrap.css" />
         <option value="$PROJECT_DIR$/war/latexEditor.css" />
-        <option value="$PROJECT_DIR$/src/main/java/org/kevoree/library/javase/webserver/latexEditor/client/latexEditorFileExplorer.java" />
         <option value="$PROJECT_DIR$/src/main/java/org/kevoree/library/javase/webserver/latexEditor/LatexEditor.java" />
         <option value="$PROJECT_DIR$/src/main/java/org/kevoree/library/javase/webserver/latexEditor/LatexService.java" />
-        <option value="$PROJECT_DIR$/src/main/java/org/kevoree/library/javase/webserver/latexEditor/client/latexEditor.java" />
         <option value="$PROJECT_DIR$/war/latexEditor.html" />
+        <option value="$PROJECT_DIR$/src/main/java/org/kevoree/library/javase/webserver/latexEditor/client/latexEditorFileExplorer.java" />
+        <option value="$PROJECT_DIR$/src/main/java/org/kevoree/library/javase/webserver/latexEditor/client/latexEditor.java" />
         <option value="$PROJECT_DIR$/src/main/java/edu/ycp/cs/dh/acegwt/client/ace/AceEditor.java" />
       </list>
     </option>
@@ -625,7 +536,7 @@
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="true" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.1329023" sideWeight="0.66110396" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.30890805" sideWeight="0.66110396" order="0" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.338896" sideWeight="0.9819652" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.338896" sideWeight="0.9819652" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
@@ -732,15 +643,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/org/kevoree/library/javase/webserver/latexEditor/client/latexEditorFileExplorer.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="73" column="0" selection-start="2521" selection-end="2521" vertical-scroll-proportion="0.0">
-          <folding>
-            <element signature="e#1777#1785#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/org/kevoree/library/javase/webserver/latexEditor/LatexService.java">
       <provider selected="true" editor-type-id="text-editor">
         <state line="25" column="0" selection-start="729" selection-end="729" vertical-scroll-proportion="0.0">
@@ -751,13 +653,6 @@
     <entry file="file://$PROJECT_DIR$/src/main/java/org/kevoree/library/javase/webserver/latexEditor/LatexEditor.java">
       <provider selected="true" editor-type-id="text-editor">
         <state line="30" column="0" selection-start="1051" selection-end="1051" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/org/kevoree/library/javase/webserver/latexEditor/client/latexEditor.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="38" column="0" selection-start="1323" selection-end="1323" vertical-scroll-proportion="0.0">
           <folding />
         </state>
       </provider>
@@ -776,32 +671,48 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/org/kevoree/library/javase/webserver/latexEditor/client/latexEditorFileExplorer.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="81" column="0" selection-start="2937" selection-end="2937" vertical-scroll-proportion="0.42915812">
+          <folding>
+            <element signature="e#1777#1785#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/org/kevoree/library/javase/webserver/latexEditor/client/latexEditor.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="68" column="31" selection-start="2189" selection-end="2189" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/edu/ycp/cs/dh/acegwt/client/ace/AceEditor.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="187" column="0" selection-start="6746" selection-end="6746" vertical-scroll-proportion="-2.431718">
+        <state line="201" column="6" selection-start="7210" selection-end="7210" vertical-scroll-proportion="0.48101267">
           <folding>
-            <element signature="e#0#9456#0" expanded="true" />
+            <element signature="e#0#9347#0" expanded="true" />
             <element signature="imports" expanded="true" />
-            <marker date="1322003514000" expanded="true" signature="2129:2670" placeholder="{...}" />
-            <marker date="1322003514000" expanded="true" signature="2326:2615" placeholder="//..." />
-            <marker date="1322003514000" expanded="true" signature="3100:3236" placeholder="{...}" />
-            <marker date="1322003514000" expanded="true" signature="3659:3899" placeholder="{...}" />
-            <marker date="1322003514000" expanded="true" signature="4118:4413" placeholder="{...}" />
-            <marker date="1322003514000" expanded="true" signature="4252:4405" placeholder="{...}" />
-            <marker date="1322003514000" expanded="true" signature="4678:4989" placeholder="{...}" />
-            <marker date="1322003514000" expanded="true" signature="4828:4981" placeholder="{...}" />
-            <marker date="1322003514000" expanded="true" signature="5088:5268" placeholder="{...}" />
-            <marker date="1322003514000" expanded="true" signature="5429:5561" placeholder="{...}" />
-            <marker date="1322003514000" expanded="true" signature="5744:5873" placeholder="{...}" />
-            <marker date="1322003514000" expanded="true" signature="6044:6158" placeholder="{...}" />
-            <marker date="1322003514000" expanded="true" signature="6335:6578" placeholder="{...}" />
-            <marker date="1322003514000" expanded="true" signature="6960:7261" placeholder="{...}" />
-            <marker date="1322003514000" expanded="true" signature="7420:7554" placeholder="{...}" />
-            <marker date="1322003514000" expanded="true" signature="7690:7806" placeholder="{...}" />
-            <marker date="1322003514000" expanded="true" signature="8157:8319" placeholder="{...}" />
-            <marker date="1322003514000" expanded="true" signature="8544:8680" placeholder="{...}" />
-            <marker date="1322003514000" expanded="true" signature="8937:9060" placeholder="{...}" />
-            <marker date="1322003514000" expanded="true" signature="9303:9449" placeholder="{...}" />
+            <marker date="1322004570000" expanded="true" signature="-1:-1" placeholder="{...}" />
+            <marker date="1322004570000" expanded="true" signature="-1:-1" placeholder="//..." />
+            <marker date="1322004570000" expanded="true" signature="-1:-1" placeholder="{...}" />
+            <marker date="1322004570000" expanded="true" signature="-1:-1" placeholder="{...}" />
+            <marker date="1322004570000" expanded="true" signature="-1:-1" placeholder="{...}" />
+            <marker date="1322004570000" expanded="true" signature="-1:-1" placeholder="{...}" />
+            <marker date="1322004570000" expanded="true" signature="-1:-1" placeholder="{...}" />
+            <marker date="1322004570000" expanded="true" signature="-1:-1" placeholder="{...}" />
+            <marker date="1322004570000" expanded="true" signature="-1:-1" placeholder="{...}" />
+            <marker date="1322004570000" expanded="true" signature="-1:-1" placeholder="{...}" />
+            <marker date="1322004570000" expanded="true" signature="-1:-1" placeholder="{...}" />
+            <marker date="1322004570000" expanded="true" signature="-1:-1" placeholder="{...}" />
+            <marker date="1322004570000" expanded="true" signature="-1:-1" placeholder="{...}" />
+            <marker date="1322004570000" expanded="true" signature="-1:-1" placeholder="{...}" />
+            <marker date="1322004570000" expanded="true" signature="-1:-1" placeholder="{...}" />
+            <marker date="1322004570000" expanded="true" signature="-1:-1" placeholder="{...}" />
+            <marker date="1322004570000" expanded="true" signature="-1:-1" placeholder="{...}" />
+            <marker date="1322004570000" expanded="true" signature="-1:-1" placeholder="{...}" />
+            <marker date="1322004570000" expanded="true" signature="-1:-1" placeholder="{...}" />
+            <marker date="1322004570000" expanded="true" signature="-1:-1" placeholder="{...}" />
           </folding>
         </state>
       </provider>
