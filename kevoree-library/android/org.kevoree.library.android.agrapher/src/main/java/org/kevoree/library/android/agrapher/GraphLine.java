@@ -26,74 +26,84 @@ import android.view.View;
 public class GraphLine {
 
 
-	private XYMultipleSeriesDataset StatsDataset = new XYMultipleSeriesDataset();
-	private XYMultipleSeriesRenderer StatsRenderer = new XYMultipleSeriesRenderer();
+    private XYMultipleSeriesDataset StatsDataset = new XYMultipleSeriesDataset();
+    private XYMultipleSeriesRenderer StatsRenderer = new XYMultipleSeriesRenderer();
 
-	private GraphicalView StatsChartView;
+    private GraphicalView StatsChartView;
 
     private LinkedList<Double> data = new LinkedList<Double>();
 
-	private XYSeries series;
-	private  int max_points =60;
-	private int color_axes = Color.GRAY;
-	private int color_courbe = Color.RED;
-/**
- *
- * @param title titre de la courbe
- * @param _max_points nombre maximum de point
- * @param _color_axes couleur de l'axe
- * @param _color_courbe couleur de la courbe
- */
-	public GraphLine(String title,int _max_points,int _color_axes,int _color_courbe){
+    private XYSeries series;
+    private  int max_points =60;
+    private int color_axes = Color.GRAY;
+    private int color_courbe = Color.RED;
+    /**
+     *
+     * @param title titre de la courbe
+     * @param _max_points nombre maximum de point
+     * @param _color_axes couleur de l'axe
+     * @param _color_courbe couleur de la courbe
+     */
+    public GraphLine(String title,int _max_points,int _color_axes,int _color_courbe){
 
-		this.max_points = _max_points;
-		series= new XYSeries(title);
-
-
-		this.color_axes =_color_axes;
-		this.color_courbe =_color_courbe;
-	}
+        this.max_points = _max_points;
+        series= new XYSeries(title);
 
 
-	public GraphicalView CreateView(Context context){
+        this.color_axes =_color_axes;
+        this.color_courbe =_color_courbe;
+    }
 
-		StatsRenderer.setAxesColor(color_axes);
-		StatsRenderer.setXAxisMax(max_points);
 
-		StatsDataset.addSeries(series);
-		XYSeriesRenderer renderer = new XYSeriesRenderer();
-		renderer.setColor(color_courbe);
-		renderer.setLineWidth(3);
+    public GraphicalView CreateView(Context context){
 
-		StatsRenderer.addSeriesRenderer(renderer);
+        StatsRenderer.setAxesColor(color_axes);
+        StatsRenderer.setXAxisMax(max_points);
 
-		StatsChartView =ChartFactory.getLineChartView(context, StatsDataset,StatsRenderer);
+        StatsDataset.addSeries(series);
+        XYSeriesRenderer renderer = new XYSeriesRenderer();
+        renderer.setColor(color_courbe);
+        renderer.setLineWidth(3);
 
-		return StatsChartView;
-	}
+        StatsRenderer.addSeriesRenderer(renderer);
 
-	public void refreshLine() {
-		series.clear();
-		int index = 0;
+        StatsChartView =ChartFactory.getLineChartView(context, StatsDataset,StatsRenderer);
 
-		StringBuffer s = new StringBuffer();
-		for (int h = 0; h < series.getItemCount(); h++)
-			s.append(series.getY(h)).append(",");
+        return StatsChartView;
+    }
 
-		for (int i = (data.size() - 1); i >= 0 && index < max_points; i--) {
+    public void refreshLine() {
+        try {
+        series.clear();
+        int index = 0;
 
-			series.add(index++, data.get(i));
-		}
-		StatsChartView.repaint();
-	}
+        StringBuffer s = new StringBuffer();
+        for (int h = 0; h < series.getItemCount(); h++)
+            s.append(series.getY(h)).append(",");
 
-	public void add(double value)
-	{
-		 if (data.size() > max_points) {
-			 data.removeFirst();
-         }
-		 data.addLast(value);
-		 refreshLine();
-	}
+        for (int i = (data.size() - 1); i >= 0 && index < max_points; i--) {
+
+            series.add(index++, data.get(i));
+        }
+
+        if(StatsChartView !=null)
+            StatsChartView.repaint();
+        }catch (Exception e)
+        {
+                 e.printStackTrace();
+        }
+    }
+
+    public void add(double value)
+    {
+
+        if (data.size() > max_points) {
+            data.removeFirst();
+        }
+        data.addLast(value);
+        refreshLine();
+
+
+    }
 
 }
