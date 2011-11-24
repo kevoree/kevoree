@@ -24,23 +24,29 @@ class LinuxLatexCompiler extends LatexCompilerInterface {
   private val errorBibtexRegex = new Regex("I was expecting.*")
   private val warningLatexRegex = new Regex(".*LaTeX Warning:.*")
   private val warningBibtexRegex = new Regex("Warning.*")
-  private val latexAvailabilityRegex = new Regex("pdflatex: /.*")
-  private val bibtexAvailabilityRegex = new Regex("bibtex: /.*")
-  private val latexAvailabilityErrorRegex = new Regex("pdflatex:")
-  private val bibtexAvailabilityErrorRegex = new Regex("bibtex:")
+//  private val latexAvailabilityRegex = new Regex("pdflatex: /.*")
+//  private val bibtexAvailabilityRegex = new Regex("bibtex: /.*")
+//  private val latexAvailabilityErrorRegex = new Regex("pdflatex:")
+//  private val bibtexAvailabilityErrorRegex = new Regex("bibtex:")
+
+
+  private val latexAvailabilityRegex = new Regex("/.*")
+  private val bibtexAvailabilityRegex = new Regex("/.*")
+  private val AvailabilityErrorRegex1 = new Regex("which: no")
+  private val AvailabilityErrorRegex2 = new Regex("")
 
   def isAvailable: Boolean = {
     var p = Runtime.getRuntime.exec("whereis pdflatex")
     resultActor.starting()
     new Thread(new
-        ProcessStreamManager(p.getInputStream, Array(latexAvailabilityRegex), Array(latexAvailabilityErrorRegex)))
+        ProcessStreamManager(p.getInputStream, Array(latexAvailabilityRegex), Array(AvailabilityErrorRegex1, AvailabilityErrorRegex2)))
       .start()
     val isAvailable1 = resultActor.waitingFor(2000)
 
     p = Runtime.getRuntime.exec("whereis bibtex")
     resultActor.starting()
     new Thread(new
-        ProcessStreamManager(p.getInputStream, Array(bibtexAvailabilityRegex), Array(bibtexAvailabilityErrorRegex)))
+        ProcessStreamManager(p.getInputStream, Array(bibtexAvailabilityRegex), Array(AvailabilityErrorRegex1, AvailabilityErrorRegex2)))
       .start()
     val isAvailable2 = resultActor.waitingFor(2000)
     isAvailable1._1 && isAvailable2._1
