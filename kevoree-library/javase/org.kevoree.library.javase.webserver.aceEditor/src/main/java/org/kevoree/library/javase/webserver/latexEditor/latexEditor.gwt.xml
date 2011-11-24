@@ -2,7 +2,7 @@
         "http://google-web-toolkit.googlecode.com/svn/releases/2.0/distro-source/core/src/gwt-module.dtd">
 <module rename-to="latexEditor">
 
-    <inherits name="edu.ycp.cs.dh.acegwt.AceGWT" />
+  <!--  <inherits name="edu.ycp.cs.dh.acegwt.AceGWT" />-->
 
     <!-- Inherit the core Web Toolkit stuff.                  -->
     <inherits name='com.google.gwt.user.User'/>
