@@ -7,13 +7,15 @@
     <title>Kevoree Latex Editor</title>
 
 
-    <link type="text/css" rel="stylesheet" href="css/bootstrap.css">
-   <!-- <link type="text/css" rel="stylesheet" href="latexEditor.css">-->
+    <!-- <link type="text/css" rel="stylesheet" href="css/bootstrap.css"> -->
+    <link type="text/css" rel="stylesheet" href="latexEditor.css">
 
     <!--                                            -->
     <!-- This script is required bootstrap stuff.   -->
     <!--                                            -->
-    <script type="text/javascript" language="javascript" src="latexEditor/latexEditor.nocache.js"></script>
+
+    <script src="pdf/pdf.js" type="text/javascript" charset="utf-8"></script>
+
 
     <!--  JSON stringify - useful for inspecting javascript objects -->
 
@@ -26,11 +28,21 @@
     <script src="ace/theme-twilight.js" type="text/javascript" charset="utf-8"></script>
     <script src="ace/theme-idle_fingers.js" type="text/javascript" charset="utf-8"></script>
 
-    <style>
-        .ace_editor {
-            position: relative !important;
-        }
-    </style>
+    <script>
+        var aceEditor = null;
+        window.onload = function () {
+            var editor = ace.edit("editor");
+            editor.getSession().setUseWrapMode(true);
+            editor.getSession().setWrapLimitRange(null, null);
+            editor.setTheme('ace/theme/idle_fingers');
+            var JavaScriptMode = require("ace/mode/latex").Mode;
+            editor.getSession().setMode(new JavaScriptMode());
+            aceEditor = editor;
+        };
+    </script>
+
+    <script type="text/javascript" language="javascript" src="latexEditor/latexEditor.nocache.js"></script>
+
 </head>
 <!--                                           -->
 <!-- The body can have arbitrary html, or      -->
@@ -49,6 +61,10 @@
         in order for this application to display correctly.
     </div>
 </noscript>
+
+
+<div id="editor"></div>
+
 </body>
 
 
