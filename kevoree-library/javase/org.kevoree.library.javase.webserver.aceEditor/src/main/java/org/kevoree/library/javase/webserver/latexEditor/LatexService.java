@@ -1,5 +1,7 @@
 package org.kevoree.library.javase.webserver.latexEditor;
 
+import org.kevoree.framework.MessagePort;
+import org.kevoree.framework.message.StdKevoreeMessage;
 import org.kevoree.library.javase.fileSystem.FilesService;
 import org.kevoree.library.javase.webserver.FileServiceHelper;
 import org.kevoree.library.javase.webserver.KevoreeHttpRequest;
@@ -11,6 +13,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
 
 /**
  * Created by IntelliJ IDEA.
@@ -29,13 +32,19 @@ public class LatexService {
         FilesService portService = editor.getPortByName("files", FilesService.class);
 
         boolean result = false;
-        if(request.getUrl().endsWith("compile")){
+        if (request.getUrl().endsWith("compile")) {
             //REQUEST ABSOLUTE PATH
+            if (request.getResolvedParams().containsKey("file") && editor.isPortBinded("compile")) {
+                String absolutePath = portService.getAbsolutePath(request.getResolvedParams().get("file"));
+                StdKevoreeMessage message = new StdKevoreeMessage();
+                message.putValue("file", absolutePath);
 
-
+                //CREATE TEMP UUID
+                UUID compileID = UUID.randomUUID();
+                message.putValue("id", compileID);
+                editor.getPortByName("compile", MessagePort.class).process(message);
+            }
         }
-
-
         if (request.getUrl().endsWith("flatfiles")) {
             Set<String> flatFiles = portService.getFilesPath();
             StringBuilder csvResult = new StringBuilder();
@@ -50,9 +59,6 @@ public class LatexService {
         }
         if (request.getUrl().endsWith("flatfile")) {
             if (request.getResolvedParams().containsKey("file")) {
-
-                System.out.println(request.getResolvedParams().get("file"));
-
                 byte[] content = portService.getFileContent(request.getResolvedParams().get("file"));
                 if (content.length > 0) {
                     response.setRawContent(content);
