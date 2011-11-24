@@ -15,5 +15,5 @@ trait CompilerComponent {
   def compile (message : Object)
 
 //  def clean(folder : String)
-  def clean(message : Object)
+//  def clean(message : Object)
 }

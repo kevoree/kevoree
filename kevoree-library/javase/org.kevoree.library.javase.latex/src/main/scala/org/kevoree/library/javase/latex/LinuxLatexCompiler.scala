@@ -52,22 +52,22 @@ class LinuxLatexCompiler extends LatexCompilerInterface {
     val builder = new ProcessBuilder()
     builder.directory(new File(folder))
 
-    builder.command("bash", "-c", "rm -f *.aux")
+    builder.command("sh", "-c", "rm -f *.aux")
 
     val p1 = builder.start()
-    builder.command("bash", "-c", "rm -f *.log")
+    builder.command("sh", "-c", "rm -f *.log")
     val p2 = builder.start()
     //    builder.command("bash", "-c", "rm -f *.pdf")
     //    val p3 = builder.start()
     //    builder.command("bash", "-c", "rm -f *.dvi")
     //    val p4 = builder.start()
-    builder.command("bash", "-c", "rm -f *.toc")
+    builder.command("sh", "-c", "rm -f *.toc")
     val p5 = builder.start()
-    builder.command("bash", "-c", "rm -f *.bbl")
+    builder.command("sh", "-c", "rm -f *.bbl")
     val p6 = builder.start()
-    builder.command("bash", "-c", "rm -f *.blg")
+    builder.command("sh", "-c", "rm -f *.blg")
     val p7 = builder.start()
-    builder.command("bash", "-c", "rm -f *.out")
+    builder.command("sh", "-c", "rm -f *.out")
     val p8 = builder.start()
 
     p1.waitFor()
@@ -122,6 +122,8 @@ class LinuxLatexCompiler extends LatexCompilerInterface {
         ProcessStreamManager(p.getInputStream, Array(warningLatexRegex), Array(errorLatexRegex)))
       .start()
     val isAvailable4 = resultActor.waitingFor(10000)
+
+    clean(folder)
 
     if (isAvailable1._1 && isAvailable2._1 && isAvailable3._1 && isAvailable4._1) {
       isAvailable2._2 + "\n" + isAvailable4._2 + "\nBuild success!"
