@@ -26,7 +26,6 @@ public class LatexService {
 
     private static Logger logger = LoggerFactory.getLogger(LatexService.class);
 
-
     public static boolean checkService(LatexEditor editor, KevoreeHttpRequest request, KevoreeHttpResponse response) {
 
         FilesService portService = editor.getPortByName("files", FilesService.class);
@@ -46,7 +45,16 @@ public class LatexService {
             }
         }
         if (request.getUrl().endsWith("flatfiles")) {
-            Set<String> flatFiles = portService.getFilesPath();
+
+            Set<String> extensions = new HashSet<String>();
+            extensions.add("tex");
+            extensions.add("cls");
+            extensions.add("txt");
+            extensions.add("sty");
+            extensions.add("bst");
+            extensions.add("bib");
+
+            Set<String> flatFiles = portService.getFilteredFilesPath(extensions);
             StringBuilder csvResult = new StringBuilder();
             for (String ff : flatFiles) {
                 if (csvResult.length() != 0) {

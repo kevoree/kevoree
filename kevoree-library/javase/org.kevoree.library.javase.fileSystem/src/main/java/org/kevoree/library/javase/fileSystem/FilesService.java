@@ -1,5 +1,6 @@
 package org.kevoree.library.javase.fileSystem;
 
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -12,6 +13,8 @@ import java.util.Set;
 public interface FilesService {
 
     public Set<String> getFilesPath();
+
+    public Set<String> getFilteredFilesPath(Set<String> extensions);
 
     public byte[] getFileContent(String relativePath);
 	
