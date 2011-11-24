@@ -100,28 +100,28 @@ class LinuxLatexCompiler extends LatexCompilerInterface {
     new Thread(new
         ProcessStreamManager(p.getInputStream, Array(warningLatexRegex), Array(errorLatexRegex)))
       .start()
-    val isAvailable1 = resultActor.waitingFor(5000)
+    val isAvailable1 = resultActor.waitingFor(10000)
 
     p = builderBibtex.start()
     resultActor.starting()
     new Thread(new
         ProcessStreamManager(p.getInputStream, Array(warningBibtexRegex), Array(errorBibtexRegex)))
       .start()
-    val isAvailable2 = resultActor.waitingFor(5000)
+    val isAvailable2 = resultActor.waitingFor(10000)
 
     p = builderPdfLatex.start()
     resultActor.starting()
     new Thread(new
         ProcessStreamManager(p.getInputStream, Array(warningLatexRegex), Array(errorLatexRegex)))
       .start()
-    val isAvailable3 = resultActor.waitingFor(5000)
+    val isAvailable3 = resultActor.waitingFor(10000)
 
     p = builderPdfLatex.start()
     resultActor.starting()
     new Thread(new
         ProcessStreamManager(p.getInputStream, Array(warningLatexRegex), Array(errorLatexRegex)))
       .start()
-    val isAvailable4 = resultActor.waitingFor(5000)
+    val isAvailable4 = resultActor.waitingFor(10000)
 
     if (isAvailable1._1 && isAvailable2._1 && isAvailable3._1 && isAvailable4._1) {
       isAvailable2._2 + "\n" + isAvailable4._2 + "\nBuild success!"
