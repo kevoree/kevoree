@@ -34,8 +34,8 @@ import java.util.Set;
 @ComponentType
 public class BasicFileSystem extends AbstractComponentType implements FilesService {
 
-    private static String baseURL = "";
-    private Logger logger = LoggerFactory.getLogger(this.getClass());
+    private String baseURL = "";
+    private Logger logger = LoggerFactory.getLogger(BasicFileSystem.class);
 
     @Start
     public void start() {
@@ -52,7 +52,7 @@ public class BasicFileSystem extends AbstractComponentType implements FilesServi
         baseURL = this.getDictionary().get("basedir").toString();
     }
 
-    private static Set<String> getFlatFiles(File base, String relativePath, boolean root, Set<String> extensions) {
+    private Set<String> getFlatFiles(File base, String relativePath, boolean root, Set<String> extensions) {
         Set<String> files = new HashSet<String>();
         if (base.exists() && !base.getName().startsWith(".")) {
             if (base.isDirectory()) {
@@ -69,8 +69,9 @@ public class BasicFileSystem extends AbstractComponentType implements FilesServi
                 boolean filtered = false;
                 if (extensions != null) {
                     filtered = true;
+                    logger.debug("Look for extension for "+base.getName());
                     for (String filter : extensions) {
-                        if(base.getName().endsWith("filter")){
+                        if(base.getName().endsWith(filter)){
                             filtered = false;
                         }
                     }
@@ -96,9 +97,6 @@ public class BasicFileSystem extends AbstractComponentType implements FilesServi
 
     @Port(name = "files", method = "getFileContent")
     public byte[] getFileContent(String relativePath) {
-
-        System.out.println("intpu=" + relativePath);
-
         File f = new File(baseURL + relativePath);
         if (f.exists()) {
             try {
