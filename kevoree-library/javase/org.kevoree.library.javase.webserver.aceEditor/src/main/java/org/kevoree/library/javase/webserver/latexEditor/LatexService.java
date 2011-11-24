@@ -29,6 +29,13 @@ public class LatexService {
         FilesService portService = editor.getPortByName("files", FilesService.class);
 
         boolean result = false;
+        if(request.getUrl().endsWith("compile")){
+            //REQUEST ABSOLUTE PATH
+
+
+        }
+
+
         if (request.getUrl().endsWith("flatfiles")) {
             Set<String> flatFiles = portService.getFilesPath();
             StringBuilder csvResult = new StringBuilder();
