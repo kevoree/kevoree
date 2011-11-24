@@ -114,11 +114,40 @@ public class RestGroup extends AbstractGroupType {
         }
     }
 
+    public String getAddress(String remoteNodeName) {
+        String ip = KevoreePlatformHelper.getProperty(this.getModelService().getLastModel(), remoteNodeName,
+                org.kevoree.framework.Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP());
+        if (ip == null || ip.equals("")) {
+            ip = "127.0.0.1";
+        }
+        return ip;
+    }
+
+    public int parsePortNumber(String nodeName) throws IOException {
+        try {
+            //logger.debug("look for port on " + nodeName);
+            return KevoreeFragmentPropertyHelper
+                    .getIntPropertyFromFragmentChannel(this.getModelService().getLastModel(), this.getName(), "port",
+                            nodeName);
+        } catch (NumberFormatException e) {
+            throw new IOException(e.getMessage());
+        }
+    }
+
     @Override
     public ContainerRoot pull(String targetNodeName) {
-        //TODO SEARCH IN MODEL FOR
-        String localhost = "127.0.0.1";
-        String port = "8000";
+        String localhost = "localhost";
+        int port=8000;
+        try
+        {
+            localhost = getAddress(targetNodeName);
+            port = parsePortNumber(targetNodeName);
+        } catch (IOException e) {
+           logger.error("Unable to getAddress or Port of " + targetNodeName, e);
+        }
+
+        logger.debug("Pulling model "+targetNodeName+" "+"http://" + localhost + ":" + port + "/model/current");
+
         try {
             URL url = new URL("http://" + localhost + ":" + port + "/model/current");
             URLConnection conn = url.openConnection();
