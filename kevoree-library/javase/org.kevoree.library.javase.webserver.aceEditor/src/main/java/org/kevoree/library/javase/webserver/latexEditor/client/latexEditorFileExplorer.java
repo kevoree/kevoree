@@ -40,7 +40,7 @@ public class latexEditorFileExplorer extends SimplePanel {
         tree = new Tree();
         map = new HashMap<String, TreeItem>();
         add(tree);
-        reloadFromServer();
+        //reloadFromServer();
 
         tree.addSelectionHandler(new SelectionHandler<TreeItem>() {
             @Override
