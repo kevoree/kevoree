@@ -24,10 +24,10 @@ class LinuxLatexCompiler extends LatexCompilerInterface {
   private val errorBibtexRegex = new Regex("I was expecting.*")
   private val warningLatexRegex = new Regex(".*LaTeX Warning:.*")
   private val warningBibtexRegex = new Regex("Warning.*")
-//  private val latexAvailabilityRegex = new Regex("pdflatex: /.*")
-//  private val bibtexAvailabilityRegex = new Regex("bibtex: /.*")
-//  private val latexAvailabilityErrorRegex = new Regex("pdflatex:")
-//  private val bibtexAvailabilityErrorRegex = new Regex("bibtex:")
+  //  private val latexAvailabilityRegex = new Regex("pdflatex: /.*")
+  //  private val bibtexAvailabilityRegex = new Regex("bibtex: /.*")
+  //  private val latexAvailabilityErrorRegex = new Regex("pdflatex:")
+  //  private val bibtexAvailabilityErrorRegex = new Regex("bibtex:")
 
 
   private val latexAvailabilityRegex = new Regex("/.*")
@@ -35,21 +35,32 @@ class LinuxLatexCompiler extends LatexCompilerInterface {
   private val AvailabilityErrorRegex1 = new Regex("which: no")
   private val AvailabilityErrorRegex2 = new Regex("")
 
-  def isAvailable: Boolean = {
-    var p = Runtime.getRuntime.exec("whereis pdflatex")
-    resultActor.starting()
-    new Thread(new
-        ProcessStreamManager(p.getInputStream, Array(latexAvailabilityRegex), Array(AvailabilityErrorRegex1, AvailabilityErrorRegex2)))
-      .start()
-    val isAvailable1 = resultActor.waitingFor(2000)
+  private var absolutePdfLatex = "pdflatex"
+  private var absoluteBibtex = "bibtex"
 
-    p = Runtime.getRuntime.exec("whereis bibtex")
+  def isAvailable: Boolean = {
+    var p = Runtime.getRuntime.exec("which pdflatex")
     resultActor.starting()
     new Thread(new
-        ProcessStreamManager(p.getInputStream, Array(bibtexAvailabilityRegex), Array(AvailabilityErrorRegex1, AvailabilityErrorRegex2)))
+        ProcessStreamManager(p.getInputStream, Array(latexAvailabilityRegex),
+                              Array(AvailabilityErrorRegex1, AvailabilityErrorRegex2)))
       .start()
-    val isAvailable2 = resultActor.waitingFor(2000)
-    isAvailable1._1 && isAvailable2._1
+    val isAvailable1 = resultActor.waitingForPath(2000)
+
+    p = Runtime.getRuntime.exec("which bibtex")
+    resultActor.starting()
+    new Thread(new
+        ProcessStreamManager(p.getInputStream, Array(bibtexAvailabilityRegex),
+                              Array(AvailabilityErrorRegex1, AvailabilityErrorRegex2)))
+      .start()
+    val isAvailable2 = resultActor.waitingForPath(2000)
+    if (isAvailable1._1 && isAvailable2._1) {
+      absolutePdfLatex = isAvailable1._2.trim()
+      absoluteBibtex = isAvailable2._2.trim()
+      true
+    } else {
+      false
+    }
 
   }
 
@@ -96,10 +107,10 @@ class LinuxLatexCompiler extends LatexCompilerInterface {
 
     val builderPdfLatex = new ProcessBuilder()
     builderPdfLatex.directory(new File(folder))
-    builderPdfLatex.command("pdflatex", "-halt-on-error", "-file-line-error", "-output-directory", folder, f)
+    builderPdfLatex.command(absolutePdfLatex, "-halt-on-error", "-file-line-error", "-output-directory", folder, f)
     val builderBibtex = new ProcessBuilder()
     builderBibtex.directory(new File(folder))
-    builderBibtex.command("bibtex", f)
+    builderBibtex.command(absoluteBibtex, f)
 
     var p = builderPdfLatex.start()
     resultActor.starting()
@@ -182,6 +193,8 @@ class LinuxLatexCompiler extends LatexCompilerInterface {
 
     case class WAITINGFOR (timeout: Int)
 
+    case class WAITINGFORPATH (timeout: Int)
+
     case class STARTING ()
 
     sealed abstract case class Result ()
@@ -203,6 +216,11 @@ class LinuxLatexCompiler extends LatexCompilerInterface {
     def waitingFor (timeout: Int): (Boolean, String) = {
       (this !? WAITINGFOR(timeout)).asInstanceOf[(Boolean, String)]
     }
+
+    def waitingForPath (timeout: Int): (Boolean, String) = {
+      (this !? WAITINGFORPATH(timeout)).asInstanceOf[(Boolean, String)]
+    }
+
 
     def output (data: String) {
       this ! OUTPUT(data)
@@ -233,16 +251,27 @@ class LinuxLatexCompiler extends LatexCompilerInterface {
                   case ERROR(data) => firstSender !(false, data)
                 }
               }
+              case WAITINGFORPATH(timeout) => {
+                firstSender = this.sender
+                reactWithin(timeout) {
+                  case STOP() => this.exit()
+                  case OUTPUT(data) => firstSender !(true, data)
+                  case TIMEOUT => firstSender !(false, "Timeout exceeds. Maybe the compilation is not able to finished")
+                  case ERROR(data) => firstSender !(false, data)
+                }
+              }
               case OUTPUT(data) => {
                 react {
                   case STOP() => this.exit()
                   case WAITINGFOR(timeout) => sender !(true, data)
+                  case WAITINGFORPATH(timeout) => sender !(true, data)
                 }
               }
               case ERROR(data) => {
                 react {
                   case STOP() => this.exit()
                   case WAITINGFOR(timeout) => sender !(false, data)
+                  case WAITINGFORPATH(timeout) => sender !(true, data)
                 }
               }
             }
