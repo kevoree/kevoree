@@ -7,6 +7,17 @@
         position: absolute;
         top: 0;
         bottom: 0;
-        left: 0;
+        left: 250;
         right: 0;
+    }
+
+    #files {
+            margin: 0;
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            width: 250px; !important
+            height: 100%;
     }
