@@ -10,7 +10,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 /**
@@ -104,7 +103,16 @@ public class BasicFileSystem extends AbstractComponentType implements FilesServi
         return new byte[0];
     }
 
-    public static byte[] convertStream(InputStream in) throws Exception {
+	@Port(name = "files", method = "getAbsolutePath")
+	public String getAbsolutePath (String relativePath) {
+		if (new File(baseURL + relativePath).exists()) {
+			return new File(baseURL + relativePath).getAbsolutePath();
+		} else {
+			return null;
+		}
+	}
+
+	public static byte[] convertStream(InputStream in) throws Exception {
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         byte[] buffer = new byte[1024];
         int l;

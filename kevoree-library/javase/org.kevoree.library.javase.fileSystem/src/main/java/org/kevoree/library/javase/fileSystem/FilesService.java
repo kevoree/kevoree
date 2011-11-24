@@ -1,7 +1,5 @@
 package org.kevoree.library.javase.fileSystem;
 
-import java.io.File;
-import java.util.List;
 import java.util.Set;
 
 /**
@@ -16,5 +14,7 @@ public interface FilesService {
     public Set<String> getFilesPath();
 
     public byte[] getFileContent(String relativePath);
+	
+	public String getAbsolutePath(String relativePath);
 
 }
