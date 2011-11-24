@@ -13,6 +13,22 @@ import com.google.gwt.user.client.Window;
  */
 public class latexEditorRPC {
 
+    public static void callForSave(latexEditorFileExplorer explorer){
+        String url = GWT.getModuleBaseURL() + "save?file=" + explorer.getSelectedFilePath();
+        RequestBuilder builder = new RequestBuilder(RequestBuilder.POST, URL.encode(url));
+        try {
+            builder.sendRequest(AceEditorWrapper.getText(), new RequestCallback() {
+                public void onError(Request request, Throwable exception) {
+                    Window.alert("Error while connecting to server");
+                }
+                public void onResponseReceived(Request request, Response response) {}
+            });
+
+        } catch (Exception e) {
+            Window.alert("Error while connecting to server");
+        }
+    }
+
     public static void callForCompile(latexEditorFileExplorer explorer) {
         String url = GWT.getModuleBaseURL() + "compile?file=" + explorer.getSelectedFilePath();
         RequestBuilder builder = new RequestBuilder(RequestBuilder.GET, URL.encode(url));

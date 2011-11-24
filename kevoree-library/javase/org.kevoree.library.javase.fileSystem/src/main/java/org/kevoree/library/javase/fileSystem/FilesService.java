@@ -19,5 +19,7 @@ public interface FilesService {
     public byte[] getFileContent(String relativePath);
 	
 	public String getAbsolutePath(String relativePath);
+    
+    public boolean saveFile(String relativePath,byte[] data);
 
 }
