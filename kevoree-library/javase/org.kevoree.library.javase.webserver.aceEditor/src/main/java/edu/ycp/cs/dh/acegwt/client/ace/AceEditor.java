@@ -21,8 +21,10 @@
 package edu.ycp.cs.dh.acegwt.client.ace;
 
 import com.google.gwt.core.client.JavaScriptObject;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.RootPanel;
 
 /**
  * A GWT widget for the Ajax.org Code Editor (ACE).
@@ -40,12 +42,17 @@ public class AceEditor extends Composite {
     /**
      * Constructor.
      */
-    public AceEditor() {
-        elementId = "_aceGWT" + nextId;
-        nextId++;
+    public AceEditor(String _elementID) {
 
-        HTML html = new HTML("<div style=\"width: 100%; height: 100%;\" id=\"" + elementId + "\"></div>");
-        initWidget(html);
+        this.elementId = _elementID;
+        //elementId = "_aceGWT" + nextId;
+        //nextId++;
+
+
+        Window.alert(this.elementId);
+
+        //HTML html = new HTML("<div style=\"width: 100%; height: 100%;\" id=\"" + elementId + "\"></div>");
+        initWidget(RootPanel.get(this.elementId));
     }
 
     /**
@@ -194,8 +201,20 @@ public class AceEditor extends Composite {
     public native void setUseSoftTabs(boolean useSoftTabs) /*-{
         var editor = this.@edu.ycp.cs.dh.acegwt.client.ace.AceEditor::editor;
         editor.getSession().setUseSoftTabs(useSoftTabs);
-        editor.getSession().setUseWrapMode(true);
     }-*/;
+
+
+    /**
+     * Set whether or not soft tabs should be used.
+     *
+     * @param useSoftWrap true if soft tabs should be used, false otherwise
+     */
+    public native void setUseWrapMode(boolean useSoftWrap) /*-{
+        var editor = this.@edu.ycp.cs.dh.acegwt.client.ace.AceEditor::editor;
+        editor.getSession().setUseWrapMode(useSoftWrap);
+        editor.getSession().setWrapLimitRange(80, 80);
+    }-*/;
+
 
     /**
      * Set tab size.  (Default is 4.)

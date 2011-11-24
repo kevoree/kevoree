@@ -1,28 +1,12 @@
     body {
-         overflow: hidden;
-            margin: 0;
-            padding: 0;
-            height: 100%;
-            width: 100%;
+        overflow: hidden;
     }
-    
-    #editor { 
+
+    #editor {
         margin: 0;
         position: absolute;
         top: 0;
         bottom: 0;
         left: 0;
         right: 0;
-        overflow: hidden;
-    }
-
-    .HorizontalSplitPanel .hsplitter
-    {
-        background-color            :    #00f;
-
-        /* Pretty much everything */
-        cursor                      :    e-resize;
-
-         /* IE6, IE7, FF2, Safari Win */
-        cursor                      :    col-resize;
     }
