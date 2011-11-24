@@ -23,6 +23,7 @@ import java.util.UUID;
  *//*
 
 
+
 @Provides({
 		@ProvidedPort(name = "callback", type = PortType.MESSAGE)
 })
@@ -82,8 +83,7 @@ public class LatexCompilerTester extends AbstractComponentType {
 					if (isPortBinded("compile")) {
 						StdKevoreeMessage msg = new StdKevoreeMessage();
 						msg.putValue("id", UUID.randomUUID());
-						msg.putValue("file", "CCGrid2012.tex");
-						msg.putValue("folder", "/home/edaubert/Documents/these/articles/CCGrid2012");
+						msg.putValue("file", "/home/edaubert/Documents/these/articles/CCGrid2012/CCGrid2012.tex");
 						getPortByName("compile", MessagePort.class).process(msg);
 					}
 				}
@@ -97,8 +97,7 @@ public class LatexCompilerTester extends AbstractComponentType {
 					if (isPortBinded("clean")) {
 						StdKevoreeMessage msg = new StdKevoreeMessage();
 						msg.putValue("id", UUID.randomUUID());
-						msg.putValue("file", "CCGrid2012.tex");
-						msg.putValue("folder", "/home/edaubert/Documents/these/articles/CCGrid2012");
+						msg.putValue("file", "/home/edaubert/Documents/these/articles/CCGrid2012/CCGrid2012.tex");
 						getPortByName("clean", MessagePort.class).process(msg);
 					}
 				}
@@ -106,27 +105,6 @@ public class LatexCompilerTester extends AbstractComponentType {
 			ButtonGroup bg = new ButtonGroup();
 			bg.add(on);
 			bg.add(off);
-
-
-			*/
-/*setPreferredSize(new Dimension(600, 800));
-			setLayout(new BorderLayout());
-
-			screen = new JTextPane();
-			screen.setFocusable(false);
-			screen.setEditable(false);
-			StyledDocument doc = screen.getStyledDocument();
-			Style def = StyleContext.getDefaultStyleContext().
-					getStyle(StyleContext.DEFAULT_STYLE);
-			Style system = doc.addStyle("system", def);
-			StyleConstants.setForeground(system, Color.GRAY);
-
-			Style incoming = doc.addStyle("incoming", def);
-			StyleConstants.setForeground(incoming, Color.BLUE);
-
-			Style outgoing = doc.addStyle("outgoing", def);
-			StyleConstants.setForeground(outgoing, Color.GREEN);*//*
-
 
 
 			setLayout(new FlowLayout());

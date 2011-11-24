@@ -21,7 +21,6 @@ import java.util.UUID;
 @MessageTypes({
 		@MessageType(name = "COMPILE",
 				elems = {@MsgElem(name = "id", className = UUID.class), @MsgElem(name = "file",
-						className = String.class), @MsgElem(name = "folder",
 						className = String.class)}),
 //		@MessageType(name = "CLEAN", elems = {@MsgElem(name = "folder", className = String.class)}),
 		@MessageType(name = "COMPILE_CALLBACK",
@@ -30,7 +29,7 @@ import java.util.UUID;
 						name = "success", className = boolean.class)})
 })
 @Provides({
-		@ProvidedPort(name = "CLEAN", type = PortType.MESSAGE, messageType = "CLEAN"),
+//		@ProvidedPort(name = "CLEAN", type = PortType.MESSAGE, messageType = "CLEAN"),
 		@ProvidedPort(name = "COMPILE", type = PortType.MESSAGE, messageType = "COMPILE")
 })
 @Requires({
@@ -70,15 +69,17 @@ public class LatexCompiler extends AbstractComponentType implements CompilerComp
 	@Port(name = "COMPILE")
 	public void compile (Object message) {
 		if (message instanceof StdKevoreeMessage && ((StdKevoreeMessage) message).getKeys().contains("id")
-				&& ((StdKevoreeMessage) message).getKeys().contains("file")
-				&& ((StdKevoreeMessage) message).getKeys().contains("folder")) {
+				&& ((StdKevoreeMessage) message).getKeys().contains("file")) {
 			UUID id = (UUID) ((StdKevoreeMessage) message).getValue("id").get();
 			String file = (String) ((StdKevoreeMessage) message).getValue("file").get();
-			String folder = (String) ((StdKevoreeMessage) message).getValue("folder").get();
-			String result = compiler.compile(file, folder);
-			if (isPortBinded("COMPILE_CALLBACK")) {
-				StdKevoreeMessage msg = new StdKevoreeMessage();
-				msg.putValue("id", id);
+			File f = new File(file);
+			file = f.getName();
+			StdKevoreeMessage msg = new StdKevoreeMessage();
+			msg.putValue("id", id);
+			if (f.exists()) {
+				String folder = f.getParentFile().getAbsolutePath();
+				String result = compiler.compile(file, folder);
+
 				msg.putValue("log", result);
 
 				if (result.endsWith("Build success!")) {
@@ -89,6 +90,12 @@ public class LatexCompiler extends AbstractComponentType implements CompilerComp
 
 					msg.putValue("success", false);
 				}
+			} else {
+				msg.putValue("log", "Unable to locate the file: " + file + f.getAbsolutePath());
+				msg.putValue("success", false);
+			}
+			if (isPortBinded("COMPILE_CALLBACK")) {
+
 
 				getPortByName("COMPILE_CALLBACK", MessagePort.class).process(msg);
 			}
