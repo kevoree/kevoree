@@ -5,10 +5,7 @@ import org.kevoree.framework.AbstractComponentType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStream;
+import java.io.*;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -69,9 +66,9 @@ public class BasicFileSystem extends AbstractComponentType implements FilesServi
                 boolean filtered = false;
                 if (extensions != null) {
                     filtered = true;
-                    logger.debug("Look for extension for "+base.getName());
+                    logger.debug("Look for extension for " + base.getName());
                     for (String filter : extensions) {
-                        if(base.getName().endsWith(filter)){
+                        if (base.getName().endsWith(filter)) {
                             filtered = false;
                         }
                     }
@@ -122,6 +119,26 @@ public class BasicFileSystem extends AbstractComponentType implements FilesServi
             return new File(baseURL + relativePath).getAbsolutePath();
         } else {
             return null;
+        }
+    }
+
+    @Port(name = "files", method = "saveFile")
+    public boolean saveFile(String relativePath, byte[] data) {
+        File f = new File(baseURL + relativePath);
+        if (f.exists()) {
+            try {
+                FileOutputStream fw = new FileOutputStream(f);
+                fw.write(data);
+                fw.flush();
+                fw.close();
+                return true;
+            } catch (Exception e) {
+                logger.error("Error while getting file ", e);
+                return false;
+            }
+        } else {
+            logger.debug("No file exist = {}", baseURL + relativePath);
+            return false;
         }
     }
 

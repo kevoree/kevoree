@@ -33,11 +33,16 @@ public class latexEditor implements EntryPoint {
             }
         });
 
-
         Button btSave = new Button();
         btSave.setText("Save");
         btSave.setStyleName("btn");
         btSave.addStyleName("primary");
+        btSave.addClickHandler(new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                latexEditorRPC.callForSave(fileExplorer);
+            }
+        });
 
         HorizontalPanel bts = new HorizontalPanel();
         bts.add(btCompile);

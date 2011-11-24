@@ -11,6 +11,11 @@ import com.google.gwt.core.client.JavaScriptObject;
  */
 public class AceEditorWrapper {
 
+
+    public static native String getText() /*-{
+        return $wnd.aceEditor.getSession().getValue();
+    }-*/;
+
     public static native void setText(String text) /*-{
         $wnd.aceEditor.getSession().setValue(text);
     }-*/;
