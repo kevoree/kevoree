@@ -76,7 +76,6 @@ public class LatexCompiler extends AbstractComponentType implements CompilerComp
 			String file = (String) ((StdKevoreeMessage) message).getValue("file").get();
 			String folder = (String) ((StdKevoreeMessage) message).getValue("folder").get();
 			String result = compiler.compile(file, folder);
-			// TODO send result COMPILE_CALLBACK port
 			if (isPortBinded("COMPILE_CALLBACK")) {
 				StdKevoreeMessage msg = new StdKevoreeMessage();
 				msg.putValue("id", id);
