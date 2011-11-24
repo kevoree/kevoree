@@ -13,6 +13,9 @@ import java.lang.String
  */
 
 class LatexCompilerManager extends DaemonActor with LatexCompilerInterface {
+
+  start()
+
   def compile (file: String, folder: String): String = {
     (this !? COMPILE(file, folder)).asInstanceOf[String]
   }
@@ -25,7 +28,7 @@ class LatexCompilerManager extends DaemonActor with LatexCompilerInterface {
     this ! CLEAN(folder)
   }
 
-  def stop() {
+  def stop () {
     this ! STOP()
   }
 
