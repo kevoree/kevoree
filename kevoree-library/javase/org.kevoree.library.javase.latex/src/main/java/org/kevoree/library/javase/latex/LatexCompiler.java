@@ -23,7 +23,7 @@ import java.util.UUID;
 				elems = {@MsgElem(name = "id", className = UUID.class), @MsgElem(name = "file",
 						className = String.class), @MsgElem(name = "folder",
 						className = String.class)}),
-		@MessageType(name = "CLEAN", elems = {@MsgElem(name = "folder", className = String.class)}),
+//		@MessageType(name = "CLEAN", elems = {@MsgElem(name = "folder", className = String.class)}),
 		@MessageType(name = "COMPILE_CALLBACK",
 				elems = {@MsgElem(name = "id", className = UUID.class), @MsgElem(name = "path",
 						className = String.class), @MsgElem(name = "log", className = String.class), @MsgElem(
@@ -97,7 +97,7 @@ public class LatexCompiler extends AbstractComponentType implements CompilerComp
 		}
 	}
 
-	@Port(name = "CLEAN")
+	/*@Port(name = "CLEAN")
 	public void clean (Object message) {
 		if (message instanceof StdKevoreeMessage && ((StdKevoreeMessage) message).getKeys().contains("folder")) {
 			String folder = (String) ((StdKevoreeMessage) message).getValue("folder").get();
@@ -105,5 +105,5 @@ public class LatexCompiler extends AbstractComponentType implements CompilerComp
 		} else {
 			logger.warn("Missing data to compile something");
 		}
-	}
+	}*/
 }
