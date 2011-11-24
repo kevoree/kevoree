@@ -35,15 +35,16 @@ class LinuxLatexCompiler extends LatexCompilerInterface {
     new Thread(new
         ProcessStreamManager(p.getInputStream, Array(latexAvailabilityRegex), Array(latexAvailabilityErrorRegex)))
       .start()
-    val isAvailable1 = resultActor.waitingFor(200)
-    p = Runtime.getRuntime.exec("whereis bibtex")
+    val isAvailable1 = resultActor.waitingFor(2000)
 
+    p = Runtime.getRuntime.exec("whereis bibtex")
     resultActor.starting()
     new Thread(new
         ProcessStreamManager(p.getInputStream, Array(bibtexAvailabilityRegex), Array(bibtexAvailabilityErrorRegex)))
       .start()
-    val isAvailable2 = resultActor.waitingFor(200)
+    val isAvailable2 = resultActor.waitingFor(2000)
     isAvailable1._1 && isAvailable2._1
+
   }
 
   def clean (folder: String) {
@@ -150,7 +151,7 @@ class LinuxLatexCompiler extends LatexCompilerInterface {
             case regex() => true
             case _ => false
           }) match {
-            case Some(regex) => errorBuilder = true;outputBuilder.append(line + "\n")
+            case Some(regex) => errorBuilder = true; outputBuilder.append(line + "\n")
             case None =>
           }
           line = reader.readLine()
