@@ -45,6 +45,12 @@ public class latexEditorFileExplorer extends SimplePanel {
             }
         });
     }
+    
+    private String selectedFilePath = "";
+
+    public String getSelectedFilePath() {
+        return selectedFilePath;
+    }
 
     public void reloadFromServer() {
 
@@ -61,15 +67,12 @@ public class latexEditorFileExplorer extends SimplePanel {
                 }
 
                 public void onResponseReceived(Request request, Response response) {
-
                     if (response.getStatusCode() == 200) {
                         String[] files = response.getText().split(";");
                         for (int i = 0; i < files.length; i++) {
                             flatFiles.add(files[i]);
                         }
-
                         for (String flatFile : flatFiles) {
-
                             if (flatFile.contains("/")) {
                                 String path = flatFile.substring(0, flatFile.lastIndexOf("/"));
                                 TreeItem treeItem = null;
@@ -99,7 +102,7 @@ public class latexEditorFileExplorer extends SimplePanel {
     }
 
 
-    public void displayFile(String path) {
+    public void displayFile(final String path) {
 
         String url = GWT.getModuleBaseURL() + "flatfile?file=" + path;
         RequestBuilder builder = new RequestBuilder(RequestBuilder.GET, URL.encode(url));
@@ -111,6 +114,7 @@ public class latexEditorFileExplorer extends SimplePanel {
 
                 public void onResponseReceived(Request request, Response response) {
                     if (response.getStatusCode() == 200) {
+                        selectedFilePath = path;
                         AceEditorWrapper.setText(response.getText());
                     }
                 }

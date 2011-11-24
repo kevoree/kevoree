@@ -58,46 +58,28 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="latexEditor.html" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/war/latexEditor.html">
+      <file leaf-file-name="LatexService.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/org/kevoree/library/javase/webserver/latexEditor/LatexService.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="54" column="16" selection-start="2379" selection-end="2379" vertical-scroll-proportion="-7.84">
+            <state line="38" column="61" selection-start="1448" selection-end="1448" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="latexEditor.css" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/war/latexEditor.css">
+      <file leaf-file-name="LatexEditor.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/org/kevoree/library/javase/webserver/latexEditor/LatexEditor.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="21" column="24" selection-start="399" selection-end="399" vertical-scroll-proportion="0.0">
+            <state line="32" column="34" selection-start="1310" selection-end="1310" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="latexEditor.java" pinned="false" current="false" current-in-tab="false">
+      <file leaf-file-name="latexEditor.java" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/main/java/org/kevoree/library/javase/webserver/latexEditor/client/latexEditor.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="25" column="7" selection-start="825" selection-end="825" vertical-scroll-proportion="0.0">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="latexEditor.gwt.xml" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/org/kevoree/library/javase/webserver/latexEditor/latexEditor.gwt.xml">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="4" column="58" selection-start="272" selection-end="272" vertical-scroll-proportion="0.0">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="latexEditorFileExplorer.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/org/kevoree/library/javase/webserver/latexEditor/client/latexEditorFileExplorer.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="111" column="84" selection-start="4022" selection-end="4022" vertical-scroll-proportion="0.0">
+            <state line="17" column="34" selection-start="475" selection-end="475" vertical-scroll-proportion="0.46811596">
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -105,20 +87,24 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="LatexEditor.java" pinned="false" current="true" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/src/main/java/org/kevoree/library/javase/webserver/latexEditor/LatexEditor.java">
+      <file leaf-file-name="latexEditorRPC.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/org/kevoree/library/javase/webserver/latexEditor/client/latexEditorRPC.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="21" column="94" selection-start="813" selection-end="813" vertical-scroll-proportion="0.17391305">
-              <folding />
+            <state line="13" column="27" selection-start="347" selection-end="361" vertical-scroll-proportion="0.0">
+              <folding>
+                <element signature="imports" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="LatexService.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/org/kevoree/library/javase/webserver/latexEditor/LatexService.java">
+      <file leaf-file-name="latexEditorFileExplorer.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/org/kevoree/library/javase/webserver/latexEditor/client/latexEditorFileExplorer.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="32" column="35" selection-start="1054" selection-end="1054" vertical-scroll-proportion="0.0">
-              <folding />
+            <state line="116" column="44" selection-start="4258" selection-end="4258" vertical-scroll-proportion="0.0">
+              <folding>
+                <element signature="imports" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -140,26 +126,22 @@
       <list>
         <option value="$PROJECT_DIR$/src/main/java/org/kevoree/library/javase/webserver/latexEditor/FileServiceHelper.java" />
         <option value="$PROJECT_DIR$/war/css/bootstrap.css" />
-        <option value="$PROJECT_DIR$/src/main/java/org/kevoree/library/javase/webserver/latexEditor/LatexEditor.java" />
         <option value="$PROJECT_DIR$/pom.xml" />
         <option value="$PROJECT_DIR$/src/main/java/org/kevoree/library/javase/webserver/latexEditor/client/PdfViewer.java" />
         <option value="$PROJECT_DIR$/src/main/java/edu/ycp/cs/dh/acegwt/client/ace/AceEditor.java" />
         <option value="$PROJECT_DIR$/src/main/java/org/kevoree/library/javase/webserver/latexEditor/client/AceEditorWrapper.java" />
-        <option value="$PROJECT_DIR$/war/latexEditor.html" />
         <option value="$PROJECT_DIR$/war/latexEditor.css" />
         <option value="$PROJECT_DIR$/src/main/java/org/kevoree/library/javase/webserver/latexEditor/latexEditor.gwt.xml" />
-        <option value="$PROJECT_DIR$/src/main/java/org/kevoree/library/javase/webserver/latexEditor/client/latexEditor.java" />
-        <option value="$PROJECT_DIR$/src/main/java/org/kevoree/library/javase/webserver/latexEditor/client/latexEditorFileExplorer.java" />
+        <option value="$PROJECT_DIR$/war/latexEditor.html" />
+        <option value="$PROJECT_DIR$/src/main/java/org/kevoree/library/javase/webserver/latexEditor/LatexEditor.java" />
         <option value="$PROJECT_DIR$/src/main/java/org/kevoree/library/javase/webserver/latexEditor/LatexService.java" />
+        <option value="$PROJECT_DIR$/src/main/java/org/kevoree/library/javase/webserver/latexEditor/client/latexEditorFileExplorer.java" />
+        <option value="$PROJECT_DIR$/src/main/java/org/kevoree/library/javase/webserver/latexEditor/client/latexEditorRPC.java" />
+        <option value="$PROJECT_DIR$/src/main/java/org/kevoree/library/javase/webserver/latexEditor/client/latexEditor.java" />
       </list>
     </option>
   </component>
   <component name="MavenImportPreferences">
-    <option name="generalSettings">
-      <MavenGeneralSettings>
-        <option name="workOffline" value="true" />
-      </MavenGeneralSettings>
-    </option>
     <option name="importingSettings">
       <MavenImportingSettings>
         <option name="importAutomatically" value="true" />
@@ -169,20 +151,6 @@
   </component>
   <component name="MavenProjectNavigator">
     <treeState>
-      <PATH>
-        <PATH_ELEMENT>
-          <option name="myItemId" value="" />
-          <option name="myItemType" value="org.jetbrains.idea.maven.navigator.MavenProjectsStructure$RootNode" />
-        </PATH_ELEMENT>
-        <PATH_ELEMENT>
-          <option name="myItemId" value="Kevoree :: Library :: JavaSE :: WebServer :: AceEditor" />
-          <option name="myItemType" value="org.jetbrains.idea.maven.navigator.MavenProjectsStructure$ProjectNode" />
-        </PATH_ELEMENT>
-        <PATH_ELEMENT>
-          <option name="myItemId" value="Dependencies" />
-          <option name="myItemType" value="org.jetbrains.idea.maven.navigator.MavenProjectsStructure$DependenciesNode" />
-        </PATH_ELEMENT>
-      </PATH>
       <PATH>
         <PATH_ELEMENT>
           <option name="myItemId" value="" />
@@ -376,6 +344,36 @@
             </PATH_ELEMENT>
             <PATH_ELEMENT>
               <option name="myItemId" value="acegwt" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="org.kevoree.library.javase.webserver.aceEditor" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="org.kevoree.library.javase.webserver.aceEditor" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="main" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="java" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="acegwt" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="ace" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -611,7 +609,7 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="22" width="1920" height="1174" extended-state="0" />
-    <editor active="true" />
+    <editor active="false" />
     <layout>
       <window_info id="Data Sources" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
@@ -624,7 +622,7 @@
       <window_info id="Web" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32991013" sideWeight="0.49712643" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="true" content_ui="tabs" />
-      <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.125" sideWeight="0.6626506" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Maven Projects" active="true" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.1736111" sideWeight="0.6626506" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.16880342" sideWeight="0.6626506" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.33734939" sideWeight="0.9188218" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
@@ -688,11 +686,6 @@
     <breakpoint-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/src/main/java/org/kevoree/library/javase/webserver/latexEditor/client/latexEditorService.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="7" column="10" selection-start="283" selection-end="283" vertical-scroll-proportion="0.0" />
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/war/css/bootstrap.css">
       <provider selected="true" editor-type-id="text-editor">
         <state line="18" column="2" selection-start="749" selection-end="749" vertical-scroll-proportion="0.49279538" />
@@ -708,11 +701,6 @@
         <state line="25986" column="31" selection-start="1074602" selection-end="1074609" vertical-scroll-proportion="0.3317757" />
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/org/kevoree/library/javase/webserver/latexEditor/client/PdfViewer.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="16" column="0" selection-start="450" selection-end="450" vertical-scroll-proportion="0.3963039" />
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/edu/ycp/cs/dh/acegwt/client/ace/AceEditorMode.java">
       <provider selected="true" editor-type-id="text-editor">
         <state line="51" column="16" selection-start="1748" selection-end="1753" vertical-scroll-proportion="0.503055" />
@@ -721,11 +709,6 @@
     <entry file="file://$PROJECT_DIR$/src/main/java/edu/ycp/cs/dh/acegwt/client/ace/AceEditorTheme.java">
       <provider selected="true" editor-type-id="text-editor">
         <state line="27" column="12" selection-start="1333" selection-end="1333" vertical-scroll-proportion="0.34826884" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/edu/ycp/cs/dh/acegwt/client/ace/AceEditor.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="165" column="0" selection-start="5913" selection-end="6093" vertical-scroll-proportion="0.3318584" />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/org/kevoree/library/javase/webserver/latexEditor/client/AceEditorWrapper.java">
@@ -737,54 +720,84 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/org/kevoree/library/javase/webserver/latexEditor/latexEditor.gwt.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="4" column="58" selection-start="272" selection-end="272" vertical-scroll-proportion="0.11014493">
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/war/latexEditor.css">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="21" column="24" selection-start="399" selection-end="399" vertical-scroll-proportion="0.0">
+        <state line="1" column="8" selection-start="19" selection-end="19" vertical-scroll-proportion="0.027536232">
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/war/latexEditor.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="54" column="16" selection-start="2379" selection-end="2379" vertical-scroll-proportion="-7.84">
+        <state line="45" column="70" selection-start="2037" selection-end="2037" vertical-scroll-proportion="0.60509557">
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/org/kevoree/library/javase/webserver/latexEditor/latexEditor.gwt.xml">
+    <entry file="file://$PROJECT_DIR$/src/main/java/edu/ycp/cs/dh/acegwt/client/ace/AceEditor.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="4" column="58" selection-start="272" selection-end="272" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/org/kevoree/library/javase/webserver/latexEditor/client/latexEditor.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="25" column="7" selection-start="825" selection-end="825" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/org/kevoree/library/javase/webserver/latexEditor/client/latexEditorFileExplorer.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="111" column="84" selection-start="4022" selection-end="4022" vertical-scroll-proportion="0.0">
+        <state line="246" column="76" selection-start="8720" selection-end="8788" vertical-scroll-proportion="0.027536232">
           <folding>
-            <element signature="imports" expanded="true" />
+            <marker date="1322129223000" expanded="true" signature="-1:-1" placeholder="{...}" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/org/kevoree/library/javase/webserver/latexEditor/client/PdfViewer.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="16" column="0" selection-start="0" selection-end="837" vertical-scroll-proportion="0.36666667">
+          <folding>
+            <marker date="1322087691000" expanded="true" signature="-1:-1" placeholder="{...}" />
+            <marker date="1322087691000" expanded="true" signature="-1:-1" placeholder="{...}" />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/org/kevoree/library/javase/webserver/latexEditor/LatexService.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="32" column="35" selection-start="1054" selection-end="1054" vertical-scroll-proportion="0.0">
+        <state line="38" column="61" selection-start="1448" selection-end="1448" vertical-scroll-proportion="0.0">
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/org/kevoree/library/javase/webserver/latexEditor/LatexEditor.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="21" column="94" selection-start="813" selection-end="813" vertical-scroll-proportion="0.17391305">
+        <state line="32" column="34" selection-start="1310" selection-end="1310" vertical-scroll-proportion="0.0">
           <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/org/kevoree/library/javase/webserver/latexEditor/client/latexEditorFileExplorer.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="116" column="44" selection-start="4258" selection-end="4258" vertical-scroll-proportion="0.0">
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/org/kevoree/library/javase/webserver/latexEditor/client/latexEditorRPC.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="13" column="27" selection-start="347" selection-end="361" vertical-scroll-proportion="0.0">
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/org/kevoree/library/javase/webserver/latexEditor/client/latexEditor.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="17" column="34" selection-start="475" selection-end="475" vertical-scroll-proportion="0.46811596">
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>

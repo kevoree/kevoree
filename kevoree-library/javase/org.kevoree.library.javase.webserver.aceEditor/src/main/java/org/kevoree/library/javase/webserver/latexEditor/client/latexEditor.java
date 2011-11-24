@@ -1,16 +1,9 @@
 package org.kevoree.library.javase.webserver.latexEditor.client;
 
-import com.google.gwt.canvas.client.Canvas;
 import com.google.gwt.core.client.EntryPoint;
-import com.google.gwt.core.client.JavaScriptObject;
-import com.google.gwt.dom.client.StyleInjector;
-import com.google.gwt.user.client.DOM;
-import com.google.gwt.user.client.Window;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.*;
-import edu.ycp.cs.dh.acegwt.client.ace.AceEditor;
-import edu.ycp.cs.dh.acegwt.client.ace.AceEditorCallback;
-import edu.ycp.cs.dh.acegwt.client.ace.AceEditorMode;
-import edu.ycp.cs.dh.acegwt.client.ace.AceEditorTheme;
 
 /**
  * Entry point classes define <code>onModuleLoad()</code>
@@ -33,6 +26,13 @@ public class latexEditor implements EntryPoint {
         btCompile.setText("Compile");
         btCompile.setStyleName("btn");
         btCompile.addStyleName("primary");
+        btCompile.addClickHandler(new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                latexEditorRPC.callForCompile(fileExplorer);
+            }
+        });
+
 
         Button btSave = new Button();
         btSave.setText("Save");
