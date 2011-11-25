@@ -31,7 +31,7 @@ class LinuxLatexCompiler extends LatexCompilerInterface {
   //  private val bibtexAvailabilityErrorRegex = new Regex("bibtex:")
 
 
-  private val latexAvailabilityRegex = new Regex("{/.*")
+  private val latexAvailabilityRegex = new Regex("/.*")
   private val bibtexAvailabilityRegex = new Regex("/.*")
   private val AvailabilityErrorRegex1 = new Regex("which: no")
   private val AvailabilityErrorRegex2 = new Regex("[^/].*")
