@@ -47,8 +47,11 @@ class LatexCompilerManager extends DaemonActor with LatexCompilerInterface {
   private def isAvailableInternals: Boolean = {
     if (isWindows) {
       false
-    } else if (isUnix || isMac) {
+    } else if (isUnix) {
       val latexCompiler = new LinuxLatexCompiler
+      latexCompiler.isAvailable
+    } else if (isMac) {
+      val latexCompiler = new MacLatexCompiler
       latexCompiler.isAvailable
     } else {
       throw new Exception("Unknown Operating System. Unable to check if latex is available")
@@ -58,8 +61,11 @@ class LatexCompilerManager extends DaemonActor with LatexCompilerInterface {
   private def cleanInternals (folder: String) {
     if (isWindows) {
       false
-    } else if (isUnix || isMac) {
+    } else if (isUnix) {
       val latexCompiler = new LinuxLatexCompiler
+      latexCompiler.clean(folder)
+    } else if (isMac) {
+      val latexCompiler = new MacLatexCompiler
       latexCompiler.clean(folder)
     } else {
       throw new Exception("Unknown Operating System. Unable to check if latex is available")
@@ -69,8 +75,16 @@ class LatexCompilerManager extends DaemonActor with LatexCompilerInterface {
   private def compileInternals (file: String, folder: String): String = {
     if (isWindows) {
       ""
-    } else if (isUnix || isMac) {
+    } else if (isUnix) {
       val latexCompiler = new LinuxLatexCompiler
+      if (!latexCompiler.isAvailable) {
+        throw new
+            Exception("Unable to find required software (pdflatex and/or bibtex). Please check the configuration of your system")
+      } else {
+        latexCompiler.compile(file, folder)
+      }
+    } else if (isMac) {
+      val latexCompiler = new MacLatexCompiler
       if (!latexCompiler.isAvailable) {
         throw new
             Exception("Unable to find required software (pdflatex and/or bibtex). Please check the configuration of your system")
