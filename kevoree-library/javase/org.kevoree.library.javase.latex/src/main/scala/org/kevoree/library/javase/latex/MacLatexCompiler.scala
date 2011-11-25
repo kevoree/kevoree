@@ -16,7 +16,7 @@ import scala.collection.JavaConversions._
  * @version 1.0
  */
 
-class LinuxLatexCompiler extends LatexCompilerInterface {
+class MacLatexCompiler extends LatexCompilerInterface {
 
   private val logger = LoggerFactory.getLogger(this.getClass.getName)
   private val resultActor = new ResultManagementActor()
@@ -25,47 +25,19 @@ class LinuxLatexCompiler extends LatexCompilerInterface {
   private val errorBibtexRegex = new Regex("I was expecting.*")
   private val warningLatexRegex = new Regex(".*LaTeX Warning:.*")
   private val warningBibtexRegex = new Regex("Warning.*")
-  //  private val latexAvailabilityRegex = new Regex("pdflatex: /.*")
-  //  private val bibtexAvailabilityRegex = new Regex("bibtex: /.*")
-  //  private val latexAvailabilityErrorRegex = new Regex("pdflatex:")
-  //  private val bibtexAvailabilityErrorRegex = new Regex("bibtex:")
 
-
-  private val latexAvailabilityRegex = new Regex("/.*")
-  private val bibtexAvailabilityRegex = new Regex("/.*")
-  private val AvailabilityErrorRegex1 = new Regex("which: no")
-
-  private var absolutePdfLatex = "pdflatex"
-  private var absoluteBibtex = "bibtex"
+  private val absolutePdfLatex = "/usr/texbin/pdflatex"
+  private val absoluteBibtex = "/usr/texbin/bibtex"
 
   def isAvailable: Boolean = {
-    val builder = new ProcessBuilder()
+    
+    var p = Runtime.getRuntime.exec(Array[String](absolutePdfLatex, "-version"))
+    var result = p.waitFor()
 
-    builder.command("which", "pdflatex")
-    var p = builder.start()
-    resultActor.starting()
-    new Thread(new
-        ProcessStreamManager(p.getInputStream, Array(latexAvailabilityRegex),
-                              Array(AvailabilityErrorRegex1)))
-      .start()
-    val isAvailable1 = resultActor.waitingForPath(2000)
+    p = Runtime.getRuntime.exec(Array[String](absoluteBibtex, "--help"))
+    result = result + p.waitFor()
 
-    builder.command("which", "bibtex")
-    p = builder.start()
-    resultActor.starting()
-    new Thread(new
-        ProcessStreamManager(p.getInputStream, Array(bibtexAvailabilityRegex),
-                              Array(AvailabilityErrorRegex1)))
-      .start()
-    val isAvailable2 = resultActor.waitingForPath(2000)
-    if (isAvailable1._1 && isAvailable2._1) {
-      absolutePdfLatex = isAvailable1._2.trim()
-      absoluteBibtex = isAvailable2._2.trim()
-      true
-    } else {
-      false
-    }
-
+    result == 0
   }
 
   def clean (folder: String) {
