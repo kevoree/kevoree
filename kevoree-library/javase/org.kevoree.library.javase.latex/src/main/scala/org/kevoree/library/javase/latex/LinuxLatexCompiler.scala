@@ -167,8 +167,6 @@ class LinuxLatexCompiler extends LatexCompilerInterface {
         var line = reader.readLine()
         while (line != null) {
           
-          println("line="+line)
-          
           outputRegexes.find(regex => line match {
             case regex() => true
             case _ => false
@@ -193,8 +191,6 @@ class LinuxLatexCompiler extends LatexCompilerInterface {
         resultActor.error(outputBuilder.toString())
       } else {
         resultActor.output(outputBuilder.toString())
-        
-        println("rez="+outputBuilder.toString())
         
       }
     }
