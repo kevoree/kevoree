@@ -12,10 +12,10 @@ import java.util.UUID;
  * To change this template use File | Settings | File Templates.
  */
 public class KevoreeHttpRequest implements Serializable {
-    
+
     private String url = "";
-    
-    private HashMap<String,String> resolvedParams = new HashMap<String,String>();
+
+    private HashMap<String, String> resolvedParams = new HashMap<String, String>();
 
     private UUID tokenID = UUID.randomUUID();
 
@@ -37,6 +37,17 @@ public class KevoreeHttpRequest implements Serializable {
 
     public void setResolvedParams(HashMap<String, String> resolvedParams) {
         this.resolvedParams = resolvedParams;
+    }
+
+    private byte[] rawBody = null;
+
+
+    public byte[] getRawBody() {
+        return rawBody;
+    }
+
+    public void setRawBody(byte[] rawBody) {
+        this.rawBody = rawBody;
     }
 }
 

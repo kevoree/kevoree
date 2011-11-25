@@ -41,11 +41,16 @@ public class latexEditorFileExplorer extends SimplePanel {
         tree.addSelectionHandler(new SelectionHandler<TreeItem>() {
             @Override
             public void onSelection(SelectionEvent<TreeItem> treeItemSelectionEvent) {
-                displayFile(getQualifiedName(treeItemSelectionEvent.getSelectedItem()));
+                String qname =getQualifiedName(treeItemSelectionEvent.getSelectedItem());
+                if(!qname.startsWith("/")){
+                    displayFile("/"+qname);
+                } else {
+                    displayFile(qname);
+                }
             }
         });
     }
-    
+
     private String selectedFilePath = "";
 
     public String getSelectedFilePath() {
@@ -75,16 +80,21 @@ public class latexEditorFileExplorer extends SimplePanel {
                         for (String flatFile : flatFiles) {
                             if (flatFile.contains("/")) {
                                 String path = flatFile.substring(0, flatFile.lastIndexOf("/"));
-                                TreeItem treeItem = null;
-                                if (map.containsKey(path)) {
-                                    treeItem = map.get(path);
+                                if (path.equals("")) {
+                                    if(flatFile.lastIndexOf("/")+1 < flatFile.length()){
+                                        tree.addItem(flatFile.substring(flatFile.lastIndexOf("/")+1));
+                                    }
                                 } else {
-                                    treeItem = new TreeItem(path);
-
-                                    map.put(path, treeItem);
-                                    tree.addItem(treeItem);
+                                    TreeItem treeItem = null;
+                                    if (map.containsKey(path)) {
+                                        treeItem = map.get(path);
+                                    } else {
+                                        treeItem = new TreeItem(path);
+                                        map.put(path, treeItem);
+                                        tree.addItem(treeItem);
+                                    }
+                                    treeItem.addItem(flatFile.substring(flatFile.lastIndexOf("/") + 1));
                                 }
-                                treeItem.addItem(flatFile.substring(flatFile.lastIndexOf("/") + 1));
                             } else {
                                 tree.addItem(flatFile);
                             }
