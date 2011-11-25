@@ -29,7 +29,6 @@ import java.util.UUID;
                         name = "success", className = boolean.class)})
 })
 @Requires({
-        @RequiredPort(name = "saveFile", type = PortType.MESSAGE, optional = true),
         @RequiredPort(name = "files", type = PortType.SERVICE, className = FilesService.class),
         @RequiredPort(name = "compile", type = PortType.MESSAGE, optional = true,messageType = "COMPILE")
 })

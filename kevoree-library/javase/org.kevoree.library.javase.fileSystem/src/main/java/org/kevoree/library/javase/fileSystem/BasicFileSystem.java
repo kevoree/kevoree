@@ -19,7 +19,6 @@ import java.util.Set;
 
 @Library(name = "JavaSE")
 @Provides({
-        @ProvidedPort(name = "save", type = PortType.MESSAGE, messageType = "saveFile"),
         @ProvidedPort(name = "files", type = PortType.SERVICE, className = FilesService.class)
 })
 @MessageTypes({
@@ -152,11 +151,6 @@ public class BasicFileSystem extends AbstractComponentType implements FilesServi
                 out.write(buffer, 0, l);
         } while (l > 0);
         return out.toByteArray();
-    }
-
-    @Port(name = "save")
-    public void saveMessage(Object o) {
-
     }
 
 }
