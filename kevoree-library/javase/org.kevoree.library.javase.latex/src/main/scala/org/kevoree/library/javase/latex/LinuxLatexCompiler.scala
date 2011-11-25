@@ -5,6 +5,7 @@ import actors.{TIMEOUT, Actor}
 import util.matching.Regex
 import java.io._
 import java.lang.ProcessBuilder
+import scala.collection.JavaConversions._
 
 /**
  * User: Erwan Daubert - erwan.daubert@gmail.com
@@ -39,7 +40,15 @@ class LinuxLatexCompiler extends LatexCompilerInterface {
   private var absoluteBibtex = "bibtex"
 
   def isAvailable: Boolean = {
-    var p = Runtime.getRuntime.exec("which pdflatex")
+    val builder = new ProcessBuilder()
+    val env: java.util.Map[String, String] = builder.environment()
+    System.getenv().keySet().foreach {
+      key =>
+        env.put(key, System.getenv(key))
+    }
+
+    builder.command("which", "pdflatex")
+    var p = builder.start()
     resultActor.starting()
     new Thread(new
         ProcessStreamManager(p.getInputStream, Array(latexAvailabilityRegex),
@@ -47,7 +56,8 @@ class LinuxLatexCompiler extends LatexCompilerInterface {
       .start()
     val isAvailable1 = resultActor.waitingForPath(2000)
 
-    p = Runtime.getRuntime.exec("which bibtex")
+    builder.command("which", "bibtex")
+    p = builder.start()
     resultActor.starting()
     new Thread(new
         ProcessStreamManager(p.getInputStream, Array(bibtexAvailabilityRegex),
@@ -68,6 +78,11 @@ class LinuxLatexCompiler extends LatexCompilerInterface {
 
     val builder = new ProcessBuilder()
     builder.directory(new File(folder))
+    val env: java.util.Map[String, String] = builder.environment()
+    System.getenv().keySet().foreach {
+      key =>
+        env.put(key, System.getenv(key))
+    }
 
     builder.command("sh", "-c", "rm -f *.aux")
 
@@ -107,9 +122,20 @@ class LinuxLatexCompiler extends LatexCompilerInterface {
 
     val builderPdfLatex = new ProcessBuilder()
     builderPdfLatex.directory(new File(folder))
+    var env: java.util.Map[String, String] = builderPdfLatex.environment()
+    System.getenv().keySet().foreach {
+      key =>
+        env.put(key, System.getenv(key))
+    }
     builderPdfLatex.command(absolutePdfLatex, "-halt-on-error", "-file-line-error", "-output-directory", folder, f)
+
     val builderBibtex = new ProcessBuilder()
     builderBibtex.directory(new File(folder))
+    env = builderBibtex.environment()
+    System.getenv().keySet().foreach {
+      key =>
+        env.put(key, System.getenv(key))
+    }
     builderBibtex.command(absoluteBibtex, f)
 
     var p = builderPdfLatex.start()
