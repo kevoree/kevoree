@@ -34,7 +34,7 @@
             <groupId>org.kevoree.library.javase</groupId>
             <artifactId>org.kevoree.library.javase.rest</artifactId>
             <version>${kevoree.version}</version>
-           <!-- <scope>provided</scope> -->
+          <scope>provided</scope>
         </dependency>
 
 
