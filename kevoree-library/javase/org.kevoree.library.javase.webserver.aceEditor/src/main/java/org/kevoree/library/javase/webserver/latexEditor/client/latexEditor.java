@@ -43,12 +43,12 @@ public class latexEditor implements EntryPoint {
                 latexEditorRPC.callForSave(fileExplorer);
             }
         });
-
+/*
         Button tooglePDF = new Button();
         tooglePDF.setText("PDF");
         tooglePDF.setStyleName("btn");
         tooglePDF.addStyleName("primary");
-        Frame pdfframe = new Frame("http://www.google.com/");
+        final Frame pdfframe = new Frame("");
         final RootPanel pdfroot = RootPanel.get("pdfview");
         pdfroot.add(pdfframe);
         pdfroot.setVisible(false);
@@ -61,21 +61,21 @@ public class latexEditor implements EntryPoint {
                     pdfroot.setVisible(false);
                 } else {
                     pdfroot.setVisible(true);
+                    pdfframe.setUrl("https://docs.google.com/gview?url=http://www.google.com/google-d-s/docsQuickstartGuide.pdf&chrome=true");
+                    pdfframe.setSize("400px","100%");
                 }
             }
         });
-
+*/
         HorizontalPanel bts = new HorizontalPanel();
         bts.add(btCompile);
-        bts.add(tooglePDF);
+     //   bts.add(tooglePDF);
         bts.add(btSave);
 
         leftBar.add(bts);
         leftBar.add(fileExplorer);
         RootPanel.get("files").add(scrollLeft);
 
-
-        // IFrameElement iframe = Document.get().createIFrameElement();
 
     }
 

@@ -28,9 +28,22 @@ public class LatexService {
         FilesService portService = editor.getPortByName("files", FilesService.class);
 
         boolean result = false;
+        if (request.getUrl().endsWith("compileresult")) {
+            if (request.getResolvedParams().containsKey("uuid")) {
+                if (editor.waitingID.contains(request.getResolvedParams().get("uuid"))) {
+                    response.setContent("waiting");
+                    result = true;
+                } else {
+                    response.setContent(editor.compileResult.get(request.getResolvedParams().get("uuid"))+";"+editor.compileLog.get(request.getResolvedParams().get("uuid")));
+                    //TODO CLEAR CACHE
 
+                    editor.compileResult.remove(request.getResolvedParams().get("uuid"));
+                    editor.compileLog.remove(request.getResolvedParams().get("uuid"));
+                    result = true;
+                }
+            }
+        }
         if (request.getUrl().endsWith("save")) {
-
             if (request.getResolvedParams().containsKey("file") && request.getRawBody() != null) {
                 boolean saveResult = portService.saveFile(request.getResolvedParams().get("file"), request.getRawBody());
                 if (!saveResult) {
@@ -50,7 +63,9 @@ public class LatexService {
                 //CREATE TEMP UUID
                 UUID compileID = UUID.randomUUID();
                 message.putValue("id", compileID);
+                editor.waitingID.add(compileID.toString());
                 editor.getPortByName("compile", MessagePort.class).process(message);
+                response.setContent(compileID.toString());
                 result = true;
             }
         }
@@ -78,6 +93,9 @@ public class LatexService {
                 byte[] content = portService.getFileContent(request.getResolvedParams().get("file"));
                 if (content.length > 0) {
                     response.setRawContent(content);
+                    if (request.getResolvedParams().get("file").endsWith(".pdf")) {
+                        response.setContentType("application/pdf");
+                    }
                     return true;
                 } else {
                     logger.debug("No file exist = {}", request.getResolvedParams().get("file"));

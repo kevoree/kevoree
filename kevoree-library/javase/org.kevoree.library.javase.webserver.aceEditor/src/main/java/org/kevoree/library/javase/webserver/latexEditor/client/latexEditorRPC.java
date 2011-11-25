@@ -29,15 +29,19 @@ public class latexEditorRPC {
         }
     }
 
-    public static void callForCompile(latexEditorFileExplorer explorer) {
-        String url = GWT.getModuleBaseURL() + "compile?file=" + explorer.getSelectedFilePath();
+    public static void callForCompile(final latexEditorFileExplorer explorer) {
+        final String selectedPath = explorer.getSelectedFilePath();
+        final String url = GWT.getModuleBaseURL() + "compile?file=" + selectedPath;
         RequestBuilder builder = new RequestBuilder(RequestBuilder.GET, URL.encode(url));
         try {
             builder.sendRequest(null, new RequestCallback() {
                 public void onError(Request request, Throwable exception) {
                     Window.alert("Error while connecting to server");
                 }
-                public void onResponseReceived(Request request, Response response) {}
+                public void onResponseReceived(Request request, Response response) {
+                    String pdfpath = GWT.getModuleBaseURL()+"flatfile?file="+selectedPath.replace(".tex", ".pdf");
+                    Window.open(pdfpath,null, null);
+                }
             });
 
         } catch (Exception e) {
