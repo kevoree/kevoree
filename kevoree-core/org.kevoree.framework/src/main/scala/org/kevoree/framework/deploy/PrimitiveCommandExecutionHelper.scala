@@ -102,6 +102,7 @@ object PrimitiveCommandExecutionHelper {
           watchDog ! true
         } catch {
           case _@e => {
+            watchDog ! false
             result = false
             logger.error("Error while executing primitive command " + primitive, e)
           }
