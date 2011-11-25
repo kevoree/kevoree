@@ -13,6 +13,9 @@ import java.lang.String
  */
 
 class LatexCompilerManager extends DaemonActor with LatexCompilerInterface {
+
+  start()
+
   def compile (file: String, folder: String): String = {
     (this !? COMPILE(file, folder)).asInstanceOf[String]
   }
@@ -25,7 +28,7 @@ class LatexCompilerManager extends DaemonActor with LatexCompilerInterface {
     this ! CLEAN(folder)
   }
 
-  def stop() {
+  def stop () {
     this ! STOP()
   }
 
@@ -48,7 +51,8 @@ class LatexCompilerManager extends DaemonActor with LatexCompilerInterface {
       val latexCompiler = new LinuxLatexCompiler
       latexCompiler.isAvailable
     } else if (isMac) {
-      false
+      val latexCompiler = new MacLatexCompiler
+      latexCompiler.isAvailable
     } else {
       throw new Exception("Unknown Operating System. Unable to check if latex is available")
     }
@@ -61,7 +65,8 @@ class LatexCompilerManager extends DaemonActor with LatexCompilerInterface {
       val latexCompiler = new LinuxLatexCompiler
       latexCompiler.clean(folder)
     } else if (isMac) {
-      false
+      val latexCompiler = new MacLatexCompiler
+      latexCompiler.clean(folder)
     } else {
       throw new Exception("Unknown Operating System. Unable to check if latex is available")
     }
@@ -79,7 +84,13 @@ class LatexCompilerManager extends DaemonActor with LatexCompilerInterface {
         latexCompiler.compile(file, folder)
       }
     } else if (isMac) {
-      ""
+      val latexCompiler = new MacLatexCompiler
+      if (!latexCompiler.isAvailable) {
+        throw new
+            Exception("Unable to find required software (pdflatex and/or bibtex). Please check the configuration of your system")
+      } else {
+        latexCompiler.compile(file, folder)
+      }
     } else {
       throw new Exception("Unknown Operating System. Unable to check if latex is available")
     }

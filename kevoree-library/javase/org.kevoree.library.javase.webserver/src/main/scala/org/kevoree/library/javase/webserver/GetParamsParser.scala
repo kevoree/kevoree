@@ -1,6 +1,5 @@
 package org.kevoree.library.javase.webserver
 
-import collection.immutable.HashMap
 
 /**
  * Created by IntelliJ IDEA.
@@ -17,13 +16,16 @@ object GetParamsParser {
     val urlParts = queryString.split("\\?")
     if (urlParts.size > 1) {
       val arrParameters = urlParts(1).split("&")
-      arrParameters.foreach { p =>
-        val pair = p.toString.split("=")
-        params.put(pair(0),pair(1))
+      arrParameters.foreach {
+        p =>
+          val pair = p.toString.split("=")
+          if (pair.size >= 2) {
+            params.put(pair(0), pair(1))
+          }
       }
       (urlParts(0).toString, params)
     } else {
-      (queryString,params)
+      (queryString, params)
     }
   }
 

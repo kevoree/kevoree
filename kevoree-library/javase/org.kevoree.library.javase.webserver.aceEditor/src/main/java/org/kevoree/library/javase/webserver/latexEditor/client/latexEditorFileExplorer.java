@@ -8,7 +8,6 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Tree;
 import com.google.gwt.user.client.ui.TreeItem;
-import edu.ycp.cs.dh.acegwt.client.ace.AceEditor;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -25,7 +24,6 @@ public class latexEditorFileExplorer extends SimplePanel {
 
     private Tree tree = null;
     private HashMap<String, TreeItem> map;
-    private AceEditor editor = null;
 
     public String getQualifiedName(TreeItem item) {
         if (item.getParentItem() != null) {
@@ -35,19 +33,28 @@ public class latexEditorFileExplorer extends SimplePanel {
         }
     }
 
-    public latexEditorFileExplorer(AceEditor _editor) {
-        editor = _editor;
+    public latexEditorFileExplorer() {
         tree = new Tree();
         map = new HashMap<String, TreeItem>();
         add(tree);
-        //reloadFromServer();
-
+        reloadFromServer();
         tree.addSelectionHandler(new SelectionHandler<TreeItem>() {
             @Override
             public void onSelection(SelectionEvent<TreeItem> treeItemSelectionEvent) {
-                displayFile(getQualifiedName(treeItemSelectionEvent.getSelectedItem()));
+                String qname =getQualifiedName(treeItemSelectionEvent.getSelectedItem());
+                if(!qname.startsWith("/")){
+                    displayFile("/"+qname);
+                } else {
+                    displayFile(qname);
+                }
             }
         });
+    }
+
+    private String selectedFilePath = "";
+
+    public String getSelectedFilePath() {
+        return selectedFilePath;
     }
 
     public void reloadFromServer() {
@@ -65,29 +72,35 @@ public class latexEditorFileExplorer extends SimplePanel {
                 }
 
                 public void onResponseReceived(Request request, Response response) {
-                    String[] files = response.getText().split(";");
-                    for (int i = 0; i < files.length; i++) {
-                        flatFiles.add(files[i]);
-                    }
-
-                    for (String flatFile : flatFiles) {
-
-                        if (flatFile.contains("/")) {
-                            String path = flatFile.substring(0, flatFile.lastIndexOf("/"));
-                            TreeItem treeItem = null;
-                            if (map.containsKey(path)) {
-                                treeItem = map.get(path);
+                    if (response.getStatusCode() == 200) {
+                        String[] files = response.getText().split(";");
+                        for (int i = 0; i < files.length; i++) {
+                            flatFiles.add(files[i]);
+                        }
+                        for (String flatFile : flatFiles) {
+                            if (flatFile.contains("/")) {
+                                String path = flatFile.substring(0, flatFile.lastIndexOf("/"));
+                                if (path.equals("")) {
+                                    if(flatFile.lastIndexOf("/")+1 < flatFile.length()){
+                                        tree.addItem(flatFile.substring(flatFile.lastIndexOf("/")+1));
+                                    }
+                                } else {
+                                    TreeItem treeItem = null;
+                                    if (map.containsKey(path)) {
+                                        treeItem = map.get(path);
+                                    } else {
+                                        treeItem = new TreeItem(path);
+                                        map.put(path, treeItem);
+                                        tree.addItem(treeItem);
+                                    }
+                                    treeItem.addItem(flatFile.substring(flatFile.lastIndexOf("/") + 1));
+                                }
                             } else {
-                                treeItem = new TreeItem(path);
-
-                                map.put(path, treeItem);
-                                tree.addItem(treeItem);
+                                tree.addItem(flatFile);
                             }
-                            treeItem.addItem(flatFile.substring(flatFile.lastIndexOf("/") + 1));
-                        } else {
-                            tree.addItem(flatFile);
                         }
                     }
+
 
                 }
             });
@@ -99,7 +112,7 @@ public class latexEditorFileExplorer extends SimplePanel {
     }
 
 
-    public void displayFile(String path) {
+    public void displayFile(final String path) {
 
         String url = GWT.getModuleBaseURL() + "flatfile?file=" + path;
         RequestBuilder builder = new RequestBuilder(RequestBuilder.GET, URL.encode(url));
@@ -110,7 +123,10 @@ public class latexEditorFileExplorer extends SimplePanel {
                 }
 
                 public void onResponseReceived(Request request, Response response) {
-                    editor.setText(response.getText());
+                    if (response.getStatusCode() == 200) {
+                        selectedFilePath = path;
+                        AceEditorWrapper.setText(response.getText());
+                    }
                 }
             });
 

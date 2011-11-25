@@ -7,7 +7,7 @@
     <title>Kevoree Latex Editor</title>
 
 
-    <!-- <link type="text/css" rel="stylesheet" href="css/bootstrap.css"> -->
+    <link type="text/css" rel="stylesheet" href="css/bootstrap.css">
     <link type="text/css" rel="stylesheet" href="latexEditor.css">
 
     <!--                                            -->
@@ -37,6 +37,8 @@
             editor.setTheme('ace/theme/idle_fingers');
             var JavaScriptMode = require("ace/mode/latex").Mode;
             editor.getSession().setMode(new JavaScriptMode());
+            editor.setShowPrintMargin(false);
+            editor.renderer.setHScrollBarAlwaysVisible(false);
             aceEditor = editor;
         };
     </script>
@@ -62,7 +64,7 @@
     </div>
 </noscript>
 
-
+<div id="files"></div>
 <div id="editor"></div>
 
 </body>

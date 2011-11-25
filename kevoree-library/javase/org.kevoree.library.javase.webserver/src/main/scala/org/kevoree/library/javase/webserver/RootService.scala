@@ -17,7 +17,7 @@ package org.kevoree.library.javase.webserver
  */
 
 import org.slf4j.LoggerFactory
-import akka.actor.{PoisonPill, Scheduler, Kill, Actor}
+import akka.actor.Actor
 import cc.spray.can._
 import org.kevoree.framework.MessagePort
 import java.util.UUID
@@ -48,10 +48,10 @@ class RootService(id: String, request: MessagePort, bootstrap: ServerBootstrap, 
       case msg: org.kevoree.library.javase.webserver.KevoreeHttpResponse => {
         map.get(msg.getTokenID) match {
           case Some(responder) => {
-            if(msg.getRawContent !=null){
-              responder._1.complete(rawResponse(msg.getRawContent,200,List(HttpHeader("Content-Type",msg.getContentType))))
+            if (msg.getRawContent != null) {
+              responder._1.complete(rawResponse(msg.getRawContent, 200, List(HttpHeader("Content-Type", msg.getContentType))))
             } else {
-              responder._1.complete(response(msg.getContent,200,List(HttpHeader("Content-Type",msg.getContentType))))
+              responder._1.complete(response(msg.getContent, 200, List(HttpHeader("Content-Type", msg.getContentType))))
             }
             map.remove(msg.getTokenID)
           }
@@ -74,7 +74,7 @@ class RootService(id: String, request: MessagePort, bootstrap: ServerBootstrap, 
   protected def receive = {
 
     case RequestContext(HttpRequest(HttpMethods.GET, "/favicon.ico", _, _, _), _, responder) =>
-      responder.complete(response("Unknown resource!", 404,defaultHeaders))
+      responder.complete(response("Unknown resource!", 404, defaultHeaders))
 
     case RequestContext(HttpRequest(HttpMethods.GET, url, _, _, _), _, responder) =>
       val kevMsg = new KevoreeHttpRequest
@@ -84,10 +84,12 @@ class RootService(id: String, request: MessagePort, bootstrap: ServerBootstrap, 
       kevMsg.setResolvedParams(paramsRes._2)
       request.process(kevMsg)
 
-    case RequestContext(HttpRequest(HttpMethods.POST, url, headers, body, _), _, responder) =>     
+    case RequestContext(HttpRequest(HttpMethods.POST, url, headers, body, _), _, responder) =>
       val kevMsg = new KevoreeHttpRequest
       actorRef ! RequestResponderTuple(responder, kevMsg.getTokenID, System.currentTimeMillis())
-      val paramsRes = GetParamsParser.getParams(url+"?"+new String(body))
+      val paramsRes = GetParamsParser.getParams(url + "?" + new String(body))
+      val params = paramsRes._2
+      kevMsg.setRawBody(body)
       kevMsg.setUrl(paramsRes._1)
       kevMsg.setResolvedParams(paramsRes._2)
       request.process(kevMsg)
@@ -101,8 +103,9 @@ class RootService(id: String, request: MessagePort, bootstrap: ServerBootstrap, 
 
   val defaultHeaders = List(HttpHeader("Content-Type", "text/html"))
 
-  def rawResponse(msg: Array[Byte], status: Int = 200,headers  :List[HttpHeader]) = HttpResponse(status, headers, msg)
-  def response(msg: String, status: Int = 200,headers  :List[HttpHeader]) = HttpResponse(status, headers, msg.getBytes("UTF-8"))
+  def rawResponse(msg: Array[Byte], status: Int = 200, headers: List[HttpHeader]) = HttpResponse(status, headers, msg)
+
+  def response(msg: String, status: Int = 200, headers: List[HttpHeader]) = HttpResponse(status, headers, msg.getBytes("UTF-8"))
 
   ////////////// helpers //////////////
   /*
