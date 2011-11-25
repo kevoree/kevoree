@@ -44,13 +44,38 @@ public class latexEditor implements EntryPoint {
             }
         });
 
+        Button tooglePDF = new Button();
+        tooglePDF.setText("PDF");
+        tooglePDF.setStyleName("btn");
+        tooglePDF.addStyleName("primary");
+        Frame pdfframe = new Frame("http://www.google.com/");
+        final RootPanel pdfroot = RootPanel.get("pdfview");
+        pdfroot.add(pdfframe);
+        pdfroot.setVisible(false);
+
+        tooglePDF.addClickHandler(new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+
+                if (pdfroot.isVisible()) {
+                    pdfroot.setVisible(false);
+                } else {
+                    pdfroot.setVisible(true);
+                }
+            }
+        });
+
         HorizontalPanel bts = new HorizontalPanel();
         bts.add(btCompile);
+        bts.add(tooglePDF);
         bts.add(btSave);
+
         leftBar.add(bts);
         leftBar.add(fileExplorer);
         RootPanel.get("files").add(scrollLeft);
 
+
+        // IFrameElement iframe = Document.get().createIFrameElement();
 
     }
 

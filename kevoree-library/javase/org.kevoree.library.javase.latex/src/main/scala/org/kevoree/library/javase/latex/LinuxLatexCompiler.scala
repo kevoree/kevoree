@@ -30,10 +30,10 @@ class LinuxLatexCompiler extends LatexCompilerInterface {
   //  private val bibtexAvailabilityErrorRegex = new Regex("bibtex:")
 
 
-  private val latexAvailabilityRegex = new Regex("/.*")
+  private val latexAvailabilityRegex = new Regex("{/.*")
   private val bibtexAvailabilityRegex = new Regex("/.*")
   private val AvailabilityErrorRegex1 = new Regex("which: no")
-  private val AvailabilityErrorRegex2 = new Regex("")
+  private val AvailabilityErrorRegex2 = new Regex("[^/].*")
 
   private var absolutePdfLatex = "pdflatex"
   private var absoluteBibtex = "bibtex"
@@ -159,6 +159,9 @@ class LinuxLatexCompiler extends LatexCompilerInterface {
         val reader = new BufferedReader(new InputStreamReader(inputStream))
         var line = reader.readLine()
         while (line != null) {
+          
+          println("line="+line)
+          
           outputRegexes.find(regex => line match {
             case regex() => true
             case _ => false
@@ -183,6 +186,9 @@ class LinuxLatexCompiler extends LatexCompilerInterface {
         resultActor.error(outputBuilder.toString())
       } else {
         resultActor.output(outputBuilder.toString())
+        
+        println("rez="+outputBuilder.toString())
+        
       }
     }
   }
