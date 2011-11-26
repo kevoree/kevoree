@@ -35,8 +35,6 @@ public class LatexService {
                     result = true;
                 } else {
                     response.setContent(editor.compileResult.get(request.getResolvedParams().get("uuid"))+";"+editor.compileLog.get(request.getResolvedParams().get("uuid")));
-                    //TODO CLEAR CACHE
-
                     editor.compileResult.remove(request.getResolvedParams().get("uuid"));
                     editor.compileLog.remove(request.getResolvedParams().get("uuid"));
                     result = true;

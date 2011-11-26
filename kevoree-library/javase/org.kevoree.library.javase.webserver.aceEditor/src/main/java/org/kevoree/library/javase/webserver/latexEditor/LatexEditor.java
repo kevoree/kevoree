@@ -46,10 +46,11 @@ public class LatexEditor extends AbstractPage {
     @Port(name = "comileCallback")
     public void compileCallback(Object o) {
         StdKevoreeMessage msg = (StdKevoreeMessage) o;
+        logger.debug("Compilation result for uuid = {} ",msg.getValue("id").toString());
         Boolean compileresult = (Boolean) msg.getValue("success").get();
-        compileResult.put(msg.getValue("id").toString(), compileresult);
-        compileLog.put(msg.getValue("id").toString(), msg.getValue("log").get());
-        waitingID.remove(msg.getValue("id").toString());
+        compileResult.put(msg.getValue("id").get().toString(), compileresult);
+        compileLog.put(msg.getValue("id").get().toString(), msg.getValue("log").get());
+        waitingID.remove(msg.getValue("id").get().toString());
     }
 
     @Override
