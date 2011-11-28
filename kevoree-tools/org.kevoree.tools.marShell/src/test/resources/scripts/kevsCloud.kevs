@@ -1,0 +1,17 @@
+tblock {
+
+ addNode node1 : JavaSENode
+ addNode node2 : JavaSENode
+ addNode childNode1 : JavaSENode
+ addNode childNode2 : JavaSENode
+
+ addChild childNode1@node1
+ addChild childNode2@node1
+
+ moveChild childNode1@node1 => node2
+ moveChild childNode2@node1 => node2
+
+ removeChild childNode2@node2
+
+
+}
