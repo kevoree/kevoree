@@ -23,8 +23,9 @@
     <modules>
 
         <module>../org.kevoree.library.javase.rest</module>
-       <!-- <module>../org.kevoree.library.javase.restChannels</module>-->
+        <!-- <module>../org.kevoree.library.javase.restChannels</module>-->
         <module>../org.kevoree.library.javase.restAutoDiscovery</module>
+        <module>../org.kevoree.library.javase.jPaxos</module>
         <module>../org.kevoree.library.javase.fileSystem</module>
         <module>../org.kevoree.library.javase.fileSystemSVN</module>
 
@@ -61,6 +62,8 @@
         <module>../org.kevoree.library.javase.miniCloudGroup</module>
         <module>../org.kevoree.library.javase.pipe</module>
         <module>../org.kevoree.library.javase.latex</module>
+
+
 
     </modules>
 

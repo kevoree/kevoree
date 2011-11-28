@@ -3,19 +3,19 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
-     <modelVersion>4.0.0</modelVersion>
-    <groupId>org.kevoree.library.javase.restJPAXOS</groupId>
-    <artifactId>org.kevoree.library.javase.restJPAXOS</artifactId>
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>org.kevoree.library.javase</groupId>
+    <artifactId>org.kevoree.library.javase.jPaxos</artifactId>
     <packaging>bundle</packaging>
-    <name>Kevoree :: Library :: JavaSE :: RestAutoDiscovery</name>
+    <name>Kevoree :: Library :: JavaSE :: jPaxos</name>
     <version>1.5.0-SNAPSHOT</version>
 
     <parent>
-         <artifactId>org.kevoree.library.javase.root</artifactId>
-         <groupId>org.kevoree.library.javase</groupId>
-         <version>1.5.0-SNAPSHOT</version>
-         <relativePath>../org.kevoree.library.javase.root/pom.xml</relativePath>
-     </parent>
+        <artifactId>org.kevoree.library.javase.root</artifactId>
+        <groupId>org.kevoree.library.javase</groupId>
+        <version>1.5.0-SNAPSHOT</version>
+        <relativePath>../org.kevoree.library.javase.root/pom.xml</relativePath>
+    </parent>
 
     <properties>
         <jpaxos.local.file>${basedir}/src/main/resources/jpaxos-1.0.jar</jpaxos.local.file>
@@ -25,13 +25,12 @@
     <dependencies>
         <dependency>
             <groupId>jpaxos</groupId>
-            <artifactId> lsr.service</artifactId>
+            <artifactId>lsr.service</artifactId>
             <version>1.0</version>
             <scope>system</scope>
             <systemPath>${jpaxos.local.file}</systemPath>
         </dependency>
     </dependencies>
-
 
     <build>
         <plugins>
@@ -60,6 +59,19 @@
                     <jvmArgs>
                         <jvmArg>-Xmx1024m</jvmArg>
                     </jvmArgs>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <version>2.3.5</version>
+                <extensions>true</extensions>
+                <configuration>
+                    <instructions>
+                        <Export-Package>org.kevoree.library.javase.jPaxos.*,lsr.*</Export-Package>
+                        <Import-Package>!org.kevoree.library.javase.jPaxos.*,*,!lsr.*</Import-Package>
+                    </instructions>
                 </configuration>
             </plugin>
 

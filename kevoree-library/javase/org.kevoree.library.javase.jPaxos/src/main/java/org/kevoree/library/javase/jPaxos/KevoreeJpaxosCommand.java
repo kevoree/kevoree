@@ -1,11 +1,11 @@
-package org.kevoree.library.javase.restJpaxos.jpaxos;
+package org.kevoree.library.javase.jPaxos;
 
 import org.kevoree.ContainerRoot;
+import org.kevoree.framework.KevoreeXmiHelper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import java.io.ByteArrayInputStream;
-import java.io.DataInputStream;
-import java.io.IOException;
-import java.io.Serializable;
+import java.io.*;
 import java.nio.ByteBuffer;
 
 /**
@@ -18,8 +18,8 @@ import java.nio.ByteBuffer;
 public class KevoreeJpaxosCommand implements Serializable{
 
     private static final long serialVersionUID = 1L;
-    private ContainerRoot model;
-
+    private final ContainerRoot model;
+    private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     public KevoreeJpaxosCommand(ContainerRoot _model)
     {
@@ -33,17 +33,16 @@ public class KevoreeJpaxosCommand implements Serializable{
 
 
     public KevoreeJpaxosCommand(byte[] bytes) throws IOException {
+        logger.debug("update");
         DataInputStream dataInput = new DataInputStream(new ByteArrayInputStream(bytes));
-
-        //TODO  regarder de plus près KevoreeXmiHelper
+        model =   KevoreeXmiHelper.loadStream(dataInput);
     }
 
     public byte[] toByteArray() throws IOException {
-        ByteBuffer buffer = ByteBuffer.allocate(100);
-
-        //TODO    regarder de plus près KevoreeXmiHelper
-
-        return  buffer.array();
+        ByteArrayOutputStream outStream = new ByteArrayOutputStream();
+        KevoreeXmiHelper.saveStream(outStream, model);
+        outStream.flush();
+        return  outStream.toByteArray();
     }
 
 }

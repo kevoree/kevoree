@@ -1,12 +1,12 @@
-package org.kevoree.library.javase.restJpaxos.jpaxos;
+package org.kevoree.library.javase.jPaxos;
 
-import lsr.paxos.test.MapServiceCommand;
 import lsr.service.SimplifiedService;
 import org.kevoree.ContainerRoot;
-import org.kevoree.KevoreeContainer;
+import org.kevoree.framework.KevoreeXmiHelper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.*;
-import java.util.HashMap;
 
 /**
  * Created by IntelliJ IDEA.
@@ -18,29 +18,24 @@ import java.util.HashMap;
 public class KevoreeJPaxosService extends SimplifiedService {
 
     private ContainerRoot currentContainerRoot;
-
+    private Logger logger = LoggerFactory.getLogger(this.getClass());
     @Override
     protected byte[] execute(byte[] bytes) {
-           try
-           {
+        try
+        {
             // Deserialise the client command
             KevoreeJpaxosCommand command;
-
             command = new KevoreeJpaxosCommand(bytes);
-
             ContainerRoot oldModel = currentContainerRoot;
-
-             currentContainerRoot =command.getLastModel();
-
-            // TODO serialize  ContainerRoot
-
-
-
-           // TODO return serialized oldModel
-            return null;
+            currentContainerRoot =command.getLastModel();
+            // return the oldModel
+            ByteArrayOutputStream outStream = new ByteArrayOutputStream();
+            KevoreeXmiHelper.saveStream(outStream, currentContainerRoot);
+            outStream.flush();
+            return   outStream.toByteArray();
 
         } catch (IOException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            logger.error("execute "+e);
         }
 
         return null;
@@ -70,6 +65,6 @@ public class KevoreeJPaxosService extends SimplifiedService {
             currentContainerRoot = (ContainerRoot) objectInputStream.readObject();
         } catch (Exception e) {
             throw new RuntimeException("Snapshot read error");
-       }
+        }
     }
 }
