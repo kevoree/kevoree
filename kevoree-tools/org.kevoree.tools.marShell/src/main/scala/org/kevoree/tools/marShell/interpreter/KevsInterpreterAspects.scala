@@ -32,7 +32,7 @@ object KevsInterpreterAspects {
 
 
   implicit def rich (o: Object): KevsAbstractInterpreter = {
-    var logger = LoggerFactory.getLogger(this.getClass)
+    val logger = LoggerFactory.getLogger(this.getClass)
 
 
     o match {
@@ -73,6 +73,10 @@ object KevsInterpreterAspects {
         //Network
         case networkStatement: NetworkPropertyStatement => KevsNetworkInterpreter(networkStatement)
 
+      // NODE ASPECT
+        case addChildStatment : AddChildStatment => KevsAddChildInterpreter(addChildStatment)
+        case removeChildStatment : RemoveChildStatment => KevsRemoveChildInterpreter(removeChildStatment)
+        case moveChildStatment : MoveChildStatment => KevsMoveChildInterpreter(moveChildStatment)
 
       }
       case _@e => logger.error("", e); null
