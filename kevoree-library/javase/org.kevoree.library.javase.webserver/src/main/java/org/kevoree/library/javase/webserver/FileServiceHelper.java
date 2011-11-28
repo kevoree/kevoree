@@ -61,7 +61,7 @@ public class FileServiceHelper {
             }
 
         } else {
-            logger.debug("Ressource not exist "+file);
+            logger.debug("Ressource not exist " + file);
         }
         return false;
     }
@@ -98,6 +98,9 @@ public class FileServiceHelper {
         }
         if (url.endsWith(".jpg")) {
             return "image/jpg";
+        }
+        if (url.endsWith(".pdf")) {
+            return "application/pdf";
         }
         return "text/html";
     }

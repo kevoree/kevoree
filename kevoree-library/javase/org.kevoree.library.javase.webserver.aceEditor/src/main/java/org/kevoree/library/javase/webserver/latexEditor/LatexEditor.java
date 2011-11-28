@@ -1,7 +1,8 @@
 package org.kevoree.library.javase.webserver.latexEditor;
 
 import org.kevoree.annotation.*;
-import org.kevoree.library.javase.fileSystem.FilesService;
+import org.kevoree.framework.message.StdKevoreeMessage;
+import org.kevoree.library.javase.fileSystemSVN.LockFilesService;
 import org.kevoree.library.javase.webserver.AbstractPage;
 import org.kevoree.library.javase.webserver.FileServiceHelper;
 import org.kevoree.library.javase.webserver.KevoreeHttpRequest;
@@ -9,7 +10,7 @@ import org.kevoree.library.javase.webserver.KevoreeHttpResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.UUID;
+import java.util.*;
 
 /**
  * Created by IntelliJ IDEA.
@@ -29,19 +30,31 @@ import java.util.UUID;
                         name = "success", className = boolean.class)})
 })
 @Requires({
-        @RequiredPort(name = "files", type = PortType.SERVICE, className = FilesService.class),
-        @RequiredPort(name = "compile", type = PortType.MESSAGE, optional = true,messageType = "COMPILE")
+        @RequiredPort(name = "files", type = PortType.SERVICE, className = LockFilesService.class),
+        @RequiredPort(name = "compile", type = PortType.MESSAGE, optional = true, messageType = "COMPILE")
 })
 @Provides({
-   @ProvidedPort(name = "comileCallback", type = PortType.MESSAGE, messageType = "COMPILE_CALLBACK")
+        @ProvidedPort(name = "compileCallback", type = PortType.MESSAGE, messageType = "COMPILE_CALLBACK")
 })
 public class LatexEditor extends AbstractPage {
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
+    public List<String> waitingID = Collections.synchronizedList(new ArrayList<String>());
+    public Map<String, Boolean> compileResult = Collections.synchronizedMap(new HashMap<String, Boolean>());
+    public Map<String, Object> compileLog = Collections.synchronizedMap(new HashMap<String, Object>());
 
-    @Port(name = "comileCallback")
-    public void compileCallback(Object o){
-        logger.debug("Compilation complete ;-) "+o);
+    @Port(name = "compileCallback")
+    public void compileCallback(Object o) {
+        StdKevoreeMessage msg = (StdKevoreeMessage) o;
+        logger.debug("Compilation result for uuid = {} ",msg.getValue("id").toString());
+        Boolean compileresult = (Boolean) msg.getValue("success").get();
+        compileResult.put(msg.getValue("id").get().toString(), compileresult);
+        compileLog.put(msg.getValue("id").get().toString(), msg.getValue("log").get());
+        waitingID.remove(msg.getValue("id").get().toString());
+
+        System.out.println("result="+compileresult);
+        System.out.println(msg.getValue("log").get());
+
     }
 
     @Override
