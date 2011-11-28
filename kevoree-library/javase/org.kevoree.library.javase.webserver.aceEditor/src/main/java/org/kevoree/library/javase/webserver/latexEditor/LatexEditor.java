@@ -34,7 +34,7 @@ import java.util.*;
         @RequiredPort(name = "compile", type = PortType.MESSAGE, optional = true, messageType = "COMPILE")
 })
 @Provides({
-        @ProvidedPort(name = "comileCallback", type = PortType.MESSAGE, messageType = "COMPILE_CALLBACK")
+        @ProvidedPort(name = "compileCallback", type = PortType.MESSAGE, messageType = "COMPILE_CALLBACK")
 })
 public class LatexEditor extends AbstractPage {
 
@@ -43,7 +43,7 @@ public class LatexEditor extends AbstractPage {
     public Map<String, Boolean> compileResult = Collections.synchronizedMap(new HashMap<String, Boolean>());
     public Map<String, Object> compileLog = Collections.synchronizedMap(new HashMap<String, Object>());
 
-    @Port(name = "comileCallback")
+    @Port(name = "compileCallback")
     public void compileCallback(Object o) {
         StdKevoreeMessage msg = (StdKevoreeMessage) o;
         logger.debug("Compilation result for uuid = {} ",msg.getValue("id").toString());
