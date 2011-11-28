@@ -2,7 +2,7 @@ package org.kevoree.library.javase.webserver.latexEditor;
 
 import org.kevoree.annotation.*;
 import org.kevoree.framework.message.StdKevoreeMessage;
-import org.kevoree.library.javase.fileSystem.FilesService;
+import org.kevoree.library.javase.fileSystemSVN.LockFilesService;
 import org.kevoree.library.javase.webserver.AbstractPage;
 import org.kevoree.library.javase.webserver.FileServiceHelper;
 import org.kevoree.library.javase.webserver.KevoreeHttpRequest;
@@ -30,7 +30,7 @@ import java.util.*;
                         name = "success", className = boolean.class)})
 })
 @Requires({
-        @RequiredPort(name = "files", type = PortType.SERVICE, className = FilesService.class),
+        @RequiredPort(name = "files", type = PortType.SERVICE, className = LockFilesService.class),
         @RequiredPort(name = "compile", type = PortType.MESSAGE, optional = true, messageType = "COMPILE")
 })
 @Provides({

@@ -175,7 +175,7 @@ public class latexEditorFileExplorer extends SimplePanel {
 
     public void displayFile(final String path) {
 
-        String url = GWT.getModuleBaseURL() + "flatfile?file=" + path;
+        String url = GWT.getModuleBaseURL() + "flatfile?lock=true&file=" + path;
         RequestBuilder builder = new RequestBuilder(RequestBuilder.GET, URL.encode(url));
         try {
             builder.sendRequest(null, new RequestCallback() {
