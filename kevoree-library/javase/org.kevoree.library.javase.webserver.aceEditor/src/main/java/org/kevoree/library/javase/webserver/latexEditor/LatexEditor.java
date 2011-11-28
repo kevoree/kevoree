@@ -51,6 +51,10 @@ public class LatexEditor extends AbstractPage {
         compileResult.put(msg.getValue("id").get().toString(), compileresult);
         compileLog.put(msg.getValue("id").get().toString(), msg.getValue("log").get());
         waitingID.remove(msg.getValue("id").get().toString());
+
+        System.out.println("result="+compileresult);
+        System.out.println(msg.getValue("log").get());
+
     }
 
     @Override

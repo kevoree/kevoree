@@ -1,5 +1,4 @@
     body {
-        overflow: hidden;
     }
 
     #editor {
@@ -20,4 +19,5 @@
             right: 0;
             width: 250px; !important
             height: 100%;
+            overflow: visible; !important
     }

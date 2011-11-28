@@ -21,7 +21,7 @@ class MacLatexCompiler extends LatexCompilerInterface {
   private val logger = LoggerFactory.getLogger(this.getClass.getName)
   private val resultActor = new ResultManagementActor()
 
-  private val errorLatexRegex = new Regex(".*LaTeX Error:.*")
+  private val errorLatexRegex = new Regex(".*no output PDF file produced.*")
   private val errorBibtexRegex = new Regex("I was expecting.*")
   private val warningLatexRegex = new Regex(".*LaTeX Warning:.*")
   private val warningBibtexRegex = new Regex("Warning.*")

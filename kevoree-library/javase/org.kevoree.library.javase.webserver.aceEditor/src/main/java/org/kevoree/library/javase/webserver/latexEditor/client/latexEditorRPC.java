@@ -1,11 +1,10 @@
 package org.kevoree.library.javase.webserver.latexEditor.client;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.http.client.*;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.DecoratedPopupPanel;
-import com.google.gwt.user.client.ui.Label;
 
 /**
  * Created by IntelliJ IDEA.
@@ -39,7 +38,13 @@ public class latexEditorRPC {
     }
 
     public static void callForCompile(final latexEditorFileExplorer explorer) {
-        final String selectedPath = explorer.getSelectedFilePath();
+        final String selectedPath = explorer.getSelectedCompileRootFilePath();
+        if (selectedPath.equals("") || selectedPath.equals(null)) {
+            Window.alert("Please select root file");
+            return;
+        }
+
+
         final String url = GWT.getModuleBaseURL() + "compile?file=" + selectedPath;
         RequestBuilder builder = new RequestBuilder(RequestBuilder.GET, URL.encode(url));
         try {
@@ -47,6 +52,8 @@ public class latexEditorRPC {
                 public void onError(Request request, Throwable exception) {
                     Window.alert("Error while connecting to server");
                 }
+
+                final JavaScriptObject window = newWindow("", null, null);
 
                 public void onResponseReceived(Request request, Response response) {
 
@@ -73,13 +80,10 @@ public class latexEditorRPC {
                                                 if (resultCompile.length == 2) {
                                                     if (resultCompile[0].equals("true")) {
                                                         String pdfpath = GWT.getModuleBaseURL() + "flatfile?file=" + selectedPath.replace(".tex", ".pdf");
-                                                        Window.open(pdfpath, null, null);
+                                                        setWindowTarget(window, pdfpath);
                                                     } else {
-                                                        DecoratedPopupPanel popup = new DecoratedPopupPanel();
-                                                        popup.setTitle("Compilation error");
-                                                        popup.setWidget(new Label(resultCompile[1]));
-                                                        popup.setGlassEnabled(true);
-                                                        popup.center();
+                                                        String pdfpath = GWT.getModuleBaseURL() + "flatfile?file=" + selectedPath.replace(".tex", ".log");
+                                                        setWindowTarget(window, pdfpath);
                                                     }
                                                 }
                                             }
@@ -101,5 +105,18 @@ public class latexEditorRPC {
             Window.alert("Error while connecting to server");
         }
     }
+
+
+    public static native JavaScriptObject newWindow(String url, String
+            name, String features)/*-{
+        var window = $wnd.open(url, name, features);
+        return window;
+    }-*/;
+
+    public static native void setWindowTarget(JavaScriptObject window,
+                                              String target)/*-{
+        window.location = target;
+    }-*/;
+
 
 }

@@ -24,29 +24,55 @@ public class latexEditorFileExplorer extends SimplePanel {
 
     private Tree tree = null;
     private HashMap<String, TreeItem> map;
+    private HashMap<TreeItem, String> mapInv;
 
     public String getQualifiedName(TreeItem item) {
         if (item.getParentItem() != null) {
-            return getQualifiedName(item.getParentItem()) + "/" + item.getText();
+            return getQualifiedName(item.getParentItem()) + "/" + mapInv.get(item);
         } else {
-            return item.getText();
+            return mapInv.get(item);
         }
     }
+
+    private TreeItem previousSelected = null;
 
     public latexEditorFileExplorer() {
         tree = new Tree();
         map = new HashMap<String, TreeItem>();
+        mapInv = new HashMap<TreeItem, String>();
+        previousSelected = null;
+        compileRoot = null;
         add(tree);
         reloadFromServer();
+/*
+        for (int i = 0; i < 20; i++) {
+            mapInv.put(tree.addItem("fuck-" + i), "fuck-" + i);
+        }
+*/
         tree.addSelectionHandler(new SelectionHandler<TreeItem>() {
             @Override
             public void onSelection(SelectionEvent<TreeItem> treeItemSelectionEvent) {
-                String qname =getQualifiedName(treeItemSelectionEvent.getSelectedItem());
-                if(!qname.startsWith("/")){
-                    displayFile("/"+qname);
+                if (previousSelected != null) {
+                    if (previousSelected.equals(compileRoot)) {
+                        previousSelected.setHTML("<span class=\"label warning\">" + mapInv.get(previousSelected) + "</span>");
+                    } else {
+                        previousSelected.setHTML(mapInv.get(previousSelected));
+                    }
+                }
+                if (treeItemSelectionEvent.getSelectedItem().equals(compileRoot)) {
+                    treeItemSelectionEvent.getSelectedItem().setHTML("<span class=\"label success\">" + mapInv.get(treeItemSelectionEvent.getSelectedItem()) + "</span>");
+                } else {
+                    treeItemSelectionEvent.getSelectedItem().setHTML("<span class=\"label notice\">" + mapInv.get(treeItemSelectionEvent.getSelectedItem()) + "</span>");
+                }
+
+                String qname = getQualifiedName(treeItemSelectionEvent.getSelectedItem());
+                if (!qname.startsWith("/")) {
+                    displayFile("/" + qname);
                 } else {
                     displayFile(qname);
                 }
+
+                previousSelected = treeItemSelectionEvent.getSelectedItem();
             }
         });
     }
@@ -57,10 +83,36 @@ public class latexEditorFileExplorer extends SimplePanel {
         return selectedFilePath;
     }
 
+    private String selectedCompileRootFilePath = "";
+
+    private TreeItem compileRoot = null;
+
+    public String getSelectedCompileRootFilePath() {
+        return selectedCompileRootFilePath;
+    }
+
+    public void setSelectAsDefault() {
+
+        if (compileRoot != null) {
+            compileRoot.setHTML(mapInv.get(compileRoot));
+        }
+
+        String qname = getQualifiedName(tree.getSelectedItem());
+        if (!qname.startsWith("/")) {
+            selectedCompileRootFilePath = "/"+qname;
+        } else {
+            selectedCompileRootFilePath = qname;
+        }
+        
+        tree.getSelectedItem().setHTML("<span class=\"label success\">" + mapInv.get(tree.getSelectedItem()) + "</span>");
+        compileRoot = tree.getSelectedItem();
+    }
+
     public void reloadFromServer() {
 
         tree.clear();
         map.clear();
+        mapInv.clear();
 
         final List<String> flatFiles = new ArrayList<String>();
         String url = GWT.getModuleBaseURL() + "flatfiles";
@@ -70,6 +122,7 @@ public class latexEditorFileExplorer extends SimplePanel {
                 public void onError(Request request, Throwable exception) {
                     Window.alert("Error while connecting to server");
                 }
+
 
                 public void onResponseReceived(Request request, Response response) {
                     if (response.getStatusCode() == 200) {
@@ -81,8 +134,12 @@ public class latexEditorFileExplorer extends SimplePanel {
                             if (flatFile.contains("/")) {
                                 String path = flatFile.substring(0, flatFile.lastIndexOf("/"));
                                 if (path.equals("")) {
-                                    if(flatFile.lastIndexOf("/")+1 < flatFile.length()){
-                                        tree.addItem(flatFile.substring(flatFile.lastIndexOf("/")+1));
+                                    if (flatFile.lastIndexOf("/") + 1 < flatFile.length()) {
+                                        if (!selectedCompileRootFilePath.equals(flatFile.substring(flatFile.lastIndexOf("/") + 1))) {
+                                            mapInv.put(tree.addItem(flatFile.substring(flatFile.lastIndexOf("/") + 1)), flatFile.substring(flatFile.lastIndexOf("/") + 1));
+                                        } else {
+                                            mapInv.put(tree.addItem("<span class=\"label warning\">" + flatFile.substring(flatFile.lastIndexOf("/") + 1) + "</span>"), flatFile.substring(flatFile.lastIndexOf("/") + 1));
+                                        }
                                     }
                                 } else {
                                     TreeItem treeItem = null;
@@ -91,12 +148,17 @@ public class latexEditorFileExplorer extends SimplePanel {
                                     } else {
                                         treeItem = new TreeItem(path);
                                         map.put(path, treeItem);
+                                        mapInv.put(treeItem, path);
                                         tree.addItem(treeItem);
                                     }
-                                    treeItem.addItem(flatFile.substring(flatFile.lastIndexOf("/") + 1));
+                                    mapInv.put(treeItem.addItem(flatFile.substring(flatFile.lastIndexOf("/") + 1)), flatFile.substring(flatFile.lastIndexOf("/") + 1));
                                 }
                             } else {
-                                tree.addItem(flatFile);
+                                if (!selectedCompileRootFilePath.equals(flatFile)) {
+                                    mapInv.put(tree.addItem(flatFile), flatFile);
+                                } else {
+                                    mapInv.put(tree.addItem("<span class=\"label warning\">" + flatFile + "</span>"), flatFile);
+                                }
                             }
                         }
                     }
@@ -108,7 +170,6 @@ public class latexEditorFileExplorer extends SimplePanel {
         } catch (Exception e) {
             Window.alert("Error while connecting to server");
         }
-
     }
 
 
