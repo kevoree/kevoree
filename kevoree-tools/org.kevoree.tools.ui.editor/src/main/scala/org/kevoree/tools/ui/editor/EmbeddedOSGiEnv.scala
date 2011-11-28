@@ -14,18 +14,33 @@
 package org.kevoree.tools.ui.editor
 
 import org.apache.felix.framework.Felix
-import java.util.Arrays
 import org.apache.felix.framework.util.FelixConstants
 import generated.SysPackageConstants
 import org.osgi.framework.Constants
 import java.io.File
 import org.slf4j.{LoggerFactory, Logger}
 import org.kevoree.framework.context.KevoreeDeployManager
+import org.kevoree.api.service.core.handler.KevoreeModelHandlerService
+import java.util.{Properties, Dictionary, Arrays}
 
 object EmbeddedOSGiEnv {
+
   private val logger: Logger = LoggerFactory.getLogger(this.getClass)
 
-  def getFwk = fwk
+  def getFwk = {
+    fwk
+  }
+  
+  def getFwk(kernel : KevoreeUIKernel) = {
+    
+    if(fwk.getBundleContext.getServiceReference(classOf[KevoreeModelHandlerService].getName) == null){
+      val wrapper = new ModelHandlerServiceWrapper(kernel)
+      fwk.getBundleContext.registerService(classOf[KevoreeModelHandlerService].getName,wrapper,new Properties())
+    }
+    
+    fwk
+  }
+  
 
   var fwk: Felix = null
   var configProps = new java.util.HashMap[String, Object]()
@@ -71,6 +86,12 @@ object EmbeddedOSGiEnv {
     // (10) Start the framework.
     fwk.start();
 
+
+
+
+
+
+
     logger.debug("Felix Embedded started");
      KevoreeDeployManager.setBundle(fwk.getBundleContext.getBundle)
 
@@ -82,7 +103,7 @@ object EmbeddedOSGiEnv {
       //      System.err.println("Could not create framework: " + ex);
       logger.error("Could not create framework: ", ex)
       //      ex.printStackTrace();
-      System.exit(0);
+
     }
   }
   /*
