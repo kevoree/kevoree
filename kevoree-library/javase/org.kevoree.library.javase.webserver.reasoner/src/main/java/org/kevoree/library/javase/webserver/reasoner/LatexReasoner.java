@@ -11,6 +11,8 @@ import org.kevoree.library.javase.webserver.KevoreeHttpRequest;
 import org.kevoree.library.javase.webserver.KevoreeHttpResponse;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.ServiceReference;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Created by IntelliJ IDEA.
@@ -24,7 +26,9 @@ import org.osgi.framework.ServiceReference;
 @ComponentType
 public class LatexReasoner extends AbstractPage {
 
-    
+    private Logger logger = LoggerFactory.getLogger(this.getClass());
+
+
     @Override
     public KevoreeHttpResponse process(KevoreeHttpRequest request, KevoreeHttpResponse response) {
 
@@ -91,6 +95,8 @@ public class LatexReasoner extends AbstractPage {
 
 
                 script.append("}//end tblock \n");
+
+                logger.debug("Script result \n"+script.toString());
                 
                 Bundle bundle = (Bundle) this.getDictionary().get("osgi.bundle");
                 ServiceReference ref = bundle.getBundleContext().getServiceReference(ScriptInterpreter.class.getName());
