@@ -34,7 +34,7 @@ public class LatexService {
                     response.setContent("waiting");
                     result = true;
                 } else {
-                    response.setContent(editor.compileResult.get(request.getResolvedParams().get("uuid"))+";"+editor.compileLog.get(request.getResolvedParams().get("uuid")));
+                    response.setContent(editor.compileResult.get(request.getResolvedParams().get("uuid")) + ";" + editor.compileLog.get(request.getResolvedParams().get("uuid")));
                     editor.compileResult.remove(request.getResolvedParams().get("uuid"));
                     editor.compileLog.remove(request.getResolvedParams().get("uuid"));
                     result = true;
@@ -94,6 +94,10 @@ public class LatexService {
                     if (request.getResolvedParams().get("file").endsWith(".pdf")) {
                         response.setContentType("application/pdf");
                     }
+                    if (request.getResolvedParams().get("file").endsWith(".log")) {
+                        response.setContentType("text/plain");
+                    }
+
                     return true;
                 } else {
                     logger.debug("No file exist = {}", request.getResolvedParams().get("file"));

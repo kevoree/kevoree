@@ -76,8 +76,8 @@ class LinuxLatexCompiler extends LatexCompilerInterface {
     builder.command("sh", "-c", "rm -f *.aux")
 
     val p1 = builder.start()
-    builder.command("sh", "-c", "rm -f *.log")
-    val p2 = builder.start()
+   // builder.command("sh", "-c", "rm -f *.log")
+   // val p2 = builder.start()
     //    builder.command("bash", "-c", "rm -f *.pdf")
     //    val p3 = builder.start()
     //    builder.command("bash", "-c", "rm -f *.dvi")
@@ -92,7 +92,7 @@ class LinuxLatexCompiler extends LatexCompilerInterface {
     val p8 = builder.start()
 
     p1.waitFor()
-    p2.waitFor()
+    //p2.waitFor()
     //    p3.waitFor()
     //    p4.waitFor()
     p5.waitFor()
