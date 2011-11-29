@@ -21,6 +21,7 @@ import akka.actor.Actor
 import cc.spray.can._
 import org.kevoree.framework.MessagePort
 import java.util.UUID
+import java.net.URLDecoder
 
 class RootService(id: String, request: MessagePort, bootstrap: ServerBootstrap, timeout: Long) extends Actor {
   val log = LoggerFactory.getLogger(getClass)

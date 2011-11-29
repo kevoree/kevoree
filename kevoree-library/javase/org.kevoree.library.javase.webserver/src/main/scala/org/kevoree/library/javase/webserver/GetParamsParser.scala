@@ -12,7 +12,7 @@ package org.kevoree.library.javase.webserver
 object GetParamsParser {
 
   def getParams(queryString: String): Tuple2[String, java.util.HashMap[String, String]] = {
-    var params = new java.util.HashMap[String, String]()
+    val params = new java.util.HashMap[String, String]()
     val urlParts = queryString.split("\\?")
     if (urlParts.size > 1) {
       val arrParameters = urlParts(1).split("&")
@@ -20,7 +20,7 @@ object GetParamsParser {
         p =>
           val pair = p.toString.split("=")
           if (pair.size >= 2) {
-            params.put(pair(0), pair(1))
+            params.put(URLUtil.unescape(pair(0)), URLUtil.unescape(pair(1)))
           }
       }
       (urlParts(0).toString, params)

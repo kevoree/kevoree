@@ -1,9 +1,8 @@
 package org.kevoree.library.javase.webserver.reasoner;
 
-import org.kevoree.ComponentInstance;
-import org.kevoree.ContainerNode;
-import org.kevoree.ContainerRoot;
+import org.kevoree.*;
 import org.kevoree.annotation.ComponentType;
+import org.kevoree.annotation.ProvidedPort;
 import org.kevoree.api.service.core.script.ScriptInterpreter;
 import org.kevoree.library.javase.webserver.AbstractPage;
 import org.kevoree.library.javase.webserver.FileServiceHelper;
@@ -84,11 +83,20 @@ public class LatexReasoner extends AbstractPage {
                         webserver = loopComponent;
                     }
                 }
+                Port requirePort = null;
+                for(Port loopPort : webserver.getRequiredForJ()){
+                    if(loopPort.getPortTypeRef().getName().equals("handler")){
+                        requirePort = loopPort;
+                    }
+                }
+                Channel requestChannel = null; 
+                for(MBinding mb : model.getMBindingsForJ()){
+                    if(mb.getPort().equals(requirePort)){
+                        requestChannel = mb.getHub();
+                    }
+                }
 
-                script.append("addChannel KloudTextRequest : defMSG\n");
-                script.append("bind "+webserver.getName()+".handler@"+this.getNodeName()+" => KloudTextRequest\n");
-                script.append("bind Editor_"+userLogin+".request@"+this.getNodeName()+" => KloudTextRequest\n");
-
+                script.append("bind Editor_"+userLogin+".request@"+this.getNodeName()+" => "+requestChannel.getName()+"\n");
                 script.append("addChannel KloudTextResponse : defMSG\n");
                 script.append("bind "+webserver.getName()+".response@"+this.getNodeName()+" => KloudTextResponse\n");
                 script.append("bind Editor_"+userLogin+".content@"+this.getNodeName()+" => KloudTextResponse\n");
