@@ -100,6 +100,11 @@
         </dependency>
         <dependency>
             <groupId>org.kevoree.library.javase</groupId>
+            <artifactId>org.kevoree.library.javase.nioChannels</artifactId>
+            <version>${kevoree.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.kevoree.library.javase</groupId>
             <artifactId>org.kevoree.library.javase.fakeDomo</artifactId>
             <version>${kevoree.version}</version>
         </dependency>
@@ -128,7 +133,13 @@
             <artifactId>org.kevoree.library.javase.swingUI</artifactId>
             <version>${kevoree.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.kevoree.library.javase</groupId>
+            <artifactId>org.kevoree.library.javase.latex</artifactId>
+            <version>${kevoree.version}</version>
+        </dependency>
 
+        <!-- WebServer -->
         <dependency>
             <groupId>org.kevoree.library.javase</groupId>
             <artifactId>org.kevoree.library.javase.webserver</artifactId>
@@ -144,24 +155,30 @@
             <artifactId>org.kevoree.library.javase.webserver.gallery</artifactId>
             <version>${kevoree.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.kevoree.library.javase</groupId>
+            <artifactId>org.kevoree.library.javase.webserver.aceEditor</artifactId>
+            <version>${kevoree.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.kevoree.library.javase</groupId>
+            <artifactId>org.kevoree.library.javase.webserver.reasoner</artifactId>
+            <version>${kevoree.version}</version>
+        </dependency>
 
 
         <!-- Android -->
-
-    
-
         <dependency>
             <groupId>org.kevoree.library.android</groupId>
             <artifactId>org.kevoree.library.android.nodeType</artifactId>
             <version>${kevoree.version}</version>
         </dependency>
-
         <dependency>
             <groupId>org.kevoree.library.android</groupId>
             <artifactId>org.kevoree.library.android.fakeDomo</artifactId>
             <version>${kevoree.version}</version>
         </dependency>
-         <dependency>
+        <dependency>
             <groupId>org.kevoree.library.android</groupId>
             <artifactId>org.kevoree.library.android.defaultChannels</artifactId>
             <version>${kevoree.version}</version>
@@ -171,7 +188,7 @@
             <artifactId>org.kevoree.library.android.logger</artifactId>
             <version>${kevoree.version}</version>
         </dependency>
-         <dependency>
+        <dependency>
             <groupId>org.kevoree.library.android</groupId>
             <artifactId>org.kevoree.library.android.rest</artifactId>
             <version>${kevoree.version}</version>
