@@ -1,11 +1,24 @@
 package org.kevoree.library.javase.kestrelChannels
 
-import net.lag.kestrel.Kestrel
 import com.twitter.logging.config.{FileHandlerConfig, LoggerConfig}
-import com.twitter.ostrich.admin.RuntimeEnvironment._
-import net.lag.kestrel.config.{Protocol, QueueBuilder}
 import com.twitter.ostrich.admin.RuntimeEnvironment
-import com.twitter.logging.{Level, Policy, Logger}
+import com.twitter.util.{JavaTimer, Timer, Duration, StorageUnit}
+import java.net._
+import java.nio._
+import java.nio.channels._
+import java.util.concurrent.atomic.AtomicInteger
+import java.util.concurrent.TimeUnit
+import net.lag.kestrel.config.{Protocol, QueueBuilder, QueueConfig}
+import net.lag.kestrel.{Kestrel, PersistentQueue}
+import scala.collection.mutable
+import com.twitter.conversions.string._
+import com.twitter.conversions.storage._
+import com.twitter.ostrich.admin.config._
+import net.lag.kestrel.config._
+import com.twitter.logging.Logger
+import com.twitter.logging.config._
+import actors.Actor._
+import actors.DaemonActor
 
 /**
  * Created by IntelliJ IDEA.
@@ -15,27 +28,29 @@ import com.twitter.logging.{Level, Policy, Logger}
  * To change this template use File | Settings | File Templates.
  */
 
-class KestrelServer {
+class KestrelServer(host : String,port :Int,queuePath : String ,filepathlog :String) extends DaemonActor {
 
-  val PORT = 22133
-  var kestrel: Kestrel = null
-
+  private val PORT = this.port
+  private var kestrel: Kestrel = null
   private val log = Logger.get(getClass)
 
-  val   config = new LoggerConfig {
-    level = Level.DEBUG
-    handlers = new FileHandlerConfig {
-      filename = "/var/log/kestrel/kestrel.log"
-      roll = Policy.Never
-    }
-  }
-
-  config()
 
   val runtime = RuntimeEnvironment(this, Array())
   Kestrel.runtime = runtime
+  start()
 
-  def run() = {
+  runServer()
+
+  def act() {
+    println("Running Kestrel Server ")
+
+
+
+
+  }
+
+
+  def runServer() = {
 
     val defaultConfig = new QueueBuilder() {
       defaultJournalSize = 16.megabytes
@@ -50,12 +65,32 @@ class KestrelServer {
       maxJournalSize = 128.megabytes
     }
 
-
-    kestrel = new Kestrel(defaultConfig, List(UpdatesConfig), "localhost",
-      Some(PORT), None, "/var/spool/kestrel", Protocol.Ascii, None, None, 1)
+    //""
+    kestrel = new Kestrel(defaultConfig, List(UpdatesConfig),host,
+      Some(PORT), None,queuePath, Protocol.Ascii, None, None, 1)
 
     kestrel.start()
+
+
   }
 
-  makeServer()
+  def stopServer()= {
+    kestrel.shutdown()
+
+  }
+
+  def reloadServer() = {
+    //todo change conf
+    kestrel.reload()
+  }
+
+  val   config = new LoggerConfig {
+    level = Level.DEBUG
+    handlers = new FileHandlerConfig {
+      filename = filepathlog
+      roll = Policy.Never
+    }
+  }
+  config()
+
 }

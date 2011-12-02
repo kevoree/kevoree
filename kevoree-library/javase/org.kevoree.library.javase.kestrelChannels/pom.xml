@@ -30,11 +30,20 @@
 
     <dependencies>
 
-       <dependency>
+        <dependency>
             <groupId>org.kevoree.extra</groupId>
             <artifactId>org.kevoree.extra.osgi.kestrel</artifactId>
             <version>2.3.3</version>
+
         </dependency>
+
+        <dependency>
+            <groupId>org.kevoree.extra</groupId>
+            <artifactId>org.kevoree.extra.marshalling</artifactId>
+            <version>1.0</version>
+
+        </dependency>
+
 
     </dependencies>
 
@@ -75,8 +84,8 @@
                 <extensions>true</extensions>
                 <configuration>
                     <instructions>
-                        <Export-Package>org.kevoree.library.javase.Kestrel.*,net.lag.kestrel.*</Export-Package>
-                        <Import-Package>!org.kevoree.library.javase.Kestrel.*,*,!net.lag.kestrel.*</Import-Package>
+                        <Export-Package>org.kevoree.library.javase.kestrelChannels.*,*</Export-Package>
+                        <Import-Package>!org.kevoree.library.javase.kestrelChannels.*,*</Import-Package>
                     </instructions>
                 </configuration>
             </plugin>
