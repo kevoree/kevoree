@@ -24,23 +24,29 @@ import org.kevoree.framework.KevoreeActor
 import org.kevoree.framework.Constants
 import org.kevoree.framework.message.StartMessage
 
-case class StartInstanceCommand(c : Instance,nodeName:String) extends LifeCycleCommand(c,nodeName) {
+case class StartInstanceCommand(c: Instance, nodeName: String) extends LifeCycleCommand(c, nodeName) {
 
-  def execute() : Boolean= {
-    KevoreeDeployManager.bundleMapping.find(map=>map.objClassName == c.getClass.getName && map.name == c.getName) match {
+  def execute(): Boolean = {
+    KevoreeDeployManager.bundleMapping.find(map => map.objClassName == c.getClass.getName && map.name == c.getName) match {
       case None => false
-      case Some(mapfound)=> {
-          val componentBundle = KevoreeDeployManager.getBundleContext.getBundle(mapfound.bundleId)
-          componentBundle.getRegisteredServices.find({sr=> sr.getProperty(Constants.KEVOREE_NODE_NAME)==nodeName && sr.getProperty(Constants.KEVOREE_INSTANCE_NAME)==c.getName }) match {
-            case None => false
-            case Some(sr)=> (componentBundle.getBundleContext.getService(sr).asInstanceOf[KevoreeActor] !? StartMessage ).asInstanceOf[Boolean]
+      case Some(mapfound) => {
+        val componentBundle = KevoreeDeployManager.getBundleContext.getBundle(mapfound.bundleId)
+        componentBundle.getRegisteredServices.find({
+          sr => sr.getProperty(Constants.KEVOREE_NODE_NAME) == nodeName && sr.getProperty(Constants.KEVOREE_INSTANCE_NAME) == c.getName
+        }) match {
+          case None => false
+          case Some(sr) => {
+            val startResult = (componentBundle.getBundleContext.getService(sr).asInstanceOf[KevoreeActor] !? StartMessage).asInstanceOf[Boolean]
+            println("Result send by component => "+startResult)
+            startResult
           }
         }
+      }
     }
   }
 
   def undo() {
-    StopInstanceCommand(c,nodeName)
+    StopInstanceCommand(c, nodeName)
   }
 
 }

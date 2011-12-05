@@ -27,6 +27,7 @@ object EmbeddedOSGiEnv {
 
   private val logger: Logger = LoggerFactory.getLogger(this.getClass)
 
+
   def getFwk = {
     fwk
   }
@@ -34,10 +35,10 @@ object EmbeddedOSGiEnv {
   def getFwk(kernel : KevoreeUIKernel) = {
     
     if(fwk.getBundleContext.getServiceReference(classOf[KevoreeModelHandlerService].getName) == null){
+      logger.debug("Create OSGI Model Handler Service Reference")
       val wrapper = new ModelHandlerServiceWrapper(kernel)
       fwk.getBundleContext.registerService(classOf[KevoreeModelHandlerService].getName,wrapper,new Properties())
     }
-    
     fwk
   }
   

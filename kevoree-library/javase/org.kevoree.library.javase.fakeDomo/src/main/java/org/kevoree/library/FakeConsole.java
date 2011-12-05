@@ -50,10 +50,12 @@ public class FakeConsole extends AbstractFakeStuffComponent {
     private MyFrame frame = null;
 
     @Override
-    public void start() {
+    public void start() throws Exception {
         frame = new MyFrame();
         frame.setVisible(true);
         frame.appendSystem("/***** CONSOLE INITIALIZED ********/ ");
+
+        throw new Exception("WTF!");
     }
 
     @Override
@@ -79,11 +81,11 @@ public class FakeConsole extends AbstractFakeStuffComponent {
             if (text instanceof KevoreeMessage) {
                 KevoreeMessage kmsg = (KevoreeMessage) text;
                 frame.appendIncomming("->");
-                for(String key : kmsg.getKeys()){
-                    frame.appendIncomming(key+"="+kmsg.getValue(key).get());
+                for (String key : kmsg.getKeys()) {
+                    frame.appendIncomming(key + "=" + kmsg.getValue(key).get());
                 }
             } else {
-                frame.appendIncomming("->"+text.toString());
+                frame.appendIncomming("->" + text.toString());
             }
         }
     }

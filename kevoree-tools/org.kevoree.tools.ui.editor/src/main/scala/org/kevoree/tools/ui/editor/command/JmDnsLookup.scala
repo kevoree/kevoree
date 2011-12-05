@@ -43,11 +43,13 @@ class JmDnsLookup extends Command {
       override def run() {
         JmDNSListener.lookup().foreach {
           info =>
-
             val nodeName = info.getName.trim()
             val groupName = info.getSubtype.trim()
+            val port = info.getPort.toString.trim()
+            val typeNames = info.getNiceTextString.trim()
+            val typeNamesArray = typeNames.split("/")
 
-            kernel.getModelHandler.getActualModel.getTypeDefinitions.find(td => td.getName == info.getNiceTextString) match {
+            kernel.getModelHandler.getActualModel.getTypeDefinitions.find(td => td.getName == typeNamesArray(0)) match {
               case Some(groupTypeDef) => {
                 if (!kernel.getModelHandler.getActualModel.getGroups.exists(group => group.getName == groupName)) {
                   val newgroup = KevoreeFactory.eINSTANCE.createGroup
@@ -56,8 +58,43 @@ class JmDnsLookup extends Command {
                   kernel.getModelHandler.getActualModel.addGroups(newgroup)
                 }
 
+                val remoteNode = kernel.getModelHandler.getActualModel.getNodes.find(n => n.getName == nodeName).getOrElse {
+                  val newnode = KevoreeFactory.eINSTANCE.createContainerNode
+                  newnode.setName(nodeName)
+                  kernel.getModelHandler.getActualModel.getTypeDefinitions.find(td => td.getName == typeNamesArray(1)).map {
+                    nodeType =>
+                      newnode.setTypeDefinition(nodeType)
+                  }
+                  kernel.getModelHandler.getActualModel.addNodes(newnode)
+                  newnode
+                }
+
+                kernel.getModelHandler.getActualModel.getGroups.find(group => group.getName == groupName).map {
+                  group =>
+                    group.getTypeDefinition.getDictionaryType.map {
+                      dicTypeDef =>
+                        dicTypeDef.getAttributes.find(att => att.getName == "port").map {
+                          attPort =>
+                            val dic = group.getDictionary.getOrElse(KevoreeFactory.createDictionary)
+                            val dicValue = dic.getValues.find(dicVal => dicVal.getAttribute == attPort && dicVal.getTargetNode.isDefined && dicVal.getTargetNode.get.getName == nodeName).getOrElse {
+                              val newDicVal = KevoreeFactory.createDictionaryValue
+                              newDicVal.setAttribute(attPort)
+                              newDicVal.setTargetNode(Some(remoteNode))
+                              dic.addValues(newDicVal)
+                              newDicVal
+                            }
+                            dicValue.setValue(port)
+                            group.setDictionary(Some(dic))
+                        }
+                    }
+                    if (group.getSubNodes.find(subNode => subNode.getName == groupName).isEmpty) {
+                      group.addSubNodes(remoteNode)
+                    }
+                }
+
+
                 val bootHelper = new GroupTypeBootstrapHelper
-                bootHelper.bootstrapGroupType(kernel.getModelHandler.getActualModel, groupName, EmbeddedOSGiEnv.getFwk.getBundleContext) match {
+                bootHelper.bootstrapGroupType(kernel.getModelHandler.getActualModel, groupName, EmbeddedOSGiEnv.getFwk(kernel).getBundleContext) match {
                   case Some(groupTypeInstance) => {
                     val model = groupTypeInstance.pull(nodeName)
                     kernel.getModelHandler.merge(model)
@@ -75,7 +112,7 @@ class JmDnsLookup extends Command {
                   case None => logger.error("Error while bootstraping group type")
                 }
               }
-              case None => println(info.getNiceTextString+" type definition not found")
+              case None => println(info.getNiceTextString + " type definition not found")
             }
 
 

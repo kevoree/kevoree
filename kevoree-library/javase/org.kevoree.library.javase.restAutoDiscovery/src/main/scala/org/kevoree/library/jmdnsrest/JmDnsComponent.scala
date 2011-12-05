@@ -27,7 +27,7 @@ import java.net.InetAddress
  * Time: 17:42
  */
 
-class  JmDnsComponent(nodeName: String, groupName : String, modelPort: Int, modelHandler : KevoreeModelHandlerService,nodeTypeName :String) {
+class  JmDnsComponent(nodeName: String, groupName : String, modelPort: Int, modelHandler : KevoreeModelHandlerService,groupTypeName :String) {
 
   val logger = LoggerFactory.getLogger(this.getClass)
   var servicelistener : ServiceListener = null
@@ -72,6 +72,14 @@ class  JmDnsComponent(nodeName: String, groupName : String, modelPort: Int, mode
         info =>
           val msg = new PlatformModelUpdate(info.getName.trim(), org.kevoree.framework.Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP, info.getInet4Addresses()(0).getHostAddress, "LAN", 100)
           modelHandler.asInstanceOf[Actor] ! msg
+
+
+              //CREATE EMPTY NODE IF NOT FOUND
+              //CREATE FRAGMENT DEP PROPERTY
+              //ASSIGN PORT
+
+
+
         // val msg2 = new PlatformModelUpdate(info.getName.trim(), org.kevoree.framework.Constants.KEVOREE_PLATFORM_REMOTE_NODE_MODELSYNCH_PORT, info.getPort.toString, "LAN", 100)
         // modelHandler.asInstanceOf[Actor] ! msg2
       }
@@ -85,9 +93,13 @@ class  JmDnsComponent(nodeName: String, groupName : String, modelPort: Int, mode
 
   jmdns.addServiceListener(REMOTE_TYPE,servicelistener)
 
-  var pairservice: ServiceInfo = ServiceInfo.create(REMOTE_TYPE, nodeName, groupName , modelPort, nodeTypeName)
+
+
+
   new Thread() {
     override def run() {
+      val nodeType = modelHandler.getLastModel.getNodes.find(n => n.getName == nodeName).get.getTypeDefinition.getName
+      val pairservice: ServiceInfo = ServiceInfo.create(REMOTE_TYPE, nodeName, groupName , modelPort, groupTypeName+"/"+nodeType)
       jmdns.registerService(pairservice)
     }
   }.start()

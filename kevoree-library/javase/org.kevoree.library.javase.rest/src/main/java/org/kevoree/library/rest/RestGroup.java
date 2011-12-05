@@ -113,7 +113,7 @@ public class RestGroup extends AbstractGroupType {
         try {
             //logger.debug("look for port on " + nodeName);
             return KevoreeFragmentPropertyHelper
-                    .getIntPropertyFromFragmentChannel(this.getModelService().getLastModel(), this.getName(), "port",
+                    .getIntPropertyFromFragmentGroup(this.getModelService().getLastModel(), this.getName(), "port",
                             nodeName);
         } catch (NumberFormatException e) {
             throw new IOException(e.getMessage());
