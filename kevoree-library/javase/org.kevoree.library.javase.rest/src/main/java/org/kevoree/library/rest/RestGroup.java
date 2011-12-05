@@ -99,6 +99,9 @@ public class RestGroup extends AbstractGroupType {
 
 
     public String getAddress(String remoteNodeName) {
+
+        logger.debug("ModelService "+getModelService());
+
         String ip = KevoreePlatformHelper.getProperty(this.getModelService().getLastModel(), remoteNodeName,org.kevoree.framework.Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP());
         if (ip == null || ip.equals("")) {
             ip = "127.0.0.1";
