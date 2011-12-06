@@ -36,7 +36,11 @@
             <version>${kevoree.version}</version>
           <scope>provided</scope>
         </dependency>
-
+        <dependency>
+            <groupId>org.kevoree.tools</groupId>
+            <artifactId>org.kevoree.tools.marShell</artifactId>
+            <version>${kevoree.version}</version>
+        </dependency>
 
     </dependencies>
 
