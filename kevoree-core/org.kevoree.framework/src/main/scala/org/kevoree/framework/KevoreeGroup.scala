@@ -69,13 +69,14 @@ trait KevoreeGroup extends AbstractGroupType with KevoreeActor {
     case UpdateDictionaryMessage(d) => {
       try {
         import scala.collection.JavaConversions._
+        val previousDictionary = dictionary.clone()
         d.keySet.foreach {
           v => dictionary.put(v, d.get(v))
         }
         if (isStarted) {
           updateGroup
         }
-        reply(true)
+        reply(previousDictionary)
       } catch {
         case _@e => {
           kevoree_internal_logger.error("Kevoree Group Instance Update Error !", e)
