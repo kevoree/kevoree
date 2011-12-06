@@ -44,7 +44,7 @@ class KevoreeCoreBean extends KevoreeModelHandlerService with KevoreeThreadActor
 
   def getBundleContext = bundleContext
 
-  def setBundleContext(bc: BundleContext) {
+  def setBundleContext (bc: BundleContext) {
     bundleContext = bc
     KevoreeDeployManager.setBundle(bc.getBundle)
   }
@@ -63,7 +63,7 @@ class KevoreeCoreBean extends KevoreeModelHandlerService with KevoreeThreadActor
   var logger = LoggerFactory.getLogger(this.getClass);
   val modelClone = new ModelCloner
 
-  private def checkBootstrapNode(currentModel: ContainerRoot): Unit = {
+  private def checkBootstrapNode (currentModel: ContainerRoot): Unit = {
     try {
       if (nodeInstance == null) {
         currentModel.getNodes.find(n => n.getName == nodeName) match {
@@ -101,14 +101,53 @@ class KevoreeCoreBean extends KevoreeModelHandlerService with KevoreeThreadActor
 
   }
 
-  private def switchToNewModel(c: ContainerRoot) = {
+  private def checkUnbootstrapNode (currentModel: ContainerRoot): ContainerRoot = {
+    try {
+      if (nodeInstance != null) {
+        currentModel.getNodes.find(n => n.getName == nodeName) match {
+          case Some(foundNode) => {
+            val bt = new NodeTypeBootstrapHelper
+            bt.bootstrapNodeType(currentModel, nodeName, bundleContext) match {
+              case Some(ist: AbstractNodeType) => {
+
+                val modelTmp = modelClone.clone(currentModel)
+                modelTmp.removeAllGroups()
+                modelTmp.removeAllHubs()
+                modelTmp.removeAllMBindings()
+                modelTmp.getNodes.filter(n => n.getName != nodeName).foreach {
+                  node =>
+                    modelTmp.removeNodes(node)
+                }
+                modelTmp.getNodes(0).removeAllComponents()
+                modelTmp.getNodes(0).removeAllHosts()
+                modelTmp
+
+              }
+              case None => logger.error("TypeDef installation fail !"); null
+            }
+          }
+          case None => logger.error("Node instance name " + nodeName + " not found in bootstrap model !"); null
+        }
+      } else {
+        logger.error("node instance is not available on current model !")
+        null
+      }
+    } catch {
+      case _@e => logger.error("Error while unbootstraping node instance ", e); null
+    }
+
+
+  }
+
+
+  private def switchToNewModel (c: ContainerRoot) = {
     models.add(model)
     model = c
     lastDate = new Date(System.currentTimeMillis)
     //TODO ADD LISTENER
 
     new Actor {
-      def act() {
+      def act () {
         //NOTIFY LOCAL REASONER
         listenerActor.notifyAllListener()
         //NOTIFY GROUP
@@ -140,7 +179,7 @@ class KevoreeCoreBean extends KevoreeModelHandlerService with KevoreeThreadActor
     this
   }
 
-  override def stop() {
+  override def stop () {
 
     logger.warn("Kevoree Core will be stopped !")
 
@@ -152,9 +191,14 @@ class KevoreeCoreBean extends KevoreeModelHandlerService with KevoreeThreadActor
     if (nodeInstance != null) {
 
       try {
-        val stopModel = KevoreeFactory.eINSTANCE.createContainerRoot
-        val adaptationModel = nodeInstance.kompare(model, stopModel);
-        val deployResult = PrimitiveCommandExecutionHelper.execute(adaptationModel, nodeInstance)
+        val stopModel = checkUnbootstrapNode(model)
+        if (stopModel != null) {
+          val adaptationModel = nodeInstance.kompare(model, stopModel);
+          val deployResult = PrimitiveCommandExecutionHelper.execute(adaptationModel, nodeInstance)
+        } else {
+          logger.error("Unable to use the stopModel !")
+        }
+
       } catch {
         case _@e => {
           logger.error("Error while unbootstrap ", e)
@@ -177,8 +221,10 @@ class KevoreeCoreBean extends KevoreeModelHandlerService with KevoreeThreadActor
   val cloner = new ModelCloner
   val modelChecker = new RootChecker
 
-  def internal_process(msg: Any) = msg match {
-    case updateMsg: PlatformModelUpdate => KevoreePlatformHelper.updateNodeLinkProp(model, nodeName, updateMsg.targetNodeName, updateMsg.key, updateMsg.value, updateMsg.networkType, updateMsg.weight)
+  def internal_process (msg: Any) = msg match {
+    case updateMsg: PlatformModelUpdate => KevoreePlatformHelper
+      .updateNodeLinkProp(model, nodeName, updateMsg.targetNodeName, updateMsg.key, updateMsg.value,
+                           updateMsg.networkType, updateMsg.weight)
     case PreviousModel() => reply(models)
     case LastModel() => {
       reply(cloner.clone(model))
@@ -210,23 +256,25 @@ class KevoreeCoreBean extends KevoreeModelHandlerService with KevoreeThreadActor
               try {
                 val adaptationModel = nodeInstance.kompare(model, newmodel);
 
-                logger.debug("Adaptation model size "+adaptationModel.getAdaptations.size)
-                adaptationModel.getAdaptations.foreach{ adaptation =>
-                    logger.debug("primitive "+adaptation.getPrimitiveType.getName)
+                logger.debug("Adaptation model size " + adaptationModel.getAdaptations.size)
+                adaptationModel.getAdaptations.foreach {
+                  adaptation =>
+                    logger.debug("primitive " + adaptation.getPrimitiveType.getName)
                 }
 
 
                 PrimitiveCommandExecutionHelper.execute(adaptationModel, nodeInstance)
-                KevoreeDeployManager.bundleMapping.foreach{ bm =>
-                  try {
-                    logger.debug("Try to cleanup "+bm.bundleId+","+bm.objClassName+","+bm.name)
-                    KevoreeDeployManager.removeMapping(bm)
-                    getBundleContext.getBundle(bm.bundleId).uninstall()
-                  } catch {
-                    case _ @ e => logger.debug("Error while cleanup platform ",e)
-                  }
+                KevoreeDeployManager.bundleMapping.foreach {
+                  bm =>
+                    try {
+                      logger.debug("Try to cleanup " + bm.bundleId + "," + bm.objClassName + "," + bm.name)
+                      KevoreeDeployManager.removeMapping(bm)
+                      getBundleContext.getBundle(bm.bundleId).uninstall()
+                    } catch {
+                      case _@e => logger.debug("Error while cleanup platform ", e)
+                    }
                 }
-                logger.debug("Deploy manager cache size after HaraKiri"+KevoreeDeployManager.bundleMapping.size)
+                logger.debug("Deploy manager cache size after HaraKiri" + KevoreeDeployManager.bundleMapping.size)
 
                 nodeInstance = null
                 switchToNewModel(newmodel)
@@ -280,7 +328,8 @@ class KevoreeCoreBean extends KevoreeModelHandlerService with KevoreeThreadActor
 
       }
     }
-    case _@unknow => logger.warn("unknow message  " + unknow.toString + " - sender" + sender.toString + "-" + this.getClass.getName)
+    case _@unknow => logger
+      .warn("unknow message  " + unknow.toString + " - sender" + sender.toString + "-" + this.getClass.getName)
   }
 
 
@@ -288,30 +337,31 @@ class KevoreeCoreBean extends KevoreeModelHandlerService with KevoreeThreadActor
     (this !? LastModel()).asInstanceOf[ContainerRoot]
   }
 
-  override def updateModel(model: ContainerRoot) {
+  override def updateModel (model: ContainerRoot) {
     logger.debug("update asked")
     this ! UpdateModel(model)
     logger.debug("update end")
   }
 
-  override def atomicUpdateModel(model: ContainerRoot) = {
+  override def atomicUpdateModel (model: ContainerRoot) = {
     logger.debug("Atomic update asked")
     (this !? UpdateModel(model))
     logger.debug("Atomic update end")
     lastDate
   }
 
-  override def getPreviousModel: java.util.List[ContainerRoot] = (this !? PreviousModel()).asInstanceOf[java.util.List[ContainerRoot]]
+  override def getPreviousModel: java.util.List[ContainerRoot] = (this !? PreviousModel())
+    .asInstanceOf[java.util.List[ContainerRoot]]
 
 
   val listenerActor = new KevoreeListeners
   listenerActor.start()
 
-  override def registerModelListener(listener: ModelListener) {
+  override def registerModelListener (listener: ModelListener) {
     listenerActor.addListener(listener)
   }
 
-  override def unregisterModelListener(listener: ModelListener) {
+  override def unregisterModelListener (listener: ModelListener) {
     listenerActor.removeListener(listener)
   }
 
