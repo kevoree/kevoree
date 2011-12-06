@@ -50,21 +50,45 @@ class  JmDnsComponent(nodeName: String, groupName : String, modelPort: Int, mode
 
       // Required to force serviceResolved to be called again
       // (after the first search)
+
       jmdns.requestServiceInfo(p1.getType(), p1.getName(), 1);
-      val infos = jmdns.list(REMOTE_TYPE)
+
+      /* val infos = jmdns.list(REMOTE_TYPE)
       infos.foreach {
         info =>
           val msg = new PlatformModelUpdate(info.getName.trim(), org.kevoree.framework.Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP, info.getInet4Addresses()(0).getHostAddress, "LAN", 100)
           modelHandler.asInstanceOf[Actor] ! msg
-        // val msg2 = new PlatformModelUpdate(info.getName.trim(), org.kevoree.framework.Constants.KEVOREE_PLATFORM_REMOTE_NODE_MODELSYNCH_PORT, info.getPort.toString, "LAN", 100)
-        // modelHandler.asInstanceOf[Actor] ! msg2
+          val msg2 = new PlatformModelUpdate(info.getName.trim(), org.kevoree.framework.Constants.KEVOREE_MODEL_PORT, info.getPort.toString, "LAN", 100)
+          modelHandler.asInstanceOf[Actor] ! msg2
       }
+      */
+
+      val typeNames = new String(p1.getInfo.getTextBytes, "UTF-8");
+      val typeNamesArray = typeNames.split("/")
+
+      val msg = new PlatformModelUpdate(p1.getInfo().getName.trim(), org.kevoree.framework.Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP, p1.getInfo().getInet4Addresses()(0).getHostAddress, "LAN", 100,typeNamesArray(0),typeNamesArray(1))
+      modelHandler.asInstanceOf[Actor] ! msg
+
+      val msg2 = new PlatformModelUpdate(p1.getInfo().getName.trim(), org.kevoree.framework.Constants.KEVOREE_MODEL_PORT, p1.getInfo().getPort.toString, "LAN", 100,typeNamesArray(0),typeNamesArray(1))
+      modelHandler.asInstanceOf[Actor] ! msg2
+
     }
 
     def serviceResolved(p1: ServiceEvent)
     {
       logger.debug("Service resolved: "+ p1.getInfo().getQualifiedName()+ " port:" + p1.getInfo().getPort());
 
+
+       val typeNames = new String(p1.getInfo.getTextBytes, "UTF-8");
+      val typeNamesArray = typeNames.split("/")
+
+      val msg = new PlatformModelUpdate(p1.getInfo().getName.trim(), org.kevoree.framework.Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP, p1.getInfo().getInet4Addresses()(0).getHostAddress, "LAN", 100,typeNamesArray(0),typeNamesArray(1))
+      modelHandler.asInstanceOf[Actor] ! msg
+
+      val msg2 = new PlatformModelUpdate(p1.getInfo().getName.trim(), org.kevoree.framework.Constants.KEVOREE_MODEL_PORT, p1.getInfo().getPort.toString, "LAN", 100,typeNamesArray(0),typeNamesArray(1))
+      modelHandler.asInstanceOf[Actor] ! msg2
+
+      /*
       val infos = jmdns.list(REMOTE_TYPE)
 
       infos.foreach
@@ -74,15 +98,14 @@ class  JmDnsComponent(nodeName: String, groupName : String, modelPort: Int, mode
           modelHandler.asInstanceOf[Actor] ! msg
 
 
-              //CREATE EMPTY NODE IF NOT FOUND
-              //CREATE FRAGMENT DEP PROPERTY
-              //ASSIGN PORT
+        //CREATE EMPTY NODE IF NOT FOUND
+        //CREATE FRAGMENT DEP PROPERTY
+        //ASSIGN PORT
 
+        val msg2 = new PlatformModelUpdate(info.getPort.toString, org.kevoree.framework.Constants.KEVOREE_MODEL_PORT, info.getPort.toString, "LAN", 100)
+        modelHandler.asInstanceOf[Actor] ! msg2
+      } */
 
-
-        // val msg2 = new PlatformModelUpdate(info.getName.trim(), org.kevoree.framework.Constants.KEVOREE_PLATFORM_REMOTE_NODE_MODELSYNCH_PORT, info.getPort.toString, "LAN", 100)
-        // modelHandler.asInstanceOf[Actor] ! msg2
-      }
     }
 
     def serviceRemoved(p1: ServiceEvent)
@@ -99,7 +122,13 @@ class  JmDnsComponent(nodeName: String, groupName : String, modelPort: Int, mode
   new Thread() {
     override def run() {
       val nodeType = modelHandler.getLastModel.getNodes.find(n => n.getName == nodeName).get.getTypeDefinition.getName
-      val pairservice: ServiceInfo = ServiceInfo.create(REMOTE_TYPE, nodeName, groupName , modelPort, groupTypeName+"/"+nodeType)
+
+
+      val pairservice: ServiceInfo = ServiceInfo.create(REMOTE_TYPE, nodeName, groupName , modelPort,"")
+      pairservice.setText((groupTypeName+"/"+nodeType).getBytes("UTF-8"))
+
+      logger.debug("nodeName "+nodeName+" groupName "+groupName+" modelPort "+modelPort +" groupTypeName "+groupTypeName+" nodeType "+nodeType)
+
       jmdns.registerService(pairservice)
     }
   }.start()
