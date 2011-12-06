@@ -18,7 +18,6 @@ class ServerBootstrap(request : MessagePort,compo : AbstractComponentType) {
   def startServer(port : Int){
     id = "kevoree.javase.webserver.spray-service."+compo.getName
     val config = ServerConfig("0.0.0.0",port,id+"-server",id,id)
-
     supervisorRef = Supervisor(
         SupervisorConfig(
           OneForOneStrategy(List(classOf[Exception]), 3, 100),
