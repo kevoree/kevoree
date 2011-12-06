@@ -123,6 +123,7 @@ trait ChannelTypeFragment extends KevoreeChannelFragment with ChannelFragment {
     case UpdateDictionaryMessage(d) => {
       try {
         import scala.collection.JavaConversions._
+        val previousDictionary = dictionary.clone()
         d.keySet.foreach {
           v =>
             dictionary.put(v, d.get(v))
@@ -130,7 +131,7 @@ trait ChannelTypeFragment extends KevoreeChannelFragment with ChannelFragment {
         if (ct_started) {
           updateChannelFragment
         }
-        reply(true)
+        reply(previousDictionary)
       } catch {
         case _@e => {
           kevoree_internal_logger.error("Kevoree Channel Instance Update Error !", e)
