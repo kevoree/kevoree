@@ -37,7 +37,6 @@ case class StartInstanceCommand(c: Instance, nodeName: String) extends LifeCycle
           case None => false
           case Some(sr) => {
             val startResult = (componentBundle.getBundleContext.getService(sr).asInstanceOf[KevoreeActor] !? StartMessage).asInstanceOf[Boolean]
-            println("Result send by component => "+startResult)
             startResult
           }
         }
@@ -46,7 +45,7 @@ case class StartInstanceCommand(c: Instance, nodeName: String) extends LifeCycle
   }
 
   def undo() {
-    StopInstanceCommand(c, nodeName)
+    StopInstanceCommand(c, nodeName).execute()
   }
 
 }
