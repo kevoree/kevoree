@@ -55,7 +55,7 @@ public class FakeConsole extends AbstractFakeStuffComponent {
         frame.setVisible(true);
         frame.appendSystem("/***** CONSOLE INITIALIZED ********/ ");
 
-        throw new Exception("WTF!");
+      //  throw new Exception("WTF!");
     }
 
     @Override

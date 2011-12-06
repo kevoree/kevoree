@@ -36,13 +36,14 @@ abstract class KevoreeComponent(c: AbstractComponentType) extends KevoreeActor {
     case UpdateDictionaryMessage(d) => {
       try {
         import scala.collection.JavaConversions._
+        val previousDictionary = c.getDictionary.clone()
         d.keySet.foreach {
           v => getKevoreeComponentType.getDictionary.put(v, d.get(v))
         }
         if (ct_started) {
           updateComponent
         }
-        reply(true)
+        reply(previousDictionary)
       } catch {
         case _@e => {
           kevoree_internal_logger.error("Kevoree Component Instance Update Error !", e)
@@ -67,6 +68,7 @@ abstract class KevoreeComponent(c: AbstractComponentType) extends KevoreeActor {
       } catch {
         case _@e => {
           kevoree_internal_logger.error("Kevoree Component Instance Start Error !", e)
+          ct_started = true //WE PUT COMPONENT IN START STATE TO ALLOW ROLLBACK TO UNSET VARIABLE
           reply(false)
         }
       }
@@ -92,8 +94,12 @@ abstract class KevoreeComponent(c: AbstractComponentType) extends KevoreeActor {
         }
       }
     }
-    case StopMessage if (!ct_started) =>
-    case StartMessage if (ct_started) =>
+    case StopMessage if (!ct_started) => {
+      reply(false)
+    }
+    case StartMessage if (ct_started) => {
+      reply(false)
+    }
     case _@umsg => println("unknow message " + umsg + "-sender-" + sender.getClass.getName)
   }
 
