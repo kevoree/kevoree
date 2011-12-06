@@ -20,13 +20,18 @@ package org.kevoree.adaptation.deploy.osgi.command
 
 import org.kevoree._
 import framework.context.KevoreeDeployManager
-import framework.{PrimitiveCommand, Constants, KevoreeActor}
+import framework.{KevoreeComponent, PrimitiveCommand, Constants, KevoreeActor}
 import org.kevoree.framework.message.UpdateDictionaryMessage
 import org.slf4j.LoggerFactory
+import java.util.HashMap
+import java.lang.String
 
 case class UpdateDictionaryCommand(c: Instance, nodeName: String) extends PrimitiveCommand {
 
   var logger = LoggerFactory.getLogger(this.getClass)
+
+  private var lastDictioanry: HashMap[String, AnyRef] = null
+
 
   def execute(): Boolean = {
     //BUILD MAP
@@ -68,20 +73,51 @@ case class UpdateDictionaryCommand(c: Instance, nodeName: String) extends Primit
               logger.error("Registered Service not found in bundleID=" + componentBundle.getBundleId)
               false
             }
-            case Some(sr) => (componentBundle.getBundleContext.getService(sr).asInstanceOf[KevoreeActor] !? UpdateDictionaryMessage(dictionary)).asInstanceOf[Boolean]
+            case Some(sr) => {
+              val obj= componentBundle.getBundleContext.getService(sr)
+              lastDictioanry = (obj.asInstanceOf[KevoreeActor] !? UpdateDictionaryMessage(dictionary)).asInstanceOf[HashMap[String, AnyRef]]
+              true
+            }
           }
         } else {
           logger.error("Registered Service for bundle ID=" + componentBundle.getBundleId + " are null, not started instance")
           false
         }
-
       }
     }
 
   }
 
   def undo() {
-    logger.warn("UpdateDictionaryCommand::undo:: Not implemented")
+    KevoreeDeployManager.bundleMapping.find(map => map.objClassName == c.getClass.getName && map.name == c.getName) match {
+      case None => false
+      case Some(mapfound) => {
+        val componentBundle = KevoreeDeployManager.getBundleContext.getBundle(mapfound.bundleId)
+        if (componentBundle.getRegisteredServices != null) {
+          componentBundle.getRegisteredServices.find({
+            sr => sr.getProperty(Constants.KEVOREE_NODE_NAME) == nodeName && sr.getProperty(Constants.KEVOREE_INSTANCE_NAME) == c.getName
+          }) match {
+            case None => {
+              logger.error("Registered Service not found in bundleID=" + componentBundle.getBundleId)
+              false
+            }
+            case Some(sr) => {
+              val obj: KevoreeComponent = componentBundle.getBundleContext.getService(sr).asInstanceOf[KevoreeComponent]
+              val tempHash = new HashMap[String, String]
+              import scala.collection.JavaConversions._
+              lastDictioanry.foreach{ dic =>
+                tempHash.put(dic._1,dic._2.toString)
+              }
+              obj.asInstanceOf[KevoreeActor] !? UpdateDictionaryMessage(tempHash)
+            }
+          }
+        } else {
+          logger.error("Registered Service for bundle ID=" + componentBundle.getBundleId + " are null, not started instance")
+          false
+        }
+      }
+    }
+
   }
 
 }

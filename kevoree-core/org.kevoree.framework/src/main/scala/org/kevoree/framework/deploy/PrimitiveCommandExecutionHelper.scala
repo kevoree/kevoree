@@ -89,8 +89,6 @@ object PrimitiveCommandExecutionHelper {
 
   private class KevoreeParDeployPhase {
     var primitives: List[PrimitiveCommand] = List()
-    var primitivesThread: List[BooleanRunnableTask] = List()
-
     class BooleanRunnableTask(primitive: PrimitiveCommand, watchDog: Actor) extends Runnable {
       private var result = false
 
@@ -99,12 +97,12 @@ object PrimitiveCommandExecutionHelper {
       def run() {
         try {
           result = primitive.execute()
-          watchDog ! true
+          watchDog ! result
         } catch {
           case _@e => {
+            logger.error("Error while executing primitive command " + primitive, e)
             watchDog ! false
             result = false
-            logger.error("Error while executing primitive command " + primitive, e)
           }
         }
 
@@ -114,35 +112,27 @@ object PrimitiveCommandExecutionHelper {
     class WatchDogActor(timeout: Long) extends Actor {
       var rec = 0
       val pointerSelf = this
+      var noError = true
+
       def act() {
         react {
-          case primitives: List[PrimitiveCommand] => {
+          case ps: List[PrimitiveCommand] => {
             var waitingThread: List[Thread] = List()
-            primitives.foreach {
+            ps.foreach {
               primitive =>
                 val pt = new Thread(new BooleanRunnableTask(primitive, pointerSelf))
                 pt.start()
                 waitingThread = waitingThread ++ List(pt)
             }
-            logger.debug("Waiting for {} threads",waitingThread.size)
+            logger.debug("Waiting for {} threads", waitingThread.size)
             val responseActor = sender
-            if (primitives.isEmpty) {
+            if (ps.isEmpty) {
               logger.debug("Empty list result true")
               responseActor ! true
               exit()
             }
             loop {
               reactWithin(timeout) {
-                case true => {
-                  rec = rec + 1
-                  logger.debug("getResult {}",rec)
-                  if (rec == primitives.size) {
-                    responseActor ! true
-                    exit()
-                  } else {
-                    //NOOP
-                  }
-                }
                 case TIMEOUT => {
                   logger.debug("TimeOut detected")
                   waitingThread.foreach {
@@ -155,6 +145,17 @@ object PrimitiveCommandExecutionHelper {
                   }
                   responseActor ! false
                   exit()
+                }
+                case b : Boolean => {
+                  rec = rec + 1
+                  if(!b){
+                    noError = false
+                  }
+                  logger.debug("getResult {}", rec)
+                  if (rec == ps.size) {
+                    responseActor ! noError
+                    exit()
+                  }
                 }
               }
             }
@@ -169,16 +170,13 @@ object PrimitiveCommandExecutionHelper {
 
     def runPhase(): Boolean = {
       if (primitives.length == 0) {
+        logger.debug("Empty phase !!!")
         return true
       }
       val wt = new WatchDogActor(30000)
       wt.start()
-      val noTimeout = (wt !? primitives).asInstanceOf[Boolean]
-      if(noTimeout){
-        primitivesThread.forall(p => p.getResult)
-      } else {
-        false
-      }
+      val stepResult = (wt !? primitives).asInstanceOf[Boolean]
+      stepResult
     }
 
     def rollBack() {
