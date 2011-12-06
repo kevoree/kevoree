@@ -56,8 +56,8 @@ class  JmDnsComponent(nodeName: String, groupName : String, modelPort: Int, mode
         info =>
           val msg = new PlatformModelUpdate(info.getName.trim(), org.kevoree.framework.Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP, info.getInet4Addresses()(0).getHostAddress, "LAN", 100)
           modelHandler.asInstanceOf[Actor] ! msg
-        // val msg2 = new PlatformModelUpdate(info.getName.trim(), org.kevoree.framework.Constants.KEVOREE_PLATFORM_REMOTE_NODE_MODELSYNCH_PORT, info.getPort.toString, "LAN", 100)
-        // modelHandler.asInstanceOf[Actor] ! msg2
+         val msg2 = new PlatformModelUpdate(info.getName.trim(), org.kevoree.framework.Constants.KEVOREE_MODEL_PORT, info.getPort.toString, "LAN", 100)
+         modelHandler.asInstanceOf[Actor] ! msg2
       }
     }
 
@@ -74,14 +74,12 @@ class  JmDnsComponent(nodeName: String, groupName : String, modelPort: Int, mode
           modelHandler.asInstanceOf[Actor] ! msg
 
 
-              //CREATE EMPTY NODE IF NOT FOUND
-              //CREATE FRAGMENT DEP PROPERTY
-              //ASSIGN PORT
+        //CREATE EMPTY NODE IF NOT FOUND
+        //CREATE FRAGMENT DEP PROPERTY
+        //ASSIGN PORT
 
-
-
-        // val msg2 = new PlatformModelUpdate(info.getName.trim(), org.kevoree.framework.Constants.KEVOREE_PLATFORM_REMOTE_NODE_MODELSYNCH_PORT, info.getPort.toString, "LAN", 100)
-        // modelHandler.asInstanceOf[Actor] ! msg2
+        val msg2 = new PlatformModelUpdate(info.getPort.toString, org.kevoree.framework.Constants.KEVOREE_MODEL_PORT, info.getPort.toString, "LAN", 100)
+        modelHandler.asInstanceOf[Actor] ! msg2
       }
     }
 
@@ -99,7 +97,13 @@ class  JmDnsComponent(nodeName: String, groupName : String, modelPort: Int, mode
   new Thread() {
     override def run() {
       val nodeType = modelHandler.getLastModel.getNodes.find(n => n.getName == nodeName).get.getTypeDefinition.getName
-      val pairservice: ServiceInfo = ServiceInfo.create(REMOTE_TYPE, nodeName, groupName , modelPort, groupTypeName+"/"+nodeType)
+
+
+      val pairservice: ServiceInfo = ServiceInfo.create(REMOTE_TYPE, nodeName, groupName , modelPort,"")
+      pairservice.setText((groupTypeName+"/"+nodeType).getBytes("UTF-8"))
+
+      logger.debug("nodeName "+nodeName+" groupName "+groupName+" modelPort "+modelPort +" groupTypeName "+groupTypeName+" nodeType "+nodeType)
+
       jmdns.registerService(pairservice)
     }
   }.start()
