@@ -33,7 +33,6 @@ import org.kevoree.framework._
 import org.kevoree.framework.context.KevoreeDeployManager
 import deploy.PrimitiveCommandExecutionHelper
 import org.kevoree.tools.aether.framework.NodeTypeBootstrapHelper
-import java.io.{BufferedOutputStream, BufferedInputStream, InputStream, OutputStream}
 import org.kevoree.cloner.ModelCloner
 import org.kevoree.core.basechecker.RootChecker
 
@@ -97,8 +96,6 @@ class KevoreeCoreBean extends KevoreeModelHandlerService with KevoreeThreadActor
     } catch {
       case _@e => logger.error("Error while bootstraping node instance ", e)
     }
-
-
   }
 
   private def switchToNewModel(c: ContainerRoot) = {
@@ -178,7 +175,7 @@ class KevoreeCoreBean extends KevoreeModelHandlerService with KevoreeThreadActor
   val modelChecker = new RootChecker
 
   def internal_process(msg: Any) = msg match {
-    case updateMsg: PlatformModelUpdate => KevoreePlatformHelper.updateNodeLinkProp(model, nodeName, updateMsg.targetNodeName, updateMsg.key, updateMsg.value, updateMsg.networkType, updateMsg.weight)
+    //case updateMsg: PlatformModelUpdate => KevoreePlatformHelper.updateNodeLinkProp(model, nodeName, updateMsg.targetNodeName, updateMsg.key, updateMsg.value, updateMsg.networkType, updateMsg.weight)
     case PreviousModel() => reply(models)
     case LastModel() => {
       reply(cloner.clone(model))

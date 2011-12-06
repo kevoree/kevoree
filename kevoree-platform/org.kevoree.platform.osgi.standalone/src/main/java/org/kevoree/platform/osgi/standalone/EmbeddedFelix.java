@@ -92,6 +92,7 @@ public class EmbeddedFelix {
         configProps.put("felix.cache.locking","false");
 
 
+
         Runtime.getRuntime().addShutdownHook(new Thread("Felix Shutdown Hook") {
 
             public void run() {
