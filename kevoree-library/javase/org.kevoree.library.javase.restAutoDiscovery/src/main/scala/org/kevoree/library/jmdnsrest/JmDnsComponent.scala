@@ -17,7 +17,6 @@ package org.kevoree.library.jmdnsrest
 import java.util.HashMap
 import javax.jmdns.{ServiceEvent, ServiceListener, ServiceInfo, JmDNS}
 import org.kevoree.api.service.core.handler.KevoreeModelHandlerService
-import org.kevoree.framework.message.PlatformModelUpdate
 import actors.Actor
 import org.slf4j.LoggerFactory
 import java.net.InetAddress
@@ -84,6 +83,19 @@ class JmDnsComponent(nodeName: String, groupName: String, modelPort: Int, modelH
     Some(currentModel)
   }
 
+  def addService(p1:ServiceEvent)
+  {
+    val typeNames = new String(p1.getInfo.getTextBytes, "UTF-8");
+    val typeNamesArray = typeNames.split("/")
+    val resultModel = updateModelNetwork(p1.getInfo.getName.trim(), typeNamesArray(1), groupName, typeNamesArray(0), p1.getInfo().getPort.toString)
+    resultModel.map {
+      goodModel => {
+
+        modelHandler.updateModel(goodModel)
+      }
+    }
+  }
+
   // TODO Listen interfaces ?
   val jmdns = JmDNS.create()
   logger.debug(" JmDNS listen on " + jmdns.getInterface());
@@ -91,25 +103,16 @@ class JmDnsComponent(nodeName: String, groupName: String, modelPort: Int, modelH
 
     def serviceAdded(p1: ServiceEvent) {
       jmdns.requestServiceInfo(p1.getType(), p1.getName(), 1);
-      val typeNames = new String(p1.getInfo.getTextBytes, "UTF-8");
-      val typeNamesArray = typeNames.split("/")
-      val resultModel = updateModelNetwork(p1.getInfo.getName.trim(), typeNamesArray(1), groupName, typeNamesArray(0), p1.getInfo().getPort.toString)
-      resultModel.map {
-        goodModel =>
-          modelHandler.updateModel(goodModel)
-      }
+      addService(p1)
     }
 
     def serviceResolved(p1: ServiceEvent) {
+
       logger.debug("Service resolved: " + p1.getInfo().getQualifiedName() + " port:" + p1.getInfo().getPort());
-      val typeNames = new String(p1.getInfo.getTextBytes, "UTF-8");
-      val typeNamesArray = typeNames.split("/")
-      val resultModel = updateModelNetwork(p1.getInfo.getName.trim(), typeNamesArray(1), groupName, typeNamesArray(0), p1.getInfo().getPort.toString)
-      resultModel.map {
-        goodModel =>
-          modelHandler.updateModel(goodModel)
-      }
+      addService(p1)
     }
+
+
 
     def serviceRemoved(p1: ServiceEvent) {
       logger.debug("Service removed " + p1.getName)
