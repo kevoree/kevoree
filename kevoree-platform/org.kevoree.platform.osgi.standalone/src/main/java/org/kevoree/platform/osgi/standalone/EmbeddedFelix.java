@@ -74,6 +74,9 @@ public class EmbeddedFelix {
         if (cacheDir.exists()) {
             cacheDir.mkdirs();
         }
+        
+        System.setProperty("osgi.cache",cacheDir.getAbsolutePath());
+        
         configProps.put(Constants.FRAMEWORK_STORAGE, cacheDir.getAbsolutePath());
 
         String extraProps = System.getProperty("org.osgi.framework.system.packages.extra");

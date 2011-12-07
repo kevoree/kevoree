@@ -231,6 +231,7 @@ public class AndroidFelixService extends Service {
 
                 File sdDir = Environment.getExternalStorageDirectory();
                 File m_cache = new File(sdDir.getAbsolutePath() + "/" + FELIX_CACHE_DIR);
+                System.setProperty("osgi.cache",m_cache.getAbsolutePath());
                 File kevoree_cache = new File(sdDir.getAbsolutePath() + "/KEVOREE");
                 Log.i("kevoree.android", m_cache.getAbsolutePath());
 
