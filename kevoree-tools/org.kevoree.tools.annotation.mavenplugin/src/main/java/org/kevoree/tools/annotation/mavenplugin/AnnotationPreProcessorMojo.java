@@ -165,7 +165,7 @@ public class AnnotationPreProcessorMojo extends AbstractAnnotationProcessorMojo 
 
 
     @SuppressWarnings("unchecked")
-    private void executeWithExceptionsHandled() throws Exception {
+    private void executeWithExceptionsHandled() throws MojoExecutionException {
         if (outputDirectory == null) {
             outputDirectory = getDefaultOutputDirectory();
         }
@@ -192,7 +192,13 @@ public class AnnotationPreProcessorMojo extends AbstractAnnotationProcessorMojo 
         final String includesString = (includes == null || includes.length == 0) ? "**/*.java" : StringUtils.join(includes, ",");
         final String excludesString = (excludes == null || excludes.length == 0) ? null : StringUtils.join(excludes, ",");
 
-        List<File> files = FileUtils.getFiles(getSourceDirectory(), includesString, excludesString);
+
+        List<File> files = null;
+        try {
+            files = FileUtils.getFiles(getSourceDirectory(), includesString, excludesString);
+        } catch (IOException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
 
         Iterable<? extends JavaFileObject> compilationUnits1 = null;
 
@@ -224,22 +230,29 @@ public class AnnotationPreProcessorMojo extends AbstractAnnotationProcessorMojo 
             getLog().info("javac option: " + option);
         }
 
+        //Reports the messages from the Annotation processor environment to the MavenPlugin logger.
         DiagnosticListener<JavaFileObject> dl = null;
         if (outputDiagnostics) {
             dl = new DiagnosticListener<JavaFileObject>() {
-
                 public void report(Diagnostic<? extends JavaFileObject> diagnostic) {
-                    getLog().info("diagnostic " + diagnostic);
-
+                    switch(diagnostic.getKind()) {
+                        case ERROR: {
+                            getLog().error(diagnostic.getMessage(Locale.getDefault()));
+                        }break;
+                        case WARNING:
+                        case MANDATORY_WARNING:{
+                            getLog().warn(diagnostic.toString());
+                        }break;
+                        default: {
+                            getLog().info(diagnostic.toString());
+                        }break;
+                    }
                 }
-
             };
         } else {
             dl = new DiagnosticListener<JavaFileObject>() {
-
                 public void report(Diagnostic<? extends JavaFileObject> diagnostic) {
                 }
-
             };
         }
 
@@ -299,8 +312,8 @@ public class AnnotationPreProcessorMojo extends AbstractAnnotationProcessorMojo 
             if (!task.call()) {
 
               //  throw new Exception("error during compilation");
-
                 this.getLog().error("Error while processing Kevoree annotation");
+                throw new MojoExecutionException("An error occurred while parsing annotations. Please refer to the trace.");
             }
         } finally {
             compileLock.unlock();
@@ -650,11 +663,12 @@ public class AnnotationPreProcessorMojo extends AbstractAnnotationProcessorMojo 
 
         // executeImpl();
 
-        try {
+       // try {
             executeWithExceptionsHandled();
-        } catch (Exception e) {
+
+        /*} catch (Exception e) {
             e.printStackTrace();
-        }
+        }*/
 
 
         //AFTER ALL GENERATED

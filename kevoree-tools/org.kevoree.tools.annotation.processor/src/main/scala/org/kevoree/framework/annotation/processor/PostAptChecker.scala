@@ -29,8 +29,32 @@ class PostAptChecker(root: ContainerRoot, env: ProcessingEnvironment) {
 
   def check = {
     checkComponentTypes()
+    mappingsCheck()
     baseCheck()
     nbErrors == 0
+  }
+
+    def mappingsCheck() {
+    root.getTypeDefinitions.filter(td => td.isInstanceOf[ComponentType]).foreach{ ct =>
+      ct.asInstanceOf[ComponentType].getProvided.foreach{providedPortTypeRef =>
+        providedPortTypeRef.getRef match {
+          case mpt : MessagePortType => {
+            if (!(providedPortTypeRef.getMappings.size > 0)) {
+              env.getMessager.printMessage(Kind.ERROR, "The process method of port: " + providedPortTypeRef.getName + ":MessagePort is not mapped on any method. Please, complete your code.")
+              nbErrors += 1
+            }
+          }
+          case spt : ServicePortType => {
+            spt.getOperations.foreach{op=>
+              if(providedPortTypeRef.getMappings.find(ptmap => ptmap.getServiceMethodName.equals(op.getName)).isEmpty) {
+                env.getMessager.printMessage(Kind.ERROR, "The method " + op.getName + " of port " + providedPortTypeRef.getName + ":" + spt.getName + " is not mapped on any method. Please, complete your code.")
+                nbErrors += 1
+              }
+            }
+            }
+        }
+      }
+    }
   }
 
   def baseCheck() {
@@ -65,15 +89,15 @@ class PostAptChecker(root: ContainerRoot, env: ProcessingEnvironment) {
 
       case lctd: LifeCycleTypeDefinition => {
         if (lctd.getStartMethod == "") {
-          env.getMessager.printMessage(Kind.ERROR,"@Start method is mandatory in " + td.getBean + "." + "\n")
+          env.getMessager.printMessage(Kind.ERROR,"@Start method is mandatory in " + td.getBean + ".")
           nbErrors += 1
         }
         if (lctd.getStopMethod == "") {
-          env.getMessager.printMessage(Kind.ERROR,"@Stop method is mandatory in " + td.getBean + "." + "\n")
+          env.getMessager.printMessage(Kind.ERROR,"@Stop method is mandatory in " + td.getBean + ".")
           nbErrors += 1
         }
         if (lctd.getUpdateMethod == "") {
-          env.getMessager.printMessage(Kind.WARNING,"@Update method is missing in " + td.getBean + "." + "\n")
+          env.getMessager.printMessage(Kind.WARNING,"@Update method is missing in " + td.getBean + ".")
         }
 
       }
@@ -90,12 +114,12 @@ class PostAptChecker(root: ContainerRoot, env: ProcessingEnvironment) {
           nbErrors += 1
         } else {
           if (td.getBean.lastIndexOf(".") == -1) {
-            env.getMessager.printMessage(Kind.ERROR,"The TypeDefinition seems to be out of any package. (lastIndexOf('.') returned -1 for bean : " + td.getBean + "\n")
+            env.getMessager.printMessage(Kind.ERROR,"The TypeDefinition seems to be out of any package. (lastIndexOf('.') returned -1 for bean : " + td.getBean)
             nbErrors += 1
           }
         }
         if (td.getFactoryBean.lastIndexOf(".") == -1) {
-          env.getMessager.printMessage(Kind.ERROR,"The TypeDefinition seems to be out of any package. (lastIndexOf('.') returned -1 for FactoryBean : " + td.getFactoryBean + "\n")
+          env.getMessager.printMessage(Kind.ERROR,"The TypeDefinition seems to be out of any package. (lastIndexOf('.') returned -1 for FactoryBean : " + td.getFactoryBean)
           nbErrors += 1
         }
       }
