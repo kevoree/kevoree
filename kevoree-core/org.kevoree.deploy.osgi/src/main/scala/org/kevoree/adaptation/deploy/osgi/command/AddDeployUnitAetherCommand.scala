@@ -48,9 +48,17 @@ case class AddDeployUnitAetherCommand(deployUnit: DeployUnit, update: Boolean = 
         //BACKUP FILE
         val destFile = File.createTempFile(random.nextInt() + "", ".jar")
 
-        FileNIOHelper.copyFile(this.getClass.getClassLoader.getResourceAsStream(lastExecutionBundle.get.getLocation), destFile)
-        tempPreviousFile = destFile.getAbsolutePath
-        isBackup = true
+        val jarFile = FileNIOHelper.resolveBundleJar(lastExecutionBundle.get, new File(System.getProperty("osgi.cache")));
+        if(jarFile != null){
+          logger.debug("Saving cache file for bundle id {} with url {}",lastExecutionBundle.get.getBundleId,jarFile.getAbsoluteFile);
+          val jarStream = new FileInputStream(jarFile);
+          FileNIOHelper.copyFile(jarStream, destFile)
+          jarStream.close();
+          tempPreviousFile = destFile.getAbsolutePath
+          isBackup = true
+        } else {
+          logger.warn("Caching bundle fail {} rollback could fail ",lastExecutionBundle.get.getSymbolicName)
+        }
 
         logger.debug("Update Deploy Unit detected , force update for bundleID " + lastExecutionBundle.get.getBundleId)
         lastExecutionBundle.get.update(new FileInputStream(arteFile))
