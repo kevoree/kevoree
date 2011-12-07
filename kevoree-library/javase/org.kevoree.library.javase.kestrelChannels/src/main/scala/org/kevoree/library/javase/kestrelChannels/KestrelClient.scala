@@ -14,7 +14,6 @@ import java.net._
 import java.nio._
 import java.nio.channels._
 import scala.collection.mutable
-import org.kevoree.extra.marshalling.{RichString, RichJSONObject}
 import org.kevoree.framework.message.Message
 import java.io._
 

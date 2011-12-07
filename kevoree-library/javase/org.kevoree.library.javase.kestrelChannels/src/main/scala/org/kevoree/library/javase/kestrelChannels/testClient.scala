@@ -11,7 +11,6 @@ package org.kevoree.library.javase.kestrelChannels
 import org.kevoree.framework.KevoreeXmiHelper
 import actors.remote.Serializer
 import java.io.{ObjectInputStream, ByteArrayInputStream, ObjectOutputStream, ByteArrayOutputStream}
-import org.kevoree.extra.marshalling.{RichString, RichJSONObject}
 import org.kevoree.framework.message.Message
 
 object testClient extends App {

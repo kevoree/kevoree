@@ -19,6 +19,7 @@ import com.twitter.logging.Logger
 import com.twitter.logging.config._
 import actors.Actor._
 import actors.DaemonActor
+import java.lang.Thread
 
 /**
  * Created by IntelliJ IDEA.
@@ -28,7 +29,7 @@ import actors.DaemonActor
  * To change this template use File | Settings | File Templates.
  */
 
-class KestrelServer(host : String,port :Int,queuePath : String ,filepathlog :String) extends DaemonActor {
+class KestrelServer(host : String,port :Int,queuePath : String ,filepathlog :String) {
 
   private val PORT = this.port
   private var kestrel: Kestrel = null
@@ -37,41 +38,33 @@ class KestrelServer(host : String,port :Int,queuePath : String ,filepathlog :Str
 
   val runtime = RuntimeEnvironment(this, Array())
   Kestrel.runtime = runtime
-  start()
 
   runServer()
 
-  def act() {
-    println("Running Kestrel Server ")
-
-
-
-
-  }
-
 
   def runServer() = {
+    new Thread(){
+      override  def run() {
+        val defaultConfig = new QueueBuilder() {
+          defaultJournalSize = 16.megabytes
+          maxMemorySize = 128.megabytes
+          maxJournalSize = 1.gigabyte
+        }.apply()
 
-    val defaultConfig = new QueueBuilder() {
-      defaultJournalSize = 16.megabytes
-      maxMemorySize = 128.megabytes
-      maxJournalSize = 1.gigabyte
-    }.apply()
+        // make a queue specify max_items and max_age
+        val UpdatesConfig = new QueueBuilder() {
+          maxSize = 128.megabytes
+          maxMemorySize = 16.megabytes
+          maxJournalSize = 128.megabytes
+        }
 
-    // make a queue specify max_items and max_age
-    val UpdatesConfig = new QueueBuilder() {
-      maxSize = 128.megabytes
-      maxMemorySize = 16.megabytes
-      maxJournalSize = 128.megabytes
-    }
+        //""
+        kestrel = new Kestrel(defaultConfig, List(UpdatesConfig),host,
+          Some(PORT), None,queuePath, Protocol.Ascii, None, None, 1)
 
-    //""
-    kestrel = new Kestrel(defaultConfig, List(UpdatesConfig),host,
-      Some(PORT), None,queuePath, Protocol.Ascii, None, None, 1)
-
-    kestrel.start()
-
-
+        kestrel.start()
+      }
+    }.start()
   }
 
   def stopServer()= {
