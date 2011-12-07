@@ -32,7 +32,7 @@ import java.util.HashMap;
 })
 public class AbstractPage extends AbstractComponentType {
 
-    private Logger logger = LoggerFactory.getLogger(this.getClass());
+    protected Logger logger = LoggerFactory.getLogger(this.getClass());
     private URLHandlerScala handler = new URLHandlerScala();
 
     @Start
