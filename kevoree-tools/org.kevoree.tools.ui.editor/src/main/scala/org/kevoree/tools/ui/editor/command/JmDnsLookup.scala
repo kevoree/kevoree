@@ -46,8 +46,10 @@ class JmDnsLookup extends Command {
             val nodeName = info.getName.trim()
             val groupName = info.getSubtype.trim()
             val port = info.getPort.toString.trim()
-            val typeNames = info.getNiceTextString.trim()
+            val typeNames = new String(info.getTextBytes, "UTF-8");
             val typeNamesArray = typeNames.split("/")
+
+            logger.debug("nodeName "+nodeName+" groupName "+groupName+" port "+port+" typeNames "+typeNames)
 
             kernel.getModelHandler.getActualModel.getTypeDefinitions.find(td => td.getName == typeNamesArray(0)) match {
               case Some(groupTypeDef) => {

@@ -47,6 +47,7 @@ case class AddDeployUnitAetherCommand(deployUnit: DeployUnit, update: Boolean = 
       if (update && previousBundleID.contains(lastExecutionBundle.get.getBundleId)) {
         //BACKUP FILE
         val destFile = File.createTempFile(random.nextInt() + "", ".jar")
+
         FileNIOHelper.copyFile(this.getClass.getClassLoader.getResourceAsStream(lastExecutionBundle.get.getLocation), destFile)
         tempPreviousFile = destFile.getAbsolutePath
         isBackup = true
