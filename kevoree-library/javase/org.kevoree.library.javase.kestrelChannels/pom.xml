@@ -10,16 +10,6 @@
     <name>Kevoree :: Library :: JavaSE :: kestrelChannels</name>
     <version>1.5.0-SNAPSHOT</version>
 
-
-    <repositories>
-        <repository
-                ><id>twittercom</id>
-            <name>twitter.com</name>
-            <url>http://maven.twttr.com/</url>
-        </repository>
-    </repositories>
-
-
     <parent>
         <artifactId>org.kevoree.library.javase.root</artifactId>
         <groupId>org.kevoree.library.javase</groupId>
@@ -34,16 +24,30 @@
             <groupId>org.kevoree.extra</groupId>
             <artifactId>org.kevoree.extra.osgi.kestrel</artifactId>
             <version>2.3.3</version>
+            <scope>provided</scope>
+        </dependency>
 
+
+        <dependency>
+            <groupId>org.jboss.netty</groupId>
+            <artifactId>netty</artifactId>
+            <version>3.2.5.Final</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.kevoree.extra.googleguava</groupId>
+            <artifactId>org.kevoree.extra.googleguava</artifactId>
+            <version>10</version>
+            <scope>provided</scope>
         </dependency>
 
         <dependency>
             <groupId>org.kevoree.extra</groupId>
-            <artifactId>org.kevoree.extra.marshalling</artifactId>
-            <version>1.0</version>
-
+            <artifactId>org.kevoree.extra.protobuf</artifactId>
+            <version>2.4.1</version>
+            <scope>provided</scope>
         </dependency>
-
 
     </dependencies>
 
@@ -76,22 +80,67 @@
                     </jvmArgs>
                 </configuration>
             </plugin>
-
             <plugin>
                 <groupId>org.apache.felix</groupId>
                 <artifactId>maven-bundle-plugin</artifactId>
-                <version>2.3.5</version>
-                <extensions>true</extensions>
                 <configuration>
                     <instructions>
-                        <Export-Package>org.kevoree.library.javase.kestrelChannels.*,*</Export-Package>
-                        <Import-Package>!org.kevoree.library.javase.kestrelChannels.*,*</Import-Package>
+                        <Export-Package>org.kevoree.library.javase.kestrelChannels.*</Export-Package>
+                        <Import-Package>!org.kevoree.library.javase.kestrelChannels.*,!com.sun.management.*,*</Import-Package>
                     </instructions>
                 </configuration>
             </plugin>
 
         </plugins>
     </build>
+
+
+    <pluginRepositories>
+        <pluginRepository>
+            <id>dtrott</id>
+            <url>http://maven.davidtrott.com/repository</url>
+        </pluginRepository>
+        <pluginRepository>
+            <id>plugin.scala-tools.org</id>
+            <name>Plugin Scala-tools Maven2 Repository</name>
+            <url>http://scala-tools.org/repo-releases</url>
+        </pluginRepository>
+        <pluginRepository>
+            <id>plugin.kevoree-github</id>
+            <url>http://maven.kevoree.org/release</url>
+        </pluginRepository>
+        <pluginRepository>
+            <id>plugin.kevoree-snapshots</id>
+            <url>http://maven.kevoree.org/snapshots</url>
+        </pluginRepository>
+    </pluginRepositories>
+    <repositories>
+        <repository>
+            <id>repository.jboss.org</id>
+            <url>http://repository.jboss.org/nexus/content/groups/public/</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+        <!--<repository>
+            <id>maven.twttr.com</id>
+            <url>http://maven.twttr.com/</url>
+        </repository>-->
+        <repository>
+            <id>scala-tools.org</id>
+            <name>Scala-tools Maven2 Repository</name>
+            <url>http://scala-tools.org/repo-releases</url>
+        </repository>
+        <repository>
+            <id>kevoree-release</id>
+            <url>http://maven.kevoree.org/release</url>
+        </repository>
+        <repository>
+            <id>kevoree-snapshots</id>
+            <url>http://maven.kevoree.org/snapshots</url>
+        </repository>
+    </repositories>
+
 
 
 </project>
