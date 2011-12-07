@@ -98,7 +98,7 @@ class KevoreeCoreBean extends KevoreeModelHandlerService with KevoreeThreadActor
     }
   }
 
-  private def checkUnbootstrapNode (currentModel: ContainerRoot): ContainerRoot = {
+  private def checkUnbootstrapNode (currentModel: ContainerRoot): Option[ContainerRoot] = {
     try {
       if (nodeInstance != null) {
         currentModel.getNodes.find(n => n.getName == nodeName) match {
@@ -117,20 +117,20 @@ class KevoreeCoreBean extends KevoreeModelHandlerService with KevoreeThreadActor
                 }
                 modelTmp.getNodes(0).removeAllComponents()
                 modelTmp.getNodes(0).removeAllHosts()
-                modelTmp
+                Some(modelTmp)
 
               }
-              case None => logger.error("TypeDef installation fail !"); null
+              case None => logger.error("TypeDef installation fail !"); None
             }
           }
-          case None => logger.error("Node instance name " + nodeName + " not found in bootstrap model !"); null
+          case None => logger.error("Node instance name " + nodeName + " not found in bootstrap model !"); None
         }
       } else {
         logger.error("node instance is not available on current model !")
-        null
+        None
       }
     } catch {
-      case _@e => logger.error("Error while unbootstraping node instance ", e); null
+      case _@e => logger.error("Error while unbootstraping node instance ", e); None
     }
 
 
@@ -189,8 +189,8 @@ class KevoreeCoreBean extends KevoreeModelHandlerService with KevoreeThreadActor
 
       try {
         val stopModel = checkUnbootstrapNode(model)
-        if (stopModel != null) {
-          val adaptationModel = nodeInstance.kompare(model, stopModel);
+        if (stopModel.isDefined) {
+          val adaptationModel = nodeInstance.kompare(model, stopModel.get);
           val deployResult = PrimitiveCommandExecutionHelper.execute(adaptationModel, nodeInstance)
         } else {
           logger.error("Unable to use the stopModel !")
