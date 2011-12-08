@@ -21,16 +21,6 @@ import org.apache.maven.model.Resource;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.project.MavenProject;
 import org.bsc.maven.plugin.processor.AbstractAnnotationProcessorMojo;
-import org.codehaus.mojo.apt.AptUtils;
-import org.codehaus.mojo.apt.CollectionUtils;
-import org.codehaus.mojo.apt.LogUtils;
-import org.codehaus.mojo.apt.MavenProjectUtils;
-import org.codehaus.plexus.compiler.util.scan.InclusionScanException;
-import org.codehaus.plexus.compiler.util.scan.SimpleSourceInclusionScanner;
-import org.codehaus.plexus.compiler.util.scan.SourceInclusionScanner;
-import org.codehaus.plexus.compiler.util.scan.StaleSourceScanner;
-import org.codehaus.plexus.compiler.util.scan.mapping.SingleTargetSourceMapping;
-import org.codehaus.plexus.compiler.util.scan.mapping.SuffixMapping;
 import org.codehaus.plexus.util.FileUtils;
 import org.codehaus.plexus.util.StringUtils;
 import org.kevoree.ContainerRoot;
@@ -197,7 +187,7 @@ public class AnnotationPreProcessorMojo extends AbstractAnnotationProcessorMojo 
         try {
             files = FileUtils.getFiles(getSourceDirectory(), includesString, excludesString);
         } catch (IOException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            e.printStackTrace();
         }
 
         Iterable<? extends JavaFileObject> compilationUnits1 = null;
@@ -216,8 +206,8 @@ public class AnnotationPreProcessorMojo extends AbstractAnnotationProcessorMojo 
         addCompilerArguments(options);
 
 
-       //     options.add("-processor");
-       //     options.add("org.kevoree.framework.annotation.processor.visitor.KevoreeAnnotationProcessor");
+        //     options.add("-processor");
+        //     options.add("org.kevoree.framework.annotation.processor.visitor.KevoreeAnnotationProcessor");
 
         options.add("-d");
         options.add(getOutputClassDirectory().getPath());
@@ -235,17 +225,20 @@ public class AnnotationPreProcessorMojo extends AbstractAnnotationProcessorMojo 
         if (outputDiagnostics) {
             dl = new DiagnosticListener<JavaFileObject>() {
                 public void report(Diagnostic<? extends JavaFileObject> diagnostic) {
-                    switch(diagnostic.getKind()) {
+                    switch (diagnostic.getKind()) {
                         case ERROR: {
                             getLog().error(diagnostic.getMessage(Locale.getDefault()));
-                        }break;
+                        }
+                        break;
                         case WARNING:
-                        case MANDATORY_WARNING:{
+                        case MANDATORY_WARNING: {
                             getLog().warn(diagnostic.toString());
-                        }break;
+                        }
+                        break;
                         default: {
                             getLog().info(diagnostic.toString());
-                        }break;
+                        }
+                        break;
                     }
                 }
             };
@@ -269,11 +262,11 @@ public class AnnotationPreProcessorMojo extends AbstractAnnotationProcessorMojo 
         compileLock.lock();
         try {
             JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
-            if(compiler == null){
+            if (compiler == null) {
                 getLog().error("Javac preprocessor not found, Kevoree PreProcessor can't run on JRE !");
             }
-            
-            
+
+
             StandardJavaFileManager fileManager = compiler.getStandardFileManager(null, null, null);
 
             if (files != null && !files.isEmpty()) {
@@ -295,7 +288,7 @@ public class AnnotationPreProcessorMojo extends AbstractAnnotationProcessorMojo 
 
             KevoreeAnnotationProcessor p = new KevoreeAnnotationProcessor();
             p.setOptions(this.options);
-            
+
             task.setProcessors(Arrays.asList(p));
 
 
@@ -311,7 +304,7 @@ public class AnnotationPreProcessorMojo extends AbstractAnnotationProcessorMojo 
             // Perform the compilation task.
             if (!task.call()) {
 
-              //  throw new Exception("error during compilation");
+                //  throw new Exception("error during compilation");
                 this.getLog().error("Error while processing Kevoree annotation");
                 throw new MojoExecutionException("An error occurred while parsing annotations. Please refer to the trace.");
             }
@@ -505,7 +498,7 @@ public class AnnotationPreProcessorMojo extends AbstractAnnotationProcessorMojo 
      *
      * @parameter
      */
-    private HashMap<String,String> options = new java.util.HashMap<String,String>();
+    private HashMap<String, String> options = new java.util.HashMap<String, String>();
     /**
      * Name of <code>AnnotationProcessorFactory</code> to use; bypasses default discovery process. This is equivalent
      * to the <code>-factory</code> argument for apt.
@@ -625,50 +618,31 @@ public class AnnotationPreProcessorMojo extends AbstractAnnotationProcessorMojo 
             otherRepositories += ";" + repo.getUrl();
         }
 
-        Iterator dependenciesIterator = project.getDependencies().iterator();
+        Iterator dependenciesIterator = project.getRuntimeDependencies().iterator();
         String thirdParties = ";";
         while (dependenciesIterator.hasNext()) {
             Dependency dep = (Dependency) dependenciesIterator.next();
-            if (dep.getScope().equals("provided") /*|| dep.getScope().equals("runtime")*/) {
+            if (dep.getScope().equals("provided") || dep.getType().equals("bundle")) {
                 thirdParties += ";" + dep.getGroupId() + "/" + dep.getArtifactId() + "/" + dep.getVersion();
             }
         }
 
-        this.options.put("kevoree.lib.id",this.project.getArtifactId());
-        this.options.put("kevoree.lib.group",this.project.getGroupId());
-        this.options.put("kevoree.lib.version",this.project.getVersion());
-        this.options.put("kevoree.lib.target",sourceOutputDirectory.getPath() + File.separator + "KEV-INF" + File.separator + "lib.kev");
-        this.options.put("kevoree.lib.tag",dateFormat.format(new Date()));
-        this.options.put("repositories",repositories);
-        this.options.put("otherRepositories",otherRepositories);
-        this.options.put("thirdParties",thirdParties);
-        this.options.put("nodeTypeNames",nodeTypeNames);
-                /*
-        this.options = (String[]) Arrays.asList(
-                "kevoree.lib.id=" + this.project.getArtifactId(),
-                "kevoree.lib.group=" + this.project.getGroupId(),
-                "kevoree.lib.version=" + this.project.getVersion(),
-                "kevoree.lib.target=" + sourceOutputDirectory.getPath() + File.separator + "KEV-INF" + File.separator + "lib.kev",
-                "kevoree.lib.tag=" + dateFormat.format(new Date()),
-                "repositories=" + repositories,
-                "otherRepositories=" + otherRepositories,
-                "thirdParties=" + thirdParties,
-                "nodeTypeNames=" + nodeTypeNames
-        ).toArray();   */
+        this.options.put("kevoree.lib.id", this.project.getArtifactId());
+        this.options.put("kevoree.lib.group", this.project.getGroupId());
+        this.options.put("kevoree.lib.version", this.project.getVersion());
+        this.options.put("kevoree.lib.target", sourceOutputDirectory.getPath() + File.separator + "KEV-INF" + File.separator + "lib.kev");
+        this.options.put("kevoree.lib.tag", dateFormat.format(new Date()));
+        this.options.put("repositories", repositories);
+        this.options.put("otherRepositories", otherRepositories);
+        this.options.put("thirdParties", thirdParties);
+        this.options.put("nodeTypeNames", nodeTypeNames);
 
         Resource resource = new Resource();
         resource.setDirectory(sourceOutputDirectory.getPath() + File.separator + "KEV-INF");
         resource.setTargetPath("KEV-INF");
         project.getResources().add(resource);
 
-        // executeImpl();
-
-       // try {
-            executeWithExceptionsHandled();
-
-        /*} catch (Exception e) {
-            e.printStackTrace();
-        }*/
+        executeWithExceptionsHandled();
 
 
         //AFTER ALL GENERATED
@@ -716,13 +690,6 @@ public class AnnotationPreProcessorMojo extends AbstractAnnotationProcessorMojo 
         return buffer.toString();
     }
 
-    private List<String> getPluginClasspathElements() throws MojoExecutionException {
-        try {
-            return MavenProjectUtils.getClasspathElements(project, pluginArtifacts);
-        } catch (Exception exception) {
-            throw new MojoExecutionException("Cannot get plugin classpath elements", exception);
-        }
-    }
 
     private List<String> getSourcePaths() {
         List<String> sourcePaths = new ArrayList<String>();
@@ -735,49 +702,6 @@ public class AnnotationPreProcessorMojo extends AbstractAnnotationProcessorMojo 
 
         return sourcePaths;
     }
-
-    private List<File> getSourceFiles(SourceInclusionScanner scanner, String name) throws MojoExecutionException {
-        List<File> sourceFiles = new ArrayList<File>();
-
-        for (String path : getSourcePaths()) {
-            File sourceDir = new File(path);
-
-            sourceFiles.addAll(getSourceFiles(scanner, name, sourceDir));
-        }
-
-        return sourceFiles;
-    }
-
-    private Set<File> getSourceFiles(SourceInclusionScanner scanner, String name, File sourceDir)
-            throws MojoExecutionException {
-        Set<File> sources;
-
-        if (sourceDir.isDirectory()) {
-            try {
-                Set<?> rawSources = scanner.getIncludedSources(sourceDir, outputDirectory);
-
-                sources = CollectionUtils.genericSet(rawSources, File.class);
-            } catch (InclusionScanException exception) {
-                throw new MojoExecutionException("Error scanning source directory: " + sourceDir, exception);
-            }
-        } else {
-            sources = Collections.emptySet();
-        }
-
-        if (getLog().isDebugEnabled()) {
-            if (sources.isEmpty()) {
-                getLog().debug("No " + name + " found in " + sourceDir);
-            } else {
-                getLog().debug(StringUtils.capitalizeFirstLetter(name) + " found in " + sourceDir + ":");
-
-                LogUtils.log(getLog(), LogUtils.LEVEL_DEBUG, sources, "  ");
-            }
-        }
-
-        return sources;
-    }
-
-
 
 
     /**
