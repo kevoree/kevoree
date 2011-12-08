@@ -26,14 +26,14 @@
             <groupId>org.kevoree.extra</groupId>
             <artifactId>org.kevoree.extra.jna</artifactId>
             <version>3.3.0</version>
-            <scope>provided</scope>
+            <type>bundle</type>
         </dependency>
 
         <dependency>
             <groupId>org.kevoree.library.javase</groupId>
             <artifactId>org.kevoree.library.javase.fileSystem</artifactId>
             <version>${kevoree.version}</version>
-            <scope>provided</scope>
+            <type>bundle</type>
         </dependency>
     </dependencies>
 

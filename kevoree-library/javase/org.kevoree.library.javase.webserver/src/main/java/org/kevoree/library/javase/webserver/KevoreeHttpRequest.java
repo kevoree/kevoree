@@ -17,6 +17,16 @@ public class KevoreeHttpRequest implements Serializable {
 
     private HashMap<String, String> resolvedParams = new HashMap<String, String>();
 
+    public HashMap<String, String> getHeaders() {
+        return headers;
+    }
+
+    public void setHeaders(HashMap<String, String> headers) {
+        this.headers = headers;
+    }
+
+    private HashMap<String, String> headers = new HashMap<String, String>();
+
     private UUID tokenID = UUID.randomUUID();
 
     public UUID getTokenID() {
@@ -39,7 +49,7 @@ public class KevoreeHttpRequest implements Serializable {
         this.resolvedParams = resolvedParams;
     }
 
-    private byte[] rawBody = null;
+    private byte[] rawBody = new byte[0];
 
 
     public byte[] getRawBody() {

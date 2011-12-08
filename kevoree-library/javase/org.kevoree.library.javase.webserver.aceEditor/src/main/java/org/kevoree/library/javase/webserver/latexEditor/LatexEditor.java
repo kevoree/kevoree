@@ -1,5 +1,6 @@
 package org.kevoree.library.javase.webserver.latexEditor;
 
+import com.google.gwt.user.server.rpc.RPC;
 import org.kevoree.annotation.*;
 import org.kevoree.framework.message.StdKevoreeMessage;
 import org.kevoree.library.javase.fileSystem.LockFilesService;
@@ -8,6 +9,7 @@ import org.kevoree.library.javase.webserver.FileServiceHelper;
 import org.kevoree.library.javase.webserver.KevoreeHttpRequest;
 import org.kevoree.library.javase.webserver.KevoreeHttpResponse;
 import org.kevoree.library.javase.webserver.servlet.LocalServletRegistry;
+import org.osgi.framework.Bundle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -49,6 +51,7 @@ public class LatexEditor extends AbstractPage {
     @Override
     public void startPage() {
         super.startPage();
+        RPC.setCurrentBundle((Bundle) this.getDictionary().get("osgi.bundle"));
         servletRepository.registerServlet("/latexEditor/latexEditorService",new org.kevoree.library.javase.webserver.latexEditor.server.latexEditorServiceImpl());
     }
 
@@ -69,6 +72,9 @@ public class LatexEditor extends AbstractPage {
     @Override
     public KevoreeHttpResponse process(KevoreeHttpRequest request, KevoreeHttpResponse response) {
 
+        if(servletRepository.tryURL(request.getUrl(),request,response)){
+            return response;
+        }
         if (LatexService.checkService(this, request, response)) {
             return response;
         }
