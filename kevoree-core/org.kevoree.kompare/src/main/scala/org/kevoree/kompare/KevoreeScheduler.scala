@@ -14,7 +14,9 @@
 package org.kevoree.kompare
 
 import scheduling.SchedulingWithTopologicalOrderAlgo
-import org.kevoreeAdaptation.{KevoreeAdaptationFactory, AdaptationModel}
+import org.kevoreeAdaptation.{ParallelStep, KevoreeAdaptationFactory, AdaptationModel}
+import org.kevoree.{NamedElement, DeployUnit}
+import org.slf4j.LoggerFactory
 
 /**
  * Created by IntelliJ IDEA.
@@ -27,159 +29,168 @@ import org.kevoreeAdaptation.{KevoreeAdaptationFactory, AdaptationModel}
 trait KevoreeScheduler {
 
   def plan (adaptionModel: AdaptationModel, nodeName: String): AdaptationModel = {
-    var currentStep = KevoreeAdaptationFactory.eINSTANCE.createParallelStep
-    adaptionModel.setOrderedPrimitiveSet(Some(currentStep))
+    if (!adaptionModel.getAdaptations.isEmpty) {
 
-    val scheduling = new SchedulingWithTopologicalOrderAlgo
-    var step = KevoreeAdaptationFactory.eINSTANCE.createParallelStep
-    //PROCESS STOP
-    scheduling.schedule(adaptionModel.getAdaptations
-      .filter(adapt => adapt.getPrimitiveType.getName == JavaSePrimitive.StopInstance).toList, false).foreach {
-      p =>
+      val scheduling = new SchedulingWithTopologicalOrderAlgo
+      var step = KevoreeAdaptationFactory.eINSTANCE.createParallelStep
+      var currentStep = step
+      adaptionModel.setOrderedPrimitiveSet(Some(currentStep))
+      //PROCESS STOP
+      scheduling.schedule(adaptionModel.getAdaptations
+        .filter(adapt => adapt.getPrimitiveType.getName == JavaSePrimitive.StopInstance).toList, false).foreach {
+        p =>
+          step = KevoreeAdaptationFactory.eINSTANCE.createParallelStep
+          step.addAdaptations(p)
+          currentStep.setNextStep(Some(step))
+          currentStep = step
+      }
+      // REMOVE BINDINGS
+      if (!step.getAdaptations.isEmpty) {
         step = KevoreeAdaptationFactory.eINSTANCE.createParallelStep
-        step.addAdaptations(p)
+      }
+      step.addAllAdaptations(adaptionModel.getAdaptations
+        .filter(adapt => (adapt.getPrimitiveType.getName == JavaSePrimitive.RemoveBinding ||
+        adapt.getPrimitiveType.getName == JavaSePrimitive.RemoveFragmentBinding)))
+      if (!step.getAdaptations.isEmpty) {
         currentStep.setNextStep(Some(step))
         currentStep = step
-    }
-    // REMOVE BINDINGS
-    if (!step.getAdaptations.isEmpty) {
-      step = KevoreeAdaptationFactory.eINSTANCE.createParallelStep
-    }
-    step.addAllAdaptations(adaptionModel.getAdaptations
-      .filter(adapt => (adapt.getPrimitiveType.getName == JavaSePrimitive.RemoveBinding ||
-      adapt.getPrimitiveType.getName == JavaSePrimitive.RemoveFragmentBinding)))
-    if (!step.getAdaptations.isEmpty) {
-      currentStep.setNextStep(Some(step))
-      currentStep = step
-    }
+      }
 
-    // REMOVE INSTANCES
-    if (!step.getAdaptations.isEmpty) {
-      step = KevoreeAdaptationFactory.eINSTANCE.createParallelStep
-    }
-    step.addAllAdaptations(adaptionModel.getAdaptations
-      .filter(adapt => adapt.getPrimitiveType.getName == JavaSePrimitive.RemoveInstance))
-    if (!step.getAdaptations.isEmpty) {
-      currentStep.setNextStep(Some(step))
-      currentStep = step
-    }
-
-    // REMOVE TYPES
-    if (!step.getAdaptations.isEmpty) {
-      step = KevoreeAdaptationFactory.eINSTANCE.createParallelStep
-    }
-    step.addAllAdaptations(adaptionModel.getAdaptations
-      .filter(adapt => adapt.getPrimitiveType.getName == JavaSePrimitive.RemoveType))
-    if (!step.getAdaptations.isEmpty) {
-      currentStep.setNextStep(Some(step))
-      currentStep = step
-    }
-
-    // REMOVE DEPLOY UNIT
-    if (!step.getAdaptations.isEmpty) {
-      step = KevoreeAdaptationFactory.eINSTANCE.createParallelStep
-    }
-    step.addAllAdaptations(adaptionModel.getAdaptations
-      .filter(adapt => adapt.getPrimitiveType.getName == JavaSePrimitive.RemoveDeployUnit))
-    if (!step.getAdaptations.isEmpty) {
-      currentStep.setNextStep(Some(step))
-      currentStep = step
-    }
-
-    // ADD ThirdParty
-    if (!step.getAdaptations.isEmpty) {
-      step = KevoreeAdaptationFactory.eINSTANCE.createParallelStep
-    }
-    step.addAllAdaptations(adaptionModel.getAdaptations
-      .filter(adapt => adapt.getPrimitiveType.getName == JavaSePrimitive.AddThirdParty))
-    if (!step.getAdaptations.isEmpty) {
-      currentStep.setNextStep(Some(step))
-      currentStep = step
-    }
-
-    // ADD ThirdParty
-    if (!step.getAdaptations.isEmpty) {
-      step = KevoreeAdaptationFactory.eINSTANCE.createParallelStep
-    }
-    step.addAllAdaptations(adaptionModel.getAdaptations
-      .filter(adapt => adapt.getPrimitiveType.getName == JavaSePrimitive.UpdateDeployUnit))
-    if (!step.getAdaptations.isEmpty) {
-      currentStep.setNextStep(Some(step))
-      currentStep = step
-    }
-
-    // ADD DeployUnit
-    if (!step.getAdaptations.isEmpty) {
-      step = KevoreeAdaptationFactory.eINSTANCE.createParallelStep
-    }
-    step.addAllAdaptations(adaptionModel.getAdaptations
-      .filter(adapt => adapt.getPrimitiveType.getName == JavaSePrimitive.AddDeployUnit))
-    if (!step.getAdaptations.isEmpty) {
-      currentStep.setNextStep(Some(step))
-      currentStep = step
-    }
-
-    // ADD DeployUnit
-    if (!step.getAdaptations.isEmpty) {
-      step = KevoreeAdaptationFactory.eINSTANCE.createParallelStep
-    }
-    step.addAllAdaptations(adaptionModel.getAdaptations
-      .filter(adapt => adapt.getPrimitiveType.getName == JavaSePrimitive.AddType))
-    if (!step.getAdaptations.isEmpty) {
-      currentStep.setNextStep(Some(step))
-      currentStep = step
-    }
-
-    // ADD Instances
-    if (!step.getAdaptations.isEmpty) {
-      step = KevoreeAdaptationFactory.eINSTANCE.createParallelStep
-    }
-    step.addAllAdaptations(adaptionModel.getAdaptations
-      .filter(adapt => adapt.getPrimitiveType.getName == JavaSePrimitive.AddInstance))
-    if (!step.getAdaptations.isEmpty) {
-      currentStep.setNextStep(Some(step))
-      currentStep = step
-    }
-
-    // ADD Instances
-    if (!step.getAdaptations.isEmpty) {
-      step = KevoreeAdaptationFactory.eINSTANCE.createParallelStep
-    }
-    step.addAllAdaptations(adaptionModel.getAdaptations
-      .filter(adapt => (adapt.getPrimitiveType.getName == JavaSePrimitive.AddBinding ||
-      adapt.getPrimitiveType.getName == JavaSePrimitive.AddFragmentBinding)))
-    if (!step.getAdaptations.isEmpty) {
-      currentStep.setNextStep(Some(step))
-      currentStep = step
-    }
-
-    // ADD Instances
-    if (!step.getAdaptations.isEmpty) {
-      step = KevoreeAdaptationFactory.eINSTANCE.createParallelStep
-    }
-    step.addAllAdaptations(adaptionModel.getAdaptations
-      .filter(adapt => adapt.getPrimitiveType.getName == JavaSePrimitive.UpdateDictionaryInstance))
-    if (!step.getAdaptations.isEmpty) {
-      currentStep.setNextStep(Some(step))
-      currentStep = step
-    }
-
-
-    //PROCESS START
-    scheduling.schedule(adaptionModel.getAdaptations
-      .filter(adapt => adapt.getPrimitiveType.getName == JavaSePrimitive.StartInstance).toList, true).foreach {
-      p =>
-        val step = KevoreeAdaptationFactory.eINSTANCE.createParallelStep
-        step.addAdaptations(p)
+      // REMOVE INSTANCES
+      if (!step.getAdaptations.isEmpty) {
+        step = KevoreeAdaptationFactory.eINSTANCE.createParallelStep
+      }
+      step.addAllAdaptations(adaptionModel.getAdaptations
+        .filter(adapt => adapt.getPrimitiveType.getName == JavaSePrimitive.RemoveInstance))
+      if (!step.getAdaptations.isEmpty) {
         currentStep.setNextStep(Some(step))
         currentStep = step
-    }
+      }
 
-    if (adaptionModel.getOrderedPrimitiveSet.get.getAdaptations.isEmpty) {
+      // REMOVE TYPES
+      if (!step.getAdaptations.isEmpty) {
+        step = KevoreeAdaptationFactory.eINSTANCE.createParallelStep
+      }
+      step.addAllAdaptations(adaptionModel.getAdaptations
+        .filter(adapt => adapt.getPrimitiveType.getName == JavaSePrimitive.RemoveType))
+      if (!step.getAdaptations.isEmpty) {
+        currentStep.setNextStep(Some(step))
+        currentStep = step
+      }
+
+      // REMOVE DEPLOY UNIT
+      if (!step.getAdaptations.isEmpty) {
+        step = KevoreeAdaptationFactory.eINSTANCE.createParallelStep
+      }
+      step.addAllAdaptations(adaptionModel.getAdaptations
+        .filter(adapt => adapt.getPrimitiveType.getName == JavaSePrimitive.RemoveDeployUnit))
+      if (!step.getAdaptations.isEmpty) {
+        currentStep.setNextStep(Some(step))
+        currentStep = step
+      }
+
+      // ADD ThirdParty
+      if (!step.getAdaptations.isEmpty) {
+        step = KevoreeAdaptationFactory.eINSTANCE.createParallelStep
+      }
+      step.addAllAdaptations(adaptionModel.getAdaptations
+        .filter(adapt => adapt.getPrimitiveType.getName == JavaSePrimitive.AddThirdParty))
+      if (!step.getAdaptations.isEmpty) {
+        currentStep.setNextStep(Some(step))
+        currentStep = step
+      }
+
+      // START ThirdParty
+      if (!step.getAdaptations.isEmpty) {
+        step = KevoreeAdaptationFactory.eINSTANCE.createParallelStep
+      }
+      step.addAllAdaptations(adaptionModel.getAdaptations
+        .filter(adapt => adapt.getPrimitiveType.getName == JavaSePrimitive.StartThirdParty))
+      if (!step.getAdaptations.isEmpty) {
+        currentStep.setNextStep(Some(step))
+        currentStep = step
+      }
+
+      // UPDATE ThirdParty OR DeployUnit
+      if (!step.getAdaptations.isEmpty) {
+        step = KevoreeAdaptationFactory.eINSTANCE.createParallelStep
+      }
+      step.addAllAdaptations(adaptionModel.getAdaptations
+        .filter(adapt => adapt.getPrimitiveType.getName == JavaSePrimitive.UpdateDeployUnit))
+      if (!step.getAdaptations.isEmpty) {
+        currentStep.setNextStep(Some(step))
+        currentStep = step
+      }
+
+      // ADD DeployUnit
+      if (!step.getAdaptations.isEmpty) {
+        step = KevoreeAdaptationFactory.eINSTANCE.createParallelStep
+      }
+      step.addAllAdaptations(adaptionModel.getAdaptations
+        .filter(adapt => adapt.getPrimitiveType.getName == JavaSePrimitive.AddDeployUnit))
+      if (!step.getAdaptations.isEmpty) {
+        currentStep.setNextStep(Some(step))
+        currentStep = step
+      }
+
+      // ADD DeployUnit
+      if (!step.getAdaptations.isEmpty) {
+        step = KevoreeAdaptationFactory.eINSTANCE.createParallelStep
+      }
+      step.addAllAdaptations(adaptionModel.getAdaptations
+        .filter(adapt => adapt.getPrimitiveType.getName == JavaSePrimitive.AddType))
+      if (!step.getAdaptations.isEmpty) {
+        currentStep.setNextStep(Some(step))
+        currentStep = step
+      }
+
+      // ADD Instances
+      if (!step.getAdaptations.isEmpty) {
+        step = KevoreeAdaptationFactory.eINSTANCE.createParallelStep
+      }
+      step.addAllAdaptations(adaptionModel.getAdaptations
+        .filter(adapt => adapt.getPrimitiveType.getName == JavaSePrimitive.AddInstance))
+      if (!step.getAdaptations.isEmpty) {
+        currentStep.setNextStep(Some(step))
+        currentStep = step
+      }
+
+      // ADD Instances
+      if (!step.getAdaptations.isEmpty) {
+        step = KevoreeAdaptationFactory.eINSTANCE.createParallelStep
+      }
+      step.addAllAdaptations(adaptionModel.getAdaptations
+        .filter(adapt => (adapt.getPrimitiveType.getName == JavaSePrimitive.AddBinding ||
+        adapt.getPrimitiveType.getName == JavaSePrimitive.AddFragmentBinding)))
+      if (!step.getAdaptations.isEmpty) {
+        currentStep.setNextStep(Some(step))
+        currentStep = step
+      }
+
+      // ADD Instances
+      if (!step.getAdaptations.isEmpty) {
+        step = KevoreeAdaptationFactory.eINSTANCE.createParallelStep
+      }
+      step.addAllAdaptations(adaptionModel.getAdaptations
+        .filter(adapt => adapt.getPrimitiveType.getName == JavaSePrimitive.UpdateDictionaryInstance))
+      if (!step.getAdaptations.isEmpty) {
+        currentStep.setNextStep(Some(step))
+        currentStep = step
+      }
+
+
+      //PROCESS START
+      scheduling.schedule(adaptionModel.getAdaptations
+        .filter(adapt => adapt.getPrimitiveType.getName == JavaSePrimitive.StartInstance).toList, true).foreach {
+        p =>
+          val step = KevoreeAdaptationFactory.eINSTANCE.createParallelStep
+          step.addAdaptations(p)
+          currentStep.setNextStep(Some(step))
+          currentStep = step
+      }
+    } else {
       adaptionModel.setOrderedPrimitiveSet(None)
     }
     adaptionModel
   }
-
-
 }

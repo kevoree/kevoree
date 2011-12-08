@@ -56,6 +56,7 @@ class BaseDeployOSGi(bundle: Bundle) {
           case JavaSePrimitive.RemoveBinding => RemoveBindingCommand(p.getRef.asInstanceOf[MBinding], nodeName)
           case JavaSePrimitive.AddFragmentBinding => AddFragmentBindingCommand(p.getRef.asInstanceOf[Channel], p.getTargetNodeName, nodeName)
           case JavaSePrimitive.RemoveFragmentBinding => RemoveFragmentBindingCommand(p.getRef.asInstanceOf[Channel], p.getTargetNodeName, nodeName)
+          case JavaSePrimitive.StartThirdParty => StartThirdPartyCommand(p.getRef.asInstanceOf[DeployUnit], nodeName)
           case _@name => {
             logger.error("Unknown Kevoree adaptation primitive " + name); null
           }
