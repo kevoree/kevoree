@@ -9,10 +9,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.security.Principal;
-import java.util.Collection;
-import java.util.Enumeration;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by IntelliJ IDEA.
@@ -30,14 +27,12 @@ public class KevoreeServletRequest implements HttpServletRequest {
 
     @Override
     public Object getAttribute(String s) {
-        return null;
+        return kevRequest.getResolvedParams().get(s);
     }
 
     @Override
     public Enumeration<String> getAttributeNames() {
-
-
-        return null;
+        return Collections.enumeration(kevRequest.getResolvedParams().keySet());
     }
 
     @Override
@@ -69,17 +64,17 @@ public class KevoreeServletRequest implements HttpServletRequest {
 
     @Override
     public String getParameter(String s) {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return kevRequest.getResolvedParams().get(s);
     }
 
     @Override
     public Enumeration<String> getParameterNames() {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return Collections.enumeration(kevRequest.getResolvedParams().keySet());
     }
 
     @Override
     public String[] getParameterValues(String s) {
-        return new String[0];  //To change body of implemented methods use File | Settings | File Templates.
+        return new String[]{kevRequest.getResolvedParams().get(s)};
     }
 
     @Override
@@ -89,7 +84,7 @@ public class KevoreeServletRequest implements HttpServletRequest {
 
     @Override
     public String getProtocol() {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return "http";
     }
 
     @Override
@@ -259,17 +254,17 @@ public class KevoreeServletRequest implements HttpServletRequest {
 
     @Override
     public String getPathInfo() {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return kevRequest.getUrl();
     }
 
     @Override
     public String getPathTranslated() {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return kevRequest.getUrl();
     }
 
     @Override
     public String getContextPath() {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return kevRequest.getUrl();
     }
 
     @Override
@@ -299,7 +294,7 @@ public class KevoreeServletRequest implements HttpServletRequest {
 
     @Override
     public String getRequestURI() {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return kevRequest.getUrl();
     }
 
     @Override
@@ -309,7 +304,7 @@ public class KevoreeServletRequest implements HttpServletRequest {
 
     @Override
     public String getServletPath() {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return kevRequest.getUrl();
     }
 
     @Override
