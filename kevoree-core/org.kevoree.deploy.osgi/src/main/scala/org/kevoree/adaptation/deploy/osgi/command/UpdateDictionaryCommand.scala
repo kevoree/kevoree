@@ -102,7 +102,7 @@ case class UpdateDictionaryCommand(c: Instance, nodeName: String) extends Primit
               false
             }
             case Some(sr) => {
-              val obj: KevoreeComponent = componentBundle.getBundleContext.getService(sr).asInstanceOf[KevoreeComponent]
+              val obj = componentBundle.getBundleContext.getService(sr)
               val tempHash = new HashMap[String, String]
               import scala.collection.JavaConversions._
               lastDictioanry.foreach{ dic =>
