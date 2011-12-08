@@ -123,8 +123,6 @@ class JmDnsComponent(nodeName: String, groupName: String, modelPort: Int, modelH
   jmdns.addServiceListener(REMOTE_TYPE, servicelistener)
 
 
-
-
   new Thread() {
     override def run() {
       val nodeType = modelHandler.getLastModel.getNodes.find(n => n.getName == nodeName).get.getTypeDefinition.getName
@@ -136,16 +134,19 @@ class JmDnsComponent(nodeName: String, groupName: String, modelPort: Int, modelH
       logger.debug("nodeName " + nodeName + " groupName " + groupName + " modelPort " + modelPort + " groupTypeName " + groupTypeName + " nodeType " + nodeType)
 
       jmdns.registerService(pairservice)
+
     }
   }.start()
 
   def close() {
-    if (servicelistener != null) {
-      jmdns.removeServiceListener(REMOTE_TYPE, servicelistener)
-    }
-    jmdns.unregisterAllServices()
-    jmdns.close()
+    new Thread() {
+      override def run() {
+        if (servicelistener != null) {
+          jmdns.removeServiceListener(REMOTE_TYPE, servicelistener)
+        }
+        jmdns.close()
+      }
+
+    }.start()
   }
-
-
 }
