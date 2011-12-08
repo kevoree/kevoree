@@ -19,7 +19,7 @@
         <dependency>
             <groupId>org.kevoree.extra</groupId>
             <artifactId>org.kevoree.extra.osgi.jmdns</artifactId>
-            <version>3.4.1</version>
+            <version>3.4.1-hack</version>
             <scope>provided</scope>
         </dependency>
         <!--
