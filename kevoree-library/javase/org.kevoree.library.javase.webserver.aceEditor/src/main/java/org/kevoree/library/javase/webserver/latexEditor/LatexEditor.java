@@ -2,11 +2,12 @@ package org.kevoree.library.javase.webserver.latexEditor;
 
 import org.kevoree.annotation.*;
 import org.kevoree.framework.message.StdKevoreeMessage;
-import org.kevoree.library.javase.fileSystemSVN.LockFilesService;
+import org.kevoree.library.javase.fileSystem.LockFilesService;
 import org.kevoree.library.javase.webserver.AbstractPage;
 import org.kevoree.library.javase.webserver.FileServiceHelper;
 import org.kevoree.library.javase.webserver.KevoreeHttpRequest;
 import org.kevoree.library.javase.webserver.KevoreeHttpResponse;
+import org.kevoree.library.javase.webserver.servlet.LocalServletRegistry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -42,6 +43,14 @@ public class LatexEditor extends AbstractPage {
     public List<String> waitingID = Collections.synchronizedList(new ArrayList<String>());
     public Map<String, Boolean> compileResult = Collections.synchronizedMap(new HashMap<String, Boolean>());
     public Map<String, Object> compileLog = Collections.synchronizedMap(new HashMap<String, Object>());
+
+    private LocalServletRegistry servletRepository = new LocalServletRegistry();
+
+    @Override
+    public void startPage() {
+        super.startPage();
+        servletRepository.registerServlet("/latexEditor/latexEditorService",new org.kevoree.library.javase.webserver.latexEditor.server.latexEditorServiceImpl());
+    }
 
     @Port(name = "compileCallback")
     public void compileCallback(Object o) {

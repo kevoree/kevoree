@@ -51,7 +51,13 @@
         </dependency>
         <dependency>
             <groupId>org.kevoree.library.javase</groupId>
-            <artifactId>org.kevoree.library.javase.fileSystemSVN</artifactId>
+            <artifactId>org.kevoree.library.javase.fileSystem</artifactId>
+            <version>${kevoree.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.kevoree.library.javase</groupId>
+            <artifactId>org.kevoree.library.javase.webserver.servlet</artifactId>
             <version>${kevoree.version}</version>
             <scope>provided</scope>
         </dependency>
@@ -117,6 +123,7 @@
                 <extensions>true</extensions>
                 <configuration>
                     <instructions>
+                        <Private-Package>com.google.gwt.user.*</Private-Package>
                         <Export-Package>
                             org.kevoree.library.javase.webserver.latexEditor.*,
                             edu.ycp.*

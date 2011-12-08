@@ -2,7 +2,7 @@ package org.kevoree.library.javase.webserver.latexEditor;
 
 import org.kevoree.framework.MessagePort;
 import org.kevoree.framework.message.StdKevoreeMessage;
-import org.kevoree.library.javase.fileSystemSVN.LockFilesService;
+import org.kevoree.library.javase.fileSystem.LockFilesService;
 import org.kevoree.library.javase.webserver.KevoreeHttpRequest;
 import org.kevoree.library.javase.webserver.KevoreeHttpResponse;
 import org.slf4j.Logger;
