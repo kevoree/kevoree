@@ -174,6 +174,10 @@ trait KevoreeScheduler {
         currentStep.setNextStep(Some(step))
         currentStep = step
     }
+
+    if (adaptionModel.getOrderedPrimitiveSet.get.getAdaptations.isEmpty) {
+      adaptionModel.setOrderedPrimitiveSet(None)
+    }
     adaptionModel
   }
 
