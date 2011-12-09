@@ -81,11 +81,8 @@ object Helper {
   }
 
   private def getVersion: String = {
-    val stream: InputStream = this.getClass.getClassLoader
-      .getResourceAsStream("META-INF/maven/org.kevoree.library.sky/org.kevoree.library.sky.minicloud/pom.properties")
-    val prop: Properties = new Properties
-    prop.load(stream)
-    prop.getProperty("version")
+
+    KevoreeFactory.getVersion
   }
 
 }
