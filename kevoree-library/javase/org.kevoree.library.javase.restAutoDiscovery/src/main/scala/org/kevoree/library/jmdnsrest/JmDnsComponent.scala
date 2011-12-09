@@ -36,6 +36,7 @@ class JmDnsComponent(nodeName: String, groupName: String, modelPort: Int, modelH
   final val REMOTE_TYPE: String = "_kevoree-remote._tcp.local."
   val values = new HashMap[String, String]
 
+
   def updateModelNetwork(nodeName: String, nodeType: String, groupName: String, groupType: String, groupPort: String): Option[ContainerRoot] = {
     val currentModel = modelHandler.getLastModel //GET & CLONE
 
@@ -83,16 +84,28 @@ class JmDnsComponent(nodeName: String, groupName: String, modelPort: Int, modelH
     Some(currentModel)
   }
 
-  def addService(p1:ServiceEvent)
+  /**
+   * add a node found in the model and request an update
+   */
+  def addNodeDiscovered(p1:ServiceInfo)
   {
-    val typeNames = new String(p1.getInfo.getTextBytes, "UTF-8");
+    val typeNames = new String(p1.getTextBytes, "UTF-8");
     val typeNamesArray = typeNames.split("/")
-    val resultModel = updateModelNetwork(p1.getInfo.getName.trim(), typeNamesArray(1), groupName, typeNamesArray(0), p1.getInfo().getPort.toString)
+    val resultModel = updateModelNetwork(p1.getName.trim(), typeNamesArray(1), groupName, typeNamesArray(0), p1.getPort.toString)
     resultModel.map {
       goodModel => {
-
         modelHandler.updateModel(goodModel)
       }
+    }
+  }
+
+  /*
+  Request from the user to scan the network
+   */
+  def requestUpdateList()
+  {
+    for (ser <- jmdns.list(REMOTE_TYPE,500)) {
+         addNodeDiscovered(ser)
     }
   }
 
@@ -103,16 +116,14 @@ class JmDnsComponent(nodeName: String, groupName: String, modelPort: Int, modelH
 
     def serviceAdded(p1: ServiceEvent) {
       jmdns.requestServiceInfo(p1.getType(), p1.getName(), 1);
-      addService(p1)
+      addNodeDiscovered(p1.getInfo)
     }
 
     def serviceResolved(p1: ServiceEvent) {
 
       logger.debug("Service resolved: " + p1.getInfo().getQualifiedName() + " port:" + p1.getInfo().getPort());
-      addService(p1)
+      addNodeDiscovered(p1.getInfo)
     }
-
-
 
     def serviceRemoved(p1: ServiceEvent) {
       logger.debug("Service removed " + p1.getName)
@@ -122,19 +133,13 @@ class JmDnsComponent(nodeName: String, groupName: String, modelPort: Int, modelH
 
   jmdns.addServiceListener(REMOTE_TYPE, servicelistener)
 
-
   new Thread() {
     override def run() {
       val nodeType = modelHandler.getLastModel.getNodes.find(n => n.getName == nodeName).get.getTypeDefinition.getName
-
-
       val pairservice: ServiceInfo = ServiceInfo.create(REMOTE_TYPE, nodeName, groupName, modelPort, "")
       pairservice.setText((groupTypeName + "/" + nodeType).getBytes("UTF-8"))
-
       logger.debug("nodeName " + nodeName + " groupName " + groupName + " modelPort " + modelPort + " groupTypeName " + groupTypeName + " nodeType " + nodeType)
-
       jmdns.registerService(pairservice)
-
     }
   }.start()
 
