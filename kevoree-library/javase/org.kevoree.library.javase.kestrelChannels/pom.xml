@@ -22,7 +22,7 @@
         <kestrel.version>2.3.3</kestrel.version>
         <twitter.version>1.0</twitter.version>
         <!--<guava.version>10.0.1</guava.version>-->
-        <netty.version>3.2.5.Final</netty.version>
+        <netty.version>3.2.5</netty.version>
         <!--<protobuf.version>2.4.1</protobuf.version>-->
     </properties>
 
