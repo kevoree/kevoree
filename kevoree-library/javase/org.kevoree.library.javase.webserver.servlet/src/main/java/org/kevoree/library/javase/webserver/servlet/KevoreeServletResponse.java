@@ -29,9 +29,12 @@ public class KevoreeServletResponse implements HttpServletResponse {
     final ServletOutputStream servletStream = new ServletOutputStream(){
         @Override
         public void write(int i) throws IOException {
+            //logger.debug("write ="+i);
             stream.write(i);
         }
     };
+    
+    private String contentType = "text/html";
 
     @Override
     public String getCharacterEncoding() {
@@ -40,7 +43,7 @@ public class KevoreeServletResponse implements HttpServletResponse {
 
     @Override
     public String getContentType() {
-        return "text/html";
+        return contentType;
     }
 
     @Override
@@ -63,7 +66,7 @@ public class KevoreeServletResponse implements HttpServletResponse {
 
     @Override
     public void setContentType(String s) {
-
+        contentType = s;
     }
 
     @Override
@@ -105,9 +108,9 @@ public class KevoreeServletResponse implements HttpServletResponse {
     }
 
     public void populateKevoreeResponse(KevoreeHttpResponse response){
-        logger.debug("Set ContentRaw {}",stream.toByteArray());
         try {
             stream.flush();
+            logger.debug("Set ContentRaw {}",new String(stream.toByteArray()));
             response.setRawContent(stream.toByteArray());
             stream.close();
         } catch (IOException e) {

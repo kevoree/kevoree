@@ -1,13 +1,12 @@
 package org.kevoree.library.javase.webserver.servlet;
 
 import org.kevoree.library.javase.webserver.KevoreeHttpRequest;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.*;
 import javax.servlet.http.*;
-import java.io.BufferedReader;
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
+import java.io.*;
 import java.security.Principal;
 import java.util.*;
 
@@ -19,10 +18,31 @@ import java.util.*;
  * To change this template use File | Settings | File Templates.
  */
 public class KevoreeServletRequest implements HttpServletRequest {
+
+    private Logger logger = LoggerFactory.getLogger(this.getClass());
+
     KevoreeHttpRequest kevRequest = null;
+    ServletInputStream input = null;
+
+    BufferedReader reader = null;
 
     public KevoreeServletRequest(KevoreeHttpRequest _r) {
         kevRequest = _r;
+        input = new ServletInputStream() {
+
+            ByteArrayInputStream inputStream = new ByteArrayInputStream(kevRequest.getRawBody());
+
+            @Override
+            public int read() throws IOException {
+                return inputStream.read();
+            }
+
+            @Override
+            public int available() throws IOException {
+                return inputStream.available();
+            }
+        };
+        reader = new BufferedReader(new InputStreamReader(input));
     }
 
     @Override
@@ -54,12 +74,15 @@ public class KevoreeServletRequest implements HttpServletRequest {
 
     @Override
     public String getContentType() {
+        if(kevRequest.getHeaders().containsKey("Content-Type")){
+            return kevRequest.getHeaders().get("Content-Type");
+        }
         return "text/plain";
     }
 
     @Override
     public ServletInputStream getInputStream() throws IOException {
-        return null;
+        return input;
     }
 
     @Override
@@ -79,7 +102,8 @@ public class KevoreeServletRequest implements HttpServletRequest {
 
     @Override
     public Map<String, String[]> getParameterMap() {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        logger.error("Not implemented !!! ");
+        return null;
     }
 
     @Override
@@ -89,22 +113,25 @@ public class KevoreeServletRequest implements HttpServletRequest {
 
     @Override
     public String getScheme() {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        logger.error("Not implemented !!! ");
+        return null;
     }
 
     @Override
     public String getServerName() {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        logger.error("Not implemented !!! ");
+        return null;
     }
 
     @Override
     public int getServerPort() {
-        return 0;  //To change body of implemented methods use File | Settings | File Templates.
+        logger.error("Not implemented !!! ");
+        return 0;
     }
 
     @Override
     public BufferedReader getReader() throws IOException {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return reader;
     }
 
     @Override
@@ -224,17 +251,17 @@ public class KevoreeServletRequest implements HttpServletRequest {
 
     @Override
     public String getHeader(String name) {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return kevRequest.getHeaders().get(name);
     }
 
     @Override
     public Enumeration<String> getHeaders(String name) {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return Collections.enumeration(Collections.singleton(kevRequest.getHeaders().get(name)));
     }
 
     @Override
     public Enumeration<String> getHeaderNames() {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return Collections.enumeration(kevRequest.getHeaders().keySet());
     }
 
     @Override
@@ -244,7 +271,7 @@ public class KevoreeServletRequest implements HttpServletRequest {
 
     @Override
     public String getMethod() {
-        if (kevRequest.getResolvedParams().containsKey("body")) {
+        if (kevRequest.getRawBody().length > 0) {
             return "POST";
         } else {
             return "GET";

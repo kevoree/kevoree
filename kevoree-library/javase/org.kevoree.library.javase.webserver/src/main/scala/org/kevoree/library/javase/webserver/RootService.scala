@@ -77,22 +77,27 @@ class RootService(id: String, request: MessagePort, bootstrap: ServerBootstrap, 
     case RequestContext(HttpRequest(HttpMethods.GET, "/favicon.ico", _, _, _), _, responder) =>
       responder.complete(response("Unknown resource!", 404, defaultHeaders))
 
-    case RequestContext(HttpRequest(HttpMethods.GET, url, _, _, _), _, responder) =>
+    case RequestContext(HttpRequest(HttpMethods.GET, url, headers, _, _), _, responder) =>
       val kevMsg = new KevoreeHttpRequest
       actorRef ! RequestResponderTuple(responder, kevMsg.getTokenID, System.currentTimeMillis())
       val paramsRes = GetParamsParser.getParams(url)
       kevMsg.setUrl(paramsRes._1)
       kevMsg.setResolvedParams(paramsRes._2)
+      headers.foreach{header =>
+        kevMsg.getHeaders.put(header._1,header._2)
+      }
       request.process(kevMsg)
 
     case RequestContext(HttpRequest(HttpMethods.POST, url, headers, body, _), _, responder) =>
       val kevMsg = new KevoreeHttpRequest
       actorRef ! RequestResponderTuple(responder, kevMsg.getTokenID, System.currentTimeMillis())
       val paramsRes = GetParamsParser.getParams(url + "?" + new String(body))
-      val params = paramsRes._2
       kevMsg.setRawBody(body)
       kevMsg.setUrl(paramsRes._1)
       kevMsg.setResolvedParams(paramsRes._2)
+      headers.foreach{header =>
+        kevMsg.getHeaders.put(header._1,header._2)
+      }
       request.process(kevMsg)
 
     case Timeout(method, uri, _, _, _, complete) => complete {

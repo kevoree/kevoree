@@ -35,7 +35,30 @@ public abstract class AbstractHttpServletPage extends AbstractPage {
         super.startPage();
         try {
             initServlet();
-            legacyServlet.init();
+
+            ServletConfig config = new ServletConfig() {
+                @Override
+                public String getServletName() {
+                    return getName();
+                }
+
+                @Override
+                public ServletContext getServletContext() {
+                    return ServletContextHandler.getContext();
+                }
+
+                @Override
+                public String getInitParameter(String name) {
+                    return null;  //To change body of implemented methods use File | Settings | File Templates.
+                }
+
+                @Override
+                public Enumeration<String> getInitParameterNames() {
+                    return null;  //To change body of implemented methods use File | Settings | File Templates.
+                }
+            };
+
+            legacyServlet.init(config);
         } catch (ServletException e) {
             logger.error("Error while starting servlet");
         }
@@ -52,9 +75,11 @@ public abstract class AbstractHttpServletPage extends AbstractPage {
         KevoreeServletRequest wrapper_request = new KevoreeServletRequest(request);
         KevoreeServletResponse wrapper_response = new KevoreeServletResponse();
         try {
+            logger.debug("Sending "+new String(request.getRawBody()));
+            logger.debug("Sending " + request.getResolvedParams().keySet().size());
             legacyServlet.service(wrapper_request, wrapper_response);
         } catch (Exception e) {
-            logger.warn("Error while processing request");
+            logger.error("Error while processing request",e);
         }
         wrapper_response.populateKevoreeResponse(response);
         return super.process(request, response);

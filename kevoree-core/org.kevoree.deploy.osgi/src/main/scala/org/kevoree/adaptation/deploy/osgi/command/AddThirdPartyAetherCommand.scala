@@ -43,7 +43,7 @@ case class AddThirdPartyAetherCommand(deployUnit: DeployUnit) extends PrimitiveC
       val symbolicName: String = lastExecutionBundle.get.getSymbolicName
       KevoreeDeployManager.addMapping(KevoreeOSGiBundle(deployUnit.getName, deployUnit.getClass.getName, lastExecutionBundle.get.getBundleId))
       // lastExecutionBundle.get.start
-      mustBeStarted = true
+      mustBeStarted = false
       true
     } catch {
       case e: BundleException if (e.getType == BundleException.DUPLICATE_BUNDLE_ERROR) => {

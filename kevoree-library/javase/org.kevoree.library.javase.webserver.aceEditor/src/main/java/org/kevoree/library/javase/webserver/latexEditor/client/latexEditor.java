@@ -10,6 +10,11 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
+import java.io.PrintWriter;
+
 /**
  * Entry point classes define <code>onModuleLoad()</code>
  */
@@ -28,6 +33,7 @@ public class latexEditor implements EntryPoint {
             @Override
             public void onFailure(Throwable caught) {
                 Window.alert("Failiure" + caught.getMessage());
+                Window.alert(caught.toString());
             }
 
             @Override

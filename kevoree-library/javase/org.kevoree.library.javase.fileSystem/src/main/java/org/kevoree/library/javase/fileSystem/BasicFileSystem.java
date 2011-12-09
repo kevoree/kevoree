@@ -19,7 +19,7 @@ import java.util.Set;
 
 @Library(name = "JavaSE")
 @Provides({
-        @ProvidedPort(name = "files", type = PortType.SERVICE, className = FilesService.class)
+        @ProvidedPort(name = "files", type = PortType.SERVICE, className = LockFilesService.class)
 })
 @MessageTypes({
         @MessageType(name = "saveFile", elems = {@MsgElem(name = "path", className = String.class), @MsgElem(name = "data", className = Byte[].class)})
@@ -28,7 +28,7 @@ import java.util.Set;
         @DictionaryAttribute(name = "basedir", optional = false)
 })
 @ComponentType
-public class BasicFileSystem extends AbstractComponentType implements FilesService {
+public class BasicFileSystem extends AbstractComponentType implements LockFilesService {
 
     private String baseURL = "";
     private Logger logger = LoggerFactory.getLogger(BasicFileSystem.class);
@@ -92,6 +92,11 @@ public class BasicFileSystem extends AbstractComponentType implements FilesServi
     }
 
     @Port(name = "files", method = "getFileContent")
+    public byte[] getFileContent(String relativePath, Boolean lock) {
+        return this.getFileContent(relativePath);
+    }
+
+
     public byte[] getFileContent(String relativePath) {
         File f = new File(baseURL + relativePath);
         if (f.exists()) {
@@ -122,6 +127,15 @@ public class BasicFileSystem extends AbstractComponentType implements FilesServi
     }
 
     @Port(name = "files", method = "saveFile")
+    public boolean saveFile(String relativePath, byte[] data, Boolean unlock) {
+        return this.saveFile(relativePath,data);
+    }
+
+    @Port(name = "files", method = "unlock")
+    public void unlock(String relativePath) {
+        //NOOP
+    }
+
     public boolean saveFile(String relativePath, byte[] data) {
         File f = new File(baseURL + relativePath);
         if (f.exists()) {

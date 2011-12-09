@@ -2,6 +2,7 @@ package org.kevoree.library.javase.fileSystemSVN;
 
 import org.kevoree.annotation.*;
 import org.kevoree.framework.AbstractComponentType;
+import org.kevoree.library.javase.fileSystem.LockFilesService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.tmatesoft.svn.core.SVNDepth;

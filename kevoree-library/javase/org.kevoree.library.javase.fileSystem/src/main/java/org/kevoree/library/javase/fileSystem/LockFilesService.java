@@ -1,6 +1,5 @@
 package org.kevoree.library.javase.fileSystem;
 
-import java.util.List;
 import java.util.Set;
 
 /**
@@ -10,16 +9,18 @@ import java.util.Set;
  * Time: 20:03
  * To change this template use File | Settings | File Templates.
  */
-public interface FilesService {
+public interface LockFilesService {
 
     public Set<String> getFilesPath();
 
     public Set<String> getFilteredFilesPath(Set<String> extensions);
-
-    public byte[] getFileContent(String relativePath);
+    
+    public byte[] getFileContent(String relativePath, Boolean lock);
 	
 	public String getAbsolutePath(String relativePath);
     
-    public boolean saveFile(String relativePath,byte[] data);
+    public boolean saveFile(String relativePath, byte[] data, Boolean unlock);
+
+    public void unlock(String relativePath);
 
 }

@@ -47,13 +47,19 @@
             <groupId>org.kevoree.library.javase</groupId>
             <artifactId>org.kevoree.library.javase.webserver</artifactId>
             <version>${kevoree.version}</version>
-            <scope>provided</scope>
+            <type>bundle</type>
         </dependency>
         <dependency>
             <groupId>org.kevoree.library.javase</groupId>
-            <artifactId>org.kevoree.library.javase.fileSystemSVN</artifactId>
+            <artifactId>org.kevoree.library.javase.fileSystem</artifactId>
             <version>${kevoree.version}</version>
-            <scope>provided</scope>
+            <type>bundle</type>
+        </dependency>
+        <dependency>
+            <groupId>org.kevoree.library.javase</groupId>
+            <artifactId>org.kevoree.library.javase.webserver.servlet</artifactId>
+            <version>${kevoree.version}</version>
+            <type>bundle</type>
         </dependency>
         <dependency>
             <groupId>junit</groupId>
@@ -117,6 +123,10 @@
                 <extensions>true</extensions>
                 <configuration>
                     <instructions>
+                        <Private-Package>
+                            com.google.gwt.user.*,
+                            com.google.gwt.core.client.*
+                        </Private-Package>
                         <Export-Package>
                             org.kevoree.library.javase.webserver.latexEditor.*,
                             edu.ycp.*
@@ -125,7 +135,7 @@
                             !edu.ycp.*,
                             !org.kevoree.library.javase.webserver.latexEditor.*,
                             !com.google.*,
-                            org.kevoree.*,scala.*,java.*,javax.*,org.slf4j.*
+                            org.kevoree.*,scala.*,java.*,javax.*,org.slf4j.*,org.osgi.*
                         </Import-Package>
                     </instructions>
                 </configuration>

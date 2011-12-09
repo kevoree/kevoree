@@ -23,14 +23,12 @@ import org.slf4j.LoggerFactory;
 @Library(name="JavaSE")
 @NodeType
 @PrimitiveCommands(
-		values = {"UpdateType", "UpdateDeployUnit", "AddType", "AddDeployUnit", "AddThirdParty", "RemoveType", "RemoveDeployUnit", "UpdateInstance", "UpdateBinding", "UpdateDictionaryInstance", "AddInstance", "RemoveInstance", "AddBinding", "RemoveBinding", "AddFragmentBinding", "RemoveFragmentBinding","UpdateFragmentBinding", "StartInstance", "StopInstance"},
-		value = {})
+		values = {"UpdateType", "UpdateDeployUnit", "AddType", "AddDeployUnit", "AddThirdParty", "RemoveType", "RemoveDeployUnit", "UpdateInstance", "UpdateBinding", "UpdateDictionaryInstance", "AddInstance", "RemoveInstance", "AddBinding", "RemoveBinding", "AddFragmentBinding", "RemoveFragmentBinding","UpdateFragmentBinding", "StartInstance", "StopInstance", "StartThirdParty"},		value = {})
 public class JavaSENode extends AbstractNodeType {
 	private static final Logger logger = LoggerFactory.getLogger(JavaSENode.class);
 
 	private KevoreeKompareBean kompareBean = null;
 	private BaseDeployOSGi deployBean = null;
-
 
 	@Start
 	@Override
