@@ -1,33 +1,12 @@
 package org.kevoree.library.javase.kestrelChannels
 
-import com.twitter.logging.config.{FileHandlerConfig, LoggerConfig}
 import com.twitter.ostrich.admin.RuntimeEnvironment
-import com.twitter.util.{JavaTimer, Timer, Duration, StorageUnit}
-import java.net._
-import java.nio._
-import java.nio.channels._
-import java.util.concurrent.atomic.AtomicInteger
-import java.util.concurrent.TimeUnit
-import net.lag.kestrel.config.{Protocol, QueueBuilder, QueueConfig}
-import net.lag.kestrel.{Kestrel, PersistentQueue}
-import scala.collection.mutable
-import com.twitter.conversions.string._
+import net.lag.kestrel.Kestrel
 import com.twitter.conversions.storage._
-import com.twitter.ostrich.admin.config._
 import net.lag.kestrel.config._
 import com.twitter.logging.Logger
 import com.twitter.logging.config._
-import actors.Actor._
-import actors.DaemonActor
 import java.lang.Thread
-
-/**
- * Created by IntelliJ IDEA.
- * User: jed
- * Date: 30/11/11
- * Time: 14:53
- * To change this template use File | Settings | File Templates.
- */
 
 class KestrelServer(host : String,port :Int,queuePath : String ,filepathlog :String) {
 
