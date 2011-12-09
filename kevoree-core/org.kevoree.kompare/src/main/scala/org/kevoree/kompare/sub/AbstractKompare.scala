@@ -29,7 +29,7 @@ trait AbstractKompare {
     model.getAdaptationPrimitiveTypes.find(p => p.getName == typeName) match {
       case Some(p) => p
       case None => {
-        logger.error("Error while searching for adaptation primitive type for name = " + typeName)
+        logger.error("Error while searching for adaptation primitive type for name = {}", typeName)
         null
       }
     }

@@ -19,7 +19,8 @@ package org.kevoree.kompare
  * Time: 13:54
  */
 
-object JavaSePrimitive { // TODO duplicate object from kompare
+object JavaSePrimitive {
+  // TODO duplicate object from kompare except StartThirdParty
 
   val UpdateType = "UpdateType"
   val UpdateDeployUnit = "UpdateDeployUnit"
@@ -42,26 +43,28 @@ object JavaSePrimitive { // TODO duplicate object from kompare
 
   val StartInstance = "StartInstance"
   val StopInstance = "StopInstance"
+  val StartThirdParty = "StartThirdParty"
 
-  def getAll : Array[String] = {
-     Array(UpdateType,
-       UpdateDeployUnit,
-       AddType,
-       AddDeployUnit,
-       AddThirdParty,
-       RemoveType,
-       RemoveDeployUnit,
-       UpdateInstance,
-       UpdateBinding,
-       UpdateDictionaryInstance,
-       AddInstance,
-       RemoveInstance,
-       AddBinding,
-       RemoveBinding,
-       AddFragmentBinding,
-       RemoveFragmentBinding,
-       UpdateFragmentBinding
-       )
+  def getAll: Array[String] = {
+    Array(UpdateType,
+           UpdateDeployUnit,
+           AddType,
+           AddDeployUnit,
+           AddThirdParty,
+           RemoveType,
+           RemoveDeployUnit,
+           UpdateInstance,
+           UpdateBinding,
+           UpdateDictionaryInstance,
+           AddInstance,
+           RemoveInstance,
+           AddBinding,
+           RemoveBinding,
+           AddFragmentBinding,
+           RemoveFragmentBinding,
+           UpdateFragmentBinding,
+           StartThirdParty
+         )
   }
 
 
