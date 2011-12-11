@@ -30,14 +30,17 @@ trait DictionaryMerger {
       val values = dictionary.getValues.toList ++ List()
       values.foreach {
         v =>
-
+          //println("Consistency merge dictionary value "+v.getAttribute.getName+"-"+v.getValue)
           val newAttribute = newtype.getAttributes.find(att => att.getName == v.getAttribute.getName)
           newAttribute match {
             case None => {
               logger.debug("Merger remove unavailable Dictionary Value => " + v.getValue + " for old key => " + v.getAttribute.getName)
               dictionary.removeValues(v)
             } //REMOVE DICTIONARY INSTANCE , NO AVAILABLE IN NEW TYPE
-            case Some(found) => v.setAttribute(found) //TODO CHECK TYPE // ACTUALLY ONLY STRING
+            case Some(found) => {
+
+              v.setAttribute(found)
+            } //TODO CHECK TYPE // ACTUALLY ONLY STRING
           }
 
       }
