@@ -23,7 +23,8 @@ import org.osgi.framework.BundleActivator
 import org.osgi.framework.BundleContext
  import org.kevoree.framework.message._
 import org.kevoree.api.service.core.handler.KevoreeModelHandlerService
-import org.kevoree.framework.{AbstractChannelFragment, KevoreeChannelFragment, ChannelTypeFragment, Constants}
+import org.kevoree.api.service.core.script.KevScriptEngineFactory
+import org.kevoree.framework._
 
 abstract class KevoreeChannelFragmentActivator extends BundleActivator {
 
@@ -59,6 +60,12 @@ abstract class KevoreeChannelFragmentActivator extends BundleActivator {
     val sr = bc.getServiceReference(classOf[KevoreeModelHandlerService].getName());
     val modelHandlerService: KevoreeModelHandlerService = bc.getService(sr).asInstanceOf[KevoreeModelHandlerService];
     channelActor.asInstanceOf[AbstractChannelFragment].setModelService(modelHandlerService)
+
+
+    val sr2 = bc.getServiceReference(classOf[KevScriptEngineFactory].getName());
+    val kevSFHandlerService : KevScriptEngineFactory = bc.getService(sr2).asInstanceOf[KevScriptEngineFactory];
+    channelActor.asInstanceOf[AbstractChannelFragment].setKevScriptEngineFactory(kevSFHandlerService)
+
 
     //channelActor.startChannelFragment //DEPRECATED DONE BY DEPLOY
   }

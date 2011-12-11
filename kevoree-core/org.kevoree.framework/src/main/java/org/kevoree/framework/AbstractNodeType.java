@@ -15,6 +15,7 @@ package org.kevoree.framework;
 
 import org.kevoree.ContainerRoot;
 import org.kevoree.api.service.core.handler.KevoreeModelHandlerService;
+import org.kevoree.api.service.core.script.KevScriptEngineFactory;
 import org.kevoreeAdaptation.AdaptationModel;
 import org.kevoreeAdaptation.AdaptationPrimitive;
 
@@ -28,37 +29,53 @@ public abstract class AbstractNodeType {
         return this.dictionary;
     }
 
-    public void setDictionary(HashMap<String, Object> dic){
-         dictionary = dic;
+    public void setDictionary(HashMap<String, Object> dic) {
+        dictionary = dic;
     }
 
-    public void startNode(){}
+    public void startNode() {
+    }
 
-    public void stopNode(){}
+    public void stopNode() {
+    }
 
-    public void updateNode(){}
+    public void updateNode() {
+    }
 
     private KevoreeModelHandlerService modelService;
-    public void setModelService(KevoreeModelHandlerService ms){
+
+    public void setModelService(KevoreeModelHandlerService ms) {
         modelService = ms;
     }
+
     public KevoreeModelHandlerService getModelService() {
         return modelService;
     }
 
     private String nodeName = "";
+
     public String getNodeName() {
         return nodeName;
     }
+
     public void setNodeName(String pnodeName) {
         nodeName = pnodeName;
     }
 
 
-    public abstract AdaptationModel kompare(ContainerRoot actualModel,ContainerRoot targetModel);
+    public abstract AdaptationModel kompare(ContainerRoot actualModel, ContainerRoot targetModel);
 
     public abstract PrimitiveCommand getPrimitive(AdaptationPrimitive primitive);
 
+    private KevScriptEngineFactory kevScriptEngineFactory = null;
+
+    public KevScriptEngineFactory getKevScriptEngineFactory() {
+        return kevScriptEngineFactory;
+    }
+
+    public void setKevScriptEngineFactory(KevScriptEngineFactory kf) {
+        kevScriptEngineFactory = kf;
+    }
 
 }
 

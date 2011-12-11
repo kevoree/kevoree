@@ -17,21 +17,34 @@
  */
 package org.kevoree.framework;
 
-import java.util.HashMap;
-
 import org.kevoree.api.service.core.handler.KevoreeModelHandlerService;
+import org.kevoree.api.service.core.script.KevScriptEngineFactory;
 import org.kevoree.framework.port.KevoreeRequiredPort;
 
+import java.util.HashMap;
+
 /**
- *
  * @author ffouquet
  */
 public class AbstractComponentType implements ComponentType {
 
+    private KevScriptEngineFactory kevScriptEngineFactory = null;
+
+    public KevScriptEngineFactory getKevScriptEngineFactory() {
+        return kevScriptEngineFactory;
+    }
+
+    public void setKevScriptEngineFactory(KevScriptEngineFactory kf) {
+        kevScriptEngineFactory = kf;
+    }
+
+
     private KevoreeModelHandlerService modelService;
-    public void setModelService(KevoreeModelHandlerService ms){
+
+    public void setModelService(KevoreeModelHandlerService ms) {
         modelService = ms;
     }
+
     public KevoreeModelHandlerService getModelService() {
         return modelService;
     }
@@ -44,6 +57,7 @@ public class AbstractComponentType implements ComponentType {
     public HashMap<String, Object> getDictionary() {
         return this.dictionary;
     }
+
     private String nodeName = "";
 
     @Override
@@ -54,17 +68,18 @@ public class AbstractComponentType implements ComponentType {
     public void setNodeName(String pnodeName) {
         nodeName = pnodeName;
     }
+
     private String name = "";
 
     @Override
     public String getName() {
         return name;
     }
-    
-    public void setName(String pname){
+
+    public void setName(String pname) {
         name = pname;
     }
-    
+
 
     @Override
     public void setDictionary(HashMap<String, Object> dictionary) {

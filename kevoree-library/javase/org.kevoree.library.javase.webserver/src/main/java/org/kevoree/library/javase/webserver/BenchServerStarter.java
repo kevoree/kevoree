@@ -1,15 +1,10 @@
 package org.kevoree.library.javase.webserver;
 
-import java.net.*;
-import org.kevoree.*;
-import org.kevoree.ComponentInstance;
-import org.kevoree.ComponentType;
-import org.kevoree.Port;
-import org.kevoree.annotation.*;
-import org.kevoree.framework.*;
-import scala.*;
-import scala.*;
-import scala.*;
+import org.kevoree.annotation.Start;
+import org.kevoree.annotation.Stop;
+import org.kevoree.annotation.Update;
+import org.kevoree.api.service.core.script.KevScriptEngine;
+import org.kevoree.framework.AbstractComponentType;
 
 /**
  * Created by IntelliJ IDEA.
@@ -35,114 +30,28 @@ public class BenchServerStarter extends AbstractComponentType {
         new Thread(new Runnable() {
             public void run() {
 
-
                 System.out.println("Server Started");
                 while ((nbWebServer / 5) != (maxInstances / 5)) {
-                    
-                    TypeDefinition webServerType = null, helloPageType = null, messageChannelType = null;
-                    ContainerRoot model = BenchServerStarter.this.getModelService().getLastModel();
 
-                    for (TypeDefinition td : model.getTypeDefinitionsForJ()) {
-                        if (td.getName().equals("WebServer")) {
-                            webServerType = td;
-                        } else if (td.getName().equals("HelloWorldPage")) {
-                            helloPageType = td;
-                        } else if (td.getName().equals("defMSG")) {
-                            messageChannelType = td;
-                        }
-                    }
-                    //System.out.println("WebServer:" + webServerType + " HelloWorldPage:" + helloPageType + " MessageChannel" + messageChannelType);
-
-                    ContainerNode nodeVar = null;
-                    for (ContainerNode node : model.getNodesForJ()) {
-                        if (node.getName().equals(getNodeName())) {
-                            nodeVar = node;
-                        }
-                    }
                     for (int i = 0; i < 5; i++) {
-                        //System.out.println("Create WebServer");
-                        ComponentInstance webServer = KevoreeFactory.createComponentInstance();
-                        nodeVar.addComponents(webServer);
-
-                        webServer.setTypeDefinition(webServerType);
-                        webServer.setName("WebServer" + nbWebServer++);
-                        Port srvReq = KevoreeFactory.createPort();
-                        webServer.addRequired(srvReq);
-                        srvReq.setPortTypeRef(((ComponentType) webServerType).getRequiredForJ().get(0));
-
-                        Port srvProv = KevoreeFactory.createPort();
-                        webServer.addProvided(srvProv);
-                        srvProv.setPortTypeRef(((ComponentType) webServerType).getProvidedForJ().get(0));
-
-
-                        Dictionary webServerDico = KevoreeFactory.createDictionary();
-                        DictionaryValue webServerDicoValue = KevoreeFactory.createDictionaryValue();
-                        webServerDicoValue.setValue("" + (basePort + nbWebServer));
-                        webServerDicoValue.setAttribute(webServerType.getDictionaryType().get().getAttributesForJ().get(0));
-                        webServerDico.addValues(webServerDicoValue);
-                        webServer.setDictionary(new scala.Some(webServerDico));
-
-
-                        //System.out.println("Create HelloPage");
-                        ComponentInstance helloPage = KevoreeFactory.createComponentInstance();
-                        nodeVar.addComponents(helloPage);
-                        helloPage.setTypeDefinition(helloPageType);
-                        helloPage.setName("HelloPage" + nbWebServer);
-
-                        Port pageReq = KevoreeFactory.createPort();
-                        helloPage.addRequired(pageReq);
-                        pageReq.setPortTypeRef(((ComponentType) helloPageType).getRequiredForJ().get(0));
-
-
-                        Port pageProv = KevoreeFactory.createPort();
-                        helloPage.addProvided(pageProv);
-                        pageProv.setPortTypeRef(((ComponentType) helloPageType).getProvidedForJ().get(0));
-
-
-                        //System.out.println("Create ServerToPage");
-                        Channel serverToPage = KevoreeFactory.createChannel();
-                        model.addHubs(serverToPage);
-                        serverToPage.setTypeDefinition(messageChannelType);
-                        serverToPage.setName("s2p" + nbWebServer);
-
-
-                        //System.out.println("Create PageToServer");
-                        Channel pageToServer = KevoreeFactory.createChannel();
-                        model.addHubs(pageToServer);
-                        pageToServer.setTypeDefinition(messageChannelType);
-                        pageToServer.setName("p2s" + nbWebServer);
-
-
-                        //System.out.println("Create B1");
-                        MBinding b1 = KevoreeFactory.createMBinding();
-                        b1.setHub(serverToPage);
-                        b1.setPort(srvReq);
-                        model.addMBindings(b1);
-
-                        //System.out.println("Create B2");
-                        MBinding b2 = KevoreeFactory.createMBinding();
-                        model.addMBindings(b2);
-                        b2.setHub(serverToPage);
-                        b2.setPort(pageProv);
-
-
-                        //System.out.println("Create B3");
-                        MBinding b3 = KevoreeFactory.createMBinding();
-                        model.addMBindings(b3);
-                        b3.setHub(pageToServer);
-                        b3.setPort(srvProv);
-
-
-                        //System.out.println("Create B4");
-                        MBinding b4 = KevoreeFactory.createMBinding();
-                        model.addMBindings(b4);
-                        b4.setHub(pageToServer);
-                        b4.setPort(pageReq);
-
-
+                        KevScriptEngine scriptEngine = getKevScriptEngineFactory().createKevScriptEngine();
+                        nbWebServer++;
+                        scriptEngine.addVariable("websrvname", "WebServer" + nbWebServer);
+                        scriptEngine.addVariable("helloPageName", "HelloPage" + nbWebServer);
+                        scriptEngine.addVariable("s2pname", "s2p" + nbWebServer);
+                        scriptEngine.addVariable("p2sname", "p2s" + nbWebServer);
+                        scriptEngine.append("addComponent {websrvname}@{nodename} : WebServer { 'port'='" + (basePort + nbWebServer) + "' } ");
+                        scriptEngine.append("addComponent {helloPageName}@{nodename} : HelloWorldPage  ");
+                        scriptEngine.append("addChannel {s2pname} : defMSG");
+                        scriptEngine.append("addChannel {p2sname} : defMSG");
+                        //BIND
+                        scriptEngine.append("bind {websrvname}.handler@{nodename} => {s2pname}");
+                        scriptEngine.append("bind {websrvname}.response@{nodename} => {p2sname}");
+                        scriptEngine.append("bind {helloPageName}.request@{nodename} => {s2pname}");
+                        scriptEngine.append("bind {helloPageName}.content@{nodename} => {p2sname}");
+                        getModelService().atomicUpdateModel(scriptEngine.interpret());
                     }
-                    KevoreeXmiHelper.save(URI.create("file:/tmp/model.kev").toString(), model);
-                    getModelService().atomicUpdateModel(model);
+
                     System.out.println("Server " + (nbWebServer - 5) + " to " + nbWebServer + " started");
                 }
             }
