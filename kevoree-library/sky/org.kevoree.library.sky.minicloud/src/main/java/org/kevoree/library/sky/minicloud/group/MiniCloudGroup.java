@@ -8,7 +8,7 @@ import org.kevoree.annotation.Library;
 import org.kevoree.annotation.Start;
 import org.kevoree.annotation.Stop;
 import org.kevoree.framework.AbstractGroupType;
-import org.kevoree.library.sky.minicloud.KevoreeNodeManager;
+import org.kevoree.library.sky.manager.KevoreeNodeManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

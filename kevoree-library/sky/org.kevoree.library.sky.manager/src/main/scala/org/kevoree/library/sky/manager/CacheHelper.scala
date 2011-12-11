@@ -1,4 +1,4 @@
-package org.kevoree.library.sky.minicloud
+package org.kevoree.library.sky.manager
 
 /**
  * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE, Version 3, 29 June 2007;

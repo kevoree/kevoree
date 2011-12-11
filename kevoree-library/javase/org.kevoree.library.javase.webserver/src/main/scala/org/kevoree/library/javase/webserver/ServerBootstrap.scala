@@ -5,7 +5,7 @@ import akka.config.Supervision.{SupervisorConfig, Permanent}
 import akka.actor._
 import org.slf4j.LoggerFactory
 import org.kevoree.framework.{AbstractComponentType, MessagePort}
-import cc.spray.can.{SelectorWakingDispatcher, ServerConfig, HttpServer}
+import cc.spray.can.{ServerConfig, HttpServer}
 
 class ServerBootstrap(request : MessagePort,compo : AbstractComponentType) {
 
@@ -42,7 +42,7 @@ class ServerBootstrap(request : MessagePort,compo : AbstractComponentType) {
         actor ! PoisonPill
       })
       supervisorRef.shutdown()
-      httpServer.dispatcher.asInstanceOf[SelectorWakingDispatcher].killDispatcher()
+      //httpServer.dispatcher.asInstanceOf[SelectorWakingDispatcher].killDispatcher()
     } catch {
       case _ @ e => logger.warn("Error while stopping Spray Server")
     }

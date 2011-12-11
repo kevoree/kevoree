@@ -112,12 +112,12 @@ trait UpdateNodeKompare extends AbstractKompare with UpdateChannelKompare {
             //ADD USED THIRDPARTY
             uctDeployUnit.getRequiredLibs.foreach {
               tp =>
+              //CHECK IF THIS DEPLOY UNIT IS ALREADY MARK AS TO BE INSTALLED
                 adaptationModel.getAdaptations
-                  .filter(adaptation => adaptation.getPrimitiveType.getName == JavaSePrimitive.AddThirdParty)
-                  .filter(adaptation => adaptation.getPrimitiveType.getName == JavaSePrimitive.AddDeployUnit)
+                  .filter(adaptation => adaptation.getPrimitiveType.getName == JavaSePrimitive.AddThirdParty ||
+                  adaptation.getPrimitiveType.getName == JavaSePrimitive.AddDeployUnit)
                   .find(adaptation => adaptation.getRef.asInstanceOf[DeployUnit].isModelEquals(tp)) match {
                   case None => {
-                    //CHECK IF THIS DEPLOY UNIT IS ALREADY MARK AS TO BE INSTALLED
                     val adaptcmd = KevoreeAdaptationFactory.eINSTANCE.createAdaptationPrimitive
                     adaptcmd.setPrimitiveType(getAdaptationPrimitive(JavaSePrimitive.AddThirdParty,
                                                                       actualNode.eContainer

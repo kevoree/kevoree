@@ -11,33 +11,15 @@
     <modelVersion>4.0.0</modelVersion>
     <packaging>bundle</packaging>
 
-    <artifactId>org.kevoree.library.sky.minicloud</artifactId>
-    <name>Kevoree :: Library :: Sky :: Mini Cloud</name>
+    <artifactId>org.kevoree.library.sky.manager</artifactId>
+    <name>Kevoree :: Library :: Sky :: Manager</name>
 
     <dependencies>
         <dependency>
-            <groupId>org.kevoree.extra</groupId>
-            <artifactId>org.kevoree.extra.netty</artifactId>
-            <version>3.2.5</version>
-            <type>bundle</type>
-        </dependency>
-        <dependency>
-            <groupId>org.kevoree.tools</groupId>
-            <artifactId>org.kevoree.tools.aether.framework</artifactId>
-            <version>${kevoree.version}</version>
-            <!--<type>bundle</type>-->
-        </dependency>
-        <dependency>
-            <groupId>org.kevoree.library.sky</groupId>
-            <artifactId>org.kevoree.library.sky.manager</artifactId>
+            <groupId>org.kevoree.library.javase</groupId>
+            <artifactId>org.kevoree.library.javase.javaseNode</artifactId>
             <version>${kevoree.version}</version>
             <type>bundle</type>
-        </dependency>
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>4.8.1</version>
-            <scope>test</scope>
         </dependency>
     </dependencies>
 
@@ -50,8 +32,8 @@
                 <extensions>true</extensions>
                 <configuration>
                     <instructions>
-                        <Export-Package>org.kevoree.library.sky.minicloud.*</Export-Package>
-                        <Import-Package>!org.kevoree.library.sky.minicloud.*,*</Import-Package>
+                        <Export-Package>org.kevoree.library.sky.manager.*</Export-Package>
+                        <Import-Package>!org.kevoree.library.sky.manager.*,*</Import-Package>
                     </instructions>
                 </configuration>
             </plugin>

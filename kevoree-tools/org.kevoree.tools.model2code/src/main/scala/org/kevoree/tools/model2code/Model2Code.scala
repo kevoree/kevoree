@@ -41,6 +41,17 @@ class Model2Code extends CompilationUnitHelpers {
   }
 
   /**
+   * Synchronizes or generates for all TypeDefinition of the give DeployUnit. Overrides original files.
+   */
+  def modelToCode(model: ContainerRoot, srcRoot: URI, du:DeployUnit) {
+    //selects only the TypeDefnitions in the giver deployUnit
+    model.getTypeDefinitions.filter(td=>td.getDeployUnits.exists(tdDu=>tdDu==du)).foreach {
+      typeDefninition =>
+        modelToCode(model, typeDefninition, srcRoot)
+    }
+  }
+
+  /**
    * Synchronizes or generates for all TypeDefinition in the given model. Does NOT override original files.
    */
   def modelToCode(model: ContainerRoot, srcRoot: URI, targetRoot: URI) {
@@ -119,7 +130,7 @@ class Model2Code extends CompilationUnitHelpers {
     generatePom(model, deployUnitRoot,deployUnit)
     System.out.println("Done.")
     System.out.println("Generating Code...")
-    modelToCode(model, srcLocationUri)
+    modelToCode(model, srcLocationUri, deployUnit)
   }
 
   def generatePom(model: ContainerRoot, deployUnitRoot: URI , deployUnit : DeployUnit) {
@@ -152,10 +163,15 @@ class Model2Code extends CompilationUnitHelpers {
     pr.println("    <dependency>")
     pr.println("      <groupId>org.kevoree.tools</groupId>")
     pr.println("      <artifactId>org.kevoree.tools.annotation.api</artifactId>")
-    pr.println("      <version>1.1.0-BETA1</version>")
+    pr.println("      <version>1.5.0-SNAPSHOT</version>")
     pr.println("      <scope>compile</scope>")
     pr.println("    </dependency>")
-
+    pr.println("    <dependency>")
+    pr.println("      <groupId>org.kevoree</groupId>")
+    pr.println("      <artifactId>org.kevoree.framework</artifactId>")
+    pr.println("      <version>1.5.0-SNAPSHOT</version>")
+    pr.println("      <scope>compile</scope>")
+    pr.println("    </dependency>")
     model.getDeployUnits.filter({
       du => du.getUrl != null && !du.getUrl.equals("")
     }).foreach {
@@ -207,7 +223,7 @@ class Model2Code extends CompilationUnitHelpers {
     pr.println("      <plugin>")
     pr.println("        <groupId>org.kevoree.tools</groupId>")
     pr.println("        <artifactId>org.kevoree.tools.annotation.mavenplugin</artifactId>")
-    pr.println("        <version>1.1.0-BETA1</version>")
+    pr.println("        <version>1.5.0-SNAPSHOT</version>")
     pr.println("        <extensions>true</extensions>")
     pr.println("        <configuration>")
     pr.println("          <nodeTypeNames>JavaSENode</nodeTypeNames>")
