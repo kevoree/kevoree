@@ -53,9 +53,9 @@ trait LifeCycleSynchMethods
               method.asInstanceOf[MethodDeclaration].getName.equals(name)}).size == 0})
 
 
-      startMethod = availableNames.head match {
-        case name : String => addDefaultMethod(td, name)
-        case _=> {
+      startMethod = availableNames.headOption match {
+        case Some(name) => addDefaultMethod(td, name)
+        case None => {
             printf("No name found for Start method name generation. Please add the start method, and annotation by hand.")
             null
           }
