@@ -24,6 +24,7 @@ import org.osgi.framework.BundleContext
  import org.kevoree.framework.message._
 import org.kevoree.api.service.core.handler.KevoreeModelHandlerService
 import org.kevoree.framework._
+import org.kevoree.api.service.core.script.KevScriptEngineFactory
 
 
 /* ABSTRACT COMPONENT */
@@ -54,6 +55,15 @@ abstract class KevoreeComponentActivator extends BundleActivator {
     val sr = bc.getServiceReference(classOf[KevoreeModelHandlerService].getName());
     val modelHandlerService : KevoreeModelHandlerService = bc.getService(sr).asInstanceOf[KevoreeModelHandlerService];
     componentActor.getKevoreeComponentType.asInstanceOf[AbstractComponentType].setModelService(modelHandlerService)
+
+
+    val sr2 = bc.getServiceReference(classOf[KevScriptEngineFactory].getName());
+    val kevSFHandlerService : KevScriptEngineFactory = bc.getService(sr2).asInstanceOf[KevScriptEngineFactory];
+    componentActor.getKevoreeComponentType.asInstanceOf[AbstractComponentType].setKevScriptEngineFactory(kevSFHandlerService)
+
+
+
+
 
 
     /* Start actor */

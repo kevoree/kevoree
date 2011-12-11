@@ -13,12 +13,12 @@
  */
 package org.kevoree.framework.osgi
 
-import org.kevoree.framework.KevoreeGroup
 import org.osgi.framework.{BundleContext, BundleActivator}
  import org.kevoree.framework.message._
-import org.kevoree.framework.Constants
 import java.util.Hashtable
 import org.kevoree.api.service.core.handler.KevoreeModelHandlerService
+import org.kevoree.api.service.core.script.KevScriptEngineFactory
+import org.kevoree.framework.{AbstractComponentType, KevoreeGroup, Constants}
 
 abstract class KevoreeGroupActivator extends BundleActivator {
 
@@ -56,6 +56,10 @@ abstract class KevoreeGroupActivator extends BundleActivator {
     val modelHandlerService : KevoreeModelHandlerService = bc.getService(sr).asInstanceOf[KevoreeModelHandlerService];
     groupActor.asInstanceOf[KevoreeGroup].setMhandler(modelHandlerService)
 
+
+    val sr2 = bc.getServiceReference(classOf[KevScriptEngineFactory].getName());
+    val kevSFHandlerService : KevScriptEngineFactory = bc.getService(sr2).asInstanceOf[KevScriptEngineFactory];
+    groupActor.asInstanceOf[KevoreeGroup].setKevScriptEngineFactory(kevSFHandlerService)
 
     //channelActor.startChannelFragment //DEPRECATED DONE BY DEPLOY
   }

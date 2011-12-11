@@ -16,6 +16,7 @@ package org.kevoree.framework;
 
 import org.kevoree.ContainerRoot;
 import org.kevoree.api.service.core.handler.KevoreeModelHandlerService;
+import org.kevoree.api.service.core.script.KevScriptEngineFactory;
 
 import java.util.HashMap;
 
@@ -49,5 +50,15 @@ public abstract class AbstractGroupType {
     }
     
     public void setName(String name){}
+
+    private KevScriptEngineFactory kevScriptEngineFactory = null;
+
+    public KevScriptEngineFactory getKevScriptEngineFactory() {
+        return kevScriptEngineFactory;
+    }
+
+    public void setKevScriptEngineFactory(KevScriptEngineFactory kf) {
+        kevScriptEngineFactory = kf;
+    }
 
 }
