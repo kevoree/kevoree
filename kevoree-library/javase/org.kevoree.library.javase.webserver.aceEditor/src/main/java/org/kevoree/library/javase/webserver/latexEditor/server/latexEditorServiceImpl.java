@@ -7,20 +7,149 @@ package org.kevoree.library.javase.webserver.latexEditor.server;
  * Time: 10:49
  * To change this template use File | Settings | File Templates.
  */
+
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
+import org.kevoree.framework.MessagePort;
+import org.kevoree.framework.message.StdKevoreeMessage;
+import org.kevoree.library.javase.fileSystem.LockFilesService;
+import org.kevoree.library.javase.webserver.latexEditor.LatexEditor;
 import org.kevoree.library.javase.webserver.latexEditor.client.latexEditorService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.UUID;
 
 public class latexEditorServiceImpl extends RemoteServiceServlet implements latexEditorService {
 
     private Logger logger = LoggerFactory.getLogger(this.getClass().getName());
 
-    // Implementation of sample interface method
-    public String getMessage(String msg) {
-        System.out.println(msg.toString());
+    private LatexEditor editor = null;
+    LockFilesService portService = null;
+    Set<String> extensions = new HashSet<String>();
+
+
+    public latexEditorServiceImpl() {
+        //EMPTY CONSTRUCTOR FOR DEBUG ONLY IN IDE
+        //INSERT FAKE COMPONENT
+        portService = new LockFilesService(){
+
+            @Override
+            public Set<String> getFilesPath() {
+                Set<String> files = new HashSet<String>();
+                files.add("/fakeFile1.tex");
+                files.add("/fakeFile2.tex");
+                return files;
+            }
+
+            @Override
+            public Set<String> getFilteredFilesPath(Set<String> extensions) {
+                Set<String> files = new HashSet<String>();
+                files.add("/fakeFile1.tex");
+                files.add("/fakeFile2.tex");
+                return files;
+            }
+
+            @Override
+            public byte[] getFileContent(String relativePath, Boolean lock) {
+                return "fake content \n %comment \n".getBytes();
+            }
+
+            @Override
+            public String getAbsolutePath(String relativePath) {
+                return null;  //To change body of implemented methods use File | Settings | File Templates.
+            }
+
+            @Override
+            public boolean saveFile(String relativePath, byte[] data, Boolean unlock) {
+                System.out.println("FAKE SAVE "+ relativePath);
+                return false;  //To change body of implemented methods use File | Settings | File Templates.
+            }
+
+            @Override
+            public void unlock(String relativePath) {
+                //To change body of implemented methods use File | Settings | File Templates.
+            }
+        };
         
-        return "Client said: \"" + msg + "\"<br>Server answered: \"Hi!\"";
+    }
+
+    public latexEditorServiceImpl(LatexEditor _editor) {
+        editor = _editor;
+        editor.getPortByName("files", LockFilesService.class);
+        extensions.add("tex");
+        extensions.add("cls");
+        extensions.add("txt");
+        extensions.add("sty");
+        extensions.add("bst");
+        extensions.add("bib");
+    }
+
+    @Override
+    public boolean saveFile(String fileName, String content) {
+        boolean saveResult = portService.saveFile(fileName, content.getBytes(), true);
+        if (!saveResult) {
+            logger.debug("Error while saving file = {}", fileName);
+        }
+        return saveResult;
+    }
+
+    @Override
+    public Set<String> getFlatFiles() {
+        return portService.getFilteredFilesPath(extensions);
+    }
+
+    @Override
+    public String getFileContent(String fileName, Boolean lock) {
+
+
+        byte[] content = portService.getFileContent(fileName, lock);
+        /*
+        if (content.length > 0) {
+            response.setRawContent(content);
+            if (request.getResolvedParams().get("file").endsWith(".pdf")) {
+                response.setContentType("application/pdf");
+            }
+            if (request.getResolvedParams().get("file").endsWith(".log")) {
+                response.setContentType("text/plain");
+            }
+
+            return true;
+        } else {
+            logger.debug("No file exist = {}", request.getResolvedParams().get("file"));
+        }*/
+        return new String(content);
+    }
+
+    @Override
+    public String compile(String fileName) throws Exception {
+        if (editor.isPortBinded("compile")) {
+            String absolutePath = portService.getAbsolutePath(fileName);
+            StdKevoreeMessage message = new StdKevoreeMessage();
+            message.putValue("file", absolutePath);
+            //CREATE TEMP UUID
+            UUID compileID = UUID.randomUUID();
+            message.putValue("id", compileID);
+            editor.waitingID.add(compileID.toString());
+            editor.getPortByName("compile", MessagePort.class).process(message);
+            return compileID.toString();
+        }
+        throw new Exception("No Compiler Ready");
+    }
+
+    @Override
+    public String[] compileresult(String uuid) {
+        if (editor.waitingID.contains(uuid)) {
+            String[] result = {"waiting", ""};
+            return result;
+        } else {
+            String[] result = {editor.compileResult.get(uuid).toString(), editor.compileLog.get(uuid).toString()};
+            editor.compileResult.remove(uuid);
+            editor.compileLog.remove(uuid);
+            return result;
+        }
     }
 
     @Override
@@ -30,6 +159,6 @@ public class latexEditorServiceImpl extends RemoteServiceServlet implements late
 
     @Override
     public void log(String message, Throwable t) {
-        logger.debug(message,t);
+        logger.debug(message, t);
     }
 }

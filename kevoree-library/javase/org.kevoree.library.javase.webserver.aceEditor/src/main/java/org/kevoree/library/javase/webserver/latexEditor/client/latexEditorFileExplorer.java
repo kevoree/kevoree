@@ -1,17 +1,17 @@
 package org.kevoree.library.javase.webserver.latexEditor.client;
 
-import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.client.JavaScriptObject;
+import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
-import com.google.gwt.http.client.*;
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Tree;
 import com.google.gwt.user.client.ui.TreeItem;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
+import java.util.Set;
 
 /**
  * Created by IntelliJ IDEA.
@@ -20,11 +20,12 @@ import java.util.List;
  * Time: 21:20
  * To change this template use File | Settings | File Templates.
  */
-public class latexEditorFileExplorer extends SimplePanel {
+public class latexEditorFileExplorer extends SimplePanel implements AceEditorCallback {
 
     private Tree tree = null;
     private HashMap<String, TreeItem> map;
     private HashMap<TreeItem, String> mapInv;
+    private Boolean[] currentModified = {false};
 
     public String getQualifiedName(TreeItem item) {
         if (item.getParentItem() != null) {
@@ -36,6 +37,22 @@ public class latexEditorFileExplorer extends SimplePanel {
 
     private TreeItem previousSelected = null;
 
+    public void initAutoSaveLoop(final latexEditorFileExplorer selfExplorer) {
+        Scheduler.get().scheduleFixedPeriod(new Scheduler.RepeatingCommand() {
+            @Override
+            public boolean execute() {
+                if (currentModified[0] == true) {
+                    latexEditorRPC.callForSave(selfExplorer);
+                    currentModified[0] = false;
+                }
+                return true;
+            }
+        }, 3000);
+
+
+    }
+
+
     public latexEditorFileExplorer() {
         tree = new Tree();
         map = new HashMap<String, TreeItem>();
@@ -44,11 +61,8 @@ public class latexEditorFileExplorer extends SimplePanel {
         compileRoot = null;
         add(tree);
         reloadFromServer();
-/*
-        for (int i = 0; i < 20; i++) {
-            mapInv.put(tree.addItem("fuck-" + i), "fuck-" + i);
-        }
-*/
+        initAutoSaveLoop(this);
+        AceEditorWrapper.addOnChangeHandler(this);
         tree.addSelectionHandler(new SelectionHandler<TreeItem>() {
             @Override
             public void onSelection(SelectionEvent<TreeItem> treeItemSelectionEvent) {
@@ -64,14 +78,12 @@ public class latexEditorFileExplorer extends SimplePanel {
                 } else {
                     treeItemSelectionEvent.getSelectedItem().setHTML("<span class=\"label notice\">" + mapInv.get(treeItemSelectionEvent.getSelectedItem()) + "</span>");
                 }
-
                 String qname = getQualifiedName(treeItemSelectionEvent.getSelectedItem());
                 if (!qname.startsWith("/")) {
                     displayFile("/" + qname);
                 } else {
                     displayFile(qname);
                 }
-
                 previousSelected = treeItemSelectionEvent.getSelectedItem();
             }
         });
@@ -99,11 +111,11 @@ public class latexEditorFileExplorer extends SimplePanel {
 
         String qname = getQualifiedName(tree.getSelectedItem());
         if (!qname.startsWith("/")) {
-            selectedCompileRootFilePath = "/"+qname;
+            selectedCompileRootFilePath = "/" + qname;
         } else {
             selectedCompileRootFilePath = qname;
         }
-        
+
         tree.getSelectedItem().setHTML("<span class=\"label success\">" + mapInv.get(tree.getSelectedItem()) + "</span>");
         compileRoot = tree.getSelectedItem();
     }
@@ -114,86 +126,76 @@ public class latexEditorFileExplorer extends SimplePanel {
         map.clear();
         mapInv.clear();
 
-        final List<String> flatFiles = new ArrayList<String>();
-        String url = GWT.getModuleBaseURL() + "flatfiles";
-        RequestBuilder builder = new RequestBuilder(RequestBuilder.GET, URL.encode(url));
-        try {
-            builder.sendRequest(null, new RequestCallback() {
-                public void onError(Request request, Throwable exception) {
-                    Window.alert("Error while connecting to server");
-                }
+        latexEditorService.App.getInstance().getFlatFiles(new AsyncCallback<Set<String>>() {
+            @Override
+            public void onFailure(Throwable caught) {
+                Window.alert("Error listing files from server");
+            }
 
-
-                public void onResponseReceived(Request request, Response response) {
-                    if (response.getStatusCode() == 200) {
-                        String[] files = response.getText().split(";");
-                        for (int i = 0; i < files.length; i++) {
-                            flatFiles.add(files[i]);
-                        }
-                        for (String flatFile : flatFiles) {
-                            if (flatFile.contains("/")) {
-                                String path = flatFile.substring(0, flatFile.lastIndexOf("/"));
-                                if (path.equals("")) {
-                                    if (flatFile.lastIndexOf("/") + 1 < flatFile.length()) {
-                                        if (!selectedCompileRootFilePath.equals(flatFile.substring(flatFile.lastIndexOf("/") + 1))) {
-                                            mapInv.put(tree.addItem(flatFile.substring(flatFile.lastIndexOf("/") + 1)), flatFile.substring(flatFile.lastIndexOf("/") + 1));
-                                        } else {
-                                            mapInv.put(tree.addItem("<span class=\"label warning\">" + flatFile.substring(flatFile.lastIndexOf("/") + 1) + "</span>"), flatFile.substring(flatFile.lastIndexOf("/") + 1));
-                                        }
-                                    }
+            @Override
+            public void onSuccess(Set<String> flatFiles) {
+                for (String flatFile : flatFiles) {
+                    if (flatFile.contains("/")) {
+                        String path = flatFile.substring(0, flatFile.lastIndexOf("/"));
+                        if (path.equals("")) {
+                            if (flatFile.lastIndexOf("/") + 1 < flatFile.length()) {
+                                if (!selectedCompileRootFilePath.equals(flatFile.substring(flatFile.lastIndexOf("/") + 1))) {
+                                    mapInv.put(tree.addItem(flatFile.substring(flatFile.lastIndexOf("/") + 1)), flatFile.substring(flatFile.lastIndexOf("/") + 1));
                                 } else {
-                                    TreeItem treeItem = null;
-                                    if (map.containsKey(path)) {
-                                        treeItem = map.get(path);
-                                    } else {
-                                        treeItem = new TreeItem(path);
-                                        map.put(path, treeItem);
-                                        mapInv.put(treeItem, path);
-                                        tree.addItem(treeItem);
-                                    }
-                                    mapInv.put(treeItem.addItem(flatFile.substring(flatFile.lastIndexOf("/") + 1)), flatFile.substring(flatFile.lastIndexOf("/") + 1));
-                                }
-                            } else {
-                                if (!selectedCompileRootFilePath.equals(flatFile)) {
-                                    mapInv.put(tree.addItem(flatFile), flatFile);
-                                } else {
-                                    mapInv.put(tree.addItem("<span class=\"label warning\">" + flatFile + "</span>"), flatFile);
+                                    mapInv.put(tree.addItem("<span class=\"label warning\">" + flatFile.substring(flatFile.lastIndexOf("/") + 1) + "</span>"), flatFile.substring(flatFile.lastIndexOf("/") + 1));
                                 }
                             }
+                        } else {
+                            TreeItem treeItem = null;
+                            if (map.containsKey(path)) {
+                                treeItem = map.get(path);
+                            } else {
+                                treeItem = new TreeItem(path);
+                                map.put(path, treeItem);
+                                mapInv.put(treeItem, path);
+                                tree.addItem(treeItem);
+                            }
+                            mapInv.put(treeItem.addItem(flatFile.substring(flatFile.lastIndexOf("/") + 1)), flatFile.substring(flatFile.lastIndexOf("/") + 1));
+                        }
+                    } else {
+                        if (!selectedCompileRootFilePath.equals(flatFile)) {
+                            mapInv.put(tree.addItem(flatFile), flatFile);
+                        } else {
+                            mapInv.put(tree.addItem("<span class=\"label warning\">" + flatFile + "</span>"), flatFile);
                         }
                     }
-
-
                 }
-            });
-
-        } catch (Exception e) {
-            Window.alert("Error while connecting to server");
-        }
+            }
+        });
     }
 
 
     public void displayFile(final String path) {
 
-        String url = GWT.getModuleBaseURL() + "flatfile?lock=true&file=" + path;
-        RequestBuilder builder = new RequestBuilder(RequestBuilder.GET, URL.encode(url));
-        try {
-            builder.sendRequest(null, new RequestCallback() {
-                public void onError(Request request, Throwable exception) {
-                    Window.alert("Error while connecting to server");
-                }
+        latexEditorService.App.getInstance().getFileContent(path, true, new AsyncCallback<String>() {
+            @Override
+            public void onFailure(Throwable caught) {
+                Window.alert("Error while connecting to server to get file content");
+            }
 
-                public void onResponseReceived(Request request, Response response) {
-                    if (response.getStatusCode() == 200) {
-                        selectedFilePath = path;
-                        AceEditorWrapper.setText(response.getText());
-                    }
-                }
-            });
-
-        } catch (Exception e) {
-            Window.alert("Error while connecting to server");
-        }
+            @Override
+            public void onSuccess(String result) {
+                selectedFilePath = path;
+                AceEditorWrapper.setText(result);
+                currentModified[0] = false;
+            }
+        });
     }
 
+    @Override
+    public void invokeAceCallback(JavaScriptObject obj) {
+        if (currentModified[0] == false) {
+            //TODO ACQUIRE LOCK
+            currentModified[0] = true;
+        } else {
+            //WAITING FOR AUTO SAVE LOOP TO DO THE JOB
+        }
+
+
+    }
 }
