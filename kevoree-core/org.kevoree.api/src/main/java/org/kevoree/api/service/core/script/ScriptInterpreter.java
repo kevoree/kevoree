@@ -22,6 +22,7 @@ package org.kevoree.api.service.core.script;
  *
  * @author ffouquet
  */
+@Deprecated
 public interface ScriptInterpreter {
 
     public Boolean interpret(String script);

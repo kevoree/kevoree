@@ -11,10 +11,22 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 
+import java.util.List;
+import java.util.Set;
+
 @RemoteServiceRelativePath("latexEditorService")
 public interface latexEditorService extends RemoteService {
-    // Sample interface method of remote interface
-    String getMessage(String msg);
+    
+    boolean saveFile(String fileName,String content);
+
+    Set<String> getFlatFiles();
+    
+    String getFileContent(String fileName, Boolean lock);
+    
+    String compile(String fileName) throws Exception;
+
+    String[] compileresult(String uuid);
+    
 
     /**
      * Utility/Convenience class.

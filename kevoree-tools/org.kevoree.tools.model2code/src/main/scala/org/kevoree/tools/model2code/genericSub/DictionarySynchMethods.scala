@@ -33,7 +33,7 @@ trait DictionarySynchMethods extends ImportSynchMethods {
 
   def synchronizeDictionary(td: TypeDeclaration, typeDef: TypeDefinition) {
 
-    if (typeDef.getDictionaryType != null) {
+    if (typeDef.getDictionaryType.isDefined) {
       val dic: SingleMemberAnnotationExpr = td.getAnnotations.find({
         annot => annot.getName.toString.equals(classOf[DictionaryType].getSimpleName)
       }) match {

@@ -618,10 +618,13 @@ public class AnnotationPreProcessorMojo extends AbstractAnnotationProcessorMojo 
             otherRepositories += ";" + repo.getUrl();
         }
 
-        Iterator dependenciesIterator = project.getRuntimeDependencies().iterator();
         String thirdParties = ";";
-        while (dependenciesIterator.hasNext()) {
-            Dependency dep = (Dependency) dependenciesIterator.next();
+        for (Dependency dep : project.getRuntimeDependencies()) {
+            if (dep.getScope().equals("provided") || dep.getType().equals("bundle")) {
+                thirdParties += ";" + dep.getGroupId() + "/" + dep.getArtifactId() + "/" + dep.getVersion();
+            }
+        }
+        for (Dependency dep : project.getDependencies()) {
             if (dep.getScope().equals("provided") || dep.getType().equals("bundle")) {
                 thirdParties += ";" + dep.getGroupId() + "/" + dep.getArtifactId() + "/" + dep.getVersion();
             }

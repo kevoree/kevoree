@@ -1,4 +1,4 @@
-package org.kevoree.library.sky.minicloud
+package org.kevoree.library.sky.jails
 
 /**
  * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE, Version 3, 29 June 2007;
@@ -18,9 +18,10 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.io._
 import java.lang.Thread
-import actors.{OutputChannel, TIMEOUT, Actor}
+import actors.{TIMEOUT, Actor}
 import util.matching.Regex
 import java.util.UUID
+import org.kevoree.library.sky.manager.{KevoreeNodeRunner, Helper}
 
 /**
  * User: Erwan Daubert - erwan.daubert@gmail.com
@@ -30,8 +31,8 @@ import java.util.UUID
  * @author Erwan Daubert
  * @version 1.0
  */
-class KevoreeNodeRunner (var nodeName: String, bootStrapModel: String) {
-  private val logger: Logger = LoggerFactory.getLogger(classOf[KevoreeNodeRunner])
+class JailKevoreeNodeRunner (var nodeName: String, bootStrapModel: String) extends KevoreeNodeRunner(nodeName, bootStrapModel) {
+  private val logger: Logger = LoggerFactory.getLogger(classOf[JailKevoreeNodeRunner])
   private var nodePlatformProcess: Process = null
   private var outputStreamReader: Thread = null
   private var errorStreamReader: Thread = null

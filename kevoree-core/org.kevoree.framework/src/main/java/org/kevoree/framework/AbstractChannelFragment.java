@@ -18,6 +18,7 @@
 package org.kevoree.framework;
 
 import org.kevoree.api.service.core.handler.KevoreeModelHandlerService;
+import org.kevoree.api.service.core.script.KevScriptEngineFactory;
 import org.kevoree.framework.message.Message;
 
 import java.util.HashMap;
@@ -64,4 +65,15 @@ public abstract class AbstractChannelFragment implements ChannelFragment {
 	public Object remoteDispatch (Message msg) {
 		return null;
 	}
+
+    private KevScriptEngineFactory kevScriptEngineFactory = null;
+
+    public KevScriptEngineFactory getKevScriptEngineFactory() {
+        return kevScriptEngineFactory;
+    }
+
+    public void setKevScriptEngineFactory(KevScriptEngineFactory kf) {
+        kevScriptEngineFactory = kf;
+    }
+
 }

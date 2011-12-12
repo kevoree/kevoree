@@ -1,4 +1,4 @@
-package org.kevoree.library.sky.minicloud
+package org.kevoree.library.sky.manager
 
 import org.kevoree.framework.KevoreeXmiHelper
 import org.kevoree.tools.aether.framework.AetherUtil
@@ -81,11 +81,8 @@ object Helper {
   }
 
   private def getVersion: String = {
-    val stream: InputStream = this.getClass.getClassLoader
-      .getResourceAsStream("META-INF/maven/org.kevoree.library.sky/org.kevoree.library.sky.minicloud/pom.properties")
-    val prop: Properties = new Properties
-    prop.load(stream)
-    prop.getProperty("version")
+
+    KevoreeFactory.getVersion
   }
 
 }

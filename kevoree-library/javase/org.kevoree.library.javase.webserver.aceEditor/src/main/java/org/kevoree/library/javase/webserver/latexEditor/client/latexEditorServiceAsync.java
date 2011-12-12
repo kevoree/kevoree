@@ -9,6 +9,18 @@ package org.kevoree.library.javase.webserver.latexEditor.client;
  */
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
+import java.util.List;
+import java.util.Set;
+
 public interface latexEditorServiceAsync {
-    void getMessage(String msg, AsyncCallback<String> async);
+
+    void saveFile(String fileName, String content, AsyncCallback<Boolean> async);
+
+    void getFlatFiles(AsyncCallback<Set<String>> async);
+
+    void getFileContent(String fileName, Boolean lock, AsyncCallback<String> async);
+
+    void compile(String fileName, AsyncCallback<String> async) throws Exception;
+
+    void compileresult(String uuid, AsyncCallback<String[]> async);
 }

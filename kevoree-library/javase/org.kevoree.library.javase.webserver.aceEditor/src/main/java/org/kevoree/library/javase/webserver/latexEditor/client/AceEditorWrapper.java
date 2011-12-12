@@ -1,7 +1,5 @@
 package org.kevoree.library.javase.webserver.latexEditor.client;
 
-import com.google.gwt.core.client.JavaScriptObject;
-
 /**
  * Created by IntelliJ IDEA.
  * User: duke
@@ -20,5 +18,14 @@ public class AceEditorWrapper {
         $wnd.aceEditor.getSession().setValue(text);
     }-*/;
 
+    public static native void addOnChangeHandler(AceEditorCallback callback) /*-{
+        $wnd.aceEditor.getSession().on("change", function (e) {
+            callback.@org.kevoree.library.javase.webserver.latexEditor.client.AceEditorCallback::invokeAceCallback(Lcom/google/gwt/core/client/JavaScriptObject;)(e);
+        });
+    }-*/;
+
+    public static native void setReadOnly(boolean readOnly) /*-{
+        $wnd.aceEditor.setReadOnly(readOnly);
+    }-*/;
 
 }

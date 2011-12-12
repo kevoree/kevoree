@@ -29,25 +29,11 @@ public class latexEditor implements EntryPoint {
      */
     public void onModuleLoad() {
 
-        latexEditorService.App.getInstance().getMessage("Hello", new AsyncCallback<String>() {
-            @Override
-            public void onFailure(Throwable caught) {
-                Window.alert("Failiure" + caught.getMessage());
-                Window.alert(caught.toString());
-            }
-
-            @Override
-            public void onSuccess(String result) {
-                Window.alert("ok=" + result);
-            }
-        });
-
-
         fileExplorer = new latexEditorFileExplorer();
         VerticalPanel leftBar = new VerticalPanel();
 
         Button btCompile = new Button();
-        btCompile.setText("PDF");
+        btCompile.setText("Generate PDF");
         btCompile.setStyleName("btn");
         btCompile.addStyleName("primary");
         btCompile.addStyleName("small");
@@ -57,7 +43,7 @@ public class latexEditor implements EntryPoint {
                 latexEditorRPC.callForCompile(fileExplorer);
             }
         });
-
+/*
         Button btSave = new Button();
         btSave.setText("Save");
         btSave.setStyleName("btn");
@@ -68,10 +54,10 @@ public class latexEditor implements EntryPoint {
             public void onClick(ClickEvent event) {
                 latexEditorRPC.callForSave(fileExplorer);
             }
-        });
+        });*/
 
         Button btDefault = new Button();
-        btDefault.setText("Root");
+        btDefault.setText("Set main file");
         btDefault.setStyleName("btn");
         btDefault.addStyleName("primary");
         btDefault.addStyleName("small");
@@ -112,7 +98,7 @@ public class latexEditor implements EntryPoint {
         bts.setBorderWidth(0);
         bts.add(btCompile);
         bts.add(btDefault);
-        bts.add(btSave);
+       // bts.add(btSave);
 
         leftBar.add(bts);
 

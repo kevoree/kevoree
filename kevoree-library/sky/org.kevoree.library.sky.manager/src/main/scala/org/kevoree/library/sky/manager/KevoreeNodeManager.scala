@@ -1,7 +1,7 @@
-package org.kevoree.library.sky.minicloud
+package org.kevoree.library.sky.manager
 
 import actors.DaemonActor
-import nodeType.MiniCloudNode
+import nodeType.SkyNode
 import org.kevoree.{ContainerRoot, ContainerNode}
 
 import org.slf4j.{LoggerFactory, Logger}
@@ -18,9 +18,9 @@ object KevoreeNodeManager extends DaemonActor {
   private val logger: Logger = LoggerFactory.getLogger(KevoreeNodeManager.getClass)
   
   logger.debug("KevoreeNodeManager initialization...")
-  private var node : MiniCloudNode = null
+  private var node : SkyNode = null
 
-  def setNode(n : MiniCloudNode) {
+  def setNode(n : SkyNode) {
     node = n
   }
 
@@ -68,7 +68,7 @@ object KevoreeNodeManager extends DaemonActor {
 
   private def addNodeInternal (containerNode: ContainerNode, model: ContainerRoot): Boolean = {
     logger.debug("try to add a node: " + containerNode.getName)
-    val newRunner = new KevoreeNodeRunner(containerNode.getName, Helper.saveModelOnFile(model))
+    val newRunner = node.createKevoreeNodeRunner(containerNode.getName, Helper.saveModelOnFile(model))
     val result = newRunner.startNode()
     if (result) {
       runners = runners ++ List(newRunner)
@@ -83,7 +83,7 @@ object KevoreeNodeManager extends DaemonActor {
     runners.find(runner => runner.nodeName == containerNode.getName) match {
       case None => // we do nothing because there is no node with this name
       case Some(runner) => {
-        runner.stopKillNode()
+        runner.stopNode()
         runners = runners.filterNot(r => r == runner)
       }
     }
@@ -93,7 +93,7 @@ object KevoreeNodeManager extends DaemonActor {
   private def removeAllInternal () {
     logger.debug("try to stop all nodes")
     runners.foreach {
-      runner => runner.stopKillNode()
+      runner => runner.stopNode()
     }
     runners = List()
   }

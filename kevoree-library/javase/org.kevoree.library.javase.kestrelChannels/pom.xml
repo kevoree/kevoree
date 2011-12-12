@@ -18,35 +18,72 @@
     </parent>
 
 
+    <properties>
+        <kestrel.version>2.3.3</kestrel.version>
+        <twitter.version>1.0</twitter.version>
+        <!--<guava.version>10.0.1</guava.version>-->
+        <netty.version>3.2.5</netty.version>
+        <!--<protobuf.version>2.4.1</protobuf.version>-->
+    </properties>
+
+
     <dependencies>
 
         <dependency>
             <groupId>org.kevoree.extra</groupId>
             <artifactId>org.kevoree.extra.osgi.kestrel</artifactId>
-            <version>2.3.3</version>
+            <version>${kestrel.version}</version>
             <scope>provided</scope>
         </dependency>
 
 
         <dependency>
-            <groupId>org.jboss.netty</groupId>
-            <artifactId>netty</artifactId>
-            <version>3.2.5.Final</version>
+            <groupId>org.kevoree.extra</groupId>
+            <artifactId>org.kevoree.extra.osgi.twitter.library</artifactId>
+            <version>${twitter.version}</version>
             <scope>provided</scope>
+            <type>bundle</type>
         </dependency>
 
+
         <dependency>
-            <groupId>org.kevoree.extra.googleguava</groupId>
+            <groupId>org.kevoree.extra</groupId>
+            <artifactId>org.kevoree.extra.netty</artifactId>
+            <version>${netty.version}</version>
+            <scope>provided</scope>
+            <type>bundle</type>
+        </dependency>
+
+        <!--<dependency>
+            <groupId>org.kevoree.extra</groupId>
             <artifactId>org.kevoree.extra.googleguava</artifactId>
-            <version>10</version>
+            <version>${guava.version}</version>
             <scope>provided</scope>
+            <type>bundle</type>
         </dependency>
 
         <dependency>
             <groupId>org.kevoree.extra</groupId>
             <artifactId>org.kevoree.extra.protobuf</artifactId>
-            <version>2.4.1</version>
+            <version>${protobuf.version}</version>
             <scope>provided</scope>
+            <type>bundle</type>
+        </dependency>-->
+
+
+        <dependency>
+            <groupId>commons-collections</groupId>
+            <artifactId>commons-collections</artifactId>
+            <version>3.2.1</version>
+            <scope>provided</scope>
+            <type>bundle</type>
+        </dependency>
+        <dependency>
+            <groupId>commons-codec</groupId>
+            <artifactId>commons-codec</artifactId>
+            <version>1.5</version>
+            <scope>provided</scope>
+            <type>bundle</type>
         </dependency>
 
     </dependencies>
@@ -86,7 +123,7 @@
                 <configuration>
                     <instructions>
                         <Export-Package>org.kevoree.library.javase.kestrelChannels.*</Export-Package>
-                        <Import-Package>!org.kevoree.library.javase.kestrelChannels.*,!com.sun.management.*,*</Import-Package>
+                        <Import-Package>!org.kevoree.library.javase.kestrelChannels.*,*</Import-Package>
                     </instructions>
                 </configuration>
             </plugin>
@@ -140,7 +177,6 @@
             <url>http://maven.kevoree.org/snapshots</url>
         </repository>
     </repositories>
-
 
 
 </project>

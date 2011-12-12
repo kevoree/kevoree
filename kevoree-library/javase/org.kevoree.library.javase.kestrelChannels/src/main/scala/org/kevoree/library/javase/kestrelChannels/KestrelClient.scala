@@ -1,14 +1,5 @@
 package org.kevoree.library.javase.kestrelChannels
 
-/**
- * Created by IntelliJ IDEA.
- * User: jed
- * Date: 30/11/11
- * Time: 13:59
- * To change this template use File | Settings | File Templates.
- */
-
-
 import scala.collection.Map
 import java.net._
 import java.nio._
