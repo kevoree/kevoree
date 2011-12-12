@@ -14,8 +14,6 @@
 package org.kevoree.merger
 
 import org.kevoree.ContainerRoot
-import resolver.UnresolvedNodeType._
-import resolver.UnresolvedTypeDefinition._
 import resolver.{UnresolvedNode, UnresolvedDictionaryAttribute, UnresolvedNodeType, UnresolvedTypeDefinition}
 
 /**
@@ -28,6 +26,18 @@ import resolver.{UnresolvedNode, UnresolvedDictionaryAttribute, UnresolvedNodeTy
 
 trait CrossReferenceMerger {
   def breakCrossRef(actualModel: ContainerRoot, modelToMerge: ContainerRoot) {
+
+    //BREAK TOPOLOGY MODEL
+    (actualModel.getNodeNetworks ++ modelToMerge.getNodeNetworks).foreach {
+      nn =>
+        nn.getInitBy.map {
+          initByNode =>
+            nn.setInitBy(Some(UnresolvedNode(initByNode.getName)))
+        }
+        nn.setTarget(UnresolvedNode(nn.getTarget.getName))
+    }
+
+    //BREAK DEPLOY TARGET NODE TYPE
     (actualModel.getDeployUnits ++ modelToMerge.getDeployUnits).foreach {
       dp =>
         dp.getTargetNodeType.map {
@@ -54,16 +64,20 @@ trait CrossReferenceMerger {
         }
     }
     import org.kevoree.framework.aspects.KevoreeAspects._
-    (actualModel.getAllInstances ++ modelToMerge.getAllInstances).foreach{ instance =>
-       instance.setTypeDefinition(UnresolvedTypeDefinition(instance.getTypeDefinition.getName))
-       instance.getDictionary.map{ instanceDictionary =>
-         instanceDictionary.getValues.foreach{ dictionaryValue =>
-           dictionaryValue.setAttribute(UnresolvedDictionaryAttribute(dictionaryValue.getAttribute.getName))
-           dictionaryValue.getTargetNode.map{targetNode =>
-             dictionaryValue.setTargetNode(Some(UnresolvedNode(targetNode.getName)))
-           }
-         }
-       }
+    (actualModel.getAllInstances ++ modelToMerge.getAllInstances).foreach {
+      instance =>
+        instance.setTypeDefinition(UnresolvedTypeDefinition(instance.getTypeDefinition.getName))
+        instance.getDictionary.map {
+          instanceDictionary =>
+            instanceDictionary.getValues.foreach {
+              dictionaryValue =>
+                dictionaryValue.setAttribute(UnresolvedDictionaryAttribute(dictionaryValue.getAttribute.getName))
+                dictionaryValue.getTargetNode.map {
+                  targetNode =>
+                    dictionaryValue.setTargetNode(Some(UnresolvedNode(targetNode.getName)))
+                }
+            }
+        }
     }
   }
 }
