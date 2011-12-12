@@ -180,13 +180,6 @@ class MiniCloudKevoreeNodeRunner (nodeName: String, bootStrapModel: String) exte
 
   def updateNode (model: String): Boolean = {
     var uuid = UUID.randomUUID()
-    /*actor.manage(BackupResult(uuid.toString))
-    nodePlatformProcess.getOutputStream.write(("backupModel " + modelBackup + " " + uuid.toString + "\n").getBytes)
-    nodePlatformProcess.getOutputStream.flush()
-
-    actor.waitFor()*/
-
-    uuid = UUID.randomUUID()
     actor.manage(DeployResult(uuid.toString))
     nodePlatformProcess.getOutputStream.write(("sendModel " + model + " " + uuid.toString + "\n").getBytes)
     nodePlatformProcess.getOutputStream.flush()
@@ -248,12 +241,6 @@ class MiniCloudKevoreeNodeRunner (nodeName: String, bootStrapModel: String) exte
                   case WAITINFOR() => sender ! Some(true)
                 }
               }
-              /*case TIMEOUT => {
-                reactWithin(timeout) {
-                  case STOP() => this.exit()
-                  case WAITINFOR() => sender ! Some(false)
-                }
-              }*/
               case ErrorResult() => {
                 react {
                   case STOP() => this.exit()
@@ -262,42 +249,6 @@ class MiniCloudKevoreeNodeRunner (nodeName: String, bootStrapModel: String) exte
               }
             }
           }
-          /*case BackupResult(uuid) => {
-            var firstSender = this.sender
-            react {
-              case WAITINFOR() => {
-                firstSender = this.sender
-                reactWithin(timeout) {
-                  case STOP() => this.exit()
-                  case BackupResult(uuid2) if (uuid == uuid2) => {
-                    firstSender ! Some(true)
-                  }
-                  case TIMEOUT => firstSender ! Some(false)
-                  case ErrorResult() => {
-                    firstSender ! Some(false)
-                  }
-                }
-              }
-              case BackupResult(uuid2) if (uuid == uuid2) => {
-                reactWithin(timeout) {
-                  case STOP() => this.exit()
-                  case WAITINFOR() => sender ! Some(true)
-                }
-              }
-              case TIMEOUT => {
-                reactWithin(timeout) {
-                  case STOP() => this.exit()
-                  case WAITINFOR() => sender ! Some(false)
-                }
-              }
-              case ErrorResult() => {
-                reactWithin(timeout) {
-                  case STOP() => this.exit()
-                  case WAITINFOR() => sender ! Some(false)
-                }
-              }
-            }
-          }*/
         }
       }
     }
