@@ -64,7 +64,7 @@ public class JmDNSRestGroup extends RestGroup implements  Runnable{
         try{
             timer = Integer.parseInt(getDictionary().get("timer").toString());
         } catch (Exception e){
-            logger.error("Parse timer refresh listener"+e);
+         timer = 8000;
         }
     }
 

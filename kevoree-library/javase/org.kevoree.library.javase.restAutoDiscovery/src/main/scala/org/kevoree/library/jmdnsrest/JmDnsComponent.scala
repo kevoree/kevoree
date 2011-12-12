@@ -21,6 +21,8 @@ import org.slf4j.LoggerFactory
 import java.net.InetAddress
 import org.kevoree.tools.marShell.KevsEngine
 import org.kevoree.{KevoreeFactory, ContainerRoot}
+import java.util.{ArrayList, HashMap}
+import org.kevoree.framework.KevoreePlatformHelper
 
 /**
  * User: ffouquet
@@ -88,7 +90,7 @@ class JmDnsComponent(nodeName: String, groupName: String, modelPort: Int, modelH
    */
   def addNodeDiscovered(p1:ServiceInfo)
   {
-    if(!nodeAlreadydiscovery.contains(p1.getName.trim()))
+    if(!nodeAlreadydiscovery.contains(p1.getName.trim()+"."+groupName) && p1.getName.trim() != nodeName)
     {
       val typeNames = new String(p1.getTextBytes, "UTF-8");
       val typeNamesArray = typeNames.split("/")
@@ -96,13 +98,14 @@ class JmDnsComponent(nodeName: String, groupName: String, modelPort: Int, modelH
       resultModel.map {
         goodModel => {
           modelHandler.updateModel(goodModel)
-          nodeAlreadydiscovery.add(p1.getName.trim())
-            logger.debug("add node <"+p1.getName.trim()+">")
+          nodeAlreadydiscovery.add(p1.getName.trim()+"."+groupName)
+          logger.debug("add node <"+p1.getName.trim()+">")
+           KevoreePlatformHelper.updateNodeLinkProp(modelHandler.getLastModel,nodeName, p1.getName.trim(),org.kevoree.framework.Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP, p1.getInet4Addresses()(0).getHostAddress, "LAN", 100)
         }
       }
 
     }else {
-           logger.debug("List of discovered nodes <"+nodeAlreadydiscovery+">")
+      logger.debug("List of discovered nodes <"+nodeAlreadydiscovery+">")
     }
   }
 
@@ -135,7 +138,7 @@ class JmDnsComponent(nodeName: String, groupName: String, modelPort: Int, modelH
     def serviceRemoved(p1: ServiceEvent) {
       logger.debug("Service removed " + p1.getName)
       //TODO REMOVE NODE FROM JMDNS GROUP INSTANCES SUBNODES
-      nodeAlreadydiscovery.remove(p1.getName.trim())
+      nodeAlreadydiscovery.remove(p1.getName.trim()+"."+groupName)
     }
   };
 
