@@ -20,18 +20,18 @@ package org.kevoree.framework.annotation.processor.visitor
 
 import sub._
 import javax.annotation.processing.ProcessingEnvironment
-import javax.lang.model.util.{SimpleElementVisitor6, SimpleTypeVisitor6}
-import org.kevoree.{ChannelType, ComponentType, GroupType}
+import javax.lang.model.util.SimpleElementVisitor6
+import org.kevoree.GroupType
 import javax.lang.model.element.{ExecutableElement, ElementKind, TypeElement, Element}
 
-case class GroupTypeVisitor(groupType: GroupType, env: ProcessingEnvironment,rootVisitor : KevoreeAnnotationProcessor)
+case class GroupTypeVisitor(groupType: GroupType, env: ProcessingEnvironment, rootVisitor: KevoreeAnnotationProcessor)
   extends SimpleElementVisitor6[Any, Element]
   with DeployUnitProcessor
   with DictionaryProcessor
   with LibraryProcessor
   with ThirdPartyProcessor
   with LifeCycleMethodProcessor
-  with TypeDefinitionProcessor{
+  with TypeDefinitionProcessor {
 
   override def visitType(p1: TypeElement, p2: Element): Any = {
     p1.getSuperclass match {
@@ -44,29 +44,22 @@ case class GroupTypeVisitor(groupType: GroupType, env: ProcessingEnvironment,roo
       }
       case _ =>
     }
-
     //SUB PROCESSOR
     processDictionary(groupType, p2.asInstanceOf[TypeElement])
-    processDeployUnit(groupType, p2.asInstanceOf[TypeElement], env,rootVisitor.getOptions)
+    processDeployUnit(groupType, p2.asInstanceOf[TypeElement], env, rootVisitor.getOptions)
     processLibrary(groupType, p2.asInstanceOf[TypeElement])
-    processThirdParty(groupType, p2.asInstanceOf[TypeElement], env,rootVisitor)
+    processThirdParty(groupType, p2.asInstanceOf[TypeElement], env, rootVisitor)
     import scala.collection.JavaConversions._
     p2.getEnclosedElements.foreach {
-          method => {
-            method.getKind match {
-              case ElementKind.METHOD => {
-                processLifeCycleMethod(groupType, method.asInstanceOf[ExecutableElement])
-              }
-              case _ =>
-            }
+      method => {
+        method.getKind match {
+          case ElementKind.METHOD => {
+            processLifeCycleMethod(groupType, method.asInstanceOf[ExecutableElement])
           }
+          case _ =>
         }
-
-
-
-
+      }
+    }
   }
-
-
 
 }
