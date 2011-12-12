@@ -25,10 +25,10 @@ import java.util.concurrent.*;
 @Library(name = "JavaSE", names = {"Android"})
 @ChannelTypeFragment
 @DictionaryType({
-        @DictionaryAttribute(name = "port", defaultValue = "9000", optional = true, fragmentDependant = true),
-        @DictionaryAttribute(name = "maximum_size_messaging", defaultValue = "50", optional = true),
-        @DictionaryAttribute(name = "timer", defaultValue = "2000", optional = true),
-        @DictionaryAttribute(name = "replay", defaultValue = "true", optional = true, vals = {"true", "false"})
+        @DictionaryAttribute(name = "port", optional = false, fragmentDependant = true),
+        @DictionaryAttribute(name = "maximum_size_messaging", defaultValue = "50", optional = false),
+        @DictionaryAttribute(name = "timer", defaultValue = "2000", optional = false),
+        @DictionaryAttribute(name = "replay", defaultValue = "true", optional = false, vals = {"true", "false"})
 }
 )
 public class SocketChannel extends AbstractChannelFragment implements Runnable {
@@ -241,7 +241,7 @@ public class SocketChannel extends AbstractChannelFragment implements Runnable {
                 stream = client.getInputStream();
             } catch (Exception e) {
                 if (alive) {
-                    logger.warn("Failed to accept client or get its input stream", e);
+                  //  logger.warn("Failed to accept client or get its input stream", e);
                 }
                 continue;
             }
