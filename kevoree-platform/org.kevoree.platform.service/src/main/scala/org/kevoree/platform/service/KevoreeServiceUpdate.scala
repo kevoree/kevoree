@@ -28,28 +28,12 @@ import org.kevoree.tools.aether.framework.AetherUtil
 
 object KevoreeServiceUpdate extends App{
 
-  val defaultLocation=System.getProperty("user.home") + File.separator + "kevoree-runtime.jar"
-  def getLocation : String = defaultLocation
+  val defaultLocation=args(0)
 
-  val model = KevoreeFactory.eINSTANCE.createContainerRoot
-
-  // define repositories
-  var repository = KevoreeFactory.eINSTANCE.createRepository
-  repository.setUrl("http://maven.kevoree.org/release")
-  model.addRepositories(repository)
-  repository = KevoreeFactory.eINSTANCE.createRepository
-  repository.setUrl("http://maven.kevoree.org/snapshots")
-  model.addRepositories(repository)
-
-
-  val deployUnit = KevoreeFactory.eINSTANCE.createDeployUnit
-  deployUnit.setGroupName("org.kevoree.platform")
-  deployUnit.setUnitName("org.kevoree.platform.osgi.standalone")
-  model.addDeployUnits(deployUnit)
-  val jarFile: File = AetherUtil.resolveDeployUnit(deployUnit)
+  val jarFile: File = AetherUtil.resolveMavenArtifact("org.kevoree.platform.osgi.standalone", "org.kevoree.platform", "LATEST", List[String]("http://maven.kevoree.org/release", "http://maven.kevoree.org/snapshots"))
 
   if (jarFile.exists) {
-    Runtime.getRuntime.exec(Array[String]("cp", jarFile.getAbsolutePath, defaultLocation))
+    val p = Runtime.getRuntime.exec(Array[String]("cp", jarFile.getAbsolutePath, defaultLocation))
+    p.waitFor()
   }
-  println(defaultLocation)
 }
