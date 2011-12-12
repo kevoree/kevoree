@@ -132,7 +132,7 @@
                     <proguardVersion>4.4</proguardVersion>
                     <options>
 
-                        <option>-keepattributes **</option>
+                       <!-- <option>-keepattributes **</option>
                         <option>
                             -keep class * implements org.xml.sax.EntityResolver
                             -keepclassmembers class * {
@@ -159,7 +159,7 @@
                             scala.concurrent.forkjoin.LinkedTransferQueue$PaddedAtomicReference cleanMe;
                             }
                         </option>
-                        <option>-keepnames class * implements java.io.Serializable</option>
+                        <option>-keepnames class * implements java.io.Serializable</option>-->
                         <option>-dontnote</option>
                         <option>-dontskipnonpubliclibraryclasses</option>
                         <option>-dontskipnonpubliclibraryclassmembers</option>
@@ -170,12 +170,12 @@
                         </option>
                         <option>-ignorewarnings</option>
                         <option>-keep public class org.kevoree.platform.service.KevoreeServiceUpdate { *; }</option>
-                        <option>
+                       <!-- <option>
                             -keepclassmembers class *{
                             static final % *;
                             static final java.lang.String *;
                             }
-                        </option>
+                        </option>-->
                     </options>
                     <assembly>
                         <inclusions>
@@ -183,7 +183,7 @@
                                 <groupId>org.scala-lang</groupId>
                                 <artifactId>scala-library</artifactId>
                             </inclusion>
-                            <inclusion>
+                            <!--<inclusion>
                                 <groupId>org.kevoree</groupId>
                                 <artifactId>org.kevoree.model</artifactId>
                                 <filter>!metamodel/**</filter>
@@ -195,7 +195,7 @@
                             <inclusion>
                                 <groupId>org.kevoree</groupId>
                                 <artifactId>org.kevoree.api</artifactId>
-                            </inclusion>
+                            </inclusion>-->
                             <inclusion>
                                 <groupId>org.slf4j</groupId>
                                 <artifactId>slf4j-api</artifactId>
