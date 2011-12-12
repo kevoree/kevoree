@@ -27,11 +27,8 @@ import java.io.{PrintWriter, File}
 
 object GenerationTest extends App {
 
-
-  private def generateModel(nbDu: Int, nbCtInDu: Int, typesName: String): ContainerRoot = {
-    val model = KevoreeFactory.createContainerRoot
-
-    for (i <- 0 to nbDu) {
+  private def generateModel(nbDu: Int, nbCtInDu: Int, typesName: String, model:ContainerRoot): ContainerRoot = {
+    for (i <- 0 to nbDu-1) {
 
       val du = KevoreeFactory.createDeployUnit
       du.setGroupName("org.entimid.genlib")
@@ -39,7 +36,7 @@ object GenerationTest extends App {
       du.setVersion("1.0.0-SNAPSHOT")
       model.addDeployUnits(du)
 
-      for (j <- 0 to nbCtInDu) {
+      for (j <- 0 to nbCtInDu-1) {
 
         val ct = KevoreeFactory.createComponentType
         ct.setBean("org.entimid.genlib.lib"+i+"." + typesName + i + "" + j)
@@ -49,8 +46,13 @@ object GenerationTest extends App {
 
       }
     }
-
     model
+  }
+
+  private def generateModel(nbDu: Int, nbCtInDu: Int, typesName: String): ContainerRoot = {
+    val model = KevoreeFactory.createContainerRoot
+
+    generateModel(nbDu, nbCtInDu, typesName, model)
   }
 
 
@@ -87,10 +89,21 @@ object GenerationTest extends App {
   }
 
   val generator = new Model2Code
-  val model = generateModel(5, 350, "TestComponent")
-  model.getDeployUnits.foreach {
-    du => generator.modelToDeployUnit(model, URI.create("file:/Users/gnain/sources/entimid/entimid-library/genlibs/" + du.getUnitName), du)
-  }
-  generateMasterPom(model)
+    var model = generateModel(1,1,"ABC1TestComponent")
+    model = generateModel(1,10,"A2TestComponent", model)
+    model = generateModel(10,1,"A3TestComponent", model)
+
+  model = generateModel(1,50,"B2TestComponent", model)
+  model = generateModel(50,1,"B3TestComponent", model)
+
+  model = generateModel(1,100,"C2TestComponent", model)
+  model = generateModel(100,1,"C3TestComponent", model)
+
+    model.getDeployUnits.foreach {
+      du => generator.modelToDeployUnit(model, URI.create("file:/Users/gnain/sources/entimid/entimid-library/genlibs/" + du.getUnitName), du)
+    }
+    generateMasterPom(model)
+
+
 
 }
