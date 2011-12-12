@@ -30,14 +30,14 @@ import org.kevoree.framework._
 import scala.collection.JavaConversions._
 import javax.annotation.processing.RoundEnvironment
 import javax.tools.Diagnostic.Kind
-import java.util.Collections
 import org.kevoree.annotation._
 import javax.lang.model.SourceVersion
-import javax.lang.model.element.{Element, TypeElement}
+import javax.lang.model.element.TypeElement
 
 class KevoreeAnnotationProcessor() extends javax.annotation.processing.AbstractProcessor {
 
   var options: java.util.HashMap[String, String] = _
+
   def getOptions = options
 
   def setOptions(s: java.util.HashMap[String, String]) = {
@@ -82,29 +82,33 @@ class KevoreeAnnotationProcessor() extends javax.annotation.processing.AbstractP
 
   def process(annotations: java.util.Set[_ <: TypeElement], roundEnv: RoundEnvironment): Boolean = {
 
-    if(annotations.size() == 0){
-        return true
+    if (annotations.size() == 0) {
+      return true
     }
 
     val root = KevoreeFactory.eINSTANCE.createContainerRoot
     LocalUtility.root = (root)
-    roundEnv.getElementsAnnotatedWith(classOf[org.kevoree.annotation.ComponentType]).foreach{typeDecl =>
-      processComponentType(typeDecl.getAnnotation(classOf[org.kevoree.annotation.ComponentType]), typeDecl.asInstanceOf[TypeElement], root)
+    roundEnv.getElementsAnnotatedWith(classOf[org.kevoree.annotation.ComponentType]).foreach {
+      typeDecl =>
+        processComponentType(typeDecl.getAnnotation(classOf[org.kevoree.annotation.ComponentType]), typeDecl.asInstanceOf[TypeElement], root)
     }
-    roundEnv.getElementsAnnotatedWith(classOf[org.kevoree.annotation.ChannelTypeFragment]).foreach{typeDecl =>
-      processChannelType(typeDecl.getAnnotation(classOf[org.kevoree.annotation.ChannelTypeFragment]), typeDecl.asInstanceOf[TypeElement], root)
-    }    
-    roundEnv.getElementsAnnotatedWith(classOf[org.kevoree.annotation.GroupType]).foreach{typeDecl =>
-      processGroupType(typeDecl.getAnnotation(classOf[org.kevoree.annotation.GroupType]), typeDecl.asInstanceOf[TypeElement], root)
-    }    
-    roundEnv.getElementsAnnotatedWith(classOf[org.kevoree.annotation.NodeType]).foreach{typeDecl =>
-      processNodeType(typeDecl.getAnnotation(classOf[org.kevoree.annotation.NodeType]), typeDecl.asInstanceOf[TypeElement], root)
+    roundEnv.getElementsAnnotatedWith(classOf[org.kevoree.annotation.ChannelTypeFragment]).foreach {
+      typeDecl =>
+        processChannelType(typeDecl.getAnnotation(classOf[org.kevoree.annotation.ChannelTypeFragment]), typeDecl.asInstanceOf[TypeElement], root)
     }
-    
+    roundEnv.getElementsAnnotatedWith(classOf[org.kevoree.annotation.GroupType]).foreach {
+      typeDecl =>
+        processGroupType(typeDecl.getAnnotation(classOf[org.kevoree.annotation.GroupType]), typeDecl.asInstanceOf[TypeElement], root)
+    }
+    roundEnv.getElementsAnnotatedWith(classOf[org.kevoree.annotation.NodeType]).foreach {
+      typeDecl =>
+        processNodeType(typeDecl.getAnnotation(classOf[org.kevoree.annotation.NodeType]), typeDecl.asInstanceOf[TypeElement], root)
+    }
+
     //POST APT PROCESS CHECKER
     val checker: PostAptChecker = new PostAptChecker(root, env)
     val errorsInChecker = !checker.check
-    KevoreeXmiHelper.save(LocalUtility.generateLibURI(options)+".debug", root);
+    KevoreeXmiHelper.save(LocalUtility.generateLibURI(options) + ".debug", root);
 
     if (!errorsInChecker) {
       //TODO SEPARATE MAVEN PLUGIN
@@ -116,10 +120,10 @@ class KevoreeAnnotationProcessor() extends javax.annotation.processing.AbstractP
           KevoreeFactoryGenerator.generateFactory(root, env.getFiler, targetNodeName);
           KevoreeActivatorGenerator.generateActivator(root, env.getFiler, targetNodeName);
       }
-      env.getMessager.printMessage(Kind.OTHER,"Save Kevoree library")
+      env.getMessager.printMessage(Kind.OTHER, "Save Kevoree library")
       KevoreeXmiHelper.save(LocalUtility.generateLibURI(options), root);
       true
-    }  else {
+    } else {
       false
     }
 
@@ -129,7 +133,17 @@ class KevoreeAnnotationProcessor() extends javax.annotation.processing.AbstractP
   def processNodeType(nodeTypeAnnotation: NodeType, typeDecl: TypeElement, root: ContainerRoot) = {
     //Checks that the root KevoreeChannelFragment is present in hierarchy.
     val superTypeChecker = new SuperTypeValidationVisitor(classOf[AbstractNodeType].getName)
-    typeDecl.accept(superTypeChecker,typeDecl)
+    typeDecl.accept(superTypeChecker, typeDecl)
+
+    var isAbstract = false
+    typeDecl.getModifiers.find(mod => mod.equals(javax.lang.model.element.Modifier.ABSTRACT)) match {
+      case Some(s) => {
+        isAbstract = true;
+        env.getMessager.printMessage(Kind.WARNING, "NodeType bean ignored  " + typeDecl.getQualifiedName + ", reason=Declared as @NodeType but is actually ABSTRACT. Should be either concrete or @ComponentFragment.")
+      }
+      case None =>
+    }
+
     if (superTypeChecker.result) {
 
       val nodeType: org.kevoree.NodeType = root.getTypeDefinitions.find(td => td.getName == typeDecl.getSimpleName) match {
@@ -139,12 +153,16 @@ class KevoreeAnnotationProcessor() extends javax.annotation.processing.AbstractP
 
       val nodeTypeName = typeDecl.getSimpleName
       nodeType.setName(nodeTypeName.toString)
-      nodeType.setBean(typeDecl.getQualifiedName.toString)
-      nodeType.setFactoryBean(typeDecl.getQualifiedName + "Factory")
+      if (!isAbstract) {
+        nodeType.setBean(typeDecl.getQualifiedName.toString)
+        nodeType.setFactoryBean(typeDecl.getQualifiedName + "Factory")
+      }
+
+
       root.addTypeDefinitions(nodeType)
 
       //RUN VISITOR
-      typeDecl.accept(NodeTypeVisitor(nodeType, env,this), typeDecl)
+      typeDecl.accept(NodeTypeVisitor(nodeType, env, this), typeDecl)
     } else {
       env.getMessager.printMessage(Kind.WARNING, "NodeType ignored " + typeDecl.getQualifiedName + " , reason=Must extend " + classOf[AbstractNodeType].getName)
     }
@@ -154,8 +172,18 @@ class KevoreeAnnotationProcessor() extends javax.annotation.processing.AbstractP
   def processGroupType(groupTypeAnnotation: GroupType, typeDecl: TypeElement, root: ContainerRoot) = {
     //Checks that the root KevoreeChannelFragment is present in hierarchy.
     val superTypeChecker = new SuperTypeValidationVisitor(classOf[AbstractGroupType].getName)
-    typeDecl.accept(superTypeChecker,typeDecl)
-    if (superTypeChecker.result) {
+    typeDecl.accept(superTypeChecker, typeDecl)
+
+    var isAbstract = false
+    typeDecl.getModifiers.find(mod => mod.equals(javax.lang.model.element.Modifier.ABSTRACT)) match {
+      case Some(s) => {
+        isAbstract = true;
+        env.getMessager.printMessage(Kind.WARNING, "ComponentType ignored " + typeDecl.getQualifiedName + ", reason=Declared as @ComponentType but is actually ABSTRACT. Should be either concrete or @ComponentFragment.")
+      }
+      case None =>
+    }
+
+    if (superTypeChecker.result && !isAbstract) {
 
       val groupType = KevoreeFactory.eINSTANCE.createGroupType
       val groupName = typeDecl.getSimpleName
@@ -165,7 +193,7 @@ class KevoreeAnnotationProcessor() extends javax.annotation.processing.AbstractP
       root.addTypeDefinitions(groupType)
 
       //RUN VISITOR
-      typeDecl.accept(GroupTypeVisitor(groupType, env,this), typeDecl)
+      typeDecl.accept(GroupTypeVisitor(groupType, env, this), typeDecl)
     } else {
       env.getMessager.printMessage(Kind.WARNING, "GroupType ignored " + typeDecl.getQualifiedName + " , reason=Must extend " + classOf[AbstractGroupType].getName)
     }
@@ -176,8 +204,18 @@ class KevoreeAnnotationProcessor() extends javax.annotation.processing.AbstractP
 
     //Checks that the root KevoreeChannelFragment is present in hierarchy.
     val superTypeChecker = new SuperTypeValidationVisitor(classOf[AbstractChannelFragment].getName)
-    typeDecl.accept(superTypeChecker,typeDecl)
-    if (superTypeChecker.result) {
+    typeDecl.accept(superTypeChecker, typeDecl)
+
+    var isAbstract = false
+    typeDecl.getModifiers.find(mod => mod.equals(javax.lang.model.element.Modifier.ABSTRACT)) match {
+      case Some(s) => {
+        isAbstract = true;
+        env.getMessager.printMessage(Kind.WARNING, "ComponentType ignored " + typeDecl.getQualifiedName + ", reason=Declared as @ComponentType but is actually ABSTRACT. Should be either concrete or @ComponentFragment.")
+      }
+      case None =>
+    }
+
+    if (superTypeChecker.result && !isAbstract) {
 
       val channelType = KevoreeFactory.eINSTANCE.createChannelType
       val ctname = typeDecl.getSimpleName
@@ -187,7 +225,7 @@ class KevoreeAnnotationProcessor() extends javax.annotation.processing.AbstractP
       root.addTypeDefinitions(channelType)
 
       //RUN VISITOR
-      typeDecl.accept(ChannelTypeFragmentVisitor(channelType, env,this), typeDecl)
+      typeDecl.accept(ChannelTypeFragmentVisitor(channelType, env, this), typeDecl)
     } else {
       env.getMessager.printMessage(Kind.WARNING, "ChannelFragment ignored " + typeDecl.getQualifiedName + " , reason=Must extend " + classOf[AbstractChannelFragment].getName)
     }
@@ -198,7 +236,7 @@ class KevoreeAnnotationProcessor() extends javax.annotation.processing.AbstractP
     //Checks that the root KevoreeComponent is present in hierarchy.
 
     val superTypeChecker = new SuperTypeValidationVisitor(classOf[AbstractComponentType].getName)
-    typeDecl.accept(superTypeChecker,typeDecl)
+    typeDecl.accept(superTypeChecker, typeDecl)
     //Prints a warning
     if (!superTypeChecker.result) {
       env.getMessager.printMessage(Kind.WARNING, "ComponentType ignored " + typeDecl.getQualifiedName + " , reason=Must extend " + classOf[AbstractComponentType].getName)
@@ -223,7 +261,7 @@ class KevoreeAnnotationProcessor() extends javax.annotation.processing.AbstractP
 
       root.addTypeDefinitions(componentType)
       //RUN VISITOR
-      typeDecl.accept(ComponentDefinitionVisitor(componentType, env,this), typeDecl)
+      typeDecl.accept(ComponentDefinitionVisitor(componentType, env, this), typeDecl)
     }
 
 
