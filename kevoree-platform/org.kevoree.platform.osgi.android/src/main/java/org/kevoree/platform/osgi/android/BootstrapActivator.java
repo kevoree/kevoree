@@ -19,14 +19,16 @@ package org.kevoree.platform.osgi.android;
 
 import org.kevoree.ContainerRoot;
 import org.kevoree.KevoreeFactory;
-import org.kevoree.api.configuration.ConfigConstants;
 import org.kevoree.api.configuration.ConfigurationService;
 import org.kevoree.api.service.core.handler.KevoreeModelHandlerService;
+import org.kevoree.api.service.core.script.KevScriptEngine;
+import org.kevoree.api.service.core.script.KevScriptEngineFactory;
 import org.kevoree.api.service.core.script.ScriptInterpreter;
 import org.kevoree.core.impl.KevoreeConfigServiceBean;
 import org.kevoree.core.impl.KevoreeCoreBean;
 import org.kevoree.framework.KevoreeXmiHelper;
 import org.kevoree.tools.aether.framework.AetherUtil;
+import org.kevoree.tools.marShell.KevScriptCoreEngine;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
@@ -96,6 +98,14 @@ public class BootstrapActivator implements BundleActivator {
             KevScriptInterpreterService kevScriptBean = new KevScriptInterpreterService(coreBean);
             context.registerService(KevoreeModelHandlerService.class.getName(), coreBean, null);
             context.registerService(ScriptInterpreter.class.getName(), kevScriptBean, null);
+            context.registerService(KevScriptEngineFactory.class.getName(), new KevScriptEngineFactory() {
+                @Override
+                public KevScriptEngine createKevScriptEngine() {
+                    return new KevScriptCoreEngine(coreBean);
+                }
+            }, null);
+
+
             /* Boot strap */
             //Bootstrap model phase
             if (bootstrapModel == null) {
@@ -111,7 +121,7 @@ public class BootstrapActivator implements BundleActivator {
             if (bootstrapModel != null) {
                 try {
                     logger.debug("Bootstrap step !");
-                    BootstrapHelper.initModelInstance(bootstrapModel,"AndroidNode","RestGroup");
+                    BootstrapHelper.initModelInstance(bootstrapModel, "AndroidNode", "RestGroup");
 
                     coreBean.updateModel(bootstrapModel);
                 } catch (Exception e) {

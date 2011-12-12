@@ -11,20 +11,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package org.kevoree.api.service.core.script;
 
 /**
- *
- * @author ffouquet
+ * Created by IntelliJ IDEA.
+ * User: duke
+ * Date: 11/12/11
+ * Time: 20:19
+ * To change this template use File | Settings | File Templates.
  */
-@Deprecated
-public interface ScriptInterpreter {
+public interface KevScriptEngineFactory {
 
-    public Boolean interpret(String script);
-    
+    public KevScriptEngine createKevScriptEngine();
+
 }

@@ -25,4 +25,6 @@ import org.kevoree.DictionaryAttribute
 
 case class UnresolvedDictionaryAttribute(attributeName : String) extends DictionaryAttribute {
 
+  override def getName = attributeName
+
 }

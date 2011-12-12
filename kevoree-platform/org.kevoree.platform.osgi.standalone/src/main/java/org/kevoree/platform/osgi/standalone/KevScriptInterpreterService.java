@@ -26,6 +26,7 @@ import scala.Option;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 
+@Deprecated
 public class KevScriptInterpreterService implements ScriptInterpreter {
 
     KevoreeModelHandlerService handler = null;
@@ -36,6 +37,7 @@ public class KevScriptInterpreterService implements ScriptInterpreter {
     }
 
     @Override
+    @Deprecated
     public Boolean interpret(String content) {
 
         Option<Script> script = parser.parseScript(content);
@@ -44,7 +46,6 @@ public class KevScriptInterpreterService implements ScriptInterpreter {
 
             ModelCloner modelCloner = new ModelCloner();
             ContainerRoot model = modelCloner.clone( handler.getLastModel());
-
             KevsInterpreterContext context = new KevsInterpreterContext(model);
             KevsScriptInterpreter interpreter = new KevsScriptInterpreter((Script) script.get());
             boolean result = interpreter.interpret(context);
