@@ -19,12 +19,12 @@
 package org.kevoree.merger
 
 import org.kevoree.ContainerRoot
+import resolver._
 import resolver.UnresolvedNodeType._
 import resolver.UnresolvedTypeDefinition._
-import resolver.{DictionaryAttributeResolver, UnresolvedTypeDefinition, UnresolvedNodeType, TypeDefinitionResolver}
 import sub._
 
-class RootMerger extends TypeDefinitionMerger with TypeLibraryMerger with NodeMerger with RepositoryMerger with TypeDefinitionResolver with DictionaryAttributeResolver with ChannelMerger with GroupMerger with CrossReferenceMerger {
+class RootMerger extends TypeDefinitionMerger with TypeLibraryMerger with NodeMerger with RepositoryMerger with TypeDefinitionResolver with DictionaryAttributeResolver with ChannelMerger with GroupMerger with CrossReferenceMerger with TopologyMerger with TopologyResolver {
 
   override def merge(actualModel: ContainerRoot, modelToMerge: ContainerRoot): Unit = {
     if (modelToMerge != null) {
@@ -33,6 +33,8 @@ class RootMerger extends TypeDefinitionMerger with TypeLibraryMerger with NodeMe
       breakCrossRef(actualModel, modelToMerge) ///BREAK LIBRARY & DEPLOY UNIT CROSS REF
 
       mergeAllNode(actualModel, modelToMerge) //MERGE & BREAK CROSS REFERENCE
+      mergeTopology(actualModel, modelToMerge)
+
       mergeAllGroups(actualModel, modelToMerge) //MERGE & BREAK CROSS REFERENCE
       mergeAllChannels(actualModel, modelToMerge) //MERGE & BREAK CROSS REFERENCE
       mergeTypeDefinition(actualModel, modelToMerge)
@@ -48,7 +50,7 @@ class RootMerger extends TypeDefinitionMerger with TypeLibraryMerger with NodeMe
       resolveLibraryType(actualModel)
       resolveInstanceTypeDefinition(actualModel)
       resolveDictionaryAttribute(actualModel)
-
+      resolveTopologyNodes(actualModel)
     }
   }
 
