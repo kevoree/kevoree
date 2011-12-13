@@ -242,15 +242,15 @@ class MacLatexCompiler extends LatexCompilerInterface {
               case OUTPUT(data) => {
                 react {
                   case STOP() => this.exit()
-                  case WAITINGFOR(timeout) => sender !(true, data)
-                  case WAITINGFORPATH(timeout) => sender !(true, data)
+                  case WAITINGFOR(timeout) => firstSender !(true, data)
+                  case WAITINGFORPATH(timeout) => firstSender !(true, data)
                 }
               }
               case ERROR(data) => {
                 react {
                   case STOP() => this.exit()
-                  case WAITINGFOR(timeout) => sender !(false, data)
-                  case WAITINGFORPATH(timeout) => sender !(true, data)
+                  case WAITINGFOR(timeout) => firstSender !(false, data)
+                  case WAITINGFORPATH(timeout) => firstSender !(true, data)
                 }
               }
             }
