@@ -11,20 +11,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+package org.kevoree.api.service.core.handler;
+
+import org.kevoree.ContainerRoot;
+
+import java.util.UUID;
+
+/**
+ * Created by IntelliJ IDEA.
+ * User: duke
+ * Date: 13/12/11
+ * Time: 10:46
+ * To change this template use File | Settings | File Templates.
  */
+public interface UUIDModel {
 
-package org.kevoree.framework.message
+    public UUID getUUID();
 
-import org.kevoree.ContainerRoot
-import org.kevoree.api.service.core.handler.UUIDModel
+    public ContainerRoot getModel();
 
-case class UpdateModel(model : ContainerRoot)
-case class LastModel()
-case class PreviousModel()
-
-
-case class LastUUIDModel()
-case class UpdateUUIDModel(prev : UUIDModel,target: ContainerRoot)
+}

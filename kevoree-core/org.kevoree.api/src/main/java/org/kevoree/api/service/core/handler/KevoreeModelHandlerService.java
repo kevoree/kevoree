@@ -30,11 +30,17 @@ public interface KevoreeModelHandlerService {
 
     public ContainerRoot getLastModel();
 
+    public UUIDModel getLastUUIDModel();
+
     public Date getLastModification();
 
     public void updateModel(ContainerRoot model);
     
     public Date atomicUpdateModel(ContainerRoot model);
+
+    public void compareAndSwapModel(UUIDModel previousModel,ContainerRoot targetModel);
+    
+    public Date atomicCompareAndSwapModel(UUIDModel previousModel,ContainerRoot targetModel);
 
     public List<ContainerRoot> getPreviousModel();
 

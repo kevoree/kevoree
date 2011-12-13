@@ -11,20 +11,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+package org.kevoree.api.service.core.handler;
+
+/**
+ * Created by IntelliJ IDEA.
+ * User: duke
+ * Date: 13/12/11
+ * Time: 10:53
+ * To change this template use File | Settings | File Templates.
  */
+public class KevoreeModelUpdateException extends Exception {
 
-package org.kevoree.framework.message
+    @Override
+    public String getMessage(){
+        return "Error during compare and swap phase, model rejected by Kevoree Core";
+    }
 
-import org.kevoree.ContainerRoot
-import org.kevoree.api.service.core.handler.UUIDModel
-
-case class UpdateModel(model : ContainerRoot)
-case class LastModel()
-case class PreviousModel()
-
-
-case class LastUUIDModel()
-case class UpdateUUIDModel(prev : UUIDModel,target: ContainerRoot)
+}

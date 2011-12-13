@@ -30,5 +30,6 @@ public interface KevScriptEngine {
     public void clearScript();
     public ContainerRoot interpret();
     public void interpretDeploy();
+    public boolean atomicInterpretDeploy();
     
 }
