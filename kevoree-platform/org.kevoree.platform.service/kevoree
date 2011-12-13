@@ -13,7 +13,7 @@ start() {
     echo "Tried to start but $SERVICE was already running!"
   else
     echo "$SERVICE was not running... starting."
-    $JAVA -Dnode.log.level=DEBUG -Dnode.name=`hostname` -Dnode.groupType=RestGroup -Xmx1024M -Xms1024M -jar "$APP_PATH/$SERVICE.jar"  > "$APP_PATH/`hostname`.log" &
+    $JAVA -Dnode.log.level=DEBUG -Dnode.name=`hostname` -Dnode.groupType=RestGroup -Dnode.update.timeout=300000 -Xmx1024M -Xms1024M -jar "$APP_PATH/$SERVICE.jar"  > "$APP_PATH/`hostname`.log" &
     sleep 5
     if ps axuw | grep -v grep | grep `hostname` | grep "$SERVICE.jar" > /dev/null
     then
