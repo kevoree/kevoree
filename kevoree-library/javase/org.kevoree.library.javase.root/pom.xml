@@ -27,7 +27,7 @@
         <module>../org.kevoree.library.javase.jPaxos</module>
         <module>../org.kevoree.library.javase.fileSystem</module>
         <module>../org.kevoree.library.javase.fileSystemSVN</module>
-
+        <module>../org.kevoree.library.javase.fileSystemGit</module>
 
         <!--   <module>../org.kevoree.library.javase.xmpp</module>     -->
         <!--<module>../org.kevoree.library.javase.sample</module>-->

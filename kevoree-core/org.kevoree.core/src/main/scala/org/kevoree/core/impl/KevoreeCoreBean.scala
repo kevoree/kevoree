@@ -43,7 +43,7 @@ class KevoreeCoreBean extends KevoreeModelHandlerService with KevoreeThreadActor
 
   def getBundleContext = bundleContext
 
-  def setBundleContext (bc: BundleContext) {
+  def setBundleContext(bc: BundleContext) {
     bundleContext = bc
     KevoreeDeployManager.setBundle(bc.getBundle)
   }
@@ -52,7 +52,7 @@ class KevoreeCoreBean extends KevoreeModelHandlerService with KevoreeThreadActor
   @BeanProperty var nodeName: String = ""
   @BeanProperty var nodeInstance: AbstractNodeType = null
 
-  var models: java.util.ArrayList[ContainerRoot] = new java.util.ArrayList()
+  var models: scala.collection.mutable.ArrayBuffer[ContainerRoot] = new scala.collection.mutable.ArrayBuffer[ContainerRoot]()
   var model: ContainerRoot = KevoreeFactory.eINSTANCE.createContainerRoot
 
   var lastDate: Date = new Date(System.currentTimeMillis)
@@ -62,7 +62,7 @@ class KevoreeCoreBean extends KevoreeModelHandlerService with KevoreeThreadActor
   var logger = LoggerFactory.getLogger(this.getClass);
   val modelClone = new ModelCloner
 
-  private def checkBootstrapNode (currentModel: ContainerRoot): Unit = {
+  private def checkBootstrapNode(currentModel: ContainerRoot): Unit = {
     try {
       if (nodeInstance == null) {
         currentModel.getNodes.find(n => n.getName == nodeName) match {
@@ -98,7 +98,7 @@ class KevoreeCoreBean extends KevoreeModelHandlerService with KevoreeThreadActor
     }
   }
 
-  private def checkUnbootstrapNode (currentModel: ContainerRoot): Option[ContainerRoot] = {
+  private def checkUnbootstrapNode(currentModel: ContainerRoot): Option[ContainerRoot] = {
     try {
       if (nodeInstance != null) {
         currentModel.getNodes.find(n => n.getName == nodeName) match {
@@ -137,14 +137,19 @@ class KevoreeCoreBean extends KevoreeModelHandlerService with KevoreeThreadActor
   }
 
 
-  private def switchToNewModel (c: ContainerRoot) = {
-    models.add(model)
+  private def switchToNewModel(c: ContainerRoot) = {
+    models.append(model)
+    if (models.size > 15) {
+      // MAGIC NUMBER
+      models = models.drop(5)
+    }
+
     model = c
     lastDate = new Date(System.currentTimeMillis)
     //TODO ADD LISTENER
 
     new Actor {
-      def act () {
+      def act() {
         //NOTIFY LOCAL REASONER
         listenerActor.notifyAllListener()
         //NOTIFY GROUP
@@ -176,7 +181,7 @@ class KevoreeCoreBean extends KevoreeModelHandlerService with KevoreeThreadActor
     this
   }
 
-  override def stop () {
+  override def stop() {
 
     logger.warn("Kevoree Core will be stopped !")
 
@@ -218,7 +223,7 @@ class KevoreeCoreBean extends KevoreeModelHandlerService with KevoreeThreadActor
   val cloner = new ModelCloner
   val modelChecker = new RootChecker
 
-  def internal_process (msg: Any) = msg match {
+  def internal_process(msg: Any) = msg match {
     //case updateMsg: PlatformModelUpdate => KevoreePlatformHelper.updateNodeLinkProp(model, nodeName, updateMsg.targetNodeName, updateMsg.key, updateMsg.value, updateMsg.networkType, updateMsg.weight)
     case PreviousModel() => reply(models)
     case LastModel() => {
@@ -332,31 +337,33 @@ class KevoreeCoreBean extends KevoreeModelHandlerService with KevoreeThreadActor
     (this !? LastModel()).asInstanceOf[ContainerRoot]
   }
 
-  override def updateModel (model: ContainerRoot) {
+  override def updateModel(model: ContainerRoot) {
     logger.debug("update asked")
     this ! UpdateModel(model)
     logger.debug("update end")
   }
 
-  override def atomicUpdateModel (model: ContainerRoot) = {
+  override def atomicUpdateModel(model: ContainerRoot) = {
     logger.debug("Atomic update asked")
     (this !? UpdateModel(model))
     logger.debug("Atomic update end")
     lastDate
   }
 
-  override def getPreviousModel: java.util.List[ContainerRoot] = (this !? PreviousModel())
-    .asInstanceOf[java.util.List[ContainerRoot]]
+  override def getPreviousModel: java.util.List[ContainerRoot] = {
+    import scala.collection.JavaConversions._
+    (this !? PreviousModel()).asInstanceOf[scala.collection.mutable.ArrayBuffer[ContainerRoot]].toList
+  }
 
 
   val listenerActor = new KevoreeListeners
   listenerActor.start()
 
-  override def registerModelListener (listener: ModelListener) {
+  override def registerModelListener(listener: ModelListener) {
     listenerActor.addListener(listener)
   }
 
-  override def unregisterModelListener (listener: ModelListener) {
+  override def unregisterModelListener(listener: ModelListener) {
     listenerActor.removeListener(listener)
   }
 
