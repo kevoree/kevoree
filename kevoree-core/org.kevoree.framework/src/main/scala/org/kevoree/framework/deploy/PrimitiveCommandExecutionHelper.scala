@@ -31,7 +31,7 @@ object PrimitiveCommandExecutionHelper {
 
   var logger = LoggerFactory.getLogger(this.getClass)
 
-  def execute(adaptionModel: AdaptationModel, nodeInstance: AbstractNodeType): Boolean = {
+  def execute (adaptionModel: AdaptationModel, nodeInstance: AbstractNodeType): Boolean = {
     if (adaptionModel.getOrderedPrimitiveSet != null) {
       adaptionModel.getOrderedPrimitiveSet match {
         case Some(orderedPrimitiveSet) => {
@@ -45,7 +45,7 @@ object PrimitiveCommandExecutionHelper {
     }
   }
 
-  private def executeStep(step: ParallelStep, nodeInstance: AbstractNodeType): Boolean = {
+  private def executeStep (step: ParallelStep, nodeInstance: AbstractNodeType): Boolean = {
     if (step == null) {
       return true
     }
@@ -89,12 +89,13 @@ object PrimitiveCommandExecutionHelper {
 
   private class KevoreeParDeployPhase {
     var primitives: List[PrimitiveCommand] = List()
-    class BooleanRunnableTask(primitive: PrimitiveCommand, watchDog: Actor) extends Runnable {
+
+    class BooleanRunnableTask (primitive: PrimitiveCommand, watchDog: Actor) extends Runnable {
       private var result = false
 
       def getResult = result
 
-      def run() {
+      def run () {
         try {
           result = primitive.execute()
           watchDog ! result
@@ -109,12 +110,12 @@ object PrimitiveCommandExecutionHelper {
       }
     }
 
-    class WatchDogActor(timeout: Long) extends Actor {
+    class WatchDogActor (timeout: Long) extends Actor {
       var rec = 0
       val pointerSelf = this
       var noError = true
 
-      def act() {
+      def act () {
         react {
           case ps: List[PrimitiveCommand] => {
             var waitingThread: List[Thread] = List()
@@ -146,9 +147,9 @@ object PrimitiveCommandExecutionHelper {
                   responseActor ! false
                   exit()
                 }
-                case b : Boolean => {
+                case b: Boolean => {
                   rec = rec + 1
-                  if(!b){
+                  if (!b) {
                     noError = false
                   }
                   logger.debug("getResult {}", rec)
@@ -164,22 +165,32 @@ object PrimitiveCommandExecutionHelper {
       }
     }
 
-    def populate(cmd: PrimitiveCommand) {
+    def populate (cmd: PrimitiveCommand) {
       primitives = primitives ++ List(cmd)
     }
 
-    def runPhase(): Boolean = {
+    def runPhase (): Boolean = {
       if (primitives.length == 0) {
         logger.debug("Empty phase !!!")
         return true
       }
-      val wt = new WatchDogActor(30000)
+
+      val watchdogTimeout = System.getProperty("node.update.timeout")
+      var watchDogTimeoutInt = 30000
+      if (watchdogTimeout != null) {
+        try {
+          watchDogTimeoutInt = Integer.parseInt(watchdogTimeout.toString)
+        } catch {
+          case _ => logger.warn("Invalid value for node.update.timeout system property (must be an integer)!")
+        }
+      }
+      val wt = new WatchDogActor(watchDogTimeoutInt)
       wt.start()
       val stepResult = (wt !? primitives).asInstanceOf[Boolean]
       stepResult
     }
 
-    def rollBack() {
+    def rollBack () {
       logger.debug("Rollback phase")
       // SEQUENCIAL ROOLBACK
       primitives.reverse.foreach(c => {
