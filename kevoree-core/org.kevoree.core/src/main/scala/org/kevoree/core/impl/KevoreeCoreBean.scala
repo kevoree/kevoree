@@ -27,14 +27,14 @@ import scala.reflect.BeanProperty
 import org.kevoree.framework.message._
 import scala.actors.Actor
 import org.kevoree.api.configuration.ConfigConstants
-import java.util.Date
-import org.kevoree.api.service.core.handler.{ModelListener, KevoreeModelHandlerService}
 import org.kevoree.framework._
 import org.kevoree.framework.context.KevoreeDeployManager
 import deploy.PrimitiveCommandExecutionHelper
 import org.kevoree.tools.aether.framework.NodeTypeBootstrapHelper
 import org.kevoree.cloner.ModelCloner
 import org.kevoree.core.basechecker.RootChecker
+import java.util.{UUID, Date}
+import org.kevoree.api.service.core.handler.{KevoreeModelUpdateException, UUIDModel, ModelListener, KevoreeModelHandlerService}
 
 class KevoreeCoreBean extends KevoreeModelHandlerService with KevoreeThreadActor {
 
@@ -54,8 +54,8 @@ class KevoreeCoreBean extends KevoreeModelHandlerService with KevoreeThreadActor
 
   var models: scala.collection.mutable.ArrayBuffer[ContainerRoot] = new scala.collection.mutable.ArrayBuffer[ContainerRoot]()
   var model: ContainerRoot = KevoreeFactory.eINSTANCE.createContainerRoot
-
   var lastDate: Date = new Date(System.currentTimeMillis)
+  var currentModelUUID: UUID = UUID.randomUUID();
 
   def getLastModification = lastDate
 
@@ -132,19 +132,17 @@ class KevoreeCoreBean extends KevoreeModelHandlerService with KevoreeThreadActor
     } catch {
       case _@e => logger.error("Error while unbootstraping node instance ", e); None
     }
-
-
   }
-
 
   private def switchToNewModel(c: ContainerRoot) = {
     models.append(model)
     if (models.size > 15) {
-      // MAGIC NUMBER
+      // MAGIC NUMBER ;-) , ONLY KEEP 10 PREVIOUS MODEL
       models = models.drop(5)
     }
 
     model = c
+    currentModelUUID = UUID.randomUUID()
     lastDate = new Date(System.currentTimeMillis)
     //TODO ADD LISTENER
 
@@ -182,16 +180,10 @@ class KevoreeCoreBean extends KevoreeModelHandlerService with KevoreeThreadActor
   }
 
   override def stop() {
-
     logger.warn("Kevoree Core will be stopped !")
-
     listenerActor.stop()
-
     super[KevoreeThreadActor].forceStop
-    //TODO CLEAN AND REACTIVATE
-
     if (nodeInstance != null) {
-
       try {
         val stopModel = checkUnbootstrapNode(model)
         if (stopModel.isDefined) {
@@ -215,138 +207,147 @@ class KevoreeCoreBean extends KevoreeModelHandlerService with KevoreeThreadActor
         }
       }
     }
-
     logger.debug("Kevoree core stopped ")
-    // KevoreeXmiHelper.save(bundleContext.getDataFile("lastModel.xmi").getAbsolutePath(), models.head);
   }
 
   val cloner = new ModelCloner
   val modelChecker = new RootChecker
 
   def internal_process(msg: Any) = msg match {
-    //case updateMsg: PlatformModelUpdate => KevoreePlatformHelper.updateNodeLinkProp(model, nodeName, updateMsg.targetNodeName, updateMsg.key, updateMsg.value, updateMsg.networkType, updateMsg.weight)
     case PreviousModel() => reply(models)
     case LastModel() => {
       reply(cloner.clone(model))
     }
-
-    case UpdateModel(pnewmodel) => {
-      if (pnewmodel == null) {
-        logger.error("Null model")
-        reply(false)
+    case LastUUIDModel() => {
+      reply(UUIDModelImpl(currentModelUUID, cloner.clone(model)))
+    }
+    case UpdateUUIDModel(prevUUIDModel, targetModel) => {
+      if (prevUUIDModel.getUUID.compareTo(currentModelUUID) == 0) {
+        //TODO CHECK WITH MODEL SHA-1 HASHCODE
+        reply(internal_update_model(targetModel))
       } else {
-
-        try {
-          val checkResult = modelChecker.check(pnewmodel)
-          if (!checkResult.isEmpty) {
-            logger.error("There is check failure on update model, update refused !")
-            import scala.collection.JavaConversions._
-            checkResult.foreach {
-              cr =>
-                logger.error("error=>" + cr.getMessage + ",objects" + cr.getTargetObjects.mkString(","))
-            }
-            reply(false)
-          } else {
-
-            var newmodel = cloner.clone(pnewmodel)
-            //CHECK FOR HARA KIRI
-            if (HaraKiriHelper.detectNodeHaraKiri(model, newmodel, getNodeName())) {
-              logger.warn("HaraKiri detected , flush platform")
-              newmodel = KevoreeFactory.createContainerRoot
-              try {
-                val adaptationModel = nodeInstance.kompare(model, newmodel);
-
-                logger.debug("Adaptation model size " + adaptationModel.getAdaptations.size)
-                adaptationModel.getAdaptations.foreach {
-                  adaptation =>
-                    logger.debug("primitive " + adaptation.getPrimitiveType.getName)
-                }
-
-
-                PrimitiveCommandExecutionHelper.execute(adaptationModel, nodeInstance)
-                KevoreeDeployManager.bundleMapping.foreach {
-                  bm =>
-                    try {
-                      logger.debug("Try to cleanup " + bm.bundleId + "," + bm.objClassName + "," + bm.name)
-                      KevoreeDeployManager.removeMapping(bm)
-                      getBundleContext.getBundle(bm.bundleId).uninstall()
-                    } catch {
-                      case _@e => logger.debug("Error while cleanup platform ", e)
-                    }
-                }
-                logger.debug("Deploy manager cache size after HaraKiri" + KevoreeDeployManager.bundleMapping.size)
-
-                nodeInstance = null
-                switchToNewModel(newmodel)
-                newmodel = cloner.clone(pnewmodel)
-              } catch {
-                case _@e => {
-                  logger.error("Error while update ", e)
-                }
-              }
-              logger.debug("End HaraKiri")
-            }
-
-            checkBootstrapNode(newmodel)
-            val milli = System.currentTimeMillis
-            logger.debug("Begin update model " + milli)
-            var deployResult = true
-            try {
-              val adaptationModel = nodeInstance.kompare(model, newmodel);
-              deployResult = PrimitiveCommandExecutionHelper.execute(adaptationModel, nodeInstance)
-            } catch {
-              case _@e => {
-                logger.error("Error while update ", e)
-                deployResult = false
-              }
-            }
-
-
-            if (deployResult) {
-              //Merge previous model on new model for platform model
-              //KevoreePlatformMerger.merge(newmodel, model)
-              switchToNewModel(newmodel)
-              logger.info("Deploy result " + deployResult)
-            } else {
-              //KEEP FAIL MODEL
-
-              logger.warn("Failed model")
-
-            }
-
-            val milliEnd = System.currentTimeMillis - milli
-            logger.debug("End deploy result=" + deployResult + "-" + milliEnd)
-
-            reply(deployResult)
-          }
-        } catch {
-          case _@e =>
-            logger.error("Error while update", e)
-            reply(false)
-        }
-
-
+        reply(false)
       }
+    }
+    case UpdateModel(pnewmodel) => {
+      reply(internal_update_model(pnewmodel))
     }
     case _@unknow => logger
       .warn("unknow message  " + unknow.toString + " - sender" + sender.toString + "-" + this.getClass.getName)
   }
 
 
+  private def internal_update_model(pnewmodel: ContainerRoot): Boolean = {
+    if (pnewmodel == null) {
+      logger.error("Null model")
+      false
+    } else {
+      try {
+        val checkResult = modelChecker.check(pnewmodel)
+        if (!checkResult.isEmpty) {
+          logger.error("There is check failure on update model, update refused !")
+          import scala.collection.JavaConversions._
+          checkResult.foreach {
+            cr =>
+              logger.error("error=>" + cr.getMessage + ",objects" + cr.getTargetObjects.mkString(","))
+          }
+          false
+        } else {
+          var newmodel = cloner.clone(pnewmodel)
+          //CHECK FOR HARA KIRI
+          if (HaraKiriHelper.detectNodeHaraKiri(model, newmodel, getNodeName())) {
+            logger.warn("HaraKiri detected , flush platform")
+            newmodel = KevoreeFactory.createContainerRoot
+            try {
+              val adaptationModel = nodeInstance.kompare(model, newmodel)
+              logger.debug("Adaptation model size " + adaptationModel.getAdaptations.size)
+              adaptationModel.getAdaptations.foreach {
+                adaptation =>
+                  logger.debug("primitive " + adaptation.getPrimitiveType.getName)
+              }
+              PrimitiveCommandExecutionHelper.execute(adaptationModel, nodeInstance)
+              KevoreeDeployManager.bundleMapping.foreach {
+                bm =>
+                  try {
+                    logger.debug("Try to cleanup " + bm.bundleId + "," + bm.objClassName + "," + bm.name)
+                    KevoreeDeployManager.removeMapping(bm)
+                    getBundleContext.getBundle(bm.bundleId).uninstall()
+                  } catch {
+                    case _@e => logger.debug("Error while cleanup platform ", e)
+                  }
+              }
+              logger.debug("Deploy manager cache size after HaraKiri" + KevoreeDeployManager.bundleMapping.size)
+              nodeInstance = null
+              switchToNewModel(newmodel)
+              newmodel = cloner.clone(pnewmodel)
+            } catch {
+              case _@e => {
+                logger.error("Error while update ", e)
+              }
+            }
+            logger.debug("End HaraKiri")
+          }
+          checkBootstrapNode(newmodel)
+          val milli = System.currentTimeMillis
+          logger.debug("Begin update model " + milli)
+          var deployResult = true
+          try {
+            val adaptationModel = nodeInstance.kompare(model, newmodel);
+            deployResult = PrimitiveCommandExecutionHelper.execute(adaptationModel, nodeInstance)
+          } catch {
+            case _@e => {
+              logger.error("Error while update ", e)
+              deployResult = false
+            }
+          }
+          if (deployResult) {
+            //Merge previous model on new model for platform model
+            //KevoreePlatformMerger.merge(newmodel, model)
+            switchToNewModel(newmodel)
+            logger.info("Deploy result " + deployResult)
+          } else {
+            //KEEP FAIL MODEL
+            logger.warn("Failed model")
+          }
+          val milliEnd = System.currentTimeMillis - milli
+          logger.debug("End deploy result=" + deployResult + "-" + milliEnd)
+          deployResult
+        }
+      } catch {
+        case _@e =>
+          logger.error("Error while update", e)
+          false
+      }
+    }
+  }
+
   override def getLastModel: ContainerRoot = {
     (this !? LastModel()).asInstanceOf[ContainerRoot]
   }
 
+  def getLastUUIDModel: UUIDModel = {
+    (this !? LastUUIDModel()).asInstanceOf[UUIDModel]
+  }
+
+  @Deprecated
   override def updateModel(model: ContainerRoot) {
-    logger.debug("update asked")
     this ! UpdateModel(model)
-    logger.debug("update end")
   }
 
   override def atomicUpdateModel(model: ContainerRoot) = {
-    logger.debug("Atomic update asked")
     (this !? UpdateModel(model))
-    logger.debug("Atomic update end")
+    lastDate
+  }
+
+  def compareAndSwapModel(previousModel: UUIDModel, targetModel: ContainerRoot) {
+    this ! UpdateUUIDModel(previousModel, targetModel)
+  }
+
+  def atomicCompareAndSwapModel(previousModel: UUIDModel, targetModel: ContainerRoot): Date = {
+    val result = (this !? UpdateUUIDModel(previousModel, targetModel)).asInstanceOf[Boolean]
+    if (!result) {
+      throw new KevoreeModelUpdateException //SEND AND EXCEPTION - Compare&Swap fail !
+    }
     lastDate
   }
 
@@ -354,7 +355,6 @@ class KevoreeCoreBean extends KevoreeModelHandlerService with KevoreeThreadActor
     import scala.collection.JavaConversions._
     (this !? PreviousModel()).asInstanceOf[scala.collection.mutable.ArrayBuffer[ContainerRoot]].toList
   }
-
 
   val listenerActor = new KevoreeListeners
   listenerActor.start()

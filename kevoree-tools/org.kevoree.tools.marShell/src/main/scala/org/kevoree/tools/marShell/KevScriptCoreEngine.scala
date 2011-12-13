@@ -40,7 +40,7 @@ class KevScriptCoreEngine(core: KevoreeModelHandlerService) extends KevScriptEng
   val modelCloner = new ModelCloner
   val parser = new KevsParser
   private val logger = LoggerFactory.getLogger(this.getClass)
-  
+
   clearVariables()
 
   def addVariable(name: String, value: String): KevScriptEngine = {
@@ -62,11 +62,10 @@ class KevScriptCoreEngine(core: KevoreeModelHandlerService) extends KevScriptEng
 
   def interpret(): ContainerRoot = {
     val resolvedScript = resolveVariables
-    logger.debug("KevScriptEngine before execution with script = {}",resolvedScript)
-    
+    logger.debug("KevScriptEngine before execution with script = {}", resolvedScript)
     parser.parseScript(resolvedScript) match {
       case Some(s) => {
-        val inputModel = modelCloner.clone(core.getLastModel)
+        val inputModel = core.getLastModel
         if (s.interpret(KevsInterpreterContext(inputModel))) {
           return inputModel;
         }
@@ -81,15 +80,50 @@ class KevScriptCoreEngine(core: KevoreeModelHandlerService) extends KevScriptEng
   }
 
   def interpretDeploy() {
+    internal_interpret_deploy(false)
+  }
+
+  def atomicInterpretDeploy(): Boolean = {
+    internal_interpret_deploy(true)
+  }
+
+
+  private def internal_interpret_deploy(atomic: Boolean): Boolean = {
     try {
-      val newModel = interpret()
-      core.updateModel(newModel)
+      val resolvedScript = resolveVariables
+      logger.debug("KevScriptEngine before execution with script = {}", resolvedScript)
+      parser.parseScript(resolvedScript) match {
+        case Some(s) => {
+          val inputModel = core.getLastUUIDModel
+          val targetModel = modelCloner.clone(inputModel.getModel)
+          if (s.interpret(KevsInterpreterContext(targetModel))) {
+            if (atomic) {
+              try {
+                core.atomicCompareAndSwapModel(inputModel, targetModel)
+                return true;
+              } catch {
+                case _@e => return false;
+              }
+            } else {
+              core.compareAndSwapModel(inputModel, targetModel)
+              return true
+            }
+          }
+          throw new KevScriptEngineException {
+            override def getMessage = "Interpreter Error : "
+          }
+        }
+        case None => throw new KevScriptEngineException {
+          override def getMessage = "Parser Error : " + parser.lastNoSuccess.toString
+        }
+      }
     } catch {
       case _@e => throw new KevScriptEngineException {
         override def getMessage = e.getMessage
       }
     }
   }
+
 
   def clearScript() {
     scriptBuilder.clear()
@@ -101,7 +135,9 @@ class KevScriptCoreEngine(core: KevoreeModelHandlerService) extends KevScriptEng
       varR =>
         unresolveScript = unresolveScript.replace("{" + varR._1 + "}", varR._2)
     }
-    unresolveScript = unresolveScript.replace("'","\"")
-    "tblock{\n"+unresolveScript+"\n}"
+    unresolveScript = unresolveScript.replace("'", "\"")
+    "tblock{\n" + unresolveScript + "\n}"
   }
+
+
 }

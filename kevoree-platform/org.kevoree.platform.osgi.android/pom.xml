@@ -288,9 +288,9 @@
                         <option>-dontnote</option>
 
                         <!--  <option>-keepattributes *Annotation*</option>-->
-                      <!--  <option>-keep class org.slf4j.** { *; }</option>  -->
+                        <!--  <option>-keep class org.slf4j.** { *; }</option>  -->
                         <option>-keep class org.osgi.** { *; }</option>
-                      <!--  <option>-keep class scala.runtime.** { *; }</option>   -->
+                        <!--  <option>-keep class scala.runtime.** { *; }</option>   -->
                         <option>-keep class org.kevoree.api.** { *; }</option>
                         <option>-keep class org.kevoree.adaptation.** { *; }</option>
                         <option>-keep class org.kevoree.framework.** { *; }</option>
@@ -301,11 +301,11 @@
                         <option>-dontskipnonpubliclibraryclassmembers</option>
                         <option>-dontoptimize</option>
                         <option>-dontobfuscate</option>
-                       <!--
-                        <option>-keepattributes
-                            Exceptions,InnerClasses,Signature,Deprecated,SourceFile,LineNumberTable,*Annotation*,EnclosingMethod
-                        </option>
-                       -->
+                        <!--
+                         <option>-keepattributes
+                             Exceptions,InnerClasses,Signature,Deprecated,SourceFile,LineNumberTable,*Annotation*,EnclosingMethod
+                         </option>
+                        -->
                         <option>-ignorewarnings</option>
 
                         <option>
