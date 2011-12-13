@@ -17,13 +17,18 @@ class JailTests {
 
   @Test
   def testJailRegex () {
-    val ezjailListPattern = "(D.?)\\ \\ *([0-9][0-9]*|N/A)\\ \\ *((?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?))\\ \\ *([a-zA-Z0-9\\.][a-zA-Z0-9\\.]*)\\ \\ *(?:(/[a-zA-Z0-9\\.][a-zA-Z0-9\\.]*)*)"
+    val ezjailListPattern =
+      "(D.?)\\ \\ *([0-9][0-9]*|N/A)\\ \\ *((?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?))\\ \\ *([a-zA-Z0-9\\.][a-zA-Z0-9\\.]*)\\ \\ *((?:(?:/[a-zA-Z0-9\\.][a-zA-Z0-9\\.]*)*))"
     val ezjailListRegex = new Regex(ezjailListPattern)
 
-    "DS  N/A  10.0.1.2        kjail1                         /usr/jails/kjail1" match {
-      //      case ezjailListRegex() => println("toto")
-      case ezjailListRegex(tmp, jid, ip, name, path) => println(name)
-      case _ => println("no match")
+    //    "DS  N/A  10.0.1.2        node0                          /usr/jails/node0"
+    "STA JID  IP              Hostname                       Root Directory\n--- ---- --------------- ------------------------------ ------------------------\nDR  8    10.0.1.2        node0                          /usr/jails/node0"
+      .split("\n").foreach {
+      line => line match {
+        //      case ezjailListRegex() => println("toto")
+        case ezjailListRegex(tmp, jid, ip, name, path) => println(path)
+        case _ => println("no match")
+      }
     }
   }
 

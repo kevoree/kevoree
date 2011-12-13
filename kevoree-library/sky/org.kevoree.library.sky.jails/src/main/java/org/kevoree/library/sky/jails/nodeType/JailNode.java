@@ -18,7 +18,7 @@ import org.slf4j.LoggerFactory;
 
 @Library(name = "SKY")
 @DictionaryType({
-		@DictionaryAttribute(name = "inet", defaultValue = "acl0", optional = false),
+		@DictionaryAttribute(name = "inet", defaultValue = "alc0", optional = false),
 		@DictionaryAttribute(name = "subnet", defaultValue = "10.0.0.0", optional = false),
 		@DictionaryAttribute(name = "mask", defaultValue = "24", vals={"8", "16", "24"}, optional = false)
 })
