@@ -24,22 +24,24 @@ import org.slf4j.LoggerFactory
 
 object KevsInterpreterAspects {
 
-  implicit def rich (o: Script) = KevsScriptInterpreter(o)
+  implicit def rich(o: Script) = KevsScriptInterpreter(o)
 
-  implicit def rich (o: TransactionalBloc) = KevsAddTBlockInterpreter(o)
+  implicit def rich(o: TransactionalBloc) = KevsAddTBlockInterpreter(o)
 
-  implicit def rich (o: AddNodeStatment) = KevsAddNodeInterpreter(o)
+  implicit def rich(o: AddNodeStatment) = KevsAddNodeInterpreter(o)
 
 
-  implicit def rich (o: Object): KevsAbstractInterpreter = {
+  implicit def rich(o: Object): KevsAbstractInterpreter = {
     val logger = LoggerFactory.getLogger(this.getClass)
-
 
     o match {
       case b: Block => b match {
         case tb: TransactionalBloc => KevsAddTBlockInterpreter(tb)
       }
       case st: Statment => st match {
+
+        case mergeSt: MergeStatement => KevsMergerInterpreter(mergeSt)
+
         case addst: AddComponentInstanceStatment => KevsAddComponentInstanceInterpreter(addst)
         case removest: RemoveComponentInstanceStatment => KevsRemoveComponentInstanceInterpreter(removest)
 
@@ -63,7 +65,7 @@ object KevsInterpreterAspects {
         //Library aspect
         case addLibrary: AddLibraryStatment => KevsAddLibraryInterpreter(addLibrary)
         case removeLibrary: RemoveLibraryStatment => KevsRemoveLibraryInterpreter(removeLibrary)
-        case addDeployUnit : AddDeployUnitStatment => KevsAddDeployUnitInterpreter(addDeployUnit)
+        case addDeployUnit: AddDeployUnitStatment => KevsAddDeployUnitInterpreter(addDeployUnit)
 
 
         //TYPE ASPECT
@@ -73,10 +75,10 @@ object KevsInterpreterAspects {
         //Network
         case networkStatement: NetworkPropertyStatement => KevsNetworkInterpreter(networkStatement)
 
-      // NODE ASPECT
-        case addChildStatment : AddChildStatment => KevsAddChildInterpreter(addChildStatment)
-        case removeChildStatment : RemoveChildStatment => KevsRemoveChildInterpreter(removeChildStatment)
-        case moveChildStatment : MoveChildStatment => KevsMoveChildInterpreter(moveChildStatment)
+        // NODE ASPECT
+        case addChildStatment: AddChildStatment => KevsAddChildInterpreter(addChildStatment)
+        case removeChildStatment: RemoveChildStatment => KevsRemoveChildInterpreter(removeChildStatment)
+        case moveChildStatment: MoveChildStatment => KevsMoveChildInterpreter(moveChildStatment)
 
       }
       case _@e => logger.error("", e); null
