@@ -32,20 +32,27 @@ class JailTests {
     val subnet = "10.0.0.0"
     val mask = "24"
 
-    val ips = List("10.0.0.1", "10.0.0.2", "10.0.0.4", "10.0.0.3", "10.0.0.6")
+    val ips = List("10.0.0.2", "10.0.0.4", "10.0.0.3", "10.0.0.6")
 
     var newIp = subnet
     val ipBlock = subnet.split("\\.")
     var i = Integer.parseInt(ipBlock(0))
     var j = Integer.parseInt(ipBlock(1))
     var k = Integer.parseInt(ipBlock(2))
-    var l = Integer.parseInt(ipBlock(3)) + 1
+    var l = Integer.parseInt(ipBlock(3)) + 2
 
-    while (i < 255 && ips.contains(newIp) && checkMask(i, j, k, l, subnet, mask)) {
-      while (j < 255 && ips.contains(newIp) && checkMask(i, j, k, l, subnet, mask)) {
-        while (k < 255 && ips.contains(newIp) && checkMask(i, j, k, l, subnet, mask)) {
-          while (l < 255 && ips.contains(newIp) && checkMask(i, j, k, l, subnet, mask)) {
-            newIp = i + "." + j + "." + k + "." + l
+    var found = false
+
+    while (i < 255 && checkMask(i, j, k, l, subnet, mask) && !found) {
+      while (j < 255 && checkMask(i, j, k, l, subnet, mask) && !found) {
+        while (k < 255 && checkMask(i, j, k, l, subnet, mask) && !found) {
+          while (l < 255 && checkMask(i, j, k, l, subnet, mask) && !found) {
+            val tmpIp = i + "." + j + "." + k + "." + l
+            println(tmpIp)
+            if (!ips.contains(tmpIp)) {
+              newIp = tmpIp
+              found = true
+            }
             l += 1
           }
           l = 1

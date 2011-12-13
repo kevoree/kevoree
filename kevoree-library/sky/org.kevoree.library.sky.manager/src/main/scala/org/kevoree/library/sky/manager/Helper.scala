@@ -5,8 +5,7 @@ import org.kevoree.tools.aether.framework.AetherUtil
 import org.kevoree.{KevoreeFactory, ContainerRoot}
 import org.kevoree.api.service.core.handler.KevoreeModelHandlerService
 import org.slf4j.{LoggerFactory, Logger}
-import java.io.{InputStream, File}
-import java.util.Properties
+import java.io.File
 
 /**
  * User: Erwan Daubert - erwan.daubert@gmail.com
@@ -81,7 +80,6 @@ object Helper {
   }
 
   private def getVersion: String = {
-
     KevoreeFactory.getVersion
   }
 

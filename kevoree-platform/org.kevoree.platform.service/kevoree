@@ -1,20 +1,21 @@
 #!/bin/sh
 
 #Settings
-APP_PATH="$HOME" # path where your exec file are
+APP_PATH="$HOME/kevoree-service" # path where your exec file are
 SERVICE="kevoree-runtime"  # name of the exec file without (.jar)
-JAVA="java"
+JAVA="/usr/local/bin/java"
 SERVICE_UPDATER="kevoree-service-updater"
 
 start() {
-  if ps ax | grep -v grep | grep "$SERVICE.jar" > /dev/null
+	update
+  if ps axuw | grep -v grep | grep "$SERVICE.jar" > /dev/null
   then
     echo "Tried to start but $SERVICE was already running!"
   else
     echo "$SERVICE was not running... starting."
-    $JAVA -Dnode.name=`hostname` -DgroupType=restGroup -Xmx1024M -Xms1024M -jar "$APP_PATH/$SERVICE.jar"  > /dev/null &
+    $JAVA -Dnode.log.level=DEBUG -Dnode.name=`hostname` -Dnode.groupType=RestGroup -Xmx1024M -Xms1024M -jar "$APP_PATH/$SERVICE.jar"  > "$APP_PATH/`hostname`.log" &
     sleep 5
-    if ps ax | grep -v grep | grep `hostname` | grep "$SERVICE.jar" > /dev/null
+    if ps axuw | grep -v grep | grep `hostname` | grep "$SERVICE.jar" > /dev/null
     then
       echo "$SERVICE is now running."
     else
@@ -24,19 +25,18 @@ start() {
 }
 
 stop() {
-    if ps ax | grep -v grep | grep `hostname` | grep "$SERVICE.jar" > /dev/null
+    if ps axuw | grep -v grep | grep `hostname` | grep "$SERVICE.jar" > /dev/null
     then
         echo "$SERVICE is running... stopping."
-        HOSTNAME=`hostname`
-        kill -6 `ps ax | grep -v grep | grep "$HOSTNAME" | grep "$SERVICE.jar" | cut -d' ' -f2`
+		HOSTNAME=`hostname`
+        kill `ps axuw | grep -v grep | grep "$HOSTNAME" | grep "$SERVICE.jar" | cut -d' ' -f4`
         sleep 10
-        kill -9 `ps ax | grep -v grep | grep "$HOSTNAME" | grep "$SERVICE.jar" | cut -d' ' -f2`
-		if ps ax | grep -v grep | grep `hostname` | grep "$SERVICE.jar" > /dev/null
-		then
-		    echo "$SERVICE could not be shut down... still running."
-		else
-		    echo "$SERVICE is shut down."
-		fi
+		if ps axuw | grep -v grep | grep `hostname` |grep "$SERVICE.jar" > /dev/null
+			then
+			    echo "$SERVICE could not be shut down... still running."
+			else
+				echo "$SERVICE is shut down."
+			fi
     else
         echo "$SERVICE was not running."
     fi
