@@ -1,0 +1,226 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>org.kevoree.platform.root</artifactId>
+        <groupId>org.kevoree.platform</groupId>
+        <version>1.5.0-SNAPSHOT</version>
+        <relativePath>../org.kevoree.platform.root/pom.xml</relativePath>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>org.kevoree.platform.service</artifactId>
+    <packaging>jar</packaging>
+    <name>Kevoree :: Platform :: Service</name>
+
+    <properties>
+        <kevoree.version>${project.version}</kevoree.version>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.kevoree.tools</groupId>
+            <artifactId>org.kevoree.tools.aether.framework</artifactId>
+            <version>${kevoree.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>1.6.2</version>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-nop</artifactId>
+            <version>1.6.2</version>
+        </dependency>
+    </dependencies>
+
+    <profiles>
+        <profile>
+            <id>org.kevoree.platform.service.mac</id>
+            <activation>
+                <os>
+                    <family>mac</family>
+                </os>
+            </activation>
+            <properties>
+                <java.lib.location>&lt;java.home&gt;/../Classes/classes.jar</java.lib.location>
+            </properties>
+        </profile>
+        <profile>
+            <id>org.kevoree.platform.service.other</id>
+            <activation>
+                <os>
+                    <family>!mac</family>
+                </os>
+            </activation>
+            <properties>
+                <java.lib.location>${java.home}/lib/rt.jar</java.lib.location>
+            </properties>
+        </profile>
+    </profiles>
+
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.scala-tools</groupId>
+                <artifactId>maven-scala-plugin</artifactId>
+                <version>2.15.2</version>
+                <executions>
+                    <execution>
+                        <id>scala-compile-first</id>
+                        <phase>process-resources</phase>
+                        <goals>
+                            <goal>add-source</goal>
+                            <goal>compile</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>scala-test-compile</id>
+                        <phase>process-test-resources</phase>
+                        <goals>
+                            <goal>testCompile</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <jvmArgs>
+                        <jvmArg>-Xmx1024m</jvmArg>
+                    </jvmArgs>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>2.3.1</version>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <mainClass>org.kevoree.platform.service.KevoreeServiceUpdate</mainClass>
+                        </manifest>
+                    </archive>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>com.pyx4me</groupId>
+                <artifactId>proguard-maven-plugin</artifactId>
+                <version>2.0.4</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>proguard</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <dependencies>
+                    <dependency>
+                        <groupId>net.sf.proguard</groupId>
+                        <artifactId>proguard</artifactId>
+                        <version>4.7-BETA</version>
+                        <scope>runtime</scope>
+                    </dependency>
+                </dependencies>
+                <configuration>
+                    <injar>${project.build.finalName}.jar</injar>
+                    <outjar>${project.build.finalName}-small.jar</outjar>
+                    <obfuscate>false</obfuscate>
+                    <maxMemory>1024m</maxMemory>
+                    <proguardVersion>4.4</proguardVersion>
+                    <options>
+
+                       <!-- <option>-keepattributes **</option>
+                        <option>
+                            -keep class * implements org.xml.sax.EntityResolver
+                            -keepclassmembers class * {
+                            ** MODULE$;
+                            }
+                            -keepclassmembernames class scala.concurrent.forkjoin.ForkJoinPool {
+                            long eventCount;
+                            int workerCounts;
+                            int runControl;
+                            scala.concurrent.forkjoin.ForkJoinPool$WaitQueueNode syncStack;
+                            scala.concurrent.forkjoin.ForkJoinPool$WaitQueueNode spareStack;
+                            }
+                            -keepclassmembernames class scala.concurrent.forkjoin.ForkJoinWorkerThread {
+                            int base;
+                            int sp;
+                            int runState;
+                            }
+                            -keepclassmembernames class scala.concurrent.forkjoin.ForkJoinTask {
+                            int status;
+                            }
+                            -keepclassmembernames class scala.concurrent.forkjoin.LinkedTransferQueue {
+                            scala.concurrent.forkjoin.LinkedTransferQueue$PaddedAtomicReference head;
+                            scala.concurrent.forkjoin.LinkedTransferQueue$PaddedAtomicReference tail;
+                            scala.concurrent.forkjoin.LinkedTransferQueue$PaddedAtomicReference cleanMe;
+                            }
+                        </option>
+                        <option>-keepnames class * implements java.io.Serializable</option>-->
+                        <option>-dontnote</option>
+                        <option>-dontskipnonpubliclibraryclasses</option>
+                        <option>-dontskipnonpubliclibraryclassmembers</option>
+                        <option>-dontoptimize</option>
+                        <option>-dontobfuscate</option>
+                        <option>-keepattributes
+                            Exceptions,InnerClasses,Signature,Deprecated,SourceFile,LineNumberTable,*Annotation*,EnclosingMethod
+                        </option>
+                        <option>-ignorewarnings</option>
+                        <option>-keep public class org.kevoree.platform.service.KevoreeServiceUpdate { *; }</option>
+                       <!-- <option>
+                            -keepclassmembers class *{
+                            static final % *;
+                            static final java.lang.String *;
+                            }
+                        </option>-->
+                    </options>
+                    <assembly>
+                        <inclusions>
+                            <inclusion>
+                                <groupId>org.scala-lang</groupId>
+                                <artifactId>scala-library</artifactId>
+                            </inclusion>
+                            <!--<inclusion>
+                                <groupId>org.kevoree</groupId>
+                                <artifactId>org.kevoree.model</artifactId>
+                                <filter>!metamodel/**</filter>
+                            </inclusion>
+                            <inclusion>
+                                <groupId>org.kevoree</groupId>
+                                <artifactId>org.kevoree.framework</artifactId>
+                            </inclusion>
+                            <inclusion>
+                                <groupId>org.kevoree</groupId>
+                                <artifactId>org.kevoree.api</artifactId>
+                            </inclusion>-->
+                            <inclusion>
+                                <groupId>org.slf4j</groupId>
+                                <artifactId>slf4j-api</artifactId>
+                            </inclusion>
+                            <inclusion>
+                                <groupId>org.slf4j</groupId>
+                                <artifactId>slf4j-nop</artifactId>
+                            </inclusion>
+                            <inclusion>
+                                <groupId>org.kevoree.tools</groupId>
+                                <artifactId>org.kevoree.tools.aether.framework</artifactId>
+                                <filter>
+                                    !org/apache/commons/**,
+                                    !org/apache/codec/**,
+                                    !META-INF/**
+                                </filter>
+                            </inclusion>
+                        </inclusions>
+                    </assembly>
+                    <libs>
+                        <lib>${java.lib.location}</lib>
+                    </libs>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>

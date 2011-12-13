@@ -13,8 +13,8 @@
  */
 package org.kevoree.platform.osgi.standalone
 
-import org.kevoree.{KevoreeFactory, ContainerRoot}
 import org.slf4j.LoggerFactory
+import org.kevoree.{ContainerNode, KevoreeFactory, ContainerRoot}
 
 /**
  * Created by IntelliJ IDEA.
@@ -28,20 +28,36 @@ object BootstrapHelper {
 
   val logger = LoggerFactory.getLogger(this.getClass)
 
-  def initModelInstance(model: ContainerRoot, defType: String) {
+  def initModelInstance(model: ContainerRoot, defType: String, groupType: String) {
 
     val nodeName = System.getProperty("node.name")
     if (!model.getNodes.exists(n => n.getName == nodeName)) {
       //CREATE DEFAULT
+      var node : ContainerNode = null
+      
       model.getTypeDefinitions.find(td => td.getName == defType) match {
         case Some(typeDefFound) => {
-          logger.warn("Init default node instance for name "+nodeName)
-          val node = KevoreeFactory.createContainerNode
+          logger.warn("Init default node instance for name " + nodeName)
+          node = KevoreeFactory.createContainerNode
           node.setName(nodeName)
           node.setTypeDefinition(typeDefFound)
           model.addNodes(node)
         }
         case None => logger.error("Default type not found for name " + defType)
+      }
+
+      if (groupType != null) {
+        model.getTypeDefinitions.find(td => td.getName == groupType) match {
+          case Some(typeDefFound) => {
+            logger.warn("Init default node instance for name " + nodeName)
+            val g = KevoreeFactory.createGroup
+            g.setName("sync")
+            g.setTypeDefinition(typeDefFound)
+            g.addSubNodes(node)
+            model.addGroups(g)
+          }
+          case None => logger.error("Default type not found for name " + defType)
+        }
       }
 
 

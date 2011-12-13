@@ -105,7 +105,7 @@ public class BootstrapActivator implements BundleActivator {
             if (bootstrapModel != null) {
                 try {
                     logger.debug("Bootstrap step !");
-                    BootstrapHelper.initModelInstance(bootstrapModel,"JavaSENode");
+                    BootstrapHelper.initModelInstance(bootstrapModel,"JavaSENode",System.getProperty("groupType"));
                     coreBean.updateModel(bootstrapModel);
                 } catch (Exception e) {
                     logger.error("Bootstrap failed", e);

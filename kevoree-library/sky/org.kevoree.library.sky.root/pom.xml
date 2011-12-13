@@ -23,7 +23,7 @@
     <modules>
         <module>../org.kevoree.library.sky.manager</module>
         <module>../org.kevoree.library.sky.minicloud</module>
-        <!--<module>../org.kevoree.library.sky.jails</module>-->
+        <module>../org.kevoree.library.sky.jails</module>
         <!--<module>../org.kevoree.library.sky.vagrant</module>-->
         <!--<module>../org.kevoree.library.sky.jclouds</module>-->
     </modules>

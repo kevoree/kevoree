@@ -20,8 +20,7 @@ import java.io._
 import java.lang.Thread
 import actors.{TIMEOUT, Actor}
 import util.matching.Regex
-import java.util.UUID
-import org.kevoree.library.sky.manager.{KevoreeNodeRunner, Helper}
+import org.kevoree.library.sky.manager.{Helper, KevoreeNodeRunner}
 
 /**
  * User: Erwan Daubert - erwan.daubert@gmail.com
@@ -31,190 +30,281 @@ import org.kevoree.library.sky.manager.{KevoreeNodeRunner, Helper}
  * @author Erwan Daubert
  * @version 1.0
  */
-class JailKevoreeNodeRunner (var nodeName: String, bootStrapModel: String) extends KevoreeNodeRunner(nodeName, bootStrapModel) {
+class JailKevoreeNodeRunner (nodeName: String, bootStrapModel: String, inet: String, baseIp: String, mask: String)
+  extends KevoreeNodeRunner(nodeName, bootStrapModel) {
   private val logger: Logger = LoggerFactory.getLogger(classOf[JailKevoreeNodeRunner])
-  private var nodePlatformProcess: Process = null
-  private var outputStreamReader: Thread = null
-  private var errorStreamReader: Thread = null
 
-  val backupRegex = new Regex(".*<saveRes(.*)/>.*")
-  val deployRegex = new Regex(".*<deployRes(.*)/>.*")
-  val errorRegex = new Regex(".*Error while update.*")
+  private val resultActor = new ResultManagementActor()
 
-  sealed abstract case class Result ()
+  /*private val createJail = "ezjail-admin create -f kevjail <name> <IP>"
+  private val startJail = "ezjail-admin onestart <name>"
+  private val stopJail = "ezjail-admin onestop <name>"
+  private val deleteJail = "ezjail-admin delete -w <name>"
+  private val createIPAlias = "ifconfig <inet> alias <IP>"
+  private val deleteIPAlias = "ifconfig <inet> -alias <IP>"*/
+  private val listJails = "ezjail-admin list"
 
-  case class DeployResult (uuid: String) extends Result
+  val ezjailListPattern = "(D.?)\\ \\ *([0-9][0-9]*|N/A)\\ \\ *((?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?))\\ \\ *([a-zA-Z0-9\\.][a-zA-Z0-9\\.]*)\\ \\ *(?:(/[a-zA-Z0-9\\.][a-zA-Z0-9\\.]*)*)"
+  val ezjailListRegex = new Regex(ezjailListPattern)
 
-  case class BackupResult (uuid: String) extends Result
 
-  case class ErrorResult () extends Result
-
-  val actor = new UpdateManagementActor(10000)
-  actor.start()
-
-  private var outFile: File = null
-
-  def getOutFile = outFile
-
-  private var errFile: File = null
-
-  def getErrFile = errFile
+  private var listJailsProcessBuilder: ProcessBuilder = null
 
   def startNode (): Boolean = {
-    try {
-      logger.debug("Start " + nodeName)
-      val java: String = getJava
-
-      if (Helper.getJarPath != null) {
-
-        logger.debug("use bootstrap model path => " + bootStrapModel)
-
-        nodePlatformProcess = Runtime.getRuntime
-          .exec(Array[String](java, "-Dnode.bootstrap=" + bootStrapModel, "-Dnode.name=" + nodeName, "-jar",
-                               Helper.getJarPath))
-
-        outputStreamReader = new Thread {
-          outFile = new File(System.getProperty("java.io.tmpdir") + File.separator + "sysout" + nodeName + ".log")
-          val logStream: OutputStream = new FileOutputStream(outFile)
-          logger.debug(outFile.getAbsolutePath + " is used as a log file")
-
-          override def run () {
-            try {
-              val reader = new BufferedReader(new InputStreamReader(stream))
-              var line = reader.readLine()
-              while (line != null) {
-                line match {
-                  case deployRegex(uuid) => {
-                    actor ! DeployResult(uuid)
-                  }
-                  case backupRegex(uuid) => {
-                    actor ! BackupResult(uuid)
-                  }
-                  case errorRegex(uuid) => actor ! ErrorResult()
-                  case _ =>
-                }
-                line = line + "\n"
-                logStream.write(line.getBytes)
-                logStream.flush()
-                line = reader.readLine()
-              }
-            } catch {
-              case _@e => {
-                logger.debug("Stream has been closed, we close " + outFile.getAbsolutePath + " too")
-              }
-            } finally {
-              logStream.flush()
-              logStream.close()
+    logger.debug("Start " + nodeName)
+    // looking for currently launched jail
+    listJailsProcessBuilder = new ProcessBuilder
+    listJailsProcessBuilder.command(listJails)
+    resultActor.starting()
+    var p = listJailsProcessBuilder.start()
+    new Thread(new ProcessStreamManager(p.getInputStream, Array(ezjailListRegex), Array())).start()
+    var result = resultActor.waitingFor(10000)
+    var notFound = true
+    var ips: List[String] = List[String]()
+    result._2.split("\n").foreach {
+      line =>
+        line match {
+          case ezjailListRegex(tmp, jid, ip, name, path) => {
+            if (name == nodeName) {
+              notFound = false
             }
+            ips = ips ++ List(ip)
           }
-          private val stream: InputStream = nodePlatformProcess.getInputStream
+          case _ =>
         }
-
-        errorStreamReader = new Thread {
-          errFile = new File(System.getProperty("java.io.tmpdir") + File.separator + "syserr" + nodeName + ".log")
-          val logStream: OutputStream = new FileOutputStream(errFile)
-          logger.debug(errFile.getAbsolutePath + " is used as a log file")
-
-          override def run () {
-            try {
-              val bytes: Array[Byte] = new Array[Byte](512)
-              var length = 0;
-              while (true) {
-                length = stream.read(bytes)
-                logStream.write(bytes, 0, length)
-
-              }
-            } catch {
-              case _@e => {
-                logger.debug("Stream has been closed, we close " + errFile.getAbsolutePath + " too")
-              }
-            } finally {
-              logStream.flush()
-              logStream.close()
-            }
-          }
-          private val stream: InputStream = nodePlatformProcess.getErrorStream
-        }
-        outputStreamReader.start()
-        errorStreamReader.start()
-        nodePlatformProcess.exitValue
-        false
-      } else {
-        logger.error("Unable to start node because the platform jar file is not available")
-        false
-      }
-    } catch {
-      case e: IOException => {
-        //        e.printStackTrace()
-        logger.error("Unexpected error while trying to start " + nodeName, e)
-        false
-      }
-      case e: IllegalThreadStateException => {
-        logger.debug("platform " + nodeName + " is started")
-        true
-      }
     }
+    if (result._1 && notFound) {
+      // we create a new IP alias according to the existing ones
+      val newIp = lookingForNewIp(ips)
+      resultActor.starting()
+      p = Runtime.getRuntime.exec(Array[String]("ifconfig", inet, "alias", newIp))
+      new Thread(new
+          ProcessStreamManager(p.getInputStream, Array(), Array(new Regex("ifconfig: ioctl \\(SIOCDIFADDR\\): .*"))))
+        .start()
+      result = resultActor.waitingFor(10000)
+      if (result._1) {
+        // create the new jail
+        resultActor.starting()
+        p = Runtime.getRuntime.exec(Array[String]("ezjail-admin", "create", "-f", "kevjail", nodeName, newIp))
+        new Thread(new ProcessStreamManager(p.getInputStream, Array(), Array(new Regex("Error:.*")))).start()
+        result = resultActor.waitingFor(60000)
+        if (result._1) {
+          // install the model on the jail
+          resultActor.starting()
+          var p = listJailsProcessBuilder.start()
+          new Thread(new ProcessStreamManager(p.getInputStream, Array(ezjailListRegex), Array())).start()
+          var result = resultActor.waitingFor(10000)
+          var notFound = true
+          var jailPath = ""
+          var jailId = "-1"
+          var ips: List[String] = List[String]()
+          result._2.split("\n").foreach {
+            line =>
+              line match {
+                case ezjailListRegex(tmp, jid, ip, name, path) => {
+                  if (name == nodeName) {
+                    jailPath = path
+                    jailId = jid
+                  }
+                }
+                case _ =>
+              }
+          }
+
+          resultActor.starting()
+          p = Runtime.getRuntime.exec(Array[String]("cp", bootStrapModel, jailPath + File.separator + "root" + File.separator + "bootstrapmodel.kev"))
+          new Thread(new ProcessStreamManager(p.getInputStream, Array(), Array())).start()
+          result = resultActor.waitingFor(10000)
+          if (result._1) {
+            // get platform runtime and add it into the jail
+            resultActor.starting()
+            p = Runtime.getRuntime.exec(Array[String]("cp", Helper.getJarPath, jailPath + File.separator + "root" + File.separator + "kevoree-runtime.jar"))
+            new Thread(new ProcessStreamManager(p.getInputStream, Array(), Array())).start()
+            result = resultActor.waitingFor(10000)
+            // launch the jail
+            resultActor.starting()
+            p = Runtime.getRuntime.exec(Array[String]("ezjail-admin", "onestart", nodeName))
+            new Thread(new ProcessStreamManager(p.getInputStream, Array(), Array())).start()
+            result = resultActor.waitingFor(10000)
+            if (result._1) {
+              resultActor.starting()
+              p = Runtime.getRuntime.exec(Array[String]("jexec", jailId, "java -Dnode.name=" + nodeName + "-Dnode.bootstrap=" + jailPath + File.separator + "root" + File.separator + "bootstrapmodel.kev -jar " + jailPath + File.separator + "root" + File.separator + "kevoree-runtime.jar"))
+              new Thread(new ProcessStreamManager(p.getInputStream, Array(), Array())).start()
+              result = resultActor.waitingFor(10000)
+              result._1
+            } else {
+              logger.error("Something wrong happens:\n {}", result._2)
+              false
+            }
+          } else {
+            logger.error("Unable to set the model before launching the new jail:\n {}", result._2)
+            false
+          }
+        } else {
+          logger.error("Unable to create a new Jail:\n {}", result._2)
+          false
+        }
+      } else {
+        logger.error("Unable to define a new alias:\n {}", result._2)
+        false
+      }
+    } else {
+      // if an existing one have the same name, then it is not possible to launch this new one (return false)
+      logger
+        .error("There already exists a jail with the same name or it is not possible to check this:\n {}", result._2)
+      false
+    }
+
   }
 
-  def stopKillNode (): Boolean = {
-    logger.debug("Kill " + nodeName)
-    try {
-      actor.stop()
-      val watchdog = new KillWatchDog(nodePlatformProcess, 20000)
-      nodePlatformProcess.getOutputStream.write("shutdown\n".getBytes)
-      nodePlatformProcess.getOutputStream.flush()
-      watchdog.start()
-      nodePlatformProcess.waitFor()
-      watchdog.stop()
-      true
+  def stopNode (): Boolean = {
+    logger.debug("stop " + nodeName)
+    // looking for the jail that must be at least created
+    resultActor.starting()
+    resultActor.starting()
+    var p = listJailsProcessBuilder.start()
+    new Thread(new ProcessStreamManager(p.getInputStream, Array(ezjailListRegex), Array())).start()
+    var result = resultActor.waitingFor(10000)
+    var found = false
+    result._2.split("\n").foreach {
+      line =>
+        line match {
+          case ezjailListRegex(tmp, jid, ip, name, path) => {
+            if (name == nodeName) {
+              found = true
+            }
+          }
+          case _ =>
+        }
     }
-    catch {
-      case _@e => {
-        logger.debug(nodeName + " cannot be killed. Try to force kill...")
-        nodePlatformProcess.destroy()
-        logger.debug(nodeName + " has been forcibly killed")
-        true
+    if (result._1 && found) {
+      // stop the jail
+      resultActor.starting()
+      p = Runtime.getRuntime.exec(Array[String]("ezjail-admin", "onestop", nodeName))
+      new Thread(new ProcessStreamManager(p.getInputStream, Array(), Array())).start()
+      result = resultActor.waitingFor(10000)
+      if (result._1) {
+        // delete the jail
+        resultActor.starting()
+        p = Runtime.getRuntime.exec(Array[String]("ezjail-admin", "delete", "-w", nodeName))
+        new Thread(new ProcessStreamManager(p.getInputStream, Array(), Array())).start()
+        result = resultActor.waitingFor(10000)
+        if (result._1) {
+          true
+        } else {
+          logger.error("Unable to delete the jail:\n {}", result._2)
+          false
+        }
+      } else {
+        logger.error("Unable to stop the jail:\n {}", result._2)
+        false
       }
+    } else {
+      // if there is no jail corresponding to the nodeName then it is not possible to stop and delete it
+      logger.error("Unable to find the corresponding jail:\n {}", result._2)
+      false
     }
   }
 
   def updateNode (model: String): Boolean = {
-    var uuid = UUID.randomUUID()
-    /*actor.manage(BackupResult(uuid.toString))
-    nodePlatformProcess.getOutputStream.write(("backupModel " + modelBackup + " " + uuid.toString + "\n").getBytes)
-    nodePlatformProcess.getOutputStream.flush()
-
-    actor.waitFor()*/
-
-    uuid = UUID.randomUUID()
-    actor.manage(DeployResult(uuid.toString))
-    nodePlatformProcess.getOutputStream.write(("sendModel " + model + " " + uuid.toString + "\n").getBytes)
-    nodePlatformProcess.getOutputStream.flush()
-
-    actor.waitFor()
+    logger.error("update command is not available for jailNode")
+    false
   }
 
-  private def getJava: String = {
-    val java_home: String = System.getProperty("java.home")
-    java_home + File.separator + "bin" + File.separator + "java"
+  private def lookingForNewIp (ips: List[String]): String = {
+    var newIp = baseIp
+    val ipBlock = baseIp.split("\\.")
+    var i = 1
+    while (i < 255 && ips.contains(newIp)) {
+      // FIXME use the mask parameter
+      i += 1
+      newIp = ipBlock(0) + "." + ipBlock(1) + "." + ipBlock(2) + "." + i
+    }
+    newIp
+
   }
 
-  class UpdateManagementActor (timeout: Int) extends Actor {
+  class ProcessStreamManager (inputStream: InputStream, outputRegexes: Array[Regex], errorRegexes: Array[Regex])
+    extends Runnable {
+
+    override def run () {
+      val outputBuilder = new StringBuilder
+      var errorBuilder = false
+      try {
+        val reader = new BufferedReader(new InputStreamReader(inputStream))
+        var line = reader.readLine()
+        while (line != null) {
+
+          outputRegexes.find(regex => line match {
+            case regex() => true
+            case _ => false
+          }) match {
+            case Some(regex) => outputBuilder.append(line + "\n")
+            case None =>
+          }
+          errorRegexes.find(regex => line match {
+            case regex() => true
+            case _ => false
+          }) match {
+            case Some(regex) => errorBuilder = true; outputBuilder.append(line + "\n")
+            case None =>
+          }
+          line = reader.readLine()
+        }
+      } catch {
+        case _@e => {
+        }
+      }
+      if (errorBuilder) {
+        resultActor.error(outputBuilder.toString())
+      } else {
+        resultActor.output(outputBuilder.toString())
+
+      }
+    }
+  }
+
+  class ResultManagementActor () extends Actor {
 
     case class STOP ()
 
-    case class WAITINFOR ()
+    case class WAITINGFOR (timeout: Int)
+
+    case class WAITINGFORPATH (timeout: Int)
+
+    case class STARTING ()
+
+    sealed abstract case class Result ()
+
+    case class OUTPUT (data: String) extends Result
+
+    case class ERROR (data: String) extends Result
+
+    start()
 
     def stop () {
       this ! STOP()
     }
 
-    def manage (res: Result) {
-      this !? res
+    def starting () {
+      this ! STARTING()
     }
 
-    def waitFor (): Boolean = {
-      (this !? WAITINFOR()).asInstanceOf[Option[Boolean]].get
+    def waitingFor (timeout: Int): (Boolean, String) = {
+      (this !? WAITINGFOR(timeout)).asInstanceOf[(Boolean, String)]
+    }
+
+    def waitingForPath (timeout: Int): (Boolean, String) = {
+      (this !? WAITINGFORPATH(timeout)).asInstanceOf[(Boolean, String)]
+    }
+
+
+    def output (data: String) {
+      this ! OUTPUT(data)
+    }
+
+    def error (data: String) {
+      this ! ERROR(data)
     }
 
     var firstSender = null
@@ -223,81 +313,48 @@ class JailKevoreeNodeRunner (var nodeName: String, bootStrapModel: String) exten
       loop {
         react {
           case STOP() => this.exit()
-          case ErrorResult() =>
-          case DeployResult(uuid) => {
+          case ERROR(data) =>
+          case OUTPUT(data) =>
+          case STARTING() => {
             var firstSender = this.sender
-            reply()
             react {
               case STOP() => this.exit()
-              case WAITINFOR() => {
+              case WAITINGFOR(timeout) => {
                 firstSender = this.sender
                 reactWithin(timeout) {
                   case STOP() => this.exit()
-                  case DeployResult(uuid2) if (uuid == uuid2) => {
-                    firstSender ! Some(true)
-                  }
-                  case TIMEOUT => firstSender ! Some(false)
-                  case ErrorResult() => {
-                    firstSender ! Some(false)
-                  }
+                  case OUTPUT(data) => firstSender !(true, data)
+                  case TIMEOUT => firstSender !
+                    (false, "Timeout exceeds.")
+                  case ERROR(data) => firstSender !(false, data)
                 }
               }
-              case DeployResult(uuid2) if (uuid == uuid2) => {
-                react {
-                  case STOP() => this.exit()
-                  case WAITINFOR() => sender ! Some(true)
-                }
-              }
-              /*case TIMEOUT => {
+              case WAITINGFORPATH(timeout) => {
+                firstSender = this.sender
                 reactWithin(timeout) {
                   case STOP() => this.exit()
-                  case WAITINFOR() => sender ! Some(false)
+                  case OUTPUT(data) => firstSender !(true, data)
+                  case TIMEOUT => firstSender !
+                    (false, "Timeout exceeds.")
+                  case ERROR(data) => firstSender !(false, data)
                 }
-              }*/
-              case ErrorResult() => {
+              }
+              case OUTPUT(data) => {
                 react {
                   case STOP() => this.exit()
-                  case WAITINFOR() => sender ! Some(false)
+                  case WAITINGFOR(timeout) => sender !(true, data)
+                  case WAITINGFORPATH(timeout) => sender !(true, data)
+                }
+              }
+              case ERROR(data) => {
+                react {
+                  case STOP() => this.exit()
+                  case WAITINGFOR(timeout) => sender !(false, data)
+                  case WAITINGFORPATH(timeout) => sender !(true, data)
                 }
               }
             }
           }
-          /*case BackupResult(uuid) => {
-            var firstSender = this.sender
-            react {
-              case WAITINFOR() => {
-                firstSender = this.sender
-                reactWithin(timeout) {
-                  case STOP() => this.exit()
-                  case BackupResult(uuid2) if (uuid == uuid2) => {
-                    firstSender ! Some(true)
-                  }
-                  case TIMEOUT => firstSender ! Some(false)
-                  case ErrorResult() => {
-                    firstSender ! Some(false)
-                  }
-                }
-              }
-              case BackupResult(uuid2) if (uuid == uuid2) => {
-                reactWithin(timeout) {
-                  case STOP() => this.exit()
-                  case WAITINFOR() => sender ! Some(true)
-                }
-              }
-              case TIMEOUT => {
-                reactWithin(timeout) {
-                  case STOP() => this.exit()
-                  case WAITINFOR() => sender ! Some(false)
-                }
-              }
-              case ErrorResult() => {
-                reactWithin(timeout) {
-                  case STOP() => this.exit()
-                  case WAITINFOR() => sender ! Some(false)
-                }
-              }
-            }
-          }*/
         }
       }
     }
