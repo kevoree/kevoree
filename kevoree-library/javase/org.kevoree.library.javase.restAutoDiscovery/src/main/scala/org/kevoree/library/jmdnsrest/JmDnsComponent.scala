@@ -20,9 +20,10 @@ import actors.Actor
 import org.slf4j.LoggerFactory
 import java.net.InetAddress
 import org.kevoree.tools.marShell.KevsEngine
-import org.kevoree.{KevoreeFactory, ContainerRoot}
-import java.util.{ArrayList, HashMap}
 import org.kevoree.framework.KevoreePlatformHelper
+import org.kevoree.{ContainerRoot, KevoreeFactory}
+import scala.Array
+import java.util.{ArrayList, HashMap}
 
 /**
  * User: ffouquet
@@ -30,12 +31,11 @@ import org.kevoree.framework.KevoreePlatformHelper
  * Time: 17:42
  */
 
-class JmDnsComponent(nodeName: String, groupName: String, modelPort: Int, modelHandler: KevoreeModelHandlerService, groupTypeName: String) {
-
+class JmDnsComponent(nodeName: String, groupName: String, modelPort: Int, modelHandler: KevoreeModelHandlerService, groupTypeName: String,interface : InetAddress) {
   val logger = LoggerFactory.getLogger(this.getClass)
   var servicelistener: ServiceListener = null
   final val REMOTE_TYPE: String = "_kevoree-remote._tcp.local."
-  val nodeAlreadydiscovery  = new ArrayList[String]
+  val nodeAlreadydiscovery  = new HashMap[String,ArrayList[String]]
 
 
   def updateModelNetwork(nodeName: String, nodeType: String, groupName: String, groupType: String, groupPort: String): Option[ContainerRoot] = {
@@ -85,43 +85,59 @@ class JmDnsComponent(nodeName: String, groupName: String, modelPort: Int, modelH
     Some(currentModel)
   }
 
+
+
   /**
    * add a node found in the model and request an update
    */
   def addNodeDiscovered(p1:ServiceInfo)
   {
-    if(!nodeAlreadydiscovery.contains(p1.getName.trim()+"."+groupName) && p1.getName.trim() != nodeName)
+    if(nodeAlreadydiscovery.containsKey(groupName) == false)
+    {
+      val row = new java.util.ArrayList[String]()
+      nodeAlreadydiscovery.put(groupName,row)
+    }
+    if(nodeAlreadydiscovery.get(groupName).contains(p1.getName.trim()) == false )
     {
       val typeNames = new String(p1.getTextBytes, "UTF-8");
       val typeNamesArray = typeNames.split("/")
       val resultModel = updateModelNetwork(p1.getName.trim(), typeNamesArray(1), groupName, typeNamesArray(0), p1.getPort.toString)
       resultModel.map {
         goodModel => {
-          modelHandler.updateModel(goodModel)
-          nodeAlreadydiscovery.add(p1.getName.trim()+"."+groupName)
-          logger.debug("add node <"+p1.getName.trim()+">")
-           KevoreePlatformHelper.updateNodeLinkProp(modelHandler.getLastModel,nodeName, p1.getName.trim(),org.kevoree.framework.Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP, p1.getInet4Addresses()(0).getHostAddress, "LAN", 100)
+          val model= goodModel
+          nodeAlreadydiscovery.get(groupName).add(p1.getName.trim())
+
+         if(p1.getName != nodeName)
+         {
+           KevoreePlatformHelper.updateNodeLinkProp(model,nodeName, p1.getName.trim(),org.kevoree.framework.Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP, p1.getInet4Address.getHostAddress,"LAN", 100)
+           KevoreePlatformHelper.updateNodeLinkProp(model,nodeName,p1.getName.trim(), org.kevoree.framework.Constants.KEVOREE_MODEL_PORT, p1.getPort.toString, "LAN", 100)
+         }
+
+          modelHandler.updateModel(model)
+          logger.debug("add node <"+p1.getName.trim()+"> on "+interface.getHostAddress)
         }
       }
+    }else
+    {
 
-    }else {
-      logger.debug("List of discovered nodes <"+nodeAlreadydiscovery+">")
+      logger.debug("List of discovered nodes "+groupName+"on "+interface.getHostAddress.toString+"<"+nodeAlreadydiscovery.get(groupName)+">")
     }
   }
 
   /*
   Request from the user to scan the network
-   */
-  def requestUpdateList()
+  */
+  def requestUpdateList(time :Int)
   {
-    for (ser <- jmdns.list(REMOTE_TYPE,500)) {
+    for (ser <- jmdns.list(REMOTE_TYPE,time)) {
       addNodeDiscovered(ser)
     }
   }
 
-  // TODO Listen interfaces ?
-  val jmdns = JmDNS.create()
+  // Create JmDNS on all interfaces
+  val jmdns = JmDNS.create(interface,nodeName+"."+interface.getAddress.toString)
   logger.debug(" JmDNS listen on " + jmdns.getInterface());
+
   servicelistener = new ServiceListener() {
 
     def serviceAdded(p1: ServiceEvent) {
@@ -138,18 +154,21 @@ class JmDnsComponent(nodeName: String, groupName: String, modelPort: Int, modelH
     def serviceRemoved(p1: ServiceEvent) {
       logger.debug("Service removed " + p1.getName)
       //TODO REMOVE NODE FROM JMDNS GROUP INSTANCES SUBNODES
-      nodeAlreadydiscovery.remove(p1.getName.trim()+"."+groupName)
+      if(nodeAlreadydiscovery.containsKey(groupName) == true)
+      {
+        nodeAlreadydiscovery.get(groupName).remove(p1.getName.trim())
+      }
     }
   };
 
   jmdns.addServiceListener(REMOTE_TYPE, servicelistener)
+
 
   new Thread() {
     override def run() {
       val nodeType = modelHandler.getLastModel.getNodes.find(n => n.getName == nodeName).get.getTypeDefinition.getName
       val pairservice: ServiceInfo = ServiceInfo.create(REMOTE_TYPE, nodeName, groupName, modelPort, "")
       pairservice.setText((groupTypeName + "/" + nodeType).getBytes("UTF-8"))
-      logger.debug("nodeName " + nodeName + " groupName " + groupName + " modelPort " + modelPort + " groupTypeName " + groupTypeName + " nodeType " + nodeType)
       jmdns.registerService(pairservice)
     }
   }.start()
@@ -161,8 +180,8 @@ class JmDnsComponent(nodeName: String, groupName: String, modelPort: Int, modelH
           jmdns.removeServiceListener(REMOTE_TYPE, servicelistener)
         }
         jmdns.close()
-      }
 
+      }
     }.start()
   }
 }
