@@ -76,13 +76,11 @@ public class JmDNSRestGroup extends RestGroup implements  Runnable{
         }
     }
 
-
     public ArrayList<InetAddress> getIps(){
         ArrayList<InetAddress> ips = new ArrayList<InetAddress>();
         try
         {
             Enumeration<NetworkInterface> interfaces = NetworkInterface.getNetworkInterfaces();
-
             while (interfaces.hasMoreElements()) {
                 NetworkInterface interfaceN = (NetworkInterface)interfaces.nextElement();
                 Enumeration<InetAddress> ienum = interfaceN.getInetAddresses();
@@ -91,14 +89,12 @@ public class JmDNSRestGroup extends RestGroup implements  Runnable{
                     if(!ia.getHostAddress().toString().startsWith("127")){
                         ips.add(ia);
                     }
-
                 }
             }
         }
         catch(Exception e){
             logger.error("pas de carte reseau " + e);
         }
-
         return ips;
     }
 
@@ -106,9 +102,10 @@ public class JmDNSRestGroup extends RestGroup implements  Runnable{
     public void run() {
         ArrayList<InetAddress> ips =    getIps();
         ContainerRoot model = getModelService().getLastModel();
+        // update local address interfaces
         for(InetAddress ip : ips)
         {
-            KevoreePlatformHelper.updateNodeLinkProp(model,this.getNodeName(),this.getNodeName(),org.kevoree.framework.Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP(),ip.getHostName(),"LAN", 100);
+            KevoreePlatformHelper.updateNodeLinkProp(model,this.getNodeName(),this.getNodeName(),org.kevoree.framework.Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP(),ip.getHostAddress(),"LAN"+ip.getHostName(), 100);
             KevoreePlatformHelper.updateNodeLinkProp(model,this.getNodeName(),this.getNodeName(), org.kevoree.framework.Constants.KEVOREE_MODEL_PORT(),this.getDictionary().get("port").toString(), "LAN", 100);
         }
         getModelService().updateModel(model);

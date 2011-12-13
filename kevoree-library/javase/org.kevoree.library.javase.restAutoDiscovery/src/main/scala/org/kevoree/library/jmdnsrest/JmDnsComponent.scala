@@ -38,9 +38,7 @@ class JmDnsComponent(nodeName: String, groupName: String, modelPort: Int, modelH
   val nodeAlreadydiscovery  = new HashMap[String,ArrayList[String]]
 
 
-  def updateModelNetwork(nodeName: String, nodeType: String, groupName: String, groupType: String, groupPort: String): Option[ContainerRoot] = {
-    val currentModel = modelHandler.getLastModel //GET & CLONE
-
+  def updateModelNetwork(currentModel:ContainerRoot,nodeName: String, nodeType: String, groupName: String, groupType: String, groupPort: String): Option[ContainerRoot] = {
     val groupTypeDef = currentModel.getTypeDefinitions.find(td => td.getName == groupType)
     val nodeTypeDef = currentModel.getTypeDefinitions.find(td => td.getName == nodeType)
     if (groupTypeDef.isEmpty || nodeTypeDef.isEmpty) {
@@ -101,7 +99,11 @@ class JmDnsComponent(nodeName: String, groupName: String, modelPort: Int, modelH
     {
       val typeNames = new String(p1.getTextBytes, "UTF-8");
       val typeNamesArray = typeNames.split("/")
-      val resultModel = updateModelNetwork(p1.getName.trim(), typeNamesArray(1), groupName, typeNamesArray(0), p1.getPort.toString)
+
+      val uuidModel = modelHandler.getLastUUIDModel
+      val model = modelHandler.getLastModel
+
+      val resultModel = updateModelNetwork(model,p1.getName.trim(), typeNamesArray(1), groupName, typeNamesArray(0), p1.getPort.toString)
       resultModel.map {
         goodModel => {
           val model= goodModel
@@ -109,18 +111,17 @@ class JmDnsComponent(nodeName: String, groupName: String, modelPort: Int, modelH
 
          if(p1.getName != nodeName)
          {
-           KevoreePlatformHelper.updateNodeLinkProp(model,nodeName, p1.getName.trim(),org.kevoree.framework.Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP, p1.getInet4Address.getHostAddress,"LAN", 100)
+           KevoreePlatformHelper.updateNodeLinkProp(model,nodeName, p1.getName.trim(),org.kevoree.framework.Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP, p1.getInet4Address.getHostAddress,"LAN"+p1.getInet4Address.getHostAddress, 100)
            KevoreePlatformHelper.updateNodeLinkProp(model,nodeName,p1.getName.trim(), org.kevoree.framework.Constants.KEVOREE_MODEL_PORT, p1.getPort.toString, "LAN", 100)
          }
-
-          modelHandler.updateModel(model)
+          modelHandler.compareAndSwapModel(uuidModel,model)
           logger.debug("add node <"+p1.getName.trim()+"> on "+interface.getHostAddress)
         }
       }
     }else
     {
 
-      logger.debug("List of discovered nodes "+groupName+"on "+interface.getHostAddress.toString+"<"+nodeAlreadydiscovery.get(groupName)+">")
+      logger.debug("List of discovered nodes <"+nodeAlreadydiscovery.get(groupName)+">")
     }
   }
 
