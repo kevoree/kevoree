@@ -4,7 +4,6 @@ import com.twitter.finagle.http.Http
 import org.jboss.netty.handler.codec.http.{HttpRequest, HttpResponse}
 import com.twitter.finagle.Service
 import com.twitter.finagle.builder.{Server, ServerBuilder}
-import org.kevoree.api.service.core.handler.{ModelListener, KevoreeModelHandlerService}
 import org.kevoree.ContainerRoot
 import org.kevoree.framework.{Constants, KevoreePlatformHelper, KevoreeXmiHelper}
 import java.net.{URLConnection, URL, InetSocketAddress}
@@ -13,6 +12,7 @@ import com.twitter.util.Duration
 import java.util.concurrent.TimeUnit
 import org.junit.{After, Before, Test}
 import util.matching.Regex
+import org.kevoree.api.service.core.handler.{UUIDModel, ModelListener, KevoreeModelHandlerService}
 
 /**
  * User: Erwan Daubert - erwan.daubert@gmail.com
@@ -132,6 +132,12 @@ class HttpServerTest {
     def registerModelListener (p1: ModelListener) {}
 
     def unregisterModelListener (p1: ModelListener) {}
+
+    def getLastUUIDModel = null
+
+    def compareAndSwapModel (p1: UUIDModel, p2: ContainerRoot) {}
+
+    def atomicCompareAndSwapModel (p1: UUIDModel, p2: ContainerRoot) = null
   }
 
 }
