@@ -80,6 +80,7 @@ object Helper {
   }
 
   private def getVersion: String = {
+    logger.debug("Kevoree version: {}", KevoreeFactory.getVersion)
     KevoreeFactory.getVersion
   }
 

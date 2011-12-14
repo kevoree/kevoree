@@ -45,7 +45,8 @@ class JailKevoreeNodeRunner (nodeName: String, bootStrapModel: String, inet: Str
   private val deleteIPAlias = "ifconfig <inet> -alias <IP>"*/
   //  private val listJails = Array[String]("/usr/local/bin/ezjail-admin", "list")
 
-  val ezjailListPattern = "(D.?)\\ \\ *([0-9][0-9]*|N/A)\\ \\ *((?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?))\\ \\ *([a-zA-Z0-9\\.][a-zA-Z0-9\\.]*)\\ \\ *(?:(/[a-zA-Z0-9\\.][a-zA-Z0-9\\.]*)*)"
+  val ezjailListPattern =
+    "(D.?)\\ \\ *([0-9][0-9]*|N/A)\\ \\ *((?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?))\\ \\ *([a-zA-Z0-9\\.][a-zA-Z0-9\\.]*)\\ \\ *((?:(?:/[a-zA-Z0-9\\.][a-zA-Z0-9\\.]*)*))"
   val ezjailListRegex = new Regex(ezjailListPattern)
 
   val ezjailAdmin = "/usr/local/bin/ezjail-admin"
@@ -54,6 +55,8 @@ class JailKevoreeNodeRunner (nodeName: String, bootStrapModel: String, inet: Str
 
 
   private var listJailsProcessBuilder: ProcessBuilder = null
+
+  var nodeProcess: Process = null
 
   def startNode (): Boolean = {
     logger.debug("Start " + nodeName)
@@ -66,6 +69,7 @@ class JailKevoreeNodeRunner (nodeName: String, bootStrapModel: String, inet: Str
     var result = resultActor.waitingFor(10000)
     var notFound = true
     var ips: List[String] = List[String]()
+
     result._2.split("\n").foreach {
       line =>
         line match {
@@ -89,10 +93,11 @@ class JailKevoreeNodeRunner (nodeName: String, bootStrapModel: String, inet: Str
       result = resultActor.waitingFor(10000)
       if (result._1) {
         // create the new jail
+        logger.debug("trying to create the jail with {} as name and with {} as IP", nodeName, newIp)
         resultActor.starting()
         p = Runtime.getRuntime.exec(Array[String](ezjailAdmin, "create", "-f", "kevjail", nodeName, newIp))
-        new Thread(new ProcessStreamManager(p.getInputStream, Array(), Array(new Regex("Error:.*")))).start()
-        result = resultActor.waitingFor(60000)
+        new Thread(new ProcessStreamManager(p.getErrorStream, Array(), Array(new Regex("^Error.*")))).start()
+        result = resultActor.waitingFor(120000)
         if (result._1) {
           // install the model on the jail
           resultActor.starting()
@@ -100,51 +105,73 @@ class JailKevoreeNodeRunner (nodeName: String, bootStrapModel: String, inet: Str
           new Thread(new ProcessStreamManager(p.getInputStream, Array(ezjailListRegex), Array())).start()
           var result = resultActor.waitingFor(10000)
           var jailPath = ""
-          var jailId = "-1"
-          var ips: List[String] = List[String]()
           result._2.split("\n").foreach {
             line =>
               line match {
                 case ezjailListRegex(tmp, jid, ip, name, path) => {
                   if (name == nodeName) {
                     jailPath = path
-                    jailId = jid
                   }
                 }
                 case _ =>
               }
           }
+          logger.debug("trying to copy bootstrap model from {} to /root/bootstrapmodel.kev", bootStrapModel)
+          logger.debug("trying to copy runtime platform from {} to /root/kevoree-runtime.jar", Helper.getJarPath)
+          // get platform runtime and add it into the jail
+          if (copyFile(bootStrapModel, jailPath + File.separator + "root" + File.separator + "bootstrapmodel.kev") &&
+            copyFile(Helper.getJarPath, jailPath + File.separator + "root" + File.separator + "kevoree-runtime.jar")) {
 
-          resultActor.starting()
-          p = Runtime.getRuntime.exec(Array[String]("cp", bootStrapModel,
-                                                     jailPath + File.separator + "root" + File.separator +
-                                                       "bootstrapmodel.kev"))
-          new Thread(new ProcessStreamManager(p.getInputStream, Array(), Array())).start()
-          result = resultActor.waitingFor(10000)
-          if (result._1) {
-            // get platform runtime and add it into the jail
-            resultActor.starting()
-            p = Runtime.getRuntime.exec(Array[String]("cp", Helper.getJarPath,
-                                                       jailPath + File.separator + "root" + File.separator +
-                                                         "kevoree-runtime.jar"))
-            new Thread(new ProcessStreamManager(p.getInputStream, Array(), Array())).start()
-            result = resultActor.waitingFor(10000)
             // launch the jail
             resultActor.starting()
             p = Runtime.getRuntime.exec(Array[String](ezjailAdmin, "onestart", nodeName))
-            new Thread(new ProcessStreamManager(p.getInputStream, Array(), Array())).start()
+            new Thread(new ProcessStreamManager(p.getErrorStream, Array(), Array())).start()
             result = resultActor.waitingFor(10000)
             if (result._1) {
               resultActor.starting()
-              // FIXME set the log level according to current log level
-              p = Runtime.getRuntime.exec(Array[String](jexec, jailId,
-                                                         "java -Dnode.name=" + nodeName + "-Dnode.bootstrap=" +
-                                                           jailPath + File.separator + "root" + File.separator +
-                                                           "bootstrapmodel.kev -jar " + jailPath + File.separator +
-                                                           "root" + File.separator + "kevoree-runtime.jar"))
-              new Thread(new ProcessStreamManager(p.getInputStream, Array(), Array())).start()
+              p = listJailsProcessBuilder.start()
+              new Thread(new ProcessStreamManager(p.getInputStream, Array(ezjailListRegex), Array())).start()
               result = resultActor.waitingFor(10000)
-              result._1
+              var jailId = "-1"
+              result._2.split("\n").foreach {
+                line =>
+                  line match {
+                    case ezjailListRegex(tmp, jid, ip, name, path) => {
+                      if (name == nodeName) {
+                        jailPath = path
+                        jailId = jid
+                      }
+                    }
+                    case _ =>
+                  }
+              }
+              //resultActor.starting()
+              // FIXME set the log level according to current log level
+              logger.debug("trying to launch {} {} {} {}{} {}{}{}{}{} {} {}{}{}{}",
+                            Array[AnyRef]("jexec", jailId, "/usr/local/bin/java", "-Dnode.name=", nodeName,
+                                           "-Dnode.bootstrap=", File.separator, "root", File.separator,
+                                           "bootstrapmodel.kev", "-jar",
+                                           File.separator, "root", File.separator, "kevoree-runtime.jar"))
+              
+              var exec = Array[String](jexec, jailId, "/usr/local/bin/java", "-Dnode.name=" + nodeName, "-Dnode.bootstrap=" + File.separator + "root" + File.separator + "bootstrapmodel.kev")
+              if (System.getProperty("node.log.level") != null) {
+                exec = exec ++ Array[String]("-Dnode.log.level=" + System.getProperty("node.log.level"))
+              }
+              exec = exec ++ Array[String]("-jar", File.separator + "root" + File.separator + "kevoree-runtime.jar")
+              nodeProcess = Runtime.getRuntime.exec(exec)
+              val logFile = System.getProperty("java.io.tmpdir") + File.separator + nodeName + ".log"
+              logger.debug("writing logs about {} on {}", nodeName, logFile)
+              new Thread(new ProcessStreamFileLogger(nodeProcess.getInputStream, nodeProcess.getErrorStream, logFile)).start()
+              //result = resultActor.waitingFor(10000)
+              try {
+                nodeProcess.exitValue
+                false
+              } catch {
+                case e: IllegalThreadStateException => {
+                  logger.debug("platform " + nodeName + " is started")
+                  true
+                }
+              }
             } else {
               logger.error("Something wrong happens:\n {}", result._2)
               false
@@ -266,6 +293,62 @@ class JailKevoreeNodeRunner (nodeName: String, bootStrapModel: String, inet: Str
     (subnetInt & maskInt) == (ipInt & maskInt)
   }
 
+  private def copyFile (inputFile: String, outputFile: String): Boolean = {
+    if (new File(inputFile).exists()) {
+      try {
+        if (new File(outputFile).exists()) {
+          new File(outputFile).delete()
+        }
+        val reader = new DataInputStream(new FileInputStream(new File(inputFile)))
+        val writer = new DataOutputStream(new FileOutputStream(new File(outputFile)))
+
+
+        val bytes = new Array[Byte](2048)
+        var length = reader.read(bytes)
+        while (length != -1) {
+          writer.write(bytes, 0, length)
+          length = reader.read(bytes)
+
+        }
+
+        writer.flush()
+        writer.close()
+        reader.close()
+        true
+      } catch {
+        case _@e => logger.error("Unable to copy {} on {}", inputFile, outputFile); false
+      }
+    } else {
+      false
+    }
+
+  }
+
+  class ProcessStreamFileLogger (inputStream: InputStream, errorStream: InputStream, file: String) extends Runnable {
+    override def run () {
+      try {
+        val outputStream = new FileWriter(new File(file))
+        val readerIn = new BufferedReader(new InputStreamReader(inputStream))
+        val readerErr = new BufferedReader(new InputStreamReader(inputStream))
+        var lineIn = readerIn.readLine()
+        var lineErr = readerErr.readLine()
+        while (lineIn != null || lineErr != null) {
+          if (lineIn != null) {
+            outputStream.write(lineIn)
+          }
+          if (lineErr != null) {
+            outputStream.write(lineErr)
+          }
+          lineIn = readerIn.readLine()
+          lineErr = readerErr.readLine()
+        }
+      } catch {
+        case _@e => e.printStackTrace()
+      }
+    }
+  }
+
+
   class ProcessStreamManager (inputStream: InputStream, outputRegexes: Array[Regex], errorRegexes: Array[Regex])
     extends Runnable {
 
@@ -277,32 +360,29 @@ class JailKevoreeNodeRunner (nodeName: String, bootStrapModel: String, inet: Str
         var line = reader.readLine()
         while (line != null) {
 
-          outputRegexes.find(regex => line match {
-            case regex() => true
-            case _ => false
+          outputRegexes.find(regex => {
+            val m = regex.pattern.matcher(line)
+            m.find()
           }) match {
             case Some(regex) => outputBuilder.append(line + "\n")
-            case None =>
+            case none =>
           }
-          errorRegexes.find(regex => line match {
-            case regex() => true
-            case _ => false
+          errorRegexes.find(regex => {
+            val m = regex.pattern.matcher(line)
+            m.find()
           }) match {
             case Some(regex) => errorBuilder = true; outputBuilder.append(line + "\n")
-            case None =>
+            case none =>
           }
-          println(line)
           line = reader.readLine()
         }
       } catch {
-        case _@e => {
-        }
+        case _@e =>
       }
       if (errorBuilder) {
         resultActor.error(outputBuilder.toString())
       } else {
         resultActor.output(outputBuilder.toString())
-
       }
     }
   }
@@ -313,7 +393,7 @@ class JailKevoreeNodeRunner (nodeName: String, bootStrapModel: String, inet: Str
 
     case class WAITINGFOR (timeout: Int)
 
-    case class WAITINGFORPATH (timeout: Int)
+    //    case class WAITINGFORPATH (timeout: Int)
 
     case class STARTING ()
 
@@ -337,9 +417,9 @@ class JailKevoreeNodeRunner (nodeName: String, bootStrapModel: String, inet: Str
       (this !? WAITINGFOR(timeout)).asInstanceOf[(Boolean, String)]
     }
 
-    def waitingForPath (timeout: Int): (Boolean, String) = {
+    /*def waitingForPath (timeout: Int): (Boolean, String) = {
       (this !? WAITINGFORPATH(timeout)).asInstanceOf[(Boolean, String)]
-    }
+    }*/
 
 
     def output (data: String) {
@@ -372,7 +452,7 @@ class JailKevoreeNodeRunner (nodeName: String, bootStrapModel: String, inet: Str
                   case ERROR(data) => firstSender !(false, data)
                 }
               }
-              case WAITINGFORPATH(timeout) => {
+              /*case WAITINGFORPATH(timeout) => {
                 firstSender = this.sender
                 reactWithin(timeout) {
                   case STOP() => this.exit()
@@ -381,19 +461,19 @@ class JailKevoreeNodeRunner (nodeName: String, bootStrapModel: String, inet: Str
                     (false, "Timeout exceeds.")
                   case ERROR(data) => firstSender !(false, data)
                 }
-              }
+              }*/
               case OUTPUT(data) => {
                 react {
                   case STOP() => this.exit()
-                  case WAITINGFOR(timeout) => sender !(true, data)
-                  case WAITINGFORPATH(timeout) => sender !(true, data)
+                  case WAITINGFOR(timeout) => firstSender !(true, data)
+                  //                  case WAITINGFORPATH(timeout) => firstSender !(true, data)
                 }
               }
               case ERROR(data) => {
                 react {
                   case STOP() => this.exit()
-                  case WAITINGFOR(timeout) => sender !(false, data)
-                  case WAITINGFORPATH(timeout) => sender !(true, data)
+                  case WAITINGFOR(timeout) => firstSender !(false, data)
+                  //                  case WAITINGFORPATH(timeout) => firstSender !(false, data)
                 }
               }
             }
