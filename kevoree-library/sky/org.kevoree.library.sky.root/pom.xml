@@ -82,7 +82,7 @@
                 <version>${kevoree.version}</version>
                 <extensions>true</extensions>
                 <configuration>
-                    <nodeTypeNames>SkyNode</nodeTypeNames>
+                    <nodeTypeNames>IaaSNode</nodeTypeNames>
                 </configuration>
                 <executions>
                     <execution>

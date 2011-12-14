@@ -22,14 +22,13 @@ import org.slf4j.LoggerFactory;
  * @version 1.0
  */
 
-@PrimitiveCommands(value = {}, values = {SkyNode.REMOVE_NODE, SkyNode.ADD_NODE})
+@PrimitiveCommands(value = {}, values = {IaaSNode.REMOVE_NODE, IaaSNode.ADD_NODE})
 @DictionaryType({
 		@DictionaryAttribute(name = "role", defaultValue = "host", vals = {"host", "container", "host/container"},
 				optional = false)
 })
-@NodeType
-public abstract class SkyNode extends JavaSENode {
-	private static final Logger logger = LoggerFactory.getLogger(SkyNode.class);
+public abstract class IaaSNode extends JavaSENode {
+	private static final Logger logger = LoggerFactory.getLogger(IaaSNode.class);
 
 	public static final String REMOVE_NODE = "RemoveNode";
 	public static final String ADD_NODE = "AddNode";

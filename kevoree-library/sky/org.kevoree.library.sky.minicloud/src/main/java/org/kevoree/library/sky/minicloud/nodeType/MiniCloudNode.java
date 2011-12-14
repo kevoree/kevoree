@@ -9,7 +9,7 @@ import org.jboss.netty.handler.codec.http.HttpRequest;
 import org.jboss.netty.handler.codec.http.HttpResponse;
 import org.kevoree.annotation.*;
 import org.kevoree.library.sky.manager.KevoreeNodeRunner;
-import org.kevoree.library.sky.manager.nodeType.SkyNode;
+import org.kevoree.library.sky.manager.nodeType.IaaSNode;
 import org.kevoree.library.sky.minicloud.HttpServer;
 import org.kevoree.library.sky.minicloud.MiniCloudKevoreeNodeRunner;
 import org.slf4j.Logger;
@@ -32,7 +32,7 @@ import java.util.concurrent.TimeUnit;
 		@DictionaryAttribute(name = "port", defaultValue = "7000", optional = false)
 })
 @NodeType
-public class MiniCloudNode extends SkyNode {
+public class MiniCloudNode extends IaaSNode {
 	private static final Logger logger = LoggerFactory.getLogger(MiniCloudNode.class);
 
 	private Server server;

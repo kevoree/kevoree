@@ -1,7 +1,7 @@
 package org.kevoree.library.sky.manager
 
 import command.{AddNodeCommand, RemoveNodeCommand}
-import nodeType.SkyNode
+import nodeType.IaaSNode
 import org.kevoreeAdaptation.{AdaptationPrimitive, ParallelStep, KevoreeAdaptationFactory, AdaptationModel}
 import org.kevoree.framework.PrimitiveCommand
 import org.slf4j.{LoggerFactory, Logger}
@@ -19,7 +19,7 @@ import org.kevoree._
 object PlanningManager {
   private val logger: Logger = LoggerFactory.getLogger(PlanningManager.getClass)
 
-  def kompare (current: ContainerRoot, target: ContainerRoot, skyNode: SkyNode): AdaptationModel = {
+  def kompare (current: ContainerRoot, target: ContainerRoot, skyNode: IaaSNode): AdaptationModel = {
     logger.debug("starting kompare...")
     val adaptationModel: AdaptationModel = KevoreeAdaptationFactory.eINSTANCE.createAdaptationModel
     var step: ParallelStep = KevoreeAdaptationFactory.eINSTANCE.createParallelStep
@@ -30,10 +30,10 @@ object PlanningManager {
       current.getAdaptationPrimitiveTypes.foreach {
         primitiveType =>
         //        for (primitiveType <- current.getAdaptationPrimitiveTypesForJ) {
-          if (primitiveType.getName == SkyNode.REMOVE_NODE) {
+          if (primitiveType.getName == IaaSNode.REMOVE_NODE) {
             removeNodeType = primitiveType
           }
-          else if (primitiveType.getName == SkyNode.ADD_NODE) {
+          else if (primitiveType.getName == IaaSNode.ADD_NODE) {
             addNodeType = primitiveType
           }
       }
@@ -41,19 +41,19 @@ object PlanningManager {
         target.getAdaptationPrimitiveTypes.foreach {
           primitiveType =>
           //          for (primitiveType <- target.getAdaptationPrimitiveTypesForJ) {
-            if (primitiveType.getName == SkyNode.REMOVE_NODE) {
+            if (primitiveType.getName == IaaSNode.REMOVE_NODE) {
               removeNodeType = primitiveType
             }
-            else if (primitiveType.getName == SkyNode.ADD_NODE) {
+            else if (primitiveType.getName == IaaSNode.ADD_NODE) {
               addNodeType = primitiveType
             }
         }
       }
       if (removeNodeType == null) {
-        logger.warn("there is no adaptation primitive for " + SkyNode.REMOVE_NODE)
+        logger.warn("there is no adaptation primitive for " + IaaSNode.REMOVE_NODE)
       }
       if (addNodeType == null) {
-        logger.warn("there is no adaptation primitive for " + SkyNode.ADD_NODE)
+        logger.warn("there is no adaptation primitive for " + IaaSNode.ADD_NODE)
       }
       //        for (node <- current.getNodesForJ) {
       current.getNodes.find(node => node.getName == skyNode.getNodeName) match {
@@ -64,7 +64,7 @@ object PlanningManager {
                 subNode =>
                   node1.getHosts.find(subNode1 => subNode.getName == subNode1.getName) match {
                     case None => {
-                      logger.debug("add a " + SkyNode.REMOVE_NODE + " adaptation primitive with " + subNode.getName +
+                      logger.debug("add a " + IaaSNode.REMOVE_NODE + " adaptation primitive with " + subNode.getName +
                         " as parameter")
                       val command: AdaptationPrimitive = KevoreeAdaptationFactory.eINSTANCE.createAdaptationPrimitive
                       command.setPrimitiveType(removeNodeType)
@@ -93,7 +93,7 @@ object PlanningManager {
                 subNode =>
                   node1.getHosts.find(subNode1 => subNode.getName == subNode1.getName) match {
                     case None => {
-                      logger.debug("add a " + SkyNode.ADD_NODE + " adaptation primitive with " + subNode.getName +
+                      logger.debug("add a " + IaaSNode.ADD_NODE + " adaptation primitive with " + subNode.getName +
                         " as parameter")
                       val command: AdaptationPrimitive = KevoreeAdaptationFactory.eINSTANCE.createAdaptationPrimitive
                       command.setPrimitiveType(addNodeType)
@@ -135,16 +135,16 @@ object PlanningManager {
     }
   }
 
-  def getPrimitive (adaptationPrimitive: AdaptationPrimitive, skyNode : SkyNode): PrimitiveCommand = {
+  def getPrimitive (adaptationPrimitive: AdaptationPrimitive, skyNode : IaaSNode): PrimitiveCommand = {
     logger.debug("ask for primitiveCommand corresponding to " + adaptationPrimitive.getPrimitiveType.getName)
     var command: PrimitiveCommand = null
-    if (adaptationPrimitive.getPrimitiveType.getName == SkyNode.REMOVE_NODE) {
+    if (adaptationPrimitive.getPrimitiveType.getName == IaaSNode.REMOVE_NODE) {
       logger.debug("add REMOVE_NODE command on " + (adaptationPrimitive.getRef.asInstanceOf[ContainerNode]).getName)
       command = new RemoveNodeCommand(adaptationPrimitive.getRef.asInstanceOf[ContainerNode],
                                        ((adaptationPrimitive.getRef.asInstanceOf[ContainerNode]).eContainer)
                                          .asInstanceOf[ContainerRoot])
     }
-    else if (adaptationPrimitive.getPrimitiveType.getName == SkyNode.ADD_NODE) {
+    else if (adaptationPrimitive.getPrimitiveType.getName == IaaSNode.ADD_NODE) {
       logger.debug("add ADD_NODE command on " + (adaptationPrimitive.getRef.asInstanceOf[ContainerNode]).getName)
       command = new AddNodeCommand(adaptationPrimitive.getRef.asInstanceOf[ContainerNode],
                                     ((adaptationPrimitive.getRef.asInstanceOf[ContainerNode]).eContainer)

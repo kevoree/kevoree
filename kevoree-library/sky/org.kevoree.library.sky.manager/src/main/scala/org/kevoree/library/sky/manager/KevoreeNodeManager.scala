@@ -1,7 +1,7 @@
 package org.kevoree.library.sky.manager
 
 import actors.DaemonActor
-import nodeType.SkyNode
+import nodeType.IaaSNode
 import org.kevoree.{ContainerRoot, ContainerNode}
 
 import org.slf4j.{LoggerFactory, Logger}
@@ -18,9 +18,9 @@ object KevoreeNodeManager extends DaemonActor {
   private val logger: Logger = LoggerFactory.getLogger(KevoreeNodeManager.getClass)
   
   logger.debug("KevoreeNodeManager initialization...")
-  private var node : SkyNode = null
+  private var node : IaaSNode = null
 
-  def setNode(n : SkyNode) {
+  def setNode(n : IaaSNode) {
     node = n
   }
 

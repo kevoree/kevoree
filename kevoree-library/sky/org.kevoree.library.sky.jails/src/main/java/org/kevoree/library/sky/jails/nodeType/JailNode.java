@@ -3,7 +3,7 @@ package org.kevoree.library.sky.jails.nodeType;
 import org.kevoree.annotation.*;
 import org.kevoree.library.sky.jails.JailKevoreeNodeRunner;
 import org.kevoree.library.sky.manager.KevoreeNodeRunner;
-import org.kevoree.library.sky.manager.nodeType.SkyNode;
+import org.kevoree.library.sky.manager.nodeType.IaaSNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -22,13 +22,9 @@ import org.slf4j.LoggerFactory;
 		@DictionaryAttribute(name = "subnet", defaultValue = "10.0.0.0", optional = false),
 		@DictionaryAttribute(name = "mask", defaultValue = "24", vals={"8", "16", "24"}, optional = false)
 })
-@PrimitiveCommands(value = {}, values = {JailNode.REMOVE_NODE, JailNode.ADD_NODE})
 @NodeType
-public class JailNode extends SkyNode {
+public class JailNode extends IaaSNode {
 	private static final Logger logger = LoggerFactory.getLogger(JailNode.class);
-
-	protected static final String REMOVE_NODE = "RemoveNode";
-	protected static final String ADD_NODE = "AddNode";
 
 	@Override
 	public KevoreeNodeRunner createKevoreeNodeRunner (String nodeName, String bootStrapModel) {
