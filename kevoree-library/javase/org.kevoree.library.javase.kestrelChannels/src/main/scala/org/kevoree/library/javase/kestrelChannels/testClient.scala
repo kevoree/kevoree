@@ -16,18 +16,28 @@ import org.kevoree.framework.message.Message
 object testClient extends App {
 
 
+
+
+
+  //val msgToEnqueue = new Message()
+  //msgToEnqueue.setContent("HELLO")
+
+  // msgToEnqueue.setDestNodeName("node0")
+  //client.enqueue("node0",msgToEnqueue)
   val client = new KestrelClient("localhost", 22133)
-  client.connect()
-  System.out.println(client.stats())
 
-  val msgToEnqueue = new Message()
-  msgToEnqueue.setContent("HELLO")
+  while(true){
+    client.connect()
+    val msgToDequeue= client.dequeue("kevoree")
 
-  client.enqueue("jed",msgToEnqueue)
+    println(msgToDequeue.getContent())
+
+    client.disconnect()
+
+  }
 
 
 
-  val msgToDequeue= client.dequeue("jed")
 
-  println(msgToDequeue.getContent())
+
 }
