@@ -29,6 +29,7 @@ class KestrelClient(host: String, port: Int) {
   }
 
 
+
   final def send(socket: SocketChannel, data: ByteBuffer) = {
     val startTime = System.nanoTime
     data.rewind()
@@ -47,42 +48,15 @@ class KestrelClient(host: String, port: Int) {
     data
   }
 
-  def toBinary(obj: AnyRef): Array[Byte] = {
-    val bos = new ByteArrayOutputStream
-    val out = new ObjectOutputStream(bos)
-    out.writeObject(obj)
-    out.close
-    bos.toByteArray
-  }
-
-  def fromBinary(bytes: Array[Byte]): Message = {
-    val in = new ObjectInputStream(new ByteArrayInputStream(bytes))
-    val obj = in.readObject.asInstanceOf[Message]
-    in.close
-    obj
-  }
-
-
-  def checkConnected() = {
-
-    if(!socketchannel.isConnected)
-    {
-      disconnect()
-      connect()
-    }
-  }
-
 
   def enqueue(key :String,msg:Message)=
   {
-    checkConnected()
-    setData(key,toBinary(msg))
+    setData(key,KevoreeUtil.toBinary(msg))
 
   }
   def dequeue(key :String) :Message =
   {
-    checkConnected()
-    val obj = fromBinary(getData(key,true))
+    val obj = KevoreeUtil.fromBinary(getData(key,true))
     obj
   }
 
@@ -105,7 +79,7 @@ class KestrelClient(host: String, port: Int) {
   }
 
   def startGet(key: String, blockingReads: Boolean) {
-    out.write(("get " + key+ (if (blockingReads) "/t=1000000/close/open" else "") + "\r\n").getBytes)
+    out.write(("get " + key+ (if (blockingReads) "/t=100000/close/open" else "") + "\r\n").getBytes)
   }
 
   def finishGetData(): Array[Byte] = {
