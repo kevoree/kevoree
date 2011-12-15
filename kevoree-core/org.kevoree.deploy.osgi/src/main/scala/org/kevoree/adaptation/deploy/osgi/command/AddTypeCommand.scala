@@ -31,8 +31,6 @@ case class AddTypeCommand (ct: TypeDefinition, nodeName: String) extends Primiti
 
   //var lastExecutionBundle : Option[org.osgi.framework.Bundle] = None
   def execute (): Boolean = {
-    logger.debug("CMD ADD CT EXECUTION ");
-
     val node = ct.eContainer.asInstanceOf[ContainerRoot].getNodes.find(n => n.getName == nodeName).get
     val deployUnit = ct.foundRelevantDeployUnit(node)
 
@@ -42,6 +40,7 @@ case class AddTypeCommand (ct: TypeDefinition, nodeName: String) extends Primiti
     }) match {
       case Some(bundle) => bundle
       case None => {
+        logger.debug("SearchName="+CommandHelper.buildKEY(deployUnit))
         KevoreeDeployManager.bundleMapping.foreach{ mapping =>
            logger.error(mapping.bundleId+"-"+mapping.name+"-"+mapping.objClassName)
         }
