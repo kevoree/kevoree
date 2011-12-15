@@ -35,6 +35,15 @@ public class AbstractPage extends AbstractComponentType {
     protected Logger logger = LoggerFactory.getLogger(this.getClass());
     private URLHandlerScala handler = new URLHandlerScala();
 
+    public String getLastParam(String url){
+        Option<String> result = handler.getLastParam(url,this.getDictionary().get("urlpattern").toString());
+        if(result.isDefined()){
+            return result.get();
+        } else {
+            return null;
+        }
+    }
+    
     @Start
     public void startPage() {
         handler.initRegex(this.getDictionary().get("urlpattern").toString());

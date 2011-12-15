@@ -1,0 +1,68 @@
+<?php
+
+define('DB_NAME', '{mysql_db_name}');
+define('DB_USER', '{mysql_login}');
+define('DB_PASSWORD', '{mysql_pass}');
+define('DB_HOST', '{mysql_host}');
+define('DB_CHARSET', 'utf8');
+define('DB_COLLATE', '');
+
+/**#@+
+ * Clefs uniques d'authentification et salage.
+ *
+ * Remplacez les valeurs par défaut par des phrases uniques !
+ * Vous pouvez générer des phrases aléatoires en utilisant 
+ * {@link https://api.wordpress.org/secret-key/1.1/salt/ le service de clefs secrètes de WordPress.org}.
+ * Vous pouvez modifier ces phrases à n'importe quel moment, afin d'invalider tous les cookies existants.
+ * Cela forcera également tous les utilisateurs à se reconnecter.
+ *
+ * @since 2.6.0
+ */
+define('AUTH_KEY',         '-4nfsgzF0y*i(MrRFLl|`X&>lg57DL&UX}q^lr)2sK :eEXBS^Gv1a=}+`?.aX&0');
+define('SECURE_AUTH_KEY',  '|&{15IO{6GC%!{1S[K|=3-[Bg@%N_J.-d}C|`rN/1+l6C8H(hDPj29EirVv#M@]n');
+define('LOGGED_IN_KEY',    'ZhmZ1)SJY]/I0W|r-,KjPw7[t}8cP6.+(b9h7n?yc)]0]ImsR#y+daDNVFwE<6+6');
+define('NONCE_KEY',        '{_BvX(v6|A|&R*rvVNGn][iJi}[u_.>L~4.YWFqox9f)4Z,e98?f_AbSYwB;e1o%');
+define('AUTH_SALT',        '2j8)xn36e-+w&5fJ-j-={3FEVmLt3x6&M@8X*-U7Ux{x&-kW|l?BPt1~<Q.:R.S4');
+define('SECURE_AUTH_SALT', 'j7_z26H 2@=E<N>+n_D7e:|h5-UDa }+D:c5m#Lo(DeF=;ku8n[@KL}RKcav,)w+');
+define('LOGGED_IN_SALT',   'Li//SrQ|W%cj2b|yL+b^H-i^vz|ijgNdx1@2$m!l~j*A|4:?iNb5t_nROH /W%BE');
+define('NONCE_SALT',       'XpCANO&+;R:ze%*[iO>(;ATbti6Pk3aNgX4@2k{OhlX>->:wXs_>=w+ra{^)o%f-');
+/**#@-*/
+
+/**
+ * Préfixe de base de données pour les tables de WordPress.
+ *
+ * Vous pouvez installer plusieurs WordPress sur une seule base de données
+ * si vous leur donnez chacune un préfixe unique. 
+ * N'utilisez que des chiffres, des lettres non-accentuées, et des caractères soulignés!
+ */
+$table_prefix  = 'kwp_{name}_';
+
+/**
+ * Langue de localisation de WordPress, par défaut en Anglais.
+ *
+ * Modifiez cette valeur pour localiser WordPress. Un fichier MO correspondant
+ * au langage choisi doit être installé dans le dossier wp-content/languages.
+ * Par exemple, pour mettre en place une traduction française, mettez le fichier
+ * fr_FR.mo dans wp-content/languages, et réglez l'option ci-dessous à "fr_FR".
+ */
+define('WPLANG', 'fr_FR');
+
+/** 
+ * Pour les développeurs : le mode deboguage de WordPress.
+ * 
+ * En passant la valeur suivante à "true", vous activez l'affichage des
+ * notifications d'erreurs pendant votre essais.
+ * Il est fortemment recommandé que les développeurs d'extensions et
+ * de thèmes se servent de WP_DEBUG dans leur environnement de 
+ * développement.
+ */ 
+define('WP_DEBUG', false); 
+
+/* C'est tout, ne touchez pas à ce qui suit ! Bon blogging ! */
+
+/** Chemin absolu vers le dossier de WordPress. */
+if ( !defined('ABSPATH') )
+	define('ABSPATH', dirname(__FILE__) . '/');
+
+/** Réglage des variables de WordPress et de ses fichiers inclus. */
+require_once(ABSPATH . 'wp-settings.php');

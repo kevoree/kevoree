@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Maven: org.apache.xalan:xalan:2.7.1-1.jbossorg">
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/org/apache/xalan/xalan/2.7.1-1.jbossorg/xalan-2.7.1-1.jbossorg.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$MAVEN_REPOSITORY$/org/apache/xalan/xalan/2.7.1-1.jbossorg/xalan-2.7.1-1.jbossorg-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$MAVEN_REPOSITORY$/org/apache/xalan/xalan/2.7.1-1.jbossorg/xalan-2.7.1-1.jbossorg-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

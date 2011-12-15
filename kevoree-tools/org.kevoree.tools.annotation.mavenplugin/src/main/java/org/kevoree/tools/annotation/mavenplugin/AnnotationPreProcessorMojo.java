@@ -36,6 +36,8 @@ import java.util.*;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * @author ffouquet
@@ -621,12 +623,14 @@ public class AnnotationPreProcessorMojo extends AbstractAnnotationProcessorMojo 
         String thirdParties = ";";
         for (Dependency dep : project.getRuntimeDependencies()) {
             if (dep.getScope().equals("provided") || dep.getType().equals("bundle")) {
-                thirdParties += ";" + dep.getGroupId() + "/" + dep.getArtifactId() + "/" + dep.getVersion();
+
+
+                thirdParties += ";" + dep.getGroupId() + "/" + dep.getArtifactId() + "/" + toBaseVersion(dep.getVersion());
             }
         }
         for (Dependency dep : project.getDependencies()) {
             if (dep.getScope().equals("provided") || dep.getType().equals("bundle")) {
-                thirdParties += ";" + dep.getGroupId() + "/" + dep.getArtifactId() + "/" + dep.getVersion();
+                thirdParties += ";" + dep.getGroupId() + "/" + dep.getArtifactId() + "/" + toBaseVersion(dep.getVersion());
             }
         }
 
@@ -733,5 +737,38 @@ public class AnnotationPreProcessorMojo extends AbstractAnnotationProcessorMojo 
 
         return temp.getAbsolutePath().toString();
     }
+
+
+    private static final String SNAPSHOT = "SNAPSHOT";
+
+    private static final Pattern SNAPSHOT_TIMESTAMP = Pattern.compile("^(.*-)?([0-9]{8}.[0-9]{6}-[0-9]+)$");
+
+    protected static boolean isSnapshot(String version) {
+        return version.endsWith(SNAPSHOT) || SNAPSHOT_TIMESTAMP.matcher(version).matches();
+    }
+
+    protected static String toBaseVersion(String version) {
+        String baseVersion;
+
+        if (version == null) {
+            baseVersion = version;
+        } else if (version.startsWith("[") || version.startsWith("(")) {
+            baseVersion = version;
+        } else {
+            Matcher m = SNAPSHOT_TIMESTAMP.matcher(version);
+            if (m.matches()) {
+                if (m.group(1) != null) {
+                    baseVersion = m.group(1) + SNAPSHOT;
+                } else {
+                    baseVersion = SNAPSHOT;
+                }
+            } else {
+                baseVersion = version;
+            }
+        }
+
+        return baseVersion;
+    }
+
 
 }

@@ -13,9 +13,7 @@ import javax.servlet.http.HttpServlet;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.util.Enumeration;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by IntelliJ IDEA.
@@ -41,20 +39,24 @@ public abstract class AbstractHttpServletPage extends AbstractPage {
                 public String getServletName() {
                     return getName();
                 }
+                
+                
 
                 @Override
                 public ServletContext getServletContext() {
                     return ServletContextHandler.getContext();
                 }
+                
+                private HashMap<String,String> initParameterNames = new HashMap<String,String>();                
 
                 @Override
                 public String getInitParameter(String name) {
-                    return null;  //To change body of implemented methods use File | Settings | File Templates.
+                    return initParameterNames.get(name);
                 }
 
                 @Override
                 public Enumeration<String> getInitParameterNames() {
-                    return null;  //To change body of implemented methods use File | Settings | File Templates.
+                    return Collections.enumeration(initParameterNames.keySet());
                 }
             };
 

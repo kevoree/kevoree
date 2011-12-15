@@ -8,10 +8,7 @@ import javax.servlet.descriptor.JspConfigDescriptor;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Enumeration;
-import java.util.EventListener;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Created by IntelliJ IDEA.
@@ -36,27 +33,27 @@ public class FakeServletContext implements ServletContext {
     public ServletContext getContext(String uripath) {
         logger.warn("Call getContext");
 
-        return this;  //To change body of implemented methods use File | Settings | File Templates.
+        return this;
     }
 
     @Override
     public int getMajorVersion() {
-        return 0;  //To change body of implemented methods use File | Settings | File Templates.
+        return 3;
     }
 
     @Override
     public int getMinorVersion() {
-        return 0;  //To change body of implemented methods use File | Settings | File Templates.
+        return 1;
     }
 
     @Override
     public int getEffectiveMajorVersion() {
-        return 0;  //To change body of implemented methods use File | Settings | File Templates.
+        return 3;
     }
 
     @Override
     public int getEffectiveMinorVersion() {
-        return 0;  //To change body of implemented methods use File | Settings | File Templates.
+        return 1;
     }
 
     @Override
@@ -145,14 +142,17 @@ public class FakeServletContext implements ServletContext {
         return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
+    private HashMap<String,String> initParameterNames = new HashMap<String,String>();
+
     @Override
     public Enumeration<String> getInitParameterNames() {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return Collections.enumeration(initParameterNames.keySet());
     }
 
     @Override
     public boolean setInitParameter(String name, String value) {
-        return false;  //To change body of implemented methods use File | Settings | File Templates.
+        initParameterNames.put(name,value);
+        return true;
     }
 
     @Override
