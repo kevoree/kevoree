@@ -6,7 +6,7 @@ import org.kevoree.{ComponentInstance, MBinding, ContainerNode, ContainerRoot}
 
 /**
  * Created by IntelliJ IDEA.
- * User: jed
+ * User: jedartois@gmail.com
  * Date: 14/12/11
  * Time: 09:38
  * To change this template use File | Settings | File Templates.
@@ -33,18 +33,37 @@ object KevoreeUtil {
     obj
   }
 
-  def isRequired(model :ContainerRoot,nameChannel : String) : Boolean = {
+  def isRequired(model :ContainerRoot,nameChannel : String, nodeName: String) : Boolean = {
     var value = false
-    val binds =  model.getMBindings.filter(m => m.getHub.getName == nameChannel)
-    binds.foreach(m2 => if(m2.getPort.eContainer.asInstanceOf[ComponentInstance].getRequired.contains(m2.getPort) == true) {value = true })
-    value
+    val binds =  model.getMBindings.find{m =>
+      val sameChannel : Boolean = (m.getHub.getName == nameChannel && m.getPort.eContainer.asInstanceOf[ComponentInstance].getRequired.contains(m.getPort))
+      val sameNode : Boolean = m.getPort.eContainer.eContainer.asInstanceOf[ContainerNode].getName.equals(nodeName)
+      sameChannel && sameNode
+    } match {
+      case Some(mBinding) => {
+        true
+      }
+      case None => {
+        false
+      }
+    }
+    binds
   }
 
-    def isProvided(model :ContainerRoot,nameChannel : String) : Boolean = {
+  def isProvided(model :ContainerRoot,nameChannel : String, nodeName: String) : Boolean = {
     var value = false
-    val binds =  model.getMBindings.filter(m => m.getHub.getName == nameChannel)
-    binds.foreach(m2 => if(m2.getPort.eContainer.asInstanceOf[ComponentInstance].getProvided.contains(m2.getPort) == true) {value = true })
-    value
+    val binds =  model.getMBindings.find{m =>
+      val sameChannel : Boolean = (m.getHub.getName == nameChannel && m.getPort.eContainer.asInstanceOf[ComponentInstance].getProvided.contains(m.getPort))
+      val sameNode : Boolean = m.getPort.eContainer.eContainer.asInstanceOf[ContainerNode].getName.equals(nodeName)
+      sameChannel && sameNode
+    } match {
+      case Some(mBinding) => {
+        true
+      }
+      case None => {
+        false
+      }
+    }
+    binds
   }
-
 }
