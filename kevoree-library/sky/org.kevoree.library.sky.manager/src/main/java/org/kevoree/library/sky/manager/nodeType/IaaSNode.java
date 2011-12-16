@@ -27,13 +27,17 @@ import org.slf4j.LoggerFactory;
 		@DictionaryAttribute(name = "role", defaultValue = "host", vals = {"host", "container", "host/container"},
 				optional = false)
 })
-public abstract class IaaSNode extends JavaSENode {
+@NodeType
+public /*abstract*/ class IaaSNode extends JavaSENode {
 	private static final Logger logger = LoggerFactory.getLogger(IaaSNode.class);
 
 	public static final String REMOVE_NODE = "RemoveNode";
 	public static final String ADD_NODE = "AddNode";
 
-	public abstract KevoreeNodeRunner createKevoreeNodeRunner (String nodeName, String bootStrapModel);
+	public /*abstract*/ KevoreeNodeRunner createKevoreeNodeRunner (String nodeName, String bootStrapModel, ContainerRoot model)/*;*/{
+		logger.error("createKevoreeNodeRunner from IaaSNode must be override by subtypes and never be used as is");
+		return null;
+	}
 
 
 	@Start

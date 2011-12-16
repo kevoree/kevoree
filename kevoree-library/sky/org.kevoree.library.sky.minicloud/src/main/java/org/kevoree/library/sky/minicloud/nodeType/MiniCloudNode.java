@@ -7,6 +7,7 @@ import com.twitter.finagle.http.Http;
 import com.twitter.util.Duration;
 import org.jboss.netty.handler.codec.http.HttpRequest;
 import org.jboss.netty.handler.codec.http.HttpResponse;
+import org.kevoree.ContainerRoot;
 import org.kevoree.annotation.*;
 import org.kevoree.library.sky.manager.KevoreeNodeRunner;
 import org.kevoree.library.sky.manager.nodeType.IaaSNode;
@@ -38,7 +39,7 @@ public class MiniCloudNode extends IaaSNode {
 	private Server server;
 
 	@Override
-	public KevoreeNodeRunner createKevoreeNodeRunner (String nodeName, String bootStrapModel) {
+	public KevoreeNodeRunner createKevoreeNodeRunner (String nodeName, String bootStrapModel, ContainerRoot model) {
 		return new MiniCloudKevoreeNodeRunner(nodeName, bootStrapModel);
 	}
 

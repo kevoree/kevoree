@@ -82,7 +82,7 @@
                 <version>${kevoree.version}</version>
                 <extensions>true</extensions>
                 <configuration>
-                    <nodeTypeNames>IaaSNode</nodeTypeNames>
+                    <nodeTypeNames>JavaSENode</nodeTypeNames>
                 </configuration>
                 <executions>
                     <execution>

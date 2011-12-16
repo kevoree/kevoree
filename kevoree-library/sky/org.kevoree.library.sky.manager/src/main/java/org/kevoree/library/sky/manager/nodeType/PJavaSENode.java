@@ -14,5 +14,5 @@ import org.kevoree.library.defaultNodeTypes.JavaSENode;
  */
 @Library(name = "SKY")
 @NodeType
-public class PJavaSeNode extends JavaSENode implements PaaSNode {
+public class PJavaSENode extends JavaSENode implements PaaSNode {
 }

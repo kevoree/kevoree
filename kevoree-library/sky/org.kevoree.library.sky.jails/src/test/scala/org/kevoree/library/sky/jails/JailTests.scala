@@ -15,7 +15,38 @@ import java.net.InetAddress
 
 class JailTests {
 
-  @Test
+//  @Test
+  def testbuildCPUFrequency () {
+    val frequency = "2.80GHz"
+    var valueFrequency = java.lang.Double.parseDouble(frequency.substring(0, frequency.length() - 3))
+    val unit = frequency.substring(frequency.length() - 3)
+    if (unit.equalsIgnoreCase("ghz")) {
+      valueFrequency = valueFrequency * 1024 * 1024 * 1024
+    } else if (unit.equalsIgnoreCase("mhz")) {
+      valueFrequency = valueFrequency * 1024 * 1024
+    } else if (unit.equalsIgnoreCase("khz")) {
+      valueFrequency = valueFrequency * 1024
+    }
+    valueFrequency = valueFrequency.longValue()
+
+    var valueFrequency4Jail = java.lang.Double.parseDouble("1.40Ghz".substring(0, "1.40Ghz".length() - 3))
+    val unit4Jail = frequency.substring(frequency.length() - 3)
+    if (unit4Jail.equalsIgnoreCase("ghz")) {
+      valueFrequency4Jail = valueFrequency4Jail * 1024 * 1024 * 1024
+    } else if (unit4Jail.equalsIgnoreCase("mhz")) {
+      valueFrequency4Jail = valueFrequency4Jail * 1024 * 1024
+    } else if (unit4Jail.equalsIgnoreCase("khz")) {
+      valueFrequency4Jail = valueFrequency4Jail * 1024
+    }
+    valueFrequency4Jail = valueFrequency4Jail.longValue()
+
+    println(valueFrequency4Jail * 100 / valueFrequency)
+    println(((valueFrequency4Jail * 100 / valueFrequency) + 0.5).intValue())
+
+
+  }
+
+  //@Test
   def testJailRegex () {
     val ezjailListPattern =
       "(D.?)\\ \\ *([0-9][0-9]*|N/A)\\ \\ *((?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?))\\ \\ *([a-zA-Z0-9\\.][a-zA-Z0-9\\.]*)\\ \\ *((?:(?:/[a-zA-Z0-9\\.][a-zA-Z0-9\\.]*)*))"
@@ -32,7 +63,7 @@ class JailTests {
     }
   }
 
-  @Test
+  //@Test
   def testLookingFornewIp () {
     val subnet = "10.0.0.0"
     val mask = "24"
@@ -81,7 +112,7 @@ class JailTests {
     (subnetInt & maskInt) == (ipInt & maskInt)
   }
 
-  @Test
+  //@Test
   def useMask () {
     val s = "10.1.1.99";
     val a = InetAddress.getByName(s);

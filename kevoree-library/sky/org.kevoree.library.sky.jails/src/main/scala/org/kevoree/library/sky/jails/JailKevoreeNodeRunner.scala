@@ -22,6 +22,8 @@ import actors.{TIMEOUT, Actor}
 import util.matching.Regex
 import org.kevoree.library.sky.manager.{Helper, KevoreeNodeRunner}
 import java.net.InetAddress
+import org.kevoree.{TypeDefinition, Instance, ContainerNode, ContainerRoot}
+import scala.Array._
 
 /**
  * User: Erwan Daubert - erwan.daubert@gmail.com
@@ -31,7 +33,8 @@ import java.net.InetAddress
  * @author Erwan Daubert
  * @version 1.0
  */
-class JailKevoreeNodeRunner (nodeName: String, bootStrapModel: String, inet: String, subnet: String, mask: String)
+class JailKevoreeNodeRunner (nodeName: String, bootStrapModel: String, inet: String, subnet: String, mask: String,
+  model: ContainerRoot)
   extends KevoreeNodeRunner(nodeName, bootStrapModel) {
   private val logger: Logger = LoggerFactory.getLogger(classOf[JailKevoreeNodeRunner])
 
@@ -65,7 +68,7 @@ class JailKevoreeNodeRunner (nodeName: String, bootStrapModel: String, inet: Str
     listJailsProcessBuilder.command("/usr/local/bin/ezjail-admin", "list")
     resultActor.starting()
     var p = listJailsProcessBuilder.start()
-    new Thread(new ProcessStreamManager(p.getInputStream, Array(ezjailListRegex), Array())).start()
+    new Thread(new ProcessStreamManager(p.getInputStream, Array(ezjailListRegex), Array(), p)).start()
     var result = resultActor.waitingFor(10000)
     var notFound = true
     var ips: List[String] = List[String]()
@@ -89,7 +92,7 @@ class JailKevoreeNodeRunner (nodeName: String, bootStrapModel: String, inet: Str
       logger.debug("running {} {} alias {}", Array[AnyRef](ifconfig, inet, newIp))
       p = Runtime.getRuntime.exec(Array[String](ifconfig, inet, "alias", newIp))
       new Thread(new
-          ProcessStreamManager(p.getInputStream, Array(), Array(new Regex("ifconfig: ioctl \\(SIOCDIFADDR\\): .*"))))
+          ProcessStreamManager(p.getInputStream, Array(), Array(new Regex("ifconfig: ioctl \\(SIOCDIFADDR\\): .*")), p))
         .start()
       result = resultActor.waitingFor(10000)
       if (result._1) {
@@ -97,13 +100,13 @@ class JailKevoreeNodeRunner (nodeName: String, bootStrapModel: String, inet: Str
         resultActor.starting()
         logger.debug("running {} create -f kevjail {} {}", Array[AnyRef](ezjailAdmin, nodeName, newIp))
         p = Runtime.getRuntime.exec(Array[String](ezjailAdmin, "create", "-f", "kevjail", nodeName, newIp))
-        new Thread(new ProcessStreamManager(p.getErrorStream, Array(), Array(new Regex("^Error.*")))).start()
+        new Thread(new ProcessStreamManager(p.getErrorStream, Array(), Array(new Regex("^Error.*")), p)).start()
         result = resultActor.waitingFor(120000)
         if (result._1) {
           // install the model on the jail
           resultActor.starting()
           var p = listJailsProcessBuilder.start()
-          new Thread(new ProcessStreamManager(p.getInputStream, Array(ezjailListRegex), Array())).start()
+          new Thread(new ProcessStreamManager(p.getInputStream, Array(ezjailListRegex), Array(), p)).start()
           var result = resultActor.waitingFor(10000)
           var jailPath = ""
           result._2.split("\n").foreach {
@@ -123,58 +126,65 @@ class JailKevoreeNodeRunner (nodeName: String, bootStrapModel: String, inet: Str
           if (copyFile(bootStrapModel, jailPath + File.separator + "root" + File.separator + "bootstrapmodel.kev") &&
             copyFile(Helper.getJarPath, jailPath + File.separator + "root" + File.separator + "kevoree-runtime.jar")) {
 
-            // launch the jail
-            resultActor.starting()
-            logger.debug("running {} onestart {}", Array[AnyRef](ezjailAdmin, nodeName))
-            p = Runtime.getRuntime.exec(Array[String](ezjailAdmin, "onestart", nodeName))
-            new Thread(new ProcessStreamManager(p.getErrorStream, Array(), Array())).start()
-            result = resultActor.waitingFor(10000)
-            if (result._1) {
+            // pecify limitation on jail such as CPU, RAM
+            if (specifyConstraints()) {
+              // launch the jail
               resultActor.starting()
-              p = listJailsProcessBuilder.start()
-              new Thread(new ProcessStreamManager(p.getInputStream, Array(ezjailListRegex), Array())).start()
+              logger.debug("running {} onestart {}", Array[AnyRef](ezjailAdmin, nodeName))
+              p = Runtime.getRuntime.exec(Array[String](ezjailAdmin, "onestart", nodeName))
+              new Thread(new ProcessStreamManager(p.getErrorStream, Array(), Array(), p)).start()
               result = resultActor.waitingFor(10000)
-              var jailId = "-1"
-              result._2.split("\n").foreach {
-                line =>
-                  line match {
-                    case ezjailListRegex(tmp, jid, ip, name, path) => {
-                      if (name == nodeName) {
-                        jailPath = path
-                        jailId = jid
+              if (result._1) {
+                resultActor.starting()
+                p = listJailsProcessBuilder.start()
+                new Thread(new ProcessStreamManager(p.getInputStream, Array(ezjailListRegex), Array(), p)).start()
+                result = resultActor.waitingFor(10000)
+                var jailId = "-1"
+                result._2.split("\n").foreach {
+                  line =>
+                    line match {
+                      case ezjailListRegex(tmp, jid, ip, name, path) => {
+                        if (name == nodeName) {
+                          jailPath = path
+                          jailId = jid
+                        }
                       }
+                      case _ =>
                     }
-                    case _ =>
-                  }
-              }
-              //resultActor.starting()
-              var exec = Array[String](jexec, jailId, "/usr/local/bin/java", "-Dnode.name=" + nodeName,
-                                        "-Dnode.bootstrap=" + File.separator + "root" + File.separator +
-                                          "bootstrapmodel.kev")
-              if (System.getProperty("node.log.level") != null) {
-                exec = exec ++ Array[String]("-Dnode.log.level=" + System.getProperty("node.log.level"))
-                logger.debug("trying to launch {} {} {} {}{} {}{} {}{}{}{}{} {} {}{}{}{}", exec)
-              } else {
-                logger.debug("trying to launch {} {} {} {}{} {}{}{}{}{} {} {}{}{}{}", exec)
-              }
-              exec = exec ++ Array[String]("-jar", File.separator + "root" + File.separator + "kevoree-runtime.jar")
-              nodeProcess = Runtime.getRuntime.exec(exec)
-              val logFile = System.getProperty("java.io.tmpdir") + File.separator + nodeName + ".log"
-              logger.debug("writing logs about {} on {}", nodeName, logFile)
-              new Thread(new ProcessStreamFileLogger(nodeProcess.getInputStream, nodeProcess.getErrorStream, logFile))
-                .start()
-              //result = resultActor.waitingFor(10000)
-              try {
-                nodeProcess.exitValue
-                false
-              } catch {
-                case e: IllegalThreadStateException => {
-                  logger.debug("platform " + nodeName + " is started")
-                  true
                 }
+                //resultActor.starting()
+                var exec = Array[String](jexec, jailId, "/usr/local/bin/java", "-Dnode.name=" + nodeName,
+                                          "-Dnode.bootstrap=" + File.separator + "root" + File.separator +
+                                            "bootstrapmodel.kev")
+                if (System.getProperty("node.log.level") != null) {
+                  exec = exec ++ Array[String]("-Dnode.log.level=" + System.getProperty("node.log.level"))
+                  logger.debug("trying to launch {} {} {} {}{} {}{} {}{}{}{}{} {} {}{}{}{}", exec)
+                } else {
+                  logger.debug("trying to launch {} {} {} {}{} {}{}{}{}{} {} {}{}{}{}", exec)
+                }
+                exec = exec ++ Array[String]("-jar", File.separator + "root" + File.separator + "kevoree-runtime.jar")
+                nodeProcess = Runtime.getRuntime.exec(exec)
+                val logFile = System.getProperty("java.io.tmpdir") + File.separator + nodeName + ".log"
+                logger.debug("writing logs about {} on {}", nodeName, logFile)
+                new Thread(new
+                    ProcessStreamFileLogger(nodeProcess.getInputStream, nodeProcess.getErrorStream, logFile))
+                  .start()
+                //result = resultActor.waitingFor(10000)
+                try {
+                  nodeProcess.exitValue
+                  false
+                } catch {
+                  case e: IllegalThreadStateException => {
+                    logger.debug("platform " + nodeName + " is started")
+                    true
+                  }
+                }
+              } else {
+                logger.error("Something wrong happens:\n {}", result._2)
+                false
               }
             } else {
-              logger.error("Something wrong happens:\n {}", result._2)
+              logger.error("Unable to specify jail limitations about CPU and/or RAM:\n {}", result._2)
               false
             }
           } else {
@@ -203,7 +213,7 @@ class JailKevoreeNodeRunner (nodeName: String, bootStrapModel: String, inet: Str
     // looking for the jail that must be at least created
     resultActor.starting()
     var p = listJailsProcessBuilder.start()
-    new Thread(new ProcessStreamManager(p.getInputStream, Array(ezjailListRegex), Array())).start()
+    new Thread(new ProcessStreamManager(p.getInputStream, Array(ezjailListRegex), Array(), p)).start()
     var result = resultActor.waitingFor(10000)
     var found = false
     result._2.split("\n").foreach {
@@ -222,14 +232,14 @@ class JailKevoreeNodeRunner (nodeName: String, bootStrapModel: String, inet: Str
       resultActor.starting()
       logger.debug("running {} onestop {}", Array[AnyRef](ezjailAdmin, nodeName))
       p = Runtime.getRuntime.exec(Array[String](ezjailAdmin, "onestop", nodeName))
-      new Thread(new ProcessStreamManager(p.getInputStream, Array(), Array())).start()
+      new Thread(new ProcessStreamManager(p.getInputStream, Array(), Array(), p)).start()
       result = resultActor.waitingFor(10000)
       if (result._1) {
         // delete the jail
         resultActor.starting()
         logger.debug("running {} delete -w {}", Array[AnyRef](ezjailAdmin, nodeName))
         p = Runtime.getRuntime.exec(Array[String](ezjailAdmin, "delete", "-w", nodeName))
-        new Thread(new ProcessStreamManager(p.getInputStream, Array(), Array())).start()
+        new Thread(new ProcessStreamManager(p.getInputStream, Array(), Array(), p)).start()
         result = resultActor.waitingFor(10000)
         if (result._1) {
           true
@@ -295,6 +305,211 @@ class JailKevoreeNodeRunner (nodeName: String, bootStrapModel: String, inet: Str
     (subnetInt & maskInt) == (ipInt & maskInt)
   }
 
+  private def specifyConstraints (): Boolean = { // TODO manage ARCH parameter
+    model.getNodes.find(node => node.getName == nodeName) match {
+      case None => logger.debug("Unable to find information about the node to start"); false
+      case Some(node) => {
+        var modeId = "log"
+        var property = getNodeProperty("MODE", nodeName).getOrElse("RELAX")
+        if (property == "STRICT") {
+          modeId = "sigkill"
+        } else if (property == "AVOID") {
+          modeId = "deny"
+        }
+
+        var execResult = true
+        var exec = Array[String]()
+        property = getNodeProperty("RAM", nodeName).getOrElse("N/A")
+        if (property != "N/A") {
+          try {
+            val limit = java.lang.Long.parseLong(property.toString) * 1024 * 1024
+            exec = Array[String]("rctl", "-a", "jail:" + nodeName + ":vmem:" + modeId + ":" + limit)
+            resultActor.starting()
+            logger.debug("running {}", exec)
+            val p = Runtime.getRuntime.exec(exec)
+            new Thread(new ProcessStreamManager(p.getInputStream, Array(new Regex(".*")), Array(), p)).start()
+            val result = resultActor.waitingFor(10000)
+            if (result._1) {
+              execResult = true
+            } else {
+              logger.debug("unable to set RAM limitation:\n{}", result._2)
+              execResult = false
+            }
+          } catch {
+            case e: NumberFormatException => logger
+              .warn("Unable to take into account RAM limitation because the value {} is not well defined for {}",
+                     property, nodeName)
+          }
+        }
+        property = buildCPUFrequency(getNodeProperty("CPU_FREQUENCY", nodeName).getOrElse("N/A"))
+        if (execResult && property != "N/A") {
+          try {
+            val limit = Integer.parseInt(property.toString)
+            exec = Array[String]("rctl", "-a", "jail:" + nodeName + ":pctcpu:" + modeId + ":" + limit)
+            resultActor.starting()
+            logger.debug("running {}", exec)
+            val p = Runtime.getRuntime.exec(exec)
+            new Thread(new ProcessStreamManager(p.getInputStream, Array(new Regex(".*")), Array(), p)).start()
+            val result = resultActor.waitingFor(10000)
+            if (result._1) {
+              execResult = true
+            } else {
+              logger.debug("unable to set CPU_FREQUENCY limitation:\n{}", result._2)
+              execResult = false
+            }
+          } catch {
+            case e: NumberFormatException => logger
+              .warn("Unable to take into account CPU_FREQUENCY limitation because the value {} is not well defined for {}",
+                     property, nodeName)
+          }
+        }
+        /*property = getNodeProperty("CPU_CORE", nodeName)
+        if (execResult && property != "N/A") {
+          try {
+            val limit = Integer.parseInt(property.toString)
+            exec = Array[String]("rctl", "-a", "jail:" + nodeName + ":vmem:" + modeId + ":" + limit) // TODO use cpuset command
+            resultActor.starting()
+            logger.debug("running {}", exec)
+            val p = Runtime.getRuntime.exec(exec)
+            new Thread(new ProcessStreamManager(p.getErrorStream, Array(new Regex(".*")), Array(), p)).start()
+            val result = resultActor.waitingFor(10000)
+            if (result._1) {
+              execResult = true
+            } else {
+              logger.debug("unable to set CPU_CORE limitation:\n{}", result._2)
+              execResult = false
+            }
+          } catch {
+            case e: NumberFormatException => logger
+              .warn("Unable to take into account CPU_CORE limitation because the value {} is not well defined for {}",
+                     property, nodeName)
+          }
+        }*/
+        property = getNodeProperty("WALLCLOCKTIME", nodeName).getOrElse("N/A")
+        if (execResult && property != "N/A") {
+          try {
+            val limit = Integer.parseInt(property.toString)
+            exec = Array[String]("rctl", "-a", "jail:" + nodeName + ":wallclock:" + modeId + ":" + limit)
+            resultActor.starting()
+            logger.debug("running {}", exec)
+            val p = Runtime.getRuntime.exec(exec)
+            new Thread(new ProcessStreamManager(p.getInputStream, Array(new Regex(".*")), Array(), p)).start()
+            val result = resultActor.waitingFor(10000)
+            if (result._1) {
+              execResult = true
+            } else {
+              logger.debug("unable to set WALLCLOCKTIME limitation:\n{}", result._2)
+              execResult = false
+            }
+          } catch {
+            case e: NumberFormatException => logger
+              .warn("Unable to take into account WALLCLOCKTIME limitation because the value {} is not well defined for {}",
+                     property, nodeName)
+          }
+        }
+        property = getNodeProperty("DATA_SIZE", nodeName).getOrElse("N/A")
+        if (execResult && property != "N/A") {
+          try {
+            val limit = Integer.parseInt(property.toString)
+            exec = Array[String]("rctl", "-a", "jail:" + nodeName + ":data:" + modeId + ":" + limit)
+            resultActor.starting()
+            logger.debug("running {}", exec)
+            val p = Runtime.getRuntime.exec(exec)
+            new Thread(new ProcessStreamManager(p.getInputStream, Array(new Regex(".*")), Array(), p)).start()
+            val result = resultActor.waitingFor(10000)
+            if (result._1) {
+              execResult = true
+            } else {
+              logger.debug("unable to set DATA_SIZE limitation:\n{}", result._2)
+              execResult = false
+            }
+          } catch {
+            case e: NumberFormatException => logger
+              .warn("Unable to take into account WALLCLOCKTIME limitation because the value {} is not well defined for {}",
+                     property, nodeName)
+          }
+        }
+        execResult
+      }
+    }
+  }
+
+  private def buildCPUFrequency (property: String): String = {
+    if (property != "N/A") {
+      if (property.toLowerCase.endsWith("ghz") && property.toLowerCase.endsWith("Mhz") &&
+        property.toLowerCase.endsWith("khz")) {
+        val exec = Array[String]("sysctl", "-a", "|", "egrep", "-i", "hw.model")
+        resultActor.starting()
+        logger.debug("running {}", exec)
+        val p = Runtime.getRuntime.exec(exec)
+        new Thread(new ProcessStreamManager(p.getInputStream, Array(new Regex("hw.model:.*@ (.*)")), Array(), p))
+          .start()
+        val result = resultActor.waitingFor(2000)
+        if (result._1) {
+          val frequency = result._2.trim()
+          var valueFrequency = java.lang.Double.parseDouble(frequency.substring(0, frequency.length() - 3))
+          val unit = frequency.substring(frequency.length() - 3)
+          if (unit.equalsIgnoreCase("ghz")) {
+            valueFrequency = valueFrequency * 1024 * 1024 * 1024
+          } else if (unit.equalsIgnoreCase("mhz")) {
+            valueFrequency = valueFrequency * 1024 * 1024
+          } else if (unit.equalsIgnoreCase("khz")) {
+            valueFrequency = valueFrequency * 1024
+          }
+          valueFrequency = valueFrequency.longValue()
+
+          var valueFrequency4Jail = java.lang.Double.parseDouble(property.substring(0, property.length() - 3))
+          val unit4Jail = frequency.substring(frequency.length() - 3)
+          if (unit4Jail.equalsIgnoreCase("ghz")) {
+            valueFrequency4Jail = valueFrequency4Jail * 1024 * 1024 * 1024
+          } else if (unit4Jail.equalsIgnoreCase("mhz")) {
+            valueFrequency4Jail = valueFrequency4Jail * 1024 * 1024
+          } else if (unit4Jail.equalsIgnoreCase("khz")) {
+            valueFrequency4Jail = valueFrequency4Jail * 1024
+          }
+          valueFrequency4Jail = valueFrequency4Jail.longValue()
+          ((valueFrequency4Jail * 100 / valueFrequency) + 0.5).intValue() + ""
+        } else {
+          "N/A"
+        }
+      } else {
+        logger.debug("Unable to take into account CPU_FREQUENCY parameter!")
+        "N/A"
+      }
+    } else {
+      "N/A"
+    }
+  }
+
+  private def getNodeProperty (key: String, nodeName: String): Option[String] = {
+    model.getNodes.find(node => node.getName == nodeName) match {
+      case None => None
+      case Some(node) => {
+        node.getDictionary match {
+          case None => {
+            getDefaultValue(node.getTypeDefinition, key)
+          }
+          case Some(dictionary) => {
+            dictionary.getValues.find(dictionaryAttribute => dictionaryAttribute.getAttribute.getName == key) match {
+              case None => None
+              case Some(dictionaryAttribute) => dictionaryAttribute.getValue
+            }
+          }
+        }
+        true
+      }
+    }
+    None
+  }
+
+  private def getDefaultValue (typeDefinition: TypeDefinition, key: String): String = {
+    typeDefinition.getDictionaryType.get.getDefaultValues
+      .find(defaultValue => defaultValue.getAttribute.getName == key) match {
+      case None => ""
+      case Some(defaultValue) => defaultValue.getValue
+    }
+  }
+
   private def copyFile (inputFile: String, outputFile: String): Boolean = {
     if (new File(inputFile).exists()) {
       try {
@@ -321,7 +536,6 @@ class JailKevoreeNodeRunner (nodeName: String, bootStrapModel: String, inet: Str
     } else {
       false
     }
-
   }
 
   class ProcessStreamFileLogger (inputStream: InputStream, errorStream: InputStream, file: String) extends Runnable {
@@ -349,7 +563,8 @@ class JailKevoreeNodeRunner (nodeName: String, bootStrapModel: String, inet: Str
   }
 
 
-  class ProcessStreamManager (inputStream: InputStream, outputRegexes: Array[Regex], errorRegexes: Array[Regex])
+  class ProcessStreamManager (inputStream: InputStream, outputRegexes: Array[Regex], errorRegexes: Array[Regex],
+    p: Process)
     extends Runnable {
 
     override def run () {
@@ -379,7 +594,8 @@ class JailKevoreeNodeRunner (nodeName: String, bootStrapModel: String, inet: Str
       } catch {
         case _@e =>
       }
-      if (errorBuilder) {
+      val exitValue = p.waitFor()
+      if (errorBuilder || exitValue != 0) {
         resultActor.error(outputBuilder.toString())
       } else {
         resultActor.output(outputBuilder.toString())

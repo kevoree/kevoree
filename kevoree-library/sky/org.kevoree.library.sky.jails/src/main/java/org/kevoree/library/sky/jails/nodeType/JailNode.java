@@ -1,5 +1,6 @@
 package org.kevoree.library.sky.jails.nodeType;
 
+import org.kevoree.ContainerRoot;
 import org.kevoree.annotation.*;
 import org.kevoree.library.sky.jails.JailKevoreeNodeRunner;
 import org.kevoree.library.sky.manager.KevoreeNodeRunner;
@@ -26,9 +27,12 @@ import org.slf4j.LoggerFactory;
 public class JailNode extends IaaSNode {
 	private static final Logger logger = LoggerFactory.getLogger(JailNode.class);
 
+	protected static final String REMOVE_NODE = "RemoveNode";
+	protected static final String ADD_NODE = "AddNode";
+
 	@Override
-	public KevoreeNodeRunner createKevoreeNodeRunner (String nodeName, String bootStrapModel) {
-		return new JailKevoreeNodeRunner(nodeName, bootStrapModel, this.getDictionary().get("inet").toString(), this.getDictionary().get("subnet").toString(), this.getDictionary().get("mask").toString());
+	public KevoreeNodeRunner createKevoreeNodeRunner (String nodeName, String bootStrapModel, ContainerRoot model) {
+		return new JailKevoreeNodeRunner(nodeName, bootStrapModel, this.getDictionary().get("inet").toString(), this.getDictionary().get("subnet").toString(), this.getDictionary().get("mask").toString(), model);
 	}
 
 	@Start

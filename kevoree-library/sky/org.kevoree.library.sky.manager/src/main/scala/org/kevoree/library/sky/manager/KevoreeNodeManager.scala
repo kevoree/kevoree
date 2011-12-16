@@ -68,7 +68,7 @@ object KevoreeNodeManager extends DaemonActor {
 
   private def addNodeInternal (containerNode: ContainerNode, model: ContainerRoot): Boolean = {
     logger.debug("try to add a node: " + containerNode.getName)
-    val newRunner = node.createKevoreeNodeRunner(containerNode.getName, Helper.saveModelOnFile(model))
+    val newRunner = node.createKevoreeNodeRunner(containerNode.getName, Helper.saveModelOnFile(model), model)
     val result = newRunner.startNode()
     if (result) {
       runners = runners ++ List(newRunner)
