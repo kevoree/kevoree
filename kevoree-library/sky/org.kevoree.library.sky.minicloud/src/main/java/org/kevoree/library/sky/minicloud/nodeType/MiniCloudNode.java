@@ -3,7 +3,7 @@ package org.kevoree.library.sky.minicloud.nodeType;
 import org.kevoree.ContainerRoot;
 import org.kevoree.annotation.*;
 import org.kevoree.library.sky.manager.KevoreeNodeRunner;
-import org.kevoree.library.sky.manager.manager.nodeType.IaaSNode;
+import org.kevoree.library.sky.manager.nodeType.IaaSNode;
 import org.kevoree.library.sky.minicloud.MiniCloudKevoreeNodeRunner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
