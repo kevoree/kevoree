@@ -135,18 +135,23 @@ class KevoreeCoreBean extends KevoreeModelHandlerService with KevoreeThreadActor
   }
 
   private def switchToNewModel(c: ContainerRoot) = {
+    //current model is backed-up
     models.append(model)
+
+    // MAGIC NUMBER ;-) , ONLY KEEP 10 PREVIOUS MODEL
     if (models.size > 15) {
-      // MAGIC NUMBER ;-) , ONLY KEEP 10 PREVIOUS MODEL
       models = models.drop(5)
       logger.debug("Garbage old previous model")
     }
 
+    //Changes the current model by the new model
     model = c
     currentModelUUID = UUID.randomUUID()
     lastDate = new Date(System.currentTimeMillis)
+
     //TODO ADD LISTENER
 
+    //Fires the update to listeners
     new Actor {
       def act() {
         //NOTIFY LOCAL REASONER
@@ -214,14 +219,19 @@ class KevoreeCoreBean extends KevoreeModelHandlerService with KevoreeThreadActor
   val cloner = new ModelCloner
   val modelChecker = new RootChecker
 
+  // treatment of incoming messages
   def internal_process(msg: Any) = msg match {
+    //Returns the collection of previous models
     case PreviousModel() => reply(models)
+    //Returns a clone of the current system model
     case LastModel() => {
       reply(cloner.clone(model))
     }
+    // returns a clone of the current system model with a companion UUID for concurrency management
     case LastUUIDModel() => {
       reply(UUIDModelImpl(currentModelUUID, cloner.clone(model)))
     }
+    //Update the system with the model given in parameter, with the UUID for checking
     case UpdateUUIDModel(prevUUIDModel, targetModel) => {
       if (prevUUIDModel.getUUID.compareTo(currentModelUUID) == 0) {
         //TODO CHECK WITH MODEL SHA-1 HASHCODE
@@ -230,6 +240,7 @@ class KevoreeCoreBean extends KevoreeModelHandlerService with KevoreeThreadActor
         reply(false)
       }
     }
+    //Updates the system to fit to the new model
     case UpdateModel(pnewmodel) => {
       reply(internal_update_model(pnewmodel))
     }
@@ -240,10 +251,12 @@ class KevoreeCoreBean extends KevoreeModelHandlerService with KevoreeThreadActor
 
   private def internal_update_model(pnewmodel: ContainerRoot): Boolean = {
     if (pnewmodel == null) {
-      logger.error("Null model")
+      logger.error("Asking for update with a NULL model !")
       false
     } else {
       try {
+
+        //Model checking
         val checkResult = modelChecker.check(pnewmodel)
         if (!checkResult.isEmpty) {
           logger.error("There is check failure on update model, update refused !")
@@ -254,19 +267,28 @@ class KevoreeCoreBean extends KevoreeModelHandlerService with KevoreeThreadActor
           }
           false
         } else {
+          //Model check is OK.
+
           var newmodel = cloner.clone(pnewmodel)
           //CHECK FOR HARA KIRI
           if (HaraKiriHelper.detectNodeHaraKiri(model, newmodel, getNodeName())) {
             logger.warn("HaraKiri detected , flush platform")
+            // Creates an empty model, removes the current node (harakiri)
             newmodel = KevoreeFactory.createContainerRoot
             try {
+              // Compare the two models and plan the adaptation
               val adaptationModel = nodeInstance.kompare(model, newmodel)
-              logger.debug("Adaptation model size " + adaptationModel.getAdaptations.size)
-              adaptationModel.getAdaptations.foreach {
-                adaptation =>
-                  logger.debug("primitive " + adaptation.getPrimitiveType.getName)
+              if (logger.isDebugEnabled) {//Avoid the loop if the debug is not activated
+                logger.debug("Adaptation model size " + adaptationModel.getAdaptations.size)
+                adaptationModel.getAdaptations.foreach {
+                  adaptation =>
+                    logger.debug("primitive " + adaptation.getPrimitiveType.getName)
+                }
               }
+              //Executes the adaptation
               PrimitiveCommandExecutionHelper.execute(adaptationModel, nodeInstance)
+
+              //Cleanup the local runtime
               KevoreeDeployManager.bundleMapping.foreach {
                 bm =>
                   try {
@@ -278,8 +300,14 @@ class KevoreeCoreBean extends KevoreeModelHandlerService with KevoreeThreadActor
                   }
               }
               logger.debug("Deploy manager cache size after HaraKiri" + KevoreeDeployManager.bundleMapping.size)
+
+              //end of harakiri
               nodeInstance = null
+
+              //place the current model as an empty model (for backup)
               switchToNewModel(newmodel)
+
+              //prepares for deployment of the new system
               newmodel = cloner.clone(pnewmodel)
             } catch {
               case _@e => {
@@ -288,12 +316,17 @@ class KevoreeCoreBean extends KevoreeModelHandlerService with KevoreeThreadActor
             }
             logger.debug("End HaraKiri")
           }
+
+          //Checks and bootstrap the node
           checkBootstrapNode(newmodel)
           val milli = System.currentTimeMillis
           logger.debug("Begin update model " + milli)
           var deployResult = true
           try {
+            // Compare the two models and plan the adaptation
             val adaptationModel = nodeInstance.kompare(model, newmodel);
+
+            //Execution of the adaptation
             deployResult = PrimitiveCommandExecutionHelper.execute(adaptationModel, nodeInstance)
           } catch {
             case _@e => {
@@ -305,7 +338,7 @@ class KevoreeCoreBean extends KevoreeModelHandlerService with KevoreeThreadActor
             //Merge previous model on new model for platform model
             //KevoreePlatformMerger.merge(newmodel, model)
             switchToNewModel(newmodel)
-            logger.info("Deploy result " + deployResult)
+            logger.info("Deploy result {}", deployResult)
           } else {
             //KEEP FAIL MODEL
             logger.warn("Failed model")
@@ -322,28 +355,53 @@ class KevoreeCoreBean extends KevoreeModelHandlerService with KevoreeThreadActor
     }
   }
 
+  /**
+   * Returns the current model.
+   * @Deprecated : Consider using #getLastUUIDModel for concurrency reasons
+   */
+  @Deprecated
   override def getLastModel: ContainerRoot = {
     (this !? LastModel()).asInstanceOf[ContainerRoot]
   }
 
+  /**
+   * Returns the current model with a unique token
+   */
   override def getLastUUIDModel: UUIDModel = {
     (this !? LastUUIDModel()).asInstanceOf[UUIDModel]
   }
 
+  /**
+   * Asks for an update of the system to the new system described by the model.
+   * @Deprecated Consider using #compareAndSwapModel for concurrency reasons
+   */
   @Deprecated
   override def updateModel(model: ContainerRoot) {
     this ! UpdateModel(model)
   }
 
+  /**
+   * Asks for an update of the system to fit the model given in parameter.<br/>
+   * This method is blocking until the update is done.
+   * @Deprecated Consider using #atomicCompareAndSwapModel for concurrency reasons.
+   */
   override def atomicUpdateModel(model: ContainerRoot) = {
     (this !? UpdateModel(model))
     lastDate
   }
 
+  /**
+   * Compares the UUID of the model and the current UUID to verify that no update occurred in between the moment the model had been delivered and the moment the update is asked.<br/>
+   * If OK, updates the system and switches to the new model, asynchronously
+   */
   override def compareAndSwapModel(previousModel: UUIDModel, targetModel: ContainerRoot) {
     this ! UpdateUUIDModel(previousModel, targetModel)
   }
 
+  /**
+   * Compares the UUID of the model and the current UUID to verify that no update occurred in between the moment the model had been delivered and the moment the update is asked.<br/>
+   * If OK, updates the system and switches to the new model, synchronously (blocking)
+   */
   override def atomicCompareAndSwapModel(previousModel: UUIDModel, targetModel: ContainerRoot): Date = {
     val result = (this !? UpdateUUIDModel(previousModel, targetModel)).asInstanceOf[Boolean]
     if (!result) {
@@ -352,6 +410,9 @@ class KevoreeCoreBean extends KevoreeModelHandlerService with KevoreeThreadActor
     lastDate
   }
 
+  /**
+   * Provides the collection of last models (short system history)
+   */
   override def getPreviousModel: java.util.List[ContainerRoot] = {
     import scala.collection.JavaConversions._
     (this !? PreviousModel()).asInstanceOf[scala.collection.mutable.ArrayBuffer[ContainerRoot]].toList
