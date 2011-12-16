@@ -1,3 +1,4 @@
+/*
 package org.kevoree.library.javase.gossiperNetty
 
 import com.twitter.finagle.Codec
@@ -46,4 +47,4 @@ object CodecFactory {
       }
     }
   }
-}
+}*/

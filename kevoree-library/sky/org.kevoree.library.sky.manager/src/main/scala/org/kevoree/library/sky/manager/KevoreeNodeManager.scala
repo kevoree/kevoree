@@ -1,7 +1,7 @@
 package org.kevoree.library.sky.manager
 
 import actors.DaemonActor
-import nodeType.IaaSNode
+import manager.nodeType.IaaSNode
 import org.kevoree.{ContainerRoot, ContainerNode}
 
 import org.slf4j.{LoggerFactory, Logger}

@@ -1,4 +1,4 @@
-package org.kevoree.library.sky.minicloud
+package org.kevoree.library.sky.manager
 
 import com.twitter.finagle.http.Http
 import org.jboss.netty.handler.codec.http.{HttpRequest, HttpResponse}

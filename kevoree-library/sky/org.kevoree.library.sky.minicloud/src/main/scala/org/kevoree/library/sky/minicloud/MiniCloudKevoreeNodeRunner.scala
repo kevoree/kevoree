@@ -52,14 +52,6 @@ class MiniCloudKevoreeNodeRunner (nodeName: String, bootStrapModel: String) exte
   val actor = new UpdateManagementActor(10000)
   actor.start()
 
-  private var outFile: File = null
-
-  def getOutFile = outFile
-
-  private var errFile: File = null
-
-  def getErrFile = errFile
-
   def startNode (): Boolean = {
     try {
       logger.debug("Start " + nodeName)

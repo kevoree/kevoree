@@ -1,5 +1,7 @@
 package org.kevoree.library.sky.manager
 
+import java.io.File
+
 /**
  * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE, Version 3, 29 June 2007;
  * you may not use this file except in compliance with the License.
@@ -30,5 +32,14 @@ abstract class KevoreeNodeRunner (var nodeName: String, bootStrapModel: String) 
   def stopNode() : Boolean
 
   def updateNode(modelPath : String) : Boolean
+
+
+  var outFile: File = null
+
+  def getOutFile = outFile
+
+  var errFile: File = null
+
+  def getErrFile = errFile
 }
 

@@ -1,7 +1,6 @@
-package org.kevoree.library.sky.minicloud
+package org.kevoree.library.sky.manager
 
 import io.Source
-import org.kevoree.library.sky.manager.KevoreeNodeManager
 
 /**
  * Created by IntelliJ IDEA.
@@ -34,14 +33,14 @@ object VirtualNodeHTMLHelper {
                      streamName match {
                        case "out" => {
                          var subresult : List[scala.xml.Elem] = List()
-                         Source.fromFile(runner.asInstanceOf[MiniCloudKevoreeNodeRunner].getOutFile).getLines().toList.reverse.foreach{ line =>
+                         Source.fromFile(runner.asInstanceOf[KevoreeNodeRunner].getOutFile).getLines().toList.reverse.foreach{ line =>
                             subresult = subresult ++ List(<p>{line}</p>)
                          }
                          subresult
                        }
                        case "err" => {
                          var subresult : List[scala.xml.Elem] = List()
-                         Source.fromFile(runner.asInstanceOf[MiniCloudKevoreeNodeRunner].getErrFile).getLines().toList.reverse.foreach{ line =>
+                         Source.fromFile(runner.asInstanceOf[KevoreeNodeRunner].getErrFile).getLines().toList.reverse.foreach{ line =>
                             subresult = subresult ++ List(<p>{line}</p>)
                          }
                          subresult

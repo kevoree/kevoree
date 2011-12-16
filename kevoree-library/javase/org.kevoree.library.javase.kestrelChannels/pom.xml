@@ -33,11 +33,11 @@
             <groupId>org.kevoree.extra</groupId>
             <artifactId>org.kevoree.extra.osgi.kestrel</artifactId>
             <version>${kestrel.version}</version>
-            <scope>provided</scope>
+            <type>bundle</type>
         </dependency>
 
 
-        <dependency>
+        <!--<dependency>
             <groupId>org.kevoree.extra</groupId>
             <artifactId>org.kevoree.extra.osgi.twitter.library</artifactId>
             <version>${twitter.version}</version>
@@ -52,7 +52,7 @@
             <version>${netty.version}</version>
             <scope>provided</scope>
             <type>bundle</type>
-        </dependency>
+        </dependency>-->
 
         <!--<dependency>
             <groupId>org.kevoree.extra</groupId>

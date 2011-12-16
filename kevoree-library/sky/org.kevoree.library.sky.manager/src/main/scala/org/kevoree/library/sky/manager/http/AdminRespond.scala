@@ -3,10 +3,8 @@ package org.kevoree.library.sky.minicloud.http
 import com.twitter.util.Future
 import org.jboss.netty.handler.codec.http.HttpVersion._
 import org.jboss.netty.handler.codec.http.HttpResponseStatus._
-import org.jboss.netty.buffer.ChannelBuffers._
-import org.jboss.netty.util.CharsetUtil._
 import org.jboss.netty.handler.codec.http.{DefaultHttpResponse, HttpRequest}
-import org.kevoree.library.sky.minicloud.{VirtualNodeHTMLHelper, HttpServer}
+import org.kevoree.library.sky.manager.{VirtualNodeHTMLHelper, HttpServer}
 
 /**
  * Created by IntelliJ IDEA.
