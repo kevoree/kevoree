@@ -91,13 +91,21 @@ trait KevoreeScheduler {
       }
 
       // START ThirdParty
-      step.addAllAdaptations(adaptionModel.getAdaptations
+      adaptionModel.getAdaptations.filter(adapt => adapt.getPrimitiveType.getName == JavaSePrimitive.StartThirdParty)
+        .foreach {
+        p =>
+          step.addAdaptations(p)
+          step = KevoreeAdaptationFactory.eINSTANCE.createParallelStep
+          currentStep.setNextStep(Some(step))
+          currentStep = step
+      }
+      /*step.addAllAdaptations(adaptionModel.getAdaptations
         .filter(adapt => adapt.getPrimitiveType.getName == JavaSePrimitive.StartThirdParty))
       if (!step.getAdaptations.isEmpty) {
         step = KevoreeAdaptationFactory.eINSTANCE.createParallelStep
         currentStep.setNextStep(Some(step))
         currentStep = step
-      }
+      }*/
 
       // UPDATE ThirdParty OR DeployUnit
       step.addAllAdaptations(adaptionModel.getAdaptations
