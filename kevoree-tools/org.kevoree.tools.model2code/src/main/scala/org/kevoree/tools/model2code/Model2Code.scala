@@ -241,7 +241,7 @@ class Model2Code extends CompilationUnitHelpers {
     pr.println("      <plugin>")
     pr.println("        <groupId>org.apache.felix</groupId>")
     pr.println("        <artifactId>maven-bundle-plugin</artifactId>")
-    pr.println("        <version>2.1.0</version>")
+    pr.println("        <version>2.3.5</version>")
     pr.println("        <extensions>true</extensions>")
     pr.println("      </plugin>")
     pr.println("      <plugin>")
