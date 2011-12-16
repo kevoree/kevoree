@@ -1,79 +1,106 @@
 #!/bin/sh
+#
 
-#Settings
-APP_PATH="$HOME/kevoree-service" # path where your exec file are
+# PROVIDE: kevoree
+# REQUIRE: LOGIN
+# KEYWORD: shutdown
+
+#
+# Configuration settings for kevoree in /etc/rc.conf:
+#
+# kevoree_enable (bool):
+#   Set to "NO" by default.
+#   Set it to "YES" to enable kevoree
+#
+# kevoree_home (str):
+#   Default to "$HOME/kevoree-service"
+#   Base kevoree directory
+#
+# 
+
+. /etc/rc.subr
+
+name="kevoree"
+rcvar=`set_rcvar`
+pidfile="/var/run/kevoree.pid"
+
+load_rc_config "${name}"
+
+
+: ${kevoree_enable="NO"}
+: ${kevoree_home="$HOME/kevoree-service"}
+
+#APP_PATH="$HOME/kevoree-service" # path where your exec file are
 SERVICE="kevoree-runtime"  # name of the exec file without (.jar)
 JAVA="/usr/local/bin/java"
 SERVICE_UPDATER="kevoree-service-updater"
 
-start() {
-	update
-  if ps axuw | grep -v grep | grep "$SERVICE.jar" > /dev/null
-  then
-    echo "Tried to start but $SERVICE was already running!"
-  else
-    echo "$SERVICE was not running... starting."
-    $JAVA -Dnode.log.level=DEBUG -Dnode.name=`hostname` -Dnode.groupType=RestGroup -Dnode.update.timeout=300000 -Xmx1024M -Xms1024M -jar "$APP_PATH/$SERVICE.jar"  > "$APP_PATH/`hostname`.log" &
-    sleep 5
-    if ps axuw | grep -v grep | grep `hostname` | grep "$SERVICE.jar" > /dev/null
-    then
-      echo "$SERVICE is now running."
-    else
-      echo "Could not start $SERVICE."
-    fi
-  fi
+java_command="/usr/local/bin/java -Dnode.log.level=DEBUG -Dnode.name=`/bin/hostname` -Dnode.groupType=RestGroup -Dnode.update.timeout=300000 -Xmx1024M -Xms1024M -jar $kevoree_home/$SERVICE.jar  2>&1 > $kevoree_home/`/bin/hostname`.log"
+
+
+start_precmd="pid_touch"
+start_cmd="kevoree_start"
+stop_cmd="kevoree_stop"
+status_cmd="kevoree_status"
+
+pid_touch() {
+    touch ${pidfile}
 }
 
-stop() {
-    if ps axuw | grep -v grep | grep `hostname` | grep "$SERVICE.jar" > /dev/null
-    then
-        echo "$SERVICE is running... stopping."
-		HOSTNAME=`hostname`
-        kill `ps axuw | grep -v grep | grep "$HOSTNAME" | grep "$SERVICE.jar" | cut -d' ' -f4`
-        sleep 10
-		if ps axuw | grep -v grep | grep `hostname` |grep "$SERVICE.jar" > /dev/null
-			then
-			    echo "$SERVICE could not be shut down... still running."
-			else
-				echo "$SERVICE is shut down."
-			fi
+kevoree_update() {
+	$JAVA -jar "$kevoree_home/$SERVICE_UPDATER.jar" "$kevoree_home/$SERVICE.jar"
+}
+
+kevoree_start() {
+	echo "updating $name."
+	kevoree_update
+    echo "Starting $name."
+    exec ${java_command}
+}
+
+kevoree_stop() {
+    rc_pid=$(kevoree_check_pidfile ${pidfile})
+
+    if [ -z "${rc_pid}" ]; then
+        [ -n "${rc_fast}" ] && return 0
+        echo "${name} not running? (check ${pidfile})."
+        return 1
+    fi
+
+    echo "Stopping ${name}."
+    kill -KILL ${rc_pid} 2> /dev/null && echo "Killed."
+    rm -f ${pidfile}
+}
+
+kevoree_status() {
+    rc_pid=$(kevoree_check_pidfile $pidfile)
+
+    if [ -n "${rc_pid}" ]; then
+        echo "${name} is running as pid ${rc_pid}."
     else
-        echo "$SERVICE was not running."
+        echo "${name} is not running."
+        return 1
     fi
 }
 
-update() {
-	java -jar "$APP_PATH/$SERVICE_UPDATER.jar" $APP_PATH/$SERVICE.jar
+kevoree_check_pidfile() {
+    _pidfile=$1
+    if [ -z "${_pidfile}" ]; then
+        err 3 'USAGE: kevoree_check_pidfile pidfile'
+    fi
+    if [ ! -f ${_pidfile} ]; then
+        debug "pid file (${_pidfile}): not readable."
+        return
+    fi
+    read _pid _junk < ${_pidfile}
+    if [ -z "${_pid}" ]; then
+        debug "pid file (${_pidfile}): no pid in file."
+        return
+    fi
+    if [ -n "`/usr/local/bin/jps -l | grep -e "^${_pid} ${java_class}\$"`" ]; then
+        echo -n ${_pid}
+    fi
 }
 
-#Start-Stop here
-case "$1" in
-  start)
-    start
-    ;;
-  stop)
-    stop
-    ;;
-  restart)
-    stop
-    start
-    ;;
-  update)
-    update
-    ;;
-  status)
-    if ps ax | grep -v grep | grep `hostname` | grep "$SERVICE.jar" > /dev/null
-    then
-      echo "$SERVICE is running."
-    else
-      echo "$SERVICE is not running."
-    fi
-    ;;
-  *)
-  echo "Usage: $SERVICE  {start|stop|status|restart}"
-  exit 1
-  ;;
-esac
+run_rc_command "$1"
 
-exit 0
-  
