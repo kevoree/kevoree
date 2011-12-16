@@ -18,9 +18,9 @@ import org.apache.maven.artifact.DefaultArtifact;
 import org.apache.maven.model.Dependency;
 import org.apache.maven.model.Repository;
 import org.apache.maven.model.Resource;
+import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.project.MavenProject;
-import org.bsc.maven.plugin.processor.AbstractAnnotationProcessorMojo;
 import org.codehaus.plexus.util.FileUtils;
 import org.codehaus.plexus.util.StringUtils;
 import org.kevoree.ContainerRoot;
@@ -47,7 +47,7 @@ import java.util.regex.Pattern;
  * @phase generate-sources
  * @requiresDependencyResolution compile
  */
-public class AnnotationPreProcessorMojo extends AbstractAnnotationProcessorMojo {
+public class AnnotationPreProcessorMojo extends AbstractMojo {
 
 
     /**
@@ -382,12 +382,12 @@ public class AnnotationPreProcessorMojo extends AbstractAnnotationProcessorMojo 
     //@MojoParameter(required = false, expression="${project.build.outputDirectory}", description = "Set the destination directory for class files (same behaviour of -d option)")
     private File outputClassDirectory;
 
-    @Override
+   // @Override
     public File getSourceDirectory() {
         return sourceDirectory;
     }
 
-    @Override
+  //  @Override
     protected File getOutputClassDirectory() {
         return outputClassDirectory;
     }
@@ -396,12 +396,12 @@ public class AnnotationPreProcessorMojo extends AbstractAnnotationProcessorMojo 
         project.addCompileSourceRoot(dir);
     }
 
-    @Override
+  //  @Override
     public File getDefaultOutputDirectory() {
         return defaultOutputDirectory;
     }
 
-    @Override
+   // @Override
     @SuppressWarnings("unchecked")
     protected java.util.Set<String> getClasspathElements(java.util.Set<String> result) {
         List<Resource> resources = project.getResources();

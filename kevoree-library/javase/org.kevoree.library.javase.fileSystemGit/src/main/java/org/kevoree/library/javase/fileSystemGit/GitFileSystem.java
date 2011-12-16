@@ -1,6 +1,5 @@
 package org.kevoree.library.javase.fileSystemGit;
 
-import com.sun.xml.internal.rngom.ast.builder.BuildException;
 import org.eclipse.jgit.api.CloneCommand;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.lib.Repository;
@@ -42,7 +41,7 @@ public class GitFileSystem extends AbstractComponentType implements LockFilesSer
     private Set<String> lockedFile = Collections.synchronizedSet(new HashSet<String>());
 
     @Start
-    public void start() {
+    public void start() throws Exception {
         try {
             baseClone = File.createTempFile("kevoreessh", "temp");
             baseClone.delete();
@@ -55,7 +54,7 @@ public class GitFileSystem extends AbstractComponentType implements LockFilesSer
 
         } catch (Exception e) {
             logger.debug("Could not clone repository: ", e);
-            throw new BuildException(e);
+            throw new Exception(e);
         }
     }
 
@@ -65,7 +64,7 @@ public class GitFileSystem extends AbstractComponentType implements LockFilesSer
     }
 
     @Update
-    public void update() {
+    public void update() throws Exception {
         stop();
         start();
     }

@@ -61,15 +61,13 @@
         <module>../org.kevoree.library.javase.webserver.reasoner</module>
         <module>../org.kevoree.library.javase.webserver.servlet</module>
         <module>../org.kevoree.library.javase.webserver.wordpress</module>
-
+        <module>../org.kevoree.library.javase.webserver.jenkins</module>
 
         <module>../org.kevoree.library.javase.kestrelChannels</module>
 
         <module>../org.kevoree.library.javase.miniCloudGroup</module>
         <module>../org.kevoree.library.javase.pipe</module>
         <module>../org.kevoree.library.javase.latex</module>
-
-
 
     </modules>
 

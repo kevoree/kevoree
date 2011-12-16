@@ -40,12 +40,11 @@ import java.io.IOException;
 @Library(name = "Arduino")
 @DictionaryType({
         @DictionaryAttribute(name = "boardTypeName", defaultValue = "uno", optional = true, vals = {"uno", "atmega328", "mega2560"}),
-       // @DictionaryAttribute(name = "boardPortName"),
         @DictionaryAttribute(name = "incremental", defaultValue = "true", optional = true, vals = {"true", "false"}),
         @DictionaryAttribute(name = "pmem", defaultValue = "eeprom", optional = true, vals = {"eeprom", "sd"}),
         @DictionaryAttribute(name = "psize", defaultValue = "MAX", optional = true)
 })
-@PrimitiveCommands(values = {"UpdateType", "UpdateDeployUnit", "AddType", "AddDeployUnit", "AddThirdParty", "RemoveType", "RemoveDeployUnit", "UpdateInstance", "UpdateBinding", "UpdateDictionaryInstance", "AddInstance", "RemoveInstance", "AddBinding", "RemoveBinding", "AddFragmentBinding", "RemoveFragmentBinding", "StartInstance", "StopInstance", "StartThirdParty"}, value = {})
+@PrimitiveCommands(values = {"StartThirdParty", "UpdateType", "UpdateDeployUnit", "AddType", "AddDeployUnit", "AddThirdParty", "RemoveType", "RemoveDeployUnit", "UpdateInstance", "UpdateBinding", "UpdateDictionaryInstance", "AddInstance", "RemoveInstance", "AddBinding", "RemoveBinding", "AddFragmentBinding", "RemoveFragmentBinding", "StartInstance", "StopInstance", "StartThirdParty"}, value = {})
 public class ArduinoNode extends AbstractNodeType {
     private static final Logger logger = LoggerFactory.getLogger(ArduinoNode.class);
 
@@ -77,7 +76,7 @@ public class ArduinoNode extends AbstractNodeType {
     }
 
     //@Override
-    public void push(final String targetNodeName, final ContainerRoot root,String boardPortName) throws IOException {
+    public void push(final String targetNodeName, final ContainerRoot root, String boardPortName) throws IOException {
 
         //new Thread() {
 
@@ -98,8 +97,8 @@ public class ArduinoNode extends AbstractNodeType {
         KevoreeKompareBean kompare = new KevoreeKompareBean();
 
         newdir = new File(System.getProperty("java.io.tmpdir") + File.separator + "arduinoGenerated" + targetNodeName);
-		newdir.delete();
-		newdir.mkdirs();
+        newdir.delete();
+        newdir.mkdirs();
         /*if (!newdir.exists()) {
             newdir.mkdir();
         }*/
@@ -132,6 +131,7 @@ public class ArduinoNode extends AbstractNodeType {
                 lastVersionModel = KevoreeXmiHelper.load(lastModelFile.getAbsolutePath());
             } catch (Exception e) {
             }
+
         } else {
             //CLEAR PREVIOUS SAVED MODEL
             for (File f : newdir.listFiles()) {
@@ -142,6 +142,18 @@ public class ArduinoNode extends AbstractNodeType {
 
         }
 
+
+        if (lastVersionModel == null || lastVersionModel.getNodes().size() == 0) {
+
+            ModelCloner cloner = new ModelCloner();
+            lastVersionModel = cloner.clone(root);
+            for (ContainerNode node : lastVersionModel.getNodesForJ()) {
+                node.removeAllComponents();
+                node.removeAllHosts();
+            }
+            lastVersionModel.removeAllMBindings();
+            lastVersionModel.removeAllGroups();
+        }
 
         AdaptationModel kompareModel = kompare.kompare(lastVersionModel, root, targetNodeName);
         progress.endTask();
@@ -163,7 +175,7 @@ public class ArduinoNode extends AbstractNodeType {
 
         progress.beginTask("Compute firmware update", 30);
         try {
-            if (deploy(kompareModel, targetNodeName,boardPortName)) {
+            if (deploy(kompareModel, targetNodeName, boardPortName)) {
                 progress.endTask();
             } else {
                 progress.failTask();
@@ -176,7 +188,7 @@ public class ArduinoNode extends AbstractNodeType {
 
 
         progress.beginTask("Save model for incremental deployment", 100);
-        KevoreeXmiHelper.save( newdir.getAbsolutePath() + File.separator + targetNodeName + "_" + (lastVersion + 1) + ".kev", root);
+        KevoreeXmiHelper.save(newdir.getAbsolutePath() + File.separator + targetNodeName + "_" + (lastVersion + 1) + ".kev", root);
         progress.endTask();
 
         frame.setVisible(false);
@@ -192,7 +204,7 @@ public class ArduinoNode extends AbstractNodeType {
     public String outputPath = "";
     private BundleContext bcontext = null;
 
-    public boolean deploy(AdaptationModel modelIn, String nodeName,String boardPortName) {
+    public boolean deploy(AdaptationModel modelIn, String nodeName, String boardPortName) {
         boolean typeAdaptationFound = false;
         ContainerRoot rootModel = null;
         for (AdaptationPrimitive p : modelIn.getAdaptationsForJ()) {
@@ -203,21 +215,21 @@ public class ArduinoNode extends AbstractNodeType {
 
             if (addType || removeType || updateType) {
                 typeAdaptationFound = true;
-                rootModel = (ContainerRoot) ((TypeDefinition)p.getRef()).eContainer();
+                rootModel = (ContainerRoot) ((TypeDefinition) p.getRef()).eContainer();
             }
         }
         if (typeAdaptationFound) {
             KevoreeKompareBean kompare = new KevoreeKompareBean();
-            
+
             ModelCloner cloner = new ModelCloner();
             ContainerRoot lastVersionModel = cloner.clone(rootModel);
-            for(ContainerNode node : lastVersionModel.getNodesForJ()){
-               node.removeAllComponents();
-               node.removeAllHosts();
+            for (ContainerNode node : lastVersionModel.getNodesForJ()) {
+                node.removeAllComponents();
+                node.removeAllHosts();
             }
             lastVersionModel.removeAllMBindings();
             lastVersionModel.removeAllGroups();
-            
+
             AdaptationModel model = kompare.kompare(lastVersionModel, rootModel, nodeName);
 
             //Must compute a dif from scratch model
@@ -276,7 +288,7 @@ public class ArduinoNode extends AbstractNodeType {
                 sketch.preprocess(target);
                 progress.endTask();
                 Core core = CodeManager.getInstance().getCore(target);
-				//System.err.println("core :=> " + core + " -> " + target.getCore());
+                //System.err.println("core :=> " + core + " -> " + target.getCore());
                 arduinoCompilation.compileCore(sketch, target, core);
                 progress.beginTask("Library processing", 60);
 
@@ -324,7 +336,7 @@ public class ArduinoNode extends AbstractNodeType {
         } else {
             logger.debug("incremental update available -> try to generate KevScript !");
             Script baseScript = KevScriptWrapper.miniPlanKevScript(AdaptationModelWrapper.generateScriptFromAdaptModel(modelIn));
-            String resultScript = KevScriptWrapper.generateKevScriptCompressed(baseScript,this.getNodeName());
+            String resultScript = KevScriptWrapper.generateKevScriptCompressed(baseScript, this.getNodeName());
             logger.debug(resultScript);
             String boardName = "";
             if (boardPortName != null && !boardPortName.equals("")) {
