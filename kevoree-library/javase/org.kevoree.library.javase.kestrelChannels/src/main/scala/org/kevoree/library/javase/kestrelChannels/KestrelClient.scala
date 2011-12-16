@@ -10,6 +10,13 @@ import java.io._
 
 class ClientError(reason: String) extends Exception(reason)
 
+/**
+ * Created by IntelliJ IDEA.
+ * User: jedartois@gmail.com
+ * Date: 29/11/11
+ * Time: 11:04
+ * To change this template use File | Settings | File Templates.
+ */
 class KestrelClient(host: String, port: Int) {
 
   var socketchannel: SocketChannel = null
@@ -79,7 +86,7 @@ class KestrelClient(host: String, port: Int) {
   }
 
   def startGet(key: String, blockingReads: Boolean) {
-    out.write(("get " + key+ (if (blockingReads) "/t=100000/close/open" else "") + "\r\n").getBytes)
+    out.write(("get " + key+ (if (blockingReads) "/t=500/close/open" else "") + "\r\n").getBytes)
   }
 
   def finishGetData(): Array[Byte] = {

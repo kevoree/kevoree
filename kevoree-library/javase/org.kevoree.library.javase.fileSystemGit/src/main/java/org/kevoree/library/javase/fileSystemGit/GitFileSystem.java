@@ -3,6 +3,7 @@ package org.kevoree.library.javase.fileSystemGit;
 import com.sun.xml.internal.rngom.ast.builder.BuildException;
 import org.eclipse.jgit.api.CloneCommand;
 import org.eclipse.jgit.api.Git;
+import org.eclipse.jgit.lib.Repository;
 import org.kevoree.annotation.*;
 import org.kevoree.framework.AbstractComponentType;
 import org.kevoree.library.javase.fileSystem.LockFilesService;
@@ -10,10 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.*;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Created by IntelliJ IDEA.
@@ -39,6 +37,9 @@ public class GitFileSystem extends AbstractComponentType implements LockFilesSer
 
     private File baseClone = null;
     private Logger logger = LoggerFactory.getLogger(GitFileSystem.class);
+    private Repository repository = null;
+    private Git git = null;
+    private Set<String> lockedFile = Collections.synchronizedSet(new HashSet<String>());
 
     @Start
     public void start() {
@@ -49,6 +50,8 @@ public class GitFileSystem extends AbstractComponentType implements LockFilesSer
             CloneCommand clone = Git.cloneRepository();
             clone.setURI(this.getDictionary().get("url").toString()).setDirectory(baseClone).setBranch(org.eclipse.jgit.lib.Constants.HEAD);
             clone.call();
+            git = Git.open(baseClone);
+            repository = git.getRepository();
 
         } catch (Exception e) {
             logger.debug("Could not clone repository: ", e);
@@ -116,16 +119,12 @@ public class GitFileSystem extends AbstractComponentType implements LockFilesSer
     @Override
     public byte[] getFileContent(String relativePath, Boolean lock) {
 
+
+
         //UPDATE PHASE
         try {
-            long newRevision = repository.getLatestRevision();
-            if (newRevision != lastRevisionCheck) {
-                File f = new File(baseClone.getAbsolutePath() + relativePath);
-                if (f.exists()) {
-                    lastRevisionCheck = client.doUpdate(f, SVNRevision.HEAD, false, false);
-                }
-            }
-        } catch (SVNException e) {
+            git.pull().call();
+        } catch (Exception e) {
             logger.error("Error while getRevision");
         }
         if (lock) {
@@ -141,9 +140,10 @@ public class GitFileSystem extends AbstractComponentType implements LockFilesSer
                         Map<String, Long> locks = new HashMap<String, Long>();
                         locks.put(relatvePathClean[0], lastRevisionCheck);
                         try {
-                            repository.lock(locks, "AutoLock Kevoree Editor", false, null);
+
+                            //repository.lock(locks, "AutoLock Kevoree Editor", false, null);
                             lockedFile.add(relatvePathClean[0]);
-                        } catch (SVNException e) {
+                        } catch (Exception e) {
                             logger.error("Error while acquire lock ", e);
                         }
                     }
@@ -190,7 +190,7 @@ public class GitFileSystem extends AbstractComponentType implements LockFilesSer
 
         File f = new File(baseClone.getAbsolutePath() + relativePath);
         if (f.exists()) {
-            SVNCommitClient clientCommit = new SVNCommitClient(authManager, SVNWCUtil.createDefaultOptions(true));
+            //SVNCommitClient clientCommit = new SVNCommitClient(authManager, SVNWCUtil.createDefaultOptions(true));
             File[] paths = {f};
             if (unlock) {
                 Map<String, Long> unlocks = new HashMap<String, Long>();
@@ -200,10 +200,12 @@ public class GitFileSystem extends AbstractComponentType implements LockFilesSer
                 }
                 unlocks.put(relatvePathClean, null);
                 try {
-                    repository.unlock(unlocks, false, null);
-                    clientCommit.doCommit(paths, true, "AutoCommit Kevoree Editor", false, false);
+                   // repository.unlock(unlocks, false, null);
+                   // clientCommit.doCommit(paths, true, "AutoCommit Kevoree Editor", false, false);
+                    git.commit().setAll(true).call();
+
                     lockedFile.remove(relatvePathClean);
-                } catch (SVNException e) {
+                } catch (Exception e) {
                     logger.error("error while unkock and commit svn ", e);
                 }
             }
@@ -220,9 +222,9 @@ public class GitFileSystem extends AbstractComponentType implements LockFilesSer
         Map<String, Long> locks = new HashMap<String, Long>();
         locks.put(relatvePathClean[0], lastRevisionCheck);
         try {
-            repository.lock(locks, "AutoLock Kevoree Editor", false, null);
+           // repository.lock(locks, "AutoLock Kevoree Editor", false, null);
             lockedFile.add(relatvePathClean[0]);
-        } catch (SVNException e) {
+        } catch (Exception e) {
             logger.error("Error while acquire lock ", e);
         }
     }

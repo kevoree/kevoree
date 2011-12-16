@@ -1,10 +1,5 @@
 package org.kevoree.library.javase.kestrelChannels;
 
-
-
-
-
-
 import org.kevoree.ContainerNode;
 import org.kevoree.Port;
 import org.kevoree.annotation.*;
@@ -15,17 +10,16 @@ import org.kevoree.framework.message.Message;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.EOFException;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.lang.reflect.Array;
+import java.util.*;
 import java.util.concurrent.Semaphore;
 
 
 /**
  * Created by IntelliJ IDEA.
- * User: jed
+ * User: jedartois@gmail.com
  * Date: 29/11/11
  * Time: 11:04
  * To change this template use File | Settings | File Templates.
@@ -37,7 +31,8 @@ import java.util.concurrent.Semaphore;
         @DictionaryAttribute(name = "portKestrel", defaultValue = "22133", optional = false, fragmentDependant = true),
         @DictionaryAttribute(name = "queuePath", defaultValue = "/tmp/kestrel", optional = false, fragmentDependant = true),
         @DictionaryAttribute(name = "queueLog", defaultValue = "/tmp/kestrel.log", optional = false, fragmentDependant = true),
-        @DictionaryAttribute(name = "queueName", defaultValue = "kevoree", optional = false, fragmentDependant = true)
+        @DictionaryAttribute(name = "queueName", defaultValue = "kevoree", optional = false, fragmentDependant = true),
+        @DictionaryAttribute(name = "PersistentQueue", defaultValue = "false", optional = false, vals = {"true", "false"}, fragmentDependant = true)
 }
 )
 public class KestrelChannel  extends AbstractChannelFragment  implements Runnable {
@@ -55,6 +50,7 @@ public class KestrelChannel  extends AbstractChannelFragment  implements Runnabl
     final Semaphore sem = new java.util.concurrent.Semaphore(1);
     private Map<String, KestrelClient> clientsKestrel = new HashMap<String, KestrelClient>();
     private Thread clientKestrel;
+    private Boolean   PersistentQueue;
 
     @Start
     public void startChannel()
@@ -82,6 +78,7 @@ public class KestrelChannel  extends AbstractChannelFragment  implements Runnabl
             queuePath=  getDictionary().get("queuePath").toString();
             queueName=  getDictionary().get("queueName").toString();
             queueLog=  getDictionary().get("queueLog").toString();
+            PersistentQueue = Boolean.parseBoolean(getDictionary().get("PersistentQueue").toString());
         } catch (Exception e)
         {
             throw new NumberFormatException("updateDico"+e);
@@ -96,13 +93,13 @@ public class KestrelChannel  extends AbstractChannelFragment  implements Runnabl
     }
     @Override
     public Object dispatch(Message message) {
-
         for (org.kevoree.framework.KevoreePort p : getBindedPorts()) {
             forward(p, message);
         }
         for (KevoreeChannelFragment cf : getOtherFragments()) {
-            if (!message.getPassedNodes().contains(cf.getNodeName())) {
+            if (!message.getPassedNodes().contains(cf.getNodeName()) ) {
                 forward(cf, message);
+                break;
             }
         }
         return null;
@@ -114,7 +111,6 @@ public class KestrelChannel  extends AbstractChannelFragment  implements Runnabl
         return new ChannelFragmentSender() {
 
             public Object sendMessageToRemote(Message msg) {
-
                 try
                 {
                     sem.acquire();
@@ -123,18 +119,20 @@ public class KestrelChannel  extends AbstractChannelFragment  implements Runnabl
                 }
                 try
                 {
-                    logger.debug("enqueue message to " + msg.getDestNodeName()+" port kestrel "+portKestrel);
-
-                    // adding the current node  to passedNodes
-                    if (!msg.getPassedNodes().contains(getNodeName())) {
-                        msg.getPassedNodes().add(getNodeName());
+                    if(server != null)
+                    {
+                        logger.debug("enqueue message to " + msg.getDestNodeName()+" port kestrel "+portKestrel);
+                        // adding the current node  to passedNodes
+                        if (!msg.getPassedNodes().contains(getNodeName())) {
+                            msg.getPassedNodes().add(getNodeName());
+                        }
+                        KestrelClient client = getOrCreateKestrel("localhost",portKestrel);
+                        client.enqueue(queueName, msg);
                     }
-                    KestrelClient client = new KestrelClient("localhost",portKestrel);
-                    client.connect();
-                    client.enqueue(queueName, msg);
 
                 } catch (Exception e)
                 {
+                    delete_link("localhost",portKestrel);
                     logger.error("KestrelClient "+e.toString());
                 }
                 finally
@@ -175,11 +173,11 @@ public class KestrelChannel  extends AbstractChannelFragment  implements Runnabl
         // Running the server Kestrel
         try
         {
-            if(server == null && KevoreeUtil.isRequired(getModelService().getLastModel(),getName()) == true)
+            if(server == null && KevoreeUtil.isRequired(getModelService().getLastModel(),getName(),getNodeName()))
             {
                 counter = 0;
                 logger.debug("The server Kestrel is starting "+counter);
-                server =  new KestrelServer("localhost",portKestrel,queuePath,queueLog);
+                server =  new KestrelServer("localhost",portKestrel,queuePath,queueLog,PersistentQueue);
             }else
             {
                 counter++;
@@ -188,54 +186,68 @@ public class KestrelChannel  extends AbstractChannelFragment  implements Runnabl
         {
             logger.error("startChannel "+e.toString());
         }
-        logger.debug("The client Kestrel is starting "+alive);
-        while (alive)
-        {
-            String host="localhost";
-            int port=0;
-            try
-            {
-                for(ContainerNode nodeName : getModelService().getLastModel().getNodesForJ())
-                {
 
-                    if(!nodeName.getName().equals(getNodeName()))
+        // running KestrelClient if provided ports
+        if(KevoreeUtil.isProvided(getModelService().getLastModel(),getName(),getNodeName()))
+        {
+
+            List<String> nodesKestrelServer = new ArrayList<String>();
+            // looking for kestrel Servers
+            for(ContainerNode node : getModelService().getLastModel().getNodesForJ())
+            {
+                if(!node.getName().equals(getNodeName())&& KevoreeUtil.isRequired(getModelService().getLastModel(),getName(),node.getName()))
+                {
+                    nodesKestrelServer.add(node.getName());
+                    logger.debug(" add kestrel server"+node.getName());
+                }
+
+            }
+            logger.debug("The client Kestrel is starting ");
+            while (alive)
+            {
+                String host="localhost";
+                int port=0;
+                try
+                {
+                    for(String nodeName : nodesKestrelServer)
                     {
                         String queue;
-                        host = getAddress(nodeName.getName());
-                        port = parsePortNumber(nodeName.getName());
-                        queue = getQueueName(nodeName.getName());
+                        host = getAddress(nodeName);
+                        port = parsePortNumber(nodeName);
+                        queue = getQueueName(nodeName);
                         KestrelClient client =getOrCreateKestrel(host,port);
                         Message msg =    client.dequeue(queue);
-
-                        if (!msg.getPassedNodes().contains(getNodeName())) {
-                            msg.getPassedNodes().add(getNodeName());
-                        }
+                        logger.debug("dequeue msg from "+host+" "+port+" "+queue);
+                        msg.setDestNodeName(getNodeName());
                         remoteDispatch(msg);
                     }
-                }
+                } catch (EOFException e)
+                {
+                    logger.debug("no message to dequeue");
 
-            } catch (Exception e)
-            {
-                delete_link(host,port);
-                try {
-                    Thread.sleep(500);
-                } catch (InterruptedException e2) {
+                } catch (Exception e)
+                {
+                    delete_link(host,port);
+                    logger.debug(""+e);
+                    try {
+                        Thread.sleep(500);
+                    } catch (InterruptedException e2) {
 
+                    }
                 }
             }
-
-
         }
     }
 
     public void delete_link(String host,Integer port){
+        logger.debug("remove link "+host+" "+port);
         try {
 
             clientsKestrel.get(host+port).disconnect();
             clientsKestrel.remove(host+port);
         } catch (Exception e)
         {
-         //ignore
+            //ignore
         }
 
     }

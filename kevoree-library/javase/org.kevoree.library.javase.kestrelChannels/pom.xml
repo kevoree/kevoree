@@ -124,6 +124,7 @@
                     <instructions>
                         <Export-Package>org.kevoree.library.javase.kestrelChannels.*</Export-Package>
                         <Import-Package>!org.kevoree.library.javase.kestrelChannels.*,*</Import-Package>
+                        <DynamicImport-Package>*</DynamicImport-Package>
                     </instructions>
                 </configuration>
             </plugin>

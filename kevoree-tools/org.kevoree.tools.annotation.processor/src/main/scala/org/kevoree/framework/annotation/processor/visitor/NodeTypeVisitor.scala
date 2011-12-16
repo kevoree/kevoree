@@ -37,6 +37,20 @@ case class NodeTypeVisitor(nodeType: NodeType, env: ProcessingEnvironment,rootVi
 
   def commonProcess(classdef: TypeElement) {
     //SUB PROCESSOR
+    import scala.collection.JavaConversions._
+    classdef.getInterfaces.foreach {
+      it =>
+        it match {
+          case dt: javax.lang.model.`type`.DeclaredType => {
+            val annotFragment = dt.asElement().getAnnotation(classOf[org.kevoree.annotation.NodeType])
+            if (annotFragment != null) {
+              dt.asElement().accept(this, dt.asElement())
+            }
+          }
+          case _ =>
+        }
+    }
+
     processDictionary(nodeType, classdef)
     processDeployUnit(nodeType, classdef, env,rootVisitor.getOptions)
     processLibrary(nodeType, classdef)
@@ -55,10 +69,6 @@ case class NodeTypeVisitor(nodeType: NodeType, env: ProcessingEnvironment,rootVi
         }
 
   }
-
-
-
-
 
   override def visitType(p1: TypeElement, p2: Element): Any = {
     p1.getSuperclass match {

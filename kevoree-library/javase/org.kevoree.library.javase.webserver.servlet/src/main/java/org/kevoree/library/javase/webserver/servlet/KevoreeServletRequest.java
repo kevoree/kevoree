@@ -119,14 +119,12 @@ public class KevoreeServletRequest implements HttpServletRequest {
 
     @Override
     public String getServerName() {
-        logger.error("Not implemented !!! ");
-        return null;
+        return "kevoreewebserver";
     }
 
     @Override
     public int getServerPort() {
-        logger.error("Not implemented !!! ");
-        return 0;
+        return 8080;
     }
 
     @Override
@@ -176,7 +174,7 @@ public class KevoreeServletRequest implements HttpServletRequest {
 
     @Override
     public String getRealPath(String s) {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return "/";
     }
 
     @Override

@@ -5,6 +5,8 @@ import org.slf4j.LoggerFactory;
 import scala.Option;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.InputStream;
 
 /**
@@ -31,6 +33,43 @@ public class FileServiceHelper {
     }
 
     static URLHandlerScala handler = new URLHandlerScala();
+
+    public static boolean checkStaticFileFromDir(String index, AbstractPage origin, KevoreeHttpRequest request, KevoreeHttpResponse response, String baseDir) {
+        String urlPattern = origin.getDictionary().get("urlpattern").toString();
+        String file = "";
+        Option<String> fileOptPath = handler.getLastParam(request.getUrl(), urlPattern);
+        if (fileOptPath.isDefined()) {
+            file = fileOptPath.get();
+        }
+        if (file == null || file.equals("") || file.equals("/")) {
+            file = index;//"latexEditor.html";
+        }
+        logger.debug("Request rec for file " + file);
+        File in = new File(baseDir+File.separator+file);
+        if (in.exists()) {
+            try {
+                FileInputStream ins = new FileInputStream(in);
+                
+                if (isRaw(request.getUrl())) {
+                    response.setRawContent(convertStream(ins));
+                } else {
+                    response.setContent(new String(convertStream(ins), "UTF-8"));
+                }
+                response.setContentType(getHttpHeaderFromURL(request.getUrl()));
+
+                ins.close();
+
+                return true;
+            } catch (Exception e) {
+                logger.error("", e);
+            }
+
+        } else {
+            logger.debug("Ressource not exist " + file);
+        }
+        return false;
+    }
+
 
     public static boolean checkStaticFile(String index, AbstractPage origin, KevoreeHttpRequest request, KevoreeHttpResponse response) {
 

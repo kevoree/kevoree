@@ -139,6 +139,7 @@ class KevoreeCoreBean extends KevoreeModelHandlerService with KevoreeThreadActor
     if (models.size > 15) {
       // MAGIC NUMBER ;-) , ONLY KEEP 10 PREVIOUS MODEL
       models = models.drop(5)
+      logger.debug("Garbage old previous model")
     }
 
     model = c
@@ -325,7 +326,7 @@ class KevoreeCoreBean extends KevoreeModelHandlerService with KevoreeThreadActor
     (this !? LastModel()).asInstanceOf[ContainerRoot]
   }
 
-  def getLastUUIDModel: UUIDModel = {
+  override def getLastUUIDModel: UUIDModel = {
     (this !? LastUUIDModel()).asInstanceOf[UUIDModel]
   }
 
@@ -339,11 +340,11 @@ class KevoreeCoreBean extends KevoreeModelHandlerService with KevoreeThreadActor
     lastDate
   }
 
-  def compareAndSwapModel(previousModel: UUIDModel, targetModel: ContainerRoot) {
+  override def compareAndSwapModel(previousModel: UUIDModel, targetModel: ContainerRoot) {
     this ! UpdateUUIDModel(previousModel, targetModel)
   }
 
-  def atomicCompareAndSwapModel(previousModel: UUIDModel, targetModel: ContainerRoot): Date = {
+  override def atomicCompareAndSwapModel(previousModel: UUIDModel, targetModel: ContainerRoot): Date = {
     val result = (this !? UpdateUUIDModel(previousModel, targetModel)).asInstanceOf[Boolean]
     if (!result) {
       throw new KevoreeModelUpdateException //SEND AND EXCEPTION - Compare&Swap fail !

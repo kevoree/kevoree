@@ -7,8 +7,14 @@ import net.lag.kestrel.config._
 import com.twitter.logging.Logger
 import com.twitter.logging.config._
 import java.lang.Thread
-
-class KestrelServer(host : String,port :Int,queuePath : String ,filepathlog :String) {
+/**
+ * Created by IntelliJ IDEA.
+ * User: jedartois@gmail.com
+ * Date: 29/11/11
+ * Time: 11:04
+ * To change this template use File | Settings | File Templates.
+ */
+class KestrelServer(host : String,port :Int,queuePath : String ,filepathlog :String,persitentQueue : Boolean) {
 
   private val PORT = this.port
   private var kestrel: Kestrel = null
@@ -25,16 +31,28 @@ class KestrelServer(host : String,port :Int,queuePath : String ,filepathlog :Str
     new Thread(){
       override  def run() {
         val defaultConfig = new QueueBuilder() {
-          defaultJournalSize = 16.megabytes
-          maxMemorySize = 128.megabytes
-          maxJournalSize = 1.gigabyte
+          maxSize = 128.megabytes
+          if(persitentQueue)
+          {
+            keepJournal = true
+            maxJournalSize = 512.megabytes
+          }else {
+            keepJournal = false
+            maxMemorySize = 512.megabytes
+          }
         }.apply()
 
         // make a queue specify max_items and max_age
         val UpdatesConfig = new QueueBuilder() {
           maxSize = 128.megabytes
-          maxMemorySize = 16.megabytes
-          maxJournalSize = 128.megabytes
+          if(persitentQueue)
+          {
+            keepJournal = true
+            maxJournalSize = 512.megabytes
+          }else {
+            keepJournal = false
+            maxMemorySize = 512.megabytes
+          }
         }
 
         //""
@@ -63,6 +81,6 @@ class KestrelServer(host : String,port :Int,queuePath : String ,filepathlog :Str
       roll = Policy.Never
     }
   }
-  config()
+  //config()
 
 }

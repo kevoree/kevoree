@@ -18,7 +18,7 @@ import org.kevoree.framework.message.Message
 
 /**
  * Created by IntelliJ IDEA.
- * User: jed
+ * User: jedartois@gmail.com
  * Date: 14/12/11
  * Time: 09:29
  * To change this template use File | Settings | File Templates.

@@ -32,7 +32,7 @@ case class StartThirdPartyCommand (c: DeployUnit, nodeName: String) extends Prim
 
   def execute (): Boolean = {
     KevoreeDeployManager.bundleMapping
-      .find(map => map.objClassName == c.getClass.getName && map.name == c.getName) match {
+      .find(map => map.objClassName == c.getClass.getName && map.name == CommandHelper.buildKEY(c)) match {
       case None => false
       case Some(mapfound) => {
         try {
@@ -45,5 +45,8 @@ case class StartThirdPartyCommand (c: DeployUnit, nodeName: String) extends Prim
     }
   }
 
-  def undo () {}
+  def undo () {
+
+
+  }
 }
