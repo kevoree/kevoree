@@ -5,6 +5,7 @@ import com.twitter.finagle.Service;
 import com.twitter.finagle.builder.Server;
 import com.twitter.finagle.builder.ServerBuilder;
 import com.twitter.finagle.http.Http;
+import com.twitter.util.Duration;
 import org.jboss.netty.handler.codec.http.HttpRequest;
 import org.jboss.netty.handler.codec.http.HttpResponse;
 import org.kevoree.ContainerRoot;
@@ -17,7 +18,6 @@ import org.kevoreeAdaptation.AdaptationPrimitive;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.xml.datatype.Duration;
 import java.net.InetSocketAddress;
 import java.util.concurrent.TimeUnit;
 

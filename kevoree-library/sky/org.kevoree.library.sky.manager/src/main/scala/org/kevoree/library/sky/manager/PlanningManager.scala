@@ -1,7 +1,7 @@
 package org.kevoree.library.sky.manager
 
 import command.{AddNodeCommand, RemoveNodeCommand}
-import manager.nodeType.IaaSNode
+import nodeType.IaaSNode
 import org.kevoreeAdaptation.{AdaptationPrimitive, ParallelStep, KevoreeAdaptationFactory, AdaptationModel}
 import org.kevoree.framework.PrimitiveCommand
 import org.slf4j.{LoggerFactory, Logger}
