@@ -57,7 +57,7 @@ case class TypeDefinitionAspect(selfTD: TypeDefinition) {
       return true
     }
     if (pTD.getFactoryBean != selfTD.getFactoryBean) {
-      println(pTD.getFactoryBean + "=>" + selfTD.getFactoryBean)
+      logger.debug("{} => {}", pTD.getFactoryBean, selfTD.getFactoryBean)
       return true
     }
     //DICTIONARY TYPE CHECK
@@ -142,7 +142,7 @@ case class TypeDefinitionAspect(selfTD: TypeDefinition) {
                 case None => false
               }
             })
-            println(selfTD.getName + "-" + providedEquality + "-" + requiredEquality)
+            logger.debug("Equality check: {} - {} - {}", Array(selfTD.getName, providedEquality, requiredEquality))
 
             !providedEquality || !requiredEquality
           }
@@ -158,7 +158,7 @@ case class TypeDefinitionAspect(selfTD: TypeDefinition) {
       case g: GroupType => {
         false
       }
-      case _@typeDef => logger.error("uncatch portTypeDef " + typeDef); true
+      case _@typeDef => logger.error("Unknown kind of type definition: {}", typeDef); true
     }
   }
 
@@ -188,7 +188,7 @@ case class TypeDefinitionAspect(selfTD: TypeDefinition) {
             selfDUInteger < pDUInteger
           } catch {
             case _@e => {
-              logger.error("Bad HashCode - equiality verification - " + pDU.getHashcode + " - " + selfDU.getHashcode, e)
+              logger.error("Bad HashCode - equiality verification - {} != {}", Array(pDU.getHashcode, selfDU.getHashcode), e)
               pDU.getHashcode != selfDU.getHashcode
             }
           }
@@ -224,17 +224,16 @@ case class TypeDefinitionAspect(selfTD: TypeDefinition) {
     var deployUnitfound: DeployUnit = null
     selfTD.getDeployUnits.find(du => du.getTargetNodeType.isDefined && du.getTargetNodeType.get.getName == node.getTypeDefinition.getName) match {
       case Some(e) => {
-        logger.info("found deploy unit => " + e.getUnitName+" for type "+selfTD.getName)
+        logger.debug("found deploy unit => {} for type {}", e.getUnitName, selfTD.getName)
         deployUnitfound = e
       }
-      case _ => logger.info("Deploy Unit not found on first level " + selfTD.getName)
+      case _ => logger.debug("Deploy Unit not found on first level {}", selfTD.getName)
     }
     if (deployUnitfound == null) {
-      logger.info("Deploy Unit not found for node " + node.getName + " : " + node.getTypeDefinition.getName + "=> " +
-        selfTD.getName)
+      logger.warn("No deploy unit has been found for deployment of {} on node {} : {}", Array(selfTD.getName,node.getName,node.getTypeDefinition.getName))
       deployUnitfound = foundRelevantDeployUnitOnNodeSuperTypes(node.getTypeDefinition.asInstanceOf[NodeType], selfTD)
     }
-    logger.debug("will exit with => " + deployUnitfound)
+    logger.debug("will exit with => {}", deployUnitfound)
     deployUnitfound
   }
 
@@ -250,11 +249,11 @@ case class TypeDefinitionAspect(selfTD: TypeDefinition) {
             if (tNode.getName == nodeType.getName) {
               tNode.getDeployUnits.foreach {
                 chooseDP =>
-                  logger.debug("candidate deploy unit => " + chooseDP.getUnitName)
+                  logger.debug("candidate deploy unit => {}", chooseDP.getUnitName)
               }
               deployUnitfound = td //tNode.getDeployUnits(0)
 
-              logger.debug("found & exit=" + deployUnitfound.getUnitName)
+              logger.debug("found & exit={}", deployUnitfound.getUnitName)
               return deployUnitfound
             }
         }
@@ -263,7 +262,7 @@ case class TypeDefinitionAspect(selfTD: TypeDefinition) {
     if (deployUnitfound == null) {
       nodeType.getSuperTypes.foreach(superNode => {
         // call recursively for super types and test if something has been found {
-        logger.info("Search on super type => " + superNode.getName)
+        logger.debug("Search on super type => {}", superNode.getName)
         deployUnitfound = foundRelevantDeployUnitOnNodeSuperTypes(superNode.asInstanceOf[NodeType], t)
         if (deployUnitfound != null) {
           return deployUnitfound

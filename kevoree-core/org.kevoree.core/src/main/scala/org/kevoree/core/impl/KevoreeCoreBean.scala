@@ -324,9 +324,11 @@ class KevoreeCoreBean extends KevoreeModelHandlerService with KevoreeThreadActor
           var deployResult = true
           try {
             // Compare the two models and plan the adaptation
+            logger.info("Comparing models and planning adaptation.")
             val adaptationModel = nodeInstance.kompare(model, newmodel);
 
             //Execution of the adaptation
+            logger.info("Launching adaptation of the system.")
             deployResult = PrimitiveCommandExecutionHelper.execute(adaptationModel, nodeInstance)
           } catch {
             case _@e => {
@@ -338,10 +340,10 @@ class KevoreeCoreBean extends KevoreeModelHandlerService with KevoreeThreadActor
             //Merge previous model on new model for platform model
             //KevoreePlatformMerger.merge(newmodel, model)
             switchToNewModel(newmodel)
-            logger.info("Deploy result {}", deployResult)
+            logger.info("Update sucessfully completed.")
           } else {
             //KEEP FAIL MODEL
-            logger.warn("Failed model")
+            logger.warn("Update failed")
           }
           val milliEnd = System.currentTimeMillis - milli
           logger.debug("End deploy result=" + deployResult + "-" + milliEnd)
