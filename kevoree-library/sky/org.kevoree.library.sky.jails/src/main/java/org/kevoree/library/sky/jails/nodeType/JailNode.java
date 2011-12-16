@@ -4,7 +4,7 @@ import org.kevoree.ContainerRoot;
 import org.kevoree.annotation.*;
 import org.kevoree.library.sky.jails.JailKevoreeNodeRunner;
 import org.kevoree.library.sky.manager.KevoreeNodeRunner;
-import org.kevoree.library.sky.manager.manager.nodeType.IaaSNode;
+import org.kevoree.library.sky.manager.nodeType.IaaSNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
