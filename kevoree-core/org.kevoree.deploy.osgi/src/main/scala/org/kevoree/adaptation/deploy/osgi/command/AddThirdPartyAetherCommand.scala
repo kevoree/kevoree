@@ -21,7 +21,7 @@ package org.kevoree.adaptation.deploy.osgi.command
 import org.osgi.framework.BundleException
 import org.osgi.service.packageadmin.PackageAdmin
 import org.slf4j.LoggerFactory
- import org.kevoree.{ContainerRoot, DeployUnit}
+import org.kevoree.DeployUnit
 import org.kevoree.tools.aether.framework.AetherUtil
 import java.io.{FileInputStream, File}
 import org.kevoree.framework.PrimitiveCommand
@@ -35,26 +35,26 @@ case class AddThirdPartyAetherCommand(deployUnit: DeployUnit) extends PrimitiveC
 
     try {
 
-      val arteFile : File = AetherUtil.resolveDeployUnit(deployUnit)
-      lastExecutionBundle = Some(KevoreeDeployManager.getBundleContext.installBundle("file:///"+arteFile.getAbsolutePath,new FileInputStream(arteFile)));
+      val arteFile: File = AetherUtil.resolveDeployUnit(deployUnit)
+      lastExecutionBundle = Some(KevoreeDeployManager.getBundleContext.installBundle("file:///" + arteFile.getAbsolutePath, new FileInputStream(arteFile)));
 
 
       //lastExecutionBundle = Some(ctx.bundleContext.installBundle(url));
       val symbolicName: String = lastExecutionBundle.get.getSymbolicName
-      KevoreeDeployManager.addMapping(KevoreeOSGiBundle(deployUnit.getName, deployUnit.getClass.getName, lastExecutionBundle.get.getBundleId))
+      KevoreeDeployManager.addMapping(KevoreeOSGiBundle(CommandHelper.buildKEY(deployUnit), deployUnit.getClass.getName, lastExecutionBundle.get.getBundleId))
       // lastExecutionBundle.get.start
       mustBeStarted = false
       true
     } catch {
       case e: BundleException if (e.getType == BundleException.DUPLICATE_BUNDLE_ERROR) => {
-		  logger.warn("ThirdParty conflict ! ")
-		  mustBeStarted = false
-		  true
-		}
+        logger.warn("ThirdParty conflict ! ")
+        mustBeStarted = false
+        true
+      }
       case _@e => {
-        logger.error("Deploy unit ("+deployUnit.getGroupName + ":" + deployUnit.getUnitName + ":" + deployUnit.getVersion + " at " + deployUnit.getUrl+") Installation error => ",e)
-		  false
-		}
+        logger.error("Deploy unit (" + deployUnit.getGroupName + ":" + deployUnit.getUnitName + ":" + deployUnit.getVersion + " at " + deployUnit.getUrl + ") Installation error => ", e)
+        false
+      }
     }
   }
 
@@ -63,12 +63,17 @@ case class AddThirdPartyAetherCommand(deployUnit: DeployUnit) extends PrimitiveC
     try {
       lastExecutionBundle match {
         case Some(bundle) => {
-			bundle.stop()
-			bundle.uninstall()
-			val srPackageAdmin = KevoreeDeployManager.getBundleContext.getServiceReference(classOf[PackageAdmin].getName)
-			val padmin: PackageAdmin = KevoreeDeployManager.getBundleContext.getService(srPackageAdmin).asInstanceOf[PackageAdmin]
-			padmin.resolveBundles(Array(bundle))
-		  }
+          //CLEAR CACHE
+          KevoreeDeployManager.bundleMapping.filter(map => map.bundleId == bundle.getBundleId).foreach {
+            map =>
+              KevoreeDeployManager.removeMapping(map)
+          }
+          bundle.stop()
+          bundle.uninstall()
+          val srPackageAdmin = KevoreeDeployManager.getBundleContext.getServiceReference(classOf[PackageAdmin].getName)
+          val padmin: PackageAdmin = KevoreeDeployManager.getBundleContext.getService(srPackageAdmin).asInstanceOf[PackageAdmin]
+          padmin.resolveBundles(Array(bundle))
+        }
         case None => //NOTHING CAN BE DOING HERE
       }
     } catch {
