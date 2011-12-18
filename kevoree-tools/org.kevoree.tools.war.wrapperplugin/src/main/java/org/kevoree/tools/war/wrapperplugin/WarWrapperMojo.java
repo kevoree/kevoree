@@ -13,10 +13,14 @@
  */
 package org.kevoree.tools.war.wrapperplugin;
 
+import org.apache.maven.model.Dependency;
+import org.apache.maven.model.Resource;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.project.MavenProject;
+import org.kevoree.KevoreeFactory;
+import scala.io.Source;
 
 import java.io.File;
 import java.net.URL;
@@ -41,6 +45,7 @@ public class WarWrapperMojo extends AbstractMojo {
      * subdirectories based on package namespace. This is equivalent to the <code>-s</code> argument for apt.
      *
      * @parameter default-value="${project.build.directory}/generated-sources/kevoree"
+     * @required
      */
     private File sourceOutputDirectory;
 
@@ -71,20 +76,50 @@ public class WarWrapperMojo extends AbstractMojo {
         try {
             URL url = new URL(war);
             String targetFile = url.getFile().substring(url.getFile().lastIndexOf('/') + 1);
-            File tempWarFile = new File(tempWar.getAbsolutePath()+File.separator+targetFile);
-            if(!tempWarFile.exists()){
-                getLog().info("Dowloading = "+war +" -> "+tempWarFile.getAbsolutePath());
-                UrlHelper.getFile(war,tempWarFile);
+            File tempWarFile = new File(tempWar.getAbsolutePath() + File.separator + targetFile);
+            if (!tempWarFile.exists()) {
+                getLog().info("Dowloading = " + war + " -> " + tempWarFile.getAbsolutePath());
+                UrlHelper.getFile(war, tempWarFile);
             }
-            ZipHelper.unzipToTempDir(tempWarFile,outputClasses);
+            ZipHelper.unzipToTempDir(tempWarFile, outputClasses);
+            BundlerHelper.copyWebInf(outputClasses);
 
-            project.getProperties().put("warlibs","ton.jar");
+            BundlerHelper.generateManifest(project, outputClasses);
+
+            Resource resource = new Resource();
+            resource.setDirectory(outputClasses.getPath());
+            project.getResources().add(resource);
+            
+            Resource resource2 = new Resource();
+            resource2.setDirectory(sourceOutputDirectory.getPath()+File.separator+"KEV-INF");
+            resource2.setTargetPath("KEV-INF");
+            project.getResources().add(resource2);
+            
+
+            //GENERATE KEVOREE COMPONENT WRAPPER
+            Dependency dep = new Dependency();
+            dep.setArtifactId("org.kevoree.library.javase.webserver.servlet");
+            dep.setGroupId("org.kevoree.library.javase");
+            dep.setVersion(KevoreeFactory.getVersion());
+            dep.setType("bundle");
+            dep.setScope("compile");
+            project.getCompileDependencies().add(dep);
+
+            Dependency dep2 = new Dependency();
+            dep2.setArtifactId("org.kevoree.library.javase.webserver");
+            dep2.setGroupId("org.kevoree.library.javase");
+            dep2.setVersion(KevoreeFactory.getVersion());
+            dep2.setType("bundle");
+            dep2.setScope("compile");
+            project.getCompileDependencies().add(dep2);
 
 
-            project.getB
+            WrapperGenerator.generate(sourceOutputDirectory,project);
 
+            project.getBuild().setSourceDirectory(sourceOutputDirectory.getAbsolutePath());
 
         } catch (Exception e) {
+            e.printStackTrace();
             getLog().error(e);
         }
     }

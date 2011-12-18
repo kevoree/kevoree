@@ -21,6 +21,7 @@ import org.kevoree.annotation.DictionaryAttribute;
 import org.kevoree.annotation.DictionaryType;
 import org.kevoree.library.javase.webserver.*;
 import org.kevoree.library.javase.webserver.servlet.LocalServletRegistry;
+import org.osgi.framework.Bundle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -50,10 +51,11 @@ import java.io.*;
 public class WordPressPage extends AbstractPage {
 
     private File rootDir = null;
-    private LocalServletRegistry servletRepository = new LocalServletRegistry();
+    private LocalServletRegistry servletRepository = null;// new LocalServletRegistry();
 
     @Override
     public void startPage() {
+        servletRepository = new LocalServletRegistry((Bundle)this.getDictionary().get("osgi.bundle"));
         super.startPage();
         InputStream zipStream = this.getClass().getClassLoader().getResourceAsStream("wordpress-3.3-fr_FR.zip");
         if (zipStream != null) {
