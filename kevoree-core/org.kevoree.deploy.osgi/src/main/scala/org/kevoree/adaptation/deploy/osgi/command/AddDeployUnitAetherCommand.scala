@@ -67,7 +67,7 @@ case class AddDeployUnitAetherCommand(deployUnit: DeployUnit, update: Boolean = 
       val symbolicName: String = lastExecutionBundle.get.getSymbolicName
       //FOR DEPLOY UNIT DO NOT USE ONLY NAME
       KevoreeDeployManager.addMapping(KevoreeOSGiBundle(CommandHelper.buildKEY(deployUnit), deployUnit.getClass.getName, lastExecutionBundle.get.getBundleId))
-      lastExecutionBundle.get.start
+      lastExecutionBundle.get.start()
       mustBeStarted = true
 
       true
