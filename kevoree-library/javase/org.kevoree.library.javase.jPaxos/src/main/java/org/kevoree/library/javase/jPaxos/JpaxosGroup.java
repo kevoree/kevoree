@@ -5,6 +5,7 @@ import lsr.common.Configuration;
 import lsr.common.PID;
 import lsr.paxos.ReplicationException;
 import lsr.paxos.client.Client;
+import lsr.paxos.recovery.FullSSRecovery;
 import lsr.paxos.replica.Replica;
 import org.kevoree.ContainerNode;
 import org.kevoree.ContainerRoot;
@@ -50,7 +51,7 @@ public class JpaxosGroup extends AbstractGroupType implements  Runnable {
 
     @Start
     public void startJpaxosRestGroup() throws IOException {
-        updateDico();
+
         handler =new Thread(this);
         handler.start();
     }
@@ -89,23 +90,15 @@ public class JpaxosGroup extends AbstractGroupType implements  Runnable {
     }
 
     @Stop
-    public void stopJpaxosRestGroup()
+    public void stopJpaxosGroup()
     {
         _replica.forceExit();
-    }
+        handler.interrupt();
 
-    public ContainerRoot update(List<PID> processess,ContainerRoot _model) throws IOException, ReplicationException {
-        Client client = null;
-        client = new Client(new Configuration(processess));
-        client.connect();
-        KevoreeJpaxosCommand command = new KevoreeJpaxosCommand(_model);
-        byte[] request = command.toByteArray();
-        /** Executing the request **/
-        byte[] response = client.execute(request);
-        /** Deserialising answer **/
-        DataInputStream in = new DataInputStream(new ByteArrayInputStream(response));
-        ContainerRoot model = KevoreeXmiHelper.loadStream(in);
-        return model;
+    }
+    @Update
+    public void updateJpaxoGroup(){
+
     }
 
 
@@ -129,8 +122,17 @@ public class JpaxosGroup extends AbstractGroupType implements  Runnable {
 
         try
         {
-            ContainerRoot model=   update(processess, getModelService().getLastModel());
+            Client client = null;
+            client = new Client(new Configuration(processess));
 
+            client.connect();
+            KevoreeJpaxosCommand command = new KevoreeJpaxosCommand(getModelService().getLastModel());
+            byte[] request = command.toByteArray();
+            /** Executing the request **/
+            byte[] response = client.execute(request);
+            /** Deserialising answer **/
+            DataInputStream in = new DataInputStream(new ByteArrayInputStream(response));
+            ContainerRoot model = KevoreeXmiHelper.loadStream(in);
         } catch (Exception e) {
             logger.error("triggerModelUpdate "+e);
         }
@@ -152,24 +154,33 @@ public class JpaxosGroup extends AbstractGroupType implements  Runnable {
         if(_replica !=null)
             processess.clear();
 
-        for(String _node : getAllNodes()){
+        for(String _node : getAllNodes())
+        {
             String hostname = getAddressModel(_node);
             int id =parseNumberModel(_node,"localId");
             int replicaport = parseNumberModel(_node,"replicaPort");
             int clientport  = parseNumberModel(_node,"clientPort");
             pid = new PID(id, hostname,replicaport,clientport);
             processess.add(pid);
-            logger.debug(pid.toString());
+        }
+        logger.debug("Number of process  : "+processess.size());
+        if(processess.size() < 3){
+            logger.error("The number of process is under 3 ");
         }
         _conf = new Configuration(processess);
-        _replica= new Replica(_conf, localId, new KevoreeJPaxosService());
+
+        _replica= new Replica(_conf, localId, new KevoreeJPaxosService(getModelService()));
+
         _replica.start();
     }
 
     @Override
     public void run()
     {
-        try {
+
+        updateDico();
+        try
+        {
             updateReplica();
         } catch (Exception e) {
             logger.error("Starting Group "+e);
