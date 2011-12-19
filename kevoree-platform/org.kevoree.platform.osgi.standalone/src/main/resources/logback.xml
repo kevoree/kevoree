@@ -21,7 +21,14 @@
         </encoder>
     </appender>
 
+    <appender name="FILE" class="ch.qos.logback.core.FileAppender">
+        <encoder>
+            <pattern>%-5level [%file:%line] - %msg%n</pattern>
+        </encoder>
+        <file>${node.log.appender.file:-/tmp/${node.name:-node0}.log}</file>
+    </appender>
+
     <root level="${node.log.level:-WARN}">
-        <appender-ref ref="CONSOLE"/>
+        <appender-ref ref="${node.log.appender:-CONSOLE}"/>
     </root>
 </configuration>
