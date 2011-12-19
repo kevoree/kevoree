@@ -28,12 +28,20 @@ import org.kevoree.api.service.core.script.KevScriptEngineFactory
 
 
 /* ABSTRACT COMPONENT */
-abstract class KevoreeComponentActivator extends BundleActivator {
+abstract class KevoreeComponentActivator extends BundleActivator with KevoreeInstanceActivator {
 
   def callFactory(): KevoreeComponent
 
   var nodeName: String = ""
   var componentName: String = ""
+  def setNodeName(n : String) {
+    nodeName = n
+  }
+  def setInstanceName(in : String){
+    componentName = in
+  }
+
+
   var componentActor: KevoreeComponent = null
   var bundleContext: BundleContext = null
 
@@ -41,8 +49,8 @@ abstract class KevoreeComponentActivator extends BundleActivator {
     bundleContext = bc
     /* SEARCH HEADERS VALUE */
     import scala.collection.JavaConversions._
-    nodeName = bc.getBundle.getHeaders.find(dic => dic._1 == Constants.KEVOREE_NODE_NAME_HEADER).get._2.toString
-    componentName = bc.getBundle.getHeaders.find(dic => dic._1 == Constants.KEVOREE_INSTANCE_NAME_HEADER).get._2.toString
+    //nodeName = bc.getBundle.getHeaders.find(dic => dic._1 == Constants.KEVOREE_NODE_NAME_HEADER).get._2.toString
+    //componentName = bc.getBundle.getHeaders.find(dic => dic._1 == Constants.KEVOREE_INSTANCE_NAME_HEADER).get._2.toString
     /* Create component actor */
     componentActor = callFactory()
 

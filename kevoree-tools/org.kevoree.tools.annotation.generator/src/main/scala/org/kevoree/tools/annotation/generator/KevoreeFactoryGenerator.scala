@@ -45,7 +45,15 @@ object KevoreeFactoryGenerator {
         writer.append("package " + componentPackage + "\n");
         writer.append("import org.kevoree.framework._\n")
         writer.append("import " + KevoreeGeneratorHelper.getTypeDefinitionBasePackage(ct) + "._\n")
-        writer.append("object " + factoryName + "{\n")
+
+        writer.append("class "+factoryName+" extends org.kevoree.framework.osgi.KevoreeInstanceFactory {\n")
+        writer.append("override def registerInstance(instanceName : String, nodeName : String)="+factoryName+".registerInstance(instanceName,nodeName)\n")
+        writer.append("override def remove(instanceName : String)="+factoryName+".remove(instanceName)\n")
+        writer.append("def createInstanceActivator = "+factoryName+".createInstanceActivator")
+        writer.append("}\n")
+
+        writer.append("object " + factoryName + " extends org.kevoree.framework.osgi.KevoreeInstanceFactory {\n")
+        writer.append("def createInstanceActivator: org.kevoree.framework.osgi.KevoreeInstanceActivator = new "+ct.getName+"Activator\n")
 
         /* create Component Actor */
         writer.append("def createComponentActor() : KevoreeComponent = {\n")
@@ -128,7 +136,16 @@ object KevoreeFactoryGenerator {
         val writer = wrapper.openWriter()
         writer.append("package " + channelTypePackage + "\n");
         writer.append("import org.kevoree.framework._\n")
-        writer.append("object " + factoryName + "{\n")
+
+        writer.append("class "+factoryName+" extends org.kevoree.framework.osgi.KevoreeInstanceFactory {\n")
+        writer.append("override def registerInstance(instanceName : String, nodeName : String)="+factoryName+".registerInstance(instanceName,nodeName)\n")
+        writer.append("override def remove(instanceName : String)="+factoryName+".remove(instanceName)\n")
+        writer.append("def createInstanceActivator = "+factoryName+".createInstanceActivator")
+        writer.append("}\n")
+
+        writer.append("object " + factoryName + " extends org.kevoree.framework.osgi.KevoreeInstanceFactory {\n")
+        writer.append("def createInstanceActivator: org.kevoree.framework.osgi.KevoreeInstanceActivator = new "+ct.getName+"Activator\n")
+
 
         writer.append("def createChannel()={new " + ct.getBean + " with ChannelTypeFragment {\n")
 
@@ -184,7 +201,15 @@ object KevoreeFactoryGenerator {
         val writer = wrapper.openWriter()
         writer.append("package " + groupTypePackage + "\n");
         writer.append("import org.kevoree.framework._\n")
-        writer.append("object " + factoryName + "{\n")
+
+        writer.append("class "+factoryName+" extends org.kevoree.framework.osgi.KevoreeInstanceFactory {\n")
+        writer.append("override def registerInstance(instanceName : String, nodeName : String)="+factoryName+".registerInstance(instanceName,nodeName)\n")
+        writer.append("override def remove(instanceName : String)="+factoryName+".remove(instanceName)\n")
+        writer.append("def createInstanceActivator = "+factoryName+".createInstanceActivator")
+        writer.append("}\n")
+        
+        writer.append("object " + factoryName + " extends org.kevoree.framework.osgi.KevoreeInstanceFactory {\n")
+        writer.append("def createInstanceActivator: org.kevoree.framework.osgi.KevoreeInstanceActivator = new "+ct.getName+"Activator\n")
 
         writer.append("def createGroup()={new " + ct.getBean + " with KevoreeGroup {\n")
 

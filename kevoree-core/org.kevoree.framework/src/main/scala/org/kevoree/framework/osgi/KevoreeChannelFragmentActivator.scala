@@ -26,7 +26,7 @@ import org.kevoree.api.service.core.handler.KevoreeModelHandlerService
 import org.kevoree.api.service.core.script.KevScriptEngineFactory
 import org.kevoree.framework._
 
-abstract class KevoreeChannelFragmentActivator extends BundleActivator {
+abstract class KevoreeChannelFragmentActivator extends BundleActivator with KevoreeInstanceActivator {
 
   def callFactory(): KevoreeChannelFragment
 
@@ -35,12 +35,20 @@ abstract class KevoreeChannelFragmentActivator extends BundleActivator {
   var channelActor: KevoreeChannelFragment = null
   var bundleContext: BundleContext = null
 
+
+  def setNodeName(n : String) {
+    nodeName = n
+  }
+  def setInstanceName(in : String){
+    instanceName = in
+  }
+
   def start(bc: BundleContext) {
     bundleContext = bc
     /* SEARCH HEADERS VALUE */
     import scala.collection.JavaConversions._
-    nodeName = bc.getBundle.getHeaders.find(dic => dic._1 == Constants.KEVOREE_NODE_NAME_HEADER).get._2.toString
-    instanceName = bc.getBundle.getHeaders.find(dic => dic._1 == Constants.KEVOREE_INSTANCE_NAME_HEADER).get._2.toString
+   // nodeName = bc.getBundle.getHeaders.find(dic => dic._1 == Constants.KEVOREE_NODE_NAME_HEADER).get._2.toString
+   // instanceName = bc.getBundle.getHeaders.find(dic => dic._1 == Constants.KEVOREE_INSTANCE_NAME_HEADER).get._2.toString
     /* Create component actor */
     channelActor = callFactory()
 
