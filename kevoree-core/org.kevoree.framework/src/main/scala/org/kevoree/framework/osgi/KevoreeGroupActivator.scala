@@ -13,12 +13,12 @@
  */
 package org.kevoree.framework.osgi
 
-import org.osgi.framework.{BundleContext, BundleActivator}
- import org.kevoree.framework.message._
+import org.kevoree.framework.message._
 import java.util.Hashtable
 import org.kevoree.api.service.core.handler.KevoreeModelHandlerService
 import org.kevoree.api.service.core.script.KevScriptEngineFactory
 import org.kevoree.framework.{AbstractComponentType, KevoreeGroup, Constants}
+import org.osgi.framework.{ServiceRegistration, BundleContext, BundleActivator}
 
 abstract class KevoreeGroupActivator extends BundleActivator with KevoreeInstanceActivator {
 
@@ -29,6 +29,8 @@ abstract class KevoreeGroupActivator extends BundleActivator with KevoreeInstanc
   var groupActor: KevoreeGroup = null
   var bundleContext: BundleContext = null
 
+  var mainService : ServiceRegistration = null
+
   def setNodeName(n : String) {
     nodeName = n
   }
@@ -37,7 +39,7 @@ abstract class KevoreeGroupActivator extends BundleActivator with KevoreeInstanc
   }
 
 
-  def start(bc: BundleContext) {
+  override def start(bc: BundleContext) {
     bundleContext = bc
     /* SEARCH HEADERS VALUE */
     import scala.collection.JavaConversions._
@@ -53,8 +55,10 @@ abstract class KevoreeGroupActivator extends BundleActivator with KevoreeInstanc
     val props = new Hashtable[String, String]()
     props.put(Constants.KEVOREE_NODE_NAME, nodeName)
     props.put(Constants.KEVOREE_INSTANCE_NAME, instanceName)
-    bc.registerService(classOf[KevoreeGroup].getName(), groupActor, props);
+    mainService = bc.registerService(classOf[KevoreeGroup].getName, groupActor, props);
 
+
+    
     /* PUT INITIAL PROPERTIES */
     groupActor.getDictionary.put(Constants.KEVOREE_PROPERTY_OSGI_BUNDLE, bc.getBundle)
     groupActor.asInstanceOf[KevoreeGroup].setName(instanceName)
@@ -72,7 +76,7 @@ abstract class KevoreeGroupActivator extends BundleActivator with KevoreeInstanc
     //channelActor.startChannelFragment //DEPRECATED DONE BY DEPLOY
   }
 
-  def stop(bc: BundleContext) {
+  override def stop(bc: BundleContext) {
     if (groupActor.asInstanceOf[KevoreeGroup].getIsStarted) {
       groupActor !? StopMessage
       println("Stopping => " + instanceName)
@@ -80,5 +84,8 @@ abstract class KevoreeGroupActivator extends BundleActivator with KevoreeInstanc
 
     groupActor.stop
     groupActor = null
+
+    mainService.unregister()
+
   }
 }
