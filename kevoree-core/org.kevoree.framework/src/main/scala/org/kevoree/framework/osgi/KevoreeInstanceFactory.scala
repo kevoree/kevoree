@@ -25,25 +25,30 @@ import org.slf4j.LoggerFactory
 
 trait KevoreeInstanceFactory {
 
-  private val logger = LoggerFactory.getLogger(this.getClass) 
-  
-  private val instancesCache = new java.util.HashMap[String,org.kevoree.framework.osgi.KevoreeInstanceActivator]()
-  def registerInstance(instanceName : String, nodeName : String):org.kevoree.framework.osgi.KevoreeInstanceActivator={
+  private val logger = LoggerFactory.getLogger(this.getClass)
+
+  private val instancesCache = new java.util.HashMap[String, org.kevoree.framework.osgi.KevoreeInstanceActivator]()
+
+  def registerInstance(instanceName: String, nodeName: String): org.kevoree.framework.osgi.KevoreeInstanceActivator = {
     val newInstance = createInstanceActivator
     newInstance.setInstanceName(instanceName)
     newInstance.setNodeName(nodeName)
-    instancesCache.put(instanceName,newInstance)
-    logger.debug("TypeCache "+this.getClass.getName+" has "+instancesCache.keySet().size()+" instances")
+    instancesCache.put(instanceName, newInstance)
+    logger.debug("TypeCache " + this.getClass.getName + " has " + instancesCache.keySet().size() + " instances")
     newInstance
   }
-  def remove(instanceName : String){
-    if(instancesCache.containsKey(instanceName)){
+
+  def remove(instanceName: String): org.kevoree.framework.osgi.KevoreeInstanceActivator = {
+    var removed: org.kevoree.framework.osgi.KevoreeInstanceActivator = null
+    if (instancesCache.containsKey(instanceName)) {
+      removed = instancesCache.get(instanceName)
       instancesCache.remove(instanceName)
     }
-    logger.debug("TypeCache "+this.getClass.getName+" has "+instancesCache.keySet().size()+" instances")
+    logger.debug("TypeCache " + this.getClass.getName + " has " + instancesCache.keySet().size() + " instances")
+    removed
   }
 
-  def createInstanceActivator : org.kevoree.framework.osgi.KevoreeInstanceActivator
+  def createInstanceActivator: org.kevoree.framework.osgi.KevoreeInstanceActivator
 
 
 }

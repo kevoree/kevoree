@@ -46,6 +46,8 @@ case class RemoveBindingCommand(c : MBinding,nodeName:String) extends PrimitiveC
       case None => logger.error("Component Mapping not found");None
       case Some(mapfound)=> {
           val componentBundle = KevoreeDeployManager.getBundleContext.getBundle(mapfound.bundleId)
+
+        logger.debug("ComponetUID="+mapfound.bundleId+"-"+componentBundle+"-"+c+componentBundle.getRegisteredServices+c.getPort.eContainer)
           componentBundle.getRegisteredServices.find({sr=> sr.getProperty(Constants.KEVOREE_NODE_NAME)==nodeName && sr.getProperty(Constants.KEVOREE_INSTANCE_NAME)==c.getPort.eContainer.asInstanceOf[ComponentInstance].getName }) match {
             case None => logger.error("Component Actor Service not found");None
             case Some(sr)=> Some(componentBundle.getBundleContext.getService(sr).asInstanceOf[KevoreeComponent])}}
