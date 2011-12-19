@@ -18,10 +18,12 @@
 
 package org.kevoree.adaptation.deploy.osgi.command
 
-import org.kevoree.Instance
- import org.slf4j.LoggerFactory
-import org.kevoree.framework.PrimitiveCommand
+import org.slf4j.LoggerFactory
 import org.kevoree.framework.context.KevoreeDeployManager
+import org.kevoree.framework.{KevoreeGeneratorHelper, PrimitiveCommand}
+import org.kevoree.framework.osgi.KevoreeInstanceFactory
+import org.kevoree.framework.aspects.KevoreeAspects._
+import org.kevoree.{ContainerRoot, NodeType, Instance}
 
 case class RemoveInstanceCommand(c: Instance, nodeName: String) extends PrimitiveCommand {
 
@@ -37,15 +39,26 @@ case class RemoveInstanceCommand(c: Instance, nodeName: String) extends Primitiv
     bundles.forall {
       mp =>
         val bundle = KevoreeDeployManager.getBundleContext.getBundle(mp.bundleId)
+        val nodeType = c.getTypeDefinition.eContainer.asInstanceOf[ContainerRoot].getNodes.find(tn => tn.getName == nodeName).get.getTypeDefinition
+        val nodeTypeName = c.getTypeDefinition.foundRelevantHostNodeType(nodeType.asInstanceOf[NodeType], c.getTypeDefinition) match {
+          case Some(nt) => nt.getName
+          case None => throw new Exception("Can foudn compatible nodeType for this instance on this node type ")
+        }
 
-        bundle.stop();
-        bundle.uninstall();
+        val activatorPackage = KevoreeGeneratorHelper.getTypeDefinitionGeneratedPackage(c.getTypeDefinition, nodeTypeName)
+        val factoryName = activatorPackage + "." + c.getTypeDefinition.getName + "Factory"
+        val kevoreeFactory = bundle.loadClass(factoryName).newInstance().asInstanceOf[KevoreeInstanceFactory]
+
+        kevoreeFactory.remove(c.getName)
+
+
         //REFRESH OSGI PACKAGE
         KevoreeDeployManager.getServicePackageAdmin.refreshPackages(Array(bundle))
         true
     }
-    KevoreeDeployManager.bundleMapping.filter(mb => bundles.contains(mb) ).foreach{ map =>
-      KevoreeDeployManager.removeMapping(map)
+    KevoreeDeployManager.bundleMapping.filter(mb => bundles.contains(mb)).foreach {
+      map =>
+        KevoreeDeployManager.removeMapping(map)
     }
     true
   }
