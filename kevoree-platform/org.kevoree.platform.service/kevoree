@@ -2,9 +2,11 @@
 #
 
 # PROVIDE: kevoree
+# REQUIRE: DAEMON 
 # REQUIRE: LOGIN
+# REQUIRE: NETWORK
+#
 # KEYWORD: shutdown
-
 #
 # Configuration settings for kevoree in /etc/rc.conf:
 #
@@ -31,11 +33,14 @@ load_rc_config "${name}"
 : ${kevoree_home="$HOME/kevoree-service"}
 
 #APP_PATH="$HOME/kevoree-service" # path where your exec file are
-SERVICE="kevoree-runtime"  # name of the exec file without (.jar)
-JAVA="/usr/local/bin/java"
-SERVICE_UPDATER="kevoree-service-updater"
+runtime="kevoree-runtime"  # name of the exec file without (.jar)
+runtime_updater="kevoree-service-updater"
 
-java_command="/usr/local/bin/java -Dnode.log.level=DEBUG -Dnode.name=`/bin/hostname` -Dnode.groupType=RestGroup -Dnode.update.timeout=300000 -Xmx1024M -Xms1024M -jar $kevoree_home/$SERVICE.jar  2>&1 > $kevoree_home/`/bin/hostname`.log"
+java="/usr/local/bin/java"
+java_args="-Dnode.log.level=DEBUG -Dnode.name=`/bin/hostname` -Dnode.log.appender=FILE -Dnode.log.appender.file=$kevoree_home/`/bin/hostname`.log -Dnode.groupType=RestGroup -Dnode.update.timeout=300000 -Xmx1024M -Xms1024M -jar $kevoree_home/$runtime.jar"
+
+command="/usr/sbin/daemon"
+command_args="-f -p ${pidfile} ${java} ${java_args}"
 
 
 start_precmd="pid_touch"
@@ -44,18 +49,24 @@ stop_cmd="kevoree_stop"
 status_cmd="kevoree_status"
 
 pid_touch() {
-    touch ${pidfile}
+   touch ${pidfile}
 }
 
 kevoree_update() {
-	$JAVA -jar "$kevoree_home/$SERVICE_UPDATER.jar" "$kevoree_home/$SERVICE.jar"
+	$java -jar "$kevoree_home/$runtime_updater.jar" "$kevoree_home/$runtime.jar"
 }
 
 kevoree_start() {
-	echo "updating $name."
+	echo "Updating $name."
 	kevoree_update
     echo "Starting $name."
-    exec ${java_command}
+    echo ${command} ${command_args}
+    exec ${command} ${command_args}
+
+#	exec "$JAVA ${java_command} ${redirection_command}"
+#	/bin/sleep 5
+#	$echo `$ps axw | $grep -e "${java_command}" | $grep -v tcsh` 
+#	$echo `$ps axw | $grep -e "${java_command}" | $grep -v tcsh | $grep -v "$grep" | $cut -c1-6 | $sed "s/ //g"` > ${pidfile}
 }
 
 kevoree_stop() {
@@ -92,12 +103,8 @@ kevoree_check_pidfile() {
         debug "pid file (${_pidfile}): not readable."
         return
     fi
-    read _pid _junk < ${_pidfile}
-    if [ -z "${_pid}" ]; then
-        debug "pid file (${_pidfile}): no pid in file."
-        return
-    fi
-    if [ -n "`/usr/local/bin/jps -l | grep -e "^${_pid} ${java_class}\$"`" ]; then
+	_pid=`cat ${_pidfile}`
+    if [ -n "`/usr/local/bin/jps -l | grep -e ${_pid}`" ]; then
         echo -n ${_pid}
     fi
 }
