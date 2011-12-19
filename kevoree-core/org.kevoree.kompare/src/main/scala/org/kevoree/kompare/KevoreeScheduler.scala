@@ -94,8 +94,8 @@ trait KevoreeScheduler {
       adaptionModel.getAdaptations.filter(adapt => adapt.getPrimitiveType.getName == JavaSePrimitive.StartThirdParty)
         .foreach {
         p =>
-          step.addAdaptations(p)
           step = KevoreeAdaptationFactory.eINSTANCE.createParallelStep
+          step.addAdaptations(p)
           currentStep.setNextStep(Some(step))
           currentStep = step
       }
