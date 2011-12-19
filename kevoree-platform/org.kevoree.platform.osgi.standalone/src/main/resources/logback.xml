@@ -25,7 +25,8 @@
         <encoder>
             <pattern>%-5level [%file:%line] - %msg%n</pattern>
         </encoder>
-        <file>${node.log.appender.file:-/tmp/${node.name:-node0}.log}</file>
+        <file>${node.log.appender.file:-/tmp/node.log}</file>
+        <append>false</append>
     </appender>
 
     <root level="${node.log.level:-WARN}">
