@@ -15,11 +15,6 @@
     <name>Kevoree :: Library :: Sky :: Mini Cloud</name>
 
     <dependencies>
-        <!--<dependency>
-            <groupId>org.kevoree.tools</groupId>
-            <artifactId>org.kevoree.tools.aether.framework</artifactId>
-            <version>${kevoree.version}</version>
-        </dependency>-->
         <dependency>
             <groupId>org.kevoree.library.sky</groupId>
             <artifactId>org.kevoree.library.sky.manager</artifactId>
