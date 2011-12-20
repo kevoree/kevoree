@@ -39,6 +39,9 @@ case class AddThirdPartyAetherCommand(deployUnit: DeployUnit) extends PrimitiveC
       lastExecutionBundle = Some(KevoreeDeployManager.getBundleContext.installBundle("file:///" + arteFile.getAbsolutePath, new FileInputStream(arteFile)));
 
 
+      logger.debug("Install file :"+arteFile.getAbsolutePath)
+
+
       //lastExecutionBundle = Some(ctx.bundleContext.installBundle(url));
       val symbolicName: String = lastExecutionBundle.get.getSymbolicName
       KevoreeDeployManager.addMapping(KevoreeOSGiBundle(CommandHelper.buildKEY(deployUnit), deployUnit.getClass.getName, lastExecutionBundle.get.getBundleId))
