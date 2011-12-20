@@ -43,6 +43,14 @@ class LocalServletRegistry(bundle: Bundle = null) {
   }
 
   def tryURL(url: String, request: KevoreeHttpRequest, response: KevoreeHttpResponse): Boolean = {
+
+    if(logger.isDebugEnabled){
+      logger.debug("Servlet regsitry for url "+url)
+      servlets.foreach{ s =>
+        logger.debug("=>"+s._1.LocalURLPattern.toString()+" -> "+s._1.precheck(url))
+      }
+    }
+
     servlets.keySet.find(urlP => urlP.precheck(url)) match {
       case Some(wrapperServletKey) => {
         servlets.get(wrapperServletKey).get.process(request, response)
