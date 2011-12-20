@@ -34,14 +34,16 @@ class NodeTypeBootstrapHelper {
 
   def getNodeTypeBundle = bundle
 
-  def bootstrapNodeType(model: ContainerRoot, destNodeName: String, bundleContext: BundleContext): Option[AbstractNodeType] = {
+  def bootstrapNodeType (model: ContainerRoot, destNodeName: String,
+    bundleContext: BundleContext): Option[AbstractNodeType] = {
     //LOCATE NODE
     val node = model.getNodes.find(node => node.getName == destNodeName)
     node match {
       case Some(node) => {
         val nodeTypeDeployUnitList = node.getTypeDefinition.getDeployUnits.toList
         if (nodeTypeDeployUnitList.size > 0) {
-          logger.debug("nodeType installation => " + installNodeTyp(node.getTypeDefinition.asInstanceOf[NodeType], bundleContext))
+          logger.debug("nodeType installation => " +
+            installNodeTyp(node.getTypeDefinition.asInstanceOf[NodeType], bundleContext))
           //KevoreeDeployManager.addMapping(KevoreeOSGiBundle(node.getTypeDefinition.getName, node.getTypeDefinition.getClass.getName, lastBundleID))
           val clazz: Class[_] = bundle.loadClass(node.getTypeDefinition.getBean)
 
@@ -90,13 +92,16 @@ class NodeTypeBootstrapHelper {
     }
   }
 
-  private def installDeployUnit(du: DeployUnit, bundleContext: BundleContext): Boolean = {
+  var bundles = List[Bundle]()
+
+  private def installDeployUnit (du: DeployUnit, bundleContext: BundleContext): Boolean = {
     try {
       val arteFile = AetherUtil.resolveDeployUnit(du)
       if (arteFile != null) {
         bundle = bundleContext.installBundle("file:///" + arteFile.getAbsolutePath, new FileInputStream(arteFile))
-        bundle.start()
+        //        bundle.start()
         KevoreeDeployManager.addMapping(KevoreeOSGiBundle(buildKEY(du), du.getClass.getName, bundle.getBundleId))
+        bundles = bundles ++ List[Bundle](bundle)
         true
       } else {
         logger.error("Can't resolve node type")
@@ -116,15 +121,29 @@ class NodeTypeBootstrapHelper {
   }
 
 
+  private def startDeployUnits (): Boolean = {
+    try {
+      bundles.foreach {
+        bundle =>
+          bundle.start()
+      }
+      true
+    } catch {
+      case _@e => logger.error("Can't isntall node type", e);false
+    }
+  }
+
+
   /* Bootstrap node type bundle in local osgi environment */
-  private def installNodeTyp(nodeType: NodeType, bundleContext: BundleContext): Boolean = {
-    val superTypeBootStrap = nodeType.getSuperTypes.forall(superType => installNodeTyp(superType.asInstanceOf[NodeType], bundleContext))
+  private def installNodeTyp (nodeType: NodeType, bundleContext: BundleContext): Boolean = {
+    val superTypeBootStrap = nodeType.getSuperTypes
+      .forall(superType => installNodeTyp(superType.asInstanceOf[NodeType], bundleContext))
     if (superTypeBootStrap) {
 
       nodeType.getDeployUnits.forall(ct => {
         ct.getRequiredLibs.forall {
           tp => installDeployUnit(tp, bundleContext)
-        } && installDeployUnit(ct, bundleContext)
+        } && startDeployUnits() && installDeployUnit(ct, bundleContext)
       })
     } else {
       false
@@ -132,11 +151,11 @@ class NodeTypeBootstrapHelper {
   }
 
 
-  def buildKEY(du: DeployUnit): String = {
+  def buildKEY (du: DeployUnit): String = {
     du.getName + "/" + buildQuery(du, None)
   }
 
-  def buildQuery(du: DeployUnit, repoUrl: Option[String]): String = {
+  def buildQuery (du: DeployUnit, repoUrl: Option[String]): String = {
     val query = new StringBuilder
     query.append("mvn:")
     repoUrl match {
