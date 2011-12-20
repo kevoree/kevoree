@@ -48,6 +48,7 @@ public class UrlHelper {
             fileName = url.getFile().substring(url.getFile().lastIndexOf('/') + 1);
 
             if (!output.exists()) {
+                ZipHelper.createParentDirs(output);
                 output.createNewFile();
             }
 

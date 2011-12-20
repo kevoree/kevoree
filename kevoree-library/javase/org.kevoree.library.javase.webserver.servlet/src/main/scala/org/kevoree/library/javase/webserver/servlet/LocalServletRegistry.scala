@@ -1,11 +1,11 @@
 package org.kevoree.library.javase.webserver.servlet
 
 import javax.servlet.http.HttpServlet
-import org.kevoree.library.javase.webserver.{KevoreeHttpResponse, KevoreeHttpRequest}
 import java.io.InputStream
 import xml.XML
 import org.osgi.framework.Bundle
 import org.slf4j.LoggerFactory
+import org.kevoree.library.javase.webserver.{URLHandlerScala, KevoreeHttpResponse, KevoreeHttpRequest}
 
 /**
  * Created by IntelliJ IDEA.
@@ -17,7 +17,7 @@ import org.slf4j.LoggerFactory
 
 class LocalServletRegistry(bundle: Bundle = null) {
 
-  private val servlets = new scala.collection.mutable.HashMap[String, AbstractHttpServletPage]
+  private val servlets = new scala.collection.mutable.HashMap[URLHandlerScala, AbstractHttpServletPage]
   private val logger = LoggerFactory.getLogger(this.getClass)
   
   def registerServlet(urlpattern: String, servletClass: HttpServlet) {
@@ -28,20 +28,22 @@ class LocalServletRegistry(bundle: Bundle = null) {
     }
     servletWrapper.getDictionary.put("urlpattern", "**" + urlpattern)
     servletWrapper.startPage()
-    servlets.put(urlpattern, servletWrapper)
+    val up = new URLHandlerScala
+    up.initRegex("**" + urlpattern)
+    servlets.put(up, servletWrapper)
     logger.debug("Subscript servlet for url "+"**" + urlpattern+" => "+servletClass.getClass.getSimpleName)
   }
 
   def unregisterUrl(urlpattern: String) {
-    servlets.get(urlpattern).map {
-      oldServlet =>
-        oldServlet.stopPage()
-        servlets.remove(urlpattern)
+    servlets.find(p=> p._1 == "**" + urlpattern).map {
+      s =>
+        s._2.stopPage()
+        servlets.remove(s._1)
     }
   }
 
   def tryURL(url: String, request: KevoreeHttpRequest, response: KevoreeHttpResponse): Boolean = {
-    servlets.keySet.find(urlP => url.endsWith(urlP)) match {
+    servlets.keySet.find(urlP => urlP.precheck(url)) match {
       case Some(wrapperServletKey) => {
         servlets.get(wrapperServletKey).get.process(request, response)
         true
