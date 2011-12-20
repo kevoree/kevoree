@@ -36,7 +36,9 @@ case class StartThirdPartyCommand (c: DeployUnit, nodeName: String) extends Prim
       case None => false
       case Some(mapfound) => {
         try {
+          
           KevoreeDeployManager.getBundleContext.getBundle(mapfound.bundleId).start()
+          
           true
         } catch {
           case _@e => logger.debug("Unable to initialiaze a ThirdParty: {}", c.getName, e); false
