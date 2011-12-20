@@ -125,7 +125,14 @@ trait UpdateNodeKompare extends AbstractKompare with UpdateChannelKompare {
                     adaptcmd.setRef(tp)
                     adaptationModel.addAdaptations(adaptcmd)
                   }
-                  case Some(e) => //SIMILAR DEPLOY UNIT PRIMITIVE ALREADY REGISTERED
+                  case Some(e) => {
+                    //SIMILAR DEPLOY UNIT PRIMITIVE ALREADY REGISTERED
+                    if (e.getPrimitiveType == JavaSePrimitive.AddDeployUnit) {
+                      e.setPrimitiveType(getAdaptationPrimitive(JavaSePrimitive.AddThirdParty,
+                                                                 actualNode.eContainer
+                                                                   .asInstanceOf[ContainerRoot]))
+                    }
+                  }
                 }
 
             }
