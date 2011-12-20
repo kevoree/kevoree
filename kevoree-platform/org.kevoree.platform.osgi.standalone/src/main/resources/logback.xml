@@ -30,6 +30,6 @@
     </appender>
 
     <root level="${node.log.level:-WARN}">
-        <appender-ref ref="${node.log.appender:-CONSOLE}"/>
+        <appender-ref ref="CONSOLE"/>
     </root>
 </configuration>

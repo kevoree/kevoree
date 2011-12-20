@@ -79,7 +79,11 @@ object BundlerHelper {
     importPackages = importPackages ++ List("scala.collection.mutable")
     importPackages = importPackages ++ List("scala.reflect")
     importPackages = importPackages ++ List("scala.runtime")
+    importPackages = importPackages ++ List("javax.servlet.http")
+    importPackages = importPackages ++ List("javax.servlet")
     mf.getMainAttributes.put(new Attributes.Name("Import-Package"), importPackages.mkString(","))
+
+    mf.getMainAttributes.put(new Attributes.Name("DynamicImport-Package"), "*")
 
 
     var exportPackages = List(project.getGroupId + "." + project.getArtifactId)
