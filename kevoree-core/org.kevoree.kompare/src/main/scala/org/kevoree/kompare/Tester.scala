@@ -14,7 +14,9 @@
 package org.kevoree.kompare
 
 import org.kevoree.framework.KevoreeXmiHelper
-import org.kevoree.{DeployUnit, NamedElement}
+import scheduling.SchedulingWithTopologicalOrderAlgo
+import org.kevoreeAdaptation.ParallelStep
+import org.kevoree.{MBinding, DeployUnit, NamedElement}
 
 /**
  * Created by IntelliJ IDEA.
@@ -30,13 +32,14 @@ object Tester extends App {
 
   val bean = new KevoreeKompareBean
 
-  val model1 = KevoreeXmiHelper.load("/Users/duke/Desktop/drop.kev")
-  val model2 = KevoreeXmiHelper.load("/Users/duke/Desktop/drop2.kev")
+  val model1 = KevoreeXmiHelper.load("/home/edaubert/kevoree/0jenkins_planning.kev")
+  val model2 = KevoreeXmiHelper.load("/home/edaubert/kevoree/jenkins_planning.kev")
 
 
   val adapModel = bean.kompare(model1, model2, "node0")
 
-  adapModel.getAdaptations.foreach {
+
+  /*adapModel.getAdaptations.foreach {
     adaptation =>
       println(adaptation.getPrimitiveType.getName)
       if (adaptation.getRef.isInstanceOf[NamedElement]) {
@@ -51,7 +54,28 @@ object Tester extends App {
         println("ref=" + adaptation.getRef + "->" + adaptation.getTargetNodeName)
 
       }
+  }*/
+
+  if (adapModel.getOrderedPrimitiveSet.isDefined) {
+    printStep(adapModel.getOrderedPrimitiveSet.get)
   }
 
+  private def printStep (step: ParallelStep) {
+    step.getAdaptations.foreach {
+      action =>
+
+        if (action.getRef.isInstanceOf[DeployUnit]) {
+          println(action.getPrimitiveType.getName + " : " + action.getRef.asInstanceOf[DeployUnit].getUrl + " -> " +
+            action.getRef.asInstanceOf[DeployUnit].getUnitName + "->" + action.getTargetNodeName)
+        } else if (action.getRef.isInstanceOf[MBinding]) {
+          println(action.getPrimitiveType.getName + " : " + action.getRef.asInstanceOf[MBinding].getHub + "<->" + action.getRef.asInstanceOf[MBinding].getPort.eContainer.asInstanceOf[NamedElement].getName + "." + action.getRef.asInstanceOf[MBinding].getPort.getPortTypeRef.getName)
+        } else {
+          println(action.getPrimitiveType.getName + " : " + action.getRef.asInstanceOf[NamedElement].getName)
+        }
+    }
+    if (step.getNextStep.isDefined) {
+      printStep(step.getNextStep.get)
+    }
+  }
 
 }
