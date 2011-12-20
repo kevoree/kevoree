@@ -29,7 +29,17 @@
         <append>false</append>
     </appender>
 
-    <root level="${node.log.level:-WARN}">
-        <appender-ref ref="CONSOLE"/>
-    </root>
+    <if condition='"${node.log.appender:-CONSOLE}".contains("CONSOLE")'>
+        <then>
+            <root level="${node.log.level:-WARN}">
+                <appender-ref ref="CONSOLE"/>
+            </root>
+        </then>
+        <else>
+            <root level="${node.log.level:-WARN}">
+                <appender-ref ref="FILE"/>
+            </root>
+        </else>
+    </if>
+
 </configuration>
