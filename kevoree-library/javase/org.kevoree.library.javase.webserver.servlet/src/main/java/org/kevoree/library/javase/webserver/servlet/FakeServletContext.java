@@ -32,7 +32,6 @@ public class FakeServletContext implements ServletContext {
     @Override
     public ServletContext getContext(String uripath) {
         logger.warn("Call getContext");
-
         return this;
     }
 
@@ -290,7 +289,7 @@ public class FakeServletContext implements ServletContext {
 
     @Override
     public ClassLoader getClassLoader() {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return this.getClass().getClassLoader();
     }
 
     @Override

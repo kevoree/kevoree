@@ -14,5 +14,4 @@ object ServletContextHandler {
 
   def getContext = context
 
-
 }
