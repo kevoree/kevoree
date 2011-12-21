@@ -164,7 +164,7 @@ class JailKevoreeNodeRunner (nodeName: String, bootStrapModel: String, inet: Str
                 }
                 exec = exec ++ Array[String]("-jar", File.separator + "root" + File.separator + "kevoree-runtime.jar")
                 nodeProcess = Runtime.getRuntime.exec(exec)
-                val logFile = System.getProperty("java.io.tmpdir") + File.separator + nodeName + ".log"
+                val logFile = System.getProperty("java.io.tmpdir") + File.separator + nodeName + ".log.*"
                 logger.debug("writing logs about {} on {}", nodeName, logFile)
                 new Thread(new
                     ProcessStreamFileLogger(nodeProcess.getInputStream, nodeProcess.getErrorStream, logFile))
@@ -541,17 +541,20 @@ class JailKevoreeNodeRunner (nodeName: String, bootStrapModel: String, inet: Str
   class ProcessStreamFileLogger (inputStream: InputStream, errorStream: InputStream, file: String) extends Runnable {
     override def run () {
       try {
-        val outputStream = new FileWriter(new File(file))
+        outFile = new File(file + ".out")
+        errFile = new File(file + ".err")
+        val outputStream = new FileWriter(outFile)
+        val errorStream = new FileWriter(errFile)
         val readerIn = new BufferedReader(new InputStreamReader(inputStream))
         val readerErr = new BufferedReader(new InputStreamReader(inputStream))
         var lineIn = readerIn.readLine()
         var lineErr = readerErr.readLine()
         while (lineIn != null || lineErr != null) {
           if (lineIn != null) {
-            outputStream.write(lineIn)
+            outputStream.write(lineIn + "\n")
           }
           if (lineErr != null) {
-            outputStream.write(lineErr)
+            errorStream.write(lineErr + "\n")
           }
           lineIn = readerIn.readLine()
           lineErr = readerErr.readLine()
