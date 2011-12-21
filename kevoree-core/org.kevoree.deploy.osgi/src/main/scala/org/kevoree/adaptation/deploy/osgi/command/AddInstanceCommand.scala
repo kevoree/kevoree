@@ -59,7 +59,7 @@ case class AddInstanceCommand(c: Instance, nodeName: String) extends PrimitiveCo
       //FIRST COMPLIANCE VALID TARGET NODE TYPE IN INHERITANCE
       val nodeTypeName = c.getTypeDefinition.foundRelevantHostNodeType(nodeType.asInstanceOf[NodeType], c.getTypeDefinition) match {
         case Some(nt) => nt.getName
-        case None => throw new Exception("Can foudn compatible nodeType for this instance on this node type ")
+        case None => throw new Exception("Can't  found compatible nodeType for this instance on this node type ")
       }
 
       val activatorPackage = KevoreeGeneratorHelper.getTypeDefinitionGeneratedPackage(c.getTypeDefinition, nodeTypeName)
@@ -76,7 +76,7 @@ case class AddInstanceCommand(c: Instance, nodeName: String) extends PrimitiveCo
       } catch {
         case _@e => {
           var message = "Could not start the instance " + c.getName + ":" + c.getClass.getName + " maybe because one of its dependencies is missing.\n"
-          message += "Please check that all dependencies of your components are marked with a 'provided' scope in the pom of the component's project.\n"
+          message += "Please check that all dependencies of your components are marked with a 'bundle' type (or 'provided' scope) in the pom of the component's project.\n"
           logger.error(message, e)
           false
         }

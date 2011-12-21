@@ -1,11 +1,12 @@
 package org.kevoree.library.javase.webserver.servlet
 
 import javax.servlet.http.HttpServlet
-import org.kevoree.library.javase.webserver.{KevoreeHttpResponse, KevoreeHttpRequest}
 import java.io.InputStream
-import xml.XML
 import org.osgi.framework.Bundle
 import org.slf4j.LoggerFactory
+import org.kevoree.library.javase.webserver.{URLHandlerScala, KevoreeHttpResponse, KevoreeHttpRequest}
+import scala.xml.XML
+import javax.servlet.{ServletContextEvent, ServletContextListener}
 
 /**
  * Created by IntelliJ IDEA.
@@ -17,9 +18,9 @@ import org.slf4j.LoggerFactory
 
 class LocalServletRegistry(bundle: Bundle = null) {
 
-  private val servlets = new scala.collection.mutable.HashMap[String, AbstractHttpServletPage]
+  private val servlets = new scala.collection.mutable.HashMap[URLHandlerScala, AbstractHttpServletPage]
   private val logger = LoggerFactory.getLogger(this.getClass)
-  
+
   def registerServlet(urlpattern: String, servletClass: HttpServlet) {
     val servletWrapper = new AbstractHttpServletPage {
       def initServlet() {
@@ -28,20 +29,31 @@ class LocalServletRegistry(bundle: Bundle = null) {
     }
     servletWrapper.getDictionary.put("urlpattern", "**" + urlpattern)
     servletWrapper.startPage()
-    servlets.put(urlpattern, servletWrapper)
-    logger.debug("Subscript servlet for url "+"**" + urlpattern+" => "+servletClass.getClass.getSimpleName)
+    val up = new URLHandlerScala
+    up.initRegex("**" + urlpattern)
+    servlets.put(up, servletWrapper)
+    logger.debug("Subscript servlet for url " + "**" + urlpattern + " => " + servletClass.getClass.getSimpleName)
   }
 
   def unregisterUrl(urlpattern: String) {
-    servlets.get(urlpattern).map {
-      oldServlet =>
-        oldServlet.stopPage()
-        servlets.remove(urlpattern)
+    servlets.find(p => p._1 == "**" + urlpattern).map {
+      s =>
+        s._2.stopPage()
+        servlets.remove(s._1)
     }
   }
 
   def tryURL(url: String, request: KevoreeHttpRequest, response: KevoreeHttpResponse): Boolean = {
-    servlets.keySet.find(urlP => url.endsWith(urlP)) match {
+
+    if (logger.isDebugEnabled) {
+      logger.debug("Servlet regsitry for url " + url)
+      servlets.foreach {
+        s =>
+          logger.debug("=>" + s._1.LocalURLPattern.toString() + " -> " + s._1.precheck(url))
+      }
+    }
+
+    servlets.keySet.find(urlP => urlP.precheck(url)) match {
       case Some(wrapperServletKey) => {
         servlets.get(wrapperServletKey).get.process(request, response)
         true
@@ -49,6 +61,9 @@ class LocalServletRegistry(bundle: Bundle = null) {
       case None => false
     }
   }
+
+
+  var listeners = List[ServletContextListener]()
 
   def loadWebXml(st: InputStream) {
     try {
@@ -63,16 +78,40 @@ class LocalServletRegistry(bundle: Bundle = null) {
               val pattern = patternMapping.get.child.find(c => c.label == "url-pattern").get.text
               val classServlet = bundle.loadClass(servletClass)
               val servlet = classServlet.newInstance()
-              registerServlet(pattern,servlet.asInstanceOf[HttpServlet])
+              registerServlet(pattern, servlet.asInstanceOf[HttpServlet])
             }
+
+            case "listener" => {
+              cNode.child.find(c => c.label == "listener-class").map {
+                listener =>
+                  val newL = bundle.loadClass(listener.text).newInstance().asInstanceOf[ServletContextListener]
+                  listeners = listeners ++ List(newL)
+              }
+            }
+            // ServletContextListener
+
             case _ =>
           }
       }
     } catch {
-      case _@e => logger.warn("Error during load of web.xml",e)
+      case _@e => logger.warn("Error during load of web.xml", e)
     }
 
+    listeners.foreach {
+      l =>
+        val sevent = new ServletContextEvent(ServletContextHandler.getContext)
+        l.contextInitialized(sevent)
+    }
 
+  }
+
+  def unload() {
+    listeners.foreach {
+      l =>
+        val sevent = new ServletContextEvent(ServletContextHandler.getContext)
+        l.contextDestroyed(sevent)
+    }
+    listeners = List()
   }
 
 

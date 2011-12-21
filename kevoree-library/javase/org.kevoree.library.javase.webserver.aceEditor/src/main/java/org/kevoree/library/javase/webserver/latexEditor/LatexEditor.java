@@ -46,12 +46,14 @@ public class LatexEditor extends AbstractPage {
     public Map<String, Boolean> compileResult = Collections.synchronizedMap(new HashMap<String, Boolean>());
     public Map<String, Object> compileLog = Collections.synchronizedMap(new HashMap<String, Object>());
 
-    private LocalServletRegistry servletRepository = new LocalServletRegistry();
+    private LocalServletRegistry servletRepository = null;//new LocalServletRegistry();
 
     @Override
     public void startPage() {
+        Bundle b = (Bundle) this.getDictionary().get("osgi.bundle");
+        servletRepository = new LocalServletRegistry(b);
         super.startPage();
-        RPC.setCurrentBundle((Bundle) this.getDictionary().get("osgi.bundle")); //GWT ACK
+        RPC.setCurrentBundle(b); //GWT ACK
         servletRepository.registerServlet("/latexEditor/latexEditorService",new org.kevoree.library.javase.webserver.latexEditor.server.latexEditorServiceImpl(this));
     }
 

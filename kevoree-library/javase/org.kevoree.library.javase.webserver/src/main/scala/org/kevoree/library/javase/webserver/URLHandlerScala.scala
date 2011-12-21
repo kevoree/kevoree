@@ -33,7 +33,23 @@ class URLHandlerScala {
     LocalURLPattern = new Regex(regexText)
   }
 
+  def precheck(url : String) : Boolean={
+    LocalURLPattern.unapplySeq(url) match {
+      case Some(paramsList) => {
+        true
+      }
+      case _ => {
+        false
+      }
+    }
+  }
+
   def check(url: Any): Option[KevoreeHttpRequest] = {
+    
+    if(logger.isDebugEnabled){
+      logger.debug("Try to check => "+LocalURLPattern.toString()+" - "+url)
+    }
+    
     url match {
       case request: KevoreeHttpRequest => {
         LocalURLPattern.unapplySeq(request.getUrl) match {

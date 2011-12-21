@@ -93,7 +93,8 @@ trait UpdateNodeKompare extends AbstractKompare with UpdateChannelKompare {
               case None => {
                 //CHECK IF THIS DEPLOY UNIT IS ALREADY MARK AS TO BE INSTALLED
                 adaptationModel.getAdaptations
-                  .filter(adaptation => adaptation.getPrimitiveType.getName == JavaSePrimitive.AddDeployUnit)
+                  .filter(adaptation => adaptation.getPrimitiveType.getName == JavaSePrimitive.AddDeployUnit
+                  || adaptation.getPrimitiveType.getName == JavaSePrimitive.AddThirdParty)
                   .find(adaptation => adaptation.getRef.asInstanceOf[DeployUnit].isModelEquals(uctDeployUnit)) match {
                   case None => {
                     val ctcmd = KevoreeAdaptationFactory.eINSTANCE.createAdaptationPrimitive
@@ -114,8 +115,8 @@ trait UpdateNodeKompare extends AbstractKompare with UpdateChannelKompare {
               tp =>
               //CHECK IF THIS DEPLOY UNIT IS ALREADY MARK AS TO BE INSTALLED
                 adaptationModel.getAdaptations
-                  .filter(adaptation => adaptation.getPrimitiveType.getName == JavaSePrimitive.AddThirdParty ||
-                  adaptation.getPrimitiveType.getName == JavaSePrimitive.AddDeployUnit)
+                  .filter(adaptation => adaptation.getPrimitiveType.getName == JavaSePrimitive.AddThirdParty
+                  || adaptation.getPrimitiveType.getName == JavaSePrimitive.AddDeployUnit)
                   .find(adaptation => adaptation.getRef.asInstanceOf[DeployUnit].isModelEquals(tp)) match {
                   case None => {
                     val adaptcmd = KevoreeAdaptationFactory.eINSTANCE.createAdaptationPrimitive
@@ -125,7 +126,14 @@ trait UpdateNodeKompare extends AbstractKompare with UpdateChannelKompare {
                     adaptcmd.setRef(tp)
                     adaptationModel.addAdaptations(adaptcmd)
                   }
-                  case Some(e) => //SIMILAR DEPLOY UNIT PRIMITIVE ALREADY REGISTERED
+                  case Some(e) => {
+                    //SIMILAR DEPLOY UNIT PRIMITIVE ALREADY REGISTERED
+                    if (e.getPrimitiveType.getName == JavaSePrimitive.AddDeployUnit) {
+                      e.setPrimitiveType(getAdaptationPrimitive(JavaSePrimitive.AddThirdParty,
+                                                                 actualNode.eContainer
+                                                                   .asInstanceOf[ContainerRoot]))
+                    }
+                  }
                 }
 
             }

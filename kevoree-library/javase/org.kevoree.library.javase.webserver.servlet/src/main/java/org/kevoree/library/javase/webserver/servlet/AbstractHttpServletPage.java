@@ -7,6 +7,7 @@ import org.kevoree.annotation.DictionaryType;
 import org.kevoree.library.javase.webserver.AbstractPage;
 import org.kevoree.library.javase.webserver.KevoreeHttpRequest;
 import org.kevoree.library.javase.webserver.KevoreeHttpResponse;
+import org.osgi.framework.BundleException;
 
 import javax.servlet.*;
 import javax.servlet.http.HttpServlet;
@@ -33,14 +34,11 @@ public abstract class AbstractHttpServletPage extends AbstractPage {
         super.startPage();
         try {
             initServlet();
-
             ServletConfig config = new ServletConfig() {
                 @Override
                 public String getServletName() {
                     return getName();
                 }
-                
-                
 
                 @Override
                 public ServletContext getServletContext() {

@@ -1,5 +1,7 @@
 package org.kevoree.library.javase.webserver.servlet
 
+import javax.servlet.ServletContext
+
 /**
  * Created by IntelliJ IDEA.
  * User: duke
@@ -12,7 +14,6 @@ object ServletContextHandler {
 
   private val context = new FakeServletContext
 
-  def getContext = context
-
+  def getContext : ServletContext = context
 
 }

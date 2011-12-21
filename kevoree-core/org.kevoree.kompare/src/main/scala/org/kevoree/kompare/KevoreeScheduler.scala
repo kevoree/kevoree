@@ -82,6 +82,14 @@ trait KevoreeScheduler {
       }
 
       // ADD ThirdParty
+      /*adaptionModel.getAdaptations.filter(adapt => adapt.getPrimitiveType.getName == JavaSePrimitive.AddThirdParty)
+        .foreach {
+        p =>
+          step = KevoreeAdaptationFactory.eINSTANCE.createParallelStep
+          step.addAdaptations(p)
+          currentStep.setNextStep(Some(step))
+          currentStep = step
+      }*/
       step.addAllAdaptations(adaptionModel.getAdaptations
         .filter(adapt => adapt.getPrimitiveType.getName == JavaSePrimitive.AddThirdParty))
       if (!step.getAdaptations.isEmpty) {
@@ -94,8 +102,8 @@ trait KevoreeScheduler {
       adaptionModel.getAdaptations.filter(adapt => adapt.getPrimitiveType.getName == JavaSePrimitive.StartThirdParty)
         .foreach {
         p =>
-          step.addAdaptations(p)
           step = KevoreeAdaptationFactory.eINSTANCE.createParallelStep
+          step.addAdaptations(p)
           currentStep.setNextStep(Some(step))
           currentStep = step
       }

@@ -24,6 +24,7 @@ import org.kevoree.framework.{KevoreeGeneratorHelper, PrimitiveCommand}
 import org.kevoree.framework.osgi.KevoreeInstanceFactory
 import org.kevoree.framework.aspects.KevoreeAspects._
 import org.kevoree.{ContainerRoot, NodeType, Instance}
+import org.osgi.framework.BundleActivator
 
 case class RemoveInstanceCommand(c: Instance, nodeName: String) extends PrimitiveCommand {
 
@@ -36,6 +37,8 @@ case class RemoveInstanceCommand(c: Instance, nodeName: String) extends Primitiv
       bm => bm.objClassName == c.getClass.getName && bm.name == c.getName
     }) ++ List()
 
+
+    
     bundles.forall {
       mp =>
         val bundle = KevoreeDeployManager.getBundleContext.getBundle(mp.bundleId)
@@ -49,11 +52,12 @@ case class RemoveInstanceCommand(c: Instance, nodeName: String) extends Primitiv
         val factoryName = activatorPackage + "." + c.getTypeDefinition.getName + "Factory"
         val kevoreeFactory = bundle.loadClass(factoryName).newInstance().asInstanceOf[KevoreeInstanceFactory]
 
-        kevoreeFactory.remove(c.getName)
-
+        val activator = kevoreeFactory.remove(c.getName)
+        activator.asInstanceOf[BundleActivator].stop(bundle.getBundleContext)
+        
 
         //REFRESH OSGI PACKAGE
-        KevoreeDeployManager.getServicePackageAdmin.refreshPackages(Array(bundle))
+       // KevoreeDeployManager.getServicePackageAdmin.refreshPackages(Array(bundle))
         true
     }
     KevoreeDeployManager.bundleMapping.filter(mb => bundles.contains(mb)).foreach {

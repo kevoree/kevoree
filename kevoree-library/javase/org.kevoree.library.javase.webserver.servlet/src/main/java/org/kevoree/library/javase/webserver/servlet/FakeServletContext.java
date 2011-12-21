@@ -32,7 +32,6 @@ public class FakeServletContext implements ServletContext {
     @Override
     public ServletContext getContext(String uripath) {
         logger.warn("Call getContext");
-
         return this;
     }
 
@@ -155,24 +154,27 @@ public class FakeServletContext implements ServletContext {
         return true;
     }
 
+
+    private HashMap<String,Object> attributes = new HashMap<String,Object>();
+
     @Override
     public Object getAttribute(String name) {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return attributes.get(name);
     }
 
     @Override
     public Enumeration<String> getAttributeNames() {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return Collections.enumeration(attributes.keySet());
     }
 
     @Override
     public void setAttribute(String name, Object object) {
-        //To change body of implemented methods use File | Settings | File Templates.
+        attributes.put(name,object);
     }
 
     @Override
     public void removeAttribute(String name) {
-        //To change body of implemented methods use File | Settings | File Templates.
+        attributes.remove(name);
     }
 
     @Override
@@ -287,7 +289,7 @@ public class FakeServletContext implements ServletContext {
 
     @Override
     public ClassLoader getClassLoader() {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return this.getClass().getClassLoader();
     }
 
     @Override
