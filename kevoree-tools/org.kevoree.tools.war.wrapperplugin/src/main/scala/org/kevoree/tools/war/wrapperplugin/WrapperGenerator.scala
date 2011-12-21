@@ -50,6 +50,7 @@ object WrapperGenerator {
 
     fw.append("@Override\n")
     fw.append("public void startPage() {\n")
+    fw.append("super.startPage();\n")
     fw.append("Bundle b = (Bundle)this.getDictionary().get(\"osgi.bundle\");")
     fw.append("servletRepository = new LocalServletRegistry(b);\n");
 

@@ -19,12 +19,11 @@
 package org.kevoree.framework.osgi
 
 import java.util.Hashtable
-import org.osgi.framework.BundleActivator
-import org.osgi.framework.BundleContext
- import org.kevoree.framework.message._
+import org.kevoree.framework.message._
 import org.kevoree.api.service.core.handler.KevoreeModelHandlerService
 import org.kevoree.api.service.core.script.KevScriptEngineFactory
 import org.kevoree.framework._
+import org.osgi.framework.{ServiceRegistration, BundleActivator, BundleContext}
 
 abstract class KevoreeChannelFragmentActivator extends BundleActivator with KevoreeInstanceActivator {
 
@@ -34,32 +33,26 @@ abstract class KevoreeChannelFragmentActivator extends BundleActivator with Kevo
   var instanceName: String = ""
   var channelActor: KevoreeChannelFragment = null
   var bundleContext: BundleContext = null
+  var mainService: ServiceRegistration = null
 
 
-  def setNodeName(n : String) {
+  def setNodeName(n: String) {
     nodeName = n
   }
-  def setInstanceName(in : String){
+
+  def setInstanceName(in: String) {
     instanceName = in
   }
 
   def start(bc: BundleContext) {
     bundleContext = bc
-    /* SEARCH HEADERS VALUE */
-    import scala.collection.JavaConversions._
-   // nodeName = bc.getBundle.getHeaders.find(dic => dic._1 == Constants.KEVOREE_NODE_NAME_HEADER).get._2.toString
-   // instanceName = bc.getBundle.getHeaders.find(dic => dic._1 == Constants.KEVOREE_INSTANCE_NAME_HEADER).get._2.toString
-    /* Create component actor */
     channelActor = callFactory()
-
-
-    /* Start actor */
-    channelActor.start
+    channelActor.start()
     /* Expose component in OSGI */
     val props = new Hashtable[String, String]()
     props.put(Constants.KEVOREE_NODE_NAME, nodeName)
     props.put(Constants.KEVOREE_INSTANCE_NAME, instanceName)
-    bc.registerService(classOf[KevoreeChannelFragment].getName(), channelActor, props);
+    mainService = bc.registerService(classOf[KevoreeChannelFragment].getName, channelActor, props);
 
     /* PUT INITIAL PROPERTIES */
     channelActor.getDictionary.put(Constants.KEVOREE_PROPERTY_OSGI_BUNDLE, bc.getBundle)
@@ -71,7 +64,7 @@ abstract class KevoreeChannelFragmentActivator extends BundleActivator with Kevo
 
 
     val sr2 = bc.getServiceReference(classOf[KevScriptEngineFactory].getName());
-    val kevSFHandlerService : KevScriptEngineFactory = bc.getService(sr2).asInstanceOf[KevScriptEngineFactory];
+    val kevSFHandlerService: KevScriptEngineFactory = bc.getService(sr2).asInstanceOf[KevScriptEngineFactory];
     channelActor.asInstanceOf[AbstractChannelFragment].setKevScriptEngineFactory(kevSFHandlerService)
 
 
@@ -84,10 +77,10 @@ abstract class KevoreeChannelFragmentActivator extends BundleActivator with Kevo
       println("Stopping => " + instanceName)
     }
 
-
-
     channelActor.stop
     //channelActor.stopChannelFragment //DEPRECATED DONE BY DEPLOY
     channelActor = null
+
+    mainService.unregister()
   }
 }

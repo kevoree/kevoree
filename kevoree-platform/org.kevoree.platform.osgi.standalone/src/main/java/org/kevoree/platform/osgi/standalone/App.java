@@ -13,26 +13,20 @@
  */
 package org.kevoree.platform.osgi.standalone;
 
-import org.kevoree.ContainerRoot;
-import org.kevoree.framework.KevoreeXmiHelper;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
+import org.slf4j.LoggerFactory;
+
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-/**
- * Hello world!
- */
 public class App {
 
     public void start() {
-
-        File mavenDir = new File(System.getProperty("user.home") + "/.m2/repository");
-        if (mavenDir.exists() && mavenDir.isDirectory()) {
-            System.out.println("use mavenDir=file:///" + mavenDir.getAbsoluteFile().getAbsolutePath());
-            System.setProperty("org.kevoree.remote.provisioning", "file:///"+mavenDir.getAbsolutePath());
+        ch.qos.logback.classic.Logger root = (ch.qos.logback.classic.Logger) LoggerFactory.getLogger(ch.qos.logback.classic.Logger.ROOT_LOGGER_NAME);
+        if(System.getProperty("node.log.appender.file") != null){
+            System.out.println("Kevoree log will out in file => "+System.getProperty("node.log.appender.file"));
+        } else {
+            root.detachAppender("FILE");
         }
-
         EmbeddedFelix felix = new EmbeddedFelix();
         felix.run();
         try {

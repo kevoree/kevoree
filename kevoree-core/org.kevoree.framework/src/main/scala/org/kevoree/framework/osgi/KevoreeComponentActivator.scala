@@ -19,18 +19,19 @@
 package org.kevoree.framework.osgi
 
 import java.util.Hashtable
-import org.osgi.framework.BundleActivator
-import org.osgi.framework.BundleContext
- import org.kevoree.framework.message._
+import org.kevoree.framework.message._
 import org.kevoree.api.service.core.handler.KevoreeModelHandlerService
 import org.kevoree.framework._
 import org.kevoree.api.service.core.script.KevScriptEngineFactory
+import org.osgi.framework.{ServiceRegistration, BundleActivator, BundleContext}
 
 
 /* ABSTRACT COMPONENT */
 abstract class KevoreeComponentActivator extends BundleActivator with KevoreeInstanceActivator {
 
   def callFactory(): KevoreeComponent
+  
+  
 
   var nodeName: String = ""
   var componentName: String = ""
@@ -44,8 +45,11 @@ abstract class KevoreeComponentActivator extends BundleActivator with KevoreeIns
 
   var componentActor: KevoreeComponent = null
   var bundleContext: BundleContext = null
+  
+  var services : List[ServiceRegistration] = List()
+  
 
-  def start(bc: BundleContext) {
+  override def start(bc: BundleContext) {
     bundleContext = bc
     /* SEARCH HEADERS VALUE */
     import scala.collection.JavaConversions._
@@ -60,36 +64,31 @@ abstract class KevoreeComponentActivator extends BundleActivator with KevoreeIns
 
     componentActor.getKevoreeComponentType.asInstanceOf[AbstractComponentType].setName(componentName)
     componentActor.getKevoreeComponentType.asInstanceOf[AbstractComponentType].setNodeName(nodeName)
-    val sr = bc.getServiceReference(classOf[KevoreeModelHandlerService].getName());
+    val sr = bc.getServiceReference(classOf[KevoreeModelHandlerService].getName);
     val modelHandlerService : KevoreeModelHandlerService = bc.getService(sr).asInstanceOf[KevoreeModelHandlerService];
     componentActor.getKevoreeComponentType.asInstanceOf[AbstractComponentType].setModelService(modelHandlerService)
 
 
-    val sr2 = bc.getServiceReference(classOf[KevScriptEngineFactory].getName());
+    val sr2 = bc.getServiceReference(classOf[KevScriptEngineFactory].getName);
     val kevSFHandlerService : KevScriptEngineFactory = bc.getService(sr2).asInstanceOf[KevScriptEngineFactory];
     componentActor.getKevoreeComponentType.asInstanceOf[AbstractComponentType].setKevScriptEngineFactory(kevSFHandlerService)
-
-
-
-
-
 
     /* Start actor */
     componentActor.start()
     /* Expose component in OSGI */
-    var props = new Hashtable[String, String]()
+    val props = new Hashtable[String, String]()
     props.put(Constants.KEVOREE_NODE_NAME, nodeName)
     props.put(Constants.KEVOREE_INSTANCE_NAME, componentName)
-    bc.registerService(classOf[KevoreeComponent].getName(), componentActor, props);
+    services = services ++ List(bc.registerService(classOf[KevoreeComponent].getName, componentActor, props))
 
     /* Expose component provided port in OSGI */
     componentActor.getKevoreeComponentType.getHostedPorts.foreach {
       hpref =>
-        var portProps = new Hashtable[String, String]()
+        val portProps = new Hashtable[String, String]()
         portProps.put(Constants.KEVOREE_NODE_NAME, nodeName)
         portProps.put(Constants.KEVOREE_INSTANCE_NAME, componentName)
         portProps.put(Constants.KEVOREE_PORT_NAME, hpref._1)
-        bc.registerService(classOf[KevoreePort].getName(), hpref._2, portProps);
+        services = services ++ List(bc.registerService(classOf[KevoreePort].getName, hpref._2, portProps))
     }
 
     /* START NEEDPORT ACTOR */
@@ -107,7 +106,7 @@ abstract class KevoreeComponentActivator extends BundleActivator with KevoreeIns
 
   }
 
-  def stop(bc: BundleContext) {
+  override def stop(bc: BundleContext) {
 
     if (componentActor.isStarted) {
       componentActor !? StopMessage
@@ -126,6 +125,11 @@ abstract class KevoreeComponentActivator extends BundleActivator with KevoreeIns
     }
     componentActor.stop
     componentActor = null
+
+    services.foreach{service =>
+      service.unregister()
+    }
+    
   }
 
 }
