@@ -294,7 +294,10 @@ class KevoreeCoreBean extends KevoreeModelHandlerService with KevoreeThreadActor
                   try {
                     logger.debug("Try to cleanup " + bm.bundleId + "," + bm.objClassName + "," + bm.name)
                     KevoreeDeployManager.removeMapping(bm)
-                    getBundleContext.getBundle(bm.bundleId).uninstall()
+                    val b_toremove = getBundleContext.getBundle(bm.bundleId)
+                    if(b_toremove != null){
+                      b_toremove.uninstall()
+                    }
                   } catch {
                     case _@e => logger.debug("Error while cleanup platform ", e)
                   }
