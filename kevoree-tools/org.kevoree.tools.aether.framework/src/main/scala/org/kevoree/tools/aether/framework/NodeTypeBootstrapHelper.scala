@@ -98,6 +98,7 @@ class NodeTypeBootstrapHelper {
     try {
       val arteFile = AetherUtil.resolveDeployUnit(du)
       if (arteFile != null) {
+        logger.debug("trying to install " + arteFile.getAbsolutePath)
         bundle = bundleContext.installBundle("file:///" + arteFile.getAbsolutePath, new FileInputStream(arteFile))
         //        bundle.start()
         KevoreeDeployManager.addMapping(KevoreeOSGiBundle(buildKEY(du), du.getClass.getName, bundle.getBundleId))
@@ -129,7 +130,7 @@ class NodeTypeBootstrapHelper {
       }
       true
     } catch {
-      case _@e => logger.error("Can't isntall node type", e);false
+      case _@e => logger.error("Can't install node type", e);false
     }
   }
 
