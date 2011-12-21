@@ -33,7 +33,6 @@ import java.awt.event.WindowEvent;
 import java.io.File;
 import java.net.URL;
 import java.util.Arrays;
-import java.util.Properties;
 
 public class KevoreeGUIFrame extends JFrame {
 
@@ -110,10 +109,8 @@ public class KevoreeGUIFrame extends JFrame {
                         btA.setBootstrapModel(nodeUI.getCurrentModel());
 
                         EmbeddedActivators.setActivators(Arrays.asList(
-                                //      (BundleActivator) new org.ops4j.pax.url.mvn.internal.Activator(),
                                 (BundleActivator) new ShellActivator(),
                                 (BundleActivator) new ConsoleActivator(),
-                                (BundleActivator) new org.ops4j.pax.url.assembly.internal.Activator(),
                                 btA
                         ));
                         EmbeddedActivators.setBootstrapActivator(btA);

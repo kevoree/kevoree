@@ -58,6 +58,12 @@ object WrapperGenerator {
     fw.append("}//END START METHOD\n")
 
     fw.append("@Override\n")
+    fw.append("public void stopPage() {\n")
+    fw.append("    servletRepository.unload();\n")
+    fw.append("    super.stopPage();\n")
+    fw.append(" }\n")
+
+    fw.append("@Override\n")
     fw.append("public KevoreeHttpResponse process(KevoreeHttpRequest request, KevoreeHttpResponse response) {\n")
 
     fw.append("if (servletRepository.tryURL(request.getUrl(), request, response)) {return response;}\n")
