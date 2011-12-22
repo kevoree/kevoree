@@ -29,7 +29,7 @@ public class KevoreeServletResponse implements HttpServletResponse {
     final ServletOutputStream servletStream = new ServletOutputStream(){
         @Override
         public void write(int i) throws IOException {
-            //logger.debug("write ="+i);
+            logger.debug("write ="+i);
             stream.write(i);
         }
     };

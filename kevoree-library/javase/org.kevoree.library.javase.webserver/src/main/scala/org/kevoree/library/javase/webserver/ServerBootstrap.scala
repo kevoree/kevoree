@@ -15,9 +15,9 @@ class ServerBootstrap(request : MessagePort,compo : AbstractComponentType) {
   var supervisorRef : Supervisor = _
   var httpServer : ActorRef= _
 
-  def startServer(port : Int){
+  def startServer(port : Int, timeout : Long){
     id = "kevoree.javase.webserver.spray-service."+compo.getName
-    val config = ServerConfig("0.0.0.0",port,id+"-server",id,id)
+    val config = ServerConfig("0.0.0.0",port,id+"-server",id,id,timeout)
     httpServer = Actor.actorOf(new HttpServer(config))
     supervisorRef = Supervisor(
         SupervisorConfig(

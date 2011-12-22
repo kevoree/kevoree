@@ -9,7 +9,7 @@ import javax.servlet.ServletContext
  * Time: 22:55
  * To change this template use File | Settings | File Templates.
  */
-
+/*
 object ServletContextHandler {
 
   private val context = new FakeServletContext
@@ -17,3 +17,4 @@ object ServletContextHandler {
   def getContext : ServletContext = context
 
 }
+*/

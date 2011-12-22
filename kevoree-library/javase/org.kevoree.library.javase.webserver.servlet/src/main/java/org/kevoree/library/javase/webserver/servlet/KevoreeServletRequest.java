@@ -289,7 +289,14 @@ public class KevoreeServletRequest implements HttpServletRequest {
 
     @Override
     public String getContextPath() {
-        return kevRequest.getUrl();
+        return "";
+        /*
+        if(kevRequest.getUrl().contains("/")){
+            return kevRequest.getUrl().substring(0,kevRequest.getUrl().lastIndexOf("/"));
+        }
+        else {
+            return kevRequest.getUrl();
+        }*/
     }
 
     @Override

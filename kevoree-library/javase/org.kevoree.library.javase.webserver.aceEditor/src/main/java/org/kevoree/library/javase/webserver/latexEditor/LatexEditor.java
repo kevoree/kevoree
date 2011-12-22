@@ -51,7 +51,12 @@ public class LatexEditor extends AbstractPage {
     @Override
     public void startPage() {
         Bundle b = (Bundle) this.getDictionary().get("osgi.bundle");
-        servletRepository = new LocalServletRegistry(b);
+        servletRepository = new LocalServletRegistry(b){
+            @Override
+            public String getCDefaultPath(){
+                return "/latexEditor";
+            }
+        };
         super.startPage();
         RPC.setCurrentBundle(b); //GWT ACK
         servletRepository.registerServlet("/latexEditor/latexEditorService",new org.kevoree.library.javase.webserver.latexEditor.server.latexEditorServiceImpl(this));

@@ -27,6 +27,9 @@ import java.util.*;
 public abstract class AbstractHttpServletPage extends AbstractPage {
 
     public HttpServlet legacyServlet = null;
+
+    public abstract ServletContext getSharedServletContext();
+
     public abstract void initServlet();
 
     @Override
@@ -42,7 +45,7 @@ public abstract class AbstractHttpServletPage extends AbstractPage {
 
                 @Override
                 public ServletContext getServletContext() {
-                    return ServletContextHandler.getContext();
+                    return getSharedServletContext();
                 }
                 
                 private HashMap<String,String> initParameterNames = new HashMap<String,String>();                
