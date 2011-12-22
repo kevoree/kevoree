@@ -17,7 +17,10 @@ import org.kevoree.library.javase.webserver.latexEditor.client.latexEditorServic
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Collections;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
@@ -30,6 +33,21 @@ public class latexEditorServiceImpl extends RemoteServiceServlet implements late
     LockFilesService portService = null;
     Set<String> extensions = new HashSet<String>();
 
+
+    @Override
+    protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+
+        System.out.println("cpath=>"+req.getContextPath());
+        System.out.println(req.getHeaderNames());
+        System.out.println("uri=>"+req.getRequestURI());
+        System.out.println("url=>"+req.getRequestURL());
+
+
+
+
+        
+        super.service(req, resp);
+    }
 
     public latexEditorServiceImpl() {
         //EMPTY CONSTRUCTOR FOR DEBUG ONLY IN IDE
@@ -78,13 +96,57 @@ public class latexEditorServiceImpl extends RemoteServiceServlet implements late
 
     public latexEditorServiceImpl(LatexEditor _editor) {
         editor = _editor;
-        editor.getPortByName("files", LockFilesService.class);
+       // portService= editor.getPortByName("files", LockFilesService.class);
         extensions.add("tex");
         extensions.add("cls");
         extensions.add("txt");
         extensions.add("sty");
         extensions.add("bst");
         extensions.add("bib");
+        logger.debug("Latex Editor Service Init "+portService);
+
+        portService = new LockFilesService(){
+
+            @Override
+            public Set<String> getFilesPath() {
+                Set<String> files = new HashSet<String>();
+                files.add("/fakeFile1.tex");
+                files.add("/fakeFile2.tex");
+                return files;
+            }
+
+            @Override
+            public Set<String> getFilteredFilesPath(Set<String> extensions) {
+                Set<String> files = new HashSet<String>();
+                files.add("/fakeFile1.tex");
+                files.add("/fakeFile2.tex");
+                return files;
+            }
+
+            @Override
+            public byte[] getFileContent(String relativePath, Boolean lock) {
+                return "fake content \n %comment \n".getBytes();
+            }
+
+            @Override
+            public String getAbsolutePath(String relativePath) {
+                return null;  //To change body of implemented methods use File | Settings | File Templates.
+            }
+
+            @Override
+            public boolean saveFile(String relativePath, byte[] data, Boolean unlock) {
+                System.out.println("FAKE SAVE "+ relativePath);
+                return false;  //To change body of implemented methods use File | Settings | File Templates.
+            }
+
+            @Override
+            public void unlock(String relativePath) {
+                //To change body of implemented methods use File | Settings | File Templates.
+            }
+        };
+
+
+
     }
 
     @Override

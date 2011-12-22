@@ -2,6 +2,7 @@ package org.kevoree.library.javase.webserver.servlet;
 
 import org.kevoree.annotation.ComponentType;
 
+import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -18,6 +19,11 @@ import java.io.PrintWriter;
  */
 @ComponentType
 public class HelloServlet extends AbstractHttpServletPage {
+
+    @Override
+    public ServletContext getSharedServletContext() {
+        return new FakeServletContext();
+    }
 
     @Override
     public void initServlet() {
