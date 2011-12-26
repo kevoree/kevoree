@@ -34,7 +34,7 @@
             <groupId>javax.validation</groupId>
             <artifactId>validation-api</artifactId>
             <version>1.0.0.GA</version>
-            <scope>test</scope>
+           <!-- <scope>test</scope>-->
         </dependency>
         <dependency>
             <groupId>javax.validation</groupId>
@@ -67,6 +67,9 @@
             <version>4.8.1</version>
             <scope>test</scope>
         </dependency>
+
+
+
     </dependencies>
 
     <build>
@@ -124,19 +127,20 @@
                 <configuration>
                     <instructions>
                         <Private-Package>
-                            com.google.gwt.user.*,
-                            com.google.gwt.core.client.*
+                            com.google.*,javax.validation.*
                         </Private-Package>
                         <Export-Package>
                             org.kevoree.library.javase.webserver.latexEditor.*,
                             edu.ycp.*
                         </Export-Package>
                         <Import-Package>
+                            !javax.validation.*,
                             !edu.ycp.*,
                             !org.kevoree.library.javase.webserver.latexEditor.*,
                             !com.google.*,
                             org.kevoree.*,scala.*,java.*,javax.*,org.slf4j.*,org.osgi.*
                         </Import-Package>
+                        <DynamicImport-Package>*</DynamicImport-Package>
                     </instructions>
                 </configuration>
             </plugin>

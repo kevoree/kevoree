@@ -12,6 +12,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Locale;
 
 /**
@@ -23,13 +24,14 @@ import java.util.Locale;
  */
 public class KevoreeServletResponse implements HttpServletResponse {
 
+    private HashMap<String,String> headers = new HashMap<String,String>();
+    
     private Logger logger = LoggerFactory.getLogger(this.getClass());
     final private ByteArrayOutputStream stream = new  ByteArrayOutputStream();
     final private PrintWriter writer = new PrintWriter(stream);
     final ServletOutputStream servletStream = new ServletOutputStream(){
         @Override
         public void write(int i) throws IOException {
-            logger.debug("write ="+i);
             stream.write(i);
         }
     };
@@ -110,8 +112,9 @@ public class KevoreeServletResponse implements HttpServletResponse {
     public void populateKevoreeResponse(KevoreeHttpResponse response){
         try {
             stream.flush();
-            logger.debug("Set ContentRaw {}",new String(stream.toByteArray()));
+            //logger.debug("Set ContentRaw {}",new String(stream.toByteArray()));
             response.setRawContent(stream.toByteArray());
+            response.setHeaders(headers);
             stream.close();
         } catch (IOException e) {
             e.printStackTrace();
@@ -127,7 +130,7 @@ public class KevoreeServletResponse implements HttpServletResponse {
 
     @Override
     public boolean containsHeader(String name) {
-        return false;  //To change body of implemented methods use File | Settings | File Templates.
+        return headers.containsKey(name);
     }
 
     @Override
@@ -167,61 +170,63 @@ public class KevoreeServletResponse implements HttpServletResponse {
 
     @Override
     public void setDateHeader(String name, long date) {
-        //To change body of implemented methods use File | Settings | File Templates.
+        headers.put(name,date+"");
     }
 
     @Override
     public void addDateHeader(String name, long date) {
-        //To change body of implemented methods use File | Settings | File Templates.
+        headers.put(name,date+"");
     }
 
     @Override
     public void setHeader(String name, String value) {
-        //To change body of implemented methods use File | Settings | File Templates.
+        headers.put(name,value);
     }
 
     @Override
     public void addHeader(String name, String value) {
-        //To change body of implemented methods use File | Settings | File Templates.
+        headers.put(name,value);
     }
 
     @Override
     public void setIntHeader(String name, int value) {
-        //To change body of implemented methods use File | Settings | File Templates.
+        headers.put(name,value+"");
     }
 
     @Override
     public void addIntHeader(String name, int value) {
-        //To change body of implemented methods use File | Settings | File Templates.
+        headers.put(name,value+"");
     }
 
     @Override
     public void setStatus(int sc) {
-        //To change body of implemented methods use File | Settings | File Templates.
+        status = sc;
     }
 
     @Override
     public void setStatus(int sc, String sm) {
-        //To change body of implemented methods use File | Settings | File Templates.
+        status = sc;
     }
+    
+    int status = 200;
 
     @Override
     public int getStatus() {
-        return 0;  //To change body of implemented methods use File | Settings | File Templates.
+        return status;
     }
 
     @Override
     public String getHeader(String name) {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return headers.get(name);
     }
 
     @Override
     public Collection<String> getHeaders(String name) {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return headers.keySet();
     }
 
     @Override
     public Collection<String> getHeaderNames() {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return headers.keySet();
     }
 }

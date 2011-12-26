@@ -21,7 +21,6 @@ import akka.actor.Actor
 import cc.spray.can._
 import org.kevoree.framework.MessagePort
 import java.util.UUID
-import java.net.URLDecoder
 
 class RootService(id: String, request: MessagePort, bootstrap: ServerBootstrap, timeout: Long) extends Actor {
   val log = LoggerFactory.getLogger(getClass)
@@ -49,10 +48,20 @@ class RootService(id: String, request: MessagePort, bootstrap: ServerBootstrap, 
       case msg: org.kevoree.library.javase.webserver.KevoreeHttpResponse => {
         map.get(msg.getTokenID) match {
           case Some(responder) => {
+
+            var headers: List[HttpHeader] = List()
+            headers = headers ++ List(HttpHeader("Content-Type", msg.getContentType))
+            import scala.collection.JavaConversions._
+            msg.getHeaders.foreach {
+              header => {
+                headers = headers ++ List(HttpHeader(header._1, header._2))
+              }
+            }
+
             if (msg.getRawContent != null) {
-              responder._1.complete(rawResponse(msg.getRawContent, 200, List(HttpHeader("Content-Type", msg.getContentType))))
+              responder._1.complete(rawResponse(msg.getRawContent, 200, headers))
             } else {
-              responder._1.complete(response(msg.getContent, 200, List(HttpHeader("Content-Type", msg.getContentType))))
+              responder._1.complete(response(msg.getContent, 200, headers))
             }
             map.remove(msg.getTokenID)
           }
@@ -83,8 +92,9 @@ class RootService(id: String, request: MessagePort, bootstrap: ServerBootstrap, 
       val paramsRes = GetParamsParser.getParams(url)
       kevMsg.setUrl(paramsRes._1)
       kevMsg.setResolvedParams(paramsRes._2)
-      headers.foreach{header =>
-        kevMsg.getHeaders.put(header._1,header._2)
+      headers.foreach {
+        header =>
+          kevMsg.getHeaders.put(header._1, header._2)
       }
       request.process(kevMsg)
 
@@ -95,8 +105,9 @@ class RootService(id: String, request: MessagePort, bootstrap: ServerBootstrap, 
       kevMsg.setRawBody(body)
       kevMsg.setUrl(paramsRes._1)
       kevMsg.setResolvedParams(paramsRes._2)
-      headers.foreach{header =>
-        kevMsg.getHeaders.put(header._1,header._2)
+      headers.foreach {
+        header =>
+          kevMsg.getHeaders.put(header._1, header._2)
       }
       request.process(kevMsg)
 
