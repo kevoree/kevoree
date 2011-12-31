@@ -1,35 +1,29 @@
-
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <artifactId>org.kevoree.tools.android.framework</artifactId>
     <packaging>bundle</packaging>
     <name>Kevoree :: Tools :: Android Framework</name>
-    <version>1.5.0-SNAPSHOT</version>
+    <version>1.5.0-RC1</version>
 
     <parent>
         <artifactId>org.kevoree.tools.root</artifactId>
         <groupId>org.kevoree.tools</groupId>
-        <version>1.5.0-SNAPSHOT</version>
+        <version>1.5.0-RC1</version>
         <relativePath>../org.kevoree.tools.root/pom.xml</relativePath>
     </parent>
 
     <dependencies>
         <dependency>
+            <groupId>org.kevoree.tools</groupId>
+            <artifactId>org.kevoree.tools.javase.framework</artifactId>
+            <version>${kevoree.version}</version>
+        </dependency>
+        <dependency>
             <groupId>com.google.android</groupId>
             <artifactId>android</artifactId>
             <version>2.2.1</version>
             <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.osgi</groupId>
-            <artifactId>org.osgi.core</artifactId>
-            <version>4.2.0</version>
-        </dependency>
-        <dependency>
-            <groupId>org.osgi</groupId>
-            <artifactId>org.osgi.compendium</artifactId>
-            <version>4.2.0</version>
         </dependency>
     </dependencies>
 
@@ -45,7 +39,8 @@
                     <instructions>
                         <Bundle-SymbolicName>org.kevoree.tools.android.framework</Bundle-SymbolicName>
                         <Import-Package>!org.kevoree.tools.android.framework.*,*;version=0.0.0</Import-Package>
-                        <Export-Package>org.kevoree.android.framework.helper,org.kevoree.android.framework.service</Export-Package>
+                        <Export-Package>org.kevoree.android.framework.helper,org.kevoree.android.framework.service
+                        </Export-Package>
                     </instructions>
                 </configuration>
             </plugin>

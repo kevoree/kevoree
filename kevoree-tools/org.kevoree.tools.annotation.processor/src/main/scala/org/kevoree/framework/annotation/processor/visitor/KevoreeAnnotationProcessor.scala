@@ -130,7 +130,7 @@ class KevoreeAnnotationProcessor() extends javax.annotation.processing.AbstractP
   }
 
 
-  def processNodeType(nodeTypeAnnotation: NodeType, typeDecl: TypeElement, root: ContainerRoot) = {
+  def processNodeType(nodeTypeAnnotation: org.kevoree.annotation.NodeType, typeDecl: TypeElement, root: ContainerRoot) = {
     //Checks that the root KevoreeChannelFragment is present in hierarchy.
     val superTypeChecker = new SuperTypeValidationVisitor(classOf[AbstractNodeType].getName)
     typeDecl.accept(superTypeChecker, typeDecl)

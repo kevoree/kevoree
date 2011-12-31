@@ -4,12 +4,12 @@
     <artifactId>org.kevoree.platform.osgi.android</artifactId>
     <packaging>jar</packaging>
     <name>Kevoree :: Platform :: OSGI Android</name>
-    <version>1.5.0-SNAPSHOT</version>
+    <version>1.5.0-RC1</version>
 
     <parent>
         <artifactId>org.kevoree.platform.root</artifactId>
         <groupId>org.kevoree.platform</groupId>
-        <version>1.5.0-SNAPSHOT</version>
+        <version>1.5.0-RC1</version>
         <relativePath>../org.kevoree.platform.root/pom.xml</relativePath>
     </parent>
 
@@ -78,8 +78,8 @@
         </dependency>
 
         <dependency>
-            <groupId>org.kevoree</groupId>
-            <artifactId>org.kevoree.deploy.osgi</artifactId>
+            <groupId>org.kevoree.tools</groupId>
+            <artifactId>org.kevoree.tools.deploy.osgi</artifactId>
             <version>${kevoree.version}</version>
             <exclusions>
                 <exclusion>
@@ -531,7 +531,7 @@
                         </goals>
                         <configuration>
                             <file>${project.build.directory}/${project.build.finalName}.apk</file>
-                            <url>http://maven.kevoree.org/archiva/repository/snapshots/</url>
+                            <url>http://maven.kevoree.org/archiva/repository/release/</url>
                             <packaging>apk</packaging>
                             <groupId>org.kevoree.platform</groupId>
                             <artifactId>org.kevoree.platform.osgi.android</artifactId>

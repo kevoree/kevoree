@@ -28,6 +28,7 @@ import org.kevoree.core.impl.KevoreeConfigServiceBean;
 import org.kevoree.core.impl.KevoreeCoreBean;
 import org.kevoree.framework.KevoreeXmiHelper;
 import org.kevoree.tools.aether.framework.AetherUtil;
+import org.kevoree.tools.aether.framework.NodeTypeBootstrapHelper;
 import org.kevoree.tools.marShell.KevScriptCoreEngine;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
@@ -91,13 +92,16 @@ public class BootstrapActivator implements BundleActivator {
         try {
             KevoreeConfigServiceBean configBean = new KevoreeConfigServiceBean();
             coreBean = new KevoreeCoreBean();
-            coreBean.setBundleContext(context);
+            NodeTypeBootstrapHelper bootstraper = new NodeTypeBootstrapHelper();
+            bootstraper.setBootstrapBundleContext(context);
+
+            coreBean.setBootstraper(bootstraper);
             coreBean.setConfigService((ConfigurationService) configBean);
             coreBean.start();
             //Kevoree script
-            KevScriptInterpreterService kevScriptBean = new KevScriptInterpreterService(coreBean);
+           // KevScriptInterpreterService kevScriptBean = new KevScriptInterpreterService(coreBean);
             context.registerService(KevoreeModelHandlerService.class.getName(), coreBean, null);
-            context.registerService(ScriptInterpreter.class.getName(), kevScriptBean, null);
+            //context.registerService(ScriptInterpreter.class.getName(), kevScriptBean, null);
             context.registerService(KevScriptEngineFactory.class.getName(), new KevScriptEngineFactory() {
                 @Override
                 public KevScriptEngine createKevScriptEngine() {
