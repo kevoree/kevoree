@@ -18,7 +18,6 @@ package org.kevoree.api.service.core.script;
  * User: duke
  * Date: 11/12/11
  * Time: 20:22
- * To change this template use File | Settings | File Templates.
  */
 public class KevScriptEngineException extends Exception {
 

@@ -3,7 +3,9 @@ package org.kevoree.library.android.nodeType;
 import org.kevoree.ContainerRoot;
 import org.kevoree.adaptation.deploy.osgi.BaseDeployOSGi;
 import org.kevoree.annotation.*;
+import org.kevoree.annotation.NodeType;
 import org.kevoree.framework.*;
+import org.kevoree.framework.context.KevoreeDeployManager;
 import org.kevoree.kompare.KevoreeKompareBean;
 import org.kevoreeAdaptation.AdaptationModel;
 import org.kevoreeAdaptation.AdaptationPrimitive;
@@ -31,8 +33,9 @@ public class AndroidNode extends AbstractNodeType {
     @Start
     @Override
     public void startNode() {
-        kompareBean = new KevoreeKompareBean();
         Bundle bundle = (Bundle) this.getDictionary().get("osgi.bundle");
+        KevoreeDeployManager.setBundle(bundle);
+        kompareBean = new KevoreeKompareBean();
         deployBean = new BaseDeployOSGi(bundle);
     }
 
@@ -41,6 +44,8 @@ public class AndroidNode extends AbstractNodeType {
     public void stopNode() {
         kompareBean = null;
         deployBean = null;
+        //Cleanup the local runtime
+        KevoreeDeployManager.clearAll();
     }
 
     @Override
