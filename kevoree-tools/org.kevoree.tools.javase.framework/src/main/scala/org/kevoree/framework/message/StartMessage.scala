@@ -1,5 +1,7 @@
 package org.kevoree.framework.message
 
+import org.kevoree.ContainerRoot
+
 /**
  * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE, Version 3, 29 June 2007;
  * you may not use this file except in compliance with the License.
@@ -13,9 +15,5 @@ package org.kevoree.framework.message
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 
-case class StartMessage() extends Message
+case class StartMessage(model : ContainerRoot) extends Message

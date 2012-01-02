@@ -75,7 +75,7 @@ case class UpdateDictionaryCommand(c: Instance, nodeName: String) extends Primit
             }
             case Some(sr) => {
               val obj= componentBundle.getBundleContext.getService(sr)
-              lastDictioanry = (obj.asInstanceOf[KevoreeActor] !? UpdateDictionaryMessage(dictionary)).asInstanceOf[HashMap[String, AnyRef]]
+              lastDictioanry = (obj.asInstanceOf[KevoreeActor] !? UpdateDictionaryMessage(dictionary, c.getTypeDefinition.eContainer.asInstanceOf[ContainerRoot])).asInstanceOf[HashMap[String, AnyRef]]
               true
             }
           }
@@ -108,7 +108,7 @@ case class UpdateDictionaryCommand(c: Instance, nodeName: String) extends Primit
               lastDictioanry.foreach{ dic =>
                 tempHash.put(dic._1,dic._2.toString)
               }
-              obj.asInstanceOf[KevoreeActor] !? UpdateDictionaryMessage(tempHash)
+              obj.asInstanceOf[KevoreeActor] !? UpdateDictionaryMessage(tempHash, c.getTypeDefinition.eContainer.asInstanceOf[ContainerRoot])
             }
           }
         } else {

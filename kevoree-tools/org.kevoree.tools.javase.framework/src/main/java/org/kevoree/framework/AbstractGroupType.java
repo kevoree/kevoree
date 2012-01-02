@@ -36,7 +36,6 @@ public abstract class AbstractGroupType {
 
     }
 
-
     public HashMap<String, Object> getDictionary() {
         return null;
     } //OVERRIDE BY FACTORY

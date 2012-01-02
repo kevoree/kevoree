@@ -29,14 +29,13 @@ trait KevoreeGroup extends AbstractGroupType with KevoreeActor with ModelListene
     triggerModelUpdate()
   }
 
-  @BeanProperty
-  var mhandler: KevoreeModelHandlerService = null;
+  var mhandler: ModelHandlerServiceProxy = new ModelHandlerServiceProxy();
 
   override def getModelService() : KevoreeModelHandlerService = {
     mhandler
   }
   override def setModelService(s : KevoreeModelHandlerService) {
-    mhandler = s
+    mhandler.setProxy(s);
   }
 
   var nodeName: String = ""
@@ -70,7 +69,7 @@ trait KevoreeGroup extends AbstractGroupType with KevoreeActor with ModelListene
   def updateGroup: Unit = {}
 
   override def internal_process(msgg: Any) = msgg match {
-    case UpdateDictionaryMessage(d) => {
+    case UpdateDictionaryMessage(d,cmodel) => {
       try {
         import scala.collection.JavaConversions._
         val previousDictionary = dictionary.clone()
@@ -78,7 +77,9 @@ trait KevoreeGroup extends AbstractGroupType with KevoreeActor with ModelListene
           v => dictionary.put(v, d.get(v))
         }
         if (isStarted) {
+          getModelService().asInstanceOf[ModelHandlerServiceProxy].setTempModel(cmodel)
           updateGroup
+          getModelService().asInstanceOf[ModelHandlerServiceProxy].unsetTempModel()
         }
         reply(previousDictionary)
       } catch {
@@ -88,10 +89,14 @@ trait KevoreeGroup extends AbstractGroupType with KevoreeActor with ModelListene
         }
       }
     }
-    case StartMessage if (!isStarted) => {
+    case StartMessage(cmodel) if (!isStarted) => {
       try {
         mhandler.registerModelListener(this)
+
+        getModelService().asInstanceOf[ModelHandlerServiceProxy].setTempModel(cmodel)
         startGroup
+        getModelService().asInstanceOf[ModelHandlerServiceProxy].unsetTempModel()
+
         isStarted = true
         reply(true)
       } catch {
@@ -101,10 +106,15 @@ trait KevoreeGroup extends AbstractGroupType with KevoreeActor with ModelListene
         }
       }
     }
-    case StopMessage if (isStarted) => {
+    case StopMessage(cmodel) if (isStarted) => {
       try {
         mhandler.unregisterModelListener(this)
+
+        getModelService().asInstanceOf[ModelHandlerServiceProxy].setTempModel(cmodel)
         stopGroup
+        getModelService().asInstanceOf[ModelHandlerServiceProxy].unsetTempModel()
+
+
         isStarted = false
         reply(true)
       } catch {

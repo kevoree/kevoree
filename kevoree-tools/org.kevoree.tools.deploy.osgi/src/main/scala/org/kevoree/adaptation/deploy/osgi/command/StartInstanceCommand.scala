@@ -36,7 +36,7 @@ case class StartInstanceCommand(c: Instance, nodeName: String) extends LifeCycle
         }) match {
           case None => false
           case Some(sr) => {
-            val startResult = (componentBundle.getBundleContext.getService(sr).asInstanceOf[KevoreeActor] !? StartMessage).asInstanceOf[Boolean]
+            val startResult = (componentBundle.getBundleContext.getService(sr).asInstanceOf[KevoreeActor] !? StartMessage(c.getTypeDefinition.eContainer.asInstanceOf[ContainerRoot])).asInstanceOf[Boolean]
             startResult
           }
         }

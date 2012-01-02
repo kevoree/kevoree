@@ -17,9 +17,9 @@ package org.kevoree.framework.osgi
 import java.util.Hashtable
 import org.kevoree.api.service.core.handler.KevoreeModelHandlerService
 import org.kevoree.api.service.core.script.KevScriptEngineFactory
-import org.kevoree.framework.{KevoreeGroup, Constants}
 import org.osgi.framework.{ServiceRegistration, BundleContext, BundleActivator}
 import org.kevoree.framework.message.StopMessage
+import org.kevoree.framework.{ModelHandlerServiceProxy, KevoreeGroup, Constants}
 
 abstract class KevoreeGroupActivator extends BundleActivator with KevoreeInstanceActivator {
 
@@ -66,7 +66,7 @@ abstract class KevoreeGroupActivator extends BundleActivator with KevoreeInstanc
 
     val sr = bc.getServiceReference(classOf[KevoreeModelHandlerService].getName());
     val modelHandlerService : KevoreeModelHandlerService = bc.getService(sr).asInstanceOf[KevoreeModelHandlerService];
-    groupActor.asInstanceOf[KevoreeGroup].setMhandler(modelHandlerService)
+    groupActor.asInstanceOf[KevoreeGroup].setModelService(modelHandlerService)
 
 
     val sr2 = bc.getServiceReference(classOf[KevScriptEngineFactory].getName());
@@ -81,6 +81,12 @@ abstract class KevoreeGroupActivator extends BundleActivator with KevoreeInstanc
       groupActor !? StopMessage
       println("Stopping => " + instanceName)
     }
+
+    //STOP PROXY MODEL
+    if(groupActor.getModelService().isInstanceOf[ModelHandlerServiceProxy]){
+      groupActor.getModelService().asInstanceOf[ModelHandlerServiceProxy].stopProxy()
+    }
+
 
     groupActor.stop
     groupActor = null

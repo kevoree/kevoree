@@ -77,6 +77,10 @@ abstract class KevoreeChannelFragmentActivator extends BundleActivator with Kevo
       println("Stopping => " + instanceName)
     }
 
+    if(channelActor.asInstanceOf[AbstractChannelFragment].isInstanceOf[ModelHandlerServiceProxy]){
+      channelActor.asInstanceOf[AbstractChannelFragment].asInstanceOf[ModelHandlerServiceProxy].stopProxy()
+    }
+
     channelActor.stop
     //channelActor.stopChannelFragment //DEPRECATED DONE BY DEPLOY
     channelActor = null

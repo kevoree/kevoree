@@ -39,14 +39,14 @@ public class AbstractComponentType implements ComponentType {
     }
 
 
-    private KevoreeModelHandlerService modelService;
+    private ModelHandlerServiceProxy modelServiceProxy = new ModelHandlerServiceProxy();
 
     public void setModelService(KevoreeModelHandlerService ms) {
-        modelService = ms;
+        modelServiceProxy.setProxy(ms);
     }
 
     public KevoreeModelHandlerService getModelService() {
-        return modelService;
+        return modelServiceProxy;
     }
 
     private HashMap<String, Object> hostedPorts = new HashMap<String, Object>();
