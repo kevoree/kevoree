@@ -28,15 +28,15 @@ import java.util.HashMap;
  */
 public abstract class AbstractChannelFragment implements ChannelFragment {
 
-	private KevoreeModelHandlerService modelService;
+    private ModelHandlerServiceProxy modelServiceProxy = new ModelHandlerServiceProxy();
 
-	public void setModelService (KevoreeModelHandlerService ms) {
-		modelService = ms;
-	}
+    public void setModelService(KevoreeModelHandlerService ms) {
+        modelServiceProxy.setProxy(ms);
+    }
 
-	public KevoreeModelHandlerService getModelService () {
-		return modelService;
-	}
+    public KevoreeModelHandlerService getModelService() {
+        return modelServiceProxy;
+    }
 
 	public java.util.List<KevoreePort> getBindedPorts () {
 		return null;

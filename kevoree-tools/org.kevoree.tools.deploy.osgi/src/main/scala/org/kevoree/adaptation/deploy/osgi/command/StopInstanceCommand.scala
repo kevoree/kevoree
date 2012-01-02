@@ -33,7 +33,7 @@ case class StopInstanceCommand(c : Instance,nodeName:String) extends LifeCycleCo
           val componentBundle = KevoreeDeployManager.getBundleContext.getBundle(mapfound.bundleId)
           componentBundle.getRegisteredServices.find({sr=> sr.getProperty(Constants.KEVOREE_NODE_NAME)==nodeName && sr.getProperty(Constants.KEVOREE_INSTANCE_NAME)==c.getName }) match {
             case None => false
-            case Some(sr)=> (componentBundle.getBundleContext.getService(sr).asInstanceOf[KevoreeActor] !? StopMessage).asInstanceOf[Boolean]
+            case Some(sr)=> (componentBundle.getBundleContext.getService(sr).asInstanceOf[KevoreeActor] !? StopMessage(c.getTypeDefinition.eContainer.asInstanceOf[ContainerRoot])).asInstanceOf[Boolean]
           }
         }
     }

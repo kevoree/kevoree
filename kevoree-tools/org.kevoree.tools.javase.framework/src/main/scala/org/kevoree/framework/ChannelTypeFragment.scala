@@ -120,7 +120,7 @@ trait ChannelTypeFragment extends KevoreeChannelFragment with ChannelFragment {
 
   override def internal_process(msgg: Any) = msgg match {
 
-    case UpdateDictionaryMessage(d) => {
+    case UpdateDictionaryMessage(d, cmodel) => {
       try {
         import scala.collection.JavaConversions._
         val previousDictionary = dictionary.clone()
@@ -129,7 +129,9 @@ trait ChannelTypeFragment extends KevoreeChannelFragment with ChannelFragment {
             dictionary.put(v, d.get(v))
         }
         if (ct_started) {
+          getModelService.asInstanceOf[ModelHandlerServiceProxy].setTempModel(cmodel)
           updateChannelFragment
+          getModelService.asInstanceOf[ModelHandlerServiceProxy].unsetTempModel()
         }
         reply(previousDictionary)
       } catch {
@@ -139,9 +141,13 @@ trait ChannelTypeFragment extends KevoreeChannelFragment with ChannelFragment {
         }
       }
     }
-    case StartMessage if (!ct_started) => {
+    case StartMessage(cmodel) if (!ct_started) => {
       try {
+
+        getModelService.asInstanceOf[ModelHandlerServiceProxy].setTempModel(cmodel)
         startChannelFragment
+        getModelService.asInstanceOf[ModelHandlerServiceProxy].unsetTempModel()
+
         local_queue.start()
         ct_started = true
         reply(true)
@@ -152,11 +158,15 @@ trait ChannelTypeFragment extends KevoreeChannelFragment with ChannelFragment {
         }
       }
     }
-    case StopMessage if (ct_started) => {
+    case StopMessage(cmodel) if (ct_started) => {
       try {
         //TODO CHECK QUEUE SIZE AND SAVE STATE
         local_queue.forceStop
+
+        getModelService.asInstanceOf[ModelHandlerServiceProxy].setTempModel(cmodel)
         stopChannelFragment
+        getModelService.asInstanceOf[ModelHandlerServiceProxy].unsetTempModel()
+
         ct_started = false
         reply(true)
       } catch {

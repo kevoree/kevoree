@@ -33,7 +33,7 @@ abstract class KevoreeComponent(c: AbstractComponentType) extends KevoreeActor {
 
   override def internal_process(msg: Any) = msg match {
 
-    case UpdateDictionaryMessage(d) => {
+    case UpdateDictionaryMessage(d,cmodel) => {
       try {
         import scala.collection.JavaConversions._
         val previousDictionary = c.getDictionary.clone()
@@ -41,7 +41,9 @@ abstract class KevoreeComponent(c: AbstractComponentType) extends KevoreeActor {
           v => getKevoreeComponentType.getDictionary.put(v, d.get(v))
         }
         if (ct_started) {
+          getKevoreeComponentType.getModelService.asInstanceOf[ModelHandlerServiceProxy].setTempModel(cmodel)
           updateComponent
+          getKevoreeComponentType.getModelService.asInstanceOf[ModelHandlerServiceProxy].unsetTempModel()
         }
         reply(previousDictionary)
       } catch {
@@ -52,9 +54,11 @@ abstract class KevoreeComponent(c: AbstractComponentType) extends KevoreeActor {
       }
     }
 
-    case StartMessage if (!ct_started) => {
+    case StartMessage(cmodel) if (!ct_started) => {
       try {
+        getKevoreeComponentType.getModelService.asInstanceOf[ModelHandlerServiceProxy].setTempModel(cmodel)
         startComponent
+        getKevoreeComponentType.getModelService.asInstanceOf[ModelHandlerServiceProxy].unsetTempModel()
         import scala.collection.JavaConversions._
         getKevoreeComponentType.getHostedPorts.foreach {
           hp =>
@@ -73,7 +77,7 @@ abstract class KevoreeComponent(c: AbstractComponentType) extends KevoreeActor {
         }
       }
     }
-    case StopMessage if (ct_started) => {
+    case StopMessage(cmodel) if (ct_started) => {
       try {
         import scala.collection.JavaConversions._
         getKevoreeComponentType.getHostedPorts.foreach {
@@ -83,7 +87,11 @@ abstract class KevoreeComponent(c: AbstractComponentType) extends KevoreeActor {
               port.pause
             }
         }
+
+        getKevoreeComponentType.getModelService.asInstanceOf[ModelHandlerServiceProxy].setTempModel(cmodel)
         stopComponent
+        getKevoreeComponentType.getModelService.asInstanceOf[ModelHandlerServiceProxy].unsetTempModel()
+
         ct_started = false
         reply(true)
       } catch {

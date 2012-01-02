@@ -113,6 +113,13 @@ abstract class KevoreeComponentActivator extends BundleActivator with KevoreeIns
       println("Stopping => " + componentName)
     }
 
+    //STOP PROXY MODEL
+    if(componentActor.getKevoreeComponentType.getModelService.isInstanceOf[ModelHandlerServiceProxy]){
+      componentActor.getKevoreeComponentType.getModelService.asInstanceOf[ModelHandlerServiceProxy].stopProxy()
+    }
+
+
+
     /* STOP NEEDED PORT */
     import scala.collection.JavaConversions._
     componentActor.getKevoreeComponentType.getNeededPorts.foreach {
