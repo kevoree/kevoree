@@ -60,4 +60,6 @@ class ModelHandlerServiceWrapper(kernel : KevoreeUIKernel) extends KevoreeModelH
   def compareAndSwapModel(previousModel: UUIDModel, targetModel: ContainerRoot) {}
 
   def atomicCompareAndSwapModel(previousModel: UUIDModel, targetModel: ContainerRoot): Date = null
+
+  def getContextModel = null
 }
