@@ -70,6 +70,14 @@ object WrapperGenerator {
 
     fw.append("org.eclipse.jetty.webapp.WebAppContext context = new org.eclipse.jetty.webapp.WebAppContext(){\n    @Override\n    public boolean isCopyWebDir() {return false;    }\n\n    @Override\n    public boolean isCopyWebInf() {return false;}\n};\n")
     fw.append("try{\n")
+
+    fw.append(" java.io.File jarFile = org.kevoree.framework.FileNIOHelper.resolveBundleJar(b, new java.io.File(System.getProperty(\"osgi.cache\")));\n")
+    fw.append(" java.io.File tempWar = java.io.File.createTempFile(\"-t-\", \"-t-\");\n")
+      fw.append(" tempWar.delete();\n")
+      fw.append(" tempWar.mkdirs();\n")
+      fw.append("  org.kevoree.framework.FileNIOHelper.unzipToTempDir(jarFile,tempWar,java.util.Arrays.asList(\".class\",\".jar\"));\n")
+
+
     fw.append("org.eclipse.jetty.osgi.boot.internal.webapp.OSGiWebappClassLoader webappClassLoader = new org.eclipse.jetty.osgi.boot.internal.webapp.OSGiWebappClassLoader(org.eclipse.jetty.osgi.boot.JettyBootstrapActivator.class.getClassLoader(), context, (org.osgi.framework.Bundle)getDictionary().get(\"osgi.bundle\"), new org.eclipse.jetty.osgi.boot.utils.BundleClassLoaderHelper() {\n")
     fw.append("    @Override\n")
     fw.append("    public ClassLoader getBundleClassLoader( org.osgi.framework.Bundle bundle) {\n")
@@ -81,7 +89,6 @@ object WrapperGenerator {
     fw.append("context.setAttribute(org.eclipse.jetty.osgi.boot.OSGiWebappConstants.RFC66_OSGI_BUNDLE_CONTEXT, ((org.osgi.framework.Bundle)getDictionary().get(\"osgi.bundle\")).getBundleContext());\n")
     fw.append(" webappClassLoader.setWebappContext(context);\n")
 
-    fw.append("} catch (java.io.IOException e) {e.printStackTrace();}\n")
 
 
 
@@ -95,11 +102,15 @@ object WrapperGenerator {
 
     
 fw.append("context.setExtractWAR(false);\n")
-    fw.append("context.setBaseResource(org.eclipse.jetty.util.resource.Resource.newClassPathResource(\"/\"));\n")
+    fw.append("context.setBaseResource(org.eclipse.jetty.util.resource.Resource.newResource(tempWar));\n")
+    fw.append("System.out.println(tempWar.getAbsolutePath());\n")
+  
+  
+  //  fw.append("context.setBaseResource(org.eclipse.jetty.util.resource.Resource.newClassPathResource(\"/\"));\n")
     fw.append("org.eclipse.jetty.security.HashLoginService dummyLoginService = new org.eclipse.jetty.security.HashLoginService(\"KEVOREE-SECURITY-REALM\");\n")
     fw.append("context.getSecurityHandler().setLoginService(dummyLoginService);\n")
     fw.append("server.setHandler(context);\n")
-    fw.append("try { server.start();server.join();\n")
+    fw.append(" server.start();server.join();\n")
     fw.append("} catch (Exception e) {e.printStackTrace(); }\n")
 
 

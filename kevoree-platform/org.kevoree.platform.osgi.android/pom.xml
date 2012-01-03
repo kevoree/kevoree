@@ -359,8 +359,8 @@
                                 <artifactId>org.kevoree.api</artifactId>
                             </inclusion>
                             <inclusion>
-                                <groupId>org.kevoree</groupId>
-                                <artifactId>org.kevoree.deploy.osgi</artifactId>
+                                <groupId>org.kevoree.tools</groupId>
+                                <artifactId>org.kevoree.tools.deploy.osgi</artifactId>
                             </inclusion>
                             <inclusion>
                                 <groupId>org.kevoree</groupId>
