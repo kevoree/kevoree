@@ -23,8 +23,12 @@ import javax.swing.JOptionPane
 import org.kevoree.framework.KevoreeXmiHelper
 import org.kevoree.tools.ui.editor.{PositionedEMFHelper, KevoreeUIKernel}
 
+object LoadRemoteModelUICommand {
+  var lastRemoteNodeAddress : String = "localhost:8000"
+}
+
 class LoadRemoteModelUICommand extends Command {
-  
+
   var kernel: KevoreeUIKernel = null
 
   def setKernel(k: KevoreeUIKernel) = kernel = k
@@ -35,8 +39,9 @@ class LoadRemoteModelUICommand extends Command {
     
     //ASK USER FOR ADRESS & PORT
     try{
-      val result = JOptionPane.showInputDialog("Remote target node : ip@port", "localhost:8000")
+      val result = JOptionPane.showInputDialog("Remote target node : ip@port", LoadRemoteModelUICommand.lastRemoteNodeAddress)
       if (result != null && result != "") {
+        LoadRemoteModelUICommand.lastRemoteNodeAddress = result
         val results = result.split(":").toList
         if(results.size >= 2){
           val ip = results(0)

@@ -7,7 +7,7 @@
     <packaging>pom</packaging>
     <name>Kevoree :: Tools :: Root</name>
     <url>https://github.com/dukeboard/kevoree</url>
-    <version>1.5.0-SNAPSHOT</version>
+    <version>1.5.0-RC1</version>
     
     
     <dependencies>
@@ -28,30 +28,6 @@
             <version>${slf4j.version}</version>
         </dependency>
     </dependencies>
-
-<!--
-    <profiles>
-        <profile>
-            <id>org.kevoree.tools.root.profile</id>
-            <activation>
-                <os>
-                    <family>!mac</family>
-                </os>
-            </activation>
-            <dependencies>
-                <dependency>
-                    <groupId>com.sun</groupId>
-                    <artifactId>tools</artifactId>
-                    <version>1.4.2</version>
-                    <scope>system</scope>
-                    <optional>true</optional>
-                    <systemPath>${java.home}/../lib/tools.jar</systemPath>
-                </dependency>
-            </dependencies>
-        </profile>
-    </profiles>
--->
-
 
     <build>
         <plugins>
@@ -176,12 +152,22 @@
     <modules>
         <module>../org.kevoree.tools.aether.framework</module>
         <module>../org.kevoree.tools.aether.lite.framework</module>
+
+        <!-- Kevoree specific frameworks -->
+        <module>../org.kevoree.tools.javase.framework</module>
+        <module>../org.kevoree.tools.android.framework</module>
+
+
+        <module>../org.kevoree.tools.deploy.osgi</module>
+
         <module>../org.kevoree.tools.annotation.api</module>
         <module>../org.kevoree.tools.annotation.generator</module>
         <module>../org.kevoree.tools.annotation.processor</module>
         <module>../org.kevoree.tools.ui.framework</module>
         <module>../org.kevoree.tools.ui.editor</module>
-        <module>../org.kevoree.tools.android.framework</module>
+
+
+
         <module>../org.kevoree.tools.merger.mavenplugin</module>
         <module>../org.kevoree.tools.annotation.mavenplugin</module>
         <module>../org.kevoree.tools.marShell</module>
@@ -198,8 +184,7 @@
         <scala.version>2.9.1</scala.version>
         <bundle.vendor>IRISA/INRIA</bundle.vendor>
         <releaseUrl>http://maven.kevoree.org/libs-release-local</releaseUrl>
-        <slf4j.version>1.6.1</slf4j.version>
-        <slf4j.version.range>[1.5,2)</slf4j.version.range>
+        <slf4j.version>1.6.4</slf4j.version>
         <kevoree.version>${project.version}</kevoree.version>
     </properties>
     

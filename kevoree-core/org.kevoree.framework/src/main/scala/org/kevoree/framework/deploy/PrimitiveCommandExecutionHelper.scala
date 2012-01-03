@@ -14,10 +14,9 @@
 package org.kevoree.framework.deploy
 
 import org.kevoreeAdaptation.{ParallelStep, AdaptationModel}
-import org.kevoree.framework.{PrimitiveCommand, AbstractNodeType}
+import org.kevoree.framework.{PrimitiveCommand, NodeType}
 import org.slf4j.LoggerFactory
-import actors.threadpool.{TimeUnit, Executors}
-import actors.{TIMEOUT, Actor, DaemonActor}
+import actors.{TIMEOUT, Actor}
 import java.lang.Thread
 
 /**
@@ -31,7 +30,7 @@ object PrimitiveCommandExecutionHelper {
 
   var logger = LoggerFactory.getLogger(this.getClass)
 
-  def execute (adaptionModel: AdaptationModel, nodeInstance: AbstractNodeType): Boolean = {
+  def execute (adaptionModel: AdaptationModel, nodeInstance: NodeType): Boolean = {
     if (adaptionModel.getOrderedPrimitiveSet != null) {
       adaptionModel.getOrderedPrimitiveSet match {
         case Some(orderedPrimitiveSet) => {
@@ -45,7 +44,7 @@ object PrimitiveCommandExecutionHelper {
     }
   }
 
-  private def executeStep (step: ParallelStep, nodeInstance: AbstractNodeType): Boolean = {
+  private def executeStep (step: ParallelStep, nodeInstance: NodeType): Boolean = {
     if (step == null) {
       return true
     }
