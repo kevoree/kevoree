@@ -37,7 +37,8 @@ runtime="kevoree-runtime"  # name of the exec file without (.jar)
 runtime_updater="kevoree-service-updater"
 
 java="/usr/local/bin/java"
-java_args="-Dnode.log.level=INFO -Dnode.name=`/bin/hostname` -Dnode.log.appender=FILE -Dnode.log.appender.file=$kevoree_home/`/bin/hostname`.log -Dnode.groupType=JmDNSRestGroup -Dnode.update.timeout=300000 -Xmx1024M -Xms1024M -jar $kevoree_home/$runtime.jar"
+java_args="-Dnode.log.level=DEBUG -Dnode.name=`/bin/hostname` -Dnode.log.appender=FILE -Dnode.log.appender.file=$kevoree_home/`/bin/hostname`.log -Dnode.groupType=JmDNSRestGroup -Dnode.update.timeout=300000 -Xmx1024M -Xms1024M -jar $kevoree_home/$runtime.jar"
+#java_args="-Dnode.log.level=DEBUG -Dnode.name=`/bin/hostname` -Dnode.log.appender=FILE -Dnode.log.appender.file=$kevoree_home/`/bin/hostname`.log -Dnode.groupType=RestGroup -Dnode.update.timeout=300000 -Xmx1024M -Xms1024M -jar $kevoree_home/$runtime.jar"
 
 command="/usr/sbin/daemon"
 command_args="-f -p ${pidfile} ${java} ${java_args}"
@@ -79,7 +80,7 @@ kevoree_stop() {
     fi
 
     echo "Stopping ${name}."
-    kill -KILL ${rc_pid} 2> /dev/null && echo "Killed."
+    kill -TERM ${rc_pid} 2> /dev/null && echo "Killed."
     rm -f ${pidfile}
 }
 

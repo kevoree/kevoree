@@ -14,11 +14,12 @@
 package org.kevoree.tools.aether.framework
 
 import java.io.FileInputStream
-import org.osgi.framework.{Bundle, BundleContext, BundleException}
 import org.slf4j.LoggerFactory
 import org.kevoree.api.service.core.handler.KevoreeModelHandlerService
-import org.kevoree.framework.{Constants, AbstractNodeType}
 import org.kevoree.{NodeType, ContainerRoot, DeployUnit}
+import reflect.BeanProperty
+import org.kevoree.framework.{AbstractNodeType, Bootstraper, Constants}
+import org.osgi.framework.{BundleException, BundleContext, Bundle}
 
 /**
  * User: ffouquet
@@ -26,7 +27,7 @@ import org.kevoree.{NodeType, ContainerRoot, DeployUnit}
  * Time: 12:01
  */
 
-class NodeTypeBootstrapHelper {
+class NodeTypeBootstrapHelper extends Bootstraper {
 
   private var bundle: Bundle = null
   private val logger = LoggerFactory.getLogger(this.getClass)
@@ -121,6 +122,15 @@ class NodeTypeBootstrapHelper {
     } else {
       false
     }
+  }
+
+  var bootstrapBundleContext : BundleContext = null
+
+  def setBootstrapBundleContext(bc : BundleContext){
+    bootstrapBundleContext = bc
+  }
+  def bootstrapNodeType(currentModel: ContainerRoot, nodeName: String): Option[org.kevoree.framework.NodeType] = {
+    bootstrapNodeType(currentModel, nodeName, bootstrapBundleContext)
   }
 
 }

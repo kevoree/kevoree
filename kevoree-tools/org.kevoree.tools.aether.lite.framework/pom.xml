@@ -4,7 +4,7 @@
     <artifactId>org.kevoree.tools.aether.lite.framework</artifactId>
     <packaging>bundle</packaging>
     <name>Kevoree :: Tools :: AetherLite Framework</name>
-    <version>1.5.0-SNAPSHOT</version>
+    <version>1.5.0-RC1</version>
 
     <properties>
         <kevoree.version>${project.version}</kevoree.version>
@@ -13,7 +13,7 @@
     <parent>
         <artifactId>org.kevoree.tools.root</artifactId>
         <groupId>org.kevoree.tools</groupId>
-        <version>1.5.0-SNAPSHOT</version>
+        <version>1.5.0-RC1</version>
         <relativePath>../org.kevoree.tools.root/pom.xml</relativePath>
     </parent>
 
@@ -26,6 +26,11 @@
         <dependency>
             <groupId>org.kevoree</groupId>
             <artifactId>org.kevoree.framework</artifactId>
+            <version>${kevoree.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.kevoree.tools</groupId>
+            <artifactId>org.kevoree.tools.javase.framework</artifactId>
             <version>${kevoree.version}</version>
         </dependency>
         <dependency>

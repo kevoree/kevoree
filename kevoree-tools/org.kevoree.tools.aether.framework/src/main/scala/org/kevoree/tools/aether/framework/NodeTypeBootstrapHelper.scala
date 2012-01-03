@@ -17,9 +17,10 @@ import java.io.FileInputStream
 import org.osgi.framework.{Bundle, BundleContext, BundleException}
 import org.slf4j.LoggerFactory
 import org.kevoree.api.service.core.handler.KevoreeModelHandlerService
-import org.kevoree.framework.{Constants, AbstractNodeType}
-import org.kevoree.{NodeType, ContainerRoot, DeployUnit}
+import org.kevoree.{ ContainerRoot, DeployUnit}
 import org.kevoree.framework.context.{KevoreeOSGiBundle, KevoreeDeployManager}
+import org.kevoree.framework.{Bootstraper, Constants, AbstractNodeType}
+import reflect.BeanProperty
 
 /**
  * User: ffouquet
@@ -27,15 +28,18 @@ import org.kevoree.framework.context.{KevoreeOSGiBundle, KevoreeDeployManager}
  * Time: 12:01
  */
 
-class NodeTypeBootstrapHelper {
+class NodeTypeBootstrapHelper extends Bootstraper {
 
   private var bundle: Bundle = null
   private val logger = LoggerFactory.getLogger(this.getClass)
 
   def getNodeTypeBundle = bundle
 
-  def bootstrapNodeType (model: ContainerRoot, destNodeName: String,
-    bundleContext: BundleContext): Option[AbstractNodeType] = {
+
+
+
+  def bootstrapNodeType(model: ContainerRoot, destNodeName: String,
+                        bundleContext: BundleContext): Option[AbstractNodeType] = {
     //LOCATE NODE
     val node = model.getNodes.find(node => node.getName == destNodeName)
     node match {
@@ -43,7 +47,7 @@ class NodeTypeBootstrapHelper {
         val nodeTypeDeployUnitList = node.getTypeDefinition.getDeployUnits.toList
         if (nodeTypeDeployUnitList.size > 0) {
           logger.debug("nodeType installation => " +
-            installNodeTyp(node.getTypeDefinition.asInstanceOf[NodeType], bundleContext))
+            installNodeTyp(node.getTypeDefinition.asInstanceOf[org.kevoree.NodeType], bundleContext))
           //KevoreeDeployManager.addMapping(KevoreeOSGiBundle(node.getTypeDefinition.getName, node.getTypeDefinition.getClass.getName, lastBundleID))
           val clazz: Class[_] = bundle.loadClass(node.getTypeDefinition.getBean)
 
@@ -94,10 +98,11 @@ class NodeTypeBootstrapHelper {
 
   var bundles = List[Bundle]()
 
-  private def installDeployUnit (du: DeployUnit, bundleContext: BundleContext): Boolean = {
+  private def installDeployUnit(du: DeployUnit, bundleContext: BundleContext): Boolean = {
     try {
       val arteFile = AetherUtil.resolveDeployUnit(du)
       if (arteFile != null) {
+        logger.debug("trying to install " + arteFile.getAbsolutePath)
         bundle = bundleContext.installBundle("file:///" + arteFile.getAbsolutePath, new FileInputStream(arteFile))
         //        bundle.start()
         KevoreeDeployManager.addMapping(KevoreeOSGiBundle(buildKEY(du), du.getClass.getName, bundle.getBundleId))
@@ -121,7 +126,7 @@ class NodeTypeBootstrapHelper {
   }
 
 
-  private def startDeployUnits (): Boolean = {
+  private def startDeployUnits(): Boolean = {
     try {
       bundles.foreach {
         bundle =>
@@ -129,15 +134,15 @@ class NodeTypeBootstrapHelper {
       }
       true
     } catch {
-      case _@e => logger.error("Can't isntall node type", e);false
+      case _@e => logger.error("Can't install node type", e); false
     }
   }
 
 
   /* Bootstrap node type bundle in local osgi environment */
-  private def installNodeTyp (nodeType: NodeType, bundleContext: BundleContext): Boolean = {
+  private def installNodeTyp(nodeType: org.kevoree.NodeType, bundleContext: BundleContext): Boolean = {
     val superTypeBootStrap = nodeType.getSuperTypes
-      .forall(superType => installNodeTyp(superType.asInstanceOf[NodeType], bundleContext))
+      .forall(superType => installNodeTyp(superType.asInstanceOf[org.kevoree.NodeType], bundleContext))
     if (superTypeBootStrap) {
 
       nodeType.getDeployUnits.forall(ct => {
@@ -151,11 +156,11 @@ class NodeTypeBootstrapHelper {
   }
 
 
-  def buildKEY (du: DeployUnit): String = {
+  def buildKEY(du: DeployUnit): String = {
     du.getName + "/" + buildQuery(du, None)
   }
 
-  def buildQuery (du: DeployUnit, repoUrl: Option[String]): String = {
+  def buildQuery(du: DeployUnit, repoUrl: Option[String]): String = {
     val query = new StringBuilder
     query.append("mvn:")
     repoUrl match {
@@ -173,4 +178,14 @@ class NodeTypeBootstrapHelper {
     query.toString
   }
 
+  var bootstrapBundleContext : BundleContext = null
+
+  def setBootstrapBundleContext(bc : BundleContext){
+    bootstrapBundleContext = bc
+  }
+
+
+  def bootstrapNodeType(currentModel: ContainerRoot, nodeName: String): Option[org.kevoree.framework.NodeType] = {
+    bootstrapNodeType(currentModel, nodeName, bootstrapBundleContext)
+  }
 }
