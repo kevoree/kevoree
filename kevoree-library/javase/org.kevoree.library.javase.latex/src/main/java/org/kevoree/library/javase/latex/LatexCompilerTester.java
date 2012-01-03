@@ -1,4 +1,3 @@
-/*
 package org.kevoree.library.javase.latex;
 
 import org.kevoree.annotation.*;
@@ -12,7 +11,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.UUID;
 
-*/
 /**
  * User: Erwan Daubert - erwan.daubert@gmail.com
  * Date: 22/11/11
@@ -20,9 +18,7 @@ import java.util.UUID;
  *
  * @author Erwan Daubert
  * @version 1.0
- *//*
-
-
+ */
 
 @Provides({
 		@ProvidedPort(name = "callback", type = PortType.MESSAGE)
@@ -125,23 +121,20 @@ public class LatexCompilerTester extends AbstractComponentType {
 			super.repaint();
 		}
 
-		*/
-/**
+		/**
 		 * @param onText the onText to set
-		 *//*
+		 */
 
 		public final void setOnText (String onText) {
 			this.onText = onText;
 		}
 
-		*/
-/**
+		/**
 		 * @param offText the offText to set
-		 *//*
+		 */
 
 		public final void setOffText (String offText) {
 			this.offText = offText;
 		}
 	}
 }
-*/

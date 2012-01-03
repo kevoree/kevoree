@@ -33,7 +33,7 @@ import java.nio.ByteBuffer;
 })
 @Requires({
 		@RequiredPort(name = "image", type = PortType.MESSAGE, optional = true, messageType = "BufferedImage"),
-		@RequiredPort(name = "image_bytes", type = PortType.MESSAGE, optional = true, messageType = "bytes") // TODO
+		@RequiredPort(name = "image_bytes", type = PortType.MESSAGE, optional = true, messageType = "bytes")
 })
 @Provides({
 		@ProvidedPort(name = "motor", type = PortType.MESSAGE)
@@ -88,18 +88,13 @@ public class Kinect extends AbstractComponentType {
 				dev.setDepthFormat(buildDepthFormat());
 				dev.startDepth(new DepthHandler() {
 					BufferedImage image;
+					byte[] bytes;
 					long lastTimeStamp = 0;
 					long delay = getDelay();
 
 					@Override
 					public synchronized void onFrameReceived (DepthFormat format, ByteBuffer frame, int timestamp) {
 						if (lastTimeStamp + delay < System.currentTimeMillis()) {
-							/*if (isPortBinded("raw")) {
-								Map<String, Object> dic = new HashMap<String, Object>();
-								dic.put("frame", frame);
-								dic.put("format", format);
-								getPortByName("raw", MessagePort.class).process(dic);
-							}*/
 							if (isPortBinded("image")) {
 								// FIXME the cost is too high
 								//int[] pixels = new int[format.getWidth() * format.getHeight()];
@@ -134,6 +129,14 @@ public class Kinect extends AbstractComponentType {
 								msg.putValue("image", image);
 								getPortByName("image", MessagePort.class).process(msg);
 //								getPortByName("image", MessagePort.class).process(image);
+							}
+							if (isPortBinded("image_bytes")) {
+								if (bytes == null) {
+									bytes = new byte[format.getHeight()*format.getWidth() * 2];
+								}
+								frame.get(bytes, 0, bytes.length);
+
+								// TODO
 							}
 							lastTimeStamp = System.currentTimeMillis();
 						}
