@@ -50,4 +50,6 @@ public interface KevoreeModelHandlerService {
 
     public void unregisterModelListener(ModelListener listener);
 
+    public ContextModel getContextModel();
+
 }

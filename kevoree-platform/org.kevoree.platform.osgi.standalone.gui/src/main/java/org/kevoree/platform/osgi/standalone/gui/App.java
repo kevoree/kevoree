@@ -16,14 +16,12 @@ package org.kevoree.platform.osgi.standalone.gui;
 import org.kevoree.ContainerRoot;
 import org.kevoree.KevoreeFactory;
 import org.kevoree.framework.KevoreeXmiHelper;
-import org.kevoree.platform.osgi.standalone.ConstantValues;
 import org.kevoree.tools.aether.framework.AetherUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Properties;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
@@ -38,9 +36,9 @@ public class App {
 
         DefaultSystem.saveSystemFlux();
 
-       // System.setProperty("actors.corePoolSize", "10");
-      //  System.setProperty("actors.maxPoolSize", "256");
-     //   System.setProperty("actors.enableForkJoin", "false");
+        // System.setProperty("actors.corePoolSize", "10");
+        //  System.setProperty("actors.maxPoolSize", "256");
+        //   System.setProperty("actors.enableForkJoin", "false");
 
 
         try {
@@ -63,7 +61,7 @@ public class App {
                 JarEntry entry = jar.getJarEntry("KEV-INF/lib.kev");
                 model = KevoreeXmiHelper.loadStream(jar.getInputStream(entry));
             } catch (Exception e) {
-              logger.error("Error while bootstrap ",e);
+                logger.error("Error while bootstrap ", e);
             }
         }
 
@@ -72,6 +70,7 @@ public class App {
 
     public static void main(String[] args) {
 
+        // System.out.println(ManagementFactory.getOperatingSystemMXBean().getSystemLoadAverage());
         // System.setProperty("apple.awt.graphics.UseQuartz","true");
 
         GuiConstantsHandler.setGuiConstantValuesProvider(new GuiConstantValuesImpl());

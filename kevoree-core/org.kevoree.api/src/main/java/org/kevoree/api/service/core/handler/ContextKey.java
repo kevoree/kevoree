@@ -11,31 +11,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kevoree.framework
-
-import org.kevoree.ContainerRoot
-import org.kevoreeAdaptation.{AdaptationModel, AdaptationPrimitive}
-import org.kevoree.api.service.core.handler.ContextModel
+package org.kevoree.api.service.core.handler;
 
 /**
  * Created by IntelliJ IDEA.
  * User: duke
- * Date: 31/12/11
- * Time: 09:50
+ * Date: 03/01/12
+ * Time: 13:46
  */
+public interface ContextKey {
+    
+    public String getNodeID();
 
-trait NodeType {
+    public String getInstanceID();
 
-  def startNode() : Unit
+    public String getName();
 
-  def stopNode() : Unit
+    public long getTimestamp();
 
-  def updateNode() : Unit
-
-  def  kompare( actualModel : ContainerRoot,  targetModel : ContainerRoot) : AdaptationModel
-
-  def  getPrimitive( primitive : AdaptationPrimitive) : PrimitiveCommand
-
-  def getContextModel : ContextModel
-
+    public String toString();
 }

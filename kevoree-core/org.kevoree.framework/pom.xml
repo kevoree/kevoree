@@ -40,8 +40,6 @@
             <artifactId>slf4j-api</artifactId>
             <version>1.6.4</version>
         </dependency>
-
-
     </dependencies>
 <!--
     <build>

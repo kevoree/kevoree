@@ -33,9 +33,11 @@ public class KevoreeJpaxosCommand implements Serializable{
 
 
     public KevoreeJpaxosCommand(byte[] bytes) throws IOException {
-        logger.debug("update");
+
         DataInputStream dataInput = new DataInputStream(new ByteArrayInputStream(bytes));
         model =   KevoreeXmiHelper.loadStream(dataInput);
+
+
     }
 
     public byte[] toByteArray() throws IOException {
