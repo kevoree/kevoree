@@ -7,12 +7,12 @@
     <name>Kevoree :: Tools :: Model2Code</name>
     <url>https://github.com/dukeboard/kevoree/</url>
     <packaging>jar</packaging>
-    <version>1.5.0-SNAPSHOT</version>
+    <version>1.5.0-RC1</version>
 
     <parent>
         <artifactId>org.kevoree.tools.root</artifactId>
         <groupId>org.kevoree.tools</groupId>
-        <version>1.5.0-SNAPSHOT</version>
+        <version>1.5.0-RC1</version>
         <relativePath>../org.kevoree.tools.root/pom.xml</relativePath>
     </parent>
 
@@ -27,8 +27,8 @@
             <version>1.0.8</version>
         </dependency>
         <dependency>
-            <artifactId>org.kevoree.framework</artifactId>
-            <groupId>org.kevoree</groupId>
+            <artifactId>org.kevoree.tools.javase.framework</artifactId>
+            <groupId>org.kevoree.tools</groupId>
             <version>${kevoree.version}</version>
         </dependency>
         <dependency>

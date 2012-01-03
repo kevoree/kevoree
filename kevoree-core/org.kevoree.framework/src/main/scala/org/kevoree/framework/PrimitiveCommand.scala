@@ -24,12 +24,12 @@ trait PrimitiveCommand {
 
   def undo(): Unit
 
-  var lastExecutionBundle : Option[org.osgi.framework.Bundle] = None
+ // var lastExecutionBundle : Option[org.osgi.framework.Bundle] = None
 
-  def getLastExecutionBundle = lastExecutionBundle
+ // def getLastExecutionBundle = lastExecutionBundle
 
   var mustBeStarted = false
 
-  var startLevel : Option[Int] = None
+ // var startLevel : Option[Int] = None
 
 }

@@ -56,6 +56,10 @@ public final class RPC {
         currentBundle = b;
     }
 
+    public static Bundle getCurrentBundle(){
+        return currentBundle;
+    }
+
 
     /**
      * Maps primitive wrapper classes to their corresponding primitive class.
@@ -470,6 +474,9 @@ public final class RPC {
                         + getSourceRepresentation(serviceMethod) + "'");
             }
         }
+        
+        
+        //System.out.println("return type = "+methodReturnType);
 
         return encodeResponse(methodReturnType, object, false, flags,
                 serializationPolicy);
@@ -565,9 +572,11 @@ public final class RPC {
         String responsePayload;
         try {
             Object result = serviceMethod.invoke(target, args);
-
             responsePayload = encodeResponseForSuccess(serviceMethod, result,
                     serializationPolicy, flags);
+
+            //System.out.println("response_payload="+responsePayload.toString());
+
         } catch (IllegalAccessException e) {
             SecurityException securityException = new SecurityException(
                     formatIllegalAccessErrorMessage(target, serviceMethod));
@@ -614,6 +623,9 @@ public final class RPC {
             stream.serializeValue(object, responseClass);
         }
 
+        //System.out.println(flags+"|"+object+":"+responseClass.toString()+"->"+stream.toString());
+        
+        
         String bufferStr = (wasThrown ? "//EX" : "//OK") + stream.toString();
         return bufferStr;
     }

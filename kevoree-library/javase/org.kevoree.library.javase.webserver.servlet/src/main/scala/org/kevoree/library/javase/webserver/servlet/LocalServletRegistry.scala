@@ -41,12 +41,12 @@ class LocalServletRegistry(bundle: Bundle = null) {
     }
 
     override def getResource(path: String): URL = {
-      println(path)
+      //println(path)
       bundle.getResource(path)
     }
 
     override def getResourceAsStream(path: String): InputStream = {
-      println(path)
+      //println(path)
       bundle.getResource(path).openStream()
     }
   }

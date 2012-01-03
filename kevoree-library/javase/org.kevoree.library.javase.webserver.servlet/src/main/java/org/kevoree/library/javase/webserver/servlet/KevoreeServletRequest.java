@@ -25,9 +25,12 @@ public class KevoreeServletRequest implements HttpServletRequest {
     ServletInputStream input = null;
 
     BufferedReader reader = null;
+    
+    String basePath = "";
 
-    public KevoreeServletRequest(KevoreeHttpRequest _r) {
+    public KevoreeServletRequest(KevoreeHttpRequest _r,String _basePath) {
         kevRequest = _r;
+        basePath = _basePath;
         input = new ServletInputStream() {
 
             ByteArrayInputStream inputStream = new ByteArrayInputStream(kevRequest.getRawBody());
@@ -289,14 +292,7 @@ public class KevoreeServletRequest implements HttpServletRequest {
 
     @Override
     public String getContextPath() {
-        return "";
-        /*
-        if(kevRequest.getUrl().contains("/")){
-            return kevRequest.getUrl().substring(0,kevRequest.getUrl().lastIndexOf("/"));
-        }
-        else {
-            return kevRequest.getUrl();
-        }*/
+        return basePath;
     }
 
     @Override

@@ -36,8 +36,7 @@ object BundlerHelper {
     }
     webInf.close
   }
-  
-  
+
   def generateManifest(project: MavenProject, outDir: File) {
     val mf = new java.util.jar.Manifest
     mf.getMainAttributes.put(new Attributes.Name("Manifest-Version"), "1")
@@ -48,6 +47,7 @@ object BundlerHelper {
     val fileWebLib = new File(outDir.getAbsolutePath + File.separator + "WEB-INF" + File.separator + "lib")
     if (fileWebLib.exists()) {
       var paths = List(".")
+      paths = paths ++ List("WEB_INF/classes")
       fileWebLib.listFiles().foreach {
         subF =>
           if (subF.getName.endsWith(".jar")) {

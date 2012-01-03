@@ -6,12 +6,12 @@
     <artifactId>org.kevoree.library.android.defaultChannels</artifactId>
     <packaging>bundle</packaging>
     <name>Kevoree :: Library :: Android :: DefaultChannels</name>
-    <version>1.5.0-SNAPSHOT</version>
+    <version>1.5.0-RC1</version>
 
     <parent>
         <artifactId>org.kevoree.library.android.root</artifactId>
         <groupId>org.kevoree.library.android</groupId>
-        <version>1.5.0-SNAPSHOT</version>
+        <version>1.5.0-RC1</version>
         <relativePath>../org.kevoree.library.android.root/pom.xml</relativePath>
     </parent>
 

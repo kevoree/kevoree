@@ -1,20 +1,17 @@
 package org.kevoree.library.javase.webserver.servlet;
 
 import org.kevoree.annotation.ComponentFragment;
-import org.kevoree.annotation.ComponentType;
-import org.kevoree.annotation.DictionaryAttribute;
-import org.kevoree.annotation.DictionaryType;
 import org.kevoree.library.javase.webserver.AbstractPage;
 import org.kevoree.library.javase.webserver.KevoreeHttpRequest;
 import org.kevoree.library.javase.webserver.KevoreeHttpResponse;
-import org.osgi.framework.BundleException;
 
-import javax.servlet.*;
+import javax.servlet.ServletConfig;
+import javax.servlet.ServletContext;
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.util.*;
+import java.util.Collections;
+import java.util.Enumeration;
+import java.util.HashMap;
 
 /**
  * Created by IntelliJ IDEA.
@@ -47,8 +44,8 @@ public abstract class AbstractHttpServletPage extends AbstractPage {
                 public ServletContext getServletContext() {
                     return getSharedServletContext();
                 }
-                
-                private HashMap<String,String> initParameterNames = new HashMap<String,String>();                
+
+                private HashMap<String, String> initParameterNames = new HashMap<String, String>();
 
                 @Override
                 public String getInitParameter(String name) {
@@ -74,15 +71,16 @@ public abstract class AbstractHttpServletPage extends AbstractPage {
     }
 
     @Override
-    public KevoreeHttpResponse process(KevoreeHttpRequest request, KevoreeHttpResponse response) {
-        KevoreeServletRequest wrapper_request = new KevoreeServletRequest(request);
+    public KevoreeHttpResponse process(final KevoreeHttpRequest request, final KevoreeHttpResponse response) {
+
+        KevoreeServletRequest wrapper_request = new KevoreeServletRequest(request,getLastParam(request.getUrl()));
         KevoreeServletResponse wrapper_response = new KevoreeServletResponse();
         try {
-            logger.debug("Sending "+new String(request.getRawBody()));
-            logger.debug("Sending " + request.getResolvedParams().keySet().size());
+           // logger.debug("Sending " + new String(request.getRawBody()));
+            //logger.debug("Sending " + request.getResolvedParams().keySet().size());
             legacyServlet.service(wrapper_request, wrapper_response);
         } catch (Exception e) {
-            logger.error("Error while processing request",e);
+            logger.error("Error while processing request", e);
         }
         wrapper_response.populateKevoreeResponse(response);
         return super.process(request, response);

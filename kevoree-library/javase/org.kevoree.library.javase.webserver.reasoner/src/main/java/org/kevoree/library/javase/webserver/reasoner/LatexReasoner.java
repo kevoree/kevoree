@@ -2,14 +2,11 @@ package org.kevoree.library.javase.webserver.reasoner;
 
 import org.kevoree.*;
 import org.kevoree.annotation.ComponentType;
-import org.kevoree.annotation.ProvidedPort;
-import org.kevoree.api.service.core.script.ScriptInterpreter;
+import org.kevoree.api.service.core.script.KevScriptEngine;
 import org.kevoree.library.javase.webserver.AbstractPage;
 import org.kevoree.library.javase.webserver.FileServiceHelper;
 import org.kevoree.library.javase.webserver.KevoreeHttpRequest;
 import org.kevoree.library.javase.webserver.KevoreeHttpResponse;
-import org.osgi.framework.Bundle;
-import org.osgi.framework.ServiceReference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -18,7 +15,6 @@ import org.slf4j.LoggerFactory;
  * User: duke
  * Date: 28/11/11
  * Time: 19:31
- * To change this template use File | Settings | File Templates.
  */
 
 
@@ -106,10 +102,14 @@ public class LatexReasoner extends AbstractPage {
 
                 logger.debug("Script result \n"+script.toString());
                 
-                Bundle bundle = (Bundle) this.getDictionary().get("osgi.bundle");
-                ServiceReference ref = bundle.getBundleContext().getServiceReference(ScriptInterpreter.class.getName());
-                ScriptInterpreter kevs = (ScriptInterpreter) bundle.getBundleContext().getService(ref);
-                if(kevs.interpret(script.toString())){
+               // Bundle bundle = (Bundle) this.getDictionary().get("osgi.bundle");
+               // ServiceReference ref = bundle.getBundleContext().getServiceReference(ScriptInterpreter.class.getName());
+               // ScriptInterpreter kevs = (ScriptInterpreter) bundle.getBundleContext().getService(ref);
+
+                KevScriptEngine engine = this.getKevScriptEngineFactory().createKevScriptEngine();
+                engine.append(script.toString());
+
+                if(engine.atomicInterpretDeploy()){
                     response.setContent("<html><body><a href=\"/latexeditor/"+userLogin+"/\">Go to your dedicated editor "+userLogin+"</a></body></html>");
                     response.setContentType("text/html");
                 } else {

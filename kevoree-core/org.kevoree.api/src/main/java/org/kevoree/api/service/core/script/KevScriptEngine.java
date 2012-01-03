@@ -20,7 +20,6 @@ import org.kevoree.ContainerRoot;
  * User: duke
  * Date: 11/12/11
  * Time: 20:20
- * To change this template use File | Settings | File Templates.
  */
 public interface KevScriptEngine {
     
