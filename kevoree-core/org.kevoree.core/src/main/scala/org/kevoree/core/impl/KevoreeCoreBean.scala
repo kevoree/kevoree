@@ -31,7 +31,7 @@ import deploy.PrimitiveCommandExecutionHelper
 import _root_.org.kevoree.cloner.ModelCloner
 import _root_.org.kevoree.core.basechecker.RootChecker
 import _root_.java.util.{UUID, Date}
-import _root_.org.kevoree.api.service.core.handler.{KevoreeModelUpdateException, UUIDModel, ModelListener, KevoreeModelHandlerService}
+import org.kevoree.api.service.core.handler._
 
 class KevoreeCoreBean extends KevoreeModelHandlerService with KevoreeThreadActor {
 
@@ -405,5 +405,7 @@ nodeInstance.stopNode()
     listenerActor.removeListener(listener)
   }
 
-
+  def getContextModel: ContextModel = {
+    nodeInstance.getContextModel
+  }
 }

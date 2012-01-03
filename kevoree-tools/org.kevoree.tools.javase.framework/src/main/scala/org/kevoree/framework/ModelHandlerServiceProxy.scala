@@ -18,7 +18,7 @@ import org.kevoree.cloner.ModelCloner
 import org.slf4j.LoggerFactory
 import actors.DaemonActor
 import java.util.{Date, UUID}
-import org.kevoree.api.service.core.handler.{ModelListener, UUIDModel, KevoreeModelHandlerService}
+import org.kevoree.api.service.core.handler.{ContextModel, ModelListener, UUIDModel, KevoreeModelHandlerService}
 
 
 /**
@@ -169,4 +169,7 @@ class ModelHandlerServiceProxy extends KevoreeModelHandlerService with DaemonAct
     proxy.unregisterModelListener(listener)
   }
 
+  def getContextModel: ContextModel = {
+    proxy.getContextModel
+  }
 }

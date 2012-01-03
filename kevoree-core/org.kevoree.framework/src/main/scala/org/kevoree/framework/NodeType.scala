@@ -15,6 +15,7 @@ package org.kevoree.framework
 
 import org.kevoree.ContainerRoot
 import org.kevoreeAdaptation.{AdaptationModel, AdaptationPrimitive}
+import org.kevoree.api.service.core.handler.ContextModel
 
 /**
  * Created by IntelliJ IDEA.
@@ -34,5 +35,7 @@ trait NodeType {
   def  kompare( actualModel : ContainerRoot,  targetModel : ContainerRoot) : AdaptationModel
 
   def  getPrimitive( primitive : AdaptationPrimitive) : PrimitiveCommand
+
+  def getContextModel : ContextModel
 
 }

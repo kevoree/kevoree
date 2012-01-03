@@ -14,14 +14,17 @@
 package org.kevoree.framework;
 
 import org.kevoree.ContainerRoot;
+import org.kevoree.api.service.core.handler.ContextModel;
 import org.kevoree.api.service.core.handler.KevoreeModelHandlerService;
 import org.kevoree.api.service.core.script.KevScriptEngineFactory;
+import org.kevoree.framework.context.HashMapContextModel;
 import org.kevoreeAdaptation.AdaptationModel;
 import org.kevoreeAdaptation.AdaptationPrimitive;
 
 import java.util.HashMap;
 
-public abstract class AbstractNodeType implements NodeType {
+public abstract class
+        AbstractNodeType implements NodeType {
 
     private HashMap<String, Object> dictionary = new HashMap<String, Object>();
 
@@ -77,6 +80,11 @@ public abstract class AbstractNodeType implements NodeType {
         kevScriptEngineFactory = kf;
     }
 
+    private HashMapContextModel contextModel = new HashMapContextModel();
+    @Override
+    public ContextModel getContextModel() {
+        return contextModel;
+    }
 }
 
 
