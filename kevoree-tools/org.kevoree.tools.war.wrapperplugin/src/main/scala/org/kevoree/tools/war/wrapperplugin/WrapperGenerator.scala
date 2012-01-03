@@ -48,19 +48,72 @@ object WrapperGenerator {
 
     fw.append("private org.kevoree.library.javase.webserver.servlet.LocalServletRegistry servletRepository = null;\n")
 
+
+    fw.append("Thread serverThread = null;\n")
+    fw.append("org.eclipse.jetty.server.Server server=null;\n")
+
     fw.append("@Override\n")
     fw.append("public void startPage() {\n")
     fw.append("super.startPage();\n")
-    fw.append("Bundle b = (Bundle)this.getDictionary().get(\"osgi.bundle\");")
+    fw.append("final Bundle b = (Bundle)this.getDictionary().get(\"osgi.bundle\");")
     fw.append("servletRepository = new LocalServletRegistry(b);\n");
 
+
+    /*
     fw.append("servletRepository.loadWebXml(this.getClass().getClassLoader().getResourceAsStream(\"web.xml\"));\n")
+    */
+
+    fw.append("final org.eclipse.jetty.server.Server server = new org.eclipse.jetty.server.Server(7080);\n")
+    fw.append(" serverThread = new Thread() {\n")
+    fw.append("  @Override\n")
+    fw.append("  public void run() {\n")
+
+    fw.append("org.eclipse.jetty.webapp.WebAppContext context = new org.eclipse.jetty.webapp.WebAppContext(){\n    @Override\n    public boolean isCopyWebDir() {return false;    }\n\n    @Override\n    public boolean isCopyWebInf() {return false;}\n};\n")
+    fw.append("try{\n")
+    fw.append("org.eclipse.jetty.osgi.boot.internal.webapp.OSGiWebappClassLoader webappClassLoader = new org.eclipse.jetty.osgi.boot.internal.webapp.OSGiWebappClassLoader(org.eclipse.jetty.osgi.boot.JettyBootstrapActivator.class.getClassLoader(), context, (org.osgi.framework.Bundle)getDictionary().get(\"osgi.bundle\"), new org.eclipse.jetty.osgi.boot.utils.BundleClassLoaderHelper() {\n")
+    fw.append("    @Override\n")
+    fw.append("    public ClassLoader getBundleClassLoader( org.osgi.framework.Bundle bundle) {\n")
+    fw.append("        return "+name+".class.getClassLoader();\n")
+    fw.append("    }\n")
+    fw.append("});\n")
+    fw.append(" context.setClassLoader(webappClassLoader);\n")
+    fw.append("Thread.currentThread().setContextClassLoader(webappClassLoader);\n")
+    fw.append("context.setAttribute(org.eclipse.jetty.osgi.boot.OSGiWebappConstants.RFC66_OSGI_BUNDLE_CONTEXT, ((org.osgi.framework.Bundle)getDictionary().get(\"osgi.bundle\")).getBundleContext());\n")
+    fw.append(" webappClassLoader.setWebappContext(context);\n")
+
+    fw.append("} catch (java.io.IOException e) {e.printStackTrace();}\n")
+
+
+
+
+    //fw.append("org.eclipse.jetty.server.handler.ResourceHandler resourceHandler = new org.eclipse.jetty.server.handler.ResourceHandler();\n")
+   //fw.append("resourceHandler.setBaseResource(org.eclipse.jetty.util.resource.Resource.newClassPathResource(\"/\"));\n")
+    //fw.append("context.setDescriptor(\"/Users/duke/Documents/dev/dukeboard/kevoree/kevoree-library/javase/org.kevoree.library.javase.webserver.jenkins/target/warcontent/web.xml\");")
+    fw.append("context.setContextPath(\"/\");\n")
+    //fw.append("context.setParentLoaderPriority(false);\n")
+
+
+    
+fw.append("context.setExtractWAR(false);\n")
+    fw.append("context.setBaseResource(org.eclipse.jetty.util.resource.Resource.newClassPathResource(\"/\"));\n")
+    fw.append("org.eclipse.jetty.security.HashLoginService dummyLoginService = new org.eclipse.jetty.security.HashLoginService(\"KEVOREE-SECURITY-REALM\");\n")
+    fw.append("context.getSecurityHandler().setLoginService(dummyLoginService);\n")
+    fw.append("server.setHandler(context);\n")
+    fw.append("try { server.start();server.join();\n")
+    fw.append("} catch (Exception e) {e.printStackTrace(); }\n")
+
+
+    fw.append("  }\n")
+    fw.append("};\n")
+    fw.append("serverThread.start();\n")
+
     fw.append("}//END START METHOD\n")
 
     fw.append("@Override\n")
     fw.append("public void stopPage() {\n")
     fw.append("    servletRepository.unload();\n")
     fw.append("    super.stopPage();\n")
+    fw.append("    try {server.stop();server.destroy();serverThread.stop();\n    } catch (Exception e) {e.printStackTrace();  }\n")
     fw.append(" }\n")
 
     fw.append("@Override\n")

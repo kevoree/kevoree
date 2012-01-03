@@ -114,6 +114,14 @@ public class WarWrapperMojo extends AbstractMojo {
             project.getCompileDependencies().add(dep2);
 
 
+            Dependency dep3 = new Dependency();
+            dep3.setArtifactId("org.kevoree.extra.jetty");
+            dep3.setGroupId("org.kevoree.extra");
+            dep3.setVersion("8.1.0.RC2");
+            dep3.setType("bundle");
+            dep3.setScope("compile");
+            project.getCompileDependencies().add(dep3);
+
             WrapperGenerator.generate(sourceOutputDirectory,project);
 
             project.getBuild().setSourceDirectory(sourceOutputDirectory.getAbsolutePath());
