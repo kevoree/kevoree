@@ -75,6 +75,7 @@ public class FakeServletContext implements ServletContext {
 
     @Override
     public InputStream getResourceAsStream(String path) {
+       // return this.getResourceAsStream(path);
         logger.warn("Call getResourceAsStream");
         return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
@@ -289,7 +290,8 @@ public class FakeServletContext implements ServletContext {
 
     @Override
     public ClassLoader getClassLoader() {
-        return this.getClass().getClassLoader();
+        //return this.getClass().getClassLoader();
+        return null;
     }
 
     @Override

@@ -6,7 +6,11 @@ import org.osgi.framework.Bundle
 import org.slf4j.LoggerFactory
 import org.kevoree.library.javase.webserver.{URLHandlerScala, KevoreeHttpResponse, KevoreeHttpRequest}
 import scala.xml.XML
-import javax.servlet.{ServletContextEvent, ServletContextListener}
+import java.lang.String
+import java.net.URL
+import javax.servlet.{ServletContext, ServletContextEvent, ServletContextListener}
+import java.util.{HashSet, Collections, Set}
+import io.Source
 
 /**
  * Created by IntelliJ IDEA.
@@ -21,12 +25,46 @@ class LocalServletRegistry(bundle: Bundle = null) {
   private val servlets = new scala.collection.mutable.HashMap[URLHandlerScala, AbstractHttpServletPage]
   private val logger = LoggerFactory.getLogger(this.getClass)
 
+  def getCDefaultPath : String = "/"
+  
+  private val sharedCTX = new FakeServletContext{
+    override def getResourcePaths(path: String): Set[String] = {
+      val s = new java.util.HashSet[String]()
+      import scala.collection.JavaConversions._
+      bundle.getEntryPaths(path).foreach(m => s.add(m.toString))
+      s
+    }
+
+
+    override def getContextPath: String = {
+      getCDefaultPath
+    }
+
+    override def getResource(path: String): URL = {
+      //println(path)
+      bundle.getResource(path)
+    }
+
+    override def getResourceAsStream(path: String): InputStream = {
+      //println(path)
+      bundle.getResource(path).openStream()
+    }
+  }
+  
+
   def registerServlet(urlpattern: String, servletClass: HttpServlet) {
     val servletWrapper = new AbstractHttpServletPage {
       def initServlet() {
         this.legacyServlet = servletClass
       }
+
+      def getSharedServletContext: ServletContext = {
+        sharedCTX
+      }
     }
+
+
+
     servletWrapper.getDictionary.put("urlpattern", "**" + urlpattern)
     servletWrapper.startPage()
     val up = new URLHandlerScala
@@ -88,8 +126,6 @@ class LocalServletRegistry(bundle: Bundle = null) {
                   listeners = listeners ++ List(newL)
               }
             }
-            // ServletContextListener
-
             case _ =>
           }
       }
@@ -99,7 +135,7 @@ class LocalServletRegistry(bundle: Bundle = null) {
 
     listeners.foreach {
       l =>
-        val sevent = new ServletContextEvent(ServletContextHandler.getContext)
+        val sevent = new ServletContextEvent(sharedCTX)
         l.contextInitialized(sevent)
     }
 
@@ -108,7 +144,7 @@ class LocalServletRegistry(bundle: Bundle = null) {
   def unload() {
     listeners.foreach {
       l =>
-        val sevent = new ServletContextEvent(ServletContextHandler.getContext)
+        val sevent = new ServletContextEvent(sharedCTX)
         l.contextDestroyed(sevent)
     }
     listeners = List()

@@ -1,6 +1,7 @@
 package org.kevoree.library.javase.webserver;
 
 import java.io.Serializable;
+import java.util.HashMap;
 import java.util.UUID;
 
 /**
@@ -50,5 +51,15 @@ public class KevoreeHttpResponse implements Serializable {
 
     public void setRawContent(byte[] rawContent) {
         this.rawContent = rawContent;
+    }
+    
+    private HashMap<String,String> headers = new HashMap<String,String>();
+
+    public HashMap<String, String> getHeaders() {
+        return headers;
+    }
+
+    public void setHeaders(HashMap<String, String> headers) {
+        this.headers = headers;
     }
 }

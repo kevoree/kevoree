@@ -129,7 +129,7 @@ public class latexEditorFileExplorer extends SimplePanel implements AceEditorCal
         latexEditorService.App.getInstance().getFlatFiles(new AsyncCallback<Set<String>>() {
             @Override
             public void onFailure(Throwable caught) {
-                Window.alert("Error listing files from server");
+                Window.alert("Error listing files from server, "+ caught.getMessage());
             }
 
             @Override
@@ -195,7 +195,5 @@ public class latexEditorFileExplorer extends SimplePanel implements AceEditorCal
         } else {
             //WAITING FOR AUTO SAVE LOOP TO DO THE JOB
         }
-
-
     }
 }

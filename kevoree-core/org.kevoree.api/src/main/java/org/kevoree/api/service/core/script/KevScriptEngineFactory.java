@@ -18,7 +18,6 @@ package org.kevoree.api.service.core.script;
  * User: duke
  * Date: 11/12/11
  * Time: 20:19
- * To change this template use File | Settings | File Templates.
  */
 public interface KevScriptEngineFactory {
 

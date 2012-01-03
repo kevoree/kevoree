@@ -33,7 +33,7 @@ import java.util.HashMap;
 public class AbstractPage extends AbstractComponentType {
 
     protected Logger logger = LoggerFactory.getLogger(this.getClass());
-    private URLHandlerScala handler = new URLHandlerScala();
+    protected URLHandlerScala handler = new URLHandlerScala();
 
     public String getLastParam(String url){
         Option<String> result = handler.getLastParam(url,this.getDictionary().get("urlpattern").toString());

@@ -18,39 +18,37 @@
 
 package org.kevoree.core.impl
 
-import org.kevoree.KevoreeFactory
-import org.kevoree.ContainerRoot
-import org.kevoree.api.configuration.ConfigurationService
-import org.osgi.framework.BundleContext
-import org.slf4j.LoggerFactory
-import scala.reflect.BeanProperty
-import org.kevoree.framework.message._
-import scala.actors.Actor
-import org.kevoree.api.configuration.ConfigConstants
-import org.kevoree.framework._
-import org.kevoree.framework.context.KevoreeDeployManager
+import _root_.org.kevoree.KevoreeFactory
+import _root_.org.kevoree.ContainerRoot
+import _root_.org.kevoree.api.configuration.ConfigurationService
+import _root_.org.slf4j.LoggerFactory
+import _root_.scala.reflect.BeanProperty
+import _root_.scala.actors.Actor
+import _root_.org.kevoree.api.configuration.ConfigConstants
+import _root_.org.kevoree.framework._
+import _root_.org.kevoree.core.impl.message._
 import deploy.PrimitiveCommandExecutionHelper
-import org.kevoree.tools.aether.framework.NodeTypeBootstrapHelper
-import org.kevoree.cloner.ModelCloner
-import org.kevoree.core.basechecker.RootChecker
-import java.util.{UUID, Date}
-import org.kevoree.api.service.core.handler.{KevoreeModelUpdateException, UUIDModel, ModelListener, KevoreeModelHandlerService}
+import _root_.org.kevoree.cloner.ModelCloner
+import _root_.org.kevoree.core.basechecker.RootChecker
+import _root_.java.util.{UUID, Date}
+import _root_.org.kevoree.api.service.core.handler.{KevoreeModelUpdateException, UUIDModel, ModelListener, KevoreeModelHandlerService}
 
 class KevoreeCoreBean extends KevoreeModelHandlerService with KevoreeThreadActor {
 
   @BeanProperty var configService: ConfigurationService = null
+
+  /*
   var bundleContext: BundleContext = null;
-
   def getBundleContext = bundleContext
-
   def setBundleContext(bc: BundleContext) {
     bundleContext = bc
     KevoreeDeployManager.setBundle(bc.getBundle)
-  }
+  }*/
 
+  @BeanProperty var bootstraper : Bootstraper = null
 
   @BeanProperty var nodeName: String = ""
-  @BeanProperty var nodeInstance: AbstractNodeType = null
+  @BeanProperty var nodeInstance: org.kevoree.framework.NodeType = null
 
   var models: scala.collection.mutable.ArrayBuffer[ContainerRoot] = new scala.collection.mutable.ArrayBuffer[ContainerRoot]()
   var model: ContainerRoot = KevoreeFactory.eINSTANCE.createContainerRoot
@@ -67,9 +65,9 @@ class KevoreeCoreBean extends KevoreeModelHandlerService with KevoreeThreadActor
       if (nodeInstance == null) {
         currentModel.getNodes.find(n => n.getName == nodeName) match {
           case Some(foundNode) => {
-            val bt = new NodeTypeBootstrapHelper
-            bt.bootstrapNodeType(currentModel, nodeName, bundleContext) match {
-              case Some(ist: AbstractNodeType) => {
+          //  val bt = new NodeTypeBootstrapHelper
+            bootstraper.bootstrapNodeType(currentModel, nodeName) match {
+              case Some(ist: org.kevoree.framework.NodeType) => {
                 nodeInstance = ist;
                 nodeInstance.startNode()
 
@@ -103,9 +101,8 @@ class KevoreeCoreBean extends KevoreeModelHandlerService with KevoreeThreadActor
       if (nodeInstance != null) {
         currentModel.getNodes.find(n => n.getName == nodeName) match {
           case Some(foundNode) => {
-            val bt = new NodeTypeBootstrapHelper
-            bt.bootstrapNodeType(currentModel, nodeName, bundleContext) match {
-              case Some(ist: AbstractNodeType) => {
+            bootstraper.bootstrapNodeType(currentModel, nodeName) match {
+              case Some(ist: org.kevoree.framework.NodeType) => {
 
                 val modelTmp = modelClone.clone(currentModel)
                 modelTmp.removeAllGroups()
@@ -118,7 +115,6 @@ class KevoreeCoreBean extends KevoreeModelHandlerService with KevoreeThreadActor
                 modelTmp.getNodes(0).removeAllComponents()
                 modelTmp.getNodes(0).removeAllHosts()
                 Some(modelTmp)
-
               }
               case None => logger.error("TypeDef installation fail !"); None
             }
@@ -148,22 +144,10 @@ class KevoreeCoreBean extends KevoreeModelHandlerService with KevoreeThreadActor
     model = c
     currentModelUUID = UUID.randomUUID()
     lastDate = new Date(System.currentTimeMillis)
-
-    //TODO ADD LISTENER
-
     //Fires the update to listeners
     new Actor {
       def act() {
-        //NOTIFY LOCAL REASONER
         listenerActor.notifyAllListener()
-        //NOTIFY GROUP
-        val srs = bundleContext.getServiceReferences(classOf[KevoreeGroup].getName, null)
-        if (srs != null) {
-          srs.foreach {
-            sr =>
-              bundleContext.getService(sr).asInstanceOf[KevoreeGroup].triggerModelUpdate()
-          }
-        }
       }
     }.start()
   }
@@ -260,7 +244,7 @@ class KevoreeCoreBean extends KevoreeModelHandlerService with KevoreeThreadActor
         val checkResult = modelChecker.check(pnewmodel)
         if (!checkResult.isEmpty) {
           logger.error("There is check failure on update model, update refused !")
-          import scala.collection.JavaConversions._
+          import _root_.scala.collection.JavaConversions._
           checkResult.foreach {
             cr =>
               logger.error("error=>" + cr.getMessage + ",objects" + cr.getTargetObjects.mkString(","))
@@ -278,7 +262,8 @@ class KevoreeCoreBean extends KevoreeModelHandlerService with KevoreeThreadActor
             try {
               // Compare the two models and plan the adaptation
               val adaptationModel = nodeInstance.kompare(model, newmodel)
-              if (logger.isDebugEnabled) {//Avoid the loop if the debug is not activated
+              if (logger.isDebugEnabled) {
+                //Avoid the loop if the debug is not activated
                 logger.debug("Adaptation model size " + adaptationModel.getAdaptations.size)
                 adaptationModel.getAdaptations.foreach {
                   adaptation =>
@@ -288,19 +273,8 @@ class KevoreeCoreBean extends KevoreeModelHandlerService with KevoreeThreadActor
               //Executes the adaptation
               PrimitiveCommandExecutionHelper.execute(adaptationModel, nodeInstance)
 
-              //Cleanup the local runtime
-              KevoreeDeployManager.bundleMapping.foreach {
-                bm =>
-                  try {
-                    logger.debug("Try to cleanup " + bm.bundleId + "," + bm.objClassName + "," + bm.name)
-                    KevoreeDeployManager.removeMapping(bm)
-                    getBundleContext.getBundle(bm.bundleId).uninstall()
-                  } catch {
-                    case _@e => logger.debug("Error while cleanup platform ", e)
-                  }
-              }
-              logger.debug("Deploy manager cache size after HaraKiri" + KevoreeDeployManager.bundleMapping.size)
 
+nodeInstance.stopNode()
               //end of harakiri
               nodeInstance = null
 
@@ -416,7 +390,7 @@ class KevoreeCoreBean extends KevoreeModelHandlerService with KevoreeThreadActor
    * Provides the collection of last models (short system history)
    */
   override def getPreviousModel: java.util.List[ContainerRoot] = {
-    import scala.collection.JavaConversions._
+    import _root_.scala.collection.JavaConversions._
     (this !? PreviousModel()).asInstanceOf[scala.collection.mutable.ArrayBuffer[ContainerRoot]].toList
   }
 

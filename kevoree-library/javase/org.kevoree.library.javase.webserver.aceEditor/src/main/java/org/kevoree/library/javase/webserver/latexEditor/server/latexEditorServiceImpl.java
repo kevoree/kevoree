@@ -17,7 +17,10 @@ import org.kevoree.library.javase.webserver.latexEditor.client.latexEditorServic
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Collections;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
@@ -30,25 +33,27 @@ public class latexEditorServiceImpl extends RemoteServiceServlet implements late
     LockFilesService portService = null;
     Set<String> extensions = new HashSet<String>();
 
-
     public latexEditorServiceImpl() {
         //EMPTY CONSTRUCTOR FOR DEBUG ONLY IN IDE
         //INSERT FAKE COMPONENT
         portService = new LockFilesService(){
-
             @Override
             public Set<String> getFilesPath() {
                 Set<String> files = new HashSet<String>();
-                files.add("/fakeFile1.tex");
-                files.add("/fakeFile2.tex");
+                for(int i =0 ;i< 20; i ++){
+                    files.add("/fakeFile"+i+".tex");
+
+                }
                 return files;
             }
 
             @Override
             public Set<String> getFilteredFilesPath(Set<String> extensions) {
                 Set<String> files = new HashSet<String>();
-                files.add("/fakeFile1.tex");
-                files.add("/fakeFile2.tex");
+                for(int i =0 ;i< 20; i ++){
+                    files.add("/fakeFile"+i+".tex");
+
+                }
                 return files;
             }
 
@@ -78,13 +83,14 @@ public class latexEditorServiceImpl extends RemoteServiceServlet implements late
 
     public latexEditorServiceImpl(LatexEditor _editor) {
         editor = _editor;
-        editor.getPortByName("files", LockFilesService.class);
+        portService= editor.getPortByName("files", LockFilesService.class);
         extensions.add("tex");
         extensions.add("cls");
         extensions.add("txt");
         extensions.add("sty");
         extensions.add("bst");
         extensions.add("bib");
+        logger.debug("Latex Editor Service Init "+portService);
     }
 
     @Override
@@ -98,7 +104,12 @@ public class latexEditorServiceImpl extends RemoteServiceServlet implements late
 
     @Override
     public Set<String> getFlatFiles() {
-        return portService.getFilteredFilesPath(extensions);
+        try {
+            return portService.getFilteredFilesPath(extensions);  
+        } catch(Exception e) {
+            logger.debug("",e);
+            return null;
+        }
     }
 
     @Override

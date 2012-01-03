@@ -33,7 +33,8 @@ import java.util.concurrent.TimeUnit;
 @PrimitiveCommands(value = {}, values = {IaaSNode.REMOVE_NODE, IaaSNode.ADD_NODE})
 @DictionaryType({
 		@DictionaryAttribute(name = "role", defaultValue = "host", vals = {"host", "container", "host/container"},
-				optional = false)
+				optional = false),
+		@DictionaryAttribute(name = "port", defaultValue = "7000", optional = false)
 })
 @NodeType
 public /*abstract*/ class IaaSNode extends JavaSENode {

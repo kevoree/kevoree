@@ -67,7 +67,7 @@ trait KevoreeThreadActor extends Actor {
   def act() {
     while (trapExitBoolean) {
       receive {
-        
+
         case RESUME_ACTOR() if(!pauseState) => {
           pauseState = false;
           deadMessageQueue.foreach(msg => this ! msg )

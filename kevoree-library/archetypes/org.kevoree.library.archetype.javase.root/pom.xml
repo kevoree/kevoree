@@ -10,7 +10,7 @@
     <parent>
         <groupId>org.kevoree.library.archetype</groupId>
         <artifactId>org.kevoree.library.archetype.root</artifactId>
-        <version>1.5.0-SNAPSHOT</version>
+        <version>1.5.0-RC1</version>
         <relativePath>../org.kevoree.library.archetype.root</relativePath>
     </parent>
 

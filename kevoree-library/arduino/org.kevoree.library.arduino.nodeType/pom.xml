@@ -6,7 +6,7 @@
     <artifactId>org.kevoree.library.arduino.nodeType</artifactId>
     <packaging>bundle</packaging>
     <name>Kevoree :: Library :: Arduino :: NodeType</name>
-    <version>1.5.0-SNAPSHOT</version>
+    <version>1.5.0-RC1</version>
 
     <properties>
         <scala.version>2.9.1</scala.version>
@@ -15,7 +15,7 @@
     <parent>
         <artifactId>org.kevoree.library.arduino.root</artifactId>
         <groupId>org.kevoree.library.arduino</groupId>
-        <version>1.5.0-SNAPSHOT</version>
+        <version>1.5.0-RC1</version>
         <relativePath>../org.kevoree.library.arduino.root/pom.xml</relativePath>
     </parent>
 
@@ -31,8 +31,8 @@
             <version>${kevoree.version}</version>
         </dependency>
         <dependency>
-            <groupId>org.kevoree</groupId>
-            <artifactId>org.kevoree.deploy.osgi</artifactId>
+            <groupId>org.kevoree.tools</groupId>
+            <artifactId>org.kevoree.tools.deploy.osgi</artifactId>
             <version>${kevoree.version}</version>
         </dependency>
 

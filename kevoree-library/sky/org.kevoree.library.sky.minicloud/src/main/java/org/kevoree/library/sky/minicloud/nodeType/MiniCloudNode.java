@@ -18,9 +18,6 @@ import org.slf4j.LoggerFactory;
  */
 
 @Library(name = "SKY")
-@DictionaryType({
-		@DictionaryAttribute(name = "port", defaultValue = "7000", optional = false)
-})
 @NodeType
 public class MiniCloudNode extends IaaSNode {
 	private static final Logger logger = LoggerFactory.getLogger(MiniCloudNode.class);

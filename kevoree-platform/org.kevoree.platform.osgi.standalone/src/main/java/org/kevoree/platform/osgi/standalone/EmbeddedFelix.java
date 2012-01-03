@@ -82,7 +82,7 @@ public class EmbeddedFelix {
         String extraProps = System.getProperty("org.osgi.framework.system.packages.extra");
 
 
-        String defaultExtra = ",sun.misc,com.sun.security.auth,com.sun.security.auth.module,sun.security.krb5,javax.security.auth.login";
+        String defaultExtra = ",sun.reflect,sun.misc,com.sun.security.auth,com.sun.security.auth.module,sun.security.krb5,javax.security.auth.login";
 
         if (extraProps != null && extraProps != "") {
             configProps.put(Constants.FRAMEWORK_SYSTEMPACKAGES_EXTRA, SysPackageConstants.getProperty() + defaultExtra + extraProps);
