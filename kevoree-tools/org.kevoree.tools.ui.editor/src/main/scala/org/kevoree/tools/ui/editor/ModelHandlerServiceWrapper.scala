@@ -15,8 +15,8 @@ package org.kevoree.tools.ui.editor
 
 import java.lang.String
 import org.kevoree.ContainerRoot
-import org.kevoree.api.service.core.handler.{UUIDModel, ModelListener, KevoreeModelHandlerService}
 import java.util.{UUID, Date, List}
+import org.kevoree.api.service.core.handler.{ContextModel, UUIDModel, ModelListener, KevoreeModelHandlerService}
 
 
 /**
@@ -28,8 +28,6 @@ import java.util.{UUID, Date, List}
  */
 
 class ModelHandlerServiceWrapper(kernel : KevoreeUIKernel) extends KevoreeModelHandlerService {
-
-
 
   def getLastModel: ContainerRoot = {
     kernel.getModelHandler.getActualModel
@@ -60,4 +58,6 @@ class ModelHandlerServiceWrapper(kernel : KevoreeUIKernel) extends KevoreeModelH
   def compareAndSwapModel(previousModel: UUIDModel, targetModel: ContainerRoot) {}
 
   def atomicCompareAndSwapModel(previousModel: UUIDModel, targetModel: ContainerRoot): Date = null
+
+  def getContextModel: ContextModel = null
 }

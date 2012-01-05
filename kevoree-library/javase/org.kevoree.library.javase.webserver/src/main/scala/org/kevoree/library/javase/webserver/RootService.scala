@@ -21,17 +21,19 @@ import akka.actor.Actor
 import cc.spray.can._
 import org.kevoree.framework.MessagePort
 import java.util.UUID
+import scala.collection.JavaConversions._
 
-class RootService(id: String, request: MessagePort, bootstrap: ServerBootstrap, timeout: Long) extends Actor {
+class RootService (id: String, request: MessagePort, bootstrap: ServerBootstrap, timeout: Long) extends Actor {
   val log = LoggerFactory.getLogger(getClass)
   self.id = id
 
-  case class GARBAGE(minLastCheck: Long)
+  case class GARBAGE (minLastCheck: Long)
 
-  case class RequestResponderTuple(responder: RequestResponder, uuid: UUID, time: Long)
+  case class RequestResponderTuple (responder: RequestResponder, uuid: UUID, time: Long)
 
   class ResponseActor extends akka.actor.Actor {
-    var map: scala.collection.mutable.HashMap[UUID, Tuple2[RequestResponder, Long]] = scala.collection.mutable.HashMap[UUID, Tuple2[RequestResponder, Long]]()
+    var map: scala.collection.mutable.HashMap[UUID, Tuple2[RequestResponder, Long]] = scala.collection.mutable
+      .HashMap[UUID, Tuple2[RequestResponder, Long]]()
 
     def receive = {
       case GARBAGE(minLastCheck) => {
@@ -91,6 +93,7 @@ class RootService(id: String, request: MessagePort, bootstrap: ServerBootstrap, 
       actorRef ! RequestResponderTuple(responder, kevMsg.getTokenID, System.currentTimeMillis())
       val paramsRes = GetParamsParser.getParams(url)
       kevMsg.setUrl(paramsRes._1)
+      kevMsg.setRawParams(defineRawParams(paramsRes._2))
       kevMsg.setResolvedParams(paramsRes._2)
       headers.foreach {
         header =>
@@ -101,10 +104,13 @@ class RootService(id: String, request: MessagePort, bootstrap: ServerBootstrap, 
     case RequestContext(HttpRequest(HttpMethods.POST, url, headers, body, _), _, responder) =>
       val kevMsg = new KevoreeHttpRequest
       actorRef ! RequestResponderTuple(responder, kevMsg.getTokenID, System.currentTimeMillis())
-      val paramsRes = GetParamsParser.getParams(url + "?" + new String(body))
+
+      val paramsRes1 = GetParamsParser.getParams(url)
+      val paramsRes = GetParamsParser.getParams(headers, body)
       kevMsg.setRawBody(body)
-      kevMsg.setUrl(paramsRes._1)
-      kevMsg.setResolvedParams(paramsRes._2)
+      kevMsg.setRawParams(defineRawParams(paramsRes1._2))
+      kevMsg.setUrl(paramsRes1._1)
+      kevMsg.setResolvedParams(paramsRes)
       headers.foreach {
         header =>
           kevMsg.getHeaders.put(header._1, header._2)
@@ -115,14 +121,27 @@ class RootService(id: String, request: MessagePort, bootstrap: ServerBootstrap, 
       actorRef ! GARBAGE(System.currentTimeMillis() - timeout)
       HttpResponse(status = 500).withBody("The " + method + " request to '" + uri + "' has timed out...")
     }
+  }
 
+  private def defineRawParams (params: java.util.HashMap[String, String]): String = {
+    val stringBuilder = new StringBuilder()
+    stringBuilder append "?"
+    params.keySet().foreach {
+      key =>
+        if (stringBuilder.get(stringBuilder.length - 1) != '?') {
+          stringBuilder append "&"
+        }
+        stringBuilder append key + "=" + params.get(key)
+    }
+    stringBuilder.toString()
   }
 
   val defaultHeaders = List(HttpHeader("Content-Type", "text/html"))
 
-  def rawResponse(msg: Array[Byte], status: Int = 200, headers: List[HttpHeader]) = HttpResponse(status, headers, msg)
+  def rawResponse (msg: Array[Byte], status: Int = 200, headers: List[HttpHeader]) = HttpResponse(status, headers, msg)
 
-  def response(msg: String, status: Int = 200, headers: List[HttpHeader]) = HttpResponse(status, headers, msg.getBytes("UTF-8"))
+  def response (msg: String, status: Int = 200, headers: List[HttpHeader]) = HttpResponse(status, headers,
+                                                                                           msg.getBytes("UTF-8"))
 
   ////////////// helpers //////////////
   /*

@@ -31,7 +31,7 @@ import deploy.PrimitiveCommandExecutionHelper
 import _root_.org.kevoree.cloner.ModelCloner
 import _root_.org.kevoree.core.basechecker.RootChecker
 import _root_.java.util.{UUID, Date}
-import _root_.org.kevoree.api.service.core.handler.{KevoreeModelUpdateException, UUIDModel, ModelListener, KevoreeModelHandlerService}
+import org.kevoree.api.service.core.handler._
 
 class KevoreeCoreBean extends KevoreeModelHandlerService with KevoreeThreadActor {
 
@@ -45,7 +45,7 @@ class KevoreeCoreBean extends KevoreeModelHandlerService with KevoreeThreadActor
     KevoreeDeployManager.setBundle(bc.getBundle)
   }*/
 
-  @BeanProperty var bootstraper : Bootstraper = null
+  @BeanProperty var bootstraper: Bootstraper = null
 
   @BeanProperty var nodeName: String = ""
   @BeanProperty var nodeInstance: org.kevoree.framework.NodeType = null
@@ -65,7 +65,7 @@ class KevoreeCoreBean extends KevoreeModelHandlerService with KevoreeThreadActor
       if (nodeInstance == null) {
         currentModel.getNodes.find(n => n.getName == nodeName) match {
           case Some(foundNode) => {
-          //  val bt = new NodeTypeBootstrapHelper
+            //  val bt = new NodeTypeBootstrapHelper
             bootstraper.bootstrapNodeType(currentModel, nodeName) match {
               case Some(ist: org.kevoree.framework.NodeType) => {
                 nodeInstance = ist;
@@ -252,76 +252,80 @@ class KevoreeCoreBean extends KevoreeModelHandlerService with KevoreeThreadActor
           false
         } else {
           //Model check is OK.
+          val precheckModel = cloner.clone(pnewmodel)
+          val preCheckResult = listenerActor.preUpdate(precheckModel)
+          if (preCheckResult) {
+            var newmodel = cloner.clone(pnewmodel)
+            //CHECK FOR HARA KIRI
+            if (HaraKiriHelper.detectNodeHaraKiri(model, newmodel, getNodeName())) {
+              logger.warn("HaraKiri detected , flush platform")
+              // Creates an empty model, removes the current node (harakiri)
+              newmodel = KevoreeFactory.createContainerRoot
+              try {
+                // Compare the two models and plan the adaptation
+                val adaptationModel = nodeInstance.kompare(model, newmodel)
+                if (logger.isDebugEnabled) {
+                  //Avoid the loop if the debug is not activated
+                  logger.debug("Adaptation model size " + adaptationModel.getAdaptations.size)
+                  adaptationModel.getAdaptations.foreach {
+                    adaptation =>
+                      logger.debug("primitive " + adaptation.getPrimitiveType.getName)
+                  }
+                }
+                //Executes the adaptation
+                PrimitiveCommandExecutionHelper.execute(adaptationModel, nodeInstance)
 
-          var newmodel = cloner.clone(pnewmodel)
-          //CHECK FOR HARA KIRI
-          if (HaraKiriHelper.detectNodeHaraKiri(model, newmodel, getNodeName())) {
-            logger.warn("HaraKiri detected , flush platform")
-            // Creates an empty model, removes the current node (harakiri)
-            newmodel = KevoreeFactory.createContainerRoot
-            try {
-              // Compare the two models and plan the adaptation
-              val adaptationModel = nodeInstance.kompare(model, newmodel)
-              if (logger.isDebugEnabled) {
-                //Avoid the loop if the debug is not activated
-                logger.debug("Adaptation model size " + adaptationModel.getAdaptations.size)
-                adaptationModel.getAdaptations.foreach {
-                  adaptation =>
-                    logger.debug("primitive " + adaptation.getPrimitiveType.getName)
+
+                nodeInstance.stopNode()
+                //end of harakiri
+                nodeInstance = null
+
+                //place the current model as an empty model (for backup)
+                switchToNewModel(newmodel)
+
+                //prepares for deployment of the new system
+                newmodel = cloner.clone(pnewmodel)
+              } catch {
+                case _@e => {
+                  logger.error("Error while update ", e)
                 }
               }
-              //Executes the adaptation
-              PrimitiveCommandExecutionHelper.execute(adaptationModel, nodeInstance)
+              logger.debug("End HaraKiri")
+            }
 
+            //Checks and bootstrap the node
+            checkBootstrapNode(newmodel)
+            val milli = System.currentTimeMillis
+            logger.debug("Begin update model " + milli)
+            var deployResult = true
+            try {
+              // Compare the two models and plan the adaptation
+              logger.info("Comparing models and planning adaptation.")
+              val adaptationModel = nodeInstance.kompare(model, newmodel);
 
-nodeInstance.stopNode()
-              //end of harakiri
-              nodeInstance = null
-
-              //place the current model as an empty model (for backup)
-              switchToNewModel(newmodel)
-
-              //prepares for deployment of the new system
-              newmodel = cloner.clone(pnewmodel)
+              //Execution of the adaptation
+              logger.info("Launching adaptation of the system.")
+              deployResult = PrimitiveCommandExecutionHelper.execute(adaptationModel, nodeInstance)
             } catch {
               case _@e => {
                 logger.error("Error while update ", e)
+                deployResult = false
               }
             }
-            logger.debug("End HaraKiri")
-          }
-
-          //Checks and bootstrap the node
-          checkBootstrapNode(newmodel)
-          val milli = System.currentTimeMillis
-          logger.debug("Begin update model " + milli)
-          var deployResult = true
-          try {
-            // Compare the two models and plan the adaptation
-            logger.info("Comparing models and planning adaptation.")
-            val adaptationModel = nodeInstance.kompare(model, newmodel);
-
-            //Execution of the adaptation
-            logger.info("Launching adaptation of the system.")
-            deployResult = PrimitiveCommandExecutionHelper.execute(adaptationModel, nodeInstance)
-          } catch {
-            case _@e => {
-              logger.error("Error while update ", e)
-              deployResult = false
+            if (deployResult) {
+              switchToNewModel(newmodel)
+              logger.info("Update sucessfully completed.")
+            } else {
+              //KEEP FAIL MODEL, TODO
+              logger.warn("Update failed")
             }
-          }
-          if (deployResult) {
-            //Merge previous model on new model for platform model
-            //KevoreePlatformMerger.merge(newmodel, model)
-            switchToNewModel(newmodel)
-            logger.info("Update sucessfully completed.")
+            val milliEnd = System.currentTimeMillis - milli
+            logger.debug("End deploy result=" + deployResult + "-" + milliEnd)
+            deployResult
           } else {
-            //KEEP FAIL MODEL
-            logger.warn("Update failed")
+            logger.debug("PreCheck Step was refused, update aborded !")
+            false
           }
-          val milliEnd = System.currentTimeMillis - milli
-          logger.debug("End deploy result=" + deployResult + "-" + milliEnd)
-          deployResult
         }
       } catch {
         case _@e =>
@@ -390,7 +394,7 @@ nodeInstance.stopNode()
    * Provides the collection of last models (short system history)
    */
   override def getPreviousModel: java.util.List[ContainerRoot] = {
-    import _root_.scala.collection.JavaConversions._
+    import scala.collection.JavaConversions._
     (this !? PreviousModel()).asInstanceOf[scala.collection.mutable.ArrayBuffer[ContainerRoot]].toList
   }
 
@@ -405,5 +409,7 @@ nodeInstance.stopNode()
     listenerActor.removeListener(listener)
   }
 
-
+  def getContextModel: ContextModel = {
+    nodeInstance.getContextModel
+  }
 }

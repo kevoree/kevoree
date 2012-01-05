@@ -5,7 +5,7 @@
     <parent>
         <artifactId>org.kevoree.library.javase.root</artifactId>
         <groupId>org.kevoree.library.javase</groupId>
-        <version>1.5.0-RC1</version>
+        <version>1.5.0</version>
         <relativePath>../org.kevoree.library.javase.root/pom.xml</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
@@ -19,6 +19,7 @@
             <groupId>org.kevoree.library.javase</groupId>
             <artifactId>org.kevoree.library.javase.webserver</artifactId>
             <version>${kevoree.version}</version>
+            <type>bundle</type>
         </dependency>
         <dependency>
             <groupId>junit</groupId>

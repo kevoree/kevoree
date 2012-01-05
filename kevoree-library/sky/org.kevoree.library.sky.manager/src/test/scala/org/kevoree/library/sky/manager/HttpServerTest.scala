@@ -138,6 +138,8 @@ class HttpServerTest {
     def compareAndSwapModel (p1: UUIDModel, p2: ContainerRoot) {}
 
     def atomicCompareAndSwapModel (p1: UUIDModel, p2: ContainerRoot) = null
+
+    def getContextModel = null
   }
 
 }

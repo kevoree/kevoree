@@ -6,12 +6,12 @@
     <artifactId>org.kevoree.library.javase.root</artifactId>
     <packaging>pom</packaging>
     <name>Kevoree :: Library :: JavaSE :: Root</name>
-    <version>1.5.0-RC1</version>
+    <version>1.5.0</version>
 
     <parent>
         <artifactId>org.kevoree.library</artifactId>
         <groupId>org.kevoree.library</groupId>
-        <version>1.5.0-RC1</version>
+        <version>1.5.0</version>
         <relativePath>../../pom.xml</relativePath>
     </parent>
 
@@ -36,6 +36,8 @@
         <!--  <module>../org.kevoree.library.javase.logger.greg</module> -->
         <!-- <module>../org.kevoree.library.javase.jscriptengine</module>  -->
         <module>../org.kevoree.library.javase.javaseNode</module>
+        <module>../org.kevoree.library.javase.javaseKratiNode</module>
+
         <module>../org.kevoree.library.javase.socketChannels</module>
         <module>../org.kevoree.library.javase.nioChannels</module>
 
@@ -62,6 +64,7 @@
         <module>../org.kevoree.library.javase.webserver.servlet</module>
         <module>../org.kevoree.library.javase.webserver.wordpress</module>
         <module>../org.kevoree.library.javase.webserver.jenkins</module>
+        <module>../org.kevoree.library.javase.webserver.archiva</module>
 
         <module>../org.kevoree.library.javase.kestrelChannels</module>
 

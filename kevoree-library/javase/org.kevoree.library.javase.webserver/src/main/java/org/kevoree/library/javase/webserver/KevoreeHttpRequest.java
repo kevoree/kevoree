@@ -13,51 +13,61 @@ import java.util.UUID;
  */
 public class KevoreeHttpRequest implements Serializable {
 
-    private String url = "";
+	private String url = "";
 
-    private HashMap<String, String> resolvedParams = new HashMap<String, String>();
+	private String rawParams = "";
 
-    public HashMap<String, String> getHeaders() {
-        return headers;
-    }
+	private HashMap<String, String> resolvedParams = new HashMap<String, String>();
 
-    public void setHeaders(HashMap<String, String> headers) {
-        this.headers = headers;
-    }
+	public HashMap<String, String> getHeaders () {
+		return headers;
+	}
 
-    private HashMap<String, String> headers = new HashMap<String, String>();
+	public void setHeaders (HashMap<String, String> headers) {
+		this.headers = headers;
+	}
 
-    private UUID tokenID = UUID.randomUUID();
+	private HashMap<String, String> headers = new HashMap<String, String>();
 
-    public UUID getTokenID() {
-        return tokenID;
-    }
+	private UUID tokenID = UUID.randomUUID();
 
-    public String getUrl() {
-        return url;
-    }
+	public UUID getTokenID () {
+		return tokenID;
+	}
 
-    public void setUrl(String url) {
-        this.url = url;
-    }
+	public String getUrl () {
+		return url;
+	}
 
-    public HashMap<String, String> getResolvedParams() {
-        return resolvedParams;
-    }
+	public void setUrl (String url) {
+		this.url = url;
+	}
 
-    public void setResolvedParams(HashMap<String, String> resolvedParams) {
-        this.resolvedParams = resolvedParams;
-    }
+	public HashMap<String, String> getResolvedParams () {
+		return resolvedParams;
+	}
 
-    private byte[] rawBody = new byte[0];
+	public void setResolvedParams (HashMap<String, String> resolvedParams) {
+		this.resolvedParams = resolvedParams;
+	}
+
+	private byte[] rawBody = new byte[0];
 
 
-    public byte[] getRawBody() {
-        return rawBody;
-    }
+	public byte[] getRawBody () {
+		return rawBody;
+	}
 
-    public void setRawBody(byte[] rawBody) {
-        this.rawBody = rawBody;
-    }
+	public void setRawBody (byte[] rawBody) {
+		this.rawBody = rawBody;
+	}
+
+	public String getRawParams () {
+		return rawParams;
+	}
+
+	public void setRawParams(String rawParams) {
+		this.rawParams = rawParams;
+	}
 }
 
