@@ -15,10 +15,11 @@ package org.kevoree.core.impl
 
 import actors.{Actor, DaemonActor}
 import org.kevoree.api.service.core.handler.ModelListener
+import org.kevoree.ContainerRoot
 
 class KevoreeListeners extends DaemonActor {
 
-  private var registeredListeners = new scala.collection.mutable.HashMap[ModelListener, Actor]()
+  private val registeredListeners = new scala.collection.mutable.HashMap[ModelListener, Actor]()
 
   def addListener(l: ModelListener) = this ! AddListener(l)
 
@@ -36,10 +37,18 @@ class KevoreeListeners extends DaemonActor {
 
   case class STOP_ACTOR()
 
+  case class PREUPDATE(proposedModel : ContainerRoot)
 
+  def preUpdate(pmodel : ContainerRoot ) : Boolean = {
+    (this !? PREUPDATE(pmodel)).asInstanceOf[Boolean]
+  }
+  
   def act() {
     loop {
       react {
+        case PREUPDATE(pmodel) => {
+          reply(registeredListeners.forall(l=> l._1.preUpdate(pmodel)))
+        }
         case AddListener(l) => {
           val myActor = new ListenerActor(l)
           myActor.start()
