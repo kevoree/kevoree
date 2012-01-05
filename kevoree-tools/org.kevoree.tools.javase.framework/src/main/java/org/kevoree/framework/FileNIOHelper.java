@@ -81,7 +81,7 @@ public class FileNIOHelper {
         }
     }
 
-    public static void unzipToTempDir(File inputWar, File outputDir, List<String> exclusions) {
+    public static void unzipToTempDir(File inputWar, File outputDir, List<String> inclusions, List<String> exclusions) {
         try {
             FileInputStream inputWarST = new FileInputStream(inputWar);
             ZipInputStream zis = new ZipInputStream(inputWarST);
@@ -93,7 +93,13 @@ public class FileNIOHelper {
                     File targetFile = new File(outputDir + File.separator + entry.getName());
                     boolean filtered = false;
                     for (String ex : exclusions) {
-                        filtered = filtered || targetFile.getName().endsWith(ex);
+                        filtered = filtered || targetFile.getName().endsWith(ex.trim());
+                    }
+                    for (String in : inclusions) {
+                       // logger.debug("Check for incluseion => "+targetFile.getName()+"-"+in.trim()+"="+targetFile.getName().trim().equals(in.trim()));
+                        if(targetFile.getName().endsWith(in.trim())||targetFile.getName().equals(in.trim())){
+                            filtered = false;
+                        }
                     }
                     if (!filtered) {
                         createParentDirs(targetFile);

@@ -29,6 +29,8 @@ trait KevoreeGroup extends AbstractGroupType with KevoreeActor with ModelListene
     triggerModelUpdate()
   }
 
+
+
   var mhandler: ModelHandlerServiceProxy = new ModelHandlerServiceProxy();
 
   override def getModelService() : KevoreeModelHandlerService = {
