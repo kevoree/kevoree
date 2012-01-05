@@ -17,6 +17,7 @@ import org.apache.maven.project.MavenProject
 import java.util.jar.Attributes
 import io.Source
 import java.io.{FileWriter, FileOutputStream, File}
+import xml.XML
 
 /**
  * Created by IntelliJ IDEA.
@@ -28,29 +29,52 @@ import java.io.{FileWriter, FileOutputStream, File}
 
 object BundlerHelper {
 
-  
-  def copyWebInf(warDir : File){
-    val webInf = new FileWriter(warDir.getAbsolutePath+File.separator+"web.xml")
-    Source.fromFile(warDir.getAbsolutePath+File.separator+"WEB-INF"+File.separator+"web.xml").getLines().foreach{l=>
-      webInf.write(l+"\n")
+
+  def copyWebInf(warDir: File) {
+    val webInf = new FileWriter(warDir.getAbsolutePath + File.separator + "web.xml")
+    Source.fromFile(warDir.getAbsolutePath + File.separator + "WEB-INF" + File.separator + "web.xml").getLines().foreach {
+      l =>
+        webInf.write(l + "\n")
     }
     webInf.close
   }
 
-  def generateManifest(project: MavenProject, outDir: File) {
+  def getWebInfParams(warDir: File): List[String] = {
+    var res = List[String]()
+    try {
+      val xmlnode = XML.loadFile(new File(warDir.getAbsolutePath + File.separator + "web.xml"))
+      xmlnode.child.foreach {
+        cNode =>
+          cNode.label match {
+            case "env-entry" => {
+              cNode.child.find(c => c.label == "env-entry-name").map {
+                name =>
+                  res = res ++ List(name.text)
+              }
+            }
+            case _ =>
+          }
+      }
+    } catch {
+      case _@e => e.printStackTrace()
+    }
+    res
+  }
+
+  def generateManifest(project: MavenProject, outDir: File, exclusions: Array[String]) {
     val mf = new java.util.jar.Manifest
     mf.getMainAttributes.put(new Attributes.Name("Manifest-Version"), "1")
     mf.getMainAttributes.put(new Attributes.Name("Bundle-ManifestVersion"), "2")
     mf.getMainAttributes.put(new Attributes.Name("Bundle-SymbolicName"), project.getGroupId + "." + project.getArtifactId)
-    mf.getMainAttributes.put(new Attributes.Name("Bundle-Version"), project.getVersion.replace("-","."))
+    mf.getMainAttributes.put(new Attributes.Name("Bundle-Version"), project.getVersion.replace("-", "."))
     mf.getMainAttributes.put(new Attributes.Name("Bundle-Name"), project.getName)
     val fileWebLib = new File(outDir.getAbsolutePath + File.separator + "WEB-INF" + File.separator + "lib")
     if (fileWebLib.exists()) {
       var paths = List(".")
-      paths = paths ++ List("WEB_INF/classes")
+      //paths = paths ++ List("WEB_INF/classes")
       fileWebLib.listFiles().foreach {
         subF =>
-          if (subF.getName.endsWith(".jar")) {
+          if (subF.getName.endsWith(".jar") && !exclusions.contains(subF.getName)) {
             paths = paths ++ List("WEB-INF/lib/" + subF.getName)
           }
       }
@@ -68,8 +92,8 @@ object BundlerHelper {
 
     var importPackages = List("org.kevoree.annotation")
     importPackages = importPackages ++ List("org.osgi.framework")
-    importPackages = importPackages ++ List("org.kevoree.library.javase.webserver")
-    importPackages = importPackages ++ List("org.kevoree.library.javase.webserver.servlet")
+  //  importPackages = importPackages ++ List("org.kevoree.library.javase.webserver")
+    //importPackages = importPackages ++ List("org.kevoree.library.javase.webserver.servlet")
     importPackages = importPackages ++ List("org.kevoree.framework")
     importPackages = importPackages ++ List("org.kevoree.framework.osgi")
     importPackages = importPackages ++ List("org.kevoree.framework.port")
@@ -79,15 +103,15 @@ object BundlerHelper {
     importPackages = importPackages ++ List("scala.collection.mutable")
     importPackages = importPackages ++ List("scala.reflect")
     importPackages = importPackages ++ List("scala.runtime")
-    importPackages = importPackages ++ List("javax.servlet.http")
-    importPackages = importPackages ++ List("javax.servlet")
+   // importPackages = importPackages ++ List("javax.servlet.http")
+  //  importPackages = importPackages ++ List("javax.servlet")
     mf.getMainAttributes.put(new Attributes.Name("Import-Package"), importPackages.mkString(","))
 
     mf.getMainAttributes.put(new Attributes.Name("DynamicImport-Package"), "*")
 
 
     var exportPackages = List(project.getGroupId + "." + project.getArtifactId)
-    exportPackages = exportPackages ++ List(project.getGroupId + "." + project.getArtifactId+".kevgen.JavaSENode")
+    exportPackages = exportPackages ++ List(project.getGroupId + "." + project.getArtifactId + ".kevgen.JavaSENode")
     mf.getMainAttributes.put(new Attributes.Name("Export-Package"), exportPackages.mkString(","))
 
     val fos = new FileOutputStream(outDir.getAbsolutePath + File.separator + "META-INF" + File.separator + "MANIFEST.MF");
@@ -95,13 +119,14 @@ object BundlerHelper {
 
     //CLEAR SF files
     val metaInfDir = new File(outDir.getAbsolutePath + File.separator + "META-INF")
-    metaInfDir.listFiles().foreach{ f =>
-      if(f.getName.toLowerCase.endsWith(".sf")|| f.getName.toLowerCase.endsWith(".rsa")){
-        f.delete()
-      }
+    metaInfDir.listFiles().foreach {
+      f =>
+        if (f.getName.toLowerCase.endsWith(".sf") || f.getName.toLowerCase.endsWith(".rsa")) {
+          f.delete()
+        }
     }
-    
-    
+
+
   }
 
 }

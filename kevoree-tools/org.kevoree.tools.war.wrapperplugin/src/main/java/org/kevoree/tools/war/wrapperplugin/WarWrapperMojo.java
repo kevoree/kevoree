@@ -36,6 +36,11 @@ import java.net.URL;
 public class WarWrapperMojo extends AbstractMojo {
 
     /**
+     * @parameter default-value=""
+     */
+    private String singletonJars;
+    
+    /**
      * @parameter default-value="${project.build.directory}"
      */
     private File tempWar;
@@ -84,7 +89,13 @@ public class WarWrapperMojo extends AbstractMojo {
             ZipHelper.unzipToTempDir(tempWarFile, outputClasses);
             BundlerHelper.copyWebInf(outputClasses);
 
-            BundlerHelper.generateManifest(project, outputClasses);
+            String sjars = singletonJars;
+            if(sjars == null){
+                sjars = "";
+            }
+            String[] lsjars = sjars.split(",");
+            
+            BundlerHelper.generateManifest(project, outputClasses,lsjars);
 
             Resource resource = new Resource();
             resource.setDirectory(outputClasses.getPath());
@@ -97,6 +108,7 @@ public class WarWrapperMojo extends AbstractMojo {
             
 
             //GENERATE KEVOREE COMPONENT WRAPPER
+            /*
             Dependency dep = new Dependency();
             dep.setArtifactId("org.kevoree.library.javase.webserver.servlet");
             dep.setGroupId("org.kevoree.library.javase");
@@ -112,9 +124,17 @@ public class WarWrapperMojo extends AbstractMojo {
             dep2.setType("bundle");
             dep2.setScope("compile");
             project.getCompileDependencies().add(dep2);
+*/
 
+            Dependency dep3 = new Dependency();
+            dep3.setArtifactId("org.kevoree.extra.jetty");
+            dep3.setGroupId("org.kevoree.extra");
+            dep3.setVersion("8.1.0.RC2");
+            dep3.setType("bundle");
+            dep3.setScope("compile");
+            project.getCompileDependencies().add(dep3);
 
-            WrapperGenerator.generate(sourceOutputDirectory,project);
+            WrapperGenerator.generate(sourceOutputDirectory,project,BundlerHelper.getWebInfParams(outputClasses),lsjars);
 
             project.getBuild().setSourceDirectory(sourceOutputDirectory.getAbsolutePath());
 

@@ -13,29 +13,33 @@
  */
 package org.kevoree.framework
 
-import org.kevoree.ContainerRoot
-import org.kevoreeAdaptation.{AdaptationModel, AdaptationPrimitive}
-import org.kevoree.api.service.core.handler.ContextModel
+import org.kevoree.api.service.core.handler.ContextKey
+import java.lang.String
 
 /**
  * Created by IntelliJ IDEA.
  * User: duke
- * Date: 31/12/11
- * Time: 09:50
+ * Date: 03/01/12
+ * Time: 13:55
+ * To change this template use File | Settings | File Templates.
  */
 
-trait NodeType {
+case class CaseContextKey(nodeID: String, instanceID: String, name: String, timestamp: Long) extends ContextKey {
+  def getNodeID: String = nodeID
 
-  def startNode() : Unit
+  def getInstanceID: String = instanceID
 
-  def stopNode() : Unit
+  def getName: String = name
 
-  def updateNode() : Unit
+  def getTimestamp: Long = timestamp
 
-  def  kompare( actualModel : ContainerRoot,  targetModel : ContainerRoot) : AdaptationModel
-
-  def  getPrimitive( primitive : AdaptationPrimitive) : PrimitiveCommand
-
-  def getContextModel : ContextModel
-
+  private def timeorstar : String = {
+    if(timestamp > 0){
+      timestamp+""
+    } else {
+      "*"
+    }
+  }
+  
+  override def toString: String = nodeID + "." + instanceID + "." + name + "." + timeorstar
 }

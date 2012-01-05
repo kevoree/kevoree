@@ -21,6 +21,9 @@ import java.io.*;
 import java.nio.channels.Channels;
 import java.nio.channels.FileChannel;
 import java.nio.channels.ReadableByteChannel;
+import java.util.List;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 
 /**
  * Created by IntelliJ IDEA.
@@ -40,7 +43,7 @@ public class FileNIOHelper {
             if (bundleRevisionCounter.exists()) {
                 FileReader fr = new FileReader(bundleRevisionCounter);
                 char vers = (char) fr.read();
-                versionDef = "version"+vers + "." + vers;
+                versionDef = "version" + vers + "." + vers;
                 fr.close();
             } /*else {
                 logger.warn("revision file does not exist");
@@ -49,7 +52,7 @@ public class FileNIOHelper {
             if (jarFile.exists()) {
                 return jarFile;
             } else {
-                logger.warn("File not found {}",jarFile.getAbsolutePath());
+                logger.warn("File not found {}", jarFile.getAbsolutePath());
                 return null;
             }
         } catch (Exception e) {
@@ -77,4 +80,62 @@ public class FileNIOHelper {
             }
         }
     }
+
+    public static void unzipToTempDir(File inputWar, File outputDir, List<String> inclusions, List<String> exclusions) {
+        try {
+            FileInputStream inputWarST = new FileInputStream(inputWar);
+            ZipInputStream zis = new ZipInputStream(inputWarST);
+            ZipEntry entry;
+            while ((entry = zis.getNextEntry()) != null) {
+                if (entry.isDirectory()) {
+                    new File(outputDir.getAbsolutePath() + File.separator + entry.getName()).mkdirs();
+                } else {
+                    File targetFile = new File(outputDir + File.separator + entry.getName());
+                    boolean filtered = false;
+                    for (String ex : exclusions) {
+                        filtered = filtered || targetFile.getName().endsWith(ex.trim());
+                    }
+                    for (String in : inclusions) {
+                       // logger.debug("Check for incluseion => "+targetFile.getName()+"-"+in.trim()+"="+targetFile.getName().trim().equals(in.trim()));
+                        if(targetFile.getName().endsWith(in.trim())||targetFile.getName().equals(in.trim())){
+                            filtered = false;
+                        }
+                    }
+                    if (!filtered) {
+                        createParentDirs(targetFile);
+                        if (!targetFile.exists()) {
+                            targetFile.createNewFile();
+                        }
+                        BufferedOutputStream outputEntry = new BufferedOutputStream(new FileOutputStream(targetFile));
+                        byte[] buffer = new byte[1024];
+                        int len = 0;
+                        while (zis.available() > 0) {
+                            len = zis.read(buffer);
+                            if (len > 0) {
+                                outputEntry.write(buffer, 0, len);
+                            }
+                        }
+                        outputEntry.flush();
+                        outputEntry.close();
+                    }
+                }
+            }
+            zis.close();
+            inputWarST.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void createParentDirs(File file) throws IOException {
+        File parent = file.getCanonicalFile().getParentFile();
+        if (parent == null) {
+            return;
+        }
+        parent.mkdirs();
+        if (!parent.isDirectory()) {
+            throw new IOException("Unable to create parent directories of " + file);
+        }
+    }
+
 }

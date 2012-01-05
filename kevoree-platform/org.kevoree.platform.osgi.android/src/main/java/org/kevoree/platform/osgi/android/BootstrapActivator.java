@@ -23,7 +23,6 @@ import org.kevoree.api.configuration.ConfigurationService;
 import org.kevoree.api.service.core.handler.KevoreeModelHandlerService;
 import org.kevoree.api.service.core.script.KevScriptEngine;
 import org.kevoree.api.service.core.script.KevScriptEngineFactory;
-import org.kevoree.api.service.core.script.ScriptInterpreter;
 import org.kevoree.core.impl.KevoreeConfigServiceBean;
 import org.kevoree.core.impl.KevoreeCoreBean;
 import org.kevoree.framework.KevoreeXmiHelper;
