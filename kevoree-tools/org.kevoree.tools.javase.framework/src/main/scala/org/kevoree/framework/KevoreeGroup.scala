@@ -18,6 +18,7 @@ import reflect.BeanProperty
 import java.util.HashMap
 import org.slf4j.LoggerFactory
 import org.kevoree.api.service.core.handler.{ModelListener, KevoreeModelHandlerService}
+import org.kevoree.ContainerRoot
 
 
 trait KevoreeGroup extends AbstractGroupType with KevoreeActor with ModelListener {
@@ -28,6 +29,8 @@ trait KevoreeGroup extends AbstractGroupType with KevoreeActor with ModelListene
   def modelUpdated() {
     triggerModelUpdate()
   }
+
+  def preUpdate(proposedModel : ContainerRoot) : Boolean = true
 
 
 

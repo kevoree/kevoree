@@ -91,6 +91,7 @@ object WrapperGenerator {
       val inclusion = (exclusions++List(".filtered")).mkString("\"","\",\"","\"")
 
       fw.append("  org.kevoree.framework.FileNIOHelper.unzipToTempDir(jarFile,tempWar,java.util.Arrays.asList("+inclusion+"),java.util.Arrays.asList(\".jar\"));\n")
+      fw.append(" context.setDescriptor(org.kevoree.framework.WebInfHelper.setWebInfParams(tempWar, getDictionary()).getAbsolutePath());\n")
 
 
       fw.append("org.eclipse.jetty.osgi.boot.internal.webapp.OSGiWebappClassLoader webappClassLoader = new org.eclipse.jetty.osgi.boot.internal.webapp.OSGiWebappClassLoader(org.eclipse.jetty.osgi.boot.JettyBootstrapActivator.class.getClassLoader(), context, (org.osgi.framework.Bundle)getDictionary().get(\"osgi.bundle\"), new org.eclipse.jetty.osgi.boot.utils.BundleClassLoaderHelper() {\n")

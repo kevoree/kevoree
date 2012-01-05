@@ -92,8 +92,8 @@ object BundlerHelper {
 
     var importPackages = List("org.kevoree.annotation")
     importPackages = importPackages ++ List("org.osgi.framework")
-    importPackages = importPackages ++ List("org.kevoree.library.javase.webserver")
-    importPackages = importPackages ++ List("org.kevoree.library.javase.webserver.servlet")
+  //  importPackages = importPackages ++ List("org.kevoree.library.javase.webserver")
+    //importPackages = importPackages ++ List("org.kevoree.library.javase.webserver.servlet")
     importPackages = importPackages ++ List("org.kevoree.framework")
     importPackages = importPackages ++ List("org.kevoree.framework.osgi")
     importPackages = importPackages ++ List("org.kevoree.framework.port")
@@ -103,8 +103,8 @@ object BundlerHelper {
     importPackages = importPackages ++ List("scala.collection.mutable")
     importPackages = importPackages ++ List("scala.reflect")
     importPackages = importPackages ++ List("scala.runtime")
-    importPackages = importPackages ++ List("javax.servlet.http")
-    importPackages = importPackages ++ List("javax.servlet")
+   // importPackages = importPackages ++ List("javax.servlet.http")
+  //  importPackages = importPackages ++ List("javax.servlet")
     mf.getMainAttributes.put(new Attributes.Name("Import-Package"), importPackages.mkString(","))
 
     mf.getMainAttributes.put(new Attributes.Name("DynamicImport-Package"), "*")
