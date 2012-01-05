@@ -24,6 +24,11 @@ public abstract class AbstractGroupType {
 
     public abstract void triggerModelUpdate();
 
+    public boolean preUpdate(){
+        return true;
+    }
+
+
     public abstract void push(ContainerRoot model, String targetNodeName);
 
     public abstract ContainerRoot pull(String targetNodeName);

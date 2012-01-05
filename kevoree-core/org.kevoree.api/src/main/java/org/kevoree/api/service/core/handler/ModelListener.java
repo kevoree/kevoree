@@ -14,7 +14,11 @@
 package org.kevoree.api.service.core.handler;
 
 
+import org.kevoree.ContainerRoot;
+
 public interface ModelListener {
+
+    public boolean preUpdate(ContainerRoot proposedModel);
 
     public void modelUpdated();
 
