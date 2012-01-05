@@ -35,6 +35,9 @@ import org.kevoree.api.service.core.handler._
 
 class KevoreeCoreBean extends KevoreeModelHandlerService with KevoreeThreadActor {
 
+  val listenerActor = new KevoreeListeners
+  listenerActor.start()
+
   @BeanProperty var configService: ConfigurationService = null
 
   /*
@@ -253,7 +256,9 @@ class KevoreeCoreBean extends KevoreeModelHandlerService with KevoreeThreadActor
         } else {
           //Model check is OK.
           val precheckModel = cloner.clone(pnewmodel)
+          logger.debug("Before listeners PreCheck !")
           val preCheckResult = listenerActor.preUpdate(precheckModel)
+          logger.debug("PreCheck result = "+preCheckResult)
           if (preCheckResult) {
             var newmodel = cloner.clone(pnewmodel)
             //CHECK FOR HARA KIRI
@@ -274,7 +279,6 @@ class KevoreeCoreBean extends KevoreeModelHandlerService with KevoreeThreadActor
                 }
                 //Executes the adaptation
                 PrimitiveCommandExecutionHelper.execute(adaptationModel, nodeInstance)
-
 
                 nodeInstance.stopNode()
                 //end of harakiri
@@ -397,9 +401,6 @@ class KevoreeCoreBean extends KevoreeModelHandlerService with KevoreeThreadActor
     import scala.collection.JavaConversions._
     (this !? PreviousModel()).asInstanceOf[scala.collection.mutable.ArrayBuffer[ContainerRoot]].toList
   }
-
-  val listenerActor = new KevoreeListeners
-  listenerActor.start()
 
   override def registerModelListener(listener: ModelListener) {
     listenerActor.addListener(listener)
