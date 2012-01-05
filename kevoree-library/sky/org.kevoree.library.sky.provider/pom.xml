@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>org.kevoree.library.sky.root</artifactId>
+        <groupId>org.kevoree.library.sky</groupId>
+        <version>1.5.0-RC1</version>
+        <relativePath>../org.kevoree.library.sky.root/pom.xml</relativePath>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>org.kevoree.library.sky.provider</artifactId>
+    <packaging>bundle</packaging>
+    <name>Kevoree :: Library :: Sky :: Provider</name>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.kevoree.library.javase</groupId>
+            <artifactId>org.kevoree.library.javase.webserver</artifactId>
+            <version>${kevoree.version}</version>
+            <type>bundle</type>
+        </dependency>
+        <dependency>
+            <groupId>org.kevoree</groupId>
+            <artifactId>org.kevoree.basechecker</artifactId>
+            <version>${kevoree.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.kevoree.tools</groupId>
+            <artifactId>org.kevoree.tools.marShell</artifactId>
+            <version>${kevoree.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.kevoree</groupId>
+            <artifactId>org.kevoree.framework</artifactId>
+            <version>${kevoree.version}</version>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <version>2.3.5</version>
+                <extensions>true</extensions>
+                <!--<configuration>
+                    <instructions>
+                        <Export-Package>org.kevoree.library.sky.minicloud.*</Export-Package>
+                        <Import-Package>!org.kevoree.library.sky.minicloud.*,*</Import-Package>
+                    </instructions>
+                </configuration>-->
+            </plugin>
+        </plugins>
+    </build>
+
+</project>

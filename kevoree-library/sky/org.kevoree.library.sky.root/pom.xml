@@ -25,7 +25,6 @@
         <module>../org.kevoree.library.sky.minicloud</module>
         <module>../org.kevoree.library.sky.jails</module>
         <module>../org.kevoree.library.sky.provider</module>
-        <module>../org.kevoree.library.sky.kloud</module>
         <!--<module>../org.kevoree.library.sky.vagrant</module>-->
         <!--<module>../org.kevoree.library.sky.jclouds</module>-->
     </modules>
@@ -33,8 +32,8 @@
 
     <dependencies>
         <dependency>
-            <groupId>org.kevoree</groupId>
-            <artifactId>org.kevoree.framework</artifactId>
+            <groupId>org.kevoree.tools</groupId>
+            <artifactId>org.kevoree.tools.javase.framework</artifactId>
             <version>${kevoree.version}</version>
         </dependency>
         <dependency>

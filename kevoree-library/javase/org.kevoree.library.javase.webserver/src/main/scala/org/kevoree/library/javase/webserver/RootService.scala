@@ -22,16 +22,17 @@ import cc.spray.can._
 import org.kevoree.framework.MessagePort
 import java.util.UUID
 
-class RootService(id: String, request: MessagePort, bootstrap: ServerBootstrap, timeout: Long) extends Actor {
+class RootService (id: String, request: MessagePort, bootstrap: ServerBootstrap, timeout: Long) extends Actor {
   val log = LoggerFactory.getLogger(getClass)
   self.id = id
 
-  case class GARBAGE(minLastCheck: Long)
+  case class GARBAGE (minLastCheck: Long)
 
-  case class RequestResponderTuple(responder: RequestResponder, uuid: UUID, time: Long)
+  case class RequestResponderTuple (responder: RequestResponder, uuid: UUID, time: Long)
 
   class ResponseActor extends akka.actor.Actor {
-    var map: scala.collection.mutable.HashMap[UUID, Tuple2[RequestResponder, Long]] = scala.collection.mutable.HashMap[UUID, Tuple2[RequestResponder, Long]]()
+    var map: scala.collection.mutable.HashMap[UUID, Tuple2[RequestResponder, Long]] = scala.collection.mutable
+      .HashMap[UUID, Tuple2[RequestResponder, Long]]()
 
     def receive = {
       case GARBAGE(minLastCheck) => {
@@ -101,10 +102,11 @@ class RootService(id: String, request: MessagePort, bootstrap: ServerBootstrap, 
     case RequestContext(HttpRequest(HttpMethods.POST, url, headers, body, _), _, responder) =>
       val kevMsg = new KevoreeHttpRequest
       actorRef ! RequestResponderTuple(responder, kevMsg.getTokenID, System.currentTimeMillis())
-      val paramsRes = GetParamsParser.getParams(url + "?" + new String(body))
+
+      val paramsRes = GetParamsParser.getParams(headers, body)
       kevMsg.setRawBody(body)
-      kevMsg.setUrl(paramsRes._1)
-      kevMsg.setResolvedParams(paramsRes._2)
+      kevMsg.setUrl(url)
+      kevMsg.setResolvedParams(paramsRes)
       headers.foreach {
         header =>
           kevMsg.getHeaders.put(header._1, header._2)
@@ -115,14 +117,14 @@ class RootService(id: String, request: MessagePort, bootstrap: ServerBootstrap, 
       actorRef ! GARBAGE(System.currentTimeMillis() - timeout)
       HttpResponse(status = 500).withBody("The " + method + " request to '" + uri + "' has timed out...")
     }
-
   }
 
   val defaultHeaders = List(HttpHeader("Content-Type", "text/html"))
 
-  def rawResponse(msg: Array[Byte], status: Int = 200, headers: List[HttpHeader]) = HttpResponse(status, headers, msg)
+  def rawResponse (msg: Array[Byte], status: Int = 200, headers: List[HttpHeader]) = HttpResponse(status, headers, msg)
 
-  def response(msg: String, status: Int = 200, headers: List[HttpHeader]) = HttpResponse(status, headers, msg.getBytes("UTF-8"))
+  def response (msg: String, status: Int = 200, headers: List[HttpHeader]) = HttpResponse(status, headers,
+                                                                                           msg.getBytes("UTF-8"))
 
   ////////////// helpers //////////////
   /*
