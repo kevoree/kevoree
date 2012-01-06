@@ -19,9 +19,25 @@ import org.kevoree.library.javase.webserver.KevoreeHttpResponse;
 })
 public class ProxyPage extends AbstractPage {
 
+
+	@Start
+	public void startPage () {
+		super.startPage();
+		Forwarder.initialize();
+	}
+
+	@Stop
+	public void stopPage() {
+		Forwarder.kill();
+	}
+
 	@Override
 	public KevoreeHttpResponse process (KevoreeHttpRequest request, KevoreeHttpResponse response) {
-		Forwarder.forward(this.getDictionary().get("forward").toString(), request, response);
+		String path = this.getLastParam(request.getUrl());
+		if (path == null) {
+			path = "";
+		}
+		Forwarder.forward(this.getDictionary().get("forward").toString(), request, response, path);
 		return response;
 	}
 }

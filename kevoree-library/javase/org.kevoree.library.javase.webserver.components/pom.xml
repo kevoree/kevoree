@@ -22,6 +22,12 @@
             <type>bundle</type>
         </dependency>
         <dependency>
+            <groupId>org.kevoree.extra</groupId>
+            <artifactId>org.kevoree.extra.spray</artifactId>
+            <version>0.9.1</version>
+            <type>bundle</type>
+        </dependency>
+        <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>4.8.1</version>
