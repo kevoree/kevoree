@@ -17,7 +17,9 @@ public class KevoreeHttpResponse implements Serializable {
 
     private String content = "";
 
-    public String getContentType() {
+	private int status = 200;
+
+    /*public String getContentType() {
         return contentType;
     }
 
@@ -25,7 +27,7 @@ public class KevoreeHttpResponse implements Serializable {
         this.contentType = contentType;
     }
 
-    private String contentType = "text/html";
+    private String contentType = "text/html";*/
 
     public UUID getTokenID() {
         return tokenID;
@@ -62,4 +64,12 @@ public class KevoreeHttpResponse implements Serializable {
     public void setHeaders(HashMap<String, String> headers) {
         this.headers = headers;
     }
+
+	public int getStatus () {
+		return status;
+	}
+
+	public void setStatus (int status) {
+		this.status = status;
+	}
 }
