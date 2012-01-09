@@ -55,7 +55,7 @@ object WebInfHelper extends App {
           </env-entry>)
       }
 
-      val newFile = new File(warDir.getAbsolutePath + File.separator + "web2.xml")
+      val newFile = new File(warDir.getAbsolutePath + File.separator + "web.xml")
       val fileWriter = new FileWriter(newFile)
       fileWriter.write(xmlnode.copy(child=listChilds).toString())
       fileWriter.close()

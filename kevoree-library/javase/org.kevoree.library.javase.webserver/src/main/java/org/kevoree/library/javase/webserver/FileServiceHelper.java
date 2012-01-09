@@ -55,7 +55,7 @@ public class FileServiceHelper {
                 } else {
                     response.setContent(new String(convertStream(ins), "UTF-8"));
                 }
-                response.setContentType(getHttpHeaderFromURL(request.getUrl()));
+				response.getHeaders().put("Content-Type", (getHttpHeaderFromURL(request.getUrl())));
 
                 ins.close();
 
@@ -93,7 +93,7 @@ public class FileServiceHelper {
                 } else {
                     response.setContent(new String(convertStream(in), "UTF-8"));
                 }
-                response.setContentType(getHttpHeaderFromURL(request.getUrl()));
+                response.getHeaders().put("Content-Type", (getHttpHeaderFromURL(request.getUrl())));
                 return true;
             } catch (Exception e) {
                 logger.error("", e);

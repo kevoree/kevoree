@@ -52,7 +52,7 @@ class RootService (id: String, request: MessagePort, bootstrap: ServerBootstrap,
           case Some(responder) => {
 
             var headers: List[HttpHeader] = List()
-            headers = headers ++ List(HttpHeader("Content-Type", msg.getContentType))
+            headers = headers ++ List(HttpHeader("Content-Type", msg.getHeaders.get("Content-Type")))
             import scala.collection.JavaConversions._
             msg.getHeaders.foreach {
               header => {
@@ -61,9 +61,9 @@ class RootService (id: String, request: MessagePort, bootstrap: ServerBootstrap,
             }
 
             if (msg.getRawContent != null) {
-              responder._1.complete(rawResponse(msg.getRawContent, 200, headers))
+              responder._1.complete(rawResponse(msg.getRawContent, msg.getStatus, headers))
             } else {
-              responder._1.complete(response(msg.getContent, 200, headers))
+              responder._1.complete(response(msg.getContent, msg.getStatus, headers))
             }
             map.remove(msg.getTokenID)
           }
@@ -132,6 +132,9 @@ class RootService (id: String, request: MessagePort, bootstrap: ServerBootstrap,
           stringBuilder append "&"
         }
         stringBuilder append key + "=" + params.get(key)
+    }
+    if (stringBuilder.size == 1) {
+      stringBuilder.deleteCharAt(0)
     }
     stringBuilder.toString()
   }
