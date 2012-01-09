@@ -9,9 +9,10 @@ import org.kevoree.library.javase.webserver.KevoreeHttpRequest;
 import org.kevoree.library.javase.webserver.KevoreeHttpResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import scala.io.Source;
 
-import java.io.*;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.InputStream;
 
 /**
  * Created by IntelliJ IDEA.
@@ -92,7 +93,8 @@ public class Gallery extends AbstractPage {
                 } else {
                     response.setContent(new String(convertStream(in), "UTF-8"));
                 }
-                response.setContentType(getHttpHeaderFromURL(request.getUrl()));
+//                response.setContentType(getHttpHeaderFromURL(request.getUrl()));
+				response.getHeaders().put("Content-Type", getHttpHeaderFromURL(request.getUrl()));
             } catch (Exception e) {
                 logger.error("", e);
             }

@@ -62,7 +62,8 @@ public class AlbumsService {
                }
                buf.append("}");
                response.setContent(buf.toString());
-               response.setContentType("text/json");
+			   response.getHeaders().put("Content-Type", "text/json");
+//               response.setContentType("text/json");
            }
         } else {
             StringBuffer buf = new StringBuffer();

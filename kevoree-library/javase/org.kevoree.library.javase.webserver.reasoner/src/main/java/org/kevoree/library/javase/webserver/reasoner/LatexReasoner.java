@@ -111,7 +111,8 @@ public class LatexReasoner extends AbstractPage {
 
                 if(engine.atomicInterpretDeploy()){
                     response.setContent("<html><body><a href=\"/latexeditor/"+userLogin+"/\">Go to your dedicated editor "+userLogin+"</a></body></html>");
-                    response.setContentType("text/html");
+//                    response.setContentType("text/html");
+					response.getHeaders().put("Content-Type", "text/html");
                 } else {
                     response.setContent("Error while updating server");
                 }

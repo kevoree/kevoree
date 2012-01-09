@@ -1,16 +1,10 @@
 package org.kevoree.library.javase.webserver.latexEditor;
 
-import org.kevoree.framework.MessagePort;
-import org.kevoree.framework.message.StdKevoreeMessage;
 import org.kevoree.library.javase.fileSystem.LockFilesService;
 import org.kevoree.library.javase.webserver.KevoreeHttpRequest;
 import org.kevoree.library.javase.webserver.KevoreeHttpResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.HashSet;
-import java.util.Set;
-import java.util.UUID;
 
 /**
  * Created by IntelliJ IDEA.
@@ -33,10 +27,12 @@ public class LatexService {
                 if (content.length > 0) {
                     response.setRawContent(content);
                     if (request.getResolvedParams().get("file").endsWith(".pdf")) {
-                        response.setContentType("application/pdf");
+//                        response.setContentType("application/pdf");
+						response.getHeaders().put("Content-Type", "application/pdf");
                     }
                     if (request.getResolvedParams().get("file").endsWith(".log")) {
-                        response.setContentType("text/plain");
+//                        response.setContentType("text/plain");
+						response.getHeaders().put("Content-Type", "text/plain");
                     }
                     return true;
                 } else {
