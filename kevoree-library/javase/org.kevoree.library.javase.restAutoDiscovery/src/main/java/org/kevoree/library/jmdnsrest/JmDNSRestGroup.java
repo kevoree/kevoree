@@ -1,25 +1,16 @@
 package org.kevoree.library.jmdnsrest;
 
 import org.kevoree.ContainerRoot;
-import org.kevoree.DictionaryValue;
-import org.kevoree.Group;
 import org.kevoree.annotation.*;
-import org.kevoree.framework.*;
-import org.kevoree.framework.Constants;
+import org.kevoree.framework.KevoreePlatformHelper;
 import org.kevoree.library.rest.RestGroup;
-import org.kevoree.library.rest.ServerBootstrap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.awt.*;
-import java.io.*;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
-import java.net.URL;
-import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.Enumeration;
-import java.util.List;
 
 /**
  * Created by IntelliJ IDEA.
@@ -82,11 +73,11 @@ public class JmDNSRestGroup extends RestGroup implements  Runnable{
         {
             Enumeration<NetworkInterface> interfaces = NetworkInterface.getNetworkInterfaces();
             while (interfaces.hasMoreElements()) {
-                NetworkInterface interfaceN = (NetworkInterface)interfaces.nextElement();
+                NetworkInterface interfaceN = interfaces.nextElement();
                 Enumeration<InetAddress> ienum = interfaceN.getInetAddresses();
                 while (ienum.hasMoreElements()) {
                     InetAddress ia = ienum.nextElement();
-                    if(!ia.getHostAddress().toString().startsWith("127")){
+                    if(!ia.getHostAddress().startsWith("127")){
                         ips.add(ia);
                     }
                 }
