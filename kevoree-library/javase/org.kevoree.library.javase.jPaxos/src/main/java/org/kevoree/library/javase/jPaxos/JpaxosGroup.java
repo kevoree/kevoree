@@ -48,6 +48,7 @@ public class JpaxosGroup extends AbstractGroupType implements  Runnable {
     private List<PID> processess = new ArrayList<PID> ();
     private Configuration _conf;
     private Replica _replica;
+    private KevoreeJPaxosService kevoreeJPaxosService;
 
     @Start
     public void startJpaxosRestGroup() throws IOException {
@@ -120,6 +121,11 @@ public class JpaxosGroup extends AbstractGroupType implements  Runnable {
     @Override
     public void triggerModelUpdate() {
 
+    }
+
+    @Override
+    public boolean preUpdate() {
+
         try
         {
             Client client = null;
@@ -130,13 +136,15 @@ public class JpaxosGroup extends AbstractGroupType implements  Runnable {
             byte[] request = command.toByteArray();
             /** Executing the request **/
             byte[] response = client.execute(request);
+
             /** Deserialising answer **/
             DataInputStream in = new DataInputStream(new ByteArrayInputStream(response));
             ContainerRoot model = KevoreeXmiHelper.loadStream(in);
         } catch (Exception e) {
             logger.error("triggerModelUpdate "+e);
+            return false;
         }
-
+        return true;
     }
 
     @Override
@@ -163,13 +171,13 @@ public class JpaxosGroup extends AbstractGroupType implements  Runnable {
             pid = new PID(id, hostname,replicaport,clientport);
             processess.add(pid);
         }
-        logger.debug("Number of process  : "+processess.size());
-        if(processess.size() < 3){
-            logger.error("The number of process is under 3 ");
-        }
-        _conf = new Configuration(processess);
 
-        _replica= new Replica(_conf, localId, new KevoreeJPaxosService(getModelService()));
+        logger.debug("Number of process  : "+processess.size());
+
+        _conf = new Configuration(processess);
+        kevoreeJPaxosService    =new KevoreeJPaxosService(getModelService());
+
+        _replica= new Replica(_conf, localId,kevoreeJPaxosService );
 
         _replica.start();
     }

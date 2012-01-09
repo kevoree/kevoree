@@ -9,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.*;
+import java.util.UUID;
 
 /**
  * Created by IntelliJ IDEA.
@@ -17,19 +18,19 @@ import java.io.*;
  * Time: 16:38
  * To change this template use File | Settings | File Templates.
  */
-public class KevoreeJPaxosService extends AbstractService {
+public class KevoreeJPaxosService extends SimplifiedService {
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
     private ContainerRoot currentContainerRoot;
     private  KevoreeModelHandlerService _handler;
+    private UUID last;
     public KevoreeJPaxosService(KevoreeModelHandlerService handler){
-
-                this._handler = handler;
+        this._handler = handler;
     }
-       /** Processes client request and returns the reply for client **/
+    /** Processes client request and returns the reply for client **/
     @Override
-    public byte[] execute(byte[] bytes, int i) {
-         logger.debug("execute "+i);
+    public byte[] execute(byte[] bytes) {
+        logger.debug("execute ");
         try
         {
             // Deserialise the client command
@@ -37,35 +38,41 @@ public class KevoreeJPaxosService extends AbstractService {
             newmodel = new KevoreeJpaxosCommand(bytes);
             ContainerRoot oldModel = currentContainerRoot;
             currentContainerRoot =newmodel.getLastModel();
-            _handler.updateModel(newmodel.getLastModel());
+
             // return the oldModel
             ByteArrayOutputStream outStream = new ByteArrayOutputStream();
             KevoreeXmiHelper.saveStream(outStream, currentContainerRoot);
             outStream.flush();
             return   outStream.toByteArray();
 
-        } catch (IOException e) {
+        } catch (IOException e)
+        {
             logger.error("execute "+e);
         }
         return null;
     }
 
     @Override
-    public void askForSnapshot(int i) {
-           logger.debug("askForSnapshot "+i);
+    protected byte[] makeSnapshot() {
+        logger.debug("makeSnapshot ");
+        // In order to make the snapshot, we just serialise the model
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        try {
+            ObjectOutputStream objectOutputStream = new ObjectOutputStream(stream);
+            objectOutputStream.writeObject(currentContainerRoot);
+        } catch (IOException e) {
+            throw new RuntimeException("Snapshot creation error");
+        }
+        return stream.toByteArray();
     }
 
-    @Override
-    public void forceSnapshot(int i) {
-          logger.debug("forceSnapshot "+i);
-    }
 
-   /** Brings the system up-to-date from a snapshot **/
+    /** Brings the system up-to-date from a snapshot **/
     @Override
-    public void updateToSnapshot(int i, byte[] bytes) {
-        logger.debug("updateToSnapshot "+i);
+    public void updateToSnapshot(byte[] bytes) {
+        logger.debug("updateToSnapshot ");
 
-        // For map service the "recovery" is just recreation of underlaying map
+        // For map service the "recovery" is just recreation of underlaying model
         ByteArrayInputStream stream = new ByteArrayInputStream(bytes);
         ObjectInputStream objectInputStream;
         try {

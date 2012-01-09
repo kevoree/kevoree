@@ -31,13 +31,10 @@ public class KevoreeJpaxosCommand implements Serializable{
         return  model;
     }
 
-
-    public KevoreeJpaxosCommand(byte[] bytes) throws IOException {
-
+    public KevoreeJpaxosCommand(byte[] bytes) throws IOException
+    {
         DataInputStream dataInput = new DataInputStream(new ByteArrayInputStream(bytes));
         model =   KevoreeXmiHelper.loadStream(dataInput);
-
-
     }
 
     public byte[] toByteArray() throws IOException {
