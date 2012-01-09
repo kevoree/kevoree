@@ -37,7 +37,7 @@ public class ProxyPage extends AbstractPage {
 		if (path == null) {
 			path = "";
 		}
-		Forwarder.forward(this.getDictionary().get("forward").toString(), request, response, path);
+		Forwarder.forward(this.getDictionary().get("forward").toString(), request, response, path, this.getDictionary().get("urlpattern").toString());
 		return response;
 	}
 }
