@@ -1,7 +1,6 @@
 package org.kevoree.library.javase.webserver.components
 
 import scala.collection.JavaConversions._
-import java.net.URLConnection
 import org.kevoree.library.javase.webserver.{KevoreeHttpResponse, KevoreeHttpRequest}
 import java.util.HashMap
 import cc.spray.can._
@@ -10,6 +9,9 @@ import HttpClient._
 import org.slf4j.LoggerFactory
 import akka.config.Supervision.SupervisorConfig
 import akka.actor.{PoisonPill, Supervisor, Actor}
+import java.io.{ByteArrayOutputStream, ByteArrayInputStream}
+import java.util.regex.Pattern
+import java.util.zip.{GZIPOutputStream, GZIPInputStream}
 
 /**
  * User: Erwan Daubert - erwan.daubert@gmail.com
@@ -45,15 +47,23 @@ object Forwarder {
     }
   }
 
-  def forward (urlString: String, request: KevoreeHttpRequest, response: KevoreeHttpResponse, path: String) {
+  def forward (urlString: String, request: KevoreeHttpRequest, response: KevoreeHttpResponse, path: String,
+    urlPattern: String) {
     var newPath = ""
     if (path != null) {
       newPath = path
     }
+    var currentPath = ""
+    if (urlPattern != "") {
+      currentPath = urlPattern.replace("*", "")
+      if (currentPath.substring(currentPath.length() - 1, currentPath.length()) != "/") {
+        currentPath = currentPath + "/"
+      }
+    }
     if (request.getRawBody.size == 0) {
-      forwardGET(urlString, request, response, newPath)
+      forwardGET(urlString, request, response, newPath, currentPath)
     } else {
-      forwardPOST(urlString, request, response, newPath)
+      forwardPOST(urlString, request, response, newPath, currentPath)
     }
   }
 
@@ -137,7 +147,8 @@ object Forwarder {
     urlConnection.disconnect()
   }*/
 
-  private def forwardGET (urlString: String, request: KevoreeHttpRequest, response: KevoreeHttpResponse, path: String) {
+  private def forwardGET (urlString: String, request: KevoreeHttpRequest, response: KevoreeHttpResponse, path: String,
+    currentPath: String) {
     // create a very basic HttpDialog that results in a Future[HttpResponse]
     val dialog = HttpClient.HttpDialog(urlString)
       .send(HttpRequest(method = HttpMethods.GET, uri = "/" + path + request.getRawParams,
@@ -146,7 +157,7 @@ object Forwarder {
 
     dialog.get
     dialog.value match {
-      case Some(Right(r)) => populateResponse(r, response)
+      case Some(Right(r)) => populateResponse(r, response, currentPath)
       case Some(Left(error)) => generateError(error, response)
       case _@e => generateError(new Exception("Unknown error:" + e.toString), response)
     }
@@ -154,7 +165,7 @@ object Forwarder {
 
 
   private def forwardPOST (urlString: String, request: KevoreeHttpRequest, response: KevoreeHttpResponse,
-    path: String) {
+    path: String, urlPattern: String) {
     // create a very basic HttpDialog that results in a Future[HttpResponse]
     val dialog = HttpClient.HttpDialog(urlString)
       .send(HttpRequest(method = HttpMethods.POST, uri = "/" + path + request.getRawParams,
@@ -163,16 +174,16 @@ object Forwarder {
 
     dialog.get
     dialog.value match {
-      case Some(Right(r)) => populateResponse(r, response)
+      case Some(Right(r)) => populateResponse(r, response, urlPattern)
       case Some(Left(error)) => generateError(error, response)
       case _@e => generateError(new Exception("Unknown error:" + e.toString), response)
     }
   }
 
-  private def populateResponse (r: HttpResponse, response: KevoreeHttpResponse) {
-    response.setRawContent(r.body)
-    println("\n" + r.bodyAsString +"\n")
+  private def populateResponse (r: HttpResponse, response: KevoreeHttpResponse, currentPath: String) {
+    response.setRawContent(checkAndFixBody(r, currentPath))
     response.setHeaders(convertSprayCanHeadersToKevoreeHTTPHeaders(r.headers))
+    response.setStatus(r.status)
   }
 
   private def generateError (error: Throwable, response: KevoreeHttpResponse) {
@@ -196,7 +207,7 @@ object Forwarder {
   }*/
 
   private def convertSprayCanHeadersToKevoreeHTTPHeaders (
-    sprayHeaders: scala.List[cc.spray.can.HttpHeader]): HashMap[String, String] = {
+    sprayHeaders: scala.List[cc.spray.can.HttpHeader] /*, currentPath : String*/): HashMap[String, String] = {
     val headers = new HashMap[String, String](sprayHeaders.size)
     sprayHeaders.foreach {
       header =>
@@ -204,6 +215,15 @@ object Forwarder {
           case "Date" =>
           case "Transfer-Encoding" =>
           case "Content-Length" =>
+          /*case "Set-Cookie" if (header._2.toLowerCase.contains("path="))=> {
+            val pathIndex = header._2.toLowerCase.indexOf("path=") + "path=".length()
+            val headerValue = new StringBuilder 
+            headerValue append header._2.substring(0, pathIndex)
+            headerValue append urlPattern.replace ("*", "")
+            headerValue append header._2.substring (pathIndex, header._2.length())
+            println(header._1 + "=" + headerValue.toString())
+            headers.put(header._1, headerValue.toString())
+          }*/
           case _ => println(header._1 + "=" + header._2); headers.put(header._1, header._2)
         }
 
@@ -217,7 +237,8 @@ object Forwarder {
     kevHeaders.foreach {
       header => {
         header._1 match {
-                    case "Host" =>
+          case "Host" =>
+          case "Content-Length" =>
           case _ => println(header._1 + "=" + header._2); headers = headers ++ List(HttpHeader(header._1, header._2))
         }
 
@@ -226,5 +247,101 @@ object Forwarder {
     headers
   }
 
+  private def checkAndFixBody (r: HttpResponse, currentPath: String): Array[Byte] = {
+    var encoding = -1 // 0 means plain/text without compression, 1 means with GZip, -1 means unknown
+    var body: Array[Byte] = r.headers.find(header => header._1.toLowerCase == "content-encoding") match {
+      case Some(header) if (header._2.toLowerCase == "text/html") => encoding = 0; r.body
+      case Some(header) if (header._2.toLowerCase == "gzip") => {
+        encoding = 1
+        uncompressGzip(r.body)
+      }
+      case None => encoding = -1; r.body
+    }
+    // look for text/html content type to try to modify it
+    r.headers.find(header => header._1.toLowerCase == "content-type") match {
+      case Some(header) if (header._2.toLowerCase.contains("text/html")) => {
+        var charset = "utf-8"
+        if (header._2.toLowerCase.contains("charset=")) {
+          var indexEndCharsetDef = header._2.toLowerCase.indexOf(";", header._2.toLowerCase.indexOf("charset=")) - 1
+          if (indexEndCharsetDef <= 0) {
+            indexEndCharsetDef = header._2.length()
+          }
+          charset = header._2
+            .substring(header._2.toLowerCase.indexOf("charset=") + "charset=".length(), indexEndCharsetDef)
+        }
+        body = fixPaths(new String(body, charset), currentPath).getBytes(charset)
+      }
+      case none =>
+    }
 
+    body = encoding match {
+      case 0 => body
+      case 1 => compressGzip(body)
+      case _ => body
+    }
+
+    body
+  }
+
+  private def fixPaths (body: String, currentPath: String): String = {
+    // Here we define the replacement of paths to fit with the proxy.
+
+    var newBody = body
+    var pattern = Pattern.compile("window.location.replace\\('(.*)'\\)")
+    var matcher = pattern.matcher(newBody)
+    var path = ""
+    while (matcher.find()) {
+      path = currentPath + matcher.group(1)
+      newBody = newBody
+        .replace("window.location.replace('" + matcher.group(1) + "')", "window.location.replace('" + path + "')")
+
+    }
+    pattern = Pattern.compile("href=\"(/[\\w~,;\\-\\./?%&+#=]*)\"")
+    matcher = pattern.matcher(newBody)
+    while (matcher.find()) {
+      path = currentPath + matcher.group(1)
+      newBody = newBody.replace("href=\"" + matcher.group(1) + "\"", "href=\"" + path + "\"")
+    }
+
+    pattern = Pattern.compile("src=[\"'](/[\\w~,;\\-\\./?%&+#=]*)[\"']")
+    matcher = pattern.matcher(newBody)
+    while (matcher.find()) {
+      path = currentPath + matcher.group(1)
+      newBody = newBody.replaceAll("src=[\"']" + matcher.group(1) + "[\"']", "src=\"" + path + "\"")
+    }
+
+    pattern = Pattern.compile("url\\((/[\\w~,;\\-\\./?%&+#=]*)\\)")
+    matcher = pattern.matcher(newBody)
+    while (matcher.find()) {
+      path = currentPath + matcher.group(1)
+      newBody = newBody.replace("url(" + matcher.group(1) + ")", "url(" + path + ")")
+    }
+
+    newBody
+  }
+
+  private def uncompressGzip (body: Array[Byte]): Array[Byte] = {
+    val inputStream = new GZIPInputStream(new ByteArrayInputStream(body))
+    val outputStream = new ByteArrayOutputStream
+    var bytes = new Array[Byte](1024);
+    var length = inputStream.read(bytes)
+    while (length >= 0) {
+      outputStream.write(bytes, 0, length)
+      length = inputStream.read(bytes)
+    }
+    inputStream.close()
+    bytes = outputStream.toByteArray
+    outputStream.close()
+    bytes
+  }
+
+  private def compressGzip (body: Array[Byte]): Array[Byte] = {
+    val byteArrayStream = new ByteArrayOutputStream
+    val outputStream = new GZIPOutputStream(byteArrayStream)
+    outputStream.write(body)
+    outputStream.flush()
+    outputStream.close()
+
+    byteArrayStream.toByteArray
+  }
 }
