@@ -4,7 +4,7 @@
     <parent>
         <artifactId>org.kevoree.library.android.root</artifactId>
         <groupId>org.kevoree.library.android</groupId>
-        <version>1.5.0</version>
+        <version>1.5.1-SNAPSHOT</version>
         <relativePath>../org.kevoree.library.android.root/pom.xml</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>

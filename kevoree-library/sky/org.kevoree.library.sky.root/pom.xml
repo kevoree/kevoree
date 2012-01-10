@@ -6,12 +6,12 @@
     <artifactId>org.kevoree.library.sky.root</artifactId>
     <packaging>pom</packaging>
     <name>Kevoree :: Library :: Sky :: Root</name>
-    <version>1.5.0</version>
+    <version>1.5.1-SNAPSHOT</version>
 
     <parent>
         <artifactId>org.kevoree.library</artifactId>
         <groupId>org.kevoree.library</groupId>
-        <version>1.5.0</version>
+        <version>1.5.1-SNAPSHOT</version>
         <relativePath>../../pom.xml</relativePath>
     </parent>
 
