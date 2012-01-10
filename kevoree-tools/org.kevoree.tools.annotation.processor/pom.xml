@@ -5,12 +5,12 @@
     <artifactId>org.kevoree.tools.annotation.processor</artifactId>
     <packaging>jar</packaging>
     <name>Kevoree :: Tools :: Annotation Processor</name>
-    <version>1.5.0</version>
+    <version>1.5.1-SNAPSHOT</version>
 
     <parent>
         <artifactId>org.kevoree.tools.root</artifactId>
         <groupId>org.kevoree.tools</groupId>
-        <version>1.5.0</version>
+        <version>1.5.1-SNAPSHOT</version>
         <relativePath>../org.kevoree.tools.root/pom.xml</relativePath>
     </parent>
 
