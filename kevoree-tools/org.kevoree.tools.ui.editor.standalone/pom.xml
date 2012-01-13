@@ -98,6 +98,7 @@
                         <option>-keep class org.kevoree.** { *; }</option>
                         <option>-keep class org.kevoreeAdaptation.** { *; }</option>
                         <option>-keep class org.slf4j.** { *; }</option>
+                        <option>-keep class japa.parser.ast.** { *; }</option>
 
                         <option>-keepattributes *Annotation*</option>
                         <option>-keepattributes **</option>
@@ -164,6 +165,10 @@
                             </inclusion>
                             <inclusion>
                                 <groupId>org.kevoree.tools</groupId>
+                                <artifactId>org.kevoree.tools.model2code</artifactId>
+                            </inclusion>
+                            <inclusion>
+                                <groupId>org.kevoree.tools</groupId>
                                 <artifactId>org.kevoree.tools.javase.framework</artifactId>
                             </inclusion>
 
@@ -220,6 +225,11 @@
                                 <artifactId>AppleJavaExtensions</artifactId>
                             </inclusion>
                             -->
+                            <inclusion>
+                                <groupId>com.google.code.javaparser</groupId>
+                                <artifactId>javaparser</artifactId>
+                                <filter>!META-INF/**</filter>
+                            </inclusion>
                         </inclusions>
                     </assembly>
                     <libs>

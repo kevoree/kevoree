@@ -130,6 +130,7 @@ class NodeTypeBootstrapHelper extends Bootstraper {
     try {
       bundles.foreach {
         bundle =>
+          logger.debug("starting " + bundle.getSymbolicName)
           bundle.start()
       }
       true
@@ -144,13 +145,14 @@ class NodeTypeBootstrapHelper extends Bootstraper {
     val superTypeBootStrap = nodeType.getSuperTypes
       .forall(superType => installNodeTyp(superType.asInstanceOf[org.kevoree.NodeType], bundleContext))
     if (superTypeBootStrap) {
-
+      bundles = List[Bundle]()
       nodeType.getDeployUnits.forall(ct => {
         ct.getRequiredLibs.forall {
           tp => installDeployUnit(tp, bundleContext)
         } && startDeployUnits() && installDeployUnit(ct, bundleContext)
       })
     } else {
+      logger.error("Super type of " + nodeType.getName + " was not completely installed")
       false
     }
   }
