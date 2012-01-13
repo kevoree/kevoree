@@ -118,9 +118,6 @@ class JmDnsComponent(nodeName: String, groupName: String, modelPort: Int, modelH
           logger.debug("add node <"+p1.getName.trim()+"> on "+interface.getHostAddress)
         }
       }
-    }else
-    {
-
       logger.debug("List of discovered nodes <"+nodeAlreadydiscovery.get(groupName)+">")
     }
   }
