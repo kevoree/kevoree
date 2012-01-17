@@ -51,11 +51,12 @@ public class KevoreeGUIFrame extends JFrame {
         topImage.setBackground(new Color(63, 128, 187));
         this.add(topImage, BorderLayout.NORTH);
 
+        /*
         File mavenDir = new File(System.getProperty("user.home") + "/.m2/repository");
         if (mavenDir.exists() && mavenDir.isDirectory()) {
             System.out.println("use mavenDir=file:///" + mavenDir.getAbsoluteFile().getAbsolutePath());
             System.setProperty("org.kevoree.remote.provisioning", "file:///" + mavenDir.getAbsolutePath());
-        }
+        }*/
 
         final HudWindow bootstrapPopup = new HudWindow(GuiConstantsHandler.getGuiConstantValuesProvider().getBootstrapWindowTitle());//"Kevoree runtime : node properties");
         bootstrapPopup.getJDialog().setSize(400, 210);
