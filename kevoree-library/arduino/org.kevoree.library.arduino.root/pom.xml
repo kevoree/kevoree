@@ -25,6 +25,7 @@
         <module>../org.kevoree.library.arduino.nodeType</module>
         <module>../org.kevoree.library.arduino.components</module>
         <module>../org.kevoree.library.arduino.groupType</module>
+        <module>../org.kevoree.library.arduino.fuzzylogic</module>
     </modules>
 
     <dependencies>

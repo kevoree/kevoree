@@ -10,9 +10,30 @@ import org.kevoree.framework.KevoreeGeneratorHelper
 import org.kevoree.{ContainerRoot, TypeDefinition}
 import scala.collection.JavaConversions._
 import org.slf4j.{LoggerFactory, Logger}
+import org.kevoree.annotation.{Generate => KGenerate}
 
 trait KevoreeReflectiveHelper {
   private val logger: Logger = LoggerFactory.getLogger(this.getClass)
+
+  def recCallAnnotedMethod(instance : Object,genVal : String, tclazz: Class[_],context : GeneratorContext){
+    tclazz.getMethods.foreach {
+      method =>
+        method.getAnnotations.foreach {
+          annotation =>
+            if (annotation.annotationType.toString.contains("org.kevoree.annotation.Generate")) {
+              val generateAnnotation = annotation.asInstanceOf[KGenerate]
+              if (generateAnnotation.value == genVal) {
+                method.invoke(instance, context.getGenerator)
+                context b context.getGenerator.getContent
+                context.getGenerator.razGen()
+              }
+            }
+        }
+    }
+    if(tclazz.getSuperclass != null){
+      recCallAnnotedMethod(instance,genVal,tclazz.getSuperclass,context)
+    }
+  }
 
   def createStandaloneInstance(ct: TypeDefinition, bundleContext: BundleContext, nodeName: String): Object = {
     //CREATE NEW INSTANCE

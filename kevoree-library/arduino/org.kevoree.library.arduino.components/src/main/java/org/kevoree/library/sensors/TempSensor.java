@@ -1,46 +1,41 @@
 package org.kevoree.library.sensors;
 
 import org.kevoree.annotation.*;
-import org.kevoree.framework.AbstractComponentType;
+import org.kevoree.tools.arduino.framework.AbstractArduinoComponent;
+import org.kevoree.tools.arduino.framework.ArduinoGenerator;
 
 
 @Library(name = "Arduino")
 @ComponentType
 @DictionaryType({
-    @DictionaryAttribute(name = "pin", defaultValue = "0", optional = true,vals={"0","1","2","3","4","5"})
+        @DictionaryAttribute(name = "pin", defaultValue = "0", optional = true, vals = {"0", "1", "2", "3", "4", "5"})
 })
 @Provides({
-    @ProvidedPort(name = "trigger", type = PortType.MESSAGE)
+        @ProvidedPort(name = "trigger", type = PortType.MESSAGE)
 })
 @Requires({
-    @RequiredPort(name = "temp", type = PortType.MESSAGE, needCheckDependency = false)
+        @RequiredPort(name = "temp", type = PortType.MESSAGE, needCheckDependency = false)
 })
-public class TempSensor extends AbstractComponentType {
-
-    @Start
-    @Stop
-    public void dummy() {
+public class TempSensor extends AbstractArduinoComponent {
+    @Override
+    public void generateHeader(ArduinoGenerator gen) {
+        gen.appendNativeStatement("#include <math.h> \n");
     }
 
-    @Generate("header")
-    public void generateHeader(StringBuffer context) {
-        context.append("#include <math.h> \n");
+    @Override
+    public void generateClassHeader(ArduinoGenerator gen) {
+        gen.appendNativeStatement("float vcc;");
+        gen.appendNativeStatement("float pad;");
+        gen.appendNativeStatement("float thermr;");
+        gen.appendNativeStatement("float tempValue;");
+        gen.appendNativeStatement("char buf[10];");
     }
 
-    @Generate("classheader")
-    public void generateClassHeader(StringBuffer context) {
-        context.append("float vcc;\n");
-        context.append("float pad;\n");
-        context.append("float thermr;\n");
-        context.append("float tempValue;\n");
-        context.append("char buf[10];\n");
-    }
-
-    @Generate("classinit")
-    public void generateClassInit(StringBuffer context) {
-        context.append("vcc = 5.05;\n");
-        context.append("pad = 9850;\n");
-        context.append("thermr = 10000;\n");
+    @Override
+    public void generateInit(ArduinoGenerator gen) {
+        gen.appendNativeStatement("vcc = 5.05;\n");
+        gen.appendNativeStatement("pad = 9850;\n");
+        gen.appendNativeStatement("thermr = 10000;\n");
     }
 
     @Port(name = "trigger")
@@ -62,7 +57,5 @@ public class TempSensor extends AbstractComponentType {
         context.append("smsg->metric=\"c\";");
         context.append("temp_rport(smsg);");
         context.append("free(smsg);");
-
-
     }
 }

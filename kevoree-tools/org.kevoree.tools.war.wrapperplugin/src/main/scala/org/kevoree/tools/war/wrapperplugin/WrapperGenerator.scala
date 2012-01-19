@@ -118,7 +118,7 @@ object WrapperGenerator {
       //fw.append("resourceHandler.setBaseResource(org.eclipse.jetty.util.resource.Resource.newClassPathResource(\"/\"));\n")
       //fw.append("context.setDescriptor(\"/Users/duke/Documents/dev/dukeboard/kevoree/kevoree-library/javase/org.kevoree.library.javase.webserver.jenkins/target/warcontent/web.xml\");")
       fw.append("context.setContextPath(\"/\");\n")
-      //fw.append("context.setParentLoaderPriority(false);\n")
+      fw.append("context.setParentLoaderPriority(false);\n")
 
 
 

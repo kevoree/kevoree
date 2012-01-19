@@ -8,6 +8,8 @@ package org.kevoree.library.arduinoNodeType.generator
 import java.io.BufferedWriter
 import java.io.FileWriter
 import java.io.PrintWriter
+import org.kevoree.tools.arduino.framework.impl.DefaultArduinoGenerator
+import org.kevoree.tools.arduino.framework.ArduinoGenerator
 
 trait KevoreeCAbstractGenerator {
   
@@ -32,6 +34,9 @@ class GeneratorContext {
   val body = new StringBuilder
   def h (content : String) = { header.append(content);header.append("\n");  }
   def b (content : String) = { body.append(content);body.append("\n");  }
+
+  val gen  = new DefaultArduinoGenerator
+  def getGenerator : ArduinoGenerator  = gen
   
   def toFile(outputDir:String,nodeName:String)={
     val finalResult = 

@@ -17,8 +17,8 @@
 
     <dependencies>
         <dependency>
-            <groupId>org.kevoree.library.arduino</groupId>
-            <artifactId>org.kevoree.library.arduino.nodeType</artifactId>
+            <groupId>org.kevoree.tools</groupId>
+            <artifactId>org.kevoree.tools.arduino.framework</artifactId>
             <version>${kevoree.version}</version>
         </dependency>
     </dependencies>

@@ -90,4 +90,11 @@ case class ComponentDefinitionVisitor(componentType: ComponentType, env: Process
       }
     }
   }
+
+
+  def processMultiMapping(){
+
+  }
+
+
 }
