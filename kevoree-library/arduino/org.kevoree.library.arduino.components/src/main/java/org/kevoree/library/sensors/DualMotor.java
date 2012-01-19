@@ -1,7 +1,8 @@
 package org.kevoree.library.sensors;
 
 import org.kevoree.annotation.*;
-import org.kevoree.framework.AbstractComponentType;
+import org.kevoree.tools.arduino.framework.AbstractArduinoComponent;
+import org.kevoree.tools.arduino.framework.ArduinoGenerator;
 
 @Library(name = "Arduino")
 @ComponentType
@@ -20,76 +21,69 @@ import org.kevoree.framework.AbstractComponentType;
         @ProvidedPort(name = "turnLeft", type = PortType.MESSAGE),
         @ProvidedPort(name = "turnRight", type = PortType.MESSAGE)
 })
-public class DualMotor extends AbstractComponentType {
+public class DualMotor extends AbstractArduinoComponent {
 
-    @Generate("classheader")
-    public void generatePeriodic(StringBuffer context) {
-        context.append("boolean state ;\n");
+    @Override
+    public void generateClassHeader(ArduinoGenerator gen) {
+        getGenerator().appendNativeStatement("boolean state ;\n");
     }
 
-    @Start
-    @Stop
-    public void dummy() {
-    }
 
     @Port(name = "goFront")
     public void goFront(Object o) {
-        StringBuffer context = (StringBuffer) o;
         /* Set Pin Mode & Speed */
-        context.append("pinMode(atoi(MA), OUTPUT);");
-        context.append("pinMode(atoi(MAB), OUTPUT);");
-        context.append("pinMode(atoi(I1pin), OUTPUT);");
-        context.append("pinMode(atoi(I2pin), OUTPUT);");
-         context.append("pinMode(atoi(I1Bpin), OUTPUT);");
-        context.append("pinMode(atoi(I2Bpin), OUTPUT);");
+        getGenerator().appendNativeStatement("pinMode(atoi(MA), OUTPUT);");
+        getGenerator().appendNativeStatement("pinMode(atoi(MAB), OUTPUT);");
+        getGenerator().appendNativeStatement("pinMode(atoi(I1pin), OUTPUT);");
+        getGenerator().appendNativeStatement("pinMode(atoi(I2pin), OUTPUT);");
+         getGenerator().appendNativeStatement("pinMode(atoi(I1Bpin), OUTPUT);");
+        getGenerator().appendNativeStatement("pinMode(atoi(I2Bpin), OUTPUT);");
         //SET SPEED
-        context.append("analogWrite(atoi(MA), 100);\n");
-        context.append("analogWrite(atoi(MAB), 100);\n");
+        getGenerator().appendNativeStatement("analogWrite(atoi(MA), 100);\n");
+        getGenerator().appendNativeStatement("analogWrite(atoi(MAB), 100);\n");
         // Both DC motor rotates clockwise
-        context.append("digitalWrite(atoi(I1pin),HIGH);\n");
-        context.append("digitalWrite(atoi(I2pin),LOW);\n");
-        context.append("digitalWrite(atoi(I1Bpin),HIGH);\n");
-        context.append("digitalWrite(atoi(I2Bpin),LOW);\n");
+        getGenerator().appendNativeStatement("digitalWrite(atoi(I1pin),HIGH);\n");
+        getGenerator().appendNativeStatement("digitalWrite(atoi(I2pin),LOW);\n");
+        getGenerator().appendNativeStatement("digitalWrite(atoi(I1Bpin),HIGH);\n");
+        getGenerator().appendNativeStatement("digitalWrite(atoi(I2Bpin),LOW);\n");
     }
 
     @Port(name = "goBack")
     public void goBack(Object o) {
-        StringBuffer context = (StringBuffer) o;
         /* Set Pin Mode & Speed */
-        context.append("pinMode(atoi(MA), OUTPUT);");
-        context.append("pinMode(atoi(MAB), OUTPUT);");
-        context.append("pinMode(atoi(I1pin), OUTPUT);");
-        context.append("pinMode(atoi(I2pin), OUTPUT);");
-         context.append("pinMode(atoi(I1Bpin), OUTPUT);");
-        context.append("pinMode(atoi(I2Bpin), OUTPUT);");
+        getGenerator().appendNativeStatement("pinMode(atoi(MA), OUTPUT);");
+        getGenerator().appendNativeStatement("pinMode(atoi(MAB), OUTPUT);");
+        getGenerator().appendNativeStatement("pinMode(atoi(I1pin), OUTPUT);");
+        getGenerator().appendNativeStatement("pinMode(atoi(I2pin), OUTPUT);");
+         getGenerator().appendNativeStatement("pinMode(atoi(I1Bpin), OUTPUT);");
+        getGenerator().appendNativeStatement("pinMode(atoi(I2Bpin), OUTPUT);");
         //SET SPEED
-        context.append("analogWrite(atoi(MA), 100);\n");
-        context.append("analogWrite(atoi(MAB), 100);\n");
+        getGenerator().appendNativeStatement("analogWrite(atoi(MA), 100);\n");
+        getGenerator().appendNativeStatement("analogWrite(atoi(MAB), 100);\n");
         // Both DC motor rotates clockwise
-        context.append("digitalWrite(atoi(I1pin),LOW);\n");
-        context.append("digitalWrite(atoi(I2pin),HIGH);\n");
-        context.append("digitalWrite(atoi(I1Bpin),LOW);\n");
-        context.append("digitalWrite(atoi(I2Bpin),HIGH);\n");
+        getGenerator().appendNativeStatement("digitalWrite(atoi(I1pin),LOW);\n");
+        getGenerator().appendNativeStatement("digitalWrite(atoi(I2pin),HIGH);\n");
+        getGenerator().appendNativeStatement("digitalWrite(atoi(I1Bpin),LOW);\n");
+        getGenerator().appendNativeStatement("digitalWrite(atoi(I2Bpin),HIGH);\n");
     }
 
     @Port(name = "stop")
     public void stopPort(Object o) {
-        StringBuffer context = (StringBuffer) o;
         /* Set Pin Mode & Speed */
-        context.append("pinMode(atoi(MA), OUTPUT);");
-        context.append("pinMode(atoi(MAB), OUTPUT);");
-        context.append("pinMode(atoi(I1pin), OUTPUT);");
-        context.append("pinMode(atoi(I2pin), OUTPUT);");
-         context.append("pinMode(atoi(I1Bpin), OUTPUT);");
-        context.append("pinMode(atoi(I2Bpin), OUTPUT);");
+        getGenerator().appendNativeStatement("pinMode(atoi(MA), OUTPUT);");
+        getGenerator().appendNativeStatement("pinMode(atoi(MAB), OUTPUT);");
+        getGenerator().appendNativeStatement("pinMode(atoi(I1pin), OUTPUT);");
+        getGenerator().appendNativeStatement("pinMode(atoi(I2pin), OUTPUT);");
+         getGenerator().appendNativeStatement("pinMode(atoi(I1Bpin), OUTPUT);");
+        getGenerator().appendNativeStatement("pinMode(atoi(I2Bpin), OUTPUT);");
         //SET SPEED
-        context.append("analogWrite(atoi(MA), 100);\n");
-        context.append("analogWrite(atoi(MAB), 100);\n");
+        getGenerator().appendNativeStatement("analogWrite(atoi(MA), 100);\n");
+        getGenerator().appendNativeStatement("analogWrite(atoi(MAB), 100);\n");
         // Both DC motor rotates clockwise
-        context.append("digitalWrite(atoi(I1pin),HIGH);\n");
-        context.append("digitalWrite(atoi(I2pin),HIGH);\n");
-        context.append("digitalWrite(atoi(I1Bpin),HIGH);\n");
-        context.append("digitalWrite(atoi(I2Bpin),HIGH);\n");
+        getGenerator().appendNativeStatement("digitalWrite(atoi(I1pin),HIGH);\n");
+        getGenerator().appendNativeStatement("digitalWrite(atoi(I2pin),HIGH);\n");
+        getGenerator().appendNativeStatement("digitalWrite(atoi(I1Bpin),HIGH);\n");
+        getGenerator().appendNativeStatement("digitalWrite(atoi(I2Bpin),HIGH);\n");
     }
 
     @Port(name = "turnLeft")

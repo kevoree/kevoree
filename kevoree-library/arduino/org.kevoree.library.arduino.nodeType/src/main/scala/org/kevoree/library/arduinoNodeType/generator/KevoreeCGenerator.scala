@@ -46,15 +46,14 @@ class KevoreeCGenerator
 
     componentTypes.foreach {
       componentTypeAdaptation =>
+        context.getGenerator.setTypeModel(componentTypeAdaptation.getRef.asInstanceOf[ComponentType])
         generateComponentType(componentTypeAdaptation.getRef.asInstanceOf[ComponentType], bundleContext, nodeName)
     }
     channelTypes.foreach {
       channelTypeAdaptation =>
+        context.getGenerator.setTypeModel(channelTypeAdaptation.getRef.asInstanceOf[ChannelType])
         generateChannelType(channelTypeAdaptation.getRef.asInstanceOf[ChannelType], bundleContext, nodeName)
     }
-
-
-
 
 
     generateDestroyInstanceMethod(ktypes)

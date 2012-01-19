@@ -1,7 +1,8 @@
 package org.kevoree.library.sensors;
 
 import org.kevoree.annotation.*;
-import org.kevoree.framework.AbstractComponentType;
+import org.kevoree.tools.arduino.framework.AbstractArduinoComponent;
+import org.kevoree.tools.arduino.framework.ArduinoGenerator;
 
 @Library(name = "Arduino")
 @ComponentType
@@ -12,36 +13,30 @@ import org.kevoree.framework.AbstractComponentType;
 @Provides({
     @ProvidedPort(name = "input", type = PortType.MESSAGE)
 })
-public class LCDDisplay extends AbstractComponentType {
+public class LCDDisplay extends AbstractArduinoComponent {
 
-    @Start
-    @Stop
-    public void dummy() {
+    @Override
+    public void generateHeader(ArduinoGenerator gen) {
+        getGenerator().appendNativeStatement("#include <LiquidCrystal.h> \n");
     }
 
-    @Generate("header")
-    public void generateHeader(StringBuffer context) {
-        context.append("#include <LiquidCrystal.h> \n");
+    @Override
+    public void generateClassHeader(ArduinoGenerator gen) {
+        getGenerator().appendNativeStatement("LiquidCrystal * lcd;\n");
     }
 
-    @Generate("classheader")
-    public void generateClassHeader(StringBuffer context) {
-        context.append("LiquidCrystal * lcd;\n");
-    }
-
-    @Generate("classinit")
-    public void generateClassInit(StringBuffer context) {     
-        context.append("lcd = (LiquidCrystal*) malloc(sizeof(LiquidCrystal));\n");
-        context.append("if (lcd){memset(lcd, 0, sizeof(LiquidCrystal));}");
-        context.append("LiquidCrystal lcdObj(10, 11, 12, 13, 14, 15, 16);");
-        context.append("memcpy (lcd,&lcdObj,sizeof(LiquidCrystal));");
-        context.append("lcd->begin(16, 2);");
+    @Override
+    public void generateInit(ArduinoGenerator gen) {
+        getGenerator().appendNativeStatement("lcd = (LiquidCrystal*) malloc(sizeof(LiquidCrystal));\n");
+        getGenerator().appendNativeStatement("if (lcd){memset(lcd, 0, sizeof(LiquidCrystal));}");
+        getGenerator().appendNativeStatement("LiquidCrystal lcdObj(10, 11, 12, 13, 14, 15, 16);");
+        getGenerator().appendNativeStatement("memcpy (lcd,&lcdObj,sizeof(LiquidCrystal));");
+        getGenerator().appendNativeStatement("lcd->begin(16, 2);");
     }
 
     @Port(name = "input")
     public void inputPort(Object o) {
-        StringBuffer context = (StringBuffer) o;
-        context.append("lcd->clear();\n");
-        context.append("lcd->print(String(msg->value)+String(\":\")+String(msg->metric));\n");
+        getGenerator().appendNativeStatement("lcd->clear();\n");
+        getGenerator().appendNativeStatement("lcd->print(String(msg->value)+String(\":\")+String(msg->metric));\n");
     }
 }

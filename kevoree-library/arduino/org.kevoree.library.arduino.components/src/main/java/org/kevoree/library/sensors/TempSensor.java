@@ -2,6 +2,7 @@ package org.kevoree.library.sensors;
 
 import org.kevoree.annotation.*;
 import org.kevoree.tools.arduino.framework.AbstractArduinoComponent;
+import org.kevoree.tools.arduino.framework.AbstractPeriodicArduinoComponent;
 import org.kevoree.tools.arduino.framework.ArduinoGenerator;
 
 
@@ -10,13 +11,10 @@ import org.kevoree.tools.arduino.framework.ArduinoGenerator;
 @DictionaryType({
         @DictionaryAttribute(name = "pin", defaultValue = "0", optional = true, vals = {"0", "1", "2", "3", "4", "5"})
 })
-@Provides({
-        @ProvidedPort(name = "trigger", type = PortType.MESSAGE)
-})
 @Requires({
         @RequiredPort(name = "temp", type = PortType.MESSAGE, needCheckDependency = false)
 })
-public class TempSensor extends AbstractArduinoComponent {
+public class TempSensor extends AbstractPeriodicArduinoComponent {
     @Override
     public void generateHeader(ArduinoGenerator gen) {
         gen.appendNativeStatement("#include <math.h> \n");
@@ -38,10 +36,9 @@ public class TempSensor extends AbstractArduinoComponent {
         gen.appendNativeStatement("thermr = 10000;\n");
     }
 
-    @Port(name = "trigger")
-    public void triggerPort(Object o) {
-        StringBuffer context = (StringBuffer) o;
-        context.append("    long Resistance;  \n"
+    @Override
+    public void generatePeriodic(ArduinoGenerator arduinoGenerator) {
+        getGenerator().appendNativeStatement("    long Resistance;  \n"
                 + "    int RawADC = analogRead(atoi(pin));\n"
                 + "    Resistance=((1024 * thermr / RawADC) - pad); \n"
                 + "    tempValue = log(Resistance); // Saving the Log(resistance) so not to calculate  it 4 times later\n"
@@ -50,12 +47,12 @@ public class TempSensor extends AbstractArduinoComponent {
                 + "    //send to output port\n");
 
 
-        context.append("kmessage * smsg = (kmessage*) malloc(sizeof(kmessage));");
-        context.append("if (smsg){memset(smsg, 0, sizeof(kmessage));}");
-        context.append("sprintf(buf,\"%d\",int(tempValue));\n");
-        context.append("smsg->value = buf;\n");
-        context.append("smsg->metric=\"c\";");
-        context.append("temp_rport(smsg);");
-        context.append("free(smsg);");
+        getGenerator().appendNativeStatement("kmessage * smsg = (kmessage*) malloc(sizeof(kmessage));");
+        getGenerator().appendNativeStatement("if (smsg){memset(smsg, 0, sizeof(kmessage));}");
+        getGenerator().appendNativeStatement("sprintf(buf,\"%d\",int(tempValue));\n");
+        getGenerator().appendNativeStatement("smsg->value = buf;\n");
+        getGenerator().appendNativeStatement("smsg->metric=\"c\";");
+        getGenerator().appendNativeStatement("temp_rport(smsg);");
+        getGenerator().appendNativeStatement("free(smsg);");
     }
 }

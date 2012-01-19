@@ -51,5 +51,15 @@ public abstract class AbstractArduinoComponent extends AbstractComponentType {
 
     }
 
+    private ArduinoGenerator gen = null;
+
+    public ArduinoGenerator getGenerator() {
+        return gen;
+    }
+
+    public void setGenerator(ArduinoGenerator g) {
+        gen = g;
+    }
+
 
 }

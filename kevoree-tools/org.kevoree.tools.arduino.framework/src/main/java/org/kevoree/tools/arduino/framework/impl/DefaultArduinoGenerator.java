@@ -13,6 +13,8 @@
  */
 package org.kevoree.tools.arduino.framework.impl;
 
+import org.kevoree.ContainerRoot;
+import org.kevoree.TypeDefinition;
 import org.kevoree.tools.arduino.framework.ArduinoGenerator;
 
 /**
@@ -56,6 +58,18 @@ public class DefaultArduinoGenerator implements ArduinoGenerator {
 
     public String getContent(){
         return buffer.toString();
+    }
+
+    private TypeDefinition typeDefModel = null;
+    
+    @Override
+    public TypeDefinition getTypeModel() {
+        return typeDefModel; 
+    }
+
+    @Override
+    public void setTypeModel(TypeDefinition td) {
+        typeDefModel = td;
     }
 
 }

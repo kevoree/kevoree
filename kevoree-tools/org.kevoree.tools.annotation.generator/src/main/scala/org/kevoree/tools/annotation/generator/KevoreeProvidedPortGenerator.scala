@@ -59,6 +59,7 @@ object KevoreeProvidedPortGenerator {
             writer.append("override def internal_process(msg : Any)= msg match {\n")
             /* CALL MAPPED METHOD */
             writer.append("case _ @ msg =>try{component.")
+
             writer.append(mapping.getBeanMethodName + "(msg)}catch{case _ @ e => {e.printStackTrace();println(\"Uncatched exception while processing Kevoree message\")}}\n")
             writer.append("}\n")
           }

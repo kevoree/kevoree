@@ -2,7 +2,8 @@ package org.kevoree.library.sensors;
 
 
 import org.kevoree.annotation.*;
-import org.kevoree.framework.AbstractComponentType;
+import org.kevoree.tools.arduino.framework.AbstractArduinoComponent;
+import org.kevoree.tools.arduino.framework.ArduinoGenerator;
 
 @Library(name = "Arduino")
 @ComponentType
@@ -15,27 +16,19 @@ import org.kevoree.framework.AbstractComponentType;
 @DictionaryType({
         @DictionaryAttribute(name = "inverted", defaultValue = "0", optional = true,vals={"0","1"})
 })
-public class AutoNormalizer extends AbstractComponentType {
+public class AutoNormalizer extends AbstractArduinoComponent {
 
-    @Start
-    public void start() {
+    @Override
+    public void generateInit(ArduinoGenerator gen) {
+        gen.appendNativeStatement("minValue = 1024;");
+        gen.appendNativeStatement("maxValue = 0;");
     }
 
-    @Stop
-    public void stop() {
-    }
-
-    @Generate("classheader")
-    public void generateHeader(StringBuffer context) {
-        context.append("char buf[10];\n");
-        context.append("int minValue;\n");
-        context.append("int maxValue;\n");
-    }
-
-    @Generate("classinit")
-    public void generateClassInit(StringBuffer context) {
-        context.append("minValue = 1024;\n");
-        context.append("maxValue = 0;\n");
+    @Override
+    public void generateClassHeader(ArduinoGenerator gen) {
+        gen.appendNativeStatement("char buf[10];");
+        gen.appendNativeStatement("int minValue;");
+        gen.appendNativeStatement("int maxValue;");
     }
 
     @Port(name = "input")

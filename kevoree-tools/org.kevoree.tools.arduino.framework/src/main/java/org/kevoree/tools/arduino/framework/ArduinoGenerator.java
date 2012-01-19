@@ -13,6 +13,9 @@
  */
 package org.kevoree.tools.arduino.framework;
 
+import org.kevoree.ContainerRoot;
+import org.kevoree.TypeDefinition;
+
 /**
  * Created by IntelliJ IDEA.
  * User: duke
@@ -32,6 +35,10 @@ public interface ArduinoGenerator {
     public void razGen();
 
     public String getContent();
+
+    public TypeDefinition getTypeModel();
+
+    public void setTypeModel(TypeDefinition td);
 
 }
 
