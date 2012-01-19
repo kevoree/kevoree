@@ -1,0 +1,15 @@
+ListenAddress <ip_address>
+
+PermitRootLogin without-password
+
+RSAAuthentication yes
+PubkeyAuthentication yes
+AuthorizedKeysFile      .ssh/authorized_keys
+
+PasswordAuthentication no
+
+ChallengeResponseAuthentication no
+
+UsePAM yes
+
+Subsystem       sftp    /usr/libexec/sftp-server
