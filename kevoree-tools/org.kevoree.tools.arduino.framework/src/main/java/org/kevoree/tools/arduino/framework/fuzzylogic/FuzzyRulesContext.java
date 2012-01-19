@@ -11,29 +11,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-package org.kevoree.annotation;
-
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
+package org.kevoree.tools.arduino.framework.fuzzylogic;
 
 /**
- *
- * @author ffouquet
+ * Created by IntelliJ IDEA.
+ * User: duke
+ * Date: 19/01/12
+ * Time: 10:35
  */
-@Retention(RetentionPolicy.CLASS)
-public @interface DictionaryAttribute {
+public interface FuzzyRulesContext {
 
-    boolean optional() default false;
-
-    String name();
-
-    String defaultValue() default "defaultKevoreeNonSetValue";
-
-    String[] vals() default {};
-
-    boolean fragmentDependant() default false;
-
-    Class dataType() default Void.class;
+    public void addRule(String rule);
 
 }

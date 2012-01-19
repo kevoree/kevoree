@@ -11,29 +11,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-package org.kevoree.annotation;
-
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
+package org.kevoree.tools.arduino.framework;
 
 /**
- *
- * @author ffouquet
+ * Created by IntelliJ IDEA.
+ * User: duke
+ * Date: 18/01/12
+ * Time: 16:35
  */
-@Retention(RetentionPolicy.CLASS)
-public @interface DictionaryAttribute {
+public interface ArduinoGenerator {
 
-    boolean optional() default false;
+    public void declareStaticKMessage(String name, String typeName);
 
-    String name();
+    public void appendNativeStatement(String statement);
 
-    String defaultValue() default "defaultKevoreeNonSetValue";
+    public void freeStaticKMessage(String name);
 
-    String[] vals() default {};
+    public void sendKMessage(String name,String portName);
 
-    boolean fragmentDependant() default false;
+    public void razGen();
 
-    Class dataType() default Void.class;
+    public String getContent();
 
 }
+
+

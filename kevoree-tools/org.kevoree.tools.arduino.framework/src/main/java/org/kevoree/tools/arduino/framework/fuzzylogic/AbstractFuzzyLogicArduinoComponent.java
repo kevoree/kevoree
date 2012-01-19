@@ -11,29 +11,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.kevoree.tools.arduino.framework.fuzzylogic;
 
-package org.kevoree.annotation;
-
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
+import org.kevoree.annotation.ComponentFragment;
+import org.kevoree.annotation.Port;
+import org.kevoree.tools.arduino.framework.AbstractArduinoComponent;
 
 /**
- *
- * @author ffouquet
+ * Created by IntelliJ IDEA.
+ * User: duke
+ * Date: 19/01/12
+ * Time: 10:20
  */
-@Retention(RetentionPolicy.CLASS)
-public @interface DictionaryAttribute {
+@ComponentFragment
+public abstract class AbstractFuzzyLogicArduinoComponent extends AbstractArduinoComponent {
 
-    boolean optional() default false;
+    @Port(name="*")
+    public void portGeneration(Object o){
+        //TODO MAPPING
+    }
 
-    String name();
-
-    String defaultValue() default "defaultKevoreeNonSetValue";
-
-    String[] vals() default {};
-
-    boolean fragmentDependant() default false;
-
-    Class dataType() default Void.class;
+    public abstract void declareRules(FuzzyRulesContext rulesContext);
 
 }
