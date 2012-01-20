@@ -22,12 +22,6 @@
             <type>bundle</type>
         </dependency>
         <dependency>
-            <groupId>org.kevoree.library.javase</groupId>
-            <artifactId>org.kevoree.library.javase.ssh</artifactId>
-            <version>${kevoree.version}</version>
-            <type>bundle</type>
-        </dependency>
-        <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>4.8.1</version>
