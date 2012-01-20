@@ -13,6 +13,7 @@
     <artifactId>org.kevoree.library.javase.ssh</artifactId>
 
     <name>Kevoree :: Library :: JavaSE :: SSH</name>
+    <packaging>bundle</packaging>
 
     <dependencies>
         <dependency>
