@@ -14,10 +14,10 @@
 package org.kevoree.tools.war.wrapperplugin
 
 import org.apache.maven.project.MavenProject
-import java.util.jar.Attributes
 import io.Source
 import java.io.{FileWriter, FileOutputStream, File}
 import xml.XML
+import java.util.jar.Attributes
 
 /**
  * Created by IntelliJ IDEA.
@@ -74,7 +74,7 @@ object BundlerHelper {
       //paths = paths ++ List("WEB_INF/classes")
       fileWebLib.listFiles().foreach {
         subF =>
-          if (subF.getName.endsWith(".jar") && !exclusions.contains(subF.getName)) {
+          if (subF.getName.endsWith(".jar") && !exclusions.forall(ex => subF.getName.contains(ex))) {
             paths = paths ++ List("WEB-INF/lib/" + subF.getName)
           }
       }

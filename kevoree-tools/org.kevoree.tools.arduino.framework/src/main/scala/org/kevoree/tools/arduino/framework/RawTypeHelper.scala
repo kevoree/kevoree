@@ -11,29 +11,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-package org.kevoree.annotation;
-
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
+package org.kevoree.tools.arduino.framework
 
 /**
- *
- * @author ffouquet
+ * Created by IntelliJ IDEA.
+ * User: duke
+ * Date: 18/01/12
+ * Time: 16:45
+ * To change this template use File | Settings | File Templates.
  */
-@Retention(RetentionPolicy.CLASS)
-public @interface DictionaryAttribute {
 
-    boolean optional() default false;
+object RawTypeHelper {
 
-    String name();
-
-    String defaultValue() default "defaultKevoreeNonSetValue";
-
-    String[] vals() default {};
-
-    boolean fragmentDependant() default false;
-
-    Class dataType() default Void.class;
+  def getArduinoType(baseType : String) : String = {
+    baseType match {
+      case "java.lang.Long" => "long"
+      case "java.lang.Integer" => "int"
+      case _ => baseType
+    }
+  }
 
 }

@@ -261,7 +261,10 @@ class KevoreeAnnotationProcessor() extends javax.annotation.processing.AbstractP
 
       root.addTypeDefinitions(componentType)
       //RUN VISITOR
-      typeDecl.accept(ComponentDefinitionVisitor(componentType, env, this), typeDecl)
+      val cvisitor = ComponentDefinitionVisitor(componentType, env, this)
+      typeDecl.accept(cvisitor, typeDecl)
+      cvisitor.doAnnotationPostProcess(componentType)
+
     }
 
 
