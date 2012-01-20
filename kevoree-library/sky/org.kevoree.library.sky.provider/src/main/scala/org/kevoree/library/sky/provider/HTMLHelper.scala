@@ -21,11 +21,11 @@ object HTMLHelper {
         <form method="post" action={targetURL} enctype="multipart/form-data">
           <table>
             <tr>
-              <td>Login :</td>
+              <td>Login:</td>
               <td>
                   <input type="text" name="login" maxlength="20" size="20"/>
               </td>
-              <td>Mot de passe :</td>
+              <td>Password:</td>
               <td>
                   <input type="password" name="password" maxlength="20" size="20"/>
               </td>
@@ -83,6 +83,24 @@ object HTMLHelper {
             <br/>
           Submission cannot be accepted:
             <br/>{exception}
+        </p>
+      </body>
+    </html>.toString()
+  }
+
+  def generateFailToLoginPageHtml (login: String): String = {
+    <html>
+      <head>
+          <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+          <meta charset="utf-8"/>
+      </head>
+      <body>
+        <p>
+          Sorry
+          {login}
+          .
+            <br/>
+          You are an unknown user of this Kloud.
         </p>
       </body>
     </html>.toString()
