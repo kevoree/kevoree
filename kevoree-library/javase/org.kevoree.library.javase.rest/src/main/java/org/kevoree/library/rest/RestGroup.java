@@ -2,7 +2,6 @@ package org.kevoree.library.rest;
 
 import org.kevoree.ContainerNode;
 import org.kevoree.ContainerRoot;
-import org.kevoree.DictionaryValue;
 import org.kevoree.Group;
 import org.kevoree.annotation.*;
 import org.kevoree.framework.*;
@@ -148,4 +147,8 @@ public class RestGroup extends AbstractGroupType {
         }
         return null;
     }
+
+	public void updateModel(ContainerRoot model) {
+		this.getModelService().updateModel(model);
+	}
 }

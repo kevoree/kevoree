@@ -45,7 +45,7 @@ class RootService(id: String, group: RestGroup) extends Actor with FileServer {
          val model = KevoreeXmiHelper.loadString(new String(body))
          new scala.actors.Actor {
            def act() {
-             group.getModelService.updateModel(model)
+             group.updateModel(model)
            }
          }.start()
          responder.complete(response("<ack nodeName=\"" + group.getNodeName + "\" />"))
