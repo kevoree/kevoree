@@ -40,6 +40,7 @@ object KevsEngine {
         if(s.interpret(KevsInterpreterContext(inputModel))){
           Some(inputModel)
         } else {
+
           None
         }
       }
