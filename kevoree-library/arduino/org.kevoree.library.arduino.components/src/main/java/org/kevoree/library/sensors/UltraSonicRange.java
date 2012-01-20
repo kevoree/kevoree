@@ -2,6 +2,9 @@ package org.kevoree.library.sensors;
 
 import org.kevoree.annotation.*;
 import org.kevoree.framework.AbstractComponentType;
+import org.kevoree.tools.arduino.framework.AbstractArduinoComponent;
+import org.kevoree.tools.arduino.framework.AbstractPeriodicArduinoComponent;
+import org.kevoree.tools.arduino.framework.ArduinoGenerator;
 
 /**
  * User: ffouquet
@@ -12,52 +15,45 @@ import org.kevoree.framework.AbstractComponentType;
 @Library(name = "Arduino")
 @ComponentType
 @DictionaryType({
-        @DictionaryAttribute(name = "dpin", defaultValue = "0", optional = true, vals = {"0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13"}),
-        @DictionaryAttribute(name = "period", defaultValue = "200", optional = true)
+        @DictionaryAttribute(name = "dpin", defaultValue = "0", optional = true, vals = {"0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13"})
 })
 @Requires({
         @RequiredPort(name = "range", type = PortType.MESSAGE, needCheckDependency = false)
 })
-public class UltraSonicRange extends AbstractComponentType {
+public class UltraSonicRange extends AbstractPeriodicArduinoComponent {
 
-    @Start
-    @Stop
-    public void dummy() {
+
+    @Override
+    public void generateClassHeader(ArduinoGenerator gen) {
+        gen.appendNativeStatement("long duration,cm;\n");
+        gen.appendNativeStatement("char buf[4];\n");
     }
 
-    @Generate("classheader")
-    public void generateHeader(StringBuffer context) {
-        context.append("long duration,cm;\n");
-        context.append("char buf[4];\n");
-    }
-
-    @Generate("periodic")
-    public void generateSetup(StringBuffer context) {
+    @Override
+    public void generatePeriodic(ArduinoGenerator gen) {
         //CLEAN SIGNAL
-        context.append("" +
+        gen.appendNativeStatement("" +
                 " pinMode(atoi(dpin), OUTPUT);\n" +
                 " digitalWrite(atoi(dpin), LOW);\n" +
                 " delayMicroseconds(2);\n" +
                 " digitalWrite(atoi(dpin), HIGH);\n" +
                 " delayMicroseconds(5);\n" +
-                " digitalWrite(atoi(dpin), LOW);\n");
+                " digitalWrite(atoi(dpin), LOW);");
         //MESURE RANGE
-        context.append("" +
+        gen.appendNativeStatement("" +
                 " pinMode(atoi(dpin), INPUT);\n" +
                 " duration = pulseIn(atoi(dpin), HIGH);\n");
         // The speed of sound is 340 m/s or 29 microseconds per centimeter.
         // The ping travels out and back, so to find the distance of the
         // object we take half of the distance travelled.
-        context.append("cm = ( duration / 29 / 2 );\n");
+        gen.appendNativeStatement("cm = ( duration / 29 / 2 );");
 
-        context.append("kmessage * smsg = (kmessage*) malloc(sizeof(kmessage));");
-        context.append("if (smsg){memset(smsg, 0, sizeof(kmessage));}");
-        context.append("sprintf(buf,\"%d\",int(cm));\n");
-        context.append("smsg->value = buf;\n");
-        context.append("smsg->metric=\"cm\";");
-        context.append("range_rport(smsg);");
-        context.append("free(smsg);");
-
-
+        gen.appendNativeStatement("kmessage * smsg = (kmessage*) malloc(sizeof(kmessage));");
+        gen.appendNativeStatement("if (smsg){memset(smsg, 0, sizeof(kmessage));}");
+        gen.appendNativeStatement("sprintf(buf,\"%d\",int(cm));\n");
+        gen.appendNativeStatement("smsg->value = buf;\n");
+        gen.appendNativeStatement("smsg->metric=\"cm\";");
+        gen.appendNativeStatement("range_rport(smsg);");
+        gen.appendNativeStatement("free(smsg);");
     }
 }

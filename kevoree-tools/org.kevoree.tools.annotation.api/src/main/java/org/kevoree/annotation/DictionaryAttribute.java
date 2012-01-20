@@ -34,4 +34,6 @@ public @interface DictionaryAttribute {
 
     boolean fragmentDependant() default false;
 
+    Class dataType() default Void.class;
+
 }

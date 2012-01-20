@@ -5,7 +5,8 @@
 package org.kevoree.library.sensors;
 
 import org.kevoree.annotation.*;
-import org.kevoree.framework.AbstractComponentType;
+import org.kevoree.tools.arduino.framework.AbstractPeriodicArduinoComponent;
+import org.kevoree.tools.arduino.framework.ArduinoGenerator;
 
 /**
  *
@@ -13,28 +14,17 @@ import org.kevoree.framework.AbstractComponentType;
  */
 @Library(name = "Arduino")
 @ComponentType
-@DictionaryType({
-    @DictionaryAttribute(name = "period", defaultValue = "1000", optional = true)
-})
 @Requires({
     @RequiredPort(name = "tick", type = PortType.MESSAGE, needCheckDependency = false)
 })
-public class Timer extends AbstractComponentType {
+public class Timer extends AbstractPeriodicArduinoComponent {
 
-    @Start
-    public void start() {}
-
-    @Stop
-    public void stop() {}
-
-    @Generate("periodic")
-    public void generatePeriodic(StringBuffer context) {
-        context.append("kmessage * msg = (kmessage*) malloc(sizeof(kmessage));\n");
-        context.append("if (msg){memset(msg, 0, sizeof(kmessage));}\n"); 
-        context.append("msg->value = \"tick\";");
-        context.append("msg->metric = \"t\";");
-        context.append("tick_rport(msg);");  
-        context.append("free(msg);");
+    @Override
+    public void generatePeriodic(ArduinoGenerator gen) {
+        gen.declareStaticKMessage("msg","t");
+        gen.appendNativeStatement("msg->value = \"tick\";");
+        gen.sendKMessage("msg","tick");
+        gen.freeStaticKMessage("msg");
     }
 
 }

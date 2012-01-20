@@ -2,13 +2,15 @@ package org.kevoree.library.sensors;
 
 import org.kevoree.annotation.*;
 import org.kevoree.framework.AbstractComponentType;
+import org.kevoree.tools.arduino.framework.AbstractArduinoComponent;
+import org.kevoree.tools.arduino.framework.AbstractPeriodicArduinoComponent;
+import org.kevoree.tools.arduino.framework.ArduinoGenerator;
 
 /**
  * Created by IntelliJ IDEA.
  * User: jed
  * Date: 21/12/11
  * Time: 13:37
- * To change this template use File | Settings | File Templates.
  */
 @Library(name = "Arduino")
 @ComponentType
@@ -19,35 +21,30 @@ import org.kevoree.framework.AbstractComponentType;
         @ProvidedPort(name = "input", type = PortType.MESSAGE)
 })
 
-public class PWMServo extends AbstractComponentType {
+public class PWMServo extends AbstractArduinoComponent {
 
-    @Start
-    @Stop
-    public void dummy() {
+
+    @Override
+    public void generateHeader(ArduinoGenerator gen) {
+        getGenerator().appendNativeStatement("#include <Servo.h>  \n");
     }
 
-    @Generate("header")
-    public void generateHeader(StringBuffer context) {
-        context.append("#include <Servo.h>  \n");
+    @Override
+    public void generateClassHeader(ArduinoGenerator gen) {
+        getGenerator().appendNativeStatement("Servo myservo;\n");
+        getGenerator().appendNativeStatement("int pos; \n");
+        getGenerator().appendNativeStatement("pos=90; \n");
     }
 
-    @Generate("classheader")
-    public void generateClassHeader(StringBuffer context) {
-        context.append("Servo myservo;\n");
-        context.append("int pos; \n");
-         context.append("pos=90; \n");
-    }
-
-    @Generate("classinit")
-    public void generateClassInit(StringBuffer context) {
-        context.append("myservo.attach(pin); \n");
-        context.append("myservo.write(pos); \n");
+    @Override
+    public void generateInit(ArduinoGenerator gen) {
+        getGenerator().appendNativeStatement("myservo.attach(pin); \n");
+        getGenerator().appendNativeStatement("myservo.write(pos); \n");
     }
 
     @Port(name = "input")
     public void inputPort(Object o) {
-        StringBuffer context = (StringBuffer) o;
-        context.append("pos = atoi(msg->value); \n");
-        context.append("myservo.write(pos); \n");
+        getGenerator().appendNativeStatement("pos = atoi(msg->value); \n");
+        getGenerator().appendNativeStatement("myservo.write(pos); \n");
     }
 }

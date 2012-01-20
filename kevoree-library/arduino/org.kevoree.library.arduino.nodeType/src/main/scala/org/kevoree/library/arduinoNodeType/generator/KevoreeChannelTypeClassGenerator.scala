@@ -14,7 +14,7 @@ import scala.collection.JavaConversions._
 import org.kevoree.annotation.{Generate => KGenerate}
 import org.slf4j.{LoggerFactory, Logger}
 
-trait KevoreeChannelTypeClassGenerator extends KevoreeCAbstractGenerator with KevoreeReflectiveHelper {
+trait KevoreeChannelTypeClassGenerator extends KevoreeCAbstractGenerator with KevoreeReflectiveHelper with KevoreeInstanceGenerator {
   private val logger: Logger = LoggerFactory.getLogger(this.getClass)
 
   def generateChannelType(ct:ChannelType,bundleContext : BundleContext,nodeName:String) = {
@@ -29,20 +29,7 @@ trait KevoreeChannelTypeClassGenerator extends KevoreeCAbstractGenerator with Ke
     context b "kbindings * bindings;"
      
     //GENERATE DICTIONARY VALUES POINTERS
-    if(ct.getDictionaryType.isDefined){
-      ct.getDictionaryType.get.getAttributes.foreach{ attribute =>
-        if(attribute.getDatatype.startsWith("enum=")){
-          val enumValues: String = attribute.getDatatype.replaceFirst("enum=", "")
-          var maxLenght : Int = 0
-          enumValues.split(",").foreach {
-            value => maxLenght = scala.math.max(maxLenght,value.size)
-          }
-          context b "char "+attribute.getName+"["+(maxLenght+1)+"];"
-        } else {
-          context b "char "+attribute.getName+"[20];"
-        }
-      }
-    }
+    generateDic(ct)
 
     context b "void init(){" //GENERATE INIT METHOD
     context b "input = (QueueList<kmessage>*) malloc(sizeof(QueueList<kmessage>));"
@@ -58,18 +45,8 @@ trait KevoreeChannelTypeClassGenerator extends KevoreeCAbstractGenerator with Ke
     
     context b "void destroy(){" //GENERATE DESTROY METHOD
     //USER DESTROY
-    clazz.getMethods.foreach {method =>
-      method.getAnnotations.foreach {annotation =>
-        if (annotation.annotationType.toString.contains("org.kevoree.annotation.Generate")) {
-          val generateAnnotation = annotation.asInstanceOf[KGenerate]
-          if(generateAnnotation.value == "classdestroy"){
-            val localContext = new StringBuffer
-            method.invoke(instance, localContext)
-            context b localContext.toString
-          }
-        }
-      }
-    }
+    recCallAnnotedMethod(instance,"classdestroy",clazz,context)
+
     context b "free(input);"
     context b "bindings->destroy();"
     context b "free(bindings);"
@@ -84,19 +61,9 @@ trait KevoreeChannelTypeClassGenerator extends KevoreeCAbstractGenerator with Ke
     context b ct.getName+"::dispatch(msg);"
     context b "}"
     // CALL PERIODIC CODE
-    
-    clazz.getMethods.foreach {method =>
-      method.getAnnotations.foreach {annotation =>
-        if (annotation.annotationType.toString.contains("org.kevoree.annotation.Generate")) {
-          val generateAnnotation = annotation.asInstanceOf[KGenerate]
-          if(generateAnnotation.value == "periodic"){
-            val localContext = new StringBuffer
-            method.invoke(instance, localContext)
-            context b localContext.toString
-          }
-        }
-      }
-    }
+
+    recCallAnnotedMethod(instance,"periodic",clazz,context)
+
   
     context b "}" //END RUN METHOD
 

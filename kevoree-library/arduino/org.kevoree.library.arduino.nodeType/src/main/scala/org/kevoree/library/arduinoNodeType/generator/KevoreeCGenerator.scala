@@ -7,10 +7,10 @@ package org.kevoree.library.arduinoNodeType.generator
 
 import org.kevoreeAdaptation.AdaptationModel
 import org.osgi.framework.BundleContext
-import scala.collection.JavaConversions._
 import org.kevoree.library.arduinoNodeType.{PMemory, ArduinoBoardType}
 import org.kevoree._
 import kompare.JavaSePrimitive
+import tools.arduino.framework.impl.DefaultArduinoGenerator
 
 class KevoreeCGenerator
   extends KevoreeComponentTypeClassGenerator
@@ -40,21 +40,20 @@ class KevoreeCGenerator
       ctype => ktypes = ktypes ++ List(ctype.getRef.asInstanceOf[TypeDefinition])
     }
 
-    generateKcFrameworkHeaders(ktypes, ArduinoBoardType.getFromTypeName(boardName),pmax)
+    generateKcFrameworkHeaders(ktypes, ArduinoBoardType.getFromTypeName(boardName), pmax)
     generateKcConstMethods(ktypes);
     generateKcFramework
 
     componentTypes.foreach {
       componentTypeAdaptation =>
+        context.getGenerator.setTypeModel(componentTypeAdaptation.getRef.asInstanceOf[ComponentType])
         generateComponentType(componentTypeAdaptation.getRef.asInstanceOf[ComponentType], bundleContext, nodeName)
     }
     channelTypes.foreach {
       channelTypeAdaptation =>
+        context.getGenerator.setTypeModel(channelTypeAdaptation.getRef.asInstanceOf[ChannelType])
         generateChannelType(channelTypeAdaptation.getRef.asInstanceOf[ChannelType], bundleContext, nodeName)
     }
-
-
-
 
 
     generateDestroyInstanceMethod(ktypes)

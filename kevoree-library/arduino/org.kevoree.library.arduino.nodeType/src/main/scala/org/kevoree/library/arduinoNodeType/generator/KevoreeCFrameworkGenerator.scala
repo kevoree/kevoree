@@ -18,6 +18,7 @@ import templates.SimpleCopyTemplate
 import util.Random
 import org.kevoree.library.arduinoNodeType.ArduinoBoardType._
 import org.kevoree.library.arduinoNodeType.ArduinoBoardType
+import org.kevoree.tools.arduino.framework.RawTypeHelper
 
 trait KevoreeCFrameworkGenerator extends KevoreeCAbstractGenerator {
 
@@ -212,7 +213,17 @@ trait KevoreeCFrameworkGenerator extends KevoreeCAbstractGenerator {
           ktype.getDictionaryType.get.getAttributes.foreach {
             attribute =>
               context b "case " + propsCodeMap.get(attribute.getName).get + ":{"
-              context b "strcpy (instance->" + attribute.getName + ",val);"
+              RawTypeHelper.getArduinoType(attribute.getDatatype.replace("raw=","")) match {
+                case "long" => {
+                  context b "instance->" + attribute.getName + "=atol(val);"
+                }
+                case "int" => {
+                  context b "instance->" + attribute.getName + "=atoi(val);"
+                }
+                case _ => {
+                  context b "strcpy (instance->" + attribute.getName + ",val);"
+                }
+              }
               context b "break;}"
           }
           context b "}"
@@ -392,9 +403,9 @@ trait KevoreeCFrameworkGenerator extends KevoreeCAbstractGenerator {
 
     context b "char instNameBuf[MAX_INST_ID];"
     context b "char instNameBuf2[MAX_INST_ID];"
-    context b "   unsigned long previousBootTime;"
+    context b "unsigned long previousBootTime;"
     context b "void setup(){"
-    context b "Serial.begin(9600);" //TO REMOVE DEBUG ONLY
+    context b "Serial.begin(115200);" //TO REMOVE DEBUG ONLY
 
     context b "initPMEM();"
 

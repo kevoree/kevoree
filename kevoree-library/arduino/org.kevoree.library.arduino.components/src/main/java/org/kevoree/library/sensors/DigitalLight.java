@@ -2,6 +2,8 @@ package org.kevoree.library.sensors;
 
 import org.kevoree.annotation.*;
 import org.kevoree.framework.AbstractComponentType;
+import org.kevoree.tools.arduino.framework.AbstractArduinoComponent;
+import org.kevoree.tools.arduino.framework.ArduinoGenerator;
 
 @Library(name = "Arduino")
 @ComponentType
@@ -13,39 +15,33 @@ import org.kevoree.framework.AbstractComponentType;
     @ProvidedPort(name = "off", type = PortType.MESSAGE),
     @ProvidedPort(name = "toggle", type = PortType.MESSAGE)
 })
-public class DigitalLight extends AbstractComponentType {
+public class DigitalLight extends AbstractArduinoComponent {
 
-    @Generate("classheader")
-    public void generatePeriodic(StringBuffer context) {
-        context.append("boolean state ;\n");
+
+    @Override
+    public void generateClassHeader(ArduinoGenerator gen) {
+        gen.appendNativeStatement("boolean state ;");
     }
 
-    @Start
-    @Stop
-    public void dummy() {
-    }
 
     @Port(name = "on")
-    public void triggerOn(Object o) {
-        StringBuffer context = (StringBuffer) o;
-        context.append("pinMode(atoi(pin), OUTPUT);");
-        context.append("digitalWrite(atoi(pin), HIGH);\n");
+    public void triggerOn(Object gen) {
+        getGenerator().appendNativeStatement("pinMode(atoi(pin), OUTPUT);");
+        getGenerator().appendNativeStatement("digitalWrite(atoi(pin), HIGH);\n");
     }
 
     @Port(name = "off")
-    public void triggerOff(Object o) {
-        StringBuffer context = (StringBuffer) o;
-        context.append("pinMode(atoi(pin), OUTPUT);");
-        context.append("digitalWrite(atoi(pin), LOW);\n");
+    public void triggerOff(Object gen) {
+        getGenerator().appendNativeStatement("pinMode(atoi(pin), OUTPUT);");
+        getGenerator().appendNativeStatement("digitalWrite(atoi(pin), LOW);\n");
     }
 
     @Port(name = "toggle")
-    public void triggerToggle(Object o) {
-        StringBuffer context = (StringBuffer) o;
-        context.append("int newState = 0;\n");
-        context.append("if(state){ newState = LOW; } else { newState=HIGH; }");
-        context.append("state = ! state; ");
-        context.append("pinMode(atoi(pin), OUTPUT);");
-        context.append("digitalWrite(atoi(pin), newState);\n");
+    public void triggerToggle(Object gen) {
+        getGenerator().appendNativeStatement("int newState = 0;\n");
+        getGenerator().appendNativeStatement("if(state){ newState = LOW; } else { newState=HIGH; }");
+        getGenerator().appendNativeStatement("state = ! state; ");
+        getGenerator().appendNativeStatement("pinMode(atoi(pin), OUTPUT);");
+        getGenerator().appendNativeStatement("digitalWrite(atoi(pin), newState);\n");
     }
 }

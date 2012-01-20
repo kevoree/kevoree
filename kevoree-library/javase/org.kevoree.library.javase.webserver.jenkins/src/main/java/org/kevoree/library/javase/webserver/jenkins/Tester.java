@@ -21,41 +21,36 @@ public class Tester {
 
     public static void main(String[] args) throws Exception {
         System.out.println("Duke :-)");
+        System.setProperty("HUDSON_HOME","/Users/duke/Documents/dev/sandbox/hudsonhome");
 
-        Thread serverThread = new Thread(){
-            @Override
-            public void run() {
-
-            }
-        };
-        
         Server server = new Server(8080);
         WebAppContext context = new WebAppContext();
-        ResourceHandler resourceHandler = new ResourceHandler();
-        resourceHandler.setBaseResource(Resource.newClassPathResource("/"));
-        context.setBaseResource(Resource.newClassPathResource("/"));
-
-       // context.setDescriptor("/Users/duke/Documents/dev/dukeboard/kevoree/kevoree-library/javase/org.kevoree.library.javase.webserver.jenkins/target/warcontent/web.xml");
         context.setContextPath("/");
-        context.setParentLoaderPriority(false);
+        //context.setParentLoaderPriority(false);
+
+
+
+        context.getAttributes().setAttribute("HUDSON_HOME", "/Users/duke/Documents/dev/sandbox/hudsonhome");
+
+
+        context.setWar("/Users/duke/Documents/dev/dukeboard/kevoree/kevoree-library/javase/org.kevoree.library.javase.webserver.jenkins/target/jenkins.war");
+
+
+
+
+
         server.setHandler(context);
         HashLoginService dummyLoginService = new HashLoginService("KEVOREE-SECURITY-REALM");
         context.getSecurityHandler().setLoginService(dummyLoginService);
         server.start();
-        //server.join();
+        server.join();
         //OSGiWebappClassLoader
 
 
-        org.eclipse.jetty.osgi.boot.internal.webapp.OSGiWebappClassLoader webappClassLoader = new org.eclipse.jetty.osgi.boot.internal.webapp.OSGiWebappClassLoader(org.eclipse.jetty.osgi.boot.JettyBootstrapActivator.class.getClassLoader(), context, null, new BundleClassLoaderHelper() {
-            @Override
-            public ClassLoader getBundleClassLoader(Bundle bundle) {
-                return getClass().getClassLoader();
-            }
-        });
-        context.setClassLoader(webappClassLoader);
-        webappClassLoader.setWebappContext(context);
+
         
-        server.stop();server.destroy();serverThread.stop();
+        server.stop();
+        server.destroy();
     }
 
 }
