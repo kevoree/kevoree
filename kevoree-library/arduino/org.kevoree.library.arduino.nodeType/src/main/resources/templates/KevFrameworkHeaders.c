@@ -11,6 +11,9 @@
      #define kprintln(x) KevSerialPrintln_P(PSTR(x)) 
      #define KNOINLINE __attribute__((noinline))
      #define BUFFERSIZE 100
+
+     #define MAX_UNTYPED_DICTIONARY 10
+
      int serialIndex = 0;
      char inBytes[BUFFERSIZE];
      const char startBAdminChar = '{';

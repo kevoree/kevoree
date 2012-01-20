@@ -53,6 +53,8 @@ public class ArduinoNode extends AbstractNodeType {
     private KevoreeKompareBean kompareBean = null;
     private BaseDeployOSGi deployBean = null;
 
+    protected Boolean forceUpdate = false;
+    
     @Start
     public void startNode() {
         kompareBean = new KevoreeKompareBean();
@@ -218,7 +220,7 @@ public class ArduinoNode extends AbstractNodeType {
                 rootModel = (ContainerRoot) ((TypeDefinition) p.getRef()).eContainer();
             }
         }
-        if (typeAdaptationFound) {
+        if (typeAdaptationFound || forceUpdate) {
             KevoreeKompareBean kompare = new KevoreeKompareBean();
 
             ModelCloner cloner = new ModelCloner();

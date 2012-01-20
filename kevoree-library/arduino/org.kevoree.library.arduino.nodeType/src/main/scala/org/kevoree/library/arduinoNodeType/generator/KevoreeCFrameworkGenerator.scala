@@ -221,7 +221,9 @@ trait KevoreeCFrameworkGenerator extends KevoreeCAbstractGenerator {
                   context b "instance->" + attribute.getName + "=atoi(val);"
                 }
                 case _ => {
+                  context b "if(strlen(val)<MAX_UNTYPED_DICTIONARY){"
                   context b "strcpy (instance->" + attribute.getName + ",val);"
+                  context b "}"
                 }
               }
               context b "break;}"

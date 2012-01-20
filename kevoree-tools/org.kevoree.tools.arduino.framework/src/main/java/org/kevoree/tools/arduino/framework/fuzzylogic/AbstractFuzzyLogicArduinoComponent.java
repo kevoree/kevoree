@@ -15,7 +15,10 @@ package org.kevoree.tools.arduino.framework.fuzzylogic;
 
 import org.kevoree.annotation.ComponentFragment;
 import org.kevoree.annotation.Port;
+import org.kevoree.framework.template.MicroTemplate;
 import org.kevoree.tools.arduino.framework.AbstractArduinoComponent;
+import org.kevoree.tools.arduino.framework.ArduinoGenerator;
+import org.kevoree.tools.arduino.framework.fuzzylogic.fuzzy.GeneratorHelper;
 
 /**
  * Created by IntelliJ IDEA.
@@ -26,9 +29,35 @@ import org.kevoree.tools.arduino.framework.AbstractArduinoComponent;
 @ComponentFragment
 public abstract class AbstractFuzzyLogicArduinoComponent extends AbstractArduinoComponent {
 
+    @Override
+    public void generateHeader(ArduinoGenerator gen) {
+        gen.appendNativeStatement(MicroTemplate.fromClassPath("fuzzylogic/ArduinoFuzzyLogic/ArduinoFuzzyLogicHeader.c",AbstractFuzzyLogicArduinoComponent.class));
+    }
+
+    @Override
+    public void generateClassHeader(ArduinoGenerator gen) {
+        DefaultFuzzyRulesContext def = new DefaultFuzzyRulesContext();
+        declareRules(def);
+
+        //GENERATE TEMP TAB
+        GeneratorHelper.generateClassVariables(gen,def.getNumberOfRules());
+
+
+        gen.appendNativeStatement(MicroTemplate.fromClassPath("fuzzylogic/ArduinoFuzzyLogic/ArduinoFuzzyLogicFramework.c",AbstractFuzzyLogicArduinoComponent.class));
+    }
+
+    //TODO UPDATE
+
+    private ArduinoGenerator lastUsed = null;
+
     @Port(name="*")
     public void portGeneration(Object o){
-        //TODO MAPPING
+        if(lastUsed != null && getGenerator() != lastUsed){
+            //TODO MAPPING & CODE GENRATION
+            
+            
+            lastUsed = getGenerator(); 
+        }
     }
 
     public abstract void declareRules(FuzzyRulesContext rulesContext);
