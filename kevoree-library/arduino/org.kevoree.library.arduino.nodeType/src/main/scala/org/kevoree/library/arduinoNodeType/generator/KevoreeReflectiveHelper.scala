@@ -15,7 +15,7 @@ import org.kevoree.annotation.{Generate => KGenerate}
 trait KevoreeReflectiveHelper {
   private val logger: Logger = LoggerFactory.getLogger(this.getClass)
 
-  def recCallAnnotedMethod(instance : Object,genVal : String, tclazz: Class[_],context : GeneratorContext, alreadyCall : List[String] = List()){
+  def recCallAnnotedMethod(instance : Object,genVal : String, tclazz: Class[_],context : GeneratorContext, alreadyCall : List[String] = List(), headers : Boolean = false){
     var alreadyCallLocal : List[String] = alreadyCall
     tclazz.getMethods.filterNot(method => alreadyCall.contains(method.getName)).foreach {
       method =>
@@ -25,7 +25,12 @@ trait KevoreeReflectiveHelper {
               val generateAnnotation = annotation.asInstanceOf[KGenerate]
               if (generateAnnotation.value == genVal) {
                 method.invoke(instance, context.getGenerator)
-                context b context.getGenerator.getContent
+                if(headers){
+                  context h context.getGenerator.getContent
+                } else {
+                  context b context.getGenerator.getContent
+                }
+
                 context.getGenerator.razGen()
 
                 alreadyCallLocal = alreadyCallLocal ++ List(method.getName)
@@ -35,7 +40,7 @@ trait KevoreeReflectiveHelper {
         }
     }
     if(tclazz.getSuperclass != null){
-      recCallAnnotedMethod(instance,genVal,tclazz.getSuperclass,context,alreadyCallLocal)
+      recCallAnnotedMethod(instance,genVal,tclazz.getSuperclass,context,alreadyCallLocal,headers)
     }
   }
 

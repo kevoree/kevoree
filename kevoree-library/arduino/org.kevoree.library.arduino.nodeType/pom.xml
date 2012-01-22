@@ -78,6 +78,11 @@
             <artifactId>org.kevoree.library.arduino.fuzzylogic</artifactId>
             <version>${kevoree.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-jdk14</artifactId>
+            <version>1.6.2</version>
+        </dependency>
 
         <!--
     <dependency>

@@ -39,7 +39,7 @@ trait KevoreeComponentTypeClassGenerator extends KevoreeCAbstractGenerator with 
     //INVOKE CLASS HEADER
     recCallAnnotedMethod(instance, "classheader", clazz, context)
     //INVOKE GLOABL HEADER
-    recCallAnnotedMethod(instance, "header", clazz, context)
+    recCallAnnotedMethod(instance, "header", clazz, context,headers=true)
 
     ct.getProvided.foreach {
       providedPort => //GENERATE PROVIDED PORT QUEUES
