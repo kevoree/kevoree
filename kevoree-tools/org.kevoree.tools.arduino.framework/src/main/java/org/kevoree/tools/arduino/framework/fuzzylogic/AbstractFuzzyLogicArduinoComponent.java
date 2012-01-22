@@ -31,6 +31,7 @@ public abstract class AbstractFuzzyLogicArduinoComponent extends AbstractArduino
 
     @Override
     public void generateHeader(ArduinoGenerator gen) {
+        System.out.println("Hi");
         gen.appendNativeStatement(MicroTemplate.fromClassPath("fuzzylogic/ArduinoFuzzyLogic/ArduinoFuzzyLogicHeader.c",AbstractFuzzyLogicArduinoComponent.class));
     }
 
