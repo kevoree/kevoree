@@ -11,14 +11,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#define MIN(A,B)       (A < B) ? A : B
-#define MAX(A,B)       (A > B) ? A : B
-
-void    fire_rule(unsigned char rule_index);
-void    control(float *, float *);
-void    fuzzify(unsigned char, float);
-float   get_membership(unsigned char, unsigned char, float);
-float   defuzzify(unsigned char, float *inputs);
 
 #ifdef DEBUG
 void displayRules(){
@@ -43,7 +35,6 @@ void displayRules(){
 			Serial.print("[");
 			Serial.print(in_term);
 			Serial.print("]");
-
 
 		}
 
@@ -99,20 +90,6 @@ void displayDomain()
 
 }
 #endif
-
-void updateInMemberShipFunction(int numDomain,int numterm,int numpoint,float newvalue)
-{
-
-	inMemberShipFunction[numDomain][numterm][numpoint] = newvalue;
-}
-
-
-
-void updateoutMemberShipFunction(int numDomain,int numterm,float newvalue)
-{
-
-	outMemberShipFunction[numDomain][numterm][0] = newvalue;
-}
 
 
 void control(float *crisp_inputs, float *crisp_outputs)

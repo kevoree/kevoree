@@ -16,6 +16,10 @@
 #define NB_TERMS 4
 #define DEBUG
 
+#define MIN(A,B)       (A < B) ? A : B
+#define MAX(A,B)       (A > B) ? A : B
+
+
 typedef struct _Predicate {
     unsigned char domain;
     unsigned char term;

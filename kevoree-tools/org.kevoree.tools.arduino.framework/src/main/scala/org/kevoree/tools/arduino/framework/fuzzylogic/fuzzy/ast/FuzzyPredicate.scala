@@ -26,5 +26,15 @@ case class FuzzyPredicate(domain : String , term : String ) {
  // domain = domain.toLowerCase
  // term = term.toLowerCase
 
+  def getDomain: String = {
+    return domain
+  }
 
+  def getTerm: String = {
+    return term
+  }
+
+  override def toString: String = {
+    return " D=" + domain + " T=" + term
+  }
 }
