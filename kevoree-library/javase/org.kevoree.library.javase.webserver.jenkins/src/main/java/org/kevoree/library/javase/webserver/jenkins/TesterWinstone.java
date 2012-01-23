@@ -14,6 +14,9 @@ import java.util.Map;
 public class TesterWinstone {
 
     public static void main(String[] args) throws Exception {
+        
+        System.out.println(TesterWinstone.class.getClassLoader().getParent());
+        
         Map config = new HashMap();
         config.put("ajp13Port","-1");
         config.put("warfile", "/Users/duke/Documents/dev/dukeboard/kevoree/kevoree-library/javase/org.kevoree.library.javase.webserver.jenkins/target/jenkins.war");
