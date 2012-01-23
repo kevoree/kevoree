@@ -53,6 +53,11 @@ public class ArduinoNode extends AbstractNodeType {
     private KevoreeKompareBean kompareBean = null;
     private BaseDeployOSGi deployBean = null;
 
+    protected Boolean forceUpdate = false;
+    public void setForceUpdate(Boolean f){
+        forceUpdate = f;
+    }
+    
     @Start
     public void startNode() {
         kompareBean = new KevoreeKompareBean();
@@ -153,9 +158,13 @@ public class ArduinoNode extends AbstractNodeType {
             }
             lastVersionModel.removeAllMBindings();
             lastVersionModel.removeAllGroups();
+
         }
 
         AdaptationModel kompareModel = kompare.kompare(lastVersionModel, root, targetNodeName);
+        
+        //System.out.println(kompareModel.getAdaptationsForJ().size());
+        
         progress.endTask();
 
 
@@ -208,7 +217,6 @@ public class ArduinoNode extends AbstractNodeType {
         boolean typeAdaptationFound = false;
         ContainerRoot rootModel = null;
         for (AdaptationPrimitive p : modelIn.getAdaptationsForJ()) {
-
             Boolean addType = p.getPrimitiveType().getName().equals(JavaSePrimitive.AddType());
             Boolean removeType = p.getPrimitiveType().getName().equals(JavaSePrimitive.RemoveType());
             Boolean updateType = p.getPrimitiveType().getName().equals(JavaSePrimitive.UpdateType());
@@ -218,7 +226,10 @@ public class ArduinoNode extends AbstractNodeType {
                 rootModel = (ContainerRoot) ((TypeDefinition) p.getRef()).eContainer();
             }
         }
-        if (typeAdaptationFound) {
+        if (typeAdaptationFound || forceUpdate) {
+            
+
+            
             KevoreeKompareBean kompare = new KevoreeKompareBean();
 
             ModelCloner cloner = new ModelCloner();
@@ -234,7 +245,6 @@ public class ArduinoNode extends AbstractNodeType {
 
             //Must compute a dif from scratch model
 
-
             logger.debug("Type adaptation detected -> full firmware update needed !");
             //Step : Type Bundle preparation step
 
@@ -248,6 +258,8 @@ public class ArduinoNode extends AbstractNodeType {
             }
             //Step : Generate firmware code to output path
             KevoreeCGenerator generator = new KevoreeCGenerator();
+
+
 
             PMemory pm = PMemory.EEPROM;
             if (this.getDictionary().get("pmem") != null) {

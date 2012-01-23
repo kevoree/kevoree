@@ -34,7 +34,7 @@ trait KevoreeInstanceGenerator extends KevoreeCAbstractGenerator {
                   context b (RawTypeHelper.getArduinoType(rawType)+" "+attribute.getName+";")
                 }
                 case _ => {
-                  context b "char " + attribute.getName + "[20];"
+                  context b "char " + attribute.getName + "[MAX_UNTYPED_DICTIONARY];"
                 }
               }
           }

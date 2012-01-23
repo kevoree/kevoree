@@ -17,7 +17,6 @@ public class PushButton extends AbstractPeriodicArduinoComponent {
 
     @Override
     public void generateClassHeader(ArduinoGenerator gen) {
-        System.out.println("I'mCalled !!");
         getGenerator().appendNativeStatement("int buttonState;");
     }
 

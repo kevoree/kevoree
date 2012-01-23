@@ -1,6 +1,5 @@
-
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.kevoree.tools</groupId>
     <artifactId>org.kevoree.tools.root</artifactId>
@@ -8,8 +7,8 @@
     <name>Kevoree :: Tools :: Root</name>
     <url>https://github.com/dukeboard/kevoree</url>
     <version>1.5.1-SNAPSHOT</version>
-    
-    
+
+
     <dependencies>
         <dependency>
             <groupId>junit</groupId>
@@ -112,7 +111,7 @@
                 </configuration>
             </plugin>
 
-            
+
         </plugins>
     </build>
 
@@ -126,10 +125,10 @@
             <id>kevoree-libs-release-local</id>
             <url>http://maven.kevoree.org/release</url>
         </repository>
-                <repository>
+        <repository>
             <id>kevoree-snapshots</id>
             <url>http://maven.kevoree.org/snapshots</url>
-        </repository> 
+        </repository>
     </repositories>
 
     <pluginRepositories>
@@ -145,8 +144,8 @@
         <pluginRepository>
             <id>plugin.kevoree-snapshots</id>
             <url>http://maven.kevoree.org/snapshots</url>
-        </pluginRepository> 
-        
+        </pluginRepository>
+
     </pluginRepositories>
 
     <modules>
@@ -168,19 +167,19 @@
         <module>../org.kevoree.tools.ui.editor</module>
 
 
-
         <module>../org.kevoree.tools.merger.mavenplugin</module>
         <module>../org.kevoree.tools.annotation.mavenplugin</module>
         <module>../org.kevoree.tools.marShell</module>
         <module>../org.kevoree.tools.marShellTransform</module>
         <module>../org.kevoree.tools.marShellGUI</module>
-      <!--  <module>../org.kevoree.tools.marShellRemoteGUI</module>    -->
+        <!--  <module>../org.kevoree.tools.marShellRemoteGUI</module>    -->
         <module>../org.kevoree.tools.dpa</module>
         <module>../org.kevoree.tools.model2code</module>
         <module>../org.kevoree.tools.war.wrapperplugin</module>
+        <module>../org.kevoree.tools.jar.wrapperplugin</module>
         <module>../org.kevoree.tools.ui.editor.standalone</module>
     </modules>
-    
+
     <properties>
         <scala.version>2.9.1</scala.version>
         <bundle.vendor>IRISA/INRIA</bundle.vendor>
@@ -188,8 +187,8 @@
         <slf4j.version>1.6.4</slf4j.version>
         <kevoree.version>${project.version}</kevoree.version>
     </properties>
-    
-   
+
+
     <distributionManagement>
         <repository>
             <id>maven2.kevoree.release</id>

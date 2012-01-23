@@ -68,11 +68,21 @@
         </dependency>
 
         <!-- Temp dependency -->
-      <!--  <dependency>
+        <dependency>
             <groupId>org.kevoree.library.arduino</groupId>
-            <artifactId>org.kevoree.library.arduino.components</artifactId>
+            <artifactId>org.kevoree.library.arduino.groupType</artifactId>
             <version>${kevoree.version}</version>
-        </dependency>  -->
+        </dependency>
+        <dependency>
+            <groupId>org.kevoree.library.arduino</groupId>
+            <artifactId>org.kevoree.library.arduino.fuzzylogic</artifactId>
+            <version>${kevoree.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-jdk14</artifactId>
+            <version>1.6.2</version>
+        </dependency>
 
         <!--
     <dependency>
