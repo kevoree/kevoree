@@ -25,6 +25,11 @@
             <artifactId>org.kevoree.tools.aether.framework</artifactId>
             <version>${kevoree.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.kevoree.library.arduino</groupId>
+            <artifactId>org.kevoree.library.arduino.groupType</artifactId>
+            <version>1.5.1-SNAPSHOT</version>
+        </dependency>
     </dependencies>
 
     <build>

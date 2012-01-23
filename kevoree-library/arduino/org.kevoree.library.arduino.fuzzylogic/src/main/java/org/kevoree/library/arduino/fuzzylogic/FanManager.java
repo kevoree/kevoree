@@ -22,7 +22,7 @@ import org.kevoree.tools.arduino.framework.fuzzylogic.FuzzyRulesContext;
 })
 @DictionaryType({
         @DictionaryAttribute(name = "temp_cold", defaultValue = "-10,-10,-5,-5"),
-        @DictionaryAttribute(name = "temp_warn", defaultValue = "0,11,17,25"),
+        @DictionaryAttribute(name = "temp_warm", defaultValue = "0,11,17,25"),
         @DictionaryAttribute(name = "temp_hot", defaultValue = "24,24,28,30"),
 
         @DictionaryAttribute(name = "fan_stop",defaultValue = "0"),
@@ -34,7 +34,6 @@ public class FanManager extends AbstractFuzzyLogicArduinoComponent {
     @Override
     public void declareRules(FuzzyRulesContext rulesContext) {
         rulesContext.addRule("IF temp IS cold THEN fan IS stop;");
-        rulesContext.addRule("IF temp IS warm THEN fan IS slow;");
         rulesContext.addRule("IF temp IS hot THEN fan IS fast;");
     }
 

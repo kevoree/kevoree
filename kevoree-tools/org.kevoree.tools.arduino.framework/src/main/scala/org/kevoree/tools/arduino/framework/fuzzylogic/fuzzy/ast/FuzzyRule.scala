@@ -23,4 +23,13 @@ package org.kevoree.tools.arduino.framework.fuzzylogic.fuzzy.ast
 
 case class FuzzyRule(antecedent : java.util.List[FuzzyPredicate] ,outcome : java.util.List[FuzzyPredicate] ) {
 
+
+  def getAntecedent(): java.util.List[FuzzyPredicate] = {
+    this.antecedent
+  }
+  def getoutcome() : java.util.List[FuzzyPredicate] = {
+    this.outcome
+  }
+
+
 }
