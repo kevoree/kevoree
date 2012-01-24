@@ -32,8 +32,7 @@ class RootService(id: String, group: RestGroup) extends Actor with FileServer {
       responder.complete(response("Unknown resource!", 404))
 
     case RequestContext(HttpRequest(HttpMethods.GET, "/model/current", _, _, _), _, responder) => {
-      val modelSerialized = KevoreeXmiHelper.saveToString(group.getModelService.getLastModel, false)
-      responder.complete(response(modelSerialized))
+      responder.complete(response(group.getModel))
     }
 
     case RequestContext(HttpRequest(HttpMethods.GET, url, _, _, _), _, responder) if(url.startsWith("/provisioning")) => {
