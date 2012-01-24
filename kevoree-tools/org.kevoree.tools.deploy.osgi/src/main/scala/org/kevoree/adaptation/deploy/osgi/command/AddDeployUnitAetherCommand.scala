@@ -35,8 +35,8 @@ case class AddDeployUnitAetherCommand(deployUnit: DeployUnit, update: Boolean = 
   var random = new Random
   var tempPreviousFile: String = null
   var isBackup = false
-  
-  var lastExecutionBundle : Option[org.osgi.framework.Bundle] = null
+
+  var lastExecutionBundle: Option[org.osgi.framework.Bundle] = null
 
   def execute(): Boolean = {
     logger.debug("CMD ADD DEPLOY UNIT EXECUTION ");
@@ -51,15 +51,15 @@ case class AddDeployUnitAetherCommand(deployUnit: DeployUnit, update: Boolean = 
         val destFile = File.createTempFile(random.nextInt() + "", ".jar")
 
         val jarFile = FileNIOHelper.resolveBundleJar(lastExecutionBundle.get, new File(System.getProperty("osgi.cache")));
-        if(jarFile != null){
-          logger.debug("Saving cache file for bundle id {} with url {}",lastExecutionBundle.get.getBundleId,jarFile.getAbsoluteFile);
+        if (jarFile != null) {
+          logger.debug("Saving cache file for bundle id {} with url {}", lastExecutionBundle.get.getBundleId, jarFile.getAbsoluteFile);
           val jarStream = new FileInputStream(jarFile);
           FileNIOHelper.copyFile(jarStream, destFile)
           jarStream.close();
           tempPreviousFile = destFile.getAbsolutePath
           isBackup = true
         } else {
-          logger.warn("Caching bundle fail {} rollback could fail ",lastExecutionBundle.get.getSymbolicName)
+          logger.warn("Caching bundle fail {} rollback could fail ", lastExecutionBundle.get.getSymbolicName)
         }
 
         logger.debug("Update Deploy Unit detected , force update for bundleID " + lastExecutionBundle.get.getBundleId)
@@ -70,7 +70,7 @@ case class AddDeployUnitAetherCommand(deployUnit: DeployUnit, update: Boolean = 
       //FOR DEPLOY UNIT DO NOT USE ONLY NAME
       KevoreeDeployManager.addMapping(KevoreeOSGiBundle(CommandHelper.buildKEY(deployUnit), deployUnit.getClass.getName, lastExecutionBundle.get.getBundleId))
       lastExecutionBundle.get.start()
-    //  mustBeStarted = true
+      //  mustBeStarted = true
 
       true
     } catch {
@@ -124,26 +124,28 @@ case class AddDeployUnitAetherCommand(deployUnit: DeployUnit, update: Boolean = 
   }
 
   def undo() {
-    lastExecutionBundle match {
-      case Some(bundle) => {
-        //UPDATE CASE
-        if (isBackup) {
-          val inp = new FileInputStream(new File(tempPreviousFile))
-          bundle.update(inp)
-          inp.close()
-        } else {
-          bundle.stop()
-          bundle.uninstall()
-          (KevoreeDeployManager.bundleMapping.filter(map => map.bundleId == bundle.getBundleId).toList ++ List()).foreach {
-            map =>
-              KevoreeDeployManager.removeMapping(map) // = ctx.bundleMapping.filter(mb => mb != map)
+    if (lastExecutionBundle != null) {
+      lastExecutionBundle match {
+        case Some(bundle) => {
+          //UPDATE CASE
+          if (isBackup) {
+            val inp = new FileInputStream(new File(tempPreviousFile))
+            bundle.update(inp)
+            inp.close()
+          } else {
+            bundle.stop()
+            bundle.uninstall()
+            (KevoreeDeployManager.bundleMapping.filter(map => map.bundleId == bundle.getBundleId).toList ++ List()).foreach {
+              map =>
+                KevoreeDeployManager.removeMapping(map) // = ctx.bundleMapping.filter(mb => mb != map)
+            }
           }
+          val srPackageAdmin = KevoreeDeployManager.getBundleContext.getServiceReference(classOf[PackageAdmin].getName)
+          val padmin: PackageAdmin = KevoreeDeployManager.getBundleContext.getService(srPackageAdmin).asInstanceOf[PackageAdmin]
+          padmin.resolveBundles(Array(bundle))
         }
-        val srPackageAdmin = KevoreeDeployManager.getBundleContext.getServiceReference(classOf[PackageAdmin].getName)
-        val padmin: PackageAdmin = KevoreeDeployManager.getBundleContext.getService(srPackageAdmin).asInstanceOf[PackageAdmin]
-        padmin.resolveBundles(Array(bundle))
+        case None => //NOTHING CAN BE DOING HERE
       }
-      case None => //NOTHING CAN BE DOING HERE
     }
   }
 

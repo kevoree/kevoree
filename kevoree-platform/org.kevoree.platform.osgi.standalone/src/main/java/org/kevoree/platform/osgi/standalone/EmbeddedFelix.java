@@ -92,6 +92,7 @@ public class EmbeddedFelix {
 
         configProps.put(Constants.FRAMEWORK_STORAGE_CLEAN, Constants.FRAMEWORK_STORAGE_CLEAN_ONFIRSTINIT);
         configProps.put(FelixConstants.SYSTEMBUNDLE_ACTIVATORS_PROP, EmbeddedActivators.getActivators());
+
         configProps.put("felix.cache.locking","false");
 
 

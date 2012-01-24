@@ -1,5 +1,5 @@
 <component name="libraryTable">
-  <library name="Maven: org.kevoree.extra:org.kevoree.extra.esper:4.1.0">
+  <library name="Maven: org.kevoree.extra:org.kevoree.extra.esper:bundle:4.1.0">
     <CLASSES>
       <root url="jar://$MAVEN_REPOSITORY$/org/kevoree/extra/org.kevoree.extra.esper/4.1.0/org.kevoree.extra.esper-4.1.0.jar!/" />
     </CLASSES>
