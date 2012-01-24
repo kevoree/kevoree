@@ -21,7 +21,7 @@ import java.awt.event.{ActionEvent, ActionListener}
 import com.explodingpixels.macwidgets.plaf.{HudLabelUI, HudComboBoxUI}
 import javax.swing._
 import org.kevoree.tools.ui.editor.form._
-import org.kevoree.{TypeDefinition, ComponentType}
+import org.kevoree.ComponentType
 
 /**
  * User: ffouquet
@@ -29,23 +29,25 @@ import org.kevoree.{TypeDefinition, ComponentType}
  * Time: 13:12
  */
 
-class AddComponentTypeElementUICommand extends Command with PortForm{
+class AddComponentTypeElementUICommand extends Command with PortForm with DictionaryForm {
 
   def portLabel = "Port"
 
-  var kernel: KevoreeUIKernel = null
-  var componentType : ComponentType = null
+  def dictionaryLabel = "Dictionnary"
 
-  def setKernel(k: KevoreeUIKernel) {
+  var kernel: KevoreeUIKernel = null
+  var componentType: ComponentType = null
+
+  def setKernel (k: KevoreeUIKernel) {
     kernel = k
   }
 
-  def setComponentType(ct : ComponentType) {
+  def setComponentType (ct: ComponentType) {
     //logger.debug("ComponentType " + ct)
     this.componentType = ct
   }
 
-  def execute(p: AnyRef) {
+  def execute (p: AnyRef) {
     val newPopup = new HudWindow("Add new element to ComponenType")
     newPopup.getJDialog.setSize(400, 200)
     newPopup.getJDialog.setLocationRelativeTo(null)
@@ -55,6 +57,7 @@ class AddComponentTypeElementUICommand extends Command with PortForm{
 
     val newElementsModel = new DefaultComboBoxModel
     newElementsModel.addElement(portLabel)
+    newElementsModel.addElement(dictionaryLabel)
 
 
     if (p != null) {
@@ -72,10 +75,13 @@ class AddComponentTypeElementUICommand extends Command with PortForm{
 
     //LISTENER
     newElements.addActionListener(new ActionListener() {
-      override def actionPerformed(actionEvent: ActionEvent) {
+      override def actionPerformed (actionEvent: ActionEvent) {
         val uiElems = newElements.getSelectedItem match {
-          case portLabel => {
+          case label if (label == portLabel) => {
             createPortPanel(newPopup, kernel, componentType)
+          }
+          case label if (label == dictionaryLabel) => {
+            createDictionaryPanel(newPopup, kernel, componentType)
           }
           //case _@e => throw new UnsupportedOperationException("No popup implemeted for item:" + e); null
         }
@@ -95,8 +101,12 @@ class AddComponentTypeElementUICommand extends Command with PortForm{
     newPopup.getContentPane.add(layoutPopup)
     val uiElems = if (p != null) {
       p match {
-        case portLabel => createPortPanel(newPopup, kernel, componentType)
-       // case _ => createPortPanel(newPopup, kernel)
+        case label if (label == portLabel) => {
+          createPortPanel(newPopup, kernel, componentType)
+        }
+        case label if (label == dictionaryLabel) => {
+          createDictionaryPanel(newPopup, kernel, componentType)
+        }
       }
     } else {
       createPortPanel(newPopup, kernel, componentType)

@@ -37,18 +37,19 @@ trait DeployUnitForm {
 
     val groupName_lbl = new JLabel("GroupName", SwingConstants.TRAILING);
     groupName_lbl.setUI(new HudLabelUI());
-    //groupName_lbl.setOpaque(false);
+    groupName_lbl.setOpaque(false);
 
     val artifactName_lbl = new JLabel("UnitName", SwingConstants.TRAILING);
     artifactName_lbl.setUI(new HudLabelUI());
-    //artifactName_lbl.setOpaque(false);
+    artifactName_lbl.setOpaque(false);
 
     val version_lbl = new JLabel("Version", SwingConstants.TRAILING);
     version_lbl.setUI(new HudLabelUI());
-    //version_lbl.setOpaque(false);
+    version_lbl.setOpaque(false);
 
     val ok_lbl = new JLabel("  ")
     ok_lbl.setUI(new HudLabelUI())
+    ok_lbl.setOpaque(false)
 
     //GroupName
     val groupName_txt = new JTextField()
@@ -59,6 +60,7 @@ trait DeployUnitForm {
       }
       def focusLost(p1: FocusEvent) {}
     })
+    groupName_txt.setOpaque(false)
 
     groupName_lbl.setLabelFor(groupName_txt);
     layout.add(groupName_lbl)
@@ -74,6 +76,7 @@ trait DeployUnitForm {
       }
       def focusLost(p1: FocusEvent) {}
     })
+    artifactName_txt.setOpaque(false)
 
     artifactName_lbl.setLabelFor(artifactName_txt);
     layout.add(artifactName_lbl)
@@ -88,6 +91,7 @@ trait DeployUnitForm {
       }
       def focusLost(p1: FocusEvent) {}
     })
+    version_txt.setOpaque(false)
 
     version_lbl.setLabelFor(version_txt);
     layout.add(version_lbl)
@@ -129,6 +133,7 @@ trait DeployUnitForm {
         }
       }
     })
+    btAdd.setOpaque(false)
 
     val bottomLine = new JPanel(new FlowLayout(FlowLayout.CENTER))
     bottomLine.add(btAdd)

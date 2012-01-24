@@ -80,8 +80,9 @@ public abstract class AbstractFuzzyLogicArduinoComponent extends AbstractArduino
     }
 
     @Override
-    public void generateUpdatedParams(ArduinoGenerator gen) {
-        gen.appendNativeStatement(";;;");
+    public void generateUpdatedParams(ArduinoGenerator gen)
+    {
+        GeneratorHelper.generateUpdateDictonnary(gen);
     }
 
     public abstract void declareRules(FuzzyRulesContext rulesContext);
@@ -91,6 +92,9 @@ public abstract class AbstractFuzzyLogicArduinoComponent extends AbstractArduino
 
     public void generateRules(ArduinoGenerator gen,DefaultFuzzyRulesContext contextRules)
     {
+
+        // TODO create one id by ruleset
+        String uuid  = contextRules.getId().toString().substring(0,5);
 
         gen.appendNativeStatement("#define NUM_RULES "+contextRules.getNumberOfRules());
 
@@ -156,14 +160,12 @@ public abstract class AbstractFuzzyLogicArduinoComponent extends AbstractArduino
             }
         }
 
+        gen.appendNativeStatement("PROGMEM const unsigned char	num_rule_antecedent[NUM_RULES] = { "+_num_rule_antecedent.toString()+"};");
+        gen.appendNativeStatement("PROGMEM const unsigned char num_rule_coutcome[NUM_RULES] = { "+_num_rule_coutcome.toString()+"};")  ;
+        gen.appendNativeStatement("const struct _Rule rules[NUM_RULES] = {");
+        gen.appendNativeStatement(code_rules.toString());
+        gen.appendNativeStatement( "};");
 
-        HashMap<String,String>   replace = new      HashMap<String,String>();
-
-        replace.put("$num_rule_antecedent$", _num_rule_antecedent.toString());
-        replace.put("$num_rule_coutcome$", _num_rule_coutcome.toString());
-        replace.put(" $loadrules$", code_rules.toString());
-
-        gen.appendNativeStatement(MicroTemplate.fromClassPathReplace("fuzzylogic/ArduinoFuzzyLogic/ArduinoFuzzyLogicRules.c", AbstractFuzzyLogicArduinoComponent.class, replace));
     }
 
 }

@@ -31,7 +31,7 @@ class IdChecker extends CheckerService {
             violations = violations ++ List(checkViolation)
         }
     }
-    //CHANNEL STEP
+    //Group STEP
     model.getGroups.foreach {
       loopGroup =>
         model.getGroups.find(l => loopGroup.getName == l.getName && loopGroup != l) map {
@@ -42,7 +42,7 @@ class IdChecker extends CheckerService {
             violations = violations ++ List(checkViolation)
         }
     }
-    //CHANNEL STEP
+    //Node STEP
     model.getNodes.foreach {
       loopNode =>
         model.getNodes.find(l => loopNode.getName == l.getName && loopNode != l) map {
@@ -52,6 +52,7 @@ class IdChecker extends CheckerService {
             checkViolation.setTargetObjects(List(loopNode, duplicate))
             violations = violations ++ List(checkViolation)
         }
+        //Component STEP on each node
         loopNode.getComponents.foreach {
           loopComponent =>
             loopNode.getComponents.find(l => loopComponent.getName == l.getName && loopComponent != l) map {

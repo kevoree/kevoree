@@ -76,8 +76,7 @@ object KevoreePlatformHelper {
 
   }
 
-
-
+  @Deprecated
   def getProperty(model:ContainerRoot,targetNodeName : String,key:String) : String = {
     val filteredNodeNetwork = model.getNodeNetworks.filter(lNN=> lNN.getTarget.getName == targetNodeName)
     var bestResultProp = ""
