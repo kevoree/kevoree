@@ -32,58 +32,62 @@ public class KinectTester extends AbstractComponentType {
 	}
 
 
-	private int i = 0;
+	private boolean ok = true;
 
 	@Port(name = "motion")
 	public void motion (Object message) {
 		System.out.println("\n\n\n\n\t\t\t" + message + "\n\n\n");
 		/*if (i == 0) {
 		   i++;*/
-		new Thread() {
-			@Override
-			public void run () {
-				try {
-					// reconfigure using kev script to unbind all motor event sender on the kinect
-					// reconfigure using kev script to bind our motor port to the motor of the kinect
-					String[] previouslyBounds = KinectReconfigurationTester
-							.bind(getModelService().getLastModel(), getKevScriptEngineFactory(),
-									KinectTester.this.getName(),
-									getNodeName());
-					// send start_scan even
-					if (isPortBinded("start_scan")) {
-						getPortByName("start_scan", MessagePort.class).process("start_scan");
-					}
-					Thread.sleep(2000);
-					// starting to send motor event to scan from bottom to top
-					if (isPortBinded("motor")) {
-
-						StdKevoreeMessage msg = new StdKevoreeMessage();
-						msg.putValue("percent", new Integer(0));
-						getPortByName("motor", MessagePort.class).process(msg);
-
+		if (ok) {
+			ok = false;
+			new Thread() {
+				@Override
+				public void run () {
+					try {
+						// reconfigure using kev script to unbind all motor event sender on the kinect
+						// reconfigure using kev script to bind our motor port to the motor of the kinect
+						String[] previouslyBounds = KinectReconfigurationTester
+								.bind(getModelService().getLastModel(), getKevScriptEngineFactory(),
+										KinectTester.this.getName(),
+										getNodeName());
+						// send start_scan even
+						if (isPortBinded("start_scan")) {
+							getPortByName("start_scan", MessagePort.class).process("start_scan");
+						}
 						Thread.sleep(2000);
+						// starting to send motor event to scan from bottom to top
+						if (isPortBinded("motor")) {
 
-						msg = new StdKevoreeMessage();
-						msg.putValue("percent", new Integer(100));
-						getPortByName("motor", MessagePort.class).process(msg);
+							StdKevoreeMessage msg = new StdKevoreeMessage();
+							msg.putValue("percent", new Integer(0));
+							getPortByName("motor", MessagePort.class).process(msg);
 
-					}
-					Thread.sleep(3000);
-					// send stop_scan event
-					if (isPortBinded("stop_scan")) {
-						getPortByName("stop_scan", MessagePort.class).process("stop_scan");
-					}
-					// reconfigure using kev script to bind all motor event sender on the kinect
-					// reconfigure using kev script to unbind our motor port to the motor of the kinect
-					KinectReconfigurationTester
-							.unbind(getModelService().getLastModel(), getKevScriptEngineFactory(),
-									KinectTester.this.getName(), getNodeName(), previouslyBounds);
+							Thread.sleep(2000);
+
+							msg = new StdKevoreeMessage();
+							msg.putValue("percent", new Integer(100));
+							getPortByName("motor", MessagePort.class).process(msg);
+
+						}
+						Thread.sleep(3000);
+						// send stop_scan event
+						if (isPortBinded("stop_scan")) {
+							getPortByName("stop_scan", MessagePort.class).process("stop_scan");
+						}
+						// reconfigure using kev script to bind all motor event sender on the kinect
+						// reconfigure using kev script to unbind our motor port to the motor of the kinect
+						KinectReconfigurationTester
+								.unbind(getModelService().getLastModel(), getKevScriptEngineFactory(),
+										KinectTester.this.getName(), getNodeName(), previouslyBounds);
 //		}
 
-				} catch (Exception e) {
-					e.printStackTrace();
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+					ok = true;
 				}
-			}
-		}.start();
+			}.start();
+		}
 	}
 }
