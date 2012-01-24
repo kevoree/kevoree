@@ -74,7 +74,7 @@ public class RestGroup extends AbstractGroupType {
 
             int PORT = KevoreeFragmentPropertyHelper.getIntPropertyFromFragmentGroup(model, this.getName(), "port", targetNodeName);
 
-            System.out.println("port=>" + PORT);
+            logger.debug("port=>" + PORT);
 
             URL url = new URL("http://" + IP + ":" + PORT + "/model/current");
             URLConnection conn = url.openConnection();
@@ -150,5 +150,9 @@ public class RestGroup extends AbstractGroupType {
 
 	public void updateModel(ContainerRoot model) {
 		this.getModelService().updateModel(model);
+	}
+
+	public String getModel() {
+		return KevoreeXmiHelper.saveToString(this.getModelService().getLastModel(), false);
 	}
 }
