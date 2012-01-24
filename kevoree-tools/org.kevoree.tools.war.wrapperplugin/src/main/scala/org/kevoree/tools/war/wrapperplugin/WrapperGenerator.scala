@@ -1,3 +1,5 @@
+package org.kevoree.tools.war.wrapperplugin
+
 /**
  * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE, Version 3, 29 June 2007;
  * you may not use this file except in compliance with the License.
@@ -11,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kevoree.tools.war.wrapperplugin
 
 import java.io.{FileWriter, File}
 import org.apache.maven.project.MavenProject
@@ -22,13 +23,11 @@ import org.apache.maven.project.MavenProject
  * User: duke
  * Date: 18/12/11
  * Time: 20:00
- * To change this template use File | Settings | File Templates.
  */
 
 object WrapperGenerator {
 
   def generate(targetDir: File, project: MavenProject, paramNames: List[String],exclusions: Array[String]) {
-
 
     var name = project.getArtifactId
     if (name.contains(".")) {
@@ -45,6 +44,7 @@ object WrapperGenerator {
       fw.append("package " + project.getGroupId + "." + project.getArtifactId + ";\n")
       fw.append("import org.osgi.framework.Bundle;\n")
       fw.append("import org.kevoree.framework.*;\n")
+      fw.append("import winstone.Launcher;\n")
 
       fw.append("@org.kevoree.annotation.Library(name=\"JavaSE\")\n")
 
@@ -59,97 +59,38 @@ object WrapperGenerator {
 
       fw.append("public class " + nameUp + " extends AbstractComponentType {\n")
 
-      //  fw.append("private org.kevoree.library.javase.webserver.servlet.LocalServletRegistry servletRepository = null;\n")
-
-
-      fw.append("Thread serverThread = null;\n")
-      fw.append("org.eclipse.jetty.server.Server server=null;\n")
+      fw.append("Launcher launcher = null;\n")
 
       fw.append("@org.kevoree.annotation.Start\n")
       fw.append("public void start() {\n")
+      
+      fw.append("try {")
+      
       fw.append("final Bundle b = (Bundle)this.getDictionary().get(\"osgi.bundle\");")
+      fw.append("java.util.Map config = new java.util.HashMap();\n")
+      fw.append("config.put(\"ajp13Port\",\"-1\");\n")
 
-
-      /*
-      fw.append("servletRepository.loadWebXml(this.getClass().getClassLoader().getResourceAsStream(\"web.xml\"));\n")
-      */
-
-      fw.append("server = new org.eclipse.jetty.server.Server(Integer.parseInt(this.getDictionary().get(\"port\").toString()));\n")
-      fw.append(" serverThread = new Thread() {\n")
-      fw.append("  @Override\n")
-      fw.append("  public void run() {\n")
-
-      fw.append("org.eclipse.jetty.webapp.WebAppContext context = new org.eclipse.jetty.webapp.WebAppContext(){\n    @Override\n    public boolean isCopyWebDir() {return false;    }\n\n    @Override\n    public boolean isCopyWebInf() {return false;}\n};\n")
-      fw.append("try{\n")
-
+      val inclusion = (exclusions++List(".filtered")).mkString("\"","\",\"","\"")
       fw.append(" java.io.File jarFile = org.kevoree.framework.FileNIOHelper.resolveBundleJar(b, new java.io.File(System.getProperty(\"osgi.cache\")));\n")
       fw.append(" java.io.File tempWar = java.io.File.createTempFile(\"-t-\", \"-t-\");\n")
       fw.append(" tempWar.delete();\n")
       fw.append(" tempWar.mkdirs();\n")
-
-
-      val inclusion = (exclusions++List(".filtered")).mkString("\"","\",\"","\"")
-
       fw.append("  org.kevoree.framework.FileNIOHelper.unzipToTempDir(jarFile,tempWar,java.util.Arrays.asList("+inclusion+"),java.util.Arrays.asList(\".jar\"));\n")
-      fw.append(" context.setDescriptor(org.kevoree.framework.WebInfHelper.setWebInfParams(tempWar, getDictionary()).getAbsolutePath());\n")
+      fw.append(" org.kevoree.framework.WebInfHelper.setWebInfParams(tempWar, getDictionary()).getAbsolutePath();\n")
+      fw.append("config.put(\"webroot\", tempWar.getAbsolutePath());\n")
+      fw.append("Launcher.initLogger(config);\n")
+      fw.append("launcher = new Launcher(config);\n")
 
-
-      fw.append("org.eclipse.jetty.osgi.boot.internal.webapp.OSGiWebappClassLoader webappClassLoader = new org.eclipse.jetty.osgi.boot.internal.webapp.OSGiWebappClassLoader(org.eclipse.jetty.osgi.boot.JettyBootstrapActivator.class.getClassLoader(), context, (org.osgi.framework.Bundle)getDictionary().get(\"osgi.bundle\"), new org.eclipse.jetty.osgi.boot.utils.BundleClassLoaderHelper() {\n")
-      fw.append("    @Override\n")
-      fw.append("    public ClassLoader getBundleClassLoader( org.osgi.framework.Bundle bundle) {\n")
-      fw.append("        return " + nameUp + ".class.getClassLoader();\n")
-      fw.append("    }\n")
-      fw.append("});\n")
-      fw.append(" context.setClassLoader(webappClassLoader);\n")
-      fw.append("Thread.currentThread().setContextClassLoader(webappClassLoader);\n")
-      fw.append("context.setAttribute(org.eclipse.jetty.osgi.boot.OSGiWebappConstants.RFC66_OSGI_BUNDLE_CONTEXT, ((org.osgi.framework.Bundle)getDictionary().get(\"osgi.bundle\")).getBundleContext());\n")
-      fw.append(" webappClassLoader.setWebappContext(context);\n")
-
-
-      paramNames.foreach {
-        p =>
-          fw.append("context.getAttributes().setAttribute(\"" + p + "\",getDictionary().get(\"" + p + "\").toString());\n")
-      }
-
-
-
-
-      //fw.append("org.eclipse.jetty.server.handler.ResourceHandler resourceHandler = new org.eclipse.jetty.server.handler.ResourceHandler();\n")
-      //fw.append("resourceHandler.setBaseResource(org.eclipse.jetty.util.resource.Resource.newClassPathResource(\"/\"));\n")
-      //fw.append("context.setDescriptor(\"/Users/duke/Documents/dev/dukeboard/kevoree/kevoree-library/javase/org.kevoree.library.javase.webserver.jenkins/target/warcontent/web.xml\");")
-      fw.append("context.setContextPath(\"/\");\n")
-      fw.append("context.setParentLoaderPriority(false);\n")
-
-
-
-      fw.append("context.setExtractWAR(false);\n")
-      fw.append("context.setBaseResource(org.eclipse.jetty.util.resource.Resource.newResource(tempWar));\n")
-      fw.append("System.out.println(tempWar.getAbsolutePath());\n")
-
-
-      //  fw.append("context.setBaseResource(org.eclipse.jetty.util.resource.Resource.newClassPathResource(\"/\"));\n")
-      fw.append("org.eclipse.jetty.security.HashLoginService dummyLoginService = new org.eclipse.jetty.security.HashLoginService(\"KEVOREE-SECURITY-REALM\");\n")
-      fw.append("context.getSecurityHandler().setLoginService(dummyLoginService);\n")
-      fw.append("server.setHandler(context);\n")
-      fw.append(" server.start();server.join();\n")
-      fw.append("} catch (Exception e) {e.printStackTrace(); }\n")
-
-
-      fw.append("  }\n")
-      fw.append("};\n")
-      fw.append("serverThread.start();\n")
-
+      
+      fw.append("} catch (Exception e) {e.printStackTrace();  }\n")
       fw.append("}//END START METHOD\n")
 
       fw.append("@org.kevoree.annotation.Stop\n")
       fw.append("public void stop() {\n")
-      fw.append("    try {server.stop();server.destroy();serverThread.stop();\n    } catch (Exception e) {e.printStackTrace();  }\n")
+      fw.append("    try {launcher.shutdown();\n    } catch (Exception e) {e.printStackTrace();  }\n")
       fw.append(" }\n")
 
-
       fw.append("@org.kevoree.annotation.Update\n    public void update() {\n        stop();\n        start();\n    }")
-
-
       fw.append("}\n")
       fw.close()
     }
