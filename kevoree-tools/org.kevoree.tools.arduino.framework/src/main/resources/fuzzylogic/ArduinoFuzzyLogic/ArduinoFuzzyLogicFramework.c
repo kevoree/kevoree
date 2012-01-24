@@ -57,6 +57,70 @@ void displayRules(){
 	}
 }
 
+
+
+void updateInMemberShipFunction(int numDomain,int numterm,int numpoint,float newvalue)
+{
+
+	inMemberShipFunction[numDomain][numterm][numpoint] = newvalue;
+}
+
+
+
+void updateoutMemberShipFunction(int numDomain,int numterm,float newvalue)
+{
+
+	outMemberShipFunction[numDomain][numterm][0] = newvalue;
+}
+
+/*
+char temp_cold[MAX_UNTYPED_DICTIONARY];
+char temp_warn[MAX_UNTYPED_DICTIONARY];
+char temp_hot[MAX_UNTYPED_DICTIONARY];
+char fan_stop[MAX_UNTYPED_DICTIONARY];
+char fan_slow[MAX_UNTYPED_DICTIONARY];
+char fan_fast[MAX_UNTYPED_DICTIONARY];
+*/
+
+
+ // -10,-10,-5,-5
+void parseDictionnary(unsigned char type,unsigned char numDomain,unsigned char numTerm,char *name)
+{
+    unsigned char count=0,i=0,j=0;
+    char parsing[MAXIMUM_SIZE_FLOAT];
+    if(type == 0)
+    {
+        j=0;
+        for(i=0;i<(int)strlen(name);i++)
+        {
+             if(name[i] != ',' && name[i] != '\n')
+             {
+                if(j <MAXIMUM_SIZE_FLOAT)
+                {
+                       parsing[j] = name[i];
+                       j++;
+                }
+                else
+                {
+                    strcpy(parsing,"0.0");
+                }
+             }
+             else
+             {
+                  parsing[j] = '\n';
+                  updateInMemberShipFunction(numDomain,numTerm,count,atof(parsing));
+                  count++;
+                  j=0;
+             }
+        }
+    }
+    else
+    {
+         updateoutMemberShipFunction(numDomain,numTerm,atof(name));
+     }
+}
+
+
 void displayDomain()
 {
    int num_out,j,y;
