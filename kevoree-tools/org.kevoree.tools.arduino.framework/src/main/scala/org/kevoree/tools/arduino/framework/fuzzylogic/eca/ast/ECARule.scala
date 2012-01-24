@@ -14,11 +14,9 @@
 package org.kevoree.tools.arduino.framework.fuzzylogic.eca.ast
 
 /**
- * Created by IntelliJ IDEA.
- * User: duke
- * Date: 20/01/12
- * Time: 09:56
- * To change this template use File | Settings | File Templates.
+ * Created by jed
+ * User: jedartois@gmail.com
+ * Date: 23/01/12
+ *
  */
-
 case class ECARule(events : java.util.List[ECAEventPredicate] ,action : String)

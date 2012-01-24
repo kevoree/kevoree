@@ -13,14 +13,21 @@
  */
 package org.kevoree.tools.arduino.framework.fuzzylogic;
 
+import org.kevoree.tools.arduino.framework.fuzzylogic.fuzzy.ast.FuzzyRule;
+import org.kevoree.tools.arduino.framework.fuzzylogic.fuzzy.ast.FuzzyRules;
+
+import java.util.List;
+
 /**
- * Created by IntelliJ IDEA.
- * User: duke
- * Date: 19/01/12
- * Time: 10:35
+ * Created by jed
+ * User: jedartois@gmail.com
+ * Date: 23/01/12
+ *
  */
 public interface FuzzyRulesContext {
 
     public void addRule(String rule);
+    public List<FuzzyRule> getParsedRules();
+    public String getRawRules();
 
 }
