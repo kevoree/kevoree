@@ -19,6 +19,13 @@
     </properties>
 
     <dependencies>
+
+        <dependency>
+            <groupId>org.xeustechnologies</groupId>
+            <artifactId>jcl-core</artifactId>
+            <version>2.3</version>
+        </dependency>
+
         <dependency>
             <groupId>org.kevoree.tools</groupId>
             <artifactId>org.kevoree.tools.aether.framework</artifactId>
@@ -132,34 +139,34 @@
                     <proguardVersion>4.4</proguardVersion>
                     <options>
 
-                       <!-- <option>-keepattributes **</option>
-                        <option>
-                            -keep class * implements org.xml.sax.EntityResolver
-                            -keepclassmembers class * {
-                            ** MODULE$;
-                            }
-                            -keepclassmembernames class scala.concurrent.forkjoin.ForkJoinPool {
-                            long eventCount;
-                            int workerCounts;
-                            int runControl;
-                            scala.concurrent.forkjoin.ForkJoinPool$WaitQueueNode syncStack;
-                            scala.concurrent.forkjoin.ForkJoinPool$WaitQueueNode spareStack;
-                            }
-                            -keepclassmembernames class scala.concurrent.forkjoin.ForkJoinWorkerThread {
-                            int base;
-                            int sp;
-                            int runState;
-                            }
-                            -keepclassmembernames class scala.concurrent.forkjoin.ForkJoinTask {
-                            int status;
-                            }
-                            -keepclassmembernames class scala.concurrent.forkjoin.LinkedTransferQueue {
-                            scala.concurrent.forkjoin.LinkedTransferQueue$PaddedAtomicReference head;
-                            scala.concurrent.forkjoin.LinkedTransferQueue$PaddedAtomicReference tail;
-                            scala.concurrent.forkjoin.LinkedTransferQueue$PaddedAtomicReference cleanMe;
-                            }
-                        </option>
-                        <option>-keepnames class * implements java.io.Serializable</option>-->
+                        <!-- <option>-keepattributes **</option>
+                    <option>
+                        -keep class * implements org.xml.sax.EntityResolver
+                        -keepclassmembers class * {
+                        ** MODULE$;
+                        }
+                        -keepclassmembernames class scala.concurrent.forkjoin.ForkJoinPool {
+                        long eventCount;
+                        int workerCounts;
+                        int runControl;
+                        scala.concurrent.forkjoin.ForkJoinPool$WaitQueueNode syncStack;
+                        scala.concurrent.forkjoin.ForkJoinPool$WaitQueueNode spareStack;
+                        }
+                        -keepclassmembernames class scala.concurrent.forkjoin.ForkJoinWorkerThread {
+                        int base;
+                        int sp;
+                        int runState;
+                        }
+                        -keepclassmembernames class scala.concurrent.forkjoin.ForkJoinTask {
+                        int status;
+                        }
+                        -keepclassmembernames class scala.concurrent.forkjoin.LinkedTransferQueue {
+                        scala.concurrent.forkjoin.LinkedTransferQueue$PaddedAtomicReference head;
+                        scala.concurrent.forkjoin.LinkedTransferQueue$PaddedAtomicReference tail;
+                        scala.concurrent.forkjoin.LinkedTransferQueue$PaddedAtomicReference cleanMe;
+                        }
+                    </option>
+                    <option>-keepnames class * implements java.io.Serializable</option>-->
                         <option>-dontnote</option>
                         <option>-dontskipnonpubliclibraryclasses</option>
                         <option>-dontskipnonpubliclibraryclassmembers</option>
@@ -170,7 +177,7 @@
                         </option>
                         <option>-ignorewarnings</option>
                         <option>-keep public class org.kevoree.platform.service.KevoreeServiceUpdate { *; }</option>
-                       <!-- <option>
+                        <!-- <option>
                             -keepclassmembers class *{
                             static final % *;
                             static final java.lang.String *;
