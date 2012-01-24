@@ -20,77 +20,81 @@ import java.util.HashMap
 import org.kevoree.framework.template.MicroTemplate
 import org.kevoree.tools.arduino.framework.fuzzylogic.{DefaultFuzzyRulesContext, AbstractFuzzyLogicArduinoComponent}
 import org.kevoree.tools.arduino.framework.fuzzylogic.gen.utils.ArduinoException
+import org.kevoree.annotation.PortType
 
 
 /**
- * Created by IntelliJ IDEA.
- * User: duke
- * Date: 20/01/12
- * Time: 10:43
+ * Created by jed
+ * User: jedartois@gmail.com
+ * Date: 24/01/12
+ *
  */
-
 object GeneratorHelper {
 
+
+
+  def generateUpdateDictonnary(gen : ArduinoGenerator) : Unit = {
+
+    gen.getTypeModel.getDictionaryType.get.getAttributes.foreach{ p =>
+      val chaine = p.getName.split("_")
+      gen.getTypeModel.asInstanceOf[ComponentType].getProvided.exists(d => d.getName == chaine(0)) match {
+
+        /// INPUTS FUZZY TERMS
+        case true  =>  gen.appendNativeStatement("parseDictionnary(0,"+getPositiongetProvided(gen, chaine(0))+","+getPositionTerm(gen, chaine(0),chaine(1))+","+p.getName+");")
+
+       // OUTPUTS FUZZY TERMS
+        case false =>   gen.appendNativeStatement("parseDictionnary(1,"+getPositiongetRequired(gen, chaine(0))+","+getPositionTerm(gen, chaine(0),chaine(1))+","+p.getName+");")
+      }
+    }
+  }
 
   def getPositiongetProvided(gen : ArduinoGenerator,name : String) :Int ={
     var count = 0
     gen.getTypeModel.asInstanceOf[ComponentType].getProvided.foreach( p =>
-
       if(p.getName ==  name)
       {
-       return  count
+        return  count
       }
       else
       {
         count = count +1
       }
     )
-   throw  new ArduinoException("not found "+name+" "+count)
+    throw  new ArduinoException("The domain "+name+" is not found :  "+gen.getTypeModel.asInstanceOf[ComponentType].getProvided )
   }
-
 
   def getPositiongetRequired(gen : ArduinoGenerator,name : String) :Int ={
     var count = 0
     gen.getTypeModel.asInstanceOf[ComponentType].getRequired.foreach( p =>
-
       if(p.getName ==  name)
       {
-       return  count
+        return  count
       }
       else
       {
         count = count +1
       }
     )
-    throw  new ArduinoException("not found "+name+" "+count)
+    throw  new ArduinoException("The domain "+name+" is not found :  "+    gen.getTypeModel.asInstanceOf[ComponentType].getRequired)
   }
-
-
 
   def getPositionTerm(gen : ArduinoGenerator,domain : String, term : String) :Int ={
     var count = 0
     gen.getTypeModel.getDictionaryType.get.getAttributes.foreach( p =>
-
-    if(p.getName == (domain+"_"+term))
-    {
-      println(p.getName)
-     return  count
-    }
-    else
-    {
-      if(p.getName.startsWith(domain))
+      if(p.getName == (domain+"_"+term))
       {
-        count = count +1
-        println(p.getName)
+        return  count
       }
-    }
-
+      else
+      {
+        if(p.getName.startsWith(domain))
+        {
+          count = count +1
+        }
+      }
     )
-    throw  new ArduinoException("not found "+domain+"_"+term+" "+count)
+    throw  new ArduinoException("The term "+domain+"_"+term+" is not found  : "+gen.getTypeModel.getDictionaryType.get.getAttributes)
   }
-
-
-
 
   def generateClassVariables(gen : ArduinoGenerator, nbRules : Int){
 
@@ -113,7 +117,6 @@ object GeneratorHelper {
     gen.appendNativeStatement("unsigned char out_num_MemberShipFunction["+nbInputs+"];")
     gen.appendNativeStatement("float outMemberShipFunction["+nbOutputs+"][PRECISION][2];")
     gen.appendNativeStatement("float inMemberShipFunction["+nbInputs+"][NB_TERMS][PRECISION];")
-
 
   }
 
