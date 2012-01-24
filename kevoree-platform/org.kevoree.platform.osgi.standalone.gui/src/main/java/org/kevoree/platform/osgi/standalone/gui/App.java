@@ -16,14 +16,11 @@ package org.kevoree.platform.osgi.standalone.gui;
 import org.kevoree.ContainerRoot;
 import org.kevoree.KevoreeFactory;
 import org.kevoree.framework.KevoreeXmiHelper;
-import org.kevoree.tools.aether.framework.AetherUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.jar.JarEntry;
-import java.util.jar.JarFile;
 
 /**
  * Hello world!
@@ -56,10 +53,18 @@ public class App {
             model = KevoreeXmiHelper.load(param.toString());
         } else {
             try {
-                File file = AetherUtil.resolveKevoreeArtifact("org.kevoree.library.model.bootstrap", "org.kevoree.library.model", KevoreeFactory.getVersion());
-                JarFile jar = new JarFile(file);
-                JarEntry entry = jar.getJarEntry("KEV-INF/lib.kev");
-                model = KevoreeXmiHelper.loadStream(jar.getInputStream(entry));
+
+                //TODO CLASSLOADER
+
+
+
+              //  File file = AetherUtil.resolveKevoreeArtifact("org.kevoree.library.model.bootstrap", "org.kevoree.library.model", KevoreeFactory.getVersion());
+                //JarFile jar = new JarFile(file);
+              //  JarEntry entry = jar.getJarEntry("KEV-INF/lib.kev");
+              //  model = KevoreeXmiHelper.loadStream(jar.getInputStream(entry));
+
+                model = KevoreeXmiHelper.loadStream(this.getClass().getClassLoader().getResourceAsStream("lib.kev"));
+
             } catch (Exception e) {
                 logger.error("Error while bootstrap ", e);
             }

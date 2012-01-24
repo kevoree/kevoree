@@ -13,9 +13,14 @@ import java.net.URL
  * To change this template use File | Settings | File Templates.
  */
 
-class KevoreeJarClassLoader extends JarClassLoader {
+class KevoreeJarClassLoader extends JarClassLoader(null.asInstanceOf[ClassLoader]) {
+
+
 
   classpathResources =  new KevoreeLazyJarResources
+
+
+
 
   override def getResourceAsStream(name  : String) : InputStream = {
     val res = this.classpathResources.getResource(name)
@@ -29,4 +34,13 @@ class KevoreeJarClassLoader extends JarClassLoader {
   override def getResource(p1: String): URL = {
     classpathResources.asInstanceOf[KevoreeLazyJarResources].getContentURL(p1)
   }
+
+  def unload() {
+    import scala.collection.JavaConversions._
+    (this.getLoadedClasses.keySet().toList++List()).foreach{ lc =>
+      unloadClass(lc)
+    }
+  }
+
+
 }

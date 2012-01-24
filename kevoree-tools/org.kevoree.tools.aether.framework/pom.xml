@@ -111,7 +111,7 @@
                 <configuration>
                     <instructions>
                         <Bundle-SymbolicName>org.kevoree.tools.aether.framework</Bundle-SymbolicName>
-                        <Import-Package>!org.kevoree.tools.aether.framework.*,*</Import-Package>
+                        <Import-Package>!org.jboss.*,!org.codehaus.*,!org.apache.commons.*,!javax.servlet.*,!com.google.protobuf.*,!org.kevoree.tools.aether.framework.*,*;resolution:=optional</Import-Package>
                         <Export-Package>org.kevoree.tools.aether.framework.*,
                             org.sonatype.*,
                             org.apache.maven.repository.*,

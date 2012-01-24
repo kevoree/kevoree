@@ -22,7 +22,7 @@ public class Tester {
 
        // String modelString = "/home/jed/Desktop/FuzzyModelTEST";
 
-        String modelString = "/home/jed/Desktop/FuzzyModelTEST";
+        String modelString = "/Users/duke/Desktop/DemoArduino/testlevel.kev";
         
         ContainerRoot model = KevoreeXmiHelper.load(modelString);
 
@@ -39,7 +39,7 @@ public class Tester {
 
         node.getDictionary().put("incremental", "false");
         node.startNode();
-        node.push("node0", model, "/dev/ttyUSB0");
+        node.push("node0", model, "/dev/tty.usbmodem26231");
 
     }
 
