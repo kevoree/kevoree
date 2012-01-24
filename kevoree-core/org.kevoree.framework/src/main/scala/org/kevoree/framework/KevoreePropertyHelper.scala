@@ -27,9 +27,9 @@ import org.kevoree.{TypeDefinition, Instance, ContainerRoot}
 
 object KevoreePropertyHelper {
 
-  def getBooleanPropertyForGroup (model: ContainerRoot, groupName: String, key: String,
-    nodeNameForFragment: String): Option[Boolean] = {
-    getPropertyForChannel(model, groupName, key, true, nodeNameForFragment) match {
+  def getBooleanPropertyForGroup (model: ContainerRoot, groupName: String, key: String, isFragment: Boolean = false,
+    nodeNameForFragment: String = ""): Option[Boolean] = {
+    getPropertyForGroup(model, groupName, key, true, nodeNameForFragment) match {
       case None => None
       case Some(value) => try {
         Some(value.toString.toLowerCase == "true")
@@ -39,9 +39,9 @@ object KevoreePropertyHelper {
     }
   }
 
-  def getIntPropertyForGroup (model: ContainerRoot, groupName: String, key: String,
-    nodeNameForFragment: String): Option[Int] = {
-    getPropertyForChannel(model, groupName, key, true, nodeNameForFragment) match {
+  def getIntPropertyForGroup (model: ContainerRoot, groupName: String, key: String, isFragment: Boolean = false,
+    nodeNameForFragment: String = ""): Option[Int] = {
+    getPropertyForGroup(model, groupName, key, true, nodeNameForFragment) match {
       case None => None
       case Some(value) => try {
         Some(Integer.parseInt(value.toString))
@@ -51,8 +51,28 @@ object KevoreePropertyHelper {
     }
   }
 
-  def getBooleanPropertyForChannel (model: ContainerRoot, channelName: String, key: String,
-    nodeNameForFragment: String): Option[Boolean] = {
+  def getStringPropertyForGroup (model: ContainerRoot, groupName: String, key: String, isFragment: Boolean = false,
+    nodeNameForFragment: String = ""): Option[String] = {
+    getPropertyForGroup(model, groupName, key, true, nodeNameForFragment) match {
+      case None => None
+      case Some(value) => try {
+        Some(value.toString)
+      } catch {
+        case _@e => None
+      }
+    }
+  }
+
+  def getPropertyForGroup (model: ContainerRoot, groupName: String, key: String,
+    isFragment: Boolean = false, nodeNameForFragment: String = ""): Option[Object] = {
+    model.getGroups.find(group => group.getName == groupName) match {
+      case Some(group) => getProperty(model, group, groupName, key)
+      case None => None
+    }
+  }
+
+  def getBooleanPropertyForChannel (model: ContainerRoot, channelName: String, key: String, isFragment: Boolean = false,
+    nodeNameForFragment: String = ""): Option[Boolean] = {
     getPropertyForChannel(model, channelName, key, true, nodeNameForFragment) match {
       case None => None
       case Some(value) => try {
@@ -63,12 +83,65 @@ object KevoreePropertyHelper {
     }
   }
 
-  def getIntPropertyForChannel (model: ContainerRoot, channelName: String, key: String,
-    nodeNameForFragment: String): Option[Int] = {
+  def getIntPropertyForChannel (model: ContainerRoot, channelName: String, key: String, isFragment: Boolean = false,
+    nodeNameForFragment: String = ""): Option[Int] = {
     getPropertyForChannel(model, channelName, key, true, nodeNameForFragment) match {
       case None => None
       case Some(value) => try {
         Some(Integer.parseInt(value.toString))
+      } catch {
+        case _@e => None
+      }
+    }
+  }
+
+  def getStringPropertyForChannel (model: ContainerRoot, channelName: String, key: String, isFragment: Boolean = false,
+    nodeNameForFragment: String = ""): Option[String] = {
+    getPropertyForChannel(model, channelName, key, true, nodeNameForFragment) match {
+      case None => None
+      case Some(value) => try {
+        Some(value.toString)
+      } catch {
+        case _@e => None
+      }
+    }
+  }
+
+  def getPropertyForChannel (model: ContainerRoot, channelName: String, key: String,
+    isFragment: Boolean = false, nodeNameForFragment: String = ""): Option[Object] = {
+    model.getHubs.find(channel => channel.getName == channelName) match {
+      case Some(channel) => getProperty(model, channel, channelName, key)
+      case None => None
+    }
+  }
+
+  def getBooleanPropertyForNode (model: ContainerRoot, nodeName: String, key: String): Option[Boolean] = {
+    getPropertyForNode(model, nodeName, key) match {
+      case None => None
+      case Some(value) => try {
+        Some(value.toString.toLowerCase == "true")
+      } catch {
+        case _@e => None
+      }
+    }
+  }
+
+  def getIntPropertyForNode (model: ContainerRoot, nodeName: String, key: String): Option[Int] = {
+    getPropertyForNode(model, nodeName, key) match {
+      case None => None
+      case Some(value) => try {
+        Some(Integer.parseInt(value.toString))
+      } catch {
+        case _@e => None
+      }
+    }
+  }
+
+  def getStringPropertyForNode (model: ContainerRoot, nodeName: String, key: String): Option[String] = {
+    getPropertyForNode(model, nodeName, key) match {
+      case None => None
+      case Some(value) => try {
+        Some(value.toString)
       } catch {
         case _@e => None
       }
@@ -79,6 +152,39 @@ object KevoreePropertyHelper {
     model.getNodes.find(node => node.getName == nodeName) match {
       case Some(node) => getProperty(model, node, nodeName, key)
       case None => None
+    }
+  }
+
+  def getBooleanPropertyForComponent (model: ContainerRoot, componentName: String, key: String): Option[Boolean] = {
+    getPropertyForComponent(model, componentName, key) match {
+      case None => None
+      case Some(value) => try {
+        Some(value.toString.toLowerCase == "true")
+      } catch {
+        case _@e => None
+      }
+    }
+  }
+
+  def getIntPropertyForComponent (model: ContainerRoot, componentName: String, key: String): Option[Int] = {
+    getPropertyForComponent(model, componentName, key) match {
+      case None => None
+      case Some(value) => try {
+        Some(Integer.parseInt(value.toString))
+      } catch {
+        case _@e => None
+      }
+    }
+  }
+
+  def getStringPropertyForComponent (model: ContainerRoot, componentName: String, key: String): Option[String] = {
+    getPropertyForComponent(model, componentName, key) match {
+      case None => None
+      case Some(value) => try {
+        Some(value.toString)
+      } catch {
+        case _@e => None
+      }
     }
   }
 
@@ -94,20 +200,53 @@ object KevoreePropertyHelper {
     result
   }
 
-  def getPropertyForChannel (model: ContainerRoot, channelName: String, key: String,
-    isFragment: Boolean = false, nodeNameForFragment: String = ""): Option[Object] = {
-    model.getHubs.find(channel => channel.getName == channelName) match {
-      case Some(channel) => getProperty(model, channel, channelName, key)
+  def getBooleanNetworkProperty (model: ContainerRoot, targetNodeName: String, key: String): Option[Boolean] = {
+      getNetworkProperty(model, targetNodeName, key) match {
+        case None => None
+        case Some(value) => try {
+          Some(value.toString.toLowerCase == "true")
+        } catch {
+          case _@e => None
+        }
+      }
+    }
+
+  def getIntNetworkProperty (model: ContainerRoot, targetNodeName: String, key: String): Option[Int] = {
+      getNetworkProperty(model, targetNodeName, key) match {
+        case None => None
+        case Some(value) => try {
+          Some(Integer.parseInt(value.toString))
+        } catch {
+          case _@e => None
+        }
+      }
+    }
+
+  def getStringNetworkProperty (model: ContainerRoot, targetNodeName: String, key: String): Option[String] = {
+    getNetworkProperty(model, targetNodeName, key) match {
       case None => None
+      case Some(value) => try {
+        Some(value.toString)
+      } catch {
+        case _@e => None
+      }
     }
   }
 
-  def getPropertyForGroup (model: ContainerRoot, groupName: String, key: String,
-    isFragment: Boolean = false, nodeNameForFragment: String = ""): Option[Object] = {
-    model.getGroups.find(group => group.getName == groupName) match {
-      case Some(group) => getProperty(model, group, groupName, key)
-      case None => None
+  def getNetworkProperty (model: ContainerRoot, targetNodeName: String, key: String): Option[Object] = {
+    val filteredNodeNetwork = model.getNodeNetworks.filter(lNN => lNN.getTarget.getName == targetNodeName)
+    var result: Option[Object] = None
+    filteredNodeNetwork.foreach {
+      fnn =>
+        fnn.getLink.foreach {
+          fnl =>
+            fnl.getNetworkProperties.find(p => p.getName == key) match {
+              case None =>
+              case Some(prop) => result = Some(prop.getValue)
+            }
+        }
     }
+    result
   }
 
   private def getProperty (model: ContainerRoot, instance: Instance, name: String, key: String,
