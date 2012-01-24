@@ -22,7 +22,7 @@ public class Tester {
 
        // String modelString = "/home/jed/Desktop/FuzzyModelTEST";
 
-        String modelString = "/Users/duke/Desktop/saveFuzzyArduino.kev";
+        String modelString = "/home/jed/Desktop/FuzzyModelTEST";
         
         ContainerRoot model = KevoreeXmiHelper.load(modelString);
 
