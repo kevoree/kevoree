@@ -84,7 +84,7 @@ public class JmDNSRestGroup extends RestGroup implements  Runnable{
             }
         }
         catch(Exception e){
-            logger.error("pas de carte reseau " + e);
+            logger.error("There is no network interface", e);
         }
         return ips;
     }
@@ -113,7 +113,7 @@ public class JmDNSRestGroup extends RestGroup implements  Runnable{
             try {
                 Thread.sleep(timer);
             } catch (InterruptedException e) {
-                logger.debug("requestUpdateList "+e);
+                logger.debug("requestUpdateList: "+e.getMessage());
             }
         }
     }

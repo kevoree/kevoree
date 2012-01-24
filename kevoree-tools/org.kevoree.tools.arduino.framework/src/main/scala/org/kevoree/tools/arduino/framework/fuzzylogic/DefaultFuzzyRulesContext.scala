@@ -15,6 +15,7 @@ package org.kevoree.tools.arduino.framework.fuzzylogic
 
 import fuzzy.ast.{FuzzyRule, FuzzyRules}
 import java.lang.String
+import java.util.UUID
 
 /**
  * Created by jed
@@ -24,6 +25,7 @@ import java.lang.String
  */
 class DefaultFuzzyRulesContext extends FuzzyRulesContext {
 
+  var uuid : UUID = UUID.randomUUID()
   var nbRules = 0
   def getNumberOfRules : Int = nbRules
   var rawRules : StringBuilder = new StringBuilder
@@ -42,6 +44,10 @@ class DefaultFuzzyRulesContext extends FuzzyRulesContext {
   def getParsedRules() :java.util.List[FuzzyRule] ={
     fuzzyDSL.parseRules(rawRules.toString()).rules
 
+  }
+
+  def getId() : UUID = {
+    uuid
   }
 
 

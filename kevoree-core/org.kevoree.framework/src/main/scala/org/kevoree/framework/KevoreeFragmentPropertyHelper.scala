@@ -24,12 +24,12 @@ import org.kevoree.{Instance, TypeDefinition, ContainerRoot}
  * @author Erwan Daubert
  * @version 1.0
  */
-
+@Deprecated
 object KevoreeFragmentPropertyHelper {
 
   val logger = LoggerFactory.getLogger(this.getClass)
 
-
+  @Deprecated
   def getIntPropertyFromFragmentChannel (model: ContainerRoot, channelName: String, key: String,
     nodeNameForFragment: String): Int = {
     val stringProperty = getPropertyFromFragmentChannel(model, channelName, key, nodeNameForFragment)
@@ -55,11 +55,13 @@ object KevoreeFragmentPropertyHelper {
     }
   }
 
+  @Deprecated
   def getBooleanPropertyFromFragmentChannel (model: ContainerRoot, channelName: String, key: String,
     nodeNameForFragment: String): Boolean = {
     getPropertyFromFragmentChannel(model, channelName, key, nodeNameForFragment).equalsIgnoreCase("true")
   }
 
+  @Deprecated
   def getPropertyFromFragmentChannel (model: ContainerRoot, channelName: String, key: String,
     nodeNameForFragment: String): String = {
     model.getHubs.find(g => g.getName == channelName) match {
@@ -70,6 +72,7 @@ object KevoreeFragmentPropertyHelper {
     }
   }
 
+  @Deprecated
   def getIntPropertyFromFragmentGroup (model: ContainerRoot, groupName: String, key: String,
     nodeNameForFragment: String): Int = {
     val stringProperty = getPropertyFromFragmentGroup(model, groupName, key, nodeNameForFragment)
@@ -95,11 +98,13 @@ object KevoreeFragmentPropertyHelper {
     }
   }
 
+  @Deprecated
   def getBooleanPropertyFromFragmentGroup (model: ContainerRoot, groupName: String, key: String,
     nodeNameForFragment: String): Boolean = {
     getPropertyFromFragmentGroup(model, groupName, key, nodeNameForFragment).equalsIgnoreCase("true")
   }
 
+  @Deprecated
   def getPropertyFromFragmentGroup (model: ContainerRoot, groupName: String, key: String,
     nodeNameForFragment: String): String = {
     model.getGroups.find(g => g.getName == groupName) match {

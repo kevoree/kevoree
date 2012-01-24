@@ -76,6 +76,7 @@ object Helper {
         logger.error(jarFile.getAbsolutePath + " doesn't exist")
       }
     }
+    logger.debug("return {}", platformJARPath)
     platformJARPath
   }
 

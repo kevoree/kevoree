@@ -51,6 +51,7 @@ public class VideoViewer extends AbstractComponentType {
 		if (isAlreadyInitialized) {
 			frame.dispose();
 			bufferStrategy.dispose();
+			frame.setVisible(false);
 		}
 	}
 

@@ -22,7 +22,7 @@ import org.slf4j.LoggerFactory;
  */
 @Library(name = "SKY")
 @GroupType
-public class MiniCloudGroup  extends AbstractGroupType {
+public class MiniCloudGroup extends AbstractGroupType {
 	private static final Logger logger = LoggerFactory.getLogger(MiniCloudGroup.class);
 
 	@Start
