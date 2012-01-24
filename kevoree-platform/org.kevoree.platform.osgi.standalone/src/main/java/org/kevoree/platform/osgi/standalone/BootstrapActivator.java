@@ -26,15 +26,14 @@ import org.kevoree.api.service.core.script.KevScriptEngine;
 import org.kevoree.api.service.core.script.KevScriptEngineFactory;
 import org.kevoree.core.impl.KevoreeConfigServiceBean;
 import org.kevoree.core.impl.KevoreeCoreBean;
+import org.kevoree.framework.Bootstraper;
 import org.kevoree.framework.KevoreeXmiHelper;
-import org.kevoree.tools.aether.framework.AetherUtil;
-import org.kevoree.tools.aether.framework.NodeTypeBootstrapHelper;
-import org.kevoree.tools.marShell.KevScriptCoreEngine;
+import org.kevoree.framework.MavenResolver;
+import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import java.io.File;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
@@ -63,10 +62,20 @@ public class BootstrapActivator implements BundleActivator {
             KevoreeConfigServiceBean configBean = new KevoreeConfigServiceBean();
             coreBean = new KevoreeCoreBean();
 
-            NodeTypeBootstrapHelper bootstraper = new NodeTypeBootstrapHelper();
-            bootstraper.setBootstrapBundleContext(context);
+            
+            Bundle b = context.installBundle("kevoree.bootstraper",this.getClass().getClassLoader().getResourceAsStream("boot/org.kevoree.tools.aether.framework-"+KevoreeFactory.getVersion()+".jar"));
+            Class clazz = b.loadClass("org.kevoree.tools.aether.framework.NodeTypeBootstrapHelper");
+            org.kevoree.framework.Bootstraper bhelper = (Bootstraper) clazz.getDeclaredConstructor(BundleContext.class).newInstance(context);
 
-            coreBean.setBootstraper(bootstraper);
+
+            Class clazz3 = b.loadClass("org.kevoree.tools.aether.framework.AetherMavenResolver");
+            MavenResolver mres = (MavenResolver) clazz3.newInstance();
+            File fileMarShell = mres.resolveKevoreeArtifact("org.kevoree.tools.marshell", "org.kevoree.tools",KevoreeFactory.getVersion());
+
+            Bundle marshell_bundle = context.installBundle("file:///"+fileMarShell.getAbsolutePath());
+            final Class clazz2 = marshell_bundle.loadClass("org.kevoree.tools.marShell.KevScriptCoreEngine");
+
+            coreBean.setBootstraper(bhelper);
             coreBean.setConfigService((ConfigurationService) configBean);
             coreBean.start();
             //Kevoree script
@@ -76,7 +85,12 @@ public class BootstrapActivator implements BundleActivator {
             context.registerService(KevScriptEngineFactory.class.getName(),new KevScriptEngineFactory() {
                 @Override
                 public KevScriptEngine createKevScriptEngine() {
-                    return new KevScriptCoreEngine(coreBean);
+                    try {
+                        return (KevScriptEngine) clazz2.getDeclaredConstructor(KevoreeModelHandlerService.class).newInstance(coreBean);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    return null;
                 }
             },null);
 
@@ -93,15 +107,13 @@ public class BootstrapActivator implements BundleActivator {
                     }
                 } else {
                     try {
-                        File file = AetherUtil.resolveKevoreeArtifact("org.kevoree.library.model.bootstrap", "org.kevoree.library.model",KevoreeFactory.getVersion());
-                        JarFile jar = new JarFile(file);
+                        File filebootmodel = mres.resolveKevoreeArtifact("org.kevoree.library.model.bootstrap", "org.kevoree.library.model",KevoreeFactory.getVersion());
+                        JarFile jar = new JarFile(filebootmodel);
                         JarEntry entry = jar.getJarEntry("KEV-INF/lib.kev");
                         bootstrapModel = KevoreeXmiHelper.loadStream(jar.getInputStream(entry));
                     } catch (Exception e) {
                         logger.error("Bootstrap failed", e);
                     }
-
-
                 }
             }
 
