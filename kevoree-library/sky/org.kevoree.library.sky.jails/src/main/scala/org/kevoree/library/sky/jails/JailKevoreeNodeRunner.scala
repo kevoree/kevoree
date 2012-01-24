@@ -21,13 +21,11 @@ import actors.{TIMEOUT, Actor}
 import util.matching.Regex
 import org.kevoree.library.sky.manager.{Helper, KevoreeNodeRunner}
 import java.net.InetAddress
-import org.kevoree.{TypeDefinition, Instance, ContainerNode, ContainerRoot}
+import org.kevoree.ContainerRoot
 import scala.Array._
-import org.kevoree.library.javase.ssh.SSHRestGroup
 import org.kevoree.framework.KevoreePropertyHelper
 import java.io._
 
-import scala.collection.JavaConversions._
 
 /**
  * User: Erwan Daubert - erwan.daubert@gmail.com
