@@ -14,11 +14,10 @@
 package org.kevoree.tools.arduino.framework.fuzzylogic.fuzzy.ast
 
 /**
- * Created by IntelliJ IDEA.
- * User: duke
- * Date: 20/01/12
- * Time: 10:03
- * To change this template use File | Settings | File Templates.
+ * Created by jed
+ * User: jedartois@gmail.com
+ * Date: 23/01/12
+ *
  */
 
 case class FuzzyRules(rules : java.util.List[FuzzyRule]) {
