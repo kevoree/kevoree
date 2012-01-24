@@ -60,6 +60,7 @@ object Forwarder {
         currentPath = currentPath + "/"
       }
     }
+    logger.debug("forward to {} with {} as parameter", urlString  + "/" + newPath, request.getRawParams)
     if (request.getRawBody.size == 0) {
       forwardGET(urlString, request, response, newPath, currentPath)
     } else {
@@ -224,7 +225,7 @@ object Forwarder {
             println(header._1 + "=" + headerValue.toString())
             headers.put(header._1, headerValue.toString())
           }*/
-          case _ => println(header._1 + "=" + header._2); headers.put(header._1, header._2)
+          case _ => /*println(header._1 + "=" + header._2); */headers.put(header._1, header._2)
         }
 
     }
@@ -239,7 +240,7 @@ object Forwarder {
         header._1 match {
           case "Host" =>
           case "Content-Length" =>
-          case _ => println(header._1 + "=" + header._2); headers = headers ++ List(HttpHeader(header._1, header._2))
+          case _ => /*println(header._1 + "=" + header._2); */headers = headers ++ List(HttpHeader(header._1, header._2))
         }
 
       }
