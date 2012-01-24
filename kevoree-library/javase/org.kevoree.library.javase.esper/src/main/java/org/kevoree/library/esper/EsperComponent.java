@@ -86,7 +86,7 @@ public class EsperComponent extends AbstractComponentType  implements UpdateList
         Configuration cepConfig = new Configuration();
         // create my Esper statement, and finally restore the class loader to its original value:
          for (String s : eventypes){
-            cepConfig.addEventType(s.split(":")[0], Tick.class);//s.split(":")[1]);
+            cepConfig.addEventType(s.split(":")[0], s.split(":")[1]);
         }
          
         cep = EPServiceProviderManager.getProvider("myCEPEngine", cepConfig);

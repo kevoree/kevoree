@@ -10,7 +10,7 @@ import org.kevoree.MessagePortType
 import org.osgi.framework.BundleContext
 import org.kevoree.annotation.{Generate => KGenerate}
 import org.slf4j.{LoggerFactory, Logger}
-import org.kevoree.tools.arduino.framework.{AbstractArduinoComponent, RawTypeHelper}
+import org.kevoree.tools.arduino.framework.AbstractArduinoComponent
 
 trait KevoreeComponentTypeClassGenerator extends KevoreeCAbstractGenerator with KevoreeReflectiveHelper with KevoreeInstanceGenerator {
   private val logger: Logger = LoggerFactory.getLogger(this.getClass)
@@ -18,10 +18,10 @@ trait KevoreeComponentTypeClassGenerator extends KevoreeCAbstractGenerator with 
   def generateComponentType(ct: ComponentType, bundleContext: BundleContext, nodeName: String) = {
 
     val instance = createStandaloneInstance(ct, bundleContext, nodeName)
-    if(instance.isInstanceOf[AbstractArduinoComponent]){
+    if (instance.isInstanceOf[AbstractArduinoComponent]) {
       instance.asInstanceOf[AbstractArduinoComponent].setGenerator(context.getGenerator)
     }
-    
+
     val clazz = instance.getClass
 
     //GENERATE CLASS HEADER
@@ -39,7 +39,7 @@ trait KevoreeComponentTypeClassGenerator extends KevoreeCAbstractGenerator with 
     //INVOKE CLASS HEADER
     recCallAnnotedMethod(instance, "classheader", clazz, context)
     //INVOKE GLOABL HEADER
-    recCallAnnotedMethod(instance, "header", clazz, context,headers=true)
+    recCallAnnotedMethod(instance, "header", clazz, context, headers = true)
 
     ct.getProvided.foreach {
       providedPort => //GENERATE PROVIDED PORT QUEUES
@@ -54,6 +54,9 @@ trait KevoreeComponentTypeClassGenerator extends KevoreeCAbstractGenerator with 
 
     generateDic(ct)
 
+    context b "void updated_p(){"
+    recCallAnnotedMethod(instance, "update", clazz, context)
+    context b "}"
 
     context b "void init(){" //GENERATE INIT METHOD
     ct.getProvided.foreach {

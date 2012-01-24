@@ -22,24 +22,11 @@
 
         <dependency>
             <groupId>org.kevoree.extra</groupId>
-            <artifactId>org.kevoree.extra.jetty</artifactId>
-            <version>8.1.0.RC2</version>
+            <artifactId>org.kevoree.extra.winstone</artifactId>
+            <version>0.9.10</version>
             <type>bundle</type>
         </dependency>
 
-        <dependency>
-            <groupId>org.kevoree.library.javase</groupId>
-            <artifactId>org.kevoree.library.javase.webserver</artifactId>
-            <version>${kevoree.version}</version>
-            <type>bundle</type>
-        </dependency>
-
-        <dependency>
-            <groupId>org.kevoree.library.javase</groupId>
-            <artifactId>org.kevoree.library.javase.webserver.servlet</artifactId>
-            <version>${kevoree.version}</version>
-            <type>bundle</type>
-        </dependency>
     </dependencies>
 
     <build>

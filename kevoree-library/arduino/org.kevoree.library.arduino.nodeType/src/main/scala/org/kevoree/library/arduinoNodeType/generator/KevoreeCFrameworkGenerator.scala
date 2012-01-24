@@ -226,6 +226,7 @@ trait KevoreeCFrameworkGenerator extends KevoreeCAbstractGenerator {
                   context b "}"
                 }
               }
+              context b "instance->updated_p();"
               context b "break;}"
           }
           context b "}"

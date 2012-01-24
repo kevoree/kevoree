@@ -11,14 +11,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#define MIN(A,B)       (A < B) ? A : B
-#define MAX(A,B)       (A > B) ? A : B
-
-void    fire_rule(unsigned char rule_index);
-void    control(float *, float *);
-void    fuzzify(unsigned char, float);
-float   get_membership(unsigned char, unsigned char, float);
-float   defuzzify(unsigned char, float *inputs);
 
 #ifdef DEBUG
 void displayRules(){
@@ -44,7 +36,6 @@ void displayRules(){
 			Serial.print(in_term);
 			Serial.print("]");
 
-
 		}
 
 		Serial.print(" THEN ");
@@ -65,6 +56,70 @@ void displayRules(){
 		 Serial.println(" END ");
 	}
 }
+
+
+
+void updateInMemberShipFunction(int numDomain,int numterm,int numpoint,float newvalue)
+{
+
+	inMemberShipFunction[numDomain][numterm][numpoint] = newvalue;
+}
+
+
+
+void updateoutMemberShipFunction(int numDomain,int numterm,float newvalue)
+{
+
+	outMemberShipFunction[numDomain][numterm][0] = newvalue;
+}
+
+/*
+char temp_cold[MAX_UNTYPED_DICTIONARY];
+char temp_warn[MAX_UNTYPED_DICTIONARY];
+char temp_hot[MAX_UNTYPED_DICTIONARY];
+char fan_stop[MAX_UNTYPED_DICTIONARY];
+char fan_slow[MAX_UNTYPED_DICTIONARY];
+char fan_fast[MAX_UNTYPED_DICTIONARY];
+*/
+
+
+ // -10,-10,-5,-5
+void parseDictionnary(unsigned char type,unsigned char numDomain,unsigned char numTerm,char *name)
+{
+    unsigned char count=0,i=0,j=0;
+    char parsing[MAXIMUM_SIZE_FLOAT];
+    if(type == 0)
+    {
+        j=0;
+        for(i=0;i<(int)strlen(name);i++)
+        {
+             if(name[i] != ',' && name[i] != '\n')
+             {
+                if(j <MAXIMUM_SIZE_FLOAT)
+                {
+                       parsing[j] = name[i];
+                       j++;
+                }
+                else
+                {
+                    strcpy(parsing,"0.0");
+                }
+             }
+             else
+             {
+                  parsing[j] = '\n';
+                  updateInMemberShipFunction(numDomain,numTerm,count,atof(parsing));
+                  count++;
+                  j=0;
+             }
+        }
+    }
+    else
+    {
+         updateoutMemberShipFunction(numDomain,numTerm,atof(name));
+     }
+}
+
 
 void displayDomain()
 {
@@ -99,20 +154,6 @@ void displayDomain()
 
 }
 #endif
-
-void updateInMemberShipFunction(int numDomain,int numterm,int numpoint,float newvalue)
-{
-
-	inMemberShipFunction[numDomain][numterm][numpoint] = newvalue;
-}
-
-
-
-void updateoutMemberShipFunction(int numDomain,int numterm,float newvalue)
-{
-
-	outMemberShipFunction[numDomain][numterm][0] = newvalue;
-}
 
 
 void control(float *crisp_inputs, float *crisp_outputs)
