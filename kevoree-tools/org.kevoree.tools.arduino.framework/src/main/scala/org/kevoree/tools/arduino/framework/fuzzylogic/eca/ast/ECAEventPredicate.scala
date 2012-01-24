@@ -14,12 +14,13 @@
 package org.kevoree.tools.arduino.framework.fuzzylogic.eca.ast
 
 import org.kevoree.tools.arduino.framework.fuzzylogic.gen.Constants
-
 /**
- * Created by IntelliJ IDEA.
- * User: duke
- * Date: 20/01/12
- * Time: 09:55
+ * Created by jed
+ * User: jedartois@gmail.com
+ * Date: 23/01/12
+ *
  */
+case class ECAEventPredicate(inputID : String, sign : Constants.SIGNS, value : Float) {
 
-case class ECAEventPredicate(inputID : String, sign : Constants.SIGNS, value : Float)
+
+}

@@ -51,6 +51,11 @@ public abstract class AbstractArduinoComponent extends AbstractComponentType {
 
     }
 
+    @Generate("update")
+    public void generateUpdatedParams(ArduinoGenerator gen) {
+
+    }
+
     private ArduinoGenerator gen = null;
 
     public ArduinoGenerator getGenerator() {

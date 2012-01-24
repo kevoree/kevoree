@@ -13,23 +13,42 @@
  */
 package org.kevoree.tools.arduino.framework.fuzzylogic
 
+import fuzzy.ast.{FuzzyRule, FuzzyRules}
 import java.lang.String
+import java.util.UUID
 
 /**
- * Created by IntelliJ IDEA.
- * User: duke
- * Date: 20/01/12
- * Time: 10:55
- * To change this template use File | Settings | File Templates.
+ * Created by jed
+ * User: jedartois@gmail.com
+ * Date: 23/01/12
+ *
  */
-
 class DefaultFuzzyRulesContext extends FuzzyRulesContext {
 
+  var uuid : UUID = UUID.randomUUID()
   var nbRules = 0
   def getNumberOfRules : Int = nbRules
+  var rawRules : StringBuilder = new StringBuilder
+  val fuzzyDSL = new ParserFuzzyLogic()
+
 
   def addRule(rule: String) {
     nbRules = nbRules + 1
+    rawRules.append(rule)
+  }
+
+  def getRawRules(): String = {
+    rawRules.toString()
+  }
+
+  def getParsedRules() :java.util.List[FuzzyRule] ={
+    fuzzyDSL.parseRules(rawRules.toString()).rules
 
   }
+
+  def getId() : UUID = {
+    uuid
+  }
+
+
 }

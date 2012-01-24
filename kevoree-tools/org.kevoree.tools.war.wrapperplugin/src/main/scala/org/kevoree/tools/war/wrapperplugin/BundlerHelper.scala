@@ -83,12 +83,6 @@ object BundlerHelper {
       mf.getMainAttributes.put(new Attributes.Name("Bundle-ClassPath"), ".")
     }
 
-    /*
-    Import-Package: org.kevoree.annotation;version="[1.5,2)",org.kevoree.f
-     ramework,org.kevoree.framework.osgi,org.kevoree.framework.port,org.sl
-     f4j;version="[1.6,2)",scala,scala.actors,scala.collection.immutable,s
-     cala.collection.mutable,scala.reflect,scala.runtime
-*/
 
     var importPackages = List("org.kevoree.annotation")
     importPackages = importPackages ++ List("org.osgi.framework")
@@ -103,8 +97,14 @@ object BundlerHelper {
     importPackages = importPackages ++ List("scala.collection.mutable")
     importPackages = importPackages ++ List("scala.reflect")
     importPackages = importPackages ++ List("scala.runtime")
-   // importPackages = importPackages ++ List("javax.servlet.http")
-  //  importPackages = importPackages ++ List("javax.servlet")
+
+
+    importPackages = importPackages ++ List("javax.servlet.http")
+    importPackages = importPackages ++ List("javax.servlet")
+    importPackages = importPackages ++ List("winstone")
+
+
+
     mf.getMainAttributes.put(new Attributes.Name("Import-Package"), importPackages.mkString(","))
 
     mf.getMainAttributes.put(new Attributes.Name("DynamicImport-Package"), "*")

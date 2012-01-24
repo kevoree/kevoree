@@ -41,6 +41,9 @@ public class KevoreeGUIFrame extends JFrame {
     public KevoreeGUIFrame(final ContainerRoot model) {
         singleton = this;
 
+//System.out.println(getClass().getClassLoader().getResource("."));
+
+
         URL urlIcon = getClass().getClassLoader().getResource(GuiConstantsHandler.getGuiConstantValuesProvider().getIconUrl());//"kevoree-logo-full.png");
         URL urlSmallIcon = getClass().getClassLoader().getResource(GuiConstantsHandler.getGuiConstantValuesProvider().getSmallIconUrl());//"kev-logo-full.png");
         ImageIcon topIIcon = new ImageIcon(urlIcon);
