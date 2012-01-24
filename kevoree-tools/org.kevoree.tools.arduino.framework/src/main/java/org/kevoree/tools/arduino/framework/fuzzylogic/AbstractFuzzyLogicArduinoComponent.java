@@ -14,6 +14,7 @@
 package org.kevoree.tools.arduino.framework.fuzzylogic;
 
 import org.kevoree.annotation.ComponentFragment;
+import org.kevoree.annotation.Generate;
 import org.kevoree.annotation.Port;
 import org.kevoree.framework.template.MicroTemplate;
 import org.kevoree.tools.arduino.framework.AbstractArduinoComponent;
@@ -78,9 +79,10 @@ public abstract class AbstractFuzzyLogicArduinoComponent extends AbstractArduino
         }
     }
 
-
-
-
+    @Override
+    public void generateUpdatedParams(ArduinoGenerator gen) {
+        gen.appendNativeStatement(";;;");
+    }
 
     public abstract void declareRules(FuzzyRulesContext rulesContext);
 

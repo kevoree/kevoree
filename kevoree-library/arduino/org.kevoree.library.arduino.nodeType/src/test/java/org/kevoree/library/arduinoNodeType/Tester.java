@@ -20,8 +20,10 @@ public class Tester {
         // System.setProperty("serial.port", "/dev/tty.usbmodem621");
 
 
-        String modelString = "/home/jed/Desktop/FuzzyModelTEST";
+       // String modelString = "/home/jed/Desktop/FuzzyModelTEST";
 
+        String modelString = "/Users/duke/Desktop/saveFuzzyArduino.kev";
+        
         ContainerRoot model = KevoreeXmiHelper.load(modelString);
 
         ArduinoNode node = new ArduinoNode();
