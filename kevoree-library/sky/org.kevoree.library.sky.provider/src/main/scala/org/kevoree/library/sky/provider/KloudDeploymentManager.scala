@@ -1,12 +1,16 @@
 package org.kevoree.library.sky.provider
 
-import org.kevoree.api.service.core.handler.{KevoreeModelHandlerService, UUIDModel}
+import org.kevoree.api.service.core.handler.KevoreeModelHandlerService
 import org.kevoree.api.service.core.script.KevScriptEngineFactory
 import org.slf4j.{LoggerFactory, Logger}
-import org.kevoree.{TypeDefinition, ContainerRoot}
 import org.kevoree.framework.{Constants, KevoreePropertyHelper}
 import java.net.URL
 import java.io.{InputStreamReader, BufferedReader, OutputStreamWriter, ByteArrayOutputStream}
+import org.kevoree.cloner.ModelCloner
+import org.kevoree.tools.marShell.KevsEngine
+import org.kevoree.core.basechecker.RootChecker
+import scala.collection.JavaConversions._
+import org.kevoree._
 
 /**
  * User: Erwan Daubert - erwan.daubert@gmail.com
@@ -27,7 +31,7 @@ object KloudDeploymentManager {
         group.getSubNodes.find(n => n.getName == nodeName) match {
           case None => false
           case Some(node) =>
-            node.getTypeDefinition.getName == "IaaSNode" || isASubType(node.getTypeDefinition, "IaaSNode")
+            node.getTypeDefinition.getName == "IaaSNode" || KloudHelper.isASubType(node.getTypeDefinition, "IaaSNode")
         }
     }
   }
@@ -39,15 +43,8 @@ object KloudDeploymentManager {
         group.getSubNodes.find(n => n.getName == nodeName) match {
           case None => false
           case Some(node) =>
-            node.getTypeDefinition.getName == "PJavaSENode" || isASubType(node.getTypeDefinition, "PJavaSENode")
+            node.getTypeDefinition.getName == "PJavaSENode" || KloudHelper.isASubType(node.getTypeDefinition, "PJavaSENode")
         }
-    }
-  }
-
-  private def isASubType (nodeType: TypeDefinition, typeName: String): Boolean = {
-    nodeType.getSuperTypes.find(td => td.getName == typeName || isASubType(td, typeName)) match {
-      case None => false
-      case Some(typeDefinition) => true
     }
   }
 
@@ -78,38 +75,308 @@ object KloudDeploymentManager {
   /**
    * compute a new deployment and apply it
    */
-  def processDeployment (userModel: ContainerRoot /*, login: String*/ , modelHandlerService: KevoreeModelHandlerService,
-    kevScripEngineFactory: KevScriptEngineFactory, groupName: String, nodeName: String) {
+  def processDeployment (newModel: ContainerRoot, userModel: ContainerRoot,
+    modelHandlerService: KevoreeModelHandlerService, kevScripEngineFactory: KevScriptEngineFactory, groupName: String/*,
+    groupTypeName: String*/) : Option[String] ={
+    // check validity of the new model
+    val resultOption = check(newModel)
+    if (resultOption.isEmpty) {
 
-    val result = KloudResourceProvider.check(userModel)
-    if (result.isEmpty) {
-      val cleanModelOption = KloudResourceProvider.cleanUserModel(userModel)
-      if (cleanModelOption.isDefined) {
-        val cleanModel = cleanModelOption.get
+      // clean newModel and userModel: get only nodes and one group
+      val cleanedNewModelOption = cleanUserModel(newModel)
+      val cleanedUserModelOption = cleanUserModel(userModel)
+      if (cleanedNewModelOption.isDefined && cleanedUserModelOption.isDefined) {
+
+        // compare newModel and userModel to know which nodes must be added or removed
+        val comparison = compareModels(cleanedNewModelOption.get, cleanedUserModelOption.get)
+        val addedNodes = comparison._1
+        val removedNodes = comparison._2
+
         val uuidModel = modelHandlerService.getLastUUIDModel
-        val newGlobalModelOption = KloudResourceProvider.distribute(userModel, uuidModel.getModel)
-        if (newGlobalModelOption.isDefined) {
-          val newGlobalModel = newGlobalModelOption.get
-          var ok = KloudResourceProvider.update(uuidModel, newGlobalModel, modelHandlerService)
-          if (ok) {
-            ok = KloudResourceProvider.updateUserConfiguration(cleanModel, userModel, modelHandlerService)
+
+        // remove useless nodes on the Kloud model
+        var newKloudModelOption = removeNodes(removedNodes, uuidModel.getModel)
+        if (newKloudModelOption.isDefined) {
+
+          // distribute the new user nodes on the Kloud model
+          newKloudModelOption = addNodes(addedNodes, newKloudModelOption.get)
+          if (newKloudModelOption.isDefined) {
+
+            // add the default group or bind this group with all user nodes
+            newKloudModelOption = configureGroup(cleanedNewModelOption.get, newKloudModelOption.get, groupName/*, groupTypeName*/)
+            if (newKloudModelOption.isDefined) {
+
+              // update the Kloud model with the result of the distribution
+              try {
+                modelHandlerService.atomicCompareAndSwapModel(uuidModel, newKloudModelOption.get)
+
+                // deploy the newModel on the user nodes
+                updateUserConfiguration(cleanedNewModelOption.get, newModel, modelHandlerService)
+                None
+              } catch {
+                case _@e =>
+                  logger
+                    .debug("Unable to swap model, maybe because the new model is based on a too old configuration", e)
+                Some("Unable to swap model, maybe because the new model is based on a too old configuration:\n" + e.getMessage)
+              }
+            } else {
+              Some("Unable to configure you access point to your nodes.")
+            }
           } else {
-            logger.debug("Unable to update the system to deploy your software.")
+            Some("Unable to define the user nodes.")
           }
         } else {
-          logger.debug("Unable to deploy your nodes on the Kloud.")
+          Some("Unable to define user nodes")
         }
       } else {
-        logger.debug("Unable to apply KevScript to add a group that manage the overall software.")
+        Some("Unable to manipulate user model.")
       }
     } else {
-      logger.debug("Unable to validate the model:\n{}", result.get)
+      resultOption
     }
   }
 
-  def processDeployment(newModel : ContainerRoot, userModel : ContainerRoot, modelHandlerService: KevoreeModelHandlerService,
-    kevScripEngineFactory: KevScriptEngineFactory, groupName: String, nodeName: String) {
-    // make
+  /**
+   * check if the model is valid
+   */
+  def check (model: ContainerRoot): Option[String] = {
+    val checker: RootChecker = new RootChecker
+    val violations = checker.check(model)
+    if (violations.isEmpty) {
+      None
+    } else {
+      val result = "Unable to deploy this software on the Kloud because there is some constraints violations:\n" +
+        violations.mkString("\n")
+      logger.debug(result)
+      Some(result)
+
+    }
+  }
+
+  /**
+   * get clean model with only nodes and without components, channels and groups
+   */
+  def cleanUserModel (model: ContainerRoot): Option[ContainerRoot] = {
+    val cloner = new ModelCloner
+    val cleanModel = cloner.clone(model)
+
+    cleanModel.removeAllGroups()
+    cleanModel.removeAllHubs()
+    cleanModel.removeAllMBindings()
+    cleanModel.getNodes.foreach {
+      node =>
+        node.removeAllComponents()
+    }
+    cleanModel.getNodes.filter(node =>
+      model.getNodes.find(parent => parent.getHosts.contains(node)) match {
+        case None => false
+        case Some(n) => true
+      }).foreach {
+      node =>
+        cleanModel.removeNodes(node)
+    }
+
+    /*val scriptBuilder = new StringBuilder()
+    scriptBuilder append "tblock {\n"
+    // add a group to link all platform between them (if there is not)
+    scriptBuilder append
+      "merge \"mvn:org.kevoree.library.javase/org.kevoree.library.javase.rest/" + KevoreeFactory.getVersion + "\"\n"
+
+    val number = (java.lang.Math.random() * (Integer.MAX_VALUE - 1)).asInstanceOf[Int]
+    scriptBuilder append "addGroup sync" + number + " : RestGroup\n"
+
+    model.getNodes.foreach {
+      node =>
+        scriptBuilder append "addToGroup sync" + number + " " + node.getName + "\n"
+        scriptBuilder append "updateDictionary sync" + number + " {port=\"8000\"}@" + node.getName + "\n"
+    }
+
+    scriptBuilder append "}"
+
+    logger.debug("Try to apply the following script to usermodel:\n{}", scriptBuilder.toString())
+
+    KevsEngine.executeScript(scriptBuilder.toString(), cleanModel)*/
+    Some(cleanModel)
+  }
+
+  /**
+   * compare models and built a tuple of sets of added nodes and removed nodes 
+   */
+  def compareModels (newModel: ContainerRoot, userModel: ContainerRoot): (List[ContainerNode], List[ContainerNode]) = {
+    var addedNodes = List[ContainerNode]()
+    var removedNodes = List[ContainerNode]()
+    userModel.getNodes.foreach {
+      userNode =>
+        newModel.getNodes.find(node => node.getName == userNode) match {
+          case None => {
+            logger.debug("{} must be removed from the kloud.", userNode.getName)
+            removedNodes = removedNodes ++ List[ContainerNode](userNode)
+          }
+          case Some(newUserNode) =>
+        }
+    }
+    newModel.getNodes.foreach {
+      newUserNode =>
+        userModel.getNodes.find(node => node.getName == newUserNode) match {
+          case None => {
+            logger.debug("{} must be added on the kloud.", newUserNode.getName)
+            addedNodes = addedNodes ++ List[ContainerNode](newUserNode)
+          }
+          case Some(userNode) =>
+        }
+    }
+    (addedNodes, removedNodes)
+  }
+
+  def removeNodes (removedNodes: List[ContainerNode], kloudModel: ContainerRoot): Option[ContainerRoot] = {
+    if (!removedNodes.isEmpty) {
+      logger.debug("Try to remove useless PaaS nodes into the Kloud")
+
+      // build kevscript to remove useless nodes into the kloud model
+      val scriptBuilder = new StringBuilder()
+      scriptBuilder append "tblock {\n"
+
+      removedNodes.foreach {
+        node =>
+          kloudModel.getNodes.find(n => n.getHosts.find(host => host.getName == node.getName) match {
+            case None => false
+            case Some(host) => true
+          }) match {
+            case None => logger
+              .debug("Unable to find the parent of {}. Houston, maybe we have a problem!", node.getName)
+            case Some(parent) =>
+              scriptBuilder append "removeChild " + node.getName + "@" + parent.getName + "\n"
+              scriptBuilder append "removeFromGroup * " + node.getName + "\n"
+              scriptBuilder append "removeNode " + node.getName + "\n"
+          }
+
+      }
+
+      scriptBuilder append "}"
+
+      logger.debug("Try to apply the following script to kloudmodel to add all the user nodes:\n{}",
+                    scriptBuilder.toString())
+
+      KevsEngine.executeScript(scriptBuilder.toString(), kloudModel)
+    } else {
+      Some(kloudModel)
+    }
+  }
+
+  /**
+   * all node are disseminate on parent node
+   * A parent node is defined by two adaptation primitives <b>addNode</b> and <b>removeNode</b>
+   */
+  def addNodes (addedNodes: List[ContainerNode], kloudModel: ContainerRoot): Option[ContainerRoot] = {
+    if (!addedNodes.isEmpty) {
+      logger.debug("Try to add all user nodes into the Kloud")
+
+      // build kevscript to add user nodes into the kloud model
+      val scriptBuilder = new StringBuilder()
+      scriptBuilder append "tblock {\n"
+
+      // count current child for each Parent nodes
+      val parents = countChilds(kloudModel)
+
+      var min = Int.MaxValue
+      var potentialParents = List[String]()
+
+      // create new node using PJavaSENode as type for each user node
+      addedNodes.foreach {
+        node =>
+        // add node
+          scriptBuilder append "addNode " + node.getName + " : PJavaSENode "
+          // set dictionary attributes of node
+          if (node.getDictionary.isDefined) {
+            scriptBuilder append "{"
+            val defaultAttributes = getDefaultNodeAttributes(kloudModel)
+            node.getDictionary.get.getValues
+              .filter(value => defaultAttributes.find(a => a.getName == value.getAttribute.getName) match {
+              case Some(attribute) => true
+              case None => false
+            }).foreach {
+              value =>
+                if (scriptBuilder.last != '{') {
+                  scriptBuilder append ", "
+                }
+                scriptBuilder append
+                  value.getAttribute.getName + "=\"" + value.getValue + "\""
+            }
+            scriptBuilder append "}\n"
+          } else {
+
+            scriptBuilder append "\n"
+          }
+
+          // select a host for each user node
+          if (potentialParents.isEmpty) {
+            min = Int.MaxValue
+
+            parents.foreach {
+              parent => {
+                if (parent._2 < min) {
+                  min = parent._2
+                }
+              }
+            }
+            parents.foreach {
+              parent => {
+                if (parent._2 <= min) {
+                  potentialParents = potentialParents ++ List(parent._1)
+                }
+              }
+            }
+          }
+          val index = (java.lang.Math.random() * potentialParents.size).asInstanceOf[Int]
+          scriptBuilder append "addChild " + node.getName + "@" + potentialParents.get(index) + "\n"
+
+          logger.debug("Add {} as child of {}", node.getName, potentialParents.get(index))
+          potentialParents = potentialParents -- List(potentialParents.get(index))
+      }
+
+      scriptBuilder append "}"
+
+      logger.debug("Try to apply the following script to kloudmodel to add all the user nodes:\n{}",
+                    scriptBuilder.toString())
+
+      KevsEngine.executeScript(scriptBuilder.toString(), kloudModel)
+    } else {
+      Some(kloudModel)
+    }
+  }
+
+  /**
+   * configure the default user group into the kloud model and bind all the user nodes on it
+   */
+  def configureGroup (cleanNewUserModel: ContainerRoot, kloudModel: ContainerRoot,
+    groupName: String/*, groupTypeName: String*/): Option[ContainerRoot] = {
+    logger.debug("Try to add the default into the Kloud")
+
+    // build kevscript to add user nodes into the kloud model
+    val scriptBuilder = new StringBuilder()
+    scriptBuilder append "tblock {\n"
+
+    /*kloudModel.getGroups.find(g => g.getName == groupName) match {
+      case None => {
+        // add the default group
+        scriptBuilder append "addGroup " + groupName + " : " + groupTypeName + "\n"
+      }
+      case Some(g) =>
+    }*/
+
+    cleanNewUserModel.getNodes.foreach {
+      node =>
+        scriptBuilder append "addToGroup " + groupName + " " + node.getName + "\n"
+        scriptBuilder append "updateDictionary " + groupName + " {port=\"8000\"}@" + node.getName + "\n"
+    }
+
+
+    scriptBuilder append "}"
+
+    logger.debug("Try to apply the following script to kloudmodel to add the default group:\n{}",
+                  scriptBuilder.toString())
+
+    KevsEngine.executeScript(scriptBuilder.toString(), kloudModel)
   }
 
   /**
@@ -125,7 +392,7 @@ object KloudDeploymentManager {
             val ipOption = KevoreePropertyHelper
               .getPropertyForNode(kloudModel, subNode.getName, Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP)
             val portOption = KevoreePropertyHelper
-              .getIntPropertyForGroup(cleanModel, group.getName, "port", subNode.getName)
+              .getIntPropertyForGroup(cleanModel, group.getName, "port", true, subNode.getName)
 
             var ip = "127.0.0.1"
             if (ipOption.isDefined && ipOption.get != "") {
@@ -163,6 +430,28 @@ object KloudDeploymentManager {
 
     logger.debug("model sent to " + urlString)
     true
+  }
+
+  private def countChilds (kloudModel: ContainerRoot): List[(String, Int)] = {
+    var counts = List[(String, Int)]()
+    kloudModel.getNodes.filter {
+      node =>
+        val nodeType: NodeType = node.getTypeDefinition.asInstanceOf[NodeType]
+        nodeType.getManagedPrimitiveTypes.filter(primitive => primitive.getName.toLowerCase == "addnode"
+          || primitive.getName.toLowerCase == "removenode").size == 2
+    }.foreach {
+      node =>
+        counts = counts ++ List[(String, Int)]((node.getName, node.getHosts.size))
+    }
+    counts
+  }
+
+  private def getDefaultNodeAttributes (kloudModel: ContainerRoot): List[DictionaryAttribute] = {
+    kloudModel.getTypeDefinitions.find(td => td.getName == "PJavaSENode") match {
+      case None => List[DictionaryAttribute]()
+      case Some(td) =>
+        td.getDictionaryType.get.getAttributes
+    }
   }
 
 }

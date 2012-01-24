@@ -25,7 +25,10 @@ import org.kevoree._
 object KloudResourceProvider {
   private val logger: Logger = LoggerFactory.getLogger(this.getClass)
 
-
+  /**
+   * check if the model is valid
+   */
+  @Deprecated
   def check (model: ContainerRoot): Option[String] = {
     val checker: RootChecker = new RootChecker
     val violations = checker.check(model)
@@ -44,6 +47,7 @@ object KloudResourceProvider {
    * get clean model with only nodes and without components, channels
    * only one group is kept and this group is the default group automatically added
    */
+  @Deprecated
   def cleanUserModel (model: ContainerRoot): Option[ContainerRoot] = {
     val cloner = new ModelCloner
     val cleanModel = cloner.clone(model)
@@ -86,6 +90,7 @@ object KloudResourceProvider {
     KevsEngine.executeScript(scriptBuilder.toString(), cleanModel)
   }
 
+  @Deprecated
   private def getDefaultNodeAttributes (kloudModel: ContainerRoot): List[DictionaryAttribute] = {
     kloudModel.getTypeDefinitions.find(td => td.getName == "PJavaSENode") match {
       case None => List[DictionaryAttribute]()
@@ -100,6 +105,7 @@ object KloudResourceProvider {
    * the groups that are into the model are replicated on the kloudModel
    * A parent node is defined by two adaptation primitives <b>addNode</b> and <b>removeNode</b>
    */
+  @Deprecated
   def distribute (model: ContainerRoot, kloudModel: ContainerRoot): Option[ContainerRoot] = {
     logger.debug("Try to distribute all the user nodes into the Kloud")
 
@@ -184,6 +190,7 @@ object KloudResourceProvider {
   /**
    * Update the current kloud configuration using UUIDModel to ensure that updates are based on last version of the current model
    */
+  @Deprecated
   def update (uuidModel: UUIDModel, model: ContainerRoot, modelHandlerService: KevoreeModelHandlerService): Boolean = {
     try {
       modelHandlerService.atomicCompareAndSwapModel(uuidModel, model)
@@ -206,7 +213,7 @@ object KloudResourceProvider {
       case Some(group) => globalModel.getGroups.find(g => g.getName == group.getName) match {
         case Some(g) =>
           val optionPort = KevoreePropertyHelper
-            .getIntPropertyForGroup(globalModel, g.getName, "port", userModel.getNodes(0).getName)
+            .getIntPropertyForGroup(globalModel, g.getName, "port", true, userModel.getNodes(0).getName)
           if (optionPort.isDefined && optionPort.get != 0) {
             val optionAddress = KevoreePropertyHelper
               .getPropertyForNode(globalModel, userModel.getNodes(0).getName, Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP)
@@ -265,7 +272,7 @@ object KloudResourceProvider {
             val ipOption = KevoreePropertyHelper
               .getPropertyForNode(kloudModel, subNode.getName, Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP)
             val portOption = KevoreePropertyHelper
-              .getIntPropertyForGroup(cleanModel, group.getName, "port", subNode.getName)
+              .getIntPropertyForGroup(cleanModel, group.getName, "port", true, subNode.getName)
 
             var ip = "127.0.0.1"
             if (ipOption.isDefined && ipOption.get != "") {
@@ -306,6 +313,7 @@ object KloudResourceProvider {
     true
   }
 
+  @Deprecated
   private def countChilds (kloudModel: ContainerRoot): List[(String, Int)] = {
     var counts = List[(String, Int)]()
     kloudModel.getNodes.filter {

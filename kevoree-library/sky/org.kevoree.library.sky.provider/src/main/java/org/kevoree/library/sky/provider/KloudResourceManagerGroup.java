@@ -5,9 +5,11 @@ import org.kevoree.annotation.DictionaryAttribute;
 import org.kevoree.annotation.DictionaryType;
 import org.kevoree.annotation.GroupType;
 import org.kevoree.annotation.Library;
+import org.kevoree.framework.KevoreeXmiHelper;
 import org.kevoree.library.javase.ssh.SSHRestGroup;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import scala.Option;
 
 /**
  * User: Erwan Daubert - erwan.daubert@gmail.com
@@ -20,13 +22,13 @@ import org.slf4j.LoggerFactory;
 @Library(name = "SKY")
 @GroupType
 @DictionaryType({
-		@DictionaryAttribute(name = "login", optional = false)
+//		@DictionaryAttribute(name = "login", optional = false),
+		@DictionaryAttribute(name = "publicURL", optional = false)
 })
 public class KloudResourceManagerGroup extends SSHRestGroup {
 	private Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	private ContainerRoot userModel;
-	private ContainerRoot cleanModel;
 
 	@Override
 	public void triggerModelUpdate () {
@@ -36,6 +38,7 @@ public class KloudResourceManagerGroup extends SSHRestGroup {
 	@Override
 	public void push (ContainerRoot containerRoot, String s) {
 		super.push(containerRoot, s);
+		// TODO replace by using the publicURL + add a local action to push the model from the kloud to the nodes
 	}
 
 	@Override
@@ -49,10 +52,13 @@ public class KloudResourceManagerGroup extends SSHRestGroup {
 		if (KloudDeploymentManager.isIaaSNode(this.getModelService().getLastModel(), this.getName(), this.getNodeName())) {
 		// if this instance is on top of IaaS node then we try to dispatch the received model on the kloud
 			if (KloudDeploymentManager.needsNewDeployment(model, userModel)) {
-				KloudDeploymentManager.processDeployment(model/*, this.getDictionary().get("login").toString()*/, this.getModelService(), this.getKevScriptEngineFactory(), this.getName(), this.getNodeName());
+				KloudDeploymentManager.processDeployment(model, userModel, this.getModelService(), this.getKevScriptEngineFactory(), this.getName()/*, "KloudResourceManagerGroup"*/);
 			} else {
-				// there is no new node so we simply push model on each PaaSNode
-				KloudDeploymentManager.updateUserConfiguration(cleanModel, model, this.getModelService());
+				Option<ContainerRoot> cleanModelOption = KloudDeploymentManager.cleanUserModel(userModel);
+				if (cleanModelOption.isDefined()) {
+					// there is no new node so we simply push model on each PaaSNode
+					KloudDeploymentManager.updateUserConfiguration(cleanModelOption.get(), model, this.getModelService());
+				}
 			}
 		} else if (KloudDeploymentManager.isPaaSNode(this.getModelService().getLastModel(), this.getName(), this.getNodeName())) {
 		// if this instance is on top of PaaS node than we deploy the model on the node
@@ -60,5 +66,14 @@ public class KloudResourceManagerGroup extends SSHRestGroup {
 		} else {
 			logger.debug("Unable to manage this kind of node as a Kloud node");
 		}
+	}
+
+	@Override
+	public String getModel () {
+		return KevoreeXmiHelper.saveToString(userModel, false);
+	}
+
+	public void localPush(ContainerRoot model, String groupName) {
+
 	}
 }

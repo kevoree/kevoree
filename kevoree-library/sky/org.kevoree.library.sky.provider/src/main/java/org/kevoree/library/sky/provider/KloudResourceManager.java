@@ -22,9 +22,6 @@ import scala.Option;
  */
 @Library(name = "SKY")
 @ComponentType
-/*@DictionaryType({
-		//@DictionaryAttribute(name = "EndPoint", defaultValue = "http://kloud.kevoree.org", optional = false)
-})*/
 public class KloudResourceManager extends AbstractPage {
 
 	private Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -37,7 +34,8 @@ public class KloudResourceManager extends AbstractPage {
 				// check authentication information
 				if (InriaLdap.testLogin(request.getResolvedParams().get("login"),
 						request.getResolvedParams().get("password"))) {
-					String result = processDeployment(request.getResolvedParams().get("model"),
+
+					String result = process(request.getResolvedParams().get("model"),
 							request.getResolvedParams().get("login"));
 					if (result.startsWith("http")) {
 						response.setContent(HTMLHelper
@@ -57,11 +55,73 @@ public class KloudResourceManager extends AbstractPage {
 		} else {
 			response.setContent("Bad Request");
 		}
-
 		return response;
 	}
 
-	private String processDeployment (String modelStream, String login) {
+	private String process (String modelStream, String login) {// try to get the user model
+		ContainerRoot model = KevoreeXmiHelper.loadString(modelStream);
+		// looking for current configuration to check if user has already submitted something
+		if (KloudHelper.lookForAGroup(login, this.getModelService().getLastModel())) {
+
+			// if the user has already submitted something, we return the access point to this previous configuration
+			Option<String> accessPointOption = KloudHelper
+					.lookForAccessPoint(login, this.getNodeName(), this.getModelService().getLastModel());
+			if (accessPointOption.isDefined()) {
+				return "A previous configuration has already submitted.<br/>Please use this access point to reconfigure it: "
+						+ accessPointOption.get()
+						+ "<br />This access point allow you to access to a Kevoree group that allows you to send a model to it."
+						+ "<br />This model will be used to reconfigure your nodes and add or remove some of them if necessary.";
+			} else {
+				return "A previous configuration has already submitted but we are not able to find the corresponding access point.<br/>Please contact the administrator.";
+			}
+		} else {
+			// else we create this new one
+			UUIDModel uuidModel = this.getModelService().getLastUUIDModel();
+
+			// we create a group with the login of the user
+			Option<ContainerRoot> newKloudModelOption = KloudHelper
+					.createGroup(login, this.getNodeName(), uuidModel.getModel());
+			if (newKloudModelOption.isDefined()) {
+				// create proxy to the group
+				newKloudModelOption = KloudHelper.createProxy(login, this.getNodeName(), "/" + login,
+						newKloudModelOption.get());
+
+				if (newKloudModelOption.isDefined()) {
+
+					KloudHelper.getGroup(login, newKloudModelOption.get());
+
+					try {
+						// update the kloud model by adding the group (the nodes are not added)
+						this.getModelService().atomicCompareAndSwapModel(uuidModel, newKloudModelOption.get());
+
+						// push the user model to this group
+						KloudHelper.localPush(model, login);
+
+						Option<String> accessPointOption = KloudHelper
+								.lookForAccessPoint(login, this.getNodeName(), this.getModelService().getLastModel());
+						if (accessPointOption.isDefined()) {
+							return accessPointOption.get();
+						} else {
+							return "Unable to give you access to your nodes.<br/>Please contact the administrators.";
+						}
+					} catch (Exception e) {
+						logger.debug(
+								"Unable to swap model, maybe because the new model is based on a too old configuration",
+								e);
+						return "Unable to swap model, maybe because the new model is based on a too old configuration:\n"
+								+ e.getMessage();
+					}
+				} else {
+					logger.debug("Unable to add the proxy for the user {}", login);
+					return "Unable to add the proxy for the user " + login;
+				}
+			} else {
+				return "Unable to create the needed user group to give access the nodes to the user.";
+			}
+		}
+	}
+
+	/*private String processDeployment (String modelStream, String login) {
 		// try to get the user model
 		ContainerRoot model = KevoreeXmiHelper.loadString(modelStream);
 		// check if the model is valid
@@ -112,5 +172,5 @@ public class KloudResourceManager extends AbstractPage {
 		} else {
 			return result.get();
 		}
-	}
+	}*/
 }
