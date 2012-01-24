@@ -40,7 +40,7 @@ public class defMSG extends AbstractChannelFragment {
     @Override
     public Object dispatch(Message msg) {
         if (getBindedPorts().isEmpty() && getOtherFragments().isEmpty()) {
-           logger.warn("No consumer, msg lost=" + msg.getContent());
+           logger.debug("No consumer, msg lost=" + msg.getContent());
         }
         for (org.kevoree.framework.KevoreePort p : getBindedPorts()) {
             forward(p, msg);
