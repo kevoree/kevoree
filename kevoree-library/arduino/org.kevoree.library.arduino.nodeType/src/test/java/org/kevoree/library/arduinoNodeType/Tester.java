@@ -20,9 +20,7 @@ public class Tester {
         // System.setProperty("serial.port", "/dev/tty.usbmodem621");
 
 
-       // String modelString = "/home/jed/Desktop/FuzzyModelTEST";
-
-        String modelString = "/Users/duke/Desktop/DemoArduino/testlevel.kev";
+       String modelString = "/Users/duke/Desktop/old/daumModelFuzzy";
         
         ContainerRoot model = KevoreeXmiHelper.load(modelString);
 
