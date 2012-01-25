@@ -31,8 +31,8 @@ public class DefaultArduinoGenerator implements ArduinoGenerator {
     @Override
     public void declareStaticKMessage(String name, String typeName) {
         buffer.append("kmessage * "+name+" = (kmessage*) malloc(sizeof(kmessage));\n");
-        buffer.append("if (msg){memset("+name+", 0, sizeof(kmessage));}\n");
-        buffer.append("msg->metric = \""+typeName+"\";");
+        buffer.append("if ("+name+"){memset("+name+", 0, sizeof(kmessage));}\n");
+        buffer.append(name+"->metric = \""+typeName+"\";");
     }
 
     @Override
@@ -70,6 +70,18 @@ public class DefaultArduinoGenerator implements ArduinoGenerator {
     @Override
     public void setTypeModel(TypeDefinition td) {
         typeDefModel = td;
+    }
+
+    private String portName = "";
+    
+    @Override
+    public void setPortName(String pname) {
+        portName = pname;
+    }
+
+    @Override
+    public String getPortName() {
+        return portName;
     }
 
 }

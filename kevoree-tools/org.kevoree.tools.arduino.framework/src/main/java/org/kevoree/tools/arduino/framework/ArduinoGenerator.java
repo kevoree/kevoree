@@ -40,6 +40,10 @@ public interface ArduinoGenerator {
 
     public void setTypeModel(TypeDefinition td);
 
+    public void setPortName(String pname);
+    
+    public String getPortName();
+    
 }
 
 
