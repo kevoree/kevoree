@@ -118,6 +118,40 @@
 
     <build>
         <plugins>
+
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <version>2.1</version>
+                <executions>
+                    <execution>
+                        <id>copy</id>
+                        <phase>generate-resources</phase>
+                        <goals>
+                            <goal>copy</goal>
+                        </goals>
+                        <configuration>
+                            <artifactItems>
+                                <artifactItem>
+                                    <groupId>org.kevoree.tools</groupId>
+                                    <artifactId>org.kevoree.tools.aether.framework</artifactId>
+                                    <version>${kevoree.version}</version>
+                                    <overWrite>false</overWrite>
+                                    <outputDirectory>${project.basedir}/src/main/resources/boot</outputDirectory>
+                                    <destFileName>org.kevoree.tools.aether.framework-${kevoree.version}.jar</destFileName>
+                                </artifactItem>
+                            </artifactItems>
+
+                            <overWriteReleases>false</overWriteReleases>
+                            <overWriteSnapshots>true</overWriteSnapshots>
+
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+
             <plugin>
                 <groupId>org.scala-tools</groupId>
                 <artifactId>maven-scala-plugin</artifactId>
