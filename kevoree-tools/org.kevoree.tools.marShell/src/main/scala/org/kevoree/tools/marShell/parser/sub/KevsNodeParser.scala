@@ -93,7 +93,7 @@ trait KevsNodeParser extends KevsAbstractParser with KevsPropertiesParser {
         var res: List[Statment] = List()
         nodeIDs.foreach {
           nodeID =>
-            val newstatement =
+//            val newstatement =
             res = res ++ List(MoveChildStatment(nodeID, oldFatherNodeId, fatherNodeId))
         }
         res

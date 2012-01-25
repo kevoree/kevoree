@@ -30,13 +30,15 @@ import reflect.BeanProperty
 
 class NodeTypeBootstrapHelper extends Bootstraper {
 
+  def this(bc : BundleContext){
+    this()
+    setBootstrapBundleContext(bc)
+  }
+
   private var bundle: Bundle = null
   private val logger = LoggerFactory.getLogger(this.getClass)
 
   def getNodeTypeBundle = bundle
-
-
-
 
   def bootstrapNodeType(model: ContainerRoot, destNodeName: String,
                         bundleContext: BundleContext): Option[AbstractNodeType] = {

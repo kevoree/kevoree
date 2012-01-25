@@ -120,6 +120,7 @@ trait PortForm {
         kernel.getEditorPanel.getTypeEditorPanel.refresh()
       }
     })
+    btAdd.setOpaque(false)
     window.getJDialog.getRootPane.setDefaultButton(btAdd)
     SpringUtilities.makeCompactGrid(layout, 4, 2, 6, 6, 6, 6)
     Tuple2(layout, btAdd)

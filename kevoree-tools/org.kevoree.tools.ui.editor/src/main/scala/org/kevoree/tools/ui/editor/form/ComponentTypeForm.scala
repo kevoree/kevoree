@@ -42,15 +42,19 @@ trait ComponentTypeForm {
 
     val packageTextFieldLabel = new JLabel("Package: ", SwingConstants.TRAILING);
     packageTextFieldLabel.setUI(new HudLabelUI());
+    packageTextFieldLabel.setOpaque(false);
 
     val componentTypeNameLabel = new JLabel("Name: ", SwingConstants.TRAILING);
     componentTypeNameLabel.setUI(new HudLabelUI());
+    componentTypeNameLabel.setOpaque(false);
 
     val libraryCompoLabel = new JLabel("Library: ", SwingConstants.TRAILING)
     libraryCompoLabel.setUI(new HudLabelUI)
+    libraryCompoLabel.setOpaque(false);
 
     val deployUnitComboLabel = new JLabel("Deploy Unit: ", SwingConstants.TRAILING)
     deployUnitComboLabel.setUI(new HudLabelUI)
+    deployUnitComboLabel.setOpaque(false);
 
     val ok_lbl = new JLabel("  ")
     ok_lbl.setUI(new HudLabelUI)
@@ -64,6 +68,7 @@ trait ComponentTypeForm {
       }
       def focusLost(p1: FocusEvent) {}
     })
+    packageTextField.setOpaque(false);
 
     packageTextFieldLabel.setLabelFor(packageTextField);
     layout.add(packageTextFieldLabel)
@@ -78,6 +83,7 @@ trait ComponentTypeForm {
       }
       def focusLost(p1: FocusEvent) {}
     })
+    nameTextField.setOpaque(false);
 
     componentTypeNameLabel.setLabelFor(nameTextField);
     layout.add(componentTypeNameLabel)
@@ -98,6 +104,7 @@ trait ComponentTypeForm {
       def popupMenuWillBecomeInvisible(p1: PopupMenuEvent) {}
       def popupMenuCanceled(p1: PopupMenuEvent) {}
     })
+    comboLibrary.setOpaque(false);
 
     libraryCompoLabel.setLabelFor(comboLibrary)
     layout.add(libraryCompoLabel)
@@ -119,6 +126,7 @@ trait ComponentTypeForm {
       def popupMenuWillBecomeInvisible(p1: PopupMenuEvent) {}
       def popupMenuCanceled(p1: PopupMenuEvent) {}
     })
+    comboDeployUnit.setOpaque(false);
 
     deployUnitComboLabel.setLabelFor(comboDeployUnit)
     layout.add(deployUnitComboLabel)
@@ -184,14 +192,16 @@ trait ComponentTypeForm {
           updateCmd.setKernel(kernel)
           updateCmd.execute(None)
 
-          ok_lbl.setText("OK")
+          ok_lbl.setText("ADDED")
           ok_lbl.setForeground(Color.GREEN)
           window.getContentPane.repaint()
         }
       }
     })
+    btAdd.setOpaque(false);
 
     val bottomLine = new JPanel(new FlowLayout(FlowLayout.CENTER))
+    bottomLine.setOpaque(false)
     bottomLine.add(btAdd)
     bottomLine.add(ok_lbl)
 

@@ -86,6 +86,7 @@ trait LibraryForm {
         }
       }
     })
+    btAdd.setOpaque(false);
 
     bottomLine.add(btAdd)
     bottomLine.add(okLabel)
