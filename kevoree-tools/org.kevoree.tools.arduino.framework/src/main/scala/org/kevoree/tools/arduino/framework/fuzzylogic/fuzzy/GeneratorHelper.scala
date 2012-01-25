@@ -104,19 +104,25 @@ object GeneratorHelper {
     gen.appendNativeStatement("#define NUM_INPUTS "+nbInputs)
     gen.appendNativeStatement("#define NUM_OUTPUTS "+nbOutputs)
 
-    //  mappage
+
     gen.appendNativeStatement("float crisp_inputs["+nbInputs+"];")
     gen.appendNativeStatement("float crisp_outputs["+nbInputs+"];")
 
-    gen.appendNativeStatement("float rule_crispvalue["+nbRules+"];")
+
     gen.appendNativeStatement("float fuzzy_outputs["+nbOutputs+"][NB_TERMS];")
     gen.appendNativeStatement("float fuzzy_inputs["+nbInputs+"][NB_TERMS];")
-
+    gen.appendNativeStatement("float rule_crispvalue["+nbRules+"];")
 
     gen.appendNativeStatement("unsigned char in_num_MemberShipFunction["+nbInputs+"];")
     gen.appendNativeStatement("unsigned char out_num_MemberShipFunction["+nbInputs+"];")
     gen.appendNativeStatement("float outMemberShipFunction["+nbOutputs+"][PRECISION][2];")
     gen.appendNativeStatement("float inMemberShipFunction["+nbInputs+"][NB_TERMS][PRECISION];")
+
+    // map global variables to local constante
+    gen.appendNativeStatement("unsigned char const	*num_rule_antecedent;");
+    gen.appendNativeStatement("unsigned char const	*num_rule_coutcome;");
+    gen.appendNativeStatement("_Rule const *rules;")
+    gen.appendNativeStatement("unsigned char numberOfRules;")
 
   }
 
