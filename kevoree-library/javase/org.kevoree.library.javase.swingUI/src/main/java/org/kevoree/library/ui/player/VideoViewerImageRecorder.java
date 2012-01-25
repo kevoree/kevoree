@@ -33,8 +33,8 @@ import java.io.IOException;
 //		@ProvidedPort(name = "image_bytes", type = PortType.MESSAGE, messageType = "bytes"),
 })
 @DictionaryType({
-		@DictionaryAttribute(name = "image_folder", optional = false),
-		@DictionaryAttribute(name = "FPS", defaultValue = "30", optional = false, vals = {"1", "10", "15", "24", "30"})
+		@DictionaryAttribute(name = "image_folder", optional = true),
+		@DictionaryAttribute(name = "FPS", defaultValue = "10", optional = true, vals = {"1", "10", "15", "24", "30"})
 })
 @Library(name = "JavaSE")
 @ComponentType
@@ -120,9 +120,13 @@ public class VideoViewerImageRecorder extends AbstractComponentType {
 
 	private void record (BufferedImage image) {
 		try {
-			File outputfile = new File(
-					this.getDictionary().get("image_folder") + File.separator + "saved" + System.currentTimeMillis()
-							+ ".png");
+			
+			String path = this.getDictionary().get("image_folder").toString();
+			if (path == null || path.equals("")) {
+				path = System.getProperty("user.home");
+			}
+			
+			File outputfile = new File(path + File.separator + "saved" + System.currentTimeMillis() + ".png");
 			ImageIO.write(image, "png", outputfile);
 		} catch (IOException e) {
 			e.printStackTrace();
