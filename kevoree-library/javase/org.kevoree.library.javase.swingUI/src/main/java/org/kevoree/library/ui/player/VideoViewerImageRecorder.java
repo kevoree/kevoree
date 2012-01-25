@@ -121,12 +121,12 @@ public class VideoViewerImageRecorder extends AbstractComponentType {
 	private void record (BufferedImage image) {
 		try {
 			
-			String path = this.getDictionary().get("image_folder").toString();
-			if (path == null || path.equals("")) {
+			Object path = this.getDictionary().get("image_folder");
+			if (path == null || path.toString().equals("")) {
 				path = System.getProperty("user.home");
 			}
 			
-			File outputfile = new File(path + File.separator + "saved" + System.currentTimeMillis() + ".png");
+			File outputfile = new File(path.toString() + File.separator + "saved" + System.currentTimeMillis() + ".png");
 			ImageIO.write(image, "png", outputfile);
 		} catch (IOException e) {
 			e.printStackTrace();
