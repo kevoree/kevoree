@@ -71,6 +71,11 @@ public class App {
                 model = KevoreeXmiHelper.loadStream(jar.getInputStream(entry));
 
 
+                mres = null;
+                factory= null;
+                temp_cl.unload();
+                temp_cl = null;
+
       
 
             } catch (Exception e) {
