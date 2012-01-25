@@ -115,7 +115,7 @@ object KinectReconfigurationTester {
     model.getNodes.find(n => n.getName == nodeName) match {
       case None => None
       case Some(node) => {
-        node.getComponents.find(c => c.getTypeDefinition.getName == "VideoViewer") match {
+        node.getComponents.find(c => c.getTypeDefinition.getName == "VideoViewerImageRecorder") match {
           case None => None
           case Some(component) => Some(component.getName)
         }
