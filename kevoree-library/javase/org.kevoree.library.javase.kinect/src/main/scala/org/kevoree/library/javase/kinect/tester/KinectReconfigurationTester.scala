@@ -45,7 +45,7 @@ object KinectReconfigurationTester {
             "unbind " + kinectNameOption.get + ".motor@" + nodeName + " => " + hubName + "\n"
       }
 
-      scriptBuilder append "addComponent VideoViwerNew@" + nodeName + " : VideoViewer\n"
+      scriptBuilder append "addComponent VideoViwerNew@" + nodeName + " : VideoViewerImageRecorder\n"
       scriptBuilder append "addChannel channel_VideoViewer" + " : defMSG\n"
       scriptBuilder append "bind VideoViwerNew.image@" + nodeName + " => channel_VideoViewer\n"
       scriptBuilder append "bind " + kinectNameOption.get + ".image@" + nodeName + " => channel_VideoViewer\n"
