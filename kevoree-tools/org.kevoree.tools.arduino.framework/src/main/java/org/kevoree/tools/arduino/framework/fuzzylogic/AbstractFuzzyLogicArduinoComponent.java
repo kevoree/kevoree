@@ -40,27 +40,34 @@ public abstract class AbstractFuzzyLogicArduinoComponent extends AbstractArduino
     {
         DefaultFuzzyRulesContext def = new DefaultFuzzyRulesContext();
         declareRules(def);
-
         gen.appendNativeStatement(MicroTemplate.fromClassPath("fuzzylogic/ArduinoFuzzyLogic/ArduinoFuzzyLogicHeader.c",AbstractFuzzyLogicArduinoComponent.class));
-
         // Generate rules
         generateRules(gen,def);
-
     }
 
     @Override
     public void generateClassHeader(ArduinoGenerator gen) {
         DefaultFuzzyRulesContext def = new DefaultFuzzyRulesContext();
         declareRules(def);
-
         //GENERATE TEMP TAB
         GeneratorHelper.generateClassVariables(gen,def.getNumberOfRules());
-
         // add framework
         gen.appendNativeStatement(MicroTemplate.fromClassPath("fuzzylogic/ArduinoFuzzyLogic/ArduinoFuzzyLogicFramework.c",AbstractFuzzyLogicArduinoComponent.class));
     }
 
-    //TODO UPDATE
+
+    @Override
+    public void generateInit(ArduinoGenerator gen) {
+
+        String idname = gen.getTypeModel().getName();
+        gen.appendNativeStatement("num_rule_antecedent=num_rule_antecedent_"+idname+";");
+        gen.appendNativeStatement("num_rule_coutcome=num_rule_coutcome_"+idname+";");
+        gen.appendNativeStatement("rules=rules_"+idname+";");
+        gen.appendNativeStatement("numberOfRules=NUM_RULES_"+idname+";");
+
+     }
+
+
 
     private ArduinoGenerator lastUsed = null;
 
@@ -74,7 +81,7 @@ public abstract class AbstractFuzzyLogicArduinoComponent extends AbstractArduino
             lastUsed = getGenerator();
 
             // fire all rules
-            lastUsed.appendNativeStatement("control(crisp_inputs,crisp_outputs);");
+            lastUsed.appendNativeStatement("fire_all_rules();");
 
         }
     }
@@ -93,10 +100,9 @@ public abstract class AbstractFuzzyLogicArduinoComponent extends AbstractArduino
     public void generateRules(ArduinoGenerator gen,DefaultFuzzyRulesContext contextRules)
     {
 
-        // TODO create one id by ruleset
-        String uuid  = contextRules.getId().toString().substring(0,5);
+        String idname = gen.getTypeModel().getName();
 
-        gen.appendNativeStatement("#define NUM_RULES "+contextRules.getNumberOfRules());
+        gen.appendNativeStatement("#define NUM_RULES_"+idname+" "+contextRules.getNumberOfRules());
 
         StringBuilder code_rules = new StringBuilder();
         StringBuilder _num_rule_antecedent = new StringBuilder();
@@ -160,9 +166,9 @@ public abstract class AbstractFuzzyLogicArduinoComponent extends AbstractArduino
             }
         }
 
-        gen.appendNativeStatement("PROGMEM const unsigned char	num_rule_antecedent[NUM_RULES] = { "+_num_rule_antecedent.toString()+"};");
-        gen.appendNativeStatement("PROGMEM const unsigned char num_rule_coutcome[NUM_RULES] = { "+_num_rule_coutcome.toString()+"};")  ;
-        gen.appendNativeStatement("const struct _Rule rules[NUM_RULES] = {");
+        gen.appendNativeStatement("PROGMEM const unsigned char	num_rule_antecedent_"+idname+"[NUM_RULES_"+idname+"] = { "+_num_rule_antecedent.toString()+"};");
+        gen.appendNativeStatement("PROGMEM const unsigned char num_rule_coutcome_"+idname+"[NUM_RULES_"+idname+"] = { "+_num_rule_coutcome.toString()+"};")  ;
+        gen.appendNativeStatement("PROGMEM const struct _Rule rules_"+idname+"[NUM_RULES_"+idname+"] = {");
         gen.appendNativeStatement(code_rules.toString());
         gen.appendNativeStatement( "};");
 

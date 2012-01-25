@@ -17,7 +17,7 @@ void displayRules(){
 
 	int rule_index,i,y,in_domain,in_term,out_domain,out_term;
 
-	for( rule_index=0;rule_index <NUM_RULES;rule_index++)
+	for( rule_index=0;rule_index <numberOfRules;rule_index++)
 	{
         Serial.print("RULE #");
         Serial.print(rule_index);
@@ -156,6 +156,11 @@ void displayDomain()
 #endif
 
 
+void fire_all_rules()
+{
+    control(crisp_inputs,crisp_outputs);
+}
+
 void control(float *crisp_inputs, float *crisp_outputs)
 {
 	unsigned char  in_index,rule_index,out_index;
@@ -165,7 +170,7 @@ void control(float *crisp_inputs, float *crisp_outputs)
 		fuzzify(in_index,crisp_inputs[in_index]);
 	}
 
-	for (rule_index = 0;rule_index < NUM_RULES;rule_index++)
+	for (rule_index = 0;rule_index < numberOfRules;rule_index++)
 	{
 		fire_rule(rule_index);
 	}
