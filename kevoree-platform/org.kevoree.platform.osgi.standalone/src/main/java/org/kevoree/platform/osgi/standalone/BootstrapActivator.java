@@ -70,7 +70,7 @@ public class BootstrapActivator implements BundleActivator {
 
             Class clazz3 = b.loadClass("org.kevoree.tools.aether.framework.AetherMavenResolver");
             MavenResolver mres = (MavenResolver) clazz3.newInstance();
-            File fileMarShell = mres.resolveKevoreeArtifact("org.kevoree.tools.marshell", "org.kevoree.tools",KevoreeFactory.getVersion());
+            File fileMarShell = mres.resolveKevoreeArtifact("org.kevoree.tools.marShell", "org.kevoree.tools",KevoreeFactory.getVersion());
 
             Bundle marshell_bundle = context.installBundle("file:///"+fileMarShell.getAbsolutePath());
             final Class clazz2 = marshell_bundle.loadClass("org.kevoree.tools.marShell.KevScriptCoreEngine");
