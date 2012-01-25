@@ -33,19 +33,18 @@ public class AutoNormalizer extends AbstractArduinoComponent {
 
     @Port(name = "input")
     public void triggerPort(Object o) {
-        StringBuffer context = (StringBuffer) o;
-        context.append("float value = atof(msg->value);\n");
-        context.append("if(value < minValue){ minValue = value; }\n");
-        context.append("if(value > maxValue){ maxValue = value; }\n");
-        context.append("float result=((value-minValue)/ (maxValue-minValue))*100;\n");
-        context.append("if(atoi(inverted) == 0){result = abs(100 - result  );}\n");
-        context.append("kmessage * smsg = (kmessage*) malloc(sizeof(kmessage));");
-        context.append("if (smsg){memset(msg, 0, sizeof(kmessage));}");
-        context.append("sprintf(buf,\"%d\",int(result));\n");
-        context.append("smsg->value = buf;\n");
-        context.append("smsg->metric = \"percent\";");
-        context.append("norm_rport(smsg);");
-        context.append("free(smsg);");
+        getGenerator().appendNativeStatement("float value = atof(msg->value);\n");
+        getGenerator().appendNativeStatement("if(value < minValue){ minValue = value; }\n");
+        getGenerator().appendNativeStatement("if(value > maxValue){ maxValue = value; }\n");
+        getGenerator().appendNativeStatement("float result=((value-minValue)/ (maxValue-minValue))*100;\n");
+        getGenerator().appendNativeStatement("if(atoi(inverted) == 0){result = abs(100 - result  );}\n");
+        getGenerator().appendNativeStatement("kmessage * smsg = (kmessage*) malloc(sizeof(kmessage));");
+        getGenerator().appendNativeStatement("if (smsg){memset(msg, 0, sizeof(kmessage));}");
+        getGenerator().appendNativeStatement("sprintf(buf,\"%d\",int(result));\n");
+        getGenerator().appendNativeStatement("smsg->value = buf;\n");
+        getGenerator().appendNativeStatement("smsg->metric = \"percent\";");
+        getGenerator().appendNativeStatement("norm_rport(smsg);");
+        getGenerator().appendNativeStatement("free(smsg);");
     }
 
 }
