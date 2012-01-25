@@ -20,9 +20,9 @@ public class Tester {
         // System.setProperty("serial.port", "/dev/tty.usbmodem621");
 
 
-       String modelString = "/Users/duke/Desktop/old/daumModelFuzzy";
+
         
-        ContainerRoot model = KevoreeXmiHelper.load(modelString);
+        ContainerRoot model = KevoreeXmiHelper.loadStream(Tester.class.getClassLoader().getResourceAsStream("FuzzyModelTEST"));
 
         ArduinoNode node = new ArduinoNode();
         node.setForceUpdate(true);

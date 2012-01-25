@@ -13,9 +13,12 @@
  */
 package org.kevoree.tools.arduino.framework.fuzzylogic;
 
+import org.kevoree.ComponentType;
+import org.kevoree.PortTypeRef;
 import org.kevoree.annotation.ComponentFragment;
 import org.kevoree.annotation.Generate;
 import org.kevoree.annotation.Port;
+import org.kevoree.annotation.RequiredPort;
 import org.kevoree.framework.template.MicroTemplate;
 import org.kevoree.tools.arduino.framework.AbstractArduinoComponent;
 import org.kevoree.tools.arduino.framework.ArduinoGenerator;
@@ -47,12 +50,21 @@ public abstract class AbstractFuzzyLogicArduinoComponent extends AbstractArduino
 
     @Override
     public void generateClassHeader(ArduinoGenerator gen) {
+        //GENERATE TEMP BUFFFER
+        for(PortTypeRef rp : ((ComponentType) gen.getTypeModel()).getRequiredForJ()){
+            gen.appendNativeStatement("char buf_"+rp.getName()+"[8];");
+        }
+        
         DefaultFuzzyRulesContext def = new DefaultFuzzyRulesContext();
         declareRules(def);
         //GENERATE TEMP TAB
         GeneratorHelper.generateClassVariables(gen,def.getNumberOfRules());
         // add framework
         gen.appendNativeStatement(MicroTemplate.fromClassPath("fuzzylogic/ArduinoFuzzyLogic/ArduinoFuzzyLogicFramework.c",AbstractFuzzyLogicArduinoComponent.class));
+
+
+        GeneratorHelper.generateControlMethod(gen);
+
     }
 
 
@@ -69,21 +81,11 @@ public abstract class AbstractFuzzyLogicArduinoComponent extends AbstractArduino
 
 
 
-    private ArduinoGenerator lastUsed = null;
-
     @Port(name="*")
     public void portGeneration(Object o)
     {
-        if(lastUsed != null)
-        {
-
-            //TODO MAPPING & CODE GENRATION
-            lastUsed = getGenerator();
-
-            // fire all rules
-            lastUsed.appendNativeStatement("fire_all_rules();");
-
-        }
+        getGenerator().appendNativeStatement("crisp_inputs["+GeneratorHelper.getPositiongetProvided(getGenerator(),getGenerator().getPortName())+"]=atol(msg->value);");
+        getGenerator().appendNativeStatement("fire_all_rules();");
     }
 
     @Override
@@ -94,16 +96,10 @@ public abstract class AbstractFuzzyLogicArduinoComponent extends AbstractArduino
 
     public abstract void declareRules(FuzzyRulesContext rulesContext);
 
-
-
-
     public void generateRules(ArduinoGenerator gen,DefaultFuzzyRulesContext contextRules)
     {
-
         String idname = gen.getTypeModel().getName();
-
         gen.appendNativeStatement("#define NUM_RULES_"+idname+" "+contextRules.getNumberOfRules());
-
         StringBuilder code_rules = new StringBuilder();
         StringBuilder _num_rule_antecedent = new StringBuilder();
         StringBuilder _num_rule_coutcome = new StringBuilder();

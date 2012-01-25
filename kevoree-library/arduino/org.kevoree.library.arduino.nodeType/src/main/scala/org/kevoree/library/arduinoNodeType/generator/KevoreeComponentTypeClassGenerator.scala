@@ -140,9 +140,11 @@ trait KevoreeComponentTypeClassGenerator extends KevoreeCAbstractGenerator with 
               case Some(mapping) => {
                 clazz.getMethods.find(method => method.getName == mapping.getBeanMethodName) match {
                   case Some(method) => {
+                    context.getGenerator.setPortName(providedPort.getName)
                     method.invoke(instance, context.getGenerator)
                     context b context.getGenerator.getContent
                     context.getGenerator.razGen()
+                    context.getGenerator.setPortName("")
                   }
                   case _@e => logger.error("method not found", e)
                 }
