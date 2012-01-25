@@ -15,12 +15,17 @@ package org.kevoree.platform.osgi.standalone.gui;
 
 import org.kevoree.ContainerRoot;
 import org.kevoree.KevoreeFactory;
+import org.kevoree.extra.jcl.KevoreeJarClassLoader;
 import org.kevoree.framework.KevoreeXmiHelper;
+import org.kevoree.framework.MavenResolver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.xeustechnologies.jcl.JclObjectFactory;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.jar.JarEntry;
+import java.util.jar.JarFile;
 
 /**
  * Hello world!
@@ -53,17 +58,20 @@ public class App {
             model = KevoreeXmiHelper.load(param.toString());
         } else {
             try {
+                System.setSecurityManager(null);
+                
+                KevoreeJarClassLoader temp_cl = new KevoreeJarClassLoader();
+                temp_cl.add(App.class.getClassLoader().getResourceAsStream("boot/org.kevoree.tools.aether.framework-" + KevoreeFactory.getVersion() + ".jar"));
+                JclObjectFactory factory = JclObjectFactory.getInstance();
 
-                //TODO CLASSLOADER
+                MavenResolver mres = (MavenResolver) factory.create(temp_cl, "org.kevoree.tools.aether.framework.AetherMavenResolver");
+                File fileMarShell = mres.resolveKevoreeArtifact("org.kevoree.library.model.bootstrap", "org.kevoree.library.model", KevoreeFactory.getVersion());
+                JarFile jar = new JarFile(fileMarShell);
+                JarEntry entry = jar.getJarEntry("KEV-INF/lib.kev");
+                model = KevoreeXmiHelper.loadStream(jar.getInputStream(entry));
 
 
-
-              //  File file = AetherUtil.resolveKevoreeArtifact("org.kevoree.library.model.bootstrap", "org.kevoree.library.model", KevoreeFactory.getVersion());
-                //JarFile jar = new JarFile(file);
-              //  JarEntry entry = jar.getJarEntry("KEV-INF/lib.kev");
-              //  model = KevoreeXmiHelper.loadStream(jar.getInputStream(entry));
-
-                model = KevoreeXmiHelper.loadStream(this.getClass().getClassLoader().getResourceAsStream("lib.kev"));
+      
 
             } catch (Exception e) {
                 logger.error("Error while bootstrap ", e);
