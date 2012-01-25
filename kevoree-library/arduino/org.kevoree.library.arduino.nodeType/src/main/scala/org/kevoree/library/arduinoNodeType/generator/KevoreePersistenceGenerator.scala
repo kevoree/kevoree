@@ -72,10 +72,11 @@ trait KevoreePersistenceGenerator extends KevoreeCAbstractGenerator {
 
               RawTypeHelper.getArduinoType(att.getDatatype.replace("raw=", "")) match {
                 case "long" => {
-
+                  context b "{"
                   context b "char tempBuf[12];"
                   context b "  sprintf(tempBuf, \"%lu\", ((" + ktype.getName + " *) instances[instanceIndex])->"+att.getName+");"
                   context b "for(int i=0;i<strlen(tempBuf);i++){save2Memory(tempBuf[i]);}"
+                  context b "}"
 
 //                  context b " save2Memory((int)(((((" + ktype.getName + " *) instances[instanceIndex])->" + att.getName + ") >> 24) & 0xFF));"
  //                 context b " save2Memory((int)(((((" + ktype.getName + " *) instances[instanceIndex])->" + att.getName + ") >> 16) & 0xFF));"
@@ -83,10 +84,11 @@ trait KevoreePersistenceGenerator extends KevoreeCAbstractGenerator {
   //                context b " save2Memory((int)(((((" + ktype.getName + " *) instances[instanceIndex])->" + att.getName + ") & 0xFF)));"
                 }
                 case "int" => {
-
+                  context b "{"
                   context b "char tempBuf[8];"
                   context b "  sprintf(tempBuf, \"%lu\", ((" + ktype.getName + " *) instances[instanceIndex])->"+att.getName+");"
                   context b "for(int i=0;i<strlen(tempBuf);i++){save2Memory(tempBuf[i]);}"
+                  context b "}"
                  // context b " save2Memory((int)(((((" + ktype.getName + " *) instances[instanceIndex])->" + att.getName + ") >> 8) & 0xFF));"
                   //context b " save2Memory((int)(((((" + ktype.getName + " *) instances[instanceIndex])->" + att.getName + ") & 0xFF)));"
                 }

@@ -3,7 +3,7 @@
 
     <modelVersion>4.0.0</modelVersion>
     <artifactId>org.kevoree.tools.marShell</artifactId>
-    <packaging>jar</packaging>
+    <packaging>bundle</packaging>
     <name>Kevoree :: Tools :: M@R Shell</name>
     <version>1.5.1-SNAPSHOT</version>
 

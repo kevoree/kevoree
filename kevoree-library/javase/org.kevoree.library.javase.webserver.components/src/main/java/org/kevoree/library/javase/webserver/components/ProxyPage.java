@@ -1,9 +1,9 @@
 package org.kevoree.library.javase.webserver.components;
 
 import org.kevoree.annotation.*;
-import org.kevoree.library.javase.webserver.AbstractPage;
 import org.kevoree.library.javase.webserver.KevoreeHttpRequest;
 import org.kevoree.library.javase.webserver.KevoreeHttpResponse;
+import org.kevoree.library.javase.webserver.ParentAbstractPage;
 
 /**
  * User: Erwan Daubert - erwan.daubert@gmail.com
@@ -15,11 +15,12 @@ import org.kevoree.library.javase.webserver.KevoreeHttpResponse;
  */
 @ComponentType
 @DictionaryType({
-		@DictionaryAttribute(name = "forward", defaultValue = "http://kloud.kevoree.org", optional = false)
+		@DictionaryAttribute(name = "forward", defaultValue = "kloud.kevoree.org", optional = false)
 })
-public class ProxyPage extends AbstractPage {
+public class ProxyPage extends ParentAbstractPage {
 
 
+	@Override
 	@Start
 	public void startPage () {
 		super.startPage();
@@ -37,7 +38,11 @@ public class ProxyPage extends AbstractPage {
 		if (path == null) {
 			path = "";
 		}
-		Forwarder.forward(this.getDictionary().get("forward").toString(), request, response, path, this.getDictionary().get("urlpattern").toString());
+		String forwardUrl = this.getDictionary().get("forward").toString();
+		if (forwardUrl.startsWith("http://")) {
+			forwardUrl = forwardUrl.substring("http://".length());
+		}
+		Forwarder.forward(forwardUrl, request, response, path, this.getDictionary().get("urlpattern").toString());
 		return response;
 	}
 }

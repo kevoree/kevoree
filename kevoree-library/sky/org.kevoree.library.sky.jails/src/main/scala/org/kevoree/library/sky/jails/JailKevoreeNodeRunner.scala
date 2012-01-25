@@ -16,14 +16,16 @@ package org.kevoree.library.sky.jails
 
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-import java.io._
 import java.lang.Thread
 import actors.{TIMEOUT, Actor}
 import util.matching.Regex
 import org.kevoree.library.sky.manager.{Helper, KevoreeNodeRunner}
 import java.net.InetAddress
-import org.kevoree.{TypeDefinition, Instance, ContainerNode, ContainerRoot}
+import org.kevoree.ContainerRoot
 import scala.Array._
+import org.kevoree.framework.KevoreePropertyHelper
+import java.io._
+
 
 /**
  * User: Erwan Daubert - erwan.daubert@gmail.com
@@ -126,8 +128,10 @@ class JailKevoreeNodeRunner (nodeName: String, bootStrapModel: String, inet: Str
           if (copyFile(bootStrapModel, jailPath + File.separator + "root" + File.separator + "bootstrapmodel.kev") &&
             copyFile(Helper.getJarPath, jailPath + File.separator + "root" + File.separator + "kevoree-runtime.jar")) {
 
-            // pecify limitation on jail such as CPU, RAM
+            // specify limitation on jail such as CPU, RAM
             if (specifyConstraints()) {
+              // configure ssh access
+              configureSSH(model, jailPath, newIp)
               // launch the jail
               resultActor.starting()
               logger.debug("running {} onestart {}", Array[AnyRef](ezjailAdmin, nodeName))
@@ -164,11 +168,16 @@ class JailKevoreeNodeRunner (nodeName: String, bootStrapModel: String, inet: Str
                 }
                 exec = exec ++ Array[String]("-jar", File.separator + "root" + File.separator + "kevoree-runtime.jar")
                 nodeProcess = Runtime.getRuntime.exec(exec)
-                val logFile = System.getProperty("java.io.tmpdir") + File.separator + nodeName + ".log.*"
-                logger.debug("writing logs about {} on {}", nodeName, logFile)
+                val logFile = System.getProperty("java.io.tmpdir") + File.separator + nodeName + ".log"
+                outFile = new File(logFile + ".out")
+                logger.debug("writing logs about {} on {}", nodeName, outFile.getAbsolutePath)
                 new Thread(new
-                    ProcessStreamFileLogger(nodeProcess.getInputStream, nodeProcess.getErrorStream, logFile))
-                  .start()
+                    ProcessStreamFileLogger(nodeProcess.getInputStream, /*nodeProcess.getErrorStream,*/
+                                             outFile)).start()
+                errFile = new File(logFile + ".err")
+                logger.debug("writing logs about {} on {}", nodeName, errFile.getAbsolutePath)
+                new Thread(new ProcessStreamFileLogger(nodeProcess.getErrorStream, /*nodeProcess.getErrorStream,*/
+                                                        errFile)).start()
                 //result = resultActor.waitingFor(10000)
                 try {
                   nodeProcess.exitValue
@@ -279,8 +288,11 @@ class JailKevoreeNodeRunner (nodeName: String, bootStrapModel: String, inet: Str
           while (l < 255 && checkMask(i, j, k, l, subnet, mask) && !found) {
             val tmpIp = i + "." + j + "." + k + "." + l
             if (!ips.contains(tmpIp)) {
-              newIp = tmpIp
-              found = true
+              val inet = InetAddress.getByName(tmpIp)
+              if (!inet.isReachable(5000)) {
+                newIp = tmpIp
+                found = true
+              }
             }
             l += 1
           }
@@ -305,12 +317,14 @@ class JailKevoreeNodeRunner (nodeName: String, bootStrapModel: String, inet: Str
     (subnetInt & maskInt) == (ipInt & maskInt)
   }
 
-  private def specifyConstraints (): Boolean = { // TODO manage ARCH parameter
+  private def specifyConstraints (): Boolean = {
+    logger.debug("try to specify constraints")
+    // TODO manage ARCH parameter
     model.getNodes.find(node => node.getName == nodeName) match {
       case None => logger.debug("Unable to find information about the node to start"); false
       case Some(node) => {
         var modeId = "log"
-        var property = getNodeProperty("MODE", nodeName).getOrElse("RELAX")
+        var property = KevoreePropertyHelper.getPropertyForNode(model, nodeName, "MODE").getOrElse("RELAX").toString
         if (property == "STRICT") {
           modeId = "sigkill"
         } else if (property == "AVOID") {
@@ -319,7 +333,9 @@ class JailKevoreeNodeRunner (nodeName: String, bootStrapModel: String, inet: Str
 
         var execResult = true
         var exec = Array[String]()
-        property = getNodeProperty("RAM", nodeName).getOrElse("N/A")
+        logger.debug("asking to node property {}...", "RAM")
+        property = KevoreePropertyHelper.getPropertyForNode(model, nodeName, "RAM").getOrElse("N/A").toString
+        logger.debug("{} = {}", "RAM", property)
         if (property != "N/A") {
           try {
             val limit = java.lang.Long.parseLong(property.toString) * 1024 * 1024
@@ -341,7 +357,8 @@ class JailKevoreeNodeRunner (nodeName: String, bootStrapModel: String, inet: Str
                      property, nodeName)
           }
         }
-        property = buildCPUFrequency(getNodeProperty("CPU_FREQUENCY", nodeName).getOrElse("N/A"))
+        property = buildCPUFrequency(KevoreePropertyHelper.getPropertyForNode(model, nodeName, "CPU_FREQUENCY")
+          .getOrElse("N/A").toString)
         if (execResult && property != "N/A") {
           try {
             val limit = Integer.parseInt(property.toString)
@@ -385,7 +402,7 @@ class JailKevoreeNodeRunner (nodeName: String, bootStrapModel: String, inet: Str
                      property, nodeName)
           }
         }*/
-        property = getNodeProperty("WALLCLOCKTIME", nodeName).getOrElse("N/A")
+        property = KevoreePropertyHelper.getPropertyForNode(model, nodeName, "WALLCLOCKTIME").getOrElse("N/A").toString
         if (execResult && property != "N/A") {
           try {
             val limit = Integer.parseInt(property.toString)
@@ -407,7 +424,7 @@ class JailKevoreeNodeRunner (nodeName: String, bootStrapModel: String, inet: Str
                      property, nodeName)
           }
         }
-        property = getNodeProperty("DATA_SIZE", nodeName).getOrElse("N/A")
+        property = KevoreePropertyHelper.getPropertyForNode(model, nodeName, "DATA_SIZE").getOrElse("N/A").toString
         if (execResult && property != "N/A") {
           try {
             val limit = Integer.parseInt(property.toString)
@@ -425,10 +442,11 @@ class JailKevoreeNodeRunner (nodeName: String, bootStrapModel: String, inet: Str
             }
           } catch {
             case e: NumberFormatException => logger
-              .warn("Unable to take into account WALLCLOCKTIME limitation because the value {} is not well defined for {}",
+              .warn("Unable to take into account DATA_SIZE limitation because the value {} is not well defined for {}",
                      property, nodeName)
           }
         }
+        logger.debug("specify constraints is done: {}", execResult)
         execResult
       }
     }
@@ -481,7 +499,7 @@ class JailKevoreeNodeRunner (nodeName: String, bootStrapModel: String, inet: Str
     }
   }
 
-  private def getNodeProperty (key: String, nodeName: String): Option[String] = {
+  /*private def getNodeProperty (key: String, nodeName: String): Option[String] = {
     model.getNodes.find(node => node.getName == nodeName) match {
       case None => None
       case Some(node) => {
@@ -508,9 +526,10 @@ class JailKevoreeNodeRunner (nodeName: String, bootStrapModel: String, inet: Str
       case None => ""
       case Some(defaultValue) => defaultValue.getValue
     }
-  }
+  }*/
 
   private def copyFile (inputFile: String, outputFile: String): Boolean = {
+    logger.debug("trying to copy {} to {}", inputFile, outputFile)
     if (new File(inputFile).exists()) {
       try {
         if (new File(outputFile).exists()) {
@@ -531,33 +550,35 @@ class JailKevoreeNodeRunner (nodeName: String, bootStrapModel: String, inet: Str
         reader.close()
         true
       } catch {
-        case _@e => logger.error("Unable to copy {} on {}", inputFile, outputFile); false
+        case _@e => logger.error("Unable to copy {} on {}", Array[AnyRef](inputFile, outputFile), e); false
       }
     } else {
+      logger.debug("Unable to find {}", inputFile)
       false
     }
   }
 
-  class ProcessStreamFileLogger (inputStream: InputStream, errorStream: InputStream, file: String) extends Runnable {
+  class ProcessStreamFileLogger (inputStream: InputStream /*, errorStream: InputStream*/ , file: File)
+    extends Runnable {
     override def run () {
       try {
-        outFile = new File(file + ".out")
-        errFile = new File(file + ".err")
-        val outputStream = new FileWriter(outFile)
-        val errorStream = new FileWriter(errFile)
+        //        outFile = new File(file)
+        //        errFile = new File(file + ".err")
+        val outputStream = new FileWriter(file)
+        //        val errorOutputStream = new FileWriter(errFile)
         val readerIn = new BufferedReader(new InputStreamReader(inputStream))
-        val readerErr = new BufferedReader(new InputStreamReader(inputStream))
+        //        val readerErr = new BufferedReader(new InputStreamReader(errorStream))
         var lineIn = readerIn.readLine()
-        var lineErr = readerErr.readLine()
-        while (lineIn != null || lineErr != null) {
+        //        var lineErr = readerErr.readLine()
+        while (lineIn != null /*|| lineErr != null*/ ) {
           if (lineIn != null) {
             outputStream.write(lineIn + "\n")
           }
-          if (lineErr != null) {
-            errorStream.write(lineErr + "\n")
-          }
+          /*if (lineErr != null) {
+            errorOutputStream.write(lineErr + "\n")
+          }*/
           lineIn = readerIn.readLine()
-          lineErr = readerErr.readLine()
+          //          lineErr = readerErr.readLine()
         }
       } catch {
         case _@e => e.printStackTrace()

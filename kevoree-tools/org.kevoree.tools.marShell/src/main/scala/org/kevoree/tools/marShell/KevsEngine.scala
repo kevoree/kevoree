@@ -39,14 +39,13 @@ object KevsEngine {
         val inputModel = modelCloner.clone(model)
         if(s.interpret(KevsInterpreterContext(inputModel))){
           Some(inputModel)
+        } else {
+
+          None
         }
       }
       case None => None
     }
-
-
-
-    None
   }
 
 }

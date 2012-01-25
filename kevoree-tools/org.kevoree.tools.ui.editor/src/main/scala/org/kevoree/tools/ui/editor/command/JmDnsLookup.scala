@@ -33,14 +33,14 @@ class JmDnsLookup extends Command {
   var kernel: KevoreeUIKernel = null
   private val logger = LoggerFactory.getLogger(this.getClass)
 
-  def setKernel(k: KevoreeUIKernel) {
+  def setKernel (k: KevoreeUIKernel) {
     kernel = k
   }
 
-  def execute(p: AnyRef) {
+  def execute (p: AnyRef) {
 
     new Thread() {
-      override def run() {
+      override def run () {
         JmDNSListener.lookup().foreach {
           info =>
             val nodeName = info.getName.trim()
@@ -49,7 +49,8 @@ class JmDnsLookup extends Command {
             val typeNames = new String(info.getTextBytes, "UTF-8");
             val typeNamesArray = typeNames.split("/")
 
-            logger.debug("nodeName "+nodeName+" groupName "+groupName+" port "+port+" typeNames "+typeNames)
+            logger
+              .debug("nodeName " + nodeName + " groupName " + groupName + " port " + port + " typeNames " + typeNames)
 
             kernel.getModelHandler.getActualModel.getTypeDefinitions.find(td => td.getName == typeNamesArray(0)) match {
               case Some(groupTypeDef) => {
@@ -60,10 +61,12 @@ class JmDnsLookup extends Command {
                   kernel.getModelHandler.getActualModel.addGroups(newgroup)
                 }
 
-                val remoteNode = kernel.getModelHandler.getActualModel.getNodes.find(n => n.getName == nodeName).getOrElse {
+                val remoteNode = kernel.getModelHandler.getActualModel.getNodes.find(n => n.getName == nodeName)
+                  .getOrElse {
                   val newnode = KevoreeFactory.eINSTANCE.createContainerNode
                   newnode.setName(nodeName)
-                  kernel.getModelHandler.getActualModel.getTypeDefinitions.find(td => td.getName == typeNamesArray(1)).map {
+                  kernel.getModelHandler.getActualModel.getTypeDefinitions.find(td => td.getName == typeNamesArray(1))
+                    .map {
                     nodeType =>
                       newnode.setTypeDefinition(nodeType)
                   }
@@ -78,7 +81,9 @@ class JmDnsLookup extends Command {
                         dicTypeDef.getAttributes.find(att => att.getName == "port").map {
                           attPort =>
                             val dic = group.getDictionary.getOrElse(KevoreeFactory.createDictionary)
-                            val dicValue = dic.getValues.find(dicVal => dicVal.getAttribute == attPort && dicVal.getTargetNode.isDefined && dicVal.getTargetNode.get.getName == nodeName).getOrElse {
+                            val dicValue = dic.getValues
+                              .find(dicVal => dicVal.getAttribute == attPort && dicVal.getTargetNode.isDefined &&
+                              dicVal.getTargetNode.get.getName == nodeName).getOrElse {
                               val newDicVal = KevoreeFactory.createDictionaryValue
                               newDicVal.setAttribute(attPort)
                               newDicVal.setTargetNode(Some(remoteNode))
@@ -96,7 +101,8 @@ class JmDnsLookup extends Command {
 
 
                 val bootHelper = new GroupTypeBootstrapHelper
-                bootHelper.bootstrapGroupType(kernel.getModelHandler.getActualModel, groupName, EmbeddedOSGiEnv.getFwk(kernel).getBundleContext) match {
+                bootHelper.bootstrapGroupType(kernel.getModelHandler.getActualModel, groupName,
+                                               EmbeddedOSGiEnv.getFwk(kernel).getBundleContext) match {
                   case Some(groupTypeInstance) => {
                     val model = groupTypeInstance.pull(nodeName)
                     kernel.getModelHandler.merge(model)
@@ -107,7 +113,12 @@ class JmDnsLookup extends Command {
                     loadCMD.setKernel(kernel)
                     loadCMD.execute(file.getAbsolutePath)
 
-                    KevoreePlatformHelper.updateNodeLinkProp(kernel.getModelHandler.getActualModel, nodeName, nodeName, org.kevoree.framework.Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP, info.getInet4Addresses()(0).getHostAddress, "LAN", 100)
+                    if (info.getInet4Addresses.size > 0) {
+                      KevoreePlatformHelper
+                        .updateNodeLinkProp(kernel.getModelHandler.getActualModel, nodeName, nodeName,
+                                             org.kevoree.framework.Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP,
+                                             info.getInet4Addresses()(0).getHostAddress, "LAN", 100)
+                    }
 
 
                   }
@@ -131,7 +142,7 @@ object JmDNSListener {
   val REMOTE_TYPE: String = "_kevoree-remote._tcp.local."
   val jmdns = JmDNS.create("KevoreeEditor")
   Runtime.getRuntime.addShutdownHook(new Thread("KevoreeJmDNSStop") {
-    override def run() {
+    override def run () {
       try {
         jmdns.close()
       } catch {
@@ -140,7 +151,7 @@ object JmDNSListener {
     }
   });
 
-  def lookup(): Array[ServiceInfo] = {
+  def lookup (): Array[ServiceInfo] = {
     jmdns.list(REMOTE_TYPE)
   }
 

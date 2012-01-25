@@ -31,6 +31,11 @@ trait KevoreeChannelTypeClassGenerator extends KevoreeCAbstractGenerator with Ke
     //GENERATE DICTIONARY VALUES POINTERS
     generateDic(ct)
 
+    context b "void updated_p(){"
+    recCallAnnotedMethod(instance, "update", clazz, context)
+    context b "}"
+
+
     context b "void init(){" //GENERATE INIT METHOD
     context b "input = (QueueList<kmessage>*) malloc(sizeof(QueueList<kmessage>));"
     context b "if(input){"

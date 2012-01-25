@@ -39,6 +39,12 @@
             <version>4.8.1</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>org.kevoree.library.javase</groupId>
+            <artifactId>org.kevoree.library.javase.ssh</artifactId>
+            <version>${kevoree.version}</version>
+            <type>bundle</type>
+        </dependency>
     </dependencies>
 
     <build>

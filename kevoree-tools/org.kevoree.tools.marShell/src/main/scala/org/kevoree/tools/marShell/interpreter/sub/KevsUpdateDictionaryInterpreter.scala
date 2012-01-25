@@ -49,9 +49,9 @@ case class KevsUpdateDictionaryInterpreter(statement: UpdateDictionaryStatement)
         }
       case None => {
           if(statement.instanceName == "*"){
-            targetInstance = targetInstance ++ context.model.getHubs.toList
+            targetInstance = targetInstance ++ context.model.getHubs.toList ++ context.model.getGroups.toList
           } else {
-            targetInstance = targetInstance ++ context.model.getHubs.filter(n=>n.getName == statement.instanceName).toList
+            targetInstance = targetInstance ++ context.model.getHubs.filter(n=>n.getName == statement.instanceName).toList ++ context.model.getGroups.filter(n=>n.getName == statement.instanceName).toList
           }
         }
     }    
