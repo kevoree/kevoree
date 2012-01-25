@@ -1,0 +1,87 @@
+<kevoree:ContainerRoot xmlns:xml="http://www.omg.org/XMI" xmlns:xsi="http://wwww.w3.org/2001/XMLSchema-instance" xmlns:kevoree="http://kevoree/1.0" xmi:version="2.0" xsi:type="kevoree:ContainerRoot">
+ <nodes metaData="x=170,y=299" xsi:type="kevoree:ContainerNode" name="node0" typeDefinition="//@typeDefinitions.2">
+  <dictionary>
+   <values value="MAX" xsi:type="kevoree:DictionaryValue" attribute="//@typeDefinitions.2/@dictionaryType/@attributes.3"></values>
+   <values value="false" xsi:type="kevoree:DictionaryValue" attribute="//@typeDefinitions.2/@dictionaryType/@attributes.1"></values>
+  </dictionary>
+  <components name="FanManage400" xsi:type="kevoree:ComponentInstance" typeDefinition="//@typeDefinitions.0">
+   <provided xsi:type="kevoree:Port" portTypeRef="//@typeDefinitions.0/@provided.0"></provided>
+   <required xsi:type="kevoree:Port" portTypeRef="//@typeDefinitions.0/@required.0"></required>
+  </components>
+ </nodes>
+ <typeDefinitions updateMethod="dummy" startMethod="dummy" factoryBean="org.kevoree.library.arduino.fuzzylogic.FanManagerFactory" xsi:type="kevoree:ComponentType" name="FanManager" bean="org.kevoree.library.arduino.fuzzylogic.FanManager" stopMethod="dummy" deployUnits="//@deployUnits.0">
+  <dictionaryType>
+   <attributes state="false" name="temp_cold" xsi:type="kevoree:DictionaryAttribute" optional="false" fragmentDependant="false"></attributes>
+   <attributes state="false" name="temp_warn" xsi:type="kevoree:DictionaryAttribute" optional="false" fragmentDependant="false"></attributes>
+   <attributes state="false" name="temp_hot" xsi:type="kevoree:DictionaryAttribute" optional="false" fragmentDependant="false"></attributes>
+   <attributes state="false" name="fan_stop" xsi:type="kevoree:DictionaryAttribute" optional="false" fragmentDependant="false"></attributes>
+   <attributes state="false" name="fan_slow" xsi:type="kevoree:DictionaryAttribute" optional="false" fragmentDependant="false"></attributes>
+   <attributes state="false" name="fan_fast" xsi:type="kevoree:DictionaryAttribute" optional="false" fragmentDependant="false"></attributes>
+   <defaultValues value="-10,-10,-5,-5" xsi:type="kevoree:DictionaryValue" attribute="//@typeDefinitions.0/@dictionaryType/@attributes.0"></defaultValues>
+   <defaultValues value="0,11,17,25" xsi:type="kevoree:DictionaryValue" attribute="//@typeDefinitions.0/@dictionaryType/@attributes.1"></defaultValues>
+   <defaultValues value="24,24,28,30" xsi:type="kevoree:DictionaryValue" attribute="//@typeDefinitions.0/@dictionaryType/@attributes.2"></defaultValues>
+   <defaultValues value="0" xsi:type="kevoree:DictionaryValue" attribute="//@typeDefinitions.0/@dictionaryType/@attributes.3"></defaultValues>
+   <defaultValues value="30" xsi:type="kevoree:DictionaryValue" attribute="//@typeDefinitions.0/@dictionaryType/@attributes.4"></defaultValues>
+   <defaultValues value="100" xsi:type="kevoree:DictionaryValue" attribute="//@typeDefinitions.0/@dictionaryType/@attributes.5"></defaultValues>
+  </dictionaryType>
+  <required noDependency="true" name="fan" xsi:type="kevoree:PortTypeRef" optional="true" ref="//@typeDefinitions.1"></required>
+  <provided noDependency="false" name="temp" xsi:type="kevoree:PortTypeRef" optional="false" ref="//@typeDefinitions.1">
+   <mappings beanMethodName="portGeneration" xsi:type="kevoree:PortTypeMapping" serviceMethodName="process"></mappings>
+  </provided>
+ </typeDefinitions>
+ <typeDefinitions name="org.kevoree.framework.MessagePort" xsi:type="kevoree:MessagePortType" synchrone="false"></typeDefinitions>
+ <typeDefinitions deployUnits="//@deployUnits.1" startMethod="startNode" factoryBean="org.kevoree.library.arduinoNodeType.ArduinoNodeFactory" xsi:type="kevoree:NodeType" name="ArduinoNode" bean="org.kevoree.library.arduinoNodeType.ArduinoNode" stopMethod="stopNode" managedPrimitiveTypes="//@adaptationPrimitiveTypes.0 //@adaptationPrimitiveTypes.1 //@adaptationPrimitiveTypes.2 //@adaptationPrimitiveTypes.3 //@adaptationPrimitiveTypes.4 //@adaptationPrimitiveTypes.5 //@adaptationPrimitiveTypes.6 //@adaptationPrimitiveTypes.7 //@adaptationPrimitiveTypes.8 //@adaptationPrimitiveTypes.9 //@adaptationPrimitiveTypes.10 //@adaptationPrimitiveTypes.11 //@adaptationPrimitiveTypes.12 //@adaptationPrimitiveTypes.13 //@adaptationPrimitiveTypes.14 //@adaptationPrimitiveTypes.15 //@adaptationPrimitiveTypes.16 //@adaptationPrimitiveTypes.17 //@adaptationPrimitiveTypes.18">
+  <dictionaryType>
+   <attributes datatype="enum=uno,atmega328,mega2560" optional="true" xsi:type="kevoree:DictionaryAttribute" name="boardTypeName" state="false" fragmentDependant="false"></attributes>
+   <attributes datatype="enum=true,false" optional="true" xsi:type="kevoree:DictionaryAttribute" name="incremental" state="false" fragmentDependant="false"></attributes>
+   <attributes datatype="enum=eeprom,sd" optional="true" xsi:type="kevoree:DictionaryAttribute" name="pmem" state="false" fragmentDependant="false"></attributes>
+   <attributes state="false" name="psize" xsi:type="kevoree:DictionaryAttribute" optional="true" fragmentDependant="false"></attributes>
+   <defaultValues value="uno" xsi:type="kevoree:DictionaryValue" attribute="//@typeDefinitions.2/@dictionaryType/@attributes.0"></defaultValues>
+   <defaultValues value="true" xsi:type="kevoree:DictionaryValue" attribute="//@typeDefinitions.2/@dictionaryType/@attributes.1"></defaultValues>
+   <defaultValues value="eeprom" xsi:type="kevoree:DictionaryValue" attribute="//@typeDefinitions.2/@dictionaryType/@attributes.2"></defaultValues>
+   <defaultValues value="MAX" xsi:type="kevoree:DictionaryValue" attribute="//@typeDefinitions.2/@dictionaryType/@attributes.3"></defaultValues>
+  </dictionaryType>
+ </typeDefinitions>
+ <typeDefinitions stopMethod="stopGroupDelegation" bean="org.kevoree.library.arduino.groupType.ArduinoSerialDelegation" name="ArduinoSerialDelegation" xsi:type="kevoree:GroupType" factoryBean="org.kevoree.library.arduino.groupType.ArduinoSerialDelegationFactory" startMethod="startGroupDelegation" deployUnits="//@deployUnits.4 //@deployUnits.5">
+  <dictionaryType>
+   <attributes state="false" name="serialport" xsi:type="kevoree:DictionaryAttribute" optional="false" fragmentDependant="true"></attributes>
+  </dictionaryType>
+ </typeDefinitions>
+ <typeDefinitions xsi:type="kevoree:NodeType" name="JavaSENode"></typeDefinitions>
+ <repositories xsi:type="kevoree:Repository" url="http://maven.kevoree.org/archiva/repository/snapshots/"></repositories>
+ <repositories xsi:type="kevoree:Repository" url="http://scala-tools.org/repo-releases"></repositories>
+ <repositories xsi:type="kevoree:Repository" url="http://maven.kevoree.org/release"></repositories>
+ <repositories xsi:type="kevoree:Repository" url="http://maven.kevoree.org/snapshots"></repositories>
+ <repositories xsi:type="kevoree:Repository" url="http://repo1.maven.org/maven2"></repositories>
+ <libraries name="Arduino" xsi:type="kevoree:TypeLibrary" subTypes="//@typeDefinitions.0 //@typeDefinitions.2 //@typeDefinitions.3"></libraries>
+ <deployUnits hashcode="201201230939641" unitName="org.kevoree.library.arduino.fuzzylogic" xsi:type="kevoree:DeployUnit" groupName="org.kevoree.library.arduino" version="1.5.1-SNAPSHOT" targetNodeType="//@typeDefinitions.2"></deployUnits>
+ <deployUnits requiredLibs="//@deployUnits.2 //@deployUnits.3" version="1.5.1-SNAPSHOT" groupName="org.kevoree.library.arduino" xsi:type="kevoree:DeployUnit" unitName="org.kevoree.library.arduino.nodeType" hashcode="201201231021193" targetNodeType="//@typeDefinitions.2"></deployUnits>
+ <deployUnits version="1.5.1-SNAPSHOT" groupName="org.kevoree.tools" xsi:type="kevoree:DeployUnit" unitName="org.kevoree.tools.arduino.framework" targetNodeType="//@typeDefinitions.2"></deployUnits>
+ <deployUnits version="2.2.0" groupName="org.kevoree.extra" xsi:type="kevoree:DeployUnit" unitName="org.kevoree.extra.osgi.rxtx" targetNodeType="//@typeDefinitions.2"></deployUnits>
+ <deployUnits hashcode="201201161155446" unitName="org.kevoree.library.arduino.groupType" xsi:type="kevoree:DeployUnit" groupName="org.kevoree.library.arduino" version="1.5.1-SNAPSHOT" targetNodeType="//@typeDefinitions.4"></deployUnits>
+ <deployUnits hashcode="201201161155446" unitName="org.kevoree.library.arduino.groupType" xsi:type="kevoree:DeployUnit" groupName="org.kevoree.library.arduino" version="1.5.1-SNAPSHOT" targetNodeType="//@typeDefinitions.2"></deployUnits>
+ <groups typeDefinition="//@typeDefinitions.3" name="group1108774127" xsi:type="kevoree:Group" metaData="x=512,y=248" subNodes="//@nodes.0">
+  <dictionary>
+   <values attribute="//@typeDefinitions.3/@dictionaryType/@attributes.0" xsi:type="kevoree:DictionaryValue" value="/dev/ttyUSB0" targetNode="//@nodes.0"></values>
+  </dictionary>
+ </groups>
+ <adaptationPrimitiveTypes xsi:type="kevoree:AdaptationPrimitiveType" name="StartThirdParty"></adaptationPrimitiveTypes>
+ <adaptationPrimitiveTypes xsi:type="kevoree:AdaptationPrimitiveType" name="UpdateType"></adaptationPrimitiveTypes>
+ <adaptationPrimitiveTypes xsi:type="kevoree:AdaptationPrimitiveType" name="UpdateDeployUnit"></adaptationPrimitiveTypes>
+ <adaptationPrimitiveTypes xsi:type="kevoree:AdaptationPrimitiveType" name="AddType"></adaptationPrimitiveTypes>
+ <adaptationPrimitiveTypes xsi:type="kevoree:AdaptationPrimitiveType" name="AddDeployUnit"></adaptationPrimitiveTypes>
+ <adaptationPrimitiveTypes xsi:type="kevoree:AdaptationPrimitiveType" name="AddThirdParty"></adaptationPrimitiveTypes>
+ <adaptationPrimitiveTypes xsi:type="kevoree:AdaptationPrimitiveType" name="RemoveType"></adaptationPrimitiveTypes>
+ <adaptationPrimitiveTypes xsi:type="kevoree:AdaptationPrimitiveType" name="RemoveDeployUnit"></adaptationPrimitiveTypes>
+ <adaptationPrimitiveTypes xsi:type="kevoree:AdaptationPrimitiveType" name="UpdateInstance"></adaptationPrimitiveTypes>
+ <adaptationPrimitiveTypes xsi:type="kevoree:AdaptationPrimitiveType" name="UpdateBinding"></adaptationPrimitiveTypes>
+ <adaptationPrimitiveTypes xsi:type="kevoree:AdaptationPrimitiveType" name="UpdateDictionaryInstance"></adaptationPrimitiveTypes>
+ <adaptationPrimitiveTypes xsi:type="kevoree:AdaptationPrimitiveType" name="AddInstance"></adaptationPrimitiveTypes>
+ <adaptationPrimitiveTypes xsi:type="kevoree:AdaptationPrimitiveType" name="RemoveInstance"></adaptationPrimitiveTypes>
+ <adaptationPrimitiveTypes xsi:type="kevoree:AdaptationPrimitiveType" name="AddBinding"></adaptationPrimitiveTypes>
+ <adaptationPrimitiveTypes xsi:type="kevoree:AdaptationPrimitiveType" name="RemoveBinding"></adaptationPrimitiveTypes>
+ <adaptationPrimitiveTypes xsi:type="kevoree:AdaptationPrimitiveType" name="AddFragmentBinding"></adaptationPrimitiveTypes>
+ <adaptationPrimitiveTypes xsi:type="kevoree:AdaptationPrimitiveType" name="RemoveFragmentBinding"></adaptationPrimitiveTypes>
+ <adaptationPrimitiveTypes xsi:type="kevoree:AdaptationPrimitiveType" name="StartInstance"></adaptationPrimitiveTypes>
+ <adaptationPrimitiveTypes xsi:type="kevoree:AdaptationPrimitiveType" name="StopInstance"></adaptationPrimitiveTypes>
+</kevoree:ContainerRoot>
