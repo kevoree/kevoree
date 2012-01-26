@@ -54,6 +54,7 @@
 	<version>1.4</version>
 	</dependency>
 	<dependency>
+	<dependency>
     <groupId>org.ow2.frascati</groupId>
     <artifactId>frascati-introspection-api</artifactId>
     <version>1.4</version>
