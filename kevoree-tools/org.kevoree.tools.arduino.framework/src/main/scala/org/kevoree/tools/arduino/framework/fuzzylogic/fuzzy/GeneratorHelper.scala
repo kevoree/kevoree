@@ -84,6 +84,33 @@ object GeneratorHelper {
     throw new ArduinoException("The term " + domain + "_" + term + " is not found  : " + gen.getTypeModel.getDictionaryType.get.getAttributes)
   }
 
+
+  def generateMemberShipVariables(gen: ArduinoGenerator){
+    var countDomain= 0
+    var countTerm = 0
+    gen.getTypeModel.asInstanceOf[ComponentType].getProvided.foreach{ g =>
+      gen.getTypeModel.getDictionaryType.get.getAttributes.foreach{a =>
+        if(a.getName.split("_")(0) == g.getName)
+        {
+          countTerm = countTerm +1
+        }
+      }
+      gen.appendNativeStatement("in_num_MemberShipFunction["+countDomain+"]="+countTerm+";")
+      countDomain = countDomain +1
+    }
+    countDomain= 0
+    countTerm = 0
+    gen.getTypeModel.asInstanceOf[ComponentType].getRequired.foreach{ g =>
+      gen.getTypeModel.getDictionaryType.get.getAttributes.foreach{a =>
+        if(a.getName.split("_")(0) == g.getName)
+        {
+          countTerm = countTerm +1
+        }
+      }
+      gen.appendNativeStatement("out_num_MemberShipFunction["+countDomain+"]="+countTerm+";")
+      countDomain = countDomain +1
+    }
+  }
   def generateClassVariables(gen: ArduinoGenerator, nbRules: Int) {
 
     val nbInputs = gen.getTypeModel.asInstanceOf[ComponentType].getProvided.size
@@ -101,14 +128,14 @@ object GeneratorHelper {
     gen.appendNativeStatement("float fuzzy_inputs[" + nbInputs + "][NB_TERMS];")
     gen.appendNativeStatement("float rule_crispvalue[" + nbRules + "];")
 
-    gen.appendNativeStatement("unsigned char in_num_MemberShipFunction[" + nbInputs + "];")
-    gen.appendNativeStatement("unsigned char out_num_MemberShipFunction[" + nbInputs + "];")
+    gen.appendNativeStatement("int in_num_MemberShipFunction[" + nbInputs + "];")
+    gen.appendNativeStatement("int out_num_MemberShipFunction[" + nbInputs + "];")
     gen.appendNativeStatement("float outMemberShipFunction[" + nbOutputs + "][PRECISION][2];")
     gen.appendNativeStatement("float inMemberShipFunction[" + nbInputs + "][NB_TERMS][PRECISION];")
 
     // map global variables to local constante
-    gen.appendNativeStatement("unsigned char const	*num_rule_antecedent;");
-    gen.appendNativeStatement("unsigned char const	*num_rule_coutcome;");
+    gen.appendNativeStatement("const unsigned char *num_rule_antecedent;");
+    gen.appendNativeStatement("const unsigned char *num_rule_coutcome;");
     gen.appendNativeStatement("_Rule const *rules;")
     gen.appendNativeStatement("unsigned char numberOfRules;")
 
@@ -116,9 +143,14 @@ object GeneratorHelper {
 
   def generateControlMethod(gen: ArduinoGenerator) {
 
-    gen.appendNativeStatement("void fire_all_rules(){control(crisp_inputs,crisp_outputs);}")
+    gen.appendNativeStatement("void fire_all_rules(){control(crisp_inputs,crisp_outputs); }")
 
     gen.appendNativeStatement("void control(float *crisp_inputs, float *crisp_outputs){")
+    gen.appendNativeStatement("#ifdef DEBUG")
+    gen.appendNativeStatement(" //displayRules();")
+    gen.appendNativeStatement(" //displayDomains();")
+    gen.appendNativeStatement("displayInputs();")
+    gen.appendNativeStatement("#endif")
     gen.appendNativeStatement("unsigned char  in_index,rule_index,out_index;")
     gen.appendNativeStatement("float   in_val;")
     gen.appendNativeStatement("for (in_index = 0;in_index < NUM_INPUTS;in_index++){fuzzify(in_index,crisp_inputs[in_index]);}")
@@ -145,6 +177,9 @@ object GeneratorHelper {
     gen.appendNativeStatement("}")
     gen.appendNativeStatement("}")
     gen.appendNativeStatement("}")
+    gen.appendNativeStatement("#ifdef DEBUG")
+    gen.appendNativeStatement("displayOutputs();")
+    gen.appendNativeStatement("#endif")
     gen.appendNativeStatement("}")
 
 
