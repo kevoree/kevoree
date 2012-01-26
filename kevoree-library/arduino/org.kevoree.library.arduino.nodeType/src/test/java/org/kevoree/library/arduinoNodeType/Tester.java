@@ -27,7 +27,7 @@ public class Tester {
         ArduinoNode node = new ArduinoNode();
         node.setForceUpdate(true);
 
-        node.getDictionary().put("boardTypeName", "uno");
+        node.getDictionary().put("boardTypeName", "atmega328");
         node.getDictionary().put("osgi.bundle", null);
         //node.getDictionary().put("boardPortName","/dev/tty.usbserial-A400g2se");
 //        node.getDictionary().put("pmem","EEPROM");
@@ -37,7 +37,7 @@ public class Tester {
 
         node.getDictionary().put("incremental", "false");
         node.startNode();
-        node.push("node0", model, "/dev/tty.usbmodem26231");
+        node.push("node0", model, "/dev/ttyUSB0");
 
     }
 
