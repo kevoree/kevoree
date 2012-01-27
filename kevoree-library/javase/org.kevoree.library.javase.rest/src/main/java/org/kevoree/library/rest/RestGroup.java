@@ -36,7 +36,7 @@ public class RestGroup extends AbstractGroupType {
         logger.warn("Rest service start on port " + this.getDictionary().get("port").toString());
         server.startServer(Integer.parseInt(this.getDictionary().get("port").toString()));
 
-       //logger.info("try to block => "+getModelService().getLastModel()+"->"+getModelService().getLastModification());
+       logger.info("try to block => "+getModelService().getLastModel()+"->"+getModelService().getLastModification());
 
     }
 

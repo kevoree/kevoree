@@ -73,9 +73,7 @@ class KevoreeCoreBean extends KevoreeModelHandlerService with KevoreeThreadActor
               case Some(ist: org.kevoree.framework.NodeType) => {
                 nodeInstance = ist;
                 nodeInstance.startNode()
-
-                //SET CURRENT MODEL 
-
+                //SET CURRENT MODEL
                 model = modelClone.clone(currentModel)
                 model.removeAllGroups()
                 model.removeAllHubs()

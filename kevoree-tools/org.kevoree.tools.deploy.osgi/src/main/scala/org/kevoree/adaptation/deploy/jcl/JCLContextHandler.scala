@@ -43,6 +43,12 @@ object JCLContextHandler {
     newcl.add(file.getAbsolutePath)
     kcl_cache.put(CommandHelper.buildKEY(du),newcl)
     kcl_cache_file.put(CommandHelper.buildKEY(du),file)
+    du.getRequiredLibs.foreach{ rLib =>
+      val kcl = getKCL(rLib)
+      if(kcl != null){
+        newcl.addSubClassLoader(kcl)
+      }
+    }
     newcl
   }
   
