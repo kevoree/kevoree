@@ -1,18 +1,13 @@
-package org.kevoree.library.defaultNodeTypes;
+package org.kevoree.library.frascatiNodeTypes;
 
 
 import org.objectweb.fractal.api.control.ContentController;
-import org.objectweb.fractal.api.factory.Factory;
 import org.ow2.frascati.FraSCAti;
-import org.ow2.frascati.assembly.factory.Launcher;
-import org.ow2.frascati.examples.helloworld.pojo.PrintService;
-import org.ow2.frascati.remote.introspection.resources.Component;
 import org.ow2.frascati.util.FrascatiClassLoader;
 
 
 public class Test {
 
-	private static final String BINDING_URI = "http://localhost:8090";
 
 	
 	
@@ -32,9 +27,9 @@ public class Test {
 		 }
 		 System.err.println(content.getFcSubComponents()[0].getFcInterface("printService"));
 		 
-		 PrintService s = (PrintService)content.getFcSubComponents()[0].getFcInterface("printService");
+		 //PrintService s = (PrintService)content.getFcSubComponents()[0].getFcInterface("printService");
 		 	
-		 s.print("Toto");
+		 //s.print("Toto");
 		 
 //		 launcher.
 		 
