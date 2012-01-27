@@ -156,16 +156,22 @@ class JailKevoreeNodeRunner (nodeName: String, bootStrapModel: String, inet: Str
                       case _ =>
                     }
                 }
+                val root = LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME).asInstanceOf[Logger]
+                var debug = "ERROR"
+                if (root.isWarnEnabled) {
+                  debug = "WARN"
+                }
+                if (root.isInfoEnabled) {
+                  debug = "INFO"
+                }
+                if (root.isDebugEnabled) {
+                  debug = "DEBUG"
+                }
                 //resultActor.starting()
                 var exec = Array[String](jexec, jailId, "/usr/local/bin/java", "-Dnode.name=" + nodeName,
                                           "-Dnode.bootstrap=" + File.separator + "root" + File.separator +
-                                            "bootstrapmodel.kev")
-                if (System.getProperty("node.log.level") != null) {
-                  exec = exec ++ Array[String]("-Dnode.log.level=" + System.getProperty("node.log.level"))
-                  logger.debug("trying to launch {} {} {} {}{} {}{} {}{}{}{}{} {} {}{}{}{}", exec)
-                } else {
-                  logger.debug("trying to launch {} {} {} {}{} {}{}{}{}{} {} {}{}{}{}", exec)
-                }
+                                            "bootstrapmodel.kev", "-Dnode.log.level=" + debug)
+                logger.debug("trying to launch {} {} {} {}{} {}{} {}{}{}{}{} {} {}{}{}{}", exec)
                 exec = exec ++ Array[String]("-jar", File.separator + "root" + File.separator + "kevoree-runtime.jar")
                 nodeProcess = Runtime.getRuntime.exec(exec)
                 val logFile = System.getProperty("java.io.tmpdir") + File.separator + nodeName + ".log"
