@@ -89,7 +89,7 @@ trait StopNodeKompare extends AbstractKompare {
         /* remove all reLib */
         //TODO
 
-        /* add deploy unit if necessary */
+        /* remove deploy unit if necessary */
         adaptationModel.getAdaptations
           .filter(adaptation => adaptation.getPrimitiveType.getName == JavaSePrimitive.RemoveDeployUnit)
           .find(adaptation => adaptation.getRef.asInstanceOf[DeployUnit].isModelEquals(deployUnitfound)) match {
