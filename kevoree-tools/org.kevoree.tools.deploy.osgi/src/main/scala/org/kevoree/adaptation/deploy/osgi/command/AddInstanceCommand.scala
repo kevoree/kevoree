@@ -18,8 +18,9 @@
 
 package org.kevoree.adaptation.deploy.osgi.command
 
-import java.io.File
 import org.kevoree._
+import api.service.core.handler.KevoreeModelHandlerService
+import api.service.core.script.KevScriptEngineFactory
 import framework.context.{KevoreeOSGiBundle, KevoreeDeployManager}
 import framework.osgi.{KevoreeInstanceActivator, KevoreeInstanceFactory}
 import framework.{PrimitiveCommand, KevoreeGeneratorHelper}
@@ -27,11 +28,11 @@ import org.kevoree.framework.aspects.KevoreeAspects._
 import org.slf4j.LoggerFactory
 import org.osgi.framework.BundleActivator
 
-case class AddInstanceCommand(c: Instance, nodeName: String) extends PrimitiveCommand {
+case class AddInstanceCommand(c: Instance, nodeName: String,modelservice : KevoreeModelHandlerService,kscript : KevScriptEngineFactory) extends PrimitiveCommand {
 
   var logger = LoggerFactory.getLogger(this.getClass);
   var kevoreeFactory: KevoreeInstanceFactory = null
-  var lastExecutionBundle : Option[org.osgi.framework.Bundle] = null
+  var lastExecutionBundle: Option[org.osgi.framework.Bundle] = null
 
   def execute(): Boolean = {
     //FOUND CT SYMBOLIC NAME
@@ -63,14 +64,18 @@ case class AddInstanceCommand(c: Instance, nodeName: String) extends PrimitiveCo
       }
 
       val activatorPackage = KevoreeGeneratorHelper.getTypeDefinitionGeneratedPackage(c.getTypeDefinition, nodeTypeName)
-      val factoryName = activatorPackage+ "."+ c.getTypeDefinition.getName + "Factory"
+      val factoryName = activatorPackage + "." + c.getTypeDefinition.getName + "Factory"
       try {
 
         kevoreeFactory = bundleType.loadClass(factoryName).newInstance().asInstanceOf[KevoreeInstanceFactory]
-        val newInstance : KevoreeInstanceActivator = kevoreeFactory.registerInstance(c.getName,nodeName)
+        val newInstance: KevoreeInstanceActivator = kevoreeFactory.registerInstance(c.getName, nodeName)
         KevoreeDeployManager.addMapping(KevoreeOSGiBundle(c.getName, c.getClass.getName, bundleType.getBundleId))
 
-        newInstance.asInstanceOf[BundleActivator].start(bundleType.getBundleContext)
+        newInstance.setBundleContext(bundleType.getBundleContext)
+        newInstance.setKevScriptEngineFactory(kscript)
+        newInstance.setModelHandlerService(modelservice)
+        newInstance.start()
+
         //mustBeStarted = true
         true
       } catch {
@@ -91,7 +96,7 @@ case class AddInstanceCommand(c: Instance, nodeName: String) extends PrimitiveCo
       case None =>
       case Some(b) => {
         try {
-          if(kevoreeFactory!=null){
+          if (kevoreeFactory != null) {
             kevoreeFactory.remove(c.getName)
           }
           (KevoreeDeployManager.bundleMapping.filter(map => map.name == c.getName).toList ++ List()).foreach {

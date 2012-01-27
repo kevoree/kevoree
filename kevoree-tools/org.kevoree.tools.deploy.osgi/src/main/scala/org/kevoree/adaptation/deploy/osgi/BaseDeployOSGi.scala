@@ -17,6 +17,8 @@ package org.kevoree.adaptation.deploy.osgi
 import org.kevoree.adaptation.deploy.osgi.command._
 import org.kevoree._
 import adaptation.deploy.jcl._
+import api.service.core.handler.KevoreeModelHandlerService
+import api.service.core.script.KevScriptEngineFactory
 import framework.context.KevoreeDeployManager
 import framework.PrimitiveCommand
 import kompare.JavaSePrimitive
@@ -24,6 +26,15 @@ import org.osgi.framework.Bundle
 import org.slf4j.LoggerFactory
 
 class BaseDeployOSGi(bundle: Bundle) {
+
+  var modelHandlerService : KevoreeModelHandlerService = null
+  def setModelHandlerService(m : KevoreeModelHandlerService){
+    modelHandlerService = m
+  }
+  var kscripEngineFactory : KevScriptEngineFactory = _
+  def setKscripEngineFactory(k : KevScriptEngineFactory){
+    kscripEngineFactory = k
+  }
 
   private val ctx = KevoreeDeployManager
   /*
@@ -62,14 +73,14 @@ class BaseDeployOSGi(bundle: Bundle) {
        case JavaSePrimitive.RemoveType if (JCLHelper.isJCLManaged(p.getRef.asInstanceOf[TypeDefinition],nodeName)) => NoopCommand()
       case JavaSePrimitive.RemoveType => RemoveTypeCommand(p.getRef.asInstanceOf[TypeDefinition], nodeName)
 
-      case JavaSePrimitive.AddInstance if (JCLHelper.isJCLManaged(p.getRef.asInstanceOf[Instance].getTypeDefinition,nodeName)) => AddInstance(p.getRef.asInstanceOf[Instance],nodeName)
-      case JavaSePrimitive.AddInstance => AddInstanceCommand(p.getRef.asInstanceOf[Instance], nodeName)
+      case JavaSePrimitive.AddInstance if (JCLHelper.isJCLManaged(p.getRef.asInstanceOf[Instance].getTypeDefinition,nodeName)) => AddInstance(p.getRef.asInstanceOf[Instance],nodeName,modelHandlerService, kscripEngineFactory)
+      case JavaSePrimitive.AddInstance => AddInstanceCommand(p.getRef.asInstanceOf[Instance], nodeName,modelHandlerService, kscripEngineFactory)
 
       case JavaSePrimitive.UpdateDictionaryInstance if (JCLHelper.isJCLManaged(p.getRef.asInstanceOf[Instance].getTypeDefinition,nodeName)) => UpdateDictionary(p.getRef.asInstanceOf[Instance], nodeName)
       case JavaSePrimitive.UpdateDictionaryInstance => UpdateDictionaryCommand(p.getRef.asInstanceOf[Instance], nodeName)
 
-      case JavaSePrimitive.RemoveInstance if (JCLHelper.isJCLManaged(p.getRef.asInstanceOf[Instance].getTypeDefinition,nodeName)) => RemoveInstance(p.getRef.asInstanceOf[Instance], nodeName)
-      case JavaSePrimitive.RemoveInstance => RemoveInstanceCommand(p.getRef.asInstanceOf[Instance], nodeName)
+      case JavaSePrimitive.RemoveInstance if (JCLHelper.isJCLManaged(p.getRef.asInstanceOf[Instance].getTypeDefinition,nodeName)) => RemoveInstance(p.getRef.asInstanceOf[Instance], nodeName,modelHandlerService, kscripEngineFactory)
+      case JavaSePrimitive.RemoveInstance => RemoveInstanceCommand(p.getRef.asInstanceOf[Instance], nodeName,modelHandlerService, kscripEngineFactory)
 
       case JavaSePrimitive.StopInstance if (JCLHelper.isJCLManaged(p.getRef.asInstanceOf[Instance].getTypeDefinition,nodeName)) => StartStopInstance(p.getRef.asInstanceOf[Instance], nodeName,false)
       case JavaSePrimitive.StopInstance => StopInstanceCommand(p.getRef.asInstanceOf[Instance], nodeName)
