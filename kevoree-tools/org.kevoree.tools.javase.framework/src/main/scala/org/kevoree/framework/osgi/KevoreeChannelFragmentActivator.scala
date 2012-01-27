@@ -55,7 +55,11 @@ abstract class KevoreeChannelFragmentActivator extends BundleActivator with Kevo
     mainService = bc.registerService(classOf[KevoreeChannelFragment].getName, channelActor, props);
 
     /* PUT INITIAL PROPERTIES */
-    channelActor.getDictionary.put(Constants.KEVOREE_PROPERTY_OSGI_BUNDLE, bc.getBundle)
+    if(bc != null){
+      channelActor.getDictionary.put(Constants.KEVOREE_PROPERTY_OSGI_BUNDLE, bc.getBundle)
+    }
+
+
     channelActor.asInstanceOf[ChannelTypeFragment].setName(instanceName)
     channelActor.asInstanceOf[ChannelTypeFragment].setNodeName(nodeName)
     val sr = bc.getServiceReference(classOf[KevoreeModelHandlerService].getName());

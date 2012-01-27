@@ -622,21 +622,27 @@ public class AnnotationPreProcessorMojo extends AbstractMojo {
 
         String thirdParties = ";";
         for (Dependency dep : project.getRuntimeDependencies()) {
-            if (dep.getScope().equals("provided") || dep.getType().equals("bundle")) {
+            System.out.println(dep.getArtifactId()+"->"+dep.getType());
+
+            if (dep.getScope().equals("provided") || dep.getType().equals("bundle") || dep.getType().equals("kjar") || dep.getType().equals("kbundle")) {
 
 
-                thirdParties += ";" + dep.getGroupId() + "/" + dep.getArtifactId() + "/" + toBaseVersion(dep.getVersion());
+                thirdParties += ";" + dep.getGroupId() + "/" + dep.getArtifactId() + "/" + toBaseVersion(dep.getVersion()) +"/"+ dep.getType();
             }
         }
         for (Dependency dep : project.getDependencies()) {
-            if (dep.getScope().equals("provided") || dep.getType().equals("bundle")) {
-                thirdParties += ";" + dep.getGroupId() + "/" + dep.getArtifactId() + "/" + toBaseVersion(dep.getVersion());
+            
+            System.out.println(dep.getArtifactId()+"->"+dep.getType());
+            
+            if (dep.getScope().equals("provided") || dep.getType().equals("bundle") || dep.getType().equals("kjar") || dep.getType().equals("kbundle")) {
+                thirdParties += ";" + dep.getGroupId() + "/" + dep.getArtifactId() + "/" + toBaseVersion(dep.getVersion()) +"/"+ dep.getType();
             }
         }
 
         this.options.put("kevoree.lib.id", this.project.getArtifactId());
         this.options.put("kevoree.lib.group", this.project.getGroupId());
         this.options.put("kevoree.lib.version", this.project.getVersion());
+        this.options.put("kevoree.lib.type", this.project.getPackaging());
         this.options.put("kevoree.lib.target", sourceOutputDirectory.getPath() + File.separator + "KEV-INF" + File.separator + "lib.kev");
         this.options.put("kevoree.lib.tag", dateFormat.format(new Date()));
         this.options.put("repositories", repositories);

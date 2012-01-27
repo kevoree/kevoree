@@ -35,6 +35,7 @@ trait DeployUnitProcessor {
     val unitName = options.get("kevoree.lib.id")
     val groupName = options.get("kevoree.lib.group")
     val version = options.get("kevoree.lib.version")
+    val dutype = options.get("kevoree.lib.type")
     val tag = options.get("kevoree.lib.tag")
     val repositories = options.get("repositories")
     val repositoriesList: List[String] = repositories.split(";").filter(r => r != null && r != "").toList
@@ -58,6 +59,7 @@ trait DeployUnitProcessor {
             newdeploy.setGroupName(groupName)
             newdeploy.setVersion(version)
             newdeploy.setHashcode(tag)
+            newdeploy.setType(dutype)
 
             /* ROOT ADD NODE TYPE IF NECESSARY */
             //nodeTypeNameList.foreach {
