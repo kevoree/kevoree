@@ -61,8 +61,11 @@ public class App {
                 System.setSecurityManager(null);
                 
                 KevoreeJarClassLoader temp_cl = new KevoreeJarClassLoader();
+
                 temp_cl.add(App.class.getClassLoader().getResourceAsStream("boot/org.kevoree.tools.aether.framework-" + KevoreeFactory.getVersion() + ".jar"));
                 JclObjectFactory factory = JclObjectFactory.getInstance();
+
+                temp_cl.loadClass("org.kevoree.tools.aether.framework.AetherMavenResolver");
 
                 MavenResolver mres = (MavenResolver) factory.create(temp_cl, "org.kevoree.tools.aether.framework.AetherMavenResolver");
                 File fileMarShell = mres.resolveKevoreeArtifact("org.kevoree.library.model.bootstrap", "org.kevoree.library.model", KevoreeFactory.getVersion());

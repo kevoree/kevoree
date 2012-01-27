@@ -12,7 +12,7 @@
      #define KNOINLINE __attribute__((noinline))
      #define BUFFERSIZE 100
 
-     #define MAX_UNTYPED_DICTIONARY 10
+     #define MAX_UNTYPED_DICTIONARY 25
 
      int serialIndex = 0;
      char inBytes[BUFFERSIZE];
