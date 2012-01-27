@@ -61,9 +61,22 @@ class MiniCloudKevoreeNodeRunner (nodeName: String, bootStrapModel: String) exte
 
         logger.debug("use bootstrap model path => " + bootStrapModel)
 
+        val root = LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME).asInstanceOf[Logger]
+        var debug = "ERROR"
+        if (root.isWarnEnabled) {
+          debug = "WARN"
+        }
+        if (root.isInfoEnabled) {
+          debug = "INFO"
+        }
+        if (root.isDebugEnabled)  {
+          debug = "DEBUG"
+        }
+        logger.debug("child node log level will be set to {}", debug)
+
         nodePlatformProcess = Runtime.getRuntime
-          .exec(Array[String](java, "-Dnode.bootstrap=" + bootStrapModel, "-Dnode.name=" + nodeName, "-jar",
-                               Helper.getJarPath))
+          .exec(Array[String](java, "-Dnode.bootstrap=" + bootStrapModel, "-Dnode.name=" + nodeName,
+                               "-Dnode.log.level=" + debug, "-jar", Helper.getJarPath))
 
         outputStreamReader = new Thread {
           outFile = new File(System.getProperty("java.io.tmpdir") + File.separator + "sysout" + nodeName + ".log")
@@ -171,7 +184,7 @@ class MiniCloudKevoreeNodeRunner (nodeName: String, bootStrapModel: String) exte
   }
 
   def updateNode (model: String): Boolean = {
-    var uuid = UUID.randomUUID()
+    val uuid = UUID.randomUUID()
     actor.manage(DeployResult(uuid.toString))
     nodePlatformProcess.getOutputStream.write(("sendModel " + model + " " + uuid.toString + "\n").getBytes)
     nodePlatformProcess.getOutputStream.flush()
