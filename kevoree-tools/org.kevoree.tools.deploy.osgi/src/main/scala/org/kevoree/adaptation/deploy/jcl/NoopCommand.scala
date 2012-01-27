@@ -1,5 +1,3 @@
-package org.kevoree.framework.context
-
 /**
  * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE, Version 3, 29 June 2007;
  * you may not use this file except in compliance with the License.
@@ -13,6 +11,19 @@ package org.kevoree.framework.context
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.kevoree.adaptation.deploy.jcl
 
-case class KevoreeOSGiBundle(name : String,objClassName : String,bundleId : Long)
-case class KevoreeJCLBundle(override val name : String,override val objClassName : String,ref : Any) extends KevoreeOSGiBundle(name,objClassName,-1)
+import org.kevoree.framework.PrimitiveCommand
+
+/**
+ * Created by IntelliJ IDEA.
+ * User: duke
+ * Date: 26/01/12
+ * Time: 17:15
+ */
+
+case class NoopCommand() extends PrimitiveCommand {
+  def execute(): Boolean = true
+
+  def undo() {}
+}

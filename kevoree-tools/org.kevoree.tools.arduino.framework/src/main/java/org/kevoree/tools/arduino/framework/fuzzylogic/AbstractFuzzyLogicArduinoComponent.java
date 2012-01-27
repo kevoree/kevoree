@@ -76,6 +76,10 @@ public abstract class AbstractFuzzyLogicArduinoComponent extends AbstractArduino
         gen.appendNativeStatement("num_rule_coutcome=num_rule_coutcome_"+idname+";");
         gen.appendNativeStatement("rules=rules_"+idname+";");
         gen.appendNativeStatement("numberOfRules=NUM_RULES_"+idname+";");
+        gen.appendNativeStatement("cleanArraysFunctions();");
+        GeneratorHelper.generateUpdateDictonnary(gen);
+        GeneratorHelper.generateMemberShipVariables(gen);
+
 
      }
 
@@ -164,7 +168,7 @@ public abstract class AbstractFuzzyLogicArduinoComponent extends AbstractArduino
 
         gen.appendNativeStatement("PROGMEM const unsigned char	num_rule_antecedent_"+idname+"[NUM_RULES_"+idname+"] = { "+_num_rule_antecedent.toString()+"};");
         gen.appendNativeStatement("PROGMEM const unsigned char num_rule_coutcome_"+idname+"[NUM_RULES_"+idname+"] = { "+_num_rule_coutcome.toString()+"};")  ;
-        gen.appendNativeStatement("PROGMEM const struct _Rule rules_"+idname+"[NUM_RULES_"+idname+"] = {");
+        gen.appendNativeStatement("const struct _Rule rules_"+idname+"[NUM_RULES_"+idname+"] = {");
         gen.appendNativeStatement(code_rules.toString());
         gen.appendNativeStatement( "};");
 

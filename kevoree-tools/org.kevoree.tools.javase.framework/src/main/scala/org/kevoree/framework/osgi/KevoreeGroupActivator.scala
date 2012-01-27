@@ -60,7 +60,11 @@ abstract class KevoreeGroupActivator extends BundleActivator with KevoreeInstanc
 
 
     /* PUT INITIAL PROPERTIES */
-    groupActor.getDictionary.put(Constants.KEVOREE_PROPERTY_OSGI_BUNDLE, bc.getBundle)
+    if(bc != null){
+      groupActor.getDictionary.put(Constants.KEVOREE_PROPERTY_OSGI_BUNDLE, bc.getBundle)
+    }
+
+
     groupActor.asInstanceOf[KevoreeGroup].setName(instanceName)
     groupActor.asInstanceOf[KevoreeGroup].setNodeName(nodeName)
 
