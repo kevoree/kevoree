@@ -9,10 +9,10 @@
     <version>1.5.0-SNAPSHOT</version>
 
     <parent>
-        <artifactId>org.kevoree.library.javase.root</artifactId>
-        <groupId>org.kevoree.library.javase</groupId>
+        <artifactId>org.kevoree.library.frascati.root</artifactId>
+        <groupId>org.kevoree.library.frascati</groupId>
         <version>1.5.0-SNAPSHOT</version>
-        <relativePath>../org.kevoree.library.javase.root/pom.xml</relativePath>
+        <relativePath>../org.kevoree.library.frascati.root/pom.xml</relativePath>
     </parent>
 
     <dependencies>
@@ -23,10 +23,52 @@
             <version>${project.version}</version>
         </dependency>
         <dependency>
+            <groupId>org.kevoree.library.javase</groupId>
+            <artifactId>org.kevoree.library.javase.javaseNode</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        
+        <dependency>
             <groupId>org.kevoree</groupId>
             <artifactId>org.kevoree.kompare</artifactId>
             <version>${project.version}</version>
         </dependency>
+	<dependency>
+	<groupId>org.ow2.frascati</groupId>
+	<artifactId>frascati-all-modules</artifactId>
+	<version>1.4</version>
+	</dependency>
+	<dependency>
+	<groupId>org.ow2.frascati</groupId>
+	<artifactId>frascati-component-factory</artifactId>
+	<version>1.4</version>
+	</dependency>
+	<dependency>
+	<groupId>org.ow2.frascati</groupId>
+	<artifactId>frascati-assembly-factory</artifactId>
+	<version>1.4</version>
+	</dependency>
+	<dependency>
+	<groupId>org.ow2.frascati</groupId>
+	<artifactId>frascati-sca-parser</artifactId>
+	<version>1.4</version>
+	</dependency>
+	<dependency>
+    <groupId>org.ow2.frascati</groupId>
+    <artifactId>frascati-introspection-api</artifactId>
+    <version>1.4</version>
+	</dependency>
+	<dependency>
+	<groupId>org.ow2.frascati.factory</groupId>
+	<artifactId>frascati-factory-tools</artifactId>
+	<version>1.4</version>
+</dependency>
+<dependency>
+    <groupId>org.apache.cxf</groupId>
+    <artifactId>cxf-rt-frontend-jaxrs</artifactId>
+    <version>2.4.0</version>
+</dependency>
+
     </dependencies>
 
 <!--
@@ -51,4 +93,56 @@
     </build>
 -->
 
+<repositories>
+      <repository>
+        <id>OW2-release</id>
+        <name>OW2 release repository</name>
+        <url>http://maven.objectweb.org/maven2</url>
+        <releases>
+          <enabled>true</enabled>
+        </releases>
+        <snapshots>
+          <enabled>false</enabled>
+        </snapshots>
+      </repository>    
+
+      <repository>
+        <id>OW2-snapshot</id>
+        <name>OW2 snapshot repository</name>
+        <url>http://maven.objectweb.org/maven2-snapshot</url>
+        <releases>
+          <enabled>false</enabled>
+        </releases>
+        <snapshots>
+          <enabled>true</enabled>
+          <updatePolicy>daily</updatePolicy>
+        </snapshots>
+      </repository>
+      
+      <repository>
+        <id>dev.java.net</id>
+        <name>Java.net Repository for Maven</name>
+        <url>http://download.java.net/maven/2/</url>
+        <layout>default</layout>
+        <releases>
+          <enabled>true</enabled>
+        </releases>
+        <snapshots>
+          <enabled>false</enabled>
+        </snapshots>
+      </repository>
+
+      <repository>
+        <id>eclipse</id>
+        <name>Eclipse EMF Mirror</name>
+        <url>http://www.openarchitectureware.org/m2</url>
+        <releases>
+          <enabled>true</enabled>
+        </releases>
+        <snapshots>
+          <enabled>false</enabled>
+        </snapshots>
+      </repository>
+
+    </repositories>   
 </project>

@@ -2,8 +2,8 @@
  <nodes metaData="x=621,y=213" xsi:type="kevoree:ContainerNode" name="node0" typeDefinition="//@typeDefinitions.22">
   <components name="FanManage732" xsi:type="kevoree:ComponentInstance" typeDefinition="//@typeDefinitions.23">
    <dictionary>
-    <values value="0,0,50,50" xsi:type="kevoree:DictionaryValue" attribute="//@typeDefinitions.23/@dictionaryType/@attributes.0"></values>
-    <values value="45,45,1024,1024" xsi:type="kevoree:DictionaryValue" attribute="//@typeDefinitions.23/@dictionaryType/@attributes.1"></values>
+    <values value="0,0,50,50\n" xsi:type="kevoree:DictionaryValue" attribute="//@typeDefinitions.23/@dictionaryType/@attributes.0"></values>
+    <values value="45,45,1024,1024\n" xsi:type="kevoree:DictionaryValue" attribute="//@typeDefinitions.23/@dictionaryType/@attributes.1"></values>
     <values value="0" xsi:type="kevoree:DictionaryValue" attribute="//@typeDefinitions.23/@dictionaryType/@attributes.2"></values>
     <values value="30" xsi:type="kevoree:DictionaryValue" attribute="//@typeDefinitions.23/@dictionaryType/@attributes.3"></values>
     <values value="100" xsi:type="kevoree:DictionaryValue" attribute="//@typeDefinitions.23/@dictionaryType/@attributes.4"></values>

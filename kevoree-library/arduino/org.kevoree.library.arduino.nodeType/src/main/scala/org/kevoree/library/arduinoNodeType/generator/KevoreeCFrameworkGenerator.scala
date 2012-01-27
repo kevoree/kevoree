@@ -454,7 +454,7 @@ trait KevoreeCFrameworkGenerator extends KevoreeCAbstractGenerator {
           //context b "EEPROM.write(eepromIndex," + propsCodeMap.get(dic._1).get + ");eepromIndex++;"
           //context b "EEPROM.write(eepromIndex,delimsEQ[0]);eepromIndex++;"
             val key = dic._1.filter(keyC => (Character.isLetterOrDigit(keyC) || keyC == '_') )
-            val value = dic._2.filter(keyC => (Character.isLetterOrDigit(keyC) || keyC == '_' || keyC == ';' ) )
+            val value = dic._2.filter(keyC => (Character.isLetterOrDigit(keyC) || keyC == '_' || keyC == ';' || keyC == '.' || keyC == '\\' || keyC == 'n' ) )
             if (dictionaryResult.length() != 0) {
               dictionaryResult.append(",")
             }
