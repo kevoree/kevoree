@@ -29,12 +29,10 @@ import org.kevoree.extra.jcl.KevoreeJarClassLoader
 object WinstoneEmbedded extends App {
 
   val jcl2 = new KevoreeJarClassLoader
-    jcl2.add("/Users/duke/.m2/repository/org/kevoree/platform/org.kevoree.platform.osgi.standalone.gui/1.5.1-SNAPSHOT/org.kevoree.platform.osgi.standalone.gui-1.5.1-SNAPSHOT.jar")
-
+  jcl2.add("/Users/duke/.m2/repository/org/kevoree/platform/org.kevoree.platform.osgi.standalone.gui/1.5.1-SNAPSHOT/org.kevoree.platform.osgi.standalone.gui-1.5.1-SNAPSHOT.jar")
 
    var jcl = new KevoreeJarClassLoader
    jcl.addSubClassLoader(jcl2)
-
 
 
   val factory = JclObjectFactory.getInstance

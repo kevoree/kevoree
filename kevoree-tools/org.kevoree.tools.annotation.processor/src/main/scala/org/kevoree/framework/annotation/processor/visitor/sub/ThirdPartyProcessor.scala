@@ -78,6 +78,7 @@ trait ThirdPartyProcessor {
         val unitName = tp.split("/").toList(1)
         val groupName = tp.split("/").toList(0)
         val version = tp.split("/").toList(2)
+        val dutype = tp.split("/").toList(3)
 
         root.getDeployUnits.find({
           etp => etp.getUnitName == unitName && etp.getGroupName == groupName && etp.getVersion == version
@@ -92,6 +93,7 @@ trait ThirdPartyProcessor {
             newThirdParty.setUnitName(unitName)
             newThirdParty.setGroupName(groupName)
             newThirdParty.setVersion(version)
+            newThirdParty.setType(dutype)
             root.addDeployUnits(newThirdParty)
             componentType.getDeployUnits(0).addRequiredLibs(newThirdParty)
           }

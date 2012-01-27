@@ -33,7 +33,6 @@ case class AddInstanceCommand(c: Instance, nodeName: String) extends PrimitiveCo
   var kevoreeFactory: KevoreeInstanceFactory = null
   var lastExecutionBundle : Option[org.osgi.framework.Bundle] = null
 
-
   def execute(): Boolean = {
     //FOUND CT SYMBOLIC NAME
     val mappingFound = KevoreeDeployManager.bundleMapping.find({

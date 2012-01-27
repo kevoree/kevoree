@@ -138,6 +138,7 @@
     <eStructuralFeatures xsi:type="ecore:EReference" name="requiredLibs" upperBound="-1"
         eType="#//DeployUnit"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="targetNodeType" eType="#//NodeType"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="type" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="TypeLibrary" eSuperTypes="#//NamedElement">
     <eStructuralFeatures xsi:type="ecore:EReference" name="subTypes" upperBound="-1"
