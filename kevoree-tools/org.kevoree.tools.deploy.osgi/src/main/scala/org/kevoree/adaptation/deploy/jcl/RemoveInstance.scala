@@ -54,8 +54,10 @@ case class RemoveInstance(c: Instance, nodeName: String) extends PrimitiveComman
         val node = c.getTypeDefinition.eContainer.asInstanceOf[ContainerRoot].getNodes.find(n => n.getName == nodeName).get
         val deployUnit = c.getTypeDefinition.foundRelevantDeployUnit(node)
 
+        val clazz = JCLContextHandler.getKCL(deployUnit).loadClass(factoryName)
+        val clazzInstance = clazz.newInstance
 
-        val kevoreeFactory = JCLContextHandler.getKCL(deployUnit).loadClass(factoryName).newInstance().asInstanceOf[KevoreeInstanceFactory]
+        val kevoreeFactory = clazzInstance.asInstanceOf[KevoreeInstanceFactory]
 
         val activator = kevoreeFactory.remove(c.getName)
         activator.asInstanceOf[BundleActivator].stop(null)
