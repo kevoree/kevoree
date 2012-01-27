@@ -4,9 +4,9 @@ import org.kevoree.tools.marShell.KevsEngine
 import org.kevoree.api.service.core.script.KevScriptEngineFactory
 import org.slf4j.{LoggerFactory, Logger}
 import org.kevoree.{TypeDefinition, KevoreeFactory, Group, ContainerRoot}
-import java.net.{URLConnection, URL, ServerSocket, Socket}
 import java.io.{ByteArrayOutputStream, InputStreamReader, BufferedReader, OutputStreamWriter}
 import org.kevoree.framework.{KevoreeXmiHelper, Constants, KevoreePropertyHelper}
+import java.net._
 
 
 /**
@@ -119,7 +119,7 @@ object KloudHelper {
   }
 
   def createGroup (groupName: String, nodeName: String, currentModel: ContainerRoot): Option[ContainerRoot] = {
-    val portNumber = selectPortNumber()
+    val portNumber = selectPortNumber("")
     val defaultPublicURLOption = buildDefaultPublicURL(groupName, nodeName, currentModel, portNumber)
     if (defaultPublicURLOption.isDefined) {
       val scriptBuilder = new StringBuilder()
@@ -143,7 +143,7 @@ object KloudHelper {
     }
   }
 
-  def localPush (model: ContainerRoot, groupName: String, kloudModel : ContainerRoot) {
+  def localPush (model: ContainerRoot, groupName: String, kloudModel: ContainerRoot) {
     logger.debug("try to push on the group the user model")
     val publicURLOption = KevoreePropertyHelper.getStringPropertyForGroup(kloudModel, groupName, "publicURL")
     if (publicURLOption.isDefined) {
@@ -170,17 +170,31 @@ object KloudHelper {
     }
   }
 
-  def selectPortNumber (): Int = {
+  def selectPortNumber (address: String): Int = {
     var i = 8000
-    var found = false
-    while (!found) {
-      try {
-        val socket = new ServerSocket(i)
-        socket.close()
-        found = true
-      } catch {
-        case _@e =>
+    if (address != "") {
+      var found = false
+      while (!found) {
+        try {
+          val socket = new Socket(address, i)
+          socket.close()
           i = i + 1
+        } catch {
+          case _@e =>
+            found = true
+        }
+      }
+    } else {
+      var found = false
+      while (!found) {
+        try {
+          val socket = new ServerSocket(i)
+          socket.close()
+          found = true
+        } catch {
+          case _@e =>
+            i = i + 1
+        }
       }
     }
     i

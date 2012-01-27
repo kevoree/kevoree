@@ -112,8 +112,6 @@ object KloudDeploymentManager {
               try {
                 modelHandlerService.atomicCompareAndSwapModel(uuidModel, newKloudModelOption.get)
 
-                Thread.sleep(10000)
-
                 // deploy the newModel on the user nodes
                 updateUserConfiguration(groupName, cleanedNewModelOption.get, newModel, modelHandlerService)
               } catch {
@@ -340,9 +338,19 @@ object KloudDeploymentManager {
 
     cleanNewUserModel.getNodes.foreach {
       node =>
+        val addressOption = kloudModel.getNodes.find(n => n.getName == node.getName) match {
+          case None => None
+          case Some(knode) => KevoreePropertyHelper
+            .getStringNetworkProperty(kloudModel, knode.getName, Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP)
+        }
+        var address = ""
+        if (addressOption.isDefined) {
+          address = addressOption.get
+        }
         scriptBuilder append "addToGroup " + groupName + " " + node.getName + "\n"
         scriptBuilder append
-          "updateDictionary " + groupName + " {port=\"" + KloudHelper.selectPortNumber() + "\"}@" + node.getName + "\n"
+          "updateDictionary " + groupName + " {port=\"" + KloudHelper.selectPortNumber(address) + "\"}@" +
+            node.getName + "\n"
     }
 
 
@@ -441,31 +449,36 @@ object KloudDeploymentManager {
   }
 
   private def sendUserModel (urlString: String, model: ContainerRoot): Boolean = {
-    try {
-      logger.debug("try to send user model at {}", urlString)
-      val url = new URL(urlString)
-      val conn: URLConnection = url.openConnection
-      conn.setConnectTimeout(3000)
-      conn.setDoOutput(true)
-      val wr: OutputStreamWriter = new OutputStreamWriter(conn.getOutputStream)
-      val outStream: ByteArrayOutputStream = new ByteArrayOutputStream
-      KevoreeXmiHelper.saveStream(outStream, model)
-      outStream.flush()
-      wr.write(outStream.toString)
-      wr.flush()
-      // Get the response
-      val rd: BufferedReader = new BufferedReader(new InputStreamReader(conn.getInputStream))
-      var line: String = rd.readLine
-      while (line != null) {
-        line = rd.readLine
-      }
-      wr.close()
-      rd.close()
+    var isSend = false
+    var i = 0
+    while (!isSend && i < 10) {
+      try {
+        logger.debug("try to send user model at {}", urlString)
+        val url = new URL(urlString)
+        val conn: URLConnection = url.openConnection
+        conn.setConnectTimeout(3000)
+        conn.setDoOutput(true)
+        val wr: OutputStreamWriter = new OutputStreamWriter(conn.getOutputStream)
+        val outStream: ByteArrayOutputStream = new ByteArrayOutputStream
+        KevoreeXmiHelper.saveStream(outStream, model)
+        outStream.flush()
+        wr.write(outStream.toString)
+        wr.flush()
+        // Get the response
+        val rd: BufferedReader = new BufferedReader(new InputStreamReader(conn.getInputStream))
+        var line: String = rd.readLine
+        while (line != null) {
+          line = rd.readLine
+        }
+        wr.close()
+        rd.close()
 
-      true
-    } catch {
-      case _@e => e.printStackTrace(); false
+        isSend = true
+      } catch {
+        case _@e => i+=1;Thread.sleep(1000)
+      }
     }
+    isSend
   }
 
   private def countChilds (kloudModel: ContainerRoot): List[(String, Int)] = {
