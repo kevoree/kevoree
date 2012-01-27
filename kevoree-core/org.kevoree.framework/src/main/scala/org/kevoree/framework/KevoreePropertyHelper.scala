@@ -29,7 +29,7 @@ object KevoreePropertyHelper {
 
   def getBooleanPropertyForGroup (model: ContainerRoot, groupName: String, key: String, isFragment: Boolean = false,
     nodeNameForFragment: String = ""): Option[Boolean] = {
-    getPropertyForGroup(model, groupName, key, true, nodeNameForFragment) match {
+    getPropertyForGroup(model, groupName, key, isFragment, nodeNameForFragment) match {
       case None => None
       case Some(value) => try {
         Some(value.toString.toLowerCase == "true")
@@ -41,7 +41,7 @@ object KevoreePropertyHelper {
 
   def getIntPropertyForGroup (model: ContainerRoot, groupName: String, key: String, isFragment: Boolean = false,
     nodeNameForFragment: String = ""): Option[Int] = {
-    getPropertyForGroup(model, groupName, key, true, nodeNameForFragment) match {
+    getPropertyForGroup(model, groupName, key, isFragment, nodeNameForFragment) match {
       case None => None
       case Some(value) => try {
         Some(Integer.parseInt(value.toString))
@@ -53,7 +53,7 @@ object KevoreePropertyHelper {
 
   def getStringPropertyForGroup (model: ContainerRoot, groupName: String, key: String, isFragment: Boolean = false,
     nodeNameForFragment: String = ""): Option[String] = {
-    getPropertyForGroup(model, groupName, key, true, nodeNameForFragment) match {
+    getPropertyForGroup(model, groupName, key, isFragment, nodeNameForFragment) match {
       case None => None
       case Some(value) => try {
         Some(value.toString)
@@ -66,14 +66,14 @@ object KevoreePropertyHelper {
   def getPropertyForGroup (model: ContainerRoot, groupName: String, key: String,
     isFragment: Boolean = false, nodeNameForFragment: String = ""): Option[Object] = {
     model.getGroups.find(group => group.getName == groupName) match {
-      case Some(group) => getProperty(model, group, groupName, key)
+      case Some(group) => getProperty(model, group, groupName, key, isFragment, nodeNameForFragment)
       case None => None
     }
   }
 
   def getBooleanPropertyForChannel (model: ContainerRoot, channelName: String, key: String, isFragment: Boolean = false,
     nodeNameForFragment: String = ""): Option[Boolean] = {
-    getPropertyForChannel(model, channelName, key, true, nodeNameForFragment) match {
+    getPropertyForChannel(model, channelName, key, isFragment, nodeNameForFragment) match {
       case None => None
       case Some(value) => try {
         Some(value.toString.toLowerCase == "true")
@@ -85,7 +85,7 @@ object KevoreePropertyHelper {
 
   def getIntPropertyForChannel (model: ContainerRoot, channelName: String, key: String, isFragment: Boolean = false,
     nodeNameForFragment: String = ""): Option[Int] = {
-    getPropertyForChannel(model, channelName, key, true, nodeNameForFragment) match {
+    getPropertyForChannel(model, channelName, key, isFragment, nodeNameForFragment) match {
       case None => None
       case Some(value) => try {
         Some(Integer.parseInt(value.toString))
@@ -97,7 +97,7 @@ object KevoreePropertyHelper {
 
   def getStringPropertyForChannel (model: ContainerRoot, channelName: String, key: String, isFragment: Boolean = false,
     nodeNameForFragment: String = ""): Option[String] = {
-    getPropertyForChannel(model, channelName, key, true, nodeNameForFragment) match {
+    getPropertyForChannel(model, channelName, key, isFragment, nodeNameForFragment) match {
       case None => None
       case Some(value) => try {
         Some(value.toString)
@@ -110,7 +110,7 @@ object KevoreePropertyHelper {
   def getPropertyForChannel (model: ContainerRoot, channelName: String, key: String,
     isFragment: Boolean = false, nodeNameForFragment: String = ""): Option[Object] = {
     model.getHubs.find(channel => channel.getName == channelName) match {
-      case Some(channel) => getProperty(model, channel, channelName, key)
+      case Some(channel) => getProperty(model, channel, channelName, key, isFragment, nodeNameForFragment)
       case None => None
     }
   }
