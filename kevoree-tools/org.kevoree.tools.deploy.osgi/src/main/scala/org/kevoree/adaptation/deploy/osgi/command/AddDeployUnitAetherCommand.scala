@@ -70,7 +70,7 @@ case class AddDeployUnitAetherCommand (deployUnit: DeployUnit, update: Boolean =
         lastExecutionBundle.get.update(new FileInputStream(arteFile))
       }
 
-      if (previousBundleID.contains(lastExecutionBundle.get.getBundleId)) {
+      if (!previousBundleID.contains(lastExecutionBundle.get.getBundleId)) {
         val symbolicName: String = lastExecutionBundle.get.getSymbolicName
         //FOR DEPLOY UNIT DO NOT USE ONLY NAME
         KevoreeDeployManager
