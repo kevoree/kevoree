@@ -19,11 +19,9 @@ package org.kevoree.framework.osgi
  */
 
 import java.util.Hashtable
-import org.kevoree.api.service.core.handler.KevoreeModelHandlerService
 import org.kevoree.framework._
 import message.StopMessage
-import org.kevoree.api.service.core.script.KevScriptEngineFactory
-import org.osgi.framework.{ServiceRegistration}
+import org.osgi.framework.ServiceRegistration
 
 
 /* ABSTRACT COMPONENT */
@@ -65,17 +63,15 @@ abstract class KevoreeComponentActivator extends KevoreeInstanceActivator {
 
     componentActor.getKevoreeComponentType.asInstanceOf[AbstractComponentType].setName(componentName)
     componentActor.getKevoreeComponentType.asInstanceOf[AbstractComponentType].setNodeName(nodeName)
-
-
-
-      componentActor.getKevoreeComponentType.asInstanceOf[AbstractComponentType].setModelService(modelHandlerService)
-      componentActor.getKevoreeComponentType.asInstanceOf[AbstractComponentType].setKevScriptEngineFactory(kevScriptEngine)
+    componentActor.getKevoreeComponentType.asInstanceOf[AbstractComponentType].setModelService(modelHandlerService)
+    componentActor.getKevoreeComponentType.asInstanceOf[AbstractComponentType].setKevScriptEngineFactory(kevScriptEngine)
 
 
 
     /* Start actor */
     componentActor.start()
     /* Expose component in OSGI */
+
     if (bundleContext != null) {
       val props = new Hashtable[String, String]()
       props.put(Constants.KEVOREE_NODE_NAME, nodeName)
