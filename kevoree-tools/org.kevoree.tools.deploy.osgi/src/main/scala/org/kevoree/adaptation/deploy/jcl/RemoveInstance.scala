@@ -24,9 +24,10 @@ import org.kevoree.framework.{KevoreeGeneratorHelper, PrimitiveCommand}
 import org.kevoree.framework.osgi.KevoreeInstanceFactory
 import org.kevoree.framework.aspects.KevoreeAspects._
 import org.kevoree.{ContainerRoot, NodeType, Instance}
-import org.osgi.framework.BundleActivator
+import org.kevoree.api.service.core.handler.KevoreeModelHandlerService
+import org.kevoree.api.service.core.script.KevScriptEngineFactory
 
-case class RemoveInstance(c: Instance, nodeName: String) extends PrimitiveCommand {
+case class RemoveInstance(c: Instance, nodeName: String,modelservice : KevoreeModelHandlerService,kscript : KevScriptEngineFactory) extends PrimitiveCommand {
 
   var logger = LoggerFactory.getLogger(this.getClass)
 
@@ -54,11 +55,13 @@ case class RemoveInstance(c: Instance, nodeName: String) extends PrimitiveComman
         val node = c.getTypeDefinition.eContainer.asInstanceOf[ContainerRoot].getNodes.find(n => n.getName == nodeName).get
         val deployUnit = c.getTypeDefinition.foundRelevantDeployUnit(node)
 
+        val clazz = JCLContextHandler.getKCL(deployUnit).loadClass(factoryName)
+        val clazzInstance = clazz.newInstance
 
-        val kevoreeFactory = JCLContextHandler.getKCL(deployUnit).loadClass(factoryName).newInstance().asInstanceOf[KevoreeInstanceFactory]
+        val kevoreeFactory = clazzInstance.asInstanceOf[KevoreeInstanceFactory]
 
         val activator = kevoreeFactory.remove(c.getName)
-        activator.asInstanceOf[BundleActivator].stop(null)
+        activator.stop()
 
         true
     }
@@ -71,7 +74,7 @@ case class RemoveInstance(c: Instance, nodeName: String) extends PrimitiveComman
 
   def undo() {
     try {
-      AddInstance(c, nodeName).execute()
+      AddInstance(c, nodeName,modelservice,kscript).execute()
       UpdateDictionary(c, nodeName).execute()
     } catch {
       case _ =>

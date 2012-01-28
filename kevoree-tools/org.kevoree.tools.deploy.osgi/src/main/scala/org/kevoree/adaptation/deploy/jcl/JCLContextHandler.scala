@@ -33,7 +33,6 @@ object JCLContextHandler {
   private val kcl_cache_file = new java.util.HashMap[String,File]()
   val logger = LoggerFactory.getLogger(this.getClass)
 
-
   def getCacheFile(du : DeployUnit) : File = {
     kcl_cache_file.get(CommandHelper.buildKEY(du))
   }
@@ -41,21 +40,34 @@ object JCLContextHandler {
   def installDeployUnit(du : DeployUnit, file : File) : KevoreeJarClassLoader = {
     logger.debug("Install {} , file {}",CommandHelper.buildKEY(du),file)
     val newcl = new KevoreeJarClassLoader
+    if(du.getVersion.contains("SNAPSHOT")){
+      newcl.setLazyLoad(false)
+    }
     newcl.add(file.getAbsolutePath)
     kcl_cache.put(CommandHelper.buildKEY(du),newcl)
     kcl_cache_file.put(CommandHelper.buildKEY(du),file)
+    logger.debug("Add KCL for "+du.getUnitName+"->"+CommandHelper.buildKEY(du))
+
+    du.getRequiredLibs.foreach{ rLib =>
+      val kcl = getKCL(rLib)
+      if(kcl != null){
+        logger.debug("Link KCL for "+du.getUnitName+"->"+rLib.getUnitName)
+        newcl.addSubClassLoader(kcl)
+      }
+    }
     newcl
   }
   
-  def getKCL(du : DeployUnit) = {
-    kcl_cache.remove(CommandHelper.buildKEY(du))
+  def getKCL(du : DeployUnit) : KevoreeJarClassLoader = {
+    kcl_cache.get(CommandHelper.buildKEY(du))
   }
   
   def removeDeployUnit(du : DeployUnit) {
     val key = CommandHelper.buildKEY(du)
     if(kcl_cache.containsKey(key)){
-      kcl_cache.get(kcl_cache).unload()
-      kcl_cache.remove(kcl_cache)
+      logger.debug("Remove KCL for "+du.getUnitName+"->"+CommandHelper.buildKEY(du))
+      kcl_cache.get(key).unload()
+      kcl_cache.remove(key)
     }
   }
 

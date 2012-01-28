@@ -19,7 +19,9 @@ import org.kevoree.framework.{KevoreeGeneratorHelper, PrimitiveCommand}
 import org.kevoree.framework.osgi.{KevoreeInstanceActivator, KevoreeInstanceFactory}
 import org.osgi.framework.BundleActivator
 import org.slf4j.LoggerFactory
-import org.kevoree.framework.context.{KevoreeJCLBundle, KevoreeDeployManager, KevoreeOSGiBundle}
+import org.kevoree.framework.context.{KevoreeJCLBundle, KevoreeDeployManager}
+import org.kevoree.api.service.core.handler.KevoreeModelHandlerService
+import org.kevoree.api.service.core.script.KevScriptEngineFactory
 
 /**
  * Created by IntelliJ IDEA.
@@ -28,7 +30,7 @@ import org.kevoree.framework.context.{KevoreeJCLBundle, KevoreeDeployManager, Ke
  * Time: 17:53
  */
 
-case class AddInstance(c: Instance, nodeName: String) extends PrimitiveCommand {
+case class AddInstance(c: Instance, nodeName: String,modelservice : KevoreeModelHandlerService,kscript : KevScriptEngineFactory) extends PrimitiveCommand {
 
   val logger = LoggerFactory.getLogger(this.getClass)
 
@@ -47,8 +49,12 @@ case class AddInstance(c: Instance, nodeName: String) extends PrimitiveCommand {
     try {
       val kevoreeFactory = JCLContextHandler.getKCL(deployUnit).loadClass(factoryName).newInstance().asInstanceOf[KevoreeInstanceFactory]
       val newInstance: KevoreeInstanceActivator = kevoreeFactory.registerInstance(c.getName, nodeName)
-      KevoreeDeployManager.addMapping(KevoreeJCLBundle(c.getName, c.getClass.getName, newInstance))
-      newInstance.asInstanceOf[BundleActivator].start(null)
+      KevoreeDeployManager.addMapping(KevoreeJCLBundle(c.getName, c.getClass.getName, newInstance,-1))
+
+      newInstance.setBundleContext(null)
+      newInstance.setKevScriptEngineFactory(kscript)
+      newInstance.setModelHandlerService(modelservice)
+      newInstance.start()
       true
     } catch {
       case _@e => {
@@ -61,6 +67,8 @@ case class AddInstance(c: Instance, nodeName: String) extends PrimitiveCommand {
   }
 
   def undo() {
+    RemoveInstance(c, nodeName,modelservice,kscript)
+
     //TODO
 
 
