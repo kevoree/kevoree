@@ -46,7 +46,6 @@
     <dependencies>
 
         <!-- Sky computing -->
-        <!--
         <dependency>
             <groupId>org.kevoree.library.sky</groupId>
             <artifactId>org.kevoree.library.sky.minicloud</artifactId>
@@ -57,12 +56,11 @@
             <artifactId>org.kevoree.library.sky.jails</artifactId>
             <version>${kevoree.version}</version>
         </dependency>
-        -->
-        <dependency>
+        <!--<dependency>
             <groupId>org.kevoree.library.javase</groupId>
             <artifactId>org.kevoree.library.javase.miniCloudGroup</artifactId>
             <version>${kevoree.version}</version>
-        </dependency>
+        </dependency>-->
         <dependency>
             <groupId>org.kevoree.library.javase</groupId>
             <artifactId>org.kevoree.library.javase.javaseNode</artifactId>
@@ -73,13 +71,11 @@
             <artifactId>org.kevoree.library.javase.rest</artifactId>
             <version>${kevoree.version}</version>
         </dependency>
-        <!--
         <dependency>
             <groupId>org.kevoree.library.javase</groupId>
             <artifactId>org.kevoree.library.javase.restAutoDiscovery</artifactId>
             <version>${kevoree.version}</version>
         </dependency>
-        -->
     </dependencies>
 
 

@@ -15,4 +15,4 @@ package org.kevoree.framework.context
  */
 
 case class KevoreeOSGiBundle(name : String,objClassName : String,bundleId : Long)
-case class KevoreeJCLBundle(override val name : String,override val objClassName : String,ref : Any) extends KevoreeOSGiBundle(name,objClassName,-1)
+case class KevoreeJCLBundle(override val name : String,override val objClassName : String,ref : Any,override val bundleId : Long) extends KevoreeOSGiBundle(name,objClassName,bundleId)

@@ -29,7 +29,7 @@ import org.kevoree.tools.aether.framework.AetherUtil
 import java.io.{File, FileInputStream}
 import java.util.Random
 
-case class AddDeployUnitAetherCommand(deployUnit: DeployUnit, update: Boolean = false) extends PrimitiveCommand {
+case class AddDeployUnitAetherCommand (deployUnit: DeployUnit, update: Boolean = false) extends PrimitiveCommand {
 
   var logger = LoggerFactory.getLogger(this.getClass)
   var random = new Random
@@ -38,21 +38,25 @@ case class AddDeployUnitAetherCommand(deployUnit: DeployUnit, update: Boolean = 
 
   var lastExecutionBundle: Option[org.osgi.framework.Bundle] = null
 
-  def execute(): Boolean = {
+  def execute (): Boolean = {
     logger.debug("CMD ADD DEPLOY UNIT EXECUTION ");
     try {
       val arteFile: File = AetherUtil.resolveDeployUnit(deployUnit)
-      logger.debug("Try to install from URL, " + arteFile.getAbsolutePath + " on - " + KevoreeDeployManager.getBundleContext)
+      logger.debug("Try to install from URL, " + arteFile.getAbsolutePath + " on - " +
+        KevoreeDeployManager.getBundleContext)
       val previousBundleID = KevoreeDeployManager.getBundleContext.getBundles.map(b => b.getBundleId)
-      lastExecutionBundle = Some(KevoreeDeployManager.getBundleContext.installBundle("file:///" + arteFile.getAbsolutePath, new FileInputStream(arteFile)));
+      lastExecutionBundle = Some(KevoreeDeployManager.getBundleContext
+        .installBundle("file:///" + arteFile.getAbsolutePath, new FileInputStream(arteFile)));
 
       if (update && previousBundleID.contains(lastExecutionBundle.get.getBundleId)) {
         //BACKUP FILE
         val destFile = File.createTempFile(random.nextInt() + "", ".jar")
 
-        val jarFile = FileNIOHelper.resolveBundleJar(lastExecutionBundle.get, new File(System.getProperty("osgi.cache")));
+        val jarFile = FileNIOHelper
+          .resolveBundleJar(lastExecutionBundle.get, new File(System.getProperty("osgi.cache")));
         if (jarFile != null) {
-          logger.debug("Saving cache file for bundle id {} with url {}", lastExecutionBundle.get.getBundleId, jarFile.getAbsoluteFile);
+          logger.debug("Saving cache file for bundle id {} with url {}", lastExecutionBundle.get.getBundleId,
+                        jarFile.getAbsoluteFile);
           val jarStream = new FileInputStream(jarFile);
           FileNIOHelper.copyFile(jarStream, destFile)
           jarStream.close();
@@ -66,11 +70,15 @@ case class AddDeployUnitAetherCommand(deployUnit: DeployUnit, update: Boolean = 
         lastExecutionBundle.get.update(new FileInputStream(arteFile))
       }
 
-      val symbolicName: String = lastExecutionBundle.get.getSymbolicName
-      //FOR DEPLOY UNIT DO NOT USE ONLY NAME
-      KevoreeDeployManager.addMapping(KevoreeOSGiBundle(CommandHelper.buildKEY(deployUnit), deployUnit.getClass.getName, lastExecutionBundle.get.getBundleId))
-      lastExecutionBundle.get.start()
-      //  mustBeStarted = true
+      if (!previousBundleID.contains(lastExecutionBundle.get.getBundleId)) {
+        val symbolicName: String = lastExecutionBundle.get.getSymbolicName
+        //FOR DEPLOY UNIT DO NOT USE ONLY NAME
+        KevoreeDeployManager
+          .addMapping(KevoreeOSGiBundle(CommandHelper.buildKEY(deployUnit), deployUnit.getClass.getName,
+                                         lastExecutionBundle.get.getBundleId))
+        lastExecutionBundle.get.start()
+        //  mustBeStarted = true
+      }
 
       true
     } catch {
@@ -78,7 +86,8 @@ case class AddDeployUnitAetherCommand(deployUnit: DeployUnit, update: Boolean = 
         logger.warn("DeployUnit conflict ! ", e)
         //try to found a valide candidate anyway
         //found type definition
-        val optTypeDef = deployUnit.eContainer.asInstanceOf[ContainerRoot].getTypeDefinitions.find(typeDef => typeDef.getDeployUnits.contains(deployUnit))
+        val optTypeDef = deployUnit.eContainer.asInstanceOf[ContainerRoot].getTypeDefinitions
+          .find(typeDef => typeDef.getDeployUnits.contains(deployUnit))
         optTypeDef match {
           case Some(typDef) => {
             lastExecutionBundle = KevoreeDeployManager.getBundleContext.getBundles.find {
@@ -92,7 +101,9 @@ case class AddDeployUnitAetherCommand(deployUnit: DeployUnit, update: Boolean = 
             }
             lastExecutionBundle match {
               case Some(bundle) => {
-                KevoreeDeployManager.addMapping(KevoreeOSGiBundle(CommandHelper.buildKEY(deployUnit), deployUnit.getClass.getName, bundle.getBundleId))
+                KevoreeDeployManager
+                  .addMapping(KevoreeOSGiBundle(CommandHelper.buildKEY(deployUnit), deployUnit.getClass.getName,
+                                                 bundle.getBundleId))
                 //mustBeStarted = false
                 true
               }
@@ -123,7 +134,7 @@ case class AddDeployUnitAetherCommand(deployUnit: DeployUnit, update: Boolean = 
 
   }
 
-  def undo() {
+  def undo () {
     if (lastExecutionBundle != null) {
       lastExecutionBundle match {
         case Some(bundle) => {
@@ -135,13 +146,15 @@ case class AddDeployUnitAetherCommand(deployUnit: DeployUnit, update: Boolean = 
           } else {
             bundle.stop()
             bundle.uninstall()
-            (KevoreeDeployManager.bundleMapping.filter(map => map.bundleId == bundle.getBundleId).toList ++ List()).foreach {
+            (KevoreeDeployManager.bundleMapping.filter(map => map.bundleId == bundle.getBundleId).toList ++ List())
+              .foreach {
               map =>
                 KevoreeDeployManager.removeMapping(map) // = ctx.bundleMapping.filter(mb => mb != map)
             }
           }
           val srPackageAdmin = KevoreeDeployManager.getBundleContext.getServiceReference(classOf[PackageAdmin].getName)
-          val padmin: PackageAdmin = KevoreeDeployManager.getBundleContext.getService(srPackageAdmin).asInstanceOf[PackageAdmin]
+          val padmin: PackageAdmin = KevoreeDeployManager.getBundleContext.getService(srPackageAdmin)
+            .asInstanceOf[PackageAdmin]
           padmin.resolveBundles(Array(bundle))
         }
         case None => //NOTHING CAN BE DOING HERE

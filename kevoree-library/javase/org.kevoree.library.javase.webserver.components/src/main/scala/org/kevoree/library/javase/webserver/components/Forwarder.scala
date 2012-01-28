@@ -47,7 +47,7 @@ object Forwarder {
     }
   }
 
-  def forward (urlString: String, request: KevoreeHttpRequest, response: KevoreeHttpResponse, path: String,
+  def forward (urlString: String, port : Int, request: KevoreeHttpRequest, response: KevoreeHttpResponse, path: String,
     urlPattern: String) {
     var newPath = ""
     if (path != null) {
@@ -60,98 +60,18 @@ object Forwarder {
         currentPath = currentPath + "/"
       }
     }
-    logger.debug("forward to {} with {} as parameter", urlString  + "/" + newPath, request.getRawParams)
+    logger.debug("forward to {} with {} as parameter", urlString + port  + "/" + newPath, request.getRawParams)
     if (request.getRawBody.size == 0) {
-      forwardGET(urlString, request, response, newPath, currentPath)
+      forwardGET(urlString, port , request, response, newPath, currentPath)
     } else {
-      forwardPOST(urlString, request, response, newPath, currentPath)
+      forwardPOST(urlString, port, request, response, newPath, currentPath)
     }
   }
 
-  /*private def setHeaders (request: KevoreeHttpRequest, urlConnection: URLConnection) {
-    request.getHeaders.keySet().foreach {
-      key =>
-        urlConnection.setRequestProperty(key, request.getHeaders.get(key))
-    }
-  }
-
-  private def forwardGET (urlString: String, request: KevoreeHttpRequest, response: KevoreeHttpResponse, path : String) {
-    println("forwardGET : " + urlString + path + request.getRawParams)
-
-    val url = new URL(urlString + path + request.getRawParams)
-    val urlConnection = url.openConnection().asInstanceOf[HttpURLConnection]
-
-    setHeaders(request, urlConnection)
-    urlConnection.setRequestMethod("GET");
-
-    // Read response
-    try {
-      val bytesStream = new ByteArrayOutputStream()
-      val bytes = new Array[Byte](1024)
-      var length = urlConnection.getInputStream.read(bytes)
-      while (length >= 0) {
-        bytesStream.write(bytes, 0, length)
-        length = urlConnection.getInputStream.read(bytes)
-      }
-      urlConnection.getInputStream.close()
-
-      // build response
-      response.setRawContent(bytesStream.toByteArray)
-    }
-    catch {
-      case _@e => {
-        response.setContent(generateErrorPageHtml(e.getMessage))
-      }
-    }
-
-    urlConnection.disconnect()
-  }
-
-  private def forwardPOST (urlString: String, request: KevoreeHttpRequest, response: KevoreeHttpResponse, path : String) {
-
-    val url = new URL(urlString + path + request.getRawParams)
-    val urlConnection = url.openConnection().asInstanceOf[HttpURLConnection]
-
-    setHeaders(request, urlConnection)
-    urlConnection.setRequestMethod("POST");
-    urlConnection.setDoOutput(true);
-    urlConnection.setDoInput(true);
-    urlConnection.setUseCaches(false);
-    urlConnection.setAllowUserInteraction(false);
-
-    urlConnection.getOutputStream.write(request.getRawBody)
-    urlConnection.getOutputStream.flush()
-    urlConnection.getOutputStream.close()
-
-    // Read response
-    try {
-      val bytesStream = new ByteArrayOutputStream()
-      val bytes = new Array[Byte](1024)
-      var length = urlConnection.getInputStream.read(bytes)
-      while (length >= 0) {
-        bytesStream.write(bytes, 0, length)
-        length = urlConnection.getInputStream.read(bytes)
-      }
-      urlConnection.getInputStream.close()
-
-
-
-      // build response
-      response.setRawContent(bytesStream.toByteArray)
-    }
-    catch {
-      case _@e => {
-        response.setContent(generateErrorPageHtml(e.getMessage))
-      }
-    }
-
-    urlConnection.disconnect()
-  }*/
-
-  private def forwardGET (urlString: String, request: KevoreeHttpRequest, response: KevoreeHttpResponse, path: String,
+  private def forwardGET (urlString: String, port : Int, request: KevoreeHttpRequest, response: KevoreeHttpResponse, path: String,
     currentPath: String) {
     // create a very basic HttpDialog that results in a Future[HttpResponse]
-    val dialog = HttpClient.HttpDialog(urlString)
+    val dialog = HttpClient.HttpDialog(urlString, port)
       .send(HttpRequest(method = HttpMethods.GET, uri = "/" + path + request.getRawParams,
                          headers = convertKevoreeHTTPHeadersToSprayCanHeaders(request.getHeaders)))
       .end
@@ -165,12 +85,12 @@ object Forwarder {
   }
 
 
-  private def forwardPOST (urlString: String, request: KevoreeHttpRequest, response: KevoreeHttpResponse,
+  private def forwardPOST (urlString: String, port : Int, request: KevoreeHttpRequest, response: KevoreeHttpResponse,
     path: String, urlPattern: String) {
     // create a very basic HttpDialog that results in a Future[HttpResponse]
-    val dialog = HttpClient.HttpDialog(urlString)
+    val dialog = HttpClient.HttpDialog(urlString, port)
       .send(HttpRequest(method = HttpMethods.POST, uri = "/" + path + request.getRawParams,
-                         headers = convertKevoreeHTTPHeadersToSprayCanHeaders(request.getHeaders)))
+                         headers = convertKevoreeHTTPHeadersToSprayCanHeaders(request.getHeaders), body = request.getRawBody))
       .end
 
     dialog.get

@@ -38,7 +38,10 @@ public class JavaSENode extends AbstractNodeType {
         KevoreeDeployManager.setBundle(bundle);
         kompareBean = new KevoreeKompareBean();
         deployBean = new BaseDeployOSGi(bundle);
+        deployBean.setModelHandlerService(getModelService());
+        deployBean.setKscripEngineFactory(getKevScriptEngineFactory());
     }
+
 
     @Stop
     @Override

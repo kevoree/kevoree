@@ -1,6 +1,7 @@
 package org.kevoree.library.sky.provider;
 
 import org.kevoree.ContainerRoot;
+import org.kevoree.KevoreeFactory;
 import org.kevoree.annotation.DictionaryAttribute;
 import org.kevoree.annotation.DictionaryType;
 import org.kevoree.annotation.GroupType;
@@ -30,6 +31,11 @@ public class KloudResourceManagerGroup extends SSHRestGroup {
 
 	private ContainerRoot userModel;
 
+	public void startRestGroup () {
+		super.startRestGroup();
+		userModel = KevoreeFactory.createContainerRoot();
+	}
+
 	@Override
 	public void triggerModelUpdate () {
 		// do nothing
@@ -49,19 +55,23 @@ public class KloudResourceManagerGroup extends SSHRestGroup {
 	@Override
 	public void updateModel (ContainerRoot model) {
 		// looking if this instance is on top of a IaaS node or a PaaS node (PJavaSeNode)
-		if (KloudDeploymentManager.isIaaSNode(this.getModelService().getLastModel(), this.getName(), this.getNodeName())) {
-		// if this instance is on top of IaaS node then we try to dispatch the received model on the kloud
+		if (KloudDeploymentManager
+				.isIaaSNode(this.getModelService().getLastModel(), this.getName(), this.getNodeName())) {
+			// if this instance is on top of IaaS node then we try to dispatch the received model on the kloud
 			if (KloudDeploymentManager.needsNewDeployment(model, userModel)) {
-				KloudDeploymentManager.processDeployment(model, userModel, this.getModelService(), this.getKevScriptEngineFactory(), this.getName()/*, "KloudResourceManagerGroup"*/);
+				KloudDeploymentManager.processDeployment(model, userModel, this.getModelService(),
+						this.getKevScriptEngineFactory(), this.getName());
 			} else {
 				Option<ContainerRoot> cleanModelOption = KloudDeploymentManager.cleanUserModel(userModel);
 				if (cleanModelOption.isDefined()) {
 					// there is no new node so we simply push model on each PaaSNode
-					KloudDeploymentManager.updateUserConfiguration(cleanModelOption.get(), model, this.getModelService());
+					KloudDeploymentManager.updateUserConfiguration(this.getName(), cleanModelOption.get(), model,
+							this.getModelService());
 				}
 			}
-		} else if (KloudDeploymentManager.isPaaSNode(this.getModelService().getLastModel(), this.getName(), this.getNodeName())) {
-		// if this instance is on top of PaaS node than we deploy the model on the node
+		} else if (KloudDeploymentManager.isPaaSNode(this.getModelService().getLastModel(), this.getName(),
+				this.getNodeName())) {
+			// if this instance is on top of PaaS node then we deploy the model on the node
 			this.getModelService().updateModel(model);
 		} else {
 			logger.debug("Unable to manage this kind of node as a Kloud node");
@@ -70,10 +80,16 @@ public class KloudResourceManagerGroup extends SSHRestGroup {
 
 	@Override
 	public String getModel () {
-		return KevoreeXmiHelper.saveToString(userModel, false);
-	}
-
-	public void localPush(ContainerRoot model, String groupName) {
-
+		if (KloudDeploymentManager
+				.isIaaSNode(this.getModelService().getLastModel(), this.getName(), this.getNodeName())) {
+			return KevoreeXmiHelper.saveToString(userModel, false);
+		} else if (KloudDeploymentManager.isPaaSNode(this.getModelService().getLastModel(), this.getName(),
+				this.getNodeName())) {
+			// if this instance is on top of PaaS node then we deploy the model on the node
+			return KevoreeXmiHelper.saveToString(this.getModelService().getLastModel(), false);
+		} else {
+			logger.debug("Unable to manage this kind of node as a Kloud node");
+			return "";
+		}
 	}
 }

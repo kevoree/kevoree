@@ -33,6 +33,9 @@ trait KevoreeInstanceFactory {
     val newInstance = createInstanceActivator
     newInstance.setInstanceName(instanceName)
     newInstance.setNodeName(nodeName)
+
+
+
     instancesCache.put(instanceName, newInstance)
     logger.debug("TypeCache " + this.getClass.getName + " has " + instancesCache.keySet().size() + " instances")
     newInstance

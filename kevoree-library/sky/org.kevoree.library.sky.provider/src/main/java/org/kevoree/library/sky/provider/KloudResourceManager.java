@@ -1,6 +1,7 @@
 package org.kevoree.library.sky.provider;
 
 import org.kevoree.ContainerRoot;
+import org.kevoree.Group;
 import org.kevoree.annotation.ComponentType;
 import org.kevoree.annotation.Library;
 import org.kevoree.api.service.core.handler.UUIDModel;
@@ -11,6 +12,9 @@ import org.kevoree.library.javase.webserver.KevoreeHttpResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import scala.Option;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * User: Erwan Daubert - erwan.daubert@gmail.com
@@ -26,6 +30,22 @@ public class KloudResourceManager extends AbstractPage {
 
 	private Logger logger = LoggerFactory.getLogger(this.getClass());
 
+	private List<String> CurrentlyInsallingLogins;
+
+	public KloudResourceManager () {
+		CurrentlyInsallingLogins = new ArrayList<String>();
+	}
+
+	@Override
+	public void requestHandler (Object param) {
+		final Object params = param;
+		new Thread(){
+			@Override
+			public void run () {
+				KloudResourceManager.super.requestHandler(params);
+			}
+		}.start();
+	}
 
 	public KevoreeHttpResponse process (KevoreeHttpRequest request, KevoreeHttpResponse response) {
 		if (request != null) {
@@ -41,7 +61,7 @@ public class KloudResourceManager extends AbstractPage {
 						response.setContent(HTMLHelper
 								.generateValidSubmissionPageHtml(request.getUrl(),
 										request.getResolvedParams().get("login"),
-										""/*TODO specify an address*/));
+										result));
 					} else {
 						response.setContent(HTMLHelper.generateUnvalidSubmissionPageHtml(request.getUrl(),
 								request.getResolvedParams().get("login"), result));
@@ -88,28 +108,33 @@ public class KloudResourceManager extends AbstractPage {
 
 				if (newKloudModelOption.isDefined()) {
 
-					KloudHelper.getGroup(login, newKloudModelOption.get());
+					Option<Group> groupOption = KloudHelper.getGroup(login, newKloudModelOption.get());
+					if (groupOption.isDefined()) {
+						try {
+							// update the kloud model by adding the group (the nodes are not added)
+							this.getModelService().atomicCompareAndSwapModel(uuidModel, newKloudModelOption.get());
+							
+							// push the user model to this group
+							KloudHelper.localPush(model, login, newKloudModelOption.get());
 
-					try {
-						// update the kloud model by adding the group (the nodes are not added)
-						this.getModelService().atomicCompareAndSwapModel(uuidModel, newKloudModelOption.get());
-
-						// push the user model to this group
-						KloudHelper.localPush(model, login);
-
-						Option<String> accessPointOption = KloudHelper
-								.lookForAccessPoint(login, this.getNodeName(), this.getModelService().getLastModel());
-						if (accessPointOption.isDefined()) {
-							return accessPointOption.get();
-						} else {
-							return "Unable to give you access to your nodes.<br/>Please contact the administrators.";
+							Option<String> accessPointOption = KloudHelper
+									.lookForAccessPoint(login, this.getNodeName(),
+											this.getModelService().getLastModel());
+							if (accessPointOption.isDefined()) {
+								return accessPointOption.get();
+							} else {
+								return "Unable to give you access to your nodes.<br />Please contact the administrators.";
+							}
+						} catch (Exception e) {
+							logger.debug(
+									"Unable to swap model, maybe because the new model is based on a too old configuration",
+									e);
+							return "Unable to swap model, maybe because the new model is based on a too old configuration:\n"
+									+ e.getMessage();
 						}
-					} catch (Exception e) {
-						logger.debug(
-								"Unable to swap model, maybe because the new model is based on a too old configuration",
-								e);
-						return "Unable to swap model, maybe because the new model is based on a too old configuration:\n"
-								+ e.getMessage();
+					} else {
+						// TODO
+						return "";
 					}
 				} else {
 					logger.debug("Unable to add the proxy for the user {}", login);
@@ -120,57 +145,4 @@ public class KloudResourceManager extends AbstractPage {
 			}
 		}
 	}
-
-	/*private String processDeployment (String modelStream, String login) {
-		// try to get the user model
-		ContainerRoot model = KevoreeXmiHelper.loadString(modelStream);
-		// check if the model is valid
-		Option<String> result = KloudResourceProvider.check(model);
-		if (result.isEmpty()) {
-			// try to configure the model to be applied on the Kloud
-			Option<ContainerRoot> cleanModelOption = KloudResourceProvider.cleanUserModel(model);
-			if (cleanModelOption.isDefined()) {
-				ContainerRoot cleanModel = cleanModelOption.get();
-				UUIDModel uuidModel = this.getModelService().getLastUUIDModel();
-				// try to distribute all user nodes on the Kloud
-				Option<ContainerRoot> newGlobalModelOption = KloudResourceProvider
-						.distribute(model, uuidModel.getModel());
-				if (newGlobalModelOption.isDefined()) {
-					ContainerRoot newGlobalModel = newGlobalModelOption.get();
-					// push the user model to the Kloud
-					boolean ok = KloudResourceProvider.update(uuidModel, newGlobalModel, this.getModelService());
-					if (ok) {
-						// add port forwarding to allow user to have access to their nodes
-						ok = KloudResourceProvider.addProxy(newGlobalModel, cleanModel, this.getModelService(),
-								this.getKevScriptEngineFactory(), this.getNodeName(), login);
-						if (ok) {
-							// send the user model to the user group to configure the software
-							ok = KloudResourceProvider.updateUserConfiguration(cleanModel, model, this.getModelService());
-							if (ok) {
-								// TODO keep a pointer to the model that has been sent to the group which represent the access point of the user software
-								return "";// return the http address to have an access to the configured nodes
-							} else {
-								return "";
-							}
-						} else {
-							logger.error(
-									"Model has been deployed but we are unable to configure the cloud to give you access to your nodes.");
-							return "Model has been deployed but we are unable to configure the cloud to give you access to your nodes.";
-						}
-					} else {
-						logger.error("Unable to update the system to deploy your software.");
-						return "Unable to update the system to deploy your software.";
-					}
-				} else {
-					logger.error("Unable to deploy your nodes on the Kloud.");
-					return "Unable to deploy your nodes on the Kloud.";
-				}
-			} else {
-				logger.error("Unable to apply KevScript to add a group that manage the overall software.");
-				return "Unable to apply KevScript to add a group that manage your software.";
-			}
-		} else {
-			return result.get();
-		}
-	}*/
 }

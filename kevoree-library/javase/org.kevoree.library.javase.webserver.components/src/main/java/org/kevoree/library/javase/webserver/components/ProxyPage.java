@@ -4,6 +4,8 @@ import org.kevoree.annotation.*;
 import org.kevoree.library.javase.webserver.KevoreeHttpRequest;
 import org.kevoree.library.javase.webserver.KevoreeHttpResponse;
 import org.kevoree.library.javase.webserver.ParentAbstractPage;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * User: Erwan Daubert - erwan.daubert@gmail.com
@@ -18,6 +20,8 @@ import org.kevoree.library.javase.webserver.ParentAbstractPage;
 		@DictionaryAttribute(name = "forward", defaultValue = "kloud.kevoree.org", optional = false)
 })
 public class ProxyPage extends ParentAbstractPage {
+
+	protected Logger logger = LoggerFactory.getLogger(ProxyPage.class);
 
 
 	@Override
@@ -42,7 +46,28 @@ public class ProxyPage extends ParentAbstractPage {
 		if (forwardUrl.startsWith("http://")) {
 			forwardUrl = forwardUrl.substring("http://".length());
 		}
-		Forwarder.forward(forwardUrl, request, response, path, this.getDictionary().get("urlpattern").toString());
+		String[] splittedForwardUrl = forwardUrl.split("/");
+		String[] splittedBaseUrl = splittedForwardUrl[0].split(":");
+		String baseUrl = splittedBaseUrl[0];
+		int port = 80;
+		if (splittedBaseUrl.length == 2) {
+			try {
+			port = Integer.parseInt(splittedBaseUrl[1]);
+			} catch (NumberFormatException e){
+				logger.debug("Unable to parse forward parameter", e);
+			}
+		}
+		if (splittedForwardUrl.length >= 1) {
+			boolean first = true;
+			for (String split : splittedBaseUrl) {
+				if (!first) {
+					path = split + "/" + path;
+					first = false;
+				}
+			}
+		}
+
+		Forwarder.forward(baseUrl, port, request, response, path, this.getDictionary().get("urlpattern").toString());
 		return response;
 	}
 }

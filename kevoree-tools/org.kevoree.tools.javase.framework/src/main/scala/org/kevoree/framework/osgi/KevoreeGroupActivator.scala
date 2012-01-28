@@ -15,20 +15,17 @@ package org.kevoree.framework.osgi
  */
 
 import java.util.Hashtable
-import org.kevoree.api.service.core.handler.KevoreeModelHandlerService
-import org.kevoree.api.service.core.script.KevScriptEngineFactory
-import org.osgi.framework.{ServiceRegistration, BundleContext, BundleActivator}
+import org.osgi.framework.{ServiceRegistration}
 import org.kevoree.framework.message.StopMessage
 import org.kevoree.framework.{ModelHandlerServiceProxy, KevoreeGroup, Constants}
 
-abstract class KevoreeGroupActivator extends BundleActivator with KevoreeInstanceActivator {
+abstract class KevoreeGroupActivator extends KevoreeInstanceActivator {
 
   def callFactory(): KevoreeGroup
 
   var nodeName: String = ""
   var instanceName: String = ""
   var groupActor: KevoreeGroup = null
-  var bundleContext: BundleContext = null
 
   var mainService : ServiceRegistration = null
 
@@ -40,8 +37,7 @@ abstract class KevoreeGroupActivator extends BundleActivator with KevoreeInstanc
   }
 
 
-  override def start(bc: BundleContext) {
-    bundleContext = bc
+  override def start() {
     /* SEARCH HEADERS VALUE */
     // nodeName = bc.getBundle.getHeaders.find(dic => dic._1 == Constants.KEVOREE_NODE_NAME_HEADER).get._2.toString
    // instanceName = bc.getBundle.getHeaders.find(dic => dic._1 == Constants.KEVOREE_INSTANCE_NAME_HEADER).get._2.toString
@@ -55,32 +51,23 @@ abstract class KevoreeGroupActivator extends BundleActivator with KevoreeInstanc
     val props = new Hashtable[String, String]()
     props.put(Constants.KEVOREE_NODE_NAME, nodeName)
     props.put(Constants.KEVOREE_INSTANCE_NAME, instanceName)
-    mainService = bc.registerService(classOf[KevoreeGroup].getName, groupActor, props);
-
-
-
-    /* PUT INITIAL PROPERTIES */
-    if(bc != null){
-      groupActor.getDictionary.put(Constants.KEVOREE_PROPERTY_OSGI_BUNDLE, bc.getBundle)
+    if(bundleContext != null){
+      mainService = bundleContext.registerService(classOf[KevoreeGroup].getName, groupActor, props);
     }
 
+    /* PUT INITIAL PROPERTIES */
+    if(bundleContext != null){
+      groupActor.getDictionary.put(Constants.KEVOREE_PROPERTY_OSGI_BUNDLE, bundleContext.getBundle)
+    }
 
     groupActor.asInstanceOf[KevoreeGroup].setName(instanceName)
     groupActor.asInstanceOf[KevoreeGroup].setNodeName(nodeName)
-
-    val sr = bc.getServiceReference(classOf[KevoreeModelHandlerService].getName());
-    val modelHandlerService : KevoreeModelHandlerService = bc.getService(sr).asInstanceOf[KevoreeModelHandlerService];
     groupActor.asInstanceOf[KevoreeGroup].setModelService(modelHandlerService)
-
-
-    val sr2 = bc.getServiceReference(classOf[KevScriptEngineFactory].getName());
-    val kevSFHandlerService : KevScriptEngineFactory = bc.getService(sr2).asInstanceOf[KevScriptEngineFactory];
-    groupActor.asInstanceOf[KevoreeGroup].setKevScriptEngineFactory(kevSFHandlerService)
-
+    groupActor.asInstanceOf[KevoreeGroup].setKevScriptEngineFactory(kevScriptEngine)
     //channelActor.startChannelFragment //DEPRECATED DONE BY DEPLOY
   }
 
-  override def stop(bc: BundleContext) {
+  override def stop() {
     if (groupActor.asInstanceOf[KevoreeGroup].getIsStarted) {
       groupActor !? StopMessage
       println("Stopping => " + instanceName)
@@ -95,7 +82,10 @@ abstract class KevoreeGroupActivator extends BundleActivator with KevoreeInstanc
     groupActor.stop
     groupActor = null
 
-    mainService.unregister()
+    if(mainService != null){
+      mainService.unregister()
+    }
+
 
   }
 }

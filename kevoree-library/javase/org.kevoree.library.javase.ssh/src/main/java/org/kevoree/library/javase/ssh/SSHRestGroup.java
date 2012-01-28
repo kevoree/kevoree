@@ -13,7 +13,7 @@ import org.kevoree.library.rest.RestGroup;
  * @version 1.0
  */
 @DictionaryType({
-		@DictionaryAttribute(name = SSHRestGroup.SSH_PUBLIC_KEY, optional = false)
+		@DictionaryAttribute(name = SSHRestGroup.SSH_PUBLIC_KEY, optional = true)
 })
 @GroupType
 @Library(name = "JavaSE")
