@@ -8,115 +8,64 @@
     <name>Kevoree :: Library :: Frascati :: FrascatiNode</name>
     <version>1.5.1-SNAPSHOT</version>
 
-   <parent>
+    <parent>
         <artifactId>org.kevoree.library.frascati.root</artifactId>
         <groupId>org.kevoree.library.frascati</groupId>
         <version>1.5.1-SNAPSHOT</version>
-        <relativePath>.org.kevoree.library.frascati.root/pom.xml</relativePath>
+        <relativePath>../org.kevoree.library.frascati.root/pom.xml</relativePath>
     </parent>
 
-    <dependencies>
+    <properties>
+        <frascati.version>1.4</frascati.version>
+    </properties>
 
-  <!--      <dependency>
-            <groupId>org.kevoree.tools</groupId>
-            <artifactId>org.kevoree.tools.deploy.osgi</artifactId>
-            <version>${project.version}</version>
-        </dependency>-->
-       <dependency>
+    <dependencies>
+        <dependency>
             <groupId>org.kevoree.library.javase</groupId>
             <artifactId>org.kevoree.library.javase.javaseNode</artifactId>
-            <version>${project.version}</version>
-	    <type>bundle</type>
+            <version>${kevoree.version}</version>
+            <type>bundle</type>
         </dependency>
-        
         <dependency>
-            <groupId>org.kevoree</groupId>
-            <artifactId>org.kevoree.kompare</artifactId>
-            <version>${project.version}</version>
+            <groupId>org.ow2.frascati</groupId>
+            <artifactId>frascati-component-factory</artifactId>
+            <version>${frascati.version}</version>
         </dependency>
-<!--	<dependency>
-	<groupId>org.ow2.frascati</groupId>
-	<artifactId>frascati-all-modules</artifactId>
-	<version>1.4</version>
-	</dependency>-->
-
-	<dependency>
-	<groupId>org.ow2.frascati</groupId>
-	<artifactId>frascati-component-factory</artifactId>
-	<version>1.4</version>
-	</dependency>
-	<dependency>
-	<groupId>org.ow2.frascati</groupId>
-	<artifactId>frascati-assembly-factory</artifactId>
-	<version>1.4</version>
-	</dependency>
-	<dependency>
-	<groupId>org.ow2.frascati</groupId>
-	<artifactId>frascati-sca-parser</artifactId>
-	<version>1.4</version>
-	</dependency>
-<!--	<dependency>
-    <groupId>org.ow2.frascati</groupId>
-    <artifactId>frascati-introspection-api</artifactId>
-    <version>1.4</version>
-	</dependency>-->
-	<dependency>
-	<groupId>org.ow2.frascati.factory</groupId>
-	<artifactId>frascati-factory-tools</artifactId>
-	<version>1.4</version>
-</dependency>
-<!--<dependency>
-    <groupId>org.apache.cxf</groupId>
-    <artifactId>cxf-rt-frontend-jaxrs</artifactId>
-    <version>2.4.0</version>
-</dependency>
--->
+        <dependency>
+            <groupId>org.ow2.frascati</groupId>
+            <artifactId>frascati-assembly-factory</artifactId>
+            <version>${frascati.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.ow2.frascati</groupId>
+            <artifactId>frascati-sca-parser</artifactId>
+            <version>${frascati.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.ow2.frascati.factory</groupId>
+            <artifactId>frascati-factory-tools</artifactId>
+            <version>${frascati.version}</version>
+        </dependency>
     </dependencies>
 
     <build>
         <plugins>
 
-	<plugin>
-        <artifactId>maven-dependency-plugin</artifactId>
-        <executions>
-          <execution>
-            <phase>install</phase>
-            <goals>
-              <goal>copy-dependencies</goal>
-            </goals>
-            <configuration>
-              <outputDirectory>${project.build.directory}/lib</outputDirectory>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-
-<!--            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-shade-plugin</artifactId>
+            <plugin>
+                <artifactId>maven-dependency-plugin</artifactId>
                 <executions>
                     <execution>
-                        <phase>package</phase>
+                        <phase>generate-resources</phase>
                         <goals>
-                            <goal>shade</goal>
+                            <goal>copy-dependencies</goal>
                         </goals>
                         <configuration>
-                            <filters>
-                                <filter>
-                                    <artifact>*:*</artifact>
-                                    <excludes>
-                                        <exclude>META-INF/*.SF</exclude>
-                                        <exclude>META-INF/*.DSA</exclude>
-                                        <exclude>META-INF/*.RSA</exclude>
-                                    </excludes>
-                                </filter>
-                            </filters>
+                            <excludeGroupIds>org.kevoree.tools</excludeGroupIds>
+                            <outputDirectory>${project.build.directory}/lib</outputDirectory>
                         </configuration>
                     </execution>
                 </executions>
             </plugin>
--->
-
             <plugin>
                 <groupId>org.apache.felix</groupId>
                 <artifactId>maven-bundle-plugin</artifactId>
@@ -124,81 +73,82 @@
                 <extensions>true</extensions>
                 <configuration>
                     <instructions>
-  <!--                      <Private-Package>schemas.*,schema.*,model.*,javax.xml.*,javax.jws.soap.*,org.apache.aries.*,net.sf.cglib.*,javax.wsdl.*,javax.servlet.*,javax.resource.*,com.werken.xpath.*,com.sun.xml.fastinfoset.*,com.p6spy.*,com.sun.codemodel.*,com.sun.msv.*,com.sun.mirror.*,com.sun.org.*,com.sun.tools.xjc.*,com.sun.tools.jxc.*,com.sun.xml.*,org.kohsuke.*,org.relaxng.datatype.*,com.google.protobuf.*,org.apache.geronimo.*,com.wutka.dtd.*,org.osoa.*,org.apache.oro.*,org.apache.ws.*,org.apache.xml.*,org.eclipse.emf.*,com.ibm.wsdl.*,com.ctc.wstx.*,org.apache.velocity.*,org.codehaus.stax2.*,org.eclipse.core.*,org.eclipse.stp.sca.*,org.apache.neethi.*,com.sun.istack.*,com.sun.xml.bind.*,com.sun.xml.txw2.*,org.jboss.*,com.google.common.*,javax.mail.*,org.oasisopen.*,org.eclipse.emf.*,org.objectweb.*,juliac.generated.*,org.aopalliance.*,javax.xml.stream.*,org.apache.cxf.*,org.ow2.*</Private-Package>-->
-                        <DynamicImport-Package>*</DynamicImport-Package>
+                        <Include-Resource>${project.build.directory}/lib</Include-Resource>
+                        <!--                      <Private-Package>schemas.*,schema.*,model.*,javax.xml.*,javax.jws.soap.*,org.apache.aries.*,net.sf.cglib.*,javax.wsdl.*,javax.servlet.*,javax.resource.*,com.werken.xpath.*,com.sun.xml.fastinfoset.*,com.p6spy.*,com.sun.codemodel.*,com.sun.msv.*,com.sun.mirror.*,com.sun.org.*,com.sun.tools.xjc.*,com.sun.tools.jxc.*,com.sun.xml.*,org.kohsuke.*,org.relaxng.datatype.*,com.google.protobuf.*,org.apache.geronimo.*,com.wutka.dtd.*,org.osoa.*,org.apache.oro.*,org.apache.ws.*,org.apache.xml.*,org.eclipse.emf.*,com.ibm.wsdl.*,com.ctc.wstx.*,org.apache.velocity.*,org.codehaus.stax2.*,org.eclipse.core.*,org.eclipse.stp.sca.*,org.apache.neethi.*,com.sun.istack.*,com.sun.xml.bind.*,com.sun.xml.txw2.*,org.jboss.*,com.google.common.*,javax.mail.*,org.oasisopen.*,org.eclipse.emf.*,org.objectweb.*,juliac.generated.*,org.aopalliance.*,javax.xml.stream.*,org.apache.cxf.*,org.ow2.*</Private-Package>-->
                         <Export-Package>org.kevoree.library.frascatiNodeTypes.*</Export-Package>
                         <Import-Package>
-!org.ow2.frascati.util.*,!org.ow2.frascati.*,!org.kevoree.library.frascatiNodeTypes.*,*;resolution:=optional</Import-Package>
-<Bundle-Classpath>lib/aopalliance-1.0.jar,lib/frascati-util-1.4.jar,
-lib/asm-3.0.jar,
-lib/ast-core-2.3.1.jar,
-lib/common-2.4.0.jar,
-lib/common-3.4.0.jar,
-lib/commons-cli-1.1.jar,
-lib/commons-collections-3.2.1.jar,
-lib/commons-lang-2.4.jar,
-lib/core-3.3.0.771.jar,
-lib/cxf-api-2.4.0.jar,
-lib/cxf-common-utilities-2.4.0.jar,
-lib/cxf-rt-core-2.4.0.jar,
-lib/cxf-tools-common-2.4.0.jar,
-lib/cxf-tools-validator-2.4.0.jar,
-lib/cxf-tools-wsdlto-core-2.4.0.jar,
-lib/cxf-tools-wsdlto-databinding-jaxb-2.4.0.jar,
-lib/cxf-tools-wsdlto-frontend-jaxws-2.4.0.jar,
-lib/dtdparser-1.21.jar,
-lib/ecore-2.4.0.jar,
-lib/fraclet-annotations-3.3.jar,
-lib/fractal-adl-2.3.1.jar,
-lib/fractal-api-2.0.2.jar,
-lib/fractal-util-1.1.2.jar,
-lib/frascati-component-factory-1.4.jar,
-lib/frascati-component-factory-juliac-1.4.jar,
-lib/frascati-component-factory-juliac-jdt-1.4.jar,
-lib/frascati-component-factory-juliac-tinfi-oo-1.4.jar,
-lib/frascati-component-factory-tinfi-oo-1.4.jar,
-lib/frascati-factory-tools-1.4.jar,
-lib/frascati-implementation-fractal-1.4.jar,
-lib/frascati-metamodel-frascati-1.4.jar,
-lib/frascati-model-2.0.1.2.jar,
-lib/frascati-runtime-factory-1.4.jar,
-lib/frascati-sca-parser-1.4.jar,
-lib/frascati-tinfi-membranes-oo-1.4.4.jar,
-lib/frascati-tinfi-mixins-1.4.4.jar,
-lib/frascati-tinfi-oo-1.4.4.jar,
-lib/frascati-tinfi-runtime-1.4.4.jar,
-lib/frascati-tinfi-runtime-api-1.4.4.jar,
-lib/geronimo-javamail_1.4_spec-1.7.1.jar,
-lib/guava-r07.jar,
-lib/jaxb-impl-2.1.13.jar,
-lib/jaxb-xjc-2.1.13.jar,
-lib/julia-asm-2.5.2.jar,
-lib/juliac-core-2.4.jar,
-lib/juliac-jdt-2.4.jar,
-lib/juliac-oo-2.4.jar,
-lib/juliac-runtime-2.4.jar,
-lib/julia-mixins-2.5.2.jar,
-lib/julia-runtime-2.5.2.jar,
-lib/monolog-1.8.jar,
-lib/monolog-api-1.8.jar,
-lib/neethi-3.0.0.jar,
-lib/oro-2.0.8.jar,
-lib/osoa-java-api-2.0.1.2.jar,
-lib/runtime-3.4.0.jar,
-lib/sca-caa-apis-1.1-CD04.jar,
-lib/sca-model-2.0.1.2.jar,
-lib/sca-model-introspection-2.0.1.2.jar,
-lib/stax2-api-3.0.2.jar,
-lib/stax-api-1.0-2.jar,
-lib/task-deployment-2.3.1.jar,
-lib/task-framework-2.3.1.jar,
-lib/velocity-1.6.4.jar,
-lib/woodstox-core-asl-4.1.1.jar,
-lib/wsdl4j-1.6.2.jar,
-lib/xmi-2.4.0.jar,
-lib/xml-resolver-1.2.jar,
-lib/xmlschema-core-2.0.jar,.,lib/frascati-assembly-factory-1.4.jar
-</Bundle-Classpath>
+                            !org.ow2.frascati.util.*,!org.ow2.frascati.*,!org.kevoree.library.frascatiNodeTypes.*,*;resolution:=optional
+                        </Import-Package>
+                        <Bundle-Classpath>aopalliance-1.0.jar,frascati-util-1.4.jar,
+                            asm-3.0.jar,
+                            ast-core-2.3.1.jar,
+                            common-2.4.0.jar,
+                            common-3.4.0.jar,
+                            commons-cli-1.1.jar,
+                            commons-collections-3.2.1.jar,
+                            commons-lang-2.4.jar,
+                            core-3.3.0.771.jar,
+                            cxf-api-2.4.0.jar,
+                            cxf-common-utilities-2.4.0.jar,
+                            cxf-rt-core-2.4.0.jar,
+                            cxf-tools-common-2.4.0.jar,
+                            cxf-tools-validator-2.4.0.jar,
+                            cxf-tools-wsdlto-core-2.4.0.jar,
+                            cxf-tools-wsdlto-databinding-jaxb-2.4.0.jar,
+                            cxf-tools-wsdlto-frontend-jaxws-2.4.0.jar,
+                            dtdparser-1.21.jar,
+                            ecore-2.4.0.jar,
+                            fraclet-annotations-3.3.jar,
+                            fractal-adl-2.3.1.jar,
+                            fractal-api-2.0.2.jar,
+                            fractal-util-1.1.2.jar,
+                            frascati-component-factory-1.4.jar,
+                            frascati-component-factory-juliac-1.4.jar,
+                            frascati-component-factory-juliac-jdt-1.4.jar,
+                            frascati-component-factory-juliac-tinfi-oo-1.4.jar,
+                            frascati-component-factory-tinfi-oo-1.4.jar,
+                            frascati-factory-tools-1.4.jar,
+                            frascati-implementation-fractal-1.4.jar,
+                            frascati-metamodel-frascati-1.4.jar,
+                            frascati-model-2.0.1.2.jar,
+                            frascati-runtime-factory-1.4.jar,
+                            frascati-sca-parser-1.4.jar,
+                            frascati-tinfi-membranes-oo-1.4.4.jar,
+                            frascati-tinfi-mixins-1.4.4.jar,
+                            frascati-tinfi-oo-1.4.4.jar,
+                            frascati-tinfi-runtime-1.4.4.jar,
+                            frascati-tinfi-runtime-api-1.4.4.jar,
+                            geronimo-javamail_1.4_spec-1.7.1.jar,
+                            guava-r07.jar,
+                            jaxb-impl-2.1.13.jar,
+                            jaxb-xjc-2.1.13.jar,
+                            julia-asm-2.5.2.jar,
+                            juliac-core-2.4.jar,
+                            juliac-jdt-2.4.jar,
+                            juliac-oo-2.4.jar,
+                            juliac-runtime-2.4.jar,
+                            julia-mixins-2.5.2.jar,
+                            julia-runtime-2.5.2.jar,
+                            monolog-1.8.jar,
+                            monolog-api-1.8.jar,
+                            neethi-3.0.0.jar,
+                            oro-2.0.8.jar,
+                            osoa-java-api-2.0.1.2.jar,
+                            runtime-3.4.0.jar,
+                            sca-caa-apis-1.1-CD04.jar,
+                            sca-model-2.0.1.2.jar,
+                            sca-model-introspection-2.0.1.2.jar,
+                            stax2-api-3.0.2.jar,
+                            stax-api-1.0-2.jar,
+                            task-deployment-2.3.1.jar,
+                            task-framework-2.3.1.jar,
+                            velocity-1.6.4.jar,
+                            woodstox-core-asl-4.1.1.jar,
+                            wsdl4j-1.6.2.jar,
+                            xmi-2.4.0.jar,
+                            xml-resolver-1.2.jar,
+                            xmlschema-core-2.0.jar,.,frascati-assembly-factory-1.4.jar
+                        </Bundle-Classpath>
                     </instructions>
                 </configuration>
             </plugin>
@@ -206,56 +156,56 @@ lib/xmlschema-core-2.0.jar,.,lib/frascati-assembly-factory-1.4.jar
         </plugins>
     </build>
 
-<repositories>
-      <repository>
-        <id>OW2-release</id>
-        <name>OW2 release repository</name>
-        <url>http://maven.objectweb.org/maven2</url>
-        <releases>
-          <enabled>true</enabled>
-        </releases>
-        <snapshots>
-          <enabled>false</enabled>
-        </snapshots>
-      </repository>    
+    <repositories>
+        <repository>
+            <id>OW2-release</id>
+            <name>OW2 release repository</name>
+            <url>http://maven.objectweb.org/maven2</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
 
-      <repository>
-        <id>OW2-snapshot</id>
-        <name>OW2 snapshot repository</name>
-        <url>http://maven.objectweb.org/maven2-snapshot</url>
-        <releases>
-          <enabled>false</enabled>
-        </releases>
-        <snapshots>
-          <enabled>true</enabled>
-          <updatePolicy>daily</updatePolicy>
-        </snapshots>
-      </repository>
-      
-      <repository>
-        <id>dev.java.net</id>
-        <name>Java.net Repository for Maven</name>
-        <url>http://download.java.net/maven/2/</url>
-        <layout>default</layout>
-        <releases>
-          <enabled>true</enabled>
-        </releases>
-        <snapshots>
-          <enabled>false</enabled>
-        </snapshots>
-      </repository>
+        <repository>
+            <id>OW2-snapshot</id>
+            <name>OW2 snapshot repository</name>
+            <url>http://maven.objectweb.org/maven2-snapshot</url>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+                <updatePolicy>daily</updatePolicy>
+            </snapshots>
+        </repository>
 
-      <repository>
-        <id>eclipse</id>
-        <name>Eclipse EMF Mirror</name>
-        <url>http://www.openarchitectureware.org/m2</url>
-        <releases>
-          <enabled>true</enabled>
-        </releases>
-        <snapshots>
-          <enabled>false</enabled>
-        </snapshots>
-      </repository>
+        <repository>
+            <id>dev.java.net</id>
+            <name>Java.net Repository for Maven</name>
+            <url>http://download.java.net/maven/2/</url>
+            <layout>default</layout>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
 
-    </repositories>   
+        <repository>
+            <id>eclipse</id>
+            <name>Eclipse EMF Mirror</name>
+            <url>http://www.openarchitectureware.org/m2</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+
+    </repositories>
 </project>
