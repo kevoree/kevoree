@@ -19,48 +19,67 @@ import org.ow2.frascati.util.FrascatiException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
 /**
- * @author obrais
+ * @author obarais
  */
-@Library(name="Frascati")
+@Library(name = "Frascati")
 @NodeType
 public class FrascatiNode extends JavaSENode {
-	private static final Logger logger = LoggerFactory.getLogger(FrascatiNode.class);
-
+	private static final Logger logger = LoggerFactory
+			.getLogger(FrascatiNode.class);
 
 	FraSCAti frascati;
 
 	@Start
 	@Override
-	public void startNode () {
+	public void startNode() {
 		super.startNode();
-		try {
-		frascati = FraSCAti.newFraSCAti();
-		 org.ow2.frascati.util.FrascatiClassLoader f = new FrascatiClassLoader(Thread.currentThread().getContextClassLoader());
-		 frascati.setClassLoader(f );
-		} catch (FrascatiException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		System.out.println(FraSCAti.class.getClassLoader());
+		
+		System.out.println(FrascatiException.class.getClassLoader());
+		
+		new Thread(new Runnable() {
+
+			@Override
+			public void run() {
+				try {
+					System.out.println("test");
+					System.out.println(FraSCAti.class.getClassLoader());
+					Thread.currentThread().setContextClassLoader(
+							FraSCAti.class.getClassLoader());
+					
+					frascati = FraSCAti.newFraSCAti();
+
+					org.ow2.frascati.util.FrascatiClassLoader f = new FrascatiClassLoader(
+							Thread.currentThread().getContextClassLoader());
+					frascati.setClassLoader(f);
+				} catch (FrascatiException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+
+			}
+		}).start();
+
 	}
 
 	@Stop
 	@Override
-	public void stopNode () {
+	public void stopNode() {
 		super.stopNode();
 	}
 
 	@Override
-	public AdaptationModel kompare (ContainerRoot current, ContainerRoot target) {
+	public AdaptationModel kompare(ContainerRoot current, ContainerRoot target) {
 		return super.kompare(current, target);
-	
+
 	}
 
 	@Override
-	public org.kevoree.framework.PrimitiveCommand getPrimitive (AdaptationPrimitive adaptationPrimitive) {
+	public org.kevoree.framework.PrimitiveCommand getPrimitive(
+			AdaptationPrimitive adaptationPrimitive) {
 		return null;
-			
+
 	}
 
 }

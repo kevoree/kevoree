@@ -8,11 +8,11 @@
     <name>Kevoree :: Library :: Frascati :: FrascatiNode</name>
     <version>1.5.1-SNAPSHOT</version>
 
-    <parent>
+   <parent>
         <artifactId>org.kevoree.library.frascati.root</artifactId>
         <groupId>org.kevoree.library.frascati</groupId>
         <version>1.5.1-SNAPSHOT</version>
-        <relativePath>../org.kevoree.library.frascati.root/pom.xml</relativePath>
+        <relativePath>.org.kevoree.library.frascati.root/pom.xml</relativePath>
     </parent>
 
     <dependencies>
@@ -22,7 +22,7 @@
             <artifactId>org.kevoree.tools.deploy.osgi</artifactId>
             <version>${project.version}</version>
         </dependency>-->
-        <dependency>
+       <dependency>
             <groupId>org.kevoree.library.javase</groupId>
             <artifactId>org.kevoree.library.javase.javaseNode</artifactId>
             <version>${project.version}</version>
@@ -75,6 +75,48 @@
 
     <build>
         <plugins>
+
+	<plugin>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <executions>
+          <execution>
+            <phase>install</phase>
+            <goals>
+              <goal>copy-dependencies</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>${project.build.directory}/lib</outputDirectory>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
+<!--            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                        <configuration>
+                            <filters>
+                                <filter>
+                                    <artifact>*:*</artifact>
+                                    <excludes>
+                                        <exclude>META-INF/*.SF</exclude>
+                                        <exclude>META-INF/*.DSA</exclude>
+                                        <exclude>META-INF/*.RSA</exclude>
+                                    </excludes>
+                                </filter>
+                            </filters>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+-->
+
             <plugin>
                 <groupId>org.apache.felix</groupId>
                 <artifactId>maven-bundle-plugin</artifactId>
@@ -82,11 +124,81 @@
                 <extensions>true</extensions>
                 <configuration>
                     <instructions>
-                        <Private-Package>!javax.xml.*,javax.jws.soap.*,org.apache.aries.*,net.sf.cglib.*,javax.wsdl.*,javax.servlet.*,javax.resource.*,com.werken.xpath.*,com.sun.xml.fastinfoset.*,com.p6spy.*,com.sun.codemodel.*,com.sun.msv.*,com.sun.mirror.*,com.sun.org.*,com.sun.tools.xjc.*,com.sun.tools.jxc.*,com.sun.xml.*,org.kohsuke.*,org.relaxng.datatype.*,com.google.protobuf.*,org.apache.geronimo.*,com.wutka.dtd.*,org.osoa.*,org.apache.oro.*,org.apache.ws.*,org.apache.xml.*,org.eclipse.emf.*,com.ibm.wsdl.*,com.ctc.wstx.*,org.apache.velocity.*,org.codehaus.stax2.*,org.eclipse.core.*,org.eclipse.stp.sca.*,org.apache.neethi.*,com.sun.istack.*,com.sun.xml.bind.*,com.sun.xml.txw2.*,org.jboss.*,com.google.common.*,javax.mail.*,org.oasisopen.*,org.eclipse.emf.*,org.objectweb.*,juliac.generated.*,org.aopalliance.*,javax.xml.stream.*,org.apache.cxf.*,org.ow2.*</Private-Package>
+  <!--                      <Private-Package>schemas.*,schema.*,model.*,javax.xml.*,javax.jws.soap.*,org.apache.aries.*,net.sf.cglib.*,javax.wsdl.*,javax.servlet.*,javax.resource.*,com.werken.xpath.*,com.sun.xml.fastinfoset.*,com.p6spy.*,com.sun.codemodel.*,com.sun.msv.*,com.sun.mirror.*,com.sun.org.*,com.sun.tools.xjc.*,com.sun.tools.jxc.*,com.sun.xml.*,org.kohsuke.*,org.relaxng.datatype.*,com.google.protobuf.*,org.apache.geronimo.*,com.wutka.dtd.*,org.osoa.*,org.apache.oro.*,org.apache.ws.*,org.apache.xml.*,org.eclipse.emf.*,com.ibm.wsdl.*,com.ctc.wstx.*,org.apache.velocity.*,org.codehaus.stax2.*,org.eclipse.core.*,org.eclipse.stp.sca.*,org.apache.neethi.*,com.sun.istack.*,com.sun.xml.bind.*,com.sun.xml.txw2.*,org.jboss.*,com.google.common.*,javax.mail.*,org.oasisopen.*,org.eclipse.emf.*,org.objectweb.*,juliac.generated.*,org.aopalliance.*,javax.xml.stream.*,org.apache.cxf.*,org.ow2.*</Private-Package>-->
                         <DynamicImport-Package>*</DynamicImport-Package>
                         <Export-Package>org.kevoree.library.frascatiNodeTypes.*</Export-Package>
                         <Import-Package>
-!javax.activation.*,!javax.annotation.*,!javax.crypto.*,!javax.crypto.spec.*,!javax.imageio.*,!javax.imageio.stream.*,!javax.jws.*,!javax.jws.soap.*,!javax.management.*,!javax.naming.*,!javax.net.ssl.*,!javax.security.auth.*,!javax.security.*,!javax.sql.*,!javax.swing.*,!javax.xml.*,!org.apache.axiom.om.*,!org.apache.commons.*,!org.apache.log.*,!org.apache.log4j.*,!org.apache.tools.ant.*,!org.eclipse.*,!org.jdom.*,!org.junit.*,!org.jvnet.*,!org.osgi.service.*,!org.osgi.service.blueprint.*,!org.springframework.*,!org.w3c.dom.*,!org.xml.sax.*,!sun.misc.*,!sun.nio.cs.*,!org.apache.aries.*,!net.sf.cglib.*,!junit.*,!javax.wsdl.*,!javax.servlet.*,!javax.resource.*,!com.werken.xpath.*,!com.sun.xml.fastinfoset.*,!com.p6spy.*,!com.sun.codemodel.*,!com.sun.msv.*,!com.sun.mirror.*,!com.sun.org.*,!com.sun.tools.xjc.*,!com.sun.tools.jxc.*,!com.sun.xml.*,!org.kohsuke.*,!org.relaxng.datatype.*,!com.google.protobuf.*,!org.apache.geronimo.*,!com.wutka.dtd.*,!org.osoa.*,!org.apache.oro.*,!org.apache.ws.*,!org.apache.xml.*,!com.ibm.wsdl.*,!com.ctc.wstx.*,!org.apache.velocity.*,!org.codehaus.stax2.*,!org.eclipse.core.*,!org.eclipse.stp.sca.*,!org.apache.neethi.*,!com.sun.istack.*,!com.sun.xml.bind.*,!com.sun.xml.txw2.*,!org.jboss.*,!com.google.common.*,!javax.mail.*,!org.oasisopen.*,!org.eclipse.emf.*,!org.objectweb.*,!juliac.generated.*,!org.aopalliance.*,!javax.xml.stream.*,!org.apache.cxf.*,!org.ow2.*,!org.kevoree.library.frascatiNodeTypes.*,*</Import-Package>
+!org.ow2.frascati.util.*,!org.ow2.frascati.*,!org.kevoree.library.frascatiNodeTypes.*,*;resolution:=optional</Import-Package>
+<Bundle-Classpath>lib/aopalliance-1.0.jar,lib/frascati-util-1.4.jar,
+lib/asm-3.0.jar,
+lib/ast-core-2.3.1.jar,
+lib/common-2.4.0.jar,
+lib/common-3.4.0.jar,
+lib/commons-cli-1.1.jar,
+lib/commons-collections-3.2.1.jar,
+lib/commons-lang-2.4.jar,
+lib/core-3.3.0.771.jar,
+lib/cxf-api-2.4.0.jar,
+lib/cxf-common-utilities-2.4.0.jar,
+lib/cxf-rt-core-2.4.0.jar,
+lib/cxf-tools-common-2.4.0.jar,
+lib/cxf-tools-validator-2.4.0.jar,
+lib/cxf-tools-wsdlto-core-2.4.0.jar,
+lib/cxf-tools-wsdlto-databinding-jaxb-2.4.0.jar,
+lib/cxf-tools-wsdlto-frontend-jaxws-2.4.0.jar,
+lib/dtdparser-1.21.jar,
+lib/ecore-2.4.0.jar,
+lib/fraclet-annotations-3.3.jar,
+lib/fractal-adl-2.3.1.jar,
+lib/fractal-api-2.0.2.jar,
+lib/fractal-util-1.1.2.jar,
+lib/frascati-component-factory-1.4.jar,
+lib/frascati-component-factory-juliac-1.4.jar,
+lib/frascati-component-factory-juliac-jdt-1.4.jar,
+lib/frascati-component-factory-juliac-tinfi-oo-1.4.jar,
+lib/frascati-component-factory-tinfi-oo-1.4.jar,
+lib/frascati-factory-tools-1.4.jar,
+lib/frascati-implementation-fractal-1.4.jar,
+lib/frascati-metamodel-frascati-1.4.jar,
+lib/frascati-model-2.0.1.2.jar,
+lib/frascati-runtime-factory-1.4.jar,
+lib/frascati-sca-parser-1.4.jar,
+lib/frascati-tinfi-membranes-oo-1.4.4.jar,
+lib/frascati-tinfi-mixins-1.4.4.jar,
+lib/frascati-tinfi-oo-1.4.4.jar,
+lib/frascati-tinfi-runtime-1.4.4.jar,
+lib/frascati-tinfi-runtime-api-1.4.4.jar,
+lib/geronimo-javamail_1.4_spec-1.7.1.jar,
+lib/guava-r07.jar,
+lib/jaxb-impl-2.1.13.jar,
+lib/jaxb-xjc-2.1.13.jar,
+lib/julia-asm-2.5.2.jar,
+lib/juliac-core-2.4.jar,
+lib/juliac-jdt-2.4.jar,
+lib/juliac-oo-2.4.jar,
+lib/juliac-runtime-2.4.jar,
+lib/julia-mixins-2.5.2.jar,
+lib/julia-runtime-2.5.2.jar,
+lib/monolog-1.8.jar,
+lib/monolog-api-1.8.jar,
+lib/neethi-3.0.0.jar,
+lib/oro-2.0.8.jar,
+lib/osoa-java-api-2.0.1.2.jar,
+lib/runtime-3.4.0.jar,
+lib/sca-caa-apis-1.1-CD04.jar,
+lib/sca-model-2.0.1.2.jar,
+lib/sca-model-introspection-2.0.1.2.jar,
+lib/stax2-api-3.0.2.jar,
+lib/stax-api-1.0-2.jar,
+lib/task-deployment-2.3.1.jar,
+lib/task-framework-2.3.1.jar,
+lib/velocity-1.6.4.jar,
+lib/woodstox-core-asl-4.1.1.jar,
+lib/wsdl4j-1.6.2.jar,
+lib/xmi-2.4.0.jar,
+lib/xml-resolver-1.2.jar,
+lib/xmlschema-core-2.0.jar,.,lib/frascati-assembly-factory-1.4.jar
+</Bundle-Classpath>
                     </instructions>
                 </configuration>
             </plugin>
