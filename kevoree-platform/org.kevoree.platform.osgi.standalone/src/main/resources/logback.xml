@@ -29,7 +29,7 @@
         <append>false</append>
     </appender>
 
-    <root level="${node.log.level:-INFO}">
+    <root level="${node.log.level:-DEBUG}">
         <appender-ref ref="CONSOLE"/>
         <appender-ref ref="FILE"/>
     </root>
