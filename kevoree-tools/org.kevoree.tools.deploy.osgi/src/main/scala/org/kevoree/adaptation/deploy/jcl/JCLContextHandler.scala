@@ -40,12 +40,18 @@ object JCLContextHandler {
   def installDeployUnit(du : DeployUnit, file : File) : KevoreeJarClassLoader = {
     logger.debug("Install {} , file {}",CommandHelper.buildKEY(du),file)
     val newcl = new KevoreeJarClassLoader
+    if(du.getVersion.contains("SNAPSHOT")){
+      newcl.setLazyLoad(false)
+    }
     newcl.add(file.getAbsolutePath)
     kcl_cache.put(CommandHelper.buildKEY(du),newcl)
     kcl_cache_file.put(CommandHelper.buildKEY(du),file)
+    logger.debug("Add KCL for "+du.getUnitName+"->"+CommandHelper.buildKEY(du))
+
     du.getRequiredLibs.foreach{ rLib =>
       val kcl = getKCL(rLib)
       if(kcl != null){
+        logger.debug("Link KCL for "+du.getUnitName+"->"+rLib.getUnitName)
         newcl.addSubClassLoader(kcl)
       }
     }
@@ -59,6 +65,7 @@ object JCLContextHandler {
   def removeDeployUnit(du : DeployUnit) {
     val key = CommandHelper.buildKEY(du)
     if(kcl_cache.containsKey(key)){
+      logger.debug("Remove KCL for "+du.getUnitName+"->"+CommandHelper.buildKEY(du))
       kcl_cache.get(key).unload()
       kcl_cache.remove(key)
     }

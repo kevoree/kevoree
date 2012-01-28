@@ -28,12 +28,15 @@ object JCLHelper {
 
   def isJCLManaged(du : DeployUnit) : Boolean = {
     du.getType == "jar" || du.getType == "kjar"
+    true
   }
 
   def isJCLManaged(td : TypeDefinition,nodeName:String) : Boolean = {
     val node = td.eContainer.asInstanceOf[ContainerRoot].getNodes.find(n => n.getName == nodeName).get
     val deployUnit = td.foundRelevantDeployUnit(node)
     deployUnit.getType == "jar" || deployUnit.getType == "kjar"
+
+    true
   }
 
 
