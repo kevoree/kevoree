@@ -49,7 +49,7 @@ case class AddInstance(c: Instance, nodeName: String,modelservice : KevoreeModel
     try {
       val kevoreeFactory = JCLContextHandler.getKCL(deployUnit).loadClass(factoryName).newInstance().asInstanceOf[KevoreeInstanceFactory]
       val newInstance: KevoreeInstanceActivator = kevoreeFactory.registerInstance(c.getName, nodeName)
-      KevoreeDeployManager.addMapping(KevoreeJCLBundle(c.getName, c.getClass.getName, newInstance))
+      KevoreeDeployManager.addMapping(KevoreeJCLBundle(c.getName, c.getClass.getName, newInstance,-1))
 
       newInstance.setBundleContext(null)
       newInstance.setKevScriptEngineFactory(kscript)
