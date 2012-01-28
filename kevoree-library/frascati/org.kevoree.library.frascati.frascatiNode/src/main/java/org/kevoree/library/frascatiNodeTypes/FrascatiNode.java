@@ -29,7 +29,7 @@ public class FrascatiNode extends JavaSENode {
 			.getLogger(FrascatiNode.class);
 
 	FraSCAti frascati;
-
+	Thread t;
 	@Start
 	@Override
 	public void startNode() {
@@ -38,7 +38,7 @@ public class FrascatiNode extends JavaSENode {
 		
 		System.out.println(FrascatiException.class.getClassLoader());
 		
-		new Thread(new Runnable() {
+		t = new Thread(new Runnable() {
 
 			@Override
 			public void run() {
@@ -53,13 +53,18 @@ public class FrascatiNode extends JavaSENode {
 					org.ow2.frascati.util.FrascatiClassLoader f = new FrascatiClassLoader(
 							Thread.currentThread().getContextClassLoader());
 					frascati.setClassLoader(f);
+					for (String s : frascati.getCompositeManager().getCompositeNames()){
+						System.out.println(s);
+					}
+					
 				} catch (FrascatiException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 
 			}
-		}).start();
+		});
+		t.start();
 
 	}
 
@@ -67,6 +72,17 @@ public class FrascatiNode extends JavaSENode {
 	@Override
 	public void stopNode() {
 		super.stopNode();
+		try {
+			frascati.close(frascati.getComposite("org.ow2.frascati.FraSCAti"));
+			frascati =null;
+			t.interrupt();
+			
+		} catch (FrascatiException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		
 	}
 
 	@Override
