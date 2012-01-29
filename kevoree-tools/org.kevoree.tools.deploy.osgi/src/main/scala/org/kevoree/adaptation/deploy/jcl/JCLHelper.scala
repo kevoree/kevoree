@@ -28,7 +28,7 @@ object JCLHelper {
 
   def isJCLManaged(du : DeployUnit) : Boolean = {
     du.getType == "jar" || du.getType == "kjar"
-   // true
+    true
   }
 
   def isJCLManaged(td : TypeDefinition,nodeName:String) : Boolean = {
@@ -36,7 +36,7 @@ object JCLHelper {
     val deployUnit = td.foundRelevantDeployUnit(node)
     deployUnit.getType == "jar" || deployUnit.getType == "kjar"
 
- //   true
+   true
   }
 
 
