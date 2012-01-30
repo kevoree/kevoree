@@ -65,7 +65,7 @@ object AetherUtil {
   resolveMavenArtifact(unitName, groupName,version, repositoriesUrl.toList)
 
   def resolveMavenArtifact(unitName:String, groupName:String,version : String, repositoriesUrl : List[String]) : File = {
-    val artifact: Artifact = new DefaultArtifact(List(groupName, unitName, version).mkString(":"))
+    val artifact: Artifact = new DefaultArtifact(List(groupName.trim(), unitName.trim(), version.trim()).mkString(":"))
     val artifactRequest = new ArtifactRequest
     artifactRequest.setArtifact(artifact)
     val repositories: java.util.List[RemoteRepository] = new java.util.ArrayList();
@@ -131,7 +131,7 @@ object AetherUtil {
     if(configFile.exists()){
       val configRoot = scala.xml.XML.loadFile(configFile)
       configRoot.child.find(c => c.label == "localRepository").map{ localRepo =>
-        logger.warn("Found localRepository value from settings.xml in user path => "+localRepo.text)
+        logger.info("Found localRepository value from settings.xml in user path => "+localRepo.text)
         session.setLocalRepositoryManager(newRepositorySystem.newLocalRepositoryManager(new LocalRepository(localRepo.text)))
       }
     } else {
