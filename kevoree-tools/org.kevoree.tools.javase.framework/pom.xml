@@ -21,6 +21,7 @@
             <artifactId>org.kevoree.framework</artifactId>
             <version>${kevoree.version}</version>
         </dependency>
+<!--
         <dependency>
             <groupId>org.osgi</groupId>
             <artifactId>org.osgi.core</artifactId>
@@ -31,6 +32,8 @@
             <artifactId>org.osgi.compendium</artifactId>
             <version>4.2.0</version>
         </dependency>
+-->
+
     </dependencies>
 
 </project>

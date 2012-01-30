@@ -21,7 +21,6 @@ package org.kevoree.framework.osgi
 import java.util.Hashtable
 import org.kevoree.framework._
 import message.StopMessage
-import org.osgi.framework.ServiceRegistration
 
 abstract class KevoreeChannelFragmentActivator extends KevoreeInstanceActivator {
 
@@ -30,7 +29,7 @@ abstract class KevoreeChannelFragmentActivator extends KevoreeInstanceActivator 
   var nodeName: String = ""
   var instanceName: String = ""
   var channelActor: KevoreeChannelFragment = null
-  var mainService: ServiceRegistration = null
+
 
 
   def setNodeName(n: String) {
@@ -49,43 +48,25 @@ abstract class KevoreeChannelFragmentActivator extends KevoreeInstanceActivator 
     props.put(Constants.KEVOREE_NODE_NAME, nodeName)
     props.put(Constants.KEVOREE_INSTANCE_NAME, instanceName)
 
-    if (bundleContext != null) {
-      mainService = bundleContext.registerService(classOf[KevoreeChannelFragment].getName, channelActor, props);
-    }
-
     /* PUT INITIAL PROPERTIES */
+    /*
     if (bundleContext != null) {
       channelActor.getDictionary.put(Constants.KEVOREE_PROPERTY_OSGI_BUNDLE, bundleContext.getBundle)
-    }
-
-
+    }*/
     channelActor.asInstanceOf[ChannelTypeFragment].setName(instanceName)
     channelActor.asInstanceOf[ChannelTypeFragment].setNodeName(nodeName)
     channelActor.asInstanceOf[AbstractChannelFragment].setModelService(modelHandlerService)
-
-
     channelActor.asInstanceOf[AbstractChannelFragment].setKevScriptEngineFactory(kevScriptEngine)
-
-
-    //channelActor.startChannelFragment //DEPRECATED DONE BY DEPLOY
   }
 
   def stop() {
     if (channelActor.asInstanceOf[ChannelTypeFragment].isStarted) {
       channelActor !? StopMessage
-      println("Stopping => " + instanceName)
     }
-
     if (channelActor.asInstanceOf[AbstractChannelFragment].isInstanceOf[ModelHandlerServiceProxy]) {
       channelActor.asInstanceOf[AbstractChannelFragment].asInstanceOf[ModelHandlerServiceProxy].stopProxy()
     }
-
     channelActor.stop
-    //channelActor.stopChannelFragment //DEPRECATED DONE BY DEPLOY
     channelActor = null
-
-    if (mainService != null) {
-      mainService.unregister()
-    }
   }
 }

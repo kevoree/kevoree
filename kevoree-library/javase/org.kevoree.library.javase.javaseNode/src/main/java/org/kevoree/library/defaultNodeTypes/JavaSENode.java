@@ -6,14 +6,12 @@
 package org.kevoree.library.defaultNodeTypes;
 
 import org.kevoree.ContainerRoot;
-import org.kevoree.adaptation.deploy.osgi.BaseDeployOSGi;
 import org.kevoree.annotation.*;
 import org.kevoree.framework.AbstractNodeType;
-import org.kevoree.framework.context.KevoreeDeployManager;
 import org.kevoree.kompare.KevoreeKompareBean;
+import org.kevoree.library.defaultNodeTypes.jcl.deploy.CommandMapper;
 import org.kevoreeAdaptation.AdaptationModel;
 import org.kevoreeAdaptation.AdaptationPrimitive;
-import org.osgi.framework.Bundle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -29,17 +27,15 @@ public class JavaSENode extends AbstractNodeType {
     private static final Logger logger = LoggerFactory.getLogger(JavaSENode.class);
 
     private KevoreeKompareBean kompareBean = null;
-    private BaseDeployOSGi deployBean = null;
+    private CommandMapper mapper = null;
 
     @Start
     @Override
     public void startNode() {
-        Bundle bundle = (Bundle) this.getDictionary().get("osgi.bundle");
-        KevoreeDeployManager.setBundle(bundle);
         kompareBean = new KevoreeKompareBean();
-        deployBean = new BaseDeployOSGi(bundle);
-        deployBean.setModelHandlerService(getModelService());
-        deployBean.setKscripEngineFactory(getKevScriptEngineFactory());
+        mapper = new CommandMapper();
+        mapper.setModelHandlerService(getModelService());
+        mapper.setKscripEngineFactory(getKevScriptEngineFactory());
     }
 
 
@@ -47,9 +43,9 @@ public class JavaSENode extends AbstractNodeType {
     @Override
     public void stopNode() {
         kompareBean = null;
-        deployBean = null;
+        mapper = null;
         //Cleanup the local runtime
-        KevoreeDeployManager.clearAll();
+        //KevoreeDeployManager.clearAll();
     }
 
     @Override
@@ -59,7 +55,7 @@ public class JavaSENode extends AbstractNodeType {
 
     @Override
     public org.kevoree.framework.PrimitiveCommand getPrimitive(AdaptationPrimitive adaptationPrimitive) {
-        return deployBean.buildPrimitiveCommand(adaptationPrimitive, this.getNodeName());
+        return mapper.buildPrimitiveCommand(adaptationPrimitive, this.getNodeName());
     }
 
 }

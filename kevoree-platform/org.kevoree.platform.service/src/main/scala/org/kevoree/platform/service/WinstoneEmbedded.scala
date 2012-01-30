@@ -14,8 +14,6 @@
 package org.kevoree.platform.service
 
 import org.xeustechnologies.jcl.JclObjectFactory
-import java.util.HashMap
-import java.lang.Thread
 import org.kevoree.extra.jcl.KevoreeJarClassLoader
 
 

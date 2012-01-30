@@ -60,7 +60,7 @@
       <defaultValues attribute="//@typeDefinitions.7/@dictionaryType/@attributes.4" value="false"/>
     </dictionaryType>
   </typeDefinitions>
-  <typeDefinitions xsi:type="kevoree:NodeType" name="JavaSENode" deployUnits="//@deployUnits.5" factoryBean="org.kevoree.library.defaultNodeTypes.JavaSENodeFactory" bean="org.kevoree.library.defaultNodeTypes.JavaSENode" startMethod="startNode" stopMethod="stopNode"/>
+  <typeDefinitions xsi:type="kevoree:NodeType" name="JavaSENode" deployUnits="//@deployUnits.5" factoryBean="org.kevoree.library.defaultNodeTypes.JavaSENodeFactory" bean="org.kevoree.library.defaultNodeTypes.osgi.JavaSEOSGINode" startMethod="startNode" stopMethod="stopNode"/>
   <typeDefinitions xsi:type="kevoree:NodeType" name="AndroidNode" deployUnits="//@deployUnits.5" factoryBean="org.kevoree.library.defaultNodeTypes.AndroidNodeFactory" bean="org.kevoree.library.defaultNodeTypes.AndroidNode"/>
   <repositories units="//@deployUnits.0 //@deployUnits.1 //@deployUnits.5" url="http://maven.kevoree.org/archiva/repository/release/"/>
   <repositories url="http://scala-tools.org/repo-releases"/>

@@ -81,7 +81,7 @@
       <file leaf-file-name="CompositeParser.scala" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/../org.kevoree.library.frascati.mavenplugin/src/main/scala/org/kevoree/library/frascati/mavenplugin/CompositeParser.scala">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="27" column="31" selection-start="751" selection-end="751" vertical-scroll-proportion="0.76">
+            <state line="5" column="0" selection-start="144" selection-end="144" vertical-scroll-proportion="0.14074074">
               <folding />
             </state>
           </provider>
@@ -548,8 +548,8 @@
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="true" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.22435898" sideWeight="0.67099166" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.3167735" sideWeight="0.67099166" order="0" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.32900834" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.3167735" sideWeight="0.67099166" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32900834" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
@@ -664,7 +664,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/../org.kevoree.library.frascati.mavenplugin/src/main/scala/org/kevoree/library/frascati/mavenplugin/CompositeParser.scala">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="27" column="31" selection-start="751" selection-end="751" vertical-scroll-proportion="0.76">
+        <state line="5" column="0" selection-start="144" selection-end="144" vertical-scroll-proportion="0.14074074">
           <folding />
         </state>
       </provider>

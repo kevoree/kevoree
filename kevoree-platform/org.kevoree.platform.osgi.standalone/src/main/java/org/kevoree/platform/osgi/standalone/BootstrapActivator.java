@@ -65,8 +65,7 @@ public class BootstrapActivator implements BundleActivator {
             
             Bundle b = context.installBundle("kevoree.bootstraper",this.getClass().getClassLoader().getResourceAsStream("boot/org.kevoree.tools.aether.framework-"+KevoreeFactory.getVersion()+".jar"));
             Class clazz = b.loadClass("org.kevoree.tools.aether.framework.NodeTypeBootstrapHelper");
-            org.kevoree.framework.Bootstraper bhelper = (Bootstraper) clazz.getDeclaredConstructor(BundleContext.class).newInstance(context);
-
+            org.kevoree.framework.Bootstraper bhelper = (Bootstraper) clazz.newInstance();
 
             Class clazz3 = b.loadClass("org.kevoree.tools.aether.framework.AetherMavenResolver");
             MavenResolver mres = (MavenResolver) clazz3.newInstance();

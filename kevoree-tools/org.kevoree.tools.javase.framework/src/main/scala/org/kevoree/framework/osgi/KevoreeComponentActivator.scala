@@ -21,31 +21,21 @@ package org.kevoree.framework.osgi
 import java.util.Hashtable
 import org.kevoree.framework._
 import message.StopMessage
-import org.osgi.framework.ServiceRegistration
 
 
 /* ABSTRACT COMPONENT */
 abstract class KevoreeComponentActivator extends KevoreeInstanceActivator {
 
   def callFactory(): KevoreeComponent
-
-
   var nodeName: String = ""
   var componentName: String = ""
-
   def setNodeName(n: String) {
     nodeName = n
   }
-
   def setInstanceName(in: String) {
     componentName = in
   }
-
-
   var componentActor: KevoreeComponent = null
-
-  var services: List[ServiceRegistration] = List()
-
 
   override def start() {
     /* SEARCH HEADERS VALUE */
@@ -56,9 +46,10 @@ abstract class KevoreeComponentActivator extends KevoreeInstanceActivator {
 
 
     /* PUT INITIAL PROPERTIES */
+    /*
     if (bundleContext != null) {
       componentActor.getKevoreeComponentType.getDictionary.put(Constants.KEVOREE_PROPERTY_OSGI_BUNDLE, bundleContext.getBundle)
-    }
+    }*/
 
 
     componentActor.getKevoreeComponentType.asInstanceOf[AbstractComponentType].setName(componentName)
@@ -72,18 +63,19 @@ abstract class KevoreeComponentActivator extends KevoreeInstanceActivator {
     componentActor.start()
     /* Expose component in OSGI */
 
+    /*
     if (bundleContext != null) {
       val props = new Hashtable[String, String]()
       props.put(Constants.KEVOREE_NODE_NAME, nodeName)
       props.put(Constants.KEVOREE_INSTANCE_NAME, componentName)
       services = services ++ List(bundleContext.registerService(classOf[KevoreeComponent].getName, componentActor, props))
-    }
+    }*/
 
     /* Expose component provided port in OSGI */
 
     import scala.collection.JavaConversions._
 
-
+/*
     if (bundleContext != null) {
       componentActor.getKevoreeComponentType.getHostedPorts.foreach {
         hpref =>
@@ -93,7 +85,7 @@ abstract class KevoreeComponentActivator extends KevoreeInstanceActivator {
           portProps.put(Constants.KEVOREE_PORT_NAME, hpref._1)
           services = services ++ List(bundleContext.registerService(classOf[KevoreePort].getName, hpref._2, portProps))
       }
-    }
+    }*/
     /* START NEEDPORT ACTOR */
     componentActor.getKevoreeComponentType.getNeededPorts.foreach {
       np => np._2.asInstanceOf[KevoreePort].start()
@@ -134,11 +126,11 @@ abstract class KevoreeComponentActivator extends KevoreeInstanceActivator {
     }
     componentActor.stop
     componentActor = null
-
+/*
     services.foreach {
       service =>
         service.unregister()
-    }
+    }*/
 
   }
 

@@ -18,9 +18,9 @@
     <dependencies>
         <dependency>
             <groupId>org.kevoree.tools</groupId>
-            <artifactId>org.kevoree.tools.deploy.osgi</artifactId>
+            <artifactId>org.kevoree.tools.aether.framework</artifactId>
             <version>${kevoree.version}</version>
-            <type>bundle</type>
+            <type>kjar</type>
         </dependency>
         <dependency>
             <groupId>org.kevoree</groupId>
@@ -45,7 +45,33 @@
                     </instructions>
                 </configuration>
             </plugin>
-
+            <plugin>
+                <groupId>org.scala-tools</groupId>
+                <artifactId>maven-scala-plugin</artifactId>
+                <version>2.15.2</version>
+                <executions>
+                    <execution>
+                        <id>scala-compile-first</id>
+                        <phase>process-resources</phase>
+                        <goals>
+                            <goal>add-source</goal>
+                            <goal>compile</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>scala-test-compile</id>
+                        <phase>process-test-resources</phase>
+                        <goals>
+                            <goal>testCompile</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <jvmArgs>
+                        <jvmArg>-Xmx1024m</jvmArg>
+                    </jvmArgs>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
 

@@ -69,7 +69,7 @@ class KevoreeCoreBean extends KevoreeModelHandlerService with KevoreeThreadActor
         currentModel.getNodes.find(n => n.getName == nodeName) match {
           case Some(foundNode) => {
             //  val bt = new NodeTypeBootstrapHelper
-            bootstraper.bootstrapNodeType(currentModel, nodeName) match {
+            bootstraper.bootstrapNodeType(currentModel, nodeName,this) match {
               case Some(ist: org.kevoree.framework.NodeType) => {
                 nodeInstance = ist;
                 nodeInstance.startNode()
@@ -102,7 +102,7 @@ class KevoreeCoreBean extends KevoreeModelHandlerService with KevoreeThreadActor
       if (nodeInstance != null) {
         currentModel.getNodes.find(n => n.getName == nodeName) match {
           case Some(foundNode) => {
-            bootstraper.bootstrapNodeType(currentModel, nodeName) match {
+            bootstraper.bootstrapNodeType(currentModel, nodeName,this) match {
               case Some(ist: org.kevoree.framework.NodeType) => {
 
                 val modelTmp = modelClone.clone(currentModel)

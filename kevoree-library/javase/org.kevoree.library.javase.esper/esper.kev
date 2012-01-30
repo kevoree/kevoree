@@ -48,7 +48,7 @@
   </typeDefinitions>
   <typeDefinitions xsi:type="kevoree:ChannelType" name="defSERVICE" deployUnits="//@deployUnits.1" factoryBean="org.kevoree.library.defaultChannels.defSERVICEFactory" bean="org.kevoree.library.defaultChannels.defSERVICE" startMethod="startHello" stopMethod="stopHello"/>
   <typeDefinitions xsi:type="kevoree:ChannelType" name="defMSG" deployUnits="//@deployUnits.1" factoryBean="org.kevoree.library.defaultChannels.defMSGFactory" bean="org.kevoree.library.defaultChannels.defMSG" startMethod="startHello" stopMethod="stopHello" updateMethod="updateHello"/>
-  <typeDefinitions xsi:type="kevoree:NodeType" name="JavaSENode" deployUnits="//@deployUnits.2" factoryBean="org.kevoree.library.defaultNodeTypes.JavaSENodeFactory" bean="org.kevoree.library.defaultNodeTypes.JavaSENode"/>
+  <typeDefinitions xsi:type="kevoree:NodeType" name="JavaSENode" deployUnits="//@deployUnits.2" factoryBean="org.kevoree.library.defaultNodeTypes.JavaSENodeFactory" bean="org.kevoree.library.defaultNodeTypes.osgi.JavaSEOSGINode"/>
   <typeDefinitions xsi:type="kevoree:GroupType" name="RestGossipGroup" deployUnits="//@deployUnits.3" factoryBean="org.kevoree.library.gossiper.groupType.RestGossipGroupFactory" bean="org.kevoree.library.gossiper.groupType.RestGossipGroup" startMethod="startMyGroup" stopMethod="stopMyGroup" updateMethod="updateMyGroup">
     <dictionaryType>
       <attributes name="interval" optional="true"/>

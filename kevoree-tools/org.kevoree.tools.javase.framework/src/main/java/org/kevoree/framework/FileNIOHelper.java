@@ -13,7 +13,6 @@
  */
 package org.kevoree.framework;
 
-import org.osgi.framework.Bundle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -36,10 +35,10 @@ public class FileNIOHelper {
 
     private static Logger logger = LoggerFactory.getLogger(FileNIOHelper.class);
 
-    public static File resolveBundleJar(Bundle bundle, File bundleWorkingDir) {
+    public static File resolveBundleJar(Long bundleID, File bundleWorkingDir) {
         String versionDef = "version0.0";
         try {
-            File bundleRevisionCounter = new File(bundleWorkingDir.getAbsolutePath() + File.separator + "bundle" + bundle.getBundleId() + File.separator + "refresh.counter");
+            File bundleRevisionCounter = new File(bundleWorkingDir.getAbsolutePath() + File.separator + "bundle" + bundleID + File.separator + "refresh.counter");
             if (bundleRevisionCounter.exists()) {
                 FileReader fr = new FileReader(bundleRevisionCounter);
                 char vers = (char) fr.read();
@@ -48,7 +47,7 @@ public class FileNIOHelper {
             } /*else {
                 logger.warn("revision file does not exist");
             }  */
-            File jarFile = new File(bundleWorkingDir.getAbsolutePath() + File.separator + "bundle" + bundle.getBundleId() + File.separator + versionDef + File.separator + "bundle.jar");
+            File jarFile = new File(bundleWorkingDir.getAbsolutePath() + File.separator + "bundle" + bundleID + File.separator + versionDef + File.separator + "bundle.jar");
             if (jarFile.exists()) {
                 return jarFile;
             } else {

@@ -36,7 +36,9 @@
         <!--  <module>../org.kevoree.library.javase.logger.greg</module> -->
         <!-- <module>../org.kevoree.library.javase.jscriptengine</module>  -->
         <module>../org.kevoree.library.javase.javaseNode</module>
-        <module>../org.kevoree.library.javase.javaseKratiNode</module>
+        <module>../org.kevoree.library.javase.javaseOSGINode</module>
+
+        <!--  <module>../org.kevoree.library.javase.javaseKratiNode</module> -->
 
         <module>../org.kevoree.library.javase.socketChannels</module>
         <module>../org.kevoree.library.javase.nioChannels</module>

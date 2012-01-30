@@ -1,6 +1,5 @@
 package org.kevoree.framework.osgi
 
-import org.osgi.framework.BundleContext
 import org.kevoree.api.service.core.handler.KevoreeModelHandlerService
 import org.kevoree.api.service.core.script.KevScriptEngineFactory
 
@@ -38,11 +37,11 @@ trait KevoreeInstanceActivator {
   def setKevScriptEngineFactory(kef : KevScriptEngineFactory){
     kevScriptEngine = kef
   }
-
+/*
   var bundleContext : BundleContext = _
   def setBundleContext(bc : BundleContext){
     bundleContext = bc
-  }
+  }*/
 
   def start()
   def stop()
