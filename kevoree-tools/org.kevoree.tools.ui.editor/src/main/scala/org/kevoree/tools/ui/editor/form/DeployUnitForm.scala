@@ -138,6 +138,7 @@ trait DeployUnitForm {
     val bottomLine = new JPanel(new FlowLayout(FlowLayout.CENTER))
     bottomLine.add(btAdd)
     bottomLine.add(ok_lbl)
+    bottomLine.setOpaque(false)
 
     //window.getJDialog.getRootPane.setDefaultButton(btAdd)
     SpringUtilities.makeCompactGrid(layout, 3, 2, 6, 6, 6, 6)

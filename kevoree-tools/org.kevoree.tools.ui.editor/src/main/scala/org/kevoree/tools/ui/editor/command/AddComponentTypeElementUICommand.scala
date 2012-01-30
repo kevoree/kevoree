@@ -83,7 +83,7 @@ class AddComponentTypeElementUICommand extends Command with PortForm with Dictio
           case label if (label == dictionaryLabel) => {
             createDictionaryPanel(newPopup, kernel, componentType)
           }
-          //case _@e => throw new UnsupportedOperationException("No popup implemeted for item:" + e); null
+          //case _@e => throw new UnsupportedOperationException("No popup implemented for item:" + e); null
         }
         if (uiElems != null) {
           layoutPopup.removeAll()
