@@ -90,6 +90,7 @@ trait LibraryForm {
 
     bottomLine.add(btAdd)
     bottomLine.add(okLabel)
+    bottomLine.setOpaque(false);
     //window.getJDialog.getRootPane.setDefaultButton(btAdd)
     SpringUtilities.makeCompactGrid(layout, 1, 2, 6, 6, 6, 6)
     Tuple2(layout, bottomLine)

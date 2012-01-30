@@ -89,7 +89,7 @@ class   AddElementUICommand extends Command with ComponentTypeForm with DeployUn
             popupLayout.add(uiElems._1, BorderLayout.CENTER)
             popupLayout.add(uiElems._2, BorderLayout.SOUTH)
           }
-          case _@e => throw new UnsupportedOperationException("No popup implemeted for item:" + e)
+          case _@e => throw new UnsupportedOperationException("No popup implemented for item:" + e)
         }
         popupLayout.add(popupTopLayout, BorderLayout.NORTH)
         popupLayout.repaint()
