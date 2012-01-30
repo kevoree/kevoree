@@ -43,7 +43,7 @@ class PortChecker extends CheckerService {
                   concreteViolation
                     .setMessage("Required port (" + port.eContainer.asInstanceOf[ComponentInstance].getName + "." +
                     port.getPortTypeRef.getName + ") is not bind")
-                  concreteViolation.setTargetObjects(List(port))
+                  concreteViolation.setTargetObjects(List(port.eContainer))
                   violations = violations ++ List(concreteViolation)
                 }
 
