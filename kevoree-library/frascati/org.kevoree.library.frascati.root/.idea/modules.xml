@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/../org.kevoree.library.frascati.frascatiNode/org.kevoree.library.frascati.frascatiNode.iml" filepath="$PROJECT_DIR$/../org.kevoree.library.frascati.frascatiNode/org.kevoree.library.frascati.frascatiNode.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../org.kevoree.library.frascati.mavenplugin/org.kevoree.library.frascati.frascatiNode (2).iml" filepath="$PROJECT_DIR$/../org.kevoree.library.frascati.mavenplugin/org.kevoree.library.frascati.frascatiNode (2).iml" />
+      <module fileurl="file://$PROJECT_DIR$/../org.kevoree.library.frascati.helloworld.pojo/org.kevoree.library.frascati.helloworld-pojo.iml" filepath="$PROJECT_DIR$/../org.kevoree.library.frascati.helloworld.pojo/org.kevoree.library.frascati.helloworld-pojo.iml" />
+      <module fileurl="file://$PROJECT_DIR$/org.kevoree.library.frascati.root.iml" filepath="$PROJECT_DIR$/org.kevoree.library.frascati.root.iml" />
+    </modules>
+  </component>
+</project>
+

@@ -1,0 +1,95 @@
+<?xml version="1.0"?>
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>org.kevoree.library.frascati</groupId>
+    <artifactId>org.kevoree.library.frascati.helloworld-pojo</artifactId>
+    <packaging>jar</packaging>
+    <name>Kevoree :: Library :: Frascati :: HelloWorld POJO</name>
+
+    <parent>
+        <artifactId>org.kevoree.library.frascati.root</artifactId>
+        <groupId>org.kevoree.library.frascati</groupId>
+        <version>1.5.1-SNAPSHOT</version>
+        <relativePath>../org.kevoree.library.frascati.root/pom.xml</relativePath>
+    </parent>
+
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <config.directory>..</config.directory>
+        <java.util.logging.config.file>${config.directory}/logging.properties</java.util.logging.config.file>
+        <cxf.config.file>${config.directory}/frascati-cxf.xml</cxf.config.file>
+        <org.ow2.frascati.class>org.ow2.frascati.FraSCAti</org.ow2.frascati.class>
+        <org.ow2.frascati.bootstrap>org.ow2.frascati.bootstrap.FraSCAti</org.ow2.frascati.bootstrap>
+        <org.ow2.frascati.composite>org.ow2.frascati.FraSCAti</org.ow2.frascati.composite>
+
+        <fractal-adl.version>2.3.1</fractal-adl.version>
+        <cxf.version>2.4.0</cxf.version>
+        <xerces.version>2.9.1</xerces.version>
+        <org.eclipse.stp.sca.version>2.0.1.2</org.eclipse.stp.sca.version>
+
+        <composite.file>helloworld-pojo</composite.file>
+        <service.name>r</service.name>
+        <method.name>run</method.name>
+        <distribution.test>true</distribution.test>
+    </properties>
+
+    <build>
+        <defaultGoal>package</defaultGoal>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+            </plugin>
+        </plugins>
+
+        <pluginManagement>
+            <plugins>
+                <!-- Compile with Java 1.5 -->
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <configuration>
+                        <source>1.5</source>
+                        <target>1.5</target>
+                    </configuration>
+                </plugin>
+
+                <!-- Compile the SCA composite. -->
+                <plugin>
+                    <groupId>org.ow2.frascati.mojo</groupId>
+                    <artifactId>frascati-compiler-plugin</artifactId>
+                    <version>${project.version}</version>
+                    <executions>
+                        <execution>
+                            <id>compile-composite</id>
+                            <phase>generate-sources</phase>
+                            <goals>
+                                <goal>compile</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                    <configuration>
+                        <loggingConfFile>${java.util.logging.config.file}</loggingConfFile>
+                        <composite>${composite.file}</composite>
+                    </configuration>
+                    <!-- Required for FraSCAti EasyBPEL integration. -->
+                    <dependencies>
+                        <dependency>
+                            <groupId>xerces</groupId>
+                            <artifactId>xercesImpl</artifactId>
+                            <version>${xerces.version}</version>
+                            <scope>compile</scope>
+                        </dependency>
+                    </dependencies>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+
+    </build>
+
+
+</project>
