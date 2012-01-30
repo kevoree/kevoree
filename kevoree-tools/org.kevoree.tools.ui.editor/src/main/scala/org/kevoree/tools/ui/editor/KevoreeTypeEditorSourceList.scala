@@ -79,7 +79,7 @@ class KevoreeTypeEditorSourceList(pane: JSplitPane, kernel: KevoreeUIKernel, typ
           val deployUnitMenuItem = new JMenuItem("Add Dictionary");
           deployUnitMenuItem.addActionListener(new ActionListener {
             def actionPerformed(p1: ActionEvent) {
-              //TODO add dictionary
+              cmd.execute(cmd.dictionaryLabel)
             }
           });
           popup.add(deployUnitMenuItem);

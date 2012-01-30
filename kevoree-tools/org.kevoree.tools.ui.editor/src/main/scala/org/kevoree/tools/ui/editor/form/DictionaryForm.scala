@@ -17,7 +17,6 @@ import com.explodingpixels.macwidgets.HudWindow
 import org.kevoree.tools.ui.editor.KevoreeUIKernel
 import com.explodingpixels.macwidgets.plaf.{HudButtonUI, HudCheckBoxUI, HudTextFieldUI, HudLabelUI}
 import org.kevoree.tools.ui.editor.property.SpringUtilities
-import java.awt.Dimension
 import scala.collection.JavaConversions._
 import org.kevoree.tools.ui.framework.data.KevoreeHudComboBoxUI
 import org.kevoree.{KevoreeFactory, ComponentType}
@@ -26,6 +25,8 @@ import event._
 import table.{TableModel, DefaultTableModel}
 import java.awt.event.{FocusEvent, FocusListener, ActionEvent, ActionListener}
 import java.util.regex.Pattern
+import java.awt.{Color, FlowLayout, Dimension}
+import org.slf4j.LoggerFactory
 
 trait DictionaryForm {
 
@@ -34,8 +35,9 @@ trait DictionaryForm {
   private val valuePanel: JPanel = new JPanel
 
   def createDictionaryPanel (window: HudWindow, kernel: KevoreeUIKernel,
-    componentType: ComponentType): Tuple2[JPanel, JButton] = {
+    componentType: ComponentType): Tuple2[JPanel, JPanel] = {
     val layout = new JPanel(new SpringLayout)
+    layout.setSize(400, 200)
     layout.setOpaque(false)
 
     val portNameTxt = new JTextField()
@@ -47,9 +49,17 @@ trait DictionaryForm {
     layout.add(portNameLbl)
     layout.add(portNameTxt)
 
+    portNameTxt.addFocusListener(new FocusListener() {
+      def focusGained (p1: FocusEvent) {
+        portNameLbl.setForeground(Color.WHITE)
+      }
+
+      def focusLost (p1: FocusEvent) {}
+    })
+
     val fragmentDependantCheckBox = new JCheckBox()
     fragmentDependantCheckBox.setUI(new HudCheckBoxUI())
-    val fragmentDependantLabel = new JLabel("Fragment dependant:", SwingConstants.TRAILING);
+    val fragmentDependantLabel = new JLabel("Fragment:", SwingConstants.TRAILING);
     fragmentDependantLabel.setUI(new HudLabelUI());
     fragmentDependantLabel.setOpaque(false);
     fragmentDependantLabel.setLabelFor(fragmentDependantCheckBox);
@@ -82,6 +92,14 @@ trait DictionaryForm {
     layout.add(datatypeLabel)
     layout.add(datatypeTxt)
 
+    datatypeTxt.addFocusListener(new FocusListener() {
+      def focusGained (p1: FocusEvent) {
+        datatypeLabel.setForeground(Color.WHITE)
+      }
+
+      def focusLost (p1: FocusEvent) {}
+    })
+
     val defaultValueTxt = new JTextField()
     defaultValueTxt.setUI(new HudTextFieldUI())
     val defaultValueLabel = new JLabel("Default value: ", SwingConstants.TRAILING);
@@ -101,61 +119,81 @@ trait DictionaryForm {
     layout.add(optionalLabel)
     layout.add(optionalCheckBox)
 
+    val ok_lbl = new JLabel("  ")
+    ok_lbl.setUI(new HudLabelUI())
+    ok_lbl.setOpaque(false)
+
     //EXECUTE KEVSCRIPT COMMAND
     val btAdd = new JButton("Add Dictionary Attribute")
     btAdd.setUI(new HudButtonUI)
     btAdd.addActionListener(new ActionListener {
       def actionPerformed (p1: ActionEvent) {
 
-        val dictionaryAttribute = KevoreeFactory.createDictionaryAttribute
-        dictionaryAttribute.setName(portNameTxt.getText)
-        dictionaryAttribute.setFragmentDependant(fragmentDependantCheckBox.isSelected)
-        dictionaryAttribute.setOptional(optionalCheckBox.isSelected)
-        // build enum values
-        //(?:vals|enum)=\{\"([^\"]*)\"(?:,\"([^\"]*)\")*\}
-        var pattern = Pattern.compile("(?:vals|enum)=\\{((\\\"[^\\\"]*\\\")(?:,(\\\"[^\\\"]*\\\"))*)\\}")
-        var matcher = pattern.matcher(datatypeTxt.getText.toLowerCase)
-        if (matcher.find()) {
-          val stringBuilder = new StringBuilder
-          stringBuilder append "enum="
-          pattern = Pattern.compile("\\\"([^\\\"]*)\\\"")
-          matcher = pattern.matcher(datatypeTxt.getText.toLowerCase)
-          while (matcher.find()) {
-            val value = matcher.group(1)
-             if (stringBuilder.last != '=') {
-                stringBuilder append ","
-              }
-              stringBuilder append value
-          }
-
-
-          /*values.foreach {
-            value =>
+        if (componentType.getDictionaryType.isDefined &&
+          componentType.getDictionaryType.get.getAttributes.find(a => a.getName == portNameTxt.getText).isDefined) {
+          portNameLbl.setForeground(Color.RED)
+          ok_lbl.setText("KO")
+          ok_lbl.setForeground(Color.RED)
+        } else {
+          val dictionaryAttribute = KevoreeFactory.createDictionaryAttribute
+          dictionaryAttribute.setName(portNameTxt.getText)
+          dictionaryAttribute.setFragmentDependant(fragmentDependantCheckBox.isSelected)
+          dictionaryAttribute.setOptional(optionalCheckBox.isSelected)
+          // build enum values
+          var pattern = Pattern.compile("(?:vals|enum)=\\{((\\\"[^\\\"]*\\\")(?:,(\\\"[^\\\"]*\\\"))*)\\}")
+          var matcher = pattern.matcher(datatypeTxt.getText.toLowerCase)
+          if (matcher.find()) {
+            val stringBuilder = new StringBuilder
+            stringBuilder append "enum="
+            pattern = Pattern.compile("\\\"([^\\\"]*)\\\"")
+            matcher = pattern.matcher(datatypeTxt.getText.toLowerCase)
+            while (matcher.find()) {
+              val value = matcher.group(1)
               if (stringBuilder.last != '=') {
                 stringBuilder append ","
               }
               stringBuilder append value
-          }*/
-          dictionaryAttribute.setDatatype(stringBuilder.toString())
+            }
+
+            dictionaryAttribute.setDatatype(stringBuilder.toString())
+            if (componentType.getDictionaryType.isEmpty) {
+              componentType.setDictionaryType(Some(KevoreeFactory.createDictionaryType))
+            }
+
+            componentType.getDictionaryType.get.addAttributes(dictionaryAttribute)
+
+            if (defaultValueTxt.getText != null && defaultValueTxt.getText != "") {
+              val defaultDictionaryValue = KevoreeFactory.createDictionaryValue
+              defaultDictionaryValue.setAttribute(dictionaryAttribute)
+              defaultDictionaryValue.setValue(defaultValueTxt.getText)
+              componentType.getDictionaryType.get.addDefaultValues(defaultDictionaryValue)
+            }
+
+            ok_lbl.setText("OK")
+            ok_lbl.setForeground(Color.GREEN)
+            window.getContentPane.repaint()
+          } else {
+            datatypeLabel.setForeground(Color.RED)
+            ok_lbl.setText("KO")
+            ok_lbl.setForeground(Color.RED)
+          }
+
+
         }
-
-        val defaultDictionaryValue = KevoreeFactory.createDictionaryValue
-        defaultDictionaryValue.setAttribute(dictionaryAttribute)
-        defaultDictionaryValue.setValue(defaultValue)
-
-        if (componentType.getDictionaryType.isEmpty) {
-          componentType.setDictionaryType(Some(KevoreeFactory.createDictionaryType))
-        }
-
-        componentType.getDictionaryType.get.addAttributes(dictionaryAttribute)
-        componentType.getDictionaryType.get.addDefaultValues(defaultDictionaryValue)
 
         kernel.getEditorPanel.getTypeEditorPanel.refresh()
       }
     })
-    window.getJDialog.getRootPane.setDefaultButton(btAdd)
+
+
+    val bottomLine = new JPanel(new FlowLayout(FlowLayout.CENTER))
+    bottomLine.add(btAdd)
+    bottomLine.add(ok_lbl)
+    bottomLine.setOpaque(false)
+
+    //    window.getJDialog.getRootPane.setDefaultButton(btAdd)
     SpringUtilities.makeCompactGrid(layout, 5, 2, 6, 6, 6, 6)
-    Tuple2(layout, btAdd)
+    Tuple2(layout, bottomLine)
   }
 
   private def defineValue (panel: JPanel, defaultValues: Boolean) {
