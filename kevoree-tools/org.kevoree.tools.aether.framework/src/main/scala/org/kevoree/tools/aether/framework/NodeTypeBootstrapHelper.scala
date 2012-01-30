@@ -53,7 +53,6 @@ class NodeTypeBootstrapHelper extends Bootstraper {
           //KevoreeDeployManager.addMapping(KevoreeOSGiBundle(node.getTypeDefinition.getName, node.getTypeDefinition.getClass.getName, lastBundleID))
           val clazz: Class[_] = bundle.loadClass(node.getTypeDefinition.getBean)
 
-
           val nodeType = clazz.newInstance.asInstanceOf[AbstractNodeType]
           //ADD INSTANCE DICTIONARY
           val dictionary: java.util.HashMap[String, AnyRef] = new java.util.HashMap[String, AnyRef]

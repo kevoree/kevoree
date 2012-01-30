@@ -21,7 +21,7 @@ package org.kevoree.adaptation.deploy.osgi.command
 import org.kevoree._
 import api.service.core.handler.KevoreeModelHandlerService
 import api.service.core.script.KevScriptEngineFactory
-import framework.context.{KevoreeOSGiBundle, KevoreeDeployManager}
+import framework.context.{KevoreeJCLBundle, KevoreeOSGiBundle, KevoreeDeployManager}
 import framework.osgi.{KevoreeInstanceActivator, KevoreeInstanceFactory}
 import framework.{PrimitiveCommand, KevoreeGeneratorHelper}
 import org.kevoree.framework.aspects.KevoreeAspects._
@@ -69,7 +69,7 @@ case class AddInstanceCommand(c: Instance, nodeName: String,modelservice : Kevor
 
         kevoreeFactory = bundleType.loadClass(factoryName).newInstance().asInstanceOf[KevoreeInstanceFactory]
         val newInstance: KevoreeInstanceActivator = kevoreeFactory.registerInstance(c.getName, nodeName)
-        KevoreeDeployManager.addMapping(KevoreeOSGiBundle(c.getName, c.getClass.getName, bundleType.getBundleId))
+        KevoreeDeployManager.addMapping(KevoreeJCLBundle(c.getName, c.getClass.getName, newInstance,bundleType.getBundleId))
 
         newInstance.setBundleContext(bundleType.getBundleContext)
         newInstance.setKevScriptEngineFactory(kscript)
