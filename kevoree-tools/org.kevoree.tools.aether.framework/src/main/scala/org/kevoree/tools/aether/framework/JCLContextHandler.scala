@@ -1,3 +1,5 @@
+package org.kevoree.tools.aether.framework
+
 /**
  * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE, Version 3, 29 June 2007;
  * you may not use this file except in compliance with the License.
@@ -11,14 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kevoree.adaptation.deploy.jcl
 
-import org.kevoree.extra.jcl.KevoreeJarClassLoader
 import java.io.File
-import java.util.HashMap
-import org.kevoree.DeployUnit
-import org.kevoree.adaptation.deploy.osgi.command.CommandHelper
 import org.slf4j.LoggerFactory
+import org.kevoree.DeployUnit
+import org.kevoree.extra.jcl.KevoreeJarClassLoader
 
 /**
  * Created by IntelliJ IDEA.
@@ -34,19 +33,19 @@ object JCLContextHandler {
   val logger = LoggerFactory.getLogger(this.getClass)
 
   def getCacheFile(du : DeployUnit) : File = {
-    kcl_cache_file.get(CommandHelper.buildKEY(du))
+    kcl_cache_file.get(buildKEY(du))
   }
 
   def installDeployUnit(du : DeployUnit, file : File) : KevoreeJarClassLoader = {
-    logger.debug("Install {} , file {}",CommandHelper.buildKEY(du),file)
+    logger.debug("Install {} , file {}",buildKEY(du),file)
     val newcl = new KevoreeJarClassLoader
     if(du.getVersion.contains("SNAPSHOT")){
       newcl.setLazyLoad(false)
     }
     newcl.add(file.getAbsolutePath)
-    kcl_cache.put(CommandHelper.buildKEY(du),newcl)
-    kcl_cache_file.put(CommandHelper.buildKEY(du),file)
-    logger.debug("Add KCL for "+du.getUnitName+"->"+CommandHelper.buildKEY(du))
+    kcl_cache.put(buildKEY(du),newcl)
+    kcl_cache_file.put(buildKEY(du),file)
+    logger.debug("Add KCL for "+du.getUnitName+"->"+buildKEY(du))
 
     du.getRequiredLibs.foreach{ rLib =>
       val kcl = getKCL(rLib)
@@ -57,18 +56,40 @@ object JCLContextHandler {
     }
     newcl
   }
-  
+
   def getKCL(du : DeployUnit) : KevoreeJarClassLoader = {
-    kcl_cache.get(CommandHelper.buildKEY(du))
+    kcl_cache.get(buildKEY(du))
   }
-  
+
   def removeDeployUnit(du : DeployUnit) {
-    val key = CommandHelper.buildKEY(du)
+    val key = buildKEY(du)
     if(kcl_cache.containsKey(key)){
-      logger.debug("Remove KCL for "+du.getUnitName+"->"+CommandHelper.buildKEY(du))
+      logger.debug("Remove KCL for "+du.getUnitName+"->"+buildKEY(du))
       kcl_cache.get(key).unload()
       kcl_cache.remove(key)
     }
   }
 
+
+  def buildKEY(du: DeployUnit): String = {
+    du.getName + "/" + buildQuery(du, None)
+  }
+
+  def buildQuery(du: DeployUnit, repoUrl: Option[String]): String = {
+      val query = new StringBuilder
+      query.append("mvn:")
+      repoUrl match {
+        case Some(r) => query.append(r); query.append("!")
+        case None =>
+      }
+      query.append(du.getGroupName)
+      query.append("/")
+      query.append(du.getUnitName)
+      du.getVersion match {
+        case "default" =>
+        case "" =>
+        case _ => query.append("/"); query.append(du.getVersion)
+      }
+      query.toString
+    }
 }

@@ -19,32 +19,30 @@ package org.kevoree.framework.context
  */
 
 
-import org.osgi.framework.Bundle;
-import org.osgi.service.packageadmin.PackageAdmin
 import actors.DaemonActor
 import org.slf4j.LoggerFactory
 
 
 object KevoreeDeployManager extends DaemonActor {
 
-  var bundle: Bundle = null
+//  var bundle: Bundle = null
   val logger = LoggerFactory.getLogger(this.getClass)
-
+/*
   def setBundle(b: Bundle) {
     bundle = b
-    val sr = bundle.getBundleContext.getServiceReference(classOf[PackageAdmin].getName)
-    servicePackageAdmin = Some(bundle.getBundleContext.getService(sr).asInstanceOf[PackageAdmin])
+    //val sr = bundle.getBundleContext.getServiceReference(classOf[PackageAdmin].getName)
+    //servicePackageAdmin = Some(bundle.getBundleContext.getService(sr).asInstanceOf[PackageAdmin])
   }
 
-  def getBundleContext = bundle.getBundleContext;
+  def getBundleContext = bundle.getBundleContext;*/
 
   private var private_bundleMapping: List[KevoreeOSGiBundle] = List[KevoreeOSGiBundle]();
-  var servicePackageAdmin: Option[PackageAdmin] = null
-
+//  var servicePackageAdmin: Option[PackageAdmin] = null
+/*
   def getServicePackageAdmin: PackageAdmin = {
     servicePackageAdmin.get
-  }
-
+  }*/
+/*
   def clearAll() {
     KevoreeDeployManager.bundleMapping.foreach {
       bm =>
@@ -60,18 +58,19 @@ object KevoreeDeployManager extends DaemonActor {
         }
     }
     logger.debug("Deploy manager cache size after HaraKiri" + KevoreeDeployManager.bundleMapping.size)
-  }
+  }*/
 
 
   /*
     Garbage unsed mapping
   */
+  /*
   def garbage(): Unit = {
     this !? GARBAGE()
   }
 
   case class GARBAGE()
-
+*/
 
   def bundleMapping: List[KevoreeOSGiBundle] = {
     (this !? GET_MAPPINGS()).asInstanceOf[List[KevoreeOSGiBundle]]
@@ -94,6 +93,7 @@ object KevoreeDeployManager extends DaemonActor {
   def act() {
     loop {
       react {
+        /*
         case GARBAGE() => {
           private_bundleMapping.foreach {
             mapping =>
@@ -106,7 +106,7 @@ object KevoreeDeployManager extends DaemonActor {
               }
           }
           reply(true)
-        }
+        }*/
         case GET_MAPPINGS() => {
           reply(private_bundleMapping)
         }

@@ -18,7 +18,6 @@ package org.kevoree.platform.osgi.standalone;
  * User: gnain
  * Date: 11/10/11
  * Time: 18:10
- * To change this template use File | Settings | File Templates.
  */
 public interface ConstantValues {
 

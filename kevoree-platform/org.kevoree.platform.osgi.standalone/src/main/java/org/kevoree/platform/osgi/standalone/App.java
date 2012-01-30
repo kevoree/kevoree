@@ -38,11 +38,8 @@ public class App {
     }
 
     public static void main(String[] args) {
-
         ConstantsHandler.setConstantValuesProvider(new ConstantValuesImpl());
-
         App app = new App();
         app.start();
-
     }
 }

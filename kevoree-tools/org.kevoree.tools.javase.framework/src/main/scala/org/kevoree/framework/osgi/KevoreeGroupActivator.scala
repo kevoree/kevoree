@@ -15,7 +15,6 @@ package org.kevoree.framework.osgi
  */
 
 import java.util.Hashtable
-import org.osgi.framework.{ServiceRegistration}
 import org.kevoree.framework.message.StopMessage
 import org.kevoree.framework.{ModelHandlerServiceProxy, KevoreeGroup, Constants}
 
@@ -26,8 +25,6 @@ abstract class KevoreeGroupActivator extends KevoreeInstanceActivator {
   var nodeName: String = ""
   var instanceName: String = ""
   var groupActor: KevoreeGroup = null
-
-  var mainService : ServiceRegistration = null
 
   def setNodeName(n : String) {
     nodeName = n
@@ -51,14 +48,16 @@ abstract class KevoreeGroupActivator extends KevoreeInstanceActivator {
     val props = new Hashtable[String, String]()
     props.put(Constants.KEVOREE_NODE_NAME, nodeName)
     props.put(Constants.KEVOREE_INSTANCE_NAME, instanceName)
+    /*
     if(bundleContext != null){
       mainService = bundleContext.registerService(classOf[KevoreeGroup].getName, groupActor, props);
-    }
+    }*/
 
     /* PUT INITIAL PROPERTIES */
+    /*
     if(bundleContext != null){
       groupActor.getDictionary.put(Constants.KEVOREE_PROPERTY_OSGI_BUNDLE, bundleContext.getBundle)
-    }
+    }*/
 
     groupActor.asInstanceOf[KevoreeGroup].setName(instanceName)
     groupActor.asInstanceOf[KevoreeGroup].setNodeName(nodeName)
@@ -81,10 +80,10 @@ abstract class KevoreeGroupActivator extends KevoreeInstanceActivator {
 
     groupActor.stop
     groupActor = null
-
+/*
     if(mainService != null){
       mainService.unregister()
-    }
+    }*/
 
 
   }

@@ -60,6 +60,7 @@ class NodeTypeBootStrapUI(pkernel: ContainerRoot) extends JPanel {
     this.removeAll()
     model = kernel
     val nodeTypeModel = new DefaultComboBoxModel
+        
     kernel.getTypeDefinitions.
       filter(td => td.isInstanceOf[org.kevoree.NodeType] && td.getDeployUnits.exists(du => du.getTargetNodeType != null ))
       .sortWith( (td,td2) => if(td2.getName=="JavaSENode"){true}else{td.getName < td2.getName } )
@@ -115,7 +116,6 @@ class NodeTypeBootStrapUI(pkernel: ContainerRoot) extends JPanel {
         }
       }
     })
-
     val bootModelLabel = new JLabel("Bootstrap", SwingConstants.TRAILING);
     bootModelLabel.setUI(new HudLabelUI());
     bootModelLabel.setOpaque(false);
@@ -170,6 +170,10 @@ class NodeTypeBootStrapUI(pkernel: ContainerRoot) extends JPanel {
   }
 
   def getTypeDefinition(box : JComboBox) : TypeDefinition = {
+    //pkernel.getTypeDefinitions.foreach{s => println(s.getName)}
+    
+    println("/=>"+box.getSelectedItem)
+    
     pkernel.getTypeDefinitions.find(td => td.getName == box.getSelectedItem).get
   }
 

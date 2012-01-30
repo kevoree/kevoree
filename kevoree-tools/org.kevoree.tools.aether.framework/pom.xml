@@ -8,6 +8,7 @@
 
     <properties>
         <kevoree.version>${project.version}</kevoree.version>
+        <kevoree.jcl.version>0.9.10</kevoree.jcl.version>
     </properties>
 
     <parent>
@@ -97,6 +98,11 @@
             <groupId>org.codehaus.plexus</groupId>
             <artifactId>plexus-component-annotations</artifactId>
             <version>1.5.5</version>
+        </dependency>
+        <dependency>
+            <groupId>org.kevoree.extra</groupId>
+            <artifactId>org.kevoree.extra.jcl</artifactId>
+            <version>${kevoree.jcl.version}</version>
         </dependency>
     </dependencies>
 
