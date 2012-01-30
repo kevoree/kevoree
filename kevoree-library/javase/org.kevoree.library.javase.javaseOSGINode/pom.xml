@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.kevoree.library.javase</groupId>
     <artifactId>org.kevoree.library.javase.javaseOSGINode</artifactId>
-    <packaging>bundle</packaging>
+    <packaging>jar</packaging>
     <name>Kevoree :: Library :: JavaSE :: JavaSE OSGI Node</name>
     <version>1.5.1-SNAPSHOT</version>
 
@@ -29,6 +29,40 @@
             <type>kjar</type>
         </dependency>
         <dependency>
+            <groupId>org.apache.felix</groupId>
+            <artifactId>org.apache.felix.shell</artifactId>
+            <version>1.4.2</version>
+            <type>kjar</type>
+            <exclusions>
+                <exclusion>
+                    <artifactId>org.osgi.core</artifactId>
+                    <groupId>org.osgi</groupId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>org.osgi.framework</artifactId>
+                    <groupId>org.osgi</groupId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.felix</groupId>
+            <artifactId>org.apache.felix.shell.tui</artifactId>
+            <version>1.4.1</version>
+            <type>kjar</type>
+            <exclusions>
+                <exclusion>
+                    <artifactId>org.osgi.core</artifactId>
+                    <groupId>org.osgi</groupId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>org.osgi.framework</artifactId>
+                    <groupId>org.osgi</groupId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+
+        <dependency>
             <groupId>org.kevoree</groupId>
             <artifactId>org.kevoree.kompare</artifactId>
             <version>${kevoree.version}</version>
@@ -37,20 +71,7 @@
 
     <build>
         <plugins>
-            <plugin>
-                <groupId>org.apache.felix</groupId>
-                <artifactId>maven-bundle-plugin</artifactId>
-                <version>2.3.5</version>
-                <extensions>true</extensions>
-                <configuration>
-                    <instructions>
-                        <Private-Package>javax.jmdns.*</Private-Package>
-                        <DynamicImport-Package>*</DynamicImport-Package>
-                        <Export-Package>org.kevoree.library.defaultNodeTypes.*</Export-Package>
-                        <Import-Package>!org.kevoree.library.defaultNodeTypes.*,*</Import-Package>
-                    </instructions>
-                </configuration>
-            </plugin>
+
             <plugin>
                 <groupId>org.scala-tools</groupId>
                 <artifactId>maven-scala-plugin</artifactId>

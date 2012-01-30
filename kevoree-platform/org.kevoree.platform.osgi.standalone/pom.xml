@@ -43,6 +43,7 @@
             <artifactId>org.kevoree.merger</artifactId>
             <version>${kevoree.version}</version>
         </dependency>
+
         <dependency>
             <groupId>org.apache.felix</groupId>
             <artifactId>org.apache.felix.framework</artifactId>
