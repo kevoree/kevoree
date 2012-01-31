@@ -94,7 +94,6 @@ public class App {
         // System.out.println(ManagementFactory.getOperatingSystemMXBean().getSystemLoadAverage());
         // System.setProperty("apple.awt.graphics.UseQuartz","true");
 
-        GuiConstantsHandler.setGuiConstantValuesProvider(new GuiConstantValuesImpl());
 
         App app = new App();
         app.start();

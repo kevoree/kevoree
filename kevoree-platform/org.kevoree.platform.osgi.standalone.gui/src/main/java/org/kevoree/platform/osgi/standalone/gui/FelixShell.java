@@ -19,7 +19,6 @@ import ch.qos.logback.classic.Logger;
 import com.explodingpixels.macwidgets.IAppWidgetFactory;
 import com.explodingpixels.macwidgets.plaf.HudComboBoxUI;
 import com.explodingpixels.macwidgets.plaf.HudTextFieldUI;
-import org.apache.felix.shell.ShellService;
 import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
@@ -44,7 +43,7 @@ public class FelixShell extends JPanel {
 
     private JScrollPane scrollShell = null;
 
-    public FelixShell(final ShellService shell) {
+    public FelixShell() {
         this.setBackground(new Color(57, 57, 57));
         //this.setBackground(Color.BLACK);
 
@@ -77,7 +76,7 @@ public class FelixShell extends JPanel {
                         // textArea.append("==>" + input.getText() + eol);
                         textArea.append(input.getText() + eol, new Color(87, 145, 198), Color.white, true);
 
-                        shell.executeCommand(input.getText().trim(), STDwriter, ERRwriter);
+                       // shell.executeCommand(input.getText().trim(), STDwriter, ERRwriter);
                         input.setText("");
                     } catch (Exception e) {
                         e.printStackTrace();

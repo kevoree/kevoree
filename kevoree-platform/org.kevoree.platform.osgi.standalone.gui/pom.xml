@@ -50,25 +50,14 @@
             <version>0.9.6</version>
         </dependency>
         <dependency>
-            <groupId>org.ops4j.pax.url</groupId>
-            <artifactId>pax-url-assembly</artifactId>
-            <version>1.3.5</version>
-            <exclusions>
-                <exclusion>
-                    <artifactId>jackson-core-asl</artifactId>
-                    <groupId>org.codehaus.jackson</groupId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-core</artifactId>
-            <version>0.9.24</version>
+            <version>1.0.0</version>
         </dependency>
         <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-classic</artifactId>
-            <version>0.9.24</version>
+            <version>1.0.0</version>
         </dependency>
         <dependency>
             <groupId>org.kevoree.platform</groupId>
@@ -131,66 +120,6 @@
                     </jvmArgs>
                 </configuration>
             </plugin>
-            <plugin>
-                <groupId>org.kevoree.extra</groupId>
-                <artifactId>org.kevoree.extra.osgi.sysgen</artifactId>
-                <version>1.0</version>
-                <extensions>true</extensions>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>generate</goal>
-                        </goals>
-                        <configuration>
-                            <filters>
-                                org.apache.felix,org.osgi,scala,org.ops4j,org.slf4j,org.kevoree,org.kevoree.tools
-                            </filters>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-            <!--
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-shade-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>shade</goal>
-                        </goals>
-                        <configuration>
-                            <filters>
-                                <filter>
-                                    <includes>
-                                        <include>org.ops4j.pax.url:*</include>
-                                        <include>org.osgi:*</include>
-                                        <include>org.apache.felix:*</include>
-                                        <include>ch.qos.logback:*</include>
-                                        <include>org.kermeta.emf:*</include>
-                                        <include>org.kevoree</include>
-                                    </includes>
-                                </filter>
-                                <filter>
-                                    <artifact>*:*</artifact>
-                                    <excludes>
-                                        <exclude>META-INF/*.SF</exclude>
-                                        <exclude>META-INF/*.DSA</exclude>
-                                        <exclude>META-INF/*.RSA</exclude>
-                                    </excludes>
-                                </filter>
-                            </filters>
-                            <transformers>
-                                <transformer
-                                        implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                                    <mainClass>org.kevoree.platform.osgi.standalone.gui.App</mainClass>
-                                </transformer>
-                            </transformers>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-            -->
 
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
@@ -286,7 +215,6 @@
                         <option>-keep class org.restlet.**</option>
                         -->
                         <option>-keep class org.slf4j.** { *; }</option>
-                        <option>-keep class org.osgi.** { *; }</option>
                         <option>-keep class scala.runtime.** { *; }</option>
                         <option>-keep class scala.Tuple2 { *; }</option>
                         <option>-keep class scala.** { *; }</option>
@@ -300,7 +228,6 @@
                         <option>-keep class org.kevoree.tools.aether.framework.** { *; }</option>
                         <option>-keepattributes *Annotation*</option>
                         <option>-keepattributes **</option>
-                        <option>-keep class org.apache.felix.framework.** { *; }</option>
                         <option>-keep class org.apache.commons.logging.** { *; }</option>
                         <option>-dontskipnonpubliclibraryclasses</option>
                         <option>-dontskipnonpubliclibraryclassmembers</option>

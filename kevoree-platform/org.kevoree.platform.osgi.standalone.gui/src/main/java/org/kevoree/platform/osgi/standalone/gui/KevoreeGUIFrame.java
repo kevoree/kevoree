@@ -18,11 +18,7 @@ import com.explodingpixels.macwidgets.IAppWidgetFactory;
 import com.explodingpixels.macwidgets.plaf.HudButtonUI;
 import org.kevoree.ContainerRoot;
 import org.kevoree.KevoreeFactory;
-import org.kevoree.platform.osgi.standalone.BootstrapActivator;
-import org.kevoree.platform.osgi.standalone.EmbeddedActivators;
-import org.kevoree.platform.osgi.standalone.EmbeddedFelix;
-import org.kevoree.platform.osgi.standalone.shell.ShellActivator;
-import org.osgi.framework.BundleActivator;
+import org.kevoree.platform.osgi.standalone.KevoreeBootStrap;
 
 import javax.swing.*;
 import java.awt.*;
@@ -30,9 +26,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.io.File;
 import java.net.URL;
-import java.util.Arrays;
 
 public class KevoreeGUIFrame extends JFrame {
 
@@ -44,8 +38,8 @@ public class KevoreeGUIFrame extends JFrame {
 //System.out.println(getClass().getClassLoader().getResource("."));
 
 
-        URL urlIcon = getClass().getClassLoader().getResource(GuiConstantsHandler.getGuiConstantValuesProvider().getIconUrl());//"kevoree-logo-full.png");
-        URL urlSmallIcon = getClass().getClassLoader().getResource(GuiConstantsHandler.getGuiConstantValuesProvider().getSmallIconUrl());//"kev-logo-full.png");
+        URL urlIcon = getClass().getClassLoader().getResource("kevoree-logo-full.png");
+        URL urlSmallIcon = getClass().getClassLoader().getResource("kev-logo-full.png");
         ImageIcon topIIcon = new ImageIcon(urlIcon);
         final ImageIcon smallIcon = new ImageIcon(urlSmallIcon);
         this.setIconImage(smallIcon.getImage());
@@ -61,7 +55,7 @@ public class KevoreeGUIFrame extends JFrame {
             System.setProperty("org.kevoree.remote.provisioning", "file:///" + mavenDir.getAbsolutePath());
         }*/
 
-        final HudWindow bootstrapPopup = new HudWindow(GuiConstantsHandler.getGuiConstantValuesProvider().getBootstrapWindowTitle());//"Kevoree runtime : node properties");
+        final HudWindow bootstrapPopup = new HudWindow("Kevoree runtime : node properties");
         bootstrapPopup.getJDialog().setSize(400, 210);
         bootstrapPopup.getJDialog().setLocationRelativeTo(null);
         bootstrapPopup.getJDialog().setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -81,11 +75,11 @@ public class KevoreeGUIFrame extends JFrame {
         final NodeTypeBootStrapUI nodeUI = new NodeTypeBootStrapUI(model);
 
         nodeUI.setOpaque(false);
-        JScrollPane scrollPane = new JScrollPane(nodeUI) ;
+        JScrollPane scrollPane = new JScrollPane(nodeUI);
         IAppWidgetFactory.makeIAppScrollPane(scrollPane);
-        scrollPane.getViewport().setOpaque(false) ;
+        scrollPane.getViewport().setOpaque(false);
         scrollPane.setOpaque(false);
-        scrollPane.setBorder(null) ;
+        scrollPane.setBorder(null);
 
         layoutPopup.add(scrollPane, BorderLayout.CENTER);
         layoutPopup.add(btOk, BorderLayout.SOUTH);
@@ -102,24 +96,16 @@ public class KevoreeGUIFrame extends JFrame {
                 String response = nodeUI.getKevName();
                 final String nodeName = response;
                 System.setProperty("node.name", response);
-                setTitle(nodeName + " : " + nodeUI.getKevTypeName()+" / Kevoree-"+ KevoreeFactory.getVersion());
+                setTitle(nodeName + " : " + nodeUI.getKevTypeName() + " / Kevoree-" + KevoreeFactory.getVersion());
                 new Thread() {
                     @Override
                     public void run() {
 
                         NodeTypeBootStrapModel.checkAndCreate(nodeUI.getCurrentModel(), nodeName, nodeUI.getKevTypeName().toString(), nodeUI.getKevGroupTypeName().toString(), nodeUI.getKevGroupName().toString(), nodeUI.nodeInstancePanel().currentProperties(), nodeUI.groupInstancePanel().currentProperties());
-                        final BootstrapActivator btA = new org.kevoree.platform.osgi.standalone.BootstrapActivator();
+                        final KevoreeBootStrap btA = new KevoreeBootStrap();
 
                         btA.setBootstrapModel(nodeUI.getCurrentModel());
 
-                        EmbeddedActivators.setActivators(Arrays.asList(
-                                (BundleActivator) new ShellActivator(),
-                                (BundleActivator) new ConsoleActivator(),
-                                btA
-                        ));
-                        EmbeddedActivators.setBootstrapActivator(btA);
-
-                        final EmbeddedFelix felix = new EmbeddedFelix();
                         addWindowListener(new WindowAdapter() {
                             @Override
                             public void windowClosing(WindowEvent windowEvent) {
@@ -132,7 +118,10 @@ public class KevoreeGUIFrame extends JFrame {
 
                                             //System.setOut(System.);
 
+                                            btA.stop();
+
                                             Runtime.getRuntime().exit(0);
+
 
 
                                             //CLOSE KEVOREE BTActivator first ...
@@ -148,8 +137,16 @@ public class KevoreeGUIFrame extends JFrame {
                                 }.start();
                             }
                         });
+                        try {
+                            FelixShell shell = null;
+                            shell = new FelixShell();
+                            KevoreeGUIFrame.showShell(shell);
 
-                        felix.run();
+                            btA.start();
+                        } catch (Exception e) {
+                            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                        }
+
                     }
                 }.start();
 

@@ -14,8 +14,10 @@
 package org.kevoree.tools.aether.framework
 
 import org.kevoree.api.service.core.handler.KevoreeModelHandlerService
-import org.kevoree.{ContainerRoot}
+import org.kevoree.ContainerRoot
 import org.kevoree.framework.{Bootstraper, AbstractNodeType}
+import org.kevoree.api.service.core.script.KevScriptEngineFactory
+import org.kevoree.extra.jcl.KevoreeJarClassLoader
 
 /**
  * User: ffouquet
@@ -25,7 +27,7 @@ import org.kevoree.framework.{Bootstraper, AbstractNodeType}
 
 class NodeTypeBootstrapHelper extends Bootstraper with KCLBootstrap {
 
-  def bootstrapNodeType(model: ContainerRoot, destNodeName: String, mservice: KevoreeModelHandlerService): Option[org.kevoree.framework.NodeType] = {
+  def bootstrapNodeType(model: ContainerRoot, destNodeName: String, mservice: KevoreeModelHandlerService, kevsEngineFactory: KevScriptEngineFactory): Option[org.kevoree.framework.NodeType] = {
     //LOCATE NODE
     val node = model.getNodes.find(node => node.getName == destNodeName)
     node match {
@@ -60,6 +62,7 @@ class NodeTypeBootstrapHelper extends Bootstraper with KCLBootstrap {
             // if (sr != null) {
             //   val s = bundleContext.getService(sr).asInstanceOf[KevoreeModelHandlerService]
             nodeType.setModelService(mservice)
+            nodeType.setKevScriptEngineFactory(kevsEngineFactory)
             // }
             //nodeType.push(destNodeName, model, bundle.getBundleContext)
             Some(nodeType)
@@ -77,21 +80,31 @@ class NodeTypeBootstrapHelper extends Bootstraper with KCLBootstrap {
   }
 
 
-
-
   /* Bootstrap node type bundle in local environment */
   private def installNodeTyp(nodeType: org.kevoree.NodeType): Option[ClassLoader] = {
     val superTypeBootStrap = nodeType.getSuperTypes
       .forall(superType => installNodeTyp(superType.asInstanceOf[org.kevoree.NodeType]).isDefined)
     if (superTypeBootStrap) {
-      var kcl : ClassLoader = null
+      var kcl: ClassLoader = null
       nodeType.getDeployUnits.forall(ct => {
-        val dpRes = ct.getRequiredLibs.forall {
-          tp => installDeployUnit(tp).isDefined
-        }
+        val dpRes = ct.getRequiredLibs.forall(tp => {
+          val idp = installDeployUnit(tp)
+          idp.isDefined
+        })
+        /*
+        groupKCL.foreach(gcl =>
+          groupKCL.filter(g => g != gcl).foreach(
+            gcl_in => {
+              gcl.addWeakClassLoader(gcl_in)
+            }
+          )
+        )*/
+
         val kcl_opt = installDeployUnit(ct)
         kcl_opt match {
-          case Some(k)=> {kcl = k}
+          case Some(k) => {
+            kcl = k
+          }
           case _ =>
         }
         kcl_opt.isDefined && dpRes

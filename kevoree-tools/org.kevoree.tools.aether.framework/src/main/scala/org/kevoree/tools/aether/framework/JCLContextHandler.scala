@@ -28,43 +28,54 @@ import org.kevoree.extra.jcl.KevoreeJarClassLoader
 
 object JCLContextHandler {
 
-  private val kcl_cache = new java.util.HashMap[String,KevoreeJarClassLoader]()
-  private val kcl_cache_file = new java.util.HashMap[String,File]()
+  private val kcl_cache = new java.util.HashMap[String, KevoreeJarClassLoader]()
+  private val kcl_cache_file = new java.util.HashMap[String, File]()
   val logger = LoggerFactory.getLogger(this.getClass)
 
-  def getCacheFile(du : DeployUnit) : File = {
+  def getCacheFile(du: DeployUnit): File = {
     kcl_cache_file.get(buildKEY(du))
   }
 
-  def installDeployUnit(du : DeployUnit, file : File) : KevoreeJarClassLoader = {
-    logger.debug("Install {} , file {}",buildKEY(du),file)
+  def installDeployUnit(du: DeployUnit, file: File): KevoreeJarClassLoader = {
+    logger.debug("Install {} , file {}", buildKEY(du), file)
     val newcl = new KevoreeJarClassLoader
-    if(du.getVersion.contains("SNAPSHOT")){
+    if (du.getVersion.contains("SNAPSHOT")) {
       newcl.setLazyLoad(false)
     }
     newcl.add(file.getAbsolutePath)
-    kcl_cache.put(buildKEY(du),newcl)
-    kcl_cache_file.put(buildKEY(du),file)
-    logger.debug("Add KCL for "+du.getUnitName+"->"+buildKEY(du))
+    kcl_cache.put(buildKEY(du), newcl)
+    kcl_cache_file.put(buildKEY(du), file)
+    logger.debug("Add KCL for " + du.getUnitName + "->" + buildKEY(du))
 
-    du.getRequiredLibs.foreach{ rLib =>
-      val kcl = getKCL(rLib)
-      if(kcl != null){
-        logger.debug("Link KCL for "+du.getUnitName+"->"+rLib.getUnitName)
-        newcl.addSubClassLoader(kcl)
-      }
+    du.getRequiredLibs.foreach {
+      rLib =>
+        val kcl = getKCL(rLib)
+        if (kcl != null) {
+          logger.debug("Link KCL for " + du.getUnitName + "->" + rLib.getUnitName)
+          newcl.addSubClassLoader(kcl)
+
+          du.getRequiredLibs.filter(rLibIn => rLib != rLibIn).foreach(rLibIn => {
+            val kcl2 = getKCL(rLibIn)
+            if (kcl2 != null) {
+              kcl.addWeakClassLoader(kcl2)
+              logger.debug("Link Weak for " + rLib.getUnitName + "->" + rLibIn.getUnitName)
+            }
+          })
+
+
+        }
     }
     newcl
   }
 
-  def getKCL(du : DeployUnit) : KevoreeJarClassLoader = {
+  def getKCL(du: DeployUnit): KevoreeJarClassLoader = {
     kcl_cache.get(buildKEY(du))
   }
 
-  def removeDeployUnit(du : DeployUnit) {
+  def removeDeployUnit(du: DeployUnit) {
     val key = buildKEY(du)
-    if(kcl_cache.containsKey(key)){
-      logger.debug("Remove KCL for "+du.getUnitName+"->"+buildKEY(du))
+    if (kcl_cache.containsKey(key)) {
+      logger.debug("Remove KCL for " + du.getUnitName + "->" + buildKEY(du))
       kcl_cache.get(key).unload()
       kcl_cache.remove(key)
     }
@@ -76,20 +87,20 @@ object JCLContextHandler {
   }
 
   def buildQuery(du: DeployUnit, repoUrl: Option[String]): String = {
-      val query = new StringBuilder
-      query.append("mvn:")
-      repoUrl match {
-        case Some(r) => query.append(r); query.append("!")
-        case None =>
-      }
-      query.append(du.getGroupName)
-      query.append("/")
-      query.append(du.getUnitName)
-      du.getVersion match {
-        case "default" =>
-        case "" =>
-        case _ => query.append("/"); query.append(du.getVersion)
-      }
-      query.toString
+    val query = new StringBuilder
+    query.append("mvn:")
+    repoUrl match {
+      case Some(r) => query.append(r); query.append("!")
+      case None =>
     }
+    query.append(du.getGroupName)
+    query.append("/")
+    query.append(du.getUnitName)
+    du.getVersion match {
+      case "default" =>
+      case "" =>
+      case _ => query.append("/"); query.append(du.getVersion)
+    }
+    query.toString
+  }
 }

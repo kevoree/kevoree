@@ -26,12 +26,10 @@ import org.kevoree.api.service.core.script.KevScriptEngine;
 import org.kevoree.api.service.core.script.KevScriptEngineFactory;
 import org.kevoree.core.impl.KevoreeConfigServiceBean;
 import org.kevoree.core.impl.KevoreeCoreBean;
+import org.kevoree.extra.jcl.KevoreeJarClassLoader;
 import org.kevoree.framework.Bootstraper;
 import org.kevoree.framework.KevoreeXmiHelper;
 import org.kevoree.framework.MavenResolver;
-import org.osgi.framework.Bundle;
-import org.osgi.framework.BundleActivator;
-import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import java.io.File;
@@ -41,20 +39,17 @@ import java.util.jar.JarFile;
 /**
  * @author ffouquet
  */
-public class BootstrapActivator implements BundleActivator {
+public class KevoreeBootStrap {
     /* Bootstrap Model to init default nodeType */
     private ContainerRoot bootstrapModel = null;
-
     public void setBootstrapModel(ContainerRoot bmodel) {
         bootstrapModel = bmodel;
     }
-
     private KevoreeCoreBean coreBean = null;
-    Logger logger = LoggerFactory.getLogger(BootstrapActivator.class);
+    Logger logger = LoggerFactory.getLogger(KevoreeBootStrap.class);
     private Boolean started = false;
 
-    @Override
-    public void start(BundleContext context) throws Exception {
+    public void start() throws Exception {
         if (started) {
             return;
         }
@@ -62,36 +57,36 @@ public class BootstrapActivator implements BundleActivator {
             KevoreeConfigServiceBean configBean = new KevoreeConfigServiceBean();
             coreBean = new KevoreeCoreBean();
 
-            
-            Bundle b = context.installBundle("kevoree.bootstraper",this.getClass().getClassLoader().getResourceAsStream("boot/org.kevoree.tools.aether.framework-"+KevoreeFactory.getVersion()+".jar"));
-            Class clazz = b.loadClass("org.kevoree.tools.aether.framework.NodeTypeBootstrapHelper");
+            KevoreeJarClassLoader jcl = new KevoreeJarClassLoader();
+            jcl.add(this.getClass().getClassLoader().getResourceAsStream("boot/org.kevoree.tools.aether.framework-"+KevoreeFactory.getVersion()+".jar"));
+            Class clazz = jcl.loadClass("org.kevoree.tools.aether.framework.NodeTypeBootstrapHelper");
             org.kevoree.framework.Bootstraper bhelper = (Bootstraper) clazz.newInstance();
 
-            Class clazz3 = b.loadClass("org.kevoree.tools.aether.framework.AetherMavenResolver");
+            Class clazz3 = jcl.loadClass("org.kevoree.tools.aether.framework.AetherMavenResolver");
             MavenResolver mres = (MavenResolver) clazz3.newInstance();
             File fileMarShell = mres.resolveKevoreeArtifact("org.kevoree.tools.marShell", "org.kevoree.tools",KevoreeFactory.getVersion());
 
-            Bundle marshell_bundle = context.installBundle("file:///"+fileMarShell.getAbsolutePath());
-            final Class clazz2 = marshell_bundle.loadClass("org.kevoree.tools.marShell.KevScriptCoreEngine");
+            KevoreeJarClassLoader scriptEngineKCL = new KevoreeJarClassLoader();
+            scriptEngineKCL.add(fileMarShell.getAbsolutePath());
+
+            final Class clazz2 = scriptEngineKCL.loadClass("org.kevoree.tools.marShell.KevScriptCoreEngine");
 
             coreBean.setBootstraper(bhelper);
             coreBean.setConfigService((ConfigurationService) configBean);
             coreBean.start();
             //Kevoree script
-         //   KevScriptInterpreterService kevScriptBean = new KevScriptInterpreterService(coreBean);
-            context.registerService(KevoreeModelHandlerService.class.getName(), coreBean, null);
-         //   context.registerService(ScriptInterpreter.class.getName(), kevScriptBean, null);
-            context.registerService(KevScriptEngineFactory.class.getName(),new KevScriptEngineFactory() {
-                @Override
-                public KevScriptEngine createKevScriptEngine() {
-                    try {
-                        return (KevScriptEngine) clazz2.getDeclaredConstructor(KevoreeModelHandlerService.class).newInstance(coreBean);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                    return null;
-                }
-            },null);
+            coreBean.setKevsEngineFactory(new KevScriptEngineFactory() {
+                            @Override
+                            public KevScriptEngine createKevScriptEngine() {
+                                try {
+                                    return (KevScriptEngine) clazz2.getDeclaredConstructor(KevoreeModelHandlerService.class).newInstance(coreBean);
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+                                return null;
+                            }
+                        });
+
 
 
             /* Boot strap */
@@ -136,8 +131,7 @@ public class BootstrapActivator implements BundleActivator {
 
     }
 
-    @Override
-    public void stop(BundleContext context) throws Exception {
+    public void stop() throws Exception {
         if (!started) {
             return;
         }
