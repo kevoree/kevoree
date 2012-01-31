@@ -29,6 +29,8 @@
         <append>false</append>
     </appender>
 
+    <logger name="com.ning.http.client.providers.jdk.JDKAsyncHttpProvider" level="INFO"/>
+
     <root level="${node.log.level:-DEBUG}">
         <appender-ref ref="CONSOLE"/>
         <appender-ref ref="FILE"/>
