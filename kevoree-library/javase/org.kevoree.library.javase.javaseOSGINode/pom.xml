@@ -20,19 +20,19 @@
             <groupId>org.kevoree.tools</groupId>
             <artifactId>org.kevoree.tools.aether.framework</artifactId>
             <version>${kevoree.version}</version>
-            <type>kjar</type>
+           <!-- <type>kjar</type> -->
         </dependency>
         <dependency>
             <groupId>org.kevoree.library.javase</groupId>
             <artifactId>org.kevoree.library.javase.javaseNode</artifactId>
             <version>${kevoree.version}</version>
-            <type>kjar</type>
+           <!-- <type>kjar</type> -->
         </dependency>
         <dependency>
             <groupId>org.apache.felix</groupId>
             <artifactId>org.apache.felix.framework</artifactId>
             <version>3.2.2</version>
-             <type>kjar</type>
+           <!--  <type>kjar</type> -->
         </dependency>
         <dependency>
             <groupId>org.apache.felix</groupId>

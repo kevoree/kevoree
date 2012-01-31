@@ -70,17 +70,17 @@ class BaseDeployOSGi(bundle: Bundle) {
       case JavaSePrimitive.AddInstance if (JCLHelper.isJCLManaged(p.getRef.asInstanceOf[Instance].getTypeDefinition,nodeName)) => AddInstance(p.getRef.asInstanceOf[Instance],nodeName,modelHandlerService, kscripEngineFactory)
       case JavaSePrimitive.AddInstance => AddInstanceCommand(p.getRef.asInstanceOf[Instance], nodeName,modelHandlerService, kscripEngineFactory)
 
-      case JavaSePrimitive.UpdateDictionaryInstance if (JCLHelper.isJCLManaged(p.getRef.asInstanceOf[Instance].getTypeDefinition,nodeName)) => UpdateDictionary(p.getRef.asInstanceOf[Instance], nodeName)
-      case JavaSePrimitive.UpdateDictionaryInstance => UpdateDictionaryCommand(p.getRef.asInstanceOf[Instance], nodeName)
+      case JavaSePrimitive.UpdateDictionaryInstance /*if (JCLHelper.isJCLManaged(p.getRef.asInstanceOf[Instance].getTypeDefinition,nodeName))*/ => UpdateDictionary(p.getRef.asInstanceOf[Instance], nodeName)
+  //    case JavaSePrimitive.UpdateDictionaryInstance => UpdateDictionary(p.getRef.asInstanceOf[Instance], nodeName)
 
       case JavaSePrimitive.RemoveInstance if (JCLHelper.isJCLManaged(p.getRef.asInstanceOf[Instance].getTypeDefinition,nodeName)) => RemoveInstance(p.getRef.asInstanceOf[Instance], nodeName,modelHandlerService, kscripEngineFactory)
       case JavaSePrimitive.RemoveInstance => RemoveInstanceCommand(p.getRef.asInstanceOf[Instance], nodeName,modelHandlerService, kscripEngineFactory)
 
-      case JavaSePrimitive.StopInstance if (JCLHelper.isJCLManaged(p.getRef.asInstanceOf[Instance].getTypeDefinition,nodeName)) => StartStopInstance(p.getRef.asInstanceOf[Instance], nodeName,false)
-      case JavaSePrimitive.StopInstance => StopInstanceCommand(p.getRef.asInstanceOf[Instance], nodeName)
+      case JavaSePrimitive.StopInstance /*if (JCLHelper.isJCLManaged(p.getRef.asInstanceOf[Instance].getTypeDefinition,nodeName))*/ => StartStopInstance(p.getRef.asInstanceOf[Instance], nodeName,false)
+     // case JavaSePrimitive.StopInstance => StopInstanceCommand(p.getRef.asInstanceOf[Instance], nodeName)
 
-      case JavaSePrimitive.StartInstance if (JCLHelper.isJCLManaged(p.getRef.asInstanceOf[Instance].getTypeDefinition,nodeName)) => StartStopInstance(p.getRef.asInstanceOf[Instance], nodeName,true)
-      case JavaSePrimitive.StartInstance => StartInstanceCommand(p.getRef.asInstanceOf[Instance], nodeName)
+      case JavaSePrimitive.StartInstance /*if (JCLHelper.isJCLManaged(p.getRef.asInstanceOf[Instance].getTypeDefinition,nodeName))*/ => StartStopInstance(p.getRef.asInstanceOf[Instance], nodeName,true)
+   //   case JavaSePrimitive.StartInstance => StartInstanceCommand(p.getRef.asInstanceOf[Instance], nodeName)
 
       case JavaSePrimitive.AddBinding => AddBindingCommand(p.getRef.asInstanceOf[MBinding], nodeName)
       case JavaSePrimitive.RemoveBinding => RemoveBindingCommand(p.getRef.asInstanceOf[MBinding], nodeName)

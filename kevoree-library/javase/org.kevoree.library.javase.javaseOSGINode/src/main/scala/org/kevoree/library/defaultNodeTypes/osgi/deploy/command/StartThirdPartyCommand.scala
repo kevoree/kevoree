@@ -18,6 +18,7 @@ import org.kevoree.framework.PrimitiveCommand
 import org.kevoree.DeployUnit
 import org.slf4j.LoggerFactory
 import org.kevoree.library.defaultNodeTypes.osgi.deploy.OSGIKevoreeDeployManager
+import org.kevoree.framework.context.KevoreeDeployManager
 
 /**
  * User: Erwan Daubert - erwan.daubert@gmail.com
@@ -32,7 +33,7 @@ case class StartThirdPartyCommand (c: DeployUnit, nodeName: String) extends Prim
   var logger = LoggerFactory.getLogger(this.getClass)
 
   def execute (): Boolean = {
-    OSGIKevoreeDeployManager.bundleMapping
+    KevoreeDeployManager.bundleMapping
       .find(map => map.objClassName == c.getClass.getName && map.name == CommandHelper.buildKEY(c)) match {
       case None => false
       case Some(mapfound) => {

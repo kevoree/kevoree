@@ -28,6 +28,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintStream;
 
@@ -77,6 +78,9 @@ public class FelixShell extends JPanel {
                         textArea.append(input.getText() + eol, new Color(87, 145, 198), Color.white, true);
 
                        // shell.executeCommand(input.getText().trim(), STDwriter, ERRwriter);
+
+                        
+                        
                         input.setText("");
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -114,7 +118,19 @@ public class FelixShell extends JPanel {
 
 
     }
+/*
+    private class ShellInputStream extends InputStream {
 
+        private
+
+        public void append()
+
+        @Override
+        public int read() throws IOException {
+            return 0;  //To change body of implemented methods use File | Settings | File Templates.
+        }
+    }*/
+    
 
     private class TextOutputStream extends OutputStream {
         private RichTextArea _textArea = null;
