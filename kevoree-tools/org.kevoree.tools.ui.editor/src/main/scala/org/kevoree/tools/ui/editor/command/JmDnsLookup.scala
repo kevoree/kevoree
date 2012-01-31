@@ -20,8 +20,8 @@ import java.io.File
 import util.Random
 import org.kevoree.framework.{KevoreeXmiHelper, KevoreePlatformHelper}
 import org.kevoree.tools.aether.framework.GroupTypeBootstrapHelper
-import org.kevoree.tools.ui.editor.{EmbeddedOSGiEnv, PositionedEMFHelper, KevoreeUIKernel}
 import org.slf4j.LoggerFactory
+import org.kevoree.tools.ui.editor.{ModelHandlerServiceWrapper, PositionedEMFHelper, KevoreeUIKernel}
 
 /**
  * User: ffouquet
@@ -102,7 +102,7 @@ class JmDnsLookup extends Command {
 
                 val bootHelper = new GroupTypeBootstrapHelper
                 bootHelper.bootstrapGroupType(kernel.getModelHandler.getActualModel, groupName,
-                                               EmbeddedOSGiEnv.getFwk(kernel).getBundleContext) match {
+                                               new ModelHandlerServiceWrapper(kernel)) match {
                   case Some(groupTypeInstance) => {
                     val model = groupTypeInstance.pull(nodeName)
                     kernel.getModelHandler.merge(model)

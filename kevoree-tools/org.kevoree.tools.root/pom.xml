@@ -150,11 +150,11 @@
 
     <modules>
         <module>../org.kevoree.tools.aether.framework</module>
-        <module>../org.kevoree.tools.aether.lite.framework</module>
+      <!--  <module>../org.kevoree.tools.aether.lite.framework</module> -->
 
         <!-- Kevoree specific frameworks -->
         <module>../org.kevoree.tools.javase.framework</module>
-        <module>../org.kevoree.tools.android.framework</module>
+      <!--  <module>../org.kevoree.tools.android.framework</module> -->
 
 
       <!--  <module>../org.kevoree.tools.deploy.osgi</module> DEPRECATED -->
