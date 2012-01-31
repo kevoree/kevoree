@@ -15,6 +15,8 @@ case class AddThirdPartyCommand(ct: DeployUnit) {
   def execute(): Boolean = {
     try {
       val arteFile = AetherUtil.resolveDeployUnit(ct)
+
+      JCLContextHandler.removeDeployUnit(ct) // FORCE SYSTEMATIQUE UPDATE
       JCLContextHandler.installDeployUnit(ct,arteFile)
       /*
       lastBundle = ctx.installBundle("file:"+arteFile.getAbsolutePath, new FileInputStream(arteFile))
