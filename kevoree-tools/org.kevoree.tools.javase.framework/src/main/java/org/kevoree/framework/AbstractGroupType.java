@@ -15,6 +15,7 @@ package org.kevoree.framework;
 
 
 import org.kevoree.ContainerRoot;
+import org.kevoree.Group;
 import org.kevoree.api.service.core.handler.KevoreeModelHandlerService;
 import org.kevoree.api.service.core.script.KevScriptEngineFactory;
 
@@ -22,47 +23,57 @@ import java.util.HashMap;
 
 public abstract class AbstractGroupType {
 
-    public abstract void triggerModelUpdate();
+	public abstract void triggerModelUpdate ();
 
-    public boolean preUpdate(){
-        return true;
-    }
+	public boolean preUpdate () {
+		return true;
+	}
 
 
-    public abstract void push(ContainerRoot model, String targetNodeName);
+	public abstract void push (ContainerRoot model, String targetNodeName);
 
-    public abstract ContainerRoot pull(String targetNodeName);
+	public abstract ContainerRoot pull (String targetNodeName);
 
-    public KevoreeModelHandlerService getModelService() {
-        return null;
-    }
+	public KevoreeModelHandlerService getModelService () {
+		return null;
+	}
 
-    public void setModelService(KevoreeModelHandlerService ms){
+	public void setModelService (KevoreeModelHandlerService ms) {
 
-    }
+	}
 
-    public HashMap<String, Object> getDictionary() {
-        return null;
-    } //OVERRIDE BY FACTORY
+	public HashMap<String, Object> getDictionary () {
+		return null;
+	} //OVERRIDE BY FACTORY
 
-    public String getNodeName() {
-        return null;
-    }
+	public String getNodeName () {
+		return null;
+	}
 
-    public String getName() {
-        return null;
-    }
-    
-    public void setName(String name){}
+	public String getName () {
+		return null;
+	}
 
-    private KevScriptEngineFactory kevScriptEngineFactory = null;
+	public void setName (String name) {
+	}
 
-    public KevScriptEngineFactory getKevScriptEngineFactory() {
-        return kevScriptEngineFactory;
-    }
+	private KevScriptEngineFactory kevScriptEngineFactory = null;
 
-    public void setKevScriptEngineFactory(KevScriptEngineFactory kf) {
-        kevScriptEngineFactory = kf;
-    }
+	public KevScriptEngineFactory getKevScriptEngineFactory () {
+		return kevScriptEngineFactory;
+	}
+
+	public void setKevScriptEngineFactory (KevScriptEngineFactory kf) {
+		kevScriptEngineFactory = kf;
+	}
+
+	/**
+	 * Allow to find the corresponding element into the model
+	 *
+	 * @return the group corresponding to this
+	 */
+	public Group getModelElement () {
+		return KevoreeElementHelper.getGroupElement(this.getName(), this.getModelService().getLastModel()).get();
+	}
 
 }

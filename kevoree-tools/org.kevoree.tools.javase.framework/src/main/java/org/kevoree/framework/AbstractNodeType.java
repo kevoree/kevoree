@@ -13,6 +13,7 @@
  */
 package org.kevoree.framework;
 
+import org.kevoree.ContainerNode;
 import org.kevoree.ContainerRoot;
 import org.kevoree.api.service.core.handler.ContextModel;
 import org.kevoree.api.service.core.handler.KevoreeModelHandlerService;
@@ -24,67 +25,77 @@ import org.kevoreeAdaptation.AdaptationPrimitive;
 import java.util.HashMap;
 
 public abstract class
-        AbstractNodeType implements NodeType {
+		AbstractNodeType implements NodeType {
 
-    private HashMap<String, Object> dictionary = new HashMap<String, Object>();
+	private HashMap<String, Object> dictionary = new HashMap<String, Object>();
 
-    public HashMap<String, Object> getDictionary() {
-        return this.dictionary;
-    }
+	public HashMap<String, Object> getDictionary () {
+		return this.dictionary;
+	}
 
-    public void setDictionary(HashMap<String, Object> dic) {
-        dictionary = dic;
-    }
+	public void setDictionary (HashMap<String, Object> dic) {
+		dictionary = dic;
+	}
 
-    public void startNode() {
-    }
+	public void startNode () {
+	}
 
-    public void stopNode() {
-    }
+	public void stopNode () {
+	}
 
-    public void updateNode() {
-    }
+	public void updateNode () {
+	}
 
-    private KevoreeModelHandlerService modelService;
+	private KevoreeModelHandlerService modelService;
 
-    public void setModelService(KevoreeModelHandlerService ms) {
-        modelService = ms;
-    }
+	public void setModelService (KevoreeModelHandlerService ms) {
+		modelService = ms;
+	}
 
-    public KevoreeModelHandlerService getModelService() {
-        return modelService;
-    }
+	public KevoreeModelHandlerService getModelService () {
+		return modelService;
+	}
 
-    private String nodeName = "";
+	private String nodeName = "";
 
-    public String getNodeName() {
-        return nodeName;
-    }
+	public String getNodeName () {
+		return nodeName;
+	}
 
-    public void setNodeName(String pnodeName) {
-        nodeName = pnodeName;
-    }
+	public void setNodeName (String pnodeName) {
+		nodeName = pnodeName;
+	}
 
 
-    public abstract AdaptationModel kompare(ContainerRoot actualModel, ContainerRoot targetModel);
+	public abstract AdaptationModel kompare (ContainerRoot actualModel, ContainerRoot targetModel);
 
-    public abstract PrimitiveCommand getPrimitive(AdaptationPrimitive primitive);
+	public abstract PrimitiveCommand getPrimitive (AdaptationPrimitive primitive);
 
-    private KevScriptEngineFactory kevScriptEngineFactory = null;
+	private KevScriptEngineFactory kevScriptEngineFactory = null;
 
-    public KevScriptEngineFactory getKevScriptEngineFactory() {
-        return kevScriptEngineFactory;
-    }
+	public KevScriptEngineFactory getKevScriptEngineFactory () {
+		return kevScriptEngineFactory;
+	}
 
-    public void setKevScriptEngineFactory(KevScriptEngineFactory kf) {
-        kevScriptEngineFactory = kf;
-    }
+	public void setKevScriptEngineFactory (KevScriptEngineFactory kf) {
+		kevScriptEngineFactory = kf;
+	}
 
-    private HashMapContextModel contextModel = new HashMapContextModel();
-    @Override
-    public ContextModel getContextModel() {
-        return contextModel;
-    }
+	private HashMapContextModel contextModel = new HashMapContextModel();
+
+	@Override
+	public ContextModel getContextModel () {
+		return contextModel;
+	}
+
+	/**
+	 * Allow to find the corresponding element into the model
+	 *
+	 * @return the node corresponding to this
+	 */
+	public ContainerNode getModelElement () {
+		return KevoreeElementHelper.getNodeElement(this.getNodeName(), this.getModelService().getLastModel()).get();
+	}
 }
 
 
