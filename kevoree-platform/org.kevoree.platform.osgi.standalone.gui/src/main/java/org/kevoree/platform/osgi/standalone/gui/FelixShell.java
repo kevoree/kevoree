@@ -27,10 +27,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.PrintStream;
+import java.io.*;
 
 public class FelixShell extends JPanel {
 
@@ -43,8 +40,20 @@ public class FelixShell extends JPanel {
     private static String eol = System.getProperty("line.separator");
 
     private JScrollPane scrollShell = null;
+        
 
     public FelixShell() {
+        
+        final PipedOutputStream pouts = new PipedOutputStream();
+        try {
+            PipedInputStream pins = new PipedInputStream(pouts);
+            System.setIn(pins);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        
+
+        
         this.setBackground(new Color(57, 57, 57));
         //this.setBackground(Color.BLACK);
 
@@ -79,7 +88,7 @@ public class FelixShell extends JPanel {
 
                        // shell.executeCommand(input.getText().trim(), STDwriter, ERRwriter);
 
-                        
+                        pouts.write( (input.getText().trim()+"\n").getBytes());
                         
                         input.setText("");
                     } catch (Exception e) {
@@ -117,7 +126,12 @@ public class FelixShell extends JPanel {
         System.setErr(ERRwriter);
 
 
+
+
     }
+
+    
+
 /*
     private class ShellInputStream extends InputStream {
 
