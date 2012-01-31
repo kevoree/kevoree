@@ -17,9 +17,9 @@
     <modules>
         <module>./javase/org.kevoree.library.javase.root</module>
         <module>./sky/org.kevoree.library.sky.root</module>
-        <module>./arduino/org.kevoree.library.arduino.root</module>
+       <!-- <module>./arduino/org.kevoree.library.arduino.root</module>
         <module>./android/org.kevoree.library.android.root</module>
-        <module>./model/org.kevoree.library.model.root</module>
+        <module>./model/org.kevoree.library.model.root</module> -->
         <module>./archetypes/org.kevoree.library.archetype.root</module>
     </modules>
 

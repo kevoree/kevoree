@@ -32,12 +32,6 @@
         </dependency>
         <dependency>
             <groupId>org.kevoree.tools</groupId>
-            <artifactId>org.kevoree.tools.deploy.osgi</artifactId>
-            <version>${kevoree.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.kevoree.tools</groupId>
             <artifactId>org.kevoree.tools.marShellTransform</artifactId>
             <version>${kevoree.version}</version>
         </dependency>

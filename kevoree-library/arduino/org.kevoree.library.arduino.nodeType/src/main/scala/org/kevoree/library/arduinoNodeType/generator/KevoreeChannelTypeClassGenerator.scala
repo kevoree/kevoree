@@ -9,7 +9,6 @@ import org.kevoree.ChannelType
 import org.kevoree.ComponentType
 import org.kevoree.MessagePortType
 import org.kevoree.framework.message.Message
-import org.osgi.framework.BundleContext
 import scala.collection.JavaConversions._
 import org.kevoree.annotation.{Generate => KGenerate}
 import org.slf4j.{LoggerFactory, Logger}
@@ -17,9 +16,9 @@ import org.slf4j.{LoggerFactory, Logger}
 trait KevoreeChannelTypeClassGenerator extends KevoreeCAbstractGenerator with KevoreeReflectiveHelper with KevoreeInstanceGenerator {
   private val logger: Logger = LoggerFactory.getLogger(this.getClass)
 
-  def generateChannelType(ct:ChannelType,bundleContext : BundleContext,nodeName:String) = {
+  def generateChannelType(ct:ChannelType,nodeName:String) = {
     
-    val instance = createStandaloneInstance(ct,bundleContext,nodeName)
+    val instance = createStandaloneInstance(ct,nodeName)
     val clazz = instance.getClass
     
     //GENERATE CLASS HEADER
