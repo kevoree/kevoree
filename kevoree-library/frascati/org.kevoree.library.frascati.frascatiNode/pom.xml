@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.kevoree.library.frascati</groupId>
     <artifactId>org.kevoree.library.frascati.frascatiNode</artifactId>
-    <packaging>jar</packaging>
+    <packaging>bundle</packaging>
     <name>Kevoree :: Library :: Frascati :: FrascatiNode</name>
     <version>1.5.1-SNAPSHOT</version>
 
@@ -24,7 +24,7 @@
             <groupId>org.kevoree.library.javase</groupId>
             <artifactId>org.kevoree.library.javase.javaseNode</artifactId>
             <version>${kevoree.version}</version>
-            <type>bundle</type>
+            <type>kjar</type>
         </dependency>
         <dependency>
             <groupId>org.ow2.frascati</groupId>
@@ -60,7 +60,7 @@
                             <goal>copy-dependencies</goal>
                         </goals>
                         <configuration>
-                            <excludeGroupIds>org.kevoree.tools</excludeGroupIds>
+                            <excludeGroupIds>org.codehaus.woodstox,org.codehaus.plexus,org.apache.maven,org.kevoree,org.kevoree.tools,org.scala-lang,org.sonatype.aether,org.slf4j,org.jboss.netty,com.ning,org.kevoree.extra</excludeGroupIds>
                             <outputDirectory>${project.build.directory}/dep/lib</outputDirectory>
                         </configuration>
                     </execution>

@@ -35,7 +35,6 @@ public class FrascatiNode extends JavaSENode {
 	public void startNode() {
 		super.startNode();
 		System.out.println(FraSCAti.class.getClassLoader());
-		
 		System.out.println(FrascatiException.class.getClassLoader());
 		
 		t = new Thread(new Runnable() {
