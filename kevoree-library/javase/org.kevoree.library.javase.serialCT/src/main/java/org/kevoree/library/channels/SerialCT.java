@@ -1,19 +1,15 @@
 package org.kevoree.library.channels;
 
-import org.kevoree.ContainerNode;
-import org.kevoree.DictionaryValue;
 import org.kevoree.annotation.*;
-import org.kevoree.api.service.core.handler.KevoreeModelHandlerService;
 import org.kevoree.extra.osgi.rxtx.KevoreeSharedCom;
 import org.kevoree.framework.AbstractChannelFragment;
 import org.kevoree.framework.ChannelFragmentSender;
 import org.kevoree.framework.KevoreeChannelFragment;
-import org.kevoree.framework.KevoreeFragmentPropertyHelper;
+import org.kevoree.framework.KevoreePropertyHelper;
 import org.kevoree.framework.message.Message;
-import org.osgi.framework.Bundle;
-import org.osgi.framework.ServiceReference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import scala.Option;
 
 import java.util.HashMap;
 
@@ -23,97 +19,100 @@ import java.util.HashMap;
  */
 @Library(name = "JavaSE")
 @DictionaryType({
-        @DictionaryAttribute(name = "serialport", fragmentDependant = true)
+		@DictionaryAttribute(name = "serialport", fragmentDependant = true)
 })
 @ChannelTypeFragment
 public class SerialCT extends AbstractChannelFragment {
 	private static final Logger logger = LoggerFactory.getLogger(SerialCT.class);
 
-    KContentListener cl = new KContentListener(this);
-    protected ServiceReference sr;
-    protected KevoreeModelHandlerService modelHandlerService = null;
+	KContentListener cl = new KContentListener(this);
+//    protected ServiceReference sr;
+//    protected KevoreeModelHandlerService modelHandlerService = null;
 
-    protected HashMap<String, String> nodePortCache = new HashMap<String, String>();
+	protected HashMap<String, String> nodePortCache = new HashMap<String, String>();
 
-    protected String getPortFromNode(String remoteNodeName) {
-        if (!nodePortCache.containsKey(remoteNodeName)) {
-            String remotePort = KevoreeFragmentPropertyHelper.getPropertyFromFragmentChannel(modelHandlerService.getLastModel(), this.getName(), "serialport", remoteNodeName);
-            nodePortCache.put(remoteNodeName, remotePort);
-        }
-        logger.warn(this.getName()+":SerailCT on node "+this.getNodeName()+" using port "+nodePortCache.get(remoteNodeName));
-        return nodePortCache.get(remoteNodeName);
-    }
+	protected String getPortFromNode (String remoteNodeName) {
+		if (!nodePortCache.containsKey(remoteNodeName)) {
+			String remotePort = "/dev/tty_unknown";
+			Option<String> remotePortOption = KevoreePropertyHelper.getStringPropertyForChannel(this.getModelService().getLastModel(), this.getName(), "serialport", true, remoteNodeName);
+			if (remotePortOption.isDefined()) {
+				nodePortCache.put(remoteNodeName, remotePort);
+				logger.warn(this.getName() + ":SerailCT on node " + this.getNodeName() + " using port " + nodePortCache.get(remoteNodeName));
+			} else {
+				logger.error("unable to find the given dictionary attribute \"serialport\"!");
+			}
+		}
+		return nodePortCache.get(remoteNodeName);
+	}
 
-    @Start
-    public void startRxTxChannel() {
-        Bundle bundle = (Bundle) this.getDictionary().get("osgi.bundle");
-        sr = bundle.getBundleContext().getServiceReference(KevoreeModelHandlerService.class.getName());
-        modelHandlerService = (KevoreeModelHandlerService) bundle.getBundleContext().getService(sr);
-        new Thread() {
-            @Override
-            public void run() {
-                try {
-                    Thread.sleep(3000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-                }
-                for (KevoreeChannelFragment cf : getOtherFragments()) {
-                    String port = getPortFromNode(cf.getNodeName());
-                    if (port != null && port != "") {
-                        KevoreeSharedCom.addObserver(port, cl);
-                    } else {
-                        logger.error("Com Port Not Found ");
-                    }
-                }
-            }
-        }.start();
-    }
+	@Start
+	public void startRxTxChannel () {
 
-    @Update
-    public void updateRxTxChannel() {
-        stopRxTxChannel();
-        startRxTxChannel();
-    }
+		new Thread() {
+			@Override
+			public void run () {
+				try {
+					Thread.sleep(3000);
+				} catch (InterruptedException e) {
+					e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+				}
+				for (KevoreeChannelFragment cf : getOtherFragments()) {
+					String port = getPortFromNode(cf.getNodeName());
+					if (port != null && !port.equals("")) {
+						KevoreeSharedCom.addObserver(port, cl);
+					} else {
+						logger.error("Com Port Not Found ");
+					}
+				}
+			}
+		}.start();
+	}
 
-    @Stop
-    public void stopRxTxChannel() {
-        for (String port : nodePortCache.values()) {
-            KevoreeSharedCom.removeObserver(port, cl);
-        }
-        nodePortCache.clear();
-    }
+	@Update
+	public void updateRxTxChannel () {
+		stopRxTxChannel();
+		startRxTxChannel();
+	}
 
-    @Override
-    public Object dispatch(Message msg) {
+	@Stop
+	public void stopRxTxChannel () {
+		for (String port : nodePortCache.values()) {
+			KevoreeSharedCom.removeObserver(port, cl);
+		}
+		nodePortCache.clear();
+	}
 
-        for (org.kevoree.framework.KevoreePort p : getBindedPorts()) {
-            forward(p, msg);
-        }
-        for (KevoreeChannelFragment cf : getOtherFragments()) {
-            if (msg.getPassedNodes().isEmpty()) {
-                forward(cf, msg);
-            }
-        }
-        return null;
-    }
+	@Override
+	public Object dispatch (Message msg) {
 
-    @Override
-    public ChannelFragmentSender createSender(final String remoteNodeName, final String remoteChannelName) {
-        return new ChannelFragmentSender() {
+		for (org.kevoree.framework.KevoreePort p : getBindedPorts()) {
+			forward(p, msg);
+		}
+		for (KevoreeChannelFragment cf : getOtherFragments()) {
+			if (msg.getPassedNodes().isEmpty()) {
+				forward(cf, msg);
+			}
+		}
+		return null;
+	}
 
-            @Override
-            public Object sendMessageToRemote(Message message) {
-                String messageTosSend = "#"+getName() + /*":" + getNodeName() +*/ "[" + message.getContent().toString() + "]";
+	@Override
+	public ChannelFragmentSender createSender (final String remoteNodeName, final String remoteChannelName) {
+		return new ChannelFragmentSender() {
 
-                logger.debug("Send Message");
-                logger.debug(getPortFromNode(remoteNodeName));
-                logger.debug(messageTosSend);
+			@Override
+			public Object sendMessageToRemote (Message message) {
+				String messageTosSend = "#" + getName() + /*":" + getNodeName() +*/ "[" + message.getContent().toString() + "]";
 
-                KevoreeSharedCom.send(getPortFromNode(remoteNodeName), messageTosSend);
-                return null;
-            }
-        };
-    }
+				logger.debug("Send Message");
+				logger.debug(getPortFromNode(remoteNodeName));
+				logger.debug(messageTosSend);
+
+				KevoreeSharedCom.send(getPortFromNode(remoteNodeName), messageTosSend);
+				return null;
+			}
+		};
+	}
 
 
 }

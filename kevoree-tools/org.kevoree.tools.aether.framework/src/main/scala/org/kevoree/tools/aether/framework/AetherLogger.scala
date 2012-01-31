@@ -26,16 +26,16 @@ class AetherLogger extends Logger {
   val logger = LoggerFactory.getLogger(this.getClass)
 
   def debug(p1: String) {
-    logger.debug(p1)
+//    logger.debug(p1)
   }
 
   def debug(p1: String, p2: Throwable) {
-    logger.debug(p1,p2)
+//    logger.debug(p1,p2)
   }
 
-  def isDebugEnabled = true
+  def isDebugEnabled = false
 
-  def isWarnEnabled = true
+  def isWarnEnabled = logger.isWarnEnabled
 
   def warn(p1: String) {
     logger.warn(p1)
