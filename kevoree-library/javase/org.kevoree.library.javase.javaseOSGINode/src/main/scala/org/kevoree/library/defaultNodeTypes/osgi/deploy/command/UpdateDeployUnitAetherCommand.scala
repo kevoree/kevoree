@@ -23,7 +23,4 @@ import org.kevoree._
 case class UpdateDeployUnitAetherCommand(ddeployUnit: DeployUnit) extends AddDeployUnitAetherCommand(ddeployUnit,true) {
 
 
-
-
-
 }

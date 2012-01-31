@@ -11,27 +11,33 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kevoree.platform.osgi.standalone.gui;
+package org.kevoree.library.defaultNodeTypes.osgi.deploy.runtime.shell;
 
-import org.kevoree.platform.osgi.standalone.ConstantsHandler;
+import org.apache.felix.shell.impl.ShutdownCommandImpl;
+import org.osgi.framework.BundleContext;
+
+import java.io.PrintStream;
 
 /**
  * Created by IntelliJ IDEA.
- * User: gnain
- * Date: 11/10/11
- * Time: 18:20
+ * User: duke
+ * Date: 27/09/11
+ * Time: 19:59
  * To change this template use File | Settings | File Templates.
  */
-public abstract class GuiConstantsHandler extends ConstantsHandler {
+public class ShutdownCommandOverride extends ShutdownCommandImpl {
 
-    private static GuiConstantValues constantValuesProvider;
-
-    public static GuiConstantValues getGuiConstantValuesProvider() {
-        return constantValuesProvider;
+    public ShutdownCommandOverride(BundleContext context) {
+        super(context);
     }
+    public void execute(String s, PrintStream out, PrintStream err)
+	    {
+            new Thread(){
+                @Override
+                public void run(){
+                  Runtime.getRuntime().exit(0);
+                }
+            }.start();
+	    }
 
-    public static void setGuiConstantValuesProvider(GuiConstantValues constantValuesProvider) {
-        ConstantsHandler.setConstantValuesProvider(constantValuesProvider);
-        GuiConstantsHandler.constantValuesProvider = constantValuesProvider;
-    }
 }

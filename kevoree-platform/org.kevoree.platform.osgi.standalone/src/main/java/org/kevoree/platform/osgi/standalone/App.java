@@ -13,32 +13,47 @@
  */
 package org.kevoree.platform.osgi.standalone;
 
+import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class App {
 
-    public void start() {
+    private static final Logger logger = LoggerFactory.getLogger(App.class);
+
+
+    public void start() throws Exception {
         ch.qos.logback.classic.Logger root = (ch.qos.logback.classic.Logger) LoggerFactory.getLogger(ch.qos.logback.classic.Logger.ROOT_LOGGER_NAME);
-        if(System.getProperty("node.log.appender.file") != null){
-            System.out.println("Kevoree log will out in file => "+System.getProperty("node.log.appender.file"));
+        if (System.getProperty("node.log.appender.file") != null) {
+            System.out.println("Kevoree log will out in file => " + System.getProperty("node.log.appender.file"));
         } else {
             root.detachAppender("FILE");
         }
-        EmbeddedFelix felix = new EmbeddedFelix();
-        felix.run();
-        try {
-            felix.getM_fwk().waitForStop(0);
-        } catch (InterruptedException ex) {
-            Logger.getLogger(App.class.getName()).log(Level.SEVERE, null, ex);
+
+        String node_name = System.getProperty("node.name");
+        if (node_name == null || node_name.equals("")) {
+            node_name = "node0";
+            System.setProperty("node.name", node_name);
         }
-        System.exit(0);
+
+
+        final KevoreeBootStrap kb = new KevoreeBootStrap();
+
+
+        Runtime.getRuntime().addShutdownHook(new Thread("Shutdown Hook") {
+
+            public void run() {
+                try {
+                    kb.stop();
+                } catch (Exception ex) {
+                    logger.warn("Error stopping framework: ", ex);
+                }
+            }
+        });
+
+        kb.start();
     }
 
-    public static void main(String[] args) {
-        ConstantsHandler.setConstantValuesProvider(new ConstantValuesImpl());
+    public static void main(String[] args) throws Exception {
         App app = new App();
         app.start();
     }

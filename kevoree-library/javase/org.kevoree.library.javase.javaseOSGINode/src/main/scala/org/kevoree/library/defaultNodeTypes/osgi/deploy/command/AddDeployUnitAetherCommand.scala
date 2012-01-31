@@ -19,13 +19,13 @@ package org.kevoree.library.defaultNodeTypes.osgi.deploy.command
  */
 
 import org.kevoree._
-import framework.context.{KevoreeOSGiBundle, KevoreeDeployManager}
+import framework.context.{KevoreeOSGiBundle}
 import framework.{FileNIOHelper, PrimitiveCommand}
+import library.defaultNodeTypes.osgi.deploy.OSGIKevoreeDeployManager
 import org.kevoree.DeployUnit
 import org.osgi.service.packageadmin.PackageAdmin
 import org.slf4j.LoggerFactory
 import org.osgi.framework.BundleException
-import org.kevoree.tools.aether.framework.AetherUtil
 import java.io.{File, FileInputStream}
 import java.util.Random
 
@@ -41,19 +41,18 @@ case class AddDeployUnitAetherCommand (deployUnit: DeployUnit, update: Boolean =
   def execute (): Boolean = {
     logger.debug("CMD ADD DEPLOY UNIT EXECUTION ");
     try {
-      val arteFile: File = AetherUtil.resolveDeployUnit(deployUnit)
+      val arteFile: File = org.kevoree.tools.aether.framework.AetherUtil.resolveDeployUnit(deployUnit)
       logger.debug("Try to install from URL, " + arteFile.getAbsolutePath + " on - " +
-        KevoreeDeployManager.getBundleContext)
-      val previousBundleID = KevoreeDeployManager.getBundleContext.getBundles.map(b => b.getBundleId)
-      lastExecutionBundle = Some(KevoreeDeployManager.getBundleContext
+        OSGIKevoreeDeployManager.getBundleContext)
+      val previousBundleID = OSGIKevoreeDeployManager.getBundleContext.getBundles.map(b => b.getBundleId)
+      lastExecutionBundle = Some(OSGIKevoreeDeployManager.getBundleContext
         .installBundle("file:///" + arteFile.getAbsolutePath, new FileInputStream(arteFile)));
 
       if (update && previousBundleID.contains(lastExecutionBundle.get.getBundleId)) {
         //BACKUP FILE
         val destFile = File.createTempFile(random.nextInt() + "", ".jar")
 
-        val jarFile = FileNIOHelper
-          .resolveBundleJar(lastExecutionBundle.get, new File(System.getProperty("osgi.cache")));
+        val jarFile = FileNIOHelper.resolveBundleJar(lastExecutionBundle.get.getBundleId, new File(System.getProperty("osgi.cache")));
         if (jarFile != null) {
           logger.debug("Saving cache file for bundle id {} with url {}", lastExecutionBundle.get.getBundleId,
                         jarFile.getAbsoluteFile);
@@ -73,8 +72,7 @@ case class AddDeployUnitAetherCommand (deployUnit: DeployUnit, update: Boolean =
       if (!previousBundleID.contains(lastExecutionBundle.get.getBundleId)) {
         val symbolicName: String = lastExecutionBundle.get.getSymbolicName
         //FOR DEPLOY UNIT DO NOT USE ONLY NAME
-        KevoreeDeployManager
-          .addMapping(KevoreeOSGiBundle(CommandHelper.buildKEY(deployUnit), deployUnit.getClass.getName,
+        OSGIKevoreeDeployManager.addMapping(KevoreeOSGiBundle(CommandHelper.buildKEY(deployUnit), deployUnit.getClass.getName,
                                          lastExecutionBundle.get.getBundleId))
         lastExecutionBundle.get.start()
         //  mustBeStarted = true
@@ -90,7 +88,7 @@ case class AddDeployUnitAetherCommand (deployUnit: DeployUnit, update: Boolean =
           .find(typeDef => typeDef.getDeployUnits.contains(deployUnit))
         optTypeDef match {
           case Some(typDef) => {
-            lastExecutionBundle = KevoreeDeployManager.getBundleContext.getBundles.find {
+            lastExecutionBundle = OSGIKevoreeDeployManager.getBundleContext.getBundles.find {
               bundle =>
                 try {
                   bundle.loadClass(typDef.getBean)
@@ -101,9 +99,7 @@ case class AddDeployUnitAetherCommand (deployUnit: DeployUnit, update: Boolean =
             }
             lastExecutionBundle match {
               case Some(bundle) => {
-                KevoreeDeployManager
-                  .addMapping(KevoreeOSGiBundle(CommandHelper.buildKEY(deployUnit), deployUnit.getClass.getName,
-                                                 bundle.getBundleId))
+                OSGIKevoreeDeployManager.addMapping(KevoreeOSGiBundle(CommandHelper.buildKEY(deployUnit), deployUnit.getClass.getName,bundle.getBundleId))
                 //mustBeStarted = false
                 true
               }
@@ -146,14 +142,14 @@ case class AddDeployUnitAetherCommand (deployUnit: DeployUnit, update: Boolean =
           } else {
             bundle.stop()
             bundle.uninstall()
-            (KevoreeDeployManager.bundleMapping.filter(map => map.bundleId == bundle.getBundleId).toList ++ List())
+            (OSGIKevoreeDeployManager.bundleMapping.filter(map => map.bundleId == bundle.getBundleId).toList ++ List())
               .foreach {
               map =>
-                KevoreeDeployManager.removeMapping(map) // = ctx.bundleMapping.filter(mb => mb != map)
+                OSGIKevoreeDeployManager.removeMapping(map) // = ctx.bundleMapping.filter(mb => mb != map)
             }
           }
-          val srPackageAdmin = KevoreeDeployManager.getBundleContext.getServiceReference(classOf[PackageAdmin].getName)
-          val padmin: PackageAdmin = KevoreeDeployManager.getBundleContext.getService(srPackageAdmin)
+          val srPackageAdmin = OSGIKevoreeDeployManager.getBundleContext.getServiceReference(classOf[PackageAdmin].getName)
+          val padmin: PackageAdmin = OSGIKevoreeDeployManager.getBundleContext.getService(srPackageAdmin)
             .asInstanceOf[PackageAdmin]
           padmin.resolveBundles(Array(bundle))
         }

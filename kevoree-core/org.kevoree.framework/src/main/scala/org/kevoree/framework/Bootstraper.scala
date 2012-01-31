@@ -15,6 +15,7 @@ package org.kevoree.framework
 
 import org.kevoree.ContainerRoot
 import org.kevoree.api.service.core.handler.KevoreeModelHandlerService
+import org.kevoree.api.service.core.script.KevScriptEngineFactory
 
 /**
  * Created by IntelliJ IDEA.
@@ -26,6 +27,6 @@ import org.kevoree.api.service.core.handler.KevoreeModelHandlerService
 
 trait Bootstraper {
 
-  def bootstrapNodeType(currentModel : ContainerRoot, nodeName : String,mservice: KevoreeModelHandlerService) : Option[org.kevoree.framework.NodeType]
+  def bootstrapNodeType(currentModel : ContainerRoot, nodeName : String,mservice: KevoreeModelHandlerService,kevsEngineFactory : KevScriptEngineFactory) : Option[org.kevoree.framework.NodeType]
 
 }

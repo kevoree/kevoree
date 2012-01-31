@@ -11,7 +11,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kevoree.platform.osgi.standalone.shell;
+package org.kevoree.library.defaultNodeTypes.osgi.deploy.runtime.shell;
 
 import org.apache.felix.shell.Command;
 import org.apache.felix.shell.impl.*;
@@ -70,7 +70,7 @@ public class ShellActivator implements BundleActivator
         {
             m_context.addServiceListener(sl,
                 "(|(objectClass="
-                + org.apache.felix.shell.Command.class.getName()
+                + Command.class.getName()
                 + ")(objectClass="
                 + org.ungoverned.osgi.service.shell.Command.class.getName()
                 + "))");
@@ -87,99 +87,99 @@ public class ShellActivator implements BundleActivator
 
         // Register "bundlelevel" command service.
         context.registerService(
-            org.apache.felix.shell.Command.class.getName(),
+            Command.class.getName(),
             new BundleLevelCommandImpl(m_context), null);
 
         // Register "cd" command service.
         classes = new String[2];
-        classes[0] = org.apache.felix.shell.Command.class.getName();
+        classes[0] = Command.class.getName();
         classes[1] = org.apache.felix.shell.CdCommand.class.getName();
         context.registerService(
             classes, new CdCommandImpl(m_context), null);
 
         // Register "find" command service.
         context.registerService(
-            org.apache.felix.shell.Command.class.getName(),
+            Command.class.getName(),
             new FindCommandImpl(m_context), null);
 
         // Register "headers" command service.
         context.registerService(
-            org.apache.felix.shell.Command.class.getName(),
+            Command.class.getName(),
             new HeadersCommandImpl(m_context), null);
 
         // Register "help" command service.
         context.registerService(
-            org.apache.felix.shell.Command.class.getName(),
+            Command.class.getName(),
             new HelpCommandImpl(m_context), null);
 
         // Register "inspect" command service.
         context.registerService(
-            org.apache.felix.shell.Command.class.getName(),
+            Command.class.getName(),
             new InspectCommandImpl(m_context), null);
 
         // Register "install" command service.
         context.registerService(
-            org.apache.felix.shell.Command.class.getName(),
+            Command.class.getName(),
             new InstallCommandImpl(m_context), null);
 
         // Register "log" command service.
         context.registerService(
-            org.apache.felix.shell.Command.class.getName(),
+            Command.class.getName(),
             new LogCommandImpl(m_context), null);
 
         // Register "ps" command service.
         context.registerService(
-            org.apache.felix.shell.Command.class.getName(),
+            Command.class.getName(),
             new PsCommandImpl(m_context), null);
 
         // Register "refresh" command service.
         context.registerService(
-            org.apache.felix.shell.Command.class.getName(),
+            Command.class.getName(),
             new RefreshCommandImpl(m_context), null);
 
         // Register "resolve" command service.
         context.registerService(
-            org.apache.felix.shell.Command.class.getName(),
+            Command.class.getName(),
             new ResolveCommandImpl(m_context), null);
 
         // Register "startlevel" command service.
         context.registerService(
-            org.apache.felix.shell.Command.class.getName(),
+            Command.class.getName(),
             new StartLevelCommandImpl(m_context), null);
 
         // Register "shutdown" command service.
         context.registerService(
-            org.apache.felix.shell.Command.class.getName(),
+            Command.class.getName(),
             new ShutdownCommandOverride(m_context), null);
 
         // Register "start" command service.
         context.registerService(
-            org.apache.felix.shell.Command.class.getName(),
+            Command.class.getName(),
             new StartCommandImpl(m_context), null);
 
         // Register "stop" command service.
         context.registerService(
-            org.apache.felix.shell.Command.class.getName(),
+            Command.class.getName(),
             new StopCommandImpl(m_context), null);
 
         // Register "sysprop" command service.
         context.registerService(
-            org.apache.felix.shell.Command.class.getName(),
+            Command.class.getName(),
             new SystemPropertiesCommandImpl(), null);
 
         // Register "uninstall" command service.
         context.registerService(
-            org.apache.felix.shell.Command.class.getName(),
+            Command.class.getName(),
             new UninstallCommandImpl(m_context), null);
 
         // Register "update" command service.
         context.registerService(
-            org.apache.felix.shell.Command.class.getName(),
+            Command.class.getName(),
             new UpdateCommandImpl(m_context), null);
 
         // Register "version" command service.
         context.registerService(
-            org.apache.felix.shell.Command.class.getName(),
+            Command.class.getName(),
             new VersionCommandImpl(m_context), null);
     }
 
@@ -195,7 +195,7 @@ public class ShellActivator implements BundleActivator
             try
             {
                 ServiceReference[] refs = m_context.getServiceReferences(
-                    org.apache.felix.shell.Command.class.getName(), null);
+                    Command.class.getName(), null);
                 if (refs != null)
                 {
                     for (int i = 0; i < refs.length; i++)

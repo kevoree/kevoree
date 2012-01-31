@@ -19,8 +19,8 @@ package org.kevoree.library.defaultNodeTypes.osgi.deploy.command
  */
 
 import org.kevoree._
-import framework.context.KevoreeDeployManager
 import framework.{PrimitiveCommand, Constants, KevoreeActor}
+import library.defaultNodeTypes.osgi.deploy.OSGIKevoreeDeployManager
 import org.kevoree.framework.message.UpdateDictionaryMessage
 import org.slf4j.LoggerFactory
 import java.util.HashMap
@@ -61,10 +61,10 @@ case class UpdateDictionaryCommand(c: Instance, nodeName: String) extends Primit
       }
     }
 
-    KevoreeDeployManager.bundleMapping.find(map => map.objClassName == c.getClass.getName && map.name == c.getName) match {
+    OSGIKevoreeDeployManager.bundleMapping.find(map => map.objClassName == c.getClass.getName && map.name == c.getName) match {
       case None => false
       case Some(mapfound) => {
-        val componentBundle = KevoreeDeployManager.getBundleContext.getBundle(mapfound.bundleId)
+        val componentBundle = OSGIKevoreeDeployManager.getBundleContext.getBundle(mapfound.bundleId)
         if (componentBundle.getRegisteredServices != null) {
           componentBundle.getRegisteredServices.find({
             sr => sr.getProperty(Constants.KEVOREE_NODE_NAME) == nodeName && sr.getProperty(Constants.KEVOREE_INSTANCE_NAME) == c.getName
@@ -89,10 +89,10 @@ case class UpdateDictionaryCommand(c: Instance, nodeName: String) extends Primit
   }
 
   def undo() {
-    KevoreeDeployManager.bundleMapping.find(map => map.objClassName == c.getClass.getName && map.name == c.getName) match {
+    OSGIKevoreeDeployManager.bundleMapping.find(map => map.objClassName == c.getClass.getName && map.name == c.getName) match {
       case None => false
       case Some(mapfound) => {
-        val componentBundle = KevoreeDeployManager.getBundleContext.getBundle(mapfound.bundleId)
+        val componentBundle = OSGIKevoreeDeployManager.getBundleContext.getBundle(mapfound.bundleId)
         if (componentBundle.getRegisteredServices != null) {
           componentBundle.getRegisteredServices.find({
             sr => sr.getProperty(Constants.KEVOREE_NODE_NAME) == nodeName && sr.getProperty(Constants.KEVOREE_INSTANCE_NAME) == c.getName

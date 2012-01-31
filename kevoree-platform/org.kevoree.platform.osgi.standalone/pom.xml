@@ -43,48 +43,6 @@
             <artifactId>org.kevoree.merger</artifactId>
             <version>${kevoree.version}</version>
         </dependency>
-
-        <dependency>
-            <groupId>org.apache.felix</groupId>
-            <artifactId>org.apache.felix.framework</artifactId>
-            <version>3.2.2</version>
-        </dependency>
-        <dependency>
-            <groupId>org.osgi</groupId>
-            <artifactId>org.osgi.core</artifactId>
-            <version>4.2.0</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.felix</groupId>
-            <artifactId>org.apache.felix.shell</artifactId>
-            <version>1.4.2</version>
-            <exclusions>
-                <exclusion>
-                    <artifactId>org.osgi.core</artifactId>
-                    <groupId>org.osgi</groupId>
-                </exclusion>
-                <exclusion>
-                    <artifactId>org.osgi.framework</artifactId>
-                    <groupId>org.osgi</groupId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.felix</groupId>
-            <artifactId>org.apache.felix.shell.tui</artifactId>
-            <version>1.4.1</version>
-            <exclusions>
-                <exclusion>
-                    <artifactId>org.osgi.core</artifactId>
-                    <groupId>org.osgi</groupId>
-                </exclusion>
-                <exclusion>
-                    <artifactId>org.osgi.framework</artifactId>
-                    <groupId>org.osgi</groupId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>log4j-over-slf4j</artifactId>
@@ -180,24 +138,6 @@
                     </jvmArgs>
                 </configuration>
             </plugin>
-            <plugin>
-                <groupId>org.kevoree.extra</groupId>
-                <artifactId>org.kevoree.extra.osgi.sysgen</artifactId>
-                <version>1.0</version>
-                <extensions>true</extensions>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>generate</goal>
-                        </goals>
-                        <configuration>
-                            <filters>
-                                scala,org.ops4j,org.slf4j,org.kevoree,org.kevoree.tools,org.apache,org.apache.http
-                            </filters>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
 
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -214,8 +154,6 @@
                                 <filter>
                                     <includes>
                                         <include>org.slf4j:*</include>
-                                        <include>org.osgi:*</include>
-                                        <include>org.apache.felix:*</include>
                                         <include>ch.qos.logback:*</include>
                                         <include>org.kevoree</include>
                                         <include>org.kevoree.tools:org.kevoree.tools.annotation.api</include>

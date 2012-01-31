@@ -14,10 +14,10 @@ package org.kevoree.library.defaultNodeTypes.osgi.deploy.command
  * limitations under the License.
  */
 
-import org.kevoree.framework.context.KevoreeDeployManager
 import org.kevoree.framework.PrimitiveCommand
 import org.kevoree.DeployUnit
 import org.slf4j.LoggerFactory
+import org.kevoree.library.defaultNodeTypes.osgi.deploy.OSGIKevoreeDeployManager
 
 /**
  * User: Erwan Daubert - erwan.daubert@gmail.com
@@ -32,14 +32,12 @@ case class StartThirdPartyCommand (c: DeployUnit, nodeName: String) extends Prim
   var logger = LoggerFactory.getLogger(this.getClass)
 
   def execute (): Boolean = {
-    KevoreeDeployManager.bundleMapping
+    OSGIKevoreeDeployManager.bundleMapping
       .find(map => map.objClassName == c.getClass.getName && map.name == CommandHelper.buildKEY(c)) match {
       case None => false
       case Some(mapfound) => {
         try {
-
-          KevoreeDeployManager.getBundleContext.getBundle(mapfound.bundleId).start()
-
+          OSGIKevoreeDeployManager.getBundleContext.getBundle(mapfound.bundleId).start()
           true
         } catch {
           case _@e => logger.debug("Unable to initialiaze a ThirdParty: {}", c.getName, e); false

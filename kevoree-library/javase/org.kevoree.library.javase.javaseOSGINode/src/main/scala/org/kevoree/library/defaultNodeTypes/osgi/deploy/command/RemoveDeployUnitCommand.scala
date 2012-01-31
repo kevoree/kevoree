@@ -21,31 +21,31 @@ package org.kevoree.library.defaultNodeTypes.osgi.deploy.command
 import org.slf4j.LoggerFactory
 import org.kevoree.DeployUnit
 import org.kevoree.framework.PrimitiveCommand
-import org.kevoree.framework.context.KevoreeDeployManager
+import org.kevoree.library.defaultNodeTypes.osgi.deploy.OSGIKevoreeDeployManager
 
 case class RemoveDeployUnitCommand(deployUnit : DeployUnit) extends PrimitiveCommand {
 
   var logger = LoggerFactory.getLogger(this.getClass)
 
   def execute() : Boolean= {
-    KevoreeDeployManager.bundleMapping.find({bundleMapping =>bundleMapping.name==CommandHelper.buildKEY(deployUnit) && bundleMapping.objClassName==deployUnit.getClass.getName}) match {
+    OSGIKevoreeDeployManager.bundleMapping.find({bundleMapping =>bundleMapping.name==CommandHelper.buildKEY(deployUnit) && bundleMapping.objClassName==deployUnit.getClass.getName}) match {
       case Some(bundleMappingFound)=> {
 
 
-        KevoreeDeployManager.bundleMapping.foreach{ map =>
+        OSGIKevoreeDeployManager.bundleMapping.foreach{ map =>
               logger.debug("map => "+map.name+"-"+map.objClassName+"-"+map.bundleId)
           }
 
        //   val osgibundleContext = bundleMappingFound.bundle.getBundleContext
-          val bundle = KevoreeDeployManager.getBundleContext.getBundle(bundleMappingFound.bundleId)
+          val bundle = OSGIKevoreeDeployManager.getBundleContext.getBundle(bundleMappingFound.bundleId)
 
           bundle.uninstall()
           logger.debug("Deploy Unit Bundle remove , try to refresh package")
 
-        KevoreeDeployManager.getServicePackageAdmin.refreshPackages(Array(bundle))
+        //OSGIKevoreeDeployManager.getServicePackageAdmin.refreshPackages(Array(bundle))
 
           //REMOVE BUNDLE MAPPING
-        KevoreeDeployManager.removeMapping(bundleMappingFound)
+        OSGIKevoreeDeployManager.removeMapping(bundleMappingFound)
           true
         }
       case None => logger.error("Type Bundle not found & Or Error while uninstall !!! ");false

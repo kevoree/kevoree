@@ -32,6 +32,7 @@ import _root_.org.kevoree.cloner.ModelCloner
 import _root_.org.kevoree.core.basechecker.RootChecker
 import _root_.java.util.{UUID, Date}
 import org.kevoree.api.service.core.handler._
+import org.kevoree.api.service.core.script.KevScriptEngineFactory
 
 class KevoreeCoreBean extends KevoreeModelHandlerService with KevoreeThreadActor {
 
@@ -39,6 +40,11 @@ class KevoreeCoreBean extends KevoreeModelHandlerService with KevoreeThreadActor
   listenerActor.start()
 
   @BeanProperty var configService: ConfigurationService = null
+  var kevsEngineFactory : KevScriptEngineFactory = null
+
+  def setKevsEngineFactory(k : KevScriptEngineFactory){
+    kevsEngineFactory = kevsEngineFactory
+  }
 
   /*
   var bundleContext: BundleContext = null;
@@ -69,7 +75,7 @@ class KevoreeCoreBean extends KevoreeModelHandlerService with KevoreeThreadActor
         currentModel.getNodes.find(n => n.getName == nodeName) match {
           case Some(foundNode) => {
             //  val bt = new NodeTypeBootstrapHelper
-            bootstraper.bootstrapNodeType(currentModel, nodeName,this) match {
+            bootstraper.bootstrapNodeType(currentModel, nodeName,this,kevsEngineFactory) match {
               case Some(ist: org.kevoree.framework.NodeType) => {
                 nodeInstance = ist;
                 nodeInstance.startNode()
@@ -102,7 +108,7 @@ class KevoreeCoreBean extends KevoreeModelHandlerService with KevoreeThreadActor
       if (nodeInstance != null) {
         currentModel.getNodes.find(n => n.getName == nodeName) match {
           case Some(foundNode) => {
-            bootstraper.bootstrapNodeType(currentModel, nodeName,this) match {
+            bootstraper.bootstrapNodeType(currentModel, nodeName,this,kevsEngineFactory) match {
               case Some(ist: org.kevoree.framework.NodeType) => {
 
                 val modelTmp = modelClone.clone(currentModel)

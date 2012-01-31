@@ -16,9 +16,9 @@
  * and open the template in the editor.
  */
 
-package org.kevoree.platform.osgi.standalone;
+package org.kevoree.library.defaultNodeTypes.osgi.deploy.runtime;
 
-import org.kevoree.platform.osgi.standalone.shell.ShellActivator;
+import org.kevoree.library.defaultNodeTypes.osgi.deploy.runtime.shell.ShellActivator;
 import org.osgi.framework.BundleActivator;
 
 import java.util.Arrays;
@@ -29,19 +29,10 @@ import java.util.List;
  */
 public class EmbeddedActivators {
 
-    public static BundleActivator getBootstrapActivator() {
-        return bta;
-    }
-
-    static BundleActivator bta =  new org.kevoree.platform.osgi.standalone.BootstrapActivator();
-
     static BundleActivator shellA = new ShellActivator();
-
     private static List<BundleActivator> activators = Arrays.asList(
-
             shellA,
-            (BundleActivator)new org.apache.felix.shell.tui.Activator(),
-            bta
+            (BundleActivator)new org.apache.felix.shell.tui.Activator()
             );
 
 
@@ -53,9 +44,5 @@ public class EmbeddedActivators {
     public static void setActivators(List<BundleActivator> newActs) {
         activators = newActs;
     }
-    public static void setBootstrapActivator(BundleActivator _bta){
-       bta = _bta;
-    }
-
 
 }

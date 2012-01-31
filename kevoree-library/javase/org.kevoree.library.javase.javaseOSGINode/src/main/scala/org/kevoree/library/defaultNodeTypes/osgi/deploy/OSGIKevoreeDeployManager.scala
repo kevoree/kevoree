@@ -22,20 +22,21 @@ package org.kevoree.library.defaultNodeTypes.osgi.deploy
 import actors.DaemonActor
 import org.slf4j.LoggerFactory
 import org.kevoree.framework.context.KevoreeOSGiBundle
+import org.osgi.framework.Bundle
 
 
 object OSGIKevoreeDeployManager extends DaemonActor {
 
-//  var bundle: Bundle = null
+  var bundle: Bundle = null
   val logger = LoggerFactory.getLogger(this.getClass)
-/*
+
   def setBundle(b: Bundle) {
     bundle = b
     //val sr = bundle.getBundleContext.getServiceReference(classOf[PackageAdmin].getName)
     //servicePackageAdmin = Some(bundle.getBundleContext.getService(sr).asInstanceOf[PackageAdmin])
   }
 
-  def getBundleContext = bundle.getBundleContext;*/
+  def getBundleContext = bundle.getBundleContext;
 
   private var private_bundleMapping: List[KevoreeOSGiBundle] = List[KevoreeOSGiBundle]();
 //  var servicePackageAdmin: Option[PackageAdmin] = null

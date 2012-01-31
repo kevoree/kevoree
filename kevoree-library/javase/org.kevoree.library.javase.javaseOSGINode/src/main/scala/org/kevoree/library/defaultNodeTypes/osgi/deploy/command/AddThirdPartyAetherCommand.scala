@@ -22,10 +22,10 @@ import org.osgi.framework.BundleException
 import org.osgi.service.packageadmin.PackageAdmin
 import org.slf4j.LoggerFactory
 import org.kevoree.DeployUnit
-import org.kevoree.tools.aether.framework.AetherUtil
 import java.io.{FileInputStream, File}
 import org.kevoree.framework.PrimitiveCommand
-import org.kevoree.framework.context.{KevoreeOSGiBundle, KevoreeDeployManager}
+import org.kevoree.framework.context.{KevoreeOSGiBundle}
+import org.kevoree.library.defaultNodeTypes.osgi.deploy.OSGIKevoreeDeployManager
 
 case class AddThirdPartyAetherCommand(deployUnit: DeployUnit) extends PrimitiveCommand {
 
@@ -37,8 +37,8 @@ case class AddThirdPartyAetherCommand(deployUnit: DeployUnit) extends PrimitiveC
 
     try {
 
-      val arteFile: File = AetherUtil.resolveDeployUnit(deployUnit)
-      lastExecutionBundle = Some(KevoreeDeployManager.getBundleContext.installBundle("file:///" + arteFile.getAbsolutePath, new FileInputStream(arteFile)));
+      val arteFile: File = org.kevoree.tools.aether.framework.AetherUtil.resolveDeployUnit(deployUnit)
+      lastExecutionBundle = Some(OSGIKevoreeDeployManager.getBundleContext.installBundle("file:///" + arteFile.getAbsolutePath, new FileInputStream(arteFile)));
 
 
       logger.debug("Install file :"+arteFile.getAbsolutePath)
@@ -46,7 +46,7 @@ case class AddThirdPartyAetherCommand(deployUnit: DeployUnit) extends PrimitiveC
 
       //lastExecutionBundle = Some(ctx.bundleContext.installBundle(url));
       val symbolicName: String = lastExecutionBundle.get.getSymbolicName
-      KevoreeDeployManager.addMapping(KevoreeOSGiBundle(CommandHelper.buildKEY(deployUnit), deployUnit.getClass.getName, lastExecutionBundle.get.getBundleId))
+      OSGIKevoreeDeployManager.addMapping(KevoreeOSGiBundle(CommandHelper.buildKEY(deployUnit), deployUnit.getClass.getName, lastExecutionBundle.get.getBundleId))
       // lastExecutionBundle.get.start
      // mustBeStarted = false
       true
@@ -69,14 +69,14 @@ case class AddThirdPartyAetherCommand(deployUnit: DeployUnit) extends PrimitiveC
       lastExecutionBundle match {
         case Some(bundle) => {
           //CLEAR CACHE
-          KevoreeDeployManager.bundleMapping.filter(map => map.bundleId == bundle.getBundleId).foreach {
+          OSGIKevoreeDeployManager.bundleMapping.filter(map => map.bundleId == bundle.getBundleId).foreach {
             map =>
-              KevoreeDeployManager.removeMapping(map)
+              OSGIKevoreeDeployManager.removeMapping(map)
           }
           bundle.stop()
           bundle.uninstall()
-          val srPackageAdmin = KevoreeDeployManager.getBundleContext.getServiceReference(classOf[PackageAdmin].getName)
-          val padmin: PackageAdmin = KevoreeDeployManager.getBundleContext.getService(srPackageAdmin).asInstanceOf[PackageAdmin]
+          val srPackageAdmin = OSGIKevoreeDeployManager.getBundleContext.getServiceReference(classOf[PackageAdmin].getName)
+          val padmin: PackageAdmin = OSGIKevoreeDeployManager.getBundleContext.getService(srPackageAdmin).asInstanceOf[PackageAdmin]
           padmin.resolveBundles(Array(bundle))
         }
         case None => //NOTHING CAN BE DOING HERE

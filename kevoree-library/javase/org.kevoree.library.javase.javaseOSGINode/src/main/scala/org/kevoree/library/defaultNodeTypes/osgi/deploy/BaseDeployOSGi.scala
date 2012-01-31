@@ -14,14 +14,13 @@ package org.kevoree.library.defaultNodeTypes.osgi.deploy
  * limitations under the License.
  */
 
-import org.kevoree.adaptation.deploy.osgi.command._
+import command._
 import org.kevoree._
-import adaptation.deploy.jcl._
 import api.service.core.handler.KevoreeModelHandlerService
 import api.service.core.script.KevScriptEngineFactory
-import framework.context.KevoreeDeployManager
 import framework.PrimitiveCommand
 import kompare.JavaSePrimitive
+import library.defaultNodeTypes.jcl.deploy.command._
 import org.osgi.framework.Bundle
 import org.slf4j.LoggerFactory
 
@@ -36,14 +35,9 @@ class BaseDeployOSGi(bundle: Bundle) {
     kscripEngineFactory = k
   }
 
-  private val ctx = KevoreeDeployManager
-  /*
-  ctx.setBundle(bundle)
-  ctx.setBundleContext(bundle.getBundleContext)
-  val sr = bundle.getBundleContext.getServiceReference(classOf[PackageAdmin].getName)
-  ctx.setServicePackageAdmin(bundle.getBundleContext.getService(sr).asInstanceOf[PackageAdmin])
-              */
+  private val ctx = OSGIKevoreeDeployManager
 
+  ctx.setBundle(bundle)
   private val logger = LoggerFactory.getLogger(this.getClass);
 
   def buildPrimitiveCommand(p: org.kevoreeAdaptation.AdaptationPrimitive, nodeName: String): PrimitiveCommand = {
@@ -88,15 +82,10 @@ class BaseDeployOSGi(bundle: Bundle) {
       case JavaSePrimitive.StartInstance if (JCLHelper.isJCLManaged(p.getRef.asInstanceOf[Instance].getTypeDefinition,nodeName)) => StartStopInstance(p.getRef.asInstanceOf[Instance], nodeName,true)
       case JavaSePrimitive.StartInstance => StartInstanceCommand(p.getRef.asInstanceOf[Instance], nodeName)
 
-
-
-      //  case JavaSePrimitive.UpdateDictionaryInstance => UpdateDictionaryCommand(p.getRef.asInstanceOf[Instance], ctx, nodeName)
       case JavaSePrimitive.AddBinding => AddBindingCommand(p.getRef.asInstanceOf[MBinding], nodeName)
       case JavaSePrimitive.RemoveBinding => RemoveBindingCommand(p.getRef.asInstanceOf[MBinding], nodeName)
       case JavaSePrimitive.AddFragmentBinding => AddFragmentBindingCommand(p.getRef.asInstanceOf[Channel], p.getTargetNodeName, nodeName)
       case JavaSePrimitive.RemoveFragmentBinding => RemoveFragmentBindingCommand(p.getRef.asInstanceOf[Channel], p.getTargetNodeName, nodeName)
-
-
       case JavaSePrimitive.StartThirdParty if (JCLHelper.isJCLManaged(p.getRef.asInstanceOf[DeployUnit])) => NoopCommand()
       case JavaSePrimitive.StartThirdParty => StartThirdPartyCommand(p.getRef.asInstanceOf[DeployUnit], nodeName)
       case _@name => {
@@ -104,9 +93,6 @@ class BaseDeployOSGi(bundle: Bundle) {
         null
       }
     }
-    //  }
-    // case None => logger.error("Unknown Kevoree adaptation primitive type "); null
-    // }
 
 
   }

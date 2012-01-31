@@ -5,15 +5,17 @@
 
 package org.kevoree.library.defaultNodeTypes.osgi;
 
+import org.apache.felix.framework.Felix;
 import org.kevoree.ContainerRoot;
-import org.kevoree.adaptation.deploy.osgi.BaseDeployOSGi;
 import org.kevoree.annotation.*;
-import org.kevoree.framework.AbstractNodeType;
-import org.kevoree.framework.context.KevoreeDeployManager;
 import org.kevoree.kompare.KevoreeKompareBean;
+import org.kevoree.library.defaultNodeTypes.JavaSENode;
+import org.kevoree.library.defaultNodeTypes.osgi.deploy.BaseDeployOSGi;
+import org.kevoree.library.defaultNodeTypes.osgi.deploy.OSGIKevoreeDeployManager;
+import org.kevoree.library.defaultNodeTypes.osgi.deploy.runtime.EmbeddedFelix;
 import org.kevoreeAdaptation.AdaptationModel;
 import org.kevoreeAdaptation.AdaptationPrimitive;
-import org.osgi.framework.Bundle;
+import org.osgi.framework.BundleException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,31 +27,37 @@ import org.slf4j.LoggerFactory;
 @NodeType
 @PrimitiveCommands(
         values = {"UpdateType", "UpdateDeployUnit", "AddType", "AddDeployUnit", "AddThirdParty", "RemoveType", "RemoveDeployUnit", "UpdateInstance", "UpdateBinding", "UpdateDictionaryInstance", "AddInstance", "RemoveInstance", "AddBinding", "RemoveBinding", "AddFragmentBinding", "RemoveFragmentBinding", "UpdateFragmentBinding", "StartInstance", "StopInstance", "StartThirdParty"}, value = {})
-public class JavaSEOSGINode extends AbstractNodeType {
+public class JavaSEOSGINode extends JavaSENode {
     private static final Logger logger = LoggerFactory.getLogger(JavaSEOSGINode.class);
 
     private KevoreeKompareBean kompareBean = null;
+    private Felix fwk = null;
     private BaseDeployOSGi deployBean = null;
 
-    @Start
     @Override
     public void startNode() {
-     //   Bundle bundle = (Bundle) this.getDictionary().get("osgi.bundle");
-       // KevoreeDeployManager.setBundle(bundle);
+        EmbeddedFelix emFelix = new EmbeddedFelix();
+        emFelix.run();
+        fwk = emFelix.getM_fwk();
+        OSGIKevoreeDeployManager.setBundle(fwk);
         kompareBean = new KevoreeKompareBean();
-        deployBean = new BaseDeployOSGi(bundle);
+        deployBean = new BaseDeployOSGi(fwk);
         deployBean.setModelHandlerService(getModelService());
         deployBean.setKscripEngineFactory(getKevScriptEngineFactory());
     }
 
-
-    @Stop
     @Override
     public void stopNode() {
         kompareBean = null;
         deployBean = null;
         //Cleanup the local runtime
-        KevoreeDeployManager.clearAll();
+        //KevoreeDeployManager.clearAll();
+
+        try {
+            fwk.stop();
+        } catch (BundleException e) {
+            logger.debug("Error while stopping node ",e);
+        }
     }
 
     @Override

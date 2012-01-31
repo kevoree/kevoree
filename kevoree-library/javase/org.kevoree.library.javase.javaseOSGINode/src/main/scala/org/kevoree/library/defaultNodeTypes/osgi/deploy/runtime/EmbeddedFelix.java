@@ -15,15 +15,15 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package org.kevoree.platform.osgi.standalone;
+package org.kevoree.library.defaultNodeTypes.osgi.deploy.runtime;
 
 import generated.SysPackageConstants;
 import org.apache.felix.framework.Felix;
 import org.apache.felix.framework.util.FelixConstants;
-import org.kevoree.KevoreeFactory;
 import org.osgi.framework.Constants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
@@ -63,13 +63,9 @@ public class EmbeddedFelix {
             logger.debug("Init Felix Default path => " + felix_base);
         }
 
-        String node_name = System.getProperty("node.name");
-        if (node_name == null || node_name.equals("")) {
-            node_name = "node0";
-            System.setProperty("node.name", node_name);
-        }
 
-        File cacheDir = new File(felix_base + "/" + "felixCache_" + node_name);
+
+        File cacheDir = new File(felix_base + "/" + "felixCache_" + System.getProperty("node.name"));
         Map<String, Object> configProps = new HashMap<String, Object>();
         if (cacheDir.exists()) {
             cacheDir.mkdirs();
@@ -103,9 +99,13 @@ public class EmbeddedFelix {
                 try {
                     logger.debug("Stopping OSGi Embedded Framework");
                     if (m_fwk != null) {
+                        /*
                         EmbeddedActivators.getBootstrapActivator().stop(m_fwk.getBundleContext());
                         m_fwk.stop();
                         m_fwk.waitForStop(0);
+                        */
+                        //TODO CALL KEVOREE CORE
+
                     }
                 } catch (Exception ex) {
                     logger.warn("Error stopping framework: ", ex);
@@ -119,25 +119,16 @@ public class EmbeddedFelix {
             m_fwk.init();
             // (10) Start the framework.
             m_fwk.start();
-            printWelcome();
-
             logger.debug("Felix Embedded started");
             // (11) Wait for framework to stop to exit the VM.
             //m_fwk.waitForStop(0);
-            //System.exit(0)
         } catch (Exception ex) {
 //            System.err.println("Could not create framework: " + ex);
 //            ex.printStackTrace();
             logger.error("Could not create framework: ", ex);
-            System.exit(0);
         }
 
     }
 
-    private void printWelcome() {
-        String welcomeMessage = ConstantsHandler.getConstantValuesProvider().getWelcomeMessage();
-        welcomeMessage += " - " + KevoreeFactory.getVersion();
-        System.out.println(welcomeMessage);
 
-    }
 }
