@@ -17,6 +17,7 @@
  */
 package org.kevoree.framework;
 
+import org.kevoree.Channel;
 import org.kevoree.api.service.core.handler.KevoreeModelHandlerService;
 import org.kevoree.api.service.core.script.KevScriptEngineFactory;
 import org.kevoree.framework.message.Message;
@@ -75,5 +76,14 @@ public abstract class AbstractChannelFragment implements ChannelFragment {
     public void setKevScriptEngineFactory(KevScriptEngineFactory kf) {
         kevScriptEngineFactory = kf;
     }
+
+
+	/**
+	 * Allow to find the corresponding element into the model
+	 * @return the channel corresponding to this
+	 */
+	public Channel getModelElement() {
+		return KevoreeElementHelper.getChannelElement(this.getName(), this.getModelService().getLastModel()).get();
+	}
 
 }
