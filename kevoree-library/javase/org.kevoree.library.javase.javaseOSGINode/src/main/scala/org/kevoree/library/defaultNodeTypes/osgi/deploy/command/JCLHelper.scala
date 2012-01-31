@@ -1,4 +1,4 @@
-package org.kevoree.library.defaultNodeTypes.jcl.deploy.command
+package org.kevoree.library.defaultNodeTypes.osgi.deploy.command
 
 /**
  * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE, Version 3, 29 June 2007;
@@ -29,14 +29,14 @@ object JCLHelper {
 
   def isJCLManaged(du: DeployUnit): Boolean = {
     du.getType == "jar" || du.getType == "kjar"
-    true
+   // true
   }
 
   def isJCLManaged(td: TypeDefinition, nodeName: String): Boolean = {
     val node = td.eContainer.asInstanceOf[ContainerRoot].getNodes.find(n => n.getName == nodeName).get
     val deployUnit = td.foundRelevantDeployUnit(node)
     deployUnit.getType == "jar" || deployUnit.getType == "kjar"
-    true
+   // true
   }
 
 
