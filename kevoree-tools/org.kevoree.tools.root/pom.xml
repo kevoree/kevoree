@@ -157,7 +157,7 @@
         <module>../org.kevoree.tools.android.framework</module>
 
 
-        <module>../org.kevoree.tools.deploy.osgi</module>
+      <!--  <module>../org.kevoree.tools.deploy.osgi</module> DEPRECATED -->
 
         <module>../org.kevoree.tools.annotation.api</module>
         <module>../org.kevoree.tools.arduino.framework</module>
