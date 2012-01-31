@@ -43,7 +43,7 @@ case class RemoveDeployUnitCommand(deployUnit : DeployUnit) extends PrimitiveCom
           bundle.uninstall()
           logger.debug("Deploy Unit Bundle remove , try to refresh package")
 
-        //OSGIKevoreeDeployManager.getServicePackageAdmin.refreshPackages(Array(bundle))
+        OSGIKevoreeDeployManager.getServicePackageAdmin.refreshPackages(Array(bundle))
 
           //REMOVE BUNDLE MAPPING
         KevoreeDeployManager.removeMapping(bundleMappingFound)
