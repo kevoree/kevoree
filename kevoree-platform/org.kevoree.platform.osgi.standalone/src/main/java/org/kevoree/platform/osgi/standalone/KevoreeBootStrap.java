@@ -114,7 +114,8 @@ public class KevoreeBootStrap {
             if (bootstrapModel != null) {
                 try {
                     logger.debug("Bootstrap step !");
-                    BootstrapHelper.initModelInstance(bootstrapModel,"JavaSENode",System.getProperty("node.groupType"));
+                    //BootstrapHelper.initModelInstance(bootstrapModel,"JavaSENode",System.getProperty("node.groupType"));
+                    BootstrapHelper.initModelInstance(bootstrapModel,"FrascatiNode",System.getProperty("node.groupType"));
                     coreBean.updateModel(bootstrapModel);
                 } catch (Exception e) {
                     logger.error("Bootstrap failed", e);
