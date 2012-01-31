@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.kevoree.library.frascati</groupId>
     <artifactId>org.kevoree.library.frascati.frascatiNode</artifactId>
-    <packaging>bundle</packaging>
+    <packaging>jar</packaging>
     <name>Kevoree :: Library :: Frascati :: FrascatiNode</name>
     <version>1.5.1-SNAPSHOT</version>
 
@@ -61,7 +61,7 @@
                         </goals>
                         <configuration>
                             <excludeGroupIds>org.kevoree.tools</excludeGroupIds>
-                            <outputDirectory>${project.build.directory}/lib</outputDirectory>
+                            <outputDirectory>${project.build.directory}/dep/lib</outputDirectory>
                         </configuration>
                     </execution>
                 </executions>
@@ -73,7 +73,7 @@
                 <extensions>true</extensions>
                 <configuration>
                     <instructions>
-                        <Include-Resource>${project.build.directory}/lib</Include-Resource>
+                        <Include-Resource>${project.build.directory}/dep</Include-Resource>
                         <!--                      <Private-Package>schemas.*,schema.*,model.*,javax.xml.*,javax.jws.soap.*,org.apache.aries.*,net.sf.cglib.*,javax.wsdl.*,javax.servlet.*,javax.resource.*,com.werken.xpath.*,com.sun.xml.fastinfoset.*,com.p6spy.*,com.sun.codemodel.*,com.sun.msv.*,com.sun.mirror.*,com.sun.org.*,com.sun.tools.xjc.*,com.sun.tools.jxc.*,com.sun.xml.*,org.kohsuke.*,org.relaxng.datatype.*,com.google.protobuf.*,org.apache.geronimo.*,com.wutka.dtd.*,org.osoa.*,org.apache.oro.*,org.apache.ws.*,org.apache.xml.*,org.eclipse.emf.*,com.ibm.wsdl.*,com.ctc.wstx.*,org.apache.velocity.*,org.codehaus.stax2.*,org.eclipse.core.*,org.eclipse.stp.sca.*,org.apache.neethi.*,com.sun.istack.*,com.sun.xml.bind.*,com.sun.xml.txw2.*,org.jboss.*,com.google.common.*,javax.mail.*,org.oasisopen.*,org.eclipse.emf.*,org.objectweb.*,juliac.generated.*,org.aopalliance.*,javax.xml.stream.*,org.apache.cxf.*,org.ow2.*</Private-Package>-->
                         <Export-Package>org.kevoree.library.frascatiNodeTypes.*</Export-Package>
                         <Import-Package>

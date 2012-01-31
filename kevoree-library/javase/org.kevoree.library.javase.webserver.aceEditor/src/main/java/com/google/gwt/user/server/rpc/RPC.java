@@ -24,7 +24,7 @@ import com.google.gwt.user.server.rpc.impl.LegacySerializationPolicy;
 import com.google.gwt.user.server.rpc.impl.ServerSerializationStreamReader;
 import com.google.gwt.user.server.rpc.impl.ServerSerializationStreamWriter;
 import com.google.gwt.user.server.rpc.impl.TypeNameObfuscator;
-import org.osgi.framework.Bundle;
+//import org.osgi.framework.Bundle;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -49,7 +49,7 @@ import java.util.*;
  * {@example com.google.gwt.examples.rpc.server.AdvancedExample#doPost(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)}
  */
 public final class RPC {
-
+/*
     private static Bundle currentBundle = null;
 
     public static void setCurrentBundle(Bundle b) {
@@ -59,7 +59,7 @@ public final class RPC {
     public static Bundle getCurrentBundle(){
         return currentBundle;
     }
-
+*/
 
     /**
      * Maps primitive wrapper classes to their corresponding primitive class.
@@ -706,12 +706,13 @@ public final class RPC {
         if (value != null) {
             return value;
         }
-
+/*
         if (currentBundle != null) {
             return currentBundle.loadClass(serializedName);
         } else {
             return Class.forName(serializedName, false, classLoader);
-        }
+        }*/
+        return null;
 
 
     }

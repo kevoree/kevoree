@@ -9,7 +9,6 @@ import org.kevoree.library.javase.webserver.FileServiceHelper;
 import org.kevoree.library.javase.webserver.KevoreeHttpRequest;
 import org.kevoree.library.javase.webserver.KevoreeHttpResponse;
 import org.kevoree.library.javase.webserver.servlet.LocalServletRegistry;
-import org.osgi.framework.Bundle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -50,15 +49,15 @@ public class LatexEditor extends AbstractPage {
 
     @Override
     public void startPage() {
-        Bundle b = (Bundle) this.getDictionary().get("osgi.bundle");
-        servletRepository = new LocalServletRegistry(b){
+        //Bundle b = (Bundle) this.getDictionary().get("osgi.bundle");
+        servletRepository = new LocalServletRegistry(/*b*/){
             @Override
             public String getCDefaultPath(){
                 return "/latexEditor";
             }
         };
         super.startPage();
-        RPC.setCurrentBundle(b); //GWT ACK
+        //RPC.setCurrentBundle(b); //GWT ACK
         servletRepository.registerServlet("/latexEditor/latexEditorService",new org.kevoree.library.javase.webserver.latexEditor.server.latexEditorServiceImpl(this));
     }
 

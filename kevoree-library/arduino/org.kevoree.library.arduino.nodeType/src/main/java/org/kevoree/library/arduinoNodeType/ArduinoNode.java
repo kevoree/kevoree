@@ -4,12 +4,10 @@ import org.kevoree.ContainerNode;
 import org.kevoree.ContainerRoot;
 import org.kevoree.KevoreeFactory;
 import org.kevoree.TypeDefinition;
-import org.kevoree.adaptation.deploy.osgi.BaseDeployOSGi;
 import org.kevoree.annotation.*;
 import org.kevoree.cloner.ModelCloner;
 import org.kevoree.extra.osgi.rxtx.KevoreeSharedCom;
 import org.kevoree.framework.AbstractNodeType;
-import org.kevoree.framework.Constants;
 import org.kevoree.framework.KevoreeXmiHelper;
 import org.kevoree.kompare.JavaSePrimitive;
 import org.kevoree.kompare.KevoreeKompareBean;
@@ -20,8 +18,6 @@ import org.kevoree.tools.marShellTransform.AdaptationModelWrapper;
 import org.kevoree.tools.marShellTransform.KevScriptWrapper;
 import org.kevoreeAdaptation.AdaptationModel;
 import org.kevoreeAdaptation.AdaptationPrimitive;
-import org.osgi.framework.Bundle;
-import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.wayoda.ang.libraries.CodeManager;
@@ -51,7 +47,7 @@ public class ArduinoNode extends AbstractNodeType {
     public ArduinoGuiProgressBar progress = null;
     public File newdir = null;
     private KevoreeKompareBean kompareBean = null;
-    private BaseDeployOSGi deployBean = null;
+//    private BaseDeployOSGi deployBean = null;
 
     protected Boolean forceUpdate = false;
     public void setForceUpdate(Boolean f){
@@ -61,13 +57,13 @@ public class ArduinoNode extends AbstractNodeType {
     @Start
     public void startNode() {
         kompareBean = new KevoreeKompareBean();
-        deployBean = new BaseDeployOSGi((Bundle) this.getDictionary().get("osgi.bundle"));
+      //  deployBean = new BaseDeployOSGi((Bundle) this.getDictionary().get("osgi.bundle"));
     }
 
     @Stop
     public void stopNode() {
         kompareBean = null;
-        deployBean = null;
+       // deployBean = null;
     }
 
     @Override
@@ -211,7 +207,7 @@ public class ArduinoNode extends AbstractNodeType {
     }
 
     public String outputPath = "";
-    private BundleContext bcontext = null;
+
 
     public boolean deploy(AdaptationModel modelIn, String nodeName, String boardPortName) {
         boolean typeAdaptationFound = false;
@@ -248,14 +244,14 @@ public class ArduinoNode extends AbstractNodeType {
             logger.debug("Type adaptation detected -> full firmware update needed !");
             //Step : Type Bundle preparation step
 
-            Bundle bundle = (Bundle) this.getDictionary().get(Constants.KEVOREE_PROPERTY_OSGI_BUNDLE());
+           // Bundle bundle = (Bundle) this.getDictionary().get(Constants.KEVOREE_PROPERTY_OSGI_BUNDLE());
 
-            if (bundle != null) {
-                logger.debug("Install Type definition");
-                TypeBundleBootstrap.bootstrapTypeBundle(model, bundle.getBundleContext());
-            } else {
-                logger.warn("No OSGi runtime available");
-            }
+            //if (bundle != null) {
+                logger.debug("Install Type definitions");
+                TypeBundleBootstrap.bootstrapTypeBundle(model);
+            //} else {
+            //    logger.warn("No OSGi runtime available");
+            //}
             //Step : Generate firmware code to output path
             KevoreeCGenerator generator = new KevoreeCGenerator();
 
@@ -277,7 +273,7 @@ public class ArduinoNode extends AbstractNodeType {
             }
 
 
-            generator.generate(model, nodeName, outputPath, bcontext, getDictionary().get("boardTypeName").toString(), pm, psize);
+            generator.generate(model, nodeName, outputPath, getDictionary().get("boardTypeName").toString(), pm, psize);
 
 //STEP 3 : Deploy by commnication channel
             progress.beginTask("Prepare compilation", 40);

@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.kevoree.library.arduino</groupId>
     <artifactId>org.kevoree.library.arduino.nodeType</artifactId>
-    <packaging>bundle</packaging>
+    <packaging>jar</packaging>
     <name>Kevoree :: Library :: Arduino :: NodeType</name>
     <version>1.5.1-SNAPSHOT</version>
 
@@ -32,14 +32,9 @@
         </dependency>
         <dependency>
             <groupId>org.kevoree.tools</groupId>
-            <artifactId>org.kevoree.tools.deploy.osgi</artifactId>
-            <version>${kevoree.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.kevoree.tools</groupId>
             <artifactId>org.kevoree.tools.marShellTransform</artifactId>
             <version>${kevoree.version}</version>
+            <type>kjar</type>
         </dependency>
         <dependency>
             <groupId>org.kevoree.tools</groupId>
@@ -50,13 +45,14 @@
             <groupId>org.kevoree.tools</groupId>
             <artifactId>org.kevoree.tools.aether.framework</artifactId>
             <version>${kevoree.version}</version>
+            <type>kjar</type>
         </dependency>
 
         <dependency>
             <groupId>org.kevoree.tools</groupId>
             <artifactId>org.kevoree.tools.arduino.framework</artifactId>
             <version>${kevoree.version}</version>
-            <type>bundle</type>
+            <type>kjar</type>
         </dependency>
 
 
@@ -64,10 +60,11 @@
             <groupId>org.kevoree.extra</groupId>
             <artifactId>org.kevoree.extra.osgi.rxtx</artifactId>
             <version>2.2.0</version>
-            <type>bundle</type>
+            <type>kjar</type>
         </dependency>
 
         <!-- Temp dependency -->
+        <!--
         <dependency>
             <groupId>org.kevoree.library.arduino</groupId>
             <artifactId>org.kevoree.library.arduino.groupType</artifactId>
@@ -83,7 +80,7 @@
             <artifactId>org.kevoree.library.arduino.components</artifactId>
             <version>${kevoree.version}</version>
         </dependency>
-
+-->
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-jdk14</artifactId>

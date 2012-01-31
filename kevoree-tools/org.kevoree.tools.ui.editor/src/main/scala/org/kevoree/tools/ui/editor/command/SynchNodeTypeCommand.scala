@@ -42,7 +42,7 @@ class SynchNodeTypeCommand extends Command {
       val model: ContainerRoot = kernel.getModelHandler.getActualModel
       new Thread() {
         override def run() {
-          bootstrap.bootstrapGroupType(model, viaGroupName, EmbeddedOSGiEnv.getFwk(kernel).getBundleContext) match {
+          bootstrap.bootstrapGroupType(model, viaGroupName, new ModelHandlerServiceWrapper(kernel)) match {
             case Some(groupTypeInstance) => {
 
               groupTypeInstance.push(model,destNodeName)

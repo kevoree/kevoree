@@ -13,7 +13,6 @@
  */
 package org.kevoree.tools.ui.editor.command
 
-import org.kevoree.tools.ui.editor.EmbeddedOSGiEnv
 
 /**
  * User: ffouquet
@@ -23,6 +22,6 @@ import org.kevoree.tools.ui.editor.EmbeddedOSGiEnv
 
 class KillOSGICommand extends Command {
   def execute(p: AnyRef) {
-      EmbeddedOSGiEnv.getFwk.stop()
+     // EmbeddedOSGiEnv.getFwk.stop()
   }
 }
