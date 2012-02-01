@@ -59,7 +59,7 @@ case class AddInstance(c: Instance, nodeName: String,modelservice : KevoreeModel
     } catch {
       case _@e => {
         var message = "Could not start the instance " + c.getName + ":" + c.getClass.getName + " maybe because one of its dependencies is missing.\n"
-        message += "Please check that all dependencies of your components are marked with a 'bundle' type (or 'provided' scope) in the pom of the component's project.\n"
+        message += "Please check that all dependencies of your components are marked with a 'bundle' type (or 'kjar' scope) in the pom of the component/channel's project.\n"
         logger.error(message, e)
         false
       }
