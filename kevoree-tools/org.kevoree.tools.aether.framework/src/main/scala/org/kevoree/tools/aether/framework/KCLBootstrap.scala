@@ -15,7 +15,7 @@ package org.kevoree.tools.aether.framework
 
 import org.kevoree.DeployUnit
 import org.kevoree.extra.jcl.KevoreeJarClassLoader
-import org.kevoree.framework.context.{KevoreeJCLBundle, KevoreeDeployManager}
+//import org.kevoree.framework.context.{KevoreeJCLBundle, KevoreeDeployManager}
 import org.slf4j.LoggerFactory
 
 /**
@@ -62,7 +62,7 @@ trait KCLBootstrap {
 
           //bundle = bundleContext.installBundle("file:///" + arteFile.getAbsolutePath, new FileInputStream(arteFile))
           //        bundle.start()
-          KevoreeDeployManager.addMapping(KevoreeJCLBundle(buildKEY(du), du.getClass.getName,kcl, -1 ))
+         // KevoreeDeployManager.addMapping(KevoreeJCLBundle(buildKEY(du), du.getClass.getName,kcl, -1 ))
           Some(kcl)
         } else {
           logger.error("Can't resolve node type")

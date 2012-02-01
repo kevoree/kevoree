@@ -10,6 +10,7 @@ import org.kevoree.annotation.*;
 import org.kevoree.framework.AbstractNodeType;
 import org.kevoree.kompare.KevoreeKompareBean;
 import org.kevoree.library.defaultNodeTypes.jcl.deploy.CommandMapper;
+import org.kevoree.library.defaultNodeTypes.jcl.deploy.context.KevoreeDeployManager;
 import org.kevoreeAdaptation.AdaptationModel;
 import org.kevoreeAdaptation.AdaptationPrimitive;
 import org.slf4j.Logger;
@@ -45,7 +46,7 @@ public class JavaSENode extends AbstractNodeType {
         kompareBean = null;
         mapper = null;
         //Cleanup the local runtime
-        //KevoreeDeployManager.clearAll();
+        KevoreeDeployManager.clearAll();
     }
 
     @Override

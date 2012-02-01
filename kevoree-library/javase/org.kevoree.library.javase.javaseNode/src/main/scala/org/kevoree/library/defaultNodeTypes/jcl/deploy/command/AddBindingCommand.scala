@@ -20,7 +20,7 @@ package org.kevoree.library.defaultNodeTypes.jcl.deploy.command
 
 import org.kevoree._
 import framework._
-import context.{ KevoreeJCLBundle, KevoreeDeployManager}
+import library.defaultNodeTypes.jcl.deploy.context.{KevoreeMapping, KevoreeDeployManager}
 import org.kevoree.framework.message.FragmentBindMessage
 import org.kevoree.framework.message.PortBindMessage
 import org.slf4j.LoggerFactory
@@ -37,7 +37,7 @@ case class AddBindingCommand(c: MBinding, nodeName: String) extends PrimitiveCom
       case Some(mapfound) => {
 
         mapfound match {
-          case kb: KevoreeJCLBundle => {
+          case kb: KevoreeMapping => {
             Some(kb.ref.asInstanceOf[KevoreeChannelFragmentActivator].channelActor)
           }
           case _ => logger.error("Channel Fragment Service not found"); None
@@ -50,7 +50,7 @@ case class AddBindingCommand(c: MBinding, nodeName: String) extends PrimitiveCom
       case Some(mapfound) => {
 
         mapfound match {
-          case kb: KevoreeJCLBundle => {
+          case kb: KevoreeMapping => {
             Some(kb.ref.asInstanceOf[KevoreeComponentActivator].componentActor)
           }
         }

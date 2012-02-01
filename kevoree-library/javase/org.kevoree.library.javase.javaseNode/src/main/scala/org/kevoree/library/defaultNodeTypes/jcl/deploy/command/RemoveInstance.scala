@@ -19,7 +19,6 @@ package org.kevoree.library.defaultNodeTypes.jcl.deploy.command
  */
 
 import org.slf4j.LoggerFactory
-import org.kevoree.framework.context.KevoreeDeployManager
 import org.kevoree.framework.{KevoreeGeneratorHelper, PrimitiveCommand}
 import org.kevoree.framework.osgi.KevoreeInstanceFactory
 import org.kevoree.framework.aspects.KevoreeAspects._
@@ -27,6 +26,7 @@ import org.kevoree.{ContainerRoot, NodeType, Instance}
 import org.kevoree.api.service.core.handler.KevoreeModelHandlerService
 import org.kevoree.api.service.core.script.KevScriptEngineFactory
 import org.kevoree.tools.aether.framework.JCLContextHandler
+import org.kevoree.library.defaultNodeTypes.jcl.deploy.context.KevoreeDeployManager
 
 case class RemoveInstance(c: Instance, nodeName: String,modelservice : KevoreeModelHandlerService,kscript : KevScriptEngineFactory) extends PrimitiveCommand {
 

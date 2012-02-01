@@ -15,9 +15,9 @@ package org.kevoree.library.defaultNodeTypes.jcl.deploy.command
  */
 
 import org.kevoree._
-import framework.context.{KevoreeOSGiBundle, KevoreeJCLBundle, KevoreeDeployManager}
 import framework.osgi.KevoreeChannelFragmentActivator
 import framework.{PrimitiveCommand, KevoreeChannelFragment, Constants}
+import library.defaultNodeTypes.jcl.deploy.context.{KevoreeMapping, KevoreeDeployManager}
 import org.kevoree.framework.message.FragmentBindMessage
 import org.slf4j.LoggerFactory
 
@@ -31,7 +31,7 @@ case class AddFragmentBindingCommand(c: Channel, remoteNodeName: String, nodeNam
       case None => logger.error("Channel Fragment Mapping not found"); None
       case Some(mapfound) => {
         mapfound match {
-          case kb: KevoreeJCLBundle => {
+          case kb: KevoreeMapping => {
             Some(kb.ref.asInstanceOf[KevoreeChannelFragmentActivator].channelActor)
           }
           case _ => logger.error("Channel Fragment Service not found"); None

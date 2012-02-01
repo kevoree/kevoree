@@ -1,4 +1,4 @@
-package org.kevoree.framework.context
+package org.kevoree.library.defaultNodeTypes.jcl.deploy.context
 
 /**
  * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE, Version 3, 29 June 2007;
@@ -21,6 +21,8 @@ package org.kevoree.framework.context
 
 import actors.DaemonActor
 import org.slf4j.LoggerFactory
+import org.kevoree.DeployUnit
+import org.kevoree.tools.aether.framework.JCLContextHandler
 
 
 object KevoreeDeployManager extends DaemonActor {
@@ -36,14 +38,23 @@ object KevoreeDeployManager extends DaemonActor {
 
   def getBundleContext = bundle.getBundleContext;*/
 
-  private var private_bundleMapping: List[KevoreeOSGiBundle] = List[KevoreeOSGiBundle]();
+  private var private_bundleMapping: List[KevoreeMapping] = List[KevoreeMapping]();
 //  var servicePackageAdmin: Option[PackageAdmin] = null
 /*
   def getServicePackageAdmin: PackageAdmin = {
     servicePackageAdmin.get
   }*/
-/*
+
   def clearAll() {
+    KevoreeDeployManager.bundleMapping.filter(bm => bm.ref.isInstanceOf[DeployUnit]).foreach( mapping => {
+      val old_du = mapping.ref.asInstanceOf[DeployUnit]
+      //CLEANUP KCL CONTEXT
+      if(JCLContextHandler.getKCL(old_du) != null){
+        logger.debug("Force cleanup unitName {}", old_du.getUnitName)
+      }
+    })
+    private_bundleMapping = List[KevoreeMapping]()
+    /*
     KevoreeDeployManager.bundleMapping.foreach {
       bm =>
         try {
@@ -56,9 +67,9 @@ object KevoreeDeployManager extends DaemonActor {
         } catch {
           case _@e => logger.debug("Error while cleanup platform ", e)
         }
-    }
+    }*/
     logger.debug("Deploy manager cache size after HaraKiri" + KevoreeDeployManager.bundleMapping.size)
-  }*/
+  }
 
 
   /*
@@ -72,23 +83,23 @@ object KevoreeDeployManager extends DaemonActor {
   case class GARBAGE()
 */
 
-  def bundleMapping: List[KevoreeOSGiBundle] = {
-    (this !? GET_MAPPINGS()).asInstanceOf[List[KevoreeOSGiBundle]]
+  def bundleMapping: List[KevoreeMapping] = {
+    (this !? GET_MAPPINGS()).asInstanceOf[List[KevoreeMapping]]
   }
 
   case class GET_MAPPINGS()
 
-  def addMapping(newMap: KevoreeOSGiBundle) {
+  def addMapping(newMap: KevoreeMapping) {
     this !? ADD_MAPPING(newMap)
   }
 
-  case class ADD_MAPPING(newMap: KevoreeOSGiBundle)
+  case class ADD_MAPPING(newMap: KevoreeMapping)
 
-  def removeMapping(newMap: KevoreeOSGiBundle) {
+  def removeMapping(newMap: KevoreeMapping) {
     this !? REMOVE_MAPPING(newMap)
   }
 
-  case class REMOVE_MAPPING(oldMap: KevoreeOSGiBundle)
+  case class REMOVE_MAPPING(oldMap: KevoreeMapping)
 
   def act() {
     loop {

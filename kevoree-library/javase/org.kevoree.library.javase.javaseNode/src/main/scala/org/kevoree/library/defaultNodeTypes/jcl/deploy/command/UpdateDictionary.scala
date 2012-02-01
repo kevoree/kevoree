@@ -19,9 +19,9 @@ package org.kevoree.library.defaultNodeTypes.jcl.deploy.command
  */
 
 import org.kevoree._
-import framework.context.{KevoreeJCLBundle, KevoreeDeployManager}
 import framework.osgi.{KevoreeGroupActivator, KevoreeChannelFragmentActivator, KevoreeComponentActivator}
 import framework.PrimitiveCommand
+import library.defaultNodeTypes.jcl.deploy.context.{KevoreeMapping, KevoreeDeployManager}
 import org.kevoree.framework.message.UpdateDictionaryMessage
 import org.slf4j.LoggerFactory
 import java.util.HashMap
@@ -66,7 +66,7 @@ case class UpdateDictionary(c: Instance, nodeName: String) extends PrimitiveComm
       case None => false
       case Some(mapfound) => {
 
-        mapfound.asInstanceOf[KevoreeJCLBundle].ref match {
+        mapfound.asInstanceOf[KevoreeMapping].ref match {
           case c_act: KevoreeComponentActivator => {
             lastDictioanry = (c_act.componentActor !? UpdateDictionaryMessage(dictionary, c.getTypeDefinition.eContainer.asInstanceOf[ContainerRoot])).asInstanceOf[HashMap[String, AnyRef]]
             true
@@ -101,7 +101,7 @@ case class UpdateDictionary(c: Instance, nodeName: String) extends PrimitiveComm
           case None => false
           case Some(mapfound) => {
 
-            mapfound.asInstanceOf[KevoreeJCLBundle].ref match {
+            mapfound.asInstanceOf[KevoreeMapping].ref match {
               case c_act: KevoreeComponentActivator => {
                 lastDictioanry = (c_act.componentActor !? UpdateDictionaryMessage(tempHash, c.getTypeDefinition.eContainer.asInstanceOf[ContainerRoot])).asInstanceOf[HashMap[String, AnyRef]]
                 true
