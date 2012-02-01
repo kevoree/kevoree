@@ -6,8 +6,6 @@ import org.kevoree.annotation.Library;
 import org.kevoree.annotation.Start;
 import org.kevoree.annotation.Stop;
 import org.kevoree.framework.AbstractGroupType;
-import org.osgi.framework.Bundle;
-import org.osgi.framework.ServiceRegistration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -23,12 +21,13 @@ import org.slf4j.LoggerFactory;
 @GroupType
 public class MiniCloudGroup extends AbstractGroupType {
 	private static final Logger logger = LoggerFactory.getLogger(MiniCloudGroup.class);
-	private ServiceRegistration sendModel;
-	private ServiceRegistration backupModel;
+	//private ServiceRegistration sendModel;
+	//private ServiceRegistration backupModel;
 
 	@Start
 	public void startMiniCloudGroup () {
 		logger.debug("starting MiniCloud group");
+        /*
 		Bundle bundle = (Bundle) this.getDictionary().get("osgi.bundle");
 		// Register the command service for felix shell
 		sendModel = bundle.getBundleContext()
@@ -36,14 +35,14 @@ public class MiniCloudGroup extends AbstractGroupType {
 						new SendModelFelixCommand(this.getModelService()), null);
 		backupModel = bundle.getBundleContext()
 				.registerService(org.apache.felix.shell.Command.class.getName(),
-						new BackupModelFelixCommand(this.getModelService()), null);
+						new BackupModelFelixCommand(this.getModelService()), null);*/
 		logger.debug("MiniCloud group is started");
 	}
 
 	@Stop
 	public void stopMiniCloudGroup () {
-		sendModel.unregister();
-		backupModel.unregister();
+		//sendModel.unregister();
+		//backupModel.unregister();
 	}
 
 	@Override

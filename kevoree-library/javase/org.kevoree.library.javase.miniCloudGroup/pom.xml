@@ -11,11 +11,13 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>org.kevoree.library.javase.miniCloudGroup</artifactId>
-    <packaging>bundle</packaging>
+    <packaging>jar</packaging>
     <name>Kevoree :: Library :: JavaSE :: MiniCloudGroup</name>
 
     <dependencies>
+        <!--
         <dependency>
+
             <groupId>org.apache.felix</groupId>
             <artifactId>org.apache.felix.shell.tui</artifactId>
             <version>1.4.1</version>
@@ -26,6 +28,7 @@
                 </exclusion>
             </exclusions>
         </dependency>
+        -->
     </dependencies>
 
     <build>
