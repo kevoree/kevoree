@@ -170,10 +170,6 @@ class NodeTypeBootStrapUI(pkernel: ContainerRoot) extends JPanel {
   }
 
   def getTypeDefinition(box : JComboBox) : TypeDefinition = {
-    //pkernel.getTypeDefinitions.foreach{s => println(s.getName)}
-    
-    println("/=>"+box.getSelectedItem)
-    
     pkernel.getTypeDefinitions.find(td => td.getName == box.getSelectedItem).get
   }
 

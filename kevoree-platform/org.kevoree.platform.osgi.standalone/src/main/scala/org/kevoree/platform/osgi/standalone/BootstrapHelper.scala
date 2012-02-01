@@ -34,7 +34,7 @@ object BootstrapHelper {
     if (!model.getNodes.exists(n => n.getName == nodeName)) {
       //CREATE DEFAULT
       var node : ContainerNode = null
-      
+
       model.getTypeDefinitions.find(td => td.getName == defType) match {
         case Some(typeDefFound) => {
           logger.warn("Init default node instance for name " + nodeName)

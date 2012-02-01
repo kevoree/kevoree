@@ -56,7 +56,7 @@ trait KCLBootstrap {
       try {
         val arteFile = AetherUtil.resolveDeployUnit(du)
         if (arteFile != null) {
-          logger.debug("trying to install " + arteFile.getAbsolutePath)
+          logger.debug("trying to install {}", arteFile.getAbsolutePath)
 
           val kcl = JCLContextHandler.installDeployUnit(du,arteFile)
 

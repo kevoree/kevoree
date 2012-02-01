@@ -4,12 +4,12 @@
     <artifactId>org.kevoree.platform.osgi.standalone</artifactId>
     <packaging>jar</packaging>
     <name>Kevoree :: Platform :: OSGI Standalone</name>
-    <version>1.5.1-SNAPSHOT</version>
+    <version>1.6.0-SNAPSHOT</version>
 
     <parent>
         <artifactId>org.kevoree.platform.root</artifactId>
         <groupId>org.kevoree.platform</groupId>
-        <version>1.5.1-SNAPSHOT</version>
+        <version>1.6.0-SNAPSHOT</version>
         <relativePath>../org.kevoree.platform.root/pom.xml</relativePath>
     </parent>
 

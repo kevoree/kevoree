@@ -5,12 +5,12 @@
     <packaging>jar</packaging>
     <name>Kevoree :: Tools :: UI Editor Standalone</name>
     <url>https://github.com/dukeboard/kevoree/</url>
-    <version>1.5.1-SNAPSHOT</version>
+    <version>1.6.0-SNAPSHOT</version>
 
     <parent>
         <artifactId>org.kevoree.tools.root</artifactId>
         <groupId>org.kevoree.tools</groupId>
-        <version>1.5.1-SNAPSHOT</version>
+        <version>1.6.0-SNAPSHOT</version>
         <relativePath>../org.kevoree.tools.root/pom.xml</relativePath>
     </parent>
 
@@ -85,8 +85,6 @@
                         </option>
                         <option>-keep class jsyntaxpane.** { *; }</option>
                         <option>-keep class org.kevoree.tools.marShellGUI.** { *; }</option>
-                        <option>-keep class org.apache.felix.framework.** { *; }</option>
-                        <option>-keep class org.osgi.framework.**{ *; }</option>
                         <option>-keep class org.kevoree.kompare.** { *; }</option>
                         <option>-keep class scala.collection.immutable.HashMap { *; }</option>
                         <option>-keep class scala.Predef** { *; }</option>
@@ -99,7 +97,6 @@
                         <option>-keep class org.kevoreeAdaptation.** { *; }</option>
                         <option>-keep class org.slf4j.** { *; }</option>
                         <option>-keep class japa.parser.ast.** { *; }</option>
-
                         <option>-keepattributes *Annotation*</option>
                         <option>-keepattributes **</option>
 
@@ -178,12 +175,12 @@
                                 <filter>!META-INF/services/jsyntaxpane/kitsfortypes.properties</filter>
                             </inclusion>
 
-
+<!--
                             <inclusion>
                                 <groupId>org.apache.felix</groupId>
                                 <artifactId>org.apache.felix.framework</artifactId>
                             </inclusion>
-
+-->
                             <inclusion>
                                 <groupId>org.slf4j</groupId>
                                 <artifactId>slf4j-api</artifactId>
