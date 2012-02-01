@@ -20,6 +20,7 @@ import org.kevoree.framework.{FileNIOHelper, PrimitiveCommand}
 import java.io.{FileInputStream, File}
 import java.util.Random
 import org.kevoree.tools.aether.framework.JCLContextHandler
+import org.kevoree.library.defaultNodeTypes.jcl.deploy.context.{KevoreeMapping, KevoreeDeployManager}
 
 /**
  * Created by IntelliJ IDEA.
@@ -28,15 +29,19 @@ import org.kevoree.tools.aether.framework.JCLContextHandler
  * Time: 16:35
  */
 
-case class RemoveDeployUnit(du : DeployUnit) extends PrimitiveCommand {
+case class RemoveDeployUnit(du: DeployUnit) extends PrimitiveCommand {
 
   val logger = LoggerFactory.getLogger(this.getClass)
-  var lastTempFile : File = _
+  var lastTempFile: File = _
   var random = new Random
 
   def undo() {
-    if(lastTempFile != null){
-      JCLContextHandler.installDeployUnit(du,lastTempFile)
+    if (lastTempFile != null) {
+      JCLContextHandler.installDeployUnit(du, lastTempFile)
+      KevoreeDeployManager.bundleMapping.find(bm => bm.ref == du) match {
+        case Some(bm) =>
+        case None => KevoreeDeployManager.addMapping(KevoreeMapping(du.getName, du.getClass.getName, du))
+      }
     }
 
   }
@@ -48,9 +53,14 @@ case class RemoveDeployUnit(du : DeployUnit) extends PrimitiveCommand {
       FileNIOHelper.copyFile(jarStream, lastTempFile)
       jarStream.close()
       JCLContextHandler.removeDeployUnit(du)
+      KevoreeDeployManager.bundleMapping.foreach(bm => {
+        if (bm.ref == du) {
+          KevoreeDeployManager.removeMapping(bm)
+        }
+      })
       true
     } catch {
-      case _@ e =>logger.debug("error ",e);false
+      case _@e => logger.debug("error ", e); false
     }
   }
 }

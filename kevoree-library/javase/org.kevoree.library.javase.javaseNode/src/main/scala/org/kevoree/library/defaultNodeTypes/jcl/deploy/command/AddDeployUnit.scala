@@ -19,6 +19,7 @@ import org.kevoree.DeployUnit
 import org.slf4j.LoggerFactory
 import java.io.File
 import org.kevoree.tools.aether.framework.{JCLContextHandler, AetherUtil}
+import org.kevoree.library.defaultNodeTypes.jcl.deploy.context.{KevoreeMapping, KevoreeDeployManager}
 
 /**
  * Created by IntelliJ IDEA.
@@ -27,21 +28,32 @@ import org.kevoree.tools.aether.framework.{JCLContextHandler, AetherUtil}
  * Time: 16:35
  */
 
-case class AddDeployUnit(du : DeployUnit) extends PrimitiveCommand {
+case class AddDeployUnit(du: DeployUnit) extends PrimitiveCommand {
 
   val logger = LoggerFactory.getLogger(this.getClass)
 
   def undo() {
     JCLContextHandler.removeDeployUnit(du)
+    KevoreeDeployManager.bundleMapping.foreach(bm => {
+      if (bm.ref == du) {
+        KevoreeDeployManager.removeMapping(bm)
+      }
+    })
   }
 
   def execute(): Boolean = {
     try {
-      val arteFile: File = AetherUtil.resolveDeployUnit(du)
-      JCLContextHandler.installDeployUnit(du,arteFile)
+      if (JCLContextHandler.getKCL(du) == null) {
+        val arteFile: File = AetherUtil.resolveDeployUnit(du)
+        JCLContextHandler.installDeployUnit(du, arteFile)
+      }
+      KevoreeDeployManager.bundleMapping.find(bm => bm.ref == du) match {
+        case Some(bm)=>
+        case None => KevoreeDeployManager.addMapping(KevoreeMapping(du.getName, du.getClass.getName, du))
+      }
       true
     } catch {
-      case _@ e =>logger.debug("error ",e);false
+      case _@e => logger.debug("error ", e); false
     }
   }
 }
