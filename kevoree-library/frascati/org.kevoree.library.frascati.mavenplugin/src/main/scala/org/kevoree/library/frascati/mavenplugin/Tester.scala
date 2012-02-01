@@ -1,6 +1,7 @@
 package org.kevoree.library.frascati.mavenplugin
 
 import java.io.File
+import org.kevoree.framework.KevoreeXmiHelper
 
 /**
  * Created by IntelliJ IDEA.
@@ -12,6 +13,5 @@ import java.io.File
 
 object Tester extends App {
 
-  CompositeParser.parseCompositeFile(new File("/Users/duke/Documents/dev/dukeboard/kevoree/kevoree-library/frascati/org.kevoree.library.frascati.helloworld.pojo/src/main/resources/helloworld-pojo.composite"))
-
+  KevoreeXmiHelper.save("/tmp/test.kev",CompositeParser.parseCompositeFile(new File("/opt/frascati-runtime-1.4/examples/helloworld-pojo/src/main/resources/helloworld-pojo.composite"),"1.5.1-SNAPSHOT","org.kevoree.library.javase","org.kevoree.library.javase.test"))
 }
