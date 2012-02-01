@@ -2,14 +2,13 @@ package org.kevoree.library.javase.webserver.servlet
 
 import javax.servlet.http.HttpServlet
 import java.io.InputStream
-import org.osgi.framework.Bundle
 import org.slf4j.LoggerFactory
 import org.kevoree.library.javase.webserver.{URLHandlerScala, KevoreeHttpResponse, KevoreeHttpRequest}
 import scala.xml.XML
 import java.lang.String
 import java.net.URL
 import javax.servlet.{ServletContext, ServletContextEvent, ServletContextListener}
-import java.util.{HashSet, Collections, Set}
+import java.util.{Set}
 import io.Source
 
 /**
@@ -20,7 +19,7 @@ import io.Source
  * To change this template use File | Settings | File Templates.
  */
 
-class LocalServletRegistry(bundle: Bundle = null) {
+class LocalServletRegistry {
 
   private val servlets = new scala.collection.mutable.HashMap[URLHandlerScala, AbstractHttpServletPage]
   private val logger = LoggerFactory.getLogger(this.getClass)
@@ -31,7 +30,7 @@ class LocalServletRegistry(bundle: Bundle = null) {
     override def getResourcePaths(path: String): Set[String] = {
       val s = new java.util.HashSet[String]()
       import scala.collection.JavaConversions._
-      bundle.getEntryPaths(path).foreach(m => s.add(m.toString))
+      //bundle.getEntryPaths(path).foreach(m => s.add(m.toString))
       s
     }
 
@@ -42,12 +41,14 @@ class LocalServletRegistry(bundle: Bundle = null) {
 
     override def getResource(path: String): URL = {
       //println(path)
-      bundle.getResource(path)
+      //bundle.getResource(path)
+      null
     }
 
     override def getResourceAsStream(path: String): InputStream = {
       //println(path)
-      bundle.getResource(path).openStream()
+     // bundle.getResource(path).openStream()
+      null
     }
   }
   
@@ -114,16 +115,16 @@ class LocalServletRegistry(bundle: Bundle = null) {
               val servletClass = cNode.child.find(c => c.label == "servlet-class").get.text
               val patternMapping = xmlnode.child.find(c => c.label == "servlet-mapping" && c.child.exists(cc => cc.label == "servlet-name" && cc.text == servletID))
               val pattern = patternMapping.get.child.find(c => c.label == "url-pattern").get.text
-              val classServlet = bundle.loadClass(servletClass)
-              val servlet = classServlet.newInstance()
-              registerServlet(pattern, servlet.asInstanceOf[HttpServlet])
+              //val classServlet = bundle.loadClass(servletClass)
+             // val servlet = classServlet.newInstance()
+            //  registerServlet(pattern, servlet.asInstanceOf[HttpServlet])
             }
 
             case "listener" => {
               cNode.child.find(c => c.label == "listener-class").map {
                 listener =>
-                  val newL = bundle.loadClass(listener.text).newInstance().asInstanceOf[ServletContextListener]
-                  listeners = listeners ++ List(newL)
+                 // val newL = bundle.loadClass(listener.text).newInstance().asInstanceOf[ServletContextListener]
+                  //listeners = listeners ++ List(newL)
               }
             }
             case _ =>

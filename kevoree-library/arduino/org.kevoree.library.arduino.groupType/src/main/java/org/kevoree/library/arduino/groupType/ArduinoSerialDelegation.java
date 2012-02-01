@@ -4,8 +4,6 @@ import org.kevoree.ContainerRoot;
 import org.kevoree.annotation.*;
 import org.kevoree.api.service.core.handler.KevoreeModelHandlerService;
 import org.kevoree.framework.AbstractGroupType;
-import org.osgi.framework.Bundle;
-import org.osgi.framework.ServiceReference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -21,35 +19,23 @@ import org.slf4j.LoggerFactory;
 })
 public class ArduinoSerialDelegation extends AbstractGroupType {
 
-    protected ServiceReference sr;
     protected KevoreeModelHandlerService modelHandlerService = null;
     protected Logger logger = LoggerFactory.getLogger(ArduinoSerialDelegation.class);
 
     ArduinoDelegationPush delegationPush = null;
 
     private boolean isStarted = false;
-    
+
     @Start
     public void startGroupDelegation() {
-        Bundle bundle = (Bundle) this.getDictionary().get("osgi.bundle");
-        sr = bundle.getBundleContext().getServiceReference(KevoreeModelHandlerService.class.getName());
-        if(sr != null){
-            modelHandlerService = (KevoreeModelHandlerService) bundle.getBundleContext().getService(sr);
-        }
-        delegationPush = new ArduinoDelegationPush(modelHandlerService, this.getName(), bundle);
+        delegationPush = new ArduinoDelegationPush(modelHandlerService, this.getName());
         //triggerModelUpdate();
     }
 
     @Stop
     public void stopGroupDelegation() {
         if (modelHandlerService != null) {
-            Bundle bundle = (Bundle) this.getDictionary().get("osgi.bundle");
-            if (bundle != null) {
-                if (bundle.getBundleContext() != null) {
-                    bundle.getBundleContext().ungetService(sr);
-                    modelHandlerService = null;
-                }
-            }
+            modelHandlerService = null;
         }
     }
 
@@ -66,7 +52,7 @@ public class ArduinoSerialDelegation extends AbstractGroupType {
 
     @Override
     public void push(ContainerRoot model, String targetNodeName) {
-        if(!isStarted){
+        if (!isStarted) {
             startGroupDelegation();
         }
         delegationPush.setModel(model);

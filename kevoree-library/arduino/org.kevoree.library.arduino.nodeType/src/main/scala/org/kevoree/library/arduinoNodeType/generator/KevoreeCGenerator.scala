@@ -6,7 +6,6 @@
 package org.kevoree.library.arduinoNodeType.generator
 
 import org.kevoreeAdaptation.AdaptationModel
-import org.osgi.framework.BundleContext
 import org.kevoree.library.arduinoNodeType.{PMemory, ArduinoBoardType}
 import org.kevoree._
 import kompare.JavaSePrimitive
@@ -24,7 +23,6 @@ class KevoreeCGenerator
                 adaptModel: AdaptationModel,
                 nodeName: String,
                 outputDir: String,
-                bundleContext: BundleContext,
                 boardName: String,
                 pmem: PMemory,
                 pmax: String
@@ -47,12 +45,12 @@ class KevoreeCGenerator
     componentTypes.foreach {
       componentTypeAdaptation =>
         context.getGenerator.setTypeModel(componentTypeAdaptation.getRef.asInstanceOf[ComponentType])
-        generateComponentType(componentTypeAdaptation.getRef.asInstanceOf[ComponentType], bundleContext, nodeName)
+        generateComponentType(componentTypeAdaptation.getRef.asInstanceOf[ComponentType], nodeName)
     }
     channelTypes.foreach {
       channelTypeAdaptation =>
         context.getGenerator.setTypeModel(channelTypeAdaptation.getRef.asInstanceOf[ChannelType])
-        generateChannelType(channelTypeAdaptation.getRef.asInstanceOf[ChannelType], bundleContext, nodeName)
+        generateChannelType(channelTypeAdaptation.getRef.asInstanceOf[ChannelType], nodeName)
     }
 
 

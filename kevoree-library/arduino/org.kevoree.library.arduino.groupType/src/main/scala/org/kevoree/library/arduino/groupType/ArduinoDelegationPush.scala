@@ -1,11 +1,12 @@
 package org.kevoree.library.arduino.groupType
 
-import org.kevoree.api.service.core.handler.KevoreeModelHandlerService
 import org.slf4j.{Logger, LoggerFactory}
 import org.kevoree.tools.aether.framework.NodeTypeBootstrapHelper
-import org.osgi.framework.Bundle
 import reflect.BeanProperty
 import org.kevoree.{KevoreeFactory, ContainerRoot}
+import java.lang.String
+import java.util.{List, Date}
+import org.kevoree.api.service.core.handler.{ContextModel, UUIDModel, ModelListener, KevoreeModelHandlerService}
 
 /**
  * User: ffouquet
@@ -13,7 +14,7 @@ import org.kevoree.{KevoreeFactory, ContainerRoot}
  * Time: 13:55
  */
 
-class ArduinoDelegationPush(handler: KevoreeModelHandlerService, groupName: String, bundle: Bundle) {
+class ArduinoDelegationPush(handler: KevoreeModelHandlerService, groupName: String) {
   protected var logger: Logger = LoggerFactory.getLogger(this.getClass)
   @BeanProperty
   var model: ContainerRoot = _
@@ -40,7 +41,7 @@ class ArduinoDelegationPush(handler: KevoreeModelHandlerService, groupName: Stri
     }
     try {
       val nodeTypeHelper = new NodeTypeBootstrapHelper
-      val nodeType = nodeTypeHelper.bootstrapNodeType(model, targetNodeName, bundle.getBundleContext)
+      val nodeType = nodeTypeHelper.bootstrapNodeType(model, targetNodeName,handler,null)
       nodeType match {
         case Some(gNodeType) => {
           model.getGroups.find(g => g.getName == groupName) match {

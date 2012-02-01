@@ -98,6 +98,15 @@
             <artifactId>org.kevoree.library.javase.restAutoDiscovery</artifactId>
             <version>${kevoree.version}</version>
         </dependency>-->
+
+
+        <dependency>
+            <groupId>org.kevoree.library.frascati</groupId>
+            <artifactId>org.kevoree.library.frascati.frascatiNode</artifactId>
+            <version>${kevoree.version}</version>
+        </dependency>
+
+
     </dependencies>
 
 

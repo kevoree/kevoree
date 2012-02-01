@@ -5,12 +5,13 @@
 
 package org.kevoree.library.arduinoNodeType.generator
 
-import org.osgi.framework.BundleContext
 import org.kevoree.framework.KevoreeGeneratorHelper
 import org.kevoree.{ContainerRoot, TypeDefinition}
 import scala.collection.JavaConversions._
 import org.slf4j.{LoggerFactory, Logger}
 import org.kevoree.annotation.{Generate => KGenerate}
+import org.kevoree.framework.aspects.KevoreeAspects._
+import org.kevoree.tools.aether.framework.JCLContextHandler
 
 trait KevoreeReflectiveHelper {
   private val logger: Logger = LoggerFactory.getLogger(this.getClass)
@@ -44,20 +45,28 @@ trait KevoreeReflectiveHelper {
     }
   }
 
-  def createStandaloneInstance(ct: TypeDefinition, bundleContext: BundleContext, nodeName: String): Object = {
+  def createStandaloneInstance(ct: TypeDefinition, nodeName: String): Object = {
     //CREATE NEW INSTANCE
     var clazzFactory: Class[_] = null
 
-    val nodeTypeName = ct.eContainer.asInstanceOf[ContainerRoot].getNodes.find(n => n.getName == nodeName).get.getTypeDefinition
+    val nodeHost = ct.eContainer.asInstanceOf[ContainerRoot].getNodes.find(n => n.getName == nodeName).get
+    val nodeTypeName = nodeHost.getTypeDefinition
     val genPackage = KevoreeGeneratorHelper.getTypeDefinitionGeneratedPackage(ct, nodeTypeName.getName)
     val activatorName = ct.getName + "Activator"
 
     val activatorClassName = genPackage + "." + activatorName
-    if (bundleContext != null) {
+    /*if (bundleContext != null) {
       clazzFactory = bundleContext.getBundle.loadClass(activatorClassName)
     } else {
       clazzFactory = this.getClass.getClassLoader.loadClass(activatorClassName)
-    }
+    }*/
+    
+    val  du = ct.foundRelevantDeployUnit(nodeHost)
+    
+
+
+    
+    clazzFactory = JCLContextHandler.getKCL(du).loadClass(activatorClassName)
     val activatorInstance = clazzFactory.newInstance
 
     val reflectiveInstanceActor = clazzFactory.getMethod("callFactory").invoke(activatorInstance)

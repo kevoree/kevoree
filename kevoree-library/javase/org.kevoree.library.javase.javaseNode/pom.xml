@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.kevoree.library.javase</groupId>
     <artifactId>org.kevoree.library.javase.javaseNode</artifactId>
-    <packaging>jar</packaging>
+    <packaging>kjar</packaging>
     <name>Kevoree :: Library :: JavaSE :: JavaSENode</name>
     <version>1.5.1-SNAPSHOT</version>
 

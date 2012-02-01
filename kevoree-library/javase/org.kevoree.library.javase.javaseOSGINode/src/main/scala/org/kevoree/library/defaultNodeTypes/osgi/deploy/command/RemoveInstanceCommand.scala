@@ -27,6 +27,7 @@ import org.kevoree.api.service.core.handler.KevoreeModelHandlerService
 import org.kevoree.api.service.core.script.KevScriptEngineFactory
 import org.kevoree.library.defaultNodeTypes.osgi.deploy.OSGIKevoreeDeployManager
 import org.kevoree.framework.context.KevoreeDeployManager
+import org.kevoree.library.defaultNodeTypes.jcl.deploy.command.UpdateDictionary
 
 case class RemoveInstanceCommand(c: Instance, nodeName: String, modelservice: KevoreeModelHandlerService, kscript: KevScriptEngineFactory) extends PrimitiveCommand {
 
@@ -71,7 +72,7 @@ case class RemoveInstanceCommand(c: Instance, nodeName: String, modelservice: Ke
   def undo() {
     try {
       AddInstanceCommand(c, nodeName, modelservice, kscript).execute()
-      UpdateDictionaryCommand(c, nodeName).execute()
+      UpdateDictionary(c, nodeName).execute()
     } catch {
       case _ =>
     }
