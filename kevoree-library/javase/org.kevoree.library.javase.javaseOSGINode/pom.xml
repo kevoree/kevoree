@@ -6,12 +6,12 @@
     <artifactId>org.kevoree.library.javase.javaseOSGINode</artifactId>
     <packaging>jar</packaging>
     <name>Kevoree :: Library :: JavaSE :: JavaSE OSGI Node</name>
-    <version>1.5.1-SNAPSHOT</version>
+    <version>1.6.0-SNAPSHOT</version>
 
     <parent>
         <artifactId>org.kevoree.library.javase.root</artifactId>
         <groupId>org.kevoree.library.javase</groupId>
-        <version>1.5.1-SNAPSHOT</version>
+        <version>1.6.0-SNAPSHOT</version>
         <relativePath>../org.kevoree.library.javase.root/pom.xml</relativePath>
     </parent>
 
@@ -20,25 +20,25 @@
             <groupId>org.kevoree.tools</groupId>
             <artifactId>org.kevoree.tools.aether.framework</artifactId>
             <version>${kevoree.version}</version>
-           <!-- <type>kjar</type> -->
+            <type>bundle</type>
         </dependency>
         <dependency>
             <groupId>org.kevoree.library.javase</groupId>
             <artifactId>org.kevoree.library.javase.javaseNode</artifactId>
             <version>${kevoree.version}</version>
-           <!-- <type>kjar</type> -->
+           <type>kjar</type>
         </dependency>
         <dependency>
             <groupId>org.apache.felix</groupId>
             <artifactId>org.apache.felix.framework</artifactId>
             <version>3.2.2</version>
-           <!--  <type>kjar</type> -->
+             <type>bundle</type>
         </dependency>
         <dependency>
             <groupId>org.apache.felix</groupId>
             <artifactId>org.apache.felix.shell</artifactId>
             <version>1.4.2</version>
-             <type>kjar</type>
+             <type>bundle</type>
             <exclusions>
                 <exclusion>
                     <artifactId>org.osgi.core</artifactId>
@@ -54,7 +54,7 @@
             <groupId>org.apache.felix</groupId>
             <artifactId>org.apache.felix.shell.tui</artifactId>
             <version>1.4.1</version>
-            <type>kjar</type>
+            <type>bundle</type>
             <exclusions>
                 <exclusion>
                     <artifactId>org.osgi.core</artifactId>

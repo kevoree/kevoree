@@ -45,11 +45,12 @@
             <role-hint>kjar</role-hint>
             <implementation>org.apache.maven.artifact.handler.DefaultArtifactHandler</implementation>
             <configuration>
-             <!-- <type>jar</type> -->
+              <type>kjar</type>
               <includesDependencies>true</includesDependencies>
               <language>java</language>
               <extension>jar</extension>
               <addedToClasspath>true</addedToClasspath>
+              <packaging>jar</packaging>
             </configuration>
           </component>
   </components>
