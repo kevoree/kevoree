@@ -78,6 +78,11 @@
                         <Import-Package>
                             !org.ow2.frascati.util.*,!org.ow2.frascati.*,!org.kevoree.library.frascatiNodeTypes.*,*;resolution:=optional
                         </Import-Package>
+                        <DynamicImport-Package>
+				*                        
+			</DynamicImport-Package>
+
+
                         <Bundle-Classpath>aopalliance-1.0.jar,frascati-util-1.4.jar,
                             asm-3.0.jar,
                             ast-core-2.3.1.jar,
