@@ -58,6 +58,10 @@ trait KCLBootstrap {
         if (arteFile != null) {
           logger.debug("trying to install {}", arteFile.getAbsolutePath)
 
+          if(JCLContextHandler.getKCL(du) != null){ //BOOT STRAP FORCE UPDATE
+            JCLContextHandler.removeDeployUnit(du)
+          }
+          
           val kcl = JCLContextHandler.installDeployUnit(du,arteFile)
 
           //bundle = bundleContext.installBundle("file:///" + arteFile.getAbsolutePath, new FileInputStream(arteFile))
