@@ -19,6 +19,7 @@ package org.kevoree.library.defaultNodeTypes.osgi.deploy.command
  */
 
 import org.kevoree._
+import framework.context.KevoreeDeployManager
 import library.defaultNodeTypes.osgi.deploy.OSGIKevoreeDeployManager
 import org.kevoree.framework.KevoreeActor
 import org.kevoree.framework.Constants
@@ -27,7 +28,7 @@ import org.kevoree.framework.message.StopMessage
 case class StopInstanceCommand(c : Instance,nodeName:String) extends LifeCycleCommand(c,nodeName) {
 
   def execute() : Boolean= {
-    OSGIKevoreeDeployManager.bundleMapping.find(map=>map.objClassName == c.getClass.getName && map.name == c.getName) match {
+    KevoreeDeployManager.bundleMapping.find(map=>map.objClassName == c.getClass.getName && map.name == c.getName) match {
       case None => false
       case Some(mapfound)=> {
           val componentBundle = OSGIKevoreeDeployManager.getBundleContext.getBundle(mapfound.bundleId)

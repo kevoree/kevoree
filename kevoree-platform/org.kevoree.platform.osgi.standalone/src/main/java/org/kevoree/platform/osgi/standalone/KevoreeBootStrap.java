@@ -32,6 +32,7 @@ import org.kevoree.framework.KevoreeXmiHelper;
 import org.kevoree.framework.MavenResolver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import java.io.File;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
@@ -42,9 +43,11 @@ import java.util.jar.JarFile;
 public class KevoreeBootStrap {
     /* Bootstrap Model to init default nodeType */
     private ContainerRoot bootstrapModel = null;
+
     public void setBootstrapModel(ContainerRoot bmodel) {
         bootstrapModel = bmodel;
     }
+
     private KevoreeCoreBean coreBean = null;
     Logger logger = LoggerFactory.getLogger(KevoreeBootStrap.class);
     private Boolean started = false;
@@ -58,13 +61,13 @@ public class KevoreeBootStrap {
             coreBean = new KevoreeCoreBean();
 
             KevoreeJarClassLoader jcl = new KevoreeJarClassLoader();
-            jcl.add(this.getClass().getClassLoader().getResourceAsStream("boot/org.kevoree.tools.aether.framework-"+KevoreeFactory.getVersion()+".jar"));
+            jcl.add(this.getClass().getClassLoader().getResourceAsStream("boot/org.kevoree.tools.aether.framework-" + KevoreeFactory.getVersion() + ".jar"));
             Class clazz = jcl.loadClass("org.kevoree.tools.aether.framework.NodeTypeBootstrapHelper");
             org.kevoree.framework.Bootstraper bhelper = (Bootstraper) clazz.newInstance();
 
             Class clazz3 = jcl.loadClass("org.kevoree.tools.aether.framework.AetherMavenResolver");
             MavenResolver mres = (MavenResolver) clazz3.newInstance();
-            File fileMarShell = mres.resolveKevoreeArtifact("org.kevoree.tools.marShell", "org.kevoree.tools",KevoreeFactory.getVersion());
+            File fileMarShell = mres.resolveKevoreeArtifact("org.kevoree.tools.marShell", "org.kevoree.tools", KevoreeFactory.getVersion());
 
             KevoreeJarClassLoader scriptEngineKCL = new KevoreeJarClassLoader();
             scriptEngineKCL.add(fileMarShell.getAbsolutePath());
@@ -76,17 +79,16 @@ public class KevoreeBootStrap {
             coreBean.start();
             //Kevoree script
             coreBean.setKevsEngineFactory(new KevScriptEngineFactory() {
-                            @Override
-                            public KevScriptEngine createKevScriptEngine() {
-                                try {
-                                    return (KevScriptEngine) clazz2.getDeclaredConstructor(KevoreeModelHandlerService.class).newInstance(coreBean);
-                                } catch (Exception e) {
-                                    e.printStackTrace();
-                                }
-                                return null;
-                            }
-                        });
-
+                @Override
+                public KevScriptEngine createKevScriptEngine() {
+                    try {
+                        return (KevScriptEngine) clazz2.getDeclaredConstructor(KevoreeModelHandlerService.class).newInstance(coreBean);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    return null;
+                }
+            });
 
 
             /* Boot strap */
@@ -101,7 +103,7 @@ public class KevoreeBootStrap {
                     }
                 } else {
                     try {
-                        File filebootmodel = mres.resolveKevoreeArtifact("org.kevoree.library.model.bootstrap", "org.kevoree.library.model",KevoreeFactory.getVersion());
+                        File filebootmodel = mres.resolveKevoreeArtifact("org.kevoree.library.model.bootstrap", "org.kevoree.library.model", KevoreeFactory.getVersion());
                         JarFile jar = new JarFile(filebootmodel);
                         JarEntry entry = jar.getJarEntry("KEV-INF/lib.kev");
                         bootstrapModel = KevoreeXmiHelper.loadStream(jar.getInputStream(entry));
@@ -114,7 +116,8 @@ public class KevoreeBootStrap {
             if (bootstrapModel != null) {
                 try {
                     logger.debug("Bootstrap step !");
-                    BootstrapHelper.initModelInstance(bootstrapModel,"JavaSENode",System.getProperty("node.groupType"));
+                    BootstrapHelper.initModelInstance(bootstrapModel, "FrascatiNode", System.getProperty("node.groupType"));
+                    //   BootstrapHelper.initModelInstance(bootstrapModel,"JavaSENode",System.getProperty("node.groupType"));
                     coreBean.updateModel(bootstrapModel);
                 } catch (Exception e) {
                     logger.error("Bootstrap failed", e);

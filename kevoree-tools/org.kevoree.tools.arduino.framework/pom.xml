@@ -4,12 +4,12 @@
     <artifactId>org.kevoree.tools.arduino.framework</artifactId>
     <packaging>bundle</packaging>
     <name>Kevoree :: Tools :: Arduino Framework</name>
-    <version>1.5.1-SNAPSHOT</version>
+    <version>1.6.0-SNAPSHOT</version>
 
     <parent>
         <artifactId>org.kevoree.tools.root</artifactId>
         <groupId>org.kevoree.tools</groupId>
-        <version>1.5.1-SNAPSHOT</version>
+        <version>1.6.0-SNAPSHOT</version>
         <relativePath>../org.kevoree.tools.root/pom.xml</relativePath>
     </parent>
 

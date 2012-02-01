@@ -38,8 +38,6 @@ public class RestGroup extends AbstractGroupType {
 
        //logger.info("!!! try to block => "+getModelService().getLastModel()+"->"+getModelService().getLastModification());
 
-        logger.info("TOTO");
-
     }
 
     @Stop

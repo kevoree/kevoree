@@ -7,7 +7,6 @@ package org.kevoree.library.arduinoNodeType.generator
 
 import org.kevoree.ComponentType
 import org.kevoree.MessagePortType
-import org.osgi.framework.BundleContext
 import org.kevoree.annotation.{Generate => KGenerate}
 import org.slf4j.{LoggerFactory, Logger}
 import org.kevoree.tools.arduino.framework.AbstractArduinoComponent
@@ -15,9 +14,9 @@ import org.kevoree.tools.arduino.framework.AbstractArduinoComponent
 trait KevoreeComponentTypeClassGenerator extends KevoreeCAbstractGenerator with KevoreeReflectiveHelper with KevoreeInstanceGenerator {
   private val logger: Logger = LoggerFactory.getLogger(this.getClass)
 
-  def generateComponentType(ct: ComponentType, bundleContext: BundleContext, nodeName: String) = {
+  def generateComponentType(ct: ComponentType, nodeName: String) = {
 
-    val instance = createStandaloneInstance(ct, bundleContext, nodeName)
+    val instance = createStandaloneInstance(ct, nodeName)
     if (instance.isInstanceOf[AbstractArduinoComponent]) {
       instance.asInstanceOf[AbstractArduinoComponent].setGenerator(context.getGenerator)
     }

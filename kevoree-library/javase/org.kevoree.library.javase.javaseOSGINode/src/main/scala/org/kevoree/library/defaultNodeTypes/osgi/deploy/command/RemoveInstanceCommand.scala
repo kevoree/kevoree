@@ -26,6 +26,8 @@ import org.kevoree.{ContainerRoot, NodeType, Instance}
 import org.kevoree.api.service.core.handler.KevoreeModelHandlerService
 import org.kevoree.api.service.core.script.KevScriptEngineFactory
 import org.kevoree.library.defaultNodeTypes.osgi.deploy.OSGIKevoreeDeployManager
+import org.kevoree.framework.context.KevoreeDeployManager
+import org.kevoree.library.defaultNodeTypes.jcl.deploy.command.UpdateDictionary
 
 case class RemoveInstanceCommand(c: Instance, nodeName: String, modelservice: KevoreeModelHandlerService, kscript: KevScriptEngineFactory) extends PrimitiveCommand {
 
@@ -34,7 +36,7 @@ case class RemoveInstanceCommand(c: Instance, nodeName: String, modelservice: Ke
   def execute(): Boolean = {
     logger.debug("CMD REMOVE INSTANCE EXECUTION - " + c.getName + " - type - " + c.getTypeDefinition.getName);
 
-    val bundles = OSGIKevoreeDeployManager.bundleMapping.filter({
+    val bundles = KevoreeDeployManager.bundleMapping.filter({
       bm => bm.objClassName == c.getClass.getName && bm.name == c.getName
     }) ++ List()
 
@@ -60,9 +62,9 @@ case class RemoveInstanceCommand(c: Instance, nodeName: String, modelservice: Ke
         // KevoreeDeployManager.getServicePackageAdmin.refreshPackages(Array(bundle))
         true
     }
-    OSGIKevoreeDeployManager.bundleMapping.filter(mb => bundles.contains(mb)).foreach {
+    KevoreeDeployManager.bundleMapping.filter(mb => bundles.contains(mb)).foreach {
       map =>
-        OSGIKevoreeDeployManager.removeMapping(map)
+        KevoreeDeployManager.removeMapping(map)
     }
     true
   }
@@ -70,7 +72,7 @@ case class RemoveInstanceCommand(c: Instance, nodeName: String, modelservice: Ke
   def undo() {
     try {
       AddInstanceCommand(c, nodeName, modelservice, kscript).execute()
-      UpdateDictionaryCommand(c, nodeName).execute()
+      UpdateDictionary(c, nodeName).execute()
     } catch {
       case _ =>
     }

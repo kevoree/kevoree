@@ -24,7 +24,7 @@ import javax.lang.model.util.{SimpleElementVisitor6}
 import org.kevoree.{ChannelType, NodeType}
 import javax.lang.model.element.{ExecutableElement, ElementKind, TypeElement, Element}
 
-case class NodeTypeVisitor(nodeType: NodeType, env: ProcessingEnvironment,rootVisitor : KevoreeAnnotationProcessor)
+case class NodeTypeVisitor (nodeType: NodeType, env: ProcessingEnvironment, rootVisitor: KevoreeAnnotationProcessor)
   extends SimpleElementVisitor6[Any, Element]
   with AdaptationPrimitiveProcessor
   with DeployUnitProcessor
@@ -35,14 +35,18 @@ case class NodeTypeVisitor(nodeType: NodeType, env: ProcessingEnvironment,rootVi
   with TypeDefinitionProcessor {
 
 
-  def commonProcess(classdef: TypeElement) {
+  def commonProcess (classdef: TypeElement) {
     //SUB PROCESSOR
     import scala.collection.JavaConversions._
     classdef.getInterfaces.foreach {
       it =>
         it match {
           case dt: javax.lang.model.`type`.DeclaredType => {
-            val annotFragment = dt.asElement().getAnnotation(classOf[org.kevoree.annotation.NodeType])
+            var annotFragment : Any = dt.asElement().getAnnotation(classOf[org.kevoree.annotation.ComponentFragment])
+            if (annotFragment != null) {
+              dt.asElement().accept(this, dt.asElement())
+            }
+            annotFragment = dt.asElement().getAnnotation(classOf[org.kevoree.annotation.NodeType])
             if (annotFragment != null) {
               dt.asElement().accept(this, dt.asElement())
             }
@@ -52,28 +56,32 @@ case class NodeTypeVisitor(nodeType: NodeType, env: ProcessingEnvironment,rootVi
     }
 
     processDictionary(nodeType, classdef)
-    processDeployUnit(nodeType, classdef, env,rootVisitor.getOptions)
+    processDeployUnit(nodeType, classdef, env, rootVisitor.getOptions)
     processLibrary(nodeType, classdef)
-    processThirdParty(nodeType, classdef, env,rootVisitor)
+    processThirdParty(nodeType, classdef, env, rootVisitor)
     processPrimitiveCommand(nodeType, classdef, env)
     import scala.collection.JavaConversions._
     classdef.getEnclosedElements.foreach {
-          method => {
-            method.getKind match {
-              case ElementKind.METHOD => {
-                processLifeCycleMethod(nodeType, method.asInstanceOf[ExecutableElement])
-              }
-              case _ =>
-            }
+      method => {
+        method.getKind match {
+          case ElementKind.METHOD => {
+            processLifeCycleMethod(nodeType, method.asInstanceOf[ExecutableElement])
           }
+          case _ =>
         }
+      }
+    }
 
   }
 
-  override def visitType(p1: TypeElement, p2: Element): Any = {
+  override def visitType (p1: TypeElement, p2: Element): Any = {
     p1.getSuperclass match {
       case dt: javax.lang.model.`type`.DeclaredType => {
-        val an = dt.asElement().getAnnotation(classOf[org.kevoree.annotation.NodeType])
+        var an: Any = dt.asElement().getAnnotation(classOf[org.kevoree.annotation.NodeFragment])
+        if (an != null) {
+          dt.asElement().accept(this, dt.asElement())
+        }
+        an = dt.asElement().getAnnotation(classOf[org.kevoree.annotation.NodeType])
         if (an != null) {
           dt.asElement().accept(this, dt.asElement())
           defineAsSuperType(nodeType, dt.asElement().getSimpleName.toString, classOf[NodeType])

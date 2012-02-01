@@ -19,7 +19,7 @@ package org.kevoree.library.defaultNodeTypes.osgi.deploy.command
  */
 
 import org.kevoree._
-import framework.context.{KevoreeOSGiBundle}
+import framework.context.{KevoreeDeployManager, KevoreeOSGiBundle}
 import framework.{FileNIOHelper, PrimitiveCommand}
 import library.defaultNodeTypes.osgi.deploy.OSGIKevoreeDeployManager
 import org.kevoree.DeployUnit
@@ -72,7 +72,7 @@ case class AddDeployUnitAetherCommand (deployUnit: DeployUnit, update: Boolean =
       if (!previousBundleID.contains(lastExecutionBundle.get.getBundleId)) {
         val symbolicName: String = lastExecutionBundle.get.getSymbolicName
         //FOR DEPLOY UNIT DO NOT USE ONLY NAME
-        OSGIKevoreeDeployManager.addMapping(KevoreeOSGiBundle(CommandHelper.buildKEY(deployUnit), deployUnit.getClass.getName,
+        KevoreeDeployManager.addMapping(KevoreeOSGiBundle(CommandHelper.buildKEY(deployUnit), deployUnit.getClass.getName,
                                          lastExecutionBundle.get.getBundleId))
         lastExecutionBundle.get.start()
         //  mustBeStarted = true
@@ -99,7 +99,7 @@ case class AddDeployUnitAetherCommand (deployUnit: DeployUnit, update: Boolean =
             }
             lastExecutionBundle match {
               case Some(bundle) => {
-                OSGIKevoreeDeployManager.addMapping(KevoreeOSGiBundle(CommandHelper.buildKEY(deployUnit), deployUnit.getClass.getName,bundle.getBundleId))
+                KevoreeDeployManager.addMapping(KevoreeOSGiBundle(CommandHelper.buildKEY(deployUnit), deployUnit.getClass.getName,bundle.getBundleId))
                 //mustBeStarted = false
                 true
               }
@@ -142,10 +142,10 @@ case class AddDeployUnitAetherCommand (deployUnit: DeployUnit, update: Boolean =
           } else {
             bundle.stop()
             bundle.uninstall()
-            (OSGIKevoreeDeployManager.bundleMapping.filter(map => map.bundleId == bundle.getBundleId).toList ++ List())
+            (KevoreeDeployManager.bundleMapping.filter(map => map.bundleId == bundle.getBundleId).toList ++ List())
               .foreach {
               map =>
-                OSGIKevoreeDeployManager.removeMapping(map) // = ctx.bundleMapping.filter(mb => mb != map)
+                KevoreeDeployManager.removeMapping(map) // = ctx.bundleMapping.filter(mb => mb != map)
             }
           }
           val srPackageAdmin = OSGIKevoreeDeployManager.getBundleContext.getServiceReference(classOf[PackageAdmin].getName)

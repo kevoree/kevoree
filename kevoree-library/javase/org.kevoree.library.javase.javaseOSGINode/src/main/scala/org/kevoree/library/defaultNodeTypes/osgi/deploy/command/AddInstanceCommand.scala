@@ -21,7 +21,7 @@ package org.kevoree.library.defaultNodeTypes.osgi.deploy.command
 import org.kevoree._
 import api.service.core.handler.KevoreeModelHandlerService
 import api.service.core.script.KevScriptEngineFactory
-import framework.context.{KevoreeJCLBundle}
+import framework.context.{KevoreeDeployManager, KevoreeJCLBundle}
 import framework.osgi.{KevoreeInstanceActivator, KevoreeInstanceFactory}
 import framework.{PrimitiveCommand, KevoreeGeneratorHelper}
 import library.defaultNodeTypes.osgi.deploy.OSGIKevoreeDeployManager
@@ -36,14 +36,14 @@ case class AddInstanceCommand(c: Instance, nodeName: String,modelservice : Kevor
 
   def execute(): Boolean = {
     //FOUND CT SYMBOLIC NAME
-    val mappingFound = OSGIKevoreeDeployManager.bundleMapping.find({
+    val mappingFound = KevoreeDeployManager.bundleMapping.find({
       bundle => bundle.name == c.getTypeDefinition.getName &&
         bundle.objClassName == c.getTypeDefinition.getClass.getName
     }) match {
       case Some(bundle) => bundle
       case None => {
         logger.error("Type Not Found: " + c.getTypeDefinition.getName)
-        logger.error("mapping state=> " + OSGIKevoreeDeployManager.bundleMapping.toString())
+        logger.error("mapping state=> " + KevoreeDeployManager.bundleMapping.toString())
       };
       return false;
       null;
@@ -69,7 +69,7 @@ case class AddInstanceCommand(c: Instance, nodeName: String,modelservice : Kevor
 
         kevoreeFactory = bundleType.loadClass(factoryName).newInstance().asInstanceOf[KevoreeInstanceFactory]
         val newInstance: KevoreeInstanceActivator = kevoreeFactory.registerInstance(c.getName, nodeName)
-        OSGIKevoreeDeployManager.addMapping(KevoreeJCLBundle(c.getName, c.getClass.getName, newInstance,bundleType.getBundleId))
+        KevoreeDeployManager.addMapping(KevoreeJCLBundle(c.getName, c.getClass.getName, newInstance,bundleType.getBundleId))
 
 
         newInstance.setKevScriptEngineFactory(kscript)
@@ -99,9 +99,9 @@ case class AddInstanceCommand(c: Instance, nodeName: String,modelservice : Kevor
           if (kevoreeFactory != null) {
             kevoreeFactory.remove(c.getName)
           }
-          (OSGIKevoreeDeployManager.bundleMapping.filter(map => map.name == c.getName).toList ++ List()).foreach {
+          (KevoreeDeployManager.bundleMapping.filter(map => map.name == c.getName).toList ++ List()).foreach {
             map =>
-              OSGIKevoreeDeployManager.removeMapping(map)
+              KevoreeDeployManager.removeMapping(map)
           }
         } catch {
           case _@e =>

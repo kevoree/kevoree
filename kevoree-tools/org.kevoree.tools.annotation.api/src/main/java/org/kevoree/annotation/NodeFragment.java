@@ -11,17 +11,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kevoree.tools.ui.editor.command
+package org.kevoree.annotation;
 
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
- * User: ffouquet
- * Date: 22/08/11
- * Time: 23:56
+ * User: Erwan Daubert - erwan.daubert@gmail.com
+ * Date: 30/01/12
+ * Time: 17:46
+ *
+ * @author Erwan Daubert
+ * @version 1.0
  */
-
-class KillOSGICommand extends Command {
-  def execute(p: AnyRef) {
-     // EmbeddedOSGiEnv.getFwk.stop()
-  }
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ElementType.TYPE})
+public @interface NodeFragment {
 }

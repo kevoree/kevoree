@@ -2,7 +2,7 @@ package org.kevoree.library.sky.manager.nodeType;
 
 import org.kevoree.annotation.DictionaryAttribute;
 import org.kevoree.annotation.DictionaryType;
-import org.kevoree.annotation.NodeType;
+import org.kevoree.annotation.NodeFragment;
 
 /**
  * User: Erwan Daubert - erwan.daubert@gmail.com
@@ -28,6 +28,6 @@ import org.kevoree.annotation.NodeType;
 		// how the restrictions are manage : STRICT = the jail is stopped, RELAX = the jail continue to execute, AVOID means to refused to execute something that break the limitation
 //		@DictionaryAttribute(name = "OS", defaultValue = "N/A", vals={"N/A", "Windows 7", "Ubuntu-11.10", "BSD-9"}, optional = false)
 })
-@NodeType
+@NodeFragment
 public interface PaaSNode {
 }

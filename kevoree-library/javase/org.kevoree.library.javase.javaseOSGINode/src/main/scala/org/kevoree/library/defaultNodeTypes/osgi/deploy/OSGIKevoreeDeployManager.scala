@@ -18,32 +18,30 @@ package org.kevoree.library.defaultNodeTypes.osgi.deploy
  * and open the template in the editor.
  */
 
-
-import actors.DaemonActor
 import org.slf4j.LoggerFactory
 import org.kevoree.framework.context.KevoreeOSGiBundle
 import org.osgi.framework.Bundle
+import org.osgi.service.packageadmin.PackageAdmin
 
-
-object OSGIKevoreeDeployManager extends DaemonActor {
+object OSGIKevoreeDeployManager {
 
   var bundle: Bundle = null
   val logger = LoggerFactory.getLogger(this.getClass)
 
   def setBundle(b: Bundle) {
     bundle = b
-    //val sr = bundle.getBundleContext.getServiceReference(classOf[PackageAdmin].getName)
-    //servicePackageAdmin = Some(bundle.getBundleContext.getService(sr).asInstanceOf[PackageAdmin])
+    val sr = bundle.getBundleContext.getServiceReference(classOf[PackageAdmin].getName)
+    servicePackageAdmin = Some(bundle.getBundleContext.getService(sr).asInstanceOf[PackageAdmin])
   }
 
   def getBundleContext = bundle.getBundleContext;
 
   private var private_bundleMapping: List[KevoreeOSGiBundle] = List[KevoreeOSGiBundle]();
-//  var servicePackageAdmin: Option[PackageAdmin] = null
-/*
+  var servicePackageAdmin: Option[PackageAdmin] = null
+
   def getServicePackageAdmin: PackageAdmin = {
     servicePackageAdmin.get
-  }*/
+  }
 /*
   def clearAll() {
     KevoreeDeployManager.bundleMapping.foreach {
@@ -73,7 +71,7 @@ object OSGIKevoreeDeployManager extends DaemonActor {
 
   case class GARBAGE()
 */
-
+/*
   def bundleMapping: List[KevoreeOSGiBundle] = {
     (this !? GET_MAPPINGS()).asInstanceOf[List[KevoreeOSGiBundle]]
   }
@@ -125,7 +123,7 @@ object OSGIKevoreeDeployManager extends DaemonActor {
   }
 
   start()
-
+*/
 }
 
 

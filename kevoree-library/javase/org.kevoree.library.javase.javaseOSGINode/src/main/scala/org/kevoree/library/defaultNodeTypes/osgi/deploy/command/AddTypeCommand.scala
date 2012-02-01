@@ -19,7 +19,7 @@ package org.kevoree.library.defaultNodeTypes.osgi.deploy.command
  */
 
 import org.kevoree._
-import framework.context.{KevoreeOSGiBundle}
+import framework.context.{KevoreeDeployManager, KevoreeOSGiBundle}
 import framework.PrimitiveCommand
 import library.defaultNodeTypes.osgi.deploy.OSGIKevoreeDeployManager
 import org.kevoree.framework.aspects.KevoreeAspects._
@@ -36,13 +36,13 @@ case class AddTypeCommand (ct: TypeDefinition, nodeName: String) extends Primiti
     val deployUnit = ct.foundRelevantDeployUnit(node)
 
     //FOUND TYPE DEFINITION DEPLOY UNIT BUNDLE
-    val mappingFound = OSGIKevoreeDeployManager.bundleMapping.find({
+    val mappingFound = KevoreeDeployManager.bundleMapping.find({
       bundle => bundle.name == CommandHelper.buildKEY(deployUnit) && bundle.objClassName == deployUnit.getClass.getName
     }) match {
       case Some(bundle) => bundle
       case None => {
         logger.debug("SearchName="+CommandHelper.buildKEY(deployUnit))
-        OSGIKevoreeDeployManager.bundleMapping.foreach{ mapping =>
+        KevoreeDeployManager.bundleMapping.foreach{ mapping =>
            logger.error(mapping.bundleId+"-"+mapping.name+"-"+mapping.objClassName)
         }
         logger.error("Deploy Unit Not Found for typedefinition "+ct.getName); null
@@ -51,7 +51,7 @@ case class AddTypeCommand (ct: TypeDefinition, nodeName: String) extends Primiti
 
     if (mappingFound != null) {
       //JUST ADD NEW BUNDING
-      OSGIKevoreeDeployManager.addMapping(KevoreeOSGiBundle(ct.getName, ct.getClass.getName, mappingFound.bundleId))
+      KevoreeDeployManager.addMapping(KevoreeOSGiBundle(ct.getName, ct.getClass.getName, mappingFound.bundleId))
       true
     } else {
       false

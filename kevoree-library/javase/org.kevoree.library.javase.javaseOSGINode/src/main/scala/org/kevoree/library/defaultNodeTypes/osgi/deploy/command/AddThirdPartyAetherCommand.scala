@@ -24,8 +24,8 @@ import org.slf4j.LoggerFactory
 import org.kevoree.DeployUnit
 import java.io.{FileInputStream, File}
 import org.kevoree.framework.PrimitiveCommand
-import org.kevoree.framework.context.{KevoreeOSGiBundle}
 import org.kevoree.library.defaultNodeTypes.osgi.deploy.OSGIKevoreeDeployManager
+import org.kevoree.framework.context.{KevoreeDeployManager, KevoreeOSGiBundle}
 
 case class AddThirdPartyAetherCommand(deployUnit: DeployUnit) extends PrimitiveCommand {
 
@@ -46,7 +46,7 @@ case class AddThirdPartyAetherCommand(deployUnit: DeployUnit) extends PrimitiveC
 
       //lastExecutionBundle = Some(ctx.bundleContext.installBundle(url));
       val symbolicName: String = lastExecutionBundle.get.getSymbolicName
-      OSGIKevoreeDeployManager.addMapping(KevoreeOSGiBundle(CommandHelper.buildKEY(deployUnit), deployUnit.getClass.getName, lastExecutionBundle.get.getBundleId))
+      KevoreeDeployManager.addMapping(KevoreeOSGiBundle(CommandHelper.buildKEY(deployUnit), deployUnit.getClass.getName, lastExecutionBundle.get.getBundleId))
       // lastExecutionBundle.get.start
      // mustBeStarted = false
       true
@@ -69,9 +69,9 @@ case class AddThirdPartyAetherCommand(deployUnit: DeployUnit) extends PrimitiveC
       lastExecutionBundle match {
         case Some(bundle) => {
           //CLEAR CACHE
-          OSGIKevoreeDeployManager.bundleMapping.filter(map => map.bundleId == bundle.getBundleId).foreach {
+          KevoreeDeployManager.bundleMapping.filter(map => map.bundleId == bundle.getBundleId).foreach {
             map =>
-              OSGIKevoreeDeployManager.removeMapping(map)
+              KevoreeDeployManager.removeMapping(map)
           }
           bundle.stop()
           bundle.uninstall()

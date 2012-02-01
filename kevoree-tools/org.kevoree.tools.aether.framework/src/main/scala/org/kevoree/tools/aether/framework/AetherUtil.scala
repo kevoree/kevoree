@@ -14,7 +14,6 @@ package org.kevoree.tools.aether.framework
  * limitations under the License.
  */
 
-import org.sonatype.aether.RepositorySystem
 import org.apache.maven.repository.internal.DefaultServiceLocator
 import org.sonatype.aether.spi.connector.RepositoryConnectorFactory
 import org.sonatype.aether.connector.file.FileRepositoryConnectorFactory
@@ -33,6 +32,7 @@ import util.matching.Regex
 import org.sonatype.aether.repository.{Authentication, RepositoryPolicy, RemoteRepository, LocalRepository}
 import scala.collection.JavaConversions._
 import org.slf4j.LoggerFactory
+import org.sonatype.aether.{ConfigurationProperties, RepositorySystem}
 
 /**
  * User: ffouquet
@@ -44,12 +44,14 @@ object AetherUtil {
 
   private val logger = LoggerFactory.getLogger(this.getClass)
 
+
+
   val newRepositorySystem: RepositorySystem = {
     val locator = new DefaultServiceLocator()
-    locator.addService(classOf[Logger], classOf[AetherLogger])
-    locator.addService(classOf[LocalRepositoryManagerFactory], classOf[EnhancedLocalRepositoryManagerFactory])
-    locator.addService(classOf[RepositoryConnectorFactory], classOf[FileRepositoryConnectorFactory])
-    locator.addService(classOf[RepositoryConnectorFactory], classOf[AsyncRepositoryConnectorFactory])
+    locator.setServices(classOf[Logger], new AetherLogger) // Doesn't work to JdkAsyncHttpProvider because this class uses its own logger and not the one provided by plexus and set with this line
+    locator.setService(classOf[LocalRepositoryManagerFactory], classOf[EnhancedLocalRepositoryManagerFactory])
+    locator.setService(classOf[RepositoryConnectorFactory], classOf[FileRepositoryConnectorFactory])
+    locator.setService(classOf[RepositoryConnectorFactory], classOf[AsyncRepositoryConnectorFactory])
     locator.getService(classOf[RepositorySystem])
   }
 
@@ -137,6 +139,8 @@ object AetherUtil {
     } else {
       logger.debug("settings.xml not found")
     }
+    session.getConfigProperties.put(ConfigurationProperties.REQUEST_TIMEOUT, 3000.asInstanceOf[java.lang.Integer])
+    session.getConfigProperties.put(ConfigurationProperties.CONNECT_TIMEOUT, 5000.asInstanceOf[java.lang.Integer])
     session
   }
 
