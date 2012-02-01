@@ -19,10 +19,10 @@ import org.kevoree.{NodeType, ContainerRoot, Instance}
 import org.kevoree.framework.{KevoreeGeneratorHelper, PrimitiveCommand}
 import org.kevoree.framework.osgi.{KevoreeInstanceActivator, KevoreeInstanceFactory}
 import org.slf4j.LoggerFactory
-import org.kevoree.framework.context.{KevoreeJCLBundle, KevoreeDeployManager}
 import org.kevoree.api.service.core.handler.KevoreeModelHandlerService
 import org.kevoree.api.service.core.script.KevScriptEngineFactory
 import org.kevoree.tools.aether.framework.JCLContextHandler
+import org.kevoree.library.defaultNodeTypes.jcl.deploy.context.{KevoreeDeployManager, KevoreeMapping}
 
 /**
  * Created by IntelliJ IDEA.
@@ -50,7 +50,7 @@ case class AddInstance(c: Instance, nodeName: String,modelservice : KevoreeModel
     try {
       val kevoreeFactory = JCLContextHandler.getKCL(deployUnit).loadClass(factoryName).newInstance().asInstanceOf[KevoreeInstanceFactory]
       val newInstance: KevoreeInstanceActivator = kevoreeFactory.registerInstance(c.getName, nodeName)
-      KevoreeDeployManager.addMapping(KevoreeJCLBundle(c.getName, c.getClass.getName, newInstance,-1))
+      KevoreeDeployManager.addMapping(KevoreeMapping(c.getName, c.getClass.getName, newInstance))
 
       newInstance.setKevScriptEngineFactory(kscript)
       newInstance.setModelHandlerService(modelservice)

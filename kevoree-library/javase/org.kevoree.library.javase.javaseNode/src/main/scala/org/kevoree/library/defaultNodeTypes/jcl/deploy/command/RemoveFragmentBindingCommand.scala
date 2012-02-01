@@ -21,9 +21,9 @@ package org.kevoree.library.defaultNodeTypes.jcl.deploy.command
 import org.kevoree.framework.message.FragmentUnbindMessage
 import org.slf4j.LoggerFactory
 import org.kevoree.Channel
-import org.kevoree.framework.{PrimitiveCommand, KevoreeChannelFragment, Constants}
+import org.kevoree.framework.{PrimitiveCommand}
 import org.kevoree.framework.osgi.KevoreeChannelFragmentActivator
-import org.kevoree.framework.context.{KevoreeOSGiBundle, KevoreeJCLBundle, KevoreeDeployManager}
+import org.kevoree.library.defaultNodeTypes.jcl.deploy.context.{KevoreeMapping, KevoreeDeployManager}
 
 case class RemoveFragmentBindingCommand(c: Channel, remoteNodeName: String, nodeName: String) extends PrimitiveCommand {
 
@@ -36,7 +36,7 @@ case class RemoveFragmentBindingCommand(c: Channel, remoteNodeName: String, node
       case None => logger.error("Channel Fragment Mapping not found"); None
       case Some(mapfound) => {
         mapfound match {
-          case kb: KevoreeJCLBundle => {
+          case kb: KevoreeMapping => {
             Some(kb.ref.asInstanceOf[KevoreeChannelFragmentActivator].channelActor)
           }
           case _ => logger.error("Channel Fragment Service not found"); None

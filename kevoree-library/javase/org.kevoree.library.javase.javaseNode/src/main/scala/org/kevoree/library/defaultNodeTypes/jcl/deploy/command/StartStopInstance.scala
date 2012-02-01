@@ -19,9 +19,9 @@ package org.kevoree.library.defaultNodeTypes.jcl.deploy.command
  */
 
 import org.kevoree._
-import framework.context.{KevoreeJCLBundle, KevoreeDeployManager}
 import framework.message.{StopMessage, StartMessage}
 import framework.osgi.{KevoreeGroupActivator, KevoreeChannelFragmentActivator, KevoreeComponentActivator}
+import library.defaultNodeTypes.jcl.deploy.context.{KevoreeMapping, KevoreeDeployManager}
 
 case class StartStopInstance(c: Instance, nodeName: String,start : Boolean) extends LifeCycleCommand(c, nodeName) {
 
@@ -37,7 +37,7 @@ case class StartStopInstance(c: Instance, nodeName: String,start : Boolean) exte
           StopMessage(c.getTypeDefinition.eContainer.asInstanceOf[ContainerRoot])
         }
 
-        mapfound.asInstanceOf[KevoreeJCLBundle].ref match {
+        mapfound.asInstanceOf[KevoreeMapping].ref match {
           case c_act: KevoreeComponentActivator => {
             val startResult = (c_act.componentActor !? msg).asInstanceOf[Boolean]
             startResult

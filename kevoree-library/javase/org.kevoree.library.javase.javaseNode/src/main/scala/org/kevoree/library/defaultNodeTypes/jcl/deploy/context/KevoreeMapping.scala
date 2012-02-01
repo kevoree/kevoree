@@ -1,4 +1,4 @@
-package org.kevoree.framework.context
+package org.kevoree.library.defaultNodeTypes.jcl.deploy.context
 
 /**
  * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE, Version 3, 29 June 2007;
@@ -14,5 +14,4 @@ package org.kevoree.framework.context
  * limitations under the License.
  */
 
-case class KevoreeOSGiBundle(name : String,objClassName : String,bundleId : Long)
-case class KevoreeJCLBundle(override val name : String,override val objClassName : String,ref : Any,override val bundleId : Long) extends KevoreeOSGiBundle(name,objClassName,bundleId)
+case class KevoreeMapping(name : String,objClassName : String,ref : Any)
