@@ -19,9 +19,10 @@ package org.kevoree.library.defaultNodeTypes.osgi.deploy.command
  */
 
 import org.kevoree._
-import framework.context.{KevoreeDeployManager, KevoreeOSGiBundle}
 import framework.PrimitiveCommand
-import library.defaultNodeTypes.osgi.deploy.OSGIKevoreeDeployManager
+import library.defaultNodeTypes.jcl.deploy.command.CommandHelper
+import library.defaultNodeTypes.jcl.deploy.context.KevoreeDeployManager
+import library.defaultNodeTypes.osgi.deploy.{KevoreeOSGIMapping, OSGIKevoreeDeployManager}
 import org.kevoree.framework.aspects.KevoreeAspects._
 import org.slf4j.LoggerFactory
 
@@ -41,17 +42,13 @@ case class AddTypeCommand (ct: TypeDefinition, nodeName: String) extends Primiti
     }) match {
       case Some(bundle) => bundle
       case None => {
-        logger.debug("SearchName="+CommandHelper.buildKEY(deployUnit))
-        KevoreeDeployManager.bundleMapping.foreach{ mapping =>
-           logger.error(mapping.bundleId+"-"+mapping.name+"-"+mapping.objClassName)
-        }
         logger.error("Deploy Unit Not Found for typedefinition "+ct.getName); null
       }
     }
 
     if (mappingFound != null) {
       //JUST ADD NEW BUNDING
-      KevoreeDeployManager.addMapping(KevoreeOSGiBundle(ct.getName, ct.getClass.getName, mappingFound.bundleId))
+      KevoreeDeployManager.addMapping(KevoreeOSGIMapping(ct.getName, ct.getClass.getName,ct, mappingFound.asInstanceOf[KevoreeOSGIMapping].bundleID))
       true
     } else {
       false

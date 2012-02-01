@@ -34,8 +34,8 @@ case class AddDeployUnit(du: DeployUnit) extends PrimitiveCommand {
 
   def undo() {
     JCLContextHandler.removeDeployUnit(du)
-    KevoreeDeployManager.bundleMapping.foreach(bm => {
-      if (bm.ref == du) {
+    KevoreeDeployManager.bundleMapping.filter(bm => bm.ref.isInstanceOf[DeployUnit]).foreach(bm => {
+      if (CommandHelper.buildKEY(bm.ref.asInstanceOf[DeployUnit]) == CommandHelper.buildKEY(du)) {
         KevoreeDeployManager.removeMapping(bm)
       }
     })
@@ -46,10 +46,10 @@ case class AddDeployUnit(du: DeployUnit) extends PrimitiveCommand {
       if (JCLContextHandler.getKCL(du) == null) {
         val arteFile: File = AetherUtil.resolveDeployUnit(du)
         JCLContextHandler.installDeployUnit(du, arteFile)
-      }
-      KevoreeDeployManager.bundleMapping.find(bm => bm.ref == du) match {
-        case Some(bm)=>
-        case None => KevoreeDeployManager.addMapping(KevoreeMapping(du.getName, du.getClass.getName, du))
+        KevoreeDeployManager.bundleMapping.filter(bm => bm.ref.isInstanceOf[DeployUnit]).find(bm => CommandHelper.buildKEY(bm.ref.asInstanceOf[DeployUnit]) == CommandHelper.buildKEY(du)) match {
+          case Some(bm) =>
+          case None => KevoreeDeployManager.addMapping(KevoreeMapping(CommandHelper.buildKEY(du), du.getClass.getName, du))
+        }
       }
       true
     } catch {

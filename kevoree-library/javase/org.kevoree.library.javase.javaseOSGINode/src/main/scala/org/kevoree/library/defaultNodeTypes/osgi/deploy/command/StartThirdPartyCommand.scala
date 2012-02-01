@@ -17,8 +17,9 @@ package org.kevoree.library.defaultNodeTypes.osgi.deploy.command
 import org.kevoree.framework.PrimitiveCommand
 import org.kevoree.DeployUnit
 import org.slf4j.LoggerFactory
-import org.kevoree.library.defaultNodeTypes.osgi.deploy.OSGIKevoreeDeployManager
-import org.kevoree.framework.context.KevoreeDeployManager
+import org.kevoree.library.defaultNodeTypes.jcl.deploy.context.KevoreeDeployManager
+import org.kevoree.library.defaultNodeTypes.jcl.deploy.command.CommandHelper
+import org.kevoree.library.defaultNodeTypes.osgi.deploy.{KevoreeOSGIMapping, OSGIKevoreeDeployManager}
 
 /**
  * User: Erwan Daubert - erwan.daubert@gmail.com
@@ -38,7 +39,7 @@ case class StartThirdPartyCommand (c: DeployUnit, nodeName: String) extends Prim
       case None => false
       case Some(mapfound) => {
         try {
-          OSGIKevoreeDeployManager.getBundleContext.getBundle(mapfound.bundleId).start()
+          OSGIKevoreeDeployManager.getBundleContext.getBundle(mapfound.asInstanceOf[KevoreeOSGIMapping].bundleID).start()
           true
         } catch {
           case _@e => logger.debug("Unable to initialiaze a ThirdParty: {}", c.getName, e); false

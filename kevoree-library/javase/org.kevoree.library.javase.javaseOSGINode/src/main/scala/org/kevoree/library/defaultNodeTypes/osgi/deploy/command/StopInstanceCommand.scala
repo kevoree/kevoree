@@ -19,8 +19,8 @@ package org.kevoree.library.defaultNodeTypes.osgi.deploy.command
  */
 
 import org.kevoree._
-import framework.context.KevoreeDeployManager
-import library.defaultNodeTypes.osgi.deploy.OSGIKevoreeDeployManager
+import library.defaultNodeTypes.jcl.deploy.context.KevoreeDeployManager
+import library.defaultNodeTypes.osgi.deploy.{KevoreeOSGIMapping, OSGIKevoreeDeployManager}
 import org.kevoree.framework.KevoreeActor
 import org.kevoree.framework.Constants
 import org.kevoree.framework.message.StopMessage
@@ -31,7 +31,7 @@ case class StopInstanceCommand(c : Instance,nodeName:String) extends LifeCycleCo
     KevoreeDeployManager.bundleMapping.find(map=>map.objClassName == c.getClass.getName && map.name == c.getName) match {
       case None => false
       case Some(mapfound)=> {
-          val componentBundle = OSGIKevoreeDeployManager.getBundleContext.getBundle(mapfound.bundleId)
+          val componentBundle = OSGIKevoreeDeployManager.getBundleContext.getBundle(mapfound.asInstanceOf[KevoreeOSGIMapping].bundleID)
           componentBundle.getRegisteredServices.find({sr=> sr.getProperty(Constants.KEVOREE_NODE_NAME)==nodeName && sr.getProperty(Constants.KEVOREE_INSTANCE_NAME)==c.getName }) match {
             case None => false
             case Some(sr)=> (componentBundle.getBundleContext.getService(sr).asInstanceOf[KevoreeActor] !? StopMessage(c.getTypeDefinition.eContainer.asInstanceOf[ContainerRoot])).asInstanceOf[Boolean]

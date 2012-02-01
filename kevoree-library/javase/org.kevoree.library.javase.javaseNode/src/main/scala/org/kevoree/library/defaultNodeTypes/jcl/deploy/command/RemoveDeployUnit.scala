@@ -38,14 +38,15 @@ case class RemoveDeployUnit(du: DeployUnit) extends PrimitiveCommand {
   def undo() {
     if (lastTempFile != null) {
       JCLContextHandler.installDeployUnit(du, lastTempFile)
-      KevoreeDeployManager.bundleMapping.find(bm => bm.ref == du) match {
+      KevoreeDeployManager.bundleMapping.filter(bm => bm.ref.isInstanceOf[DeployUnit]).find(bm => CommandHelper.buildKEY(bm.ref.asInstanceOf[DeployUnit]) == CommandHelper.buildKEY(du)) match {
         case Some(bm) =>
-        case None => KevoreeDeployManager.addMapping(KevoreeMapping(du.getName, du.getClass.getName, du))
+        case None => KevoreeDeployManager.addMapping(KevoreeMapping(CommandHelper.buildKEY(du), du.getClass.getName, du))
       }
     }
 
   }
 
+  //LET THE UNINSTALL
   def execute(): Boolean = {
     try {
       lastTempFile = File.createTempFile(random.nextInt() + "", ".jar")
@@ -53,8 +54,8 @@ case class RemoveDeployUnit(du: DeployUnit) extends PrimitiveCommand {
       FileNIOHelper.copyFile(jarStream, lastTempFile)
       jarStream.close()
       JCLContextHandler.removeDeployUnit(du)
-      KevoreeDeployManager.bundleMapping.foreach(bm => {
-        if (bm.ref == du) {
+      KevoreeDeployManager.bundleMapping.filter(bm => bm.ref.isInstanceOf[DeployUnit]).foreach(bm => {
+        if (CommandHelper.buildKEY(bm.ref.asInstanceOf[DeployUnit]) == CommandHelper.buildKEY(du)) {
           KevoreeDeployManager.removeMapping(bm)
         }
       })

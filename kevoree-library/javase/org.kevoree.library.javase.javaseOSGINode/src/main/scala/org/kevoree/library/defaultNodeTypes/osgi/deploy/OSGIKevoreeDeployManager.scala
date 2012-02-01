@@ -19,9 +19,9 @@ package org.kevoree.library.defaultNodeTypes.osgi.deploy
  */
 
 import org.slf4j.LoggerFactory
-import org.kevoree.framework.context.KevoreeOSGiBundle
 import org.osgi.framework.Bundle
 import org.osgi.service.packageadmin.PackageAdmin
+import org.kevoree.library.defaultNodeTypes.jcl.deploy.context.KevoreeDeployManager
 
 object OSGIKevoreeDeployManager {
 
@@ -36,20 +36,21 @@ object OSGIKevoreeDeployManager {
 
   def getBundleContext = bundle.getBundleContext;
 
-  private var private_bundleMapping: List[KevoreeOSGiBundle] = List[KevoreeOSGiBundle]();
+  //private var private_bundleMapping: List[KevoreeOSGiBundle] = List[KevoreeOSGiBundle]();
   var servicePackageAdmin: Option[PackageAdmin] = null
 
   def getServicePackageAdmin: PackageAdmin = {
     servicePackageAdmin.get
   }
-/*
+
   def clearAll() {
-    KevoreeDeployManager.bundleMapping.foreach {
-      bm =>
+    KevoreeDeployManager.bundleMapping.filter(bm => bm.isInstanceOf[KevoreeOSGIMapping]).foreach {
+      bm2 =>
         try {
-          logger.debug("Try to cleanup " + bm.bundleId + "," + bm.objClassName + "," + bm.name)
+          val bm= bm2.asInstanceOf[KevoreeOSGIMapping]
+          logger.debug("Try to cleanup " + bm.bundleID + "," + bm.objClassName + "," + bm.name)
           KevoreeDeployManager.removeMapping(bm)
-          val b_toremove = getBundleContext.getBundle(bm.bundleId)
+          val b_toremove = getBundleContext.getBundle(bm.bundleID)
           if (b_toremove != null) {
             b_toremove.uninstall()
           }
@@ -58,7 +59,7 @@ object OSGIKevoreeDeployManager {
         }
     }
     logger.debug("Deploy manager cache size after HaraKiri" + KevoreeDeployManager.bundleMapping.size)
-  }*/
+  }
 
 
   /*
