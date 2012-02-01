@@ -37,35 +37,41 @@ object JCLContextHandler {
   }
 
   def installDeployUnit(du: DeployUnit, file: File): KevoreeJarClassLoader = {
-    logger.debug("Install {} , file {}", buildKEY(du), file)
-    val newcl = new KevoreeJarClassLoader
-    if (du.getVersion.contains("SNAPSHOT")) {
-      newcl.setLazyLoad(false)
+    val previousKCL = getKCL(du)
+    if (previousKCL != null) {
+      logger.debug("Take already installed {}", buildKEY(du))
+      previousKCL
+    } else {
+      logger.debug("Install {} , file {}", buildKEY(du), file)
+      val newcl = new KevoreeJarClassLoader
+      if (du.getVersion.contains("SNAPSHOT")) {
+        newcl.setLazyLoad(false)
+      }
+      newcl.add(file.getAbsolutePath)
+      kcl_cache.put(buildKEY(du), newcl)
+      kcl_cache_file.put(buildKEY(du), file)
+      logger.debug("Add KCL for " + du.getUnitName + "->" + buildKEY(du))
+
+      du.getRequiredLibs.foreach {
+        rLib =>
+          val kcl = getKCL(rLib)
+          if (kcl != null) {
+            logger.debug("Link KCL for " + du.getUnitName + "->" + rLib.getUnitName)
+            newcl.addSubClassLoader(kcl)
+
+            du.getRequiredLibs.filter(rLibIn => rLib != rLibIn).foreach(rLibIn => {
+              val kcl2 = getKCL(rLibIn)
+              if (kcl2 != null) {
+                kcl.addWeakClassLoader(kcl2)
+                logger.debug("Link Weak for " + rLib.getUnitName + "->" + rLibIn.getUnitName)
+              }
+            })
+
+
+          }
+      }
+      newcl
     }
-    newcl.add(file.getAbsolutePath)
-    kcl_cache.put(buildKEY(du), newcl)
-    kcl_cache_file.put(buildKEY(du), file)
-    logger.debug("Add KCL for " + du.getUnitName + "->" + buildKEY(du))
-
-    du.getRequiredLibs.foreach {
-      rLib =>
-        val kcl = getKCL(rLib)
-        if (kcl != null) {
-          logger.debug("Link KCL for " + du.getUnitName + "->" + rLib.getUnitName)
-          newcl.addSubClassLoader(kcl)
-
-          du.getRequiredLibs.filter(rLibIn => rLib != rLibIn).foreach(rLibIn => {
-            val kcl2 = getKCL(rLibIn)
-            if (kcl2 != null) {
-              kcl.addWeakClassLoader(kcl2)
-              logger.debug("Link Weak for " + rLib.getUnitName + "->" + rLibIn.getUnitName)
-            }
-          })
-
-
-        }
-    }
-    newcl
   }
 
   def getKCL(du: DeployUnit): KevoreeJarClassLoader = {
