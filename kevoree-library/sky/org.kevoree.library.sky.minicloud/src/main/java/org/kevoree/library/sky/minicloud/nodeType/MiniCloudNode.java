@@ -27,17 +27,4 @@ public class MiniCloudNode extends IaaSNode {
 		return new MiniCloudKevoreeNodeRunner(nodeName, bootStrapModel);
 	}
 
-	@Start
-	@Override
-	public void startNode () {
-
-		super.startNode();
-	}
-
-	@Stop
-	@Override
-	public void stopNode () {
-		super.stopNode();
-	}
-
 }
