@@ -36,9 +36,28 @@ object JCLContextHandler {
     kcl_cache_file.get(buildKEY(du))
   }
 
+  var lockedDu: List[String] = List()
+
+  def manuallyAddToCache(du: DeployUnit, kcl: KevoreeJarClassLoader) {
+    kcl_cache.put(buildKEY(du), kcl)
+    lockedDu = lockedDu ++ List(buildKEY(du))
+    // kcl_cache_file.put(buildKEY(du), f)
+  }
+
+  def printDump = {
+    import scala.collection.JavaConversions._
+    logger.debug("------------------ KCL Dump -----------------------")
+    kcl_cache.foreach {
+      k =>
+        logger.debug("Dump = " + k._1)
+        k._2.printDump()
+    }
+    logger.debug("================== End KCL Dump ===================")
+  }
+
   def installDeployUnit(du: DeployUnit, file: File): KevoreeJarClassLoader = {
     val previousKCL = getKCL(du)
-    if (previousKCL != null) {
+    val res = if (previousKCL != null) {
       logger.debug("Take already installed {}", buildKEY(du))
       previousKCL
     } else {
@@ -72,6 +91,10 @@ object JCLContextHandler {
       }
       newcl
     }
+    if(logger.isDebugEnabled){
+      printDump
+    }
+    res
   }
 
   def getKCL(du: DeployUnit): KevoreeJarClassLoader = {
@@ -80,10 +103,18 @@ object JCLContextHandler {
 
   def removeDeployUnit(du: DeployUnit) {
     val key = buildKEY(du)
-    if (kcl_cache.containsKey(key)) {
-      logger.debug("Remove KCL for " + du.getUnitName + "->" + buildKEY(du))
-      kcl_cache.get(key).unload()
-      kcl_cache.remove(key)
+    if (!lockedDu.contains(key)) {
+      if (kcl_cache.containsKey(key)) {
+        logger.debug("Remove KCL for " + du.getUnitName + "->" + buildKEY(du))
+        kcl_cache.get(key).unload()
+        kcl_cache.remove(key)
+      }
+      if (kcl_cache_file.containsKey(key)) {
+        kcl_cache_file.remove(key)
+      }
+    }
+    if(logger.isDebugEnabled){
+      printDump
     }
   }
 
