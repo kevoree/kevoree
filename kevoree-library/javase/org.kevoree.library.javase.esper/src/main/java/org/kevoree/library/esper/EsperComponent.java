@@ -26,8 +26,6 @@ import org.kevoree.classloader.ClassLoaderInterface;
 import org.kevoree.classloader.ClassLoaderWrapper;
 import org.kevoree.framework.AbstractComponentType;
 import org.kevoree.framework.MessagePort;
-import org.osgi.framework.Bundle;
-
 import com.espertech.esper.client.Configuration;
 import com.espertech.esper.client.EPAdministrator;
 import com.espertech.esper.client.EPRuntime;
@@ -77,9 +75,9 @@ public class EsperComponent extends AbstractComponentType  implements UpdateList
       // ClassLoader contextClassloader = Thread.currentThread().getContextClassLoader();
        
        
-       Bundle ctx = (Bundle) this.getDictionary().get("osgi.bundle");
-       ClassLoaderInterface itf = new OsgiClassLoader(ctx);
-       ((ClassLoaderWrapper)ClassLoaderInterface.instance).setWrap(itf);
+      // Bundle ctx = (Bundle) this.getDictionary().get("osgi.bundle");
+    //   ClassLoaderInterface itf = new OsgiClassLoader(ctx);
+     //  ((ClassLoaderWrapper)ClassLoaderInterface.instance).setWrap(itf);
        
        // then alter the class-loader (but which one ? the one used to load this class itself) with:
     //   Thread.currentThread().setContextClassLoader(Tick.class.getClassLoader());
