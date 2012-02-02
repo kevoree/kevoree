@@ -65,6 +65,7 @@ public class KevoreeBootStrap {
             jcl.add(this.getClass().getClassLoader().getResourceAsStream("boot/org.kevoree.tools.aether.framework-" + KevoreeFactory.getVersion() + ".jar"));
             Class selfRegisteredClazz = jcl.loadClass("org.kevoree.tools.aether.framework.JCLContextHandlerHelper");
             Object selfRegisteredInstance = selfRegisteredClazz.newInstance();
+			jcl.lockLinks();
 
             for (Method m : selfRegisteredClazz.getMethods()) {
                 if (m.getName().equals("registerManuallyDeployUnit")) {
@@ -80,6 +81,7 @@ public class KevoreeBootStrap {
             File fileMarShell = mres.resolveKevoreeArtifact("org.kevoree.tools.marShell", "org.kevoree.tools", KevoreeFactory.getVersion());
 
             KevoreeJarClassLoader scriptEngineKCL = new KevoreeJarClassLoader();
+			scriptEngineKCL.lockLinks();
             scriptEngineKCL.add(fileMarShell.getAbsolutePath());
 
             for (Method m : selfRegisteredClazz.getMethods()) {
