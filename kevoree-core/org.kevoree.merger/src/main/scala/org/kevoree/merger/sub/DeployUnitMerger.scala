@@ -21,11 +21,13 @@ package org.kevoree.merger.sub
 import org.kevoree._
 import org.kevoree.merger.Merger
 import org.kevoree.framework.aspects.KevoreeAspects._
+import org.slf4j.LoggerFactory
 
 trait DeployUnitMerger extends Merger {
 
+  private val logger = LoggerFactory.getLogger(this.getClass);
 
-  def mergeDeployUnit(actualModel: ContainerRoot, tp: DeployUnit, newForce: Boolean = false): DeployUnit = {
+  def mergeDeployUnit (actualModel: ContainerRoot, tp: DeployUnit, newForce: Boolean = false): DeployUnit = {
 
     val resultDeployUnit = actualModel.getDeployUnits.find({
       atp =>
@@ -33,7 +35,7 @@ trait DeployUnitMerger extends Merger {
     }) match {
       case Some(ftp) => {
         //CHECK CONSISTENCY, IF NOT JUST ADD
-        if (tp.getUrl != ftp.getUrl || tp.getUnitName != ftp.getUnitName || tp.getGroupName != ftp.getGroupName || tp.getVersion != ftp.getVersion|| tp.getType != ftp.getType) {
+        if (tp.getUrl != ftp.getUrl || tp.getUnitName != ftp.getUnitName || tp.getGroupName != ftp.getGroupName || tp.getVersion != ftp.getVersion /*|| tp.getType != ftp.getType*/ ) {
           actualModel.addDeployUnits(tp)
           mergeRequiredLibs(actualModel, tp)
           tp
@@ -47,6 +49,10 @@ trait DeployUnitMerger extends Merger {
 
           }
 
+
+
+
+
           val ftpTimeStamp = if (ftp.getHashcode != "") {
             java.lang.Long.parseLong(ftp.getHashcode)
           } else {
@@ -58,10 +64,18 @@ trait DeployUnitMerger extends Merger {
             0l
           }
 
+          if (tp.getType != ftp.getType) {
+            logger.warn("Different type for same deploy unit : {}", ftp.getUnitName)
+          }
+
           if (tpTimeStamp > ftpTimeStamp) {
             this.addPostProcess({
               () => {
                 ftp.setHashcode(tpTimeStamp + "")
+                if (tp.getType != ftp.getType) {
+                  logger.warn("Chosen newest type for deploy unit : {} : {}", ftp.getUnitName, tp.getType)
+                  ftp.setType(tp.getType)
+                }
               }
             })
           }
@@ -78,7 +92,7 @@ trait DeployUnitMerger extends Merger {
     resultDeployUnit
   }
 
-  def mergeRequiredLibs(actualModel: ContainerRoot, tp: DeployUnit) {
+  def mergeRequiredLibs (actualModel: ContainerRoot, tp: DeployUnit) {
     val requireds: List[DeployUnit] = tp.getRequiredLibs
     tp.removeAllRequiredLibs()
     requireds.foreach {
