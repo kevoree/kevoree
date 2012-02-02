@@ -17,7 +17,6 @@ import org.kevoree.api.service.core.handler.KevoreeModelHandlerService
 import org.kevoree.ContainerRoot
 import org.kevoree.framework.{Bootstraper, AbstractNodeType}
 import org.kevoree.api.service.core.script.KevScriptEngineFactory
-import org.kevoree.extra.jcl.KevoreeJarClassLoader
 
 /**
  * User: ffouquet
@@ -27,14 +26,15 @@ import org.kevoree.extra.jcl.KevoreeJarClassLoader
 
 class NodeTypeBootstrapHelper extends Bootstraper with KCLBootstrap {
 
-  def bootstrapNodeType(model: ContainerRoot, destNodeName: String, mservice: KevoreeModelHandlerService, kevsEngineFactory: KevScriptEngineFactory): Option[org.kevoree.framework.NodeType] = {
+  def bootstrapNodeType (model: ContainerRoot, destNodeName: String, mservice: KevoreeModelHandlerService, kevsEngineFactory: KevScriptEngineFactory): Option[org.kevoree.framework.NodeType] = {
+    JCLContextHandler.clear()
     //LOCATE NODE
-    val node = model.getNodes.find(node => node.getName == destNodeName)
-    node match {
+    val nodeOption = model.getNodes.find(node => node.getName == destNodeName)
+    nodeOption match {
       case Some(node) => {
         val nodeTypeDeployUnitList = node.getTypeDefinition.getDeployUnits.toList
         if (nodeTypeDeployUnitList.size > 0) {
-          val classLoader = installNodeTyp(node.getTypeDefinition.asInstanceOf[org.kevoree.NodeType])
+          val classLoader = installNodeType(node.getTypeDefinition.asInstanceOf[org.kevoree.NodeType])
           if (classLoader.isDefined) {
             val clazz: Class[_] = classLoader.get.loadClass(node.getTypeDefinition.getBean)
             val nodeType = clazz.newInstance.asInstanceOf[AbstractNodeType]
@@ -81,9 +81,9 @@ class NodeTypeBootstrapHelper extends Bootstraper with KCLBootstrap {
 
 
   /* Bootstrap node type bundle in local environment */
-  private def installNodeTyp(nodeType: org.kevoree.NodeType): Option[ClassLoader] = {
+  private def installNodeType (nodeType: org.kevoree.NodeType): Option[ClassLoader] = {
     val superTypeBootStrap = nodeType.getSuperTypes
-      .forall(superType => installNodeTyp(superType.asInstanceOf[org.kevoree.NodeType]).isDefined)
+      .forall(superType => installNodeType(superType.asInstanceOf[org.kevoree.NodeType]).isDefined)
     if (superTypeBootStrap) {
       var kcl: ClassLoader = null
       nodeType.getDeployUnits.forall(ct => {
