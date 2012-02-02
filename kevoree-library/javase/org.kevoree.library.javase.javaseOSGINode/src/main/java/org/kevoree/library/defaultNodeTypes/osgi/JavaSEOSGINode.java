@@ -10,6 +10,7 @@ import org.kevoree.ContainerRoot;
 import org.kevoree.annotation.*;
 import org.kevoree.kompare.KevoreeKompareBean;
 import org.kevoree.library.defaultNodeTypes.JavaSENode;
+import org.kevoree.library.defaultNodeTypes.jcl.deploy.context.KevoreeDeployManager;
 import org.kevoree.library.defaultNodeTypes.osgi.deploy.BaseDeployOSGi;
 import org.kevoree.library.defaultNodeTypes.osgi.deploy.OSGIKevoreeDeployManager;
 import org.kevoree.library.defaultNodeTypes.osgi.deploy.runtime.EmbeddedFelix;
@@ -26,7 +27,7 @@ import org.slf4j.LoggerFactory;
 @Library(name = "JavaSE")
 @NodeType
 @PrimitiveCommands(
-        values = {"UpdateType", "UpdateDeployUnit", "AddType", "AddDeployUnit", "AddThirdParty", "RemoveType", "RemoveDeployUnit", "UpdateInstance", "UpdateBinding", "UpdateDictionaryInstance", "AddInstance", "RemoveInstance", "AddBinding", "RemoveBinding", "AddFragmentBinding", "RemoveFragmentBinding", "UpdateFragmentBinding", "StartInstance", "StopInstance", "StartThirdParty"}, value = {})
+        values = {"UpdateType", "UpdateDeployUnit", "AddType", "AddDeployUnit", "AddThirdParty", "RemoveType", "RemoveDeployUnit", "UpdateInstance", "UpdateBinding", "UpdateDictionaryInstance", "AddInstance", "RemoveInstance", "AddBinding", "RemoveBinding", "AddFragmentBinding", "RemoveFragmentBinding", "UpdateFragmentBinding", "StartInstance", "StopInstance", "StartThirdParty","RemoveThirdParty"}, value = {})
 public class JavaSEOSGINode extends JavaSENode {
     private static final Logger logger = LoggerFactory.getLogger(JavaSEOSGINode.class);
 
@@ -51,7 +52,8 @@ public class JavaSEOSGINode extends JavaSENode {
         kompareBean = null;
         deployBean = null;
         //Cleanup the local runtime
-        //KevoreeDeployManager.clearAll();
+        OSGIKevoreeDeployManager.clearAll();
+        KevoreeDeployManager.clearAll();
 
         try {
             fwk.stop();

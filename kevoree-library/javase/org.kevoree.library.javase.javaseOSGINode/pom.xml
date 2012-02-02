@@ -26,12 +26,12 @@
             <groupId>org.kevoree.library.javase</groupId>
             <artifactId>org.kevoree.library.javase.javaseNode</artifactId>
             <version>${kevoree.version}</version>
-           <type>kjar</type>
+           <type>bundle</type>
         </dependency>
         <dependency>
             <groupId>org.apache.felix</groupId>
             <artifactId>org.apache.felix.framework</artifactId>
-            <version>3.2.2</version>
+            <version>4.0.2</version>
              <type>bundle</type>
         </dependency>
         <dependency>
@@ -87,7 +87,7 @@
                         </goals>
                         <configuration>
                             <filters>
-                                scala,org.ops4j,org.slf4j,org.kevoree,org.kevoree.tools
+                                scala,org.ops4j,org.slf4j,org.kevoree,org.osgi,javax,org.w3c,org.xml,org.omg
                             </filters>
                         </configuration>
                     </execution>

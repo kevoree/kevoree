@@ -20,6 +20,7 @@ import org.kevoree.framework.{FileNIOHelper, PrimitiveCommand}
 import java.io.{FileInputStream, File}
 import java.util.Random
 import org.kevoree.tools.aether.framework.JCLContextHandler
+import org.kevoree.library.defaultNodeTypes.jcl.deploy.context.{KevoreeMapping, KevoreeDeployManager}
 
 /**
  * Created by IntelliJ IDEA.
@@ -28,19 +29,24 @@ import org.kevoree.tools.aether.framework.JCLContextHandler
  * Time: 16:35
  */
 
-case class RemoveDeployUnit(du : DeployUnit) extends PrimitiveCommand {
+case class RemoveDeployUnit(du: DeployUnit) extends PrimitiveCommand {
 
   val logger = LoggerFactory.getLogger(this.getClass)
-  var lastTempFile : File = _
+  var lastTempFile: File = _
   var random = new Random
 
   def undo() {
-    if(lastTempFile != null){
-      JCLContextHandler.installDeployUnit(du,lastTempFile)
+    if (lastTempFile != null) {
+      JCLContextHandler.installDeployUnit(du, lastTempFile)
+      KevoreeDeployManager.bundleMapping.filter(bm => bm.ref.isInstanceOf[DeployUnit]).find(bm => CommandHelper.buildKEY(bm.ref.asInstanceOf[DeployUnit]) == CommandHelper.buildKEY(du)) match {
+        case Some(bm) =>
+        case None => KevoreeDeployManager.addMapping(KevoreeMapping(CommandHelper.buildKEY(du), du.getClass.getName, du))
+      }
     }
 
   }
 
+  //LET THE UNINSTALL
   def execute(): Boolean = {
     try {
       lastTempFile = File.createTempFile(random.nextInt() + "", ".jar")
@@ -48,9 +54,14 @@ case class RemoveDeployUnit(du : DeployUnit) extends PrimitiveCommand {
       FileNIOHelper.copyFile(jarStream, lastTempFile)
       jarStream.close()
       JCLContextHandler.removeDeployUnit(du)
+      KevoreeDeployManager.bundleMapping.filter(bm => bm.ref.isInstanceOf[DeployUnit]).foreach(bm => {
+        if (CommandHelper.buildKEY(bm.ref.asInstanceOf[DeployUnit]) == CommandHelper.buildKEY(du)) {
+          KevoreeDeployManager.removeMapping(bm)
+        }
+      })
       true
     } catch {
-      case _@ e =>logger.debug("error ",e);false
+      case _@e => logger.debug("error ", e); false
     }
   }
 }

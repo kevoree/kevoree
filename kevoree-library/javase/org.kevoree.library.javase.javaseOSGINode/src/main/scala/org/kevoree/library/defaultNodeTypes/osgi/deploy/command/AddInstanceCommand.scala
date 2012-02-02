@@ -21,10 +21,10 @@ package org.kevoree.library.defaultNodeTypes.osgi.deploy.command
 import org.kevoree._
 import api.service.core.handler.KevoreeModelHandlerService
 import api.service.core.script.KevScriptEngineFactory
-import framework.context.{KevoreeDeployManager, KevoreeJCLBundle}
 import framework.osgi.{KevoreeInstanceActivator, KevoreeInstanceFactory}
 import framework.{PrimitiveCommand, KevoreeGeneratorHelper}
-import library.defaultNodeTypes.osgi.deploy.OSGIKevoreeDeployManager
+import library.defaultNodeTypes.jcl.deploy.context.KevoreeDeployManager
+import library.defaultNodeTypes.osgi.deploy.{KevoreeOSGIMapping, OSGIKevoreeDeployManager}
 import org.kevoree.framework.aspects.KevoreeAspects._
 import org.slf4j.LoggerFactory
 
@@ -49,9 +49,9 @@ case class AddInstanceCommand(c: Instance, nodeName: String,modelservice : Kevor
       null;
     }
 
-    logger.debug("bundleID for " + c.getTypeDefinition.getName + " =>" + mappingFound.bundleId + "");
+    logger.debug("bundleID for " + c.getTypeDefinition.getName + " =>" + mappingFound.asInstanceOf[KevoreeOSGIMapping].bundleID + "");
 
-    val bundleType = OSGIKevoreeDeployManager.getBundleContext.getBundle(mappingFound.bundleId)
+    val bundleType = OSGIKevoreeDeployManager.getBundleContext.getBundle(mappingFound.asInstanceOf[KevoreeOSGIMapping].bundleID)
     lastExecutionBundle = Some(bundleType)
 
     if (mappingFound != null) {
@@ -69,7 +69,7 @@ case class AddInstanceCommand(c: Instance, nodeName: String,modelservice : Kevor
 
         kevoreeFactory = bundleType.loadClass(factoryName).newInstance().asInstanceOf[KevoreeInstanceFactory]
         val newInstance: KevoreeInstanceActivator = kevoreeFactory.registerInstance(c.getName, nodeName)
-        KevoreeDeployManager.addMapping(KevoreeJCLBundle(c.getName, c.getClass.getName, newInstance,bundleType.getBundleId))
+        KevoreeDeployManager.addMapping(KevoreeOSGIMapping(c.getName, c.getClass.getName, newInstance,bundleType.getBundleId))
 
 
         newInstance.setKevScriptEngineFactory(kscript)

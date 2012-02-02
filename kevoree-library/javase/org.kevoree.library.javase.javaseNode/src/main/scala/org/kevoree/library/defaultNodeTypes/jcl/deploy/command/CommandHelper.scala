@@ -1,4 +1,4 @@
-package org.kevoree.library.defaultNodeTypes.osgi.deploy.command
+package org.kevoree.library.defaultNodeTypes.jcl.deploy.command
 
 /**
  * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE, Version 3, 29 June 2007;

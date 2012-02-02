@@ -25,9 +25,9 @@ import org.kevoree.framework.aspects.KevoreeAspects._
 import org.kevoree.{ContainerRoot, NodeType, Instance}
 import org.kevoree.api.service.core.handler.KevoreeModelHandlerService
 import org.kevoree.api.service.core.script.KevScriptEngineFactory
-import org.kevoree.library.defaultNodeTypes.osgi.deploy.OSGIKevoreeDeployManager
-import org.kevoree.framework.context.KevoreeDeployManager
 import org.kevoree.library.defaultNodeTypes.jcl.deploy.command.UpdateDictionary
+import org.kevoree.library.defaultNodeTypes.jcl.deploy.context.KevoreeDeployManager
+import org.kevoree.library.defaultNodeTypes.osgi.deploy.{KevoreeOSGIMapping, OSGIKevoreeDeployManager}
 
 case class RemoveInstanceCommand(c: Instance, nodeName: String, modelservice: KevoreeModelHandlerService, kscript: KevScriptEngineFactory) extends PrimitiveCommand {
 
@@ -44,7 +44,7 @@ case class RemoveInstanceCommand(c: Instance, nodeName: String, modelservice: Ke
 
     bundles.forall {
       mp =>
-        val bundle = OSGIKevoreeDeployManager.getBundleContext.getBundle(mp.bundleId)
+        val bundle = OSGIKevoreeDeployManager.getBundleContext.getBundle(mp.asInstanceOf[KevoreeOSGIMapping].bundleID)
         val nodeType = c.getTypeDefinition.eContainer.asInstanceOf[ContainerRoot].getNodes.find(tn => tn.getName == nodeName).get.getTypeDefinition
         val nodeTypeName = c.getTypeDefinition.foundRelevantHostNodeType(nodeType.asInstanceOf[NodeType], c.getTypeDefinition) match {
           case Some(nt) => nt.getName

@@ -34,6 +34,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
+import java.lang.reflect.Method;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
@@ -62,6 +63,15 @@ public class KevoreeBootStrap {
 
             KevoreeJarClassLoader jcl = new KevoreeJarClassLoader();
             jcl.add(this.getClass().getClassLoader().getResourceAsStream("boot/org.kevoree.tools.aether.framework-" + KevoreeFactory.getVersion() + ".jar"));
+            Class selfRegisteredClazz = jcl.loadClass("org.kevoree.tools.aether.framework.JCLContextHandlerHelper");
+            Object selfRegisteredInstance = selfRegisteredClazz.newInstance();
+
+            for (Method m : selfRegisteredClazz.getMethods()) {
+                if (m.getName().equals("registerManuallyDeployUnit")) {
+                    m.invoke(selfRegisteredInstance, "org.kevoree.tools.aether.framework", "org.kevoree.tools", KevoreeFactory.getVersion(), jcl);
+                }
+            }
+
             Class clazz = jcl.loadClass("org.kevoree.tools.aether.framework.NodeTypeBootstrapHelper");
             org.kevoree.framework.Bootstraper bhelper = (Bootstraper) clazz.newInstance();
 
@@ -71,6 +81,13 @@ public class KevoreeBootStrap {
 
             KevoreeJarClassLoader scriptEngineKCL = new KevoreeJarClassLoader();
             scriptEngineKCL.add(fileMarShell.getAbsolutePath());
+
+            for (Method m : selfRegisteredClazz.getMethods()) {
+                if (m.getName().equals("registerManuallyDeployUnit")) {
+                    m.invoke(selfRegisteredInstance, "org.kevoree.tools.marShell", "org.kevoree.tools", KevoreeFactory.getVersion(), scriptEngineKCL);
+                }
+            }
+
 
             final Class clazz2 = scriptEngineKCL.loadClass("org.kevoree.tools.marShell.KevScriptCoreEngine");
 

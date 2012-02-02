@@ -19,9 +19,10 @@ package org.kevoree.library.defaultNodeTypes.osgi.deploy.command
  */
 
 import org.kevoree._
-import framework.context.{KevoreeDeployManager, KevoreeOSGiBundle}
 import framework.{FileNIOHelper, PrimitiveCommand}
-import library.defaultNodeTypes.osgi.deploy.OSGIKevoreeDeployManager
+import library.defaultNodeTypes.jcl.deploy.command.CommandHelper
+import library.defaultNodeTypes.jcl.deploy.context.KevoreeDeployManager
+import library.defaultNodeTypes.osgi.deploy.{KevoreeOSGIMapping, OSGIKevoreeDeployManager}
 import org.kevoree.DeployUnit
 import org.osgi.service.packageadmin.PackageAdmin
 import org.slf4j.LoggerFactory
@@ -72,8 +73,7 @@ case class AddDeployUnitAetherCommand (deployUnit: DeployUnit, update: Boolean =
       if (!previousBundleID.contains(lastExecutionBundle.get.getBundleId)) {
         val symbolicName: String = lastExecutionBundle.get.getSymbolicName
         //FOR DEPLOY UNIT DO NOT USE ONLY NAME
-        KevoreeDeployManager.addMapping(KevoreeOSGiBundle(CommandHelper.buildKEY(deployUnit), deployUnit.getClass.getName,
-                                         lastExecutionBundle.get.getBundleId))
+        KevoreeDeployManager.addMapping(KevoreeOSGIMapping(CommandHelper.buildKEY(deployUnit), deployUnit.getClass.getName,deployUnit,lastExecutionBundle.get.getBundleId))
         lastExecutionBundle.get.start()
         //  mustBeStarted = true
       }
@@ -99,7 +99,7 @@ case class AddDeployUnitAetherCommand (deployUnit: DeployUnit, update: Boolean =
             }
             lastExecutionBundle match {
               case Some(bundle) => {
-                KevoreeDeployManager.addMapping(KevoreeOSGiBundle(CommandHelper.buildKEY(deployUnit), deployUnit.getClass.getName,bundle.getBundleId))
+                KevoreeDeployManager.addMapping(KevoreeOSGIMapping(CommandHelper.buildKEY(deployUnit), deployUnit.getClass.getName,deployUnit,bundle.getBundleId))
                 //mustBeStarted = false
                 true
               }
@@ -142,7 +142,7 @@ case class AddDeployUnitAetherCommand (deployUnit: DeployUnit, update: Boolean =
           } else {
             bundle.stop()
             bundle.uninstall()
-            (KevoreeDeployManager.bundleMapping.filter(map => map.bundleId == bundle.getBundleId).toList ++ List())
+            (KevoreeDeployManager.bundleMapping.filter(bm => bm.isInstanceOf[KevoreeOSGIMapping]).filter(map => map.asInstanceOf[KevoreeOSGIMapping].bundleID == bundle.getBundleId).toList ++ List())
               .foreach {
               map =>
                 KevoreeDeployManager.removeMapping(map) // = ctx.bundleMapping.filter(mb => mb != map)
