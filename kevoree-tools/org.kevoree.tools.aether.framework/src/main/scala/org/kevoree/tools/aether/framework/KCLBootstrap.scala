@@ -15,7 +15,6 @@ package org.kevoree.tools.aether.framework
 
 import org.kevoree.DeployUnit
 import org.kevoree.extra.jcl.KevoreeJarClassLoader
-//import org.kevoree.framework.context.{KevoreeJCLBundle, KevoreeDeployManager}
 import org.slf4j.LoggerFactory
 
 /**
@@ -58,9 +57,9 @@ trait KCLBootstrap {
         if (arteFile != null) {
           logger.debug("trying to install {}", arteFile.getAbsolutePath)
 
-          if(JCLContextHandler.getKCL(du) != null){ //BOOT STRAP FORCE UPDATE
+         /* if(JCLContextHandler.getKCL(du) != null){ //BOOT STRAP FORCE UPDATE
             JCLContextHandler.removeDeployUnit(du)
-          }
+          }*/
           
           val kcl = JCLContextHandler.installDeployUnit(du,arteFile)
 
