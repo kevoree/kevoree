@@ -56,19 +56,6 @@
 
     <dependencies>
 
-        <!-- Sky computing -->
-        <!--
-        <dependency>
-            <groupId>org.kevoree.library.sky</groupId>
-            <artifactId>org.kevoree.library.sky.minicloud</artifactId>
-            <version>${kevoree.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.kevoree.library.sky</groupId>
-            <artifactId>org.kevoree.library.sky.jails</artifactId>
-            <version>${kevoree.version}</version>
-        </dependency>
-        -->
         <!--<dependency>
             <groupId>org.kevoree.library.javase</groupId>
             <artifactId>org.kevoree.library.javase.miniCloudGroup</artifactId>
@@ -88,6 +75,19 @@
         <dependency>
             <groupId>org.kevoree.library.javase</groupId>
             <artifactId>org.kevoree.library.javase.rest</artifactId>
+            <version>${kevoree.version}</version>
+        </dependency>
+
+
+        <!-- Sky computing -->
+        <dependency>
+            <groupId>org.kevoree.library.sky</groupId>
+            <artifactId>org.kevoree.library.sky.minicloud</artifactId>
+            <version>${kevoree.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.kevoree.library.sky</groupId>
+            <artifactId>org.kevoree.library.sky.jails</artifactId>
             <version>${kevoree.version}</version>
         </dependency>
 
