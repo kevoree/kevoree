@@ -27,7 +27,9 @@ import org.kevoree.api.service.core.script.KevScriptEngineFactory
 class NodeTypeBootstrapHelper extends Bootstraper with KCLBootstrap {
 
   def bootstrapNodeType (model: ContainerRoot, destNodeName: String, mservice: KevoreeModelHandlerService, kevsEngineFactory: KevScriptEngineFactory): Option[org.kevoree.framework.NodeType] = {
-    JCLContextHandler.clear()
+    //JCLContextHandler.clear()
+
+
     //LOCATE NODE
     val nodeOption = model.getNodes.find(node => node.getName == destNodeName)
     nodeOption match {
