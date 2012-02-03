@@ -19,7 +19,7 @@ import org.slf4j.LoggerFactory;
 })
 public class ArduinoSerialDelegation extends AbstractGroupType {
 
-    protected KevoreeModelHandlerService modelHandlerService = null;
+    //protected KevoreeModelHandlerService modelHandlerService = null;
     protected Logger logger = LoggerFactory.getLogger(ArduinoSerialDelegation.class);
 
     ArduinoDelegationPush delegationPush = null;
@@ -28,15 +28,16 @@ public class ArduinoSerialDelegation extends AbstractGroupType {
 
     @Start
     public void startGroupDelegation() {
-        delegationPush = new ArduinoDelegationPush(modelHandlerService, this.getName());
+        delegationPush = new ArduinoDelegationPush(getModelService(), this.getName());
         //triggerModelUpdate();
     }
 
     @Stop
     public void stopGroupDelegation() {
+        /*
         if (modelHandlerService != null) {
             modelHandlerService = null;
-        }
+        }*/
     }
 
     @Override
