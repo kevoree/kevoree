@@ -70,7 +70,7 @@
 -->
         <module>../org.kevoree.library.javase.kestrelChannels</module>
 
-        <module>../org.kevoree.library.javase.miniCloudGroup</module>
+        <!--<module>../org.kevoree.library.javase.miniCloudGroup</module>-->
         <module>../org.kevoree.library.javase.pipe</module>
         <module>../org.kevoree.library.javase.latex</module>
         <module>../org.kevoree.library.javase.ssh</module>

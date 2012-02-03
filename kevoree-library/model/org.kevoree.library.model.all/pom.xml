@@ -48,43 +48,6 @@
     </build>
 
     <dependencies>
-
-        <!-- Sky computing -->
-        <!--
-        <dependency>
-            <groupId>org.kevoree.library.sky</groupId>
-            <artifactId>org.kevoree.library.sky.minicloud</artifactId>
-            <version>${kevoree.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.kevoree.library.sky</groupId>
-            <artifactId>org.kevoree.library.sky.jails</artifactId>
-            <version>${kevoree.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.kevoree.library.sky</groupId>
-            <artifactId>org.kevoree.library.sky.provider</artifactId>
-            <version>${kevoree.version}</version>
-        </dependency>
-        -->
-
-        <!-- Arduino -->
-        <dependency>
-            <groupId>org.kevoree.library.arduino</groupId>
-            <artifactId>org.kevoree.library.arduino.nodeType</artifactId>
-            <version>${kevoree.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.kevoree.library.arduino</groupId>
-            <artifactId>org.kevoree.library.arduino.components</artifactId>
-            <version>${kevoree.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.kevoree.library.arduino</groupId>
-            <artifactId>org.kevoree.library.arduino.groupType</artifactId>
-            <version>${kevoree.version}</version>
-        </dependency>
-
         <!-- JavaSE -->
         <dependency>
             <groupId>org.kevoree.library.javase</groupId>
@@ -106,11 +69,11 @@
             <artifactId>org.kevoree.library.javase.restAutoDiscovery</artifactId>
             <version>${kevoree.version}</version>
         </dependency>
-        <dependency>
+        <!--<dependency>
             <groupId>org.kevoree.library.javase</groupId>
             <artifactId>org.kevoree.library.javase.miniCloudGroup</artifactId>
             <version>${kevoree.version}</version>
-        </dependency>
+        </dependency>-->
         <dependency>
             <groupId>org.kevoree.library.javase</groupId>
             <artifactId>org.kevoree.library.javase.socketChannels</artifactId>
@@ -181,6 +144,40 @@
         <dependency>
             <groupId>org.kevoree.library.javase</groupId>
             <artifactId>org.kevoree.library.javase.webserver.reasoner</artifactId>
+            <version>${kevoree.version}</version>
+        </dependency>
+
+        <!-- Sky computing -->
+        <dependency>
+            <groupId>org.kevoree.library.sky</groupId>
+            <artifactId>org.kevoree.library.sky.minicloud</artifactId>
+            <version>${kevoree.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.kevoree.library.sky</groupId>
+            <artifactId>org.kevoree.library.sky.jails</artifactId>
+            <version>${kevoree.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.kevoree.library.sky</groupId>
+            <artifactId>org.kevoree.library.sky.provider</artifactId>
+            <version>${kevoree.version}</version>
+        </dependency>
+
+        <!-- Arduino -->
+        <dependency>
+            <groupId>org.kevoree.library.arduino</groupId>
+            <artifactId>org.kevoree.library.arduino.nodeType</artifactId>
+            <version>${kevoree.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.kevoree.library.arduino</groupId>
+            <artifactId>org.kevoree.library.arduino.components</artifactId>
+            <version>${kevoree.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.kevoree.library.arduino</groupId>
+            <artifactId>org.kevoree.library.arduino.groupType</artifactId>
             <version>${kevoree.version}</version>
         </dependency>
 
