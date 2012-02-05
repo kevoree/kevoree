@@ -86,6 +86,14 @@
                         </dependency>
                     </dependencies>
                 </plugin>
+
+                <plugin>
+                    <groupId>org.kevoree.library.frascati</groupId>
+                    <artifactId>org.kevoree.library.frascati.mavenplugin</artifactId>
+                    <version>${kevoree.version}</version>
+                </plugin>
+
+
             </plugins>
         </pluginManagement>
 

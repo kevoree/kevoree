@@ -8,7 +8,6 @@ import org.kevoree.framework.KevoreeXmiHelper
  * User: duke
  * Date: 30/01/12
  * Time: 17:44
- * To change this template use File | Settings | File Templates.
  */
 
 object Tester extends App {

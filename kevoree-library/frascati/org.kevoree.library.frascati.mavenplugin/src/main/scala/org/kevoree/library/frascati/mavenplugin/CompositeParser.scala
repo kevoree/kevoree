@@ -130,9 +130,9 @@ object CompositeParser {
   
   
   def addCurrentDeployUnit(model : ContainerRoot,version :String, groupId:String,artefactId:String) : ContainerRoot  = {
-		 var nodeType = KevoreeFactory.createNodeType
+		 val nodeType = KevoreeFactory.createNodeType
 		 nodeType.setName("FrascatiNode")
-		 var dep = KevoreeFactory.createDeployUnit
+		 val dep = KevoreeFactory.createDeployUnit
 		 dep.setType("bundle")
 		 dep.setVersion(version)
 		 dep.setGroupName(groupId)
@@ -142,7 +142,6 @@ object CompositeParser {
 		 model.addTypeDefinitions(nodeType)
 		 model.addDeployUnits(dep)
 		 model
-  
   }
 
 
