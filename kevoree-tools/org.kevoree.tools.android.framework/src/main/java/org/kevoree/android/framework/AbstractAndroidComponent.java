@@ -11,38 +11,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kevoree.tools.aether.framework
-
-import org.sonatype.aether.spi.log.Logger
-import org.slf4j.LoggerFactory
+package org.kevoree.android.framework;
 
 /**
- * User: ffouquet
- * Date: 18/08/11
- * Time: 15:15
+ * Created by IntelliJ IDEA.
+ * User: duke
+ * Date: 05/02/12
+ * Time: 17:39
+ * To change this template use File | Settings | File Templates.
  */
+public class AbstractAndroidComponent {
 
-class AetherLogger extends Logger {
 
-  val logger = LoggerFactory.getLogger(this.getClass)
 
-  def debug(p1: String) {
-    logger.debug(p1)
-  }
-
-  def debug(p1: String, p2: Throwable) {
-    logger.debug(p1,p2)
-  }
-
-  def isDebugEnabled = true
-
-  def isWarnEnabled = true
-
-  def warn(p1: String) {
-    logger.warn(p1)
-  }
-
-  def warn(p1: String, p2: Throwable) {
-    logger.warn(p1,p2)
-  }
 }
