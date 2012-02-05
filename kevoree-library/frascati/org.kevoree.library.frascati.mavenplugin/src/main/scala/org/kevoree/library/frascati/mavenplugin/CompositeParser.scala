@@ -71,15 +71,69 @@ object CompositeParser {
         
         
     }
-   //KevoreeXmiHelper.save("/tmp/test.kev",root)
+    
+    
+    xmlnode.child.foreach { cNode =>
+        cNode.label match {
+          case "composite" => {
+    
+            val newkev = KevoreeFactory.createComponentType
+              cNode.attribute("name").map{ nameAtt =>
+              newkev.setName(nameAtt.text)
+            }
+            cNode.child.foreach(node=> node.label match {
+              	case "service" => {
+              		newkev.addProvided(this.createPortRefComposite(root,node))
+              	} 
+              	case "reference" => {
+              		newkev.addRequired(this.createPortRefComposite(root,node))
+              	} 
+              
+            })
+            
+            
+          }
+          case _@e =>
 
+            
+            
+              }
+    }
     this.createRepo(root)
     this.addCurrentDeployUnit(root,version,groupId,artefactId)
 
+    
+    
+    
+    
    	root
 
   }
 
+    def createPortRefComposite(root : ContainerRoot, node:Node) : PortTypeRef ={
+                  	val portRef = KevoreeFactory.createPortTypeRef  
+              		portRef.setOptional(true)
+              		portRef.setNoDependency(false)
+              		node.attribute("name").map{ nameAtt =>
+              			portRef.setName(nameAtt.text)
+              		}
+              		val service = KevoreeFactory.createServicePortType
+              		node.child.foreach(serv => serv.label match {
+              			case "interface.java" => {
+              			  serv.attribute("interface").map{ nameAtt =>
+              			  	service.setName(nameAtt.text)
+              			  	service.setInterface(nameAtt.text)
+              			  }
+              			}
+              			case _@e =>
+              		})
+              		root.addTypeDefinitions(service)              			  
+              		portRef.setRef(service)
+
+              		portRef
+  }
+
+  
   def createPortRef(root : ContainerRoot, node:Node) : PortTypeRef ={
                   	val portRef = KevoreeFactory.createPortTypeRef  
               		portRef.setOptional(true)
