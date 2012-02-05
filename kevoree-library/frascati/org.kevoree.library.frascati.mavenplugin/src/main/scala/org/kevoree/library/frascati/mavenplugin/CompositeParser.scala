@@ -38,6 +38,8 @@ object CompositeParser {
           newkev.setStopMethod("stop");
           newkev.setUpdateMethod("update");
 
+          
+          
           val dico = KevoreeFactory.createDictionaryType
 
           cNode.child.foreach(node => node.label match {
@@ -192,6 +194,8 @@ object CompositeParser {
     dep.setTargetNodeType(Option(nodeType))
     model.addTypeDefinitions(nodeType)
     model.addDeployUnits(dep)
+    model.getTypeDefinitions.filter(e=> e.isInstanceOf[ComponentType]).foreach(e=> e.asInstanceOf[ComponentType].addDeployUnits(dep))
+    
     model
   }
 
