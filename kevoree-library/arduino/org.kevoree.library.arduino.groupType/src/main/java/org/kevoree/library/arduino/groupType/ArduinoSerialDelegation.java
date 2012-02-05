@@ -2,7 +2,6 @@ package org.kevoree.library.arduino.groupType;
 
 import org.kevoree.ContainerRoot;
 import org.kevoree.annotation.*;
-import org.kevoree.api.service.core.handler.KevoreeModelHandlerService;
 import org.kevoree.framework.AbstractGroupType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,16 +18,13 @@ import org.slf4j.LoggerFactory;
 })
 public class ArduinoSerialDelegation extends AbstractGroupType {
 
-    //protected KevoreeModelHandlerService modelHandlerService = null;
     protected Logger logger = LoggerFactory.getLogger(ArduinoSerialDelegation.class);
-
     ArduinoDelegationPush delegationPush = null;
-
     private boolean isStarted = false;
 
     @Start
     public void startGroupDelegation() {
-        delegationPush = new ArduinoDelegationPush(getModelService(), this.getName());
+        delegationPush = new ArduinoDelegationPush(getModelService(), this.getName(),getBootStrapperService(),getKevScriptEngineFactory());
         //triggerModelUpdate();
     }
 
