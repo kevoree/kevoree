@@ -4,12 +4,11 @@ import org.kevoree.annotation.*;
 import org.kevoree.tools.arduino.framework.AbstractArduinoComponent;
 import org.kevoree.tools.arduino.framework.ArduinoGenerator;
 
-@Library(name = "KevoreeArduino")
+@Library(name = "Arduino")
 @ComponentType
 @DictionaryType({
         @DictionaryAttribute(name = "pin", defaultValue = "0", optional = true)
 })
-
 @Provides({
         @ProvidedPort(name = "intensity", type = PortType.MESSAGE),
         @ProvidedPort(name = "color", type = PortType.MESSAGE)
@@ -40,7 +39,7 @@ public class DMXLight extends AbstractArduinoComponent {
 
     @Port(name = "color")
     public void triggerColor(Object o) {
-        getGenerator().appendNativeStatement("DmxSimple.write(1,int(param));");
+      //  getGenerator().appendNativeStatement("DmxSimple.write(1,int(param));");
     }
 
 }

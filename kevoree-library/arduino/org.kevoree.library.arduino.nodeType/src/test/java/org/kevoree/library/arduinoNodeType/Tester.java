@@ -2,6 +2,7 @@ package org.kevoree.library.arduinoNodeType;
 
 import org.kevoree.ContainerRoot;
 import org.kevoree.framework.KevoreeXmiHelper;
+import org.kevoree.tools.aether.framework.NodeTypeBootstrapHelper;
 
 import java.io.IOException;
 
@@ -22,11 +23,18 @@ public class Tester {
 
 
         
-        ContainerRoot model = KevoreeXmiHelper.loadStream(Tester.class.getClassLoader().getResourceAsStream("kduke.kev"));
+        //ContainerRoot model = KevoreeXmiHelper.loadStream(Tester.class.getClassLoader().getResourceAsStream("kduke.kev"));
+        ContainerRoot model = KevoreeXmiHelper.load("/Users/duke/Desktop/tempArd.kev");
+
         ArduinoNode node = new ArduinoNode();
+
+        //FOR TEST
+      //  NodeTypeBootstrapHelper bs = new NodeTypeBootstrapHelper();
+      //  node.setBootStrapperService(bs);
+
         node.setForceUpdate(true);
 
-        node.getDictionary().put("boardTypeName", "atmega328");
+        node.getDictionary().put("boardTypeName", "uno");
         node.getDictionary().put("osgi.bundle", null);
         //node.getDictionary().put("boardPortName","/dev/tty.usbserial-A400g2se");
 //        node.getDictionary().put("pmem","EEPROM");
