@@ -18,18 +18,14 @@
 package org.kevoree.android.framework.helper;
 
 import org.kevoree.android.framework.service.KevoreeAndroidService;
-import org.osgi.framework.Bundle;
-import org.osgi.util.tracker.ServiceTracker;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
  * @author ffouquet
  */
 public class UIServiceHandler {
-
+/*
     public static KevoreeAndroidService getUIService(Bundle b) {
         ServiceTracker tracker = new ServiceTracker(b.getBundleContext(), KevoreeAndroidService.class.getName(), null);
         tracker.open();
@@ -42,5 +38,5 @@ public class UIServiceHandler {
 
         tracker.close();
         return uis;
-    }
+    }*/
 }
