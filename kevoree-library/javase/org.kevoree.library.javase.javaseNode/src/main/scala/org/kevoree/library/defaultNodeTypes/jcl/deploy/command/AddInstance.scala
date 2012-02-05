@@ -16,13 +16,13 @@ package org.kevoree.library.defaultNodeTypes.jcl.deploy.command
 
 import org.kevoree.framework.aspects.KevoreeAspects._
 import org.kevoree.{NodeType, ContainerRoot, Instance}
-import org.kevoree.framework.{KevoreeGeneratorHelper, PrimitiveCommand}
+import org.kevoree.framework.{KevoreeGeneratorHelper}
 import org.kevoree.framework.osgi.{KevoreeInstanceActivator, KevoreeInstanceFactory}
 import org.slf4j.LoggerFactory
 import org.kevoree.api.service.core.handler.KevoreeModelHandlerService
 import org.kevoree.api.service.core.script.KevScriptEngineFactory
-import org.kevoree.tools.aether.framework.JCLContextHandler
 import org.kevoree.library.defaultNodeTypes.jcl.deploy.context.{KevoreeDeployManager, KevoreeMapping}
+import org.kevoree.api.PrimitiveCommand
 
 /**
  * Created by IntelliJ IDEA.
@@ -31,7 +31,7 @@ import org.kevoree.library.defaultNodeTypes.jcl.deploy.context.{KevoreeDeployMan
  * Time: 17:53
  */
 
-case class AddInstance(c: Instance, nodeName: String,modelservice : KevoreeModelHandlerService,kscript : KevScriptEngineFactory) extends PrimitiveCommand {
+case class AddInstance(c: Instance, nodeName: String,modelservice : KevoreeModelHandlerService,kscript : KevScriptEngineFactory,bs : org.kevoree.api.Bootstraper) extends PrimitiveCommand {
 
   val logger = LoggerFactory.getLogger(this.getClass)
 
@@ -48,7 +48,7 @@ case class AddInstance(c: Instance, nodeName: String,modelservice : KevoreeModel
     val activatorPackage = KevoreeGeneratorHelper.getTypeDefinitionGeneratedPackage(c.getTypeDefinition, nodeTypeName)
     val factoryName = activatorPackage + "." + c.getTypeDefinition.getName + "Factory"
     try {
-      val kevoreeFactory = JCLContextHandler.getKCL(deployUnit).loadClass(factoryName).newInstance().asInstanceOf[KevoreeInstanceFactory]
+      val kevoreeFactory = bs.getKevoreeClassLoaderHandler.getKevoreeClassLoader(deployUnit).loadClass(factoryName).newInstance().asInstanceOf[KevoreeInstanceFactory]
       val newInstance: KevoreeInstanceActivator = kevoreeFactory.registerInstance(c.getName, nodeName)
       KevoreeDeployManager.addMapping(KevoreeMapping(c.getName, c.getClass.getName, newInstance))
 
@@ -67,7 +67,7 @@ case class AddInstance(c: Instance, nodeName: String,modelservice : KevoreeModel
   }
 
   def undo() {
-    RemoveInstance(c, nodeName,modelservice,kscript)
+    RemoveInstance(c, nodeName,modelservice,kscript,bs)
 
     //TODO
 

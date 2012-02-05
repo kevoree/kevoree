@@ -23,12 +23,12 @@ import org.osgi.service.packageadmin.PackageAdmin
 import org.slf4j.LoggerFactory
 import org.kevoree.DeployUnit
 import java.io.{FileInputStream, File}
-import org.kevoree.framework.PrimitiveCommand
 import org.kevoree.library.defaultNodeTypes.jcl.deploy.context.KevoreeDeployManager
 import org.kevoree.library.defaultNodeTypes.osgi.deploy.{KevoreeOSGIMapping, OSGIKevoreeDeployManager}
 import org.kevoree.library.defaultNodeTypes.jcl.deploy.command.CommandHelper
+import org.kevoree.api.PrimitiveCommand
 
-case class AddThirdPartyAetherCommand(deployUnit: DeployUnit) extends PrimitiveCommand {
+case class AddThirdPartyAetherCommand(deployUnit: DeployUnit,bs : org.kevoree.api.Bootstraper) extends PrimitiveCommand {
 
   var logger = LoggerFactory.getLogger(this.getClass)
   var lastExecutionBundle : Option[org.osgi.framework.Bundle] = null
@@ -38,7 +38,7 @@ case class AddThirdPartyAetherCommand(deployUnit: DeployUnit) extends PrimitiveC
 
     try {
 
-      val arteFile: File = org.kevoree.tools.aether.framework.AetherUtil.resolveDeployUnit(deployUnit)
+      val arteFile: File = bs.resolveDeployUnit(deployUnit)
       lastExecutionBundle = Some(OSGIKevoreeDeployManager.getBundleContext.installBundle("file:///" + arteFile.getAbsolutePath, new FileInputStream(arteFile)));
 
 

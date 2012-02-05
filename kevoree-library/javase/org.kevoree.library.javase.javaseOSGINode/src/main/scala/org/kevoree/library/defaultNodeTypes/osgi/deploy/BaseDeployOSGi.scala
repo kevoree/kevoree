@@ -16,24 +16,16 @@ package org.kevoree.library.defaultNodeTypes.osgi.deploy
 
 import command._
 import org.kevoree._
+import api.PrimitiveCommand
 import api.service.core.handler.KevoreeModelHandlerService
 import api.service.core.script.KevScriptEngineFactory
-import framework.PrimitiveCommand
+import framework.AbstractNodeType
 import kompare.JavaSePrimitive
 import library.defaultNodeTypes.jcl.deploy.command._
 import org.osgi.framework.Bundle
 import org.slf4j.LoggerFactory
 
-class BaseDeployOSGi(bundle: Bundle) {
-
-  var modelHandlerService : KevoreeModelHandlerService = null
-  def setModelHandlerService(m : KevoreeModelHandlerService){
-    modelHandlerService = m
-  }
-  var kscripEngineFactory : KevScriptEngineFactory = _
-  def setKscripEngineFactory(k : KevScriptEngineFactory){
-    kscripEngineFactory = k
-  }
+class BaseDeployOSGi(bundle: Bundle, nodeType : AbstractNodeType) {
 
   private val ctx = OSGIKevoreeDeployManager
 
@@ -45,19 +37,19 @@ class BaseDeployOSGi(bundle: Bundle) {
       // case Some(primitiveType) => {
       //   primitiveType.getName match {
 
-      case JavaSePrimitive.AddDeployUnit if (JCLHelper.isJCLManaged(p.getRef.asInstanceOf[DeployUnit])) => AddDeployUnit(p.getRef.asInstanceOf[DeployUnit])
-      case JavaSePrimitive.AddDeployUnit => AddDeployUnitAetherCommand(p.getRef.asInstanceOf[DeployUnit])
+      case JavaSePrimitive.AddDeployUnit if (JCLHelper.isJCLManaged(p.getRef.asInstanceOf[DeployUnit])) => AddDeployUnit(p.getRef.asInstanceOf[DeployUnit],nodeType.getBootStrapperService)
+      case JavaSePrimitive.AddDeployUnit => AddDeployUnitAetherCommand(p.getRef.asInstanceOf[DeployUnit],bs=nodeType.getBootStrapperService)
 
-      case JavaSePrimitive.UpdateDeployUnit if (JCLHelper.isJCLManaged(p.getRef.asInstanceOf[DeployUnit])) => UpdateDeployUnit(p.getRef.asInstanceOf[DeployUnit])
-      case JavaSePrimitive.UpdateDeployUnit => UpdateDeployUnitAetherCommand(p.getRef.asInstanceOf[DeployUnit])
+      case JavaSePrimitive.UpdateDeployUnit if (JCLHelper.isJCLManaged(p.getRef.asInstanceOf[DeployUnit])) => UpdateDeployUnit(p.getRef.asInstanceOf[DeployUnit],nodeType.getBootStrapperService)
+      case JavaSePrimitive.UpdateDeployUnit => UpdateDeployUnitAetherCommand(p.getRef.asInstanceOf[DeployUnit],nodeType.getBootStrapperService)
 
-      case JavaSePrimitive.RemoveDeployUnit if (JCLHelper.isJCLManaged(p.getRef.asInstanceOf[DeployUnit])) => RemoveDeployUnit(p.getRef.asInstanceOf[DeployUnit])
-      case JavaSePrimitive.RemoveDeployUnit => RemoveDeployUnitCommand(p.getRef.asInstanceOf[DeployUnit])
+      case JavaSePrimitive.RemoveDeployUnit if (JCLHelper.isJCLManaged(p.getRef.asInstanceOf[DeployUnit])) => RemoveDeployUnit(p.getRef.asInstanceOf[DeployUnit],nodeType.getBootStrapperService)
+      case JavaSePrimitive.RemoveDeployUnit => RemoveDeployUnitCommand(p.getRef.asInstanceOf[DeployUnit],nodeType.getBootStrapperService)
 
-      case JavaSePrimitive.AddThirdParty if (JCLHelper.isJCLManaged(p.getRef.asInstanceOf[DeployUnit])) => AddDeployUnit(p.getRef.asInstanceOf[DeployUnit])
-      case JavaSePrimitive.AddThirdParty => AddThirdPartyAetherCommand(p.getRef.asInstanceOf[DeployUnit])
+      case JavaSePrimitive.AddThirdParty if (JCLHelper.isJCLManaged(p.getRef.asInstanceOf[DeployUnit])) => AddDeployUnit(p.getRef.asInstanceOf[DeployUnit],nodeType.getBootStrapperService)
+      case JavaSePrimitive.AddThirdParty => AddThirdPartyAetherCommand(p.getRef.asInstanceOf[DeployUnit],nodeType.getBootStrapperService)
 
-      case JavaSePrimitive.RemoveThirdParty if (JCLHelper.isJCLManaged(p.getRef.asInstanceOf[DeployUnit])) => RemoveDeployUnit(p.getRef.asInstanceOf[DeployUnit])
+      case JavaSePrimitive.RemoveThirdParty if (JCLHelper.isJCLManaged(p.getRef.asInstanceOf[DeployUnit])) => RemoveDeployUnit(p.getRef.asInstanceOf[DeployUnit],nodeType.getBootStrapperService)
       case JavaSePrimitive.RemoveThirdParty => RemoveThirdPartyCommand(p.getRef.asInstanceOf[DeployUnit])
 
 
@@ -67,14 +59,14 @@ class BaseDeployOSGi(bundle: Bundle) {
        case JavaSePrimitive.RemoveType if (JCLHelper.isJCLManaged(p.getRef.asInstanceOf[TypeDefinition],nodeName)) => NoopCommand()
       case JavaSePrimitive.RemoveType => RemoveTypeCommand(p.getRef.asInstanceOf[TypeDefinition], nodeName)
 
-      case JavaSePrimitive.AddInstance if (JCLHelper.isJCLManaged(p.getRef.asInstanceOf[Instance].getTypeDefinition,nodeName)) => AddInstance(p.getRef.asInstanceOf[Instance],nodeName,modelHandlerService, kscripEngineFactory)
-      case JavaSePrimitive.AddInstance => AddInstanceCommand(p.getRef.asInstanceOf[Instance], nodeName,modelHandlerService, kscripEngineFactory)
+      case JavaSePrimitive.AddInstance if (JCLHelper.isJCLManaged(p.getRef.asInstanceOf[Instance].getTypeDefinition,nodeName)) => AddInstance(p.getRef.asInstanceOf[Instance],nodeName,nodeType.getModelService, nodeType.getKevScriptEngineFactory,nodeType.getBootStrapperService)
+      case JavaSePrimitive.AddInstance => AddInstanceCommand(p.getRef.asInstanceOf[Instance], nodeName,nodeType.getModelService, nodeType.getKevScriptEngineFactory)
 
       case JavaSePrimitive.UpdateDictionaryInstance /*if (JCLHelper.isJCLManaged(p.getRef.asInstanceOf[Instance].getTypeDefinition,nodeName))*/ => UpdateDictionary(p.getRef.asInstanceOf[Instance], nodeName)
   //    case JavaSePrimitive.UpdateDictionaryInstance => UpdateDictionary(p.getRef.asInstanceOf[Instance], nodeName)
 
-      case JavaSePrimitive.RemoveInstance if (JCLHelper.isJCLManaged(p.getRef.asInstanceOf[Instance].getTypeDefinition,nodeName)) => RemoveInstance(p.getRef.asInstanceOf[Instance], nodeName,modelHandlerService, kscripEngineFactory)
-      case JavaSePrimitive.RemoveInstance => RemoveInstanceCommand(p.getRef.asInstanceOf[Instance], nodeName,modelHandlerService, kscripEngineFactory)
+      case JavaSePrimitive.RemoveInstance if (JCLHelper.isJCLManaged(p.getRef.asInstanceOf[Instance].getTypeDefinition,nodeName)) => RemoveInstance(p.getRef.asInstanceOf[Instance], nodeName,nodeType.getModelService, nodeType.getKevScriptEngineFactory,nodeType.getBootStrapperService)
+      case JavaSePrimitive.RemoveInstance => RemoveInstanceCommand(p.getRef.asInstanceOf[Instance], nodeName,nodeType.getModelService, nodeType.getKevScriptEngineFactory)
 
       case JavaSePrimitive.StopInstance /*if (JCLHelper.isJCLManaged(p.getRef.asInstanceOf[Instance].getTypeDefinition,nodeName))*/ => StartStopInstance(p.getRef.asInstanceOf[Instance], nodeName,false)
      // case JavaSePrimitive.StopInstance => StopInstanceCommand(p.getRef.asInstanceOf[Instance], nodeName)

@@ -19,16 +19,16 @@ package org.kevoree.library.defaultNodeTypes.jcl.deploy.command
  */
 
 import org.slf4j.LoggerFactory
-import org.kevoree.framework.{KevoreeGeneratorHelper, PrimitiveCommand}
+import org.kevoree.framework.{KevoreeGeneratorHelper}
 import org.kevoree.framework.osgi.KevoreeInstanceFactory
 import org.kevoree.framework.aspects.KevoreeAspects._
 import org.kevoree.{ContainerRoot, NodeType, Instance}
 import org.kevoree.api.service.core.handler.KevoreeModelHandlerService
 import org.kevoree.api.service.core.script.KevScriptEngineFactory
-import org.kevoree.tools.aether.framework.JCLContextHandler
 import org.kevoree.library.defaultNodeTypes.jcl.deploy.context.KevoreeDeployManager
+import org.kevoree.api.PrimitiveCommand
 
-case class RemoveInstance(c: Instance, nodeName: String,modelservice : KevoreeModelHandlerService,kscript : KevScriptEngineFactory) extends PrimitiveCommand {
+case class RemoveInstance(c: Instance, nodeName: String,modelservice : KevoreeModelHandlerService,kscript : KevScriptEngineFactory,bs : org.kevoree.api.Bootstraper) extends PrimitiveCommand {
 
   var logger = LoggerFactory.getLogger(this.getClass)
 
@@ -56,7 +56,7 @@ case class RemoveInstance(c: Instance, nodeName: String,modelservice : KevoreeMo
         val node = c.getTypeDefinition.eContainer.asInstanceOf[ContainerRoot].getNodes.find(n => n.getName == nodeName).get
         val deployUnit = c.getTypeDefinition.foundRelevantDeployUnit(node)
 
-        val clazz = JCLContextHandler.getKCL(deployUnit).loadClass(factoryName)
+        val clazz = bs.getKevoreeClassLoaderHandler.getKevoreeClassLoader(deployUnit).loadClass(factoryName)
         val clazzInstance = clazz.newInstance
 
         val kevoreeFactory = clazzInstance.asInstanceOf[KevoreeInstanceFactory]
@@ -75,7 +75,7 @@ case class RemoveInstance(c: Instance, nodeName: String,modelservice : KevoreeMo
 
   def undo() {
     try {
-      AddInstance(c, nodeName,modelservice,kscript).execute()
+      AddInstance(c, nodeName,modelservice,kscript,bs).execute()
       UpdateDictionary(c, nodeName).execute()
     } catch {
       case _ =>

@@ -17,12 +17,6 @@
 
     <dependencies>
         <dependency>
-            <groupId>org.kevoree.tools</groupId>
-            <artifactId>org.kevoree.tools.aether.framework</artifactId>
-            <version>${kevoree.version}</version>
-            <type>bundle</type>
-        </dependency>
-        <dependency>
             <groupId>org.kevoree.extra</groupId>
             <artifactId>org.kevoree.extra.jcl</artifactId>
             <version>0.9.10</version>

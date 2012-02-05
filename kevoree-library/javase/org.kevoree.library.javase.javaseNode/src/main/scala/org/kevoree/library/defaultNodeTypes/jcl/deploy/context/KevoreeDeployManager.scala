@@ -22,8 +22,7 @@ package org.kevoree.library.defaultNodeTypes.jcl.deploy.context
 import actors.DaemonActor
 import org.slf4j.LoggerFactory
 import org.kevoree.DeployUnit
-import org.kevoree.tools.aether.framework.JCLContextHandler
-
+import org.kevoree.framework.AbstractNodeType
 
 object KevoreeDeployManager extends DaemonActor {
 
@@ -45,11 +44,11 @@ object KevoreeDeployManager extends DaemonActor {
     servicePackageAdmin.get
   }*/
 
-  def clearAll() {
+  def clearAll(nodeType : AbstractNodeType) {
     KevoreeDeployManager.bundleMapping.filter(bm => bm.ref.isInstanceOf[DeployUnit]).foreach( mapping => {
       val old_du = mapping.ref.asInstanceOf[DeployUnit]
       //CLEANUP KCL CONTEXT
-      if(JCLContextHandler.getKCL(old_du) != null){
+      if(nodeType.getBootStrapperService.getKevoreeClassLoaderHandler.getKevoreeClassLoader(old_du) != null){
         logger.debug("Force cleanup unitName {}", old_du.getUnitName)
       }
     })

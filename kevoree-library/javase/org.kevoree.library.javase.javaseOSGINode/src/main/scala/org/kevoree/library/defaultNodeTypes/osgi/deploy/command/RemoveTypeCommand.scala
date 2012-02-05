@@ -20,8 +20,8 @@ package org.kevoree.library.defaultNodeTypes.osgi.deploy.command
 
 import org.slf4j.LoggerFactory
 import org.kevoree.TypeDefinition
-import org.kevoree.framework.PrimitiveCommand
 import org.kevoree.library.defaultNodeTypes.jcl.deploy.context.KevoreeDeployManager
+import org.kevoree.api.PrimitiveCommand
 
 case class RemoveTypeCommand(ct : TypeDefinition,nodeName:String) extends PrimitiveCommand {
 

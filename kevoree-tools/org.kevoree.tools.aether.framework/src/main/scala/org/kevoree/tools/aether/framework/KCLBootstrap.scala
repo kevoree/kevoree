@@ -16,6 +16,7 @@ package org.kevoree.tools.aether.framework
 import org.kevoree.DeployUnit
 import org.kevoree.extra.jcl.KevoreeJarClassLoader
 import org.slf4j.LoggerFactory
+import org.kevoree.api.Bootstraper
 
 /**
  * Created by IntelliJ IDEA.
@@ -24,10 +25,9 @@ import org.slf4j.LoggerFactory
  * Time: 16:05
  */
 
-trait KCLBootstrap {
+trait KCLBootstrap extends  Bootstraper {
 
   protected val logger = LoggerFactory.getLogger(this.getClass)
-
 
   def buildKEY(du: DeployUnit): String = {
     du.getName + "/" + buildQuery(du, None)
@@ -61,7 +61,7 @@ trait KCLBootstrap {
             JCLContextHandler.removeDeployUnit(du)
           }*/
           
-          val kcl = JCLContextHandler.installDeployUnit(du,arteFile)
+          val kcl = getKevoreeClassLoaderHandler.installDeployUnit(du,arteFile)
 
           //bundle = bundleContext.installBundle("file:///" + arteFile.getAbsolutePath, new FileInputStream(arteFile))
           //        bundle.start()

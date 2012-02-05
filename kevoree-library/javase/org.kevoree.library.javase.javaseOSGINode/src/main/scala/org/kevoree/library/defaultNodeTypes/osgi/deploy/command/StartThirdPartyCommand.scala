@@ -14,12 +14,12 @@ package org.kevoree.library.defaultNodeTypes.osgi.deploy.command
  * limitations under the License.
  */
 
-import org.kevoree.framework.PrimitiveCommand
 import org.kevoree.DeployUnit
 import org.slf4j.LoggerFactory
 import org.kevoree.library.defaultNodeTypes.jcl.deploy.context.KevoreeDeployManager
 import org.kevoree.library.defaultNodeTypes.jcl.deploy.command.CommandHelper
 import org.kevoree.library.defaultNodeTypes.osgi.deploy.{KevoreeOSGIMapping, OSGIKevoreeDeployManager}
+import org.kevoree.api.PrimitiveCommand
 
 /**
  * User: Erwan Daubert - erwan.daubert@gmail.com

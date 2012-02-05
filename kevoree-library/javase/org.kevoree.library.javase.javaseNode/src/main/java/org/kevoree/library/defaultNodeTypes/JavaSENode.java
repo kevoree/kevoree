@@ -35,8 +35,7 @@ public class JavaSENode extends AbstractNodeType {
     public void startNode() {
         kompareBean = new KevoreeKompareBean();
         mapper = new CommandMapper();
-        mapper.setModelHandlerService(getModelService());
-        mapper.setKscripEngineFactory(getKevScriptEngineFactory());
+        mapper.setNodeType(this);
     }
 
 
@@ -46,7 +45,7 @@ public class JavaSENode extends AbstractNodeType {
         kompareBean = null;
         mapper = null;
         //Cleanup the local runtime
-        KevoreeDeployManager.clearAll();
+        KevoreeDeployManager.clearAll(this);
     }
 
     @Override
@@ -55,7 +54,7 @@ public class JavaSENode extends AbstractNodeType {
     }
 
     @Override
-    public org.kevoree.framework.PrimitiveCommand getPrimitive(AdaptationPrimitive adaptationPrimitive) {
+    public org.kevoree.api.PrimitiveCommand getPrimitive(AdaptationPrimitive adaptationPrimitive) {
         return mapper.buildPrimitiveCommand(adaptationPrimitive, this.getNodeName());
     }
 

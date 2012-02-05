@@ -1,3 +1,5 @@
+package org.kevoree.api
+
 /**
  * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE, Version 3, 29 June 2007;
  * you may not use this file except in compliance with the License.
@@ -11,22 +13,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kevoree.tools.aether.framework
 
-import org.kevoree.framework.MavenResolver
-import java.lang.String
-import java.io.File
-import java.util.List
+import org.kevoree.ContainerRoot
+import org.kevoreeAdaptation.{AdaptationModel, AdaptationPrimitive}
+import org.kevoree.api.service.core.handler.ContextModel
 
 /**
  * Created by IntelliJ IDEA.
  * User: duke
- * Date: 24/01/12
- * Time: 19:17
+ * Date: 31/12/11
+ * Time: 09:50
  */
 
-class AetherMavenResolver extends MavenResolver {
-  def resolveArtifact(artId: String, groupId: String, version: String, repos: List[String]): File = AetherUtil.resolveMavenArtifact4J(artId,groupId,version,repos)
+trait NodeType {
 
-  def resolveKevoreeArtifact(artId: String, groupId: String, version: String): File = AetherUtil.resolveKevoreeArtifact(artId,groupId,version)
+  def startNode(): Unit
+
+  def stopNode(): Unit
+
+  def updateNode(): Unit
+
+  def kompare(actualModel: ContainerRoot, targetModel: ContainerRoot): AdaptationModel
+
+  def getPrimitive(primitive: AdaptationPrimitive): PrimitiveCommand
+
+  def getContextModel: ContextModel
+
 }

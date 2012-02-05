@@ -1,11 +1,10 @@
 package org.kevoree.library.defaultNodeTypes.jcl.deploy
 
 import command._
-import org.kevoree.api.service.core.handler.KevoreeModelHandlerService
-import org.kevoree.api.service.core.script.KevScriptEngineFactory
 import org.kevoree.kompare.JavaSePrimitive
-import org.kevoree.framework.PrimitiveCommand
 import org.kevoree.{Channel, MBinding, Instance, DeployUnit}
+import org.kevoree.api.PrimitiveCommand
+import org.kevoree.framework.AbstractNodeType
 
 /**
  * Created by IntelliJ IDEA.
@@ -15,7 +14,7 @@ import org.kevoree.{Channel, MBinding, Instance, DeployUnit}
  */
 
 class CommandMapper {
-
+/*
   var modelHandlerService: KevoreeModelHandlerService = null
 
   def setModelHandlerService(m: KevoreeModelHandlerService) {
@@ -26,18 +25,25 @@ class CommandMapper {
 
   def setKscripEngineFactory(k: KevScriptEngineFactory) {
     kscripEngineFactory = k
-  }
+  }*/
+
+  var nodeType : AbstractNodeType = null
+  def setNodeType(n : AbstractNodeType) { nodeType = n }
+  def getNodeType : AbstractNodeType = nodeType
+
+
+
 
   def buildPrimitiveCommand(p: org.kevoreeAdaptation.AdaptationPrimitive, nodeName: String): PrimitiveCommand = {
     p.getPrimitiveType.getName match {
-      case JavaSePrimitive.AddDeployUnit => AddDeployUnit(p.getRef.asInstanceOf[DeployUnit])
-      case JavaSePrimitive.UpdateDeployUnit => UpdateDeployUnit(p.getRef.asInstanceOf[DeployUnit])
-      case JavaSePrimitive.RemoveDeployUnit => RemoveDeployUnit(p.getRef.asInstanceOf[DeployUnit])
-      case JavaSePrimitive.AddThirdParty => AddDeployUnit(p.getRef.asInstanceOf[DeployUnit])
-      case JavaSePrimitive.RemoveThirdParty => RemoveDeployUnit(p.getRef.asInstanceOf[DeployUnit])
-      case JavaSePrimitive.AddInstance => AddInstance(p.getRef.asInstanceOf[Instance], nodeName, modelHandlerService, kscripEngineFactory)
+      case JavaSePrimitive.AddDeployUnit => AddDeployUnit(p.getRef.asInstanceOf[DeployUnit],nodeType.getBootStrapperService)
+      case JavaSePrimitive.UpdateDeployUnit => UpdateDeployUnit(p.getRef.asInstanceOf[DeployUnit],nodeType.getBootStrapperService)
+      case JavaSePrimitive.RemoveDeployUnit => RemoveDeployUnit(p.getRef.asInstanceOf[DeployUnit],nodeType.getBootStrapperService)
+      case JavaSePrimitive.AddThirdParty => AddDeployUnit(p.getRef.asInstanceOf[DeployUnit],nodeType.getBootStrapperService)
+      case JavaSePrimitive.RemoveThirdParty => RemoveDeployUnit(p.getRef.asInstanceOf[DeployUnit],nodeType.getBootStrapperService)
+      case JavaSePrimitive.AddInstance => AddInstance(p.getRef.asInstanceOf[Instance], nodeName, nodeType.getModelService, nodeType.getKevScriptEngineFactory,nodeType.getBootStrapperService)
       case JavaSePrimitive.UpdateDictionaryInstance => UpdateDictionary(p.getRef.asInstanceOf[Instance], nodeName)
-      case JavaSePrimitive.RemoveInstance => RemoveInstance(p.getRef.asInstanceOf[Instance], nodeName, modelHandlerService, kscripEngineFactory)
+      case JavaSePrimitive.RemoveInstance => RemoveInstance(p.getRef.asInstanceOf[Instance], nodeName, nodeType.getModelService, nodeType.getKevScriptEngineFactory,nodeType.getBootStrapperService)
       case JavaSePrimitive.StopInstance  => StartStopInstance(p.getRef.asInstanceOf[Instance], nodeName, false)
       case JavaSePrimitive.StartInstance => StartStopInstance(p.getRef.asInstanceOf[Instance], nodeName, true)
       case JavaSePrimitive.AddBinding => AddBindingCommand(p.getRef.asInstanceOf[MBinding], nodeName)

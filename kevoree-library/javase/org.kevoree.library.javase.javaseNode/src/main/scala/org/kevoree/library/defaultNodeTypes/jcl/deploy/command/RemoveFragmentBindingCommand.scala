@@ -21,9 +21,9 @@ package org.kevoree.library.defaultNodeTypes.jcl.deploy.command
 import org.kevoree.framework.message.FragmentUnbindMessage
 import org.slf4j.LoggerFactory
 import org.kevoree.Channel
-import org.kevoree.framework.{PrimitiveCommand}
 import org.kevoree.framework.osgi.KevoreeChannelFragmentActivator
 import org.kevoree.library.defaultNodeTypes.jcl.deploy.context.{KevoreeMapping, KevoreeDeployManager}
+import org.kevoree.api.PrimitiveCommand
 
 case class RemoveFragmentBindingCommand(c: Channel, remoteNodeName: String, nodeName: String) extends PrimitiveCommand {
 

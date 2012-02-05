@@ -19,7 +19,7 @@ package org.kevoree.framework.deploy
  */
 
 import org.slf4j.LoggerFactory
-import org.kevoree.framework.PrimitiveCommand
+import org.kevoree.api.PrimitiveCommand
 
 class KevoreeDeployPhase {
 

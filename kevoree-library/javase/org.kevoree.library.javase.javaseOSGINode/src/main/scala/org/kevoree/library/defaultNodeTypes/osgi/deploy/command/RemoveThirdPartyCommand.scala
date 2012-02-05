@@ -20,7 +20,7 @@ package org.kevoree.library.defaultNodeTypes.osgi.deploy.command
 
 import org.slf4j.LoggerFactory
 import org.kevoree.DeployUnit
-import org.kevoree.framework.PrimitiveCommand
+import org.kevoree.api.PrimitiveCommand
 
 case class RemoveThirdPartyCommand(ct : DeployUnit) extends PrimitiveCommand {
 

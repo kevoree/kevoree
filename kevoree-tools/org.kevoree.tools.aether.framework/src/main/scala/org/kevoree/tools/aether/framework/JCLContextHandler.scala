@@ -17,9 +17,10 @@ package org.kevoree.tools.aether.framework
 import java.io.File
 import org.slf4j.LoggerFactory
 import org.kevoree.DeployUnit
-import org.kevoree.extra.jcl.KevoreeJarClassLoader
 import actors.DaemonActor
 import scala.collection.JavaConversions._
+import org.kevoree.api.service.core.classloading.{KevoreeClassLoaderHandler}
+import org.kevoree.extra.jcl.KevoreeJarClassLoader
 
 /**
  * Created by IntelliJ IDEA.
@@ -28,31 +29,36 @@ import scala.collection.JavaConversions._
  * Time: 14:29
  */
 
-object JCLContextHandler extends DaemonActor {
+class JCLContextHandler extends DaemonActor with KevoreeClassLoaderHandler {
 
   private val kcl_cache = new java.util.HashMap[String, KevoreeJarClassLoader]()
   private val kcl_cache_file = new java.util.HashMap[String, File]()
   private var lockedDu: List[String] = List()
-
   private val logger = LoggerFactory.getLogger(this.getClass)
 
   start()
 
-  case class DUMP ()
+  case class DUMP()
 
-  case class INSTALL_DEPLOYUNIT (du: DeployUnit, file: File)
+  case class INSTALL_DEPLOYUNIT(du: DeployUnit, file: File)
 
-  case class REMOVE_DEPLOYUNIT (du: DeployUnit)
+  case class REMOVE_DEPLOYUNIT(du: DeployUnit)
 
-  case class GET_KCL (du: DeployUnit)
+  case class GET_KCL(du: DeployUnit)
 
-  case class MANUALLY_ADD_TO_CACHE (du: DeployUnit, kcl: KevoreeJarClassLoader)
+  case class MANUALLY_ADD_TO_CACHE(du: DeployUnit, kcl: KevoreeJarClassLoader)
 
-  case class GET_CACHE_FILE (du: DeployUnit)
+  case class GET_CACHE_FILE(du: DeployUnit)
 
-  case class CLEAR ()
+  case class CLEAR()
 
-  def act () {
+  case class KILLActor()
+
+  def stop() {
+    this ! KILLActor()
+  }
+
+  def act() {
     loop {
       react {
         case GET_CACHE_FILE(du) => reply(getCacheFileInternals(du))
@@ -62,105 +68,29 @@ object JCLContextHandler extends DaemonActor {
         case MANUALLY_ADD_TO_CACHE(du, kcl) => manuallyAddToCacheInternals(du, kcl)
         case DUMP() => printDumpInternals()
         case CLEAR() => clearInternals(); reply()
+        case KILLActor() => exit()
       }
     }
   }
 
-  def clear () {
+  def clear() {
     this !? CLEAR()
   }
 
-  def removeDeployUnit (du: DeployUnit) {
-    this ! REMOVE_DEPLOYUNIT(du)
-    /*val key = buildKEY(du)
-          if (!lockedDu.contains(key)) {
-            if (kcl_cache.containsKey(key)) {
-              logger.debug("Remove KCL for " + du.getUnitName + "->" + buildKEY(du))
-              kcl_cache.get(key).unload()
-              kcl_cache.remove(key)
-            }
-            if (kcl_cache_file.containsKey(key)) {
-              kcl_cache_file.remove(key)
-            }
-          }
-          if (logger.isDebugEnabled) {
-            printDumpInternals()
-          }*/
-  }
-
-  def getCacheFile (du: DeployUnit): File = {
+  def getCacheFile(du: DeployUnit): File = {
     (this !? GET_CACHE_FILE(du)).asInstanceOf[File]
-    //    kcl_cache_file.get(buildKEY(du))
   }
 
-  def manuallyAddToCache (du: DeployUnit, kcl: KevoreeJarClassLoader) {
+  def manuallyAddToCache(du: DeployUnit, kcl: KevoreeJarClassLoader) {
     this ! MANUALLY_ADD_TO_CACHE(du, kcl)
-    /*kcl_cache.put(buildKEY(du), kcl)
-    lockedDu = lockedDu ++ List(buildKEY(du))*/
-    // kcl_cache_file.put(buildKEY(du), f)
   }
 
-  def printDump () {
+  def printDump() {
     this ! DUMP()
-    /*import scala.collection.JavaConversions._
-    logger.debug("------------------ KCL Dump -----------------------")
-    kcl_cache.foreach {
-      k =>
-        logger.debug("Dump = " + k._1)
-        k._2.printDump()
-    }
-    logger.debug("================== End KCL Dump ===================")*/
   }
 
-  def installDeployUnit (du: DeployUnit, file: File): KevoreeJarClassLoader = {
-    (this !? INSTALL_DEPLOYUNIT(du, file)).asInstanceOf[KevoreeJarClassLoader]
-    /*val previousKCL = getKCL(du)
-    val res = if (previousKCL != null) {
-      logger.debug("Take already installed {}", buildKEY(du))
-      previousKCL
-    } else {
-      logger.debug("Install {} , file {}", buildKEY(du), file)
-      val newcl = new KevoreeJarClassLoader
-      if (du.getVersion.contains("SNAPSHOT")) {
-        newcl.setLazyLoad(false)
-      }
-      newcl.add(file.getAbsolutePath)
-      kcl_cache.put(buildKEY(du), newcl)
-      kcl_cache_file.put(buildKEY(du), file)
-      logger.debug("Add KCL for " + du.getUnitName + "->" + buildKEY(du))
 
-      du.getRequiredLibs.foreach {
-        rLib =>
-          val kcl = getKCL(rLib)
-          if (kcl != null) {
-            logger.debug("Link KCL for " + du.getUnitName + "->" + rLib.getUnitName)
-            newcl.addSubClassLoader(kcl)
-
-            du.getRequiredLibs.filter(rLibIn => rLib != rLibIn).foreach(rLibIn => {
-              val kcl2 = getKCL(rLibIn)
-              if (kcl2 != null) {
-                kcl.addWeakClassLoader(kcl2)
-                logger.debug("Link Weak for " + rLib.getUnitName + "->" + rLibIn.getUnitName)
-              }
-            })
-
-
-          }
-      }
-      newcl
-    }
-    if(logger.isDebugEnabled){
-      printDump()
-    }
-    res*/
-  }
-
-  def getKCL (du: DeployUnit): KevoreeJarClassLoader = {
-    (this !? GET_KCL(du)).asInstanceOf[KevoreeJarClassLoader]
-    //    kcl_cache.get(buildKEY(du))
-  }
-
-  private def clearInternals () {
+  private def clearInternals() {
     kcl_cache.keySet().toList.foreach {
       key =>
         if (!lockedDu.contains(key)) {
@@ -181,17 +111,17 @@ object JCLContextHandler extends DaemonActor {
     }
   }
 
-  private def getCacheFileInternals (du: DeployUnit): File = {
+  private def getCacheFileInternals(du: DeployUnit): File = {
     kcl_cache_file.get(buildKEY(du))
   }
 
-  private def manuallyAddToCacheInternals (du: DeployUnit, kcl: KevoreeJarClassLoader) {
+  private def manuallyAddToCacheInternals(du: DeployUnit, kcl: KevoreeJarClassLoader) {
     kcl_cache.put(buildKEY(du), kcl)
     lockedDu = lockedDu ++ List(buildKEY(du))
     // kcl_cache_file.put(buildKEY(du), f)
   }
 
-  private def printDumpInternals () {
+  private def printDumpInternals() {
     logger.debug("------------------ KCL Dump -----------------------")
     kcl_cache.foreach {
       k =>
@@ -201,7 +131,7 @@ object JCLContextHandler extends DaemonActor {
     logger.debug("================== End KCL Dump ===================")
   }
 
-  private def installDeployUnitInternals (du: DeployUnit, file: File): KevoreeJarClassLoader = {
+  private def installDeployUnitInternals(du: DeployUnit, file: File): KevoreeJarClassLoader = {
     val previousKCL = getKCLInternals(du)
     val res = if (previousKCL != null) {
       logger.debug("Take already installed {}", buildKEY(du))
@@ -243,11 +173,11 @@ object JCLContextHandler extends DaemonActor {
     res
   }
 
-  private def getKCLInternals (du: DeployUnit): KevoreeJarClassLoader = {
+  private def getKCLInternals(du: DeployUnit): KevoreeJarClassLoader = {
     kcl_cache.get(buildKEY(du))
   }
 
-  private def removeDeployUnitInternals (du: DeployUnit) {
+  private def removeDeployUnitInternals(du: DeployUnit) {
     val key = buildKEY(du)
     if (!lockedDu.contains(key)) {
       if (kcl_cache.containsKey(key)) {
@@ -268,11 +198,11 @@ object JCLContextHandler extends DaemonActor {
   }
 
 
-  private def buildKEY (du: DeployUnit): String = {
+  private def buildKEY(du: DeployUnit): String = {
     du.getName + "/" + buildQuery(du, None)
   }
 
-  private def buildQuery (du: DeployUnit, repoUrl: Option[String]): String = {
+  private def buildQuery(du: DeployUnit, repoUrl: Option[String]): String = {
     val query = new StringBuilder
     query.append("mvn:")
     repoUrl match {
@@ -288,6 +218,29 @@ object JCLContextHandler extends DaemonActor {
       case _ => query.append("/"); query.append(du.getVersion)
     }
     query.toString()
+  }
+
+
+  def installDeployUnit(du: DeployUnit, file: File): KevoreeJarClassLoader = {
+    (this !? INSTALL_DEPLOYUNIT(du, file)).asInstanceOf[KevoreeJarClassLoader]
+  }
+
+  def getKevoreeClassLoader(du: DeployUnit): KevoreeJarClassLoader = {
+    (this !? GET_KCL(du)).asInstanceOf[KevoreeJarClassLoader]
+  }
+
+  def removeDeployUnitClassLoader(du: DeployUnit) {
+    this ! REMOVE_DEPLOYUNIT(du)
+  }
+
+  def installDeployUnit(du: DeployUnit): KevoreeJarClassLoader = {
+    //TODO CALL ACTOR
+    val resolvedFile = AetherUtil.resolveDeployUnit(du)
+    if (resolvedFile != null) {
+      installDeployUnit(du, resolvedFile)
+    } else {
+      null
+    }
   }
 
 }

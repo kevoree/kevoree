@@ -15,12 +15,11 @@ package org.kevoree.platform.osgi.standalone.gui;
 
 import org.kevoree.ContainerRoot;
 import org.kevoree.KevoreeFactory;
+import org.kevoree.api.Bootstraper;
 import org.kevoree.extra.jcl.KevoreeJarClassLoader;
 import org.kevoree.framework.KevoreeXmiHelper;
-import org.kevoree.framework.MavenResolver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.xeustechnologies.jcl.JclObjectFactory;
 
 import java.io.File;
 import java.io.IOException;
@@ -59,27 +58,23 @@ public class App {
         } else {
             try {
                 System.setSecurityManager(null);
-                
+
                 KevoreeJarClassLoader temp_cl = new KevoreeJarClassLoader();
-
                 temp_cl.add(App.class.getClassLoader().getResourceAsStream("boot/org.kevoree.tools.aether.framework-" + KevoreeFactory.getVersion() + ".jar"));
-                JclObjectFactory factory = JclObjectFactory.getInstance();
+                //JclObjectFactory factory = JclObjectFactory.getInstance();
 
-                temp_cl.loadClass("org.kevoree.tools.aether.framework.AetherMavenResolver");
-
-                MavenResolver mres = (MavenResolver) factory.create(temp_cl, "org.kevoree.tools.aether.framework.AetherMavenResolver");
-                File fileMarShell = mres.resolveKevoreeArtifact("org.kevoree.library.model.bootstrap", "org.kevoree.library.model", KevoreeFactory.getVersion());
+                Class clazz = temp_cl.loadClass("org.kevoree.tools.aether.framework.NodeTypeBootstrapHelper");
+                org.kevoree.api.Bootstraper bootstraper = (Bootstraper) clazz.newInstance();
+                File fileMarShell = bootstraper.resolveKevoreeArtifact("org.kevoree.library.model.bootstrap", "org.kevoree.library.model", KevoreeFactory.getVersion());
                 JarFile jar = new JarFile(fileMarShell);
                 JarEntry entry = jar.getJarEntry("KEV-INF/lib.kev");
                 model = KevoreeXmiHelper.loadStream(jar.getInputStream(entry));
 
-
-                mres = null;
-                factory= null;
+                bootstraper.close();
+                bootstraper = null;
                 temp_cl.unload();
                 temp_cl = null;
 
-      
 
             } catch (Exception e) {
                 logger.error("Error while bootstrap ", e);

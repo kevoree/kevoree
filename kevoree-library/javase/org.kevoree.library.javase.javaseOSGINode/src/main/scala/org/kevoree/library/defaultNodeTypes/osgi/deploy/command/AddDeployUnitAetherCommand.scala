@@ -19,7 +19,8 @@ package org.kevoree.library.defaultNodeTypes.osgi.deploy.command
  */
 
 import org.kevoree._
-import framework.{FileNIOHelper, PrimitiveCommand}
+import api.PrimitiveCommand
+import framework.{FileNIOHelper}
 import library.defaultNodeTypes.jcl.deploy.command.CommandHelper
 import library.defaultNodeTypes.jcl.deploy.context.KevoreeDeployManager
 import library.defaultNodeTypes.osgi.deploy.{KevoreeOSGIMapping, OSGIKevoreeDeployManager}
@@ -30,7 +31,7 @@ import org.osgi.framework.BundleException
 import java.io.{File, FileInputStream}
 import java.util.Random
 
-case class AddDeployUnitAetherCommand (deployUnit: DeployUnit, update: Boolean = false) extends PrimitiveCommand {
+case class AddDeployUnitAetherCommand (deployUnit: DeployUnit, update: Boolean = false, bs : org.kevoree.api.Bootstraper) extends PrimitiveCommand {
 
   var logger = LoggerFactory.getLogger(this.getClass)
   var random = new Random
@@ -42,7 +43,7 @@ case class AddDeployUnitAetherCommand (deployUnit: DeployUnit, update: Boolean =
   def execute (): Boolean = {
     logger.debug("CMD ADD DEPLOY UNIT EXECUTION ");
     try {
-      val arteFile: File = org.kevoree.tools.aether.framework.AetherUtil.resolveDeployUnit(deployUnit)
+      val arteFile: File = bs.resolveDeployUnit(deployUnit)
       logger.debug("Try to install from URL, " + arteFile.getAbsolutePath + " on - " +
         OSGIKevoreeDeployManager.getBundleContext)
       val previousBundleID = OSGIKevoreeDeployManager.getBundleContext.getBundles.map(b => b.getBundleId)

@@ -19,6 +19,7 @@ package org.kevoree.library.defaultNodeTypes.jcl.deploy.command
  */
 
 import org.kevoree._
+import api.PrimitiveCommand
 import framework._
 import library.defaultNodeTypes.jcl.deploy.context.{KevoreeMapping, KevoreeDeployManager}
 import org.kevoree.framework.message.FragmentUnbindMessage
