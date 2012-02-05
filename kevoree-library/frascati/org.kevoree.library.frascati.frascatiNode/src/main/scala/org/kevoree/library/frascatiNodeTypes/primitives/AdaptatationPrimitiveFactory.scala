@@ -4,6 +4,7 @@ import org.kevoree.library.frascatiNodeTypes.FrascatiNode
 import org.eclipse.stp.sca.ComponentType
 import org.kevoree.ComponentInstance
 import org.ow2.frascati.FraSCAti
+import org.kevoree.api.PrimitiveCommand
 import org.objectweb.fractal.api.Component
 import org.objectweb.fractal.api.control.ContentController
 import org.objectweb.fractal.api.control.AttributeController
@@ -11,7 +12,6 @@ import org.kevoree.Instance
 import scala.collection.JavaConversions._
 import org.objectweb.fractal.api.control.LifeCycleController
 import java.io.File
-import org.kevoree.api.PrimitiveCommand
 
 
 object AdaptatationPrimitiveFactory {
@@ -25,6 +25,8 @@ object AdaptatationPrimitiveFactory {
     //        values = {"UpdateType", "UpdateDeployUnit", "AddType", "AddDeployUnit", "AddThirdParty", 
     //"RemoveType", "RemoveDeployUnit", "UpdateInstance", "UpdateBinding", "UpdateDictionaryInstance", 
 
+    println("pass par la " + adaptationPrimitive.getPrimitiveType.getName)
+    
     adaptationPrimitive.getPrimitiveType.getName match {
       case "UpdateType" => {
         node.getSuperPrimitive(adaptationPrimitive);
