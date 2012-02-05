@@ -13,6 +13,8 @@
  */
 package org.kevoree.api.service.core.script;
 
+import org.kevoree.ContainerRoot;
+
 /**
  * Created by IntelliJ IDEA.
  * User: duke
@@ -21,6 +23,17 @@ package org.kevoree.api.service.core.script;
  */
 public interface KevScriptEngineFactory {
 
+    /**
+     * Create a KevScript Engine ready to interpret reconfiguration script on live current model
+     * @return
+     */
     public KevScriptEngine createKevScriptEngine();
+
+    /**
+     * Create a KevScript engine ready to interpret reconfiguration on srcModel parameter
+     * @param srcModel
+     * @return
+     */
+    public KevScriptEngine createKevScriptEngine(ContainerRoot srcModel);
 
 }
