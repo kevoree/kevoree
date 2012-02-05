@@ -15,6 +15,7 @@ package org.kevoree.library.sky.manager
  */
 
 import com.twitter.finagle.Service
+import http.AdminRespond
 import org.jboss.netty.handler.codec.http._
 import org.jboss.netty.handler.codec.http.HttpResponseStatus._
 import org.jboss.netty.handler.codec.http.HttpVersion.HTTP_1_1
@@ -27,7 +28,6 @@ import org.kevoree.api.service.core.handler.KevoreeModelHandlerService
 import java.io.ByteArrayOutputStream
 import org.slf4j.{LoggerFactory, Logger}
 import util.matching.Regex
-import org.kevoree.library.sky.minicloud.http.AdminRespond
 
 object HttpServer {
 

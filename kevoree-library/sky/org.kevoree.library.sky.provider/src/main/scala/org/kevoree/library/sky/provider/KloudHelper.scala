@@ -1,12 +1,11 @@
 package org.kevoree.library.sky.provider
 
-import org.kevoree.tools.marShell.KevsEngine
-import org.kevoree.api.service.core.script.KevScriptEngineFactory
 import org.slf4j.{LoggerFactory, Logger}
-import org.kevoree.{TypeDefinition, KevoreeFactory, Group, ContainerRoot}
+import org.kevoree.{TypeDefinition, Group, ContainerRoot}
 import java.io.{ByteArrayOutputStream, InputStreamReader, BufferedReader, OutputStreamWriter}
 import org.kevoree.framework.{KevoreeXmiHelper, Constants, KevoreePropertyHelper}
 import java.net._
+import org.kevoree.api.service.core.script.KevScriptEngineFactory
 
 
 /**
@@ -22,22 +21,22 @@ object KloudHelper {
   private val logger: Logger = LoggerFactory.getLogger(this.getClass)
 
 
-  def isASubType (nodeType: TypeDefinition, typeName: String): Boolean = {
+  def isASubType(nodeType: TypeDefinition, typeName: String): Boolean = {
     nodeType.getSuperTypes.find(td => td.getName == typeName || isASubType(td, typeName)) match {
       case None => false
       case Some(typeDefinition) => true
     }
   }
 
-  def lookForAGroup (groupName: String, currentModel: ContainerRoot): Boolean = {
+  def lookForAGroup(groupName: String, currentModel: ContainerRoot): Boolean = {
     currentModel.getGroups.find(g => g.getName == groupName).isDefined
   }
 
-  def getGroup (groupName: String, currentModel: ContainerRoot): Option[Group] = {
+  def getGroup(groupName: String, currentModel: ContainerRoot): Option[Group] = {
     currentModel.getGroups.find(g => g.getName == groupName)
   }
 
-  def lookForAccessPoint (groupName: String, nodeName: String, currentModel: ContainerRoot): Option[String] = {
+  def lookForAccessPoint(groupName: String, nodeName: String, currentModel: ContainerRoot): Option[String] = {
     currentModel.getGroups.find(g => g.getName == groupName) match {
       case None => None
       case Some(group) => {
@@ -51,8 +50,8 @@ object KloudHelper {
     }
   }
 
-  def createProxy (groupName: String, nodeName: String, proxyPath: String,
-    currentModel: ContainerRoot): Option[ContainerRoot] = {
+  def createProxy(groupName: String, nodeName: String, proxyPath: String,
+                  currentModel: ContainerRoot, kevScriptEngineFactory: KevScriptEngineFactory): Option[ContainerRoot] = {
     val scriptBuilder = new StringBuilder()
 
     //find Web Server
@@ -86,7 +85,17 @@ object KloudHelper {
 
             logger.debug("Try to apply the script below\n{}", scriptBuilder.toString())
 
-            val kloudModelOption = KevsEngine.executeScript(scriptBuilder.toString(), currentModel)
+
+            val kengine = kevScriptEngineFactory.createKevScriptEngine(currentModel)
+            val kloudModelOption = (try {
+              Some(kengine.interpret())
+            } catch {
+              case _@e => {
+                logger.debug("KevScript Error : ", e)
+                None
+              }
+            })
+
             if (kloudModelOption.isDefined) {
               val publicURLOption = buildPublicURL(groupName, nodeName, kloudModelOption.get)
               if (publicURLOption.isDefined) {
@@ -100,7 +109,16 @@ object KloudHelper {
 
                 logger.debug("Try to apply the script below\n{}", scriptBuilder.toString())
 
-                KevsEngine.executeScript(scriptBuilder.toString(), kloudModelOption.get)
+                val kengine = kevScriptEngineFactory.createKevScriptEngine(kloudModelOption.get)
+                try {
+                  Some(kengine.interpret())
+                } catch {
+                  case _@e => {
+                    logger.debug("KevScript Error : ", e)
+                    None
+                  }
+                }
+
               } else {
                 logger.debug("Unable to build the public URL to {} on {}", groupName, nodeName)
                 None
@@ -118,7 +136,7 @@ object KloudHelper {
     }
   }
 
-  def createGroup (groupName: String, nodeName: String, currentModel: ContainerRoot): Option[ContainerRoot] = {
+  def createGroup(groupName: String, nodeName: String, currentModel: ContainerRoot, kevScriptEngineFactory: KevScriptEngineFactory): Option[ContainerRoot] = {
     val portNumber = selectPortNumber("")
     val defaultPublicURLOption = buildDefaultPublicURL(groupName, nodeName, currentModel, portNumber)
     if (defaultPublicURLOption.isDefined) {
@@ -136,14 +154,22 @@ object KloudHelper {
 
       logger.debug("Try to apply the script below\n{}", scriptBuilder.toString())
 
-      KevsEngine.executeScript(scriptBuilder.toString(), currentModel)
+      val kengine = kevScriptEngineFactory.createKevScriptEngine(currentModel)
+      try {
+        Some(kengine.interpret())
+      } catch {
+        case _@e => {
+          logger.debug("KevScript Error : ", e)
+          None
+        }
+      }
     } else {
       logger.debug("Unable to create a group named {}", groupName)
       None
     }
   }
 
-  def localPush (model: ContainerRoot, groupName: String, kloudModel: ContainerRoot) {
+  def localPush(model: ContainerRoot, groupName: String, kloudModel: ContainerRoot) {
     logger.debug("try to push on the group the user model")
     val publicURLOption = KevoreePropertyHelper.getStringPropertyForGroup(kloudModel, groupName, "publicURL")
     if (publicURLOption.isDefined) {
@@ -170,7 +196,7 @@ object KloudHelper {
     }
   }
 
-  def selectPortNumber (address: String): Int = {
+  def selectPortNumber(address: String): Int = {
     var i = 8000
     if (address != "") {
       var found = false
@@ -203,7 +229,7 @@ object KloudHelper {
   /**
    * try to get the complete URL to forward data to the KloudResourceManagerGroup
    */
-  private def buildForwardURL (groupName: String, nodeName: String, model: ContainerRoot): Option[String] = {
+  private def buildForwardURL(groupName: String, nodeName: String, model: ContainerRoot): Option[String] = {
     model.getGroups.find(g => g.getName == groupName) match {
       case None => logger.error("Unable to find group named {}", groupName); None
       case Some(group) => {
@@ -230,8 +256,8 @@ object KloudHelper {
     }
   }
 
-  private def buildDefaultPublicURL (groupName: String, nodeName: String, model: ContainerRoot,
-    portNumber: Int): Option[String] = {
+  private def buildDefaultPublicURL(groupName: String, nodeName: String, model: ContainerRoot,
+                                    portNumber: Int): Option[String] = {
     model.getNodes.find(n => n.getName == nodeName) match {
       case None => logger.error("Unable to find the node for {}", nodeName); None
       case Some(node) => {
@@ -249,7 +275,7 @@ object KloudHelper {
   /**
    * try to build the public url used by a KloudResourceManagerGroup to communicate with itself
    */
-  private def buildPublicURL (groupName: String, nodeName: String, model: ContainerRoot): Option[String] = {
+  private def buildPublicURL(groupName: String, nodeName: String, model: ContainerRoot): Option[String] = {
     // find the webserver to get the port
     // find the IP of the node
     // concatenate IP:port/groupName

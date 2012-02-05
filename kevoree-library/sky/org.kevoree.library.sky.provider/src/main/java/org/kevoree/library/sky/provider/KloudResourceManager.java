@@ -100,11 +100,11 @@ public class KloudResourceManager extends AbstractPage {
 
 			// we create a group with the login of the user
 			Option<ContainerRoot> newKloudModelOption = KloudHelper
-					.createGroup(login, this.getNodeName(), uuidModel.getModel());
+					.createGroup(login, this.getNodeName(), uuidModel.getModel(),getKevScriptEngineFactory());
 			if (newKloudModelOption.isDefined()) {
 				// create proxy to the group
 				newKloudModelOption = KloudHelper.createProxy(login, this.getNodeName(), "/" + login,
-						newKloudModelOption.get());
+						newKloudModelOption.get(),getKevScriptEngineFactory());
 
 				if (newKloudModelOption.isDefined()) {
 

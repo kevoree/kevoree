@@ -91,7 +91,8 @@ public class KevoreeBootStrap {
             }
 
 
-            final Class clazz2 = scriptEngineKCL.loadClass("org.kevoree.tools.marShell.KevScriptCoreEngine");
+            final Class onlineMShellEngineClazz = scriptEngineKCL.loadClass("org.kevoree.tools.marShell.KevScriptCoreEngine");
+            final Class offLineMShellEngineClazz = scriptEngineKCL.loadClass("org.kevoree.tools.marShell.KevScriptOfflineEngine");
 
             coreBean.setBootstraper(bootstraper);
             coreBean.setConfigService((ConfigurationService) configBean);
@@ -99,12 +100,21 @@ public class KevoreeBootStrap {
                 @Override
                 public KevScriptEngine createKevScriptEngine() {
                     try {
-                        return (KevScriptEngine) clazz2.getDeclaredConstructor(KevoreeModelHandlerService.class).newInstance(coreBean);
+                        return (KevScriptEngine) onlineMShellEngineClazz.getDeclaredConstructor(KevoreeModelHandlerService.class).newInstance(coreBean);
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
                     return null;
                 }
+
+                @Override
+                public KevScriptEngine createKevScriptEngine(ContainerRoot srcModel) {
+                    try {
+                        return (KevScriptEngine) offLineMShellEngineClazz.getDeclaredConstructor(ContainerRoot.class).newInstance(coreBean);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    return null;                }
             });
             coreBean.start();
 

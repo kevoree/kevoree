@@ -1,4 +1,4 @@
-package org.kevoree.library.sky.minicloud.http
+package org.kevoree.library.sky.manager.http
 
 import com.twitter.util.Future
 import org.jboss.netty.handler.codec.http.HttpVersion._
@@ -11,7 +11,6 @@ import org.kevoree.library.sky.manager.{VirtualNodeHTMLHelper, HttpServer}
  * User: duke
  * Date: 27/09/11
  * Time: 07:57
- * To change this template use File | Settings | File Templates.
  */
 
 trait AdminRespond {
@@ -30,9 +29,9 @@ trait AdminRespond {
     Future.value(response)
   }
 
-  def sendNodeFlux(fluxName : String,nodeName: String, request: HttpRequest, server: HttpServer.Respond): Future[DefaultHttpResponse] = {
+  def sendNodeFlux(fluxName: String, nodeName: String, request: HttpRequest, server: HttpServer.Respond): Future[DefaultHttpResponse] = {
     val response = new DefaultHttpResponse(HTTP_1_1, OK)
-    val htmlContent = VirtualNodeHTMLHelper.getNodeStreamAsHTML( nodeName,fluxName)
+    val htmlContent = VirtualNodeHTMLHelper.getNodeStreamAsHTML(nodeName, fluxName)
     response.setContent(server.createBufferFromString(htmlContent))
     Future.value(response)
   }

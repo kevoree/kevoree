@@ -7,7 +7,6 @@ import org.kevoree.cloner.ModelCloner
 import org.kevoree.api.service.core.handler.{UUIDModel, KevoreeModelHandlerService}
 import org.kevoree.api.service.core.script.KevScriptEngineFactory
 import java.net.URL
-import org.kevoree.tools.marShell.KevsEngine
 import java.io._
 import org.kevoree.framework.{Constants, KevoreePropertyHelper}
 import org.kevoree._
@@ -48,7 +47,7 @@ object KloudResourceProvider {
    * only one group is kept and this group is the default group automatically added
    */
   @Deprecated
-  def cleanUserModel (model: ContainerRoot): Option[ContainerRoot] = {
+  def cleanUserModel (model: ContainerRoot, kevScriptEngineFactory : KevScriptEngineFactory): Option[ContainerRoot] = {
     val cloner = new ModelCloner
     val cleanModel = cloner.clone(model)
 
@@ -87,7 +86,18 @@ object KloudResourceProvider {
 
     logger.debug("Try to apply the following script to usermodel:\n{}", scriptBuilder.toString())
 
-    KevsEngine.executeScript(scriptBuilder.toString(), cleanModel)
+    val kevEngine = kevScriptEngineFactory.createKevScriptEngine(cleanModel)
+    kevEngine.append(scriptBuilder.toString())
+    try {
+      Some(kevEngine.interpret())
+    } catch {
+      case _@ e => {
+        logger.debug("KevScript Error : ",e)
+        None
+      }
+    }
+    
+    
   }
 
   @Deprecated
@@ -106,7 +116,7 @@ object KloudResourceProvider {
    * A parent node is defined by two adaptation primitives <b>addNode</b> and <b>removeNode</b>
    */
   @Deprecated
-  def distribute (model: ContainerRoot, kloudModel: ContainerRoot): Option[ContainerRoot] = {
+  def distribute (model: ContainerRoot, kloudModel: ContainerRoot,kevScriptEngineFactory : KevScriptEngineFactory): Option[ContainerRoot] = {
     logger.debug("Try to distribute all the user nodes into the Kloud")
 
     // build kevscript to apply user model into the kloud model
@@ -184,7 +194,18 @@ object KloudResourceProvider {
     logger.debug("Try to apply the following script to kloudmodel to distribute all the user nodes:\n{}",
                   scriptBuilder.toString())
 
-    KevsEngine.executeScript(scriptBuilder.toString(), kloudModel)
+
+    val kevEngine = kevScriptEngineFactory.createKevScriptEngine(kloudModel)
+    kevEngine.append(scriptBuilder.toString())
+    try {
+      Some(kevEngine.interpret())
+    } catch {
+      case _@ e => {
+        logger.debug("KevScript Error : ",e)
+        None
+      }
+    }
+
   }
 
   /**
