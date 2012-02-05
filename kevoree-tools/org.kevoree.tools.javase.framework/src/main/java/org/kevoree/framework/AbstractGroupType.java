@@ -16,6 +16,7 @@ package org.kevoree.framework;
 
 import org.kevoree.ContainerRoot;
 import org.kevoree.Group;
+import org.kevoree.api.Bootstraper;
 import org.kevoree.api.service.core.handler.KevoreeModelHandlerService;
 import org.kevoree.api.service.core.script.KevScriptEngineFactory;
 
@@ -75,5 +76,17 @@ public abstract class AbstractGroupType {
 	public Group getModelElement () {
 		return KevoreeElementHelper.getGroupElement(this.getName(), this.getModelService().getLastModel()).get();
 	}
+
+
+    private Bootstraper bootstrapService = null;
+
+    public void setBootStrapperService(Bootstraper brs){
+        bootstrapService = brs;
+    }
+
+    public Bootstraper getBootStrapperService(){
+        return bootstrapService;
+    }
+
 
 }
