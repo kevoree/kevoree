@@ -61,6 +61,9 @@ public class KevoreeFrascatiMojo extends AbstractMojo {
 
 
     public void execute() throws MojoExecutionException, MojoFailureException {
+
+        getLog().info("Hello !!!!");
+
     	System.err.println("pass par la");
     	
     	List<File> res = new ArrayList<File>();

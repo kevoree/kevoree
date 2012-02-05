@@ -30,6 +30,7 @@ class AndroidKevoreeJarClassLoader(ctx: android.content.Context, parent: ClassLo
     }
     dexWriter.close()
     val dexOptStoragePath = new File(ctx.getDir("odex", Context.MODE_PRIVATE), cleanName)
+    val newDexCL = new DexClassLoader(dexInternalStoragePath.getAbsolutePath,dexOptStoragePath.getAbsolutePath,null,parent)
 
   }
 
