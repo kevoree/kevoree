@@ -92,13 +92,13 @@ public class FrascatiNode extends JavaSENode {
 
 	}
 
-	public org.kevoree.framework.PrimitiveCommand getSuperPrimitive(
+	public org.kevoree.api.PrimitiveCommand getSuperPrimitive(
 			AdaptationPrimitive adaptationPrimitive) {
 		return super.getPrimitive(adaptationPrimitive);
 	
 	}
 	@Override
-	public org.kevoree.framework.PrimitiveCommand getPrimitive(
+	public org.kevoree.api.PrimitiveCommand getPrimitive(
 			AdaptationPrimitive adaptationPrimitive) {
 		
 		

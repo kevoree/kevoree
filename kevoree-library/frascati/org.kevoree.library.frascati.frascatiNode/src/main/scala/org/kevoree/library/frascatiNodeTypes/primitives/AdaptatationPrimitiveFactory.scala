@@ -1,7 +1,6 @@
 package org.kevoree.library.frascatiNodeTypes.primitives;
 import org.kevoreeAdaptation.AdaptationPrimitive
 import org.kevoree.library.frascatiNodeTypes.FrascatiNode
-import org.kevoree.framework.PrimitiveCommand
 import org.eclipse.stp.sca.ComponentType
 import org.kevoree.ComponentInstance
 import org.ow2.frascati.FraSCAti
@@ -12,6 +11,7 @@ import org.kevoree.Instance
 import scala.collection.JavaConversions._
 import org.objectweb.fractal.api.control.LifeCycleController
 import java.io.File
+import org.kevoree.api.PrimitiveCommand
 
 
 object AdaptatationPrimitiveFactory {
@@ -20,7 +20,7 @@ object AdaptatationPrimitiveFactory {
 	def frascati :FraSCAti = _frascati;
   	
   
-  def getPrimitive(adaptationPrimitive: AdaptationPrimitive, node: FrascatiNode): org.kevoree.framework.PrimitiveCommand = {
+  def getPrimitive(adaptationPrimitive: AdaptationPrimitive, node: FrascatiNode): org.kevoree.api.PrimitiveCommand = {
 
     //        values = {"UpdateType", "UpdateDeployUnit", "AddType", "AddDeployUnit", "AddThirdParty", 
     //"RemoveType", "RemoveDeployUnit", "UpdateInstance", "UpdateBinding", "UpdateDictionaryInstance", 
@@ -242,8 +242,8 @@ object AdaptatationPrimitiveFactory {
 
     
     def generateComponent(componentName : String, componentJavaClass:String,instance:org.kevoree.ComponentInstance):String ={
-          	  <?xml version="1.0" encoding="ISO-8859-15"?>
-    		<composite xmlns="http://www.osoa.org/xmlns/sca/1.0" name="{componentName}">
+          	  "<?xml version=\"1.0\" encoding=\"ISO-8859-15\"?>"+
+    		(<composite xmlns={"http://www.osoa.org/xmlns/sca/1.0"} name={componentName}>
     			  {/*generate promote*/}
     			  <component name={componentName+"_internal_"}>    			  
     			  <implementation.java class={componentJavaClass}/>
@@ -253,7 +253,7 @@ object AdaptatationPrimitiveFactory {
         			    instance.getDictionary.get.getValues.foreach(value=> properties(value.getAttribute.getName,value.getValue))
         			  }
         			  </component>
-    			  </composite>.toString()
+    			  </composite>.toString())
     }
     
     override def undo() = {
@@ -334,6 +334,5 @@ object AdaptatationPrimitiveFactory {
     }
 
   }
-
 
 }

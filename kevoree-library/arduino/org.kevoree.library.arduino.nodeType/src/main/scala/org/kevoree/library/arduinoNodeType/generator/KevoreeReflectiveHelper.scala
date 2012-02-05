@@ -5,13 +5,13 @@
 
 package org.kevoree.library.arduinoNodeType.generator
 
-import org.kevoree.framework.KevoreeGeneratorHelper
 import org.kevoree.{ContainerRoot, TypeDefinition}
 import scala.collection.JavaConversions._
 import org.slf4j.{LoggerFactory, Logger}
 import org.kevoree.annotation.{Generate => KGenerate}
 import org.kevoree.framework.aspects.KevoreeAspects._
 import org.kevoree.tools.aether.framework.JCLContextHandler
+import org.kevoree.framework.{AbstractNodeType, KevoreeGeneratorHelper}
 
 trait KevoreeReflectiveHelper {
   private val logger: Logger = LoggerFactory.getLogger(this.getClass)
@@ -45,7 +45,7 @@ trait KevoreeReflectiveHelper {
     }
   }
 
-  def createStandaloneInstance(ct: TypeDefinition, nodeName: String): Object = {
+  def createStandaloneInstance(ct: TypeDefinition, nodeName: String,nodeTypeInstance : AbstractNodeType): Object = {
     //CREATE NEW INSTANCE
     var clazzFactory: Class[_] = null
 
@@ -62,11 +62,8 @@ trait KevoreeReflectiveHelper {
     }*/
     
     val  du = ct.foundRelevantDeployUnit(nodeHost)
-    
 
-
-    
-    clazzFactory = JCLContextHandler.getKCL(du).loadClass(activatorClassName)
+    clazzFactory = nodeTypeInstance.getBootStrapperService.getKevoreeClassLoaderHandler.getKevoreeClassLoader(du).loadClass(activatorClassName)
     val activatorInstance = clazzFactory.newInstance
 
     val reflectiveInstanceActor = clazzFactory.getMethod("callFactory").invoke(activatorInstance)

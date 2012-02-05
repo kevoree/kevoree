@@ -50,6 +50,35 @@
 
     <build>
         <plugins>
+
+            <plugin>
+                <groupId>org.scala-tools</groupId>
+                <artifactId>maven-scala-plugin</artifactId>
+                <version>2.15.2</version>
+                <executions>
+                    <execution>
+                        <id>scala-compile-first</id>
+                        <phase>process-resources</phase>
+                        <goals>
+                            <goal>add-source</goal>
+                            <goal>compile</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>scala-test-compile</id>
+                        <phase>process-test-resources</phase>
+                        <goals>
+                            <goal>testCompile</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <jvmArgs>
+                        <jvmArg>-Xmx1024m</jvmArg>
+                    </jvmArgs>
+                </configuration>
+            </plugin>
+
             <plugin>
                 <artifactId>maven-dependency-plugin</artifactId>
                 <executions>
@@ -59,7 +88,9 @@
                             <goal>copy-dependencies</goal>
                         </goals>
                         <configuration>
-                            <excludeGroupIds>org.codehaus.woodstox,org.codehaus.plexus,org.apache.maven,org.kevoree,org.kevoree.tools,org.scala-lang,org.sonatype.aether,org.slf4j,org.jboss.netty,com.ning,org.kevoree.extra</excludeGroupIds>
+                            <excludeGroupIds>
+                                org.codehaus.woodstox,org.codehaus.plexus,org.apache.maven,org.kevoree,org.kevoree.tools,org.scala-lang,org.sonatype.aether,org.slf4j,org.jboss.netty,com.ning,org.kevoree.extra
+                            </excludeGroupIds>
                             <outputDirectory>${project.build.directory}/dep/lib</outputDirectory>
                         </configuration>
                     </execution>
@@ -72,15 +103,17 @@
                 <extensions>true</extensions>
                 <configuration>
                     <instructions>
-                        <Include-Resource>${project.build.directory}/dep,${project.build.directory}/generated-sources/kevoree,${basedir}/src/main/resources</Include-Resource>
+                        <Include-Resource>
+                            ${project.build.directory}/dep,${project.build.directory}/generated-sources/kevoree,${basedir}/src/main/resources
+                        </Include-Resource>
                         <!--                      <Private-Package>schemas.*,schema.*,model.*,javax.xml.*,javax.jws.soap.*,org.apache.aries.*,net.sf.cglib.*,javax.wsdl.*,javax.servlet.*,javax.resource.*,com.werken.xpath.*,com.sun.xml.fastinfoset.*,com.p6spy.*,com.sun.codemodel.*,com.sun.msv.*,com.sun.mirror.*,com.sun.org.*,com.sun.tools.xjc.*,com.sun.tools.jxc.*,com.sun.xml.*,org.kohsuke.*,org.relaxng.datatype.*,com.google.protobuf.*,org.apache.geronimo.*,com.wutka.dtd.*,org.osoa.*,org.apache.oro.*,org.apache.ws.*,org.apache.xml.*,org.eclipse.emf.*,com.ibm.wsdl.*,com.ctc.wstx.*,org.apache.velocity.*,org.codehaus.stax2.*,org.eclipse.core.*,org.eclipse.stp.sca.*,org.apache.neethi.*,com.sun.istack.*,com.sun.xml.bind.*,com.sun.xml.txw2.*,org.jboss.*,com.google.common.*,javax.mail.*,org.oasisopen.*,org.eclipse.emf.*,org.objectweb.*,juliac.generated.*,org.aopalliance.*,javax.xml.stream.*,org.apache.cxf.*,org.ow2.*</Private-Package>-->
                         <Export-Package>org.kevoree.library.frascatiNodeTypes.*</Export-Package>
                         <Import-Package>
                             !org.ow2.frascati.util.*,!org.ow2.frascati.*,!org.kevoree.library.frascatiNodeTypes.*,*;resolution:=optional
                         </Import-Package>
                         <DynamicImport-Package>
-				*                        
-			</DynamicImport-Package>
+                            *
+                        </DynamicImport-Package>
 
 
                         <Bundle-Classpath>aopalliance-1.0.jar,frascati-util-1.4.jar,
