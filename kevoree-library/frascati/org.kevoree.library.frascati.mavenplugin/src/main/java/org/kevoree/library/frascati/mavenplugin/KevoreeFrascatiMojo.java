@@ -62,7 +62,6 @@ public class KevoreeFrascatiMojo extends AbstractMojo {
 
     public void execute() throws MojoExecutionException, MojoFailureException {
     	System.err.println("pass par la");
-    	
     	List<File> res = new ArrayList<File>();
     	listFile(resources,res);
   	    ContainerRoot root = KevoreeFactory.createContainerRoot();
@@ -77,37 +76,24 @@ public class KevoreeFrascatiMojo extends AbstractMojo {
     
     
     public void listFile(File dir, Collection<File> files) {
-    	 
 		GenericExtFilter filter = new GenericExtFilter("composite");
- 
- 
- 
 		// list out all the file name and filter by the extension
 		File[] list = dir.listFiles(filter);
- 
-		
 		for (File file : list) {
 			files.add(file);
 		}
-		
-		
 		GenericDirFilter dirfilter = new GenericDirFilter();
 		File[] dirs = dir.listFiles(dirfilter);
-
 		for (File d : dirs) {
 			listFile(d, files);
 		}
     }
     
     class GenericExtFilter implements FileFilter {
-    	 
 		private String ext;
- 
 		public GenericExtFilter(String ext) {
 			this.ext = ext;
 		}
- 
-
 		@Override
 		public boolean accept(File arg0) {
 			return 	arg0.getName().endsWith(ext);
