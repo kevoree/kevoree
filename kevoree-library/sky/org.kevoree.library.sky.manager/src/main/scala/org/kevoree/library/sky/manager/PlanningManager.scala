@@ -3,9 +3,9 @@ package org.kevoree.library.sky.manager
 import command.{AddNodeCommand, RemoveNodeCommand}
 import nodeType.IaaSNode
 import org.kevoreeAdaptation.{AdaptationPrimitive, ParallelStep, KevoreeAdaptationFactory, AdaptationModel}
-import org.kevoree.framework.PrimitiveCommand
 import org.slf4j.{LoggerFactory, Logger}
 import org.kevoree._
+import api.PrimitiveCommand
 
 /**
  * User: Erwan Daubert - erwan.daubert@gmail.com

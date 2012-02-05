@@ -1,8 +1,8 @@
 package org.kevoree.library.sky.manager.command
 
-import org.kevoree.framework.PrimitiveCommand
 import org.kevoree.{ContainerRoot, ContainerNode}
 import org.kevoree.library.sky.manager.KevoreeNodeManager
+import org.kevoree.api.PrimitiveCommand
 
 /**
  * User: Erwan Daubert - erwan.daubert@gmail.com

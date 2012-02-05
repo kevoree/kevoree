@@ -10,7 +10,6 @@ import org.jboss.netty.handler.codec.http.HttpRequest;
 import org.jboss.netty.handler.codec.http.HttpResponse;
 import org.kevoree.ContainerRoot;
 import org.kevoree.annotation.*;
-import org.kevoree.framework.PrimitiveCommand;
 import org.kevoree.library.defaultNodeTypes.JavaSENode;
 import org.kevoree.library.sky.manager.*;
 import org.kevoreeAdaptation.AdaptationModel;
@@ -32,81 +31,81 @@ import java.util.concurrent.TimeUnit;
 
 @PrimitiveCommands(value = {}, values = {IaaSNode.REMOVE_NODE, IaaSNode.ADD_NODE})
 @DictionaryType({
-		@DictionaryAttribute(name = "role", defaultValue = "host", vals = {"host", "container", "host/container"},
-				optional = false),
-		@DictionaryAttribute(name = "port", defaultValue = "7000", optional = false)
+        @DictionaryAttribute(name = "role", defaultValue = "host", vals = {"host", "container", "host/container"},
+                optional = false),
+        @DictionaryAttribute(name = "port", defaultValue = "7000", optional = false)
 })
 @NodeFragment
 public abstract class IaaSNode extends JavaSENode {
-	private static final Logger logger = LoggerFactory.getLogger(IaaSNode.class);
+    private static final Logger logger = LoggerFactory.getLogger(IaaSNode.class);
 
-	public static final String REMOVE_NODE = "RemoveNode";
-	public static final String ADD_NODE = "AddNode";
+    public static final String REMOVE_NODE = "RemoveNode";
+    public static final String ADD_NODE = "AddNode";
 
-	private Server server;
+    private Server server;
 
-	public abstract KevoreeNodeRunner createKevoreeNodeRunner (String nodeName, String bootStrapModel,
-			ContainerRoot model); /*{
+    public abstract KevoreeNodeRunner createKevoreeNodeRunner(String nodeName, String bootStrapModel,
+                                                              ContainerRoot model); /*{
 		logger.error("createKevoreeNodeRunner from IaaSNode must be override by subtypes and never be used as is");
 		return null;
 	}*/
 
 
-	@Start
-	@Override
-	public void startNode () {
+    @Start
+    @Override
+    public void startNode() {
 
-		super.startNode();
+        super.startNode();
 
-		KevoreeNodeManager.setNode(this);
+        KevoreeNodeManager.setNode(this);
+        Helper.setCurrentNodeType(this);
+        //Helper.setModelHandlerService(this.getModelService());
+        //Helper.setNodeName(this.getNodeName());
 
-		Helper.setModelHandlerService(this.getModelService());
-		Helper.setNodeName(this.getNodeName());
+        // start HTTP Server
+        String port = (String) this.getDictionary().get("port");
+        int portint = Integer.parseInt(port);
 
-		// start HTTP Server
-		String port = (String) this.getDictionary().get("port");
-		int portint = Integer.parseInt(port);
+        Service<HttpRequest, HttpResponse> myService = new HttpServer.Respond(this.getModelService());
+        server = ServerBuilder.safeBuild(myService, ServerBuilder.get().codec(Http.get())
+                .bindTo(new InetSocketAddress(portint))
+                .name(this.getNodeName()));
+    }
 
-		Service<HttpRequest, HttpResponse> myService = new HttpServer.Respond(this.getModelService());
-		server = ServerBuilder.safeBuild(myService, ServerBuilder.get().codec(Http.get())
-				.bindTo(new InetSocketAddress(portint))
-				.name(this.getNodeName()));
-	}
+    @Stop
+    @Override
+    public void stopNode() {
+        logger.debug("stopping node type of " + this.getNodeName());
+        super.stopNode();
+        KevoreeNodeManager.stop();
+        server.close(Duration.apply(300, TimeUnit.MILLISECONDS));
+    }
 
-	@Stop
-	@Override
-	public void stopNode () {
-		logger.debug("stopping node type of " + this.getNodeName());
-		super.stopNode();
-		KevoreeNodeManager.stop();
-		server.close(Duration.apply(300, TimeUnit.MILLISECONDS));
-	}
+    public boolean isHost() {
+        String role = this.getDictionary().get("role").toString();
+        return role.contains("host");
+    }
 
-	public boolean isHost () {
-		String role = this.getDictionary().get("role").toString();
-		return role.contains("host");
-	}
+    public boolean isContainer() {
+        String role = this.getDictionary().get("role").toString();
+        return role.contains("container");
+    }
 
-	public boolean isContainer () {
-		String role = this.getDictionary().get("role").toString();
-		return role.contains("container");
-	}
+    public AdaptationModel superKompare(ContainerRoot current, ContainerRoot target) {
+        return super.kompare(current, target);
+    }
 
-	public AdaptationModel superKompare (ContainerRoot current, ContainerRoot target) {
-		return super.kompare(current, target);
-	}
+    @Override
+    public AdaptationModel kompare(ContainerRoot current, ContainerRoot target) {
+        return PlanningManager.kompare(current, target, this);
+    }
 
-	@Override
-	public AdaptationModel kompare (ContainerRoot current, ContainerRoot target) {
-		return PlanningManager.kompare(current, target, this);
-	}
+    public org.kevoree.api.PrimitiveCommand superGetPrimitive(AdaptationPrimitive adaptationPrimitive) {
+        return super.getPrimitive(adaptationPrimitive);
+    }
 
-	public PrimitiveCommand superGetPrimitive (AdaptationPrimitive adaptationPrimitive) {
-		return super.getPrimitive(adaptationPrimitive);
-	}
-
-	@Override
-	public PrimitiveCommand getPrimitive (AdaptationPrimitive adaptationPrimitive) {
-		return PlanningManager.getPrimitive(adaptationPrimitive, this);
-	}
+    @Override
+    public org.kevoree.api.PrimitiveCommand getPrimitive(AdaptationPrimitive adaptationPrimitive) {
+        return PlanningManager.getPrimitive(adaptationPrimitive, this);
+    }
 }
