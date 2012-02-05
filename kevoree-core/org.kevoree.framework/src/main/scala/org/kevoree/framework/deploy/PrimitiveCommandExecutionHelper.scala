@@ -14,7 +14,7 @@
 package org.kevoree.framework.deploy
 
 import org.kevoreeAdaptation.{ParallelStep, AdaptationModel}
-import org.kevoree.framework.{PrimitiveCommand, NodeType}
+import org.kevoree.api.{PrimitiveCommand, NodeType}
 import org.slf4j.LoggerFactory
 import actors.{TIMEOUT, Actor}
 import java.lang.Thread

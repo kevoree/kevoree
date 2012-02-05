@@ -1,3 +1,5 @@
+package org.kevoree.api
+
 /**
  * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE, Version 3, 29 June 2007;
  * you may not use this file except in compliance with the License.
@@ -11,22 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kevoree.framework
-
-import org.kevoree.ContainerRoot
-import org.kevoree.api.service.core.handler.KevoreeModelHandlerService
-import org.kevoree.api.service.core.script.KevScriptEngineFactory
-
-/**
- * Created by IntelliJ IDEA.
- * User: duke
- * Date: 31/12/11
- * Time: 13:10
- * To change this template use File | Settings | File Templates.
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
  */
 
-trait Bootstraper {
+trait PrimitiveCommand {
 
-  def bootstrapNodeType(currentModel : ContainerRoot, nodeName : String,mservice: KevoreeModelHandlerService,kevsEngineFactory : KevScriptEngineFactory) : Option[org.kevoree.framework.NodeType]
+  def execute(): Boolean
+
+  def undo(): Unit
 
 }

@@ -30,6 +30,11 @@
             <artifactId>org.kevoree.adaptation.model</artifactId>
             <version>${kevoree.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.kevoree.extra</groupId>
+            <artifactId>org.kevoree.extra.jcl</artifactId>
+            <version>0.9.10</version>
+        </dependency>
     </dependencies>
 
     <build>

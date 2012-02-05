@@ -19,9 +19,9 @@ import org.kevoree.KevoreeFactory
 import java.io.File
 import util.Random
 import org.kevoree.framework.{KevoreeXmiHelper, KevoreePlatformHelper}
-import org.kevoree.tools.aether.framework.GroupTypeBootstrapHelper
 import org.slf4j.LoggerFactory
 import org.kevoree.tools.ui.editor.{ModelHandlerServiceWrapper, PositionedEMFHelper, KevoreeUIKernel}
+import org.kevoree.tools.aether.framework.NodeTypeBootstrapHelper
 
 /**
  * User: ffouquet
@@ -100,7 +100,7 @@ class JmDnsLookup extends Command {
                 }
 
 
-                val bootHelper = new GroupTypeBootstrapHelper
+                val bootHelper = new NodeTypeBootstrapHelper
                 bootHelper.bootstrapGroupType(kernel.getModelHandler.getActualModel, groupName,
                                                new ModelHandlerServiceWrapper(kernel)) match {
                   case Some(groupTypeInstance) => {
