@@ -12,13 +12,15 @@ public class Test {
 	
 	
 	public static void main( String[] args ) throws Exception {
-		 FraSCAti frascati = FraSCAti.newFraSCAti();
+		 
+		FraSCAti frascati = FraSCAti.newFraSCAti();
 		 org.ow2.frascati.util.FrascatiClassLoader f = new FrascatiClassLoader(Thread.currentThread().getContextClassLoader());
 		 frascati.setClassLoader(f );
 		 
 		 //Launcher launcher = new Launcher("helloworld1-pojo.composite", frascati);
 		 org.objectweb.fractal.api.Component first = frascati.getComposite("helloworld1-pojo.composite");
 		 org.objectweb.fractal.api.Component c = frascati.getComposite("helloworld2-pojo.composite");
+		 
 		 ContentController content = (ContentController) c.getFcInterface("content-controller");
 		
 		 
