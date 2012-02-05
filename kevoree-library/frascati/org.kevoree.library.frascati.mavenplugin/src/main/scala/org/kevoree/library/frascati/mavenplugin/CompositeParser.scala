@@ -18,9 +18,10 @@ import org.kevoree.ServicePortType
 
 object CompositeParser {
 
-  def parseCompositeFile(file: File, version: String, groupId: String, artefactId: String,compositeFileName:String): ContainerRoot = {
+  
+  
+  def parseCompositeFile(root : ContainerRoot,file: File, version: String, groupId: String, artefactId: String,compositeFileName:String): ContainerRoot = {
 
-    val root = KevoreeFactory.createContainerRoot
 
     val xmlnode = XML.loadFile(file)
     xmlnode.child.foreach { cNode =>
