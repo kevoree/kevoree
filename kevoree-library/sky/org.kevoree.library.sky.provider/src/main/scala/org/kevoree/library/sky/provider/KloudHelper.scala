@@ -51,8 +51,7 @@ object KloudHelper {
     }
   }
 
-  def createProxy (groupName: String, nodeName: String, proxyPath: String,
-    currentModel: ContainerRoot): Option[ContainerRoot] = {
+  def createProxy (groupName: String, nodeName: String, proxyPath: String, currentModel: ContainerRoot): Option[ContainerRoot] = {
     val scriptBuilder = new StringBuilder()
 
     //find Web Server
@@ -118,14 +117,14 @@ object KloudHelper {
     }
   }
 
-  def createGroup (groupName: String, nodeName: String, currentModel: ContainerRoot): Option[ContainerRoot] = {
+  def createGroup (groupName: String, nodeName: String, currentModel: ContainerRoot, sshKey : String = ""): Option[ContainerRoot] = {
     val portNumber = selectPortNumber("")
     val defaultPublicURLOption = buildDefaultPublicURL(groupName, nodeName, currentModel, portNumber)
     if (defaultPublicURLOption.isDefined) {
       val scriptBuilder = new StringBuilder()
       scriptBuilder append "tblock {\n"
 
-      scriptBuilder append "addGroup " + groupName + " : KloudResourceManagerGroup\n"
+      scriptBuilder append "addGroup " + groupName + " : KloudResourceManagerGroup {SSH_Public_Key=\"" + sshKey + "\"}\n""
 
       scriptBuilder append "addToGroup " + groupName + " " + nodeName + "\n"
       scriptBuilder append "updateDictionary " + groupName + " {port=\"" + portNumber + "\"}@" + nodeName + "\n"

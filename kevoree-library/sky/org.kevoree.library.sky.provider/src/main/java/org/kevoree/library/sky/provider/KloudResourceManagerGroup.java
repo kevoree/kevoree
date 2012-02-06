@@ -23,7 +23,6 @@ import scala.Option;
 @Library(name = "SKY")
 @GroupType
 @DictionaryType({
-//		@DictionaryAttribute(name = "login", optional = false),
 		@DictionaryAttribute(name = "publicURL", optional = false)
 })
 public class KloudResourceManagerGroup extends SSHRestGroup {

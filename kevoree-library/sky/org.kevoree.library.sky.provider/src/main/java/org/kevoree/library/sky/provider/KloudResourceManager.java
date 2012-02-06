@@ -13,9 +13,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import scala.Option;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * User: Erwan Daubert - erwan.daubert@gmail.com
  * Date: 03/01/12
@@ -30,16 +27,10 @@ public class KloudResourceManager extends AbstractPage {
 
 	private Logger logger = LoggerFactory.getLogger(this.getClass());
 
-	private List<String> CurrentlyInsallingLogins;
-
-	public KloudResourceManager () {
-		CurrentlyInsallingLogins = new ArrayList<String>();
-	}
-
 	@Override
 	public void requestHandler (Object param) {
 		final Object params = param;
-		new Thread(){
+		new Thread() {
 			@Override
 			public void run () {
 				KloudResourceManager.super.requestHandler(params);
@@ -50,13 +41,12 @@ public class KloudResourceManager extends AbstractPage {
 	public KevoreeHttpResponse process (KevoreeHttpRequest request, KevoreeHttpResponse response) {
 		if (request != null) {
 			if (request.getResolvedParams().get("model") != null && request.getResolvedParams().get("login") != null
-					&& request.getResolvedParams().get("password") != null) {
+					&& request.getResolvedParams().get("password") != null && request.getResolvedParams().get("ssh_key") != null) {
 				// check authentication information
 				if (InriaLdap.testLogin(request.getResolvedParams().get("login"),
 						request.getResolvedParams().get("password"))) {
 
-					String result = process(request.getResolvedParams().get("model"),
-							request.getResolvedParams().get("login"));
+					String result = process(request.getResolvedParams().get("model"), request.getResolvedParams().get("login"), request.getResolvedParams().get("ssh_key"));
 					if (result.startsWith("http")) {
 						response.setContent(HTMLHelper
 								.generateValidSubmissionPageHtml(request.getUrl(),
@@ -78,7 +68,7 @@ public class KloudResourceManager extends AbstractPage {
 		return response;
 	}
 
-	private String process (String modelStream, String login) {// try to get the user model
+	private String process (String modelStream, String login, String sshKey) {// try to get the user model
 		ContainerRoot model = KevoreeXmiHelper.loadString(modelStream);
 		// looking for current configuration to check if user has already submitted something
 		if (KloudHelper.lookForAGroup(login, this.getModelService().getLastModel())) {
@@ -99,12 +89,10 @@ public class KloudResourceManager extends AbstractPage {
 			UUIDModel uuidModel = this.getModelService().getLastUUIDModel();
 
 			// we create a group with the login of the user
-			Option<ContainerRoot> newKloudModelOption = KloudHelper
-					.createGroup(login, this.getNodeName(), uuidModel.getModel());
+			Option<ContainerRoot> newKloudModelOption = KloudHelper.createGroup(login, this.getNodeName(), uuidModel.getModel(), sshKey);
 			if (newKloudModelOption.isDefined()) {
 				// create proxy to the group
-				newKloudModelOption = KloudHelper.createProxy(login, this.getNodeName(), "/" + login,
-						newKloudModelOption.get());
+				newKloudModelOption = KloudHelper.createProxy(login, this.getNodeName(), "/" + login, newKloudModelOption.get());
 
 				if (newKloudModelOption.isDefined()) {
 
@@ -113,13 +101,11 @@ public class KloudResourceManager extends AbstractPage {
 						try {
 							// update the kloud model by adding the group (the nodes are not added)
 							this.getModelService().atomicCompareAndSwapModel(uuidModel, newKloudModelOption.get());
-							
+
 							// push the user model to this group
 							KloudHelper.localPush(model, login, newKloudModelOption.get());
 
-							Option<String> accessPointOption = KloudHelper
-									.lookForAccessPoint(login, this.getNodeName(),
-											this.getModelService().getLastModel());
+							Option<String> accessPointOption = KloudHelper.lookForAccessPoint(login, this.getNodeName(), this.getModelService().getLastModel());
 							if (accessPointOption.isDefined()) {
 								return accessPointOption.get();
 							} else {
