@@ -17,6 +17,9 @@ import org.kevoree.ContainerRoot;
 import org.kevoree.TypeDefinition;
 import org.kevoree.tools.arduino.framework.ArduinoGenerator;
 
+import java.io.InputStream;
+import java.util.*;
+
 /**
  * Created by IntelliJ IDEA.
  * User: duke
@@ -27,6 +30,28 @@ import org.kevoree.tools.arduino.framework.ArduinoGenerator;
 public class DefaultArduinoGenerator implements ArduinoGenerator {
 
     private StringBuffer buffer = new StringBuffer();
+
+    private HashMap<String,InputStream> streamPaths = new HashMap<String,InputStream>();
+    
+    @Override
+    public void addLibrary(String name, InputStream stream) {
+        streamPaths.put(name,stream);
+    }
+
+    @Override
+    public void razLibrary() {
+        streamPaths.clear();
+    }
+
+    @Override
+    public Set<String> getLibraryKeys() {
+        return streamPaths.keySet();
+    }
+
+    @Override
+    public InputStream getLibrary(String key) {
+        return streamPaths.get(key);
+    }
 
     @Override
     public void declareStaticKMessage(String name, String typeName) {
