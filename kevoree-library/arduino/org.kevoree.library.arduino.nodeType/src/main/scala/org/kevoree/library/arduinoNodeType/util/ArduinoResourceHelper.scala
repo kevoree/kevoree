@@ -9,8 +9,7 @@ object ArduinoResourceHelper {
   private var basePath: String = null;
   
   private var boot : Bootstraper  = null
-  def setBs(b : Bootstraper) { 
-    println("boooooootttt ===="+b)
+  def setBs(b : Bootstraper) {
     boot = b 
   }
   

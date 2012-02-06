@@ -17,32 +17,41 @@ public class DMXLight extends AbstractArduinoComponent {
 
     @Override
     public void generateHeader(ArduinoGenerator gen) {
-        gen.addLibrary("DmxSimple.h",this.getClass().getClassLoader().getResourceAsStream("DmxSimple/DmxSimple.h"));
-        gen.addLibrary("DmxSimple.cpp",this.getClass().getClassLoader().getResourceAsStream("DmxSimple/DmxSimple.cpp"));
+        gen.addLibrary("DmxSimple.h", this.getClass().getClassLoader().getResourceAsStream("DmxSimple/DmxSimple.h"));
+        gen.addLibrary("DmxSimple.cpp", this.getClass().getClassLoader().getResourceAsStream("DmxSimple/DmxSimple.cpp"));
         gen.appendNativeStatement("#include <DmxSimple.h>");
     }
 
     @Override
-    public void generateInit(ArduinoGenerator gen) {
-        gen.appendNativeStatement("DmxSimple.usePin(atoi(pin));");
+    public void generateUpdatedParams(ArduinoGenerator gen) {
+        gen.appendNativeStatement("DmxSimple.usePin(atoi(dpin));");
         gen.appendNativeStatement("DmxSimple.maxChannel(4);");
         gen.appendNativeStatement("DmxSimple.write(2,255);");
         gen.appendNativeStatement("DmxSimple.write(3,255);");
         gen.appendNativeStatement("DmxSimple.write(4,255);");
         gen.appendNativeStatement("DmxSimple.write(1,127);");
     }
+/*
+    @Override
+    public void generateInit(ArduinoGenerator gen) {
+        gen.appendNativeStatement("DmxSimple.usePin(atoi(dpin));");
+        gen.appendNativeStatement("DmxSimple.maxChannel(4);");
+        gen.appendNativeStatement("DmxSimple.write(2,255);");
+        gen.appendNativeStatement("DmxSimple.write(3,255);");
+        gen.appendNativeStatement("DmxSimple.write(4,255);");
+        gen.appendNativeStatement("DmxSimple.write(1,127);");
+    }*/
 
     @Port(name = "intensity")
     public void triggerOn(Object o) {
         getGenerator().appendNativeStatement("int value = atoi(msg->value);");
-        getGenerator().appendNativeStatement("Serial.println(value);");
         getGenerator().appendNativeStatement("int outputIntensity = (127 * value) / 100 ;");
         getGenerator().appendNativeStatement("DmxSimple.write(1,outputIntensity);");
     }
 
     @Port(name = "color")
     public void triggerColor(Object o) {
-      //  getGenerator().appendNativeStatement("DmxSimple.write(1,int(param));");
+        //  getGenerator().appendNativeStatement("DmxSimple.write(1,int(param));");
     }
 
 }

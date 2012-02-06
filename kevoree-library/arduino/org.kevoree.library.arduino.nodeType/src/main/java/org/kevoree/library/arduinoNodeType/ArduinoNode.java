@@ -49,8 +49,6 @@ public class ArduinoNode extends AbstractNodeType {
 
     public ArduinoGuiProgressBar progress = null;
     public File newdir = null;
-    private KevoreeKompareBean kompareBean = null;
-//    private BaseDeployOSGi deployBean = null;
 
     protected Boolean forceUpdate = false;
     public void setForceUpdate(Boolean f){
@@ -60,16 +58,11 @@ public class ArduinoNode extends AbstractNodeType {
     @Start
     public void startNode() {
         ArduinoResourceHelper.setBs(getBootStrapperService());
-        logger.debug("BSSET="+getBootStrapperService());
-        kompareBean = new KevoreeKompareBean();
-      //  deployBean = new BaseDeployOSGi((Bundle) this.getDictionary().get("osgi.bundle"));
     }
 
     @Stop
     public void stopNode() {
         ArduinoResourceHelper.setBs(null);
-        kompareBean = null;
-       // deployBean = null;
     }
 
     @Override
