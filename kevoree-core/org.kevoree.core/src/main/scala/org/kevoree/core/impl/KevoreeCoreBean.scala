@@ -41,9 +41,9 @@ class KevoreeCoreBean extends KevoreeModelHandlerService with KevoreeThreadActor
   listenerActor.start()
 
   @BeanProperty var configService: ConfigurationService = null
-  var kevsEngineFactory : KevScriptEngineFactory = null
+  var kevsEngineFactory: KevScriptEngineFactory = null
 
-  def setKevsEngineFactory(k : KevScriptEngineFactory){
+  def setKevsEngineFactory(k: KevScriptEngineFactory) {
     kevsEngineFactory = kevsEngineFactory
   }
 
@@ -67,7 +67,7 @@ class KevoreeCoreBean extends KevoreeModelHandlerService with KevoreeThreadActor
         currentModel.getNodes.find(n => n.getName == nodeName) match {
           case Some(foundNode) => {
             //  val bt = new NodeTypeBootstrapHelper
-            bootstraper.bootstrapNodeType(currentModel, nodeName,this,kevsEngineFactory) match {
+            bootstraper.bootstrapNodeType(currentModel, nodeName, this, kevsEngineFactory) match {
               case Some(ist: org.kevoree.api.NodeType) => {
                 nodeInstance = ist;
                 nodeInstance.startNode()
@@ -91,7 +91,15 @@ class KevoreeCoreBean extends KevoreeModelHandlerService with KevoreeThreadActor
         }
       }
     } catch {
-      case _@e => logger.error("Error while bootstraping node instance ", e)
+      case _@e => {
+        logger.error("Error while bootstraping node instance ", e)
+        try {
+          nodeInstance.stopNode()
+        } catch {
+          case _ =>
+        }
+        nodeInstance = null
+      }
     }
   }
 
@@ -100,27 +108,20 @@ class KevoreeCoreBean extends KevoreeModelHandlerService with KevoreeThreadActor
       if (nodeInstance != null) {
         currentModel.getNodes.find(n => n.getName == nodeName) match {
           case Some(foundNode) => {
-
-            //bootstraper.bootstrapNodeType(currentModel, nodeName,this,kevsEngineFactory) match {
-            //  case Some(ist: org.kevoree.framework.NodeType) => {
-
-                val modelTmp = modelClone.clone(currentModel)
-                modelTmp.removeAllGroups()
-                modelTmp.removeAllHubs()
-                modelTmp.removeAllMBindings()
-                modelTmp.getNodes.filter(n => n.getName != nodeName).foreach {
-                  node =>
-                    modelTmp.removeNodes(node)
-                }
-                modelTmp.getNodes(0).removeAllComponents()
-                modelTmp.getNodes(0).removeAllHosts()
-                Some(modelTmp)
-              }
-              case None => logger.error("TypeDef installation fail !"); None
+            val modelTmp = modelClone.clone(currentModel)
+            modelTmp.removeAllGroups()
+            modelTmp.removeAllHubs()
+            modelTmp.removeAllMBindings()
+            modelTmp.getNodes.filter(n => n.getName != nodeName).foreach {
+              node =>
+                modelTmp.removeNodes(node)
             }
-         // }
-         // case None => logger.error("Node instance name " + nodeName + " not found in bootstrap model !"); None
-        //}
+            modelTmp.getNodes(0).removeAllComponents()
+            modelTmp.getNodes(0).removeAllHosts()
+            Some(modelTmp)
+          }
+          case None => logger.error("TypeDef installation fail !"); None
+        }
       } else {
         logger.error("node instance is not available on current model !")
         None
@@ -257,14 +258,14 @@ class KevoreeCoreBean extends KevoreeModelHandlerService with KevoreeThreadActor
           val precheckModel = cloner.clone(pnewmodel)
           logger.debug("Before listeners PreCheck !")
           val preCheckResult = listenerActor.preUpdate(precheckModel)
-          logger.debug("PreCheck result = "+preCheckResult)
+          logger.debug("PreCheck result = " + preCheckResult)
           if (preCheckResult) {
             var newmodel = cloner.clone(pnewmodel)
             //CHECK FOR HARA KIRI
             if (HaraKiriHelper.detectNodeHaraKiri(model, newmodel, getNodeName())) {
               logger.warn("HaraKiri detected , flush platform")
               // Creates an empty model, removes the current node (harakiri)
-              newmodel = KevoreeFactory.createContainerRoot
+              newmodel = checkUnbootstrapNode(model).get
               try {
                 // Compare the two models and plan the adaptation
                 val adaptationModel = nodeInstance.kompare(model, newmodel)
@@ -278,17 +279,15 @@ class KevoreeCoreBean extends KevoreeModelHandlerService with KevoreeThreadActor
                 }
                 //Executes the adaptation
                 PrimitiveCommandExecutionHelper.execute(adaptationModel, nodeInstance)
-
                 nodeInstance.stopNode()
                 //end of harakiri
                 nodeInstance = null
-                bootstraper.clear
-
+                bootstraper.clear //CLEAR
                 //place the current model as an empty model (for backup)
-                switchToNewModel(newmodel)
+                switchToNewModel(KevoreeFactory.createContainerRoot)
 
                 //prepares for deployment of the new system
-                newmodel = cloner.clone(pnewmodel)
+                newmodel = cloner.clone(pnewmodel) //OVERRIDE NEW MODEL WITH NEW VALUE
               } catch {
                 case _@e => {
                   logger.error("Error while update ", e)
