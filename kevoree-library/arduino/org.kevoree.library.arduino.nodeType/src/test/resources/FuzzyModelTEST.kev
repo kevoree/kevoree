@@ -1,12 +1,15 @@
 <kevoree:ContainerRoot xmlns:xml="http://www.omg.org/XMI" xmlns:xsi="http://wwww.w3.org/2001/XMLSchema-instance" xmlns:kevoree="http://kevoree/1.0" xmi:version="2.0" xsi:type="kevoree:ContainerRoot">
  <nodes metaData="x=621,y=213" xsi:type="kevoree:ContainerNode" name="node0" typeDefinition="//@typeDefinitions.22">
+  <dictionary>
+   <values value="MAX" xsi:type="kevoree:DictionaryValue" attribute="//@typeDefinitions.22/@dictionaryType/@attributes.3"></values>
+  </dictionary>
   <components name="FanManage732" xsi:type="kevoree:ComponentInstance" typeDefinition="//@typeDefinitions.23">
    <dictionary>
-    <values value="0,0,50,50\n" xsi:type="kevoree:DictionaryValue" attribute="//@typeDefinitions.23/@dictionaryType/@attributes.0"></values>
-    <values value="45,45,1024,1024\n" xsi:type="kevoree:DictionaryValue" attribute="//@typeDefinitions.23/@dictionaryType/@attributes.1"></values>
-    <values value="0" xsi:type="kevoree:DictionaryValue" attribute="//@typeDefinitions.23/@dictionaryType/@attributes.2"></values>
-    <values value="30" xsi:type="kevoree:DictionaryValue" attribute="//@typeDefinitions.23/@dictionaryType/@attributes.3"></values>
-    <values value="100" xsi:type="kevoree:DictionaryValue" attribute="//@typeDefinitions.23/@dictionaryType/@attributes.4"></values>
+    <values value="0;0;50;50\n" xsi:type="kevoree:DictionaryValue" attribute="//@typeDefinitions.23/@dictionaryType/@attributes.0"></values>
+    <values value="45;45;1024;1024\n" xsi:type="kevoree:DictionaryValue" attribute="//@typeDefinitions.23/@dictionaryType/@attributes.2"></values>
+    <values value="0" xsi:type="kevoree:DictionaryValue" attribute="//@typeDefinitions.23/@dictionaryType/@attributes.3"></values>
+    <values value="30" xsi:type="kevoree:DictionaryValue" attribute="//@typeDefinitions.23/@dictionaryType/@attributes.4"></values>
+    <values value="100" xsi:type="kevoree:DictionaryValue" attribute="//@typeDefinitions.23/@dictionaryType/@attributes.5"></values>
    </dictionary>
    <provided xsi:type="kevoree:Port" portTypeRef="//@typeDefinitions.23/@provided.0"></provided>
    <required xsi:type="kevoree:Port" portTypeRef="//@typeDefinitions.23/@required.0"></required>
@@ -245,18 +248,20 @@
    <defaultValues value="MAX" xsi:type="kevoree:DictionaryValue" attribute="//@typeDefinitions.22/@dictionaryType/@attributes.3"></defaultValues>
   </dictionaryType>
  </typeDefinitions>
- <typeDefinitions updateMethod="dummy" startMethod="dummy" factoryBean="org.kevoree.library.arduino.fuzzylogic.FanManagerFactory" xsi:type="kevoree:ComponentType" name="FanManager" bean="org.kevoree.library.arduino.fuzzylogic.FanManager" stopMethod="dummy" deployUnits="//@deployUnits.6">
+ <typeDefinitions updateMethod="dummy" startMethod="dummy" factoryBean="org.kevoree.library.arduino.fuzzylogic.FanManagerFactory" xsi:type="kevoree:ComponentType" name="FanManager" bean="org.kevoree.library.arduino.fuzzylogic.FanManager" stopMethod="dummy" deployUnits="//@deployUnits.7">
   <dictionaryType>
    <attributes state="false" name="temp_cold" xsi:type="kevoree:DictionaryAttribute" optional="false" fragmentDependant="false"></attributes>
+   <attributes state="false" name="temp_warm" xsi:type="kevoree:DictionaryAttribute" optional="false" fragmentDependant="false"></attributes>
    <attributes state="false" name="temp_hot" xsi:type="kevoree:DictionaryAttribute" optional="false" fragmentDependant="false"></attributes>
    <attributes state="false" name="fan_stop" xsi:type="kevoree:DictionaryAttribute" optional="false" fragmentDependant="false"></attributes>
    <attributes state="false" name="fan_slow" xsi:type="kevoree:DictionaryAttribute" optional="false" fragmentDependant="false"></attributes>
    <attributes state="false" name="fan_fast" xsi:type="kevoree:DictionaryAttribute" optional="false" fragmentDependant="false"></attributes>
-   <defaultValues value="-10,-10,-5,-5" xsi:type="kevoree:DictionaryValue" attribute="//@typeDefinitions.23/@dictionaryType/@attributes.0"></defaultValues>
-   <defaultValues value="24,24,28,30" xsi:type="kevoree:DictionaryValue" attribute="//@typeDefinitions.23/@dictionaryType/@attributes.1"></defaultValues>
-   <defaultValues value="0" xsi:type="kevoree:DictionaryValue" attribute="//@typeDefinitions.23/@dictionaryType/@attributes.2"></defaultValues>
-   <defaultValues value="30" xsi:type="kevoree:DictionaryValue" attribute="//@typeDefinitions.23/@dictionaryType/@attributes.3"></defaultValues>
-   <defaultValues value="100" xsi:type="kevoree:DictionaryValue" attribute="//@typeDefinitions.23/@dictionaryType/@attributes.4"></defaultValues>
+   <defaultValues value="0;0;200;200" xsi:type="kevoree:DictionaryValue" attribute="//@typeDefinitions.23/@dictionaryType/@attributes.0"></defaultValues>
+   <defaultValues value="100;100;600;600" xsi:type="kevoree:DictionaryValue" attribute="//@typeDefinitions.23/@dictionaryType/@attributes.1"></defaultValues>
+   <defaultValues value="512;512;1024;1024" xsi:type="kevoree:DictionaryValue" attribute="//@typeDefinitions.23/@dictionaryType/@attributes.2"></defaultValues>
+   <defaultValues value="0" xsi:type="kevoree:DictionaryValue" attribute="//@typeDefinitions.23/@dictionaryType/@attributes.3"></defaultValues>
+   <defaultValues value="30" xsi:type="kevoree:DictionaryValue" attribute="//@typeDefinitions.23/@dictionaryType/@attributes.4"></defaultValues>
+   <defaultValues value="100" xsi:type="kevoree:DictionaryValue" attribute="//@typeDefinitions.23/@dictionaryType/@attributes.5"></defaultValues>
   </dictionaryType>
   <required noDependency="true" name="fan" xsi:type="kevoree:PortTypeRef" optional="true" ref="//@typeDefinitions.1"></required>
   <provided noDependency="false" name="temp" xsi:type="kevoree:PortTypeRef" optional="false" ref="//@typeDefinitions.1">
@@ -274,7 +279,7 @@
    <values attribute="//@typeDefinitions.18/@dictionaryType/@attributes.0" xsi:type="kevoree:DictionaryValue" value="/dev/tty.usbmodem26231" targetNode="//@nodes.0"></values>
   </dictionary>
  </hubs>
- <hubs metaData="x=50,y=50" xsi:type="kevoree:Channel" name="LocalChan606" typeDefinition="//@typeDefinitions.19"></hubs>
+ <hubs metaData="x=152,y=325" xsi:type="kevoree:Channel" name="LocalChan606" typeDefinition="//@typeDefinitions.19"></hubs>
  <mBindings port="//@nodes.0/@components.0/@required.0" xsi:type="kevoree:MBinding" hub="//@hubs.0"></mBindings>
  <mBindings port="//@nodes.0/@components.1/@required.0" xsi:type="kevoree:MBinding" hub="//@hubs.1"></mBindings>
  <mBindings port="//@nodes.0/@components.0/@provided.0" xsi:type="kevoree:MBinding" hub="//@hubs.1"></mBindings>
@@ -285,6 +290,8 @@
  <deployUnits version="1.5.1-SNAPSHOT" groupName="org.kevoree.tools" xsi:type="kevoree:DeployUnit" unitName="org.kevoree.tools.arduino.framework" targetNodeType="//@typeDefinitions.22"></deployUnits>
  <deployUnits version="2.2.0" groupName="org.kevoree.extra" xsi:type="kevoree:DeployUnit" unitName="org.kevoree.extra.osgi.rxtx" targetNodeType="//@typeDefinitions.22"></deployUnits>
  <deployUnits hashcode="201201251410263" unitName="org.kevoree.library.arduino.fuzzylogic" xsi:type="kevoree:DeployUnit" groupName="org.kevoree.library.arduino" version="1.5.1-SNAPSHOT" targetNodeType="//@typeDefinitions.22"></deployUnits>
+ <deployUnits requiredLibs="//@deployUnits.8" hashcode="201202061827314" unitName="org.kevoree.library.arduino.fuzzylogic" xsi:type="kevoree:DeployUnit" groupName="org.kevoree.library.arduino" version="1.6.0-SNAPSHOT" type="jar" targetNodeType="//@typeDefinitions.22"></deployUnits>
+ <deployUnits type="bundle" unitName="org.kevoree.tools.arduino.framework" xsi:type="kevoree:DeployUnit" groupName="org.kevoree.tools" version="1.6.0-SNAPSHOT" targetNodeType="//@typeDefinitions.22"></deployUnits>
  <groups typeDefinition="//@typeDefinitions.20" name="group1800455760" xsi:type="kevoree:Group" metaData="x=340,y=162" subNodes="//@nodes.0">
   <dictionary>
    <values attribute="//@typeDefinitions.20/@dictionaryType/@attributes.0" xsi:type="kevoree:DictionaryValue" value="/dev/tty.usbmodem26231" targetNode="//@nodes.0"></values>

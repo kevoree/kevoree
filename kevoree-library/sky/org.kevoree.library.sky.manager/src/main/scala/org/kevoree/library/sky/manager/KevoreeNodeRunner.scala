@@ -1,7 +1,6 @@
 package org.kevoree.library.sky.manager
 
 import org.kevoree.framework.KevoreePropertyHelper
-import org.kevoree.library.javase.ssh.SSHRestGroup
 import org.slf4j.{LoggerFactory, Logger}
 import org.kevoree.{TypeDefinition, ContainerRoot}
 import java.io._
@@ -60,7 +59,7 @@ abstract class KevoreeNodeRunner (var nodeName: String, bootStrapModel: String) 
         })).foreach {
       group =>
         val keyOption = KevoreePropertyHelper
-          .getPropertyForGroup(model, group.getName, SSHRestGroup.SSH_PUBLIC_KEY)
+          .getPropertyForGroup(model, group.getName, "SSH_PUBLIC_KEY")
         if (keyOption.isDefined) {
           logger.debug("try to copy SSH Public keys from {} ...", group.getName)
           // check if .ssh is available and create it else

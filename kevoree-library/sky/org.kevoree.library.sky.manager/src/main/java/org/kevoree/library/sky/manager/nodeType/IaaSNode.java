@@ -1,24 +1,26 @@
 package org.kevoree.library.sky.manager.nodeType;
 
 
-import com.twitter.finagle.Service;
+/*import com.twitter.finagle.Service;
 import com.twitter.finagle.builder.Server;
 import com.twitter.finagle.builder.ServerBuilder;
 import com.twitter.finagle.http.Http;
 import com.twitter.util.Duration;
 import org.jboss.netty.handler.codec.http.HttpRequest;
-import org.jboss.netty.handler.codec.http.HttpResponse;
+import org.jboss.netty.handler.codec.http.HttpResponse;*/
+
 import org.kevoree.ContainerRoot;
 import org.kevoree.annotation.*;
 import org.kevoree.library.defaultNodeTypes.JavaSENode;
-import org.kevoree.library.sky.manager.*;
+import org.kevoree.library.sky.manager.Helper;
+import org.kevoree.library.sky.manager.KevoreeNodeManager;
+import org.kevoree.library.sky.manager.KevoreeNodeRunner;
+import org.kevoree.library.sky.manager.PlanningManager;
+import org.kevoree.library.sky.manager.http.IaaSHTTPServer;
 import org.kevoreeAdaptation.AdaptationModel;
 import org.kevoreeAdaptation.AdaptationPrimitive;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.net.InetSocketAddress;
-import java.util.concurrent.TimeUnit;
 
 /**
  * User: Erwan Daubert - erwan.daubert@gmail.com
@@ -31,7 +33,7 @@ import java.util.concurrent.TimeUnit;
 
 @PrimitiveCommands(value = {}, values = {IaaSNode.REMOVE_NODE, IaaSNode.ADD_NODE})
 @DictionaryType({
-        @DictionaryAttribute(name = "role", defaultValue = "host", vals = {"host", "container", "host/container"},
+        @DictionaryAttribute(name = "role", defaultValue = "host/container", vals = {"host", "container", "host/container"},
                 optional = false),
         @DictionaryAttribute(name = "port", defaultValue = "7000", optional = false)
 })
@@ -42,7 +44,7 @@ public abstract class IaaSNode extends JavaSENode {
     public static final String REMOVE_NODE = "RemoveNode";
     public static final String ADD_NODE = "AddNode";
 
-    private Server server;
+	private IaaSHTTPServer server = new IaaSHTTPServer(this);
 
 	public abstract KevoreeNodeRunner createKevoreeNodeRunner(String nodeName, String bootStrapModel, ContainerRoot model);/* {
 		logger.error("createKevoreeNodeRunner from IaaSNode must be override by subtypes and never be used as is");
@@ -65,10 +67,7 @@ public abstract class IaaSNode extends JavaSENode {
         String port = (String) this.getDictionary().get("port");
         int portint = Integer.parseInt(port);
 
-        Service<HttpRequest, HttpResponse> myService = new HttpServer.Respond(this.getModelService());
-        server = ServerBuilder.safeBuild(myService, ServerBuilder.get().codec(Http.get())
-                .bindTo(new InetSocketAddress(portint))
-                .name(this.getNodeName()));
+		server.startServer(portint);
     }
 
     @Stop
@@ -77,7 +76,8 @@ public abstract class IaaSNode extends JavaSENode {
         logger.debug("stopping node type of " + this.getNodeName());
         super.stopNode();
         KevoreeNodeManager.stop();
-        server.close(Duration.apply(300, TimeUnit.MILLISECONDS));
+//        server.close(Duration.apply(300, TimeUnit.MILLISECONDS));
+		server.stop();
     }
 
     public boolean isHost() {

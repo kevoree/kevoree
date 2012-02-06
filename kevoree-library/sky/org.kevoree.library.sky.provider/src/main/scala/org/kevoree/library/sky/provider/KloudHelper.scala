@@ -64,7 +64,7 @@ object KloudHelper {
         case Some(component) => {
           val forwardURLOption = buildForwardURL(groupName, nodeName, currentModel)
           if (forwardURLOption.isDefined) {
-            scriptBuilder append "tblock {\n"
+//            scriptBuilder append "tblock {\n"
 
             scriptBuilder append "addComponent " + groupName + "_proxy@" + nodeName + " : ProxyPage " + "{forward=\"" +
               forwardURLOption.get +
@@ -82,13 +82,14 @@ object KloudHelper {
             scriptBuilder append
               "bind " + component.getName + ".response@" + nodeName + " => channel_" + groupName + "_proxy" + "2\n"
 
-            scriptBuilder append "}"
+//            scriptBuilder append "}"
 
             logger.debug("Try to apply the script below\n{}", scriptBuilder.toString())
 
 
             val kengine = kevScriptEngineFactory.createKevScriptEngine(currentModel)
             val kloudModelOption = (try {
+              kengine.append(scriptBuilder.toString())
               Some(kengine.interpret())
             } catch {
               case _@e => {
@@ -101,17 +102,18 @@ object KloudHelper {
               val publicURLOption = buildPublicURL(groupName, nodeName, kloudModelOption.get)
               if (publicURLOption.isDefined) {
                 scriptBuilder.clear()
-                scriptBuilder append "tblock {\n"
+//                scriptBuilder append "tblock {\n"
 
                 scriptBuilder append
                   "updateDictionary " + groupName + " {publicURL=\"" + publicURLOption.get + "\"}\n"
 
-                scriptBuilder append "}"
+//                scriptBuilder append "}"
 
                 logger.debug("Try to apply the script below\n{}", scriptBuilder.toString())
 
                 val kengine = kevScriptEngineFactory.createKevScriptEngine(kloudModelOption.get)
                 try {
+                  kengine.append(scriptBuilder.toString())
                   Some(kengine.interpret())
                 } catch {
                   case _@e => {
@@ -142,7 +144,7 @@ object KloudHelper {
     val defaultPublicURLOption = buildDefaultPublicURL(groupName, nodeName, currentModel, portNumber)
     if (defaultPublicURLOption.isDefined) {
       val scriptBuilder = new StringBuilder()
-      scriptBuilder append "tblock {\n"
+//      scriptBuilder append "tblock {\n"
 
       scriptBuilder append "addGroup " + groupName + " : KloudResourceManagerGroup {SSH_Public_Key=\"" + sshKey + "\"}\n"
 
@@ -151,12 +153,13 @@ object KloudHelper {
       scriptBuilder append
         "updateDictionary " + groupName + " {publicURL=\"" + defaultPublicURLOption.get + "\"}\n"
 
-      scriptBuilder append "}"
+//      scriptBuilder append "}"
 
       logger.debug("Try to apply the script below\n{}", scriptBuilder.toString())
 
       val kengine = kevScriptEngineFactory.createKevScriptEngine(currentModel)
       try {
+        kengine.append(scriptBuilder.toString())
         Some(kengine.interpret())
       } catch {
         case _@e => {

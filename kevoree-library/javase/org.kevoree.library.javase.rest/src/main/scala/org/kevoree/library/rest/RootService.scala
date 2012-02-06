@@ -19,8 +19,7 @@ package org.kevoree.library.rest
 import org.slf4j.LoggerFactory
 import akka.actor.Actor
 import cc.spray.can._
-import java.util.UUID
-import org.kevoree.framework.{KevoreeXmiHelper, MessagePort}
+import org.kevoree.framework.KevoreeXmiHelper
 
 class RootService(id: String, group: RestGroup) extends Actor with FileServer {
   val log = LoggerFactory.getLogger(getClass)
