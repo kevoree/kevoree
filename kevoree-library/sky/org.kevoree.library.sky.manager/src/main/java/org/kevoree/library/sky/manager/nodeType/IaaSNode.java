@@ -46,7 +46,7 @@ public abstract class IaaSNode extends JavaSENode {
 	private Server server;
 
 	public abstract KevoreeNodeRunner createKevoreeNodeRunner (String nodeName, String bootStrapModel,
-			ContainerRoot model); /*{
+			ContainerRoot model);/* {
 		logger.error("createKevoreeNodeRunner from IaaSNode must be override by subtypes and never be used as is");
 		return null;
 	}*/
