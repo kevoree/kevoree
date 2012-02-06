@@ -14,13 +14,16 @@ import org.objectweb.fractal.api.control.LifeCycleController
 import java.io.File
 import scala.xml.Node
 import scala.collection.mutable.Queue
+import java.io.PrintWriter
 
 
 object AdaptatationPrimitiveFactory {
 
   	var _frascati :FraSCAti = _ ;
 	def frascati :FraSCAti = _frascati;
-  	def setFrascati(frascati :FraSCAti) = {_frascati =frascati}
+  	def setFrascati(fras :FraSCAti) = {
+  	  println("TOTOTOTO" +fras)
+  	  _frascati =fras}
   
   def getPrimitive(adaptationPrimitive: AdaptationPrimitive, node: FrascatiNode): org.kevoree.api.PrimitiveCommand = {
 
@@ -201,7 +204,23 @@ object AdaptatationPrimitiveFactory {
     override def execute(): Boolean = { 
       println("pass par la AddInstance")
       
-      println(generateComponent(adaptationPrimitive.getRef.asInstanceOf[org.kevoree.Instance].getName,adaptationPrimitive.getRef.asInstanceOf[org.kevoree.Instance].getTypeDefinition.asInstanceOf[org.kevoree.ComponentType].getBean, adaptationPrimitive.getRef.asInstanceOf[org.kevoree.ComponentInstance] ))
+      if (adaptationPrimitive.getRef.isInstanceOf[org.kevoree.ComponentInstance]  && adaptationPrimitive.getRef.asInstanceOf[org.kevoree.ComponentInstance].getTypeDefinition.asInstanceOf[org.kevoree.ComponentType].getBean.endsWith(".composite")){
+    	  println(AdaptatationPrimitiveFactory.frascati)
+    	  AdaptatationPrimitiveFactory.frascati.getComposite(adaptationPrimitive.getRef.asInstanceOf[org.kevoree.ComponentInstance].getTypeDefinition.asInstanceOf[org.kevoree.ComponentType].getBean)
+      }
+      else if(adaptationPrimitive.getRef.isInstanceOf[org.kevoree.ComponentInstance]){      
+        val s = generateComponent(adaptationPrimitive.getRef.asInstanceOf[org.kevoree.Instance].getName,adaptationPrimitive.getRef.asInstanceOf[org.kevoree.Instance].getTypeDefinition.asInstanceOf[org.kevoree.ComponentType].getBean, adaptationPrimitive.getRef.asInstanceOf[org.kevoree.ComponentInstance] )
+        val f = java.io.File.createTempFile(adaptationPrimitive.getRef.asInstanceOf[org.kevoree.ComponentInstance].getName,"composite")
+        val output = new java.io.FileOutputStream(f)
+        val writer = new PrintWriter(output)
+        writer.print(s);
+        writer.flush()
+        writer.close()
+        output.close()
+        AdaptatationPrimitiveFactory.frascati.getComposite(f.getAbsolutePath())
+        
+      }
+      
       
       true }
 

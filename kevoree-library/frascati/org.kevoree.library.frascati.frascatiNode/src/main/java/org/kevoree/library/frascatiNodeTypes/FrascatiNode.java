@@ -36,8 +36,6 @@ public class FrascatiNode extends JavaSENode {
 	@Override
 	public void startNode() {
 		super.startNode();
-		System.out.println(FraSCAti.class.getClassLoader());
-		System.out.println(FrascatiException.class.getClassLoader());
 
 		if (t == null) {
 
@@ -61,7 +59,6 @@ public class FrascatiNode extends JavaSENode {
 						}
 
 					} catch (FrascatiException e) {
-						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
 
@@ -76,11 +73,12 @@ public class FrascatiNode extends JavaSENode {
 	public void stopNode() {
 		super.stopNode();
 		try {
-			frascati.close(frascati.getComposite("org.ow2.frascati.FraSCAti"));
-			frascati = null;
-			t.interrupt();
+			System.err.println("STOP NODE FRASCATI");
+//			frascati.close(frascati.getComposite("org.ow2.frascati.FraSCAti"));
+//			frascati = null;
+//			t.interrupt();
 
-		} catch (FrascatiException e) {
+		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
