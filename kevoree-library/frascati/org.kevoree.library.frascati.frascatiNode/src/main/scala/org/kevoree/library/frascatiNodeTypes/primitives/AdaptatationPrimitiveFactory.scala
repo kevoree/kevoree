@@ -15,16 +15,20 @@ import java.io.File
 import scala.xml.Node
 import scala.collection.mutable.Queue
 import java.io.PrintWriter
+import org.ow2.frascati.util.FrascatiClassLoader
 
 
 object AdaptatationPrimitiveFactory {
 
+  
+  
   	var _frascati :FraSCAti = _ ;
 	def frascati : FraSCAti = _frascati;
   	def setFrascati(fras :FraSCAti) = {
   	  _frascati =fras
   	  }
   
+  	var cl :ClassLoader =_
   def getPrimitive(adaptationPrimitive: AdaptationPrimitive, node: FrascatiNode): org.kevoree.api.PrimitiveCommand = {
 
     //        values = {"UpdateType", "UpdateDeployUnit", "AddType", "AddDeployUnit", "AddThirdParty", 
@@ -43,6 +47,10 @@ object AdaptatationPrimitiveFactory {
         node.getSuperPrimitive(adaptationPrimitive);
       }
       case "AddDeployUnit" => {
+        println(adaptationPrimitive.getRef.asInstanceOf[org.kevoree.DeployUnit].getUnitName)
+        if (adaptationPrimitive.getRef.asInstanceOf[org.kevoree.DeployUnit].getUnitName.equals("helloworld-pojo"))
+        	cl = node.getBootStrapperService.getKevoreeClassLoaderHandler.getKevoreeClassLoader(adaptationPrimitive.getRef.asInstanceOf[org.kevoree.DeployUnit])
+        
         node.getSuperPrimitive(adaptationPrimitive);
       }
       case "AddThirdParty" => {
@@ -218,6 +226,7 @@ object AdaptatationPrimitiveFactory {
         writer.close()
         output.close()
         println(f.getAbsolutePath)
+        AdaptatationPrimitiveFactory.frascati.setClassLoader(new FrascatiClassLoader(cl))        
         AdaptatationPrimitiveFactory.frascati.getComposite(f.getAbsolutePath())
         
       }

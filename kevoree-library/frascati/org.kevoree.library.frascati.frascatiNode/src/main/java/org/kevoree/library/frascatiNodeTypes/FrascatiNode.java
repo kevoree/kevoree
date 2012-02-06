@@ -85,6 +85,8 @@ public class FrascatiNode extends JavaSENode {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		
+		
 
 	}
 
