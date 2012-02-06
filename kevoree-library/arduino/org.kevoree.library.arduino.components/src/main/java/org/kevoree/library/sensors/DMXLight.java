@@ -17,12 +17,14 @@ public class DMXLight extends AbstractArduinoComponent {
 
     @Override
     public void generateHeader(ArduinoGenerator gen) {
+        gen.addLibrary("DmxSimple.h",this.getClass().getClassLoader().getResourceAsStream("DmxSimple/DmxSimple.h"));
+        gen.addLibrary("DmxSimple.cpp",this.getClass().getClassLoader().getResourceAsStream("DmxSimple/DmxSimple.cpp"));
         gen.appendNativeStatement("#include <DmxSimple.h>");
     }
 
     @Override
     public void generateInit(ArduinoGenerator gen) {
-        gen.appendNativeStatement("DmxSimple.usePin(pin);");
+        gen.appendNativeStatement("DmxSimple.usePin(atoi(pin));");
         gen.appendNativeStatement("DmxSimple.maxChannel(4);");
         gen.appendNativeStatement("DmxSimple.write(2,255);");
         gen.appendNativeStatement("DmxSimple.write(3,255);");

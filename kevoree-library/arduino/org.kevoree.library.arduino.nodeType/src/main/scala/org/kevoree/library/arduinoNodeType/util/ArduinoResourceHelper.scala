@@ -28,7 +28,7 @@ object ArduinoResourceHelper {
     (os.contains("64"))
   }
 
-  private def copyInputStream (in: InputStream, out: OutputStream) {
+  def copyInputStream (in: InputStream, out: OutputStream) {
     val buffer: Array[Byte] = new Array[Byte](1024)
     var len: Int = 0
     while ((({

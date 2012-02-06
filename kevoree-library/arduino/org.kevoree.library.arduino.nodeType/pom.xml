@@ -41,7 +41,6 @@
             <groupId>org.kevoree.tools</groupId>
             <artifactId>org.kevoree.tools.aether.framework</artifactId>
             <version>${kevoree.version}</version>
-            <type>bundle</type>
             <scope>test</scope>
         </dependency>
 
