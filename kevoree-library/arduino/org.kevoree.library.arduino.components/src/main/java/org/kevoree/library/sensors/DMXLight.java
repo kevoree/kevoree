@@ -7,7 +7,7 @@ import org.kevoree.tools.arduino.framework.ArduinoGenerator;
 @Library(name = "Arduino")
 @ComponentType
 @DictionaryType({
-        @DictionaryAttribute(name = "pin", defaultValue = "0", optional = true)
+        @DictionaryAttribute(name = "dpin", defaultValue = "0", optional = true, vals = {"0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13"})
 })
 @Provides({
         @ProvidedPort(name = "intensity", type = PortType.MESSAGE),
@@ -17,20 +17,30 @@ public class DMXLight extends AbstractArduinoComponent {
 
     @Override
     public void generateHeader(ArduinoGenerator gen) {
-        gen.addLibrary("DmxSimple.h",this.getClass().getClassLoader().getResourceAsStream("DmxSimple/DmxSimple.h"));
-        gen.addLibrary("DmxSimple.cpp",this.getClass().getClassLoader().getResourceAsStream("DmxSimple/DmxSimple.cpp"));
+        gen.addLibrary("DmxSimple.h", this.getClass().getClassLoader().getResourceAsStream("DmxSimple/DmxSimple.h"));
+        gen.addLibrary("DmxSimple.cpp", this.getClass().getClassLoader().getResourceAsStream("DmxSimple/DmxSimple.cpp"));
         gen.appendNativeStatement("#include <DmxSimple.h>");
     }
 
     @Override
-    public void generateInit(ArduinoGenerator gen) {
-        gen.appendNativeStatement("DmxSimple.usePin(atoi(pin));");
+    public void generateUpdatedParams(ArduinoGenerator gen) {
+        gen.appendNativeStatement("DmxSimple.usePin(atoi(dpin));");
         gen.appendNativeStatement("DmxSimple.maxChannel(4);");
         gen.appendNativeStatement("DmxSimple.write(2,255);");
         gen.appendNativeStatement("DmxSimple.write(3,255);");
         gen.appendNativeStatement("DmxSimple.write(4,255);");
         gen.appendNativeStatement("DmxSimple.write(1,127);");
     }
+/*
+    @Override
+    public void generateInit(ArduinoGenerator gen) {
+        gen.appendNativeStatement("DmxSimple.usePin(atoi(dpin));");
+        gen.appendNativeStatement("DmxSimple.maxChannel(4);");
+        gen.appendNativeStatement("DmxSimple.write(2,255);");
+        gen.appendNativeStatement("DmxSimple.write(3,255);");
+        gen.appendNativeStatement("DmxSimple.write(4,255);");
+        gen.appendNativeStatement("DmxSimple.write(1,127);");
+    }*/
 
     @Port(name = "intensity")
     public void triggerOn(Object o) {
@@ -41,7 +51,7 @@ public class DMXLight extends AbstractArduinoComponent {
 
     @Port(name = "color")
     public void triggerColor(Object o) {
-      //  getGenerator().appendNativeStatement("DmxSimple.write(1,int(param));");
+        //  getGenerator().appendNativeStatement("DmxSimple.write(1,int(param));");
     }
 
 }

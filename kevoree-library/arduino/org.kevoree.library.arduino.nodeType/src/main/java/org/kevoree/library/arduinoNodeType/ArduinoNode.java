@@ -14,6 +14,7 @@ import org.kevoree.framework.KevoreeXmiHelper;
 import org.kevoree.kompare.JavaSePrimitive;
 import org.kevoree.kompare.KevoreeKompareBean;
 import org.kevoree.library.arduinoNodeType.generator.KevoreeCGenerator;
+import org.kevoree.library.arduinoNodeType.util.ArduinoResourceHelper;
 import org.kevoree.library.arduinoNodeType.utils.ComSender;
 import org.kevoree.tools.marShell.ast.Script;
 import org.kevoree.tools.marShellTransform.AdaptationModelWrapper;
@@ -48,8 +49,6 @@ public class ArduinoNode extends AbstractNodeType {
 
     public ArduinoGuiProgressBar progress = null;
     public File newdir = null;
-    private KevoreeKompareBean kompareBean = null;
-//    private BaseDeployOSGi deployBean = null;
 
     protected Boolean forceUpdate = false;
     public void setForceUpdate(Boolean f){
@@ -58,14 +57,12 @@ public class ArduinoNode extends AbstractNodeType {
     
     @Start
     public void startNode() {
-        kompareBean = new KevoreeKompareBean();
-      //  deployBean = new BaseDeployOSGi((Bundle) this.getDictionary().get("osgi.bundle"));
+        ArduinoResourceHelper.setBs(getBootStrapperService());
     }
 
     @Stop
     public void stopNode() {
-        kompareBean = null;
-       // deployBean = null;
+        ArduinoResourceHelper.setBs(null);
     }
 
     @Override

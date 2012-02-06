@@ -25,6 +25,7 @@
 
 package org.wayoda.ang.project;
 
+import org.kevoree.api.Bootstraper;
 import org.kevoree.library.arduinoNodeType.util.ArduinoResourceHelper;
 
 import java.io.File;

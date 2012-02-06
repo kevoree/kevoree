@@ -178,6 +178,10 @@ class NodeTypeBootstrapHelper extends Bootstraper with KCLBootstrap {
             //    val s = bundleContext.getService(sr).asInstanceOf[KevoreeModelHandlerService]
             groupType.setModelService(mservice)
             groupType.asInstanceOf[AbstractGroupType].setBootStrapperService(this)
+            //groupType.setKevScriptEngineFactory(kevsEngineFactory)
+            //nodeType.setBootStrapperService(this)
+
+
             //  }
             Some(groupType)
           } else {

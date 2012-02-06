@@ -42,6 +42,7 @@ class ArduinoDelegationPush(handler: KevoreeModelHandlerService, groupName: Stri
       val nodeType = bs.bootstrapNodeType(model, targetNodeName,handler,kevSFact)
       nodeType match {
         case Some(gNodeType) => {
+
           model.getGroups.find(g => g.getName == groupName) match {
             case Some(group) => {
               val dictionary = group.getDictionary.getOrElse({
@@ -51,12 +52,14 @@ class ArduinoDelegationPush(handler: KevoreeModelHandlerService, groupName: Stri
               val serialPort = org.kevoree.framework.KevoreeFragmentPropertyHelper.getPropertyFromFragmentGroup(group.eContainer.asInstanceOf[ContainerRoot],group.getName,"serialport",targetNodeName)
 
             //  val att = dictionary.getValues.find(value => value.getAttribute.getName == "serialport" && value.getTargetNode == targetNodeName).getOrElse(null)
+              gNodeType.startNode()
               gNodeType.getClass.getMethods.find(method => method.getName == "push") match {
                 case Some(method) => {
                   method.invoke(gNodeType, targetNodeName, model, serialPort)
                 }
                 case None => logger.error("No push method in group for name " + groupName)
               }
+              gNodeType.stopNode()
 
 
             }
