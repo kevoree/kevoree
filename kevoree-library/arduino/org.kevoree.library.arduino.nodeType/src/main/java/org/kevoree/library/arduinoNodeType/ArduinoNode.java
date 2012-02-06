@@ -14,6 +14,7 @@ import org.kevoree.framework.KevoreeXmiHelper;
 import org.kevoree.kompare.JavaSePrimitive;
 import org.kevoree.kompare.KevoreeKompareBean;
 import org.kevoree.library.arduinoNodeType.generator.KevoreeCGenerator;
+import org.kevoree.library.arduinoNodeType.util.ArduinoResourceHelper;
 import org.kevoree.library.arduinoNodeType.utils.ComSender;
 import org.kevoree.tools.marShell.ast.Script;
 import org.kevoree.tools.marShellTransform.AdaptationModelWrapper;
@@ -58,12 +59,15 @@ public class ArduinoNode extends AbstractNodeType {
     
     @Start
     public void startNode() {
+        ArduinoResourceHelper.setBs(getBootStrapperService());
+        logger.debug("BSSET="+getBootStrapperService());
         kompareBean = new KevoreeKompareBean();
       //  deployBean = new BaseDeployOSGi((Bundle) this.getDictionary().get("osgi.bundle"));
     }
 
     @Stop
     public void stopNode() {
+        ArduinoResourceHelper.setBs(null);
         kompareBean = null;
        // deployBean = null;
     }

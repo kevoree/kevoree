@@ -10,7 +10,6 @@ import scala.collection.JavaConversions._
 import org.slf4j.{LoggerFactory, Logger}
 import org.kevoree.annotation.{Generate => KGenerate}
 import org.kevoree.framework.aspects.KevoreeAspects._
-import org.kevoree.tools.aether.framework.JCLContextHandler
 import org.kevoree.framework.{AbstractNodeType, KevoreeGeneratorHelper}
 
 trait KevoreeReflectiveHelper {

@@ -5,6 +5,7 @@
 
 package org.kevoree.library.arduinoNodeType;
 
+import org.kevoree.api.Bootstraper;
 import org.kevoree.library.arduinoNodeType.util.ArduinoResourceHelper;
 import org.slf4j.LoggerFactory;
 

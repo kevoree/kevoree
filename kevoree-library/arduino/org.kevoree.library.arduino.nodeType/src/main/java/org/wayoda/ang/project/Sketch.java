@@ -34,6 +34,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
+import org.kevoree.api.Bootstraper;
 import org.wayoda.ang.libraries.CodeManager;
 import org.wayoda.ang.libraries.Library;
 import org.wayoda.ang.utils.FileSelector;

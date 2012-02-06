@@ -2,11 +2,18 @@ package org.kevoree.library.arduinoNodeType.util
 
 import java.util.zip.ZipFile
 import java.io._
-import org.kevoree.tools.aether.framework.AetherUtil
 import collection.JavaConversions._
+import org.kevoree.api.Bootstraper
 
 object ArduinoResourceHelper {
   private var basePath: String = null;
+  
+  private var boot : Bootstraper  = null
+  def setBs(b : Bootstraper) { 
+    println("boooooootttt ===="+b)
+    boot = b 
+  }
+  
 
   def isWindows: Boolean = {
     val os: String = System.getProperty("os.name").toLowerCase
@@ -80,7 +87,7 @@ object ArduinoResourceHelper {
 
   def getIncludePaths: java.util.List[String] = {
     if (basePath == null) {
-      extractArduinoResources()
+      extractArduinoResources
     }
     var paths = List[String]()
     paths = paths ++
@@ -93,7 +100,7 @@ object ArduinoResourceHelper {
 
   def getLibraryLocation: java.util.List[String] = {
     if (basePath == null) {
-      extractArduinoResources()
+      extractArduinoResources
     }
     var paths = List[String]()
     paths = paths ++
@@ -104,13 +111,13 @@ object ArduinoResourceHelper {
 
   def getArduinoHome: String = {
     if (basePath == null) {
-      extractArduinoResources();
+      extractArduinoResources;
     }
 
     basePath + File.separator + "arduino";
   }
 
-  def extractArduinoResources () {
+  def extractArduinoResources {
     // use aether to get the correspond artifact : extra avr-arduino
     var repositories = List[String]()
     repositories = repositories ++ List[String]("http://maven.kevoree.org/release");
@@ -132,8 +139,7 @@ object ArduinoResourceHelper {
         artifactId = artifactId + ".nix"
       }
     }
-    val arteFile = AetherUtil
-      .resolveMavenArtifact(artifactId, "org.kevoree.extra", "0022", repositories);
+    val arteFile = boot.resolveArtifact(artifactId, "org.kevoree.extra", "0022", repositories);
     // unzip it on /tmp
     val f = File.createTempFile("arduino_resources", "")
     f.delete()
@@ -147,7 +153,7 @@ object ArduinoResourceHelper {
 
   def getBinaryLocation: java.util.List[String] = {
     if (basePath == null) {
-      extractArduinoResources()
+      extractArduinoResources
     }
     // TODO test if basePath is defined
 

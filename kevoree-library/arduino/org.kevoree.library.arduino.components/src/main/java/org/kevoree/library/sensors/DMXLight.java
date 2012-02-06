@@ -7,7 +7,7 @@ import org.kevoree.tools.arduino.framework.ArduinoGenerator;
 @Library(name = "Arduino")
 @ComponentType
 @DictionaryType({
-        @DictionaryAttribute(name = "pin", defaultValue = "0", optional = true)
+        @DictionaryAttribute(name = "dpin", defaultValue = "0", optional = true, vals = {"0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13"})
 })
 @Provides({
         @ProvidedPort(name = "intensity", type = PortType.MESSAGE),
@@ -35,6 +35,7 @@ public class DMXLight extends AbstractArduinoComponent {
     @Port(name = "intensity")
     public void triggerOn(Object o) {
         getGenerator().appendNativeStatement("int value = atoi(msg->value);");
+        getGenerator().appendNativeStatement("Serial.println(value);");
         getGenerator().appendNativeStatement("int outputIntensity = (127 * value) / 100 ;");
         getGenerator().appendNativeStatement("DmxSimple.write(1,outputIntensity);");
     }
