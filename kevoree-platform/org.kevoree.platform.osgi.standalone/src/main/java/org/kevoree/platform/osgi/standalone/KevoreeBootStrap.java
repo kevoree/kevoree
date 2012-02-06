@@ -110,7 +110,7 @@ public class KevoreeBootStrap {
                 @Override
                 public KevScriptEngine createKevScriptEngine(ContainerRoot srcModel) {
                     try {
-                        return (KevScriptEngine) offLineMShellEngineClazz.getDeclaredConstructor(ContainerRoot.class).newInstance(coreBean);
+                        return (KevScriptEngine) offLineMShellEngineClazz.getDeclaredConstructor(ContainerRoot.class).newInstance(srcModel);
                     } catch (Exception e) {
                         e.printStackTrace();
                     }

@@ -16,7 +16,7 @@
 #define NB_TERMS 4
 #define MAXIMUM_SIZE_FLOAT 15
 
-#define DEBUG
+//#define DEBUG
 
 #define MIN(A,B)       (A < B) ? A : B
 #define MAX(A,B)       (A > B) ? A : B
