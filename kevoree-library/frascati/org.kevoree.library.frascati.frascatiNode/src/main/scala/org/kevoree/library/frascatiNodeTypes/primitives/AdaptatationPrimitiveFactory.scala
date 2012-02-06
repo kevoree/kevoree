@@ -204,8 +204,8 @@ object AdaptatationPrimitiveFactory {
     override def execute(): Boolean = { 
       println("pass par la AddInstance")
       
-      if (adaptationPrimitive.getRef.isInstanceOf[org.kevoree.ComponentInstance]  && adaptationPrimitive.getRef.asInstanceOf[org.kevoree.ComponentInstance].getTypeDefinition.asInstanceOf[org.kevoree.ComponentType].getBean.endsWith(".composite")){
-    	  println(AdaptatationPrimitiveFactory.frascati)
+      if (adaptationPrimitive.getRef.isInstanceOf[org.kevoree.ComponentInstance]  && adaptationPrimitive.getRef.asInstanceOf[org.kevoree.ComponentInstance].getTypeDefinition.asInstanceOf[org.kevoree.ComponentType].getBean.endsWith(".composite"))
+    	  
     	  AdaptatationPrimitiveFactory.frascati.getComposite(adaptationPrimitive.getRef.asInstanceOf[org.kevoree.ComponentInstance].getTypeDefinition.asInstanceOf[org.kevoree.ComponentType].getBean)
       }
       else if(adaptationPrimitive.getRef.isInstanceOf[org.kevoree.ComponentInstance]){      
