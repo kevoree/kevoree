@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.kevoree.library.javase</groupId>
     <artifactId>org.kevoree.library.javase.nioChannels</artifactId>
-    <packaging>bundle</packaging>
+    <packaging>jar</packaging>
     <name>Kevoree :: Library :: JavaSE :: NioChannels</name>
     <version>1.6.0-SNAPSHOT</version>
 
@@ -74,7 +74,7 @@
                 </executions>
             </plugin>
 
-            <plugin>
+            <!--<plugin>
                 <groupId>org.apache.felix</groupId>
                 <artifactId>maven-bundle-plugin</artifactId>
                 <configuration>
@@ -82,7 +82,7 @@
                         <DynamicImport-Package>*</DynamicImport-Package>
                     </instructions>
                 </configuration>
-            </plugin>
+            </plugin>-->
         </plugins>
     </build>
 

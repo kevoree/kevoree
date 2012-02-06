@@ -3,7 +3,6 @@ package org.kevoree.library.sky.minicloud.group;
 import org.kevoree.ContainerNode;
 import org.kevoree.ContainerRoot;
 import org.kevoree.Group;
-import org.kevoree.annotation.GroupType;
 import org.kevoree.annotation.Library;
 import org.kevoree.annotation.Start;
 import org.kevoree.annotation.Stop;
@@ -21,7 +20,7 @@ import org.slf4j.LoggerFactory;
  * @version 1.0
  */
 @Library(name = "SKY")
-@GroupType
+//@GroupType
 public class MiniCloudGroup extends AbstractGroupType {
 	private static final Logger logger = LoggerFactory.getLogger(MiniCloudGroup.class);
 

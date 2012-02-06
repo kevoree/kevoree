@@ -18,7 +18,7 @@ import org.kevoree.library.rest.RestGroup;
 @GroupType
 @Library(name = "JavaSE")
 public class SSHRestGroup extends RestGroup {
-	public static final String SSH_PUBLIC_KEY = "SSH Public Key";
+	public static final String SSH_PUBLIC_KEY = "SSH_Public_Key";
 	// TODO ssh on the node then access the rest group using localhost..
 
 	@Override
