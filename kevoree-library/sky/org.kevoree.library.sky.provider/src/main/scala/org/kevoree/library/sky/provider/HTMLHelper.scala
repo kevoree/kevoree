@@ -11,11 +11,15 @@ package org.kevoree.library.sky.provider
 
 object HTMLHelper {
 
-  def generateSimpleSubmissionFormHtml (targetURL: String): String = {
+  def generateSimpleSubmissionFormHtml (targetURL: String, url : String): String = {
+
+    val cssPath = url + "/css/bootstrap.min.css"
+
     <html>
       <head>
           <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
           <meta charset="utf-8"/>
+          <link href={cssPath} rel="stylesheet"/>
       </head>
       <body>
         <form method="post" action={targetURL} enctype="multipart/form-data">
@@ -37,6 +41,12 @@ object HTMLHelper {
               </td>
             </tr>
             <tr>
+              <td>Public SSH key:</td>
+              <td>
+                <textarea name="ssh_key" cols="80" rows="3"></textarea>
+              </td>
+            </tr>
+            <tr>
               <td colspan="2" align="center">
                   <input type="submit" value="Submit"/>
               </td>
@@ -53,6 +63,7 @@ object HTMLHelper {
       <head>
           <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
           <meta charset="utf-8"/>
+          <link href="css/bootstrap.min.css" rel="stylesheet"/>
       </head>
       <body>
         <p>
@@ -74,6 +85,7 @@ object HTMLHelper {
       <head>
           <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
           <meta charset="utf-8"/>
+          <link href="css/bootstrap.min.css" rel="stylesheet"/>
       </head>
       <body>
         <p>
@@ -93,6 +105,7 @@ object HTMLHelper {
       <head>
           <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
           <meta charset="utf-8"/>
+          <link href="css/bootstrap.min.css" rel="stylesheet"/>
       </head>
       <body>
         <p>

@@ -31,88 +31,109 @@ import scala.collection.JavaConversions._
 
 class NameChecker extends CheckerService {
 
-	val acceptedRegex = "[A-Za-z0-9_]*"
-	var message = "The name doesn't fit the defined format.\nA name only contains lower or upper letters, numbers and \"_\"."
+  val acceptedRegex = "[A-Za-z0-9_]*"
+  var message = "The name doesn't fit the defined format.\nA name only contains lower or upper letters, numbers and \"_\"."
 
-	def check(model: ContainerRoot): java.util.List[CheckerViolation] = {
-		var violations: List[CheckerViolation] = List()
-		model.getNodes.foreach {
-			node =>
-				var violation = check(node)
-				if (violation != null) {
-					violations = violations ++ List(violation)
-				}
-				node.getComponents.foreach {
-					component: ComponentInstance =>
-						violation = check(component)
-						if (violation != null) {
-							violation.setTargetObjects(List(component))
-							violations = violations ++ List(violation)
-						}
-						if (component.getDictionary.isDefined) {
-							component.getDictionary.get.getValues.foreach {
-								property: DictionaryValue =>
-									violation = check(property.getAttribute)
-									if (violation != null) {
-										violation.setTargetObjects(List(component))
-										violations = violations ++ List(violation)
-									}
-							}
-						}
-						component.getProvided.foreach {
-							port =>
-								violation = check(port.getPortTypeRef)
-								if (violation != null) {
-									violation.setTargetObjects(List(component))
-									violations = violations ++ List(violation)
-								}
-						}
-						component.getRequired.foreach {
-							port =>
-								violation = check(port.getPortTypeRef)
-								if (violation != null) {
-									violation.setTargetObjects(List(component))
-									violations = violations ++ List(violation)
-								}
-						}
-				}
-		}
-		model.getHubs.foreach {
-			channel =>
-				var violation = check(channel)
-				if (violation != null) {
-					violation.setTargetObjects(List(channel))
-					violations = violations ++ List(violation)
-				}
-				if (channel.getDictionary.isDefined) {
-					channel.getDictionary.get.getValues.foreach {
-						property: DictionaryValue =>
-							violation = check(property.getAttribute)
-							if (violation != null) {
-								violation.setTargetObjects(List(channel))
-								violations = violations ++ List(violation)
-							}
-					}
-				}
-		}
+  def check (model: ContainerRoot): java.util.List[CheckerViolation] = {
+    var violations: List[CheckerViolation] = List()
+    model.getNodes.foreach {
+      node =>
+        var violation = check(node)
+        if (violation != null) {
+          violations = violations ++ List(violation)
+        }
+        node.getComponents.foreach {
+          component: ComponentInstance =>
+            violation = check(component)
+            if (violation != null) {
+              violation.setTargetObjects(List(component))
+              violations = violations ++ List(violation)
+            }
+            if (component.getDictionary.isDefined) {
+              component.getDictionary.get.getValues.foreach {
+                property: DictionaryValue =>
+                  violation = check(property.getAttribute)
+                  if (violation != null) {
+                    violation.setTargetObjects(List(component))
+                    violations = violations ++ List(violation)
+                  }
+              }
+            }
+            component.getProvided.foreach {
+              port =>
+                violation = check(port.getPortTypeRef)
+                if (violation != null) {
+                  violation.setTargetObjects(List(component))
+                  violations = violations ++ List(violation)
+                }
+            }
+            component.getRequired.foreach {
+              port =>
+                violation = check(port.getPortTypeRef)
+                if (violation != null) {
+                  violation.setTargetObjects(List(component))
+                  violations = violations ++ List(violation)
+                }
+            }
+        }
+    }
+    model.getHubs.foreach {
+      channel =>
+        var violation = check(channel)
+        if (violation != null) {
+          violation.setTargetObjects(List(channel))
+          violations = violations ++ List(violation)
+        }
+        if (channel.getDictionary.isDefined) {
+          channel.getDictionary.get.getValues.foreach {
+            property: DictionaryValue =>
+              violation = check(property.getAttribute)
+              if (violation != null) {
+                violation.setTargetObjects(List(channel))
+                violations = violations ++ List(violation)
+              }
+          }
+        }
+    }
 
-		violations
-	}
+    model.getGroups.foreach {
+      group =>
+        var violation = check(group)
+        if (violation != null) {
+          violation.setTargetObjects(List(group))
+          violations = violations ++ List(violation)
+        }
+        if (group.getDictionary.isDefined) {
+          group.getDictionary.get.getValues.foreach {
+            property: DictionaryValue =>
+              violation = check(property.getAttribute)
+              if (violation != null) {
+                violation.setTargetObjects(List(group))
+                violations = violations ++ List(violation)
+              }
+          }
+        }
+    }
 
-	private def check(name: String): Boolean = {
-    if(name == ""){return false}
-		val p: Pattern = Pattern.compile(acceptedRegex)
-		val m: Matcher = p.matcher(name)
-		m.matches
-	}
+    violations
+  }
 
-	private def check(obj: NamedElement): CheckerViolation = {
-		var violation: CheckerViolation = null
-		if (check(obj.getName) == false) {
-			violation = new CheckerViolation
-			violation.setMessage(message)
-			violation.setTargetObjects(List(obj))
-		}
-		violation
-	}
+  private def check (name: String): Boolean = {
+    if (name == "") {
+      return false
+    }
+    val p: Pattern = Pattern.compile(acceptedRegex)
+    val m: Matcher = p.matcher(name)
+    m.matches
+  }
+
+  private def check (obj: NamedElement): CheckerViolation = {
+    var violation: CheckerViolation = null
+    if (check(obj.getName) == false) {
+      violation = new CheckerViolation
+      violation.setMessage(message)
+      violation.setTargetObjects(List(obj))
+    }
+    violation
+  }
 }

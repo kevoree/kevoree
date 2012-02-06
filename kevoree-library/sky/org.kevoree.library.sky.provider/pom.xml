@@ -21,6 +21,12 @@
             <version>${kevoree.version}</version>
             <type>bundle</type>
         </dependency>
+       <!-- <dependency>
+            <groupId>org.kevoree.library.javase</groupId>
+            <artifactId>org.kevoree.library.javase.ssh</artifactId>
+            <version>${kevoree.version}</version>
+            <type>bundle</type>
+        </dependency>-->
         <dependency>
             <groupId>org.kevoree</groupId>
             <artifactId>org.kevoree.basechecker</artifactId>
@@ -31,6 +37,7 @@
             <groupId>org.kevoree.tools</groupId>
             <artifactId>org.kevoree.tools.marShell</artifactId>
             <version>${kevoree.version}</version>
+            <type>bundle</type>
         </dependency>
         -->
         <dependency>
@@ -42,12 +49,6 @@
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-classic</artifactId>
             <version>1.0.0</version>
-        </dependency>
-        <dependency>
-            <groupId>org.kevoree.library.javase</groupId>
-            <artifactId>org.kevoree.library.javase.ssh</artifactId>
-            <version>${kevoree.version}</version>
-            <type>bundle</type>
         </dependency>
     </dependencies>
 

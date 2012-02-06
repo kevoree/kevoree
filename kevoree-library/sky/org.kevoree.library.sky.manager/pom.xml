@@ -31,6 +31,11 @@
             <groupId>org.kevoree.extra</groupId>
             <artifactId>org.kevoree.extra.osgi.twitter.library</artifactId>
             <version>1.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.kevoree.library.javase</groupId>
+            <artifactId>org.kevoree.library.javase.ssh</artifactId>
+            <version>${kevoree.version}</version>
             <type>bundle</type>
         </dependency>
         <dependency>
@@ -38,12 +43,6 @@
             <artifactId>junit</artifactId>
             <version>4.8.1</version>
             <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.kevoree.library.javase</groupId>
-            <artifactId>org.kevoree.library.javase.ssh</artifactId>
-            <version>${kevoree.version}</version>
-            <type>bundle</type>
         </dependency>
     </dependencies>
 

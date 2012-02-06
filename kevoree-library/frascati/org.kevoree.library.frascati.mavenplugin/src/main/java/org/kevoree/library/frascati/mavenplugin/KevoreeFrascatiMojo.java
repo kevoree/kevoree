@@ -55,7 +55,7 @@ public class KevoreeFrascatiMojo extends AbstractMojo {
     
     /**
     *
-    * @parameter default-value="${project.basedir}/target/main/resources"
+    * @parameter default-value="${project.basedir}/target/classes"
     */
    private File targetresources;
 
@@ -63,10 +63,11 @@ public class KevoreeFrascatiMojo extends AbstractMojo {
     public void execute() throws MojoExecutionException, MojoFailureException {
 
         getLog().info("Hello !!!!");
-
     	System.err.println("pass par la");
     	List<File> res = new ArrayList<File>();
     	listFile(resources,res);
+    	System.err.println("pass par la " + res.size());
+    	
   	    ContainerRoot root = KevoreeFactory.createContainerRoot();
   	    for (File f : res){
         	CompositeParser.parseCompositeFile(root,f,project.getVersion(),project.getGroupId(),project.getArtifactId(),f.getName());
@@ -75,6 +76,9 @@ public class KevoreeFrascatiMojo extends AbstractMojo {
   	    resdir.mkdir();
   	    File resFile = new File(targetresources.getAbsolutePath() + File.separatorChar + "KEV-INF" + File.separatorChar + "lib.kev" );
     	KevoreeXmiHelper.save(resFile.getAbsolutePath(),root);
+    	System.err.println(resFile.getAbsolutePath());
+    	
+    	
     }
     
     
