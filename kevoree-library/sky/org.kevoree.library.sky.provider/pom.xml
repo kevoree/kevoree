@@ -21,12 +21,12 @@
             <version>${kevoree.version}</version>
             <type>bundle</type>
         </dependency>
-        <dependency>
+       <!-- <dependency>
             <groupId>org.kevoree.library.javase</groupId>
             <artifactId>org.kevoree.library.javase.ssh</artifactId>
             <version>${kevoree.version}</version>
             <type>bundle</type>
-        </dependency>
+        </dependency>-->
         <dependency>
             <groupId>org.kevoree</groupId>
             <artifactId>org.kevoree.basechecker</artifactId>
