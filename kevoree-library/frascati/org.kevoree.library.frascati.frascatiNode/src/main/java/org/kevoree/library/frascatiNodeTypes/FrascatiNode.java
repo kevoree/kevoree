@@ -5,14 +5,14 @@
 
 package org.kevoree.library.frascatiNodeTypes;
 
+import org.eclipse.emf.ecore.EPackage;
+import org.eclipse.stp.sca.ScaPackage;
 import org.kevoree.ContainerRoot;
 import org.kevoree.annotation.Library;
 import org.kevoree.annotation.NodeType;
 import org.kevoree.annotation.Start;
 import org.kevoree.annotation.Stop;
-import org.kevoree.extra.jcl.KevoreeJarClassLoader;
 import org.kevoree.library.defaultNodeTypes.JavaSENode;
-
 import org.kevoreeAdaptation.AdaptationModel;
 import org.kevoreeAdaptation.AdaptationPrimitive;
 import org.ow2.frascati.FraSCAti;
@@ -34,13 +34,12 @@ public class FrascatiNode extends JavaSENode {
 	Thread t;
 	Thread current;
 
-	
 	@Start
 	@Override
 	public void startNode() {
 		super.startNode();
 		current = Thread.currentThread();
-		
+
 		if (t == null) {
 
 			t = new Thread(new Runnable() {
@@ -50,13 +49,55 @@ public class FrascatiNode extends JavaSENode {
 					try {
 						System.out.println("test");
 						System.out.println(FraSCAti.class.getClassLoader());
+
+						System.err.println("toto "
+								+ EPackage.Registry.INSTANCE
+										.getEPackage(ScaPackage.eNS_URI));
+						System.err.println("titi" + EPackage.class.hashCode());
+						System.err.println("titi" + EPackage.Registry.class.hashCode());
+
 						Thread.currentThread().setContextClassLoader(
 								FraSCAti.class.getClassLoader());
+						System.err.println("toto "
+								+ EPackage.Registry.INSTANCE
+										.getEPackage(ScaPackage.eNS_URI));
+						;
+
+						System.err.println("titi" + EPackage.class.hashCode());
+						System.err.println("titi" + EPackage.Registry.class.hashCode());
+
+						
 						frascati = FraSCAti.newFraSCAti();
 
-						org.ow2.frascati.util.FrascatiClassLoader f = new FrascatiClassLoader(FraSCAti.class.getClassLoader());
-						frascati.setClassLoader(f);
+						System.err.println("toto "
+								+ EPackage.Registry.INSTANCE
+										.getEPackage(ScaPackage.eNS_URI));
 
+						System.err.println("titi" + EPackage.class.hashCode());
+						System.err.println("titi" + EPackage.Registry.class.hashCode());
+						System.err.println("titi "
+								+ EPackage.Registry.INSTANCE
+										);
+
+						org.ow2.frascati.util.FrascatiClassLoader f = new FrascatiClassLoader(
+								FraSCAti.class.getClassLoader());
+						frascati.setClassLoader(f);
+						System.err.println("toto "
+								+ EPackage.Registry.INSTANCE
+										.getEPackage(ScaPackage.eNS_URI));
+
+						System.err.println("titi" + EPackage.class.hashCode());
+						System.err.println("titi" + EPackage.Registry.class.hashCode());
+						System.err.println("titi "
+								+ EPackage.Registry.INSTANCE
+										);
+						
+						System.err.println(EPackage.Registry.INSTANCE.keySet().size());
+						for (String s : EPackage.Registry.INSTANCE.keySet()){
+							System.err.println(s);
+							
+						}
+						
 					} catch (FrascatiException e) {
 						e.printStackTrace();
 					}
@@ -86,8 +127,6 @@ public class FrascatiNode extends JavaSENode {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
-		
 
 	}
 
@@ -110,7 +149,8 @@ public class FrascatiNode extends JavaSENode {
 		org.kevoree.library.frascatiNodeTypes.primitives.AdaptatationPrimitiveFactory
 				.setFrascati(frascati);
 		return org.kevoree.library.frascatiNodeTypes.primitives.AdaptatationPrimitiveFactory
-				.getPrimitive(adaptationPrimitive, this,this,(KevoreeJarClassLoader)FraSCAti.class.getClassLoader());
+				.getPrimitive(adaptationPrimitive, this, this,
+					(org.kevoree.extra.jcl.KevoreeJarClassLoader)FraSCAti.class.getClassLoader());
 
 	}
 

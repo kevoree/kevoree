@@ -16,6 +16,7 @@ import java.io.PrintWriter
 import org.kevoree.{DeployUnit, ComponentInstance, Instance}
 import org.kevoree.extra.jcl.KevoreeJarClassLoader
 import org.kevoree.framework.AbstractNodeType
+import org.kevoree.library.defaultNodeTypes.jcl.deploy.command.NoopCommand
 
 
 object AdaptatationPrimitiveFactory {
@@ -41,19 +42,26 @@ object AdaptatationPrimitiveFactory {
         node.getSuperPrimitive(adaptationPrimitive);
       }
       case "AddType" => {
-        node.getSuperPrimitive(adaptationPrimitive);
+                 NoopCommand()
+
+//        node.getSuperPrimitive(adaptationPrimitive);
       }
       case "AddDeployUnit" => {
-        FrascatiAddDedployUnit(adaptationPrimitive.getRef.asInstanceOf[DeployUnit],nodeType.getBootStrapperService,topKCL)
+         NoopCommand()
+        //node.getSuperPrimitive(adaptationPrimitive)
+        //FrascatiAddDedployUnit(adaptationPrimitive.getRef.asInstanceOf[DeployUnit],nodeType.getBootStrapperService,topKCL)
       }
-      case "AddThirdParty" => {
-        FrascatiAddDedployUnit(adaptationPrimitive.getRef.asInstanceOf[DeployUnit],nodeType.getBootStrapperService,topKCL)
+      case "AddThirdParty" => {         NoopCommand()
+
+  //      FrascatiAddDedployUnit(adaptationPrimitive.getRef.asInstanceOf[DeployUnit],nodeType.getBootStrapperService,topKCL)
       }
       case "RemoveType" => {
         node.getSuperPrimitive(adaptationPrimitive);
       }
       case "RemoveDeployUnit" => {
-        node.getSuperPrimitive(adaptationPrimitive);
+                 NoopCommand()
+
+//        node.getSuperPrimitive(adaptationPrimitive);
       }
       case "UpdateDictionaryInstance" => {
     	 /* 	if (adaptationPrimitive.getRef.isInstanceOf[org.kevoree.Instance] && adaptationPrimitive.getRef.asInstanceOf[org.kevoree.Instance].getTypeDefinition.getDeployUnits.forall(e =>
