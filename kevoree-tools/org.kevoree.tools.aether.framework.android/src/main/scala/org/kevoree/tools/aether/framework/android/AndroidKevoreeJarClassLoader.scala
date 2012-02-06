@@ -20,7 +20,7 @@ class AndroidKevoreeJarClassLoader(ctx: android.content.Context, parent: ClassLo
     val cleanName = idName.replace(File.separator, "_")
     val dexInternalStoragePath = new File(ctx.getDir("dex", Context.MODE_PRIVATE), cleanName)
     val dexWriter = new BufferedOutputStream(new FileOutputStream(dexInternalStoragePath))
-    val b = new Array[Byte](8*1014)
+    val b = new Array[Byte](8 * 1014)
     var len = 0;
     while (dexStream.available() > 0) {
       len = dexStream.read(b);
@@ -30,12 +30,20 @@ class AndroidKevoreeJarClassLoader(ctx: android.content.Context, parent: ClassLo
     }
     dexWriter.close()
     val dexOptStoragePath = new File(ctx.getDir("odex", Context.MODE_PRIVATE), cleanName)
-    val newDexCL = new DexClassLoader(dexInternalStoragePath.getAbsolutePath,dexOptStoragePath.getAbsolutePath,null,parent)
-
+    val newDexCL = new DexClassLoader(dexInternalStoragePath.getAbsolutePath, dexOptStoragePath.getAbsolutePath, null, parent)
+    subDexClassLoader = subDexClassLoader ++ List(newDexCL)
   }
 
-  override def callSuperConcreteLoader(className: String, resolveIt: Boolean) = {
-    //CALL LOCAL DEX CLASS LOADER
+  override def callSuperConcreteLoader(className: String, resolveIt: Boolean) : Class[_] = {
+    subClassLoaders.foreach {
+      subCL =>
+        try {
+          return subCL.loadClass(className)
+        } catch {
+          case nf: ClassNotFoundException =>
+        }
+    }
+    throw new ClassNotFoundException(className)
   }
 
 
