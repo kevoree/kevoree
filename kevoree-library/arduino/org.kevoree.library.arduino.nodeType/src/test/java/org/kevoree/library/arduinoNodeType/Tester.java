@@ -23,8 +23,8 @@ public class Tester {
 
 
         
-        //ContainerRoot model = KevoreeXmiHelper.loadStream(Tester.class.getClassLoader().getResourceAsStream("kduke.kev"));
-        ContainerRoot model = KevoreeXmiHelper.load("/Users/duke/Desktop/tempArd.kev");
+        ContainerRoot model = KevoreeXmiHelper.loadStream(Tester.class.getClassLoader().getResourceAsStream("FuzzyModelTEST.kev"));
+        //ContainerRoot model = KevoreeXmiHelper.load("/Users/duke/Desktop/tempArd.kev");
 
         ArduinoNode node = new ArduinoNode();
 
@@ -38,13 +38,12 @@ public class Tester {
         node.getDictionary().put("osgi.bundle", null);
         //node.getDictionary().put("boardPortName","/dev/tty.usbserial-A400g2se");
 //        node.getDictionary().put("pmem","EEPROM");
-//        node.getDictionary().put("psize","16384");
         // node.getDictionary().put("boardPortName","/dev/tty.usbserial-A400g2se");
 
 
         node.getDictionary().put("incremental", "false");
         node.startNode();
-        node.push("node0", model, "/dev/tty.usbmodem411");
+        node.push("node0", model, "/dev/tty.usbmodem24131");
 
     }
 
