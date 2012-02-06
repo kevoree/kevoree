@@ -23,6 +23,7 @@ import javax.annotation.processing.ProcessingEnvironment
 import javax.lang.model.util.{SimpleElementVisitor6}
 import org.kevoree.{ChannelType, NodeType}
 import javax.lang.model.element.{ExecutableElement, ElementKind, TypeElement, Element}
+import org.kevoree.annotation.NodeFragment
 
 case class NodeTypeVisitor (nodeType: NodeType, env: ProcessingEnvironment, rootVisitor: KevoreeAnnotationProcessor)
   extends SimpleElementVisitor6[Any, Element]
@@ -42,7 +43,7 @@ case class NodeTypeVisitor (nodeType: NodeType, env: ProcessingEnvironment, root
       it =>
         it match {
           case dt: javax.lang.model.`type`.DeclaredType => {
-            var annotFragment : Any = dt.asElement().getAnnotation(classOf[org.kevoree.annotation.ComponentFragment])
+            var annotFragment : Any = dt.asElement().getAnnotation(classOf[org.kevoree.annotation.NodeFragment])
             if (annotFragment != null) {
               dt.asElement().accept(this, dt.asElement())
             }
@@ -80,6 +81,8 @@ case class NodeTypeVisitor (nodeType: NodeType, env: ProcessingEnvironment, root
         var an: Any = dt.asElement().getAnnotation(classOf[org.kevoree.annotation.NodeFragment])
         if (an != null) {
           dt.asElement().accept(this, dt.asElement())
+//          defineAsSuperType(nodeType, dt.asElement().getSimpleName.toString, classOf[NodeFragment])
+          // FIXME ?
         }
         an = dt.asElement().getAnnotation(classOf[org.kevoree.annotation.NodeType])
         if (an != null) {
