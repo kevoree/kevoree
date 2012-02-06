@@ -2,19 +2,20 @@ package org.kevoree.library.frascatiNodeTypes.primitives;
 import org.kevoreeAdaptation.AdaptationPrimitive
 import org.kevoree.library.frascatiNodeTypes.FrascatiNode
 import org.eclipse.stp.sca.ComponentType
-import org.kevoree.ComponentInstance
 import org.ow2.frascati.FraSCAti
 import org.kevoree.api.PrimitiveCommand
 import org.objectweb.fractal.api.Component
 import org.objectweb.fractal.api.control.ContentController
 import org.objectweb.fractal.api.control.AttributeController
-import org.kevoree.Instance
 import scala.collection.JavaConversions._
 import org.objectweb.fractal.api.control.LifeCycleController
 import java.io.File
 import scala.xml.Node
 import scala.collection.mutable.Queue
 import java.io.PrintWriter
+import org.kevoree.{DeployUnit, ComponentInstance, Instance}
+import org.kevoree.extra.jcl.KevoreeJarClassLoader
+import org.kevoree.framework.AbstractNodeType
 
 
 object AdaptatationPrimitiveFactory {
@@ -25,7 +26,7 @@ object AdaptatationPrimitiveFactory {
   	  println("TOTOTOTO" +fras)
   	  _frascati =fras}
   
-  def getPrimitive(adaptationPrimitive: AdaptationPrimitive, node: FrascatiNode): org.kevoree.api.PrimitiveCommand = {
+  def getPrimitive(adaptationPrimitive: AdaptationPrimitive, node: FrascatiNode, nodeType : AbstractNodeType, topKCL : KevoreeJarClassLoader): org.kevoree.api.PrimitiveCommand = {
 
     //        values = {"UpdateType", "UpdateDeployUnit", "AddType", "AddDeployUnit", "AddThirdParty", 
     //"RemoveType", "RemoveDeployUnit", "UpdateInstance", "UpdateBinding", "UpdateDictionaryInstance", 
@@ -43,16 +44,16 @@ object AdaptatationPrimitiveFactory {
         node.getSuperPrimitive(adaptationPrimitive);
       }
       case "AddDeployUnit" => {
-        node.getSuperPrimitive(adaptationPrimitive);
+        FrascatiAddDedployUnit(adaptationPrimitive.getRef.asInstanceOf[DeployUnit],nodeType.getBootStrapperService,topKCL)
       }
       case "AddThirdParty" => {
-        node.getSuperPrimitive(adaptationPrimitive);
+        FrascatiAddDedployUnit(adaptationPrimitive.getRef.asInstanceOf[DeployUnit],nodeType.getBootStrapperService,topKCL)
       }
       case "RemoveType" => {
         node.getSuperPrimitive(adaptationPrimitive);
       }
       case "RemoveDeployUnit" => {
-        node.getSuperPrimitive(adaptationPrimitive);
+        FrascatiRemoveDeployUnit(adaptationPrimitive.getRef.asInstanceOf[DeployUnit],nodeType.getBootStrapperService,topKCL)
       }
       case "UpdateDictionaryInstance" => {
     	 /* 	if (adaptationPrimitive.getRef.isInstanceOf[org.kevoree.Instance] && adaptationPrimitive.getRef.asInstanceOf[org.kevoree.Instance].getTypeDefinition.getDeployUnits.forall(e =>
@@ -74,7 +75,7 @@ object AdaptatationPrimitiveFactory {
       case "AddInstance" => {
     	  	if (adaptationPrimitive.getRef.isInstanceOf[org.kevoree.Instance] && adaptationPrimitive.getRef.asInstanceOf[org.kevoree.Instance].getTypeDefinition.getDeployUnits.forall(e =>
               e.getTargetNodeType.get.getName.equals(classOf[FrascatiNode].getSimpleName()))) {
-          new AddInstance(adaptationPrimitive);
+          FrascatiAddInstance(adaptationPrimitive,nodeType.getNodeName,nodeType.getBootStrapperService);
         } else
           node.getSuperPrimitive(adaptationPrimitive);
       }
@@ -145,7 +146,7 @@ object AdaptatationPrimitiveFactory {
 
       }
       case "RemoveThirdParty" => {
-          node.getSuperPrimitive(adaptationPrimitive);
+        FrascatiRemoveDeployUnit(adaptationPrimitive.getRef.asInstanceOf[DeployUnit],nodeType.getBootStrapperService,topKCL)
       }
       case _@ e => { null }
 
@@ -155,21 +156,21 @@ object AdaptatationPrimitiveFactory {
 
   
   //////////// CRUD Binding //////////////////
-  class RemoveBinding(adapptationPrimitive: AdaptationPrimitive) extends PrimitiveCommand {
+  case class RemoveBinding(adapptationPrimitive: AdaptationPrimitive) extends PrimitiveCommand {
     override def execute(): Boolean = { true }
 
     override def undo() = {}
 
   }
 
-  class AddBinding(adapptationPrimitive: AdaptationPrimitive) extends PrimitiveCommand {
+  case class AddBinding(adapptationPrimitive: AdaptationPrimitive) extends PrimitiveCommand {
     override def execute(): Boolean = { true }
 
     override def undo() = {}
 
   }
 
-    class UpdateBinding(adapptationPrimitive: AdaptationPrimitive) extends PrimitiveCommand {
+  case class UpdateBinding(adapptationPrimitive: AdaptationPrimitive) extends PrimitiveCommand {
     override def execute(): Boolean = { true }
 
     override def undo() = {}
