@@ -56,60 +56,22 @@ public class FrascatiNode extends JavaSENode {
 				@Override
 				public void run() {
 					try {
-						System.out.println("test");
-						System.out.println(FraSCAti.class.getClassLoader());
-
-						System.err.println("toto "
-								+ EPackage.Registry.INSTANCE
-										.getEPackage(ScaPackage.eNS_URI));
-						System.err.println("titi" + EPackage.class.hashCode());
-						System.err.println("titi" + EPackage.Registry.class.hashCode());
 
 						Thread.currentThread().setContextClassLoader(
 								FraSCAti.class.getClassLoader());
-						System.err.println("toto "
-								+ EPackage.Registry.INSTANCE
-										.getEPackage(ScaPackage.eNS_URI));
-						;
-
-						System.err.println("titi" + EPackage.class.hashCode());
-						System.err.println("titi" + EPackage.Registry.class.hashCode());
 
 						
 						frascati = FraSCAti.newFraSCAti();
 
-						System.err.println("toto "
-								+ EPackage.Registry.INSTANCE
-										.getEPackage(ScaPackage.eNS_URI));
-
-						System.err.println("titi" + EPackage.class.hashCode());
-						System.err.println("titi" + EPackage.Registry.class.hashCode());
-						System.err.println("titi "
-								+ EPackage.Registry.INSTANCE
-										);
 
 						org.ow2.frascati.util.FrascatiClassLoader f = new FrascatiClassLoader(
 								FraSCAti.class.getClassLoader());
-						frascati.setClassLoader(f);
-						System.err.println("toto "
-								+ EPackage.Registry.INSTANCE
-										.getEPackage(ScaPackage.eNS_URI));
+				        System.err.println("TUTUTUTUTU" + FraSCAti.class.getClassLoader());
 
-						System.err.println("titi" + EPackage.class.hashCode());
-						System.err.println("titi" + EPackage.Registry.class.hashCode());
-						System.err.println("titi "
-								+ EPackage.Registry.INSTANCE
-										);
-						
-						System.err.println(EPackage.Registry.INSTANCE.keySet().size());
+						frascati.setClassLoader(f);
 						for (Entry<String, Object> s : EPackage.Registry.INSTANCE.entrySet()){
-							System.err.println(s);
-							
 							registries.put(s.getKey(), s.getValue());
 						}
-						
-						
-						
 					} catch (FrascatiException e) {
 						e.printStackTrace();
 					}
@@ -119,6 +81,8 @@ public class FrascatiNode extends JavaSENode {
 			t.start();
 			try {
 				t.join();
+				System.err.println("TUTU " + EPackage.Registry.INSTANCE.keySet().size());
+				
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}

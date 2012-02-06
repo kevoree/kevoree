@@ -50,6 +50,10 @@ case class FrascatiAddInstance(adaptationPrimitive: AdaptationPrimitive,self:Fra
 
         self.getRegistries().foreach(e=>EPackage.Registry.INSTANCE.put(e._1,e._2))
         
+        println(kcl)
+        
+        
+        //AdaptatationPrimitiveFactory.frascati.setClassLoader(new FrascatiClassLoader(kcl))
         
         
         AdaptatationPrimitiveFactory.frascati.getComposite(compositeURL.toString)
