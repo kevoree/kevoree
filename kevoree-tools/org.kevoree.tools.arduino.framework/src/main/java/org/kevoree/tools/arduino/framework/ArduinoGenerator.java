@@ -16,6 +16,10 @@ package org.kevoree.tools.arduino.framework;
 import org.kevoree.ContainerRoot;
 import org.kevoree.TypeDefinition;
 
+import java.io.InputStream;
+import java.util.List;
+import java.util.Set;
+
 /**
  * Created by IntelliJ IDEA.
  * User: duke
@@ -24,6 +28,14 @@ import org.kevoree.TypeDefinition;
  */
 public interface ArduinoGenerator {
 
+    public void addLibrary(String name, InputStream stream);
+
+    public void razLibrary();
+    
+    public Set<String> getLibraryKeys();
+    
+    public InputStream getLibrary(String key);
+    
     public void declareStaticKMessage(String name, String typeName);
 
     public void appendNativeStatement(String statement);

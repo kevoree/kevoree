@@ -309,7 +309,7 @@ public class ArduinoNode extends AbstractNodeType {
                 progress.endTask();
 
                 progress.beginTask("Firmware compilation", 70);
-                arduinoCompilation.compileSketch(sketch, target, core);
+                arduinoCompilation.compileSketch(sketch, target, core,generator.context().getGenerator());
                 arduinoArchive.archiveSketch(sketch, target);
                 progress.endTask();
 

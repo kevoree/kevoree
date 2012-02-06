@@ -29,8 +29,8 @@ public class Tester {
         ArduinoNode node = new ArduinoNode();
 
         //FOR TEST
-      //  NodeTypeBootstrapHelper bs = new NodeTypeBootstrapHelper();
-      //  node.setBootStrapperService(bs);
+        NodeTypeBootstrapHelper bs = new NodeTypeBootstrapHelper();
+        node.setBootStrapperService(bs);
 
         node.setForceUpdate(true);
 
