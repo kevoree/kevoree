@@ -53,7 +53,7 @@ object AdaptatationPrimitiveFactory {
         node.getSuperPrimitive(adaptationPrimitive);
       }
       case "RemoveDeployUnit" => {
-        FrascatiRemoveDeployUnit(adaptationPrimitive.getRef.asInstanceOf[DeployUnit],nodeType.getBootStrapperService,topKCL)
+        node.getSuperPrimitive(adaptationPrimitive);
       }
       case "UpdateDictionaryInstance" => {
     	 /* 	if (adaptationPrimitive.getRef.isInstanceOf[org.kevoree.Instance] && adaptationPrimitive.getRef.asInstanceOf[org.kevoree.Instance].getTypeDefinition.getDeployUnits.forall(e =>
