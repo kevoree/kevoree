@@ -5,6 +5,10 @@
 
 package org.kevoree.library.frascatiNodeTypes;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
+
 import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.stp.sca.ScaPackage;
 import org.kevoree.ContainerRoot;
@@ -33,6 +37,11 @@ public class FrascatiNode extends JavaSENode {
 	FraSCAti frascati;
 	Thread t;
 	Thread current;
+	Map<String,Object> registries = new HashMap<String, Object>();
+
+	public Map<String, Object> getRegistries() {
+		return registries;
+	}
 
 	@Start
 	@Override
@@ -93,10 +102,13 @@ public class FrascatiNode extends JavaSENode {
 										);
 						
 						System.err.println(EPackage.Registry.INSTANCE.keySet().size());
-						for (String s : EPackage.Registry.INSTANCE.keySet()){
+						for (Entry<String, Object> s : EPackage.Registry.INSTANCE.entrySet()){
 							System.err.println(s);
 							
+							registries.put(s.getKey(), s.getValue());
 						}
+						
+						
 						
 					} catch (FrascatiException e) {
 						e.printStackTrace();

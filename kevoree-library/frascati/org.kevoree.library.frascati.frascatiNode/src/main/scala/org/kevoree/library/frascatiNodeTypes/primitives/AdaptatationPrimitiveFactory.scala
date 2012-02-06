@@ -75,7 +75,7 @@ object AdaptatationPrimitiveFactory {
       case "AddInstance" => {
     	  	if (adaptationPrimitive.getRef.isInstanceOf[org.kevoree.Instance] && adaptationPrimitive.getRef.asInstanceOf[org.kevoree.Instance].getTypeDefinition.getDeployUnits.forall(e =>
               e.getTargetNodeType.get.getName.equals(classOf[FrascatiNode].getSimpleName()))) {
-          FrascatiAddInstance(adaptationPrimitive,nodeType.getNodeName,nodeType.getBootStrapperService);
+          FrascatiAddInstance(adaptationPrimitive, node,nodeType.getNodeName,nodeType.getBootStrapperService);
         } else
           node.getSuperPrimitive(adaptationPrimitive);
       }

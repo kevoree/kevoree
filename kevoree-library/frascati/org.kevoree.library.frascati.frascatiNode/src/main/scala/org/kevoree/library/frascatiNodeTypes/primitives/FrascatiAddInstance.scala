@@ -10,8 +10,8 @@ import org.kevoree.library.defaultNodeTypes.jcl.deploy.context.KevoreeDeployMana
 import org.ow2.frascati.util.FrascatiClassLoader
 import org.eclipse.emf.ecore.EPackage
 import org.eclipse.stp.sca.ScaPackage
-
-        import scala.collection.JavaConversions._
+import scala.collection.JavaConversions._
+import org.kevoree.library.frascatiNodeTypes.FrascatiNode
 
 
 /**
@@ -21,7 +21,7 @@ import org.eclipse.stp.sca.ScaPackage
  * Time: 15:32
  */
 
-case class FrascatiAddInstance(adaptationPrimitive: AdaptationPrimitive,nodeName: String, bs: org.kevoree.api.Bootstraper) extends AInstance {
+case class FrascatiAddInstance(adaptationPrimitive: AdaptationPrimitive,self:FrascatiNode,nodeName: String, bs: org.kevoree.api.Bootstraper) extends AInstance {
 
   val logger = LoggerFactory.getLogger(this.getClass)
 
@@ -47,6 +47,10 @@ case class FrascatiAddInstance(adaptationPrimitive: AdaptationPrimitive,nodeName
 
         println(EPackage.Registry.INSTANCE.keySet().size)
         println(EPackage.Registry.INSTANCE.keySet().mkString("\n"))
+
+        self.getRegistries().foreach(e=>EPackage.Registry.INSTANCE.put(e._1,e._2))
+        
+        
         
         AdaptatationPrimitiveFactory.frascati.getComposite(compositeURL.toString)
       } else {
@@ -61,6 +65,8 @@ case class FrascatiAddInstance(adaptationPrimitive: AdaptationPrimitive,nodeName
         output.close()
         val kcl = bs.getKevoreeClassLoaderHandler.getKevoreeClassLoader(deployUnit)
         println(kcl)
+        
+        
         AdaptatationPrimitiveFactory.frascati.setClassLoader(new FrascatiClassLoader(kcl))
         AdaptatationPrimitiveFactory.frascati.getComposite(f.getAbsolutePath())
       }
