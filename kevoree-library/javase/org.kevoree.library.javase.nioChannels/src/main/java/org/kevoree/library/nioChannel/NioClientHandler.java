@@ -1,7 +1,9 @@
 package org.kevoree.library.nioChannel;
 
-import org.jboss.netty.channel.*;
-import org.kevoree.framework.message.Message;
+import org.jboss.netty.channel.ChannelHandlerContext;
+import org.jboss.netty.channel.ChannelStateEvent;
+import org.jboss.netty.channel.ExceptionEvent;
+import org.jboss.netty.channel.SimpleChannelUpstreamHandler;
 import org.slf4j.LoggerFactory;
 
 import java.net.InetSocketAddress;
@@ -16,37 +18,39 @@ import java.net.InetSocketAddress;
  */
 public class NioClientHandler extends SimpleChannelUpstreamHandler {
 
-    private org.slf4j.Logger logger = LoggerFactory.getLogger(this.getClass());
+	private org.slf4j.Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    private NioChannel parentChannel;
+	private NioChannel parentChannel;
 
-    public NioClientHandler(NioChannel p) {
-        parentChannel = p;
-    }
+	public NioClientHandler (NioChannel p) {
+		parentChannel = p;
+	}
 
-    @Override
-    public void channelConnected(ChannelHandlerContext ctx, ChannelStateEvent e) {
-        InetSocketAddress remoteAdr = (InetSocketAddress) e.getChannel().getRemoteAddress();
-        logger.debug("Channel connected "+remoteAdr);
+	@Override
+	public void channelConnected (ChannelHandlerContext ctx, ChannelStateEvent e) {
+		InetSocketAddress remoteAdr = (InetSocketAddress) e.getChannel().getRemoteAddress();
+		logger.debug("Channel connected " + remoteAdr);
 
-       // Message msg = parentChannel.getMsgQueue().popMsg(remoteAdr.getAddress().getHostAddress(), remoteAdr.getPort() + "");
-        parentChannel.getMsgQueue().putChannel(remoteAdr.getAddress().getHostAddress(),remoteAdr.getPort(),e.getChannel());
-        /*
-        if (msg != null) {
-            e.getChannel().write(msg).addListener(ChannelFutureListener.CLOSE);
-        } else {
-            e.getChannel().close();
-        }*/
+		// Message msg = parentChannel.getMsgQueue().popMsg(remoteAdr.getAddress().getHostAddress(), remoteAdr.getPort() + "");
+		parentChannel.getMsgQueue().putChannel(remoteAdr.getAddress().getHostAddress(), remoteAdr.getPort(), e.getChannel());
+		/*
+				if (msg != null) {
+					e.getChannel().write(msg).addListener(ChannelFutureListener.CLOSE);
+				} else {
+					e.getChannel().close();
+				}*/
 
-    }
+	}
 
-    @Override
-    public void exceptionCaught(ChannelHandlerContext ctx, ExceptionEvent e) {
-        logger.debug("Error while processing message ", e.getCause());
-        InetSocketAddress remoteAdr = (InetSocketAddress) e.getChannel().getRemoteAddress();
-        ctx.getChannel().close();
-        parentChannel.getMsgQueue().invalidChannel(remoteAdr.getAddress().getHostAddress(),remoteAdr.getPort());
-    }
+	@Override
+	public void exceptionCaught (ChannelHandlerContext ctx, ExceptionEvent e) {
+		logger.debug("Error while processing message ", e.getCause());
+		InetSocketAddress remoteAdr = (InetSocketAddress) e.getChannel().getRemoteAddress();
+		ctx.getChannel().close();
+		if (remoteAdr != null) {
+			parentChannel.getMsgQueue().invalidChannel(remoteAdr.getAddress().getHostAddress(), remoteAdr.getPort());
+		}
+	}
 
 
 }

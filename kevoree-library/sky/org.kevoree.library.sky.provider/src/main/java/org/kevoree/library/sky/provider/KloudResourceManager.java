@@ -6,9 +6,9 @@ import org.kevoree.annotation.ComponentType;
 import org.kevoree.annotation.Library;
 import org.kevoree.api.service.core.handler.UUIDModel;
 import org.kevoree.framework.KevoreeXmiHelper;
-import org.kevoree.library.javase.webserver.AbstractPage;
 import org.kevoree.library.javase.webserver.KevoreeHttpRequest;
 import org.kevoree.library.javase.webserver.KevoreeHttpResponse;
+import org.kevoree.library.javase.webserver.ParentAbstractPage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import scala.Option;
@@ -23,7 +23,7 @@ import scala.Option;
  */
 @Library(name = "SKY")
 @ComponentType
-public class KloudResourceManager extends AbstractPage {
+public class KloudResourceManager extends ParentAbstractPage {
 
 	private Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -60,7 +60,7 @@ public class KloudResourceManager extends AbstractPage {
 					response.setContent(HTMLHelper.generateFailToLoginPageHtml(request.getUrl()));
 				}
 			} else {
-				response.setContent(HTMLHelper.generateSimpleSubmissionFormHtml(request.getUrl()));
+				response.setContent(HTMLHelper.generateSimpleSubmissionFormHtml(request.getUrl(), this.getDictionary().get("urlpattern").toString()));
 			}
 		} else {
 			response.setContent("Bad Request");
