@@ -16,10 +16,10 @@ package org.kevoree.library.defaultNodeTypes.jcl.deploy.command
 
 import org.kevoree.DeployUnit
 import org.slf4j.LoggerFactory
-import org.kevoree.framework.{FileNIOHelper, PrimitiveCommand}
+import org.kevoree.framework.{FileNIOHelper}
 import java.io.{FileInputStream, File}
 import java.util.Random
-import org.kevoree.tools.aether.framework.{JCLContextHandler, AetherUtil}
+import org.kevoree.api.PrimitiveCommand
 
 /**
  * Created by IntelliJ IDEA.
@@ -28,7 +28,7 @@ import org.kevoree.tools.aether.framework.{JCLContextHandler, AetherUtil}
  * Time: 16:35
  */
 
-case class UpdateDeployUnit(du : DeployUnit) extends PrimitiveCommand {
+case class UpdateDeployUnit(du : DeployUnit,bs : org.kevoree.api.Bootstraper) extends PrimitiveCommand {
 
   val logger = LoggerFactory.getLogger(this.getClass)
   var lastTempFile : File = _
@@ -36,20 +36,19 @@ case class UpdateDeployUnit(du : DeployUnit) extends PrimitiveCommand {
 
   def undo() {
     if(lastTempFile != null){
-      JCLContextHandler.removeDeployUnit(du)
-      JCLContextHandler.installDeployUnit(du,lastTempFile)
+      bs.getKevoreeClassLoaderHandler.removeDeployUnitClassLoader(du)
+      bs.getKevoreeClassLoaderHandler.installDeployUnit(du,lastTempFile)
     }
   }
 
   def execute(): Boolean = {
     try {
       lastTempFile = File.createTempFile(random.nextInt() + "", ".jar")
-      val jarStream = new FileInputStream(JCLContextHandler.getCacheFile(du));
+      val jarStream = new FileInputStream(bs.getKevoreeClassLoaderHandler.getCacheFile(du));
       FileNIOHelper.copyFile(jarStream, lastTempFile)
       jarStream.close()
-      JCLContextHandler.removeDeployUnit(du)
-      val arteFile: File = AetherUtil.resolveDeployUnit(du)
-      JCLContextHandler.installDeployUnit(du,arteFile)
+      bs.getKevoreeClassLoaderHandler.removeDeployUnitClassLoader(du)
+      bs.getKevoreeClassLoaderHandler.installDeployUnit(du)
       true
     } catch {
       case _@ e =>logger.debug("error ",e);false

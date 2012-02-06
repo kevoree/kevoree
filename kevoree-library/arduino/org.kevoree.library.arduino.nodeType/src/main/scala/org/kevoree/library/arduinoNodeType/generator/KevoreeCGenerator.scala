@@ -8,6 +8,7 @@ package org.kevoree.library.arduinoNodeType.generator
 import org.kevoreeAdaptation.AdaptationModel
 import org.kevoree.library.arduinoNodeType.{PMemory, ArduinoBoardType}
 import org.kevoree._
+import framework.AbstractNodeType
 import kompare.JavaSePrimitive
 import tools.arduino.framework.impl.DefaultArduinoGenerator
 
@@ -25,7 +26,8 @@ class KevoreeCGenerator
                 outputDir: String,
                 boardName: String,
                 pmem: PMemory,
-                pmax: String
+                pmax: String,
+                anodeType : AbstractNodeType
                 ) {
 
     val componentTypes = adaptModel.getAdaptations.filter(adt => adt.getPrimitiveType.getName == JavaSePrimitive.AddType && adt.getRef.isInstanceOf[ComponentType])
@@ -45,12 +47,12 @@ class KevoreeCGenerator
     componentTypes.foreach {
       componentTypeAdaptation =>
         context.getGenerator.setTypeModel(componentTypeAdaptation.getRef.asInstanceOf[ComponentType])
-        generateComponentType(componentTypeAdaptation.getRef.asInstanceOf[ComponentType], nodeName)
+        generateComponentType(componentTypeAdaptation.getRef.asInstanceOf[ComponentType], nodeName,anodeType)
     }
     channelTypes.foreach {
       channelTypeAdaptation =>
         context.getGenerator.setTypeModel(channelTypeAdaptation.getRef.asInstanceOf[ChannelType])
-        generateChannelType(channelTypeAdaptation.getRef.asInstanceOf[ChannelType], nodeName)
+        generateChannelType(channelTypeAdaptation.getRef.asInstanceOf[ChannelType], nodeName,anodeType)
     }
 
 

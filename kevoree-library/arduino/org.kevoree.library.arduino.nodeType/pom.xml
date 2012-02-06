@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.kevoree.library.arduino</groupId>
     <artifactId>org.kevoree.library.arduino.nodeType</artifactId>
-    <packaging>jar</packaging>
+    <packaging>bundle</packaging>
     <name>Kevoree :: Library :: Arduino :: NodeType</name>
     <version>1.6.0-SNAPSHOT</version>
 
@@ -34,25 +34,22 @@
             <groupId>org.kevoree.tools</groupId>
             <artifactId>org.kevoree.tools.marShellTransform</artifactId>
             <version>${kevoree.version}</version>
-            <type>kjar</type>
+            <type>bundle</type>
         </dependency>
-        <dependency>
-            <groupId>org.kevoree.tools</groupId>
-            <artifactId>org.kevoree.tools.marShell</artifactId>
-            <version>${kevoree.version}</version>
-        </dependency>
+
         <dependency>
             <groupId>org.kevoree.tools</groupId>
             <artifactId>org.kevoree.tools.aether.framework</artifactId>
             <version>${kevoree.version}</version>
             <type>bundle</type>
+            <scope>test</scope>
         </dependency>
 
         <dependency>
             <groupId>org.kevoree.tools</groupId>
             <artifactId>org.kevoree.tools.arduino.framework</artifactId>
             <version>${kevoree.version}</version>
-            <type>kjar</type>
+            <type>bundle</type>
         </dependency>
 
 
@@ -60,7 +57,7 @@
             <groupId>org.kevoree.extra</groupId>
             <artifactId>org.kevoree.extra.osgi.rxtx</artifactId>
             <version>2.2.0</version>
-            <type>kjar</type>
+            <type>bundle</type>
         </dependency>
 
         <!-- Temp dependency -->

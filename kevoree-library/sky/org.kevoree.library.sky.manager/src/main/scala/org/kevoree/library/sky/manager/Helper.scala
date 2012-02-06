@@ -1,11 +1,10 @@
 package org.kevoree.library.sky.manager
 
-import org.kevoree.framework.KevoreeXmiHelper
-import org.kevoree.tools.aether.framework.AetherUtil
 import org.kevoree.{KevoreeFactory, ContainerRoot}
 import org.kevoree.api.service.core.handler.KevoreeModelHandlerService
 import org.slf4j.{LoggerFactory, Logger}
 import java.io.File
+import org.kevoree.framework.{AbstractNodeType, KevoreeXmiHelper}
 
 /**
  * User: Erwan Daubert - erwan.daubert@gmail.com
@@ -18,24 +17,22 @@ import java.io.File
 object Helper {
   private val logger: Logger = LoggerFactory.getLogger(Helper.getClass)
 
-  private var nodeName: String = null
-  private var modelHandlerService: KevoreeModelHandlerService = null
+  //private var nodeName: String = null
+  //private var modelHandlerService: KevoreeModelHandlerService = null
   private var platformJARPath: String = null
 
-  def getNodeName: String = {
-    nodeName
+  private var currentNodeType : AbstractNodeType  = null
+
+  def setCurrentNodeType(nt : AbstractNodeType){
+    currentNodeType = nt
   }
 
-  def setNodeName (name: String) {
-    nodeName = name
+  def getNodeName: String = {
+    currentNodeType.getNodeName
   }
 
   def getModelHandlerService: KevoreeModelHandlerService = {
-    modelHandlerService
-  }
-
-  def setModelHandlerService (handler: KevoreeModelHandlerService) {
-    modelHandlerService = handler
+    currentNodeType.getModelService
   }
 
   def saveModelOnFile (bootStrapModel: ContainerRoot): String = {
@@ -66,7 +63,7 @@ object Helper {
       deployUnit.setVersion(getVersion)
       model.addDeployUnits(deployUnit)
       logger.debug("before trying to get the platform jar on maven...")
-      val jarFile: File = AetherUtil.resolveDeployUnit(deployUnit)
+      val jarFile: File = currentNodeType.getBootStrapperService.resolveDeployUnit(deployUnit)
       logger.debug("after trying to get the platform jar on maven...")
 
       if (jarFile.exists) {

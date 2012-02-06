@@ -42,9 +42,7 @@ public class JavaSEOSGINode extends JavaSENode {
         fwk = emFelix.getM_fwk();
         OSGIKevoreeDeployManager.setBundle(fwk);
         kompareBean = new KevoreeKompareBean();
-        deployBean = new BaseDeployOSGi(fwk);
-        deployBean.setModelHandlerService(getModelService());
-        deployBean.setKscripEngineFactory(getKevScriptEngineFactory());
+        deployBean = new BaseDeployOSGi(fwk,this);
     }
 
     @Override
@@ -53,7 +51,7 @@ public class JavaSEOSGINode extends JavaSENode {
         deployBean = null;
         //Cleanup the local runtime
         OSGIKevoreeDeployManager.clearAll();
-        KevoreeDeployManager.clearAll();
+        KevoreeDeployManager.clearAll(this);
 
         try {
             fwk.stop();
@@ -68,7 +66,7 @@ public class JavaSEOSGINode extends JavaSENode {
     }
 
     @Override
-    public org.kevoree.framework.PrimitiveCommand getPrimitive(AdaptationPrimitive adaptationPrimitive) {
+    public org.kevoree.api.PrimitiveCommand getPrimitive(AdaptationPrimitive adaptationPrimitive) {
         return deployBean.buildPrimitiveCommand(adaptationPrimitive, this.getNodeName());
     }
 

@@ -46,7 +46,6 @@ public class FrascatiNode extends JavaSENode {
 					System.out.println(FraSCAti.class.getClassLoader());
 					Thread.currentThread().setContextClassLoader(
 							FraSCAti.class.getClassLoader());
-					
 					frascati = FraSCAti.newFraSCAti();
 
 					org.ow2.frascati.util.FrascatiClassLoader f = new FrascatiClassLoader(
@@ -86,13 +85,23 @@ public class FrascatiNode extends JavaSENode {
 
 	@Override
 	public AdaptationModel kompare(ContainerRoot current, ContainerRoot target) {
+		
 		return super.kompare(current, target);
+		
+		
 
 	}
 
-	@Override
-	public org.kevoree.framework.PrimitiveCommand getPrimitive(
+	public org.kevoree.api.PrimitiveCommand getSuperPrimitive(
 			AdaptationPrimitive adaptationPrimitive) {
+		return super.getPrimitive(adaptationPrimitive);
+	
+	}
+	@Override
+	public org.kevoree.api.PrimitiveCommand getPrimitive(
+			AdaptationPrimitive adaptationPrimitive) {
+		
+		
 		return null;
 
 	}

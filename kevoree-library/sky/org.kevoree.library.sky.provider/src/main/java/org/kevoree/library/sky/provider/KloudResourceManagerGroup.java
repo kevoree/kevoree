@@ -65,7 +65,7 @@ public class KloudResourceManagerGroup extends SSHRestGroup {
 				if (cleanModelOption.isDefined()) {
 					// there is no new node so we simply push model on each PaaSNode
 					KloudDeploymentManager.updateUserConfiguration(this.getName(), cleanModelOption.get(), model,
-							this.getModelService());
+							this.getModelService(),getKevScriptEngineFactory());
 				}
 			}
 		} else if (KloudDeploymentManager.isPaaSNode(this.getModelService().getLastModel(), this.getName(),

@@ -19,7 +19,7 @@ package org.kevoree.library.defaultNodeTypes.osgi.deploy.command
  */
 
 import org.slf4j.LoggerFactory
-import org.kevoree.framework.{KevoreeGeneratorHelper, PrimitiveCommand}
+import org.kevoree.framework.{KevoreeGeneratorHelper}
 import org.kevoree.framework.osgi.KevoreeInstanceFactory
 import org.kevoree.framework.aspects.KevoreeAspects._
 import org.kevoree.{ContainerRoot, NodeType, Instance}
@@ -28,6 +28,7 @@ import org.kevoree.api.service.core.script.KevScriptEngineFactory
 import org.kevoree.library.defaultNodeTypes.jcl.deploy.command.UpdateDictionary
 import org.kevoree.library.defaultNodeTypes.jcl.deploy.context.KevoreeDeployManager
 import org.kevoree.library.defaultNodeTypes.osgi.deploy.{KevoreeOSGIMapping, OSGIKevoreeDeployManager}
+import org.kevoree.api.PrimitiveCommand
 
 case class RemoveInstanceCommand(c: Instance, nodeName: String, modelservice: KevoreeModelHandlerService, kscript: KevScriptEngineFactory) extends PrimitiveCommand {
 

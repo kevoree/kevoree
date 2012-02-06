@@ -19,7 +19,7 @@ package org.kevoree.library.defaultNodeTypes.osgi.deploy.command
  */
 
 import org.kevoree.Instance
-import org.kevoree.framework.PrimitiveCommand
+import org.kevoree.api.PrimitiveCommand
 
 abstract class LifeCycleCommand(c : Instance,nodeName:String) extends PrimitiveCommand {
 

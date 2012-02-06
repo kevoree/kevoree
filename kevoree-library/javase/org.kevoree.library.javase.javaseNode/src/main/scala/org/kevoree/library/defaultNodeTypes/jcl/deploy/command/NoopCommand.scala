@@ -1,5 +1,7 @@
 package org.kevoree.library.defaultNodeTypes.jcl.deploy.command
 
+import org.kevoree.api.PrimitiveCommand
+
 /**
  * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE, Version 3, 29 June 2007;
  * you may not use this file except in compliance with the License.
@@ -13,8 +15,6 @@ package org.kevoree.library.defaultNodeTypes.jcl.deploy.command
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-import org.kevoree.framework.PrimitiveCommand
 
 /**
  * Created by IntelliJ IDEA.

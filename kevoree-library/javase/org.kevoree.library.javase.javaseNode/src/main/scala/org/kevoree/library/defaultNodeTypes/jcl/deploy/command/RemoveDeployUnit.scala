@@ -16,11 +16,11 @@ package org.kevoree.library.defaultNodeTypes.jcl.deploy.command
 
 import org.kevoree.DeployUnit
 import org.slf4j.LoggerFactory
-import org.kevoree.framework.{FileNIOHelper, PrimitiveCommand}
+import org.kevoree.framework.{FileNIOHelper}
 import java.io.{FileInputStream, File}
 import java.util.Random
-import org.kevoree.tools.aether.framework.JCLContextHandler
 import org.kevoree.library.defaultNodeTypes.jcl.deploy.context.{KevoreeMapping, KevoreeDeployManager}
+import org.kevoree.api.PrimitiveCommand
 
 /**
  * Created by IntelliJ IDEA.
@@ -29,7 +29,7 @@ import org.kevoree.library.defaultNodeTypes.jcl.deploy.context.{KevoreeMapping, 
  * Time: 16:35
  */
 
-case class RemoveDeployUnit(du: DeployUnit) extends PrimitiveCommand {
+case class RemoveDeployUnit(du: DeployUnit,bootstrap : org.kevoree.api.Bootstraper) extends PrimitiveCommand {
 
   val logger = LoggerFactory.getLogger(this.getClass)
   var lastTempFile: File = _
@@ -37,7 +37,7 @@ case class RemoveDeployUnit(du: DeployUnit) extends PrimitiveCommand {
 
   def undo() {
     if (lastTempFile != null) {
-      JCLContextHandler.installDeployUnit(du, lastTempFile)
+      bootstrap.getKevoreeClassLoaderHandler.installDeployUnit(du, lastTempFile)
       KevoreeDeployManager.bundleMapping.filter(bm => bm.ref.isInstanceOf[DeployUnit]).find(bm => CommandHelper.buildKEY(bm.ref.asInstanceOf[DeployUnit]) == CommandHelper.buildKEY(du)) match {
         case Some(bm) =>
         case None => KevoreeDeployManager.addMapping(KevoreeMapping(CommandHelper.buildKEY(du), du.getClass.getName, du))
@@ -50,10 +50,10 @@ case class RemoveDeployUnit(du: DeployUnit) extends PrimitiveCommand {
   def execute(): Boolean = {
     try {
       lastTempFile = File.createTempFile(random.nextInt() + "", ".jar")
-      val jarStream = new FileInputStream(JCLContextHandler.getCacheFile(du));
+      val jarStream = new FileInputStream(bootstrap.getKevoreeClassLoaderHandler.getCacheFile(du));
       FileNIOHelper.copyFile(jarStream, lastTempFile)
       jarStream.close()
-      JCLContextHandler.removeDeployUnit(du)
+      bootstrap.getKevoreeClassLoaderHandler.removeDeployUnitClassLoader(du)
       KevoreeDeployManager.bundleMapping.filter(bm => bm.ref.isInstanceOf[DeployUnit]).foreach(bm => {
         if (CommandHelper.buildKEY(bm.ref.asInstanceOf[DeployUnit]) == CommandHelper.buildKEY(du)) {
           KevoreeDeployManager.removeMapping(bm)

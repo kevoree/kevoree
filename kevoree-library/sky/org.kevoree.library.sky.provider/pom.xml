@@ -32,12 +32,14 @@
             <artifactId>org.kevoree.basechecker</artifactId>
             <version>${kevoree.version}</version>
         </dependency>
+        <!--
         <dependency>
             <groupId>org.kevoree.tools</groupId>
             <artifactId>org.kevoree.tools.marShell</artifactId>
             <version>${kevoree.version}</version>
             <type>bundle</type>
         </dependency>
+        -->
         <dependency>
             <groupId>org.kevoree</groupId>
             <artifactId>org.kevoree.framework</artifactId>

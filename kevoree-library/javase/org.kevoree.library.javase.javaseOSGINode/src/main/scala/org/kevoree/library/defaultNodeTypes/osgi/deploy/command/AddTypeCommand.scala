@@ -19,10 +19,10 @@ package org.kevoree.library.defaultNodeTypes.osgi.deploy.command
  */
 
 import org.kevoree._
-import framework.PrimitiveCommand
+import api.PrimitiveCommand
 import library.defaultNodeTypes.jcl.deploy.command.CommandHelper
 import library.defaultNodeTypes.jcl.deploy.context.KevoreeDeployManager
-import library.defaultNodeTypes.osgi.deploy.{KevoreeOSGIMapping, OSGIKevoreeDeployManager}
+import library.defaultNodeTypes.osgi.deploy.{KevoreeOSGIMapping}
 import org.kevoree.framework.aspects.KevoreeAspects._
 import org.slf4j.LoggerFactory
 

@@ -20,6 +20,7 @@
             <groupId>org.kevoree.tools</groupId>
             <artifactId>org.kevoree.tools.arduino.framework</artifactId>
             <version>${kevoree.version}</version>
+            <type>bundle</type>
         </dependency>
     </dependencies>
 </project>

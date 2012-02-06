@@ -19,8 +19,8 @@ package org.kevoree.library.defaultNodeTypes.jcl.deploy.command
  */
 
 import org.kevoree._
+import api.PrimitiveCommand
 import framework.osgi.{KevoreeGroupActivator, KevoreeChannelFragmentActivator, KevoreeComponentActivator}
-import framework.PrimitiveCommand
 import library.defaultNodeTypes.jcl.deploy.context.{KevoreeMapping, KevoreeDeployManager}
 import org.kevoree.framework.message.UpdateDictionaryMessage
 import org.slf4j.LoggerFactory

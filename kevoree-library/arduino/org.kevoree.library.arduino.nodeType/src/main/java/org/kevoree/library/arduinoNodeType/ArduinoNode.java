@@ -5,6 +5,8 @@ import org.kevoree.ContainerRoot;
 import org.kevoree.KevoreeFactory;
 import org.kevoree.TypeDefinition;
 import org.kevoree.annotation.*;
+import org.kevoree.annotation.NodeType;
+import org.kevoree.api.*;
 import org.kevoree.cloner.ModelCloner;
 import org.kevoree.extra.osgi.rxtx.KevoreeSharedCom;
 import org.kevoree.framework.AbstractNodeType;
@@ -72,7 +74,7 @@ public class ArduinoNode extends AbstractNodeType {
     }
 
     @Override
-    public org.kevoree.framework.PrimitiveCommand getPrimitive(AdaptationPrimitive adaptationPrimitive) {
+    public org.kevoree.api.PrimitiveCommand getPrimitive(AdaptationPrimitive adaptationPrimitive) {
         return null;//NOT TO BE USED WITH KEVOREE CORE
     }
 
@@ -248,7 +250,7 @@ public class ArduinoNode extends AbstractNodeType {
 
             //if (bundle != null) {
                 logger.debug("Install Type definitions");
-                TypeBundleBootstrap.bootstrapTypeBundle(model);
+                TypeBundleBootstrap.bootstrapTypeBundle(model,this);
             //} else {
             //    logger.warn("No OSGi runtime available");
             //}
@@ -273,7 +275,7 @@ public class ArduinoNode extends AbstractNodeType {
             }
 
 
-            generator.generate(model, nodeName, outputPath, getDictionary().get("boardTypeName").toString(), pm, psize);
+            generator.generate(model, nodeName, outputPath, getDictionary().get("boardTypeName").toString(), pm, psize,this);
 
 //STEP 3 : Deploy by commnication channel
             progress.beginTask("Prepare compilation", 40);

@@ -15,6 +15,9 @@ package org.kevoree.framework;
 
 import org.kevoree.ContainerNode;
 import org.kevoree.ContainerRoot;
+import org.kevoree.api.Bootstraper;
+import org.kevoree.api.NodeType;
+import org.kevoree.api.PrimitiveCommand;
 import org.kevoree.api.service.core.handler.ContextModel;
 import org.kevoree.api.service.core.handler.KevoreeModelHandlerService;
 import org.kevoree.api.service.core.script.KevScriptEngineFactory;
@@ -96,6 +99,17 @@ public abstract class
 	public ContainerNode getModelElement () {
 		return KevoreeElementHelper.getNodeElement(this.getNodeName(), this.getModelService().getLastModel()).get();
 	}
+
+    private Bootstraper bootstrapService = null;
+
+    public void setBootStrapperService(Bootstraper brs){
+        bootstrapService = brs;
+    }
+
+    public Bootstraper getBootStrapperService(){
+        return bootstrapService;
+    }
+
 }
 
 

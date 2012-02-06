@@ -33,6 +33,7 @@ import _root_.org.kevoree.core.basechecker.RootChecker
 import _root_.java.util.{UUID, Date}
 import org.kevoree.api.service.core.handler._
 import org.kevoree.api.service.core.script.KevScriptEngineFactory
+import org.kevoree.api.Bootstraper
 
 class KevoreeCoreBean extends KevoreeModelHandlerService with KevoreeThreadActor {
 
@@ -46,18 +47,9 @@ class KevoreeCoreBean extends KevoreeModelHandlerService with KevoreeThreadActor
     kevsEngineFactory = kevsEngineFactory
   }
 
-  /*
-  var bundleContext: BundleContext = null;
-  def getBundleContext = bundleContext
-  def setBundleContext(bc: BundleContext) {
-    bundleContext = bc
-    KevoreeDeployManager.setBundle(bc.getBundle)
-  }*/
-
   @BeanProperty var bootstraper: Bootstraper = null
-
   @BeanProperty var nodeName: String = ""
-  @BeanProperty var nodeInstance: org.kevoree.framework.NodeType = null
+  @BeanProperty var nodeInstance: org.kevoree.api.NodeType = null
 
   var models: scala.collection.mutable.ArrayBuffer[ContainerRoot] = new scala.collection.mutable.ArrayBuffer[ContainerRoot]()
   var model: ContainerRoot = KevoreeFactory.eINSTANCE.createContainerRoot
@@ -76,7 +68,7 @@ class KevoreeCoreBean extends KevoreeModelHandlerService with KevoreeThreadActor
           case Some(foundNode) => {
             //  val bt = new NodeTypeBootstrapHelper
             bootstraper.bootstrapNodeType(currentModel, nodeName,this,kevsEngineFactory) match {
-              case Some(ist: org.kevoree.framework.NodeType) => {
+              case Some(ist: org.kevoree.api.NodeType) => {
                 nodeInstance = ist;
                 nodeInstance.startNode()
                 //SET CURRENT MODEL
@@ -108,8 +100,9 @@ class KevoreeCoreBean extends KevoreeModelHandlerService with KevoreeThreadActor
       if (nodeInstance != null) {
         currentModel.getNodes.find(n => n.getName == nodeName) match {
           case Some(foundNode) => {
-            bootstraper.bootstrapNodeType(currentModel, nodeName,this,kevsEngineFactory) match {
-              case Some(ist: org.kevoree.framework.NodeType) => {
+
+            //bootstraper.bootstrapNodeType(currentModel, nodeName,this,kevsEngineFactory) match {
+            //  case Some(ist: org.kevoree.framework.NodeType) => {
 
                 val modelTmp = modelClone.clone(currentModel)
                 modelTmp.removeAllGroups()
@@ -125,9 +118,9 @@ class KevoreeCoreBean extends KevoreeModelHandlerService with KevoreeThreadActor
               }
               case None => logger.error("TypeDef installation fail !"); None
             }
-          }
-          case None => logger.error("Node instance name " + nodeName + " not found in bootstrap model !"); None
-        }
+         // }
+         // case None => logger.error("Node instance name " + nodeName + " not found in bootstrap model !"); None
+        //}
       } else {
         logger.error("node instance is not available on current model !")
         None
@@ -196,8 +189,10 @@ class KevoreeCoreBean extends KevoreeModelHandlerService with KevoreeThreadActor
         }
       }
       try {
+        logger.debug("Call instance stop")
         nodeInstance.stopNode()
         nodeInstance == null
+        bootstraper.clear
       } catch {
         case _@e => {
           logger.error("Error while stopping node instance ", e)
@@ -287,6 +282,7 @@ class KevoreeCoreBean extends KevoreeModelHandlerService with KevoreeThreadActor
                 nodeInstance.stopNode()
                 //end of harakiri
                 nodeInstance = null
+                bootstraper.clear
 
                 //place the current model as an empty model (for backup)
                 switchToNewModel(newmodel)

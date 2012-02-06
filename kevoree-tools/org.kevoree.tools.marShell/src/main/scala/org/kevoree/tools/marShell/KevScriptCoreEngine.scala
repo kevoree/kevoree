@@ -15,15 +15,9 @@ package org.kevoree.tools.marShell
 
 import interpreter.KevsInterpreterContext
 import org.kevoree.ContainerRoot
-import java.lang.String
-import java.util.HashMap
 import org.kevoree.api.service.core.handler.KevoreeModelHandlerService
-import parser.KevsParser
-import scala.collection.JavaConversions._
-import org.kevoree.cloner.ModelCloner
 import interpreter.KevsInterpreterAspects._
-import org.kevoree.api.service.core.script.{KevScriptEngineException, KevScriptEngine}
-import org.slf4j.LoggerFactory
+import org.kevoree.api.service.core.script.{KevScriptEngineException}
 
 /**
  * Created by IntelliJ IDEA.
@@ -33,30 +27,12 @@ import org.slf4j.LoggerFactory
  * To change this template use File | Settings | File Templates.
  */
 
-class KevScriptCoreEngine(core: KevoreeModelHandlerService) extends KevScriptEngine {
-
-  var scriptBuilder = new StringBuilder
-  var varMap = new HashMap[String, String]()
-  val modelCloner = new ModelCloner
-  val parser = new KevsParser
-  private val logger = LoggerFactory.getLogger(this.getClass)
+class KevScriptCoreEngine(core: KevoreeModelHandlerService) extends KevScriptAbstractEngine {
 
   clearVariables()
-
-  def addVariable(name: String, value: String): KevScriptEngine = {
-    varMap.put(name, value);
-    this
-  }
-
   def clearVariables() {
     varMap.clear();
     varMap.put("nodename", core.getNodeName)
-    this
-  }
-
-  def append(scriptStatement: String): KevScriptEngine = {
-    scriptBuilder.append(scriptStatement)
-    scriptBuilder.append("\n")
     this
   }
 
@@ -125,19 +101,9 @@ class KevScriptCoreEngine(core: KevoreeModelHandlerService) extends KevScriptEng
   }
 
 
-  def clearScript() {
-    scriptBuilder.clear()
-  }
 
-  private def resolveVariables: String = {
-    var unresolveScript = scriptBuilder.toString()
-    varMap.foreach {
-      varR =>
-        unresolveScript = unresolveScript.replace("{" + varR._1 + "}", varR._2)
-    }
-    unresolveScript = unresolveScript.replace("'", "\"")
-    "tblock{\n" + unresolveScript + "\n}"
-  }
+
+
 
 
 }

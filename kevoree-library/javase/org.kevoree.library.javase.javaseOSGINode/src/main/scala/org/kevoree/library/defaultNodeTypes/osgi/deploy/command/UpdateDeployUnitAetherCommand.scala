@@ -20,7 +20,7 @@ package org.kevoree.library.defaultNodeTypes.osgi.deploy.command
 
 import org.kevoree._
 
-case class UpdateDeployUnitAetherCommand(ddeployUnit: DeployUnit) extends AddDeployUnitAetherCommand(ddeployUnit,true) {
+case class UpdateDeployUnitAetherCommand(ddeployUnit: DeployUnit,bsU : org.kevoree.api.Bootstraper) extends AddDeployUnitAetherCommand(ddeployUnit,true,bsU) {
 
 
 }

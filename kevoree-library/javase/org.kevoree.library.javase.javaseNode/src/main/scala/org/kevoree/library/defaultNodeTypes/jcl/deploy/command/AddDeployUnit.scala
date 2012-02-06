@@ -14,12 +14,10 @@ package org.kevoree.library.defaultNodeTypes.jcl.deploy.command
  * limitations under the License.
  */
 
-import org.kevoree.framework.PrimitiveCommand
 import org.kevoree.DeployUnit
 import org.slf4j.LoggerFactory
-import java.io.File
-import org.kevoree.tools.aether.framework.{JCLContextHandler, AetherUtil}
 import org.kevoree.library.defaultNodeTypes.jcl.deploy.context.{KevoreeMapping, KevoreeDeployManager}
+import org.kevoree.api.PrimitiveCommand
 
 /**
  * Created by IntelliJ IDEA.
@@ -28,12 +26,12 @@ import org.kevoree.library.defaultNodeTypes.jcl.deploy.context.{KevoreeMapping, 
  * Time: 16:35
  */
 
-case class AddDeployUnit(du: DeployUnit) extends PrimitiveCommand {
+case class AddDeployUnit(du: DeployUnit,bs : org.kevoree.api.Bootstraper) extends PrimitiveCommand {
 
   val logger = LoggerFactory.getLogger(this.getClass)
 
   def undo() {
-    JCLContextHandler.removeDeployUnit(du)
+    bs.getKevoreeClassLoaderHandler.removeDeployUnitClassLoader(du)
     KevoreeDeployManager.bundleMapping.filter(bm => bm.ref.isInstanceOf[DeployUnit]).foreach(bm => {
       if (CommandHelper.buildKEY(bm.ref.asInstanceOf[DeployUnit]) == CommandHelper.buildKEY(du)) {
         KevoreeDeployManager.removeMapping(bm)
@@ -43,9 +41,10 @@ case class AddDeployUnit(du: DeployUnit) extends PrimitiveCommand {
 
   def execute(): Boolean = {
     try {
-      if (JCLContextHandler.getKCL(du) == null) {
-        val arteFile: File = AetherUtil.resolveDeployUnit(du)
-        JCLContextHandler.installDeployUnit(du, arteFile)
+      if (bs.getKevoreeClassLoaderHandler.getKevoreeClassLoader(du) == null) {
+        bs.getKevoreeClassLoaderHandler.installDeployUnit(du)
+        //val arteFile: File = AetherUtil.resolveDeployUnit(du)
+        //JCLContextHandler.installDeployUnit(du, arteFile)
         KevoreeDeployManager.bundleMapping.filter(bm => bm.ref.isInstanceOf[DeployUnit]).find(bm => CommandHelper.buildKEY(bm.ref.asInstanceOf[DeployUnit]) == CommandHelper.buildKEY(du)) match {
           case Some(bm) =>
           case None => KevoreeDeployManager.addMapping(KevoreeMapping(CommandHelper.buildKEY(du), du.getClass.getName, du))
