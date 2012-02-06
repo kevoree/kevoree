@@ -12,13 +12,15 @@ import org.kevoree.Instance
 import scala.collection.JavaConversions._
 import org.objectweb.fractal.api.control.LifeCycleController
 import java.io.File
+import scala.xml.Node
+import scala.collection.mutable.Queue
 
 
 object AdaptatationPrimitiveFactory {
 
   	var _frascati :FraSCAti = _ ;
 	def frascati :FraSCAti = _frascati;
-  	
+  	def setFrascati(frascati :FraSCAti) = {_frascati =frascati}
   
   def getPrimitive(adaptationPrimitive: AdaptationPrimitive, node: FrascatiNode): org.kevoree.api.PrimitiveCommand = {
 
@@ -50,34 +52,31 @@ object AdaptatationPrimitiveFactory {
         node.getSuperPrimitive(adaptationPrimitive);
       }
       case "UpdateDictionaryInstance" => {
-    	  	if (adaptationPrimitive.getRef.asInstanceOf[org.kevoree.Instance].getTypeDefinition.getDeployUnits.forall(e =>
+    	 /* 	if (adaptationPrimitive.getRef.isInstanceOf[org.kevoree.Instance] && adaptationPrimitive.getRef.asInstanceOf[org.kevoree.Instance].getTypeDefinition.getDeployUnits.forall(e =>
               e.getTargetNodeType.get.getName.equals(classOf[FrascatiNode].getSimpleName()))) {
           new UpdateDictionaryInstance(adaptationPrimitive);
-        } else
-          node.getSuperPrimitive(adaptationPrimitive);
-        
-        
-        new UpdateDictionaryInstance(adaptationPrimitive);
+        } else*/
+          node.getSuperPrimitive(adaptationPrimitive)
       }
       case "UpdateInstance" => {
           node.getSuperPrimitive(adaptationPrimitive);
       }
       case "RemoveInstance" => {
-    	  	if (adaptationPrimitive.getRef.asInstanceOf[org.kevoree.Instance].getTypeDefinition.getDeployUnits.forall(e =>
+    	  	if (adaptationPrimitive.getRef.isInstanceOf[org.kevoree.Instance] && adaptationPrimitive.getRef.asInstanceOf[org.kevoree.Instance].getTypeDefinition.getDeployUnits.forall(e =>
               e.getTargetNodeType.get.getName.equals(classOf[FrascatiNode].getSimpleName()))) {
           new RemoveInstance(adaptationPrimitive);
         } else
           node.getSuperPrimitive(adaptationPrimitive);
       }
       case "AddInstance" => {
-    	  	if (adaptationPrimitive.getRef.asInstanceOf[org.kevoree.Instance].getTypeDefinition.getDeployUnits.forall(e =>
+    	  	if (adaptationPrimitive.getRef.isInstanceOf[org.kevoree.Instance] && adaptationPrimitive.getRef.asInstanceOf[org.kevoree.Instance].getTypeDefinition.getDeployUnits.forall(e =>
               e.getTargetNodeType.get.getName.equals(classOf[FrascatiNode].getSimpleName()))) {
           new AddInstance(adaptationPrimitive);
         } else
           node.getSuperPrimitive(adaptationPrimitive);
       }
       case "AddBinding" => {
-        if (adaptationPrimitive.getRef.asInstanceOf[org.kevoree.MBinding].getPort.
+        if (adaptationPrimitive.getRef.isInstanceOf[org.kevoree.MBinding] &&  adaptationPrimitive.getRef.asInstanceOf[org.kevoree.MBinding].getPort.
             eContainer.asInstanceOf[ComponentInstance].getTypeDefinition.getDeployUnits.forall(e =>
               e.getTargetNodeType.get.getName.equals(classOf[FrascatiNode].getSimpleName()))) {
           new AddBinding(adaptationPrimitive);
@@ -86,7 +85,7 @@ object AdaptatationPrimitiveFactory {
 
       }
       case "UpdateBinding" => {
-        if (adaptationPrimitive.getRef.asInstanceOf[org.kevoree.MBinding].getPort.
+        if (adaptationPrimitive.getRef.isInstanceOf[org.kevoree.MBinding] && adaptationPrimitive.getRef.asInstanceOf[org.kevoree.MBinding].getPort.
             eContainer.asInstanceOf[ComponentInstance].getTypeDefinition.getDeployUnits.forall(e =>
               e.getTargetNodeType.get.getName.equals(classOf[FrascatiNode].getSimpleName()))) {
           new UpdateBinding(adaptationPrimitive);
@@ -95,7 +94,7 @@ object AdaptatationPrimitiveFactory {
       }
 
       case "RemoveBinding" => {
-        if (adaptationPrimitive.getRef.asInstanceOf[org.kevoree.MBinding].getPort.
+        if (adaptationPrimitive.getRef.isInstanceOf[org.kevoree.MBinding] && adaptationPrimitive.getRef.asInstanceOf[org.kevoree.MBinding].getPort.
             eContainer.asInstanceOf[ComponentInstance].getTypeDefinition.getDeployUnits.forall(e =>
               e.getTargetNodeType.get.getName.equals(classOf[FrascatiNode].getSimpleName()))) {
           new RemoveBinding(adaptationPrimitive);
@@ -103,7 +102,7 @@ object AdaptatationPrimitiveFactory {
           node.getSuperPrimitive(adaptationPrimitive);
       }
       case "AddFragmentBinding" => {
-        if (adaptationPrimitive.getRef.asInstanceOf[org.kevoree.Channel].getTypeDefinition.getDeployUnits.forall(e =>
+        if (adaptationPrimitive.getRef.isInstanceOf[org.kevoree.Channel] &&  adaptationPrimitive.getRef.asInstanceOf[org.kevoree.Channel].getTypeDefinition.getDeployUnits.forall(e =>
               e.getTargetNodeType.get.getName.equals(classOf[FrascatiNode].getSimpleName()))) {
           new AddFragmentBinding(adaptationPrimitive);
         } else
@@ -111,28 +110,28 @@ object AdaptatationPrimitiveFactory {
 
       }
       case "RemoveFragmentBinding" => {
-    	  if (adaptationPrimitive.getRef.asInstanceOf[org.kevoree.Channel].getTypeDefinition.getDeployUnits.forall(e =>
+    	  if (adaptationPrimitive.getRef.isInstanceOf[org.kevoree.Channel] && adaptationPrimitive.getRef.asInstanceOf[org.kevoree.Channel].getTypeDefinition.getDeployUnits.forall(e =>
               e.getTargetNodeType.get.getName.equals(classOf[FrascatiNode].getSimpleName()))) {
           new RemoveFragmentBinding(adaptationPrimitive);
         } else
           node.getSuperPrimitive(adaptationPrimitive);
       }
       case "UpdateFragmentBinding" => {
-    	 if (adaptationPrimitive.getRef.asInstanceOf[org.kevoree.Channel].getTypeDefinition.getDeployUnits.forall(e =>
+    	 if (adaptationPrimitive.getRef.isInstanceOf[org.kevoree.Channel] &&  adaptationPrimitive.getRef.asInstanceOf[org.kevoree.Channel].getTypeDefinition.getDeployUnits.forall(e =>
               e.getTargetNodeType.get.getName.equals(classOf[FrascatiNode].getSimpleName()))) {
           new UpdateFragmentBinding(adaptationPrimitive);
         } else
           node.getSuperPrimitive(adaptationPrimitive);
       }
       case "StartInstance" => {
-    	  	if (adaptationPrimitive.getRef.asInstanceOf[org.kevoree.Instance].getTypeDefinition.getDeployUnits.forall(e =>
+    	  	if (adaptationPrimitive.getRef.isInstanceOf[org.kevoree.Instance] && adaptationPrimitive.getRef.asInstanceOf[org.kevoree.Instance].getTypeDefinition.getDeployUnits.forall(e =>
               e.getTargetNodeType.get.getName.equals(classOf[FrascatiNode].getSimpleName()))) {
           new StartInstance(adaptationPrimitive);
         } else
           node.getSuperPrimitive(adaptationPrimitive);
       }
       case "StopInstance" => {
-    	  	if (adaptationPrimitive.getRef.asInstanceOf[org.kevoree.Instance].getTypeDefinition.getDeployUnits.forall(e =>
+    	  	if (adaptationPrimitive.getRef.isInstanceOf[org.kevoree.Instance] && adaptationPrimitive.getRef.asInstanceOf[org.kevoree.Instance].getTypeDefinition.getDeployUnits.forall(e =>
               e.getTargetNodeType.get.getName.equals(classOf[FrascatiNode].getSimpleName()))) {
           new StopInstance(adaptationPrimitive);
         } else
@@ -198,14 +197,19 @@ object AdaptatationPrimitiveFactory {
   
 
       //////////// CRUD Instance //////////////////
-    class AddInstance(adapptationPrimitive: AdaptationPrimitive) extends PrimitiveCommand {
-    override def execute(): Boolean = { true }
+    class AddInstance(adaptationPrimitive: AdaptationPrimitive) extends AInstance {
+    override def execute(): Boolean = { 
+      println("pass par la AddInstance")
+      
+      println(generateComponent(adaptationPrimitive.getRef.asInstanceOf[org.kevoree.Instance].getName,adaptationPrimitive.getRef.asInstanceOf[org.kevoree.Instance].getTypeDefinition.asInstanceOf[org.kevoree.ComponentType].getBean, adaptationPrimitive.getRef.asInstanceOf[org.kevoree.ComponentInstance] ))
+      
+      true }
 
     override def undo() = {}
 
   }
 
-    class RemoveInstance(adapptationPrimitive: AdaptationPrimitive) extends PrimitiveCommand {
+    class RemoveInstance(adapptationPrimitive: AdaptationPrimitive) extends AInstance {
     var c  : Component = _
       override def execute(): Boolean = { 
       var c  : Component =AdaptatationPrimitiveFactory.frascati.getCompositeManager().getComposite(  adapptationPrimitive.getRef.asInstanceOf[org.kevoree.Instance].getName)
@@ -213,62 +217,60 @@ object AdaptatationPrimitiveFactory {
       true 
      }
 
-    def printService(serviceName : String, interfaceName: String) : String ={   
+        override def undo() = {
+    	  var v = File.createTempFile(adapptationPrimitive.getRef.asInstanceOf[org.kevoree.Instance].getName,"composite")
+    	  //adapptationPrimitive.getRef.asInstanceOf[org.kevoree.Instance].getTypeDefinition.get
+    	  
+        }
+     }
+
+    abstract class AInstance extends PrimitiveCommand {
+    def printService(serviceName : String, interfaceName: String) : Node ={   
     		  	<service name={serviceName}>
     			  <interface.java interface={interfaceName}/>
     			  </service>
-      .toString()
     }
 
-        def printServiceComposite(serviceName : String, componentName: String) : String ={   
+        def printServiceComposite(componentName: String,serviceName : String) : Node ={   
     		<service name={serviceName} promote={componentName + "/" +serviceName}/>
-    		.toString()
     }
         
-        def printReferenceComposite(serviceName : String, componentName: String) : String ={   
+        def printReferenceComposite(componentName: String,serviceName : String) : Node ={   
           <reference name={serviceName} promote={componentName + "/" + serviceName} />
-    		.toString()
     }
 
 
-    def printReference(serviceName : String, interfaceName: String) : String = {  
+    def printReference(serviceName : String, interfaceName: String) : Node = {  
     		<reference name={serviceName}>
     			  <interface.java interface={interfaceName}/>
-    			  </reference>.toString()
+    			  </reference>
     }
 
-    def properties(propertyName : String, value: String) : String = {  
+    def properties(propertyName : String, value: String) : Node = {  
     		<property name={propertyName}>{value}</property>
-    			  .toString()
+    			  
     }
 
     
     def generateComponent(componentName : String, componentJavaClass:String,instance:org.kevoree.ComponentInstance):String ={
           	  "<?xml version=\"1.0\" encoding=\"ISO-8859-15\"?>"+
-    		(<composite xmlns={"http://www.osoa.org/xmlns/sca/1.0"} name={componentName}>
-    			  {/*generate promote*/}
+    		<composite xmlns={"http://www.osoa.org/xmlns/sca/1.0"} name={componentName}>
+    			 { var res =  Queue[Node]() ; instance.getTypeDefinition.asInstanceOf[org.kevoree.ComponentType].getProvided.foreach(e => res ++= printServiceComposite(componentName+"_internal_",e.getName))
+    			  instance.getTypeDefinition.asInstanceOf[org.kevoree.ComponentType].getRequired.foreach(e => res++=printReferenceComposite(componentName+"_internal_",e.getName))
+    			  res
+    			 }
     			  <component name={componentName+"_internal_"}>    			  
     			  <implementation.java class={componentJavaClass}/>
-        			  {/*generate service*/}
-        			  {/*generate reference*/}
-        			  {
-        			    instance.getDictionary.get.getValues.foreach(value=> properties(value.getAttribute.getName,value.getValue))
-        			  }
+        		{	var  res =  Queue[Node](); instance.getTypeDefinition.asInstanceOf[org.kevoree.ComponentType].getProvided.foreach(e => res ++=printService(e.getName, e.getRef.getName));
+        			  instance.getTypeDefinition.asInstanceOf[org.kevoree.ComponentType].getRequired.foreach(e => res ++=printReference(e.getName, e.getRef.getName))
+        			  if (!instance.getDictionary.isEmpty)
+        				  instance.getDictionary.get.getValues.foreach(value=> res ++=properties(value.getAttribute.getName,value.getValue))
+    			res}
+        			  
         			  </component>
-    			  </composite>.toString())
+    			  </composite>.toString()
     }
     
-    override def undo() = {
-    	  var v = File.createTempFile(adapptationPrimitive.getRef.asInstanceOf[org.kevoree.Instance].getName,"composite")
-    	  
-    	  
-    	  
-    	  //adapptationPrimitive.getRef.asInstanceOf[org.kevoree.Instance].getTypeDefinition.get
-    	  
-    	  
-    	  
-    	  
-    }
 
   }
 
@@ -320,8 +322,8 @@ object AdaptatationPrimitiveFactory {
       
       var content: ContentController = c.getFcInterface("content-controller").asInstanceOf[ContentController];
 		 content.getFcSubComponents().apply(0).getFcInterfaces().foreach(o=> System.err.println(o))
-		 var attr  =content.getFcSubComponents().apply(0).getFcInterfaces().map(o=> o.isInstanceOf[AttributeController]).apply(0)
-		 if (attr!=null){
+		 var attr  =content.getFcSubComponents().apply(0).getFcInterfaces().filter(o=> o.isInstanceOf[AttributeController]).apply(0)
+		 if (attr != null){
 			 var att  =attr.asInstanceOf[AttributeController]
 			 //TODO set properties
 			 adapptationPrimitive.getRef.asInstanceOf[Instance].getDictionary.get

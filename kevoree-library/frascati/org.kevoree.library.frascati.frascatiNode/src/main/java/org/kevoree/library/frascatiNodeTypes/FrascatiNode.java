@@ -11,6 +11,7 @@ import org.kevoree.annotation.NodeType;
 import org.kevoree.annotation.Start;
 import org.kevoree.annotation.Stop;
 import org.kevoree.library.defaultNodeTypes.JavaSENode;
+
 import org.kevoreeAdaptation.AdaptationModel;
 import org.kevoreeAdaptation.AdaptationPrimitive;
 import org.ow2.frascati.FraSCAti;
@@ -30,40 +31,44 @@ public class FrascatiNode extends JavaSENode {
 
 	FraSCAti frascati;
 	Thread t;
+
 	@Start
 	@Override
 	public void startNode() {
 		super.startNode();
 		System.out.println(FraSCAti.class.getClassLoader());
 		System.out.println(FrascatiException.class.getClassLoader());
-		
-		t = new Thread(new Runnable() {
 
-			@Override
-			public void run() {
-				try {
-					System.out.println("test");
-					System.out.println(FraSCAti.class.getClassLoader());
-					Thread.currentThread().setContextClassLoader(
-							FraSCAti.class.getClassLoader());
-					frascati = FraSCAti.newFraSCAti();
+		if (t == null) {
 
-					org.ow2.frascati.util.FrascatiClassLoader f = new FrascatiClassLoader(
-							Thread.currentThread().getContextClassLoader());
-					frascati.setClassLoader(f);
-					for (String s : frascati.getCompositeManager().getCompositeNames()){
-						System.out.println(s);
+			t = new Thread(new Runnable() {
+
+				@Override
+				public void run() {
+					try {
+						System.out.println("test");
+						System.out.println(FraSCAti.class.getClassLoader());
+						Thread.currentThread().setContextClassLoader(
+								FraSCAti.class.getClassLoader());
+						frascati = FraSCAti.newFraSCAti();
+
+						org.ow2.frascati.util.FrascatiClassLoader f = new FrascatiClassLoader(
+								Thread.currentThread().getContextClassLoader());
+						frascati.setClassLoader(f);
+						for (String s : frascati.getCompositeManager()
+								.getCompositeNames()) {
+							System.out.println(s);
+						}
+
+					} catch (FrascatiException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
 					}
-					
-				} catch (FrascatiException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+
 				}
-
-			}
-		});
-		t.start();
-
+			});
+			t.start();
+		}
 	}
 
 	@Stop
@@ -72,37 +77,36 @@ public class FrascatiNode extends JavaSENode {
 		super.stopNode();
 		try {
 			frascati.close(frascati.getComposite("org.ow2.frascati.FraSCAti"));
-			frascati =null;
+			frascati = null;
 			t.interrupt();
-			
+
 		} catch (FrascatiException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
-		
+
 	}
 
 	@Override
 	public AdaptationModel kompare(ContainerRoot current, ContainerRoot target) {
-		
+
 		return super.kompare(current, target);
-		
-		
 
 	}
 
 	public org.kevoree.api.PrimitiveCommand getSuperPrimitive(
 			AdaptationPrimitive adaptationPrimitive) {
 		return super.getPrimitive(adaptationPrimitive);
-	
+
 	}
+
 	@Override
 	public org.kevoree.api.PrimitiveCommand getPrimitive(
 			AdaptationPrimitive adaptationPrimitive) {
-		
-		
-		return null;
+		org.kevoree.library.frascatiNodeTypes.primitives.AdaptatationPrimitiveFactory
+				.setFrascati(frascati);
+		return org.kevoree.library.frascatiNodeTypes.primitives.AdaptatationPrimitiveFactory
+				.getPrimitive(adaptationPrimitive, this);
 
 	}
 
