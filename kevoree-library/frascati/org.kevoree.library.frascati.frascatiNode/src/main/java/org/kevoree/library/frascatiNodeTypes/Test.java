@@ -18,8 +18,8 @@ public class Test {
 		 frascati.setClassLoader(f );
 		 
 		 //Launcher launcher = new Launcher("helloworld1-pojo.composite", frascati);
-		 org.objectweb.fractal.api.Component first = frascati.getComposite("helloworld1-pojo.composite");
-		 org.objectweb.fractal.api.Component c = frascati.getComposite("helloworld2-pojo.composite");
+		 org.objectweb.fractal.api.Component c = frascati.getComposite("/tmp/server1463694843683778624.composite");//1helloworld1-pojo.composite");
+//		 org.objectweb.fractal.api.Component c = frascati.getComposite("2helloworld2-pojo.composite");
 		 
 		 ContentController content = (ContentController) c.getFcInterface("content-controller");
 		

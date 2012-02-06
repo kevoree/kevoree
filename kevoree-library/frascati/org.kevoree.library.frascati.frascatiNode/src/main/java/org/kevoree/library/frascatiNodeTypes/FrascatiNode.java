@@ -56,10 +56,6 @@ public class FrascatiNode extends JavaSENode {
 
 						org.ow2.frascati.util.FrascatiClassLoader f = new FrascatiClassLoader(FraSCAti.class.getClassLoader());
 						frascati.setClassLoader(f);
-						for (String s : frascati.getCompositeManager()
-								.getCompositeNames()) {
-							System.out.println(s);
-						}
 
 					} catch (FrascatiException e) {
 						e.printStackTrace();

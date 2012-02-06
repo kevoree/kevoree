@@ -31,9 +31,10 @@ object CompositeParser {
           cNode.attribute("name").map { nameAtt =>
             newkev.setName(nameAtt.text)
           }
-          cNode.attribute("implementation.java").map { nameAtt =>
-            newkev.setBean(nameAtt.text)
-          }
+          cNode.child.filter(imp => imp.label.equals("implementation.java")).foreach(nameAtt =>
+            nameAtt.attribute("class").map { nameAtt1 =>
+            newkev.setBean(nameAtt1.text)
+          })
           newkev.setStartMethod("start");
           newkev.setStopMethod("stop");
           newkev.setUpdateMethod("update");
