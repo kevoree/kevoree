@@ -158,18 +158,17 @@ object GeneratorHelper {
 
     gen.appendNativeStatement("for (out_index = 0;out_index < NUM_OUTPUTS;out_index++){")
 
-    gen.appendNativeStatement("long tempVal = defuzzify(out_index, crisp_inputs);")
-    gen.appendNativeStatement("if(tempVal != crisp_outputs[out_index]){")
-    gen.appendNativeStatement("crisp_outputs[out_index] = defuzzify(out_index, crisp_inputs);")
-
+    gen.appendNativeStatement("float previousVal = crisp_outputs[out_index];");
+    gen.appendNativeStatement("int currentResult = defuzzify(out_index, crisp_inputs);")
+    gen.appendNativeStatement("if(previousVal != currentResult){")
     gen.appendNativeStatement("switch(out_index){")
 
     gen.getTypeModel.asInstanceOf[ComponentType].getRequired.foreach {
       req =>
         gen.appendNativeStatement("case " + getPositiongetRequired(gen, req.getName) + " : ")
-        gen.appendNativeStatement("sprintf(&buf_" + req.getName + "[0],\"%f\",tempVal);\n")
+        gen.appendNativeStatement("sprintf(buf_" + req.getName + ",\"%d\",currentResult);\n")
         gen.declareStaticKMessage("temp_kmsg", "")
-        gen.appendNativeStatement("temp_kmsg->value = &buf_" + req.getName+"[0];")
+        gen.appendNativeStatement("temp_kmsg->value = buf_" + req.getName+";")
         gen.sendKMessage("temp_kmsg", req.getName)
         gen.freeStaticKMessage("temp_kmsg")
         gen.appendNativeStatement("break;")
