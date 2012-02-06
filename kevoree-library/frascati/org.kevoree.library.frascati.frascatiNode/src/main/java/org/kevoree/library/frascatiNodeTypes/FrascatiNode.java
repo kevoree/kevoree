@@ -10,6 +10,7 @@ import org.kevoree.annotation.Library;
 import org.kevoree.annotation.NodeType;
 import org.kevoree.annotation.Start;
 import org.kevoree.annotation.Stop;
+import org.kevoree.extra.jcl.KevoreeJarClassLoader;
 import org.kevoree.library.defaultNodeTypes.JavaSENode;
 
 import org.kevoreeAdaptation.AdaptationModel;
@@ -109,7 +110,7 @@ public class FrascatiNode extends JavaSENode {
 		org.kevoree.library.frascatiNodeTypes.primitives.AdaptatationPrimitiveFactory
 				.setFrascati(frascati);
 		return org.kevoree.library.frascatiNodeTypes.primitives.AdaptatationPrimitiveFactory
-				.getPrimitive(adaptationPrimitive, this);
+				.getPrimitive(adaptationPrimitive, this,this,(KevoreeJarClassLoader)FraSCAti.class.getClassLoader());
 
 	}
 
