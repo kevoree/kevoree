@@ -154,13 +154,18 @@
 
         <!-- Kevoree specific frameworks -->
         <module>../org.kevoree.tools.javase.framework</module>
-      <!--  <module>../org.kevoree.tools.android.framework</module> -->
+        <module>../org.kevoree.tools.android.framework</module>
+        <module>../org.kevoree.tools.aether.framework.android</module>
 
 
       <!--  <module>../org.kevoree.tools.deploy.osgi</module> DEPRECATED -->
 
         <module>../org.kevoree.tools.annotation.api</module>
         <module>../org.kevoree.tools.arduino.framework</module>
+
+
+
+
         <module>../org.kevoree.tools.annotation.generator</module>
         <module>../org.kevoree.tools.annotation.processor</module>
         <module>../org.kevoree.tools.ui.framework</module>

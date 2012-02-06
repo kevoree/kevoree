@@ -18,7 +18,7 @@ import org.kevoree.ContainerRoot
 import org.slf4j.LoggerFactory
 import org.kevoree.tools.ui.editor._
 import java.lang.Thread
-import org.kevoree.tools.aether.framework.{GroupTypeBootstrapHelper, NodeTypeBootstrapHelper}
+import org.kevoree.tools.aether.framework.{NodeTypeBootstrapHelper}
 
 class SynchNodeTypeCommand extends Command {
 
@@ -33,11 +33,11 @@ class SynchNodeTypeCommand extends Command {
   @BeanProperty
   var viaGroupName: String = null
 
-  val bootstrap = new GroupTypeBootstrapHelper
+  val bootstrap = new NodeTypeBootstrapHelper
 
   def execute(p: AnyRef) {
-
     try {
+      bootstrap.clear
       PositionedEMFHelper.updateModelUIMetaData(kernel);
       val model: ContainerRoot = kernel.getModelHandler.getActualModel
       new Thread() {

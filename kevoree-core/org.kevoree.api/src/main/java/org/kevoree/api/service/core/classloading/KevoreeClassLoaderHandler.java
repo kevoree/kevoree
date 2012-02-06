@@ -11,31 +11,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kevoree.framework
+package org.kevoree.api.service.core.classloading;
 
-import org.kevoree.ContainerRoot
-import org.kevoreeAdaptation.{AdaptationModel, AdaptationPrimitive}
-import org.kevoree.api.service.core.handler.ContextModel
+import org.kevoree.DeployUnit;
+import org.kevoree.extra.jcl.KevoreeJarClassLoader;
+
+import java.io.File;
 
 /**
  * Created by IntelliJ IDEA.
  * User: duke
- * Date: 31/12/11
- * Time: 09:50
+ * Date: 04/02/12
+ * Time: 18:24
+ * To change this template use File | Settings | File Templates.
  */
+public interface KevoreeClassLoaderHandler {
 
-trait NodeType {
+    public KevoreeJarClassLoader installDeployUnit(DeployUnit du);
 
-  def startNode() : Unit
+    public KevoreeJarClassLoader installDeployUnit(DeployUnit du ,File srcFile);
 
-  def stopNode() : Unit
+    public KevoreeJarClassLoader getKevoreeClassLoader(DeployUnit du);
 
-  def updateNode() : Unit
+    public void removeDeployUnitClassLoader(DeployUnit du);
 
-  def  kompare( actualModel : ContainerRoot,  targetModel : ContainerRoot) : AdaptationModel
-
-  def  getPrimitive( primitive : AdaptationPrimitive) : PrimitiveCommand
-
-  def getContextModel : ContextModel
+    public File getCacheFile(DeployUnit du);
 
 }

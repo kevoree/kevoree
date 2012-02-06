@@ -1,3 +1,5 @@
+package org.kevoree.api
+
 /**
  * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE, Version 3, 29 June 2007;
  * you may not use this file except in compliance with the License.
@@ -12,28 +14,29 @@
  * limitations under the License.
  */
 
-package org.kevoree.tools.aether.framework
-
-import org.sonatype.aether.connector.wagon.WagonProvider
-import org.apache.maven.wagon.Wagon
-import org.apache.maven.wagon.providers.http.LightweightHttpWagon
+import org.kevoree.ContainerRoot
+import org.kevoreeAdaptation.{AdaptationModel, AdaptationPrimitive}
+import org.kevoree.api.service.core.handler.ContextModel
 
 /**
-* User: ffouquet
-* Date: 04/08/11
-* Time: 21:25
-*/
+ * Created by IntelliJ IDEA.
+ * User: duke
+ * Date: 31/12/11
+ * Time: 09:50
+ */
 
-class ManualWagonProvider extends WagonProvider {
-  def lookup(roleHint: String) : Wagon = {
-    if ("http".equals(roleHint)) {
-       val httpC = new LightweightHttpWagon();
-      return httpC;
-    }
-    null
-  }
+trait NodeType {
 
-  def release(p1: Wagon) {}
+  def startNode(): Unit
 
+  def stopNode(): Unit
+
+  def updateNode(): Unit
+
+  def kompare(actualModel: ContainerRoot, targetModel: ContainerRoot): AdaptationModel
+
+  def getPrimitive(primitive: AdaptationPrimitive): PrimitiveCommand
+
+  def getContextModel: ContextModel
 
 }

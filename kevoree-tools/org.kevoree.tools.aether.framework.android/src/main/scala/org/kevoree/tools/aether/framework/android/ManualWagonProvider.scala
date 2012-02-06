@@ -1,3 +1,5 @@
+package org.kevoree.tools.aether.framework.android
+
 /**
  * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE, Version 3, 29 June 2007;
  * you may not use this file except in compliance with the License.
@@ -11,38 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kevoree.tools.aether.framework
 
-import org.sonatype.aether.spi.log.Logger
-import org.slf4j.LoggerFactory
+import org.sonatype.aether.connector.wagon.WagonProvider
+import org.apache.maven.wagon.Wagon
+import org.apache.maven.wagon.providers.http.LightweightHttpWagon
 
 /**
  * User: ffouquet
- * Date: 18/08/11
- * Time: 15:15
+ * Date: 04/08/11
+ * Time: 21:25
  */
 
-class AetherLogger extends Logger {
-
-  val logger = LoggerFactory.getLogger(this.getClass)
-
-  def debug(p1: String) {
-    logger.debug(p1)
+class ManualWagonProvider extends WagonProvider {
+  def lookup(roleHint: String): Wagon = {
+    if ("http".equals(roleHint)) {
+      val httpC = new LightweightHttpWagon();
+      return httpC;
+    }
+    null
   }
 
-  def debug(p1: String, p2: Throwable) {
-    logger.debug(p1,p2)
-  }
+  def release(p1: Wagon) {}
 
-  def isDebugEnabled = true
 
-  def isWarnEnabled = true
-
-  def warn(p1: String) {
-    logger.warn(p1)
-  }
-
-  def warn(p1: String, p2: Throwable) {
-    logger.warn(p1,p2)
-  }
 }
