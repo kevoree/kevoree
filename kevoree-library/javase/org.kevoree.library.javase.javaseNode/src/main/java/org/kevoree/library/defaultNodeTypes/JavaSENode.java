@@ -75,16 +75,24 @@ public class JavaSENode extends AbstractNodeType {
 	private void catchShutdown () {
 		BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
 		String line;
+		boolean shutdown = false;
 		try {
 			while (isRunning) {
 				line = reader.readLine();
 				if (line.equalsIgnoreCase("shutdown")) {
 					isRunning = false;
+					shutdown = true;
+				} else if (line.equalsIgnoreCase("printKCL")) {
+					this.getBootStrapperService().getKevoreeClassLoaderHandler().printKCL();
+				} else if (line.equalsIgnoreCase("help")) {
+					System.out.println("commands:\n\tshutdown: allow to shutdown the node\n\tprintKCL: allow to list all the KCLClassLoader and their relationships");
 				}
 			}
 			reader.close();
-			// start the shutdown of the platform
-			System.exit(0);
+			if (shutdown) {
+				// start the shutdown of the platform
+				System.exit(0);
+			}
 		} catch (IOException e) {
 		}
 	}
