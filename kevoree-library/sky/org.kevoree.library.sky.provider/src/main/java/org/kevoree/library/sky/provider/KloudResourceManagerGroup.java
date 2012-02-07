@@ -6,11 +6,18 @@ import org.kevoree.annotation.DictionaryAttribute;
 import org.kevoree.annotation.DictionaryType;
 import org.kevoree.annotation.GroupType;
 import org.kevoree.annotation.Library;
-import org.kevoree.framework.KevoreeXmiHelper;
+import org.kevoree.framework.*;
 import org.kevoree.library.javase.ssh.SSHRestGroup;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import scala.Option;
+
+import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.net.URL;
+import java.net.URLConnection;
 
 /**
  * User: Erwan Daubert - erwan.daubert@gmail.com
@@ -42,8 +49,42 @@ public class KloudResourceManagerGroup extends SSHRestGroup {
 
 	@Override
 	public void push (ContainerRoot containerRoot, String s) {
-		super.push(containerRoot, s);
-		// TODO replace by using the publicURL + add a local action to push the model from the kloud to the nodes
+		try {
+			ByteArrayOutputStream outStream = new ByteArrayOutputStream();
+			KevoreeXmiHelper.saveStream(outStream, containerRoot);
+			outStream.flush();
+			Option<String> publicURLOption = KevoreePropertyHelper.getStringPropertyForGroup(containerRoot, this.getName(), "publicURL", false, "");
+
+			String publicURL;
+			if (publicURLOption.isEmpty() || publicURLOption.get().equals("")) {
+				publicURL = "127.0.0.1";
+			} else {
+				publicURL = publicURLOption.get();
+			}
+			if (!publicURL.startsWith("http://")) {
+				publicURL = "http://" + publicURL;
+			}
+
+			URL url = new URL(publicURL);
+			URLConnection conn = url.openConnection();
+			conn.setConnectTimeout(3000);
+			conn.setDoOutput(true);
+			OutputStreamWriter wr = new OutputStreamWriter(conn.getOutputStream());
+			wr.write(outStream.toString());
+			wr.flush();
+			// Get the response
+			BufferedReader rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+			String line = rd.readLine();
+			while (line != null) {
+				line = rd.readLine();
+			}
+			wr.close();
+			rd.close();
+
+		} catch (Exception e) {
+			logger.error("Unable to push a model on {}", s, e);
+
+		}
 	}
 
 	@Override

@@ -46,14 +46,21 @@ class JailTests {
 
   }
 
-  //@Test
+  @Test
   def testJailRegex () {
     val ezjailListPattern =
-      "(D.?)\\ \\ *([0-9][0-9]*|N/A)\\ \\ *((?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?))\\ \\ *([a-zA-Z0-9\\.][a-zA-Z0-9\\.]*)\\ \\ *((?:(?:/[a-zA-Z0-9\\.][a-zA-Z0-9\\.]*)*))"
+      "(D.?)\\ \\ *([0-9][0-9]*|N/A)\\ \\ *((?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?))\\ \\ *([a-zA-Z0-9\\.][a-zA-Z0-9_\\.]*)\\ \\ *((?:(?:/[a-zA-Z0-9_\\.][a-zA-Z0-9_\\.]*)*))"
     val ezjailListRegex = new Regex(ezjailListPattern)
 
     //    "DS  N/A  10.0.1.2        node0                          /usr/jails/node0"
-    "STA JID  IP              Hostname                       Root Directory\n--- ---- --------------- ------------------------------ ------------------------\nDR  8    10.0.1.2        node0                          /usr/jails/node0"
+
+    "STA JID  IP              Hostname                       Root Directory\n--- ---- --------------- ------------------------------ ------------------------\nDR  1    10.0.21.1       mat1                           /usr/jails/mat1\nDR  2    10.0.0.3        edaubert_node0                 /usr/jails/edaubert_node0"
+
+
+
+
+
+   /* "STA JID  IP              Hostname                       Root Directory\n--- ---- --------------- ------------------------------ ------------------------\nDR  8    10.0.1.2        node0                          /usr/jails/node0"*/
       .split("\n").foreach {
       line => line match {
         //      case ezjailListRegex() => println("toto")

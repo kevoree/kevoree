@@ -489,7 +489,7 @@ object KloudDeploymentManager {
   private def sendUserModel(urlString: String, model: ContainerRoot): Boolean = {
     var isSend = false
     var i = 0
-    while (!isSend && i < 10) {
+    while (!isSend && i < 20) {
       try {
         logger.debug("try to send user model at {}", urlString)
         val url = new URL(urlString)

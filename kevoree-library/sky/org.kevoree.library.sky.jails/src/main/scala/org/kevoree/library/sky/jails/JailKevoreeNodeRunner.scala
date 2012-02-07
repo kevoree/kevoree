@@ -51,7 +51,7 @@ class JailKevoreeNodeRunner (nodeName: String, bootStrapModel: String, inet: Str
   //  private val listJails = Array[String]("/usr/local/bin/ezjail-admin", "list")
 
   val ezjailListPattern =
-    "(D.?)\\ \\ *([0-9][0-9]*|N/A)\\ \\ *((?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?))\\ \\ *([a-zA-Z0-9\\.][a-zA-Z0-9\\.]*)\\ \\ *((?:(?:/[a-zA-Z0-9\\.][a-zA-Z0-9\\.]*)*))"
+    "(D.?)\\ \\ *([0-9][0-9]*|N/A)\\ \\ *((?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?))\\ \\ *([a-zA-Z0-9\\.][a-zA-Z0-9_\\.]*)\\ \\ *((?:(?:/[a-zA-Z0-9_\\.][a-zA-Z0-9_\\.]*)*))"
   val ezjailListRegex = new Regex(ezjailListPattern)
 
   val ezjailAdmin = "/usr/local/bin/ezjail-admin"
@@ -122,8 +122,8 @@ class JailKevoreeNodeRunner (nodeName: String, bootStrapModel: String, inet: Str
                 case _ =>
               }
           }
-          logger.debug("trying to copy bootstrap model from {} to /root/bootstrapmodel.kev", bootStrapModel)
-          logger.debug("trying to copy runtime platform from {} to /root/kevoree-runtime.jar", Helper.getJarPath)
+          logger.debug("trying to copy bootstrap model from {} to {}", bootStrapModel, jailPath + File.separator + "root" + File.separator + "bootstrapmodel.kev")
+          logger.debug("trying to copy runtime platform from {} to {}", Helper.getJarPath, jailPath + File.separator + "root" + File.separator + "kevoree-runtime.jar")
           // get platform runtime and add it into the jail
           if (copyFile(bootStrapModel, jailPath + File.separator + "root" + File.separator + "bootstrapmodel.kev") &&
             copyFile(Helper.getJarPath, jailPath + File.separator + "root" + File.separator + "kevoree-runtime.jar")) {
@@ -168,11 +168,10 @@ class JailKevoreeNodeRunner (nodeName: String, bootStrapModel: String, inet: Str
                   debug = "DEBUG"
                 }
                 //resultActor.starting()
-                var exec = Array[String](jexec, jailId, "/usr/local/bin/java", "-Dnode.name=" + nodeName,
-                                          "-Dnode.bootstrap=" + File.separator + "root" + File.separator +
-                                            "bootstrapmodel.kev", "-Dnode.log.level=" + debug)
-                logger.debug("trying to launch {} {} {} {}{} {}{} {}{}{}{}{} {} {}{}{}{}", exec)
+                var exec = Array[String](jexec, jailId, "/usr/local/bin/java", "-Dnode.name=" + nodeName, "-Dnode.bootstrap=" + File.separator + "root" + File.separator + "bootstrapmodel.kev",
+                                          "-Dnode.log.level=" + debug)
                 exec = exec ++ Array[String]("-jar", File.separator + "root" + File.separator + "kevoree-runtime.jar")
+                logger.debug("trying to launch {} {} {} {} {} {} {} {}", exec)
                 nodeProcess = Runtime.getRuntime.exec(exec)
                 val logFile = System.getProperty("java.io.tmpdir") + File.separator + nodeName + ".log"
                 outFile = new File(logFile + ".out")
@@ -182,8 +181,7 @@ class JailKevoreeNodeRunner (nodeName: String, bootStrapModel: String, inet: Str
                                              outFile)).start()
                 errFile = new File(logFile + ".err")
                 logger.debug("writing logs about {} on {}", nodeName, errFile.getAbsolutePath)
-                new Thread(new ProcessStreamFileLogger(nodeProcess.getErrorStream, /*nodeProcess.getErrorStream,*/
-                                                        errFile)).start()
+                new Thread(new ProcessStreamFileLogger(nodeProcess.getErrorStream, /*nodeProcess.getErrorStream,*/ errFile)).start()
                 //result = resultActor.waitingFor(10000)
                 try {
                   nodeProcess.exitValue
@@ -216,8 +214,7 @@ class JailKevoreeNodeRunner (nodeName: String, bootStrapModel: String, inet: Str
       }
     } else {
       // if an existing one have the same name, then it is not possible to launch this new one (return false)
-      logger
-        .error("There already exists a jail with the same name or it is not possible to check this:\n {}", result._2)
+      logger.error("There already exists a jail with the same name or it is not possible to check this:\n {}", result._2)
       false
     }
 

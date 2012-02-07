@@ -27,11 +27,12 @@ object Forwarder {
   private val logger = LoggerFactory.getLogger(getClass)
 
   private var alreadyInitialize = 0
+  var supervisorRef: Supervisor = _
 
   def initialize () {
     if (alreadyInitialize == 0) {
       // start and supervise the HttpClient actor
-      Supervisor(SupervisorConfig(
+      supervisorRef = Supervisor(SupervisorConfig(
                                    OneForOneStrategy(List(classOf[Exception]), 3, 100),
                                    List(Supervise(Actor.actorOf(new HttpClient()), Permanent))
                                  )
@@ -43,11 +44,38 @@ object Forwarder {
   def kill () {
     alreadyInitialize -= 1
     if (alreadyInitialize == 0) {
-      Actor.registry.actors.foreach(_ ! PoisonPill)
+//      Actor.registry.actors.foreach(a =>try {a ? PoisonPill} catch { case _=>})
+
+
+      try {
+            Actor.registry.actors.foreach(actor => {
+
+                try {
+                  /*val result = */actor ? PoisonPill
+      //            result.get
+                } catch {
+                  case e: akka.actor.ActorKilledException =>
+                }
+            })
+
+            try {
+              /*val result = */Actor.registry.actorFor(supervisorRef.uuid).get ? PoisonPill
+      //        result.get
+            } catch {
+              case e: akka.actor.ActorKilledException =>
+            }
+
+          } catch {
+            case _@e => logger.warn("Error while stopping Spray Server ", e)
+          }
+
+
+
+
     }
   }
 
-  def forward (urlString: String, port : Int, request: KevoreeHttpRequest, response: KevoreeHttpResponse, path: String,
+  def forward (urlString: String, port: Int, request: KevoreeHttpRequest, response: KevoreeHttpResponse, path: String,
     urlPattern: String) {
     var newPath = ""
     if (path != null) {
@@ -60,15 +88,15 @@ object Forwarder {
         currentPath = currentPath + "/"
       }
     }
-    logger.debug("forward to {} with {} as parameter", urlString + port  + "/" + newPath, request.getRawParams)
+    logger.debug("forward to {} with {} as parameter", urlString + port + "/" + newPath, request.getRawParams)
     if (request.getRawBody.size == 0) {
-      forwardGET(urlString, port , request, response, newPath, currentPath)
+      forwardGET(urlString, port, request, response, newPath, currentPath)
     } else {
       forwardPOST(urlString, port, request, response, newPath, currentPath)
     }
   }
 
-  private def forwardGET (urlString: String, port : Int, request: KevoreeHttpRequest, response: KevoreeHttpResponse, path: String,
+  private def forwardGET (urlString: String, port: Int, request: KevoreeHttpRequest, response: KevoreeHttpResponse, path: String,
     currentPath: String) {
     // create a very basic HttpDialog that results in a Future[HttpResponse]
     val dialog = HttpClient.HttpDialog(urlString, port)
@@ -85,7 +113,7 @@ object Forwarder {
   }
 
 
-  private def forwardPOST (urlString: String, port : Int, request: KevoreeHttpRequest, response: KevoreeHttpResponse,
+  private def forwardPOST (urlString: String, port: Int, request: KevoreeHttpRequest, response: KevoreeHttpResponse,
     path: String, urlPattern: String) {
     // create a very basic HttpDialog that results in a Future[HttpResponse]
     val dialog = HttpClient.HttpDialog(urlString, port)
@@ -145,7 +173,7 @@ object Forwarder {
             println(header._1 + "=" + headerValue.toString())
             headers.put(header._1, headerValue.toString())
           }*/
-          case _ => /*println(header._1 + "=" + header._2); */headers.put(header._1, header._2)
+          case _ => /*println(header._1 + "=" + header._2); */ headers.put(header._1, header._2)
         }
 
     }
@@ -160,7 +188,7 @@ object Forwarder {
         header._1 match {
           case "Host" =>
           case "Content-Length" =>
-          case _ => /*println(header._1 + "=" + header._2); */headers = headers ++ List(HttpHeader(header._1, header._2))
+          case _ => /*println(header._1 + "=" + header._2); */ headers = headers ++ List(HttpHeader(header._1, header._2))
         }
 
       }
