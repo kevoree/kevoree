@@ -14,7 +14,7 @@
 package org.kevoree.api.service.core.classloading;
 
 import org.kevoree.DeployUnit;
-import org.kevoree.extra.jcl.KevoreeJarClassLoader;
+import org.kevoree.kcl.KevoreeJarClassLoader;
 
 import java.io.File;
 
