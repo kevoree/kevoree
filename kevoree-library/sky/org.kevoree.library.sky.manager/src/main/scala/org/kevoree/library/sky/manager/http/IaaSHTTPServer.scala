@@ -35,8 +35,8 @@ class IaaSHTTPServer (node: AbstractNodeType) {
       Actor.registry.actors.foreach(actor => {
         if (actor.getId().contains(id)) {
           try {
-            val result = actor ? PoisonPill
-            result.get
+            /*val result = */ actor ? PoisonPill
+            //            result.get
           } catch {
             case e: akka.actor.ActorKilledException =>
           }
@@ -44,8 +44,8 @@ class IaaSHTTPServer (node: AbstractNodeType) {
       })
 
       try {
-        val result = Actor.registry.actorFor(supervisorRef.uuid).get ? PoisonPill
-        result.get
+        /*val result = */ Actor.registry.actorFor(supervisorRef.uuid).get ? PoisonPill
+        //        result.get
       } catch {
         case e: akka.actor.ActorKilledException =>
       }

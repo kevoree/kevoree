@@ -168,7 +168,7 @@ class MiniCloudKevoreeNodeRunner (nodeName: String, bootStrapModel: String) exte
       val watchdog = new KillWatchDog(nodePlatformProcess, 20000)
       nodePlatformProcess.getOutputStream.write("shutdown\n".getBytes)
       nodePlatformProcess.getOutputStream.flush()
-      nodePlatformProcess.getOutputStream.close()
+
       watchdog.start()
       nodePlatformProcess.waitFor()
       watchdog.stop()

@@ -101,8 +101,20 @@ public class KevoreeGUIFrame extends JFrame {
                     @Override
                     public void run() {
 
-                        NodeTypeBootStrapModel.checkAndCreate(nodeUI.getCurrentModel(), nodeName, nodeUI.getKevTypeName().toString(), nodeUI.getKevGroupTypeName().toString(), nodeUI.getKevGroupName().toString(), nodeUI.nodeInstancePanel().currentProperties(), nodeUI.groupInstancePanel().currentProperties());
+                        NodeTypeBootStrapModel.checkAndCreate(nodeUI.getCurrentModel(), nodeName, nodeUI.getKevTypeName().toString(), nodeUI.getKevGroupTypeName().toString(), nodeUI.getKevGroupName(), nodeUI.nodeInstancePanel().currentProperties(), nodeUI.groupInstancePanel().currentProperties());
                         final KevoreeBootStrap btA = new KevoreeBootStrap();
+
+
+						Runtime.getRuntime().addShutdownHook(new Thread("Shutdown Hook") {
+
+							public void run () {
+								try {
+									btA.stop();
+								} catch (Exception ex) {
+									System.out.println("Error stopping framework: " + ex.getMessage());
+								}
+							}
+						});
 
                         btA.setBootstrapModel(nodeUI.getCurrentModel());
 
@@ -144,9 +156,8 @@ public class KevoreeGUIFrame extends JFrame {
 
                             btA.start();
                         } catch (Exception e) {
-                            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                            e.printStackTrace();
                         }
-
                     }
                 }.start();
 
@@ -155,7 +166,6 @@ public class KevoreeGUIFrame extends JFrame {
 
             }
         });
-
 
     }
 
