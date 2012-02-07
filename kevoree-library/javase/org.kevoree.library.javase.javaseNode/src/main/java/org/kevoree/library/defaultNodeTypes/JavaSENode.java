@@ -16,6 +16,10 @@ import org.kevoreeAdaptation.AdaptationPrimitive;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+
 
 /**
  * @author ffouquet
@@ -30,12 +34,21 @@ public class JavaSENode extends AbstractNodeType {
     private KevoreeKompareBean kompareBean = null;
     private CommandMapper mapper = null;
 
+	private boolean isRunning;
+
     @Start
     @Override
     public void startNode() {
+		isRunning = true;
         kompareBean = new KevoreeKompareBean();
         mapper = new CommandMapper();
         mapper.setNodeType(this);
+		new Thread() {
+			@Override
+			public void run () {
+				catchShutdown();
+			}
+		}.start();
     }
 
 
@@ -44,6 +57,7 @@ public class JavaSENode extends AbstractNodeType {
     public void stopNode() {
         kompareBean = null;
         mapper = null;
+		isRunning = false;
         //Cleanup the local runtime
         KevoreeDeployManager.clearAll(this);
     }
@@ -57,5 +71,22 @@ public class JavaSENode extends AbstractNodeType {
     public org.kevoree.api.PrimitiveCommand getPrimitive(AdaptationPrimitive adaptationPrimitive) {
         return mapper.buildPrimitiveCommand(adaptationPrimitive, this.getNodeName());
     }
+
+	private void catchShutdown () {
+		BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+		String line;
+		try {
+			while (isRunning) {
+				line = reader.readLine();
+				if (line.equalsIgnoreCase("shutdown")) {
+					isRunning = false;
+				}
+			}
+			reader.close();
+			// start the shutdown of the platform
+			System.exit(0);
+		} catch (IOException e) {
+		}
+	}
 
 }
