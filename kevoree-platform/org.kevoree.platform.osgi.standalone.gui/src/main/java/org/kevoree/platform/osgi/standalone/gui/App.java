@@ -16,7 +16,7 @@ package org.kevoree.platform.osgi.standalone.gui;
 import org.kevoree.ContainerRoot;
 import org.kevoree.KevoreeFactory;
 import org.kevoree.api.Bootstraper;
-import org.kevoree.extra.jcl.KevoreeJarClassLoader;
+import org.kevoree.kcl.KevoreeJarClassLoader;
 import org.kevoree.framework.KevoreeXmiHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

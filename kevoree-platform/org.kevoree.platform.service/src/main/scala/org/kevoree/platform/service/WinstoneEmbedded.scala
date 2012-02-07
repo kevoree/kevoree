@@ -14,7 +14,7 @@
 package org.kevoree.platform.service
 
 import org.xeustechnologies.jcl.JclObjectFactory
-import org.kevoree.extra.jcl.KevoreeJarClassLoader
+import org.kevoree.kcl.KevoreeJarClassLoader
 
 
 /**

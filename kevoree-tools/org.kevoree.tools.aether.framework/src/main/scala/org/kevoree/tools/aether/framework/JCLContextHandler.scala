@@ -20,7 +20,7 @@ import org.kevoree.DeployUnit
 import actors.DaemonActor
 import scala.collection.JavaConversions._
 import org.kevoree.api.service.core.classloading.{KevoreeClassLoaderHandler}
-import org.kevoree.extra.jcl.KevoreeJarClassLoader
+import org.kevoree.kcl.KevoreeJarClassLoader
 
 /**
  * Created by IntelliJ IDEA.

@@ -18,7 +18,7 @@ import org.slf4j.LoggerFactory
 import org.kevoree.api.service.core.classloading.KevoreeClassLoaderHandler
 import actors.DaemonActor
 import java.io.File
-import org.kevoree.extra.jcl.KevoreeJarClassLoader
+import org.kevoree.kcl.KevoreeJarClassLoader
 import scala.collection.JavaConversions._
 
 /**
