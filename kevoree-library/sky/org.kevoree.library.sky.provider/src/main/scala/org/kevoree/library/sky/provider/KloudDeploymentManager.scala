@@ -30,7 +30,9 @@ object KloudDeploymentManager {
         group.getSubNodes.find(n => n.getName == nodeName) match {
           case None => false
           case Some(node) =>
-            node.getTypeDefinition.getName == "IaaSNode" || KloudHelper.isASubType(node.getTypeDefinition, "IaaSNode")
+//            node.eContainer.asInstanceOf[ContainerRoot].getAdaptationPrimitiveTypes.
+              node.getTypeDefinition.asInstanceOf[NodeType].getManagedPrimitiveTypes.filter(p => p.getName == "RemoveNode" || p.getName == "AddNode").size == 2
+//            node.getTypeDefinition.getName == "IaaSNode" || KloudHelper.isASubType(node.getTypeDefinition, "IaaSNode")
         }
     }
   }
@@ -213,7 +215,7 @@ object KloudDeploymentManager {
 
       // build kevscript to remove useless nodes into the kloud model
       val scriptBuilder = new StringBuilder()
-      scriptBuilder append "tblock {\n"
+//      scriptBuilder append "tblock {\n"
 
       removedNodes.foreach {
         node =>
@@ -231,13 +233,14 @@ object KloudDeploymentManager {
 
       }
 
-      scriptBuilder append "}"
+//      scriptBuilder append "}"
 
       logger.debug("Try to apply the following script to kloudmodel to add all the user nodes:\n{}",
         scriptBuilder.toString())
 
       val kengine = kevScriptEngineFactory.createKevScriptEngine(kloudModel)
       try {
+        kengine.append(scriptBuilder.toString())
         Some(kengine.interpret())
       } catch {
         case _@e => {
@@ -260,7 +263,7 @@ object KloudDeploymentManager {
 
       // build kevscript to add user nodes into the kloud model
       val scriptBuilder = new StringBuilder()
-      scriptBuilder append "tblock {\n"
+//      scriptBuilder append "tblock {\n"
 
       // count current child for each Parent nodes
       val parents = countChilds(kloudModel)
@@ -321,13 +324,14 @@ object KloudDeploymentManager {
           potentialParents = potentialParents -- List(potentialParents.get(index))
       }
 
-      scriptBuilder append "}"
+//      scriptBuilder append "}"
 
       logger.debug("Try to apply the following script to kloudmodel to add all the user nodes:\n{}",
         scriptBuilder.toString())
 
       val kengine = kevScriptEngineFactory.createKevScriptEngine(kloudModel)
       try {
+        kengine.append(scriptBuilder.toString())
         Some(kengine.interpret())
       } catch {
         case _@e => {
@@ -350,7 +354,7 @@ object KloudDeploymentManager {
 
     // build kevscript to add user nodes into the kloud model
     val scriptBuilder = new StringBuilder()
-    scriptBuilder append "tblock {\n"
+//    scriptBuilder append "tblock {\n"
 
     cleanNewUserModel.getNodes.foreach {
       node =>
@@ -370,13 +374,14 @@ object KloudDeploymentManager {
     }
 
 
-    scriptBuilder append "}"
+//    scriptBuilder append "}"
 
     logger.debug("Try to apply the following script to kloudmodel to add the default group:\n{}",
       scriptBuilder.toString())
 
     val kengine = kevScriptEngineFactory.createKevScriptEngine(kloudModel)
     try {
+      kengine.append(scriptBuilder.toString())
       Some(kengine.interpret())
     } catch {
       case _@e => {
@@ -400,7 +405,7 @@ object KloudDeploymentManager {
         case Some(group) => {
           // build kevscript to add user nodes into the kloud model
           val scriptBuilder = new StringBuilder()
-          scriptBuilder append "tblock {\n"
+//          scriptBuilder append "tblock {\n"
 
           scriptBuilder append "merge  \"mvn:org.kevoree.library.sky/org.kevoree.library.sky.provider/" +
             KevoreeFactory.getVersion + "\"\n"
@@ -429,7 +434,7 @@ object KloudDeploymentManager {
               }
           }
 
-          scriptBuilder append "}"
+//          scriptBuilder append "}"
 
           logger.debug("Try to apply the following script to user model to add the default group:\n{}",
             scriptBuilder.toString())
@@ -437,6 +442,7 @@ object KloudDeploymentManager {
 
           val kengine = kevScriptEngineFactory.createKevScriptEngine(userModel)
           val newUserModelOption = (try {
+            kengine.append(scriptBuilder.toString())
             Some(kengine.interpret())
           } catch {
             case _@e => {
