@@ -5,25 +5,16 @@
 
 package org.kevoree.library.frascatiNodeTypes;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Map.Entry;
-
-import org.eclipse.emf.ecore.EPackage;
-import org.eclipse.stp.sca.ScaPackage;
 import org.kevoree.ContainerRoot;
 import org.kevoree.annotation.Library;
 import org.kevoree.annotation.NodeType;
 import org.kevoree.annotation.Start;
 import org.kevoree.annotation.Stop;
 import org.kevoree.library.defaultNodeTypes.JavaSENode;
+import org.kevoree.library.frascatiNodeTypes.primitives.AdaptatationPrimitiveFactory;
 import org.kevoreeAdaptation.AdaptationModel;
 import org.kevoreeAdaptation.AdaptationPrimitive;
 import org.ow2.frascati.FraSCAti;
-import org.ow2.frascati.util.FrascatiClassLoader;
-import org.ow2.frascati.util.FrascatiException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * @author obarais
@@ -31,103 +22,42 @@ import org.slf4j.LoggerFactory;
 @Library(name = "Frascati")
 @NodeType
 public class FrascatiNode extends JavaSENode {
-	private static final Logger logger = LoggerFactory
-			.getLogger(FrascatiNode.class);
 
-	FraSCAti frascati;
-	Thread t;
-	Thread current;
-	Map<String,Object> registries = new HashMap<String, Object>();
+    private AdaptatationPrimitiveFactory cmdFactory = null;
 
-	public Map<String, Object> getRegistries() {
-		return registries;
-	}
+    private FrascatiRuntime f_runtime = null;
 
-	@Start
-	@Override
-	public void startNode() {
-		super.startNode();
-		current = Thread.currentThread();
-
-		if (t == null) {
-
-			t = new Thread(new Runnable() {
-
-				@Override
-				public void run() {
-					try {
-
-						Thread.currentThread().setContextClassLoader(
-								FraSCAti.class.getClassLoader());
-
-						
-						frascati = FraSCAti.newFraSCAti();
+    @Start
+    @Override
+    public void startNode() {
+        final FrascatiNode selfPointer = this;
+        super.startNode();
+        f_runtime = new FrascatiRuntime();
+        f_runtime.start();
+        FraSCAti f_sub = f_runtime.startRuntime();
+        cmdFactory = new AdaptatationPrimitiveFactory(f_sub, selfPointer, (org.kevoree.extra.jcl.KevoreeJarClassLoader) FraSCAti.class.getClassLoader(),f_runtime);
+    }
 
 
-						org.ow2.frascati.util.FrascatiClassLoader f = new FrascatiClassLoader(
-								FraSCAti.class.getClassLoader());
-				        System.err.println("TUTUTUTUTU" + FraSCAti.class.getClassLoader());
+    @Stop
+    @Override
+    public void stopNode() {
+        f_runtime.stopRuntime();
+        super.stopNode();
+    }
 
-						frascati.setClassLoader(f);
-						for (Entry<String, Object> s : EPackage.Registry.INSTANCE.entrySet()){
-							registries.put(s.getKey(), s.getValue());
-						}
-					} catch (FrascatiException e) {
-						e.printStackTrace();
-					}
+    @Override
+    public AdaptationModel kompare(ContainerRoot current, ContainerRoot target) {
+        return super.kompare(current, target);
+    }
 
-				}
-			});
-			t.start();
-			try {
-				t.join();
-				System.err.println("TUTU " + EPackage.Registry.INSTANCE.keySet().size());
-				
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-		}
-	}
+    public org.kevoree.api.PrimitiveCommand getSuperPrimitive(AdaptationPrimitive adaptationPrimitive) {
+        return super.getPrimitive(adaptationPrimitive);
+    }
 
-	@Stop
-	@Override
-	public void stopNode() {
-		super.stopNode();
-		try {
-			System.err.println("STOP NODE FRASCATI");
-			frascati.close(frascati.getComposite("org.ow2.frascati.FraSCAti"));
-			frascati = null;
-			t.interrupt();
-
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-	}
-
-	@Override
-	public AdaptationModel kompare(ContainerRoot current, ContainerRoot target) {
-
-		return super.kompare(current, target);
-
-	}
-
-	public org.kevoree.api.PrimitiveCommand getSuperPrimitive(
-			AdaptationPrimitive adaptationPrimitive) {
-		return super.getPrimitive(adaptationPrimitive);
-
-	}
-
-	@Override
-	public org.kevoree.api.PrimitiveCommand getPrimitive(
-			AdaptationPrimitive adaptationPrimitive) {
-		org.kevoree.library.frascatiNodeTypes.primitives.AdaptatationPrimitiveFactory
-				.setFrascati(frascati);
-		return org.kevoree.library.frascatiNodeTypes.primitives.AdaptatationPrimitiveFactory
-				.getPrimitive(adaptationPrimitive, this, this,
-					(org.kevoree.extra.jcl.KevoreeJarClassLoader)FraSCAti.class.getClassLoader());
-
-	}
+    @Override
+    public org.kevoree.api.PrimitiveCommand getPrimitive(AdaptationPrimitive adaptationPrimitive) {
+        return cmdFactory.getPrimitive(adaptationPrimitive);
+    }
 
 }

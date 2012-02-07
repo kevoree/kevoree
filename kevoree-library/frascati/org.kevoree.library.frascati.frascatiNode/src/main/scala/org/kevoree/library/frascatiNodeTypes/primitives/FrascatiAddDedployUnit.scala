@@ -22,8 +22,6 @@ case class FrascatiAddDedployUnit(du: DeployUnit, bs: org.kevoree.api.Bootstrape
     try {
       if (bs.getKevoreeClassLoaderHandler.getKevoreeClassLoader(du) == null) {
         val newKCL = bs.getKevoreeClassLoaderHandler.installDeployUnit(du)
-        
-        println("TUTUTUTUTU" + topFrascatiBootLoader)
         topFrascatiBootLoader.addWeakClassLoader(newKCL)
         KevoreeDeployManager.bundleMapping.filter(bm => bm.ref.isInstanceOf[DeployUnit]).find(bm => CommandHelper.buildKEY(bm.ref.asInstanceOf[DeployUnit]) == CommandHelper.buildKEY(du)) match {
           case Some(bm) =>

@@ -104,11 +104,12 @@ class JCLContextHandler extends DaemonActor with KevoreeClassLoaderHandler {
           }
         }
     }
+    /*
     if (logger.isDebugEnabled) {
       logger.debug("-----------------------------DUMP after clear-------------------------")
       printDumpInternals()
       logger.debug("-----------------------------END DUMP after clear-------------------------")
-    }
+    }*/
   }
 
   private def getCacheFileInternals(du: DeployUnit): File = {
@@ -167,9 +168,10 @@ class JCLContextHandler extends DaemonActor with KevoreeClassLoaderHandler {
       }
       newcl
     }
+    /*
     if (logger.isDebugEnabled) {
       printDumpInternals()
-    }
+    }*/
     res
   }
 
@@ -192,9 +194,10 @@ class JCLContextHandler extends DaemonActor with KevoreeClassLoaderHandler {
         kcl_cache_file.remove(key)
       }
     }
+    /*
     if (logger.isDebugEnabled) {
       printDumpInternals()
-    }
+    }*/
   }
 
 

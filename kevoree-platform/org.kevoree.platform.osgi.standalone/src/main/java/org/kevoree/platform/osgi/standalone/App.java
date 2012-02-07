@@ -38,7 +38,6 @@ public class App {
 
         final KevoreeBootStrap kb = new KevoreeBootStrap();
 
-
         Runtime.getRuntime().addShutdownHook(new Thread("Shutdown Hook") {
 
             public void run() {
