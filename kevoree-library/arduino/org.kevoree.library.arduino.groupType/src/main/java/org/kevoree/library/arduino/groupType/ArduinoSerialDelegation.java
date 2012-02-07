@@ -24,12 +24,16 @@ public class ArduinoSerialDelegation extends AbstractGroupType {
 
     @Start
     public void startGroupDelegation() {
+        
+        System.out.println("hi=>"+getBootStrapperService());
+        
         delegationPush = new ArduinoDelegationPush(getModelService(), this.getName(),getBootStrapperService(),getKevScriptEngineFactory());
         //triggerModelUpdate();
     }
 
     @Stop
     public void stopGroupDelegation() {
+        delegationPush = null;
         /*
         if (modelHandlerService != null) {
             modelHandlerService = null;
