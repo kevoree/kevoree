@@ -24,9 +24,9 @@ import org.kevoree.tools.arduino.framework.fuzzylogic.FuzzyRulesContext;
         @RequiredPort(name = "blue", type = PortType.MESSAGE, needCheckDependency = false, optional = true)
 })
 @DictionaryType({
-        @DictionaryAttribute(name = "distance_near", defaultValue = "0;0;15;15"),
-        @DictionaryAttribute(name = "distance_med", defaultValue = "20;20;60;60"),
-        @DictionaryAttribute(name = "distance_far", defaultValue = "80;80;150;150"),
+        @DictionaryAttribute(name = "distance_near", defaultValue = "0;0;20;20\n"),
+        @DictionaryAttribute(name = "distance_med", defaultValue = "10;10;100;100\n"),
+        @DictionaryAttribute(name = "distance_far", defaultValue = "80;80;150;150\n"),
 
         @DictionaryAttribute(name = "red_low",defaultValue = "20"),
         @DictionaryAttribute(name = "red_high",defaultValue = "100"),
@@ -42,22 +42,14 @@ public class DistLightManager extends AbstractFuzzyLogicArduinoComponent {
     @Override
     public void declareRules(FuzzyRulesContext rulesContext)
     {
-        rulesContext.addRule("IF distance IS near THEN red IS high;");
-            /*
-        rulesContext.addRule("IF distance IS near THEN green IS low;");
-        rulesContext.addRule("IF distance IS near THEN blue IS low;");
-        rulesContext.addRule("IF distance IS near THEN intensity IS high;");
+        rulesContext.addRule("IF distance IS near THEN red IS high AND green IS low AND blue IS low AND intensity IS high;");
 
-        rulesContext.addRule("IF distance IS med THEN red IS low;");
-        rulesContext.addRule("IF distance IS med THEN green IS high;");
-        rulesContext.addRule("IF distance IS med THEN blue IS low;");
-        rulesContext.addRule("IF distance IS med THEN intensity IS high;");
+        rulesContext.addRule("IF distance IS med THEN red IS low AND green IS high AND blue IS low AND intensity IS high;");
 
-        rulesContext.addRule("IF distance IS far THEN red IS low;");
-        rulesContext.addRule("IF distance IS far THEN green IS low;");
-        rulesContext.addRule("IF distance IS far THEN blue IS high;");
-        rulesContext.addRule("IF distance IS far THEN intensity IS low;");
-        */
+        rulesContext.addRule("IF distance IS far THEN red IS low AND green IS low AND blue IS high AND intensity IS high;");
+
+
+
     }
 
 }
