@@ -22,10 +22,6 @@ case class FrascatiAddInstance(adaptationPrimitive: AdaptationPrimitive, frascat
   val logger = LoggerFactory.getLogger(this.getClass)
 
   override def execute(): Boolean = {
-
-    println("size="+EPackage.Registry.INSTANCE.entrySet())
-
-
     if (adaptationPrimitive.getRef.isInstanceOf[org.kevoree.ComponentInstance]) {
       val c_instance = adaptationPrimitive.getRef.asInstanceOf[org.kevoree.ComponentInstance]
       val node = c_instance.getTypeDefinition.eContainer.asInstanceOf[ContainerRoot].getNodes.find(n => n.getName == nodeName).get

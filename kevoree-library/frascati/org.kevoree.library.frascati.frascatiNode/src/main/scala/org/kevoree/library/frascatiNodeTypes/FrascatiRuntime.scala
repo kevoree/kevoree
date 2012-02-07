@@ -6,6 +6,9 @@ import org.ow2.frascati.util.FrascatiClassLoader
 import org.eclipse.emf.ecore.EPackage
 import org.kevoree.api.PrimitiveCommand
 import org.slf4j.LoggerFactory
+import java.net.URL
+import java.util.Enumeration
+import java.lang.Class
 
 /**
  * Created by IntelliJ IDEA.
@@ -39,9 +42,23 @@ class FrascatiRuntime extends Actor {
         case StartRuntime() => {
           Thread.currentThread().setContextClassLoader(classOf[FraSCAti].getClassLoader);
           internal_frascati = FraSCAti.newFraSCAti();
-          val f_cl = new FrascatiClassLoader(classOf[FraSCAti].getClassLoader)
+          val f_cl = new FrascatiClassLoader(classOf[FraSCAti].getClassLoader){
+            override def loadClass(p1: String): Class[_] = {
+              println("fload ======>"+p1)
+              super[FrascatiClassLoader].loadClass(p1)
+            }
+
+            override def getResources(p1: String): Enumeration[URL] = {
+              println("GetResss=="+p1)
+              super[FrascatiClassLoader].getResources(p1)
+            }
+
+            override def getResource(p1: String): URL = {
+              println("GetRes="+p1)
+              super[FrascatiClassLoader].getResource(p1)
+            }
+          }
           internal_frascati.setClassLoader(f_cl)
-          println("size=" + EPackage.Registry.INSTANCE.entrySet())
           reply(internal_frascati)
         }
         case StopRuntime() => {
