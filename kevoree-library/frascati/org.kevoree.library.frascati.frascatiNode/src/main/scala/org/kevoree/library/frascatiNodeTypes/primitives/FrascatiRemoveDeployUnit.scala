@@ -8,7 +8,7 @@ import org.kevoree.library.defaultNodeTypes.jcl.deploy.context.{KevoreeMapping, 
 import org.kevoree.library.defaultNodeTypes.jcl.deploy.command.CommandHelper
 import java.io.{FileInputStream, File}
 import org.kevoree.framework.FileNIOHelper
-import org.kevoree.extra.jcl.KevoreeJarClassLoader
+import org.kevoree.kcl.KevoreeJarClassLoader
 
 /**
  * Created by IntelliJ IDEA.

@@ -22,7 +22,7 @@ import org.kevoree.framework.{AbstractGroupType, KevoreeGeneratorHelper, Abstrac
 import org.kevoree.framework.aspects.KevoreeAspects._
 import java.io.File
 import org.kevoree.{DeployUnit, KevoreeFactory, GroupType, ContainerRoot}
-import org.kevoree.extra.jcl.KevoreeJarClassLoader
+import org.kevoree.kcl.KevoreeJarClassLoader
 import org.slf4j.LoggerFactory
 
 /**

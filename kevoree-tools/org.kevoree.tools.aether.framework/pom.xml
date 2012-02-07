@@ -100,9 +100,9 @@
             <version>1.5.5</version>
         </dependency>
         <dependency>
-            <groupId>org.kevoree.extra</groupId>
-            <artifactId>org.kevoree.extra.jcl</artifactId>
-            <version>${kevoree.jcl.version}</version>
+            <groupId>org.kevoree</groupId>
+            <artifactId>org.kevoree.kcl</artifactId>
+            <version>${kevoree.version}</version>
         </dependency>
     </dependencies>
 

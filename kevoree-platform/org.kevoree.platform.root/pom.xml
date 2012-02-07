@@ -1,6 +1,5 @@
-
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.kevoree.platform</groupId>
     <artifactId>org.kevoree.platform.root</artifactId>
@@ -15,7 +14,7 @@
         <slf4j.version.range>[1.5,2)</slf4j.version.range>
         <bundle.vendor>IRISA/INRIA</bundle.vendor>
     </properties>
-    
+
     <dependencies>
         <dependency>
             <groupId>junit</groupId>
@@ -85,12 +84,12 @@
     </build>
 
     <modules>
-       <module>../org.kevoree.platform.osgi.standalone</module>
-       <module>../org.kevoree.platform.osgi.standalone.gui</module>
-       <module>../org.kevoree.platform.osgi.android</module>
+        <module>../org.kevoree.platform.osgi.standalone</module>
+        <module>../org.kevoree.platform.osgi.standalone.gui</module>
         <module>../org.kevoree.platform.service</module>
+        <module>../org.kevoree.platform.osgi.android</module>
     </modules>
-    
+
     <repositories>
         <repository>
             <id>scala-tools.org</id>
@@ -101,11 +100,11 @@
             <id>kevoree-libs-release-local</id>
             <url>http://maven.kevoree.org/release/</url>
         </repository>
-                <repository>
+        <repository>
             <id>kevoree-snapshots</id>
             <url>http://maven.kevoree.org/snapshots/</url>
         </repository>
-        
+
     </repositories>
 
     <pluginRepositories>
@@ -118,11 +117,11 @@
             <id>plugin.kevoree-github</id>
             <url>http://maven.kevoree.org/release/</url>
         </pluginRepository>
-                <pluginRepository>
+        <pluginRepository>
             <id>plugin.kevoree-snapshots</id>
             <url>http://maven.kevoree.org/snapshots/</url>
         </pluginRepository>
-        
+
     </pluginRepositories>
 
     <distributionManagement>
