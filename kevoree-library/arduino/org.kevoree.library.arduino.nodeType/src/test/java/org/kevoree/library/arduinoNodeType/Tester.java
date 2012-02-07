@@ -23,8 +23,8 @@ public class Tester {
 
 
         
-        //ContainerRoot model = KevoreeXmiHelper.loadStream(Tester.class.getClassLoader().getResourceAsStream("FuzzyModelTEST.kev"));
-        ContainerRoot model = KevoreeXmiHelper.load("/Users/duke/Desktop/kev.kev");
+        ContainerRoot model = KevoreeXmiHelper.loadStream(Tester.class.getClassLoader().getResourceAsStream("FuzzyModelTESTLED.kev"));
+      //  ContainerRoot model = KevoreeXmiHelper.load("/Users/duke/Desktop/kev.kev");
 
         ArduinoNode node = new ArduinoNode();
 
@@ -43,7 +43,7 @@ public class Tester {
 
         node.getDictionary().put("incremental", "false");
         node.startNode();
-        node.push("node0", model, "/dev/tty.usbmodem621");
+        node.push("node0", model, "/dev/ttyACM0");
 
     }
 

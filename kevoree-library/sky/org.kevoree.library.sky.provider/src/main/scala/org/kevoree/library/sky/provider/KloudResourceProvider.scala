@@ -1,3 +1,4 @@
+/*
 package org.kevoree.library.sky.provider
 
 import org.kevoree.core.basechecker.RootChecker
@@ -350,4 +351,4 @@ object KloudResourceProvider {
   }
 
 
-}
+}*/

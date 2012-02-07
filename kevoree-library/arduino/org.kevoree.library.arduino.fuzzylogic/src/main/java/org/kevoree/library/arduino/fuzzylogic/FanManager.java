@@ -21,9 +21,9 @@ import org.kevoree.tools.arduino.framework.fuzzylogic.FuzzyRulesContext;
         @RequiredPort(name = "fan", type = PortType.MESSAGE, needCheckDependency = false, optional = true)
 })
 @DictionaryType({
-        @DictionaryAttribute(name = "temp_cold", defaultValue = "0;0;200;200"),
-        @DictionaryAttribute(name = "temp_warm", defaultValue = "100;100;600;600"),
-        @DictionaryAttribute(name = "temp_hot", defaultValue = "512;512;1024;1024"),
+        @DictionaryAttribute(name = "temp_cold", defaultValue = "0;0;200;200\n"),
+        @DictionaryAttribute(name = "temp_warm", defaultValue = "100;100;800;800\n"),
+        @DictionaryAttribute(name = "temp_hot", defaultValue = "512;512;1024;1024\n"),
 
         @DictionaryAttribute(name = "fan_stop",defaultValue = "0"),
         @DictionaryAttribute(name = "fan_slow" ,defaultValue = "30"),
@@ -36,7 +36,7 @@ public class FanManager extends AbstractFuzzyLogicArduinoComponent {
     {
         rulesContext.addRule("IF temp IS cold THEN fan IS stop;");
         rulesContext.addRule("IF temp IS warm THEN fan IS slow;");
-        //rulesContext.addRule("IF temp IS cold AND temp is warm THEN fan IS slow;");
+        rulesContext.addRule("IF temp IS cold AND temp IS hot THEN fan IS slow;");
         rulesContext.addRule("IF temp IS hot THEN fan IS fast;");
     }
 
