@@ -69,9 +69,9 @@
             <version>${kevoree.version}</version>
         </dependency>
         <dependency>
-            <groupId>org.kevoree.extra</groupId>
-            <artifactId>org.kevoree.extra.jcl</artifactId>
-            <version>0.9.10</version>
+            <groupId>org.kevoree</groupId>
+            <artifactId>org.kevoree.kcl</artifactId>
+            <version>${kevoree.version}</version>
         </dependency>
     </dependencies>
 
@@ -158,7 +158,6 @@
                                         <include>org.kevoree</include>
                                         <include>org.kevoree.tools:org.kevoree.tools.annotation.api</include>
                                         <include>org.kevoree.tools:org.kevoree.tools.javase.framework</include>
-                                        <include>org.kevoree.extra:org.kevoree.extra.jcl</include>
                                     </includes>
                                 </filter>
                                 <filter>

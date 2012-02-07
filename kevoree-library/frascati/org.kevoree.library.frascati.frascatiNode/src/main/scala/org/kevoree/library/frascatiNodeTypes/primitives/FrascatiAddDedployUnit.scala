@@ -2,7 +2,7 @@ package org.kevoree.library.frascatiNodeTypes.primitives
 
 import org.kevoree.DeployUnit
 import org.kevoree.api.PrimitiveCommand
-import org.kevoree.extra.jcl.KevoreeJarClassLoader
+import org.kevoree.kcl.KevoreeJarClassLoader
 import org.kevoree.library.defaultNodeTypes.jcl.deploy.command.CommandHelper
 import org.kevoree.library.defaultNodeTypes.jcl.deploy.context.{KevoreeMapping, KevoreeDeployManager}
 import org.slf4j.LoggerFactory

@@ -35,7 +35,7 @@ public class FrascatiNode extends JavaSENode {
         f_runtime = new FrascatiRuntime();
         f_runtime.start();
         FraSCAti f_sub = f_runtime.startRuntime();
-        cmdFactory = new AdaptatationPrimitiveFactory(f_sub, selfPointer, (org.kevoree.extra.jcl.KevoreeJarClassLoader) FraSCAti.class.getClassLoader(),f_runtime);
+        cmdFactory = new AdaptatationPrimitiveFactory(f_sub, selfPointer, (org.kevoree.kcl.KevoreeJarClassLoader) FraSCAti.class.getClassLoader(),f_runtime);
     }
 
 

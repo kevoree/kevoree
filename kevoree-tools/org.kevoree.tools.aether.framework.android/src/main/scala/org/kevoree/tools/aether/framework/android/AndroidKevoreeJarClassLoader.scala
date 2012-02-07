@@ -14,7 +14,7 @@
 package org.kevoree.tools.aether.framework.android
 
 import dalvik.system.DexClassLoader
-import org.kevoree.extra.jcl.KevoreeJarClassLoader
+import org.kevoree.kcl.KevoreeJarClassLoader
 import android.content.Context
 import java.io.{BufferedOutputStream, FileOutputStream, File, InputStream}
 

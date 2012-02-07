@@ -5,7 +5,7 @@ package org.kevoree.library.frascatiNodeTypes.primitives
 import org.kevoreeAdaptation.AdaptationPrimitive
 import org.kevoree.library.frascatiNodeTypes.FrascatiNode
 import org.kevoree.DeployUnit
-import org.kevoree.extra.jcl.KevoreeJarClassLoader
+import org.kevoree.kcl.KevoreeJarClassLoader
 import org.kevoree.kompare.JavaSePrimitive
 import org.ow2.frascati.FraSCAti
 import actors.Actor
