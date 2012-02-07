@@ -11,7 +11,9 @@ import org.kevoree.tools.arduino.framework.ArduinoGenerator;
 })
 @Provides({
         @ProvidedPort(name = "intensity", type = PortType.MESSAGE),
-        @ProvidedPort(name = "color", type = PortType.MESSAGE)
+        @ProvidedPort(name = "red", type = PortType.MESSAGE),
+        @ProvidedPort(name = "green", type = PortType.MESSAGE),
+        @ProvidedPort(name = "blue", type = PortType.MESSAGE)
 })
 public class DMXLight extends AbstractArduinoComponent {
 
@@ -31,16 +33,6 @@ public class DMXLight extends AbstractArduinoComponent {
         gen.appendNativeStatement("DmxSimple.write(4,255);");
         gen.appendNativeStatement("DmxSimple.write(1,127);");
     }
-/*
-    @Override
-    public void generateInit(ArduinoGenerator gen) {
-        gen.appendNativeStatement("DmxSimple.usePin(atoi(dpin));");
-        gen.appendNativeStatement("DmxSimple.maxChannel(4);");
-        gen.appendNativeStatement("DmxSimple.write(2,255);");
-        gen.appendNativeStatement("DmxSimple.write(3,255);");
-        gen.appendNativeStatement("DmxSimple.write(4,255);");
-        gen.appendNativeStatement("DmxSimple.write(1,127);");
-    }*/
 
     @Port(name = "intensity")
     public void triggerOn(Object o) {
@@ -49,9 +41,25 @@ public class DMXLight extends AbstractArduinoComponent {
         getGenerator().appendNativeStatement("DmxSimple.write(1,outputIntensity);");
     }
 
-    @Port(name = "color")
-    public void triggerColor(Object o) {
-        //  getGenerator().appendNativeStatement("DmxSimple.write(1,int(param));");
+    @Port(name = "red")
+    public void triggerRed(Object o) {
+        getGenerator().appendNativeStatement("int value = atoi(msg->value);");
+        getGenerator().appendNativeStatement("int outputIntensity = (255 * value) / 100 ;");
+        getGenerator().appendNativeStatement("DmxSimple.write(2,outputIntensity);");
+    }
+
+    @Port(name = "green")
+    public void triggerGreen(Object o) {
+        getGenerator().appendNativeStatement("int value = atoi(msg->value);");
+        getGenerator().appendNativeStatement("int outputIntensity = (255 * value) / 100 ;");
+        getGenerator().appendNativeStatement("DmxSimple.write(3,outputIntensity);");
+    }
+
+    @Port(name = "blue")
+    public void triggerBlue(Object o) {
+        getGenerator().appendNativeStatement("int value = atoi(msg->value);");
+        getGenerator().appendNativeStatement("int outputIntensity = (255 * value) / 100 ;");
+        getGenerator().appendNativeStatement("DmxSimple.write(4,outputIntensity);");
     }
 
 }
