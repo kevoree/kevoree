@@ -79,6 +79,7 @@ public class KevoreeBootStrap {
             //MavenResolver mres = (MavenResolver) clazz3.newInstance();
             File fileMarShell = bootstraper.resolveKevoreeArtifact("org.kevoree.tools.marShell", "org.kevoree.tools", KevoreeFactory.getVersion());
             KevoreeJarClassLoader scriptEngineKCL = new KevoreeJarClassLoader();
+			scriptEngineKCL.addSubClassLoader(jcl);
             scriptEngineKCL.add(fileMarShell.getAbsolutePath());
             scriptEngineKCL.lockLinks();
 
@@ -141,7 +142,7 @@ public class KevoreeBootStrap {
                 }
             }
 
-            bootstrapModel = KevoreeXmiHelper.load("/Users/duke/Desktop/test.kev");
+//            bootstrapModel = KevoreeXmiHelper.load("/Users/duke/Desktop/test.kev");
 
             if (bootstrapModel != null) {
                 try {
