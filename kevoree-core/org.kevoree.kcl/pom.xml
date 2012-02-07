@@ -1,11 +1,10 @@
-
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
     <modelVersion>4.0.0</modelVersion>
-    <artifactId>org.kevoree.api</artifactId>
-    <packaging>jar</packaging>
-    <name>Kevoree :: Api</name>
+    <artifactId>org.kevoree.kcl</artifactId>
+    <packaging>bundle</packaging>
+    <name>Kevoree :: KlassLoader</name>
 
     <version>1.6.0-SNAPSHOT</version>
     <parent>
@@ -17,23 +16,24 @@
 
     <properties>
         <kevoree.version>${project.version}</kevoree.version>
+        <slf4j.version>1.6.4</slf4j.version>
     </properties>
 
     <dependencies>
         <dependency>
-            <groupId>org.kevoree</groupId>
-            <artifactId>org.kevoree.model</artifactId>
-            <version>${kevoree.version}</version>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>${slf4j.version}</version>
         </dependency>
         <dependency>
-            <groupId>org.kevoree</groupId>
-            <artifactId>org.kevoree.adaptation.model</artifactId>
-            <version>${kevoree.version}</version>
+            <groupId>cglib</groupId>
+            <artifactId>cglib-nodep</artifactId>
+            <version>2.2.2</version>
         </dependency>
         <dependency>
-            <groupId>org.kevoree</groupId>
-            <artifactId>org.kevoree.kcl</artifactId>
-            <version>${kevoree.version}</version>
+            <groupId>org.objenesis</groupId>
+            <artifactId>objenesis</artifactId>
+            <version>1.2</version>
         </dependency>
     </dependencies>
 
@@ -42,17 +42,22 @@
             <plugin>
                 <groupId>org.apache.felix</groupId>
                 <artifactId>maven-bundle-plugin</artifactId>
-                <extensions>true</extensions>
                 <version>2.3.5</version>
+                <extensions>true</extensions>
                 <configuration>
                     <instructions>
-                        <Bundle-ClassPath>.</Bundle-ClassPath>
-                        <Import-Package>org.kevoree.*,org.kevoreeAdaptation.*,scala.*</Import-Package>
-                        <Export-Package>org.kevoree.api.*</Export-Package>
+                        <Export-Package>org.xeustechnologies.*,org.kevoree.kcl.*</Export-Package>
+                        <Private-Package>net.sf.cglib.*,org.objenesis.*</Private-Package>
+                        <Import-Package>
+                            !org.xeustechnologies.*,
+                            !org.kevoree.kcl.*,
+                            !net.sf.cglib.*,
+                            !org.objenesis.*,
+                            *
+                        </Import-Package>
                     </instructions>
                 </configuration>
             </plugin>
-
         </plugins>
     </build>
 
