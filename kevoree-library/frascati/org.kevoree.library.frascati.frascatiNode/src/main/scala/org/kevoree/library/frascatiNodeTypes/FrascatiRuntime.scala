@@ -59,6 +59,8 @@ class FrascatiRuntime extends Actor {
             }
           }
           internal_frascati.setClassLoader(f_cl)
+          internal_frascati.getClassLoaderManager().setClassLoader(f_cl)
+
           reply(internal_frascati)
         }
         case StopRuntime() => {
