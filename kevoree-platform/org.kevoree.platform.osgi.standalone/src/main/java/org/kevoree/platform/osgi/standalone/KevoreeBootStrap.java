@@ -141,11 +141,13 @@ public class KevoreeBootStrap {
                 }
             }
 
+            bootstrapModel = KevoreeXmiHelper.load("/Users/duke/Desktop/test.kev");
+
             if (bootstrapModel != null) {
                 try {
                     logger.debug("Bootstrap step !");
                     BootstrapHelper.initModelInstance(bootstrapModel, "FrascatiNode", System.getProperty("node.groupType"));
-                    //   BootstrapHelper.initModelInstance(bootstrapModel,"JavaSENode",System.getProperty("node.groupType"));
+                    BootstrapHelper.initModelInstance(bootstrapModel,"JavaSENode",System.getProperty("node.groupType"));
                     coreBean.updateModel(bootstrapModel);
                 } catch (Exception e) {
                     logger.error("Bootstrap failed", e);
