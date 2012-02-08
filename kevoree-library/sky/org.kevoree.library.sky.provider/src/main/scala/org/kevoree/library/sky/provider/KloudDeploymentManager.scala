@@ -77,7 +77,7 @@ object KloudDeploymentManager {
   /**
    * compute a new deployment and apply it
    */
-  def processDeployment (newModel: ContainerRoot, userModel: ContainerRoot, modelHandlerService: KevoreeModelHandlerService, kevScripEngineFactory: KevScriptEngineFactory, groupName: String) = {
+  def processDeployment (newModel: ContainerRoot, userModel: ContainerRoot, modelHandlerService: KevoreeModelHandlerService, kevScripEngineFactory: KevScriptEngineFactory, groupName: String) :Option[ContainerRoot] = {
     // check validity of the new model
     val resultOption = check(newModel)
     if (resultOption.isEmpty) {
@@ -112,25 +112,31 @@ object KloudDeploymentManager {
 
                 // deploy the newModel on the user nodes
                 updateUserConfiguration(groupName, cleanedNewModelOption.get, newModel, modelHandlerService, kevScripEngineFactory)
+                cleanedNewModelOption
               } catch {
                 case _@e =>
-                  logger
-                    .debug("Unable to swap model, maybe because the new model is based on a too old configuration", e)
+                  logger.debug("Unable to swap model, maybe because the new model is based on a too old configuration", e)
+                None
               }
             } else {
               logger.debug("Unable to configure you access point to your nodes.")
+              None
             }
           } else {
             logger.debug("Unable to define the user nodes.")
+            None
           }
         } else {
           logger.debug("Unable to define user nodes")
+          None
         }
       } else {
         logger.debug("Unable to manipulate user model.")
+        None
       }
     } else {
       logger.debug(resultOption.get)
+      None
     }
   }
 
@@ -362,7 +368,9 @@ object KloudDeploymentManager {
       node =>
         val addressOption = kloudModel.getNodes.find(n => n.getName == node.getName) match {
           case None => None
-          case Some(knode) => KevoreePropertyHelper.getStringNetworkProperty(kloudModel, knode.getName, Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP)
+          case Some(knode) => {
+            KevoreePropertyHelper.getStringNetworkProperty(kloudModel, knode.getName, Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP)
+          }
         }
         var address = ""
         if (addressOption.isDefined) {
@@ -370,6 +378,10 @@ object KloudDeploymentManager {
         }
         scriptBuilder append "addToGroup " + groupName + " " + node.getName + "\n"
         scriptBuilder append "updateDictionary " + groupName + " {port=\"" + KloudHelper.selectPortNumber(address) + "\"}@" + node.getName + "\n"
+        if (addressOption.isDefined) {
+          scriptBuilder append "updateDictionary " + groupName + " {ip=\"" + addressOption.get + "\"}@" + node.getName + "\n"
+          scriptBuilder append "network " + node.getName + " {\"KEVOREE.remote.node.ip\" = \"" + addressOption.get + "\" }\n"
+        }
     }
 
 
@@ -505,8 +517,9 @@ object KloudDeploymentManager {
 
         isSend = true
       } catch {
-        case _@e => i += 1; Thread.sleep(1000)
+        case _@e => i += 1;
       }
+      Thread.sleep(5000)
     }
     isSend
   }
@@ -541,7 +554,7 @@ object KloudDeploymentManager {
         val subnetOption = KevoreePropertyHelper.getStringPropertyForNode(kloudModel, parentNodeName, "subnet")
         val maskOption = KevoreePropertyHelper.getStringPropertyForNode(kloudModel, parentNodeName, "mask")
         if (subnetOption.isDefined && maskOption.isDefined) {
-          Some(lookingForNewIp(List(), subnetOption.get,  maskOption.get))
+          Some(lookingForNewIp(List(), subnetOption.get, maskOption.get))
         } else {
           None
         }
@@ -558,22 +571,14 @@ object KloudDeploymentManager {
     var l = Integer.parseInt(ipBlock(3)) + 2
 
     var found = false
-    logger.debug(">>>>>>>>>>>>>>>>>>>>>>bli")
     while (i < 255 && checkMask(i, j, k, l, subnet, mask) && !found) {
-      logger.debug(">>>>>>>>>>>>>>>>>>>>>>ble")
       while (j < 255 && checkMask(i, j, k, l, subnet, mask) && !found) {
-        logger.debug(">>>>>>>>>>>>>>>>>>>>>>bla")
         while (k < 255 && checkMask(i, j, k, l, subnet, mask) && !found) {
-          logger.debug(">>>>>>>>>>>>>>>>>>>>>>blo")
           while (l < 255 && checkMask(i, j, k, l, subnet, mask) && !found) {
-            logger.debug(">>>>>>>>>>>>>>>>>>>>>>blu")
             val tmpIp = i + "." + j + "." + k + "." + l
             if (!ips.contains(tmpIp)) {
-              logger.debug(">>>>>>>>>>>>>>>>>>>>>>bly")
               val inet = InetAddress.getByName(tmpIp)
-              logger.debug(">>>>>>>>>>>>>>>>>>>>>>blc")
               if (!inet.isReachable(1000)) {
-                logger.debug(">>>>>>>>>>>>>>>>>>>>>>" + tmpIp)
                 newIp = tmpIp
                 found = true
               }

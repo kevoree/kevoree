@@ -21,29 +21,12 @@
             <version>${kevoree.version}</version>
             <type>bundle</type>
         </dependency>
-        <!--<dependency>
-            <groupId>org.kevoree.extra</groupId>
-            <artifactId>org.kevoree.extra.finagle</artifactId>
-            <version>1.7.3</version>
-            <type>bundle</type>
-        </dependency>
-        <dependency>
-            <groupId>org.kevoree.extra</groupId>
-            <artifactId>org.kevoree.extra.osgi.twitter.library</artifactId>
-            <version>1.0</version>
-        </dependency>-->
         <dependency>
             <groupId>org.kevoree.extra</groupId>
             <artifactId>org.kevoree.extra.spray</artifactId>
             <version>0.9.1</version>
             <type>bundle</type>
         </dependency>
-        <!--<dependency>
-            <groupId>org.kevoree.library.javase</groupId>
-            <artifactId>org.kevoree.library.javase.ssh</artifactId>
-            <version>${kevoree.version}</version>
-            <type>bundle</type>
-        </dependency>-->
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>

@@ -98,12 +98,17 @@ public class KloudResourceManagerGroup extends SSHRestGroup {
 		if (KloudDeploymentManager.isIaaSNode(this.getModelService().getLastModel(), this.getName(), this.getNodeName())) {
 			// if this instance is on top of IaaS node then we try to dispatch the received model on the kloud
 			if (KloudDeploymentManager.needsNewDeployment(model, userModel)) {
-				KloudDeploymentManager.processDeployment(model, userModel, this.getModelService(), this.getKevScriptEngineFactory(), this.getName());
+				Option<ContainerRoot> cleanedModelOption = KloudDeploymentManager.processDeployment(model, userModel, this.getModelService(), this.getKevScriptEngineFactory(), this.getName());
+				if (cleanedModelOption.isDefined()) {
+					userModel = cleanedModelOption.get();
+				}
 			} else {
 				Option<ContainerRoot> cleanModelOption = KloudDeploymentManager.cleanUserModel(userModel);
 				if (cleanModelOption.isDefined()) {
 					// there is no new node so we simply push model on each PaaSNode
-					KloudDeploymentManager.updateUserConfiguration(this.getName(), cleanModelOption.get(), model, this.getModelService(),getKevScriptEngineFactory());
+					if (KloudDeploymentManager.updateUserConfiguration(this.getName(), cleanModelOption.get(), model, this.getModelService(), getKevScriptEngineFactory())) {
+						userModel = model;
+					}
 				}
 			}
 		} else if (KloudDeploymentManager.isPaaSNode(this.getModelService().getLastModel(), this.getName(), this.getNodeName())) {
