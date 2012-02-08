@@ -54,10 +54,17 @@
 
         <dependency>
             <groupId>org.kevoree.extra</groupId>
-            <artifactId>org.kevoree.extra.osgi.rxtx</artifactId>
-            <version>2.2.0</version>
-            <type>bundle</type>
+            <artifactId>org.kevoree.extra.kserial</artifactId>
+            <version>1.0</version>
+            <scope>kjar</scope>
         </dependency>
+        <dependency>
+            <groupId>net.java.dev.jna</groupId>
+            <artifactId>jna</artifactId>
+            <version>3.3.0</version>
+            <type>kjar</type>
+        </dependency>
+
 
         <!-- Temp dependency -->
         <!--

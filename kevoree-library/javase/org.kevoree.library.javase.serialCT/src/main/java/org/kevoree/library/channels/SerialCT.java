@@ -1,7 +1,7 @@
 package org.kevoree.library.channels;
 
 import org.kevoree.annotation.*;
-import org.kevoree.extra.osgi.rxtx.KevoreeSharedCom;
+import org.kevoree.extra.kserial.KevoreeSharedCom;
 import org.kevoree.framework.AbstractChannelFragment;
 import org.kevoree.framework.ChannelFragmentSender;
 import org.kevoree.framework.KevoreeChannelFragment;
@@ -32,13 +32,16 @@ public class SerialCT extends AbstractChannelFragment {
 	protected HashMap<String, String> nodePortCache = new HashMap<String, String>();
 
 	protected String getPortFromNode (String remoteNodeName) {
+
 		if (!nodePortCache.containsKey(remoteNodeName)) {
 			String remotePort = "/dev/tty_unknown";
 			Option<String> remotePortOption = KevoreePropertyHelper.getStringPropertyForChannel(this.getModelService().getLastModel(), this.getName(), "serialport", true, remoteNodeName);
 			if (remotePortOption.isDefined()) {
+                remotePort = remotePortOption.get();
 				nodePortCache.put(remoteNodeName, remotePort);
-				logger.warn(this.getName() + ":SerailCT on node " + this.getNodeName() + " using port " + nodePortCache.get(remoteNodeName));
+				//logger.warn(this.getName() + ":SerailCT on node " + this.getNodeName() + " using port " + nodePortCache.get(remoteNodeName));
 			} else {
+                nodePortCache.put(remoteNodeName, remotePort);
 				logger.error("unable to find the given dictionary attribute \"serialport\"!");
 			}
 		}

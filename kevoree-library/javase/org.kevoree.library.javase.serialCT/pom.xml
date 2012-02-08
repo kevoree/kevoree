@@ -23,14 +23,15 @@
     <dependencies>
         <dependency>
             <groupId>org.kevoree.extra</groupId>
-            <artifactId>org.kevoree.extra.osgi.rxtx</artifactId>
-            <version>2.2.0</version>
-            <scope>provided</scope>
+            <artifactId>org.kevoree.extra.kserial</artifactId>
+            <version>1.0</version>
+            <type>kjar</type>
         </dependency>
         <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
-            <version>1.6.1</version>
+            <groupId>net.java.dev.jna</groupId>
+            <artifactId>jna</artifactId>
+            <version>3.3.0</version>
+            <type>kjar</type>
         </dependency>
     </dependencies>
 

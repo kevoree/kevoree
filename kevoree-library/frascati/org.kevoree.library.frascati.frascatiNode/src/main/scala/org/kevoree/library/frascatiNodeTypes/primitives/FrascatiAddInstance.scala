@@ -37,7 +37,9 @@ case class FrascatiAddInstance(adaptationPrimitive: AdaptationPrimitive, frascat
         
         
 //        frascati.getClassLoaderManager().setClassLoader(new FrascatiClassLoader(kcl))
-        
+
+
+
         
         frascati.getClassLoaderManager().loadLibraries(Array(new URL("file:/opt/frascati-runtime-1.4/examples/helloworld-pojo/target/helloworld-pojo-1.4.jar")))
         

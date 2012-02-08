@@ -1,11 +1,11 @@
 package org.kevoree.library.channels
 
-import org.kevoree.extra.osgi.rxtx.ContentListener
 import util.matching.Regex
 import org.kevoree.framework.message.Message
 import org.kevoree.framework.ChannelFragment
 import scala.collection.JavaConversions._
 import org.slf4j.{LoggerFactory, Logger}
+import org.kevoree.extra.kserial.ContentListener
 
 /**
  * User: ffouquet
