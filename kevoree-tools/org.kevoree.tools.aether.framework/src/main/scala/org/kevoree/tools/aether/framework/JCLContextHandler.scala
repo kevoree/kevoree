@@ -40,7 +40,9 @@ class JCLContextHandler extends DaemonActor with KevoreeClassLoaderHandler {
 
   case class DUMP()
 
-  case class INSTALL_DEPLOYUNIT(du: DeployUnit, file: File)
+  case class INSTALL_DEPLOYUNIT_FILE(du: DeployUnit, file: File)
+
+  case class INSTALL_DEPLOYUNIT(du: DeployUnit)
 
   case class REMOVE_DEPLOYUNIT(du: DeployUnit)
 
@@ -62,7 +64,8 @@ class JCLContextHandler extends DaemonActor with KevoreeClassLoaderHandler {
     loop {
       react {
         case GET_CACHE_FILE(du) => reply(getCacheFileInternals(du))
-        case INSTALL_DEPLOYUNIT(du, file) => reply(installDeployUnitInternals(du, file))
+        case INSTALL_DEPLOYUNIT_FILE(du, file) => reply(installDeployUnitInternals(du, file))
+        case INSTALL_DEPLOYUNIT(du) => reply(installDeployUnitNoFileInternals(du))
         case GET_KCL(du) => reply(getKCLInternals(du))
         case REMOVE_DEPLOYUNIT(du) => removeDeployUnitInternals(du)
         case MANUALLY_ADD_TO_CACHE(du, kcl) => manuallyAddToCacheInternals(du, kcl)
@@ -225,7 +228,7 @@ class JCLContextHandler extends DaemonActor with KevoreeClassLoaderHandler {
 
 
   def installDeployUnit(du: DeployUnit, file: File): KevoreeJarClassLoader = {
-    (this !? INSTALL_DEPLOYUNIT(du, file)).asInstanceOf[KevoreeJarClassLoader]
+    (this !? INSTALL_DEPLOYUNIT_FILE(du, file)).asInstanceOf[KevoreeJarClassLoader]
   }
 
   def getKevoreeClassLoader(du: DeployUnit): KevoreeJarClassLoader = {
@@ -236,14 +239,19 @@ class JCLContextHandler extends DaemonActor with KevoreeClassLoaderHandler {
     this ! REMOVE_DEPLOYUNIT(du)
   }
 
-  def installDeployUnit(du: DeployUnit): KevoreeJarClassLoader = {
-    //TODO CALL ACTOR
+
+  def installDeployUnitNoFileInternals(du: DeployUnit): KevoreeJarClassLoader = {
     val resolvedFile = AetherUtil.resolveDeployUnit(du)
     if (resolvedFile != null) {
-      installDeployUnit(du, resolvedFile)
+      installDeployUnitInternals(du, resolvedFile)
     } else {
+      logger.error("Error while resolving deploy unit "+du.getUnitName)
       null
     }
+  }
+
+  def installDeployUnit(du: DeployUnit): KevoreeJarClassLoader = {
+    (this !? INSTALL_DEPLOYUNIT(du)).asInstanceOf[KevoreeJarClassLoader]
   }
 
 }

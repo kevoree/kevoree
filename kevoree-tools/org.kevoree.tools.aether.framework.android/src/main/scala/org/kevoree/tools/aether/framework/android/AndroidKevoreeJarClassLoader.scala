@@ -14,9 +14,9 @@
 package org.kevoree.tools.aether.framework.android
 
 import dalvik.system.DexClassLoader
-import org.kevoree.kcl.KevoreeJarClassLoader
 import android.content.Context
 import java.io.{BufferedOutputStream, FileOutputStream, File, InputStream}
+import org.kevoree.kcl.{KevoreeResourcesLoader, KevoreeJarClassLoader}
 
 /**
  * Created by IntelliJ IDEA.
@@ -25,7 +25,20 @@ import java.io.{BufferedOutputStream, FileOutputStream, File, InputStream}
  * Time: 17:57
  */
 
-class AndroidKevoreeJarClassLoader(ctx: android.content.Context, parent: ClassLoader) extends KevoreeJarClassLoader {
+class AndroidKevoreeJarClassLoader(gkey : String,ctx: android.content.Context, parent: ClassLoader) extends KevoreeJarClassLoader {
+
+  /* Constructor */
+  addSpecialLoaders(new KevoreeResourcesLoader("class"){
+    def doLoad(key: String, stream: InputStream) {
+      //NOOP
+    }
+  })
+  addSpecialLoaders(new KevoreeResourcesLoader("dex"){
+    def doLoad(key: String, stream: InputStream) {
+      declareLocalDexClassLoader(stream,gkey+"_"+key)
+    }
+  })
+  /* End Constructor */
 
   private var subDexClassLoader: List[DexClassLoader] = List()
 
@@ -58,6 +71,9 @@ class AndroidKevoreeJarClassLoader(ctx: android.content.Context, parent: ClassLo
     }
     throw new ClassNotFoundException(className)
   }
+
+
+
 
 
 }
