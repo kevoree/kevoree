@@ -231,12 +231,14 @@ class JailKevoreeNodeRunner (nodeName: String, bootStrapModel: String, inet: Str
     new Thread(new ProcessStreamManager(p.getInputStream, Array(ezjailListRegex), Array(), p)).start()
     var result = resultActor.waitingFor(10000)
     var found = false
+    var oldIP = ""
     result._2.split("\n").foreach {
       line =>
         line match {
           case ezjailListRegex(tmp, jid, ip, name, path) => {
             if (name == nodeName) {
               found = true
+              oldIP = ip
             }
           }
           case _ =>
@@ -257,6 +259,16 @@ class JailKevoreeNodeRunner (nodeName: String, bootStrapModel: String, inet: Str
         new Thread(new ProcessStreamManager(p.getInputStream, Array(), Array(), p)).start()
         result = resultActor.waitingFor(10000)
         if (result._1) {
+          // release IP alias to allow next IP select to use this one
+          resultActor.starting()
+          p = Runtime.getRuntime.exec(Array[String](ifconfig, inet, "-alias", oldIP))
+          new Thread(new
+              ProcessStreamManager(p.getInputStream, Array(), Array(new Regex("ifconfig: ioctl \\(SIOCDIFADDR\\): .*")), p))
+            .start()
+          result = resultActor.waitingFor(10000)
+          if (!result._1) {
+            logger.debug("unable to release ip alias {} for the network interface {}", oldIP, inet)
+          }
           true
         } else {
           logger.error("Unable to delete the jail:\n {}", result._2)
