@@ -54,13 +54,13 @@
             <groupId>org.kevoree.extra</groupId>
             <artifactId>org.kevoree.extra.kserial</artifactId>
             <version>1.0</version>
-            <scope>kjar</scope>
+            <type>bundle</type>
         </dependency>
         <dependency>
             <groupId>net.java.dev.jna</groupId>
             <artifactId>jna</artifactId>
             <version>3.3.0</version>
-            <type>kjar</type>
+            <type>bundle</type>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
