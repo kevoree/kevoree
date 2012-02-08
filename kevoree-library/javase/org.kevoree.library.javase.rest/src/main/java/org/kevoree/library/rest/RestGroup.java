@@ -67,6 +67,12 @@ public class RestGroup extends AbstractGroupType {
 
     }
 
+	@Update
+	public void updateRestGroup() {
+		stopRestGroup();
+		startRestGroup();
+	}
+
     @Override
     public void push(ContainerRoot model, String targetNodeName) {
         try {
