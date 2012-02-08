@@ -21,31 +21,29 @@ import org.slf4j.LoggerFactory;
 @DictionaryType({
 		@DictionaryAttribute(name = "inet", defaultValue = "alc0", optional = false),
 		@DictionaryAttribute(name = "subnet", defaultValue = "10.0.0.0", optional = false),
-		@DictionaryAttribute(name = "mask", defaultValue = "24", vals={"8", "16", "24"}, optional = false)
+		@DictionaryAttribute(name = "mask", defaultValue = "24", vals={"8", "16", "24"}, optional = false),
+		@DictionaryAttribute(name = "flavor", defaultValue = "kevjail", optional = false)
 })
 @NodeType
 public class JailNode extends IaaSNode {
 	private static final Logger logger = LoggerFactory.getLogger(JailNode.class);
 
-	protected static final String REMOVE_NODE = "RemoveNode";
-	protected static final String ADD_NODE = "AddNode";
-
 	@Override
 	public KevoreeNodeRunner createKevoreeNodeRunner (String nodeName, String bootStrapModel, ContainerRoot model) {
-		return new JailKevoreeNodeRunner(nodeName, bootStrapModel, this.getDictionary().get("inet").toString(), this.getDictionary().get("subnet").toString(), this.getDictionary().get("mask").toString(), model);
+		return new JailKevoreeNodeRunner(nodeName, bootStrapModel, this.getDictionary().get("inet").toString(),
+				this.getDictionary().get("subnet").toString(), this.getDictionary().get("mask").toString(), model, this.getDictionary().get("flavor").toString());
 	}
 
-	@Start
+	/*@Start
 	@Override
 	public void startNode () {
-
 		super.startNode();
 	}
 
 	@Stop
 	@Override
 	public void stopNode () {
-		logger.debug("stopping node type of " + this.getNodeName());
+		logger.debug("stopping node {}", this.getNodeName());
 		super.stopNode();
-	}
+	}*/
 }

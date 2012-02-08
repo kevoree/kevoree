@@ -23,8 +23,8 @@ import org.kevoree.library.sky.manager.{Helper, KevoreeNodeRunner}
 import java.net.InetAddress
 import org.kevoree.ContainerRoot
 import scala.Array._
-import org.kevoree.framework.KevoreePropertyHelper
 import java.io._
+import org.kevoree.framework.{Constants, KevoreePropertyHelper}
 
 
 /**
@@ -35,8 +35,7 @@ import java.io._
  * @author Erwan Daubert
  * @version 1.0
  */
-class JailKevoreeNodeRunner (nodeName: String, bootStrapModel: String, inet: String, subnet: String, mask: String,
-  model: ContainerRoot)
+class JailKevoreeNodeRunner (nodeName: String, bootStrapModel: String, inet: String, subnet: String, mask: String, model: ContainerRoot, flavor: String)
   extends KevoreeNodeRunner(nodeName, bootStrapModel) {
   private val logger: Logger = LoggerFactory.getLogger(classOf[JailKevoreeNodeRunner])
 
@@ -88,8 +87,15 @@ class JailKevoreeNodeRunner (nodeName: String, bootStrapModel: String, inet: Str
         }
     }
     if (result._1 && notFound) {
-      // we create a new IP alias according to the existing ones
-      val newIp = lookingForNewIp(ips)
+      var newIp = "127.0.0.1"
+      // check if the node have a inet address
+      val ipOption = KevoreePropertyHelper.getStringNetworkProperty(model, nodeName, Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP)
+      if (ipOption.isDefined) {
+        newIp = ipOption.get
+      } else {
+        // we create a new IP alias according to the existing ones
+        newIp = lookingForNewIp(ips)
+      }
       resultActor.starting()
       logger.debug("running {} {} alias {}", Array[AnyRef](ifconfig, inet, newIp))
       p = Runtime.getRuntime.exec(Array[String](ifconfig, inet, "alias", newIp))
@@ -100,8 +106,8 @@ class JailKevoreeNodeRunner (nodeName: String, bootStrapModel: String, inet: Str
       if (result._1) {
         // create the new jail
         resultActor.starting()
-        logger.debug("running {} create -f kevjail {} {}", Array[AnyRef](ezjailAdmin, nodeName, newIp))
-        p = Runtime.getRuntime.exec(Array[String](ezjailAdmin, "create", "-f", "kevjail", nodeName, newIp))
+        logger.debug("running {} create -f {} {} {}", Array[AnyRef](ezjailAdmin, flavor, nodeName, newIp))
+        p = Runtime.getRuntime.exec(Array[String](ezjailAdmin, "create", "-f", flavor, nodeName, newIp))
         new Thread(new ProcessStreamManager(p.getErrorStream, Array(), Array(new Regex("^Error.*")), p)).start()
         result = resultActor.waitingFor(120000)
         if (result._1) {
@@ -167,7 +173,6 @@ class JailKevoreeNodeRunner (nodeName: String, bootStrapModel: String, inet: Str
                 if (root.isDebugEnabled) {
                   debug = "DEBUG"
                 }
-                //resultActor.starting()
                 var exec = Array[String](jexec, jailId, "/usr/local/bin/java", "-Dnode.name=" + nodeName, "-Dnode.bootstrap=" + File.separator + "root" + File.separator + "bootstrapmodel.kev",
                                           "-Dnode.log.level=" + debug)
                 exec = exec ++ Array[String]("-jar", File.separator + "root" + File.separator + "kevoree-runtime.jar")
@@ -177,12 +182,10 @@ class JailKevoreeNodeRunner (nodeName: String, bootStrapModel: String, inet: Str
                 outFile = new File(logFile + ".out")
                 logger.debug("writing logs about {} on {}", nodeName, outFile.getAbsolutePath)
                 new Thread(new
-                    ProcessStreamFileLogger(nodeProcess.getInputStream, /*nodeProcess.getErrorStream,*/
-                                             outFile)).start()
+                    ProcessStreamFileLogger(nodeProcess.getInputStream, outFile)).start()
                 errFile = new File(logFile + ".err")
                 logger.debug("writing logs about {} on {}", nodeName, errFile.getAbsolutePath)
-                new Thread(new ProcessStreamFileLogger(nodeProcess.getErrorStream, /*nodeProcess.getErrorStream,*/ errFile)).start()
-                //result = resultActor.waitingFor(10000)
+                new Thread(new ProcessStreamFileLogger(nodeProcess.getErrorStream, errFile)).start()
                 try {
                   nodeProcess.exitValue
                   false
@@ -502,35 +505,6 @@ class JailKevoreeNodeRunner (nodeName: String, bootStrapModel: String, inet: Str
     }
   }
 
-  /*private def getNodeProperty (key: String, nodeName: String): Option[String] = {
-    model.getNodes.find(node => node.getName == nodeName) match {
-      case None => None
-      case Some(node) => {
-        node.getDictionary match {
-          case None => {
-            getDefaultValue(node.getTypeDefinition, key)
-          }
-          case Some(dictionary) => {
-            dictionary.getValues.find(dictionaryAttribute => dictionaryAttribute.getAttribute.getName == key) match {
-              case None => None
-              case Some(dictionaryAttribute) => dictionaryAttribute.getValue
-            }
-          }
-        }
-        true
-      }
-    }
-    None
-  }
-
-  private def getDefaultValue (typeDefinition: TypeDefinition, key: String): String = {
-    typeDefinition.getDictionaryType.get.getDefaultValues
-      .find(defaultValue => defaultValue.getAttribute.getName == key) match {
-      case None => ""
-      case Some(defaultValue) => defaultValue.getValue
-    }
-  }*/
-
   private def copyFile (inputFile: String, outputFile: String): Boolean = {
     logger.debug("trying to copy {} to {}", inputFile, outputFile)
     if (new File(inputFile).exists()) {
@@ -561,27 +535,18 @@ class JailKevoreeNodeRunner (nodeName: String, bootStrapModel: String, inet: Str
     }
   }
 
-  class ProcessStreamFileLogger (inputStream: InputStream /*, errorStream: InputStream*/ , file: File)
+  class ProcessStreamFileLogger (inputStream: InputStream, file: File)
     extends Runnable {
     override def run () {
       try {
-        //        outFile = new File(file)
-        //        errFile = new File(file + ".err")
         val outputStream = new FileWriter(file)
-        //        val errorOutputStream = new FileWriter(errFile)
         val readerIn = new BufferedReader(new InputStreamReader(inputStream))
-        //        val readerErr = new BufferedReader(new InputStreamReader(errorStream))
         var lineIn = readerIn.readLine()
-        //        var lineErr = readerErr.readLine()
-        while (lineIn != null /*|| lineErr != null*/ ) {
+        while (lineIn != null) {
           if (lineIn != null) {
             outputStream.write(lineIn + "\n")
           }
-          /*if (lineErr != null) {
-            errorOutputStream.write(lineErr + "\n")
-          }*/
           lineIn = readerIn.readLine()
-          //          lineErr = readerErr.readLine()
         }
       } catch {
         case _@e => e.printStackTrace()
