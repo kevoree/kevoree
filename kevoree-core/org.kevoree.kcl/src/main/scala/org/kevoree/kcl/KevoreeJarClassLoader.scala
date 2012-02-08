@@ -31,9 +31,19 @@ import java.util.{ArrayList, Collections, Enumeration}
 
 class KevoreeJarClassLoader extends JarClassLoader {
 
-  private var locked = false
+  def getLoadedURLs : java.util.List[URL] = {
+    import scala.collection.JavaConversions._
+    classpathResources.asInstanceOf[KevoreeLazyJarResources].getLoadedURLs
+  }
 
-  //def filteredExtension = ".class"
+  var specialloaders : List[KevoreeResourcesLoader] = List()
+
+  def addSpecialLoaders(l : KevoreeResourcesLoader){
+    specialloaders = specialloaders ++ List(l)
+  }
+  def getSpecialLoaders = specialloaders
+
+  private var locked = false
 
   def lockLinks() {
     locked = true
@@ -48,6 +58,7 @@ class KevoreeJarClassLoader extends JarClassLoader {
   }
 
   classpathResources = new KevoreeLazyJarResources
+  classpathResources.asInstanceOf[KevoreeLazyJarResources].setParentKCL(this)
 
   def setLazyLoad(lazyload: Boolean) {
     classpathResources.asInstanceOf[KevoreeLazyJarResources].setLazyLoad(lazyload)
