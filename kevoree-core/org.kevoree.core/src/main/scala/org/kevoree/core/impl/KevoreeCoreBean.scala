@@ -238,8 +238,8 @@ class KevoreeCoreBean extends KevoreeModelHandlerService with KevoreeThreadActor
 
 
   private def internal_update_model(pnewmodel: ContainerRoot): Boolean = {
-    if (pnewmodel == null) {
-      logger.error("Asking for update with a NULL model !")
+    if (pnewmodel == null || !pnewmodel.getNodes.exists(p => p.getName == getNodeName())) {
+      logger.error("Asking for update with a NULL model or node name was not found in target model !")
       false
     } else {
       try {
