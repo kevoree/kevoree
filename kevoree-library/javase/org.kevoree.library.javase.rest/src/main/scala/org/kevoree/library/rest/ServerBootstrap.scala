@@ -35,6 +35,7 @@ class ServerBootstrap(group: RestGroup) {
         if (actor.getId().contains(id)) {
           try {
             val result = actor ? PoisonPill
+            // wait until the actor is killed
             result.get
           } catch {
             case e: akka.actor.ActorKilledException =>
@@ -44,6 +45,7 @@ class ServerBootstrap(group: RestGroup) {
 
       try {
         val result = Actor.registry.actorFor(supervisorRef.uuid).get ? PoisonPill
+        // wait until the supervisor is killed
         result.get
       } catch {
         case e: akka.actor.ActorKilledException =>

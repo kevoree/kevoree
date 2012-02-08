@@ -58,12 +58,14 @@ object HTMLHelper {
       .toString()
   }
 
-  def generateValidSubmissionPageHtml (targetURL: String, login: String, address: String): String = {
+  def generateValidSubmissionPageHtml (targetURL: String, login: String, address: String, url : String): String = {
+
+    val cssPath = url + "/css/bootstrap.min.css"
     <html>
       <head>
           <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
           <meta charset="utf-8"/>
-          <link href="css/bootstrap.min.css" rel="stylesheet"/>
+          <link href={cssPath} rel="stylesheet"/>
       </head>
       <body>
         <p>
@@ -80,12 +82,14 @@ object HTMLHelper {
     </html>.toString()
   }
 
-  def generateUnvalidSubmissionPageHtml (targetURL: String, login: String, exception: String): String = {
+  def generateUnvalidSubmissionPageHtml (targetURL: String, login: String, exception: String, url : String): String = {
+
+    val cssPath = url + "/css/bootstrap.min.css"
     <html>
       <head>
           <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
           <meta charset="utf-8"/>
-          <link href="css/bootstrap.min.css" rel="stylesheet"/>
+          <link href={cssPath} rel="stylesheet"/>
       </head>
       <body>
         <p>
@@ -100,12 +104,13 @@ object HTMLHelper {
     </html>.toString()
   }
 
-  def generateFailToLoginPageHtml (login: String): String = {
+  def generateFailToLoginPageHtml (login: String, url : String): String = {
+    val cssPath = url + "/css/bootstrap.min.css"
     <html>
       <head>
           <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
           <meta charset="utf-8"/>
-          <link href="css/bootstrap.min.css" rel="stylesheet"/>
+          <link href={cssPath} rel="stylesheet"/>
       </head>
       <body>
         <p>

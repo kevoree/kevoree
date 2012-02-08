@@ -39,7 +39,7 @@ public class LatexReasoner extends AbstractPage {
 
                 //
                 StringBuilder script = new StringBuilder();
-                script.append("tblock{ \n");
+//                script.append("tblock{ \n");
                 //CREATE ON SELF NODE ; TODO BETTER :-)
                 //ADD FILE SYSTEM DEDICATED TO USER
                 script.append("addComponent SvnFileSys_" + userLogin + "@" + this.getNodeName() + " : SvnFileSystem");
@@ -98,7 +98,7 @@ public class LatexReasoner extends AbstractPage {
                 script.append("bind Editor_"+userLogin+".content@"+this.getNodeName()+" => KloudTextResponse\n");
 
 
-                script.append("}//end tblock \n");
+//                script.append("}//end tblock \n");
 
                 logger.debug("Script result \n"+script.toString());
                 
