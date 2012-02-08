@@ -67,7 +67,6 @@ class KevoreeCoreBean extends KevoreeModelHandlerService with KevoreeThreadActor
         currentModel.getNodes.find(n => n.getName == nodeName) match {
           case Some(foundNode) => {
             //  val bt = new NodeTypeBootstrapHelper
-            println("toto" + kevsEngineFactory)
             bootstraper.bootstrapNodeType(currentModel, nodeName, this, kevsEngineFactory) match {
               case Some(ist: org.kevoree.api.NodeType) => {
                 nodeInstance = ist;
