@@ -28,15 +28,18 @@ object Forwarder {
 
   private var alreadyInitialize = 0
   var supervisorRef: Supervisor = _
+  var id = ""
 
   def initialize () {
     if (alreadyInitialize == 0) {
+      id = "kevoree.rest.group.spray-service.forwarder"
+      val config = ClientConfig(clientActorId = id)
       // start and supervise the HttpClient actor
       supervisorRef = Supervisor(SupervisorConfig(
-                                   OneForOneStrategy(List(classOf[Exception]), 3, 100),
-                                   List(Supervise(Actor.actorOf(new HttpClient()), Permanent))
-                                 )
-                )
+                                                   OneForOneStrategy(List(classOf[Exception]), 3, 100),
+                                                   List(Supervise(Actor.actorOf(new HttpClient(config)), Permanent))
+                                                 )
+                                )
     }
     alreadyInitialize += 1
   }
@@ -44,32 +47,28 @@ object Forwarder {
   def kill () {
     alreadyInitialize -= 1
     if (alreadyInitialize == 0) {
-//      Actor.registry.actors.foreach(a =>try {a ? PoisonPill} catch { case _=>})
-
-
       try {
-            Actor.registry.actors.foreach(actor => {
-
-                try {
-                  /*val result = */actor ? PoisonPill
-      //            result.get
-                } catch {
-                  case e: akka.actor.ActorKilledException =>
-                }
-            })
-
+        Actor.registry.actors.foreach(actor => {
+          if (actor.getId().contains(id)) {
             try {
-              /*val result = */Actor.registry.actorFor(supervisorRef.uuid).get ? PoisonPill
-      //        result.get
+              val result = actor ? PoisonPill
+              result.get
             } catch {
               case e: akka.actor.ActorKilledException =>
             }
-
-          } catch {
-            case _@e => logger.warn("Error while stopping Spray Server ", e)
           }
+        }
 
+        try {
+          val result = Actor.registry.actorFor(supervisorRef.uuid).get ? PoisonPill
+          result.get
+        } catch {
+          case e: akka.actor.ActorKilledException =>
+        }
 
+      } catch {
+        case _@e => logger.warn("Error while stopping Spray Server ", e)
+      }
 
 
     }
@@ -141,19 +140,19 @@ object Forwarder {
   }
 
   /*private def generateErrorPageHtml (exception: String): String = {
-    <html>
-      <head>
-          <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-          <meta charset="utf-8"/>
-      </head>
-      <body>
-        <p>
-          Unable to deal with the request:
-            <br/>{exception}
-        </p>
-      </body>
-    </html>.toString()
-  }*/
+          <html>
+            <head>
+                <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+                <meta charset="utf-8"/>
+            </head>
+            <body>
+              <p>
+                Unable to deal with the request:
+                  <br/>{exception}
+              </p>
+            </body>
+          </html>.toString()
+        }*/
 
   private def convertSprayCanHeadersToKevoreeHTTPHeaders (
     sprayHeaders: scala.List[cc.spray.can.HttpHeader] /*, currentPath : String*/): HashMap[String, String] = {
@@ -165,14 +164,14 @@ object Forwarder {
           case "Transfer-Encoding" =>
           case "Content-Length" =>
           /*case "Set-Cookie" if (header._2.toLowerCase.contains("path="))=> {
-            val pathIndex = header._2.toLowerCase.indexOf("path=") + "path=".length()
-            val headerValue = new StringBuilder 
-            headerValue append header._2.substring(0, pathIndex)
-            headerValue append urlPattern.replace ("*", "")
-            headerValue append header._2.substring (pathIndex, header._2.length())
-            println(header._1 + "=" + headerValue.toString())
-            headers.put(header._1, headerValue.toString())
-          }*/
+                                  val pathIndex = header._2.toLowerCase.indexOf("path=") + "path=".length()
+                                  val headerValue = new StringBuilder
+                                  headerValue append header._2.substring(0, pathIndex)
+                                  headerValue append urlPattern.replace ("*", "")
+                                  headerValue append header._2.substring (pathIndex, header._2.length())
+                                  println(header._1 + "=" + headerValue.toString())
+                                  headers.put(header._1, headerValue.toString())
+                                }*/
           case _ => /*println(header._1 + "=" + header._2); */ headers.put(header._1, header._2)
         }
 
