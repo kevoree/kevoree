@@ -43,18 +43,13 @@ public class KloudResourceManager extends ParentAbstractPage {
 			if (request.getResolvedParams().get("model") != null && request.getResolvedParams().get("login") != null
 					&& request.getResolvedParams().get("password") != null && request.getResolvedParams().get("ssh_key") != null) {
 				// check authentication information
-				if (InriaLdap.testLogin(request.getResolvedParams().get("login"),
-						request.getResolvedParams().get("password"))) {
+				if (InriaLdap.testLogin(request.getResolvedParams().get("login"), request.getResolvedParams().get("password"))) {
 
 					String result = process(request.getResolvedParams().get("model"), request.getResolvedParams().get("login"), request.getResolvedParams().get("ssh_key"));
 					if (result.startsWith("http")) {
-						response.setContent(HTMLHelper
-								.generateValidSubmissionPageHtml(request.getUrl(),
-										request.getResolvedParams().get("login"),
-										result));
+						response.setContent(HTMLHelper.generateValidSubmissionPageHtml(request.getUrl(), request.getResolvedParams().get("login"), result));
 					} else {
-						response.setContent(HTMLHelper.generateUnvalidSubmissionPageHtml(request.getUrl(),
-								request.getResolvedParams().get("login"), result));
+						response.setContent(HTMLHelper.generateUnvalidSubmissionPageHtml(request.getUrl(), request.getResolvedParams().get("login"), result));
 					}
 				} else {
 					response.setContent(HTMLHelper.generateFailToLoginPageHtml(request.getUrl()));
@@ -74,8 +69,7 @@ public class KloudResourceManager extends ParentAbstractPage {
 		if (KloudHelper.lookForAGroup(login, this.getModelService().getLastModel())) {
 
 			// if the user has already submitted something, we return the access point to this previous configuration
-			Option<String> accessPointOption = KloudHelper
-					.lookForAccessPoint(login, this.getNodeName(), this.getModelService().getLastModel());
+			Option<String> accessPointOption = KloudHelper.lookForAccessPoint(login, this.getNodeName(), this.getModelService().getLastModel());
 			if (accessPointOption.isDefined()) {
 				return "A previous configuration has already submitted.<br/>Please use this access point to reconfigure it: "
 						+ accessPointOption.get()
@@ -89,10 +83,10 @@ public class KloudResourceManager extends ParentAbstractPage {
 			UUIDModel uuidModel = this.getModelService().getLastUUIDModel();
 
 			// we create a group with the login of the user
-			Option<ContainerRoot> newKloudModelOption = KloudHelper.createGroup(login, this.getNodeName(), uuidModel.getModel(),getKevScriptEngineFactory(), sshKey);
+			Option<ContainerRoot> newKloudModelOption = KloudHelper.createGroup(login, this.getNodeName(), uuidModel.getModel(), getKevScriptEngineFactory(), sshKey);
 			if (newKloudModelOption.isDefined()) {
 				// create proxy to the group
-				newKloudModelOption = KloudHelper.createProxy(login, this.getNodeName(), "/" + login, newKloudModelOption.get(),getKevScriptEngineFactory());
+				newKloudModelOption = KloudHelper.createProxy(login, this.getNodeName(), "/" + login, newKloudModelOption.get(), getKevScriptEngineFactory());
 
 				if (newKloudModelOption.isDefined()) {
 

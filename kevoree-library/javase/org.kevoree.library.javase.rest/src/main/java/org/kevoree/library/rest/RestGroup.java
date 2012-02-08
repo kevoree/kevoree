@@ -22,7 +22,8 @@ import java.net.URLConnection;
 
 
 @DictionaryType({
-        @DictionaryAttribute(name = "port", defaultValue = "8000", optional = true, fragmentDependant = true)
+        @DictionaryAttribute(name = "port", defaultValue = "8000", optional = true, fragmentDependant = true),
+		@DictionaryAttribute(name = "ip", defaultValue = "0.0.0.0", optional = true, fragmentDependant = true)
 })
 @GroupType
 @Library(name = "JavaSE")
@@ -34,7 +35,12 @@ public class RestGroup extends AbstractGroupType {
     @Start
     public void startRestGroup() {
         logger.warn("Rest service start on port " + this.getDictionary().get("port").toString());
-        server.startServer(Integer.parseInt(this.getDictionary().get("port").toString()));
+		Object ipOption = this.getDictionary().get("ip");
+		String ip = "0.0.0.0";
+		if (ipOption != null) {
+			ip = ipOption.toString();
+		}
+        server.startServer(Integer.parseInt(this.getDictionary().get("port").toString()), ip);
 
        //logger.info("!!! try to block => "+getModelService().getLastModel()+"->"+getModelService().getLastModification());
 
