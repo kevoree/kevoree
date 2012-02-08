@@ -236,7 +236,6 @@ class KevoreeCoreBean extends KevoreeModelHandlerService with KevoreeThreadActor
       .warn("unknow message  " + unknow.toString + " - sender" + sender.toString + "-" + this.getClass.getName)
   }
 
-
   private def internal_update_model(pnewmodel: ContainerRoot): Boolean = {
     if (pnewmodel == null || !pnewmodel.getNodes.exists(p => p.getName == getNodeName())) {
       logger.error("Asking for update with a NULL model or node name was not found in target model !")
