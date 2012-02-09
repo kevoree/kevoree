@@ -115,6 +115,7 @@ public class KevoreeServletResponse implements HttpServletResponse {
             //logger.debug("Set ContentRaw {}",new String(stream.toByteArray()));
             response.setRawContent(stream.toByteArray());
             response.setHeaders(headers);
+            response.getHeaders().put("Content-Type",contentType);
             stream.close();
         } catch (IOException e) {
             e.printStackTrace();
