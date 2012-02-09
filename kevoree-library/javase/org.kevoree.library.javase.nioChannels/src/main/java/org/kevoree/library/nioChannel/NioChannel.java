@@ -73,10 +73,11 @@ public class NioChannel extends AbstractChannelFragment {
         }
 
 
+
         // Set up the pipeline factory.
         bootstrap.setPipelineFactory(new ChannelPipelineFactory() {
             public ChannelPipeline getPipeline() throws Exception {
-                return Channels.pipeline(new ObjectEncoder(), new KevoreeObjectDecoder(NioChannel.this.getClass().getClassLoader(), 2548576), new NioServerHandler(selfPointer));
+                return Channels.pipeline(new ObjectEncoder(), new org.jboss.netty.handler.codec.serialization.KevoreeBindingObjectDecoder(selfPointer), new NioServerHandler(selfPointer));
             }
         });
 

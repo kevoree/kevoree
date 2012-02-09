@@ -18,6 +18,7 @@
 package org.kevoree.framework;
 
 import org.kevoree.Channel;
+import org.kevoree.api.Bootstraper;
 import org.kevoree.api.service.core.handler.KevoreeModelHandlerService;
 import org.kevoree.api.service.core.script.KevScriptEngineFactory;
 import org.kevoree.framework.message.Message;
@@ -39,33 +40,33 @@ public abstract class AbstractChannelFragment implements ChannelFragment {
         return modelServiceProxy;
     }
 
-	public java.util.List<KevoreePort> getBindedPorts () {
-		return null;
-	} //OVERRIDE BY FACTORY
+    public java.util.List<KevoreePort> getBindedPorts() {
+        return null;
+    } //OVERRIDE BY FACTORY
 
-	public java.util.List<KevoreeChannelFragment> getOtherFragments () {
-		return null;
-	} //OVERRIDE BY FACTORY
+    public java.util.List<KevoreeChannelFragment> getOtherFragments() {
+        return null;
+    } //OVERRIDE BY FACTORY
 
-	public Object forward (KevoreeActor delegate, Message msg) {
-		return null;
-	} //OVERRIDE BY FACTORY
+    public Object forward(KevoreeActor delegate, Message msg) {
+        return null;
+    } //OVERRIDE BY FACTORY
 
-	public HashMap<String, Object> getDictionary () {
-		return null;
-	} //OVERRIDE BY FACTORY
+    public HashMap<String, Object> getDictionary() {
+        return null;
+    } //OVERRIDE BY FACTORY
 
-	public String getNodeName () {
-		return null;
-	}
+    public String getNodeName() {
+        return null;
+    }
 
-	public String getName () {
-		return null;
-	}
+    public String getName() {
+        return null;
+    }
 
-	public Object remoteDispatch (Message msg) {
-		return null;
-	}
+    public Object remoteDispatch(Message msg) {
+        return null;
+    }
 
     private KevScriptEngineFactory kevScriptEngineFactory = null;
 
@@ -78,12 +79,24 @@ public abstract class AbstractChannelFragment implements ChannelFragment {
     }
 
 
-	/**
-	 * Allow to find the corresponding element into the model
-	 * @return the channel corresponding to this
-	 */
-	public Channel getModelElement() {
-		return KevoreeElementHelper.getChannelElement(this.getName(), this.getModelService().getLastModel()).get();
-	}
+    /**
+     * Allow to find the corresponding element into the model
+     *
+     * @return the channel corresponding to this
+     */
+    public Channel getModelElement() {
+        return KevoreeElementHelper.getChannelElement(this.getName(), this.getModelService().getLastModel()).get();
+    }
+
+    private Bootstraper bootstrapService = null;
+
+    public void setBootStrapperService(Bootstraper brs) {
+        bootstrapService = brs;
+    }
+
+    public Bootstraper getBootStrapperService() {
+        return bootstrapService;
+    }
+
 
 }
