@@ -67,7 +67,6 @@ class KevoreeCoreBean extends KevoreeModelHandlerService with KevoreeThreadActor
         currentModel.getNodes.find(n => n.getName == nodeName) match {
           case Some(foundNode) => {
             //  val bt = new NodeTypeBootstrapHelper
-            println("toto" + kevsEngineFactory)
             bootstraper.bootstrapNodeType(currentModel, nodeName, this, kevsEngineFactory) match {
               case Some(ist: org.kevoree.api.NodeType) => {
                 nodeInstance = ist;
@@ -236,10 +235,9 @@ class KevoreeCoreBean extends KevoreeModelHandlerService with KevoreeThreadActor
       .warn("unknow message  " + unknow.toString + " - sender" + sender.toString + "-" + this.getClass.getName)
   }
 
-
   private def internal_update_model(pnewmodel: ContainerRoot): Boolean = {
-    if (pnewmodel == null) {
-      logger.error("Asking for update with a NULL model !")
+    if (pnewmodel == null || !pnewmodel.getNodes.exists(p => p.getName == getNodeName())) {
+      logger.error("Asking for update with a NULL model or node name was not found in target model !")
       false
     } else {
       try {

@@ -28,7 +28,7 @@ import scala.collection.JavaConversions._
  * Time: 17:50
  */
 
-class AndroidJCLContextHandler extends DaemonActor with KevoreeClassLoaderHandler {
+class AndroidJCLContextHandler(ctx: android.content.Context, parent: ClassLoader) extends DaemonActor with KevoreeClassLoaderHandler {
   private val kcl_cache = new java.util.HashMap[String, KevoreeJarClassLoader]()
     private val kcl_cache_file = new java.util.HashMap[String, File]()
     private var lockedDu: List[String] = List()
@@ -38,7 +38,9 @@ class AndroidJCLContextHandler extends DaemonActor with KevoreeClassLoaderHandle
 
     case class DUMP()
 
-    case class INSTALL_DEPLOYUNIT(du: DeployUnit, file: File)
+    case class INSTALL_DEPLOYUNIT_FILE(du: DeployUnit, file: File)
+
+    case class INSTALL_DEPLOYUNIT(du : DeployUnit)
 
     case class REMOVE_DEPLOYUNIT(du: DeployUnit)
 
@@ -60,7 +62,8 @@ class AndroidJCLContextHandler extends DaemonActor with KevoreeClassLoaderHandle
       loop {
         react {
           case GET_CACHE_FILE(du) => reply(getCacheFileInternals(du))
-          case INSTALL_DEPLOYUNIT(du, file) => reply(installDeployUnitInternals(du, file))
+          case INSTALL_DEPLOYUNIT_FILE(du, file) => reply(installDeployUnitInternals(du, file))
+          case INSTALL_DEPLOYUNIT(du) => reply(installDeployUnitNoFileInternals(du))
           case GET_KCL(du) => reply(getKCLInternals(du))
           case REMOVE_DEPLOYUNIT(du) => removeDeployUnitInternals(du)
           case MANUALLY_ADD_TO_CACHE(du, kcl) => manuallyAddToCacheInternals(du, kcl)
@@ -136,7 +139,8 @@ class AndroidJCLContextHandler extends DaemonActor with KevoreeClassLoaderHandle
         previousKCL
       } else {
         logger.debug("Install {} , file {}", buildKEY(du), file)
-        val newcl = new KevoreeJarClassLoader
+        val cleankey = buildKEY(du).replace(File.separator,"_")
+        val newcl = new AndroidKevoreeJarClassLoader(cleankey,ctx,parent)
         if (du.getVersion.contains("SNAPSHOT")) {
           newcl.setLazyLoad(false)
         }
@@ -220,7 +224,7 @@ class AndroidJCLContextHandler extends DaemonActor with KevoreeClassLoaderHandle
 
 
     def installDeployUnit(du: DeployUnit, file: File): KevoreeJarClassLoader = {
-      (this !? INSTALL_DEPLOYUNIT(du, file)).asInstanceOf[KevoreeJarClassLoader]
+      (this !? INSTALL_DEPLOYUNIT_FILE(du, file)).asInstanceOf[KevoreeJarClassLoader]
     }
 
     def getKevoreeClassLoader(du: DeployUnit): KevoreeJarClassLoader = {
@@ -231,13 +235,17 @@ class AndroidJCLContextHandler extends DaemonActor with KevoreeClassLoaderHandle
       this ! REMOVE_DEPLOYUNIT(du)
     }
 
-    def installDeployUnit(du: DeployUnit): KevoreeJarClassLoader = {
-      //TODO CALL ACTOR
-      val resolvedFile = AetherUtil.resolveDeployUnit(du)
-      if (resolvedFile != null) {
-        installDeployUnit(du, resolvedFile)
-      } else {
-        null
-      }
+  def installDeployUnitNoFileInternals(du: DeployUnit): KevoreeJarClassLoader = {
+    val resolvedFile = AetherUtil.resolveDeployUnit(du)
+    if (resolvedFile != null) {
+      installDeployUnitInternals(du, resolvedFile)
+    } else {
+      logger.error("Error while resolving deploy unit "+du.getUnitName)
+      null
     }
+  }
+
+  def installDeployUnit(du: DeployUnit): KevoreeJarClassLoader = {
+    (this !? INSTALL_DEPLOYUNIT(du)).asInstanceOf[KevoreeJarClassLoader]
+  }
 }

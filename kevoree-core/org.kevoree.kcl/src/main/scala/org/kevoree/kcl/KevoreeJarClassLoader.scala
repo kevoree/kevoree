@@ -31,9 +31,20 @@ import java.util.{ArrayList, Collections, Enumeration}
 
 class KevoreeJarClassLoader extends JarClassLoader {
 
-  private var locked = false
+  def getLoadedURLs: java.util.List[URL] = {
+    import scala.collection.JavaConversions._
+    classpathResources.asInstanceOf[KevoreeLazyJarResources].getLoadedURLs
+  }
 
-  //def filteredExtension = ".class"
+  var specialloaders: List[KevoreeResourcesLoader] = List()
+
+  def addSpecialLoaders(l: KevoreeResourcesLoader) {
+    specialloaders = specialloaders ++ List(l)
+  }
+
+  def getSpecialLoaders = specialloaders
+
+  private var locked = false
 
   def lockLinks() {
     locked = true
@@ -48,6 +59,7 @@ class KevoreeJarClassLoader extends JarClassLoader {
   }
 
   classpathResources = new KevoreeLazyJarResources
+  classpathResources.asInstanceOf[KevoreeLazyJarResources].setParentKCL(this)
 
   def setLazyLoad(lazyload: Boolean) {
     classpathResources.asInstanceOf[KevoreeLazyJarResources].setLazyLoad(lazyload)
@@ -83,40 +95,45 @@ class KevoreeJarClassLoader extends JarClassLoader {
 
 
   override def loadClass(className: String, resolveIt: Boolean): Class[_] = {
-    try {
-      return callSuperConcreteLoader(className, resolveIt)
-    } catch {
-      case nf: ClassNotFoundException =>
-    }
-    if (resolveIt) {
-      subClassLoaders.foreach {
-        subCL =>
-          try {
-            return subCL.loadClass(className)
-          } catch {
-            case nf: ClassNotFoundException =>
-          }
+
+    this.synchronized {
+      try {
+        return callSuperConcreteLoader(className, resolveIt)
+      } catch {
+        case nf: ClassNotFoundException =>
       }
-      subWeakClassLoaders.foreach {
-        subCL =>
-          try {
-            subCL.get.map {
-              m =>
-                if (m.isInstanceOf[KevoreeJarClassLoader]) {
-                  return m.asInstanceOf[KevoreeJarClassLoader].loadClass(className, false)
-                }
+      if (resolveIt) {
+        subClassLoaders.foreach {
+          subCL =>
+            try {
+              return subCL.loadClass(className)
+            } catch {
+              case nf: ClassNotFoundException =>
             }
-          } catch {
-            case nf: ClassNotFoundException =>
-          }
+        }
+        subWeakClassLoaders.foreach {
+          subCL =>
+            try {
+              subCL.get.map {
+                m =>
+                  if (m.isInstanceOf[KevoreeJarClassLoader]) {
+                    return m.asInstanceOf[KevoreeJarClassLoader].loadClass(className, false)
+                  }
+              }
+            } catch {
+              case nf: ClassNotFoundException =>
+            }
+        }
       }
+
+      throw new ClassNotFoundException(className)
     }
 
-    throw new ClassNotFoundException(className)
+
   }
 
   override def loadClass(className: String): Class[_] = {
-    println("loadClass->" + className)
+    // println("loadClass->" + className)
     loadClass(className, true)
   }
 
