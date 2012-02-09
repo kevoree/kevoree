@@ -37,7 +37,13 @@
             <artifactId>org.kevoree.tools.annotation.api</artifactId>
             <version>${kevoree.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.kevoree.platform</groupId>
+            <artifactId>org.kevoree.platform.osgi.standalone</artifactId>
+            <version>${kevoree.version}</version>
+        </dependency>
     </dependencies>
+
 
     <build>
         <plugins>

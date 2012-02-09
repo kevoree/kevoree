@@ -15,8 +15,6 @@ import org.ow2.frascati.util.FrascatiClassLoader;
 
 public class Test {
 
-
-	
 	
 	public static void main( String[] args ) throws Exception {
 	

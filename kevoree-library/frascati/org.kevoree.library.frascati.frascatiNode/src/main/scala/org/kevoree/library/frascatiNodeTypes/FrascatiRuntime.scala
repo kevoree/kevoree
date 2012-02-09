@@ -11,7 +11,8 @@ import java.util.Enumeration
 import java.lang.Class
 import java.util.Arrays
 import java.util.Collections
- 
+import org.kevoree.kcl.KevoreeJarClassLoader
+
 /**
  * Created by IntelliJ IDEA.
  * User: duke
@@ -62,8 +63,13 @@ class FrascatiRuntime extends Actor {
             }
             override def getURLs(): Array[java.net.URL] = {
               logger.info("GETURL CLASSLOADER")
-              val res = super[FrascatiClassLoader].getURLs
-              var urls = new java.util.ArrayList[java.net.URL]
+              val urls = classOf[FrascatiRuntime].getClassLoader.asInstanceOf[KevoreeJarClassLoader].getLoadedURLs
+              urls.toArray(new Array[java.net.URL](urls.size))
+
+
+
+              //val res = super[FrascatiClassLoader].get
+         /*     var urls = new java.util.ArrayList[java.net.URL]
 
               urls.add(new java.net.URL("file:/home/barais/.m2/repository/javax/xml/stream/stax-api/1.0-2/stax-api-1.0-2.jar"))
               urls.add(new java.net.URL("file:/home/barais/.m2/repository/aopalliance/aopalliance/1.0/aopalliance-1.0.jar"))
@@ -151,10 +157,12 @@ class FrascatiRuntime extends Actor {
               urls.add(new java.net.URL("file:/home/barais/.m2/repository/xml-resolver/xml-resolver/1.2/xml-resolver-1.2.jar"))
               urls.add(new java.net.URL("file:/home/barais/.m2/repository/org/apache/ws/xmlschema/xmlschema-core/2.0/xmlschema-core-2.0.jar"))
               urls.add(new URL("file:/opt/frascati-runtime-1.4/examples/helloworld-pojo/target/helloworld-pojo-1.4.jar"))
+              */
+/*
               res.foreach(e => urls.add(e))
               logger.info("GETURL CLASSLOADER   " + res)
               urls.toArray(new Array[java.net.URL](urls.size))
-
+*/
             }
 
           }

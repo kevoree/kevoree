@@ -16,7 +16,6 @@
         <relativePath>../org.kevoree.library.frascati.root/pom.xml</relativePath>
     </parent>
 
-
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <config.directory>..</config.directory>

@@ -1,0 +1,39 @@
+<kevoree:ContainerRoot xmlns:xml="http://www.omg.org/XMI" xmlns:xsi="http://wwww.w3.org/2001/XMLSchema-instance" xmlns:kevoree="http://kevoree/1.0" xmi:version="2.0" xsi:type="kevoree:ContainerRoot">
+ <nodes metaData="x=421,y=177" xsi:type="kevoree:ContainerNode" name="node0" typeDefinition="//@typeDefinitions.0"></nodes>
+ <typeDefinitions superTypes="//@typeDefinitions.1" stopMethod="stopNode" bean="org.kevoree.library.frascatiNodeTypes.FrascatiNode" name="FrascatiNode" xsi:type="kevoree:NodeType" factoryBean="org.kevoree.library.frascatiNodeTypes.FrascatiNodeFactory" startMethod="startNode" deployUnits="//@deployUnits.0" managedPrimitiveTypes="//@adaptationPrimitiveTypes.0 //@adaptationPrimitiveTypes.1 //@adaptationPrimitiveTypes.2 //@adaptationPrimitiveTypes.3 //@adaptationPrimitiveTypes.4 //@adaptationPrimitiveTypes.5 //@adaptationPrimitiveTypes.6 //@adaptationPrimitiveTypes.7 //@adaptationPrimitiveTypes.8 //@adaptationPrimitiveTypes.9 //@adaptationPrimitiveTypes.10 //@adaptationPrimitiveTypes.11 //@adaptationPrimitiveTypes.12 //@adaptationPrimitiveTypes.13 //@adaptationPrimitiveTypes.14 //@adaptationPrimitiveTypes.15 //@adaptationPrimitiveTypes.16 //@adaptationPrimitiveTypes.17 //@adaptationPrimitiveTypes.18 //@adaptationPrimitiveTypes.19 //@adaptationPrimitiveTypes.20"></typeDefinitions>
+ <typeDefinitions deployUnits="//@deployUnits.1" startMethod="startNode" factoryBean="org.kevoree.library.defaultNodeTypes.JavaSENodeFactory" xsi:type="kevoree:NodeType" name="JavaSENode" bean="org.kevoree.library.defaultNodeTypes.JavaSENode" stopMethod="stopNode" managedPrimitiveTypes="//@adaptationPrimitiveTypes.0 //@adaptationPrimitiveTypes.1 //@adaptationPrimitiveTypes.2 //@adaptationPrimitiveTypes.3 //@adaptationPrimitiveTypes.4 //@adaptationPrimitiveTypes.5 //@adaptationPrimitiveTypes.6 //@adaptationPrimitiveTypes.7 //@adaptationPrimitiveTypes.8 //@adaptationPrimitiveTypes.9 //@adaptationPrimitiveTypes.10 //@adaptationPrimitiveTypes.11 //@adaptationPrimitiveTypes.12 //@adaptationPrimitiveTypes.13 //@adaptationPrimitiveTypes.14 //@adaptationPrimitiveTypes.15 //@adaptationPrimitiveTypes.16 //@adaptationPrimitiveTypes.17 //@adaptationPrimitiveTypes.18 //@adaptationPrimitiveTypes.19 //@adaptationPrimitiveTypes.20"></typeDefinitions>
+ <repositories xsi:type="kevoree:Repository" url="http://maven.kevoree.org/archiva/repository/snapshots/"></repositories>
+ <repositories xsi:type="kevoree:Repository" url="http://maven.objectweb.org/maven2"></repositories>
+ <repositories xsi:type="kevoree:Repository" url="http://maven.objectweb.org/maven2-snapshot"></repositories>
+ <repositories xsi:type="kevoree:Repository" url="http://download.java.net/maven/2/"></repositories>
+ <repositories xsi:type="kevoree:Repository" url="http://www.openarchitectureware.org/m2"></repositories>
+ <repositories xsi:type="kevoree:Repository" url="http://scala-tools.org/repo-releases"></repositories>
+ <repositories xsi:type="kevoree:Repository" url="http://maven.kevoree.org/release"></repositories>
+ <repositories xsi:type="kevoree:Repository" url="http://maven.kevoree.org/snapshots"></repositories>
+ <repositories xsi:type="kevoree:Repository" url="http://repo1.maven.org/maven2"></repositories>
+ <libraries name="JavaSE" xsi:type="kevoree:TypeLibrary" subTypes="//@typeDefinitions.0 //@typeDefinitions.1"></libraries>
+ <libraries name="Frascati" xsi:type="kevoree:TypeLibrary" subTypes="//@typeDefinitions.0"></libraries>
+ <deployUnits requiredLibs="//@deployUnits.1" hashcode="201202071355928" unitName="org.kevoree.library.frascati.frascatiNode" xsi:type="kevoree:DeployUnit" groupName="org.kevoree.library.frascati" version="1.6.0-SNAPSHOT" type="bundle" targetNodeType="//@typeDefinitions.1"></deployUnits>
+ <deployUnits type="jar" version="1.6.0-SNAPSHOT" groupName="org.kevoree.library.javase" xsi:type="kevoree:DeployUnit" unitName="org.kevoree.library.javase.javaseNode" hashcode="201202071343811" targetNodeType="//@typeDefinitions.1"></deployUnits>
+ <adaptationPrimitiveTypes xsi:type="kevoree:AdaptationPrimitiveType" name="UpdateType"></adaptationPrimitiveTypes>
+ <adaptationPrimitiveTypes xsi:type="kevoree:AdaptationPrimitiveType" name="UpdateDeployUnit"></adaptationPrimitiveTypes>
+ <adaptationPrimitiveTypes xsi:type="kevoree:AdaptationPrimitiveType" name="AddType"></adaptationPrimitiveTypes>
+ <adaptationPrimitiveTypes xsi:type="kevoree:AdaptationPrimitiveType" name="AddDeployUnit"></adaptationPrimitiveTypes>
+ <adaptationPrimitiveTypes xsi:type="kevoree:AdaptationPrimitiveType" name="AddThirdParty"></adaptationPrimitiveTypes>
+ <adaptationPrimitiveTypes xsi:type="kevoree:AdaptationPrimitiveType" name="RemoveType"></adaptationPrimitiveTypes>
+ <adaptationPrimitiveTypes xsi:type="kevoree:AdaptationPrimitiveType" name="RemoveDeployUnit"></adaptationPrimitiveTypes>
+ <adaptationPrimitiveTypes xsi:type="kevoree:AdaptationPrimitiveType" name="UpdateInstance"></adaptationPrimitiveTypes>
+ <adaptationPrimitiveTypes xsi:type="kevoree:AdaptationPrimitiveType" name="UpdateBinding"></adaptationPrimitiveTypes>
+ <adaptationPrimitiveTypes xsi:type="kevoree:AdaptationPrimitiveType" name="UpdateDictionaryInstance"></adaptationPrimitiveTypes>
+ <adaptationPrimitiveTypes xsi:type="kevoree:AdaptationPrimitiveType" name="AddInstance"></adaptationPrimitiveTypes>
+ <adaptationPrimitiveTypes xsi:type="kevoree:AdaptationPrimitiveType" name="RemoveInstance"></adaptationPrimitiveTypes>
+ <adaptationPrimitiveTypes xsi:type="kevoree:AdaptationPrimitiveType" name="AddBinding"></adaptationPrimitiveTypes>
+ <adaptationPrimitiveTypes xsi:type="kevoree:AdaptationPrimitiveType" name="RemoveBinding"></adaptationPrimitiveTypes>
+ <adaptationPrimitiveTypes xsi:type="kevoree:AdaptationPrimitiveType" name="AddFragmentBinding"></adaptationPrimitiveTypes>
+ <adaptationPrimitiveTypes xsi:type="kevoree:AdaptationPrimitiveType" name="RemoveFragmentBinding"></adaptationPrimitiveTypes>
+ <adaptationPrimitiveTypes xsi:type="kevoree:AdaptationPrimitiveType" name="UpdateFragmentBinding"></adaptationPrimitiveTypes>
+ <adaptationPrimitiveTypes xsi:type="kevoree:AdaptationPrimitiveType" name="StartInstance"></adaptationPrimitiveTypes>
+ <adaptationPrimitiveTypes xsi:type="kevoree:AdaptationPrimitiveType" name="StopInstance"></adaptationPrimitiveTypes>
+ <adaptationPrimitiveTypes xsi:type="kevoree:AdaptationPrimitiveType" name="StartThirdParty"></adaptationPrimitiveTypes>
+ <adaptationPrimitiveTypes xsi:type="kevoree:AdaptationPrimitiveType" name="RemoveThirdParty"></adaptationPrimitiveTypes>
+</kevoree:ContainerRoot>
