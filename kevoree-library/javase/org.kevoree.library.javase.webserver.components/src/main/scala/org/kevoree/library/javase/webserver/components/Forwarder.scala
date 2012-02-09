@@ -57,7 +57,7 @@ object Forwarder {
               case e: akka.actor.ActorKilledException =>
             }
           }
-        }
+        })
 
         try {
           val result = Actor.registry.actorFor(supervisorRef.uuid).get ? PoisonPill
