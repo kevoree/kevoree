@@ -19,4 +19,9 @@ package org.kevoree.framework
  */
 
 trait KevoreePort extends KevoreeActor with Port {
+
+  def getModelElement : org.kevoree.Port = {
+    null
+  }
+
 }

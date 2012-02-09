@@ -10,7 +10,7 @@ import org.jboss.netty.channel.socket.nio.NioClientSocketChannelFactory;
 import org.jboss.netty.channel.socket.nio.NioServerSocketChannelFactory;
 import org.jboss.netty.channel.socket.oio.OioClientSocketChannelFactory;
 import org.jboss.netty.channel.socket.oio.OioServerSocketChannelFactory;
-import org.jboss.netty.handler.codec.serialization.KevoreeObjectDecoder;
+import org.jboss.netty.handler.codec.serialization.ObjectDecoder;
 import org.jboss.netty.handler.codec.serialization.ObjectEncoder;
 import org.kevoree.annotation.ChannelTypeFragment;
 import org.kevoree.annotation.*;
@@ -73,10 +73,11 @@ public class NioChannel extends AbstractChannelFragment {
         }
 
 
+
         // Set up the pipeline factory.
         bootstrap.setPipelineFactory(new ChannelPipelineFactory() {
             public ChannelPipeline getPipeline() throws Exception {
-                return Channels.pipeline(new ObjectEncoder(), new KevoreeObjectDecoder(NioChannel.this.getClass().getClassLoader(), 2548576), new NioServerHandler(selfPointer));
+                return Channels.pipeline(new ObjectEncoder(), new ObjectDecoder(new ChannelClassResolver(selfPointer)), new NioServerHandler(selfPointer));
             }
         });
 
@@ -90,7 +91,7 @@ public class NioChannel extends AbstractChannelFragment {
             public ChannelPipeline getPipeline() throws Exception {
                 return Channels.pipeline(
                         new ObjectEncoder(),
-                        new KevoreeObjectDecoder(NioChannel.this.getClass().getClassLoader(), 2548576),
+                        new ObjectDecoder(new ChannelClassResolver(selfPointer)),
                         new NioClientHandler(selfPointer));
             }
         });

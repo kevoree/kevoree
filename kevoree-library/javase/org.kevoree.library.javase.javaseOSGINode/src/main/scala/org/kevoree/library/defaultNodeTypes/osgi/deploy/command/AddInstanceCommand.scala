@@ -29,7 +29,7 @@ import library.defaultNodeTypes.osgi.deploy.{KevoreeOSGIMapping, OSGIKevoreeDepl
 import org.kevoree.framework.aspects.KevoreeAspects._
 import org.slf4j.LoggerFactory
 
-case class AddInstanceCommand(c: Instance, nodeName: String, modelservice: KevoreeModelHandlerService, kscript: KevScriptEngineFactory) extends PrimitiveCommand {
+case class AddInstanceCommand(c: Instance, nodeName: String, modelservice: KevoreeModelHandlerService, kscript: KevScriptEngineFactory,bs : org.kevoree.api.Bootstraper) extends PrimitiveCommand {
 
   var logger = LoggerFactory.getLogger(this.getClass);
   var kevoreeFactory: KevoreeInstanceFactory = null

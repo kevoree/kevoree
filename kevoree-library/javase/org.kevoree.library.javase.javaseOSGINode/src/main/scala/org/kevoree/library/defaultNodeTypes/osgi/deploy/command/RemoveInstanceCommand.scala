@@ -30,7 +30,7 @@ import org.kevoree.library.defaultNodeTypes.jcl.deploy.context.KevoreeDeployMana
 import org.kevoree.library.defaultNodeTypes.osgi.deploy.{KevoreeOSGIMapping, OSGIKevoreeDeployManager}
 import org.kevoree.api.PrimitiveCommand
 
-case class RemoveInstanceCommand(c: Instance, nodeName: String, modelservice: KevoreeModelHandlerService, kscript: KevScriptEngineFactory) extends PrimitiveCommand {
+case class RemoveInstanceCommand(c: Instance, nodeName: String, modelservice: KevoreeModelHandlerService, kscript: KevScriptEngineFactory,bs : org.kevoree.api.Bootstraper) extends PrimitiveCommand {
 
   var logger = LoggerFactory.getLogger(this.getClass)
 
@@ -72,7 +72,7 @@ case class RemoveInstanceCommand(c: Instance, nodeName: String, modelservice: Ke
 
   def undo() {
     try {
-      AddInstanceCommand(c, nodeName, modelservice, kscript).execute()
+      AddInstanceCommand(c, nodeName, modelservice, kscript,bs).execute()
       UpdateDictionary(c, nodeName).execute()
     } catch {
       case _ =>
