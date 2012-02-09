@@ -1,15 +1,17 @@
 package org.kevoree.library.frascatiNodeTypes.primitives
 
+import java.io.PrintWriter
+import java.net.URL
+import org.kevoree.api.PrimitiveCommand
 import org.kevoree.framework.aspects.KevoreeAspects._
 import org.kevoreeAdaptation.AdaptationPrimitive
-import java.io.PrintWriter
 import org.kevoree.ContainerRoot
-import org.slf4j.LoggerFactory
-import org.ow2.frascati.FraSCAti
-import org.kevoree.api.PrimitiveCommand
-import org.eclipse.emf.ecore.EPackage
-import java.net.URL
+import org.objectweb.fractal.api.Component
+import org.ow2.frascati.assembly.factory.processor.ProcessingContextImpl
 import org.ow2.frascati.util.FrascatiClassLoader
+import org.ow2.frascati.FraSCAti
+import org.slf4j.LoggerFactory
+import javax.xml.namespace.QName
 
 
 /**
@@ -31,17 +33,26 @@ case class FrascatiAddInstance(adaptationPrimitive: AdaptationPrimitive, frascat
       if (c_instance.getTypeDefinition.asInstanceOf[org.kevoree.ComponentType].getBean.endsWith(".composite")) {
         val kcl = bs.getKevoreeClassLoaderHandler.getKevoreeClassLoader(deployUnit)
         val compositeURL = kcl.getResource(c_instance.getTypeDefinition.getBean)
-        logger.error("TFTFTFTFTFT"+kcl.loadClass("org.ow2.frascati.examples.helloworld.pojo.Client"))
+        //logger.error("TFTFTFTFTFT"+kcl.loadClass("org.ow2.frascati.examples.helloworld.pojo.Client"))
         //logger.error("TFTFTFTFTFT"+kcl.loadClass("org.ow2.frascati.tinfi.api.control.SCABasicIntentController"))
+        
+ 
         
         
         
 //        frascati.getClassLoaderManager().setClassLoader(new FrascatiClassLoader(kcl))
         
-        
-        frascati.getClassLoaderManager().loadLibraries(Array(new URL("file:/opt/frascati-runtime-1.4/examples/helloworld-pojo/target/helloworld-pojo-1.4.jar")))
-        
-        frascati.getComposite(compositeURL.toString)
+    var cm = frascati.getCompositeManager();
+    // Create a FraSCAti Assembly Factory processing context.
+    var processingContext = new ProcessingContextImpl(frascati.getClassLoaderManager().getClassLoader());
+    // Process the composite.
+      //  frascati.getClassLoaderManager().loadLibraries(Array(new URL("file:/opt/frascati-runtime-1.4/examples/helloworld-pojo/target/helloworld-pojo-1.4.jar")))
+     
+    
+    var composite = cm.processComposite(new QName(compositeURL.toString()), processingContext);
+    
+//      
+//        frascati.getComposite()
       } else {
         val s = ScaGenerator.generateComponent(adaptationPrimitive.getRef.asInstanceOf[org.kevoree.Instance].getName, adaptationPrimitive.getRef.asInstanceOf[org.kevoree.Instance].getTypeDefinition.asInstanceOf[org.kevoree.ComponentType].getBean, adaptationPrimitive.getRef.asInstanceOf[org.kevoree.ComponentInstance])
         val f = java.io.File.createTempFile(adaptationPrimitive.getRef.asInstanceOf[org.kevoree.ComponentInstance].getName, "composite")
