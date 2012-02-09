@@ -4,12 +4,9 @@
  */
 package org.kevoree.library.arduinoNodeType.utils;
 
-import gnu.io.*;
-import org.kevoree.extra.osgi.rxtx.KevoreeSharedCom;
-//import org.kevoree.library.arduinoNodeType.com.TwoWayActors;
+import org.kevoree.extra.kserial.KevoreeSharedCom;
 
 import java.io.IOException;
-//import java.util.HashMap;
 import java.util.Random;
 
 /**
@@ -19,7 +16,7 @@ public class ComSender {
 
    // private static HashMap<String, TwoWayActors> map = new HashMap<String, TwoWayActors>();
 
-    public static Boolean send(String msg, String portName) throws NoSuchPortException, PortInUseException, IOException, InterruptedException {
+    public static Boolean send(String msg, String portName) throws IOException, InterruptedException {
            /*
         if (!map.containsKey(portName)) {
             map.put(portName, new TwoWayActors(portName));
@@ -30,11 +27,16 @@ public class ComSender {
          */
 
         int token = new Random().nextInt(10);
-
         String msgToSend = "$"+token+msg;
+        Thread.sleep(2000);
+        boolean result = false;
+        int nbTry = 5;
+        while(nbTry > 0 && !result){
+            nbTry = nbTry -1;
+            result = KevoreeSharedCom.sendSynch(portName, msgToSend, "ack" + token, 3000);
+        }
 
 
-        boolean result = KevoreeSharedCom.sendSynch(portName,msgToSend, "ack" + token, 3000);
 
         //boolean result = com.sendAndWait(msgToSend, "ack" + token, 3000);
 

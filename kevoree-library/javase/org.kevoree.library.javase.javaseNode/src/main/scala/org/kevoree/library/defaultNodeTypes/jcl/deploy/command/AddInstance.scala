@@ -16,13 +16,13 @@ package org.kevoree.library.defaultNodeTypes.jcl.deploy.command
 
 import org.kevoree.framework.aspects.KevoreeAspects._
 import org.kevoree.{NodeType, ContainerRoot, Instance}
-import org.kevoree.framework.{KevoreeGeneratorHelper}
-import org.kevoree.framework.osgi.{KevoreeInstanceActivator, KevoreeInstanceFactory}
 import org.slf4j.LoggerFactory
 import org.kevoree.api.service.core.handler.KevoreeModelHandlerService
 import org.kevoree.api.service.core.script.KevScriptEngineFactory
 import org.kevoree.library.defaultNodeTypes.jcl.deploy.context.{KevoreeDeployManager, KevoreeMapping}
 import org.kevoree.api.PrimitiveCommand
+import org.kevoree.framework.osgi.{KevoreeChannelFragmentActivator, KevoreeGroupActivator, KevoreeInstanceActivator, KevoreeInstanceFactory}
+import org.kevoree.framework.{AbstractChannelFragment, AbstractNodeType, AbstractGroupType, KevoreeGeneratorHelper}
 
 /**
  * Created by IntelliJ IDEA.
@@ -54,7 +54,19 @@ case class AddInstance(c: Instance, nodeName: String,modelservice : KevoreeModel
 
       newInstance.setKevScriptEngineFactory(kscript)
       newInstance.setModelHandlerService(modelservice)
+
       newInstance.start()
+      
+      if(newInstance.isInstanceOf[KevoreeGroupActivator]){
+        newInstance.asInstanceOf[KevoreeGroupActivator].groupActor.setBootStrapperService(bs)
+      }
+
+      if(newInstance.isInstanceOf[KevoreeChannelFragmentActivator]){
+        newInstance.asInstanceOf[KevoreeChannelFragmentActivator].channelActor.asInstanceOf[AbstractChannelFragment].setBootStrapperService(bs)
+      }
+
+
+
       true
     } catch {
       case _@e => {

@@ -13,10 +13,10 @@ class ServerBootstrap(group: RestGroup) {
   var id = ""
   var supervisorRef: Supervisor = _
 
-  def startServer(port: Int) {
+  def startServer(port: Int, ip : String) {
 
     id = "kevoree.rest.group.spray-service." + group.getName
-    val config = ServerConfig("0.0.0.0", port, id + "-server", id, id)
+    val config = ServerConfig(ip, port, id + "-server", id, id)
 
     supervisorRef = Supervisor(
       SupervisorConfig(
@@ -35,6 +35,7 @@ class ServerBootstrap(group: RestGroup) {
         if (actor.getId().contains(id)) {
           try {
             val result = actor ? PoisonPill
+            // wait until the actor is killed
             result.get
           } catch {
             case e: akka.actor.ActorKilledException =>
@@ -44,6 +45,7 @@ class ServerBootstrap(group: RestGroup) {
 
       try {
         val result = Actor.registry.actorFor(supervisorRef.uuid).get ? PoisonPill
+        // wait until the supervisor is killed
         result.get
       } catch {
         case e: akka.actor.ActorKilledException =>

@@ -50,46 +50,23 @@
             <version>${kevoree.version}</version>
             <type>bundle</type>
         </dependency>
-
-
         <dependency>
             <groupId>org.kevoree.extra</groupId>
-            <artifactId>org.kevoree.extra.osgi.rxtx</artifactId>
-            <version>2.2.0</version>
+            <artifactId>org.kevoree.extra.kserial</artifactId>
+            <version>1.0</version>
             <type>bundle</type>
         </dependency>
-
-        <!-- Temp dependency -->
-        <!--
         <dependency>
-            <groupId>org.kevoree.library.arduino</groupId>
-            <artifactId>org.kevoree.library.arduino.groupType</artifactId>
-            <version>${kevoree.version}</version>
+            <groupId>net.java.dev.jna</groupId>
+            <artifactId>jna</artifactId>
+            <version>3.3.0</version>
+            <type>bundle</type>
         </dependency>
-        <dependency>
-            <groupId>org.kevoree.library.arduino</groupId>
-            <artifactId>org.kevoree.library.arduino.fuzzylogic</artifactId>
-            <version>${kevoree.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.kevoree.library.arduino</groupId>
-            <artifactId>org.kevoree.library.arduino.components</artifactId>
-            <version>${kevoree.version}</version>
-        </dependency>
--->
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-jdk14</artifactId>
             <version>1.6.2</version>
         </dependency>
-
-        <!--
-    <dependency>
-        <groupId>org.kevoree.library.arduino</groupId>
-        <artifactId>org.kevoree.library.arduino.channels</artifactId>
-        <version>${kevoree.version}</version>
-    </dependency>
-        -->
     </dependencies>
 
     <build>

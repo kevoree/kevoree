@@ -26,8 +26,15 @@ class IaaSHTTPServer (node: AbstractNodeType) {
     id = "iaas.spray-service." + node.getNodeName
     val config = ServerConfig("0.0.0.0", port, id + "-server", id, id)
 
-    supervisorRef = Supervisor(SupervisorConfig(OneForOneStrategy(List(classOf[Exception]), 3, 100),
-                                                 List(Supervise(Actor.actorOf(new HTTPServerRoot(id, node)), Permanent), Supervise(Actor.actorOf(new HttpServer(config)), Permanent))))
+    supervisorRef = Supervisor(
+                                SupervisorConfig(
+                                                  OneForOneStrategy(List(classOf[Exception]), 3, 100),
+                                                  List(
+                                                        Supervise(Actor.actorOf(new HTTPServerRoot(id, node)), Permanent),
+                                                        Supervise(Actor.actorOf(new HttpServer(config)), Permanent)
+                                                      )
+                                                )
+                              )
   }
 
   def stop () {
@@ -35,8 +42,8 @@ class IaaSHTTPServer (node: AbstractNodeType) {
       Actor.registry.actors.foreach(actor => {
         if (actor.getId().contains(id)) {
           try {
-            /*val result = */ actor ? PoisonPill
-            //            result.get
+            val result = actor ? PoisonPill
+            result.get
           } catch {
             case e: akka.actor.ActorKilledException =>
           }
@@ -44,8 +51,8 @@ class IaaSHTTPServer (node: AbstractNodeType) {
       })
 
       try {
-        /*val result = */ Actor.registry.actorFor(supervisorRef.uuid).get ? PoisonPill
-        //        result.get
+        val result = Actor.registry.actorFor(supervisorRef.uuid).get ? PoisonPill
+        result.get
       } catch {
         case e: akka.actor.ActorKilledException =>
       }

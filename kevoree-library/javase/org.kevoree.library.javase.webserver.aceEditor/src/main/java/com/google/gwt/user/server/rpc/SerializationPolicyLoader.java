@@ -145,11 +145,11 @@ public final class SerializationPolicyLoader {
           try {
 
 
-            //  if(com.google.gwt.user.server.rpc.RPC.getCurrentBundle() != null){
-           //       clazz= com.google.gwt.user.server.rpc.RPC.getCurrentBundle().loadClass(binaryTypeName);
-             // } else {
+              if(com.google.gwt.user.server.rpc.RPC.getClassLoader() != null){
+                  clazz= com.google.gwt.user.server.rpc.RPC.getClassLoader().loadClass(binaryTypeName);
+             } else {
                   clazz = Class.forName(binaryTypeName, false, contextClassLoader);
-            //  }
+              }
 
             HashSet<String> fieldNames = new HashSet<String>();
             for (int i = 2; i < components.length; i++) {
@@ -208,11 +208,11 @@ public final class SerializationPolicyLoader {
           try {
 
               Class clazz = null;
-              //if(com.google.gwt.user.server.rpc.RPC.getCurrentBundle() != null){
-             //     clazz= com.google.gwt.user.server.rpc.RPC.getCurrentBundle().loadClass(binaryTypeName);
-             // } else {
+              if(com.google.gwt.user.server.rpc.RPC.getClassLoader() != null){
+                  clazz= com.google.gwt.user.server.rpc.RPC.getClassLoader().loadClass(binaryTypeName);
+             } else {
                   clazz = Class.forName(binaryTypeName, false, contextClassLoader);
-             // }
+             }
 
 
 

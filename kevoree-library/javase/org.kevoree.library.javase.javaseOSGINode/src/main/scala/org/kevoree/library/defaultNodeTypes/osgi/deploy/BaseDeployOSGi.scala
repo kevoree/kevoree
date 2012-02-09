@@ -60,13 +60,13 @@ class BaseDeployOSGi(bundle: Bundle, nodeType : AbstractNodeType) {
       case JavaSePrimitive.RemoveType => RemoveTypeCommand(p.getRef.asInstanceOf[TypeDefinition], nodeName)
 
       case JavaSePrimitive.AddInstance if (JCLHelper.isJCLManaged(p.getRef.asInstanceOf[Instance].getTypeDefinition,nodeName)) => AddInstance(p.getRef.asInstanceOf[Instance],nodeName,nodeType.getModelService, nodeType.getKevScriptEngineFactory,nodeType.getBootStrapperService)
-      case JavaSePrimitive.AddInstance => AddInstanceCommand(p.getRef.asInstanceOf[Instance], nodeName,nodeType.getModelService, nodeType.getKevScriptEngineFactory)
+      case JavaSePrimitive.AddInstance => AddInstanceCommand(p.getRef.asInstanceOf[Instance], nodeName,nodeType.getModelService, nodeType.getKevScriptEngineFactory,nodeType.getBootStrapperService)
 
       case JavaSePrimitive.UpdateDictionaryInstance /*if (JCLHelper.isJCLManaged(p.getRef.asInstanceOf[Instance].getTypeDefinition,nodeName))*/ => UpdateDictionary(p.getRef.asInstanceOf[Instance], nodeName)
   //    case JavaSePrimitive.UpdateDictionaryInstance => UpdateDictionary(p.getRef.asInstanceOf[Instance], nodeName)
 
       case JavaSePrimitive.RemoveInstance if (JCLHelper.isJCLManaged(p.getRef.asInstanceOf[Instance].getTypeDefinition,nodeName)) => RemoveInstance(p.getRef.asInstanceOf[Instance], nodeName,nodeType.getModelService, nodeType.getKevScriptEngineFactory,nodeType.getBootStrapperService)
-      case JavaSePrimitive.RemoveInstance => RemoveInstanceCommand(p.getRef.asInstanceOf[Instance], nodeName,nodeType.getModelService, nodeType.getKevScriptEngineFactory)
+      case JavaSePrimitive.RemoveInstance => RemoveInstanceCommand(p.getRef.asInstanceOf[Instance], nodeName,nodeType.getModelService, nodeType.getKevScriptEngineFactory,nodeType.getBootStrapperService)
 
       case JavaSePrimitive.StopInstance /*if (JCLHelper.isJCLManaged(p.getRef.asInstanceOf[Instance].getTypeDefinition,nodeName))*/ => StartStopInstance(p.getRef.asInstanceOf[Instance], nodeName,false)
      // case JavaSePrimitive.StopInstance => StopInstanceCommand(p.getRef.asInstanceOf[Instance], nodeName)

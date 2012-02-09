@@ -22,14 +22,14 @@ import org.kevoree._
 import api.PrimitiveCommand
 import api.service.core.handler.KevoreeModelHandlerService
 import api.service.core.script.KevScriptEngineFactory
-import framework.osgi.{KevoreeInstanceActivator, KevoreeInstanceFactory}
-import framework.{KevoreeGeneratorHelper}
+import framework.osgi.{KevoreeGroupActivator, KevoreeInstanceActivator, KevoreeInstanceFactory}
+import framework.KevoreeGeneratorHelper
 import library.defaultNodeTypes.jcl.deploy.context.KevoreeDeployManager
 import library.defaultNodeTypes.osgi.deploy.{KevoreeOSGIMapping, OSGIKevoreeDeployManager}
 import org.kevoree.framework.aspects.KevoreeAspects._
 import org.slf4j.LoggerFactory
 
-case class AddInstanceCommand(c: Instance, nodeName: String,modelservice : KevoreeModelHandlerService,kscript : KevScriptEngineFactory) extends PrimitiveCommand {
+case class AddInstanceCommand(c: Instance, nodeName: String, modelservice: KevoreeModelHandlerService, kscript: KevScriptEngineFactory,bs : org.kevoree.api.Bootstraper) extends PrimitiveCommand {
 
   var logger = LoggerFactory.getLogger(this.getClass);
   var kevoreeFactory: KevoreeInstanceFactory = null
@@ -70,12 +70,15 @@ case class AddInstanceCommand(c: Instance, nodeName: String,modelservice : Kevor
 
         kevoreeFactory = bundleType.loadClass(factoryName).newInstance().asInstanceOf[KevoreeInstanceFactory]
         val newInstance: KevoreeInstanceActivator = kevoreeFactory.registerInstance(c.getName, nodeName)
-        KevoreeDeployManager.addMapping(KevoreeOSGIMapping(c.getName, c.getClass.getName, newInstance,bundleType.getBundleId))
+        KevoreeDeployManager.addMapping(KevoreeOSGIMapping(c.getName, c.getClass.getName, newInstance, bundleType.getBundleId))
 
 
         newInstance.setKevScriptEngineFactory(kscript)
         newInstance.setModelHandlerService(modelservice)
         newInstance.start()
+        if (newInstance.isInstanceOf[KevoreeGroupActivator]) {
+          newInstance.asInstanceOf[KevoreeGroupActivator].groupActor.setBootStrapperService(bs)
+        }
 
         //mustBeStarted = true
         true

@@ -5,7 +5,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.servlet.ServletOutputStream;
-import javax.servlet.ServletResponse;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 import java.io.ByteArrayOutputStream;
@@ -115,6 +114,7 @@ public class KevoreeServletResponse implements HttpServletResponse {
             //logger.debug("Set ContentRaw {}",new String(stream.toByteArray()));
             response.setRawContent(stream.toByteArray());
             response.setHeaders(headers);
+            response.getHeaders().put("Content-Type",contentType);
             stream.close();
         } catch (IOException e) {
             e.printStackTrace();

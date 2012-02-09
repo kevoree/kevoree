@@ -31,14 +31,12 @@ import org.slf4j.LoggerFactory
  * Time: 12:01
  */
 
-class NodeTypeBootstrapHelper extends Bootstraper {
+class NodeTypeBootstrapHelper(ctx: android.content.Context, parent: ClassLoader) extends Bootstraper {
 
   protected val logger = LoggerFactory.getLogger(this.getClass)
-  val classLoaderHandler = new AndroidJCLContextHandler
+  val classLoaderHandler = new AndroidJCLContextHandler(ctx,parent)
 
   def bootstrapNodeType(model: ContainerRoot, destNodeName: String, mservice: KevoreeModelHandlerService, kevsEngineFactory: KevScriptEngineFactory): Option[org.kevoree.api.NodeType] = {
-    //JCLContextHandler.clear()
-
 
     //LOCATE NODE
     val nodeOption = model.getNodes.find(node => node.getName == destNodeName)

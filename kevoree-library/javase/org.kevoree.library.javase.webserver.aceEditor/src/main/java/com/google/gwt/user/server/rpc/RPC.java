@@ -49,17 +49,28 @@ import java.util.*;
  * {@example com.google.gwt.examples.rpc.server.AdvancedExample#doPost(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)}
  */
 public final class RPC {
-/*
-    private static Bundle currentBundle = null;
+	
+	private static ClassLoader classLoader;
 
-    public static void setCurrentBundle(Bundle b) {
-        currentBundle = b;
-    }
+	public static ClassLoader getClassLoader () {
+		return classLoader;
+	}
 
-    public static Bundle getCurrentBundle(){
-        return currentBundle;
-    }
-*/
+	public static void setClassLoader (ClassLoader classLoader) {
+		RPC.classLoader = classLoader;
+	}
+
+	/*
+	 private static Bundle currentBundle = null;
+ 
+	 public static void setCurrentBundle(Bundle b) {
+		 currentBundle = b;
+	 }
+ 
+	 public static Bundle getCurrentBundle(){
+		 return currentBundle;
+	 }
+ */
 
     /**
      * Maps primitive wrapper classes to their corresponding primitive class.
@@ -237,7 +248,7 @@ public final class RPC {
             throw new IllegalArgumentException("encodedRequest cannot be empty");
         }
 
-        ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+//        ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
 
         try {
             ServerSerializationStreamReader streamReader = new ServerSerializationStreamReader(
@@ -706,6 +717,10 @@ public final class RPC {
         if (value != null) {
             return value;
         }
+		
+		if (classLoader != null) {
+			return classLoader.loadClass(serializedName);
+		}
 /*
         if (currentBundle != null) {
             return currentBundle.loadClass(serializedName);

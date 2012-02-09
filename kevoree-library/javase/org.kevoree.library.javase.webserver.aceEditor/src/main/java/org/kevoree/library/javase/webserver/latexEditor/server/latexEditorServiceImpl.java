@@ -17,10 +17,6 @@ import org.kevoree.library.javase.webserver.latexEditor.client.latexEditorServic
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
@@ -153,13 +149,15 @@ public class latexEditorServiceImpl extends RemoteServiceServlet implements late
     @Override
     public String[] compileresult(String uuid) {
         if (editor.waitingID.contains(uuid)) {
-            String[] result = {"waiting", ""};
-            return result;
+            return new String[] {"waiting", ""};
         } else {
-            String[] result = {editor.compileResult.get(uuid).toString(), editor.compileLog.get(uuid).toString()};
-            editor.compileResult.remove(uuid);
-            editor.compileLog.remove(uuid);
-            return result;
+			/*if (editor.compileResult.get(uuid) != null) {*/
+				String[] result = {editor.compileResult.get(uuid).toString(), editor.compileLog.get(uuid).toString()};
+				editor.compileResult.remove(uuid);
+				editor.compileLog.remove(uuid);
+				return result;
+			/*}
+			return new String[]{"", ""};*/
         }
     }
 

@@ -409,12 +409,12 @@ public class SerializabilityUtil {
                                                      String qualifiedSerialzierName) {
         try {
             Class<?> customSerializerClass = null;
-         //   if (com.google.gwt.user.server.rpc.RPC.getCurrentBundle() != null) {
-         //       customSerializerClass = com.google.gwt.user.server.rpc.RPC.getCurrentBundle().loadClass(qualifiedSerialzierName);
-        //    } else {
+            if (com.google.gwt.user.server.rpc.RPC.getClassLoader() != null) {
+                customSerializerClass = com.google.gwt.user.server.rpc.RPC.getClassLoader().loadClass(qualifiedSerialzierName);
+            } else {
                 customSerializerClass = Class.forName(qualifiedSerialzierName,
                         false, classLoader);
-         //   }
+            }
 
             return customSerializerClass;
         } catch (ClassNotFoundException e) {

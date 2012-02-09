@@ -1,5 +1,3 @@
-package org.kevoree.framework
-
 /**
  * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE, Version 3, 29 June 2007;
  * you may not use this file except in compliance with the License.
@@ -13,15 +11,21 @@ package org.kevoree.framework
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+package org.kevoree.kcl
+
+import java.io.InputStream
+
+/**
+ * Created by IntelliJ IDEA.
+ * User: duke
+ * Date: 08/02/12
+ * Time: 11:35
  */
 
-trait KevoreePort extends KevoreeActor with Port {
+abstract class KevoreeResourcesLoader(extension : String) {
 
-  def getModelElement : org.kevoree.Port = {
-    null
-  }
+  def getExtension = extension
+
+  def doLoad(key: String,stream : InputStream)
 
 }

@@ -13,6 +13,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import scala.Option;
 
+import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
+
 /**
  * User: Erwan Daubert - erwan.daubert@gmail.com
  * Date: 03/01/12
@@ -40,31 +43,44 @@ public class KloudResourceManager extends ParentAbstractPage {
 
 	public KevoreeHttpResponse process (KevoreeHttpRequest request, KevoreeHttpResponse response) {
 		if (request != null) {
-			if (request.getResolvedParams().get("model") != null && request.getResolvedParams().get("login") != null
-					&& request.getResolvedParams().get("password") != null && request.getResolvedParams().get("ssh_key") != null) {
-				// check authentication information
-				if (InriaLdap.testLogin(request.getResolvedParams().get("login"),
-						request.getResolvedParams().get("password"))) {
+			if (!request.getUrl().endsWith("/css/bootstrap.min.css")) {
+				if (request.getResolvedParams().get("model") != null && request.getResolvedParams().get("login") != null
+						&& request.getResolvedParams().get("password") != null && request.getResolvedParams().get("ssh_key") != null) {
+					// check authentication information
+					if (InriaLdap.testLogin(request.getResolvedParams().get("login"), request.getResolvedParams().get("password"))) {
 
-					String result = process(request.getResolvedParams().get("model"), request.getResolvedParams().get("login"), request.getResolvedParams().get("ssh_key"));
-					if (result.startsWith("http")) {
-						response.setContent(HTMLHelper
-								.generateValidSubmissionPageHtml(request.getUrl(),
-										request.getResolvedParams().get("login"),
-										result));
+						String result = process(request.getResolvedParams().get("model"), request.getResolvedParams().get("login"), request.getResolvedParams().get("ssh_key"));
+						if (result.startsWith("http")) {
+							response.setContent(
+									HTMLHelper.generateValidSubmissionPageHtml(request.getUrl(), request.getResolvedParams().get("login"), result, this.getDictionary().get("urlpattern").toString()));
+						} else {
+							response.setContent(
+									HTMLHelper
+											.generateUnvalidSubmissionPageHtml(request.getUrl(), request.getResolvedParams().get("login"), result, this.getDictionary().get("urlpattern").toString()));
+						}
 					} else {
-						response.setContent(HTMLHelper.generateUnvalidSubmissionPageHtml(request.getUrl(),
-								request.getResolvedParams().get("login"), result));
+						response.setContent(HTMLHelper.generateFailToLoginPageHtml(request.getUrl(), this.getDictionary().get("urlpattern").toString()));
 					}
 				} else {
-					response.setContent(HTMLHelper.generateFailToLoginPageHtml(request.getUrl()));
+					response.setContent(HTMLHelper.generateSimpleSubmissionFormHtml(request.getUrl(), this.getDictionary().get("urlpattern").toString()));
 				}
 			} else {
-				response.setContent(HTMLHelper.generateSimpleSubmissionFormHtml(request.getUrl(), this.getDictionary().get("urlpattern").toString()));
+
+				try {
+					InputStream ins = this.getClass().getClassLoader().getResourceAsStream("css/bootstrap.min.css");
+					response.setContent(new String(convertStream(ins), "UTF-8"));
+					response.getHeaders().put("Content-Type", "text/css");
+					ins.close();
+				} catch (Exception e) {
+					logger.error("", e);
+				}
+				/*this.getClass().getClassLoader().getResourceAsStream("css/bootstrap.min.css");
+				StringBuilder builder = new StringBuilder
+				response.setContent();*/
 			}
-		} else {
+		} /*else {
 			response.setContent("Bad Request");
-		}
+		}*/
 		return response;
 	}
 
@@ -74,8 +90,7 @@ public class KloudResourceManager extends ParentAbstractPage {
 		if (KloudHelper.lookForAGroup(login, this.getModelService().getLastModel())) {
 
 			// if the user has already submitted something, we return the access point to this previous configuration
-			Option<String> accessPointOption = KloudHelper
-					.lookForAccessPoint(login, this.getNodeName(), this.getModelService().getLastModel());
+			Option<String> accessPointOption = KloudHelper.lookForAccessPoint(login, this.getNodeName(), this.getModelService().getLastModel());
 			if (accessPointOption.isDefined()) {
 				return "A previous configuration has already submitted.<br/>Please use this access point to reconfigure it: "
 						+ accessPointOption.get()
@@ -89,10 +104,10 @@ public class KloudResourceManager extends ParentAbstractPage {
 			UUIDModel uuidModel = this.getModelService().getLastUUIDModel();
 
 			// we create a group with the login of the user
-			Option<ContainerRoot> newKloudModelOption = KloudHelper.createGroup(login, this.getNodeName(), uuidModel.getModel(),getKevScriptEngineFactory(), sshKey);
+			Option<ContainerRoot> newKloudModelOption = KloudHelper.createGroup(login, this.getNodeName(), uuidModel.getModel(), getKevScriptEngineFactory(), sshKey);
 			if (newKloudModelOption.isDefined()) {
 				// create proxy to the group
-				newKloudModelOption = KloudHelper.createProxy(login, this.getNodeName(), "/" + login, newKloudModelOption.get(),getKevScriptEngineFactory());
+				newKloudModelOption = KloudHelper.createProxy(login, this.getNodeName(), "/" + login, newKloudModelOption.get(), getKevScriptEngineFactory());
 
 				if (newKloudModelOption.isDefined()) {
 
@@ -130,5 +145,18 @@ public class KloudResourceManager extends ParentAbstractPage {
 				return "Unable to create the needed user group to give access the nodes to the user.";
 			}
 		}
+	}
+
+	private static byte[] convertStream (InputStream in) throws Exception {
+		ByteArrayOutputStream out = new ByteArrayOutputStream();
+		byte[] buffer = new byte[1024];
+		int l;
+		do {
+			l = (in.read(buffer));
+			if (l > 0) {
+				out.write(buffer, 0, l);
+			}
+		} while (l > 0);
+		return out.toByteArray();
 	}
 }
