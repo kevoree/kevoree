@@ -57,6 +57,7 @@ public class LatexEditor extends AbstractPage {
             }
         };
         super.startPage();
+		RPC.setClassLoader(this.getClass().getClassLoader());
         //RPC.setCurrentBundle(b); //GWT ACK
         servletRepository.registerServlet("/latexEditor/latexEditorService",new org.kevoree.library.javase.webserver.latexEditor.server.latexEditorServiceImpl(this));
     }

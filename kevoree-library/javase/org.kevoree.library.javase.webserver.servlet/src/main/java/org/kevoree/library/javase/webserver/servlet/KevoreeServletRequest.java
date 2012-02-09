@@ -79,7 +79,10 @@ public class KevoreeServletRequest implements HttpServletRequest {
     public String getContentType() {
         if(kevRequest.getHeaders().containsKey("Content-Type")){
             return kevRequest.getHeaders().get("Content-Type");
-        }
+		}
+		if (kevRequest.getHeaders().containsKey("content-type")) {
+			return kevRequest.getHeaders().get("content-type");
+		}
         return "text/plain";
     }
 
@@ -252,16 +255,25 @@ public class KevoreeServletRequest implements HttpServletRequest {
 
     @Override
     public String getHeader(String name) {
+		/*for (String key : kevRequest.getHeaders().keySet()) {
+			System.out.println(key + "\t" + kevRequest.getHeaders().get(key));
+		}*/
         return kevRequest.getHeaders().get(name);
     }
 
     @Override
     public Enumeration<String> getHeaders(String name) {
+		/*for (String key : kevRequest.getHeaders().keySet()) {
+					System.out.println(key + "\t" + kevRequest.getHeaders().get(key));
+				}*/
         return Collections.enumeration(Collections.singleton(kevRequest.getHeaders().get(name)));
     }
 
     @Override
     public Enumeration<String> getHeaderNames() {
+		/*for (String key : kevRequest.getHeaders().keySet()) {
+					System.out.println(key + "\t" + kevRequest.getHeaders().get(key));
+				}*/
         return Collections.enumeration(kevRequest.getHeaders().keySet());
     }
 

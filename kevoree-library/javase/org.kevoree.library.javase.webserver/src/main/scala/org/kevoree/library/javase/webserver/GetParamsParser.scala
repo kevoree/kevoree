@@ -56,11 +56,12 @@ object GetParamsParser {
               }
           }
           params
-        } else {
+        } /*else {
           getParams("?" + new String(body))._2
-        }
+        }*/
+        new java.util.HashMap[String, String](0)
       }
-      case None => getParams("?" + new String(body))._2
+      case None => new java.util.HashMap[String, String](0)//getParams("?" + new String(body))._2
     }
   }
 
