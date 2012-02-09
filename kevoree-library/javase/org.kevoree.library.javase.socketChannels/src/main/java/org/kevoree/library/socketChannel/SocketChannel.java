@@ -54,6 +54,7 @@ public class SocketChannel extends AbstractChannelFragment implements Runnable {
 
     private Map<String, Socket> clientSockets = new HashMap<String, Socket>();
 
+    private ChannelClassResolver resolver = new ChannelClassResolver(this);
 
     @Override
     public Object dispatch(Message message) {
@@ -255,9 +256,21 @@ public class SocketChannel extends AbstractChannelFragment implements Runnable {
                             if (stream != null) {
                                 ObjectInputStream ois =null;
                                 try {
-                                    ois = new ObjectInputStream(stream);
+                                    ois = new ObjectInputStream(stream){
+                                        @Override
+                                        protected Class<?> resolveClass(ObjectStreamClass objectStreamClass) throws IOException, ClassNotFoundException {
+                                            Class c = resolver.resolve(objectStreamClass.getName());
+                                            if(c == null){
+                                                return super.resolveClass(objectStreamClass);
+                                            } else {
+                                                return c;
+                                            }
+                                        }
+                                    };
                                     msg = (Message) ois.readObject();
+                                    System.out.println("Message Rec = "+msg);
                                 } catch (Exception e) {
+                                    e.printStackTrace();
                                     ois = null;
                                     nodeDown(client);
                                     _alive =false;
