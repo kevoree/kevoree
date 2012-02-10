@@ -45,7 +45,7 @@
             </intent-filter>
         </activity>
 
-        <service android:name=".AndroidFelixService" android:enabled="true" android:exported="true">
+        <service android:name=".KevoreeService" android:enabled="true" android:exported="true">
         </service>
 
     </application>

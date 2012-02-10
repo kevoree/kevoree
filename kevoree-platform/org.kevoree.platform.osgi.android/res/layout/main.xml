@@ -21,8 +21,8 @@
         xmlns:android="http://schemas.android.com/apk/res/android">
     <TableRow android:layout_width="fill_parent"
                 android:layout_height="wrap_content">
-        <Button android:id="@+id/StartFelix" android:text="StartFelix" />
-        <Button android:id="@+id/StopFelix" android:text="StopFelix" />
+        <Button android:id="@+id/StartKevoree" android:text="StartKevoree" />
+        <Button android:id="@+id/StopKevoree" android:text="StopKevoree" />
     </TableRow>
 </TableLayout>
 
