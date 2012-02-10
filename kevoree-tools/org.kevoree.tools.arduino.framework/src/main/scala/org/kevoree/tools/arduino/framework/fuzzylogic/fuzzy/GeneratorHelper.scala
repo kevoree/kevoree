@@ -121,7 +121,7 @@ object GeneratorHelper {
 
 
     gen.appendNativeStatement("float crisp_inputs[" + nbInputs + "];")
-    gen.appendNativeStatement("float crisp_outputs[" + nbInputs + "];")
+    gen.appendNativeStatement("float crisp_outputs[" + nbOutputs + "];")
 
 
     gen.appendNativeStatement("float fuzzy_outputs[" + nbOutputs + "][NB_TERMS];")
@@ -143,14 +143,10 @@ object GeneratorHelper {
 
   def generateControlMethod(gen: ArduinoGenerator) {
 
-    gen.appendNativeStatement("void fire_all_rules(){control(crisp_inputs,crisp_outputs); }")
+    gen.appendNativeStatement("void fire_all_rules(){control(); }")
 
-    gen.appendNativeStatement("void control(float *crisp_inputs, float *crisp_outputs){")
-    gen.appendNativeStatement("#ifdef DEBUG")
-    gen.appendNativeStatement(" //displayRules();")
-    gen.appendNativeStatement(" //displayDomains();")
-    gen.appendNativeStatement("displayInputs();")
-    gen.appendNativeStatement("#endif")
+    gen.appendNativeStatement("void control(){")
+
     gen.appendNativeStatement("unsigned char  in_index,rule_index,out_index;")
     gen.appendNativeStatement("float   in_val;")
     gen.appendNativeStatement("for (in_index = 0;in_index < NUM_INPUTS;in_index++){fuzzify(in_index,crisp_inputs[in_index]);}")
@@ -180,7 +176,10 @@ object GeneratorHelper {
     gen.appendNativeStatement("}") // END IF
     gen.appendNativeStatement("}")//END FOR
     gen.appendNativeStatement("#ifdef DEBUG")
-    gen.appendNativeStatement("displayOutputs();")
+    gen.appendNativeStatement(" //displayRules();")
+    gen.appendNativeStatement("// displayDomains();")
+    gen.appendNativeStatement("// displayInputs();")
+    gen.appendNativeStatement("//displayOutputs();")
     gen.appendNativeStatement("#endif")
     gen.appendNativeStatement("}")
 
