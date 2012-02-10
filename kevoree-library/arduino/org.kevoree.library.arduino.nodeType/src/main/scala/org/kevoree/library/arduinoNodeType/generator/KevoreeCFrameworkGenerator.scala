@@ -57,7 +57,7 @@ trait KevoreeCFrameworkGenerator extends KevoreeCAbstractGenerator {
       case _ => pmax
     }
     context h "#define EEPROM_MAX_SIZE " + maxSize
-    context h "#define MAX_INST_ID 15" //TO CHANGE
+    context h "#define MAX_INST_ID 32" //TO CHANGE
 
     val random = new Random
     context h ("#define kevoreeID1 " + random.nextInt(10))

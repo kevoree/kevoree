@@ -44,6 +44,7 @@ public abstract class AbstractFuzzyLogicArduinoComponent extends AbstractArduino
         DefaultFuzzyRulesContext def = new DefaultFuzzyRulesContext();
         declareRules(def);
         gen.appendNativeStatement(MicroTemplate.fromClassPath("fuzzylogic/ArduinoFuzzyLogic/ArduinoFuzzyLogicHeader.c",AbstractFuzzyLogicArduinoComponent.class));
+
         // Generate rules
         generateRules(gen,def);
     }
@@ -57,6 +58,7 @@ public abstract class AbstractFuzzyLogicArduinoComponent extends AbstractArduino
         
         DefaultFuzzyRulesContext def = new DefaultFuzzyRulesContext();
         declareRules(def);
+
         //GENERATE TEMP TAB
         GeneratorHelper.generateClassVariables(gen,def.getNumberOfRules());
         // add framework
@@ -109,12 +111,22 @@ public abstract class AbstractFuzzyLogicArduinoComponent extends AbstractArduino
         StringBuilder _num_rule_coutcome = new StringBuilder();
         List<FuzzyRule> rules =  contextRules.getParsedRules();
 
+        if(contextRules.getNumberOfRules() != rules.size()){
+
+            System.out.println("Something went wrong maybe the rules does not comply with the syntax !");
+            // TODO throw exception
+        }
+
+        System.out.println("RULES :  "+contextRules.getRawRules());
         for(int i=0;i< rules.size();i++)
         {
+            
+
             int numberAntecedent =    rules.get(i).getAntecedent().size();
             _num_rule_antecedent.append(numberAntecedent);
+            System.out.println("Parse rule #"+i+" numberAntecedent "+numberAntecedent);
 
-            if(i < rules.size()-1)
+            if(i < rules.size())
             {
                 _num_rule_antecedent.append(",");
             }
@@ -138,7 +150,9 @@ public abstract class AbstractFuzzyLogicArduinoComponent extends AbstractArduino
             code_rules.append("},{");
             int numberoutcome =    rules.get(i).getoutcome().size();
             _num_rule_coutcome.append(numberoutcome);
-            if(i < rules.size()-1){
+
+            System.out.println("Parse rule #"+i+" numberoutcome "+numberoutcome);
+            if(i < rules.size()){
 
                 _num_rule_coutcome.append(",");
             }
@@ -168,7 +182,7 @@ public abstract class AbstractFuzzyLogicArduinoComponent extends AbstractArduino
 
         gen.appendNativeStatement("PROGMEM const unsigned char	num_rule_antecedent_"+idname+"[NUM_RULES_"+idname+"] = { "+_num_rule_antecedent.toString()+"};");
         gen.appendNativeStatement("PROGMEM const unsigned char num_rule_coutcome_"+idname+"[NUM_RULES_"+idname+"] = { "+_num_rule_coutcome.toString()+"};")  ;
-        gen.appendNativeStatement("const struct _Rule rules_"+idname+"[NUM_RULES_"+idname+"] = {");
+        gen.appendNativeStatement("PROGMEM const struct _Rule rules_"+idname+"[NUM_RULES_"+idname+"] = {");
         gen.appendNativeStatement(code_rules.toString());
         gen.appendNativeStatement( "};");
 
