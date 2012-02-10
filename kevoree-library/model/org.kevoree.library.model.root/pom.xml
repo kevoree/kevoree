@@ -23,7 +23,7 @@
     <modules>
         <module>../org.kevoree.library.model.all</module>
         <module>../org.kevoree.library.model.bootstrap</module>
-        <!--     <module>../org.kevoree.library.model.bootstrap.android</module> -->
+        <module>../org.kevoree.library.model.bootstrap.android</module>
     </modules>
 
     <repositories>

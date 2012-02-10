@@ -1,3 +1,5 @@
+package org.kevoree.library.android.nodeType.deploy.command
+
 /**
  * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE, Version 3, 29 June 2007;
  * you may not use this file except in compliance with the License.
@@ -16,28 +18,10 @@
  * and open the template in the editor.
  */
 
-package org.kevoree.platform.osgi.android;
+import org.kevoree.Instance
+import org.kevoree.api.PrimitiveCommand
 
-import java.util.Arrays;
-import java.util.List;
+abstract class LifeCycleCommand(c: Instance, nodeName: String) extends PrimitiveCommand {
 
-import org.kevoree.ContainerRoot;
-import org.osgi.framework.BundleActivator;
-
-/**
- *
- * @author ffouquet
- */
-public class EmbeddedActivators {
-
-    public static List<BundleActivator> getActivators(){
-        BootstrapActivator bact = new BootstrapActivator();
-        return Arrays.asList(
-                (BundleActivator)new org.apache.felix.shell.impl.Activator(),
-              //  (BundleActivator)new org.apache.felix.shell.tui.Activator(),
-                (BundleActivator)new org.ops4j.pax.url.assembly.internal.Activator(),
-                bact
-                );
-    }
-
+  def getInstance = c
 }

@@ -6,30 +6,57 @@
     <artifactId>org.kevoree.library.android.nodeType</artifactId>
     <packaging>bundle</packaging>
     <name>Kevoree :: Library :: Android :: NodeType</name>
-    <version>1.5.1-SNAPSHOT</version>
+    <version>1.6.0-SNAPSHOT</version>
 
     <parent>
         <artifactId>org.kevoree.library.android.root</artifactId>
         <groupId>org.kevoree.library.android</groupId>
-        <version>1.5.1-SNAPSHOT</version>
+        <version>1.6.0-SNAPSHOT</version>
         <relativePath>../org.kevoree.library.android.root/pom.xml</relativePath>
     </parent>
 
     <dependencies>
         <dependency>
             <groupId>org.kevoree</groupId>
-            <artifactId>org.kevoree.kompare</artifactId>
+            <artifactId>org.kevoree.kcl</artifactId>
             <version>${kevoree.version}</version>
         </dependency>
         <dependency>
-            <groupId>org.kevoree.tools</groupId>
-            <artifactId>org.kevoree.tools.deploy.osgi</artifactId>
+            <groupId>org.kevoree</groupId>
+            <artifactId>org.kevoree.kompare</artifactId>
             <version>${kevoree.version}</version>
         </dependency>
     </dependencies>
 
     <build>
         <plugins>
+            <plugin>
+                <groupId>org.scala-tools</groupId>
+                <artifactId>maven-scala-plugin</artifactId>
+                <version>2.15.2</version>
+                <executions>
+                    <execution>
+                        <id>scala-compile-first</id>
+                        <phase>process-resources</phase>
+                        <goals>
+                            <goal>add-source</goal>
+                            <goal>compile</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>scala-test-compile</id>
+                        <phase>process-test-resources</phase>
+                        <goals>
+                            <goal>testCompile</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <jvmArgs>
+                        <jvmArg>-Xmx1024m</jvmArg>
+                    </jvmArgs>
+                </configuration>
+            </plugin>
             <plugin>
                 <groupId>org.apache.felix</groupId>
                 <artifactId>maven-bundle-plugin</artifactId>

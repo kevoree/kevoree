@@ -17,6 +17,7 @@ import dalvik.system.DexClassLoader
 import android.content.Context
 import java.io.{BufferedOutputStream, FileOutputStream, File, InputStream}
 import org.kevoree.kcl.{KevoreeResourcesLoader, KevoreeJarClassLoader}
+import org.slf4j.LoggerFactory
 
 /**
  * Created by IntelliJ IDEA.
@@ -27,14 +28,18 @@ import org.kevoree.kcl.{KevoreeResourcesLoader, KevoreeJarClassLoader}
 
 class AndroidKevoreeJarClassLoader(gkey : String,ctx: android.content.Context, parent: ClassLoader) extends KevoreeJarClassLoader {
 
+  val logger = LoggerFactory.getLogger(this.getClass)
+
   /* Constructor */
   addSpecialLoaders(new KevoreeResourcesLoader("class"){
     def doLoad(key: String, stream: InputStream) {
+      logger.debug("Ignore class => "+key)
       //NOOP
     }
   })
   addSpecialLoaders(new KevoreeResourcesLoader("dex"){
     def doLoad(key: String, stream: InputStream) {
+      logger.debug("SubClassLoader for Dex => "+key)
       declareLocalDexClassLoader(stream,gkey+"_"+key)
     }
   })

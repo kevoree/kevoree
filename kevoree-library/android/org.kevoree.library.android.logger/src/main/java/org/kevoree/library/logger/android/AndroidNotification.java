@@ -9,7 +9,6 @@ import org.kevoree.android.framework.helper.UIServiceHandler;
 import org.kevoree.android.framework.service.KevoreeAndroidService;
 import org.kevoree.annotation.*;
 import org.kevoree.framework.AbstractComponentType;
-import org.osgi.framework.Bundle;
 
 /**
  * @author ffouquet
@@ -26,7 +25,7 @@ public class AndroidNotification extends AbstractComponentType {
 
     @Start
     public void start() {
-        uiService = UIServiceHandler.getUIService((Bundle) this.getDictionary().get("osgi.bundle"));
+        //uiService = UIServiceHandler.getUIService((Bundle) this.getDictionary().get("osgi.bundle"));
         view = new TextView(uiService.getRootActivity());
         uiService.addToGroup("kevlog", view);
     }

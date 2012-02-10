@@ -6,17 +6,16 @@
     <artifactId>org.kevoree.library.model.bootstrap.android</artifactId>
     <packaging>jar</packaging>
     <name>Kevoree :: Library :: Model :: Bootstrap Android</name>
-    <version>1.5.1-SNAPSHOT</version>
+    <version>1.6.0-SNAPSHOT</version>
 
     <properties>
         <kevoree.version>${project.version}</kevoree.version>
     </properties>
 
-
     <parent>
         <artifactId>org.kevoree.library.model.root</artifactId>
         <groupId>org.kevoree.library.model</groupId>
-        <version>1.5.1-SNAPSHOT</version>
+        <version>1.6.0-SNAPSHOT</version>
         <relativePath>../org.kevoree.library.model.root/pom.xml</relativePath>
     </parent>
 
@@ -51,6 +50,7 @@
             <artifactId>org.kevoree.library.android.nodeType</artifactId>
             <version>${kevoree.version}</version>
         </dependency>
+
         <dependency>
             <groupId>org.kevoree.library.android</groupId>
             <artifactId>org.kevoree.library.android.rest</artifactId>
