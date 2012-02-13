@@ -26,7 +26,7 @@ public abstract class AbstractGroupType {
 
 	public abstract void triggerModelUpdate ();
 
-	public boolean preUpdate () {
+	public boolean triggerPreUpdate (ContainerRoot proposedModel ) {
 		return true;
 	}
 
