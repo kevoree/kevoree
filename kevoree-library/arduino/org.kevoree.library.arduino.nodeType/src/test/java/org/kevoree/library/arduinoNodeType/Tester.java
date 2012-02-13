@@ -23,7 +23,7 @@ public class Tester {
 
 
         
-        ContainerRoot model = KevoreeXmiHelper.loadStream(Tester.class.getClassLoader().getResourceAsStream("FuzzyModelTESTLED2.kev"));
+        ContainerRoot model = KevoreeXmiHelper.loadStream(Tester.class.getClassLoader().getResourceAsStream("kduke.kev"));
       //  ContainerRoot model = KevoreeXmiHelper.load("/Users/duke/Desktop/kev.kev");
 
         ArduinoNode node = new ArduinoNode();
