@@ -236,6 +236,8 @@
                         <!--  <option>-keepattributes *Annotation*</option>-->
                         <!--  <option>-keep class org.slf4j.** { *; }</option>  -->
                         <!--  <option>-keep class scala.runtime.** { *; }</option>   -->
+                        <option>-keep class scala.Tuple** { *; }</option>
+                        <option>-keep class scala.Function** { *; }</option>
                         <option>-keep class org.kevoree.api.** { *; }</option>
                         <option>-keep class org.xeustechnologies.** { *; }</option>
                         <option>-keep class org.kevoree.kcl.** { *; }</option>
@@ -243,6 +245,7 @@
                         <option>-keep class org.kevoree.framework.** { *; }</option>
                         <option>-keep class org.kevoree.android.framework.** { *; }</option>
                         <option>-keep class org.kevoree.tools.aether.framework.android.** { *; }</option>
+                        <option>-keep class org.kevoree.kompare.** { *; }</option>
                         <option>-dontskipnonpubliclibraryclasses</option>
                         <option>-dontskipnonpubliclibraryclassmembers</option>
                         <option>-dontoptimize</option>
@@ -259,9 +262,6 @@
                             static final % *;
                             static final java.lang.String *;
                             }
-                        </option>
-                        <option>
-                            -keepclassmembers class org.osgi.**
                         </option>
                         <option>
                             -keepclassmembers class org.kevoree.framework.**
