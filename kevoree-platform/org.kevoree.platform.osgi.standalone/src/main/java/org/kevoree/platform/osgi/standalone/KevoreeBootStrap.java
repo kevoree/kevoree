@@ -27,13 +27,14 @@ import org.kevoree.api.service.core.script.KevScriptEngine;
 import org.kevoree.api.service.core.script.KevScriptEngineFactory;
 import org.kevoree.core.impl.KevoreeConfigServiceBean;
 import org.kevoree.core.impl.KevoreeCoreBean;
-import org.kevoree.kcl.KevoreeJarClassLoader;
 import org.kevoree.framework.KevoreeXmiHelper;
+import org.kevoree.kcl.KevoreeJarClassLoader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.lang.reflect.Method;
+import java.net.URL;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
@@ -126,7 +127,12 @@ public class KevoreeBootStrap {
                 if (!configBean.getProperty(ConfigConstants.KEVOREE_NODE_BOOTSTRAP()).equals("")) {
                     try {
                         logger.info("Try to load bootstrap platform from system parameter");
-                        bootstrapModel = KevoreeXmiHelper.load(configBean.getProperty(ConfigConstants.KEVOREE_NODE_BOOTSTRAP()));
+						String bootstrapModelPath = configBean.getProperty(ConfigConstants.KEVOREE_NODE_BOOTSTRAP());
+						if (bootstrapModelPath.startsWith("http://")) {
+							bootstrapModel = KevoreeXmiHelper.loadStream(new URL(bootstrapModelPath).openStream());
+						} else {
+							bootstrapModel = KevoreeXmiHelper.load(bootstrapModelPath);
+						}
                     } catch (Exception e) {
                         logger.error("Bootstrap failed", e);
                     }

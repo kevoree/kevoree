@@ -21,7 +21,6 @@ import org.slf4j.LoggerFactory
  * User: duke
  * Date: 24/10/11
  * Time: 13:41
- * To change this template use File | Settings | File Templates.
  */
 
 object BootstrapHelper {

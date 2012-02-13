@@ -26,11 +26,9 @@ import org.kevoree.api.service.core.script.KevScriptEngineFactory;
 import org.kevoree.core.impl.KevoreeConfigServiceBean;
 import org.kevoree.core.impl.KevoreeCoreBean;
 import org.kevoree.framework.KevoreeXmiHelper;
-import org.kevoree.tools.aether.framework.AetherUtil;
-import org.kevoree.tools.aether.framework.NodeTypeBootstrapHelper;
+import org.kevoree.tools.aether.framework.android.AetherUtil;
+import org.kevoree.tools.aether.framework.android.NodeTypeBootstrapHelper;
 import org.kevoree.tools.marShell.KevScriptCoreEngine;
-import org.osgi.framework.BundleActivator;
-import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -41,11 +39,11 @@ import java.util.jar.JarFile;
 /**
  * @author ffouquet
  */
-public class BootstrapActivator implements BundleActivator {
+public class KevoreeAndroidBootstrap {
 
     /* Bootstrap Model to init default nodeType */
     private ContainerRoot bootstrapModel = null;
-    Logger logger = LoggerFactory.getLogger(BootstrapActivator.class);
+    Logger logger = LoggerFactory.getLogger(KevoreeAndroidBootstrap.class);
     private Boolean started = false;
 
     public void setBootstrapModel(ContainerRoot bmodel) {
@@ -54,60 +52,41 @@ public class BootstrapActivator implements BundleActivator {
 
     private KevoreeCoreBean coreBean = null;
 
-
-    /*
-   @Override
-   public void start(BundleContext context) throws Exception {
-       //KEVOREE BOOTSTRAP
-       KevoreeAndroidConfigService configBean = new KevoreeAndroidConfigService();//new KevoreeConfigServiceBean();
-       configBean.def.put("node.name", KevoreeActivity.nodeName);
-       coreBean = new KevoreeCoreBean();
-       coreBean.setBundleContext(context);
-       coreBean.setConfigService((ConfigurationService) configBean);
-       coreBean.start();
-       //Kevoree script
-       KevScriptInterpreterService kevScriptBean = new KevScriptInterpreterService(coreBean);
-       context.registerService(ScriptInterpreter.class.getName(), kevScriptBean, null);
-       context.registerService(KevoreeModelHandlerService.class.getName(), coreBean, null);
-       System.out.println("Kevoree Started !");
-       if (bootstrapModel != null) {
-           try {
-               logger.debug("Bootstrap step !");
-               coreBean.updateModel(bootstrapModel);
-           } catch (Exception e) {
-               logger.error("Bootstrap failed", e);
-           }
-       } else {
-           logger.error("Can't bootstrap nodeType");
-       }
-   } */
-
-
-    @Override
-    public void start(BundleContext context) throws Exception {
+    public void start(android.content.Context ctx, ClassLoader parentCL) {
         if (started) {
             return;
         }
         try {
             KevoreeConfigServiceBean configBean = new KevoreeConfigServiceBean();
             coreBean = new KevoreeCoreBean();
-            NodeTypeBootstrapHelper bootstraper = new NodeTypeBootstrapHelper();
-            bootstraper.setBootstrapBundleContext(context);
-
+            NodeTypeBootstrapHelper bootstraper = new NodeTypeBootstrapHelper(ctx, parentCL);
             coreBean.setBootstraper(bootstraper);
             coreBean.setConfigService((ConfigurationService) configBean);
-            coreBean.start();
-            //Kevoree script
-           // KevScriptInterpreterService kevScriptBean = new KevScriptInterpreterService(coreBean);
-            context.registerService(KevoreeModelHandlerService.class.getName(), coreBean, null);
-            //context.registerService(ScriptInterpreter.class.getName(), kevScriptBean, null);
-            context.registerService(KevScriptEngineFactory.class.getName(), new KevScriptEngineFactory() {
+            coreBean.setKevsEngineFactory(new KevScriptEngineFactory() {
                 @Override
                 public KevScriptEngine createKevScriptEngine() {
-                    return new KevScriptCoreEngine(coreBean);
+                    try {
+                        return new org.kevoree.tools.marShell.KevScriptCoreEngine(coreBean);
+                        //return (KevScriptEngine) onlineMShellEngineClazz.getDeclaredConstructor(KevoreeModelHandlerService.class).newInstance(coreBean);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    return null;
                 }
-            }, null);
 
+                @Override
+                public KevScriptEngine createKevScriptEngine(ContainerRoot srcModel) {
+                    try {
+                        return new org.kevoree.tools.marShell.KevScriptOfflineEngine(srcModel);
+                        //return (KevScriptEngine) offLineMShellEngineClazz.getDeclaredConstructor(ContainerRoot.class).newInstance(srcModel);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    return null;
+                }
+            });
+
+            coreBean.start();
 
             /* Boot strap */
             //Bootstrap model phase
@@ -125,34 +104,29 @@ public class BootstrapActivator implements BundleActivator {
                 try {
                     logger.debug("Bootstrap step !");
                     BootstrapHelper.initModelInstance(bootstrapModel, "AndroidNode", "RestGroup");
-
+                    logger.debug("BootUpdate");
                     coreBean.updateModel(bootstrapModel);
+
+                    logger.debug("After Model Update !!!!");
+
                 } catch (Exception e) {
                     logger.error("Bootstrap failed", e);
                 }
             } else {
                 logger.error("Can't bootstrap nodeType");
             }
-
             started = true;
-
         } catch (Exception e) {
             e.printStackTrace();
         }
 
     }
 
-    @Override
-    public void stop(BundleContext context) throws Exception {
+    public void stop() {
         if (!started) {
             return;
         }
-        try {
-            coreBean.stop();
-            started = false;
-        } catch (Exception e) {
-            logger.error("Error while stopping Core ", e);
-        }
-
+        coreBean.stop();
+        started = false;
     }
 }
