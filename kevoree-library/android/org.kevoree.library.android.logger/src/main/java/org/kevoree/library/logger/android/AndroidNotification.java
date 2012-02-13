@@ -25,15 +25,14 @@ public class AndroidNotification extends AbstractComponentType {
 
     @Start
     public void start() {
-        //uiService = UIServiceHandler.getUIService((Bundle) this.getDictionary().get("osgi.bundle"));
-        //view = new TextView(uiService.getRootActivity());
-        //uiService.addToGroup("kevlog", view);
+        uiService = UIServiceHandler.getUIService();        //view = new TextView(uiService.getRootActivity());
+        uiService.addToGroup("kevlog", view);
         System.out.println("Hello Duke 222");
     }
 
     @Stop
     public void stop() {
-        //uiService.remove(view);
+        uiService.remove(view);
     }
 
     @Port(name = "log")
