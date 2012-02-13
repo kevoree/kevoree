@@ -298,7 +298,7 @@ class KevoreeCoreBean extends KevoreeModelHandlerService with KevoreeThreadActor
     if (pnewmodel == null || !pnewmodel.getNodes.exists(p => p.getName == getNodeName())) {
       logger.error("Asking for update with a NULL model or node name was not found in target model !")
       false
-    } else {
+    }  else {
       try {
 
         //Model checking
