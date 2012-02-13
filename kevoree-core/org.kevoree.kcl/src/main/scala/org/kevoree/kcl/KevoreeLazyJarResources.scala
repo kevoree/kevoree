@@ -110,7 +110,11 @@ class KevoreeLazyJarResources extends ClasspathResources {
         if (!jarEntry.isDirectory) {
 
           var filtered = false
-          if (parentKCL.isEnqueued) {
+          
+        //  System.out.println(parentKCL);
+          
+          if (parentKCL.get() != null) {
+
             parentKCL.get().getSpecialLoaders.find(r => jarEntry.getName.endsWith(r.getExtension)) match {
               case Some(e) => {
                 e.doLoad(jarEntry.getName, jis)

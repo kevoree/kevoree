@@ -52,4 +52,6 @@ public interface KevoreeModelHandlerService {
 
     public ContextModel getContextModel();
 
+   // public boolean acquireLock(ModelHandlerLockCallBack callBack,Long timeout);
+
 }
