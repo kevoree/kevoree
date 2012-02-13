@@ -51,7 +51,7 @@ object AetherUtil {
     locator.addService(classOf[LocalRepositoryManagerFactory], classOf[EnhancedLocalRepositoryManagerFactory])
     locator.addService(classOf[RepositoryConnectorFactory], classOf[FileRepositoryConnectorFactory])
     locator.setServices(classOf[WagonProvider], new ManualWagonProvider())
-    locator.setServices(classOf[UpdateCheckManager], new DefaultUpdateCheckManager())
+    //locator.setServices(classOf[UpdateCheckManager], new DefaultUpdateCheckManager())
     locator.addService(classOf[RepositoryConnectorFactory], classOf[WagonRepositoryConnectorFactoryFork])
     locator.getService(classOf[RepositorySystem])
   }
