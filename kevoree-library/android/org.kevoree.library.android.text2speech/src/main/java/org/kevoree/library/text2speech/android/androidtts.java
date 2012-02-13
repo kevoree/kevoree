@@ -5,7 +5,6 @@ import org.kevoree.android.framework.helper.UIServiceHandler;
 import org.kevoree.android.framework.service.KevoreeAndroidService;
 import org.kevoree.annotation.*;
 import org.kevoree.framework.AbstractComponentType;
-import org.osgi.framework.Bundle;
 
 import java.util.Locale;
 
@@ -32,7 +31,7 @@ public class androidtts extends AbstractComponentType implements TextToSpeech.On
     public void start() {
         updateFromDictionnary();
         bundle = this.getDictionary().get("osgi.bundle");
-        uiService = UIServiceHandler.getUIService((Bundle) bundle);
+        //uiService = UIServiceHandler.getUIService((Bundle) bundle);
         //create the TTS instance
         // The OnInitListener (second argument) is called after initialization completes.
         mTts = new TextToSpeech(uiService.getRootActivity(), this);

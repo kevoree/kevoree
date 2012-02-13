@@ -20,16 +20,11 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
-import org.apache.felix.framework.Logger;
-import org.osgi.framework.BundleContext;
-
-
 import android.view.Display;
 import android.view.View;
 import android.widget.*;
 import android.widget.Button;
 import android.widget.TabHost.TabSpec;
-import org.apache.felix.framework.util.StringMap;
 import org.kevoree.android.framework.service.KevoreeAndroidService;
 import org.kevoree.platform.osgi.android.ui.PreExistingViewFactory;
 
@@ -51,7 +46,6 @@ public class KevoreeActivity extends Activity implements KevoreeAndroidService {
     @Override
     protected void onStart() {
         super.onStart();
-
         Log.i("kevoree", "Kevoree UIActivity Start /" + this.toString());
     }
 
@@ -59,7 +53,7 @@ public class KevoreeActivity extends Activity implements KevoreeAndroidService {
     protected void onStop() {
         super.onStop();
         Log.i("kevoree", "Kevoree UIActivity Stop /" + this.toString());
-        // Intent intent = new Intent(".AndroidFelixService.ACTION");
+        // Intent intent = new Intent(".KevoreeService.ACTION");
         //stopService(intent);
     }
 
@@ -200,7 +194,7 @@ public class KevoreeActivity extends Activity implements KevoreeAndroidService {
             btstart.setOnClickListener(new Button.OnClickListener() {
 
                 public void onClick(View v) {
-                    Intent intent_start = new Intent(ctx, AndroidFelixService.class);
+                    Intent intent_start = new Intent(ctx, KevoreeService.class);
                     Log.i("art2.service", "start bind service");
                     if (!alreadyStarted) {
                         nodeName=  nodeNameView.getText().toString();
@@ -208,27 +202,6 @@ public class KevoreeActivity extends Activity implements KevoreeAndroidService {
                         startService(intent_start);
                         alreadyStarted = true;
                     }
-
-                    // Toast.makeText(ctx, "Art2 Platform Started !", 3000).show();
-
-
-                    /*
-                   bindService(intent_start, new ServiceConnection() {
-                   @Override
-                   public void onServiceConnected(ComponentName name, IBinder service) {
-                   AndroidFelixServiceBinder felixservicebinder = (AndroidFelixServiceBinder) service;
-                   BundleContext ctx = felixservicebinder.getService().getFrameworkBundleContext();
-                   //Toast.makeText(app_ctx, "size=" + ctx.getBundles().length, 3000).show();
-                   }
-
-                   @Override
-                   public void onServiceDisconnected(ComponentName name) {
-                   //throw new UnsupportedOperationException("Not supported yet.");
-                   }
-                   }, BIND_AUTO_CREATE);
-                    */
-                    //startService(intent_start);
-
                 }
             });
 
@@ -238,17 +211,12 @@ public class KevoreeActivity extends Activity implements KevoreeAndroidService {
                 public void onClick(View v) {
                     Log.i("kevoree.platform", "try to stop the platform");
                     if (alreadyStarted) {
-                        Intent intent_stop = new Intent(ctx, AndroidFelixService.class);
+                        Intent intent_stop = new Intent(ctx, KevoreeService.class);
                         stopService(intent_stop);
                         alreadyStarted = false;
                     }
                 }
             });
-
-
-
-
-
 
         }
         if(singleton ==null)
@@ -308,7 +276,7 @@ public class KevoreeActivity extends Activity implements KevoreeAndroidService {
                                 _textArea.scrollTo(0,0);
 
                             _textArea.setTextColor(_color);
-                            Log.i("kevoree.osgi.service.logger", currentLine.toString());
+                            Log.i("kevoree.service.logger", currentLine.toString());
 
                             currentLine = new StringBuilder();
                         } else {

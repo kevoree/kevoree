@@ -11,7 +11,6 @@ import org.kevoree.android.framework.helper.UIServiceHandler;
 import org.kevoree.android.framework.service.KevoreeAndroidService;
 import org.kevoree.annotation.*;
 import org.kevoree.framework.AbstractComponentType;
-import org.osgi.framework.Bundle;
 
 
 /**
@@ -56,7 +55,7 @@ public class AGrapher extends AbstractComponentType  {
         updateDico();
 
         bundle = this.getDictionary().get("osgi.bundle");
-        uiService = UIServiceHandler.getUIService((Bundle) bundle);
+        //uiService = UIServiceHandler.getUIService((Bundle) bundle);
         graphline = new GraphLine(title,history_size, color_axe,color_courbe);
 
         layout = new LinearLayout(uiService.getRootActivity());

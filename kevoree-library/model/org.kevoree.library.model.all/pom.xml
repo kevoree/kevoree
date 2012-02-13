@@ -69,11 +69,11 @@
             <artifactId>org.kevoree.library.javase.restAutoDiscovery</artifactId>
             <version>${kevoree.version}</version>
         </dependency>
-        <!--<dependency>
+        <dependency>
             <groupId>org.kevoree.library.javase</groupId>
-            <artifactId>org.kevoree.library.javase.miniCloudGroup</artifactId>
+            <artifactId>org.kevoree.library.javase.ssh</artifactId>
             <version>${kevoree.version}</version>
-        </dependency>-->
+        </dependency>
         <dependency>
             <groupId>org.kevoree.library.javase</groupId>
             <artifactId>org.kevoree.library.javase.socketChannels</artifactId>
@@ -117,6 +117,11 @@
         <dependency>
             <groupId>org.kevoree.library.javase</groupId>
             <artifactId>org.kevoree.library.javase.latex</artifactId>
+            <version>${kevoree.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.kevoree.library.javase</groupId>
+            <artifactId>org.kevoree.library.javase.fileSystemSVN</artifactId>
             <version>${kevoree.version}</version>
         </dependency>
 

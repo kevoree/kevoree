@@ -20,7 +20,7 @@
             <groupId>org.kevoree.library.javase</groupId>
             <artifactId>org.kevoree.library.javase.javaseNode</artifactId>
             <version>${kevoree.version}</version>
-           <type>bundle</type>
+           <type>kjar</type>
         </dependency>
         <dependency>
             <groupId>org.apache.felix</groupId>

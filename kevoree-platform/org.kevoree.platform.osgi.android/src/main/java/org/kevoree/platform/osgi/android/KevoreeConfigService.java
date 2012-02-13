@@ -19,7 +19,7 @@ import org.kevoree.api.configuration.ConfigurationService;
 import java.util.HashMap;
 import java.util.Map;
 
-public class KevoreeAndroidConfigService implements ConfigurationService {
+public class KevoreeConfigService implements ConfigurationService {
 
     public Map<String,String> def = new HashMap<String,String>();
 

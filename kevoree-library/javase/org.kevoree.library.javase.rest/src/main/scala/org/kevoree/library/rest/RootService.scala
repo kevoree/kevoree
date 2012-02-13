@@ -55,6 +55,16 @@ class RootService(id: String, group: RestGroup) extends Actor with FileServer {
       }
     }
 
+    case RequestContext(HttpRequest(HttpMethods.GET, "/node/lock", _, _, _), _, responder) => {
+      // call the lock on the node
+      if (group.lock()) {
+        responder.complete(response("Node is lock !!!"))
+      } else {
+        responder.complete(response("Unable to lock the node"))
+      }
+
+    }
+
     case Timeout(method, uri, _, _, _, complete) => complete {
       HttpResponse(status = 401).withBody("The " + method + " request to '" + uri + "' has timed out...")
     }

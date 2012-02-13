@@ -167,4 +167,8 @@ public class RestGroup extends AbstractGroupType {
 	public String getModel() {
 		return KevoreeXmiHelper.saveToString(this.getModelService().getLastModel(), false);
 	}
+
+	public boolean lock(){
+		return false;
+	}
 }

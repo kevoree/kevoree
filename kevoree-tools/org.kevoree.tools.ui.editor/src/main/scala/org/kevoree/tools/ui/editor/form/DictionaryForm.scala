@@ -13,7 +13,6 @@
  */
 package org.kevoree.tools.ui.editor.form
 
-import com.explodingpixels.macwidgets.HudWindow
 import org.kevoree.tools.ui.editor.KevoreeUIKernel
 import com.explodingpixels.macwidgets.plaf.{HudButtonUI, HudCheckBoxUI, HudTextFieldUI, HudLabelUI}
 import org.kevoree.tools.ui.editor.property.SpringUtilities
@@ -27,6 +26,7 @@ import java.awt.event.{FocusEvent, FocusListener, ActionEvent, ActionListener}
 import java.util.regex.Pattern
 import java.awt.{Color, FlowLayout, Dimension}
 import org.slf4j.LoggerFactory
+import com.explodingpixels.macwidgets.{IAppWidgetFactory, HudWindow}
 
 trait DictionaryForm {
 
@@ -207,6 +207,8 @@ trait DictionaryForm {
       table.setMinimumSize(new Dimension(100, 100))
       table.setSize(new Dimension(100, 100))
       val scrollTable: JScrollPane = new JScrollPane(table)
+
+      IAppWidgetFactory.makeIAppScrollPane(scrollTable)
       scrollTable.setColumnHeader(null)
       scrollTable.setMinimumSize(new Dimension(100, 80))
       val tableBox: Box = new Box(BoxLayout.Y_AXIS)

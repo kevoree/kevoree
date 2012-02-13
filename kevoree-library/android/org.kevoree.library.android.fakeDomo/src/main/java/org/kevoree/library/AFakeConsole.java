@@ -15,7 +15,6 @@ import org.kevoree.annotation.*;
 import org.kevoree.framework.AbstractComponentType;
 import org.kevoree.framework.KevoreeMessage;
 import org.kevoree.framework.MessagePort;
-import org.osgi.framework.Bundle;
 
 
 /**
@@ -47,7 +46,7 @@ public class AFakeConsole extends AbstractComponentType {
     public void start() {
 
         bundle = this.getDictionary().get("osgi.bundle");
-        uiService = UIServiceHandler.getUIService((Bundle) bundle);
+       // uiService = UIServiceHandler.getUIService((Bundle) bundle);
 
         button = new Button(uiService.getRootActivity());
         button.setText("Send");
