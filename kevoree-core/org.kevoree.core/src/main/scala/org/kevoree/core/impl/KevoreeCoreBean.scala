@@ -242,7 +242,7 @@ class KevoreeCoreBean extends KevoreeModelHandlerService with KevoreeThreadActor
     }
     //Updates the system to fit to the new model
     case UpdateModel(pnewmodel) => {
-      if (currentLock != null) {
+      if (currentLock == null) {
         reply(internal_update_model(pnewmodel))
       } else {
         logger.debug("Core Locked , UUID mandatory")
