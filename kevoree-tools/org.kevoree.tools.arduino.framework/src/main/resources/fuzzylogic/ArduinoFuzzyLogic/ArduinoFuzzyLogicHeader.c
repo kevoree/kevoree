@@ -14,7 +14,7 @@
 #include <avr/pgmspace.h>
 #define PRECISION 4
 #define NB_TERMS 4
-#define MAXIMUM_SIZE_FLOAT 10
+#define MAXIMUM_SIZE_FLOAT 5
 
 //#define DEBUG
 
