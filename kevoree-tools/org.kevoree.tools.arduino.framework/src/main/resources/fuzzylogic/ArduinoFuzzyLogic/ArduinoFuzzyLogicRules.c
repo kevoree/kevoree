@@ -11,10 +11,3 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-PROGMEM const unsigned char	num_rule_antecedent[NUM_RULES] = { $num_rule_antecedent$};
-PROGMEM const unsigned char	num_rule_coutcome[NUM_RULES] = { $num_rule_coutcome$};
-
-const struct _Rule rules[NUM_RULES] = {
- $loadrules$
-};

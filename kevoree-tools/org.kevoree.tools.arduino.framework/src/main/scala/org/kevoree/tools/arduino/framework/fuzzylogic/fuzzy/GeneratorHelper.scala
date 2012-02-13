@@ -129,7 +129,7 @@ object GeneratorHelper {
     gen.appendNativeStatement("float rule_crispvalue[" + nbRules + "];")
 
     gen.appendNativeStatement("int in_num_MemberShipFunction[" + nbInputs + "];")
-    gen.appendNativeStatement("int out_num_MemberShipFunction[" + nbInputs + "];")
+    gen.appendNativeStatement("int out_num_MemberShipFunction[" + nbOutputs + "];")
     gen.appendNativeStatement("float outMemberShipFunction[" + nbOutputs + "][PRECISION][2];")
     gen.appendNativeStatement("float inMemberShipFunction[" + nbInputs + "][NB_TERMS][PRECISION];")
 
