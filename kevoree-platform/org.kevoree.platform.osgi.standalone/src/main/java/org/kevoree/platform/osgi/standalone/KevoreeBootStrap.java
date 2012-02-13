@@ -29,11 +29,15 @@ import org.kevoree.core.impl.KevoreeConfigServiceBean;
 import org.kevoree.core.impl.KevoreeCoreBean;
 import org.kevoree.kcl.KevoreeJarClassLoader;
 import org.kevoree.framework.KevoreeXmiHelper;
+import org.kevoree.kcl.KevoreeResourcesLoader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
+import java.io.InputStream;
 import java.lang.reflect.Method;
+import java.net.URL;
+import java.util.List;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
