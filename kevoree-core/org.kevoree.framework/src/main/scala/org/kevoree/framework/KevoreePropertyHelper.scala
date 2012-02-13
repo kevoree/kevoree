@@ -27,8 +27,7 @@ import org.kevoree.{TypeDefinition, Instance, ContainerRoot}
 
 object KevoreePropertyHelper {
 
-  def getBooleanPropertyForGroup (model: ContainerRoot, groupName: String, key: String, isFragment: Boolean = false,
-    nodeNameForFragment: String = ""): Option[Boolean] = {
+  def getBooleanPropertyForGroup (model: ContainerRoot, groupName: String, key: String, isFragment: Boolean = false, nodeNameForFragment: String = ""): Option[Boolean] = {
     getPropertyForGroup(model, groupName, key, isFragment, nodeNameForFragment) match {
       case None => None
       case Some(value) => try {
@@ -39,8 +38,7 @@ object KevoreePropertyHelper {
     }
   }
 
-  def getIntPropertyForGroup (model: ContainerRoot, groupName: String, key: String, isFragment: Boolean = false,
-    nodeNameForFragment: String = ""): Option[Int] = {
+  def getIntPropertyForGroup (model: ContainerRoot, groupName: String, key: String, isFragment: Boolean = false, nodeNameForFragment: String = ""): Option[java.lang.Integer] = {
     getPropertyForGroup(model, groupName, key, isFragment, nodeNameForFragment) match {
       case None => None
       case Some(value) => try {
@@ -51,8 +49,7 @@ object KevoreePropertyHelper {
     }
   }
 
-  def getStringPropertyForGroup (model: ContainerRoot, groupName: String, key: String, isFragment: Boolean = false,
-    nodeNameForFragment: String = ""): Option[String] = {
+  def getStringPropertyForGroup (model: ContainerRoot, groupName: String, key: String, isFragment: Boolean = false, nodeNameForFragment: String = ""): Option[String] = {
     getPropertyForGroup(model, groupName, key, isFragment, nodeNameForFragment) match {
       case None => None
       case Some(value) => try {
@@ -63,16 +60,14 @@ object KevoreePropertyHelper {
     }
   }
 
-  def getPropertyForGroup (model: ContainerRoot, groupName: String, key: String,
-    isFragment: Boolean = false, nodeNameForFragment: String = ""): Option[Object] = {
+  def getPropertyForGroup (model: ContainerRoot, groupName: String, key: String, isFragment: Boolean = false, nodeNameForFragment: String = ""): Option[Object] = {
     model.getGroups.find(group => group.getName == groupName) match {
       case Some(group) => getProperty(model, group, groupName, key, isFragment, nodeNameForFragment)
       case None => None
     }
   }
 
-  def getBooleanPropertyForChannel (model: ContainerRoot, channelName: String, key: String, isFragment: Boolean = false,
-    nodeNameForFragment: String = ""): Option[Boolean] = {
+  def getBooleanPropertyForChannel (model: ContainerRoot, channelName: String, key: String, isFragment: Boolean = false, nodeNameForFragment: String = ""): Option[Boolean] = {
     getPropertyForChannel(model, channelName, key, isFragment, nodeNameForFragment) match {
       case None => None
       case Some(value) => try {
@@ -83,8 +78,7 @@ object KevoreePropertyHelper {
     }
   }
 
-  def getIntPropertyForChannel (model: ContainerRoot, channelName: String, key: String, isFragment: Boolean = false,
-    nodeNameForFragment: String = ""): Option[Int] = {
+  def getIntPropertyForChannel (model: ContainerRoot, channelName: String, key: String, isFragment: Boolean = false, nodeNameForFragment: String = ""): Option[java.lang.Integer] = {
     getPropertyForChannel(model, channelName, key, isFragment, nodeNameForFragment) match {
       case None => None
       case Some(value) => try {
@@ -95,8 +89,7 @@ object KevoreePropertyHelper {
     }
   }
 
-  def getStringPropertyForChannel (model: ContainerRoot, channelName: String, key: String, isFragment: Boolean = false,
-    nodeNameForFragment: String = ""): Option[String] = {
+  def getStringPropertyForChannel (model: ContainerRoot, channelName: String, key: String, isFragment: Boolean = false, nodeNameForFragment: String = ""): Option[String] = {
     getPropertyForChannel(model, channelName, key, isFragment, nodeNameForFragment) match {
       case None => None
       case Some(value) => try {
@@ -107,8 +100,7 @@ object KevoreePropertyHelper {
     }
   }
 
-  def getPropertyForChannel (model: ContainerRoot, channelName: String, key: String,
-    isFragment: Boolean = false, nodeNameForFragment: String = ""): Option[Object] = {
+  def getPropertyForChannel (model: ContainerRoot, channelName: String, key: String, isFragment: Boolean = false, nodeNameForFragment: String = ""): Option[Object] = {
     model.getHubs.find(channel => channel.getName == channelName) match {
       case Some(channel) => getProperty(model, channel, channelName, key, isFragment, nodeNameForFragment)
       case None => None
@@ -126,7 +118,7 @@ object KevoreePropertyHelper {
     }
   }
 
-  def getIntPropertyForNode (model: ContainerRoot, nodeName: String, key: String): Option[Int] = {
+  def getIntPropertyForNode (model: ContainerRoot, nodeName: String, key: String): Option[java.lang.Integer] = {
     getPropertyForNode(model, nodeName, key) match {
       case None => None
       case Some(value) => try {
@@ -166,7 +158,7 @@ object KevoreePropertyHelper {
     }
   }
 
-  def getIntPropertyForComponent (model: ContainerRoot, componentName: String, key: String): Option[Int] = {
+  def getIntPropertyForComponent (model: ContainerRoot, componentName: String, key: String): Option[java.lang.Integer] = {
     getPropertyForComponent(model, componentName, key) match {
       case None => None
       case Some(value) => try {
@@ -211,7 +203,7 @@ object KevoreePropertyHelper {
       }
     }
 
-  def getIntNetworkProperty (model: ContainerRoot, targetNodeName: String, key: String): Option[Int] = {
+  def getIntNetworkProperty (model: ContainerRoot, targetNodeName: String, key: String): Option[java.lang.Integer] = {
       getNetworkProperty(model, targetNodeName, key) match {
         case None => None
         case Some(value) => try {
@@ -249,8 +241,7 @@ object KevoreePropertyHelper {
     result
   }
 
-  private def getProperty (model: ContainerRoot, instance: Instance, name: String, key: String,
-    isFragment: Boolean = false, nodeNameForFragment: String = ""): Option[Object] = {
+  private def getProperty (model: ContainerRoot, instance: Instance, name: String, key: String, isFragment: Boolean = false, nodeNameForFragment: String = ""): Option[Object] = {
     instance.getDictionary match {
       case None => {
         getDefaultValue(instance.getTypeDefinition, key)
