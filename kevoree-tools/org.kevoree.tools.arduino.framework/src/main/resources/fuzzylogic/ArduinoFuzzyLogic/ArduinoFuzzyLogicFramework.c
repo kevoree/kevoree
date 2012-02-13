@@ -14,7 +14,7 @@
 
 
 void displayRules(){
-
+  /*
 	int rule_index,i,y;
     unsigned char in_domain,in_term,out_domain,out_term;
 	for( rule_index=0;rule_index <numberOfRules;rule_index++)
@@ -55,6 +55,7 @@ void displayRules(){
 		}
 		 Serial.println(" END ");
 	}
+	*/
 }
 
 
@@ -187,7 +188,7 @@ void displayOutputs()
     int num_out;
       for( num_out=0;num_out <NUM_OUTPUTS;num_out++)
      	{
-         Serial.print("O=");
+    //     Serial.print("O=");
          Serial.print(num_out);
          Serial.println(crisp_outputs[num_out]);
    	}
@@ -199,7 +200,7 @@ void displayDomains()
    int num_out,j,y;
    for( num_out=0;num_out <NUM_INPUTS;num_out++)
 	{
-	      Serial.print("D_I");
+	    //  Serial.print("D_I");
 	      Serial.print(num_out);
 	      Serial.print("<");
           Serial.print(in_num_MemberShipFunction[num_out]);
@@ -219,7 +220,7 @@ void displayDomains()
 
      for( num_out=0;num_out <NUM_OUTPUTS;num_out++)
 	{
-	      Serial.print("D_O");
+	    //  Serial.print("D_O");
 	       Serial.println(num_out);
 	   for(j=0;j<out_num_MemberShipFunction[num_out];j++)
 	   {
