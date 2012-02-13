@@ -1,13 +1,12 @@
 package org.kevoree.library.rest;
 
-import org.kevoree.ContainerNode;
 import org.kevoree.ContainerRoot;
-import org.kevoree.Group;
 import org.kevoree.annotation.*;
 import org.kevoree.framework.*;
 import org.kevoree.framework.Constants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import scala.Option;
 
 import java.io.*;
 import java.net.URL;
@@ -53,7 +52,7 @@ public class RestGroup extends AbstractGroupType {
 
     @Override
     public void triggerModelUpdate() {
-        ContainerRoot model = this.getModelService().getLastModel();
+        /*ContainerRoot model = this.getModelService().getLastModel();
         for (Group group : model.getGroupsForJ()) {
             if (group.getName().equals(this.getName())) {
                 for (ContainerNode subNode : group.getSubNodesForJ()) {
@@ -63,7 +62,7 @@ public class RestGroup extends AbstractGroupType {
                 }
                 return;
             }
-        }
+        }*/
 
     }
 
@@ -84,7 +83,11 @@ public class RestGroup extends AbstractGroupType {
                 IP = "127.0.0.1";
             }
 
-            int PORT = KevoreeFragmentPropertyHelper.getIntPropertyFromFragmentGroup(model, this.getName(), "port", targetNodeName);
+            Option<Integer> portOption = KevoreePropertyHelper.getIntPropertyForGroup(model, this.getName(), "port", true, targetNodeName);
+			int PORT = 8000;
+			if (portOption.isDefined()) {
+				PORT = portOption.get();
+			}
 
             logger.debug("port=>" + PORT);
 
@@ -113,7 +116,6 @@ public class RestGroup extends AbstractGroupType {
 
 
     public String getAddress(String remoteNodeName) {
-
         logger.debug("ModelService "+getModelService());
 
         String ip = KevoreePlatformHelper.getProperty(this.getModelService().getLastModel(), remoteNodeName,org.kevoree.framework.Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP());
@@ -139,8 +141,7 @@ public class RestGroup extends AbstractGroupType {
         String localhost = "localhost";
         int port=8000;
 
-        try
-        {
+        try {
             localhost = getAddress(targetNodeName);
             port = parsePortNumber(targetNodeName);
         } catch (IOException e) {
@@ -168,7 +169,7 @@ public class RestGroup extends AbstractGroupType {
 		return KevoreeXmiHelper.saveToString(this.getModelService().getLastModel(), false);
 	}
 
-	public boolean lock(){
-		return false;
+	public RootService getRootService(String id) {
+		return new RootService(id, this);
 	}
 }

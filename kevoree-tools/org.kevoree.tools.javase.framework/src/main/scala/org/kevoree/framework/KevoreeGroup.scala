@@ -30,7 +30,7 @@ trait KevoreeGroup extends AbstractGroupType with KevoreeActor with ModelListene
     triggerModelUpdate()
   }
 
-  def preUpdate(proposedModel : ContainerRoot) : Boolean = true
+  def preUpdate(proposedModel : ContainerRoot) : Boolean = triggerPreUpdate(proposedModel)
 
 
 
