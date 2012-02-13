@@ -18,12 +18,13 @@ package org.kevoree.api.service.core.handler;
  * and open the template in the editor.
  */
 
-import java.util.Date;
-import java.util.List;
 import org.kevoree.ContainerRoot;
 
+import java.util.Date;
+import java.util.List;
+import java.util.UUID;
+
 /**
- *
  * @author ffouquet
  */
 public interface KevoreeModelHandlerService {
@@ -35,12 +36,12 @@ public interface KevoreeModelHandlerService {
     public Date getLastModification();
 
     public void updateModel(ContainerRoot model);
-    
+
     public Date atomicUpdateModel(ContainerRoot model);
 
-    public void compareAndSwapModel(UUIDModel previousModel,ContainerRoot targetModel);
-    
-    public Date atomicCompareAndSwapModel(UUIDModel previousModel,ContainerRoot targetModel);
+    public void compareAndSwapModel(UUIDModel previousModel, ContainerRoot targetModel);
+
+    public Date atomicCompareAndSwapModel(UUIDModel previousModel, ContainerRoot targetModel);
 
     public List<ContainerRoot> getPreviousModel();
 
@@ -52,6 +53,8 @@ public interface KevoreeModelHandlerService {
 
     public ContextModel getContextModel();
 
-   // public boolean acquireLock(ModelHandlerLockCallBack callBack,Long timeout);
+    public void acquireLock(ModelHandlerLockCallBack callBack, Long timeout);
+
+    public void releaseLock(UUID uuid);
 
 }
