@@ -34,7 +34,7 @@ import org.kevoree.api.service.core.handler._
 import org.kevoree.api.service.core.script.KevScriptEngineFactory
 import org.kevoree.api.Bootstraper
 import java.lang.Long
-import actors.{TIMEOUT, Actor}
+import actors.{DaemonActor, TIMEOUT, Actor}
 
 class KevoreeCoreBean extends KevoreeModelHandlerService with KevoreeThreadActor {
 
@@ -257,7 +257,7 @@ class KevoreeCoreBean extends KevoreeModelHandlerService with KevoreeThreadActor
         val lockUUID = UUID.randomUUID()
         currentLock = (lockUUID, handler)
         //RUN ACTOR
-        currentLockTimer = new Actor {
+        currentLockTimer = new DaemonActor {
           def act() {
             reactWithin(timeout) {
               case TIMEOUT => {
