@@ -18,6 +18,7 @@ import org.kevoree.tools.arduino.framework.fuzzylogic.gen.utils.ArduinoException
 import org.kevoree.ComponentType
 
 
+
 /**
  * Created by jed
  * User: jedartois@gmail.com
@@ -29,16 +30,17 @@ object GeneratorHelper {
 
   def generateUpdateDictonnary(gen: ArduinoGenerator): Unit = {
 
+
     gen.getTypeModel.getDictionaryType.get.getAttributes.foreach {
       p =>
         val chaine = p.getName.split("_")
         gen.getTypeModel.asInstanceOf[ComponentType].getProvided.exists(d => d.getName == chaine(0)) match {
 
           /// INPUTS FUZZY TERMS
-          case true => gen.appendNativeStatement("parseDictionnary(0," + getPositiongetProvided(gen, chaine(0)) + "," + getPositionTerm(gen, chaine(0), chaine(1)) + "," + p.getName + ");")
+          case true => gen.appendNativeStatement("setDictionnary(0," + getPositiongetProvided(gen, chaine(0)) + "," + getPositionTerm(gen, chaine(0), chaine(1)) + "," + p.getName + ");")
 
           // OUTPUTS FUZZY TERMS
-          case false => gen.appendNativeStatement("parseDictionnary(1," + getPositiongetRequired(gen, chaine(0)) + "," + getPositionTerm(gen, chaine(0), chaine(1)) + "," + p.getName + ");")
+          case false => gen.appendNativeStatement("setDictionnary(1," + getPositiongetRequired(gen, chaine(0)) + "," + getPositionTerm(gen, chaine(0), chaine(1)) + ",&" + p.getName + ");")
         }
     }
   }
@@ -84,7 +86,6 @@ object GeneratorHelper {
     throw new ArduinoException("The term " + domain + "_" + term + " is not found  : " + gen.getTypeModel.getDictionaryType.get.getAttributes)
   }
 
-
   def generateMemberShipVariables(gen: ArduinoGenerator){
     var countDomain= 0
     var countTerm = 0
@@ -124,18 +125,18 @@ object GeneratorHelper {
     gen.appendNativeStatement("#define NUM_OUTPUTS " + nbOutputs)
 
 
-    gen.appendNativeStatement("float crisp_inputs[" + nbInputs + "];")
-    gen.appendNativeStatement("float crisp_outputs[" + nbOutputs + "];")
+    gen.appendNativeStatement("int crisp_inputs[" + nbInputs + "];")
+    gen.appendNativeStatement("int crisp_outputs[" + nbOutputs + "];")
 
 
-    gen.appendNativeStatement("float fuzzy_outputs[" + nbOutputs + "][NB_TERMS];")
-    gen.appendNativeStatement("float fuzzy_inputs[" + nbInputs + "][NB_TERMS];")
-    gen.appendNativeStatement("float rule_crispvalue[" + nbRules + "];")
+    gen.appendNativeStatement("int fuzzy_outputs[" + nbOutputs + "][NB_TERMS];")
+    gen.appendNativeStatement("int fuzzy_inputs[" + nbInputs + "][NB_TERMS];")
+    gen.appendNativeStatement("int rule_crispvalue[" + nbRules + "];")
 
     gen.appendNativeStatement("int in_num_MemberShipFunction[" + nbInputs + "];")
     gen.appendNativeStatement("int out_num_MemberShipFunction[" + nbOutputs + "];")
-    gen.appendNativeStatement("float outMemberShipFunction[" + nbOutputs + "][PRECISION][2];")
-    gen.appendNativeStatement("float inMemberShipFunction[" + nbInputs + "][NB_TERMS][PRECISION];")
+    gen.appendNativeStatement("int outMemberShipFunction[" + nbOutputs + "][PRECISION][2];")
+    gen.appendNativeStatement("int inMemberShipFunction[" + nbInputs + "][NB_TERMS][PRECISION];")
 
     // map global variables to local constante
     gen.appendNativeStatement("const unsigned char *num_rule_antecedent;");
