@@ -57,7 +57,7 @@ trait KevoreeCFrameworkGenerator extends KevoreeCAbstractGenerator {
       case _ => pmax
     }
     context h "#define EEPROM_MAX_SIZE " + maxSize
-    context h "#define MAX_INST_ID 32" //TO CHANGE
+    context h "#define MAX_INST_ID 15" //TO CHANGE
 
     val random = new Random
     context h ("#define kevoreeID1 " + random.nextInt(10))
@@ -460,8 +460,14 @@ trait KevoreeCFrameworkGenerator extends KevoreeCAbstractGenerator {
             }
             dictionaryResult.append(key + "=" + value)
         }
-        context b "        strcpy_P(instNameBuf, (char *) pgm_read_word (&(init_tables[" + instanceCODE.indexOf("init_" + instance.getName.toLowerCase) + "])));        "
-        context b "        saveAIN_CMD(instNameBuf, " + typeCodeMap.get(instance.getTypeDefinition.getName).get + ", \"" + dictionaryResult.toString + "\");                                             "
+
+         val id = instanceCODE.indexOf("init_" + instance.getName.toLowerCase)
+        context b "strcpy_P(instNameBuf, (char *) pgm_read_word (&(init_tables[" +id  + "])));      "
+        context b "strcpy_P(inBytes, PSTR(\""+dictionaryResult.toString+"\"));                    "
+        context b "saveAIN_CMD(instNameBuf, " + typeCodeMap.get(instance.getTypeDefinition.getName).get + ", inBytes);"
+
+
+
     }
 
 
