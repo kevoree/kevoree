@@ -41,12 +41,15 @@ class RootService(id: String, group: RestGroup) extends Actor with FileServer {
     case RequestContext(HttpRequest(HttpMethods.POST, url, _, body, _), _, responder) => {
       try {
          val model = KevoreeXmiHelper.loadString(new String(body))
-         new scala.actors.Actor {
-           def act() {
-             group.updateModel(model)
-           }
-         }.start()
-         responder.complete(response("<ack nodeName=\"" + group.getNodeName + "\" />"))
+         /*new scala.actors.Actor {
+           def act() {*/
+             if (group.updateModel(model)) {
+               responder.complete(response("<ack nodeName=\"" + group.getNodeName + "\" />"))
+             } else {
+               responder.complete(response("<nack nodeName=\"" + group.getNodeName + "\" />"))
+             }
+           /*}
+         }.start()*/
       } catch {
         case _ @ e => {
           log.error("Error while uploading model from group "+group.getName,e)

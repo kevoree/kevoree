@@ -3,10 +3,10 @@ package org.kevoree.library.javase.webserver.components
 import scala.collection.JavaConversions._
 import org.kevoree.library.javase.webserver.{KevoreeHttpResponse, KevoreeHttpRequest}
 import java.util.HashMap
+import org.slf4j.LoggerFactory
 import cc.spray.can._
 import akka.config.Supervision._
 import HttpClient._
-import org.slf4j.LoggerFactory
 import akka.config.Supervision.SupervisorConfig
 import akka.actor.{PoisonPill, Supervisor, Actor}
 import java.io.{ByteArrayOutputStream, ByteArrayInputStream}
@@ -67,7 +67,7 @@ object Forwarder {
         }
 
       } catch {
-        case _@e => logger.warn("Error while stopping Spray Server ", e)
+        case _@e => logger.warn("Error while stopping Spray client ", e)
       }
 
 
@@ -138,21 +138,6 @@ object Forwarder {
     response.setStatus(502)
     logger.error("Unable to complete request", error)
   }
-
-  /*private def generateErrorPageHtml (exception: String): String = {
-          <html>
-            <head>
-                <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-                <meta charset="utf-8"/>
-            </head>
-            <body>
-              <p>
-                Unable to deal with the request:
-                  <br/>{exception}
-              </p>
-            </body>
-          </html>.toString()
-        }*/
 
   private def convertSprayCanHeadersToKevoreeHTTPHeaders (
     sprayHeaders: scala.List[cc.spray.can.HttpHeader] /*, currentPath : String*/): HashMap[String, String] = {

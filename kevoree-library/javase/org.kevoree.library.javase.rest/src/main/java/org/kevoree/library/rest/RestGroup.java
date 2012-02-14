@@ -161,8 +161,15 @@ public class RestGroup extends AbstractGroupType {
         return null;
     }
 
-	public void updateModel(ContainerRoot model) {
+	/**
+	 * <b>This method must only be use by RootService</b>
+	 * @param model the new model to apply on the node
+	 * @return the result may depend of the implementation. Basic implementation in RestGroup always returns <code>true</code>
+	 */
+	boolean updateModel(ContainerRoot model) {
 		this.getModelService().updateModel(model);
+		logger.debug("Rest Group updateModel");
+		return true;
 	}
 
 	public String getModel() {
