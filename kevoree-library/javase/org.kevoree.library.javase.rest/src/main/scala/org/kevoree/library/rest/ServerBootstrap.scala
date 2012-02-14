@@ -22,7 +22,7 @@ class ServerBootstrap(group: RestGroup) {
       SupervisorConfig(
         OneForOneStrategy(List(classOf[Exception]), 3, 100),
         List(
-          Supervise(Actor.actorOf(new RootService(id, group)), Permanent),
+          Supervise(Actor.actorOf(/*new RootService(id, group)*/group.getRootService(id)), Permanent),
           Supervise(Actor.actorOf(new HttpServer(config)), Permanent)
         )
       )

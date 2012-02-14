@@ -27,8 +27,7 @@ import org.sonatype.aether.spi.localrepo.LocalRepositoryManagerFactory
 import org.sonatype.aether.connector.wagon.WagonProvider
 import org.kevoree.{ContainerRoot, DeployUnit}
 import org.slf4j.LoggerFactory
-import org.sonatype.aether.impl.UpdateCheckManager
-import org.sonatype.aether.impl.internal.{DefaultUpdateCheckManager, EnhancedLocalRepositoryManagerFactory}
+import org.sonatype.aether.impl.internal.{EnhancedLocalRepositoryManagerFactory}
 import util.matching.Regex
 import org.sonatype.aether.repository.{Authentication, RepositoryPolicy, RemoteRepository, LocalRepository}
 import scala.collection.JavaConversions._
@@ -46,12 +45,12 @@ object AetherUtil {
 
   val logger = LoggerFactory.getLogger(this.getClass)
 
-  val newRepositorySystem: RepositorySystem = {
+  def newRepositorySystem: RepositorySystem = {
     val locator = new DefaultServiceLocator()
     locator.addService(classOf[LocalRepositoryManagerFactory], classOf[EnhancedLocalRepositoryManagerFactory])
     locator.addService(classOf[RepositoryConnectorFactory], classOf[FileRepositoryConnectorFactory])
     locator.setServices(classOf[WagonProvider], new ManualWagonProvider())
-    locator.setServices(classOf[UpdateCheckManager], new DefaultUpdateCheckManager())
+    //locator.setServices(classOf[UpdateCheckManager], new DefaultUpdateCheckManager())
     locator.addService(classOf[RepositoryConnectorFactory], classOf[WagonRepositoryConnectorFactoryFork])
     locator.getService(classOf[RepositorySystem])
   }
@@ -124,7 +123,7 @@ object AetherUtil {
     artefactResult.getArtifact.getFile
   }
 
-  val newRepositorySystemSession = {
+  def newRepositorySystemSession = {
     val session = new MavenRepositorySystemSession()
     session.setUpdatePolicy(RepositoryPolicy.UPDATE_POLICY_ALWAYS)
     session.setConfigProperty("aether.connector.ahc.provider", "jdk")

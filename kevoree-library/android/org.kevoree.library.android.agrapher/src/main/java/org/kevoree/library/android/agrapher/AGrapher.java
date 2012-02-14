@@ -55,7 +55,7 @@ public class AGrapher extends AbstractComponentType  {
         updateDico();
 
         bundle = this.getDictionary().get("osgi.bundle");
-        //uiService = UIServiceHandler.getUIService((Bundle) bundle);
+        uiService = UIServiceHandler.getUIService();
         graphline = new GraphLine(title,history_size, color_axe,color_courbe);
 
         layout = new LinearLayout(uiService.getRootActivity());
