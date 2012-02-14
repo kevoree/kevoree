@@ -15,13 +15,5 @@ import org.kevoree.library.rest.RestConsensusGroup;
 @GroupType
 @Library(name = "JavaSE")
 public class SSHRestConsensusGroup extends RestConsensusGroup {
-	@Override
-	public boolean lock () {
-		return super.lock();
-	}
 
-	@Override
-	public boolean preUpdate () {
-		return super.preUpdate();
-	}
 }

@@ -1,16 +1,14 @@
 package org.kevoree.library.rest;
 
+import org.kevoree.ContainerRoot;
 import org.kevoree.annotation.DictionaryAttribute;
 import org.kevoree.annotation.DictionaryType;
 import org.kevoree.annotation.GroupType;
 import org.kevoree.annotation.Library;
-import org.kevoree.framework.KevoreeXmiHelper;
+import org.kevoree.library.rest.consensus.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.io.ByteArrayOutputStream;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
+import scala.Tuple2;
 
 /**
  * User: Erwan Daubert - erwan.daubert@gmail.com
@@ -22,46 +20,131 @@ import java.security.NoSuchAlgorithmException;
  */
 
 @DictionaryType({
-		@DictionaryAttribute(name = "lock_timeout", defaultValue = "1000", optional = false)
+		@DictionaryAttribute(name = "lock_timeout", defaultValue = "1000", dataType = Long.class, optional = false),
+		@DictionaryAttribute(name = "lock_percent", defaultValue = "51", dataType = Integer.class, optional = false),
+		@DictionaryAttribute(name = "pull_interval", defaultValue = "10000", dataType = Long.class, optional = false)
 })
 @GroupType
 @Library(name = "JavaSE")
 public class RestConsensusGroup extends RestGroup {
+
+	// TODO phase d'init
 	private Logger logger = LoggerFactory.getLogger(this.getClass());
 
-	public boolean lock () {
-		// TODO lock the node
-		return false;
+	private LockManager lockManager;
+	private PullConsensusActor pullConsensus;
+	private int lockPercent;
+
+	@Override
+	public void startRestGroup () {
+		super.startRestGroup();
+		String lockTimeoutString = this.getDictionary().get("lock_timeout").toString();
+		long lockTimeout = 1000;
+		try {
+			lockTimeout = Long.parseLong(lockTimeoutString);
+		} catch (NumberFormatException e) {
+			logger.debug("Unable to parse <lock_timeout> attribute. Please check this value.");
+		}
+		String lockPercentString = this.getDictionary().get("lock_percent").toString();
+		lockPercent = 51;
+		try {
+			lockPercent = Integer.parseInt(lockPercentString);
+		} catch (NumberFormatException e) {
+			logger.debug("Unable to parse <lock_percent> attribute. Please check this value.");
+		}
+		lockManager = new LockManager(lockTimeout, this.getModelService());
+		String pullIntervalOption = this.getDictionary().get("pull_interval").toString();
+		long pullInterval = 10000;
+		try {
+			pullInterval = Long.parseLong(pullIntervalOption);
+		} catch (NumberFormatException e) {
+			logger.debug("Unable to parse <pull_interval> attribute. Please check this value.");
+		}
+		pullConsensus = new PullConsensusActor(pullInterval, this);
+		ConsensusClient.initialize();
+		lockManager.start();
 	}
 
-	public byte[] getHashedModel () {
-		try {
-			ByteArrayOutputStream stream = new ByteArrayOutputStream();
-			KevoreeXmiHelper.saveStream(stream, this.getModelService().getLastModel());
-			MessageDigest md = MessageDigest.getInstance("SHA-1");
-			return md.digest(stream.toByteArray());
-		} catch (NoSuchAlgorithmException e1) {
-			logger.debug("Unable to build a Hash code of the model", e1);
-			return new byte[0];
+	@Override
+	public void stopRestGroup () {
+		super.stopRestGroup();
+		lockManager.stop();
+		pullConsensus.stop();
+		ConsensusClient.kill();
+	}
+
+	public Tuple2<byte[], byte[]> lock (byte[] remoteCurrentHashModel, byte[] remoteFutureHashModel) {
+		logger.debug("Asking for locking the node");
+		byte[] currentHashedModel = HashManager.getHashedModel(this.getModelService().getLastModel());
+		// check if the current model have the same hash code than the one send by the remote node
+		if (HashManager.equals(currentHashedModel, remoteCurrentHashModel)) {
+			logger.debug("The node can be locked according to the proposed models");
+			// lock the node
+			if (lockManager.lock()) {
+				logger.debug("the node is now locked");
+				// TODO keep the hash of the future model to use it on comparison
+				return new Tuple2<byte[], byte[]>(remoteCurrentHashModel, remoteFutureHashModel);
+			} else {
+				logger.debug("Unable to lock the node. Maybe a previous lock is always active");
+				return new Tuple2<byte[], byte[]>(currentHashedModel, currentHashedModel);
+			}
+		} else {
+			logger.debug("The node can not be locked according to the proposed models");
+			return new Tuple2<byte[], byte[]>(currentHashedModel, currentHashedModel);
+		}
+	}
+
+	public Tuple2<byte[], byte[]> hashes () {
+		byte[] currentHashedModel = HashManager.getHashedModel(this.getModelService().getLastModel());
+		return new Tuple2<byte[], byte[]>(currentHashedModel, currentHashedModel);
+	}
+
+	public void unlock () {
+		lockManager.unlock();
+	}
+
+	@Override
+	public boolean triggerPreUpdate (ContainerRoot model) {
+		logger.debug("Starting consensus about a new update on {}", this.getNodeName());
+		// try to lock all nodes
+		int lockConsensus = ConsensusClient.acquireRemoteLocks(this.getModelElement(), this.getNodeName(), this.getModelService().getLastModel(),
+				HashManager.getHashedModel(this.getModelService().getLastModel()), HashManager.getHashedModel(model));
+		// check if at least <lock_percent> nodes are locked
+		if (lockConsensus >= (lockPercent / 100)) {
+			logger.debug("Lock is acquired on {} nodes", lockConsensus);
+			// send model to propose the update
+			ConsensusClient.sendModel(this.getModelElement(), this.getNodeName(), model);
+			logger.debug("Model has been sent");
+			return true;
+		} else {
+			logger.warn("Unable to acquire global lock. Update cannot be done!");
+			// unable to obtain a consensus to apply a new model, must unlock all the remote nodes
+			ConsensusClient.unlock(this.getModelElement(), this.getNodeName(), model);
+			return false;
 		}
 	}
 
 	@Override
-	public boolean preUpdate () {
-		// TODO try to lock all nodes
-
-		return false;
-	}
-
-	@Override
 	public void triggerModelUpdate () {
-		// TODO check if all other nodes have done their update
-			// if they have not done their update you need to rollback
-		// TODO unlock all nodes
+		// TODO check if all other nodes have done their update by asking for the model and comparing to the local one
+		// if they have not done their update you need to rollback
+		// unlock all nodes
+		ConsensusClient.unlock(this.getModelElement(), this.getNodeName(), this.getModelService().getLastModel());
 	}
 
 	@Override
 	public RootService getRootService (String id) {
 		return new ConsensusRootService(id, this);
+	}
+
+	@Override
+	boolean updateModel (ContainerRoot model) {
+		logger.debug("Try to update local node with a new model");
+		if (lockManager.isLock()) {
+			logger.debug("Kevoree core is locked so we need to use the lock callback interface");
+			lockManager.update(model);
+			return true;
+		}
+		return super.updateModel(model);
 	}
 }

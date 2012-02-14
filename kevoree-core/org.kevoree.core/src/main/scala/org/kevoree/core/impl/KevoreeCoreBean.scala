@@ -398,7 +398,7 @@ class KevoreeCoreBean extends KevoreeModelHandlerService with KevoreeThreadActor
 
   /**
    * Returns the current model.
-   * @Deprecated : Consider using #getLastUUIDModel for concurrency reasons
+   * @see : Consider using #getLastUUIDModel for concurrency reasons
    */
   @Deprecated
   override def getLastModel: ContainerRoot = {
@@ -414,7 +414,7 @@ class KevoreeCoreBean extends KevoreeModelHandlerService with KevoreeThreadActor
 
   /**
    * Asks for an update of the system to the new system described by the model.
-   * @Deprecated Consider using #compareAndSwapModel for concurrency reasons
+   * @see Consider using #compareAndSwapModel for concurrency reasons
    */
   @Deprecated
   override def updateModel(model: ContainerRoot) {
@@ -428,8 +428,9 @@ class KevoreeCoreBean extends KevoreeModelHandlerService with KevoreeThreadActor
   /**
    * Asks for an update of the system to fit the model given in parameter.<br/>
    * This method is blocking until the update is done.
-   * @Deprecated Consider using #atomicCompareAndSwapModel for concurrency reasons.
+   * @see Consider using #atomicCompareAndSwapModel for concurrency reasons.
    */
+  @Deprecated
   override def atomicUpdateModel(model: ContainerRoot) = {
     (this !? UpdateModel(model))
     lastDate
