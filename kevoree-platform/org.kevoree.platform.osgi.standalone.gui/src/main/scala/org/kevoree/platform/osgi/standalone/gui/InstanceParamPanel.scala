@@ -109,7 +109,7 @@ class InstanceParamPanel(pnodeTypeDefinition: TypeDefinition, defaultName: Strin
           val l = new JLabel(att.getName, SwingConstants.TRAILING)
           l.setUI(new HudLabelUI)
           p.add(l)
-          if (att.getDatatype != "") {
+          if (!att.getDatatype.equals("") && !att.getDatatype.startsWith("raw=")) {
             if (att.getDatatype.startsWith("enum=")) {
               val values: String = att.getDatatype.replaceFirst("enum=", "")
               val valuesModel = new DefaultComboBoxModel
@@ -124,7 +124,7 @@ class InstanceParamPanel(pnodeTypeDefinition: TypeDefinition, defaultName: Strin
                 comboBox.setSelectedItem(currentProperties.get(att.getName))
               }
               comboBox.addActionListener(new ActionListener {
-                def actionPerformed(actionEvent: ActionEvent): Unit = {
+                def actionPerformed(actionEvent: ActionEvent) {
                   currentProperties.put(att.getName, comboBox.getSelectedItem.toString)
                 }
               })
