@@ -71,6 +71,7 @@ public class ArduinoDeploy {
 			cmd.add("stk500v1");
 		}
 
+        cmd.add("-F");
 		cmd.add("-p");
 		cmd.add(target.getMCU());
 		cmd.add("-P");

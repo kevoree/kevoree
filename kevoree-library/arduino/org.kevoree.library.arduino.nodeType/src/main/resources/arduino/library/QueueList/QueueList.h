@@ -46,7 +46,7 @@
 #define _QUEUELIST_H
 
 // include necessary header for libraries.
-#include <WProgram.h>
+#include <Arduino.h>
 
 // the definition of the queue class.
 template<typename T>

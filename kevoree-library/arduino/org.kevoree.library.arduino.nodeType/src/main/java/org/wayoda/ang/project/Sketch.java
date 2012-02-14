@@ -666,7 +666,7 @@ public class Sketch {
         src.append(source.substring(0, pos));
         src.append("\n");
         /* Add the standard arduino-core header file */
-        src.append("#include \"WProgram.h\"\n");
+        src.append("#include \"Arduino.h\"\n");
         src.append("\n");
         /* Add the prototypes themselves */
         for (String ptype : ptypes) {
