@@ -227,7 +227,7 @@ class KevoreeCoreBean extends KevoreeModelHandlerService with KevoreeThreadActor
         if (prevUUIDModel.getUUID.compareTo(currentLock._1) == 0) {
           reply(internal_update_model(targetModel))
         } else {
-          logger.debug("Core Locked , bad UUID "+prevUUIDModel.getUUID)
+          logger.debug("Core Locked , bad UUID " + prevUUIDModel.getUUID)
           reply(false) //LOCK REFUSED !
         }
       } else {
@@ -298,7 +298,7 @@ class KevoreeCoreBean extends KevoreeModelHandlerService with KevoreeThreadActor
     if (pnewmodel == null || !pnewmodel.getNodes.exists(p => p.getName == getNodeName())) {
       logger.error("Asking for update with a NULL model or node name was not found in target model !")
       false
-    }  else {
+    } else {
       try {
 
         //Model checking
@@ -418,7 +418,11 @@ class KevoreeCoreBean extends KevoreeModelHandlerService with KevoreeThreadActor
    */
   @Deprecated
   override def updateModel(model: ContainerRoot) {
-    this ! UpdateModel(model)
+    new Actor() {
+      def act() {
+        selfActorPointer ! UpdateModel(model)
+      }
+    }.start()
   }
 
   /**
@@ -436,7 +440,11 @@ class KevoreeCoreBean extends KevoreeModelHandlerService with KevoreeThreadActor
    * If OK, updates the system and switches to the new model, asynchronously
    */
   override def compareAndSwapModel(previousModel: UUIDModel, targetModel: ContainerRoot) {
-    this ! UpdateUUIDModel(previousModel, targetModel)
+    new Actor() {
+      def act() {
+        selfActorPointer ! UpdateUUIDModel(previousModel, targetModel)
+      }
+    }.start()
   }
 
   /**
