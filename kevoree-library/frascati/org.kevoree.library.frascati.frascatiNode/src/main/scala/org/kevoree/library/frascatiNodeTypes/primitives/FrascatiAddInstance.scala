@@ -9,6 +9,7 @@ import org.ow2.frascati.assembly.factory.processor.ProcessingContextImpl
 import org.ow2.frascati.FraSCAti
 import org.slf4j.LoggerFactory
 import javax.xml.namespace.QName
+import org.kevoree.library.frascatiNodeTypes.FrascatiNode
 
 
 /**
@@ -39,6 +40,8 @@ case class FrascatiAddInstance(adaptationPrimitive: AdaptationPrimitive, frascat
         //
         //        frascati.getComposite()
       } else {
+
+        /*
         val s = ScaGenerator.generateComponent(adaptationPrimitive.getRef.asInstanceOf[org.kevoree.Instance].getName, adaptationPrimitive.getRef.asInstanceOf[org.kevoree.Instance].getTypeDefinition.asInstanceOf[org.kevoree.ComponentType].getBean, adaptationPrimitive.getRef.asInstanceOf[org.kevoree.ComponentInstance])
         val f = java.io.File.createTempFile(adaptationPrimitive.getRef.asInstanceOf[org.kevoree.ComponentInstance].getName, "composite")
         val output = new java.io.FileOutputStream(f)
@@ -48,6 +51,9 @@ case class FrascatiAddInstance(adaptationPrimitive: AdaptationPrimitive, frascat
         writer.close()
         output.close()
         frascati.getComposite(f.getAbsolutePath)
+        */
+
+
       }
       true
     } else {
