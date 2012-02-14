@@ -30,9 +30,7 @@ public class androidtts extends AbstractComponentType implements TextToSpeech.On
     @Start
     public void start() {
         updateFromDictionnary();
-        bundle = this.getDictionary().get("osgi.bundle");
-        //uiService = UIServiceHandler.getUIService((Bundle) bundle);
-        //create the TTS instance
+        uiService = UIServiceHandler.getUIService();        //create the TTS instance
         // The OnInitListener (second argument) is called after initialization completes.
         mTts = new TextToSpeech(uiService.getRootActivity(), this);
     }
@@ -82,7 +80,7 @@ public class androidtts extends AbstractComponentType implements TextToSpeech.On
         if (mTts.isLanguageAvailable(lang) == TextToSpeech.LANG_AVAILABLE) {
             int result = mTts.setLanguage(lang);
             if (result == TextToSpeech.LANG_MISSING_DATA || result == TextToSpeech.LANG_NOT_SUPPORTED) {
-               System.out.println("Language data not available.");
+                System.out.println("Language data not available.");
             }
         }
 

@@ -44,10 +44,7 @@ public class AFakeConsole extends AbstractComponentType {
 
     @Start
     public void start() {
-
-        bundle = this.getDictionary().get("osgi.bundle");
-       // uiService = UIServiceHandler.getUIService((Bundle) bundle);
-
+        uiService = UIServiceHandler.getUIService();
         button = new Button(uiService.getRootActivity());
         button.setText("Send");
         button.setWidth(300);

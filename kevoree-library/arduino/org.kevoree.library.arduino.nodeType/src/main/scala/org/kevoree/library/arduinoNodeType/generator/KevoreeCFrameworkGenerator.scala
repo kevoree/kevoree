@@ -57,7 +57,7 @@ trait KevoreeCFrameworkGenerator extends KevoreeCAbstractGenerator {
       case _ => pmax
     }
     context h "#define EEPROM_MAX_SIZE " + maxSize
-    context h "#define MAX_INST_ID 32" //TO CHANGE
+    context h "#define MAX_INST_ID 4" //TO CHANGE
 
     val random = new Random
     context h ("#define kevoreeID1 " + random.nextInt(10))
@@ -213,19 +213,40 @@ trait KevoreeCFrameworkGenerator extends KevoreeCAbstractGenerator {
           ktype.getDictionaryType.get.getAttributes.foreach {
             attribute =>
               context b "case " + propsCodeMap.get(attribute.getName).get + ":{"
-              RawTypeHelper.getArduinoType(attribute.getDatatype.replace("raw=","")) match {
-                case "long" => {
-                  context b "instance->" + attribute.getName + "=atol(val);"
+
+
+              val rawType: String = attribute.getDatatype.replaceFirst("raw=", "")
+
+              if(RawTypeHelper.isArduinoTypeArray(rawType))
+              {
+               // parsing array
+                rawType match {
+                  case _ if (rawType.contains("IntList4")) =>
+                  {
+                        context b  "parse_IntList4(val,instance->"+attribute.getName+");"
+                  }
+
                 }
-                case "int" => {
-                  context b "instance->" + attribute.getName + "=atoi(val);"
-                }
-                case _ => {
-                  context b "if(strlen(val)<MAX_UNTYPED_DICTIONARY){"
-                  context b "strcpy (instance->" + attribute.getName + ",val);"
-                  context b "}"
+
+              }
+              else
+              {
+                RawTypeHelper.getArduinoType(rawType) match {
+                  case "long" => {
+                    context b "instance->" + attribute.getName + "=atol(val);"
+                  }
+                  case "int" => {
+                    context b "instance->" + attribute.getName + "=atoi(val);"
+                  }
+                  case _ => {
+                    context b "if(strlen(val)<MAX_UNTYPED_DICTIONARY){"
+                    context b "strcpy (instance->" + attribute.getName + ",val);"
+                    context b "}"
+                  }
                 }
               }
+
+
               context b "instance->updated_p();"
               context b "break;}"
           }
@@ -460,8 +481,14 @@ trait KevoreeCFrameworkGenerator extends KevoreeCAbstractGenerator {
             }
             dictionaryResult.append(key + "=" + value)
         }
-        context b "        strcpy_P(instNameBuf, (char *) pgm_read_word (&(init_tables[" + instanceCODE.indexOf("init_" + instance.getName.toLowerCase) + "])));        "
-        context b "        saveAIN_CMD(instNameBuf, " + typeCodeMap.get(instance.getTypeDefinition.getName).get + ", \"" + dictionaryResult.toString + "\");                                             "
+
+        val id = instanceCODE.indexOf("init_" + instance.getName.toLowerCase)
+        context b "strcpy_P(instNameBuf, (char *) pgm_read_word (&(init_tables[" +id  + "])));      "
+        context b "strcpy_P(inBytes, PSTR(\""+dictionaryResult.toString+"\"));                    "
+        context b "saveAIN_CMD(instNameBuf, " + typeCodeMap.get(instance.getTypeDefinition.getName).get + ", inBytes);"
+
+
+
     }
 
 
