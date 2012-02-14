@@ -138,7 +138,7 @@ class KevoreeJarClassLoader extends JarClassLoader {
   }
 
   override def getResourceAsStream(name: String): InputStream = {
-    logger.debug("Get Ressource : " + name)
+    logger.debug("Get RessourceAsStream : " + name)
     var res: Array[Byte] = null
     if (name.endsWith(".class")) {
       res = this.classpathResources.getResource(name)
@@ -151,6 +151,7 @@ class KevoreeJarClassLoader extends JarClassLoader {
     if (res != null) {
       new ByteArrayInputStream(res)
     } else {
+      logger.debug("Res not found "+name)
       null
     }
   }
