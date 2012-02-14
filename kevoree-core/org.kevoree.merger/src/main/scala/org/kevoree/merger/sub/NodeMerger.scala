@@ -52,9 +52,9 @@ trait NodeMerger extends ComponentInstanceMerger with DictionaryMerger {
         case None => {
             targetInstance.setTypeDefinition(UnresolvedTypeDefinition(targetInstance.getTypeDefinition.getName))
             targetInstance.addComponents(c)
-            mergeComponentInstance(actualModel,c)
+            mergeComponentInstance(actualModel,c,null)
         }
-        case Some(e)=> mergeComponentInstance(actualModel,c)
+        case Some(targetComponent)=> mergeComponentInstance(actualModel,c,targetComponent)
       }
     }
   }
