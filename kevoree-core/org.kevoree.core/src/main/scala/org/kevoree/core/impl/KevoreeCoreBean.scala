@@ -23,7 +23,6 @@ import _root_.org.kevoree.ContainerRoot
 import _root_.org.kevoree.api.configuration.ConfigurationService
 import _root_.org.slf4j.LoggerFactory
 import _root_.scala.reflect.BeanProperty
-import _root_.scala.actors.Actor
 import _root_.org.kevoree.api.configuration.ConfigConstants
 import _root_.org.kevoree.framework._
 import _root_.org.kevoree.core.impl.message._
@@ -34,6 +33,8 @@ import _root_.java.util.{UUID, Date}
 import org.kevoree.api.service.core.handler._
 import org.kevoree.api.service.core.script.KevScriptEngineFactory
 import org.kevoree.api.Bootstraper
+import java.lang.Long
+import actors.{DaemonActor, TIMEOUT, Actor}
 
 class KevoreeCoreBean extends KevoreeModelHandlerService with KevoreeThreadActor {
 
@@ -60,6 +61,8 @@ class KevoreeCoreBean extends KevoreeModelHandlerService with KevoreeThreadActor
 
   var logger = LoggerFactory.getLogger(this.getClass);
   val modelClone = new ModelCloner
+
+  var selfActorPointer = this
 
   private def checkBootstrapNode(currentModel: ContainerRoot): Unit = {
     try {
@@ -220,17 +223,73 @@ class KevoreeCoreBean extends KevoreeModelHandlerService with KevoreeThreadActor
     }
     //Update the system with the model given in parameter, with the UUID for checking
     case UpdateUUIDModel(prevUUIDModel, targetModel) => {
-      if (prevUUIDModel.getUUID.compareTo(currentModelUUID) == 0) {
-        //TODO CHECK WITH MODEL SHA-1 HASHCODE
-        reply(internal_update_model(targetModel))
+      if (currentLock != null) {
+        if (prevUUIDModel.getUUID.compareTo(currentLock._1) == 0) {
+          reply(internal_update_model(targetModel))
+        } else {
+          logger.debug("Core Locked , bad UUID "+prevUUIDModel.getUUID)
+          reply(false) //LOCK REFUSED !
+        }
       } else {
-        reply(false)
+        //COMMON CHECK
+        if (prevUUIDModel.getUUID.compareTo(currentModelUUID) == 0) {
+          //TODO CHECK WITH MODEL SHA-1 HASHCODE
+          reply(internal_update_model(targetModel))
+        } else {
+          reply(false)
+        }
       }
     }
     //Updates the system to fit to the new model
     case UpdateModel(pnewmodel) => {
-      reply(internal_update_model(pnewmodel))
+      if (currentLock == null) {
+        reply(internal_update_model(pnewmodel))
+      } else {
+        logger.debug("Core Locked , UUID mandatory")
+        reply(false)
+      }
     }
+
+    case ACQUIRE_LOCK(handler, timeout) => {
+      if (currentLock != null) {
+        handler.lockRejected()
+      } else {
+        val lockUUID = UUID.randomUUID()
+        currentLock = (lockUUID, handler)
+        //RUN ACTOR
+        currentLockTimer = new DaemonActor {
+          def act() {
+            reactWithin(timeout) {
+              case TIMEOUT => {
+                selfActorPointer ! LOCK_TIMEOUT();
+                exit()
+              }
+              case RELEASE_LOCK(uuid) => exit()
+            }
+          }
+        }
+        currentLockTimer.start()
+        handler.lockAcquired(lockUUID)
+      }
+    }
+    case LOCK_TIMEOUT() => {
+      if (currentLock != null) {
+        currentLock._2.lockTimeout()
+        currentLock = null
+        currentLockTimer = null
+      }
+    }
+    case RELEASE_LOCK(uuid: UUID) => {
+      if (currentLock != null) {
+        if (currentLock._1.compareTo(uuid) == 0) {
+          currentLock = null
+          currentLockTimer ! RELEASE_LOCK(uuid) // KILL ACTOR
+          currentLockTimer = null
+        }
+      }
+    }
+
+
     case _@unknow => logger
       .warn("unknow message  " + unknow.toString + " - sender" + sender.toString + "-" + this.getClass.getName)
   }
@@ -239,7 +298,7 @@ class KevoreeCoreBean extends KevoreeModelHandlerService with KevoreeThreadActor
     if (pnewmodel == null || !pnewmodel.getNodes.exists(p => p.getName == getNodeName())) {
       logger.error("Asking for update with a NULL model or node name was not found in target model !")
       false
-    } else {
+    }  else {
       try {
 
         //Model checking
@@ -410,5 +469,24 @@ class KevoreeCoreBean extends KevoreeModelHandlerService with KevoreeThreadActor
 
   def getContextModel: ContextModel = {
     nodeInstance.getContextModel
+  }
+
+  /* Lock Management */
+
+  private var currentLock: Tuple2[UUID, ModelHandlerLockCallBack] = null
+  private var currentLockTimer: Actor = null
+
+  case class RELEASE_LOCK(uuid: UUID)
+
+  case class ACQUIRE_LOCK(callBack: ModelHandlerLockCallBack, timeout: Long)
+
+  case class LOCK_TIMEOUT()
+
+  def acquireLock(callBack: ModelHandlerLockCallBack, timeout: Long) {
+    this ! ACQUIRE_LOCK(callBack, timeout)
+  }
+
+  def releaseLock(uuid: UUID) {
+    this ! RELEASE_LOCK(uuid)
   }
 }

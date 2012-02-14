@@ -26,6 +26,7 @@ import android.content.Intent;
 import android.os.Environment;
 import android.os.IBinder;
 import android.util.Log;
+import org.kevoree.android.framework.helper.UIServiceHandler;
 
 import java.io.File;
 import java.lang.reflect.Method;
@@ -67,6 +68,7 @@ public class KevoreeService extends Service {
                     }
                 }
                 System.setProperty("user.home", kevoree_cache.getAbsolutePath());
+                UIServiceHandler.setUIService(KevoreeActivity.last);
                 kebBoot.start(getBaseContext(), getClassLoader());
 
                 //File m_cache = new File(sdDir.getAbsolutePath() + "/" + FELIX_CACHE_DIR);

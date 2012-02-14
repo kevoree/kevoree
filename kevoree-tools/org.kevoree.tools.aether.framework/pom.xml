@@ -84,6 +84,8 @@
             <artifactId>aether-connector-file</artifactId>
             <version>1.13</version>
         </dependency>
+
+
         <dependency>
             <groupId>org.sonatype.aether</groupId>
             <artifactId>aether-connector-asynchttpclient</artifactId>
@@ -94,6 +96,9 @@
             <artifactId>maven-aether-provider</artifactId>
             <version>3.0.3</version>
         </dependency>
+
+
+
         <dependency>
             <groupId>org.codehaus.plexus</groupId>
             <artifactId>plexus-component-annotations</artifactId>
@@ -116,7 +121,6 @@
                 <extensions>true</extensions>
                 <configuration>
                     <instructions>
-                        <Bundle-SymbolicName>org.kevoree.tools.aether.framework</Bundle-SymbolicName>
                         <Import-Package>!org.jboss.*,!org.codehaus.*,!org.apache.commons.*,!javax.servlet.*,!com.google.protobuf.*,!org.kevoree.tools.aether.framework.*,*;resolution:=optional</Import-Package>
                         <Export-Package>org.kevoree.tools.aether.framework.*,
                             org.sonatype.*,
