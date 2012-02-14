@@ -112,7 +112,8 @@
              }
          } else {
             if(Serial.peek() != '$'){
-               Serial.println(Serial.read(),BYTE);
+               //Serial.println(Serial.read(),BYTE);
+               Serial.println(Serial.read());         // fix for arduino 1.0
             }
          }
     }

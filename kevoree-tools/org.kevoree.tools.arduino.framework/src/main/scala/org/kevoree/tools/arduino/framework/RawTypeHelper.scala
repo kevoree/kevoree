@@ -31,4 +31,24 @@ object RawTypeHelper {
     }
   }
 
+  def isArduinoTypeArray(datatype : String) : Boolean ={
+    datatype match {
+    case  "org.kevoree.tools.arduino.framework.datatypes.IntList4" => true
+    case _ => false
+  }
+  }
+
+  /**
+   * @param baseType  the type
+   * @param attribute_name
+   * @return   type  attribute_name [size]
+   */
+  def getArduinoTypeArray(baseType : String,attribute_name : String) : String = {
+    baseType match {
+      case "org.kevoree.tools.arduino.framework.datatypes.IntList4" =>  "int " + attribute_name + "[4];"
+      case _ => baseType
+    }
+  }
+
+
 }
