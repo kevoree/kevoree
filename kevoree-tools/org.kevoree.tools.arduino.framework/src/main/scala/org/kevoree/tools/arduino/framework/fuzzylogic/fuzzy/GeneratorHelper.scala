@@ -89,6 +89,7 @@ object GeneratorHelper {
     var countDomain= 0
     var countTerm = 0
     gen.getTypeModel.asInstanceOf[ComponentType].getProvided.foreach{ g =>
+      countTerm = 0
       gen.getTypeModel.getDictionaryType.get.getAttributes.foreach{a =>
         if(a.getName.split("_")(0) == g.getName)
         {
@@ -101,6 +102,7 @@ object GeneratorHelper {
     countDomain= 0
     countTerm = 0
     gen.getTypeModel.asInstanceOf[ComponentType].getRequired.foreach{ g =>
+      countTerm = 0
       gen.getTypeModel.getDictionaryType.get.getAttributes.foreach{a =>
         if(a.getName.split("_")(0) == g.getName)
         {
@@ -111,6 +113,8 @@ object GeneratorHelper {
       countDomain = countDomain +1
     }
   }
+
+
   def generateClassVariables(gen: ArduinoGenerator, nbRules: Int) {
 
     val nbInputs = gen.getTypeModel.asInstanceOf[ComponentType].getProvided.size
