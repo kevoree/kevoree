@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>org.kevoree.library.frascati</groupId>
-    <artifactId>org.kevoree.library.frascati.helloworld-pojo</artifactId>
+    <artifactId>org.kevoree.library.frascati.helloworld.pojo</artifactId>
     <packaging>jar</packaging>
     <name>Kevoree :: Library :: Frascati :: HelloWorld POJO</name>
 

@@ -108,13 +108,8 @@ class KevoreeLazyJarResources extends ClasspathResources {
       var jarEntry = jis.getNextJarEntry
       while (jarEntry != null) {
         if (!jarEntry.isDirectory) {
-
           var filtered = false
-          
-        //  System.out.println(parentKCL);
-          
           if (parentKCL.get() != null) {
-
             parentKCL.get().getSpecialLoaders.find(r => jarEntry.getName.endsWith(r.getExtension)) match {
               case Some(e) => {
                 e.doLoad(jarEntry.getName, jis)
@@ -123,7 +118,6 @@ class KevoreeLazyJarResources extends ClasspathResources {
               case _ =>
             }
           }
-
           if (!filtered) {
             if (jarContentURL.containsKey(jarEntry.getName)) {
               if (!collisionAllowed) {
@@ -161,6 +155,13 @@ class KevoreeLazyJarResources extends ClasspathResources {
                   detectedResourcesURL.get(jarEntry.getName).add(new URL(key_url))
                 }
                 if (jarEntry.getName.endsWith(".jar")) {
+
+                  if(baseurl != null){
+                    val subRUL = new URL("jar:" + baseurl + "!/" + jarEntry.getName)
+                    lastLoadedJars = lastLoadedJars ++ List(subRUL)
+                  }
+
+                //  println("subParentURL="+baseurl +jarEntry.getName)
                   logger.debug("KCL Found sub Jar => " + jarEntry.getName)
                   loadJar(new ByteArrayInputStream(out.toByteArray))
                 } else {
