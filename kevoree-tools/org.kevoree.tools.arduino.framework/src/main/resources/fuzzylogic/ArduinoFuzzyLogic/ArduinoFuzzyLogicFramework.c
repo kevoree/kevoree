@@ -60,7 +60,7 @@ void displayRules(){
 
 
 
-void updateInMemberShipFunction(int numDomain,int numterm,int numpoint,float newvalue)
+void updateInMemberShipFunction(int numDomain,int numterm,int numpoint,int newvalue)
 {
 
 	inMemberShipFunction[numDomain][numterm][numpoint] = newvalue;
@@ -68,20 +68,13 @@ void updateInMemberShipFunction(int numDomain,int numterm,int numpoint,float new
 
 
 
-void updateoutMemberShipFunction(int numDomain,int numterm,float newvalue)
+void updateoutMemberShipFunction(int numDomain,int numterm,int newvalue)
 {
 
 	outMemberShipFunction[numDomain][numterm][0] = newvalue;
 }
 
-/*
-char temp_cold[MAX_UNTYPED_DICTIONARY];
-char temp_warn[MAX_UNTYPED_DICTIONARY];
-char temp_hot[MAX_UNTYPED_DICTIONARY];
-char fan_stop[MAX_UNTYPED_DICTIONARY];
-char fan_slow[MAX_UNTYPED_DICTIONARY];
-char fan_fast[MAX_UNTYPED_DICTIONARY];
-*/
+
 
 void cleanArraysFunctions()
 {
@@ -97,76 +90,18 @@ void cleanArraysFunctions()
 
 }
 
-
- // -10,-10,-5,-5
-void parseDictionnary(int type,int numDomain,int numTerm,char *name)
-{
-     int count=0,i=0,j=0;
-     char parsing[MAXIMUM_SIZE_FLOAT];
-   if((int)strlen(name) > 1)
-   {
-
-
+void setDictionnary(int type,int numDomain,int numTerm,int *val ){
+    int i=0;
     if(type == 0)
     {
-        /*
-          Serial.print("P_I");
-           Serial.print("[");
-           Serial.print(numDomain);
-           Serial.print("]");
-           Serial.print(numTerm);
-             Serial.print("]<");
-               Serial.print(name);
-                      Serial.println(">"); */
-        j=0;
-        for(i=0;i<(int)strlen(name);i++)
+        for(i=0;i<NB_TERMS;i++)
         {
-
-
-             if(name[i] != ';' && name[i] != '\n')
-             {
-                if(j <MAXIMUM_SIZE_FLOAT)
-                {
-                       parsing[j] = name[i];
-                       j++;
-                }
-                else
-                {
-                    strcpy(parsing,"0.0");
-                }
-             }
-             else
-             {
-                  parsing[j] = '\n';
-
-                  updateInMemberShipFunction(numDomain,numTerm,count,atof(parsing));
-                  count++;
-                  /*
-                  Serial.print("d=");
-                  Serial.print(numDomain);
-                  Serial.print("c=");
-                  Serial.print(count);
-                  Serial.print("v");
-                  Serial.println(atof(parsing));    */
-                  j=0;
-             }
+                updateInMemberShipFunction(numDomain,numTerm,i,val[i]);
         }
+    }else
+    {
+           updateoutMemberShipFunction(numDomain,numTerm,*val);
     }
-    else
-    {           /*
-                 Serial.print("P_O");
-                 Serial.print("[");
-                 Serial.print(numDomain);
-                 Serial.print("]");
-                 Serial.print(numTerm);
-                 Serial.print("]<");
-                 Serial.print(name);
-                 Serial.println(">");     */
-
-         updateoutMemberShipFunction(numDomain,numTerm,atof(name));
-
-     }
-        }
 }
 
 
@@ -234,7 +169,7 @@ void displayDomains()
 
 
 
-void fuzzify(unsigned char in_index,float in_val)
+void fuzzify(unsigned char in_index,int in_val)
 {
 	unsigned char i;
 	for (i = 0;i < in_num_MemberShipFunction[in_index];i++)
@@ -243,7 +178,7 @@ void fuzzify(unsigned char in_index,float in_val)
 	}
 }
 
-float get_membership(unsigned char in_index,unsigned char mf_index,float in_val)
+int get_membership(unsigned char in_index,unsigned char mf_index,int in_val)
 {
 	if (in_val < inMemberShipFunction[in_index][mf_index][0]) return 0;
 	if (in_val > inMemberShipFunction[in_index][mf_index][3]) return 0;
@@ -270,7 +205,7 @@ void fire_rule(unsigned char rule_index)
 {
 	unsigned char  in_domain,in_term,out_domain,out_term,i,y;
 
-	float   crispvalue = 1;
+	int   crispvalue = 1;
 
 	for(i = 0;i < pgm_read_byte_near(num_rule_antecedent +rule_index);i++)
 	{
@@ -289,11 +224,11 @@ void fire_rule(unsigned char rule_index)
 	}
 }
 
-float defuzzify(unsigned char out_index,float *inputs)
+int defuzzify(unsigned char out_index,int *inputs)
 {
-	float           summ = 0;
-	float           product = 0;
-	float           temp1,temp2;
+	int           summ = 0;
+	int           product = 0;
+	int           temp1,temp2;
 	unsigned char             i,in_index;
 	for (i = 0;i < out_num_MemberShipFunction[out_index];i++)
 	{
