@@ -83,7 +83,6 @@ public class KloudResourceManagerGroup extends SSHRestGroup {
 
 		} catch (Exception e) {
 			logger.error("Unable to push a model on {}", s, e);
-
 		}
 	}
 
@@ -93,7 +92,7 @@ public class KloudResourceManagerGroup extends SSHRestGroup {
 	}
 
 	@Override
-	public void updateModel (ContainerRoot model) {
+	public void triggerUpdateModel (ContainerRoot currentModel, ContainerRoot model) {
 		// looking if this instance is on top of a IaaS node or a PaaS node (PJavaSeNode)
 		if (KloudDeploymentManager.isIaaSNode(this.getModelService().getLastModel(), this.getName(), this.getNodeName())) {
 			// if this instance is on top of IaaS node then we try to dispatch the received model on the kloud
