@@ -2,18 +2,33 @@ package org.kevoree.library.ws;
 
 import net.tootallnate.websocket.Handshakedata;
 import net.tootallnate.websocket.WebSocketClient;
+import org.kevoree.framework.message.Message;
 
 import java.net.URI;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by IntelliJ IDEA.
  * User: duke
  * Date: 14/02/12
  * Time: 21:52
- * To change this template use File | Settings | File Templates.
  */
 public class WsSocketClient extends WebSocketClient {
 
+    private List<Message> msgs = new ArrayList<Message>();
+    private Boolean connected = false;
+
+    public void sendMessage(Message msg) throws Exception{
+       if(connected){
+           System.out.println("Direct send");
+           send(msg.getContent().toString());
+       } else {
+           System.out.println("Can send :-) endque");
+           msgs.add(msg);
+       }
+    }
+    
     public WsSocketClient(URI serverURI) {
         super(serverURI);
     }
@@ -23,18 +38,24 @@ public class WsSocketClient extends WebSocketClient {
     }
 
     public void onOpen(Handshakedata handshake) {
-        try {
-            send("ta mere");
-        } catch (InterruptedException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        connected = true;
+        for(Message msg : msgs){
+            try {
+                sendMessage(msg);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
+        msgs.clear();
     }
 
     public void onClose(int code, String reason, boolean remote) {
-
+        //TODO REJEU ;-)
+        connected = false;
     }
 
-    public void onError(Exception ex) {ex.printStackTrace();
+    public void onError(Exception ex) {
+        ex.printStackTrace();
     }
 
 

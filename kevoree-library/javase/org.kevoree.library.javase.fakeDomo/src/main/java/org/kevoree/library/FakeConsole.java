@@ -52,6 +52,7 @@ public class FakeConsole extends AbstractFakeStuffComponent {
     @Override
     public void start() throws Exception {
         frame = new MyFrame();
+        frame.setTitle(getName()+" : "+getNodeName());
         frame.setVisible(true);
         frame.appendSystem("/***** CONSOLE INITIALIZED ********/ ");
 
