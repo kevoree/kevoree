@@ -19,6 +19,7 @@ object HashManager {
   private val logger: Logger = LoggerFactory.getLogger(this.getClass)
   
   def equals(currentHashedModel : Array[Byte], remoteCurrentHashedModel : Array[Byte]) : Boolean = {
+    logger.debug("check if {} and {} are equals", currentHashedModel, remoteCurrentHashedModel)
     currentHashedModel.corresponds(remoteCurrentHashedModel)(_ == _)
   }
 

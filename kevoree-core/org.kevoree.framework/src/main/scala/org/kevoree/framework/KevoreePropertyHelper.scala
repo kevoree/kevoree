@@ -251,7 +251,7 @@ object KevoreePropertyHelper {
           (if (isFragment && dictionaryAttribute.getTargetNode.isDefined) {
             dictionaryAttribute.getTargetNode.get.getName == nodeNameForFragment
           } else if (!isFragment) {
-            true
+            true // TODO test
           } else {
             false
           })) match {

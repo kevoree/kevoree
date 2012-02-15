@@ -13,7 +13,7 @@ import org.kevoree.library.rest.RestConsensusGroup
  * @version 1.0
  */
 
-class PullConsensusActor (interval: Long, group : RestConsensusGroup) extends DaemonActor {
+class PullConsensusActor (interval: Long, group : RestConsensusGroup, consensusClient : ConsensusClient) extends DaemonActor {
   
   case class STOP()
   
@@ -28,7 +28,7 @@ class PullConsensusActor (interval: Long, group : RestConsensusGroup) extends Da
       reactWithin(interval) {
         case STOP() => this.exit()
         case TIMEOUT => {
-          val modelOption = ConsensusClient.pull(group.getModelElement, group.getNodeName, group.getModelService.getLastModel, HashManager.getHashedModel(group.getModelService.getLastModel))
+          val modelOption = consensusClient.pull(group.getModelElement, group.getNodeName, group.getModelService.getLastModel, group.getHash)
           if (modelOption.isDefined) {
             group.getModelService.atomicCompareAndSwapModel(group.getModelService.getLastUUIDModel, modelOption.get)
           }
