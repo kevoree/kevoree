@@ -1,10 +1,12 @@
 package org.kevoree.library.rest;
 
 import org.kevoree.ContainerRoot;
+import org.kevoree.Group;
 import org.kevoree.annotation.DictionaryAttribute;
 import org.kevoree.annotation.DictionaryType;
 import org.kevoree.annotation.GroupType;
 import org.kevoree.annotation.Library;
+import org.kevoree.framework.KevoreeElementHelper;
 import org.kevoree.library.rest.consensus.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -104,22 +106,23 @@ public class RestConsensusGroup extends RestGroup {
 	}
 
 	@Override
-	public boolean triggerPreUpdate (ContainerRoot model) {
+	public boolean triggerPreUpdate (ContainerRoot currentModel, ContainerRoot futureModel) {
 		logger.debug("Starting consensus about a new update on {}", this.getNodeName());
 		// try to lock all nodes
-		int lockConsensus = ConsensusClient.acquireRemoteLocks(this.getModelElement(), this.getNodeName(), this.getModelService().getLastModel(),
-				HashManager.getHashedModel(this.getModelService().getLastModel()), HashManager.getHashedModel(model));
+		Group g = KevoreeElementHelper.getGroupElement(this.getName(), currentModel).get();
+		int lockConsensus = ConsensusClient.acquireRemoteLocks(g, this.getNodeName(), currentModel,
+				HashManager.getHashedModel(currentModel), HashManager.getHashedModel(futureModel));
 		// check if at least <lock_percent> nodes are locked
 		if (lockConsensus >= (lockPercent / 100)) {
 			logger.debug("Lock is acquired on {} nodes", lockConsensus);
 			// send model to propose the update
-			ConsensusClient.sendModel(this.getModelElement(), this.getNodeName(), model);
+			ConsensusClient.sendModel(g, this.getNodeName(), currentModel, futureModel);
 			logger.debug("Model has been sent");
 			return true;
 		} else {
 			logger.warn("Unable to acquire global lock. Update cannot be done!");
 			// unable to obtain a consensus to apply a new model, must unlock all the remote nodes
-			ConsensusClient.unlock(this.getModelElement(), this.getNodeName(), model);
+			ConsensusClient.unlock(g, this.getNodeName(), currentModel);
 			return false;
 		}
 	}

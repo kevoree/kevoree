@@ -68,7 +68,7 @@ object ConsensusClient {
   }
 
 
-  def acquireRemoteLocks (group: Group, nodeName : String, model: ContainerRoot, currentHashedModel: Array[Byte], futureHashedModel: Array[Byte]): Int = {
+  def acquireRemoteLocks (group: Group, nodeName : String, currentModel: ContainerRoot, currentHashedModel: Array[Byte], futureHashedModel: Array[Byte]): Int = {
     logger.debug("Try to acquire a global lock")
     var nbLocked = 1
     val nbNodes = group.getSubNodes.size
@@ -77,7 +77,7 @@ object ConsensusClient {
       node => {
         // ask to lock the remote nodes by notifying them we want to make an update from the currentHashedModel to the futureHashedModel
         // each remote nodes return the update they accept by sending their currentHashedModel and their futureHashedModel
-        val remoteHashedModels = sendHashes(group.getName, node.getName, model, currentHashedModel, futureHashedModel, "/model/consensus/lock")
+        val remoteHashedModels = sendHashes(group.getName, node.getName, currentModel, currentHashedModel, futureHashedModel, "/model/consensus/lock")
         // if remote hashes are equivalent to current hashes, we consider the remote node is locked
         if (currentHashedModel.corresponds(remoteHashedModels._1)(_ == _) && futureHashedModel.corresponds(remoteHashedModels._2)(_ == _)) {
           nbLocked += 1
@@ -88,11 +88,11 @@ object ConsensusClient {
     nbLocked / nbNodes
   }
 
-  def sendModel (group: Group, nodeName : String, model: ContainerRoot) {
+  def sendModel (group: Group, nodeName : String, currentModel: ContainerRoot, futureModel: ContainerRoot) {
     // send model
     group.getSubNodes.filter(n => n.getName != nodeName).foreach {
       node => {
-        sendModel(group.getName, node.getName, model)
+        sendModel(group.getName, node.getName, currentModel, futureModel)
       }
     }
   }
@@ -138,10 +138,10 @@ object ConsensusClient {
     }
   }
 
-  private def sendHashes (groupName: String, nodeName: String, model: ContainerRoot, currentHashedModel: Array[Byte], futureHashedModel: Array[Byte], path: String): (Array[Byte], Array[Byte]) = {
+  private def sendHashes (groupName: String, nodeName: String, currentModel: ContainerRoot, currentHashedModel: Array[Byte], futureHashedModel: Array[Byte], path: String): (Array[Byte], Array[Byte]) = {
     logger.debug("send hashes of the current and the future models to know if {} is agreed with this potential update.")
-    val ipOption = KevoreePropertyHelper.getStringNetworkProperty(model, nodeName, Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP)
-    val portOption = KevoreePropertyHelper.getIntPropertyForGroup(model, groupName, "port", true, nodeName)
+    val ipOption = KevoreePropertyHelper.getStringNetworkProperty(currentModel, nodeName, Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP)
+    val portOption = KevoreePropertyHelper.getIntPropertyForGroup(currentModel, groupName, "port", true, nodeName)
 
     if (ipOption.isDefined && portOption.isDefined) {
 
@@ -179,12 +179,12 @@ object ConsensusClient {
     }
   }
 
-  private def sendModel (groupName: String, nodeName: String, model: ContainerRoot): Boolean = {
-    val ipOption = KevoreePropertyHelper.getStringNetworkProperty(model, nodeName, Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP)
-    val portOption = KevoreePropertyHelper.getIntPropertyForGroup(model, groupName, "port", true, nodeName)
+  private def sendModel (groupName: String, nodeName: String, currentModel: ContainerRoot, futureModel: ContainerRoot): Boolean = {
+    val ipOption = KevoreePropertyHelper.getStringNetworkProperty(currentModel, nodeName, Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP)
+    val portOption = KevoreePropertyHelper.getIntPropertyForGroup(currentModel, groupName, "port", true, nodeName)
 
     if (ipOption.isDefined && portOption.isDefined) {
-      val modelString = KevoreeXmiHelper.saveToString(model, false)
+      val modelString = KevoreeXmiHelper.saveToString(futureModel, false)
       // if there is a error about implicit concat, check the import package order
       val dialog = HttpClient.HttpDialog(ipOption.get, portOption.get)
         .send(HttpRequest(method = HttpMethods.POST, uri = "/model/current").withBody(modelString)).end
@@ -200,9 +200,9 @@ object ConsensusClient {
     }
   }
 
-  private def unlock (groupName: String, nodeName: String, model: ContainerRoot): Boolean = {
-    val ipOption = KevoreePropertyHelper.getStringNetworkProperty(model, nodeName, Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP)
-    val portOption = KevoreePropertyHelper.getIntPropertyForGroup(model, groupName, "port", true, nodeName)
+  private def unlock (groupName: String, nodeName: String, currentModel: ContainerRoot): Boolean = {
+    val ipOption = KevoreePropertyHelper.getStringNetworkProperty(currentModel, nodeName, Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP)
+    val portOption = KevoreePropertyHelper.getIntPropertyForGroup(currentModel, groupName, "port", true, nodeName)
 
     if (ipOption.isDefined && portOption.isDefined) {
       // if there is a error about implicit concat, check the import package order
@@ -220,9 +220,9 @@ object ConsensusClient {
     }
   }
 
-  private def pull (groupName: String, nodeName: String, model: ContainerRoot): Option[ContainerRoot] = {
-    val ipOption = KevoreePropertyHelper.getStringNetworkProperty(model, nodeName, Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP)
-    val portOption = KevoreePropertyHelper.getIntPropertyForGroup(model, groupName, "port", true, nodeName)
+  private def pull (groupName: String, nodeName: String, currentModel: ContainerRoot): Option[ContainerRoot] = {
+    val ipOption = KevoreePropertyHelper.getStringNetworkProperty(currentModel, nodeName, Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP)
+    val portOption = KevoreePropertyHelper.getIntPropertyForGroup(currentModel, groupName, "port", true, nodeName)
 
     if (ipOption.isDefined && portOption.isDefined) {
       // if there is a error about implicit concat, check the import package order
