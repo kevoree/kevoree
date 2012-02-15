@@ -224,7 +224,7 @@ case class TypeDefinitionAspect(selfTD: TypeDefinition) {
     var deployUnitfound: DeployUnit = null
     selfTD.getDeployUnits.find(du => du.getTargetNodeType.isDefined && du.getTargetNodeType.get.getName == node.getTypeDefinition.getName) match {
       case Some(e) => {
-        logger.debug("found deploy unit => {} for type {}", e.getUnitName, selfTD.getName)
+        //logger.debug("found deploy unit => {} for type {}", e.getUnitName, selfTD.getName)
         deployUnitfound = e
       }
       case _ => logger.debug("Deploy Unit not found on first level {}", selfTD.getName)
@@ -233,7 +233,7 @@ case class TypeDefinitionAspect(selfTD: TypeDefinition) {
       logger.warn("No deploy unit has been found for deployment of {} on node {} : {}", Array(selfTD.getName,node.getName,node.getTypeDefinition.getName))
       deployUnitfound = foundRelevantDeployUnitOnNodeSuperTypes(node.getTypeDefinition.asInstanceOf[NodeType], selfTD)
     }
-    logger.debug("will exit with => {}", deployUnitfound)
+    //logger.debug("will exit with => {}", deployUnitfound)
     deployUnitfound
   }
 
