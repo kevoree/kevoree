@@ -19,7 +19,7 @@ import org.kevoree.framework.{KevoreeXmiHelper, Constants, KevoreePropertyHelper
  * @version 1.0
  */
 
-object ConsensusClient {
+class ConsensusClient(groupName : String) {
   private val logger = LoggerFactory.getLogger(getClass)
   private var alreadyInitialize = 0
   var supervisorRef: Supervisor = _
@@ -27,8 +27,8 @@ object ConsensusClient {
 
   def initialize () {
     if (alreadyInitialize == 0) {
-      id = "kevoree.rest.group.spray-service.consensus"
-      val config = ClientConfig(clientActorId = id)
+      id = "kevoree.rest.group.spray-service.consensus." + groupName
+      val config = ClientConfig(id)
       // start and supervise the HttpClient actor
       supervisorRef = Supervisor(SupervisorConfig(
                                                    OneForOneStrategy(List(classOf[Exception]), 3, 100),
@@ -67,8 +67,17 @@ object ConsensusClient {
     }
   }
 
+  def initializeConsensus (group: Group, nodeName: String, currentModel: ContainerRoot, hash: Long) {
+    group.getSubNodes.filter(n => n.getName != nodeName).foreach {
+      node => {
+        logger.debug("Initialize consensus by {}", node.getName)
 
-  def acquireRemoteLocks (group: Group, nodeName : String, currentModel: ContainerRoot, currentHashedModel: Array[Byte], futureHashedModel: Array[Byte]): Int = {
+      }
+    }
+  }
+
+
+  def acquireRemoteLocks (group: Group, nodeName : String, currentModel: ContainerRoot, hash : Long, futureModel : ContainerRoot): Int = {
     logger.debug("Try to acquire a global lock")
     var nbLocked = 1
 
@@ -77,9 +86,9 @@ object ConsensusClient {
         logger.debug("try to ask for lock to {}", node.getName)
         // ask to lock the remote nodes by notifying them we want to make an update from the currentHashedModel to the futureHashedModel
         // each remote nodes return the update they accept by sending their currentHashedModel and their futureHashedModel
-        val remoteHashedModels = sendHashes(group.getName, node.getName, currentModel, currentHashedModel, futureHashedModel, "/model/consensus/lock")
+        val remoteHashedModels = sendHash(group.getName, node.getName, currentModel, hash, futureModel, "/model/consensus/lock")
         // if remote hashes are equivalent to current hashes, we consider the remote node is locked
-        if (currentHashedModel.corresponds(remoteHashedModels._1)(_ == _) && futureHashedModel.corresponds(remoteHashedModels._2)(_ == _)) {
+        if (hash == remoteHashedModels) {
           nbLocked += 1
         }
       }
@@ -106,29 +115,29 @@ object ConsensusClient {
     }
   }
 
-  def pull (group: Group, nodeName : String, model: ContainerRoot, currentHashedModel: Array[Byte]): Option[ContainerRoot] = {
-    var hashes = List[(Array[Byte], List[String])]()
+  def pull (group: Group, nodeName : String, model: ContainerRoot, hash : Long): Option[ContainerRoot] = {
+    var hashes = List[(Long, List[String])]()
 
     group.getSubNodes.filter(n => n.getName != nodeName).foreach {
       node => {
-        val remoteHashedModels = sendHashes(group.getName, node.getName, model, currentHashedModel, currentHashedModel, "/model/consensus/hash")
-        if (!currentHashedModel.corresponds(remoteHashedModels._1)(_ == _) || !currentHashedModel.corresponds(remoteHashedModels._2)(_ == _)) {
-          hashes.find(t => t._1.corresponds(remoteHashedModels._1)(_ == _)) match {
-            case None => hashes = hashes ++ List[(Array[Byte], List[String])]((remoteHashedModels._1, List[String](node.getName)))
+        val remoteHashedModels = sendHash(group.getName, node.getName, model, hash, null, "/model/consensus/hash")
+        if (hash != remoteHashedModels) {
+          hashes.find(t => t._1 == remoteHashedModels) match {
+            case None => hashes = hashes ++ List[(Long, List[String])]((remoteHashedModels, List[String](node.getName)))
             case Some(tuple) => {
               val names = tuple._2 ++ List[String](node.getName)
-              hashes = hashes -- List[(Array[Byte], List[String])](tuple) ++ List[(Array[Byte], List[String])]((tuple._1, names))
+              hashes = hashes -- List[(Long, List[String])](tuple) ++ List[(Long, List[String])]((tuple._1, names))
             }
           }
         }
       }
     }
 
-    hashes.find(t => hashes.forall(t2 => !t2._1.corresponds(t._1)(_ == _) && t._2.size > t2._2.size)) match {
+    hashes.find(t => hashes.forall(t2 => t2._1 != t._1 && t._2.size > t2._2.size)) match {
       case None => None
       case Some(tuple) => {
         // check if the global model is the current one in the local node
-        if (tuple._1.corresponds(currentHashedModel)(_ == _)) {
+        if (tuple._1 != hash) {
           // if the current model is not the global model
           pull(group.getName, tuple._2(0), model)
         } else {
@@ -138,7 +147,7 @@ object ConsensusClient {
     }
   }
 
-  private def sendHashes (groupName: String, nodeName: String, currentModel: ContainerRoot, currentHashedModel: Array[Byte], futureHashedModel: Array[Byte], path: String): (Array[Byte], Array[Byte]) = {
+  private def sendHash (groupName: String, nodeName: String, currentModel: ContainerRoot, hash : Long, futureModel : ContainerRoot, path: String): Long = {
     logger.debug("send hashes of the current and the future models to know if {} is agreed with this potential update.", nodeName)
     val ipOption = KevoreePropertyHelper.getStringNetworkProperty(currentModel, nodeName, Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP)
     val portOption = KevoreePropertyHelper.getIntPropertyForGroup(currentModel, groupName, "port", true, nodeName)
@@ -146,36 +155,37 @@ object ConsensusClient {
     if (ipOption.isDefined && portOption.isDefined) {
 
       // if there is a error about implicit concat, check the import package order
-      val dialog = HttpClient.HttpDialog(ipOption.get, portOption.get)
-        .send(HttpRequest(method = HttpMethods.GET, uri = path + "?currentModel=" + new String(currentHashedModel, "UTF-8") + "&futureModel=" + new String(futureHashedModel, "UTF-8"))).end
+      val dialog = HttpClient.HttpDialog(ipOption.get, portOption.get, id)
+        .send(HttpRequest(method = HttpMethods.GET, uri = path + "?hash=" + hash).withBody(KevoreeXmiHelper.saveToString(futureModel, false))).end
 
       dialog.get
       dialog.value match {
         case Some(Right(r: HttpResponse)) => {
+          logger.debug("Response received:\n{}", r.bodyAsString)
           val hashes = r.bodyAsString.split("\n")
-          var currentModel = Array[Byte]()
-          var futureModel = Array[Byte]()
+          var currentModel : Long = 0
           var currentModelFound = false
-          var futureModelFound = false
+//          var futureModelFound = false
           hashes.foreach {
             hash =>
               val splitted = hash.split("=")
               if (splitted(0) == "currentModel") {
-                currentModel = splitted(1).getBytes("UTF-8")
+                currentModel = java.lang.Long.parseLong(splitted(1))/*.getBytes("UTF-8")*/
                 currentModelFound = true
-              } else if (splitted(0) == "futureModel") {
+              }/* else if (splitted(0) == "futureModel") {
                 futureModel = splitted(1).getBytes("UTF-8")
                 futureModelFound = true
-              }
-              !currentModelFound || !futureModelFound
+              }*/
+              !currentModelFound /*|| !futureModelFound*/
           }
-          (currentModel, futureModel)
+          /*(*/currentModel/*, futureModel)*/
         }
-        case Some(Left(error)) => (Array[Byte](), Array[Byte]())
-        case _@e => (Array[Byte](), Array[Byte]())
+        case Some(Left(error)) =>
+          logger.debug("Response received:\n{}", error.getMessage);0
+        case _@e => logger.debug("Unable to send hashes\n{}", e);0
       }
     } else {
-      (Array[Byte](), Array[Byte]())
+      0
     }
   }
 
@@ -186,7 +196,7 @@ object ConsensusClient {
     if (ipOption.isDefined && portOption.isDefined) {
       val modelString = KevoreeXmiHelper.saveToString(futureModel, false)
       // if there is a error about implicit concat, check the import package order
-      val dialog = HttpClient.HttpDialog(ipOption.get, portOption.get)
+      val dialog = HttpClient.HttpDialog(ipOption.get, portOption.get, id)
         .send(HttpRequest(method = HttpMethods.POST, uri = "/model/current").withBody(modelString)).end
 
       dialog.get
@@ -206,7 +216,7 @@ object ConsensusClient {
 
     if (ipOption.isDefined && portOption.isDefined) {
       // if there is a error about implicit concat, check the import package order
-      val dialog = HttpClient.HttpDialog(ipOption.get, portOption.get)
+      val dialog = HttpClient.HttpDialog(ipOption.get, portOption.get, id)
         .send(HttpRequest(method = HttpMethods.POST, uri = "/model/consensus/unlock")).end
 
       dialog.get

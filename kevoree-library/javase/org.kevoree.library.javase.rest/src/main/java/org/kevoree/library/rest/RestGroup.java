@@ -1,9 +1,12 @@
 package org.kevoree.library.rest;
 
+import org.kevoree.ContainerNode;
 import org.kevoree.ContainerRoot;
+import org.kevoree.Group;
 import org.kevoree.annotation.*;
 import org.kevoree.framework.*;
 import org.kevoree.framework.Constants;
+import org.kevoree.library.rest.consensus.HashManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import scala.Option;
@@ -50,19 +53,24 @@ public class RestGroup extends AbstractGroupType {
         server.stop();
     }
 
-    @Override
+	@Override
+	public boolean triggerPreUpdate (ContainerRoot currentModel, ContainerRoot proposedModel) {
+		return !HashManager.equals(HashManager.getHashedModel(currentModel), HashManager.getHashedModel(proposedModel));
+	}
+
+	@Override
     public void triggerModelUpdate() {
-        /*ContainerRoot model = this.getModelService().getLastModel();
+        ContainerRoot model = this.getModelService().getLastModel();
         for (Group group : model.getGroupsForJ()) {
             if (group.getName().equals(this.getName())) {
                 for (ContainerNode subNode : group.getSubNodesForJ()) {
                     if (!subNode.getName().equals(this.getNodeName())) {
-                        //push(model, subNode.getName());
+                        push(model, subNode.getName());
                     }
                 }
                 return;
             }
-        }*/
+        }
 
     }
 
@@ -166,7 +174,7 @@ public class RestGroup extends AbstractGroupType {
 	 * @param model the new model to apply on the node
 	 * @return the result may depend of the implementation. Basic implementation in RestGroup always returns <code>true</code>
 	 */
-	boolean updateModel(ContainerRoot model) {
+	public boolean updateModel(ContainerRoot model) {
 		this.getModelService().updateModel(model);
 		logger.debug("Rest Group updateModel");
 		return true;

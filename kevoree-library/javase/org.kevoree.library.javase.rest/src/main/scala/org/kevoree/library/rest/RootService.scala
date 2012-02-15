@@ -38,7 +38,7 @@ class RootService(id: String, group: RestGroup) extends Actor with FileServer {
       responder.complete(getResponse(url))
     }
 
-    case RequestContext(HttpRequest(HttpMethods.POST, url, _, body, _), _, responder) => {
+    case RequestContext(HttpRequest(HttpMethods.POST, "/model/current", _, body, _), _, responder) => {
       try {
          val model = KevoreeXmiHelper.loadString(new String(body))
          /*new scala.actors.Actor {

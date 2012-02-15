@@ -15,7 +15,6 @@ class ConsensusRootService (id: String, group: RestConsensusGroup) extends RootS
 
   override protected def receive = {
     super.receive.orElse {
-
       // ConsensusRootService specific cases
       case RequestContext(HttpRequest(HttpMethods.GET, uri, _, _, _), _, responder) if (uri.startsWith("/model/consensus/lock")) => {
         // get parameters which must be currentModel and futureModel
