@@ -18,7 +18,7 @@ import org.kevoree.ContainerRoot;
 
 public interface ModelListener {
 
-    public boolean preUpdate(ContainerRoot proposedModel);
+    public boolean preUpdate(ContainerRoot currentModel, ContainerRoot proposedModel);
 
     public void modelUpdated();
 

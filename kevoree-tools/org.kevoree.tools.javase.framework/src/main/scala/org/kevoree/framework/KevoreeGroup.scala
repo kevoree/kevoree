@@ -30,13 +30,13 @@ trait KevoreeGroup extends AbstractGroupType with KevoreeActor with ModelListene
     triggerModelUpdate()
   }
 
-  def preUpdate(proposedModel : ContainerRoot) : Boolean = triggerPreUpdate(proposedModel)
+  def preUpdate(currentModel : ContainerRoot, proposedModel : ContainerRoot) : Boolean = triggerPreUpdate(currentModel, proposedModel)
 
 
 
   var mhandler: ModelHandlerServiceProxy = new ModelHandlerServiceProxy();
 
-  override def getModelService() : KevoreeModelHandlerService = {
+  override def getModelService: KevoreeModelHandlerService = {
     mhandler
   }
   override def setModelService(s : KevoreeModelHandlerService) {
@@ -65,13 +65,13 @@ trait KevoreeGroup extends AbstractGroupType with KevoreeActor with ModelListene
 
   var dictionary: HashMap[String, Object] = new HashMap[String, Object]()
 
-  override def getDictionary(): HashMap[String, Object] = dictionary
+  override def getDictionary: HashMap[String, Object] = dictionary
 
-  def startGroup: Unit = {}
+  def startGroup {}
 
-  def stopGroup: Unit = {}
+  def stopGroup {}
 
-  def updateGroup: Unit = {}
+  def updateGroup {}
 
   override def internal_process(msgg: Any) = msgg match {
     case UpdateDictionaryMessage(d,cmodel) => {
@@ -118,8 +118,6 @@ trait KevoreeGroup extends AbstractGroupType with KevoreeActor with ModelListene
         getModelService().asInstanceOf[ModelHandlerServiceProxy].setTempModel(cmodel)
         stopGroup
         getModelService().asInstanceOf[ModelHandlerServiceProxy].unsetTempModel()
-
-
         isStarted = false
         reply(true)
       } catch {
@@ -129,8 +127,12 @@ trait KevoreeGroup extends AbstractGroupType with KevoreeActor with ModelListene
         }
       }
     }
-    case StopMessage if (!isStarted) =>  //IGNORE
-    case StartMessage if (isStarted) =>  //IGNORE
+    case StopMessage(_) if (!isStarted) =>  {
+      reply(false)
+    }
+    case StartMessage(_) if (isStarted) =>  {
+      reply(false)
+    }
 
     case _@msg => println("Uncatch message group " + name)
   }

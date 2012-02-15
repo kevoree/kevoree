@@ -26,7 +26,7 @@ public abstract class AbstractGroupType {
 
 	public abstract void triggerModelUpdate ();
 
-	public boolean triggerPreUpdate (ContainerRoot proposedModel ) {
+	public boolean triggerPreUpdate (ContainerRoot currentModel, ContainerRoot proposedModel ) {
 		return true;
 	}
 
@@ -70,6 +70,7 @@ public abstract class AbstractGroupType {
 
 	/**
 	 * Allow to find the corresponding element into the model
+	 * Be careful, this method use the KevoreeModelHandlerService#getLastModel but this method is locked in some cases
 	 *
 	 * @return the group corresponding to this
 	 */
