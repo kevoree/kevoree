@@ -1,10 +1,12 @@
 package org.kevoree.library.rest;
 
 import org.kevoree.ContainerRoot;
+import org.kevoree.Group;
 import org.kevoree.annotation.DictionaryAttribute;
 import org.kevoree.annotation.DictionaryType;
 import org.kevoree.annotation.GroupType;
 import org.kevoree.annotation.Library;
+import org.kevoree.framework.KevoreeElementHelper;
 import org.kevoree.library.rest.consensus.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,13 +46,6 @@ public class RestConsensusGroup extends RestGroup {
 			lockTimeout = Long.parseLong(lockTimeoutString);
 		} catch (NumberFormatException e) {
 			logger.debug("Unable to parse <lock_timeout> attribute. Please check this value.");
-		}
-		String lockPercentString = this.getDictionary().get("lock_percent").toString();
-		lockPercent = 51;
-		try {
-			lockPercent = Integer.parseInt(lockPercentString);
-		} catch (NumberFormatException e) {
-			logger.debug("Unable to parse <lock_percent> attribute. Please check this value.");
 		}
 		lockManager = new LockManager(lockTimeout, this.getModelService());
 		String pullIntervalOption = this.getDictionary().get("pull_interval").toString();
@@ -104,28 +99,40 @@ public class RestConsensusGroup extends RestGroup {
 	}
 
 	@Override
-	public boolean triggerPreUpdate (ContainerRoot model) {
+	public boolean triggerPreUpdate (ContainerRoot currentModel, ContainerRoot futureModel) {
 		logger.debug("Starting consensus about a new update on {}", this.getNodeName());
+		Group g = KevoreeElementHelper.getGroupElement(this.getName(), currentModel).get();
+
 		// try to lock all nodes
-		int lockConsensus = ConsensusClient.acquireRemoteLocks(this.getModelElement(), this.getNodeName(), this.getModelService().getLastModel(),
-				HashManager.getHashedModel(this.getModelService().getLastModel()), HashManager.getHashedModel(model));
+		int lockConsensus = ConsensusClient.acquireRemoteLocks(g, this.getNodeName(), currentModel, HashManager.getHashedModel(currentModel), HashManager.getHashedModel(futureModel));
 		// check if at least <lock_percent> nodes are locked
-		if (lockConsensus >= (lockPercent / 100)) {
+		if (lockConsensus >= lockPercent) {
 			logger.debug("Lock is acquired on {} nodes", lockConsensus);
 			// send model to propose the update
-			ConsensusClient.sendModel(this.getModelElement(), this.getNodeName(), model);
+			ConsensusClient.sendModel(g, this.getNodeName(), currentModel, futureModel);
 			logger.debug("Model has been sent");
 			return true;
 		} else {
 			logger.warn("Unable to acquire global lock. Update cannot be done!");
 			// unable to obtain a consensus to apply a new model, must unlock all the remote nodes
-			ConsensusClient.unlock(this.getModelElement(), this.getNodeName(), model);
+			ConsensusClient.unlock(g, this.getNodeName(), currentModel);
 			return false;
 		}
 	}
 
 	@Override
 	public void triggerModelUpdate () {
+		// compute the minimum number of node we need to get a consensus
+		String lockPercentString = this.getDictionary().get("lock_percent").toString();
+		lockPercent = 51;
+		try {
+			lockPercent = Integer.parseInt(lockPercentString);
+		} catch (NumberFormatException e) {
+			logger.debug("Unable to parse <lock_percent> attribute. Please check this value.");
+		}
+		// convert the lockPercent into a number of nodes
+		lockPercent = ((int) ((lockPercent * this.getModelElement().getSubNodesForJ().size() / 100) + 0.5));
+		System.out.println("\t" + lockPercentString + "\t" + lockPercent);
 		// TODO check if all other nodes have done their update by asking for the model and comparing to the local one
 		// if they have not done their update you need to rollback
 		// unlock all nodes

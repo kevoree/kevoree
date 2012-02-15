@@ -19,16 +19,16 @@ class ConsensusRootService (id: String, group: RestConsensusGroup) extends RootS
       // ConsensusRootService specific cases
       case RequestContext(HttpRequest(HttpMethods.GET, uri, _, _, _), _, responder) if (uri.startsWith("/model/consensus/lock")) => {
         // get parameters which must be currentModel and futureModel
-        val currentHashModel = getParam(uri, "currentModel").getBytes
-        val futureHashModel = getParam(uri, "futureModel").getBytes
+        val currentHashModel = getParam(uri, "currentModel").getBytes("UTF-8")
+        val futureHashModel = getParam(uri, "futureModel").getBytes("UTF-8")
         // call the lock on the node
         val hashes = group.lock(currentHashModel, futureHashModel)
-        val body = "currentModel" + "=" + new String(hashes._1) + "\n" + "futureModel" + "=" + new String(hashes._2) + "\n"
+        val body = "currentModel" + "=" + new String(hashes._1, "UTF-8") + "\n" + "futureModel" + "=" + new String(hashes._2, "UTF-8") + "\n"
         responder.complete(response(body))
       }
       case RequestContext(HttpRequest(HttpMethods.GET, uri, _, _, _), _, responder) if (uri.startsWith("/model/consensus/hash")) => {
         val hashes = group.hashes()
-        val body = "currentModel" + "=" + new String(hashes._1) + "\n" + "futureModel" + "=" + new String(hashes._2) + "\n"
+        val body = "currentModel" + "=" + new String(hashes._1, "UTF-8") + "\n" + "futureModel" + "=" + new String(hashes._2, "UTF-8") + "\n"
         responder.complete(response(body))
       }
         // ConsensusRootService specific cases

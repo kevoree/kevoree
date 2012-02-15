@@ -61,7 +61,7 @@ abstract class KevoreeChannelFragmentActivator extends KevoreeInstanceActivator 
 
   def stop() {
     if (channelActor.asInstanceOf[ChannelTypeFragment].isStarted) {
-      channelActor !? StopMessage
+      channelActor !? StopMessage(null)
     }
     if (channelActor.asInstanceOf[AbstractChannelFragment].isInstanceOf[ModelHandlerServiceProxy]) {
       channelActor.asInstanceOf[AbstractChannelFragment].asInstanceOf[ModelHandlerServiceProxy].stopProxy()

@@ -176,8 +176,12 @@ trait ChannelTypeFragment extends KevoreeChannelFragment with ChannelFragment {
         }
       }
     }
-    case StopMessage if (!ct_started) => //IGNORE
-    case StartMessage if (ct_started) => //IGNORE
+    case StopMessage(_) if (!ct_started) => {
+      reply(false)
+    }
+    case StartMessage(_) if (ct_started) => {
+      reply(false)
+    }
 
     case msg: FragmentBindMessage => {
 

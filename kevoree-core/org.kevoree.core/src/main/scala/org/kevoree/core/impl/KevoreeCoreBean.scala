@@ -315,7 +315,7 @@ class KevoreeCoreBean extends KevoreeModelHandlerService with KevoreeThreadActor
           //Model check is OK.
           val precheckModel = cloner.clone(pnewmodel)
           logger.debug("Before listeners PreCheck !")
-          val preCheckResult = listenerActor.preUpdate(precheckModel)
+          val preCheckResult = listenerActor.preUpdate(model, precheckModel)
           logger.debug("PreCheck result = " + preCheckResult)
           if (preCheckResult) {
             var newmodel = cloner.clone(pnewmodel)
