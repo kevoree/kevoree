@@ -24,7 +24,7 @@ public class WsSocketClient extends WebSocketClient {
 
     public void onOpen(Handshakedata handshake) {
         try {
-            send("hello server");
+            send("ta mere");
         } catch (InterruptedException e) {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         }
