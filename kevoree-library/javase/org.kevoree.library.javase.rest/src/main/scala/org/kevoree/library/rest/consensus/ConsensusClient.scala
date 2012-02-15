@@ -71,10 +71,10 @@ object ConsensusClient {
   def acquireRemoteLocks (group: Group, nodeName : String, currentModel: ContainerRoot, currentHashedModel: Array[Byte], futureHashedModel: Array[Byte]): Int = {
     logger.debug("Try to acquire a global lock")
     var nbLocked = 1
-    val nbNodes = group.getSubNodes.size
 
     group.getSubNodes.filter(n => n.getName != nodeName).foreach {
       node => {
+        logger.debug("try to ask for lock to {}", node.getName)
         // ask to lock the remote nodes by notifying them we want to make an update from the currentHashedModel to the futureHashedModel
         // each remote nodes return the update they accept by sending their currentHashedModel and their futureHashedModel
         val remoteHashedModels = sendHashes(group.getName, node.getName, currentModel, currentHashedModel, futureHashedModel, "/model/consensus/lock")
@@ -85,7 +85,7 @@ object ConsensusClient {
       }
     }
 
-    nbLocked / nbNodes
+    nbLocked
   }
 
   def sendModel (group: Group, nodeName : String, currentModel: ContainerRoot, futureModel: ContainerRoot) {
@@ -139,7 +139,7 @@ object ConsensusClient {
   }
 
   private def sendHashes (groupName: String, nodeName: String, currentModel: ContainerRoot, currentHashedModel: Array[Byte], futureHashedModel: Array[Byte], path: String): (Array[Byte], Array[Byte]) = {
-    logger.debug("send hashes of the current and the future models to know if {} is agreed with this potential update.")
+    logger.debug("send hashes of the current and the future models to know if {} is agreed with this potential update.", nodeName)
     val ipOption = KevoreePropertyHelper.getStringNetworkProperty(currentModel, nodeName, Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP)
     val portOption = KevoreePropertyHelper.getIntPropertyForGroup(currentModel, groupName, "port", true, nodeName)
 
@@ -147,7 +147,7 @@ object ConsensusClient {
 
       // if there is a error about implicit concat, check the import package order
       val dialog = HttpClient.HttpDialog(ipOption.get, portOption.get)
-        .send(HttpRequest(method = HttpMethods.GET, uri = path + "?currentModel=" + new String(currentHashedModel) + "&futureModel=" + new String(futureHashedModel))).end
+        .send(HttpRequest(method = HttpMethods.GET, uri = path + "?currentModel=" + new String(currentHashedModel, "UTF-8") + "&futureModel=" + new String(futureHashedModel, "UTF-8"))).end
 
       dialog.get
       dialog.value match {
@@ -161,10 +161,10 @@ object ConsensusClient {
             hash =>
               val splitted = hash.split("=")
               if (splitted(0) == "currentModel") {
-                currentModel = splitted(1).getBytes
+                currentModel = splitted(1).getBytes("UTF-8")
                 currentModelFound = true
               } else if (splitted(0) == "futureModel") {
-                futureModel = splitted(1).getBytes
+                futureModel = splitted(1).getBytes("UTF-8")
                 futureModelFound = true
               }
               !currentModelFound || !futureModelFound

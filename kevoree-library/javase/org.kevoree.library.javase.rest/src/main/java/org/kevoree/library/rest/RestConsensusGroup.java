@@ -47,13 +47,6 @@ public class RestConsensusGroup extends RestGroup {
 		} catch (NumberFormatException e) {
 			logger.debug("Unable to parse <lock_timeout> attribute. Please check this value.");
 		}
-		String lockPercentString = this.getDictionary().get("lock_percent").toString();
-		lockPercent = 51;
-		try {
-			lockPercent = Integer.parseInt(lockPercentString);
-		} catch (NumberFormatException e) {
-			logger.debug("Unable to parse <lock_percent> attribute. Please check this value.");
-		}
 		lockManager = new LockManager(lockTimeout, this.getModelService());
 		String pullIntervalOption = this.getDictionary().get("pull_interval").toString();
 		long pullInterval = 10000;
@@ -108,12 +101,12 @@ public class RestConsensusGroup extends RestGroup {
 	@Override
 	public boolean triggerPreUpdate (ContainerRoot currentModel, ContainerRoot futureModel) {
 		logger.debug("Starting consensus about a new update on {}", this.getNodeName());
-		// try to lock all nodes
 		Group g = KevoreeElementHelper.getGroupElement(this.getName(), currentModel).get();
-		int lockConsensus = ConsensusClient.acquireRemoteLocks(g, this.getNodeName(), currentModel,
-				HashManager.getHashedModel(currentModel), HashManager.getHashedModel(futureModel));
+
+		// try to lock all nodes
+		int lockConsensus = ConsensusClient.acquireRemoteLocks(g, this.getNodeName(), currentModel, HashManager.getHashedModel(currentModel), HashManager.getHashedModel(futureModel));
 		// check if at least <lock_percent> nodes are locked
-		if (lockConsensus >= (lockPercent / 100)) {
+		if (lockConsensus >= lockPercent) {
 			logger.debug("Lock is acquired on {} nodes", lockConsensus);
 			// send model to propose the update
 			ConsensusClient.sendModel(g, this.getNodeName(), currentModel, futureModel);
@@ -129,6 +122,17 @@ public class RestConsensusGroup extends RestGroup {
 
 	@Override
 	public void triggerModelUpdate () {
+		// compute the minimum number of node we need to get a consensus
+		String lockPercentString = this.getDictionary().get("lock_percent").toString();
+		lockPercent = 51;
+		try {
+			lockPercent = Integer.parseInt(lockPercentString);
+		} catch (NumberFormatException e) {
+			logger.debug("Unable to parse <lock_percent> attribute. Please check this value.");
+		}
+		// convert the lockPercent into a number of nodes
+		lockPercent = ((int) ((lockPercent * this.getModelElement().getSubNodesForJ().size() / 100) + 0.5));
+		System.out.println("\t" + lockPercentString + "\t" + lockPercent);
 		// TODO check if all other nodes have done their update by asking for the model and comparing to the local one
 		// if they have not done their update you need to rollback
 		// unlock all nodes
