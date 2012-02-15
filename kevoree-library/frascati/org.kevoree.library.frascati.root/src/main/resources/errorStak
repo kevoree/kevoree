@@ -1,0 +1,905 @@
+/System/Library/Java/JavaVirtualMachines/1.6.0.jdk/Contents/Home/bin/java -Didea.launcher.port=7541 "-Didea.launcher.bin.path=/Applications/IntelliJ IDEA 11.app/bin" -Dfile.encoding=UTF-8 -classpath "/System/Library/Java/JavaVirtualMachines/1.6.0.jdk/Contents/Home/lib/deploy.jar:/System/Library/Java/JavaVirtualMachines/1.6.0.jdk/Contents/Home/lib/dt.jar:/System/Library/Java/JavaVirtualMachines/1.6.0.jdk/Contents/Home/lib/javaws.jar:/System/Library/Java/JavaVirtualMachines/1.6.0.jdk/Contents/Home/lib/jce.jar:/System/Library/Java/JavaVirtualMachines/1.6.0.jdk/Contents/Home/lib/jconsole.jar:/System/Library/Java/JavaVirtualMachines/1.6.0.jdk/Contents/Home/lib/management-agent.jar:/System/Library/Java/JavaVirtualMachines/1.6.0.jdk/Contents/Home/lib/plugin.jar:/System/Library/Java/JavaVirtualMachines/1.6.0.jdk/Contents/Home/lib/sa-jdi.jar:/System/Library/Java/JavaVirtualMachines/1.6.0.jdk/Contents/Home/../Classes/alt-rt.jar:/System/Library/Java/JavaVirtualMachines/1.6.0.jdk/Contents/Home/../Classes/alt-string.jar:/System/Library/Java/JavaVirtualMachines/1.6.0.jdk/Contents/Home/../Classes/charsets.jar:/System/Library/Java/JavaVirtualMachines/1.6.0.jdk/Contents/Home/../Classes/classes.jar:/System/Library/Java/JavaVirtualMachines/1.6.0.jdk/Contents/Home/../Classes/jsse.jar:/System/Library/Java/JavaVirtualMachines/1.6.0.jdk/Contents/Home/../Classes/ui.jar:/System/Library/Java/JavaVirtualMachines/1.6.0.jdk/Contents/Home/lib/ext/apple_provider.jar:/System/Library/Java/JavaVirtualMachines/1.6.0.jdk/Contents/Home/lib/ext/dnsns.jar:/System/Library/Java/JavaVirtualMachines/1.6.0.jdk/Contents/Home/lib/ext/localedata.jar:/System/Library/Java/JavaVirtualMachines/1.6.0.jdk/Contents/Home/lib/ext/sunjce_provider.jar:/System/Library/Java/JavaVirtualMachines/1.6.0.jdk/Contents/Home/lib/ext/sunpkcs11.jar:/Users/duke/Documents/dev/dukeboard/kevoree/kevoree-library/frascati/org.kevoree.library.frascati.root/target/classes:/Users/duke/.m2/repository/org/kevoree/tools/org.kevoree.tools.annotation.api/1.6.0-SNAPSHOT/org.kevoree.tools.annotation.api-1.6.0-SNAPSHOT.jar:/Users/duke/.m2/repository/org/scala-lang/scala-library/2.9.1/scala-library-2.9.1.jar:/Users/duke/.m2/repository/org/slf4j/slf4j-api/1.6.4/slf4j-api-1.6.4.jar:/Users/duke/.m2/repository/org/kevoree/platform/org.kevoree.platform.osgi.standalone/1.6.0-SNAPSHOT/org.kevoree.platform.osgi.standalone-1.6.0-SNAPSHOT.jar:/Users/duke/.m2/repository/org/scala-lang/scala-compiler/2.9.1/scala-compiler-2.9.1.jar:/Applications/IntelliJ IDEA 11.app/lib/idea_rt.jar" com.intellij.rt.execution.application.AppMain org.kevoree.runner.FrascatiRunner
+DEBUG [KevoreeBootStrap.java:77] - Manual Init Aether KCL
+DEBUG [KevoreeBootStrap.java:93] - Manual Init MarShell KCL
+INFO  [KevoreeCoreBean.scala:160] - Kevoree Start event : node name = node0
+INFO  [KevoreeBootStrap.java:132] - Try to load bootstrap platform from system parameter
+DEBUG [KevoreeXmiHelper.scala:80] - load model from => /Users/duke/Documents/dev/dukeboard/kevoree/kevoree-library/frascati/org.kevoree.library.frascati.root/target/classes/fbootstrap.kev
+DEBUG [KevoreeBootStrap.java:158] - Bootstrap step !
+DEBUG [TypeDefinitionAspect.scala:227] - found deploy unit => helloworld-pojo for type helloworld-pojo
+DEBUG [TypeDefinitionAspect.scala:236] - will exit with => org.kevoree.impl.DeployUnitImpl@3445378f
+DEBUG [TypeDefinitionAspect.scala:230] - Deploy Unit not found on first level FrascatiNode
+WARN  [TypeDefinitionAspect.scala:233] - No deploy unit has been found for deployment of [FrascatiNode, node0, FrascatiNode] on node {} : {}
+DEBUG [TypeDefinitionAspect.scala:265] - Search on super type => JavaSENode
+DEBUG [TypeDefinitionAspect.scala:252] - candidate deploy unit => org.kevoree.library.javase.javaseNode
+DEBUG [TypeDefinitionAspect.scala:256] - found & exit=org.kevoree.library.frascati.frascatiNode
+DEBUG [TypeDefinitionAspect.scala:236] - will exit with => org.kevoree.impl.DeployUnitImpl@442f1e75
+DEBUG [RootChecker.scala:43] - Model checked in 64
+DEBUG [KevoreeCoreBean.scala:317] - Before listeners PreCheck !
+DEBUG [KevoreeCoreBean.scala:319] - PreCheck result = true
+DEBUG [KCLBootstrap.scala:58] - trying to install /Users/duke/.m2/repository/org/kevoree/library/javase/org.kevoree.library.javase.javaseNode/1.6.0-SNAPSHOT/org.kevoree.library.javase.javaseNode-1.6.0-SNAPSHOT.jar
+DEBUG [JCLContextHandler.scala:144] - Install /mvn:org.kevoree.library.javase/org.kevoree.library.javase.javaseNode/1.6.0-SNAPSHOT , file /Users/duke/.m2/repository/org/kevoree/library/javase/org.kevoree.library.javase.javaseNode/1.6.0-SNAPSHOT/org.kevoree.library.javase.javaseNode-1.6.0-SNAPSHOT.jar
+DEBUG [JCLContextHandler.scala:152] - Add KCL for org.kevoree.library.javase.javaseNode->/mvn:org.kevoree.library.javase/org.kevoree.library.javase.javaseNode/1.6.0-SNAPSHOT
+DEBUG [KCLBootstrap.scala:58] - trying to install /Users/duke/.m2/repository/org/kevoree/library/javase/org.kevoree.library.javase.javaseNode/1.6.0-SNAPSHOT/org.kevoree.library.javase.javaseNode-1.6.0-SNAPSHOT.jar
+DEBUG [JCLContextHandler.scala:141] - Take already installed /mvn:org.kevoree.library.javase/org.kevoree.library.javase.javaseNode/1.6.0-SNAPSHOT
+DEBUG [KCLBootstrap.scala:58] - trying to install /Users/duke/.m2/repository/org/kevoree/library/frascati/org.kevoree.library.frascati.frascatiNode/1.6.0-SNAPSHOT/org.kevoree.library.frascati.frascatiNode-1.6.0-SNAPSHOT.jar
+DEBUG [JCLContextHandler.scala:144] - Install /mvn:org.kevoree.library.frascati/org.kevoree.library.frascati.frascatiNode/1.6.0-SNAPSHOT , file /Users/duke/.m2/repository/org/kevoree/library/frascati/org.kevoree.library.frascati.frascatiNode/1.6.0-SNAPSHOT/org.kevoree.library.frascati.frascatiNode-1.6.0-SNAPSHOT.jar
+DEBUG [KevoreeLazyJarResources.scala:165] - KCL Found sub Jar => lib/aopalliance-1.0.jar
+DEBUG [KevoreeLazyJarResources.scala:165] - KCL Found sub Jar => lib/cglib-nodep-2.2.2.jar
+DEBUG [KevoreeLazyJarResources.scala:165] - KCL Found sub Jar => lib/common-2.4.0.jar
+DEBUG [KevoreeLazyJarResources.scala:165] - KCL Found sub Jar => lib/common-3.4.0.jar
+DEBUG [KevoreeLazyJarResources.scala:165] - KCL Found sub Jar => lib/core-3.3.0.771.jar
+DEBUG [KevoreeLazyJarResources.scala:165] - KCL Found sub Jar => jdtCompilerAdapter.jar
+DEBUG [KevoreeLazyJarResources.scala:165] - KCL Found sub Jar => lib/ecore-2.4.0.jar
+DEBUG [KevoreeLazyJarResources.scala:165] - KCL Found sub Jar => lib/fraclet-annotations-3.3.jar
+DEBUG [KevoreeLazyJarResources.scala:165] - KCL Found sub Jar => lib/fractal-api-2.0.2.jar
+DEBUG [KevoreeLazyJarResources.scala:165] - KCL Found sub Jar => lib/frascati-assembly-factory-1.5-SNAPSHOT.jar
+DEBUG [KevoreeLazyJarResources.scala:165] - KCL Found sub Jar => lib/frascati-component-factory-1.5-SNAPSHOT.jar
+DEBUG [KevoreeLazyJarResources.scala:165] - KCL Found sub Jar => lib/frascati-component-factory-juliac-1.5-SNAPSHOT.jar
+DEBUG [KevoreeLazyJarResources.scala:165] - KCL Found sub Jar => lib/frascati-component-factory-juliac-jdt-1.5-SNAPSHOT.jar
+DEBUG [KevoreeLazyJarResources.scala:165] - KCL Found sub Jar => lib/frascati-component-factory-juliac-tinfi-oo-1.5-SNAPSHOT.jar
+DEBUG [KevoreeLazyJarResources.scala:165] - KCL Found sub Jar => lib/frascati-component-factory-tinfi-oo-1.5-SNAPSHOT.jar
+DEBUG [KevoreeLazyJarResources.scala:165] - KCL Found sub Jar => lib/frascati-runtime-factory-1.5-SNAPSHOT.jar
+DEBUG [KevoreeLazyJarResources.scala:165] - KCL Found sub Jar => lib/frascati-sca-parser-1.5-SNAPSHOT.jar
+DEBUG [KevoreeLazyJarResources.scala:165] - KCL Found sub Jar => lib/frascati-tinfi-membranes-oo-1.4.4.jar
+DEBUG [KevoreeLazyJarResources.scala:165] - KCL Found sub Jar => lib/frascati-tinfi-mixins-1.4.4.jar
+DEBUG [KevoreeLazyJarResources.scala:165] - KCL Found sub Jar => lib/frascati-tinfi-oo-1.4.4.jar
+DEBUG [KevoreeLazyJarResources.scala:165] - KCL Found sub Jar => lib/frascati-tinfi-runtime-1.4.4.jar
+DEBUG [KevoreeLazyJarResources.scala:165] - KCL Found sub Jar => lib/frascati-tinfi-runtime-api-1.4.4.jar
+DEBUG [KevoreeLazyJarResources.scala:165] - KCL Found sub Jar => lib/frascati-util-1.5-SNAPSHOT.jar
+DEBUG [KevoreeLazyJarResources.scala:165] - KCL Found sub Jar => lib/guava-r07.jar
+DEBUG [KevoreeLazyJarResources.scala:165] - KCL Found sub Jar => lib/jgrapht-jdk1.5-0.7.3.jar
+DEBUG [KevoreeLazyJarResources.scala:165] - KCL Found sub Jar => lib/julia-mixins-2.5.2.jar
+DEBUG [KevoreeLazyJarResources.scala:165] - KCL Found sub Jar => lib/julia-runtime-2.5.2.jar
+DEBUG [KevoreeLazyJarResources.scala:165] - KCL Found sub Jar => lib/juliac-core-2.4.jar
+DEBUG [KevoreeLazyJarResources.scala:165] - KCL Found sub Jar => lib/juliac-jdt-2.4.jar
+DEBUG [KevoreeLazyJarResources.scala:165] - KCL Found sub Jar => lib/juliac-oo-2.4.jar
+DEBUG [KevoreeLazyJarResources.scala:165] - KCL Found sub Jar => lib/juliac-runtime-2.4.jar
+DEBUG [KevoreeLazyJarResources.scala:165] - KCL Found sub Jar => lib/monolog-1.8.jar
+DEBUG [KevoreeLazyJarResources.scala:165] - KCL Found sub Jar => lib/objenesis-1.2.jar
+DEBUG [KevoreeLazyJarResources.scala:165] - KCL Found sub Jar => lib/osoa-java-api-2.0.1.2.jar
+DEBUG [KevoreeLazyJarResources.scala:165] - KCL Found sub Jar => lib/osoa-java-api-2.0.1.3.jar
+DEBUG [KevoreeLazyJarResources.scala:165] - KCL Found sub Jar => lib/runtime-3.4.0.jar
+DEBUG [KevoreeLazyJarResources.scala:165] - KCL Found sub Jar => lib/sca-caa-apis-1.1-CD04.jar
+DEBUG [KevoreeLazyJarResources.scala:165] - KCL Found sub Jar => lib/sca-model-2.0.1.3.jar
+DEBUG [KevoreeLazyJarResources.scala:165] - KCL Found sub Jar => lib/sca-model-introspection-2.0.1.3.jar
+DEBUG [KevoreeLazyJarResources.scala:165] - KCL Found sub Jar => lib/xmi-2.4.0.jar
+DEBUG [JCLContextHandler.scala:152] - Add KCL for org.kevoree.library.frascati.frascatiNode->/mvn:org.kevoree.library.frascati/org.kevoree.library.frascati.frascatiNode/1.6.0-SNAPSHOT
+DEBUG [JCLContextHandler.scala:158] - Link KCL for org.kevoree.library.frascati.frascatiNode->org.kevoree.library.javase.javaseNode
+INFO  [FrascatiRuntime.scala:139] - fload org.ow2.frascati.FraSCAti ======> res class org.ow2.frascati.FraSCAti
+INFO  [FrascatiRuntime.scala:139] - fload org.ow2.frascati.bootstrap.FraSCAti ======> res class org.ow2.frascati.bootstrap.FraSCAti
+INFO  [FrascatiRuntime.scala:139] - fload org.objectweb.fractal.juliac.runtime.Juliac ======> res class org.objectweb.fractal.juliac.runtime.Juliac
+INFO  [FrascatiRuntime.scala:139] - fload org.objectweb.fractal.juliac.runtime.Juliac ======> res class org.objectweb.fractal.juliac.runtime.Juliac
+INFO  [FrascatiRuntime.scala:144] - GetResss==org/ow2/frascati/FraSCAti.composite
+FraSCAti.composite->/var/folders/jn/jnhvfT3jG+Gik9Jr3bknWE+++TI/-Tmp-/dummy_kcl_temp1331591107149342760FraSCAti.composite
+getresResult=sun.misc.CompoundEnumeration@400c02a
+INFO  [FrascatiRuntime.scala:151] - GetRes=META-INF/services/javax.xml.parsers.SAXParserFactory
+DEBUG [KevoreeJarClassLoader.scala:181] - getResource not found null=>META-INF/services/javax.xml.parsers.SAXParserFactory in jar:file:/Users/duke/.m2/repository/org/kevoree/library/frascati/org.kevoree.library.frascati.frascatiNode/1.6.0-SNAPSHOT/org.kevoree.library.frascati.frascatiNode-1.6.0-SNAPSHOT.jar!/lib/aopalliance-1.0.jar
+INFO  [FrascatiRuntime.scala:139] - fload com.sun.org.apache.xerces.internal.jaxp.SAXParserFactoryImpl ======> res class com.sun.org.apache.xerces.internal.jaxp.SAXParserFactoryImpl
+INFO  [FrascatiRuntime.scala:139] - fload com.sun.org.apache.xerces.internal.parsers.XIncludeAwareParserConfiguration ======> res class com.sun.org.apache.xerces.internal.parsers.XIncludeAwareParserConfiguration
+INFO  [FrascatiRuntime.scala:139] - fload com.sun.org.apache.xerces.internal.impl.dv.dtd.DTDDVFactoryImpl ======> res class com.sun.org.apache.xerces.internal.impl.dv.dtd.DTDDVFactoryImpl
+INFO  [FrascatiRuntime.scala:144] - GetResss==org/ow2/frascati/assembly/factory/AssemblyFactory.composite
+AssemblyFactory.composite->/var/folders/jn/jnhvfT3jG+Gik9Jr3bknWE+++TI/-Tmp-/dummy_kcl_temp2737477513545808113AssemblyFactory.composite
+getresResult=sun.misc.CompoundEnumeration@5fb45ddc
+INFO  [FrascatiRuntime.scala:151] - GetRes=META-INF/services/javax.xml.parsers.SAXParserFactory
+DEBUG [KevoreeJarClassLoader.scala:181] - getResource not found null=>META-INF/services/javax.xml.parsers.SAXParserFactory in jar:file:/Users/duke/.m2/repository/org/kevoree/library/frascati/org.kevoree.library.frascati.frascatiNode/1.6.0-SNAPSHOT/org.kevoree.library.frascati.frascatiNode-1.6.0-SNAPSHOT.jar!/lib/aopalliance-1.0.jar
+INFO  [FrascatiRuntime.scala:139] - fload com.sun.org.apache.xerces.internal.jaxp.SAXParserFactoryImpl ======> res class com.sun.org.apache.xerces.internal.jaxp.SAXParserFactoryImpl
+INFO  [FrascatiRuntime.scala:139] - fload com.sun.org.apache.xerces.internal.parsers.XIncludeAwareParserConfiguration ======> res class com.sun.org.apache.xerces.internal.parsers.XIncludeAwareParserConfiguration
+INFO  [FrascatiRuntime.scala:139] - fload com.sun.org.apache.xerces.internal.impl.dv.dtd.DTDDVFactoryImpl ======> res class com.sun.org.apache.xerces.internal.impl.dv.dtd.DTDDVFactoryImpl
+DEBUG [KevoreeJarClassLoader.scala:141] - Get RessourceAsStream : org/eclipse/emf/ecore/plugin/plugin.properties
+DEBUG [KevoreeJarClassLoader.scala:141] - Get RessourceAsStream : org/eclipse/emf/ecore/plugin/plugin_fr.properties
+DEBUG [KevoreeJarClassLoader.scala:154] - Res not found org/eclipse/emf/ecore/plugin/plugin_fr.properties
+DEBUG [KevoreeJarClassLoader.scala:141] - Get RessourceAsStream : org/eclipse/emf/ecore/plugin/plugin_fr_FR.properties
+DEBUG [KevoreeJarClassLoader.scala:154] - Res not found org/eclipse/emf/ecore/plugin/plugin_fr_FR.properties
+INFO  [FrascatiRuntime.scala:144] - GetResss==org/ow2/frascati/parser/Parser.composite
+Parser.composite->/var/folders/jn/jnhvfT3jG+Gik9Jr3bknWE+++TI/-Tmp-/dummy_kcl_temp3112948490763641125Parser.composite
+getresResult=sun.misc.CompoundEnumeration@64d1afd3
+INFO  [FrascatiRuntime.scala:151] - GetRes=META-INF/services/javax.xml.parsers.SAXParserFactory
+DEBUG [KevoreeJarClassLoader.scala:181] - getResource not found null=>META-INF/services/javax.xml.parsers.SAXParserFactory in jar:file:/Users/duke/.m2/repository/org/kevoree/library/frascati/org.kevoree.library.frascati.frascatiNode/1.6.0-SNAPSHOT/org.kevoree.library.frascati.frascatiNode-1.6.0-SNAPSHOT.jar!/lib/aopalliance-1.0.jar
+INFO  [FrascatiRuntime.scala:139] - fload com.sun.org.apache.xerces.internal.jaxp.SAXParserFactoryImpl ======> res class com.sun.org.apache.xerces.internal.jaxp.SAXParserFactoryImpl
+INFO  [FrascatiRuntime.scala:139] - fload com.sun.org.apache.xerces.internal.parsers.XIncludeAwareParserConfiguration ======> res class com.sun.org.apache.xerces.internal.parsers.XIncludeAwareParserConfiguration
+INFO  [FrascatiRuntime.scala:139] - fload com.sun.org.apache.xerces.internal.impl.dv.dtd.DTDDVFactoryImpl ======> res class com.sun.org.apache.xerces.internal.impl.dv.dtd.DTDDVFactoryImpl
+INFO  [FrascatiRuntime.scala:144] - GetResss==org/ow2/frascati/parser/CompositeParser.composite
+CompositeParser.composite->/var/folders/jn/jnhvfT3jG+Gik9Jr3bknWE+++TI/-Tmp-/dummy_kcl_temp4503081347253131845CompositeParser.composite
+getresResult=sun.misc.CompoundEnumeration@3bf60430
+INFO  [FrascatiRuntime.scala:151] - GetRes=META-INF/services/javax.xml.parsers.SAXParserFactory
+DEBUG [KevoreeJarClassLoader.scala:181] - getResource not found null=>META-INF/services/javax.xml.parsers.SAXParserFactory in jar:file:/Users/duke/.m2/repository/org/kevoree/library/frascati/org.kevoree.library.frascati.frascatiNode/1.6.0-SNAPSHOT/org.kevoree.library.frascati.frascatiNode-1.6.0-SNAPSHOT.jar!/lib/aopalliance-1.0.jar
+INFO  [FrascatiRuntime.scala:139] - fload com.sun.org.apache.xerces.internal.jaxp.SAXParserFactoryImpl ======> res class com.sun.org.apache.xerces.internal.jaxp.SAXParserFactoryImpl
+INFO  [FrascatiRuntime.scala:139] - fload com.sun.org.apache.xerces.internal.parsers.XIncludeAwareParserConfiguration ======> res class com.sun.org.apache.xerces.internal.parsers.XIncludeAwareParserConfiguration
+INFO  [FrascatiRuntime.scala:139] - fload com.sun.org.apache.xerces.internal.impl.dv.dtd.DTDDVFactoryImpl ======> res class com.sun.org.apache.xerces.internal.impl.dv.dtd.DTDDVFactoryImpl
+INFO  [FrascatiRuntime.scala:144] - GetResss==org/ow2/frascati/parser/ScaParser.composite
+ScaParser.composite->/var/folders/jn/jnhvfT3jG+Gik9Jr3bknWE+++TI/-Tmp-/dummy_kcl_temp5578126185670504700ScaParser.composite
+getresResult=sun.misc.CompoundEnumeration@5dc1eceb
+INFO  [FrascatiRuntime.scala:151] - GetRes=META-INF/services/javax.xml.parsers.SAXParserFactory
+DEBUG [KevoreeJarClassLoader.scala:181] - getResource not found null=>META-INF/services/javax.xml.parsers.SAXParserFactory in jar:file:/Users/duke/.m2/repository/org/kevoree/library/frascati/org.kevoree.library.frascati.frascatiNode/1.6.0-SNAPSHOT/org.kevoree.library.frascati.frascatiNode-1.6.0-SNAPSHOT.jar!/lib/aopalliance-1.0.jar
+INFO  [FrascatiRuntime.scala:139] - fload com.sun.org.apache.xerces.internal.jaxp.SAXParserFactoryImpl ======> res class com.sun.org.apache.xerces.internal.jaxp.SAXParserFactoryImpl
+INFO  [FrascatiRuntime.scala:139] - fload com.sun.org.apache.xerces.internal.parsers.XIncludeAwareParserConfiguration ======> res class com.sun.org.apache.xerces.internal.parsers.XIncludeAwareParserConfiguration
+INFO  [FrascatiRuntime.scala:139] - fload com.sun.org.apache.xerces.internal.impl.dv.dtd.DTDDVFactoryImpl ======> res class com.sun.org.apache.xerces.internal.impl.dv.dtd.DTDDVFactoryImpl
+INFO  [FrascatiRuntime.scala:144] - GetResss==org/ow2/frascati/component/factory/ComponentFactory.composite
+ComponentFactory.composite->/var/folders/jn/jnhvfT3jG+Gik9Jr3bknWE+++TI/-Tmp-/dummy_kcl_temp4056943193697470754ComponentFactory.composite
+ComponentFactory.composite->/var/folders/jn/jnhvfT3jG+Gik9Jr3bknWE+++TI/-Tmp-/dummy_kcl_temp8470604229851650432ComponentFactory.composite
+ComponentFactory.composite->/var/folders/jn/jnhvfT3jG+Gik9Jr3bknWE+++TI/-Tmp-/dummy_kcl_temp4619999589250019225ComponentFactory.composite
+getresResult=sun.misc.CompoundEnumeration@2ac9f93f
+INFO  [FrascatiRuntime.scala:151] - GetRes=META-INF/services/javax.xml.parsers.SAXParserFactory
+DEBUG [KevoreeJarClassLoader.scala:181] - getResource not found null=>META-INF/services/javax.xml.parsers.SAXParserFactory in jar:file:/Users/duke/.m2/repository/org/kevoree/library/frascati/org.kevoree.library.frascati.frascatiNode/1.6.0-SNAPSHOT/org.kevoree.library.frascati.frascatiNode-1.6.0-SNAPSHOT.jar!/lib/aopalliance-1.0.jar
+INFO  [FrascatiRuntime.scala:139] - fload com.sun.org.apache.xerces.internal.jaxp.SAXParserFactoryImpl ======> res class com.sun.org.apache.xerces.internal.jaxp.SAXParserFactoryImpl
+INFO  [FrascatiRuntime.scala:139] - fload com.sun.org.apache.xerces.internal.parsers.XIncludeAwareParserConfiguration ======> res class com.sun.org.apache.xerces.internal.parsers.XIncludeAwareParserConfiguration
+INFO  [FrascatiRuntime.scala:139] - fload com.sun.org.apache.xerces.internal.impl.dv.dtd.DTDDVFactoryImpl ======> res class com.sun.org.apache.xerces.internal.impl.dv.dtd.DTDDVFactoryImpl
+INFO  [FrascatiRuntime.scala:144] - GetResss==file:////var/folders/jn/jnhvfT3jG+Gik9Jr3bknWE+++TI/-Tmp-/dummy_kcl_temp8470604229851650432ComponentFactory.composite
+getresResult=sun.misc.CompoundEnumeration@7e349a0e
+INFO  [FrascatiRuntime.scala:151] - GetRes=META-INF/services/javax.xml.parsers.SAXParserFactory
+DEBUG [KevoreeJarClassLoader.scala:181] - getResource not found null=>META-INF/services/javax.xml.parsers.SAXParserFactory in jar:file:/Users/duke/.m2/repository/org/kevoree/library/frascati/org.kevoree.library.frascati.frascatiNode/1.6.0-SNAPSHOT/org.kevoree.library.frascati.frascatiNode-1.6.0-SNAPSHOT.jar!/lib/aopalliance-1.0.jar
+INFO  [FrascatiRuntime.scala:139] - fload com.sun.org.apache.xerces.internal.jaxp.SAXParserFactoryImpl ======> res class com.sun.org.apache.xerces.internal.jaxp.SAXParserFactoryImpl
+INFO  [FrascatiRuntime.scala:139] - fload com.sun.org.apache.xerces.internal.parsers.XIncludeAwareParserConfiguration ======> res class com.sun.org.apache.xerces.internal.parsers.XIncludeAwareParserConfiguration
+INFO  [FrascatiRuntime.scala:139] - fload com.sun.org.apache.xerces.internal.impl.dv.dtd.DTDDVFactoryImpl ======> res class com.sun.org.apache.xerces.internal.impl.dv.dtd.DTDDVFactoryImpl
+INFO  [FrascatiRuntime.scala:144] - GetResss==file:////var/folders/jn/jnhvfT3jG+Gik9Jr3bknWE+++TI/-Tmp-/dummy_kcl_temp4619999589250019225ComponentFactory.composite
+getresResult=sun.misc.CompoundEnumeration@71292d12
+INFO  [FrascatiRuntime.scala:151] - GetRes=META-INF/services/javax.xml.parsers.SAXParserFactory
+DEBUG [KevoreeJarClassLoader.scala:181] - getResource not found null=>META-INF/services/javax.xml.parsers.SAXParserFactory in jar:file:/Users/duke/.m2/repository/org/kevoree/library/frascati/org.kevoree.library.frascati.frascatiNode/1.6.0-SNAPSHOT/org.kevoree.library.frascati.frascatiNode-1.6.0-SNAPSHOT.jar!/lib/aopalliance-1.0.jar
+INFO  [FrascatiRuntime.scala:139] - fload com.sun.org.apache.xerces.internal.jaxp.SAXParserFactoryImpl ======> res class com.sun.org.apache.xerces.internal.jaxp.SAXParserFactoryImpl
+INFO  [FrascatiRuntime.scala:139] - fload com.sun.org.apache.xerces.internal.parsers.XIncludeAwareParserConfiguration ======> res class com.sun.org.apache.xerces.internal.parsers.XIncludeAwareParserConfiguration
+INFO  [FrascatiRuntime.scala:139] - fload com.sun.org.apache.xerces.internal.impl.dv.dtd.DTDDVFactoryImpl ======> res class com.sun.org.apache.xerces.internal.impl.dv.dtd.DTDDVFactoryImpl
+INFO  [FrascatiRuntime.scala:151] - GetRes=org/ow2/frascati/component/factory/FractalBootstrapClassProviderType.constrainingType
+INFO  [FrascatiRuntime.scala:151] - GetRes=META-INF/services/javax.xml.parsers.SAXParserFactory
+DEBUG [KevoreeJarClassLoader.scala:181] - getResource not found null=>META-INF/services/javax.xml.parsers.SAXParserFactory in jar:file:/Users/duke/.m2/repository/org/kevoree/library/frascati/org.kevoree.library.frascati.frascatiNode/1.6.0-SNAPSHOT/org.kevoree.library.frascati.frascatiNode-1.6.0-SNAPSHOT.jar!/lib/aopalliance-1.0.jar
+INFO  [FrascatiRuntime.scala:139] - fload com.sun.org.apache.xerces.internal.jaxp.SAXParserFactoryImpl ======> res class com.sun.org.apache.xerces.internal.jaxp.SAXParserFactoryImpl
+INFO  [FrascatiRuntime.scala:139] - fload com.sun.org.apache.xerces.internal.parsers.XIncludeAwareParserConfiguration ======> res class com.sun.org.apache.xerces.internal.parsers.XIncludeAwareParserConfiguration
+INFO  [FrascatiRuntime.scala:139] - fload com.sun.org.apache.xerces.internal.impl.dv.dtd.DTDDVFactoryImpl ======> res class com.sun.org.apache.xerces.internal.impl.dv.dtd.DTDDVFactoryImpl
+INFO  [FrascatiRuntime.scala:144] - GetResss==org/ow2/frascati/component/factory/juliac/Juliac.composite
+Juliac.composite->/var/folders/jn/jnhvfT3jG+Gik9Jr3bknWE+++TI/-Tmp-/dummy_kcl_temp1164205291568672481Juliac.composite
+Juliac.composite->/var/folders/jn/jnhvfT3jG+Gik9Jr3bknWE+++TI/-Tmp-/dummy_kcl_temp1370199089226523083Juliac.composite
+Juliac.composite->/var/folders/jn/jnhvfT3jG+Gik9Jr3bknWE+++TI/-Tmp-/dummy_kcl_temp2410819708614807497Juliac.composite
+getresResult=sun.misc.CompoundEnumeration@5143c423
+INFO  [FrascatiRuntime.scala:151] - GetRes=META-INF/services/javax.xml.parsers.SAXParserFactory
+DEBUG [KevoreeJarClassLoader.scala:181] - getResource not found null=>META-INF/services/javax.xml.parsers.SAXParserFactory in jar:file:/Users/duke/.m2/repository/org/kevoree/library/frascati/org.kevoree.library.frascati.frascatiNode/1.6.0-SNAPSHOT/org.kevoree.library.frascati.frascatiNode-1.6.0-SNAPSHOT.jar!/lib/aopalliance-1.0.jar
+INFO  [FrascatiRuntime.scala:139] - fload com.sun.org.apache.xerces.internal.jaxp.SAXParserFactoryImpl ======> res class com.sun.org.apache.xerces.internal.jaxp.SAXParserFactoryImpl
+INFO  [FrascatiRuntime.scala:139] - fload com.sun.org.apache.xerces.internal.parsers.XIncludeAwareParserConfiguration ======> res class com.sun.org.apache.xerces.internal.parsers.XIncludeAwareParserConfiguration
+INFO  [FrascatiRuntime.scala:139] - fload com.sun.org.apache.xerces.internal.impl.dv.dtd.DTDDVFactoryImpl ======> res class com.sun.org.apache.xerces.internal.impl.dv.dtd.DTDDVFactoryImpl
+INFO  [FrascatiRuntime.scala:144] - GetResss==file:////var/folders/jn/jnhvfT3jG+Gik9Jr3bknWE+++TI/-Tmp-/dummy_kcl_temp1370199089226523083Juliac.composite
+getresResult=sun.misc.CompoundEnumeration@3f649b1a
+INFO  [FrascatiRuntime.scala:151] - GetRes=META-INF/services/javax.xml.parsers.SAXParserFactory
+DEBUG [KevoreeJarClassLoader.scala:181] - getResource not found null=>META-INF/services/javax.xml.parsers.SAXParserFactory in jar:file:/Users/duke/.m2/repository/org/kevoree/library/frascati/org.kevoree.library.frascati.frascatiNode/1.6.0-SNAPSHOT/org.kevoree.library.frascati.frascatiNode-1.6.0-SNAPSHOT.jar!/lib/aopalliance-1.0.jar
+INFO  [FrascatiRuntime.scala:139] - fload com.sun.org.apache.xerces.internal.jaxp.SAXParserFactoryImpl ======> res class com.sun.org.apache.xerces.internal.jaxp.SAXParserFactoryImpl
+INFO  [FrascatiRuntime.scala:139] - fload com.sun.org.apache.xerces.internal.parsers.XIncludeAwareParserConfiguration ======> res class com.sun.org.apache.xerces.internal.parsers.XIncludeAwareParserConfiguration
+INFO  [FrascatiRuntime.scala:139] - fload com.sun.org.apache.xerces.internal.impl.dv.dtd.DTDDVFactoryImpl ======> res class com.sun.org.apache.xerces.internal.impl.dv.dtd.DTDDVFactoryImpl
+INFO  [FrascatiRuntime.scala:144] - GetResss==file:////var/folders/jn/jnhvfT3jG+Gik9Jr3bknWE+++TI/-Tmp-/dummy_kcl_temp2410819708614807497Juliac.composite
+getresResult=sun.misc.CompoundEnumeration@308c666a
+INFO  [FrascatiRuntime.scala:151] - GetRes=META-INF/services/javax.xml.parsers.SAXParserFactory
+DEBUG [KevoreeJarClassLoader.scala:181] - getResource not found null=>META-INF/services/javax.xml.parsers.SAXParserFactory in jar:file:/Users/duke/.m2/repository/org/kevoree/library/frascati/org.kevoree.library.frascati.frascatiNode/1.6.0-SNAPSHOT/org.kevoree.library.frascati.frascatiNode-1.6.0-SNAPSHOT.jar!/lib/aopalliance-1.0.jar
+INFO  [FrascatiRuntime.scala:139] - fload com.sun.org.apache.xerces.internal.jaxp.SAXParserFactoryImpl ======> res class com.sun.org.apache.xerces.internal.jaxp.SAXParserFactoryImpl
+INFO  [FrascatiRuntime.scala:139] - fload com.sun.org.apache.xerces.internal.parsers.XIncludeAwareParserConfiguration ======> res class com.sun.org.apache.xerces.internal.parsers.XIncludeAwareParserConfiguration
+INFO  [FrascatiRuntime.scala:139] - fload com.sun.org.apache.xerces.internal.impl.dv.dtd.DTDDVFactoryImpl ======> res class com.sun.org.apache.xerces.internal.impl.dv.dtd.DTDDVFactoryImpl
+INFO  [FrascatiRuntime.scala:151] - GetRes=org/ow2/frascati/component/factory/juliac/JuliacGeneratorClassProviderType.constrainingType
+INFO  [FrascatiRuntime.scala:151] - GetRes=META-INF/services/javax.xml.parsers.SAXParserFactory
+DEBUG [KevoreeJarClassLoader.scala:181] - getResource not found null=>META-INF/services/javax.xml.parsers.SAXParserFactory in jar:file:/Users/duke/.m2/repository/org/kevoree/library/frascati/org.kevoree.library.frascati.frascatiNode/1.6.0-SNAPSHOT/org.kevoree.library.frascati.frascatiNode-1.6.0-SNAPSHOT.jar!/lib/aopalliance-1.0.jar
+INFO  [FrascatiRuntime.scala:139] - fload com.sun.org.apache.xerces.internal.jaxp.SAXParserFactoryImpl ======> res class com.sun.org.apache.xerces.internal.jaxp.SAXParserFactoryImpl
+INFO  [FrascatiRuntime.scala:139] - fload com.sun.org.apache.xerces.internal.parsers.XIncludeAwareParserConfiguration ======> res class com.sun.org.apache.xerces.internal.parsers.XIncludeAwareParserConfiguration
+INFO  [FrascatiRuntime.scala:139] - fload com.sun.org.apache.xerces.internal.impl.dv.dtd.DTDDVFactoryImpl ======> res class com.sun.org.apache.xerces.internal.impl.dv.dtd.DTDDVFactoryImpl
+15 févr. 2012 13:54:54 org.ow2.frascati.parser.resolver.AutowireResolver doResolve
+INFO: Autowire <sca:wire source='juliac/generators' target='tinfi-oo/juliac-generator-class-provider'/>
+15 févr. 2012 13:54:54 org.ow2.frascati.parser.resolver.AutowireResolver doResolve
+INFO: Autowire <sca:wire source='juliac/compiler-provider' target='jdt-compiler/compiler-provider'/>
+15 févr. 2012 13:54:54 org.ow2.frascati.parser.resolver.AutowireResolver doResolve
+INFO: Autowire <sca:wire source='factory/fractal-bootstrap-class-providers' target='tinfi-oo/fractal-bootstrap-class-provider'/>
+INFO  [FrascatiRuntime.scala:144] - GetResss==org/ow2/frascati/Services.composite
+Services.composite->/var/folders/jn/jnhvfT3jG+Gik9Jr3bknWE+++TI/-Tmp-/dummy_kcl_temp7861819721231035779Services.composite
+getresResult=sun.misc.CompoundEnumeration@7ef7bf2d
+INFO  [FrascatiRuntime.scala:151] - GetRes=META-INF/services/javax.xml.parsers.SAXParserFactory
+DEBUG [KevoreeJarClassLoader.scala:181] - getResource not found null=>META-INF/services/javax.xml.parsers.SAXParserFactory in jar:file:/Users/duke/.m2/repository/org/kevoree/library/frascati/org.kevoree.library.frascati.frascatiNode/1.6.0-SNAPSHOT/org.kevoree.library.frascati.frascatiNode-1.6.0-SNAPSHOT.jar!/lib/aopalliance-1.0.jar
+INFO  [FrascatiRuntime.scala:139] - fload com.sun.org.apache.xerces.internal.jaxp.SAXParserFactoryImpl ======> res class com.sun.org.apache.xerces.internal.jaxp.SAXParserFactoryImpl
+INFO  [FrascatiRuntime.scala:139] - fload com.sun.org.apache.xerces.internal.parsers.XIncludeAwareParserConfiguration ======> res class com.sun.org.apache.xerces.internal.parsers.XIncludeAwareParserConfiguration
+INFO  [FrascatiRuntime.scala:139] - fload com.sun.org.apache.xerces.internal.impl.dv.dtd.DTDDVFactoryImpl ======> res class com.sun.org.apache.xerces.internal.impl.dv.dtd.DTDDVFactoryImpl
+INFO  [FrascatiRuntime.scala:139] - fload org.objectweb.fractal.juliac.runtime.Juliac ======> res class org.objectweb.fractal.juliac.runtime.Juliac
+INFO  [FrascatiRuntime.scala:139] - fload org.objectweb.fractal.juliac.runtime.Juliac ======> res class org.objectweb.fractal.juliac.runtime.Juliac
+15 févr. 2012 13:54:55 org.ow2.frascati.assembly.factory.manager.AssemblyFactoryManager processComposite
+INFO: SCA composite 'org.ow2.frascati.FraSCAti': STARTED
+
+DEBUG [KevoreeCoreBean.scala:360] - Begin update model 1329310495108
+INFO  [KevoreeCoreBean.scala:364] - Comparing models and planning adaptation.
+INFO  [UpdateNodeKompare.scala:30] - UPDATE NODE node0
+DEBUG [TypeDefinitionAspect.scala:227] - found deploy unit => helloworld-pojo for type helloworld-pojo
+DEBUG [TypeDefinitionAspect.scala:236] - will exit with => org.kevoree.impl.DeployUnitImpl@5e3a78ad
+DEBUG [TypeDefinitionAspect.scala:230] - Deploy Unit not found on first level JavaSENode
+WARN  [TypeDefinitionAspect.scala:233] - No deploy unit has been found for deployment of [JavaSENode, node0, FrascatiNode] on node {} : {}
+DEBUG [TypeDefinitionAspect.scala:265] - Search on super type => JavaSENode
+DEBUG [TypeDefinitionAspect.scala:252] - candidate deploy unit => org.kevoree.library.javase.javaseNode
+DEBUG [TypeDefinitionAspect.scala:256] - found & exit=org.kevoree.library.javase.javaseNode
+DEBUG [TypeDefinitionAspect.scala:236] - will exit with => org.kevoree.impl.DeployUnitImpl@2494310b
+DEBUG [TypeDefinitionAspect.scala:230] - Deploy Unit not found on first level FrascatiNode
+WARN  [TypeDefinitionAspect.scala:233] - No deploy unit has been found for deployment of [FrascatiNode, node0, FrascatiNode] on node {} : {}
+DEBUG [TypeDefinitionAspect.scala:265] - Search on super type => JavaSENode
+DEBUG [TypeDefinitionAspect.scala:252] - candidate deploy unit => org.kevoree.library.javase.javaseNode
+DEBUG [TypeDefinitionAspect.scala:256] - found & exit=org.kevoree.library.frascati.frascatiNode
+DEBUG [TypeDefinitionAspect.scala:236] - will exit with => org.kevoree.impl.DeployUnitImpl@36a06816
+DEBUG [TypeDefinitionAspect.scala:230] - Deploy Unit not found on first level RestGroup
+WARN  [TypeDefinitionAspect.scala:233] - No deploy unit has been found for deployment of [RestGroup, node0, FrascatiNode] on node {} : {}
+DEBUG [TypeDefinitionAspect.scala:265] - Search on super type => JavaSENode
+DEBUG [TypeDefinitionAspect.scala:252] - candidate deploy unit => org.kevoree.library.javase.javaseNode
+DEBUG [TypeDefinitionAspect.scala:256] - found & exit=org.kevoree.library.javase.rest
+DEBUG [TypeDefinitionAspect.scala:236] - will exit with => org.kevoree.impl.DeployUnitImpl@372bab9
+DEBUG [TypeDefinitionAspect.scala:230] - Deploy Unit not found on first level JavaSENode
+WARN  [TypeDefinitionAspect.scala:233] - No deploy unit has been found for deployment of [JavaSENode, node0, FrascatiNode] on node {} : {}
+DEBUG [TypeDefinitionAspect.scala:265] - Search on super type => JavaSENode
+DEBUG [TypeDefinitionAspect.scala:252] - candidate deploy unit => org.kevoree.library.javase.javaseNode
+DEBUG [TypeDefinitionAspect.scala:256] - found & exit=org.kevoree.library.javase.javaseNode
+DEBUG [TypeDefinitionAspect.scala:236] - will exit with => org.kevoree.impl.DeployUnitImpl@2494310b
+DEBUG [TypeDefinitionAspect.scala:230] - Deploy Unit not found on first level FrascatiNode
+WARN  [TypeDefinitionAspect.scala:233] - No deploy unit has been found for deployment of [FrascatiNode, node0, FrascatiNode] on node {} : {}
+DEBUG [TypeDefinitionAspect.scala:265] - Search on super type => JavaSENode
+DEBUG [TypeDefinitionAspect.scala:252] - candidate deploy unit => org.kevoree.library.javase.javaseNode
+DEBUG [TypeDefinitionAspect.scala:256] - found & exit=org.kevoree.library.frascati.frascatiNode
+DEBUG [TypeDefinitionAspect.scala:236] - will exit with => org.kevoree.impl.DeployUnitImpl@36a06816
+INFO  [KevoreeCoreBean.scala:368] - Launching adaptation of the system.
+DEBUG [PrimitiveCommandExecutionHelper.scala:56] - Populate primitive => FrascatiAddDedployUnit(org.kevoree.impl.DeployUnitImpl@6140c973,org.kevoree.tools.aether.framework.NodeTypeBootstrapHelper@15ee9cc3,org.kevoree.kcl.KevoreeJarClassLoader@70b11164)
+DEBUG [PrimitiveCommandExecutionHelper.scala:127] - Waiting for 1 threads
+DEBUG [JCLContextHandler.scala:144] - Install /mvn:org.kevoree.extra/org.kevoree.extra.spray/0.9.1 , file /Users/duke/.m2/repository/org/kevoree/extra/org.kevoree.extra.spray/0.9.1/org.kevoree.extra.spray-0.9.1.jar
+DEBUG [JCLContextHandler.scala:152] - Add KCL for org.kevoree.extra.spray->/mvn:org.kevoree.extra/org.kevoree.extra.spray/0.9.1
+DEBUG [PrimitiveCommandExecutionHelper.scala:154] - getResult 1
+DEBUG [PrimitiveCommandExecutionHelper.scala:173] - Empty phase !!!
+DEBUG [PrimitiveCommandExecutionHelper.scala:56] - Populate primitive => NoopCommand()
+DEBUG [PrimitiveCommandExecutionHelper.scala:127] - Waiting for 1 threads
+DEBUG [PrimitiveCommandExecutionHelper.scala:154] - getResult 1
+DEBUG [PrimitiveCommandExecutionHelper.scala:56] - Populate primitive => FrascatiAddDedployUnit(org.kevoree.impl.DeployUnitImpl@5e3a78ad,org.kevoree.tools.aether.framework.NodeTypeBootstrapHelper@15ee9cc3,org.kevoree.kcl.KevoreeJarClassLoader@70b11164)
+DEBUG [PrimitiveCommandExecutionHelper.scala:56] - Populate primitive => FrascatiAddDedployUnit(org.kevoree.impl.DeployUnitImpl@372bab9,org.kevoree.tools.aether.framework.NodeTypeBootstrapHelper@15ee9cc3,org.kevoree.kcl.KevoreeJarClassLoader@70b11164)
+DEBUG [PrimitiveCommandExecutionHelper.scala:127] - Waiting for 2 threads
+DEBUG [JCLContextHandler.scala:144] - Install /mvn:org.ow2.frascati.examples/helloworld-pojo/1.4 , file /Users/duke/.m2/repository/org/ow2/frascati/examples/helloworld-pojo/1.4/helloworld-pojo-1.4.jar
+DEBUG [JCLContextHandler.scala:152] - Add KCL for helloworld-pojo->/mvn:org.ow2.frascati.examples/helloworld-pojo/1.4
+DEBUG [PrimitiveCommandExecutionHelper.scala:154] - getResult 1
+DEBUG [JCLContextHandler.scala:144] - Install /mvn:org.kevoree.library.javase/org.kevoree.library.javase.rest/1.6.0-SNAPSHOT , file /Users/duke/.m2/repository/org/kevoree/library/javase/org.kevoree.library.javase.rest/1.6.0-SNAPSHOT/org.kevoree.library.javase.rest-1.6.0-SNAPSHOT.jar
+DEBUG [JCLContextHandler.scala:152] - Add KCL for org.kevoree.library.javase.rest->/mvn:org.kevoree.library.javase/org.kevoree.library.javase.rest/1.6.0-SNAPSHOT
+DEBUG [JCLContextHandler.scala:158] - Link KCL for org.kevoree.library.javase.rest->org.kevoree.extra.spray
+DEBUG [PrimitiveCommandExecutionHelper.scala:154] - getResult 2
+DEBUG [PrimitiveCommandExecutionHelper.scala:56] - Populate primitive => NoopCommand()
+DEBUG [PrimitiveCommandExecutionHelper.scala:56] - Populate primitive => NoopCommand()
+DEBUG [PrimitiveCommandExecutionHelper.scala:127] - Waiting for 2 threads
+DEBUG [PrimitiveCommandExecutionHelper.scala:154] - getResult 1
+DEBUG [PrimitiveCommandExecutionHelper.scala:154] - getResult 2
+DEBUG [PrimitiveCommandExecutionHelper.scala:56] - Populate primitive => AddInstance(org.kevoree.impl.GroupImpl@3165d118,node0,org.kevoree.core.impl.KevoreeCoreBean@5bdf59bd,org.kevoree.platform.osgi.standalone.KevoreeBootStrap$1@247cb66a,org.kevoree.tools.aether.framework.NodeTypeBootstrapHelper@15ee9cc3)
+DEBUG [PrimitiveCommandExecutionHelper.scala:56] - Populate primitive => RuntimeCommandWrapper(FrascatiAddInstance(org.kevoreeAdaptation.impl.AdaptationPrimitiveImpl@799dbc3b,org.ow2.frascati.FraSCAti@62b103dd,node0,org.kevoree.tools.aether.framework.NodeTypeBootstrapHelper@15ee9cc3),org.kevoree.library.frascatiNodeTypes.FrascatiRuntime@5374d4c9)
+DEBUG [TypeDefinitionAspect.scala:230] - Deploy Unit not found on first level RestGroup
+WARN  [TypeDefinitionAspect.scala:233] - No deploy unit has been found for deployment of [RestGroup, node0, FrascatiNode] on node {} : {}
+DEBUG [TypeDefinitionAspect.scala:265] - Search on super type => JavaSENode
+DEBUG [TypeDefinitionAspect.scala:252] - candidate deploy unit => org.kevoree.library.javase.javaseNode
+DEBUG [TypeDefinitionAspect.scala:256] - found & exit=org.kevoree.library.javase.rest
+DEBUG [TypeDefinitionAspect.scala:236] - will exit with => org.kevoree.impl.DeployUnitImpl@372bab9
+DEBUG [PrimitiveCommandExecutionHelper.scala:127] - Waiting for 2 threads
+DEBUG [KevoreeInstanceFactory.scala:40] - TypeCache org.kevoree.library.rest.kevgen.JavaSENode.RestGroupFactory$ has 1 instances
+DEBUG [TypeDefinitionAspect.scala:227] - found deploy unit => helloworld-pojo for type helloworld-pojo
+DEBUG [TypeDefinitionAspect.scala:236] - will exit with => org.kevoree.impl.DeployUnitImpl@5e3a78ad
+INFO  [FrascatiRuntime.scala:144] - GetResss==jar:file:/Users/duke/.m2/repository/org/ow2/frascati/examples/helloworld-pojo/1.4/helloworld-pojo-1.4.jar!/helloworld-pojo.composite
+getresResult=sun.misc.CompoundEnumeration@705789f3
+INFO  [FrascatiRuntime.scala:151] - GetRes=META-INF/services/javax.xml.parsers.SAXParserFactory
+DEBUG [KevoreeJarClassLoader.scala:181] - getResource not found null=>META-INF/services/javax.xml.parsers.SAXParserFactory in jar:file:/Users/duke/.m2/repository/org/kevoree/library/frascati/org.kevoree.library.frascati.frascatiNode/1.6.0-SNAPSHOT/org.kevoree.library.frascati.frascatiNode-1.6.0-SNAPSHOT.jar!/lib/aopalliance-1.0.jar
+INFO  [FrascatiRuntime.scala:139] - fload com.sun.org.apache.xerces.internal.jaxp.SAXParserFactoryImpl ======> res class com.sun.org.apache.xerces.internal.jaxp.SAXParserFactoryImpl
+INFO  [FrascatiRuntime.scala:139] - fload com.sun.org.apache.xerces.internal.parsers.XIncludeAwareParserConfiguration ======> res class com.sun.org.apache.xerces.internal.parsers.XIncludeAwareParserConfiguration
+INFO  [FrascatiRuntime.scala:139] - fload com.sun.org.apache.xerces.internal.impl.dv.dtd.DTDDVFactoryImpl ======> res class com.sun.org.apache.xerces.internal.impl.dv.dtd.DTDDVFactoryImpl
+DEBUG [PrimitiveCommandExecutionHelper.scala:154] - getResult 1
+INFO  [FrascatiRuntime.scala:139] - fload org.ow2.frascati.examples.helloworld.pojo.Client ======> res class org.ow2.frascati.examples.helloworld.pojo.Client
+INFO  [FrascatiRuntime.scala:139] - fload java.lang.Runnable ======> res interface java.lang.Runnable
+INFO  [FrascatiRuntime.scala:139] - fload org.ow2.frascati.examples.helloworld.pojo.PrintService ======> res interface org.ow2.frascati.examples.helloworld.pojo.PrintService
+INFO  [FrascatiRuntime.scala:139] - fload org.ow2.frascati.examples.helloworld.pojo.Server ======> res class org.ow2.frascati.examples.helloworld.pojo.Server
+INFO  [FrascatiRuntime.scala:139] - fload org.ow2.frascati.examples.helloworld.pojo.PrintService ======> res interface org.ow2.frascati.examples.helloworld.pojo.PrintService
+INFO  [FrascatiRuntime.scala:139] - fload org.ow2.frascati.examples.helloworld.pojo.Client ======> res class org.ow2.frascati.examples.helloworld.pojo.Client
+INFO  [FrascatiRuntime.scala:139] - fload org.ow2.frascati.examples.helloworld.pojo.Client ======> res class org.ow2.frascati.examples.helloworld.pojo.Client
+INFO  [FrascatiRuntime.scala:139] - fload org.ow2.frascati.examples.helloworld.pojo.Server ======> res class org.ow2.frascati.examples.helloworld.pojo.Server
+INFO  [FrascatiRuntime.scala:139] - fload org.ow2.frascati.examples.helloworld.pojo.Server ======> res class org.ow2.frascati.examples.helloworld.pojo.Server
+INFO  [FrascatiRuntime.scala:139] - fload org.ow2.frascati.examples.helloworld.pojo.Client ======> res class org.ow2.frascati.examples.helloworld.pojo.Client
+INFO  [FrascatiRuntime.scala:139] - fload org.ow2.frascati.examples.helloworld.pojo.Server ======> res class org.ow2.frascati.examples.helloworld.pojo.Server
+INFO  [FrascatiRuntime.scala:139] - fload org.ow2.frascati.examples.helloworld.pojo.Client ======> res class org.ow2.frascati.examples.helloworld.pojo.Client
+INFO  [FrascatiRuntime.scala:139] - fload java.lang.Runnable ======> res interface java.lang.Runnable
+INFO  [FrascatiRuntime.scala:139] - fload org.ow2.frascati.examples.helloworld.pojo.Server ======> res class org.ow2.frascati.examples.helloworld.pojo.Server
+INFO  [FrascatiRuntime.scala:139] - fload org.ow2.frascati.examples.helloworld.pojo.PrintService ======> res interface org.ow2.frascati.examples.helloworld.pojo.PrintService
+INFO  [FrascatiRuntime.scala:139] - fload org.ow2.frascati.examples.helloworld.pojo.Client ======> res class org.ow2.frascati.examples.helloworld.pojo.Client
+INFO  [FrascatiRuntime.scala:139] - fload java.lang.Runnable ======> res interface java.lang.Runnable
+INFO  [FrascatiRuntime.scala:139] - fload org.ow2.frascati.examples.helloworld.pojo.PrintService ======> res interface org.ow2.frascati.examples.helloworld.pojo.PrintService
+INFO  [FrascatiRuntime.scala:139] - fload org.ow2.frascati.examples.helloworld.pojo.Server ======> res class org.ow2.frascati.examples.helloworld.pojo.Server
+INFO  [FrascatiRuntime.scala:139] - fload org.ow2.frascati.examples.helloworld.pojo.PrintService ======> res interface org.ow2.frascati.examples.helloworld.pojo.PrintService
+INFO  [FrascatiRuntime.scala:139] - fload java.lang.Runnable ======> res interface java.lang.Runnable
+INFO  [FrascatiRuntime.scala:139] - fload org.ow2.frascati.tinfi.opt.oo.FCOOCtrlSourceCodeGenerator ======> res class org.ow2.frascati.tinfi.opt.oo.FCOOCtrlSourceCodeGenerator
+INFO  [FrascatiRuntime.scala:139] - fload org.ow2.frascati.tinfi.opt.oo.FCOOCtrlSourceCodeGenerator ======> res class org.ow2.frascati.tinfi.opt.oo.FCOOCtrlSourceCodeGenerator
+INFO: Default Juliac output directory: /Users/duke/Documents/dev/dukeboard/kevoree/kevoree-library/frascati/org.kevoree.library.frascati.root/./target
+INFO: Deleting directory /Users/duke/Documents/dev/dukeboard/kevoree/kevoree-library/frascati/org.kevoree.library.frascati.root/./target/generated-frascati-sources
+INFO  [FrascatiRuntime.scala:139] - fload org.ow2.frascati.tinfi.api.control.SCABasicIntentController ======> res interface org.ow2.frascati.tinfi.api.control.SCABasicIntentController
+INFO  [FrascatiRuntime.scala:139] - fload org.ow2.frascati.tinfi.api.control.SCABasicIntentControllerFcItf ======> res class org.ow2.frascati.tinfi.api.control.SCABasicIntentControllerFcItf
+INFO  [FrascatiRuntime.scala:139] - fload org.ow2.frascati.tinfi.api.control.SCABasicIntentController ======> res interface org.ow2.frascati.tinfi.api.control.SCABasicIntentController
+INFO  [FrascatiRuntime.scala:139] - fload org.ow2.frascati.tinfi.api.control.SCABasicIntentControllerFcItf ======> res class org.ow2.frascati.tinfi.api.control.SCABasicIntentControllerFcItf
+INFO  [FrascatiRuntime.scala:139] - fload org.oasisopen.sca.ComponentContext ======> res interface org.oasisopen.sca.ComponentContext
+INFO  [FrascatiRuntime.scala:139] - fload org.oasisopen.sca.ComponentContextFcItf ======> res class org.oasisopen.sca.ComponentContextFcItf
+INFO  [FrascatiRuntime.scala:139] - fload org.oasisopen.sca.ComponentContext ======> res interface org.oasisopen.sca.ComponentContext
+INFO  [FrascatiRuntime.scala:139] - fload org.oasisopen.sca.ComponentContextFcItf ======> res class org.oasisopen.sca.ComponentContextFcItf
+INFO  [FrascatiRuntime.scala:139] - fload org.ow2.frascati.tinfi.api.control.SCAPropertyController ======> res interface org.ow2.frascati.tinfi.api.control.SCAPropertyController
+INFO  [FrascatiRuntime.scala:139] - fload org.ow2.frascati.tinfi.api.control.SCAPropertyControllerFcItf ======> res class org.ow2.frascati.tinfi.api.control.SCAPropertyControllerFcItf
+INFO  [FrascatiRuntime.scala:139] - fload org.ow2.frascati.tinfi.api.control.SCAPropertyController ======> res interface org.ow2.frascati.tinfi.api.control.SCAPropertyController
+INFO  [FrascatiRuntime.scala:139] - fload org.ow2.frascati.tinfi.api.control.SCAPropertyControllerFcItf ======> res class org.ow2.frascati.tinfi.api.control.SCAPropertyControllerFcItf
+INFO  [FrascatiRuntime.scala:139] - fload org.objectweb.fractal.api.Component ======> res interface org.objectweb.fractal.api.Component
+INFO  [FrascatiRuntime.scala:139] - fload org.objectweb.fractal.api.ComponentFcItf ======> res class org.objectweb.fractal.api.ComponentFcItf
+INFO  [FrascatiRuntime.scala:139] - fload org.objectweb.fractal.api.Component ======> res interface org.objectweb.fractal.api.Component
+INFO  [FrascatiRuntime.scala:139] - fload org.objectweb.fractal.api.ComponentFcItf ======> res class org.objectweb.fractal.api.ComponentFcItf
+INFO  [FrascatiRuntime.scala:139] - fload org.objectweb.fractal.api.control.BindingController ======> res interface org.objectweb.fractal.api.control.BindingController
+INFO  [FrascatiRuntime.scala:139] - fload org.objectweb.fractal.api.control.BindingControllerFcItf ======> res class org.objectweb.fractal.api.control.BindingControllerFcItf
+INFO  [FrascatiRuntime.scala:139] - fload org.objectweb.fractal.api.control.BindingController ======> res interface org.objectweb.fractal.api.control.BindingController
+INFO  [FrascatiRuntime.scala:139] - fload org.objectweb.fractal.api.control.BindingControllerFcItf ======> res class org.objectweb.fractal.api.control.BindingControllerFcItf
+INFO  [FrascatiRuntime.scala:139] - fload org.objectweb.fractal.api.control.ContentController ======> res interface org.objectweb.fractal.api.control.ContentController
+INFO  [FrascatiRuntime.scala:139] - fload org.objectweb.fractal.api.control.ContentControllerFcItf ======> res class org.objectweb.fractal.api.control.ContentControllerFcItf
+INFO  [FrascatiRuntime.scala:139] - fload org.objectweb.fractal.api.control.ContentController ======> res interface org.objectweb.fractal.api.control.ContentController
+INFO  [FrascatiRuntime.scala:139] - fload org.objectweb.fractal.api.control.ContentControllerFcItf ======> res class org.objectweb.fractal.api.control.ContentControllerFcItf
+INFO  [FrascatiRuntime.scala:139] - fload org.objectweb.fractal.julia.control.content.SuperControllerNotifier ======> res interface org.objectweb.fractal.julia.control.content.SuperControllerNotifier
+INFO  [FrascatiRuntime.scala:139] - fload org.objectweb.fractal.julia.control.content.SuperControllerNotifierFcItf ======> res class org.objectweb.fractal.julia.control.content.SuperControllerNotifierFcItf
+INFO  [FrascatiRuntime.scala:139] - fload org.objectweb.fractal.julia.control.content.SuperControllerNotifier ======> res interface org.objectweb.fractal.julia.control.content.SuperControllerNotifier
+INFO  [FrascatiRuntime.scala:139] - fload org.objectweb.fractal.julia.control.content.SuperControllerNotifierFcItf ======> res class org.objectweb.fractal.julia.control.content.SuperControllerNotifierFcItf
+INFO  [FrascatiRuntime.scala:139] - fload org.objectweb.fractal.julia.control.lifecycle.LifeCycleCoordinator ======> res interface org.objectweb.fractal.julia.control.lifecycle.LifeCycleCoordinator
+INFO  [FrascatiRuntime.scala:139] - fload org.objectweb.fractal.julia.control.lifecycle.LifeCycleCoordinatorFcItf ======> res class org.objectweb.fractal.julia.control.lifecycle.LifeCycleCoordinatorFcItf
+INFO  [FrascatiRuntime.scala:139] - fload org.objectweb.fractal.julia.control.lifecycle.LifeCycleCoordinator ======> res interface org.objectweb.fractal.julia.control.lifecycle.LifeCycleCoordinator
+INFO  [FrascatiRuntime.scala:139] - fload org.objectweb.fractal.julia.control.lifecycle.LifeCycleCoordinatorFcItf ======> res class org.objectweb.fractal.julia.control.lifecycle.LifeCycleCoordinatorFcItf
+INFO  [FrascatiRuntime.scala:139] - fload org.objectweb.fractal.api.control.NameController ======> res interface org.objectweb.fractal.api.control.NameController
+INFO  [FrascatiRuntime.scala:139] - fload org.objectweb.fractal.api.control.NameControllerFcItf ======> res class org.objectweb.fractal.api.control.NameControllerFcItf
+INFO  [FrascatiRuntime.scala:139] - fload org.objectweb.fractal.api.control.NameController ======> res interface org.objectweb.fractal.api.control.NameController
+INFO  [FrascatiRuntime.scala:139] - fload org.objectweb.fractal.api.control.NameControllerFcItf ======> res class org.objectweb.fractal.api.control.NameControllerFcItf
+INFO  [FrascatiRuntime.scala:139] - fload juliac.generated.SCACompositeIntentControllerImpl ======> res class juliac.generated.SCACompositeIntentControllerImpl
+INFO  [FrascatiRuntime.scala:139] - fload juliac.generated.SCAComponentControllerImpl ======> res class juliac.generated.SCAComponentControllerImpl
+INFO  [FrascatiRuntime.scala:139] - fload juliac.generated.SCACompositePropertyControllerImpl ======> res class juliac.generated.SCACompositePropertyControllerImpl
+INFO  [FrascatiRuntime.scala:139] - fload juliac.generated.ComponentImpl ======> res class juliac.generated.ComponentImpl
+INFO  [FrascatiRuntime.scala:139] - fload juliac.generated.CompositeBindingControllerImpl ======> res class juliac.generated.CompositeBindingControllerImpl
+INFO  [FrascatiRuntime.scala:139] - fload juliac.generated.ContentControllerImpl ======> res class juliac.generated.ContentControllerImpl
+INFO  [FrascatiRuntime.scala:139] - fload juliac.generated.SuperControllerImpl ======> res class juliac.generated.SuperControllerImpl
+INFO  [FrascatiRuntime.scala:139] - fload juliac.generated.CompositeLifeCycleControllerImpl ======> res class juliac.generated.CompositeLifeCycleControllerImpl
+INFO  [FrascatiRuntime.scala:139] - fload juliac.generated.NameControllerImpl ======> res class juliac.generated.NameControllerImpl
+INFO  [FrascatiRuntime.scala:139] - fload org.ow2.frascati.tinfi.opt.oo.SCATinfiInterceptorSourceCodeGenerator ======> res class org.ow2.frascati.tinfi.opt.oo.SCATinfiInterceptorSourceCodeGenerator
+INFO  [FrascatiRuntime.scala:139] - fload org.ow2.frascati.tinfi.opt.oo.SCAIntentInterceptorSourceCodeGenerator ======> res class org.ow2.frascati.tinfi.opt.oo.SCAIntentInterceptorSourceCodeGenerator
+INFO  [FrascatiRuntime.scala:139] - fload org.ow2.frascati.tinfi.opt.oo.InterceptorClassGenerator ======> res class org.ow2.frascati.tinfi.opt.oo.InterceptorClassGenerator
+INFO  [FrascatiRuntime.scala:139] - fload org.ow2.frascati.tinfi.api.control.SCABasicIntentController ======> res interface org.ow2.frascati.tinfi.api.control.SCABasicIntentController
+INFO  [FrascatiRuntime.scala:139] - fload org.ow2.frascati.tinfi.api.control.SCABasicIntentControllerInterceptorSCAIntent ======> res class org.ow2.frascati.tinfi.api.control.SCABasicIntentControllerInterceptorSCAIntent
+INFO  [FrascatiRuntime.scala:139] - fload org.oasisopen.sca.ComponentContext ======> res interface org.oasisopen.sca.ComponentContext
+INFO  [FrascatiRuntime.scala:139] - fload org.oasisopen.sca.ComponentContextInterceptorSCAIntent ======> res class org.oasisopen.sca.ComponentContextInterceptorSCAIntent
+INFO  [FrascatiRuntime.scala:139] - fload org.ow2.frascati.tinfi.api.control.SCAPropertyController ======> res interface org.ow2.frascati.tinfi.api.control.SCAPropertyController
+INFO  [FrascatiRuntime.scala:139] - fload org.ow2.frascati.tinfi.api.control.SCAPropertyControllerInterceptorSCAIntent ======> res class org.ow2.frascati.tinfi.api.control.SCAPropertyControllerInterceptorSCAIntent
+INFO  [FrascatiRuntime.scala:139] - fload org.objectweb.fractal.api.Component ======> res interface org.objectweb.fractal.api.Component
+INFO  [FrascatiRuntime.scala:139] - fload org.objectweb.fractal.api.ComponentInterceptorSCAIntent ======> res class org.objectweb.fractal.api.ComponentInterceptorSCAIntent
+INFO  [FrascatiRuntime.scala:139] - fload org.objectweb.fractal.api.control.BindingController ======> res interface org.objectweb.fractal.api.control.BindingController
+INFO  [FrascatiRuntime.scala:139] - fload org.objectweb.fractal.api.control.BindingControllerInterceptorSCAIntent ======> res class org.objectweb.fractal.api.control.BindingControllerInterceptorSCAIntent
+INFO  [FrascatiRuntime.scala:139] - fload org.objectweb.fractal.api.control.ContentController ======> res interface org.objectweb.fractal.api.control.ContentController
+INFO  [FrascatiRuntime.scala:139] - fload org.objectweb.fractal.api.control.ContentControllerInterceptorSCAIntent ======> res class org.objectweb.fractal.api.control.ContentControllerInterceptorSCAIntent
+INFO  [FrascatiRuntime.scala:139] - fload org.objectweb.fractal.julia.control.content.SuperControllerNotifier ======> res interface org.objectweb.fractal.julia.control.content.SuperControllerNotifier
+INFO  [FrascatiRuntime.scala:139] - fload org.objectweb.fractal.julia.control.content.SuperControllerNotifierInterceptorSCAIntent ======> res class org.objectweb.fractal.julia.control.content.SuperControllerNotifierInterceptorSCAIntent
+INFO  [FrascatiRuntime.scala:139] - fload org.objectweb.fractal.julia.control.lifecycle.LifeCycleCoordinator ======> res interface org.objectweb.fractal.julia.control.lifecycle.LifeCycleCoordinator
+INFO  [FrascatiRuntime.scala:139] - fload org.objectweb.fractal.julia.control.lifecycle.LifeCycleCoordinatorInterceptorSCAIntent ======> res class org.objectweb.fractal.julia.control.lifecycle.LifeCycleCoordinatorInterceptorSCAIntent
+INFO  [FrascatiRuntime.scala:139] - fload org.objectweb.fractal.api.control.NameController ======> res interface org.objectweb.fractal.api.control.NameController
+INFO  [FrascatiRuntime.scala:139] - fload org.objectweb.fractal.api.control.NameControllerInterceptorSCAIntent ======> res class org.objectweb.fractal.api.control.NameControllerInterceptorSCAIntent
+INFO  [FrascatiRuntime.scala:139] - fload juliac.generated.scaComposite ======> res class juliac.generated.scaComposite
+INFO  [FrascatiRuntime.scala:139] - fload juliac.generated.scaCompositeFCb62 ======> res class juliac.generated.scaCompositeFCb62
+INFO  [FrascatiRuntime.scala:139] - fload java.lang.Runnable ======> res interface java.lang.Runnable
+INFO  [FrascatiRuntime.scala:139] - fload java.lang.Runnable ======> res interface java.lang.Runnable
+INFO  [FrascatiRuntime.scala:139] - fload java.lang.Runnable ======> res interface java.lang.Runnable
+INFO  [FrascatiRuntime.scala:139] - fload java.lang.Runnable ======> res interface java.lang.Runnable
+INFO  [FrascatiRuntime.scala:139] - fload java.lang.Runnable ======> res interface java.lang.Runnable
+INFO  [FrascatiRuntime.scala:139] - fload java.lang.Runnable ======> res interface java.lang.Runnable
+INFO: juliac.generated.java.lang.RunnableFcInItf
+INFO  [FrascatiRuntime.scala:139] - fload java.lang.Runnable ======> res interface java.lang.Runnable
+INFO  [FrascatiRuntime.scala:139] - fload java.lang.Runnable ======> res interface java.lang.Runnable
+INFO  [FrascatiRuntime.scala:139] - fload java.lang.Runnable ======> res interface java.lang.Runnable
+INFO  [FrascatiRuntime.scala:139] - fload java.lang.Runnable ======> res interface java.lang.Runnable
+INFO  [FrascatiRuntime.scala:139] - fload java.lang.Runnable ======> res interface java.lang.Runnable
+INFO  [FrascatiRuntime.scala:139] - fload java.lang.Runnable ======> res interface java.lang.Runnable
+INFO: juliac.generated.java.lang.RunnableFcSR
+INFO  [FrascatiRuntime.scala:139] - fload java.lang.Runnable ======> res interface java.lang.Runnable
+INFO  [FrascatiRuntime.scala:139] - fload java.lang.Runnable ======> res interface java.lang.Runnable
+INFO  [FrascatiRuntime.scala:139] - fload java.lang.Runnable ======> res interface java.lang.Runnable
+INFO  [FrascatiRuntime.scala:139] - fload java.lang.Runnable ======> res interface java.lang.Runnable
+INFO  [FrascatiRuntime.scala:139] - fload java.lang.Runnable ======> res interface java.lang.Runnable
+INFO  [FrascatiRuntime.scala:139] - fload java.lang.Runnable ======> res interface java.lang.Runnable
+INFO  [FrascatiRuntime.scala:139] - fload java.lang.Runnable ======> res interface java.lang.Runnable
+INFO  [FrascatiRuntime.scala:139] - fload java.lang.Runnable ======> res interface java.lang.Runnable
+INFO: juliac.generated.java.lang.RunnableFcOutItf
+INFO  [FrascatiRuntime.scala:139] - fload java.lang.Runnable ======> res interface java.lang.Runnable
+INFO  [FrascatiRuntime.scala:139] - fload org.ow2.frascati.tinfi.api.control.SCABasicIntentController ======> res interface org.ow2.frascati.tinfi.api.control.SCABasicIntentController
+INFO  [FrascatiRuntime.scala:139] - fload org.ow2.frascati.tinfi.api.control.SCABasicIntentControllerFcItf ======> res class org.ow2.frascati.tinfi.api.control.SCABasicIntentControllerFcItf
+INFO  [FrascatiRuntime.scala:139] - fload org.ow2.frascati.tinfi.api.control.SCABasicIntentController ======> res interface org.ow2.frascati.tinfi.api.control.SCABasicIntentController
+INFO  [FrascatiRuntime.scala:139] - fload org.ow2.frascati.tinfi.api.control.SCABasicIntentControllerFcItf ======> res class org.ow2.frascati.tinfi.api.control.SCABasicIntentControllerFcItf
+INFO  [FrascatiRuntime.scala:139] - fload org.oasisopen.sca.ComponentContext ======> res interface org.oasisopen.sca.ComponentContext
+INFO  [FrascatiRuntime.scala:139] - fload org.oasisopen.sca.ComponentContextFcItf ======> res class org.oasisopen.sca.ComponentContextFcItf
+INFO  [FrascatiRuntime.scala:139] - fload org.oasisopen.sca.ComponentContext ======> res interface org.oasisopen.sca.ComponentContext
+INFO  [FrascatiRuntime.scala:139] - fload org.oasisopen.sca.ComponentContextFcItf ======> res class org.oasisopen.sca.ComponentContextFcItf
+INFO  [FrascatiRuntime.scala:139] - fload org.ow2.frascati.tinfi.api.control.SCAPropertyController ======> res interface org.ow2.frascati.tinfi.api.control.SCAPropertyController
+INFO  [FrascatiRuntime.scala:139] - fload org.ow2.frascati.tinfi.api.control.SCAPropertyControllerFcItf ======> res class org.ow2.frascati.tinfi.api.control.SCAPropertyControllerFcItf
+INFO  [FrascatiRuntime.scala:139] - fload org.ow2.frascati.tinfi.api.control.SCAPropertyController ======> res interface org.ow2.frascati.tinfi.api.control.SCAPropertyController
+INFO  [FrascatiRuntime.scala:139] - fload org.ow2.frascati.tinfi.api.control.SCAPropertyControllerFcItf ======> res class org.ow2.frascati.tinfi.api.control.SCAPropertyControllerFcItf
+INFO  [FrascatiRuntime.scala:139] - fload org.objectweb.fractal.api.Component ======> res interface org.objectweb.fractal.api.Component
+INFO  [FrascatiRuntime.scala:139] - fload org.objectweb.fractal.api.ComponentFcItf ======> res class org.objectweb.fractal.api.ComponentFcItf
+INFO  [FrascatiRuntime.scala:139] - fload org.objectweb.fractal.api.Component ======> res interface org.objectweb.fractal.api.Component
+INFO  [FrascatiRuntime.scala:139] - fload org.objectweb.fractal.api.ComponentFcItf ======> res class org.objectweb.fractal.api.ComponentFcItf
+INFO  [FrascatiRuntime.scala:139] - fload org.objectweb.fractal.api.control.BindingController ======> res interface org.objectweb.fractal.api.control.BindingController
+INFO  [FrascatiRuntime.scala:139] - fload org.objectweb.fractal.api.control.BindingControllerFcItf ======> res class org.objectweb.fractal.api.control.BindingControllerFcItf
+INFO  [FrascatiRuntime.scala:139] - fload org.objectweb.fractal.api.control.BindingController ======> res interface org.objectweb.fractal.api.control.BindingController
+INFO  [FrascatiRuntime.scala:139] - fload org.objectweb.fractal.api.control.BindingControllerFcItf ======> res class org.objectweb.fractal.api.control.BindingControllerFcItf
+INFO  [FrascatiRuntime.scala:139] - fload org.objectweb.fractal.api.control.ContentController ======> res interface org.objectweb.fractal.api.control.ContentController
+INFO  [FrascatiRuntime.scala:139] - fload org.objectweb.fractal.api.control.ContentControllerFcItf ======> res class org.objectweb.fractal.api.control.ContentControllerFcItf
+INFO  [FrascatiRuntime.scala:139] - fload org.objectweb.fractal.api.control.ContentController ======> res interface org.objectweb.fractal.api.control.ContentController
+INFO  [FrascatiRuntime.scala:139] - fload org.objectweb.fractal.api.control.ContentControllerFcItf ======> res class org.objectweb.fractal.api.control.ContentControllerFcItf
+INFO  [FrascatiRuntime.scala:139] - fload org.objectweb.fractal.julia.control.content.SuperControllerNotifier ======> res interface org.objectweb.fractal.julia.control.content.SuperControllerNotifier
+INFO  [FrascatiRuntime.scala:139] - fload org.objectweb.fractal.julia.control.content.SuperControllerNotifierFcItf ======> res class org.objectweb.fractal.julia.control.content.SuperControllerNotifierFcItf
+INFO  [FrascatiRuntime.scala:139] - fload org.objectweb.fractal.julia.control.content.SuperControllerNotifier ======> res interface org.objectweb.fractal.julia.control.content.SuperControllerNotifier
+INFO  [FrascatiRuntime.scala:139] - fload org.objectweb.fractal.julia.control.content.SuperControllerNotifierFcItf ======> res class org.objectweb.fractal.julia.control.content.SuperControllerNotifierFcItf
+INFO  [FrascatiRuntime.scala:139] - fload org.objectweb.fractal.julia.control.lifecycle.LifeCycleCoordinator ======> res interface org.objectweb.fractal.julia.control.lifecycle.LifeCycleCoordinator
+INFO  [FrascatiRuntime.scala:139] - fload org.objectweb.fractal.julia.control.lifecycle.LifeCycleCoordinatorFcItf ======> res class org.objectweb.fractal.julia.control.lifecycle.LifeCycleCoordinatorFcItf
+INFO  [FrascatiRuntime.scala:139] - fload org.objectweb.fractal.julia.control.lifecycle.LifeCycleCoordinator ======> res interface org.objectweb.fractal.julia.control.lifecycle.LifeCycleCoordinator
+INFO  [FrascatiRuntime.scala:139] - fload org.objectweb.fractal.julia.control.lifecycle.LifeCycleCoordinatorFcItf ======> res class org.objectweb.fractal.julia.control.lifecycle.LifeCycleCoordinatorFcItf
+INFO  [FrascatiRuntime.scala:139] - fload org.objectweb.fractal.api.control.NameController ======> res interface org.objectweb.fractal.api.control.NameController
+INFO  [FrascatiRuntime.scala:139] - fload org.objectweb.fractal.api.control.NameControllerFcItf ======> res class org.objectweb.fractal.api.control.NameControllerFcItf
+INFO  [FrascatiRuntime.scala:139] - fload org.objectweb.fractal.api.control.NameController ======> res interface org.objectweb.fractal.api.control.NameController
+INFO  [FrascatiRuntime.scala:139] - fload org.objectweb.fractal.api.control.NameControllerFcItf ======> res class org.objectweb.fractal.api.control.NameControllerFcItf
+INFO  [FrascatiRuntime.scala:139] - fload juliac.generated.SCACompositeIntentControllerImpl ======> res class juliac.generated.SCACompositeIntentControllerImpl
+INFO  [FrascatiRuntime.scala:139] - fload juliac.generated.SCAComponentControllerImpl ======> res class juliac.generated.SCAComponentControllerImpl
+INFO  [FrascatiRuntime.scala:139] - fload juliac.generated.SCACompositePropertyControllerImpl ======> res class juliac.generated.SCACompositePropertyControllerImpl
+INFO  [FrascatiRuntime.scala:139] - fload juliac.generated.ComponentImpl ======> res class juliac.generated.ComponentImpl
+INFO  [FrascatiRuntime.scala:139] - fload juliac.generated.CompositeBindingControllerImpl ======> res class juliac.generated.CompositeBindingControllerImpl
+INFO  [FrascatiRuntime.scala:139] - fload juliac.generated.ContentControllerImpl ======> res class juliac.generated.ContentControllerImpl
+INFO  [FrascatiRuntime.scala:139] - fload juliac.generated.SuperControllerImpl ======> res class juliac.generated.SuperControllerImpl
+INFO  [FrascatiRuntime.scala:139] - fload juliac.generated.CompositeLifeCycleControllerImpl ======> res class juliac.generated.CompositeLifeCycleControllerImpl
+INFO  [FrascatiRuntime.scala:139] - fload juliac.generated.NameControllerImpl ======> res class juliac.generated.NameControllerImpl
+INFO  [FrascatiRuntime.scala:139] - fload java.lang.Runnable ======> res interface java.lang.Runnable
+INFO  [FrascatiRuntime.scala:139] - fload java.lang.Runnable ======> res interface java.lang.Runnable
+INFO  [FrascatiRuntime.scala:139] - fload java.lang.Runnable ======> res interface java.lang.Runnable
+INFO  [FrascatiRuntime.scala:139] - fload java.lang.Runnable ======> res interface java.lang.Runnable
+INFO  [FrascatiRuntime.scala:139] - fload java.lang.Runnable ======> res interface java.lang.Runnable
+INFO  [FrascatiRuntime.scala:139] - fload java.lang.Runnable ======> res interface java.lang.Runnable
+INFO: juliac.generated.java.lang.RunnableInterceptorSCAIntent
+INFO  [FrascatiRuntime.scala:139] - fload org.ow2.frascati.tinfi.api.control.SCABasicIntentController ======> res interface org.ow2.frascati.tinfi.api.control.SCABasicIntentController
+INFO  [FrascatiRuntime.scala:139] - fload org.ow2.frascati.tinfi.api.control.SCABasicIntentControllerInterceptorSCAIntent ======> res class org.ow2.frascati.tinfi.api.control.SCABasicIntentControllerInterceptorSCAIntent
+INFO  [FrascatiRuntime.scala:139] - fload org.oasisopen.sca.ComponentContext ======> res interface org.oasisopen.sca.ComponentContext
+INFO  [FrascatiRuntime.scala:139] - fload org.oasisopen.sca.ComponentContextInterceptorSCAIntent ======> res class org.oasisopen.sca.ComponentContextInterceptorSCAIntent
+INFO  [FrascatiRuntime.scala:139] - fload org.ow2.frascati.tinfi.api.control.SCAPropertyController ======> res interface org.ow2.frascati.tinfi.api.control.SCAPropertyController
+INFO  [FrascatiRuntime.scala:139] - fload org.ow2.frascati.tinfi.api.control.SCAPropertyControllerInterceptorSCAIntent ======> res class org.ow2.frascati.tinfi.api.control.SCAPropertyControllerInterceptorSCAIntent
+INFO  [FrascatiRuntime.scala:139] - fload org.objectweb.fractal.api.Component ======> res interface org.objectweb.fractal.api.Component
+INFO  [FrascatiRuntime.scala:139] - fload org.objectweb.fractal.api.ComponentInterceptorSCAIntent ======> res class org.objectweb.fractal.api.ComponentInterceptorSCAIntent
+INFO  [FrascatiRuntime.scala:139] - fload org.objectweb.fractal.api.control.BindingController ======> res interface org.objectweb.fractal.api.control.BindingController
+INFO  [FrascatiRuntime.scala:139] - fload org.objectweb.fractal.api.control.BindingControllerInterceptorSCAIntent ======> res class org.objectweb.fractal.api.control.BindingControllerInterceptorSCAIntent
+INFO  [FrascatiRuntime.scala:139] - fload org.objectweb.fractal.api.control.ContentController ======> res interface org.objectweb.fractal.api.control.ContentController
+INFO  [FrascatiRuntime.scala:139] - fload org.objectweb.fractal.api.control.ContentControllerInterceptorSCAIntent ======> res class org.objectweb.fractal.api.control.ContentControllerInterceptorSCAIntent
+INFO  [FrascatiRuntime.scala:139] - fload org.objectweb.fractal.julia.control.content.SuperControllerNotifier ======> res interface org.objectweb.fractal.julia.control.content.SuperControllerNotifier
+INFO  [FrascatiRuntime.scala:139] - fload org.objectweb.fractal.julia.control.content.SuperControllerNotifierInterceptorSCAIntent ======> res class org.objectweb.fractal.julia.control.content.SuperControllerNotifierInterceptorSCAIntent
+INFO  [FrascatiRuntime.scala:139] - fload org.objectweb.fractal.julia.control.lifecycle.LifeCycleCoordinator ======> res interface org.objectweb.fractal.julia.control.lifecycle.LifeCycleCoordinator
+INFO  [FrascatiRuntime.scala:139] - fload org.objectweb.fractal.julia.control.lifecycle.LifeCycleCoordinatorInterceptorSCAIntent ======> res class org.objectweb.fractal.julia.control.lifecycle.LifeCycleCoordinatorInterceptorSCAIntent
+INFO  [FrascatiRuntime.scala:139] - fload org.objectweb.fractal.api.control.NameController ======> res interface org.objectweb.fractal.api.control.NameController
+INFO  [FrascatiRuntime.scala:139] - fload org.objectweb.fractal.api.control.NameControllerInterceptorSCAIntent ======> res class org.objectweb.fractal.api.control.NameControllerInterceptorSCAIntent
+INFO  [FrascatiRuntime.scala:139] - fload juliac.generated.scaComposite ======> res class juliac.generated.scaComposite
+INFO  [FrascatiRuntime.scala:139] - fload java.lang.Runnable ======> res interface java.lang.Runnable
+INFO  [FrascatiRuntime.scala:139] - fload java.lang.Runnable ======> res interface java.lang.Runnable
+INFO  [FrascatiRuntime.scala:139] - fload java.lang.Runnable ======> res interface java.lang.Runnable
+INFO  [FrascatiRuntime.scala:139] - fload org.objectweb.fractal.julia.loader.Initializable ======> res interface org.objectweb.fractal.julia.loader.Initializable
+INFO  [FrascatiRuntime.scala:139] - fload org.objectweb.fractal.api.Component ======> res interface org.objectweb.fractal.api.Component
+INFO  [FrascatiRuntime.scala:139] - fload org.ow2.frascati.tinfi.control.content.SCAExtendedContentController ======> res interface org.ow2.frascati.tinfi.control.content.SCAExtendedContentController
+INFO  [FrascatiRuntime.scala:139] - fload juliac.generated.SCACompositeIntentControllerImpl ======> res class juliac.generated.SCACompositeIntentControllerImpl
+INFO  [FrascatiRuntime.scala:139] - fload juliac.generated.SCAComponentControllerImpl ======> res class juliac.generated.SCAComponentControllerImpl
+INFO  [FrascatiRuntime.scala:139] - fload juliac.generated.SCACompositePropertyControllerImpl ======> res class juliac.generated.SCACompositePropertyControllerImpl
+INFO  [FrascatiRuntime.scala:139] - fload juliac.generated.ComponentImpl ======> res class juliac.generated.ComponentImpl
+INFO  [FrascatiRuntime.scala:139] - fload juliac.generated.CompositeBindingControllerImpl ======> res class juliac.generated.CompositeBindingControllerImpl
+INFO  [FrascatiRuntime.scala:139] - fload juliac.generated.ContentControllerImpl ======> res class juliac.generated.ContentControllerImpl
+INFO  [FrascatiRuntime.scala:139] - fload juliac.generated.SuperControllerImpl ======> res class juliac.generated.SuperControllerImpl
+INFO  [FrascatiRuntime.scala:139] - fload juliac.generated.CompositeLifeCycleControllerImpl ======> res class juliac.generated.CompositeLifeCycleControllerImpl
+INFO  [FrascatiRuntime.scala:139] - fload juliac.generated.NameControllerImpl ======> res class juliac.generated.NameControllerImpl
+INFO  [FrascatiRuntime.scala:139] - fload java.lang.Runnable ======> res interface java.lang.Runnable
+INFO: juliac.generated.scaCompositeFCf938cfee
+INFO  [FrascatiRuntime.scala:139] - fload java.lang.Runnable ======> res interface java.lang.Runnable
+INFO  [FrascatiRuntime.scala:139] - fload java.lang.Runnable ======> res interface java.lang.Runnable
+INFO  [FrascatiRuntime.scala:139] - fload java.lang.Runnable ======> res interface java.lang.Runnable
+INFO  [FrascatiRuntime.scala:139] - fload java.lang.Runnable ======> res interface java.lang.Runnable
+INFO  [FrascatiRuntime.scala:139] - fload java.lang.Runnable ======> res interface java.lang.Runnable
+INFO  [FrascatiRuntime.scala:139] - fload java.lang.Runnable ======> res interface java.lang.Runnable
+INFO  [FrascatiRuntime.scala:139] - fload org.ow2.frascati.examples.helloworld.pojo.PrintService ======> res interface org.ow2.frascati.examples.helloworld.pojo.PrintService
+INFO  [FrascatiRuntime.scala:139] - fload org.ow2.frascati.examples.helloworld.pojo.PrintService ======> res interface org.ow2.frascati.examples.helloworld.pojo.PrintService
+INFO  [FrascatiRuntime.scala:139] - fload org.ow2.frascati.examples.helloworld.pojo.PrintService ======> res interface org.ow2.frascati.examples.helloworld.pojo.PrintService
+INFO  [FrascatiRuntime.scala:139] - fload org.ow2.frascati.examples.helloworld.pojo.PrintService ======> res interface org.ow2.frascati.examples.helloworld.pojo.PrintService
+INFO  [FrascatiRuntime.scala:139] - fload org.ow2.frascati.examples.helloworld.pojo.PrintService ======> res interface org.ow2.frascati.examples.helloworld.pojo.PrintService
+INFO  [FrascatiRuntime.scala:139] - fload org.ow2.frascati.examples.helloworld.pojo.PrintService ======> res interface org.ow2.frascati.examples.helloworld.pojo.PrintService
+INFO: org.ow2.frascati.examples.helloworld.pojo.PrintServiceFcInItf
+INFO  [FrascatiRuntime.scala:139] - fload org.ow2.frascati.examples.helloworld.pojo.PrintService ======> res interface org.ow2.frascati.examples.helloworld.pojo.PrintService
+INFO  [FrascatiRuntime.scala:139] - fload org.ow2.frascati.examples.helloworld.pojo.PrintService ======> res interface org.ow2.frascati.examples.helloworld.pojo.PrintService
+INFO  [FrascatiRuntime.scala:139] - fload org.ow2.frascati.examples.helloworld.pojo.PrintService ======> res interface org.ow2.frascati.examples.helloworld.pojo.PrintService
+INFO  [FrascatiRuntime.scala:139] - fload org.ow2.frascati.examples.helloworld.pojo.PrintService ======> res interface org.ow2.frascati.examples.helloworld.pojo.PrintService
+INFO  [FrascatiRuntime.scala:139] - fload org.ow2.frascati.examples.helloworld.pojo.PrintService ======> res interface org.ow2.frascati.examples.helloworld.pojo.PrintService
+INFO  [FrascatiRuntime.scala:139] - fload org.ow2.frascati.examples.helloworld.pojo.PrintService ======> res interface org.ow2.frascati.examples.helloworld.pojo.PrintService
+INFO  [FrascatiRuntime.scala:139] - fload org.ow2.frascati.examples.helloworld.pojo.PrintService ======> res interface org.ow2.frascati.examples.helloworld.pojo.PrintService
+INFO: org.ow2.frascati.examples.helloworld.pojo.PrintServiceFcOutItf
+INFO  [FrascatiRuntime.scala:139] - fload org.ow2.frascati.examples.helloworld.pojo.PrintService ======> res interface org.ow2.frascati.examples.helloworld.pojo.PrintService
+INFO  [FrascatiRuntime.scala:139] - fload org.ow2.frascati.examples.helloworld.pojo.PrintService ======> res interface org.ow2.frascati.examples.helloworld.pojo.PrintService
+INFO: org.ow2.frascati.examples.helloworld.pojo.PrintServiceFcSR
+INFO  [FrascatiRuntime.scala:139] - fload org.ow2.frascati.examples.helloworld.pojo.PrintService ======> res interface org.ow2.frascati.examples.helloworld.pojo.PrintService
+INFO  [FrascatiRuntime.scala:139] - fload org.ow2.frascati.examples.helloworld.pojo.PrintService ======> res interface org.ow2.frascati.examples.helloworld.pojo.PrintService
+INFO  [FrascatiRuntime.scala:139] - fload org.ow2.frascati.examples.helloworld.pojo.PrintService ======> res interface org.ow2.frascati.examples.helloworld.pojo.PrintService
+INFO  [FrascatiRuntime.scala:139] - fload org.ow2.frascati.examples.helloworld.pojo.PrintService ======> res interface org.ow2.frascati.examples.helloworld.pojo.PrintService
+INFO  [FrascatiRuntime.scala:139] - fload org.ow2.frascati.examples.helloworld.pojo.PrintService ======> res interface org.ow2.frascati.examples.helloworld.pojo.PrintService
+INFO  [FrascatiRuntime.scala:139] - fload org.ow2.frascati.examples.helloworld.pojo.PrintService ======> res interface org.ow2.frascati.examples.helloworld.pojo.PrintService
+INFO  [FrascatiRuntime.scala:139] - fload org.ow2.frascati.tinfi.api.control.SCAIntentController ======> res interface org.ow2.frascati.tinfi.api.control.SCAIntentController
+INFO  [FrascatiRuntime.scala:139] - fload org.ow2.frascati.tinfi.api.control.SCAIntentControllerFcItf ======> res class org.ow2.frascati.tinfi.api.control.SCAIntentControllerFcItf
+INFO  [FrascatiRuntime.scala:139] - fload org.ow2.frascati.tinfi.api.control.SCAIntentController ======> res interface org.ow2.frascati.tinfi.api.control.SCAIntentController
+INFO  [FrascatiRuntime.scala:139] - fload org.ow2.frascati.tinfi.api.control.SCAIntentControllerFcItf ======> res class org.ow2.frascati.tinfi.api.control.SCAIntentControllerFcItf
+INFO  [FrascatiRuntime.scala:139] - fload org.oasisopen.sca.ComponentContext ======> res interface org.oasisopen.sca.ComponentContext
+INFO  [FrascatiRuntime.scala:139] - fload org.oasisopen.sca.ComponentContextFcItf ======> res class org.oasisopen.sca.ComponentContextFcItf
+INFO  [FrascatiRuntime.scala:139] - fload org.oasisopen.sca.ComponentContext ======> res interface org.oasisopen.sca.ComponentContext
+INFO  [FrascatiRuntime.scala:139] - fload org.oasisopen.sca.ComponentContextFcItf ======> res class org.oasisopen.sca.ComponentContextFcItf
+INFO  [FrascatiRuntime.scala:139] - fload org.objectweb.fractal.api.control.BindingController ======> res interface org.objectweb.fractal.api.control.BindingController
+INFO  [FrascatiRuntime.scala:139] - fload org.objectweb.fractal.api.control.BindingControllerFcItf ======> res class org.objectweb.fractal.api.control.BindingControllerFcItf
+INFO  [FrascatiRuntime.scala:139] - fload org.objectweb.fractal.api.control.BindingController ======> res interface org.objectweb.fractal.api.control.BindingController
+INFO  [FrascatiRuntime.scala:139] - fload org.objectweb.fractal.api.control.BindingControllerFcItf ======> res class org.objectweb.fractal.api.control.BindingControllerFcItf
+INFO  [FrascatiRuntime.scala:139] - fload org.objectweb.fractal.julia.control.lifecycle.LifeCycleCoordinator ======> res interface org.objectweb.fractal.julia.control.lifecycle.LifeCycleCoordinator
+INFO  [FrascatiRuntime.scala:139] - fload org.objectweb.fractal.julia.control.lifecycle.LifeCycleCoordinatorFcItf ======> res class org.objectweb.fractal.julia.control.lifecycle.LifeCycleCoordinatorFcItf
+INFO  [FrascatiRuntime.scala:139] - fload org.objectweb.fractal.julia.control.lifecycle.LifeCycleCoordinator ======> res interface org.objectweb.fractal.julia.control.lifecycle.LifeCycleCoordinator
+INFO  [FrascatiRuntime.scala:139] - fload org.objectweb.fractal.julia.control.lifecycle.LifeCycleCoordinatorFcItf ======> res class org.objectweb.fractal.julia.control.lifecycle.LifeCycleCoordinatorFcItf
+INFO  [FrascatiRuntime.scala:139] - fload org.ow2.frascati.tinfi.control.content.SCAExtendedContentController ======> res interface org.ow2.frascati.tinfi.control.content.SCAExtendedContentController
+INFO  [FrascatiRuntime.scala:139] - fload org.ow2.frascati.tinfi.control.content.SCAExtendedContentControllerFcItf ======> res class org.ow2.frascati.tinfi.control.content.SCAExtendedContentControllerFcItf
+INFO  [FrascatiRuntime.scala:139] - fload org.ow2.frascati.tinfi.control.content.SCAExtendedContentController ======> res interface org.ow2.frascati.tinfi.control.content.SCAExtendedContentController
+INFO  [FrascatiRuntime.scala:139] - fload org.ow2.frascati.tinfi.control.content.SCAExtendedContentControllerFcItf ======> res class org.ow2.frascati.tinfi.control.content.SCAExtendedContentControllerFcItf
+INFO  [FrascatiRuntime.scala:139] - fload org.ow2.frascati.tinfi.api.control.SCAPropertyController ======> res interface org.ow2.frascati.tinfi.api.control.SCAPropertyController
+INFO  [FrascatiRuntime.scala:139] - fload org.ow2.frascati.tinfi.api.control.SCAPropertyControllerFcItf ======> res class org.ow2.frascati.tinfi.api.control.SCAPropertyControllerFcItf
+INFO  [FrascatiRuntime.scala:139] - fload org.ow2.frascati.tinfi.api.control.SCAPropertyController ======> res interface org.ow2.frascati.tinfi.api.control.SCAPropertyController
+INFO  [FrascatiRuntime.scala:139] - fload org.ow2.frascati.tinfi.api.control.SCAPropertyControllerFcItf ======> res class org.ow2.frascati.tinfi.api.control.SCAPropertyControllerFcItf
+INFO  [FrascatiRuntime.scala:139] - fload org.objectweb.fractal.api.Component ======> res interface org.objectweb.fractal.api.Component
+INFO  [FrascatiRuntime.scala:139] - fload org.objectweb.fractal.api.ComponentFcItf ======> res class org.objectweb.fractal.api.ComponentFcItf
+INFO  [FrascatiRuntime.scala:139] - fload org.objectweb.fractal.api.Component ======> res interface org.objectweb.fractal.api.Component
+INFO  [FrascatiRuntime.scala:139] - fload org.objectweb.fractal.api.ComponentFcItf ======> res class org.objectweb.fractal.api.ComponentFcItf
+INFO  [FrascatiRuntime.scala:139] - fload org.objectweb.fractal.julia.control.content.SuperControllerNotifier ======> res interface org.objectweb.fractal.julia.control.content.SuperControllerNotifier
+INFO  [FrascatiRuntime.scala:139] - fload org.objectweb.fractal.julia.control.content.SuperControllerNotifierFcItf ======> res class org.objectweb.fractal.julia.control.content.SuperControllerNotifierFcItf
+INFO  [FrascatiRuntime.scala:139] - fload org.objectweb.fractal.julia.control.content.SuperControllerNotifier ======> res interface org.objectweb.fractal.julia.control.content.SuperControllerNotifier
+INFO  [FrascatiRuntime.scala:139] - fload org.objectweb.fractal.julia.control.content.SuperControllerNotifierFcItf ======> res class org.objectweb.fractal.julia.control.content.SuperControllerNotifierFcItf
+INFO  [FrascatiRuntime.scala:139] - fload org.objectweb.fractal.api.control.NameController ======> res interface org.objectweb.fractal.api.control.NameController
+INFO  [FrascatiRuntime.scala:139] - fload org.objectweb.fractal.api.control.NameControllerFcItf ======> res class org.objectweb.fractal.api.control.NameControllerFcItf
+INFO  [FrascatiRuntime.scala:139] - fload org.objectweb.fractal.api.control.NameController ======> res interface org.objectweb.fractal.api.control.NameController
+INFO  [FrascatiRuntime.scala:139] - fload org.objectweb.fractal.api.control.NameControllerFcItf ======> res class org.objectweb.fractal.api.control.NameControllerFcItf
+INFO  [FrascatiRuntime.scala:139] - fload juliac.generated.SCAPrimitiveIntentControllerImpl ======> res class juliac.generated.SCAPrimitiveIntentControllerImpl
+INFO  [FrascatiRuntime.scala:139] - fload juliac.generated.SCAComponentControllerImpl ======> res class juliac.generated.SCAComponentControllerImpl
+INFO  [FrascatiRuntime.scala:139] - fload juliac.generated.SCABindingControllerImpl ======> res class juliac.generated.SCABindingControllerImpl
+INFO  [FrascatiRuntime.scala:139] - fload juliac.generated.SCALifeCycleControllerImpl ======> res class juliac.generated.SCALifeCycleControllerImpl
+INFO  [FrascatiRuntime.scala:139] - fload juliac.generated.SCAContentControllerImpl ======> res class juliac.generated.SCAContentControllerImpl
+INFO  [FrascatiRuntime.scala:139] - fload juliac.generated.SCAPrimitivePropertyControllerImpl ======> res class juliac.generated.SCAPrimitivePropertyControllerImpl
+INFO  [FrascatiRuntime.scala:139] - fload juliac.generated.ComponentImpl ======> res class juliac.generated.ComponentImpl
+INFO  [FrascatiRuntime.scala:139] - fload juliac.generated.SuperControllerImpl ======> res class juliac.generated.SuperControllerImpl
+INFO  [FrascatiRuntime.scala:139] - fload juliac.generated.NameControllerImpl ======> res class juliac.generated.NameControllerImpl
+INFO  [FrascatiRuntime.scala:139] - fload org.objectweb.fractal.juliac.proxy.LifeCycleSourceCodeGenerator ======> res class org.objectweb.fractal.juliac.proxy.LifeCycleSourceCodeGenerator
+INFO  [FrascatiRuntime.scala:139] - fload org.ow2.frascati.tinfi.opt.oo.SCAContentInterceptorSourceCodeGenerator ======> res class org.ow2.frascati.tinfi.opt.oo.SCAContentInterceptorSourceCodeGenerator
+INFO  [FrascatiRuntime.scala:139] - fload java.lang.Runnable ======> res interface java.lang.Runnable
+INFO  [FrascatiRuntime.scala:139] - fload org.objectweb.fractal.api.control.LifeCycleController ======> res interface org.objectweb.fractal.api.control.LifeCycleController
+INFO  [FrascatiRuntime.scala:139] - fload juliac.generated.SCAPrimitiveIntentControllerImpl ======> res class juliac.generated.SCAPrimitiveIntentControllerImpl
+INFO  [FrascatiRuntime.scala:139] - fload juliac.generated.SCAComponentControllerImpl ======> res class juliac.generated.SCAComponentControllerImpl
+INFO  [FrascatiRuntime.scala:139] - fload juliac.generated.SCABindingControllerImpl ======> res class juliac.generated.SCABindingControllerImpl
+INFO  [FrascatiRuntime.scala:139] - fload juliac.generated.SCALifeCycleControllerImpl ======> res class juliac.generated.SCALifeCycleControllerImpl
+INFO  [FrascatiRuntime.scala:139] - fload org.objectweb.fractal.api.control.LifeCycleController ======> res interface org.objectweb.fractal.api.control.LifeCycleController
+INFO  [FrascatiRuntime.scala:139] - fload juliac.generated.SCAPrimitiveIntentControllerImpl ======> res class juliac.generated.SCAPrimitiveIntentControllerImpl
+INFO  [FrascatiRuntime.scala:139] - fload juliac.generated.SCAComponentControllerImpl ======> res class juliac.generated.SCAComponentControllerImpl
+INFO  [FrascatiRuntime.scala:139] - fload juliac.generated.SCABindingControllerImpl ======> res class juliac.generated.SCABindingControllerImpl
+INFO  [FrascatiRuntime.scala:139] - fload juliac.generated.SCALifeCycleControllerImpl ======> res class juliac.generated.SCALifeCycleControllerImpl
+INFO  [FrascatiRuntime.scala:139] - fload org.objectweb.fractal.api.control.LifeCycleController ======> res interface org.objectweb.fractal.api.control.LifeCycleController
+INFO  [FrascatiRuntime.scala:139] - fload juliac.generated.SCAPrimitiveIntentControllerImpl ======> res class juliac.generated.SCAPrimitiveIntentControllerImpl
+INFO  [FrascatiRuntime.scala:139] - fload juliac.generated.SCAComponentControllerImpl ======> res class juliac.generated.SCAComponentControllerImpl
+INFO  [FrascatiRuntime.scala:139] - fload juliac.generated.SCABindingControllerImpl ======> res class juliac.generated.SCABindingControllerImpl
+INFO  [FrascatiRuntime.scala:139] - fload juliac.generated.SCALifeCycleControllerImpl ======> res class juliac.generated.SCALifeCycleControllerImpl
+INFO  [FrascatiRuntime.scala:139] - fload org.objectweb.fractal.api.control.LifeCycleController ======> res interface org.objectweb.fractal.api.control.LifeCycleController
+INFO  [FrascatiRuntime.scala:139] - fload juliac.generated.SCAPrimitiveIntentControllerImpl ======> res class juliac.generated.SCAPrimitiveIntentControllerImpl
+INFO  [FrascatiRuntime.scala:139] - fload juliac.generated.SCAComponentControllerImpl ======> res class juliac.generated.SCAComponentControllerImpl
+INFO  [FrascatiRuntime.scala:139] - fload juliac.generated.SCABindingControllerImpl ======> res class juliac.generated.SCABindingControllerImpl
+INFO  [FrascatiRuntime.scala:139] - fload juliac.generated.SCALifeCycleControllerImpl ======> res class juliac.generated.SCALifeCycleControllerImpl
+INFO  [FrascatiRuntime.scala:139] - fload java.lang.Runnable ======> res interface java.lang.Runnable
+INFO  [FrascatiRuntime.scala:139] - fload java.lang.Runnable ======> res interface java.lang.Runnable
+INFO  [FrascatiRuntime.scala:139] - fload java.lang.Runnable ======> res interface java.lang.Runnable
+INFO  [FrascatiRuntime.scala:139] - fload java.lang.Runnable ======> res interface java.lang.Runnable
+INFO  [FrascatiRuntime.scala:139] - fload java.lang.Runnable ======> res interface java.lang.Runnable
+INFO  [FrascatiRuntime.scala:139] - fload java.lang.Runnable ======> res interface java.lang.Runnable
+INFO  [FrascatiRuntime.scala:139] - fload java.lang.Runnable ======> res interface java.lang.Runnable
+INFO  [FrascatiRuntime.scala:139] - fload org.objectweb.fractal.api.control.LifeCycleController ======> res interface org.objectweb.fractal.api.control.LifeCycleController
+INFO  [FrascatiRuntime.scala:139] - fload juliac.generated.SCAPrimitiveIntentControllerImpl ======> res class juliac.generated.SCAPrimitiveIntentControllerImpl
+INFO  [FrascatiRuntime.scala:139] - fload juliac.generated.SCAComponentControllerImpl ======> res class juliac.generated.SCAComponentControllerImpl
+INFO  [FrascatiRuntime.scala:139] - fload juliac.generated.SCABindingControllerImpl ======> res class juliac.generated.SCABindingControllerImpl
+INFO  [FrascatiRuntime.scala:139] - fload juliac.generated.SCALifeCycleControllerImpl ======> res class juliac.generated.SCALifeCycleControllerImpl
+INFO  [FrascatiRuntime.scala:139] - fload org.objectweb.fractal.api.control.LifeCycleController ======> res interface org.objectweb.fractal.api.control.LifeCycleController
+INFO  [FrascatiRuntime.scala:139] - fload juliac.generated.SCAPrimitiveIntentControllerImpl ======> res class juliac.generated.SCAPrimitiveIntentControllerImpl
+INFO  [FrascatiRuntime.scala:139] - fload juliac.generated.SCAComponentControllerImpl ======> res class juliac.generated.SCAComponentControllerImpl
+INFO  [FrascatiRuntime.scala:139] - fload juliac.generated.SCABindingControllerImpl ======> res class juliac.generated.SCABindingControllerImpl
+INFO  [FrascatiRuntime.scala:139] - fload juliac.generated.SCALifeCycleControllerImpl ======> res class juliac.generated.SCALifeCycleControllerImpl
+INFO  [FrascatiRuntime.scala:139] - fload org.objectweb.fractal.api.control.LifeCycleController ======> res interface org.objectweb.fractal.api.control.LifeCycleController
+INFO  [FrascatiRuntime.scala:139] - fload juliac.generated.SCAPrimitiveIntentControllerImpl ======> res class juliac.generated.SCAPrimitiveIntentControllerImpl
+INFO  [FrascatiRuntime.scala:139] - fload juliac.generated.SCAComponentControllerImpl ======> res class juliac.generated.SCAComponentControllerImpl
+INFO  [FrascatiRuntime.scala:139] - fload juliac.generated.SCABindingControllerImpl ======> res class juliac.generated.SCABindingControllerImpl
+INFO  [FrascatiRuntime.scala:139] - fload juliac.generated.SCALifeCycleControllerImpl ======> res class juliac.generated.SCALifeCycleControllerImpl
+INFO  [FrascatiRuntime.scala:139] - fload org.ow2.frascati.examples.helloworld.pojo.PrintService ======> res interface org.ow2.frascati.examples.helloworld.pojo.PrintService
+INFO  [FrascatiRuntime.scala:139] - fload org.ow2.frascati.examples.helloworld.pojo.PrintService ======> res interface org.ow2.frascati.examples.helloworld.pojo.PrintService
+INFO  [FrascatiRuntime.scala:139] - fload org.ow2.frascati.examples.helloworld.pojo.PrintService ======> res interface org.ow2.frascati.examples.helloworld.pojo.PrintService
+INFO  [FrascatiRuntime.scala:139] - fload org.ow2.frascati.examples.helloworld.pojo.PrintService ======> res interface org.ow2.frascati.examples.helloworld.pojo.PrintService
+INFO: juliac.generated.java.lang.RunnableInterceptorSCALCb56bb98SCACCIntent
+INFO  [FrascatiRuntime.scala:139] - fload org.ow2.frascati.examples.helloworld.pojo.PrintService ======> res interface org.ow2.frascati.examples.helloworld.pojo.PrintService
+INFO  [FrascatiRuntime.scala:139] - fload org.ow2.frascati.examples.helloworld.pojo.PrintService ======> res interface org.ow2.frascati.examples.helloworld.pojo.PrintService
+INFO  [FrascatiRuntime.scala:139] - fload org.ow2.frascati.tinfi.api.control.SCAIntentController ======> res interface org.ow2.frascati.tinfi.api.control.SCAIntentController
+INFO  [FrascatiRuntime.scala:139] - fload org.ow2.frascati.tinfi.api.control.SCAIntentControllerInterceptorSCAIntent ======> res class org.ow2.frascati.tinfi.api.control.SCAIntentControllerInterceptorSCAIntent
+INFO  [FrascatiRuntime.scala:139] - fload org.oasisopen.sca.ComponentContext ======> res interface org.oasisopen.sca.ComponentContext
+INFO  [FrascatiRuntime.scala:139] - fload org.oasisopen.sca.ComponentContextInterceptorSCAIntent ======> res class org.oasisopen.sca.ComponentContextInterceptorSCAIntent
+INFO  [FrascatiRuntime.scala:139] - fload org.objectweb.fractal.api.control.BindingController ======> res interface org.objectweb.fractal.api.control.BindingController
+INFO  [FrascatiRuntime.scala:139] - fload org.objectweb.fractal.api.control.BindingControllerInterceptorSCAIntent ======> res class org.objectweb.fractal.api.control.BindingControllerInterceptorSCAIntent
+INFO  [FrascatiRuntime.scala:139] - fload org.objectweb.fractal.julia.control.lifecycle.LifeCycleCoordinator ======> res interface org.objectweb.fractal.julia.control.lifecycle.LifeCycleCoordinator
+INFO  [FrascatiRuntime.scala:139] - fload org.objectweb.fractal.julia.control.lifecycle.LifeCycleCoordinatorInterceptorSCAIntent ======> res class org.objectweb.fractal.julia.control.lifecycle.LifeCycleCoordinatorInterceptorSCAIntent
+INFO  [FrascatiRuntime.scala:139] - fload org.ow2.frascati.tinfi.control.content.SCAExtendedContentController ======> res interface org.ow2.frascati.tinfi.control.content.SCAExtendedContentController
+INFO  [FrascatiRuntime.scala:139] - fload org.ow2.frascati.tinfi.control.content.SCAExtendedContentControllerInterceptorSCAIntent ======> res class org.ow2.frascati.tinfi.control.content.SCAExtendedContentControllerInterceptorSCAIntent
+INFO  [FrascatiRuntime.scala:139] - fload org.ow2.frascati.tinfi.api.control.SCAPropertyController ======> res interface org.ow2.frascati.tinfi.api.control.SCAPropertyController
+INFO  [FrascatiRuntime.scala:139] - fload org.ow2.frascati.tinfi.api.control.SCAPropertyControllerInterceptorSCAIntent ======> res class org.ow2.frascati.tinfi.api.control.SCAPropertyControllerInterceptorSCAIntent
+INFO  [FrascatiRuntime.scala:139] - fload org.objectweb.fractal.api.Component ======> res interface org.objectweb.fractal.api.Component
+INFO  [FrascatiRuntime.scala:139] - fload org.objectweb.fractal.api.ComponentInterceptorSCAIntent ======> res class org.objectweb.fractal.api.ComponentInterceptorSCAIntent
+INFO  [FrascatiRuntime.scala:139] - fload org.objectweb.fractal.julia.control.content.SuperControllerNotifier ======> res interface org.objectweb.fractal.julia.control.content.SuperControllerNotifier
+INFO  [FrascatiRuntime.scala:139] - fload org.objectweb.fractal.julia.control.content.SuperControllerNotifierInterceptorSCAIntent ======> res class org.objectweb.fractal.julia.control.content.SuperControllerNotifierInterceptorSCAIntent
+INFO  [FrascatiRuntime.scala:139] - fload org.objectweb.fractal.api.control.NameController ======> res interface org.objectweb.fractal.api.control.NameController
+INFO  [FrascatiRuntime.scala:139] - fload org.objectweb.fractal.api.control.NameControllerInterceptorSCAIntent ======> res class org.objectweb.fractal.api.control.NameControllerInterceptorSCAIntent
+INFO: org.ow2.frascati.examples.helloworld.pojo.PrintServiceInterceptorSCAIntent
+INFO  [FrascatiRuntime.scala:139] - fload org.ow2.frascati.examples.helloworld.pojo.Client ======> res class org.ow2.frascati.examples.helloworld.pojo.Client
+INFO  [FrascatiRuntime.scala:139] - fload juliac.generated.scaPrimitive ======> res class juliac.generated.scaPrimitive
+INFO: org.ow2.frascati.examples.helloworld.pojo.ClientFCSCAContentControllerImpl
+INFO  [FrascatiRuntime.scala:139] - fload java.lang.Runnable ======> res interface java.lang.Runnable
+INFO  [FrascatiRuntime.scala:139] - fload org.objectweb.fractal.api.control.LifeCycleController ======> res interface org.objectweb.fractal.api.control.LifeCycleController
+INFO  [FrascatiRuntime.scala:139] - fload juliac.generated.SCAPrimitiveIntentControllerImpl ======> res class juliac.generated.SCAPrimitiveIntentControllerImpl
+INFO  [FrascatiRuntime.scala:139] - fload juliac.generated.SCAComponentControllerImpl ======> res class juliac.generated.SCAComponentControllerImpl
+INFO  [FrascatiRuntime.scala:139] - fload juliac.generated.SCABindingControllerImpl ======> res class juliac.generated.SCABindingControllerImpl
+INFO  [FrascatiRuntime.scala:139] - fload juliac.generated.SCALifeCycleControllerImpl ======> res class juliac.generated.SCALifeCycleControllerImpl
+INFO  [FrascatiRuntime.scala:139] - fload java.lang.Runnable ======> res interface java.lang.Runnable
+INFO  [FrascatiRuntime.scala:139] - fload org.ow2.frascati.examples.helloworld.pojo.PrintService ======> res interface org.ow2.frascati.examples.helloworld.pojo.PrintService
+INFO  [FrascatiRuntime.scala:139] - fload org.ow2.frascati.examples.helloworld.pojo.PrintService ======> res interface org.ow2.frascati.examples.helloworld.pojo.PrintService
+INFO  [FrascatiRuntime.scala:139] - fload org.objectweb.fractal.julia.loader.Initializable ======> res interface org.objectweb.fractal.julia.loader.Initializable
+INFO  [FrascatiRuntime.scala:139] - fload org.objectweb.fractal.api.Component ======> res interface org.objectweb.fractal.api.Component
+INFO  [FrascatiRuntime.scala:139] - fload org.ow2.frascati.tinfi.control.content.SCAExtendedContentController ======> res interface org.ow2.frascati.tinfi.control.content.SCAExtendedContentController
+INFO  [FrascatiRuntime.scala:139] - fload juliac.generated.SCAPrimitiveIntentControllerImpl ======> res class juliac.generated.SCAPrimitiveIntentControllerImpl
+INFO  [FrascatiRuntime.scala:139] - fload juliac.generated.SCAComponentControllerImpl ======> res class juliac.generated.SCAComponentControllerImpl
+INFO  [FrascatiRuntime.scala:139] - fload juliac.generated.SCABindingControllerImpl ======> res class juliac.generated.SCABindingControllerImpl
+INFO  [FrascatiRuntime.scala:139] - fload juliac.generated.SCALifeCycleControllerImpl ======> res class juliac.generated.SCALifeCycleControllerImpl
+INFO  [FrascatiRuntime.scala:139] - fload juliac.generated.SCAContentControllerImpl ======> res class juliac.generated.SCAContentControllerImpl
+INFO  [FrascatiRuntime.scala:139] - fload org.ow2.frascati.examples.helloworld.pojo.Client ======> res class org.ow2.frascati.examples.helloworld.pojo.Client
+INFO  [FrascatiRuntime.scala:139] - fload juliac.generated.SCAPrimitivePropertyControllerImpl ======> res class juliac.generated.SCAPrimitivePropertyControllerImpl
+INFO  [FrascatiRuntime.scala:139] - fload juliac.generated.ComponentImpl ======> res class juliac.generated.ComponentImpl
+INFO  [FrascatiRuntime.scala:139] - fload juliac.generated.SuperControllerImpl ======> res class juliac.generated.SuperControllerImpl
+INFO  [FrascatiRuntime.scala:139] - fload juliac.generated.NameControllerImpl ======> res class juliac.generated.NameControllerImpl
+INFO: org.ow2.frascati.examples.helloworld.pojo.ClientFCscaPrimitiveFC91a514e8
+INFO  [FrascatiRuntime.scala:139] - fload org.ow2.frascati.examples.helloworld.pojo.PrintService ======> res interface org.ow2.frascati.examples.helloworld.pojo.PrintService
+INFO  [FrascatiRuntime.scala:139] - fload org.ow2.frascati.examples.helloworld.pojo.PrintService ======> res interface org.ow2.frascati.examples.helloworld.pojo.PrintService
+INFO  [FrascatiRuntime.scala:139] - fload org.ow2.frascati.examples.helloworld.pojo.PrintService ======> res interface org.ow2.frascati.examples.helloworld.pojo.PrintService
+INFO  [FrascatiRuntime.scala:139] - fload org.ow2.frascati.examples.helloworld.pojo.PrintService ======> res interface org.ow2.frascati.examples.helloworld.pojo.PrintService
+INFO  [FrascatiRuntime.scala:139] - fload org.ow2.frascati.examples.helloworld.pojo.PrintService ======> res interface org.ow2.frascati.examples.helloworld.pojo.PrintService
+INFO  [FrascatiRuntime.scala:139] - fload org.ow2.frascati.examples.helloworld.pojo.PrintService ======> res interface org.ow2.frascati.examples.helloworld.pojo.PrintService
+INFO  [FrascatiRuntime.scala:139] - fload org.ow2.frascati.examples.helloworld.pojo.PrintService ======> res interface org.ow2.frascati.examples.helloworld.pojo.PrintService
+INFO  [FrascatiRuntime.scala:139] - fload org.ow2.frascati.tinfi.api.control.SCAIntentController ======> res interface org.ow2.frascati.tinfi.api.control.SCAIntentController
+INFO  [FrascatiRuntime.scala:139] - fload org.ow2.frascati.tinfi.api.control.SCAIntentControllerFcItf ======> res class org.ow2.frascati.tinfi.api.control.SCAIntentControllerFcItf
+INFO  [FrascatiRuntime.scala:139] - fload org.ow2.frascati.tinfi.api.control.SCAIntentController ======> res interface org.ow2.frascati.tinfi.api.control.SCAIntentController
+INFO  [FrascatiRuntime.scala:139] - fload org.ow2.frascati.tinfi.api.control.SCAIntentControllerFcItf ======> res class org.ow2.frascati.tinfi.api.control.SCAIntentControllerFcItf
+INFO  [FrascatiRuntime.scala:139] - fload org.oasisopen.sca.ComponentContext ======> res interface org.oasisopen.sca.ComponentContext
+INFO  [FrascatiRuntime.scala:139] - fload org.oasisopen.sca.ComponentContextFcItf ======> res class org.oasisopen.sca.ComponentContextFcItf
+INFO  [FrascatiRuntime.scala:139] - fload org.oasisopen.sca.ComponentContext ======> res interface org.oasisopen.sca.ComponentContext
+INFO  [FrascatiRuntime.scala:139] - fload org.oasisopen.sca.ComponentContextFcItf ======> res class org.oasisopen.sca.ComponentContextFcItf
+INFO  [FrascatiRuntime.scala:139] - fload org.objectweb.fractal.api.control.BindingController ======> res interface org.objectweb.fractal.api.control.BindingController
+INFO  [FrascatiRuntime.scala:139] - fload org.objectweb.fractal.api.control.BindingControllerFcItf ======> res class org.objectweb.fractal.api.control.BindingControllerFcItf
+INFO  [FrascatiRuntime.scala:139] - fload org.objectweb.fractal.api.control.BindingController ======> res interface org.objectweb.fractal.api.control.BindingController
+INFO  [FrascatiRuntime.scala:139] - fload org.objectweb.fractal.api.control.BindingControllerFcItf ======> res class org.objectweb.fractal.api.control.BindingControllerFcItf
+INFO  [FrascatiRuntime.scala:139] - fload org.objectweb.fractal.julia.control.lifecycle.LifeCycleCoordinator ======> res interface org.objectweb.fractal.julia.control.lifecycle.LifeCycleCoordinator
+INFO  [FrascatiRuntime.scala:139] - fload org.objectweb.fractal.julia.control.lifecycle.LifeCycleCoordinatorFcItf ======> res class org.objectweb.fractal.julia.control.lifecycle.LifeCycleCoordinatorFcItf
+INFO  [FrascatiRuntime.scala:139] - fload org.objectweb.fractal.julia.control.lifecycle.LifeCycleCoordinator ======> res interface org.objectweb.fractal.julia.control.lifecycle.LifeCycleCoordinator
+INFO  [FrascatiRuntime.scala:139] - fload org.objectweb.fractal.julia.control.lifecycle.LifeCycleCoordinatorFcItf ======> res class org.objectweb.fractal.julia.control.lifecycle.LifeCycleCoordinatorFcItf
+INFO  [FrascatiRuntime.scala:139] - fload org.ow2.frascati.tinfi.control.content.SCAExtendedContentController ======> res interface org.ow2.frascati.tinfi.control.content.SCAExtendedContentController
+INFO  [FrascatiRuntime.scala:139] - fload org.ow2.frascati.tinfi.control.content.SCAExtendedContentControllerFcItf ======> res class org.ow2.frascati.tinfi.control.content.SCAExtendedContentControllerFcItf
+INFO  [FrascatiRuntime.scala:139] - fload org.ow2.frascati.tinfi.control.content.SCAExtendedContentController ======> res interface org.ow2.frascati.tinfi.control.content.SCAExtendedContentController
+INFO  [FrascatiRuntime.scala:139] - fload org.ow2.frascati.tinfi.control.content.SCAExtendedContentControllerFcItf ======> res class org.ow2.frascati.tinfi.control.content.SCAExtendedContentControllerFcItf
+INFO  [FrascatiRuntime.scala:139] - fload org.ow2.frascati.tinfi.api.control.SCAPropertyController ======> res interface org.ow2.frascati.tinfi.api.control.SCAPropertyController
+INFO  [FrascatiRuntime.scala:139] - fload org.ow2.frascati.tinfi.api.control.SCAPropertyControllerFcItf ======> res class org.ow2.frascati.tinfi.api.control.SCAPropertyControllerFcItf
+INFO  [FrascatiRuntime.scala:139] - fload org.ow2.frascati.tinfi.api.control.SCAPropertyController ======> res interface org.ow2.frascati.tinfi.api.control.SCAPropertyController
+INFO  [FrascatiRuntime.scala:139] - fload org.ow2.frascati.tinfi.api.control.SCAPropertyControllerFcItf ======> res class org.ow2.frascati.tinfi.api.control.SCAPropertyControllerFcItf
+INFO  [FrascatiRuntime.scala:139] - fload org.objectweb.fractal.api.Component ======> res interface org.objectweb.fractal.api.Component
+INFO  [FrascatiRuntime.scala:139] - fload org.objectweb.fractal.api.ComponentFcItf ======> res class org.objectweb.fractal.api.ComponentFcItf
+INFO  [FrascatiRuntime.scala:139] - fload org.objectweb.fractal.api.Component ======> res interface org.objectweb.fractal.api.Component
+INFO  [FrascatiRuntime.scala:139] - fload org.objectweb.fractal.api.ComponentFcItf ======> res class org.objectweb.fractal.api.ComponentFcItf
+INFO  [FrascatiRuntime.scala:139] - fload org.objectweb.fractal.julia.control.content.SuperControllerNotifier ======> res interface org.objectweb.fractal.julia.control.content.SuperControllerNotifier
+INFO  [FrascatiRuntime.scala:139] - fload org.objectweb.fractal.julia.control.content.SuperControllerNotifierFcItf ======> res class org.objectweb.fractal.julia.control.content.SuperControllerNotifierFcItf
+INFO  [FrascatiRuntime.scala:139] - fload org.objectweb.fractal.julia.control.content.SuperControllerNotifier ======> res interface org.objectweb.fractal.julia.control.content.SuperControllerNotifier
+INFO  [FrascatiRuntime.scala:139] - fload org.objectweb.fractal.julia.control.content.SuperControllerNotifierFcItf ======> res class org.objectweb.fractal.julia.control.content.SuperControllerNotifierFcItf
+INFO  [FrascatiRuntime.scala:139] - fload org.objectweb.fractal.api.control.NameController ======> res interface org.objectweb.fractal.api.control.NameController
+INFO  [FrascatiRuntime.scala:139] - fload org.objectweb.fractal.api.control.NameControllerFcItf ======> res class org.objectweb.fractal.api.control.NameControllerFcItf
+INFO  [FrascatiRuntime.scala:139] - fload org.objectweb.fractal.api.control.NameController ======> res interface org.objectweb.fractal.api.control.NameController
+INFO  [FrascatiRuntime.scala:139] - fload org.objectweb.fractal.api.control.NameControllerFcItf ======> res class org.objectweb.fractal.api.control.NameControllerFcItf
+INFO  [FrascatiRuntime.scala:139] - fload juliac.generated.SCAPrimitiveIntentControllerImpl ======> res class juliac.generated.SCAPrimitiveIntentControllerImpl
+INFO  [FrascatiRuntime.scala:139] - fload juliac.generated.SCAComponentControllerImpl ======> res class juliac.generated.SCAComponentControllerImpl
+INFO  [FrascatiRuntime.scala:139] - fload juliac.generated.SCABindingControllerImpl ======> res class juliac.generated.SCABindingControllerImpl
+INFO  [FrascatiRuntime.scala:139] - fload juliac.generated.SCALifeCycleControllerImpl ======> res class juliac.generated.SCALifeCycleControllerImpl
+INFO  [FrascatiRuntime.scala:139] - fload juliac.generated.SCAContentControllerImpl ======> res class juliac.generated.SCAContentControllerImpl
+INFO  [FrascatiRuntime.scala:139] - fload juliac.generated.SCAPrimitivePropertyControllerImpl ======> res class juliac.generated.SCAPrimitivePropertyControllerImpl
+INFO  [FrascatiRuntime.scala:139] - fload juliac.generated.ComponentImpl ======> res class juliac.generated.ComponentImpl
+INFO  [FrascatiRuntime.scala:139] - fload juliac.generated.SuperControllerImpl ======> res class juliac.generated.SuperControllerImpl
+INFO  [FrascatiRuntime.scala:139] - fload juliac.generated.NameControllerImpl ======> res class juliac.generated.NameControllerImpl
+INFO  [FrascatiRuntime.scala:139] - fload org.ow2.frascati.examples.helloworld.pojo.PrintService ======> res interface org.ow2.frascati.examples.helloworld.pojo.PrintService
+INFO  [FrascatiRuntime.scala:139] - fload org.objectweb.fractal.api.control.LifeCycleController ======> res interface org.objectweb.fractal.api.control.LifeCycleController
+INFO  [FrascatiRuntime.scala:139] - fload juliac.generated.SCAPrimitiveIntentControllerImpl ======> res class juliac.generated.SCAPrimitiveIntentControllerImpl
+INFO  [FrascatiRuntime.scala:139] - fload juliac.generated.SCAComponentControllerImpl ======> res class juliac.generated.SCAComponentControllerImpl
+INFO  [FrascatiRuntime.scala:139] - fload juliac.generated.SCABindingControllerImpl ======> res class juliac.generated.SCABindingControllerImpl
+INFO  [FrascatiRuntime.scala:139] - fload juliac.generated.SCALifeCycleControllerImpl ======> res class juliac.generated.SCALifeCycleControllerImpl
+INFO  [FrascatiRuntime.scala:139] - fload org.objectweb.fractal.api.control.LifeCycleController ======> res interface org.objectweb.fractal.api.control.LifeCycleController
+INFO  [FrascatiRuntime.scala:139] - fload juliac.generated.SCAPrimitiveIntentControllerImpl ======> res class juliac.generated.SCAPrimitiveIntentControllerImpl
+INFO  [FrascatiRuntime.scala:139] - fload juliac.generated.SCAComponentControllerImpl ======> res class juliac.generated.SCAComponentControllerImpl
+INFO  [FrascatiRuntime.scala:139] - fload juliac.generated.SCABindingControllerImpl ======> res class juliac.generated.SCABindingControllerImpl
+INFO  [FrascatiRuntime.scala:139] - fload juliac.generated.SCALifeCycleControllerImpl ======> res class juliac.generated.SCALifeCycleControllerImpl
+INFO  [FrascatiRuntime.scala:139] - fload org.objectweb.fractal.api.control.LifeCycleController ======> res interface org.objectweb.fractal.api.control.LifeCycleController
+INFO  [FrascatiRuntime.scala:139] - fload juliac.generated.SCAPrimitiveIntentControllerImpl ======> res class juliac.generated.SCAPrimitiveIntentControllerImpl
+INFO  [FrascatiRuntime.scala:139] - fload juliac.generated.SCAComponentControllerImpl ======> res class juliac.generated.SCAComponentControllerImpl
+INFO  [FrascatiRuntime.scala:139] - fload juliac.generated.SCABindingControllerImpl ======> res class juliac.generated.SCABindingControllerImpl
+INFO  [FrascatiRuntime.scala:139] - fload juliac.generated.SCALifeCycleControllerImpl ======> res class juliac.generated.SCALifeCycleControllerImpl
+INFO  [FrascatiRuntime.scala:139] - fload org.objectweb.fractal.api.control.LifeCycleController ======> res interface org.objectweb.fractal.api.control.LifeCycleController
+INFO  [FrascatiRuntime.scala:139] - fload juliac.generated.SCAPrimitiveIntentControllerImpl ======> res class juliac.generated.SCAPrimitiveIntentControllerImpl
+INFO  [FrascatiRuntime.scala:139] - fload juliac.generated.SCAComponentControllerImpl ======> res class juliac.generated.SCAComponentControllerImpl
+INFO  [FrascatiRuntime.scala:139] - fload juliac.generated.SCABindingControllerImpl ======> res class juliac.generated.SCABindingControllerImpl
+INFO  [FrascatiRuntime.scala:139] - fload juliac.generated.SCALifeCycleControllerImpl ======> res class juliac.generated.SCALifeCycleControllerImpl
+INFO  [FrascatiRuntime.scala:139] - fload org.ow2.frascati.examples.helloworld.pojo.PrintService ======> res interface org.ow2.frascati.examples.helloworld.pojo.PrintService
+INFO  [FrascatiRuntime.scala:139] - fload org.ow2.frascati.examples.helloworld.pojo.PrintService ======> res interface org.ow2.frascati.examples.helloworld.pojo.PrintService
+INFO  [FrascatiRuntime.scala:139] - fload org.ow2.frascati.examples.helloworld.pojo.PrintService ======> res interface org.ow2.frascati.examples.helloworld.pojo.PrintService
+INFO  [FrascatiRuntime.scala:139] - fload org.ow2.frascati.examples.helloworld.pojo.PrintService ======> res interface org.ow2.frascati.examples.helloworld.pojo.PrintService
+INFO  [FrascatiRuntime.scala:139] - fload org.ow2.frascati.examples.helloworld.pojo.PrintService ======> res interface org.ow2.frascati.examples.helloworld.pojo.PrintService
+INFO  [FrascatiRuntime.scala:139] - fload org.ow2.frascati.examples.helloworld.pojo.PrintService ======> res interface org.ow2.frascati.examples.helloworld.pojo.PrintService
+INFO  [FrascatiRuntime.scala:139] - fload org.ow2.frascati.examples.helloworld.pojo.PrintService ======> res interface org.ow2.frascati.examples.helloworld.pojo.PrintService
+INFO  [FrascatiRuntime.scala:139] - fload org.objectweb.fractal.api.control.LifeCycleController ======> res interface org.objectweb.fractal.api.control.LifeCycleController
+INFO  [FrascatiRuntime.scala:139] - fload juliac.generated.SCAPrimitiveIntentControllerImpl ======> res class juliac.generated.SCAPrimitiveIntentControllerImpl
+INFO  [FrascatiRuntime.scala:139] - fload juliac.generated.SCAComponentControllerImpl ======> res class juliac.generated.SCAComponentControllerImpl
+INFO  [FrascatiRuntime.scala:139] - fload juliac.generated.SCABindingControllerImpl ======> res class juliac.generated.SCABindingControllerImpl
+INFO  [FrascatiRuntime.scala:139] - fload juliac.generated.SCALifeCycleControllerImpl ======> res class juliac.generated.SCALifeCycleControllerImpl
+INFO  [FrascatiRuntime.scala:139] - fload org.objectweb.fractal.api.control.LifeCycleController ======> res interface org.objectweb.fractal.api.control.LifeCycleController
+INFO  [FrascatiRuntime.scala:139] - fload juliac.generated.SCAPrimitiveIntentControllerImpl ======> res class juliac.generated.SCAPrimitiveIntentControllerImpl
+INFO  [FrascatiRuntime.scala:139] - fload juliac.generated.SCAComponentControllerImpl ======> res class juliac.generated.SCAComponentControllerImpl
+INFO  [FrascatiRuntime.scala:139] - fload juliac.generated.SCABindingControllerImpl ======> res class juliac.generated.SCABindingControllerImpl
+INFO  [FrascatiRuntime.scala:139] - fload juliac.generated.SCALifeCycleControllerImpl ======> res class juliac.generated.SCALifeCycleControllerImpl
+INFO  [FrascatiRuntime.scala:139] - fload org.objectweb.fractal.api.control.LifeCycleController ======> res interface org.objectweb.fractal.api.control.LifeCycleController
+INFO  [FrascatiRuntime.scala:139] - fload juliac.generated.SCAPrimitiveIntentControllerImpl ======> res class juliac.generated.SCAPrimitiveIntentControllerImpl
+INFO  [FrascatiRuntime.scala:139] - fload juliac.generated.SCAComponentControllerImpl ======> res class juliac.generated.SCAComponentControllerImpl
+INFO  [FrascatiRuntime.scala:139] - fload juliac.generated.SCABindingControllerImpl ======> res class juliac.generated.SCABindingControllerImpl
+INFO  [FrascatiRuntime.scala:139] - fload juliac.generated.SCALifeCycleControllerImpl ======> res class juliac.generated.SCALifeCycleControllerImpl
+INFO  [FrascatiRuntime.scala:139] - fload org.ow2.frascati.tinfi.api.control.SCAIntentController ======> res interface org.ow2.frascati.tinfi.api.control.SCAIntentController
+INFO  [FrascatiRuntime.scala:139] - fload org.ow2.frascati.tinfi.api.control.SCAIntentControllerInterceptorSCAIntent ======> res class org.ow2.frascati.tinfi.api.control.SCAIntentControllerInterceptorSCAIntent
+INFO  [FrascatiRuntime.scala:139] - fload org.oasisopen.sca.ComponentContext ======> res interface org.oasisopen.sca.ComponentContext
+INFO  [FrascatiRuntime.scala:139] - fload org.oasisopen.sca.ComponentContextInterceptorSCAIntent ======> res class org.oasisopen.sca.ComponentContextInterceptorSCAIntent
+INFO  [FrascatiRuntime.scala:139] - fload org.objectweb.fractal.api.control.BindingController ======> res interface org.objectweb.fractal.api.control.BindingController
+INFO  [FrascatiRuntime.scala:139] - fload org.objectweb.fractal.api.control.BindingControllerInterceptorSCAIntent ======> res class org.objectweb.fractal.api.control.BindingControllerInterceptorSCAIntent
+INFO  [FrascatiRuntime.scala:139] - fload org.objectweb.fractal.julia.control.lifecycle.LifeCycleCoordinator ======> res interface org.objectweb.fractal.julia.control.lifecycle.LifeCycleCoordinator
+INFO  [FrascatiRuntime.scala:139] - fload org.objectweb.fractal.julia.control.lifecycle.LifeCycleCoordinatorInterceptorSCAIntent ======> res class org.objectweb.fractal.julia.control.lifecycle.LifeCycleCoordinatorInterceptorSCAIntent
+INFO  [FrascatiRuntime.scala:139] - fload org.ow2.frascati.tinfi.control.content.SCAExtendedContentController ======> res interface org.ow2.frascati.tinfi.control.content.SCAExtendedContentController
+INFO  [FrascatiRuntime.scala:139] - fload org.ow2.frascati.tinfi.control.content.SCAExtendedContentControllerInterceptorSCAIntent ======> res class org.ow2.frascati.tinfi.control.content.SCAExtendedContentControllerInterceptorSCAIntent
+INFO  [FrascatiRuntime.scala:139] - fload org.ow2.frascati.tinfi.api.control.SCAPropertyController ======> res interface org.ow2.frascati.tinfi.api.control.SCAPropertyController
+INFO  [FrascatiRuntime.scala:139] - fload org.ow2.frascati.tinfi.api.control.SCAPropertyControllerInterceptorSCAIntent ======> res class org.ow2.frascati.tinfi.api.control.SCAPropertyControllerInterceptorSCAIntent
+INFO  [FrascatiRuntime.scala:139] - fload org.objectweb.fractal.api.Component ======> res interface org.objectweb.fractal.api.Component
+INFO  [FrascatiRuntime.scala:139] - fload org.objectweb.fractal.api.ComponentInterceptorSCAIntent ======> res class org.objectweb.fractal.api.ComponentInterceptorSCAIntent
+INFO  [FrascatiRuntime.scala:139] - fload org.objectweb.fractal.julia.control.content.SuperControllerNotifier ======> res interface org.objectweb.fractal.julia.control.content.SuperControllerNotifier
+INFO  [FrascatiRuntime.scala:139] - fload org.objectweb.fractal.julia.control.content.SuperControllerNotifierInterceptorSCAIntent ======> res class org.objectweb.fractal.julia.control.content.SuperControllerNotifierInterceptorSCAIntent
+INFO  [FrascatiRuntime.scala:139] - fload org.objectweb.fractal.api.control.NameController ======> res interface org.objectweb.fractal.api.control.NameController
+INFO  [FrascatiRuntime.scala:139] - fload org.objectweb.fractal.api.control.NameControllerInterceptorSCAIntent ======> res class org.objectweb.fractal.api.control.NameControllerInterceptorSCAIntent
+INFO: org.ow2.frascati.examples.helloworld.pojo.PrintServiceInterceptorSCALCb56bb98SCACCIntent
+INFO  [FrascatiRuntime.scala:139] - fload org.ow2.frascati.examples.helloworld.pojo.Server ======> res class org.ow2.frascati.examples.helloworld.pojo.Server
+INFO  [FrascatiRuntime.scala:139] - fload juliac.generated.scaPrimitive ======> res class juliac.generated.scaPrimitive
+INFO  [FrascatiRuntime.scala:139] - fload org.ow2.frascati.examples.helloworld.pojo.PrintService ======> res interface org.ow2.frascati.examples.helloworld.pojo.PrintService
+INFO  [FrascatiRuntime.scala:139] - fload org.objectweb.fractal.api.control.LifeCycleController ======> res interface org.objectweb.fractal.api.control.LifeCycleController
+INFO  [FrascatiRuntime.scala:139] - fload juliac.generated.SCAPrimitiveIntentControllerImpl ======> res class juliac.generated.SCAPrimitiveIntentControllerImpl
+INFO  [FrascatiRuntime.scala:139] - fload juliac.generated.SCAComponentControllerImpl ======> res class juliac.generated.SCAComponentControllerImpl
+INFO  [FrascatiRuntime.scala:139] - fload juliac.generated.SCABindingControllerImpl ======> res class juliac.generated.SCABindingControllerImpl
+INFO: org.ow2.frascati.examples.helloworld.pojo.ServerFCSCAContentControllerImpl
+INFO  [FrascatiRuntime.scala:139] - fload juliac.generated.SCALifeCycleControllerImpl ======> res class juliac.generated.SCALifeCycleControllerImpl
+INFO  [FrascatiRuntime.scala:139] - fload org.ow2.frascati.examples.helloworld.pojo.PrintService ======> res interface org.ow2.frascati.examples.helloworld.pojo.PrintService
+INFO  [FrascatiRuntime.scala:139] - fload org.objectweb.fractal.julia.loader.Initializable ======> res interface org.objectweb.fractal.julia.loader.Initializable
+INFO  [FrascatiRuntime.scala:139] - fload org.objectweb.fractal.api.Component ======> res interface org.objectweb.fractal.api.Component
+INFO  [FrascatiRuntime.scala:139] - fload org.ow2.frascati.tinfi.control.content.SCAExtendedContentController ======> res interface org.ow2.frascati.tinfi.control.content.SCAExtendedContentController
+INFO  [FrascatiRuntime.scala:139] - fload juliac.generated.SCAPrimitiveIntentControllerImpl ======> res class juliac.generated.SCAPrimitiveIntentControllerImpl
+INFO  [FrascatiRuntime.scala:139] - fload juliac.generated.SCAComponentControllerImpl ======> res class juliac.generated.SCAComponentControllerImpl
+INFO  [FrascatiRuntime.scala:139] - fload juliac.generated.SCABindingControllerImpl ======> res class juliac.generated.SCABindingControllerImpl
+INFO  [FrascatiRuntime.scala:139] - fload juliac.generated.SCALifeCycleControllerImpl ======> res class juliac.generated.SCALifeCycleControllerImpl
+INFO  [FrascatiRuntime.scala:139] - fload juliac.generated.SCAContentControllerImpl ======> res class juliac.generated.SCAContentControllerImpl
+INFO  [FrascatiRuntime.scala:139] - fload org.ow2.frascati.examples.helloworld.pojo.Server ======> res class org.ow2.frascati.examples.helloworld.pojo.Server
+INFO  [FrascatiRuntime.scala:139] - fload juliac.generated.SCAPrimitivePropertyControllerImpl ======> res class juliac.generated.SCAPrimitivePropertyControllerImpl
+INFO  [FrascatiRuntime.scala:139] - fload juliac.generated.ComponentImpl ======> res class juliac.generated.ComponentImpl
+INFO  [FrascatiRuntime.scala:139] - fload juliac.generated.SuperControllerImpl ======> res class juliac.generated.SuperControllerImpl
+INFO  [FrascatiRuntime.scala:139] - fload juliac.generated.NameControllerImpl ======> res class juliac.generated.NameControllerImpl
+INFO  [FrascatiRuntime.scala:139] - fload org.objectweb.fractal.juliac.compile.jdt.CompileSupportImpl ======> res class org.objectweb.fractal.juliac.compile.jdt.CompileSupportImpl
+INFO: org.ow2.frascati.examples.helloworld.pojo.ServerFCscaPrimitiveFC7aa16a0b
+INFO: Compiling...
+DEBUG [KevoreeJarClassLoader.scala:141] - Get RessourceAsStream : org/eclipse/jdt/internal/compiler/problem/messages.properties
+DEBUG [KevoreeJarClassLoader.scala:141] - Get RessourceAsStream : org/eclipse/jdt/internal/compiler/problem/messages_fr.properties
+DEBUG [KevoreeJarClassLoader.scala:154] - Res not found org/eclipse/jdt/internal/compiler/problem/messages_fr.properties
+DEBUG [KevoreeJarClassLoader.scala:141] - Get RessourceAsStream : org/eclipse/jdt/internal/compiler/problem/messages_fr_FR.properties
+DEBUG [KevoreeJarClassLoader.scala:154] - Res not found org/eclipse/jdt/internal/compiler/problem/messages_fr_FR.properties
+DEBUG [KevoreeJarClassLoader.scala:141] - Get RessourceAsStream : org/eclipse/jdt/internal/compiler/parser/parser1.rsc
+DEBUG [KevoreeJarClassLoader.scala:141] - Get RessourceAsStream : org/eclipse/jdt/internal/compiler/parser/parser2.rsc
+DEBUG [KevoreeJarClassLoader.scala:141] - Get RessourceAsStream : org/eclipse/jdt/internal/compiler/parser/parser3.rsc
+DEBUG [KevoreeJarClassLoader.scala:141] - Get RessourceAsStream : org/eclipse/jdt/internal/compiler/parser/parser4.rsc
+DEBUG [KevoreeJarClassLoader.scala:141] - Get RessourceAsStream : org/eclipse/jdt/internal/compiler/parser/parser5.rsc
+DEBUG [KevoreeJarClassLoader.scala:141] - Get RessourceAsStream : org/eclipse/jdt/internal/compiler/parser/parser6.rsc
+DEBUG [KevoreeJarClassLoader.scala:141] - Get RessourceAsStream : org/eclipse/jdt/internal/compiler/parser/parser7.rsc
+DEBUG [KevoreeJarClassLoader.scala:141] - Get RessourceAsStream : org/eclipse/jdt/internal/compiler/parser/parser8.rsc
+DEBUG [KevoreeJarClassLoader.scala:141] - Get RessourceAsStream : org/eclipse/jdt/internal/compiler/parser/parser9.rsc
+DEBUG [KevoreeJarClassLoader.scala:141] - Get RessourceAsStream : org/eclipse/jdt/internal/compiler/parser/parser10.rsc
+DEBUG [KevoreeJarClassLoader.scala:141] - Get RessourceAsStream : org/eclipse/jdt/internal/compiler/parser/parser11.rsc
+DEBUG [KevoreeJarClassLoader.scala:141] - Get RessourceAsStream : org/eclipse/jdt/internal/compiler/parser/parser12.rsc
+DEBUG [KevoreeJarClassLoader.scala:141] - Get RessourceAsStream : org/eclipse/jdt/internal/compiler/parser/parser13.rsc
+DEBUG [KevoreeJarClassLoader.scala:141] - Get RessourceAsStream : org/eclipse/jdt/internal/compiler/parser/parser14.rsc
+DEBUG [KevoreeJarClassLoader.scala:141] - Get RessourceAsStream : org/eclipse/jdt/internal/compiler/parser/parser15.rsc
+DEBUG [KevoreeJarClassLoader.scala:141] - Get RessourceAsStream : org/eclipse/jdt/internal/compiler/parser/parser16.rsc
+DEBUG [KevoreeJarClassLoader.scala:141] - Get RessourceAsStream : org/eclipse/jdt/internal/compiler/parser/parser17.rsc
+DEBUG [KevoreeJarClassLoader.scala:141] - Get RessourceAsStream : org/eclipse/jdt/internal/compiler/parser/parser18.rsc
+DEBUG [KevoreeJarClassLoader.scala:141] - Get RessourceAsStream : org/eclipse/jdt/internal/compiler/parser/parser19.rsc
+DEBUG [KevoreeJarClassLoader.scala:141] - Get RessourceAsStream : org/eclipse/jdt/internal/compiler/parser/parser20.rsc
+DEBUG [KevoreeJarClassLoader.scala:141] - Get RessourceAsStream : org/eclipse/jdt/internal/compiler/parser/parser21.rsc
+DEBUG [KevoreeJarClassLoader.scala:141] - Get RessourceAsStream : org/eclipse/jdt/internal/compiler/parser/readableNames.properties
+DEBUG [KevoreeJarClassLoader.scala:141] - Get RessourceAsStream : org/eclipse/jdt/internal/compiler/parser/readableNames_fr.properties
+DEBUG [KevoreeJarClassLoader.scala:154] - Res not found org/eclipse/jdt/internal/compiler/parser/readableNames_fr.properties
+DEBUG [KevoreeJarClassLoader.scala:141] - Get RessourceAsStream : org/eclipse/jdt/internal/compiler/parser/readableNames_fr_FR.properties
+DEBUG [KevoreeJarClassLoader.scala:154] - Res not found org/eclipse/jdt/internal/compiler/parser/readableNames_fr_FR.properties
+DEBUG [KevoreeJarClassLoader.scala:141] - Get RessourceAsStream : org/eclipse/jdt/internal/compiler/parser/parser22.rsc
+DEBUG [KevoreeJarClassLoader.scala:141] - Get RessourceAsStream : org/eclipse/jdt/internal/compiler/parser/parser23.rsc
+DEBUG [KevoreeJarClassLoader.scala:141] - Get RessourceAsStream : org/eclipse/jdt/internal/compiler/parser/parser24.rsc
+DEBUG [KevoreeJarClassLoader.scala:141] - Get RessourceAsStream : org/eclipse/jdt/internal/compiler/parser/start1.rsc
+DEBUG [KevoreeJarClassLoader.scala:141] - Get RessourceAsStream : org/eclipse/jdt/internal/compiler/parser/start2.rsc
+DEBUG [KevoreeJarClassLoader.scala:141] - Get RessourceAsStream : org/eclipse/jdt/internal/compiler/parser/part1.rsc
+DEBUG [KevoreeJarClassLoader.scala:141] - Get RessourceAsStream : org/eclipse/jdt/internal/compiler/parser/part2.rsc
+DEBUG [KevoreeJarClassLoader.scala:141] - Get RessourceAsStream : org/eclipse/jdt/internal/compiler/parser/part14.rsc
+INFO: 15 file(s) compiled to /Users/duke/Documents/dev/dukeboard/kevoree/kevoree-library/frascati/org.kevoree.library.frascati.root/target/generated-frascati-classes
+INFO  [FrascatiRuntime.scala:139] - fload juliac.generated.scaCompositeFCb62 ======> res class juliac.generated.scaCompositeFCb62
+GRAVE: jar:file:/Users/duke/.m2/repository/org/ow2/frascati/examples/helloworld-pojo/1.4/helloworld-pojo-1.4.jar!/helloworld-pojo.composite: <sca:composite name="helloworld-pojo"> - Unable to instantiate the composite: Error when create component componentType='[r/java.lang.Runnable/server/mandatory/singleton]' membraneDesc='scaComposite' contentClass='null'.
+Please check that frascati-runtime-factory-<major>.<minor>.jar is present into your classpath.
+ERROR [FrascatiRuntime.scala:184] -
+org.ow2.frascati.assembly.factory.api.ManagerException: Error when instantiating the composite instance 'jar:file:/Users/duke/.m2/repository/org/ow2/frascati/examples/helloworld-pojo/1.4/helloworld-pojo-1.4.jar!/helloworld-pojo.composite'
+	at org.ow2.frascati.assembly.factory.manager.AssemblyFactoryManager.processComposite(AssemblyFactoryManager.java:520) ~[na:na]
+	at org.ow2.frascati.assembly.factory.api.CompositeManagerInterceptorSCALCb56bb98SCACCIntent.processComposite(CompositeManagerInterceptorSCALCb56bb98SCACCIntent.java:499) ~[na:na]
+	at org.ow2.frascati.assembly.factory.api.CompositeManagerInterceptorSCAIntent.processComposite(CompositeManagerInterceptorSCAIntent.java:371) ~[na:na]
+	at org.ow2.frascati.assembly.factory.api.CompositeManagerInterceptorSCAIntent.processComposite(CompositeManagerInterceptorSCAIntent.java:371) ~[na:na]
+	at org.ow2.frascati.assembly.factory.api.CompositeManagerFcInItf.processComposite(CompositeManagerFcInItf.java:79) ~[na:na]
+	at org.kevoree.library.frascatiNodeTypes.primitives.FrascatiAddInstance.execute(FrascatiAddInstance.scala:39) ~[na:na]
+	at org.kevoree.library.frascatiNodeTypes.FrascatiRuntime$$anonfun$act$1.apply(FrascatiRuntime.scala:181) [na:na]
+	at org.kevoree.library.frascatiNodeTypes.FrascatiRuntime$$anonfun$act$1.apply(FrascatiRuntime.scala:42) [na:na]
+	at scala.actors.Actor$class.receive(Actor.scala:547) [scala-library-2.9.1.jar:na]
+	at org.kevoree.library.frascatiNodeTypes.FrascatiRuntime.receive(FrascatiRuntime.scala:23) [na:na]
+	at org.kevoree.library.frascatiNodeTypes.FrascatiRuntime.act(FrascatiRuntime.scala:42) [na:na]
+	at scala.actors.Reactor$$anonfun$dostart$1.apply(Reactor.scala:222) [scala-library-2.9.1.jar:na]
+	at scala.actors.Reactor$$anonfun$dostart$1.apply(Reactor.scala:222) [scala-library-2.9.1.jar:na]
+	at scala.actors.ReactorTask.run(ReactorTask.scala:33) [scala-library-2.9.1.jar:na]
+	at scala.concurrent.forkjoin.ForkJoinPool$AdaptedRunnable.exec(ForkJoinPool.java:611) [scala-library-2.9.1.jar:na]
+	at scala.concurrent.forkjoin.ForkJoinTask.quietlyExec(ForkJoinTask.java:422) [scala-library-2.9.1.jar:na]
+	at scala.concurrent.forkjoin.ForkJoinWorkerThread.mainLoop(ForkJoinWorkerThread.java:340) [scala-library-2.9.1.jar:na]
+	at scala.concurrent.forkjoin.ForkJoinWorkerThread.run(ForkJoinWorkerThread.java:325) [scala-library-2.9.1.jar:na]
+Caused by: org.ow2.frascati.assembly.factory.api.ProcessorException: Unable to instantiate the composite
+	at org.ow2.frascati.assembly.factory.processor.ScaCompositeProcessor.doInstantiate(ScaCompositeProcessor.java:258) ~[na:na]
+	at org.ow2.frascati.assembly.factory.processor.ScaCompositeProcessor.doInstantiate(ScaCompositeProcessor.java:1) ~[na:na]
+	at org.ow2.frascati.assembly.factory.processor.AbstractProcessor.instantiate(AbstractProcessor.java:601) ~[na:na]
+	at org.ow2.frascati.assembly.factory.processor.AbstractProcessor.instantiate(AbstractProcessor.java:1) ~[na:na]
+	at org.ow2.frascati.assembly.factory.api.ProcessorInterceptorSCALCb56bb98SCACCIntent.instantiate(ProcessorInterceptorSCALCb56bb98SCACCIntent.java:251) ~[na:na]
+	at org.ow2.frascati.assembly.factory.api.ProcessorFcInItf.instantiate(ProcessorFcInItf.java:49) ~[na:na]
+	at org.ow2.frascati.assembly.factory.api.ProcessorInterceptorSCAIntent.instantiate(ProcessorInterceptorSCAIntent.java:89) ~[na:na]
+	at org.ow2.frascati.assembly.factory.api.ProcessorFcInItf.instantiate(ProcessorFcInItf.java:49) ~[na:na]
+	at org.ow2.frascati.assembly.factory.api.ProcessorFcSR.instantiate(ProcessorFcSR.java:39) ~[na:na]
+	at org.ow2.frascati.assembly.factory.manager.AssemblyFactoryManager.processComposite(AssemblyFactoryManager.java:518) ~[na:na]
+	... 17 common frames omitted
+Caused by: org.ow2.frascati.component.factory.api.FactoryException: Error when create component componentType='[r/java.lang.Runnable/server/mandatory/singleton]' membraneDesc='scaComposite' contentClass='null'
+	at org.ow2.frascati.component.factory.impl.ComponentFactoryImpl.createComponent(ComponentFactoryImpl.java:243) ~[na:na]
+	at org.ow2.frascati.component.factory.impl.ComponentFactoryImpl.createScaCompositeComponent(ComponentFactoryImpl.java:269) ~[na:na]
+	at org.ow2.frascati.component.factory.api.ComponentFactoryInterceptorSCALCb56bb98SCACCIntent.createScaCompositeComponent(ComponentFactoryInterceptorSCALCb56bb98SCACCIntent.java:440) ~[na:na]
+	at org.ow2.frascati.component.factory.api.ComponentFactoryInterceptorSCAIntent.createScaCompositeComponent(ComponentFactoryInterceptorSCAIntent.java:116) ~[na:na]
+	at org.ow2.frascati.component.factory.api.ComponentFactoryInterceptorSCAIntent.createScaCompositeComponent(ComponentFactoryInterceptorSCAIntent.java:116) ~[na:na]
+	at org.ow2.frascati.component.factory.api.ComponentFactoryFcInItf.createScaCompositeComponent(ComponentFactoryFcInItf.java:42) ~[na:na]
+	at org.ow2.frascati.component.factory.api.ComponentFactoryInterceptorSCAIntent.createScaCompositeComponent(ComponentFactoryInterceptorSCAIntent.java:116) ~[na:na]
+	at org.ow2.frascati.component.factory.api.ComponentFactoryFcInItf.createScaCompositeComponent(ComponentFactoryFcInItf.java:42) ~[na:na]
+	at org.ow2.frascati.component.factory.api.ComponentFactoryFcSR.createScaCompositeComponent(ComponentFactoryFcSR.java:36) ~[na:na]
+	at org.ow2.frascati.assembly.factory.processor.ScaCompositeProcessor.doInstantiate(ScaCompositeProcessor.java:253) ~[na:na]
+	... 26 common frames omitted
+Caused by: org.objectweb.fractal.julia.factory.ChainedInstantiationException:
+	at org.objectweb.fractal.juliac.runtime.JuliacBootstrapComponentImpl.loadClassIE(JuliacBootstrapComponentImpl.java:331) ~[na:na]
+	at org.objectweb.fractal.juliac.runtime.JuliacBootstrapComponentImpl.newFcInstance(JuliacBootstrapComponentImpl.java:93) ~[na:na]
+	at org.objectweb.fractal.juliac.runtime.GenericFactoryFcItf.newFcInstance(GenericFactoryFcItf.java:68) ~[na:na]
+	at org.ow2.frascati.component.factory.impl.ComponentFactoryImpl.createComponent(ComponentFactoryImpl.java:241) ~[na:na]
+	... 35 common frames omitted
+DEBUG [PrimitiveCommandExecutionHelper.scala:154] - getResult 2
+DEBUG [PrimitiveCommandExecutionHelper.scala:193] - Rollback phase
+DEBUG [PrimitiveCommandExecutionHelper.scala:197] - Undo adaptation command class org.kevoree.library.frascatiNodeTypes.primitives.RuntimeCommandWrapper
+DEBUG [PrimitiveCommandExecutionHelper.scala:197] - Undo adaptation command class org.kevoree.library.defaultNodeTypes.jcl.deploy.command.AddInstance
+DEBUG [PrimitiveCommandExecutionHelper.scala:193] - Rollback phase
+DEBUG [PrimitiveCommandExecutionHelper.scala:197] - Undo adaptation command class org.kevoree.library.defaultNodeTypes.jcl.deploy.command.NoopCommand
+DEBUG [PrimitiveCommandExecutionHelper.scala:197] - Undo adaptation command class org.kevoree.library.defaultNodeTypes.jcl.deploy.command.NoopCommand
+DEBUG [PrimitiveCommandExecutionHelper.scala:193] - Rollback phase
+DEBUG [PrimitiveCommandExecutionHelper.scala:197] - Undo adaptation command class org.kevoree.library.frascatiNodeTypes.primitives.FrascatiAddDedployUnit
+DEBUG [JCLContextHandler.scala:189] - Remove KCL for org.kevoree.library.javase.rest->/mvn:org.kevoree.library.javase/org.kevoree.library.javase.rest/1.6.0-SNAPSHOT
+DEBUG [PrimitiveCommandExecutionHelper.scala:197] - Undo adaptation command class org.kevoree.library.frascatiNodeTypes.primitives.FrascatiAddDedployUnit
+DEBUG [JCLContextHandler.scala:189] - Remove KCL for helloworld-pojo->/mvn:org.ow2.frascati.examples/helloworld-pojo/1.4
+DEBUG [PrimitiveCommandExecutionHelper.scala:193] - Rollback phase
+DEBUG [PrimitiveCommandExecutionHelper.scala:197] - Undo adaptation command class org.kevoree.library.defaultNodeTypes.jcl.deploy.command.NoopCommand
+DEBUG [PrimitiveCommandExecutionHelper.scala:193] - Rollback phase
+DEBUG [PrimitiveCommandExecutionHelper.scala:193] - Rollback phase
+DEBUG [PrimitiveCommandExecutionHelper.scala:197] - Undo adaptation command class org.kevoree.library.frascatiNodeTypes.primitives.FrascatiAddDedployUnit
+DEBUG [JCLContextHandler.scala:189] - Remove KCL for org.kevoree.extra.spray->/mvn:org.kevoree.extra/org.kevoree.extra.spray/0.9.1
+WARN  [KevoreeCoreBean.scala:381] - Update failed
+DEBUG [KevoreeCoreBean.scala:384] - End deploy result=false-5039
