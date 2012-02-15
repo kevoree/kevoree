@@ -37,17 +37,17 @@ class KevoreeListeners extends DaemonActor {
 
   case class STOP_ACTOR()
 
-  case class PREUPDATE(proposedModel : ContainerRoot)
+  case class PREUPDATE(currentModel : ContainerRoot, proposedModel : ContainerRoot)
 
-  def preUpdate(pmodel : ContainerRoot ) : Boolean = {
-    (this !? PREUPDATE(pmodel)).asInstanceOf[Boolean]
+  def preUpdate(currentModel : ContainerRoot,pmodel : ContainerRoot ) : Boolean = {
+    (this !? PREUPDATE(currentModel, pmodel)).asInstanceOf[Boolean]
   }
   
   def act() {
     loop {
       react {
-        case PREUPDATE(pmodel) => {
-          reply(registeredListeners.forall(l=> l._1.preUpdate(pmodel)))
+        case PREUPDATE(currentModel, pmodel) => {
+          reply(registeredListeners.forall(l=> l._1.preUpdate(currentModel, pmodel)))
         }
         case AddListener(l) => {
           val myActor = new ListenerActor(l)
