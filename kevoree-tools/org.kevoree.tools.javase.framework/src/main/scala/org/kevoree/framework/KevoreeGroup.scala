@@ -118,8 +118,6 @@ trait KevoreeGroup extends AbstractGroupType with KevoreeActor with ModelListene
         getModelService().asInstanceOf[ModelHandlerServiceProxy].setTempModel(cmodel)
         stopGroup
         getModelService().asInstanceOf[ModelHandlerServiceProxy].unsetTempModel()
-
-
         isStarted = false
         reply(true)
       } catch {
@@ -129,8 +127,12 @@ trait KevoreeGroup extends AbstractGroupType with KevoreeActor with ModelListene
         }
       }
     }
-    case StopMessage if (!isStarted) =>  //IGNORE
-    case StartMessage if (isStarted) =>  //IGNORE
+    case StopMessage(_) if (!isStarted) =>  {
+      reply(false)
+    }
+    case StartMessage(_) if (isStarted) =>  {
+      reply(false)
+    }
 
     case _@msg => println("Uncatch message group " + name)
   }
