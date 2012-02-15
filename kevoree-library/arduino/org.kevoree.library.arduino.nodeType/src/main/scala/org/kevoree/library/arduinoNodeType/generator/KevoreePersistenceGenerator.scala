@@ -78,13 +78,13 @@ trait KevoreePersistenceGenerator extends KevoreeCAbstractGenerator {
                   case _ if (rawType.contains("IntList4")) =>
                   {
                     context b "{"
-                                context b "char tempBuf[4];"
-                                content b "for(int j=0;j<4;j++)"
-                                content b "{"
-                                     content b "memset(tempBuf,0,sizeof(tempBuf));"
-                                     context b "sprintf(tempBuf, \":%d:\", ((" + ktype.getName + " *) instances[instanceIndex])->"+att.getName+"[j]);"
-                                     context b "for(int i=0;i<strlen(tempBuf);i++){save2Memory(tempBuf[i]);}"
-                                content b "}"
+                    context b "char tempBuf[4];"
+                    context b "for(int j=0;j<4;j++)"
+                    context b "{"
+                    context b "memset(tempBuf,0,sizeof(tempBuf));"
+                    context b "sprintf(tempBuf, \":%d;\", ((" + ktype.getName + " *) instances[instanceIndex])->"+att.getName+"[j]);"
+                    context b "for(int i=0;i<strlen(tempBuf);i++){save2Memory(tempBuf[i]);}"
+                    context b "}"
                     context b "}"
                   }
 
