@@ -230,7 +230,7 @@ case class TypeDefinitionAspect(selfTD: TypeDefinition) {
       case _ => logger.debug("Deploy Unit not found on first level {}", selfTD.getName)
     }
     if (deployUnitfound == null) {
-      logger.warn("No deploy unit has been found for deployment of {} on node {} : {}", Array(selfTD.getName,node.getName,node.getTypeDefinition.getName))
+      logger.debug("No deploy unit has been found for deployment of {} on node {} : {}", Array(selfTD.getName,node.getName,node.getTypeDefinition.getName))
       deployUnitfound = foundRelevantDeployUnitOnNodeSuperTypes(node.getTypeDefinition.asInstanceOf[NodeType], selfTD)
     }
     //logger.debug("will exit with => {}", deployUnitfound)
