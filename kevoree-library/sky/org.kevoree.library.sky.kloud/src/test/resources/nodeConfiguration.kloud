@@ -1,0 +1,31 @@
+tblock {
+
+addNode cumulus : JailNode {role="host/container", port="7000", inet="alc0", subnet="10.0.0.0", mask="24", flavor="kevjail"}
+addNode cumulus : JailNode {role="host", port="7000", inet="alc0", subnet="10.0.1.0", mask="24", flavor="kevjail"}
+addNode cumulus : JailNode {role="host", port="7000", inet="alc0", subnet="10.0.2.0", mask="24", flavor="kevjail"}
+addNode cumulus : JailNode {role="host", port="7000", inet="alc0", subnet="10.0.3.0", mask="24", flavor="kevjail"}
+addNode cumulus : JailNode {role="host", port="7000", inet="alc0", subnet="10.0.4.0", mask="24", flavor="kevjail"}
+addNode cumulus : JailNode {role="host", port="7000", inet="alc0", subnet="10.0.5.0", mask="24", flavor="kevjail"}
+addNode cumulus : JailNode {role="host", port="7000", inet="alc0", subnet="10.0.6.0", mask="24", flavor="kevjail"}
+addNode cumulus : JailNode {role="host", port="7000", inet="alc0", subnet="10.0.7.0", mask="24", flavor="kevjail"}
+addNode cumulus : JailNode {role="host", port="7000", inet="alc0", subnet="10.0.8.0", mask="24", flavor="kevjail"}
+addNode cumulus : JailNode {role="host", port="7000", inet="alc0", subnet="10.0.9.0", mask="24", flavor="kevjail"}
+addNode cumulus : JailNode {role="host", port="7000", inet="alc0", subnet="10.0.10.0", mask="24", flavor="kevjail"}
+
+network cumulus => cumulus { "KEVOREE.remote.node.modelsynch.ip"= "10.0.0.2"}
+network fog1 => fog1 { "KEVOREE.remote.node.modelsynch.ip"= "10.0.1.1"}
+network fog2 => fog2 { "KEVOREE.remote.node.modelsynch.ip"= "10.0.2.1"}
+network fog3 => fog3 { "KEVOREE.remote.node.modelsynch.ip"= "10.0.3.1"}
+network fog4 => fog4 { "KEVOREE.remote.node.modelsynch.ip"= "10.0.4.1"}
+network fog5 => fog5 { "KEVOREE.remote.node.modelsynch.ip"= "10.0.5.1"}
+network fog6 => fog6 { "KEVOREE.remote.node.modelsynch.ip"= "10.0.6.1"}
+network fog7 => fog7 { "KEVOREE.remote.node.modelsynch.ip"= "10.0.7.1"}
+network fog8 => fog8 { "KEVOREE.remote.node.modelsynch.ip"= "10.0.8.1"}
+network fog9 => fog9 { "KEVOREE.remote.node.modelsynch.ip"= "10.0.9.1"}
+network fog10 => fog10 { "KEVOREE.remote.node.modelsynch.ip"= "10.0.10.1"}
+
+addGroup sync : SSHRestConsensusGroup {lock_timeout="",lock_percent="51",pull_interval="", SSH_Public_Key=""}
+
+updateDictionary sync {ip="10.0.0.2", port="8000"}@cumulus,{ip="10.0.1.1", port="8000"}@fog1,{ip="10.0.2.1", port="8000"}@fog2,{ip="10.0.3.1", port="8000"}@fog3,{ip="10.0.4.1", port="8000"}@fog4,{ip="10.0.5.1", port="8000"}@fog5,{ip="10.0.6.1", port="8000"}@fog6,{ip="10.0.7.1", port="8000"}@fog7,{ip="10.0.8.1", port="8000"}@fog8,{ip="10.0.9.1", port="8000"}@fog9,{ip="10.0.10.1", port="8000"}@fog10
+
+}
