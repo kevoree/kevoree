@@ -149,11 +149,11 @@ class KevoreeCoreBean extends KevoreeModelHandlerService with KevoreeThreadActor
     currentModelUUID = UUID.randomUUID()
     lastDate = new Date(System.currentTimeMillis)
     //Fires the update to listeners
-    new Actor {
-      def act() {
+    //new Actor {
+    //  def act() {
         listenerActor.notifyAllListener()
-      }
-    }.start()
+    //  }
+    //}.start()
   }
 
   override def start: Actor = {
