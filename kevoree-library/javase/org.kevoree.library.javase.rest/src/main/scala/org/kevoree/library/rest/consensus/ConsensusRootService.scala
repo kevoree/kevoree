@@ -39,27 +39,4 @@ class ConsensusRootService (id: String, group: RestConsensusGroup) extends RootS
       }
     }
   }
-
-  private def getParam (uri: String, parameterName: String): String = {
-    val urlParts = uri.split("\\?")
-    if (urlParts.size > 1) {
-      val arrParameters = urlParts(1).split("&")
-      var value = ""
-      arrParameters.forall {
-        p =>
-          val pair = p.toString.split("=")
-          if (pair.size >= 2 && pair(0) == parameterName) {
-            value = pair(1)
-            false
-          } else {
-            true
-          }
-      }
-      value
-    } else {
-      ""
-    }
-  }
-
-
 }

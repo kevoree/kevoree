@@ -37,16 +37,6 @@ public class RestConsensusGroup extends RestGroup {
 	private PullConsensusActor pullConsensus;
 	private int lockPercent;
 	private ConsensusClient consensusClient;
-	
-	private long hash;
-
-	public long getHash () {
-		return hash;
-	}
-
-	public void setHash (long hash) {
-		this.hash = hash;
-	}
 
 	@Override
 	public void startRestGroup () {
@@ -89,7 +79,6 @@ public class RestConsensusGroup extends RestGroup {
 			// lock the node
 			if (lockManager.lock()) {
 				logger.debug("the node is now locked");
-				// TODO keep the hash of the future model to use it on comparison
 				return new Tuple2<byte[], byte[]>(remoteCurrentHashModel, remoteFutureHashModel);
 			} else {
 				logger.debug("Unable to lock the node. Maybe a previous lock is always active");
@@ -115,13 +104,13 @@ public class RestConsensusGroup extends RestGroup {
 		logger.debug("Starting consensus about a new update on {}", this.getNodeName());
 		Group g = KevoreeElementHelper.getGroupElement(this.getName(), currentModel).get();
 		
-		if (hash == 0) {
-			hash = System.currentTimeMillis();
-			consensusClient.initializeConsensus(g, this.getNodeName(), currentModel, hash);
+		if (getHash() == 0) {
+			setHash(System.currentTimeMillis());
+			consensusClient.initializeConsensus(g, this.getNodeName(), currentModel, getHash());
 		}
 
 		// try to lock all nodes
-		int lockConsensus = consensusClient.acquireRemoteLocks(g, this.getNodeName(), currentModel, hash, futureModel);
+		int lockConsensus = consensusClient.acquireRemoteLocks(g, this.getNodeName(), currentModel, getHash(), futureModel);
 		// check if at least <lock_percent> nodes are locked
 		if (lockConsensus >= lockPercent) {
 			logger.debug("Lock is acquired on {} nodes", lockConsensus);
