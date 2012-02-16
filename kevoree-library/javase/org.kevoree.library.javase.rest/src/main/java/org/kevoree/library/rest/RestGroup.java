@@ -64,7 +64,6 @@ public class RestGroup extends AbstractGroupType {
 
 	@Override
 	public void triggerModelUpdate () {
-		hash++;
 		ContainerRoot model = this.getModelService().getLastModel();
 		for (Group group : model.getGroupsForJ()) {
 			if (group.getName().equals(this.getName())) {
@@ -223,6 +222,7 @@ public class RestGroup extends AbstractGroupType {
 	 * @return the result may depend of the implementation. Basic implementation in RestGroup always returns <code>true</code>
 	 */
 	public boolean updateModel (ContainerRoot model) {
+		hash++;
 		this.getModelService().updateModel(model);
 		logger.debug("Rest Group updateModel");
 		return true;
