@@ -33,16 +33,6 @@ public class RestGroup extends AbstractGroupType {
 	private Logger logger = LoggerFactory.getLogger(this.getClass());
 	private ServerBootstrap server = new ServerBootstrap(this);
 
-	private long hash;
-
-	public long getHash () {
-		return hash;
-	}
-
-	public void setHash (long hash) {
-		this.hash = hash;
-	}
-
 	@Start
 	public void startRestGroup () {
 		logger.warn("Rest service start on port " + this.getDictionary().get("port").toString());
@@ -69,7 +59,7 @@ public class RestGroup extends AbstractGroupType {
 			if (group.getName().equals(this.getName())) {
 				for (ContainerNode subNode : group.getSubNodesForJ()) {
 					if (!subNode.getName().equals(this.getNodeName())) {
-						internalPush(model, subNode.getName(), hash);
+						internalPush(model, subNode.getName(), this.getNodeName());
 					}
 				}
 				return;
@@ -126,47 +116,46 @@ public class RestGroup extends AbstractGroupType {
 		}
 	}
 
+	public void internalPush (ContainerRoot model, String targetNodeName, String sender) {
+			try {
+				ByteArrayOutputStream outStream = new ByteArrayOutputStream();
+				KevoreeXmiHelper.saveStream(outStream, model);
+				outStream.flush();
+				String IP = KevoreePlatformHelper.getProperty(model, targetNodeName, Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP());
+				if (IP.equals("")) {
+					IP = "127.0.0.1";
+				}
 
-	void internalPush (ContainerRoot model, String targetNodeName, Long hash) {
-		try {
-			ByteArrayOutputStream outStream = new ByteArrayOutputStream();
-			KevoreeXmiHelper.saveStream(outStream, model);
-			outStream.flush();
-			String IP = KevoreePlatformHelper.getProperty(model, targetNodeName, Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP());
-			if (IP.equals("")) {
-				IP = "127.0.0.1";
+				Option<Integer> portOption = KevoreePropertyHelper.getIntPropertyForGroup(model, this.getName(), "port", true, targetNodeName);
+				int PORT = 8000;
+				if (portOption.isDefined()) {
+					PORT = portOption.get();
+				}
+
+				logger.debug("port=>" + PORT);
+
+				URL url = new URL("http://" + IP + ":" + PORT + "/model/current?sender=" + sender);
+				URLConnection conn = url.openConnection();
+				conn.setConnectTimeout(3000);
+				conn.setDoOutput(true);
+				OutputStreamWriter wr = new OutputStreamWriter(conn.getOutputStream());
+				wr.write(outStream.toString());
+				wr.flush();
+				// Get the response
+				BufferedReader rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+				String line = rd.readLine();
+				while (line != null) {
+					line = rd.readLine();
+				}
+				wr.close();
+				rd.close();
+
+			} catch (Exception e) {
+				//			e.printStackTrace();
+				logger.error("Unable to push a model on " + targetNodeName, e);
+
 			}
-
-			Option<Integer> portOption = KevoreePropertyHelper.getIntPropertyForGroup(model, this.getName(), "port", true, targetNodeName);
-			int PORT = 8000;
-			if (portOption.isDefined()) {
-				PORT = portOption.get();
-			}
-
-			logger.debug("port=>" + PORT);
-
-			URL url = new URL("http://" + IP + ":" + PORT + "/model/current&hash=" + hash);
-			URLConnection conn = url.openConnection();
-			conn.setConnectTimeout(3000);
-			conn.setDoOutput(true);
-			OutputStreamWriter wr = new OutputStreamWriter(conn.getOutputStream());
-			wr.write(outStream.toString());
-			wr.flush();
-			// Get the response
-			BufferedReader rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-			String line = rd.readLine();
-			while (line != null) {
-				line = rd.readLine();
-			}
-			wr.close();
-			rd.close();
-
-		} catch (Exception e) {
-			//			e.printStackTrace();
-			logger.error("Unable to push a model on " + targetNodeName, e);
-
 		}
-	}
 
 
 	public String getAddress (String remoteNodeName) {
@@ -182,9 +171,8 @@ public class RestGroup extends AbstractGroupType {
 	public int parsePortNumber (String nodeName) throws IOException {
 		try {
 			//logger.debug("look for port on " + nodeName);
-			return KevoreeFragmentPropertyHelper
-					.getIntPropertyFromFragmentGroup(this.getModelService().getLastModel(), this.getName(), "port",
-							nodeName);
+			return KevoreeFragmentPropertyHelper.getIntPropertyFromFragmentGroup(this.getModelService().getLastModel(), this.getName(), "port",
+					nodeName);
 		} catch (NumberFormatException e) {
 			throw new IOException(e.getMessage());
 		}
@@ -218,12 +206,31 @@ public class RestGroup extends AbstractGroupType {
 	/**
 	 * <b>This method must only be use by RootService</b>
 	 *
-	 * @param model the new model to apply on the node
+	 * @param model  the new model to apply on the node
+	 * @param sender the sender name of the model (maybe an empty string if the sender is not a node of the group
 	 * @return the result may depend of the implementation. Basic implementation in RestGroup always returns <code>true</code>
 	 */
-	public boolean updateModel (ContainerRoot model) {
-		hash++;
-		this.getModelService().updateModel(model);
+	public boolean updateModel (final ContainerRoot model, final String sender) {
+		new Thread() {
+			@Override
+			public void run () {
+				if (!sender.equals("")) {
+					for (ContainerNode n : RestGroup.this.getModelElement().getSubNodesForJ()) {
+						if (n.getName().equals(sender)) {
+							RestGroup.this.getModelService().unregisterModelListener(RestGroup.this.getModelListener());
+						}
+					}
+				}
+				RestGroup.this.getModelService().atomicUpdateModel(model);
+				if (!sender.equals("")) {
+					for (ContainerNode n : RestGroup.this.getModelElement().getSubNodesForJ()) {
+						if (n.getName().equals(sender)) {
+							RestGroup.this.getModelService().registerModelListener(RestGroup.this.getModelListener());
+						}
+					}
+				}
+			}
+		}.start();
 		logger.debug("Rest Group updateModel");
 		return true;
 	}

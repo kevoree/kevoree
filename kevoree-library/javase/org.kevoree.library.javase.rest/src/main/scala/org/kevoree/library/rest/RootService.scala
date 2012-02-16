@@ -40,27 +40,13 @@ class RootService (id: String, group: RestGroup) extends Actor with FileServer {
 
     case RequestContext(HttpRequest(HttpMethods.POST, url, _, body, _), _, responder) if (url.startsWith("/model/current")) => {
       try {
-        val hashString = getParam(url, "hash")
-        if (hashString != "") {
-          val hash = java.lang.Long.parseLong(hashString)
-          if (hash != group.getHash) {
-            val model = KevoreeXmiHelper.loadString(new String(body))
-            if (group.updateModel(model)) {
-              responder.complete(response("<ack nodeName=\"" + group.getNodeName + "\" />"))
-            } else {
-              responder.complete(response("<nack nodeName=\"" + group.getNodeName + "\" />"))
-            }
-          } else {
-            responder.complete(response("<ack nodeName=\"" + group.getNodeName + "\" />"))
-          }
+        val model = KevoreeXmiHelper.loadString(new String(body))
+        if (group.updateModel(model, getParam(url, "sender"))) {
+          responder.complete(response("<ack nodeName=\"" + group.getNodeName + "\" />"))
         } else {
-          val model = KevoreeXmiHelper.loadString(new String(body))
-          if (group.updateModel(model)) {
-            responder.complete(response("<ack nodeName=\"" + group.getNodeName + "\" />"))
-          } else {
-            responder.complete(response("<nack nodeName=\"" + group.getNodeName + "\" />"))
-          }
+          responder.complete(response("<nack nodeName=\"" + group.getNodeName + "\" />"))
         }
+
       } catch {
         case _@e => {
           log.error("Error while uploading model from group " + group.getName, e)
