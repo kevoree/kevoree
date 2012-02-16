@@ -259,18 +259,28 @@ public class SocketChannel extends AbstractChannelFragment implements Runnable {
                                     ois = new ObjectInputStream(stream){
                                         @Override
                                         protected Class<?> resolveClass(ObjectStreamClass objectStreamClass) throws IOException, ClassNotFoundException {
-                                            Class c = resolver.resolve(objectStreamClass.getName());
-                                            if(c == null){
-                                                return super.resolveClass(objectStreamClass);
-                                            } else {
-                                                return c;
-                                            }
+                                            Class c = null;
+                                            try {
+                                                if(c == null){
+                                                    c = resolver.resolve(objectStreamClass.getName());
+                                                }
+                                            } catch (Exception e) { }
+                                            try {
+                                                if(c == null){
+                                                    c = super.resolveClass(objectStreamClass);
+                                                }
+                                            } catch (Exception e) { }
+                                            try {
+                                                if(c == null){
+                                                    c= Class.forName(objectStreamClass.getName());
+                                                }
+                                            } catch (Exception e) { }                                            
+
+                                            return c;
                                         }
                                     };
                                     msg = (Message) ois.readObject();
-                                    System.out.println("Message Rec = "+msg);
                                 } catch (Exception e) {
-                                    e.printStackTrace();
                                     ois = null;
                                     nodeDown(client);
                                     _alive =false;

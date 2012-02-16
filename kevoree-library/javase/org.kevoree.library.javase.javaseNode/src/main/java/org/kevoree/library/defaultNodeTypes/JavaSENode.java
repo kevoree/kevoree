@@ -82,10 +82,10 @@ public class JavaSENode extends AbstractNodeType {
 				if (line.equalsIgnoreCase("shutdown")) {
 					isRunning = false;
 					shutdown = true;
-				} else if (line.equalsIgnoreCase("printKCL")) {
-					//this.getBootStrapperService().getKevoreeClassLoaderHandler().printKCL();
+				} else if (line.equalsIgnoreCase("kcl")) {
+					System.out.println(this.getBootStrapperService().getKevoreeClassLoaderHandler().getKCLDump());
 				} else if (line.equalsIgnoreCase("help")) {
-					System.out.println("commands:\n\tshutdown: allow to shutdown the node\n\tprintKCL: allow to list all the KCLClassLoader and their relationships");
+					System.out.println("commands:\n\tshutdown: allow to shutdown the node\n\tkcl: allow to list all the KCLClassLoader and their relationships");
 				}
 			}
 			reader.close();

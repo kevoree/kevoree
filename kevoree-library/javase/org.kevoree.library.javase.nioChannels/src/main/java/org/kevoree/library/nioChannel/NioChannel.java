@@ -132,12 +132,6 @@ public class NioChannel extends AbstractChannelFragment {
 
     @Override
     public Object dispatch(Message message) {
-
-
-        if (!message.getPassedNodes().contains(getNodeName())) {
-            message.getPassedNodes().add(getNodeName());
-        }
-
         for (org.kevoree.framework.KevoreePort p : getBindedPorts()) {
             forward(p, message);
         }
@@ -156,6 +150,9 @@ public class NioChannel extends AbstractChannelFragment {
             @Override
             public Object sendMessageToRemote(Message message) {
                 try {
+                    if (!message.getPassedNodes().contains(getNodeName())) {
+                        message.getPassedNodes().add(getNodeName());
+                    }
                     msgQueue.putMsg(getAddress(remoteNodeName), parsePortNumber(remoteNodeName), message);
                     //    clientBootStrap.connect(new InetSocketAddress(getAddress(remoteNodeName),parsePortNumber(remoteNodeName)));
                 } catch (IOException e) {

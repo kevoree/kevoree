@@ -105,16 +105,16 @@ public class KevoreeGUIFrame extends JFrame {
                         final KevoreeBootStrap btA = new KevoreeBootStrap();
 
 
-						Runtime.getRuntime().addShutdownHook(new Thread("Shutdown Hook") {
+                        Runtime.getRuntime().addShutdownHook(new Thread("Shutdown Hook") {
 
-							public void run () {
-								try {
-									btA.stop();
-								} catch (Exception ex) {
-									System.out.println("Error stopping framework: " + ex.getMessage());
-								}
-							}
-						});
+                            public void run() {
+                                try {
+                                    btA.stop();
+                                } catch (Exception ex) {
+                                    System.out.println("Error stopping framework: " + ex.getMessage());
+                                }
+                            }
+                        });
 
                         btA.setBootstrapModel(nodeUI.getCurrentModel());
 
@@ -125,17 +125,10 @@ public class KevoreeGUIFrame extends JFrame {
                                     @Override
                                     public void run() {
                                         try {
+                                            btA.stop();
                                             DefaultSystem.resetSystemFlux();
                                             dispose();
-
-                                            //System.setOut(System.);
-
-                                            btA.stop();
-
                                             Runtime.getRuntime().exit(0);
-
-
-
                                             //CLOSE KEVOREE BTActivator first ...
                                             /*
                                             btA.stop(felix.getM_fwk().getBundleContext());

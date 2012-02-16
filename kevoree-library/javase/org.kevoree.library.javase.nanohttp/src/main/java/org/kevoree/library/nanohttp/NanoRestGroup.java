@@ -96,7 +96,7 @@ public class NanoRestGroup extends AbstractGroupType {
             }
         };
 
-        logger.warn("Rest service start on port ->" + port);
+        logger.info("Rest service start on port ->" + port);
     }
 
     @Stop
@@ -150,7 +150,7 @@ public class NanoRestGroup extends AbstractGroupType {
 
         } catch (Exception e) {
             //			e.printStackTrace();
-            logger.error("Unable to push a model on " + targetNodeName, e);
+            logger.debug("Unable to push a model on " + targetNodeName);
 
         }
     }

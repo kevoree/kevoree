@@ -19,7 +19,7 @@ import org.slf4j.LoggerFactory
 import org.kevoree.DeployUnit
 import actors.DaemonActor
 import scala.collection.JavaConversions._
-import org.kevoree.api.service.core.classloading.{KevoreeClassLoaderHandler}
+import org.kevoree.api.service.core.classloading.KevoreeClassLoaderHandler
 import org.kevoree.kcl.KevoreeJarClassLoader
 
 /**
@@ -150,13 +150,13 @@ class JCLContextHandler extends DaemonActor with KevoreeClassLoaderHandler {
       kcl_cache.put(buildKEY(du), newcl)
       kcl_cache_file.put(buildKEY(du), file)
       logger.debug("Add KCL for {}->{}", du.getUnitName, buildKEY(du))
-
       du.getRequiredLibs.foreach {
         rLib =>
           val kcl = getKCLInternals(rLib)
           if (kcl != null) {
             logger.debug("Link KCL for {}->{}", du.getUnitName, rLib.getUnitName)
             newcl.addSubClassLoader(kcl)
+            kcl.addWeakClassLoader(newcl)
 
             du.getRequiredLibs.filter(rLibIn => rLib != rLibIn).foreach(rLibIn => {
               val kcl2 = getKCLInternals(rLibIn)
@@ -187,8 +187,8 @@ class JCLContextHandler extends DaemonActor with KevoreeClassLoaderHandler {
     if (!lockedDu.contains(key)) {
       if (kcl_cache.containsKey(key)) {
         logger.debug("Remove KCL for {}->{}", du.getUnitName, buildKEY(du))
-        kcl_cache.keySet().foreach {
-          key1 => kcl_cache.get(key1).cleanupLinks(kcl_cache.get(key))
+        kcl_cache.values().foreach {
+          vals => vals.cleanupLinks(kcl_cache.get(key))
         }
         kcl_cache.get(key).unload()
         kcl_cache.remove(key)
@@ -245,7 +245,7 @@ class JCLContextHandler extends DaemonActor with KevoreeClassLoaderHandler {
     if (resolvedFile != null) {
       installDeployUnitInternals(du, resolvedFile)
     } else {
-      logger.error("Error while resolving deploy unit "+du.getUnitName)
+      logger.error("Error while resolving deploy unit " + du.getUnitName)
       null
     }
   }
@@ -254,4 +254,13 @@ class JCLContextHandler extends DaemonActor with KevoreeClassLoaderHandler {
     (this !? INSTALL_DEPLOYUNIT(du)).asInstanceOf[KevoreeJarClassLoader]
   }
 
+  def getKCLDump: String = {
+    val buffer = new StringBuffer
+    kcl_cache.foreach {k =>
+      buffer.append("KCL KEY name="+k._1+"\n")
+      buffer.append(k._2.getKCLDump+"\n")
+    }
+
+    buffer.toString
+  }
 }
