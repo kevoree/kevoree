@@ -32,6 +32,7 @@ trait KevoreeGroup extends AbstractGroupType with KevoreeActor with ModelListene
 
   def preUpdate(currentModel : ContainerRoot, proposedModel : ContainerRoot) : Boolean = triggerPreUpdate(currentModel, proposedModel)
 
+  override def getModelListener : ModelListener = this
 
 
   var mhandler: ModelHandlerServiceProxy = new ModelHandlerServiceProxy();
