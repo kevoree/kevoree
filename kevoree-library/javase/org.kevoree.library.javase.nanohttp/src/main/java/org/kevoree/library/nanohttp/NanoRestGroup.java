@@ -1,6 +1,8 @@
 package org.kevoree.library.nanohttp;
 
+import org.kevoree.ContainerNode;
 import org.kevoree.ContainerRoot;
+import org.kevoree.Group;
 import org.kevoree.annotation.*;
 import org.kevoree.api.service.core.handler.KevoreeModelHandlerService;
 import org.kevoree.framework.AbstractGroupType;
@@ -14,7 +16,10 @@ import org.slf4j.LoggerFactory;
 import java.io.*;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.Enumeration;
 import java.util.Properties;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  * Created by IntelliJ IDEA.
@@ -35,8 +40,11 @@ public class NanoRestGroup extends AbstractGroupType {
     private ModelSerializer modelSaver = new ModelSerializer();
     private KevoreeModelHandlerService handler = null;
 
+    ExecutorService poolUpdate = Executors.newSingleThreadExecutor();
+
     @Start
     public void startRestGroup() throws IOException {
+        poolUpdate = Executors.newSingleThreadExecutor();
         handler = this.getModelService();
         int port = Integer.parseInt(this.getDictionary().get("port").toString());
         server = new NanoHTTPD(port) {
@@ -44,15 +52,36 @@ public class NanoRestGroup extends AbstractGroupType {
             public Response serve(String uri, String method, Properties header, Properties parms, Properties files, String body) {
                 if (method.equals("POST")) {
                     try {
-                        ContainerRoot model = KevoreeXmiHelper.loadString(body.trim());
-                        System.out.println("UpdateModel");
-                        handler.updateModel(model);
+                        final ContainerRoot model = KevoreeXmiHelper.loadString(body.trim());
+
+                        String srcNodeName = "";
+                        Boolean externalSender = true;
+                        Enumeration e = header.propertyNames();
+                        e = parms.propertyNames();
+                        while (e.hasMoreElements()) {
+                            String value = (String) e.nextElement();
+                            if (value.endsWith("nodesrc")) {
+                                srcNodeName = parms.getProperty(value);
+                            }
+                        }
+                        for(ContainerNode subNode : getModelElement().getSubNodesForJ()){
+                            if(subNode.getName().trim().equals(srcNodeName.trim())){
+                                externalSender = false;
+                            }
+                        }
+
                         //DO NOT NOTIFY ALL WHEN REC FROM THIS GROUP
+                        final Boolean finalexternalSender = externalSender;
+                        Runnable t = new Runnable() {
+                            @Override
+                            public void run() {
+                                if(!finalexternalSender){ getModelService().unregisterModelListener(getModelListener()); }
+                                handler.atomicUpdateModel(model);
+                                if(!finalexternalSender){ getModelService().registerModelListener(getModelListener()); }
+                            }
+                        };
+                        poolUpdate.submit(t);
 
-                        //OPEN THREAD
-                        //REMOVE LISTENER
-
-                        //ADD LISTENER
                         return new NanoHTTPD.Response(HTTP_OK, MIME_HTML, "<ack nodeName=\"" + getNodeName() + "\" />");
                     } catch (Exception e) {
                         logger.error("Error while loading model");
@@ -72,14 +101,18 @@ public class NanoRestGroup extends AbstractGroupType {
 
     @Stop
     public void stopRestGroup() {
+        poolUpdate.shutdownNow();
         server.stop();
     }
 
     @Override
     public void triggerModelUpdate() {
-        //NOOP
-        //FORWARD TO ALL CONNECTED NODE
-        //TODO
+        Group group = getModelElement();
+        for (ContainerNode subNode : group.getSubNodesForJ()) {
+            if (!subNode.getName().equals(this.getNodeName())) {
+                push(getModelService().getLastModel(), subNode.getName());
+            }
+        }
     }
 
     @Override
@@ -94,10 +127,12 @@ public class NanoRestGroup extends AbstractGroupType {
             }
 
             int PORT = KevoreeFragmentPropertyHelper.getIntPropertyFromFragmentGroup(model, this.getName(), "port", targetNodeName);
-
+/*
             System.out.println("port=>" + PORT);
-
-            URL url = new URL("http://" + IP + ":" + PORT + "/model/current");
+            System.out.println("GetName=> " + getName());
+            System.out.println("GetNodeName=> " + getNodeName());
+*/
+            URL url = new URL("http://" + IP + ":" + PORT + "/model/current?nodesrc="+getNodeName());
             URLConnection conn = url.openConnection();
             conn.setConnectTimeout(3000);
             conn.setDoOutput(true);
