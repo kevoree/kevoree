@@ -15,7 +15,6 @@ class ConsensusRootService (id: String, group: RestConsensusGroup) extends RootS
 
   override protected def receive = {
     super.receive.orElse {
-
       // ConsensusRootService specific cases
       case RequestContext(HttpRequest(HttpMethods.GET, uri, _, _, _), _, responder) if (uri.startsWith("/model/consensus/lock")) => {
         // get parameters which must be currentModel and futureModel
@@ -40,27 +39,4 @@ class ConsensusRootService (id: String, group: RestConsensusGroup) extends RootS
       }
     }
   }
-
-  private def getParam (uri: String, parameterName: String): String = {
-    val urlParts = uri.split("\\?")
-    if (urlParts.size > 1) {
-      val arrParameters = urlParts(1).split("&")
-      var value = ""
-      arrParameters.forall {
-        p =>
-          val pair = p.toString.split("=")
-          if (pair.size >= 2 && pair(0) == parameterName) {
-            value = pair(1)
-            false
-          } else {
-            true
-          }
-      }
-      value
-    } else {
-      ""
-    }
-  }
-
-
 }

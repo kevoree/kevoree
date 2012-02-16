@@ -93,7 +93,7 @@ public class KloudResourceManagerGroup extends SSHRestGroup {
 	}
 
 	@Override
-	public void updateModel (ContainerRoot model) {
+	public boolean updateModel (ContainerRoot model) {
 		// looking if this instance is on top of a IaaS node or a PaaS node (PJavaSeNode)
 		if (KloudDeploymentManager.isIaaSNode(this.getModelService().getLastModel(), this.getName(), this.getNodeName())) {
 			// if this instance is on top of IaaS node then we try to dispatch the received model on the kloud
@@ -101,21 +101,27 @@ public class KloudResourceManagerGroup extends SSHRestGroup {
 				Option<ContainerRoot> cleanedModelOption = KloudDeploymentManager.processDeployment(model, userModel, this.getModelService(), this.getKevScriptEngineFactory(), this.getName());
 				if (cleanedModelOption.isDefined()) {
 					userModel = cleanedModelOption.get();
+					return true;
 				}
+				return false;
 			} else {
 				Option<ContainerRoot> cleanModelOption = KloudDeploymentManager.cleanUserModel(userModel);
 				if (cleanModelOption.isDefined()) {
 					// there is no new node so we simply push model on each PaaSNode
 					if (KloudDeploymentManager.updateUserConfiguration(this.getName(), cleanModelOption.get(), model, this.getModelService(), getKevScriptEngineFactory())) {
 						userModel = model;
+						return true;
 					}
 				}
+				return false;
 			}
 		} else if (KloudDeploymentManager.isPaaSNode(this.getModelService().getLastModel(), this.getName(), this.getNodeName())) {
 			// if this instance is on top of PaaS node then we deploy the model on the node
 			this.getModelService().updateModel(model);
+			return true;
 		} else {
 			logger.debug("Unable to manage this kind of node as a Kloud node");
+			return false;
 		}
 	}
 
