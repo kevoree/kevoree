@@ -44,11 +44,9 @@
        return false;
      }
 
-
-
 int parse_array_int(int size,char *dico, int val[])
 {
-	#define MAX_SIZE_INT 10
+	#define MAX_SIZE_INT 4
 	int count=0,i=0,j=0;
 	char parsing[MAX_SIZE_INT];
 	// init array val
@@ -56,18 +54,16 @@ int parse_array_int(int size,char *dico, int val[])
 	{
 		val[i] = 0;
 	}
-	dico[strlen(dico)] = '\n';
 	if((int)strlen(dico) > 1)
 	{
-		for(i=0;i<(int)strlen(dico);i++)
+		for(i=0;i<(int)strlen(dico)+1;i++)
 		{
-			if(dico[i] != ';' && dico[i] != '\n')
+			if(dico[i] != ';' && i !=strlen(dico))
 			{
 				if(j <MAX_SIZE_INT)	{ parsing[j] = dico[i];	j++;}	else {strcpy(parsing,"0");}
 			}
 			else
 			{
-				parsing[j] = '\n';
 				val[count] = atoi(parsing);
 				memset(parsing, 0, sizeof(parsing));
 				count++;
@@ -83,12 +79,6 @@ int parse_array_int(int size,char *dico, int val[])
 	}
 }
 
-/**
-* Parsing type IntList4
-* @param dico
-* @param values parsed
-* @return 0 in case of success
-*/
 int parse_IntList4(char *dico, int val[])
 {
 	return parse_array_int(4,dico,val);
