@@ -40,17 +40,17 @@ public abstract class AbstractClassLoader extends ClassLoader {
     private final ProxyClassLoader systemLoader = new SystemLoader();
     private final ProxyClassLoader parentLoader = new ParentLoader();
     private final ProxyClassLoader currentLoader = new CurrentLoader();
-    private final ProxyClassLoader threadLoader = new ThreadContextLoader();
-    private final ProxyClassLoader osgiBootLoader = new OsgiBootLoader();
+   // private final ProxyClassLoader threadLoader = new ThreadContextLoader();
+    //private final ProxyClassLoader osgiBootLoader = new OsgiBootLoader();
 
     /**
      * No arguments constructor
      */
     public AbstractClassLoader() {
         loaders.add( systemLoader );
-        loaders.add( parentLoader );
-        loaders.add( currentLoader );
-        loaders.add( threadLoader );
+        //loaders.add( parentLoader );
+       // loaders.add( currentLoader );
+        //loaders.add( threadLoader );
     }
     
 
@@ -65,6 +65,7 @@ public abstract class AbstractClassLoader extends ClassLoader {
      */
     @Override
     public Class loadClass(String className) throws ClassNotFoundException {
+        System.out.println("!!!!!!!!!!!!!! KCL Hell !!!!!");
         return ( loadClass( className, true ) );
     }
 
@@ -85,9 +86,9 @@ public abstract class AbstractClassLoader extends ClassLoader {
         Class clazz = null;
 
         // Check osgi boot delegation
-        if (osgiBootLoader.isEnabled()) {
-            clazz = osgiBootLoader.loadClass( className, resolveIt );
-        }
+       // if (osgiBootLoader.isEnabled()) {
+       //     clazz = osgiBootLoader.loadClass( className, resolveIt );
+       // }
 
         if (clazz == null) {
             for (ProxyClassLoader l : loaders) {
@@ -122,9 +123,10 @@ public abstract class AbstractClassLoader extends ClassLoader {
         InputStream is = null;
 
         // Check osgi boot delegation
+        /*
         if (osgiBootLoader.isEnabled()) {
             is = osgiBootLoader.loadResource( name );
-        }
+        }*/
 
         if (is == null) {
             for (ProxyClassLoader l : loaders) {
@@ -163,9 +165,10 @@ public abstract class AbstractClassLoader extends ClassLoader {
                 return null;
             }
 
-            if (logger.isLoggable( Level.FINEST ))
+            //System.out.println("Returning system class " + className);
+            /*if (logger.isLoggable( Level.FINEST ))
                 logger.finest( "Returning system class " + className );
-
+*/
             return result;
         }
 
@@ -427,8 +430,8 @@ public abstract class AbstractClassLoader extends ClassLoader {
     public ProxyClassLoader getThreadLoader() {
         return currentLoader;
     }
-
+/*
     public ProxyClassLoader getOsgiBootLoader() {
         return osgiBootLoader;
-    }
+    }*/
 }

@@ -37,4 +37,6 @@ public interface KevoreeClassLoaderHandler {
 
     public File getCacheFile(DeployUnit du);
 
+    public String getKCLDump();
+
 }
