@@ -18,23 +18,27 @@ class ConsensusRootService (id: String, group: RestConsensusGroup) extends RootS
       // ConsensusRootService specific cases
       case RequestContext(HttpRequest(HttpMethods.GET, uri, _, _, _), _, responder) if (uri.startsWith("/model/consensus/lock")) => {
         // get parameters which must be currentModel and futureModel
-        val currentHashModel = getParam(uri, "currentModel").getBytes("UTF-8")
-        val futureHashModel = getParam(uri, "futureModel").getBytes("UTF-8")
+        val remoteHash = java.lang.Long.parseLong(getParam(uri, "hash"))
+        //        val futureHashModel = getParam(uri, "futureModel").getBytes("UTF-8")
         // call the lock on the node
-        val hashes = group.lock(currentHashModel, futureHashModel)
-        val body = "currentModel" + "=" + new String(hashes._1, "UTF-8") + "\n" + "futureModel" + "=" + new String(hashes._2, "UTF-8") + "\n"
+        val isLock = group.lock(remoteHash)
+        var body = ""
+        if (isLock) {
+          body = "<lock nodeName=\"" + group.getNodeName + "\" hash" + "=\"" + group.getHash + "\" />"
+        } else {
+          body = "<unlock nodeName=\"" + group.getNodeName + "\" />"
+        }
         responder.complete(response(body))
       }
       case RequestContext(HttpRequest(HttpMethods.GET, uri, _, _, _), _, responder) if (uri.startsWith("/model/consensus/hash")) => {
-        val hashes = group.hashes()
-        val body = "currentModel" + "=" + new String(hashes._1, "UTF-8") + "\n" + "futureModel" + "=" + new String(hashes._2, "UTF-8") + "\n"
+        val body = "<hash nodeName=\"" + group.getNodeName + "\">" + group.getHash + "</hash>"
         responder.complete(response(body))
       }
-        // ConsensusRootService specific cases
+      // ConsensusRootService specific cases
       case RequestContext(HttpRequest(HttpMethods.GET, uri, _, _, _), _, responder) if (uri.startsWith("/model/consensus/unlock")) => {
         // call the unlock on the node
-        group.unlock()
-        val body = "<unlock nodeName=\"" + group.getNodeName + "\" />"
+        val newHash = group.unlock(java.lang.Long.parseLong(getParam(uri, "hash")))
+        val body = "<unlock nodeName=\"" + group.getNodeName + "\" hash=" + newHash + "\" />"
         responder.complete(response(body))
       }
     }
