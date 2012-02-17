@@ -93,7 +93,7 @@ public class KloudResourceManagerGroup extends SSHRestGroup {
 	}
 
 	@Override
-	public boolean updateModel (ContainerRoot model) {
+	public boolean updateModel (ContainerRoot model, String sender) {
 		// looking if this instance is on top of a IaaS node or a PaaS node (PJavaSeNode)
 		if (KloudDeploymentManager.isIaaSNode(this.getModelService().getLastModel(), this.getName(), this.getNodeName())) {
 			// if this instance is on top of IaaS node then we try to dispatch the received model on the kloud
