@@ -91,7 +91,7 @@ public class RestGroup extends AbstractGroupType {
 				PORT = portOption.get();
 			}
 
-			logger.debug("port=>" + PORT);
+			logger.debug("url=>" + "http://" + IP + ":" + PORT + "/model/current");
 
 			URL url = new URL("http://" + IP + ":" + PORT + "/model/current");
 			URLConnection conn = url.openConnection();
