@@ -16,7 +16,7 @@ package org.kevoree.core.basechecker.dictionaryChecker
 import org.kevoree.api.service.core.checker.{CheckerViolation, CheckerService}
 import org.kevoree.framework.aspects.KevoreeAspects._
 import scala.collection.JavaConversions._
-import org.kevoree.{DictionaryAttribute, Instance, ContainerRoot}
+import org.kevoree._
 
 
 /**
@@ -28,7 +28,7 @@ import org.kevoree.{DictionaryAttribute, Instance, ContainerRoot}
  */
 
 class DictionaryOptionalChecker extends CheckerService {
-  def check(model: ContainerRoot): java.util.List[CheckerViolation] = {
+  def check (model: ContainerRoot): java.util.List[CheckerViolation] = {
     var violations: List[CheckerViolation] = List()
 
     model.getAllInstances.foreach {
@@ -43,10 +43,25 @@ class DictionaryOptionalChecker extends CheckerService {
                   if (!defaultValuePresent) {
                     instance.getDictionary match {
                       case Some(instDic) => {
-                        val valuePresent = instDic.getValues.exists(v => v.getAttribute.getName == dicAtt.getName)
-                        if (!valuePresent)
-                        {
-                          throwError(instance, Some(dicAtt))
+                        instDic.getValues.find(v => v.getAttribute.getName == dicAtt.getName) match {
+                          case None => throwError(instance, Some(dicAtt))
+                          case Some(value) => {
+                            if (dicAtt.getFragmentDependant) {
+                              var nodeNames = List[String]()
+                              if (instance.isInstanceOf[Group]) {
+                                nodeNames = getChild(instance.asInstanceOf[Group])
+                              } else if (instance.isInstanceOf[Channel]) {
+                                nodeNames = getBounds(instance.asInstanceOf[Channel])
+                              }
+                              var i = nodeNames.length
+                              println("length=" + i)
+                              if (!instDic.getValues.filter(v => v.getAttribute.getName == dicAtt.getName).forall {
+                                value => val ok = nodeNames.contains(value.getTargetNode); i=i-1; println(i);ok
+                              } && i != 0) {
+                                throwError(instance, Some(dicAtt))
+                              }
+                            }
+                          }
                         }
                       }
                       case None => {
@@ -62,7 +77,7 @@ class DictionaryOptionalChecker extends CheckerService {
         }
     }
 
-    def throwError(instance: Instance, odicAtt: Option[DictionaryAttribute]) {
+    def throwError (instance: Instance, odicAtt: Option[DictionaryAttribute]) {
       val checkViolation = new CheckerViolation
       odicAtt match {
         case Some(dicAtt) => {
@@ -77,6 +92,22 @@ class DictionaryOptionalChecker extends CheckerService {
       violations = violations ++ List(checkViolation)
     }
     violations
+  }
+
+  def getChild (instance: Group): List[String] = {
+    var nodeNames = List[String]()
+    instance.getSubNodes.foreach {
+      node => nodeNames = nodeNames ++ List[String](node.getName)
+    }
+    nodeNames
+  }
+
+  def getBounds (instance: Channel): List[String] = {
+    var nodeNames = List[String]()
+    instance.getConnectedNode("").foreach {
+      node => nodeNames = nodeNames ++ List[String](node.getName)
+    }
+    nodeNames
   }
 
 }
