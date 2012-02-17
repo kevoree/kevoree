@@ -6,6 +6,7 @@ import org.kevoree.KevoreeFactory;
 import org.kevoree.TypeDefinition;
 import org.kevoree.annotation.*;
 import org.kevoree.annotation.NodeType;
+import org.kevoree.api.service.core.checker.CheckerViolation;
 import org.kevoree.cloner.ModelCloner;
 import org.kevoree.extra.kserial.KevoreeSharedCom;
 import org.kevoree.framework.AbstractNodeType;
@@ -48,6 +49,7 @@ public class ArduinoNode extends AbstractNodeType {
 
     public ArduinoGuiProgressBar progress = null;
     public File newdir = null;
+    private ArduinoChecker localChecker = null;
 
     protected Boolean forceUpdate = false;
     public void setForceUpdate(Boolean f){
@@ -56,6 +58,7 @@ public class ArduinoNode extends AbstractNodeType {
     
     @Start
     public void startNode() {
+        localChecker = new ArduinoChecker(getNodeName());
         ArduinoResourceHelper.setBs(getBootStrapperService());
     }
 
@@ -220,6 +223,16 @@ public class ArduinoNode extends AbstractNodeType {
                 rootModel = (ContainerRoot) ((TypeDefinition) p.getRef()).eContainer();
             }
         }
+
+        java.util.List<CheckerViolation> result = localChecker.check(rootModel);
+        if(result.size()>0){
+            for(CheckerViolation cv : result){
+                logger.error("Checker Error = "+cv.getMessage());
+            }
+            
+            return false;
+        }
+
         if (typeAdaptationFound || forceUpdate) {
             
 
@@ -352,6 +365,10 @@ public class ArduinoNode extends AbstractNodeType {
                 boardName = GuiAskForComPort.askPORT();
             }
             try {
+                ComSender.send("$5{ping}",boardName);
+                Thread.sleep(1000);
+                ComSender.send("$6{ping}",boardName);
+
                 ComSender.send(resultScript, boardName);
             } catch (Exception e) {
 //                e.printStackTrace();

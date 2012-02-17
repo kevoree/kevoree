@@ -85,6 +85,7 @@ public class NanoRestGroup extends AbstractGroupType {
                         return new NanoHTTPD.Response(HTTP_OK, MIME_HTML, "<ack nodeName=\"" + getNodeName() + "\" />");
                     } catch (Exception e) {
                         logger.error("Error while loading model");
+                        logger.debug("Model="+body.trim(),e);
                         return new NanoHTTPD.Response(HTTP_BADREQUEST, MIME_HTML, "Error while uploading model");
                     }
                 }

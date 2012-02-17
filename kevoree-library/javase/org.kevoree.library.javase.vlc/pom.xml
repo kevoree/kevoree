@@ -29,10 +29,9 @@
 
 
     <properties>
-        <kevoree.include>*:*</kevoree.include>
-
-      <!--  <kevoree.include>org.kevoree.extra:*</kevoree.include> -->
-     <!--   <kevoree.exclude>org.kevoree.extra:org.kevoree.extra.vlcj</kevoree.exclude> -->
+        <!-- <kevoree.include>*:*</kevoree.include>-->
+        <kevoree.include>org.kevoree.extra:*</kevoree.include>
+        <!-- <kevoree.exclude>org.kevoree.extra:org.kevoree.extra.vlcj</kevoree.exclude> -->
     </properties>
 
 
