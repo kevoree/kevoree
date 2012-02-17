@@ -44,7 +44,7 @@ class KevoreeLazyJarResources extends ClasspathResources {
   }
 
   var lastLoadedJars: List[URL] = List()
-  def getLastLoadedJar = lastLoadedJars(0).toString
+  def getLastLoadedJar = if(lastLoadedJars.size>0){lastLoadedJars(0).toString} else {"streamKCL"}
   def getLoadedURLs = lastLoadedJars
 
   //  def getContentURL(name: String) = jarContentURL.get(name)

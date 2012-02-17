@@ -95,7 +95,6 @@ class KevoreeJarClassLoader extends JarClassLoader {
 
 
   override def loadClass(className: String, resolveIt: Boolean): Class[_] = {
-
     this.synchronized {
       try {
         return callSuperConcreteLoader(className, resolveIt)
@@ -133,7 +132,6 @@ class KevoreeJarClassLoader extends JarClassLoader {
   }
 
   override def loadClass(className: String): Class[_] = {
-    // println("loadClass->" + className)
     loadClass(className, true)
   }
 
@@ -151,7 +149,7 @@ class KevoreeJarClassLoader extends JarClassLoader {
     if (res != null) {
       new ByteArrayInputStream(res)
     } else {
-      logger.debug("Res not found "+name)
+      logger.debug("Res not found " + name)
       null
     }
   }
@@ -209,7 +207,6 @@ class KevoreeJarClassLoader extends JarClassLoader {
               p1
             }
             val tFile = File.createTempFile("dummy_kcl_temp", cleanName)
-            println(cleanName + "->" + tFile.getAbsolutePath)
             tFile.deleteOnExit()
             val tWriter = new FileOutputStream(tFile)
             tWriter.write(classpathResources.asInstanceOf[KevoreeLazyJarResources].getResourceContent(u))
@@ -225,6 +222,29 @@ class KevoreeJarClassLoader extends JarClassLoader {
     }
   }
 
+  def cleanJarURL(j: String) = {
+    if (j.contains(File.separator)) {
+      j.substring(j.lastIndexOf(File.separator) + 1)
+    } else {
+      j
+    }
+  }
+
+  def getKCLDump: String = {
+    val buffer = new StringBuffer
+    buffer.append("\tJar=" + cleanJarURL(classpathResources.asInstanceOf[KevoreeLazyJarResources].getLastLoadedJar) + "_" + hashCode() + "\n")
+    subClassLoaders.foreach {
+      s =>
+        buffer.append("\t\tl->" + cleanJarURL(s.asInstanceOf[KevoreeJarClassLoader].classpathResources.asInstanceOf[KevoreeLazyJarResources].getLastLoadedJar) + "_" + s.hashCode() + "\n")
+    }
+    subWeakClassLoaders.foreach {
+      s =>
+        if (s.get.isDefined) {
+          buffer.append("\t\tw~>" + cleanJarURL(s.get.get.asInstanceOf[KevoreeJarClassLoader].classpathResources.asInstanceOf[KevoreeLazyJarResources].getLastLoadedJar + "_" + s.get.get.hashCode()) + "\n")
+        }
+    }
+    buffer.toString
+  }
 
   def printDump() {
     logger.debug("KCL : " + classpathResources.asInstanceOf[KevoreeLazyJarResources].getLastLoadedJar)
@@ -241,4 +261,5 @@ class KevoreeJarClassLoader extends JarClassLoader {
     }
   }
 
+  override def toString: String = cleanJarURL(classpathResources.asInstanceOf[KevoreeLazyJarResources].getLastLoadedJar)+hashCode()
 }

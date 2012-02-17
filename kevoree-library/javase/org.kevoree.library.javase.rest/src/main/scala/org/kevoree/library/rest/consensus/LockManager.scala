@@ -1,9 +1,11 @@
 package org.kevoree.library.rest.consensus
 
 import actors.DaemonActor
-import java.util.UUID
 import org.kevoree.ContainerRoot
 import org.kevoree.api.service.core.handler.{UUIDModel, ModelHandlerLockCallBack, KevoreeModelHandlerService}
+import org.kevoree.library.rest.RestConsensusGroup
+import org.slf4j.LoggerFactory
+import java.util.{Random, UUID}
 
 /**
  * User: Erwan Daubert - erwan.daubert@gmail.com
@@ -14,7 +16,8 @@ import org.kevoree.api.service.core.handler.{UUIDModel, ModelHandlerLockCallBack
  * @version 1.0
  */
 
-class LockManager (timeout: Long, modelService: KevoreeModelHandlerService) extends DaemonActor with ModelHandlerLockCallBack {
+class LockManager (timeout: Long, consensusGroup: RestConsensusGroup, r : Random) extends DaemonActor with ModelHandlerLockCallBack {
+  private val logger = LoggerFactory.getLogger(getClass)
 
   case class LOCK ()
 
@@ -33,14 +36,15 @@ class LockManager (timeout: Long, modelService: KevoreeModelHandlerService) exte
   case class UPDATE (model: ContainerRoot)
 
   private var lockUUID: UUID = null
+  private var updateDone = false
 
   def lock (): Boolean = {
     (this !? LOCK()).asInstanceOf[Boolean]
   }
 
-  def unlock () {
-      this ! LOCK()
-    }
+  def unlock () : Boolean = {
+    (this !? UNLOCK()).asInstanceOf[Boolean]
+  }
 
   def isLock: Boolean = {
     (this !? IS_LOCK()).asInstanceOf[Boolean]
@@ -71,8 +75,8 @@ class LockManager (timeout: Long, modelService: KevoreeModelHandlerService) exte
       react {
         case LOCK() => {
           val previousSender = this.sender
-          lockUUID = null
-          modelService.acquireLock(this, timeout)
+          consensusGroup.getModelService.acquireLock(this, timeout)
+          updateDone = false
           react {
             case LOCK_ACQUIRED(uuid) => lockUUID = uuid; previousSender ! true
             case LOCK_REJECTED() => previousSender ! false
@@ -81,17 +85,27 @@ class LockManager (timeout: Long, modelService: KevoreeModelHandlerService) exte
           }
         }
         case IS_LOCK() => reply(lockUUID != null)
-        case UNLOCK() => this.modelService.releaseLock(lockUUID);lockUUID = null
+        case UNLOCK() => {
+          logger.debug("Unlocking Kevoree core !")
+          consensusGroup.getModelService.releaseLock(lockUUID)
+          lockUUID = null
+          reply(updateDone)
+        }
         case LOCK_REJECTED() => lockUUID = null
         case LOCK_TIMEOUT() => lockUUID = null
         case STOP() => stopInternals()
         case UPDATE(model) => {
           val uuidModel = new UUIDModel() {
             def getUUID = lockUUID
+
             def getModel = null
           }
           try {
-            this.modelService.atomicCompareAndSwapModel(uuidModel, model)
+            consensusGroup.getModelService.unregisterModelListener(consensusGroup.getModelListener)
+            logger.debug("Consensus is OK => an update must be done on the local node")
+            consensusGroup.getModelService.atomicCompareAndSwapModel(uuidModel, model)
+            consensusGroup.getModelService.registerModelListener(consensusGroup.getModelListener)
+            updateDone = true
           } catch {
             case _@e =>
           }
@@ -102,7 +116,7 @@ class LockManager (timeout: Long, modelService: KevoreeModelHandlerService) exte
 
   private def stopInternals () {
     if (lockUUID != null) {
-      modelService.releaseLock(lockUUID)
+      consensusGroup.getModelService.releaseLock(lockUUID)
     }
     this.exit()
   }

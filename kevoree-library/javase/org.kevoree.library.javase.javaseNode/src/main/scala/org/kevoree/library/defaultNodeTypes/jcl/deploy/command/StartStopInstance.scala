@@ -59,7 +59,7 @@ case class StartStopInstance(c: Instance, nodeName: String,start : Boolean) exte
   }
 
   def undo() {
-    val resul = StartStopInstance(c, nodeName,!start).execute()
+    StartStopInstance(c, nodeName,!start).execute()
   }
 
 }
