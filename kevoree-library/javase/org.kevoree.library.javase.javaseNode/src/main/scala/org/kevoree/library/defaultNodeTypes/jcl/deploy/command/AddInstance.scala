@@ -43,7 +43,7 @@ case class AddInstance(c: Instance, nodeName: String,modelservice : KevoreeModel
     //FIRST COMPLIANCE VALID TARGET NODE TYPE IN INHERITANCE
     val nodeTypeName = c.getTypeDefinition.foundRelevantHostNodeType(nodeType.asInstanceOf[NodeType], c.getTypeDefinition) match {
       case Some(nt) => nt.getName
-      case None => throw new Exception("Can't  found compatible nodeType for this instance on this node type ")
+      case None => throw new Exception("Can't found compatible nodeType for this instance on this node type ")
     }
     val activatorPackage = KevoreeGeneratorHelper.getTypeDefinitionGeneratedPackage(c.getTypeDefinition, nodeTypeName)
     val factoryName = activatorPackage + "." + c.getTypeDefinition.getName + "Factory"
@@ -71,7 +71,7 @@ case class AddInstance(c: Instance, nodeName: String,modelservice : KevoreeModel
     } catch {
       case _@e => {
         var message = "Could not start the instance " + c.getName + ":" + c.getClass.getName + " maybe because one of its dependencies is missing.\n"
-        message += "Please check that all dependencies of your components are marked with a 'bundle' type (or 'kjar' scope) in the pom of the component/channel's project.\n"
+        message += "Please check that all dependencies of your components are marked with a 'bundle' type (or 'kjar' type) in the pom of the component/channel's project.\n"
         logger.error(message, e)
         false
       }
