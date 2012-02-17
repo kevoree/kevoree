@@ -53,12 +53,13 @@ class DictionaryOptionalChecker extends CheckerService {
                               } else if (instance.isInstanceOf[Channel]) {
                                 nodeNames = getBounds(instance.asInstanceOf[Channel])
                               }
-                              var i = nodeNames.length
-                              println("length=" + i)
-                              if (!instDic.getValues.filter(v => v.getAttribute.getName == dicAtt.getName).forall {
-                                value => val ok = nodeNames.contains(value.getTargetNode); i=i-1; println(i);ok
-                              } && i != 0) {
-                                throwError(instance, Some(dicAtt))
+
+                              nodeNames.foreach{
+                                name =>
+                                  instDic.getValues.find(v => v.getAttribute.getName == dicAtt.getName && v.getTargetNode.isDefined && name == v.getTargetNode.get.getName && v.getValue != "") match {
+                                  case None => throwError(instance, Some(dicAtt), Some(name))
+                                  case Some(v) =>
+                                }
                               }
                             }
                           }
@@ -77,11 +78,15 @@ class DictionaryOptionalChecker extends CheckerService {
         }
     }
 
-    def throwError (instance: Instance, odicAtt: Option[DictionaryAttribute]) {
+    def throwError (instance: Instance, odicAtt: Option[DictionaryAttribute], fragment : Option[String] = None) {
       val checkViolation = new CheckerViolation
       odicAtt match {
         case Some(dicAtt) => {
+          if (fragment.isEmpty) {
           checkViolation.setMessage("Dictionary value not set for attribute name " + dicAtt.getName + " in " + instance.getName)
+          } else {
+            checkViolation.setMessage("Dictionary value not set for attribute name " + dicAtt.getName + " in " + instance.getName + " for fragment " + fragment.get)
+          }
         }
         case None => {
           checkViolation.setMessage("Dictionary invalide in " + instance.getName)
