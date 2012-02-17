@@ -203,7 +203,7 @@ trait UpdateNodeKompare extends AbstractKompare with UpdateChannelKompare {
               val adaptcmd = KevoreeAdaptationFactory.eINSTANCE.createAdaptationPrimitive
               adaptcmd.setPrimitiveType(getAdaptationPrimitive(JavaSePrimitive.UpdateInstance,
                                                                 actualNode.eContainer.asInstanceOf[ContainerRoot]))
-              adaptcmd.setRef(uc)
+              adaptcmd.setRef((c, uc))
               adaptationModel.addAdaptations(adaptcmd)
 
 
