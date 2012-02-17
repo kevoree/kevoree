@@ -102,7 +102,7 @@ public class FelixShell extends JPanel {
         //scrollInput.setOpaque(false);
         //scrollInput.setBorder(null);
 
-        final JComboBox loglevels = new JComboBox(new DefaultComboBoxModel(new String[]{"WARN", "INFO", "DEBUG"}));
+        final JComboBox loglevels = new JComboBox(new DefaultComboBoxModel(new String[]{"INFO","WARN", "DEBUG"}));
         loglevels.setUI(new HudComboBoxUI());
         loglevels.setFocusable(false);
         loglevels.addActionListener(new ActionListener() {

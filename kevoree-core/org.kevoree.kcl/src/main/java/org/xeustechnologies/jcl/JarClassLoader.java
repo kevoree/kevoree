@@ -23,6 +23,7 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.kevoree.kcl.KevoreeJarClassLoader;
 import org.xeustechnologies.jcl.exception.JclException;
 import org.xeustechnologies.jcl.exception.ResourceNotFoundException;
 
@@ -45,6 +46,8 @@ public class JarClassLoader extends AbstractClassLoader {
     private final ProxyClassLoader localLoader = new LocalLoader();
 
     private static Logger logger = Logger.getLogger( JarClassLoader.class.getName() );
+
+    private final JarClassLoader selfPointer = this;
 
     public JarClassLoader() {
         classpathResources = new ClasspathResources();
@@ -259,6 +262,7 @@ public class JarClassLoader extends AbstractClassLoader {
             classes.put( className, result );
             if (logger.isLoggable( Level.FINEST ))
                 logger.finest( "Return new local loaded class " + className );
+
             return result;
         }
 

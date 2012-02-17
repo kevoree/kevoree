@@ -248,4 +248,15 @@ class AndroidJCLContextHandler(ctx: android.content.Context, parent: ClassLoader
   def installDeployUnit(du: DeployUnit): KevoreeJarClassLoader = {
     (this !? INSTALL_DEPLOYUNIT(du)).asInstanceOf[KevoreeJarClassLoader]
   }
+
+  def getKCLDump: String = {
+    val buffer = new StringBuffer
+    kcl_cache.foreach {k =>
+      buffer.append("KCL KEY name="+k._1.substring (0,k._1.indexOf("/"))+"\n")
+      buffer.append(k._2.getKCLDump+"\n")
+    }
+
+    buffer.toString
+  }
+
 }
