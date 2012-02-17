@@ -621,6 +621,11 @@ public class AnnotationPreProcessorMojo extends AbstractMojo {
         }
 
         String thirdParties = ";";
+        
+        for(Dependency dep : ThirdPartyManagement.processKevoreeProperty(project,getLog())){
+            thirdParties += ";" + dep.getGroupId() + "/" + dep.getArtifactId() + "/" + toBaseVersion(dep.getVersion()) +"/"+ dep.getType();
+        }
+        /*
         for (Dependency dep : project.getRuntimeDependencies()) {
             System.out.println(dep.getArtifactId()+"->"+dep.getType());
 
@@ -637,7 +642,7 @@ public class AnnotationPreProcessorMojo extends AbstractMojo {
             if (dep.getScope().equals("provided") || dep.getType().equals("bundle") || dep.getType().equals("kjar") || dep.getType().equals("kbundle")) {
                 thirdParties += ";" + dep.getGroupId() + "/" + dep.getArtifactId() + "/" + toBaseVersion(dep.getVersion()) +"/"+ dep.getType();
             }
-        }
+        }*/
 
         this.options.put("kevoree.lib.id", this.project.getArtifactId());
         this.options.put("kevoree.lib.group", this.project.getGroupId());
