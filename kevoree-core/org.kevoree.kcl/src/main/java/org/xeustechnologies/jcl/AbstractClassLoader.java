@@ -48,8 +48,8 @@ public abstract class AbstractClassLoader extends ClassLoader {
      */
     public AbstractClassLoader() {
         loaders.add( systemLoader );
-        //loaders.add( parentLoader );
-       // loaders.add( currentLoader );
+        loaders.add( parentLoader );
+        loaders.add( currentLoader );
         //loaders.add( threadLoader );
     }
     
