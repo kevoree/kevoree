@@ -28,12 +28,13 @@ public class ComSender {
 
         int token = new Random().nextInt(10);
         String msgToSend = "$"+token+msg;
-        Thread.sleep(2000);
         boolean result = false;
         int nbTry = 5;
         while(nbTry > 0 && !result){
             nbTry = nbTry -1;
-            result = KevoreeSharedCom.sendSynch(portName, msgToSend, "ack" + token, 3000);
+            System.out.println("Before");
+            result = KevoreeSharedCom.sendSynch(portName, msgToSend, "ack" + token, 2000);
+            System.out.println("After");
         }
 
 

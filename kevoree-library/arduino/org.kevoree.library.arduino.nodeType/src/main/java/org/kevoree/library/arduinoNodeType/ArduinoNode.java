@@ -363,7 +363,7 @@ public class ArduinoNode extends AbstractNodeType {
             }
             try {
                 ComSender.send("{ping}", boardName);
-                Thread.sleep(500);
+               // Thread.sleep(500);
 
                 ComSender.send(resultScript, boardName);
             } catch (Exception e) {
