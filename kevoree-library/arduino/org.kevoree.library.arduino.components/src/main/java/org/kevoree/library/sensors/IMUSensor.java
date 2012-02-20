@@ -92,27 +92,27 @@ public class IMUSensor  extends AbstractPeriodicArduinoComponent {
 
         gen.appendNativeStatement("smsg = (kmessage*) malloc(sizeof(kmessage));");
         gen.appendNativeStatement("if (smsg){memset(smsg, 0, sizeof(kmessage));}");
-        gen.appendNativeStatement("sprintf(buff_roll,\"%d.%d\",(int)buf[0],(int)abs(buf[1]));");
+        gen.appendNativeStatement("sprintf(buff_roll,\"%d,%d\",(int)buf[0],(int)abs(buf[1]));");
         gen.appendNativeStatement("smsg->value = buff_roll;\n");
-        gen.appendNativeStatement("smsg->metric=\"d\";");
+        gen.appendNativeStatement("smsg->metric=\"rd\";");
         gen.appendNativeStatement("roll_rport(smsg);");
         gen.appendNativeStatement("free(smsg);");
 
 
         gen.appendNativeStatement("smsg = (kmessage*) malloc(sizeof(kmessage));");
         gen.appendNativeStatement("if (smsg){memset(smsg, 0, sizeof(kmessage));}");
-        gen.appendNativeStatement("sprintf(buff_pitch,\"%d.%d\",(int)buf[2],(int)abs(buf[3]));\n");
+        gen.appendNativeStatement("sprintf(buff_pitch,\"%d,%d\",(int)buf[2],(int)abs(buf[3]));\n");
         gen.appendNativeStatement("smsg->value = buff_pitch;\n");
-        gen.appendNativeStatement("smsg->metric=\"d\";");
+        gen.appendNativeStatement("smsg->metric=\"pd\";");
         gen.appendNativeStatement("pitch_rport(smsg);");
         gen.appendNativeStatement("free(smsg);");
 
 
         gen.appendNativeStatement("smsg = (kmessage*) malloc(sizeof(kmessage));");
         gen.appendNativeStatement("if (smsg){memset(smsg, 0, sizeof(kmessage));}");
-        gen.appendNativeStatement("sprintf(buff_yaw,\"%d.%d\",(int)buf[4],(int)abs(buf[5]));\n");
+        gen.appendNativeStatement("sprintf(buff_yaw,\"%d,%d\",(int)buf[4],(int)abs(buf[5]));\n");
         gen.appendNativeStatement("smsg->value = buff_yaw;\n");
-        gen.appendNativeStatement("smsg->metric=\"d\";");
+        gen.appendNativeStatement("smsg->metric=\"yd\";");
         gen.appendNativeStatement("yaw_rport(smsg);");
         gen.appendNativeStatement("free(smsg);");
 
