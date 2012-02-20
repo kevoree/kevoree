@@ -25,9 +25,9 @@ import org.kevoree.tools.arduino.framework.fuzzylogic.FuzzyRulesContext;
         @RequiredPort(name = "b", type = PortType.MESSAGE, needCheckDependency = false, optional = true)
 })
 @DictionaryType({
-        @DictionaryAttribute(name = "d_n", defaultValue = "0;0;20;20\n", dataType = IntList4.class),
-        @DictionaryAttribute(name = "d_m", defaultValue = "10;10;100;100\n", dataType = IntList4.class),
-        @DictionaryAttribute(name = "d_f", defaultValue = "80;80;150;150\n", dataType = IntList4.class),
+        @DictionaryAttribute(name = "d_n", defaultValue = "0;0;20;20", dataType = IntList4.class),
+        @DictionaryAttribute(name = "d_m", defaultValue = "10;10;100;100", dataType = IntList4.class),
+        @DictionaryAttribute(name = "d_f", defaultValue = "80;80;150;150", dataType = IntList4.class),
 
         @DictionaryAttribute(name = "r_l",defaultValue = "20" , dataType = java.lang.Integer.class),
         @DictionaryAttribute(name = "r_h",defaultValue = "100" , dataType = java.lang.Integer.class),
@@ -51,7 +51,6 @@ public class DistLightManager extends AbstractFuzzyLogicArduinoComponent {
         rulesContext.addRule("IF d IS m THEN r IS l AND g IS h AND b IS l AND i IS h;");
 
         rulesContext.addRule("IF d IS f THEN r IS l AND g IS l AND b IS h AND i IS h;");
-
 
 
     }
