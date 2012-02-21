@@ -21,6 +21,8 @@
         </encoder>
     </appender>
 
+    <logger name="com.ning.http.client.providers.jdk.JDKAsyncHttpProvider" level="INFO"/>
+
     <root level="${root-level:-DEBUG}">
         <appender-ref ref="CONSOLE"/>
     </root>
