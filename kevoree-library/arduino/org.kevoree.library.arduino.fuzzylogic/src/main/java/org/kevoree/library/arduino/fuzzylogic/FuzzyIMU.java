@@ -26,14 +26,14 @@ import org.kevoree.tools.arduino.framework.fuzzylogic.FuzzyRulesContext;
 
 @DictionaryType({
 
-        @DictionaryAttribute(name = "roll_light", defaultValue = "-5;-5;5;5",dataType = IntList4.class),
-        @DictionaryAttribute(name = "roll_strong", defaultValue = "-60;-60;60;60",dataType = IntList4.class),
+        @DictionaryAttribute(name = "roll_light", defaultValue = "-20;-20;20;20",dataType = IntList4.class),
+        @DictionaryAttribute(name = "roll_strong", defaultValue = "10;10;60;60",dataType = IntList4.class),
 
-        @DictionaryAttribute(name = "pitch_light", defaultValue = "-5;-5;5;5",dataType = IntList4.class),
-        @DictionaryAttribute(name = "pitch_strong", defaultValue = "-60;-60;60;60",dataType = IntList4.class),
+        @DictionaryAttribute(name = "pitch_light", defaultValue = "-10;-10;10;10",dataType = IntList4.class),
+        @DictionaryAttribute(name = "pitch_strong", defaultValue = "10;10;60;60",dataType = IntList4.class),
 
         @DictionaryAttribute(name = "motion_light",defaultValue = "0", dataType = java.lang.Integer.class),
-        @DictionaryAttribute(name = "motion_medium",defaultValue = "50", dataType = java.lang.Integer.class),
+        @DictionaryAttribute(name = "motion_medium",defaultValue = "25", dataType = java.lang.Integer.class),
         @DictionaryAttribute(name = "motion_strong",defaultValue = "100", dataType = java.lang.Integer.class)
 
 })
@@ -43,8 +43,6 @@ public class FuzzyIMU extends AbstractFuzzyLogicArduinoComponent {
     @Override
     public void declareRules(FuzzyRulesContext rules)
     {
-        rules.addRule("IF roll IS strong THEN motion IS strong;");
-
         rules.addRule("IF roll IS light AND pitch IS light THEN motion IS light;");
         rules.addRule("IF roll IS strong AND pitch IS light THEN motion IS medium;");
         rules.addRule("IF pitch IS strong AND roll IS light THEN motion IS medium;");

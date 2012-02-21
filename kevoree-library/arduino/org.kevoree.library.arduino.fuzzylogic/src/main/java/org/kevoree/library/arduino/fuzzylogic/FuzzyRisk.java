@@ -16,7 +16,8 @@ import org.kevoree.tools.arduino.framework.fuzzylogic.FuzzyRulesContext;
 @Library(name = "Arduino")
 @ComponentType
 @Provides({
-        @ProvidedPort(name = "risk", type = PortType.MESSAGE)
+        @ProvidedPort(name = "triggerAlarme", type = PortType.MESSAGE),
+        @ProvidedPort(name = "triggerPrealarme", type = PortType.MESSAGE)
 
 })
 
@@ -29,13 +30,14 @@ import org.kevoree.tools.arduino.framework.fuzzylogic.FuzzyRulesContext;
 
 @DictionaryType({
 
-        @DictionaryAttribute(name = "risk_low", defaultValue = "0;0;20;20",dataType = IntList4.class),
-        @DictionaryAttribute(name = "risk_intermediate", defaultValue = "19;19;50;50",dataType = IntList4.class),
+        @DictionaryAttribute(name = "triggerAlarme_low", defaultValue = "0;0;20;20",dataType = IntList4.class),
+        @DictionaryAttribute(name = "triggerAlarme_intermediate", defaultValue = "19;19;50;50",dataType = IntList4.class),
         @DictionaryAttribute(name = "risk_medium", defaultValue = "40;40;70;70",dataType = IntList4.class),
         @DictionaryAttribute(name = "risk_high", defaultValue = "60;60;100;100",dataType = IntList4.class),
 
 
         @DictionaryAttribute(name = "led_none",defaultValue = "0" , dataType = java.lang.Integer.class),
+        @DictionaryAttribute(name = "led_low",defaultValue = "25" , dataType = java.lang.Integer.class),
         @DictionaryAttribute(name = "led_medium",defaultValue = "50" , dataType = java.lang.Integer.class),
         @DictionaryAttribute(name = "led_high",defaultValue = "100" , dataType = java.lang.Integer.class),
 
