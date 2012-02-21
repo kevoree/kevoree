@@ -46,7 +46,7 @@
 
 int parse_array_int(int size,char *dico, int val[])
 {
-	#define MAX_SIZE_INT 4
+	#define MAX_SIZE_INT 6
 	int count=0,i=0,j=0;
 	char parsing[MAX_SIZE_INT];
 	// init array val
