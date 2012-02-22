@@ -44,9 +44,9 @@ public class BaliseHommeMort  extends AbstractPeriodicArduinoComponent {
         gen.appendNativeStatement("unsigned long alarme_previousMillis;");
         gen.appendNativeStatement("int prealarme_nbMotion;");
         gen.appendNativeStatement("int alarme_nbMotion;");
-        gen.appendNativeStatement("int last_roll;");
-        gen.appendNativeStatement("int last_yaw;");
-        gen.appendNativeStatement("int last_pitch;");
+        gen.appendNativeStatement("float last_roll;");
+        gen.appendNativeStatement("float last_yaw;");
+        gen.appendNativeStatement("float last_pitch;");
     }
 
     @Override
@@ -68,40 +68,40 @@ public class BaliseHommeMort  extends AbstractPeriodicArduinoComponent {
     @Port(name = "yaw")
     public void yaw(Object o)
     {
-        getGenerator().appendNativeStatement("int tmp;");
-        getGenerator().appendNativeStatement("tmp = atoi(msg->value);");
-        getGenerator().appendNativeStatement(" if(tmp != 0){ ");
-        getGenerator().appendNativeStatement("if(abs(last_yaw-tmp) > 45){ last_yaw  = tmp;");
+        getGenerator().appendNativeStatement("float tmp;\n" +
+                "tmp = atof(msg->value);\n" +
+                "if(tmp != last_yaw && tmp != 0){");
         getGenerator().appendNativeStatement("prealarme_nbMotion++;");
         getGenerator().appendNativeStatement("alarme_nbMotion++;");
-        getGenerator().appendNativeStatement("}");
-        getGenerator().appendNativeStatement("}");
+        getGenerator().appendNativeStatement(" last_yaw = tmp; \n" +
+                "}");
+
 
     }
     @Port(name = "roll")
     public void roll(Object o)
     {
-        getGenerator().appendNativeStatement("int tmp;");
-        getGenerator().appendNativeStatement("tmp = atoi(msg->value);");
-        getGenerator().appendNativeStatement(" if(tmp != 0){ ");
-        getGenerator().appendNativeStatement("if(abs(last_roll-tmp) > 20){ last_roll  = tmp;");
+        getGenerator().appendNativeStatement("float tmp;\n" +
+                "tmp = atof(msg->value);\n" +
+                "if(tmp != last_roll && tmp != 0){");
         getGenerator().appendNativeStatement("prealarme_nbMotion++;");
         getGenerator().appendNativeStatement("alarme_nbMotion++;");
-        getGenerator().appendNativeStatement("}");
-        getGenerator().appendNativeStatement("}");
+
+        getGenerator().appendNativeStatement(" last_roll = tmp; \n" +
+                "}");
     }
 
     @Port(name = "pitch")
     public void pitch(Object o)
     {
-        getGenerator().appendNativeStatement("int tmp;");
-        getGenerator().appendNativeStatement("tmp = atoi(msg->value);");
-        getGenerator().appendNativeStatement(" if(tmp != 0){ ");
-        getGenerator().appendNativeStatement("if(abs(last_pitch-tmp) > 20){ last_pitch  = tmp;");
+        getGenerator().appendNativeStatement("float tmp;\n" +
+                "tmp = atof(msg->value);\n" +
+                "if(tmp != last_pitch && tmp != 0){");
         getGenerator().appendNativeStatement("prealarme_nbMotion++;");
         getGenerator().appendNativeStatement("alarme_nbMotion++;");
-        getGenerator().appendNativeStatement("}");
-        getGenerator().appendNativeStatement("}");
+
+        getGenerator().appendNativeStatement(" last_pitch = tmp; \n" +
+                "}");
     }
 
     @Override

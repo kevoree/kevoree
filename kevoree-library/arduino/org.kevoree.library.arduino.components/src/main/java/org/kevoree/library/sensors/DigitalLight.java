@@ -13,7 +13,8 @@ import org.kevoree.tools.arduino.framework.ArduinoGenerator;
 @Provides({
     @ProvidedPort(name = "on", type = PortType.MESSAGE),
     @ProvidedPort(name = "off", type = PortType.MESSAGE),
-    @ProvidedPort(name = "toggle", type = PortType.MESSAGE)
+    @ProvidedPort(name = "toggle", type = PortType.MESSAGE) ,
+    @ProvidedPort(name = "flash", type = PortType.MESSAGE)
 })
 public class DigitalLight extends AbstractArduinoComponent {
 
@@ -43,5 +44,14 @@ public class DigitalLight extends AbstractArduinoComponent {
         getGenerator().appendNativeStatement("state = ! state; ");
         getGenerator().appendNativeStatement("pinMode(atoi(pin), OUTPUT);");
         getGenerator().appendNativeStatement("digitalWrite(atoi(pin), newState);\n");
+    }
+
+
+    @Port(name = "flash")
+    public void triggerflashled(Object gen) {
+        getGenerator().appendNativeStatement("pinMode(atoi(pin), OUTPUT);");
+        getGenerator().appendNativeStatement("digitalWrite(atoi(pin), HIGH);\n");
+        getGenerator().appendNativeStatement("delay(80);\n");
+        getGenerator().appendNativeStatement("digitalWrite(atoi(pin), LOW);\n");
     }
 }
