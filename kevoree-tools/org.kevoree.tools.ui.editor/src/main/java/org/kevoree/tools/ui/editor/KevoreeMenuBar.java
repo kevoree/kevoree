@@ -19,6 +19,8 @@ import ch.qos.logback.classic.Logger;
 import org.kevoree.tools.ui.editor.command.*;
 
 import javax.swing.*;
+import javax.swing.event.MenuEvent;
+import javax.swing.event.MenuListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -188,7 +190,6 @@ public class KevoreeMenuBar extends JMenuBar {
 		logGroup.add(infoLevelItem);
 
 		tools.add(loggerMenu);
-
 
 		this.add(file);
 		this.add(model);
