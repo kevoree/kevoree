@@ -137,7 +137,7 @@ class MiniKloudForm (editor: KevoreeEditor) {
         scriptBuilder append "updateDictionary editor_group {port=\"6002\"}@" + minicloudName + "\n"
         editor.getPanel.getKernel.getModelHandler.getActualModel.getNodes.foreach {
           node =>
-            scriptBuilder append "addChild " + node.getName + "@editor_node"
+            scriptBuilder append "addChild " + node.getName + "@editor_node\n"
         }
         scriptBuilder append "}"
 
