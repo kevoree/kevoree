@@ -21,8 +21,8 @@ import org.kevoree.tools.marShell.parser.KevsParser
 import org.kevoree.tools.marShell.interpreter.KevsInterpreterContext
 import org.kevoree.tools.marShell.interpreter.KevsInterpreterAspects._
 import org.slf4j.LoggerFactory
-import org.kevoree.tools.ui.editor.KevoreeEditor
 import org.kevoree.tools.ui.editor.command.LoadModelCommand
+import org.kevoree.tools.ui.editor.{PositionedEMFHelper, KevoreeEditor}
 
 /**
  * User: Erwan Daubert - erwan.daubert@gmail.com
@@ -119,12 +119,14 @@ class MiniKloudForm (editor: KevoreeEditor) {
         minicloudName = minicloudNode.getName
         val file = File.createTempFile("editorBootstrapModel", "kev")
         file.deleteOnExit()
+        PositionedEMFHelper.updateModelUIMetaData(editor.getPanel.getKernel)
         KevoreeXmiHelper.save(file.getAbsolutePath, editor.getPanel.getKernel.getModelHandler.getActualModel);
         bootstrapModel = file.getAbsolutePath
       }
       case None => {
         logger.debug("start a minicloud with an editor node")
         minicloudName = "editor_node"
+        PositionedEMFHelper.updateModelUIMetaData(editor.getPanel.getKernel)
         val skyModel = editor.getPanel.getKernel.getModelHandler.getActualModel
 
         val scriptBuilder = new StringBuilder
