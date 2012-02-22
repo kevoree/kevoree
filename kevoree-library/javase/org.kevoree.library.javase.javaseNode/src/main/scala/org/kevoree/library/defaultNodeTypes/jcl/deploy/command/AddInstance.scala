@@ -80,9 +80,5 @@ case class AddInstance(c: Instance, nodeName: String,modelservice : KevoreeModel
 
   def undo() {
     RemoveInstance(c, nodeName,modelservice,kscript,bs).execute()
-
-    //TODO
-
-
   }
 }
