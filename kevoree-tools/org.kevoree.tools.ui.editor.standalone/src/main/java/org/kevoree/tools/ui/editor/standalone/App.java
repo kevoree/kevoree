@@ -127,7 +127,7 @@ public class App {
 
 				AbstractButton toogleKloud = null;
 				try {
-					java.net.URL url = App.class.getClassLoader().getResource("terminal.png");
+					java.net.URL url = App.class.getClassLoader().getResource("kloud.png");
 					ImageIcon icon = new ImageIcon(url);
 					toogleKloud =
 							MacButtonFactory.makeUnifiedToolBarButton(
@@ -140,7 +140,7 @@ public class App {
 
 				AbstractButton toogleMiniKloud = null;
 				try {
-					java.net.URL url = App.class.getClassLoader().getResource("terminal.png");
+					java.net.URL url = App.class.getClassLoader().getResource("kloud.png");
 					ImageIcon icon = new ImageIcon(url);
 					toogleMiniKloud =
 							MacButtonFactory.makeUnifiedToolBarButton(
