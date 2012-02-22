@@ -1,4 +1,4 @@
-package org.kevoree.tools.ui.editor.form
+package org.kevoree.tools.ui.editor.kloud
 
 import com.explodingpixels.macwidgets.HudWindow
 import org.kevoree.tools.ui.editor.KevoreeEditor
@@ -12,6 +12,7 @@ import org.kevoree.{KevoreeFactory, ContainerRoot}
 import org.kevoree.framework.{KevoreePropertyHelper, Constants, KevoreePlatformHelper, KevoreeXmiHelper}
 import java.net.{URLConnection, URL}
 import java.io.{InputStreamReader, BufferedReader, OutputStreamWriter, ByteArrayOutputStream}
+import org.slf4j.LoggerFactory
 
 /**
  * User: Erwan Daubert - erwan.daubert@gmail.com
@@ -23,6 +24,7 @@ import java.io.{InputStreamReader, BufferedReader, OutputStreamWriter, ByteArray
  */
 
 class KloudForm (editor: KevoreeEditor) {
+  var logger = LoggerFactory.getLogger(this.getClass)
   private val defaultAddress = "10.0.0.2:8080/kloud"
 
   val newPopup = new HudWindow("Submit a model on Kloud")
@@ -32,20 +34,14 @@ class KloudForm (editor: KevoreeEditor) {
   layoutPopup.setOpaque(false)
   layoutPopup.setLayout(new BorderLayout())
 
-
-  /* val newElementsLabel = new JLabel("Submit a new model on Kloud", SwingConstants.TRAILING)
-    newElementsLabel.setUI(new HudLabelUI)*/
-
   val layoutPopupTop = new JPanel()
   layoutPopupTop.setOpaque(false)
-  //  layoutPopupTop.add(newElementsLabel)
 
   val configLayout = new JPanel(new SpringLayout)
   configLayout.setSize(400, 200)
   configLayout.setOpaque(false)
 
   // build the content of the Dialog
-
 
   // set the login
   val loginTxtField = new JTextField()
@@ -73,6 +69,7 @@ class KloudForm (editor: KevoreeEditor) {
   val passwordTxtField = new JPasswordField()
   passwordTxtField.setUI(new HudTextFieldUI())
   val passwordLbl = new JLabel("Password: ", SwingConstants.TRAILING);
+  passwordLbl.setForeground(Color.WHITE)
   passwordLbl.setUI(new HudLabelUI());
   passwordLbl.setOpaque(false);
   passwordLbl.setLabelFor(passwordTxtField);
@@ -144,7 +141,7 @@ class KloudForm (editor: KevoreeEditor) {
   btSubmit.addActionListener(new ActionListener {
     def actionPerformed (p1: ActionEvent) {
       // check data (login, password, ssh_key must be defined, kloud address must also be set but a default value exists)
-      if (loginTxtField.getText != "" && passwordTxtField.getPassword.length > 0 && sshTxtField.getText != "") {
+      if (loginTxtField.getText != "" && passwordTxtField.getPassword.length > 0 && sshTxtField.getText != "" && addressTxtField.getText != "") {
         val password = new String(passwordTxtField.getPassword)
         val model = editor.getPanel.getKernel.getModelHandler.getActualModel
         // send the current model of the editor on Kloud
@@ -154,6 +151,15 @@ class KloudForm (editor: KevoreeEditor) {
       } else {
         ok_lbl.setText("KO")
         ok_lbl.setForeground(Color.RED)
+        if (loginTxtField.getText != "") {
+          logger.warn("You need to use a login to access the Kloud")
+        } else if (passwordTxtField.getPassword.length > 0) {
+          logger.warn("You may have a password to access the Kloud")
+        } else if (sshTxtField.getText != "") {
+          logger.warn("You need to put a SSH public key to access the Kloud")
+        } else if (addressTxtField.getText != "") {
+          logger.warn("You need to specify the address of the Kloud (default = {})", defaultAddress)
+        }
       }
     }
   })
@@ -172,6 +178,15 @@ class KloudForm (editor: KevoreeEditor) {
       } else {
         ok_lbl.setText("KO")
         ok_lbl.setForeground(Color.RED)
+        if (loginTxtField.getText != "") {
+          logger.warn("You need to use a login to access the Kloud")
+        } else if (passwordTxtField.getPassword.length > 0) {
+          logger.warn("You may have a password to access the Kloud")
+        } else if (sshTxtField.getText != "") {
+          logger.warn("You need to put a SSH public key to access the Kloud")
+        } else if (addressTxtField.getText != "") {
+          logger.warn("You need to specify the address of the Kloud (default = {})", defaultAddress)
+        }
       }
     }
   })
@@ -214,7 +229,7 @@ class KloudForm (editor: KevoreeEditor) {
     bodyBuilder append "model="
     bodyBuilder append KevoreeXmiHelper.saveToString(model, false)
 
-    //          logger.debug("url=>" + "http://" + IP + ":" + PORT + "/model/current")
+    logger.debug("url=>" + address)
     val url = new URL(address)
     val connection = url.openConnection()
     connection.getOutputStream
