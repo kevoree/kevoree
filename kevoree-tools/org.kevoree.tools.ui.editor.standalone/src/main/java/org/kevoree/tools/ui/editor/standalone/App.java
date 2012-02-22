@@ -16,8 +16,8 @@ package org.kevoree.tools.ui.editor.standalone;
 import com.explodingpixels.macwidgets.*;
 import org.kevoree.KevoreeFactory;
 import org.kevoree.tools.ui.editor.KevoreeEditor;
-import org.kevoree.tools.ui.editor.form.KloudForm;
-import org.kevoree.tools.ui.editor.form.MiniKloudForm;
+import org.kevoree.tools.ui.editor.kloud.KloudForm;
+import org.kevoree.tools.ui.editor.kloud.MiniKloudForm;
 
 import javax.swing.*;
 import java.awt.*;
@@ -133,7 +133,7 @@ public class App {
 							MacButtonFactory.makeUnifiedToolBarButton(
 									new JButton("Kloud", icon));
 					toogleKloud.setEnabled(false);
-					toolBar.addComponentToLeft(toogleKloud);
+					toolBar.addComponentToRight(toogleKloud);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -146,7 +146,7 @@ public class App {
 							MacButtonFactory.makeUnifiedToolBarButton(
 									new JButton("MiniKloud", icon));
 					toogleMiniKloud.setEnabled(false);
-					toolBar.addComponentToLeft(toogleMiniKloud);
+					toolBar.addComponentToRight(toogleMiniKloud);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -344,10 +344,13 @@ public class App {
 						finalToggleMiniKloudDialog.setEnabled(!finalToggleMiniKloudDialog.isEnabled());
 						if (finalToggleMiniKloudDialog.isEnabled()) {
 							// display the Dialog
-							minikloudForm.display();
+//							minikloudForm.display();
+							minikloudForm.startMiniCloud();
 						} else {
 							// hide the Dialog
-							minikloudForm.hide();
+//							minikloudForm.hide();
+//							logger.debug("trying to shutdown the minicloud");
+							minikloudForm.shutdownMiniCloud();
 						}
 					}
 				});

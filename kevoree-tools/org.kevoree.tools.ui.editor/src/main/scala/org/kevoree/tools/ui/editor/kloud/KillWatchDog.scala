@@ -1,4 +1,4 @@
-package org.kevoree.tools.ui.editor.form
+package org.kevoree.tools.ui.editor.kloud
 
 import actors.{TIMEOUT, DaemonActor}
 
