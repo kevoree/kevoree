@@ -110,7 +110,8 @@ class RootService (id: String, request: MessagePort, bootstrap: ServerBootstrap,
       kevMsg.setRawBody(body)
       kevMsg.setRawParams(defineRawParams(paramsRes1._2))
       kevMsg.setUrl(paramsRes1._1)
-      kevMsg.setResolvedParams(paramsRes1._2)
+      paramsRes.putAll(paramsRes1._2)
+      kevMsg.setResolvedParams(paramsRes)
       headers.foreach {
         header =>
           kevMsg.getHeaders.put(header._1, header._2)
