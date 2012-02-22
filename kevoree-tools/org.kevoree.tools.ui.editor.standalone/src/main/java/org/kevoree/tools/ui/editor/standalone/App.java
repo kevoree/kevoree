@@ -341,16 +341,20 @@ public class App {
 					@Override
 					public void mouseClicked (MouseEvent e) {
 						// Display the Dialog to configure the kloud and send the model on it
-						finalToggleMiniKloudDialog.setEnabled(!finalToggleMiniKloudDialog.isEnabled());
-						if (finalToggleMiniKloudDialog.isEnabled()) {
+						boolean toggle = !finalToggleMiniKloudDialog.isEnabled();
+						if (toggle) {
 							// display the Dialog
 //							minikloudForm.display();
-							minikloudForm.startMiniCloud();
+							if (minikloudForm.startMiniCloud()) {
+								finalToggleMiniKloudDialog.setEnabled(toggle);
+							}
 						} else {
 							// hide the Dialog
 //							minikloudForm.hide();
 //							logger.debug("trying to shutdown the minicloud");
-							minikloudForm.shutdownMiniCloud();
+							if (minikloudForm.shutdownMiniCloud()) {
+								finalToggleMiniKloudDialog.setEnabled(toggle);
+							}
 						}
 					}
 				});
