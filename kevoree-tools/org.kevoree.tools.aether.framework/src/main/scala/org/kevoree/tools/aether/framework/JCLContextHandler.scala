@@ -184,11 +184,16 @@ class JCLContextHandler extends DaemonActor with KevoreeClassLoaderHandler {
 
   private def removeDeployUnitInternals(du: DeployUnit) {
     val key = buildKEY(du)
+    val kcl_to_remove = kcl_cache.get(key)
     if (!lockedDu.contains(key)) {
       if (kcl_cache.containsKey(key)) {
         logger.debug("Remove KCL for {}->{}", du.getUnitName, buildKEY(du))
+        //logger.debug("Cache To cleanuip size"+kcl_cache.values().size()+"-"+kcl_cache.size()+"-"+kcl_cache.keySet().size())
         kcl_cache.values().foreach {
-          vals => vals.cleanupLinks(kcl_cache.get(key))
+          vals => {
+            vals.cleanupLinks(kcl_to_remove)
+            //logger.debug("Cleanup {} from {}",vals.toString(),du.getUnitName)
+          }
         }
         kcl_cache.get(key).unload()
         kcl_cache.remove(key)
@@ -256,9 +261,10 @@ class JCLContextHandler extends DaemonActor with KevoreeClassLoaderHandler {
 
   def getKCLDump: String = {
     val buffer = new StringBuffer
-    kcl_cache.foreach {k =>
-      buffer.append("KCL KEY name="+k._1+"\n")
-      buffer.append(k._2.getKCLDump+"\n")
+    kcl_cache.foreach {
+      k =>
+        buffer.append("KCL KEY name=" + k._1 + "\n")
+        buffer.append(k._2.getKCLDump + "\n")
     }
 
     buffer.toString

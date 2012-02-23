@@ -102,6 +102,10 @@ abstract class KevoreeComponentActivator extends KevoreeInstanceActivator {
   }
 
   override def stop() {
+    
+    if(componentActor == null){
+      return
+    }
 
     if (componentActor.isStarted) {
       componentActor !? StopMessage(null)

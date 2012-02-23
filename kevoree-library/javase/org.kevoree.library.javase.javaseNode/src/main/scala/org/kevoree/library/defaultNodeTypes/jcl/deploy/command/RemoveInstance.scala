@@ -19,7 +19,7 @@ package org.kevoree.library.defaultNodeTypes.jcl.deploy.command
  */
 
 import org.slf4j.LoggerFactory
-import org.kevoree.framework.{KevoreeGeneratorHelper}
+import org.kevoree.framework.KevoreeGeneratorHelper
 import org.kevoree.framework.osgi.KevoreeInstanceFactory
 import org.kevoree.framework.aspects.KevoreeAspects._
 import org.kevoree.{ContainerRoot, NodeType, Instance}
@@ -28,7 +28,7 @@ import org.kevoree.api.service.core.script.KevScriptEngineFactory
 import org.kevoree.library.defaultNodeTypes.jcl.deploy.context.KevoreeDeployManager
 import org.kevoree.api.PrimitiveCommand
 
-case class RemoveInstance(c: Instance, nodeName: String,modelservice : KevoreeModelHandlerService,kscript : KevScriptEngineFactory,bs : org.kevoree.api.Bootstraper) extends PrimitiveCommand {
+case class RemoveInstance(c: Instance, nodeName: String, modelservice: KevoreeModelHandlerService, kscript: KevScriptEngineFactory, bs: org.kevoree.api.Bootstraper) extends PrimitiveCommand {
 
   var logger = LoggerFactory.getLogger(this.getClass)
 
@@ -39,33 +39,36 @@ case class RemoveInstance(c: Instance, nodeName: String,modelservice : KevoreeMo
       bm => bm.objClassName == c.getClass.getName && bm.name == c.getName
     }) ++ List()
 
+    try {
+      bundles.forall {
+        mp =>
 
+          val nodeType = c.getTypeDefinition.eContainer.asInstanceOf[ContainerRoot].getNodes.find(tn => tn.getName == nodeName).get.getTypeDefinition
+          val nodeTypeName = c.getTypeDefinition.foundRelevantHostNodeType(nodeType.asInstanceOf[NodeType], c.getTypeDefinition) match {
+            case Some(nt) => nt.getName
+            case None => throw new Exception("Can foudn compatible nodeType for this instance on this node type ")
+          }
 
-    bundles.forall {
-      mp =>
+          val activatorPackage = KevoreeGeneratorHelper.getTypeDefinitionGeneratedPackage(c.getTypeDefinition, nodeTypeName)
+          val factoryName = activatorPackage + "." + c.getTypeDefinition.getName + "Factory"
 
-        val nodeType = c.getTypeDefinition.eContainer.asInstanceOf[ContainerRoot].getNodes.find(tn => tn.getName == nodeName).get.getTypeDefinition
-        val nodeTypeName = c.getTypeDefinition.foundRelevantHostNodeType(nodeType.asInstanceOf[NodeType], c.getTypeDefinition) match {
-          case Some(nt) => nt.getName
-          case None => throw new Exception("Can foudn compatible nodeType for this instance on this node type ")
-        }
+          val node = c.getTypeDefinition.eContainer.asInstanceOf[ContainerRoot].getNodes.find(n => n.getName == nodeName).get
+          val deployUnit = c.getTypeDefinition.foundRelevantDeployUnit(node)
 
-        val activatorPackage = KevoreeGeneratorHelper.getTypeDefinitionGeneratedPackage(c.getTypeDefinition, nodeTypeName)
-        val factoryName = activatorPackage + "." + c.getTypeDefinition.getName + "Factory"
+          val clazz = bs.getKevoreeClassLoaderHandler.getKevoreeClassLoader(deployUnit).loadClass(factoryName)
+          val clazzInstance = clazz.newInstance
 
-        val node = c.getTypeDefinition.eContainer.asInstanceOf[ContainerRoot].getNodes.find(n => n.getName == nodeName).get
-        val deployUnit = c.getTypeDefinition.foundRelevantDeployUnit(node)
+          val kevoreeFactory = clazzInstance.asInstanceOf[KevoreeInstanceFactory]
 
-        val clazz = bs.getKevoreeClassLoaderHandler.getKevoreeClassLoader(deployUnit).loadClass(factoryName)
-        val clazzInstance = clazz.newInstance
+          val activator = kevoreeFactory.remove(c.getName)
+          activator.stop()
 
-        val kevoreeFactory = clazzInstance.asInstanceOf[KevoreeInstanceFactory]
-
-        val activator = kevoreeFactory.remove(c.getName)
-        activator.stop()
-
-        true
+          true
+      }
+    } catch {
+      case _ =>
     }
+
     KevoreeDeployManager.bundleMapping.filter(mb => bundles.contains(mb)).foreach {
       map =>
         KevoreeDeployManager.removeMapping(map)
@@ -75,7 +78,7 @@ case class RemoveInstance(c: Instance, nodeName: String,modelservice : KevoreeMo
 
   def undo() {
     try {
-      AddInstance(c, nodeName,modelservice,kscript,bs).execute()
+      AddInstance(c, nodeName, modelservice, kscript, bs).execute()
       UpdateDictionary(c, nodeName).execute()
     } catch {
       case _ =>
