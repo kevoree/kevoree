@@ -5,14 +5,14 @@
     <parent>
         <artifactId>org.kevoree.library.javase.root</artifactId>
         <groupId>org.kevoree.library.javase</groupId>
-        <version>1.6.0-SNAPSHOT</version>
+        <version>1.6.0-BETA1</version>
         <relativePath>../org.kevoree.library.javase.root/pom.xml</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>org.kevoree.library.javase.airReceiver.server</artifactId>
     <name>Kevoree :: Library :: JavaSE :: AirReceiver :: Server</name>
-    <packaging>bundle</packaging>
+    <packaging>jar</packaging>
 
     <dependencies>
         <dependency>
@@ -21,7 +21,6 @@
             <version>1.2</version>
         </dependency>
     </dependencies>
-
 
     <properties>
         <kevoree.include>*:*</kevoree.include>
