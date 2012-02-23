@@ -117,45 +117,45 @@ public class RestGroup extends AbstractGroupType {
 	}
 
 	public void internalPush (ContainerRoot model, String targetNodeName, String sender) {
-			try {
-				ByteArrayOutputStream outStream = new ByteArrayOutputStream();
-				KevoreeXmiHelper.saveStream(outStream, model);
-				outStream.flush();
-				String IP = KevoreePlatformHelper.getProperty(model, targetNodeName, Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP());
-				if (IP.equals("")) {
-					IP = "127.0.0.1";
-				}
-
-				Option<Integer> portOption = KevoreePropertyHelper.getIntPropertyForGroup(model, this.getName(), "port", true, targetNodeName);
-				int PORT = 8000;
-				if (portOption.isDefined()) {
-					PORT = portOption.get();
-				}
-
-				logger.debug("port=>" + PORT);
-
-				URL url = new URL("http://" + IP + ":" + PORT + "/model/current?sender=" + sender);
-				URLConnection conn = url.openConnection();
-				conn.setConnectTimeout(3000);
-				conn.setDoOutput(true);
-				OutputStreamWriter wr = new OutputStreamWriter(conn.getOutputStream());
-				wr.write(outStream.toString());
-				wr.flush();
-				// Get the response
-				BufferedReader rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-				String line = rd.readLine();
-				while (line != null) {
-					line = rd.readLine();
-				}
-				wr.close();
-				rd.close();
-
-			} catch (Exception e) {
-				//			e.printStackTrace();
-				logger.error("Unable to push a model on " + targetNodeName, e);
-
+		try {
+			ByteArrayOutputStream outStream = new ByteArrayOutputStream();
+			KevoreeXmiHelper.saveStream(outStream, model);
+			outStream.flush();
+			String IP = KevoreePlatformHelper.getProperty(model, targetNodeName, Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP());
+			if (IP.equals("")) {
+				IP = "127.0.0.1";
 			}
+
+			Option<Integer> portOption = KevoreePropertyHelper.getIntPropertyForGroup(model, this.getName(), "port", true, targetNodeName);
+			int PORT = 8000;
+			if (portOption.isDefined()) {
+				PORT = portOption.get();
+			}
+
+			logger.debug("port=>" + PORT);
+
+			URL url = new URL("http://" + IP + ":" + PORT + "/model/current?sender=" + sender);
+			URLConnection conn = url.openConnection();
+			conn.setConnectTimeout(3000);
+			conn.setDoOutput(true);
+			OutputStreamWriter wr = new OutputStreamWriter(conn.getOutputStream());
+			wr.write(outStream.toString());
+			wr.flush();
+			// Get the response
+			BufferedReader rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+			String line = rd.readLine();
+			while (line != null) {
+				line = rd.readLine();
+			}
+			wr.close();
+			rd.close();
+
+		} catch (Exception e) {
+			//			e.printStackTrace();
+			logger.error("Unable to push a model on " + targetNodeName, e);
+
 		}
+	}
 
 
 	public String getAddress (String remoteNodeName) {
@@ -171,8 +171,7 @@ public class RestGroup extends AbstractGroupType {
 	public int parsePortNumber (String nodeName) throws IOException {
 		try {
 			//logger.debug("look for port on " + nodeName);
-			return KevoreeFragmentPropertyHelper.getIntPropertyFromFragmentGroup(this.getModelService().getLastModel(), this.getName(), "port",
-					nodeName);
+			return KevoreeFragmentPropertyHelper.getIntPropertyFromFragmentGroup(this.getModelService().getLastModel(), this.getName(), "port", nodeName);
 		} catch (NumberFormatException e) {
 			throw new IOException(e.getMessage());
 		}
