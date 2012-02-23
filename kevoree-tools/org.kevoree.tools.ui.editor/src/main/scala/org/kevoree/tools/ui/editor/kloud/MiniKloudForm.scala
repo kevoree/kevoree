@@ -59,11 +59,14 @@ class MiniKloudForm (editor: KevoreeEditor) {
 
             // build default model of the minicloud
             if (bootstrapModel == null) {
-              platformJAR = AetherUtil.resolveMavenArtifact("org.kevoree.platform.osgi.standalone.gui", "org.kevoree.platform", KevoreeFactory.getVersion, List("http://maven.kevoree.org/release", "http://maven.kevoree.org/snapshots"))
+              platformJAR = AetherUtil.resolveMavenArtifact("org.kevoree.platform.osgi.standalone.gui", "org.kevoree.platform", KevoreeFactory.getVersion,
+                                                             List("http://maven.kevoree.org/release", "http://maven.kevoree.org/snapshots"))
               if (platformJAR != null) {
                 buildBootstrapModel()
                 logger.debug("trying to start the minicloud")
-                minicloud = Runtime.getRuntime.exec(Array[String](java, "-Dnode.gui.config=false", "-Dnode.bootstrap=" + bootstrapModel, "-Dnode.name=" + minicloudName, "-Dnode.log.level=DEBUG", "-jar", platformJAR.getAbsolutePath))
+                minicloud = Runtime.getRuntime
+                  .exec(Array[String](java, "-Dnode.gui.config=false", "-Dnode.bootstrap=" + bootstrapModel, "-Dnode.name=" + minicloudName, "-Dnode.log.level=DEBUG", "-jar",
+                                       platformJAR.getAbsolutePath))
 
 
                 //LOAD MODEL
@@ -113,7 +116,8 @@ class MiniKloudForm (editor: KevoreeEditor) {
   }
 
   private def buildBootstrapModel () {
-    editor.getPanel.getKernel.getModelHandler.getActualModel.getNodes.find(n => n.getTypeDefinition.getName == "MiniCloudNode") match {
+    editor.getPanel.getKernel.getModelHandler.getActualModel.getNodes
+      .find(n => n.getTypeDefinition.getName == "MiniCloudNode" && n.getHosts.size == editor.getPanel.getKernel.getModelHandler.getActualModel.getNodes.size - 1 && !n.getHosts.contains(n)) match {
       case Some(minicloudNode) => {
         logger.debug("start a minicloud with your own minicloud node")
         minicloudName = minicloudNode.getName
