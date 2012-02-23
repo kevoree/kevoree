@@ -33,9 +33,11 @@ import org.phlo.AirReceiver.RaopRtspPipelineFactory;
 import javax.jmdns.JmDNS;
 import javax.jmdns.ServiceInfo;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.*;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.logging.Level;
@@ -95,7 +97,6 @@ public class AirReceiver {
     public final ExecutionHandler ChannelExecutionHandler = new ExecutionHandler(
             new OrderedMemoryAwareThreadPoolExecutor(4, 0, 0)
     );
-
 
 
     /**
@@ -257,7 +258,7 @@ public class AirReceiver {
         ChannelExecutionHandler.releaseExternalResources();
     }
 
-    public void startAirServer(int AirtunesServiceRTSPPort) throws Exception {
+    public void startAirServer(final int AirtunesServiceRTSPPort) throws Exception {
 
         /* Create AirTunes RTSP server */
         final ServerBootstrap airTunesRtspBootstrap = new ServerBootstrap(new NioServerSocketChannelFactory(ExecutorService, ExecutorService));
@@ -269,39 +270,53 @@ public class AirReceiver {
         s_logger.info("Launched RTSP service on port " + AirtunesServiceRTSPPort);
 
         /* Create mDNS responders. */
-        synchronized (s_jmDNSInstances) {
-            for (final NetworkInterface iface : Collections.list(NetworkInterface.getNetworkInterfaces())) {
-                if (iface.isLoopback())
-                    continue;
-                if (iface.isPointToPoint())
-                    continue;
-                if (!iface.isUp())
-                    continue;
 
-                for (final InetAddress addr : Collections.list(iface.getInetAddresses())) {
-                    if (!(addr instanceof Inet4Address) && !(addr instanceof Inet6Address))
-                        continue;
-
+        Thread jmdnsReg = new Thread() {
+            @Override
+            public void run() {
+                synchronized (s_jmDNSInstances) {
                     try {
-                        /* Create mDNS responder for address */
-                        final JmDNS jmDNS = JmDNS.create(addr, HostName + "-jmdns");
-                        s_jmDNSInstances.add(jmDNS);
+                        for (final NetworkInterface iface : Collections.list(NetworkInterface.getNetworkInterfaces())) {
+                            if (iface.isLoopback())
+                                continue;
+                            if (iface.isPointToPoint())
+                                continue;
+                            if (!iface.isUp())
+                                continue;
 
-                        /* Publish RAOP service */
-                        final ServiceInfo airTunesServiceInfo = ServiceInfo.create(
-                                AirtunesServiceType,
-                                HardwareAddressString + "@" + HostName + " (" + iface.getName() + ")",
-                                AirtunesServiceRTSPPort,
-                                0 /* weight */, 0 /* priority */,
-                                AirtunesServiceProperties
-                        );
-                        jmDNS.registerService(airTunesServiceInfo);
-                        s_logger.info("Registered AirTunes service '" + airTunesServiceInfo.getName() + "' on " + addr);
-                    } catch (final Throwable e) {
-                        s_logger.log(Level.SEVERE, "Failed to publish service on " + addr, e);
+                            for (final InetAddress addr : Collections.list(iface.getInetAddresses())) {
+                                if (!(addr instanceof Inet4Address) && !(addr instanceof Inet6Address))
+                                    continue;
+
+                                try {
+                                    /* Create mDNS responder for address */
+                                    final JmDNS jmDNS = JmDNS.create(addr, HostName + "-jmdns");
+                                    s_jmDNSInstances.add(jmDNS);
+
+                                    /* Publish RAOP service */
+                                    final ServiceInfo airTunesServiceInfo = ServiceInfo.create(
+                                            AirtunesServiceType,
+                                            HardwareAddressString + "@" + HostName + " (" + iface.getName() + ")",
+                                            AirtunesServiceRTSPPort,
+                                            0 /* weight */, 0 /* priority */,
+                                            AirtunesServiceProperties
+                                    );
+                                    jmDNS.registerService(airTunesServiceInfo);
+                                    s_logger.info("Registered AirTunes service '" + airTunesServiceInfo.getName() + "' on " + addr);
+                                } catch (final Throwable e) {
+                                    s_logger.log(Level.SEVERE, "Failed to publish service on " + addr, e);
+                                }
+                            }
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
+
                 }
             }
-        }
+        };
+        jmdnsReg.start();
+
+
     }
 }
