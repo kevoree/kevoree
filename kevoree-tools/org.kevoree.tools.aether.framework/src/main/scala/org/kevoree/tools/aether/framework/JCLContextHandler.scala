@@ -135,6 +135,10 @@ class JCLContextHandler extends DaemonActor with KevoreeClassLoaderHandler {
     logger.debug("================== End KCL Dump ===================")
   }
 
+
+  private val failedLinks = new java.util.HashMap[DeployUnit,KevoreeJarClassLoader]()
+  def clearFailedLinks(){ failedLinks.clear() }
+
   private def installDeployUnitInternals(du: DeployUnit, file: File): KevoreeJarClassLoader = {
     val previousKCL = getKCLInternals(du)
     val res = if (previousKCL != null) {
@@ -150,6 +154,15 @@ class JCLContextHandler extends DaemonActor with KevoreeClassLoaderHandler {
       kcl_cache.put(buildKEY(du), newcl)
       kcl_cache_file.put(buildKEY(du), file)
       logger.debug("Add KCL for {}->{}", du.getUnitName, buildKEY(du))
+      
+            //TRY TO RECOVER FAILED LINK
+      if(failedLinks.containsKey(du)){
+        failedLinks.get(du).addSubClassLoader(newcl)
+        newcl.addWeakClassLoader(failedLinks.get(du))
+        failedLinks.remove(du)
+        logger.debug("Failed Link {} remain size : {}",du.getUnitName,failedLinks.size())
+      }
+      
       du.getRequiredLibs.foreach {
         rLib =>
           val kcl = getKCLInternals(rLib)
@@ -165,10 +178,13 @@ class JCLContextHandler extends DaemonActor with KevoreeClassLoaderHandler {
                 logger.debug("Link Weak for {}->{}", rLib.getUnitName, rLibIn.getUnitName)
               }
             })
-
-
+          } else {
+            logger.debug("Fail link ! Warning ")
+            failedLinks.put(rLib,newcl)
           }
       }
+
+    
       newcl
     }
     /*
@@ -183,6 +199,10 @@ class JCLContextHandler extends DaemonActor with KevoreeClassLoaderHandler {
   }
 
   private def removeDeployUnitInternals(du: DeployUnit) {
+    if(failedLinks.containsKey(du)){
+      failedLinks.remove(du)
+    }
+    
     val key = buildKEY(du)
     val kcl_to_remove = kcl_cache.get(key)
     if (!lockedDu.contains(key)) {
@@ -269,4 +289,10 @@ class JCLContextHandler extends DaemonActor with KevoreeClassLoaderHandler {
 
     buffer.toString
   }
+
+
+
+
+
+
 }

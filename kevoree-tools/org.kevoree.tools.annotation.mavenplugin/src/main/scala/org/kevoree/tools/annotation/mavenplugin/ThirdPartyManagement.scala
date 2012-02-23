@@ -97,7 +97,15 @@ object ThirdPartyManagement {
             }
         }
     }
+    
+    selectedDeps.foreach { previousSelectedDep =>
+      if(previousSelectedDep.getType == "pom" ){
+        selectedDeps = selectedDeps.filter(s => s != previousSelectedDep) //REMOVE
+      }
+    }
 
+    
+    
     selectedDeps
 
   }
