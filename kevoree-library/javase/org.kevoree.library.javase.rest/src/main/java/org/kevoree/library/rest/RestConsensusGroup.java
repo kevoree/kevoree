@@ -104,9 +104,9 @@ public class RestConsensusGroup extends RestGroup {
 		if (lockManager.unlock()) {
 			logger.debug("Update is done => hash is incremented");
 			hash = newHash;
-		} else {
+		} /*else {
 			logger.debug("Update fails");
-		}
+		}*/
 		return hash;
 	}
 
