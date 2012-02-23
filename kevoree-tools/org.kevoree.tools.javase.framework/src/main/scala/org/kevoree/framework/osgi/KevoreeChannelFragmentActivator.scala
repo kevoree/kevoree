@@ -60,6 +60,10 @@ abstract class KevoreeChannelFragmentActivator extends KevoreeInstanceActivator 
   }
 
   def stop() {
+    if(channelActor == null){
+      return
+    }
+
     if (channelActor.asInstanceOf[ChannelTypeFragment].isStarted) {
       channelActor !? StopMessage(null)
     }

@@ -53,9 +53,9 @@ class KevoreeJarClassLoader extends JarClassLoader {
   private val logger = LoggerFactory.getLogger(classOf[KevoreeJarClassLoader]);
 
   def cleanupLinks(c: ClassLoader) {
-    // CHEKC USED
+    // CHECK USED
     subClassLoaders = subClassLoaders.filter(scl => scl != c)
-    subWeakClassLoaders = subWeakClassLoaders.filter(scl => scl != c)
+    subWeakClassLoaders = subWeakClassLoaders.filter(scl => scl.get.isDefined && scl.get.get != c)
   }
 
   classpathResources = new KevoreeLazyJarResources

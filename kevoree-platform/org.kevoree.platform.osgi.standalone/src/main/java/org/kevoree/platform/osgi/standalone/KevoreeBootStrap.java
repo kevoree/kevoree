@@ -76,6 +76,7 @@ public class KevoreeBootStrap {
             scriptEngineKCL.lockLinks();
 
             KevoreeJarClassLoader dummyKCL = new KevoreeJarClassLoader();
+            dummyKCL.lockLinks();
 
             for (Method m : selfRegisteredClazz.getMethods()) {
                 if (m.getName().equals("registerManuallyDeployUnit")) {
