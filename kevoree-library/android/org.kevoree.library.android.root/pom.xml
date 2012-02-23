@@ -31,6 +31,7 @@
         <module>../org.kevoree.library.android.defaultChannels</module>
         <module>../org.kevoree.library.android.socketChannels</module>
         <module>../org.kevoree.library.android.agrapher</module>
+        <module>../org.kevoree.library.android.serialCT</module>
     </modules>
 
     <dependencies>
@@ -42,7 +43,7 @@
         <dependency>
             <groupId>com.google.android</groupId>
             <artifactId>android</artifactId>
-            <version>2.2.1</version>
+            <version>4.0.1.2</version>
         </dependency>
         <dependency>
             <groupId>org.kevoree.tools</groupId>
