@@ -17,7 +17,7 @@ import org.slf4j.LoggerFactory;
  */
 @ComponentType
 @DictionaryType({
-		@DictionaryAttribute(name = "forward", defaultValue = "kloud.kevoree.org", optional = false)
+		@DictionaryAttribute(name = "forward", optional = false)
 })
 public class ProxyPage extends ParentAbstractPage {
 

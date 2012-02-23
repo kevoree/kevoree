@@ -32,8 +32,8 @@ object Forwarder {
 
   def initialize () {
     if (alreadyInitialize == 0) {
-      id = "kevoree.rest.group.spray-service.forwarder"
-      val config = ClientConfig(clientActorId = id)
+      id = "kevoree.forwarder.spray-service.client"
+      val config = ClientConfig(id)
       // start and supervise the HttpClient actor
       supervisorRef = Supervisor(SupervisorConfig(
                                                    OneForOneStrategy(List(classOf[Exception]), 3, 100),
@@ -74,11 +74,13 @@ object Forwarder {
     }
   }
 
-  def forward (urlString: String, port: Int, request: KevoreeHttpRequest, response: KevoreeHttpResponse, path: String,
-    urlPattern: String) {
+  def forward (urlString: String, port: Int, request: KevoreeHttpRequest, response: KevoreeHttpResponse, path: String,urlPattern: String) {
     var newPath = ""
     if (path != null) {
       newPath = path
+    }
+    if (newPath.startsWith("/")) {
+      newPath = newPath.substring(1)
     }
     var currentPath = ""
     if (urlPattern != "") {
@@ -87,7 +89,7 @@ object Forwarder {
         currentPath = currentPath + "/"
       }
     }
-    logger.debug("forward to {} with {} as parameter", urlString + port + "/" + newPath, request.getRawParams)
+    logger.debug("forward to {} with {} as parameter", urlString + ":" + port + "/" + newPath, request.getRawParams)
     if (request.getRawBody.size == 0) {
       forwardGET(urlString, port, request, response, newPath, currentPath)
     } else {
@@ -95,12 +97,9 @@ object Forwarder {
     }
   }
 
-  private def forwardGET (urlString: String, port: Int, request: KevoreeHttpRequest, response: KevoreeHttpResponse, path: String,
-    currentPath: String) {
-    // create a very basic HttpDialog that results in a Future[HttpResponse]
-    val dialog = HttpClient.HttpDialog(urlString, port)
-      .send(HttpRequest(method = HttpMethods.GET, uri = "/" + path + request.getRawParams,
-                         headers = convertKevoreeHTTPHeadersToSprayCanHeaders(request.getHeaders)))
+  private def forwardGET (urlString: String, port: Int, request: KevoreeHttpRequest, response: KevoreeHttpResponse, path: String, currentPath: String) {
+    val dialog = HttpClient.HttpDialog(urlString, port, id)
+      .send(HttpRequest(method = HttpMethods.GET, uri = "/" + path + request.getRawParams, headers = convertKevoreeHTTPHeadersToSprayCanHeaders(request.getHeaders)))
       .end
 
     dialog.get
@@ -112,12 +111,9 @@ object Forwarder {
   }
 
 
-  private def forwardPOST (urlString: String, port: Int, request: KevoreeHttpRequest, response: KevoreeHttpResponse,
-    path: String, urlPattern: String) {
-    // create a very basic HttpDialog that results in a Future[HttpResponse]
-    val dialog = HttpClient.HttpDialog(urlString, port)
-      .send(HttpRequest(method = HttpMethods.POST, uri = "/" + path + request.getRawParams,
-                         headers = convertKevoreeHTTPHeadersToSprayCanHeaders(request.getHeaders), body = request.getRawBody))
+  private def forwardPOST (urlString: String, port: Int, request: KevoreeHttpRequest, response: KevoreeHttpResponse, path: String, urlPattern: String) {
+    val dialog = HttpClient.HttpDialog(urlString, port, id)
+      .send(HttpRequest(method = HttpMethods.POST, uri = "/" + path + request.getRawParams, headers = convertKevoreeHTTPHeadersToSprayCanHeaders(request.getHeaders), body = request.getRawBody))
       .end
 
     dialog.get

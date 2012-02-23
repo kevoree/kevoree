@@ -54,6 +54,7 @@ object GetParamsParser {
                 case _@e => logger.error("unable to parser HTTP request", e)
               }
             } else {
+              if (content != "" || content != "--") {}
               logger.error("Unrecognized HTTP body:\n\"{}\"", content)
             }
         }
