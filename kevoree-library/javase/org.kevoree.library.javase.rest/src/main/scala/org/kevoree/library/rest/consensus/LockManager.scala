@@ -87,8 +87,10 @@ class LockManager (timeout: Long, consensusGroup: RestConsensusGroup, r : Random
         case IS_LOCK() => reply(lockUUID != null)
         case UNLOCK() => {
           logger.debug("Unlocking Kevoree core !")
-          consensusGroup.getModelService.releaseLock(lockUUID)
-          lockUUID = null
+          if (lockUUID != null) {
+            consensusGroup.getModelService.releaseLock(lockUUID)
+            lockUUID = null
+          }
           reply(updateDone)
         }
         case LOCK_REJECTED() => lockUUID = null
