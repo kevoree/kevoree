@@ -127,7 +127,7 @@ public class App {
 
 				AbstractButton toogleKloud = null;
 				try {
-					java.net.URL url = App.class.getClassLoader().getResource("terminal.png");
+					java.net.URL url = App.class.getClassLoader().getResource("kloud.png");
 					ImageIcon icon = new ImageIcon(url);
 					toogleKloud =
 							MacButtonFactory.makeUnifiedToolBarButton(
@@ -140,7 +140,7 @@ public class App {
 
 				AbstractButton toogleMiniKloud = null;
 				try {
-					java.net.URL url = App.class.getClassLoader().getResource("terminal.png");
+					java.net.URL url = App.class.getClassLoader().getResource("kloud.png");
 					ImageIcon icon = new ImageIcon(url);
 					toogleMiniKloud =
 							MacButtonFactory.makeUnifiedToolBarButton(
@@ -341,16 +341,20 @@ public class App {
 					@Override
 					public void mouseClicked (MouseEvent e) {
 						// Display the Dialog to configure the kloud and send the model on it
-						finalToggleMiniKloudDialog.setEnabled(!finalToggleMiniKloudDialog.isEnabled());
-						if (finalToggleMiniKloudDialog.isEnabled()) {
+						boolean toggle = !finalToggleMiniKloudDialog.isEnabled();
+						if (toggle) {
 							// display the Dialog
 //							minikloudForm.display();
-							minikloudForm.startMiniCloud();
+							if (minikloudForm.startMiniCloud()) {
+								finalToggleMiniKloudDialog.setEnabled(toggle);
+							}
 						} else {
 							// hide the Dialog
 //							minikloudForm.hide();
 //							logger.debug("trying to shutdown the minicloud");
-							minikloudForm.shutdownMiniCloud();
+							if (minikloudForm.shutdownMiniCloud()) {
+								finalToggleMiniKloudDialog.setEnabled(toggle);
+							}
 						}
 					}
 				});
