@@ -79,7 +79,6 @@ case class UpdateDictionary(c: Instance, nodeName: String) extends PrimitiveComm
             lastDictioanry = (g_act.groupActor !? UpdateDictionaryMessage(dictionary, c.getTypeDefinition.eContainer.asInstanceOf[ContainerRoot])).asInstanceOf[HashMap[String, AnyRef]]
             true
           }
-
           case _ => false
         }
       }
