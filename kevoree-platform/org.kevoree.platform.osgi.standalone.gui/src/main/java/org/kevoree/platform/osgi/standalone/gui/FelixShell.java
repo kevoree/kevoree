@@ -17,16 +17,14 @@ package org.kevoree.platform.osgi.standalone.gui;
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
 import com.explodingpixels.macwidgets.IAppWidgetFactory;
+import com.explodingpixels.macwidgets.plaf.HudButtonUI;
 import com.explodingpixels.macwidgets.plaf.HudComboBoxUI;
 import com.explodingpixels.macwidgets.plaf.HudTextFieldUI;
 import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
+import java.awt.event.*;
 import java.io.*;
 
 public class FelixShell extends JPanel {
@@ -118,6 +116,19 @@ public class FelixShell extends JPanel {
         layoutBOTTOM.setLayout(new BorderLayout());
         layoutBOTTOM.add(input, BorderLayout.CENTER);
         layoutBOTTOM.add(loglevels, BorderLayout.WEST);
+        JButton clearBt  = new JButton("Clear");
+        clearBt.setUI(new HudButtonUI());
+        layoutBOTTOM.add(clearBt, BorderLayout.EAST);
+        clearBt.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent mouseEvent) {
+                textArea.setText("");
+                textArea.repaint();
+                textArea.revalidate();
+            }
+        });
+
+
         layoutBOTTOM.setOpaque(false);
         layoutBOTTOM.setBorder(null);
         add(layoutBOTTOM, BorderLayout.SOUTH);
