@@ -17,13 +17,13 @@
 
     <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
-            <pattern>%-5level [%file:%line] - %msg%n</pattern>
+            <pattern>%-5level [%d{HH:mm:ss.SSS}:%file:%line] - %msg%n</pattern>
         </encoder>
     </appender>
 
     <appender name="FILE" class="ch.qos.logback.core.FileAppender">
         <encoder>
-            <pattern>%-5level [%file:%line] - %msg%n</pattern>
+            <pattern>%-5level [%d{HH:mm:ss.SSS}:%file:%line] - %msg%n</pattern>
         </encoder>
         <file>${node.log.appender.file:-/tmp/node.log}</file>
         <append>false</append>
