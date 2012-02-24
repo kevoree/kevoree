@@ -13,6 +13,8 @@ import scala.Option;
 import java.io.*;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  * Created by IntelliJ IDEA.
@@ -32,9 +34,12 @@ public class RestGroup extends AbstractGroupType {
 
 	private Logger logger = LoggerFactory.getLogger(this.getClass());
 	private ServerBootstrap server = new ServerBootstrap(this);
+	private ExecutorService poolUpdate;
 
 	@Start
 	public void startRestGroup () {
+
+		poolUpdate = Executors.newSingleThreadExecutor();
 		logger.warn("Rest service start on port " + this.getDictionary().get("port").toString());
 		Object ipOption = this.getDictionary().get("ip");
 		String ip = "0.0.0.0";
@@ -50,22 +55,19 @@ public class RestGroup extends AbstractGroupType {
 	@Stop
 	public void stopRestGroup () {
 		server.stop();
+		poolUpdate.shutdownNow();
 	}
 
 	@Override
 	public void triggerModelUpdate () {
+		Group group = getModelElement();
 		ContainerRoot model = this.getModelService().getLastModel();
-		for (Group group : model.getGroupsForJ()) {
-			if (group.getName().equals(this.getName())) {
-				for (ContainerNode subNode : group.getSubNodesForJ()) {
-					if (!subNode.getName().equals(this.getNodeName())) {
-						internalPush(model, subNode.getName(), this.getNodeName());
-					}
-				}
-				return;
+
+		for (ContainerNode subNode : group.getSubNodesForJ()) {
+			if (!subNode.getName().equals(this.getNodeName())) {
+				internalPush(model, subNode.getName(), this.getNodeName());
 			}
 		}
-
 	}
 
 	@Update
@@ -76,65 +78,49 @@ public class RestGroup extends AbstractGroupType {
 
 	@Override
 	public void push (ContainerRoot model, String targetNodeName) {
-		try {
-			ByteArrayOutputStream outStream = new ByteArrayOutputStream();
-			KevoreeXmiHelper.saveStream(outStream, model);
-			outStream.flush();
-			String IP = KevoreePlatformHelper.getProperty(model, targetNodeName, Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP());
-			if (IP.equals("")) {
-				IP = "127.0.0.1";
-			}
+		String IP = KevoreePlatformHelper.getProperty(model, targetNodeName, Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP());
+		if (IP.equals("")) {
+			IP = "127.0.0.1";
+		}
 
-			Option<Integer> portOption = KevoreePropertyHelper.getIntPropertyForGroup(model, this.getName(), "port", true, targetNodeName);
-			int PORT = 8000;
-			if (portOption.isDefined()) {
-				PORT = portOption.get();
-			}
+		Option<Integer> portOption = KevoreePropertyHelper.getIntPropertyForGroup(model, this.getName(), "port", true, targetNodeName);
+		int PORT = 8000;
+		if (portOption.isDefined()) {
+			PORT = portOption.get();
+		}
 
-			logger.debug("url=>" + "http://" + IP + ":" + PORT + "/model/current");
+		logger.debug("url=>" + "http://" + IP + ":" + PORT + "/model/current");
 
-			URL url = new URL("http://" + IP + ":" + PORT + "/model/current");
-			URLConnection conn = url.openConnection();
-			conn.setConnectTimeout(3000);
-			conn.setDoOutput(true);
-			OutputStreamWriter wr = new OutputStreamWriter(conn.getOutputStream());
-			wr.write(outStream.toString());
-			wr.flush();
-			// Get the response
-			BufferedReader rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-			String line = rd.readLine();
-			while (line != null) {
-				line = rd.readLine();
-			}
-			wr.close();
-			rd.close();
-
-		} catch (Exception e) {
-			//			e.printStackTrace();
-			logger.error("Unable to push a model on " + targetNodeName, e);
-
+		if (!sendModel(model, "http://" + IP + ":" + PORT + "/model/current")) {
+			logger.debug("Unable to push a model on " + targetNodeName);
 		}
 	}
 
 	public void internalPush (ContainerRoot model, String targetNodeName, String sender) {
+		String IP = KevoreePlatformHelper.getProperty(model, targetNodeName, Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP());
+		if (IP.equals("")) {
+			IP = "127.0.0.1";
+		}
+
+		Option<Integer> portOption = KevoreePropertyHelper.getIntPropertyForGroup(model, this.getName(), "port", true, targetNodeName);
+		int PORT = 8000;
+		if (portOption.isDefined()) {
+			PORT = portOption.get();
+		}
+
+		if (!sendModel(model, "http://" + IP + ":" + PORT + "/model/current?sender=" + sender)) {
+			logger.debug("Unable to push a model on " + targetNodeName);
+		}
+
+
+	}
+
+	private boolean sendModel (ContainerRoot model, String urlPath) {
 		try {
 			ByteArrayOutputStream outStream = new ByteArrayOutputStream();
 			KevoreeXmiHelper.saveStream(outStream, model);
 			outStream.flush();
-			String IP = KevoreePlatformHelper.getProperty(model, targetNodeName, Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP());
-			if (IP.equals("")) {
-				IP = "127.0.0.1";
-			}
-
-			Option<Integer> portOption = KevoreePropertyHelper.getIntPropertyForGroup(model, this.getName(), "port", true, targetNodeName);
-			int PORT = 8000;
-			if (portOption.isDefined()) {
-				PORT = portOption.get();
-			}
-
-			logger.debug("port=>" + PORT);
-
-			URL url = new URL("http://" + IP + ":" + PORT + "/model/current?sender=" + sender);
+			URL url = new URL(urlPath);
 			URLConnection conn = url.openConnection();
 			conn.setConnectTimeout(3000);
 			conn.setDoOutput(true);
@@ -149,14 +135,11 @@ public class RestGroup extends AbstractGroupType {
 			}
 			wr.close();
 			rd.close();
-
+			return true;
 		} catch (Exception e) {
-			//			e.printStackTrace();
-			logger.error("Unable to push a model on " + targetNodeName, e);
-
+			return false;
 		}
 	}
-
 
 	public String getAddress (String remoteNodeName) {
 		logger.debug("ModelService " + getModelService());
@@ -210,26 +193,27 @@ public class RestGroup extends AbstractGroupType {
 	 * @return the result may depend of the implementation. Basic implementation in RestGroup always returns <code>true</code>
 	 */
 	public boolean updateModel (final ContainerRoot model, final String sender) {
-		new Thread() {
+		Runnable t = new Runnable() {
 			@Override
 			public void run () {
+				boolean externalSender = true;
 				if (!sender.equals("")) {
 					for (ContainerNode n : RestGroup.this.getModelElement().getSubNodesForJ()) {
 						if (n.getName().equals(sender)) {
-							RestGroup.this.getModelService().unregisterModelListener(RestGroup.this.getModelListener());
+							externalSender = false;
 						}
 					}
+				}
+				if (!externalSender) {
+					RestGroup.this.getModelService().unregisterModelListener(RestGroup.this.getModelListener());
 				}
 				RestGroup.this.getModelService().atomicUpdateModel(model);
-				if (!sender.equals("")) {
-					for (ContainerNode n : RestGroup.this.getModelElement().getSubNodesForJ()) {
-						if (n.getName().equals(sender)) {
-							RestGroup.this.getModelService().registerModelListener(RestGroup.this.getModelListener());
-						}
-					}
+				if (!externalSender) {
+					RestGroup.this.getModelService().registerModelListener(RestGroup.this.getModelListener());
 				}
 			}
-		}.start();
+		};
+		poolUpdate.submit(t);
 		logger.debug("Rest Group updateModel");
 		return true;
 	}
