@@ -26,7 +26,7 @@ import java.io.InputStream;
  */
 @Library(name = "SKY")
 @ComponentType
-public class KloudResourceManager extends ParentAbstractPage {
+public class PaaSKloudResourceManager extends ParentAbstractPage {
 
 	private Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -36,7 +36,7 @@ public class KloudResourceManager extends ParentAbstractPage {
 		new Thread() {
 			@Override
 			public void run () {
-				KloudResourceManager.super.requestHandler(params);
+				PaaSKloudResourceManager.super.requestHandler(params);
 			}
 		}.start();
 	}
@@ -101,49 +101,53 @@ public class KloudResourceManager extends ParentAbstractPage {
 			}
 		} else {
 			// else we create this new one
-			UUIDModel uuidModel = this.getModelService().getLastUUIDModel();
+			return processNew(model, login, sshKey);
+		}
+	}
 
-			// we create a group with the login of the user
-			Option<ContainerRoot> newKloudModelOption = KloudHelper.createGroup(login, this.getNodeName(), uuidModel.getModel(), getKevScriptEngineFactory(), sshKey);
-			if (newKloudModelOption.isDefined()) {
-				// create proxy to the group
-				newKloudModelOption = KloudHelper.createProxy(login, this.getNodeName(), "/" + login, newKloudModelOption.get(), getKevScriptEngineFactory());
+	private String processNew (ContainerRoot model, String login, String sshKey) {
+		UUIDModel uuidModel = this.getModelService().getLastUUIDModel();
 
-				if (newKloudModelOption.isDefined()) {
+		// we create a group with the login of the user
+		Option<ContainerRoot> newKloudModelOption = KloudReasoner.createGroup(login, this.getNodeName(), uuidModel.getModel(), getKevScriptEngineFactory(), sshKey);
+		if (newKloudModelOption.isDefined()) {
+			// create proxy to the group
+			KloudReasoner.createProxy(login, this.getNodeName(), "/" + login, newKloudModelOption.get(), getKevScriptEngineFactory());
 
-					Option<Group> groupOption = KloudHelper.getGroup(login, newKloudModelOption.get());
-					if (groupOption.isDefined()) {
-						try {
-							// update the kloud model by adding the group (the nodes are not added)
-							this.getModelService().atomicCompareAndSwapModel(uuidModel, newKloudModelOption.get());
+//			if (newKloudModelOption.isDefined()) {
 
-							// push the user model to this group
-							KloudHelper.localPush(model, login, newKloudModelOption.get());
-
-							Option<String> accessPointOption = KloudHelper.lookForAccessPoint(login, this.getNodeName(), this.getModelService().getLastModel());
-							if (accessPointOption.isDefined()) {
-								return accessPointOption.get();
-							} else {
-								return "Unable to give you access to your nodes.<br />Please contact the administrators.";
-							}
-						} catch (Exception e) {
-							logger.debug(
-									"Unable to swap model, maybe because the new model is based on a too old configuration",
-									e);
-							return "Unable to swap model, maybe because the new model is based on a too old configuration:\n"
-									+ e.getMessage();
-						}
-					} else {
-						// TODO
-						return "";
+			Option<Group> groupOption = KloudHelper.getGroup(login, newKloudModelOption.get());
+			if (groupOption.isDefined()) {
+				try {
+					// update the kloud model by adding the group (the nodes are not added)
+					this.getModelService().atomicCompareAndSwapModel(uuidModel, newKloudModelOption.get());
+				} catch (Exception e) {
+					return processNew(model, login, sshKey);
+				}
+				// push the user model to this group on the master fragment
+				Option<String> addressOption = KloudHelper.pushOnMaster(model, login, this.getNodeName(), newKloudModelOption.get());
+				if (addressOption.isDefined()) {
+					uuidModel = this.getModelService().getLastUUIDModel();
+					KloudReasoner.createProxy(login, this.getNodeName(), "/" + login, newKloudModelOption.get(), getKevScriptEngineFactory());
+					try {
+						this.getModelService().atomicCompareAndSwapModel(uuidModel, newKloudModelOption.get());
+						return addressOption.get();
+					} catch (Exception e) {
+						logger.error("Unable to add the proxy for the user {}", login, e);
+						return "Unable to add the proxy for the user " + login;
 					}
 				} else {
 					logger.debug("Unable to add the proxy for the user {}", login);
 					return "Unable to add the proxy for the user " + login;
 				}
+
 			} else {
-				return "Unable to create the needed user group to give access the nodes to the user.";
+				logger.debug("Unable to find the user group for {}", login);
+				return "Unable to find the user group for {}" + login;
 			}
+		} else {
+			logger.debug("Unable to create the needed user group to give access the nodes to the user.");
+			return "Unable to create the needed user group to give access the nodes to the user.";
 		}
 	}
 
