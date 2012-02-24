@@ -73,6 +73,7 @@ public class SerialCT extends AbstractChannelFragment {
 		}.start();
 	}
 
+
 	@Update
 	public void updateRxTxChannel () {
 		stopRxTxChannel();
