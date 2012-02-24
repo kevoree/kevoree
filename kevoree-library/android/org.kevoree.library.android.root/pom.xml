@@ -6,12 +6,12 @@
     <artifactId>org.kevoree.library.android.root</artifactId>
     <packaging>pom</packaging>
     <name>Kevoree :: Library :: Android :: Root</name>
-    <version>1.6.0-BETA1</version>
+    <version>1.6.0-BETA2</version>
 
     <parent>
         <artifactId>org.kevoree.library</artifactId>
         <groupId>org.kevoree.library</groupId>
-        <version>1.6.0-BETA1</version>
+        <version>1.6.0-BETA2</version>
         <relativePath>../../pom.xml</relativePath>
     </parent>
 
@@ -31,7 +31,7 @@
         <module>../org.kevoree.library.android.defaultChannels</module>
         <module>../org.kevoree.library.android.socketChannels</module>
         <module>../org.kevoree.library.android.agrapher</module>
-       <!-- <module>../org.kevoree.library.android.serialCT</module> -->
+        <module>../org.kevoree.library.android.serialCT</module>
        
     </modules>
 
