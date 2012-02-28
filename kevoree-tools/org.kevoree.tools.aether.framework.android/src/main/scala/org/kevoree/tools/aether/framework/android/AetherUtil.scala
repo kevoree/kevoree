@@ -118,9 +118,18 @@ object AetherUtil {
         repositories.add(repo)
     }
 
-    artifactRequest.setRepositories(repositories)
-    val artefactResult = newRepositorySystem.resolveArtifact(newRepositorySystemSession, artifactRequest)
-    artefactResult.getArtifact.getFile
+    try {
+      artifactRequest.setRepositories(repositories)
+      val artefactResult = newRepositorySystem.resolveArtifact(newRepositorySystemSession, artifactRequest)
+      artefactResult.getArtifact.getFile
+    } catch {
+      case _@e => {
+        logger.debug("Error while resolving {}",du.getUnitName.trim(),e)
+        null
+      }
+    }
+
+
   }
 
   def newRepositorySystemSession = {

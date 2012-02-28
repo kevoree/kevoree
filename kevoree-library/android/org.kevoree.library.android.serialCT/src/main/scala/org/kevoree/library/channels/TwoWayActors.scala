@@ -53,6 +53,9 @@ class TwoWayActors(portName: String) extends 	SerialListener {
   var serialPort: ISerial = null
   private[library] var uiService: KevoreeAndroidService = null
   uiService = UIServiceHandler.getUIService
+
+  println("Instance Port Creation "+ portName)
+
   serialPort = new UsbSerial(portName,115200,uiService.getRootActivity)
   serialPort.open()
   if(serialPort.isConnected){

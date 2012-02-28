@@ -20,7 +20,7 @@ import java.util.HashMap;
  */
 @Library(name = "Android")
 @DictionaryType({
-		@DictionaryAttribute(name = "serialport", defaultValue = "0403:6001", fragmentDependant = true)
+		@DictionaryAttribute(name = "serialport", fragmentDependant = true)
 })
 @ChannelTypeFragment
 public class SerialCT extends AbstractChannelFragment {
@@ -69,6 +69,8 @@ public class SerialCT extends AbstractChannelFragment {
 						logger.error("Com Port Not Found ");
 					}
 				}
+
+
 			}
 		}.start();
 	}
