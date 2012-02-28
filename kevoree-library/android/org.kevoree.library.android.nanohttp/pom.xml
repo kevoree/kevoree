@@ -3,9 +3,9 @@
 
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.kevoree.library.android</groupId>
-    <artifactId>org.kevoree.library.android.nodeType</artifactId>
-    <packaging>bundle</packaging>
-    <name>Kevoree :: Library :: Android :: NodeType</name>
+    <artifactId>org.kevoree.library.android.nanohttp</artifactId>
+    <packaging>jar</packaging>
+    <name>Kevoree :: Library :: Android :: NanoHttp</name>
     <version>1.6.0-BETA2</version>
 
     <parent>
@@ -15,37 +15,15 @@
         <relativePath>../org.kevoree.library.android.root/pom.xml</relativePath>
     </parent>
 
-    <dependencies>
-        <dependency>
-            <groupId>org.kevoree</groupId>
-            <artifactId>org.kevoree.kcl</artifactId>
-            <version>${kevoree.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.kevoree</groupId>
-            <artifactId>org.kevoree.kompare</artifactId>
-            <version>${kevoree.version}</version>
-        </dependency>
-    </dependencies>
+    <properties>
+        <android.tools.aapt>${android.home}/platform-tools/aapt</android.tools.aapt>
+        <android.tools.dx>${android.home}/platform-tools/dx</android.tools.dx>
+    </properties>
 
     <build>
+        <sourceDirectory>../../javase/org.kevoree.library.javase.nanohttp/src</sourceDirectory>
         <plugins>
 
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>build-helper-maven-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <phase>generate-sources</phase>
-                        <goals><goal>add-source</goal></goals>
-                        <configuration>
-                            <sources>
-                                <source>../../javase/org.kevoree.library.javase.javaseNode/src/main/scala</source>
-                            </sources>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
             <plugin>
                 <groupId>org.scala-tools</groupId>
                 <artifactId>maven-scala-plugin</artifactId>
@@ -73,27 +51,30 @@
                     </jvmArgs>
                 </configuration>
             </plugin>
+
+            
             <plugin>
-                <groupId>org.apache.felix</groupId>
-                <artifactId>maven-bundle-plugin</artifactId>
-                <version>2.3.5</version>
+                <groupId>org.kevoree.tools</groupId>
+                <artifactId>org.kevoree.tools.annotation.mavenplugin</artifactId>
+                <version>${kevoree.version}</version>
                 <extensions>true</extensions>
                 <configuration>
-                    <instructions>
-                        <Import-Package>
-                            !org.kevoree.library.*,
-                            org.osgi.*;version="[1,5)",
-                            *
-                        </Import-Package>
-                        <Export-Package>org.kevoree.library.*</Export-Package>
-                    </instructions>
+                    <nodeTypeNames>AndroidNode</nodeTypeNames>
                 </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>generate</goal>
+                            <goal>compile</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
             <!-- android dex phase -->
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>exec-maven-plugin</artifactId>
-                <version>1.1.1</version>
+                <version>1.1</version>
                 <executions>
                     <execution>
                         <id>generate-dex</id>
@@ -129,8 +110,8 @@
                     </execution>
                 </executions>
             </plugin>
+
         </plugins>
     </build>
 
 </project>
-

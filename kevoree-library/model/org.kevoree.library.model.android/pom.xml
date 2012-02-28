@@ -75,7 +75,7 @@
         </dependency>
         <dependency>
             <groupId>org.kevoree.library.android</groupId>
-            <artifactId>org.kevoree.library.android.rest</artifactId>
+            <artifactId>org.kevoree.library.android.nanohttp</artifactId>
             <version>${kevoree.version}</version>
         </dependency>
         <dependency>

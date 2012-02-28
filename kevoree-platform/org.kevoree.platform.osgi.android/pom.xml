@@ -117,25 +117,17 @@
             <artifactId>org.kevoree.tools.marShell</artifactId>
             <version>${kevoree.version}</version>
             <scope>provided</scope>
-
             <exclusions>
                 <exclusion>
                     <artifactId>org.kevoree.tools.aether.framework</artifactId>
                     <groupId>org.kevoree.tools</groupId>
                 </exclusion>
             </exclusions>
-
         </dependency>
         <dependency>
             <groupId>org.kevoree.tools</groupId>
             <artifactId>org.kevoree.tools.aether.framework.android</artifactId>
             <version>${kevoree.version}</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-android</artifactId>
-            <version>1.6.1-RC1</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>
@@ -246,6 +238,8 @@
                         <option>-keep class org.kevoree.android.framework.** { *; }</option>
                         <option>-keep class org.kevoree.tools.aether.framework.android.** { *; }</option>
                         <option>-keep class org.kevoree.kompare.** { *; }</option>
+                        <option>-keep class org.kevoree.* { *; }</option>
+                        <option>-keep class org.kevoree.impl.* { *; }</option>
                         <option>-dontskipnonpubliclibraryclasses</option>
                         <option>-dontskipnonpubliclibraryclassmembers</option>
                         <option>-dontoptimize</option>
@@ -340,11 +334,6 @@
                                     !org/apache/codec/**,
                                     !META-INF/**
                                 </filter>
-
-                            </inclusion>
-                            <inclusion>
-                                <groupId>org.slf4j</groupId>
-                                <artifactId>slf4j-android</artifactId>
                             </inclusion>
                             <inclusion>
                                 <groupId>org.jgrapht</groupId>
