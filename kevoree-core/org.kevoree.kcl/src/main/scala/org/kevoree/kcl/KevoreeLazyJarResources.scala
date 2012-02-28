@@ -109,6 +109,9 @@ class KevoreeLazyJarResources extends ClasspathResources {
       while (jarEntry != null) {
         if (!jarEntry.isDirectory) {
           var filtered = false
+
+          //logger.debug("Will check for "+jarEntry.getName)
+
           if (parentKCL.get() != null) {
             parentKCL.get().getSpecialLoaders.find(r => jarEntry.getName.endsWith(r.getExtension)) match {
               case Some(e) => {
@@ -137,7 +140,9 @@ class KevoreeLazyJarResources extends ClasspathResources {
                 val b = new Array[Byte](2048)
                 val out = new ByteArrayOutputStream();
                 var len = 0;
-                while (jis.available() > 0) {
+                while (len != -1) {
+
+                //while (jis.available() > 0) {
                   len = jis.read(b);
                   if (len > 0) {
                     out.write(b, 0, len);

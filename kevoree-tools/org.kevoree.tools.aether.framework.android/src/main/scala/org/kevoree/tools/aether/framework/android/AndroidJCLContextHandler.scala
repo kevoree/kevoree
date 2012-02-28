@@ -157,7 +157,16 @@ class AndroidJCLContextHandler(ctx: android.content.Context, parent: ClassLoader
       if (du.getVersion.contains("SNAPSHOT")) {
         newcl.setLazyLoad(false)
       }
-      newcl.add(file.getAbsolutePath)
+      logger.debug("Before add the jar {} to classloader",file.getAbsolutePath)
+      try {
+        newcl.add(file.getAbsolutePath)
+      } catch {
+        case _ @ e => {
+          logger.error("Can't add Jar to class path",e)
+          return null
+        }
+      }
+      logger.debug("After Adding the jar ")
       kcl_cache.put(buildKEY(du), newcl)
       kcl_cache_file.put(buildKEY(du), file)
       logger.debug("Add KCL for {}->{}", du.getUnitName, buildKEY(du))
