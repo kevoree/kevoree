@@ -80,18 +80,17 @@ public class KevoreeActivity extends Activity implements KevoreeAndroidService {
 
             checkbox_info = new CheckBox(this);
             checkbox_info.setText("INFO");
+            checkbox_info.setChecked(true);
             checkbox_debug = new CheckBox(this);
             checkbox_debug.setText("DEBUG");
             checkbox_warn = new CheckBox(this);
+            checkbox_warn.setChecked(true);
             checkbox_warn.setText("WARN");
 
 
             checkbox_list  = new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    // change log level todo
-
-
 
                 }
             };
@@ -199,6 +198,12 @@ public class KevoreeActivity extends Activity implements KevoreeAndroidService {
                     if (!alreadyStarted) {
                         nodeName=  nodeNameView.getText().toString();
                         System.setProperty("node.name",nodeName);
+                        nodeNameView.setClickable(false);
+                        nodeNameView.setCursorVisible(false);
+                        nodeNameView.setBackgroundColor(Color.GRAY);
+                        nodeNameView.setSelected(false);
+                        nodeNameView.setEnabled(false);
+
                         startService(intent_start);
                         alreadyStarted = true;
                     }

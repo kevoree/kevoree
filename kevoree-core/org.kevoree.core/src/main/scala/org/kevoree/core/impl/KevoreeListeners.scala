@@ -3,7 +3,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * 	http://www.gnu.org/licenses/lgpl-3.0.txt
+ * http://www.gnu.org/licenses/lgpl-3.0.txt
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -16,6 +16,7 @@ package org.kevoree.core.impl
 import actors.{Actor, DaemonActor}
 import org.kevoree.api.service.core.handler.ModelListener
 import org.kevoree.ContainerRoot
+import org.slf4j.LoggerFactory
 
 class KevoreeListeners extends DaemonActor {
 
@@ -37,17 +38,17 @@ class KevoreeListeners extends DaemonActor {
 
   case class STOP_ACTOR()
 
-  case class PREUPDATE(currentModel : ContainerRoot, proposedModel : ContainerRoot)
+  case class PREUPDATE(currentModel: ContainerRoot, proposedModel: ContainerRoot)
 
-  def preUpdate(currentModel : ContainerRoot,pmodel : ContainerRoot ) : Boolean = {
+  def preUpdate(currentModel: ContainerRoot, pmodel: ContainerRoot): Boolean = {
     (this !? PREUPDATE(currentModel, pmodel)).asInstanceOf[Boolean]
   }
-  
+
   def act() {
     loop {
       react {
         case PREUPDATE(currentModel, pmodel) => {
-          reply(registeredListeners.forall(l=> l._1.preUpdate(currentModel, pmodel)))
+          reply(registeredListeners.forall(l => l._1.preUpdate(currentModel, pmodel)))
         }
         case AddListener(l) => {
           val myActor = new ListenerActor(l)
@@ -87,11 +88,20 @@ class KevoreeListeners extends DaemonActor {
 
   case class STOP_LISTENER()
 
+
+  private val logger = LoggerFactory.getLogger(this.getClass)
+
   class ListenerActor(listener: ModelListener) extends DaemonActor {
     def act() {
       loop {
         react {
-          case Notify() => listener.modelUpdated()
+          case Notify() => {
+            try {
+              listener.modelUpdated()
+            } catch {
+              case _ @ e => logger.error("Error while trigger model update ",e)
+            }
+          }
           case STOP_LISTENER() => exit()
         }
       }

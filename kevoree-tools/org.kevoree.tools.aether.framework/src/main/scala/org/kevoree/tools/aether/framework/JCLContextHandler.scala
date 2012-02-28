@@ -222,10 +222,6 @@ class JCLContextHandler extends DaemonActor with KevoreeClassLoaderHandler {
         kcl_cache_file.remove(key)
       }
     }
-    /*
-    if (logger.isDebugEnabled) {
-      printDumpInternals()
-    }*/
   }
 
 

@@ -26,6 +26,7 @@ import org.kevoree.api.service.core.script.KevScriptEngineFactory;
 import org.kevoree.core.impl.KevoreeConfigServiceBean;
 import org.kevoree.core.impl.KevoreeCoreBean;
 import org.kevoree.framework.KevoreeXmiHelper;
+import org.kevoree.kcl.KevoreeJarClassLoader;
 import org.kevoree.tools.aether.framework.android.AetherUtil;
 import org.kevoree.tools.aether.framework.android.NodeTypeBootstrapHelper;
 import org.kevoree.tools.marShell.KevScriptCoreEngine;
@@ -33,6 +34,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
+import java.lang.reflect.Method;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
@@ -67,7 +69,6 @@ public class KevoreeAndroidBootstrap {
                 public KevScriptEngine createKevScriptEngine() {
                     try {
                         return new org.kevoree.tools.marShell.KevScriptCoreEngine(coreBean);
-                        //return (KevScriptEngine) onlineMShellEngineClazz.getDeclaredConstructor(KevoreeModelHandlerService.class).newInstance(coreBean);
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -78,13 +79,31 @@ public class KevoreeAndroidBootstrap {
                 public KevScriptEngine createKevScriptEngine(ContainerRoot srcModel) {
                     try {
                         return new org.kevoree.tools.marShell.KevScriptOfflineEngine(srcModel);
-                        //return (KevScriptEngine) offLineMShellEngineClazz.getDeclaredConstructor(ContainerRoot.class).newInstance(srcModel);
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
                     return null;
                 }
             });
+
+            KevoreeJarClassLoader dummyKCL = new KevoreeJarClassLoader();
+            dummyKCL.lockLinks();
+
+            bootstraper.registerManuallyDeployUnit("org.kevoree.tools.aether.framework", "org.kevoree.tools", KevoreeFactory.getVersion(), dummyKCL);
+            bootstraper.registerManuallyDeployUnit("org.kevoree.tools.aether.framework.android", "org.kevoree.tools", KevoreeFactory.getVersion(), dummyKCL);
+            bootstraper.registerManuallyDeployUnit("org.kevoree.tools.marShell", "org.kevoree.tools", KevoreeFactory.getVersion(), dummyKCL);
+
+            bootstraper.registerManuallyDeployUnit("org.kevoree.adaptation.model", "org.kevoree", KevoreeFactory.getVersion(), dummyKCL);
+            bootstraper.registerManuallyDeployUnit("org.kevoree.api", "org.kevoree", KevoreeFactory.getVersion(), dummyKCL);
+            bootstraper.registerManuallyDeployUnit("org.kevoree.basechecker", "org.kevoree", KevoreeFactory.getVersion(), dummyKCL);
+            bootstraper.registerManuallyDeployUnit("org.kevoree.core", "org.kevoree", KevoreeFactory.getVersion(), dummyKCL);
+            bootstraper.registerManuallyDeployUnit("org.kevoree.framework", "org.kevoree", KevoreeFactory.getVersion(), dummyKCL);
+            bootstraper.registerManuallyDeployUnit("org.kevoree.kcl", "org.kevoree", KevoreeFactory.getVersion(), dummyKCL);
+            bootstraper.registerManuallyDeployUnit("org.kevoree.kompare", "org.kevoree", KevoreeFactory.getVersion(), dummyKCL);
+            bootstraper.registerManuallyDeployUnit("org.kevoree.merger", "org.kevoree", KevoreeFactory.getVersion(), dummyKCL);
+            bootstraper.registerManuallyDeployUnit("org.kevoree.model", "org.kevoree", KevoreeFactory.getVersion(), dummyKCL);
+            bootstraper.registerManuallyDeployUnit("org.kevoree.tools.annotation.api", "org.kevoree.tools", KevoreeFactory.getVersion(), dummyKCL);
+            bootstraper.registerManuallyDeployUnit("org.kevoree.tools.android.framework", "org.kevoree.tools", KevoreeFactory.getVersion(), dummyKCL);
 
             coreBean.start();
 
@@ -103,7 +122,7 @@ public class KevoreeAndroidBootstrap {
             if (bootstrapModel != null) {
                 try {
                     logger.debug("Bootstrap step !");
-                    BootstrapHelper.initModelInstance(bootstrapModel, "AndroidNode", "RestGroup");
+                    BootstrapHelper.initModelInstance(bootstrapModel, "AndroidNode", "NanoRestGroup");
                     logger.debug("BootUpdate");
                     coreBean.updateModel(bootstrapModel);
 
