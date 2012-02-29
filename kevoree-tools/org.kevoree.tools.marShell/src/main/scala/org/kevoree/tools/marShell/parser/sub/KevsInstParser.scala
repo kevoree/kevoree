@@ -82,7 +82,7 @@ trait KevsInstParser extends KevsAbstractParser with KevsPropertiesParser {
       List(RemoveComponentInstanceStatment(cid))
   }
 
-  val moveComponentCommandFormat = "moveComponent <ComponentInstanceName> => <NodeName>"
+  val moveComponentCommandFormat = "moveComponent <ComponentInstanceName> @<nodeName> => <NodeName>"
   def parseMoveComponent : Parser[List[Statment]] = "moveComponent" ~ orFailure(componentID,moveComponentCommandFormat) ~ orFailure("=>",moveComponentCommandFormat) ~ orFailure(ident,moveComponentCommandFormat)  ^^{ case _ ~ cid ~ _ ~ targetNodeId  =>
       List(MoveComponentInstanceStatment(cid,targetNodeId))
   }
