@@ -52,13 +52,18 @@ public class KloudPaaSGroup extends AbstractGroupType {
 		int port = Integer.parseInt(this.getDictionary().get("port").toString());
 		server = new NanoHTTPD(port) {
 			@Override
-			public Response serve (String uri, String method, Properties header, Properties parms, Properties files, String body) {
+			public Response serve (String uri, String method, Properties header, Properties parms, Properties files, InputStream body) {
 				if (method.equals("POST")) {
 //					try {
 
-					final ContainerRoot model = KevoreeXmiHelper.loadString(body.trim());
+					final ContainerRoot model = KevoreeXmiHelper.loadStream(body);
+                    try {
+                        body.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                    }
 
-					// looking if this instance is on top of a IaaS node or a PaaS node (PJavaSeNode)
+                    // looking if this instance is on top of a IaaS node or a PaaS node (PJavaSeNode)
 					if (KloudHelper.isIaaSNode(getModelService().getLastModel(), getName(), getNodeName())) {
 						// if this instance is on top of IaaS node then we try to dispatch the received model on the kloud
 						if (KloudReasoner.needsNewDeployment(model, userModel)) {
