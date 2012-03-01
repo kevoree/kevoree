@@ -62,9 +62,11 @@ object NodeNetworkHelper {
     try {
       NetworkInterface.getNetworkInterfaces.foreach {
         networkInterface =>
-          networkInterface.getInterfaceAddresses.foreach {
-            interfaceAddress =>
-              addresses = addresses ++ Array[(String, String)]((interfaceAddress.getAddress.getHostAddress, networkInterface.getDisplayName))
+          if (!networkInterface.isLoopback) {
+            networkInterface.getInterfaceAddresses.foreach {
+              interfaceAddress =>
+                addresses = addresses ++ Array[(String, String)]((interfaceAddress.getAddress.getHostAddress, networkInterface.getDisplayName))
+            }
           }
       }
     }
@@ -79,7 +81,7 @@ object NodeNetworkHelper {
   def addNetworkProperty (model: ContainerRoot, nodeName: String, ips: Array[(String, String)], kevScriptEngineFactory: KevScriptEngineFactory): Option[ContainerRoot] = {
     ips.foreach {
       ip =>
-      KevoreePlatformHelper.updateNodeLinkProp(model, nodeName, nodeName, org.kevoree.framework.Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP, ip._1, ip._2, 100)
+        KevoreePlatformHelper.updateNodeLinkProp(model, nodeName, nodeName, org.kevoree.framework.Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP, ip._1, ip._2, 100)
     }
     Some(model)
   }

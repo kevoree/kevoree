@@ -62,9 +62,11 @@ object NodeNetworkHelper {
     try {
       NetworkInterface.getNetworkInterfaces.foreach {
         networkInterface =>
-          networkInterface.getInterfaceAddresses.foreach {
-            interfaceAddress =>
-              addresses = addresses ++ Array[(String, String)]((interfaceAddress.getAddress.getHostAddress, networkInterface.getDisplayName))
+          if (!networkInterface.isLoopback) {
+            networkInterface.getInterfaceAddresses.foreach {
+              interfaceAddress =>
+                addresses = addresses ++ Array[(String, String)]((interfaceAddress.getAddress.getHostAddress, networkInterface.getDisplayName))
+            }
           }
       }
     }
