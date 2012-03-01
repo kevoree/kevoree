@@ -5,11 +5,11 @@ import org.kevoree.ContainerRoot;
 import org.kevoree.Group;
 import org.kevoree.annotation.*;
 import org.kevoree.framework.AbstractGroupType;
-import org.kevoree.framework.KevoreeFragmentPropertyHelper;
-import org.kevoree.framework.KevoreePlatformHelper;
+import org.kevoree.framework.KevoreePropertyHelper;
 import org.kevoree.library.javase.gossiperNetty.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import scala.Option;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,7 +24,9 @@ import java.util.List;
 		@DictionaryAttribute(name = "port", defaultValue = "9010", optional = true, fragmentDependant = true),
 		@DictionaryAttribute(name = "FullUDP", defaultValue = "false", optional = true, vals= {"true", "false"}),
 		@DictionaryAttribute(name = "sendNotification", defaultValue = "true", optional = true, vals= {"true", "false"}),
-		@DictionaryAttribute(name = "alwaysAskModel", defaultValue = "false", optional = true, vals= {"true", "false"})
+		@DictionaryAttribute(name = "alwaysAskModel", defaultValue = "false", optional = true, vals= {"true", "false"}),
+		@DictionaryAttribute(name = "merge", defaultValue = "false", optional = true, vals= {"true", "false"}),
+		@DictionaryAttribute(name = "http_port", defaultValue = "8000", optional = true, fragmentDependant = true)
 })
 public class NettyGossiperGroup extends AbstractGroupType implements GossiperComponent {
 
@@ -39,17 +41,19 @@ public class NettyGossiperGroup extends AbstractGroupType implements GossiperCom
 
 	protected boolean sendNotification;
 
+	private HTTPServer httpServer;
+
 	@Start
 	public void startGossiperGroup () {
-
 		sendNotification = parseBooleanProperty("sendNotification");
 
 		Long timeoutLong = Long.parseLong((String) this.getDictionary().get("interval"));
+		boolean merge = "true".equals(this.getDictionary().get("merge").toString());
 
 		NetworkProtocolSelector protocolSelector = new NetworkProtocolSelector();
 
 		Serializer serializer = new GroupSerializer(this.getModelService());
-		dataManager = new DataManagerForGroup(this.getName(), this.getNodeName(), this.getModelService());
+		dataManager = new DataManagerForGroup(this.getName(), this.getNodeName(), this.getModelService(), merge);
 		processValue = new ProcessValue(this, parseBooleanProperty("alwaysAskModel"), protocolSelector, dataManager,
 				serializer, false);
 		processRequest = new ProcessRequest(this, dataManager, serializer, processValue, protocolSelector);
@@ -77,6 +81,10 @@ public class NettyGossiperGroup extends AbstractGroupType implements GossiperCom
 		tcpActor.start();
 		selector.start();
 		actor.start();
+
+		// starting HTTP server to accept http model update coming from the editor for example
+		httpServer = new HTTPServer(this, Integer.parseInt(this.getDictionary().get("http_port").toString()));
+
 	}
 
 	@Stop
@@ -109,6 +117,10 @@ public class NettyGossiperGroup extends AbstractGroupType implements GossiperCom
 			dataManager.stop();
 			dataManager = null;
 		}
+		if (httpServer != null) {
+			httpServer.stop();
+			httpServer = null;
+		}
 	}
 
 	@Update
@@ -135,20 +147,23 @@ public class NettyGossiperGroup extends AbstractGroupType implements GossiperCom
 
 	@Override
 	public String getAddress (String remoteNodeName) {
-		String ip = KevoreePlatformHelper.getProperty(this.getModelService().getLastModel(), remoteNodeName,
-				org.kevoree.framework.Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP());
-		if (ip == null || ip.equals("")) {
-			ip = "127.0.0.1";
+		Option<String> ipOption = KevoreePropertyHelper.getStringNetworkProperty(this.getModelService().getLastModel(), remoteNodeName, org.kevoree.framework.Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP());
+		if (ipOption.isDefined()) {
+			return ipOption.get();
+		} else {
+			return "127.0.0.1";
 		}
-		return ip;
 	}
 
 	@Override
 	public int parsePortNumber (String nodeName) {
 		logger.debug("look for port on " + nodeName);
-		return KevoreeFragmentPropertyHelper
-				.getIntPropertyFromFragmentGroup(this.getModelService().getLastModel(), this.getName(), "port",
-						nodeName);
+		Option<Integer> portOption = KevoreePropertyHelper.getIntPropertyForGroup(this.getModelService().getLastModel(), this.getName(), "port", true, nodeName);
+		if (portOption.isDefined()) {
+			return portOption.get();
+		} else {
+			return 8000;
+		}
 	}
 
 	private int parsePortNumber () {
@@ -180,10 +195,11 @@ public class NettyGossiperGroup extends AbstractGroupType implements GossiperCom
 
 	@Override
 	public void push (ContainerRoot containerRoot, String s) {
+		httpServer.push(containerRoot, s);
 	}
 
 	@Override
 	public ContainerRoot pull (String s) {
-		return null;
+		return httpServer.pull(this.getModelService().getLastModel(), s);
 	}
 }

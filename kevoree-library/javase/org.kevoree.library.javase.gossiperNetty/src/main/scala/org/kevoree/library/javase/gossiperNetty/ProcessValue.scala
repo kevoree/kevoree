@@ -87,7 +87,7 @@ class ProcessValue (instance: GossiperComponent, alwaysAskData: Boolean, protoco
       val address = new
           InetSocketAddress(instance.getAddress(peer), instance.parsePortNumber(peer))
       if (alwaysAskData) {
-        dataManager.getUUIDVectorClocks().keySet().foreach {
+        dataManager.getUUIDVectorClocks.keySet().foreach {
           uuid =>
             askForData(uuid, instance.getNodeName, address)
         }
