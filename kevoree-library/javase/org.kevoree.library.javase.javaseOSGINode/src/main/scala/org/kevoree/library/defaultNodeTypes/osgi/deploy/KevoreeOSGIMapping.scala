@@ -10,6 +10,8 @@ import org.kevoree.library.defaultNodeTypes.jcl.deploy.context.KevoreeMapping
  * To change this template use File | Settings | File Templates.
  */
 
-case class KevoreeOSGIMapping(override val name : String,override val objClassName : String,override val ref : Any,bundleID : Long) extends KevoreeMapping(name,objClassName,ref) {
+class KevoreeOSGIMapping(override val name : String,override val objClassName : String,override val ref : Any,bbundleID : Long) extends KevoreeMapping(name,objClassName,ref) {
+
+      def bundleID = bbundleID
 
 }

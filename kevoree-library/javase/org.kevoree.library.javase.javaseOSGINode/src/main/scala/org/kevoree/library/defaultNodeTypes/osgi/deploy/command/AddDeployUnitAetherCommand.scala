@@ -74,7 +74,7 @@ case class AddDeployUnitAetherCommand (deployUnit: DeployUnit, update: Boolean =
       if (!previousBundleID.contains(lastExecutionBundle.get.getBundleId)) {
         val symbolicName: String = lastExecutionBundle.get.getSymbolicName
         //FOR DEPLOY UNIT DO NOT USE ONLY NAME
-        KevoreeDeployManager.addMapping(KevoreeOSGIMapping(CommandHelper.buildKEY(deployUnit), deployUnit.getClass.getName,deployUnit,lastExecutionBundle.get.getBundleId))
+        KevoreeDeployManager.addMapping(new KevoreeOSGIMapping(CommandHelper.buildKEY(deployUnit), deployUnit.getClass.getName,deployUnit,lastExecutionBundle.get.getBundleId))
         lastExecutionBundle.get.start()
         //  mustBeStarted = true
       }
@@ -100,7 +100,7 @@ case class AddDeployUnitAetherCommand (deployUnit: DeployUnit, update: Boolean =
             }
             lastExecutionBundle match {
               case Some(bundle) => {
-                KevoreeDeployManager.addMapping(KevoreeOSGIMapping(CommandHelper.buildKEY(deployUnit), deployUnit.getClass.getName,deployUnit,bundle.getBundleId))
+                KevoreeDeployManager.addMapping(new KevoreeOSGIMapping(CommandHelper.buildKEY(deployUnit), deployUnit.getClass.getName,deployUnit,bundle.getBundleId))
                 //mustBeStarted = false
                 true
               }

@@ -70,7 +70,7 @@ case class AddInstanceCommand(c: Instance, nodeName: String, modelservice: Kevor
 
         kevoreeFactory = bundleType.loadClass(factoryName).newInstance().asInstanceOf[KevoreeInstanceFactory]
         val newInstance: KevoreeInstanceActivator = kevoreeFactory.registerInstance(c.getName, nodeName)
-        KevoreeDeployManager.addMapping(KevoreeOSGIMapping(c.getName, c.getClass.getName, newInstance, bundleType.getBundleId))
+        KevoreeDeployManager.addMapping(new KevoreeOSGIMapping(c.getName, c.getClass.getName, newInstance, bundleType.getBundleId))
 
 
         newInstance.setKevScriptEngineFactory(kscript)

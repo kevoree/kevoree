@@ -48,7 +48,7 @@ case class AddTypeCommand (ct: TypeDefinition, nodeName: String) extends Primiti
 
     if (mappingFound != null) {
       //JUST ADD NEW BUNDING
-      KevoreeDeployManager.addMapping(KevoreeOSGIMapping(ct.getName, ct.getClass.getName,ct, mappingFound.asInstanceOf[KevoreeOSGIMapping].bundleID))
+      KevoreeDeployManager.addMapping(new KevoreeOSGIMapping(ct.getName, ct.getClass.getName,ct, mappingFound.asInstanceOf[KevoreeOSGIMapping].bundleID))
       true
     } else {
       false
