@@ -47,7 +47,7 @@ case class AddThirdPartyAetherCommand(deployUnit: DeployUnit,bs : org.kevoree.ap
 
       //lastExecutionBundle = Some(ctx.bundleContext.installBundle(url));
       val symbolicName: String = lastExecutionBundle.get.getSymbolicName
-      KevoreeDeployManager.addMapping(KevoreeOSGIMapping(CommandHelper.buildKEY(deployUnit), deployUnit.getClass.getName,deployUnit, lastExecutionBundle.get.getBundleId))
+      KevoreeDeployManager.addMapping(new KevoreeOSGIMapping(CommandHelper.buildKEY(deployUnit), deployUnit.getClass.getName,deployUnit, lastExecutionBundle.get.getBundleId))
       // lastExecutionBundle.get.start
      // mustBeStarted = false
       true
