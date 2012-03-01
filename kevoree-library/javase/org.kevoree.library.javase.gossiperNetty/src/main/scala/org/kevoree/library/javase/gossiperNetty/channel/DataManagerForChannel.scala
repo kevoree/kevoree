@@ -84,7 +84,7 @@ class DataManagerForChannel (instance: GossiperComponent, nodeName: String)
         }
         case RemoveData(uuid, tuple) => garbage(uuid, tuple.asInstanceOf[(VectorClock, Message)])
         case GetUUIDVectorClock(uuid) => reply(getUUIDVectorClockFromUUID(uuid))
-        case GetUUIDVectorClocks() => reply(getAllUUIDVectorClocks())
+        case GetUUIDVectorClocks() => reply(getAllUUIDVectorClocks)
         /*case MergeClock(uuid, newClock, source) => {
           //println("clock must be merged")
           val mergedVC = localMerge(datas.get(uuid)._1._1, newClock)
