@@ -615,11 +615,9 @@ class JailKevoreeNodeRunner (nodeName: String, bootStrapModel: String, inet: Str
 
     case class STARTING ()
 
-    sealed abstract case class Result ()
+    case class OUTPUT (data: String)
 
-    case class OUTPUT (data: String) extends Result
-
-    case class ERROR (data: String) extends Result
+    case class ERROR (data: String)
 
     start()
 

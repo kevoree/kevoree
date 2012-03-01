@@ -157,7 +157,7 @@ abstract class KevoreeNodeRunner (var nodeName: String, bootStrapModel: String) 
       writer.close()
       logger.debug("copying \"{}\" into {} uis done", data, outputFile)
     } catch {
-      case _@e => logger.error("Unable to copy \"{}\" on {}", Array[AnyRef](data, outputFile), e); false
+      case _@e => logger.error("Unable to copy \"{}\" on {}", Array[AnyRef](data, outputFile), e)
     }
   }
 
