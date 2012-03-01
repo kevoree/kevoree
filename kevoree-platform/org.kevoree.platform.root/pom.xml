@@ -4,14 +4,13 @@
     <groupId>org.kevoree.platform</groupId>
     <artifactId>org.kevoree.platform.root</artifactId>
     <packaging>pom</packaging>
-    <version>1.6.0-BETA2</version>
+    <version>1.6.0-BETA3</version>
     <name>Kevoree :: Platform :: Root</name>
     <url>https://github.com/dukeboard/kevoree</url>
 
     <properties>
         <scala.version>2.10.0-M2</scala.version>
-        <slf4j.version>1.6.1</slf4j.version>
-        <slf4j.version.range>[1.5,2)</slf4j.version.range>
+        <slf4j.version>1.6.4</slf4j.version>
         <bundle.vendor>IRISA/INRIA</bundle.vendor>
     </properties>
 
