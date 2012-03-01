@@ -52,7 +52,7 @@ class ProcessRequest (instance: GossiperComponent, dataManager: DataManager, ser
     message.getContentClass match {
       case s: String if (s == classOf[VectorClockUUIDsRequest].getName) => {
         logger.debug("VectorClockUUIDsRequest request received")
-        val uuidVectorClocks = dataManager.getUUIDVectorClocks()
+        val uuidVectorClocks = dataManager.getUUIDVectorClocks
         logger.debug("local uuids " + uuidVectorClocks.keySet().mkString(","))
         var vectorClockUUIDsBuilder = VectorClockUUIDs.newBuilder
         uuidVectorClocks.keySet.foreach {
