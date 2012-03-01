@@ -16,6 +16,8 @@
  * Copyright  : IRISA / INRIA / Universite de Rennes 1 */
 package org.kevoree.tools.ui.editor.property;
 
+import com.explodingpixels.macwidgets.HudWidgetFactory;
+import com.explodingpixels.macwidgets.MacWidgetFactory;
 import com.explodingpixels.macwidgets.plaf.HudComboBoxUI;
 import com.explodingpixels.macwidgets.plaf.HudLabelUI;
 import org.kevoree.*;
@@ -120,13 +122,27 @@ public class NodePropertyEditor extends InstancePropertyEditor {
            }
         }
         final JComboBox groupTypeComboBox = new JComboBox(groupModel);
+        final JProgressBar progressBar = new JProgressBar();
+        progressBar.setEnabled(false);
+        final JLabel resultLabel = HudWidgetFactory.createHudLabel("");
+
+        sendNodeType.setProgressBar(progressBar);
+        sendNodeType.setResultLabel(resultLabel);
+
         JCommandButton btPushNodeType = new JCommandButton("Push via") {
             @Override
             public void doBeforeExecution() {
+                progressBar.setEnabled(true);
+                progressBar.setIndeterminate(true);
+                resultLabel.setText("Sending...");
                 sendNodeType.setDestNodeName(elem.getName());
                 sendNodeType.setViaGroupName(groupTypeComboBox.getSelectedItem().toString());
             }
         };
+
+
+
+
         btPushNodeType.setCommand(sendNodeType);
         groupTypeComboBox.setUI(new HudComboBoxUI());
         JPanel layout = new JPanel();
@@ -134,9 +150,14 @@ public class NodePropertyEditor extends InstancePropertyEditor {
         layout.setLayout(new SpringLayout());
         layout.add(btPushNodeType);
         layout.add(groupTypeComboBox);
-        SpringUtilities.makeCompactGrid(layout, 1, 2, 6, 6, 6, 6);
+
+        layout.add(progressBar);
+        layout.add(resultLabel);
+
+
+
+        SpringUtilities.makeCompactGrid(layout, 2, 2, 6, 6, 6, 6);
         this.addCenter(layout);
-        
-        
+
     }
 }

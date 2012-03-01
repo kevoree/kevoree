@@ -19,6 +19,7 @@ import org.slf4j.LoggerFactory
 import org.kevoree.tools.ui.editor._
 import java.lang.Thread
 import org.kevoree.tools.aether.framework.{NodeTypeBootstrapHelper}
+import javax.swing.{JProgressBar, JLabel}
 
 class SynchNodeTypeCommand extends Command {
 
@@ -35,11 +36,17 @@ class SynchNodeTypeCommand extends Command {
 
   val bootstrap = new NodeTypeBootstrapHelper
 
+  @BeanProperty
+  var resultLabel : JLabel = null
+
+  @BeanProperty
+  var progressBar : JProgressBar = null
+
   def execute(p: AnyRef) {
     try {
       bootstrap.clear
       PositionedEMFHelper.updateModelUIMetaData(kernel);
-
+      resultLabel.setText("Update model...")
       val autoUpdate = new AutoUpdateCommand
       autoUpdate.setKernel(kernel)
       autoUpdate.execute(null)
@@ -50,15 +57,28 @@ class SynchNodeTypeCommand extends Command {
         override def run() {
           bootstrap.bootstrapGroupType(model, viaGroupName, new ModelHandlerServiceWrapper(kernel)) match {
             case Some(groupTypeInstance) => {
-
               groupTypeInstance.push(model,destNodeName)
+              progressBar.setIndeterminate(false);
+              progressBar.setEnabled(false);
+              resultLabel.setText("Pushed ;-)")
             }
-            case None => logger.error("Error while bootstraping group type")
+
+            case None => {
+              logger.error("Error while bootstraping group type")
+              progressBar.setIndeterminate(false);
+              progressBar.setEnabled(false);
+              resultLabel.setText("Error boot Group, bad merge ?")
+            }
           }
         }
       }.start()
     } catch {
-      case _@e => logger.error("", e)
+      case _@e => {
+        logger.error("", e)
+        progressBar.setIndeterminate(false);
+        progressBar.setEnabled(false);
+        resultLabel.setText(e.getMessage)
+      }
     }
   }
 

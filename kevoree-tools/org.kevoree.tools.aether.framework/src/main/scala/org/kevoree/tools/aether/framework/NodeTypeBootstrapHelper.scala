@@ -205,7 +205,14 @@ class NodeTypeBootstrapHelper extends Bootstraper with KCLBootstrap {
         javaseTD =>
           fakeNode.setTypeDefinition(javaseTD)
       }
-      val ct = groupType.foundRelevantDeployUnit(fakeNode)
+
+      var ct : DeployUnit = null
+      try {
+        ct = groupType.foundRelevantDeployUnit(fakeNode)
+      } catch {
+        case _ @ e =>
+      }
+
       if (ct != null) {
         var kcl: ClassLoader = null
         val dpRes = ct.getRequiredLibs.forall {
