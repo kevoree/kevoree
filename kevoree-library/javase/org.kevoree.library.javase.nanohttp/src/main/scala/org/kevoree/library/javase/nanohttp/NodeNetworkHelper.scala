@@ -62,10 +62,8 @@ object NodeNetworkHelper {
     try {
       NetworkInterface.getNetworkInterfaces.foreach {
         networkInterface =>
-          println(networkInterface.getDisplayName)
           networkInterface.getInterfaceAddresses.foreach {
             interfaceAddress =>
-              println(interfaceAddress.getAddress.getHostAddress)
               addresses = addresses ++ Array[(String, String)]((interfaceAddress.getAddress.getHostAddress, networkInterface.getDisplayName))
           }
       }
