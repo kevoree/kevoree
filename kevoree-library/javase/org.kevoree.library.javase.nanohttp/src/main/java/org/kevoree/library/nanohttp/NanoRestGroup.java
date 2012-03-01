@@ -49,11 +49,14 @@ public class NanoRestGroup extends AbstractGroupType {
         int port = Integer.parseInt(this.getDictionary().get("port").toString());
         server = new NanoHTTPD(port) {
             @Override
-            public Response serve(String uri, String method, Properties header, Properties parms, Properties files, String body) {
+            public Response serve(String uri, String method, Properties header, Properties parms, Properties files, InputStream body) {
                 if (method.equals("POST")) {
                     try {
-                        final ContainerRoot model = KevoreeXmiHelper.loadString(body.trim());
+                        logger.debug("Model receive, process to load");
 
+                        final ContainerRoot model = KevoreeXmiHelper.loadStream(body);
+                        body.close();
+                        logger.debug("Model loaded,send to core");
                         String srcNodeName = "";
                         Boolean externalSender = true;
                         Enumeration e = header.propertyNames();
@@ -85,7 +88,7 @@ public class NanoRestGroup extends AbstractGroupType {
                         return new NanoHTTPD.Response(HTTP_OK, MIME_HTML, "<ack nodeName=\"" + getNodeName() + "\" />");
                     } catch (Exception e) {
                         logger.error("Error while loading model");
-                        logger.debug("Model="+body.trim(),e);
+                        //logger.debug("Model="+body.trim(),e);
                         return new NanoHTTPD.Response(HTTP_BADREQUEST, MIME_HTML, "Error while uploading model");
                     }
                 }

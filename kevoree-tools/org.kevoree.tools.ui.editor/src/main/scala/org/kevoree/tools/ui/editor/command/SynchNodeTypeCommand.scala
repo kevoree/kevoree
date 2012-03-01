@@ -39,7 +39,13 @@ class SynchNodeTypeCommand extends Command {
     try {
       bootstrap.clear
       PositionedEMFHelper.updateModelUIMetaData(kernel);
+
+      val autoUpdate = new AutoUpdateCommand
+      autoUpdate.setKernel(kernel)
+      autoUpdate.execute(null)
+
       val model: ContainerRoot = kernel.getModelHandler.getActualModel
+
       new Thread() {
         override def run() {
           bootstrap.bootstrapGroupType(model, viaGroupName, new ModelHandlerServiceWrapper(kernel)) match {

@@ -165,11 +165,11 @@
     <distributionManagement>
         <repository>
             <id>maven2.kevoree.release</id>
-            <url>http://maven.kevoree.org/release/</url>
+            <url>http://maven.kevoree.org/archiva/repository/release/</url>
         </repository>
         <snapshotRepository>
             <id>maven2.kevoree.snapshots</id>
-            <url>http://maven.kevoree.org/snapshots/</url>
+            <url>http://maven.kevoree.org/archiva/repository/snapshots/</url>
         </snapshotRepository>
     </distributionManagement>
 

@@ -15,12 +15,11 @@
         <relativePath>../org.kevoree.library.android.root/pom.xml</relativePath>
     </parent>
 
+    <properties>
+        <kevoree.include>org.kevoree:*,org.kevoree.tools:*</kevoree.include>
+    </properties>
+
     <dependencies>
-        <dependency>
-            <groupId>org.kevoree</groupId>
-            <artifactId>org.kevoree.kcl</artifactId>
-            <version>${kevoree.version}</version>
-        </dependency>
         <dependency>
             <groupId>org.kevoree</groupId>
             <artifactId>org.kevoree.kompare</artifactId>

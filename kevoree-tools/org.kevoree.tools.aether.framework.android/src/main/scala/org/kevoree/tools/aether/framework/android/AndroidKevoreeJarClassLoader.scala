@@ -33,6 +33,21 @@ class AndroidKevoreeJarClassLoader(gkey: String, ctx: android.content.Context, p
 
   private var odexPaths = List[File]()
 
+  val selfPointer = this
+
+  private class KevoreeDexClassLoader(c1:String,c2:String,c3:String,parentCL : ClassLoader) extends DexClassLoader(c1,c2,c3,parentCL) {
+
+    def internalLoad(name:String) : Class[_] = {
+      super[DexClassLoader].loadClass(name)
+    }
+
+    override def loadClass(p1: String) : Class[_] = {
+      selfPointer.loadClass(p1)
+    }
+
+  }
+
+
   /* Constructor */
   addSpecialLoaders(new KevoreeResourcesLoader(".class") {
     def doLoad(key: String, stream: InputStream) {
@@ -48,7 +63,7 @@ class AndroidKevoreeJarClassLoader(gkey: String, ctx: android.content.Context, p
   })
   /* End Constructor */
 
-  private var subDexClassLoader: List[DexClassLoader] = List()
+  private var subDexClassLoader: List[KevoreeDexClassLoader] = List()
 
   def declareLocalDexClassLoader(dexStream: InputStream, idName: String) {
     logger.debug("Begin declare subClassLoader " + idName)
@@ -69,16 +84,16 @@ class AndroidKevoreeJarClassLoader(gkey: String, ctx: android.content.Context, p
     val dexOptStoragePath = ctx.getDir("odex" + System.currentTimeMillis(), Context.MODE_WORLD_WRITEABLE)
     odexPaths = odexPaths ++ List(dexOptStoragePath)
     dexOptStoragePath.mkdirs()
-    val newDexCL = new DexClassLoader(dexInternalStoragePath.getAbsolutePath, dexOptStoragePath.getAbsolutePath, null, parent)
+    val newDexCL = new KevoreeDexClassLoader(dexInternalStoragePath.getAbsolutePath, dexOptStoragePath.getAbsolutePath, null, parent)
     subDexClassLoader = subDexClassLoader ++ List(newDexCL)
   }
 
   override def callSuperConcreteLoader(className: String, resolveIt: Boolean): Class[_] = {
-    logger.debug("Try to load " + className)
+    //logger.debug("Try to load " + className)
     subDexClassLoader.foreach {
       subCL =>
         try {
-          return subCL.loadClass(className)
+          return subCL.internalLoad(className)
         } catch {
           case nf: ClassNotFoundException =>
         }
