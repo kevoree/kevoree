@@ -22,12 +22,12 @@
             <version>${kevoree.version}</version>
             <type>bundle</type>
         </dependency>
-        <dependency>
+        <!--<dependency>
             <groupId>org.kevoree.library.javase</groupId>
             <artifactId>org.kevoree.library.javase.consensus</artifactId>
             <version>${kevoree.version}</version>
             <type>bundle</type>
-        </dependency>
+        </dependency>-->
     </dependencies>
 
 

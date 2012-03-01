@@ -59,9 +59,9 @@ class LatexCompilerManager extends DaemonActor with LatexCompilerInterface {
   }
 
   private def cleanInternals (folder: String) {
-    if (isWindows) {
+    /*if (isWindows) {
       false
-    } else if (isUnix) {
+    } else*/ if (isUnix) {
       val latexCompiler = new LinuxLatexCompiler
       latexCompiler.clean(folder)
     } else if (isMac) {
