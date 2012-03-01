@@ -9,7 +9,7 @@
     <url>https://github.com/dukeboard/kevoree</url>
 
     <properties>
-        <scala.version>2.9.1</scala.version>
+        <scala.version>2.10.0-M2</scala.version>
         <slf4j.version>1.6.1</slf4j.version>
         <slf4j.version.range>[1.5,2)</slf4j.version.range>
         <bundle.vendor>IRISA/INRIA</bundle.vendor>
@@ -87,15 +87,12 @@
         <module>../org.kevoree.platform.osgi.standalone</module>
         <module>../org.kevoree.platform.osgi.standalone.gui</module>
         <module>../org.kevoree.platform.service</module>
-        <module>../org.kevoree.platform.osgi.android</module>
+
+        <module>../org.kevoree.platform.android.core</module>
+        <module>../org.kevoree.platform.android.apk</module>
     </modules>
 
     <repositories>
-        <repository>
-            <id>scala-tools.org</id>
-            <name>Scala-tools Maven2 Repository</name>
-            <url>http://scala-tools.org/repo-releases</url>
-        </repository>
         <repository>
             <id>kevoree-libs-release-local</id>
             <url>http://maven.kevoree.org/release/</url>
@@ -108,11 +105,6 @@
     </repositories>
 
     <pluginRepositories>
-        <pluginRepository>
-            <id>plugin.scala-tools.org</id>
-            <name>Plugin Scala-tools Maven2 Repository</name>
-            <url>http://scala-tools.org/repo-releases</url>
-        </pluginRepository>
         <pluginRepository>
             <id>plugin.kevoree-github</id>
             <url>http://maven.kevoree.org/release/</url>
