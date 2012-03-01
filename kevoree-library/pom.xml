@@ -11,7 +11,7 @@
     <properties>
         <kevoree.version>${project.version}</kevoree.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <scala.version>2.9.1</scala.version>
+        <scala.version>2.10.0-M2</scala.version>
     </properties>
 
     <modules>

@@ -34,7 +34,7 @@ public class TinyClusterKCLDexClassLoader extends ClassLoader {
 
     @Override
     public Class<?> loadClass(String s) throws ClassNotFoundException {
-        Log.i("ClusterCL","Try to resolve Class "+s);
+        //Log.i("ClusterCL","Try to resolve Class "+s);
         for(TinyKCLDexClassLoader sub : subs){
             try {
                 Class clazz = sub.internalLoad(s);
@@ -45,7 +45,7 @@ public class TinyClusterKCLDexClassLoader extends ClassLoader {
               //SILENTLY IGNORE
             }
         }
-        Log.i("ClusterCL","Not resolved in cluster "+s);
+        //Log.i("ClusterCL","Not resolved in cluster "+s);
         throw new ClassNotFoundException(s);
     }
 }
