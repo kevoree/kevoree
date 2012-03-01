@@ -21,7 +21,7 @@ import scala.util.parsing.input.Positional
 
 trait KevsTokens extends Tokens with Parsers {
 
-  abstract case class KevsToken extends Token with Positional {
+  abstract class KevsToken extends Token with Positional {
     def getOffset : java.lang.Integer  = this.pos.asInstanceOf[OffsetPosition].offset
     def getLength : java.lang.Integer = this.toString.length
   }

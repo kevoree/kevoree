@@ -4,7 +4,7 @@
     <artifactId>org.kevoree.tools.aether.framework.android</artifactId>
     <packaging>bundle</packaging>
     <name>Kevoree :: Tools :: Aether Framework :: Android</name>
-    <version>1.6.0-BETA2</version>
+    <version>1.6.0-BETA3</version>
 
     <properties>
         <kevoree.version>${project.version}</kevoree.version>
@@ -15,7 +15,7 @@
     <parent>
         <artifactId>org.kevoree.tools.root</artifactId>
         <groupId>org.kevoree.tools</groupId>
-        <version>1.6.0-BETA2</version>
+        <version>1.6.0-BETA3</version>
         <relativePath>../org.kevoree.tools.root/pom.xml</relativePath>
     </parent>
 

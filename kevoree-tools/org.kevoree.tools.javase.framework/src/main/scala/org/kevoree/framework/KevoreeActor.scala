@@ -23,15 +23,15 @@ import scala.actors.TIMEOUT
 
 trait KevoreeActor extends Actor {
 
-  sealed case class ACTOR_ADMIN_MSG()
-  sealed case class STOP_ACTOR(force : Boolean = false) extends ACTOR_ADMIN_MSG
-  sealed case class PAUSE_ACTOR() extends ACTOR_ADMIN_MSG
-  sealed case class RESUME_ACTOR() extends ACTOR_ADMIN_MSG
+  //sealed case class ACTOR_ADMIN_MSG()
+  sealed case class STOP_ACTOR(force : Boolean = false) //extends ACTOR_ADMIN_MSG
+  sealed case class PAUSE_ACTOR() //extends ACTOR_ADMIN_MSG
+  sealed case class RESUME_ACTOR() //extends ACTOR_ADMIN_MSG
 
   def stop = this ! STOP_ACTOR()
   def forceStop = this ! STOP_ACTOR(true)
-  def resume = this ! RESUME_ACTOR
-  def pause = this ! PAUSE_ACTOR
+  def resume = this ! RESUME_ACTOR()
+  def pause = this ! PAUSE_ACTOR()
 
   protected var pauseState = false
   def isInPause = pauseState
@@ -45,7 +45,11 @@ trait KevoreeActor extends Actor {
   }
 
   private def emptyMailBox : Nothing = reactWithin(0) {
-    case adminMsg : ACTOR_ADMIN_MSG => println("Actor in stopping phase, ignore admin message")
+
+    case  RESUME_ACTOR() => println("Actor in stopping phase, ignore admin message")
+    case  STOP_ACTOR(_) => println("Actor in stopping phase, ignore admin message")
+    case  PAUSE_ACTOR() => println("Actor in stopping phase, ignore admin message")
+
     case TIMEOUT => exit()
     case _ @ msg => internal_process(msg);emptyMailBox
   }

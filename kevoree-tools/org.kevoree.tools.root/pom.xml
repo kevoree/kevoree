@@ -6,7 +6,7 @@
     <packaging>pom</packaging>
     <name>Kevoree :: Tools :: Root</name>
     <url>https://github.com/dukeboard/kevoree</url>
-    <version>1.6.0-BETA2</version>
+    <version>1.6.0-BETA3</version>
 
 
     <dependencies>
@@ -176,7 +176,7 @@
     </modules>
 
     <properties>
-        <scala.version>2.9.1</scala.version>
+        <scala.version>2.10.0-M2</scala.version>
         <bundle.vendor>IRISA/INRIA</bundle.vendor>
         <releaseUrl>http://maven.kevoree.org/libs-release-local</releaseUrl>
         <slf4j.version>1.6.4</slf4j.version>

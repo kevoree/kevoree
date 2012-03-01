@@ -136,7 +136,6 @@ class ModelHandlerServiceProxy extends KevoreeModelHandlerService with DaemonAct
   def compareAndSwapModel(previousModel: UUIDModel, targetModel: ContainerRoot) {
     if (proxyModel != null) {
       logger.error("compareAndSwapModel not available during update")
-      null
     } else {
       proxy.compareAndSwapModel(previousModel, targetModel)
     }
