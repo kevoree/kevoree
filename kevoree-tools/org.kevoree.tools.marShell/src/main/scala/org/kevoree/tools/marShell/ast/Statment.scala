@@ -13,6 +13,6 @@
  */
 package org.kevoree.tools.marShell.ast
 
-abstract case class Statment
+abstract class Statment
 
-abstract case class TypeStatment extends Statment
+abstract class TypeStatment extends Statment

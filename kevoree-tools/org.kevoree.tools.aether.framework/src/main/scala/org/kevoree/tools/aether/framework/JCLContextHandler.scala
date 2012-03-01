@@ -147,9 +147,11 @@ class JCLContextHandler extends DaemonActor with KevoreeClassLoaderHandler {
     } else {
       logger.debug("Install {} , file {}", buildKEY(du), file)
       val newcl = new KevoreeJarClassLoader
-      if (du.getVersion.contains("SNAPSHOT")) {
+
+      //if (du.getVersion.contains("SNAPSHOT")) {
         newcl.setLazyLoad(false)
-      }
+     // }
+
       newcl.add(file.getAbsolutePath)
       kcl_cache.put(buildKEY(du), newcl)
       kcl_cache_file.put(buildKEY(du), file)
