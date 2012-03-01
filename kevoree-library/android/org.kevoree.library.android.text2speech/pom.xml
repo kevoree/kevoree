@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.kevoree.library.android</groupId>
     <artifactId>org.kevoree.library.android.text2speech</artifactId>
-    <packaging>bundle</packaging>
+    <packaging>jar</packaging>
     <name>Kevoree :: Library :: Android :: Text2Speech</name>
     <version>1.6.0-BETA3</version>
 
@@ -14,6 +14,10 @@
         <version>1.6.0-BETA3</version>
         <relativePath>../org.kevoree.library.android.root/pom.xml</relativePath>
     </parent>
+
+    <properties>
+        <kevoree.include>org.kevoree:*,org.kevoree.tools:*,eu.powet:*</kevoree.include>
+    </properties>
 
     <build>
         <plugins>

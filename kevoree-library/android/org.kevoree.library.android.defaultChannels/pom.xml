@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.kevoree.library.android</groupId>
     <artifactId>org.kevoree.library.android.defaultChannels</artifactId>
-    <packaging>bundle</packaging>
+    <packaging>jar</packaging>
     <name>Kevoree :: Library :: Android :: DefaultChannels</name>
     <version>1.6.0-BETA3</version>
 
@@ -18,28 +18,13 @@
     <properties>
         <android.tools.aapt>${android.home}/platform-tools/aapt</android.tools.aapt>
         <android.tools.dx>${android.home}/platform-tools/dx</android.tools.dx>
+        <kevoree.include>org.kevoree:*,org.kevoree.tools:*</kevoree.include>
     </properties>
 
     <build>
         <sourceDirectory>../../javase/org.kevoree.library.javase.defaultChannels/src</sourceDirectory>
 
         <plugins>
-
-            <plugin>
-                <groupId>org.apache.felix</groupId>
-                <artifactId>maven-bundle-plugin</artifactId>
-                <version>2.3.5</version>
-                <extensions>true</extensions>
-                <!--
-                <configuration>
-                    <instructions>
-                        <Import-Package>
-                           !nanohttpd,!org.kevoree.library.rest.*,org.osgi.*;version="[4.2.0,5)",*
-                        </Import-Package>
-                        <Export-Package>org.kevoree.library.rest.*,nanohttpd.*</Export-Package>
-                    </instructions>
-                </configuration>   -->
-            </plugin>
             <plugin>
                 <groupId>org.kevoree.tools</groupId>
                 <artifactId>org.kevoree.tools.annotation.mavenplugin</artifactId>

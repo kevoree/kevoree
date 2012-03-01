@@ -12,12 +12,12 @@
     <version>1.6.0-BETA3</version>
 
 
-
     <artifactId>org.kevoree.library.android.agrapher</artifactId>
     <name>Kevoree :: Library :: Android :: AGrapher</name>
 
     <properties>
         <achartengine.local.file>${basedir}/src/main/resources/achartengine-0.7.0.jar</achartengine.local.file>
+        <kevoree.include>org.kevoree:*,org.kevoree.tools:*</kevoree.include>
     </properties>
 
 
@@ -40,7 +40,8 @@
                 <extensions>true</extensions>
                 <configuration>
                     <instructions>
-                        <Import-Package>!org.kevoree.library.android.agrapher.*,!org.achartengine.*,org.osgi.*;version="[1,5)",*
+                        <Import-Package>
+                            !org.kevoree.library.android.agrapher.*,!org.achartengine.*,org.osgi.*;version="[1,5)",*
                         </Import-Package>
                         <Export-Package>org.kevoree.library.android.agrapher.*,org.achartengine.*</Export-Package>
                     </instructions>
