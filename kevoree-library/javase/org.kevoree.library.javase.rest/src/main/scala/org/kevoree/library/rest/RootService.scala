@@ -46,7 +46,6 @@ class RootService (id: String, group: RestGroup) extends Actor with FileServer {
         } else {
           responder.complete(response("<nack nodeName=\"" + group.getNodeName + "\" />"))
         }
-
       } catch {
         case _@e => {
           log.error("Error while uploading model from group " + group.getName, e)
