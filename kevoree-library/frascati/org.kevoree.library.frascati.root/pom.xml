@@ -18,7 +18,6 @@
     <properties>
         <kevoree.version>${project.version}</kevoree.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <scala.version>2.9.1</scala.version>
     </properties>
 
     <modules>
@@ -37,16 +36,6 @@
             <groupId>org.kevoree.platform</groupId>
             <artifactId>org.kevoree.platform.osgi.standalone</artifactId>
             <version>${kevoree.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.scala-lang</groupId>
-            <artifactId>scala-library</artifactId>
-            <version>${scala.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.scala-lang</groupId>
-            <artifactId>scala-compiler</artifactId>
-            <version>${scala.version}</version>
         </dependency>
     </dependencies>
 

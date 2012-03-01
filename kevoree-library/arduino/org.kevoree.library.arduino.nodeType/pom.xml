@@ -8,10 +8,6 @@
     <name>Kevoree :: Library :: Arduino :: NodeType</name>
     <version>1.6.0-BETA3</version>
 
-    <properties>
-        <scala.version>2.9.1</scala.version>
-    </properties>
-
     <parent>
         <artifactId>org.kevoree.library.arduino.root</artifactId>
         <groupId>org.kevoree.library.arduino</groupId>
