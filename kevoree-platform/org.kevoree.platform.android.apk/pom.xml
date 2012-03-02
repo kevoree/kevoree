@@ -44,7 +44,6 @@
         </profile>
     </profiles>
 
-
     <dependencies>
         <dependency>
             <groupId>com.google.android</groupId>
@@ -52,14 +51,11 @@
             <version>4.0.1.2</version>
             <scope>provided</scope>
         </dependency>
-        <!--
         <dependency>
-            <groupId>org.kevoree.platform</groupId>
-            <artifactId>org.kevoree.platform.android.core</artifactId>
-            <version>${kevoree.version}</version>
-            <scope>provided</scope>
+            <groupId>com.actionbarsherlock</groupId>
+            <artifactId>library</artifactId>
+            <version>3.5.1</version>
         </dependency>
-        -->
     </dependencies>
 
     <build>
@@ -76,21 +72,25 @@
                             <goal>unpack</goal>
                         </goals>
                         <configuration>
-                             <includes>**\/*.dex</includes>
+                            <includes>**\/*.dex</includes>
                             <artifactItems>
                                 <artifactItem>
                                     <groupId>org.kevoree.tools</groupId>
                                     <artifactId>org.kevoree.tools.aether.framework.android</artifactId>
                                     <version>${kevoree.version}</version>
                                     <overWrite>false</overWrite>
-                                    <outputDirectory>${project.basedir}/src/main/resources/boot/org.kevoree.tools.aether.framework.android</outputDirectory>
+                                    <outputDirectory>
+                                        ${project.basedir}/src/main/resources/boot/org.kevoree.tools.aether.framework.android
+                                    </outputDirectory>
                                 </artifactItem>
                                 <artifactItem>
                                     <groupId>org.kevoree.platform</groupId>
                                     <artifactId>org.kevoree.platform.android.core</artifactId>
                                     <version>${kevoree.version}</version>
                                     <overWrite>false</overWrite>
-                                    <outputDirectory>${project.basedir}/src/main/resources/boot/org.kevoree.platform.android.core</outputDirectory>
+                                    <outputDirectory>
+                                        ${project.basedir}/src/main/resources/boot/org.kevoree.platform.android.core
+                                    </outputDirectory>
                                 </artifactItem>
 
 
@@ -99,56 +99,72 @@
                                     <artifactId>scala.library.android.actor</artifactId>
                                     <version>${scala.version}</version>
                                     <overWrite>false</overWrite>
-                                    <outputDirectory>${project.basedir}/src/main/resources/boot/scala.library.android.actor</outputDirectory>
+                                    <outputDirectory>
+                                        ${project.basedir}/src/main/resources/boot/scala.library.android.actor
+                                    </outputDirectory>
                                 </artifactItem>
                                 <artifactItem>
                                     <groupId>org.scala.android</groupId>
                                     <artifactId>scala.library.android.base</artifactId>
                                     <version>${scala.version}</version>
                                     <overWrite>false</overWrite>
-                                    <outputDirectory>${project.basedir}/src/main/resources/boot/scala.library.android.base</outputDirectory>
+                                    <outputDirectory>
+                                        ${project.basedir}/src/main/resources/boot/scala.library.android.base
+                                    </outputDirectory>
                                 </artifactItem>
                                 <artifactItem>
                                     <groupId>org.scala.android</groupId>
                                     <artifactId>scala.library.android.collection.base</artifactId>
                                     <version>${scala.version}</version>
                                     <overWrite>false</overWrite>
-                                    <outputDirectory>${project.basedir}/src/main/resources/boot/scala.library.android.collection.base</outputDirectory>
+                                    <outputDirectory>
+                                        ${project.basedir}/src/main/resources/boot/scala.library.android.collection.base
+                                    </outputDirectory>
                                 </artifactItem>
                                 <artifactItem>
                                     <groupId>org.scala.android</groupId>
                                     <artifactId>scala.library.android.collection.immutable</artifactId>
                                     <version>${scala.version}</version>
                                     <overWrite>false</overWrite>
-                                    <outputDirectory>${project.basedir}/src/main/resources/boot/scala.library.android.collection.immutable</outputDirectory>
+                                    <outputDirectory>
+                                        ${project.basedir}/src/main/resources/boot/scala.library.android.collection.immutable
+                                    </outputDirectory>
                                 </artifactItem>
                                 <artifactItem>
                                     <groupId>org.scala.android</groupId>
                                     <artifactId>scala.library.android.collection.mutable</artifactId>
                                     <version>${scala.version}</version>
                                     <overWrite>false</overWrite>
-                                    <outputDirectory>${project.basedir}/src/main/resources/boot/scala.library.android.collection.mutable</outputDirectory>
+                                    <outputDirectory>
+                                        ${project.basedir}/src/main/resources/boot/scala.library.android.collection.mutable
+                                    </outputDirectory>
                                 </artifactItem>
                                 <artifactItem>
                                     <groupId>org.scala.android</groupId>
                                     <artifactId>scala.library.android.collection.parallel</artifactId>
                                     <version>${scala.version}</version>
                                     <overWrite>false</overWrite>
-                                    <outputDirectory>${project.basedir}/src/main/resources/boot/scala.library.android.collection.parallel</outputDirectory>
+                                    <outputDirectory>
+                                        ${project.basedir}/src/main/resources/boot/scala.library.android.collection.parallel
+                                    </outputDirectory>
                                 </artifactItem>
                                 <artifactItem>
                                     <groupId>org.scala.android</groupId>
                                     <artifactId>scala.library.android.runtime</artifactId>
                                     <version>${scala.version}</version>
                                     <overWrite>false</overWrite>
-                                    <outputDirectory>${project.basedir}/src/main/resources/boot/scala.library.android.runtime</outputDirectory>
+                                    <outputDirectory>
+                                        ${project.basedir}/src/main/resources/boot/scala.library.android.runtime
+                                    </outputDirectory>
                                 </artifactItem>
                                 <artifactItem>
                                     <groupId>org.scala.android</groupId>
                                     <artifactId>scala.library.android.util</artifactId>
                                     <version>${scala.version}</version>
                                     <overWrite>false</overWrite>
-                                    <outputDirectory>${project.basedir}/src/main/resources/boot/scala.library.android.util</outputDirectory>
+                                    <outputDirectory>
+                                        ${project.basedir}/src/main/resources/boot/scala.library.android.util
+                                    </outputDirectory>
                                 </artifactItem>
                             </artifactItems>
                             <overWriteReleases>true</overWriteReleases>
@@ -214,6 +230,10 @@
                     </options>
                     <assembly>
                         <inclusions>
+                            <inclusion>
+                                <groupId>com.actionbarsherlock</groupId>
+                                <artifactId>library</artifactId>
+                            </inclusion>
                         </inclusions>
                     </assembly>
                     <libs>
@@ -338,5 +358,11 @@
         </plugins>
     </build>
 
+    <repositories>
+        <repository>
+            <id>actionbarsherlock</id>
+            <url>http://r.jakewharton.com/maven/release/</url>
+        </repository>
+    </repositories>
 
 </project>
