@@ -1,4 +1,4 @@
-package org.kevoree.library.javase.helloworld.${package};
+package org.kevoree.library.javase.helloworld.org.kevoree.sample.typeid;
 
 import org.kevoree.annotation.*;
 import org.kevoree.annotation.ComponentType;

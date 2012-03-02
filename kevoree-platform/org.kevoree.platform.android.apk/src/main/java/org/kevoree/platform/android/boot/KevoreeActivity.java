@@ -229,10 +229,8 @@ public class KevoreeActivity extends Activity {
                     }
                 }
             });
-
-        }
-        if (singleton == null)
             singleton = this;
+        }
     }
 
     private class TextOutputStream extends OutputStream {

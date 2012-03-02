@@ -38,7 +38,6 @@ import org.kevoree.framework.AbstractComponentType;
 public class AGrapher extends AbstractComponentType  {
 
     KevoreeAndroidService uiService = null;
-    Object bundle=null;
     private String title= "";
     private int history_size= 60;
     private int color_axe= Color.WHITE;
@@ -51,10 +50,7 @@ public class AGrapher extends AbstractComponentType  {
     @Start
     public void start() {
         // logger.debug("AGrapher ","starting");
-
         updateDico();
-
-        bundle = this.getDictionary().get("osgi.bundle");
         uiService = UIServiceHandler.getUIService();
         graphline = new GraphLine(title,history_size, color_axe,color_courbe);
 
@@ -66,7 +62,6 @@ public class AGrapher extends AbstractComponentType  {
             @Override
             public void run ()
             {
-
                 GraphicalView view= graphline.CreateView(uiService.getRootActivity());
                 layout.addView(view);
             }
