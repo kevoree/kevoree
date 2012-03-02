@@ -1,7 +1,6 @@
 package org.kevoree.library.sensors;
 
 import org.kevoree.annotation.*;
-import org.kevoree.tools.arduino.framework.AbstractArduinoComponent;
 import org.kevoree.tools.arduino.framework.AbstractPeriodicArduinoComponent;
 import org.kevoree.tools.arduino.framework.ArduinoGenerator;
 
@@ -16,7 +15,8 @@ import org.kevoree.tools.arduino.framework.ArduinoGenerator;
 @ComponentType
 @DictionaryType({
         @DictionaryAttribute(name = "trigger_prealarme", defaultValue = "23",dataType = Long.class),
-        @DictionaryAttribute(name = "trigger_alarme", defaultValue = "35",dataType = Long.class)
+        @DictionaryAttribute(name = "trigger_alarme", defaultValue = "35",dataType = Long.class),
+        @DictionaryAttribute(name = "sensibilite", defaultValue = "5",dataType = Long.class)
 })
 
 @Requires({
@@ -70,7 +70,7 @@ public class BaliseHommeMort  extends AbstractPeriodicArduinoComponent {
     {
         getGenerator().appendNativeStatement("float tmp;\n" +
                 "tmp = atof(msg->value);\n" +
-                "if(tmp != last_yaw && tmp != 0){");
+                "if(abs(tmp-last_yaw) > sensibilite && tmp != 0){");
         getGenerator().appendNativeStatement("prealarme_nbMotion++;");
         getGenerator().appendNativeStatement("alarme_nbMotion++;");
         getGenerator().appendNativeStatement(" last_yaw = tmp; \n" +
@@ -83,7 +83,7 @@ public class BaliseHommeMort  extends AbstractPeriodicArduinoComponent {
     {
         getGenerator().appendNativeStatement("float tmp;\n" +
                 "tmp = atof(msg->value);\n" +
-                "if(tmp != last_roll && tmp != 0){");
+                "if(abs(tmp-last_roll) > sensibilite && tmp != 0){");
         getGenerator().appendNativeStatement("prealarme_nbMotion++;");
         getGenerator().appendNativeStatement("alarme_nbMotion++;");
 
@@ -96,7 +96,7 @@ public class BaliseHommeMort  extends AbstractPeriodicArduinoComponent {
     {
         getGenerator().appendNativeStatement("float tmp;\n" +
                 "tmp = atof(msg->value);\n" +
-                "if(tmp != last_pitch && tmp != 0){");
+                "if(abs(tmp-last_pitch) > sensibilite && tmp != 0){");
         getGenerator().appendNativeStatement("prealarme_nbMotion++;");
         getGenerator().appendNativeStatement("alarme_nbMotion++;");
 
@@ -115,7 +115,7 @@ public class BaliseHommeMort  extends AbstractPeriodicArduinoComponent {
 
         gen.appendNativeStatement(" prealarme_previousMillis = currentMillis;");
 
-        gen.appendNativeStatement(" if(prealarme_nbMotion < 8){    ");
+        gen.appendNativeStatement(" if(prealarme_nbMotion < 2){    ");
 
         gen.appendNativeStatement("smsg = (kmessage*) malloc(sizeof(kmessage));");
         gen.appendNativeStatement("if (smsg){memset(smsg, 0, sizeof(kmessage));}");
@@ -141,7 +141,7 @@ public class BaliseHommeMort  extends AbstractPeriodicArduinoComponent {
 
         gen.appendNativeStatement(" alarme_previousMillis = currentMillis;");
 
-        gen.appendNativeStatement(" if(alarme_nbMotion < 8){    ");
+        gen.appendNativeStatement(" if(alarme_nbMotion < 2){    ");
 
         gen.appendNativeStatement("smsg = (kmessage*) malloc(sizeof(kmessage));");
         gen.appendNativeStatement("if (smsg){memset(smsg, 0, sizeof(kmessage));}");
