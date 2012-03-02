@@ -56,6 +56,14 @@
             <artifactId>org.kevoree.library.android.nanohttp</artifactId>
             <version>${kevoree.version}</version>
         </dependency>
+
+
+        <dependency>
+            <groupId>org.kevoree.library.javase</groupId>
+            <artifactId>org.kevoree.library.javase.nanohttp</artifactId>
+            <version>${kevoree.version}</version>
+        </dependency>
+
     </dependencies>
 
 

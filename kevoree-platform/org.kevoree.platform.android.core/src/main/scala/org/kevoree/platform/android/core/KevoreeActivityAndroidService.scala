@@ -30,9 +30,15 @@ class KevoreeActivityAndroidService(act : Activity,tabs:TabHost) extends Kevoree
   def getRootActivity = act
 
   def addToGroup(groupKey: String, view: View) {
+
+    System.out.println("HelloAddGroup");
+
     act.runOnUiThread(new Runnable() {
       @Override
       def run() {
+
+        System.out.println("InRun "+act+"-"+tabs);
+
         val tspec3 = tabs.newTabSpec(groupKey);
         tspec3.setIndicator(groupKey);//, getResources().getDrawable(android.R.drawable.star_on));
         tspec3.setContent(new PreExistingViewFactory(view));
