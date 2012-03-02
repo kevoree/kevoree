@@ -14,6 +14,7 @@
 package org.kevoree.framework
 
 import org.kevoree.{TypeDefinition, Instance, ContainerRoot}
+import java.util.ArrayList
 
 
 /**
@@ -193,26 +194,26 @@ object KevoreePropertyHelper {
   }
 
   def getBooleanNetworkProperty (model: ContainerRoot, targetNodeName: String, key: String): Option[Boolean] = {
-      getNetworkProperty(model, targetNodeName, key) match {
-        case None => None
-        case Some(value) => try {
-          Some(value.toString.toLowerCase == "true")
-        } catch {
-          case _@e => None
-        }
+    getNetworkProperty(model, targetNodeName, key) match {
+      case None => None
+      case Some(value) => try {
+        Some(value.toString.toLowerCase == "true")
+      } catch {
+        case _@e => None
       }
     }
+  }
 
   def getIntNetworkProperty (model: ContainerRoot, targetNodeName: String, key: String): Option[java.lang.Integer] = {
-      getNetworkProperty(model, targetNodeName, key) match {
-        case None => None
-        case Some(value) => try {
-          Some(Integer.parseInt(value.toString))
-        } catch {
-          case _@e => None
-        }
+    getNetworkProperty(model, targetNodeName, key) match {
+      case None => None
+      case Some(value) => try {
+        Some(Integer.parseInt(value.toString))
+      } catch {
+        case _@e => None
       }
     }
+  }
 
   def getStringNetworkProperty (model: ContainerRoot, targetNodeName: String, key: String): Option[String] = {
     getNetworkProperty(model, targetNodeName, key) match {
@@ -239,6 +240,54 @@ object KevoreePropertyHelper {
         }
     }
     result
+  }
+
+  def getIntNetworkProperties (model: ContainerRoot, targetNodeName: String, key: String): java.util.List[Int] = {
+      val properties = new ArrayList[Int]()
+      val filteredNodeNetwork = model.getNodeNetworks.filter(lNN => lNN.getTarget.getName == targetNodeName)
+      filteredNodeNetwork.foreach {
+        fnn =>
+          fnn.getLink.foreach {
+            fnl =>
+              fnl.getNetworkProperties.find(p => p.getName == key && p.getValue.isInstanceOf[Int]) match {
+                case None =>
+                case Some(prop) => properties.add(prop.getValue.asInstanceOf[Int])
+              }
+          }
+      }
+      properties
+    }
+
+  def getStringNetworkProperties (model: ContainerRoot, targetNodeName: String, key: String): java.util.List[String] = {
+      val properties = new ArrayList[String]()
+      val filteredNodeNetwork = model.getNodeNetworks.filter(lNN => lNN.getTarget.getName == targetNodeName)
+      filteredNodeNetwork.foreach {
+        fnn =>
+          fnn.getLink.foreach {
+            fnl =>
+              fnl.getNetworkProperties.find(p => p.getName == key) match {
+                case None =>
+                case Some(prop) => properties.add(prop.getValue.asInstanceOf[String])
+              }
+          }
+      }
+      properties
+    }
+
+  def getNetworkProperties (model: ContainerRoot, targetNodeName: String, key: String): java.util.List[Object] = {
+    val properties = new ArrayList[Object]()
+    val filteredNodeNetwork = model.getNodeNetworks.filter(lNN => lNN.getTarget.getName == targetNodeName)
+    filteredNodeNetwork.foreach {
+      fnn =>
+        fnn.getLink.foreach {
+          fnl =>
+            fnl.getNetworkProperties.find(p => p.getName == key) match {
+              case None =>
+              case Some(prop) => properties.add(prop)
+            }
+        }
+    }
+    properties
   }
 
   private def getProperty (model: ContainerRoot, instance: Instance, name: String, key: String, isFragment: Boolean = false, nodeNameForFragment: String = ""): Option[Object] = {
