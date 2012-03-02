@@ -25,7 +25,7 @@ import android.view.Display;
 import android.view.View;
 import android.widget.*;
 import android.widget.Button;
-import android.widget.TabHost.TabSpec;
+
 
 import java.io.*;
 
@@ -77,6 +77,7 @@ public class KevoreeActivity extends android.support.v4.app.FragmentActivity imp
     protected synchronized void onCreate(Bundle savedInstanceState) {
         if (singleton == null) {
             super.onCreate(savedInstanceState);
+            setContentView(R.layout.main);
 
             Display display = getWindowManager().getDefaultDisplay();
             int width = display.getWidth();
@@ -190,7 +191,7 @@ public class KevoreeActivity extends android.support.v4.app.FragmentActivity imp
 
                    */
 
-            setContentView(R.layout.main);
+
             getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
 
 
