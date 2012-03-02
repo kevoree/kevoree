@@ -127,7 +127,7 @@ public class PaaSKloudResourceManager extends ParentAbstractPage {
 				// push the user model to this group on the master fragment
 				Option<String> addressOption = KloudHelper.pushOnMaster(model, login, this.getNodeName(), newKloudModelOption.get());
 				if (addressOption.isDefined()) {
-					uuidModel = this.getModelService().getLastUUIDModel();
+					/*uuidModel = this.getModelService().getLastUUIDModel();
 					KloudReasoner.createProxy(login, this.getNodeName(), "/" + login, newKloudModelOption.get(), getKevScriptEngineFactory());
 					try {
 						this.getModelService().atomicCompareAndSwapModel(uuidModel, newKloudModelOption.get());
@@ -135,10 +135,16 @@ public class PaaSKloudResourceManager extends ParentAbstractPage {
 					} catch (Exception e) {
 						logger.error("Unable to add the proxy for the user {}", login, e);
 						return "Unable to add the proxy for the user " + login;
+					}*/
+					if (createProxy(login, newKloudModelOption.get(), 5)) {
+						return addressOption.get();
+					} else {
+						logger.error("Unable to add the proxy for the user {}", login);
+						return "Unable to add the proxy for the user " + login;
 					}
 				} else {
-					logger.debug("Unable to add the proxy for the user {}", login);
-					return "Unable to add the proxy for the user " + login;
+					logger.debug("Unable to commit the user model on nodes");
+					return "Unable to commit the user model on nodes";
 				}
 
 			} else {
@@ -148,6 +154,21 @@ public class PaaSKloudResourceManager extends ParentAbstractPage {
 		} else {
 			logger.debug("Unable to create the needed user group to give access the nodes to the user.");
 			return "Unable to create the needed user group to give access the nodes to the user.";
+		}
+	}
+
+	private boolean createProxy (String login, ContainerRoot kloudModel, int nbTry) {
+		UUIDModel uuidModel = this.getModelService().getLastUUIDModel();
+		KloudReasoner.createProxy(login, this.getNodeName(), "/" + login, kloudModel, getKevScriptEngineFactory());
+		try {
+			this.getModelService().atomicCompareAndSwapModel(uuidModel, kloudModel);
+			return true;
+		} catch (Exception e) {
+			if (nbTry > 0) {
+				return createProxy(login, kloudModel, nbTry - 1);
+			} else {
+				return false;
+			}
 		}
 	}
 
