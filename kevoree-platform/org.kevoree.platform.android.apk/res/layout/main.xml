@@ -14,15 +14,33 @@
     limitations under the License.
 
 -->
-<TableLayout android:id="@+id/Table"
-        android:layout_width="fill_parent"
-		android:layout_height="fill_parent"
-        android:stretchColumns="0,1,2,3,4"
-        xmlns:android="http://schemas.android.com/apk/res/android">
-    <TableRow android:layout_width="fill_parent"
-                android:layout_height="wrap_content">
-        <Button android:id="@+id/StartKevoree" android:text="StartKevoree" />
-        <Button android:id="@+id/StopKevoree" android:text="StopKevoree" />
-    </TableRow>
-</TableLayout>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="fill_parent"
+              android:layout_height="fill_parent"
+              android:orientation="vertical"
+              android:padding="20dip">
+    <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"
+            android:text="Hi"/>
+    <TextView
+            android:id="@+id/text"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"/>
+    <TableLayout android:id="@+id/Table"
+                 android:layout_width="fill_parent"
+                 android:layout_height="fill_parent"
+                 android:stretchColumns="0,1,2,3,4"
+                 xmlns:android="http://schemas.android.com/apk/res/android">
+        <TableRow android:layout_width="fill_parent"
+                  android:layout_height="wrap_content">
+            <Button android:id="@+id/StartKevoree" android:text="StartKevoree"/>
+            <Button android:id="@+id/StopKevoree" android:text="StopKevoree"/>
+        </TableRow>
+    </TableLayout>
+</LinearLayout>
+
+
 
