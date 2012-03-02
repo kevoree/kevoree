@@ -13,11 +13,12 @@
  */
 package org.kevoree.platform.android.boot;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.v4.app.ActionBar;
+import android.support.v4.app.FragmentTransaction;
 import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.Display;
@@ -32,8 +33,9 @@ import java.io.*;
 /**
  * Hello world!
  */
-public class KevoreeActivity extends Activity {
+public class KevoreeActivity extends android.support.v4.app.FragmentActivity implements ActionBar.TabListener {
 
+    /*
     class PreExistingViewFactory implements TabHost.TabContentFactory {
 
         private View v = null;
@@ -46,8 +48,7 @@ public class KevoreeActivity extends Activity {
         public View createTabContent(String s) {
             return v;
         }
-    }
-
+    }  */
 
     public static KevoreeActivity singleton = null;
     public static String nodeName = "";
@@ -69,7 +70,7 @@ public class KevoreeActivity extends Activity {
     }
 
     private Boolean alreadyStarted = false;
-    public static TabHost tabs = null;
+   // public static TabHost tabs = null;
 
 
     @Override
@@ -132,6 +133,8 @@ public class KevoreeActivity extends Activity {
             LinearLayout main = new LinearLayout(this);
             main.setOrientation(LinearLayout.VERTICAL);
             setContentView(main);
+
+            /*
             tabs = new TabHost(this, null);
             tabs.setId(android.R.id.tabhost);
             main.addView(tabs);
@@ -143,9 +146,12 @@ public class KevoreeActivity extends Activity {
             tabContent.setPadding(0, 65, 0, 0);
             tabs.addView(tabContent);
             tabs.setup();
+            */
 
-            TabSpec tspec1 = tabs.newTabSpec("Admin");
-            tspec1.setIndicator("Admin");
+
+
+            //TabSpec tspec1 = tabs.newTabSpec("Admin");
+           // tspec1.setIndicator("Admin");
 
             LinearLayout adminLayout = new LinearLayout(this);
             LinearLayout layout = new LinearLayout(this);
@@ -176,8 +182,28 @@ public class KevoreeActivity extends Activity {
             layout.addView(logs);
 
 
-            tspec1.setContent(new PreExistingViewFactory(layout));
-            tabs.addTab(tspec1);
+              /*
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .add(android.R.id.content, FragmentStackSupport.CountingFragment.newInstance(0))
+                    .commit();
+
+                   */
+
+            setContentView(R.layout.main);
+            getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
+
+
+            //tspec1.setContent(new PreExistingViewFactory(layout));
+            //tabs.addTab(tspec1);
+
+
+            ActionBar.Tab tab = getSupportActionBar().newTab();
+            tab.setText("Admin");
+            tab.setTabListener(this);
+            getSupportActionBar().addTab(tab);
+
+
             /*
            TabSpec tspec2 = tabs.newTabSpec("Tab2");
            tspec2.setIndicator("Two", this.getResources().getDrawable(android.R.drawable.star_on));
@@ -231,6 +257,24 @@ public class KevoreeActivity extends Activity {
             });
             singleton = this;
         }
+    }
+
+    @Override
+    public void onTabReselected(ActionBar.Tab tab, FragmentTransaction fragmentTransaction) {
+    }
+
+    @Override
+    public void onTabSelected(ActionBar.Tab tab, FragmentTransaction fragmentTransaction) {
+        /*
+        getSupportFragmentManager()
+                .beginTransaction()
+                .replace(android.R.id.content, FragmentStackSupport.CountingFragment.newInstance(tab.getPosition()))
+                .commit();    */
+    }
+
+    @Override
+    public void onTabUnselected(ActionBar.Tab tab, FragmentTransaction fragmentTransaction) {
+        //To change body of implemented methods use File | Settings | File Templates.
     }
 
     private class TextOutputStream extends OutputStream {

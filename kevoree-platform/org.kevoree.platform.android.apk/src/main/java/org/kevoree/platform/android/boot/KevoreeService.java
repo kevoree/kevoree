@@ -73,7 +73,7 @@ public class KevoreeService extends Service {
                     Class bootClazz = tkcl.getClusterKCL().loadClass("org.kevoree.platform.android.core.KevoreeAndroidBootStrap");
                     bootObj = bootClazz.newInstance();
                     Method startM = bootClazz.getMethod("start",Activity.class, android.content.Context.class, ClassLoader.class, TabHost.class, String.class);
-                    startM.invoke(bootObj,KevoreeActivity.singleton,getBaseContext(),tkcl.getClusterKCL(),KevoreeActivity.tabs,KevoreeActivity.nodeName);
+                    startM.invoke(bootObj,KevoreeActivity.singleton,getBaseContext(),tkcl.getClusterKCL(),null,KevoreeActivity.nodeName);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

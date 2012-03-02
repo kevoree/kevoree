@@ -226,6 +226,7 @@
                         <option>-dontnote</option>
                         <option>-keep class org.xeustechnologies.** { *; }</option>
                         <option>-keep class org.kevoree** { *; }</option>
+                        <option>-keep class com.actionbarsherlock ** { *; }</option>
                         <option>-dontskipnonpubliclibraryclasses</option>
                         <option>-dontskipnonpubliclibraryclassmembers</option>
                         <option>-dontoptimize</option>
