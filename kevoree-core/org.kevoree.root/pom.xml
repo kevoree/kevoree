@@ -10,7 +10,7 @@
     <version>1.6.0-BETA3</version>
 
     <properties>
-        <scala.version>2.10.0-m2</scala.version>
+        <scala.version>2.10.0-M2</scala.version>
         <bundle.vendor>IRISA/INRIA</bundle.vendor>
     </properties>
 
