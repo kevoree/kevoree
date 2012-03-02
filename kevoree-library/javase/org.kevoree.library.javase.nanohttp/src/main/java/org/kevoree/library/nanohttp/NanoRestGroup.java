@@ -5,14 +5,13 @@ import org.kevoree.ContainerRoot;
 import org.kevoree.Group;
 import org.kevoree.annotation.*;
 import org.kevoree.api.service.core.handler.KevoreeModelHandlerService;
-import org.kevoree.framework.AbstractGroupType;
-import org.kevoree.framework.KevoreeFragmentPropertyHelper;
-import org.kevoree.framework.KevoreePlatformHelper;
-import org.kevoree.framework.KevoreeXmiHelper;
+import org.kevoree.framework.*;
+import org.kevoree.framework.Constants;
 import org.kevoree.library.javase.nanohttp.NodeNetworkHelper;
 import org.kevoree.serializer.ModelSerializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import scala.Option;
 
 import java.io.*;
 import java.net.InetAddress;
@@ -20,6 +19,7 @@ import java.net.InetSocketAddress;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.Enumeration;
+import java.util.List;
 import java.util.Properties;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -136,22 +136,34 @@ public class NanoRestGroup extends AbstractGroupType {
 
 	@Override
 	public void push (ContainerRoot model, String targetNodeName) {
+		List<String> ips = KevoreePropertyHelper.getStringNetworkProperties(model, targetNodeName, Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP());
+		Option<Integer> portOption = KevoreePropertyHelper.getIntPropertyForGroup(model, this.getName(), "port", true, targetNodeName);
+		int PORT = 8000;
+		if (portOption.isDefined()) {
+			PORT = portOption.get();
+		}
+		boolean sent = false;
+		for (String ip : ips) {
+			logger.debug("try to send model on url=>" + "http://" + ip + ":" + PORT + "/model/current");
+			if (sendModel(model, "http://" + ip + ":" + PORT + "/model/current")) {
+				sent = true;
+				break;
+			}
+		}
+		if (!sent) {
+			logger.debug("try to send model on url=>" + "http://127.0.0.1:" + PORT + "/model/current");
+			if (!sendModel(model, "http://127.0.0.1:" + PORT + "/model/current")) {
+				logger.debug("Unable to push a model on " + targetNodeName);
+			}
+		}
+	}
+
+	private boolean sendModel (ContainerRoot model, String urlPath) {
 		try {
 			ByteArrayOutputStream outStream = new ByteArrayOutputStream();
 			KevoreeXmiHelper.saveStream(outStream, model);
 			outStream.flush();
-			String IP = KevoreePlatformHelper.getProperty(model, targetNodeName, org.kevoree.framework.Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP());
-			if (IP.equals("")) {
-				IP = "127.0.0.1";
-			}
-
-			int PORT = KevoreeFragmentPropertyHelper.getIntPropertyFromFragmentGroup(model, this.getName(), "port", targetNodeName);
-/*
-            System.out.println("port=>" + PORT);
-            System.out.println("GetName=> " + getName());
-            System.out.println("GetNodeName=> " + getNodeName());
-*/
-			URL url = new URL("http://" + IP + ":" + PORT + "/model/current?nodesrc=" + getNodeName());
+			URL url = new URL(urlPath);
 			URLConnection conn = url.openConnection();
 			conn.setConnectTimeout(3000);
 			conn.setDoOutput(true);
@@ -166,57 +178,47 @@ public class NanoRestGroup extends AbstractGroupType {
 			}
 			wr.close();
 			rd.close();
-
+			return true;
 		} catch (Exception e) {
-			//			e.printStackTrace();
-			logger.debug("Unable to push a model on " + targetNodeName);
-
-		}
-	}
-
-	public String getAddress (String remoteNodeName) {
-		String ip = KevoreePlatformHelper.getProperty(this.getModelService().getLastModel(), remoteNodeName,
-				org.kevoree.framework.Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP());
-		if (ip == null || ip.equals("")) {
-			ip = "127.0.0.1";
-		}
-		return ip;
-	}
-
-	public int parsePortNumber (String nodeName) throws IOException {
-		try {
-			//logger.debug("look for port on " + nodeName);
-			return KevoreeFragmentPropertyHelper
-					.getIntPropertyFromFragmentChannel(this.getModelService().getLastModel(), this.getName(), "port",
-							nodeName);
-		} catch (NumberFormatException e) {
-			throw new IOException(e.getMessage());
+			return false;
 		}
 	}
 
 	@Override
 	public ContainerRoot pull (String targetNodeName) {
-		String localhost = "localhost";
-		int port = 8000;
-		try {
-			localhost = getAddress(targetNodeName);
-			port = parsePortNumber(targetNodeName);
-		} catch (IOException e) {
-			logger.error("Unable to getAddress or Port of " + targetNodeName, e);
+
+		List<String> ips = KevoreePropertyHelper.getStringNetworkProperties(this.getModelService().getLastModel(), targetNodeName, Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP());
+		Option<Integer> portOption = KevoreePropertyHelper.getIntPropertyForGroup(this.getModelService().getLastModel(), this.getName(), "port", true, targetNodeName);
+		int PORT = 8000;
+		if (portOption.isDefined()) {
+			PORT = portOption.get();
 		}
+		for (String ip : ips) {
+			logger.debug("try to pull model on url=>" + "http://" + ip + ":" + PORT + "/model/current");
+			ContainerRoot model = pullModel("http://" + ip + ":" + PORT + "/model/current");
+			if (model != null) {
+				return model;
+			}
+		}
+		ContainerRoot model = pullModel("http://127.0.0.1:" + PORT + "/model/current");
+		if (model == null) {
+			logger.debug("Unable to pull a model on " + targetNodeName);
+			return null;
+		} else {
+			return model;
+		}
+	}
 
-		logger.debug("Pulling model " + targetNodeName + " " + "http://" + localhost + ":" + port + "/model/current");
-
+	private ContainerRoot pullModel (String urlPath) {
 		try {
-			URL url = new URL("http://" + localhost + ":" + port + "/model/current");
+			URL url = new URL(urlPath);
 			URLConnection conn = url.openConnection();
 			conn.setConnectTimeout(2000);
 			InputStream inputStream = conn.getInputStream();
 			return KevoreeXmiHelper.loadStream(inputStream);
 		} catch (IOException e) {
-			logger.error("error while pulling model for name " + targetNodeName, e);
+			return null;
 		}
-		return null;
 	}
 
 }
