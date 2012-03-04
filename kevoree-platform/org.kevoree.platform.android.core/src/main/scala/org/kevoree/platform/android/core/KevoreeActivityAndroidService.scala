@@ -16,7 +16,6 @@ package org.kevoree.platform.android.core
 import org.kevoree.android.framework.service.KevoreeAndroidService
 import android.app.Activity
 import android.view.View
-import android.widget.TabHost
 
 /**
  * Created with IntelliJ IDEA.
@@ -25,27 +24,35 @@ import android.widget.TabHost
  * Time: 17:52
  */
 
-class KevoreeActivityAndroidService(act : Activity,tabs:TabHost) extends KevoreeAndroidService {
+class KevoreeActivityAndroidService(act : Activity,kui : org.kevoree.platform.android.ui.KevoreeAndroidUIScreen) extends KevoreeAndroidService {
 
   def getRootActivity = act
 
   def addToGroup(groupKey: String, view: View) {
 
-    System.out.println("HelloAddGroup");
-
     act.runOnUiThread(new Runnable() {
       @Override
       def run() {
 
+        kui.addToGroup(groupKey,view)
+        /*
         System.out.println("InRun "+act+"-"+tabs);
 
         val tspec3 = tabs.newTabSpec(groupKey);
         tspec3.setIndicator(groupKey);//, getResources().getDrawable(android.R.drawable.star_on));
         tspec3.setContent(new PreExistingViewFactory(view));
-        tabs.addTab(tspec3);
+        tabs.addTab(tspec3);*/
       }
     });
   }
 
-  def remove(p1: View) {}
+  def remove(p1: View) {
+    act.runOnUiThread(new Runnable() {
+      @Override
+      def run() {
+        kui.removeView(p1)
+      }
+    });
+
+  }
 }

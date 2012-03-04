@@ -56,10 +56,39 @@
             <artifactId>library</artifactId>
             <version>3.5.1</version>
         </dependency>
+        <dependency>
+            <groupId>org.kevoree.platform</groupId>
+            <artifactId>org.kevoree.platform.android.ui</artifactId>
+            <version>${kevoree.version}</version>
+        </dependency>
+
     </dependencies>
 
     <build>
         <plugins>
+
+            <plugin>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <phase>initialize</phase>
+                        <configuration>
+                            <tasks>
+                                <unzip src="${basedir}/lib/library-3.5.1.zip" dest="${basedir}">
+                                    <patternset>
+                                        <include name="res/**"/>
+                                        <exclude name="AndroidManifest.xml"/>
+                                    </patternset>
+                                </unzip>
+                            </tasks>
+                        </configuration>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-dependency-plugin</artifactId>
@@ -227,12 +256,17 @@
                         <option>-keep public class * extends
                             android.content.ContentProvider
                         </option>
+                        <option>-keep class org.kevoree.platform.android.ui.** { *; }</option>
                     </options>
                     <assembly>
                         <inclusions>
                             <inclusion>
                                 <groupId>com.actionbarsherlock</groupId>
                                 <artifactId>library</artifactId>
+                            </inclusion>
+                            <inclusion>
+                                <groupId>org.kevoree.platform</groupId>
+                                <artifactId>org.kevoree.platform.android.ui</artifactId>
                             </inclusion>
                         </inclusions>
                     </assembly>
@@ -289,7 +323,7 @@
                 <configuration>
                     <sdk>
                         <path>${android.home}</path>
-                        <platform>8</platform>
+                        <platform>13</platform>
                     </sdk>
                     <emulator>
                         <avd>FROYO</avd>

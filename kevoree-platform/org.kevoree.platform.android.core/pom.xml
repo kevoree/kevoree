@@ -46,6 +46,11 @@
 
     <dependencies>
         <dependency>
+            <groupId>org.kevoree.platform</groupId>
+            <artifactId>org.kevoree.platform.android.ui</artifactId>
+            <version>${kevoree.version}</version>
+        </dependency>
+        <dependency>
             <groupId>com.google.android</groupId>
             <artifactId>android</artifactId>
             <version>4.0.1.2</version>
@@ -225,8 +230,8 @@
                         <option>-keepnames class * implements java.io.Serializable</option>
                         <option>-dontnote</option>
                         <option>-keep class org.xeustechnologies.** { *; }</option>
-                        <option>-keep class org.kevoree** { *; }</option>
-                        <option>-keep class com.actionbarsherlock ** { *; }</option>
+                        <option>-keep class org.kevoree.** { *; }</option>
+                        <option>-keep class com.actionbarsherlock.** { *; }</option>
                         <option>-dontskipnonpubliclibraryclasses</option>
                         <option>-dontskipnonpubliclibraryclassmembers</option>
                         <option>-dontoptimize</option>
