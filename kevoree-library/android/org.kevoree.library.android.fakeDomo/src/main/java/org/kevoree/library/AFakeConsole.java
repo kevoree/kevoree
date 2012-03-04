@@ -83,7 +83,7 @@ public class AFakeConsole extends AbstractComponentType {
 
     @Stop
     public void stop() {
-        uiService.remove(textview);
+        uiService.remove(layout);
     }
 
 

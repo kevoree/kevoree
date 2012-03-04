@@ -25,15 +25,18 @@ import android.view.Display;
 import android.view.View;
 import android.widget.*;
 import android.widget.Button;
+import org.kevoree.platform.android.ui.KevoreeAndroidUIScreen;
 
 
 import java.io.*;
+import java.util.HashMap;
+import java.util.Map;
 
 
 /**
  * Hello world!
  */
-public class KevoreeActivity extends android.support.v4.app.FragmentActivity implements ActionBar.TabListener {
+public class KevoreeActivity extends android.support.v4.app.FragmentActivity implements ActionBar.TabListener, KevoreeAndroidUIScreen {
 
     /*
     class PreExistingViewFactory implements TabHost.TabContentFactory {
@@ -70,14 +73,15 @@ public class KevoreeActivity extends android.support.v4.app.FragmentActivity imp
     }
 
     private Boolean alreadyStarted = false;
-   // public static TabHost tabs = null;
+    // public static TabHost tabs = null;
 
+    View layoutAdmin = null;
 
     @Override
     protected synchronized void onCreate(Bundle savedInstanceState) {
         if (singleton == null) {
             super.onCreate(savedInstanceState);
-            setContentView(R.layout.main);
+            // setContentView(R.layout.kmain);
 
             Display display = getWindowManager().getDefaultDisplay();
             int width = display.getWidth();
@@ -131,9 +135,9 @@ public class KevoreeActivity extends android.support.v4.app.FragmentActivity imp
             System.setOut(STDwriter);
             System.setErr(ERRwriter);
 
-            LinearLayout main = new LinearLayout(this);
-            main.setOrientation(LinearLayout.VERTICAL);
-            setContentView(main);
+            //LinearLayout main = new LinearLayout(this);
+            //  main.setOrientation(LinearLayout.VERTICAL);
+            //  setContentView(main);
 
             /*
             tabs = new TabHost(this, null);
@@ -150,12 +154,12 @@ public class KevoreeActivity extends android.support.v4.app.FragmentActivity imp
             */
 
 
-
             //TabSpec tspec1 = tabs.newTabSpec("Admin");
-           // tspec1.setIndicator("Admin");
+            // tspec1.setIndicator("Admin");
 
             LinearLayout adminLayout = new LinearLayout(this);
-            LinearLayout layout = new LinearLayout(this);
+            final LinearLayout layout = new LinearLayout(this);
+            layoutAdmin = layout;
 
             layout.setLayoutParams(new AbsListView.LayoutParams(AbsListView.LayoutParams.FILL_PARENT, AbsListView.LayoutParams.FILL_PARENT));
             layout.setOrientation(LinearLayout.VERTICAL);
@@ -183,13 +187,13 @@ public class KevoreeActivity extends android.support.v4.app.FragmentActivity imp
             layout.addView(logs);
 
 
-              /*
-            getSupportFragmentManager()
-                    .beginTransaction()
-                    .add(android.R.id.content, FragmentStackSupport.CountingFragment.newInstance(0))
-                    .commit();
+            /*
+     getSupportFragmentManager()
+             .beginTransaction()
+             .add(android.R.id.content, FragmentStackSupport.CountingFragment.newInstance(0))
+             .commit();
 
-                   */
+            */
 
 
             getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
@@ -198,11 +202,24 @@ public class KevoreeActivity extends android.support.v4.app.FragmentActivity imp
             //tspec1.setContent(new PreExistingViewFactory(layout));
             //tabs.addTab(tspec1);
 
-
+            /*
             ActionBar.Tab tab = getSupportActionBar().newTab();
             tab.setText("Admin");
             tab.setTabListener(this);
             getSupportActionBar().addTab(tab);
+            */
+            addToGroup("KAdmin", layout);
+
+
+            setContentView(views.get(getTabById("KAdmin")));
+
+            //addToGroup("KAdmin222", new LinearLayout(this));
+
+
+            //getSupportFragmentManager()
+            //        .beginTransaction().re
+
+            //tab.setCustomView(tabContent);
 
 
             /*
@@ -266,6 +283,17 @@ public class KevoreeActivity extends android.support.v4.app.FragmentActivity imp
 
     @Override
     public void onTabSelected(ActionBar.Tab tab, FragmentTransaction fragmentTransaction) {
+
+        // setContentView(R.layout.kmain);
+
+        LinearLayout l = views.get(tab);
+        if(l != null){
+            setContentView(l);
+        }
+
+
+        //setContentView(views.get(tab));
+
         /*
         getSupportFragmentManager()
                 .beginTransaction()
@@ -273,9 +301,53 @@ public class KevoreeActivity extends android.support.v4.app.FragmentActivity imp
                 .commit();    */
     }
 
+
     @Override
     public void onTabUnselected(ActionBar.Tab tab, FragmentTransaction fragmentTransaction) {
-        //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    private Map<ActionBar.Tab, LinearLayout> views = new HashMap<ActionBar.Tab, LinearLayout>();
+
+    public ActionBar.Tab getTabById(String id) {
+        for (ActionBar.Tab t : views.keySet()) {
+            if (t.getText().equals(id)) {
+                return t;
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public void addToGroup(String groupKey, View view) {
+        ActionBar.Tab idTab = getTabById(groupKey);
+        if (idTab == null) {
+            idTab = getSupportActionBar().newTab();
+            idTab.setText(groupKey);
+            idTab.setTabListener(this);
+            getSupportActionBar().addTab(idTab);
+            LinearLayout tabLayout = new LinearLayout(this);
+            idTab.setCustomView(tabLayout);
+            views.put(idTab, tabLayout);
+            Log.i("KevoreeBoot","Add"+groupKey+"-"+idTab+"-"+view);
+        }
+        views.get(idTab).addView(view);
+    }
+
+    @Override
+    public void removeView(View view) {
+
+        for (ActionBar.Tab idTab : views.keySet()) {
+            if (idTab != null) {
+                LinearLayout l = views.get(idTab);
+                l.removeView(view);
+                if (l.getChildCount() == 0) {
+                    getSupportActionBar().removeTab(idTab);
+                    views.remove(idTab);
+                }
+            }
+        }
+
+
     }
 
     private class TextOutputStream extends OutputStream {
