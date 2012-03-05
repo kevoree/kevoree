@@ -24,6 +24,7 @@ import android.os.Environment;
 import android.os.IBinder;
 import android.util.Log;
 import android.widget.TabHost;
+import org.kevoree.platform.android.ui.KevoreeAndroidUIScreen;
 
 import java.io.File;
 import java.lang.reflect.Method;
@@ -72,8 +73,8 @@ public class KevoreeService extends Service {
                 try {
                     Class bootClazz = tkcl.getClusterKCL().loadClass("org.kevoree.platform.android.core.KevoreeAndroidBootStrap");
                     bootObj = bootClazz.newInstance();
-                    Method startM = bootClazz.getMethod("start",Activity.class, android.content.Context.class, ClassLoader.class, TabHost.class, String.class);
-                    startM.invoke(bootObj,KevoreeActivity.singleton,getBaseContext(),tkcl.getClusterKCL(),null,KevoreeActivity.nodeName);
+                    Method startM = bootClazz.getMethod("start",Activity.class, android.content.Context.class, ClassLoader.class, KevoreeAndroidUIScreen.class, String.class);
+                    startM.invoke(bootObj,KevoreeActivity.singleton,getBaseContext(),tkcl.getClusterKCL(),KevoreeActivity.singleton,KevoreeActivity.nodeName);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -149,7 +150,7 @@ public class KevoreeService extends Service {
 
             // Prepare arguments for the method
             NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-            Notification notification = new Notification(R.drawable.icon, getString(R.string.app_name), System.currentTimeMillis());
+            Notification notification = new Notification(R.drawable.kicon, getString(R.string.app_name), System.currentTimeMillis());
             PendingIntent contentIntent = PendingIntent.getActivity(getApplicationContext(), 0, new Intent(), 0);
             notification.setLatestEventInfo(getApplicationContext(), getString(R.string.app_name), getString(R.string.notification_description), contentIntent);
             Object[] startForegroundMethodArgs = new Object[]{Integer.valueOf(ART2SERVICE_NOTIFICATION_ID), notification};

@@ -40,13 +40,13 @@ class KevoreeAndroidBootStrap {
   var started = false
   var coreBean: KevoreeCoreBean = null;
 
-  def start(act: Activity, ctx: android.content.Context, clusterCL: ClassLoader, tabs: TabHost, nodeName: String) {
+  def start(act: Activity, ctx: android.content.Context, clusterCL: ClassLoader, kui: org.kevoree.platform.android.ui.KevoreeAndroidUIScreen, nodeName: String) {
     if (started) {
       return;
     }
 
     //Build UI PROXY
-    val uiService = new KevoreeActivityAndroidService(act, tabs)
+    val uiService = new KevoreeActivityAndroidService(act, kui)
     org.kevoree.android.framework.helper.UIServiceHandler.setUIService(uiService)
 
     try {
