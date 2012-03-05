@@ -20,16 +20,7 @@
               android:layout_height="fill_parent"
               android:orientation="vertical"
               android:padding="20dip">
-    <TextView
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="20dp"
-            android:text="Hi"/>
-    <TextView
-            android:id="@+id/text"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"/>
-    <TableLayout android:id="@+id/Table"
+    <TableLayout android:id="@+id/kadmin"
                  android:layout_width="fill_parent"
                  android:layout_height="fill_parent"
                  android:stretchColumns="0,1,2,3,4"
@@ -39,6 +30,8 @@
             <Button android:id="@+id/StartKevoree" android:text="StartKevoree"/>
             <Button android:id="@+id/StopKevoree" android:text="StopKevoree"/>
         </TableRow>
+
+
     </TableLayout>
 </LinearLayout>
 
