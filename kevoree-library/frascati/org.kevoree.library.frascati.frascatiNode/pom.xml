@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.kevoree.library.frascati</groupId>
     <artifactId>org.kevoree.library.frascati.frascatiNode</artifactId>
-    <packaging>bundle</packaging>
+   <!-- <packaging>bundle</packaging> -->
     <name>Kevoree :: Library :: Frascati :: FrascatiNode</name>
     <version>1.6.0-BETA3</version>
 
@@ -17,6 +17,15 @@
 
     <properties>
         <frascati.version>1.5-SNAPSHOT</frascati.version>
+        <kevoree.include>
+            org.eclipse.*:*,
+            org.objectweb.*:*,
+            org.ow2.*:*,
+            org.kevoree.*:*,
+            org.oasis-open.*:*,
+            com.google.*:*,
+            aopalliance:*
+        </kevoree.include>
     </properties>
 
     <dependencies>
@@ -29,7 +38,6 @@
             <groupId>org.kevoree.library.javase</groupId>
             <artifactId>org.kevoree.library.javase.javaseNode</artifactId>
             <version>${kevoree.version}</version>
-            <type>bundle</type>
         </dependency>
         <dependency>
             <groupId>org.ow2.frascati</groupId>
@@ -37,122 +45,6 @@
             <version>${frascati.version}</version>
         </dependency>
     </dependencies>
-
-    <build>
-        <plugins>
-            <plugin>
-                <artifactId>maven-dependency-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <phase>generate-resources</phase>
-                        <goals>
-                            <goal>copy-dependencies</goal>
-                        </goals>
-                        <configuration>
-                            <excludeGroupIds>
-                                org.codehaus.woodstox,org.codehaus.plexus,org.apache.maven,org.kevoree,org.kevoree.tools,org.scala-lang,org.sonatype.aether,org.slf4j,org.jboss.netty,com.ning,org.kevoree.extra
-                            </excludeGroupIds>
-                            <outputDirectory>${project.build.directory}/dep/lib</outputDirectory>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.felix</groupId>
-                <artifactId>maven-bundle-plugin</artifactId>
-                <version>2.3.5</version>
-                <extensions>true</extensions>
-                <configuration>
-                    <instructions>
-                        <Include-Resource>
-                            ${project.build.directory}/dep,${project.build.directory}/generated-sources/kevoree,${basedir}/src/main/resources
-                        </Include-Resource>
-                        <!--                      <Private-Package>schemas.*,schema.*,model.*,javax.xml.*,javax.jws.soap.*,org.apache.aries.*,net.sf.cglib.*,javax.wsdl.*,javax.servlet.*,javax.resource.*,com.werken.xpath.*,com.sun.xml.fastinfoset.*,com.p6spy.*,com.sun.codemodel.*,com.sun.msv.*,com.sun.mirror.*,com.sun.org.*,com.sun.tools.xjc.*,com.sun.tools.jxc.*,com.sun.xml.*,org.kohsuke.*,org.relaxng.datatype.*,com.google.protobuf.*,org.apache.geronimo.*,com.wutka.dtd.*,org.osoa.*,org.apache.oro.*,org.apache.ws.*,org.apache.xml.*,org.eclipse.emf.*,com.ibm.wsdl.*,com.ctc.wstx.*,org.apache.velocity.*,org.codehaus.stax2.*,org.eclipse.core.*,org.eclipse.stp.sca.*,org.apache.neethi.*,com.sun.istack.*,com.sun.xml.bind.*,com.sun.xml.txw2.*,org.jboss.*,com.google.common.*,javax.mail.*,org.oasisopen.*,org.eclipse.emf.*,org.objectweb.*,juliac.generated.*,org.aopalliance.*,javax.xml.stream.*,org.apache.cxf.*,org.ow2.*</Private-Package>-->
-                        <Export-Package>org.kevoree.library.frascatiNodeTypes.*</Export-Package>
-                        <Import-Package>
-                            !org.ow2.frascati.util.*,!org.ow2.frascati.*,!org.kevoree.library.frascatiNodeTypes.*,*;resolution:=optional
-                        </Import-Package>
-                        <DynamicImport-Package>
-                            *
-                        </DynamicImport-Package>
-
-
-                        <Bundle-Classpath>aopalliance-1.0.jar,frascati-util-${frascati.version}.jar,
-                            asm-3.0.jar,
-                            ast-core-2.3.1.jar,
-                            common-2.4.0.jar,
-                            common-3.4.0.jar,
-                            commons-cli-1.1.jar,
-                            commons-collections-3.2.1.jar,
-                            commons-lang-2.4.jar,
-                            core-3.3.0.771.jar,
-                            cxf-api-2.4.0.jar,
-                            cxf-common-utilities-2.4.0.jar,
-                            cxf-rt-core-2.4.0.jar,
-                            cxf-tools-common-2.4.0.jar,
-                            cxf-tools-validator-2.4.0.jar,
-                            cxf-tools-wsdlto-core-2.4.0.jar,
-                            cxf-tools-wsdlto-databinding-jaxb-2.4.0.jar,
-                            cxf-tools-wsdlto-frontend-jaxws-2.4.0.jar,
-                            dtdparser-1.21.jar,
-                            ecore-2.4.0.jar,
-                            fraclet-annotations-3.3.jar,
-                            fractal-adl-2.3.1.jar,
-                            fractal-api-2.0.2.jar,
-                            fractal-util-1.1.2.jar,
-                            frascati-component-factory-${frascati.version}.jar,
-                            frascati-component-factory-juliac-${frascati.version}.jar,
-                            frascati-component-factory-juliac-jdt-${frascati.version}.jar,
-                            frascati-component-factory-juliac-tinfi-oo-${frascati.version}.jar,
-                            frascati-component-factory-tinfi-oo-${frascati.version}.jar,
-                            frascati-factory-tools-${frascati.version}.jar,
-                            frascati-implementation-fractal-${frascati.version}.jar,
-                            frascati-metamodel-frascati-${frascati.version}.jar,
-                            frascati-model-2.0.1.2.jar,
-                            frascati-runtime-factory-${frascati.version}.jar,
-                            frascati-sca-parser-${frascati.version}.jar,
-                            frascati-tinfi-membranes-oo-1.4.4.jar,
-                            frascati-tinfi-mixins-1.4.4.jar,
-                            frascati-tinfi-oo-1.4.4.jar,
-                            frascati-tinfi-runtime-1.4.4.jar,
-                            frascati-tinfi-runtime-api-1.4.4.jar,
-                            geronimo-javamail_1.4_spec-1.7.1.jar,
-                            guava-r07.jar,
-                            jaxb-impl-2.1.13.jar,
-                            jaxb-xjc-2.1.13.jar,
-                            julia-asm-2.5.2.jar,
-                            juliac-core-2.4.jar,
-                            juliac-jdt-2.4.jar,
-                            juliac-oo-2.4.jar,
-                            juliac-runtime-2.4.jar,
-                            julia-mixins-2.5.2.jar,
-                            julia-runtime-2.5.2.jar,
-                            monolog-1.8.jar,
-                            monolog-api-1.8.jar,
-                            neethi-3.0.0.jar,
-                            oro-2.0.8.jar,
-                            osoa-java-api-2.0.1.2.jar,
-                            runtime-3.4.0.jar,
-                            sca-caa-apis-1.1-CD04.jar,
-                            sca-model-2.0.1.2.jar,
-                            sca-model-introspection-2.0.1.2.jar,
-                            stax2-api-3.0.2.jar,
-                            stax-api-1.0-2.jar,
-                            task-deployment-2.3.1.jar,
-                            task-framework-2.3.1.jar,
-                            velocity-1.6.4.jar,
-                            woodstox-core-asl-4.1.1.jar,
-                            wsdl4j-1.6.2.jar,
-                            xmi-2.4.0.jar,
-                            xml-resolver-1.2.jar,
-                            xmlschema-core-2.0.jar,.,frascati-assembly-factory-${frascati.version}.jar
-                        </Bundle-Classpath>
-                    </instructions>
-                </configuration>
-            </plugin>
-
-        </plugins>
-    </build>
 
     <repositories>
         <repository>
