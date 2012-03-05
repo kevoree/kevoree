@@ -57,17 +57,7 @@
     <favorites_list name="org.kevoree.library.frascati.root" />
   </component>
   <component name="FileEditorManager">
-    <leaf>
-      <file leaf-file-name="FrascatiRuntime.scala" pinned="false" current="true" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/../org.kevoree.library.frascati.frascatiNode/src/main/scala/org/kevoree/library/frascatiNodeTypes/FrascatiRuntime.scala">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="82" column="24" selection-start="2456" selection-end="2456" vertical-scroll-proportion="0.4187328">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-    </leaf>
+    <leaf />
   </component>
   <component name="FindManager">
     <FindUsagesManager>
@@ -156,7 +146,7 @@
   <component name="ProjectFrameBounds">
     <option name="y" value="22" />
     <option name="width" value="1920" />
-    <option name="height" value="874" />
+    <option name="height" value="1174" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="false">
     <OptionsSetting value="true" id="Add" />
@@ -197,6 +187,10 @@
             <PATH_ELEMENT>
               <option name="myItemId" value="org.kevoree.library.frascati.root" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="External Libraries" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ExternalLibrariesNode" />
             </PATH_ELEMENT>
           </PATH>
           <PATH>
@@ -255,6 +249,12 @@
             <PATH_ELEMENT>
               <option name="myItemId" value="runner" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="org.kevoree.library.frascati.root" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
             </PATH_ELEMENT>
           </PATH>
           <PATH>
@@ -446,9 +446,9 @@
     <property name="GoToClass.toSaveIncludeLibraries" value="false" />
     <property name="MemberChooser.showClasses" value="true" />
     <property name="GoToClass.includeLibraries" value="false" />
-    <property name="dynamic.classpath" value="false" />
-    <property name="options.splitter.details.proportions" value="0.2" />
     <property name="options.searchVisible" value="true" />
+    <property name="options.splitter.details.proportions" value="0.2" />
+    <property name="dynamic.classpath" value="false" />
   </component>
   <component name="RecentsManager">
     <key name="CopyClassDialog.RECENTS_KEY">
@@ -548,6 +548,24 @@
         <option name="Maven.BeforeRunTask" enabled="false" />
       </method>
     </configuration>
+    <configuration default="true" type="Applet" factoryName="Applet">
+      <module name="" />
+      <option name="MAIN_CLASS_NAME" />
+      <option name="HTML_FILE_NAME" />
+      <option name="HTML_USED" value="false" />
+      <option name="WIDTH" value="400" />
+      <option name="HEIGHT" value="300" />
+      <option name="POLICY_FILE" value="$APPLICATION_HOME_DIR$/bin/appletviewer.policy" />
+      <option name="VM_PARAMETERS" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
+      <option name="ALTERNATIVE_JRE_PATH" />
+      <method>
+        <option name="AntTarget" enabled="false" />
+        <option name="BuildArtifacts" enabled="false" />
+        <option name="Make" enabled="true" />
+        <option name="Maven.BeforeRunTask" enabled="false" />
+      </method>
+    </configuration>
     <configuration default="true" type="TestNG" factoryName="TestNG">
       <module name="" />
       <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
@@ -573,24 +591,6 @@
       <envs />
       <properties />
       <listeners />
-      <method>
-        <option name="AntTarget" enabled="false" />
-        <option name="BuildArtifacts" enabled="false" />
-        <option name="Make" enabled="true" />
-        <option name="Maven.BeforeRunTask" enabled="false" />
-      </method>
-    </configuration>
-    <configuration default="true" type="Applet" factoryName="Applet">
-      <module name="" />
-      <option name="MAIN_CLASS_NAME" />
-      <option name="HTML_FILE_NAME" />
-      <option name="HTML_USED" value="false" />
-      <option name="WIDTH" value="400" />
-      <option name="HEIGHT" value="300" />
-      <option name="POLICY_FILE" value="$APPLICATION_HOME_DIR$/bin/appletviewer.policy" />
-      <option name="VM_PARAMETERS" />
-      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
-      <option name="ALTERNATIVE_JRE_PATH" />
       <method>
         <option name="AntTarget" enabled="false" />
         <option name="BuildArtifacts" enabled="false" />
@@ -678,11 +678,12 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="0" y="22" width="1920" height="874" extended-state="0" />
-    <editor active="true" />
+    <frame x="0" y="22" width="1920" height="1174" extended-state="0" />
+    <editor active="false" />
     <layout>
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
@@ -693,14 +694,13 @@
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Gradle" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="true" content_ui="tabs" />
-      <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.25267094" sideWeight="0.55776894" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.19070514" sideWeight="0.55840456" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.2451923" sideWeight="0.55776894" order="0" side_tool="false" content_ui="combo" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4422311" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.28418803" sideWeight="0.55840456" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.44159544" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="ResolveWindow" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
     </layout>
@@ -764,112 +764,82 @@
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/../org.kevoree.library.frascati.mavenplugin/src/main/scala/org/kevoree/library/frascati/mavenplugin/CompositeParser.scala">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="18" column="7" selection-start="451" selection-end="451" vertical-scroll-proportion="-2.5636723">
-          <folding />
-        </state>
+        <state line="18" column="7" selection-start="451" selection-end="451" vertical-scroll-proportion="-2.5636723" />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/../org.kevoree.library.frascati.mavenplugin/src/main/scala/org/kevoree/library/frascati/mavenplugin/Tester.scala">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="17" column="71" selection-start="616" selection-end="616" vertical-scroll-proportion="0.3188549">
-          <folding />
-        </state>
+        <state line="17" column="71" selection-start="616" selection-end="616" vertical-scroll-proportion="0.3188549" />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/pom.xml">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="39" column="39" selection-start="1451" selection-end="1451" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
+        <state line="39" column="39" selection-start="1451" selection-end="1451" vertical-scroll-proportion="0.0" />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/../org.kevoree.library.frascati.runner/src/main/resources/fbootstrap.kev">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="22" column="107" selection-start="6047" selection-end="6047" vertical-scroll-proportion="0.13243243">
-          <folding />
-        </state>
+        <state line="22" column="107" selection-start="6047" selection-end="6047" vertical-scroll-proportion="0.13243243" />
       </provider>
     </entry>
     <entry file="jar://$MAVEN_REPOSITORY$/aopalliance/aopalliance/1.0/aopalliance-1.0.jar!/META-INF/MANIFEST.MF">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
+        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/../org.kevoree.library.frascati.frascatiNode/target/generated-sources/kevoree/KEV-INF/lib.kev">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="15" column="35" selection-start="4732" selection-end="4732" vertical-scroll-proportion="0.5246548">
-          <folding />
-        </state>
+        <state line="15" column="35" selection-start="4732" selection-end="4732" vertical-scroll-proportion="0.5246548" />
       </provider>
     </entry>
     <entry file="jar://$MAVEN_REPOSITORY$/org/objectweb/fractal/juliac/juliac-runtime/2.4/juliac-runtime-2.4.jar!/org/objectweb/fractal/juliac/runtime/JuliacBootstrapComponentImpl.class">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="39" column="0" selection-start="2891" selection-end="2892" vertical-scroll-proportion="0.67052025">
-          <folding />
-        </state>
+        <state line="39" column="0" selection-start="2891" selection-end="2892" vertical-scroll-proportion="0.67052025" />
       </provider>
     </entry>
     <entry file="jar://$MAVEN_REPOSITORY$/org/ow2/frascati/frascati-component-factory/1.5-SNAPSHOT/frascati-component-factory-1.5-SNAPSHOT.jar!/org/ow2/frascati/component/factory/impl/ComponentFactoryImpl.class">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="57" column="0" selection-start="4794" selection-end="4794" vertical-scroll-proportion="0.74277455">
-          <folding />
-        </state>
+        <state line="57" column="0" selection-start="4794" selection-end="4794" vertical-scroll-proportion="0.74277455" />
       </provider>
     </entry>
     <entry file="jar://$MAVEN_REPOSITORY$/org/ow2/frascati/frascati-assembly-factory/1.5-SNAPSHOT/frascati-assembly-factory-1.5-SNAPSHOT.jar!/org/ow2/frascati/assembly/factory/api/CompositeManagerInterceptorSCALCb56bb98SCACCIntent.class">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="44" column="0" selection-start="3311" selection-end="3311" vertical-scroll-proportion="0.74277455">
-          <folding />
-        </state>
+        <state line="44" column="0" selection-start="3311" selection-end="3311" vertical-scroll-proportion="0.74277455" />
       </provider>
     </entry>
     <entry file="jar://$MAVEN_REPOSITORY$/org/ow2/frascati/tinfi/frascati-tinfi-runtime/1.4.4/frascati-tinfi-runtime-1.4.4.jar!/org/ow2/frascati/tinfi/control/content/scope/AbstractScopeManager.class">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="34" column="0" selection-start="2696" selection-end="2697" vertical-scroll-proportion="0.74277455">
-          <folding />
-        </state>
+        <state line="34" column="0" selection-start="2696" selection-end="2697" vertical-scroll-proportion="0.74277455" />
       </provider>
     </entry>
     <entry file="jar://$MAVEN_REPOSITORY$/org/ow2/frascati/frascati-assembly-factory/1.5-SNAPSHOT/frascati-assembly-factory-1.5-SNAPSHOT.jar!/org/ow2/frascati/FraSCAti.class">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="62" column="0" selection-start="5125" selection-end="5125" vertical-scroll-proportion="0.74277455">
-          <folding />
-        </state>
+        <state line="62" column="0" selection-start="5125" selection-end="5125" vertical-scroll-proportion="0.74277455" />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/../org.kevoree.library.frascati.frascatiNode/pom.xml">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="27" column="37" selection-start="1115" selection-end="1115" vertical-scroll-proportion="-0.40203562">
-          <folding />
-        </state>
+        <state line="27" column="37" selection-start="1115" selection-end="1115" vertical-scroll-proportion="-0.40203562" />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/../org.kevoree.library.frascati.frascatiNode/src/main/java/org/kevoree/library/frascatiNodeTypes/FrascatiNode.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="23" column="25" selection-start="686" selection-end="698" vertical-scroll-proportion="-0.9">
-          <folding />
-        </state>
+        <state line="23" column="25" selection-start="686" selection-end="698" vertical-scroll-proportion="-0.9" />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/../org.kevoree.library.frascati.runner/pom.xml">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="21" column="24" selection-start="799" selection-end="966" vertical-scroll-proportion="1.0152671">
-          <folding />
-        </state>
+        <state line="21" column="24" selection-start="799" selection-end="966" vertical-scroll-proportion="1.0152671" />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/../org.kevoree.library.frascati.runner/src/main/java/org/kevoree/runner/FrascatiRunner.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="4" column="76" selection-start="82" selection-end="82" vertical-scroll-proportion="0.2">
-          <folding />
-        </state>
+        <state line="4" column="76" selection-start="82" selection-end="82" vertical-scroll-proportion="0.2" />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/../org.kevoree.library.frascati.frascatiNode/src/main/scala/org/kevoree/library/frascatiNodeTypes/FrascatiRuntime.scala">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="82" column="24" selection-start="2456" selection-end="2456" vertical-scroll-proportion="0.4187328">
+        <state line="82" column="24" selection-start="2456" selection-end="2456" vertical-scroll-proportion="0.026647966">
           <folding />
         </state>
       </provider>
