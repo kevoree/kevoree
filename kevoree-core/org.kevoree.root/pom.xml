@@ -136,6 +136,10 @@
             <id>kevoree-snapshots</id>
             <url>http://maven.kevoree.org/snapshots</url>
         </repository>
+        <repository>
+            <id>oss</id>
+            <url>https://oss.sonatype.org/content/groups/public</url>
+        </repository>
     </repositories>
 
     <pluginRepositories>
@@ -196,5 +200,6 @@
             </build>
         </profile>
     </profiles>
+
 
 </project>
