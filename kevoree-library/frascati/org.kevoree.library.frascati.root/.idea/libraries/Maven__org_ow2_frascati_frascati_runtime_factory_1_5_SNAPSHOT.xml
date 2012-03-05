@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Maven: org.ow2.frascati:frascati-runtime-factory:1.5-SNAPSHOT">
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/org/ow2/frascati/frascati-runtime-factory/1.5-SNAPSHOT/frascati-runtime-factory-1.5-SNAPSHOT.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$MAVEN_REPOSITORY$/org/ow2/frascati/frascati-runtime-factory/1.5-SNAPSHOT/frascati-runtime-factory-1.5-SNAPSHOT-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$MAVEN_REPOSITORY$/org/ow2/frascati/frascati-runtime-factory/1.5-SNAPSHOT/frascati-runtime-factory-1.5-SNAPSHOT-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

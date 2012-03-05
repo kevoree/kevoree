@@ -1,0 +1,72 @@
+<kevoree:ContainerRoot xsi:type="kevoree:ContainerRoot" xmlns:xml="http://www.omg.org/XMI" xmi:version="2.0" xmlns:xsi="http://wwww.w3.org/2001/XMLSchema-instance" xmlns:kevoree="http://kevoree/1.0">
+ <nodes typeDefinition="//@typeDefinitions.0" metaData="x=183,y=209" name="node0" xsi:type="kevoree:ContainerNode"></nodes>
+ <typeDefinitions managedPrimitiveTypes="//@adaptationPrimitiveTypes.0 //@adaptationPrimitiveTypes.1 //@adaptationPrimitiveTypes.2 //@adaptationPrimitiveTypes.3 //@adaptationPrimitiveTypes.4 //@adaptationPrimitiveTypes.5 //@adaptationPrimitiveTypes.6 //@adaptationPrimitiveTypes.7 //@adaptationPrimitiveTypes.8 //@adaptationPrimitiveTypes.9 //@adaptationPrimitiveTypes.10 //@adaptationPrimitiveTypes.11 //@adaptationPrimitiveTypes.12 //@adaptationPrimitiveTypes.13 //@adaptationPrimitiveTypes.14 //@adaptationPrimitiveTypes.15 //@adaptationPrimitiveTypes.16 //@adaptationPrimitiveTypes.17 //@adaptationPrimitiveTypes.18 //@adaptationPrimitiveTypes.19 //@adaptationPrimitiveTypes.20" superTypes="//@typeDefinitions.1" deployUnits="//@deployUnits.0" stopMethod="stopNode" startMethod="startNode" bean="org.kevoree.library.frascatiNodeTypes.FrascatiNode" factoryBean="org.kevoree.library.frascatiNodeTypes.FrascatiNodeFactory" name="FrascatiNode" xsi:type="kevoree:NodeType"></typeDefinitions>
+ <typeDefinitions managedPrimitiveTypes="//@adaptationPrimitiveTypes.0 //@adaptationPrimitiveTypes.1 //@adaptationPrimitiveTypes.2 //@adaptationPrimitiveTypes.3 //@adaptationPrimitiveTypes.4 //@adaptationPrimitiveTypes.5 //@adaptationPrimitiveTypes.6 //@adaptationPrimitiveTypes.7 //@adaptationPrimitiveTypes.8 //@adaptationPrimitiveTypes.9 //@adaptationPrimitiveTypes.10 //@adaptationPrimitiveTypes.11 //@adaptationPrimitiveTypes.12 //@adaptationPrimitiveTypes.13 //@adaptationPrimitiveTypes.14 //@adaptationPrimitiveTypes.15 //@adaptationPrimitiveTypes.16 //@adaptationPrimitiveTypes.17 //@adaptationPrimitiveTypes.18 //@adaptationPrimitiveTypes.19 //@adaptationPrimitiveTypes.20" deployUnits="//@deployUnits.1" stopMethod="stopNode" startMethod="startNode" bean="org.kevoree.library.defaultNodeTypes.JavaSENode" factoryBean="org.kevoree.library.defaultNodeTypes.JavaSENodeFactory" name="JavaSENode" xsi:type="kevoree:NodeType"></typeDefinitions>
+ <repositories url="http://maven.kevoree.org/archiva/repository/release/" xsi:type="kevoree:Repository"></repositories>
+ <repositories url="https://frascati-repo.inria.fr/nexus/content/groups/public" xsi:type="kevoree:Repository"></repositories>
+ <repositories url="http://maven.kevoree.org/release" xsi:type="kevoree:Repository"></repositories>
+ <repositories url="http://maven.kevoree.org/snapshots" xsi:type="kevoree:Repository"></repositories>
+ <repositories url="http://repo1.maven.org/maven2" xsi:type="kevoree:Repository"></repositories>
+ <libraries subTypes="//@typeDefinitions.0 //@typeDefinitions.1" name="JavaSE" xsi:type="kevoree:TypeLibrary"></libraries>
+ <libraries subTypes="//@typeDefinitions.0" name="Frascati" xsi:type="kevoree:TypeLibrary"></libraries>
+ <deployUnits targetNodeType="//@typeDefinitions.1" requiredLibs="//@deployUnits.1 //@deployUnits.2 //@deployUnits.3 //@deployUnits.4 //@deployUnits.5 //@deployUnits.6 //@deployUnits.7 //@deployUnits.8 //@deployUnits.9 //@deployUnits.10 //@deployUnits.11 //@deployUnits.12 //@deployUnits.13 //@deployUnits.14 //@deployUnits.15 //@deployUnits.16 //@deployUnits.17 //@deployUnits.18 //@deployUnits.19 //@deployUnits.20 //@deployUnits.21 //@deployUnits.22 //@deployUnits.23 //@deployUnits.24 //@deployUnits.25 //@deployUnits.26 //@deployUnits.27 //@deployUnits.28 //@deployUnits.29 //@deployUnits.30 //@deployUnits.31 //@deployUnits.32 //@deployUnits.33 //@deployUnits.34 //@deployUnits.35 //@deployUnits.36 //@deployUnits.37 //@deployUnits.38" type="jar" hashcode="201203051051813" version="1.6.0-BETA3" unitName="org.kevoree.library.frascati.frascatiNode" groupName="org.kevoree.library.frascati" xsi:type="kevoree:DeployUnit"></deployUnits>
+ <deployUnits targetNodeType="//@typeDefinitions.1" type="jar" hashcode="201203011736461" version="1.6.0-BETA3" unitName="org.kevoree.library.javase.javaseNode" groupName="org.kevoree.library.javase" xsi:type="kevoree:DeployUnit"></deployUnits>
+ <deployUnits targetNodeType="//@typeDefinitions.1" type="jar" version="1.6.0-BETA3" unitName="org.kevoree.tools.javase.framework" groupName="org.kevoree.tools" xsi:type="kevoree:DeployUnit"></deployUnits>
+ <deployUnits targetNodeType="//@typeDefinitions.1" type="jar" version="1.5-SNAPSHOT" unitName="frascati-runtime-factory" groupName="org.ow2.frascati" xsi:type="kevoree:DeployUnit"></deployUnits>
+ <deployUnits targetNodeType="//@typeDefinitions.1" type="jar" version="1.5-SNAPSHOT" unitName="frascati-assembly-factory" groupName="org.ow2.frascati" xsi:type="kevoree:DeployUnit"></deployUnits>
+ <deployUnits targetNodeType="//@typeDefinitions.1" type="jar" version="1.5-SNAPSHOT" unitName="frascati-sca-parser" groupName="org.ow2.frascati" xsi:type="kevoree:DeployUnit"></deployUnits>
+ <deployUnits targetNodeType="//@typeDefinitions.1" type="jar" version="1.5-SNAPSHOT" unitName="frascati-util" groupName="org.ow2.frascati" xsi:type="kevoree:DeployUnit"></deployUnits>
+ <deployUnits targetNodeType="//@typeDefinitions.1" type="jar" version="2.0.1.3" unitName="osoa-java-api" groupName="org.ow2.frascati.model" xsi:type="kevoree:DeployUnit"></deployUnits>
+ <deployUnits targetNodeType="//@typeDefinitions.1" type="jar" version="2.0.2" unitName="fractal-api" groupName="org.objectweb.fractal" xsi:type="kevoree:DeployUnit"></deployUnits>
+ <deployUnits targetNodeType="//@typeDefinitions.1" type="jar" version="1.4.4" unitName="frascati-tinfi-membranes-oo" groupName="org.ow2.frascati.tinfi" xsi:type="kevoree:DeployUnit"></deployUnits>
+ <deployUnits targetNodeType="//@typeDefinitions.1" type="jar" version="2.0.1.3" unitName="sca-model-introspection" groupName="org.ow2.frascati.model" xsi:type="kevoree:DeployUnit"></deployUnits>
+ <deployUnits targetNodeType="//@typeDefinitions.1" type="jar" version="2.0.1.3" unitName="sca-model" groupName="org.ow2.frascati.model" xsi:type="kevoree:DeployUnit"></deployUnits>
+ <deployUnits targetNodeType="//@typeDefinitions.1" type="jar" version="2.4.0" unitName="ecore" groupName="org.eclipse.emf" xsi:type="kevoree:DeployUnit"></deployUnits>
+ <deployUnits targetNodeType="//@typeDefinitions.1" type="jar" version="3.4.0" unitName="runtime" groupName="org.eclipse.core" xsi:type="kevoree:DeployUnit"></deployUnits>
+ <deployUnits targetNodeType="//@typeDefinitions.1" type="jar" version="3.4.0" unitName="common" groupName="org.eclipse.equinox" xsi:type="kevoree:DeployUnit"></deployUnits>
+ <deployUnits targetNodeType="//@typeDefinitions.1" type="jar" version="2.4.0" unitName="xmi" groupName="org.eclipse.emf.ecore" xsi:type="kevoree:DeployUnit"></deployUnits>
+ <deployUnits targetNodeType="//@typeDefinitions.1" type="jar" version="2.4.0" unitName="common" groupName="org.eclipse.emf" xsi:type="kevoree:DeployUnit"></deployUnits>
+ <deployUnits targetNodeType="//@typeDefinitions.1" type="jar" version="1.5-SNAPSHOT" unitName="frascati-component-factory-tinfi-oo" groupName="org.ow2.frascati" xsi:type="kevoree:DeployUnit"></deployUnits>
+ <deployUnits targetNodeType="//@typeDefinitions.1" type="jar" version="1.5-SNAPSHOT" unitName="frascati-component-factory" groupName="org.ow2.frascati" xsi:type="kevoree:DeployUnit"></deployUnits>
+ <deployUnits targetNodeType="//@typeDefinitions.1" type="jar" version="1.5-SNAPSHOT" unitName="frascati-component-factory-juliac-jdt" groupName="org.ow2.frascati" xsi:type="kevoree:DeployUnit"></deployUnits>
+ <deployUnits targetNodeType="//@typeDefinitions.1" type="jar" version="1.5-SNAPSHOT" unitName="frascati-component-factory-juliac" groupName="org.ow2.frascati" xsi:type="kevoree:DeployUnit"></deployUnits>
+ <deployUnits targetNodeType="//@typeDefinitions.1" type="jar" version="2.4" unitName="juliac-core" groupName="org.objectweb.fractal.juliac" xsi:type="kevoree:DeployUnit"></deployUnits>
+ <deployUnits targetNodeType="//@typeDefinitions.1" type="jar" version="2.5.2" unitName="julia-runtime" groupName="org.objectweb.fractal.julia" xsi:type="kevoree:DeployUnit"></deployUnits>
+ <deployUnits targetNodeType="//@typeDefinitions.1" type="jar" version="1.8" unitName="monolog" groupName="org.objectweb.monolog" xsi:type="kevoree:DeployUnit"></deployUnits>
+ <deployUnits targetNodeType="//@typeDefinitions.1" type="jar" version="3.3" unitName="fraclet-annotations" groupName="org.objectweb.fractal.fraclet.java" xsi:type="kevoree:DeployUnit"></deployUnits>
+ <deployUnits targetNodeType="//@typeDefinitions.1" type="jar" version="2.4" unitName="juliac-jdt" groupName="org.objectweb.fractal.juliac" xsi:type="kevoree:DeployUnit"></deployUnits>
+ <deployUnits targetNodeType="//@typeDefinitions.1" type="jar" version="3.3.0.771" unitName="core" groupName="org.eclipse.jdt" xsi:type="kevoree:DeployUnit"></deployUnits>
+ <deployUnits targetNodeType="//@typeDefinitions.1" type="jar" version="1.5-SNAPSHOT" unitName="frascati-component-factory-juliac-tinfi-oo" groupName="org.ow2.frascati" xsi:type="kevoree:DeployUnit"></deployUnits>
+ <deployUnits targetNodeType="//@typeDefinitions.1" type="jar" version="1.4.4" unitName="frascati-tinfi-oo" groupName="org.ow2.frascati.tinfi" xsi:type="kevoree:DeployUnit"></deployUnits>
+ <deployUnits targetNodeType="//@typeDefinitions.1" type="jar" version="1.4.4" unitName="frascati-tinfi-runtime" groupName="org.ow2.frascati.tinfi" xsi:type="kevoree:DeployUnit"></deployUnits>
+ <deployUnits targetNodeType="//@typeDefinitions.1" type="jar" version="2.4" unitName="juliac-runtime" groupName="org.objectweb.fractal.juliac" xsi:type="kevoree:DeployUnit"></deployUnits>
+ <deployUnits targetNodeType="//@typeDefinitions.1" type="jar" version="1.4.4" unitName="frascati-tinfi-runtime-api" groupName="org.ow2.frascati.tinfi" xsi:type="kevoree:DeployUnit"></deployUnits>
+ <deployUnits targetNodeType="//@typeDefinitions.1" type="jar" version="1.0" unitName="aopalliance" groupName="aopalliance" xsi:type="kevoree:DeployUnit"></deployUnits>
+ <deployUnits targetNodeType="//@typeDefinitions.1" type="jar" version="1.1-CD04" unitName="sca-caa-apis" groupName="org.oasis-open.sca.j" xsi:type="kevoree:DeployUnit"></deployUnits>
+ <deployUnits targetNodeType="//@typeDefinitions.1" type="jar" version="2.0.1.2" unitName="osoa-java-api" groupName="org.eclipse.stp.sca.osoa.java" xsi:type="kevoree:DeployUnit"></deployUnits>
+ <deployUnits targetNodeType="//@typeDefinitions.1" type="jar" version="2.4" unitName="juliac-oo" groupName="org.objectweb.fractal.juliac" xsi:type="kevoree:DeployUnit"></deployUnits>
+ <deployUnits targetNodeType="//@typeDefinitions.1" type="jar" version="2.5.2" unitName="julia-mixins" groupName="org.objectweb.fractal.julia" xsi:type="kevoree:DeployUnit"></deployUnits>
+ <deployUnits targetNodeType="//@typeDefinitions.1" type="jar" version="1.4.4" unitName="frascati-tinfi-mixins" groupName="org.ow2.frascati.tinfi" xsi:type="kevoree:DeployUnit"></deployUnits>
+ <deployUnits targetNodeType="//@typeDefinitions.1" type="jar" version="1.6.0-BETA3" unitName="org.kevoree.tools.annotation.api" groupName="org.kevoree.tools" xsi:type="kevoree:DeployUnit"></deployUnits>
+ <adaptationPrimitiveTypes name="UpdateType" xsi:type="kevoree:AdaptationPrimitiveType"></adaptationPrimitiveTypes>
+ <adaptationPrimitiveTypes name="UpdateDeployUnit" xsi:type="kevoree:AdaptationPrimitiveType"></adaptationPrimitiveTypes>
+ <adaptationPrimitiveTypes name="AddType" xsi:type="kevoree:AdaptationPrimitiveType"></adaptationPrimitiveTypes>
+ <adaptationPrimitiveTypes name="AddDeployUnit" xsi:type="kevoree:AdaptationPrimitiveType"></adaptationPrimitiveTypes>
+ <adaptationPrimitiveTypes name="AddThirdParty" xsi:type="kevoree:AdaptationPrimitiveType"></adaptationPrimitiveTypes>
+ <adaptationPrimitiveTypes name="RemoveType" xsi:type="kevoree:AdaptationPrimitiveType"></adaptationPrimitiveTypes>
+ <adaptationPrimitiveTypes name="RemoveDeployUnit" xsi:type="kevoree:AdaptationPrimitiveType"></adaptationPrimitiveTypes>
+ <adaptationPrimitiveTypes name="UpdateInstance" xsi:type="kevoree:AdaptationPrimitiveType"></adaptationPrimitiveTypes>
+ <adaptationPrimitiveTypes name="UpdateBinding" xsi:type="kevoree:AdaptationPrimitiveType"></adaptationPrimitiveTypes>
+ <adaptationPrimitiveTypes name="UpdateDictionaryInstance" xsi:type="kevoree:AdaptationPrimitiveType"></adaptationPrimitiveTypes>
+ <adaptationPrimitiveTypes name="AddInstance" xsi:type="kevoree:AdaptationPrimitiveType"></adaptationPrimitiveTypes>
+ <adaptationPrimitiveTypes name="RemoveInstance" xsi:type="kevoree:AdaptationPrimitiveType"></adaptationPrimitiveTypes>
+ <adaptationPrimitiveTypes name="AddBinding" xsi:type="kevoree:AdaptationPrimitiveType"></adaptationPrimitiveTypes>
+ <adaptationPrimitiveTypes name="RemoveBinding" xsi:type="kevoree:AdaptationPrimitiveType"></adaptationPrimitiveTypes>
+ <adaptationPrimitiveTypes name="AddFragmentBinding" xsi:type="kevoree:AdaptationPrimitiveType"></adaptationPrimitiveTypes>
+ <adaptationPrimitiveTypes name="RemoveFragmentBinding" xsi:type="kevoree:AdaptationPrimitiveType"></adaptationPrimitiveTypes>
+ <adaptationPrimitiveTypes name="UpdateFragmentBinding" xsi:type="kevoree:AdaptationPrimitiveType"></adaptationPrimitiveTypes>
+ <adaptationPrimitiveTypes name="StartInstance" xsi:type="kevoree:AdaptationPrimitiveType"></adaptationPrimitiveTypes>
+ <adaptationPrimitiveTypes name="StopInstance" xsi:type="kevoree:AdaptationPrimitiveType"></adaptationPrimitiveTypes>
+ <adaptationPrimitiveTypes name="StartThirdParty" xsi:type="kevoree:AdaptationPrimitiveType"></adaptationPrimitiveTypes>
+ <adaptationPrimitiveTypes name="RemoveThirdParty" xsi:type="kevoree:AdaptationPrimitiveType"></adaptationPrimitiveTypes>
+</kevoree:ContainerRoot>

@@ -22,19 +22,16 @@
 
     <modules>
         <module>../org.kevoree.library.frascati.mavenplugin</module>
-       <!-- <module>../org.kevoree.library.frascati.helloworld.pojo</module> -->
+        <module>../org.kevoree.library.frascati.helloworld.pojo</module>
         <module>../org.kevoree.library.frascati.frascatiNode</module>
+
+        <module>../org.kevoree.library.frascati.runner</module>
     </modules>
 
     <dependencies>
         <dependency>
             <groupId>org.kevoree.tools</groupId>
             <artifactId>org.kevoree.tools.annotation.api</artifactId>
-            <version>${kevoree.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.kevoree.platform</groupId>
-            <artifactId>org.kevoree.platform.osgi.standalone</artifactId>
             <version>${kevoree.version}</version>
         </dependency>
     </dependencies>
