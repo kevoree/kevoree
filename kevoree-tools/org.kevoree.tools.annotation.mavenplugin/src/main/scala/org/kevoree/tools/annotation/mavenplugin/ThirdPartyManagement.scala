@@ -41,9 +41,9 @@ object ThirdPartyManagement {
     if (pomModel.getProperties.containsKey(includeProp)) {
       pomModel.getProperties.get(includeProp).toString.split(seperatorProp).foreach {
         loopProp =>
-          val loopProps = loopProp.split(groupSepProp)
+          val loopProps = loopProp.trim().split(groupSepProp)
           if (loopProps.size == 2) {
-            includeRegex = includeRegex ++ List((new Regex(loopProps(0).replace("*", ".*")), new Regex(loopProps(1).replace("*", ".*"))))
+            includeRegex = includeRegex ++ List((new Regex(loopProps(0).replace("*", ".*").trim()), new Regex(loopProps(1).replace("*", ".*").trim())))
           } else {
             log.error("Ignore include statement -> " + loopProp)
           }
@@ -56,9 +56,9 @@ object ThirdPartyManagement {
     if (pomModel.getProperties.containsKey(excludeProp)) {
       pomModel.getProperties.get(excludeProp).toString.split(seperatorProp).foreach {
         loopProp =>
-          val loopProps = loopProp.split(groupSepProp)
+          val loopProps = loopProp.trim().split(groupSepProp)
           if (loopProps.size == 2) {
-            excludeRegex = excludeRegex ++ List((new Regex(loopProps(0).replace("*", ".*")), new Regex(loopProps(1).replace("*", ".*"))))
+            excludeRegex = excludeRegex ++ List((new Regex(loopProps(0).replace("*", ".*").trim()), new Regex(loopProps(1).replace("*", ".*").trim())))
           } else {
             log.error("Ignore include statement -> " + loopProp)
           }

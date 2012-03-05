@@ -1,3 +1,29 @@
+/**
+ * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE, Version 3, 29 June 2007;
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * 	http://www.gnu.org/licenses/lgpl-3.0.txt
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+/**
+ * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE, Version 3, 29 June 2007;
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.gnu.org/licenses/lgpl-3.0.txt
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.kevoree.kcl
 
 /**
@@ -5,7 +31,7 @@ package org.kevoree.kcl
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * 	http://www.gnu.org/licenses/lgpl-3.0.txt
+ * http://www.gnu.org/licenses/lgpl-3.0.txt
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -132,6 +158,9 @@ class KevoreeJarClassLoader extends JarClassLoader {
   }
 
   override def loadClass(className: String): Class[_] = {
+
+    println("KCL LOAD "+className+"-")
+
     loadClass(className, true)
   }
 
@@ -155,8 +184,15 @@ class KevoreeJarClassLoader extends JarClassLoader {
   }
 
   override def getResource(s: String): URL = {
+    logger.debug("GetResource="+s)
     internal_getResource(s)
   }
+
+            /*
+  override def getResources(p1: String) = {
+    println("FUCKKKKKKK")
+    null
+  }       */
 
   def internal_getResource(s: String): URL = {
     if (classpathResources.asInstanceOf[KevoreeLazyJarResources].containResource(s)) {
@@ -194,7 +230,10 @@ class KevoreeJarClassLoader extends JarClassLoader {
   }
 
   override def findResources(p1: String): Enumeration[URL] = {
-    if (classpathResources.asInstanceOf[KevoreeLazyJarResources].containResource(p1)) {
+
+    logger.debug("CallFind Resources")
+
+    val selfRes = if (classpathResources.asInstanceOf[KevoreeLazyJarResources].containResource(p1)) {
       val urls = classpathResources.asInstanceOf[KevoreeLazyJarResources].getResourceURLS(p1)
       val resolvedUrl = new ArrayList[URL]
       import scala.collection.JavaConversions._
@@ -216,10 +255,46 @@ class KevoreeJarClassLoader extends JarClassLoader {
             resolvedUrl.add(u)
           }
       }
-      Collections.enumeration(resolvedUrl);
+      //Collections.enumeration(resolvedUrl);
+      resolvedUrl
     } else {
-      Collections.enumeration(new java.util.ArrayList[URL]())
+      //Collections.enumeration(new java.util.ArrayList[URL]())
+      new java.util.ArrayList[URL]()
     }
+    //Then call on all
+    import scala.collection.JavaConverters._
+
+    subClassLoaders.foreach {
+      sub =>
+        val subEnum = sub.getResources(p1)
+        while (subEnum.hasMoreElements) {
+          val subElem = subEnum.nextElement();
+          if (!selfRes.contains(subElem)) {
+            selfRes.add(subElem)
+          }
+        }
+    }
+
+    subWeakClassLoaders.foreach {
+      subOpt =>
+        if (subOpt.get.isDefined) {
+          val sub = subOpt.get.get
+          val subEnum = sub.getResources(p1)
+          while (subEnum.hasMoreElements) {
+            val subElem = subEnum.nextElement();
+            if (!selfRes.contains(subElem)) {
+              selfRes.add(subElem)
+            }
+          }
+        }
+    }
+
+    selfRes.toArray.foreach{ s =>
+      println("URLs=>"+s);
+    }
+
+
+    Collections.enumeration(selfRes)
   }
 
   def cleanJarURL(j: String) = {
@@ -261,5 +336,5 @@ class KevoreeJarClassLoader extends JarClassLoader {
     }
   }
 
-  override def toString: String = cleanJarURL(classpathResources.asInstanceOf[KevoreeLazyJarResources].getLastLoadedJar)+hashCode()
+  override def toString: String = cleanJarURL(classpathResources.asInstanceOf[KevoreeLazyJarResources].getLastLoadedJar) + hashCode()
 }
