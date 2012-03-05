@@ -27,7 +27,7 @@ case class UpdateDictionaryInstance(adapptationPrimitive: AdaptationPrimitive,fr
       var att = attr.asInstanceOf[AttributeController]
       adapptationPrimitive.getRef.asInstanceOf[Instance].getDictionary.get
     }
-    true
+    true 
   }
 
   override def undo() {

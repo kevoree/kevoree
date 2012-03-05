@@ -1,6 +1,6 @@
-package org.kevoree.library.frascatiNodeTypes
+package org.kevoree.library.frascatiNodeTypes;
 
-import scala.actors.Actor
+import scala.actors.Actor  
 import org.ow2.frascati.FraSCAti
 import org.ow2.frascati.util.FrascatiClassLoader
 import org.kevoree.api.PrimitiveCommand
@@ -19,7 +19,7 @@ import org.kevoree.kcl.KevoreeJarClassLoader
 case class ExecuteContextCommand(cmd: PrimitiveCommand)
 
 case class UndoContextCommand(cmd: PrimitiveCommand)
-
+ 
 class FrascatiRuntime extends Actor {
 
   private val logger = LoggerFactory.getLogger(this.getClass)
@@ -63,7 +63,16 @@ class FrascatiRuntime extends Actor {
 
 
               logger.info("GetResss==" + p1)
+              println(Thread.currentThread().getContextClassLoader)
+              println(classOf[FrascatiNode].getClassLoader)
+
               val res = classOf[FrascatiNode].getClassLoader.getResources(p1)
+
+              import scala.collection.JavaConversions._
+
+              println(res.size)
+              println(res.asInstanceOf[sun.misc.CompoundEnumeration[_>:Any]].size)
+              res.asInstanceOf[sun.misc.CompoundEnumeration[_>:Any]].foreach(p2=>  println((p2)))
               println("getresResult=" + res + "- ")
               res
             }

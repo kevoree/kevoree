@@ -16,9 +16,9 @@ import org.kevoreeAdaptation.AdaptationModel;
 import org.kevoreeAdaptation.AdaptationPrimitive;
 import org.ow2.frascati.FraSCAti;
 
-/**
- * @author obarais
- */
+/** 
+ * @author obarais 
+ */ 
 @Library(name = "Frascati")
 @NodeType
 public class FrascatiNode extends JavaSENode {
