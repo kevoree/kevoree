@@ -43,7 +43,7 @@ trait TypeDefinitionMerger extends Merger with DictionaryMerger with PortTypeMer
               }
             } else {
               //cleanCrossReference(found_type_definition, toMergeTypeDef)
-              logger.info("No update found for type "+toMergeTypeDef.getName)
+              logger.debug("No update found for type "+toMergeTypeDef.getName)
             }
           }
           //SIMPLE CASE ? JUST MERGE THE NEW TYPE DEFINITION
@@ -123,10 +123,10 @@ trait TypeDefinitionMerger extends Merger with DictionaryMerger with PortTypeMer
           } else {
             // set to None the dictionary of the art2instance
             kevoreeInstance.setDictionary(None)
-            logger.info("There is no dictionary type on the new type definition " + newTypeDefinition.getName)
+            logger.debug("There is no dictionary type on the new type definition " + newTypeDefinition.getName)
           }
         } else {
-          logger.info("There is no dictionary type on the current type definition " + kevoreeInstance.getName)
+          logger.debug("There is no dictionary type on the current type definition " + kevoreeInstance.getName)
         }
 
         //SPECIFIC PROCESS
