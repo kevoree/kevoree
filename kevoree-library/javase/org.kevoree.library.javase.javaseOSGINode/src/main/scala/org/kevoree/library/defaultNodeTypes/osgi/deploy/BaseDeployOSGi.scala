@@ -41,7 +41,7 @@ class BaseDeployOSGi(bundle: Bundle, nodeType : AbstractNodeType) {
       case JavaSePrimitive.AddDeployUnit => AddDeployUnitAetherCommand(p.getRef.asInstanceOf[DeployUnit],bs=nodeType.getBootStrapperService)
 
       case JavaSePrimitive.UpdateDeployUnit if (JCLHelper.isJCLManaged(p.getRef.asInstanceOf[DeployUnit])) => UpdateDeployUnit(p.getRef.asInstanceOf[DeployUnit],nodeType.getBootStrapperService)
-      case JavaSePrimitive.UpdateDeployUnit => UpdateDeployUnitAetherCommand(p.getRef.asInstanceOf[DeployUnit],nodeType.getBootStrapperService)
+      case JavaSePrimitive.UpdateDeployUnit => AddDeployUnitAetherCommand(p.getRef.asInstanceOf[DeployUnit],true,nodeType.getBootStrapperService)
 
       case JavaSePrimitive.RemoveDeployUnit if (JCLHelper.isJCLManaged(p.getRef.asInstanceOf[DeployUnit])) => RemoveDeployUnit(p.getRef.asInstanceOf[DeployUnit],nodeType.getBootStrapperService)
       case JavaSePrimitive.RemoveDeployUnit => RemoveDeployUnitCommand(p.getRef.asInstanceOf[DeployUnit],nodeType.getBootStrapperService)

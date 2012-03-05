@@ -26,7 +26,7 @@ import org.kevoree.api.PrimitiveCommand
  * Time: 16:35
  */
 
-case class AddDeployUnit(du: DeployUnit,bs : org.kevoree.api.Bootstraper) extends PrimitiveCommand {
+case class AddDeployUnit(du: DeployUnit, bs: org.kevoree.api.Bootstraper) extends PrimitiveCommand {
 
   val logger = LoggerFactory.getLogger(this.getClass)
 
@@ -42,15 +42,19 @@ case class AddDeployUnit(du: DeployUnit,bs : org.kevoree.api.Bootstraper) extend
   def execute(): Boolean = {
     try {
       if (bs.getKevoreeClassLoaderHandler.getKevoreeClassLoader(du) == null) {
-        bs.getKevoreeClassLoaderHandler.installDeployUnit(du)
-        //val arteFile: File = AetherUtil.resolveDeployUnit(du)
-        //JCLContextHandler.installDeployUnit(du, arteFile)
-        KevoreeDeployManager.bundleMapping.filter(bm => bm.ref.isInstanceOf[DeployUnit]).find(bm => CommandHelper.buildKEY(bm.ref.asInstanceOf[DeployUnit]) == CommandHelper.buildKEY(du)) match {
-          case Some(bm) =>
-          case None => KevoreeDeployManager.addMapping(KevoreeMapping(CommandHelper.buildKEY(du), du.getClass.getName, du))
+        val new_kcl = bs.getKevoreeClassLoaderHandler.installDeployUnit(du)
+        if (new_kcl != null) {
+          KevoreeDeployManager.bundleMapping.filter(bm => bm.ref.isInstanceOf[DeployUnit]).find(bm => CommandHelper.buildKEY(bm.ref.asInstanceOf[DeployUnit]) == CommandHelper.buildKEY(du)) match {
+            case Some(bm) =>
+            case None => KevoreeDeployManager.addMapping(KevoreeMapping(CommandHelper.buildKEY(du), du.getClass.getName, du))
+          }
+          true
+        } else {
+          false
         }
+      } else {
+        true
       }
-      true
     } catch {
       case _@e => logger.debug("error ", e); false
     }

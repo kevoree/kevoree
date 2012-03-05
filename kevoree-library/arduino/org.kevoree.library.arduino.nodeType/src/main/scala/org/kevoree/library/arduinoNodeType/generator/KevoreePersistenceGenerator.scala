@@ -69,36 +69,60 @@ trait KevoreePersistenceGenerator extends KevoreeCAbstractGenerator {
               }
               context b "save2Memory(" + propsCodeMap.get(att.getName).get + ");"
               context b "save2Memory(delimsEQ[0]);"
+              val rawType: String = att.getDatatype.replaceFirst("raw=", "")
 
-              RawTypeHelper.getArduinoType(att.getDatatype.replace("raw=", "")) match {
-                case "long" => {
-                  context b "{"
-                  context b "char tempBuf[12];"
-                  context b "  sprintf(tempBuf, \"%lu\", ((" + ktype.getName + " *) instances[instanceIndex])->"+att.getName+");"
-                  context b "for(int i=0;i<strlen(tempBuf);i++){save2Memory(tempBuf[i]);}"
-                  context b "}"
+              if(RawTypeHelper.isArduinoTypeArray(rawType))
+              {
+                // parsing array
+                rawType match {
+                  case _ if (rawType.contains("IntList4")) =>
+                  {
+                    context b "{"
+                    context b "char tempBuf[4];"
+                    context b "for(int j=0;j<4;j++)"
+                    context b "{"
+                    context b "memset(tempBuf,0,sizeof(tempBuf));"
+                    context b "sprintf(tempBuf, \":%d;\", ((" + ktype.getName + " *) instances[instanceIndex])->"+att.getName+"[j]);"
+                    context b "for(int i=0;i<strlen(tempBuf);i++){save2Memory(tempBuf[i]);}"
+                    context b "}"
+                    context b "}"
+                  }
 
-//                  context b " save2Memory((int)(((((" + ktype.getName + " *) instances[instanceIndex])->" + att.getName + ") >> 24) & 0xFF));"
- //                 context b " save2Memory((int)(((((" + ktype.getName + " *) instances[instanceIndex])->" + att.getName + ") >> 16) & 0xFF));"
- //                 context b " save2Memory((int)(((((" + ktype.getName + " *) instances[instanceIndex])->" + att.getName + ") >> 8) & 0xFF));"
-  //                context b " save2Memory((int)(((((" + ktype.getName + " *) instances[instanceIndex])->" + att.getName + ") & 0xFF)));"
                 }
-                case "int" => {
-                  context b "{"
-                  context b "char tempBuf[8];"
-                  context b "  sprintf(tempBuf, \"%lu\", ((" + ktype.getName + " *) instances[instanceIndex])->"+att.getName+");"
-                  context b "for(int i=0;i<strlen(tempBuf);i++){save2Memory(tempBuf[i]);}"
-                  context b "}"
-                 // context b " save2Memory((int)(((((" + ktype.getName + " *) instances[instanceIndex])->" + att.getName + ") >> 8) & 0xFF));"
-                  //context b " save2Memory((int)(((((" + ktype.getName + " *) instances[instanceIndex])->" + att.getName + ") & 0xFF)));"
-                }
-                case _ => {
-                  context b "for(int i=0;i<strlen(((" + ktype.getName + " *) instances[instanceIndex])->" + att.getName + ");i++){"
-                  context b "save2Memory(((" + ktype.getName + " *) instances[instanceIndex])->" + att.getName + "[i]);"
-                  context b "}"
-                }
+
               }
-              isFirst = false
+              else
+              {
+                RawTypeHelper.getArduinoType(rawType) match {
+                  case "long" => {
+                    context b "{"
+                    context b "char tempBuf[12];"
+                    context b "  sprintf(tempBuf, \"%lu\", ((" + ktype.getName + " *) instances[instanceIndex])->"+att.getName+");"
+                    context b "for(int i=0;i<strlen(tempBuf);i++){save2Memory(tempBuf[i]);}"
+                    context b "}"
+
+                    //                  context b " save2Memory((int)(((((" + ktype.getName + " *) instances[instanceIndex])->" + att.getName + ") >> 24) & 0xFF));"
+                    //                 context b " save2Memory((int)(((((" + ktype.getName + " *) instances[instanceIndex])->" + att.getName + ") >> 16) & 0xFF));"
+                    //                 context b " save2Memory((int)(((((" + ktype.getName + " *) instances[instanceIndex])->" + att.getName + ") >> 8) & 0xFF));"
+                    //                context b " save2Memory((int)(((((" + ktype.getName + " *) instances[instanceIndex])->" + att.getName + ") & 0xFF)));"
+                  }
+                  case "int" => {
+                    context b "{"
+                    context b "char tempBuf[8];"
+                    context b "  sprintf(tempBuf, \"%lu\", ((" + ktype.getName + " *) instances[instanceIndex])->"+att.getName+");"
+                    context b "for(int i=0;i<strlen(tempBuf);i++){save2Memory(tempBuf[i]);}"
+                    context b "}"
+                    // context b " save2Memory((int)(((((" + ktype.getName + " *) instances[instanceIndex])->" + att.getName + ") >> 8) & 0xFF));"
+                    //context b " save2Memory((int)(((((" + ktype.getName + " *) instances[instanceIndex])->" + att.getName + ") & 0xFF)));"
+                  }
+                  case _ => {
+                    context b "for(int i=0;i<strlen(((" + ktype.getName + " *) instances[instanceIndex])->" + att.getName + ");i++){"
+                    context b "save2Memory(((" + ktype.getName + " *) instances[instanceIndex])->" + att.getName + "[i]);"
+                    context b "}"
+                  }
+                }
+                isFirst = false
+              }
           }
           context b "break;"
           context b "}"

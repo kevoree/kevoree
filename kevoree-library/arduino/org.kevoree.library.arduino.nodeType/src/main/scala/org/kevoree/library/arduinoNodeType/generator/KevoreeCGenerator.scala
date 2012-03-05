@@ -39,6 +39,11 @@ class KevoreeCGenerator
       ctype => ktypes = ktypes ++ List(ctype.getRef.asInstanceOf[TypeDefinition])
     }
 
+
+
+
+    context.getGenerator.addLibrary("QueueList.h",this.getClass.getClassLoader.getResourceAsStream("arduino/library/QueueList/QueueList.h"))
+
     generateKcFrameworkHeaders(ktypes, ArduinoBoardType.getFromTypeName(boardName), pmax)
     generateKcConstMethods(ktypes);
     generateKcFramework

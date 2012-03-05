@@ -6,12 +6,12 @@
     <artifactId>org.kevoree.library.javase.root</artifactId>
     <packaging>pom</packaging>
     <name>Kevoree :: Library :: JavaSE :: Root</name>
-    <version>1.6.0-SNAPSHOT</version>
+    <version>1.6.0-BETA3</version>
 
     <parent>
         <artifactId>org.kevoree.library</artifactId>
         <groupId>org.kevoree.library</groupId>
-        <version>1.6.0-SNAPSHOT</version>
+        <version>1.6.0-BETA3</version>
         <relativePath>../../pom.xml</relativePath>
     </parent>
 
@@ -78,6 +78,14 @@
 
         <module>../org.kevoree.library.javase.esper</module>
 
+
+        <module>../org.kevoree.library.javase.webSocket</module>
+        <module>../org.kevoree.library.javase.nanohttp</module>
+
+
+        <module>../org.kevoree.library.javase.airReceiver.server</module>
+
+
     </modules>
 
 
@@ -136,11 +144,6 @@
 
     <repositories>
         <repository>
-            <id>scala-tools.org</id>
-            <name>Scala-tools Maven2 Repository</name>
-            <url>http://scala-tools.org/repo-releases</url>
-        </repository>
-        <repository>
             <id>kevoree-release</id>
             <url>http://maven.kevoree.org/release</url>
         </repository>
@@ -151,11 +154,6 @@
     </repositories>
 
     <pluginRepositories>
-        <pluginRepository>
-            <id>plugin.scala-tools.org</id>
-            <name>Plugin Scala-tools Maven2 Repository</name>
-            <url>http://scala-tools.org/repo-releases</url>
-        </pluginRepository>
         <pluginRepository>
             <id>plugin.kevoree-github</id>
             <url>http://maven.kevoree.org/release</url>

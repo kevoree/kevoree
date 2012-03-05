@@ -79,7 +79,6 @@ case class UpdateDictionary(c: Instance, nodeName: String) extends PrimitiveComm
             lastDictioanry = (g_act.groupActor !? UpdateDictionaryMessage(dictionary, c.getTypeDefinition.eContainer.asInstanceOf[ContainerRoot])).asInstanceOf[HashMap[String, AnyRef]]
             true
           }
-
           case _ => false
         }
       }
@@ -89,7 +88,7 @@ case class UpdateDictionary(c: Instance, nodeName: String) extends PrimitiveComm
 
   def undo() {
     KevoreeDeployManager.bundleMapping.find(map => map.objClassName == c.getClass.getName && map.name == c.getName) match {
-      case None => false
+      case None => //false
       case Some(mapfound) => {
         val tempHash = new HashMap[String, String]
         import scala.collection.JavaConversions._
@@ -104,15 +103,15 @@ case class UpdateDictionary(c: Instance, nodeName: String) extends PrimitiveComm
             mapfound.asInstanceOf[KevoreeMapping].ref match {
               case c_act: KevoreeComponentActivator => {
                 lastDictioanry = (c_act.componentActor !? UpdateDictionaryMessage(tempHash, c.getTypeDefinition.eContainer.asInstanceOf[ContainerRoot])).asInstanceOf[HashMap[String, AnyRef]]
-                true
+                //true
               }
               case c_act: KevoreeChannelFragmentActivator => {
                 lastDictioanry = (c_act.channelActor !? UpdateDictionaryMessage(tempHash, c.getTypeDefinition.eContainer.asInstanceOf[ContainerRoot])).asInstanceOf[HashMap[String, AnyRef]]
-                true
+                //true
               }
               case g_act: KevoreeGroupActivator => {
                 lastDictioanry = (g_act.groupActor !? UpdateDictionaryMessage(tempHash, c.getTypeDefinition.eContainer.asInstanceOf[ContainerRoot])).asInstanceOf[HashMap[String, AnyRef]]
-                true
+                //true
               }
 
               case _ => false

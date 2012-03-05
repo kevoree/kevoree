@@ -92,8 +92,14 @@ object ArduinoResourceHelper {
     paths = paths ++
       List[String](basePath + File.separator + "arduino" + File.separator + "hardware" + File.separator + "tools" +
         File.separator + "avr" + File.separator + "include")
-    paths = paths ++
-      List[String](basePath + File.separator + "arduino" + File.separator + "libraries")
+    paths = paths ++ List[String](basePath + File.separator + "arduino" + File.separator + "libraries")
+
+    //TODO BETTER CHOICE
+
+   // println(basePath + File.separator + "arduino" + File.separator + "hardware" + File.separator + "variants" + File.separator +"standard")
+    
+    paths = paths ++ List[String](basePath + File.separator + "arduino" + File.separator + "hardware" + File.separator + "arduino" + File.separator + "variants" + File.separator +"standard")
+
     paths
   }
 
@@ -138,7 +144,7 @@ object ArduinoResourceHelper {
         artifactId = artifactId + ".nix"
       }
     }
-    val arteFile = boot.resolveArtifact(artifactId, "org.kevoree.extra", "0022", repositories);
+    val arteFile = boot.resolveArtifact(artifactId, "org.kevoree.extra", "1.0", repositories);
     // unzip it on /tmp
     val f = File.createTempFile("arduino_resources", "")
     f.delete()

@@ -19,6 +19,7 @@
 package org.kevoree.kompare
 
 import org.kevoree._
+import framework.KevoreeElementHelper
 import org.kevoree.kompare.sub.AbstractKompare
 import org.kevoree.kompare.sub.InitNodeKompare
 import org.kevoree.kompare.sub.StopNodeKompare
@@ -129,33 +130,33 @@ class KevoreeKompareBean
             val stopcmd = KevoreeAdaptationFactory.eINSTANCE.createAdaptationPrimitive
             stopcmd.setPrimitiveType(getAdaptationPrimitive(JavaSePrimitive.StopInstance,
                                                              actualModel.asInstanceOf[ContainerRoot]))
-            stopcmd.setRef(adaptation.getRef)
+            stopcmd.setRef(adaptation.getRef.asInstanceOf[(Object, Object)]._1)
             currentAdaptModel.removeAdaptations(adaptation)
             currentAdaptModel.addAdaptations(stopcmd)
 
             val rcmd = KevoreeAdaptationFactory.eINSTANCE.createAdaptationPrimitive
             rcmd.setPrimitiveType(getAdaptationPrimitive(JavaSePrimitive.RemoveInstance,
                                                           actualModel.asInstanceOf[ContainerRoot]))
-            rcmd.setRef(adaptation.getRef)
+            rcmd.setRef(adaptation.getRef.asInstanceOf[(Object, Object)]._1)
             currentAdaptModel.removeAdaptations(adaptation)
             currentAdaptModel.addAdaptations(rcmd)
 
             val acmd = KevoreeAdaptationFactory.eINSTANCE.createAdaptationPrimitive
             acmd.setPrimitiveType(getAdaptationPrimitive(JavaSePrimitive.AddInstance,
                                                           actualModel.asInstanceOf[ContainerRoot]))
-            acmd.setRef(adaptation.getRef)
+            acmd.setRef(adaptation.getRef.asInstanceOf[(Object, Object)]._2)
             currentAdaptModel.addAdaptations(acmd)
 
             val uDiccmd = KevoreeAdaptationFactory.eINSTANCE.createAdaptationPrimitive
             uDiccmd.setPrimitiveType(getAdaptationPrimitive(JavaSePrimitive.UpdateDictionaryInstance,
                                                              actualModel.asInstanceOf[ContainerRoot]))
-            uDiccmd.setRef(adaptation.getRef)
+            uDiccmd.setRef(adaptation.getRef.asInstanceOf[(Object, Object)]._2)
             currentAdaptModel.addAdaptations(uDiccmd)
 
             val startcmd = KevoreeAdaptationFactory.eINSTANCE.createAdaptationPrimitive
             startcmd.setPrimitiveType(getAdaptationPrimitive(JavaSePrimitive.StartInstance,
                                                               actualModel.asInstanceOf[ContainerRoot]))
-            startcmd.setRef(adaptation.getRef)
+            startcmd.setRef(adaptation.getRef.asInstanceOf[(Object, Object)]._2)
             currentAdaptModel.addAdaptations(startcmd)
 
           }

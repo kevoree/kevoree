@@ -3,10 +3,10 @@ package org.kevoree.library.javase.webserver.components
 import scala.collection.JavaConversions._
 import org.kevoree.library.javase.webserver.{KevoreeHttpResponse, KevoreeHttpRequest}
 import java.util.HashMap
+import org.slf4j.LoggerFactory
 import cc.spray.can._
 import akka.config.Supervision._
 import HttpClient._
-import org.slf4j.LoggerFactory
 import akka.config.Supervision.SupervisorConfig
 import akka.actor.{PoisonPill, Supervisor, Actor}
 import java.io.{ByteArrayOutputStream, ByteArrayInputStream}
@@ -32,8 +32,8 @@ object Forwarder {
 
   def initialize () {
     if (alreadyInitialize == 0) {
-      id = "kevoree.rest.group.spray-service.forwarder"
-      val config = ClientConfig(clientActorId = id)
+      id = "kevoree.forwarder.spray-service.client"
+      val config = ClientConfig(id)
       // start and supervise the HttpClient actor
       supervisorRef = Supervisor(SupervisorConfig(
                                                    OneForOneStrategy(List(classOf[Exception]), 3, 100),
@@ -67,18 +67,20 @@ object Forwarder {
         }
 
       } catch {
-        case _@e => logger.warn("Error while stopping Spray Server ", e)
+        case _@e => logger.warn("Error while stopping Spray client ", e)
       }
 
 
     }
   }
 
-  def forward (urlString: String, port: Int, request: KevoreeHttpRequest, response: KevoreeHttpResponse, path: String,
-    urlPattern: String) {
+  def forward (urlString: String, port: Int, request: KevoreeHttpRequest, response: KevoreeHttpResponse, path: String,urlPattern: String) {
     var newPath = ""
     if (path != null) {
       newPath = path
+    }
+    if (newPath.startsWith("/")) {
+      newPath = newPath.substring(1)
     }
     var currentPath = ""
     if (urlPattern != "") {
@@ -87,7 +89,7 @@ object Forwarder {
         currentPath = currentPath + "/"
       }
     }
-    logger.debug("forward to {} with {} as parameter", urlString + port + "/" + newPath, request.getRawParams)
+    logger.debug("forward to {} with {} as parameter", urlString + ":" + port + "/" + newPath, request.getRawParams)
     if (request.getRawBody.size == 0) {
       forwardGET(urlString, port, request, response, newPath, currentPath)
     } else {
@@ -95,12 +97,9 @@ object Forwarder {
     }
   }
 
-  private def forwardGET (urlString: String, port: Int, request: KevoreeHttpRequest, response: KevoreeHttpResponse, path: String,
-    currentPath: String) {
-    // create a very basic HttpDialog that results in a Future[HttpResponse]
-    val dialog = HttpClient.HttpDialog(urlString, port)
-      .send(HttpRequest(method = HttpMethods.GET, uri = "/" + path + request.getRawParams,
-                         headers = convertKevoreeHTTPHeadersToSprayCanHeaders(request.getHeaders)))
+  private def forwardGET (urlString: String, port: Int, request: KevoreeHttpRequest, response: KevoreeHttpResponse, path: String, currentPath: String) {
+    val dialog = HttpClient.HttpDialog(urlString, port, id)
+      .send(HttpRequest(method = HttpMethods.GET, uri = "/" + path + request.getRawParams, headers = convertKevoreeHTTPHeadersToSprayCanHeaders(request.getHeaders)))
       .end
 
     dialog.get
@@ -112,12 +111,9 @@ object Forwarder {
   }
 
 
-  private def forwardPOST (urlString: String, port: Int, request: KevoreeHttpRequest, response: KevoreeHttpResponse,
-    path: String, urlPattern: String) {
-    // create a very basic HttpDialog that results in a Future[HttpResponse]
-    val dialog = HttpClient.HttpDialog(urlString, port)
-      .send(HttpRequest(method = HttpMethods.POST, uri = "/" + path + request.getRawParams,
-                         headers = convertKevoreeHTTPHeadersToSprayCanHeaders(request.getHeaders), body = request.getRawBody))
+  private def forwardPOST (urlString: String, port: Int, request: KevoreeHttpRequest, response: KevoreeHttpResponse, path: String, urlPattern: String) {
+    val dialog = HttpClient.HttpDialog(urlString, port, id)
+      .send(HttpRequest(method = HttpMethods.POST, uri = "/" + path + request.getRawParams, headers = convertKevoreeHTTPHeadersToSprayCanHeaders(request.getHeaders), body = request.getRawBody))
       .end
 
     dialog.get
@@ -138,21 +134,6 @@ object Forwarder {
     response.setStatus(502)
     logger.error("Unable to complete request", error)
   }
-
-  /*private def generateErrorPageHtml (exception: String): String = {
-          <html>
-            <head>
-                <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-                <meta charset="utf-8"/>
-            </head>
-            <body>
-              <p>
-                Unable to deal with the request:
-                  <br/>{exception}
-              </p>
-            </body>
-          </html>.toString()
-        }*/
 
   private def convertSprayCanHeadersToKevoreeHTTPHeaders (
     sprayHeaders: scala.List[cc.spray.can.HttpHeader] /*, currentPath : String*/): HashMap[String, String] = {

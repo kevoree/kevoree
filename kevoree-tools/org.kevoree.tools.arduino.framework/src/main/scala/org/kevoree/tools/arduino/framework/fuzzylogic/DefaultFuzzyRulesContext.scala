@@ -42,7 +42,7 @@ class DefaultFuzzyRulesContext extends FuzzyRulesContext {
   }
 
   def getParsedRules() :java.util.List[FuzzyRule] ={
-    fuzzyDSL.parseRules(rawRules.toString()).rules
+    fuzzyDSL.parseRules(getRawRules()).rules
 
   }
 

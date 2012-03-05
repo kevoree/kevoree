@@ -41,13 +41,11 @@ class MiniCloudKevoreeNodeRunner (nodeName: String, bootStrapModel: String) exte
   val deployRegex = new Regex(".*<deployRes(.*)/>.*")
   val errorRegex = new Regex(".*Error while update.*")
 
-  sealed abstract case class Result ()
+  case class DeployResult (uuid: String)
 
-  case class DeployResult (uuid: String) extends Result
+  case class BackupResult (uuid: String)
 
-  case class BackupResult (uuid: String) extends Result
-
-  case class ErrorResult () extends Result
+  case class ErrorResult ()
 
   val actor = new UpdateManagementActor(10000)
   actor.start()
@@ -69,7 +67,7 @@ class MiniCloudKevoreeNodeRunner (nodeName: String, bootStrapModel: String) exte
         if (root.isInfoEnabled) {
           debug = "INFO"
         }
-        if (root.isDebugEnabled)  {
+        if (root.isDebugEnabled) {
           debug = "DEBUG"
         }
         logger.debug("child node log level will be set to {}", debug)
@@ -112,6 +110,7 @@ class MiniCloudKevoreeNodeRunner (nodeName: String, bootStrapModel: String) exte
               logStream.close()
             }
           }
+
           private val stream: InputStream = nodePlatformProcess.getInputStream
         }
 
@@ -138,6 +137,7 @@ class MiniCloudKevoreeNodeRunner (nodeName: String, bootStrapModel: String) exte
               logStream.close()
             }
           }
+
           private val stream: InputStream = nodePlatformProcess.getErrorStream
         }
         outputStreamReader.start()
@@ -208,7 +208,15 @@ class MiniCloudKevoreeNodeRunner (nodeName: String, bootStrapModel: String) exte
       this ! STOP()
     }
 
-    def manage (res: Result) {
+    def manage (res: DeployResult) {
+      this !? res
+    }
+
+    def manage (res: BackupResult) {
+      this !? res
+    }
+
+    def manage (res: ErrorResult) {
       this !? res
     }
 

@@ -1,9 +1,7 @@
-package org.kevoree.library.javase.helloworld.${package};
+package org.kevoree.library.javase.helloworld.org.kevoree.sample.typeid;
 
 import org.kevoree.annotation.*;
-import org.kevoree.annotation.ComponentType;
-import org.kevoree.annotation.Port;
-import org.kevoree.framework.*;
+import org.kevoree.framework.AbstractComponentType;
 
 /**
  * Created by IntelliJ IDEA.
@@ -21,24 +19,24 @@ public class HelloConsumerComponent extends AbstractComponentType {
 
     @Start
     public void startComponent() {
-System.out.println("Consumer:: Start");
+        System.out.println("Consumer:: Start");
     }
 
     @Stop
     public void stopComponent() {
-System.out.println("Consumer:: Stop");
+        System.out.println("Consumer:: Stop");
     }
 
     @Update
     public void updateComponent() {
-System.out.println("Consumer:: Update");
+        System.out.println("Consumer:: Update");
     }
 
     @Port(name = "receive")
     public void consumeHello(Object o) {
         System.out.println("Consumer:: Received " + o.toString());
         if(o instanceof String) {
-           String msg = (String)o;
+            String msg = (String)o;
             System.out.println("HelloConsumer received: " + msg);
         }
     }

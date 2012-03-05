@@ -104,7 +104,7 @@ case class AddBindingCommand(c: MBinding, nodeName: String) extends PrimitiveCom
   }
 
   def undo() = {
-    RemoveBindingCommand(c, nodeName).execute
+    RemoveBindingCommand(c, nodeName).execute()
   }
 
 

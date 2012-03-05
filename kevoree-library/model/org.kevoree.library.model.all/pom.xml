@@ -6,7 +6,7 @@
     <artifactId>org.kevoree.library.model.all</artifactId>
     <packaging>jar</packaging>
     <name>Kevoree :: Library :: Model :: All</name>
-    <version>1.6.0-SNAPSHOT</version>
+    <version>1.6.0-BETA3</version>
 
     <properties>
         <kevoree.version>${project.version}</kevoree.version>
@@ -16,7 +16,7 @@
     <parent>
         <artifactId>org.kevoree.library.model.root</artifactId>
         <groupId>org.kevoree.library.model</groupId>
-        <version>1.6.0-SNAPSHOT</version>
+        <version>1.6.0-BETA3</version>
         <relativePath>../org.kevoree.library.model.root/pom.xml</relativePath>
     </parent>
 
@@ -69,11 +69,11 @@
             <artifactId>org.kevoree.library.javase.restAutoDiscovery</artifactId>
             <version>${kevoree.version}</version>
         </dependency>
-        <!--<dependency>
+        <dependency>
             <groupId>org.kevoree.library.javase</groupId>
-            <artifactId>org.kevoree.library.javase.miniCloudGroup</artifactId>
+            <artifactId>org.kevoree.library.javase.ssh</artifactId>
             <version>${kevoree.version}</version>
-        </dependency>-->
+        </dependency>
         <dependency>
             <groupId>org.kevoree.library.javase</groupId>
             <artifactId>org.kevoree.library.javase.socketChannels</artifactId>
@@ -119,6 +119,23 @@
             <artifactId>org.kevoree.library.javase.latex</artifactId>
             <version>${kevoree.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.kevoree.library.javase</groupId>
+            <artifactId>org.kevoree.library.javase.fileSystemSVN</artifactId>
+            <version>${kevoree.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.kevoree.library.javase</groupId>
+            <artifactId>org.kevoree.library.javase.nanohttp</artifactId>
+            <version>${kevoree.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.kevoree.library.javase</groupId>
+            <artifactId>org.kevoree.library.javase.airReceiver.server</artifactId>
+            <version>${kevoree.version}</version>
+        </dependency>
+        
+        
 
         <!-- WebServer -->
         <dependency>

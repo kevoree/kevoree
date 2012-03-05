@@ -17,6 +17,8 @@ import dalvik.system.DexClassLoader
 import android.content.Context
 import java.io.{BufferedOutputStream, FileOutputStream, File, InputStream}
 import org.kevoree.kcl.{KevoreeResourcesLoader, KevoreeJarClassLoader}
+import org.slf4j.LoggerFactory
+import java.lang.Class
 
 /**
  * Created by IntelliJ IDEA.
@@ -25,46 +27,73 @@ import org.kevoree.kcl.{KevoreeResourcesLoader, KevoreeJarClassLoader}
  * Time: 17:57
  */
 
-class AndroidKevoreeJarClassLoader(gkey : String,ctx: android.content.Context, parent: ClassLoader) extends KevoreeJarClassLoader {
+class AndroidKevoreeJarClassLoader(gkey: String, ctx: android.content.Context, parent: ClassLoader) extends KevoreeJarClassLoader {
+
+  val logger = LoggerFactory.getLogger(this.getClass)
+
+  private var odexPaths = List[File]()
+
+  val selfPointer = this
+
+  private class KevoreeDexClassLoader(c1:String,c2:String,c3:String,parentCL : ClassLoader) extends DexClassLoader(c1,c2,c3,parentCL) {
+
+    def internalLoad(name:String) : Class[_] = {
+      super[DexClassLoader].loadClass(name)
+    }
+
+    override def loadClass(p1: String) : Class[_] = {
+      selfPointer.loadClass(p1)
+    }
+
+  }
+
 
   /* Constructor */
-  addSpecialLoaders(new KevoreeResourcesLoader("class"){
+  addSpecialLoaders(new KevoreeResourcesLoader(".class") {
     def doLoad(key: String, stream: InputStream) {
+      //logger.debug("Ignore class => "+key)
       //NOOP
     }
   })
-  addSpecialLoaders(new KevoreeResourcesLoader("dex"){
+  addSpecialLoaders(new KevoreeResourcesLoader(".dex") {
     def doLoad(key: String, stream: InputStream) {
-      declareLocalDexClassLoader(stream,gkey+"_"+key)
+      //logger.debug("Found DEX file => "+key)
+      declareLocalDexClassLoader(stream, gkey + "_" + key)
     }
   })
   /* End Constructor */
 
-  private var subDexClassLoader: List[DexClassLoader] = List()
+  private var subDexClassLoader: List[KevoreeDexClassLoader] = List()
 
   def declareLocalDexClassLoader(dexStream: InputStream, idName: String) {
-    val cleanName = idName.replace(File.separator, "_")
-    val dexInternalStoragePath = new File(ctx.getDir("dex", Context.MODE_PRIVATE), cleanName)
+    logger.debug("Begin declare subClassLoader " + idName)
+    val cleanName = System.currentTimeMillis() + idName.replaceAll(File.separator, "_").replaceAll(":", "_")
+    val dexInternalStoragePath = new File(ctx.getDir("dex", Context.MODE_WORLD_WRITEABLE), cleanName)
+    logger.debug("File Create " + dexInternalStoragePath.getAbsolutePath)
     val dexWriter = new BufferedOutputStream(new FileOutputStream(dexInternalStoragePath))
-    val b = new Array[Byte](8 * 1014)
+    val b = new Array[Byte](2048)
     var len = 0;
-    while (dexStream.available() > 0) {
+    while (len != -1) {
       len = dexStream.read(b);
       if (len > 0) {
         dexWriter.write(b, 0, len);
       }
     }
+    dexWriter.flush()
     dexWriter.close()
-    val dexOptStoragePath = new File(ctx.getDir("odex", Context.MODE_PRIVATE), cleanName)
-    val newDexCL = new DexClassLoader(dexInternalStoragePath.getAbsolutePath, dexOptStoragePath.getAbsolutePath, null, parent)
+    val dexOptStoragePath = ctx.getDir("odex" + System.currentTimeMillis(), Context.MODE_WORLD_WRITEABLE)
+    odexPaths = odexPaths ++ List(dexOptStoragePath)
+    dexOptStoragePath.mkdirs()
+    val newDexCL = new KevoreeDexClassLoader(dexInternalStoragePath.getAbsolutePath, dexOptStoragePath.getAbsolutePath, null, parent)
     subDexClassLoader = subDexClassLoader ++ List(newDexCL)
   }
 
-  override def callSuperConcreteLoader(className: String, resolveIt: Boolean) : Class[_] = {
-    subClassLoaders.foreach {
+  override def callSuperConcreteLoader(className: String, resolveIt: Boolean): Class[_] = {
+    //logger.debug("Try to load " + className)
+    subDexClassLoader.foreach {
       subCL =>
         try {
-          return subCL.loadClass(className)
+          return subCL.internalLoad(className)
         } catch {
           case nf: ClassNotFoundException =>
         }
@@ -72,8 +101,29 @@ class AndroidKevoreeJarClassLoader(gkey : String,ctx: android.content.Context, p
     throw new ClassNotFoundException(className)
   }
 
+  override def unload() {
+    subDexClassLoader = null
+    super.unload()
+    odexPaths.foreach {
+      odexp =>
+        clearAll(odexp)
+    }
+    odexPaths = List()
+  }
 
 
-
+  def clearAll(f : File) {
+    def deleteFile(dfile: File): Unit = {
+      if (dfile.isDirectory) {
+        val subfiles = dfile.listFiles
+        if (subfiles != null)
+          subfiles.foreach {
+            f => deleteFile(f)
+          }
+      }
+      dfile.delete
+    }
+    deleteFile(f)
+  }
 
 }

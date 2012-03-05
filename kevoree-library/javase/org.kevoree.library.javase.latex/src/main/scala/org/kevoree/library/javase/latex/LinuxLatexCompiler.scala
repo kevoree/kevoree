@@ -208,9 +208,9 @@ class LinuxLatexCompiler extends LatexCompilerInterface {
 
     sealed abstract case class Result ()
 
-    case class OUTPUT (data: String) extends Result
+    case class OUTPUT (data: String)
 
-    case class ERROR (data: String) extends Result
+    case class ERROR (data: String)
 
     start()
 

@@ -51,7 +51,7 @@ case class AddFragmentBindingCommand(c: Channel, remoteNodeName: String, nodeNam
   }
 
   def undo() {
-    RemoveFragmentBindingCommand(c, remoteNodeName, nodeName).execute
+    RemoveFragmentBindingCommand(c, remoteNodeName, nodeName).execute()
   }
 
 }

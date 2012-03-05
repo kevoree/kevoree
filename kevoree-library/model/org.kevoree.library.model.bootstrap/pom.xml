@@ -6,7 +6,7 @@
     <artifactId>org.kevoree.library.model.bootstrap</artifactId>
     <packaging>jar</packaging>
     <name>Kevoree :: Library :: Model :: Bootstrap</name>
-    <version>1.6.0-SNAPSHOT</version>
+    <version>1.6.0-BETA3</version>
 
     <properties>
         <kevoree.version>${project.version}</kevoree.version>
@@ -16,7 +16,7 @@
     <parent>
         <artifactId>org.kevoree.library.model.root</artifactId>
         <groupId>org.kevoree.library.model</groupId>
-        <version>1.6.0-SNAPSHOT</version>
+        <version>1.6.0-BETA3</version>
         <relativePath>../org.kevoree.library.model.root/pom.xml</relativePath>
     </parent>
 
@@ -77,7 +77,11 @@
             <artifactId>org.kevoree.library.javase.rest</artifactId>
             <version>${kevoree.version}</version>
         </dependency>
-
+        <dependency>
+            <groupId>org.kevoree.library.javase</groupId>
+            <artifactId>org.kevoree.library.javase.nanohttp</artifactId>
+            <version>${kevoree.version}</version>
+        </dependency>
 
         <!-- Sky computing -->
         <dependency>
@@ -85,6 +89,7 @@
             <artifactId>org.kevoree.library.sky.minicloud</artifactId>
             <version>${kevoree.version}</version>
         </dependency>
+
         <dependency>
             <groupId>org.kevoree.library.sky</groupId>
             <artifactId>org.kevoree.library.sky.jails</artifactId>

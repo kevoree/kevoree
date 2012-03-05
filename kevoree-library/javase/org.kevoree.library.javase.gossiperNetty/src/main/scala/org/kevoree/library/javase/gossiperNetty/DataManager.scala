@@ -20,7 +20,7 @@ trait DataManager {
 
   def getUUIDVectorClock (uuid: UUID): VectorClock
 
-  def getUUIDVectorClocks(): java.util.Map[UUID, VectorClock]
+  def getUUIDVectorClocks: java.util.Map[UUID, VectorClock]
 
 //  def mergeClock (uid: UUID, v: VectorClock, source: String): VectorClock
 

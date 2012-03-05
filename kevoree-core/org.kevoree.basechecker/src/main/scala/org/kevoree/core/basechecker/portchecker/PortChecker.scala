@@ -15,8 +15,8 @@ package org.kevoree.core.basechecker.portchecker
 
 import org.kevoree.framework.aspects.KevoreeAspects._
 import org.kevoree.api.service.core.checker.{CheckerViolation, CheckerService}
-import org.kevoree.{ComponentInstance, ContainerRoot}
 import collection.JavaConversions._
+import org.kevoree.{ComponentInstance, ContainerRoot}
 
 /**
  * User: Erwan Daubert - erwan.daubert@gmail.com
@@ -40,14 +40,23 @@ class PortChecker extends CheckerService {
               port =>
                 if (!port.getPortTypeRef.getOptional && !port.isBind) {
                   val concreteViolation: CheckerViolation = new CheckerViolation()
-                  concreteViolation
-                    .setMessage("Required port (" + port.eContainer.asInstanceOf[ComponentInstance].getName + "." +
-                    port.getPortTypeRef.getName + ") is not bind")
+                  concreteViolation.setMessage("Required port (" + port.eContainer.asInstanceOf[ComponentInstance].getName + "." +port.getPortTypeRef.getName + ") is not bind")
                   concreteViolation.setTargetObjects(List(port.eContainer))
                   violations = violations ++ List(concreteViolation)
                 }
 
-
+                val mb = model.getMBindings.filter({
+                  mb => mb.getPort == port
+                })
+                if (mb.size > 1) {
+                  //TWICE BINDING !!!
+                  val concreteViolation: CheckerViolation = new CheckerViolation()
+                  concreteViolation.setMessage("Required port (" + port.eContainer.asInstanceOf[ComponentInstance].getName + "." +port.getPortTypeRef.getName + ") is bound multiple times !")
+                  concreteViolation.setTargetObjects(List(port.eContainer))
+                  concreteViolation.setTargetObjects(List(port))
+                  concreteViolation.setTargetObjects(List(mb))
+                  violations = violations ++ List(concreteViolation)
+                }
             }
         }
     }

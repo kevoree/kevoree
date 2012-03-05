@@ -37,31 +37,37 @@ object GetParamsParser {
     headers.find {
       h => h.name == "Content-Type"
     } match {
-      case Some(header) => {
+      case Some(header) if (header.value.startsWith("multipart/form-data;")) => {
         // manage multipart enctype form
-        if (header.value.contains("multipart/form-data; boundary=")) {
-          val params = new java.util.HashMap[String, String]()
-          val boundary = header.value.split("multipart/form-data; boundary=")(1)
-          new String(body).replaceAll("\r\n", "\n").split("--" + boundary).foreach {
-            content =>
-              if (!content.equals("") && !content.equals("--") && !content.equals("--\n")) {
-                try {
-                  val key = content.substring("Content-Disposition: form-data; name=\"".length() + 1, content
-                    .indexOf("\"", "Content-Disposition: form-data; name=\"".length() + 1))
-                  val value = content.substring(content.indexOf("\n\n") + 2, content.lastIndexOf("\n"))
-                  params.put(key, value)
-                } catch {
-                  case _@e => logger.error("unable to parser HTTP request", e)
-                }
+        val params = new java.util.HashMap[String, String]()
+        val boundary = header.value.split("multipart/form-data; boundary=")(1)
+        new String(body, "UTF-8").replaceAll("\r\n", "\n").split("--" + boundary).foreach {
+          content =>
+            if (content.startsWith("\nContent-Disposition: form-data;")) {
+              try {
+                val key = content.substring("\nContent-Disposition: form-data; name=\"".length(), content.indexOf("\"", "Content-Disposition: form-data; name=\"".length() + 1))
+
+                val value = content.substring(content.indexOf("\n\n") + 2, content.lastIndexOf("\n"))
+
+                params.put(key, value)
+              } catch {
+                case _@e => logger.error("unable to parser HTTP request", e)
               }
-          }
-          params
-        } /*else {
-          getParams("?" + new String(body))._2
-        }*/
+            } else {
+              if (content != "" || content != "--") {}
+              logger.error("Unrecognized HTTP body:\n\"{}\"", content)
+            }
+        }
+        params
+      }
+      case Some(header) if (header.value == "application/x-www-form-urlencoded") => {
+        getParams("?" + new String(body))._2
+      }
+      case Some(header) => {
+        logger.warn("The web server is currently not able to manage this kind of content-type: {}", header._2)
         new java.util.HashMap[String, String](0)
       }
-      case None => new java.util.HashMap[String, String](0)//getParams("?" + new String(body))._2
+      case None => new java.util.HashMap[String, String](0)
     }
   }
 

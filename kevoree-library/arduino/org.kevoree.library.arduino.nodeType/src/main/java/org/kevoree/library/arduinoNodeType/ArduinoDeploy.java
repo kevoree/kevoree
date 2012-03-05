@@ -68,9 +68,10 @@ public class ArduinoDeploy {
 		if (target.getKey().equals("mega2560")) {
 			cmd.add("stk500v2");
 		} else {
-			cmd.add("stk500v1");
+			cmd.add("arduino");
 		}
 
+        cmd.add("-F");
 		cmd.add("-p");
 		cmd.add(target.getMCU());
 		cmd.add("-P");

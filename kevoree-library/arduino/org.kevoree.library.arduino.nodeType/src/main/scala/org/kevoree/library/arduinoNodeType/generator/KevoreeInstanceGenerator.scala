@@ -16,29 +16,40 @@ trait KevoreeInstanceGenerator extends KevoreeCAbstractGenerator {
 
   def generateDic(td : TypeDefinition){
     //GENERATE DICTIONARY VALUES POINTERS
-        if (td.getDictionaryType.isDefined) {
-          td.getDictionaryType.get.getAttributes.foreach {
-            attribute =>
+    if (td.getDictionaryType.isDefined) {
+      td.getDictionaryType.get.getAttributes.foreach {
+        attribute =>
 
-              this match {
-                case _ if (attribute.getDatatype.startsWith("enum=")) => {
-                  val enumValues: String = attribute.getDatatype.replaceFirst("enum=", "")
-                  var maxLenght: Int = 0
-                  enumValues.split(",").foreach {
-                    value => maxLenght = scala.math.max(maxLenght, value.size)
-                  }
-                  context b "char " + attribute.getName + "[" + (maxLenght + 1) + "];"
-                }
-                case _ if (attribute.getDatatype.startsWith("raw=")) => {
-                  val rawType: String = attribute.getDatatype.replaceFirst("raw=", "")
-                  context b (RawTypeHelper.getArduinoType(rawType)+" "+attribute.getName+";")
-                }
-                case _ => {
-                  context b "char " + attribute.getName + "[MAX_UNTYPED_DICTIONARY];"
-                }
+          this match {
+            case _ if (attribute.getDatatype.startsWith("enum=")) => {
+              val enumValues: String = attribute.getDatatype.replaceFirst("enum=", "")
+              var maxLenght: Int = 0
+              enumValues.split(",").foreach {
+                value => maxLenght = scala.math.max(maxLenght, value.size)
               }
+              context b "char " + attribute.getName + "[" + (maxLenght + 1) + "];"
+            }
+            case _ if (attribute.getDatatype.startsWith("raw=")) => {
+              val rawType: String = attribute.getDatatype.replaceFirst("raw=", "")
+
+              if(RawTypeHelper.isArduinoTypeArray(rawType) ==true)
+              {
+                // is an array  type
+                context b (RawTypeHelper.getArduinoTypeArray(rawType,attribute.getName))
+              }
+              else
+              {
+                 // is a simple type
+                context b (RawTypeHelper.getArduinoType(rawType)+" "+attribute.getName+";")
+              }
+
+            }
+            case _ => {
+              context b "char " + attribute.getName + "[MAX_UNTYPED_DICTIONARY];"
+            }
           }
-        }
+      }
+    }
   }
 
 }

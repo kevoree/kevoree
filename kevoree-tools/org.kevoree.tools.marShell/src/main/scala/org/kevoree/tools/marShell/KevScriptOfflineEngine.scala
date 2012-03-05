@@ -16,7 +16,7 @@ package org.kevoree.tools.marShell
 import interpreter.KevsInterpreterContext
 import org.kevoree.ContainerRoot
 import interpreter.KevsInterpreterAspects._
-import org.kevoree.api.service.core.script.KevScriptEngineException
+import org.kevoree.api.service.core.script.{KevScriptEngine, KevScriptEngineException}
 
 
 /**
@@ -30,7 +30,6 @@ class KevScriptOfflineEngine(srcModel: ContainerRoot) extends KevScriptAbstractE
   
   def clearVariables() {
     varMap.clear();
-    this
   }
 
   def interpret(): ContainerRoot = {

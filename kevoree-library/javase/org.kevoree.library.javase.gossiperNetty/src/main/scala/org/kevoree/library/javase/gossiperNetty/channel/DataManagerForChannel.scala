@@ -53,7 +53,7 @@ class DataManagerForChannel (instance: GossiperComponent, nodeName: String)
     (this !? GetUUIDVectorClock(uuid)).asInstanceOf[VectorClock]
   }
 
-  def getUUIDVectorClocks (): java.util.Map[UUID, VectorClock] = {
+  def getUUIDVectorClocks: java.util.Map[UUID, VectorClock] = {
     (this !? GetUUIDVectorClocks()).asInstanceOf[java.util.Map[UUID, VectorClock]]
   }
 
@@ -84,7 +84,7 @@ class DataManagerForChannel (instance: GossiperComponent, nodeName: String)
         }
         case RemoveData(uuid, tuple) => garbage(uuid, tuple.asInstanceOf[(VectorClock, Message)])
         case GetUUIDVectorClock(uuid) => reply(getUUIDVectorClockFromUUID(uuid))
-        case GetUUIDVectorClocks() => reply(getAllUUIDVectorClocks())
+        case GetUUIDVectorClocks() => reply(getAllUUIDVectorClocks)
         /*case MergeClock(uuid, newClock, source) => {
           //println("clock must be merged")
           val mergedVC = localMerge(datas.get(uuid)._1._1, newClock)
@@ -147,7 +147,7 @@ class DataManagerForChannel (instance: GossiperComponent, nodeName: String)
     }
   }
 
-  private def getAllUUIDVectorClocks (): java.util.Map[UUID, VectorClock] = {
+  private def getAllUUIDVectorClocks: java.util.Map[UUID, VectorClock] = {
     val uuidVectorClocks: java.util.Map[UUID, VectorClock] = new HashMap[UUID, VectorClock]()
     datas.keySet.foreach {
       uuid: UUID =>
@@ -195,7 +195,7 @@ class DataManagerForChannel (instance: GossiperComponent, nodeName: String)
             val newClock = ClockEntry.newBuilder(toUpdate)
               .setVersion(java.lang.Math.max(toUpdate.getVersion, clockEntry.getVersion)) /*.setTimestamp(timeStamp)*/
               .build
-            enties = ((enties -- List(toUpdate)) ++ List(newClock))
+            enties = ((enties.filterNot(e => e == toUpdate)) ++ List(newClock))
           }
           case None => enties = enties ++ List(clockEntry)
         }

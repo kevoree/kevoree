@@ -18,6 +18,7 @@ import org.kevoree.ContainerRoot;
 import org.kevoree.Group;
 import org.kevoree.api.Bootstraper;
 import org.kevoree.api.service.core.handler.KevoreeModelHandlerService;
+import org.kevoree.api.service.core.handler.ModelListener;
 import org.kevoree.api.service.core.script.KevScriptEngineFactory;
 
 import java.util.HashMap;
@@ -26,10 +27,9 @@ public abstract class AbstractGroupType {
 
 	public abstract void triggerModelUpdate ();
 
-	public boolean preUpdate () {
+	public boolean triggerPreUpdate (ContainerRoot currentModel, ContainerRoot proposedModel ) {
 		return true;
 	}
-
 
 	public abstract void push (ContainerRoot model, String targetNodeName);
 
@@ -70,6 +70,7 @@ public abstract class AbstractGroupType {
 
 	/**
 	 * Allow to find the corresponding element into the model
+	 * Be careful, this method use the KevoreeModelHandlerService#getLastModel but this method is locked in some cases
 	 *
 	 * @return the group corresponding to this
 	 */
@@ -87,6 +88,9 @@ public abstract class AbstractGroupType {
     public Bootstraper getBootStrapperService(){
         return bootstrapService;
     }
+
+	    public ModelListener getModelListener(){return null;
+	    }
 
 
 }

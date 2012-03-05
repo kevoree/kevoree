@@ -9,7 +9,6 @@ import org.kevoree.android.framework.service.KevoreeAndroidService;
 import org.kevoree.annotation.*;
 import org.kevoree.framework.AbstractComponentType;
 import org.kevoree.framework.MessagePort;
-import org.osgi.framework.Bundle;
 
 import java.util.HashMap;
 
@@ -34,7 +33,7 @@ public class AFakeSimpleSwitch extends AbstractComponentType {
 
 	@Start
 	public void start () {
-		uiService = UIServiceHandler.getUIService((Bundle) this.getDictionary().get("osgi.bundle"));
+		//uiService = UIServiceHandler.getUIService((Bundle) this.getDictionary().get("osgi.bundle"));
 		LinearLayout layout = new LinearLayout(uiService.getRootActivity());
 		layout.setOrientation(LinearLayout.VERTICAL);
 

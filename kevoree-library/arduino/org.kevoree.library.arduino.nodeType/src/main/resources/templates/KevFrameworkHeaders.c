@@ -1,5 +1,5 @@
 
-     #include <QueueList/QueueList.h>
+     #include <QueueList.h>
      #include <avr/pgmspace.h> 
      #include <avr/wdt.h>
      #define UDI_C 0 
@@ -12,7 +12,7 @@
      #define KNOINLINE __attribute__((noinline))
      #define BUFFERSIZE 100
 
-     #define MAX_UNTYPED_DICTIONARY 25
+     #define MAX_UNTYPED_DICTIONARY 20
 
      int serialIndex = 0;
      char inBytes[BUFFERSIZE];

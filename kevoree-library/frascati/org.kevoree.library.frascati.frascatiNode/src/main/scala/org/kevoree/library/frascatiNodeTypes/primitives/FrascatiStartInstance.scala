@@ -19,6 +19,9 @@ case class FrascatiStartInstance(adapptationPrimitive: AdaptationPrimitive, fras
   val logger = LoggerFactory.getLogger(this.getClass)
 
   override def execute(): Boolean = {
+
+
+
     val c: Component = frascati.getCompositeManager.getComposite(adapptationPrimitive.getRef.asInstanceOf[org.kevoree.Instance].getName)
     lf = c.getFcInterface("lifecycle-controller").asInstanceOf[LifeCycleController];
     try {

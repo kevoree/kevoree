@@ -5,7 +5,7 @@ import org.kevoree.ContainerRoot;
 import org.kevoree.KevoreeFactory;
 import org.kevoree.TypeDefinition;
 import org.kevoree.annotation.*;
-import org.kevoree.annotation.NodeType;
+import org.kevoree.api.service.core.checker.CheckerViolation;
 import org.kevoree.cloner.ModelCloner;
 import org.kevoree.extra.kserial.KevoreeSharedCom;
 import org.kevoree.framework.AbstractNodeType;
@@ -48,14 +48,17 @@ public class ArduinoNode extends AbstractNodeType {
 
     public ArduinoGuiProgressBar progress = null;
     public File newdir = null;
+    private ArduinoChecker localChecker = null;
 
     protected Boolean forceUpdate = false;
-    public void setForceUpdate(Boolean f){
+
+    public void setForceUpdate(Boolean f) {
         forceUpdate = f;
     }
-    
+
     @Start
     public void startNode() {
+        localChecker = new ArduinoChecker(getNodeName());
         ArduinoResourceHelper.setBs(getBootStrapperService());
     }
 
@@ -156,9 +159,9 @@ public class ArduinoNode extends AbstractNodeType {
         }
 
         AdaptationModel kompareModel = kompare.kompare(lastVersionModel, root, targetNodeName);
-        
+
         //System.out.println(kompareModel.getAdaptationsForJ().size());
-        
+
         progress.endTask();
 
 
@@ -220,10 +223,18 @@ public class ArduinoNode extends AbstractNodeType {
                 rootModel = (ContainerRoot) ((TypeDefinition) p.getRef()).eContainer();
             }
         }
-        if (typeAdaptationFound || forceUpdate) {
-            
 
-            
+
+        if (typeAdaptationFound || forceUpdate) {
+
+            java.util.List<CheckerViolation> result = localChecker.check(rootModel);
+            if (result.size() > 0) {
+                for (CheckerViolation cv : result) {
+                    logger.error("Checker Error = " + cv.getMessage());
+                }
+                return false;
+            }
+
             KevoreeKompareBean kompare = new KevoreeKompareBean();
 
             ModelCloner cloner = new ModelCloner();
@@ -242,17 +253,16 @@ public class ArduinoNode extends AbstractNodeType {
             logger.debug("Type adaptation detected -> full firmware update needed !");
             //Step : Type Bundle preparation step
 
-           // Bundle bundle = (Bundle) this.getDictionary().get(Constants.KEVOREE_PROPERTY_OSGI_BUNDLE());
+            // Bundle bundle = (Bundle) this.getDictionary().get(Constants.KEVOREE_PROPERTY_OSGI_BUNDLE());
 
             //if (bundle != null) {
-                logger.debug("Install Type definitions");
-                TypeBundleBootstrap.bootstrapTypeBundle(model,this);
+            logger.debug("Install Type definitions");
+            TypeBundleBootstrap.bootstrapTypeBundle(model, this);
             //} else {
             //    logger.warn("No OSGi runtime available");
             //}
             //Step : Generate firmware code to output path
             KevoreeCGenerator generator = new KevoreeCGenerator();
-
 
 
             PMemory pm = PMemory.EEPROM;
@@ -271,7 +281,7 @@ public class ArduinoNode extends AbstractNodeType {
             }
 
 
-            generator.generate(model, nodeName, outputPath, getDictionary().get("boardTypeName").toString(), pm, psize,this);
+            generator.generate(model, nodeName, outputPath, getDictionary().get("boardTypeName").toString(), pm, psize, this);
 
 //STEP 3 : Deploy by commnication channel
             progress.beginTask("Prepare compilation", 40);
@@ -305,7 +315,7 @@ public class ArduinoNode extends AbstractNodeType {
                 progress.endTask();
 
                 progress.beginTask("Firmware compilation", 70);
-                arduinoCompilation.compileSketch(sketch, target, core,generator.context().getGenerator());
+                arduinoCompilation.compileSketch(sketch, target, core, generator.context().getGenerator());
                 arduinoArchive.archiveSketch(sketch, target);
                 progress.endTask();
 
@@ -352,6 +362,9 @@ public class ArduinoNode extends AbstractNodeType {
                 boardName = GuiAskForComPort.askPORT();
             }
             try {
+                ComSender.send("{ping}", boardName);
+               // Thread.sleep(500);
+
                 ComSender.send(resultScript, boardName);
             } catch (Exception e) {
 //                e.printStackTrace();

@@ -3,23 +3,22 @@ package org.kevoree.library.javase.jPaxos;
 
 import lsr.common.Configuration;
 import lsr.common.PID;
-import lsr.paxos.ReplicationException;
 import lsr.paxos.client.Client;
-import lsr.paxos.recovery.FullSSRecovery;
 import lsr.paxos.replica.Replica;
 import org.kevoree.ContainerNode;
 import org.kevoree.ContainerRoot;
 import org.kevoree.Group;
 import org.kevoree.annotation.*;
-import org.kevoree.framework.*;
+import org.kevoree.framework.AbstractGroupType;
+import org.kevoree.framework.KevoreeFragmentPropertyHelper;
+import org.kevoree.framework.KevoreePlatformHelper;
+import org.kevoree.framework.KevoreeXmiHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 import java.io.IOException;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -124,7 +123,7 @@ public class JpaxosGroup extends AbstractGroupType implements  Runnable {
     }
 
     @Override
-    public boolean preUpdate() {
+    public boolean triggerPreUpdate(ContainerRoot currentModel, ContainerRoot futureModel) {
 
         try
         {
@@ -132,7 +131,7 @@ public class JpaxosGroup extends AbstractGroupType implements  Runnable {
             client = new Client(new Configuration(processess));
 
             client.connect();
-            KevoreeJpaxosCommand command = new KevoreeJpaxosCommand(getModelService().getLastModel());
+            KevoreeJpaxosCommand command = new KevoreeJpaxosCommand(currentModel);
             byte[] request = command.toByteArray();
             /** Executing the request **/
             byte[] response = client.execute(request);

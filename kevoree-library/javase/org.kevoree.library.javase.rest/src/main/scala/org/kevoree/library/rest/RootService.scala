@@ -21,7 +21,7 @@ import akka.actor.Actor
 import cc.spray.can._
 import org.kevoree.framework.KevoreeXmiHelper
 
-class RootService(id: String, group: RestGroup) extends Actor with FileServer {
+class RootService (id: String, group: RestGroup) extends Actor with FileServer {
   val log = LoggerFactory.getLogger(getClass)
   self.id = id
 
@@ -34,22 +34,21 @@ class RootService(id: String, group: RestGroup) extends Actor with FileServer {
       responder.complete(response(group.getModel))
     }
 
-    case RequestContext(HttpRequest(HttpMethods.GET, url, _, _, _), _, responder) if(url.startsWith("/provisioning")) => {
+    case RequestContext(HttpRequest(HttpMethods.GET, url, _, _, _), _, responder) if (url.startsWith("/provisioning")) => {
       responder.complete(getResponse(url))
     }
 
-    case RequestContext(HttpRequest(HttpMethods.POST, url, _, body, _), _, responder) => {
+    case RequestContext(HttpRequest(HttpMethods.POST, url, _, body, _), _, responder) if (url.startsWith("/model/current")) => {
       try {
-         val model = KevoreeXmiHelper.loadString(new String(body))
-         new scala.actors.Actor {
-           def act() {
-             group.updateModel(model)
-           }
-         }.start()
-         responder.complete(response("<ack nodeName=\"" + group.getNodeName + "\" />"))
+        val model = KevoreeXmiHelper.loadString(new String(body))
+        if (group.updateModel(model, getParam(url, "sender"))) {
+          responder.complete(response("<ack nodeName=\"" + group.getNodeName + "\" />"))
+        } else {
+          responder.complete(response("<nack nodeName=\"" + group.getNodeName + "\" />"))
+        }
       } catch {
-        case _ @ e => {
-          log.error("Error while uploading model from group "+group.getName,e)
+        case _@e => {
+          log.error("Error while uploading model from group " + group.getName, e)
           responder.complete(HttpResponse(status = 501).withBody("Error while uploading model "))
         }
       }
@@ -63,6 +62,26 @@ class RootService(id: String, group: RestGroup) extends Actor with FileServer {
 
   val defaultHeaders = List(HttpHeader("Content-Type", "text/html"))
 
-  def response(msg: String, status: Int = 200) = HttpResponse(status, defaultHeaders, msg.getBytes("UTF-8"))
+  def response (msg: String, status: Int = 200) = HttpResponse(status, defaultHeaders, msg.getBytes("UTF-8"))
 
+  def getParam (uri: String, parameterName: String): String = {
+    val urlParts = uri.split("\\?")
+    if (urlParts.size > 1) {
+      val arrParameters = urlParts(1).split("&")
+      var value = ""
+      arrParameters.forall {
+        p =>
+          val pair = p.toString.split("=")
+          if (pair.size >= 2 && pair(0) == parameterName) {
+            value = pair(1)
+            false
+          } else {
+            true
+          }
+      }
+      value
+    } else {
+      ""
+    }
+  }
 }

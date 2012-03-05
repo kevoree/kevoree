@@ -21,7 +21,6 @@ import org.kevoree.annotation.DictionaryAttribute;
 import org.kevoree.annotation.DictionaryType;
 import org.kevoree.library.javase.webserver.*;
 import org.kevoree.library.javase.webserver.servlet.LocalServletRegistry;
-import org.osgi.framework.Bundle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -39,7 +38,6 @@ import java.io.*;
  * User: duke
  * Date: 13/12/11
  * Time: 23:05
- * To change this template use File | Settings | File Templates.
  */
 @ComponentType
 @DictionaryType({
@@ -55,7 +53,7 @@ public class WordPressPage extends AbstractPage {
 
     @Override
     public void startPage() {
-        servletRepository = new LocalServletRegistry((Bundle)this.getDictionary().get("osgi.bundle"));
+        servletRepository = new LocalServletRegistry();
         super.startPage();
         InputStream zipStream = this.getClass().getClassLoader().getResourceAsStream("wordpress-3.3-fr_FR.zip");
         if (zipStream != null) {

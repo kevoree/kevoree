@@ -1,0 +1,26 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>org.kevoree.library.frascati</groupId>
+    <artifactId>org.kevoree.library.frascati.runner</artifactId>
+   <!-- <packaging>bundle</packaging> -->
+    <name>Kevoree :: Library :: Frascati :: Runner</name>
+    <version>1.6.0-BETA3</version>
+
+    <parent>
+        <artifactId>org.kevoree.library.frascati.root</artifactId>
+        <groupId>org.kevoree.library.frascati</groupId>
+        <version>1.6.0-BETA3</version>
+        <relativePath>../org.kevoree.library.frascati.root/pom.xml</relativePath>
+    </parent>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.kevoree.platform</groupId>
+            <artifactId>org.kevoree.platform.osgi.standalone</artifactId>
+            <version>${kevoree.version}</version>
+        </dependency>
+    </dependencies>
+
+</project>

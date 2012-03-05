@@ -18,6 +18,7 @@ import org.kevoree.tools.arduino.framework.fuzzylogic.gen.utils.ArduinoException
 import org.kevoree.ComponentType
 
 
+
 /**
  * Created by jed
  * User: jedartois@gmail.com
@@ -29,16 +30,17 @@ object GeneratorHelper {
 
   def generateUpdateDictonnary(gen: ArduinoGenerator): Unit = {
 
+
     gen.getTypeModel.getDictionaryType.get.getAttributes.foreach {
       p =>
         val chaine = p.getName.split("_")
         gen.getTypeModel.asInstanceOf[ComponentType].getProvided.exists(d => d.getName == chaine(0)) match {
 
           /// INPUTS FUZZY TERMS
-          case true => gen.appendNativeStatement("parseDictionnary(0," + getPositiongetProvided(gen, chaine(0)) + "," + getPositionTerm(gen, chaine(0), chaine(1)) + "," + p.getName + ");")
+          case true => gen.appendNativeStatement("setDictionnary(0," + getPositiongetProvided(gen, chaine(0)) + "," + getPositionTerm(gen, chaine(0), chaine(1)) + "," + p.getName + ");")
 
           // OUTPUTS FUZZY TERMS
-          case false => gen.appendNativeStatement("parseDictionnary(1," + getPositiongetRequired(gen, chaine(0)) + "," + getPositionTerm(gen, chaine(0), chaine(1)) + "," + p.getName + ");")
+          case false => gen.appendNativeStatement("setDictionnary(1," + getPositiongetRequired(gen, chaine(0)) + "," + getPositionTerm(gen, chaine(0), chaine(1)) + ",&" + p.getName + ");")
         }
     }
   }
@@ -84,11 +86,11 @@ object GeneratorHelper {
     throw new ArduinoException("The term " + domain + "_" + term + " is not found  : " + gen.getTypeModel.getDictionaryType.get.getAttributes)
   }
 
-
   def generateMemberShipVariables(gen: ArduinoGenerator){
     var countDomain= 0
     var countTerm = 0
     gen.getTypeModel.asInstanceOf[ComponentType].getProvided.foreach{ g =>
+      countTerm = 0
       gen.getTypeModel.getDictionaryType.get.getAttributes.foreach{a =>
         if(a.getName.split("_")(0) == g.getName)
         {
@@ -101,6 +103,7 @@ object GeneratorHelper {
     countDomain= 0
     countTerm = 0
     gen.getTypeModel.asInstanceOf[ComponentType].getRequired.foreach{ g =>
+      countTerm = 0
       gen.getTypeModel.getDictionaryType.get.getAttributes.foreach{a =>
         if(a.getName.split("_")(0) == g.getName)
         {
@@ -111,6 +114,8 @@ object GeneratorHelper {
       countDomain = countDomain +1
     }
   }
+
+
   def generateClassVariables(gen: ArduinoGenerator, nbRules: Int) {
 
     val nbInputs = gen.getTypeModel.asInstanceOf[ComponentType].getProvided.size
@@ -120,18 +125,18 @@ object GeneratorHelper {
     gen.appendNativeStatement("#define NUM_OUTPUTS " + nbOutputs)
 
 
-    gen.appendNativeStatement("float crisp_inputs[" + nbInputs + "];")
-    gen.appendNativeStatement("float crisp_outputs[" + nbInputs + "];")
+    gen.appendNativeStatement("int crisp_inputs[" + nbInputs + "];")
+    gen.appendNativeStatement("int crisp_outputs[" + nbOutputs + "];")
 
 
-    gen.appendNativeStatement("float fuzzy_outputs[" + nbOutputs + "][NB_TERMS];")
-    gen.appendNativeStatement("float fuzzy_inputs[" + nbInputs + "][NB_TERMS];")
-    gen.appendNativeStatement("float rule_crispvalue[" + nbRules + "];")
+    gen.appendNativeStatement("int fuzzy_outputs[" + nbOutputs + "][NB_TERMS];")
+    gen.appendNativeStatement("int fuzzy_inputs[" + nbInputs + "][NB_TERMS];")
+    gen.appendNativeStatement("int rule_crispvalue[" + nbRules + "];")
 
     gen.appendNativeStatement("int in_num_MemberShipFunction[" + nbInputs + "];")
-    gen.appendNativeStatement("int out_num_MemberShipFunction[" + nbInputs + "];")
-    gen.appendNativeStatement("float outMemberShipFunction[" + nbOutputs + "][PRECISION][2];")
-    gen.appendNativeStatement("float inMemberShipFunction[" + nbInputs + "][NB_TERMS][PRECISION];")
+    gen.appendNativeStatement("int out_num_MemberShipFunction[" + nbOutputs + "];")
+    gen.appendNativeStatement("int outMemberShipFunction[" + nbOutputs + "][PRECISION][2];")
+    gen.appendNativeStatement("int inMemberShipFunction[" + nbInputs + "][NB_TERMS][PRECISION];")
 
     // map global variables to local constante
     gen.appendNativeStatement("const unsigned char *num_rule_antecedent;");
@@ -143,14 +148,10 @@ object GeneratorHelper {
 
   def generateControlMethod(gen: ArduinoGenerator) {
 
-    gen.appendNativeStatement("void fire_all_rules(){control(crisp_inputs,crisp_outputs); }")
+    gen.appendNativeStatement("void fire_all_rules(){control(); }")
 
-    gen.appendNativeStatement("void control(float *crisp_inputs, float *crisp_outputs){")
-    gen.appendNativeStatement("#ifdef DEBUG")
-    gen.appendNativeStatement(" //displayRules();")
-    gen.appendNativeStatement(" //displayDomains();")
-    gen.appendNativeStatement("displayInputs();")
-    gen.appendNativeStatement("#endif")
+    gen.appendNativeStatement("void control(){")
+
     gen.appendNativeStatement("unsigned char  in_index,rule_index,out_index;")
     gen.appendNativeStatement("float   in_val;")
     gen.appendNativeStatement("for (in_index = 0;in_index < NUM_INPUTS;in_index++){fuzzify(in_index,crisp_inputs[in_index]);}")
@@ -180,7 +181,10 @@ object GeneratorHelper {
     gen.appendNativeStatement("}") // END IF
     gen.appendNativeStatement("}")//END FOR
     gen.appendNativeStatement("#ifdef DEBUG")
-    gen.appendNativeStatement("displayOutputs();")
+    gen.appendNativeStatement(" //displayRules();")
+    gen.appendNativeStatement("// displayDomains();")
+    gen.appendNativeStatement("// displayInputs();")
+    gen.appendNativeStatement("//displayOutputs();")
     gen.appendNativeStatement("#endif")
     gen.appendNativeStatement("}")
 

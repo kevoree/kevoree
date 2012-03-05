@@ -45,7 +45,6 @@ object AetherUtil {
   private val logger = LoggerFactory.getLogger(this.getClass)
 
 
-
   val newRepositorySystem: RepositorySystem = {
     val locator = new DefaultServiceLocator()
     locator.setServices(classOf[Logger], new AetherLogger) // Doesn't work to JdkAsyncHttpProvider because this class uses its own logger and not the one provided by plexus and set with this line
@@ -55,36 +54,37 @@ object AetherUtil {
     locator.getService(classOf[RepositorySystem])
   }
 
-  def resolveKevoreeArtifact(unitName:String, groupName:String,version : String) : File = {
-    if(version.endsWith("SNAPSHOT")){
-      resolveMavenArtifact(unitName,groupName,version,List("http://maven.kevoree.org/snapshots/"))
+  def resolveKevoreeArtifact(unitName: String, groupName: String, version: String): File = {
+    if (version.endsWith("SNAPSHOT")) {
+      resolveMavenArtifact(unitName, groupName, version, List("http://maven.kevoree.org/snapshots/"))
     } else {
-      resolveMavenArtifact(unitName,groupName,version,List("http://maven.kevoree.org/release/"))
+      resolveMavenArtifact(unitName, groupName, version, List("http://maven.kevoree.org/release/"))
     }
   }
 
-  def resolveMavenArtifact4J(unitName:String, groupName:String,version : String, repositoriesUrl : java.util.List[String]) : File =
-  resolveMavenArtifact(unitName, groupName,version, repositoriesUrl.toList)
+  def resolveMavenArtifact4J(unitName: String, groupName: String, version: String, repositoriesUrl: java.util.List[String]): File =
+    resolveMavenArtifact(unitName, groupName, version, repositoriesUrl.toList)
 
-  def resolveMavenArtifact(unitName:String, groupName:String,version : String, repositoriesUrl : List[String]) : File = {
+  def resolveMavenArtifact(unitName: String, groupName: String, version: String, repositoriesUrl: List[String]): File = {
     val artifact: Artifact = new DefaultArtifact(List(groupName.trim(), unitName.trim(), version.trim()).mkString(":"))
     val artifactRequest = new ArtifactRequest
     artifactRequest.setArtifact(artifact)
     val repositories: java.util.List[RemoteRepository] = new java.util.ArrayList();
-    repositoriesUrl.foreach{ repository =>
-      val repo = new RemoteRepository
-      val purl = repository.trim.replace(':', '_').replace('/', '_').replace('\\', '_')
-      repo.setId(purl)
-      repo.setUrl(repository)
-      repo.setContentType("default")
-      repositories.add(repo)
+    repositoriesUrl.foreach {
+      repository =>
+        val repo = new RemoteRepository
+        val purl = repository.trim.replace(':', '_').replace('/', '_').replace('\\', '_')
+        repo.setId(purl)
+        repo.setUrl(repository)
+        repo.setContentType("default")
+        repositories.add(repo)
     }
     artifactRequest.setRepositories(repositories)
     val artefactResult = newRepositorySystem.resolveArtifact(newRepositorySystemSession, artifactRequest)
     artefactResult.getArtifact.getFile
   }
-  
-  
+
+
   def resolveDeployUnit(du: DeployUnit): File = {
 
 
@@ -117,24 +117,34 @@ object AetherUtil {
         repositories.add(repo)
     }
 
-    artifactRequest.setRepositories(repositories)
-    val artefactResult = newRepositorySystem.resolveArtifact(newRepositorySystemSession, artifactRequest)
-    artefactResult.getArtifact.getFile
+    try {
+      artifactRequest.setRepositories(repositories)
+      val artefactResult = newRepositorySystem.resolveArtifact(newRepositorySystemSession, artifactRequest)
+      artefactResult.getArtifact.getFile
+    } catch {
+      case _@e => {
+        logger.debug("Error while resolving {}",du.getUnitName.trim(),e)
+        null
+      }
+    }
+
+
   }
 
   val newRepositorySystemSession = {
     val session = new MavenRepositorySystemSession()
     session.setUpdatePolicy(RepositoryPolicy.UPDATE_POLICY_ALWAYS)
-    session.setConfigProperty("aether.connector.ahc.provider","jdk")
+    session.setConfigProperty("aether.connector.ahc.provider", "jdk")
     //DEFAULT VALUE
     session.setLocalRepositoryManager(newRepositorySystem.newLocalRepositoryManager(new LocalRepository(System.getProperty("user.home").toString + "/.m2/repository")))
     //TRY TO FOUND MAVEN CONFIGURATION
-    val configFile =new File(System.getProperty("user.home").toString+File.separator+".m2"+File.separator+"settings.xml")
-    if(configFile.exists()){
+    val configFile = new File(System.getProperty("user.home").toString + File.separator + ".m2" + File.separator + "settings.xml")
+    if (configFile.exists()) {
       val configRoot = scala.xml.XML.loadFile(configFile)
-      configRoot.child.find(c => c.label == "localRepository").map{ localRepo =>
-        logger.info("Found localRepository value from settings.xml in user path => "+localRepo.text)
-        session.setLocalRepositoryManager(newRepositorySystem.newLocalRepositoryManager(new LocalRepository(localRepo.text)))
+      configRoot.child.find(c => c.label == "localRepository").map {
+        localRepo =>
+          logger.info("Found localRepository value from settings.xml in user path => " + localRepo.text)
+          session.setLocalRepositoryManager(newRepositorySystem.newLocalRepositoryManager(new LocalRepository(localRepo.text)))
       }
     } else {
       logger.debug("settings.xml not found")
@@ -179,13 +189,13 @@ object AetherUtil {
     root.getNodes.find(n => n.getName == nodeName) match {
       case Some(node) => {
         node.getDictionary match {
-          case Some(dic)=> {
-             dic.getValues.find(v => v.getAttribute.getName == "port") match {
-            case Some(att) => {
-              Some("http://" + ip + ":" + att.getValue + "/provisioning/")
+          case Some(dic) => {
+            dic.getValues.find(v => v.getAttribute.getName == "port") match {
+              case Some(att) => {
+                Some("http://" + ip + ":" + att.getValue + "/provisioning/")
+              }
+              case None => None
             }
-            case None => None
-          }
           }
           case None => None
         }

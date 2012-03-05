@@ -19,7 +19,7 @@ import org.slf4j.LoggerFactory
 import org.kevoree.DeployUnit
 import actors.DaemonActor
 import scala.collection.JavaConversions._
-import org.kevoree.api.service.core.classloading.{KevoreeClassLoaderHandler}
+import org.kevoree.api.service.core.classloading.KevoreeClassLoaderHandler
 import org.kevoree.kcl.KevoreeJarClassLoader
 
 /**
@@ -135,6 +135,10 @@ class JCLContextHandler extends DaemonActor with KevoreeClassLoaderHandler {
     logger.debug("================== End KCL Dump ===================")
   }
 
+
+  private val failedLinks = new java.util.HashMap[DeployUnit,KevoreeJarClassLoader]()
+  def clearFailedLinks(){ failedLinks.clear() }
+
   private def installDeployUnitInternals(du: DeployUnit, file: File): KevoreeJarClassLoader = {
     val previousKCL = getKCLInternals(du)
     val res = if (previousKCL != null) {
@@ -143,20 +147,31 @@ class JCLContextHandler extends DaemonActor with KevoreeClassLoaderHandler {
     } else {
       logger.debug("Install {} , file {}", buildKEY(du), file)
       val newcl = new KevoreeJarClassLoader
-      if (du.getVersion.contains("SNAPSHOT")) {
+
+      //if (du.getVersion.contains("SNAPSHOT")) {
         newcl.setLazyLoad(false)
-      }
+     // }
+
       newcl.add(file.getAbsolutePath)
       kcl_cache.put(buildKEY(du), newcl)
       kcl_cache_file.put(buildKEY(du), file)
       logger.debug("Add KCL for {}->{}", du.getUnitName, buildKEY(du))
-
+      
+            //TRY TO RECOVER FAILED LINK
+      if(failedLinks.containsKey(du)){
+        failedLinks.get(du).addSubClassLoader(newcl)
+        newcl.addWeakClassLoader(failedLinks.get(du))
+        failedLinks.remove(du)
+        logger.debug("Failed Link {} remain size : {}",du.getUnitName,failedLinks.size())
+      }
+      
       du.getRequiredLibs.foreach {
         rLib =>
           val kcl = getKCLInternals(rLib)
           if (kcl != null) {
             logger.debug("Link KCL for {}->{}", du.getUnitName, rLib.getUnitName)
             newcl.addSubClassLoader(kcl)
+            kcl.addWeakClassLoader(newcl)
 
             du.getRequiredLibs.filter(rLibIn => rLib != rLibIn).foreach(rLibIn => {
               val kcl2 = getKCLInternals(rLibIn)
@@ -165,10 +180,13 @@ class JCLContextHandler extends DaemonActor with KevoreeClassLoaderHandler {
                 logger.debug("Link Weak for {}->{}", rLib.getUnitName, rLibIn.getUnitName)
               }
             })
-
-
+          } else {
+            logger.debug("Fail link ! Warning ")
+            failedLinks.put(rLib,newcl)
           }
       }
+
+    
       newcl
     }
     /*
@@ -183,12 +201,21 @@ class JCLContextHandler extends DaemonActor with KevoreeClassLoaderHandler {
   }
 
   private def removeDeployUnitInternals(du: DeployUnit) {
+    if(failedLinks.containsKey(du)){
+      failedLinks.remove(du)
+    }
+    
     val key = buildKEY(du)
+    val kcl_to_remove = kcl_cache.get(key)
     if (!lockedDu.contains(key)) {
       if (kcl_cache.containsKey(key)) {
         logger.debug("Remove KCL for {}->{}", du.getUnitName, buildKEY(du))
-        kcl_cache.keySet().foreach {
-          key1 => kcl_cache.get(key1).cleanupLinks(kcl_cache.get(key))
+        //logger.debug("Cache To cleanuip size"+kcl_cache.values().size()+"-"+kcl_cache.size()+"-"+kcl_cache.keySet().size())
+        kcl_cache.values().foreach {
+          vals => {
+            vals.cleanupLinks(kcl_to_remove)
+            //logger.debug("Cleanup {} from {}",vals.toString(),du.getUnitName)
+          }
         }
         kcl_cache.get(key).unload()
         kcl_cache.remove(key)
@@ -197,10 +224,6 @@ class JCLContextHandler extends DaemonActor with KevoreeClassLoaderHandler {
         kcl_cache_file.remove(key)
       }
     }
-    /*
-    if (logger.isDebugEnabled) {
-      printDumpInternals()
-    }*/
   }
 
 
@@ -245,7 +268,7 @@ class JCLContextHandler extends DaemonActor with KevoreeClassLoaderHandler {
     if (resolvedFile != null) {
       installDeployUnitInternals(du, resolvedFile)
     } else {
-      logger.error("Error while resolving deploy unit "+du.getUnitName)
+      logger.error("Error while resolving deploy unit " + du.getUnitName)
       null
     }
   }
@@ -253,5 +276,21 @@ class JCLContextHandler extends DaemonActor with KevoreeClassLoaderHandler {
   def installDeployUnit(du: DeployUnit): KevoreeJarClassLoader = {
     (this !? INSTALL_DEPLOYUNIT(du)).asInstanceOf[KevoreeJarClassLoader]
   }
+
+  def getKCLDump: String = {
+    val buffer = new StringBuffer
+    kcl_cache.foreach {
+      k =>
+        buffer.append("KCL KEY name=" + k._1 + "\n")
+        buffer.append(k._2.getKCLDump + "\n")
+    }
+
+    buffer.toString
+  }
+
+
+
+
+
 
 }

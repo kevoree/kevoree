@@ -23,19 +23,13 @@ import org.kevoree.{MBinding, DeployUnit, NamedElement}
  * User: duke
  * Date: 11/10/11
  * Time: 09:18
- * To change this template use File | Settings | File Templates.
  */
 
 object Tester extends App {
 
-  println("Test Kompare")
-
   val bean = new KevoreeKompareBean
-
-  val model1 = KevoreeXmiHelper.load("/home/edaubert/kevoree/0jenkins_planning.kev")
-  val model2 = KevoreeXmiHelper.load("/home/edaubert/kevoree/jenkins_planning.kev")
-
-
+  val model2 = KevoreeXmiHelper.load("/Users/duke/Desktop/bad.kev")
+  val model1 = KevoreeXmiHelper.load("/Users/duke/Desktop/badBefore.kev")
   val adapModel = bean.kompare(model1, model2, "node0")
 
 
