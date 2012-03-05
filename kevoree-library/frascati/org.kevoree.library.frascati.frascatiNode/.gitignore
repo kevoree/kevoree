@@ -2,3 +2,4 @@
 /.scala_dependencies
 /pom.xml~
 /*.cache
+/.externalToolBuilders/
