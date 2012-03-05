@@ -67,8 +67,13 @@ abstract class KevoreeGroupActivator extends KevoreeInstanceActivator {
   }
 
   override def stop() {
+
+    if(groupActor == null){
+      return
+    }
+
     if (groupActor.asInstanceOf[KevoreeGroup].getIsStarted) {
-      groupActor !? StopMessage
+      groupActor !? StopMessage(null)
       println("Stopping => " + instanceName)
     }
 

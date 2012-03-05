@@ -22,6 +22,7 @@ public class App {
 
 
     public void start() throws Exception {
+
         ch.qos.logback.classic.Logger root = (ch.qos.logback.classic.Logger) LoggerFactory.getLogger(ch.qos.logback.classic.Logger.ROOT_LOGGER_NAME);
         if (System.getProperty("node.log.appender.file") != null) {
             System.out.println("Kevoree log will out in file => " + System.getProperty("node.log.appender.file"));

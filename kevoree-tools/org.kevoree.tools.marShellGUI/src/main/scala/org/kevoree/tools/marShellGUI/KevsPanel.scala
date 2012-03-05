@@ -88,7 +88,11 @@ class KevsPanel extends JPanel {
 
           //val highlighter = codeEditor.getHighlighter()
           try {
-            val marker = new Markers.SimpleMarker(Color.RED, parser.lastNoSuccess.toString)
+
+            var cleanHtmlText = parser.lastNoSuccess.toString
+            cleanHtmlText= cleanHtmlText.toString.replace("<","<b>")
+            cleanHtmlText= cleanHtmlText.toString.replace(">","</b>")
+            val marker = new Markers.SimpleMarker(Color.RED, cleanHtmlText)
 
             //  println(parser.lastNoSuccess.next.offset)
             //  println(parser.lastNoSuccess.next.rest.offset)

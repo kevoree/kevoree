@@ -38,7 +38,7 @@ object MainRunner {
   def main(args: Array[String]): Unit = {
     println("Hello, world!")
 
-    val model = KevoreeXmiHelper.load("/Users/ffouquet/Documents/DEV/dukeboard_github/kevoree/kevoree-tools/org.kevoree.tools.marShellGUI/src/main/resources/baseModel.kev")
+    val model = KevoreeXmiHelper.load("/Users/duke/Desktop/arduinoTest.kev")
     KevsModelHandlers.put(1,model)
 
 

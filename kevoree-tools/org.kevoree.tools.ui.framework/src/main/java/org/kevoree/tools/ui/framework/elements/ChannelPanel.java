@@ -17,24 +17,15 @@
  */
 package org.kevoree.tools.ui.framework.elements;
 
-import java.awt.AlphaComposite;
-import java.awt.BasicStroke;
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.GradientPaint;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.Point;
-import java.awt.RenderingHints;
-import java.awt.image.BufferedImage;
-import javax.swing.JPanel;
-
 import org.jdesktop.swingx.graphics.GraphicsUtilities;
 import org.jdesktop.swingx.graphics.ShadowRenderer;
 import org.kevoree.tools.ui.framework.ErrorHighlightableElement;
 import org.kevoree.tools.ui.framework.SelectElement;
 import org.kevoree.tools.ui.framework.TitledElement;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.image.BufferedImage;
 
 /**
  * @author ffouquet
@@ -48,6 +39,7 @@ public class ChannelPanel extends JPanel implements TitledElement, SelectElement
         if (_title != null) {
             title = _title;
             this.setToolTipText("Channel " + title);
+            bufferGhost = null;
         }
     }
 
@@ -80,65 +72,52 @@ public class ChannelPanel extends JPanel implements TitledElement, SelectElement
         return rec.contains(x, y);
     }
 
+    private BufferedImage bufferGhost;
+
     @Override
     protected void paintComponent(Graphics g) {
-        int x = (SHADOW_SIZE - 6);
-        int y = (SHADOW_SIZE - 6);
-        int w = getWidth() - x * 2;
-        int h = getHeight() - y * 2;
-        Graphics2D g2 = (Graphics2D) g.create();
-        g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
-                RenderingHints.VALUE_ANTIALIAS_ON);
-        if (shadow != null) {
-            int xOffset = (shadow.getWidth() - w) / 2;
-            int yOffset = (shadow.getHeight() - h) / 2;
-            g2.drawImage(shadow, x - xOffset, y - yOffset, null);
-        }
 
+        if (bufferGhost == null) {
+            bufferGhost = getGraphicsConfiguration().createCompatibleImage(getWidth(), getHeight(), Transparency.TRANSLUCENT);
+            int x = (SHADOW_SIZE - 6);
+            int y = (SHADOW_SIZE - 6);
+            int w = getWidth() - x * 2;
+            int h = getHeight() - y * 2;
 
-        //g2.setColor(new Color(0, 0, 0, 150));
-
-        //g2.setColor(borderColor);
-
-
-        /*
-        if (shadow != null) {
-        int xOffset = (shadow.getWidth() - w) / 2;
-        int yOffset = (shadow.getHeight() - h) / 2;
-        g2.drawImage(shadow, x - xOffset, y - yOffset, null);
-        }
-         */
-
-        //g2.setColor(Color.WHITE);
-
-        GradientPaint grad = new GradientPaint(new Point(0, 0), actualFillColor, new Point(0, getHeight()), new Color(255, 127, 36, 220));
-        g2.setPaint(grad);
-        g2.fillOval(x, y, w, h);
-        //g2.fillRoundRect(x, y, w, h, arc, arc);
-        g2.setStroke(new BasicStroke(2f));
-        g2.setColor(borderColor);
-        if (selected) {
-            g2.setColor(new Color(243, 238, 39, 150));
-        } else {
-            g2.setColor(Color.WHITE);
-        }
-        g2.drawOval(x, y, w, h);//, arc, arc);
-
-        g2.setColor(Color.WHITE);
-        g2.setFont(new Font("Monospaced", Font.BOLD, 9));
-        //g2.drawChars(title.toCharArray(), 0, title.length(), 0, 5);
-
-
-        String[] titles = title.split(":");
-        for (int i = 0; i < titles.length; i++) {
-            g2.drawString(titles[i].trim(), (int) ((getWidth() / 2) - (title.trim().length() / 2) * 2.6), 40 + i * 25);
-            if (i != 0) {
-                g2.drawString(":", (int) ((getWidth() / 2) - 1), 30 + (i * 25));
+            Graphics2D g2 = bufferGhost.createGraphics();
+            g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+                    RenderingHints.VALUE_ANTIALIAS_ON);
+            if (shadow != null) {
+                int xOffset = (shadow.getWidth() - w) / 2;
+                int yOffset = (shadow.getHeight() - h) / 2;
+                g2.drawImage(shadow, x - xOffset, y - yOffset, null);
             }
-        }
 
-        //g2.drawString(title, (int)(getWidth()/2-title.length()*3),(getHeight()/2)+5);
-        g2.dispose();
+            GradientPaint grad = new GradientPaint(new Point(0, 0), actualFillColor, new Point(0, getHeight()), new Color(255, 127, 36, 220));
+            g2.setPaint(grad);
+            g2.fillOval(x, y, w, h);
+            g2.setStroke(new BasicStroke(2f));
+            g2.setColor(borderColor);
+            if (selected) {
+                g2.setColor(new Color(243, 238, 39, 150));
+            } else {
+                g2.setColor(Color.WHITE);
+            }
+            g2.drawOval(x, y, w, h);//, arc, arc);
+            g2.setColor(Color.WHITE);
+            g2.setFont(new Font("Monospaced", Font.BOLD, 9));
+            //g2.drawChars(title.toCharArray(), 0, title.length(), 0, 5);
+            String[] titles = title.split(":");
+            for (int i = 0; i < titles.length; i++) {
+                g2.drawString(titles[i].trim(), (int) ((getWidth() / 2) - (title.trim().length() / 2) * 2.6), 40 + i * 25);
+                if (i != 0) {
+                    g2.drawString(":", (int) ((getWidth() / 2) - 1), 30 + (i * 25));
+                }
+            }
+            //g2.drawString(title, (int)(getWidth()/2-title.length()*3),(getHeight()/2)+5);
+            g2.dispose();
+        }
+        g.drawImage(bufferGhost, 0, 0, this);
     }
 
     @Override

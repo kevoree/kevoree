@@ -4,7 +4,7 @@
     <artifactId>org.kevoree.tools.aether.framework</artifactId>
     <packaging>bundle</packaging>
     <name>Kevoree :: Tools :: Aether Framework</name>
-    <version>1.6.0-SNAPSHOT</version>
+    <version>1.6.0-BETA3</version>
 
     <properties>
         <kevoree.version>${project.version}</kevoree.version>
@@ -14,7 +14,7 @@
     <parent>
         <artifactId>org.kevoree.tools.root</artifactId>
         <groupId>org.kevoree.tools</groupId>
-        <version>1.6.0-SNAPSHOT</version>
+        <version>1.6.0-BETA3</version>
         <relativePath>../org.kevoree.tools.root/pom.xml</relativePath>
     </parent>
 
@@ -84,16 +84,27 @@
             <artifactId>aether-connector-file</artifactId>
             <version>1.13</version>
         </dependency>
+
+
         <dependency>
             <groupId>org.sonatype.aether</groupId>
             <artifactId>aether-connector-asynchttpclient</artifactId>
             <version>1.13</version>
+            <exclusions>
+                <exclusion>
+                    <artifactId>netty</artifactId>
+                    <groupId>org.jboss.netty</groupId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.apache.maven</groupId>
             <artifactId>maven-aether-provider</artifactId>
             <version>3.0.3</version>
         </dependency>
+
+
+
         <dependency>
             <groupId>org.codehaus.plexus</groupId>
             <artifactId>plexus-component-annotations</artifactId>
@@ -116,7 +127,6 @@
                 <extensions>true</extensions>
                 <configuration>
                     <instructions>
-                        <Bundle-SymbolicName>org.kevoree.tools.aether.framework</Bundle-SymbolicName>
                         <Import-Package>!org.jboss.*,!org.codehaus.*,!org.apache.commons.*,!javax.servlet.*,!com.google.protobuf.*,!org.kevoree.tools.aether.framework.*,*;resolution:=optional</Import-Package>
                         <Export-Package>org.kevoree.tools.aether.framework.*,
                             org.sonatype.*,

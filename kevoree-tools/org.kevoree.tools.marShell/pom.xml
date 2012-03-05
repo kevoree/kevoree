@@ -5,12 +5,12 @@
     <artifactId>org.kevoree.tools.marShell</artifactId>
     <packaging>bundle</packaging>
     <name>Kevoree :: Tools :: M@R Shell</name>
-    <version>1.6.0-SNAPSHOT</version>
+    <version>1.6.0-BETA3</version>
 
     <parent>
         <artifactId>org.kevoree.tools.root</artifactId>
         <groupId>org.kevoree.tools</groupId>
-        <version>1.6.0-SNAPSHOT</version>
+        <version>1.6.0-BETA3</version>
         <relativePath>../org.kevoree.tools.root/pom.xml</relativePath>
     </parent>
 
@@ -42,11 +42,19 @@
 
         <dependency>
             <groupId>org.scalatest</groupId>
-            <artifactId>scalatest_2.9.1</artifactId>
-            <version>1.6.1</version>
+            <artifactId>scalatest_2.10.0-M2</artifactId>
+            <version>1.8-SNAPSHOT</version>
             <scope>test</scope>
         </dependency>
 
     </dependencies>
+
+    <repositories>
+        <repository>
+            <id>oss</id>
+            <url>https://oss.sonatype.org/content/groups/public</url>
+        </repository>
+    </repositories>
+
 
 </project>

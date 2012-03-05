@@ -25,6 +25,18 @@ import org.kevoree.android.framework.service.KevoreeAndroidService;
  * @author ffouquet
  */
 public class UIServiceHandler {
+    
+    private static KevoreeAndroidService uiService = null;
+    
+    public static void setUIService(KevoreeAndroidService ui){
+        uiService = ui;
+    }
+    
+    public static KevoreeAndroidService getUIService(){
+        return uiService;
+    }
+    
+    
 /*
     public static KevoreeAndroidService getUIService(Bundle b) {
         ServiceTracker tracker = new ServiceTracker(b.getBundleContext(), KevoreeAndroidService.class.getName(), null);

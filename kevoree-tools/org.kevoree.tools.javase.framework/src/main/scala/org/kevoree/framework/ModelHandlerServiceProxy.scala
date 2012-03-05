@@ -18,7 +18,8 @@ import org.kevoree.cloner.ModelCloner
 import org.slf4j.LoggerFactory
 import actors.DaemonActor
 import java.util.{Date, UUID}
-import org.kevoree.api.service.core.handler.{ContextModel, ModelListener, UUIDModel, KevoreeModelHandlerService}
+import org.kevoree.api.service.core.handler._
+import java.lang.Long
 
 
 /**
@@ -135,7 +136,6 @@ class ModelHandlerServiceProxy extends KevoreeModelHandlerService with DaemonAct
   def compareAndSwapModel(previousModel: UUIDModel, targetModel: ContainerRoot) {
     if (proxyModel != null) {
       logger.error("compareAndSwapModel not available during update")
-      null
     } else {
       proxy.compareAndSwapModel(previousModel, targetModel)
     }
@@ -171,5 +171,13 @@ class ModelHandlerServiceProxy extends KevoreeModelHandlerService with DaemonAct
 
   def getContextModel: ContextModel = {
     proxy.getContextModel
+  }
+
+  def acquireLock(callBack: ModelHandlerLockCallBack, timeout: Long) {
+    proxy.acquireLock(callBack,timeout)
+  }
+
+  def releaseLock(uuid: UUID) {
+    proxy.releaseLock(uuid)
   }
 }

@@ -15,7 +15,6 @@ package org.kevoree.tools.ui.editor.property
 
 import org.kevoree.tools.ui.editor.KevoreeUIKernel
 import org.kevoree._
-import com.explodingpixels.macwidgets.HudWidgetFactory
 import com.explodingpixels.macwidgets.plaf.{HudTextFieldUI, HudLabelUI}
 import javax.swing._
 import event.{DocumentEvent, DocumentListener}
@@ -23,6 +22,7 @@ import java.awt.Dimension
 import java.awt.event.{ActionListener, ActionEvent}
 import text.BadLocationException
 import org.slf4j.LoggerFactory
+import com.explodingpixels.macwidgets.{IAppWidgetFactory, HudWidgetFactory}
 
 /**
  * Created by IntelliJ IDEA.
@@ -157,6 +157,8 @@ class InstancePropertyEditor(elem: org.kevoree.Instance, kernel: KevoreeUIKernel
   scrollPane.setOpaque(false)
   scrollPane.setBorder(null)
   scrollPane.setPreferredSize(new Dimension(250, 150))
+
+  IAppWidgetFactory.makeIAppScrollPane(scrollPane)
   this.addCenter(scrollPane)
 
   //END CONSTRUCTOR CODE

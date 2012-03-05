@@ -1,3 +1,29 @@
+/**
+ * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE, Version 3, 29 June 2007;
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * 	http://www.gnu.org/licenses/lgpl-3.0.txt
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+/**
+ * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE, Version 3, 29 June 2007;
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.gnu.org/licenses/lgpl-3.0.txt
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.kevoree.kcl
 
 /**
@@ -5,7 +31,7 @@ package org.kevoree.kcl
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * 	http://www.gnu.org/licenses/lgpl-3.0.txt
+ * http://www.gnu.org/licenses/lgpl-3.0.txt
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -53,9 +79,9 @@ class KevoreeJarClassLoader extends JarClassLoader {
   private val logger = LoggerFactory.getLogger(classOf[KevoreeJarClassLoader]);
 
   def cleanupLinks(c: ClassLoader) {
-    // CHEKC USED
+    // CHECK USED
     subClassLoaders = subClassLoaders.filter(scl => scl != c)
-    subWeakClassLoaders = subWeakClassLoaders.filter(scl => scl != c)
+    subWeakClassLoaders = subWeakClassLoaders.filter(scl => scl.get.isDefined && scl.get.get != c)
   }
 
   classpathResources = new KevoreeLazyJarResources
@@ -95,7 +121,6 @@ class KevoreeJarClassLoader extends JarClassLoader {
 
 
   override def loadClass(className: String, resolveIt: Boolean): Class[_] = {
-
     this.synchronized {
       try {
         return callSuperConcreteLoader(className, resolveIt)
@@ -133,12 +158,14 @@ class KevoreeJarClassLoader extends JarClassLoader {
   }
 
   override def loadClass(className: String): Class[_] = {
-    // println("loadClass->" + className)
+
+    println("KCL LOAD "+className+"-")
+
     loadClass(className, true)
   }
 
   override def getResourceAsStream(name: String): InputStream = {
-    logger.debug("Get Ressource : " + name)
+    logger.debug("Get RessourceAsStream : " + name)
     var res: Array[Byte] = null
     if (name.endsWith(".class")) {
       res = this.classpathResources.getResource(name)
@@ -151,13 +178,21 @@ class KevoreeJarClassLoader extends JarClassLoader {
     if (res != null) {
       new ByteArrayInputStream(res)
     } else {
+      logger.debug("Res not found " + name)
       null
     }
   }
 
   override def getResource(s: String): URL = {
+    logger.debug("GetResource="+s)
     internal_getResource(s)
   }
+
+            /*
+  override def getResources(p1: String) = {
+    println("FUCKKKKKKK")
+    null
+  }       */
 
   def internal_getResource(s: String): URL = {
     if (classpathResources.asInstanceOf[KevoreeLazyJarResources].containResource(s)) {
@@ -195,7 +230,10 @@ class KevoreeJarClassLoader extends JarClassLoader {
   }
 
   override def findResources(p1: String): Enumeration[URL] = {
-    if (classpathResources.asInstanceOf[KevoreeLazyJarResources].containResource(p1)) {
+
+    logger.debug("CallFind Resources")
+
+    val selfRes = if (classpathResources.asInstanceOf[KevoreeLazyJarResources].containResource(p1)) {
       val urls = classpathResources.asInstanceOf[KevoreeLazyJarResources].getResourceURLS(p1)
       val resolvedUrl = new ArrayList[URL]
       import scala.collection.JavaConversions._
@@ -208,7 +246,6 @@ class KevoreeJarClassLoader extends JarClassLoader {
               p1
             }
             val tFile = File.createTempFile("dummy_kcl_temp", cleanName)
-            println(cleanName + "->" + tFile.getAbsolutePath)
             tFile.deleteOnExit()
             val tWriter = new FileOutputStream(tFile)
             tWriter.write(classpathResources.asInstanceOf[KevoreeLazyJarResources].getResourceContent(u))
@@ -218,12 +255,71 @@ class KevoreeJarClassLoader extends JarClassLoader {
             resolvedUrl.add(u)
           }
       }
-      Collections.enumeration(resolvedUrl);
+      //Collections.enumeration(resolvedUrl);
+      resolvedUrl
     } else {
-      Collections.enumeration(new java.util.ArrayList[URL]())
+      //Collections.enumeration(new java.util.ArrayList[URL]())
+      new java.util.ArrayList[URL]()
+    }
+    //Then call on all
+    import scala.collection.JavaConverters._
+
+    subClassLoaders.foreach {
+      sub =>
+        val subEnum = sub.getResources(p1)
+        while (subEnum.hasMoreElements) {
+          val subElem = subEnum.nextElement();
+          if (!selfRes.contains(subElem)) {
+            selfRes.add(subElem)
+          }
+        }
+    }
+
+    subWeakClassLoaders.foreach {
+      subOpt =>
+        if (subOpt.get.isDefined) {
+          val sub = subOpt.get.get
+          val subEnum = sub.getResources(p1)
+          while (subEnum.hasMoreElements) {
+            val subElem = subEnum.nextElement();
+            if (!selfRes.contains(subElem)) {
+              selfRes.add(subElem)
+            }
+          }
+        }
+    }
+
+    selfRes.toArray.foreach{ s =>
+      println("URLs=>"+s);
+    }
+
+
+    Collections.enumeration(selfRes)
+  }
+
+  def cleanJarURL(j: String) = {
+    if (j.contains(File.separator)) {
+      j.substring(j.lastIndexOf(File.separator) + 1)
+    } else {
+      j
     }
   }
 
+  def getKCLDump: String = {
+    val buffer = new StringBuffer
+    buffer.append("\tJar=" + cleanJarURL(classpathResources.asInstanceOf[KevoreeLazyJarResources].getLastLoadedJar) + "_" + hashCode() + "\n")
+    subClassLoaders.foreach {
+      s =>
+        buffer.append("\t\tl->" + cleanJarURL(s.asInstanceOf[KevoreeJarClassLoader].classpathResources.asInstanceOf[KevoreeLazyJarResources].getLastLoadedJar) + "_" + s.hashCode() + "\n")
+    }
+    subWeakClassLoaders.foreach {
+      s =>
+        if (s.get.isDefined) {
+          buffer.append("\t\tw~>" + cleanJarURL(s.get.get.asInstanceOf[KevoreeJarClassLoader].classpathResources.asInstanceOf[KevoreeLazyJarResources].getLastLoadedJar + "_" + s.get.get.hashCode()) + "\n")
+        }
+    }
+    buffer.toString
+  }
 
   def printDump() {
     logger.debug("KCL : " + classpathResources.asInstanceOf[KevoreeLazyJarResources].getLastLoadedJar)
@@ -240,4 +336,5 @@ class KevoreeJarClassLoader extends JarClassLoader {
     }
   }
 
+  override def toString: String = cleanJarURL(classpathResources.asInstanceOf[KevoreeLazyJarResources].getLastLoadedJar) + hashCode()
 }

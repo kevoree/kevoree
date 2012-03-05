@@ -6,7 +6,7 @@
     <packaging>pom</packaging>
     <name>Kevoree :: Tools :: Root</name>
     <url>https://github.com/dukeboard/kevoree</url>
-    <version>1.6.0-SNAPSHOT</version>
+    <version>1.6.0-BETA3</version>
 
 
     <dependencies>
@@ -117,11 +117,6 @@
 
     <repositories>
         <repository>
-            <id>scala-tools.org</id>
-            <name>Scala-tools Maven2 Repository</name>
-            <url>http://scala-tools.org/repo-releases</url>
-        </repository>
-        <repository>
             <id>kevoree-libs-release-local</id>
             <url>http://maven.kevoree.org/release</url>
         </repository>
@@ -132,11 +127,6 @@
     </repositories>
 
     <pluginRepositories>
-        <pluginRepository>
-            <id>plugin.scala-tools.org</id>
-            <name>Plugin Scala-tools Maven2 Repository</name>
-            <url>http://scala-tools.org/repo-releases</url>
-        </pluginRepository>
         <pluginRepository>
             <id>plugin.kevoree-github</id>
             <url>http://maven.kevoree.org/release</url>
@@ -186,7 +176,7 @@
     </modules>
 
     <properties>
-        <scala.version>2.9.1</scala.version>
+        <scala.version>2.10.0-M2</scala.version>
         <bundle.vendor>IRISA/INRIA</bundle.vendor>
         <releaseUrl>http://maven.kevoree.org/libs-release-local</releaseUrl>
         <slf4j.version>1.6.4</slf4j.version>

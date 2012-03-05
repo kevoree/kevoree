@@ -102,10 +102,10 @@ abstract class KevoreeComponent(c: AbstractComponentType) extends KevoreeActor {
         }
       }
     }
-    case StopMessage if (!ct_started) => {
+    case StopMessage(_) if (!ct_started) => {
       reply(false)
     }
-    case StartMessage if (ct_started) => {
+    case StartMessage(_) if (ct_started) => {
       reply(false)
     }
     case _@umsg => println("unknow message " + umsg + "-sender-" + sender.getClass.getName)

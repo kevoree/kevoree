@@ -13,10 +13,10 @@
  */
 package org.kevoree.tools.ui.editor
 
-import java.lang.String
 import org.kevoree.ContainerRoot
 import java.util.{UUID, Date, List}
-import org.kevoree.api.service.core.handler.{ContextModel, UUIDModel, ModelListener, KevoreeModelHandlerService}
+import org.kevoree.api.service.core.handler._
+import java.lang.{Long, String}
 
 
 /**
@@ -60,4 +60,9 @@ class ModelHandlerServiceWrapper(kernel : KevoreeUIKernel) extends KevoreeModelH
   def atomicCompareAndSwapModel(previousModel: UUIDModel, targetModel: ContainerRoot): Date = null
 
   def getContextModel: ContextModel = null
+
+  def acquireLock(callBack: ModelHandlerLockCallBack, timeout: Long) {callBack.lockRejected()}
+
+  def releaseLock(uuid: UUID) {}
+
 }

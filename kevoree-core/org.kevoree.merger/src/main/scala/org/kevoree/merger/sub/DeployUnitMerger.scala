@@ -42,16 +42,11 @@ trait DeployUnitMerger extends Merger {
         } else {
           //USED BY PARENT MERGER TO FORCE UPDATE
           if (newForce) {
-            //FUCKK TOTO
             val reLibs = tp.getRequiredLibs
             ftp.removeAllRequiredLibs()
             ftp.addAllRequiredLibs(reLibs)
 
           }
-
-
-
-
 
           val ftpTimeStamp = if (ftp.getHashcode != "") {
             java.lang.Long.parseLong(ftp.getHashcode)

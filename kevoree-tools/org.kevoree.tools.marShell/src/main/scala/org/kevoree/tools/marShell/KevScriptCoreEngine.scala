@@ -17,7 +17,7 @@ import interpreter.KevsInterpreterContext
 import org.kevoree.ContainerRoot
 import org.kevoree.api.service.core.handler.KevoreeModelHandlerService
 import interpreter.KevsInterpreterAspects._
-import org.kevoree.api.service.core.script.{KevScriptEngineException}
+import org.kevoree.api.service.core.script.{KevScriptEngine, KevScriptEngineException}
 
 /**
  * Created by IntelliJ IDEA.
@@ -33,7 +33,6 @@ class KevScriptCoreEngine(core: KevoreeModelHandlerService) extends KevScriptAbs
   def clearVariables() {
     varMap.clear();
     varMap.put("nodename", core.getNodeName)
-    this
   }
 
   def interpret(): ContainerRoot = {

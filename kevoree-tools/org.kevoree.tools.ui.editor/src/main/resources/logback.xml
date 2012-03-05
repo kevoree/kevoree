@@ -17,9 +17,11 @@
 
     <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
-            <pattern>%-5level [%file:%line] - %msg%n</pattern>
+            <pattern>%-5level [%d{HH:mm:ss.SSS}:%file:%line] - %msg%n</pattern>
         </encoder>
     </appender>
+
+    <logger name="com.ning.http.client.providers.jdk.JDKAsyncHttpProvider" level="INFO"/>
 
     <root level="${root-level:-DEBUG}">
         <appender-ref ref="CONSOLE"/>
