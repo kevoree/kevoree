@@ -41,7 +41,7 @@ class FrascatiRuntime extends Actor {
     while (true) {
       receive {
         case StartRuntime() => {
-
+                            /*
           val f_cl = new FrascatiClassLoader(classOf[FrascatiNode].getClassLoader) {
 
             override def loadClass(p1: String): Class[_] = {
@@ -82,13 +82,17 @@ class FrascatiRuntime extends Actor {
             override def addURL(p1: URL) {
               println("add URL " + p1)
             }
-          }
+          }   */
 
-          //Thread.currentThread().setContextClassLoader(f_cl);
+          Thread.currentThread().setContextClassLoader(classOf[FrascatiNode].getClassLoader);
          // FraSCAti.newFraSCAti()
 
 
-          internal_frascati = FraSCAti.newFraSCAti(f_cl);
+          println("Lookfor=MembraneGeneration")
+          val clazzres = classOf[FrascatiNode].getClassLoader.loadClass("org.ow2.frascati.component.factory.api.MembraneGeneration")
+          println("Result="+clazzres)
+
+          internal_frascati = FraSCAti.newFraSCAti(classOf[FrascatiNode].getClassLoader);
           //internal_frascati.setClassLoader(f_cl)
           //internal_frascati.getClassLoaderManager.setClassLoader(f_cl)
 
