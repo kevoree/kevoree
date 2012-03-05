@@ -31,9 +31,7 @@ object KloudHelper {
         group.getSubNodes.find(n => n.getName == nodeName) match {
           case None => false
           case Some(node) =>
-            //            node.eContainer.asInstanceOf[ContainerRoot].getAdaptationPrimitiveTypes.
             node.getTypeDefinition.asInstanceOf[NodeType].getManagedPrimitiveTypes.filter(p => p.getName == "RemoveNode" || p.getName == "AddNode").size == 2
-          //            node.getTypeDefinition.getName == "IaaSNode" || KloudHelper.isASubType(node.getTypeDefinition, "IaaSNode")
         }
     }
   }
