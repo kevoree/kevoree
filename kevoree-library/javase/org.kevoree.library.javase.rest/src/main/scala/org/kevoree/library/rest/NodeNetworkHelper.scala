@@ -82,6 +82,7 @@ object NodeNetworkHelper {
     ips.foreach {
       ip =>
         KevoreePlatformHelper.updateNodeLinkProp(model, nodeName, nodeName, org.kevoree.framework.Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP, ip._1, ip._2, 100)
+        logger.info("add {} as IP of {}", ip._1, nodeName)
     }
     Some(model)
   }

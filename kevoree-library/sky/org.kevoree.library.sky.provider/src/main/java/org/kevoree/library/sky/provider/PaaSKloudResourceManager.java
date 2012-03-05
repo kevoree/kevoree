@@ -74,13 +74,8 @@ public class PaaSKloudResourceManager extends ParentAbstractPage {
 				} catch (Exception e) {
 					logger.error("", e);
 				}
-				/*this.getClass().getClassLoader().getResourceAsStream("css/bootstrap.min.css");
-				StringBuilder builder = new StringBuilder
-				response.setContent();*/
 			}
-		} /*else {
-			response.setContent("Bad Request");
-		}*/
+		}
 		return response;
 	}
 
@@ -112,7 +107,7 @@ public class PaaSKloudResourceManager extends ParentAbstractPage {
 		Option<ContainerRoot> newKloudModelOption = KloudReasoner.createGroup(login, this.getNodeName(), uuidModel.getModel(), getKevScriptEngineFactory(), sshKey);
 		if (newKloudModelOption.isDefined()) {
 			// create proxy to the group
-			KloudReasoner.createProxy(login, this.getNodeName(), "/" + login, newKloudModelOption.get(), getKevScriptEngineFactory());
+//			KloudReasoner.createProxy(login, this.getNodeName(), "/" + login, newKloudModelOption.get(), getKevScriptEngineFactory());
 
 //			if (newKloudModelOption.isDefined()) {
 
@@ -127,18 +122,15 @@ public class PaaSKloudResourceManager extends ParentAbstractPage {
 				// push the user model to this group on the master fragment
 				Option<String> addressOption = KloudHelper.pushOnMaster(model, login, this.getNodeName(), newKloudModelOption.get());
 				if (addressOption.isDefined()) {
-					uuidModel = this.getModelService().getLastUUIDModel();
-					KloudReasoner.createProxy(login, this.getNodeName(), "/" + login, newKloudModelOption.get(), getKevScriptEngineFactory());
-					try {
-						this.getModelService().atomicCompareAndSwapModel(uuidModel, newKloudModelOption.get());
-						return addressOption.get();
-					} catch (Exception e) {
-						logger.error("Unable to add the proxy for the user {}", login, e);
+					if (createProxy(login, 5)) {
+						return addressOption.get(); // TODO maybe find the proxy address
+					} else {
+						logger.error("Unable to add the proxy for the user {}", login);
 						return "Unable to add the proxy for the user " + login;
 					}
 				} else {
-					logger.debug("Unable to add the proxy for the user {}", login);
-					return "Unable to add the proxy for the user " + login;
+					logger.debug("Unable to commit the user model on nodes");
+					return "Unable to commit the user model on nodes";
 				}
 
 			} else {
@@ -149,6 +141,18 @@ public class PaaSKloudResourceManager extends ParentAbstractPage {
 			logger.debug("Unable to create the needed user group to give access the nodes to the user.");
 			return "Unable to create the needed user group to give access the nodes to the user.";
 		}
+	}
+
+	private boolean createProxy (String login, int nbTry) {
+		UUIDModel uuidModel = this.getModelService().getLastUUIDModel();
+		Option<ContainerRoot> kloudModelOption = KloudReasoner.createProxy(login, this.getNodeName(), "/" + login, uuidModel.getModel(), getKevScriptEngineFactory());
+		if (kloudModelOption.isDefined()) {
+		}
+		try {
+			this.getModelService().atomicCompareAndSwapModel(uuidModel, kloudModelOption.get());
+			return true;
+		} catch (Exception e) {}
+		return nbTry > 0 && createProxy(login, nbTry - 1);
 	}
 
 	private static byte[] convertStream (InputStream in) throws Exception {

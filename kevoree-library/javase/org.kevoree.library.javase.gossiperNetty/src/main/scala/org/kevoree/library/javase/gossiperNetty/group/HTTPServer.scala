@@ -11,8 +11,9 @@ import org.kevoree.library.gossiperNetty.protocol.message.KevoreeMessage.Message
 import org.jboss.netty.handler.codec.protobuf.ProtobufDecoder
 import java.net.{InetSocketAddress, URLConnection, URL}
 import org.jboss.netty.channel._
-import org.jboss.netty.handler.codec.http.{HttpRequest, HttpResponseEncoder, HttpContentCompressor, HttpRequestDecoder}
 import org.jboss.netty.util.CharsetUtil
+import org.jboss.netty.handler.codec.http._
+import org.jboss.netty.buffer.ChannelBuffers
 
 /**
  * User: Erwan Daubert - erwan.daubert@gmail.com
@@ -132,12 +133,15 @@ class HTTPServer (group: NettyGossiperGroup, port: Int) {
     override def messageReceived (ctx: ChannelHandlerContext, e: MessageEvent) {
       if (e.getMessage.isInstanceOf[HttpRequest]) {
         val httpRequest = e.getMessage.asInstanceOf[HttpRequest]
-        val content = httpRequest.getContent
-        val modelString = content.toString(CharsetUtil.UTF_8)
-        group.getModelService.updateModel(KevoreeXmiHelper.loadString(modelString))
-        ctx.getChannel.write("<ack nodeName=\"" + group.getNodeName + "\" />")
+        if (httpRequest.getUri == "/model/current" && httpRequest.getMethod == HttpMethod.POST) {
+          val content = httpRequest.getContent
+          val modelString = content.toString(CharsetUtil.UTF_8)
+          group.getModelService.updateModel(KevoreeXmiHelper.loadString(modelString))
+          ctx.getChannel.write(buildResponse("<ack nodeName=\"" + group.getNodeName + "\" />"))
+        } else if (httpRequest.getUri == "/model/current" && httpRequest.getMethod == HttpMethod.GET) {
+          ctx.getChannel.write(buildResponse(KevoreeXmiHelper.saveToString(group.getModelService.getLastModel, false)))
+        }
         ctx.getChannel.close()
-
       }
     }
 
@@ -146,10 +150,21 @@ class HTTPServer (group: NettyGossiperGroup, port: Int) {
         ctx.getChannel.getRemoteAddress, e.getCause)
       e.getChannel.close()
     }
+
+    private def buildResponse (content: String): HttpResponse = {
+      // Build the response object.
+      val response = new DefaultHttpResponse(HttpVersion.HTTP_1_1, HttpResponseStatus.OK);
+      response.setContent(ChannelBuffers.copiedBuffer(content, CharsetUtil.UTF_8))
+      response.setHeader(HttpHeaders.Names.CONTENT_TYPE, "text/plain; charset=UTF-8");
+      response
+    }
   }
 
   def stop () {
-    channelServer.close().awaitUninterruptibly()
+    channelServer.unbind()
+    if (!channelServer.getCloseFuture.awaitUninterruptibly(5000)) {
+      channelServer.close().awaitUninterruptibly()
+    }
     bootstrapServer.releaseExternalResources();
   }
 
