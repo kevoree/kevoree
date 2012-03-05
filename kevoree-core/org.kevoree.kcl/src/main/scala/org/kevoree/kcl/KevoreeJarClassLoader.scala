@@ -24,6 +24,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+/**
+ * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE, Version 3, 29 June 2007;
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.gnu.org/licenses/lgpl-3.0.txt
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.kevoree.kcl
 
 /**
@@ -180,19 +193,16 @@ class KevoreeJarClassLoader extends JarClassLoader {
     } else {
       logger.debug("Res not found " + name)
       null
+
+      //TODO RESOLVE IN LINKED CLASSLOADER
+
     }
   }
 
   override def getResource(s: String): URL = {
-    logger.debug("GetResource="+s)
+    //logger.debug("GetResource=" + s)
     internal_getResource(s)
   }
-
-            /*
-  override def getResources(p1: String) = {
-    println("FUCKKKKKKK")
-    null
-  }       */
 
   def internal_getResource(s: String): URL = {
     if (classpathResources.asInstanceOf[KevoreeLazyJarResources].containResource(s)) {
@@ -209,6 +219,7 @@ class KevoreeJarClassLoader extends JarClassLoader {
         tWriter.close()
         new URL("file:///" + tFile.getAbsolutePath)
       } else {
+        //SIMPLY RETURN URL
         classpathResources.asInstanceOf[KevoreeLazyJarResources].getResourceURL(s)
       }
     } else {
@@ -226,14 +237,43 @@ class KevoreeJarClassLoader extends JarClassLoader {
   }
 
   override def findResource(s: java.lang.String): java.net.URL = {
-    internal_getResource(s)
+    var urlInternal: URL = internal_getResource(s)
+    if (urlInternal == null) {
+      subClassLoaders.foreach {
+        sub =>
+          urlInternal = if (sub.isInstanceOf[KevoreeJarClassLoader]) {
+            sub.asInstanceOf[KevoreeJarClassLoader].internal_getResource(s)
+          } else {
+            sub.getResource(s)
+          }
+          if (urlInternal != null) {
+            return urlInternal
+          }
+      }
+      subWeakClassLoaders.foreach {
+        subOpt =>
+
+          if (subOpt.get.isDefined) {
+            val sub = subOpt.get.get
+            urlInternal = if (sub.isInstanceOf[KevoreeJarClassLoader]) {
+              sub.asInstanceOf[KevoreeJarClassLoader].internal_getResource(s)
+            } else {
+              sub.getResource(s)
+            }
+            if (urlInternal != null) {
+              return urlInternal
+            }
+          }
+      }
+      null
+    } else {
+      urlInternal
+    }
   }
 
-  override def findResources(p1: String): Enumeration[URL] = {
 
-    logger.debug("CallFind Resources")
-
-    val selfRes = if (classpathResources.asInstanceOf[KevoreeLazyJarResources].containResource(p1)) {
+  def internal_findResources(p1: String): java.util.ArrayList[URL] = {
+    if (classpathResources.asInstanceOf[KevoreeLazyJarResources].containResource(p1)) {
       val urls = classpathResources.asInstanceOf[KevoreeLazyJarResources].getResourceURLS(p1)
       val resolvedUrl = new ArrayList[URL]
       import scala.collection.JavaConversions._
@@ -255,18 +295,24 @@ class KevoreeJarClassLoader extends JarClassLoader {
             resolvedUrl.add(u)
           }
       }
-      //Collections.enumeration(resolvedUrl);
       resolvedUrl
     } else {
-      //Collections.enumeration(new java.util.ArrayList[URL]())
       new java.util.ArrayList[URL]()
     }
+  }
+
+  override def findResources(p1: String): Enumeration[URL] = {
+    //logger.debug("CallFind Resources for " + p1 + "-")
+    val selfRes : ArrayList[URL] = internal_findResources(p1)
     //Then call on all
     import scala.collection.JavaConverters._
-
     subClassLoaders.foreach {
       sub =>
-        val subEnum = sub.getResources(p1)
+        val subEnum = if (sub.isInstanceOf[KevoreeJarClassLoader]) {
+          Collections.enumeration(sub.asInstanceOf[KevoreeJarClassLoader].internal_findResources(p1))
+        } else {
+          sub.getResources(p1)
+        }
         while (subEnum.hasMoreElements) {
           val subElem = subEnum.nextElement();
           if (!selfRes.contains(subElem)) {
@@ -274,12 +320,15 @@ class KevoreeJarClassLoader extends JarClassLoader {
           }
         }
     }
-
     subWeakClassLoaders.foreach {
       subOpt =>
         if (subOpt.get.isDefined) {
           val sub = subOpt.get.get
-          val subEnum = sub.getResources(p1)
+          val subEnum = if (sub.isInstanceOf[KevoreeJarClassLoader]) {
+            Collections.enumeration(sub.asInstanceOf[KevoreeJarClassLoader].internal_findResources(p1))
+          } else {
+            sub.getResources(p1)
+          }
           while (subEnum.hasMoreElements) {
             val subElem = subEnum.nextElement();
             if (!selfRes.contains(subElem)) {
@@ -288,12 +337,13 @@ class KevoreeJarClassLoader extends JarClassLoader {
           }
         }
     }
-
-    selfRes.toArray.foreach{ s =>
-      println("URLs=>"+s);
-    }
-
-
+    /*
+    logger.debug("ResourcesEnumSize={}",selfRes.size())
+    if(logger.isDebugEnabled){
+      selfRes.toArray.foreach{  u =>
+        logger.debug("URL="+u)
+      }
+    }   */
     Collections.enumeration(selfRes)
   }
 
